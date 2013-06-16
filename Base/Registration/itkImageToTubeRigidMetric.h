@@ -92,11 +92,10 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Space dimension is the dimension of parameters space */
-  enum { SpaceDimension = 6 };
-
   unsigned int GetNumberOfParameters( void ) const
-    { return SpaceDimension; }
+    {
+    return this->m_Transform->GetNumberOfParameters();
+    }
 
   /** Typedef for the Range calculator */
   typedef MinimumMaximumImageCalculator<FixedImageType> RangeCalculatorType;
