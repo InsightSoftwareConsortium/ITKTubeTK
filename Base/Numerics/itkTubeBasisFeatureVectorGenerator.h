@@ -85,7 +85,7 @@ public:
   //
   void         SetInputFeatureVectorGenerator( FeatureVectorGeneratorType
                  * fGen );
-  typename FeatureVectorGeneratorType::Pointer
+  typename FeatureVectorGenerator< ImageT >::Pointer
                GetInputFeatureVectorGenerator( void );
 
   itkSetObjectMacro( Labelmap, LabelmapType );

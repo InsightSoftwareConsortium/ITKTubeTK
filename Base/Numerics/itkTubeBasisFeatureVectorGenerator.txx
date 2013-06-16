@@ -82,8 +82,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
 }
 
 template < class ImageT, class LabelmapT >
-typename BasisFeatureVectorGenerator< ImageT, LabelmapT >::
-  FeatureVectorGeneratorType::Pointer
+typename FeatureVectorGenerator< ImageT >::Pointer
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GetInputFeatureVectorGenerator( void )
 {
