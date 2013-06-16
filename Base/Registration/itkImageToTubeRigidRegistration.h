@@ -95,6 +95,8 @@ public:
   itkTypeMacro( ImageToTubeRigidRegistration,
     ImageToSpatialObjectRegistrationMethod );
 
+  typedef typename Superclass::MetricType  MetricType;
+
   typedef ImageToTubeRigidMetric< FixedImageType,
     MovingSpatialObjectType,
     MovingTubeType,
