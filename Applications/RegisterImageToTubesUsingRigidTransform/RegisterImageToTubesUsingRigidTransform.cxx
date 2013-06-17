@@ -22,6 +22,7 @@ limitations under the License.
 =========================================================================*/
 
 #include "itkImageToTubeRigidRegistration.h"
+#include "itkRecordOptimizationParameterProgressionCommand.h"
 #include "itkSubSampleTubeTreeSpatialObjectFilter.h"
 #include "itkTubeToTubeTransformFilter.h"
 #include "tubeCLIFilterWatcher.h"
@@ -42,6 +43,9 @@ limitations under the License.
 
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
+
+// Does not currently use pixelT
+#define PARSE_ARGS_FLOAT_ONLY 1
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
@@ -183,6 +187,23 @@ int DoIt( int argc, char * argv[] )
     {
     gradientDescentOptimizer->SetLearningRate( 0.1 );
     gradientDescentOptimizer->SetNumberOfIterations( 1000 );
+    }
+
+  // TODO: This is hard-coded now, which is sufficient since
+  // ImageToTubeRigidMetric only uses a Euler3DTransform.  Will need to adjust
+  // to the transform parameters in the future at compile time.
+  const unsigned int NumberOfParameters = 6;
+  typedef itk::tube::RecordOptimizationParameterProgressionCommand< NumberOfParameters >
+    RecordParameterProgressionCommandType;
+  RecordParameterProgressionCommandType::Pointer
+    recordParameterProgressionCommand = RecordParameterProgressionCommandType::New();
+  if( !parameterProgression.empty() )
+    {
+    // Record the optimization parameter progression and write to a file.
+    recordParameterProgressionCommand->SetFileName( parameterProgression );
+    optimizer->AddObserver( itk::StartEvent(), recordParameterProgressionCommand );
+    optimizer->AddObserver( itk::IterationEvent(), recordParameterProgressionCommand );
+    optimizer->AddObserver( itk::EndEvent(), recordParameterProgressionCommand );
     }
 
   try
