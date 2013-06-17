@@ -27,14 +27,10 @@ limitations under the License.
 #include "itkImageToTubeRigidMetric.h"
 #include "itkTubeExponentialResolutionWeightFunction.h"
 
-#include <itkConjugateGradientOptimizer.h>
 #include <itkEuler3DTransform.h>
-#include <itkGradientDescentOptimizer.h>
 #include <itkImage.h>
 #include <itkImageRegionIterator.h>
 #include <itkImageToSpatialObjectRegistrationMethod.h>
-#include <itkLevenbergMarquardtOptimizer.h>
-#include <itkOnePlusOneEvolutionaryOptimizer.h>
 #include <itkTransform.h>
 #include <itkTubeSpatialObject.h>
 #include <itkVectorContainer.h>
@@ -95,6 +91,8 @@ public:
   itkTypeMacro( ImageToTubeRigidRegistration,
     ImageToSpatialObjectRegistrationMethod );
 
+  typedef typename Superclass::MetricType  MetricType;
+
   typedef ImageToTubeRigidMetric< FixedImageType,
     MovingSpatialObjectType,
     MovingTubeType,
@@ -110,19 +108,10 @@ public:
     ParametersDimension = TransformType::ParametersDimension };
 
   typedef typename Superclass::InterpolatorType   InterpolatorType;
-
-  //typedef GradientDescentVariableStepOptimizer  OptimizerType;
-  typedef GradientDescentOptimizer                OptimizerType;
-  //typedef OnePlusOneEvolutionaryOptimizer       OptimizerType;
+  typedef typename Superclass::OptimizerType      OptimizerType;
 
   /** Method that initiates the registration. */
   void StartRegistration( void );
-
-  /** Set the number of iteration */
-  itkSetMacro( NumberOfIteration, unsigned int );
-
-  /** Set the learning rate */
-  itkSetMacro( LearningRate, double );
 
   /** Set the initial position */
   void SetInitialPosition( const double position[6] );
@@ -141,9 +130,7 @@ private:
   ImageToTubeRigidRegistration( const Self& ); //purposely not implemented
   void operator=( const Self& ); //purposely not implemented
 
-  unsigned int                             m_NumberOfIteration;
   bool                                     m_IsInitialized;
-  double                                   m_LearningRate;
   ParametersType                           m_InitialPosition;
   ParametersType                           m_ParametersScale;
 

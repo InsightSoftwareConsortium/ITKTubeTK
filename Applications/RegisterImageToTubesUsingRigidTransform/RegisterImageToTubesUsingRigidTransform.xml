@@ -32,6 +32,14 @@
       <index>2</index>
       <description>Binary image demonstrating where the tube is located after it has been registered.</description>
     </image>
+    <file>
+      <name>parameterProgression</name>
+      <label>Parameter Progression</label>
+      <channel>output</channel>
+      <description>Output optimization parameter progression file.</description>
+      <flag>p</flag>
+      <longflag>parameterProgression</longflag>
+    </file>
   </parameters>
   <parameters>
     <label>Blur Filter</label>
