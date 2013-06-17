@@ -77,23 +77,69 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
 
     # Layout within the io collapsible button
     objectFormLayout = qt.QFormLayout(objectCollapsibleButton)
-    objectLabel = slicer.qMRMLLabelComboBox()
-    objectLabel.objectName = 'Foreground label selector'
-    objectLabel.setMRMLScene(slicer.mrmlScene)
-    objectLabel.setMRMLColorNode(slicer.modules.EditorWidget.editUtil.getColorNode())
-    objectLabel.labelValueVisible = True
-    objectLabel.currentColor = 1
-    objectFormLayout.addRow("Foreground Label:", objectLabel)
-    self.objectLabel = objectLabel
+    foregroundLayout = qt.QHBoxLayout()
+    foregroundLabel = slicer.qMRMLLabelComboBox()
+    foregroundLabel.objectName = 'Foreground label'
+    foregroundLabel.setMRMLScene(slicer.mrmlScene)
+    foregroundLabel.setMRMLColorNode(slicer.modules.EditorWidget.editUtil.getColorNode())
+    foregroundLabel.labelValueVisible = True
+    foregroundLabel.currentColor = 1
+    foregroundWeightSpinBox = qt.QDoubleSpinBox(foregroundLabel)
+    self.foregroundWeightSpinBox = foregroundWeightSpinBox
+    foregroundWeightSpinBox.setRange(0.0, 1.0)
+    foregroundWeightSpinBox.setSingleStep(0.1)
+    foregroundWeightSpinBox.value = 1.0
+    foregroundPopup = ctk.ctkPopupWidget( foregroundWeightSpinBox )
+    foregroundPopupLayout = qt.QHBoxLayout( foregroundPopup )
+    foregroundPopupSlider = ctk.ctkDoubleSlider( foregroundPopup )
+    self.foregroundPopupSlider = foregroundPopupSlider
+    foregroundPopupSlider.maximum = 1.0
+    foregroundPopupSlider.minimum = 0.0
+    foregroundPopupSlider.singleStep = 0.1
+    foregroundPopupSlider.connect('valueChanged(double)', self.foregroundWeightSpinBox.setValue)
+    foregroundWeightSpinBox.connect('valueChanged(double)', self.foregroundPopupSlider.setValue)
+    foregroundLayout.addWidget( foregroundLabel )
+    foregroundLayout.addWidget( foregroundWeightSpinBox )
+    foregroundPopupLayout.addWidget( foregroundPopupSlider )
+    objectFormLayout.addRow("Foreground Label:", foregroundLayout )
+    self.objectLabel = foregroundLabel
+    # http://qt-project.org/doc/qt-4.7/qt.html
+    foregroundPopup.alignment = 0x0082 # Qt::AlignVCenter | Qt::AlignRight
+    foregroundPopup.horizontalDirection = 0 # Qt::LeftToRight
+    foregroundPopup.verticalDirection = 0 # Qt::TopToBottom
+    foregroundPopup.animationEffect = 1 # Qt::ScrollEffect
 
+    backgroundLayout = qt.QHBoxLayout()
     backgroundLabel = slicer.qMRMLLabelComboBox()
-    backgroundLabel.objectName = 'Background label selector'
+    backgroundLabel.objectName = 'Background label'
     backgroundLabel.setMRMLScene(slicer.mrmlScene)
     backgroundLabel.setMRMLColorNode(slicer.modules.EditorWidget.editUtil.getColorNode())
     backgroundLabel.labelValueVisible = True
     backgroundLabel.currentColor = 2
-    objectFormLayout.addRow("Background Label:", backgroundLabel)
+    backgroundWeightSpinBox = qt.QDoubleSpinBox(backgroundLabel)
+    self.backgroundWeightSpinBox = backgroundWeightSpinBox
+    backgroundWeightSpinBox.setRange(0.0, 1.0)
+    backgroundWeightSpinBox.setSingleStep(0.1)
+    backgroundWeightSpinBox.value = 1.0
+    backgroundPopup = ctk.ctkPopupWidget( backgroundWeightSpinBox )
+    backgroundPopupLayout = qt.QHBoxLayout( backgroundPopup )
+    backgroundPopupSlider = ctk.ctkDoubleSlider( backgroundPopup )
+    self.backgroundPopupSlider = backgroundPopupSlider
+    backgroundPopupSlider.maximum = 1.0
+    backgroundPopupSlider.minimum = 0.0
+    backgroundPopupSlider.singleStep = 0.1
+    backgroundPopupSlider.connect('valueChanged(double)', self.backgroundWeightSpinBox.setValue)
+    backgroundWeightSpinBox.connect('valueChanged(double)', self.backgroundPopupSlider.setValue)
+    backgroundLayout.addWidget( backgroundLabel )
+    backgroundLayout.addWidget( backgroundWeightSpinBox )
+    backgroundPopupLayout.addWidget( backgroundPopupSlider )
+    objectFormLayout.addRow("Background Label:", backgroundLayout)
     self.backgroundLabel = backgroundLabel
+    # http://qt-project.org/doc/qt-4.7/qt.html
+    backgroundPopup.alignment = 0x0082 # Qt::AlignVCenter | Qt::AlignRight
+    backgroundPopup.horizontalDirection = 0 # Qt::LeftToRight
+    backgroundPopup.verticalDirection = 0 # Qt::TopToBottom
+    backgroundPopup.animationEffect = 1 # Qt::ScrollEffect
 
     barrierLabel = slicer.qMRMLLabelComboBox()
     barrierLabel.objectName = 'Barrier label selector'
@@ -143,15 +189,6 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     holeFillSpinBox.setMinimum(0)
     paramsFormLayout.addRow("Hole Fill Iterations:", holeFillSpinBox)
     self.holeFillSpinBox = holeFillSpinBox
-
-    falsePositiveRatioSpinBox = qt.QDoubleSpinBox()
-    falsePositiveRatioSpinBox.objectName = 'falsePositiveRatioSpinBox'
-    falsePositiveRatioSpinBox.toolTip = "Relative Cost of False Positive vs. false negative."
-    falsePositiveRatioSpinBox.setMinimum(0.0)
-    falsePositiveRatioSpinBox.setValue(1.0) # Default
-    falsePositiveRatioSpinBox.setSingleStep(0.1)
-    paramsFormLayout.addRow("False Positive Ratio:", falsePositiveRatioSpinBox)
-    self.falsePositiveRatioSpinBox = falsePositiveRatioSpinBox
 
     # probabilitySmoothingStandardDeviation spin box
     probabilitySmoothingStdDevSpinBox = qt.QDoubleSpinBox()
@@ -234,6 +271,9 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     objectIds = []
     objectIds.append(self.objectLabel.currentColor)
     objectIds.append(self.backgroundLabel.currentColor)
+    objectPDFWeights = []
+    objectPDFWeights.append(self.foregroundWeightSpinBox.value)
+    objectPDFWeights.append(self.backgroundWeightSpinBox.value)
     parameters = {}
     parameters['inputVolume1'] = self.inputNodeSelector1.currentNode()
     parameters['inputVolume2'] = self.inputNodeSelector2.currentNode()
@@ -244,7 +284,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     parameters['outputVolume'] = slicer.modules.EditorWidget.editUtil.getLabelVolume()
     parameters['erodeRadius'] = self.erosionSpinBox.value
     parameters['holeFillIterations'] = self.holeFillSpinBox.value
-    parameters['fprWeight'] = self.falsePositiveRatioSpinBox.value
+    parameters['objectPDFWeight'] = objectPDFWeights
     parameters['probSmoothingStdDev'] = self.probabilitySmoothingStdDevSpinBox.value
     parameters['draft'] = self.draftCheckBox.checked
     parameters['reclassifyObjectMask'] = self.reclassifyObjectMaskCheckBox.checked
@@ -266,7 +306,6 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
   def setInputNode1(self):
     backgroundLogic = self.sliceLogic.GetBackgroundLayer()
     backgroundNode = backgroundLogic.GetVolumeNode()
-
 
 #
 # EditorEffectTemplateTool
