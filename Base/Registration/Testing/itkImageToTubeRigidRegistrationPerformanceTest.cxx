@@ -110,7 +110,7 @@ int itkImageToTubeRigidRegistrationPerformanceTest(int argc, char* argv[] )
   typedef itk::Image<double, 3>                          ImageType;
   typedef itk::ImageFileReader<ImageType>                ImageReaderType;
   typedef itk::ImageToTubeRigidRegistration<ImageType, TubeNetType, TubeType>
-                                                         RegistrationFilterType;
+                                                         RegistrationMethodType;
 
   // read image
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
@@ -192,15 +192,25 @@ int itkImageToTubeRigidRegistrationPerformanceTest(int argc, char* argv[] )
   double parameterScales[6] = {30.0, 30.0, 30.0, 1.0, 1.0, 1.0};
   double initialPose[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-  RegistrationFilterType::Pointer registrationFilter =
-    RegistrationFilterType::New();
+  RegistrationMethodType::Pointer registrationMethod =
+    RegistrationMethodType::New();
 
-  registrationFilter->SetFixedImage( blurFilters[2]->GetOutput() );
-  registrationFilter->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
-  registrationFilter->SetNumberOfIteration( 1000 );
-  registrationFilter->SetLearningRate( 0.1 );
-  registrationFilter->SetInitialPosition( initialPose );
-  registrationFilter->SetParametersScale( parameterScales );
+  registrationMethod->SetFixedImage( blurFilters[2]->GetOutput() );
+  registrationMethod->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
+  registrationMethod->SetInitialPosition( initialPose );
+  registrationMethod->SetParametersScale( parameterScales );
+
+  // Set Optimizer parameters.
+  RegistrationMethodType::OptimizerType::Pointer optimizer =
+    registrationMethod->GetOptimizer();
+  itk::GradientDescentOptimizer * gradientDescentOptimizer =
+    dynamic_cast< itk::GradientDescentOptimizer * >( optimizer.GetPointer() );
+  if( gradientDescentOptimizer )
+    {
+    gradientDescentOptimizer->SetLearningRate( 0.1 );
+    gradientDescentOptimizer->SetNumberOfIterations( 1000 );
+    }
+
 
   // Add a time probe
   itk::TimeProbesCollectorBase chronometer;
@@ -227,18 +237,18 @@ int itkImageToTubeRigidRegistrationPerformanceTest(int argc, char* argv[] )
     memorymeter.Start( "Registration" );
     chronometer.Start( "Registration" );
 
-    registrationFilter->Initialize();
+    registrationMethod->Initialize();
 
     // Create the Command observer and register it with the optimizer.
     //
     CommandIterationUpdate::Pointer observer = CommandIterationUpdate::New();
     observer->SetFileName( valuesFile );
 
-    registrationFilter->GetOptimizer()->
+    registrationMethod->GetOptimizer()->
       AddObserver( itk::IterationEvent(), observer );
 
     // Launch Registration
-    registrationFilter->Update();
+    registrationMethod->Update();
 
     chronometer.Stop( "Registration" );
     memorymeter.Stop( "Registration" );
@@ -248,7 +258,7 @@ int itkImageToTubeRigidRegistrationPerformanceTest(int argc, char* argv[] )
     memorymeter.Report( measuresFile );
 
     std::cout << "Optimizer stop condition = "
-              << registrationFilter->GetOptimizer()->GetStopConditionDescription()
+              << registrationMethod->GetOptimizer()->GetStopConditionDescription()
               << std::endl;
     }
   catch( itk::ExceptionObject & err )

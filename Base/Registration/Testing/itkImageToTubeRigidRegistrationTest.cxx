@@ -63,8 +63,8 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv[] )
   typedef itk::ImageFileReader< ImageType >              ImageReaderType;
   typedef itk::ImageFileWriter< ImageType >              ImageWriterType;
   typedef itk::ImageToTubeRigidRegistration< ImageType, TubeNetType, TubeType >
-                                                         RegistrationFilterType;
-  typedef RegistrationFilterType::TransformType          TransformType;
+                                                         RegistrationMethodType;
+  typedef RegistrationMethodType::TransformType          TransformType;
   typedef itk::TubeToTubeTransformFilter< TransformType, Dimension >
                                                          TubeTransformFilterType;
 
@@ -137,18 +137,28 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv[] )
       }
     }
 
-  RegistrationFilterType::Pointer  registrationFilter =
-    RegistrationFilterType::New();
+  RegistrationMethodType::Pointer registrationMethod =
+    RegistrationMethodType::New();
 
-  registrationFilter->SetFixedImage( blurFilters[2]->GetOutput() );
-  registrationFilter->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
-  registrationFilter->SetNumberOfIteration( 1000 );
-  registrationFilter->SetLearningRate( 0.1 );
-  registrationFilter->SetInitialPosition( initialPosition );
+  registrationMethod->SetFixedImage( blurFilters[2]->GetOutput() );
+  registrationMethod->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
+  registrationMethod->SetInitialPosition( initialPosition );
+
+  // Set Optimizer parameters.
+  RegistrationMethodType::OptimizerType::Pointer optimizer =
+    registrationMethod->GetOptimizer();
+  itk::GradientDescentOptimizer * gradientDescentOptimizer =
+    dynamic_cast< itk::GradientDescentOptimizer * >( optimizer.GetPointer() );
+  if( gradientDescentOptimizer )
+    {
+    gradientDescentOptimizer->SetLearningRate( 0.1 );
+    gradientDescentOptimizer->SetNumberOfIterations( 1000 );
+    }
+
   try
     {
-    registrationFilter->Initialize();
-    registrationFilter->Update();
+    registrationMethod->Initialize();
+    registrationMethod->Update();
     }
   catch( itk::ExceptionObject & err )
     {
@@ -159,8 +169,8 @@ int itkImageToTubeRigidRegistrationTest(int argc, char* argv[] )
   // validate the registration result
   //! \todo validate against known real results.
   TransformType::Pointer outputTransform =
-    dynamic_cast<TransformType *>(registrationFilter->GetTransform());
-  outputTransform->SetParameters( registrationFilter->GetLastTransformParameters() );
+    dynamic_cast<TransformType *>(registrationMethod->GetTransform());
+  outputTransform->SetParameters( registrationMethod->GetLastTransformParameters() );
 
   TransformType::Pointer inverseTransform = TransformType::New();
   outputTransform->GetInverse( inverseTransform );

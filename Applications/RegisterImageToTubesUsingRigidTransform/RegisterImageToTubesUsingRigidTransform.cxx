@@ -70,8 +70,8 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileReader< ImageType >              ImageReaderType;
   typedef itk::ImageFileWriter< ImageType >              ImageWriterType;
   typedef itk::ImageToTubeRigidRegistration< ImageType, TubeNetType, TubeType >
-                                                         RegistrationFilterType;
-  typedef RegistrationFilterType::TransformType          TransformType;
+                                                         RegistrationMethodType;
+  typedef RegistrationMethodType::TransformType          TransformType;
   typedef itk::TubeToTubeTransformFilter< TransformType, Dimension >
                                                          TubeTransformFilterType;
   typedef itk::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
@@ -168,17 +168,27 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start("Register image to tube");
 
-  RegistrationFilterType::Pointer  registrationFilter =
-    RegistrationFilterType::New();
+  RegistrationMethodType::Pointer registrationMethod =
+    RegistrationMethodType::New();
 
-  registrationFilter->SetFixedImage( currentImage );
-  registrationFilter->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
-  registrationFilter->SetNumberOfIteration( 1000 );
-  registrationFilter->SetLearningRate( 0.1 );
+  registrationMethod->SetFixedImage( currentImage );
+  registrationMethod->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
+
+  // Set Optimizer parameters.
+  RegistrationMethodType::OptimizerType::Pointer optimizer =
+    registrationMethod->GetOptimizer();
+  itk::GradientDescentOptimizer * gradientDescentOptimizer =
+    dynamic_cast< itk::GradientDescentOptimizer * >( optimizer.GetPointer() );
+  if( gradientDescentOptimizer )
+    {
+    gradientDescentOptimizer->SetLearningRate( 0.1 );
+    gradientDescentOptimizer->SetNumberOfIterations( 1000 );
+    }
+
   try
     {
-    registrationFilter->Initialize();
-    registrationFilter->Update();
+    registrationMethod->Initialize();
+    registrationMethod->Update();
     }
   catch( itk::ExceptionObject & err )
     {
@@ -194,8 +204,8 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start("Save data");
   TransformType* outputTransform =
-    dynamic_cast<TransformType *>(registrationFilter->GetTransform());
-  outputTransform->SetParameters( registrationFilter->GetLastTransformParameters() );
+    dynamic_cast<TransformType *>(registrationMethod->GetTransform());
+  outputTransform->SetParameters( registrationMethod->GetLastTransformParameters() );
 
   TubeTransformFilterType::Pointer transformFilter = TubeTransformFilterType::New();
   transformFilter->SetInput( vesselReader->GetGroup() );
