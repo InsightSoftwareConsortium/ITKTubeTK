@@ -1,0 +1,8 @@
+# tubetk.pth
+# Add a symlink to this file in the directory that results from::
+#
+#   python -m site --user-site
+#
+# to make TubeTK Python packages and modules importable.
+
+@TubeTK_PURE_PYTHON_DIR@

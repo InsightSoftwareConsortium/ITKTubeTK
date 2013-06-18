@@ -20,19 +20,3 @@
 # limitations under the License.
 #
 ##############################################################################
-
-add_subdirectory( CLI )
-add_subdirectory( Common )
-add_subdirectory( Filtering )
-add_subdirectory( IO )
-add_subdirectory( Numerics )
-add_subdirectory( ObjectDocuments )
-
-if( ParameterSerializer_FOUND )
-  add_subdirectory( ParameterSerializer )
-endif( ParameterSerializer_FOUND )
-
-add_subdirectory( Python )
-add_subdirectory( Registration )
-add_subdirectory( Segmentation )
-add_subdirectory( USTK )
