@@ -82,10 +82,9 @@ public:
   typedef vnl_matrix< ValueType >                MatrixType;
   typedef std::vector< MatrixType >              MatrixListType;
 
-  //
   void         SetInputFeatureVectorGenerator( FeatureVectorGeneratorType
                  * fGen );
-  typename FeatureVectorGeneratorType::Pointer
+  typename FeatureVectorGenerator< ImageT >::Pointer
                GetInputFeatureVectorGenerator( void );
 
   itkSetObjectMacro( Labelmap, LabelmapType );
