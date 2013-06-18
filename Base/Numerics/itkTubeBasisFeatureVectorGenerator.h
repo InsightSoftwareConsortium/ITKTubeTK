@@ -82,7 +82,6 @@ public:
   typedef vnl_matrix< ValueType >                MatrixType;
   typedef std::vector< MatrixType >              MatrixListType;
 
-  //
   void         SetInputFeatureVectorGenerator( FeatureVectorGeneratorType
                  * fGen );
   typename FeatureVectorGenerator< ImageT >::Pointer

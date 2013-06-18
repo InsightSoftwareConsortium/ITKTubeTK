@@ -73,7 +73,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
 {
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::SetInputFeatureVectorGenerator( FeatureVectorGeneratorType * fGen )
@@ -81,7 +81,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   m_InputFeatureVectorGenerator = fGen;
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename FeatureVectorGenerator< ImageT >::Pointer
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GetInputFeatureVectorGenerator( void )
@@ -89,7 +89,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   return m_InputFeatureVectorGenerator;
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::SetObjectId( ObjectIdType objectId )
@@ -98,7 +98,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   m_ObjectIdList.push_back( objectId );
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::AddObjectId( ObjectIdType objectId )
@@ -106,7 +106,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   m_ObjectIdList.push_back( objectId );
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename BasisFeatureVectorGenerator< ImageT, LabelmapT >::ObjectIdType
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GetObjectId( unsigned int num ) const
@@ -121,7 +121,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     }
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 unsigned int
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GetNumberOfObjectIds( void ) const
@@ -129,7 +129,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   return m_ObjectIdList.size();
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename BasisFeatureVectorGenerator< ImageT, LabelmapT >::ValueType
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GetObjectMean( ObjectIdType num ) const
@@ -144,7 +144,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     }
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::SetObjectMean( ObjectIdType num, ValueType val )
@@ -155,7 +155,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     }
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename BasisFeatureVectorGenerator< ImageT, LabelmapT >::MatrixType
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GetObjectCovariance( ObjectIdType num ) const
@@ -170,7 +170,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     }
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::SetObjectCovariance( ObjectIdType num, MatrixType val )
@@ -185,7 +185,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     }
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename BasisFeatureVectorGenerator< ImageT, LabelmapT >::ValueType
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GetGlobalMean( void ) const
@@ -193,7 +193,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   return m_GlobalMean;
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::SetGlobalMean( ValueType val )
@@ -201,7 +201,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   m_GlobalMean = val;
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename BasisFeatureVectorGenerator< ImageT, LabelmapT >::MatrixType
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GetGlobalCovariance( void ) const
@@ -209,7 +209,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   return m_GlobalCovariance;
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::SetGlobalCovariance( MatrixType val )
@@ -218,7 +218,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
 }
 
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 unsigned int
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GetNumberOfBasis( void ) const
@@ -226,7 +226,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   return m_BasisValues.size();
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename BasisFeatureVectorGenerator< ImageT, LabelmapT >::VectorType
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GetBasisVector( unsigned int basisNum ) const
@@ -241,7 +241,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     }
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 double
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GetBasisValue( unsigned int basisNum ) const
@@ -256,7 +256,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     }
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename BasisFeatureVectorGenerator< ImageT, LabelmapT >::MatrixType
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GetBasisMatrix( void ) const
@@ -264,7 +264,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   return m_BasisMatrix;
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename BasisFeatureVectorGenerator< ImageT, LabelmapT >::VectorType
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GetBasisValues( void ) const
@@ -272,7 +272,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   return m_BasisValues;
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::SetBasisValue( unsigned int basisNum, double value )
@@ -287,7 +287,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     }
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::SetBasisMatrix( const MatrixType & mat )
@@ -295,7 +295,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   m_BasisMatrix = mat;
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::SetBasisVector( unsigned int basisNum, const VectorType & vec )
@@ -310,7 +310,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     }
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::SetBasisValues( const VectorType & values )
@@ -318,7 +318,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   m_BasisValues = values;
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename BasisFeatureVectorGenerator< ImageT, LabelmapT >::FeatureImageType::Pointer
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GetFeatureImage( unsigned int featureNum ) const
@@ -404,7 +404,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
     }
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GenerateBasis( void )
@@ -600,7 +600,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   timeCollector.Report();
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::SetNumberOfBasisToUseAsFeatures( unsigned int numBasisUsed )
@@ -608,7 +608,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   m_NumberOfBasisToUseAsFeatures = numBasisUsed;
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 unsigned int
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GetNumberOfFeatures( void ) const
@@ -616,7 +616,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   return m_NumberOfBasisToUseAsFeatures;
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename BasisFeatureVectorGenerator< ImageT, LabelmapT >::FeatureVectorType
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GetFeatureVector( const IndexType & indx ) const
@@ -643,7 +643,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   return featureVector;
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename BasisFeatureVectorGenerator< ImageT, LabelmapT >::FeatureValueType
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::GetFeatureVectorValue( const IndexType & indx,
@@ -663,7 +663,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   return featureVector;
 }
 
-template <class ImageT, class LabelmapT >
+template<class ImageT, class LabelmapT >
 void
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::PrintSelf( std::ostream & os, Indent indent ) const
