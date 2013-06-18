@@ -53,7 +53,7 @@ ComputeLineStep(vnl_vector<T> x, double a, vnl_vector<T> dir);
 
 /** Compute the euclidean distance */
 template <class T>
-T
+double
 ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y);
 
 /** Compute eigen values and vectors  */

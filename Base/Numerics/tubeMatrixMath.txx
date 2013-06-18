@@ -105,7 +105,7 @@ ComputeLineStep(vnl_vector<T> x, double a, vnl_vector<T> dir)
 /**
  * Compute the Euclidean distance  */
 template <class T>
-T
+double
 ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y)
 {
   double s = 0;
@@ -134,7 +134,7 @@ ComputeEuclideanDistance(PointType x, PointType y)
  * Compute eigen values and vectors  */
 template <class T>
 void
-ComputeEigen(vnl_matrix<T> const & mat,
+ComputeEigen( vnl_matrix<T> const & mat,
   vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
   bool orderByAbs, bool minToMax )
 {
@@ -181,7 +181,7 @@ ComputeEigen(vnl_matrix<T> const & mat,
         if( ( vnl_math_abs(eVals(j))>vnl_math_abs(eVals(i)) && !minToMax )
           || ( vnl_math_abs(eVals(j))<vnl_math_abs(eVals(i)) && minToMax ) )
           {
-          double tf = eVals(j);
+          T tf = eVals(j);
           eVals(j) = eVals(i);
           eVals(i) = tf;
           for(int k=0; k<n; k++)
@@ -203,7 +203,7 @@ ComputeEigen(vnl_matrix<T> const & mat,
         if( ( eVals(j)>eVals(i) && !minToMax )
           || ( eVals(j)<eVals(i) && minToMax ) )
           {
-          double tf = eVals(j);
+          T tf = eVals(j);
           eVals(j) = eVals(i);
           eVals(i) = tf;
           for(int k=0; k<n; k++)
@@ -248,7 +248,7 @@ ComputeTriDiag3D(vnl_matrix<T> &mat,
   double  a = mat(0,0), b = mat(0,1), c = mat(0,2),
           d = mat(1,1), e = mat(1,2), f = mat(2,2);
 
-  diag(0) = a;
+  diag(0) = static_cast< T >( a );
   subD(2) = 0;
   if(c != 0)
     {
@@ -256,29 +256,29 @@ ComputeTriDiag3D(vnl_matrix<T> &mat,
     b /= s;
     c /= s;
     const double q = 2*b*e+c*(f-d);
-    diag(1) = d+c*q;
-    diag(2) = f-c*q;
-    subD(0) = s;
-    subD(1) = e-b*q;
+    diag(1) = static_cast< T >( d+c*q );
+    diag(2) = static_cast< T >( f-c*q );
+    subD(0) = static_cast< T >( s );
+    subD(1) = static_cast< T >( e-b*q );
 
     mat(0,0) = 1;
     mat(0,1) = 0;
     mat(0,2) = 0;
 
     mat(1,0) = 0;
-    mat(1,1) = b;
-    mat(1,2) = c;
+    mat(1,1) = static_cast< T >( b );
+    mat(1,2) = static_cast< T >( c );
 
     mat(2,0) = 0;
-    mat(2,1) = c;
-    mat(2,2) = -b;
+    mat(2,1) = static_cast< T >( c );
+    mat(2,2) = static_cast< T >( -b );
     }
   else
     {
-    diag(1) = d;
-    diag(2) = f;
-    subD(0) = b;
-    subD(1) = e;
+    diag(1) = static_cast< T >( d );
+    diag(2) = static_cast< T >( f );
+    subD(0) = static_cast< T >( b );
+    subD(1) = static_cast< T >( e );
 
     mat(0,0) = 1;
     mat(0,1) = 0;
@@ -360,31 +360,31 @@ ComputeTqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
           {
           c = g/f;
           r = vcl_sqrt(c*c+1);
-          subD(i+1) = f*r;
+          subD(i+1) = static_cast< T >( f*r );
           c *= (s = 1/r);
           }
         else
           {
           s = f/g;
           r = vcl_sqrt(s*s+1);
-          subD(i+1) = g*r;
+          subD(i+1) = static_cast< T >( g*r );
           s *= (c = 1/r);
           }
         g = diag(i+1)-p;
         r = (diag(i)-g)*s+2*b*c;
         p = s*r;
-        diag(i+1) = g+p;
+        diag(i+1) = static_cast< T >( g+p );
         g = c*r-b;
 
         for(k=0; k<n; k++)
           {
           f = mat(k,i+1);
-          mat(k,i+1) = s*mat(k,i)+c*f;
-          mat(k,i) = c*mat(k,i)-s*f;
+          mat(k,i+1) = static_cast< T >( s*mat(k,i)+c*f );
+          mat(k,i) = static_cast< T >( c*mat(k,i)-s*f );
           }
         }
-      diag(l) -= p;
-      subD(l) = g;
+      diag(l) -= static_cast< T >( p );
+      subD(l) = static_cast< T >( g );
       subD(m) = 0;
       }
     if(iter == EIGEN_MAX_ITERATIONS)
