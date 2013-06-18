@@ -21,15 +21,15 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkTubeCVTImageFilter.h"
-#include "itkTubeLabelOverlapMeasuresImageFilter.h"
-#include "itkTubeOtsuThresholdMaskedImageFilter.h"
-#include "itkTubePDFSegmenter.h"
-#include "itkTubeRadiusExtractor.h"
-#include "itkTubeRidgeExtractor.h"
-#include "itkTubeRidgeSeedFilter.h"
-#include "itkTubeTubeExtractor.h"
-#include "itkTubeTubeNetworkExtractor.h"
+#include "itktubeCVTImageFilter.h"
+#include "itktubeLabelOverlapMeasuresImageFilter.h"
+#include "itktubeOtsuThresholdMaskedImageFilter.h"
+#include "itktubePDFSegmenter.h"
+#include "itktubeRadiusExtractor.h"
+#include "itktubeRidgeExtractor.h"
+#include "itktubeRidgeSeedFilter.h"
+#include "itktubeTubeExtractor.h"
+#include "itktubeTubeNetworkExtractor.h"
 
 #include <itkImage.h>
 
@@ -40,51 +40,51 @@ int tubeBaseSegmentationPrintTest( int, char ** )
 
   itk::tube::CVTImageFilter< ImageType >::Pointer
     cvtObject = itk::tube::CVTImageFilter< ImageType >::New();
-  std::cout << "-------------itkTubeCVTImageFilter" << cvtObject
+  std::cout << "-------------itktubeCVTImageFilter" << cvtObject
     << std::endl;
 
   itk::tube::LabelOverlapMeasuresImageFilter< CharImageType >::Pointer
     loObject =
     itk::tube::LabelOverlapMeasuresImageFilter< CharImageType >::New();
-  std::cout << "-------------itkTubeLabelOverlapMeasuresImageFilter"
+  std::cout << "-------------itktubeLabelOverlapMeasuresImageFilter"
     << loObject << std::endl;
 
   itk::tube::OtsuThresholdMaskedImageFilter< ImageType, ImageType >::Pointer
     otsuObject = itk::tube::OtsuThresholdMaskedImageFilter< ImageType,
       ImageType >::New();
-  std::cout << "-------------itkTubeOtsuThresholdMaskedImageFilter"
+  std::cout << "-------------itktubeOtsuThresholdMaskedImageFilter"
     << otsuObject << std::endl;
 
   itk::tube::PDFSegmenter< ImageType, 3, ImageType >::Pointer
     pdfObject = itk::tube::PDFSegmenter< ImageType, 3, ImageType >::New();
-  std::cout << "-------------itkTubePDFImageFilter" << pdfObject
+  std::cout << "-------------itktubePDFImageFilter" << pdfObject
     << std::endl;
 
   itk::tube::RadiusExtractor< ImageType >::Pointer
     radiusObject = itk::tube::RadiusExtractor< ImageType >::New();
-  std::cout << "-------------itkTubeRadiusExtractor" << radiusObject
+  std::cout << "-------------itktubeRadiusExtractor" << radiusObject
     << std::endl;
 
   itk::tube::RidgeExtractor< ImageType >::Pointer
     ridgeObject = itk::tube::RidgeExtractor< ImageType >::New();
-  std::cout << "-------------itkTubeRidgeExtractor" << ridgeObject
+  std::cout << "-------------itktubeRidgeExtractor" << ridgeObject
     << std::endl;
 
   itk::tube::RidgeSeedFilter< ImageType, CharImageType >::Pointer
     seedObject = itk::tube::RidgeSeedFilter< ImageType,
       CharImageType >::New();
-  std::cout << "-------------itkTubeRidgeSeedFilter" << seedObject
+  std::cout << "-------------itktubeRidgeSeedFilter" << seedObject
     << std::endl;
 
   itk::tube::TubeExtractor< ImageType >::Pointer
     tubeObject = itk::tube::TubeExtractor< ImageType >::New();
-  std::cout << "-------------itkTubeTubeExtractor" << tubeObject
+  std::cout << "-------------itktubeTubeExtractor" << tubeObject
     << std::endl;
 
   itk::tube::TubeNetworkExtractor< ImageType, ImageType >::Pointer
     netObject =
     itk::tube::TubeNetworkExtractor< ImageType, ImageType >::New();
-  std::cout << "-------------itkTubeTubeNetworkExtractor" << netObject
+  std::cout << "-------------itktubeTubeNetworkExtractor" << netObject
     << std::endl;
 
   return EXIT_SUCCESS;

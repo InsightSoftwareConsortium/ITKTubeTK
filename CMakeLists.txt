@@ -124,8 +124,7 @@ if( TubeTK_USE_CPPCHECK )
   find_package( Cppcheck REQUIRED )
   set( cppcheck_paths_to_check
     "${TubeTK_SOURCE_DIR}/Applications"
-    "${TubeTK_SOURCE_DIR}/Base"
-    )
+    "${TubeTK_SOURCE_DIR}/Base" )
   set( cppcheck_suppressions_file
     "${TubeTK_SOURCE_DIR}/CMake/Cppcheck/TubeTKCppcheck.supp" )
   set( cppcheck_cmd_prefix
@@ -142,8 +141,7 @@ if( TubeTK_USE_CPPCHECK )
     ${cppcheck_cmd_prefix} --enable=unusedFunction ${cppcheck_paths_to_check} )
   set_tests_properties( CppcheckStyle CppcheckPerformance CppcheckPortability
     CppcheckInformation CppcheckUnusedFunction
-    PROPERTIES FAIL_REGULAR_EXPRESSION "error file="
-    )
+    PROPERTIES FAIL_REGULAR_EXPRESSION "error file=" )
 endif( TubeTK_USE_CPPCHECK )
 #-------------------------------------------------------------------------------
 # KWStyle setup.

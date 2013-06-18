@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkTubeRidgeExtractor.h"
+#include "itktubeRidgeExtractor.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"

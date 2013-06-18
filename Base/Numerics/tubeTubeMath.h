@@ -39,6 +39,6 @@ ComputeVectorTangentsAndNormals( std::vector< TubePointT > & tube );
 
 } // End namespace tube
 
-#include "tubeTubeMath.txx"
+#include "tubeTubeMath.hxx"
 
 #endif // End !defined(__tubeTubeMath_h)

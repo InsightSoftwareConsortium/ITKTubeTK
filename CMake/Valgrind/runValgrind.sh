@@ -37,7 +37,7 @@ set(DOC  "
 
 For example:
 
-    ctest  -R   itkTubeRidgeExtractorTest2$ -N
+    ctest  -R   itktubeRidgeExtractorTest2$ -N
 
 This will print the tests selected by the regular expression but not run the
 tests (-N option).
@@ -48,7 +48,7 @@ tests (-N option).
 For example:
 
    ~/src/TubeTK/CMake/Valgrind/runValgrind.sh    \
-      -R itkTubeRidgeExtractorTest2$
+      -R itktubeRidgeExtractorTest2$
 
 This will run the selected tests under valgrind and generate HTML that can be
 opened with your favorite browser.  The HTML is written to ./memcheck_index.html

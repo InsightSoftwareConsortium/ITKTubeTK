@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkObjectDocumentToImageFilter.h"
+#include "itktubeObjectDocumentToImageFilter.h"
 #include "tubeAtlasSummation.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"

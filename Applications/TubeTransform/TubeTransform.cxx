@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkTubeToTubeTransformFilter.h"
+#include "itktubeTubeToTubeTransformFilter.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"

@@ -26,17 +26,14 @@ set( MODULE_NAME TubesToImage )
 project( ${MODULE_NAME} )
 
 set( TubesToImage_H_Files
-  itkTubeSpatialObjectToImageFilter.h
-  )
+  itktubeSpatialObjectToImageFilter.h )
 
-set( TubesToImage_TXX_Files
-  itkTubeSpatialObjectToImageFilter.txx
-  )
+set( TubesToImage_HXX_Files
+  itktubeSpatialObjectToImageFilter.hxx )
 
 add_custom_target( TubesToImageInclude SOURCES
   ${TubesToImage_H_Files}
-  ${TubesToImage_TXX_Files}
-  )
+  ${TubesToImage_HXX_Files} )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
@@ -54,8 +51,7 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/Common
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/Registration
-    ${TubeTK_SOURCE_DIR}/Base/ObjectDocument
-  )
+    ${TubeTK_SOURCE_DIR}/Base/ObjectDocument )
 
 #if( BUILD_TESTING )
 #  add_subdirectory( Testing )

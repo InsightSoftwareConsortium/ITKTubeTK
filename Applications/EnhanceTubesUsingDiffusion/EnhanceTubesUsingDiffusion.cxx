@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkTubeEnhancingDiffusion2DImageFilter.h"
+#include "itktubeTubeEnhancingDiffusion2DImageFilter.h"
 
 #include <itkImage.h>
 #include <itkImageFileReader.h>
@@ -43,7 +43,7 @@ int DoIt( int argc, char **argv )
   typedef pixelT                                           PixelType;
   typedef itk::Image< PixelType,  dimensionT  >            ImageType;
   typedef itk::ImageFileReader< ImageType >                ReaderType;
-  typedef itk::TubeEnhancingDiffusion2DImageFilter< PixelType,
+  typedef itk::tube::TubeEnhancingDiffusion2DImageFilter< PixelType,
                                                     dimensionT  >
                                                            FilterType;
 

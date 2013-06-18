@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkTubePDFSegmenter.h"
+#include "itktubePDFSegmenter.h"
 
 #include <itkImage.h>
 #include <itkImageFileReader.h>

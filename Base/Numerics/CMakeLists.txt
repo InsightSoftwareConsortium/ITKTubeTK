@@ -27,16 +27,17 @@ find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_Numerics_H_Files
-  itkImageRegionMomentsCalculator.h
-  itkJointHistogramImageFunction.h
-  itkTubeBasisFeatureVectorGenerator.h
-  itkTubeBlurImageFunction.h
-  itkTubeFeatureVectorGenerator.h
-  itkTubeNJetFeatureVectorGenerator.h
-  itkTubeNJetImageFunction.h
-  itkTubeRidgeFeatureVectorGenerator.h
-  itkVectorImageToListGenerator.h
-  itkVotingResampleImageFunction.h
+  itktubeBasisFeatureVectorGenerator.h
+  itktubeBlurImageFunction.h
+  itktubeFeatureVectorGenerator.h
+  itktubeImageRegionMomentsCalculator.h
+  itktubeJointHistogramImageFunction.h
+  itktubeNJetFeatureVectorGenerator.h
+  itktubeNJetImageFunction.h
+  itktubeRecordOptimizationParameterProgressionCommand.h
+  itktubeRidgeFeatureVectorGenerator.h
+  itktubeVectorImageToListGenerator.h
+  itktubeVotingResampleImageFunction.h
   tubeBrentOptimizer1D.h
   tubeGoldenMeanOptimizer1D.h
   tubeMatrixMath.h
@@ -49,19 +50,20 @@ set( TubeTK_Base_Numerics_H_Files
   tubeTubeMath.h
   tubeUserFunction.h )
 
-set( TubeTK_Base_Numerics_TXX_Files
-  itkImageRegionMomentsCalculator.txx
-  itkJointHistogramImageFunction.txx
-  itkTubeBasisFeatureVectorGenerator.txx
-  itkTubeBlurImageFunction.txx
-  itkTubeFeatureVectorGenerator.txx
-  itkTubeNJetFeatureVectorGenerator.txx
-  itkTubeNJetImageFunction.txx
-  itkTubeRidgeFeatureVectorGenerator.txx
-  itkVectorImageToListGenerator.txx
-  itkVotingResampleImageFunction.txx
-  tubeMatrixMath.txx
-  tubeTubeMath.txx )
+set( TubeTK_Base_Numerics_HXX_Files
+  itktubeBasisFeatureVectorGenerator.hxx
+  itktubeBlurImageFunction.hxx
+  itktubeFeatureVectorGenerator.hxx
+  itktubeImageRegionMomentsCalculator.hxx
+  itktubeJointHistogramImageFunction.hxx
+  itktubeNJetFeatureVectorGenerator.hxx
+  itktubeNJetImageFunction.hxx
+  itktubeRecordOptimizationParameterProgressionCommand.hxx
+  itktubeRidgeFeatureVectorGenerator.hxx
+  itktubeVectorImageToListGenerator.hxx
+  itktubeVotingResampleImageFunction.hxx
+  tubeMatrixMath.hxx
+  tubeTubeMath.hxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common )
@@ -78,7 +80,7 @@ set( TubeTK_Base_Numerics_SRCS
 
 add_library( TubeNumerics STATIC
   ${TubeTK_Base_Numerics_H_Files}
-  ${TubeTK_Base_Numerics_TXX_Files}
+  ${TubeTK_Base_Numerics_HXX_Files}
   ${TubeTK_Base_Numerics_SRCS} )
 
 target_link_libraries( TubeNumerics ${ITK_LIBRARIES} )
@@ -93,5 +95,5 @@ endif( BUILD_TESTING )
 
 install( FILES
   ${TubeTK_Base_Numerics_H_Files}
-  ${TubeTK_Base_Numerics_TXX_Files}
+  ${TubeTK_Base_Numerics_HXX_Files}
   DESTINATION include )

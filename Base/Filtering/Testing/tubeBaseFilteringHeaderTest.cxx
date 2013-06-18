@@ -21,16 +21,16 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
-#include "itkAnisotropicDiffusionTensorFunction.h"
-#include "itkAnisotropicDiffusionTensorImageFilter.h"
-#include "itkAnisotropicEdgeEnhancementDiffusionImageFilter.h"
-#include "itkAnisotropicHybridDiffusionImageFilter.h"
-#include "itkSheetnessMeasureImageFilter.h"
-#include "itkSpatialObjectToSpatialObjectFilter.h"
-#include "itkStructureTensorRecursiveGaussianImageFilter.h"
-#include "itkSymmetricEigenVectorAnalysisImageFilter.h"
-#include "itkTubeEnhancingDiffusion2DImageFilter.h"
+#include "itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
+#include "itktubeAnisotropicDiffusionTensorFunction.h"
+#include "itktubeAnisotropicDiffusionTensorImageFilter.h"
+#include "itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h"
+#include "itktubeAnisotropicHybridDiffusionImageFilter.h"
+#include "itktubeSheetnessMeasureImageFilter.h"
+#include "itktubeSpatialObjectToSpatialObjectFilter.h"
+#include "itktubeStructureTensorRecursiveGaussianImageFilter.h"
+#include "itktubeSymmetricEigenVectorAnalysisImageFilter.h"
+#include "itktubeTubeEnhancingDiffusion2DImageFilter.h"
 
 #include <iostream>
 

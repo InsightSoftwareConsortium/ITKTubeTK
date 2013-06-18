@@ -50,12 +50,10 @@ include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
   ${TubeTK_SOURCE_DIR}/Base/Numerics
   ${TubeTK_SOURCE_DIR}/Base/Filtering
-  ${TubeTK_SOURCE_DIR}/Base/Segmentation
-  )
+  ${TubeTK_SOURCE_DIR}/Base/Segmentation )
 
 set( PROJECT_SOURCE
-  ${PROJECT_NAME}.cxx
-  )
+  ${PROJECT_NAME}.cxx )
 
 add_executable( ${PROJECT_NAME} ${PROJECT_SOURCE} )
 target_link_libraries( ${PROJECT_NAME} ${ITK_LIBRARIES} TubeNumerics )

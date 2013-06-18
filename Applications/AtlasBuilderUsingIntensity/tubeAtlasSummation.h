@@ -24,10 +24,10 @@ limitations under the License.
 #ifndef __tubeAtlasSummation_h
 #define __tubeAtlasSummation_h
 
-#include "itkCompleteImageResampleFilter.h"
-#include "itkMeanAndSigmaImageBuilder.h"
-#include "itkMinimizeImageSizeFilter.h"
-#include "itkRobustMeanAndSigmaImageBuilder.h"
+#include "itktubeCompleteImageResampleFilter.h"
+#include "itktubeMeanAndSigmaImageBuilder.h"
+#include "itktubeMinimizeImageSizeFilter.h"
+#include "itktubeRobustMeanAndSigmaImageBuilder.h"
 
 #include <itkAffineTransform.h>
 #include <itkImage.h>
@@ -71,7 +71,6 @@ public:
   typedef InputImageType::SizeType                       SizeType;
   typedef InputImageType::PointType                      PointType;
 
-
 private:
 
   /**  Pixel and Image Type for processing transition images */
@@ -90,7 +89,6 @@ private:
 
   typedef itk::tube::MeanAndSigmaImageBuilder<
     InputImageType, MeanImageType, VarianceImageType >  RobustMeanBuilderType;
-
 
 public:
 

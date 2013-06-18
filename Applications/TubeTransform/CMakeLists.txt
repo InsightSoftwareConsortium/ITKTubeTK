@@ -26,17 +26,14 @@ set( MODULE_NAME TubeTransform )
 project( ${MODULE_NAME} )
 
 set( TubeTransform_H_Files
-  itkTubeToTubeTransformFilter.h
-  )
+  itktubeTubeToTubeTransformFilter.h )
 
-set( TubeTransform_TXX_Files
-  itkTubeToTubeTransformFilter.txx
-  )
+set( TubeTransform_HXX_Files
+  itktubeTubeToTubeTransformFilter.hxx )
 
 add_custom_target( TubeTransformInclude SOURCES
   ${TubeTransform_H_Files}
-  ${TubeTransform_TXX_Files}
-  )
+  ${TubeTransform_HXX_Files} )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
@@ -52,8 +49,7 @@ SEMMacroBuildCLI(
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/CLI
     ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Filtering
-  )
+    ${TubeTK_SOURCE_DIR}/Base/Filtering )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

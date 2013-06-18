@@ -119,7 +119,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkUltrasoundProbeGeometryCalculator.txx"
+#include "itkUltrasoundProbeGeometryCalculator.hxx"
 #endif
 
 #endif // End !defined(__itkUltrasoundProbeGeometryCalculator_h)

@@ -27,29 +27,37 @@ find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_Filtering_H_Files
-  itkAnisotropicCoherenceEnhancingDiffusionImageFilter.h
-  itkAnisotropicDiffusionTensorFunction.h
-  itkAnisotropicDiffusionTensorImageFilter.h
-  itkAnisotropicEdgeEnhancementDiffusionImageFilter.h
-  itkAnisotropicHybridDiffusionImageFilter.h
-  itkSheetnessMeasureImageFilter.h
-  itkStructureTensorRecursiveGaussianImageFilter.h
-  itkSymmetricEigenVectorAnalysisImageFilter.h
-  itkTubeEnhancingDiffusion2DImageFilter.h )
+  itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter.h
+  itktubeAnisotropicDiffusionTensorFunction.h
+  itktubeAnisotropicDiffusionTensorImageFilter.h
+  itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h
+  itktubeAnisotropicHybridDiffusionImageFilter.h
+  itktubeSheetnessMeasureImageFilter.h
+  itktubeSpatialObjectSource.h
+  itktubeSpatialObjectToSpatialObjectFilter.h
+  itktubeStructureTensorRecursiveGaussianImageFilter.h
+  itktubeSubSampleTubeSpatialObjectFilter.h
+  itktubeSubSampleTubeTreeSpatialObjectFilter.h
+  itktubeSymmetricEigenVectorAnalysisImageFilter.h
+  itktubeTubeEnhancingDiffusion2DImageFilter.h )
 
-set( TubeTK_Base_Filtering_TXX_Files
-  itkAnisotropicCoherenceEnhancingDiffusionImageFilter.txx
-  itkAnisotropicDiffusionTensorFunction.txx
-  itkAnisotropicDiffusionTensorImageFilter.txx
-  itkAnisotropicEdgeEnhancementDiffusionImageFilter.txx
-  itkAnisotropicHybridDiffusionImageFilter.txx
-  itkSheetnessMeasureImageFilter.txx
-  itkStructureTensorRecursiveGaussianImageFilter.txx
-  itkTubeEnhancingDiffusion2DImageFilter.txx )
+set( TubeTK_Base_Filtering_HXX_Files
+  itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter.hxx
+  itktubeAnisotropicDiffusionTensorFunction.hxx
+  itktubeAnisotropicDiffusionTensorImageFilter.hxx
+  itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.hxx
+  itktubeAnisotropicHybridDiffusionImageFilter.hxx
+  itktubeSheetnessMeasureImageFilter.hxx
+  itktubeSpatialObjectSource.hxx
+  itktubeSpatialObjectToSpatialObjectFilter.hxx
+  itktubeStructureTensorRecursiveGaussianImageFilter.hxx
+  itktubeSubSampleTubeSpatialObjectFilter.hxx
+  itktubeSubSampleTubeTreeSpatialObjectFilter.hxx
+  itktubeTubeEnhancingDiffusion2DImageFilter.hxx )
 
 add_custom_target( TubeFiltering SOURCES
   ${TubeTK_Base_Filtering_H_Files}
-  ${TubeTK_Base_Filtering_TXX_Files} )
+  ${TubeTK_Base_Filtering_HXX_Files} )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
@@ -61,5 +69,5 @@ endif( BUILD_TESTING )
 
 install( FILES
   ${TubeTK_Base_Filtering_H_Files}
-  ${TubeTK_Base_Filtering_TXX_Files}
+  ${TubeTK_Base_Filtering_HXX_Files}
   DESTINATION include )

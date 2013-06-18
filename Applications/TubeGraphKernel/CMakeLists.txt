@@ -28,12 +28,10 @@ project( ${MODULE_NAME} )
 set( TubeGraphKernel_H_Files
   GraphKernel.h
   tubeShortestPathKernel.h
-  tubeWLSubtreeKernel.h
-  )
+  tubeWLSubtreeKernel.h )
 
 add_custom_target( TubeGraphKernelInclude SOURCES
-  ${TubeGraphKernel_H_Files}
-  )
+  ${TubeGraphKernel_H_Files} )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
@@ -59,8 +57,7 @@ SEMMacroBuildCLI(
     ${Boost_INCLUDE_DIRS}
     ${TubeTK_SOURCE_DIR}/Base/CLI
     ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Filtering
-  )
+    ${TubeTK_SOURCE_DIR}/Base/Filtering )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

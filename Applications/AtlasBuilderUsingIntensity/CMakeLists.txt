@@ -26,24 +26,21 @@ set( MODULE_NAME AtlasBuilderUsingIntensity )
 project( ${MODULE_NAME} )
 
 set( AtlasBuilderUsingIntensity_H_Files
-  itkCompleteImageResampleFilter.h
-  itkMeanAndSigmaImageBuilder.h
-  itkMinimizeImageSizeFilter.h
-  itkRobustMeanAndSigmaImageBuilder.h
-  tubeAtlasSummation.h
-  )
+  itktubeCompleteImageResampleFilter.h
+  itktubeMeanAndSigmaImageBuilder.h
+  itktubeMinimizeImageSizeFilter.h
+  itktubeRobustMeanAndSigmaImageBuilder.h
+  tubeAtlasSummation.h )
 
-set( AtlasBuilderUsingIntensity_TXX_Files
-  itkCompleteImageResampleFilter.txx
-  itkMeanAndSigmaImageBuilder.txx
-  itkMinimizeImageSizeFilter.txx
-  itkRobustMeanAndSigmaImageBuilder.txx
-  )
+set( AtlasBuilderUsingIntensity_HXX_Files
+  itktubeCompleteImageResampleFilter.hxx
+  itktubeMeanAndSigmaImageBuilder.hxx
+  itktubeMinimizeImageSizeFilter.hxx
+  itktubeRobustMeanAndSigmaImageBuilder.hxx )
 
 add_custom_target( AtlasBuilderUsingIntensityInclude SOURCES
   ${AtlasBuilderUsingIntensity_H_Files}
-  ${AtlasBuilderUsingIntensity_TXX_Files}
-  )
+  ${AtlasBuilderUsingIntensity_HXX_Files} )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
@@ -62,8 +59,7 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/Common
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/Registration
-    ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments
-  )
+    ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments )
 
 #-----------------------------------------------------------------------------
 if( BUILD_TESTING )

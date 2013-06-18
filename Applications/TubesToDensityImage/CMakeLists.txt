@@ -26,21 +26,18 @@ set( MODULE_NAME TubesToDensityImage )
 project( ${MODULE_NAME} )
 
 set( TubesToDensityImage_H_Files
-  itkInverseIntensityImageFilter.h
-  itkTubeSpatialObjectToDensityImage.h
-  itkTubeSpatialObjectToImageFilter.h
-  )
+  itktubeInverseIntensityImageFilter.h
+  itktubeSpatialObjectToImageFilter.h
+  itktubeTubeSpatialObjectToDensityImage.h )
 
-set( TubesToDensityImage_TXX_Files
-  itkInverseIntensityImageFilter.txx
-  itkTubeSpatialObjectToDensityImage.txx
-  itkTubeSpatialObjectToImageFilter.txx
-  )
+set( TubesToDensityImage_HXX_Files
+  itktubeInverseIntensityImageFilter.hxx
+  itktubeSpatialObjectToImageFilter.hxx
+  itktubeTubeSpatialObjectToDensityImage.hxx )
 
 add_custom_target( TubesToDensityImageInclude SOURCES
   ${TubesToDensityImage_H_Files}
-  ${TubesToDensityImage_TXX_Files}
-  )
+  ${TubesToDensityImage_HXX_Files} )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
@@ -58,8 +55,7 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/Common
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/Registration
-    ${TubeTK_SOURCE_DIR}/Base/ObjectDocument
-  )
+    ${TubeTK_SOURCE_DIR}/Base/ObjectDocument )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

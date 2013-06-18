@@ -50,6 +50,9 @@ int DoIt( int argc, char * argv[] );
 namespace itk
 {
 
+namespace tube
+{
+
 template< class pixelT, unsigned int dimensionT >
 class BlendCostFunction
 : public SingleValuedCostFunction
@@ -485,6 +488,8 @@ private:
 
 }; // End class BlendScaleCostFunction
 
+} // End namespace tube
+
 } // End namespace itk
 
 template< class pixelT, unsigned int dimensionT >
@@ -595,7 +600,7 @@ int DoIt( int argc, char * argv[] )
   blendParams[2] = offset;
   if( 1 )
     {
-    typedef itk::BlendCostFunction< PixelType, dimensionT >
+    typedef itk::tube::BlendCostFunction< PixelType, dimensionT >
                                                   BlendCostFunctionType;
     typedef itk::OnePlusOneEvolutionaryOptimizer  InitialOptimizerType;
     typedef itk::FRPROptimizer                    OptimizerType;
@@ -693,7 +698,7 @@ int DoIt( int argc, char * argv[] )
   blendScaleParams[3] = sigma;
   if( 1 )
     {
-    typedef itk::BlendScaleCostFunction< PixelType, dimensionT >
+    typedef itk::tube::BlendScaleCostFunction< PixelType, dimensionT >
                                                   BlendScaleCostFunctionType;
     typedef itk::OnePlusOneEvolutionaryOptimizer  InitialOptimizerType;
     typedef itk::FRPROptimizer                    OptimizerType;

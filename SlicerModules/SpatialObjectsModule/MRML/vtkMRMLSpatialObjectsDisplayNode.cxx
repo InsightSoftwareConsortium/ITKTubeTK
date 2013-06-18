@@ -188,8 +188,7 @@ SetAndObserveSpatialObjectsDisplayPropertiesNodeID(const char *id )
   if(
       (id != this->GetSpatialObjectsDisplayPropertiesNodeID())
       && id != NULL && this->GetSpatialObjectsDisplayPropertiesNodeID() != NULL
-      && (std::strcmp(id, this->GetSpatialObjectsDisplayPropertiesNodeID()) == 0)
-      )
+      && (std::strcmp(id, this->GetSpatialObjectsDisplayPropertiesNodeID()) == 0) )
     {
     return;
     }

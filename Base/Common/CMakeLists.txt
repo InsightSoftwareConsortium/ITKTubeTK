@@ -27,19 +27,19 @@ find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_Common_H_Files
-  itkDifferenceImageFilter2.h
-  itkFilterWatcher.h
+  itktubeDifferenceImageFilter2.h
+  itktubeFilterWatcher.h
   tubeMacro.h
   tubeMessage.h
   tubeStringUtilities.h
   tubeTestMain.h )
 
-set( TubeTK_Base_Common_TXX_Files
-  itkDifferenceImageFilter2.txx )
+set( TubeTK_Base_Common_HXX_Files
+  itktubeDifferenceImageFilter2.hxx )
 
 add_custom_target( TubeCommon SOURCES
   ${TubeTK_Base_Common_H_Files}
-  ${TubeTK_Base_Common_TXX_Files} )
+  ${TubeTK_Base_Common_HXX_Files} )
 
 add_executable( ImageCompareCommand ImageCompareCommand.cxx )
 target_link_libraries( ImageCompareCommand ${ITK_LIBRARIES} )
@@ -58,7 +58,7 @@ endif( BUILD_TESTING )
 
 install( FILES
   ${TubeTK_Base_Common_H_Files}
-  ${TubeTK_Base_Common_TXX_Files}
+  ${TubeTK_Base_Common_HXX_Files}
   DESTINATION include )
 
 install( TARGETS

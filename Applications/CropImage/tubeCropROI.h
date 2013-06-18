@@ -104,6 +104,6 @@ private:
 
 } // End namespace tube
 
-#include "tubeCropROI.txx"
+#include "tubeCropROI.hxx"
 
 #endif // End !defined(__tubeCropROI_h)

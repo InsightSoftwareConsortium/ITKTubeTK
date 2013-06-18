@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkAnisotropicHybridDiffusionImageFilter.h"
+#include "itktubeAnisotropicHybridDiffusionImageFilter.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
@@ -109,7 +109,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start("Hybrid enhancing anisotropic diffusion");
 
   // Declare the anisotropic diffusion hybrid enhancing filter
-  typedef itk::AnisotropicHybridDiffusionImageFilter< FilterInputImageType,
+  typedef itk::tube::AnisotropicHybridDiffusionImageFilter< FilterInputImageType,
     FilterOutputImageType>  HybridEnhancingFilterType;
 
   // Create a hybrid enhancing Filter

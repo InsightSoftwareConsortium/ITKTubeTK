@@ -24,7 +24,7 @@ limitations under the License.
 #ifndef __itkAngleOfIncidenceImageFilter_h
 #define __itkAngleOfIncidenceImageFilter_h
 
-#include "itkSymmetricEigenVectorAnalysisImageFilter.h"
+#include "itktubeSymmetricEigenVectorAnalysisImageFilter.h"
 
 #include <itkHessianRecursiveGaussianImageFilter.h>
 #include <itkImageRegionIteratorWithIndex.h>
@@ -101,7 +101,7 @@ public:
     <SymmetricSecondRankTensorImageType, EigenValueImageType>
     EigenValueAnalysisFilterType;
 
-  typedef itk::SymmetricEigenVectorAnalysisImageFilter
+  typedef itk::tube::SymmetricEigenVectorAnalysisImageFilter
         <SymmetricSecondRankTensorImageType, EigenValueImageType,
          EigenVectorMatrixImageType>
     EigenVectorAnalysisFilterType;
@@ -143,7 +143,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkAngleOfIncidenceImageFilter.txx"
+#include "itkAngleOfIncidenceImageFilter.hxx"
 #endif
 
 #endif // End !defined(__itkAngleOfIncidenceImageFilter_h)

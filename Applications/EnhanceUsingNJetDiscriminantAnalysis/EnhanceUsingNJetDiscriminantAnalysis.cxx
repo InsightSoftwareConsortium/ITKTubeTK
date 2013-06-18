@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkTubeMetaNJetLDA.h"
-#include "itkTubeNJetSupervisedLinearBasisGenerator.h"
+#include "itktubeMetaNJetLDA.h"
+#include "itktubeNJetSupervisedLinearBasisGenerator.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"

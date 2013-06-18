@@ -29,8 +29,7 @@ set(${KIT}_INCLUDE_DIRECTORIES)
 
 set(${KIT}_SRCS
     vtkMRMLSpatialObjectsDisplayNode.cxx
-    vtkMRMLSpatialObjectsDisplayNode.h
-)
+    vtkMRMLSpatialObjectsDisplayNode.h )
 
 list(APPEND ${KIT}_SRCS
      vtkMRMLSpatialObjectsDisplayPropertiesNode.cxx
@@ -44,13 +43,11 @@ list(APPEND ${KIT}_SRCS
      vtkMRMLSpatialObjectsStorageNode.cxx
      vtkMRMLSpatialObjectsStorageNode.h
      vtkMRMLSpatialObjectsTubeDisplayNode.cxx
-     vtkMRMLSpatialObjectsTubeDisplayNode.h
-)
+     vtkMRMLSpatialObjectsTubeDisplayNode.h )
 
 set(${KIT}_TARGET_LIBRARIES
     ${ITK_LIBRARIES}
-    ${MRML_LIBRARIES}
-)
+    ${MRML_LIBRARIES} )
 
 #-----------------------------------------------------------------------------
 SlicerMacroBuildModuleMRML(
@@ -58,5 +55,4 @@ SlicerMacroBuildModuleMRML(
   EXPORT_DIRECTIVE ${${KIT}_EXPORT_DIRECTIVE}
   INCLUDE_DIRECTORIES ${${KIT}_INCLUDE_DIRECTORIES}
   SRCS ${${KIT}_SRCS}
-  TARGET_LIBRARIES ${${KIT}_TARGET_LIBRARIES}
-)
+  TARGET_LIBRARIES ${${KIT}_TARGET_LIBRARIES} )

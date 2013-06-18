@@ -51,8 +51,7 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
 MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
              ${IMAGECOMPARE_EXE}
                -t ${TEMP}/DSC_Test1_20030625_361_3__0.86_1.60_3.mha
-               -b MIDAS{DSC_Test1_20030625_361_3__0.86_1.60_3.mha.md5}
-              )
+               -b MIDAS{DSC_Test1_20030625_361_3__0.86_1.60_3.mha.md5} )
 
 set_property(TEST ${PROJECT_NAME}-Test1-Compare
                       APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )

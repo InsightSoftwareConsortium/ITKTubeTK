@@ -154,7 +154,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkGradientBasedAngleOfIncidenceImageFilter.txx"
+#include "itkGradientBasedAngleOfIncidenceImageFilter.hxx"
 #endif
 
 #endif // End !defined(__itkGradientBasedAngleOfIncidenceImageFilter_h)

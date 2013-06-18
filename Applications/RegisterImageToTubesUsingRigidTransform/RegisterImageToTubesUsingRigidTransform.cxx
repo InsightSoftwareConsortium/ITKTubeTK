@@ -21,10 +21,10 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itkImageToTubeRigidRegistration.h"
-#include "itkRecordOptimizationParameterProgressionCommand.h"
-#include "itkSubSampleTubeTreeSpatialObjectFilter.h"
-#include "itkTubeToTubeTransformFilter.h"
+#include "itktubeImageToTubeRigidRegistration.h"
+#include "itktubeRecordOptimizationParameterProgressionCommand.h"
+#include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
+#include "itktubeTubeToTubeTransformFilter.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
@@ -73,12 +73,12 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< FloatType, Dimension >             ImageType;
   typedef itk::ImageFileReader< ImageType >              ImageReaderType;
   typedef itk::ImageFileWriter< ImageType >              ImageWriterType;
-  typedef itk::ImageToTubeRigidRegistration< ImageType, TubeNetType, TubeType >
+  typedef itk::tube::ImageToTubeRigidRegistration< ImageType, TubeNetType, TubeType >
                                                          RegistrationMethodType;
   typedef RegistrationMethodType::TransformType          TransformType;
-  typedef itk::TubeToTubeTransformFilter< TransformType, Dimension >
+  typedef itk::tube::TubeToTubeTransformFilter< TransformType, Dimension >
                                                          TubeTransformFilterType;
-  typedef itk::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
+  typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
                                                          SubSampleTubeNetFilterType;
 
   timeCollector.Start("Load data");

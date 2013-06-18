@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: OptionList.h,v $
+  Module:    $RCSfile: tubeOptionList.h,v $
   Language:  C++
   Date:      $Date: 2004/05/06 13:45:52 $
   Version:   $Revision: 1.1 $

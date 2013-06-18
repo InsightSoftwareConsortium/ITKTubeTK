@@ -24,30 +24,33 @@
 project( TubeRegistration )
 
 set( TubeTK_Base_Registration_H_Files
-  itkAnisotropicDiffusiveRegistrationFilter.h
-  itkAnisotropicDiffusiveRegistrationFunction.h
-  itkAnisotropicDiffusiveSparseRegistrationFilter.h
-  itkDiffusiveRegistrationFilter.h
-  itkDiffusiveRegistrationFilterUtils.h
-  itkImageToTubeRigidMetric.h
-  itkImageToTubeRigidRegistration.h
-  itkMeanSquareRegistrationFunction.h
-  itkTubeToTubeTransformFilter.h )
+  itktubeAnisotropicDiffusiveRegistrationFilter.h
+  itktubeAnisotropicDiffusiveRegistrationFunction.h
+  itktubeAnisotropicDiffusiveSparseRegistrationFilter.h
+  itktubeDiffusiveRegistrationFilter.h
+  itktubeDiffusiveRegistrationFilterUtils.h
+  itktubeImageToTubeRigidMetric.h
+  itktubeImageToTubeRigidRegistration.h
+  itktubeMeanSquareRegistrationFunction.h
+  itktubeTubeExponentialResolutionWeightFunction.h
+  itktubeTubeParametricExponentialResolutionWeightFunction.h
+  itktubeTubeParametricExponentialWithBoundsResolutionWeightFunction.h
+  itktubeTubeToTubeTransformFilter.h )
 
-set( TubeTK_Base_Registration_TXX_Files
-  itkAnisotropicDiffusiveRegistrationFilter.txx
-  itkAnisotropicDiffusiveRegistrationFunction.txx
-  itkAnisotropicDiffusiveSparseRegistrationFilter.txx
-  itkDiffusiveRegistrationFilter.txx
-  itkDiffusiveRegistrationFilterUtils.txx
-  itkImageToTubeRigidMetric.txx
-  itkImageToTubeRigidRegistration.txx
-  itkMeanSquareRegistrationFunction.txx
-  itkTubeToTubeTransformFilter.txx )
+set( TubeTK_Base_Registration_HXX_Files
+  itktubeAnisotropicDiffusiveRegistrationFilter.hxx
+  itktubeAnisotropicDiffusiveRegistrationFunction.hxx
+  itktubeAnisotropicDiffusiveSparseRegistrationFilter.hxx
+  itktubeDiffusiveRegistrationFilter.hxx
+  itktubeDiffusiveRegistrationFilterUtils.hxx
+  itktubeImageToTubeRigidMetric.hxx
+  itktubeImageToTubeRigidRegistration.hxx
+  itktubeMeanSquareRegistrationFunction.hxx
+  itktubeTubeToTubeTransformFilter.hxx )
 
 add_custom_target( TubeRegistration SOURCES
   ${TubeTK_Base_Registration_H_Files}
-  ${TubeTK_Base_Registration_TXX_Files} )
+  ${TubeTK_Base_Registration_HXX_Files} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
@@ -55,5 +58,5 @@ endif( BUILD_TESTING )
 
 install( FILES
   ${TubeTK_Base_Segmentation_H_Files}
-  ${TubeTK_Base_Segmentation_TXX_Files}
+  ${TubeTK_Base_Segmentation_HXX_Files}
   DESTINATION include )
