@@ -30,15 +30,12 @@ find_package( JsonCpp REQUIRED )
 include_directories( ${JsonCpp_INCLUDE_DIRS} )
 
 set( TubeTK_Base_ParameterSerializer_H_Files
-  USTK/itkAcousticImpulseResponseImageFilterSerializer.h
-  )
+  USTK/itkAcousticImpulseResponseImageFilterSerializer.h )
 
 set( TubeTK_Base_ParameterSerializer_TXX_Files
-  USTK/itkAcousticImpulseResponseImageFilterSerializer.txx
-  )
+  USTK/itkAcousticImpulseResponseImageFilterSerializer.txx )
 
-set( TubeTK_Base_ParameterSerializer_SRCS
-  )
+set( TubeTK_Base_ParameterSerializer_SRCS )
 
 #add_library( TubeParameterSerializer STATIC
   #${TubeTK_Base_ParameterSerializer_SRCS} )
@@ -54,5 +51,4 @@ endif( BUILD_TESTING )
 install( FILES
   ${TubeTK_Base_ParameterSerializer_H_Files}
   ${TubeTK_Base_ParameterSerializer_TXX_Files}
-  DESTINATION include
-  )
+  DESTINATION include )

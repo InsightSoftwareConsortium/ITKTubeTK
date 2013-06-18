@@ -32,8 +32,7 @@ set( TubeTK_Base_USTK_H_Files
   itkGradientBasedAngleOfIncidenceImageFilter.h
   itkLabelMapToAcousticImpedanceFunctor.h
   itkLabelMapToAcousticImpedanceImageFilter.h
-  itkUltrasoundProbeGeometryCalculator.h
-  )
+  itkUltrasoundProbeGeometryCalculator.h )
 
 set( TubeTK_Base_USTK_TXX_Files
   itkAcousticImpulseResponseImageFilter.txx
@@ -41,13 +40,11 @@ set( TubeTK_Base_USTK_TXX_Files
   itkGradientBasedAngleOfIncidenceImageFilter.txx
   itkLabelMapToAcousticImpedanceFunctor.txx
   itkLabelMapToAcousticImpedanceImageFilter.txx
-  itkUltrasoundProbeGeometryCalculator.txx
-  )
+  itkUltrasoundProbeGeometryCalculator.txx )
 
 add_custom_target( TubeUSTK SOURCES
   ${TubeTK_Base_USTK_H_Files}
-  ${TubeTK_Base_USTK_TXX_Files}
-  )
+  ${TubeTK_Base_USTK_TXX_Files} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
@@ -56,5 +53,4 @@ endif( BUILD_TESTING )
 install( FILES
   ${TubeTK_Base_USTK_H_Files}
   ${TubeTK_Base_USTK_TXX_Files}
-  DESTINATION include
-  )
+  DESTINATION include )

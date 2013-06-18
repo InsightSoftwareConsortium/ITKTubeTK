@@ -32,8 +32,7 @@ set( TubeTK_Base_Registration_H_Files
   itkImageToTubeRigidMetric.h
   itkImageToTubeRigidRegistration.h
   itkMeanSquareRegistrationFunction.h
-  itkTubeToTubeTransformFilter.h
-  )
+  itkTubeToTubeTransformFilter.h )
 
 set( TubeTK_Base_Registration_TXX_Files
   itkAnisotropicDiffusiveRegistrationFilter.txx
@@ -44,13 +43,11 @@ set( TubeTK_Base_Registration_TXX_Files
   itkImageToTubeRigidMetric.txx
   itkImageToTubeRigidRegistration.txx
   itkMeanSquareRegistrationFunction.txx
-  itkTubeToTubeTransformFilter.txx
-  )
+  itkTubeToTubeTransformFilter.txx )
 
 add_custom_target( TubeRegistration SOURCES
   ${TubeTK_Base_Registration_H_Files}
-  ${TubeTK_Base_Registration_TXX_Files}
-  )
+  ${TubeTK_Base_Registration_TXX_Files} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
@@ -59,5 +56,4 @@ endif( BUILD_TESTING )
 install( FILES
   ${TubeTK_Base_Segmentation_H_Files}
   ${TubeTK_Base_Segmentation_TXX_Files}
-  DESTINATION include
-  )
+  DESTINATION include )

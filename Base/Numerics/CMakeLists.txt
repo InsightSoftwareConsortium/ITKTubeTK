@@ -47,8 +47,7 @@ set( TubeTK_Base_Numerics_H_Files
   tubeSplineApproximation1D.h
   tubeSplineND.h
   tubeTubeMath.h
-  tubeUserFunction.h
-  )
+  tubeUserFunction.h )
 
 set( TubeTK_Base_Numerics_TXX_Files
   itkImageRegionMomentsCalculator.txx
@@ -62,12 +61,10 @@ set( TubeTK_Base_Numerics_TXX_Files
   itkVectorImageToListGenerator.txx
   itkVotingResampleImageFunction.txx
   tubeMatrixMath.txx
-  tubeTubeMath.txx
-  )
+  tubeTubeMath.txx )
 
 include_directories(
-  ${TubeTK_SOURCE_DIR}/Base/Common
-  )
+  ${TubeTK_SOURCE_DIR}/Base/Common )
 
 set( TubeTK_Base_Numerics_SRCS
   tubeBrentOptimizer1D.cxx
@@ -77,14 +74,12 @@ set( TubeTK_Base_Numerics_SRCS
   tubeParabolicFitOptimizer1D.cxx
   tubeSpline1D.cxx
   tubeSplineApproximation1D.cxx
-  tubeSplineND.cxx
-  )
+  tubeSplineND.cxx )
 
 add_library( TubeNumerics STATIC
   ${TubeTK_Base_Numerics_H_Files}
   ${TubeTK_Base_Numerics_TXX_Files}
-  ${TubeTK_Base_Numerics_SRCS}
-  )
+  ${TubeTK_Base_Numerics_SRCS} )
 
 target_link_libraries( TubeNumerics ${ITK_LIBRARIES} )
 
@@ -99,5 +94,4 @@ endif( BUILD_TESTING )
 install( FILES
   ${TubeTK_Base_Numerics_H_Files}
   ${TubeTK_Base_Numerics_TXX_Files}
-  DESTINATION include
-  )
+  DESTINATION include )
