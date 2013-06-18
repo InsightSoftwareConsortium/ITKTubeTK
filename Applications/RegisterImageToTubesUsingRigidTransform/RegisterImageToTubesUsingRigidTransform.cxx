@@ -22,6 +22,7 @@ limitations under the License.
 =========================================================================*/
 
 #include "itkImageToTubeRigidRegistration.h"
+#include "itkRecordOptimizationParameterProgressionCommand.h"
 #include "itkSubSampleTubeTreeSpatialObjectFilter.h"
 #include "itkTubeToTubeTransformFilter.h"
 #include "tubeCLIFilterWatcher.h"
@@ -42,6 +43,9 @@ limitations under the License.
 
 template< class pixelT, unsigned int dimensionT >
 int DoIt( int argc, char * argv[] );
+
+// Does not currently use pixelT
+#define PARSE_ARGS_FLOAT_ONLY 1
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
@@ -70,8 +74,8 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileReader< ImageType >              ImageReaderType;
   typedef itk::ImageFileWriter< ImageType >              ImageWriterType;
   typedef itk::ImageToTubeRigidRegistration< ImageType, TubeNetType, TubeType >
-                                                         RegistrationFilterType;
-  typedef RegistrationFilterType::TransformType          TransformType;
+                                                         RegistrationMethodType;
+  typedef RegistrationMethodType::TransformType          TransformType;
   typedef itk::TubeToTubeTransformFilter< TransformType, Dimension >
                                                          TubeTransformFilterType;
   typedef itk::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
@@ -168,17 +172,44 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start("Register image to tube");
 
-  RegistrationFilterType::Pointer  registrationFilter =
-    RegistrationFilterType::New();
+  RegistrationMethodType::Pointer registrationMethod =
+    RegistrationMethodType::New();
 
-  registrationFilter->SetFixedImage( currentImage );
-  registrationFilter->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
-  registrationFilter->SetNumberOfIteration( 1000 );
-  registrationFilter->SetLearningRate( 0.1 );
+  registrationMethod->SetFixedImage( currentImage );
+  registrationMethod->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
+
+  // Set Optimizer parameters.
+  RegistrationMethodType::OptimizerType::Pointer optimizer =
+    registrationMethod->GetOptimizer();
+  itk::GradientDescentOptimizer * gradientDescentOptimizer =
+    dynamic_cast< itk::GradientDescentOptimizer * >( optimizer.GetPointer() );
+  if( gradientDescentOptimizer )
+    {
+    gradientDescentOptimizer->SetLearningRate( 0.1 );
+    gradientDescentOptimizer->SetNumberOfIterations( 1000 );
+    }
+
+  // TODO: This is hard-coded now, which is sufficient since
+  // ImageToTubeRigidMetric only uses a Euler3DTransform.  Will need to adjust
+  // to the transform parameters in the future at compile time.
+  const unsigned int NumberOfParameters = 6;
+  typedef itk::tube::RecordOptimizationParameterProgressionCommand< NumberOfParameters >
+    RecordParameterProgressionCommandType;
+  RecordParameterProgressionCommandType::Pointer
+    recordParameterProgressionCommand = RecordParameterProgressionCommandType::New();
+  if( !parameterProgression.empty() )
+    {
+    // Record the optimization parameter progression and write to a file.
+    recordParameterProgressionCommand->SetFileName( parameterProgression );
+    optimizer->AddObserver( itk::StartEvent(), recordParameterProgressionCommand );
+    optimizer->AddObserver( itk::IterationEvent(), recordParameterProgressionCommand );
+    optimizer->AddObserver( itk::EndEvent(), recordParameterProgressionCommand );
+    }
+
   try
     {
-    registrationFilter->Initialize();
-    registrationFilter->Update();
+    registrationMethod->Initialize();
+    registrationMethod->Update();
     }
   catch( itk::ExceptionObject & err )
     {
@@ -194,8 +225,8 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start("Save data");
   TransformType* outputTransform =
-    dynamic_cast<TransformType *>(registrationFilter->GetTransform());
-  outputTransform->SetParameters( registrationFilter->GetLastTransformParameters() );
+    dynamic_cast<TransformType *>(registrationMethod->GetTransform());
+  outputTransform->SetParameters( registrationMethod->GetLastTransformParameters() );
 
   TubeTransformFilterType::Pointer transformFilter = TubeTransformFilterType::New();
   transformFilter->SetInput( vesselReader->GetGroup() );

@@ -41,10 +41,10 @@ set( IMAGECOMPARE_EXE
 #######
 MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
   ${PROJ_EXE}
+  --parameterProgression ${TEMP}/${MODULE_NAME}Test1ParameterProgression.h5
   MIDAS{Branch.n020.mha.md5}
   MIDAS{tube.tre.md5}
-  ${TEMP}/${MODULE_NAME}Test1.mha
-  )
+  ${TEMP}/${MODULE_NAME}Test1.mha )
 
 #######
 # Test1-Compare

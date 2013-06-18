@@ -46,6 +46,7 @@ set( tubeBaseNumerics_SRCS
   tubeBaseNumericsPrintTest.cxx
   itkImageRegionMomentsCalculatorTest.cxx
   itkJointHistogramImageFunctionTest.cxx
+  itkRecordOptimizationParameterProgressionCommandTest.cxx
   itkTubeBlurImageFunctionTest.cxx
   itkTubeNJetFeatureVectorGeneratorTest.cxx
   itkTubeNJetBasisFeatureVectorGeneratorTest.cxx

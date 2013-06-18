@@ -28,8 +28,11 @@ limitations under the License.
 
 #include "itkSubSampleTubeTreeSpatialObjectFilter.h"
 
+#include <itkConjugateGradientOptimizer.h>
+#include <itkGradientDescentOptimizer.h>
 #include <itkLinearInterpolateImageFunction.h>
 #include <itkNormalVariateGenerator.h>
+#include <itkOnePlusOneEvolutionaryOptimizer.h>
 #include <itkSpatialObjectDuplicator.h>
 
 namespace itk
@@ -45,8 +48,6 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
   this->m_InitialTransformParameters.Fill( 0.0f );
   this->m_LastTransformParameters.Fill( 0.0f );
 
-  m_NumberOfIteration = 100; //by default
-  m_LearningRate = 0.1;
   m_IsInitialized = false;
 
   m_InitialPosition.set_size( 6 );
@@ -65,6 +66,28 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
   typedef LinearInterpolateImageFunction< FixedImageType > DefaultInterpolatorType;
   typename DefaultInterpolatorType::Pointer interpolator = DefaultInterpolatorType::New();
   this->SetInterpolator( interpolator );
+
+  //typedef GradientDescentVariableStepOptimizer  DefaultOptimizerType;
+  typedef GradientDescentOptimizer                DefaultOptimizerType;
+  //typedef OnePlusOneEvolutionaryOptimizer       DefaultOptimizerType;
+  typename DefaultOptimizerType::Pointer optimizer =
+    DefaultOptimizerType::New();
+
+  optimizer->MaximizeOn();
+  optimizer->SetScales( m_ParametersScale );
+
+  /*  optimizer->SetMaximumIteration( m_NumberOfIteration );
+
+  Statistics::NormalVariateGenerator::Pointer generator =
+      Statistics::NormalVariateGenerator::New();
+  generator->SetReferenceCount( 2 );
+  generator->Initialize( std::time( NULL ) );
+
+  optimizer->SetNormalVariateGenerator( generator );
+  optimizer->Initialize( 40 );
+  */
+
+  this->SetOptimizer( optimizer );
 }
 
 
@@ -99,31 +122,8 @@ void
 ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 ::Initialize() throw ( ExceptionObject )
 {
-  typename OptimizerType::Pointer optimizer = OptimizerType::New();
-
   typename TransformType::Pointer transform = TransformType::New();
   this->SetTransform( transform );
-
-  optimizer->MaximizeOn();
-  optimizer->SetScales( m_ParametersScale );
-
-  // Gradient descent stuff
-  optimizer->SetLearningRate( m_LearningRate );
-  optimizer->SetNumberOfIterations( m_NumberOfIteration );
-
-
-  /*  optimizer->SetMaximumIteration( m_NumberOfIteration );
-
-  Statistics::NormalVariateGenerator::Pointer generator =
-      Statistics::NormalVariateGenerator::New();
-  generator->SetReferenceCount( 2 );
-  generator->Initialize( std::time( NULL ) );
-
-  optimizer->SetNormalVariateGenerator( generator );
-  optimizer->Initialize( 40 );
-  */
-
-  this->SetOptimizer( optimizer );
 
   this->SetInitialTransformParameters( m_InitialPosition );
 

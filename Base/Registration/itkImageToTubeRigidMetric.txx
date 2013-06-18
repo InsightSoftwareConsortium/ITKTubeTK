@@ -483,7 +483,7 @@ ImageToTubeRigidMetric< TFixedImage,
 ::GetDerivative( const ParametersType & parameters,
                  DerivativeType & derivative ) const
 {
-  derivative = DerivativeType( SpaceDimension );
+  derivative.SetSize( this->GetNumberOfParameters() );
 
   // Create a copy of the transform to keep true const correctness (thread-safe)
   // Set the parameters on the copy and uses the copy.
