@@ -34,7 +34,7 @@ limitations under the License.
 #include <itkSpatialObjectWriter.h>
 #include <itkVesselTubeSpatialObject.h>
 
-int itktubeImageToTubeRigidRegistrationTest(int argc, char* argv[] )
+int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
 {
 
   if( argc < 4 )

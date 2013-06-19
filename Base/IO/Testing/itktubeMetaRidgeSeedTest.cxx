@@ -26,7 +26,7 @@ limitations under the License.
 #include <itkFilterWatcher.h>
 #include <itkImage.h>
 
-int itktubeMetaRidgeSeedTest( int argc, char * argv [] )
+int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
 {
   if( argc != 2 )
     {

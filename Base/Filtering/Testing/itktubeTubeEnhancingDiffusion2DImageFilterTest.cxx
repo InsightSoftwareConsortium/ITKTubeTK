@@ -27,7 +27,7 @@ limitations under the License.
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
-int itktubeTubeEnhancingDiffusion2DImageFilterTest(int argc, char* argv[] )
+int itktubeTubeEnhancingDiffusion2DImageFilterTest( int argc, char * argv[] )
 {
   if( argc < 3 )
     {

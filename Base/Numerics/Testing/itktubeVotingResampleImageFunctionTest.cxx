@@ -33,7 +33,7 @@ limitations under the License.
 
 #include <iostream>
 
-int itktubeVotingResampleImageFunctionTest(int argc, char* argv[] )
+int itktubeVotingResampleImageFunctionTest( int argc, char * argv[] )
 {
   if( argc != 4 )
     {

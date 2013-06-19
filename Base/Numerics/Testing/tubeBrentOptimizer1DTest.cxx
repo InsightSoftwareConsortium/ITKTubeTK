@@ -22,14 +22,14 @@ limitations under the License.
 =========================================================================*/
 
 #include "tubeBrentOptimizer1D.h"
-#include "tubeMacro.h"
 #include "tubeOptimizer1D.h"
 #include "tubeUserFunction.h"
+
+#include <itkMacro.h>
 
 #include <vcl_cmath.h>
 #include <vnl/vnl_math.h>
 
-#include <cstdlib>
 #include <iostream>
 
 class MyOBFunc : public tube::UserFunction< double, double >
@@ -68,7 +68,7 @@ public:
 
 }; // End class MyOBFuncD
 
-int tubeBrentOptimizer1DTest( int tubeNotUsed(argc), char *tubeNotUsed(argv)[] )
+int tubeBrentOptimizer1DTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {
   double epsilon = 0.000001;
 

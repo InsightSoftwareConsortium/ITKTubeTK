@@ -22,13 +22,12 @@ limitations under the License.
 =========================================================================*/
 
 #include "itktubeDifferenceImageFilter.h"
-#include "tubeMacro.h"
 #include "tubeMessage.h"
 #include "tubeStringUtilities.h"
 
 #include <cstdlib>
 
-int main ( int , char ** )
+int main ( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {
   return EXIT_SUCCESS;
 }

@@ -1723,7 +1723,7 @@ void GetImageInformation( std::string fileName,
   dimension = imageIO->GetNumberOfDimensions();
 }
 
-int main( int argc, char *argv[] )
+int main( int argc, char * argv[] )
 {
   MetaCommand command;
 

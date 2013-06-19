@@ -29,7 +29,7 @@
 #include <itkVariableLengthVector.h>
 #include <itkVectorImage.h>
 
-int itktubeSheetnessMeasureImageFilterTest2(int argc ,char* argv[] )
+int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
 {
   if( argc < 4 )
     {

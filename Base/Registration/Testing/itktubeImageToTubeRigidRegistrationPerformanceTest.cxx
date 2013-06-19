@@ -93,7 +93,7 @@ public:
 
 }; // End class CommandIterationUpdate
 
-int itktubeImageToTubeRigidRegistrationPerformanceTest(int argc, char* argv[] )
+int itktubeImageToTubeRigidRegistrationPerformanceTest( int argc, char * argv[] )
 {
   if( argc < 4 )
     {

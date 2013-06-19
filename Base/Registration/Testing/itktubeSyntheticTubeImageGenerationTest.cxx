@@ -35,7 +35,7 @@
  *  registration/metric testing process.
  */
 
-int itktubeSyntheticTubeImageGenerationTest(int argc, char* argv[] )
+int itktubeSyntheticTubeImageGenerationTest( int argc, char * argv[] )
 {
   if( argc < 6 )
     {

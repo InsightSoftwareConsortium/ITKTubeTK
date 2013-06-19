@@ -48,18 +48,18 @@ limitations under the License.
 
 #include "MergeTubeGraphsCLP.h"
 
-int DoIt( int, char *[] );
+int DoIt( int argc, char * argv[] );
 
 using namespace tube;
 
-int main(int argc, char **argv)
+int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
   return DoIt( argc, argv );
 }
 
-int DoIt( int argc, char *argv[] )
+int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 

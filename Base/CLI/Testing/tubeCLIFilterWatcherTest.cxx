@@ -41,7 +41,7 @@ void testCallbackFunction( void * data )
     }
 }
 
-int tubeCLIFilterWatcherTest(int argc, char* argv[] )
+int tubeCLIFilterWatcherTest( int argc, char * argv[] )
 {
   if( argc != 2 )
     {

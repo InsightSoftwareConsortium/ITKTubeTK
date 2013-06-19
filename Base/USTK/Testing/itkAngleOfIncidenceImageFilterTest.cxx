@@ -24,7 +24,7 @@
 #include <itkImageFileWriter.h>
 #include <itkThresholdImageFilter.h>
 
-int itkAngleOfIncidenceImageFilterTest(int argc ,char* argv[] )
+int itkAngleOfIncidenceImageFilterTest( int argc, char * argv[] )
 {
   // Argument parsing.
   if( argc < 7 )

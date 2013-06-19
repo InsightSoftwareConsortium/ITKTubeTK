@@ -33,7 +33,7 @@ limitations under the License.
 #include <itkVariableLengthVector.h>
 #include <itkVectorImage.h>
 
-int itktubeStructureTensorRecursiveGaussianImageFilterTest(int argc, char* argv[]  )
+int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc, char * argv[] )
 {
   if( argc < 4 )
     {

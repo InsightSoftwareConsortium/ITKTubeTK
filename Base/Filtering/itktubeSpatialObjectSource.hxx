@@ -48,7 +48,7 @@ SpatialObjectSource< TOutputSpatialObject >
 template< class TOutputSpatialObject >
 ProcessObject::DataObjectPointer
 SpatialObjectSource< TOutputSpatialObject >
-::MakeOutput( ProcessObject::DataObjectPointerArraySizeType itkNotUsed(idx) )
+::MakeOutput( ProcessObject::DataObjectPointerArraySizeType itkNotUsed( idx ) )
 {
   return OutputSpatialObjectType::New().GetPointer();
 }

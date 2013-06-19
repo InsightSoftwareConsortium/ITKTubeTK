@@ -44,7 +44,7 @@ int DoIt( int argc, char * argv[] );
 #include "tubeCLIHelperFunctions.h"
 
 template< class PixelT, unsigned int DimensionI >
-int DoIt( int argc, char *argv[] )
+int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
@@ -272,7 +272,7 @@ int DoIt( int argc, char *argv[] )
 }
 
 // Main
-int main( int argc, char **argv )
+int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
 

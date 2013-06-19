@@ -21,12 +21,13 @@ limitations under the License.
 
 =========================================================================*/
 
+#include <itkMacro.h>
+
 #include <fstream>
 #include <iostream>
 #include <list>
-#include <string>
 
-int main(int, char **)
+int main( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {
   std::cout << "Importing your data into the MetaImage format"
     << std::endl

@@ -25,7 +25,7 @@
 #include <itkSpatialObjectToImageFilter.h>
 #include <itkSpatialObjectWriter.h>
 
-int itktubeTubeToTubeTransformFilterTest(int argc, char* argv[] )
+int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
 {
 
   if( argc < 12 )

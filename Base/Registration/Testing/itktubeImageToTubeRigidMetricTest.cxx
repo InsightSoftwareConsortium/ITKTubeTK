@@ -40,7 +40,7 @@ limitations under the License.
  *  the reference for the metric.
  */
 
-int itktubeImageToTubeRigidMetricTest(int argc, char* argv[] )
+int itktubeImageToTubeRigidMetricTest( int argc, char * argv[] )
 {
   if( argc < 4 )
     {

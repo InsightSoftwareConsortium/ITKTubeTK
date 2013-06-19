@@ -22,7 +22,6 @@ limitations under the License.
 =========================================================================*/
 
 #include "tubeBrentOptimizer1D.h"
-#include "tubeMacro.h"
 #include "tubeSplineApproximation1D.h"
 #include "tubeUserFunction.h"
 
@@ -92,7 +91,7 @@ public:
 
 }; // End class MySA1DFuncD
 
-int tubeSplineApproximation1DTest( int argc, char *argv[] )
+int tubeSplineApproximation1DTest( int argc, char * argv[] )
 {
   if( argc != 2 )
     {

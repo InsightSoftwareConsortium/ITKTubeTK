@@ -55,7 +55,7 @@ template< unsigned int DimsT >
 int RegressionTestImage( const char *, const char *, bool, bool, double,
   int, int, bool, const char * );
 
-int main( int argc, char **argv )
+int main( int argc, char * argv[] )
 {
   int bestBaselineStatus = 2001;
 

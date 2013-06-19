@@ -83,7 +83,7 @@ RoughBMode( TInputImage * inputImage, const char * fileName )
   writer->Update();
 }
 
-int itkAcousticImpulseResponseImageFilterTest( int argc, char* argv[] )
+int itkAcousticImpulseResponseImageFilterTest( int argc, char * argv[] )
 {
   // Argument parsing.
   if( argc < 7 )

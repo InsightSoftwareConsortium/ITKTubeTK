@@ -43,7 +43,7 @@ public:
   static LabelType                      DUAL_ELEMENT_DELIMITER;
 
 
-  OptionList(int argc, char* argv[]);
+  OptionList( int argc, char * argv[] );
   ~OptionList( void ) {}
 
   class RequiredOptionMissing

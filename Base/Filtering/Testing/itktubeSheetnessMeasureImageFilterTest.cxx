@@ -21,7 +21,7 @@
 #include <itkHessianRecursiveGaussianImageFilter.h>
 #include <itkImageFileWriter.h>
 
-int itktubeSheetnessMeasureImageFilterTest(int ,char*[] )
+int itktubeSheetnessMeasureImageFilterTest(int ,char *[] )
 {
   std::cout << "itktubeSheetnessMeasureImageFilterTest running..." << std::endl;
 

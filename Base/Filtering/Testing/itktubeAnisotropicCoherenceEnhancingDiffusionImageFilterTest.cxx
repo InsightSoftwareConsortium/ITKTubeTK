@@ -20,7 +20,7 @@
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
-int itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest(int argc, char* argv[] )
+int itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest( int argc, char * argv[] )
 {
   if( argc < 3 )
     {

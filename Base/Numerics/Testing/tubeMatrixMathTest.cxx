@@ -21,7 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeMacro.h"
 #include "tubeMatrixMath.h"
 
 #include <itkMersenneTwisterRandomVariateGenerator.h>
@@ -123,9 +122,8 @@ int Test( void )
   return returnStatus;
 }
 
-int tubeMatrixMathTest(int tubeNotUsed(argc), char * tubeNotUsed(argv)[])
+int tubeMatrixMathTest( int argc, char * itkNotUsed( argv )[] )
 {
-
   if( Test<2>() == EXIT_FAILURE ||
       Test<3>() == EXIT_FAILURE ||
       Test<4>() == EXIT_FAILURE )

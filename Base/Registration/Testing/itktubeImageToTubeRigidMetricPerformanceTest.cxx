@@ -40,7 +40,7 @@ limitations under the License.
  *  a 3D binary images (32x32x32) and a .tre image is computed.
  */
 
-int itktubeImageToTubeRigidMetricPerformanceTest(int argc, char* argv[] )
+int itktubeImageToTubeRigidMetricPerformanceTest( int argc, char * argv[] )
 {
   if( argc < 4 )
     {

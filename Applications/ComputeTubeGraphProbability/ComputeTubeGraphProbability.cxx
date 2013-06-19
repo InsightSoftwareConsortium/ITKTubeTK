@@ -44,9 +44,9 @@ limitations under the License.
 
 #include "ComputeTubeGraphProbabilityCLP.h"
 
-int DoIt( int, char ** );
+int DoIt( int argc, char * argv[] );
 
-int main(int argc, char **argv)
+int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 }
 
 
-int DoIt( int argc, char **argv )
+int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 

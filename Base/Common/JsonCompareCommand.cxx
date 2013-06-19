@@ -40,7 +40,7 @@ int RegressionTestJson( const char *testJSONFileName,
   bool verbose = true,
   double toleranceValue = 0.00001 );
 
-int main( int argc, char **argv )
+int main( int argc, char * argv[] )
 {
   int bestBaselineStatus = 2001;
 

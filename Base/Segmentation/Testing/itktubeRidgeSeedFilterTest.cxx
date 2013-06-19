@@ -28,7 +28,7 @@ limitations under the License.
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
-int itktubeRidgeSeedFilterTest( int argc, char * argv [] )
+int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
 {
   if( argc != 7 )
     {

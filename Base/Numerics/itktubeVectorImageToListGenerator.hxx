@@ -131,7 +131,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
 template < class TImage, class TMaskImage >
 typename VectorImageToListGenerator< TImage, TMaskImage >::DataObjectPointer
 VectorImageToListGenerator< TImage, TMaskImage >
-::MakeOutput(DataObjectPointerArraySizeType itkNotUsed(idx))
+::MakeOutput( DataObjectPointerArraySizeType itkNotUsed( idx ) )
 {
   typename ListSampleOutputType::Pointer decoratedOutput =
     ListSampleOutputType::New();

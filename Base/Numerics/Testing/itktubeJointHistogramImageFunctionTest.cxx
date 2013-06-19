@@ -28,7 +28,7 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
 
-int itktubeJointHistogramImageFunctionTest(int argc, char* argv[] )
+int itktubeJointHistogramImageFunctionTest( int argc, char * argv[] )
 {
   if( argc < 4 )
     {

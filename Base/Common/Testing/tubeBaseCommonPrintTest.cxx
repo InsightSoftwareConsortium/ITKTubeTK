@@ -28,7 +28,7 @@ limitations under the License.
 #include <cstdlib>
 #include <iostream>
 
-int tubeBaseCommonPrintTest( int, char *[] )
+int tubeBaseCommonPrintTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {
   typedef itk::Image< float, 2 > ImageType;
 

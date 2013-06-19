@@ -28,7 +28,6 @@ include( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_Common_H_Files
   itktubeDifferenceImageFilter.h
-  tubeMacro.h
   tubeMessage.h
   tubeStringUtilities.h
   tubeTestMain.h )
