@@ -125,7 +125,7 @@ const std::string CleanString(std::string inString, int strLen)
 }
 
 
-int main( int argc, char* argv[] )
+int main( int argc, char * argv[] )
 {
 
   MetaCommand command;

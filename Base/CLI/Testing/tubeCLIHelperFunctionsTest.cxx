@@ -28,20 +28,20 @@ limitations under the License.
 #include <cstdlib>
 
 template< class pixelT, unsigned int dimensionT >
-int DoIt( int argc, char * argv [] );
+int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
 template< class pixelT, unsigned int dimensionT >
-int DoIt( int argc, char * argv [] )
+int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
   return EXIT_SUCCESS;
 }
 
-int tubeCLIHelperFunctionsTest( int argc, char * argv [] )
+int tubeCLIHelperFunctionsTest( int argc, char * argv[] )
 {
   PARSE_ARGS;
 

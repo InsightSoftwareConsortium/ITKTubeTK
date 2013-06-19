@@ -34,8 +34,7 @@ limitations under the License.
 #include <vtkPolyDataWriter.h>
 #include <vtkSmartPointer.h>
 
-int itkAnisotropicDiffusiveRegistrationRegularizationTest(
-                                                      int argc, char* argv[] )
+int itkAnisotropicDiffusiveRegistrationRegularizationTest( int argc, char * argv[] )
 {
   if( argc < 7 )
     {

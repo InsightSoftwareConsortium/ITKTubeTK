@@ -67,10 +67,10 @@ TubesType::Pointer ReadTubes( const char * file );
 void WriteImage( const char * file, DensityImageType::Pointer image );
 void WriteImage( const char * file, RadiusImageType::Pointer image );
 void WriteImage( const char * file, TangentImageType::Pointer image );
-int DoIt( int, char *[] );
+int DoIt( int argc, char * argv[] );
 
 
-int main(int argc, char *argv[])
+int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 
 
 /** Main work happens here */
-int DoIt( int argc, char *argv[] )
+int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 

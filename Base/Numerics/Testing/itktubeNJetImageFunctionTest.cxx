@@ -27,7 +27,7 @@ limitations under the License.
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
-int itktubeNJetImageFunctionTest(int argc, char* argv[] )
+int itktubeNJetImageFunctionTest( int argc, char * argv[] )
 {
   if( argc < 4 )
     {

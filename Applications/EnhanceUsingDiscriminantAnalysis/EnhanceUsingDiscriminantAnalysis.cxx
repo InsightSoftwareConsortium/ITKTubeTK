@@ -36,13 +36,13 @@ limitations under the License.
 #include "EnhanceUsingDiscriminantAnalysisCLP.h"
 
 template< class pixelT, unsigned int dimensionT >
-int DoIt( int argc, char * argv [] );
+int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
 template< class pixelT, unsigned int dimensionT >
-int DoIt( int argc, char * argv [] )
+int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
@@ -179,7 +179,7 @@ int DoIt( int argc, char * argv [] )
 }
 
 // Main
-int main( int argc, char ** argv )
+int main( int argc, char *[] argv )
 {
   PARSE_ARGS;
 

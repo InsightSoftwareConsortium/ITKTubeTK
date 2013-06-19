@@ -305,8 +305,7 @@ TImage * image )
 }
 
 
-int itkAnisotropicDiffusiveRegistrationGenerateTestingImages(
-                                                      int argc, char* argv[] )
+int itkAnisotropicDiffusiveRegistrationGenerateTestingImages( int argc, char * argv[] )
 {
   if( argc < 7 )
     {

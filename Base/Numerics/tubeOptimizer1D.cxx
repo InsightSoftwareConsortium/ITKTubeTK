@@ -28,7 +28,7 @@ limitations under the License.
 
 #include "tubeOptimizer1D.h"
 
-#include "tubeMacro.h"
+#include <itkMacro.h>
 
 #include <iostream>
 
@@ -37,7 +37,7 @@ namespace tube
 
 bool
 Optimizer1D
-::m_Extreme( double * tubeNotUsed(x), double * tubeNotUsed(xVal) )
+::m_Extreme( double * itkNotUsed( x ), double * itkNotUsed( xval ) )
 {
   return false;
 }

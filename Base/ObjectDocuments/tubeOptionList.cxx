@@ -36,7 +36,7 @@ OptionList::LabelType OptionList::DUAL_ELEMENT_DELIMITER = "*";
 
 
 OptionList::
-OptionList(int argc, char* argv[])
+OptionList( int argc, char * argv[] )
 {
   std::string tag;
   std::string value;

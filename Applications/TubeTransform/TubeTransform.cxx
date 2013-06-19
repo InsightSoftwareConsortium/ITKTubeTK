@@ -85,7 +85,7 @@ GroupSpatialObjectType::Pointer ReadTubeFile( const char *tubeFile );
 void WriteOutput( GroupSpatialObjectType::Pointer, const char * );
 
 /* Main routine */
-int DoIt( int, char *[] );
+int DoIt( int argc, char * argv[] );
 
 GroupSpatialObjectType::Pointer
 ProcessTubes( itk::TransformFileReader::TransformPointer genericInputTransform,

@@ -269,7 +269,7 @@ tube::GraphKernel::GraphType loadGraph( std::string graphFile,
 }
 
 
-int main(int argc, char **argv)
+int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
 

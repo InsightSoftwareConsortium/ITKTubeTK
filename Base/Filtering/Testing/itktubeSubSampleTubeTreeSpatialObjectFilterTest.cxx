@@ -28,7 +28,7 @@ limitations under the License.
 #include <itkSpatialObjectWriter.h>
 #include <itkVesselTubeSpatialObject.h>
 
-int itktubeSubSampleTubeTreeSpatialObjectFilterTest( int argc, char* argv[] )
+int itktubeSubSampleTubeTreeSpatialObjectFilterTest( int argc, char * argv[] )
 {
   if( argc < 3 )
     {

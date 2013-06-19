@@ -21,15 +21,15 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeMacro.h"
 #include "tubeOptimizer1D.h"
 #include "tubeParabolicFitOptimizer1D.h"
 #include "tubeUserFunction.h"
 
+#include <itkMacro.h>
+
 #include <vcl_cmath.h>
 #include <vnl/vnl_math.h>
 
-#include <cstdlib>
 #include <iostream>
 
 class MyOPFunc : public tube::UserFunction< double, double >
@@ -68,7 +68,7 @@ public:
 
 }; // End class MyOPFuncD
 
-int tubeParabolicFitOptimizer1DTest( int tubeNotUsed(argc), char *tubeNotUsed(argv)[] )
+int tubeParabolicFitOptimizer1DTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {
   double epsilon = 0.000001;
 

@@ -23,7 +23,7 @@ limitations under the License.
 
 #include "itkAcousticImpulseResponseImageFilterSerializer.h"
 
-int main ( int , char ** )
+int main ( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {
   return EXIT_SUCCESS;
 }

@@ -20,7 +20,7 @@
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
-int itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest(int argc, char* argv[] )
+int itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest( int argc, char * argv[] )
 {
   if( argc < 3 )
     {

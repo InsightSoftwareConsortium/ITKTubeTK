@@ -22,7 +22,6 @@ limitations under the License.
 =========================================================================*/
 
 #include "tubeBrentOptimizer1D.h"
-#include "tubeMacro.h"
 #include "tubeParabolicFitOptimizer1D.h"
 #include "tubeSplineApproximation1D.h"
 #include "tubeSplineND.h"
@@ -97,7 +96,7 @@ public:
 
 }; // End class MySANDFuncD
 
-int tubeSplineNDTest( int argc, char *argv[] )
+int tubeSplineNDTest( int argc, char * argv[] )
 {
   if( argc != 2 )
     {

@@ -102,7 +102,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
                 const DiffusionTensorNeighborhoodType &tensorNeighborhood,
                 const SpacingType &spacing,
                 void *globalData,
-                const FloatOffsetType& itkNotUsed(offset) )
+                const FloatOffsetType& itkNotUsed( offset ) )
 {
   // Global data structure
   GlobalDataStruct *gd = static_cast<GlobalDataStruct *>( globalData );
@@ -130,7 +130,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
     const TensorDerivativeImageRegionType &intensitySecondDerivatives,
     const TensorDerivativeImageRegionType &tensorFirstDerivatives,
     void *globalData,
-    const FloatOffsetType& itkNotUsed(offset) )
+    const FloatOffsetType& itkNotUsed( offset ) )
 {
   // Global data structure
   GlobalDataStruct *gd = static_cast<GlobalDataStruct *>( globalData );

@@ -25,9 +25,9 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 #include "TubeTKLogo.h"
 
-#include <cstdlib>
+#include <itkMacro.h>
 
-int main ( int , char ** )
+int main ( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {
   return EXIT_SUCCESS;
 }

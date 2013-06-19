@@ -26,9 +26,9 @@ limitations under the License.
 #include "itktubeMetaRidgeSeed.h"
 #include "itktubeMetaTubeParams.h"
 
-#include <cstdlib>
+#include <itkMacro.h>
 
-int main( int, char *[] )
+int main( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {
   return EXIT_SUCCESS;
 }

@@ -35,10 +35,10 @@ limitations under the License.
 #include "RegisterUsingImageCentersCLP.h"
 
 template< unsigned int VDimension >
-int DoIt( int argc, char **argv );
+int DoIt( int argc, char * argv[] );
 
 template <class TPixel, unsigned int VDimension>
-int DoIt( int argc, char **argv )
+int DoIt( int argc, char * argv[] )
 {
   (void)argc;
   (void)argv;
@@ -50,7 +50,7 @@ int DoIt( int argc, char **argv )
 // Typdefs independent of image type
 typedef itk::ImageIOBase::IOComponentType ScalarPixelType;
 
-int main(int argc, char **argv)
+int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 
 
 template <unsigned int VDimension >
-int DoIt(int argc, char **argv)
+int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 

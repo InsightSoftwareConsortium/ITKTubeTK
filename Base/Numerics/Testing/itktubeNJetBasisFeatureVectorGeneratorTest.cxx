@@ -31,7 +31,7 @@ limitations under the License.
 #include <itkImageRegionIteratorWithIndex.h>
 #include <itkRecursiveGaussianImageFilter.h>
 
-int itktubeNJetBasisFeatureVectorGeneratorTest(int argc, char * argv [] )
+int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
 {
   if( argc != 7 )
     {

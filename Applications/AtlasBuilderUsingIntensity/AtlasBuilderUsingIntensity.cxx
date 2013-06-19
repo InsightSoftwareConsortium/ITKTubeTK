@@ -71,15 +71,15 @@ typedef itk::tube::ObjectDocumentToImageFilter<
 void WriteImage( UShortImagePointer image, const std::string & file );
 void WriteImage( FloatImageType::Pointer image, const std::string & file );
 void SetParameterList( AtlasBuilderType * atlasBuilder , MetaCommand command);
-int DoIt( int argc, char *argv[] );
+int DoIt( int argc, char * argv[] );
 
-int main( int argc, char* argv[] )
+int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
   return DoIt( argc, argv );
 }
 
-int DoIt( int argc, char *argv[] )
+int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 

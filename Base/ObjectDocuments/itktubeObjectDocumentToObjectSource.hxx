@@ -172,7 +172,7 @@ ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
 template< class TInputObjectDocument, unsigned int TDimension >
 typename ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>::DataObjectPointer
 ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
-::MakeOutput( DataObjectPointerArraySizeType itkNotUsed(idx) )
+::MakeOutput( DataObjectPointerArraySizeType itkNotUsed( idx ) )
 {
   std::cout << "Making output" << std::endl;
   return static_cast<DataObject*>(OutputType::New().GetPointer());

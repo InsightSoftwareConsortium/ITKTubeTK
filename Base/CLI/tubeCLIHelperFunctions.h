@@ -59,9 +59,7 @@ void GetImageInformation( const std::string & fileName,
 
 #ifndef PARSE_ARGS_FLOAT_ONLY
 
-int ParseArgsAndCallDoIt( std::string inputImage,
-                          int argc,
-                          char **argv )
+int ParseArgsAndCallDoIt( std::string inputImage, int argc, char * argv[] )
 {
   itk::ImageIOBase::IOComponentType componentType;
   unsigned int dimension;
@@ -147,9 +145,7 @@ int ParseArgsAndCallDoIt( std::string inputImage,
 
 #else
 
-int ParseArgsAndCallDoIt( std::string inputImage,
-                          int argc,
-                          char **argv )
+int ParseArgsAndCallDoIt( std::string inputImage, int argc, char * argv[] )
 {
   itk::ImageIOBase::IOComponentType componentType;
   unsigned int dimension;

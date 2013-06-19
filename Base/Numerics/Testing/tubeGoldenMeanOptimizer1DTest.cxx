@@ -22,7 +22,6 @@ limitations under the License.
 =========================================================================*/
 
 #include "tubeGoldenMeanOptimizer1D.h"
-#include "tubeMacro.h"
 #include "tubeOptimizer1D.h"
 #include "tubeUserFunction.h"
 
@@ -72,7 +71,7 @@ public:
 
 }; // End class MyOGMFunc2
 
-int tubeGoldenMeanOptimizer1DTest( int argc, char *argv[] )
+int tubeGoldenMeanOptimizer1DTest( int argc, char * argv[] )
 {
   if( argc < 9 )
     {

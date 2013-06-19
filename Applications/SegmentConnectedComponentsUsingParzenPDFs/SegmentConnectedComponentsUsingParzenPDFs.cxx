@@ -98,7 +98,7 @@ CheckImageAttributes( const InputImageType * input,
 }
 
 template <class T, unsigned int N>
-int DoIt( int argc, char *argv[] )
+int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 

@@ -28,7 +28,7 @@ limitations under the License.
 
 #include "tubeParabolicFitOptimizer1D.h"
 
-#include "tubeMacro.h"
+#include <itkMacro.h>
 
 #include <iostream>
 
@@ -52,7 +52,7 @@ ParabolicFitOptimizer1D::~ParabolicFitOptimizer1D( void )
 
 
 void ParabolicFitOptimizer1D::use( UserFunction<double, double> * newFuncVal,
-  UserFunction<double,double> * tubeNotUsed( derivative ) )
+  UserFunction<double, double> * itkNotUsed( derivative ) )
 {
   Optimizer1D::use( newFuncVal, NULL );
 }

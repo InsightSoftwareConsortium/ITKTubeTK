@@ -21,9 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <cstdlib>
+#include <itkMacro.h>
 
-int tubeBaseCLIPrintTest( int, char *[] )
+int tubeBaseCLIPrintTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {
   return EXIT_SUCCESS;
 }

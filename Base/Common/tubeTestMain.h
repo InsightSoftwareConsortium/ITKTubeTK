@@ -34,11 +34,11 @@
 
 #define ITK_TEST_DIMENSION_MAX 6
 
-typedef int (*MainFuncPointer)( int , char * [] );
+typedef int (*MainFuncPointer)( int argc, char * argv[] );
 std::map< std::string, MainFuncPointer > StringToTestFunctionMap;
 
 #define REGISTER_TEST(test) \
-extern int test( int, char * [] ); \
+extern int test( int argc, char * argv[] ); \
 StringToTestFunctionMap[#test] = test
 
 int RegressionTestImage ( const char * testImageFilename,
@@ -48,9 +48,10 @@ int RegressionTestImage ( const char * testImageFilename,
                           unsigned int numberOfPixelsTolerance = 0,
                           unsigned int radiusTolerance = 0);
 
-std::map<std::string,int> RegressionTestBaselines (char *);
+std::map<std::string,int> RegressionTestBaselines(char *);
 
 void RegisterTests( void );
+
 void PrintAvailableTests( void )
 {
   std::cout << "Available tests:\n";
@@ -64,7 +65,7 @@ void PrintAvailableTests( void )
     }
 }
 
-int main( int ac, char * av [] )
+int main( int argc, char * argv[] )
 {
   double intensityTolerance  = 0.0;
   unsigned int numberOfPixelsTolerance = 0;
@@ -75,7 +76,7 @@ int main( int ac, char * av [] )
 
   RegisterTests();
   std::string testToRun;
-  if( ac < 2 )
+  if( argc < 2 )
     {
     PrintAvailableTests();
     std::cout << "To run a test, enter the test number: ";
@@ -97,48 +98,48 @@ int main( int ac, char * av [] )
     }
   else
     {
-    while( ac > 0 && testToRun.empty() )
+    while( argc > 0 && testToRun.empty() )
       {
-      if(std::strcmp(av[1], "--with-threads") == 0)
+      if(std::strcmp(argv[1], "--with-threads") == 0)
         {
-        int numThreads = std::atoi(av[2]);
+        int numThreads = std::atoi(argv[2]);
         itk::MultiThreader::SetGlobalDefaultNumberOfThreads(numThreads);
-        av += 2;
-        ac -= 2;
+        argv += 2;
+        argc -= 2;
         }
-      else if(std::strcmp(av[1], "--without-threads") == 0)
+      else if(std::strcmp(argv[1], "--without-threads") == 0)
         {
         itk::MultiThreader::SetGlobalDefaultNumberOfThreads(1);
-        av += 1;
-        ac -= 1;
+        argv += 1;
+        argc -= 1;
         }
-      else if(ac > 3 && std::strcmp(av[1], "--compare") == 0)
+      else if(argc > 3 && std::strcmp(argv[1], "--compare") == 0)
         {
-        compareList.push_back( ComparePairType( av[2], av[3] ) );
-        av += 3;
-        ac -= 3;
+        compareList.push_back( ComparePairType( argv[2], argv[3] ) );
+        argv += 3;
+        argc -= 3;
         }
-      else if(ac > 2 && std::strcmp(av[1], "--compareNumberOfPixelsTolerance") == 0)
+      else if(argc > 2 && std::strcmp(argv[1], "--compareNumberOfPixelsTolerance") == 0)
         {
-        numberOfPixelsTolerance = std::atoi( av[2] );
-        av += 2;
-        ac -= 2;
+        numberOfPixelsTolerance = std::atoi( argv[2] );
+        argv += 2;
+        argc -= 2;
         }
-      else if(ac > 2 && std::strcmp(av[1], "--compareRadiusTolerance") == 0)
+      else if(argc > 2 && std::strcmp(argv[1], "--compareRadiusTolerance") == 0)
         {
-        radiusTolerance = std::atoi( av[2] );
-        av += 2;
-        ac -= 2;
+        radiusTolerance = std::atoi( argv[2] );
+        argv += 2;
+        argc -= 2;
         }
-      else if(ac > 2 && std::strcmp(av[1], "--compareIntensityTolerance") == 0)
+      else if(argc > 2 && std::strcmp(argv[1], "--compareIntensityTolerance") == 0)
         {
-        intensityTolerance = std::atof( av[2] );
-        av += 2;
-        ac -= 2;
+        intensityTolerance = std::atof( argv[2] );
+        argv += 2;
+        argc -= 2;
         }
       else
         {
-        testToRun = av[1];
+        testToRun = argv[1];
         }
       }
     }
@@ -150,7 +151,7 @@ int main( int ac, char * av [] )
     try
       {
       // Invoke the test's "main" function.
-      result = (*f)(ac-1, av+1);
+      result = (*f)(argc-1, argv+1);
 
       // Make a list of possible baselines
       for( int i=0; i<static_cast<int>(compareList.size()); i++)
@@ -225,12 +226,12 @@ int main( int ac, char * av [] )
 
 // Regression Testing Code
 
-int RegressionTestImage (const char *testImageFilename,
-                         const char *baselineImageFilename,
-                         int reportErrors,
-                         double intensityTolerance,
-                         unsigned int numberOfPixelsTolerance,
-                         unsigned int radiusTolerance )
+int RegressionTestImage(const char * testImageFilename,
+                        const char * baselineImageFilename,
+                        int reportErrors,
+                        double intensityTolerance,
+                        unsigned int numberOfPixelsTolerance,
+                        unsigned int radiusTolerance )
 {
   // Use the factory mechanism to read the test and baseline files and convert them to double
   typedef itk::Image<double,ITK_TEST_DIMENSION_MAX>        ImageType;

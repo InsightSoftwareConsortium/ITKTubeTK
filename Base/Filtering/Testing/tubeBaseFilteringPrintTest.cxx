@@ -34,7 +34,7 @@ limitations under the License.
 #include <itkImage.h>
 #include <itkMatrix.h>
 
-int tubeBaseFilteringPrintTest( int, char*[] )
+int tubeBaseFilteringPrintTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {
   typedef itk::Image< float, 3 >  ImageType;
   typedef itk::Matrix< float, 3 > MatrixType;

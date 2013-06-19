@@ -41,16 +41,16 @@ limitations under the License.
 
 #include "TubeToTubeGraphCLP.h"
 
-int DoIt( int, char *[] );
+int DoIt( int argc, char * argv[] );
 
-int main(int argc, char **argv)
+int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
   return DoIt( argc, argv );
 }
 
-int DoIt( int argc, char *argv[] )
+int DoIt( int argc, char * argv[] )
 {
   const unsigned int Dimension = 3;
 

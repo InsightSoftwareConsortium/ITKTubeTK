@@ -27,7 +27,7 @@ limitations under the License.
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
-int itktubeImageRegionMomentsCalculatorTest(int argc, char* argv[] )
+int itktubeImageRegionMomentsCalculatorTest( int argc, char * argv[] )
 {
   if( argc != 2 )
     {

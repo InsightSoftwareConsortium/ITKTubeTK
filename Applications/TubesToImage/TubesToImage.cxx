@@ -66,10 +66,10 @@ TubesType::Pointer ReadTubes( const char * file );
 void WriteImage( const char * file, OutputImageType::Pointer image );
 
 /** Main routine */
-int DoIt( int, char *[] );
+int DoIt( int argc, char * argv[] );
 
 
-int main(int argc, char *argv[])
+int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
   return DoIt( argc, argv );
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 
 
 /** Main work happens here */
-int DoIt( int argc, char *argv[] )
+int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 

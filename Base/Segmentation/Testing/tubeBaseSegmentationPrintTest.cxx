@@ -33,7 +33,7 @@ limitations under the License.
 
 #include <itkImage.h>
 
-int tubeBaseSegmentationPrintTest( int, char *[] )
+int tubeBaseSegmentationPrintTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {
   typedef itk::Image< float, 2 > ImageType;
   typedef itk::Image< unsigned char, 2 > CharImageType;

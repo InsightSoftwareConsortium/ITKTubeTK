@@ -54,7 +54,7 @@ int DoIt( int argc, char * argv[] );
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-int main( int argc, char **argv )
+int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
   return tube::ParseArgsAndCallDoIt( argInImageFileName, argc, argv );
@@ -209,7 +209,7 @@ bool CheckCompatibility(
 
 
 template< class TPixel, unsigned int VImageDimension >
-int DoIt( int argc, char **argv )
+int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 

@@ -30,7 +30,7 @@ limitations under the License.
 
 #define numCentroids 4
 
-int itktubeCVTImageFilterTest(int argc, char* argv[] )
+int itktubeCVTImageFilterTest( int argc, char * argv[] )
 {
   if( argc != 3 )
     {
