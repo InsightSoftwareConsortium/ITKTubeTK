@@ -118,7 +118,8 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report(0.2);
 
   char childName[] = "Tube";
-  typename TubeType::ChildrenListType * tubeList = group->GetChildren(99999, childName);
+  typename TubeType::ChildrenListType * tubeList =
+    group->GetChildren( group->GetMaximumDepth(), childName );
   typename TubeType::ChildrenListType::const_iterator tubeIt = tubeList->begin();
   TubePointType tubePoint;
   typename TubeTransformType::Pointer tubeTransform;
