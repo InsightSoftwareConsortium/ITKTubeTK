@@ -23,7 +23,7 @@
 // that calls RegisterTests() then looks up the function pointer for the test
 // specified on the command line.
 
-#include "itktubeDifferenceImageFilter2.h"
+#include "itktubeDifferenceImageFilter.h"
 
 #include <itkExtractImageFilter.h>
 #include <itkImageFileReader.h>
@@ -281,7 +281,7 @@ int RegressionTestImage (const char *testImageFilename,
     }
 
   // Now compare the two images
-  typedef itk::tube::DifferenceImageFilter2<ImageType,ImageType> DiffType;
+  typedef itk::tube::DifferenceImageFilter<ImageType,ImageType> DiffType;
   DiffType::Pointer diff = DiffType::New();
     diff->SetValidInput(baselineReader->GetOutput());
     diff->SetTestInput(testReader->GetOutput());
@@ -486,7 +486,7 @@ std::map<std::string,int> RegressionTestBaselines (char *baselineFilename)
 }
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeDifferenceImageFilter2.hxx"
+#include "itktubeDifferenceImageFilter.hxx"
 #endif
 
 #endif // End !defined(__tubeTestMain_h)

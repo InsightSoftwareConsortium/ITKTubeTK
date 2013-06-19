@@ -22,9 +22,9 @@ limitations under the License.
 =========================================================================*/
 
 #include "itktubeBasisFeatureVectorGenerator.h"
-#include "itktubeFilterWatcher.h"
 #include "itktubeNJetFeatureVectorGenerator.h"
 
+#include <itkFilterWatcher.h>
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>

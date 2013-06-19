@@ -54,15 +54,13 @@ itktubeBlurImageFunction.h Namespace Disable
 itktubeBlurImageFunction.hxx Namespace Disable
 itktubeCVTImageFilter.h Namespace Disable
 itktubeCVTImageFilter.hxx Namespace Disable
-itktubeDifferenceImageFilter2.h Namespace Disable
-itktubeDifferenceImageFilter2.hxx Namespace Disable
+itktubeDifferenceImageFilter.h Namespace Disable
+itktubeDifferenceImageFilter.hxx Namespace Disable
 itktubeDiffusiveRegistrationFilter.h Namespace Disable
 itktubeDiffusiveRegistrationFilter.hxx Namespace Disable
 itktubeDiffusiveRegistrationFilterUtils.h Namespace Disable
 itktubeDiffusiveRegistrationFilterUtils.hxx Namespace Disable
 itktubeDocument.h Namespace Disable
-itktubeFilterWatcher.h Header Disable
-itktubeFilterWatcher.h Namespace Disable
 itktubeImageDocument.h Namespace Disable
 itktubeImageRegionMomentsCalculator.h Namespace Disable
 itktubeImageRegionMomentsCalculator.hxx Namespace Disable

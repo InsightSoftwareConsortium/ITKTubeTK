@@ -27,15 +27,14 @@ find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_Common_H_Files
-  itktubeDifferenceImageFilter2.h
-  itktubeFilterWatcher.h
+  itktubeDifferenceImageFilter.h
   tubeMacro.h
   tubeMessage.h
   tubeStringUtilities.h
   tubeTestMain.h )
 
 set( TubeTK_Base_Common_HXX_Files
-  itktubeDifferenceImageFilter2.hxx )
+  itktubeDifferenceImageFilter.hxx )
 
 add_custom_target( TubeCommon SOURCES
   ${TubeTK_Base_Common_H_Files}

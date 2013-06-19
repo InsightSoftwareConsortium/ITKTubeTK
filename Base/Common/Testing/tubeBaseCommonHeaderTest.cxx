@@ -21,8 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeDifferenceImageFilter2.h"
-#include "itktubeFilterWatcher.h"
+#include "itktubeDifferenceImageFilter.h"
 #include "tubeMacro.h"
 #include "tubeMessage.h"
 #include "tubeStringUtilities.h"

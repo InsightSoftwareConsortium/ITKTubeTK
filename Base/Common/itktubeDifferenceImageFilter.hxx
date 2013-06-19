@@ -21,10 +21,10 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeDifferenceImageFilter2_hxx
-#define __itktubeDifferenceImageFilter2_hxx
+#ifndef __itktubeDifferenceImageFilter_hxx
+#define __itktubeDifferenceImageFilter_hxx
 
-#include "itktubeDifferenceImageFilter2.h"
+#include "itktubeDifferenceImageFilter.h"
 
 #include <itkImageRegionIterator.h>
 #include <itkNeighborhoodAlgorithm.h>
@@ -39,8 +39,8 @@ namespace tube
 
 //----------------------------------------------------------------------------
 template <class TInputImage, class TOutputImage>
-DifferenceImageFilter2<TInputImage, TOutputImage>
-::DifferenceImageFilter2( void )
+DifferenceImageFilter<TInputImage, TOutputImage>
+::DifferenceImageFilter( void )
 {
   // We require two inputs to execute.
   this->SetNumberOfRequiredInputs(2);
@@ -61,7 +61,7 @@ DifferenceImageFilter2<TInputImage, TOutputImage>
 //----------------------------------------------------------------------------
 template<class TInputImage, class TOutputImage>
 void
-DifferenceImageFilter2<TInputImage, TOutputImage>
+DifferenceImageFilter<TInputImage, TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   this->Superclass::PrintSelf(os, indent);
@@ -78,7 +78,7 @@ DifferenceImageFilter2<TInputImage, TOutputImage>
 //----------------------------------------------------------------------------
 template <class TInputImage, class TOutputImage>
 void
-DifferenceImageFilter2<TInputImage, TOutputImage>
+DifferenceImageFilter<TInputImage, TOutputImage>
 ::SetValidInput(const InputImageType* validImage)
 {
   // The valid image should be input 0.
@@ -88,7 +88,7 @@ DifferenceImageFilter2<TInputImage, TOutputImage>
 //----------------------------------------------------------------------------
 template <class TInputImage, class TOutputImage>
 void
-DifferenceImageFilter2<TInputImage, TOutputImage>
+DifferenceImageFilter<TInputImage, TOutputImage>
 ::SetTestInput(const InputImageType* testImage)
 {
   // The test image should be input 1.
@@ -98,7 +98,7 @@ DifferenceImageFilter2<TInputImage, TOutputImage>
 //----------------------------------------------------------------------------
 template<class TInputImage, class TOutputImage>
 void
-DifferenceImageFilter2<TInputImage, TOutputImage>
+DifferenceImageFilter<TInputImage, TOutputImage>
 ::BeforeThreadedGenerateData( void )
 {
   int numberOfThreads = this->GetNumberOfThreads();
@@ -120,7 +120,7 @@ DifferenceImageFilter2<TInputImage, TOutputImage>
 //----------------------------------------------------------------------------
 template <class TInputImage, class TOutputImage>
 void
-DifferenceImageFilter2<TInputImage, TOutputImage>
+DifferenceImageFilter<TInputImage, TOutputImage>
 ::ThreadedGenerateData(const OutputImageRegionType &threadRegion,
   ThreadIdType threadId)
 {
@@ -233,7 +233,7 @@ DifferenceImageFilter2<TInputImage, TOutputImage>
 //----------------------------------------------------------------------------
 template <class TInputImage, class TOutputImage>
 void
-DifferenceImageFilter2<TInputImage, TOutputImage>
+DifferenceImageFilter<TInputImage, TOutputImage>
 ::AfterThreadedGenerateData( void )
 {
   // Set statistics about difference image.
@@ -260,4 +260,4 @@ DifferenceImageFilter2<TInputImage, TOutputImage>
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeDifferenceImageFilter2_hxx)
+#endif // End !defined(__itktubeDifferenceImageFilter_hxx)
