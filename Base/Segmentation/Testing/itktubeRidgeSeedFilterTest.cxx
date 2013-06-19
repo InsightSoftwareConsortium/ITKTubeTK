@@ -21,9 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeFilterWatcher.h"
 #include "itktubeRidgeSeedFilter.h"
 
+#include <itkFilterWatcher.h>
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>

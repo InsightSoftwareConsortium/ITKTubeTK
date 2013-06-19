@@ -21,9 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeFilterWatcher.h"
 #include "itktubeMetaTubeParams.h"
 
+#include <itkFilterWatcher.h>
 #include <itkImage.h>
 
 int itktubeMetaTubeParamsTest( int argc, char* argv [] )

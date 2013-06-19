@@ -21,9 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeFilterWatcher.h"
 #include "itktubeMetaLDA.h"
 
+#include <itkFilterWatcher.h>
 #include <itkImage.h>
 
 #include <cstdlib>

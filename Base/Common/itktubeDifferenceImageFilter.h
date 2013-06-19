@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeDifferenceImageFilter2_h
-#define __itktubeDifferenceImageFilter2_h
+#ifndef __itktubeDifferenceImageFilter_h
+#define __itktubeDifferenceImageFilter_h
 
 #include <itkArray.h>
 #include <itkImageToImageFilter.h>
@@ -33,7 +33,7 @@ namespace itk
 namespace tube
 {
 
-/** \class DifferenceImageFilter2
+/** \class DifferenceImageFilter
  * \brief Implements comparison between two images.
  *
  * This filter is used by the testing system to compute the difference between
@@ -45,12 +45,12 @@ namespace tube
  * \ingroup IntensityImageFilters   Multithreaded
  */
 template <class TInputImage, class TOutputImage>
-class ITK_EXPORT DifferenceImageFilter2 :
+class ITK_EXPORT DifferenceImageFilter :
     public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class typedefs. */
-  typedef DifferenceImageFilter2                          Self;
+  typedef DifferenceImageFilter                          Self;
   typedef ImageToImageFilter<TInputImage,TOutputImage>    Superclass;
   typedef SmartPointer<Self>                              Pointer;
   typedef SmartPointer<const Self>                        ConstPointer;
@@ -59,7 +59,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(DifferenceImageFilter2, ImageToImageFilter);
+  itkTypeMacro(DifferenceImageFilter, ImageToImageFilter);
 
   /** Some convenient typedefs. */
   typedef TInputImage                                         InputImageType;
@@ -97,12 +97,12 @@ public:
   itkGetConstMacro(NumberOfPixelsWithDifferences, unsigned long);
 
 protected:
-  DifferenceImageFilter2( void );
-  virtual ~DifferenceImageFilter2( void ) {}
+  DifferenceImageFilter( void );
+  virtual ~DifferenceImageFilter( void ) {}
 
   void PrintSelf(std::ostream& os, Indent indent) const;
 
-  /** DifferenceImageFilter2 can be implemented as a multithreaded
+  /** DifferenceImageFilter can be implemented as a multithreaded
    * filter.  Therefore, this implementation provides a
    * ThreadedGenerateData() routine which is called for each
    * processing thread. The output image data is allocated
@@ -129,19 +129,19 @@ protected:
   Array<unsigned long>     m_ThreadNumberOfPixelsWithDifferences;
 
 private:
-  DifferenceImageFilter2(const Self&); //purposely not implemented
+  DifferenceImageFilter(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
 
   bool m_IgnoreBoundaryPixels;
 
-}; // End class DifferenceImageFilter2
+}; // End class DifferenceImageFilter
 
 } // End namespace tube
 
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeDifferenceImageFilter2.hxx"
+#include "itktubeDifferenceImageFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeDifferenceImageFilter2_h)
+#endif // End !defined(__itktubeDifferenceImageFilter_h)
