@@ -38,7 +38,12 @@ if( WIN32 )
   if( DISABLE_MSVC8_DEPRECATED_WARNINGS )
     add_definitions( -D_CRT_SECURE_NO_DEPRECATE )
   endif( DISABLE_MSVC8_DEPRECATED_WARNINGS )
-endif( WIN32)
+endif( WIN32 )
+
+if( NOT TubeTK_SOURCE_DIR )
+  find_package( TubeTK REQUIRED )
+  include( ${TubeTK_USE_FILE} )
+endif( NOT TubeTK_SOURCE_DIR )
 
 # Find ITK
 find_package( ITK REQUIRED )

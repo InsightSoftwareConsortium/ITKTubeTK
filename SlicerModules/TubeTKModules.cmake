@@ -21,33 +21,16 @@
 #
 ##############################################################################
 
-#-----------------------------------------------------------------------------
-set( MODULE_NAME MergeTubeGraphs )
-project( ${MODULE_NAME} )
+set( proj SlicerModules )
+
+set( TubeTK_${proj}_MODULES
+  SpatialObjectsModule
+  InteractiveConnectedComponentsUsingParzenPDFs )
 
 if( NOT TubeTK_SOURCE_DIR )
   find_package( TubeTK REQUIRED )
   include( ${TubeTK_USE_FILE} )
 endif( NOT TubeTK_SOURCE_DIR )
 
-find_package( SlicerExecutionModel REQUIRED )
-include( ${SlicerExecutionModel_USE_FILE} )
-
-find_package( ITK REQUIRED )
-include( ${USE_ITK_FILE} )
-
-#-----------------------------------------------------------------------------
-SEMMacroBuildCLI(
-  NAME ${MODULE_NAME}
-  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} TubeObjectDocuments
-  INCLUDE_DIRECTORIES
-    ${TubeTK_SOURCE_DIR}/Base/CLI
-    ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Filtering
-    ${TubeTK_SOURCE_DIR}/Base/Registration
-    ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments )
-
-if( BUILD_TESTING )
-  add_subdirectory( Testing )
-endif( BUILD_TESTING )
+include ( ${TubeTK_CMAKE_EXTENSIONS_DIR}/TubeTKMacroAddModules.cmake )
+TubeTKAddModules( MODULES ${TubeTK_${proj}_MODULES} )

@@ -26,10 +26,11 @@ include( ${CMAKE_CURRENT_SOURCE_DIR}/CMake/SlicerBlockSetCMakeOSXVariables.cmake
 project( TubeTK )
 
 set( Slicer_SKIP_PROJECT_COMMAND ON )
-#-------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # Require CMake 2.8 for its superbuild functionality.
 cmake_minimum_required( VERSION 2.8.8 )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Set TubeTK version and output directories.
 set( TubeTK_VERSION_MAJOR "0" )
 set( TubeTK_VERSION_MINOR "9" )
@@ -42,7 +43,19 @@ set( TubeTK_VERSION
 set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin" )
 set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/TubeTK" )
 set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/TubeTK" )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
+# Update CMake module path
+set( TubeTK_CMAKE_EXTENSIONS_DIR
+  ${TubeTK_SOURCE_DIR}/CMake )
+
+set( CMAKE_MODULE_PATH
+  ${TubeTK_CMAKE_EXTENSIONS_DIR}
+  ${CMAKE_MODULE_PATH} )
+
+include( SlicerMacroEmptyExternalProject )
+
+#-----------------------------------------------------------------------------
 # Setup for building 3D Slicer extensions.
 set( SlicerExecutionModel_CLI_RUNTIME_INSTALL_DIRECTORY "bin" )
 set( SlicerExecutionModel_CLI_LIBRARY_INSTALL_DIRECTORY "lib/TubeTK" )
@@ -75,7 +88,8 @@ if( TubeTK_BUILD_SLICER_EXTENSION )
   set( EXTENSION_SCREENSHOTURLS
     "http://public.kitware.com/Wiki/images/f/fd/VesselExtraction.jpg" )
 endif( TubeTK_BUILD_SLICER_EXTENSION )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # CDash dashboard setup.
 include( ${CMAKE_ROOT}/Modules/Dart.cmake )
 mark_as_advanced( TCL_TCLSH DART_ROOT )
@@ -90,7 +104,8 @@ set( BUILD_ERROR_REPORT_LIMIT -1 )
 include( "CTestConfig.cmake" )
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/CTestCustom.cmake.in
   ${TubeTK_BINARY_DIR}/CTestCustom.cmake )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Configure for the download of CTest unit testing data from a Midas Platform
 # server.
 set( MIDAS_USER "" CACHE STRING "Midas Platform user email address." )
@@ -98,7 +113,8 @@ mark_as_advanced( MIDAS_USER )
 set( MIDAS_DEFAULT_API_KEY "" CACHE STRING "Midas Platform default API key." )
 mark_as_advanced( MIDAS_DEFAULT_API_KEY )
 set( MIDAS_DATA_DIR ${TubeTK_BINARY_DIR}/MIDAS_Data )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Doxygen documentation setup.
 option( BUILD_DOCUMENTATION
   "Build the software guide and source code documentation."
@@ -112,7 +128,8 @@ if( BUILD_DOCUMENTATION )
     add_subdirectory( CMake/Doxygen )
   endif( TubeTK_USE_DOXYGEN )
 endif( BUILD_DOCUMENTATION )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 #  Cppcheck setup.
 option( TubeTK_USE_CPPCHECK
   "Use Cppcheck to perform a static analysis of the source code."
@@ -143,7 +160,8 @@ if( TubeTK_USE_CPPCHECK )
     CppcheckInformation CppcheckUnusedFunction
     PROPERTIES FAIL_REGULAR_EXPRESSION "error file=" )
 endif( TubeTK_USE_CPPCHECK )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # KWStyle setup.
 option( TubeTK_USE_KWSTYLE
   "Use KWStyle to check for coding standards violations."
@@ -202,7 +220,8 @@ if( TubeTK_USE_KWSTYLE )
     WORKING_DIRECTORY ${TubeTK_BINARY_DIR}
     COMMENT "Coding style checker" VERBATIM )
 endif( TubeTK_USE_KWSTYLE )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Microsoft Visual Studio setup.
 if( MSVC )
   add_definitions( -D_SCL_SECURE_NO_WARNINGS )
@@ -217,7 +236,8 @@ if( MSVC )
     add_definitions( -D_CRT_SECURE_NO_DEPRECATE )
   endif( DISABLE_MSVC8_DEPRECATED_WARNINGS )
 endif( MSVC )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Apple OS X setup.
 if( APPLE )
   if( NOT CMAKE_FIRST_PASS_COMPLETED )
@@ -227,7 +247,8 @@ if( APPLE )
       CACHE STRING "Flags used by all build types." FORCE )
   endif( NOT CMAKE_FIRST_PASS_COMPLETED )
 endif( APPLE )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Linux or UNIX setup.
 if( UNIX )
   if( NOT CMAKE_FIRST_PASS_COMPLETED )
@@ -243,10 +264,12 @@ if( UNIX )
     endif( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
   endif( NOT CMAKE_FIRST_PASS_COMPLETED )
 endif( UNIX )
-#-------------------------------------------------------------------------------
-# Implementation agnostic fPIC.
+
+#-----------------------------------------------------------------------------
+# Implementation agnostic fPIC
 set( CMAKE_POSITION_INDEPENDENT_CODE ON )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # JsonCpp library setup.
 option( USE_SYSTEM_JsonCpp
   "Exclude JsonCpp from the superbuild and use an existing build instead." OFF )
@@ -255,7 +278,8 @@ if( USE_SYSTEM_JsonCpp )
   find_package( JsonCpp REQUIRED )
   include_directories( ${JsonCpp_INCLUDE_DIRS} )
 endif( USE_SYSTEM_JsonCpp )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # LIBSVM library setup.
 option( TubeTK_USE_LIBSVM
   "Use LIBSVM for support vector machine support to enable additional applications."
@@ -265,11 +289,13 @@ if( TubeTK_USE_LIBSVM )
   include( FindLibSVM )
   find_package( LibSVM REQUIRED )
 endif( TubeTK_USE_LIBSVM )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Boost libraries setup.
 option( TubeTK_USE_Boost
   "Use the Boost libraries to enable additional applications." OFF )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Parameter serializer setup.
 option( USE_SYSTEM_ParameterSerializer
   "Exclude the parameter serializer from the superbuild and use an existing build instead."
@@ -280,7 +306,10 @@ if( USE_SYSTEM_ParameterSerializer )
   include_directories( ${ParameterSerializer_INCLUDE_DIRS} )
 endif( USE_SYSTEM_ParameterSerializer )
 
-if( NOT TubeTK_BUILD_SLICER_EXTENSION ) #-------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+if( NOT TubeTK_BUILD_SLICER_EXTENSION )
+
+  # --------------------------------------------------------------------------
   # ITK setup.
   option( USE_SYSTEM_ITK
     "Exclude ITK from the superbuild and use an existing build instead." OFF )
@@ -291,7 +320,9 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION ) #---------------------------------------
   endif( USE_SYSTEM_ITK )
   option( TubeTK_USE_SimpleITK
     "Use SimpleITK to enable additional applications and libraries."
-    OFF ) #-------------------------------------------------------------------------------
+    OFF )
+
+  #---------------------------------------------------------------------------
   # Qt framework setup.
   option( TubeTK_USE_QT
     "Use the Qt framework to enable additional applications and libraries."
@@ -318,7 +349,9 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION ) #---------------------------------------
     else( QT4_FOUND )
       message( SEND_ERROR "Error: Qt not found." )
     endif( QT4_FOUND )
-  endif( TubeTK_USE_QT ) #-------------------------------------------------------------------------------
+  endif( TubeTK_USE_QT )
+
+  #---------------------------------------------------------------------------
   # VTK setup.
   option( TubeTK_USE_VTK
     "Use VTK to enable additional applications and libraries."
@@ -331,7 +364,9 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION ) #---------------------------------------
       find_package( VTK REQUIRED )
       include( ${VTK_USE_FILE} )
     endif( USE_SYSTEM_VTK )
-  endif( TubeTK_USE_VTK ) #-------------------------------------------------------------------------------
+  endif( TubeTK_USE_VTK )
+
+  #---------------------------------------------------------------------------
   # CTK setup.
   if( TubeTK_USE_QT )
     option( TubeTK_USE_CTK
@@ -345,6 +380,17 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION ) #---------------------------------------
       include( ${CTK_USE_FILE} )
     endif( USE_SYSTEM_CTK )
   endif( TubeTK_USE_QT )
+
+  #---------------------------------------------------------------------------
+  # Slicer Execution model Setup
+  option( USE_SYSTEM_SlicerExecutionModel
+    "Exclude SlicerExecutionModel from SuperBuild and use an existing build instead." OFF )
+  mark_as_advanced( USE_SYSTEM_SlicerExecutionModel )
+  if( USE_SYSTEM_SlicerExecutionModel )
+    find_package( SlicerExecutionModel REQUIRED )
+    include( ${SlicerExecutionModel_USE_FILE} )
+  endif( USE_SYSTEM_SlicerExecutionModel )
+
 else( NOT TubeTK_BUILD_SLICER_EXTENSION )
   unset( ITK_DIR )
   unset( VTK_DIR )
@@ -353,10 +399,12 @@ else( NOT TubeTK_BUILD_SLICER_EXTENSION )
   unset( SlicerExecutionModel_DIR )
   unset( TubeTK_USE_SUPERBUILD )
 endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Image viewer setup.
 option( TubeTK_BUILD_ImageViewer "Build the lightweight image viewer." OFF )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Indicate that this CMakeLists.txt file has already been parsed once. Keeps
 # append commands from having an effect every time CMake is run.
 set( CMAKE_FIRST_PASS_COMPLETED ON
@@ -364,7 +412,8 @@ set( CMAKE_FIRST_PASS_COMPLETED ON
   "Modify the cache variables only on the first pass through the CMake file."
   FORCE )
 mark_as_advanced( CMAKE_FIRST_PASS_COMPLETED )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Superbuild setup.
 set( superbuild_enabled_by_default ON )
 if( TubeTK_BUILD_SLICER_EXTENSION )
@@ -375,15 +424,29 @@ option( TubeTK_USE_SUPERBUILD
   "Build TubeTK and the projects it depends on using a superbuild."
   ${superbuild_enabled_by_default} )
 mark_as_advanced( TubeTK_USE_SUPERBUILD )
+
+# If TubeTK_CONFIG_BINARY_DIR isn't defined, it means TubeTK is *NOT* build using Superbuild.
+# In that specific case, TubeTK_CONFIG_BINARY_DIR should default to TubeTK_BINARY_DIR
+if( NOT DEFINED TubeTK_CONFIG_BINARY_DIR )
+  set( TubeTK_CONFIG_BINARY_DIR ${CMAKE_BINARY_DIR} )
+endif( NOT DEFINED TubeTK_CONFIG_BINARY_DIR )
+
 if( TubeTK_USE_SUPERBUILD )
   if( TubeTK_BUILD_SLICER_EXTENSION )
     find_package( Slicer REQUIRED )
     include( ${Slicer_USE_FILE} )
   endif( TubeTK_BUILD_SLICER_EXTENSION )
 
-  include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild.cmake" )
+  # Expose the TubeTK_BUILD_* variables
+  file( GLOB_RECURSE TubeTK_modules_files "TubeTKModules.cmake" )
+  foreach( f ${TubeTK_modules_files} )
+    include( ${f} )
+  endforeach( f ${TubeTK_modules_files} )
+
+  add_subdirectory( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/Superbuild" )
   return()
 else( TubeTK_USE_SUPERBUILD )
+
   find_package( JsonCpp REQUIRED )
   include_directories( ${JsonCpp_INCLUDE_DIRS} )
 
@@ -417,14 +480,17 @@ else( TubeTK_USE_SUPERBUILD )
     endif( TubeTK_USE_QT )
   endif( TubeTK_BUILD_SLICER_EXTENSION )
 endif( TubeTK_USE_SUPERBUILD )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Check endianness.
 include( ${CMAKE_ROOT}/Modules/TestBigEndian.cmake )
 test_big_endian( CMAKE_WORDS_BIGENDIAN )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Setup to conform to 3D Slicer paths and define plugin copying macros.
 include( CMake/Slicer4Config.cmake )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Build 3D Slicer command line applications essential to TubeTK.
 svnGetSlicerBase( Resources )
 svnGetSlicerBase( Base/CLI )
@@ -448,20 +514,23 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
     CACHE INTERNAL "3D Slicer execution model extra libraries." FORCE )
 endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
-#-------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # Build TubeTK.
 add_subdirectory( Utilities )
 add_subdirectory( Base )
 add_subdirectory( Applications )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Optionally build 3D Slicer modules.
 if( TubeTK_BUILD_SLICER_EXTENSION )
   add_subdirectory( SlicerModules )
 endif( TubeTK_BUILD_SLICER_EXTENSION )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Create the directory where CTest unit tests store temporary results.
 make_directory( ${TubeTK_BINARY_DIR}/Temporary )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Configure variables to export.
 set( TubeTK_INCLUDE_DIRS
   ${TubeTK_SOURCE_DIR}/Base/Numerics
@@ -473,6 +542,8 @@ set( TubeTK_INCLUDE_DIRS
 
 if( MSVC )
   set( TubeTK_EXECUTABLE_DIRS
+    ${JSonCpp_DIR}/bin/${CMAKE_BUILD_TYPE}
+    ${ParameterSerializer_DIR}/bin/${CMAKE_BUILD_TYPE}
     ${GenerateCLP_DIR}/${CMAKE_BUILD_TYPE}
     ${ITK_DIR}/bin/${CMAKE_BUILD_TYPE}
     ${VTK_DIR}/bin/${CMAKE_BUILD_TYPE}
@@ -480,6 +551,8 @@ if( MSVC )
     ${TubeTK_BINARY_DIR}/lib/TubeTK/Plugins/${CMAKE_BUILD_TYPE} )
 else( MSVC )
   set( TubeTK_EXECUTABLE_DIRS
+    ${JSonCpp_DIR}/bin
+    ${ParameterSerializer_DIR}/bin
     ${GenerateCLP_DIR}
     ${ITK_DIR}/bin
     ${VTK_DIR}/bin
@@ -491,42 +564,42 @@ endif( MSVC )
 set( TubeTK_LIBRARY_DIRS
   ${TubeTK_EXECUTABLE_DIRS} )
 
-set( TubeTK_LIBS
-  TubeIO
-  TubeNumerics )
-set( TubeTK_LIBRARIES )
-foreach( library ${TubeTK_LIBS} )
-  get_target_property( library_location ${library} LOCATION )
-  list( APPEND TubeTK_LIBRARIES ${library_location} )
-endforeach( library ${TubeTK_LIBS} )
+# Configure TubeTKTargets.cmake.
+get_property( TubeTK_TARGETS GLOBAL PROPERTY TubeTK_TARGETS )
+export( TARGETS ${TubeTK_TARGETS} FILE ${TubeTK_CONFIG_BINARY_DIR}/TubeTKTargets.cmake )
 
-set( TubeTK_CMAKE_EXTENSIONS_DIR
-  ${TubeTK_SOURCE_DIR}/CMake )
+set( TubeTK_TARGETS_FILE
+  ${TubeTK_CONFIG_BINARY_DIR}/TubeTKTargets.cmake )
 
 set( TubeTK_USE_FILE
-  ${TubeTK_BINARY_DIR}/UseTubeTK.cmake )
-#-------------------------------------------------------------------------------
+  ${TubeTK_CONFIG_BINARY_DIR}/UseTubeTK.cmake )
+
+#-----------------------------------------------------------------------------
 # Configure TubeTKConfig.cmake.
 # The variables set above are for building against a TubeTK build tree.
 # A different TubeTKConfig.cmake will need to be generated in order to build
 # against a TubeTK installation.
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKConfig.cmake.in
-  ${TubeTK_BINARY_DIR}/TubeTKConfig.cmake @ONLY )
-#-------------------------------------------------------------------------------
+  ${TubeTK_CONFIG_BINARY_DIR}/TubeTKConfig.cmake @ONLY )
+
+#-----------------------------------------------------------------------------
 # Configure UseTubeTK.cmake.
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/UseTubeTK.cmake.in
-  ${TubeTK_BINARY_DIR}/UseTubeTK.cmake @ONLY )
-#-------------------------------------------------------------------------------
+  ${TubeTK_CONFIG_BINARY_DIR}/UseTubeTK.cmake @ONLY )
+
+#-----------------------------------------------------------------------------
 # Configure a launcher for running TubeTK methods from the command line in
 # Microsoft Windows.
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/tubeLauncher.bat.in
   ${TubeTK_BINARY_DIR}/tubeLauncher.bat @ONLY )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Configure a launcher for running TubeTK methods from the command line in
 # Apple OS X, Linux, or UNIX.
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/tubeLauncher.sh.in
   ${TubeTK_BINARY_DIR}/tubeLauncher.sh @ONLY )
-#-------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 # Configure CPack packaging.
 if( NOT TubeTK_BUILD_SLICER_EXTENSION )
   # Record ITK, VTK, CTK, and GenerateCLP libraries used by TubeTK for

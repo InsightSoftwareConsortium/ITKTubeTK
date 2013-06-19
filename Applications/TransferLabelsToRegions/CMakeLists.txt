@@ -25,6 +25,11 @@
 set( MODULE_NAME TransferLabelsToRegions )
 project( ${MODULE_NAME} )
 
+if( NOT TubeTK_SOURCE_DIR )
+  find_package( TubeTK REQUIRED )
+  include( ${TubeTK_USE_FILE} )
+endif( NOT TubeTK_SOURCE_DIR )
+
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 
@@ -32,12 +37,12 @@ find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
 
 # Find Boost
-set(Boost_ADDITIONAL_VERSIONS "1.51")
-find_package(Boost 1.49 COMPONENTS system filesystem REQUIRED)
-include_directories(${Boost_INCLUDE_DIRS})
+set( Boost_ADDITIONAL_VERSIONS "1.51" )
+find_package( Boost 1.49 COMPONENTS system filesystem REQUIRED )
+include_directories( ${Boost_INCLUDE_DIRS} )
 
 #-----------------------------------------------------------------------------
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -ffast-math -msse3" ${CMAKE_FLAGS_RELEASE})
+set( CMAKE_CXX_FLAGS_RELEASE "-O3 -ffast-math -msse3" ${CMAKE_FLAGS_RELEASE} )
 
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
