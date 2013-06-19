@@ -33,7 +33,7 @@ limitations under the License.
 
 #include <itkImage.h>
 
-int tubeBaseNumericsPrintTest( int, char ** )
+int tubeBaseNumericsPrintTest( int, char *[] )
 {
   typedef itk::Image< float, 2 >                 ImageType;
   typedef itk::Image< itk::Vector<float, 2>, 2 > VectorImageType;
