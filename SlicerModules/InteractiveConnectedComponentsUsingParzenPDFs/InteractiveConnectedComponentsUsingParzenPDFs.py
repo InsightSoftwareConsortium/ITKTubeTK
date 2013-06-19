@@ -26,57 +26,32 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
 
     ioCollapsibleButton = ctk.ctkCollapsibleButton()
     ioCollapsibleButton.text = "IO"
+    ioCollapsibleButton.collapsed = 1
     self.frame.layout().addWidget(ioCollapsibleButton)
 
     # Layout within the io collapsible button
     ioFormLayout = qt.QFormLayout(ioCollapsibleButton)
-
-    inputNodeSelector1 =  slicer.qMRMLNodeComboBox()
-    inputNodeSelector1.objectName = 'inputNodeSelector1'
-    inputNodeSelector1.toolTip = "Select the 1st input volume to be segmented."
-    inputNodeSelector1.nodeTypes = ['vtkMRMLScalarVolumeNode']
-    inputNodeSelector1.noneEnabled = False
-    inputNodeSelector1.addEnabled = False
-    inputNodeSelector1.removeEnabled = False
-    inputNodeSelector1.editEnabled = True
-    inputNodeSelector1.enabled = 1
-    inputNodeSelector1.setMRMLScene(slicer.mrmlScene)
-    ioFormLayout.addRow("Input Volume 1:", inputNodeSelector1)
-    self.inputNodeSelector1 = inputNodeSelector1
-
-    inputNodeSelector2 = slicer.qMRMLNodeComboBox()
-    inputNodeSelector2.objectName = 'inputNodeSelector2'
-    inputNodeSelector2.toolTip = "Select the 2nd coregistered input volume to be segmented."
-    inputNodeSelector2.nodeTypes = ['vtkMRMLScalarVolumeNode']
-    inputNodeSelector2.noneEnabled = True
-    inputNodeSelector2.addEnabled = False
-    inputNodeSelector2.removeEnabled = False
-    inputNodeSelector2.editEnabled = True
-    inputNodeSelector2.enabled = 1
-    inputNodeSelector2.setMRMLScene(slicer.mrmlScene)
-    ioFormLayout.addRow("Input Volume 2:", inputNodeSelector2)
-    self.inputNodeSelector2 = inputNodeSelector2
-
-    inputNodeSelector3 = slicer.qMRMLNodeComboBox()
-    inputNodeSelector3.objectName = 'inputNodeSelector3'
-    inputNodeSelector3.toolTip = "Select the 3rd coregistered input volume to be segmented."
-    inputNodeSelector3.nodeTypes = ['vtkMRMLScalarVolumeNode']
-    inputNodeSelector3.noneEnabled = True
-    inputNodeSelector3.addEnabled = False
-    inputNodeSelector3.removeEnabled = False
-    inputNodeSelector3.editEnabled = True
-    inputNodeSelector3.enabled = 1
-    inputNodeSelector3.setMRMLScene(slicer.mrmlScene)
-    ioFormLayout.addRow("Input Volume 3:", inputNodeSelector3)
-    self.inputNodeSelector3 = inputNodeSelector3
+    secondaryIoCollapsibleGroupBox = ctk.ctkCollapsibleGroupBox()
+    secondaryIoCollapsibleGroupBox.title = "Additional Input"
+    secondaryIoCollapsibleGroupBox.collapsed = 1
+    secondaryIoFormLayout = qt.QFormLayout(secondaryIoCollapsibleGroupBox)
+    self.inputNodeSelectors = []
+    self.inputNodeSelectors.append(self.addInputNodeSelector(0, ioFormLayout))
+    self.inputNodeSelectors[0].noneEnabled = False
+    for i in range(1,3):
+      self.inputNodeSelectors.append(self.addInputNodeSelector(i, secondaryIoFormLayout))
+    self.inputNodeSelectors[0].toolTip = "Select the 1st input volume to be segmented"
+    self.inputNodeSelectors[1].toolTip = "Select the 2nd input volume to be segmented"
+    self.inputNodeSelectors[2].toolTip = "Select the 3rd input volume to be segmented"
+    ioFormLayout.addWidget(secondaryIoCollapsibleGroupBox)
 
     # Objects
-    objectCollapsibleButton = ctk.ctkCollapsibleButton()
-    objectCollapsibleButton.text = "Objects"
-    self.frame.layout().addWidget(objectCollapsibleButton)
+    objectCollapsibleGroupBox = ctk.ctkCollapsibleGroupBox()
+    objectCollapsibleGroupBox.title = "Objects"
+    self.frame.layout().addWidget(objectCollapsibleGroupBox)
 
     # Layout within the io collapsible button
-    objectFormLayout = qt.QFormLayout(objectCollapsibleButton)
+    objectFormLayout = qt.QFormLayout(objectCollapsibleGroupBox)
     foregroundLayout = qt.QHBoxLayout()
     foregroundLabel = slicer.qMRMLLabelComboBox()
     foregroundLabel.objectName = 'Foreground label'
@@ -163,18 +138,19 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
 
     # Presets
     # Placeholder
-    presetsCollapsibleButton = ctk.ctkCollapsibleButton()
-    presetsCollapsibleButton.text = "Preset"
-    self.frame.layout().addWidget(presetsCollapsibleButton)
+    presetsCollapsibleGroupBox = ctk.ctkCollapsibleGroupBox()
+    presetsCollapsibleGroupBox.title = "Preset"
+    self.frame.layout().addWidget(presetsCollapsibleGroupBox)
     presetComboBox = slicer.qSlicerPresetComboBox()
 
     # Advanced Parameters
-    paramsCollapsibleButton = ctk.ctkCollapsibleButton()
-    paramsCollapsibleButton.text = "Advanced Parameters"
-    self.frame.layout().addWidget(paramsCollapsibleButton)
+    paramsCollapsibleGroupBox = ctk.ctkCollapsibleGroupBox()
+    paramsCollapsibleGroupBox.title = "Advanced Parameters"
+    paramsCollapsibleGroupBox.collapsed = 1
+    self.frame.layout().addWidget(paramsCollapsibleGroupBox)
 
     # Layout within the io collapsible button
-    paramsFormLayout = qt.QFormLayout(paramsCollapsibleButton)
+    paramsFormLayout = qt.QFormLayout(paramsCollapsibleGroupBox)
 
     erosionSpinBox = qt.QSpinBox()
     erosionSpinBox.objectName = 'erosionSpinBox'
@@ -211,7 +187,6 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     reclassifyObjectMaskCheckBox = qt.QCheckBox()
     reclassifyObjectMaskCheckBox.objectName = 'reclassifyObjectMaskCheckBox'
     reclassifyObjectMaskCheckBox.toolTip = "Perform classification on voxels within the foreground mask?"
-    reclassifyObjectMaskCheckBox.setChecked(True)
     paramsFormLayout.addRow("Reclassify Foreground Mask:", reclassifyObjectMaskCheckBox)
     self.reclassifyObjectMaskCheckBox = reclassifyObjectMaskCheckBox
 
@@ -219,7 +194,6 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     reclassifyNotObjectMaskCheckBox = qt.QCheckBox()
     reclassifyNotObjectMaskCheckBox.objectName = 'reclassifyNotObjectMaskCheckBox'
     reclassifyNotObjectMaskCheckBox.toolTip = "Perform classification on voxels within the barrier mask?"
-    reclassifyNotObjectMaskCheckBox.setChecked(True)
     paramsFormLayout.addRow("Reclassify Barrier Mask:", reclassifyNotObjectMaskCheckBox)
     self.reclassifyNotObjectMaskCheckBox = reclassifyNotObjectMaskCheckBox
 
@@ -275,9 +249,8 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     objectPDFWeights.append(self.foregroundWeightSpinBox.value)
     objectPDFWeights.append(self.backgroundWeightSpinBox.value)
     parameters = {}
-    parameters['inputVolume1'] = self.inputNodeSelector1.currentNode()
-    parameters['inputVolume2'] = self.inputNodeSelector2.currentNode()
-    parameters['inputVolume3'] = self.inputNodeSelector3.currentNode()
+    for i in range(0,3):
+      parameters['inputVolume'+str(i+1)] = self.inputNodeSelectors[i].currentNode()
     parameters['voidId'] = self.voidLabel.currentColor
     parameters['objectId'] = objectIds
     parameters['labelmap'] = slicer.modules.EditorWidget.editUtil.getLabelVolume()
@@ -306,6 +279,19 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
   def setInputNode1(self):
     backgroundLogic = self.sliceLogic.GetBackgroundLayer()
     backgroundNode = backgroundLogic.GetVolumeNode()
+
+  def addInputNodeSelector(self, index, layout):
+    inputNodeSelector =  slicer.qMRMLNodeComboBox()
+    inputNodeSelector.objectName = 'inputNodeSelector'+str(index+1)
+    inputNodeSelector.nodeTypes = ['vtkMRMLScalarVolumeNode']
+    inputNodeSelector.noneEnabled = True
+    inputNodeSelector.addEnabled = False
+    inputNodeSelector.removeEnabled = False
+    inputNodeSelector.editEnabled = True
+    inputNodeSelector.enabled = 1
+    inputNodeSelector.setMRMLScene(slicer.mrmlScene)
+    layout.addRow("Input Volume "+str(index+1)+":", inputNodeSelector)
+    return inputNodeSelector
 
 #
 # EditorEffectTemplateTool
