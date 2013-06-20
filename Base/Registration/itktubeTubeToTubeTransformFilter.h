@@ -27,6 +27,8 @@ limitations under the License.
 #include "itktubeSpatialObjectToSpatialObjectFilter.h"
 
 #include <itkGroupSpatialObject.h>
+#include <itkObject.h>
+#include <itkObjectFactory.h>
 #include <itkVesselTubeSpatialObject.h>
 #include <itkVesselTubeSpatialObjectPoint.h>
 
@@ -39,19 +41,22 @@ namespace tube
 /**
  *  This class applies a transformation to tubes in a group and returns
  *  a the group with transformed tubes.
+ *
  *  \warning Transform Class MUST have a proper implementation of
  *    ::TransformCovariantVector( void )
+ *
  *  \warning The scale is applied before computing the transformation.
+ *
  *  The resulting tube could be cropped and/or a narrow band could be
  *  defined.
  */
-
 template <class TTransformType, unsigned int TDimension>
 class ITK_EXPORT TubeToTubeTransformFilter
 : public SpatialObjectToSpatialObjectFilter<
   GroupSpatialObject<TDimension>, GroupSpatialObject<TDimension> >
 {
 public:
+
   typedef GroupSpatialObject<TDimension>                       GroupType;
 
   /** Standard class typedefs. */
@@ -93,12 +98,16 @@ public:
   /** Set the scale */
   itkSetMacro(Scale, double);
 
-  /** Set the Ridgeness of all the tubes in the tubenet
-   *  if Ridgeness is not set then the tube keeps its own value */
+  /**
+   * Set the Ridgeness of all the tubes in the tubenet
+   * if Ridgeness is not set then the tube keeps its own value
+   */
   itkSetMacro(Ridgeness, double);
 
-  /** Set the Medialness of all the tubes in the tubenet
-   *  if Medialness is not set then the tube keeps its own value */
+  /**
+   * Set the Medialness of all the tubes in the tubenet
+   * if Medialness is not set then the tube keeps its own value
+   */
   itkSetMacro(Medialness, double);
 
   /** Set if we should crop the tube net to fit the image */

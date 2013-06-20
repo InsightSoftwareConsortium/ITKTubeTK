@@ -35,7 +35,7 @@ namespace tube
 /**
  * Constructor
  */
-template <class TTransformType, unsigned int TDimension>
+template < class TTransformType, unsigned int TDimension >
 TubeToTubeTransformFilter<TTransformType,TDimension>
 ::TubeToTubeTransformFilter( void )
 {
@@ -50,13 +50,12 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
   m_Medialness = -1;
 }
 
-
 /**
  * Apply the transformation to the tube
  */
-template <class TTransformType, unsigned int TDimension>
+template < class TTransformType, unsigned int TDimension >
 void
-TubeToTubeTransformFilter<TTransformType,TDimension>
+TubeToTubeTransformFilter< TTransformType, TDimension >
 ::Update( void )
 {
   m_Output = GroupType::New();
@@ -65,82 +64,76 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
   double* groupspacing = new double[TDimension];
   const double* tubespacing;
 
-  for(unsigned int i=0;i<TDimension;i++)
+  for( unsigned int i = 0; i < TDimension; i++ )
     {
     groupspacing[i]= this->GetInput()->GetIndexToObjectTransform()
                                 ->GetScaleComponent()[i]/m_Scale;
     }
 
-  m_Output->GetIndexToObjectTransform()->SetScaleComponent(groupspacing);
+  m_Output->GetIndexToObjectTransform()->SetScaleComponent( groupspacing );
 
-  // Set the transform
-  if(!m_Transform)
+  // Check if the user set any transform
+  if( !m_Transform )
     {
-    m_Transform = TransformType::New();
+    itkExceptionMacro("No transform is set!");
     }
 
-  Point<double,TDimension> point;
-  CovariantVector<double,TDimension> FirstNormal;
-  CovariantVector<double,TDimension> SecondNormal;
+  Point<double, TDimension> point;
+  CovariantVector< double, TDimension > normal1;
+  CovariantVector< double, TDimension > normal2;
 
   typename TubeType::ChildrenListType::iterator TubeIterator;
+  typedef typename TubeType::PointListType      TubePointListType;
 
-  typedef typename TubeType::PointListType TubePointListType;
-
-
-  typename TubeType::ChildrenListPointer TubeList =
-    this->GetInput()->GetChildren(99999);
-  for(TubeIterator = TubeList->begin();
-      TubeIterator != TubeList->end();
-      TubeIterator++)
+  const GroupType * inputGroup = this->GetInput();
+  typename TubeType::ChildrenListPointer inputTubeList =
+    inputGroup->GetChildren( inputGroup->GetMaximumDepth() );
+  for( TubeIterator = inputTubeList->begin();
+       TubeIterator != inputTubeList->end();
+       TubeIterator++ )
     {
-
-    if(!std::strcmp((*TubeIterator)->GetTypeName(),"VesselTubeSpatialObject"))
+    if( !strcmp( (*TubeIterator)->GetTypeName(), "VesselTubeSpatialObject" ) )
       {
-
-      typename TubeType::Pointer tub = TubeType::New();
+      typename TubeType::Pointer tube = TubeType::New();
       tubespacing = (*TubeIterator)->GetSpacing();
 
-      tub->SetId(((TubeType *)((*TubeIterator).GetPointer()))->GetId());
-      tub->SetRoot(((TubeType *)((*TubeIterator).GetPointer()))->GetRoot());
-      tub->SetArtery(((TubeType *)((*TubeIterator).GetPointer()))
-        ->GetArtery());
-
-      tub->GetProperty()->SetColor((*TubeIterator)->GetProperty()
-        ->GetColor());
+      tube->SetId(((TubeType *)((*TubeIterator).GetPointer()))->GetId());
+      tube->SetRoot(((TubeType *)((*TubeIterator).GetPointer()))->GetRoot());
+      tube->SetArtery(((TubeType *)((*TubeIterator).GetPointer()))->GetArtery());
+      tube->GetProperty()->SetColor((*TubeIterator)->GetProperty()->GetColor());
 
       TubePointListType tubeList =
         ((TubeType *)((*TubeIterator).GetPointer()))->GetPoints();
       typename TubePointListType::const_iterator TubePointIterator =
         tubeList.begin();
 
-      while(TubePointIterator != tubeList.end())
+      while( TubePointIterator != tubeList.end() )
         {
         point = (*TubePointIterator).GetPosition();
-        for(unsigned int i=0;i<TDimension;i++)
+        for( unsigned int i = 0; i < TDimension; i++ )
           {
           point[i] *= tubespacing[i]*groupspacing[i]*m_Scale;
           }
-
-        if(m_TransformAsGroup)
+        if( m_TransformAsGroup )
           {
-          point = m_TransformAsGroup->GetObjectToParentTransform()->TransformPoint(point);
+          point = m_TransformAsGroup->GetObjectToParentTransform()->
+                  TransformPoint( point );
           }
         else
           {
-          point = m_Transform->TransformPoint(point);
+          point = m_Transform->TransformPoint( point );
           }
 
-        for(unsigned int i=0;i<TDimension;i++)
+        for( unsigned int i = 0; i < TDimension; i++ )
           {
           point[i] /= tubespacing[i]*groupspacing[i];
           }
 
         /** Crop the tube net to fit the image*/
         bool IsInside = true;
-        if(m_Crop)
+        if( m_Crop )
           {
-          for(unsigned int i=0;i<TDimension;i++)
+          for( unsigned int i = 0; i < TDimension; i++ )
             {
             if( ( point[i] > m_CropSize[i] + m_NarrowBandSize )
                 || ( point[i] < 0 ) )
@@ -153,78 +146,80 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
             }
           }
 
-        if(IsInside)
+        if( IsInside )
           {
           VesselTubeSpatialObjectPoint<TDimension> pnt;
           pnt.SetPosition(point);
 
-          if(m_TransformAsGroup)
-            {
-            FirstNormal = m_TransformAsGroup->GetObjectToParentTransform()
-              ->TransformCovariantVector(
-                (*TubePointIterator).GetNormal1() );
-            SecondNormal  = m_TransformAsGroup->GetObjectToParentTransform()
-              ->TransformCovariantVector(
-                (*TubePointIterator).GetNormal2() );
-            pnt.SetNormal1(FirstNormal);
-            pnt.SetNormal2(SecondNormal);
-            }
-          else
-            {
-            FirstNormal = m_Transform->TransformCovariantVector(
-              (*TubePointIterator).GetNormal1() );
-            SecondNormal  = m_Transform->TransformCovariantVector(
-              (*TubePointIterator).GetNormal2() );
-            pnt.SetNormal1(FirstNormal);
-            pnt.SetNormal2(SecondNormal);
-            }
+          // get both normals
+          const typename TubeType::CovariantVectorType &n1 =
+            (*TubePointIterator).GetNormal1();
+          const typename TubeType::CovariantVectorType &n2 =
+            (*TubePointIterator).GetNormal2();
 
-          pnt.SetRadius((*TubePointIterator).GetRadius()*m_Scale);
-
-          if(m_Medialness == -1)
+          // only try transformation of normals if both are non-zero
+          if ( !n1.GetVnlVector().is_zero() && !n2.GetVnlVector().is_zero() )
             {
-            pnt.SetMedialness((*TubePointIterator).GetMedialness());
+            if( m_TransformAsGroup )
+              {
+              normal1 = m_TransformAsGroup->GetObjectToParentTransform()
+                ->TransformCovariantVector( n1, point );
+              normal2  = m_TransformAsGroup->GetObjectToParentTransform()
+                ->TransformCovariantVector( n2, point );
+              pnt.SetNormal1( normal1 );
+              pnt.SetNormal2( normal2 );
+              }
+            else
+              {
+              normal1 = m_Transform->TransformCovariantVector( n1, point );
+              normal2 = m_Transform->TransformCovariantVector( n2, point );
+              pnt.SetNormal1( normal1 );
+              pnt.SetNormal2( normal2 );
+              }
+            }
+          pnt.SetRadius( (*TubePointIterator).GetRadius()*m_Scale );
+
+          if( m_Medialness == -1 )
+            {
+            pnt.SetMedialness( (*TubePointIterator).GetMedialness() );
             }
           else
             {
             pnt.SetMedialness(m_Medialness);
             }
 
-          if(m_Ridgeness == -1)
+          if( m_Ridgeness == -1 )
             {
-            pnt.SetRidgeness((*TubePointIterator).GetRidgeness());
+            pnt.SetRidgeness( (*TubePointIterator).GetRidgeness() );
             }
           else
             {
-            pnt.SetRidgeness(m_Ridgeness);
+            pnt.SetRidgeness( m_Ridgeness );
             }
 
-          pnt.SetBranchness((*TubePointIterator).GetBranchness());
-          tub->GetPoints().push_back(pnt);
+          pnt.SetBranchness( (*TubePointIterator).GetBranchness() );
+          tube->GetPoints().push_back( pnt );
           }
         TubePointIterator++;
         }
 
-      tub->GetIndexToObjectTransform()->SetScaleComponent(
-        ((*TubeIterator)->GetIndexToObjectTransform()
-          ->GetScaleComponent()));
-      tub->RemoveDuplicatePoints();
-      tub->ComputeTangentAndNormals();
-      m_Output->AddSpatialObject(tub);
+      tube->GetIndexToObjectTransform()->SetScaleComponent(
+        ( (*TubeIterator)->GetIndexToObjectTransform()->GetScaleComponent() ) );
+      tube->RemoveDuplicatePoints();
+      tube->ComputeTangentAndNormals();
+      m_Output->AddSpatialObject( tube );
       }
     }
-  delete TubeList;
+  delete inputTubeList;
   delete [] groupspacing;
 }
 
-
-template <class TTransformType, unsigned int TDimension>
+template < class TTransformType, unsigned int TDimension >
 void
-TubeToTubeTransformFilter<TTransformType,TDimension>
+TubeToTubeTransformFilter< TTransformType,TDimension >
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf(os,indent);
-
   os << indent << "Transformation: " << m_Transform << std::endl;
 }
 
