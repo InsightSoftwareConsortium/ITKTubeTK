@@ -52,6 +52,15 @@ RidgeSeedFilter< ImageT, LabelmapT >
     m_RidgeFeatureGenerator );
 
   m_PDFSegmenter = PDFSegmenterType::New();
+  m_PDFSegmenter->SetVoidId( 10 );
+  m_PDFSegmenter->SetReclassifyObjectMask( true );
+  m_PDFSegmenter->SetReclassifyNotObjectMask( true );
+  m_PDFSegmenter->SetForceClassification( true );
+  m_PDFSegmenter->SetErodeRadius( 0 );
+  m_PDFSegmenter->SetHoleFillIterations( 0 );
+  m_PDFSegmenter->SetOutlierRejectPortion( 0.01 );
+  m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation( 0.1 );
+  m_PDFSegmenter->SetHistogramSmoothingStandardDeviation( 0.5 );
 }
 
 template< class ImageT, class LabelmapT >
@@ -192,6 +201,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
 {
   m_SeedFeatureGenerator->SetObjectId( id );
   m_PDFSegmenter->SetObjectId( id );
+  m_PDFSegmenter->SetObjectPDFWeight( 0, 0.5 );
 }
 
 template < class ImageT, class LabelmapT >

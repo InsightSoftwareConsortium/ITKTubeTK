@@ -98,7 +98,7 @@ RidgeFeatureVectorGenerator< ImageT >
     featureVector[featureCount++] = njet->GetMostRecentRidgeRoundness();
     featureVector[featureCount++] = njet->GetMostRecentRidgeLevelness();
     featureVector[featureCount++] = njet->GetMostRecentRidgeCurvature();
-    if( s == 0 || ridgeness > extremeRidgeness )
+    if( s == 0 || njet->GetMostRecentRidgeLevelness() > extremeLevelness )
       {
       extremeScale = m_Scales[s];
       extremeIntensity = njet->GetMostRecentIntensity();
