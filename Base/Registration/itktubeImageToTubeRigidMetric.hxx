@@ -254,7 +254,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   typename TubeNetType::ChildrenListType * tubeList = GetTubes();
   for( tubeIterator = tubeList->begin();
        tubeIterator != tubeList->end();
-       tubeIterator++ )
+       ++tubeIterator )
     {
     TubeType * currentTube =
       dynamic_cast< TubeType * >( ( *tubeIterator ).GetPointer() );

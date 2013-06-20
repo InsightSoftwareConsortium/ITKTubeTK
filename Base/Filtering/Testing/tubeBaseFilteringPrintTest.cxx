@@ -26,6 +26,7 @@ limitations under the License.
 #include "itktubeAnisotropicDiffusionTensorImageFilter.h"
 #include "itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h"
 #include "itktubeAnisotropicHybridDiffusionImageFilter.h"
+#include "itktubeExtractTubePointsSpatialObjectFilter.h"
 #include "itktubeSheetnessMeasureImageFilter.h"
 #include "itktubeStructureTensorRecursiveGaussianImageFilter.h"
 #include "itktubeSymmetricEigenVectorAnalysisImageFilter.h"
@@ -33,11 +34,14 @@ limitations under the License.
 
 #include <itkImage.h>
 #include <itkMatrix.h>
+#include <itkTubeSpatialObject.h>
 
 int tubeBaseFilteringPrintTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {
-  typedef itk::Image< float, 3 >  ImageType;
-  typedef itk::Matrix< float, 3 > MatrixType;
+  const unsigned int Dimension = 3;
+  typedef itk::Image< float, Dimension >      ImageType;
+  typedef itk::Matrix< float, Dimension >     MatrixType;
+  typedef itk::TubeSpatialObject< Dimension > TubeSpatialObjectType;
 
   itk::tube::AnisotropicCoherenceEnhancingDiffusionImageFilter< ImageType,
     ImageType >
@@ -62,6 +66,12 @@ int tubeBaseFilteringPrintTest( int itkNotUsed( argc ), char * itkNotUsed( argv 
     itk::tube::AnisotropicHybridDiffusionImageFilter< ImageType, ImageType >
     ::New();
   std::cout << "-------------ahdif" << ahdif << std::endl;
+
+  typedef itk::tube::ExtractTubePointsSpatialObjectFilter< TubeSpatialObjectType >
+    ExtractTubePointsSpatialObjectFilterType;
+  ExtractTubePointsSpatialObjectFilterType::Pointer etpsof =
+    ExtractTubePointsSpatialObjectFilterType::New();
+  std::cout << "-------------etpsof" << etpsof << std::endl;
 
   itk::tube::StructureTensorRecursiveGaussianImageFilter< ImageType >
     ::Pointer strgif =
