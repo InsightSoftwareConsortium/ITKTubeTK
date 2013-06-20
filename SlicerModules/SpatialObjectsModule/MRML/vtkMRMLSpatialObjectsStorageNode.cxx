@@ -102,7 +102,7 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
 
       char childName[] = "Tube";
       TubeNetType::ChildrenListType* tubeList =
-        reader->GetGroup()->GetChildren(tubeList->GetMaximumDepth(), childName);
+        reader->GetGroup()->GetChildren(reader->GetGroup()->GetMaximumDepth(), childName);
 
       // -----------------------------------------------------------------------
       // Copy skeleton points from vessels into polydata structure
