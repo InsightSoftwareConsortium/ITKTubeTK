@@ -122,7 +122,7 @@ int Test( void )
   return returnStatus;
 }
 
-int tubeMatrixMathTest( int argc, char * itkNotUsed( argv )[] )
+int tubeMatrixMathTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {
   if( Test<2>() == EXIT_FAILURE ||
       Test<3>() == EXIT_FAILURE ||
