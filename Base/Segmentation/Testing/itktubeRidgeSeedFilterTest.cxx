@@ -97,11 +97,11 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   LabelmapType::Pointer labelmapImage = mReader->GetOutput();
 
   FilterType::RidgeScalesType scales(5);
-  scales[0] = 0.3;
+  scales[0] = 0.15;
   scales[1] = 0.6;
-  scales[2] = 0.9;
-  scales[3] = 1.2;
-  scales[4] = 1.8;
+  scales[2] = 1.2;
+  scales[3] = 2.4;
+  scales[4] = 3.6;
 
   FilterType::Pointer filter = FilterType::New();
   filter->SetInput( inputImage );
@@ -139,7 +139,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   feature2ImageWriter->SetFileName( argv[6] );
   feature2ImageWriter->SetUseCompression( true );
   feature2ImageWriter->SetInput( filter->GetRidgeFeatureGenerator()->
-    GetFeatureImage( 2 ) );
+    GetFeatureImage( 0 ) );
   try
     {
     feature2ImageWriter->Update();
