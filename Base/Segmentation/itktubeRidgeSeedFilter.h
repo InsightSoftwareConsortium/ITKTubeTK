@@ -107,7 +107,6 @@ public:
   float GetIntensityMin( void );
   void  SetIntensityMax( float intensityMax );
   float GetIntensityMax( void );
-  void  SetIntensityRangeByPercentile( float percentile );
 
   void  SetScales( const RidgeScalesType & Scales );
   RidgeScalesType GetScales( void );
@@ -123,6 +122,13 @@ public:
   void ClassifyImages();
 
   typename LabelmapType::Pointer GetOutput( void );
+
+  // Generate Convolution Filters
+  typename OutputImageType::Pointer GetFilterImage( unsigned int basisNum );
+
+  void SetFilterImage( unsigned int basisNum,
+    typename OutputImageType::Pointer filterImage );
+
 
 protected:
 

@@ -173,14 +173,6 @@ RidgeSeedFilter< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 void
 RidgeSeedFilter< ImageT, LabelmapT >
-::SetIntensityRangeByPercentile( float percentile )
-{
-  m_RidgeFeatureGenerator->SetIntensityRangeByPercentile( percentile );
-}
-
-template < class ImageT, class LabelmapT >
-void
-RidgeSeedFilter< ImageT, LabelmapT >
 ::SetScales( const RidgeScalesType & scales )
 {
   m_RidgeFeatureGenerator->SetScales( scales );
