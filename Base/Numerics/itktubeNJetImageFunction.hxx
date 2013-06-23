@@ -1740,7 +1740,8 @@ NJetImageFunction<TInputImage>
   m_MostRecentRidgeRoundness = roundness;
   m_MostRecentRidgeLevelness = levelness;
   m_MostRecentRidgeCurvature = curvature;
-  m_MostRecentRidgeTangent.SetVnlVector( eigSys.get_eigenvector( ImageDimension-1 ) );
+  m_MostRecentRidgeTangent.SetVnlVector( eigSys.get_eigenvector(
+    ImageDimension-1 ) );
 
   return m_MostRecentRidgeness;
 }
