@@ -114,17 +114,17 @@
       <default>false</default>
     </boolean>
     <boolean>
-      <name>reclassifyObjectMask</name>
-      <label>Reclassify Object Mask</label>
+      <name>reclassifyObjectLabels</name>
+      <label>Reclassify Object Labels</label>
       <description>Perform classification on voxels within the object mask.</description>
-      <longflag>reclassifyObjectMask</longflag>
+      <longflag>reclassifyObjectLabels</longflag>
       <default>false</default>
     </boolean>
     <boolean>
-      <name>reclassifyNotObjectMask</name>
-      <label>Reclassify Not-Object Mask</label>
+      <name>reclassifyNotObjectLabels</name>
+      <label>Reclassify Not-Object Labels</label>
       <description>Perform classification on all non-void voxels.</description>
-      <longflag>reclassifyNotObjectMask</longflag>
+      <longflag>reclassifyNotObjectLabels</longflag>
       <default>false</default>
     </boolean>
     <boolean>

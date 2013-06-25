@@ -123,13 +123,6 @@ public:
 
   typename LabelmapType::Pointer GetOutput( void );
 
-  // Generate Convolution Filters
-  typename OutputImageType::Pointer GetFilterImage( unsigned int basisNum );
-
-  void SetFilterImage( unsigned int basisNum,
-    typename OutputImageType::Pointer filterImage );
-
-
 protected:
 
   RidgeSeedFilter( void );

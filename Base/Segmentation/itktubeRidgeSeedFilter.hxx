@@ -53,8 +53,8 @@ RidgeSeedFilter< ImageT, LabelmapT >
 
   m_PDFSegmenter = PDFSegmenterType::New();
   m_PDFSegmenter->SetVoidId( 10 );
-  m_PDFSegmenter->SetReclassifyObjectMask( true );
-  m_PDFSegmenter->SetReclassifyNotObjectMask( true );
+  m_PDFSegmenter->SetReclassifyObjectLabels( true );
+  m_PDFSegmenter->SetReclassifyNotObjectLabels( true );
   m_PDFSegmenter->SetForceClassification( true );
   m_PDFSegmenter->SetErodeRadius( 0 );
   m_PDFSegmenter->SetHoleFillIterations( 0 );
