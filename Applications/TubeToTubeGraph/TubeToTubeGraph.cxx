@@ -130,7 +130,7 @@ int DoIt( int argc, char * argv[] )
   char tubeName[10];
   std::sprintf( tubeName, "Tube" );
   TubeSpatialObjectType::ChildrenListType *
-    tubeList = group->GetChildren( 99999, tubeName );
+    tubeList = group->GetChildren( group->GetMaximumDepth(), tubeName );
   TubeSpatialObjectType::ChildrenListType::const_iterator
            tubeIt = tubeList->begin();
   int numTubes = tubeList->size();

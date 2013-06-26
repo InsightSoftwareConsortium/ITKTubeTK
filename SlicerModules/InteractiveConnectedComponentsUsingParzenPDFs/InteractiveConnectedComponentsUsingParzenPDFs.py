@@ -26,74 +26,95 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
 
     ioCollapsibleButton = ctk.ctkCollapsibleButton()
     ioCollapsibleButton.text = "IO"
+    ioCollapsibleButton.collapsed = 1
     self.frame.layout().addWidget(ioCollapsibleButton)
 
     # Layout within the io collapsible button
     ioFormLayout = qt.QFormLayout(ioCollapsibleButton)
-
-    inputNodeSelector1 =  slicer.qMRMLNodeComboBox()
-    inputNodeSelector1.objectName = 'inputNodeSelector1'
-    inputNodeSelector1.toolTip = "Select the 1st input volume to be segmented."
-    inputNodeSelector1.nodeTypes = ['vtkMRMLScalarVolumeNode']
-    inputNodeSelector1.noneEnabled = False
-    inputNodeSelector1.addEnabled = False
-    inputNodeSelector1.removeEnabled = False
-    inputNodeSelector1.editEnabled = True
-    inputNodeSelector1.enabled = 1
-    inputNodeSelector1.setMRMLScene(slicer.mrmlScene)
-    ioFormLayout.addRow("Input Volume 1:", inputNodeSelector1)
-    self.inputNodeSelector1 = inputNodeSelector1
-
-    inputNodeSelector2 = slicer.qMRMLNodeComboBox()
-    inputNodeSelector2.objectName = 'inputNodeSelector2'
-    inputNodeSelector2.toolTip = "Select the 2nd coregistered input volume to be segmented."
-    inputNodeSelector2.nodeTypes = ['vtkMRMLScalarVolumeNode']
-    inputNodeSelector2.noneEnabled = True
-    inputNodeSelector2.addEnabled = False
-    inputNodeSelector2.removeEnabled = False
-    inputNodeSelector2.editEnabled = True
-    inputNodeSelector2.enabled = 1
-    inputNodeSelector2.setMRMLScene(slicer.mrmlScene)
-    ioFormLayout.addRow("Input Volume 2:", inputNodeSelector2)
-    self.inputNodeSelector2 = inputNodeSelector2
-
-    inputNodeSelector3 = slicer.qMRMLNodeComboBox()
-    inputNodeSelector3.objectName = 'inputNodeSelector3'
-    inputNodeSelector3.toolTip = "Select the 3rd coregistered input volume to be segmented."
-    inputNodeSelector3.nodeTypes = ['vtkMRMLScalarVolumeNode']
-    inputNodeSelector3.noneEnabled = True
-    inputNodeSelector3.addEnabled = False
-    inputNodeSelector3.removeEnabled = False
-    inputNodeSelector3.editEnabled = True
-    inputNodeSelector3.enabled = 1
-    inputNodeSelector3.setMRMLScene(slicer.mrmlScene)
-    ioFormLayout.addRow("Input Volume 3:", inputNodeSelector3)
-    self.inputNodeSelector3 = inputNodeSelector3
+    secondaryIoCollapsibleGroupBox = ctk.ctkCollapsibleGroupBox()
+    secondaryIoCollapsibleGroupBox.title = "Additional Input"
+    secondaryIoCollapsibleGroupBox.collapsed = 1
+    secondaryIoFormLayout = qt.QFormLayout(secondaryIoCollapsibleGroupBox)
+    self.inputNodeSelectors = []
+    self.inputNodeSelectors.append(self.addInputNodeSelector(0, ioFormLayout))
+    self.inputNodeSelectors[0].noneEnabled = False
+    for i in range(1,3):
+      self.inputNodeSelectors.append(self.addInputNodeSelector(i, secondaryIoFormLayout))
+    self.inputNodeSelectors[0].toolTip = "Select the 1st input volume to be segmented"
+    self.inputNodeSelectors[1].toolTip = "Select the 2nd input volume to be segmented"
+    self.inputNodeSelectors[2].toolTip = "Select the 3rd input volume to be segmented"
+    ioFormLayout.addWidget(secondaryIoCollapsibleGroupBox)
 
     # Objects
-    objectCollapsibleButton = ctk.ctkCollapsibleButton()
-    objectCollapsibleButton.text = "Objects"
-    self.frame.layout().addWidget(objectCollapsibleButton)
+    objectCollapsibleGroupBox = ctk.ctkCollapsibleGroupBox()
+    objectCollapsibleGroupBox.title = "Objects"
+    self.frame.layout().addWidget(objectCollapsibleGroupBox)
 
     # Layout within the io collapsible button
-    objectFormLayout = qt.QFormLayout(objectCollapsibleButton)
-    objectLabel = slicer.qMRMLLabelComboBox()
-    objectLabel.objectName = 'Foreground label selector'
-    objectLabel.setMRMLScene(slicer.mrmlScene)
-    objectLabel.setMRMLColorNode(slicer.modules.EditorWidget.editUtil.getColorNode())
-    objectLabel.labelValueVisible = True
-    objectLabel.currentColor = 1
-    objectFormLayout.addRow("Foreground Label:", objectLabel)
-    self.objectLabel = objectLabel
+    objectFormLayout = qt.QFormLayout(objectCollapsibleGroupBox)
+    foregroundLayout = qt.QHBoxLayout()
+    foregroundLabel = slicer.qMRMLLabelComboBox()
+    foregroundLabel.objectName = 'Foreground label'
+    foregroundLabel.setMRMLScene(slicer.mrmlScene)
+    foregroundLabel.setMRMLColorNode(slicer.modules.EditorWidget.editUtil.getColorNode())
+    foregroundLabel.labelValueVisible = True
+    foregroundLabel.currentColor = 1
+    foregroundWeightSpinBox = qt.QDoubleSpinBox(foregroundLabel)
+    self.foregroundWeightSpinBox = foregroundWeightSpinBox
+    foregroundWeightSpinBox.setRange(0.0, 1.0)
+    foregroundWeightSpinBox.setSingleStep(0.1)
+    foregroundWeightSpinBox.value = 1.0
+    foregroundPopup = ctk.ctkPopupWidget( foregroundWeightSpinBox )
+    foregroundPopupLayout = qt.QHBoxLayout( foregroundPopup )
+    foregroundPopupSlider = ctk.ctkDoubleSlider( foregroundPopup )
+    self.foregroundPopupSlider = foregroundPopupSlider
+    foregroundPopupSlider.maximum = 1.0
+    foregroundPopupSlider.minimum = 0.0
+    foregroundPopupSlider.singleStep = 0.1
+    foregroundPopupSlider.connect('valueChanged(double)', self.foregroundWeightSpinBox.setValue)
+    foregroundWeightSpinBox.connect('valueChanged(double)', self.foregroundPopupSlider.setValue)
+    foregroundLayout.addWidget( foregroundLabel )
+    foregroundLayout.addWidget( foregroundWeightSpinBox )
+    foregroundPopupLayout.addWidget( foregroundPopupSlider )
+    objectFormLayout.addRow("Foreground Label:", foregroundLayout )
+    self.objectLabel = foregroundLabel
+    # http://qt-project.org/doc/qt-4.7/qt.html
+    foregroundPopup.alignment = 0x0082 # Qt::AlignVCenter | Qt::AlignRight
+    foregroundPopup.horizontalDirection = 0 # Qt::LeftToRight
+    foregroundPopup.verticalDirection = 0 # Qt::TopToBottom
+    foregroundPopup.animationEffect = 1 # Qt::ScrollEffect
 
+    backgroundLayout = qt.QHBoxLayout()
     backgroundLabel = slicer.qMRMLLabelComboBox()
-    backgroundLabel.objectName = 'Background label selector'
+    backgroundLabel.objectName = 'Background label'
     backgroundLabel.setMRMLScene(slicer.mrmlScene)
     backgroundLabel.setMRMLColorNode(slicer.modules.EditorWidget.editUtil.getColorNode())
     backgroundLabel.labelValueVisible = True
     backgroundLabel.currentColor = 2
-    objectFormLayout.addRow("Background Label:", backgroundLabel)
+    backgroundWeightSpinBox = qt.QDoubleSpinBox(backgroundLabel)
+    self.backgroundWeightSpinBox = backgroundWeightSpinBox
+    backgroundWeightSpinBox.setRange(0.0, 1.0)
+    backgroundWeightSpinBox.setSingleStep(0.1)
+    backgroundWeightSpinBox.value = 1.0
+    backgroundPopup = ctk.ctkPopupWidget( backgroundWeightSpinBox )
+    backgroundPopupLayout = qt.QHBoxLayout( backgroundPopup )
+    backgroundPopupSlider = ctk.ctkDoubleSlider( backgroundPopup )
+    self.backgroundPopupSlider = backgroundPopupSlider
+    backgroundPopupSlider.maximum = 1.0
+    backgroundPopupSlider.minimum = 0.0
+    backgroundPopupSlider.singleStep = 0.1
+    backgroundPopupSlider.connect('valueChanged(double)', self.backgroundWeightSpinBox.setValue)
+    backgroundWeightSpinBox.connect('valueChanged(double)', self.backgroundPopupSlider.setValue)
+    backgroundLayout.addWidget( backgroundLabel )
+    backgroundLayout.addWidget( backgroundWeightSpinBox )
+    backgroundPopupLayout.addWidget( backgroundPopupSlider )
+    objectFormLayout.addRow("Background Label:", backgroundLayout)
     self.backgroundLabel = backgroundLabel
+    # http://qt-project.org/doc/qt-4.7/qt.html
+    backgroundPopup.alignment = 0x0082 # Qt::AlignVCenter | Qt::AlignRight
+    backgroundPopup.horizontalDirection = 0 # Qt::LeftToRight
+    backgroundPopup.verticalDirection = 0 # Qt::TopToBottom
+    backgroundPopup.animationEffect = 1 # Qt::ScrollEffect
 
     barrierLabel = slicer.qMRMLLabelComboBox()
     barrierLabel.objectName = 'Barrier label selector'
@@ -117,18 +138,19 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
 
     # Presets
     # Placeholder
-    presetsCollapsibleButton = ctk.ctkCollapsibleButton()
-    presetsCollapsibleButton.text = "Preset"
-    self.frame.layout().addWidget(presetsCollapsibleButton)
+    presetsCollapsibleGroupBox = ctk.ctkCollapsibleGroupBox()
+    presetsCollapsibleGroupBox.title = "Preset"
+    self.frame.layout().addWidget(presetsCollapsibleGroupBox)
     presetComboBox = slicer.qSlicerPresetComboBox()
 
     # Advanced Parameters
-    paramsCollapsibleButton = ctk.ctkCollapsibleButton()
-    paramsCollapsibleButton.text = "Advanced Parameters"
-    self.frame.layout().addWidget(paramsCollapsibleButton)
+    paramsCollapsibleGroupBox = ctk.ctkCollapsibleGroupBox()
+    paramsCollapsibleGroupBox.title = "Advanced Parameters"
+    paramsCollapsibleGroupBox.collapsed = 1
+    self.frame.layout().addWidget(paramsCollapsibleGroupBox)
 
     # Layout within the io collapsible button
-    paramsFormLayout = qt.QFormLayout(paramsCollapsibleButton)
+    paramsFormLayout = qt.QFormLayout(paramsCollapsibleGroupBox)
 
     erosionSpinBox = qt.QSpinBox()
     erosionSpinBox.objectName = 'erosionSpinBox'
@@ -143,15 +165,6 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     holeFillSpinBox.setMinimum(0)
     paramsFormLayout.addRow("Hole Fill Iterations:", holeFillSpinBox)
     self.holeFillSpinBox = holeFillSpinBox
-
-    falsePositiveRatioSpinBox = qt.QDoubleSpinBox()
-    falsePositiveRatioSpinBox.objectName = 'falsePositiveRatioSpinBox'
-    falsePositiveRatioSpinBox.toolTip = "Relative Cost of False Positive vs. false negative."
-    falsePositiveRatioSpinBox.setMinimum(0.0)
-    falsePositiveRatioSpinBox.setValue(1.0) # Default
-    falsePositiveRatioSpinBox.setSingleStep(0.1)
-    paramsFormLayout.addRow("False Positive Ratio:", falsePositiveRatioSpinBox)
-    self.falsePositiveRatioSpinBox = falsePositiveRatioSpinBox
 
     # probabilitySmoothingStandardDeviation spin box
     probabilitySmoothingStdDevSpinBox = qt.QDoubleSpinBox()
@@ -174,7 +187,6 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     reclassifyObjectMaskCheckBox = qt.QCheckBox()
     reclassifyObjectMaskCheckBox.objectName = 'reclassifyObjectMaskCheckBox'
     reclassifyObjectMaskCheckBox.toolTip = "Perform classification on voxels within the foreground mask?"
-    reclassifyObjectMaskCheckBox.setChecked(True)
     paramsFormLayout.addRow("Reclassify Foreground Mask:", reclassifyObjectMaskCheckBox)
     self.reclassifyObjectMaskCheckBox = reclassifyObjectMaskCheckBox
 
@@ -182,7 +194,6 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     reclassifyNotObjectMaskCheckBox = qt.QCheckBox()
     reclassifyNotObjectMaskCheckBox.objectName = 'reclassifyNotObjectMaskCheckBox'
     reclassifyNotObjectMaskCheckBox.toolTip = "Perform classification on voxels within the barrier mask?"
-    reclassifyNotObjectMaskCheckBox.setChecked(True)
     paramsFormLayout.addRow("Reclassify Barrier Mask:", reclassifyNotObjectMaskCheckBox)
     self.reclassifyNotObjectMaskCheckBox = reclassifyNotObjectMaskCheckBox
 
@@ -234,17 +245,19 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     objectIds = []
     objectIds.append(self.objectLabel.currentColor)
     objectIds.append(self.backgroundLabel.currentColor)
+    objectPDFWeights = []
+    objectPDFWeights.append(self.foregroundWeightSpinBox.value)
+    objectPDFWeights.append(self.backgroundWeightSpinBox.value)
     parameters = {}
-    parameters['inputVolume1'] = self.inputNodeSelector1.currentNode()
-    parameters['inputVolume2'] = self.inputNodeSelector2.currentNode()
-    parameters['inputVolume3'] = self.inputNodeSelector3.currentNode()
+    for i in range(0,3):
+      parameters['inputVolume'+str(i+1)] = self.inputNodeSelectors[i].currentNode()
     parameters['voidId'] = self.voidLabel.currentColor
     parameters['objectId'] = objectIds
     parameters['labelmap'] = slicer.modules.EditorWidget.editUtil.getLabelVolume()
     parameters['outputVolume'] = slicer.modules.EditorWidget.editUtil.getLabelVolume()
     parameters['erodeRadius'] = self.erosionSpinBox.value
     parameters['holeFillIterations'] = self.holeFillSpinBox.value
-    parameters['fprWeight'] = self.falsePositiveRatioSpinBox.value
+    parameters['objectPDFWeight'] = objectPDFWeights
     parameters['probSmoothingStdDev'] = self.probabilitySmoothingStdDevSpinBox.value
     parameters['draft'] = self.draftCheckBox.checked
     parameters['reclassifyObjectMask'] = self.reclassifyObjectMaskCheckBox.checked
@@ -267,6 +280,18 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     backgroundLogic = self.sliceLogic.GetBackgroundLayer()
     backgroundNode = backgroundLogic.GetVolumeNode()
 
+  def addInputNodeSelector(self, index, layout):
+    inputNodeSelector =  slicer.qMRMLNodeComboBox()
+    inputNodeSelector.objectName = 'inputNodeSelector'+str(index+1)
+    inputNodeSelector.nodeTypes = ['vtkMRMLScalarVolumeNode']
+    inputNodeSelector.noneEnabled = True
+    inputNodeSelector.addEnabled = False
+    inputNodeSelector.removeEnabled = False
+    inputNodeSelector.editEnabled = True
+    inputNodeSelector.enabled = 1
+    inputNodeSelector.setMRMLScene(slicer.mrmlScene)
+    layout.addRow("Input Volume "+str(index+1)+":", inputNodeSelector)
+    return inputNodeSelector
 
 #
 # EditorEffectTemplateTool

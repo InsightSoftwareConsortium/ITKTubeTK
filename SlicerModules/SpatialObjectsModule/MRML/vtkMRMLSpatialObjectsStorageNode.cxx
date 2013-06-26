@@ -100,11 +100,9 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
       reader->Update();
       // WARNING : Should we check if the tube contains less than 2 points...
 
-      // TODO WARNING:
-      // Method might use GetMaximumDepth from ITKv4.
       char childName[] = "Tube";
       TubeNetType::ChildrenListType* tubeList =
-        reader->GetGroup()->GetChildren(999999, childName);
+        reader->GetGroup()->GetChildren(reader->GetGroup()->GetMaximumDepth(), childName);
 
       // -----------------------------------------------------------------------
       // Copy skeleton points from vessels into polydata structure

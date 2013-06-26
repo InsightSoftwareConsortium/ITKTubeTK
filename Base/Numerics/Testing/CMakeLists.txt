@@ -35,10 +35,10 @@ if( PYTHON_EXECUTABLE )
 endif()
 
 set( BASE_NUMERICS_TESTS
-      ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseNumericsTests )
+  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseNumericsTests )
 
 set( BASE_NUMERICS_HEADER_TEST
-     ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseNumericsHeaderTest )
+  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseNumericsHeaderTest )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 

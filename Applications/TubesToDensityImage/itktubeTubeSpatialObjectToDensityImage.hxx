@@ -89,7 +89,7 @@ TubeSpatialObjectToDensityImage<TDensityImageType,
     {
     TubeGroupPointer tubes = this->GetTubes();
 
-    tubes->SetBoundingBoxChildrenDepth(99999);
+    tubes->SetBoundingBoxChildrenDepth( tubes->GetMaximumDepth() );
     tubes->ComputeBoundingBox();
 
     typedef TubeSpatialObjectToImageFilter<TDimension,DensityImageType>

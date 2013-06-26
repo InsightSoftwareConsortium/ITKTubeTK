@@ -237,10 +237,6 @@ ImageToTubeRigidMetric< TFixedImage,
 }
 
 
-/** Get tubes contained within the Spatial Object */
-// WARNING:
-// Method might use GetMaximumDepth from ITK.
-// Patch pushed in ITKv4, waiting for validation.
 template < class TFixedImage,
   class TMovingSpatialObject,
   class TTubeSpatialObject,
@@ -255,13 +251,14 @@ ImageToTubeRigidMetric< TFixedImage,
   TResolutionWeightFunction >
 ::GetTubes( void ) const
 {
-  if(!this->m_MovingSpatialObject)
+  if( !this->m_MovingSpatialObject )
     {
     return NULL;
     }
 
   char childName[] = "Tube";
-  return this->m_MovingSpatialObject->GetChildren( 999999, childName );
+  return this->m_MovingSpatialObject->GetChildren(
+    this->m_MovingSpatialObject->GetMaximumDepth(), childName );
 }
 
 
