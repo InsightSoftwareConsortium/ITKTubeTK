@@ -52,6 +52,15 @@ RidgeSeedFilter< ImageT, LabelmapT >
     m_RidgeFeatureGenerator );
 
   m_PDFSegmenter = PDFSegmenterType::New();
+  m_PDFSegmenter->SetVoidId( 10 );
+  m_PDFSegmenter->SetReclassifyObjectLabels( true );
+  m_PDFSegmenter->SetReclassifyNotObjectLabels( true );
+  m_PDFSegmenter->SetForceClassification( true );
+  m_PDFSegmenter->SetErodeRadius( 0 );
+  m_PDFSegmenter->SetHoleFillIterations( 0 );
+  m_PDFSegmenter->SetOutlierRejectPortion( 0.01 );
+  m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation( 0.1 );
+  m_PDFSegmenter->SetHistogramSmoothingStandardDeviation( 0.5 );
 }
 
 template< class ImageT, class LabelmapT >
@@ -164,14 +173,6 @@ RidgeSeedFilter< ImageT, LabelmapT >
 template < class ImageT, class LabelmapT >
 void
 RidgeSeedFilter< ImageT, LabelmapT >
-::SetIntensityRangeByPercentile( float percentile )
-{
-  m_RidgeFeatureGenerator->SetIntensityRangeByPercentile( percentile );
-}
-
-template < class ImageT, class LabelmapT >
-void
-RidgeSeedFilter< ImageT, LabelmapT >
 ::SetScales( const RidgeScalesType & scales )
 {
   m_RidgeFeatureGenerator->SetScales( scales );
@@ -192,6 +193,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
 {
   m_SeedFeatureGenerator->SetObjectId( id );
   m_PDFSegmenter->SetObjectId( id );
+  m_PDFSegmenter->SetObjectPDFWeight( 0, 0.5 );
 }
 
 template < class ImageT, class LabelmapT >

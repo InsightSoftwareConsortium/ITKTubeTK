@@ -30,12 +30,12 @@ limitations under the License.
 
 int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
 {
-  if( argc != 7 )
+  if( argc != 8 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
-      << " inputImage labelmapImage objId bkgId outputClass0PDF outputImage"
+      << " inputImage labelmapImage objId bkgId outputClass0PDF outputFeature0Image outputImage"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -59,6 +59,9 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
 
   typedef itk::Image< float, 3 >                    PDFImageType;
   typedef itk::ImageFileWriter< PDFImageType >      PDFImageWriterType;
+
+  typedef itk::Image< float, Dimension >            FeatureImageType;
+  typedef itk::ImageFileWriter< FeatureImageType >  FeatureImageWriterType;
 
   // Declare the type for the Filter
   typedef itk::tube::RidgeSeedFilter< ImageType, LabelmapType >
@@ -87,15 +90,18 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject& e )
     {
-    std::cerr << "Exception caught during input mask read:" << std::endl << e;
+    std::cerr << "Exception caught during input mask read:" << std::endl
+      << e;
     return EXIT_FAILURE;
     }
   LabelmapType::Pointer labelmapImage = mReader->GetOutput();
 
-  FilterType::RidgeScalesType scales(3);
-  scales[0] = 0.4;
-  scales[1] = 0.8;
-  scales[2] = 1.6;
+  FilterType::RidgeScalesType scales(5);
+  scales[0] = 0.15;
+  scales[1] = 0.6;
+  scales[2] = 1.2;
+  scales[3] = 2.4;
+  scales[4] = 3.6;
 
   FilterType::Pointer filter = FilterType::New();
   filter->SetInput( inputImage );
@@ -105,6 +111,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   int bkgId = atoi( argv[4] );
   filter->SetObjectId( objId );
   filter->AddObjectId( bkgId );
+  filter->AddObjectId( 0 );
   std::cout << filter << std::endl;
   filter->Update();
   std::cout << "Update done." << std::endl;
@@ -115,7 +122,8 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   PDFImageWriterType::Pointer pdfImageWriter = PDFImageWriterType::New();
   pdfImageWriter->SetFileName( argv[5] );
   pdfImageWriter->SetUseCompression( true );
-  pdfImageWriter->SetInput( filter->GetPDFSegmenter()->GetClassPDFImage( 0 ) );
+  pdfImageWriter->SetInput( filter->GetPDFSegmenter()->
+    GetClassPDFImage( 0 ) );
   try
     {
     pdfImageWriter->Update();
@@ -126,8 +134,24 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
+  FeatureImageWriterType::Pointer feature2ImageWriter =
+    FeatureImageWriterType::New();
+  feature2ImageWriter->SetFileName( argv[6] );
+  feature2ImageWriter->SetUseCompression( true );
+  feature2ImageWriter->SetInput( filter->GetRidgeFeatureGenerator()->
+    GetFeatureImage( 0 ) );
+  try
+    {
+    feature2ImageWriter->Update();
+    }
+  catch (itk::ExceptionObject& e)
+    {
+    std::cerr << "Exception caught during write:" << std::endl << e;
+    return EXIT_FAILURE;
+    }
+
   LabelmapWriterType::Pointer labelmapWriter = LabelmapWriterType::New();
-  labelmapWriter->SetFileName( argv[6] );
+  labelmapWriter->SetFileName( argv[7] );
   labelmapWriter->SetUseCompression( true );
   labelmapWriter->SetInput( filter->GetOutput() );
   try

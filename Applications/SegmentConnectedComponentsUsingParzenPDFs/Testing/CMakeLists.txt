@@ -45,8 +45,8 @@ MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
                --holeFillIterations 3
                --erodeRadius 1
                --voidId 0
-               --reclassifyNotObjectMask
-               --reclassifyObjectMask
+               --reclassifyNotObjectLabels
+               --reclassifyObjectLabels
                MIDAS{ES0015_Large_Subs.mha.md5}
                MIDAS{GDS0015_Large-TrainingMask_Subs.mha.md5}
                ${TEMP}/${MODULE_NAME}Test1.mha )

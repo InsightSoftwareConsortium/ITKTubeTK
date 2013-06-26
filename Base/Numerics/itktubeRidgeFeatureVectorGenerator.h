@@ -76,9 +76,6 @@ public:
   float GetIntensityMin( void ) const;
   float GetIntensityMax( void ) const;
 
-  void SetIntensityRangeByPercentile( float percentile,
-    bool findBrightPoints=true );
-
   void SetScales( const RidgeScalesType & scales );
   const RidgeScalesType & GetScales( void ) const;
 

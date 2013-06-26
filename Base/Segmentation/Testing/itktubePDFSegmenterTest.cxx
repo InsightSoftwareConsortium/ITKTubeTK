@@ -30,13 +30,14 @@ limitations under the License.
 
 int itktubePDFSegmenterTest( int argc, char * argv[] )
 {
-  if( argc != 11 )
+  if( argc != 12 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
-      << " inputImage1 inputImage2 inputMask force blur outputProbImage0"
-      << " outputPDF0 outputProbImage1 outputPDF1 outputMask"
+      << " inputImage1 inputImage2 inputLabelmap force blur outputProbImage0"
+      << " outputPDF0 outputProbImage1 outputPDF1 outputLabelmap"
+      << " labeledFeatureSpace"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -87,23 +88,23 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
   ImageType::Pointer inputImage2 = reader2->GetOutput();
 
   // Create the reader and writer
-  ReaderType::Pointer maskReader = ReaderType::New();
-  maskReader->SetFileName( argv[5] );
+  ReaderType::Pointer labelmapReader = ReaderType::New();
+  labelmapReader->SetFileName( argv[5] );
   try
     {
-    maskReader->Update();
+    labelmapReader->Update();
     }
   catch( itk::ExceptionObject& e )
     {
     std::cerr << "Exception caught during input read:\n"  << e;
     return EXIT_FAILURE;
     }
-  ImageType::Pointer maskImage = maskReader->GetOutput();
+  ImageType::Pointer labelmapImage = labelmapReader->GetOutput();
 
   FilterType::Pointer filter = FilterType::New();
   filter->SetInputVolume( 0, inputImage );
   filter->SetInputVolume( 1, inputImage2 );
-  filter->SetLabelmap( maskImage );
+  filter->SetLabelmap( labelmapImage );
   filter->SetObjectId( 255 );
   filter->AddObjectId( 127 );
   filter->SetVoidId( 0 );
@@ -117,14 +118,14 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
   filter->SetDraft( false );
   if( argv[3][0] == 't' || argv[3][0] == 'T' || argv[3][0] == '1' )
     {
-    filter->SetReclassifyObjectMask( true );
-    filter->SetReclassifyNotObjectMask( true );
+    filter->SetReclassifyObjectLabels( true );
+    filter->SetReclassifyNotObjectLabels( true );
     filter->SetForceClassification( true );
     }
   else
     {
-    filter->SetReclassifyObjectMask( false );
-    filter->SetReclassifyNotObjectMask( false );
+    filter->SetReclassifyObjectLabels( false );
+    filter->SetReclassifyNotObjectLabels( false );
     filter->SetForceClassification( false );
     }
   filter->Update();
@@ -133,7 +134,7 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
   WriterType::Pointer probWriter0 = WriterType::New();
   probWriter0->SetFileName( argv[6] );
   probWriter0->SetUseCompression( true );
-  probWriter0->SetInput( filter->GetClassProbabilityVolume( 0 ) );
+  probWriter0->SetInput( filter->GetClassProbabilityForInputVolume( 0 ) );
   try
     {
     probWriter0->Update();
@@ -161,7 +162,7 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
   WriterType::Pointer probWriter1 = WriterType::New();
   probWriter1->SetFileName( argv[8] );
   probWriter1->SetUseCompression( true );
-  probWriter1->SetInput( filter->GetClassProbabilityVolume( 1 ) );
+  probWriter1->SetInput( filter->GetClassProbabilityForInputVolume( 1 ) );
   try
     {
     probWriter1->Update();
@@ -186,13 +187,29 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  WriterType::Pointer maskWriter = WriterType::New();
-  maskWriter->SetFileName( argv[10] );
-  maskWriter->SetUseCompression( true );
-  maskWriter->SetInput( filter->GetLabelmap() );
+  WriterType::Pointer labelmapWriter = WriterType::New();
+  labelmapWriter->SetFileName( argv[10] );
+  labelmapWriter->SetUseCompression( true );
+  labelmapWriter->SetInput( filter->GetLabelmap() );
   try
     {
-    maskWriter->Update();
+    labelmapWriter->Update();
+    }
+  catch( itk::ExceptionObject& e )
+    {
+    std::cerr << "Exception caught during write:\n"  << e;
+    return EXIT_FAILURE;
+    }
+
+  filter->GenerateLabeledFeatureSpace();
+
+  WriterType::Pointer labeledFeatureSpaceWriter = WriterType::New();
+  labeledFeatureSpaceWriter->SetFileName( argv[11] );
+  labeledFeatureSpaceWriter->SetUseCompression( true );
+  labeledFeatureSpaceWriter->SetInput( filter->GetLabeledFeatureSpace() );
+  try
+    {
+    labeledFeatureSpaceWriter->Update();
     }
   catch( itk::ExceptionObject& e )
     {

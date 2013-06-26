@@ -60,7 +60,7 @@ unsigned int
 RidgeFeatureVectorGenerator< ImageT >
 ::GetNumberOfFeatures( void ) const
 {
-  const unsigned int numFeatures = m_Scales.size() * 5 + 8;
+  const unsigned int numFeatures = m_Scales.size() * 5 + 6;
 
   return numFeatures;
 }
@@ -88,8 +88,6 @@ RidgeFeatureVectorGenerator< ImageT >
   double extremeRoundness = 0;
   double extremeLevelness = 0;
   double extremeCurvature = 0;
-  typename NJetFunctionType::VectorType extremeTangent;
-  extremeTangent.Fill( 0 );
   for( unsigned int s=0; s<m_Scales.size(); s++ )
     {
     double ridgeness = njet->RidgenessAtIndex( indx, m_Scales[s] );
@@ -106,7 +104,6 @@ RidgeFeatureVectorGenerator< ImageT >
       extremeRoundness = njet->GetMostRecentRidgeRoundness();
       extremeLevelness = njet->GetMostRecentRidgeLevelness();
       extremeCurvature = njet->GetMostRecentRidgeCurvature();
-      extremeTangent = njet->GetMostRecentRidgeTangent();
       }
     }
   featureVector[featureCount++] = extremeScale;
@@ -115,42 +112,6 @@ RidgeFeatureVectorGenerator< ImageT >
   featureVector[featureCount++] = extremeRoundness;
   featureVector[featureCount++] = extremeLevelness;
   featureVector[featureCount++] = extremeCurvature;
-  typename ImageType::IndexType indx2 = indx;
-  typename NJetFunctionType::VectorType t;
-  typename NJetFunctionType::VectorType t2;
-  indx2[0] = indx[0] + vnl_math_rnd( extremeScale *
-    extremeTangent[0] );
-  indx2[1] = indx[1] + vnl_math_rnd( extremeScale *
-    extremeTangent[1] );
-  if( ImageDimension > 2 )
-    {
-    indx2[2] = indx[2] + vnl_math_rnd( extremeScale *
-      extremeTangent[2] );
-    }
-  double intensity = extremeIntensity;
-  if( this->m_InputImageList[0]
-    ->GetLargestPossibleRegion().IsInside( indx2 ) )
-    {
-    intensity = njet->EvaluateAtIndex( indx2, extremeScale );
-    }
-  featureVector[featureCount++] = intensity;
-
-  indx2[0] = indx[0] - vnl_math_rnd( extremeScale *
-    extremeTangent[0] );
-  indx2[1] = indx[1] - vnl_math_rnd( extremeScale *
-    extremeTangent[1] );
-  if( ImageDimension > 2 )
-    {
-    indx2[2] = indx[2] - vnl_math_rnd( extremeScale *
-      extremeTangent[2] );
-    }
-  intensity = extremeIntensity;
-  if( this->m_InputImageList[0]
-    ->GetLargestPossibleRegion().IsInside( indx2 ) )
-    {
-    intensity = njet->EvaluateAtIndex( indx2, extremeScale );
-    }
-  featureVector[featureCount++] = intensity;
 
   return featureVector;
 }

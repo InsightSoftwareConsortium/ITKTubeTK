@@ -107,7 +107,6 @@ public:
   float GetIntensityMin( void );
   void  SetIntensityMax( float intensityMax );
   float GetIntensityMax( void );
-  void  SetIntensityRangeByPercentile( float percentile );
 
   void  SetScales( const RidgeScalesType & Scales );
   RidgeScalesType GetScales( void );

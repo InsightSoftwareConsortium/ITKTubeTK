@@ -60,16 +60,16 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     ImageT::ImageDimension );
 
-  typedef LabelmapT                            MaskImageType;
-  typedef typename MaskImageType::PixelType    MaskPixelType;
+  typedef LabelmapT                            LabelmapType;
+  typedef typename LabelmapType::PixelType     LabelmapPixelType;
 
   typedef int                                  ObjectIdType;
   typedef std::vector< ObjectIdType >          ObjectIdListType;
 
   typedef float                                ProbabilityPixelType;
-  typedef Image< ProbabilityPixelType,
-    ImageT::ImageDimension >
+  typedef Image< ProbabilityPixelType, ImageT::ImageDimension >
                                                ProbabilityImageType;
+
   typedef std::vector< ProbabilityPixelType >  ProbabilityListType;
 
   typedef float                                HistogramPixelType;
@@ -77,6 +77,8 @@ public:
 
   typedef HistogramPixelType                   PDFPixelType;
   typedef HistogramImageType                   PDFImageType;
+
+  typedef Image< LabelmapPixelType, N >        LabeledFeatureSpaceType;
 
   typedef Vector< double, N >                  VectorDoubleNType;
 
@@ -99,8 +101,8 @@ public:
   itkSetMacro( VoidId, ObjectIdType );
   itkGetMacro( VoidId, ObjectIdType );
 
-  itkSetObjectMacro( Labelmap, MaskImageType );
-  itkGetObjectMacro( Labelmap, MaskImageType );
+  itkSetObjectMacro( Labelmap, LabelmapType );
+  itkGetObjectMacro( Labelmap, LabelmapType );
 
   itkSetMacro( ErodeRadius, int );
   itkSetMacro( HoleFillIterations, int );
@@ -111,8 +113,8 @@ public:
 
   int GetNumberOfClasses( void );
 
-  const typename ProbabilityImageType::Pointer GetClassProbabilityVolume(
-    unsigned int classNum ) const;
+  const typename ProbabilityImageType::Pointer
+    GetClassProbabilityForInputVolume( unsigned int classNum ) const;
 
   const typename PDFImageType::Pointer GetClassPDFImage(
     unsigned int classNum );
@@ -126,13 +128,13 @@ public:
 
   /** Copy the input object mask to the output mask, overwritting the
    *   classification assigned to those voxels. Default is false. */
-  itkSetMacro( ReclassifyObjectMask, bool );
-  itkGetMacro( ReclassifyObjectMask, bool );
+  itkSetMacro( ReclassifyObjectLabels, bool );
+  itkGetMacro( ReclassifyObjectLabels, bool );
 
   /** Copy the input not-object mask to the output mask, overwritting the
    *   classification assigned to those voxels. Default is false. */
-  itkSetMacro( ReclassifyNotObjectMask, bool );
-  itkGetMacro( ReclassifyNotObjectMask, bool );
+  itkSetMacro( ReclassifyNotObjectLabels, bool );
+  itkGetMacro( ReclassifyNotObjectLabels, bool );
 
   /** All object, void, and notObject pixels are force to being classified
    * as object or notObject. Default is false. */
@@ -142,9 +144,16 @@ public:
   void SetProgressProcessInformation( void * processInfo, double fraction,
     double start );
 
+  /** Given one PDF per class, generate a labelmap of feature space */
+  void GenerateLabeledFeatureSpace( void );
+
+  void SetLabeledFeatureSpace( typename LabeledFeatureSpaceType::Pointer
+    labeledFeatureSpace );
+
+  typename LabeledFeatureSpaceType::Pointer GetLabeledFeatureSpace( void );
+
   void Update( void );
   void ClassifyImages( void );
-  void GenerateLabeledFeatureSpace( void );
 
 protected:
 
@@ -183,17 +192,15 @@ private:
   typename ListSampleType::Pointer         m_OutClassList;
 
   ClassHistogramImageType                  m_InClassHistogram;
-  typename HistogramImageType::Pointer     m_OutHistogram;
   VectorDoubleNType                        m_HistogramBinMin;
   VectorDoubleNType                        m_HistogramBinMax;
   VectorDoubleNType                        m_HistogramBinScale;
   unsigned int                             m_HistogramNumBinsND;
-  unsigned int                             m_HistogramNumBins1D;
 
   //  Data
   std::vector< typename ImageType::Pointer > m_InputVolumeList;
 
-  typename MaskImageType::Pointer m_Labelmap;
+  typename LabelmapType::Pointer  m_Labelmap;
 
   ObjectIdListType                m_ObjectIdList;
   ObjectIdType                    m_VoidId;
@@ -206,11 +213,13 @@ private:
   double                          m_HistogramSmoothingStandardDeviation;
   double                          m_OutlierRejectPortion;
   bool                            m_Draft;
-  bool                            m_ReclassifyObjectMask;
-  bool                            m_ReclassifyNotObjectMask;
+  bool                            m_ReclassifyObjectLabels;
+  bool                            m_ReclassifyNotObjectLabels;
   bool                            m_ForceClassification;
 
   ProbabilityImageVectorType      m_ProbabilityImageVector;
+
+  typename LabeledFeatureSpaceType::Pointer    m_LabeledFeatureSpace;
 
   void                          * m_ProgressProcessInfo;
   double                          m_ProgressFraction;
