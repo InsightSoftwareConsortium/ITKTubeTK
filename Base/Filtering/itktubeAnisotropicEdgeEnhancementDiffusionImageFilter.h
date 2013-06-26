@@ -57,7 +57,7 @@ namespace tube
  */
 
 
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 class AnisotropicEdgeEnhancementDiffusionImageFilter
   : public AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 {

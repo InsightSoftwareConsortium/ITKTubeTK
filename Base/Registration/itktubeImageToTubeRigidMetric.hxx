@@ -34,13 +34,9 @@ namespace itk
 namespace tube
 {
 
-template < class TFixedImage,
-  class TMovingSpatialObject,
-  class TTubeSpatialObject,
-  class TResolutionWeightFunction >
-ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
+template< class TFixedImage, class TMovingSpatialObject,
+          class TTubeSpatialObject, class TResolutionWeightFunction >
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::ImageToTubeRigidMetric( void )
 {
@@ -56,30 +52,20 @@ ImageToTubeRigidMetric< TFixedImage,
 }
 
 
-template < class TFixedImage,
-  class TMovingSpatialObject,
-  class TTubeSpatialObject,
-  class TResolutionWeightFunction >
-ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
-  TResolutionWeightFunction >
+template< class TFixedImage, class TMovingSpatialObject,
+          class TTubeSpatialObject, class TResolutionWeightFunction >
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
+                        TResolutionWeightFunction >
 ::~ImageToTubeRigidMetric( void )
 {
 }
 
 
-template < class TFixedImage,
-  class TMovingSpatialObject,
-  class TTubeSpatialObject,
-  class TResolutionWeightFunction >
-typename ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
-  TResolutionWeightFunction >::ResolutionWeightFunctionType &
-ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
+template< class TFixedImage, class TMovingSpatialObject,
+          class TTubeSpatialObject, class TResolutionWeightFunction >
+typename ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
+  TTubeSpatialObject, TResolutionWeightFunction >::ResolutionWeightFunctionType &
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::GetResolutionWeightFunction( void )
 {
@@ -87,17 +73,11 @@ ImageToTubeRigidMetric< TFixedImage,
 }
 
 
-template < class TFixedImage,
-  class TMovingSpatialObject,
-  class TTubeSpatialObject,
-  class TResolutionWeightFunction >
-const typename ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
-  TResolutionWeightFunction >::ResolutionWeightFunctionType &
-ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
+template< class TFixedImage, class TMovingSpatialObject,
+          class TTubeSpatialObject, class TResolutionWeightFunction >
+const typename ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
+  TTubeSpatialObject, TResolutionWeightFunction >::ResolutionWeightFunctionType &
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::GetResolutionWeightFunction( void ) const
 {
@@ -105,14 +85,10 @@ ImageToTubeRigidMetric< TFixedImage,
 }
 
 
-template < class TFixedImage,
-  class TMovingSpatialObject,
-  class TTubeSpatialObject,
-  class TResolutionWeightFunction >
+template< class TFixedImage, class TMovingSpatialObject,
+          class TTubeSpatialObject, class TResolutionWeightFunction >
 void
-ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::SetResolutionWeightFunction( const ResolutionWeightFunctionType & function )
 {
@@ -124,14 +100,10 @@ ImageToTubeRigidMetric< TFixedImage,
 }
 
 
-template < class TFixedImage,
-  class TMovingSpatialObject,
-  class TTubeSpatialObject,
-  class TResolutionWeightFunction >
+template< class TFixedImage, class TMovingSpatialObject,
+          class TTubeSpatialObject, class TResolutionWeightFunction >
 void
-ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::Initialize( void ) throw ( ExceptionObject )
 {
@@ -150,14 +122,10 @@ ImageToTubeRigidMetric< TFixedImage,
 }
 
 
-template < class TFixedImage,
-  class TMovingSpatialObject,
-  class TTubeSpatialObject,
-  class TResolutionWeightFunction >
+template< class TFixedImage, class TMovingSpatialObject,
+          class TTubeSpatialObject, class TResolutionWeightFunction >
 void
-ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::ComputeImageRange( void )
 {
@@ -172,14 +140,10 @@ ImageToTubeRigidMetric< TFixedImage,
 }
 
 
-template < class TFixedImage,
-  class TMovingSpatialObject,
-  class TTubeSpatialObject,
-  class TResolutionWeightFunction >
+template< class TFixedImage, class TMovingSpatialObject,
+          class TTubeSpatialObject, class TResolutionWeightFunction >
 void
-ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::ComputeTubePointResolutionWeights( void )
 {
@@ -237,17 +201,11 @@ ImageToTubeRigidMetric< TFixedImage,
 }
 
 
-template < class TFixedImage,
-  class TMovingSpatialObject,
-  class TTubeSpatialObject,
-  class TResolutionWeightFunction >
-typename ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
-  TResolutionWeightFunction >::TubeNetType::ChildrenListType*
-ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
+template< class TFixedImage, class TMovingSpatialObject,
+          class TTubeSpatialObject, class TResolutionWeightFunction >
+typename ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
+  TTubeSpatialObject, TResolutionWeightFunction >::TubeNetType::ChildrenListType*
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::GetTubes( void ) const
 {
@@ -265,17 +223,11 @@ ImageToTubeRigidMetric< TFixedImage,
 /** Get the match Measure */
 // TODO Do not pass the parameter as arguments use instead
 // the transform parameters previously set.
-template < class TFixedImage,
-  class TMovingSpatialObject,
-  class TTubeSpatialObject,
-  class TResolutionWeightFunction >
-typename ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
-  TResolutionWeightFunction >::MeasureType
-ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
+template< class TFixedImage, class TMovingSpatialObject,
+          class TTubeSpatialObject, class TResolutionWeightFunction >
+typename ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
+  TTubeSpatialObject, TResolutionWeightFunction >::MeasureType
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::GetValue( const ParametersType & parameters ) const
 {
@@ -363,17 +315,12 @@ ImageToTubeRigidMetric< TFixedImage,
 
 /** Compute the Laplacian magnitude */
 // TODO FACTORIZE CODE --> See ComputeThirdDerivative
-template < class TFixedImage,
-  class TMovingSpatialObject,
-  class TTubeSpatialObject,
-  class TResolutionWeightFunction >
+template< class TFixedImage, class TMovingSpatialObject,
+          class TTubeSpatialObject, class TResolutionWeightFunction >
 typename ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
+  TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >::InternalComputationValueType
-ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::ComputeLaplacianMagnitude(
   const typename TubePointType::CovariantVectorType & tubeNormal,
@@ -442,14 +389,10 @@ ImageToTubeRigidMetric< TFixedImage,
 }
 
 
-template < class TFixedImage,
-  class TMovingSpatialObject,
-  class TTubeSpatialObject,
-  class TResolutionWeightFunction >
+template< class TFixedImage, class TMovingSpatialObject,
+          class TTubeSpatialObject, class TResolutionWeightFunction >
 void
-ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::GetDeltaAngles( const OutputPointType & tubePoint,
   const vnl_vector_fixed<double, 3> & dx,
@@ -471,14 +414,10 @@ ImageToTubeRigidMetric< TFixedImage,
 }
 
 
-template < class TFixedImage,
-  class TMovingSpatialObject,
-  class TTubeSpatialObject,
-  class TResolutionWeightFunction >
+template< class TFixedImage, class TMovingSpatialObject,
+          class TTubeSpatialObject, class TResolutionWeightFunction >
 void
-ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::GetDerivative( const ParametersType & parameters,
                  DerivativeType & derivative ) const
@@ -660,14 +599,10 @@ ImageToTubeRigidMetric< TFixedImage,
 }
 
 
-template < class TFixedImage,
-  class TMovingSpatialObject,
-  class TTubeSpatialObject,
-  class TResolutionWeightFunction >
+template< class TFixedImage, class TMovingSpatialObject,
+          class TTubeSpatialObject, class TResolutionWeightFunction >
 void
-ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::GetValueAndDerivative( const ParametersType & parameters,
                          MeasureType & value,
@@ -678,17 +613,11 @@ ImageToTubeRigidMetric< TFixedImage,
 }
 
 
-template < class TFixedImage,
-  class TMovingSpatialObject,
-  class TTubeSpatialObject,
-  class TResolutionWeightFunction >
-typename ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
-  TResolutionWeightFunction >::InternalComputationValueType
-ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
+template< class TFixedImage, class TMovingSpatialObject,
+          class TTubeSpatialObject, class TResolutionWeightFunction >
+typename ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
+  TTubeSpatialObject, TResolutionWeightFunction >::InternalComputationValueType
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::ComputeThirdDerivatives(
   const Vector< InternalComputationValueType, TubeDimension > *tubeNormal,
@@ -735,14 +664,10 @@ ImageToTubeRigidMetric< TFixedImage,
 }
 
 
-template < class TFixedImage,
-  class TMovingSpatialObject,
-  class TTubeSpatialObject,
-  class TResolutionWeightFunction >
+template< class TFixedImage, class TMovingSpatialObject,
+          class TTubeSpatialObject, class TResolutionWeightFunction >
 bool
-ImageToTubeRigidMetric< TFixedImage,
-  TMovingSpatialObject,
-  TTubeSpatialObject,
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::IsInside( const InputPointType & inputPoint,
   OutputPointType & outputPoint,

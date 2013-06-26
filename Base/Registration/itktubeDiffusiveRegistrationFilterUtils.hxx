@@ -39,7 +39,7 @@ namespace tube
 /**
  * Helper function to allocate space for an image given a template image
  */
-template < class TUnallocatedImagePointer, class TemplateImagePointer >
+template< class TUnallocatedImagePointer, class TemplateImagePointer >
 void
 DiffusiveRegistrationFilterUtils
 ::AllocateSpaceForImage( TUnallocatedImagePointer& image,
@@ -59,7 +59,7 @@ DiffusiveRegistrationFilterUtils
 /**
  * Helper function to check whether the attributes of an image matches template
  */
-template < class CheckedImageType, class TemplateImageType >
+template< class CheckedImageType, class TemplateImageType >
 bool
 DiffusiveRegistrationFilterUtils
 ::CompareImageAttributes( const CheckedImageType * image,

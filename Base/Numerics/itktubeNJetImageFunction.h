@@ -44,7 +44,7 @@ namespace tube
  *        given a scale and extent of the gaussian.
  * This class is templated over the input image type.
  */
-template <class TInputImage>
+template< class TInputImage >
 class NJetImageFunction :
 public Object // ImageFunction< TInputImage, double >
 {

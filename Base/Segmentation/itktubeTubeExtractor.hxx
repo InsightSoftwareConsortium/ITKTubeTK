@@ -39,7 +39,7 @@ namespace tube
 
 /**
  * Constructor */
-template<class TInputImage>
+template< class TInputImage >
 TubeExtractor<TInputImage>
 ::TubeExtractor( void )
 {
@@ -61,7 +61,7 @@ TubeExtractor<TInputImage>
 
 /**
  * Destructor */
-template<class TInputImage>
+template< class TInputImage >
 TubeExtractor<TInputImage>
 ::~TubeExtractor( void )
 {
@@ -69,7 +69,7 @@ TubeExtractor<TInputImage>
 
 /**
  * Set the input image */
-template<class TInputImage>
+template< class TInputImage >
 void
 TubeExtractor<TInputImage>
 ::SetInputImage( typename ImageType::Pointer inputImage )
@@ -86,7 +86,7 @@ TubeExtractor<TInputImage>
 
 /**
  * Set the input image */
-template<class TInputImage>
+template< class TInputImage >
 typename TubeExtractor<TInputImage>::TubeMaskImageType::Pointer
 TubeExtractor<TInputImage>
 ::GetTubeMaskImage( void )
@@ -101,7 +101,7 @@ TubeExtractor<TInputImage>
 
 /**
  * Set Data Min value */
-template<class TInputImage>
+template< class TInputImage >
 void
 TubeExtractor<TInputImage>
 ::SetDataMin( double dataMin )
@@ -117,7 +117,7 @@ TubeExtractor<TInputImage>
 
 /**
  * Get Data Min value */
-template<class TInputImage>
+template< class TInputImage >
 double
 TubeExtractor<TInputImage>
 ::GetDataMin( void )
@@ -132,7 +132,7 @@ TubeExtractor<TInputImage>
 
 /**
  * Set Data Max value */
-template<class TInputImage>
+template< class TInputImage >
 void
 TubeExtractor<TInputImage>
 ::SetDataMax( double dataMax )
@@ -149,7 +149,7 @@ TubeExtractor<TInputImage>
 
 /**
  * Get Data Max value */
-template<class TInputImage>
+template< class TInputImage >
 double
 TubeExtractor<TInputImage>
 ::GetDataMax( void )
@@ -164,7 +164,7 @@ TubeExtractor<TInputImage>
 
 /**
  * Set Data Min value */
-template<class TInputImage>
+template< class TInputImage >
 void
 TubeExtractor<TInputImage>
 ::SetExtractBoundMin( typename TInputImage::IndexType dataMin )
@@ -179,7 +179,7 @@ TubeExtractor<TInputImage>
 
 /**
  * Get Data Min value */
-template<class TInputImage>
+template< class TInputImage >
 typename TInputImage::IndexType
 TubeExtractor<TInputImage>
 ::GetExtractBoundMin( void ) const
@@ -194,7 +194,7 @@ TubeExtractor<TInputImage>
 
 /**
  * Set Data Max value */
-template<class TInputImage>
+template< class TInputImage >
 void
 TubeExtractor<TInputImage>
 ::SetExtractBoundMax( typename TInputImage::IndexType dataMax )
@@ -210,7 +210,7 @@ TubeExtractor<TInputImage>
 
 /**
  * Get Data Max value */
-template<class TInputImage>
+template< class TInputImage >
 typename TInputImage::IndexType
 TubeExtractor<TInputImage>
 ::GetExtractBoundMax( void ) const
@@ -225,7 +225,7 @@ TubeExtractor<TInputImage>
 
 /**
  * Set Radius */
-template<class TInputImage>
+template< class TInputImage >
 void
 TubeExtractor<TInputImage>
 ::SetRadius( double radius )
@@ -241,7 +241,7 @@ TubeExtractor<TInputImage>
 
 /**
  * Get Radius */
-template<class TInputImage>
+template< class TInputImage >
 double
 TubeExtractor<TInputImage>
 ::GetRadius( void )
@@ -256,7 +256,7 @@ TubeExtractor<TInputImage>
 
 /**
  * Extract the ridge */
-template<class TInputImage>
+template< class TInputImage >
 void
 TubeExtractor<TInputImage>
 ::ExtractBrightTube( bool extractRidge )
@@ -271,7 +271,7 @@ TubeExtractor<TInputImage>
 
 /**
  * Get Extract ridge */
-template<class TInputImage>
+template< class TInputImage >
 bool
 TubeExtractor<TInputImage>
 ::ExtractBrightTube( void )
@@ -286,7 +286,7 @@ TubeExtractor<TInputImage>
 
 /**
  * Get the ridge extractor */
-template<class TInputImage>
+template< class TInputImage >
 typename RidgeExtractor<TInputImage>::Pointer
 TubeExtractor<TInputImage>
 ::GetRidgeOp( void )
@@ -296,7 +296,7 @@ TubeExtractor<TInputImage>
 
 /**
  * Get the radius extractor */
-template<class TInputImage>
+template< class TInputImage >
 typename RadiusExtractor<TInputImage>::Pointer
 TubeExtractor<TInputImage>
 ::GetRadiusOp( void )
@@ -307,7 +307,7 @@ TubeExtractor<TInputImage>
 /**
  * Extract the tube given the position of the first point
  * and the tube ID */
-template<class TInputImage>
+template< class TInputImage >
 bool
 TubeExtractor<TInputImage>
 ::LocalTube( ContinuousIndexType & x )
@@ -323,7 +323,7 @@ TubeExtractor<TInputImage>
 /**
  * Extract the tube given the position of the first point
  * and the tube ID */
-template<class TInputImage>
+template< class TInputImage >
 typename TubeExtractor< TInputImage >::TubeType::Pointer
 TubeExtractor<TInputImage>
 ::ExtractTube( ContinuousIndexType & x, unsigned int tubeID )
@@ -400,7 +400,7 @@ TubeExtractor<TInputImage>
 
 /**
  * Smooth a tube */
-template<class TInputImage>
+template< class TInputImage >
 void
   TubeExtractor<TInputImage>
 ::SmoothTube( TubeType * tube, int h )
@@ -415,7 +415,7 @@ void
 
 /**
  * Add a tube */
-template<class TInputImage>
+template< class TInputImage >
 bool
   TubeExtractor<TInputImage>
 ::AddTube( TubeType * tube )
@@ -430,7 +430,7 @@ bool
 
 /**
  * Delete a tube */
-template<class TInputImage>
+template< class TInputImage >
 bool
   TubeExtractor<TInputImage>
 ::DeleteTube( TubeType * tube )
@@ -445,7 +445,7 @@ bool
 
 /**
  * Set the tube color */
-template<class TInputImage>
+template< class TInputImage >
 void
   TubeExtractor<TInputImage>
 ::SetColor( float color[4] )
@@ -458,7 +458,7 @@ void
 
 /**
  * Set the idle call back */
-template<class TInputImage>
+template< class TInputImage >
 void
   TubeExtractor<TInputImage>
 ::IdleCallBack( bool ( *idleCallBack )() )
@@ -468,7 +468,7 @@ void
 
 /**
  * Set the status callback  */
-template<class TInputImage>
+template< class TInputImage >
 void
   TubeExtractor<TInputImage>
 ::StatusCallBack( void ( *statusCallBack )( const char *, const char *,
@@ -486,7 +486,7 @@ void
 
 /**
  * Set the status callback  */
-template<class TInputImage>
+template< class TInputImage >
 void
   TubeExtractor<TInputImage>
 ::NewTubeCallBack( void ( *newTubeCallBack )( TubeType * ) )
@@ -496,7 +496,7 @@ void
 
 /**
  * Abort the process  */
-template<class TInputImage>
+template< class TInputImage >
 void
   TubeExtractor<TInputImage>
 ::AbortProcess( bool ( *abortProcess )() )
@@ -506,7 +506,7 @@ void
 
 /**
  * PrintSelf */
-template<class TInputImage>
+template< class TInputImage >
 void TubeExtractor<TInputImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {

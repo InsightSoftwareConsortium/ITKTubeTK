@@ -42,7 +42,7 @@ namespace tube
  *  the Z-Score at a point when Evaluate is called. The neighboorhood used in
  *  the computation of the joint histogram is determined by the feature width.
  */
-template<class TInputImage, class TCoordRep = float>
+template< class TInputImage, class TCoordRep = float >
 class JointHistogramImageFunction :
     public ImageFunction< TInputImage, double, TCoordRep >
 {

@@ -71,7 +71,7 @@ AnisotropicDiffusionTensorFunction< TImageType>
   this->m_UseImageSpacing = true;
 }
 
-template <class TImageType>
+template< class TImageType >
 void
 AnisotropicDiffusionTensorFunction<TImageType>
 ::PrintSelf(std::ostream& os, Indent indent) const
@@ -299,8 +299,8 @@ AnisotropicDiffusionTensorFunction< TImageType >
   return ( PixelType ) ( total );
 }
 
-template < class TImageType >
-template < class TPixel, unsigned int VImageDimension >
+template< class TImageType >
+template< class TPixel, unsigned int VImageDimension >
 void
 AnisotropicDiffusionTensorFunction<TImageType>
 ::CheckTimeStepStability(

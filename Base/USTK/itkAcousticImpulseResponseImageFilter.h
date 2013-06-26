@@ -61,7 +61,7 @@ namespace itk
  *
  * \ingroup ImageToImageFilter
  */
-template< class TInputImage, class TOutputImage, class TOperatorValue=float >
+template< class TInputImage, class TOutputImage, class TOperatorValue = float >
 class AcousticImpulseResponseImageFilter :
   public ImageToImageFilter< TInputImage, TOutputImage >
 {

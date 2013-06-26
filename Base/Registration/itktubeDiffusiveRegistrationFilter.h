@@ -116,7 +116,7 @@ struct EnergiesStruct
  * \ingroup MultiThreaded
  */
 
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 class DiffusiveRegistrationFilter
   : public PDEDeformableRegistrationFilter< TFixedImage,
                                            TMovingImage,

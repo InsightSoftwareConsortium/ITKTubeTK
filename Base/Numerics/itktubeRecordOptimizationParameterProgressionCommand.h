@@ -41,8 +41,7 @@ namespace tube
  *
  * This Command should observe an itk::SingleValuedNonLinearOptimizer.
  * */
-template< unsigned int VNumberOfParameters,
-          class TParametersValue = double >
+template< unsigned int VNumberOfParameters, class TParametersValue = double >
 class RecordOptimizationParameterProgressionCommand
   : public Command
 {

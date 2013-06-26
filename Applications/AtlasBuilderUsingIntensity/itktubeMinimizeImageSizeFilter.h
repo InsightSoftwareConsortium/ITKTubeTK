@@ -45,7 +45,7 @@ namespace tube
  * Done for all dimensions...Good Filter to follow \sa
  * itkCompleteImageResampleFilter.h
  */
-template<class TInputImage >
+template< class TInputImage >
 class MinimizeImageSizeFilter : public ImageToImageFilter< TInputImage,
                                                            TInputImage >
 {

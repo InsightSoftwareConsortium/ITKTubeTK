@@ -53,10 +53,11 @@ namespace tube
  * \warning (Derivative)
  */
 
-template < class TFixedImage,
-  class TMovingSpatialObject,
-  class TTubeSpatialObject,
-  class TResolutionWeightFunction = Function::TubeExponentialResolutionWeightFunction< typename TTubeSpatialObject::TubePointType > >
+template< class TFixedImage, class TMovingSpatialObject,
+          class TTubeSpatialObject,
+          class TResolutionWeightFunction =
+            Function::TubeExponentialResolutionWeightFunction<
+            typename TTubeSpatialObject::TubePointType > >
 class ImageToTubeRigidMetric
 : public ImageToSpatialObjectMetric< TFixedImage, TMovingSpatialObject >
 {

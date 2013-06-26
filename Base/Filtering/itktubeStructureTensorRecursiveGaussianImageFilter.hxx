@@ -37,7 +37,7 @@ namespace tube
 /**
  * Constructor
  */
-template <typename TInputImage, typename TOutputImage >
+template< class TInputImage, class TOutputImage >
 StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 ::StructureTensorRecursiveGaussianImageFilter( void )
 {
@@ -88,7 +88,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 /**
  * Set value of Sigma
  */
-template <typename TInputImage, typename TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 ::SetSigma( RealType sigma )
@@ -109,7 +109,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 /**
  * Set value of SigmaOuter
  */
-template <typename TInputImage, typename TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 ::SetSigmaOuter( RealType sigma )
@@ -122,7 +122,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 /**
  * Set Normalize Across Scale Space
  */
-template <typename TInputImage, typename TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 ::SetNormalizeAcrossScale( bool normalize )
@@ -140,7 +140,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 
 }
 
-template <typename TInputImage, typename TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 ::GenerateInputRequestedRegion() throw(InvalidRequestedRegionError)
@@ -157,7 +157,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
   image->SetRequestedRegion( this->GetInput()->GetLargestPossibleRegion() );
 }
 
-template <typename TInputImage, typename TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 ::EnlargeOutputRequestedRegion(DataObject *output)
@@ -173,7 +173,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 /**
  * Compute filter for Gaussian kernel
  */
-template <typename TInputImage, typename TOutputImage >
+template< class TInputImage, class TOutputImage >
 void
 StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
 ::GenerateData( void )
@@ -341,7 +341,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
 }
 
 
-template <typename TInputImage, typename TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const

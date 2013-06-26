@@ -41,7 +41,7 @@ namespace itk
 namespace tube
 {
 
-template < class TFixedImage, class TMovingSpatialObject, class TMovingTube >
+template< class TFixedImage, class TMovingSpatialObject, class TMovingTube >
 ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 ::ImageToTubeRigidRegistration( void )
 {
@@ -94,7 +94,7 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 }
 
 
-template < class TFixedImage, class TMovingSpatialObject, class TMovingTube >
+template< class TFixedImage, class TMovingSpatialObject, class TMovingTube >
 void
 ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 ::SetInitialPosition( const double position[6] )
@@ -107,7 +107,7 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 }
 
 
-template < class TFixedImage, class TMovingSpatialObject, class TMovingTube >
+template< class TFixedImage, class TMovingSpatialObject, class TMovingTube >
 void
 ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 ::SetParametersScale( const double scales[6] )
@@ -120,7 +120,7 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 }
 
 
-template < class TFixedImage, class TMovingSpatialObject, class TMovingTube >
+template< class TFixedImage, class TMovingSpatialObject, class TMovingTube >
 void
 ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 ::Initialize() throw ( ExceptionObject )
@@ -148,7 +148,7 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 }
 
 
-template < class TFixedImage, class TMovingSpatialObject, class TMovingTube >
+template< class TFixedImage, class TMovingSpatialObject, class TMovingTube >
 void
 ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 ::StartRegistration( void )

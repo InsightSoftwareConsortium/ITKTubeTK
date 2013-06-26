@@ -32,7 +32,7 @@ namespace itk
 namespace tube
 {
 
-template< typename TInputSpatialObject, typename TOutputSpatialObject >
+template< class TInputSpatialObject, class TOutputSpatialObject >
 SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
 ::SpatialObjectToSpatialObjectFilter( void )
 {
@@ -40,7 +40,7 @@ SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
 }
 
 
-template< typename TInputSpatialObject, typename TOutputSpatialObject >
+template< class TInputSpatialObject, class TOutputSpatialObject >
 void
 SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
 ::SetInput( const InputSpatialObjectType * input )
@@ -51,7 +51,7 @@ SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
 }
 
 
-template< typename TInputSpatialObject, typename TOutputSpatialObject >
+template< class TInputSpatialObject, class TOutputSpatialObject >
 void
 SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
 ::SetInput( unsigned int index, const InputSpatialObjectType * input )
@@ -62,7 +62,7 @@ SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
 }
 
 
-template< typename TInputSpatialObject, typename TOutputSpatialObject >
+template< class TInputSpatialObject, class TOutputSpatialObject >
 const typename SpatialObjectToSpatialObjectFilter
 < TInputSpatialObject, TOutputSpatialObject >::InputSpatialObjectType *
 SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
@@ -73,7 +73,7 @@ SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
 }
 
 
-template< typename TInputSpatialObject, typename TOutputSpatialObject >
+template< class TInputSpatialObject, class TOutputSpatialObject >
 const typename SpatialObjectToSpatialObjectFilter
 < TInputSpatialObject, TOutputSpatialObject >::InputSpatialObjectType *
 SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >

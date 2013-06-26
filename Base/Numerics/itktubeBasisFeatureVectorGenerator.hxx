@@ -662,7 +662,7 @@ BasisFeatureVectorGenerator< ImageT, LabelmapT >
   return featureVector;
 }
 
-template<class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 BasisFeatureVectorGenerator< ImageT, LabelmapT >
 ::PrintSelf( std::ostream & os, Indent indent ) const

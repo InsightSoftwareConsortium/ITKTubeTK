@@ -40,7 +40,7 @@ namespace tube
 /**
  * Constructor
  */
-template<class TInputImage>
+template< class TInputImage >
 OtsuThresholdMaskedImageCalculator<TInputImage>
 ::OtsuThresholdMaskedImageCalculator( void )
 {
@@ -55,7 +55,7 @@ OtsuThresholdMaskedImageCalculator<TInputImage>
 /*
  * Compute the Otsu's threshold
  */
-template<class TInputImage>
+template< class TInputImage >
 void
 OtsuThresholdMaskedImageCalculator<TInputImage>
 ::Compute( void )
@@ -259,7 +259,7 @@ OtsuThresholdMaskedImageCalculator<TInputImage>
                                         ( maxBinNumber + 1 ) / binMultiplier );
 }
 
-template<class TInputImage>
+template< class TInputImage >
 void
 OtsuThresholdMaskedImageCalculator<TInputImage>
 ::SetRegion( const RegionType & region )
@@ -269,7 +269,7 @@ OtsuThresholdMaskedImageCalculator<TInputImage>
 }
 
 
-template<class TInputImage>
+template< class TInputImage >
 void
 OtsuThresholdMaskedImageCalculator<TInputImage>
 ::PrintSelf( std::ostream& os, Indent indent ) const

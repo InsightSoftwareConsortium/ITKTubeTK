@@ -35,7 +35,7 @@ namespace tube
  *
  * \sa SubSampleTubeTreeSpatialObjectFilter
  */
-template< typename TTubeSpatialObject >
+template< class TTubeSpatialObject >
 class SubSampleTubeSpatialObjectFilter :
   public SpatialObjectToSpatialObjectFilter< TTubeSpatialObject, TTubeSpatialObject >
 {

@@ -38,7 +38,7 @@ namespace tube
 {
 
 //----------------------------------------------------------------------------
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 DifferenceImageFilter<TInputImage, TOutputImage>
 ::DifferenceImageFilter( void )
 {
@@ -59,7 +59,7 @@ DifferenceImageFilter<TInputImage, TOutputImage>
 }
 
 //----------------------------------------------------------------------------
-template<class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 DifferenceImageFilter<TInputImage, TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const
@@ -76,7 +76,7 @@ DifferenceImageFilter<TInputImage, TOutputImage>
 }
 
 //----------------------------------------------------------------------------
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 DifferenceImageFilter<TInputImage, TOutputImage>
 ::SetValidInput(const InputImageType* validImage)
@@ -86,7 +86,7 @@ DifferenceImageFilter<TInputImage, TOutputImage>
 }
 
 //----------------------------------------------------------------------------
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 DifferenceImageFilter<TInputImage, TOutputImage>
 ::SetTestInput(const InputImageType* testImage)
@@ -96,7 +96,7 @@ DifferenceImageFilter<TInputImage, TOutputImage>
 }
 
 //----------------------------------------------------------------------------
-template<class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 DifferenceImageFilter<TInputImage, TOutputImage>
 ::BeforeThreadedGenerateData( void )
@@ -118,7 +118,7 @@ DifferenceImageFilter<TInputImage, TOutputImage>
 }
 
 //----------------------------------------------------------------------------
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 DifferenceImageFilter<TInputImage, TOutputImage>
 ::ThreadedGenerateData(const OutputImageRegionType &threadRegion,
@@ -231,7 +231,7 @@ DifferenceImageFilter<TInputImage, TOutputImage>
 }
 
 //----------------------------------------------------------------------------
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 DifferenceImageFilter<TInputImage, TOutputImage>
 ::AfterThreadedGenerateData( void )

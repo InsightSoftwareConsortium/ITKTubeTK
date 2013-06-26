@@ -40,7 +40,7 @@ enum { Information, Warning, Error, Debug };
 
 } // End namespace MessageLevel
 
-template <class T>
+template< class T >
 void Message( const T& str, int level = 0 )
 {
 #ifndef NDEBUG
@@ -190,35 +190,35 @@ inline void FmtDebugMessage(const char* fmt, ...)
 }
 
 
-template <class T>
+template< class T >
 void InfoMessage( const T& str )
 {
   Message( str, MessageLevel::Information );
 }
 
 
-template <class T>
+template< class T >
 void InformationMessage( const T& str )
 {
   Message( str, MessageLevel::Information );
 }
 
 
-template <class T>
+template< class T >
 void WarningMessage( const T& str )
 {
   Message( str, MessageLevel::Warning );
 }
 
 
-template <class T>
+template< class T >
 void ErrorMessage( const T& str )
 {
   Message( str, MessageLevel::Error );
 }
 
 
-template <class T>
+template< class T >
 void DebugMessage( const T& str )
 {
   Message( str, MessageLevel::Debug );

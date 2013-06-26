@@ -31,7 +31,7 @@ namespace tube
 /** \class SpatialObjectToSpatialObjectFilter
  * \brief Base class for filters that take an image as input and produce an image as output.
  */
-template <class TInputSpatialObject, class TOutputSpatialObject>
+template< class TInputSpatialObject, class TOutputSpatialObject >
 class SpatialObjectToSpatialObjectFilter :
 public ProcessObject
 {

@@ -46,7 +46,7 @@ namespace tube
 /** Define the Medialness Function
  * \class RadiusExtractorMedialnessFunc
  */
-template < class ImageT >
+template< class ImageT >
 class RadiusExtractorMedialnessFunc : public ::tube::UserFunction<int, double>
 {
 public:
@@ -108,7 +108,7 @@ private:
 }; // End class RadiusExtractorMedialnessFunc
 
 /** Constructor */
-template<class TInputImage>
+template< class TInputImage >
 RadiusExtractor<TInputImage>
 ::RadiusExtractor( void )
 {
@@ -193,7 +193,7 @@ RadiusExtractor<TInputImage>
 }
 
 /** Destructor */
-template<class TInputImage>
+template< class TInputImage >
 RadiusExtractor<TInputImage>
 ::~RadiusExtractor( void )
 {
@@ -212,7 +212,7 @@ RadiusExtractor<TInputImage>
 
 
 /** Set Radius Min */
-template<class TInputImage>
+template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::SetRadius0( double radius0 )
@@ -231,7 +231,7 @@ RadiusExtractor<TInputImage>
 }
 
 /** Set Radius Min */
-template<class TInputImage>
+template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::SetRadiusMin( double radiusMin )
@@ -250,7 +250,7 @@ RadiusExtractor<TInputImage>
 }
 
 /** Set Radius Max */
-template<class TInputImage>
+template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::SetRadiusMax( double radiusMax )
@@ -264,7 +264,7 @@ RadiusExtractor<TInputImage>
 }
 
 /** Get the medialness operator */
-template<class TInputImage>
+template< class TInputImage >
 typename RadiusExtractor<TInputImage>::OptimizerType &
 RadiusExtractor<TInputImage>
 ::GetMedialnessOptimizer( void )
@@ -273,7 +273,7 @@ RadiusExtractor<TInputImage>
 }
 
 /** Get the medialness operator */
-template<class TInputImage>
+template< class TInputImage >
 typename RadiusExtractor<TInputImage>::SplineType &
 RadiusExtractor<TInputImage>
 ::GetMedialnessOptimizerSpline( void )
@@ -282,7 +282,7 @@ RadiusExtractor<TInputImage>
 }
 
 /** Set the input image */
-template<class TInputImage>
+template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::SetInputImage( typename ImageType::Pointer inputImage  )
@@ -320,7 +320,7 @@ RadiusExtractor<TInputImage>
 /**
  * Compute the medialness at a point
  */
-template<class TInputImage>
+template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::MeasuresAtPoint( TubePointType & pnt, double pntR,
@@ -408,7 +408,7 @@ RadiusExtractor<TInputImage>
 }
 
 /** Compute the medialness at a kernel */
-template<class TInputImage>
+template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::MeasuresInKernelArray( KernArrayType & kernArray,
@@ -521,7 +521,7 @@ RadiusExtractor<TInputImage>
 }
 
 /** Compute the Optimal scale */
-template<class TInputImage>
+template< class TInputImage >
 bool
 RadiusExtractor<TInputImage>
 ::OptimalRadiusAtPoint( TubePointType & pnt, double & r0,
@@ -650,7 +650,7 @@ RadiusExtractor<TInputImage>
   return true;
 }
 
-template<class TInputImage>
+template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const
@@ -714,7 +714,7 @@ RadiusExtractor<TInputImage>
   os << indent << "StatusCallBack = " << m_StatusCallBack << std::endl;
 }
 
-template<class TInputImage>
+template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::ValuesInSubKernel( TubePointType pnt, double pntR,
@@ -812,7 +812,7 @@ RadiusExtractor<TInputImage>
     }
 }
 
-template<class TInputImage>
+template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::ValuesInKernel( TubePointType pnt, double pntR,
@@ -1013,7 +1013,7 @@ RadiusExtractor<TInputImage>
 }
 
 /** Compute kernel array */
-template<class TInputImage>
+template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::ValuesInFullKernelArray( TubeType * tube,
@@ -1102,7 +1102,7 @@ RadiusExtractor<TInputImage>
 
 /**
  * Compute the medialness and the branchness */
-template<class TInputImage>
+template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::MeasuresInKernel( double pntR,
@@ -1321,7 +1321,7 @@ RadiusExtractor<TInputImage>
 
 
 /** Compute Kernel radii one way */
-template<class TInputImage>
+template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::MeasuresInFullKernelArray( KernArrayType & kernArray,
@@ -1464,7 +1464,7 @@ RadiusExtractor<TInputImage>
 }
 
 /** Compute Kernel Measures */
-template<class TInputImage>
+template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::SmoothMeasuresInFullKernelArray( KernArrayType & kernArray )
@@ -1527,7 +1527,7 @@ RadiusExtractor<TInputImage>
 
 /**
  * Apply kernel measures */
-template<class TInputImage>
+template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::ApplyMeasuresInFullKernelArray( TubeType * tube,
@@ -1644,7 +1644,7 @@ RadiusExtractor<TInputImage>
 }
 
 /** Compute Radii */
-template<class TInputImage>
+template< class TInputImage >
 bool
 RadiusExtractor<TInputImage>
 ::ExtractRadii( TubeType * tube )
@@ -1753,7 +1753,7 @@ RadiusExtractor<TInputImage>
 
 /**
  * Idle callback */
-template<class TInputImage>
+template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::SetIdleCallBack( bool ( *idleCallBack )() )
@@ -1763,7 +1763,7 @@ RadiusExtractor<TInputImage>
 
 /**
  * Status Call back */
-template<class TInputImage>
+template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::SetStatusCallBack( void ( *statusCallBack )( const char *, const char *,

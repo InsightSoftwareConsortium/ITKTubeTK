@@ -26,9 +26,8 @@ limitations under the License.
 
 #include "itktubeMeanAndSigmaImageBuilder.h"
 
-template< class TInputImageType,
-          class TOutputMeanImageType,
-          class TOutputSigmaImageType>
+template< class TInputImageType, class TOutputMeanImageType,
+          class TOutputSigmaImageType >
 MeanAndSigmaImageBuilder< TInputImageType,
                           TOutputMeanImageType,
                           TOutputSigmaImageType>
@@ -45,9 +44,8 @@ MeanAndSigmaImageBuilder< TInputImageType,
   m_OutputOrigin.Fill(0);
 }
 
-template< class TInputImageType,
-          class TOutputMeanImageType,
-          class TOutputSigmaImageType>
+template< class TInputImageType, class TOutputMeanImageType,
+          class TOutputSigmaImageType >
 void MeanAndSigmaImageBuilder< TInputImageType,
                                TOutputMeanImageType,
                                TOutputSigmaImageType>
@@ -109,9 +107,8 @@ void MeanAndSigmaImageBuilder< TInputImageType,
   this->SetValidCountImage( validImage );
 }
 
-template< class TInputImageType,
-          class TOutputMeanImageType,
-          class TOutputSigmaImageType>
+template< class TInputImageType, class TOutputMeanImageType,
+          class TOutputSigmaImageType >
 void MeanAndSigmaImageBuilder< TInputImageType,
                                TOutputMeanImageType,
                                TOutputSigmaImageType>
@@ -217,9 +214,8 @@ void MeanAndSigmaImageBuilder< TInputImageType,
   this->SetIsProcessing( false );
 }
 
-template<class TInputImageType,
-         class TOutputMeanImageType,
-         class TOutputSigmaImageType >
+template< class TInputImageType, class TOutputMeanImageType,
+          class TOutputSigmaImageType >
 void
 MeanAndSigmaImageBuilder< TInputImageType,
                           TOutputMeanImageType,
@@ -264,8 +260,7 @@ MeanAndSigmaImageBuilder< TInputImageType,
   this->SetIsProcessing( true );
 }
 
-template< class TInputImageType,
-          class TOutputMeanImageType,
+template< class TInputImageType, class TOutputMeanImageType,
           class TOutputSigmaImageType >
 void
 MeanAndSigmaImageBuilder< TInputImageType,

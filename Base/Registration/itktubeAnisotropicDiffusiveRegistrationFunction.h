@@ -67,7 +67,7 @@ namespace tube
  * \ingroup Functions
  */
 
-template <class TFixedImage, class TMovingImage, class TDeformationField>
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 class AnisotropicDiffusiveRegistrationFunction
   : public PDEDeformableRegistrationFunction<TFixedImage,
                                              TMovingImage,

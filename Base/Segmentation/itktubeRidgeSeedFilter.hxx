@@ -69,7 +69,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
 {
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 RidgeSeedFilter< ImageT, LabelmapT >
 ::SetInput( typename ImageType::Pointer img )
@@ -78,7 +78,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   m_RidgeFeatureGenerator->SetInputImage( img );
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename ImageT::Pointer
 RidgeSeedFilter< ImageT, LabelmapT >
 ::GetInput( void )
@@ -86,7 +86,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   return m_SeedFeatureGenerator->GetInputImage();
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 RidgeSeedFilter< ImageT, LabelmapT >
 ::SetLabelmap( typename LabelmapType::Pointer img )
@@ -96,7 +96,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   m_PDFSegmenter->SetLabelmap( img );
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename RidgeSeedFilter< ImageT, LabelmapT >::LabelmapType::Pointer
 RidgeSeedFilter< ImageT, LabelmapT >
 ::GetLabelmap( void )
@@ -104,7 +104,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   return m_SeedFeatureGenerator->GetLabelmap();
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename RidgeSeedFilter< ImageT, LabelmapT >::SeedFeatureGeneratorType::
 Pointer
 RidgeSeedFilter< ImageT, LabelmapT >
@@ -113,7 +113,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   return m_SeedFeatureGenerator;
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename RidgeSeedFilter< ImageT, LabelmapT >::RidgeFeatureGeneratorType::
 Pointer
 RidgeSeedFilter< ImageT, LabelmapT >
@@ -122,7 +122,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   return m_RidgeFeatureGenerator;
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename RidgeSeedFilter< ImageT, LabelmapT>::PDFSegmenterType::Pointer
 RidgeSeedFilter< ImageT, LabelmapT >
 ::GetPDFSegmenter( void )
@@ -130,7 +130,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   return m_PDFSegmenter;
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 RidgeSeedFilter< ImageT, LabelmapT >
 ::SetIntensityRange( float intensityMin, float intensityMax )
@@ -138,7 +138,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   m_RidgeFeatureGenerator->SetIntensityRange( intensityMin, intensityMax );
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 RidgeSeedFilter< ImageT, LabelmapT >
 ::SetIntensityMin( float intensityMin )
@@ -146,7 +146,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   m_RidgeFeatureGenerator->SetIntensityMin( intensityMin );
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 float
 RidgeSeedFilter< ImageT, LabelmapT >
 ::GetIntensityMin( void )
@@ -154,7 +154,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   return m_RidgeFeatureGenerator->GetIntensityMin( );
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 RidgeSeedFilter< ImageT, LabelmapT >
 ::SetIntensityMax( float intensityMax )
@@ -162,7 +162,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   m_RidgeFeatureGenerator->SetIntensityMax( intensityMax );
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 float
 RidgeSeedFilter< ImageT, LabelmapT >
 ::GetIntensityMax( void )
@@ -170,7 +170,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   return m_RidgeFeatureGenerator->GetIntensityMax( );
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 RidgeSeedFilter< ImageT, LabelmapT >
 ::SetScales( const RidgeScalesType & scales )
@@ -178,7 +178,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   m_RidgeFeatureGenerator->SetScales( scales );
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename RidgeSeedFilter< ImageT, LabelmapT >::RidgeScalesType
 RidgeSeedFilter< ImageT, LabelmapT >
 ::GetScales( void )
@@ -186,7 +186,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   return m_RidgeFeatureGenerator->GetScales();
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 RidgeSeedFilter< ImageT, LabelmapT >
 ::SetObjectId( ObjectIdType id )
@@ -196,7 +196,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   m_PDFSegmenter->SetObjectPDFWeight( 0, 0.5 );
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 RidgeSeedFilter< ImageT, LabelmapT >
 ::AddObjectId( ObjectIdType id )
@@ -205,7 +205,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   m_PDFSegmenter->AddObjectId( id );
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename RidgeSeedFilter< ImageT, LabelmapT >::ObjectIdType
 RidgeSeedFilter< ImageT, LabelmapT >
 ::GetObjectId( unsigned int num ) const
@@ -213,7 +213,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   return m_PDFSegmenter->GetObjectId( num );
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 unsigned int
 RidgeSeedFilter< ImageT, LabelmapT >
 ::GetNumberOfObjectIds( void ) const
@@ -221,7 +221,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   return m_PDFSegmenter->GetNumberOfObjectIds();
 }
 
-template < class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 RidgeSeedFilter< ImageT, LabelmapT >
 ::Update( void )
@@ -236,7 +236,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   m_PDFSegmenter->Update();
 }
 
-template <class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 RidgeSeedFilter< ImageT, LabelmapT >
 ::ClassifyImages( void )
@@ -254,7 +254,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
   m_SeedFeatureGenerator->SetLabelmap( tmpLabelmap );
 }
 
-template <class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 typename RidgeSeedFilter< ImageT, LabelmapT >::LabelmapType::Pointer
 RidgeSeedFilter< ImageT, LabelmapT >
 ::GetOutput( void )
@@ -263,7 +263,7 @@ RidgeSeedFilter< ImageT, LabelmapT >
 }
 
 
-template <class ImageT, class LabelmapT >
+template< class ImageT, class LabelmapT >
 void
 RidgeSeedFilter< ImageT, LabelmapT >
 ::PrintSelf( std::ostream & os, Indent indent ) const

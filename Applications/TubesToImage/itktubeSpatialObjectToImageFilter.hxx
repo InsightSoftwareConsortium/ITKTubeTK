@@ -31,14 +31,10 @@ limitations under the License.
 #include <vnl/vnl_vector.h>
 
 /** Constructor */
-template <unsigned int ObjectDimension,
-          class TOutputImage,
-          class TRadiusImage,
-          class TTangentImage>
-TubeSpatialObjectToImageFilter<ObjectDimension,
-                               TOutputImage,
-                               TRadiusImage,
-                               TTangentImage>
+template< unsigned int ObjectDimension, class TOutputImage, class TRadiusImage,
+          class TTangentImage >
+TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
+                                TTangentImage>
 ::TubeSpatialObjectToImageFilter( void )
 {
   m_UseRadius = false;
@@ -65,64 +61,46 @@ TubeSpatialObjectToImageFilter<ObjectDimension,
 }
 
 /** Destructor */
-template <unsigned int ObjectDimension,
-          class TOutputImage,
-          class TRadiusImage,
-          class TTangentImage>
-TubeSpatialObjectToImageFilter<ObjectDimension,
-                               TOutputImage,
-                               TRadiusImage,
-                               TTangentImage>
+template< unsigned int ObjectDimension, class TOutputImage, class TRadiusImage,
+          class TTangentImage >
+TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
+                                TTangentImage >
 ::~TubeSpatialObjectToImageFilter( void )
 {
 }
 
 /** Return the Radius Image */
-template <unsigned int ObjectDimension,
-          class TOutputImage,
-          class TRadiusImage,
-          class TTangentImage>
-typename TubeSpatialObjectToImageFilter<ObjectDimension,
-                                        TOutputImage,
-                                        TRadiusImage,
-                                        TTangentImage>::RadiusImagePointer
-TubeSpatialObjectToImageFilter<ObjectDimension,
-                               TOutputImage,
-                               TRadiusImage,
-                               TTangentImage>
+template< unsigned int ObjectDimension, class TOutputImage, class TRadiusImage,
+          class TTangentImage >
+typename TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage,
+                                         TRadiusImage,
+                                         TTangentImage >::RadiusImagePointer
+TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
+                                TTangentImage>
 ::GetRadiusImage( void )
 {
   return dynamic_cast< TRadiusImage * >(this->ProcessObject::GetOutput(1) );
 }
 
 /** Return the tangent Image */
-template <unsigned int ObjectDimension,
-          class TOutputImage,
-          class TRadiusImage,
-          class TTangentImage>
-typename TubeSpatialObjectToImageFilter<ObjectDimension,
-                                        TOutputImage,
-                                        TRadiusImage,
-                                        TTangentImage>::TangentImagePointer
-TubeSpatialObjectToImageFilter<ObjectDimension,
-                               TOutputImage,
-                               TRadiusImage,
-                               TTangentImage>
+template< unsigned int ObjectDimension, class TOutputImage, class TRadiusImage,
+          class TTangentImage >
+typename TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage,
+                                         TRadiusImage,
+                                         TTangentImage >::TangentImagePointer
+TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
+                                TTangentImage >
 ::GetTangentImage( void )
 {
   return dynamic_cast< TTangentImage * >(this->ProcessObject::GetOutput(2) );
 }
 
 /** Update */
-template <unsigned int ObjectDimension,
-          class TOutputImage,
-          class TRadiusImage,
-          class TTangentImage>
+template< unsigned int ObjectDimension, class TOutputImage, class TRadiusImage,
+          class TTangentImage >
 void
-TubeSpatialObjectToImageFilter<ObjectDimension,
-                               TOutputImage,
-                               TRadiusImage,
-                               TTangentImage>
+TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
+                                TTangentImage >
 ::GenerateData( void )
 {
   itkDebugMacro(<< "TubeSpatialObjectToImageFilter::Update() called");

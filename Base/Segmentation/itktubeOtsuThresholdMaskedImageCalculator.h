@@ -49,7 +49,7 @@ namespace tube
  *
  * \ingroup Operators
  */
-template <class TInputImage>
+template< class TInputImage >
 class OtsuThresholdMaskedImageCalculator : public Object
 {
 public:

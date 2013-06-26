@@ -32,7 +32,7 @@ limitations under the License.
 
 #include "SegmentConnectedComponentsUsingParzenPDFsCLP.h"
 
-template <class T, unsigned int N>
+template< class T, unsigned int N >
 int DoIt( int argc, char * argv[] );
 
 // Description:
@@ -77,7 +77,7 @@ void GetImageTypes( std::vector<std::string> fileNames,
 // Helper function to check whether the attributes of input image match
 // those of the labelmap.
 //
-template < class InputImageType, class LabelmapType >
+template< class InputImageType, class LabelmapType >
 bool
 CheckImageAttributes( const InputImageType * input,
                      const LabelmapType * mask )
@@ -97,7 +97,7 @@ CheckImageAttributes( const InputImageType * input,
          && input->GetLargestPossibleRegion().GetSize() == mask->GetLargestPossibleRegion().GetSize();
 }
 
-template <class T, unsigned int N>
+template< class T, unsigned int N >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;

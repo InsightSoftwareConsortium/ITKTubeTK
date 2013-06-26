@@ -49,7 +49,7 @@ namespace tube
  * \ingroup IntensityImageFilters  Multithreaded
  */
 
-template<class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 class OtsuThresholdMaskedImageFilter :
     public ImageToImageFilter< TInputImage, TOutputImage >
 {

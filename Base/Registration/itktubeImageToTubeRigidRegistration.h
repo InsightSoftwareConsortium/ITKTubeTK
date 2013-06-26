@@ -70,7 +70,7 @@ namespace tube
  *  \ingroup AffineImageRegistration
  */
 
-template < class TFixedImage, class TMovingSpatialObject, class TMovingTube >
+template< class TFixedImage, class TMovingSpatialObject, class TMovingTube >
 class ImageToTubeRigidRegistration
 : public ImageToSpatialObjectRegistrationMethod< TFixedImage,
   TMovingSpatialObject >

@@ -39,9 +39,8 @@ namespace itk
 namespace tube
 {
 
-template < class TDensityImageType,
-           class TRadiusImageType = Image<float,3>,
-           class TTangentImageType = Image<Vector<float,3>,3> >
+template< class TDensityImageType, class TRadiusImageType = Image< float, 3 >,
+          class TTangentImageType = Image< Vector< float, 3 >, 3 > >
 class TubeSpatialObjectToDensityImage : public Object
 {
 public:

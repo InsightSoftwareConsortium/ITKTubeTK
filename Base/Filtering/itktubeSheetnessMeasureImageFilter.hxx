@@ -38,7 +38,7 @@ namespace tube
 /**
  * Constructor
  */
-template< typename TPixel >
+template< class TPixel >
 SheetnessMeasureImageFilter< TPixel >
 ::SheetnessMeasureImageFilter( void )
 {
@@ -54,7 +54,7 @@ SheetnessMeasureImageFilter< TPixel >
     EigenAnalysisFilterType::FunctorType::OrderByValue);
 }
 
-template< typename TPixel >
+template< class TPixel >
 void
 SheetnessMeasureImageFilter< TPixel >
 ::GenerateData( void )
@@ -187,7 +187,7 @@ SheetnessMeasureImageFilter< TPixel >
     }
 }
 
-template< typename TPixel >
+template< class TPixel >
 void
 SheetnessMeasureImageFilter< TPixel >
 ::PrintSelf(std::ostream & os, Indent indent) const

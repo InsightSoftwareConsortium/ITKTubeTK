@@ -35,7 +35,7 @@ namespace tube
 /**
  * Constructor
  */
-template < class TTransformType, unsigned int TDimension >
+template< class TTransformType, unsigned int TDimension >
 TubeToTubeTransformFilter<TTransformType,TDimension>
 ::TubeToTubeTransformFilter( void )
 {
@@ -53,7 +53,7 @@ TubeToTubeTransformFilter<TTransformType,TDimension>
 /**
  * Apply the transformation to the tube
  */
-template < class TTransformType, unsigned int TDimension >
+template< class TTransformType, unsigned int TDimension >
 void
 TubeToTubeTransformFilter< TTransformType, TDimension >
 ::Update( void )
@@ -214,7 +214,7 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
   delete [] groupspacing;
 }
 
-template < class TTransformType, unsigned int TDimension >
+template< class TTransformType, unsigned int TDimension >
 void
 TubeToTubeTransformFilter< TTransformType,TDimension >
 ::PrintSelf( std::ostream& os, Indent indent ) const

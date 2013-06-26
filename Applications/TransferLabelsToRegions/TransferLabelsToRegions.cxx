@@ -92,7 +92,7 @@ bool IsDiscrete( const std::string & fileName )
  * \param tol Tolerance value
  * \return true in case of equality, false else
  */
-template <typename T>
+template< class T >
 bool check_vnl_vector_equality( const vnl_vector<T> &v,
                                 const vnl_vector<T> &g,
                                 double tol = 1.0e-6 )
@@ -118,7 +118,7 @@ bool check_vnl_vector_equality( const vnl_vector<T> &v,
  * \param tol Tolerance value
  * \return true in case of equality, false else
  */
-template <typename T>
+template< class T >
 bool check_vnl_matrix_equality( const vnl_matrix<T> &V,
                                 const vnl_matrix<T> &G,
                                 double tol = 1.0e-6 )
@@ -146,7 +146,7 @@ bool check_vnl_matrix_equality( const vnl_matrix<T> &V,
  *  \param outImage Image that is about to be created (has to exist)
  *  \param targetSize Desired size of the image
  */
-template < class ImageType >
+template< class ImageType >
 void CreateEmptyImage(
   typename ImageType::Pointer &outImage,
   typename ImageType::SizeType targetSize)
@@ -169,7 +169,7 @@ void CreateEmptyImage(
  *  \param imageB 2nd input image of type ImageType
  *  \returns true if image have equal spacing and size, false else
  */
-template < typename ImageType >
+template< class ImageType >
 bool CheckCompatibility(
   typename ImageType::Pointer imageA,
   typename ImageType::Pointer imageB )

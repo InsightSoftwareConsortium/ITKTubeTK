@@ -55,7 +55,7 @@ RidgeFeatureVectorGenerator< ImageT >
 {
 }
 
-template < class ImageT >
+template< class ImageT >
 unsigned int
 RidgeFeatureVectorGenerator< ImageT >
 ::GetNumberOfFeatures( void ) const
@@ -65,7 +65,7 @@ RidgeFeatureVectorGenerator< ImageT >
   return numFeatures;
 }
 
-template < class ImageT >
+template< class ImageT >
 typename RidgeFeatureVectorGenerator< ImageT >::FeatureVectorType
 RidgeFeatureVectorGenerator< ImageT >
 ::GetFeatureVector( const IndexType & indx ) const
@@ -116,7 +116,7 @@ RidgeFeatureVectorGenerator< ImageT >
   return featureVector;
 }
 
-template < class ImageT >
+template< class ImageT >
 typename RidgeFeatureVectorGenerator< ImageT >::FeatureValueType
 RidgeFeatureVectorGenerator< ImageT >
 ::GetFeatureVectorValue( const IndexType & indx, unsigned int fNum ) const
@@ -161,7 +161,7 @@ RidgeFeatureVectorGenerator< ImageT >
   return this->GetFeatureVector( indx )[fNum];
 }
 
-template < class ImageT >
+template< class ImageT >
 void
 RidgeFeatureVectorGenerator< ImageT >
 ::SetScales( const RidgeScalesType & scales )
@@ -169,7 +169,7 @@ RidgeFeatureVectorGenerator< ImageT >
   m_Scales = scales;
 }
 
-template < class ImageT >
+template< class ImageT >
 const std::vector< double > &
 RidgeFeatureVectorGenerator< ImageT >
 ::GetScales( void ) const
@@ -177,7 +177,7 @@ RidgeFeatureVectorGenerator< ImageT >
   return m_Scales;
 }
 
-template <class ImageT >
+template< class ImageT >
 void
 RidgeFeatureVectorGenerator< ImageT >
 ::PrintSelf( std::ostream & os, Indent indent ) const

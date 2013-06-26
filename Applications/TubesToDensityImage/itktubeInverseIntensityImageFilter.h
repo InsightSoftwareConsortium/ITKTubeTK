@@ -36,7 +36,7 @@ namespace itk
 namespace tube
 {
 
-template <class TInputImage>
+template< class TInputImage >
 class InverseIntensityImageFilter :
   public ImageToImageFilter< TInputImage, TInputImage>
 {

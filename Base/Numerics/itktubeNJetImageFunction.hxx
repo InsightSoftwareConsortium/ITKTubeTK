@@ -40,7 +40,7 @@ namespace tube
 /**
  * Set the input Image
  */
-template <class TInputImage>
+template< class TInputImage >
 NJetImageFunction<TInputImage>
 ::NJetImageFunction( void )
 {
@@ -72,7 +72,7 @@ NJetImageFunction<TInputImage>
 /**
  * Set the input Image
  */
-template <class TInputImage>
+template< class TInputImage >
 void
 NJetImageFunction<TInputImage>
 ::SetInputImage( const InputImageType * ptr )
@@ -106,7 +106,7 @@ NJetImageFunction<TInputImage>
 /**
  * Set the input Image
  */
-template <class TInputImage>
+template< class TInputImage >
 void
 NJetImageFunction<TInputImage>
 ::SetInputImageMask( const InputImageType * ptr )
@@ -139,7 +139,7 @@ NJetImageFunction<TInputImage>
 /**
  * Print
  */
-template<class TInputImage>
+template< class TInputImage >
 void
 NJetImageFunction<TInputImage>
 ::PrintSelf( std::ostream& os, Indent indent) const
@@ -190,7 +190,7 @@ NJetImageFunction<TInputImage>
 /**
  * Evaluate the fonction at the specified point
  */
-template <class TInputImage>
+template< class TInputImage >
 void
 NJetImageFunction<TInputImage>
 ::ComputeStatistics( void )
@@ -262,7 +262,7 @@ NJetImageFunction<TInputImage>
 /**
  * Evaluate the fonction at the specified point
  */
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::GetMin( void ) const
@@ -273,7 +273,7 @@ NJetImageFunction<TInputImage>
 /**
  * Evaluate the fonction at the specified point
  */
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::GetMax( void ) const
@@ -284,7 +284,7 @@ NJetImageFunction<TInputImage>
 /**
  * Evaluate the fonction at the specified point
  */
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::Evaluate( const PointType& point, double scale) const
@@ -308,7 +308,7 @@ NJetImageFunction<TInputImage>
 /**
  * Evaluate the fonction at the specified point
  */
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::Evaluate( const PointType& point, const VectorType & v1, double scale) const
@@ -332,7 +332,7 @@ NJetImageFunction<TInputImage>
 /**
  * Evaluate the fonction at the specified point
  */
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::Evaluate( const PointType& point,
@@ -357,7 +357,7 @@ NJetImageFunction<TInputImage>
 /**
  * Evaluate the fonction at the specified point
  */
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::EvaluateAtIndex( const IndexType& index, double scale) const
@@ -380,7 +380,7 @@ NJetImageFunction<TInputImage>
 /**
  * Evaluate the fonction at the specified point
  */
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::EvaluateAtIndex( const IndexType& index, const VectorType & v1, double scale) const
@@ -403,7 +403,7 @@ NJetImageFunction<TInputImage>
 /**
  * Evaluate the fonction at the specified point
  */
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::EvaluateAtIndex( const IndexType& index,
@@ -428,7 +428,7 @@ NJetImageFunction<TInputImage>
 /**
  * Evaluate the fonction at the specified point
  */
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::EvaluateAtContinuousIndex( const ContinuousIndexType & cIndex,
@@ -520,7 +520,7 @@ NJetImageFunction<TInputImage>
   return m_MostRecentIntensity;
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::EvaluateAtContinuousIndex( const ContinuousIndexType & cIndex,
@@ -559,7 +559,7 @@ NJetImageFunction<TInputImage>
 }
 
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::EvaluateAtContinuousIndex( const ContinuousIndexType & cIndex,
@@ -606,7 +606,7 @@ NJetImageFunction<TInputImage>
     }
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::Derivative( const PointType& point, double scale,
@@ -628,7 +628,7 @@ NJetImageFunction<TInputImage>
   return DerivativeAtContinuousIndex( cIndex, scale, d);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::Derivative( const PointType& point, const VectorType & v1,
@@ -652,7 +652,7 @@ NJetImageFunction<TInputImage>
   return DerivativeAtContinuousIndex( cIndex, v1, scale, d);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::Derivative( const PointType& point, const VectorType & v1,
@@ -678,7 +678,7 @@ NJetImageFunction<TInputImage>
 }
 
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::DerivativeAtIndex( const IndexType& index, double scale,
@@ -700,7 +700,7 @@ NJetImageFunction<TInputImage>
   return DerivativeAtContinuousIndex( cIndex, scale, d);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::DerivativeAtIndex( const IndexType& index, const VectorType & v1,
@@ -722,7 +722,7 @@ NJetImageFunction<TInputImage>
   return DerivativeAtContinuousIndex( cIndex, v1, scale, d);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::DerivativeAtIndex( const IndexType& index,
@@ -745,7 +745,7 @@ NJetImageFunction<TInputImage>
   return DerivativeAtContinuousIndex( cIndex, v1, v2, scale, d);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
@@ -868,7 +868,7 @@ NJetImageFunction<TInputImage>
   return dMag;
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
@@ -926,7 +926,7 @@ NJetImageFunction<TInputImage>
   return vnl_math_abs( d[0] );
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
@@ -1008,7 +1008,7 @@ NJetImageFunction<TInputImage>
   return dMag;
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::Hessian( const PointType& point, double scale,
@@ -1032,7 +1032,7 @@ NJetImageFunction<TInputImage>
   return HessianAtContinuousIndex( cIndex, scale, h);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::Hessian( const PointType& point, const VectorType & v1, double scale,
@@ -1056,7 +1056,7 @@ NJetImageFunction<TInputImage>
   return HessianAtContinuousIndex( cIndex, v1, scale, h);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::Hessian( const PointType& point,
@@ -1081,7 +1081,7 @@ NJetImageFunction<TInputImage>
   return HessianAtContinuousIndex( cIndex, v1, v2, scale, h);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::HessianAtIndex( const IndexType& index, double scale,
@@ -1103,7 +1103,7 @@ NJetImageFunction<TInputImage>
   return HessianAtContinuousIndex( cIndex, scale, h);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::HessianAtIndex( const IndexType& index, const VectorType & v1,
@@ -1125,7 +1125,7 @@ NJetImageFunction<TInputImage>
   return HessianAtContinuousIndex( cIndex, v1, scale, h);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::HessianAtIndex( const IndexType& index,
@@ -1148,7 +1148,7 @@ NJetImageFunction<TInputImage>
   return HessianAtContinuousIndex( cIndex, v1, v2, scale, h);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::HessianAtContinuousIndex( const ContinuousIndexType & cIndex,
@@ -1166,7 +1166,7 @@ NJetImageFunction<TInputImage>
 }
 
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::HessianAtContinuousIndex( const ContinuousIndexType & cIndex,
@@ -1217,7 +1217,7 @@ NJetImageFunction<TInputImage>
   return vnl_math_abs( m[0][0] );
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::HessianAtContinuousIndex( const ContinuousIndexType & cIndex,
@@ -1284,7 +1284,7 @@ NJetImageFunction<TInputImage>
   return vcl_sqrt( m[0][0]*m[0][0] + m[1][1]*m[1][1] );
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::Jet( const PointType& point, VectorType & d, MatrixType & h,
@@ -1310,7 +1310,7 @@ NJetImageFunction<TInputImage>
   return JetAtContinuousIndex( cIndex, d, h, scale);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::JetAtIndex( const IndexType& index, VectorType & d, MatrixType & h,
@@ -1333,7 +1333,7 @@ NJetImageFunction<TInputImage>
   return JetAtContinuousIndex( cIndex, d, h, scale);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::JetAtContinuousIndex( const ContinuousIndexType & cIndex,
@@ -1500,7 +1500,7 @@ NJetImageFunction<TInputImage>
   return v;
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::Ridgeness( const PointType& point, double scale) const
@@ -1521,7 +1521,7 @@ NJetImageFunction<TInputImage>
   return RidgenessAtContinuousIndex( cIndex, scale);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::Ridgeness( const PointType& point, const VectorType & v1, double scale) const
@@ -1542,7 +1542,7 @@ NJetImageFunction<TInputImage>
   return RidgenessAtContinuousIndex( cIndex, v1, scale);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::Ridgeness( const PointType& point,
@@ -1564,7 +1564,7 @@ NJetImageFunction<TInputImage>
   return RidgenessAtContinuousIndex( cIndex, v1, v2, scale);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::RidgenessAtIndex( const IndexType& index, double scale) const
@@ -1584,7 +1584,7 @@ NJetImageFunction<TInputImage>
   return RidgenessAtContinuousIndex( cIndex, scale);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::RidgenessAtIndex( const IndexType& index,
@@ -1605,7 +1605,7 @@ NJetImageFunction<TInputImage>
   return RidgenessAtContinuousIndex( cIndex, v1, scale);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::RidgenessAtIndex( const IndexType& index,
@@ -1627,7 +1627,7 @@ NJetImageFunction<TInputImage>
   return RidgenessAtContinuousIndex( cIndex, v1, v2, scale);
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
@@ -1746,7 +1746,7 @@ NJetImageFunction<TInputImage>
   return m_MostRecentRidgeness;
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
@@ -1816,7 +1816,7 @@ NJetImageFunction<TInputImage>
   return val;
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
@@ -1898,7 +1898,7 @@ NJetImageFunction<TInputImage>
   return val;
 }
 
-template <class TInputImage>
+template< class TInputImage >
 typename NJetImageFunction<TInputImage>::InputImagePointer
 NJetImageFunction<TInputImage>
 ::ScaleSubsample( double factor)

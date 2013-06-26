@@ -48,9 +48,8 @@ namespace tube
  *
  * This class derives from \sa MeanAndSigmaImageBuilder
  */
-template< class TInputImageType,
-          class TOutputMeanImageType,
-          class TOutputSigmaImageType>
+template< class TInputImageType, class TOutputMeanImageType,
+          class TOutputSigmaImageType >
 class RobustMeanAndSigmaImageBuilder :
   public MeanAndSigmaImageBuilder< TInputImageType,
                                    TOutputMeanImageType,

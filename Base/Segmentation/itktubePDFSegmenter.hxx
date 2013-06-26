@@ -1275,7 +1275,7 @@ PDFSegmenter< ImageT, N, LabelmapT >
   this->ApplyPDFs();
 }
 
-template<class ImageT, unsigned int N, class LabelmapT >
+template< class ImageT, unsigned int N, class LabelmapT >
 void
 PDFSegmenter< ImageT, N, LabelmapT >
 ::PrintSelf( std::ostream & os, Indent indent ) const

@@ -44,7 +44,7 @@ namespace tube
 namespace Functor
 {
 
-template< typename TInput, typename TOutput, typename TMatrix >
+template< class TInput, class TOutput, class TMatrix >
 class SymmetricEigenVectorAnalysisFunction
 {
 public:
@@ -109,7 +109,7 @@ private:
 /** \class SymmetricEigenVectorAnalysisImageFilter
  * \ingroup IntensityImageFilters  Multithreaded  TensorObjects
  */
-template <typename  TInputImage, typename  TOutputImage, typename TOutputMatrix>
+template< class TInputImage, class TOutputImage, class TOutputMatrix >
 class SymmetricEigenVectorAnalysisImageFilter :
     public
 UnaryFunctorImageFilter<TInputImage,TOutputMatrix,

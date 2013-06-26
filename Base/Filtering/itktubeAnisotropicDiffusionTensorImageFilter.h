@@ -49,7 +49,7 @@ namespace tube
  * \ingroup FiniteDifferenceFunctions
  * \ingroup Functions
  */
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 class AnisotropicDiffusionTensorImageFilter
   : public FiniteDifferenceImageFilter<TInputImage, TOutputImage>
 {

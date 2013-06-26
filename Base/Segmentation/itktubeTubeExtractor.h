@@ -46,7 +46,7 @@ namespace tube
  * \sa TubeExtractor
  */
 
-template <class TInputImage>
+template< class TInputImage >
 class TubeExtractor : public Object
 {
 public:

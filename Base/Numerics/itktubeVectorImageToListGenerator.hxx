@@ -37,7 +37,7 @@ namespace tube
 namespace Statistics
 {
 
-template < class TImage, class TMaskImage >
+template< class TImage, class TMaskImage >
 VectorImageToListGenerator< TImage, TMaskImage >
 ::VectorImageToListGenerator( void )
 {
@@ -50,7 +50,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
   this->ProcessObject::SetNthOutput(0, listSampleDecorator.GetPointer());
 }
 
-template < class TImage, class TMaskImage >
+template< class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
 ::PrintSelf(std::ostream& os, Indent indent) const
@@ -70,7 +70,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
     }
 }
 
-template < class TImage, class TMaskImage >
+template< class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
 ::SetInput(const ImageType* image)
@@ -80,7 +80,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
                                    const_cast< ImageType* >( image ) );
 }
 
-template < class TImage, class TMaskImage >
+template< class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
 ::SetMaskImage(const MaskImageType* image)
@@ -90,7 +90,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
                                    const_cast< MaskImageType* >( image ) );
 }
 
-template < class TImage, class TMaskImage >
+template< class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
 ::SetMaskValue(const MaskPixelType maskValue)
@@ -100,7 +100,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
   this->Modified();
 }
 
-template < class TImage, class TMaskImage >
+template< class TImage, class TMaskImage >
 const TImage*
 VectorImageToListGenerator< TImage, TMaskImage >
 ::GetInput( void ) const
@@ -114,7 +114,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
     (this->ProcessObject::GetInput(0) );
 }
 
-template < class TImage, class TMaskImage >
+template< class TImage, class TMaskImage >
 const TMaskImage*
 VectorImageToListGenerator< TImage, TMaskImage >
 ::GetMaskImage( void ) const
@@ -128,7 +128,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
     (this->ProcessObject::GetInput(1) );
 }
 
-template < class TImage, class TMaskImage >
+template< class TImage, class TMaskImage >
 typename VectorImageToListGenerator< TImage, TMaskImage >::DataObjectPointer
 VectorImageToListGenerator< TImage, TMaskImage >
 ::MakeOutput( DataObjectPointerArraySizeType itkNotUsed( idx ) )
@@ -139,7 +139,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
   return static_cast< DataObject * >(decoratedOutput.GetPointer());
 }
 
-template < class TImage, class TMaskImage >
+template< class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
 ::GenerateData( void )
@@ -214,7 +214,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
     }
 }
 
-template < class TImage, class TMaskImage >
+template< class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
 ::GenerateOutputInformation( void )
@@ -230,7 +230,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
     itkGetStaticConstMacro( MeasurementVectorSize ));
 }
 
-template < class TImage, class TMaskImage >
+template< class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
 ::GenerateInputRequestedRegion() throw(InvalidRequestedRegionError)
@@ -259,7 +259,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
     }
 }
 
-template < class TImage, class TMaskImage >
+template< class TImage, class TMaskImage >
 const typename VectorImageToListGenerator< TImage, TMaskImage >::ListSampleType *
 VectorImageToListGenerator< TImage, TMaskImage >
 ::GetListSample( void ) const
