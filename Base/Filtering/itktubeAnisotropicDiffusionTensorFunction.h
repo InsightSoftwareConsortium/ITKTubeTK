@@ -50,7 +50,7 @@ namespace tube
  * \ingroup Functions
  */
 template <class TImageType>
-class ITK_EXPORT AnisotropicDiffusionTensorFunction
+class AnisotropicDiffusionTensorFunction
   : public FiniteDifferenceFunction<TImageType>
 {
 public:

@@ -75,7 +75,7 @@ namespace tube
  * email: r.manniesing@erasmusmc.nl
  */
 template <class TPixel = short int, unsigned int TDimension = 2>
-class ITK_EXPORT TubeEnhancingDiffusion2DImageFilter :
+class TubeEnhancingDiffusion2DImageFilter :
     public ImageToImageFilter<Image<TPixel, TDimension> ,
                               Image<TPixel, TDimension> >
 {

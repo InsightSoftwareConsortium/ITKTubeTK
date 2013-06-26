@@ -41,7 +41,7 @@ namespace tube
  * that returns a pointer to the output SpatialObject.
  */
 template< class TOutputSpatialObject >
-class ITK_EXPORT SpatialObjectSource : public ProcessObject
+class SpatialObjectSource : public ProcessObject
 {
 public:
   /** Standard class typedefs. */

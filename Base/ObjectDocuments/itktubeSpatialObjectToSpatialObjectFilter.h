@@ -32,7 +32,7 @@ namespace tube
  * \brief Base class for filters that take an image as input and produce an image as output.
  */
 template <class TInputSpatialObject, class TOutputSpatialObject>
-class ITK_EXPORT SpatialObjectToSpatialObjectFilter :
+class SpatialObjectToSpatialObjectFilter :
 public ProcessObject
 {
 public:

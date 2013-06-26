@@ -41,7 +41,7 @@ namespace tube
 {
 
 template < class TInputImage, class TOutputImage=TInputImage >
-class ITK_EXPORT CVTImageFilter :
+class CVTImageFilter :
   public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:

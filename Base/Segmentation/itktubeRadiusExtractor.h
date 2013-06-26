@@ -52,7 +52,7 @@ namespace tube
  */
 
 template <class TInputImage>
-class ITK_EXPORT RadiusExtractor : public Object
+class RadiusExtractor : public Object
 {
 public:
 

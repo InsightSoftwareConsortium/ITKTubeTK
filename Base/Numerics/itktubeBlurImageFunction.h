@@ -39,7 +39,7 @@ namespace tube
  * This class is templated over the input image type.
  */
 template <class TInputImage>
-class ITK_EXPORT BlurImageFunction :
+class BlurImageFunction :
   public ImageFunction< TInputImage, double, double >
 {
 public:

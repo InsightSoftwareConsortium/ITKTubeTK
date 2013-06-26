@@ -37,7 +37,7 @@ namespace tube
  * \sa ParameterSerializer
  */
 template< class TAcousticImpulseResponseImageFilter >
-class ITK_EXPORT AcousticImpulseResponseImageFilterSerializer :
+class AcousticImpulseResponseImageFilterSerializer :
   public ImageToImageFilterSerializer< typename TAcousticImpulseResponseImageFilter::Superclass >
 {
 public:

@@ -50,7 +50,7 @@ namespace tube
  */
 
 template<class TInputImage, class TOutputImage>
-class ITK_EXPORT OtsuThresholdMaskedImageFilter :
+class OtsuThresholdMaskedImageFilter :
     public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:

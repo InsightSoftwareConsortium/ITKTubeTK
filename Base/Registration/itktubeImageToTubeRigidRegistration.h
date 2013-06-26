@@ -71,7 +71,7 @@ namespace tube
  */
 
 template < class TFixedImage, class TMovingSpatialObject, class TMovingTube >
-class ITK_EXPORT ImageToTubeRigidRegistration
+class ImageToTubeRigidRegistration
 : public ImageToSpatialObjectRegistrationMethod< TFixedImage,
   TMovingSpatialObject >
 {

@@ -64,7 +64,7 @@ namespace Statistics
  * \sa VectorImageToListAdaptor
  */
 template < class TImage, class TMaskImage >
-class ITK_EXPORT VectorImageToListGenerator :
+class VectorImageToListGenerator :
   public ProcessObject
 {
 public:

@@ -50,7 +50,7 @@ namespace tube
  * \ingroup Functions
  */
 template <class TInputImage, class TOutputImage>
-class ITK_EXPORT AnisotropicDiffusionTensorImageFilter
+class AnisotropicDiffusionTensorImageFilter
   : public FiniteDifferenceImageFilter<TInputImage, TOutputImage>
 {
 public:

@@ -56,7 +56,7 @@ namespace tube
 
 
 template <class TInputImage, class TOutputImage>
-class ITK_EXPORT AnisotropicHybridDiffusionImageFilter
+class AnisotropicHybridDiffusionImageFilter
   : public AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 {
 public:

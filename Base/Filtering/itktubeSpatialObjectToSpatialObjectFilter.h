@@ -37,7 +37,7 @@ namespace tube
  * a SpatialObject as output.
  */
 template< class TInputSpatialObject, class TOutputSpatialObject >
-class ITK_EXPORT SpatialObjectToSpatialObjectFilter :
+class SpatialObjectToSpatialObjectFilter :
   public SpatialObjectSource< TOutputSpatialObject >
 {
 public:

@@ -44,7 +44,7 @@ namespace tube
  * \ingroup MultiThreaded
  */
 template<class TLabelImage>
-class ITK_EXPORT LabelOverlapMeasuresImageFilter :
+class LabelOverlapMeasuresImageFilter :
     public InPlaceImageFilter< TLabelImage >
 {
 public:

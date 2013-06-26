@@ -45,7 +45,7 @@ namespace tube
  * This class is templated over the input image type.
  */
 template <class TInputImage>
-class ITK_EXPORT NJetImageFunction :
+class NJetImageFunction :
 public Object // ImageFunction< TInputImage, double >
 {
 public:

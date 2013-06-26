@@ -50,7 +50,7 @@ namespace itk
  * \ingroup ImageToImageFilter
  */
 template< class TInputImage, class TOutputImage, class TOperatorValue=float >
-class ITK_EXPORT GradientBasedAngleOfIncidenceImageFilter :
+class GradientBasedAngleOfIncidenceImageFilter :
   public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:

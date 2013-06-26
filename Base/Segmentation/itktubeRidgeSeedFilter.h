@@ -42,7 +42,7 @@ namespace tube
 {
 
 template< class ImageT, class LabelmapT >
-class ITK_EXPORT RidgeSeedFilter :
+class RidgeSeedFilter :
   public Object
 {
 public:
