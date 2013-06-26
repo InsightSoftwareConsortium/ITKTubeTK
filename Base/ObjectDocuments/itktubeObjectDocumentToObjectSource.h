@@ -42,7 +42,7 @@ namespace tube
  * Reads and composes all transforms from ObjectDocument for single object.
  */
 template< class TInputObjectDocument, unsigned int TDimension = 3 >
-class ITK_EXPORT ObjectDocumentToObjectSource : public ProcessObject
+class ObjectDocumentToObjectSource : public ProcessObject
 {
 public:
 

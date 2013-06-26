@@ -32,7 +32,7 @@ namespace itk
 namespace tube
 {
 
-class ITK_EXPORT DiffusiveRegistrationFilterUtils
+class DiffusiveRegistrationFilterUtils
 {
 public:
 

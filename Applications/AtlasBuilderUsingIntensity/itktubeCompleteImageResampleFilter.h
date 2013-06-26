@@ -52,7 +52,7 @@ template < class TInputImage,
            class TOutputImage,
            class TNonSingularTransform,
            class TInterpolatorPrecisionType=double >
-class ITK_EXPORT CompleteImageResampleFilter :
+class CompleteImageResampleFilter :
     public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:

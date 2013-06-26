@@ -45,7 +45,7 @@ namespace tube
  * \ingroup IntensityImageFilters   Multithreaded
  */
 template <class TInputImage, class TOutputImage>
-class ITK_EXPORT DifferenceImageFilter :
+class DifferenceImageFilter :
     public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:

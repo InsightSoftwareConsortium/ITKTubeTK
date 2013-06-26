@@ -50,7 +50,7 @@ template <typename TInputImage,
   ::RealType,
   TInputImage::ImageDimension >,
   TInputImage::ImageDimension > >
-class ITK_EXPORT StructureTensorRecursiveGaussianImageFilter :
+class StructureTensorRecursiveGaussianImageFilter :
     public ImageToImageFilter<TInputImage,TOutputImage>
 {
 public:

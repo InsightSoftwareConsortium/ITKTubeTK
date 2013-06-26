@@ -57,7 +57,7 @@ template < class TFixedImage,
   class TMovingSpatialObject,
   class TTubeSpatialObject,
   class TResolutionWeightFunction = Function::TubeExponentialResolutionWeightFunction< typename TTubeSpatialObject::TubePointType > >
-class ITK_EXPORT ImageToTubeRigidMetric
+class ImageToTubeRigidMetric
 : public ImageToSpatialObjectMetric< TFixedImage, TMovingSpatialObject >
 {
 public:

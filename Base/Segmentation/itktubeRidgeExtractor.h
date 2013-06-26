@@ -54,7 +54,7 @@ namespace tube
  */
 
 template <class TInputImage>
-class ITK_EXPORT RidgeExtractor : public Object
+class RidgeExtractor : public Object
 {
 public:
 

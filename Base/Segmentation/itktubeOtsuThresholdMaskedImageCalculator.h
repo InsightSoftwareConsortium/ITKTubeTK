@@ -50,7 +50,7 @@ namespace tube
  * \ingroup Operators
  */
 template <class TInputImage>
-class ITK_EXPORT OtsuThresholdMaskedImageCalculator : public Object
+class OtsuThresholdMaskedImageCalculator : public Object
 {
 public:
   /** Standard class typedefs. */

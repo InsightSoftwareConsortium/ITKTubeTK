@@ -50,7 +50,7 @@ namespace tube
  * \ingroup ImageFunctions ImageInterpolators
  */
 template <class TInputImage, class TCoordRep = float>
-class ITK_EXPORT VotingResampleImageFunction :
+class VotingResampleImageFunction :
   public InterpolateImageFunction<TInputImage,TCoordRep>
 {
 public:

@@ -69,7 +69,7 @@ namespace tube
  */
 
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-class ITK_EXPORT AnisotropicDiffusiveRegistrationFilter
+class AnisotropicDiffusiveRegistrationFilter
   : public DiffusiveRegistrationFilter< TFixedImage,
                                         TMovingImage,
                                         TDeformationField >

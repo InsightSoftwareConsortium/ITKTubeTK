@@ -43,7 +43,7 @@ namespace tube
  *  the computation of the joint histogram is determined by the feature width.
  */
 template<class TInputImage, class TCoordRep = float>
-class ITK_EXPORT JointHistogramImageFunction :
+class JointHistogramImageFunction :
     public ImageFunction< TInputImage, double, TCoordRep >
 {
 public:

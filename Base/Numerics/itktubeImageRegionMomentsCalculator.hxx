@@ -37,7 +37,7 @@ namespace itk
 namespace tube
 {
 
-class ITK_EXPORT InvalidImageRegionMomentsError : public ExceptionObject
+class InvalidImageRegionMomentsError : public ExceptionObject
 {
 public:
   /*

@@ -47,7 +47,7 @@ namespace tube
  */
 
 template <class TInputImage>
-class ITK_EXPORT TubeExtractor : public Object
+class TubeExtractor : public Object
 {
 public:
 

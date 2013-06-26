@@ -110,7 +110,7 @@ private:
  * \ingroup IntensityImageFilters  Multithreaded  TensorObjects
  */
 template <typename  TInputImage, typename  TOutputImage, typename TOutputMatrix>
-class ITK_EXPORT SymmetricEigenVectorAnalysisImageFilter :
+class SymmetricEigenVectorAnalysisImageFilter :
     public
 UnaryFunctorImageFilter<TInputImage,TOutputMatrix,
                         Functor::SymmetricEigenVectorAnalysisFunction<

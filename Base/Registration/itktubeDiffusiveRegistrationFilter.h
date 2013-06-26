@@ -117,7 +117,7 @@ struct EnergiesStruct
  */
 
 template < class TFixedImage, class TMovingImage, class TDeformationField >
-class ITK_EXPORT DiffusiveRegistrationFilter
+class DiffusiveRegistrationFilter
   : public PDEDeformableRegistrationFilter< TFixedImage,
                                            TMovingImage,
                                            TDeformationField >

@@ -51,7 +51,7 @@ namespace tube
  *  defined.
  */
 template <class TTransformType, unsigned int TDimension>
-class ITK_EXPORT TubeToTubeTransformFilter
+class TubeToTubeTransformFilter
 : public SpatialObjectToSpatialObjectFilter<
   GroupSpatialObject<TDimension>, GroupSpatialObject<TDimension> >
 {

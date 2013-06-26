@@ -55,7 +55,7 @@ namespace tube
  */
 
 template< typename  TPixel >
-class ITK_EXPORT SheetnessMeasureImageFilter : public
+class SheetnessMeasureImageFilter : public
   ImageToImageFilter< Image< SymmetricSecondRankTensor< double, 3 >, 3 >,
                       Image< TPixel, 3 > >
 {
