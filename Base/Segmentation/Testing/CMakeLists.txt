@@ -163,9 +163,11 @@ MIDAS_ADD_TEST( itktubeTubeExtractorTest
 
 MIDAS_ADD_TEST( itktubeRidgeSeedFilterTest
   ${BASE_SEGMENTATION_TESTS}
+    --compare MIDAS{itkTubeRidgeSeedFilterTest_Output.mha.md5}
+      ${TEMP}/itkTubeRidgeSeedFilterTest_Output.mha
     itktubeRidgeSeedFilterTest
       MIDAS{im0001.crop.contrast.mha.md5}
-      ${TEMP}/im0001.vessMask2.mha
+      MIDAS{im0001.vk.maskRidge.crop.mha.md5}
       255 127
       ${TEMP}/itkTubeRidgeSeedFilterTest_Class0PDF.mha
       ${TEMP}/itkTubeRidgeSeedFilterTest_Feature0Image.mha
