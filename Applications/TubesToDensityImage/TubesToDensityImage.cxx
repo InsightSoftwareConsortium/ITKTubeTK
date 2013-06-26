@@ -40,16 +40,16 @@ limitations under the License.
 
 using namespace tube;
 
-const int Dimensions = 3;
+enum { Dimension = 3 };
 
 typedef unsigned int                                  DensityPixelType;
 typedef float                                         RadiusPixelType;
-typedef itk::Vector< float, Dimensions >              TangentPixelType;
+typedef itk::Vector< float, Dimension >              TangentPixelType;
 
-typedef itk::Image< unsigned char, Dimensions >       TemplateImageType;
-typedef itk::Image< DensityPixelType, Dimensions >    DensityImageType;
-typedef itk::Image< RadiusPixelType, Dimensions >     RadiusImageType;
-typedef itk::Image< TangentPixelType, Dimensions >    TangentImageType;
+typedef itk::Image< unsigned char, Dimension >       TemplateImageType;
+typedef itk::Image< DensityPixelType, Dimension >    DensityImageType;
+typedef itk::Image< RadiusPixelType, Dimension >     RadiusImageType;
+typedef itk::Image< TangentPixelType, Dimension >    TangentImageType;
 
 typedef itk::ImageFileReader< TemplateImageType >     TemplateImageReaderType;
 
@@ -57,7 +57,7 @@ typedef itk::tube::TubeSpatialObjectToDensityImage<
   DensityImageType, RadiusImageType > TubeToDensityImageBuilderType;
 
 typedef TubeToDensityImageBuilderType::TubeGroupType  TubesType;
-typedef itk::SpatialObjectReader< Dimensions >        TubesReaderType;
+typedef itk::SpatialObjectReader< Dimension >        TubesReaderType;
 
 /** Max Intensity value */
 DensityPixelType   max_densityIntensity = 2048;
@@ -111,8 +111,8 @@ int DoIt( int argc, char * argv[] )
 
     TemplateImageType::Pointer imT = imTemplateReader->GetOutput();
     TubeToDensityImageBuilderType::SizeType size;
-    double spacing[Dimensions];
-    for(int i = 0; i < Dimensions; i++ )
+    double spacing[Dimension];
+    for(int i = 0; i < Dimension; i++ )
       {
       size[i] = imT->GetLargestPossibleRegion().GetSize()[i];
       spacing[i] = imT->GetSpacing()[i];
@@ -132,7 +132,7 @@ int DoIt( int argc, char * argv[] )
       return -1;
       }
     TubeToDensityImageBuilderType::SizeType sizeValue;
-    for(int i = 0; i < Dimensions; i++ )
+    for(int i = 0; i < Dimension; i++ )
       {
       sizeValue[i] = outputSize[i];
       }
@@ -143,8 +143,8 @@ int DoIt( int argc, char * argv[] )
       std::cerr << "Output spacing is missing!" << std::endl;
       return -1;
       }
-    double sp[Dimensions];
-    for(int i = 0; i < Dimensions; i++ )
+    double sp[Dimension];
+    for(int i = 0; i < Dimension; i++ )
       {
       sp[i] = outputSpacing[i];
       }

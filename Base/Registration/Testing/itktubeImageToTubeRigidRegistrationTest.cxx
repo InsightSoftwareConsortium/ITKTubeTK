@@ -53,7 +53,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   const char * outputTubes = argv[3];
   const char * outputImage = argv[4];
 
-  static const unsigned int Dimension = 3;
+  enum { Dimension = 3 };
   typedef double            FloatType;
 
   typedef itk::VesselTubeSpatialObject< Dimension >      TubeType;

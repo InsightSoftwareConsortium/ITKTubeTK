@@ -50,7 +50,7 @@ limitations under the License.
 
 #include "RegisterUsingSlidingGeometriesCLP.h"
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
@@ -125,7 +125,7 @@ bool ReorientAndWriteImage( ImageType * inputImage,
 }
 
 // Your code should be within the DoIt function...
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -146,8 +146,8 @@ int DoIt( int argc, char * argv[] )
   // Typedefs seeding definition of the anisotropic diffusive registration
   // filter
   const unsigned int                                      ImageDimension = 3;
-  typedef pixelT                                          FixedPixelType;
-  typedef pixelT                                          MovingPixelType;
+  typedef TPixel                                          FixedPixelType;
+  typedef TPixel                                          MovingPixelType;
   typedef MovingPixelType                                 OutputPixelType;
   typedef itk::Image< FixedPixelType, ImageDimension >    FixedImageType;
   typedef itk::Image< MovingPixelType, ImageDimension >   MovingImageType;
@@ -727,7 +727,7 @@ int DoIt( int argc, char * argv[] )
   double maximumError = 0.01;
 
   // Setup the multiresolution pyramids
-  typedef pixelT MultiResolutionRealType;
+  typedef TPixel MultiResolutionRealType;
   typedef itk::Image< MultiResolutionRealType, ImageDimension >
       MultiResolutionRealImageType;
   typedef itk::RecursiveMultiResolutionPyramidImageFilter

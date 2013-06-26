@@ -47,7 +47,7 @@ public:
    * image when image is resampled. This tells the processor not to count
    * that value
    */
-  enum { TDimensions = 3, DEFAULT_PIXEL_FILL = 0 };
+  enum { Dimension = 3, DEFAULT_PIXEL_FILL = 0 };
 
   typedef float                                          InputPixelType;
   typedef float                                          CountPixelType;
@@ -55,10 +55,10 @@ public:
   typedef float                                          MeanPixelType;
   typedef float                                          VariancePixelType;
 
-  typedef itk::Image< InputPixelType, TDimensions >      InputImageType;
-  typedef itk::Image< MeanPixelType, TDimensions >       MeanImageType;
-  typedef itk::Image< VariancePixelType, TDimensions >   VarianceImageType;
-  typedef itk::Image< CountPixelType, TDimensions >      CountImageType;
+  typedef itk::Image< InputPixelType, Dimension >      InputImageType;
+  typedef itk::Image< MeanPixelType, Dimension >       MeanImageType;
+  typedef itk::Image< VariancePixelType, Dimension >   VarianceImageType;
+  typedef itk::Image< CountPixelType, Dimension >      CountImageType;
   typedef itk::AffineTransform<>                         TransformType;
 
   typedef InputImageType::Pointer                        InputImagePointer;
@@ -75,7 +75,7 @@ private:
 
   /**  Pixel and Image Type for processing transition images */
   typedef double                                        ProcessPixelType;
-  typedef itk::Image< ProcessPixelType, TDimensions >   ProcessImageType;
+  typedef itk::Image< ProcessPixelType, Dimension >   ProcessImageType;
   typedef ProcessImageType::Pointer                     ProcessImagePointer;
 
   typedef itk::ImageRegionConstIterator<InputImageType> InputConstIteratorType;

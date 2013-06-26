@@ -108,7 +108,7 @@ int itkAcousticImpulseResponseImageFilterTest( int argc, char * argv[] )
   const char * angleDependence = argv[6];
 
   // Types
-  static const unsigned int Dimension = 2;
+  enum { Dimension = 2 };
 
   typedef float                              PixelType;
   typedef itk::Image< PixelType, Dimension > ImageType;

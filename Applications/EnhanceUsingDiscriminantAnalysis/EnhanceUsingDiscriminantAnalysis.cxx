@@ -35,13 +35,13 @@ limitations under the License.
 
 #include "EnhanceUsingDiscriminantAnalysisCLP.h"
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -54,10 +54,10 @@ int DoIt( int argc, char * argv[] )
   //   of this algorithm.
   itk::TimeProbesCollectorBase timeCollector;
 
-  typedef pixelT                                   InputPixelType;
-  typedef itk::Image< InputPixelType, dimensionT > InputImageType;
-  typedef itk::Image< unsigned short, dimensionT > MaskImageType;
-  typedef itk::Image< float, dimensionT >          BasisImageType;
+  typedef TPixel                                   InputPixelType;
+  typedef itk::Image< InputPixelType, TDimension > InputImageType;
+  typedef itk::Image< unsigned short, TDimension > MaskImageType;
+  typedef itk::Image< float, TDimension >          BasisImageType;
 
   typedef itk::ImageFileReader< InputImageType >   ImageReaderType;
   typedef itk::ImageFileReader< MaskImageType >    MaskReaderType;

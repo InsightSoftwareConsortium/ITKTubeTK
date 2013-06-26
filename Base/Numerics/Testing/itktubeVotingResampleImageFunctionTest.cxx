@@ -45,15 +45,15 @@ int itktubeVotingResampleImageFunctionTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  const unsigned int NDimensions = 2;
+  const unsigned int Dimension = 2;
   typedef unsigned char                       PixelType;
-  typedef itk::Image<PixelType, NDimensions>  ImageType;
+  typedef itk::Image<PixelType, Dimension>  ImageType;
 
   typedef ImageType::IndexType                ImageIndexType;
   typedef ImageType::RegionType               ImageRegionType;
   typedef ImageType::SizeType                 ImageSizeType;
   typedef double                              CoordRepType;
-  typedef itk::AffineTransform<CoordRepType,NDimensions>
+  typedef itk::AffineTransform<CoordRepType,Dimension>
                                               AffineTransformType;
   typedef itk::tube::VotingResampleImageFunction<ImageType,CoordRepType>
                                               InterpolatorType;

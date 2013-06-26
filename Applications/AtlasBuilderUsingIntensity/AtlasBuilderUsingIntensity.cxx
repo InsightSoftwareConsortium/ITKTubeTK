@@ -42,23 +42,23 @@ limitations under the License.
 
 using namespace tube;
 
-const unsigned int Dimensions = 3;
+enum { Dimension = 3 };
 
 /** Processors */
 typedef AtlasSummation                                AtlasBuilderType;
-typedef itk::AffineTransform< double, Dimensions >    TransformType;
+typedef itk::AffineTransform< double, Dimension >    TransformType;
 
 /** Object types */
 typedef AtlasBuilderType::InputPixelType              InputPixelType;
-typedef itk::Image< InputPixelType, Dimensions >      InputImageType;
+typedef itk::Image< InputPixelType, Dimension >      InputImageType;
 typedef AtlasSummation::MeanPixelType                 MeanPixelType;
-typedef itk::Image< MeanPixelType, Dimensions >       MeanImageType;
+typedef itk::Image< MeanPixelType, Dimension >       MeanImageType;
 typedef AtlasSummation::VariancePixelType             VariancePixelType;
-typedef itk::Image< VariancePixelType, Dimensions >   VarianceImageType;
-typedef itk::Image< short, Dimensions >               ShortImageType;
-typedef itk::Image< unsigned short, Dimensions >      UShortImageType;
+typedef itk::Image< VariancePixelType, Dimension >   VarianceImageType;
+typedef itk::Image< short, Dimension >               ShortImageType;
+typedef itk::Image< unsigned short, Dimension >      UShortImageType;
 typedef UShortImageType::Pointer                      UShortImagePointer;
-typedef itk::Image< float, Dimensions >               FloatImageType;
+typedef itk::Image< float, Dimension >               FloatImageType;
 
 /** IO */
 typedef MetaObjectDocument                            DocumentReaderType;
@@ -96,7 +96,7 @@ int DoIt( int argc, char * argv[] )
 
   AtlasBuilderType * atlasBuilder = new AtlasBuilderType();
 
-  assert( outputSize.size() == Dimensions );
+  assert( outputSize.size() == Dimension );
 
   AtlasBuilderType::SizeType size;
   for( unsigned int i = 0; i < outputSpacing.size(); ++i )

@@ -40,7 +40,7 @@ int itkUltrasoundProbeGeometryCalculatorTest( int argc, char * argv[] )
   const char * inputImage = argv[1];
 
   // Types
-  const unsigned int Dimension = 2;
+  enum { Dimension = 2 };
 
   typedef unsigned char                      PixelType;
   typedef itk::Image< PixelType, Dimension > ImageType;

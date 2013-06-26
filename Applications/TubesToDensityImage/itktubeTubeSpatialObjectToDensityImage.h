@@ -67,27 +67,27 @@ public:
   typedef typename TangentImageType::Pointer             TangentImagePointer;
 
   /** Define the Dimension variable */
-  itkStaticConstMacro( TDimension, unsigned int,
+  itkStaticConstMacro( ImageDimension, unsigned int,
                        DensityImageType::ImageDimension );
 
   typedef GroupSpatialObject<
-    itkGetStaticConstMacro( TDimension ) > TubeGroupType;
+    itkGetStaticConstMacro( ImageDimension ) > TubeGroupType;
   typedef typename TubeGroupType::Pointer TubeGroupPointer;
 
   typedef VesselTubeSpatialObject<
-    itkGetStaticConstMacro( TDimension ) > TubeType;
+    itkGetStaticConstMacro( ImageDimension ) > TubeType;
 
   typedef typename DensityImageType::OffsetType VectorPixelType;
   typedef Image<
     VectorPixelType,
-    itkGetStaticConstMacro(TDimension) >        VectorImageType;
+    itkGetStaticConstMacro(ImageDimension) >        VectorImageType;
   typedef typename VectorImageType::Pointer     VectorImagePointer;
 
   typedef typename DensityImageType::SizeType     SizeType;
   typedef typename DensityImageType::SpacingType  SpacingType;
 
   typedef TubeSpatialObjectToImageFilter<
-    itkGetStaticConstMacro(TDimension),
+    itkGetStaticConstMacro(ImageDimension),
     DensityImageType > TubetoImageFilterType;
 
   typedef DanielssonDistanceMapImageFilter<

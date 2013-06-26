@@ -41,7 +41,7 @@ int itktubeSubSampleTubeTreeSpatialObjectFilterTest( int argc, char * argv[] )
   const char * inputTubeNetwork = argv[1];
   const char * outputTubeNetwork = argv[2];
 
-  static const unsigned int Dimension = 3;
+  enum { Dimension = 3 };
   typedef itk::VesselTubeSpatialObject< Dimension > TubeSpatialObjectType;
   typedef itk::GroupSpatialObject< Dimension >      GroupSpatialObjectType;
 

@@ -40,7 +40,7 @@ limitations under the License.
 int itktubeStructureTensorRecursiveGaussianImageFilterTestNew( int argc, char * argv[] )
 {
   // Define image
-  const unsigned int Dimension = 3;
+  enum { Dimension = 3 };
   typedef double PixelType;
   typedef itk::Image<PixelType, Dimension>  ImageType;
 

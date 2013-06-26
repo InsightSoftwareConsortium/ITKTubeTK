@@ -74,17 +74,17 @@ namespace tube
  *
  * email: r.manniesing@erasmusmc.nl
  */
-template <class PixelT = short int, unsigned int DimensionT = 2>
+template <class TPixel = short int, unsigned int TDimension = 2>
 class ITK_EXPORT TubeEnhancingDiffusion2DImageFilter :
-    public ImageToImageFilter<Image<PixelT, DimensionT> ,
-                              Image<PixelT, DimensionT> >
+    public ImageToImageFilter<Image<TPixel, TDimension> ,
+                              Image<TPixel, TDimension> >
 {
 
 public:
 
   typedef float                                           Precision;
-  typedef Image<PixelT, DimensionT>                       ImageType;
-  typedef Image<Precision, DimensionT>                    PrecisionImageType;
+  typedef Image<TPixel, TDimension>                       ImageType;
+  typedef Image<Precision, TDimension>                    PrecisionImageType;
 
   typedef TubeEnhancingDiffusion2DImageFilter             Self;
   typedef ImageToImageFilter<ImageType,ImageType>         Superclass;

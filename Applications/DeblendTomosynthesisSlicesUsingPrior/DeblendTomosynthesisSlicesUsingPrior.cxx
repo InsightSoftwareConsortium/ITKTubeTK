@@ -41,7 +41,7 @@ limitations under the License.
 
 #include "DeblendTomosynthesisSlicesUsingPriorCLP.h"
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
@@ -53,7 +53,7 @@ namespace itk
 namespace tube
 {
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 class BlendCostFunction
 : public SingleValuedCostFunction
 {
@@ -71,7 +71,7 @@ public:
   typedef Superclass::MeasureType         MeasureType;
   typedef Superclass::ParametersType      ParametersType;
   typedef Superclass::DerivativeType      DerivativeType;
-  typedef itk::Image<pixelT, dimensionT>  ImageType;
+  typedef itk::Image<TPixel, TDimension>  ImageType;
 
   unsigned int GetNumberOfParameters( void ) const
     {
@@ -259,7 +259,7 @@ private:
 
 }; // End class BlendCostFunction
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 class BlendScaleCostFunction
 : public SingleValuedCostFunction
 {
@@ -277,7 +277,7 @@ public:
   typedef Superclass::MeasureType         MeasureType;
   typedef Superclass::ParametersType      ParametersType;
   typedef Superclass::DerivativeType      DerivativeType;
-  typedef itk::Image<pixelT, dimensionT>  ImageType;
+  typedef itk::Image<TPixel, TDimension>  ImageType;
 
   typedef itk::SmoothingRecursiveGaussianImageFilter< ImageType, ImageType >
                                                   BlurFilterType;
@@ -492,7 +492,7 @@ private:
 
 } // End namespace itk
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -507,7 +507,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   typedef float                                 PixelType;
-  typedef itk::Image< PixelType,  dimensionT >  ImageType;
+  typedef itk::Image< PixelType,  TDimension >  ImageType;
 
   /** Read input images */
   typename ImageType::Pointer imageBottom;
@@ -600,7 +600,7 @@ int DoIt( int argc, char * argv[] )
   blendParams[2] = offset;
   if( 1 )
     {
-    typedef itk::tube::BlendCostFunction< PixelType, dimensionT >
+    typedef itk::tube::BlendCostFunction< PixelType, TDimension >
                                                   BlendCostFunctionType;
     typedef itk::OnePlusOneEvolutionaryOptimizer  InitialOptimizerType;
     typedef itk::FRPROptimizer                    OptimizerType;
@@ -698,7 +698,7 @@ int DoIt( int argc, char * argv[] )
   blendScaleParams[3] = sigma;
   if( 1 )
     {
-    typedef itk::tube::BlendScaleCostFunction< PixelType, dimensionT >
+    typedef itk::tube::BlendScaleCostFunction< PixelType, TDimension >
                                                   BlendScaleCostFunctionType;
     typedef itk::OnePlusOneEvolutionaryOptimizer  InitialOptimizerType;
     typedef itk::FRPROptimizer                    OptimizerType;

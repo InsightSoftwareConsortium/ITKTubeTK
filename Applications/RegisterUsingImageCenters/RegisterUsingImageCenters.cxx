@@ -34,10 +34,10 @@ limitations under the License.
 
 #include "RegisterUsingImageCentersCLP.h"
 
-template< unsigned int VDimension >
+template< unsigned int TDimension >
 int DoIt( int argc, char * argv[] );
 
-template <class TPixel, unsigned int VDimension>
+template <class TPixel, unsigned int TDimension>
 int DoIt( int argc, char * argv[] )
 {
   (void)argc;
@@ -79,12 +79,12 @@ int main( int argc, char * argv[] )
 }
 
 
-template <unsigned int VDimension >
+template <unsigned int TDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  const unsigned int Dimension = VDimension;
+  const unsigned int Dimension = TDimension;
 
   itk::ImageIOBase::Pointer imageIO =
     itk::ImageIOFactory::CreateImageIO(

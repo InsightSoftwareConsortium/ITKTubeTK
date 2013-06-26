@@ -61,7 +61,7 @@ public:
   typedef SmartPointer<Self>                            Pointer;
   typedef SmartPointer<const Self>                      ConstPointer;
 
-  itkStaticConstMacro( TDimension, unsigned int,
+  itkStaticConstMacro( ImageDimension, unsigned int,
                        TInputImageType::ImageDimension );
 
   itkNewMacro(Self);
@@ -71,7 +71,7 @@ public:
   typedef TOutputMeanImageType                          OutputMeanImageType;
   typedef TOutputSigmaImageType                         OutputSigmaImageType;
   typedef Image<
-    float, itkGetStaticConstMacro(TDimension)>           CountImageType;
+    float, itkGetStaticConstMacro(ImageDimension)>           CountImageType;
 
   typedef typename InputImageType::PixelType            InputPixelType;
   typedef typename OutputMeanImageType::PixelType       OutputMeanPixelType;
@@ -89,7 +89,7 @@ public:
   typedef typename InputImageType::PointType            PointType;
 
   typedef Image<
-    float,itkGetStaticConstMacro(TDimension)>           ProcessImageType;
+    float,itkGetStaticConstMacro(ImageDimension)>           ProcessImageType;
 
   /*
    * Add an image to the group being summed.

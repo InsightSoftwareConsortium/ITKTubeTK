@@ -212,7 +212,7 @@ AtlasSummation::InputImagePointer AtlasSummation
     }
 
   SizeType buffer;
-  for( int i = 0; i < TDimensions; i++ )
+  for( int i = 0; i < Dimension; i++ )
     {
     buffer[i] = 2;
     }
@@ -230,7 +230,7 @@ bool AtlasSummation
   SizeType outputSize = m_MeanBuilder->GetOutputSize();
 
   bool sizeChanged = false;
-  for( int i = 0; i < TDimensions; i++ )
+  for( int i = 0; i < Dimension; i++ )
     {
     if( inputSize[i] > outputSize[i] )
       {

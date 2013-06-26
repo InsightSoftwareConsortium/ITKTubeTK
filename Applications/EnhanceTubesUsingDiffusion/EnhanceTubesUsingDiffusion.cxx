@@ -29,22 +29,22 @@ limitations under the License.
 
 #include "EnhanceTubesUsingDiffusionCLP.h"
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef pixelT                                           PixelType;
-  typedef itk::Image< PixelType,  dimensionT  >            ImageType;
+  typedef TPixel                                           PixelType;
+  typedef itk::Image< PixelType,  TDimension  >            ImageType;
   typedef itk::ImageFileReader< ImageType >                ReaderType;
   typedef itk::tube::TubeEnhancingDiffusion2DImageFilter< PixelType,
-                                                    dimensionT  >
+                                                    TDimension  >
                                                            FilterType;
 
   typename ReaderType::Pointer reader = ReaderType::New();

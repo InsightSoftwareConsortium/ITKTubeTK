@@ -35,7 +35,7 @@ TubeSpatialObjectToDensityImage<TDensityImageType,
                                 TTangentImageType>
 ::TubeSpatialObjectToDensityImage( void )
 {
-  for(short i = 0; i < TDimension; i++ )
+  for(short i = 0; i < ImageDimension; i++ )
     {
     m_Size[i] = 0;
     m_Spacing[i] = 1;
@@ -64,7 +64,7 @@ TubeSpatialObjectToDensityImage<TDensityImageType,
                                 TTangentImageType>
 ::SetSpacing( SpacingType s )
 {
-  for( unsigned int i = 0; i < TDimension; i++ )
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     m_Spacing[i] = s[i];
     }
@@ -92,7 +92,7 @@ TubeSpatialObjectToDensityImage<TDensityImageType,
     tubes->SetBoundingBoxChildrenDepth( tubes->GetMaximumDepth() );
     tubes->ComputeBoundingBox();
 
-    typedef TubeSpatialObjectToImageFilter<TDimension,DensityImageType>
+    typedef TubeSpatialObjectToImageFilter<ImageDimension,DensityImageType>
                  FilterType;
     typename FilterType::Pointer tubefilter = FilterType::New();
 
@@ -150,7 +150,7 @@ TubeSpatialObjectToDensityImage<TDensityImageType,
       {
       VectorPixelType v = it_vector.Value();
       typename DensityImageType::IndexType index = it_vector.GetIndex();
-      for( int i = 0; i < TDimension; i++ )
+      for( int i = 0; i < ImageDimension; i++ )
         {
         index[i] += v[i];
         }
@@ -175,7 +175,7 @@ TubeSpatialObjectToDensityImage<TDensityImageType,
       {
       VectorPixelType v = it_vector.Value();
       typename DensityImageType::IndexType index = it_vector.GetIndex();
-      for( int i = 0; i < TDimension; i++ )
+      for( int i = 0; i < ImageDimension; i++ )
         {
         index[i] += v[i];
         }

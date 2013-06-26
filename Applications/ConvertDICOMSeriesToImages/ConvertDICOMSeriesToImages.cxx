@@ -229,7 +229,7 @@ int main( int argc, char * argv[] )
   // Parameters to be used as template arguments
   //
   typedef signed short    PixelType;
-  const unsigned int      Dimension = 3;
+  enum { Dimension = 3 };
 
   //
   // Typedefs

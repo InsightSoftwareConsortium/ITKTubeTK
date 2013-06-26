@@ -52,7 +52,7 @@ int main( int argc, char * argv[] )
 
 int DoIt( int argc, char * argv[] )
 {
-  const unsigned int Dimension = 3;
+  enum { Dimension = 3 };
 
   typedef short                                      PixelType;
   typedef itk::Image< PixelType, Dimension >         ImageType;

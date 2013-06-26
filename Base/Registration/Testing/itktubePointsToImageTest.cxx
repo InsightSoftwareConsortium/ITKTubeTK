@@ -40,16 +40,17 @@ int itktubePointsToImageTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  const unsigned int                                      ImageDimension = 3;
-  typedef itk::SpatialObjectReader< ImageDimension >      ReaderType;
-  typedef itk::SpatialObject< ImageDimension >::ChildrenListType
+  enum { Dimension = 3 };
+
+  typedef itk::SpatialObjectReader< Dimension >      ReaderType;
+  typedef itk::SpatialObject< Dimension >::ChildrenListType
       ObjectListType;
-  typedef itk::GroupSpatialObject< ImageDimension >       GroupType;
-  typedef itk::VesselTubeSpatialObject< ImageDimension >  TubeType;
+  typedef itk::GroupSpatialObject< Dimension >       GroupType;
+  typedef itk::VesselTubeSpatialObject< Dimension >  TubeType;
   typedef TubeType::PointListType                         PointListType;
   typedef TubeType::PointType                             PointType;
   typedef TubeType::TubePointType                         TubePointType;
-  typedef itk::Image< float, ImageDimension >             ImageType;
+  typedef itk::Image< float, Dimension >             ImageType;
 
   // Read the tube
   ReaderType::Pointer tubeReader = ReaderType::New();

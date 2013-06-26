@@ -41,16 +41,16 @@ limitations under the License.
 
 #include "RegisterImageToTubesUsingRigidTransformCLP.h"
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] );
 
-// Does not currently use pixelT
+// Does not currently use TPixel
 #define PARSE_ARGS_FLOAT_ONLY 1
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -64,7 +64,7 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  static const unsigned int Dimension = 3;
+  enum { Dimension = 3 };
   typedef double            FloatType;
 
   typedef itk::VesselTubeSpatialObject< Dimension >      TubeType;
@@ -75,7 +75,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileWriter< ImageType >              ImageWriterType;
   typedef itk::tube::ImageToTubeRigidRegistration< ImageType, TubeNetType, TubeType >
                                                          RegistrationMethodType;
-  typedef RegistrationMethodType::TransformType          TransformType;
+  typedef typename RegistrationMethodType::TransformType TransformType;
   typedef itk::tube::TubeToTubeTransformFilter< TransformType, Dimension >
                                                          TubeTransformFilterType;
   typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
@@ -96,7 +96,7 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  TubeNetReaderType::Pointer vesselReader = TubeNetReaderType::New();
+  typename TubeNetReaderType::Pointer vesselReader = TubeNetReaderType::New();
   vesselReader->SetFileName( inputVessel );
   try
     {
@@ -114,7 +114,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   timeCollector.Start("Sub-sample data");
-  SubSampleTubeNetFilterType::Pointer subSampleTubeNetFilter =
+  typename SubSampleTubeNetFilterType::Pointer subSampleTubeNetFilter =
     SubSampleTubeNetFilterType::New();
   subSampleTubeNetFilter->SetInput( vesselReader->GetGroup() );
   subSampleTubeNetFilter->SetSampling( 100 );
@@ -142,7 +142,7 @@ int DoIt( int argc, char * argv[] )
 
     typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType >
       GaussianFilterType;
-    GaussianFilterType::Pointer gaussianFilter;
+    typename GaussianFilterType::Pointer gaussianFilter;
 
     // Progress per iteration
     const double progressFraction = 0.1/Dimension;
@@ -172,14 +172,14 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start("Register image to tube");
 
-  RegistrationMethodType::Pointer registrationMethod =
+  typename RegistrationMethodType::Pointer registrationMethod =
     RegistrationMethodType::New();
 
   registrationMethod->SetFixedImage( currentImage );
   registrationMethod->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
 
   // Set Optimizer parameters.
-  RegistrationMethodType::OptimizerType::Pointer optimizer =
+  typename RegistrationMethodType::OptimizerType::Pointer optimizer =
     registrationMethod->GetOptimizer();
   itk::GradientDescentOptimizer * gradientDescentOptimizer =
     dynamic_cast< itk::GradientDescentOptimizer * >( optimizer.GetPointer() );
@@ -228,7 +228,7 @@ int DoIt( int argc, char * argv[] )
     dynamic_cast<TransformType *>(registrationMethod->GetTransform());
   outputTransform->SetParameters( registrationMethod->GetLastTransformParameters() );
 
-  TubeTransformFilterType::Pointer transformFilter = TubeTransformFilterType::New();
+  typename TubeTransformFilterType::Pointer transformFilter = TubeTransformFilterType::New();
   transformFilter->SetInput( vesselReader->GetGroup() );
   transformFilter->SetScale( 1.0 );
   transformFilter->SetTransform( outputTransform );
@@ -246,16 +246,16 @@ int DoIt( int argc, char * argv[] )
 
   typedef itk::SpatialObjectToImageFilter<TubeNetType, ImageType>
                                               SpatialObjectToImageFilterType;
-  SpatialObjectToImageFilterType::Pointer vesselToImageFilter =
+  typename SpatialObjectToImageFilterType::Pointer vesselToImageFilter =
     SpatialObjectToImageFilterType::New();
-  ImageType::SizeType size = currentImage->GetLargestPossibleRegion().GetSize();
+  typename ImageType::SizeType size = currentImage->GetLargestPossibleRegion().GetSize();
   const double decimationFactor = 4.0;
-  typedef ImageType::SizeType::SizeValueType SizeValueType;
+  typedef typename ImageType::SizeType::SizeValueType SizeValueType;
   size[0] = static_cast< SizeValueType >( size[0] / decimationFactor );
   size[1] = static_cast< SizeValueType >( size[1] / decimationFactor );
   size[2] = static_cast< SizeValueType >( size[2] / decimationFactor );
 
-  ImageType::SpacingType spacing = currentImage->GetSpacing();
+  typename ImageType::SpacingType spacing = currentImage->GetSpacing();
   spacing[0] = spacing[0] * decimationFactor;
   spacing[1] = spacing[1] * decimationFactor;
   spacing[2] = spacing[2] * decimationFactor;
