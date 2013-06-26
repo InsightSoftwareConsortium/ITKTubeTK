@@ -55,7 +55,7 @@ MinimizeImageSizeFilter<TInputImage>
 
   this->AllocateOutputs();
 
-  if( TDimension == 3 )
+  if( ImageDimension == 3 )
     {
     // Determine the clipped end of the image
     if( this->GetClipEndIndices() )
@@ -68,7 +68,7 @@ MinimizeImageSizeFilter<TInputImage>
       Get3DCroppedStartRegion( input, region );
       }
     }
-  else if( TDimension == 2 )
+  else if( ImageDimension == 2 )
     {
     itkExceptionMacro("2D image cropping is not implemented yet...sorry!");
     return;
@@ -90,14 +90,14 @@ MinimizeImageSizeFilter<TInputImage>
     {
     if( this->GetClipEndIndices() )
       {
-      for( unsigned int i = 0; i < TDimension; i++ )
+      for( unsigned int i = 0; i < ImageDimension; i++ )
         {
         size[i] += m_NumberOfBufferPixels[i];
         }
       }
     if( this->GetClipStartIndices() )
       {
-      for( unsigned int j = 0; j < TDimension; j++ )
+      for( unsigned int j = 0; j < ImageDimension; j++ )
         {
         size[j] += m_NumberOfBufferPixels[j];
         // Get the physical point for the new origin
@@ -137,11 +137,11 @@ MinimizeImageSizeFilter< TInputImage >
   SizeType  size = region.GetSize();
 
   // Run sweep for back end
-  for( unsigned int i = 0; i < TDimension; i++ )
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     ImageSliceConstIteratorType  it_input( input, region );
     it_input.SetFirstDirection( i );
-    it_input.SetSecondDirection( ( (i+1)%TDimension ) );
+    it_input.SetSecondDirection( ( (i+1)%ImageDimension ) );
 
     it_input.GoToReverseBegin();
 
@@ -182,7 +182,7 @@ MinimizeImageSizeFilter< TInputImage >
     // dimension i+2
     IndexType index = it_input.GetIndex();
 
-    unsigned int dim = (i+2)%TDimension;  //Dimension that is changed
+    unsigned int dim = (i+2)%ImageDimension;  //Dimension that is changed
     if( index[dim] < 0 )
       {
       std::cout << "Index below 0 = " << index[dim] << std::endl;
@@ -207,11 +207,11 @@ MinimizeImageSizeFilter< TInputImage >
   SizeType  size = region.GetSize();
 
   // Run sweep for front end of image
-  for( unsigned int i = 0; i < TDimension; i++ )
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     ImageSliceConstIteratorType  it_input( input, region );
     it_input.SetFirstDirection( i );
-    it_input.SetSecondDirection( ( (i+1)%TDimension ) );
+    it_input.SetSecondDirection( ( (i+1)%ImageDimension ) );
 
     it_input.GoToBegin();
 
@@ -250,7 +250,7 @@ MinimizeImageSizeFilter< TInputImage >
     // This is the index of the first point found in the plane defined by
     // i & i+1 ( starting from beginning ). Therefore it is the first point
     // for dimension i+2
-    unsigned int dim = ( i+2 ) % TDimension;  //Dimension that is changed
+    unsigned int dim = ( i+2 ) % ImageDimension;  //Dimension that is changed
     index[dim] = it_input.GetIndex()[dim];
 
     size[dim]  -= ( index[dim] - region.GetIndex()[dim] );

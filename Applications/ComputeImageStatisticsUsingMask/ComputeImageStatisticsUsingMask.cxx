@@ -35,13 +35,13 @@ limitations under the License.
 
 #include "ComputeImageStatisticsUsingMaskCLP.h"
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -55,9 +55,9 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef itk::Image< pixelT,  dimensionT >        MaskType;
-  typedef itk::Image< unsigned int,  dimensionT >  ConnCompType;
-  typedef itk::Image< float,  dimensionT >         VolumeType;
+  typedef itk::Image< TPixel,  TDimension >        MaskType;
+  typedef itk::Image< unsigned int,  TDimension >  ConnCompType;
+  typedef itk::Image< float,  TDimension >         VolumeType;
   typedef itk::ImageFileReader< VolumeType >       VolumeReaderType;
   typedef itk::ImageFileReader< MaskType >         MaskReaderType;
 
@@ -117,7 +117,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start("Connected Components");
 
-  typedef std::map< pixelT, unsigned int > MapType;
+  typedef std::map< TPixel, unsigned int > MapType;
 
   MapType maskMap;
 
@@ -137,7 +137,7 @@ int DoIt( int argc, char * argv[] )
   typename MapType::iterator mapIter;
   unsigned int numberOfComponents = 0;
   unsigned int id = 0;
-  pixelT tf = 0;
+  TPixel tf = 0;
   while( !connCompIter.IsAtEnd() )
     {
     tf = maskIter.Get();

@@ -47,7 +47,7 @@ int itkLabelMapToAcousticImpedanceImageFilterTest( int argc, char * argv[] )
 
 
   // Types.
-  static const unsigned int Dimension = 2;
+  enum { Dimension = 2 };
 
   typedef unsigned char                              LabelMapPixelType;
   typedef itk::Image< LabelMapPixelType, Dimension > LabelMapType;

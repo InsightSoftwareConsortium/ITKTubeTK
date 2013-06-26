@@ -44,7 +44,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc, char * arg
     }
 
   // Define the dimension of the images
-  const unsigned int Dimension = 3;
+  enum { Dimension = 3 };
 
   // Define the pixel type
   typedef short PixelType;

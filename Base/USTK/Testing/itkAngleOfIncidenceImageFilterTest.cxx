@@ -36,7 +36,7 @@ int itkAngleOfIncidenceImageFilterTest( int argc, char * argv[] )
     }
 
   // Types.
-  static const unsigned int Dimension = 3;
+  enum { Dimension = 3 };
 
   typedef unsigned short                              UltrasoundPixelType;
   typedef itk::Image< UltrasoundPixelType, Dimension > UltrasoundImageType;

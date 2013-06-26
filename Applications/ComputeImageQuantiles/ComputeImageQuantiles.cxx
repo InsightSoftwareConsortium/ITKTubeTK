@@ -46,12 +46,12 @@ limitations under the License.
 
 #include "ComputeImageQuantilesCLP.h"
 
-enum { TDimensions = 3 };
+enum { Dimension = 3 };
 
 //using namespace boost;
 using namespace boost::accumulators;
 
-typedef itk::Image< float, TDimensions >                  ImageType;
+typedef itk::Image< float, Dimension >                  ImageType;
 typedef ImageType::IndexType                              ImageIndexType;
 typedef ImageType::PixelType                              ImagePixelType;
 typedef ImageType::SizeType                               ImageSizeType;

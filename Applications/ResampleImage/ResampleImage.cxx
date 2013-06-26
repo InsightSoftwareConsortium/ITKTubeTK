@@ -37,18 +37,18 @@ limitations under the License.
 
 #include "ResampleImageCLP.h"
 
-template< class PixelT, unsigned int DimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template< class PixelT, unsigned int DimensionI >
+template< class TPixel, unsigned int DimensionI >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef PixelT                                      InputPixelType;
+  typedef TPixel                                      InputPixelType;
   typedef itk::Image< InputPixelType, DimensionI >    InputImageType;
 
   typedef InputPixelType                              OutputPixelType;

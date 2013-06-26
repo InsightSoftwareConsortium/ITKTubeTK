@@ -39,8 +39,8 @@ limitations under the License.
 namespace tube
 {
 
-template< class pixelT, unsigned int dimensionT >
-CropROI< pixelT, dimensionT >::
+template< class TPixel, unsigned int TDimension >
+CropROI< TPixel, TDimension >::
 CropROI( void )
 {
   m_InputImage = NULL;
@@ -62,103 +62,103 @@ CropROI( void )
   m_ProgressRange = 1;
 }
 
-template< class pixelT, unsigned int dimensionT >
-CropROI< pixelT, dimensionT >::
+template< class TPixel, unsigned int TDimension >
+CropROI< TPixel, TDimension >::
 ~CropROI( void )
 {
 }
 
-template< class pixelT, unsigned int dimensionT >
-void CropROI< pixelT, dimensionT >::
+template< class TPixel, unsigned int TDimension >
+void CropROI< TPixel, TDimension >::
 SetInput( typename ImageType::Pointer inputImage )
 {
   m_InputImage = inputImage;
 }
 
-template< class pixelT, unsigned int dimensionT >
-void CropROI< pixelT, dimensionT >::
+template< class TPixel, unsigned int TDimension >
+void CropROI< TPixel, TDimension >::
 SetMin( typename ImageType::IndexType roiMin )
 {
   m_ROIMin = roiMin;
   m_UseROIMin = true;
 }
 
-template< class pixelT, unsigned int dimensionT >
-void CropROI< pixelT, dimensionT >::
+template< class TPixel, unsigned int TDimension >
+void CropROI< TPixel, TDimension >::
 SetUseMin( bool useMin )
 {
   m_UseROIMin = useMin;
 }
 
-template< class pixelT, unsigned int dimensionT >
-void CropROI< pixelT, dimensionT >::
+template< class TPixel, unsigned int TDimension >
+void CropROI< TPixel, TDimension >::
 SetMax( typename ImageType::IndexType roiMax )
 {
   m_ROIMax = roiMax;
   m_UseROIMax = true;
 }
 
-template< class pixelT, unsigned int dimensionT >
-void CropROI< pixelT, dimensionT >::
+template< class TPixel, unsigned int TDimension >
+void CropROI< TPixel, TDimension >::
 SetUseMax( bool useMax )
 {
   m_UseROIMax = useMax;
 }
 
-template< class pixelT, unsigned int dimensionT >
-void CropROI< pixelT, dimensionT >::
+template< class TPixel, unsigned int TDimension >
+void CropROI< TPixel, TDimension >::
 SetSize( typename ImageType::SizeType roiSize )
 {
   m_ROISize = roiSize;
   m_UseROISize = true;
 }
 
-template< class pixelT, unsigned int dimensionT >
-void CropROI< pixelT, dimensionT >::
+template< class TPixel, unsigned int TDimension >
+void CropROI< TPixel, TDimension >::
 SetUseSize( bool useSize )
 {
   m_UseROISize = useSize;
 }
 
-template< class pixelT, unsigned int dimensionT >
-void CropROI< pixelT, dimensionT >::
+template< class TPixel, unsigned int TDimension >
+void CropROI< TPixel, TDimension >::
 SetCenter( typename ImageType::IndexType roiCenter )
 {
   m_ROICenter = roiCenter;
   m_UseROICenter = true;
 }
 
-template< class pixelT, unsigned int dimensionT >
-void CropROI< pixelT, dimensionT >::
+template< class TPixel, unsigned int TDimension >
+void CropROI< TPixel, TDimension >::
 SetUseCenter( bool useCenter )
 {
   m_UseROICenter = useCenter;
 }
 
-template< class pixelT, unsigned int dimensionT >
-void CropROI< pixelT, dimensionT >::
+template< class TPixel, unsigned int TDimension >
+void CropROI< TPixel, TDimension >::
 SetBoundary( typename ImageType::IndexType roiBoundary )
 {
   m_ROIBoundary = roiBoundary;
   m_UseROIBoundary = true;
 }
 
-template< class pixelT, unsigned int dimensionT >
-void CropROI< pixelT, dimensionT >::
+template< class TPixel, unsigned int TDimension >
+void CropROI< TPixel, TDimension >::
 SetUseBoundary( bool useBoundary )
 {
   m_UseROIBoundary = useBoundary;
 }
 
-template< class pixelT, unsigned int dimensionT >
-void CropROI< pixelT, dimensionT>::
+template< class TPixel, unsigned int TDimension >
+void CropROI< TPixel, TDimension>::
 SetTimeCollector( itk::TimeProbesCollectorBase * timeCollector )
 {
   m_TimeCollector = timeCollector;
 }
 
-template< class pixelT, unsigned int dimensionT >
-void CropROI< pixelT, dimensionT>::
+template< class TPixel, unsigned int TDimension >
+void CropROI< TPixel, TDimension>::
 SetProgressReporter( CLIProgressReporter * progressReporter,
                      float progressStart, float progressRange )
 {
@@ -167,8 +167,8 @@ SetProgressReporter( CLIProgressReporter * progressReporter,
   m_ProgressRange = progressRange;
 }
 
-template< class pixelT, unsigned int dimensionT >
-void CropROI< pixelT, dimensionT>::
+template< class TPixel, unsigned int TDimension >
+void CropROI< TPixel, TDimension>::
 Update( void )
 {
   if( m_ProgressReporter )
@@ -196,7 +196,7 @@ Update( void )
 
     if( !m_UseROIMin && !m_UseROICenter )
       {
-      for( unsigned int i=0; i<dimensionT; i++ )
+      for( unsigned int i=0; i<TDimension; i++ )
         {
         m_ROIMin[i] = 0;
         }
@@ -204,7 +204,7 @@ Update( void )
 
     if( m_UseROICenter )
       {
-      for( unsigned int i=0; i<dimensionT; i++ )
+      for( unsigned int i=0; i<TDimension; i++ )
         {
         m_ROIMin[i] = m_ROICenter[i] - m_ROISize[i]/2;
         }
@@ -212,7 +212,7 @@ Update( void )
 
     typename ImageType::SizeType imageSize;
     imageSize = m_InputImage->GetLargestPossibleRegion().GetSize();
-    for( unsigned int i=0; i<dimensionT; i++ )
+    for( unsigned int i=0; i<TDimension; i++ )
       {
       if( m_ROIMin[i] < 0 )
         {
@@ -230,7 +230,7 @@ Update( void )
     outputSize = m_InputImage->GetLargestPossibleRegion().GetSize();
     if( m_UseROISize )
       {
-      for( unsigned int i=0; i<dimensionT; i++ )
+      for( unsigned int i=0; i<TDimension; i++ )
         {
         outputSize[i] = m_ROISize[i];
         if( outputSize[i] < 1 )
@@ -241,7 +241,7 @@ Update( void )
       }
     else
       {
-      for( unsigned int i=0; i<dimensionT; i++ )
+      for( unsigned int i=0; i<TDimension; i++ )
         {
         if( m_ROIMin[i] > m_ROIMax[i] )
           {
@@ -255,14 +255,14 @@ Update( void )
 
     if( m_UseROIBoundary )
       {
-      for( unsigned int i=0; i<dimensionT; i++ )
+      for( unsigned int i=0; i<TDimension; i++ )
         {
         m_ROIMin[i] -= m_ROIBoundary[i];
         outputSize[i] += 2*m_ROIBoundary[i];
         }
       }
 
-    for( unsigned int i=0; i<dimensionT; i++ )
+    for( unsigned int i=0; i<TDimension; i++ )
       {
       if( m_ROIMin[i] + outputSize[i] > imageSize[i] )
         {
@@ -277,7 +277,7 @@ Update( void )
 
     typename ImageType::SizeType lowerCropSize;
     typename ImageType::SizeType upperCropSize;
-    for( unsigned int i=0; i<dimensionT; i++ )
+    for( unsigned int i=0; i<TDimension; i++ )
       {
       lowerCropSize[i] = m_ROIMin[i];
       upperCropSize[i] = imageSize[i] - (m_ROIMin[i] + outputSize[i]);
@@ -328,17 +328,17 @@ Update( void )
     }
 }
 
-template< class pixelT, unsigned int dimensionT >
-typename itk::Image< pixelT, dimensionT >::Pointer
-CropROI< pixelT, dimensionT>::
+template< class TPixel, unsigned int TDimension >
+typename itk::Image< TPixel, TDimension >::Pointer
+CropROI< TPixel, TDimension>::
 GetOutput( void )
 {
   return m_OutputImage;
 }
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 void
-CropROI< pixelT, dimensionT>::
+CropROI< TPixel, TDimension>::
 PrintSelf( void )
 {
   if( m_InputImage.IsNotNull() )

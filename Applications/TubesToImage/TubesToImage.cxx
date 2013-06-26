@@ -42,22 +42,22 @@ limitations under the License.
 
 using namespace tube;
 
-const int Dimensions = 3;
+enum { Dimension = 3 };
 
 typedef unsigned char                                   OutputPixelType;
 
-typedef itk::Image< unsigned char, Dimensions >         TemplateImageType;
+typedef itk::Image< unsigned char, Dimension >         TemplateImageType;
 typedef itk::ImageFileReader< TemplateImageType >       TemplateImageReaderType;
-typedef itk::Image< OutputPixelType, Dimensions >       OutputImageType;
+typedef itk::Image< OutputPixelType, Dimension >       OutputImageType;
 
 typedef itk::tube::TubeSpatialObjectToImageFilter<
-    Dimensions,
+    Dimension,
     OutputImageType >                                   TubetoImageFilterType;
 
-typedef itk::GroupSpatialObject< Dimensions >           TubeGroupType;
+typedef itk::GroupSpatialObject< Dimension >           TubeGroupType;
 typedef TubeGroupType::Pointer                          TubeGroupPointer;
 typedef TubeGroupType                                   TubesType;
-typedef itk::SpatialObjectReader< Dimensions >          TubesReaderType;
+typedef itk::SpatialObjectReader< Dimension >          TubesReaderType;
 
 /** Read tube file from disk */
 TubesType::Pointer ReadTubes( const char * file );
@@ -111,8 +111,8 @@ int DoIt( int argc, char * argv[] )
   // get image's spacing and size
   TemplateImageType::Pointer imT = imTemplateReader->GetOutput();
   TubetoImageFilterType::SizeType size;
-  double spacing[Dimensions];
-  for(int i = 0; i < Dimensions; i++ )
+  double spacing[Dimension];
+  for(int i = 0; i < Dimension; i++ )
     {
     size[i] = imT->GetLargestPossibleRegion().GetSize()[i];
     spacing[i] = imT->GetSpacing()[i];

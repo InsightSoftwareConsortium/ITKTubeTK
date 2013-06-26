@@ -54,17 +54,17 @@ limitations under the License.
 #include <iostream>
 
 /** Resamples image a to b if they are different, returns resampled_a */
-template< class pixelT, unsigned int dimensionT >
-typename itk::Image< pixelT, dimensionT >::Pointer
+template< class TPixel, unsigned int TDimension >
+typename itk::Image< TPixel, TDimension >::Pointer
 ResampleImage(
-  typename itk::Image< pixelT, dimensionT >::Pointer a,
-  typename itk::Image< pixelT, dimensionT >::Pointer b )
+  typename itk::Image< TPixel, TDimension >::Pointer a,
+  typename itk::Image< TPixel, TDimension >::Pointer b )
 {
-  typedef itk::Image< pixelT, dimensionT >      ImageType;
+  typedef itk::Image< TPixel, TDimension >      ImageType;
 
   typename ImageType::Pointer output = a;
 
-  for( unsigned int i = 0; i < dimensionT; i++ )
+  for( unsigned int i = 0; i < TDimension; i++ )
     {
     if( a->GetLargestPossibleRegion().GetSize()[i]
           != b->GetLargestPossibleRegion().GetSize()[i]
@@ -88,14 +88,14 @@ ResampleImage(
 }
 
 /** Main command */
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( MetaCommand & command )
 {
   typedef float                                    PixelType;
-  typedef itk::Image< PixelType, dimensionT >      ImageType;
-  typedef itk::Image< unsigned char, dimensionT >  ImageTypeUChar;
-  typedef itk::Image< unsigned short, dimensionT > ImageTypeUShort;
-  typedef itk::Image< short, dimensionT >          ImageTypeShort;
+  typedef itk::Image< PixelType, TDimension >      ImageType;
+  typedef itk::Image< unsigned char, TDimension >  ImageTypeUChar;
+  typedef itk::Image< unsigned short, TDimension > ImageTypeUShort;
+  typedef itk::Image< short, TDimension >          ImageTypeShort;
 
   MetaCommand::OptionVector parsed = command.GetParsedOptions();
 
@@ -328,7 +328,7 @@ int DoIt( MetaCommand & command )
                   << std::endl;
         return EXIT_FAILURE;
         }
-      imIn2 = ResampleImage< PixelType, dimensionT >( imIn2, imIn );
+      imIn2 = ResampleImage< PixelType, TDimension >( imIn2, imIn );
       itk::ImageRegionIterator< ImageType > it2( imIn2,
                      imIn2->GetLargestPossibleRegion() );
       int count = 0;
@@ -553,7 +553,7 @@ int DoIt( MetaCommand & command )
             << std::endl;
 
           if( (binMax - binMin) < nBins
-            && 1 == static_cast< pixelT >( 1.1 ) )
+            && 1 == static_cast< TPixel >( 1.1 ) )
             {
             std::cout << "Stretching represent int values" << std::endl;
             int binMid = (binMax + binMin ) / 2.0;
@@ -868,7 +868,7 @@ int DoIt( MetaCommand & command )
                   << std::endl;
         return EXIT_FAILURE;
         }
-      imIn2 = ResampleImage< PixelType, dimensionT >( imIn2, imIn );
+      imIn2 = ResampleImage< PixelType, TDimension >( imIn2, imIn );
       itk::ImageRegionIterator< ImageType > it1( imIn,
             imIn->GetLargestPossibleRegion() );
       itk::ImageRegionIterator< ImageType > it2( imIn2,
@@ -906,7 +906,7 @@ int DoIt( MetaCommand & command )
       float backgroundValue = command.GetValueAsFloat( *it,
         "backgroundValue" );
 
-      typedef itk::BinaryBallStructuringElement<PixelType, dimensionT>
+      typedef itk::BinaryBallStructuringElement<PixelType, TDimension>
         BallType;
       BallType ball;
       ball.SetRadius( 1 );
@@ -991,7 +991,7 @@ int DoIt( MetaCommand & command )
       typename itk::RecursiveGaussianImageFilter< ImageType >::Pointer
         filter;
       typename ImageType::Pointer imTemp;
-      for( unsigned int i=0; i<dimensionT; i++ )
+      for( unsigned int i=0; i<TDimension; i++ )
         {
         filter = itk::RecursiveGaussianImageFilter< ImageType >::New();
         filter->SetInput( imIn );
@@ -1274,11 +1274,11 @@ int DoIt( MetaCommand & command )
       unsigned int z;
       it3D.GoToBegin();
       unsigned int zMax = 1;
-      if( dimensionT == 3 )
+      if( TDimension == 3 )
         {
-        zMax = imIn->GetLargestPossibleRegion().GetSize()[dimensionT-1];
+        zMax = imIn->GetLargestPossibleRegion().GetSize()[TDimension-1];
         }
-      for( z=0; z<dimensionT && z<zMax; z++ )
+      for( z=0; z<TDimension && z<zMax; z++ )
         {
         it2DRef.GoToBegin();
         for( y=0; y<imIn->GetLargestPossibleRegion().GetSize()[1]; y++ )
@@ -1378,7 +1378,7 @@ int DoIt( MetaCommand & command )
       typename ImageType::SpacingType spacing;
       if( factor != 0 )
         {
-        for( unsigned int i=0; i<dimensionT; i++ )
+        for( unsigned int i=0; i<TDimension; i++ )
           {
           size[i] = ( long unsigned int )
                     ( imIn->GetLargestPossibleRegion().GetSize()[i]
@@ -1388,15 +1388,15 @@ int DoIt( MetaCommand & command )
         }
       else
         {
-        for( unsigned int i=0; i<dimensionT; i++ )
+        for( unsigned int i=0; i<TDimension; i++ )
           {
           spacing[i] = imIn->GetSpacing()[i];
           }
 
         double meanSpacing = ( spacing[0] + spacing[1] ) / 2;
-        if( dimensionT == 3 )
+        if( TDimension == 3 )
           {
-          meanSpacing = ( meanSpacing + spacing[dimensionT-1] ) / 2;
+          meanSpacing = ( meanSpacing + spacing[TDimension-1] ) / 2;
           }
         factor = meanSpacing/spacing[0];
         size[0] = ( long unsigned int )
@@ -1406,20 +1406,20 @@ int DoIt( MetaCommand & command )
                   ( imIn->GetLargestPossibleRegion().GetSize()[1]/factor );
         spacing[0] = meanSpacing;
         spacing[1] = meanSpacing;
-        if( dimensionT == 3 )
+        if( TDimension == 3 )
           {
-          factor = meanSpacing/spacing[dimensionT-1];
-          size[dimensionT-1] = ( long unsigned int )
-                    ( imIn->GetLargestPossibleRegion().GetSize()[dimensionT-1]
+          factor = meanSpacing/spacing[TDimension-1];
+          size[TDimension-1] = ( long unsigned int )
+                    ( imIn->GetLargestPossibleRegion().GetSize()[TDimension-1]
                       / factor );
-          spacing[dimensionT-1] = meanSpacing;
+          spacing[TDimension-1] = meanSpacing;
           }
         }
       imSub2->SetRegions( size );
       imSub2->SetSpacing( spacing );
       imSub2->Allocate();
 
-      imIn = ResampleImage< PixelType, dimensionT >( imIn, imSub2 );
+      imIn = ResampleImage< PixelType, TDimension >( imIn, imSub2 );
       }
 
     // resize2
@@ -1441,7 +1441,7 @@ int DoIt( MetaCommand & command )
                   << std::endl;
         return EXIT_FAILURE;
         }
-      imIn = ResampleImage< PixelType, dimensionT >( imIn, imIn2 );
+      imIn = ResampleImage< PixelType, TDimension >( imIn, imIn2 );
       }
 
     // segment
@@ -1466,10 +1466,10 @@ int DoIt( MetaCommand & command )
       seed[0] = ( long int )x;
       seed[1] = ( long int )y;
 
-      if( dimensionT == 3 )
+      if( TDimension == 3 )
         {
         float z = command.GetValueAsFloat( *it, "z" );
-        seed[dimensionT-1] = ( long int )z;
+        seed[TDimension-1] = ( long int )z;
         }
 
       filter->SetInput( imIn );
@@ -1485,12 +1485,12 @@ int DoIt( MetaCommand & command )
     // offset
     else if( ( *it ).name == "offset" )
       {
-      double offset[dimensionT];
+      double offset[TDimension];
       offset[0] = command.GetValueAsFloat( *it, "offsetX" );
       offset[1] = command.GetValueAsFloat( *it, "offsetY" );
-      if( dimensionT == 3 )
+      if( TDimension == 3 )
         {
-        offset[dimensionT-1] = command.GetValueAsFloat( *it, "offsetZ" );
+        offset[TDimension-1] = command.GetValueAsFloat( *it, "offsetZ" );
         }
       imIn->SetOrigin( offset );
       }
@@ -1536,7 +1536,7 @@ int DoIt( MetaCommand & command )
       writeStream << numberOfCentroids << std::endl;
       for( unsigned int i=0; i<numberOfCentroids; i++ )
         {
-        for( unsigned int j = 0; j<dimensionT; j++ )
+        for( unsigned int j = 0; j<TDimension; j++ )
           {
           writeStream << ( *( filter->GetCentroids() ) )[i][j];
           if( j<2 )
@@ -1557,9 +1557,9 @@ int DoIt( MetaCommand & command )
       vnl_matrix<int> aMat( numberOfCentroids, numberOfCentroids );
       aMat.fill( 0 );
 
-      itk::Index<dimensionT> indx;
-      itk::Index<dimensionT> indx2;
-      itk::Index<dimensionT> indx3;
+      itk::Index<TDimension> indx;
+      itk::Index<TDimension> indx2;
+      itk::Index<TDimension> indx3;
       indx.Fill( 0 );
       bool done = false;
       int n;
@@ -1572,7 +1572,7 @@ int DoIt( MetaCommand & command )
         while( !done2 )
           {
           bool invalid = false;
-          for( unsigned int d=0; d<dimensionT; d++ )
+          for( unsigned int d=0; d<TDimension; d++ )
             {
             indx3[d] = indx[d] + indx2[d];
             if( indx3[d] >= ( int )size[d] )
@@ -1596,7 +1596,7 @@ int DoIt( MetaCommand & command )
             {
             indx2[i] = 0;
             i++;
-            if( i > (int)(dimensionT)-1 )
+            if( i > (int)(TDimension)-1 )
               {
               done2 = true;
               }
@@ -1612,16 +1612,16 @@ int DoIt( MetaCommand & command )
           {
           indx[i] = 0;
           i++;
-          if( i>(int)(dimensionT)-1 )
+          if( i>(int)(TDimension)-1 )
             {
             done = true;
             }
           else
             {
-            if( i == (int)(dimensionT)-1 )
+            if( i == (int)(TDimension)-1 )
               {
               std::cout << "Computing adjacency of slice : "
-                        << indx[dimensionT-1] << std::endl;
+                        << indx[TDimension-1] << std::endl;
               }
             indx[i]++;
             }

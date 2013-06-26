@@ -41,7 +41,7 @@ limitations under the License.
 
 #include "EnhanceContrastUsingPriorCLP.h"
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
@@ -53,7 +53,7 @@ namespace itk
 namespace tube
 {
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 class ContrastCostFunction
 : public SingleValuedCostFunction
 {
@@ -71,7 +71,7 @@ public:
   typedef Superclass::MeasureType         MeasureType;
   typedef Superclass::ParametersType      ParametersType;
   typedef Superclass::DerivativeType      DerivativeType;
-  typedef itk::Image<pixelT, dimensionT>  ImageType;
+  typedef itk::Image<TPixel, TDimension>  ImageType;
 
   typedef itk::SmoothingRecursiveGaussianImageFilter< ImageType, ImageType >
                                                   BlurFilterType;
@@ -283,7 +283,7 @@ private:
 
 } // End namespace itk
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -298,7 +298,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   typedef float                                 PixelType;
-  typedef itk::Image< PixelType,  dimensionT >  ImageType;
+  typedef itk::Image< PixelType,  TDimension >  ImageType;
 
   /** Read input images */
   typename ImageType::Pointer inputImage;
@@ -354,7 +354,7 @@ int DoIt( int argc, char * argv[] )
   outputImage->Allocate();
   progressReporter.Report( 0.2 );
 
-  typedef itk::tube::ContrastCostFunction< PixelType, dimensionT >
+  typedef itk::tube::ContrastCostFunction< PixelType, TDimension >
                                                 ContrastCostFunctionType;
   typedef itk::OnePlusOneEvolutionaryOptimizer  InitialOptimizerType;
   typedef itk::FRPROptimizer                    OptimizerType;

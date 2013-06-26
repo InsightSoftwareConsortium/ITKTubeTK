@@ -49,7 +49,7 @@ class ITK_EXPORT ObjectDocumentToImageFilter :
 {
 public:
 
-  enum { TDimensions = 3 };
+  enum { Dimension = 3 };
 
   typedef ObjectDocumentToImageFilter                       Self;
   typedef ObjectDocumentToObjectSource<TInputObjectDocument,

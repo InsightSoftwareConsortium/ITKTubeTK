@@ -35,13 +35,13 @@ limitations under the License.
 
 #include "EnhanceEdgesUsingDiffusionCLP.h"
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -59,8 +59,8 @@ int DoIt( int argc, char * argv[] )
   // Use the input image to dictate the type of the image reader/writer,
   // but use double for the filter to avoid rounding off errors in the
   // filter's floating point operations
-  const unsigned int Dimension                     = 3;
-  typedef pixelT                                   ImagePixelType;
+  enum { Dimension = 3 };
+  typedef TPixel                                   ImagePixelType;
   typedef itk::Image< ImagePixelType, Dimension >  InputImageType;
   typedef itk::Image< ImagePixelType, Dimension >  OutputImageType;
   typedef double                                   FilterPixelType;

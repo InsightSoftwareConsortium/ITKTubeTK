@@ -67,14 +67,14 @@ int main( int argc, char * argv[] )
  */
 bool IsDiscrete( const std::string & fileName )
 {
-  typedef itk::ImageIOBase::IOComponentType ScalarTPixelype;
+  typedef itk::ImageIOBase::IOComponentType ScalarPixelType;
 
   itk::ImageIOBase::Pointer imageIO = itk::ImageIOFactory::CreateImageIO(
     fileName.c_str(), itk::ImageIOFactory::ReadMode);
 
   imageIO->SetFileName( fileName.c_str() );
   imageIO->ReadImageInformation();
-  const ScalarTPixelype pixelType = imageIO->GetComponentType();
+  const ScalarPixelType pixelType = imageIO->GetComponentType();
 
   if( pixelType == itk::ImageIOBase::FLOAT ||
       pixelType == itk::ImageIOBase::DOUBLE )
@@ -218,16 +218,16 @@ int DoIt( int argc, char * argv[] )
    * the images are essentially the same, except that the voxel values
    * represent different entities.
    */
-  typedef TPixel                                          InputTPixelype;
-  typedef itk::Image< InputTPixelype, VImageDimension >   InputImageType;
+  typedef TPixel                                          InputPixelType;
+  typedef itk::Image< InputPixelType, VImageDimension >   InputImageType;
 
-  typedef InputTPixelype                                  OutputTPixelype;
-  typedef itk::Image< OutputTPixelype, VImageDimension >  OutputImageType;
+  typedef InputPixelType                                  OutputPixelType;
+  typedef itk::Image< OutputPixelType, VImageDimension >  OutputImageType;
 
   typedef itk::ImageFileReader< InputImageType >          InputReaderType;
   typedef itk::ImageFileWriter< OutputImageType >         OutputWriterType;
 
-  typedef itk::ImageIOBase::IOComponentType               ScalarTPixelype;
+  typedef itk::ImageIOBase::IOComponentType               ScalarPixelType;
 
   // Check input images's type (we assume discrete valued images)
   if( !IsDiscrete( argInImageFileName ) ||

@@ -35,7 +35,7 @@ limitations under the License.
 
 #include "SegmentTubeSeedsCLP.h"
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
@@ -59,7 +59,7 @@ void WriteRidgeSeed( const typename imageT::Pointer & img,
   rsImageWriter->Update();
 }
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -68,10 +68,10 @@ int DoIt( int argc, char * argv[] )
   //   of your algorithm.
   itk::TimeProbesCollectorBase timeCollector;
 
-  typedef pixelT                                   InputPixelType;
-  typedef itk::Image< InputPixelType, dimensionT > InputImageType;
-  typedef itk::Image< unsigned short, dimensionT > MapImageType;
-  typedef itk::Image< float, dimensionT >          RidgeSeedImageType;
+  typedef TPixel                                   InputPixelType;
+  typedef itk::Image< InputPixelType, TDimension > InputImageType;
+  typedef itk::Image< unsigned short, TDimension > MapImageType;
+  typedef itk::Image< float, TDimension >          RidgeSeedImageType;
 
   typedef itk::ImageFileReader< RidgeSeedImageType >     ImageReaderType;
   typedef itk::ImageFileReader< MapImageType >     MapReaderType;

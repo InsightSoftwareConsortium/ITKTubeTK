@@ -52,7 +52,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest( int argc, char * argv
     }
 
   // Typedefs
-  const unsigned int                                      Dimension = 3;
+  enum { Dimension = 3 };
   typedef double                                          PixelType;
   typedef double                                          VectorScalarType;
   typedef itk::Image< PixelType, Dimension >              FixedImageType;

@@ -37,11 +37,11 @@ limitations under the License.
 
 #include "ComputeTubeProbabilityCLP.h"
 
-template< unsigned int VDimension >
+template< unsigned int TDimension >
 int DoIt( int argc, char * argv[] );
 
 // This needs to be declared for tubeCLIHelperFunctions.
-template< class TPixel, unsigned int VDimension >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int itkNotUsed( argc ), char * itkNotUsed( argv )[] ) { return 0; }
 
 #include "tubeCLIHelperFunctions.h"
@@ -75,18 +75,16 @@ int main( int argc, char * argv[] )
 }
 
 
-template< unsigned int VDimension >
+template< unsigned int TDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  const unsigned int Dimension = VDimension;
-
-  typedef itk::Image< short, Dimension >             ImageType;
-  typedef itk::GroupSpatialObject< Dimension >       GroupType;
+  typedef itk::Image< short, TDimension >             ImageType;
+  typedef itk::GroupSpatialObject< TDimension >       GroupType;
   typedef itk::ImageFileReader< ImageType >          ImageReaderType;
-  typedef itk::SpatialObjectReader< Dimension >      SOReaderType;
-  typedef itk::VesselTubeSpatialObject< Dimension >  TubeType;
+  typedef itk::SpatialObjectReader< TDimension >      SOReaderType;
+  typedef itk::VesselTubeSpatialObject< TDimension >  TubeType;
   typedef typename TubeType::TubePointType           TubePointType;
   typedef typename TubeType::TransformType           TubeTransformType;
 
@@ -132,8 +130,8 @@ int DoIt( int argc, char * argv[] )
     tube->RemoveDuplicatePoints();
     tube->ComputeTangentAndNormals();
 
-    itk::Point<double, Dimension> pnt;
-    itk::Index< Dimension > indx;
+    itk::Point<double, TDimension> pnt;
+    itk::Index< TDimension > indx;
     tube->ComputeObjectToWorldTransform();
     tubeTransform = tube->GetIndexToWorldTransform();
     for( unsigned int i=0; i<tube->GetNumberOfPoints(); i++)

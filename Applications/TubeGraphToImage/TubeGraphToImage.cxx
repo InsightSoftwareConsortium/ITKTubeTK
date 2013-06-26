@@ -40,20 +40,20 @@ limitations under the License.
 
 #include "TubeGraphToImageCLP.h"
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template< class pixelT, unsigned int dimensionT >
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
   std::stringstream logMsg;
 
-  typedef itk::Image< pixelT, dimensionT >      CVTImageType;
+  typedef itk::Image< TPixel, TDimension >      CVTImageType;
   typedef itk::ImageFileReader< CVTImageType >  ImageReaderType;
 
   typename ImageReaderType::Pointer imageReader = ImageReaderType::New();
@@ -172,7 +172,7 @@ int DoIt( int argc, char * argv[] )
     }
   readStream.close();
 
-  typedef itk::Image< float, dimensionT > ImageType;
+  typedef itk::Image< float, TDimension > ImageType;
 
   typename ImageType::Pointer aImage = ImageType::New();
   aImage->SetRegions( cvtImage->GetLargestPossibleRegion().GetSize() );
@@ -213,7 +213,7 @@ int DoIt( int argc, char * argv[] )
   itB.GoToBegin();
   itR.GoToBegin();
   itC.GoToBegin();
-  pixelT c;
+  TPixel c;
   while( !itCVT.IsAtEnd() )
     {
     c = itCVT.Get()-1;

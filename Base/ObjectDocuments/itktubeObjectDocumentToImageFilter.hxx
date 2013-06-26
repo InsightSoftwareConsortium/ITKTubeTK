@@ -137,7 +137,7 @@ ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
         image->TransformIndexToPhysicalPoint( index, point );
         point = transform->TransformPoint( point );
 
-        for( unsigned int i = 0; i < TDimensions; i++ )
+        for( unsigned int i = 0; i < Dimension; i++ )
           {
           if( point[i] < origin[i] ) { origin[i] = point[i]; }
           if( point[i] > max[i] ) { max[i] = point[i]; }
@@ -148,7 +148,7 @@ ObjectDocumentToImageFilter<TInputObjectDocument,TOutputImageType>
 
   // Origin represents the minimum point on the image
   typename OutputImageType::SpacingType  spacing = image->GetSpacing();
-  for( unsigned int i = 0; i < TDimensions; i++ )
+  for( unsigned int i = 0; i < Dimension; i++ )
     {
     outputSize[i] = (long int)(( max[i] - origin[i] ) / spacing[i] );
     }

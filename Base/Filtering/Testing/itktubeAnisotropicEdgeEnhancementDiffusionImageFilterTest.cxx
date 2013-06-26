@@ -32,7 +32,7 @@ int itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest( int argc, char * 
     return EXIT_FAILURE;
     }
   // Define the dimension of the images
-  const unsigned int Dimension = 3;
+  enum { Dimension = 3 };
   typedef double      InputPixelType;
   typedef double      OutputPixelType;
 

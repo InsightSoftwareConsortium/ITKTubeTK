@@ -40,7 +40,7 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
     }
 
   // Define the dimension of the images
-  const unsigned int Dimension = 3;
+  enum { Dimension = 3 };
 
   // Define the pixel type
   typedef short PixelType;

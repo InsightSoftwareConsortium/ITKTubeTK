@@ -50,8 +50,8 @@ namespace tube
 {
 
 // constructor
-template <class PixelT, unsigned int DimensionT>
-TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
+template <class TPixel, unsigned int TDimension>
+TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 ::TubeEnhancingDiffusion2DImageFilter( void )
   : m_TimeStep(0.2),
     m_Iterations(200),
@@ -72,8 +72,8 @@ TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
 }
 
 // printself for debugging
-template <class PixelT, unsigned int DimensionT>
-void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
+template <class TPixel, unsigned int TDimension>
+void TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 ::PrintSelf(std::ostream &os, Indent indent) const
 {
   Superclass::PrintSelf(os,indent);
@@ -99,8 +99,8 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
 }
 
 // singleiter
-template <class PixelT, unsigned int DimensionT>
-void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
+template <class TPixel, unsigned int TDimension>
+void TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 ::VED2DSingleIteration(typename PrecisionImageType::Pointer ci)
 {
   bool rec(false);
@@ -285,8 +285,8 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
 }
 
 // maxvesselresponse
-template <class PixelT, unsigned int DimensionT>
-void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
+template <class TPixel, unsigned int TDimension>
+void TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 ::MaxTubeResponse(const typename PrecisionImageType::Pointer im)
 {
 
@@ -385,9 +385,9 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
 }
 
 // vesselnessfunction
-template <class PixelT, unsigned int DimensionT>
-typename TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>::Precision
-TubeEnhancingDiffusion2DImageFilter<PixelT,DimensionT>::TubenessFunction2D(
+template <class TPixel, unsigned int TDimension>
+typename TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>::Precision
+TubeEnhancingDiffusion2DImageFilter<TPixel,TDimension>::TubenessFunction2D(
   const Precision l1, const Precision l2 )
 {
   if( l2 < 0 )
@@ -412,8 +412,8 @@ TubeEnhancingDiffusion2DImageFilter<PixelT,DimensionT>::TubenessFunction2D(
 }
 
 // diffusiontensor
-template <class PixelT, unsigned int DimensionT>
-void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
+template <class TPixel, unsigned int TDimension>
+void TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 ::DiffusionTensor( void )
 {
   ImageRegionIterator<PrecisionImageType>
@@ -472,8 +472,8 @@ void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
 }
 
 // generatedata
-template <class PixelT, unsigned int DimensionT>
-void TubeEnhancingDiffusion2DImageFilter<PixelT, DimensionT>
+template <class TPixel, unsigned int TDimension>
+void TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 ::GenerateData( void )
 {
   if(m_Verbose)

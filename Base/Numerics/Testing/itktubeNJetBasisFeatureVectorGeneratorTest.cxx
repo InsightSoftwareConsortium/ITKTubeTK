@@ -44,7 +44,7 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
     }
 
   // Define the dimension of the images
-  const unsigned int Dimension = 2;
+  enum { Dimension = 2 };
 
   // Define the pixel type
   typedef float PixelType;
