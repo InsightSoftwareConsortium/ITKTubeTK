@@ -46,7 +46,7 @@ namespace tube
  *
  * \ingroup  IO
  */
-class METAIO_EXPORT MetaNJetLDA : public MetaLDA
+class MetaNJetLDA : public MetaLDA
 {
 public:
 
