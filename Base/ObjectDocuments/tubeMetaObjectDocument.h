@@ -31,61 +31,95 @@ limitations under the License.
 namespace tube
 {
 
+/**
+ * \ingroup  ObjectDocuments
+ */
 class MetaObjectDocument : public MetaDocument
 {
 public:
 
-  typedef itk::tube::ObjectDocument                   ObjectDocumentType;
-  typedef itk::tube::BlobSpatialObjectDocument        BlobSpatialObjectDocumentType;
-  typedef itk::tube::SpatialObjectDocument            SpatialObjectDocumentType;
-  typedef itk::tube::ImageDocument                    ImageDocumentType;
-  typedef std::vector<ObjectDocumentType::Pointer>    ObjectListType;
+  typedef MetaObjectDocument                    Self;
+  typedef MetaDocument                          Superclass;
+  typedef Self *                                Pointer;
+  typedef const Self *                          ConstPointer;
 
+  typedef Superclass::FieldType                 FieldType;
+  typedef Superclass::FieldListType             FieldListType;
+
+  typedef itk::tube::BlobSpatialObjectDocument  BlobSpatialObjectDocumentType;
+  typedef itk::tube::ImageDocument              ImageDocumentType;
+  typedef itk::tube::ObjectDocument             ObjectDocumentType;
+  typedef itk::tube::SpatialObjectDocument      SpatialObjectDocumentType;
+  typedef std::vector< ObjectDocumentType::Pointer >
+                                                ObjectDocumentListType;
+
+  /** Constructor. */
   MetaObjectDocument( void );
-  ~MetaObjectDocument( void );
 
-  void  PrintInfo( void ) const;
+  /** Destructor. */
+  virtual ~MetaObjectDocument( void );
 
-  bool  Read(const std::string & _fileName = std::string());
+  /** Return the name of this class. */
+  tubeTypeMacro( MetaObjectDocument );
 
-  bool  Write(const std::string & _fileName = std::string());
+  /** Return the maximum number of transforms. **/
+  tubeGetMacro( MaximumNumberOfTransforms, unsigned int );
 
-  /** Clear tube information */
-  void Clear( void );
+  /** Return the number of object documents. **/
+  tubeGetMacro( NumberOfObjectDocuments, int );
 
-  void AddObject( ObjectDocumentType::Pointer );
+  /** Return a reference to the list of object documents. **/
+  virtual ObjectDocumentListType & GetObjectDocumentList( void );
 
-  /** Overrides any previously added objects */
-  void SetObjectList( ObjectListType& list );
+  /** Set the list of object documents. **/
+  virtual void SetObjectDocumentList( ObjectDocumentListType & objectDocumentList );
 
-  ObjectListType * GetObjectList( void );
+  /** Add the specified object document to the back of the list. */
+  virtual void AddObjectDocument( ObjectDocumentType::Pointer objectDocument );
 
+  /** Clear all the information. */
+  virtual void Clear( void );
 
 protected:
-  bool M_Write( void );
-  bool M_Read( void );
 
-  void M_SetupReadFields( void );
-  void M_SetupObjectReadFields( void );
+  /** Set the maximum number of transforms. **/
+  tubeSetMacro( MaximumNumberOfTransforms, unsigned int );
 
-  void M_SetupWriteFields( void );
-  void M_SetupObjectWriteFields(unsigned int);
+  /** Set the number of object documents. **/
+  tubeSetMacro( NumberOfObjectDocuments, int );
 
-  static const std::string LABEL_NOBJECTS;
-  static const std::string LABEL_TYPE;
-  static const std::string LABEL_NAME;
-  static const std::string LABEL_NUM_TRANS;
-  static const std::string LABEL_TRANSFORM;
+  /** Read the fields. */
+  virtual bool ReadFields( void );
 
-  /** Label ID names of possible object types */
-  static const std::string ID_LABEL_BLOBTYPE;
-  static const std::string ID_LABEL_IMAGETYPE;
-  static const std::string ID_LABEL_SPATIALOBJTYPE;
+  /** Initialize the read fields for objects. */
+  virtual void SetupObjectReadFields( void );
 
-  int                      m_NObjects;
+  /** Initialize the write fields for objects. */
+  virtual void SetupObjectWriteFields( unsigned int index );
 
-  ObjectListType           m_Objects;
-  const unsigned int       m_MaxNumTransforms;  //Maximum number of transforms
+  /** Initialize the read fields. */
+  virtual void SetupReadFields( void );
+
+  /** Initialize the write fields. */
+  virtual void SetupWriteFields( void );
+
+  /** Write the fields. */
+  virtual bool WriteFields( void );
+
+  /** Print information about this object. */
+  virtual void PrintSelf( std::ostream & os, Indent indent ) const;
+
+private:
+
+  // Copy constructor not implemented.
+  MetaObjectDocument( const Self & self );
+
+  // Copy assignment operator not implemented.
+  void operator=( const Self & self );
+
+  unsigned int            m_MaximumNumberOfTransforms;
+  int                     m_NumberOfObjectDocuments;
+  ObjectDocumentListType  m_ObjectDocumentList;
 
 }; // End class MetaObjectDocument
 

@@ -32,51 +32,48 @@ namespace itk
 namespace tube
 {
 
-/** \class BlobSpatialObjectDocument
- * \brief Encodes a blob Spatial Object file name and its ordered transform file names
+/**
+ * Encodes a blob spatial object file name and its ordered transform file names.
+ * Blob spatial object documents store the file name of a blob spatial object
+ * and the file names of the transforms that are to be applied consecutively to
+ * the blob spatial object.
  *
- *  Object will store the file name of a \sa BlobSpatialObject type
- *     and will a set file names for the transforms that are to be applied consecutively to the object.
- *
- *  IO is done through MetaObjectDocument.h
- *
- *  \ingroup Document
+ * \ingroup  ObjectDocuments
  */
 class BlobSpatialObjectDocument : public SpatialObjectDocument
 {
 public:
 
-  typedef BlobSpatialObjectDocument             Self;
-  typedef SpatialObjectDocument                 Superclass;
+  typedef BlobSpatialObjectDocument          Self;
+  typedef SpatialObjectDocument              Superclass;
+  typedef SmartPointer< Self >               Pointer;
+  typedef SmartPointer< const Self >         ConstPointer;
 
-  typedef SmartPointer< Self >                  Pointer;
-  typedef SmartPointer< const Self >            ConstPointer;
+  typedef Superclass::TransformNameListType  TransformNameListType;
 
-  typedef Superclass::DateType                  DateType;
-  typedef Superclass::CommentsType              CommentsType;
-
-  /** Not Implemented, but would allow for Document objects to be held by other documents */
-  typedef Superclass::ChildrenListType          ChildrenListType;
-  typedef Superclass::ChildrenListPointer       ChildrenListPointer;
-
-  /** list that holds the ordered transform Names */
-  typedef Superclass::TransformNameListType     TransformNameListType;
-
-  /** Method for creation through the object factory. */
   itkNewMacro( Self );
-
-  /** Run-time type information (and related methods). */
   itkTypeMacro( BlobSpatialObjectDocument, SpatialObjectDocument );
-
-  /** Return the type of the object within the Document (ie. "Blob") */
-  std::string GetObjectType( void ) const { return LABEL_BLOBTYPE; }
 
 protected:
 
-  BlobSpatialObjectDocument( void ) : LABEL_BLOBTYPE("Blob") {}
-  ~BlobSpatialObjectDocument( void ) {}
+  /** Constructor. */
+  BlobSpatialObjectDocument( void )
+    {
+    this->SetObjectType( "Blob" );
+    }
 
-  const std::string LABEL_BLOBTYPE;
+  /** Destructor. */
+  virtual ~BlobSpatialObjectDocument( void )
+    {
+    }
+
+private:
+
+  // Copy constructor not implemented.
+  BlobSpatialObjectDocument( const Self & self );
+
+  // Copy assignment operator not implemented.
+  void operator=( const Self & self );
 
 }; // End class BlobSpatialObjectDocument
 

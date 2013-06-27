@@ -35,127 +35,145 @@ namespace itk
 namespace tube
 {
 
-/** \class ObjectDocumentToObjectSource
- * \brief Base Class for all filters that convert an ObjectDocument to the referenced object
+/**
+ * Filter that converts an object document to an object by reading and
+ * composing all transforms from an object document for a single object.
  *
- * This base class handles transform composition and use for all of the subclasses.
- * Reads and composes all transforms from ObjectDocument for single object.
+ * \note  Does not hold a buffer of objects read.
+ * \ingroup  ObjectDocuments
  */
-template< class TInputObjectDocument, unsigned int VDimension = 3 >
+template< class TObjectDocument, unsigned int VDimension = 3 >
 class ObjectDocumentToObjectSource : public ProcessObject
 {
 public:
 
-  typedef ObjectDocumentToObjectSource                      Self;
-  typedef ProcessObject                                     Superclass;
-  typedef SmartPointer< Self >                              Pointer;
-  typedef SmartPointer< const Self >                        ConstPointer;
+  typedef ObjectDocumentToObjectSource         Self;
+  typedef ProcessObject                        Superclass;
+  typedef SmartPointer< Self >                 Pointer;
+  typedef SmartPointer< const Self >           ConstPointer;
 
-  typedef TInputObjectDocument                              DocumentType;
-  typedef typename DocumentType::Pointer                    DocumentPointer;
-  typedef typename DocumentType::ConstPointer               ConstDocumentPointer;
+  typedef typename DataObject::Pointer         DataObjectPointer;
 
-  typedef typename SpatialObject<VDimension>::TransformType TransformType;
-  typedef typename TransformType::Pointer                   TransformPointer;
+  typedef TObjectDocument                      DocumentType;
+  typedef typename DocumentType::ConstPointer  ConstDocumentPointer;
 
-
-protected:
-
-  typedef SpatialObject<> OutputType;
-
-public:
-
-  /** Smart Pointer type to a DataObject. */
-  typedef typename DataObject::Pointer DataObjectPointer;
+  typedef typename SpatialObject< VDimension >::TransformType
+                                               TransformType;
+  typedef typename TransformType::Pointer      TransformPointer;
 
   itkNewMacro( Self );
   itkTypeMacro( ObjectDocumentToObjectSource, ProcessObject );
 
-  /** Sets the transforms that will be composed and applied to the object are applied to it */
-  void ApplyTransforms( int start, int end );
+  /** Return whether the transforms should be applied. */
+  itkGetMacro( ApplyTransforms, bool );
 
-  /* Sets all the transforms to be applied (equivalent to ->ApplyTransforms(0, -1) ) */
-  void ApplyTransforms( bool );
-  bool ApplyTransforms( void )
-    {
-    return m_ApplyTransforms;
-    }
+  /** Return the composed transform. */
+  virtual TransformPointer GetComposedTransform( void );
 
-  /** Return the composed Transform combining start to end */
-  TransformPointer GetComposedTransform( void );
+  /** Return whether the composed transform is the identity transform. */
+  itkGetMacro( ComposedTransformIsIdentity, bool );
 
-  bool ComposedTransformIsIdentity( void )
-    {
-    return m_ComposedTransformIsIdentity;
-    }
-
-  /** Purposely not implemented -- To be implemented by deriving class */
-  virtual void GenerateData( void )
-    {
-    std::cout << " In source filter class" << std::endl;
-    }
-
-  /** Purposely not implemented -- To be implemented by deriving class */
-  virtual void GenerateOutputInformation( void ) {} // do nothing
-
-  /** Get the output object */
-  DataObject * GetOutput( void )
-    {
-    return this->ProcessObject::GetOutput(0);
-    }
-
-  /** Set the input document object */
-  using Superclass::SetInput;
-  virtual void SetInput( const DocumentType * input )
-    {
-    // Process object is not const-correct so the const_cast is required here
-    this->ProcessObject::SetNthInput(0, const_cast< DocumentType * >( input ) );
-    }
-
-  /** Get the input document object */
+  /** Return the input. */
   virtual const DocumentType * GetInput( void );
 
-  /** Must be be defined by deriving class */
-  virtual void GraftOutput( DataObject * ) {}
-  virtual void GraftNthOutput( unsigned int, DataObject * ) {}
+  /** Return the output. */
+  virtual DataObject * GetOutput( void );
 
+  /** Set whether the transforms should be applied. */
+  virtual void SetApplyTransforms( bool applyTransforms );
+  itkBooleanMacro( ApplyTransforms );
+
+  /** Set whether the transforms should be applied. */
+  virtual void SetApplyTransforms( int start, int end );
+
+  /** Set the input. */
+  using Superclass::SetInput;
+  virtual void SetInput( const DocumentType * input );
+
+  /* Graft the specified data object onto the specified indexed output, but note
+     that this function should be implemented by derived classes. */
+  virtual void GraftNthOutput( unsigned int index, DataObject * data )
+    {
+    }
+
+  /* Graft the specified data object onto the output, but note that this
+     function should be implemented by derived classes. */
+  virtual void GraftOutput( DataObject * data )
+    {
+    }
+
+  /* Make an object to be used as the specified indexed output. */
   using Superclass::MakeOutput;
-  virtual DataObjectPointer MakeOutput(DataObjectPointerArraySizeType idx);
+  virtual DataObjectPointer MakeOutput( DataObjectPointerArraySizeType index );
 
 protected:
 
-  /** Typedef for transform file reader */
-  typedef SpatialObjectReader<VDimension>                          TransformReaderType;
+  typedef SpatialObject<>                    OutputType;
+  typedef SpatialObjectReader< VDimension >  TransformReaderType;
 
+  /** Constructor. */
   ObjectDocumentToObjectSource( void );
-  ~ObjectDocumentToObjectSource( void ) {}
 
-  DataObject * GetOutput(unsigned int idx) { return this->ProcessObject::GetOutput(idx); }
+  /** Destructor. */
+  virtual ~ObjectDocumentToObjectSource( void );
 
-  /**
-   * Composes object's transforms ranging from start to end
-   * and returns the final transform
-   *
-   * NOTE: 0 = first transform, -1 is last transform
-   */
-  TransformPointer ComposeTransforms( ConstDocumentPointer doc, int startIndex=0, int endIndex=-1 ) const;
+  /** Return the end index for the list of transforms. */
+  itkGetMacro( EndTransforms, int );
 
-  /** Read the transform from file */
-  TransformPointer ReadTransform( const std::string & file ) const;
+  /** Return the specified indexed output. */
+  virtual DataObject * GetOutput( unsigned int index );
 
-  /** Flag to determine whether to apply transforms or not */
-  bool                                    m_ApplyTransforms;
+  /** Return the end index for the list of transforms. */
+  itkGetMacro( StartTransforms, int );
 
-  /** Selected range of transforms to be applied  */
-  int                                     m_StartTransforms;
-  int                                     m_EndTransforms;
-  mutable bool                            m_ComposedTransformIsIdentity;
+  /** Set whether the composed transform is the identity transform. */
+  itkSetMacro( ComposedTransformIsIdentity, bool );
+  itkBooleanMacro( ComposedTransformIsIdentity );
+
+  /** Set the end index for the list of transforms. */
+  itkSetMacro( EndTransforms, int );
+
+  /** Set the start index for the list of transforms. */
+  itkSetMacro( StartTransforms, int );
+
+  /** Generate the output data, but note that this function should be
+      implemented by derived classes. */
+  virtual void GenerateData( void )
+    {
+    }
+
+  /** Generate the information describing the output data, but note that this
+      function should be implemented by derived classes. */
+  virtual void GenerateOutputInformation( void )
+    {
+    }
+
+  /** Compose the transforms of the object ranging from start to end and return
+      the final transform. Note that 0 is the first transform and -1 is the last
+      transform. */
+  virtual TransformPointer ComposeTransforms( ConstDocumentPointer document,
+                                              int startIndex = 0,
+                                              int endIndex = -1 ) const;
+
+  /** Read the transform from the specified file. */
+  virtual TransformPointer ReadTransform( const std::string & file ) const;
+
+  /** Print information about the object. */
+  virtual void PrintSelf( std::ostream & os, Indent indent ) const;
 
 private:
 
-  ObjectDocumentToObjectSource(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
-  ConstDocumentPointer                              m_Input;
+  // Copy constructor not implemented.
+  ObjectDocumentToObjectSource( const Self & self );
+
+  // Copy assignment operator not implemented.
+  void operator=( const Self & self );
+
+  ConstDocumentPointer  m_Input;
+  int                   m_StartTransforms;
+  int                   m_EndTransforms;
+  mutable bool          m_ComposedTransformIsIdentity;
+  bool                  m_ApplyTransforms;
 
 }; // End class ObjectDocumentToObjectSource
 

@@ -32,150 +32,210 @@ namespace itk
 namespace tube
 {
 
-template< class TInputObjectDocument, unsigned int TDimension >
-ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
+template< class TObjectDocument, unsigned int VDimension >
+ObjectDocumentToObjectSource< TObjectDocument, VDimension >
 ::ObjectDocumentToObjectSource( void )
 {
   m_ComposedTransformIsIdentity = true;
-  this->ApplyTransforms( true );  // Set transforms to be built (default value)
-  this->SetNumberOfRequiredInputs(1);
+
+  this->SetApplyTransforms( true );
+  this->SetNumberOfRequiredInputs( 1 );
 }
 
-
-template< class TInputObjectDocument, unsigned int TDimension >
-const typename ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>::DocumentType *
-ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
-::GetInput( void )
+template< class TObjectDocument, unsigned int VDimension >
+ObjectDocumentToObjectSource< TObjectDocument, VDimension >
+::~ObjectDocumentToObjectSource( void )
 {
-  if(this->GetNumberOfInputs() < 1)
-    {
-    return 0;
-    }
-
-  return static_cast<const DocumentType * > (this->ProcessObject::GetInput(0) );
 }
 
-
-template< class TInputObjectDocument, unsigned int TDimension >
-typename ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>::TransformPointer
-ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
+template< class TObjectDocument, unsigned int VDimension >
+typename ObjectDocumentToObjectSource< TObjectDocument, VDimension >::TransformPointer
+ObjectDocumentToObjectSource< TObjectDocument, VDimension >
 ::GetComposedTransform( void )
 {
-  ConstDocumentPointer doc = static_cast<const DocumentType * > (this->ProcessObject::GetInput(0) );
+  ConstDocumentPointer document
+    = static_cast< const DocumentType * >( this->Superclass::GetInput( 0 ) );
+
   if( m_ApplyTransforms )
     {
-    return ComposeTransforms( doc, m_StartTransforms, m_EndTransforms );
+    return this->ComposeTransforms( document, m_StartTransforms, m_EndTransforms );
+    }
+
+  return this->ComposeTransforms( document, 0, -1 );
+}
+
+template< class TObjectDocument, unsigned int VDimension >
+const typename ObjectDocumentToObjectSource< TObjectDocument, VDimension >::DocumentType *
+ObjectDocumentToObjectSource< TObjectDocument, VDimension >
+::GetInput( void )
+{
+  if( this->GetNumberOfInputs() < 1 )
+    {
+    return NULL;
+    }
+
+  return static_cast< const DocumentType * >( this->Superclass::GetInput( 0 ) );
+}
+
+template< class TObjectDocument, unsigned int VDimension >
+DataObject *
+ObjectDocumentToObjectSource< TObjectDocument, VDimension >
+::GetOutput( void )
+{
+  return this->Superclass::GetOutput( 0 );
+}
+
+template< class TObjectDocument, unsigned int VDimension >
+DataObject *
+ObjectDocumentToObjectSource< TObjectDocument, VDimension >
+::GetOutput( unsigned int index )
+{
+  return this->Superclass::GetOutput( index );
+}
+
+template< class TObjectDocument, unsigned int VDimension >
+void
+ObjectDocumentToObjectSource< TObjectDocument, VDimension >
+::SetApplyTransforms( bool applyTransforms )
+{
+  if( applyTransforms )
+    {
+    this->SetApplyTransforms( 0, -1 );
     }
   else
     {
-    return ComposeTransforms( doc, 0, -1 );
+    m_ApplyTransforms = applyTransforms;
     }
 }
 
-
-template< class TInputObjectDocument, unsigned int TDimension >
+template< class TObjectDocument, unsigned int VDimension >
 void
-ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
-::ApplyTransforms( int start, int end )
+ObjectDocumentToObjectSource< TObjectDocument, VDimension >
+::SetApplyTransforms( int start, int end )
 {
   m_ApplyTransforms = true;
   m_StartTransforms = start;
   m_EndTransforms = end;
 }
 
-
-template< class TInputObjectDocument, unsigned int TDimension >
+template< class TObjectDocument, unsigned int VDimension >
 void
-ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
-::ApplyTransforms( bool b )
+ObjectDocumentToObjectSource< TObjectDocument, VDimension >
+::SetInput( const DocumentType * input )
 {
-  if( b == true )
-    {
-    ApplyTransforms( 0, -1 );
-    }
-  else
-    {
-    m_ApplyTransforms = b;
-    }
+  this->Superclass::SetNthInput( 0, const_cast< DocumentType * >( input ) );
 }
 
-
-/** Protected method is assumed to receive valid inputs
- *  (ie. startIndex !> endIndex || none < -1
- *  startIndex included upto, but excluding endIndex.
- *  eg. all transforms : startIndex = 0, endIndex = NumberOfTransforms
- *  -1 refers to the last element.
- *  Therefore startIndex = -1 is just the last element */
-template< class TInputObjectDocument, unsigned int TDimension >
-typename ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>::TransformPointer
-ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
-::ComposeTransforms( ConstDocumentPointer doc, int startIndex, int endIndex ) const
+template< class TObjectDocument, unsigned int VDimension >
+typename ObjectDocumentToObjectSource< TObjectDocument, VDimension >::DataObjectPointer
+ObjectDocumentToObjectSource< TObjectDocument, VDimension >
+::MakeOutput( DataObjectPointerArraySizeType itkNotUsed( index ) )
 {
-  typename DocumentType::TransformNameListType transNames = doc->GetTransformNames();
-  typename DocumentType::TransformNameListType::const_iterator it_trans = transNames.begin();
+  return static_cast< DataObject * >( OutputType::New().GetPointer() );
+}
+
+/* Function is assumed to receive valid inputs
+   i.e., startIndex !> endIndex || none < -1
+   startIndex included up to, but excluding, endIndex.
+   e.g., all transforms: startIndex = 0, endIndex = NumberOfTransforms
+   -1 refers to the last element.
+   Therefore startIndex = -1 is just the last element. */
+template< class TObjectDocument, unsigned int VDimension >
+typename ObjectDocumentToObjectSource< TObjectDocument, VDimension >::TransformPointer
+ObjectDocumentToObjectSource< TObjectDocument, VDimension >
+::ComposeTransforms( ConstDocumentPointer document, int startIndex,
+                     int endIndex ) const
+{
+  typedef typename DocumentType::TransformNameListType  TransformNameListType;
+
+  TransformNameListType transformNames = document->GetTransformNames();
+  typename TransformNameListType::const_iterator iter = transformNames.begin();
 
   TransformPointer transform = TransformType::New();
   transform->SetIdentity();
   m_ComposedTransformIsIdentity = true;
-  if( startIndex == -1 ) { startIndex = transNames.size() - 1; }
-  if( endIndex == -1 ) { endIndex = transNames.size(); }
+
+  if( startIndex == -1 )
+    {
+    startIndex = transformNames.size() - 1;
+    }
+
+  if( endIndex == -1 )
+    {
+    endIndex = transformNames.size();
+    }
 
   int i = 0;
-  // Skip the starting transforms
-  while( it_trans != transNames.end() && i < startIndex  )
+
+  // Skip the starting transforms.
+  while( iter != transformNames.end() && i < startIndex  )
     {
-    ++it_trans;
-    i++;
+    ++i;
+    ++iter;
     }
 
-  //Compose the transform range
-  while( it_trans != transNames.end() && i < endIndex  )
+  // Compose the transform range.
+  while( iter != transformNames.end() && i < endIndex  )
     {
     m_ComposedTransformIsIdentity = false;
-    transform->Compose( ReadTransform( (*it_trans) ) );
-    i++;
-    ++it_trans;
+    transform->Compose( this->ReadTransform( *iter ) );
+
+    ++i;
+    ++iter;
     }
+
   return transform;
 }
 
-
-template< class TInputObjectDocument, unsigned int TDimension >
-typename ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>::TransformPointer
-ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
-  ::ReadTransform( const std::string & file ) const
+template< class TObjectDocument, unsigned int VDimension >
+typename ObjectDocumentToObjectSource< TObjectDocument, VDimension >::TransformPointer
+ObjectDocumentToObjectSource< TObjectDocument, VDimension >
+::ReadTransform( const std::string & file ) const
 {
   typename TransformReaderType::Pointer reader = TransformReaderType::New();
   reader->SetFileName( file );
+
   try
     {
     reader->Update();
     }
   catch( ... )
     {
-    std::cerr << "Error:: No readable Transform found " << std::endl;
+    itkWarningMacro( << "No readable transform found." );
     return NULL;
     }
 
-  typename TransformReaderType::GroupPointer grp = reader->GetGroup();
-  if(!grp->GetNumberOfChildren())
+  typename TransformReaderType::GroupPointer group = reader->GetGroup();
+
+  if( !group->GetNumberOfChildren() )
     {
-    return grp->GetObjectToParentTransform();
+    return group->GetObjectToParentTransform();
     }
   else
     {
-    return (* (grp->GetChildren()->begin()))->GetObjectToParentTransform();
+    return ( * ( group->GetChildren()->begin() ) )->GetObjectToParentTransform();
     }
 }
 
-
-template< class TInputObjectDocument, unsigned int TDimension >
-typename ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>::DataObjectPointer
-ObjectDocumentToObjectSource<TInputObjectDocument,TDimension>
-::MakeOutput( DataObjectPointerArraySizeType itkNotUsed( idx ) )
+template< class TObjectDocument, unsigned int VDimension >
+void ObjectDocumentToObjectSource< TObjectDocument, VDimension >
+::PrintSelf( std::ostream & os, Indent indent ) const
 {
-  std::cout << "Making output" << std::endl;
-  return static_cast<DataObject*>(OutputType::New().GetPointer());
+  this->Superclass::PrintSelf( os, indent );
+
+  if( m_Input )
+    {
+    os << indent << "Input:                       " << m_Input << std::endl;
+    }
+
+  os << indent << "StartTransforms:             " << m_StartTransforms
+     << std::endl;
+  os << indent << "EndTransforms:               " << m_EndTransforms
+     << std::endl;
+  os << indent << "ComposedTransformIsIdentity: "
+     << m_ComposedTransformIsIdentity << std::endl;
+  os << indent << "ApplyTransforms:             " << m_ApplyTransforms
+     << std::endl;
 }
 
 } // End namespace tube

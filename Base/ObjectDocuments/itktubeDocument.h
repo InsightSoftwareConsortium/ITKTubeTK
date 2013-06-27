@@ -33,78 +33,102 @@ namespace itk
 namespace tube
 {
 
-/** \class Document
- *  \brief Base class that allows text based documentation of meta information
+/**
+ * Allows text based documentation of meta information.
  *
- *  IO is done through MetaDocument.h
- *
- *  \ingroup Document
+ * \ingroup  ObjectDocuments
  */
 class Document : public DataObject
 {
 public:
 
-  typedef Document                              Self;
-  typedef DataObject                            Superclass;
+  typedef Document                    Self;
+  typedef DataObject                  Superclass;
+  typedef SmartPointer< Self >        Pointer;
+  typedef SmartPointer< const Self >  ConstPointer;
 
-  typedef SmartPointer< Self >                  Pointer;
-  typedef SmartPointer< const Self >            ConstPointer;
-
-  typedef std::string                           DateType;
-  typedef std::string                           CommentsType;
-
-  /**
-   * Not Implemented, but would allow for Document
-   * objects to be held by other documents
-   */
-  typedef std::vector< Pointer >                ChildrenListType;
-  typedef ChildrenListType *                    ChildrenListPointer;
-
-   /** Method for creation through the object factory. */
   itkNewMacro( Self );
-
-  /** Run-time type information (and related methods). */
   itkTypeMacro( Document, DataObject );
 
-  /** Get the inputted Comments value */
-  CommentsType GetComment( void ) const { return m_Comment; }
-  /** Set the Comments value */
-  void SetComment( CommentsType comment ) { m_Comment = comment; }
+  /** Return the date modified. */
+  itkGetStringMacro( DateModified );
 
-  /** Get the modification Date (not implemented) */
-  DateType  GetDateModified( void ) const { return m_DateModified; }
+  /** Set the date modified. */
+  itkSetStringMacro( DateModified );
 
-  /** There is no information that can be passed using this function */
-  void CopyInformation(const DataObject*) {}
+  /** Return the comment. */
+  itkGetStringMacro( Comment );
 
-  /** Documents do not use region information so must override these classes */
-  virtual void UpdateOutputInformation( void ) {}
-  /** Documents do not use region information so must override these classes */
-  virtual bool VerifyRequestedRegion( void ) { return true; }
-  /** Documents do not use region information so must override these classes */
-  bool RequestedRegionIsOutsideOfTheBufferedRegion( void ) { return false; }
-  /** Documents do not use region information so must override these classes */
-  virtual void SetRequestedRegion( const DataObject * ) {}
-  /** Documents do not use region information so must override these classes */
-  virtual void SetRequestedRegionToLargestPossibleRegion( void ) {}
+  /** Set the comment. */
+  itkSetStringMacro( Comment );
+
+  /** Copy the information from the specified data object. */
+  virtual void CopyInformation( const DataObject * data )
+    {
+    }
+
+  /** Update the output information. */
+  virtual void UpdateOutputInformation( void )
+    {
+    }
+
+  /** Verify that the requested region is within the largest possible region,
+      but note that this object does not use region information. */
+  virtual bool VerifyRequestedRegion( void )
+    {
+    return true;
+    }
+
+  /** Determine whether the requested region is outside of the buffered region,
+      but note that this object does not use region information. */
+  virtual bool RequestedRegionIsOutsideOfTheBufferedRegion( void )
+    {
+    return false;
+    }
+
+  /** Set the requested region to match the requested region of the specified
+      data object, but note that this object does not use region information. */
+  virtual void SetRequestedRegion( const DataObject * data )
+    {
+    }
+
+  /** Set the requested region to the largest possible region, but note that
+      this object does not use region information. */
+  virtual void SetRequestedRegionToLargestPossibleRegion( void )
+    {
+    }
 
 protected:
 
-  Document( void ) {}
-  ~Document( void ) {}
-
-  virtual void PrintSelf(std::ostream& os, Indent indent) const
+  /** Constructor. */
+  Document( void )
     {
-    Superclass::PrintSelf(os,indent);
+    }
 
-    os << indent << "TimeLastModified: " << m_DateModified << std::endl;
-    os << indent << "Comment: " << m_Comment << std::endl;
+  /** Destructor. */
+  virtual ~Document( void )
+    {
+    }
+
+  /** Print information about the object. */
+  virtual void PrintSelf( std::ostream & os, Indent indent ) const
+    {
+    this->Superclass::PrintSelf( os, indent );
+
+    os << indent << "Comment:      " << m_Comment << std::endl;
+    os << indent << "DateModified: " << m_DateModified << std::endl;
     }
 
 private:
 
-  DateType      m_DateModified;
-  CommentsType  m_Comment;
+  // Copy constructor not implemented.
+  Document( const Self & self );
+
+  // Copy assignment operator not implemented.
+  void operator=( const Self & self );
+
+  std::string  m_Comment;
+  std::string  m_DateModified;
 
 }; // End class Document
 

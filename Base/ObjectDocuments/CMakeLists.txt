@@ -23,7 +23,6 @@
 
 project( TubeObjectDocuments )
 
-# Find ITK
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
 
@@ -55,7 +54,8 @@ add_library( TubeObjectDocuments STATIC
   ${TubeTk_Base_ObjectDocuments_HXX_Files}
   ${TubeTk_Base_ObjectDocuments_SRCS} )
 
-target_link_libraries( TubeObjectDocuments ${ITK_LIBRARIES} )
+include_directories( ${TubeTK_SOURCE_DIR}/Base/Common )
+target_link_libraries( TubeObjectDocuments TubeCommon ${ITK_LIBRARIES} )
 
 set( TARGETS TubeObjectDocuments )
 TubeTKMacroInstallPlugins( ${TARGETS} )

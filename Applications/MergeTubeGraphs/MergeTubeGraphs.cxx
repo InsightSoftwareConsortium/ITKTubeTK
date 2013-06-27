@@ -66,8 +66,8 @@ int DoIt( int argc, char * argv[] )
   // Generic stream for log messages
   std::stringstream logMsg;
 
-  typedef MetaObjectDocument                   DocumentReaderType;
-  typedef DocumentReaderType::ObjectListType   DocumentListType;
+  typedef MetaObjectDocument                          DocumentReaderType;
+  typedef DocumentReaderType::ObjectDocumentListType  DocumentListType;
 
   int numberOfCentroids = nCentroids;
   assert( numberOfCentroids > 0 );
@@ -77,7 +77,7 @@ int DoIt( int argc, char * argv[] )
   tube::InfoMessage( logMsg.str() );
 
   DocumentReaderType * reader = new DocumentReaderType();
-  reader->FileName( listFile.c_str() );
+  reader->SetFileName( listFile.c_str() );
   if( !reader->Read( listFile.c_str() ) )
     {
     tube::ErrorMessage( "Could not read ObjectDocument file!" );
@@ -85,9 +85,9 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  DocumentListType* graphObjects = reader->GetObjectList();
+  DocumentListType graphObjects = reader->GetObjectDocumentList();
 
-  int numberOfGraphs = graphObjects->size();
+  int numberOfGraphs = graphObjects.size();
   logMsg.str( "" );
   logMsg << "Number of graphs " << numberOfGraphs;
   tube::InfoMessage( logMsg.str() );
@@ -103,8 +103,8 @@ int DoIt( int argc, char * argv[] )
   int numberOfCentroids2;
   std::string filename;
 
-  DocumentListType::const_iterator graphIt = graphObjects->begin();
-  while( graphIt != graphObjects->end() )
+  DocumentListType::const_iterator graphIt = graphObjects.begin();
+  while( graphIt != graphObjects.end() )
     {
     filename = (*graphIt)->GetObjectName();
 
