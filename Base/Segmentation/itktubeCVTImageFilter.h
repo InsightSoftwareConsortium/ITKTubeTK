@@ -40,7 +40,7 @@ namespace itk
 namespace tube
 {
 
-template < class TInputImage, class TOutputImage=TInputImage >
+template< class TInputImage, class TOutputImage = TInputImage >
 class CVTImageFilter :
   public ImageToImageFilter< TInputImage, TOutputImage >
 {

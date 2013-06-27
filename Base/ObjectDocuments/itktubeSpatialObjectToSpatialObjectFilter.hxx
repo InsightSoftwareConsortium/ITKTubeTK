@@ -28,7 +28,7 @@ namespace tube
 {
 
 
-template <class TInputSpatialObject, class TOutputSpatialObject>
+template< class TInputSpatialObject, class TOutputSpatialObject >
 SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
 ::SpatialObjectToSpatialObjectFilter( void )
 {
@@ -37,14 +37,14 @@ SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
 }
 
 
-template <class TInputSpatialObject, class TOutputSpatialObject>
+template< class TInputSpatialObject, class TOutputSpatialObject >
 SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
 ::~SpatialObjectToSpatialObjectFilter( void )
 {
 }
 
 
-template <class TInputSpatialObject, class TOutputSpatialObject>
+template< class TInputSpatialObject, class TOutputSpatialObject >
 void
 SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
 ::SetInput(const InputSpatialObjectType *input)
@@ -58,7 +58,7 @@ SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
 /**
  * Connect one of the operands for pixel-wise addition
  */
-template <class TInputSpatialObject, class TOutputSpatialObject>
+template< class TInputSpatialObject, class TOutputSpatialObject >
 void
 SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
 ::SetInput( unsigned int index, const TInputSpatialObject * object )
@@ -74,7 +74,7 @@ SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
 }
 
 
-template <class TInputSpatialObject, class TOutputSpatialObject>
+template< class TInputSpatialObject, class TOutputSpatialObject >
 const typename SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>::InputSpatialObjectType *
 SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
 ::GetInput( void )
@@ -89,7 +89,7 @@ SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
 }
 
 
-template <class TInputSpatialObject, class TOutputSpatialObject>
+template< class TInputSpatialObject, class TOutputSpatialObject >
 const typename SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>::InputSpatialObjectType *
 SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
 ::GetInput(unsigned int idx)
@@ -99,7 +99,7 @@ SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
 }
 
 
-template<class TInputSpatialObject, class TOutputSpatialObject>
+template< class TInputSpatialObject, class TOutputSpatialObject >
 void
 SpatialObjectToSpatialObjectFilter<TInputSpatialObject,TOutputSpatialObject>
 ::PrintSelf(std::ostream& os, Indent indent) const

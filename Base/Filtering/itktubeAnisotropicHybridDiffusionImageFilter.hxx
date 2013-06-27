@@ -46,7 +46,7 @@ namespace tube
 /**
  * Constructor
  */
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 ::AnisotropicHybridDiffusionImageFilter( void )
 {
@@ -59,7 +59,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   m_Alpha = 0.001;
 }
 
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 ::UpdateDiffusionTensorImage( void )
@@ -376,7 +376,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     }
 }
 
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const

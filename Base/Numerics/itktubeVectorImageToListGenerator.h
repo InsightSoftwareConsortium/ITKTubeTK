@@ -63,7 +63,7 @@ namespace Statistics
  *
  * \sa VectorImageToListAdaptor
  */
-template < class TImage, class TMaskImage >
+template< class TImage, class TMaskImage >
 class VectorImageToListGenerator :
   public ProcessObject
 {

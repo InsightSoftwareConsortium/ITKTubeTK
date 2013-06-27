@@ -31,7 +31,7 @@ limitations under the License.
 namespace tube
 {
 
-template <class T>
+template< class T >
 void StringToVector( const std::string & s, std::vector< T > & vec )
 {
   vec.clear();

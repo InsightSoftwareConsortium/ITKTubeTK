@@ -43,7 +43,7 @@ namespace tube
  *
  * \ingroup MultiThreaded
  */
-template<class TLabelImage>
+template< class TLabelImage >
 class LabelOverlapMeasuresImageFilter :
     public InPlaceImageFilter< TLabelImage >
 {

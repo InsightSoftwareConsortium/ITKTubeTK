@@ -27,12 +27,10 @@ limitations under the License.
 #include "itktubeTubeSpatialObjectToDensityImage.h"
 
 /** Constructor */
-template < class TDensityImageType,
-           class TRadiusImageType,
-           class TTangentImageType>
-TubeSpatialObjectToDensityImage<TDensityImageType,
-                                TRadiusImageType,
-                                TTangentImageType>
+template< class TDensityImageType, class TRadiusImageType,
+          class TTangentImageType >
+TubeSpatialObjectToDensityImage< TDensityImageType, TRadiusImageType,
+                                 TTangentImageType >
 ::TubeSpatialObjectToDensityImage( void )
 {
   for(short i = 0; i < ImageDimension; i++ )
@@ -45,23 +43,19 @@ TubeSpatialObjectToDensityImage<TDensityImageType,
 }
 
 /** Destructor */
-template < class TDensityImageType,
-           class TRadiusImageType,
-           class TTangentImageType>
-TubeSpatialObjectToDensityImage<TDensityImageType,
-                                TRadiusImageType,
-                                TTangentImageType>
+template< class TDensityImageType, class TRadiusImageType,
+          class TTangentImageType >
+TubeSpatialObjectToDensityImage< TDensityImageType, TRadiusImageType,
+                                 TTangentImageType>
 ::~TubeSpatialObjectToDensityImage( void )
 {
 }
 
-template < class TDensityImageType,
-           class TRadiusImageType,
-           class TTangentImageType>
+template< class TDensityImageType, class TRadiusImageType,
+          class TTangentImageType >
 void
-TubeSpatialObjectToDensityImage<TDensityImageType,
-                                TRadiusImageType,
-                                TTangentImageType>
+TubeSpatialObjectToDensityImage< TDensityImageType, TRadiusImageType,
+                                 TTangentImageType>
 ::SetSpacing( SpacingType s )
 {
   for( unsigned int i = 0; i < ImageDimension; i++ )
@@ -71,13 +65,11 @@ TubeSpatialObjectToDensityImage<TDensityImageType,
 }
 
 
-template < class TDensityImageType,
-           class TRadiusImageType,
-           class TTangentImageType>
+template< class TDensityImageType, class TRadiusImageType,
+          class TTangentImageType >
 void
-TubeSpatialObjectToDensityImage<TDensityImageType,
-                                TRadiusImageType,
-                                TTangentImageType>
+TubeSpatialObjectToDensityImage< TDensityImageType, TRadiusImageType,
+                                 TTangentImageType >
 ::Update( void )
 {
   if(m_Size[0] == 0)

@@ -37,7 +37,7 @@ namespace itk
 namespace tube
 {
 
-template<class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 OtsuThresholdMaskedImageFilter<TInputImage, TOutputImage>
 ::OtsuThresholdMaskedImageFilter( void )
 {
@@ -48,7 +48,7 @@ OtsuThresholdMaskedImageFilter<TInputImage, TOutputImage>
   m_NumberOfHistogramBins = 128;
 }
 
-template<class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 OtsuThresholdMaskedImageFilter<TInputImage, TOutputImage>
 ::GenerateData( void )
@@ -86,7 +86,7 @@ OtsuThresholdMaskedImageFilter<TInputImage, TOutputImage>
   this->GraftOutput( threshold->GetOutput() );
 }
 
-template<class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 OtsuThresholdMaskedImageFilter<TInputImage, TOutputImage>
 ::GenerateInputRequestedRegion( void )
@@ -98,7 +98,7 @@ OtsuThresholdMaskedImageFilter<TInputImage, TOutputImage>
     }
 }
 
-template<class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 OtsuThresholdMaskedImageFilter<TInputImage,TOutputImage>
 ::PrintSelf( std::ostream& os, Indent indent ) const

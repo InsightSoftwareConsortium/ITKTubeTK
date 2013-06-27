@@ -44,7 +44,7 @@ namespace tube
 /**
  * Set the input Image
  */
-template <class TInputImage, class TCoordRep>
+template< class TInputImage, class TCoordRep >
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::JointHistogramImageFunction( void )
 {
@@ -69,7 +69,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   this->SetHistogramSize( 40 );
 }
 
-template <class TInputImage, class TCoordRep>
+template< class TInputImage, class TCoordRep >
 void
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::SetHistogramSize( const unsigned int & size )
@@ -115,7 +115,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   m_MaskStep = (m_MaskMax - m_MaskMin) / m_HistogramSize;
 }
 
-template <class TInputImage, class TCoordRep>
+template< class TInputImage, class TCoordRep >
 void
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::SetInputImage( const InputImageType * ptr )
@@ -132,7 +132,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   m_ImageStep = (m_ImageMax - m_ImageMin) / m_HistogramSize;
 }
 
-template <class TInputImage, class TCoordRep>
+template< class TInputImage, class TCoordRep >
 void
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::SetInputMask( const typename InputImageType::Pointer mask )
@@ -149,7 +149,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   m_MaskStep = (m_MaskMax - m_MaskMin) / m_HistogramSize;
 }
 
-template <class TInputImage, class TCoordRep>
+template< class TInputImage, class TCoordRep >
 double
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::EvaluateAtIndex( const IndexType & index ) const
@@ -170,7 +170,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     }
 }
 
-template <class TInputImage, class TCoordRep>
+template< class TInputImage, class TCoordRep >
 void
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::PrecomputeAtIndex( const IndexType & index )
@@ -198,7 +198,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   ++m_NumberOfSamples;
 }
 
-template <class TInputImage, class TCoordRep>
+template< class TInputImage, class TCoordRep >
 void
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::ComputeMeanAndStandardDeviation( void ) const
@@ -259,7 +259,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     }
 }
 
-template <class TInputImage, class TCoordRep>
+template< class TInputImage, class TCoordRep >
 void
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::PrintSelf( std::ostream & os, Indent indent ) const
@@ -296,7 +296,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   os << indent << "m_ForceDiagonalHistogram = " << m_MaskStep << std::endl;
 }
 
-template <class TInputImage, class TCoordRep>
+template< class TInputImage, class TCoordRep >
 double
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::ComputeZScoreAtIndex( const IndexType & index ) const
@@ -339,7 +339,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     }
 }
 
-template <class TInputImage, class TCoordRep>
+template< class TInputImage, class TCoordRep >
 itk::Image<float,2>::Pointer &
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::ComputeHistogramAtIndex( const IndexType & index, bool blur ) const

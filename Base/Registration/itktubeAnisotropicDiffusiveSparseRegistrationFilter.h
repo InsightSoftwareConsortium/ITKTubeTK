@@ -70,7 +70,7 @@ namespace tube
  * \ingroup MultiThreaded
  */
 
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 class AnisotropicDiffusiveSparseRegistrationFilter
   : public DiffusiveRegistrationFilter< TFixedImage,
                                         TMovingImage,

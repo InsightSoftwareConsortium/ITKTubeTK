@@ -41,13 +41,10 @@ namespace tube
  * Also, forms the same image, but with the radius value in place of the 1.
  */
 
-template <unsigned int ObjectDimension,
-          class TOutputImage,
-          class TRadiusImage = Image<float,
-                                     TOutputImage::ImageDimension>,
-          class TTangentImage = Image<
-                    itk::Vector<float, TOutputImage::ImageDimension>,
-                    TOutputImage::ImageDimension> >
+template< unsigned int ObjectDimension, class TOutputImage,
+          class TRadiusImage = Image< float, TOutputImage::ImageDimension >,
+          class TTangentImage = Image< Vector< float, TOutputImage::ImageDimension >,
+                                       TOutputImage::ImageDimension > >
 class TubeSpatialObjectToImageFilter :
   public SpatialObjectToImageFilter< SpatialObject<ObjectDimension>,
                                      TOutputImage>

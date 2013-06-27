@@ -49,7 +49,7 @@ namespace tube
  *
  * \ingroup ImageFunctions ImageInterpolators
  */
-template <class TInputImage, class TCoordRep = float>
+template< class TInputImage, class TCoordRep = float >
 class VotingResampleImageFunction :
   public InterpolateImageFunction<TInputImage,TCoordRep>
 {

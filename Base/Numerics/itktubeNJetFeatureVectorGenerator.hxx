@@ -57,7 +57,7 @@ NJetFeatureVectorGenerator< ImageT >
 {
 }
 
-template < class ImageT >
+template< class ImageT >
 unsigned int
 NJetFeatureVectorGenerator< ImageT >
 ::GetNumberOfFeatures( void ) const
@@ -73,7 +73,7 @@ NJetFeatureVectorGenerator< ImageT >
   return numFeatures;
 }
 
-template < class ImageT >
+template< class ImageT >
 typename NJetFeatureVectorGenerator< ImageT >::FeatureVectorType
 NJetFeatureVectorGenerator< ImageT >
 ::GetFeatureVector( const IndexType & indx ) const
@@ -145,7 +145,7 @@ NJetFeatureVectorGenerator< ImageT >
   return featureVector;
 }
 
-template < class ImageT >
+template< class ImageT >
 typename NJetFeatureVectorGenerator< ImageT >::FeatureValueType
 NJetFeatureVectorGenerator< ImageT >
 ::GetFeatureVectorValue( const IndexType & indx, unsigned int fNum ) const
@@ -265,7 +265,7 @@ NJetFeatureVectorGenerator< ImageT >
   itkExceptionMacro( "Requested non-existent FeatureVectorValue." );
 }
 
-template < class ImageT >
+template< class ImageT >
 void
 NJetFeatureVectorGenerator< ImageT >
 ::SetZeroScales( const NJetScalesType & scales )
@@ -273,7 +273,7 @@ NJetFeatureVectorGenerator< ImageT >
   m_ZeroScales = scales;
 }
 
-template < class ImageT >
+template< class ImageT >
 void
 NJetFeatureVectorGenerator< ImageT >
 ::SetFirstScales( const NJetScalesType & scales )
@@ -281,7 +281,7 @@ NJetFeatureVectorGenerator< ImageT >
   m_FirstScales = scales;
 }
 
-template < class ImageT >
+template< class ImageT >
 void
 NJetFeatureVectorGenerator< ImageT >
 ::SetSecondScales( const NJetScalesType & scales )
@@ -289,7 +289,7 @@ NJetFeatureVectorGenerator< ImageT >
   m_SecondScales = scales;
 }
 
-template < class ImageT >
+template< class ImageT >
 void
 NJetFeatureVectorGenerator< ImageT >
 ::SetRidgeScales( const NJetScalesType & scales )
@@ -297,7 +297,7 @@ NJetFeatureVectorGenerator< ImageT >
   m_RidgeScales = scales;
 }
 
-template < class ImageT >
+template< class ImageT >
 const std::vector< double > &
 NJetFeatureVectorGenerator< ImageT >
 ::GetZeroScales( void ) const
@@ -305,7 +305,7 @@ NJetFeatureVectorGenerator< ImageT >
   return m_ZeroScales;
 }
 
-template < class ImageT >
+template< class ImageT >
 const std::vector< double > &
 NJetFeatureVectorGenerator< ImageT >
 ::GetFirstScales( void ) const
@@ -313,7 +313,7 @@ NJetFeatureVectorGenerator< ImageT >
   return m_FirstScales;
 }
 
-template < class ImageT >
+template< class ImageT >
 const std::vector< double > &
 NJetFeatureVectorGenerator< ImageT >
 ::GetSecondScales( void ) const
@@ -321,7 +321,7 @@ NJetFeatureVectorGenerator< ImageT >
   return m_SecondScales;
 }
 
-template < class ImageT >
+template< class ImageT >
 const std::vector< double > &
 NJetFeatureVectorGenerator< ImageT >
 ::GetRidgeScales( void ) const
@@ -329,7 +329,7 @@ NJetFeatureVectorGenerator< ImageT >
   return m_RidgeScales;
 }
 
-template < class ImageT >
+template< class ImageT >
 void
 NJetFeatureVectorGenerator< ImageT >
 ::SetForceOrientationInsensitivity( bool _forceOrientationInsensitivity )
@@ -337,7 +337,7 @@ NJetFeatureVectorGenerator< ImageT >
   m_ForceOrientationInsensitivity = _forceOrientationInsensitivity;
 }
 
-template < class ImageT >
+template< class ImageT >
 bool
 NJetFeatureVectorGenerator< ImageT >
 ::GetForceOrientationInsensitivity( void ) const
@@ -345,7 +345,7 @@ NJetFeatureVectorGenerator< ImageT >
   return m_ForceOrientationInsensitivity;
 }
 
-template <class ImageT >
+template< class ImageT >
 void
 NJetFeatureVectorGenerator< ImageT >
 ::PrintSelf( std::ostream & os, Indent indent ) const

@@ -39,7 +39,7 @@ namespace tube
 
 /**
 * Constructor */
-template<class TInputImage, class TInputMask>
+template< class TInputImage, class TInputMask >
 TubeNetworkExtractor<TInputImage, TInputMask>
 ::TubeNetworkExtractor( void )
 {
@@ -51,7 +51,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
 
 /**
  * Destructor */
-template<class TInputImage, class TInputMask>
+template< class TInputImage, class TInputMask >
 TubeNetworkExtractor<TInputImage, TInputMask>
 ::~TubeNetworkExtractor( void )
 {
@@ -59,7 +59,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
 
 /**
  * Set the input image */
-template<class TInputImage, class TInputMask>
+template< class TInputImage, class TInputMask >
 void
 TubeNetworkExtractor<TInputImage, TInputMask>
 ::SetInputImage( typename ImageType::Pointer inputImage )
@@ -74,7 +74,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
 
 /**
  * Set the status callback  */
-template<class TInputImage, class TInputMask>
+template< class TInputImage, class TInputMask >
 void
 TubeNetworkExtractor<TInputImage, TInputMask>
 ::NewTubeCallBack( void ( *newTubeCallBack )( TubeType* ) )
@@ -85,7 +85,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
 
 /**
  * Get the tube net */
-template<class TInputImage, class TInputMask>
+template< class TInputImage, class TInputMask >
 typename TubeNetworkExtractor<TInputImage, TInputMask>::TubeType::Pointer
 TubeNetworkExtractor<TInputImage, TInputMask>
 ::GetTubeNetwork( void )
@@ -95,7 +95,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
 
 /**
  * Set the mask  */
-template<class TInputImage, class TInputMask>
+template< class TInputImage, class TInputMask >
 void
 TubeNetworkExtractor<TInputImage, TInputMask>
 ::SetAutoExtractMask( typename MaskType::Pointer autoExtractMask )
@@ -105,7 +105,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
 
 /**
  * Auto extract tubes using a mask */
-template<class TInputImage, class TInputMask>
+template< class TInputImage, class TInputMask >
 double
 TubeNetworkExtractor<TInputImage, TInputMask>
 ::AutoExtractThresh( void )
@@ -115,7 +115,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
 
 /**
  * Auto extract tubes using a mask */
-template<class TInputImage, class TInputMask>
+template< class TInputImage, class TInputMask >
 void
 TubeNetworkExtractor<TInputImage, TInputMask>
 ::AutoExtractThresh( double newAEThresh )
@@ -125,7 +125,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
 
 /**
  * AutoExtract tubes */
-template<class TInputImage, class TInputMask>
+template< class TInputImage, class TInputMask >
 bool
 TubeNetworkExtractor<TInputImage, TInputMask>
 ::AutoExtract( int , int ) // zMin, int zMax )
@@ -174,7 +174,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
 
 /**
  * Generate vessel mask */
-template<class TInputImage, class TInputMask>
+template< class TInputImage, class TInputMask >
 void
 TubeNetworkExtractor<TInputImage, TInputMask>
 ::DrawMask( MaskType * ) // mask )
@@ -200,7 +200,7 @@ TubeNetworkExtractor<TInputImage, TInputMask>
 
 /**
  * PrintSelf */
-template<class TInputImage, class TInputMask>
+template< class TInputImage, class TInputMask >
 void
 TubeNetworkExtractor<TInputImage, TInputMask>
 ::PrintSelf( std::ostream & os, Indent indent ) const

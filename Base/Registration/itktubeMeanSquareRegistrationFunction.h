@@ -59,7 +59,7 @@ namespace tube
  * \sa MeanSquareRegistrationFilter
  * \ingroup FiniteDifferenceFunctions
  */
-template<class TFixedImage, class TMovingImage, class TDeformationField>
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 class MeanSquareRegistrationFunction :
   public PDEDeformableRegistrationFunction< TFixedImage,
     TMovingImage, TDeformationField>

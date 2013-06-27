@@ -44,7 +44,7 @@ namespace itk
 namespace tube
 {
 
-template <class TInputImage>
+template< class TInputImage >
 class RidgeExtractorSplineValue
 : public ::tube::UserFunction< vnl_vector<int>, double >
 {
@@ -82,7 +82,7 @@ protected:
 
 /**
  * Constructor */
-template<class TInputImage>
+template< class TInputImage >
 RidgeExtractor<TInputImage>
 ::RidgeExtractor( void )
 {
@@ -149,7 +149,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Destructor */
-template<class TInputImage>
+template< class TInputImage >
 RidgeExtractor<TInputImage>
 ::~RidgeExtractor( void )
 {
@@ -169,7 +169,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Set the input image */
-template<class TInputImage>
+template< class TInputImage >
 void
 RidgeExtractor<TInputImage>
 ::SetInputImage( typename ImageType::Pointer inputImage )
@@ -234,7 +234,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Get the input image */
-template<class TInputImage>
+template< class TInputImage >
 typename TInputImage::Pointer
 RidgeExtractor<TInputImage>
 ::GetInputImage( void )
@@ -244,7 +244,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Set Data Min value */
-template<class TInputImage>
+template< class TInputImage >
 void
 RidgeExtractor<TInputImage>
 ::SetDataMin( double dataMin )
@@ -255,7 +255,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Set Data Min value */
-template<class TInputImage>
+template< class TInputImage >
 void
 RidgeExtractor<TInputImage>
 ::SetDataMax( double dataMax )
@@ -266,7 +266,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Set the scale */
-template<class TInputImage>
+template< class TInputImage >
 void
 RidgeExtractor<TInputImage>
 ::SetScale( double scale )
@@ -281,7 +281,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Get the scale */
-template<class TInputImage>
+template< class TInputImage >
 double
 RidgeExtractor<TInputImage>
 ::GetScale( void )
@@ -291,7 +291,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Set the extent */
-template<class TInputImage>
+template< class TInputImage >
 void
 RidgeExtractor<TInputImage>
 ::SetExtent( double extent )
@@ -303,7 +303,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Get the extent */
-template<class TInputImage>
+template< class TInputImage >
 double
 RidgeExtractor<TInputImage>
 ::GetExtent( void )
@@ -313,7 +313,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Get the data spline */
-template<class TInputImage>
+template< class TInputImage >
 ::tube::SplineND *
 RidgeExtractor<TInputImage>
 ::GetDataSpline( void )
@@ -323,7 +323,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Get the data spline 1D */
-template<class TInputImage>
+template< class TInputImage >
 ::tube::Spline1D *
 RidgeExtractor<TInputImage>
 ::GetDataSpline1D( void )
@@ -333,7 +333,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Get the data spline optimizer */
-template<class TInputImage>
+template< class TInputImage >
 ::tube::Optimizer1D *
 RidgeExtractor<TInputImage>
 ::GetDataSplineOptimizer( void )
@@ -344,7 +344,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Set the dynamic scale */
-template<class TInputImage>
+template< class TInputImage >
 void
 RidgeExtractor<TInputImage>
 ::SetDynamicScale( bool dynamicScale )
@@ -358,7 +358,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Set the radius extractor */
-template<class TInputImage>
+template< class TInputImage >
 void
 RidgeExtractor<TInputImage>
 ::SetRadiusExtractor( RadiusExtractor<TInputImage> * radiusExtractor )
@@ -368,7 +368,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Return the intensity */
-template<class TInputImage>
+template< class TInputImage >
 double
 RidgeExtractor<TInputImage>
 ::Intensity( const IndexType & x )
@@ -390,7 +390,7 @@ RidgeExtractor<TInputImage>
 /**
  * Ridgeness
  */
-template<class TInputImage>
+template< class TInputImage >
 double
 RidgeExtractor<TInputImage>
 ::Ridgeness( const ContinuousIndexType & x, double & roundness,
@@ -535,7 +535,7 @@ RidgeExtractor<TInputImage>
 /**
  * PrintSelf
  */
-template<class TInputImage>
+template< class TInputImage >
 void
 RidgeExtractor<TInputImage>
 ::PrintSelf( std::ostream & os, Indent indent ) const
@@ -633,7 +633,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Traverse one way */
-template<class TInputImage>
+template< class TInputImage >
 bool
 RidgeExtractor<TInputImage>
 ::TraverseOneWay( ContinuousIndexType & newX, VectorType & newT,
@@ -1292,7 +1292,7 @@ RidgeExtractor<TInputImage>
 /**
  * Compute the local ridge
  */
-template<class TInputImage>
+template< class TInputImage >
 bool
 RidgeExtractor<TInputImage>
 ::LocalRidge( ContinuousIndexType & newX )
@@ -1586,7 +1586,7 @@ RidgeExtractor<TInputImage>
 /**
  * Extract a tube
  */
-template<class TInputImage>
+template< class TInputImage >
 typename RidgeExtractor<TInputImage>::TubeType::Pointer
 RidgeExtractor<TInputImage>
 ::ExtractRidge( ContinuousIndexType & newX, int tubeId )
@@ -1813,7 +1813,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Smooth a tube */
-template<class TInputImage>
+template< class TInputImage >
 void
 RidgeExtractor<TInputImage>
 ::SmoothTube( TubeType * tube, int h )
@@ -1872,8 +1872,8 @@ RidgeExtractor<TInputImage>
 }
 
 
-template<class TInputImage>
-template<class TDrawMask>
+template< class TInputImage >
+template< class TDrawMask >
 bool
 RidgeExtractor<TInputImage>
 ::DeleteTube( TubeType * tube,  TDrawMask * drawMask )
@@ -1982,7 +1982,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Delete a tube */
-template<class TInputImage>
+template< class TInputImage >
 bool
 RidgeExtractor<TInputImage>
 ::DeleteTube( TubeType * tube )
@@ -1993,8 +1993,8 @@ RidgeExtractor<TInputImage>
 
 /**
  * Add a tube */
-template<class TInputImage>
-template<class TDrawMask>
+template< class TInputImage >
+template< class TDrawMask >
 bool
 RidgeExtractor<TInputImage>
 ::AddTube( TubeType * tube,  TDrawMask * drawMask )
@@ -2109,7 +2109,7 @@ RidgeExtractor<TInputImage>
 
 /**
  * Add a tube */
-template<class TInputImage>
+template< class TInputImage >
 bool
 RidgeExtractor<TInputImage>
 ::AddTube( TubeType * tube )
@@ -2118,7 +2118,7 @@ RidgeExtractor<TInputImage>
 }
 
 /** Set the idle call back */
-template<class TInputImage>
+template< class TInputImage >
 void
 RidgeExtractor<TInputImage>
 ::IdleCallBack( bool ( *idleCallBack )() )
@@ -2127,7 +2127,7 @@ RidgeExtractor<TInputImage>
 }
 
 /** Set the status callback  */
-template<class TInputImage>
+template< class TInputImage >
 void
 RidgeExtractor<TInputImage>
 ::StatusCallBack( void ( *statusCallBack )( const char *, const char *,

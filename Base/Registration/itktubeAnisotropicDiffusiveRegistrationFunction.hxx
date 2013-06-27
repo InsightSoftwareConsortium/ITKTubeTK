@@ -35,7 +35,7 @@ namespace tube
 /**
  * Constructor
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 AnisotropicDiffusiveRegistrationFunction
  < TFixedImage, TMovingImage, TDeformationField >
 ::AnisotropicDiffusiveRegistrationFunction( void )
@@ -64,7 +64,7 @@ AnisotropicDiffusiveRegistrationFunction
 /**
  * PrintSelf
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
@@ -94,7 +94,7 @@ AnisotropicDiffusiveRegistrationFunction
 /**
  * Creates a pointer to the data structure used to manage global values
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void *
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
@@ -120,7 +120,7 @@ AnisotropicDiffusiveRegistrationFunction
 /**
  * Deletes the global data structure
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
@@ -146,7 +146,7 @@ AnisotropicDiffusiveRegistrationFunction
 /**
  * Called at the beginning of each iteration
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
@@ -178,7 +178,7 @@ AnisotropicDiffusiveRegistrationFunction
 /**
  * Computes the update term
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 typename AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
 ::PixelType
@@ -195,7 +195,7 @@ AnisotropicDiffusiveRegistrationFunction
 /**
   * Computes the update term
   */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 typename AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
 ::PixelType
@@ -260,7 +260,7 @@ AnisotropicDiffusiveRegistrationFunction
 /**
   * Computes the update term for the regularization
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 typename AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
 ::PixelType
@@ -337,7 +337,7 @@ AnisotropicDiffusiveRegistrationFunction
 /**
   * Computes the intensity distance energy
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 double
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
@@ -352,7 +352,7 @@ AnisotropicDiffusiveRegistrationFunction
 /**
   * Computes the regularization energy
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 double
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >

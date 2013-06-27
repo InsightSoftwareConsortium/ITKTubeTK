@@ -26,8 +26,7 @@ limitations under the License.
 
 #include "itktubeRobustMeanAndSigmaImageBuilder.h"
 
-template< class TInputImageType,
-          class TOutputMeanImageType,
+template< class TInputImageType, class TOutputMeanImageType,
           class TOutputSigmaImageType >
 RobustMeanAndSigmaImageBuilder< TInputImageType,
                                 TOutputMeanImageType,
@@ -38,8 +37,7 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
 {
 }
 
-template< class TInputImageType,
-          class TOutputMeanImageType,
+template< class TInputImageType, class TOutputMeanImageType,
           class TOutputSigmaImageType >
 void
 RobustMeanAndSigmaImageBuilder< TInputImageType,
@@ -104,8 +102,7 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
   this->SetUpperOutlierImages( upperImages );
 }
 
-template< class TInputImageType,
-          class TOutputMeanImageType,
+template< class TInputImageType, class TOutputMeanImageType,
           class TOutputSigmaImageType >
 void
 RobustMeanAndSigmaImageBuilder< TInputImageType,
@@ -135,8 +132,7 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
   SetUpperImages( i );
 }
 
-template< class TInputImageType,
-          class TOutputMeanImageType,
+template< class TInputImageType, class TOutputMeanImageType,
           class TOutputSigmaImageType >
 void
 RobustMeanAndSigmaImageBuilder< TInputImageType,
@@ -152,9 +148,8 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
 
 }
 
-template< class TInputImageType,
-          class TOutputMeanImageType,
-          class TOutputSigmaImageType>
+template< class TInputImageType, class TOutputMeanImageType,
+          class TOutputSigmaImageType >
 void
 RobustMeanAndSigmaImageBuilder< TInputImageType,
                                 TOutputMeanImageType,
@@ -166,9 +161,8 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
   AddToUpdateImageList( image, this->GetLowerOutlierImages(), isAscending );
 }
 
-template< class TInputImageType,
-          class TOutputMeanImageType,
-          class TOutputSigmaImageType>
+template< class TInputImageType, class TOutputMeanImageType,
+          class TOutputSigmaImageType >
 void
 RobustMeanAndSigmaImageBuilder< TInputImageType,
                                 TOutputMeanImageType,
@@ -181,8 +175,7 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
 
 }
 
-template< class TInputImageType,
-          class TOutputMeanImageType,
+template< class TInputImageType, class TOutputMeanImageType,
           class TOutputSigmaImageType >
 typename RobustMeanAndSigmaImageBuilder< TInputImageType,
                                          TOutputMeanImageType,
@@ -231,8 +224,7 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
   return list;
 }
 
-template< class TInputImageType,
-          class TOutputMeanImageType,
+template< class TInputImageType, class TOutputMeanImageType,
           class TOutputSigmaImageType >
 typename RobustMeanAndSigmaImageBuilder< TInputImageType,
                                          TOutputMeanImageType,
@@ -261,8 +253,7 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
   return copy;
 }
 
-template< class TInputImageType,
-          class TOutputMeanImageType,
+template< class TInputImageType, class TOutputMeanImageType,
           class TOutputSigmaImageType >
 void
 RobustMeanAndSigmaImageBuilder< TInputImageType,
@@ -347,9 +338,8 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
     }
 }
 
-template< class TInputImageType,
-          class TOutputMeanImageType,
-          class TOutputSigmaImageType>
+template< class TInputImageType, class TOutputMeanImageType,
+          class TOutputSigmaImageType >
 typename RobustMeanAndSigmaImageBuilder<
                 TInputImageType,
                 TOutputMeanImageType,
@@ -415,9 +405,8 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
   return medianImage;
 }
 
-template< class TInputImageType,
-          class TOutputMeanImageType,
-          class TOutputSigmaImageType>
+template< class TInputImageType, class TOutputMeanImageType,
+          class TOutputSigmaImageType >
 void
 RobustMeanAndSigmaImageBuilder< TInputImageType,
                                 TOutputMeanImageType,

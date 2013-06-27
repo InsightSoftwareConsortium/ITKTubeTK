@@ -71,7 +71,7 @@ private:
   /** Computes a Floyd-transformed graph, see [1], Section 4.1 */
   GraphType FloydTransform(const GraphType &in);
 
-  template <typename T>
+  template< class T >
   void ensureOrder(T& first, T& second)
     {
     if( first > second )

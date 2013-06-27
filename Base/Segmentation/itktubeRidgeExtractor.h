@@ -53,7 +53,7 @@ namespace tube
  * \sa RidgeExtractor
  */
 
-template <class TInputImage>
+template< class TInputImage >
 class RidgeExtractor : public Object
 {
 public:
@@ -298,13 +298,13 @@ public:
 
   /**
    * Delete a tube */
-  template <class TDrawMask>
+  template< class TDrawMask >
   bool DeleteTube( TubeType * tube, TDrawMask * drawMask );
   bool DeleteTube( TubeType * tube );
 
   /**
    * Add a tube */
-  template <class TDrawMask>
+  template< class TDrawMask >
   bool AddTube( TubeType * tube, TDrawMask * drawMask );
   bool AddTube( TubeType * tube );
 

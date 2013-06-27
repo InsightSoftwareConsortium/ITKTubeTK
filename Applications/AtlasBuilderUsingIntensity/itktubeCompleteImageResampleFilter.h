@@ -48,12 +48,10 @@ namespace tube
  * ALSO :: Expects transforms in the identical manner as ResampleImageFilter
  *  (ie. Fixed->Moving )
  */
-template < class TInputImage,
-           class TOutputImage,
-           class TNonSingularTransform,
-           class TInterpolatorPrecisionType=double >
-class CompleteImageResampleFilter :
-    public ImageToImageFilter< TInputImage, TOutputImage >
+template< class TInputImage, class TOutputImage, class TNonSingularTransform,
+          class TInterpolatorPrecisionType = double >
+class CompleteImageResampleFilter
+  : public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
 

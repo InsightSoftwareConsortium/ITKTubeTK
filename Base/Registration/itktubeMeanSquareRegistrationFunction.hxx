@@ -37,7 +37,7 @@ namespace tube
 /**
  * Default constructor
  */
-template <class TFixedImage, class TMovingImage, class TDeformationField>
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
 ::MeanSquareRegistrationFunction( void )
 {
@@ -73,7 +73,7 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
 /*
  * Standard "PrintSelf" method.
  */
-template <class TFixedImage, class TMovingImage, class TDeformationField>
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
 ::PrintSelf(std::ostream& os, Indent indent) const
@@ -95,7 +95,7 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
 /*
  * Set the function state values before each iteration
  */
-template <class TFixedImage, class TMovingImage, class TDeformationField>
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
 ::InitializeIteration( void )
@@ -121,7 +121,7 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
 /**
  * Compute update at a non boundary neighbourhood
  */
-template <class TFixedImage, class TMovingImage, class TDeformationField>
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 typename MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
 ::PixelType
 MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
@@ -180,7 +180,7 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
  * Compute intensity difference between fixed and moving images at a
  * non boundary neighbourhood
  */
-template <class TFixedImage, class TMovingImage, class TDeformationField>
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 double
 MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
 ::ComputeIntensityDifference(const IndexType & index,

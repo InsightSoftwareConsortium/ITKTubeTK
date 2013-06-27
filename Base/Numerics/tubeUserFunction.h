@@ -36,7 +36,7 @@ namespace tube
  * \author Stephen R. Aylward
  * \date 11/22/99
  */
-template <class InVarT, class OutVarT>
+template< class InVarT, class OutVarT >
 class UserFunction
 {
 public:
@@ -47,7 +47,7 @@ public:
 
 }; // End class UserFunction
 
-template <class InVarT, class OutVarT>
+template< class InVarT, class OutVarT >
 inline UserFunction< InVarT, OutVarT >::~UserFunction( void )
 {
 }

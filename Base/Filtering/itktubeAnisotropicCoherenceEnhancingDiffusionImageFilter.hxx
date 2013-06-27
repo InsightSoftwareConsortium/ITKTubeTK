@@ -45,7 +45,7 @@ namespace tube
 /**
  * Constructor
  */
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
 ::AnisotropicCoherenceEnhancingDiffusionImageFilter( void )
 {
@@ -55,7 +55,7 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
   m_SigmaOuter = 1.0;
 }
 
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
 ::UpdateDiffusionTensorImage( void )
@@ -290,7 +290,7 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
     }
 }
 
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const

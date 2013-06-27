@@ -41,7 +41,7 @@ limitations under the License.
 #include <vtkVersion.h>
 
 // Template function to fill in an image with a sphere.
-template <class TImage>
+template< class TImage >
 void
 FillWithSphere(
 TImage * image,
@@ -71,7 +71,7 @@ typename TImage::PixelType backgnd )
 }
 
 // Template function to fill in an image with two boxes
-template <class TImage>
+template< class TImage >
 void
 FillWithBox(
 TImage * image,
@@ -142,7 +142,7 @@ typename TImage::PixelType topEnd )
 }
 
 // Determines whether a point is in a tube
-template<class TIndex>
+template< class TIndex >
 bool PointInTube( TIndex index, double * tubeLeftPoint, double radius)
 {
   TIndex centerPoint;
@@ -160,7 +160,7 @@ bool PointInTube( TIndex index, double * tubeLeftPoint, double radius)
 }
 
 // Template function to fill in an image with two tubes
-template <class TImage>
+template< class TImage >
 void
 FillWithTubes(
 TImage * image,
@@ -275,7 +275,7 @@ vtkPolyData* CreateCubePolydata( double * bottomBox, double * topBox,
 
 
 // Intensity windowing from 0..255 to 0..1
-template <class TImage>
+template< class TImage >
 void IntensityWindow(
 TImage * image )
 {

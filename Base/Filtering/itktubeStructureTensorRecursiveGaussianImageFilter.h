@@ -44,12 +44,10 @@ namespace tube
  * \ingroup GradientFilters
  * \ingroup Singlethreaded
  */
-template <typename TInputImage,
-          typename TOutputImage = Image< SymmetricSecondRankTensor<
-  typename NumericTraits< typename TInputImage::PixelType >
-  ::RealType,
-  TInputImage::ImageDimension >,
-  TInputImage::ImageDimension > >
+template< class TInputImage,
+          class TOutputImage = Image< SymmetricSecondRankTensor<
+            typename NumericTraits< typename TInputImage::PixelType >::RealType,
+            TInputImage::ImageDimension >, TInputImage::ImageDimension > >
 class StructureTensorRecursiveGaussianImageFilter :
     public ImageToImageFilter<TInputImage,TOutputImage>
 {

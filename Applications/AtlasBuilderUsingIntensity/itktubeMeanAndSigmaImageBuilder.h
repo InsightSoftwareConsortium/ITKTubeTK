@@ -49,9 +49,8 @@ namespace tube
  *  NOTE: This is not done for origin or spacing, because those factors
  *  could require interpolation, which would change the maintain base results.
  */
-template< class TInputImageType,
-        class TOutputMeanImageType,
-        class TOutputSigmaImageType>
+template< class TInputImageType, class TOutputMeanImageType,
+          class TOutputSigmaImageType >
 class MeanAndSigmaImageBuilder : public Object
 {
 public:

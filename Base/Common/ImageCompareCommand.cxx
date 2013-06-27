@@ -51,7 +51,7 @@ void GetImageInformation( std::string fileName,
   dimension = imageIO->GetNumberOfDimensions();
 }
 
-template< unsigned int DimsT >
+template< unsigned int TDimension >
 int RegressionTestImage( const char *, const char *, bool, bool, double,
   int, int, bool, const char * );
 
@@ -308,7 +308,7 @@ int main( int argc, char * argv[] )
 }
 
 // Regression Testing Code
-template< unsigned int DimsT >
+template< unsigned int TDimension >
 int RegressionTestImage( const char *testImageFilename,
   const char *baselineImageFilename, bool reportErrors,
   bool createDifferenceImage, double intensityTolerance,
@@ -317,8 +317,8 @@ int RegressionTestImage( const char *testImageFilename,
 {
   // Use the factory mechanism to read the test and baseline files and
   //  convert them to double
-  typedef itk::Image< double, DimsT >         ImageType;
-  typedef itk::Image< unsigned char, DimsT >  OutputType;
+  typedef itk::Image< double, TDimension >         ImageType;
+  typedef itk::Image< unsigned char, TDimension >  OutputType;
   typedef itk::Image< unsigned char, 2 >      DiffOutputType;
   typedef itk::ImageFileReader< ImageType >   ReaderType;
 
@@ -409,7 +409,7 @@ int RegressionTestImage( const char *testImageFilename,
       ExtractType;
     typedef itk::ImageFileWriter< DiffOutputType >
       WriterType;
-    typedef itk::ImageRegion< DimsT >
+    typedef itk::ImageRegion< TDimension >
       RegionType;
 
     typename OutputType::IndexType index;
@@ -430,7 +430,7 @@ int RegressionTestImage( const char *testImageFilename,
     region.SetIndex( index );
 
     size = rescale->GetOutput()->GetLargestPossibleRegion().GetSize();
-    for( unsigned int i = 2; i < DimsT; i++ )
+    for( unsigned int i = 2; i < TDimension; i++ )
       {
       size[i] = 0;
       }

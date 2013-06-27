@@ -41,7 +41,7 @@ int DoIt( int argc, char * argv[] );
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template < class imageT >
+template< class imageT >
 void WriteRidgeSeed( const typename imageT::Pointer & img,
   std::string base, std::string ext, int num )
 {

@@ -49,7 +49,7 @@ namespace tube
  * \ingroup FiniteDifferenceFunctions
  * \ingroup Functions
  */
-template <class TImageType>
+template< class TImageType >
 class AnisotropicDiffusionTensorFunction
   : public FiniteDifferenceFunction<TImageType>
 {

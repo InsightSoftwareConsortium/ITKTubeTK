@@ -50,7 +50,7 @@ namespace tube
  *  The resulting tube could be cropped and/or a narrow band could be
  *  defined.
  */
-template <class TTransformType, unsigned int TDimension>
+template< class TTransformType, unsigned int TDimension >
 class TubeToTubeTransformFilter
 : public SpatialObjectToSpatialObjectFilter<
   GroupSpatialObject<TDimension>, GroupSpatialObject<TDimension> >

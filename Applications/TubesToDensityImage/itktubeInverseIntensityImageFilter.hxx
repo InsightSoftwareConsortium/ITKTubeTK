@@ -36,7 +36,7 @@ namespace tube
 {
 
 
-template <class TInputImage>
+template< class TInputImage >
 InverseIntensityImageFilter<TInputImage>
 ::InverseIntensityImageFilter( void )
 {
@@ -44,7 +44,7 @@ InverseIntensityImageFilter<TInputImage>
 }
 
 /** Generate Data */
-template <class TInputImage>
+template< class TInputImage >
 void
 InverseIntensityImageFilter<TInputImage>
 ::GenerateData( void )

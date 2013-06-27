@@ -49,7 +49,7 @@ namespace tube
 /**
  * Constructor
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 AnisotropicDiffusiveSparseRegistrationFilter
 < TFixedImage, TMovingImage, TDeformationField >
 ::AnisotropicDiffusiveSparseRegistrationFilter( void )
@@ -73,7 +73,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 /**
  * PrintSelf
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -132,7 +132,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 /**
  * Setup the pointers for the deformation component images
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -192,7 +192,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
  * All other initialization done before the initialize / calculate change /
  * apply update loop
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -344,7 +344,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 /**
  * Compute the normals for the border surface
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -377,7 +377,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 /**
  * Compute the normals for tubes
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -482,7 +482,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 /**
  * Computes the normal vectors and distances to the closest point
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -564,7 +564,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 /**
  * Calls ThreadedGetNormalsAndDistancesFromClosestSurfacePoint for processing
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 ITK_THREAD_RETURN_TYPE
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -635,7 +635,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
  * closest point given an initialized vtkPointLocator and the surface border
  * normals
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -800,7 +800,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
  * Computes the distance from the point to the planePoint in the plane defined
  * by two tangent vectors.
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 double
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -844,7 +844,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 /**
  * Updates the border normals and the weighting factor w
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -937,7 +937,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
  * regularizations, based on a given distance from a voxel to the border, using
  * exponential decay.
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 typename AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::WeightComponentType
@@ -953,7 +953,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
  * regularizations, based on a given distance from a voxel to the border, using
  * a dirac-shaped function
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 typename AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::WeightComponentType
@@ -968,7 +968,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 /**
  * Updates the diffusion tensor image before each run of the registration
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -1094,7 +1094,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 /** Computes the multiplication vectors that the div(Tensor /grad u) values
  *  are multiplied by.
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -1173,7 +1173,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 /**
  * Updates the deformation vector component images before each iteration
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -1263,7 +1263,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
  * Calculates the derivatives of the deformation vector derivatives after
  * each iteration.
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -1323,7 +1323,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 /**
  * Get the normal matrix image as a vector image.
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >

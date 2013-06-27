@@ -37,7 +37,7 @@ limitations under the License.
 template< unsigned int TDimension >
 int DoIt( int argc, char * argv[] );
 
-template <class TPixel, unsigned int TDimension>
+template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] )
 {
   (void)argc;
@@ -79,7 +79,7 @@ int main( int argc, char * argv[] )
 }
 
 
-template <unsigned int TDimension >
+template< unsigned int TDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;

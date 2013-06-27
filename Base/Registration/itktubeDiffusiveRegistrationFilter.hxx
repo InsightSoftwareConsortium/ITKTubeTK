@@ -37,7 +37,7 @@ namespace tube
 /**
  * Constructor
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 DiffusiveRegistrationFilter
 < TFixedImage, TMovingImage, TDeformationField >
 ::DiffusiveRegistrationFilter( void )
@@ -76,7 +76,7 @@ DiffusiveRegistrationFilter
 /**
  * PrintSelf
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -154,7 +154,7 @@ DiffusiveRegistrationFilter
 /**
  * Create the registration function
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -171,7 +171,7 @@ DiffusiveRegistrationFilter
 /**
  * Get the registration function pointer
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 typename DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::RegistrationFunctionType *
@@ -187,7 +187,7 @@ DiffusiveRegistrationFilter
 /**
  * Allocate space for the update buffer
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -204,7 +204,7 @@ DiffusiveRegistrationFilter
  * All other initialization done before the initialize iteration / calculate
  * change / apply update loop
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -322,7 +322,7 @@ DiffusiveRegistrationFilter
  * Allocate the images we will use to store data computed during the
  * registration
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -422,7 +422,7 @@ DiffusiveRegistrationFilter
 /**
  * Initialize the deformation component images and their derivatives
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -458,7 +458,7 @@ DiffusiveRegistrationFilter
 /**
  * Updates the diffusion tensor image before each run of the registration
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -478,7 +478,7 @@ DiffusiveRegistrationFilter
  * Updates the diffusion tensor image derivatives before each run of the
  * registration
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -503,7 +503,7 @@ DiffusiveRegistrationFilter
 /**
  * Actually computes the diffusion tensor derivative images
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -562,7 +562,7 @@ DiffusiveRegistrationFilter
 /**
  * Updates the deformation vector component images before each iteration
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -575,7 +575,7 @@ DiffusiveRegistrationFilter
  * Calculates the derivatives of the deformation vector derivatives after
  * each iteration.
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -610,7 +610,7 @@ DiffusiveRegistrationFilter
 /**
  * Actually computes the deformation component image derivatives.
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -651,7 +651,7 @@ DiffusiveRegistrationFilter
 /**
  * Calls ThreadedComputeDeformationComponentDerivativeImageHelper for processing
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 ITK_THREAD_RETURN_TYPE
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -699,7 +699,7 @@ DiffusiveRegistrationFilter
 /**
  * Does the actual work of computing the deformation component image derivatives
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -780,7 +780,7 @@ DiffusiveRegistrationFilter
 /**
  * Initialize the state of the filter and equation before each iteration.
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -808,7 +808,7 @@ DiffusiveRegistrationFilter
 /**
  * Populates the update buffer
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 typename DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::TimeStepType
@@ -834,7 +834,7 @@ DiffusiveRegistrationFilter
 /**
  * Inherited from superclass - do not call
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 typename DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::TimeStepType
@@ -852,7 +852,7 @@ DiffusiveRegistrationFilter
 /**
  * Populates the update buffer with the gradient part of the line search
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 typename DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::TimeStepType
@@ -929,7 +929,7 @@ DiffusiveRegistrationFilter
 /**
  * Calls ThreadedCalculateChangeGradient for processing
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 ITK_THREAD_RETURN_TYPE
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -985,7 +985,7 @@ DiffusiveRegistrationFilter
  * Does the actual work of calculating the gradient
  * over a region supplied by the multithreading mechanism
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 typename DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::TimeStepType
@@ -1250,7 +1250,7 @@ DiffusiveRegistrationFilter
  * Computes the intensity distance and regularization energies under the current
  * update buffer.
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -1299,7 +1299,7 @@ DiffusiveRegistrationFilter
 /**
  * Calls ThreadedCalculateEnergies for processing
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 ITK_THREAD_RETURN_TYPE
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -1350,7 +1350,7 @@ DiffusiveRegistrationFilter
  * Does the actual work of calculating the energies
  * over an output region supplied by the multithreading mechanism.
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
 < TFixedImage, TMovingImage, TDeformationField >
@@ -1525,7 +1525,7 @@ DiffusiveRegistrationFilter
 /**
  * Computes the update statistics for this iteration
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -1584,7 +1584,7 @@ DiffusiveRegistrationFilter
  * Applies changes from the update buffer to the output.  This will only get
  * called by the superclass, so we know that it is the final apply update.
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -1611,7 +1611,7 @@ DiffusiveRegistrationFilter
 /**
  * Applies changes from the update buffer to the output
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -1639,7 +1639,7 @@ DiffusiveRegistrationFilter
  * Calls ThreadedApplyUpdate, need to reimplement here to also split the
  * diffusion tensor image
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 ITK_THREAD_RETURN_TYPE
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -1674,7 +1674,7 @@ DiffusiveRegistrationFilter
 /**
  * Inherited from superclass - do not call
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
 < TFixedImage, TMovingImage, TDeformationField >
@@ -1692,7 +1692,7 @@ DiffusiveRegistrationFilter
  * Does the actual work of updating the output from the UpdateContainer
  * over an output region supplied by the multithreading mechanism.
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
 < TFixedImage, TMovingImage, TDeformationField >
@@ -1719,7 +1719,7 @@ DiffusiveRegistrationFilter
  * Does the actual work of updating the output from the UpdateContainer
  * over an output region supplied by the multithreading mechanism.
  */
-template < class TFixedImage, class TMovingImage, class TDeformationField >
+template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >

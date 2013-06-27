@@ -35,10 +35,8 @@ namespace tube
 /**
  * Initialize new instance
  */
-template < class TInputImage,
-           class TOutputImage,
-           class TNonSingularTransform,
-           class TInterpolatorPrecisionType >
+template< class TInputImage, class TOutputImage, class TNonSingularTransform,
+          class TInterpolatorPrecisionType >
 CompleteImageResampleFilter< TInputImage,
                              TOutputImage,
                              TNonSingularTransform,
@@ -57,10 +55,8 @@ CompleteImageResampleFilter< TInputImage,
  *
  * \todo Add details about this class
  */
-template < class TInputImage,
-           class TOutputImage,
-           class TNonSingularTransform,
-           class TInterpolatorPrecisionType >
+template< class TInputImage, class TOutputImage, class TNonSingularTransform,
+          class TInterpolatorPrecisionType >
 void
 CompleteImageResampleFilter< TInputImage,
                              TOutputImage,
@@ -83,10 +79,8 @@ CompleteImageResampleFilter< TInputImage,
 /**
  * Set the output image spacing.
  */
-template < class TInputImage,
-           class TOutputImage,
-           class TNonSingularTransform,
-           class TInterpolatorPrecisionType >
+template< class TInputImage, class TOutputImage, class TNonSingularTransform,
+          class TInterpolatorPrecisionType >
 void
 CompleteImageResampleFilter< TInputImage,
                              TOutputImage,
@@ -99,10 +93,8 @@ CompleteImageResampleFilter< TInputImage,
   this->SetOutputSpacing( s );
 }
 
-template < class TInputImage,
-           class TOutputImage,
-           class TNonSingularTransform,
-           class TInterpolatorPrecisionType >
+template< class TInputImage, class TOutputImage, class TNonSingularTransform,
+          class TInterpolatorPrecisionType >
 void
 CompleteImageResampleFilter< TInputImage,
                              TOutputImage,
@@ -159,14 +151,10 @@ CompleteImageResampleFilter< TInputImage,
  *
  * Expects the transform maps Moving->Fixed
  */
-template < class TInputImage,
-           class TOutputImage,
-           class TNonSingularTransform,
-           class TInterpolatorPrecisionType >
+template< class TInputImage, class TOutputImage, class TNonSingularTransform,
+          class TInterpolatorPrecisionType >
 void
-CompleteImageResampleFilter< TInputImage,
-                             TOutputImage,
-                             TNonSingularTransform,
+CompleteImageResampleFilter< TInputImage, TOutputImage, TNonSingularTransform,
                              TInterpolatorPrecisionType >
 ::FindOutput3DParameters( InputImageConstPointer image,
                           TransformPointerType transform,

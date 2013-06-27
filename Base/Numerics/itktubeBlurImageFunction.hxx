@@ -41,7 +41,7 @@ namespace tube
 
 /**
  * Set the input Image */
-template <class TInputImage>
+template< class TInputImage >
 BlurImageFunction<TInputImage>
 ::BlurImageFunction( void )
 {
@@ -67,7 +67,7 @@ BlurImageFunction<TInputImage>
 
 /**
  * Set the input Image */
-template <class TInputImage>
+template< class TInputImage >
 void
 BlurImageFunction<TInputImage>
 ::SetInputImage( const InputImageType * ptr )
@@ -100,7 +100,7 @@ BlurImageFunction<TInputImage>
 
 /**
  * Print */
-template<class TInputImage>
+template< class TInputImage >
 void
 BlurImageFunction<TInputImage>
 ::SetUseRelativeSpacing( bool useRelativeSpacing )
@@ -125,7 +125,7 @@ BlurImageFunction<TInputImage>
 
 /**
  * Print */
-template<class TInputImage>
+template< class TInputImage >
 void
 BlurImageFunction<TInputImage>
 ::PrintSelf( std::ostream& os, Indent indent ) const
@@ -156,7 +156,7 @@ BlurImageFunction<TInputImage>
 /**
  * SetScale
  * Pre-compute kernel weights */
-template<class TInputImage>
+template< class TInputImage >
 void
 BlurImageFunction<TInputImage>
 ::RecomputeKernel( void )
@@ -235,7 +235,7 @@ BlurImageFunction<TInputImage>
 /**
  * SetScale
  * Pre-compute kernel weights */
-template<class TInputImage>
+template< class TInputImage >
 void
 BlurImageFunction<TInputImage>
 ::SetScale( double scale )
@@ -250,7 +250,7 @@ BlurImageFunction<TInputImage>
 /**
  * SetExtent
  * Pre-compute kernel weights */
-template<class TInputImage>
+template< class TInputImage >
 void
 BlurImageFunction<TInputImage>
 ::SetExtent( double extent )
@@ -264,7 +264,7 @@ BlurImageFunction<TInputImage>
 
 /**
  * Evaluate the fonction at the specified point */
-template <class TInputImage>
+template< class TInputImage >
 double
 BlurImageFunction<TInputImage>
 ::Evaluate( const PointType& point ) const
@@ -294,7 +294,7 @@ BlurImageFunction<TInputImage>
   return this->EvaluateAtContinuousIndex( index );
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 BlurImageFunction<TInputImage>
 ::EvaluateAtIndex( const IndexType & point ) const
@@ -403,7 +403,7 @@ BlurImageFunction<TInputImage>
   return res/wTotal;
 }
 
-template <class TInputImage>
+template< class TInputImage >
 double
 BlurImageFunction<TInputImage>
 ::EvaluateAtContinuousIndex( const ContinuousIndexType & point ) const

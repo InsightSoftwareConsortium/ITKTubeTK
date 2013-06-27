@@ -47,7 +47,7 @@ namespace tube
 /**
  * Constructor
  */
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::AnisotropicDiffusionTensorImageFilter( void )
 {
@@ -65,7 +65,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 /** Prepare for the iteration process - called at the beginning of each
  * iteration.
  */
- template <class TInputImage, class TOutputImage>
+ template< class TInputImage, class TOutputImage >
  void
  AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
  ::InitializeIteration( void )
@@ -105,7 +105,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   this->UpdateDiffusionTensorImage();
 }
 
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::CopyInputToOutput( void )
@@ -141,7 +141,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
     }
 }
 
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::AllocateUpdateBuffer( void )
@@ -162,7 +162,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   m_UpdateBuffer->Allocate();
 }
 
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::AllocateDiffusionTensorImage( void )
@@ -183,7 +183,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   m_DiffusionTensorImage->Allocate();
 }
 
-template<class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::ApplyUpdate(const TimeStepType & dt)
@@ -208,7 +208,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 #endif
 }
 
-template<class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 ITK_THREAD_RETURN_TYPE
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::ApplyUpdateThreaderCallback( void * arg )
@@ -242,7 +242,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   return ITK_THREAD_RETURN_VALUE;
 }
 
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 typename
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>::TimeStepType
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
@@ -278,7 +278,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   return  dt;
 }
 
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 ITK_THREAD_RETURN_TYPE
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::CalculateChangeThreaderCallback( void * arg )
@@ -316,7 +316,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   return ITK_THREAD_RETURN_VALUE;
 }
 
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::ThreadedApplyUpdate(TimeStepType dt, const ThreadRegionType &regionToProcess,
@@ -339,7 +339,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
     }
 }
 
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 typename
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>::TimeStepType
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
@@ -456,7 +456,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   return timeStep;
 }
 
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::GenerateData( void )
@@ -511,7 +511,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
     }
 }
 
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 typename AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::DiffusionTensorImagePointerType
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
@@ -520,7 +520,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   return m_DiffusionTensorImage;
 }
 
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::PrintSelf(std::ostream& os, Indent indent) const

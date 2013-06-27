@@ -36,7 +36,7 @@ namespace tube
 {
 
 /** Constructor */
-template < class TInputImage, class TOutputImage >
+template< class TInputImage, class TOutputImage >
 CVTImageFilter< TInputImage, TOutputImage >
 ::CVTImageFilter( void )
 {
@@ -64,7 +64,7 @@ CVTImageFilter< TInputImage, TOutputImage >
 
 
 /** SetCentroids */
-template < class TInputImage, class TOutputImage >
+template< class TInputImage, class TOutputImage >
 void
 CVTImageFilter< TInputImage, TOutputImage >
 ::SetCentroids(const PointArrayType * centroids)
@@ -80,7 +80,7 @@ CVTImageFilter< TInputImage, TOutputImage >
 
 
 /** GenerateInputRequestedRegion */
-template < class TInputImage, class TOutputImage >
+template< class TInputImage, class TOutputImage >
 void
 CVTImageFilter< TInputImage, TOutputImage >
 ::GenerateInputRequestedRegion( void )
@@ -96,7 +96,7 @@ CVTImageFilter< TInputImage, TOutputImage >
 
 
 /** EnlargeOutputRequestedRegion */
-template < class TInputImage, class TOutputImage >
+template< class TInputImage, class TOutputImage >
 void
 CVTImageFilter< TInputImage, TOutputImage >
 ::EnlargeOutputRequestedRegion(DataObject * output)
@@ -106,7 +106,7 @@ CVTImageFilter< TInputImage, TOutputImage >
 }
 
 /** GenerateData */
-template < class TInputImage, class TOutputImage >
+template< class TInputImage, class TOutputImage >
 void
 CVTImageFilter< TInputImage, TOutputImage >
 ::GenerateData( void )
@@ -248,7 +248,7 @@ CVTImageFilter< TInputImage, TOutputImage >
 
 
 /** ComputeIteration */
-template < class TInputImage, class TOutputImage >
+template< class TInputImage, class TOutputImage >
 double
 CVTImageFilter< TInputImage, TOutputImage >
 ::ComputeIteration( double & energyDiff)
@@ -355,7 +355,7 @@ CVTImageFilter< TInputImage, TOutputImage >
 
 
 /** ComputeSample */
-template < class TInputImage, class TOutputImage >
+template< class TInputImage, class TOutputImage >
 void
 CVTImageFilter< TInputImage, TOutputImage >
 ::ComputeSample( PointArrayType * sample, unsigned int sampleSize,
@@ -464,7 +464,7 @@ CVTImageFilter< TInputImage, TOutputImage >
 
 
 /** ComputeClosest */
-template < class TInputImage, class TOutputImage >
+template< class TInputImage, class TOutputImage >
 void
 CVTImageFilter< TInputImage, TOutputImage >
 ::ComputeClosest( const PointArrayType & sample,
@@ -513,7 +513,7 @@ CVTImageFilter< TInputImage, TOutputImage >
 }
 
 /** PrintSelf */
-template < class TInputImage, class TOutputImage >
+template< class TInputImage, class TOutputImage >
 void
 CVTImageFilter< TInputImage, TOutputImage >
 ::PrintSelf(std::ostream & os, Indent indent) const

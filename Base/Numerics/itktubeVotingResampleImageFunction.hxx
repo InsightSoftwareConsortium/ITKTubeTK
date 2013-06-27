@@ -42,7 +42,7 @@ namespace tube
 /**
  * Define the number of neighbors
  */
-template<class TInputImage, class TCoordRep>
+template< class TInputImage, class TCoordRep >
 const unsigned long
 VotingResampleImageFunction< TInputImage, TCoordRep >
 ::m_Neighbors = 1 << TInputImage::ImageDimension;
@@ -51,7 +51,7 @@ VotingResampleImageFunction< TInputImage, TCoordRep >
 /**
  * Constructor
  */
-template<class TInputImage, class TCoordRep>
+template< class TInputImage, class TCoordRep >
 VotingResampleImageFunction< TInputImage, TCoordRep >
 ::VotingResampleImageFunction( void )
 {
@@ -62,7 +62,7 @@ VotingResampleImageFunction< TInputImage, TCoordRep >
 /**
  * PrintSelf
  */
-template<class TInputImage, class TCoordRep>
+template< class TInputImage, class TCoordRep >
 void
 VotingResampleImageFunction< TInputImage, TCoordRep >
 ::PrintSelf(std::ostream& os, Indent indent) const
@@ -74,7 +74,7 @@ VotingResampleImageFunction< TInputImage, TCoordRep >
 /**
  * Evaluate at image index position
  */
-template<class TInputImage, class TCoordRep>
+template< class TInputImage, class TCoordRep >
 typename VotingResampleImageFunction< TInputImage, TCoordRep >
 ::OutputType
 VotingResampleImageFunction< TInputImage, TCoordRep >

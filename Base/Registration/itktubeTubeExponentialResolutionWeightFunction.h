@@ -47,7 +47,7 @@ namespace Function
  * \sa TubeExponentialResolutionWeightFunction
  * \sa TubeExponentialWithBoundsResolutionWeightFunction
  */
-template< class TTubePoint, class TOperatorValue=double >
+template< class TTubePoint, class TOperatorValue = double >
 class TubeExponentialResolutionWeightFunction
 {
 public:

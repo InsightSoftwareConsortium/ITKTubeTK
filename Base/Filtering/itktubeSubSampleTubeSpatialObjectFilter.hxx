@@ -26,7 +26,7 @@ namespace itk
 namespace tube
 {
 
-template< typename TTubeSpatialObject >
+template< class TTubeSpatialObject >
 SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
 ::SubSampleTubeSpatialObjectFilter( void )
   : m_Sampling(1)
@@ -34,7 +34,7 @@ SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
 }
 
 
-template< typename TTubeSpatialObject >
+template< class TTubeSpatialObject >
 void
 SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
 ::GenerateData( void )

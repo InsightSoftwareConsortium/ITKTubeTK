@@ -61,7 +61,7 @@ FeatureVectorGenerator< ImageT >
 {
 }
 
-template < class ImageT >
+template< class ImageT >
 void
 FeatureVectorGenerator< ImageT >
 ::SetInputImage( typename ImageType::Pointer img )
@@ -72,7 +72,7 @@ FeatureVectorGenerator< ImageT >
   m_InputImageList.push_back( img );
 }
 
-template < class ImageT >
+template< class ImageT >
 void
 FeatureVectorGenerator< ImageT >
 ::AddInputImage( typename ImageType::Pointer img )
@@ -80,7 +80,7 @@ FeatureVectorGenerator< ImageT >
   m_InputImageList.push_back( img );
 }
 
-template < class ImageT >
+template< class ImageT >
 typename ImageT::Pointer
 FeatureVectorGenerator< ImageT >
 ::GetInputImage( unsigned int num ) const
@@ -93,7 +93,7 @@ FeatureVectorGenerator< ImageT >
   return NULL;
 }
 
-template < class ImageT >
+template< class ImageT >
 unsigned int
 FeatureVectorGenerator< ImageT >
 ::GetNumberOfInputImages( void ) const
@@ -101,7 +101,7 @@ FeatureVectorGenerator< ImageT >
   return m_InputImageList.size();
 }
 
-template < class ImageT >
+template< class ImageT >
 void
 FeatureVectorGenerator< ImageT >
 ::UpdateWhitenFeatureImageStats( void )
@@ -171,7 +171,7 @@ FeatureVectorGenerator< ImageT >
 }
 
 
-template < class ImageT >
+template< class ImageT >
 void
 FeatureVectorGenerator< ImageT >
 ::SetWhitenMeans( const ValueListType & means )
@@ -179,7 +179,7 @@ FeatureVectorGenerator< ImageT >
   m_WhitenFeatureImageMean = means;
 }
 
-template < class ImageT >
+template< class ImageT >
 const typename FeatureVectorGenerator< ImageT >::ValueListType &
 FeatureVectorGenerator< ImageT >
 ::GetWhitenMeans( void ) const
@@ -187,7 +187,7 @@ FeatureVectorGenerator< ImageT >
   return m_WhitenFeatureImageMean;
 }
 
-template < class ImageT >
+template< class ImageT >
 void
 FeatureVectorGenerator< ImageT >
 ::SetWhitenStdDevs( const ValueListType & stdDevs )
@@ -195,7 +195,7 @@ FeatureVectorGenerator< ImageT >
   m_WhitenFeatureImageStdDev = stdDevs;
 }
 
-template < class ImageT >
+template< class ImageT >
 const typename FeatureVectorGenerator< ImageT >::ValueListType &
 FeatureVectorGenerator< ImageT >
 ::GetWhitenStdDevs( void ) const
@@ -203,7 +203,7 @@ FeatureVectorGenerator< ImageT >
   return m_WhitenFeatureImageStdDev;
 }
 
-template < class ImageT >
+template< class ImageT >
 void
 FeatureVectorGenerator< ImageT >
 ::SetWhitenFeatureImageMean( unsigned int num, double mean )
@@ -214,7 +214,7 @@ FeatureVectorGenerator< ImageT >
     }
 }
 
-template < class ImageT >
+template< class ImageT >
 double
 FeatureVectorGenerator< ImageT >
 ::GetWhitenFeatureImageMean( unsigned int num ) const
@@ -229,7 +229,7 @@ FeatureVectorGenerator< ImageT >
     }
 }
 
-template < class ImageT >
+template< class ImageT >
 void
 FeatureVectorGenerator< ImageT >
 ::SetWhitenFeatureImageStdDev( unsigned int num, double stdDev )
@@ -240,7 +240,7 @@ FeatureVectorGenerator< ImageT >
     }
 }
 
-template < class ImageT >
+template< class ImageT >
 double
 FeatureVectorGenerator< ImageT >
 ::GetWhitenFeatureImageStdDev( unsigned int num ) const
@@ -253,7 +253,7 @@ FeatureVectorGenerator< ImageT >
   return 1;
 }
 
-template < class ImageT >
+template< class ImageT >
 unsigned int
 FeatureVectorGenerator< ImageT >
 ::GetNumberOfFeatures( void ) const
@@ -261,7 +261,7 @@ FeatureVectorGenerator< ImageT >
   return m_InputImageList.size();
 }
 
-template < class ImageT >
+template< class ImageT >
 typename FeatureVectorGenerator< ImageT >::FeatureVectorType
 FeatureVectorGenerator< ImageT >
 ::GetFeatureVector( const IndexType & indx ) const
@@ -279,7 +279,7 @@ FeatureVectorGenerator< ImageT >
   return featureVector;
 }
 
-template < class ImageT >
+template< class ImageT >
 typename FeatureVectorGenerator< ImageT >::FeatureValueType
 FeatureVectorGenerator< ImageT >
 ::GetFeatureVectorValue( const IndexType & indx, unsigned int fNum ) const
@@ -299,7 +299,7 @@ FeatureVectorGenerator< ImageT >
     }
 }
 
-template < class ImageT >
+template< class ImageT >
 typename FeatureVectorGenerator< ImageT >::FeatureImageType::Pointer
 FeatureVectorGenerator< ImageT >
 ::GetFeatureImage( unsigned int featureNum ) const
@@ -350,7 +350,7 @@ FeatureVectorGenerator< ImageT >
 }
 
 
-template <class ImageT >
+template< class ImageT >
 void
 FeatureVectorGenerator< ImageT >
 ::PrintSelf( std::ostream & os, Indent indent ) const

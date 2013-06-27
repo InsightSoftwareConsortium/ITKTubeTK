@@ -37,7 +37,7 @@ namespace tube
 /**
  * Compute the orthogonal vector of one vector
  * Do not check for wrong dimension             */
-template <class T>
+template< class T >
 vnl_vector<T>
 ComputeOrthogonalVector(vnl_vector<T>  v)
 {
@@ -72,7 +72,7 @@ ComputeOrthogonalVector(vnl_vector<T>  v)
  * Compute the cross vector in 3D resulting from two vectors
  * Do not check for wrong dimension
  * could use vnl_cross3D instead        */
-template <class T>
+template< class T >
 vnl_vector<T>
 ComputeCrossVector(vnl_vector<T> v1, vnl_vector<T> v2)
 {
@@ -87,7 +87,7 @@ ComputeCrossVector(vnl_vector<T> v1, vnl_vector<T> v2)
 
 /**
  *return the new position folowing the vector dir */
-template <class T>
+template< class T >
 vnl_vector<T>
 ComputeLineStep(vnl_vector<T> x, double a, vnl_vector<T> dir)
 {
@@ -104,7 +104,7 @@ ComputeLineStep(vnl_vector<T> x, double a, vnl_vector<T> dir)
 
 /**
  * Compute the Euclidean distance  */
-template <class T>
+template< class T >
 double
 ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y)
 {
@@ -118,7 +118,7 @@ ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y)
 
 /**
  * Compute the Euclidean distance  */
-template <class PointType>
+template< class PointType >
 double
 ComputeEuclideanDistance(PointType x, PointType y)
 {
@@ -132,7 +132,7 @@ ComputeEuclideanDistance(PointType x, PointType y)
 
 /**
  * Compute eigen values and vectors  */
-template <class T>
+template< class T >
 void
 ComputeEigen( vnl_matrix<T> const & mat,
   vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
@@ -221,7 +221,7 @@ ComputeEigen( vnl_matrix<T> const & mat,
 
 /**
  * Preform trilinear diagonalisation in 2D */
-template <class T>
+template< class T >
 void
 ComputeTriDiag2D(vnl_matrix<T> &mat,
   vnl_vector<T> &diag, vnl_vector<T> &subD)
@@ -240,7 +240,7 @@ ComputeTriDiag2D(vnl_matrix<T> &mat,
 
 /**
  * Preform trilinear diagonalisation in 3D */
-template <class T>
+template< class T >
 void
 ComputeTriDiag3D(vnl_matrix<T> &mat,
   vnl_vector<T> &diag, vnl_vector<T> &subD)
@@ -294,7 +294,7 @@ ComputeTriDiag3D(vnl_matrix<T> &mat,
     }
 }
 
-template <class T>
+template< class T >
 void
 ComputeTqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
 {

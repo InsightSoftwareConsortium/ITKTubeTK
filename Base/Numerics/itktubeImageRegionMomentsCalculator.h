@@ -65,7 +65,7 @@ namespace tube
  *
  * \todo It's not yet clear how multi-echo images should be handled here.
  */
-template < class TImage >
+template< class TImage >
 class ImageRegionMomentsCalculator : public Object
 {
 public:

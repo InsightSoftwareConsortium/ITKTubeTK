@@ -51,7 +51,7 @@ namespace tube
  * \sa RidgeExtractor
  */
 
-template <class TInputImage>
+template< class TInputImage >
 class RadiusExtractor : public Object
 {
 public:
