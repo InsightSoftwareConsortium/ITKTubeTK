@@ -44,8 +44,7 @@ namespace tube
 * \date August 29, 1999
 *
 */
-class METAIO_EXPORT MetaTubeParams
-: public MetaForm
+class MetaTubeParams : public MetaForm
 {
 public:
 

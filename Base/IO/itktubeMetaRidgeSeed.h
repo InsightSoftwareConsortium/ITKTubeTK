@@ -45,8 +45,7 @@ namespace tube
 * \date August 29, 1999
 *
 */
-class METAIO_EXPORT MetaRidgeSeed
-: public MetaLDA
+class MetaRidgeSeed : public MetaLDA
 {
 public:
 

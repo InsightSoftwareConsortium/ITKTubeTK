@@ -44,7 +44,7 @@ namespace tube
  *
  * \ingroup  IO
  */
-class METAIO_EXPORT MetaLDA : public MetaForm
+class MetaLDA : public MetaForm
 {
 public:
 
