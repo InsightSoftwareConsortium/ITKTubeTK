@@ -118,7 +118,7 @@ double ShortestPathKernel::Compute( void )
 
     int srcLabel = m_FG0[source(e0, m_FG0)].type; // Type of start vertex
     int dstLabel = m_FG0[target(e0, m_FG0)].type; // Type of end vertex
-    ensureOrder<int>( srcLabel, dstLabel );
+    ensureOrder( srcLabel, dstLabel );
 
     // Iterate over all the edges of Floyd-transformed graph fg1
     EdgeIteratorType bIt, bEnd;
@@ -151,7 +151,7 @@ double ShortestPathKernel::Compute( void )
         case EDGE_KERNEL_DEL:
           int cmpSrcLabel = m_FG1[source(e1, m_FG1)].type;
           int cmpDstLabel = m_FG1[target(e1, m_FG1)].type;
-          ensureOrder<int>( cmpSrcLabel, cmpDstLabel );
+          ensureOrder( cmpSrcLabel, cmpDstLabel );
 
           bool vertexTypeCheck =
             ( srcLabel == cmpSrcLabel ) &&
