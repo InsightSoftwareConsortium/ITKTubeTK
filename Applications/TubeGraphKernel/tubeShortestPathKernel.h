@@ -25,22 +25,13 @@ limitations under the License.
 #define __tubeShortestPathKernel_h
 
 #include "GraphKernel.h"
-#include "tubeMessage.h"
-
-#include <itkTimeProbesCollectorBase.h>
 
 #include <algorithm>
-#include <exception>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <utility>
 
 namespace tube
 {
 
-
-/** \class ShortestPathKernel
+/**
  * \brief Impementation of Borgwardt's Shortest-Path Kernel
  *
  * This class implements the shortest-path kernel, proposed in
@@ -56,12 +47,16 @@ public:
   static const int EDGE_KERNEL_DEL = 0;
 
   /** CTOR - Consumer sets graphs */
-  ShortestPathKernel(const GraphType &G0, const GraphType &G1)
-    : GraphKernel(G0, G1), m_EdgeKernelType(EDGE_KERNEL_DEL) {}
+  ShortestPathKernel( const GraphType & g0, const GraphType & g1 )
+    : GraphKernel( g0, g1 ), m_EdgeKernelType( EDGE_KERNEL_DEL )
+    {
+    }
 
   /** Sets edge-kernel type */
-  void SetEdgeKernel(int edgeKernelType)
-    { m_EdgeKernelType = edgeKernelType; }
+  void SetEdgeKernel( int edgeKernelType )
+    {
+    m_EdgeKernelType = edgeKernelType;
+    }
 
   /** Computes the SP kernel value, see [1], Section 4.2 */
   double Compute( void );
@@ -69,10 +64,9 @@ public:
 private:
 
   /** Computes a Floyd-transformed graph, see [1], Section 4.1 */
-  GraphType FloydTransform(const GraphType &in);
+  GraphType FloydTransform( const GraphType & in );
 
-  template< class T >
-  void ensureOrder(T& first, T& second)
+  void ensureOrder( int & first, int & second )
     {
     if( first > second )
       {
@@ -81,9 +75,9 @@ private:
     }
 
   /** Floyd-transformed graphs */
-  GraphType m_FG0;
-  GraphType m_FG1;
-  int       m_EdgeKernelType;
+  GraphType  m_FG0;
+  GraphType  m_FG1;
+  int        m_EdgeKernelType;
 
 }; // End class ShortestPathKernel
 
