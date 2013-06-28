@@ -91,29 +91,29 @@ public:
   typedef SmartPointer<Self>                              Pointer;
   typedef SmartPointer<const Self>                        ConstPointer;
 
-  itkNewMacro(Self);
-  itkTypeMacro(TubeEnhancingDiffusion2DImageFilter, ImageToImageFilter);
+  itkNewMacro( Self );
+  itkTypeMacro( TubeEnhancingDiffusion2DImageFilter, ImageToImageFilter );
 
-  itkSetMacro(TimeStep, Precision);
-  itkSetMacro(Iterations, unsigned int);
-  itkSetMacro(RecalculateTubeness, unsigned int);
+  itkSetMacro( TimeStep, Precision );
+  itkSetMacro( Iterations, unsigned int );
+  itkSetMacro( RecalculateTubeness, unsigned int );
 
-  itkSetMacro(Beta, Precision);
-  itkSetMacro(Gamma, Precision);
+  itkSetMacro( Beta, Precision );
+  itkSetMacro( Gamma, Precision );
 
-  itkSetMacro(Epsilon, Precision);
-  itkSetMacro(Omega, Precision);
-  itkSetMacro(Sensitivity, Precision);
+  itkSetMacro( Epsilon, Precision );
+  itkSetMacro( Omega, Precision );
+  itkSetMacro( Sensitivity, Precision );
 
   void SetScales(const std::vector<Precision> &scales)
     {
     m_Scales = scales;
     }
 
-  itkBooleanMacro(DarkObjectLightBackground);
-  itkSetMacro(DarkObjectLightBackground,bool);
-  itkBooleanMacro(Verbose);
-  itkSetMacro(Verbose,bool);
+  itkBooleanMacro( DarkObjectLightBackground );
+  itkSetMacro( DarkObjectLightBackground, bool );
+  itkBooleanMacro( Verbose );
+  itkSetMacro( Verbose, bool );
 
   // some defaults for lowdose example
   // used in the paper

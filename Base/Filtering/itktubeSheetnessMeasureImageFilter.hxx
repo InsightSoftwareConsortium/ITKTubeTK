@@ -59,7 +59,7 @@ void
 SheetnessMeasureImageFilter< TPixel >
 ::GenerateData( void )
 {
-  itkDebugMacro(<< "SheetnessMeasureImageFilter generating data ");
+  itkDebugMacro( << "SheetnessMeasureImageFilter generating data ." );
 
   m_SymmetricEigenValueFilter->SetInput( this->GetInput() );
 

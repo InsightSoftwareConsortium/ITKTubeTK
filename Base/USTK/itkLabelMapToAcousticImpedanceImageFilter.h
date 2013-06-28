@@ -55,7 +55,7 @@ public:
   typedef SmartPointer< const Self >                                        ConstPointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Runtime type information. */
   itkTypeMacro( LabelMapToAcousticImpedanceImageFilter,

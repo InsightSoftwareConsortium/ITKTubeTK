@@ -111,7 +111,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
 
   if( !this->m_MovingSpatialObject || !this->m_FixedImage )
     {
-    itkExceptionMacro( "No tube/image net plugged in !" );
+    itkExceptionMacro( << "No tube/image net plugged in." );
     }
 
   this->ComputeImageRange();
@@ -135,8 +135,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   m_ImageMin = m_RangeCalculator->GetMinimum();
   m_ImageMax = m_RangeCalculator->GetMaximum();
 
-  itkDebugMacro( "ImageMin = " << m_ImageMin );
-  itkDebugMacro( "ImageMax = " << m_ImageMax );
+  itkDebugMacro( << "ImageMin = " << m_ImageMin );
+  itkDebugMacro( << "ImageMax = " << m_ImageMax );
 }
 
 
@@ -231,8 +231,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::GetValue( const ParametersType & parameters ) const
 {
-  itkDebugMacro( "**** Get Value ****" );
-  itkDebugMacro( "Parameters = " << parameters );
+  itkDebugMacro( << "**** Get Value ****" );
+  itkDebugMacro( << "Parameters = " << parameters );
 
   MeasureType matchMeasure = NumericTraits< MeasureType >::Zero;
 
@@ -292,7 +292,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
 
   if( weightSum == NumericTraits< InternalComputationValueType >::Zero )
     {
-    itkWarningMacro( << "GetValue: All the transformed tube points are outside the image! " );
+    itkWarningMacro( << "GetValue: All the transformed tube points are outside the image." );
     matchMeasure = NumericTraits< InternalComputationValueType >::min();
     }
   else
@@ -306,7 +306,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
                    - static_cast< InternalComputationValueType >( m_ImageMin );
     }
 
-  itkDebugMacro( "matchMeasure = " << matchMeasure );
+  itkDebugMacro( << "matchMeasure = " << matchMeasure );
 
   delete tubeList;
   return matchMeasure;
@@ -431,8 +431,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   transformCopy->SetFixedParameters( this->m_Transform->GetFixedParameters() );
   transformCopy->SetParameters( parameters );
 
-  itkDebugMacro( "**** Get Derivative ****" );
-  itkDebugMacro( "parameters = "<< parameters )
+  itkDebugMacro( << "**** Get Derivative ****" );
+  itkDebugMacro( << "parameters = "<< parameters )
 
   vnl_matrix<double> biasV( TubeDimension, TubeDimension, 0.0 );
   vnl_matrix<double> biasVI( TubeDimension, TubeDimension, 0.0 );
@@ -541,7 +541,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
     {
     biasV = 0.0;
     derivative.fill(0.0);
-    itkWarningMacro( "GetDerivative : weightSum == 0 !" );
+    itkWarningMacro( << "GetDerivative : weightSum == 0 !" );
     return;
     }
   else

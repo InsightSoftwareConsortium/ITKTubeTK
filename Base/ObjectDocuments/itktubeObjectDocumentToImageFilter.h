@@ -80,7 +80,7 @@ public:
   itkGetObjectMacro( Interpolator, InterpolateImageFunctionType );
 
   itkNewMacro( Self );
-  itkTypeMacro( Self, Superclass );
+  itkTypeMacro( ObjectDocumentToImageFilter, ObjectDocumentToObjectSource );
 
   OutputImageType * GetOutput( void );
 

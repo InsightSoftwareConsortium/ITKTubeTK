@@ -49,7 +49,7 @@ void
 InverseIntensityImageFilter<TInputImage>
 ::GenerateData( void )
 {
-  itkDebugMacro(<< "InverseIntensityImageFilter::Generate Data() called");
+  itkDebugMacro( << "InverseIntensityImageFilter::Generate Data() called." );
 
   /**************************************/
   /* Get the input and output pointers */
@@ -109,7 +109,7 @@ InverseIntensityImageFilter<TInputImage>
     ++it_input;
     }
 
-  itkDebugMacro(<< "InverseIntensityImageFilter::Generate Data()  finished");
+  itkDebugMacro( << "InverseIntensityImageFilter::Generate Data() finished." );
 }
 
 } // End namespace tube

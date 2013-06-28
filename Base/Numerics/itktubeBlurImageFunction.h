@@ -50,9 +50,9 @@ public:
   typedef SmartPointer<Self>                           Pointer;
   typedef SmartPointer<const Self>                     ConstPointer;
 
-  itkTypeMacro(BlurImageFunction, ImageFunction);
+  itkTypeMacro( BlurImageFunction, ImageFunction );
 
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /**
    * InputImageType typedef support. */
@@ -67,7 +67,7 @@ public:
 
   /**
    * Dimension of the underlying image. */
-  itkStaticConstMacro(ImageDimension, unsigned int,
+  itkStaticConstMacro( ImageDimension, unsigned int,
     InputImageType::ImageDimension );
 
   /**
@@ -95,7 +95,7 @@ public:
 
   /**
    * Get the Scale */
-  itkGetMacro( Scale, double);
+  itkGetMacro( Scale, double );
 
   /**
    * Set the Extent */
@@ -103,7 +103,7 @@ public:
 
   /**
    * Get the Extent */
-  itkGetMacro( Extent, double);
+  itkGetMacro( Extent, double );
 
   /**
    * Get the Spacing */

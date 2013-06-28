@@ -291,14 +291,14 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     return 0.0;
     }
 
   ContinuousIndexType cIndex;
   if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point, cIndex))
     {
-    //itkWarningMacro( << "Cannot convert point to continuous index");
+    //itkWarningMacro( << "Cannot convert point to continuous index." );
     return 0.0;
     }
 
@@ -315,14 +315,14 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     return 0.0;
     }
 
   ContinuousIndexType cIndex;
   if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point, cIndex))
     {
-    //itkWarningMacro( << "Cannot convert point to continuous index");
+    //itkWarningMacro( << "Cannot convert point to continuous index." );
     return 0.0;
     }
 
@@ -340,14 +340,14 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     return 0.0;
     }
 
   ContinuousIndexType cIndex;
   if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point, cIndex))
     {
-    //itkWarningMacro( << "Cannot convert point to continuous index");
+    //itkWarningMacro( << "Cannot convert point to continuous index." );
     return 0.0;
     }
 
@@ -364,7 +364,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     return 0.0;
     }
 
@@ -387,7 +387,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     return 0.0;
     }
 
@@ -412,7 +412,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     return 0.0;
     }
 
@@ -509,7 +509,7 @@ NJetImageFunction<TInputImage>
 
   if( vTotal == 0)
     {
-    //itkWarningMacro( << "wTotal = 0 : only zero-value pixels encountered");
+    //itkWarningMacro( << "wTotal = 0 : only zero-value pixels encountered." );
     m_MostRecentIntensity = 0.0;
     }
   else
@@ -614,14 +614,14 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     return 0.0;
     }
 
   ContinuousIndexType cIndex;
   if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point, cIndex))
     {
-    itkWarningMacro( << "Cannot convert point to continuous index");
+    itkWarningMacro( << "Cannot convert point to continuous index." );
     return 0.0;
     }
 
@@ -636,7 +636,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     d.Fill( 0 );
     return 0.0;
     }
@@ -644,7 +644,7 @@ NJetImageFunction<TInputImage>
   ContinuousIndexType cIndex;
   if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point, cIndex))
     {
-    itkWarningMacro( << "Cannot convert point to continuous index");
+    itkWarningMacro( << "Cannot convert point to continuous index." );
     d.Fill( 0 );
     return 0.0;
     }
@@ -661,7 +661,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     d.Fill( 0 );
     return 0.0;
     }
@@ -669,7 +669,7 @@ NJetImageFunction<TInputImage>
   ContinuousIndexType cIndex;
   if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point, cIndex))
     {
-    itkWarningMacro( << "Cannot convert point to continuous index");
+    itkWarningMacro( << "Cannot convert point to continuous index." );
     d.Fill( 0 );
     return 0.0;
     }
@@ -686,7 +686,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     d.Fill( 0 );
     return 0.0;
     }
@@ -708,7 +708,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     d.Fill( 0 );
     return 0.0;
     }
@@ -731,7 +731,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     d.Fill( 0 );
     return 0.0;
     }
@@ -1016,7 +1016,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     h.Fill( 0 );
     return 0.0;
     }
@@ -1024,7 +1024,7 @@ NJetImageFunction<TInputImage>
   ContinuousIndexType cIndex;
   if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point, cIndex))
     {
-    itkWarningMacro( << "Cannot convert point to continuous index");
+    itkWarningMacro( << "Cannot convert point to continuous index." );
     h.Fill( 0 );
     return 0.0;
     }
@@ -1040,7 +1040,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     h.Fill( 0 );
     return 0.0;
     }
@@ -1048,7 +1048,7 @@ NJetImageFunction<TInputImage>
   ContinuousIndexType cIndex;
   if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point, cIndex))
     {
-    itkWarningMacro( << "Cannot convert point to continuous index");
+    itkWarningMacro( << "Cannot convert point to continuous index." );
     h.Fill( 0 );
     return 0.0;
     }
@@ -1065,7 +1065,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     h.Fill( 0 );
     return 0.0;
     }
@@ -1073,7 +1073,7 @@ NJetImageFunction<TInputImage>
   ContinuousIndexType cIndex;
   if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point, cIndex))
     {
-    itkWarningMacro( << "Cannot convert point to continuous index");
+    itkWarningMacro( << "Cannot convert point to continuous index." );
     h.Fill( 0 );
     return 0.0;
     }
@@ -1089,7 +1089,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     h.Fill( 0 );
     return 0.0;
     }
@@ -1111,7 +1111,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     h.Fill( 0 );
     return 0.0;
     }
@@ -1134,7 +1134,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     h.Fill( 0.0 );
     return 0.0;
     }
@@ -1292,7 +1292,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     d.Fill( 0.0 );
     h.Fill( 0.0 );
     return 0.0;
@@ -1301,7 +1301,7 @@ NJetImageFunction<TInputImage>
   ContinuousIndexType cIndex;
   if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point, cIndex))
     {
-    itkWarningMacro( << "Cannot convert point to continuous index");
+    itkWarningMacro( << "Cannot convert point to continuous index." );
     d.Fill( 0.0 );
     h.Fill( 0.0 );
     return 0.0;
@@ -1318,7 +1318,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     d.Fill( 0.0 );
     h.Fill( 0.0 );
     return 0.0;
@@ -1507,14 +1507,14 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     return 0.0;
     }
 
   ContinuousIndexType cIndex;
   if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point, cIndex))
     {
-    itkWarningMacro( << "Cannot convert point to continuous index");
+    itkWarningMacro( << "Cannot convert point to continuous index." );
     return 0.0;
     }
 
@@ -1528,14 +1528,14 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     return 0.0;
     }
 
   ContinuousIndexType cIndex;
   if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point, cIndex))
     {
-    itkWarningMacro( << "Cannot convert point to continuous index");
+    itkWarningMacro( << "Cannot convert point to continuous index." );
     return 0.0;
     }
 
@@ -1550,14 +1550,14 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     return 0.0;
     }
 
   ContinuousIndexType cIndex;
   if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point, cIndex))
     {
-    itkWarningMacro( << "Cannot convert point to continuous index");
+    itkWarningMacro( << "Cannot convert point to continuous index." );
     return 0.0;
     }
 
@@ -1571,7 +1571,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     return 0.0;
     }
 
@@ -1592,7 +1592,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     return 0.0;
     }
 
@@ -1614,7 +1614,7 @@ NJetImageFunction<TInputImage>
 {
   if( !m_InputImage )
     {
-    itkWarningMacro( << "Input image not set");
+    itkWarningMacro( << "Input image not set." );
     return 0.0;
     }
 

@@ -59,7 +59,7 @@ public:
   typedef SmartPointer<const Self>                ConstPointer;
 
   itkNewMacro( Self );
-  itkTypeMacro( Self, Superclass );
+  itkTypeMacro( MinimizeImageSizeFilter, ImageToImageFilter );
 
   typedef TInputImage                             InputImageType;
   typedef typename InputImageType::PixelType      InputPixelType;
@@ -74,7 +74,7 @@ public:
   typedef typename InputImageType::PointType      PointType;
 
   /** Number of dimensions. */
-  itkStaticConstMacro(ImageDimension, unsigned int, TInputImage::ImageDimension);
+  itkStaticConstMacro( ImageDimension, unsigned int, TInputImage::ImageDimension );
 
   /** Get/Set the input */
   itkGetConstObjectMacro( Input, InputImageType );

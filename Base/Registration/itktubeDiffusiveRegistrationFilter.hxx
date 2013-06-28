@@ -215,7 +215,7 @@ DiffusiveRegistrationFilter
   // Ensure we have a fixed image and moving image
   if( !this->GetFixedImage() || !this->GetMovingImage() )
     {
-    itkExceptionMacro( << "Fixed image and/or moving image not set" );
+    itkExceptionMacro( << "Fixed image and/or moving image not set." );
     }
 
   // Calculate minimum and maximum intensities and warn if we are not in range
@@ -223,19 +223,19 @@ DiffusiveRegistrationFilter
   if( !DiffusiveRegistrationFilterUtils::IsIntensityRangeBetween0And1(
         this->GetFixedImage() ) )
     {
-    itkWarningMacro( << "Fixed image intensity should be [0,1]" );
+    itkWarningMacro( << "Fixed image intensity should be [0, 1]." );
     }
   if( !DiffusiveRegistrationFilterUtils::IsIntensityRangeBetween0And1(
         this->GetMovingImage() ) )
     {
-    itkWarningMacro( << "Moving image intensity should be [0,1]" );
+    itkWarningMacro( << "Moving image intensity should be [0, 1]." );
     }
 
   // Ensure we have good regularization weightings
   unsigned int regularizationWeightingsSize = m_RegularizationWeightings.size();
   if( regularizationWeightingsSize == 0 )
     {
-    itkExceptionMacro( << "Regularization weightings not set" );
+    itkExceptionMacro( << "Regularization weightings not set." );
     }
 
   // Update the current multiresolution level (when registering, level is 1..N)
@@ -844,7 +844,7 @@ DiffusiveRegistrationFilter
                            ThreadIdType itkNotUsed( threadId ) )
 {
   // This function should never be called!
-  itkExceptionMacro( << "ThreadedCalculateChange(regionToProcess, threadId) "
+  itkExceptionMacro( << "ThreadedCalculateChange(regionToProcess, threadId ) "
                      << "should never be called.  Use the other "
                      << "ThreadedCalculateChange function instead" );
 }
@@ -1683,7 +1683,7 @@ DiffusiveRegistrationFilter
                        ThreadIdType )
 {
   // This function should never be called!
-  itkExceptionMacro( << "ThreadedApplyUpdate(dt, regionToProcess, threadId) "
+  itkExceptionMacro( << "ThreadedApplyUpdate(dt, regionToProcess, threadId ) "
                     << "should never be called.  Use the other "
                     << "ThreadedApplyUpdate function instead" );
 }

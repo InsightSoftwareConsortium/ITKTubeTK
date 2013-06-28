@@ -373,13 +373,13 @@ RadiusExtractor<TInputImage>
         << std::endl;
       }
     n.set_column( 0,
-      ::tube::ComputeOrthogonalVector( pnt.GetTangent().GetVnlVector() )  );
+      ::tube::ComputeOrthogonalVector( pnt.GetTangent().GetVnlVector() ) );
     n.get_column( 0 ).normalize();
     if( ImageDimension == 3 )
       {
       n.set_column( 1,
         ::tube::ComputeCrossVector( pnt.GetTangent().GetVnlVector(),
-          n.get_column( 0 ) )  );
+          n.get_column( 0 ) ) );
       n.get_column( 1 ).normalize();
       }
     }
@@ -873,14 +873,14 @@ RadiusExtractor<TInputImage>
         }
       }
     n.set_column( 0,
-      ::tube::ComputeOrthogonalVector( pnt.GetTangent().GetVnlVector() )  );
+      ::tube::ComputeOrthogonalVector( pnt.GetTangent().GetVnlVector() ) );
     n.get_column( 0 ).normalize();
     // Should we set the point's normals?
     if( ImageDimension == 3 )
       {
       n.set_column( 1,
         ::tube::ComputeCrossVector( pnt.GetTangent().GetVnlVector(),
-          n.get_column( 0 ) )  );
+          n.get_column( 0 ) ) );
       n.get_column( 1 ).normalize();
       }
     }
@@ -909,7 +909,7 @@ RadiusExtractor<TInputImage>
     {
     n.set_column( 1,
       ::tube::ComputeCrossVector( pnt.GetTangent().GetVnlVector(),
-        n.get_column( 0 ) )  );
+        n.get_column( 0 ) ) );
     n.get_column( 1 ).normalize();
     if( this->GetDebug() )
       {

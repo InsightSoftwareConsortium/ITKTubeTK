@@ -103,7 +103,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
                                 TTangentImage >
 ::GenerateData( void )
 {
-  itkDebugMacro(<< "TubeSpatialObjectToImageFilter::Update() called");
+  itkDebugMacro( << "TubeSpatialObjectToImageFilter::Update() called." );
 
   //Get the input and output pointers
   const typename SuperClass::InputSpatialObjectType   * InputTube = this->GetInput();
@@ -369,7 +369,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
 
   delete tubeList;
 
-  itkDebugMacro(<< "TubeSpatialObjectToImageFilter::Update() finished");
+  itkDebugMacro( << "TubeSpatialObjectToImageFilter::Update() finished." );
 
 } // End update function
 

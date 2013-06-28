@@ -72,16 +72,16 @@ public:
   typedef TTransformType                          TransformType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(Self, Object);
+  itkTypeMacro( TubeToTubeTransformFilter, SpatialObjectToSpatialObjectFilter );
 
   /** Apply the transformation to the tube */
   void Update( void );
 
   /** Set the Transformation */
-  itkSetObjectMacro(Transform, TransformType);
+  itkSetObjectMacro( Transform, TransformType );
 
   /** Set the transform as a group spatial object */
   void SetTransform(const GroupType * transform)
@@ -90,28 +90,28 @@ public:
     }
 
   /** Get the output tubenet */
-  itkGetObjectMacro(Output, GroupType);
+  itkGetObjectMacro( Output, GroupType );
 
   /** Set the narrow band size */
-  itkSetMacro(NarrowBandSize, double);
+  itkSetMacro( NarrowBandSize, double );
 
   /** Set the scale */
-  itkSetMacro(Scale, double);
+  itkSetMacro( Scale, double );
 
   /**
    * Set the Ridgeness of all the tubes in the tubenet
    * if Ridgeness is not set then the tube keeps its own value
    */
-  itkSetMacro(Ridgeness, double);
+  itkSetMacro( Ridgeness, double );
 
   /**
    * Set the Medialness of all the tubes in the tubenet
    * if Medialness is not set then the tube keeps its own value
    */
-  itkSetMacro(Medialness, double);
+  itkSetMacro( Medialness, double );
 
   /** Set if we should crop the tube net to fit the image */
-  itkSetMacro(Crop, bool);
+  itkSetMacro( Crop, bool );
 
   /** Set the size of the Region of Interest */
   void SetCropSize(double* cropSize) {m_CropSize = cropSize;}

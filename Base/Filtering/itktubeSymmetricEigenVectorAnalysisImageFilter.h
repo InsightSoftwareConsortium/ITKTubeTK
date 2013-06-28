@@ -150,7 +150,7 @@ public:
     }
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Print internal ivars */
   void PrintSelf(std::ostream& os, Indent indent) const

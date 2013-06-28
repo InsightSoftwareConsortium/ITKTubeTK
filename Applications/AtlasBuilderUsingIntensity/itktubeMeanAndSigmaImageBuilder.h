@@ -63,14 +63,14 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TInputImageType::ImageDimension );
 
-  itkNewMacro(Self);
-  itkTypeMacro(Self,Superclass);
+  itkNewMacro( Self );
+  itkTypeMacro( MeanAndSigmaImageBuilder, Object );
 
   typedef TInputImageType                               InputImageType;
   typedef TOutputMeanImageType                          OutputMeanImageType;
   typedef TOutputSigmaImageType                         OutputSigmaImageType;
   typedef Image<
-    float, itkGetStaticConstMacro(ImageDimension)>           CountImageType;
+    float, itkGetStaticConstMacro( ImageDimension )>           CountImageType;
 
   typedef typename InputImageType::PixelType            InputPixelType;
   typedef typename OutputMeanImageType::PixelType       OutputMeanPixelType;
@@ -88,7 +88,7 @@ public:
   typedef typename InputImageType::PointType            PointType;
 
   typedef Image<
-    float,itkGetStaticConstMacro(ImageDimension)>           ProcessImageType;
+    float,itkGetStaticConstMacro( ImageDimension )>           ProcessImageType;
 
   /*
    * Add an image to the group being summed.

@@ -84,8 +84,9 @@ SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
 
   if( input == NULL && this->ProcessObject::GetInput( input ) != NULL )
     {
-    itkWarningMacro (<< "Unable to convert input number " << index
-      << " to type " <<  typeid( InputSpatialObjectType ).name () );
+    itkWarningMacro( << "Unable to convert input number " << index
+                     << " to type "
+                     << typeid( InputSpatialObjectType ).name () );
     }
   return input;
 }

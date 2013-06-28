@@ -85,7 +85,8 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
   if( this->m_UltrasoundProbeType == LINEAR &&
       this->m_UltrasoundProbeBeamDirection.GetNorm() == static_cast< OperatorValueType >( 0.0 ) )
     {
-    itkExceptionMacro( "The BeamDirection must be specified with a LINEAR probe." );
+    itkExceptionMacro( << "The BeamDirection must be specified with a linear "
+                       << "probe." );
     }
 }
 

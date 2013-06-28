@@ -61,10 +61,10 @@ public:
   typedef ChildrenListType *                    ChildrenListPointer;
 
    /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( Self, Superclass );
+  itkTypeMacro( Document, DataObject );
 
   /** Get the inputted Comments value */
   CommentsType GetComment( void ) const { return m_Comment; }

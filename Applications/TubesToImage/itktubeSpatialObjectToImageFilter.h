@@ -74,23 +74,23 @@ public:
   typedef typename TTangentImage::PixelType              TangentPixelType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(TubeSpatialObjectToImageFilter,
-               SpatialObjectToImageFilter);
+  itkTypeMacro( TubeSpatialObjectToImageFilter,
+                SpatialObjectToImageFilter );
 
   /** Set if the tube should be full inside */
-  itkSetMacro(UseRadius,bool);
-  itkGetMacro(UseRadius,bool);
+  itkSetMacro( UseRadius, bool );
+  itkGetMacro( UseRadius, bool );
 
   /** Set if the filter should build a radius image in parallel */
-  itkSetMacro(BuildRadiusImage, bool);
-  itkGetMacro(BuildRadiusImage, bool);
+  itkSetMacro( BuildRadiusImage, bool );
+  itkGetMacro( BuildRadiusImage, bool );
 
   /** Set if the filter should build a tangent image in parallel */
-  itkSetMacro(BuildTangentImage, bool);
-  itkGetMacro(BuildTangentImage, bool);
+  itkSetMacro( BuildTangentImage, bool );
+  itkGetMacro( BuildTangentImage, bool );
 
   /**Image Pointer Definition and GetRadius return method */
   RadiusImagePointer GetRadiusImage( void );
@@ -99,13 +99,13 @@ public:
   TangentImagePointer GetTangentImage( void );
 
   /** Set the FallOff value */
-  itkSetMacro(FallOff,double);
-  itkGetMacro(FallOff,double);
+  itkSetMacro( FallOff, double );
+  itkGetMacro( FallOff, double );
 
   /** Set if the value of tubes that are crossing should accumulate
    *  their values to produce the image */
-  itkSetMacro(Cumulative,bool);
-  itkGetMacro(Cumulative,bool);
+  itkSetMacro( Cumulative, bool );
+  itkGetMacro( Cumulative, bool );
 
 
 protected:

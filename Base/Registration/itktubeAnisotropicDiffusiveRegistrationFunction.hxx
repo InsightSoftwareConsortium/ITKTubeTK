@@ -187,7 +187,7 @@ AnisotropicDiffusiveRegistrationFunction
 ::ComputeUpdate(const NeighborhoodType &, void *, const FloatOffsetType & )
 {
   // This function should never be called!
-  itkExceptionMacro( << "ComputeUpdate(neighborhood, gd, offset) should never"
+  itkExceptionMacro( << "ComputeUpdate(neighborhood, gd, offset ) should never"
                      << "be called.  Use the other ComputeUpdate() defined in"
                      << "itktubeAnisotropicDiffusiveRegistrationFunction instead" );
 }

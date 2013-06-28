@@ -70,12 +70,12 @@ MinimizeImageSizeFilter<TInputImage>
     }
   else if( ImageDimension == 2 )
     {
-    itkExceptionMacro("2D image cropping is not implemented yet...sorry!");
+    itkExceptionMacro( << "2D image cropping is not implemented yet." );
     return;
     }
   else
     {
-    itkExceptionMacro("The dimension size is not compatiable with the filter");
+    itkExceptionMacro( << "Dimension size is not compatible with filter." );
     return;
     }
 

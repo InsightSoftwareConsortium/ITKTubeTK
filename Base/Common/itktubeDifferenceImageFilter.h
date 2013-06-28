@@ -56,10 +56,10 @@ public:
   typedef SmartPointer<const Self>                        ConstPointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(DifferenceImageFilter, ImageToImageFilter);
+  itkTypeMacro( DifferenceImageFilter, ImageToImageFilter );
 
   /** Some convenient typedefs. */
   typedef TInputImage                                         InputImageType;
@@ -77,24 +77,24 @@ public:
 
   /** Set/Get the maximum distance away to look for a matching pixel.
       Default is 0. */
-  itkSetMacro(ToleranceRadius, int);
-  itkGetConstMacro(ToleranceRadius, int);
+  itkSetMacro( ToleranceRadius, int );
+  itkGetConstMacro( ToleranceRadius, int );
 
   /** Set/Get the minimum threshold for pixels to be different.
       Default is 0. */
-  itkSetMacro(DifferenceThreshold, OutputPixelType);
-  itkGetConstMacro(DifferenceThreshold, OutputPixelType);
+  itkSetMacro( DifferenceThreshold, OutputPixelType );
+  itkGetConstMacro( DifferenceThreshold, OutputPixelType );
 
   /** Set/Get ignore boundary pixels.  Useful when resampling may have
    *    introduced difference pixel values along the image edge
    *    Default = false */
-  itkSetMacro(IgnoreBoundaryPixels, bool);
-  itkGetConstMacro(IgnoreBoundaryPixels, bool);
+  itkSetMacro( IgnoreBoundaryPixels, bool );
+  itkGetConstMacro( IgnoreBoundaryPixels, bool );
 
   /** Get parameters of the difference image after execution.  */
-  itkGetConstMacro(MeanDifference, RealType);
-  itkGetConstMacro(TotalDifference, AccumulateType);
-  itkGetConstMacro(NumberOfPixelsWithDifferences, unsigned long);
+  itkGetConstMacro( MeanDifference, RealType );
+  itkGetConstMacro( TotalDifference, AccumulateType );
+  itkGetConstMacro( NumberOfPixelsWithDifferences, unsigned long );
 
 protected:
   DifferenceImageFilter( void );

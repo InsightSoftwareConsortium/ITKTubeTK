@@ -53,18 +53,18 @@ public:
   typedef SmartPointer<const Self>                        ConstPointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
-  itkTypeMacro(CVTImageFilter, ImageToImageFilter);
+  itkTypeMacro( CVTImageFilter, ImageToImageFilter );
 
-  itkStaticConstMacro(ImageDimension, unsigned int,
-                                      TInputImage::ImageDimension);
+  itkStaticConstMacro( ImageDimension, unsigned int,
+                       TInputImage::ImageDimension );
 
   typedef TInputImage                                   InputImageType;
   typedef typename InputImageType::PixelType            InputPixelType;
 
   typedef typename InputImageType::IndexType            IndexType;
-  typedef ContinuousIndex<double, itkGetStaticConstMacro(ImageDimension)>
+  typedef ContinuousIndex<double, itkGetStaticConstMacro( ImageDimension )>
                                                         ContinuousIndexType;
 
   typedef TOutputImage                                  OutputImageType;
@@ -78,32 +78,32 @@ public:
   typedef enum {CVT_GRID, CVT_RANDOM, CVT_USER}         SamplingMethodEnum;
 
   /** */
-  itkGetMacro(NumberOfCentroids, unsigned int);
-  itkSetMacro(NumberOfCentroids, unsigned int);
+  itkGetMacro( NumberOfCentroids, unsigned int );
+  itkSetMacro( NumberOfCentroids, unsigned int );
 
   /** */
-  itkGetMacro(InitialSamplingMethod, SamplingMethodEnum);
-  itkSetMacro(InitialSamplingMethod, SamplingMethodEnum);
+  itkGetMacro( InitialSamplingMethod, SamplingMethodEnum );
+  itkSetMacro( InitialSamplingMethod, SamplingMethodEnum );
 
   /** */
-  itkGetMacro(NumberOfSamples, unsigned int);
-  itkSetMacro(NumberOfSamples, unsigned int);
+  itkGetMacro( NumberOfSamples, unsigned int );
+  itkSetMacro( NumberOfSamples, unsigned int );
 
   /** */
-  itkGetMacro(NumberOfIterations, unsigned int);
-  itkSetMacro(NumberOfIterations, unsigned int);
+  itkGetMacro( NumberOfIterations, unsigned int );
+  itkSetMacro( NumberOfIterations, unsigned int );
 
   /** */
-  itkGetMacro(NumberOfIterationsPerBatch, unsigned int);
-  itkSetMacro(NumberOfIterationsPerBatch, unsigned int);
+  itkGetMacro( NumberOfIterationsPerBatch, unsigned int );
+  itkSetMacro( NumberOfIterationsPerBatch, unsigned int );
 
   /** */
-  itkGetMacro(NumberOfSamplesPerBatch, unsigned int);
-  itkSetMacro(NumberOfSamplesPerBatch, unsigned int);
+  itkGetMacro( NumberOfSamplesPerBatch, unsigned int );
+  itkSetMacro( NumberOfSamplesPerBatch, unsigned int );
 
   /** */
-  itkGetMacro(BatchSamplingMethod, SamplingMethodEnum);
-  itkSetMacro(BatchSamplingMethod, SamplingMethodEnum);
+  itkGetMacro( BatchSamplingMethod, SamplingMethodEnum );
+  itkSetMacro( BatchSamplingMethod, SamplingMethodEnum );
 
   /** */
   PointArrayType * GetCentroids( void )
@@ -111,8 +111,8 @@ public:
   void SetCentroids(const PointArrayType * centroids);
 
   /** */
-  itkGetMacro(Seed, long int);
-  itkSetMacro(Seed, long int);
+  itkGetMacro( Seed, long int );
+  itkSetMacro( Seed, long int );
 
 
 protected:

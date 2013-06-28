@@ -54,10 +54,10 @@ public:
   typedef SmartPointer< const Self >                          ConstPointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(AngleOfIncidenceImageFilter, ImageToImageFilter);
+  itkTypeMacro( AngleOfIncidenceImageFilter, ImageToImageFilter );
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     TInputImage::ImageDimension );
@@ -107,8 +107,8 @@ public:
     EigenVectorAnalysisFilterType;
 
   /** Set/Get Ultrasound origin vector */
-  itkSetMacro(UltrasoundProbeOrigin, VectorType);
-  itkGetConstMacro(UltrasoundProbeOrigin, VectorType);
+  itkSetMacro( UltrasoundProbeOrigin, VectorType );
+  itkGetConstMacro( UltrasoundProbeOrigin, VectorType );
 
 protected:
   AngleOfIncidenceImageFilter( void );

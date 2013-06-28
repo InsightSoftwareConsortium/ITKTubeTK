@@ -76,14 +76,14 @@ public:
   typedef SmartPointer<const Self>               ConstPointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(ImageRegionMomentsCalculator, Object);
+  itkTypeMacro( ImageRegionMomentsCalculator, Object );
 
   /** Extract the dimension of the image. */
-  itkStaticConstMacro(ImageDimension, unsigned int,
-                      TImage::ImageDimension);
+  itkStaticConstMacro( ImageDimension, unsigned int,
+                      TImage::ImageDimension );
 
   /** Standard scalar type within this class. */
   typedef double                       ScalarType;
@@ -91,11 +91,11 @@ public:
   typedef typename TImage::PointType   PointType;
 
   /** Standard vector type within this class. */
-  typedef Vector<ScalarType, itkGetStaticConstMacro(ImageDimension)>
+  typedef Vector<ScalarType, itkGetStaticConstMacro( ImageDimension )>
                                        VectorType;
 
   /** Spatial Object type within this class. */
-  typedef SpatialObject< itkGetStaticConstMacro(ImageDimension) >
+  typedef SpatialObject< itkGetStaticConstMacro( ImageDimension ) >
                                        SpatialObjectType;
 
   /** Spatial Object member types used within this class. */
@@ -106,8 +106,8 @@ public:
 
   /** Standard matrix type within this class. */
   typedef Matrix<ScalarType,
-                 itkGetStaticConstMacro(ImageDimension),
-                 itkGetStaticConstMacro(ImageDimension)>   MatrixType;
+                 itkGetStaticConstMacro( ImageDimension ),
+                 itkGetStaticConstMacro( ImageDimension )>   MatrixType;
 
   /** Standard image type within this class. */
   typedef TImage ImageType;
@@ -117,7 +117,7 @@ public:
   typedef typename ImageType::ConstPointer ImageConstPointer;
 
   /** Affine transform for mapping to and from principal axis */
-  typedef AffineTransform<double,itkGetStaticConstMacro(ImageDimension)>
+  typedef AffineTransform<double,itkGetStaticConstMacro( ImageDimension )>
                                            AffineTransformType;
   typedef typename AffineTransformType::Pointer
                                            AffineTransformPointer;
@@ -147,8 +147,8 @@ public:
 
   /** Method for controlling the region of interest that optionally limits
    *   the spatial extent of the computations */
-  itkSetMacro(UseRegionOfInterest, bool);
-  itkGetMacro(UseRegionOfInterest, bool);
+  itkSetMacro( UseRegionOfInterest, bool );
+  itkGetMacro( UseRegionOfInterest, bool );
   virtual void SetRegionOfInterest( const PointType & point1,
                                     const PointType & point2 )
     {
@@ -161,8 +161,8 @@ public:
       m_Valid = false;
       }
     }
-  itkGetMacro(RegionOfInterestPoint1, PointType);
-  itkGetMacro(RegionOfInterestPoint2, PointType);
+  itkGetMacro( RegionOfInterestPoint1, PointType );
+  itkGetMacro( RegionOfInterestPoint2, PointType );
 
   /** Compute moments of a new or modified image.
    * This method computes the moments of the image given as a

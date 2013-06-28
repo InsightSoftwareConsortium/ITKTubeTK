@@ -77,7 +77,7 @@ int itktubeMetaTubeParamsTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  mtp1.Clear( );
+  mtp1.Clear();
   if( mtp1.GetSeedScales().size() != 1 )
     {
     std::cout << "Tube params seed.size not 1 after clear." << std::endl;

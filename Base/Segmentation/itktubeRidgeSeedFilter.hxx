@@ -151,7 +151,7 @@ float
 RidgeSeedFilter< ImageT, LabelmapT >
 ::GetIntensityMin( void )
 {
-  return m_RidgeFeatureGenerator->GetIntensityMin( );
+  return m_RidgeFeatureGenerator->GetIntensityMin();
 }
 
 template< class ImageT, class LabelmapT >
@@ -167,7 +167,7 @@ float
 RidgeSeedFilter< ImageT, LabelmapT >
 ::GetIntensityMax( void )
 {
-  return m_RidgeFeatureGenerator->GetIntensityMax( );
+  return m_RidgeFeatureGenerator->GetIntensityMax();
 }
 
 template< class ImageT, class LabelmapT >

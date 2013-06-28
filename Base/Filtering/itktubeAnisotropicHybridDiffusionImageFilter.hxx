@@ -64,7 +64,7 @@ void
 AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 ::UpdateDiffusionTensorImage( void )
 {
-  itkDebugMacro( << "UpdateDiffusionTensorImage() called" );
+  itkDebugMacro( << "UpdateDiffusionTensorImage() called." );
 
   /* IN THIS METHOD, the following items will be implemented
    - Compute the structure tensor ( Multiscale version structure tensor )

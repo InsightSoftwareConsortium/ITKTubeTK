@@ -76,8 +76,8 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods) */
-  itkTypeMacro(AnisotropicCoherenceEnhancingDiffusionImageFilter,
-                                                ImageToImageFilter );
+  itkTypeMacro( AnisotropicCoherenceEnhancingDiffusionImageFilter,
+                ImageToImageFilter );
 
   /** Convenient typedefs */
   typedef typename Superclass::InputImageType  InputImageType;
@@ -93,7 +93,8 @@ public:
 
   /** Dimensionality of input and output data is assumed to be the same.
    * It is inherited from the superclass. */
-  itkStaticConstMacro(ImageDimension, unsigned int,Superclass::ImageDimension);
+  itkStaticConstMacro( ImageDimension, unsigned int,
+                       Superclass::ImageDimension );
 
   typedef itk::Matrix<double, ImageDimension, ImageDimension> MatrixType;
 
@@ -121,10 +122,10 @@ public:
                                                DiffusionTensorNeighborhoodType;
 
   /** Set the contrast parameter */
-  itkSetMacro( ContrastParameterLambdaC, double);
+  itkSetMacro( ContrastParameterLambdaC, double );
 
   /** Set Alpha */
-  itkSetMacro( Alpha, double);
+  itkSetMacro( Alpha, double );
 
   /**  Sigma value for the Gaussian derivative filters */
   itkSetMacro( Sigma, double );

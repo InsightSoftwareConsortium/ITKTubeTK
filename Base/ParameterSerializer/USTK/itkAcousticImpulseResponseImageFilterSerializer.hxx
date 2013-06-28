@@ -147,7 +147,7 @@ AcousticImpulseResponseImageFilterSerializer< TAcousticImpulseResponseImageFilte
       ( this->GetTargetObject() );
   if( filter == NULL )
     {
-    itkWarningMacro("AcousticImpulseResponseImageFilterSerializer target object not set");
+    itkWarningMacro( << "AcousticImpulseResponseImageFilterSerializer target object not set" );
     }
   else
     {

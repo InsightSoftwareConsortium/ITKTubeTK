@@ -64,8 +64,8 @@ public:
   typedef SmartPointer<Self>                                Pointer;
   typedef SmartPointer<const Self>                          ConstPointer;
 
-  itkNewMacro(Self);
-  itkTypeMacro(Self,Superclass);
+  itkNewMacro( Self );
+  itkTypeMacro( RobustMeanAndSigmaImageBuilder, MeanAndSigmaImageBuilder );
 
   typedef TInputImageType                                   InputImageType;
   typedef TOutputMeanImageType                              OutputMeanImageType;

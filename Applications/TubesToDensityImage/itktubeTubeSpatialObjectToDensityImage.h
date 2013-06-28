@@ -49,8 +49,8 @@ public:
   typedef Object                                  Superclass;
   typedef SmartPointer<Self>                      Pointer;
 
-  itkNewMacro(Self);
-  itkTypeMacro(Self,Superclass);
+  itkNewMacro( Self );
+  itkTypeMacro( TubeSpatialObjectToDensityImage, Object );
 
   /** Typdefs */
   typedef TDensityImageType                              DensityImageType;
@@ -79,14 +79,14 @@ public:
   typedef typename DensityImageType::OffsetType VectorPixelType;
   typedef Image<
     VectorPixelType,
-    itkGetStaticConstMacro(ImageDimension) >        VectorImageType;
+    itkGetStaticConstMacro( ImageDimension ) >        VectorImageType;
   typedef typename VectorImageType::Pointer     VectorImagePointer;
 
   typedef typename DensityImageType::SizeType     SizeType;
   typedef typename DensityImageType::SpacingType  SpacingType;
 
   typedef TubeSpatialObjectToImageFilter<
-    itkGetStaticConstMacro(ImageDimension),
+    itkGetStaticConstMacro( ImageDimension ),
     DensityImageType > TubetoImageFilterType;
 
   typedef DanielssonDistanceMapImageFilter<

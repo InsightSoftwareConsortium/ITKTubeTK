@@ -75,7 +75,7 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
   // Check if the user set any transform
   if( !m_Transform )
     {
-    itkExceptionMacro("No transform is set!");
+    itkExceptionMacro( << "No transform is set." );
     }
 
   Point<double, TDimension> point;

@@ -60,10 +60,10 @@ public:
   typedef SmartPointer<const Self>           ConstPointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(OtsuThresholdMaskedImageCalculator, Object);
+  itkTypeMacro( OtsuThresholdMaskedImageCalculator, Object );
 
   /** Type definition for the input image. */
   typedef TInputImage  ImageType;
@@ -81,16 +81,16 @@ public:
   typedef typename TInputImage::RegionType RegionType;
 
   /** Set the input image. */
-  itkSetConstObjectMacro(Image,ImageType);
+  itkSetConstObjectMacro( Image, ImageType );
 
   /** Set the input image. */
-  itkSetConstObjectMacro(MaskImage,ImageType);
+  itkSetConstObjectMacro( MaskImage, ImageType );
 
   /** Compute the Otsu's threshold for the input image. */
   void Compute( void );
 
   /** Return the Otsu's threshold value. */
-  itkGetConstMacro(Threshold,PixelType);
+  itkGetConstMacro( Threshold, PixelType );
 
   /** Set/Get the number of histogram bins. Default is 128. */
   itkSetClampMacro( NumberOfHistogramBins, unsigned long, 1,

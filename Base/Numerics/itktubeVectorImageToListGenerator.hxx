@@ -227,7 +227,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
   ListSampleType *output =
    const_cast< ListSampleType *>( decoratedOutput->Get() );
   output->SetMeasurementVectorSize(
-    itkGetStaticConstMacro( MeasurementVectorSize ));
+    itkGetStaticConstMacro( MeasurementVectorSize ) );
 }
 
 template< class TImage, class TMaskImage >

@@ -61,13 +61,13 @@ public:
   typedef SmartPointer<const Self>                    ConstPointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Run-time type information (and related methods) */
   itkTypeMacro( AnisotropicDiffusionTensorFunction, FiniteDifferenceFunction );
 
   /** Extract some parameters from the superclass. */
-  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
+  itkStaticConstMacro( ImageDimension, unsigned int, Superclass::ImageDimension );
 
   /** Convenient typedefs. */
   typedef typename Superclass::TimeStepType               TimeStepType;
@@ -91,7 +91,7 @@ public:
 
   /** Scalar derivative typedefs. */
   typedef itk::Vector< ScalarValueType,
-                       itkGetStaticConstMacro(ImageDimension)>
+                       itkGetStaticConstMacro( ImageDimension )>
                        ScalarDerivativeType;
   typedef itk::Image< ScalarDerivativeType, 3 >       ScalarDerivativeImageType;
   typedef ImageRegionIterator< ScalarDerivativeImageType >
@@ -99,8 +99,8 @@ public:
 
   /** Tensor derivative typedefs. */
   typedef itk::Matrix< ScalarValueType,
-                       itkGetStaticConstMacro(ImageDimension),
-                       itkGetStaticConstMacro(ImageDimension) >
+                       itkGetStaticConstMacro( ImageDimension ),
+                       itkGetStaticConstMacro( ImageDimension ) >
                                                       TensorDerivativeType;
   typedef itk::Image< TensorDerivativeType, 3 >       TensorDerivativeImageType;
   typedef ImageRegionIterator< TensorDerivativeImageType >
@@ -216,20 +216,20 @@ protected:
   unsigned int m_Center;
 
   /** Stride length along the y-dimension. */
-  unsigned int m_xStride[itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_xStride[itkGetStaticConstMacro( ImageDimension )];
 
   /** Defines various positions surrounding the center pixel in an image
     iterator. */
-  unsigned int m_positionA[itkGetStaticConstMacro(ImageDimension)];
-  unsigned int m_positionB[itkGetStaticConstMacro(ImageDimension)];
-  unsigned int m_positionAa[itkGetStaticConstMacro(ImageDimension)]
-      [itkGetStaticConstMacro(ImageDimension)];
-  unsigned int m_positionBa[itkGetStaticConstMacro(ImageDimension)]
-      [itkGetStaticConstMacro(ImageDimension)];
-  unsigned int m_positionCa[itkGetStaticConstMacro(ImageDimension)]
-      [itkGetStaticConstMacro(ImageDimension)];
-  unsigned int m_positionDa[itkGetStaticConstMacro(ImageDimension)]
-      [itkGetStaticConstMacro(ImageDimension)];
+  unsigned int m_positionA[itkGetStaticConstMacro( ImageDimension )];
+  unsigned int m_positionB[itkGetStaticConstMacro( ImageDimension )];
+  unsigned int m_positionAa[itkGetStaticConstMacro( ImageDimension )]
+      [itkGetStaticConstMacro( ImageDimension )];
+  unsigned int m_positionBa[itkGetStaticConstMacro( ImageDimension )]
+      [itkGetStaticConstMacro( ImageDimension )];
+  unsigned int m_positionCa[itkGetStaticConstMacro( ImageDimension )]
+      [itkGetStaticConstMacro( ImageDimension )];
+  unsigned int m_positionDa[itkGetStaticConstMacro( ImageDimension )]
+      [itkGetStaticConstMacro( ImageDimension )];
 
   /** Computes the first and second derivatives of an intensity image. */
   void ComputeIntensityFirstAndSecondOrderPartialDerivatives(

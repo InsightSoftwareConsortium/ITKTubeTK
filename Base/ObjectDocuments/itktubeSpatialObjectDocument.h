@@ -68,7 +68,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( Self, Superclass );
+  itkTypeMacro( SpatialObjectDocument, ObjectDocument );
 
   /** Return the type of the object within the Document (ie. "SpatialObject") */
   std::string GetObjectType( void ) const { return LABEL_SOTYPE; }

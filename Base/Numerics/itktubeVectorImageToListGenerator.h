@@ -74,10 +74,10 @@ public:
   typedef SmartPointer<const Self>          ConstPointer;
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(VectorImageToListGenerator, ProcessObject);
+  itkTypeMacro( VectorImageToListGenerator, ProcessObject );
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Image typedefs */
   typedef TImage                           ImageType;
@@ -108,8 +108,8 @@ public:
   typedef DataObjectDecorator< ListSampleType >  ListSampleOutputType;
 
   /** the number of components in a measurement vector */
-  itkStaticConstMacro(MeasurementVectorSize, unsigned int,
-                      PixelTraitsType::Dimension);
+  itkStaticConstMacro( MeasurementVectorSize, unsigned int,
+                      PixelTraitsType::Dimension );
 
   /** Standard itk::ProcessObject subclass method. */
   using Superclass::MakeOutput;
@@ -126,7 +126,7 @@ public:
         << "Measurement vector size for the image adaptor obtained"
         << " from the pixel dimension is: "
         << MeasurementVectorSize << " but you "
-        << "are setting it to " << s);
+        << "are setting it to " << s );
       }
     }
 

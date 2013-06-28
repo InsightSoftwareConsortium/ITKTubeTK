@@ -125,7 +125,7 @@ CompleteImageResampleFilter< TInputImage,
     }
   else
     {
-    itkExceptionMacro(<<"Filter only setup for 3D images");
+    itkExceptionMacro( << "Filter only setup for 3D images." );
     outputSize = inputImage->GetLargestPossibleRegion().GetSize();
     outputOrigin = inputImage->GetOrigin();
     }
