@@ -448,8 +448,6 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
     CACHE INTERNAL "3D Slicer execution model extra libraries." FORCE )
 endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
-add_subdirectory( ${Slicer_SOURCE_DIR}/ExpertAutomatedRegistration
-  ${Slicer_BINARY_DIR}/ExpertAutomatedRegistration )
 #-------------------------------------------------------------------------------
 # Build TubeTK.
 add_subdirectory( Utilities )
