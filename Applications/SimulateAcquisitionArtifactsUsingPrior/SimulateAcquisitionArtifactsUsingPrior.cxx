@@ -47,8 +47,7 @@ int DoIt( int argc, char * argv[] );
 #include "tubeCLIHelperFunctions.h"
 
 template< class TPixel, unsigned int TDimension >
-class MyMIWPFunc :
-public tube::UserFunction< vnl_vector<int>, double >
+class MyMIWPFunc : public tube::UserFunction< vnl_vector< int >, double >
 {
 public:
 

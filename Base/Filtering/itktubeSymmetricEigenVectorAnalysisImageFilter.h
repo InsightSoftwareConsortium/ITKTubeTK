@@ -110,13 +110,13 @@ private:
  * \ingroup IntensityImageFilters  Multithreaded  TensorObjects
  */
 template< class TInputImage, class TOutputImage, class TOutputMatrix >
-class SymmetricEigenVectorAnalysisImageFilter :
-    public
-UnaryFunctorImageFilter<TInputImage,TOutputMatrix,
-                        Functor::SymmetricEigenVectorAnalysisFunction<
-                                        typename TInputImage::PixelType,
-                                        typename TOutputImage::PixelType,
-                                        typename TOutputMatrix::PixelType > >
+class SymmetricEigenVectorAnalysisImageFilter
+  : public
+    UnaryFunctorImageFilter< TInputImage, TOutputMatrix,
+                             Functor::SymmetricEigenVectorAnalysisFunction<
+                                           typename TInputImage::PixelType,
+                                           typename TOutputImage::PixelType,
+                                           typename TOutputMatrix::PixelType > >
 {
 public:
   /** Standard class typedefs. */

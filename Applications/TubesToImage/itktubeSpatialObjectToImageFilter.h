@@ -45,9 +45,9 @@ template< unsigned int ObjectDimension, class TOutputImage,
           class TRadiusImage = Image< float, TOutputImage::ImageDimension >,
           class TTangentImage = Image< Vector< float, TOutputImage::ImageDimension >,
                                        TOutputImage::ImageDimension > >
-class TubeSpatialObjectToImageFilter :
-  public SpatialObjectToImageFilter< SpatialObject<ObjectDimension>,
-                                     TOutputImage>
+class TubeSpatialObjectToImageFilter
+  : public SpatialObjectToImageFilter< SpatialObject< ObjectDimension >,
+                                       TOutputImage >
 {
 public:
 

@@ -59,7 +59,7 @@ namespace tube
 
 template< class TInputImage, class TOutputImage >
 class AnisotropicCoherenceEnhancingDiffusionImageFilter
-  : public AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
+  : public AnisotropicDiffusionTensorImageFilter< TInputImage, TOutputImage >
 {
 public:
   /** Standard class typedefs */

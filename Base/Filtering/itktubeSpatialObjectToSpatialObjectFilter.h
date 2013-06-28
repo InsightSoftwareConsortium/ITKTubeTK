@@ -37,8 +37,8 @@ namespace tube
  * a SpatialObject as output.
  */
 template< class TInputSpatialObject, class TOutputSpatialObject >
-class SpatialObjectToSpatialObjectFilter :
-  public SpatialObjectSource< TOutputSpatialObject >
+class SpatialObjectToSpatialObjectFilter
+  : public SpatialObjectSource< TOutputSpatialObject >
 {
 public:
   /** Standard class typedefs */

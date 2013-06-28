@@ -45,8 +45,9 @@ namespace Function
  * outside the UpperBound or LowerBound are given a weight of zero.
  */
 template< class TTubePoint, class TOperatorValue = double >
-class TubeParametricExponentialWithBoundsResolutionWeightFunction:
-  public TubeParametricExponentialResolutionWeightFunction< TTubePoint, TOperatorValue >
+class TubeParametricExponentialWithBoundsResolutionWeightFunction
+  : public TubeParametricExponentialResolutionWeightFunction< TTubePoint,
+                                                              TOperatorValue >
 {
 public:
   typedef TubeParametricExponentialWithBoundsResolutionWeightFunction

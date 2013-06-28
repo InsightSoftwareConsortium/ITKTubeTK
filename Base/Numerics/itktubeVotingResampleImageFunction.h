@@ -50,8 +50,8 @@ namespace tube
  * \ingroup ImageFunctions ImageInterpolators
  */
 template< class TInputImage, class TCoordRep = float >
-class VotingResampleImageFunction :
-  public InterpolateImageFunction<TInputImage,TCoordRep>
+class VotingResampleImageFunction
+  : public InterpolateImageFunction< TInputImage, TCoordRep >
 {
 public:
   /** Standard class typedefs. */

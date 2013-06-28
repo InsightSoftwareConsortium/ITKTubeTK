@@ -51,7 +51,7 @@ namespace tube
  */
 template< class TImageType >
 class AnisotropicDiffusionTensorFunction
-  : public FiniteDifferenceFunction<TImageType>
+  : public FiniteDifferenceFunction< TImageType >
 {
 public:
   /** Standard class typedefs. */

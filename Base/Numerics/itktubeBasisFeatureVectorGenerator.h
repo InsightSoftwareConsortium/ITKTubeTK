@@ -40,8 +40,7 @@ namespace tube
 {
 
 template< class ImageT, class LabelmapT >
-class BasisFeatureVectorGenerator
-: public FeatureVectorGenerator< ImageT >
+class BasisFeatureVectorGenerator : public FeatureVectorGenerator< ImageT >
 {
 public:
 

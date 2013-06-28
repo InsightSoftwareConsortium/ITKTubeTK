@@ -42,8 +42,7 @@ namespace tube
 {
 
 template< class ImageT, class LabelmapT >
-class RidgeSeedFilter :
-  public Object
+class RidgeSeedFilter : public Object
 {
 public:
 

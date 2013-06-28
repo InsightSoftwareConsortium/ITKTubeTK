@@ -51,7 +51,7 @@ namespace tube
  */
 template< class TInputImage, class TOutputImage >
 class AnisotropicDiffusionTensorImageFilter
-  : public FiniteDifferenceImageFilter<TInputImage, TOutputImage>
+  : public FiniteDifferenceImageFilter< TInputImage, TOutputImage >
 {
 public:
   /** Standard class typedefs */

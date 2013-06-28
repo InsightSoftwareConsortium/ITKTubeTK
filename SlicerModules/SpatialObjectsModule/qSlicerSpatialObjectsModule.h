@@ -33,8 +33,8 @@ class qSlicerAbstractModuleWidget;
 class qSlicerSpatialObjectsModulePrivate;
 
 /// \ingroup Slicer_QtModules_SpatialObjects
-class Q_SLICER_QTMODULES_SPATIALOBJECTS_EXPORT qSlicerSpatialObjectsModule :
-  public qSlicerLoadableModule
+class Q_SLICER_QTMODULES_SPATIALOBJECTS_EXPORT qSlicerSpatialObjectsModule
+  : public qSlicerLoadableModule
 {
   Q_OBJECT
   Q_INTERFACES(qSlicerLoadableModule);

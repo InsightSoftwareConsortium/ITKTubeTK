@@ -50,8 +50,8 @@ namespace tube
  */
 
 template< class TInputImage, class TOutputImage >
-class OtsuThresholdMaskedImageFilter :
-    public ImageToImageFilter< TInputImage, TOutputImage >
+class OtsuThresholdMaskedImageFilter
+  : public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
   /** Standard Self typedef */

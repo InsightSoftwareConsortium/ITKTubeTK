@@ -54,8 +54,7 @@ namespace tube
 {
 
 template< class TPixel, unsigned int TDimension >
-class BlendCostFunction
-: public SingleValuedCostFunction
+class BlendCostFunction : public SingleValuedCostFunction
 {
 public:
 
@@ -260,8 +259,7 @@ private:
 }; // End class BlendCostFunction
 
 template< class TPixel, unsigned int TDimension >
-class BlendScaleCostFunction
-: public SingleValuedCostFunction
+class BlendScaleCostFunction : public SingleValuedCostFunction
 {
 public:
 

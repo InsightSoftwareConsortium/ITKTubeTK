@@ -50,8 +50,8 @@ namespace itk
  * \ingroup ImageToImageFilter
  */
 template< class TInputImage, class TOutputImage, class TOperatorValue = float >
-class GradientBasedAngleOfIncidenceImageFilter :
-  public ImageToImageFilter< TInputImage, TOutputImage >
+class GradientBasedAngleOfIncidenceImageFilter
+  : public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
   /** Standard class typedefs. */

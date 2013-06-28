@@ -37,7 +37,7 @@ namespace tube
  */
 class UserFunction2
 {
-public :
+public:
 
   virtual ~UserFunction2( void ) = 0;
 
@@ -53,8 +53,7 @@ inline UserFunction2::~UserFunction2( void )
 
 } // End namespace tube
 
-class MyFunc2 :
-public tube::UserFunction2
+class MyFunc2 : public tube::UserFunction2
 {
 public:
 

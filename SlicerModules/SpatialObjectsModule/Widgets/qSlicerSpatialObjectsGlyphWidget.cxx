@@ -30,8 +30,8 @@ limitations under the License.
 #include <vtkMRMLSpatialObjectsDisplayPropertiesNode.h>
 
 //------------------------------------------------------------------------------
-class qSlicerSpatialObjectsGlyphWidgetPrivate :
-  public Ui_qSlicerSpatialObjectsGlyphWidget
+class qSlicerSpatialObjectsGlyphWidgetPrivate
+  : public Ui_qSlicerSpatialObjectsGlyphWidget
 {
 Q_DECLARE_PUBLIC(qSlicerSpatialObjectsGlyphWidget);
 

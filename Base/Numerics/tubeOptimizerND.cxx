@@ -31,7 +31,7 @@ limitations under the License.
 namespace tube
 {
 
-class OptValFuncND : public UserFunction<double, double>
+class OptValFuncND : public UserFunction< double, double >
 {
 public:
   OptValFuncND( OptimizerND * newOpt )
@@ -52,7 +52,7 @@ private:
 
 }; // End class OptValFuncND
 
-class OptDerivFuncND : public UserFunction<double, double>
+class OptDerivFuncND : public UserFunction< double, double >
 {
 public:
   OptDerivFuncND( OptimizerND * newOpt )

@@ -50,8 +50,8 @@ class vtkExtractPolyDataGeometry;
 class vtkPlanes;
 class vtkCleanPolyData;
 
-class VTK_SLICER_SPATIALOBJECTS_MODULE_MRML_EXPORT vtkMRMLSpatialObjectsNode :
-  public vtkMRMLModelNode
+class VTK_SLICER_SPATIALOBJECTS_MODULE_MRML_EXPORT vtkMRMLSpatialObjectsNode
+  : public vtkMRMLModelNode
 {
 public:
   typedef itk::GroupSpatialObject<3> TubeNetType;

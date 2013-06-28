@@ -40,9 +40,9 @@ namespace tube
 {
 
 template< class ImageT >
-class NJetFeatureVectorGenerator :
-  public FeatureVectorGenerator<
-    Image< typename ImageT::PixelType, ImageT::ImageDimension > >
+class NJetFeatureVectorGenerator
+  : public FeatureVectorGenerator< Image< typename ImageT::PixelType,
+                                          ImageT::ImageDimension > >
 {
 public:
 

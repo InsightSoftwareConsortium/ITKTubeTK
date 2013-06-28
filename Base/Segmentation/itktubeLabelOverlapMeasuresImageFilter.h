@@ -44,8 +44,8 @@ namespace tube
  * \ingroup MultiThreaded
  */
 template< class TLabelImage >
-class LabelOverlapMeasuresImageFilter :
-    public InPlaceImageFilter< TLabelImage >
+class LabelOverlapMeasuresImageFilter
+  : public InPlaceImageFilter< TLabelImage >
 {
 public:
   /** Standard Self typedef */

@@ -36,8 +36,9 @@ namespace tube
  * \sa SubSampleTubeTreeSpatialObjectFilter
  */
 template< class TTubeSpatialObject >
-class SubSampleTubeSpatialObjectFilter :
-  public SpatialObjectToSpatialObjectFilter< TTubeSpatialObject, TTubeSpatialObject >
+class SubSampleTubeSpatialObjectFilter
+  : public SpatialObjectToSpatialObjectFilter< TTubeSpatialObject,
+                                               TTubeSpatialObject >
 {
 public:
   /** Standard class typedefs. */

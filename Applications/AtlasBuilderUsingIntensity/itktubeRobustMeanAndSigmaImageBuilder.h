@@ -50,10 +50,9 @@ namespace tube
  */
 template< class TInputImageType, class TOutputMeanImageType,
           class TOutputSigmaImageType >
-class RobustMeanAndSigmaImageBuilder :
-  public MeanAndSigmaImageBuilder< TInputImageType,
-                                   TOutputMeanImageType,
-                                   TOutputSigmaImageType>
+class RobustMeanAndSigmaImageBuilder
+  : public MeanAndSigmaImageBuilder< TInputImageType, TOutputMeanImageType,
+                                     TOutputSigmaImageType >
 {
 public:
 

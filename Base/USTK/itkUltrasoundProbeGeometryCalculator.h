@@ -52,8 +52,8 @@ namespace tube
  * median of the first non-background values determine the output
  * StartOfAcquisitionRadius.
  */
-template< class TInputImage > class UltrasoundProbeGeometryCalculator
-  : public ProcessObject
+template< class TInputImage >
+class UltrasoundProbeGeometryCalculator : public ProcessObject
 {
 public:
   /** Standard class typedefs. */

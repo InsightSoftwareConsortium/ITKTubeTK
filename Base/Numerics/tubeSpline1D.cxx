@@ -28,7 +28,7 @@ limitations under the License.
 namespace tube
 {
 
-class Spline1DValFunc : public UserFunction<double, double>
+class Spline1DValFunc : public UserFunction< double, double >
 {
 public:
   Spline1DValFunc(Spline1D * newSpline)
@@ -49,7 +49,7 @@ protected:
 
 }; // End class Spline1DValFunc
 
-class Spline1DDerivFunc : public UserFunction<double, double>
+class Spline1DDerivFunc : public UserFunction< double, double >
 {
 public:
   Spline1DDerivFunc(Spline1D * newSpline)

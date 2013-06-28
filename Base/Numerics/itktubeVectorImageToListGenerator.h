@@ -64,8 +64,7 @@ namespace Statistics
  * \sa VectorImageToListAdaptor
  */
 template< class TImage, class TMaskImage >
-class VectorImageToListGenerator :
-  public ProcessObject
+class VectorImageToListGenerator : public ProcessObject
 {
 public:
   /** Standard class typedefs */

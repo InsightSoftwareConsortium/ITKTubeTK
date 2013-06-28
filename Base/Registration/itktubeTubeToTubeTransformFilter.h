@@ -52,8 +52,8 @@ namespace tube
  */
 template< class TTransformType, unsigned int TDimension >
 class TubeToTubeTransformFilter
-: public SpatialObjectToSpatialObjectFilter<
-  GroupSpatialObject<TDimension>, GroupSpatialObject<TDimension> >
+  : public SpatialObjectToSpatialObjectFilter< GroupSpatialObject< TDimension >,
+                                               GroupSpatialObject< TDimension > >
 {
 public:
 

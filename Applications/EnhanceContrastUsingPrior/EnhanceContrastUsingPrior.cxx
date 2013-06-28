@@ -54,8 +54,7 @@ namespace tube
 {
 
 template< class TPixel, unsigned int TDimension >
-class ContrastCostFunction
-: public SingleValuedCostFunction
+class ContrastCostFunction : public SingleValuedCostFunction
 {
 public:
 
