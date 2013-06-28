@@ -46,9 +46,9 @@ template< unsigned int ObjectDimension, class TOutputImage,
           class TTangentImage = Image< itk::Vector< float,
                                                     TOutputImage::ImageDimension >,
                                        TOutputImage::ImageDimension > >
-class TubeSpatialObjectToImageFilter :
-  public SpatialObjectToImageFilter< SpatialObject<ObjectDimension>,
-                                     TOutputImage>
+class TubeSpatialObjectToImageFilter
+  : public SpatialObjectToImageFilter< SpatialObject< ObjectDimension >,
+                                       TOutputImage >
 {
 public:
 

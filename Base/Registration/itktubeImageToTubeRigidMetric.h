@@ -59,7 +59,7 @@ template< class TFixedImage, class TMovingSpatialObject,
             Function::TubeExponentialResolutionWeightFunction<
             typename TTubeSpatialObject::TubePointType > >
 class ImageToTubeRigidMetric
-: public ImageToSpatialObjectMetric< TFixedImage, TMovingSpatialObject >
+  : public ImageToSpatialObjectMetric< TFixedImage, TMovingSpatialObject >
 {
 public:
   /** Standard class typedefs. */

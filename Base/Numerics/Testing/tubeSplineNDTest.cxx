@@ -38,7 +38,7 @@ limitations under the License.
 #include <cstdlib>
 #include <iostream>
 
-class MySANDFunc : public tube::UserFunction< vnl_vector<int>, double >
+class MySANDFunc : public tube::UserFunction< vnl_vector< int >, double >
 {
 private:
   double cVal;
@@ -57,7 +57,7 @@ public:
 
 }; // End class MySANDFunc
 
-class MySANDFuncV : public tube::UserFunction< vnl_vector<double>, double >
+class MySANDFuncV : public tube::UserFunction< vnl_vector< double >, double >
 {
 private:
   double cVal;
@@ -76,7 +76,8 @@ public:
 
 }; // End class MySANDFuncV
 
-class MySANDFuncD : public tube::UserFunction< vnl_vector<double>, vnl_vector<double> >
+class MySANDFuncD : public tube::UserFunction< vnl_vector< double >,
+                                               vnl_vector< double > >
 {
 private:
   vnl_vector<double> cDeriv;

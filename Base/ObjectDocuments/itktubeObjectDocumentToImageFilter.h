@@ -44,8 +44,9 @@ namespace tube
  */
 
 template< class TInputObjectDocument, class TOutputImageType >
-class ObjectDocumentToImageFilter :
-  public ObjectDocumentToObjectSource<TInputObjectDocument, TOutputImageType::ImageDimension>
+class ObjectDocumentToImageFilter
+  : public ObjectDocumentToObjectSource< TInputObjectDocument,
+                                         TOutputImageType::ImageDimension >
 {
 public:
 

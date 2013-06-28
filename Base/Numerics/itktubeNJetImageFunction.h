@@ -45,8 +45,7 @@ namespace tube
  * This class is templated over the input image type.
  */
 template< class TInputImage >
-class NJetImageFunction :
-public Object // ImageFunction< TInputImage, double >
+class NJetImageFunction : public Object
 {
 public:
   /**

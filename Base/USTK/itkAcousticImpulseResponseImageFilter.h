@@ -62,8 +62,8 @@ namespace itk
  * \ingroup ImageToImageFilter
  */
 template< class TInputImage, class TOutputImage, class TOperatorValue = float >
-class AcousticImpulseResponseImageFilter :
-  public ImageToImageFilter< TInputImage, TOutputImage >
+class AcousticImpulseResponseImageFilter
+  : public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
   /** Standard class typedefs. */

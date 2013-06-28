@@ -47,7 +47,7 @@ namespace tube
  * \class RadiusExtractorMedialnessFunc
  */
 template< class ImageT >
-class RadiusExtractorMedialnessFunc : public ::tube::UserFunction<int, double>
+class RadiusExtractorMedialnessFunc : public ::tube::UserFunction< int, double >
 {
 public:
 

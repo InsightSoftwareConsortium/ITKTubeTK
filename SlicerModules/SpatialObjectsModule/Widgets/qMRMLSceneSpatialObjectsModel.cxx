@@ -34,8 +34,8 @@ limitations under the License.
 #include <vtkMRMLSpatialObjectsGlyphDisplayNode.h>
 
 
-class qMRMLSceneSpatialObjectsModelPrivate :
-  public qMRMLSceneDisplayableModelPrivate
+class qMRMLSceneSpatialObjectsModelPrivate
+  : public qMRMLSceneDisplayableModelPrivate
 {
 protected:
   Q_DECLARE_PUBLIC(qMRMLSceneSpatialObjectsModel);

@@ -34,7 +34,7 @@ limitations under the License.
 
 #include <iostream>
 
-class MyNDFunc : public tube::UserFunction< vnl_vector<double>, double >
+class MyNDFunc : public tube::UserFunction< vnl_vector< double >, double >
 {
 public:
   MyNDFunc( void )
@@ -53,7 +53,8 @@ private:
 
 }; // End class MyNDFunc
 
-class MyNDFuncD : public tube::UserFunction< vnl_vector<double>, vnl_vector<double> >
+class MyNDFuncD : public tube::UserFunction< vnl_vector< double >,
+                                             vnl_vector< double > >
 {
 public:
   MyNDFuncD( void )

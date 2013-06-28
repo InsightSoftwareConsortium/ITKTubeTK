@@ -37,8 +37,8 @@ namespace tube
  * \sa ParameterSerializer
  */
 template< class TAcousticImpulseResponseImageFilter >
-class AcousticImpulseResponseImageFilterSerializer :
-  public ImageToImageFilterSerializer< typename TAcousticImpulseResponseImageFilter::Superclass >
+class AcousticImpulseResponseImageFilterSerializer
+  : public ImageToImageFilterSerializer< typename TAcousticImpulseResponseImageFilter::Superclass >
 {
 public:
   /** Standard class typedefs. */

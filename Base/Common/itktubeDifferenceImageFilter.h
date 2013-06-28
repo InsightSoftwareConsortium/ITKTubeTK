@@ -45,8 +45,8 @@ namespace tube
  * \ingroup IntensityImageFilters   Multithreaded
  */
 template< class TInputImage, class TOutputImage >
-class DifferenceImageFilter :
-    public ImageToImageFilter<TInputImage, TOutputImage>
+class DifferenceImageFilter
+  : public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
   /** Standard class typedefs. */

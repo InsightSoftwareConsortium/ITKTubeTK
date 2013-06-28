@@ -43,8 +43,8 @@ namespace itk
  * \ingroup ImageToImageFilter
  */
 template< class TInputImage, class TOutputImage >
-class AngleOfIncidenceImageFilter :
-  public ImageToImageFilter< TInputImage, TOutputImage >
+class AngleOfIncidenceImageFilter
+  : public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
   /** Standard class typedefs. */

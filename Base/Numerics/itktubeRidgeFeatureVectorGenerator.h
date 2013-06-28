@@ -40,9 +40,9 @@ namespace tube
 {
 
 template< class ImageT >
-class RidgeFeatureVectorGenerator :
-  public FeatureVectorGenerator<
-    Image< typename ImageT::PixelType, ImageT::ImageDimension > >
+class RidgeFeatureVectorGenerator
+  : public FeatureVectorGenerator< Image< typename ImageT::PixelType,
+                                          ImageT::ImageDimension > >
 {
 public:
 

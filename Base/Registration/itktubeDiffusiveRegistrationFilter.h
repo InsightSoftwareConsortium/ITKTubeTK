@@ -118,9 +118,8 @@ struct EnergiesStruct
 
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 class DiffusiveRegistrationFilter
-  : public PDEDeformableRegistrationFilter< TFixedImage,
-                                           TMovingImage,
-                                           TDeformationField >
+  : public PDEDeformableRegistrationFilter< TFixedImage, TMovingImage,
+                                            TDeformationField >
 {
 public:
   /** Standard class typedefs. */

@@ -37,8 +37,8 @@ namespace itk
  * classified tissues.
  */
 template< class TInputImage, class TOutputImage, class TLookupTable >
-class LabelMapToAcousticImpedanceImageFilter :
-  public UnaryFunctorImageFilter< TInputImage, TOutputImage,
+class LabelMapToAcousticImpedanceImageFilter
+  : public UnaryFunctorImageFilter< TInputImage, TOutputImage,
     Functor::LabelMapToAcousticImpedanceFunctor< typename TInputImage::PixelType,
       typename TOutputImage::PixelType, TLookupTable > >
 {

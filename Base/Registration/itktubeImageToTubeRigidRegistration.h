@@ -72,8 +72,8 @@ namespace tube
 
 template< class TFixedImage, class TMovingSpatialObject, class TMovingTube >
 class ImageToTubeRigidRegistration
-: public ImageToSpatialObjectRegistrationMethod< TFixedImage,
-  TMovingSpatialObject >
+  : public ImageToSpatialObjectRegistrationMethod< TFixedImage,
+                                                   TMovingSpatialObject >
 {
 public:
   typedef ImageToTubeRigidRegistration                  Self;
@@ -92,7 +92,7 @@ public:
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( ImageToTubeRigidRegistration,
-    ImageToSpatialObjectRegistrationMethod );
+                ImageToSpatialObjectRegistrationMethod );
 
   typedef typename Superclass::MetricType  MetricType;
 

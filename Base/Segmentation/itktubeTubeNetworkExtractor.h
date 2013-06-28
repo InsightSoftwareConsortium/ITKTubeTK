@@ -39,7 +39,7 @@ namespace tube
  */
 
 template< class TInputImage, class TInputMask >
-class TubeNetworkExtractor : public TubeExtractor<TInputImage>
+class TubeNetworkExtractor : public TubeExtractor< TInputImage >
 {
 public:
 

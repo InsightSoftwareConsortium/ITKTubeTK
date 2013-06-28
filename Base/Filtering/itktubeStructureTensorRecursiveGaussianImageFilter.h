@@ -48,8 +48,8 @@ template< class TInputImage,
           class TOutputImage = Image< SymmetricSecondRankTensor<
             typename NumericTraits< typename TInputImage::PixelType >::RealType,
             TInputImage::ImageDimension >, TInputImage::ImageDimension > >
-class StructureTensorRecursiveGaussianImageFilter :
-    public ImageToImageFilter<TInputImage,TOutputImage>
+class StructureTensorRecursiveGaussianImageFilter
+  : public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
   /** Standard class typedefs. */
