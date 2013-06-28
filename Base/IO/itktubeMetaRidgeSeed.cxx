@@ -394,7 +394,7 @@ M_SetupWriteFields( void )
 {
   MetaLDA::M_SetupWriteFields();
 
-  if( m_RidgeSeedScales.size() > 0 )
+  if( !m_RidgeSeedScales.empty() )
     {
     m_RidgeSeedScalesTmp.set_size( m_RidgeSeedScales.size() );
     for( unsigned int i = 0; i < m_RidgeSeedScales.size(); i++ )
