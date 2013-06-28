@@ -61,8 +61,8 @@ public:
                                     TOutputMeanImageType,
                                     TOutputSigmaImageType>  Superclass;
 
-  typedef SmartPointer<Self>                                Pointer;
-  typedef SmartPointer<const Self>                          ConstPointer;
+  typedef SmartPointer< Self >                              Pointer;
+  typedef SmartPointer< const Self >                        ConstPointer;
 
   itkNewMacro( Self );
   itkTypeMacro( RobustMeanAndSigmaImageBuilder, MeanAndSigmaImageBuilder );

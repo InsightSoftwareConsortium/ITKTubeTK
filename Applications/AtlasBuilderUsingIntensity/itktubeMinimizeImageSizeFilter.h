@@ -55,8 +55,8 @@ public:
   typedef ImageToImageFilter< TInputImage,
                               TInputImage >       Superclass;
 
-  typedef SmartPointer<Self>                      Pointer;
-  typedef SmartPointer<const Self>                ConstPointer;
+  typedef SmartPointer< Self >                    Pointer;
+  typedef SmartPointer< const Self >              ConstPointer;
 
   itkNewMacro( Self );
   itkTypeMacro( MinimizeImageSizeFilter, ImageToImageFilter );

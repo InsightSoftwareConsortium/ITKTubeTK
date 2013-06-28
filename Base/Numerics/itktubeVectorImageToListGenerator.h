@@ -71,7 +71,7 @@ public:
   typedef VectorImageToListGenerator        Self;
   typedef ProcessObject                     Superclass;
   typedef SmartPointer< Self >              Pointer;
-  typedef SmartPointer<const Self>          ConstPointer;
+  typedef SmartPointer< const Self >        ConstPointer;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro( VectorImageToListGenerator, ProcessObject );

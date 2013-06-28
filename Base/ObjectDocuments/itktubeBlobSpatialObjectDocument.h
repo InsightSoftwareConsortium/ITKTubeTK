@@ -49,7 +49,7 @@ public:
   typedef BlobSpatialObjectDocument             Self;
   typedef SpatialObjectDocument                 Superclass;
 
-  typedef SmartPointer<Self>                    Pointer;
+  typedef SmartPointer< Self >                  Pointer;
   typedef SmartPointer< const Self >            ConstPointer;
 
   typedef Superclass::DateType                  DateType;

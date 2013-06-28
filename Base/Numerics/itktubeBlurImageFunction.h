@@ -47,8 +47,8 @@ public:
    * Standard "Self" typedef */
   typedef BlurImageFunction                            Self;
   typedef ImageFunction<TInputImage, double, double>   Superclass;
-  typedef SmartPointer<Self>                           Pointer;
-  typedef SmartPointer<const Self>                     ConstPointer;
+  typedef SmartPointer< Self >                         Pointer;
+  typedef SmartPointer< const Self >                   ConstPointer;
 
   itkTypeMacro( BlurImageFunction, ImageFunction );
 

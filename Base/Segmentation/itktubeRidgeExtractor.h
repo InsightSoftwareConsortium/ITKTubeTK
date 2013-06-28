@@ -60,8 +60,8 @@ public:
 
   typedef RidgeExtractor             Self;
   typedef Object                     Superclass;
-  typedef SmartPointer<Self>         Pointer;
-  typedef SmartPointer<const Self>   ConstPointer;
+  typedef SmartPointer< Self >       Pointer;
+  typedef SmartPointer< const Self > ConstPointer;
 
   itkTypeMacro( RidgeExtractor, Object );
 

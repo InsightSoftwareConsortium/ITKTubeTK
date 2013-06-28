@@ -51,7 +51,7 @@ public:
   typedef SpatialObjectDocument                 Self;
   typedef ObjectDocument                        Superclass;
 
-  typedef SmartPointer<Self>                    Pointer;
+  typedef SmartPointer< Self >                  Pointer;
   typedef SmartPointer< const Self >            ConstPointer;
 
   typedef Superclass::DateType                  DateType;

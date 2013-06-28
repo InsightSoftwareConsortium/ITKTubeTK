@@ -47,8 +47,8 @@ public:
    * Standard self typedef */
   typedef TubeNetworkExtractor             Self;
   typedef Object                           Superclass;
-  typedef SmartPointer<Self>               Pointer;
-  typedef SmartPointer<const Self>         ConstPointer;
+  typedef SmartPointer< Self >             Pointer;
+  typedef SmartPointer< const Self >       ConstPointer;
 
   itkNewMacro( Self );
   itkTypeMacro( TubeNetworkExtractor, TubeExtractor );

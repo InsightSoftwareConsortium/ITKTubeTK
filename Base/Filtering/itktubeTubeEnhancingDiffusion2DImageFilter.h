@@ -88,8 +88,8 @@ public:
 
   typedef TubeEnhancingDiffusion2DImageFilter             Self;
   typedef ImageToImageFilter<ImageType,ImageType>         Superclass;
-  typedef SmartPointer<Self>                              Pointer;
-  typedef SmartPointer<const Self>                        ConstPointer;
+  typedef SmartPointer< Self >                            Pointer;
+  typedef SmartPointer< const Self >                      ConstPointer;
 
   itkNewMacro( Self );
   itkTypeMacro( TubeEnhancingDiffusion2DImageFilter, ImageToImageFilter );

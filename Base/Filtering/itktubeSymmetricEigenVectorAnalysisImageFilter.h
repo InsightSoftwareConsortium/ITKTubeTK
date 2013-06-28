@@ -128,8 +128,8 @@ public:
                                         typename TOutputMatrix::PixelType > >
                                                                       Superclass;
 
-  typedef SmartPointer<Self>                Pointer;
-  typedef SmartPointer<const Self>          ConstPointer;
+  typedef SmartPointer< Self >              Pointer;
+  typedef SmartPointer< const Self >        ConstPointer;
 
   typedef typename Superclass::OutputImageType    OutputImageType;
   typedef typename TOutputImage::PixelType        OutputPixelType;

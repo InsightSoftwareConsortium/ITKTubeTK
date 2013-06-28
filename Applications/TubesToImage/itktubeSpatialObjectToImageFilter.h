@@ -55,8 +55,8 @@ public:
   typedef TubeSpatialObjectToImageFilter                 Self;
   typedef SpatialObjectToImageFilter< SpatialObject<ObjectDimension>,
                                       TOutputImage>      SuperClass;
-  typedef SmartPointer<Self>                             Pointer;
-  typedef SmartPointer<const Self>                       ConstPointer;
+  typedef SmartPointer< Self >                           Pointer;
+  typedef SmartPointer< const Self >                     ConstPointer;
 
   /**Tube class typedef **/
   typedef TOutputImage                                   OutputImageType;
