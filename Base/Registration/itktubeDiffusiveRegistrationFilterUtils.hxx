@@ -59,11 +59,11 @@ DiffusiveRegistrationFilterUtils
 /**
  * Helper function to check whether the attributes of an image matches template
  */
-template< class CheckedImageType, class TemplateImageType >
+template< class TCheckedImage, class TTemplateImage >
 bool
 DiffusiveRegistrationFilterUtils
-::CompareImageAttributes( const CheckedImageType * image,
-                          const TemplateImageType * templateImage )
+::CompareImageAttributes( const TCheckedImage * image,
+                          const TTemplateImage * templateImage )
 {
   assert( image );
   assert( templateImage );
@@ -82,17 +82,17 @@ DiffusiveRegistrationFilterUtils
 /**
  * Resample an image to match a template
  */
-template< class ResampleImagePointer, class TemplateImagePointer >
+template< class TResampleImagePointer, class TemplateImagePointer >
 void
 DiffusiveRegistrationFilterUtils
 ::ResampleImageNearestNeighbor(
-    const ResampleImagePointer & highResolutionImage,
+    const TResampleImagePointer & highResolutionImage,
     const TemplateImagePointer & templateImage,
-    ResampleImagePointer & resampledImage )
+    TResampleImagePointer & resampledImage )
 {
   // We have to implement nearest neighbors by hand, since we are dealing with
   // pixel types that do not have Numeric Traits
-  typedef typename ResampleImagePointer::ObjectType ResampleImageType;
+  typedef typename TResampleImagePointer::ObjectType ResampleImageType;
 
   // Create the resized resampled image
   resampledImage = ResampleImageType::New();
@@ -127,17 +127,17 @@ DiffusiveRegistrationFilterUtils
 /**
  * Resample an image to match a template
  */
-template< class ResampleImagePointer, class TemplateImagePointer >
+template< class TResampleImagePointer, class TemplateImagePointer >
 void
 DiffusiveRegistrationFilterUtils
-::ResampleImageLinear( const ResampleImagePointer & highResolutionImage,
+::ResampleImageLinear( const TResampleImagePointer & highResolutionImage,
                        const TemplateImagePointer & templateImage,
-                       ResampleImagePointer & resampledImage )
+                       TResampleImagePointer & resampledImage )
 {
   // Do linear interpolation
   typedef itk::ResampleImageFilter
-      < typename ResampleImagePointer::ObjectType,
-        typename ResampleImagePointer::ObjectType > ResampleFilterType;
+      < typename TResampleImagePointer::ObjectType,
+        typename TResampleImagePointer::ObjectType > ResampleFilterType;
   typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();
   resampler->SetInput( highResolutionImage );
   resampler->SetOutputParametersFromImage( templateImage );
@@ -148,19 +148,19 @@ DiffusiveRegistrationFilterUtils
 /**
  * Resample a vector image to match a template
  */
-template< class VectorResampleImagePointer, class TemplateImagePointer >
+template< class TVectorResampleImagePointer, class TemplateImagePointer >
 void
 DiffusiveRegistrationFilterUtils
 ::VectorResampleImageLinear(
-    const VectorResampleImagePointer & highResolutionImage,
+    const TVectorResampleImagePointer & highResolutionImage,
     const TemplateImagePointer & templateImage,
-    VectorResampleImagePointer & resampledImage,
+    TVectorResampleImagePointer & resampledImage,
     bool normalize )
 {
   // Do linear interpolation
   typedef itk::VectorResampleImageFilter
-      < typename VectorResampleImagePointer::ObjectType,
-        typename VectorResampleImagePointer::ObjectType > ResampleFilterType;
+      < typename TVectorResampleImagePointer::ObjectType,
+        typename TVectorResampleImagePointer::ObjectType > ResampleFilterType;
   typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();
   resampler->SetInput( highResolutionImage );
   resampler->SetOutputOrigin( templateImage->GetOrigin() );
@@ -181,12 +181,12 @@ DiffusiveRegistrationFilterUtils
 /**
  * Normalizes a vector field to ensure each vector has length 1
  */
-template< class VectorImagePointer >
+template< class TVectorImagePointer >
 void
 DiffusiveRegistrationFilterUtils
-::NormalizeVectorField( VectorImagePointer & image )
+::NormalizeVectorField( TVectorImagePointer & image )
 {
-  typedef ImageRegionIterator< typename VectorImagePointer::ObjectType >
+  typedef ImageRegionIterator< typename TVectorImagePointer::ObjectType >
       DeformationVectorImageRegionType;
   DeformationVectorImageRegionType vectorIt(
       image, image->GetLargestPossibleRegion() );
@@ -200,12 +200,12 @@ DiffusiveRegistrationFilterUtils
 /**
  * Returns whether an image has intensity range between 0 and 1
  */
-template< class ImageType >
+template< class TImage >
 bool
 DiffusiveRegistrationFilterUtils
-::IsIntensityRangeBetween0And1( ImageType * image )
+::IsIntensityRangeBetween0And1( TImage * image )
 {
-  typedef itk::MinimumMaximumImageCalculator< ImageType > CalculatorType;
+  typedef itk::MinimumMaximumImageCalculator< TImage > CalculatorType;
   typename CalculatorType::Pointer calculator = CalculatorType::New();
   calculator->SetImage( image );
   calculator->Compute();
@@ -220,21 +220,21 @@ DiffusiveRegistrationFilterUtils
 /**
  * Update x, y, z components of a deformation field
  */
-template< class DeformationFieldType, class DeformationComponentImageArrayType >
+template< class TDeformationField, class TDeformationComponentImageArray >
 void
 DiffusiveRegistrationFilterUtils
 ::ExtractXYZComponentsFromDeformationField(
-    const DeformationFieldType * deformationField,
-    DeformationComponentImageArrayType& deformationComponentImages )
+    const TDeformationField * deformationField,
+    TDeformationComponentImageArray& deformationComponentImages )
 {
   assert( deformationField );
 
   typedef itk::VectorIndexSelectionCastImageFilter
-      < DeformationFieldType,
-      typename DeformationComponentImageArrayType::ValueType::ObjectType >
+      < TDeformationField,
+      typename TDeformationComponentImageArray::ValueType::ObjectType >
       VectorIndexSelectionFilterType;
   typename VectorIndexSelectionFilterType::Pointer indexSelector;
-  for( unsigned int i = 0; i < DeformationFieldType::ImageDimension; i++ )
+  for( unsigned int i = 0; i < TDeformationField::ImageDimension; i++ )
     {
     indexSelector = VectorIndexSelectionFilterType::New();
     indexSelector->SetInput( deformationField );

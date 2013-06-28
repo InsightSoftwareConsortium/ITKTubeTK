@@ -118,12 +118,12 @@ ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y)
 
 /**
  * Compute the Euclidean distance  */
-template< class PointType >
+template< class TPoint >
 double
-ComputeEuclideanDistance(PointType x, PointType y)
+ComputeEuclideanDistance( TPoint x, TPoint y )
 {
   double s = 0;
-  for(unsigned int i=0; i<PointType::PointDimension; i++)
+  for( unsigned int i = 0; i < TPoint::PointDimension; i++)
     {
     s += (x[i]-y[i])*(x[i]-y[i]);
     }

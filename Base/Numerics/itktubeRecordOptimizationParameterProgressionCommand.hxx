@@ -34,9 +34,9 @@ namespace itk
 namespace tube
 {
 
-template< unsigned int VNumberOfParameters, class ParametersValueType >
+template< unsigned int VNumberOfParameters, class TParametersValue >
 RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
-  ParametersValueType >
+  TParametersValue >
 ::RecordOptimizationParameterProgressionCommand( void )
 {
   H5::Exception::dontPrint();
@@ -59,30 +59,30 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
 }
 
 
-template< unsigned int VNumberOfParameters, class ParametersValueType >
+template< unsigned int VNumberOfParameters, class TParametersValue >
 void
 RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
-  ParametersValueType >
+  TParametersValue >
 ::Execute( Object *caller, const EventObject & event )
 {
   this->Execute( (const itk::Object *)caller, event);
 }
 
 
-template< unsigned int VNumberOfParameters, class ParametersValueType >
+template< unsigned int VNumberOfParameters, class TParametersValue >
 H5::CompType
 RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
-  ParametersValueType >
+  TParametersValue >
 ::GetH5ParameterIterationType() const
 {
   return this->H5ParameterIterationType;
 }
 
 
-template< unsigned int VNumberOfParameters, class ParametersValueType >
+template< unsigned int VNumberOfParameters, class TParametersValue >
 void
 RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
-  ParametersValueType >
+  TParametersValue >
 ::Execute( const Object * object, const EventObject & event )
 {
   if( StartEvent().CheckEvent( &event ) )
@@ -169,10 +169,10 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
 }
 
 
-template< unsigned int VNumberOfParameters, class ParametersValueType >
+template< unsigned int VNumberOfParameters, class TParametersValue >
 void
 RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
-  ParametersValueType >
+  TParametersValue >
 ::WriteParameterProgressionToFile( void ) const
 {
   hsize_t dataspaceDimension[] = { this->m_ParameterProgression.size() };

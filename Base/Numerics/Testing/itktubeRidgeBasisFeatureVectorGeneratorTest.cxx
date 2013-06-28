@@ -55,14 +55,14 @@ int itktubeRidgeBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   typedef itk::ImageFileReader< ImageType > ReaderType;
   typedef itk::ImageFileWriter< ImageType > WriterType;
 
-  typedef itk::Image<unsigned char, Dimension>      LabelmapType;
-  typedef itk::ImageFileReader< LabelmapType >      LabelmapReaderType;
+  typedef itk::Image<unsigned char, Dimension>      LabelMapType;
+  typedef itk::ImageFileReader< LabelMapType >      LabelMapReaderType;
 
 
   // Declare the type for the Filter
   typedef itk::tube::RidgeFeatureVectorGenerator< ImageType >
     FilterType;
-  typedef itk::tube::BasisFeatureVectorGenerator< ImageType, LabelmapType >
+  typedef itk::tube::BasisFeatureVectorGenerator< ImageType, LabelMapType >
     BasisFilterType;
 
   // Create the reader
@@ -80,7 +80,7 @@ int itktubeRidgeBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   ImageType::Pointer inputImage = reader->GetOutput();
 
   // Create the mask reader
-  LabelmapReaderType::Pointer mReader = LabelmapReaderType::New();
+  LabelMapReaderType::Pointer mReader = LabelMapReaderType::New();
   mReader->SetFileName( argv[2] );
   try
     {
@@ -91,7 +91,7 @@ int itktubeRidgeBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
     std::cerr << "Exception caught during input mask read:" << std::endl << e;
     return EXIT_FAILURE;
     }
-  LabelmapType::Pointer maskImage = mReader->GetOutput();
+  LabelMapType::Pointer maskImage = mReader->GetOutput();
 
   FilterType::RidgeScalesType scales( 3 );
   scales[0] = 0.4;
@@ -106,7 +106,7 @@ int itktubeRidgeBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   BasisFilterType::Pointer basisFilter = BasisFilterType::New();
   basisFilter->SetInputFeatureVectorGenerator( filter.GetPointer() );
   basisFilter->SetInputImage( inputImage );
-  basisFilter->SetLabelmap( maskImage );
+  basisFilter->SetLabelMap( maskImage );
   int objId = atoi( argv[3] );
   int bkgId = atoi( argv[4] );
   basisFilter->SetObjectId( objId );
@@ -118,7 +118,7 @@ int itktubeRidgeBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   std::cout << "Stop" << std::endl;
   std::cout << basisFilter << std::endl;
 
-  basisFilter->SetLabelmap( NULL );
+  basisFilter->SetLabelMap( NULL );
 
   WriterType::Pointer featureImage0Writer = WriterType::New();
   featureImage0Writer->SetFileName( argv[5] );

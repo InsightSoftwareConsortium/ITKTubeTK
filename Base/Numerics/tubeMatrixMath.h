@@ -83,9 +83,9 @@ void
 ComputeTqli(vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat);
 
 /** Compute the euclidean distance for two points */
-template< class PointType >
+template< class TPoint >
 double
-ComputeEuclideanDistance(PointType x, PointType y);
+ComputeEuclideanDistance(TPoint x, TPoint y);
 
 } // End namespace tube
 

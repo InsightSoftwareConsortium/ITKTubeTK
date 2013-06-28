@@ -36,19 +36,19 @@ namespace tube
  * \author Stephen R. Aylward
  * \date 11/22/99
  */
-template< class InVarT, class OutVarT >
+template< class TInVar, class TOutVar >
 class UserFunction
 {
 public:
   virtual ~UserFunction( void ) = 0;
 
   /** Derive this function */
-  virtual const OutVarT & value( const InVarT & x ) = 0;
+  virtual const TOutVar & value( const TInVar & x ) = 0;
 
 }; // End class UserFunction
 
-template< class InVarT, class OutVarT >
-inline UserFunction< InVarT, OutVarT >::~UserFunction( void )
+template< class TInVar, class TOutVar >
+inline UserFunction< TInVar, TOutVar >::~UserFunction( void )
 {
 }
 

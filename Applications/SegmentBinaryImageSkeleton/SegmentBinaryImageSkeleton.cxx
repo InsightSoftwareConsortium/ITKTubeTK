@@ -35,13 +35,13 @@ limitations under the License.
 
 #include "SegmentBinaryImageSkeletonCLP.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -56,7 +56,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   typedef unsigned char                         PixelType;
-  typedef itk::Image< PixelType,  TDimension >  ImageType;
+  typedef itk::Image< PixelType, VDimension >   ImageType;
   typedef itk::ImageFileReader< ImageType >     ReaderType;
 
   timeCollector.Start( "Load data" );
@@ -82,14 +82,14 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start("Binary Thinning");
 
   typedef itk::BinaryThinningImageFilter< ImageType, ImageType >    FilterType;
-  typedef itk::BinaryBallStructuringElement< PixelType, TDimension> SEType;
+  typedef itk::BinaryBallStructuringElement< PixelType, VDimension> SEType;
   typedef itk::BinaryDilateImageFilter< ImageType, ImageType, SEType >
                                                                     DilateType;
   typename FilterType::Pointer filter;
   typename DilateType::Pointer dilator;
 
   // Progress per iteration
-  double progressFraction = 0.8/TDimension;
+  double progressFraction = 0.8/VDimension;
 
   filter = FilterType::New();
   filter->SetInput( curImage );

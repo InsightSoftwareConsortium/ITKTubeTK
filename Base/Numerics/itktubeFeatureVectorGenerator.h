@@ -38,7 +38,7 @@ namespace itk
 namespace tube
 {
 
-template< class ImageT >
+template< class TImage >
 class FeatureVectorGenerator : public ProcessObject
 {
 public:
@@ -52,17 +52,17 @@ public:
 
   itkNewMacro( Self );
 
-  typedef ImageT                                        ImageType;
+  typedef TImage                                        ImageType;
   typedef std::vector< typename ImageType::Pointer >    ImageListType;
 
-  typedef typename ImageT::IndexType                    IndexType;
+  typedef typename TImage::IndexType                    IndexType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
-    ImageT::ImageDimension );
+    TImage::ImageDimension );
 
-  typedef typename ImageT::PixelType           FeatureValueType;
+  typedef typename TImage::PixelType           FeatureValueType;
   typedef vnl_vector< FeatureValueType >       FeatureVectorType;
-  typedef Image< FeatureValueType, ImageT::ImageDimension >
+  typedef Image< FeatureValueType, TImage::ImageDimension >
                                                FeatureImageType;
 
   typedef double                               ValueType;

@@ -40,18 +40,18 @@ limitations under the License.
 
 #include "SimulateAcquisitionArtifactsUsingPriorCLP.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 class MyMIWPFunc : public tube::UserFunction< vnl_vector< int >, double >
 {
 public:
 
-  typedef tube::CompareImageWithPrior< TPixel, TDimension > ImageEvalType;
+  typedef tube::CompareImageWithPrior< TPixel, VDimension > ImageEvalType;
   MyMIWPFunc( ImageEvalType & eval ) : m_Eval(eval), m_GoF(0)
     {
     }
@@ -73,7 +73,7 @@ private:
 
 }; // End class MyMIWPFunc
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -88,7 +88,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   typedef float                                 PixelType;
-  typedef itk::Image< PixelType,  TDimension >  ImageType;
+  typedef itk::Image< PixelType, VDimension > ImageType;
 
   /** Read input images */
   typename ImageType::Pointer inVolume;
@@ -146,7 +146,7 @@ int DoIt( int argc, char * argv[] )
     }
   progressReporter.Report( 0.2 );
 
-  typedef tube::CompareImageWithPrior< TPixel, TDimension > ImageEvalType;
+  typedef tube::CompareImageWithPrior< TPixel, VDimension > ImageEvalType;
   ImageEvalType eval;
   eval.SetVolumeImage( inVolume );
   eval.SetMaskImage( inMask );
@@ -231,8 +231,8 @@ int DoIt( int argc, char * argv[] )
     eval.SetNormalize( true );
     eval.SetProgressReporter( &progressReporter, 0.4, 0.5 );
 
-    MyMIWPFunc< TPixel, TDimension > * myFunc = new
-      MyMIWPFunc< TPixel, TDimension >( eval );
+    MyMIWPFunc< TPixel, VDimension > * myFunc = new
+      MyMIWPFunc< TPixel, VDimension >( eval );
     tube::SplineApproximation1D * spline1D = new
       tube::SplineApproximation1D();
     tube::BrentOptimizer1D * opt = new tube::BrentOptimizer1D();

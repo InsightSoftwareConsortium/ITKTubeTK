@@ -35,17 +35,17 @@ limitations under the License.
 
 #include "SegmentTubeSeedsCLP.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template< class imageT >
+template< class TImage >
 void WriteRidgeSeed( const typename imageT::Pointer & img,
   std::string base, std::string ext, int num )
 {
-  typedef itk::ImageFileWriter< imageT >     RidgeSeedImageWriterType;
+  typedef itk::ImageFileWriter< TImage >     RidgeSeedImageWriterType;
 
   typename RidgeSeedImageWriterType::Pointer rsImageWriter =
     RidgeSeedImageWriterType::New();
@@ -59,7 +59,7 @@ void WriteRidgeSeed( const typename imageT::Pointer & img,
   rsImageWriter->Update();
 }
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -69,9 +69,9 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   typedef TPixel                                   InputPixelType;
-  typedef itk::Image< InputPixelType, TDimension > InputImageType;
-  typedef itk::Image< unsigned short, TDimension > MapImageType;
-  typedef itk::Image< float, TDimension >          RidgeSeedImageType;
+  typedef itk::Image< InputPixelType, VDimension > InputImageType;
+  typedef itk::Image< unsigned short, VDimension > MapImageType;
+  typedef itk::Image< float, VDimension >          RidgeSeedImageType;
 
   typedef itk::ImageFileReader< RidgeSeedImageType >     ImageReaderType;
   typedef itk::ImageFileReader< MapImageType >     MapReaderType;
@@ -98,7 +98,7 @@ int DoIt( int argc, char * argv[] )
     typename MapReaderType::Pointer  inMapReader = MapReaderType::New();
     inMapReader->SetFileName( labelmap.c_str() );
     inMapReader->Update();
-    rsGenerator->SetLabelmap( inMapReader->GetOutput() );
+    rsGenerator->SetLabelMap( inMapReader->GetOutput() );
     rsGenerator->SetObjectId( objectId );
     timeCollector.Stop( "LoadLabelMap" );
     }
@@ -132,7 +132,7 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Start( "Update" );
     rsGenerator->Update();
     timeCollector.Stop( "Update" );
-    rsGenerator->SetLabelmap( NULL );
+    rsGenerator->SetLabelMap( NULL );
     }
 
   timeCollector.Start( "SaveTubeSeedImage" );

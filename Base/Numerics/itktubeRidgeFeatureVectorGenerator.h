@@ -39,15 +39,15 @@ namespace itk
 namespace tube
 {
 
-template< class ImageT >
+template< class TImage >
 class RidgeFeatureVectorGenerator
-  : public FeatureVectorGenerator< Image< typename ImageT::PixelType,
-                                          ImageT::ImageDimension > >
+  : public FeatureVectorGenerator< Image< typename TImage::PixelType,
+                                          TImage::ImageDimension > >
 {
 public:
 
   typedef RidgeFeatureVectorGenerator          Self;
-  typedef FeatureVectorGenerator< ImageT >     Superclass;
+  typedef FeatureVectorGenerator< TImage >     Superclass;
   typedef SmartPointer< Self >                 Pointer;
   typedef SmartPointer< const Self >           ConstPointer;
 
@@ -57,7 +57,7 @@ public:
 
   //
   itkStaticConstMacro( ImageDimension, unsigned int,
-    ImageT::ImageDimension );
+    TImage::ImageDimension );
 
   typedef typename Superclass::FeatureValueType      FeatureValueType;
 

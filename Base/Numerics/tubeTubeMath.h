@@ -29,13 +29,13 @@ limitations under the License.
 namespace tube
 {
 
-template< class TubeT >
+template< class TTube >
 bool
-ComputeTubeTangentsAndNormals( TubeT * tube );
+ComputeTubeTangentsAndNormals( TTube * tube );
 
-template< class TubePointT >
+template< class TTubePoint >
 bool
-ComputeVectorTangentsAndNormals( std::vector< TubePointT > & tube );
+ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tube );
 
 } // End namespace tube
 

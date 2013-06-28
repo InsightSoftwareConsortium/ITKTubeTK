@@ -33,13 +33,13 @@ namespace tube
 {
 
 /** Compute the tangent of the centerline of the tube */
-template< class TubeT >
-bool  ComputeTubeTangentsAndNormals( TubeT * tube )
+template< class TTube >
+bool  ComputeTubeTangentsAndNormals( TTube * tube )
 {
-  typedef typename TubeT::PointType             PointType;
-  typedef typename TubeT::TubePointType         TubePointType;
-  typedef typename TubeT::VectorType            VectorType;
-  typedef typename TubeT::CovariantVectorType   CovariantVectorType;
+  typedef typename TTube::PointType             PointType;
+  typedef typename TTube::TubePointType         TubePointType;
+  typedef typename TTube::VectorType            VectorType;
+  typedef typename TTube::CovariantVectorType   CovariantVectorType;
 
   unsigned int dimension = tube->GetObjectDimension();
 
@@ -198,13 +198,13 @@ bool  ComputeTubeTangentsAndNormals( TubeT * tube )
 }
 
 /** Compute the tangent of the centerline of the tube */
-template< class TubePointT >
-bool  ComputeVectorTangentsAndNormals( std::vector< TubePointT > & tubeV )
+template< class TTubePoint >
+bool  ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
 {
-  typedef TubePointT                                 TubePointType;
-  typedef typename TubePointT::PointType             PointType;
-  typedef typename TubePointT::VectorType            VectorType;
-  typedef typename TubePointT::CovariantVectorType   CovariantVectorType;
+  typedef TTubePoint                                 TubePointType;
+  typedef typename TTubePoint::PointType             PointType;
+  typedef typename TTubePoint::VectorType            VectorType;
+  typedef typename TTubePoint::CovariantVectorType   CovariantVectorType;
 
   unsigned int dimension = tubeV[0].GetPosition().GetPointDimension();
 

@@ -46,16 +46,16 @@ namespace tube
 /** Define the Medialness Function
  * \class RadiusExtractorMedialnessFunc
  */
-template< class ImageT >
+template< class TImage >
 class RadiusExtractorMedialnessFunc : public ::tube::UserFunction< int, double >
 {
 public:
 
-  typedef itk::VesselTubeSpatialObject< ImageT::ImageDimension >
+  typedef itk::VesselTubeSpatialObject< TImage::ImageDimension >
                                                            TubeType;
   typedef typename TubeType::TubePointType                 TubePointType;
 
-  RadiusExtractorMedialnessFunc( RadiusExtractor< ImageT > *
+  RadiusExtractorMedialnessFunc( RadiusExtractor< TImage > *
     newRadiusExtractor,
     double newMedialnessScaleStep )
     : m_KernelArray(0),
@@ -90,7 +90,7 @@ public:
     return m_KernelArray;
     }
 
-  RadiusExtractor< ImageT > * GetRadiusExtractor( void  )
+  RadiusExtractor< TImage > * GetRadiusExtractor( void  )
     {
     return m_RadiusExtractor;
     }
@@ -99,7 +99,7 @@ private:
 
   std::vector<TubePointType>             * m_KernelArray;
 
-  RadiusExtractor< ImageT >              * m_RadiusExtractor;
+  RadiusExtractor< TImage >              * m_RadiusExtractor;
 
   double                                   m_Value;
 

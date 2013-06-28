@@ -77,10 +77,10 @@ void GetImageTypes( std::vector<std::string> fileNames,
 // Helper function to check whether the attributes of input image match
 // those of the labelmap.
 //
-template< class InputImageType, class LabelmapType >
+template< class TInputImage, class TLabelMap >
 bool
-CheckImageAttributes( const InputImageType * input,
-                     const LabelmapType * mask )
+CheckImageAttributes( const TInputImage * input,
+                     const TLabelMap * mask )
 {
   assert( input );
   assert( mask );
@@ -106,27 +106,27 @@ int DoIt( int argc, char * argv[] )
 
   typedef T                                InputPixelType;
   typedef itk::Image< InputPixelType, 3 >  InputImageType;
-  typedef itk::Image< unsigned short, 3 >  LabelmapType;
+  typedef itk::Image< unsigned short, 3 >  LabelMapType;
   typedef itk::Image< float, 3 >           ProbImageType;
   typedef itk::Image< float, N >           PDFImageType;
 
   typedef itk::ImageFileReader< InputImageType >   ImageReaderType;
-  typedef itk::ImageFileReader< LabelmapType >     LabelmapReaderType;
-  typedef itk::ImageFileWriter< LabelmapType >     LabelmapWriterType;
+  typedef itk::ImageFileReader< LabelMapType >     LabelMapReaderType;
+  typedef itk::ImageFileWriter< LabelMapType >     LabelMapWriterType;
   typedef itk::ImageFileWriter< ProbImageType >    ProbImageWriterType;
   typedef itk::ImageFileWriter< PDFImageType >     PDFImageWriterType;
   typedef itk::ImageFileReader< PDFImageType >     PDFImageReaderType;
 
-  typedef itk::tube::PDFSegmenter< InputImageType, N, LabelmapType >
+  typedef itk::tube::PDFSegmenter< InputImageType, N, LabelMapType >
     PDFSegmenterType;
   typename PDFSegmenterType::Pointer pdfSegmenter = PDFSegmenterType::New();
 
   timeCollector.Start( "LoadData" );
 
-  LabelmapReaderType::Pointer  inLabelmapReader = LabelmapReaderType::New();
-  inLabelmapReader->SetFileName( labelmap.c_str() );
-  inLabelmapReader->Update();
-  pdfSegmenter->SetLabelmap( inLabelmapReader->GetOutput() );
+  LabelMapReaderType::Pointer  inLabelMapReader = LabelMapReaderType::New();
+  inLabelMapReader->SetFileName( labelmap.c_str() );
+  inLabelMapReader->Update();
+  pdfSegmenter->SetLabelMap( inLabelMapReader->GetOutput() );
 
   typename ImageReaderType::Pointer reader;
   for( unsigned int i = 0; i < N; i++ )
@@ -156,7 +156,7 @@ int DoIt( int argc, char * argv[] )
       }
     reader->Update();
     if( !CheckImageAttributes( reader->GetOutput(),
-        inLabelmapReader->GetOutput() ) )
+        inLabelMapReader->GetOutput() ) )
       {
       std::cout << "Image attributes of inputVolume" << i+1 <<
         " and labelmap do not match.  Please check size, spacing, origin."
@@ -251,9 +251,9 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
-  LabelmapWriterType::Pointer writer = LabelmapWriterType::New();
+  LabelMapWriterType::Pointer writer = LabelMapWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( pdfSegmenter->GetLabelmap() );
+  writer->SetInput( pdfSegmenter->GetLabelMap() );
   writer->Update();
 
   if( saveClassPDFBase.size() > 0 )

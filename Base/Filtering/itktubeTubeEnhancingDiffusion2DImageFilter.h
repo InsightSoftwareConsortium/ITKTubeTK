@@ -74,17 +74,17 @@ namespace tube
  *
  * email: r.manniesing@erasmusmc.nl
  */
-template< class TPixel = short int, unsigned int TDimension = 2 >
+template< class TPixel = short int, unsigned int VDimension = 2 >
 class TubeEnhancingDiffusion2DImageFilter
-  : public ImageToImageFilter< Image< TPixel, TDimension >,
-                               Image< TPixel, TDimension > >
+  : public ImageToImageFilter< Image< TPixel, VDimension >,
+                               Image< TPixel, VDimension > >
 {
 
 public:
 
   typedef float                                           Precision;
-  typedef Image<TPixel, TDimension>                       ImageType;
-  typedef Image<Precision, TDimension>                    PrecisionImageType;
+  typedef Image<TPixel, VDimension>                       ImageType;
+  typedef Image<Precision, VDimension>                    PrecisionImageType;
 
   typedef TubeEnhancingDiffusion2DImageFilter             Self;
   typedef ImageToImageFilter<ImageType,ImageType>         Superclass;

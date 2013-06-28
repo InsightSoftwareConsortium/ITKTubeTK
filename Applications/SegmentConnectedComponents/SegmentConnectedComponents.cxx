@@ -34,13 +34,13 @@ limitations under the License.
 
 #include "SegmentConnectedComponentsCLP.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -54,10 +54,10 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef itk::Image< TPixel,  TDimension >        MaskType;
+  typedef itk::Image< TPixel,  VDimension >        MaskType;
   typedef itk::ImageFileReader< MaskType >         MaskReaderType;
 
-  typedef itk::Image< unsigned int,  TDimension >  ConnCompType;
+  typedef itk::Image< unsigned int,  VDimension >  ConnCompType;
 
   //
   //

@@ -37,64 +37,64 @@ class DiffusiveRegistrationFilterUtils
 public:
 
   /** Helper function to allocate an image based on a template */
-  template< class UnallocatedImagePointer, class TemplateImagePointer >
-  static void AllocateSpaceForImage( UnallocatedImagePointer & image,
-                                     const TemplateImagePointer & templateImage );
+  template< class TUnallocatedImagePointer, class TTemplateImagePointer >
+  static void AllocateSpaceForImage( TUnallocatedImagePointer & image,
+                                     const TTemplateImagePointer & templateImage );
 
   /** Helper function to check whether the attributes of an image match a
     * template */
-  template< class CheckedImageType, class TemplateImageType >
-  static bool CompareImageAttributes( const CheckedImageType * image,
-                                      const TemplateImageType * templateImage );
+  template< class TCheckedImage, class TTemplateImage >
+  static bool CompareImageAttributes( const TCheckedImage * image,
+                                      const TTemplateImage * templateImage );
 
   /** Resamples an image to a template using nearest neighbor interpolation */
-  template< class ResampleImagePointer, class TemplateImagePointer >
+  template< class TResampleImagePointer, class TTemplateImagePointer >
   static void ResampleImageNearestNeighbor(
-      const ResampleImagePointer & highResolutionImage,
-      const TemplateImagePointer & templateImage,
-      ResampleImagePointer & resampledImage );
+      const TResampleImagePointer & highResolutionImage,
+      const TTemplateImagePointer & templateImage,
+      TResampleImagePointer & resampledImage );
 
   /** Resamples an image to a template using linear interpolation */
-  template< class ResampleImagePointer, class TemplateImagePointer >
+  template< class TResampleImagePointer, class TTemplateImagePointer >
   static void ResampleImageLinear(
-      const ResampleImagePointer & highResolutionImage,
-      const TemplateImagePointer & templateImage,
-      ResampleImagePointer & resampledImage );
+      const TResampleImagePointer & highResolutionImage,
+      const TTemplateImagePointer & templateImage,
+      TResampleImagePointer & resampledImage );
 
   /** Resamples a vector image to a template using linear interpolation.  If
    *  normalize is true, the vectors will be scaled to length 1 after the
    *  resampling. */
-  template< class VectorResampleImagePointer, class TemplateImagePointer >
+  template< class TVectorResampleImagePointer, class TTemplateImagePointer >
   static void VectorResampleImageLinear(
-      const VectorResampleImagePointer & highResolutionImage,
-      const TemplateImagePointer & templateImage,
-      VectorResampleImagePointer & resampledImage,
+      const TVectorResampleImagePointer & highResolutionImage,
+      const TTemplateImagePointer & templateImage,
+      TVectorResampleImagePointer & resampledImage,
       bool normalize = false );
 
   /** Normalizes a vector field to ensure each vector has length 1 */
-  template< class VectorImagePointer >
-  static void NormalizeVectorField( VectorImagePointer & image );
+  template< class TVectorImagePointer >
+  static void NormalizeVectorField( TVectorImagePointer & image );
 
   /** Computes the minimum and maximum intensity in an image */
-  template< class ImageType >
-  static bool IsIntensityRangeBetween0And1( ImageType * image );
+  template< class TImage >
+  static bool IsIntensityRangeBetween0And1( TImage * image );
 
   /** Extracts the x, y, z components of a deformation field. */
-  template< class DeformationFieldType, class DeformationComponentImageArrayType >
+  template< class TDeformationField, class TDeformationComponentImageArray >
   static void ExtractXYZComponentsFromDeformationField(
-      const DeformationFieldType * deformationField,
-      DeformationComponentImageArrayType & deformationComponentImages );
+      const TDeformationField * deformationField,
+      TDeformationComponentImageArray & deformationComponentImages );
 
 }; // End class DiffusiveRegistrationFilterUtils
 
 
 /** Struct to simply get the face list and an iterator over the face list
  *  when processing an image.  Designed for use with SmartPointers. */
-template< class ImageType >
+template< class TImage >
 struct FaceStruct
 {
   typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator
-      < typename ImageType::ObjectType >                  FaceCalculatorType;
+      < typename TImage::ObjectType >                     FaceCalculatorType;
         typedef typename FaceCalculatorType::FaceListType FaceListType;
         typedef typename FaceListType::iterator           FaceListIteratorType;
 
@@ -103,9 +103,9 @@ struct FaceStruct
     numberOfTerms = 0;
     }
 
-  FaceStruct( const ImageType& image,
-              typename ImageType::ObjectType::RegionType region,
-              typename ImageType::ObjectType::SizeType radius )
+  FaceStruct( const TImage& image,
+              typename TImage::ObjectType::RegionType region,
+              typename TImage::ObjectType::SizeType radius )
     {
     numberOfTerms = 0;
     if( image.GetPointer() )
@@ -115,9 +115,9 @@ struct FaceStruct
       }
     }
 
-  FaceStruct( const std::vector< ImageType >& images,
-              typename ImageType::ObjectType::RegionType region,
-              typename ImageType::ObjectType::SizeType radius )
+  FaceStruct( const std::vector< TImage >& images,
+              typename TImage::ObjectType::RegionType region,
+              typename TImage::ObjectType::SizeType radius )
     {
     numberOfTerms = 0;
     for( int i = 0; i < (int) images.size(); i++ )
@@ -131,9 +131,9 @@ struct FaceStruct
     }
 
   template< unsigned int VLength >
-  FaceStruct( const itk::FixedArray< ImageType, VLength >& images,
-              typename ImageType::ObjectType::RegionType region,
-              typename ImageType::ObjectType::SizeType radius )
+  FaceStruct( const itk::FixedArray< TImage, VLength >& images,
+              typename TImage::ObjectType::RegionType region,
+              typename TImage::ObjectType::SizeType radius )
     {
     numberOfTerms = 0;
     for( int i = 0; i < (int) images.Size(); i++ )
@@ -148,9 +148,9 @@ struct FaceStruct
 
   template< unsigned int VLength >
   FaceStruct( const
-              std::vector< itk::FixedArray< ImageType, VLength > > &images,
-              typename ImageType::ObjectType::RegionType region,
-              typename ImageType::ObjectType::SizeType radius )
+              std::vector< itk::FixedArray< TImage, VLength > > &images,
+              typename TImage::ObjectType::RegionType region,
+              typename TImage::ObjectType::SizeType radius )
     {
     numberOfTerms = 0;
     for( int i = 0; i < (int) images.size(); i++)
@@ -204,42 +204,42 @@ struct FaceStruct
       }
     }
 
-  template< class IteratorType >
+  template< class TIterator >
   void SetIteratorToCurrentFace(
-      IteratorType& iterator,
-      const ImageType& image,
-      typename ImageType::ObjectType::SizeType radius )
+      TIterator& iterator,
+      const TImage& image,
+      typename TImage::ObjectType::SizeType radius )
     {
     if( image.GetPointer() )
       {
-      iterator = IteratorType( radius, image, *faceListIts[0] );
+      iterator = TIterator( radius, image, *faceListIts[0] );
       }
     else
       {
-      iterator = IteratorType();
+      iterator = TIterator();
       }
     }
 
-  template< class IteratorType >
+  template< class TIterator >
   void SetIteratorToCurrentFace(
-      IteratorType& iterator,
-      const ImageType& image )
+      TIterator& iterator,
+      const TImage& image )
     {
     if( image.GetPointer() )
       {
-      iterator = IteratorType( image, *faceListIts[0] );
+      iterator = TIterator( image, *faceListIts[0] );
       }
     else
       {
-      iterator = IteratorType();
+      iterator = TIterator();
       }
     }
 
-  template< class IteratorType >
+  template< class TIterator >
   void SetIteratorToCurrentFace(
-      std::vector< IteratorType >& iterators,
-      const std::vector< ImageType >& images,
-      typename ImageType::ObjectType::SizeType radius )
+      std::vector< TIterator >& iterators,
+      const std::vector< TImage >& images,
+      typename TImage::ObjectType::SizeType radius )
     {
     if( (int) iterators.size() != numberOfTerms )
       {
@@ -248,11 +248,11 @@ struct FaceStruct
         if( images[i].GetPointer() )
           {
           iterators.push_back(
-              IteratorType( radius, images[i], *faceListIts[i] ) );
+              TIterator( radius, images[i], *faceListIts[i] ) );
           }
         else
           {
-          iterators.push_back( IteratorType() );
+          iterators.push_back( TIterator() );
           }
         }
       }
@@ -262,20 +262,20 @@ struct FaceStruct
         {
         if( images[i].GetPointer() )
           {
-          iterators[i] = IteratorType( radius, images[i], *faceListIts[i] );
+          iterators[i] = TIterator( radius, images[i], *faceListIts[i] );
           }
         else
           {
-          iterators[i] = IteratorType();
+          iterators[i] = TIterator();
           }
         }
       }
     }
 
-  template< class IteratorType >
+  template< class TIterator >
   void SetIteratorToCurrentFace(
-      std::vector< IteratorType >& iterators,
-      const std::vector< ImageType >& images )
+      std::vector< TIterator >& iterators,
+      const std::vector< TImage >& images )
     {
     if( (int) iterators.size() != numberOfTerms )
       {
@@ -283,11 +283,11 @@ struct FaceStruct
         {
         if( images[i].GetPointer() )
           {
-          iterators.push_back( IteratorType( images[i], *faceListIts[i] ) );
+          iterators.push_back( TIterator( images[i], *faceListIts[i] ) );
           }
         else
           {
-          iterators.push_back( IteratorType() );
+          iterators.push_back( TIterator() );
           }
         }
       }
@@ -297,37 +297,37 @@ struct FaceStruct
         {
         if( images[i].GetPointer() )
           {
-          iterators[i] = IteratorType( images[i], *faceListIts[i] );
+          iterators[i] = TIterator( images[i], *faceListIts[i] );
           }
         else
           {
-          iterators[i] = IteratorType();
+          iterators[i] = TIterator();
           }
         }
       }
     }
 
-    template< class IteratorType, unsigned int VLength >
+    template< class TIterator, unsigned int VLength >
     void SetIteratorToCurrentFace(
-        std::vector< itk::FixedArray< IteratorType, VLength > > &iterators,
-        const std::vector< itk::FixedArray< ImageType, VLength > > & images )
+        std::vector< itk::FixedArray< TIterator, VLength > > &iterators,
+        const std::vector< itk::FixedArray< TImage, VLength > > & images )
     {
     int c = 0;
     if( (int) iterators.size() != (int) images.size() )
         {
         for( int i = 0; i < (int) images.size(); i++ )
           {
-          itk::FixedArray< IteratorType, VLength > fixedArray;
+          itk::FixedArray< TIterator, VLength > fixedArray;
           for( int j = 0; j < (int) images[i].Size(); j++ )
             {
             if( images[i][j] )
               {
-              fixedArray[j] = IteratorType( images[i][j], *faceListIts[c] );
+              fixedArray[j] = TIterator( images[i][j], *faceListIts[c] );
               c++;
               }
             else
               {
-              fixedArray[j] = IteratorType();
+              fixedArray[j] = TIterator();
               }
             }
           iterators.push_back( fixedArray );
@@ -337,17 +337,17 @@ struct FaceStruct
         {
         for( int i = 0; i < (int) images.size(); i++ )
           {
-          itk::FixedArray< IteratorType, VLength > fixedArray;
+          itk::FixedArray< TIterator, VLength > fixedArray;
           for( int j = 0; j < (int) images[i].Size(); j++ )
             {
             if( images[i][j].GetPointer() )
               {
-              fixedArray[j] = IteratorType( images[i][j], *faceListIts[c] );
+              fixedArray[j] = TIterator( images[i][j], *faceListIts[c] );
               c++;
               }
             else
               {
-              fixedArray[j] = IteratorType();
+              fixedArray[j] = TIterator();
               }
             }
           iterators[i] = fixedArray;
