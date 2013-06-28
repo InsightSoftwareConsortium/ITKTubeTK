@@ -45,10 +45,10 @@ public:
   typedef SmartPointer<const Self>                                  ConstPointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(SpatialObjectToSpatialObjectFilter,ProcessObject);
+  itkTypeMacro( SpatialObjectToSpatialObjectFilter, ProcessObject );
 
   /** Some convenient typedefs. */
   typedef TInputSpatialObject    InputSpatialObjectType;
@@ -59,10 +59,10 @@ public:
                                  InputSpatialObjectConstPointer;
 
   /** ImageDimension constants */
-  itkStaticConstMacro(InputSpatialObjectDimension, unsigned int,
-                      InputSpatialObjectType::ObjectDimension);
-  itkStaticConstMacro(OutputSpatialObjectDimension, unsigned int,
-                      OutputSpatialObjectType::ObjectDimension);
+  itkStaticConstMacro( InputSpatialObjectDimension, unsigned int,
+                       InputSpatialObjectType::ObjectDimension );
+  itkStaticConstMacro( OutputSpatialObjectDimension, unsigned int,
+                       OutputSpatialObjectType::ObjectDimension );
 
   /** Set/Get the image input of this process object.  */
   virtual void SetInput( const InputSpatialObjectType *object);

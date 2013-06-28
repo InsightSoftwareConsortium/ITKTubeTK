@@ -75,39 +75,39 @@ public:
   typedef TPixel                               OutputPixelType;
 
   /** Image dimension = 3. */
-  itkStaticConstMacro(ImageDimension, unsigned int,
-                      InputImageType::ImageDimension);
-  itkStaticConstMacro(InputPixelDimension, unsigned int,
-                      InputPixelType::Dimension);
+  itkStaticConstMacro( ImageDimension, unsigned int,
+                       InputImageType::ImageDimension );
+  itkStaticConstMacro( InputPixelDimension, unsigned int,
+                       InputPixelType::Dimension );
 
-  typedef  FixedArray< double, itkGetStaticConstMacro(InputPixelDimension) >
+  typedef  FixedArray< double, itkGetStaticConstMacro( InputPixelDimension ) >
   EigenValueArrayType;
-  typedef  Image< EigenValueArrayType, itkGetStaticConstMacro(ImageDimension) >
+  typedef  Image< EigenValueArrayType, itkGetStaticConstMacro( ImageDimension ) >
   EigenValueImageType;
   typedef   SymmetricEigenAnalysisImageFilter<
     InputImageType, EigenValueImageType >     EigenAnalysisFilterType;
 
   /** Run-time type information (and related methods).   */
-  itkTypeMacro(SheetnessMeasureImageFilter, ImageToImageFilter);
+  itkTypeMacro( SheetnessMeasureImageFilter, ImageToImageFilter );
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Set/Get macros for alpha */
-  itkSetMacro(Alpha, double);
-  itkGetConstMacro(Alpha, double);
+  itkSetMacro( Alpha, double );
+  itkGetConstMacro( Alpha, double );
 
   /** Set/Get macros for Beta. */
-  itkSetMacro(Beta, double);
-  itkGetConstMacro(Beta, double);
+  itkSetMacro( Beta, double );
+  itkGetConstMacro( Beta, double );
 
   /** Set/Get macros for Cfactor. */
-  itkSetMacro(Cfactor, double);
-  itkGetConstMacro(Cfactor, double);
+  itkSetMacro( Cfactor, double );
+  itkGetConstMacro( Cfactor, double );
 
   /** Set/Get DetectBrightSheets */
   itkBooleanMacro( DetectBrightSheets );
-  itkSetMacro( DetectBrightSheets, bool);
+  itkSetMacro( DetectBrightSheets, bool );
 
 
 #ifdef ITK_USE_CONCEPT_CHECKING

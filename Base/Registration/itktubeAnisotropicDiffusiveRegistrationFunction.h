@@ -83,13 +83,14 @@ public:
   typedef SmartPointer< const Self >                            ConstPointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(Self, PDEDeformableRegistrationFunction);
+  itkTypeMacro( AnisotropicDiffusiveRegistrationFunction,
+                PDEDeformableRegistrationFunction );
 
   /** Inherit some parameters from the superclass. */
-  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
+  itkStaticConstMacro( ImageDimension, unsigned int, Superclass::ImageDimension );
 
   /** Convenient typedefs from the superclass. */
   typedef typename Superclass::FixedImageType            FixedImageType;

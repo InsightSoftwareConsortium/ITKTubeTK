@@ -330,7 +330,7 @@ AnisotropicDiffusionTensorFunction<TImageType>
 
   if( m_TimeStep > ratio )
     {
-    itkWarningMacro(<< std::endl
+    itkWarningMacro( << std::endl
       << "Anisotropic diffusion unstable time step:"
       << m_TimeStep << std::endl << "Minimum stable time step"
       << "for this image is " << ratio );

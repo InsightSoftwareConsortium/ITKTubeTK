@@ -76,8 +76,8 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods) */
-  itkTypeMacro(AnisotropicEdgeEnhancementDiffusionImageFilter,
-                                                ImageToImageFilter );
+  itkTypeMacro( AnisotropicEdgeEnhancementDiffusionImageFilter,
+                ImageToImageFilter );
 
   /** Convenient typedefs */
   typedef typename Superclass::InputImageType  InputImageType;
@@ -93,7 +93,8 @@ public:
 
   /** Dimensionality of input and output data is assumed to be the same.
    * It is inherited from the superclass. */
-  itkStaticConstMacro(ImageDimension, unsigned int,Superclass::ImageDimension);
+  itkStaticConstMacro( ImageDimension, unsigned int,
+                       Superclass::ImageDimension );
 
   typedef itk::Matrix<double, ImageDimension, ImageDimension> MatrixType;
 
@@ -127,14 +128,14 @@ public:
   itkSetMacro( ThresholdParameterC,  double );
 
   /** Set the sigma and outer sigma value for structure tensor computation */
-  itkSetMacro( Sigma, double);
-  itkSetMacro( SigmaOuter, double);
+  itkSetMacro( Sigma, double );
+  itkSetMacro( SigmaOuter, double );
 
   /**Get methods */
-  itkGetMacro( ContrastParameterLambdaE, double);
-  itkGetMacro( ThresholdParameterC, double);
-  itkGetMacro( Sigma, double);
-  itkGetMacro( SigmaOuter, double);
+  itkGetMacro( ContrastParameterLambdaE, double );
+  itkGetMacro( ThresholdParameterC, double );
+  itkGetMacro( Sigma, double );
+  itkGetMacro( SigmaOuter, double );
 
 
 protected:

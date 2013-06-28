@@ -363,7 +363,7 @@ void TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
       ev[0] = ES.get_eigenvalue(0);
       ev[1] = ES.get_eigenvalue(1);
 
-      if( vnl_math_abs(ev[0]) > vnl_math_abs(ev[1])  )
+      if( vnl_math_abs(ev[0]) > vnl_math_abs(ev[1]) )
         {
         std::swap(ev[0], ev[1]);
         }

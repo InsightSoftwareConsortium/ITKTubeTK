@@ -66,7 +66,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( Self, Superclass );
+  itkTypeMacro( BlobSpatialObjectDocument, SpatialObjectDocument );
 
   /** Return the type of the object within the Document (ie. "Blob") */
   std::string GetObjectType( void ) const { return LABEL_BLOBTYPE; }

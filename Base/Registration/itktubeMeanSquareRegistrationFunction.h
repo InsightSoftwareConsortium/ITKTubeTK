@@ -73,7 +73,7 @@ public:
   typedef SmartPointer<const Self>          ConstPointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
   itkTypeMacro( MeanSquareRegistrationFunction,
@@ -97,7 +97,7 @@ public:
   typedef typename DeformationFieldType::PixelType     DeformationFieldPixelType;
 
   /** Inherit some enums from the superclass. */
-  itkStaticConstMacro(ImageDimension, unsigned int,Superclass::ImageDimension);
+  itkStaticConstMacro( ImageDimension, unsigned int, Superclass::ImageDimension );
 
   /** Inherit some enums from the superclass. */
   typedef typename Superclass::PixelType        PixelType;
@@ -116,7 +116,7 @@ public:
                                                      DefaultInterpolatorType;
 
   /** Covariant vector type. */
-  typedef CovariantVector< double,itkGetStaticConstMacro(ImageDimension) >
+  typedef CovariantVector< double,itkGetStaticConstMacro( ImageDimension ) >
     CovariantVectorType;
 
   /** Gradient calculator type. */

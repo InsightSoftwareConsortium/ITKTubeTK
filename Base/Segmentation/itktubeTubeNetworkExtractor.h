@@ -50,9 +50,8 @@ public:
   typedef SmartPointer<Self>               Pointer;
   typedef SmartPointer<const Self>         ConstPointer;
 
-  itkTypeMacro( Self, Object );
-
   itkNewMacro( Self );
+  itkTypeMacro( TubeNetworkExtractor, TubeExtractor );
 
   /**
    * Type definition for the input image. */
@@ -98,11 +97,11 @@ public:
 
   /**
    * Set use mask */
-  itkSetMacro( AEUseMask,bool );
+  itkSetMacro( AEUseMask, bool );
 
   /**
    * Get use mask */
-  itkGetMacro( AEUseMask,bool );
+  itkGetMacro( AEUseMask, bool );
 
   /**
    * Set the mask  */

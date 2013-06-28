@@ -45,8 +45,7 @@ namespace tube
  * This class is templated over the input image type.
  */
 template< class TInputImage >
-class NJetImageFunction :
-public Object // ImageFunction< TInputImage, double >
+class NJetImageFunction : public Object
 {
 public:
   /**
@@ -68,7 +67,7 @@ public:
   /**
    * Method for creation through the object factory.
    */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   itkTypeMacro( NJetImageFunction, Object );
   //itkTypeMacro( NJetImageFunction, ImageFunction );
@@ -76,31 +75,31 @@ public:
   /**
    * Dimension of the underlying image.
    */
-  itkStaticConstMacro(ImageDimension,
+  itkStaticConstMacro( ImageDimension,
                       unsigned int,
-                      TInputImage::ImageDimension);
+                      TInputImage::ImageDimension );
 
   typedef TInputImage                                 InputImageType;
   typedef typename InputImageType::Pointer            InputImagePointer;
 
-  typedef Point<double, itkGetStaticConstMacro(ImageDimension) >
+  typedef Point<double, itkGetStaticConstMacro( ImageDimension ) >
                                                       PointType;
 
-  typedef Vector< double, itkGetStaticConstMacro(ImageDimension) >
+  typedef Vector< double, itkGetStaticConstMacro( ImageDimension ) >
                                                       VectorType;
 
-  typedef Matrix< double, itkGetStaticConstMacro(ImageDimension),
-                  itkGetStaticConstMacro(ImageDimension) >
+  typedef Matrix< double, itkGetStaticConstMacro( ImageDimension ),
+                  itkGetStaticConstMacro( ImageDimension ) >
                                                       MatrixType;
 
   typedef typename InputImageType::IndexType          IndexType;
 
-  typedef ContinuousIndex<double, itkGetStaticConstMacro(ImageDimension) >
+  typedef ContinuousIndex<double, itkGetStaticConstMacro( ImageDimension ) >
                                                       ContinuousIndexType;
 
   typedef typename InputImageType::SpacingType              SpacingType;
 
-  typedef Size<itkGetStaticConstMacro(ImageDimension)>      SizeType;
+  typedef Size<itkGetStaticConstMacro( ImageDimension )>      SizeType;
 
   typedef Array< VectorType >                               ArrayVectorType;
 
@@ -266,12 +265,12 @@ public:
   /**
    * Set the Extent
    */
-  itkSetMacro( Extent, double);
+  itkSetMacro( Extent, double );
 
   /**
    * Get the Extent
    */
-  itkGetMacro( Extent, double);
+  itkGetMacro( Extent, double );
 
   /**
    * Get the Spacing
@@ -283,8 +282,8 @@ public:
    *   projected onto the subset of directions given.   Otherwise, the
    *   computations are done explicitly within the vector/plane given.
    */
-  itkSetMacro( UseProjection, bool);
-  itkGetMacro( UseProjection, bool);
+  itkSetMacro( UseProjection, bool );
+  itkGetMacro( UseProjection, bool );
 
 protected:
   NJetImageFunction( void );

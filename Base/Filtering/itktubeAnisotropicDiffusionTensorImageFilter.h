@@ -73,7 +73,7 @@ public:
 
   /** Dimensionality of input and output data is assumed to be the same.
    * It is inherited from the superclass. */
-  itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
+  itkStaticConstMacro( ImageDimension, unsigned int, Superclass::ImageDimension );
 
   /** Type of associated function, with associated typedefs */
   typedef AnisotropicDiffusionTensorFunction< InputImageType >
@@ -106,12 +106,12 @@ public:
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
-  itkConceptMacro(OutputTimesDoubleCheck,
-    (Concept::MultiplyOperator<PixelType, double>));
-  itkConceptMacro(OutputAdditiveOperatorsCheck,
-    (Concept::AdditiveOperators<PixelType>));
-  itkConceptMacro(InputConvertibleToOutputCheck,
-    (Concept::Convertible<typename TInputImage::PixelType, PixelType>));
+  itkConceptMacro( OutputTimesDoubleCheck,
+    ( Concept::MultiplyOperator< PixelType, double > ) );
+  itkConceptMacro( OutputAdditiveOperatorsCheck,
+    ( Concept::AdditiveOperators< PixelType > ) );
+  itkConceptMacro( InputConvertibleToOutputCheck,
+    ( Concept::Convertible< typename TInputImage::PixelType, PixelType > ) );
   /** End concept checking */
 #endif
 

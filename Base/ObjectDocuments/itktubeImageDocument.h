@@ -66,7 +66,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( Self, Superclass );
+  itkTypeMacro( ImageDocument, ObjectDocument );
 
   /** Return the type of the object within the Document (ie. "Image") */
   std::string GetObjectType( void ) const { return LABEL_IMAGETYPE; }

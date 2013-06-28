@@ -70,7 +70,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
  AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
  ::InitializeIteration( void )
 {
-  itkDebugMacro( << "InitializeIteration() called " );
+  itkDebugMacro( << "InitializeIteration() called ." );
 
   AnisotropicDiffusionTensorFunction<UpdateBufferType> *f =
      dynamic_cast<AnisotropicDiffusionTensorFunction<UpdateBufferType> *>
@@ -115,7 +115,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 
   if( !input || !output )
     {
-    itkExceptionMacro(<< "Either input and/or output is NULL.");
+    itkExceptionMacro( << "Either input and/or output is NULL." );
     }
 
   // Check if we are doing in-place filtering
@@ -146,7 +146,7 @@ void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::AllocateUpdateBuffer( void )
 {
-  itkDebugMacro( << "AllocateUpdateBuffer() called" );
+  itkDebugMacro( << "AllocateUpdateBuffer() called." );
 
   /* The update buffer looks just like the output and holds the change in
    the pixel  */
@@ -167,7 +167,7 @@ void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::AllocateDiffusionTensorImage( void )
 {
-  itkDebugMacro( << "AllocateDiffusionTensorImage() called" );
+  itkDebugMacro( << "AllocateDiffusionTensorImage() called." );
 
   /* The diffusionTensor image has the same size as the output and holds
      the diffusion tensor matrix for each pixel */
@@ -248,7 +248,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>::TimeStepType
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::CalculateChange( void )
 {
-  itkDebugMacro( << "CalculateChange called" );
+  itkDebugMacro( << "CalculateChange called." );
 
   // Set up for multithreaded processing.
   DenseFDThreadStruct str;
@@ -461,7 +461,7 @@ void
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::GenerateData( void )
 {
-  itkDebugMacro( << "GenerateData is called" );
+  itkDebugMacro( << "GenerateData is called." );
 
   if(!this->GetIsInitialized())
     {

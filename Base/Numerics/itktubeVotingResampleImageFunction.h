@@ -61,10 +61,10 @@ public:
   typedef SmartPointer<const Self>                        ConstPointer;
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(VotingResampleImageFunction, InterpolateImageFunction);
+  itkTypeMacro( VotingResampleImageFunction, InterpolateImageFunction );
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** OutputType typedef support. */
   typedef typename Superclass::OutputType OutputType;
@@ -76,7 +76,7 @@ public:
   typedef typename Superclass::RealType RealType;
 
   /** Dimension underlying input image. */
-  itkStaticConstMacro(ImageDimension, unsigned int,Superclass::ImageDimension);
+  itkStaticConstMacro( ImageDimension, unsigned int, Superclass::ImageDimension );
 
   /** Index typedef support. */
   typedef typename Superclass::IndexType IndexType;

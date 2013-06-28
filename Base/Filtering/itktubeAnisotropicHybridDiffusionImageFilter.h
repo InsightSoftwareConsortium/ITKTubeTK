@@ -74,8 +74,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods) */
-  itkTypeMacro(AnisotropicHybridDiffusionImageFilter,
-                                                ImageToImageFilter );
+  itkTypeMacro( AnisotropicHybridDiffusionImageFilter, ImageToImageFilter );
 
   /** Convenient typedefs */
   typedef typename Superclass::InputImageType  InputImageType;
@@ -91,7 +90,8 @@ public:
 
   /** Dimensionality of input and output data is assumed to be the same.
    * It is inherited from the superclass. */
-  itkStaticConstMacro(ImageDimension, unsigned int,Superclass::ImageDimension);
+  itkStaticConstMacro( ImageDimension, unsigned int,
+                       Superclass::ImageDimension );
 
   typedef Matrix<double, ImageDimension, ImageDimension> MatrixType;
 
@@ -118,31 +118,31 @@ public:
   typedef typename Superclass::DiffusionTensorNeighborhoodType
                                                DiffusionTensorNeighborhoodType;
   /** Set the contrast parameter for EED */
-  itkSetMacro(ContrastParameterLambdaEED, double );
+  itkSetMacro( ContrastParameterLambdaEED, double );
 
   /** Set the contrast parameter for CED */
-  itkSetMacro(ContrastParameterLambdaCED, double );
+  itkSetMacro( ContrastParameterLambdaCED, double );
 
   /** Set the contrast parameter for Hybrid */
-  itkSetMacro(ContrastParameterLambdaHybrid, double );
+  itkSetMacro( ContrastParameterLambdaHybrid, double );
 
   /** Set threshold parameter C */
-  itkSetMacro(ThresholdParameterC, double);
+  itkSetMacro( ThresholdParameterC, double );
 
   /** Set the sigma value for structure tensor computation */
-  itkSetMacro( Sigma, double);
-  itkSetMacro( SigmaOuter, double);
+  itkSetMacro( Sigma, double );
+  itkSetMacro( SigmaOuter, double );
 
   /** Set the alpha value for structure tensor computation */
   itkSetMacro( Alpha, double );
 
   /** Get methods */
-  itkGetMacro( ContrastParameterLambdaEED, double);
-  itkGetMacro( ContrastParameterLambdaCED, double);
-  itkGetMacro( ContrastParameterLambdaHybrid, double);
-  itkGetMacro( ThresholdParameterC, double);
-  itkGetMacro( Sigma, double);
-  itkGetMacro( SigmaOuter, double);
+  itkGetMacro( ContrastParameterLambdaEED, double );
+  itkGetMacro( ContrastParameterLambdaCED, double );
+  itkGetMacro( ContrastParameterLambdaHybrid, double );
+  itkGetMacro( ThresholdParameterC, double );
+  itkGetMacro( Sigma, double );
+  itkGetMacro( SigmaOuter, double );
 
 protected:
   AnisotropicHybridDiffusionImageFilter( void );

@@ -69,7 +69,7 @@ public:
   typedef typename DataObject::Pointer DataObjectPointer;
 
   itkNewMacro( Self );
-  itkTypeMacro( Self, Superclass );
+  itkTypeMacro( ObjectDocumentToObjectSource, ProcessObject );
 
   /** Sets the transforms that will be composed and applied to the object are applied to it */
   void ApplyTransforms( int start, int end );

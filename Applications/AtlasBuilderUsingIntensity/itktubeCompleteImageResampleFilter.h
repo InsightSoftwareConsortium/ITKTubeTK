@@ -68,14 +68,14 @@ public:
   typedef typename InputImageType::RegionType       InputImageRegionType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(Self,ImageToImageFilter);
+  itkTypeMacro( CompleteImageResampleFilter, ImageToImageFilter );
 
   /** Number of dimensions. */
   itkStaticConstMacro( ImageDimension, unsigned int,
-                       TOutputImage::ImageDimension);
+                       TOutputImage::ImageDimension );
 
   /** ResampleImageFilter typedef */
   typedef ResampleImageFilter< InputImageType,
@@ -151,7 +151,7 @@ public:
   itkGetMacro( DefaultPixelValue, PixelType );
 
   /** Set the output image spacing. */
-  itkSetMacro(OutputSpacing, SpacingType);
+  itkSetMacro( OutputSpacing, SpacingType );
   virtual void SetOutputSpacing( const double values[ImageDimension] );
 
   /** Get the output image spacing. */

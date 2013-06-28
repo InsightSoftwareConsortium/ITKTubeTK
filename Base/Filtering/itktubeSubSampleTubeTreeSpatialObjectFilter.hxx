@@ -56,9 +56,10 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
     dynamic_cast< SpatialObjectBaseType * >( newSpatialObject.GetPointer() );
   if( newSpatialObjectBase.IsNull() )
     {
-    itkExceptionMacro( "Could not create an instance of " << spatialObjectType
-              << "The usual cause of this error is not registering the "
-              << "SpatialObject with SpatialFactory" );
+    itkExceptionMacro( << "Could not create an instance of "
+                       << spatialObjectType << ". The usual cause of this "
+                       << "error is not registering the SpatialObject with "
+                       << "SpatialFactory." );
 
     }
 

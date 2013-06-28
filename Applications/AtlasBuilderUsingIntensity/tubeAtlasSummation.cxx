@@ -148,7 +148,7 @@ AtlasSummation::InputImagePointer AtlasSummation
   transfilter->SetInput( image );
   transfilter->SetOutputSpacing( spacing );
   transfilter->SetSize( size );
-  transfilter->SetOutputOrigin( origin  );
+  transfilter->SetOutputOrigin( origin );
   transfilter->SetDefaultPixelValue( DEFAULT_PIXEL_FILL );
 
   /*

@@ -241,7 +241,7 @@ LabelOverlapMeasuresImageFilter< TLabelImage >
   MapIterator mapIt = this->m_LabelSetMeasures.find( label );
   if( mapIt == this->m_LabelSetMeasures.end() )
     {
-    itkWarningMacro( "Label " << label << " not found." );
+    itkWarningMacro( << "Label " << label << " not found." );
     return 0.0;
     }
   RealType value =
@@ -279,7 +279,7 @@ LabelOverlapMeasuresImageFilter< TLabelImage >
   MapIterator mapIt = this->m_LabelSetMeasures.find( label );
   if( mapIt == this->m_LabelSetMeasures.end() )
     {
-    itkWarningMacro( "Label " << label << " not found." );
+    itkWarningMacro( << "Label " << label << " not found." );
     return 0.0;
     }
   RealType value =
@@ -337,7 +337,7 @@ LabelOverlapMeasuresImageFilter< TLabelImage >
   MapIterator mapIt = this->m_LabelSetMeasures.find( label );
   if( mapIt == this->m_LabelSetMeasures.end() )
     {
-    itkWarningMacro( "Label " << label << " not found." );
+    itkWarningMacro( << "Label " << label << " not found." );
     return 0.0;
     }
   RealType value = 2.0 *
@@ -377,7 +377,7 @@ LabelOverlapMeasuresImageFilter< TLabelImage >
   MapIterator mapIt = this->m_LabelSetMeasures.find( label );
   if( mapIt == this->m_LabelSetMeasures.end() )
     {
-    itkWarningMacro( "Label " << label << " not found." );
+    itkWarningMacro( << "Label " << label << " not found." );
     return 0.0;
     }
   RealType value =
@@ -415,7 +415,7 @@ LabelOverlapMeasuresImageFilter< TLabelImage >
   MapIterator mapIt = this->m_LabelSetMeasures.find( label );
   if( mapIt == this->m_LabelSetMeasures.end() )
     {
-    itkWarningMacro( "Label " << label << " not found." );
+    itkWarningMacro( << "Label " << label << " not found." );
     return 0.0;
     }
   RealType value =

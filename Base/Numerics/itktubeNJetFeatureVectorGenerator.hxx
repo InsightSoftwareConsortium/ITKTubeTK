@@ -262,7 +262,7 @@ NJetFeatureVectorGenerator< ImageT >
         }
       }
     }
-  itkExceptionMacro( "Requested non-existent FeatureVectorValue." );
+  itkExceptionMacro( << "Requested non-existent FeatureVectorValue." );
 }
 
 template< class ImageT >

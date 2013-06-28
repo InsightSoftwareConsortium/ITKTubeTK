@@ -225,8 +225,9 @@ AnisotropicDiffusiveSparseRegistrationFilter
     // Ensure we have a border surface or a tube list to work with
     if( !this->GetBorderSurface() && !this->GetTubeList() )
       {
-      itkExceptionMacro( << "You must provide a border surface, or a tube list,"
-                         << "or both a normal matrix image and a weight image" );
+      itkExceptionMacro( << "You must provide a border surface, or a tube "
+                         << "list, or both a normal matrix image and a weight "
+                         << "image" );
       }
 
     // Compute the normals for the surface
@@ -366,11 +367,11 @@ AnisotropicDiffusiveSparseRegistrationFilter
   // Make sure we now have the normals
   if( !m_BorderSurface->GetPointData() )
     {
-    itkExceptionMacro( << "Border surface does not contain point data" );
+    itkExceptionMacro( << "Border surface does not contain point data." );
     }
   else if( !m_BorderSurface->GetPointData()->GetNormals() )
     {
-    itkExceptionMacro( << "Border surface point data does not have normals" );
+    itkExceptionMacro( << "Border surface point data does not have normals." );
     }
 }
 
@@ -388,7 +389,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 
   if( m_TubeList->empty() )
     {
-    itkExceptionMacro( << "Tube list does not contain tubes" );
+    itkExceptionMacro( << "Tube list does not contain tubes." );
     }
 
   // Iterate through the tubes to compute tangents and normals

@@ -131,7 +131,7 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
       dynamic_cast< const SingleValuedNonLinearOptimizer * >( object );
     if( object == NULL )
       {
-      itkExceptionMacro(<< "Could not cast to itk::Optimizer.");
+      itkExceptionMacro( << "Could not cast to itk::Optimizer." );
       }
 
     this->m_ParameterProgression.resize( this->m_CurrentIteration + 1 );

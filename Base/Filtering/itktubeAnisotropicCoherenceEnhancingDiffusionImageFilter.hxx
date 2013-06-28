@@ -60,7 +60,7 @@ void
 AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
 ::UpdateDiffusionTensorImage( void )
 {
-  itkDebugMacro( << "UpdateDiffusionTensorImage() called" );
+  itkDebugMacro( << "UpdateDiffusionTensorImage() called." );
 
   std::cerr << "UpdateDiffusionTensorImage()" << std::endl;
 

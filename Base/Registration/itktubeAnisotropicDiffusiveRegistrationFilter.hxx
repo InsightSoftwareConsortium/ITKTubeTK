@@ -290,11 +290,11 @@ AnisotropicDiffusiveRegistrationFilter
   // Make sure we now have the normals
   if( !m_BorderSurface->GetPointData() )
     {
-    itkExceptionMacro( << "Border surface does not contain point data" );
+    itkExceptionMacro( << "Border surface does not contain point data." );
     }
   else if( !m_BorderSurface->GetPointData()->GetNormals() )
     {
-    itkExceptionMacro( << "Border surface point data does not have normals" );
+    itkExceptionMacro( << "Border surface point data does not have normals." );
     }
 }
 

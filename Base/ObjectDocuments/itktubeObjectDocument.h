@@ -69,7 +69,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( Self, Superclass );
+  itkTypeMacro( ObjectDocument, Document );
 
   /** To be implemented by the object type that inherits this class */
   virtual std::string  GetObjectType( void ) const{ return "Object";}

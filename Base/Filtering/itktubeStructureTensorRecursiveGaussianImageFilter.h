@@ -59,7 +59,7 @@ public:
   typedef SmartPointer<const Self>                        ConstPointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Pixel Type of the input image */
   typedef TInputImage                                     InputImageType;
@@ -67,15 +67,15 @@ public:
   typedef typename NumericTraits<PixelType>::RealType     RealType;
 
   /** Image dimension. */
-  itkStaticConstMacro(ImageDimension,
+  itkStaticConstMacro( ImageDimension,
                       unsigned int,
-                      TInputImage::ImageDimension);
+                      TInputImage::ImageDimension );
 
   /** Define the image type for internal computations
       RealType is usually 'double' in NumericTraits.
       Here we prefer float in order to save memory. */
   typedef float                                           InternalRealType;
-  typedef Image< InternalRealType, itkGetStaticConstMacro(ImageDimension) >
+  typedef Image< InternalRealType, itkGetStaticConstMacro( ImageDimension ) >
       RealImageType;
 
   /**  Output Image Nth Element Adaptor

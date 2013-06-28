@@ -61,13 +61,13 @@ public:
   typedef typename InputImageType::RegionType             RegionType;
 
   /** Method for creation through the object factory. **/
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
-  itkSetMacro(InverseMaximumIntensity, InputPixelType);
-  itkGetMacro(InverseMaximumIntensity, InputPixelType);
+  itkSetMacro( InverseMaximumIntensity, InputPixelType );
+  itkGetMacro( InverseMaximumIntensity, InputPixelType );
 
   /** Run-time type information (and related methods). **/
-  itkTypeMacro(TubeNetworkSpatialObjectToImageFilter, ImageToImageFilter);
+  itkTypeMacro( TubeNetworkSpatialObjectToImageFilter, ImageToImageFilter );
 
 protected:
 

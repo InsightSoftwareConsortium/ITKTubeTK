@@ -86,8 +86,8 @@ SpatialObjectSource< TOutputSpatialObject >
 
   if( output == NULL && this->ProcessObject::GetOutput(idx) != NULL )
     {
-    itkWarningMacro (<< "Unable to convert output number " << idx
-      << " to type " <<  typeid( OutputSpatialObjectType ).name() );
+    itkWarningMacro( << "Unable to convert output number " << idx << " to type "
+                     << typeid( OutputSpatialObjectType ).name() );
     }
   return output;
 }
@@ -109,7 +109,7 @@ SpatialObjectSource< TOutputSpatialObject >
 {
   if( !graft )
     {
-    itkExceptionMacro(<< "Requested to graft output that is a NULL pointer");
+    itkExceptionMacro( << "Requested to graft output that is a NULL pointer." );
     }
 
   // we use the process object method since all out output may not be
@@ -128,7 +128,7 @@ SpatialObjectSource< TOutputSpatialObject >
 {
   if( idx >= this->GetNumberOfIndexedOutputs() )
     {
-    itkExceptionMacro(<< "Requested to graft output " << idx
+    itkExceptionMacro( << "Requested to graft output " << idx
                       << " but this filter only has " << this->GetNumberOfIndexedOutputs() << " indexed Outputs.");
     }
   this->GraftOutput( this->MakeNameFromOutputIndex(idx), graft );
