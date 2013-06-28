@@ -28,16 +28,26 @@ include( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_Common_H_Files
   itktubeDifferenceImageFilter.h
+  tubeIndent.h
+  tubeMacro.h
   tubeMessage.h
+  tubeObject.h
   tubeStringUtilities.h
   tubeTestMain.h )
 
 set( TubeTK_Base_Common_HXX_Files
   itktubeDifferenceImageFilter.hxx )
 
-add_custom_target( TubeCommon SOURCES
+set( TubeTK_Base_Common_CXX_Files
+  tubeIndent.cxx
+  tubeObject.cxx )
+
+add_library( TubeCommon STATIC
   ${TubeTK_Base_Common_H_Files}
-  ${TubeTK_Base_Common_HXX_Files} )
+  ${TubeTK_Base_Common_HXX_Files}
+  ${TubeTK_Base_Common_CXX_Files} )
+
+tubetk_install_plugins( TubeCommon )
 
 add_executable( ImageCompareCommand ImageCompareCommand.cxx )
 target_link_libraries( ImageCompareCommand ${ITK_LIBRARIES} )
@@ -63,7 +73,7 @@ install( TARGETS
   ImageCompareCommand
   JsonCompareCommand
   TextCompareCommand
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION bin
+  DESTINATION bin
   COMPONENT RUNTIME )
+
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeCommon )
