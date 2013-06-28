@@ -43,8 +43,8 @@ void GetImageType( const std::string & fileName,
   dimensions = imageReader->GetImageIO()->GetNumberOfDimensions();
 }
 
-template < unsigned int DimensionT, class T >
-int DoIt( int argc, char *argv[] )
+template < unsigned int TDimension, class TPixelType >
+int DoIt( int argc, char * argv[] )
 {
 
   PARSE_ARGS;
@@ -60,7 +60,7 @@ int DoIt( int argc, char *argv[] )
     verbosity = VERBOSE;
     }
 
-  typedef typename itk::Image< T, DimensionT > ImageType;
+  typedef typename itk::Image< TPixelType, TDimension > ImageType;
 
   typedef typename itk::ImageToImageRegistrationHelper< ImageType >
     RegistrationType;
@@ -88,21 +88,6 @@ int DoIt( int argc, char *argv[] )
     {
     std::cout << "###DONE" << std::endl;
     }
-
-  /*
-  if( loadParameters.size() > 1 )
-    {
-    if ( verbosity >= STANDARD )
-      {
-      std::cout << "###Loading parameters...";
-      }
-    reger->LoadParameters( loadParameters );
-    if ( verbosity >= STANDARD )
-      {
-      std::cout << "###DONE" << std::endl;
-      }
-    }
-  */
 
   if( loadTransform.size() > 1 )
     {
@@ -315,11 +300,10 @@ int DoIt( int argc, char *argv[] )
     }
 
   typedef typename itk::ImageFileReader<
-    itk::Image< unsigned char, DimensionT > > ImageReader;
-  typedef typename itk::ImageMaskSpatialObject< DimensionT >
+    itk::Image< unsigned char, TDimension > > ImageReader;
+  typedef typename itk::ImageMaskSpatialObject< TDimension >
     ImageMaskSpatialObject;
 
-  // if a fixed image mask was set
   if( fixedImageMask != "" )
     {
     reger->SetUseFixedImageMaskObject( true );
@@ -330,11 +314,11 @@ int DoIt( int argc, char *argv[] )
       {
       reader->Update();
       }
-    catch( itk::ExceptionObject & excep )
+    catch( itk::ExceptionObject & exception )
       {
       std::cerr << "Exception caught while loading fixed image mask."
         << std::endl;
-      std::cerr << excep << std::endl;
+      std::cerr << exception << std::endl;
       return EXIT_FAILURE;
       }
 
@@ -363,21 +347,21 @@ int DoIt( int argc, char *argv[] )
   //   std::cout << "###sampleIntensityPortion: "
   //     << sampleIntensityPortion << std::endl;
   //   }
-  // if( regionOfInterest.size() == 2*DimensionT )
+  // if( regionOfInterest.size() == 2*TDimension )
   //   {
   //   reger->SetRegionOfInterest( regionOfInterest );
   //   if ( verbosity >= STANDARD )
   //     {
   //     std::cout << "###regionOfInterest: ";
   //     std::cout << "    ###point1: ";
-  //     for( unsigned int i=0; i< DimensionT; i++ )
+  //     for( unsigned int i=0; i< TDimension; i++ )
   //       {
   //       std::cout << regionOfInterest[i] << " ";
   //       }
   //     std::cout << "    ###point2: ";
-  //     for( unsigned int i=0; i< DimensionT; i++ )
+  //     for( unsigned int i=0; i< TDimension; i++ )
   //       {
-  //       std::cout << regionOfInterest[i+DimensionT] << " ";
+  //       std::cout << regionOfInterest[i+TDimension] << " ";
   //       }
   //     std::cout << std::endl;
   //     }
@@ -525,10 +509,10 @@ int DoIt( int argc, char *argv[] )
       }
     reger->Update();
     }
-  catch( itk::ExceptionObject & excep )
+  catch( itk::ExceptionObject & exception )
     {
     std::cerr << "Exception caught during helper class registration."
-      << excep << std::endl;
+      << exception << std::endl;
     std::cerr << "Current Matrix Transform = " << std::endl;
     reger->GetCurrentMatrixTransform()->Print( std::cerr, 2 );
     return EXIT_FAILURE;
@@ -566,10 +550,10 @@ int DoIt( int argc, char *argv[] )
           ::OptimizedRegistrationMethodType::BSPLINE_INTERPOLATION );
         }
       }
-    catch( itk::ExceptionObject & excep )
+    catch( itk::ExceptionObject & exception )
       {
       std::cerr << "Exception caught during helper class resampling."
-        << excep << std::endl;
+        << exception << std::endl;
       std::cerr << "Current Matrix Transform = " << std::endl;
       reger->GetCurrentMatrixTransform()->Print( std::cerr, 2 );
       return EXIT_FAILURE;
@@ -585,11 +569,11 @@ int DoIt( int argc, char *argv[] )
       {
       reger->SaveImage( resampledImage, resultImage );
       }
-    catch( itk::ExceptionObject & excep )
+    catch( itk::ExceptionObject & exception )
       {
       std::cerr <<
         "Exception caught during helper class resampled image saving."
-        << excep << std::endl;
+        << exception << std::endl;
       return EXIT_FAILURE;
       }
     catch( ... )
@@ -607,10 +591,10 @@ int DoIt( int argc, char *argv[] )
       {
       reger->SaveTransform( saveTransform );
       }
-    catch( itk::ExceptionObject & excep )
+    catch( itk::ExceptionObject & exception )
       {
       std::cerr << "Exception caught during helper class transform saving."
-                << excep << std::endl;
+                << exception << std::endl;
       return EXIT_FAILURE;
       }
     catch( ... )
@@ -620,82 +604,6 @@ int DoIt( int argc, char *argv[] )
       return EXIT_FAILURE;
       }
     }
-
-  /*
-  if( saveParameters.size() > 1 )
-    {
-    try
-      {
-      reger->SaveParameters( saveParameters );
-      }
-    catch( itk::ExceptionObject &excep )
-      {
-      std::cerr << "Exception caught during helper class parameter saving."
-                << excep << std::endl;
-      return EXIT_FAILURE;
-      }
-    catch( ... )
-      {
-      std::cerr <<
-        "Uncaught exception during helper class parameter saving."
-        << std::endl;
-      return EXIT_FAILURE;
-      }
-    }
-  */
-
-  /*
-  if( baselineImage.size() > 1 )
-    {
-    try
-      {
-      reger->LoadBaselineImage( baselineImage );
-      reger->SetBaselineNumberOfFailedPixelsTolerance(
-        baselineNumberOfFailedPixelsTolerance );
-      reger->SetBaselineIntensityTolerance( static_cast< typename
-        ImageType::PixelType >( baselineIntensityTolerance ) );
-      reger->SetBaselineRadiusTolerance( baselineRadiusTolerance );
-      reger->ComputeBaselineDifference();
-      if( baselineDifferenceImage.size() > 1 )
-        {
-        reger->SaveImage( baselineDifferenceImage,
-                          reger->GetBaselineDifferenceImage() );
-        }
-      if( baselineResampledMovingImage.size() > 1 )
-        {
-        reger->SaveImage( baselineResampledMovingImage,
-                          reger->GetBaselineResampledMovingImage() );
-        }
-      if( reger->GetBaselineTestPassed() )
-        {
-        std::cout << "Baseline test passed with "
-                  << reger->GetBaselineNumberOfFailedPixels()
-                  << " failed pixels." << std::endl;
-        }
-      else
-        {
-        std::cerr << "Baseline test failed with "
-                  << reger->GetBaselineNumberOfFailedPixels()
-                  << " failed pixels." << std::endl;
-        return EXIT_FAILURE;
-        }
-      }
-    catch( itk::ExceptionObject &excep )
-      {
-      std::cerr <<
-        "Exception caught during helper class baseline computations."
-        << excep << std::endl;
-      return EXIT_FAILURE;
-      }
-    catch( ... )
-      {
-      std::cerr <<
-        "Uncaught exception during helper class baseline computations."
-        << std::endl;
-      return EXIT_FAILURE;
-      }
-    }
-  */
   return EXIT_SUCCESS;
 }
 
@@ -829,10 +737,10 @@ int main( int argc, char * argv[] )
         break;
       }
     }
-  catch( itk::ExceptionObject & excep )
+  catch( itk::ExceptionObject & exception )
     {
     std::cerr << argv[0] << ": exception caught !" << std::endl;
-    std::cerr << excep << std::endl;
+    std::cerr << exception << std::endl;
     return EXIT_FAILURE;
     }
   return EXIT_SUCCESS;
