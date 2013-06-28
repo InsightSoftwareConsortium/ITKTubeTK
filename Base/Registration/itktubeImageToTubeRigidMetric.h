@@ -66,8 +66,8 @@ public:
   typedef ImageToTubeRigidMetric                Self;
   typedef ImageToSpatialObjectMetric< TFixedImage, TMovingSpatialObject >
                                                 Superclass;
-  typedef SmartPointer<Self>                    Pointer;
-  typedef SmartPointer<const Self>              ConstPointer;
+  typedef SmartPointer< Self >                  Pointer;
+  typedef SmartPointer< const Self >            ConstPointer;
 
   /**  Dimension of the image and tube.  */
   itkStaticConstMacro( ImageDimension, unsigned int, TFixedImage::ImageDimension );

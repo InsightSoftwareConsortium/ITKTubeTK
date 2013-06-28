@@ -60,8 +60,8 @@ public:
    * Standard self typedef */
   typedef RadiusExtractor                                    Self;
   typedef Object                                             Superclass;
-  typedef SmartPointer<Self>                                 Pointer;
-  typedef SmartPointer<const Self>                           ConstPointer;
+  typedef SmartPointer< Self >                               Pointer;
+  typedef SmartPointer< const Self >                         ConstPointer;
 
   typedef ::tube::ParabolicFitOptimizer1D                    OptimizerType;
   typedef ::tube::SplineApproximation1D                      SplineType;

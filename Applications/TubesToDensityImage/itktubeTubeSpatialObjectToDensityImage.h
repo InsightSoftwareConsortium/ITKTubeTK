@@ -47,7 +47,7 @@ public:
 
   typedef TubeSpatialObjectToDensityImage         Self;
   typedef Object                                  Superclass;
-  typedef SmartPointer<Self>                      Pointer;
+  typedef SmartPointer< Self >                    Pointer;
 
   itkNewMacro(Self);
   itkTypeMacro(Self,Superclass);

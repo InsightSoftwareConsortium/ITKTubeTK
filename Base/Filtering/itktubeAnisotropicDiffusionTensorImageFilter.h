@@ -57,8 +57,8 @@ public:
   /** Standard class typedefs */
   typedef AnisotropicDiffusionTensorImageFilter                   Self;
   typedef FiniteDifferenceImageFilter<TInputImage, TOutputImage>  Superclass;
-  typedef SmartPointer<Self>                                      Pointer;
-  typedef SmartPointer<const Self>                                ConstPointer;
+  typedef SmartPointer< Self >                                    Pointer;
+  typedef SmartPointer< const Self >                              ConstPointer;
 
   // itkNewMacro( Self );  // Not included since pure virutal
 

@@ -51,8 +51,8 @@ public:
   /** Class typedefs */
   typedef JointHistogramImageFunction                  Self;
   typedef ImageFunction<TInputImage,double,TCoordRep>  Superclass;
-  typedef SmartPointer<Self>                           Pointer;
-  typedef SmartPointer<const Self>                     ConstPointer;
+  typedef SmartPointer< Self >                         Pointer;
+  typedef SmartPointer< const Self >                   ConstPointer;
   typedef typename Superclass::InputImageType          InputImageType;
   typedef typename TInputImage::PixelType              PixelType;
   typedef typename Superclass::PointType               PointType;

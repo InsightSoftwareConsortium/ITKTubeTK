@@ -63,8 +63,8 @@ public:
   typedef TubeToTubeTransformFilter<TTransformType,TDimension> Self;
   typedef SpatialObjectToSpatialObjectFilter<GroupType, GroupType>
                                                                Superclass;
-  typedef SmartPointer<Self>                                   Pointer;
-  typedef SmartPointer<const Self>                             ConstPointer;
+  typedef SmartPointer< Self >                                 Pointer;
+  typedef SmartPointer< const Self >                           ConstPointer;
 
   typedef VesselTubeSpatialObject<TDimension>     TubeType;
 

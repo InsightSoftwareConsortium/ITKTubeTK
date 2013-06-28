@@ -53,10 +53,10 @@ public:
 
   /**
    * Standard self typedef */
-  typedef TubeExtractor             Self;
-  typedef Object                    Superclass;
-  typedef SmartPointer<Self>        Pointer;
-  typedef SmartPointer<const Self>  ConstPointer;
+  typedef TubeExtractor               Self;
+  typedef Object                      Superclass;
+  typedef SmartPointer< Self >        Pointer;
+  typedef SmartPointer< const Self >  ConstPointer;
 
   /**
    * Run-time type information ( and related methods ). */

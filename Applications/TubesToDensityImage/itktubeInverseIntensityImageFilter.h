@@ -46,8 +46,8 @@ public:
   typedef InverseIntensityImageFilter                     Self;
   typedef ImageToImageFilter< TInputImage, TInputImage>   SuperClass;
 
-  typedef SmartPointer<Self>                              Pointer;
-  typedef SmartPointer<const Self>                        ConstPointer;
+  typedef SmartPointer< Self >                            Pointer;
+  typedef SmartPointer< const Self >                      ConstPointer;
 
   typedef TInputImage                                     InputImageType;
   typedef typename InputImageType::PixelType              InputPixelType;
