@@ -21,7 +21,8 @@
 #
 ##############################################################################
 
-set( MODULE_NAME EnhanceUsingNJetDiscriminantAnalysis )
+set( MODULE_NAME EnhanceTubesUsingDiscriminantAnalysis )
+
 project( ${MODULE_NAME} )
 
 if( NOT TubeTK_SOURCE_DIR )

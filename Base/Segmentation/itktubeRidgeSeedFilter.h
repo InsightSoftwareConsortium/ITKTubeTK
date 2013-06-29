@@ -87,7 +87,8 @@ public:
                                                   PDFSegmenterType;
 
   void SetInput( typename ImageType::Pointer img );
-  typename ImageType::Pointer GetInput( void );
+  void AddInput( typename ImageType::Pointer img );
+  typename ImageType::Pointer GetInput( unsigned int num = 0 );
 
   void SetLabelMap( typename LabelMapType::Pointer img );
   typename LabelMapType::Pointer GetLabelMap( void );
