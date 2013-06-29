@@ -76,7 +76,8 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Stop("Load data");
   progressReporter.Report( 0.1 );
 
-  if( size.size() > 0 || max.size() > 0 || min.size() > 0 )
+  if( size.size() > 0 || max.size() > 0 || min.size() > 0
+    || matchVolume.size() > 0)
     {
     if( size.size() > 0 && max.size() > 0 )
       {
@@ -97,6 +98,51 @@ int DoIt( int argc, char * argv[] )
     tube::CropROI< TPixel, TDimension > cropFilter;
 
     cropFilter.SetInput( reader->GetOutput() );
+    if( matchVolume.size() > 0 )
+      {
+      typename ImageType::Pointer imgVolume = reader->GetOutput();
+
+      typename ReaderType::Pointer matchReader = ReaderType::New();
+      matchReader->SetFileName( matchVolume.c_str() );
+      matchReader->Update();
+      typename ImageType::Pointer matchVolume = matchReader->GetOutput();
+
+      typename ImageType::RegionType matchRegion =
+        matchVolume->GetLargestPossibleRegion();
+
+      typename ImageType::IndexType matchIndex = matchRegion.GetIndex();
+      typename ImageType::SizeType matchSize = matchRegion.GetSize();
+
+      typename ImageType::PointType matchOrigin = matchVolume->GetOrigin();
+      typename ImageType::SpacingType matchSpacing =
+        matchVolume->GetSpacing();
+
+      typename ImageType::RegionType imgRegion =
+        imgVolume->GetLargestPossibleRegion();
+
+      typename ImageType::IndexType imgIndex = imgRegion.GetIndex();
+      typename ImageType::SizeType imgSize = imgRegion.GetSize();
+
+      typename ImageType::PointType imgOrigin = imgVolume->GetOrigin();
+      typename ImageType::SpacingType imgSpacing =
+        imgVolume->GetSpacing();
+
+      typename ImageType::IndexType minI;
+      typename ImageType::SizeType sizeI;
+
+      for( unsigned int i = 0; i < TDimension; i++ )
+        {
+        minI[i] = vnl_math_rnd( ( ( matchOrigin[i]
+          + matchIndex[i] * matchSpacing[i] ) - ( imgOrigin[i]
+          + imgIndex[i] * imgSpacing[i] ) )
+          / imgSpacing[i] );
+        sizeI[i] = vnl_math_rnd( ( matchSize[i] * matchSpacing[i] )
+          / imgSpacing[i] );
+        }
+      cropFilter.SetMin( minI );
+      cropFilter.SetSize( sizeI );
+      }
+
     if( min.size() > 0 )
       {
       typename ImageType::IndexType minI;

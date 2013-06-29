@@ -28,6 +28,14 @@
   </parameters>
   <parameters>
     <label>Crop Filter</label>
+    <image>
+      <name>matchVolume</name>
+      <label>Match crop to volume</label>
+      <channel>input</channel>
+      <description>Match crop to volume.</description>
+      <longflag>matchVolume</longflag>
+      <flag>v</flag>
+    </image>
     <integer-vector>
       <name>min</name>
       <label>Minimum Coordinate</label>
