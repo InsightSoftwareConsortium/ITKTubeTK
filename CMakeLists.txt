@@ -131,18 +131,9 @@ if( TubeTK_USE_CPPCHECK )
     "${TubeTK_SOURCE_DIR}/CMake/Cppcheck/TubeTKCppcheck.supp" )
   set( cppcheck_cmd_prefix
     "${CPPCHECK_EXECUTABLE}" -q --xml --suppressions "${cppcheck_suppressions_file}" )
-  add_test( CppcheckStyle
-    ${cppcheck_cmd_prefix} --enable=style ${cppcheck_paths_to_check} )
-  add_test( CppcheckPerformance
-    ${cppcheck_cmd_prefix} --enable=performance ${cppcheck_paths_to_check} )
-  add_test( CppcheckPortability
-    ${cppcheck_cmd_prefix} --enable=portability ${cppcheck_paths_to_check} )
-  add_test( CppcheckInformation
-    ${cppcheck_cmd_prefix} --enable=information ${cppcheck_paths_to_check} )
-  add_test( CppcheckUnusedFunction
-    ${cppcheck_cmd_prefix} --enable=unusedFunction ${cppcheck_paths_to_check} )
-  set_tests_properties( CppcheckStyle CppcheckPerformance CppcheckPortability
-    CppcheckInformation CppcheckUnusedFunction
+  add_test( Cppcheck
+    ${cppcheck_cmd_prefix} --enable=all ${cppcheck_paths_to_check} )
+  set_tests_properties( Cppcheck
     PROPERTIES FAIL_REGULAR_EXPRESSION "error file=" )
 endif( TubeTK_USE_CPPCHECK )
 
