@@ -85,9 +85,8 @@ add_library( TubeNumerics STATIC
 
 target_link_libraries( TubeNumerics ${ITK_LIBRARIES} )
 
-slicer4_set_plugins_output_path( TubeNumerics )
 set( TARGETS TubeNumerics )
-slicer4_install_plugins( ${TARGETS} )
+tubetk_install_plugins( ${TARGETS} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

@@ -57,22 +57,6 @@ include( SlicerMacroEmptyExternalProject )
 
 #-----------------------------------------------------------------------------
 # Setup for building 3D Slicer extensions.
-set( SlicerExecutionModel_CLI_RUNTIME_INSTALL_DIRECTORY "bin" )
-set( SlicerExecutionModel_CLI_LIBRARY_INSTALL_DIRECTORY "lib/TubeTK" )
-set( SlicerExecutionModel_CLI_INCLUDE_INSTALL_DIRECTORY "include/TubeTK" )
-set( SlicerExecutionModel_CLI_SHARE_INSTALL_DIRECTORY "share/TubeTK" )
-set( SlicerExecutionModel_CLI_ARHCHIVE_INSTALL_DIRECTORY "lib/TubeTK" )
-
-set( SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY
-  "${CMAKE_BINARY_DIR}/bin" )
-set( SlicerExecutionModel_CLI_LIBRARY_OUTPUT_DIRECTORY
-  "${CMAKE_BINARY_DIR}/lib/TubeTK" )
-set( SlicerExecutionModel_CLI_INCLUDE_OUTPUT_DIRECTORY
-  "${CMAKE_BINARY_DIR}/include/TubeTK" )
-set( SlicerExecutionModel_CLI_SHARE_OUTPUT_DIRECTORY
-  "${CMAKE_BINARY_DIR}/share/TubeTK" )
-set( SlicerExecutionModel_CLI_ARCHIVE_OUTPUT_DIRECTORY
-  "${CMAKE_BINARY_DIR}/lib/TubeTK" )
 
 option( TubeTK_BUILD_SLICER_EXTENSION
   "Build TubeTK as a 3D Slicer extension." OFF )
@@ -444,6 +428,16 @@ if( TubeTK_USE_SUPERBUILD )
   return()
 endif( TubeTK_USE_SUPERBUILD )
 
+set( TubeTK_INSTALL_BIN_DIR "bin" )
+set( TubeTK_INSTALL_LIB_DIR "lib/TubeTK" )
+set( TubeTK_INSTALL_INCLUDE_DIR "include/TubeTK" )
+set( TubeTK_INSTALL_SHARE_DIR "share/TubeTK" )
+
+set( TubeTK_INSTALL_PLUGINS_BIN_DIR "${TubeTK_INSTALL_BIN_DIR}" )
+set( TubeTK_INSTALL_PLUGINS_LIB_DIR "${TubeTK_INSTALL_LIB_DIR}" )
+set( TubeTK_INSTALL_PLUGINS_INCLUDE_DIR "${TubeTK_INSTALL_INCLUDE_DIR}" )
+set( TubeTK_INSTALL_PLUGINS_SHARE_DIR "${TubeTK_INSTALL_SHARE_DIR}" )
+set( TubeTK_INSTALL_PLUGINS_CACHE_DIR "${TubeTK_INSTALL_LIB_DIR}/CACHE" )
 
 find_package( JsonCpp REQUIRED )
 include_directories( ${JsonCpp_INCLUDE_DIRS} )
@@ -467,6 +461,23 @@ if( TubeTK_USE_VTK )
   include( ${VTK_USE_FILE} )
 endif( TubeTK_USE_VTK )
 
+
+set( SlicerExecutionModel_CLI_RUNTIME_INSTALL_DIRECTORY ${TubeTK_INSTALL_BIN_DIR} )
+set( SlicerExecutionModel_CLI_LIBRARY_INSTALL_DIRECTORY ${TubeTK_INSTALL_LIB_DIR} )
+set( SlicerExecutionModel_CLI_INCLUDE_INSTALL_DIRECTORY ${TubeTK_INSTALL_INCLUDE_DIR} )
+set( SlicerExecutionModel_CLI_SHARE_INSTALL_DIRECTORY ${TubeTK_INSTALL_SHARE_DIR} )
+set( SlicerExecutionModel_CLI_ARCHIVE_INSTALL_DIRECTORY ${TubeTK_INSTALL_LIB_DIR} )
+
+set( SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY
+  "${CMAKE_BINARY_DIR}/bin" )
+set( SlicerExecutionModel_CLI_LIBRARY_OUTPUT_DIRECTORY
+  "${CMAKE_BINARY_DIR}/lib/TubeTK" )
+set( SlicerExecutionModel_CLI_INCLUDE_OUTPUT_DIRECTORY
+  "${CMAKE_BINARY_DIR}/include/TubeTK" )
+set( SlicerExecutionModel_CLI_SHARE_OUTPUT_DIRECTORY
+  "${CMAKE_BINARY_DIR}/share/TubeTK" )
+set( SlicerExecutionModel_CLI_ARCHIVE_OUTPUT_DIRECTORY
+  "${CMAKE_BINARY_DIR}/lib/TubeTK" )
 
 find_package( SlicerExecutionModel REQUIRED GenerateCLP )
 include( ${GenerateCLP_USE_FILE} )
@@ -501,6 +512,8 @@ if( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_Slicer )
   set( LAUNCH_EXE  "" )
   set( SUPPORT_2D_IMAGES on )
 
+  set( ITKFactoryRegistration_INSTALL_BIN_DIR ${TubeTK_INSTALL_BIN_DIR} )
+  set( ITKFactoryRegistration_INSTALL_LIB_DIR ${TubeTK_INSTALL_LIB_DIR} )
   add_subdirectory( ${TubeTK_Slicer_SOURCE_DIR}/Libs/ITKFactoryRegistration
     ${TubeTK_Slicer_BINARY_DIR}/Libs/ITKFactoryRegistration )
   include_directories( ${Slicer_BINARY_DIR}/Libs/itkFactoryRegistration )
@@ -520,6 +533,8 @@ if( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_Slicer )
     CACHE INTERNAL "3D Slicer execution model extra libraries." FORCE )
 
 endif( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_Slicer )
+
+include( CMake/TubeTKPluginsMacros.cmake )
 
 #-----------------------------------------------------------------------------
 # Build TubeTK.
@@ -619,7 +634,7 @@ configure_file( ${TubeTK_SOURCE_DIR}/CMake/tubeLauncher.sh.in
 if( NOT TubeTK_BUILD_SLICER_EXTENSION )
   # Record ITK, VTK, CTK, and GenerateCLP libraries used by TubeTK for
   # packaging.
-  file( GLOB_RECURSE ITK_BINARIES "${ITK_DIR}/bin/lib*" )
+  file( GLOB_RECURSE ITK_BINARIES "${ITK_DIR}/lib/lib*" )
   if( TubeTK_USE_VTK )
     file( GLOB_RECURSE VTK_BINARIES "${VTK_DIR}/bin/lib*" )
   endif( TubeTK_USE_VTK)
@@ -627,8 +642,10 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
     file( GLOB_RECURSE CTK_BINARIES "${CTK_DIR}/CTK-build/bin/lib*" )
   endif( TubeTK_USE_CTK )
   file( GLOB_RECURSE SEM_BINARIES "${GenerateCLP_DIR}/bin/lib*" )
+  file( GLOB_RECURSE JsonCpp_BINARIES "${JsonCpp_DIR}/lib/lib*" )
   list( APPEND TubeTK_SUPPORT_BINARIES
-    ${SEM_BINARIES} ${CTK_BINARIES} ${VTK_BINARIES} ${ITK_BINARIES} )
+    ${SEM_BINARIES} ${CTK_BINARIES} ${VTK_BINARIES} ${ITK_BINARIES}
+    ${JsonCpp_BINARIES} )
   install( FILES ${TubeTK_SUPPORT_BINARIES}
     DESTINATION lib )
 

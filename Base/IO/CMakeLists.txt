@@ -50,9 +50,8 @@ add_library( TubeIO STATIC
 
 target_link_libraries( TubeIO ${ITK_LIBRARIES} )
 
-slicer4_set_plugins_output_path( TubeIO )
 set( TARGETS TubeIO )
-slicer4_install_plugins( ${TARGETS} )
+tubetk_install_plugins( ${TARGETS} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
