@@ -74,52 +74,42 @@ set( TubeTK_DEPENDENCIES "" )
 ## Check if system JsonCpp or superbuild JsonCpp
 if( NOT USE_SYSTEM_JsonCpp )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "JsonCpp" )
+else( NOT USE_SYSTEM_JsonCpp )
+  find_package( JsonCpp REQUIRED )
 endif( NOT USE_SYSTEM_JsonCpp )
 
-if( NOT TubeTK_BUILD_SLICER_EXTENSION )
-  ## Check if system ITK or superbuild ITK
-  if( NOT USE_SYSTEM_ITK )
-    set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "Insight" )
+## Check if system ITK or superbuild ITK
+if( NOT USE_SYSTEM_ITK )
+  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "Insight" )
 
-    if( TubeTK_USE_SimpleITK )
-      set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "SimpleITK" )
-    endif( TubeTK_USE_SimpleITK )
-  endif( NOT USE_SYSTEM_ITK )
+  if( TubeTK_USE_SimpleITK )
+    set(TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "SimpleITK" )
+  endif( TubeTK_USE_SimpleITK )
+endif( NOT USE_SYSTEM_ITK )
 
-  ## Check if system VTK or superbuild VTK
-  if( TubeTK_USE_VTK AND NOT USE_SYSTEM_VTK )
-    set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "VTK" )
-  endif( TubeTK_USE_VTK AND NOT USE_SYSTEM_VTK )
-
-endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
+## Check if system VTK or superbuild VTK
+if( TubeTK_USE_VTK AND NOT USE_SYSTEM_VTK )
+  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "VTK" )
+endif( TubeTK_USE_VTK AND NOT USE_SYSTEM_VTK )
 
 ## Check if system ParameterSerializer or superbuild ParameterSerializer
 if( NOT USE_SYSTEM_ParameterSerializer )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "ParameterSerializer" )
+else( NOT USE_SYSTEM_ParameterSerializer )
+  find_package( ParameterSerializer REQUIRED )
 endif( NOT USE_SYSTEM_ParameterSerializer )
 
-if( NOT TubeTK_BUILD_SLICER_EXTENSION )
-  ## SlicerExecutionModel
- if( NOT USE_SYSTEM_SlicerExecutionModel )
-    set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "SlicerExecutionModel" )
-  endif( NOT USE_SYSTEM_SlicerExecutionModel )
+## SlicerExecutionModel
+if( NOT USE_SYSTEM_SlicerExecutionModel )
+  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "SlicerExecutionModel" )
+endif( NOT USE_SYSTEM_SlicerExecutionModel )
 
-  if( TubeTK_USE_QT )
-    ## CTK
-    if( TubeTK_USE_CTK AND NOT USE_SYSTEM_CTK )
-        set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "CTK" )
-    endif( TubeTK_USE_CTK AND NOT USE_SYSTEM_CTK )
-  endif( TubeTK_USE_QT )
-
-else( NOT TubeTK_BUILD_SLICER_EXTENSION )
-
-  unset( CTK_DIR )
-  unset( ITK_DIR )
-  unset( VTK_DIR )
-  unset( QT_QMAKE_EXECUTABLE )
-  unset( SlicerExecutionModel_DIR )
-
-endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
+if( TubeTK_USE_QT )
+  ## CTK
+  if( TubeTK_USE_CTK AND NOT USE_SYSTEM_CTK )
+      set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "CTK" )
+  endif( TubeTK_USE_CTK AND NOT USE_SYSTEM_CTK )
+endif( TubeTK_USE_QT )
 
 if( TubeTK_BUILD_ImageViewer )
   include( "External_ImageViewer.cmake" )
@@ -174,7 +164,9 @@ ExternalProject_Add( ${proj}
     -DTubeTK_BUILD_SLICER_EXTENSION:BOOL=${TubeTK_BUILD_SLICER_EXTENSION}
     -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
     ${kwstyle_dashboard_submission_arg}
+    -DTubeTK_USE_Slicer:BOOL=${TubeTK_USE_Slicer}
     -DSlicer_DIR:PATH=${Slicer_DIR}
+    -DTubeTK_Slicer_SOURCE_DIR:PATH=${TubeTK_Slicer_SOURCE_DIR}
     -DITK_DIR:PATH=${ITK_DIR}
     -DVTK_DIR:PATH=${VTK_DIR}
     -DCTK_DIR:PATH=${CTK_DIR}
@@ -191,5 +183,6 @@ ExternalProject_Add( ${proj}
     -DTubeTK_REQUIRED_QT_VERSION=${TubeTK_REQUIRED_QT_VERSION}
     -DTubeTK_USE_CPPCHECK:BOOL=${TubeTK_USE_CPPCHECK}
     ${TubeTK_SimpleITK_Def}
+    -DTubeTK_BUILD_MODULES=${TubeTK_BUILD_MODULES}
     -DTubeTK_BUILD_ALL_MODULES=${TubeTK_BUILD_ALL_MODULES}
   INSTALL_COMMAND "" )
