@@ -309,21 +309,12 @@ endif( TubeTK_USE_Slicer AND USE_SYSTEM_Slicer )
 option( USE_SYSTEM_JsonCpp
   "Exclude JsonCpp from the superbuild and use an existing build instead." OFF )
 mark_as_advanced( USE_SYSTEM_JsonCpp )
-if( USE_SYSTEM_JsonCpp )
-  find_package( JsonCpp REQUIRED )
-  include_directories( ${JsonCpp_INCLUDE_DIRS} )
-endif( USE_SYSTEM_JsonCpp )
 
 #-----------------------------------------------------------------------------
 # LIBSVM library setup.
 option( TubeTK_USE_LIBSVM
   "Use LIBSVM for support vector machine support to enable additional applications."
   OFF )
-if( TubeTK_USE_LIBSVM )
-  list( APPEND CMAKE_MODULE_PATH "${TubeTK_SOURCE_DIR}/CMake/LibSVM" )
-  include( FindLibSVM )
-  find_package( LibSVM REQUIRED )
-endif( TubeTK_USE_LIBSVM )
 
 #-----------------------------------------------------------------------------
 # Boost libraries setup.
@@ -336,104 +327,67 @@ option( USE_SYSTEM_ParameterSerializer
   "Exclude the parameter serializer from the superbuild and use an existing build instead."
   OFF )
 mark_as_advanced( USE_SYSTEM_ParameterSerializer )
-if( USE_SYSTEM_ParameterSerializer )
-  find_package( ParameterSerializer REQUIRED )
-  include_directories( ${ParameterSerializer_INCLUDE_DIRS} )
-endif( USE_SYSTEM_ParameterSerializer )
 
-#-----------------------------------------------------------------------------
-if( NOT TubeTK_BUILD_SLICER_EXTENSION )
+# --------------------------------------------------------------------------
+# ITK setup.
+option( USE_SYSTEM_ITK
+  "Exclude ITK from the superbuild and use an existing build instead." OFF )
+mark_as_advanced( USE_SYSTEM_ITK )
+option( TubeTK_USE_SimpleITK
+  "Use SimpleITK to enable additional applications and libraries."
+  OFF )
 
-  # --------------------------------------------------------------------------
-  # ITK setup.
-  option( USE_SYSTEM_ITK
-    "Exclude ITK from the superbuild and use an existing build instead." OFF )
-  mark_as_advanced( USE_SYSTEM_ITK )
-  if( USE_SYSTEM_ITK )
-    find_package( ITK REQUIRED )
-    include( ${ITK_USE_FILE} )
-  endif( USE_SYSTEM_ITK )
-  option( TubeTK_USE_SimpleITK
-    "Use SimpleITK to enable additional applications and libraries."
-    OFF )
+#---------------------------------------------------------------------------
+# VTK setup.
+option( TubeTK_USE_VTK
+  "Use VTK to enable additional applications and libraries."
+  OFF )
+option( USE_SYSTEM_VTK
+  "Exclude VTK from the superbuild and use an existing build instead." OFF )
+mark_as_advanced( USE_SYSTEM_VTK )
 
-  #---------------------------------------------------------------------------
-  # Qt framework setup.
-  option( TubeTK_USE_QT
-    "Use the Qt framework to enable additional applications and libraries."
-    ON )
-
-  if( TubeTK_USE_QT )
-    find_package( Qt4 )
-    # 3D Slicer only tests against a specific Qt 4 version. To
-    # override the version check, set the TubeTK_REQUIRED_QT_VERSION CMake
-    # variable.
-    if( NOT DEFINED TubeTK_REQUIRED_QT_VERSION )
-      set( TubeTK_REQUIRED_QT_VERSION
-        "4.7.4" CACHE STRING "Exact Qt version required." FORCE )
-      mark_as_advanced( TubeTK_REQUIRED_QT_VERSION )
-    endif( NOT DEFINED TubeTK_REQUIRED_QT_VERSION )
-    if( QT4_FOUND )
-      if( NOT "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
+#---------------------------------------------------------------------------
+# Qt framework setup.
+option( TubeTK_USE_QT
+  "Use the Qt framework to enable additional applications and libraries."
+  OFF )
+if( TubeTK_USE_QT )
+  find_package( Qt4 )
+  # 3D Slicer only tests against a specific Qt 4 version. To
+  # override the version check, set the TubeTK_REQUIRED_QT_VERSION CMake
+  # variable.
+  if( NOT DEFINED TubeTK_REQUIRED_QT_VERSION )
+    set( TubeTK_REQUIRED_QT_VERSION
+      "4.7.4" CACHE STRING "Exact Qt version required." FORCE )
+    mark_as_advanced( TubeTK_REQUIRED_QT_VERSION )
+  endif( NOT DEFINED TubeTK_REQUIRED_QT_VERSION )
+  if( QT4_FOUND )
+    if( NOT "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
         VERSION_EQUAL "${TubeTK_REQUIRED_QT_VERSION}" )
-        message( FATAL_ERROR
-          "Error: TubeTK requires Qt == ${TubeTK_REQUIRED_QT_VERSION}" )
-      endif( NOT "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
-        VERSION_EQUAL "${TubeTK_REQUIRED_QT_VERSION}" )
-      include( ${QT_USE_FILE} )
-    else( QT4_FOUND )
-      message( SEND_ERROR "Error: Qt not found." )
-    endif( QT4_FOUND )
-  endif( TubeTK_USE_QT )
+      message( FATAL_ERROR
+        "Error: TubeTK requires Qt == ${TubeTK_REQUIRED_QT_VERSION}" )
+    endif( NOT "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
+      VERSION_EQUAL "${TubeTK_REQUIRED_QT_VERSION}" )
+    include( ${QT_USE_FILE} )
+  else( QT4_FOUND )
+    message( SEND_ERROR "Error: Qt not found." )
+  endif( QT4_FOUND )
+endif( TubeTK_USE_QT )
 
-  #---------------------------------------------------------------------------
-  # VTK setup.
-  option( TubeTK_USE_VTK
-    "Use VTK to enable additional applications and libraries."
-    ON )
-  if( TubeTK_USE_VTK )
-    option( USE_SYSTEM_VTK
-      "Exclude VTK from the superbuild and use an existing build instead." OFF )
-    mark_as_advanced( USE_SYSTEM_VTK )
-    if( USE_SYSTEM_VTK )
-      find_package( VTK REQUIRED )
-      include( ${VTK_USE_FILE} )
-    endif( USE_SYSTEM_VTK )
-  endif( TubeTK_USE_VTK )
+#---------------------------------------------------------------------------
+# CTK setup.
+option( TubeTK_USE_CTK
+  "Use CTK to enable additional applications and build the 3D Slicer modules."
+  OFF )
+option( USE_SYSTEM_CTK
+  "Exclude CTK from the superbuild and use an existing build instead." OFF )
+mark_as_advanced( USE_SYSTEM_CTK )
 
-  #---------------------------------------------------------------------------
-  # CTK setup.
-  if( TubeTK_USE_QT )
-    option( TubeTK_USE_CTK
-      "Use CTK to enable additional applications and build the 3D Slicer modules."
-      ON )
-    option( USE_SYSTEM_CTK
-      "Exclude CTK from the superbuild and use an existing build instead." OFF )
-    mark_as_advanced( USE_SYSTEM_CTK )
-    if( USE_SYSTEM_CTK )
-      find_package( CTK REQUIRED )
-      include( ${CTK_USE_FILE} )
-    endif( USE_SYSTEM_CTK )
-  endif( TubeTK_USE_QT )
-
-  #---------------------------------------------------------------------------
-  # Slicer Execution model Setup
-  option( USE_SYSTEM_SlicerExecutionModel
-    "Exclude SlicerExecutionModel from SuperBuild and use an existing build instead." OFF )
-  mark_as_advanced( USE_SYSTEM_SlicerExecutionModel )
-  if( USE_SYSTEM_SlicerExecutionModel )
-    find_package( SlicerExecutionModel REQUIRED )
-    include( ${SlicerExecutionModel_USE_FILE} )
-  endif( USE_SYSTEM_SlicerExecutionModel )
-
-else( NOT TubeTK_BUILD_SLICER_EXTENSION )
-  unset( ITK_DIR )
-  unset( VTK_DIR )
-  unset( CTK_DIR )
-  unset( QT_QMAKE_EXECUTABLE )
-  unset( SlicerExecutionModel_DIR )
-  unset( TubeTK_USE_SUPERBUILD )
-endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
+#---------------------------------------------------------------------------
+# Slicer Execution model Setup
+option( USE_SYSTEM_SlicerExecutionModel
+  "Exclude SlicerExecutionModel from SuperBuild and use an existing build instead." OFF )
+mark_as_advanced( USE_SYSTEM_SlicerExecutionModel )
 
 #-----------------------------------------------------------------------------
 # Image viewer setup.
@@ -476,41 +430,41 @@ if( TubeTK_USE_SUPERBUILD )
 
   add_subdirectory( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/Superbuild" )
   return()
-else( TubeTK_USE_SUPERBUILD )
-
-  find_package( JsonCpp REQUIRED )
-  include_directories( ${JsonCpp_INCLUDE_DIRS} )
-
-  find_package( ParameterSerializer )
-  include_directories( ${ParameterSerializer_INCLUDE_DIRS} )
-
-  if( TubeTK_BUILD_SLICER_EXTENSION )
-    find_package( Slicer REQUIRED )
-    include( ${Slicer_USE_FILE} )
-
-    set( TubeTK_USE_VTK ON )
-    set( TubeTK_USE_QT ON )
-    set( TubeTK_USE_CTK ON )
-  else( TubeTK_BUILD_SLICER_EXTENSION )
-    find_package( ITK REQUIRED )
-    include( ${ITK_USE_FILE} )
-
-    if( TubeTK_USE_VTK )
-      find_package( VTK REQUIRED )
-      include( ${VTK_USE_FILE} )
-    endif( TubeTK_USE_VTK )
-
-    find_package( SlicerExecutionModel REQUIRED GenerateCLP )
-    include( ${GenerateCLP_USE_FILE} )
-
-    if( TubeTK_USE_QT )
-      if( TubeTK_USE_CTK )
-        find_package( CTK REQUIRED )
-        include( ${CTK_USE_FILE} )
-      endif( TubeTK_USE_CTK )
-    endif( TubeTK_USE_QT )
-  endif( TubeTK_BUILD_SLICER_EXTENSION )
 endif( TubeTK_USE_SUPERBUILD )
+
+
+find_package( JsonCpp REQUIRED )
+include_directories( ${JsonCpp_INCLUDE_DIRS} )
+
+#-----------------------------------------------------------------------------
+# LIBSVM library setup.
+if( TubeTK_USE_LIBSVM )
+  list( APPEND CMAKE_MODULE_PATH "${TubeTK_SOURCE_DIR}/CMake/LibSVM" )
+  include( FindLibSVM )
+  find_package( LibSVM REQUIRED )
+endif( TubeTK_USE_LIBSVM )
+
+find_package( ParameterSerializer )
+include_directories( ${ParameterSerializer_INCLUDE_DIRS} )
+
+find_package( ITK REQUIRED )
+include( ${ITK_USE_FILE} )
+
+if( TubeTK_USE_VTK )
+  find_package( VTK REQUIRED )
+  include( ${VTK_USE_FILE} )
+endif( TubeTK_USE_VTK )
+
+
+find_package( SlicerExecutionModel REQUIRED GenerateCLP )
+include( ${GenerateCLP_USE_FILE} )
+
+if( TubeTK_USE_QT )
+  if( TubeTK_USE_CTK )
+    find_package( CTK REQUIRED )
+    include( ${CTK_USE_FILE} )
+  endif( TubeTK_USE_CTK )
+endif( TubeTK_USE_QT )
 
 #-----------------------------------------------------------------------------
 # Check endianness.
@@ -577,19 +531,25 @@ if( MSVC )
     ${ParameterSerializer_DIR}/bin/${CMAKE_BUILD_TYPE}
     ${GenerateCLP_DIR}/${CMAKE_BUILD_TYPE}
     ${ITK_DIR}/bin/${CMAKE_BUILD_TYPE}
-    ${VTK_DIR}/bin/${CMAKE_BUILD_TYPE}
     ${TubeTK_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}
     ${TubeTK_BINARY_DIR}/lib/TubeTK/Plugins/${CMAKE_BUILD_TYPE} )
+  if( TubeTK_USE_VTK )
+    list( APPEND TubeTK_EXECUTABLE_DIRS
+      ${VTK_DIR}/bin/${CMAKE_BUILD_TYPE} )
+  endif( TubeTK_USE_VTK )
+
 else( MSVC )
   set( TubeTK_EXECUTABLE_DIRS
     ${JSonCpp_DIR}/bin
     ${ParameterSerializer_DIR}/bin
     ${GenerateCLP_DIR}
     ${ITK_DIR}/bin
-    ${VTK_DIR}/bin
     ${TubeTK_BINARY_DIR}/bin
     ${TubeTK_BINARY_DIR}/lib
     ${TubeTK_BINARY_DIR}/lib/TubeTK/Plugins )
+  if( TubeTK_USE_VTK )
+    list( APPEND ${VTK_DIR}/bin )
+  endif( TubeTK_USE_VTK )
 endif( MSVC )
 
 set( TubeTK_LIBRARY_DIRS
@@ -636,8 +596,12 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
   # Record ITK, VTK, CTK, and GenerateCLP libraries used by TubeTK for
   # packaging.
   file( GLOB_RECURSE ITK_BINARIES "${ITK_DIR}/bin/lib*" )
-  file( GLOB_RECURSE VTK_BINARIES "${VTK_DIR}/bin/lib*" )
-  file( GLOB_RECURSE CTK_BINARIES "${CTK_DIR}/CTK-build/bin/lib*" )
+  if( TubeTK_USE_VTK )
+    file( GLOB_RECURSE VTK_BINARIES "${VTK_DIR}/bin/lib*" )
+  endif( TubeTK_USE_VTK)
+  if( TubeTK_USE_CTK )
+    file( GLOB_RECURSE CTK_BINARIES "${CTK_DIR}/CTK-build/bin/lib*" )
+  endif( TubeTK_USE_CTK )
   file( GLOB_RECURSE SEM_BINARIES "${GenerateCLP_DIR}/bin/lib*" )
   list( APPEND TubeTK_SUPPORT_BINARIES
     ${SEM_BINARIES} ${CTK_BINARIES} ${VTK_BINARIES} ${ITK_BINARIES} )
