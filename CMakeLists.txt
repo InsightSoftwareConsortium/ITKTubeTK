@@ -390,6 +390,11 @@ option( USE_SYSTEM_SlicerExecutionModel
 mark_as_advanced( USE_SYSTEM_SlicerExecutionModel )
 
 #-----------------------------------------------------------------------------
+# Modules
+option( TubeTK_BUILD_MODULES
+  "Build modules. If not, only TubeTK library is built"
+  ON )
+#-----------------------------------------------------------------------------
 # Image viewer setup.
 option( TubeTK_BUILD_ImageViewer "Build the lightweight image viewer." OFF )
 
@@ -421,12 +426,13 @@ if( NOT DEFINED TubeTK_CONFIG_BINARY_DIR )
 endif( NOT DEFINED TubeTK_CONFIG_BINARY_DIR )
 
 if( TubeTK_USE_SUPERBUILD )
-
-  # Expose the TubeTK_BUILD_* variables
-  file( GLOB_RECURSE TubeTK_modules_files "TubeTKModules.cmake" )
-  foreach( f ${TubeTK_modules_files} )
-    include( ${f} )
-  endforeach( f ${TubeTK_modules_files} )
+  if( TubeTK_BUILD_MODULES )
+    # Expose the TubeTK_BUILD_* variables to Superbuild
+    file( GLOB_RECURSE TubeTK_modules_files "TubeTKModules.cmake" )
+    foreach( f ${TubeTK_modules_files} )
+      include( ${f} )
+    endforeach( f ${TubeTK_modules_files} )
+  endif( TubeTK_BUILD_MODULES )
 
   add_subdirectory( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/Superbuild" )
   return()
@@ -503,13 +509,15 @@ endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
 # Build TubeTK.
 add_subdirectory( Utilities )
 add_subdirectory( Base )
-add_subdirectory( Applications )
+if( TubeTK_BUILD_MODULES )
+  add_subdirectory( Applications )
+endif( TubeTK_BUILD_MODULES )
 
 #-----------------------------------------------------------------------------
 # Optionally build 3D Slicer modules.
-if( TubeTK_BUILD_SLICER_EXTENSION )
+if( TubeTK_BUILD_MODULES AND TubeTK_USE_Slicer )
   add_subdirectory( SlicerModules )
-endif( TubeTK_BUILD_SLICER_EXTENSION )
+endif( TubeTK_BUILD_MODULES AND TubeTK_USE_Slicer )
 
 #-----------------------------------------------------------------------------
 # Create the directory where CTest unit tests store temporary results.
