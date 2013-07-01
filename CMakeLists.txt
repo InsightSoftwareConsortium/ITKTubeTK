@@ -270,6 +270,41 @@ endif( UNIX )
 set( CMAKE_POSITION_INDEPENDENT_CODE ON )
 
 #-----------------------------------------------------------------------------
+# Slicer library setup.
+# If available, Slicer can be used to retrieve external libraries and modules
+# used by TubeTK.
+option( TubeTK_USE_Slicer
+  "Use Slicer to extract useful commands and CLIs."
+  OFF )
+
+# Slicer must be used if TubeTK is built as an extension.
+if( TubeTK_BUILD_SLICER_EXTENSION )
+  set( TubeTK_USE_Slicer ON CACHE BOOL "Use Slicer to extract useful commands and CLIs." FORCE )
+endif( TubeTK_BUILD_SLICER_EXTENSION )
+
+# If USE_SYSTEM_Slicer is OFF, it still won't be built as an external project.
+option( USE_SYSTEM_Slicer
+  "Use Slicer to configure dependencies such as ITK, VTK, CTK..."
+  ON )
+mark_as_advanced( USE_SYSTEM_Slicer )
+
+if( TubeTK_USE_Slicer AND USE_SYSTEM_Slicer )
+  unset(QT_QMAKE_EXECUTABLE)
+  # Find Slicer to set the [ITK|VTK|CTK|...]_DIR variables
+  find_package( Slicer REQUIRED )
+  set( Slicer_DONT_USE_EXTENSION ${TubeTK_BUILD_SLICER_EXTENSION} )
+  include( ${Slicer_USE_FILE} )
+  # All those dependencies are already provided by Slicer
+  set( USE_SYSTEM_ITK ON CACHE BOOL "Use SimpleITK to enable additional applications and libraries." FORCE )
+  set( TubeTK_USE_VTK ON CACHE BOOL "Use VTK to enable additional applications and libraries." FORCE )
+  set( USE_SYSTEM_VTK ON CACHE BOOL "Exclude VTK from the superbuild and use an existing build instead." FORCE )
+  set( TubeTK_USE_QT ON CACHE BOOL "Use the Qt framework to enable additional applications and libraries." FORCE )
+  set( TubeTK_USE_CTK ON CACHE BOOL "Use CTK to enable additional applications and build the 3D Slicer modules." FORCE )
+  set( USE_SYSTEM_CTK ON CACHE BOOL "Exclude CTK from the superbuild and use an existing build instead." FORCE )
+  set( USE_SYSTEM_SlicerExecutionModel ON CACHE BOOL "Exclude SlicerExecutionModel from SuperBuild and use an existing build instead." FORCE )
+endif( TubeTK_USE_Slicer AND USE_SYSTEM_Slicer )
+
+#-----------------------------------------------------------------------------
 # JsonCpp library setup.
 option( USE_SYSTEM_JsonCpp
   "Exclude JsonCpp from the superbuild and use an existing build instead." OFF )
@@ -432,10 +467,6 @@ if( NOT DEFINED TubeTK_CONFIG_BINARY_DIR )
 endif( NOT DEFINED TubeTK_CONFIG_BINARY_DIR )
 
 if( TubeTK_USE_SUPERBUILD )
-  if( TubeTK_BUILD_SLICER_EXTENSION )
-    find_package( Slicer REQUIRED )
-    include( ${Slicer_USE_FILE} )
-  endif( TubeTK_BUILD_SLICER_EXTENSION )
 
   # Expose the TubeTK_BUILD_* variables
   file( GLOB_RECURSE TubeTK_modules_files "TubeTKModules.cmake" )

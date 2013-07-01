@@ -174,6 +174,7 @@ ExternalProject_Add( ${proj}
     -DTubeTK_BUILD_SLICER_EXTENSION:BOOL=${TubeTK_BUILD_SLICER_EXTENSION}
     -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
     ${kwstyle_dashboard_submission_arg}
+    -DTubeTK_USE_Slicer:BOOL=${TubeTK_USE_Slicer}
     -DSlicer_DIR:PATH=${Slicer_DIR}
     -DITK_DIR:PATH=${ITK_DIR}
     -DVTK_DIR:PATH=${VTK_DIR}
