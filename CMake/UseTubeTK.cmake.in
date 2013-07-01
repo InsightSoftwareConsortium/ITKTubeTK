@@ -71,6 +71,10 @@ set( SVNCOMMAND "@SVNCOMMAND@" )
 set( CVSCOMMAND "@CVSCOMMAND@" )
 set( QT_QMAKE_EXECUTABLE "@QT_QMAKE_EXECUTABLE@" )
 
-# Slicer variabless and macros as provided by TubeTK
+# Slicer variables and macros as provided by TubeTK
 # Needs to come after the definition of SlicerExecutionModel_DIR.
-include( "@TubeTK_CMAKE_EXTENSIONS_DIR@/Slicer4Config.cmake" )
+set( TubeTK_USE_Slicer "@TubeTK_USE_Slicer@")
+if( TubeTK_USE_Slicer )
+  include( "@TubeTK_CMAKE_EXTENSIONS_DIR@/Slicer4Config.cmake" )
+endif( TubeTK_USE_Slicer )
+set( TubeTK_Slicer_SOURCE_DIR "@TubeTK_Slicer_SOURCE_DIR@")

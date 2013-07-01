@@ -166,6 +166,7 @@ ExternalProject_Add( ${proj}
     ${kwstyle_dashboard_submission_arg}
     -DTubeTK_USE_Slicer:BOOL=${TubeTK_USE_Slicer}
     -DSlicer_DIR:PATH=${Slicer_DIR}
+    -DTubeTK_Slicer_SOURCE_DIR:PATH=${TubeTK_Slicer_SOURCE_DIR}
     -DITK_DIR:PATH=${ITK_DIR}
     -DVTK_DIR:PATH=${VTK_DIR}
     -DCTK_DIR:PATH=${CTK_DIR}

@@ -294,6 +294,12 @@ if( TubeTK_USE_Slicer AND USE_SYSTEM_Slicer )
   find_package( Slicer REQUIRED )
   set( Slicer_DONT_USE_EXTENSION ${TubeTK_BUILD_SLICER_EXTENSION} )
   include( ${Slicer_USE_FILE} )
+  # TubeTK_Slicer_SOURCE_DIR is needed to get ExpertAutomatedRegistration CLI
+  if( Slicer_SOURCE_DIR )
+    set( TubeTK_Slicer_SOURCE_DIR ${Slicer_SOURCE_DIR} )
+  else( Slicer_SOURCE_DIR)
+    set( TubeTK_Slicer_SOURCE_DIR ${Slicer_CMAKE_DIR}/.. )
+  endif( Slicer_SOURCE_DIR )
   # All those dependencies are already provided by Slicer
   set( USE_SYSTEM_ITK ON CACHE BOOL "Use SimpleITK to enable additional applications and libraries." FORCE )
   set( TubeTK_USE_VTK ON CACHE BOOL "Use VTK to enable additional applications and libraries." FORCE )
@@ -479,31 +485,41 @@ test_big_endian( CMAKE_WORDS_BIGENDIAN )
 
 #-----------------------------------------------------------------------------
 # Setup to conform to 3D Slicer paths and define plugin copying macros.
-include( CMake/Slicer4Config.cmake )
+if( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_Slicer )
+  include( CMake/SlicerGetSource.cmake )
 
-#-----------------------------------------------------------------------------
-# Build 3D Slicer command line applications essential to TubeTK.
-svnGetSlicerBase( Resources )
-svnGetSlicerBase( Base/CLI )
-svnGetSlicerBase( Libs/ITKFactoryRegistration )
-svnGetSlicerCLI( ExpertAutomatedRegistration )
+  svnGetSlicerBase( Resources )
+  svnGetSlicerBase( Base/CLI )
+  svnGetSlicerBase( Libs/ITKFactoryRegistration )
 
-set( CXX_TEST_PATH  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR} )
-set( LAUNCH_EXE  "" )
-set( SUPPORT_2D_IMAGES on )
+  svnGetSlicerCLI( ExpertAutomatedRegistration )
 
-if( NOT TubeTK_BUILD_SLICER_EXTENSION )
-  add_subdirectory( ${Slicer_SOURCE_DIR}/Libs/ITKFactoryRegistration
-    ${Slicer_BINARY_DIR}/Libs/ITKFactoryRegistration )
+  #-----------------------------------------------------------------------------
+  # Build ITKFactorRegistration
+  include( CMake/Slicer4Config.cmake )
+  set( CXX_TEST_PATH  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR} )
+  set( LAUNCH_EXE  "" )
+  set( SUPPORT_2D_IMAGES on )
+
+  add_subdirectory( ${TubeTK_Slicer_SOURCE_DIR}/Libs/ITKFactoryRegistration
+    ${TubeTK_Slicer_BINARY_DIR}/Libs/ITKFactoryRegistration )
   include_directories( ${Slicer_BINARY_DIR}/Libs/itkFactoryRegistration )
-  add_subdirectory( ${Slicer_SOURCE_DIR}/Base/CLI
-    ${Slicer_BINARY_DIR}/Base/CLI )
+  #-----------------------------------------------------------------------------
+  # Build SlicerBaseCLI
+  add_subdirectory( ${TubeTK_Slicer_SOURCE_DIR}/Base/CLI
+    ${TubeTK_Slicer_BINARY_DIR}/Base/CLI )
 
+  #-----------------------------------------------------------------------------
+  # Config SlicerExecutionModel
+  set( extras ITKFactoryRegistration )
+  if( TubeTK_USE_VTK)
+    list( APPEND extras SlicerBaseCLI )
+  endif( TubeTK_USE_VTK)
   set( SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES
-    SlicerBaseCLI
-    ITKFactoryRegistration
+    ${extras}
     CACHE INTERNAL "3D Slicer execution model extra libraries." FORCE )
-endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
+
+endif( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_Slicer )
 
 #-----------------------------------------------------------------------------
 # Build TubeTK.
