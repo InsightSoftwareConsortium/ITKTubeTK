@@ -42,6 +42,9 @@ set( BASE_CLI_HEADER_TEST
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
+find_package( GenerateCLP REQUIRED )
+include( ${GenerateCLP_USE_FILE} )
+
 set( tubeCLIHelperFunctionsTest_SOURCE tubeCLIHelperFunctionsTest.cxx )
 generateclp( tubeCLIHelperFunctionsTest_SOURCE tubeCLIHelperFunctionsTest.xml )
 

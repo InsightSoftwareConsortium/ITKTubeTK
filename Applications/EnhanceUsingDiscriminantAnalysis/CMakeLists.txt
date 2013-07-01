@@ -21,14 +21,22 @@
 #
 ##############################################################################
 
+#-----------------------------------------------------------------------------
 set( MODULE_NAME EnhanceUsingDiscriminantAnalysis )
 project( ${MODULE_NAME} )
+
+if( NOT TubeTK_SOURCE_DIR )
+  find_package( TubeTK REQUIRED )
+  include( ${TubeTK_USE_FILE} )
+endif( NOT TubeTK_SOURCE_DIR )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
+
+find_package( JsonCpp REQUIRED )
 
 #-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
@@ -40,7 +48,8 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/Common
     ${TubeTK_SOURCE_DIR}/Base/Numerics
     ${TubeTK_SOURCE_DIR}/Base/Filtering
-    ${TubeTK_SOURCE_DIR}/Base/IO )
+    ${TubeTK_SOURCE_DIR}/Base/IO
+    ${JsonCpp_INCLUDE_DIRS} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

@@ -69,3 +69,6 @@ install( FILES
   ${TubeTK_Base_ObjectDocuments_H_Files}
   ${TubeTK_Base_ObjectDocuments_HXX_Files}
   DESTINATION include )
+
+# Export target
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeObjectDocuments )

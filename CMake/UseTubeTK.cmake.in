@@ -44,16 +44,12 @@ set( TubeTK_BINARY_DIR "@TubeTK_BINARY_DIR@" )
 set( TubeTK_INCLUDE_DIRS "@TubeTK_INCLUDE_DIRS@" )
 include_directories( BEFORE ${TubeTK_INCLUDE_DIRS} )
 
-# Executables
 set( TubeTK_EXECUTABLE_DIRS "@TubeTK_EXECUTABLE_DIRS@" )
 
-# Libraries
 set( TubeTK_LIBRARY_DIRS "@TubeTK_LIBRARY_DIRS@" )
 link_directories( ${TubeTK_LIBRARY_DIRS} )
 
-set( TubeTK_LIBRARIES "@TubeTK_LIBRARIES@" )
-
-# CMake magic is stored here by TubeTK
+# CMake files are stored here by TubeTK
 set( TubeTK_CMAKE_EXTENSIONS_DIR "@TubeTK_CMAKE_EXTENSIONS_DIR@" )
 
 # The TubeTK version number
@@ -62,17 +58,19 @@ set( TubeTK_VERSION_MINOR "@TubeTK_VERSION_MINOR@" )
 set( TubeTK_VERSION_BUILD "@TubeTK_VERSION_BUILD@" )
 set( TubeTK_VERSION "@TubeTK_VERSION@" )
 
-# Pass on TubeTK knowledge
-set( SlicerExecutionModel_DIR @SlicerExecutionModel_DIR@ )
-set( GenerateCLP_DIR @GenerateCLP_DIR@ )
-set( ITK_DIR @ITK_DIR@ )
-set( CTK_DIR @CTK_DIR@ )
-set( VTK_DIR @VTK_DIR@ )
-set( GITCOMMAND @GITCOMMAND@ )
-set( SVNCOMMAND @SVNCOMMAND@ )
-set( CVSCOMMAND @CVSCOMMAND@ )
-set( QT_QMAKE_EXECUTABLE @QT_QMAKE_EXECUTABLE@ )
+# Pass on TubeTK dependencies directories
+set( JsonCpp_DIR "@JsonCpp_DIR@" )
+set( ParameterSerializer_DIR "@ParameterSerializer_DIR@" )
+set( SlicerExecutionModel_DIR "@SlicerExecutionModel_DIR@" )
+set( GenerateCLP_DIR "@GenerateCLP_DIR@" )
+set( ITK_DIR "@ITK_DIR@" )
+set( CTK_DIR "@CTK_DIR@" )
+set( VTK_DIR "@VTK_DIR@" )
+set( GITCOMMAND "@GITCOMMAND@" )
+set( SVNCOMMAND "@SVNCOMMAND@" )
+set( CVSCOMMAND "@CVSCOMMAND@" )
+set( QT_QMAKE_EXECUTABLE "@QT_QMAKE_EXECUTABLE@" )
 
-# Slicer vars and macros as provided by TubeTK
+# Slicer variabless and macros as provided by TubeTK
 # Needs to come after the definition of SlicerExecutionModel_DIR.
 include( "@TubeTK_CMAKE_EXTENSIONS_DIR@/Slicer4Config.cmake" )

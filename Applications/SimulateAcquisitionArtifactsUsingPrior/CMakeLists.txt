@@ -35,11 +35,17 @@ add_custom_target( SimulateAcquisitionArtifactsUsingPriorInclude SOURCES
   ${SimulateAcquisitionArtifactsUsingPrior_H_Files}
   ${SimulateAcquisitionArtifactsUsingPrior_HXX_Files} )
 
+if( NOT TubeTK_SOURCE_DIR )
+  find_package( TubeTK REQUIRED )
+  include( ${TubeTK_USE_FILE} )
+endif( NOT TubeTK_SOURCE_DIR )
+
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
+
 #-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
