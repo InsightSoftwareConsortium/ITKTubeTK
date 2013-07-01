@@ -25,7 +25,6 @@ include( ${CMAKE_CURRENT_SOURCE_DIR}/CMake/SlicerBlockSetCMakeOSXVariables.cmake
 
 project( TubeTK )
 
-set( Slicer_SKIP_PROJECT_COMMAND ON )
 #-----------------------------------------------------------------------------
 # Require CMake 2.8 for its superbuild functionality.
 cmake_minimum_required( VERSION 2.8.8 )
@@ -71,6 +70,8 @@ if( TubeTK_BUILD_SLICER_EXTENSION )
     "http://public.kitware.com/Wiki/images/a/ad/TubeTK_Icon.jpg" )
   set( EXTENSION_SCREENSHOTURLS
     "http://public.kitware.com/Wiki/images/f/fd/VesselExtraction.jpg" )
+  set( EXTENSION_README_FILE ${TubeTK_SOURCE_DIR}/README.md )
+  set( EXTENSION_LICENSE_FILE ${TubeTK_SOURCE_DIR}/LICENSE.md )
 endif( TubeTK_BUILD_SLICER_EXTENSION )
 
 #-----------------------------------------------------------------------------
