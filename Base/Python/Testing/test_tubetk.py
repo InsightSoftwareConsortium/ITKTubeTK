@@ -25,10 +25,23 @@
 
 import sys
 
-def VesselTubeToNumPyTest():
-    import tubetk.numpy
-    # TODO actual testing code.
-    return True
+def VesselTubeToNumPyTest(tubes, baseline_array):
+    from tubetk.numpy import tubes_from_file
+    import numpy as np
+
+    array = tubes_from_file(tubes)
+    print(array.dtype)
+    print(array)
+
+    baseline = np.load(baseline_array)
+
+    all_fields_close = True
+    for field in baseline.dtype.fields.iterkeys():
+        if not np.allclose(array[field], baseline[field]):
+            all_fields_close = False
+            print('The array field: ' + field + ' does not match!')
+
+    return all_fields_close
 
 if __name__ == '__main__':
     usage = 'Usage: ' + sys.argv[0] + \

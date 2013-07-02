@@ -21,13 +21,16 @@
 #
 ##############################################################################
 
-include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
+include( ${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 find_package( PythonInterp REQUIRED )
 
-MIDAS_ADD_TEST( VesselTubeToNumPyTest
-  ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_tubetk.py
-  VesselTubeToNumPyTest
-  )
+if( ${TubeTK_USE_NumPy} )
+  MIDAS_ADD_TEST( VesselTubeToNumPyTest
+    ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_tubetk.py
+      VesselTubeToNumPyTest
+        MIDAS{tube.tre.md5}
+        MIDAS{tube.tre.npy.md5} )
+endif( ${TubeTK_USE_NumPy} )

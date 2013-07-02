@@ -5,4 +5,4 @@
 #
 # to make TubeTK Python packages and modules importable.
 
-@TubeTK_PURE_PYTHON_DIR@
+@TubeTK_C_PYTHON_EXTENSION_DIR@

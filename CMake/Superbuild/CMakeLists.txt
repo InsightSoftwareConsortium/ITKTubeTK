@@ -177,6 +177,7 @@ ExternalProject_Add( ${proj}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
     -DTubeTK_USE_Boost:BOOL=${TubeTK_USE_Boost}
     -DTubeTK_USE_LIBSVM:BOOL=${TubeTK_USE_LIBSVM}
+    -DTubeTK_USE_NumPy:BOOL=${TubeTK_USE_NumPy}
     -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
     -DParameterSerializer_DIR:PATH=${ParameterSerializer_DIR}
     -DTubeTK_EXECUTABLE_DIRS:STRING=${TubeTK_EXECUTABLE_DIRS}

@@ -22,3 +22,6 @@
 ##############################################################################
 
 """Bridge between TubeTK and NumPy."""
+
+from tubetk import _tubetk_numpy
+from _tubetk_numpy import tubes_from_file
