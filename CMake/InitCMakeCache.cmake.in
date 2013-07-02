@@ -46,7 +46,7 @@ set( TubeTK_SOURCE_DIR "@TUBETK_SOURCE_DIR@" CACHE PATH "Init" FORCE )
 
 set( TubeTK_USE_SUPERBUILD ON CACHE BOOL "Init" FORCE )
 
-set( TubeTK_USE_QT ON CACHE BOOL "Init" FORCE )
+set( TubeTK_USE_QT @TubeTK_USE_QT@ CACHE BOOL "Init" FORCE )
 
 set( BUILD_DOCUMENTATION @BUILD_DOCUMENTATION@ CACHE BOOL "Init" FORCE )
 set( TubeTK_USE_DOXYGEN @TubeTK_USE_DOXYGEN@ CACHE BOOL "Init" FORCE )
@@ -56,25 +56,26 @@ set( TubeTK_USE_KWSTYLE @TubeTK_USE_KWSTYLE@ CACHE BOOL "Init" FORCE )
 set( TubeTK_USE_CPPCHECK @TubeTK_USE_CPPCHECK@ CACHE BOOL "Init" FORCE )
 set( TubeTK_USE_Boost @TubeTK_USE_Boost@ CACHE BOOL "Init" FORCE )
 
-if( EXISTS ${TUBETK_BINARY_DIR}/Insight-build/CMakeCache.txt )
-  set( ITK_DIR "${TUBETK_BINARY_DIR}/Insight-build" CACHE PATH "Init" FORCE )
-endif()
+if( EXISTS ${TubeTK_BINARY_DIR}/Insight-build/CMakeCache.txt )
+  set( ITK_DIR "${TubeTK_BINARY_DIR}/Insight-build" CACHE PATH "Init" FORCE )
+endif( EXISTS ${TubeTK_BINARY_DIR}/Insight-build/CMakeCache.txt )
 
-if( EXISTS ${TUBETK_BINARY_DIR}/GenerateCLP-build/CMakeCache.txt)
-  set( GenerateCLP_DIR "${TUBETK_BINARY_DIR}/GenerateCLP-build" CACHE PATH "Init" FORCE )
-endif()
-
-if( EXISTS ${TUBETK_BINARY_DIR}/SlicerExecutionModel-build/CMakeCache.txt)
-  set( SlicerExecutionModel_DIR "${TUBETK_BINARY_DIR}/SlicerExecutionModel-build"
+if( EXISTS ${TubeTK_BINARY_DIR}/GenerateCLP-build/CMakeCache.txt )
+  set( GenerateCLP_DIR "${TubeTK_BINARY_DIR}/GenerateCLP-build"
     CACHE PATH "Init" FORCE )
-endif()
+endif( EXISTS ${TubeTK_BINARY_DIR}/GenerateCLP-build/CMakeCache.txt )
 
-if( EXISTS ${TUBETK_BINARY_DIR}/CTK-build/CMakeCache.txt )
+if( EXISTS ${TubeTK_BINARY_DIR}/SlicerExecutionModel-build/CMakeCache.txt )
+  set( SlicerExecutionModel_DIR "${TubeTK_BINARY_DIR}/SlicerExecutionModel-build"
+    CACHE PATH "Init" FORCE )
+endif( EXISTS ${TubeTK_BINARY_DIR}/SlicerExecutionModel-build/CMakeCache.txt )
+
+if( EXISTS ${TubeTK_BINARY_DIR}/CTK-build/CMakeCache.txt )
   set( TubeTK_USE_CTK ON CACHE BOOL "Init" FORCE )
-  set( CTK_DIR "${TUBETK_BINARY_DIR}/CTK-build" CACHE PATH "Init" FORCE )
-endif()
+  set( CTK_DIR "${TubeTK_BINARY_DIR}/CTK-build" CACHE PATH "Init" FORCE )
+endif( EXISTS ${TubeTK_BINARY_DIR}/CTK-build/CMakeCache.txt )
 
-if( EXISTS ${TUBETK_BINARY_DIR}/VTK-build/CMakeCache.txt )
+if( EXISTS ${TubeTK_BINARY_DIR}/VTK-build/CMakeCache.txt )
   set( TubeTK_USE_VTK ON CACHE BOOL "Init" FORCE )
-  set( VTK_DIR "${TUBETK_BINARY_DIR}/VTK-build" CACHE PATH "Init" FORCE )
-endif()
+  set( VTK_DIR "${TubeTK_BINARY_DIR}/VTK-build" CACHE PATH "Init" FORCE )
+endif( EXISTS ${TubeTK_BINARY_DIR}/VTK-build/CMakeCache.txt )
