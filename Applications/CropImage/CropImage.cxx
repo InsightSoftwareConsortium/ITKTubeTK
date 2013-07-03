@@ -33,13 +33,13 @@ limitations under the License.
 
 #include "CropImageCLP.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -53,9 +53,9 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef TPixel                                PixelType;
-  typedef itk::Image< PixelType,  TDimension >  ImageType;
-  typedef itk::ImageFileReader< ImageType >     ReaderType;
+  typedef TPixel                               PixelType;
+  typedef itk::Image< PixelType, VDimension >  ImageType;
+  typedef itk::ImageFileReader< ImageType >    ReaderType;
 
   timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
@@ -94,13 +94,13 @@ int DoIt( int argc, char * argv[] )
 
     timeCollector.Start("CropFilter");
 
-    tube::CropROI< TPixel, TDimension > cropFilter;
+    tube::CropROI< TPixel, VDimension > cropFilter;
 
     cropFilter.SetInput( reader->GetOutput() );
     if( min.size() > 0 )
       {
       typename ImageType::IndexType minI;
-      for( unsigned int i=0; i<TDimension; i++ )
+      for( unsigned int i=0; i<VDimension; i++ )
         {
         minI[i] = min[i];
         }
@@ -110,7 +110,7 @@ int DoIt( int argc, char * argv[] )
     if( max.size() > 0 )
       {
       typename ImageType::IndexType maxI;
-      for( unsigned int i=0; i<TDimension; i++ )
+      for( unsigned int i=0; i<VDimension; i++ )
         {
         maxI[i] = max[i];
         }
@@ -120,7 +120,7 @@ int DoIt( int argc, char * argv[] )
     if( size.size() > 0 )
       {
       typename ImageType::SizeType sizeI;
-      for( unsigned int i=0; i<TDimension; i++ )
+      for( unsigned int i=0; i<VDimension; i++ )
         {
         sizeI[i] = size[i];
         }
@@ -130,7 +130,7 @@ int DoIt( int argc, char * argv[] )
     if( center.size() > 0 )
       {
       typename ImageType::IndexType centerI;
-      for( unsigned int i=0; i<TDimension; i++ )
+      for( unsigned int i=0; i<VDimension; i++ )
         {
         centerI[i] = center[i];
         }
@@ -140,7 +140,7 @@ int DoIt( int argc, char * argv[] )
     if( boundary.size() > 0 )
       {
       typename ImageType::IndexType boundaryI;
-      for( unsigned int i=0; i<TDimension; i++ )
+      for( unsigned int i=0; i<VDimension; i++ )
         {
         boundaryI[i] = boundary[i];
         }
@@ -196,9 +196,9 @@ int DoIt( int argc, char * argv[] )
       }
     timeCollector.Stop("Save data");
     }
-  else if( split.size() == TDimension )
+  else if( split.size() == VDimension )
     {
-    tube::CropROI< TPixel, TDimension > cropFilter;
+    tube::CropROI< TPixel, VDimension > cropFilter;
 
     typename ImageType::Pointer inputImage = reader->GetOutput();
     typename ImageType::SizeType inputImageSize = inputImage->
@@ -210,7 +210,7 @@ int DoIt( int argc, char * argv[] )
     if( boundary.size() > 0 )
       {
       typename ImageType::IndexType boundaryI;
-      for( unsigned int i=0; i<TDimension; i++ )
+      for( unsigned int i=0; i<VDimension; i++ )
         {
         boundaryI[i] = boundary[i];
         }
@@ -222,7 +222,7 @@ int DoIt( int argc, char * argv[] )
 
     typename ImageType::IndexType roiStep;
     typename ImageType::IndexType roiSize;
-    for( unsigned int i=0; i<TDimension; i++ )
+    for( unsigned int i=0; i<VDimension; i++ )
       {
       roiStep[i] = inputImageSize[i]/(split[i]+1);
       roiSize[i] = inputImageSize[i]/split[i];
@@ -238,7 +238,7 @@ int DoIt( int argc, char * argv[] )
       {
       timeCollector.Start("CropFilter");
 
-      for( unsigned int i=0; i<TDimension; i++ )
+      for( unsigned int i=0; i<VDimension; i++ )
         {
         roiMin[i] = roiIndex[i] * roiSize[i];
         roiMax[i] = roiMin[i] + roiSize[i] - 1;
@@ -287,7 +287,7 @@ int DoIt( int argc, char * argv[] )
       std::stringstream out;
       out << outputVolume;
       out << "_";
-      for( unsigned int i=0; i<TDimension; i++ )
+      for( unsigned int i=0; i<VDimension; i++ )
         {
         out << roiIndex[i];
         }
@@ -312,7 +312,7 @@ int DoIt( int argc, char * argv[] )
       while( !done && ++roiIndex[i] >= split[i] )
         {
         roiIndex[i++] = 0;
-        if( i >= TDimension )
+        if( i >= VDimension )
           {
           done = true;
           }

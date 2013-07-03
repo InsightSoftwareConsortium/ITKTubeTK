@@ -42,22 +42,22 @@ namespace itk
 namespace tube
 {
 
-template< class ImageT >
-RidgeFeatureVectorGenerator< ImageT >
+template< class TImage >
+RidgeFeatureVectorGenerator< TImage >
 ::RidgeFeatureVectorGenerator( void )
 {
   m_Scales.resize( 0 );
 }
 
-template< class ImageT >
-RidgeFeatureVectorGenerator< ImageT >
+template< class TImage >
+RidgeFeatureVectorGenerator< TImage >
 ::~RidgeFeatureVectorGenerator( void )
 {
 }
 
-template< class ImageT >
+template< class TImage >
 unsigned int
-RidgeFeatureVectorGenerator< ImageT >
+RidgeFeatureVectorGenerator< TImage >
 ::GetNumberOfFeatures( void ) const
 {
   const unsigned int numFeatures = m_Scales.size() * 5 + 6;
@@ -65,9 +65,9 @@ RidgeFeatureVectorGenerator< ImageT >
   return numFeatures;
 }
 
-template< class ImageT >
-typename RidgeFeatureVectorGenerator< ImageT >::FeatureVectorType
-RidgeFeatureVectorGenerator< ImageT >
+template< class TImage >
+typename RidgeFeatureVectorGenerator< TImage >::FeatureVectorType
+RidgeFeatureVectorGenerator< TImage >
 ::GetFeatureVector( const IndexType & indx ) const
 {
   const unsigned int numFeatures = this->GetNumberOfFeatures();
@@ -116,9 +116,9 @@ RidgeFeatureVectorGenerator< ImageT >
   return featureVector;
 }
 
-template< class ImageT >
-typename RidgeFeatureVectorGenerator< ImageT >::FeatureValueType
-RidgeFeatureVectorGenerator< ImageT >
+template< class TImage >
+typename RidgeFeatureVectorGenerator< TImage >::FeatureValueType
+RidgeFeatureVectorGenerator< TImage >
 ::GetFeatureVectorValue( const IndexType & indx, unsigned int fNum ) const
 {
   const unsigned int numFeatures = this->GetNumberOfFeatures();
@@ -161,25 +161,25 @@ RidgeFeatureVectorGenerator< ImageT >
   return this->GetFeatureVector( indx )[fNum];
 }
 
-template< class ImageT >
+template< class TImage >
 void
-RidgeFeatureVectorGenerator< ImageT >
+RidgeFeatureVectorGenerator< TImage >
 ::SetScales( const RidgeScalesType & scales )
 {
   m_Scales = scales;
 }
 
-template< class ImageT >
+template< class TImage >
 const std::vector< double > &
-RidgeFeatureVectorGenerator< ImageT >
+RidgeFeatureVectorGenerator< TImage >
 ::GetScales( void ) const
 {
   return m_Scales;
 }
 
-template< class ImageT >
+template< class TImage >
 void
-RidgeFeatureVectorGenerator< ImageT >
+RidgeFeatureVectorGenerator< TImage >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );

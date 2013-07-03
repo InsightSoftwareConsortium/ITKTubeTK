@@ -50,23 +50,23 @@ namespace tube
  *  The resulting tube could be cropped and/or a narrow band could be
  *  defined.
  */
-template< class TTransformType, unsigned int TDimension >
+template< class TTransformType, unsigned int VDimension >
 class TubeToTubeTransformFilter
-  : public SpatialObjectToSpatialObjectFilter< GroupSpatialObject< TDimension >,
-                                               GroupSpatialObject< TDimension > >
+  : public SpatialObjectToSpatialObjectFilter< GroupSpatialObject< VDimension >,
+                                               GroupSpatialObject< VDimension > >
 {
 public:
 
-  typedef GroupSpatialObject<TDimension>                       GroupType;
+  typedef GroupSpatialObject<VDimension>                       GroupType;
 
   /** Standard class typedefs. */
-  typedef TubeToTubeTransformFilter<TTransformType,TDimension> Self;
+  typedef TubeToTubeTransformFilter<TTransformType,VDimension> Self;
   typedef SpatialObjectToSpatialObjectFilter<GroupType, GroupType>
                                                                Superclass;
   typedef SmartPointer< Self >                                 Pointer;
   typedef SmartPointer< const Self >                           ConstPointer;
 
-  typedef VesselTubeSpatialObject<TDimension>     TubeType;
+  typedef VesselTubeSpatialObject<VDimension>     TubeType;
 
   /** Typedef for the transformations */
   typedef TTransformType                          TransformType;

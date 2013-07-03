@@ -53,9 +53,9 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   typedef itk::ImageFileReader< ImageType > ReaderType;
   typedef itk::ImageFileWriter< ImageType > WriterType;
 
-  typedef itk::Image< unsigned char, Dimension >    LabelmapType;
-  typedef itk::ImageFileReader< LabelmapType >      LabelmapReaderType;
-  typedef itk::ImageFileWriter< LabelmapType >      LabelmapWriterType;
+  typedef itk::Image< unsigned char, Dimension >    LabelMapType;
+  typedef itk::ImageFileReader< LabelMapType >      LabelMapReaderType;
+  typedef itk::ImageFileWriter< LabelMapType >      LabelMapWriterType;
 
   typedef itk::Image< float, 3 >                    PDFImageType;
   typedef itk::ImageFileWriter< PDFImageType >      PDFImageWriterType;
@@ -64,7 +64,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   typedef itk::ImageFileWriter< FeatureImageType >  FeatureImageWriterType;
 
   // Declare the type for the Filter
-  typedef itk::tube::RidgeSeedFilter< ImageType, LabelmapType >
+  typedef itk::tube::RidgeSeedFilter< ImageType, LabelMapType >
     FilterType;
 
   // Create the reader
@@ -82,7 +82,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   ImageType::Pointer inputImage = reader->GetOutput();
 
   // Create the mask reader
-  LabelmapReaderType::Pointer mReader = LabelmapReaderType::New();
+  LabelMapReaderType::Pointer mReader = LabelMapReaderType::New();
   mReader->SetFileName( argv[2] );
   try
     {
@@ -94,7 +94,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
       << e;
     return EXIT_FAILURE;
     }
-  LabelmapType::Pointer labelmapImage = mReader->GetOutput();
+  LabelMapType::Pointer labelmapImage = mReader->GetOutput();
 
   FilterType::RidgeScalesType scales(5);
   scales[0] = 0.15;
@@ -105,7 +105,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
 
   FilterType::Pointer filter = FilterType::New();
   filter->SetInput( inputImage );
-  filter->SetLabelmap( labelmapImage );
+  filter->SetLabelMap( labelmapImage );
   filter->SetScales( scales );
   int objId = atoi( argv[3] );
   int bkgId = atoi( argv[4] );
@@ -150,7 +150,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  LabelmapWriterType::Pointer labelmapWriter = LabelmapWriterType::New();
+  LabelMapWriterType::Pointer labelmapWriter = LabelMapWriterType::New();
   labelmapWriter->SetFileName( argv[7] );
   labelmapWriter->SetUseCompression( true );
   labelmapWriter->SetInput( filter->GetOutput() );

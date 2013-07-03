@@ -37,13 +37,13 @@ limitations under the License.
 
 #include "SegmentTubesCLP.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -58,13 +58,13 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   typedef float                                         PixelType;
-  typedef itk::Image< PixelType,  TDimension >          ImageType;
+  typedef itk::Image< PixelType, VDimension >           ImageType;
   typedef itk::ImageFileReader< ImageType >             ReaderType;
 
-  typedef itk::SpatialObject< TDimension >              SpatialObjectType;
+  typedef itk::SpatialObject< VDimension >              SpatialObjectType;
   typedef typename SpatialObjectType::ChildrenListType  ObjectListType;
-  typedef itk::GroupSpatialObject< TDimension >         GroupType;
-  typedef itk::VesselTubeSpatialObject< TDimension >    TubeType;
+  typedef itk::GroupSpatialObject< VDimension >         GroupType;
+  typedef itk::VesselTubeSpatialObject< VDimension >    TubeType;
   typedef typename TubeType::PointListType              PointListType;
   typedef typename TubeType::PointType                  PointType;
   typedef typename TubeType::TubePointType              TubePointType;
@@ -106,7 +106,7 @@ int DoIt( int argc, char * argv[] )
 
   if( seedX.size() > 0 )
     {
-    if( seedX.size() != TDimension )
+    if( seedX.size() != VDimension )
       {
       std::cout << "seedX = ";
       for( unsigned int i=0; i<seedX.size(); i++ )
@@ -114,7 +114,7 @@ int DoIt( int argc, char * argv[] )
         std::cout << seedX[i] << " ";
         }
       std::cout << std::endl;
-      std::cout << "TDimension = " << TDimension << std::endl;
+      std::cout << "VDimension = " << VDimension << std::endl;
       std::cout << "size = " << seedX.size() << std::endl;
       tube::ErrorMessage(
         "Errror: X vector must be specified to initiate an extraction." );
@@ -123,8 +123,8 @@ int DoIt( int argc, char * argv[] )
 
     timeCollector.Start("Ridge Extractor");
 
-    itk::ContinuousIndex< double, TDimension > cIndx;
-    for( unsigned int i=0; i<TDimension; i++ )
+    itk::ContinuousIndex< double, VDimension > cIndx;
+    for( unsigned int i=0; i<VDimension; i++ )
       {
       cIndx[i] = seedX[i];
       }

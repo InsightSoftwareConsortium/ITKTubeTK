@@ -146,16 +146,16 @@ bool check_vnl_matrix_equality( const vnl_matrix<T> &V,
  *  \param outImage Image that is about to be created (has to exist)
  *  \param targetSize Desired size of the image
  */
-template< class ImageType >
+template< class TImage >
 void CreateEmptyImage(
-  typename ImageType::Pointer &outImage,
-  typename ImageType::SizeType targetSize)
+  typename TImage::Pointer &outImage,
+  typename TImage::SizeType targetSize)
 {
-  typename ImageType::IndexType start;
+  typename TImage::IndexType start;
   start.Fill(0);
-  typename ImageType::SizeType outImageSize = targetSize;
+  typename TImage::SizeType outImageSize = targetSize;
 
-  typename ImageType::RegionType region( start, outImageSize );
+  typename TImage::RegionType region( start, outImageSize );
   outImage->SetRegions( region );
   outImage->Allocate();
   outImage->FillBuffer(0);
@@ -165,14 +165,14 @@ void CreateEmptyImage(
 /** Evaluate if two images are compatible.
  *  Compatibility is defined in terms of spacing, directions, size and origin.
  *
- *  \param imageA 1st input image of type ImageType
- *  \param imageB 2nd input image of type ImageType
+ *  \param imageA 1st input image of type TImage
+ *  \param imageB 2nd input image of type TImage
  *  \returns true if image have equal spacing and size, false else
  */
-template< class ImageType >
+template< class TImage >
 bool CheckCompatibility(
-  typename ImageType::Pointer imageA,
-  typename ImageType::Pointer imageB )
+  typename TImage::Pointer imageA,
+  typename TImage::Pointer imageB )
 {
   // Spacing tolerance is imageA's 1st coord. spacing * 1e-6
   double spacingTol = imageA->GetSpacing()[0] * 1.0e-6;

@@ -33,13 +33,13 @@ limitations under the License.
 namespace tube
 {
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 class CompareImageWithPrior
 {
 public:
 
   typedef float                                 PixelType;
-  typedef itk::Image< PixelType,  TDimension >  ImageType;
+  typedef itk::Image< PixelType, VDimension >   ImageType;
 
   typedef itk::RigidImageToImageRegistrationMethod< ImageType >
                                                     RegistrationMethodType;

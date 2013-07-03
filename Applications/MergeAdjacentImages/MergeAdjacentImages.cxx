@@ -36,7 +36,7 @@ limitations under the License.
 
 #include "MergeAdjacentImagesCLP.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
 #define PARSE_ARGS_FLOAT_ONLY 1
@@ -45,7 +45,7 @@ int DoIt( int argc, char * argv[] );
 #include "tubeCLIHelperFunctions.h"
 
 // Your code should be within the DoIt function...
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -60,7 +60,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   typedef TPixel                                        PixelType;
-  typedef itk::Image< PixelType,  TDimension >          ImageType;
+  typedef itk::Image< PixelType, VDimension >           ImageType;
   typedef itk::ImageFileReader< ImageType >             ReaderType;
   typedef itk::ImageFileWriter< ImageType  >            WriterType;
 
@@ -91,9 +91,9 @@ int DoIt( int argc, char * argv[] )
 
   typename ImageType::IndexType minX1Org;
   minX1Org = curImage1->GetLargestPossibleRegion().GetIndex();
-  if( boundary.size() == TDimension )
+  if( boundary.size() == VDimension )
     {
-    for( unsigned int i=0; i<TDimension; i++ )
+    for( unsigned int i=0; i<VDimension; i++ )
       {
       minX1Org[i] -= boundary[i];
       }
@@ -102,13 +102,13 @@ int DoIt( int argc, char * argv[] )
                                          GetLargestPossibleRegion().
                                          GetSize();
   typename ImageType::IndexType maxX1Org;
-  for( unsigned int i=0; i<TDimension; i++ )
+  for( unsigned int i=0; i<VDimension; i++ )
     {
     maxX1Org[i] = minX1Org[i] + size1[i] - 1;
     }
-  if( boundary.size() == TDimension )
+  if( boundary.size() == VDimension )
     {
-    for( unsigned int i=0; i<TDimension; i++ )
+    for( unsigned int i=0; i<VDimension; i++ )
       {
       maxX1Org[i] += 2*boundary[i];
       }
@@ -121,7 +121,7 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::SizeType  sizeOut;
   minXOut = minX1Org;
   maxXOut = maxX1Org;
-  for( unsigned int i=0; i<TDimension; i++ )
+  for( unsigned int i=0; i<VDimension; i++ )
     {
     sizeOut[i] = maxXOut[i] - minXOut[i] + 1;
     }
@@ -151,9 +151,9 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::IndexType minX2;
   typename ImageType::IndexType minX2Org;
   minX2Org = curImage2->GetLargestPossibleRegion().GetIndex();
-  if( boundary.size() == TDimension )
+  if( boundary.size() == VDimension )
     {
-    for( unsigned int i=0; i<TDimension; i++ )
+    for( unsigned int i=0; i<VDimension; i++ )
       {
       minX2Org[i] -= boundary[i];
       }
@@ -166,13 +166,13 @@ int DoIt( int argc, char * argv[] )
                                          GetSize();
   typename ImageType::IndexType maxX2;
   typename ImageType::IndexType maxX2Org;
-  for( unsigned int i=0; i<TDimension; i++ )
+  for( unsigned int i=0; i<VDimension; i++ )
     {
     maxX2Org[i] = minX2Org[i] + size2[i] - 1;
     }
-  if( boundary.size() == TDimension )
+  if( boundary.size() == VDimension )
     {
-    for( unsigned int i=0; i<TDimension; i++ )
+    for( unsigned int i=0; i<VDimension; i++ )
       {
       maxX2Org[i] += 2*boundary[i];
       }
@@ -180,7 +180,7 @@ int DoIt( int argc, char * argv[] )
   curImage2->TransformIndexToPhysicalPoint( maxX2Org, pointX );
   curImage1->TransformPhysicalPointToIndex( pointX, maxX2 );
 
-  for( unsigned int i=0; i<TDimension; i++ )
+  for( unsigned int i=0; i<VDimension; i++ )
     {
     if( minX2[i] < minXOut[i] )
       {
@@ -191,7 +191,7 @@ int DoIt( int argc, char * argv[] )
       minXOut[i] = maxX2[i];
       }
     }
-  for( unsigned int i=0; i<TDimension; i++ )
+  for( unsigned int i=0; i<VDimension; i++ )
     {
     if( minX2[i] > maxXOut[i] )
       {
@@ -203,7 +203,7 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
-  for( unsigned int i=0; i<TDimension; i++ )
+  for( unsigned int i=0; i<VDimension; i++ )
     {
     sizeOut[i] = maxXOut[i] - minXOut[i] + 1;
     }

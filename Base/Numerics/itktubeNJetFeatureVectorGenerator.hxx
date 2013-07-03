@@ -39,8 +39,8 @@ namespace itk
 namespace tube
 {
 
-template< class ImageT >
-NJetFeatureVectorGenerator< ImageT >
+template< class TImage >
+NJetFeatureVectorGenerator< TImage >
 ::NJetFeatureVectorGenerator( void )
 {
   m_ZeroScales.resize( 0 );
@@ -51,15 +51,15 @@ NJetFeatureVectorGenerator< ImageT >
   m_ForceOrientationInsensitivity = true;
 }
 
-template< class ImageT >
-NJetFeatureVectorGenerator< ImageT >
+template< class TImage >
+NJetFeatureVectorGenerator< TImage >
 ::~NJetFeatureVectorGenerator()
 {
 }
 
-template< class ImageT >
+template< class TImage >
 unsigned int
-NJetFeatureVectorGenerator< ImageT >
+NJetFeatureVectorGenerator< TImage >
 ::GetNumberOfFeatures( void ) const
 {
   const unsigned int featuresPerImage = m_ZeroScales.size()
@@ -73,9 +73,9 @@ NJetFeatureVectorGenerator< ImageT >
   return numFeatures;
 }
 
-template< class ImageT >
-typename NJetFeatureVectorGenerator< ImageT >::FeatureVectorType
-NJetFeatureVectorGenerator< ImageT >
+template< class TImage >
+typename NJetFeatureVectorGenerator< TImage >::FeatureVectorType
+NJetFeatureVectorGenerator< TImage >
 ::GetFeatureVector( const IndexType & indx ) const
 {
   const unsigned int numFeatures = this->GetNumberOfFeatures();
@@ -145,9 +145,9 @@ NJetFeatureVectorGenerator< ImageT >
   return featureVector;
 }
 
-template< class ImageT >
-typename NJetFeatureVectorGenerator< ImageT >::FeatureValueType
-NJetFeatureVectorGenerator< ImageT >
+template< class TImage >
+typename NJetFeatureVectorGenerator< TImage >::FeatureValueType
+NJetFeatureVectorGenerator< TImage >
 ::GetFeatureVectorValue( const IndexType & indx, unsigned int fNum ) const
 {
   const unsigned int numInputImages = this->GetNumberOfInputImages();
@@ -265,89 +265,89 @@ NJetFeatureVectorGenerator< ImageT >
   itkExceptionMacro( << "Requested non-existent FeatureVectorValue." );
 }
 
-template< class ImageT >
+template< class TImage >
 void
-NJetFeatureVectorGenerator< ImageT >
+NJetFeatureVectorGenerator< TImage >
 ::SetZeroScales( const NJetScalesType & scales )
 {
   m_ZeroScales = scales;
 }
 
-template< class ImageT >
+template< class TImage >
 void
-NJetFeatureVectorGenerator< ImageT >
+NJetFeatureVectorGenerator< TImage >
 ::SetFirstScales( const NJetScalesType & scales )
 {
   m_FirstScales = scales;
 }
 
-template< class ImageT >
+template< class TImage >
 void
-NJetFeatureVectorGenerator< ImageT >
+NJetFeatureVectorGenerator< TImage >
 ::SetSecondScales( const NJetScalesType & scales )
 {
   m_SecondScales = scales;
 }
 
-template< class ImageT >
+template< class TImage >
 void
-NJetFeatureVectorGenerator< ImageT >
+NJetFeatureVectorGenerator< TImage >
 ::SetRidgeScales( const NJetScalesType & scales )
 {
   m_RidgeScales = scales;
 }
 
-template< class ImageT >
+template< class TImage >
 const std::vector< double > &
-NJetFeatureVectorGenerator< ImageT >
+NJetFeatureVectorGenerator< TImage >
 ::GetZeroScales( void ) const
 {
   return m_ZeroScales;
 }
 
-template< class ImageT >
+template< class TImage >
 const std::vector< double > &
-NJetFeatureVectorGenerator< ImageT >
+NJetFeatureVectorGenerator< TImage >
 ::GetFirstScales( void ) const
 {
   return m_FirstScales;
 }
 
-template< class ImageT >
+template< class TImage >
 const std::vector< double > &
-NJetFeatureVectorGenerator< ImageT >
+NJetFeatureVectorGenerator< TImage >
 ::GetSecondScales( void ) const
 {
   return m_SecondScales;
 }
 
-template< class ImageT >
+template< class TImage >
 const std::vector< double > &
-NJetFeatureVectorGenerator< ImageT >
+NJetFeatureVectorGenerator< TImage >
 ::GetRidgeScales( void ) const
 {
   return m_RidgeScales;
 }
 
-template< class ImageT >
+template< class TImage >
 void
-NJetFeatureVectorGenerator< ImageT >
+NJetFeatureVectorGenerator< TImage >
 ::SetForceOrientationInsensitivity( bool _forceOrientationInsensitivity )
 {
   m_ForceOrientationInsensitivity = _forceOrientationInsensitivity;
 }
 
-template< class ImageT >
+template< class TImage >
 bool
-NJetFeatureVectorGenerator< ImageT >
+NJetFeatureVectorGenerator< TImage >
 ::GetForceOrientationInsensitivity( void ) const
 {
   return m_ForceOrientationInsensitivity;
 }
 
-template< class ImageT >
+template< class TImage >
 void
-NJetFeatureVectorGenerator< ImageT >
+NJetFeatureVectorGenerator< TImage >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );

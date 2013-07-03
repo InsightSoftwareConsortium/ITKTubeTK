@@ -37,11 +37,11 @@ limitations under the License.
 
 #include "ComputeTubeProbabilityCLP.h"
 
-template< unsigned int TDimension >
+template< unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
 // This needs to be declared for tubeCLIHelperFunctions.
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int itkNotUsed( argc ), char * itkNotUsed( argv )[] ) { return 0; }
 
 #include "tubeCLIHelperFunctions.h"
@@ -75,18 +75,18 @@ int main( int argc, char * argv[] )
 }
 
 
-template< unsigned int TDimension >
+template< unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef itk::Image< short, TDimension >             ImageType;
-  typedef itk::GroupSpatialObject< TDimension >       GroupType;
-  typedef itk::ImageFileReader< ImageType >          ImageReaderType;
-  typedef itk::SpatialObjectReader< TDimension >      SOReaderType;
-  typedef itk::VesselTubeSpatialObject< TDimension >  TubeType;
-  typedef typename TubeType::TubePointType           TubePointType;
-  typedef typename TubeType::TransformType           TubeTransformType;
+  typedef itk::Image< short, VDimension >             ImageType;
+  typedef itk::GroupSpatialObject< VDimension >       GroupType;
+  typedef itk::ImageFileReader< ImageType >           ImageReaderType;
+  typedef itk::SpatialObjectReader< VDimension >      SOReaderType;
+  typedef itk::VesselTubeSpatialObject< VDimension >  TubeType;
+  typedef typename TubeType::TubePointType            TubePointType;
+  typedef typename TubeType::TransformType            TubeTransformType;
 
 
   tube::CLIProgressReporter progressReporter(
@@ -130,8 +130,8 @@ int DoIt( int argc, char * argv[] )
     tube->RemoveDuplicatePoints();
     tube->ComputeTangentAndNormals();
 
-    itk::Point<double, TDimension> pnt;
-    itk::Index< TDimension > indx;
+    itk::Point<double, VDimension> pnt;
+    itk::Index< VDimension > indx;
     tube->ComputeObjectToWorldTransform();
     tubeTransform = tube->GetIndexToWorldTransform();
     for( unsigned int i=0; i<tube->GetNumberOfPoints(); i++)

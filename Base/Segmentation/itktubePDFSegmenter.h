@@ -37,7 +37,7 @@ namespace tube
 
 #define MAX_NUMBER_OF_FEATURES 4
 
-template< class ImageT, unsigned int N, class LabelmapT >
+template< class TImage, unsigned int N, class TLabelMap >
 class PDFSegmenter : public Object
 {
 public:
@@ -54,20 +54,20 @@ public:
   //
   // Custom Typedefs
   //
-  typedef ImageT                               ImageType;
+  typedef TImage                               ImageType;
   typedef typename ImageType::PixelType        PixelType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
-    ImageT::ImageDimension );
+    TImage::ImageDimension );
 
-  typedef LabelmapT                            LabelmapType;
-  typedef typename LabelmapType::PixelType     LabelmapPixelType;
+  typedef TLabelMap                            LabelMapType;
+  typedef typename LabelMapType::PixelType     LabelMapPixelType;
 
   typedef int                                  ObjectIdType;
   typedef std::vector< ObjectIdType >          ObjectIdListType;
 
   typedef float                                ProbabilityPixelType;
-  typedef Image< ProbabilityPixelType, ImageT::ImageDimension >
+  typedef Image< ProbabilityPixelType, TImage::ImageDimension >
                                                ProbabilityImageType;
 
   typedef std::vector< ProbabilityPixelType >  ProbabilityListType;
@@ -78,7 +78,7 @@ public:
   typedef HistogramPixelType                   PDFPixelType;
   typedef HistogramImageType                   PDFImageType;
 
-  typedef Image< LabelmapPixelType, N >        LabeledFeatureSpaceType;
+  typedef Image< LabelMapPixelType, N >        LabeledFeatureSpaceType;
 
   typedef Vector< double, N >                  VectorDoubleNType;
 
@@ -101,8 +101,8 @@ public:
   itkSetMacro( VoidId, ObjectIdType );
   itkGetMacro( VoidId, ObjectIdType );
 
-  itkSetObjectMacro( Labelmap, LabelmapType );
-  itkGetObjectMacro( Labelmap, LabelmapType );
+  itkSetObjectMacro( LabelMap, LabelMapType );
+  itkGetObjectMacro( LabelMap, LabelMapType );
 
   itkSetMacro( ErodeRadius, int );
   itkSetMacro( HoleFillIterations, int );
@@ -200,7 +200,7 @@ private:
   //  Data
   std::vector< typename ImageType::Pointer > m_InputVolumeList;
 
-  typename LabelmapType::Pointer  m_Labelmap;
+  typename LabelMapType::Pointer  m_LabelMap;
 
   ObjectIdListType                m_ObjectIdList;
   ObjectIdType                    m_VoidId;

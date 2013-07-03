@@ -45,8 +45,8 @@ namespace itk
 namespace tube
 {
 
-template< class ImageT >
-FeatureVectorGenerator< ImageT >
+template< class TImage >
+FeatureVectorGenerator< TImage >
 ::FeatureVectorGenerator( void )
 {
   m_InputImageList.clear();
@@ -55,15 +55,15 @@ FeatureVectorGenerator< ImageT >
   m_WhitenFeatureImageStdDev.clear();
 }
 
-template< class ImageT >
-FeatureVectorGenerator< ImageT >
+template< class TImage >
+FeatureVectorGenerator< TImage >
 ::~FeatureVectorGenerator( void )
 {
 }
 
-template< class ImageT >
+template< class TImage >
 void
-FeatureVectorGenerator< ImageT >
+FeatureVectorGenerator< TImage >
 ::SetInputImage( typename ImageType::Pointer img )
 {
   m_InputImageList.clear();
@@ -72,17 +72,17 @@ FeatureVectorGenerator< ImageT >
   m_InputImageList.push_back( img );
 }
 
-template< class ImageT >
+template< class TImage >
 void
-FeatureVectorGenerator< ImageT >
+FeatureVectorGenerator< TImage >
 ::AddInputImage( typename ImageType::Pointer img )
 {
   m_InputImageList.push_back( img );
 }
 
-template< class ImageT >
-typename ImageT::Pointer
-FeatureVectorGenerator< ImageT >
+template< class TImage >
+typename TImage::Pointer
+FeatureVectorGenerator< TImage >
 ::GetInputImage( unsigned int num ) const
 {
   if( num < m_InputImageList.size() )
@@ -93,17 +93,17 @@ FeatureVectorGenerator< ImageT >
   return NULL;
 }
 
-template< class ImageT >
+template< class TImage >
 unsigned int
-FeatureVectorGenerator< ImageT >
+FeatureVectorGenerator< TImage >
 ::GetNumberOfInputImages( void ) const
 {
   return m_InputImageList.size();
 }
 
-template< class ImageT >
+template< class TImage >
 void
-FeatureVectorGenerator< ImageT >
+FeatureVectorGenerator< TImage >
 ::UpdateWhitenFeatureImageStats( void )
 {
   const unsigned int numFeatures = this->GetNumberOfFeatures();
@@ -129,7 +129,7 @@ FeatureVectorGenerator< ImageT >
     }
   unsigned int imCount = 0;
 
-  typedef itk::ImageRegionIteratorWithIndex< ImageT >
+  typedef itk::ImageRegionIteratorWithIndex< TImage >
     ImageIteratorType;
   ImageIteratorType itIm( m_InputImageList[0],
     m_InputImageList[0]->GetLargestPossibleRegion() );
@@ -171,41 +171,41 @@ FeatureVectorGenerator< ImageT >
 }
 
 
-template< class ImageT >
+template< class TImage >
 void
-FeatureVectorGenerator< ImageT >
+FeatureVectorGenerator< TImage >
 ::SetWhitenMeans( const ValueListType & means )
 {
   m_WhitenFeatureImageMean = means;
 }
 
-template< class ImageT >
-const typename FeatureVectorGenerator< ImageT >::ValueListType &
-FeatureVectorGenerator< ImageT >
+template< class TImage >
+const typename FeatureVectorGenerator< TImage >::ValueListType &
+FeatureVectorGenerator< TImage >
 ::GetWhitenMeans( void ) const
 {
   return m_WhitenFeatureImageMean;
 }
 
-template< class ImageT >
+template< class TImage >
 void
-FeatureVectorGenerator< ImageT >
+FeatureVectorGenerator< TImage >
 ::SetWhitenStdDevs( const ValueListType & stdDevs )
 {
   m_WhitenFeatureImageStdDev = stdDevs;
 }
 
-template< class ImageT >
-const typename FeatureVectorGenerator< ImageT >::ValueListType &
-FeatureVectorGenerator< ImageT >
+template< class TImage >
+const typename FeatureVectorGenerator< TImage >::ValueListType &
+FeatureVectorGenerator< TImage >
 ::GetWhitenStdDevs( void ) const
 {
   return m_WhitenFeatureImageStdDev;
 }
 
-template< class ImageT >
+template< class TImage >
 void
-FeatureVectorGenerator< ImageT >
+FeatureVectorGenerator< TImage >
 ::SetWhitenFeatureImageMean( unsigned int num, double mean )
 {
   if( num < m_WhitenFeatureImageMean.size() )
@@ -214,9 +214,9 @@ FeatureVectorGenerator< ImageT >
     }
 }
 
-template< class ImageT >
+template< class TImage >
 double
-FeatureVectorGenerator< ImageT >
+FeatureVectorGenerator< TImage >
 ::GetWhitenFeatureImageMean( unsigned int num ) const
 {
   if( num < m_WhitenFeatureImageMean.size() )
@@ -229,9 +229,9 @@ FeatureVectorGenerator< ImageT >
     }
 }
 
-template< class ImageT >
+template< class TImage >
 void
-FeatureVectorGenerator< ImageT >
+FeatureVectorGenerator< TImage >
 ::SetWhitenFeatureImageStdDev( unsigned int num, double stdDev )
 {
   if( num < m_WhitenFeatureImageStdDev.size() )
@@ -240,9 +240,9 @@ FeatureVectorGenerator< ImageT >
     }
 }
 
-template< class ImageT >
+template< class TImage >
 double
-FeatureVectorGenerator< ImageT >
+FeatureVectorGenerator< TImage >
 ::GetWhitenFeatureImageStdDev( unsigned int num ) const
 {
   if( num < m_WhitenFeatureImageStdDev.size() )
@@ -253,17 +253,17 @@ FeatureVectorGenerator< ImageT >
   return 1;
 }
 
-template< class ImageT >
+template< class TImage >
 unsigned int
-FeatureVectorGenerator< ImageT >
+FeatureVectorGenerator< TImage >
 ::GetNumberOfFeatures( void ) const
 {
   return m_InputImageList.size();
 }
 
-template< class ImageT >
-typename FeatureVectorGenerator< ImageT >::FeatureVectorType
-FeatureVectorGenerator< ImageT >
+template< class TImage >
+typename FeatureVectorGenerator< TImage >::FeatureVectorType
+FeatureVectorGenerator< TImage >
 ::GetFeatureVector( const IndexType & indx ) const
 {
   const unsigned int numFeatures = this->GetNumberOfFeatures();
@@ -279,9 +279,9 @@ FeatureVectorGenerator< ImageT >
   return featureVector;
 }
 
-template< class ImageT >
-typename FeatureVectorGenerator< ImageT >::FeatureValueType
-FeatureVectorGenerator< ImageT >
+template< class TImage >
+typename FeatureVectorGenerator< TImage >::FeatureValueType
+FeatureVectorGenerator< TImage >
 ::GetFeatureVectorValue( const IndexType & indx, unsigned int fNum ) const
 {
   if( m_WhitenFeatureImageStdDev.size() > 0 &&
@@ -299,9 +299,9 @@ FeatureVectorGenerator< ImageT >
     }
 }
 
-template< class ImageT >
-typename FeatureVectorGenerator< ImageT >::FeatureImageType::Pointer
-FeatureVectorGenerator< ImageT >
+template< class TImage >
+typename FeatureVectorGenerator< TImage >::FeatureImageType::Pointer
+FeatureVectorGenerator< TImage >
 ::GetFeatureImage( unsigned int featureNum ) const
 {
   const unsigned int numFeatures = this->GetNumberOfFeatures();
@@ -350,9 +350,9 @@ FeatureVectorGenerator< ImageT >
 }
 
 
-template< class ImageT >
+template< class TImage >
 void
-FeatureVectorGenerator< ImageT >
+FeatureVectorGenerator< TImage >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );

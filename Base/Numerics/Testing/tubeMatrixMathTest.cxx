@@ -27,7 +27,7 @@ limitations under the License.
 
 #include <cstdlib>
 
-template< int TDimension >
+template< int VDimension >
 int Test( void )
 {
   double epsilon = 0.00001;
@@ -40,13 +40,13 @@ int Test( void )
 
   for( unsigned int count=0; count<1000; count++ )
     {
-    vnl_vector<float> v1(TDimension);
-    for( unsigned int d=0; d<TDimension; d++ )
+    vnl_vector<float> v1(VDimension);
+    for( unsigned int d=0; d<VDimension; d++ )
       {
       v1[d] = rndGen->GetNormalVariate( 0.0, 1.0 );
       }
-    vnl_vector<float> v2(TDimension);
-    if( TDimension == 3 )
+    vnl_vector<float> v2(VDimension);
+    if( VDimension == 3 )
       {
       v2 = tube::ComputeOrthogonalVector( v1 );
       if( vnl_math_abs( dot_product( v1, v2 ) ) > epsilon )
@@ -71,7 +71,7 @@ int Test( void )
       }
     else
       {
-      for( unsigned int d=0; d<TDimension; d++ )
+      for( unsigned int d=0; d<VDimension; d++ )
         {
         v2[d] = rndGen->GetNormalVariate( 0.0, 1.0 );
         }
@@ -90,20 +90,20 @@ int Test( void )
       returnStatus = EXIT_FAILURE;
       }
 
-    vnl_matrix<float> m1(TDimension, TDimension);
-    for( unsigned int r=0; r<TDimension; r++ )
+    vnl_matrix<float> m1(VDimension, VDimension);
+    for( unsigned int r=0; r<VDimension; r++ )
       {
-      for( unsigned int c=r; c<TDimension; c++ )
+      for( unsigned int c=r; c<VDimension; c++ )
         {
         m1(r,c) = rndGen->GetNormalVariate( 0.0, 1.0 );
         m1(c,r) = m1(r,c);
         }
       }
 
-    vnl_matrix<float> eVects(TDimension, TDimension);
-    vnl_vector<float> eVals(TDimension);
+    vnl_matrix<float> eVects(VDimension, VDimension);
+    vnl_vector<float> eVals(VDimension);
     tube::ComputeEigen( m1, eVects, eVals, true );
-    for( unsigned int d=0; d<TDimension; d++ )
+    for( unsigned int d=0; d<VDimension; d++ )
       {
       v1 = m1 * eVects.get_column(d);
       if( vnl_math_abs( v1.magnitude() - vnl_math_abs(eVals[d]) ) > epsilon )

@@ -41,7 +41,7 @@ namespace tube
  * This base class handles transform composition and use for all of the subclasses.
  * Reads and composes all transforms from ObjectDocument for single object.
  */
-template< class TInputObjectDocument, unsigned int TDimension = 3 >
+template< class TInputObjectDocument, unsigned int VDimension = 3 >
 class ObjectDocumentToObjectSource : public ProcessObject
 {
 public:
@@ -55,7 +55,7 @@ public:
   typedef typename DocumentType::Pointer                    DocumentPointer;
   typedef typename DocumentType::ConstPointer               ConstDocumentPointer;
 
-  typedef typename SpatialObject<TDimension>::TransformType TransformType;
+  typedef typename SpatialObject<VDimension>::TransformType TransformType;
   typedef typename TransformType::Pointer                   TransformPointer;
 
 
@@ -125,7 +125,7 @@ public:
 protected:
 
   /** Typedef for transform file reader */
-  typedef SpatialObjectReader<TDimension>                          TransformReaderType;
+  typedef SpatialObjectReader<VDimension>                          TransformReaderType;
 
   ObjectDocumentToObjectSource( void );
   ~ObjectDocumentToObjectSource( void ) {}
