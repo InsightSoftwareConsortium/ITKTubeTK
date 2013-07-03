@@ -109,7 +109,7 @@ else( NOT EXISTS "${TUBETK_SOURCE_DIR}/CMakeLists.txt" )
   ctest_configure( BUILD "${TUBETK_BINARY_DIR}" SOURCE "${TUBETK_SOURCE_DIR}" OPTIONS "-C${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
   ctest_read_custom_files( "${TUBETK_BINARY_DIR}" )
   ctest_build( BUILD "${TUBETK_BINARY_DIR}" )
-  ctest_test( BUILD "${TUBETK_BINARY_DIR}/TubeTK-Build" )
+  ctest_test( BUILD "${TUBETK_BINARY_DIR}/TubeTK-build" )
   ctest_submit( PARTS Notes Update Configure Build Test )
 endif( NOT EXISTS "${TUBETK_SOURCE_DIR}/CMakeLists.txt" )
 
