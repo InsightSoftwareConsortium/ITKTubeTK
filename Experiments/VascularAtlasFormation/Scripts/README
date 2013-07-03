@@ -93,7 +93,7 @@ $ nano -T 2 Pydas.config
     This file specifies where the TubeTK binaries for running the experiments
     can be found. In fact, you only need to change the placeholder
     <FullPathToTubeTKBuildDirectory> with the full path to the
-    'TubeTK-Build' directory. The file also contains a setting for the
+    'TubeTK-build' directory. The file also contains a setting for the
     number of 'cvtCells' to use (in case they are not specified by the
     user on the command line).
 
