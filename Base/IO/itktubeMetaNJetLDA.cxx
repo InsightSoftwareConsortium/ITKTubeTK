@@ -513,7 +513,7 @@ void MetaNJetLDA
 
   MET_FieldRecordType * mF;
 
-  if( m_ZeroScales.size() > 0 )
+  if( !m_ZeroScales.empty() )
     {
     m_ZeroScalesTmp.set_size( m_ZeroScales.size() );
     for( unsigned int i = 0; i < m_ZeroScales.size(); i++ )
@@ -531,7 +531,7 @@ void MetaNJetLDA
     m_Fields.push_back( mF );
     }
 
-  if( m_FirstScales.size() > 0 )
+  if( !m_FirstScales.empty() )
     {
     m_FirstScalesTmp.set_size( m_FirstScales.size() );
     for( unsigned int i = 0; i < m_FirstScales.size(); i++ )
@@ -549,7 +549,7 @@ void MetaNJetLDA
     m_Fields.push_back( mF );
     }
 
-  if( m_SecondScales.size() > 0 )
+  if( !m_SecondScales.empty() )
     {
     m_SecondScalesTmp.set_size( m_SecondScales.size() );
     for( unsigned int i = 0; i < m_SecondScales.size(); i++ )
@@ -567,7 +567,7 @@ void MetaNJetLDA
     m_Fields.push_back( mF );
     }
 
-  if( m_RidgeScales.size() > 0 )
+  if( !m_RidgeScales.empty() )
     {
     m_RidgeScalesTmp.set_size( m_RidgeScales.size() );
     for( unsigned int i = 0; i < m_RidgeScales.size(); i++ )
