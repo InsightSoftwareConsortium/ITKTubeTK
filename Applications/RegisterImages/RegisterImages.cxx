@@ -711,7 +711,6 @@ int main( int argc, char * argv[] )
           }
 #endif
           return DoIt< 3, float >( argc, argv );
-        break;
       case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
       default:
         std::cerr << "ERROR: unknown component type" << std::endl;
