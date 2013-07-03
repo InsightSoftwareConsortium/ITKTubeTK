@@ -18,13 +18,13 @@
       <index>0</index>
       <description>Input volume.</description>
     </image>
-    <string>
+    <image>
       <name>outputVolume</name>
       <label>Output Volume</label>
       <channel>output</channel>
       <index>1</index>
       <description>Resampling results.</description>
-    </string>
+    </image>
   </parameters>
   <parameters>
     <label>Resampling Options</label>
@@ -33,6 +33,7 @@
       <name>matchImage</name>
       <label>Match to Image</label>
       <longflag>matchImage</longflag>
+      <channel>input</channel>
       <description>The image from which origin, orientation, and spacing should be taken.</description>
     </image>
     <float-vector>
