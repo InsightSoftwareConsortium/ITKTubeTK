@@ -35,8 +35,8 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
-      << " inputImage1 inputImage2 inputLabelMap force blur outputProbImage0"
-      << " outputPDF0 outputProbImage1 outputPDF1 outputLabelMap"
+      << " inputImage1 inputImage2 inputLabelMap force blur outputProbImg0"
+      << " outputPDF0 outputProbImg1 outputPDF1 outputLabelMap"
       << " labeledFeatureSpace"
       << std::endl;
     return EXIT_FAILURE;
@@ -102,8 +102,8 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
   ImageType::Pointer labelmapImage = labelmapReader->GetOutput();
 
   FilterType::Pointer filter = FilterType::New();
-  filter->SetInputVolume( 0, inputImage );
-  filter->SetInputVolume( 1, inputImage2 );
+  filter->SetInput( 0, inputImage );
+  filter->SetInput( 1, inputImage2 );
   filter->SetLabelMap( labelmapImage );
   filter->SetObjectId( 255 );
   filter->AddObjectId( 127 );
@@ -134,7 +134,7 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
   WriterType::Pointer probWriter0 = WriterType::New();
   probWriter0->SetFileName( argv[6] );
   probWriter0->SetUseCompression( true );
-  probWriter0->SetInput( filter->GetClassProbabilityForInputVolume( 0 ) );
+  probWriter0->SetInput( filter->GetClassProbabilityForInput( 0 ) );
   try
     {
     probWriter0->Update();
@@ -162,7 +162,7 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
   WriterType::Pointer probWriter1 = WriterType::New();
   probWriter1->SetFileName( argv[8] );
   probWriter1->SetUseCompression( true );
-  probWriter1->SetInput( filter->GetClassProbabilityForInputVolume( 1 ) );
+  probWriter1->SetInput( filter->GetClassProbabilityForInput( 1 ) );
   try
     {
     probWriter1->Update();

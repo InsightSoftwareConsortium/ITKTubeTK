@@ -99,13 +99,13 @@ int itktubeRidgeBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   scales[2] = 1.6;
 
   FilterType::Pointer filter = FilterType::New();
-  filter->SetInputImage( inputImage );
+  filter->SetInput( inputImage );
   filter->SetScales( scales );
   std::cout << filter << std::endl;
 
   BasisFilterType::Pointer basisFilter = BasisFilterType::New();
   basisFilter->SetInputFeatureVectorGenerator( filter.GetPointer() );
-  basisFilter->SetInputImage( inputImage );
+  basisFilter->SetInput( inputImage );
   basisFilter->SetLabelMap( maskImage );
   int objId = atoi( argv[3] );
   int bkgId = atoi( argv[4] );

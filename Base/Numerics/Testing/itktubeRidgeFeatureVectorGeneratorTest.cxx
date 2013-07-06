@@ -73,7 +73,7 @@ int itktubeRidgeFeatureVectorGeneratorTest( int argc, char * argv[] )
   ImageType::Pointer inputImage = reader->GetOutput();
 
   FilterType::Pointer filter = FilterType::New();
-  filter->SetInputImage( inputImage );
+  filter->SetInput( inputImage );
 
   FilterType::RidgeScalesType scales( 2 );
   scales[0] = 0.4;

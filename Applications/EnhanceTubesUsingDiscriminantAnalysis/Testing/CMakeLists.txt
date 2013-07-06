@@ -43,12 +43,12 @@ set( TEXTCOMPARE_EXE
 #######
 Midas3FunctionAddTest( ${MODULE_NAME}-Test1
   ${PROJ_EXE}
-     --objectId 0,255
-     --tubeScales 5
+     --objectId 255,0
+     --tubeScales 0.3,0.9,1.8
      --saveDiscriminantInfo ${TEMP}/${MODULE_NAME}Test1.mnda
-     MIDAS{im0001.crop.contrast.mha.md5}
      --labelmap MIDAS{im0001.vk.crop.mha.md5}
-     ${TEMP}/${MODULE_NAME}Test1 )
+     MIDAS{im0001.crop.contrast.mha.md5}
+     ${TEMP}/${MODULE_NAME}Test1_Output.mha )
 
 #######
 # Test1-Compare

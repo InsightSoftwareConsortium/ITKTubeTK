@@ -163,7 +163,7 @@ int DoIt( int argc, char * argv[] )
         << std::endl;
       return EXIT_FAILURE;
       }
-    pdfSegmenter->SetInputVolume( i, reader->GetOutput() );
+    pdfSegmenter->SetInput( i, reader->GetOutput() );
     }
 
   timeCollector.Stop( "LoadData" );
@@ -246,7 +246,7 @@ int DoIt( int argc, char * argv[] )
         ProbImageWriterType::New();
       probImageWriter->SetFileName( fname.c_str() );
       probImageWriter->SetInput( pdfSegmenter->
-        GetClassProbabilityForInputVolume( i ) );
+        GetClassProbabilityForInput( i ) );
       probImageWriter->Update();
       }
     }

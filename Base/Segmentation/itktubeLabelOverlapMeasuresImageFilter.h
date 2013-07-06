@@ -143,14 +143,14 @@ public:
   RealType GetTotalOverlap( void );
   RealType GetUnionOverlap( void );
   RealType GetMeanOverlap( void );
-  RealType GetVolumeSimilarity( void );
+  RealType GetSimilarity( void );
   RealType GetFalseNegativeError( void );
   RealType GetFalsePositiveError( void );
   /** measures over individual labels */
   RealType GetTargetOverlap( LabelType );
   RealType GetUnionOverlap( LabelType );
   RealType GetMeanOverlap( LabelType );
-  RealType GetVolumeSimilarity( LabelType );
+  RealType GetSimilarity( LabelType );
   RealType GetFalseNegativeError( LabelType );
   RealType GetFalsePositiveError( LabelType );
   /** alternative names */

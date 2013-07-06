@@ -103,7 +103,7 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   scales2[0] = 8;
 
   FilterType::Pointer filter = FilterType::New();
-  filter->SetInputImage( inputImage );
+  filter->SetInput( inputImage );
   filter->SetZeroScales( scales );
   filter->SetFirstScales( scales );
   filter->SetSecondScales( scales2 );
@@ -113,7 +113,7 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
 
   BasisFilterType::Pointer basisFilter = BasisFilterType::New();
   basisFilter->SetInputFeatureVectorGenerator( filter.GetPointer() );
-  basisFilter->SetInputImage( inputImage );
+  basisFilter->SetInput( inputImage );
   basisFilter->SetLabelMap( maskImage );
   int objId = std::atoi( argv[3] );
   int bkgId = std::atoi( argv[4] );

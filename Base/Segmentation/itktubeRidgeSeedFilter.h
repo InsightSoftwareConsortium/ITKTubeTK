@@ -66,9 +66,6 @@ public:
 
   typedef RidgeFeatureVectorGenerator< TImage >   RidgeFeatureGeneratorType;
 
-  typedef BasisFeatureVectorGenerator< TImage, LabelMapType >
-                                                  SeedFeatureGeneratorType;
-
   typedef typename RidgeFeatureGeneratorType::FeatureValueType
                                                   FeatureValueType;
   typedef typename RidgeFeatureGeneratorType::FeatureVectorType
@@ -80,18 +77,37 @@ public:
   typedef typename RidgeFeatureGeneratorType::RidgeScalesType
                                                   RidgeScalesType;
 
+  typedef typename RidgeFeatureGeneratorType::ValueListType
+                                                  WhitenMeansType;
+
+  typedef typename RidgeFeatureGeneratorType::ValueListType
+                                                  WhitenStdDevsType;
+
+  typedef BasisFeatureVectorGenerator< TImage, LabelMapType >
+                                                  SeedFeatureGeneratorType;
+
   typedef typename SeedFeatureGeneratorType::ObjectIdType
                                                   ObjectIdType;
+
+  typedef typename SeedFeatureGeneratorType::VectorType
+                                                  VectorType;
+
+  typedef typename SeedFeatureGeneratorType::MatrixType
+                                                  MatrixType;
 
   typedef PDFSegmenter< OutputImageType, 3, LabelMapType >
                                                   PDFSegmenterType;
 
+  typedef typename PDFSegmenterType::ProbabilityPixelType
+                                                  ProbabilityPixelType;
+  typedef typename PDFSegmenterType::ProbabilityImageType
+                                                  ProbabilityImageType;
+
+
   void SetInput( typename ImageType::Pointer img );
   void AddInput( typename ImageType::Pointer img );
-  typename ImageType::Pointer GetInput( unsigned int num = 0 );
 
   void SetLabelMap( typename LabelMapType::Pointer img );
-  typename LabelMapType::Pointer GetLabelMap( void );
 
   typename SeedFeatureGeneratorType::Pointer
     GetSeedFeatureGenerator( void );
@@ -102,24 +118,49 @@ public:
   typename PDFSegmenterType::Pointer GetPDFSegmenter( void );
 
   // Ridge
-  void  SetIntensityRange( float intensityMin, float intensityMax );
-  void  SetIntensityMin( float intensityMin );
-  float GetIntensityMin( void );
-  void  SetIntensityMax( float intensityMax );
-  float GetIntensityMax( void );
+  void   SetIntensityRange( float intensityMin, float intensityMax );
+  void   SetIntensityMin( float intensityMin );
+  float  GetIntensityMin( void ) const;
+  void   SetIntensityMax( float intensityMax );
+  float  GetIntensityMax( void ) const;
 
-  void  SetScales( const RidgeScalesType & Scales );
-  RidgeScalesType GetScales( void );
+  void            SetScales( const RidgeScalesType & Scales );
+  RidgeScalesType GetScales( void ) const;
 
-  // Ridge and PDFSegmenter
+  // Basis
+  void   SetWhitenMeans( const WhitenMeansType & means );
+  void   SetWhitenStdDevs( const WhitenStdDevsType & stdDevs );
+  const WhitenMeansType &   GetWhitenMeans( void ) const;
+  const WhitenStdDevsType & GetWhitenStdDevs( void ) const;
+
+  unsigned int GetNumberOfBasis( void ) const;
+
+  double       GetBasisValue( unsigned int basisNum ) const;
+  VectorType   GetBasisVector( unsigned int basisNum ) const;
+  MatrixType   GetBasisMatrix( void ) const;
+  VectorType   GetBasisValues( void ) const;
+
+  void   SetBasisValue( unsigned int basisNum, double value );
+  void   SetBasisVector( unsigned int basisNum, const VectorType & vec );
+  void   SetBasisMatrix( const MatrixType & mat );
+  void   SetBasisValues( const VectorType & values );
+
+  // PDFSegmenter
+  typename ProbabilityImageType::Pointer
+    GetClassProbabilityForInput( unsigned int objectNum ) const;
+
+  typename ProbabilityImageType::Pointer
+    GetClassProbabilityDifferenceForInput( unsigned int objectNum ) const;
+
+  // Ridge, Basis, and PDFSegmenter
   void         SetObjectId( ObjectIdType objectId );
   void         AddObjectId( ObjectIdType objectId );
   ObjectIdType GetObjectId( unsigned int num = 0 ) const;
   unsigned int GetNumberOfObjectIds( void ) const;
 
   // Local
-  void Update();
-  void ClassifyImages();
+  void   Update();
+  void   ClassifyImages();
 
   typename LabelMapType::Pointer GetOutput( void );
 

@@ -27,12 +27,14 @@ limitations under the License.
 #include <itkTimeProbesCollectorBase.h>
 
 #include "itktubeMetaRidgeSeed.h"
+#include "itktubeRidgeSeedFilter.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 #include "tubeStringUtilities.h"
 
-#include "EnhanceUsingNJetDiscriminantAnalysisCLP.h"
+#include "EnhanceTubesUsingDiscriminantAnalysisCLP.h"
+
 
 template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] );
@@ -52,31 +54,35 @@ int DoIt( int argc, char * argv[] )
 
   itk::TimeProbesCollectorBase timeCollector;
 
-  typedef TPixel                                   InputPixelType;
-  typedef itk::Image< InputPixelType, TDimension > InputImageType;
+  typedef TPixel                                    InputPixelType;
+  typedef itk::Image< InputPixelType, TDimension >  InputImageType;
+  typedef itk::ImageFileReader< InputImageType >    InputImageReaderType;
 
-  typedef unsigned short                           LabelmapPixelType;
-  typedef itk::Image< unsigned short, TDimension > LabelmapType;
-  typedef itk::ImageFileReader< LabelmapType >     LabelmapReaderType;
+  typedef unsigned short                            LabelmapPixelType;
+  typedef itk::Image< unsigned short, TDimension >  LabelmapType;
+  typedef itk::ImageFileReader< LabelmapType >      LabelmapReaderType;
 
-  typedef float                                     OutputPixelType;
-  typedef itk::Image< OutputPixelType, TDimension > OutputImageType;
-
-  typedef itk::ImageFileWriter< OutputImageType >  OutputImageWriterType;
-
-  typedef itk::tube::MetaRidgeSeed                 TubeParametersIOType;
+  typedef itk::tube::MetaRidgeSeed                  TubeParametersIOType;
 
   typedef itk::tube::RidgeSeedFilter< InputImageType, LabelmapType >
-    RidgeSeedFilterType;
+                                                    RidgeSeedFilterType;
 
-  RidgeSeedFilterType::Pointer tubeFilter = RidgeSeedFilterType::New();
+  typedef typename RidgeSeedFilterType::ProbabilityPixelType
+                                                    OutputPixelType;
+  typedef typename RidgeSeedFilterType::ProbabilityImageType
+                                                    OutputImageType;
+  typedef itk::ImageFileWriter< OutputImageType >   OutputImageWriterType;
+
+
+  typename RidgeSeedFilterType::Pointer tubeFilter =
+    RidgeSeedFilterType::New();
 
   timeCollector.Start( "LoadData" );
 
-  typename ImageReaderType::Pointer reader;
+  typename InputImageReaderType::Pointer reader;
   for( unsigned int vNum = 0; vNum < inputVolumesList.size(); vNum++ )
     {
-    reader = ImageReaderType::New();
+    reader = InputImageReaderType::New();
     reader->SetFileName( inputVolumesList[vNum].c_str() );
     reader->Update();
     if( vNum == 0 )
@@ -95,7 +101,7 @@ int DoIt( int argc, char * argv[] )
       LabelmapReaderType::New();
     inLabelmapReader->SetFileName( labelmap.c_str() );
     inLabelmapReader->Update();
-    tubeFilter->SetLabelmap( inLabelmapReader->GetOutput() );
+    tubeFilter->SetLabelMap( inLabelmapReader->GetOutput() );
     }
 
   timeCollector.Stop( "LoadData" );
@@ -116,7 +122,7 @@ int DoIt( int argc, char * argv[] )
     TubeParametersIOType tubeParametersIO( loadDiscriminantInfo.c_str() );
     tubeParametersIO.Read();
 
-    tubeFilter->SetRidgeScales( tubeParametersIO.GetRidgeScales() );
+    tubeFilter->SetScales( tubeParametersIO.GetRidgeSeedScales() );
     tubeFilter->SetWhitenMeans( tubeParametersIO.GetWhitenMeans() );
     tubeFilter->SetWhitenStdDevs( tubeParametersIO.GetWhitenStdDevs() );
 
@@ -129,7 +135,7 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start( "Update" );
 
-    tubeFilter->SetRidgeScales( tubeScales );
+    tubeFilter->SetScales( tubeScales );
     tubeFilter->SetWhitenMeans( whitenMeans );
     tubeFilter->SetWhitenStdDevs( whitenStdDevs );
 
@@ -144,20 +150,21 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start( "SaveBasis" );
     TubeParametersIOType tubeParametersIO(
-      tubeFilter->GetRidgeScales(),
+      tubeFilter->GetScales(),
       tubeFilter->GetBasisValues(),
       tubeFilter->GetBasisMatrix(),
       tubeFilter->GetWhitenMeans(),
       tubeFilter->GetWhitenStdDevs() );
-    basisWriter.Write( saveDiscriminantInfo.c_str() );
+    tubeParametersIO.Write( saveDiscriminantInfo.c_str() );
     timeCollector.Stop( "SaveBasis" );
     }
 
-  OutputImageWriterType::Pointer outputWriter =
+  typename OutputImageWriterType::Pointer outputWriter =
     OutputImageWriterType::New();
   outputWriter->SetFileName( outputVolume.c_str() );
   outputWriter->SetUseCompression( true );
-  outputWriter->SetInput( tubeFilter->GetOutput() );
+  outputWriter->SetInput( tubeFilter->
+    GetClassProbabilityDifferenceForInput( 0 ) );
   outputWriter->Update();
 
   timeCollector.Report();

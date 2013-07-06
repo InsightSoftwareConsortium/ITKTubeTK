@@ -85,12 +85,15 @@ public:
   //
   // Methods
   //
-  void SetInputVolume( unsigned int featureNumber,
+  void SetInput( unsigned int featureNumber,
     typename ImageType::Pointer vol );
 
   void ClearObjectIds( void );
   void SetObjectId( ObjectIdType objectId );
   void AddObjectId( ObjectIdType objectId );
+
+  unsigned int GetNumberOfClasses( void );
+  unsigned int GetNumberOfObjectIds( void );
 
   ObjectIdType GetObjectId( unsigned int num = 0 ) const;
   unsigned int GetObjectNumberFromId( ObjectIdType id ) const;
@@ -111,10 +114,8 @@ public:
   itkSetMacro( OutlierRejectPortion, double );
   itkSetMacro( Draft, bool );
 
-  int GetNumberOfClasses( void );
-
   const typename ProbabilityImageType::Pointer
-    GetClassProbabilityForInputVolume( unsigned int classNum ) const;
+    GetClassProbabilityForInput( unsigned int classNum ) const;
 
   const typename PDFImageType::Pointer GetClassPDFImage(
     unsigned int classNum );
@@ -198,7 +199,7 @@ private:
   unsigned int                             m_HistogramNumBinsND;
 
   //  Data
-  std::vector< typename ImageType::Pointer > m_InputVolumeList;
+  std::vector< typename ImageType::Pointer > m_InputImageList;
 
   typename LabelMapType::Pointer  m_LabelMap;
 

@@ -148,7 +148,7 @@ int DoIt( int argc, char * argv[] )
 
   typedef tube::CompareImageWithPrior< TPixel, VDimension > ImageEvalType;
   ImageEvalType eval;
-  eval.SetVolumeImage( inVolume );
+  eval.SetInput( inVolume );
   eval.SetMaskImage( inMask );
   eval.SetForeground( foreground );
   eval.SetBackground( background );
@@ -206,7 +206,7 @@ int DoIt( int argc, char * argv[] )
   int outDilate = dilate;
   double outGaussianBlur = gaussianBlur;
   double outGoF = eval.GetGoodnessOfFit();
-  typename ImageType::Pointer outVolume = eval.GetOutputVolumeImage();
+  typename ImageType::Pointer outVolume = eval.GetOutput();
   typename ImageType::Pointer outMask = eval.GetOutputMaskImage();
 
   if( loadTransform.size() == 0 )
@@ -261,7 +261,7 @@ int DoIt( int argc, char * argv[] )
     std::cout << "Opt gaussian best = " << outGaussianBlur << std::endl;
     std::cout << "Opt gof best = " << outGoF << std::endl;
 
-    eval.SetVolumeImage( inVolume );
+    eval.SetInput( inVolume );
     eval.SetMaskImage( inMask );
     eval.SetForeground( foreground );
     eval.SetBackground( background );
@@ -273,7 +273,7 @@ int DoIt( int argc, char * argv[] )
     eval.SetGaussianBlur( outGaussianBlur );
     eval.SetProgressReporter( &progressReporter, 0.3, 0.1 );
     eval.Update();
-    outVolume = eval.GetOutputVolumeImage();
+    outVolume = eval.GetOutput();
     outMask = eval.GetOutputMaskImage();
 
     delete myFunc;

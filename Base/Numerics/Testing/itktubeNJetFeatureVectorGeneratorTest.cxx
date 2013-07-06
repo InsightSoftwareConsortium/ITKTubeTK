@@ -92,7 +92,7 @@ int itktubeNJetFeatureVectorGeneratorTest( int argc, char * argv[] )
   FilterType::NJetScalesType scales2( 1 );
   scales2[0] = 2;
   FilterType::Pointer filter = FilterType::New();
-  filter->SetInputImage( inputImage );
+  filter->SetInput( inputImage );
   filter->SetZeroScales( scales );
   filter->SetFirstScales( scales );
   filter->SetSecondScales( scales2 );

@@ -309,7 +309,7 @@ LabelOverlapMeasuresImageFilter< TLabelImage >
 template< class TLabelImage >
 typename LabelOverlapMeasuresImageFilter< TLabelImage >::RealType
 LabelOverlapMeasuresImageFilter< TLabelImage >
-::GetVolumeSimilarity( void )
+::GetSimilarity( void )
 {
   RealType numerator = 0.0;
   RealType denominator = 0.0;
@@ -332,7 +332,7 @@ LabelOverlapMeasuresImageFilter< TLabelImage >
 template< class TLabelImage >
 typename LabelOverlapMeasuresImageFilter< TLabelImage >::RealType
 LabelOverlapMeasuresImageFilter< TLabelImage >
-::GetVolumeSimilarity( LabelType label )
+::GetSimilarity( LabelType label )
 {
   MapIterator mapIt = this->m_LabelSetMeasures.find( label );
   if( mapIt == this->m_LabelSetMeasures.end() )

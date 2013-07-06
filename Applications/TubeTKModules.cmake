@@ -39,7 +39,7 @@ set( TubeTK_${proj}_MODULES
   EnhanceContrastUsingPrior
   EnhanceEdgesUsingDiffusion
   EnhanceTubesUsingDiffusion
-#  EnhanceTubesUsingDiscriminantAnalysis
+  EnhanceTubesUsingDiscriminantAnalysis
   ImageMath
   MergeAdjacentImages
   MergeTubeGraphs
