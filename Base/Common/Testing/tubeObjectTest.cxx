@@ -21,16 +21,30 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeDifferenceImageFilter.h"
-#include "tubeIndent.h"
-#include "tubeMacro.h"
-#include "tubeMessage.h"
 #include "tubeObject.h"
-#include "tubeStringUtilities.h"
 
-#include <cstdlib>
+#include <sstream>
 
-int main ( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
+int tubeObjectTest( int argc, char * argv[] )
 {
+  if( argc > 1 )
+    {
+    tubeStandardErrorMacro( << "Usage: " << argv[0] );
+
+    return EXIT_FAILURE;
+    }
+
+  typedef tube::Object ObjectType;
+
+  ObjectType::Pointer object = new ObjectType();
+  std::ostringstream oss;
+
+  object->Print( oss );
+
+  tubeStandardOutputMacro( << "Object print method test:" << std::endl << oss.str() );
+  tubeStandardOutputMacro( << "Object stream operator test:" << std::endl << *object );
+
+  delete object;
+
   return EXIT_SUCCESS;
 }

@@ -21,16 +21,19 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeDifferenceImageFilter.h"
-#include "tubeIndent.h"
 #include "tubeMacro.h"
-#include "tubeMessage.h"
-#include "tubeObject.h"
-#include "tubeStringUtilities.h"
 
-#include <cstdlib>
-
-int main ( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
+int tubeMacroTest( int argc, char * argv[] )
 {
+  if( argc > 1 )
+    {
+    tubeStandardErrorMacro( << "Usage: " << argv[0] );
+
+    return EXIT_FAILURE;
+    }
+
+  tubeStandardErrorMacro( << "tubeStandardErrorMacro test." );
+  tubeStandardOutputMacro( << "tubeStandardOutputMacro test." );
+
   return EXIT_SUCCESS;
 }
