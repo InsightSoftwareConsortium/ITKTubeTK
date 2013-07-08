@@ -22,7 +22,7 @@
 ##############################################################################
 
 include( ExternalProject )
-include( SlicerMacroCheckExternalProjectDependency )
+include( TubeTKMacroCheckExternalProjectDependency )
 
 set( base "${CMAKE_BINARY_DIR}" )
 set_property( DIRECTORY PROPERTY EP_BASE ${base} )
@@ -126,7 +126,7 @@ endif( TubeTK_USE_LIBSVM )
 ##
 
 set( EXTERNAL_PROJECT_DIR ${TubeTK_SOURCE_DIR}/CMake/Superbuild )
-SlicerMacroCheckExternalProjectDependency( TubeTK )
+TubeTKMacroCheckExternalProjectDependency( TubeTK )
 
 ##
 ## TubeTK - Normal Build

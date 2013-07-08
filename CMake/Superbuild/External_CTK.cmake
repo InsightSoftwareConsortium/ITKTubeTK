@@ -46,7 +46,7 @@ if( TubeTK_USE_VTK AND NOT USE_SYSTEM_VTK )
 endif( TubeTK_USE_VTK AND NOT USE_SYSTEM_VTK )
 
 # Include dependent projects if any
-SlicerMacroCheckExternalProjectDependency( ${proj} )
+TubeTKMacroCheckExternalProjectDependency( ${proj} )
 
 if( NOT DEFINED ${proj}_DIR )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
@@ -79,5 +79,5 @@ if( NOT DEFINED ${proj}_DIR )
 else( NOT DEFINED ${proj}_DIR )
   # The project is provided using ${proj}_DIR, nevertheless since other project may depend on ${proj},
   # let's add an 'empty' one
-  SlicerMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
+  TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
 endif( NOT DEFINED ${proj}_DIR )

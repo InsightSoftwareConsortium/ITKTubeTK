@@ -21,8 +21,6 @@
 #
 ##############################################################################
 
-include( ${CMAKE_CURRENT_SOURCE_DIR}/CMake/SlicerBlockSetCMakeOSXVariables.cmake )
-
 project( TubeTK )
 
 #-----------------------------------------------------------------------------
@@ -30,29 +28,28 @@ project( TubeTK )
 cmake_minimum_required( VERSION 2.8.8 )
 
 #-----------------------------------------------------------------------------
+# Update CMake module path
+set( TubeTK_CMAKE_EXTENSIONS_DIR ${TubeTK_SOURCE_DIR}/CMake )
+set( CMAKE_MODULE_PATH ${TubeTK_CMAKE_EXTENSIONS_DIR} ${CMAKE_MODULE_PATH} )
+
+#-----------------------------------------------------------------------------
 # Set TubeTK version and output directories.
 set( TubeTK_VERSION_MAJOR "0" )
 set( TubeTK_VERSION_MINOR "9" )
 set( TubeTK_VERSION_PATCH "0" )
-include( CMake/CMakeFunctionToday.cmake )
-TODAY( TubeTK_VERSION_BUILD )
+
+include( TubeTKFunctionToday )
+TubeTKFunctionToday( TubeTK_VERSION_BUILD )
+
 set( TubeTK_VERSION
-  "${TubeTK_VERSION_MAJOR}.${TubeTK_VERSION_MINOR}.${TubeTK_VERSION_BUILD}" )
+  "${TubeTK_VERSION_MAJOR}.${TubeTK_VERSION_MINOR}.${TubeTK_VERSION_PATCH}.${TubeTK_VERSION_BUILD}" )
 
 set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin" )
 set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/TubeTK" )
 set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/TubeTK" )
 
-#-----------------------------------------------------------------------------
-# Update CMake module path
-set( TubeTK_CMAKE_EXTENSIONS_DIR
-  ${TubeTK_SOURCE_DIR}/CMake )
-
-set( CMAKE_MODULE_PATH
-  ${TubeTK_CMAKE_EXTENSIONS_DIR}
-  ${CMAKE_MODULE_PATH} )
-
-include( SlicerMacroEmptyExternalProject )
+include( TubeTKBlockSetCMakeOSXVariables )
+include( TubeTKMacroEmptyExternalProject )
 
 #-----------------------------------------------------------------------------
 # Setup for building 3D Slicer extensions.
@@ -86,7 +83,7 @@ if( BUILD_TESTING )
 endif( BUILD_TESTING )
 set( BUILD_WARNING_REPORT_LIMIT -1 )
 set( BUILD_ERROR_REPORT_LIMIT -1 )
-include( "CTestConfig.cmake" )
+include( CTestConfig.cmake )
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/CTestCustom.cmake.in
   ${TubeTK_BINARY_DIR}/CTestCustom.cmake )
 
@@ -489,7 +486,7 @@ test_big_endian( CMAKE_WORDS_BIGENDIAN )
 #-----------------------------------------------------------------------------
 # Setup to conform to 3D Slicer paths and define plugin copying macros.
 if( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_Slicer )
-  include( CMake/SlicerGetSource.cmake )
+  include( SlicerGetSource )
 
   svnGetSlicerBase( Resources )
   svnGetSlicerBase( Base/CLI )
@@ -499,7 +496,7 @@ if( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_Slicer )
 
   #-----------------------------------------------------------------------------
   # Build ITKFactorRegistration
-  include( CMake/Slicer4Config.cmake )
+  include( Slicer4Config )
   set( CXX_TEST_PATH  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR} )
   set( LAUNCH_EXE  "" )
   set( SUPPORT_2D_IMAGES on )
@@ -526,7 +523,7 @@ if( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_Slicer )
 
 endif( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_Slicer )
 
-include( CMake/TubeTKPluginsMacros.cmake )
+include( TubeTKPluginsMacros )
 
 #-----------------------------------------------------------------------------
 # Build TubeTK.
@@ -612,14 +609,14 @@ configure_file( ${TubeTK_SOURCE_DIR}/CMake/UseTubeTK.cmake.in
 #-----------------------------------------------------------------------------
 # Configure a launcher for running TubeTK methods from the command line in
 # Microsoft Windows.
-configure_file( ${TubeTK_SOURCE_DIR}/CMake/tubeLauncher.bat.in
-  ${TubeTK_BINARY_DIR}/tubeLauncher.bat @ONLY )
+configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKLauncher.bat.in
+  ${TubeTK_BINARY_DIR}/TubeTKLauncher.bat @ONLY )
 
 #-----------------------------------------------------------------------------
 # Configure a launcher for running TubeTK methods from the command line in
 # Apple OS X, Linux, or UNIX.
-configure_file( ${TubeTK_SOURCE_DIR}/CMake/tubeLauncher.sh.in
-  ${TubeTK_BINARY_DIR}/tubeLauncher.sh @ONLY )
+configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKLauncher.sh.in
+  ${TubeTK_BINARY_DIR}/TubeTKLauncher.sh @ONLY )
 
 #-----------------------------------------------------------------------------
 # Configure CPack packaging.
@@ -643,9 +640,9 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
   # Record the environment setup files for packaging.
   set( TubeTK_LINUX_SETUP
-    ${TubeTK_SOURCE_DIR}/CMake/tubeSourceMeToSetupLinux.sh )
+    ${TubeTK_SOURCE_DIR}/CMake/TubeTKSourceMeToSetupLinux.sh )
   set( TubeTK_WINDOWS_SETUP
-    ${TubeTK_SOURCE_DIR}/CMake/tubeRunMeToSetupWindows.bat )
+    ${TubeTK_SOURCE_DIR}/CMake/TubeTKRunMeToSetupWindows.bat )
 
   include( InstallRequiredSystemLibraries )
 
