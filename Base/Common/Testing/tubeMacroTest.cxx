@@ -32,6 +32,10 @@ int tubeMacroTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
+  tubeDebugMacro( << "tubeDebugMacro test." );
+  tubeWarningMacro( << "tubeWarningMacro test." );
+  tubeErrorMacro( << "tubeErrorMacro test." );
+
   tubeStandardErrorMacro( << "tubeStandardErrorMacro test." );
   tubeStandardOutputMacro( << "tubeStandardOutputMacro test." );
 

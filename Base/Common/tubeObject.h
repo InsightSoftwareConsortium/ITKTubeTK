@@ -47,6 +47,12 @@ public:
 
   tubeTypeMacro( Object );
 
+  /** Constructor. */
+  Object( void );
+
+  /** Destructor. */
+  virtual ~Object( void );
+
   /** Print out information about this object. */
   void Print( std::ostream & os, Indent indent = 0 ) const;
 
@@ -60,6 +66,14 @@ protected:
 
   /** Footer for when printing out information about this object. */
   virtual void PrintFooter( std::ostream & os, Indent indent ) const;
+
+private:
+
+  // Copy constructor not implemented.
+  Object( const Self & self );
+
+  // Copy assignment operator not implemented.
+  void operator=( const Self & self );
 
 }; // End class Object
 

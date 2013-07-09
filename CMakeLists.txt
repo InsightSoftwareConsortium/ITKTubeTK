@@ -546,11 +546,14 @@ make_directory( ${TubeTK_BINARY_DIR}/Temporary )
 #-----------------------------------------------------------------------------
 # Configure variables to export.
 set( TubeTK_INCLUDE_DIRS
-  ${TubeTK_SOURCE_DIR}/Base/Numerics
+  ${TubeTK_SOURCE_DIR}/Base/CLI
+  ${TubeTK_SOURCE_DIR}/Base/Common
   ${TubeTK_SOURCE_DIR}/Base/Filtering
   ${TubeTK_SOURCE_DIR}/Base/IO
-  ${TubeTK_SOURCE_DIR}/Base/Segmentation
+  ${TubeTK_SOURCE_DIR}/Base/Numerics
+  ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments
   ${TubeTK_SOURCE_DIR}/Base/Registration
+  ${TubeTK_SOURCE_DIR}/Base/Segmentation
   ${TubeTK_SOURCE_DIR}/Base/USTK )
 
 if( MSVC )

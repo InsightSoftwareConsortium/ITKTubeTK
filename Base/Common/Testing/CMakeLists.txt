@@ -46,7 +46,7 @@ set( tubeBaseCommonTests_SRCS
   tubeBaseCommonPrintTest.cxx
   tubeMacroTest.cxx
   tubeMessageTest.cxx
-  tubeObjectTest.cxx)
+  tubeObjectTest.cxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common )

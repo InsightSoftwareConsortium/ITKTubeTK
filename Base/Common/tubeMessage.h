@@ -24,11 +24,10 @@ limitations under the License.
 #ifndef __tubeMessage_h
 #define __tubeMessage_h
 
+#include "tubeMacro.h"
+
 #include <cstdarg>
 #include <cstdio>
-#include <cstring>
-#include <iostream>
-#include <string>
 
 namespace tube
 {
@@ -66,7 +65,6 @@ void Message( const T& str, int level = 0 )
     }
 }
 
-
 inline void FmtMessage(int level, const std::string & message )
 {
   std::ostream & os = level >= MessageLevel::Information ? std::cerr : std::cout;
@@ -102,7 +100,6 @@ inline void FmtMessage(int level, const std::string & message )
   os.flush();
 }
 
-
 /** Formatted logging, as with printf(...) */
 inline void FmtMessage(int level, const char* fmt, va_list args )
 {
@@ -113,12 +110,10 @@ inline void FmtMessage(int level, const char* fmt, va_list args )
   FmtMessage(level, std::string(message));
 }
 
-
 inline void FmtInfoMessage(const std::string & message)
 {
   FmtMessage( MessageLevel::Information, message );
 }
-
 
 inline void FmtInfoMessage(const char* fmt, ...)
 {
@@ -128,12 +123,10 @@ inline void FmtInfoMessage(const char* fmt, ...)
   va_end(args);
 }
 
-
 inline void FmtInformationMessage(const std::string & message)
 {
   FmtMessage( MessageLevel::Information, message );
 }
-
 
 inline void FmtInformationMessage(const char* fmt, ...)
 {
@@ -144,12 +137,10 @@ inline void FmtInformationMessage(const char* fmt, ...)
 
 }
 
-
 inline void FmtWarningMessage(const std::string & message)
 {
   FmtMessage( MessageLevel::Warning, message );
 }
-
 
 inline void FmtWarningMessage(const char* fmt, ...)
 {
@@ -159,12 +150,10 @@ inline void FmtWarningMessage(const char* fmt, ...)
   va_end( args );
 }
 
-
 inline void FmtErrorMessage(const std::string & message)
 {
   FmtMessage( MessageLevel::Error, message );
 }
-
 
 inline void FmtErrorMessage(const char* fmt, ...)
 {
@@ -174,12 +163,10 @@ inline void FmtErrorMessage(const char* fmt, ...)
   va_end( args );
 }
 
-
 inline void FmtDebugMessage(const std::string & message)
 {
   FmtMessage( MessageLevel::Debug, message );
 }
-
 
 inline void FmtDebugMessage(const char* fmt, ...)
 {
@@ -189,13 +176,11 @@ inline void FmtDebugMessage(const char* fmt, ...)
   va_end( args );
 }
 
-
 template< class T >
 void InfoMessage( const T& str )
 {
   Message( str, MessageLevel::Information );
 }
-
 
 template< class T >
 void InformationMessage( const T& str )
@@ -203,20 +188,17 @@ void InformationMessage( const T& str )
   Message( str, MessageLevel::Information );
 }
 
-
 template< class T >
 void WarningMessage( const T& str )
 {
   Message( str, MessageLevel::Warning );
 }
 
-
 template< class T >
 void ErrorMessage( const T& str )
 {
   Message( str, MessageLevel::Error );
 }
-
 
 template< class T >
 void DebugMessage( const T& str )
