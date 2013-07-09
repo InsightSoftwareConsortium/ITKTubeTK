@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-################################################################################
+##############################################################################
 #
 #  Program: 3D Slicer
 #
@@ -36,16 +36,16 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-#  This file was originally developed by Jean-Christophe Fillion-Robin, Kitware Inc.
-#  and was partially funded by NIH grant 3P41RR013218-12S1
+#  This file was originally developed by Jean-Christophe Fillion-Robin,
+#  Kitware Inc. and was partially funded by NIH grant 3P41RR013218-12S1.
 #
-################################################################################
+##############################################################################
 
 if( NOT EXISTS "${EXTERNAL_PROJECT_DIR}" )
   set( EXTERNAL_PROJECT_DIR ${${CMAKE_PROJECT_NAME}_SOURCE_DIR}/CMake/SuperBuild )
 endif( NOT EXISTS "${EXTERNAL_PROJECT_DIR}" )
 
-macro( SlicerMacroCheckExternalProjectDependency proj )
+macro( TubeTKMacroCheckExternalProjectDependency proj )
 
   if( NOT DEFINED __indent )
     set( __indent "" )
@@ -55,7 +55,7 @@ macro( SlicerMacroCheckExternalProjectDependency proj )
 
   # Sanity checks
   if( NOT DEFINED ${proj}_DEPENDENCIES )
-    message( FATAL_ERROR "${__indent}${proj}_DEPENDENCIES variable is NOT defined !" )
+    message( FATAL_ERROR "${__indent}${proj}_DEPENDENCIES variable is NOT defined" )
   endif( NOT DEFINED ${proj}_DEPENDENCIES )
 
   # Display dependency of project being processed
@@ -98,7 +98,7 @@ macro( SlicerMacroCheckExternalProjectDependency proj )
       endif( NOT ${external_project_found} )
 
       if( NOT ${external_project_found} )
-        message( FATAL_ERROR "Can't find External_${dep}.cmake" )
+        message( FATAL_ERROR "Cannot find External_${dep}.cmake" )
       endif( NOT ${external_project_found} )
     endif( NOT External_${dep}_FILE_INCLUDED )
   endforeach()
@@ -118,4 +118,4 @@ macro( SlicerMacroCheckExternalProjectDependency proj )
   if( NOT ${__indent_length} LESS 0 )
     string( SUBSTRING "${__indent}" 0 ${__indent_length} __indent )
   endif( NOT ${__indent_length} LESS 0 )
-endmacro()
+endmacro( TubeTKMacroCheckExternalProjectDependency proj )

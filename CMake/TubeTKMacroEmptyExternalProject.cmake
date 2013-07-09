@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-###########################################################################
+##############################################################################
 #
 #  Library:   CTK
 #
@@ -39,25 +39,22 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-###########################################################################
+##############################################################################
 
 # See http://github.com/commontk/CTK/blob/master/CMake/ctkMacroEmptyExternalProject.cmake
 
 #
-# Convenient macro allowing to define a "empty" project in case an external one is provided
-# using for example <proj>_DIR.
-# Doing so allows to keep the external project dependency system happy.
+# Convenient macro allowing to define a "empty" project in case an external one
+# is provided using for example <proj>_DIR. Doing so allows us to keep the
+# external project dependency system happy.
 #
-macro( SlicerMacroEmptyExternalProject proj dependencies )
-
-  ExternalProject_Add(${proj}
+macro( TubeTKMacroEmptyExternalProject proj dependencies )
+  ExternalProject_Add( ${proj}
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${proj}-build
     DOWNLOAD_COMMAND ""
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND ""
-    DEPENDS
-      ${dependencies} )
-
-endmacro( SlicerMacroEmptyExternalProject proj dependencies )
+  DEPENDS ${dependencies} )
+endmacro( TubeTKMacroEmptyExternalProject proj dependencies )
