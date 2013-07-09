@@ -312,7 +312,7 @@ RidgeSeedFilter< TImage, TLabelMap >
     resultImage, region );
   for( unsigned int c = 0; c < this->GetNumberOfObjectIds(); c++ )
     {
-    if( c == objectNum )
+    if( c != objectNum )
       {
       itk::ImageRegionConstIterator< ProbabilityImageType >
         classIter( m_PDFSegmenter->GetClassProbabilityForInput( c ),
@@ -334,7 +334,8 @@ RidgeSeedFilter< TImage, TLabelMap >
   resultIter.GoToBegin();
   while( ! resultIter.IsAtEnd() )
     {
-    resultIter.Set( classIter.Get() - resultIter.Get() );
+    resultIter.Set( classIter.Get() *
+      ( classIter.Get() - resultIter.Get() ) / ( classIter.Get() ) );
     ++resultIter;
     ++classIter;
     }

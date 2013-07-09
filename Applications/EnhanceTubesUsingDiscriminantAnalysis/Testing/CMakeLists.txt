@@ -43,20 +43,30 @@ set( TEXTCOMPARE_EXE
 #######
 Midas3FunctionAddTest( ${MODULE_NAME}-Test1
   ${PROJ_EXE}
-     --objectId 255,0
-     --tubeScales 0.3,0.9,1.8
-     --saveDiscriminantInfo ${TEMP}/${MODULE_NAME}Test1.mnda
-     --labelmap MIDAS{im0001.vk.crop.mha.md5}
-     MIDAS{im0001.crop.contrast.mha.md5}
-     ${TEMP}/${MODULE_NAME}Test1_Output.mha )
+    --objectId 255,0
+    --tubeScales 0.3,1.5
+    --saveDiscriminantInfo ${TEMP}/${MODULE_NAME}Test1.mrs
+    --labelmap MIDAS{im0001.vk.crop.mha.md5}
+    MIDAS{im0001.crop.contrast.mha.md5}
+    ${TEMP}/${MODULE_NAME}Test1_Output.mha )
 
 #######
-# Test1-Compare
+# Test1-Compare MRS
 #######
-#Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
-  #${IMAGECOMPARE_EXE}
-     #-i 0.01
-     #-t ${TEMP}/${MODULE_NAME}Test1.lda00.mha
-     #-b MIDAS{${MODULE_NAME}Test1.lda00.mha.md5} )
-#set_property(TEST ${MODULE_NAME}-Test1-Compare
-                      #APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-MRS-Compare
+  ${TEXTCOMPARE_EXE}
+    -t ${TEMP}/${MODULE_NAME}Test1.mrs
+    -b MIDAS{${MODULE_NAME}Test1.mrs.md5} )
+set_property(TEST ${MODULE_NAME}-Test1-MRS-Compare
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+
+#######
+# Test1-Compare Output
+#######
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Output-Compare
+  ${IMAGECOMPARE_EXE}
+    -i 0.01
+    -t ${TEMP}/${MODULE_NAME}Test1_Output.mha
+    -b MIDAS{${MODULE_NAME}Test1_Output.mha.md5} )
+set_property(TEST ${MODULE_NAME}-Test1-Output-Compare
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )

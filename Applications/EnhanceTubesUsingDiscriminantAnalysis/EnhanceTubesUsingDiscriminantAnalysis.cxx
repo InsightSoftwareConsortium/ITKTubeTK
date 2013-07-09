@@ -164,7 +164,7 @@ int DoIt( int argc, char * argv[] )
   outputWriter->SetFileName( outputVolume.c_str() );
   outputWriter->SetUseCompression( true );
   outputWriter->SetInput( tubeFilter->
-    GetClassProbabilityDifferenceForInput( 0 ) );
+    GetClassProbabilityForInput( 0 ) );
   outputWriter->Update();
 
   timeCollector.Report();
