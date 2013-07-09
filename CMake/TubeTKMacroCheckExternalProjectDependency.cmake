@@ -42,7 +42,7 @@
 ##############################################################################
 
 if( NOT EXISTS "${EXTERNAL_PROJECT_DIR}" )
-  set( EXTERNAL_PROJECT_DIR ${${CMAKE_PROJECT_NAME}_SOURCE_DIR}/CMake/SuperBuild )
+  set( EXTERNAL_PROJECT_DIR ${${CMAKE_PROJECT_NAME}_SOURCE_DIR}/CMake/Superbuild )
 endif( NOT EXISTS "${EXTERNAL_PROJECT_DIR}" )
 
 macro( TubeTKMacroCheckExternalProjectDependency proj )
