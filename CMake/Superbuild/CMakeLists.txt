@@ -111,22 +111,24 @@ if( TubeTK_USE_QT )
   endif( TubeTK_USE_CTK AND NOT USE_SYSTEM_CTK )
 endif( TubeTK_USE_QT )
 
-if( TubeTK_BUILD_ImageViewer )
-  include( "External_ImageViewer.cmake" )
-endif( TubeTK_BUILD_ImageViewer )
-
-## LibSVM
-##
-if( TubeTK_USE_LIBSVM )
- include( "External_LibSVM.cmake" )
-endif( TubeTK_USE_LIBSVM )
-
 ##
 ## TubeTK - Check Dependencies
 ##
 
 set( EXTERNAL_PROJECT_DIR ${TubeTK_SOURCE_DIR}/CMake/Superbuild )
 TubeTKMacroCheckExternalProjectDependency( TubeTK )
+
+## ImageViewer - must come after TubeTK Dependency check
+##
+if( TubeTK_BUILD_ImageViewer )
+  include( "External_ImageViewer.cmake" )
+endif( TubeTK_BUILD_ImageViewer )
+
+## LibSVM - must come after TubeTK Dependency check
+##
+if( TubeTK_USE_LIBSVM )
+ include( "External_LibSVM.cmake" )
+endif( TubeTK_USE_LIBSVM )
 
 ##
 ## TubeTK - Normal Build
