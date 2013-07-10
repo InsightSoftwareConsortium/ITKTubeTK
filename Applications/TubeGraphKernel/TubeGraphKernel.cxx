@@ -180,12 +180,12 @@ void writeKernelPlainText( const std::string &baseFileName,
     }
 }
 
-/** Writes VNL matrix to LibSVM compatible file.
+/** Writes VNL matrix to LIBSVM compatible file.
  *
- *  \param baseFileName The basename of the LibSVM file (.libsvm is appended).
+ *  \param baseFileName The basename of the LIBSVM file (.libsvm is appended).
  *  \param K The VNL kernel matrix.
  */
-void writeKernelLibSVM(const std::string &baseFileName,
+void writeKernelLIBSVM(const std::string &baseFileName,
                        const vnl_matrix<double> &K,
                        const std::vector<int> &labels)
 {
@@ -403,7 +403,7 @@ int main( int argc, char * argv[] )
      */
 
     writeKernel( argOutputKernel, K );
-    writeKernelLibSVM( argOutputKernel, K, labelsA );
+    writeKernelLIBSVM( argOutputKernel, K, labelsA );
     writeKernelPlainText( argOutputKernel, K );
     }
   catch(std::exception &e)

@@ -22,10 +22,10 @@
 ##############################################################################
 
 #
-# LibSVM
+# LIBSVM
 #
 
-set( proj LibSVM )
+set( proj LIBSVM )
 
 # Make sure this file is included only once
 get_filename_component( CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE} NAME_WE )

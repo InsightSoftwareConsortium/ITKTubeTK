@@ -434,9 +434,9 @@ include_directories( ${JsonCpp_INCLUDE_DIRS} )
 #-----------------------------------------------------------------------------
 # LIBSVM library setup.
 if( TubeTK_USE_LIBSVM )
-  list( APPEND CMAKE_MODULE_PATH "${TubeTK_SOURCE_DIR}/CMake/LibSVM" )
-  include( FindLibSVM )
-  find_package( LibSVM REQUIRED )
+  list( APPEND CMAKE_MODULE_PATH "${TubeTK_SOURCE_DIR}/CMake/LIBSVM" )
+  include( FindLIBSVM )
+  find_package( LIBSVM REQUIRED )
 endif( TubeTK_USE_LIBSVM )
 
 find_package( ParameterSerializer )
