@@ -88,4 +88,9 @@ set( TubeTK_BUILD_TYPE @TubeTK_BUILD_TYPE_CONFIG@ )
 # The TubeTK library dependencies.
 if( NOT TubeTK_NO_LIBRARY_DEPENDS AND EXISTS "@TubeTK_LIBRARY_DEPENDS_FILE@" )
   include( "@TubeTK_LIBRARY_DEPENDS_FILE@" )
-endif()
+endif( NOT TubeTK_NO_LIBRARY_DEPENDS AND EXISTS "@TubeTK_LIBRARY_DEPENDS_FILE@" )
+
+# The TubeTK librares.
+if( EXISTS "@TubeTK_TARGETS_FILE@" AND NOT TARGET TubeIO )
+  include( "@TubeTK_TARGETS_FILE@" )
+endif( EXISTS "@TubeTK_TARGETS_FILE@" AND NOT TARGET TubeIO )

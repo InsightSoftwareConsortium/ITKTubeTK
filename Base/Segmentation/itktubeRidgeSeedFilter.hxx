@@ -42,8 +42,8 @@ namespace itk
 namespace tube
 {
 
-template< class ImageT, class LabelmapT >
-RidgeSeedFilter< ImageT, LabelmapT >
+template< class TImage, class TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap >
 ::RidgeSeedFilter( void )
 {
   m_SeedFeatureGenerator = SeedFeatureGeneratorType::New();
@@ -63,132 +63,132 @@ RidgeSeedFilter< ImageT, LabelmapT >
   m_PDFSegmenter->SetHistogramSmoothingStandardDeviation( 0.5 );
 }
 
-template< class ImageT, class LabelmapT >
-RidgeSeedFilter< ImageT, LabelmapT >
+template< class TImage, class TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap >
 ::~RidgeSeedFilter( void )
 {
 }
 
-template< class ImageT, class LabelmapT >
+template< class TImage, class TLabelMap >
 void
-RidgeSeedFilter< ImageT, LabelmapT >
+RidgeSeedFilter< TImage, TLabelMap >
 ::SetInput( typename ImageType::Pointer img )
 {
   m_SeedFeatureGenerator->SetInputImage( img );
   m_RidgeFeatureGenerator->SetInputImage( img );
 }
 
-template< class ImageT, class LabelmapT >
-typename ImageT::Pointer
-RidgeSeedFilter< ImageT, LabelmapT >
+template< class TImage, class TLabelMap >
+typename TImage::Pointer
+RidgeSeedFilter< TImage, TLabelMap >
 ::GetInput( void )
 {
   return m_SeedFeatureGenerator->GetInputImage();
 }
 
-template< class ImageT, class LabelmapT >
+template< class TImage, class TLabelMap >
 void
-RidgeSeedFilter< ImageT, LabelmapT >
-::SetLabelmap( typename LabelmapType::Pointer img )
+RidgeSeedFilter< TImage, TLabelMap >
+::SetLabelMap( typename LabelMapType::Pointer img )
 {
-  m_SeedFeatureGenerator->SetLabelmap( img );
+  m_SeedFeatureGenerator->SetLabelMap( img );
 
-  m_PDFSegmenter->SetLabelmap( img );
+  m_PDFSegmenter->SetLabelMap( img );
 }
 
-template< class ImageT, class LabelmapT >
-typename RidgeSeedFilter< ImageT, LabelmapT >::LabelmapType::Pointer
-RidgeSeedFilter< ImageT, LabelmapT >
-::GetLabelmap( void )
+template< class TImage, class TLabelMap >
+typename RidgeSeedFilter< TImage, TLabelMap >::LabelMapType::Pointer
+RidgeSeedFilter< TImage, TLabelMap >
+::GetLabelMap( void )
 {
-  return m_SeedFeatureGenerator->GetLabelmap();
+  return m_SeedFeatureGenerator->GetLabelMap();
 }
 
-template< class ImageT, class LabelmapT >
-typename RidgeSeedFilter< ImageT, LabelmapT >::SeedFeatureGeneratorType::
+template< class TImage, class TLabelMap >
+typename RidgeSeedFilter< TImage, TLabelMap >::SeedFeatureGeneratorType::
 Pointer
-RidgeSeedFilter< ImageT, LabelmapT >
+RidgeSeedFilter< TImage, TLabelMap >
 ::GetSeedFeatureGenerator( void )
 {
   return m_SeedFeatureGenerator;
 }
 
-template< class ImageT, class LabelmapT >
-typename RidgeSeedFilter< ImageT, LabelmapT >::RidgeFeatureGeneratorType::
+template< class TImage, class TLabelMap >
+typename RidgeSeedFilter< TImage, TLabelMap >::RidgeFeatureGeneratorType::
 Pointer
-RidgeSeedFilter< ImageT, LabelmapT >
+RidgeSeedFilter< TImage, TLabelMap >
 ::GetRidgeFeatureGenerator( void )
 {
   return m_RidgeFeatureGenerator;
 }
 
-template< class ImageT, class LabelmapT >
-typename RidgeSeedFilter< ImageT, LabelmapT>::PDFSegmenterType::Pointer
-RidgeSeedFilter< ImageT, LabelmapT >
+template< class TImage, class TLabelMap >
+typename RidgeSeedFilter< TImage, TLabelMap >::PDFSegmenterType::Pointer
+RidgeSeedFilter< TImage, TLabelMap >
 ::GetPDFSegmenter( void )
 {
   return m_PDFSegmenter;
 }
 
-template< class ImageT, class LabelmapT >
+template< class TImage, class TLabelMap >
 void
-RidgeSeedFilter< ImageT, LabelmapT >
+RidgeSeedFilter< TImage, TLabelMap >
 ::SetIntensityRange( float intensityMin, float intensityMax )
 {
   m_RidgeFeatureGenerator->SetIntensityRange( intensityMin, intensityMax );
 }
 
-template< class ImageT, class LabelmapT >
+template< class TImage, class TLabelMap >
 void
-RidgeSeedFilter< ImageT, LabelmapT >
+RidgeSeedFilter< TImage, TLabelMap >
 ::SetIntensityMin( float intensityMin )
 {
   m_RidgeFeatureGenerator->SetIntensityMin( intensityMin );
 }
 
-template< class ImageT, class LabelmapT >
+template< class TImage, class TLabelMap >
 float
-RidgeSeedFilter< ImageT, LabelmapT >
+RidgeSeedFilter< TImage, TLabelMap >
 ::GetIntensityMin( void )
 {
   return m_RidgeFeatureGenerator->GetIntensityMin();
 }
 
-template< class ImageT, class LabelmapT >
+template< class TImage, class TLabelMap >
 void
-RidgeSeedFilter< ImageT, LabelmapT >
+RidgeSeedFilter< TImage, TLabelMap >
 ::SetIntensityMax( float intensityMax )
 {
   m_RidgeFeatureGenerator->SetIntensityMax( intensityMax );
 }
 
-template< class ImageT, class LabelmapT >
+template< class TImage, class TLabelMap >
 float
-RidgeSeedFilter< ImageT, LabelmapT >
+RidgeSeedFilter< TImage, TLabelMap >
 ::GetIntensityMax( void )
 {
   return m_RidgeFeatureGenerator->GetIntensityMax();
 }
 
-template< class ImageT, class LabelmapT >
+template< class TImage, class TLabelMap >
 void
-RidgeSeedFilter< ImageT, LabelmapT >
+RidgeSeedFilter< TImage, TLabelMap >
 ::SetScales( const RidgeScalesType & scales )
 {
   m_RidgeFeatureGenerator->SetScales( scales );
 }
 
-template< class ImageT, class LabelmapT >
-typename RidgeSeedFilter< ImageT, LabelmapT >::RidgeScalesType
-RidgeSeedFilter< ImageT, LabelmapT >
+template< class TImage, class TLabelMap >
+typename RidgeSeedFilter< TImage, TLabelMap >::RidgeScalesType
+RidgeSeedFilter< TImage, TLabelMap >
 ::GetScales( void )
 {
   return m_RidgeFeatureGenerator->GetScales();
 }
 
-template< class ImageT, class LabelmapT >
+template< class TImage, class TLabelMap >
 void
-RidgeSeedFilter< ImageT, LabelmapT >
+RidgeSeedFilter< TImage, TLabelMap >
 ::SetObjectId( ObjectIdType id )
 {
   m_SeedFeatureGenerator->SetObjectId( id );
@@ -196,34 +196,34 @@ RidgeSeedFilter< ImageT, LabelmapT >
   m_PDFSegmenter->SetObjectPDFWeight( 0, 0.5 );
 }
 
-template< class ImageT, class LabelmapT >
+template< class TImage, class TLabelMap >
 void
-RidgeSeedFilter< ImageT, LabelmapT >
+RidgeSeedFilter< TImage, TLabelMap >
 ::AddObjectId( ObjectIdType id )
 {
   m_SeedFeatureGenerator->AddObjectId( id );
   m_PDFSegmenter->AddObjectId( id );
 }
 
-template< class ImageT, class LabelmapT >
-typename RidgeSeedFilter< ImageT, LabelmapT >::ObjectIdType
-RidgeSeedFilter< ImageT, LabelmapT >
+template< class TImage, class TLabelMap >
+typename RidgeSeedFilter< TImage, TLabelMap >::ObjectIdType
+RidgeSeedFilter< TImage, TLabelMap >
 ::GetObjectId( unsigned int num ) const
 {
   return m_PDFSegmenter->GetObjectId( num );
 }
 
-template< class ImageT, class LabelmapT >
+template< class TImage, class TLabelMap >
 unsigned int
-RidgeSeedFilter< ImageT, LabelmapT >
+RidgeSeedFilter< TImage, TLabelMap >
 ::GetNumberOfObjectIds( void ) const
 {
   return m_PDFSegmenter->GetNumberOfObjectIds();
 }
 
-template< class ImageT, class LabelmapT >
+template< class TImage, class TLabelMap >
 void
-RidgeSeedFilter< ImageT, LabelmapT >
+RidgeSeedFilter< TImage, TLabelMap >
 ::Update( void )
 {
   m_SeedFeatureGenerator->GenerateBasis();
@@ -236,14 +236,14 @@ RidgeSeedFilter< ImageT, LabelmapT >
   m_PDFSegmenter->Update();
 }
 
-template< class ImageT, class LabelmapT >
+template< class TImage, class TLabelMap >
 void
-RidgeSeedFilter< ImageT, LabelmapT >
+RidgeSeedFilter< TImage, TLabelMap >
 ::ClassifyImages( void )
 {
-  typename LabelmapType::Pointer tmpLabelmap =
-    m_SeedFeatureGenerator->GetLabelmap();
-  m_SeedFeatureGenerator->SetLabelmap( NULL );
+  typename LabelMapType::Pointer tmpLabelMap =
+    m_SeedFeatureGenerator->GetLabelMap();
+  m_SeedFeatureGenerator->SetLabelMap( NULL );
   m_PDFSegmenter->SetInputVolume( 0,
     m_SeedFeatureGenerator->GetFeatureImage( 0 ) );
   m_PDFSegmenter->SetInputVolume( 1,
@@ -251,21 +251,21 @@ RidgeSeedFilter< ImageT, LabelmapT >
   m_PDFSegmenter->SetInputVolume( 2,
     m_SeedFeatureGenerator->GetFeatureImage( 2 ) );
   m_PDFSegmenter->ClassifyImages();
-  m_SeedFeatureGenerator->SetLabelmap( tmpLabelmap );
+  m_SeedFeatureGenerator->SetLabelMap( tmpLabelMap );
 }
 
-template< class ImageT, class LabelmapT >
-typename RidgeSeedFilter< ImageT, LabelmapT >::LabelmapType::Pointer
-RidgeSeedFilter< ImageT, LabelmapT >
+template< class TImage, class TLabelMap >
+typename RidgeSeedFilter< TImage, TLabelMap >::LabelMapType::Pointer
+RidgeSeedFilter< TImage, TLabelMap >
 ::GetOutput( void )
 {
-  return m_PDFSegmenter->GetLabelmap();
+  return m_PDFSegmenter->GetLabelMap();
 }
 
 
-template< class ImageT, class LabelmapT >
+template< class TImage, class TLabelMap >
 void
-RidgeSeedFilter< ImageT, LabelmapT >
+RidgeSeedFilter< TImage, TLabelMap >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );

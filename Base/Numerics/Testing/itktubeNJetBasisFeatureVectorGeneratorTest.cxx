@@ -56,14 +56,14 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   typedef itk::ImageFileReader< ImageType > ReaderType;
   typedef itk::ImageFileWriter< ImageType > WriterType;
 
-  typedef itk::Image< unsigned char, Dimension >    LabelmapType;
-  typedef itk::ImageFileReader< LabelmapType >      LabelmapReaderType;
+  typedef itk::Image< unsigned char, Dimension >    LabelMapType;
+  typedef itk::ImageFileReader< LabelMapType >      LabelMapReaderType;
 
 
   // Declare the type for the filter
   typedef itk::tube::NJetFeatureVectorGenerator< ImageType >
     FilterType;
-  typedef itk::tube::BasisFeatureVectorGenerator< ImageType, LabelmapType >
+  typedef itk::tube::BasisFeatureVectorGenerator< ImageType, LabelMapType >
     BasisFilterType;
 
   // Create the reader
@@ -81,7 +81,7 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   ImageType::Pointer inputImage = reader->GetOutput();
 
   // Create the mask reader
-  LabelmapReaderType::Pointer maskReader = LabelmapReaderType::New();
+  LabelMapReaderType::Pointer maskReader = LabelMapReaderType::New();
   maskReader->SetFileName( argv[2] );
   try
     {
@@ -93,7 +93,7 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
       << e;
     return EXIT_FAILURE;
     }
-  LabelmapType::Pointer maskImage = maskReader->GetOutput();
+  LabelMapType::Pointer maskImage = maskReader->GetOutput();
 
   FilterType::NJetScalesType scales( 2 );
   scales[0] = 4;
@@ -114,7 +114,7 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   BasisFilterType::Pointer basisFilter = BasisFilterType::New();
   basisFilter->SetInputFeatureVectorGenerator( filter.GetPointer() );
   basisFilter->SetInputImage( inputImage );
-  basisFilter->SetLabelmap( maskImage );
+  basisFilter->SetLabelMap( maskImage );
   int objId = std::atoi( argv[3] );
   int bkgId = std::atoi( argv[4] );
   basisFilter->SetObjectId( objId );
@@ -123,7 +123,7 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
 
   std::cout << basisFilter << std::endl;
 
-  basisFilter->SetLabelmap( NULL );
+  basisFilter->SetLabelMap( NULL );
 
   WriterType::Pointer featureImage0Writer = WriterType::New();
   featureImage0Writer->SetFileName( argv[5] );

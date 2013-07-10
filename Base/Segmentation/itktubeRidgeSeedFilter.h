@@ -41,7 +41,7 @@ namespace itk
 namespace tube
 {
 
-template< class ImageT, class LabelmapT >
+template< class TImage, class TLabelMap >
 class RidgeSeedFilter : public Object
 {
 public:
@@ -55,18 +55,18 @@ public:
 
   itkNewMacro( Self );
 
-  typedef ImageT                                  ImageType;
-  typedef ImageT                                  InputImageType;
-  typedef Image< float, ImageT::ImageDimension >  OutputImageType;
+  typedef TImage                                  ImageType;
+  typedef TImage                                  InputImageType;
+  typedef Image< float, TImage::ImageDimension >  OutputImageType;
 
-  typedef LabelmapT                               LabelmapType;
+  typedef TLabelMap                               LabelMapType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
-    ImageT::ImageDimension );
+    TImage::ImageDimension );
 
-  typedef RidgeFeatureVectorGenerator< ImageT >   RidgeFeatureGeneratorType;
+  typedef RidgeFeatureVectorGenerator< TImage >   RidgeFeatureGeneratorType;
 
-  typedef BasisFeatureVectorGenerator< ImageT, LabelmapType >
+  typedef BasisFeatureVectorGenerator< TImage, LabelMapType >
                                                   SeedFeatureGeneratorType;
 
   typedef typename RidgeFeatureGeneratorType::FeatureValueType
@@ -83,14 +83,14 @@ public:
   typedef typename SeedFeatureGeneratorType::ObjectIdType
                                                   ObjectIdType;
 
-  typedef PDFSegmenter< OutputImageType, 3, LabelmapType >
+  typedef PDFSegmenter< OutputImageType, 3, LabelMapType >
                                                   PDFSegmenterType;
 
   void SetInput( typename ImageType::Pointer img );
   typename ImageType::Pointer GetInput( void );
 
-  void SetLabelmap( typename LabelmapType::Pointer img );
-  typename LabelmapType::Pointer GetLabelmap( void );
+  void SetLabelMap( typename LabelMapType::Pointer img );
+  typename LabelMapType::Pointer GetLabelMap( void );
 
   typename SeedFeatureGeneratorType::Pointer
     GetSeedFeatureGenerator( void );
@@ -120,7 +120,7 @@ public:
   void Update();
   void ClassifyImages();
 
-  typename LabelmapType::Pointer GetOutput( void );
+  typename LabelMapType::Pointer GetOutput( void );
 
 protected:
 

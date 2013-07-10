@@ -76,7 +76,7 @@ set( CTEST_CTEST_COMMAND "${SITE_CTEST_COMMAND}" )
 set( CTEST_UPDATE_COMMAND "${SITE_UPDATE_COMMAND}" )
 set( CTEST_COMMAND "${SITE_CTEST_COMMAND}" )
 
-set( SITE_EXECUTABLE_DIRS "${TUBETK_BINARY_DIR}/ModuleDescriptionParser-Build/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/GenerateCLP-Build/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/Insight-Build/bin/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/VTK-Build/bin/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/TubeTK-Build/bin/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/TubeTK-Build/lib/TubeTK/Plugins/${SITE_BUILD_TYPE}" )
+set( SITE_EXECUTABLE_DIRS "${TUBETK_BINARY_DIR}/ModuleDescriptionParser-build/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/GenerateCLP-build/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/Insight-build/bin/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/VTK-build/bin/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/TubeTK-build/bin/${SITE_BUILD_TYPE};${TUBETK_BINARY_DIR}/TubeTK-build/lib/TubeTK/Plugins/${SITE_BUILD_TYPE}" )
 set( ENV{PATH} "${SITE_EXECUTABLE_DIRS};$ENV{PATH}" )
 
 set( SITE_CXX_FLAGS "/DWIN32 /D_WINDOWS /W3 /Zm1000 /GR /MP /EHsc" )
@@ -112,7 +112,7 @@ else( NOT EXISTS "${TUBETK_SOURCE_DIR}/CMakeLists.txt" )
   ctest_configure( BUILD "${TUBETK_BINARY_DIR}" SOURCE "${TUBETK_SOURCE_DIR}" OPTIONS "-C${TUBETK_BINARY_DIR}/InitCMakeCache.cmake" )
   ctest_read_custom_files( "${TUBETK_BINARY_DIR}" )
   ctest_build( BUILD "${TUBETK_BINARY_DIR}" )
-  ctest_test( BUILD "${TUBETK_BINARY_DIR}/TubeTK-Build" )
+  ctest_test( BUILD "${TUBETK_BINARY_DIR}/TubeTK-build" )
   ctest_submit( PARTS Notes Update Configure Build Test )
 endif( NOT EXISTS "${TUBETK_SOURCE_DIR}/CMakeLists.txt" )
 

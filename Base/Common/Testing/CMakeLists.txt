@@ -44,7 +44,9 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseCommonTests_SRCS
   tubeBaseCommonPrintTest.cxx
-  tubeMessageTest.cxx )
+  tubeMacroTest.cxx
+  tubeMessageTest.cxx
+  tubeObjectTest.cxx)
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common )
@@ -55,7 +57,9 @@ target_link_libraries( tubeBaseCommonHeaderTest ${ITK_LIBRARIES} )
 add_executable( tubeBaseCommonTests
   tubeBaseCommonTests.cxx
   ${tubeBaseCommonTests_SRCS} )
+
 target_link_libraries( tubeBaseCommonTests
+  TubeCommon
   ${ITK_LIBRARIES}
   ${JsonCpp_LIBRARIES} )
 
@@ -65,9 +69,17 @@ add_test( tubeBaseCommonPrintTest
   ${BASE_COMMON_TESTS}
   tubeBaseCommonPrintTest )
 
+add_test( tubeMacroTest
+  ${BASE_COMMON_TESTS}
+  tubeMacroTest )
+
 add_test( tubeMessageTest
   ${BASE_COMMON_TESTS}
   tubeMessageTest )
+
+add_test( tubeObjectTest
+  ${BASE_COMMON_TESTS}
+  tubeObjectTest )
 
 MIDAS_ADD_TEST( ImageCompareCommand-Test1
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand

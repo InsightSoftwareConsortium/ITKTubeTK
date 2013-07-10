@@ -26,5 +26,7 @@ limitations under the License.
 void RegisterTests( void )
 {
   REGISTER_TEST( tubeBaseCommonPrintTest );
+  REGISTER_TEST( tubeMacroTest );
   REGISTER_TEST( tubeMessageTest );
+  REGISTER_TEST( tubeObjectTest );
 }

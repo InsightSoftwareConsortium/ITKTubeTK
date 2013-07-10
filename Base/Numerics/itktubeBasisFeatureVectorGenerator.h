@@ -39,13 +39,13 @@ namespace itk
 namespace tube
 {
 
-template< class ImageT, class LabelmapT >
-class BasisFeatureVectorGenerator : public FeatureVectorGenerator< ImageT >
+template< class TImage, class TLabelMap >
+class BasisFeatureVectorGenerator : public FeatureVectorGenerator< TImage >
 {
 public:
 
   typedef BasisFeatureVectorGenerator            Self;
-  typedef FeatureVectorGenerator< ImageT >       Superclass;
+  typedef FeatureVectorGenerator< TImage >       Superclass;
   typedef SmartPointer< Self >                   Pointer;
   typedef SmartPointer< const Self >             ConstPointer;
 
@@ -56,10 +56,10 @@ public:
   //
   typedef typename Superclass::ImageType         ImageType;
 
-  typedef LabelmapT                              LabelmapType;
+  typedef TLabelMap                              LabelMapType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
-    ImageT::ImageDimension );
+    TImage::ImageDimension );
 
   typedef typename Superclass::IndexType         IndexType;
 
@@ -67,9 +67,9 @@ public:
   typedef typename Superclass::FeatureVectorType FeatureVectorType;
   typedef typename Superclass::FeatureImageType  FeatureImageType;
 
-  typedef FeatureVectorGenerator< ImageT >       FeatureVectorGeneratorType;
+  typedef FeatureVectorGenerator< TImage >       FeatureVectorGeneratorType;
 
-  typedef typename LabelmapT::PixelType          ObjectIdType;
+  typedef typename TLabelMap::PixelType          ObjectIdType;
   typedef std::vector< ObjectIdType >            ObjectIdListType;
 
   typedef typename Superclass::ValueType         ValueType;
@@ -83,11 +83,11 @@ public:
 
   void         SetInputFeatureVectorGenerator( FeatureVectorGeneratorType
                  * fGen );
-  typename FeatureVectorGenerator< ImageT >::Pointer
+  typename FeatureVectorGenerator< TImage >::Pointer
                GetInputFeatureVectorGenerator( void );
 
-  itkSetObjectMacro( Labelmap, LabelmapType );
-  itkGetObjectMacro( Labelmap, LabelmapType );
+  itkSetObjectMacro( LabelMap, LabelMapType );
+  itkGetObjectMacro( LabelMap, LabelMapType );
 
   void         SetObjectId( ObjectIdType objectId );
   void         AddObjectId( ObjectIdType objectId );
@@ -155,7 +155,7 @@ private:
   typename FeatureVectorGeneratorType::Pointer
                                   m_InputFeatureVectorGenerator;
 
-  typename LabelmapType::Pointer  m_Labelmap;
+  typename LabelMapType::Pointer  m_LabelMap;
 
   ObjectIdListType                m_ObjectIdList;
   VectorListType                  m_ObjectMeanList;

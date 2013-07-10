@@ -38,13 +38,13 @@ namespace tube
 {
 
 // Your code should be within the DoIt function...
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 class CropROI
 {
 public:
 
   typedef TPixel                                       PixelType;
-  typedef itk::Image< PixelType, TDimension>           ImageType;
+  typedef itk::Image< PixelType, VDimension>           ImageType;
   typedef itk::CropImageFilter< ImageType, ImageType > CropFilterType;
 
   CropROI( void );

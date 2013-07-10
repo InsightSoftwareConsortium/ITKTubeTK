@@ -631,17 +631,18 @@ int main( int argc, char * argv[] )
     itk::MultiThreader::SetGlobalDefaultNumberOfThreads( numberOfThreads );
     }
 
-  unsigned int                      fixedDimensions = 0;
-  itk::ImageIOBase::IOPixelType     fixedPixelType;
-  itk::ImageIOBase::IOComponentType fixedComponentType;
-  unsigned int                      movingDimensions = 0;
-  itk::ImageIOBase::IOPixelType     movingPixelType;
-  itk::ImageIOBase::IOComponentType movingComponentType;
-  unsigned int                      dimensions = 0;
-  itk::ImageIOBase::IOComponentType componentType;
-
   try
     {
+    itk::ImageIOBase::IOPixelType fixedPixelType;
+    itk::ImageIOBase::IOComponentType fixedComponentType;
+    itk::ImageIOBase::IOPixelType movingPixelType;
+    itk::ImageIOBase::IOComponentType movingComponentType;
+    itk::ImageIOBase::IOComponentType componentType;
+
+    unsigned int dimensions = 0;
+    unsigned int fixedDimensions = 0;
+    unsigned int movingDimensions = 0;
+
     GetImageType( fixedImage, fixedPixelType, fixedComponentType,
       fixedDimensions );
     GetImageType( movingImage, movingPixelType, movingComponentType,
@@ -671,48 +672,32 @@ int main( int argc, char * argv[] )
           {
           return DoIt< 2, unsigned char >( argc, argv );
           }
-        else
 #endif
-          {
-          return DoIt< 3, unsigned char >( argc, argv );
-          }
-        break;
+        return DoIt< 3, unsigned char >( argc, argv );
       case itk::ImageIOBase::CHAR:
 #ifdef SUPPORT_2D_IMAGES
         if( dimensions == 2 )
           {
           return DoIt< 2, char >( argc, argv );
           }
-        else
 #endif
-          {
-          return DoIt< 3, char >( argc, argv );
-          }
-        break;
+        return DoIt< 3, char >( argc, argv );
       case itk::ImageIOBase::SHORT:
 #ifdef SUPPORT_2D_IMAGES
         if( dimensions == 2 )
           {
           return DoIt< 2, short >( argc, argv );
           }
-        else
 #endif
-          {
-          return DoIt< 3, short >( argc, argv );
-          }
-        break;
+        return DoIt< 3, short >( argc, argv );
       case itk::ImageIOBase::USHORT:
 #ifdef SUPPORT_2D_IMAGES
         if( dimensions == 2 )
           {
           return DoIt< 2, unsigned short >( argc, argv );
           }
-        else
 #endif
-          {
-          return DoIt< 3, unsigned short >( argc, argv );
-          }
-        break;
+        return DoIt< 3, unsigned short >( argc, argv );
       case itk::ImageIOBase::UINT:
       case itk::ImageIOBase::INT:
       case itk::ImageIOBase::ULONG:
@@ -724,17 +709,12 @@ int main( int argc, char * argv[] )
           {
           return DoIt< 2, float >( argc, argv );
           }
-        else
 #endif
-          {
           return DoIt< 3, float >( argc, argv );
-          }
-        break;
       case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
       default:
         std::cerr << "ERROR: unknown component type" << std::endl;
         return EXIT_FAILURE;
-        break;
       }
     }
   catch( itk::ExceptionObject & exception )

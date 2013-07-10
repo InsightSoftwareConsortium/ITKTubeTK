@@ -39,14 +39,14 @@ limitations under the License.
 
 // Must do a forward declaraction of DoIt before including
 // tubeCLIHelperFunctions
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
 // Your code should be within the DoIt function...
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -61,7 +61,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   typedef float                                 PixelType;
-  typedef itk::Image< PixelType,  TDimension >  ImageType;
+  typedef itk::Image< PixelType, VDimension >   ImageType;
   typedef itk::ImageFileReader< ImageType >     ReaderType;
 
   timeCollector.Start("Load data");
@@ -93,9 +93,9 @@ int DoIt( int argc, char * argv[] )
     typename FilterType::Pointer filter;
 
     // Progress per iteration
-    double progressFraction = 0.8/TDimension;
+    double progressFraction = 0.8/VDimension;
 
-    for(unsigned int i=0; i<TDimension; i++)
+    for(unsigned int i=0; i<VDimension; i++)
       {
       filter = FilterType::New();
       filter->SetInput( curImage );

@@ -50,9 +50,8 @@ add_library( TubeIO STATIC
 
 target_link_libraries( TubeIO ${ITK_LIBRARIES} )
 
-slicer4_set_plugins_output_path( TubeIO )
 set( TARGETS TubeIO )
-slicer4_install_plugins( ${TARGETS} )
+tubetk_install_plugins( ${TARGETS} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
@@ -62,3 +61,6 @@ install( FILES
   ${TubeTK_Base_Numerics_H_Files}
   ${TubeTK_Base_Numerics_HXX_Files}
   DESTINATION include )
+
+# Export target
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeIO )

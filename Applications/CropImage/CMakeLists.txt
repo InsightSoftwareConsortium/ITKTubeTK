@@ -35,6 +35,11 @@ add_custom_target( CropImageInclude SOURCES
   ${CropImage_H_Files}
   ${CropImage_HXX_Files} )
 
+if( NOT TubeTK_SOURCE_DIR )
+  find_package( TubeTK REQUIRED )
+  include( ${TubeTK_USE_FILE} )
+endif( NOT TubeTK_SOURCE_DIR )
+
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 

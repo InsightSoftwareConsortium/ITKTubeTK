@@ -33,13 +33,13 @@ limitations under the License.
 
 #include "SegmentUsingOtsuThresholdCLP.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -55,8 +55,8 @@ int DoIt( int argc, char * argv[] )
 
   typedef float                                           PixelType;
   typedef unsigned char                                   OutPixType;
-  typedef itk::Image< PixelType, TDimension >             ImageType;
-  typedef itk::Image< OutPixType, TDimension >            OutputType;
+  typedef itk::Image< PixelType, VDimension >             ImageType;
+  typedef itk::Image< OutPixType, VDimension >            OutputType;
   typedef itk::ImageFileReader< ImageType >               ReaderType;
   typedef itk::ImageFileWriter< OutputType  >             WriterType;
   typedef itk::tube::OtsuThresholdMaskedImageFilter< ImageType, OutputType >
@@ -107,7 +107,7 @@ int DoIt( int argc, char * argv[] )
   typename FilterType::Pointer filter;
 
   // Progress per iteration
-  double progressFraction = 0.8/TDimension;
+  double progressFraction = 0.8/VDimension;
 
   filter = FilterType::New();
   filter->SetInput( inputImage );

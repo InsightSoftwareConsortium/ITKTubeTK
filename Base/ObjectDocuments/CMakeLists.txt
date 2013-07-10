@@ -57,9 +57,8 @@ add_library( TubeObjectDocuments STATIC
 
 target_link_libraries( TubeObjectDocuments ${ITK_LIBRARIES} )
 
-slicer4_set_plugins_output_path( TubeObjectDocuments )
 set( TARGETS TubeObjectDocuments )
-slicer4_install_plugins( ${TARGETS} )
+tubetk_install_plugins( ${TARGETS} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
@@ -69,3 +68,6 @@ install( FILES
   ${TubeTK_Base_ObjectDocuments_H_Files}
   ${TubeTK_Base_ObjectDocuments_HXX_Files}
   DESTINATION include )
+
+# Export target
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeObjectDocuments )

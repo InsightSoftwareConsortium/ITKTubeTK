@@ -35,17 +35,17 @@ limitations under the License.
 
 #include "EnhanceUsingNJetDiscriminantAnalysisCLP.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template< class imageT >
+template< class TImage >
 void WriteBasis( const typename imageT::Pointer & img,
   std::string base, std::string ext, int num )
 {
-  typedef itk::ImageFileWriter< imageT >     BasisImageWriterType;
+  typedef itk::ImageFileWriter< TImage >     BasisImageWriterType;
 
   typename BasisImageWriterType::Pointer basisImageWriter =
     BasisImageWriterType::New();
@@ -59,7 +59,7 @@ void WriteBasis( const typename imageT::Pointer & img,
   basisImageWriter->Update();
 }
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -73,9 +73,9 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   typedef TPixel                                   InputPixelType;
-  typedef itk::Image< InputPixelType, TDimension > InputImageType;
-  typedef itk::Image< unsigned short, TDimension > MaskImageType;
-  typedef itk::Image< float, TDimension >          BasisImageType;
+  typedef itk::Image< InputPixelType, VDimension > InputImageType;
+  typedef itk::Image< unsigned short, VDimension > MaskImageType;
+  typedef itk::Image< float, VDimension >          BasisImageType;
 
   typedef itk::ImageFileReader< BasisImageType >   ImageReaderType;
   typedef itk::ImageFileReader< MaskImageType >    MaskReaderType;
@@ -110,7 +110,7 @@ int DoIt( int argc, char * argv[] )
     typename MaskReaderType::Pointer  inMaskReader = MaskReaderType::New();
     inMaskReader->SetFileName( labelmap.c_str() );
     inMaskReader->Update();
-    basisGenerator->SetLabelmap( inMaskReader->GetOutput() );
+    basisGenerator->SetLabelMap( inMaskReader->GetOutput() );
     }
 
   timeCollector.Stop( "LoadData" );

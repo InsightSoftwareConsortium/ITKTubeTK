@@ -35,13 +35,13 @@ limitations under the License.
 
 #include "ComputeImageStatisticsUsingMaskCLP.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -55,9 +55,9 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef itk::Image< TPixel,  TDimension >        MaskType;
-  typedef itk::Image< unsigned int,  TDimension >  ConnCompType;
-  typedef itk::Image< float,  TDimension >         VolumeType;
+  typedef itk::Image< TPixel,  VDimension >        MaskType;
+  typedef itk::Image< unsigned int,  VDimension >  ConnCompType;
+  typedef itk::Image< float,  VDimension >         VolumeType;
   typedef itk::ImageFileReader< VolumeType >       VolumeReaderType;
   typedef itk::ImageFileReader< MaskType >         MaskReaderType;
 

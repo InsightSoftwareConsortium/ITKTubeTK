@@ -41,7 +41,7 @@ limitations under the License.
 
 #include "RegisterImageToTubesUsingRigidTransformCLP.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
 // Does not currently use TPixel
@@ -50,7 +50,7 @@ int DoIt( int argc, char * argv[] );
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;

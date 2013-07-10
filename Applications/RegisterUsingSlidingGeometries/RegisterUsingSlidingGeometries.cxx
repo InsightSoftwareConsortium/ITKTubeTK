@@ -50,17 +50,17 @@ limitations under the License.
 
 #include "RegisterUsingSlidingGeometriesCLP.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
 // Read and orient an image
-template< class ImageType >
-bool ReadAndOrientImageAxial( ImageType & outputImage, std::string fileName )
+template< class TImage >
+bool ReadAndOrientImageAxial( TImage & outputImage, std::string fileName )
 {
-  typedef typename ImageType::ObjectType ObjectType;
+  typedef typename TImage::ObjectType ObjectType;
 
   typedef itk::ImageFileReader< ObjectType > FileReaderType;
   typename FileReaderType::Pointer imageReader = FileReaderType::New();
@@ -94,19 +94,19 @@ bool ReadAndOrientImageAxial( ImageType & outputImage, std::string fileName )
 }
 
 // Reorient and write an image
-template< class ImageType >
-bool ReorientAndWriteImage( ImageType * inputImage,
-                            typename ImageType::DirectionType dir,
+template< class TImage >
+bool ReorientAndWriteImage( TImage * inputImage,
+                            typename TImage::DirectionType dir,
                             std::string fileName )
 {
-  typedef itk::OrientImageFilter< ImageType, ImageType > OrientFilterType;
+  typedef itk::OrientImageFilter< TImage, TImage > OrientFilterType;
   typename OrientFilterType::Pointer orient = OrientFilterType::New();
   orient->UseImageDirectionOn();
   orient->SetDesiredCoordinateDirection( dir );
   orient->SetInput( inputImage );
   orient->Update();
 
-  typedef itk::ImageFileWriter< ImageType > FileWriterType;
+  typedef itk::ImageFileWriter< TImage > FileWriterType;
   typename FileWriterType::Pointer imageWriter = FileWriterType::New();
   imageWriter->SetFileName( fileName );
   imageWriter->SetUseCompression( true );
@@ -125,7 +125,7 @@ bool ReorientAndWriteImage( ImageType * inputImage,
 }
 
 // Your code should be within the DoIt function...
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;

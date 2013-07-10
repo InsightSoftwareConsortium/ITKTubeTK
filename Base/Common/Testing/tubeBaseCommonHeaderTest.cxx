@@ -22,7 +22,10 @@ limitations under the License.
 =========================================================================*/
 
 #include "itktubeDifferenceImageFilter.h"
+#include "tubeIndent.h"
+#include "tubeMacro.h"
 #include "tubeMessage.h"
+#include "tubeObject.h"
 #include "tubeStringUtilities.h"
 
 #include <cstdlib>

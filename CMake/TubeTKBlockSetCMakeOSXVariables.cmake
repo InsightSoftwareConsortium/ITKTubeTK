@@ -41,7 +41,6 @@
 #
 ##############################################################################
 
-# SlicerBlockSetCMakeOSXVariables
 # Adapted from Paraview/Superbuild/CMakeLists.txt
 
 # Note: Change architecture *before* any enable_language or project calls so

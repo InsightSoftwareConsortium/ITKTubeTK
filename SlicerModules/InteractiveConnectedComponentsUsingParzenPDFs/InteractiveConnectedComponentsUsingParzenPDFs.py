@@ -18,6 +18,12 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     self.displayName = 'Interactive Connected Components using Parzen PDFs'
     self.undoRedo = EditorLib.EditUtil.UndoRedo()
 
+    # Create the normal PDF segmenter node cli if it doesn't exists yet.
+    # This is because we want the normal module's cli to be selected
+    # when opening the cli module.
+    module = slicer.modules.segmentconnectedcomponentsusingparzenpdfs
+    self.getCLINode(module, module.title)
+
   def __del__(self):
     super(InteractiveConnectedComponentsUsingParzenPDFsOptions,self).__del__()
 
@@ -56,7 +62,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     foregroundLabel = slicer.qMRMLLabelComboBox()
     foregroundLabel.objectName = 'Foreground label'
     foregroundLabel.setMRMLScene(slicer.mrmlScene)
-    foregroundLabel.setMRMLColorNode(slicer.modules.EditorWidget.editUtil.getColorNode())
+    foregroundLabel.setMRMLColorNode(self.editUtil.getColorNode())
     foregroundLabel.labelValueVisible = True
     foregroundLabel.currentColor = 1
     foregroundWeightSpinBox = qt.QDoubleSpinBox(foregroundLabel)
@@ -88,7 +94,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     backgroundLabel = slicer.qMRMLLabelComboBox()
     backgroundLabel.objectName = 'Background label'
     backgroundLabel.setMRMLScene(slicer.mrmlScene)
-    backgroundLabel.setMRMLColorNode(slicer.modules.EditorWidget.editUtil.getColorNode())
+    backgroundLabel.setMRMLColorNode(self.editUtil.getColorNode())
     backgroundLabel.labelValueVisible = True
     backgroundLabel.currentColor = 2
     backgroundWeightSpinBox = qt.QDoubleSpinBox(backgroundLabel)
@@ -119,7 +125,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     barrierLabel = slicer.qMRMLLabelComboBox()
     barrierLabel.objectName = 'Barrier label selector'
     barrierLabel.setMRMLScene(slicer.mrmlScene)
-    barrierLabel.setMRMLColorNode(slicer.modules.EditorWidget.editUtil.getColorNode())
+    barrierLabel.setMRMLColorNode(self.editUtil.getColorNode())
     barrierLabel.labelValueVisible = True
     barrierLabel.currentColor = 3
     objectFormLayout.addRow("Barrier Label:", barrierLabel)
@@ -128,7 +134,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     voidLabel = slicer.qMRMLLabelComboBox()
     voidLabel.objectName = 'Void label selector'
     voidLabel.setMRMLScene(slicer.mrmlScene)
-    voidLabel.setMRMLColorNode(slicer.modules.EditorWidget.editUtil.getColorNode())
+    voidLabel.setMRMLColorNode(self.editUtil.getColorNode())
     voidLabel.labelValueVisible = True
     # HACK: Set this to 1 first to get around a bug in the labelComboBox MRML interaction
     voidLabel.setCurrentColor(1)
@@ -253,8 +259,8 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
       parameters['inputVolume'+str(i+1)] = self.inputNodeSelectors[i].currentNode()
     parameters['voidId'] = self.voidLabel.currentColor
     parameters['objectId'] = objectIds
-    parameters['labelmap'] = slicer.modules.EditorWidget.editUtil.getLabelVolume()
-    parameters['outputVolume'] = slicer.modules.EditorWidget.editUtil.getLabelVolume()
+    parameters['labelmap'] = self.editUtil.getLabelVolume()
+    parameters['outputVolume'] = self.editUtil.getLabelVolume()
     parameters['erodeRadius'] = self.erosionSpinBox.value
     parameters['holeFillIterations'] = self.holeFillSpinBox.value
     parameters['objectPDFWeight'] = objectPDFWeights
@@ -264,7 +270,17 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     parameters['reclassifyNotObjectMask'] = self.reclassifyNotObjectMaskCheckBox.checked
     parameters['forceClassification'] = self.forceClassificationCheckBox.checked
 
-    slicer.cli.run(slicer.modules.segmentconnectedcomponentsusingparzenpdfs, None, parameters)
+    module = slicer.modules.segmentconnectedcomponentsusingparzenpdfs
+    cliNode = self.getCLINode(module, 'PDFSegmenterEditorEffect')
+    slicer.cli.run(module, cliNode, parameters)
+
+  def getCLINode(self, module, nodeName):
+    cliNode = slicer.mrmlScene.GetFirstNodeByName(nodeName)
+    # Also check path to make sure the CLI isn't a scripted module
+    if (cliNode == None) and ('qt-scripted-modules' not in module.path):
+      cliNode = slicer.cli.createNode(module)
+      cliNode.SetName(nodeName)
+    return cliNode
 
   def updateMRMLFromGUI(self):
     if self.updatingGUI:

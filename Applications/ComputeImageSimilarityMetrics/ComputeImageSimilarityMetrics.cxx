@@ -31,19 +31,19 @@ limitations under the License.
 
 #include "ComputeImageSimilarityMetricsCLP.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-template< class TPixel, unsigned int TDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
   typedef TPixel                                              PixelType;
-  typedef itk::Image< PixelType,  TDimension >                ImageType;
+  typedef itk::Image< PixelType, VDimension >                 ImageType;
   typedef itk::ImageFileReader< ImageType >                   ReaderType;
 
   typename ReaderType::Pointer reader1 = ReaderType::New();
@@ -90,7 +90,7 @@ int DoIt( int argc, char * argv[] )
   norm2->Update();
   image2 = norm2->GetOutput();
 
-  typedef itk::IdentityTransform< double, TDimension >
+  typedef itk::IdentityTransform< double, VDimension >
     TransformType;
   typename TransformType::Pointer transform = TransformType::New();
 

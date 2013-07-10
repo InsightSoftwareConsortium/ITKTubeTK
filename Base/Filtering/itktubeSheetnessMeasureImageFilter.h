@@ -54,7 +54,7 @@ namespace tube
  * \ingroup ITKImageFeature
  */
 
-template< class  TPixel >
+template< class TPixel >
 class SheetnessMeasureImageFilter : public
   ImageToImageFilter< Image< SymmetricSecondRankTensor< double, 3 >, 3 >,
                       Image< TPixel, 3 > >
