@@ -37,7 +37,7 @@ set( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1 )
 # Sanity checks
 if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
   message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to non-existing directory" )
-endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR})
+endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 set( ${proj}_DEPENDENCIES "")
 if( NOT TubeTK_BUILD_SLICER_EXTENSION )
