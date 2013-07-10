@@ -26,6 +26,7 @@ limitations under the License.
 #include "tubeCropROI.h"
 #include "tubeMessage.h"
 
+#include <itkMath.h>
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -57,7 +58,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< PixelType,  TDimension >  ImageType;
   typedef itk::ImageFileReader< ImageType >     ReaderType;
 
-  timeCollector.Start("Load data");
+  timeCollector.Start( "Load data" );
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
   try
@@ -70,14 +71,14 @@ int DoIt( int argc, char * argv[] )
     out << "ExceptionObject caught !" << std::endl;
     out << err << std::endl;
     tube::ErrorMessage( out.str() );
-    timeCollector.Stop("Load data");
+    timeCollector.Stop( "Load data" );
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Load data");
+  timeCollector.Stop( "Load data" );
   progressReporter.Report( 0.1 );
 
-  if( size.size() > 0 || max.size() > 0 || min.size() > 0
-    || matchVolume.size() > 0)
+  if( size.size() > 0 || max.size() > 0 || min.size() > 0 ||
+    matchVolume.size() > 0)
     {
     if( size.size() > 0 && max.size() > 0 )
       {
@@ -93,7 +94,7 @@ int DoIt( int argc, char * argv[] )
       return EXIT_FAILURE;
       }
 
-    timeCollector.Start("CropFilter");
+    timeCollector.Start( "CropFilter" );
 
     tube::CropROI< TPixel, TDimension > cropFilter;
 
@@ -104,27 +105,30 @@ int DoIt( int argc, char * argv[] )
 
       typename ReaderType::Pointer matchReader = ReaderType::New();
       matchReader->SetFileName( matchVolume.c_str() );
-      matchReader->Update();
-      typename ImageType::Pointer matchVolume = matchReader->GetOutput();
+      matchReader->UpdateOutputInformation();
+      typename ImageType::ConstPointer matchVolume =
+        matchReader->GetOutput();
 
-      typename ImageType::RegionType matchRegion =
+      const typename ImageType::RegionType matchRegion =
         matchVolume->GetLargestPossibleRegion();
-
-      typename ImageType::IndexType matchIndex = matchRegion.GetIndex();
-      typename ImageType::SizeType matchSize = matchRegion.GetSize();
-
-      typename ImageType::PointType matchOrigin = matchVolume->GetOrigin();
-      typename ImageType::SpacingType matchSpacing =
+      const typename ImageType::IndexType matchIndex =
+        matchRegion.GetIndex();
+      const typename ImageType::SizeType matchSize =
+        matchRegion.GetSize();
+      const typename ImageType::PointType matchOrigin =
+        matchVolume->GetOrigin();
+      const typename ImageType::SpacingType matchSpacing =
         matchVolume->GetSpacing();
 
-      typename ImageType::RegionType imgRegion =
+      const typename ImageType::RegionType imgRegion =
         imgVolume->GetLargestPossibleRegion();
-
-      typename ImageType::IndexType imgIndex = imgRegion.GetIndex();
-      typename ImageType::SizeType imgSize = imgRegion.GetSize();
-
-      typename ImageType::PointType imgOrigin = imgVolume->GetOrigin();
-      typename ImageType::SpacingType imgSpacing =
+      const typename ImageType::IndexType imgIndex =
+        imgRegion.GetIndex();
+      const typename ImageType::SizeType imgSize =
+        imgRegion.GetSize();
+      const typename ImageType::PointType imgOrigin =
+        imgVolume->GetOrigin();
+      const typename ImageType::SpacingType imgSpacing =
         imgVolume->GetSpacing();
 
       typename ImageType::IndexType minI;
@@ -146,7 +150,7 @@ int DoIt( int argc, char * argv[] )
     if( min.size() > 0 )
       {
       typename ImageType::IndexType minI;
-      for( unsigned int i=0; i<TDimension; i++ )
+      for( unsigned int i = 0; i < TDimension; i++ )
         {
         minI[i] = min[i];
         }
@@ -156,7 +160,7 @@ int DoIt( int argc, char * argv[] )
     if( max.size() > 0 )
       {
       typename ImageType::IndexType maxI;
-      for( unsigned int i=0; i<TDimension; i++ )
+      for( unsigned int i = 0; i < TDimension; i++ )
         {
         maxI[i] = max[i];
         }
@@ -166,7 +170,7 @@ int DoIt( int argc, char * argv[] )
     if( size.size() > 0 )
       {
       typename ImageType::SizeType sizeI;
-      for( unsigned int i=0; i<TDimension; i++ )
+      for( unsigned int i = 0; i < TDimension; i++ )
         {
         sizeI[i] = size[i];
         }
@@ -176,7 +180,7 @@ int DoIt( int argc, char * argv[] )
     if( center.size() > 0 )
       {
       typename ImageType::IndexType centerI;
-      for( unsigned int i=0; i<TDimension; i++ )
+      for( unsigned int i = 0; i < TDimension; i++ )
         {
         centerI[i] = center[i];
         }
@@ -186,7 +190,7 @@ int DoIt( int argc, char * argv[] )
     if( boundary.size() > 0 )
       {
       typename ImageType::IndexType boundaryI;
-      for( unsigned int i=0; i<TDimension; i++ )
+      for( unsigned int i = 0; i < TDimension; i++ )
         {
         boundaryI[i] = boundary[i];
         }
@@ -206,26 +210,26 @@ int DoIt( int argc, char * argv[] )
       out << "Crop Filter: itk exception: ";
       out << e;
       tube::ErrorMessage( out.str() );
-      timeCollector.Stop("CropFilter");
+      timeCollector.Stop( "CropFilter" );
       throw( out.str() );
       }
     catch( const std::string & s )
       {
       std::cerr << "Error during crop filter: " << s << std::endl;
-      timeCollector.Stop("CropFilter");
+      timeCollector.Stop( "CropFilter" );
       return EXIT_FAILURE;
       }
     catch( ... )
       {
       std::cerr << "Error during crop filter" << std::endl;
-      timeCollector.Stop("CropFilter");
+      timeCollector.Stop( "CropFilter" );
       return EXIT_FAILURE;
       }
-    timeCollector.Stop("CropFilter");
+    timeCollector.Stop( "CropFilter" );
 
     typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
 
-    timeCollector.Start("Save data");
+    timeCollector.Start( "Save data" );
     typename ImageWriterType::Pointer writer = ImageWriterType::New();
     writer->SetFileName( outputVolume.c_str() );
     writer->SetInput( cropFilter.GetOutput() );
@@ -237,10 +241,10 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       std::cerr << "Exception caught: " << err << std::endl;
-      timeCollector.Stop("Save data");
+      timeCollector.Stop( "Save data" );
       return EXIT_FAILURE;
       }
-    timeCollector.Stop("Save data");
+    timeCollector.Stop( "Save data" );
     }
   else if( split.size() == TDimension )
     {
@@ -256,7 +260,7 @@ int DoIt( int argc, char * argv[] )
     if( boundary.size() > 0 )
       {
       typename ImageType::IndexType boundaryI;
-      for( unsigned int i=0; i<TDimension; i++ )
+      for( unsigned int i = 0; i < TDimension; i++ )
         {
         boundaryI[i] = boundary[i];
         }
@@ -268,10 +272,10 @@ int DoIt( int argc, char * argv[] )
 
     typename ImageType::IndexType roiStep;
     typename ImageType::IndexType roiSize;
-    for( unsigned int i=0; i<TDimension; i++ )
+    for( unsigned int i = 0; i < TDimension; i++ )
       {
-      roiStep[i] = inputImageSize[i]/(split[i]+1);
-      roiSize[i] = inputImageSize[i]/split[i];
+      roiStep[i] = inputImageSize[i] / ( split[i] + 1 );
+      roiSize[i] = inputImageSize[i] / split[i];
       }
     typename ImageType::IndexType roiIndex;
     roiIndex.Fill( 0 );
@@ -282,9 +286,9 @@ int DoIt( int argc, char * argv[] )
     bool done = false;
     while( !done )
       {
-      timeCollector.Start("CropFilter");
+      timeCollector.Start( "CropFilter" );
 
-      for( unsigned int i=0; i<TDimension; i++ )
+      for( unsigned int i = 0; i < TDimension; i++ )
         {
         roiMin[i] = roiIndex[i] * roiSize[i];
         roiMax[i] = roiMin[i] + roiSize[i] - 1;
@@ -306,7 +310,7 @@ int DoIt( int argc, char * argv[] )
         out << "Crop Filter: itk exception: ";
         out << e;
         tube::ErrorMessage( out.str() );
-        timeCollector.Stop("CropFilter");
+        timeCollector.Stop( "CropFilter" );
         throw( out.str() );
         }
       catch( const std::string & s )
@@ -314,26 +318,26 @@ int DoIt( int argc, char * argv[] )
         std::stringstream out;
         out << "Error during crop filter: " << s << std::endl;
         tube::ErrorMessage( out.str() );
-        timeCollector.Stop("CropFilter");
+        timeCollector.Stop( "CropFilter" );
         return EXIT_FAILURE;
         }
       catch( ... )
         {
         std::cerr << "Error during crop filter" << std::endl;
-        timeCollector.Stop("CropFilter");
+        timeCollector.Stop( "CropFilter" );
         return EXIT_FAILURE;
         }
 
-      timeCollector.Stop("CropFilter");
+      timeCollector.Stop( "CropFilter" );
 
-      timeCollector.Start("Save data");
+      timeCollector.Start( "Save data" );
       typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
       typename ImageWriterType::Pointer writer = ImageWriterType::New();
 
       std::stringstream out;
       out << outputVolume;
       out << "_";
-      for( unsigned int i=0; i<TDimension; i++ )
+      for( unsigned int i = 0; i < TDimension; i++ )
         {
         out << roiIndex[i];
         }
@@ -349,10 +353,10 @@ int DoIt( int argc, char * argv[] )
       catch( itk::ExceptionObject & err )
         {
         std::cerr << "Exception caught: " << err << std::endl;
-        timeCollector.Stop("Save data");
+        timeCollector.Stop( "Save data" );
         return EXIT_FAILURE;
         }
-      timeCollector.Stop("Save data");
+      timeCollector.Stop( "Save data" );
 
       unsigned int i=0;
       while( !done && ++roiIndex[i] >= split[i] )
