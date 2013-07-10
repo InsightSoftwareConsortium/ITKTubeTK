@@ -33,9 +33,9 @@ int itktubeNJetFeatureVectorGeneratorTest( int argc, char * argv[] )
 {
   if( argc != 5 )
     {
-    std::cerr << "Missing arguments." << std::endl;
-    std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0]
+    std::cout << "Missing arguments." << std::endl;
+    std::cout << "Usage: " << std::endl;
+    std::cout << argv[0]
       << " inputImage outputF0Image outputF1Image"
       << std::endl;
     return EXIT_FAILURE;
@@ -67,7 +67,7 @@ int itktubeNJetFeatureVectorGeneratorTest( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during input read:" << std::endl << e;
+    std::cout << "Exception caught during input read:" << std::endl << e;
     return EXIT_FAILURE;
     }
   ImageType::Pointer inputImage = reader->GetOutput();
@@ -81,7 +81,7 @@ int itktubeNJetFeatureVectorGeneratorTest( int argc, char * argv[] )
     }
   catch(itk::ExceptionObject& e)
     {
-    std::cerr << "Exception caught during input read:\n"  << e;
+    std::cout << "Exception caught during input read:" << std::endl << e;
     return EXIT_FAILURE;
     }
   ImageType::Pointer maskImage = maskReader->GetOutput();
@@ -109,7 +109,7 @@ int itktubeNJetFeatureVectorGeneratorTest( int argc, char * argv[] )
     }
   catch(itk::ExceptionObject& e)
     {
-    std::cerr << "Exception caught during write:" << std::endl << e;
+    std::cout << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
     }
 
@@ -123,7 +123,7 @@ int itktubeNJetFeatureVectorGeneratorTest( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during write:" << std::endl << e;
+    std::cout << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
     }
 

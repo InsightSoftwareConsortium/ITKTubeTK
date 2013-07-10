@@ -101,35 +101,33 @@ int DoIt( int argc, char * argv[] )
     cropFilter.SetInput( reader->GetOutput() );
     if( matchVolume.size() > 0 )
       {
-      typename ImageType::Pointer imgVolume = reader->GetOutput();
+      typename ImageType::Pointer image = reader->GetOutput();
 
       typename ReaderType::Pointer matchReader = ReaderType::New();
       matchReader->SetFileName( matchVolume.c_str() );
       matchReader->UpdateOutputInformation();
-      typename ImageType::ConstPointer matchVolume =
+      typename ImageType::ConstPointer match =
         matchReader->GetOutput();
 
       const typename ImageType::RegionType matchRegion =
-        matchVolume->GetLargestPossibleRegion();
+        match->GetLargestPossibleRegion();
       const typename ImageType::IndexType matchIndex =
         matchRegion.GetIndex();
       const typename ImageType::SizeType matchSize =
         matchRegion.GetSize();
       const typename ImageType::PointType matchOrigin =
-        matchVolume->GetOrigin();
+        match->GetOrigin();
       const typename ImageType::SpacingType matchSpacing =
-        matchVolume->GetSpacing();
+        match->GetSpacing();
 
       const typename ImageType::RegionType imgRegion =
-        imgVolume->GetLargestPossibleRegion();
+        image->GetLargestPossibleRegion();
       const typename ImageType::IndexType imgIndex =
         imgRegion.GetIndex();
-      const typename ImageType::SizeType imgSize =
-        imgRegion.GetSize();
       const typename ImageType::PointType imgOrigin =
-        imgVolume->GetOrigin();
+        image->GetOrigin();
       const typename ImageType::SpacingType imgSpacing =
-        imgVolume->GetSpacing();
+        image->GetSpacing();
 
       typename ImageType::IndexType minI;
       typename ImageType::SizeType sizeI;
