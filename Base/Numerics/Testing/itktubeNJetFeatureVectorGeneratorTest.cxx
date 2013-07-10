@@ -87,7 +87,7 @@ int itktubeNJetFeatureVectorGeneratorTest( int argc, char * argv[] )
   ImageType::Pointer maskImage = maskReader->GetOutput();
 
   FilterType::NJetScalesType scales( 2 );
-  scales[0] = 1;
+  scales[0] = 2;
   scales[1] = 4;
   FilterType::NJetScalesType scales2( 1 );
   scales2[0] = 2;
