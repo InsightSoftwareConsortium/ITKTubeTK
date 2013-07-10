@@ -96,12 +96,9 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     }
   LabelMapType::Pointer labelmapImage = mReader->GetOutput();
 
-  FilterType::RidgeScalesType scales(5);
+  FilterType::RidgeScalesType scales(2);
   scales[0] = 0.15;
-  scales[1] = 0.6;
-  scales[2] = 1.2;
-  scales[3] = 2.4;
-  scales[4] = 3.6;
+  scales[1] = 0.5;
 
   FilterType::Pointer filter = FilterType::New();
   filter->SetInput( inputImage );
