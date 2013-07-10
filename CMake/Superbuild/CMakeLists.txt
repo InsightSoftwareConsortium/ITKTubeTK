@@ -124,10 +124,10 @@ if( TubeTK_BUILD_ImageViewer )
   include( "External_ImageViewer.cmake" )
 endif( TubeTK_BUILD_ImageViewer )
 
-## LibSVM - must come after TubeTK Dependency check
+## LIBSVM - must come after TubeTK Dependency check
 ##
 if( TubeTK_USE_LIBSVM )
- include( "External_LibSVM.cmake" )
+ include( "External_LIBSVM.cmake" )
 endif( TubeTK_USE_LIBSVM )
 
 ##
