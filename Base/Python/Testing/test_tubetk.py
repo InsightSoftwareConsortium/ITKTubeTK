@@ -43,6 +43,47 @@ def VesselTubeToNumPyTest(tubes, baseline_array):
 
     return all_fields_close
 
+def PyQtGraphTubesAsCirclesTest(tube_file, screenshot):
+    import pyqtgraph as pg
+    import pyqtgraph.opengl as gl
+    from tubetk.numpy import tubes_from_file
+    from tubetk.pyqtgraph import tubes_as_circles
+
+    tubes = tubes_from_file(tube_file)
+    subsample = 30
+    tubes = tubes[::subsample]
+
+    # Setup QApplication
+    qapp = pg.mkQApp()
+
+    view = gl.GLViewWidget()
+    view.setCameraPosition(distance=200)
+    view.orbit(0., 20.)
+    view.setWindowTitle('PyQtGraphTubePointsTest')
+    view.show()
+
+    x_grid = gl.GLGridItem()
+    grid_scale = 20
+    x_grid.rotate(90, 0, 1, 0)
+    x_grid.translate(-10 * grid_scale, 0, 0)
+    y_grid = gl.GLGridItem()
+    y_grid.rotate(90, 1, 0, 0)
+    y_grid.translate(0, -10 * grid_scale, 0)
+    z_grid = gl.GLGridItem()
+    z_grid.translate(0, 0, -10 * grid_scale)
+    for grid in x_grid, y_grid, z_grid:
+        grid.scale(grid_scale, grid_scale, grid_scale)
+        view.addItem(grid)
+
+    circles = tubes_as_circles(tubes)
+    circles_mesh = gl.GLMeshItem(meshdata=circles, smooth=False)
+    view.addItem(circles_mesh)
+
+    #return qapp.exec_()
+    view.paintGL()
+    framebuffer = view.grabFrameBuffer()
+    return framebuffer.save(screenshot)
+
 if __name__ == '__main__':
     usage = 'Usage: ' + sys.argv[0] + \
             ' <TestName> [TestArg1 TestArg2 ...  TestArgN]'
