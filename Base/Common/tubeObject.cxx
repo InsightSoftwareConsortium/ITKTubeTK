@@ -32,6 +32,16 @@ limitations under the License.
 namespace tube
 {
 
+// Constructor.
+Object::Object( void )
+{
+}
+
+// Destructor.
+Object::~Object( void )
+{
+}
+
 // Print out information about this object.
 void Object::Print( std::ostream & os, Indent indent ) const
 {
@@ -49,7 +59,6 @@ void Object::PrintHeader( std::ostream & os, Indent indent ) const
 // Print out information about the member variables of this object.
 void Object::PrintSelf( std::ostream & os, Indent indent ) const
 {
-
   os << indent << "RTTI typeinfo: ";
 
 #if __GNUC__ > 3 || ( __GNUC__ == 3 && __GNUC_MINOR__ > 0 )

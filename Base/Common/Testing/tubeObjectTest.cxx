@@ -41,8 +41,10 @@ int tubeObjectTest( int argc, char * argv[] )
 
   object->Print( oss );
 
-  tubeStandardOutputMacro( << "Object print method test:" << std::endl << oss.str() );
-  tubeStandardOutputMacro( << "Object stream operator test:" << std::endl << *object );
+  tubeStandardOutputMacro( << "Object print method test:" << std::endl
+                           << oss.str() );
+  tubeStandardOutputMacro( << "Object stream operator test:" << std::endl
+                           << *object );
 
   delete object;
 

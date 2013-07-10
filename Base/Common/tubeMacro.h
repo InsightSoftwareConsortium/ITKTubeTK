@@ -29,6 +29,7 @@ limitations under the License.
 #define __tubeMacro_h
 
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <string>
 
@@ -160,18 +161,18 @@ virtual const variabletype * Get##variablename( void ) const   \
   return &( this->m_##variablename );                          \
   }
 
-/** Return a const reference to a member variable of object type. */
-#define tubeGetConstReferenceObjectMacro( variablename, variabletype )  \
-virtual const variabletype & Get##variablename( void ) const            \
-  {                                                                     \
-  return this->m_##variablename;                                        \
+/** Set a member variable of fundamental type. */
+#define tubeSetMacro( variablename, variabletype )                   \
+virtual void Set##variablename( const variabletype _variablevalue )  \
+  {                                                                  \
+  this->m_##variablename = _variablevalue;                           \
   }
 
-/** Set a member variable of fundamental type. */
-#define tubeSetMacro( variablename, variabletype )   \
-virtual void Set##name( const type _variablevalue )  \
-  {                                                  \
-  this->m_##variablename = _variablevalue;           \
+/** Set a member variable of object type. */
+#define tubeSetConstReferenceMacro( variablename, variabletype )       \
+virtual void Set##variablename( const variabletype & _variablevalue )  \
+  {                                                                    \
+  this->m_##variablename = _variablevalue;                             \
   }
 
 /** Set a member variable of C++ string type. */
