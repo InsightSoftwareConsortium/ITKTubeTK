@@ -48,8 +48,6 @@ public:
 
   bool  Read(const std::string & _fileName = std::string());
 
-  bool  ReadStream(int _nDims, std::ifstream & _stream);
-
   bool  Write(const std::string & _fileName = std::string());
 
   /** Clear tube information */
