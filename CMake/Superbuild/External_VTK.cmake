@@ -58,7 +58,7 @@ if( NOT DEFINED ${proj}_DIR )
   set( proj VTK )
   ExternalProject_Add( VTK
     GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/Slicer/VTK.git"
-    GIT_TAG "03ddda8cd503b957268fee138c7b57465e5842a4"
+    GIT_TAG "66376810ecd7aa5705272f3d694fd5daa27f3a6b"
     SOURCE_DIR "${CMAKE_BINARY_DIR}/${proj}"
     BINARY_DIR ${${proj}_DIR}
     CMAKE_GENERATOR ${gen}
