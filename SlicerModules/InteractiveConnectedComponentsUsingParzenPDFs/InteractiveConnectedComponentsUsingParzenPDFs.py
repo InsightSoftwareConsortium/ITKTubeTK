@@ -22,7 +22,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     # This is because we want the normal module's cli to be selected
     # when opening the cli module.
     module = slicer.modules.segmentconnectedcomponentsusingparzenpdfs
-    self.getCLINode(module, module.title)
+    self.logic.getCLINode(module, module.title)
 
   def __del__(self):
     super(InteractiveConnectedComponentsUsingParzenPDFsOptions,self).__del__()
@@ -30,26 +30,18 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
   def create(self):
     super(InteractiveConnectedComponentsUsingParzenPDFsOptions,self).create()
 
-    ioCollapsibleButton = ctk.ctkCollapsibleButton()
-    ioCollapsibleButton.text = "IO"
+    ioCollapsibleButton = ctk.ctkCollapsibleGroupBox()
+    ioCollapsibleButton.title = "IO"
     ioCollapsibleButton.collapsed = 1
     self.frame.layout().addWidget(ioCollapsibleButton)
 
     # Layout within the io collapsible button
     ioFormLayout = qt.QFormLayout(ioCollapsibleButton)
-    secondaryIoCollapsibleGroupBox = ctk.ctkCollapsibleGroupBox()
-    secondaryIoCollapsibleGroupBox.title = "Additional Input"
-    secondaryIoCollapsibleGroupBox.collapsed = 1
-    secondaryIoFormLayout = qt.QFormLayout(secondaryIoCollapsibleGroupBox)
-    self.inputNodeSelectors = []
-    self.inputNodeSelectors.append(self.addInputNodeSelector(0, ioFormLayout))
-    self.inputNodeSelectors[0].noneEnabled = False
-    for i in range(1,3):
-      self.inputNodeSelectors.append(self.addInputNodeSelector(i, secondaryIoFormLayout))
-    self.inputNodeSelectors[0].toolTip = "Select the 1st input volume to be segmented"
-    self.inputNodeSelectors[1].toolTip = "Select the 2nd input volume to be segmented"
-    self.inputNodeSelectors[2].toolTip = "Select the 3rd input volume to be segmented"
-    ioFormLayout.addWidget(secondaryIoCollapsibleGroupBox)
+    self.additionalInputNodeSelectors = []
+    for i in range(0,2):
+      self.additionalInputNodeSelectors.append(self.addInputNodeSelector(i, ioFormLayout))
+    self.additionalInputNodeSelectors[0].toolTip = "Select the 1st additional input volume to be segmented"
+    self.additionalInputNodeSelectors[1].toolTip = "Select the 2nd additional input volume to be segmented"
 
     # Objects
     objectCollapsibleGroupBox = ctk.ctkCollapsibleGroupBox()
@@ -65,6 +57,8 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     foregroundLabel.setMRMLColorNode(self.editUtil.getColorNode())
     foregroundLabel.labelValueVisible = True
     foregroundLabel.currentColor = 1
+    self.foregroundLabel = foregroundLabel
+    self.connections.append( (self.foregroundLabel, 'currentColorChanged(int)', self.updateMRMLFromGUI ) )
     foregroundWeightSpinBox = qt.QDoubleSpinBox(foregroundLabel)
     self.foregroundWeightSpinBox = foregroundWeightSpinBox
     foregroundWeightSpinBox.setRange(0.0, 1.0)
@@ -79,6 +73,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     foregroundPopupSlider.singleStep = 0.1
     foregroundPopupSlider.connect('valueChanged(double)', self.foregroundWeightSpinBox.setValue)
     foregroundWeightSpinBox.connect('valueChanged(double)', self.foregroundPopupSlider.setValue)
+    self.connections.append( (self.foregroundWeightSpinBox, 'valueChanged(double)', self.updateMRMLFromGUI ) )
     foregroundLayout.addWidget( foregroundLabel )
     foregroundLayout.addWidget( foregroundWeightSpinBox )
     foregroundPopupLayout.addWidget( foregroundPopupSlider )
@@ -97,6 +92,8 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     backgroundLabel.setMRMLColorNode(self.editUtil.getColorNode())
     backgroundLabel.labelValueVisible = True
     backgroundLabel.currentColor = 2
+    self.backgroundLabel = backgroundLabel
+    self.connections.append( (self.backgroundLabel, 'currentColorChanged(int)', self.updateMRMLFromGUI ) )
     backgroundWeightSpinBox = qt.QDoubleSpinBox(backgroundLabel)
     self.backgroundWeightSpinBox = backgroundWeightSpinBox
     backgroundWeightSpinBox.setRange(0.0, 1.0)
@@ -111,6 +108,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     backgroundPopupSlider.singleStep = 0.1
     backgroundPopupSlider.connect('valueChanged(double)', self.backgroundWeightSpinBox.setValue)
     backgroundWeightSpinBox.connect('valueChanged(double)', self.backgroundPopupSlider.setValue)
+    self.connections.append( (self.backgroundWeightSpinBox, 'valueChanged(double)', self.updateMRMLFromGUI ) )
     backgroundLayout.addWidget( backgroundLabel )
     backgroundLayout.addWidget( backgroundWeightSpinBox )
     backgroundPopupLayout.addWidget( backgroundPopupSlider )
@@ -130,6 +128,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     barrierLabel.currentColor = 3
     objectFormLayout.addRow("Barrier Label:", barrierLabel)
     self.barrierLabel = barrierLabel
+    self.connections.append( (self.barrierLabel, "currentColorChanged(int)", self.updateMRMLFromGUI ) )
 
     voidLabel = slicer.qMRMLLabelComboBox()
     voidLabel.objectName = 'Void label selector'
@@ -141,6 +140,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     voidLabel.setCurrentColor(0)
     objectFormLayout.addRow("Void Label:", voidLabel)
     self.voidLabel = voidLabel
+    self.connections.append( (self.voidLabel, "currentColorChanged(int)", self.updateMRMLFromGUI ) )
 
     # Presets
     # Placeholder
@@ -164,6 +164,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     erosionSpinBox.setMinimum(0)
     paramsFormLayout.addRow("Erosion Radius:", erosionSpinBox)
     self.erosionSpinBox = erosionSpinBox
+    self.connections.append( (self.erosionSpinBox, "valueChanged(int)", self.updateMRMLFromGUI ) )
 
     holeFillSpinBox = qt.QSpinBox()
     holeFillSpinBox.objectName = 'holeFillSpinBox'
@@ -171,6 +172,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     holeFillSpinBox.setMinimum(0)
     paramsFormLayout.addRow("Hole Fill Iterations:", holeFillSpinBox)
     self.holeFillSpinBox = holeFillSpinBox
+    self.connections.append( (self.holeFillSpinBox, "valueChanged(int)", self.updateMRMLFromGUI ) )
 
     # probabilitySmoothingStandardDeviation spin box
     probabilitySmoothingStdDevSpinBox = qt.QDoubleSpinBox()
@@ -181,6 +183,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     probabilitySmoothingStdDevSpinBox.setSingleStep(0.1)
     paramsFormLayout.addRow("Probability Smoothing Standard Deviation:", probabilitySmoothingStdDevSpinBox)
     self.probabilitySmoothingStdDevSpinBox = probabilitySmoothingStdDevSpinBox
+    self.connections.append( (self.probabilitySmoothingStdDevSpinBox, "valueChanged(double)", self.updateMRMLFromGUI ) )
 
     # draft check box
     draftCheckBox = qt.QCheckBox()
@@ -188,6 +191,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     draftCheckBox.toolTip = "Downsamples results by a factor of 4."
     paramsFormLayout.addRow("Draft Mode:", draftCheckBox)
     self.draftCheckBox = draftCheckBox
+    self.connections.append( (self.draftCheckBox, "stateChanged(int)", self.updateMRMLFromGUI ) )
 
     # reclassifyObjectMask check box
     reclassifyObjectMaskCheckBox = qt.QCheckBox()
@@ -195,6 +199,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     reclassifyObjectMaskCheckBox.toolTip = "Perform classification on voxels within the foreground mask?"
     paramsFormLayout.addRow("Reclassify Foreground Mask:", reclassifyObjectMaskCheckBox)
     self.reclassifyObjectMaskCheckBox = reclassifyObjectMaskCheckBox
+    self.connections.append( (self.reclassifyObjectMaskCheckBox, "stateChanged(int)", self.updateMRMLFromGUI ) )
 
     # reclassifyNotObjectMask check box
     reclassifyNotObjectMaskCheckBox = qt.QCheckBox()
@@ -202,6 +207,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     reclassifyNotObjectMaskCheckBox.toolTip = "Perform classification on voxels within the barrier mask?"
     paramsFormLayout.addRow("Reclassify Barrier Mask:", reclassifyNotObjectMaskCheckBox)
     self.reclassifyNotObjectMaskCheckBox = reclassifyNotObjectMaskCheckBox
+    self.connections.append( (self.reclassifyNotObjectMaskCheckBox, "stateChanged(int)", self.updateMRMLFromGUI ) )
 
     # force classification check box
     forceClassificationCheckBox = qt.QCheckBox()
@@ -210,6 +216,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     forceClassificationCheckBox.setChecked(False)
     paramsFormLayout.addRow("Force Classification: ", forceClassificationCheckBox)
     self.forceClassificationCheckBox = forceClassificationCheckBox
+    self.connections.append( (self.forceClassificationCheckBox, "stateChanged(int)", self.updateMRMLFromGUI ) )
 
     self.helpLabel = qt.QLabel("Run the PDF Segmentation on the current label map.", self.frame)
     self.frame.layout().addWidget(self.helpLabel)
@@ -239,66 +246,120 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
 
   def setMRMLDefaults(self):
     super(InteractiveConnectedComponentsUsingParzenPDFsOptions,self).setMRMLDefaults()
+    disableState = self.parameterNode.GetDisableModifiedEvent()
+    self.parameterNode.SetDisableModifiedEvent(1)
+
+    defaults = [
+      ("outputVolume", "0"),
+      ("labelmap", "0"),
+      ("voidId", "0"),
+      ("objectId", "1,2,3"),
+      ("erodeRadius", "0"),
+      ("holeFillIterations", "0"),
+      ("objectPDFWeight", "1.0,1.0"),
+      ("probSmoothingStdDev", "3.0"),
+      ("draft", "0"),
+      ("reclassifyObjectMask", "0"),
+      ("reclassifyNotObjectMask", "0"),
+      ("forceClassification", "0"),
+      ]
+    for i in range(0, 2):
+      defaults.append(("additionalInputVolumeID" + str(i), "0"))
+
+    # Set logic here because this function is called before the end
+    # of the superclass constructor
+    self.logic = InteractiveConnectedComponentsUsingParzenPDFsLogic(None)
+
+    for default in defaults:
+      pvalue = self.getParameter(default[0])
+      if pvalue == "":
+        self.setParameter(default[0], default[1])
+    self.parameterNode.SetDisableModifiedEvent(disableState)
 
   def updateGUIFromMRML(self,caller,event):
-    self.disconnectWidgets()
+    parameters = ["voidId",
+                  "objectId",
+                  "erodeRadius",
+                  "holeFillIterations",
+                  "objectPDFWeight",
+                  "probSmoothingStdDev",
+                  "draft",
+                  "reclassifyObjectMask",
+                  "reclassifyNotObjectMask",
+                  "forceClassification",
+                  ]
+    for i in range(0, 2):
+      parameters.append("additionalInputVolumeID" + str(i))
+
+    for parameter in parameters:
+      if self.getParameter(parameter) == "":
+        # don't update if the parameter node has not got all values yet
+        return
     super(InteractiveConnectedComponentsUsingParzenPDFsOptions,self).updateGUIFromMRML(caller,event)
+    self.disconnectWidgets()
+
+    # Additional inputs
+    for i in range(0, 2):
+      self.additionalInputNodeSelectors[i].currentNodeID = self.getParameter("additionalInputVolumeID" + str(i))
+
+    # labels
+    self.voidLabel.currentColor = int(self.getParameter("voidId"))
+    objectIds = self.logic.listFromStringList(self.getParameter("objectId"))
+    self.foregroundLabel.currentColor = objectIds[0]
+    self.backgroundLabel.currentColor = objectIds[1]
+    self.barrierLabel.currentColor = objectIds[2]
+
+    # Parameters
+    self.erosionSpinBox.value = int(self.getParameter("erodeRadius"))
+    self.holeFillSpinBox.value = int(self.getParameter("holeFillIterations"))
+    self.probabilitySmoothingStdDevSpinBox.value = float(self.getParameter("probSmoothingStdDev"))
+    self.draftCheckBox.setChecked(int(self.getParameter("draft")))
+    self.reclassifyObjectMaskCheckBox.setChecked(int(self.getParameter("reclassifyObjectMask")))
+    self.forceClassificationCheckBox.setChecked(int(self.getParameter("forceClassification")))
+    self.reclassifyNotObjectMaskCheckBox.setChecked(int(self.getParameter("reclassifyNotObjectMask")))
+
     self.connectWidgets()
 
   def onApply(self):
-
     self.undoRedo.saveState()
-    objectIds = []
-    objectIds.append(self.objectLabel.currentColor)
-    objectIds.append(self.backgroundLabel.currentColor)
-    objectPDFWeights = []
-    objectPDFWeights.append(self.foregroundWeightSpinBox.value)
-    objectPDFWeights.append(self.backgroundWeightSpinBox.value)
-    parameters = {}
-    for i in range(0,3):
-      parameters['inputVolume'+str(i+1)] = self.inputNodeSelectors[i].currentNode()
-    parameters['voidId'] = self.voidLabel.currentColor
-    parameters['objectId'] = objectIds
-    parameters['labelmap'] = self.editUtil.getLabelVolume()
-    parameters['outputVolume'] = self.editUtil.getLabelVolume()
-    parameters['erodeRadius'] = self.erosionSpinBox.value
-    parameters['holeFillIterations'] = self.holeFillSpinBox.value
-    parameters['objectPDFWeight'] = objectPDFWeights
-    parameters['probSmoothingStdDev'] = self.probabilitySmoothingStdDevSpinBox.value
-    parameters['draft'] = self.draftCheckBox.checked
-    parameters['reclassifyObjectMask'] = self.reclassifyObjectMaskCheckBox.checked
-    parameters['reclassifyNotObjectMask'] = self.reclassifyNotObjectMaskCheckBox.checked
-    parameters['forceClassification'] = self.forceClassificationCheckBox.checked
-
-    module = slicer.modules.segmentconnectedcomponentsusingparzenpdfs
-    cliNode = self.getCLINode(module, 'PDFSegmenterEditorEffect')
-    slicer.cli.run(module, cliNode, parameters)
-
-  def getCLINode(self, module, nodeName):
-    cliNode = slicer.mrmlScene.GetFirstNodeByName(nodeName)
-    # Also check path to make sure the CLI isn't a scripted module
-    if (cliNode == None) and ('qt-scripted-modules' not in module.path):
-      cliNode = slicer.cli.createNode(module)
-      cliNode.SetName(nodeName)
-    return cliNode
+    self.logic.applyPDFSegmenter()
 
   def updateMRMLFromGUI(self):
     if self.updatingGUI:
       return
+
     disableState = self.parameterNode.GetDisableModifiedEvent()
     self.parameterNode.SetDisableModifiedEvent(1)
     super(InteractiveConnectedComponentsUsingParzenPDFsOptions,self).updateMRMLFromGUI()
+
+    # Input
+    for i in range(0, 2):
+      self.setParameter("additionalInputVolumeID" + str(i), self.additionalInputNodeSelectors[i].currentNodeID)
+
+    # Labels
+    self.setParameter("voidId", str(self.voidLabel.currentColor))
+    objectIds = (str(self.foregroundLabel.currentColor) + ","
+                 + str(self.backgroundLabel.currentColor) + ","
+                 + str(self.barrierLabel.currentColor)
+                )
+    self.setParameter("objectId", objectIds)
+
+    # Parameters
+    self.setParameter("erodeRadius", self.erosionSpinBox.text)
+    self.setParameter("holeFillIterations", self.holeFillSpinBox.text)
+    self.setParameter("probSmoothingStdDev", self.probabilitySmoothingStdDevSpinBox.text)
+    self.setParameter("draft", str(int(self.draftCheckBox.isChecked())))
+    self.setParameter("reclassifyObjectMask", str(int(self.reclassifyObjectMaskCheckBox.isChecked())))
+    self.setParameter("reclassifyNotObjectMask", str(int(self.reclassifyNotObjectMaskCheckBox.isChecked())))
+    self.setParameter("forceClassification", str(int(self.forceClassificationCheckBox.isChecked())))
+
     self.parameterNode.SetDisableModifiedEvent(disableState)
     if not disableState:
       self.parameterNode.InvokePendingModifiedEvent()
 
-  def setInputNode1(self):
-    backgroundLogic = self.sliceLogic.GetBackgroundLayer()
-    backgroundNode = backgroundLogic.GetVolumeNode()
-
   def addInputNodeSelector(self, index, layout):
     inputNodeSelector =  slicer.qMRMLNodeComboBox()
-    inputNodeSelector.objectName = 'inputNodeSelector'+str(index+1)
+    inputNodeSelector.objectName = 'additionalInputNodeSelector'+str(index+1)
     inputNodeSelector.nodeTypes = ['vtkMRMLScalarVolumeNode']
     inputNodeSelector.noneEnabled = True
     inputNodeSelector.addEnabled = False
@@ -306,8 +367,15 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     inputNodeSelector.editEnabled = True
     inputNodeSelector.enabled = 1
     inputNodeSelector.setMRMLScene(slicer.mrmlScene)
-    layout.addRow("Input Volume "+str(index+1)+":", inputNodeSelector)
+    layout.addRow("Additional Input Volume "+str(index+1)+":", inputNodeSelector)
+    self.connections.append( (inputNodeSelector, "currentNodeChanged(vtkMRMLNode*)", self.updateMRMLFromGUI ) )
     return inputNodeSelector
+
+  def setParameter(self, parameterName, value):
+    self.logic.setParameter(parameterName, value)
+
+  def getParameter(self, parameterName):
+    return self.logic.getParameter(parameterName)
 
 #
 # EditorEffectTemplateTool
@@ -380,11 +448,76 @@ class InteractiveConnectedComponentsUsingParzenPDFsLogic(LabelEffect.LabelEffect
   """
 
   def __init__(self,sliceLogic):
-    self.sliceLogic = sliceLogic
+    super(InteractiveConnectedComponentsUsingParzenPDFsLogic,self).__init__(sliceLogic)
+    self.effectName = 'InteractiveConnectedComponentsUsingParzenPDFsOptions'
+    self.parameterNode = self.editUtil.getParameterNode()
+
+  def getCLINode(self, module, nodeName):
+    cliNode = slicer.mrmlScene.GetFirstNodeByName(nodeName)
+    # Also check path to make sure the CLI isn't a scripted module
+    if (cliNode == None) and ("qt-scripted-modules" not in module.path):
+      cliNode = slicer.cli.createNode(module)
+      cliNode.SetName(nodeName)
+    return cliNode
+
+  def setParameter(self, parameterName, value):
+    self.parameterNode.SetParameter(self.getFullParameterName(parameterName), value)
+
+  def getParameter(self, parameterName):
+    return self.parameterNode.GetParameter(self.getFullParameterName(parameterName))
+
+  def getFullParameterName(self, parameterName):
+    return self.effectName + ',' + parameterName
+
+  def listFromStringList(self, stringlist):
+    '''Convert a stringlist of the format '1.0, 2.0, 3.0' to a list
+       of the format [1.0, 2.0, 3.0].'''
+    list = []
+    for string in stringlist.split(","):
+      try:
+        list.append(int(string))
+      except ValueError:
+        list.append(float(string))
+    return list
 
   def apply(self,xy):
     pass
 
+  def applyPDFSegmenter(self):
+    #
+    # Apply PDF segmenter based on the parameter node
+    #
+    if not self.sliceLogic:
+      self.sliceLogic = self.editUtil.getSliceLogic()
+    cliParameters = {}
+
+    # IO
+    cliParameters["inputVolume1"] = self.editUtil.getBackgroundVolume()
+    for i in range(0,2):
+      # Get input nodes by their IDs
+      nodeID = self.getParameter("additionalInputVolumeID" + str(i))
+      cliParameters["inputVolume"+str(i+2)] = slicer.mrmlScene.GetNodeByID(nodeID)
+
+    cliParameters["labelmap"] = self.editUtil.getLabelVolume()
+    cliParameters["outputVolume"] = self.editUtil.getLabelVolume()
+
+    # Labels
+    cliParameters["voidId"] = int(self.getParameter( "voidId"))
+    cliParameters["objectId"] = self.listFromStringList(self.getParameter("objectId"))
+
+    # Parameters
+    cliParameters["erodeRadius"] = int(self.getParameter( "erodeRadius"))
+    cliParameters["holeFillIterations"] = int(self.getParameter("holeFillIterations"))
+    cliParameters["objectPDFWeight"] = self.listFromStringList(self.getParameter("objectPDFWeight"))
+    cliParameters["probSmoothingStdDev"] = float(self.getParameter("probSmoothingStdDev"))
+    cliParameters["draft"] = int(self.getParameter("draft"))
+    cliParameters["reclassifyObjectMask"] = int(self.getParameter("reclassifyObjectMask"))
+    cliParameters["reclassifyNotObjectMask"] = int(self.getParameter("reclassifyNotObjectMask"))
+    cliParameters["forceClassification"] = int(self.getParameter("forceClassification"))
+
+    module = slicer.modules.segmentconnectedcomponentsusingparzenpdfs
+    cliNode = self.getCLINode(module, "PDFSegmenterEditorEffect")
+    slicer.cli.run(module, cliNode, cliParameters)
 
 #
 # The InteractiveConnectedComponentsUsingParzenPDFs Template class definition
@@ -421,7 +554,8 @@ class InteractiveConnectedComponentsUsingParzenPDFs:
     parent.categories = ["Developer Tools.Editor Extensions"]
     parent.contributors = ["Danielle Pace (Kitware)",
                            "Christopher Mullins (Kitware)",
-                           "Stephen Aylward (Kitware)"]
+                           "Stephen Aylward (Kitware)",
+                           "Johan Andruejol (Kitware)",]
     parent.helpText = """
     The PDF Segmenter is a framework for using connected components alonside intensity
     histograms for classifying images in pixel space.
