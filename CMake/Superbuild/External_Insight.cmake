@@ -49,8 +49,8 @@ if( NOT DEFINED ${proj}_DIR )
 
   ExternalProject_Add( ${proj}
     GIT_REPOSITORY "${GIT_PROTOCOL}://itk.org/ITK.git"
-    # master on 2013-02-28
-    GIT_TAG "9fe3eaaac2321f"
+    # release on 2013-07-10
+    GIT_TAG "41abd503c51277d4ead198e6dbe5020d5a0c6bbf"
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${ITK_DIR}
     CMAKE_GENERATOR ${gen}
