@@ -104,12 +104,25 @@ if( NOT USE_SYSTEM_SlicerExecutionModel )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "SlicerExecutionModel" )
 endif( NOT USE_SYSTEM_SlicerExecutionModel )
 
+## Qt
+set( TubeTK_QT_VARIABLES )
 if( TubeTK_USE_QT )
   ## CTK
   if( TubeTK_USE_CTK AND NOT USE_SYSTEM_CTK )
       set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "CTK" )
   endif( TubeTK_USE_CTK AND NOT USE_SYSTEM_CTK )
+  set( TubeTK_QT_VARIABLES
+       -DTubeTK_REQUIRED_QT_VERSION=${TubeTK_REQUIRED_QT_VERSION} )
 endif( TubeTK_USE_QT )
+
+## Check whether we use Slicer
+set( TubeTK_Slicer_DIRS
+    -DTubeTK_Slicer_SOURCE_DIR:PATH=${TubeTK_Slicer_SOURCE_DIR} )
+if( TubeTK_USE_Slicer )
+  set( TubeTK_Slicer_DIRS
+    ${TubeTK_Slicer_DIRS}
+    -DSlicer_DIR:PATH=${Slicer_DIR} )
+endif( TubeTK_USE_Slicer )
 
 ##
 ## TubeTK - Check Dependencies
@@ -167,8 +180,7 @@ ExternalProject_Add( ${proj}
     -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
     ${kwstyle_dashboard_submission_arg}
     -DTubeTK_USE_Slicer:BOOL=${TubeTK_USE_Slicer}
-    -DSlicer_DIR:PATH=${Slicer_DIR}
-    -DTubeTK_Slicer_SOURCE_DIR:PATH=${TubeTK_Slicer_SOURCE_DIR}
+    ${TubeTK_Slicer_DIRS}
     -DITK_DIR:PATH=${ITK_DIR}
     -DVTK_DIR:PATH=${VTK_DIR}
     -DCTK_DIR:PATH=${CTK_DIR}
@@ -182,7 +194,7 @@ ExternalProject_Add( ${proj}
     -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
     -DParameterSerializer_DIR:PATH=${ParameterSerializer_DIR}
     -DTubeTK_EXECUTABLE_DIRS:STRING=${TubeTK_EXECUTABLE_DIRS}
-    -DTubeTK_REQUIRED_QT_VERSION=${TubeTK_REQUIRED_QT_VERSION}
+    ${TubeTK_QT_VARIABLES}
     -DTubeTK_USE_CPPCHECK:BOOL=${TubeTK_USE_CPPCHECK}
     ${TubeTK_SimpleITK_Def}
     -DTubeTK_BUILD_MODULES=${TubeTK_BUILD_MODULES}
