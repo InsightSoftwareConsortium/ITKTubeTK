@@ -58,7 +58,7 @@ void readGraphList(const std::string &fileName,
     boost::property_tree::ptree pt;
     read_json(fileName, pt);
 
-    int nGraphs = boost::lexical_cast<int>( pt.get<std::string>("nGraphs") );
+    const int nGraphs = boost::lexical_cast<int>( pt.get<std::string>("nGraphs") );
 
     int graphCount = 0;
     BOOST_FOREACH( boost::property_tree::ptree::value_type &v,
@@ -99,8 +99,11 @@ void readGraphList(const std::string &fileName,
       labels.push_back( label );
       ++labelCount;
       }
-    assert( graphCount == nGraphs );
-    assert( labelCount == nGraphs );
+
+    if( graphCount != nGraphs || labelCount != nGraphs )
+      {
+      throw std::exception();
+      }
     }
   catch( std::exception &e )
     {
