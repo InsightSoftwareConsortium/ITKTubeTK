@@ -46,6 +46,8 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
     "itkSmapsFileParser"
     "itktiff"
     "JsonCpp"
+    "LIBSVM"
+    "libsvm"
     "log4qt"
     "mrmpi"
     "netlib"
