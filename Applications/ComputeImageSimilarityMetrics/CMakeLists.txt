@@ -21,8 +21,7 @@
 #
 ##############################################################################
 
-#-----------------------------------------------------------------------------
-set(MODULE_NAME ComputeImageSimilarityMetrics)
+set( MODULE_NAME ComputeImageSimilarityMetrics )
 project( ${MODULE_NAME} )
 
 if( NOT TubeTK_SOURCE_DIR )
@@ -36,7 +35,6 @@ include( ${SlicerExecutionModel_USE_FILE} )
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
 
-#-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h

@@ -32,14 +32,14 @@ get_filename_component( CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE} N
 if( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
   return()
 endif( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
-set(${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1)
+set( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1 )
 
 # Sanity checks
 if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
   message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to non-existing directory" )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
-set ( ${proj}_DEPENDENCIES "Insight" )
+set( ${proj}_DEPENDENCIES "Insight" )
 
 # Include dependent projects if any
 TubeTKMacroCheckExternalProjectDependency( ${proj} )

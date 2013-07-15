@@ -23,7 +23,7 @@
 
 include_regular_expression( "^.*$" )
 
-include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake )
+include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
@@ -81,12 +81,12 @@ add_test( tubeObjectTest
   ${BASE_COMMON_TESTS}
   tubeObjectTest )
 
-MIDAS_ADD_TEST( ImageCompareCommand-Test1
+Midas3FunctionAddTest( ImageCompareCommand-Test1
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
   -t MIDAS{ES0015_Large.mha.md5}
   -b MIDAS{ES0015_Large.mha.md5} )
 
-MIDAS_ADD_TEST( ImageCompareCommand-Test2
+Midas3FunctionAddTest( ImageCompareCommand-Test2
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
   -n 1000
   -r 1
@@ -94,24 +94,24 @@ MIDAS_ADD_TEST( ImageCompareCommand-Test2
   -t MIDAS{im0001.crop.mha.md5}
   -b MIDAS{im0001_n10.crop.mha.md5} )
 
-MIDAS_ADD_TEST( ImageCompareCommand-Test3
+Midas3FunctionAddTest( ImageCompareCommand-Test3
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
   -t MIDAS{im0001.mha.md5}
   -b MIDAS{im0001_n10.crop.mha.md5} )
 set_tests_properties( ImageCompareCommand-Test3 PROPERTIES WILL_FAIL true )
 
-midas_add_test( ImageCompareCommand-Test4
+Midas3FunctionAddTest( ImageCompareCommand-Test4
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
   -t MIDAS{im0001.crop.mha.md5}
   -B 2 MIDAS{im0001_n10.crop.mha.md5} MIDAS{im0001.crop.mha.md5} )
 
-midas_add_test( ImageCompareCommand-Test5
+Midas3FunctionAddTest( ImageCompareCommand-Test5
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
   -t MIDAS{im0001.crop.mha.md5}
   -B 2 MIDAS{im0001_n10.crop.mha.md5} MIDAS{im0001_n20.crop.mha.md5} )
 set_tests_properties( ImageCompareCommand-Test5 PROPERTIES WILL_FAIL true )
 
-midas_add_test( ImageCompareCommand-Test6
+Midas3FunctionAddTest( ImageCompareCommand-Test6
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand
   -t MIDAS{im0001_n10.crop.mha.md5}
   -b ${TEMP}/filedoesnotexist.mha )

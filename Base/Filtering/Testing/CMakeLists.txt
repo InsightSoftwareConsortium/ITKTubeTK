@@ -23,16 +23,16 @@
 
 include_regular_expression( "^.*$" )
 
-include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
+include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseFiltering ${PYTHON_EXECUTABLE}
     ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
     ${TubeTK_SOURCE_DIR}/Base/Filtering )
-endif()
+endif( PYTHON_EXECUTABLE )
 
 set( BASE_FILTERING_TESTS
   ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseFilteringTests )
@@ -88,51 +88,51 @@ MIDAS_ADD_TEST( itktubeExtractTubePointsSpatialObjectFilterTest
     itktubeExtractTubePointsSpatialObjectFilterTest
       MIDAS{VascularNetwork.tre.md5} )
 
-MIDAS_ADD_TEST( itktubeSheetnessMeasureImageFilterTest2
+Midas3FunctionAddTest( itktubeSheetnessMeasureImageFilterTest2
   ${BASE_FILTERING_TESTS}
     itktubeSheetnessMeasureImageFilterTest2
       MIDAS{PrimitiveObjects.mha.md5}
       ${TEMP}/PrimitiveObjectsSheetnessMeasure.mha
       ${TEMP}/PrimitiaveObjectsPrimaryEigenVector.mha )
 
-MIDAS_ADD_TEST( itktubeSheetnessMeasureImageFilterTest3
+Midas3FunctionAddTest( itktubeSheetnessMeasureImageFilterTest3
   ${BASE_FILTERING_TESTS}
     itktubeSheetnessMeasureImageFilterTest2
       MIDAS{UltrasoundCroppedResampled.mha.md5}
       ${TEMP}/UltrasoundCroppedResampledSheetnessMeasure.mha
-      ${TEMP}/UltrasoundCroppedResampledPrimaryEigenVector.mha 2.0)
+      ${TEMP}/UltrasoundCroppedResampledPrimaryEigenVector.mha 2.0 )
 
-MIDAS_ADD_TEST( itktubeStructureTensorRecursiveGaussianImageFilterTest
+Midas3FunctionAddTest( itktubeStructureTensorRecursiveGaussianImageFilterTest
   ${BASE_FILTERING_TESTS}
     itktubeStructureTensorRecursiveGaussianImageFilterTest
       MIDAS{PrimitiveObjects.mha.md5}
       ${TEMP}/PrimaryEigenVectorImage.mha
       ${TEMP}/PrimaryEigenValueImage.mha )
 
-MIDAS_ADD_TEST( itktubeStructureTensorRecursiveGaussianImageFilterTest2
+Midas3FunctionAddTest( itktubeStructureTensorRecursiveGaussianImageFilterTest2
   ${BASE_FILTERING_TESTS}
     itktubeStructureTensorRecursiveGaussianImageFilterTest
       MIDAS{CylinderSynthetic.mha.md5}
       ${TEMP}/CylinderPrimaryEigenVectorImage.mha
       ${TEMP}/CylinderPrimaryEigenValueImage.mha )
 
-MIDAS_ADD_TEST( itktubeStructureTensorRecursiveGaussianImageFilterTest3
+Midas3FunctionAddTest( itktubeStructureTensorRecursiveGaussianImageFilterTest3
   ${BASE_FILTERING_TESTS}
     itktubeStructureTensorRecursiveGaussianImageFilterTestNew )
 
-MIDAS_ADD_TEST( itktubeSubSampleTubeSpatialObjectFilterTest
+Midas3FunctionAddTest( itktubeSubSampleTubeSpatialObjectFilterTest
   ${BASE_FILTERING_TESTS}
     itktubeSubSampleTubeSpatialObjectFilterTest
       MIDAS{Branch-truth-new.tre.md5}
       ${TEMP}/itkSubSampleTubeSpatialObjectFilterTest.tre )
 
-MIDAS_ADD_TEST( itktubeSubSampleTubeTreeSpatialObjectFilterTest
+Midas3FunctionAddTest( itktubeSubSampleTubeTreeSpatialObjectFilterTest
   ${BASE_FILTERING_TESTS}
     itktubeSubSampleTubeTreeSpatialObjectFilterTest
       MIDAS{Branch-truth-new.tre.md5}
       ${TEMP}/itkSubSampleTubeTreeSpatialObjectFilterTest.tre )
 
-MIDAS_ADD_TEST( itktubeTubeEnhancingDiffusion2DImageFilterTest
+Midas3FunctionAddTest( itktubeTubeEnhancingDiffusion2DImageFilterTest
   ${BASE_FILTERING_TESTS}
     --compare MIDAS{itkTubeEnhancingDiffusion2DImageFilterTest.mha.md5}
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha
@@ -141,7 +141,7 @@ MIDAS_ADD_TEST( itktubeTubeEnhancingDiffusion2DImageFilterTest
       MIDAS{ES0015_1_Subs.mha.md5}
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha )
 
-MIDAS_ADD_TEST( itktubeTubeEnhancingDiffusion2DImageFilterRetinaTest
+Midas3FunctionAddTest( itktubeTubeEnhancingDiffusion2DImageFilterRetinaTest
   ${BASE_FILTERING_TESTS}
     --compare MIDAS{itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha.md5}
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha
@@ -151,7 +151,7 @@ MIDAS_ADD_TEST( itktubeTubeEnhancingDiffusion2DImageFilterRetinaTest
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha
       true )
 
-MIDAS_ADD_TEST( itktubeTubeEnhancingDiffusion2DImageFilterRetina10Test
+Midas3FunctionAddTest( itktubeTubeEnhancingDiffusion2DImageFilterRetina10Test
   ${BASE_FILTERING_TESTS}
     --compare MIDAS{itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha.md5}
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
@@ -161,23 +161,21 @@ MIDAS_ADD_TEST( itktubeTubeEnhancingDiffusion2DImageFilterRetina10Test
       ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
       true )
 
-MIDAS_ADD_TEST( itktubeAnisotropicHybridDiffusionImageFilterTest
+Midas3FunctionAddTest( itktubeAnisotropicHybridDiffusionImageFilterTest
  ${BASE_FILTERING_TESTS}
  itktubeAnisotropicHybridDiffusionImageFilterTest
  MIDAS{CroppedWholeLungCTScan.mhd.md5}
  ${TEMP}/CroppedWholeLungCTScanHybridDiffused.mha
  MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5} )
 
-
-MIDAS_ADD_TEST( itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest
+Midas3FunctionAddTest( itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest
  ${BASE_FILTERING_TESTS}
  itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest
  MIDAS{CroppedWholeLungCTScan.mhd.md5}
  ${TEMP}/CroppedWholeLungCTCoherenceEnhanced.mha
  MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5} )
 
-
-MIDAS_ADD_TEST( itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest
+Midas3FunctionAddTest( itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest
  ${BASE_FILTERING_TESTS}
  itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest
  MIDAS{CroppedWholeLungCTScan.mhd.md5}

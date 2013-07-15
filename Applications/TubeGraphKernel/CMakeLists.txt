@@ -21,7 +21,6 @@
 #
 ##############################################################################
 
-#-----------------------------------------------------------------------------
 set( MODULE_NAME TubeGraphKernel )
 project( ${MODULE_NAME} )
 
@@ -45,13 +44,12 @@ find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
 
 # Find Boost
-set(Boost_ADDITIONAL_VERSIONS "1.51")
-find_package(Boost 1.49 COMPONENTS system filesystem REQUIRED)
+set( Boost_ADDITIONAL_VERSIONS "1.51" )
+find_package( Boost 1.49 COMPONENTS system filesystem REQUIRED )
 
-#-----------------------------------------------------------------------------
 if( CMAKE_COMPILER_IS_GNUCXX )
-  set(CMAKE_CXX_FLAGS "-O3 -ffast-math -msse3")
-endif()
+  set( CMAKE_CXX_FLAGS "-O3 -ffast-math -msse3" )
+endif( CMAKE_COMPILER_IS_GNUCXX )
 
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}

@@ -23,9 +23,9 @@
 
 include_regular_expression( "^.*$" )
 
-Include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
+include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -38,10 +38,8 @@ set( TEXTCOMPARE_EXE
 set( IMAGECOMPARE_EXE
      ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
 
-#######
 # Test1
-#######
-MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1
                 ${PROJ_EXE}
                   MIDAS{VesselNetwork-In-SPL2012-ReferenceSpace.tre.md5}
                   ${TEMP}/${MODULE_NAME}Test1-Den.mha
@@ -51,10 +49,8 @@ MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
                   MIDAS{SPL2012-ReferenceSpace.mha.md5}
                   --useSquareDistance )
 
-###############
 # Test1-Compare
-###############
-MIDAS_ADD_Test( ${MODULE_NAME}-Test1-Compare-Den
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-Den
                 ${IMAGECOMPARE_EXE}
                   -t ${TEMP}/${MODULE_NAME}Test1-Den.mha
                   -b MIDAS{${MODULE_NAME}Test1-Den.mha.md5} )
@@ -62,7 +58,7 @@ MIDAS_ADD_Test( ${MODULE_NAME}-Test1-Compare-Den
 set_property( TEST ${MODULE_NAME}-Test1-Compare-Den
                 APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
-MIDAS_ADD_Test( ${MODULE_NAME}-Test1-Compare-Rad
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-Rad
                 ${IMAGECOMPARE_EXE}
                   -t ${TEMP}/${MODULE_NAME}Test1-Rad.mha
                   -b MIDAS{${MODULE_NAME}Test1-Rad.mha.md5} )
@@ -70,7 +66,7 @@ MIDAS_ADD_Test( ${MODULE_NAME}-Test1-Compare-Rad
 set_property( TEST ${MODULE_NAME}-Test1-Compare-Rad
                 APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
-MIDAS_ADD_Test( ${MODULE_NAME}-Test1-Compare-Tan
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-Tan
                 ${IMAGECOMPARE_EXE}
                 -t ${TEMP}/${MODULE_NAME}Test1-Tan.mha
                 -b MIDAS{${MODULE_NAME}Test1-Tan.mha.md5} )

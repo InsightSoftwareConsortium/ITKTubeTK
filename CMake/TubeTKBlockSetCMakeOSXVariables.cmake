@@ -55,7 +55,7 @@ if( APPLE )
     endif( arch_count GREATER 1 )
   endif( NOT "${CMAKE_OSX_ARCHITECTURES}" STREQUAL "" )
 
-  # See CMake/Modules/Platform/Darwin.cmake)
+  # See CMake/Modules/Platform/Darwin.cmake.
   #   6.x == Mac OSX 10.2 (Jaguar)
   #   7.x == Mac OSX 10.3 (Panther)
   #   8.x == Mac OSX 10.4 (Tiger)

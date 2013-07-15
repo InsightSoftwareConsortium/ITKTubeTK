@@ -23,9 +23,9 @@
 
 include_regular_expression( "^.*$" )
 
-Include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
+include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -35,11 +35,8 @@ set( PROJ_EXE
 set( IMAGECOMPARE_EXE
  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
 
-
-#######
 # Test1
-#######
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
+Midas3FunctionAddTest( ${PROJECT_NAME}-Test1
              ${PROJ_EXE}
                -i
                -r
@@ -48,10 +45,10 @@ MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1
                -b DSC_
                MIDAS_DIRECTORY{DICOMSeries} )
 
-MIDAS_ADD_TEST( ${PROJECT_NAME}-Test1-Compare
+Midas3FunctionAddTest( ${PROJECT_NAME}-Test1-Compare
              ${IMAGECOMPARE_EXE}
                -t ${TEMP}/DSC_Test1_20030625_361_3__0.86_1.60_3.mha
                -b MIDAS{DSC_Test1_20030625_361_3__0.86_1.60_3.mha.md5} )
 
-set_property(TEST ${PROJECT_NAME}-Test1-Compare
+set_property( TEST ${PROJECT_NAME}-Test1-Compare
                       APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test1 )

@@ -21,7 +21,6 @@
 #
 ##############################################################################
 
-#-----------------------------------------------------------------------------
 set( MODULE_NAME AtlasBuilderUsingIntensity )
 project( ${MODULE_NAME} )
 
@@ -53,7 +52,6 @@ include( ${SlicerExecutionModel_USE_FILE} )
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
 
-#-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   ADDITIONAL_SRCS tubeAtlasSummation.cxx
@@ -66,7 +64,6 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/Registration
     ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments )
 
-#-----------------------------------------------------------------------------
 if( BUILD_TESTING )
   find_package( PythonInterp )
   if( PYTHON_EXECUTABLE )

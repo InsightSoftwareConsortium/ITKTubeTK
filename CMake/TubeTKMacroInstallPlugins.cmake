@@ -21,12 +21,10 @@
 #
 ##############################################################################
 
-#-----------------------------------------------------------------------------
-# Install one or more plugins to the default plugin location
-#
-macro( tubetk_install_plugins )
+# Install one or more plugins to the default plugin location.
+macro( TubeTKMacroInstallPlugins )
   install( TARGETS ${ARGN}
     RUNTIME DESTINATION ${TubeTK_INSTALL_PLUGINS_BIN_DIR} COMPONENT RuntimeLibraries
     LIBRARY DESTINATION ${TubeTK_INSTALL_PLUGINS_LIB_DIR} COMPONENT RuntimeLibraries
     ARCHIVE DESTINATION ${TubeTK_INSTALL_PLUGINS_LIB_DIR} COMPONENT RuntimeLibraries )
-endmacro( tubetk_install_plugins )
+endmacro( TubeTKMacroInstallPlugins )

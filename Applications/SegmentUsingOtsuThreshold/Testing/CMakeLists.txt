@@ -23,9 +23,9 @@
 
 include_regular_expression( "^.*$" )
 
-Include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
+include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -35,38 +35,30 @@ set( PROJ_EXE
 set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
 
-#######
 # Test1
-#######
-MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1
             ${PROJ_EXE}
                MIDAS{ES0015_1.mha.md5}
                ${TEMP}/${MODULE_NAME}Test1.mha )
 
-#######
 # Test1-Compare
-#######
-MIDAS_ADD_TEST( ${MODULE_NAME}-Test1-Compare
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test1.mha
                -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
-set_property(TEST ${MODULE_NAME}-Test1-Compare
+set_property( TEST ${MODULE_NAME}-Test1-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
-#######
 # Test2
-#######
-MIDAS_ADD_TEST( ${MODULE_NAME}-Test2
+Midas3FunctionAddTest( ${MODULE_NAME}-Test2
             ${PROJ_EXE}
                --mask MIDAS{GDS0015_1_match.mask.mha.md5}
                MIDAS{ES0015_1.mha.md5}
                ${TEMP}/${MODULE_NAME}Test2.mha )
 
-#######
 # Test2-Compare
-#######
-MIDAS_ADD_TEST( ${MODULE_NAME}-Test2-Compare
+Midas3FunctionAddTest( ${MODULE_NAME}-Test2-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test2.mha
                -b MIDAS{${MODULE_NAME}Test2.mha.md5} )
-set_property(TEST ${MODULE_NAME}-Test2-Compare
+set_property( TEST ${MODULE_NAME}-Test2-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )

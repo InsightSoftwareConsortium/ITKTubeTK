@@ -21,7 +21,6 @@
 #
 ##############################################################################
 
-#-----------------------------------------------------------------------------
 set( MODULE_NAME ComputeImageQuantiles )
 project( ${MODULE_NAME} )
 
@@ -36,12 +35,11 @@ include( ${SlicerExecutionModel_USE_FILE} )
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
 
-# Find BOOST
+# Find Boost
 set( Boost_ADDITIONAL_VERSIONS "1.51 1.52 1.53" )
 find_package( Boost 1.49 COMPONENTS system filesystem REQUIRED )
 
-#-----------------------------------------------------------------------------
-# Fiddle with template-depth (for BOOST's accumulators)
+# Fiddle with template-depth (for Boost's accumulators)
 set( USER_CMAKE_CXX_FLAGS "-ftemplate-depth-100" )
 set( CMAKE_CXX_FLAGS
    "${CMAKE_CXX_FLAGS} ${USER_CMAKE_CXX_FLAGS}" )
@@ -52,7 +50,6 @@ set( CMAKE_CXX_FLAGS_DEBUG
 set( CMAKE_CXX_FLAGS_RELWITHDEBINFO
   "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} ${USER_CMAKE_CXX_FLAGS}" )
 
-#-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h

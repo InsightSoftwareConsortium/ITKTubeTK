@@ -20,25 +20,26 @@
 # limitations under the License.
 #
 ##############################################################################
-set(KIT qSlicer${MODULE_NAME}Module)
 
-set(KIT_TEST_SRCS qSlicerSpatialObjectsGlyphWidgetTest1.cxx)
-set(KIT_TEST_NAMES qSlicerSpatialObjectsGlyphWidgetTest1)
-set(KIT_TEST_NAMES_CXX qSlicerSpatialObjectsGlyphWidgetTest1.cxx)
-SlicerMacroConfigureGenericCxxModuleTests(${MODULE_NAME} KIT_TEST_SRCS KIT_TEST_NAMES KIT_TEST_NAMES_CXX)
+set( KIT qSlicer${MODULE_NAME}Module )
 
-set(CMAKE_TESTDRIVER_BEFORE_TESTMAIN "DEBUG_LEAKS_ENABLE_EXIT_ERROR();" )
-create_test_sourcelist(Tests ${KIT}CxxTests.cxx
+set( KIT_TEST_SRCS qSlicerSpatialObjectsGlyphWidgetTest1.cxx )
+set( KIT_TEST_NAMES qSlicerSpatialObjectsGlyphWidgetTest1 )
+set( KIT_TEST_NAMES_CXX qSlicerSpatialObjectsGlyphWidgetTest1.cxx )
+SlicerMacroConfigureGenericCxxModuleTests( ${MODULE_NAME} KIT_TEST_SRCS KIT_TEST_NAMES KIT_TEST_NAMES_CXX )
+
+set( CMAKE_TESTDRIVER_BEFORE_TESTMAIN "DEBUG_LEAKS_ENABLE_EXIT_ERROR();" )
+create_test_sourcelist( Tests ${KIT}CxxTests.cxx
   ${KIT_TEST_NAMES_CXX}
   EXTRA_INCLUDE vtkMRMLDebugLeaksMacro.h )
-list(REMOVE_ITEM Tests ${KIT_TEST_NAMES_CXX})
-list(APPEND Tests ${KIT_TEST_SRCS})
+list( REMOVE_ITEM Tests ${KIT_TEST_NAMES_CXX} )
+list( APPEND Tests ${KIT_TEST_SRCS} )
 
-set(LIBRARY_NAME ${lib_name})
+set( LIBRARY_NAME ${lib_name} )
 
-add_executable(${KIT}CxxTests ${Tests})
-target_link_libraries(${KIT}CxxTests ${KIT})
+add_executable( ${KIT}CxxTests ${Tests} )
+target_link_libraries( ${KIT}CxxTests ${KIT} )
 
-foreach(testname ${KIT_TEST_NAMES})
+foreach( testname ${KIT_TEST_NAMES} )
   SIMPLE_TEST( ${testname} )
-endforeach()
+endforeach( testname ${KIT_TEST_NAMES} )

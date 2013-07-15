@@ -20,18 +20,19 @@
 # limitations under the License.
 #
 ##############################################################################
-project(vtkSlicer${MODULE_NAME}ModuleMRML)
 
-set(KIT ${PROJECT_NAME})
+project( vtkSlicer${MODULE_NAME}ModuleMRML )
 
-set(${KIT}_EXPORT_DIRECTIVE "VTK_SLICER_${MODULE_NAME_UPPER}_MODULE_MRML_EXPORT")
-set(${KIT}_INCLUDE_DIRECTORIES)
+set( KIT ${PROJECT_NAME} )
 
-set(${KIT}_SRCS
+set( ${KIT}_EXPORT_DIRECTIVE "VTK_SLICER_${MODULE_NAME_UPPER}_MODULE_MRML_EXPORT" )
+set( ${KIT}_INCLUDE_DIRECTORIES )
+
+set( ${KIT}_SRCS
     vtkMRMLSpatialObjectsDisplayNode.cxx
     vtkMRMLSpatialObjectsDisplayNode.h )
 
-list(APPEND ${KIT}_SRCS
+list( APPEND ${KIT}_SRCS
      vtkMRMLSpatialObjectsDisplayPropertiesNode.cxx
      vtkMRMLSpatialObjectsDisplayPropertiesNode.h
      vtkMRMLSpatialObjectsGlyphDisplayNode.cxx
@@ -45,11 +46,10 @@ list(APPEND ${KIT}_SRCS
      vtkMRMLSpatialObjectsTubeDisplayNode.cxx
      vtkMRMLSpatialObjectsTubeDisplayNode.h )
 
-set(${KIT}_TARGET_LIBRARIES
+set( ${KIT}_TARGET_LIBRARIES
     ${ITK_LIBRARIES}
     ${MRML_LIBRARIES} )
 
-#-----------------------------------------------------------------------------
 SlicerMacroBuildModuleMRML(
   NAME ${KIT}
   EXPORT_DIRECTIVE ${${KIT}_EXPORT_DIRECTIVE}

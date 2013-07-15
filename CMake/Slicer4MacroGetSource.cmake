@@ -32,11 +32,7 @@ if( NOT SVNCOMMAND )
   set( SVNCOMMAND ${Subversion_SVN_EXECUTABLE} )
 endif( NOT SVNCOMMAND )
 
-macro( svnGetSlicerCLI FILENAME )
-  svnGetSlicerBase( "Modules/CLI/${FILENAME}" )
-endmacro( svnGetSlicerCLI FILENAME )
-
-macro( svnGetSlicerBase FILENAME )
+macro( Slicer4MacroGetSource FILENAME )
   set( svnCmd "co" )
   set( svnSite "http://svn.slicer.org/Slicer4/trunk/" )
   execute_process(
@@ -54,4 +50,8 @@ macro( svnGetSlicerBase FILENAME )
     message( "Output = ${svnOutput}" )
     message( FATAL "Result = ${svnResult}" )
   endif( svnError )
-endmacro( svnGetSlicerBase FILENAME )
+endmacro( Slicer4MacroGetSource FILENAME )
+
+macro( Slicer4MacroGetCLISource FILENAME )
+  Slicer4MacroGetSource( "Modules/CLI/${FILENAME}" )
+endmacro( Slicer4MacroGetCLISource FILENAME )

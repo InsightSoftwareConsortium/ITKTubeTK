@@ -23,10 +23,9 @@
 
 include_regular_expression( "^.*$" )
 
-Include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
+include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
-
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -36,90 +35,81 @@ set( PROJ_EXE
 set( IMAGECOMPARE_EXE
  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
 
-
-#######
 # Test1
-#######
-MIDAS_ADD_Test( ${MODULE_NAME}-Test1
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1
                ${PROJ_EXE}
                MIDAS{ES0015_Large.mha.md5}
                ${TEMP}/${MODULE_NAME}Test1.mha
                -m 10,10 -M 100,100 )
 
-MIDAS_ADD_Test( ${MODULE_NAME}-Test1-Compare
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
                ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test1.mha
                -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
-set_property(TEST ${MODULE_NAME}-Test1-Compare
+set_property( TEST ${MODULE_NAME}-Test1-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
-#######
 # Test2
-#######
-MIDAS_ADD_Test( ${MODULE_NAME}-Test2
+Midas3FunctionAddTest( ${MODULE_NAME}-Test2
                ${PROJ_EXE}
                MIDAS{ES0015_Large.mha.md5}
                ${TEMP}/${MODULE_NAME}Test2.mha
                -m 10,10 -s 91,91 )
 
-MIDAS_ADD_Test( ${MODULE_NAME}-Test2-Compare
+Midas3FunctionAddTest( ${MODULE_NAME}-Test2-Compare
                ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test2.mha
                -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
-set_property(TEST ${MODULE_NAME}-Test2-Compare
+set_property( TEST ${MODULE_NAME}-Test2-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
 
-#######
 # Test3
-#######
-MIDAS_ADD_Test( ${MODULE_NAME}-Test3
+Midas3FunctionAddTest( ${MODULE_NAME}-Test3
                ${PROJ_EXE}
                MIDAS{ES0015_Large.mha.md5}
                ${TEMP}/${MODULE_NAME}Test3.mha
                -m 15,15 -s 81,81 -b 5,5 )
 
-MIDAS_ADD_Test( ${MODULE_NAME}-Test3-Compare
+Midas3FunctionAddTest( ${MODULE_NAME}-Test3-Compare
                ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test3.mha
                -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
-set_property(TEST ${MODULE_NAME}-Test3-Compare
+set_property( TEST ${MODULE_NAME}-Test3-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test3 )
 
-#######
 # Test4
-#######
-MIDAS_ADD_Test( ${MODULE_NAME}-Test4
+Midas3FunctionAddTest( ${MODULE_NAME}-Test4
                ${PROJ_EXE}
                MIDAS{ES0015_Large.mha.md5}
                ${TEMP}/${MODULE_NAME}Test4
                -S 2,2 -b 5,5 )
 
-MIDAS_ADD_Test( ${MODULE_NAME}-Test4-Compare00
+Midas3FunctionAddTest( ${MODULE_NAME}-Test4-Compare00
                ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test4_00.mha
                -b MIDAS{${MODULE_NAME}Test4_00.mha.md5} )
-set_property(TEST ${MODULE_NAME}-Test4-Compare00
+set_property( TEST ${MODULE_NAME}-Test4-Compare00
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
 
-MIDAS_ADD_Test( ${MODULE_NAME}-Test4-Compare01
+Midas3FunctionAddTest( ${MODULE_NAME}-Test4-Compare01
                ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test4_01.mha
                -b MIDAS{${MODULE_NAME}Test4_01.mha.md5} )
-set_property(TEST ${MODULE_NAME}-Test4-Compare01
+set_property( TEST ${MODULE_NAME}-Test4-Compare01
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
 
-MIDAS_ADD_Test( ${MODULE_NAME}-Test4-Compare10
+Midas3FunctionAddTest( ${MODULE_NAME}-Test4-Compare10
                ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test4_10.mha
                -b MIDAS{${MODULE_NAME}Test4_10.mha.md5} )
-set_property(TEST ${MODULE_NAME}-Test4-Compare10
+set_property( TEST ${MODULE_NAME}-Test4-Compare10
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
 
-MIDAS_ADD_Test( ${MODULE_NAME}-Test4-Compare11
+Midas3FunctionAddTest( ${MODULE_NAME}-Test4-Compare11
                ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test4_11.mha
                -b MIDAS{${MODULE_NAME}Test4_11.mha.md5} )
-set_property(TEST ${MODULE_NAME}-Test4-Compare11
+set_property( TEST ${MODULE_NAME}-Test4-Compare11
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
 
 # Needs ParameterSerializer
@@ -127,34 +117,34 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
   #######
   # Test5
   #######
-  MIDAS_ADD_Test( ${MODULE_NAME}-Test5
+  Midas3FunctionAddTest( ${MODULE_NAME}-Test5
                  ${PROJ_EXE}
                  MIDAS{ES0015_Large.mha.md5}
                  ${TEMP}/${MODULE_NAME}Test5.mha
                  --parameterstorestore ${CMAKE_CURRENT_SOURCE_DIR}/CropImage-Test5.json
                  -b 5,5 )
 
-  MIDAS_ADD_Test( ${MODULE_NAME}-Test5-Compare
+  Midas3FunctionAddTest( ${MODULE_NAME}-Test5-Compare
                  ${IMAGECOMPARE_EXE}
                  -t ${TEMP}/${MODULE_NAME}Test5.mha
                  -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
-  set_property(TEST ${MODULE_NAME}-Test5-Compare
+  set_property( TEST ${MODULE_NAME}-Test5-Compare
                         APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test5 )
 
   #######
   # Test6
   #######
-  MIDAS_ADD_Test( ${MODULE_NAME}-Test6
+  Midas3FunctionAddTest( ${MODULE_NAME}-Test6
                  ${PROJ_EXE}
                  MIDAS{ES0015_Large.mha.md5}
                  ${TEMP}/${MODULE_NAME}Test6.mha
                  --parameterstorestore ${CMAKE_CURRENT_SOURCE_DIR}/CropImage-Test6.json
                  -b 5,5 )
 
-  MIDAS_ADD_Test( ${MODULE_NAME}-Test6-Compare
+  Midas3FunctionAddTest( ${MODULE_NAME}-Test6-Compare
                  ${IMAGECOMPARE_EXE}
                  -t ${TEMP}/${MODULE_NAME}Test6.mha
                  -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
-  set_property(TEST ${MODULE_NAME}-Test6-Compare
+  set_property( TEST ${MODULE_NAME}-Test6-Compare
                         APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test6 )
-endif()
+endif( NOT TubeTK_BUILD_SLICER_EXTENSION )

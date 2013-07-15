@@ -23,9 +23,9 @@
 
 include_regular_expression( "^.*$" )
 
-Include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
+include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -38,19 +38,15 @@ set( TEXTCOMPARE_EXE
 set( IMAGECOMPARE_EXE
      ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
 
-#######
 # Test1
-#######
-MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1
                 ${PROJ_EXE}
                   MIDAS{VesselNetwork-In-SPL2012-ReferenceSpace.tre.md5}
                   MIDAS{Exemplary-CVT-Tessellation.mha.md5}
                   ${TEMP}/${MODULE_NAME}-VesselNetwork-In-SPL2012-ReferenceSpace.grp )
 
-#######
 # Test1-Compare
-#######
-MIDAS_ADD_Test( ${MODULE_NAME}-Test1-Compare-00
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-00
                   ${TEXTCOMPARE_EXE}
                     -t ${TEMP}/${MODULE_NAME}-VesselNetwork-In-SPL2012-ReferenceSpace.grp
                     -b MIDAS{${MODULE_NAME}Test1.grp.md5} )
@@ -58,7 +54,7 @@ MIDAS_ADD_Test( ${MODULE_NAME}-Test1-Compare-00
 set_property( TEST ${MODULE_NAME}-Test1-Compare-00
               APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
-MIDAS_ADD_Test( ${MODULE_NAME}-Test1-Compare-01
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-01
                   ${TEXTCOMPARE_EXE}
                     -t ${TEMP}/${MODULE_NAME}-VesselNetwork-In-SPL2012-ReferenceSpace.grp.brc
                     -b MIDAS{${MODULE_NAME}Test1.grp.brc.md5} )
@@ -66,7 +62,7 @@ MIDAS_ADD_Test( ${MODULE_NAME}-Test1-Compare-01
 set_property( TEST ${MODULE_NAME}-Test1-Compare-01
               APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
-MIDAS_ADD_Test( ${MODULE_NAME}-Test1-Compare-02
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-02
                   ${TEXTCOMPARE_EXE}
                     -t ${TEMP}/${MODULE_NAME}-VesselNetwork-In-SPL2012-ReferenceSpace.grp.mat
                     -b MIDAS{${MODULE_NAME}Test1.grp.mat.md5} )
@@ -74,7 +70,7 @@ MIDAS_ADD_Test( ${MODULE_NAME}-Test1-Compare-02
 set_property( TEST ${MODULE_NAME}-Test1-Compare-02
               APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
-MIDAS_ADD_Test( ${MODULE_NAME}-Test1-Compare-03
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-03
                   ${TEXTCOMPARE_EXE}
                     -t ${TEMP}/${MODULE_NAME}-VesselNetwork-In-SPL2012-ReferenceSpace.grp.rot
                     -b MIDAS{${MODULE_NAME}Test1.grp.rot.md5} )

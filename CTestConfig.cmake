@@ -21,14 +21,14 @@
 #
 ##############################################################################
 
-# This file should be placed in the root directory of your project.
-# Then modify the CMakeLists.txt file in the root directory of your
-# project to incorporate the testing dashboard.
+# This file should be placed in the root directory of your project. Modify the
+# CMakeLists.txt file in the root directory of yourvproject to incorporate the
+# testing dashboard.
 #
-# The following are required to uses Dart and the CDash dashboard:
+# The following are required to use the Dart and the CDash dashboard:
 #
-#   ENABLE_TESTING()
-#   INCLUDE( CTest )
+#   enable_testing()
+#   include( CTest )
 
 set( CTEST_PROJECT_NAME "TubeTK" )
 set( CTEST_NIGHTLY_START_TIME "23:59:00 EDT" )

@@ -28,7 +28,7 @@
 if( TubeTK_BUILD_SETTINGS_FILE )
   include( ${CMAKE_ROOT}/Modules/CMakeImportBuildSettings.cmake )
   cmake_import_build_settings( ${TubeTK_BUILD_SETTINGS_FILE} )
-endif()
+endif( TubeTK_BUILD_SETTINGS_FILE )
 
 # TubeTK compiler flags
 set( CMAKE_C_FLAGS "@CMAKE_C_FLAGS@" )
@@ -73,8 +73,8 @@ set( QT_QMAKE_EXECUTABLE "@QT_QMAKE_EXECUTABLE@" )
 
 # Slicer variables and macros as provided by TubeTK
 # Needs to come after the definition of SlicerExecutionModel_DIR.
-set( TubeTK_USE_Slicer "@TubeTK_USE_Slicer@")
+set( TubeTK_USE_Slicer "@TubeTK_USE_Slicer@" )
 if( TubeTK_USE_Slicer )
   include( "@TubeTK_CMAKE_EXTENSIONS_DIR@/Slicer4Config.cmake" )
 endif( TubeTK_USE_Slicer )
-set( TubeTK_Slicer_SOURCE_DIR "@TubeTK_Slicer_SOURCE_DIR@")
+set( TubeTK_Slicer_SOURCE_DIR "@TubeTK_Slicer_SOURCE_DIR@" )

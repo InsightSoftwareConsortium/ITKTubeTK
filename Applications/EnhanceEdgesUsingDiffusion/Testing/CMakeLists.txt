@@ -23,10 +23,9 @@
 
 include_regular_expression( "^.*$" )
 
-Include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
+include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
-
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -40,83 +39,67 @@ set( IMAGECOMPARE_EXE
 if( UNIX AND NOT APPLE AND NOT CYGWIN AND CMAKE_SIZEOF_VOID_P EQUAL 8 )
   set( imageCompareTolerance 0 )
 # ... and give a bit of tolerance for 32-bit machines or windows/mac
-else()
+else( UNIX AND NOT APPLE AND NOT CYGWIN AND CMAKE_SIZEOF_VOID_P EQUAL 8 )
   set( imageCompareTolerance 0.000001 )
-endif()
+endif( UNIX AND NOT APPLE AND NOT CYGWIN AND CMAKE_SIZEOF_VOID_P EQUAL 8 )
 
-#######
 # Test1
-#######
-MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1
             ${PROJ_EXE}
                MIDAS{CroppedWholeLungCTScan.mhd.md5}
                ${TEMP}/${MODULE_NAME}-Test1.mha
                MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5} )
 
-#######
 # Test1-Compare
-#######
-MIDAS_ADD_TEST( ${MODULE_NAME}-Test1-Compare
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}-Test1.mha
                -b MIDAS{${MODULE_NAME}-Test1.mha.md5}
                -i ${imageCompareTolerance} )
-set_property(TEST ${MODULE_NAME}-Test1-Compare
+set_property( TEST ${MODULE_NAME}-Test1-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
-#######
 # Test2
-#######
-MIDAS_ADD_TEST( ${MODULE_NAME}-Test2
+Midas3FunctionAddTest( ${MODULE_NAME}-Test2
             ${PROJ_EXE}
                MIDAS{SyntheticTubeImage.mha.md5}
                ${TEMP}/${MODULE_NAME}-Test2.mha )
 
-#######
 # Test2-Compare
-#######
-MIDAS_ADD_TEST( ${MODULE_NAME}-Test2-Compare
+Midas3FunctionAddTest( ${MODULE_NAME}-Test2-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}-Test2.mha
                -b MIDAS{${MODULE_NAME}-Test2.mha.md5}
                -i ${imageCompareTolerance} )
-set_property(TEST ${MODULE_NAME}-Test2-Compare
+set_property( TEST ${MODULE_NAME}-Test2-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
 
-#######
 # Test3
-#######
-MIDAS_ADD_TEST( ${MODULE_NAME}-Test3
+Midas3FunctionAddTest( ${MODULE_NAME}-Test3
             ${PROJ_EXE}
                MIDAS{SyntheticTubePlusSurfaceImage.mha.md5}
                ${TEMP}/${MODULE_NAME}-Test3.mha )
 
-#######
 # Test3-Compare
-#######
-MIDAS_ADD_TEST( ${MODULE_NAME}-Test3-Compare
+Midas3FunctionAddTest( ${MODULE_NAME}-Test3-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}-Test3.mha
                -b MIDAS{${MODULE_NAME}-Test3.mha.md5}
                -i ${imageCompareTolerance} )
-set_property(TEST ${MODULE_NAME}-Test3-Compare
+set_property( TEST ${MODULE_NAME}-Test3-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test3 )
 
-#######
 # Test4
-#######
-MIDAS_ADD_TEST( ${MODULE_NAME}-Test4
+Midas3FunctionAddTest( ${MODULE_NAME}-Test4
             ${PROJ_EXE}
                MIDAS{SyntheticTubePlusSurfaceImage_oriented.mha.md5}
                ${TEMP}/${MODULE_NAME}-Test4.mha )
 
-#######
 # Test4-Compare
-#######
-MIDAS_ADD_TEST( ${MODULE_NAME}-Test4-Compare
+Midas3FunctionAddTest( ${MODULE_NAME}-Test4-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}-Test4.mha
                -b MIDAS{${MODULE_NAME}-Test4.mha.md5}
                -i ${imageCompareTolerance} )
-set_property(TEST ${MODULE_NAME}-Test4-Compare
+set_property( TEST ${MODULE_NAME}-Test4-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
