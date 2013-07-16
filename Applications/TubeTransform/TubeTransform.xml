@@ -2,13 +2,12 @@
 <executable>
   <category>TubeTK</category>
   <title>Spatially Transform Tubes (TubeTK)</title>
-  <description>Applies a transform / displacement field to tubes (i.e., spatial objects).</description>
+  <description>Applies a transform or displacement field to tubes (i.e., spatial objects).</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
   <contributor>Stephen R. Aylward (Kitware)</contributor>
   <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
-
   <parameters>
     <label>IO</label>
     <description>Input/output parameters.</description>
@@ -20,8 +19,7 @@
     <string>
       <name>transformFile</name>
       <longflag>transformFile</longflag>
-      <description>Transform to apply (in ITK format). NOTE: In case a displacement field is specified, any additional transforms are currently ignored!
-      </description>
+      <description>Transform to apply (in ITK format). When a displacement field is specified, any additional transforms are currently ignored.</description>
     </string>
     <file>
       <name>outputTubeFile</name>
@@ -30,16 +28,16 @@
     </file>
     <string>
       <name>displacementField</name>
+      <label>Displacement Field</label>
       <longflag>displacementField</longflag>
       <description>Specify the displacement field (e.g., generated using ANTS).</description>
     </string>
-	  <boolean>
-	    <name>useInverseTransform</name>
-	    <label>Use the inverse of the loaded transform</label>
-	    <longflag>useInverseTransform</longflag>
-      <description>Instead of using the transform directly, compute it's inverse and apply. NOTE: In case of an displacement field, the USER is responsible to input the inverse displacement field!
-      </description>
+    <boolean>
+      <name>useInverseTransform</name>
+      <label>Use the Inverse of the Loaded Transform</label>
+      <longflag>useInverseTransform</longflag>
+      <description>Instead of using the transform directly, compute its inverse and apply. For a displacement field, the user is responsible for inputting the inverse displacement field.</description>
       <default>false</default>
-	  </boolean>
+    </boolean>
   </parameters>
 </executable>

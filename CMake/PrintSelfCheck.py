@@ -7,9 +7,9 @@ from __future__ import with_statement
 #
 # Verbose Levels:
 #
-#	0:	No extra printing
-#	1:	Print basic extra information
-#	2:	Print lots of details
+#  0:  No extra printing
+#  1:  Print basic extra information
+#  2:  Print lots of details
 #
 VERBOSE = 2
 
