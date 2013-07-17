@@ -63,7 +63,7 @@ public:
   itkSetStringMacro( Comment );
 
   /** Copy the information from the specified data object. */
-  virtual void CopyInformation( const DataObject * data )
+  virtual void CopyInformation( const DataObject * itkNotUsed( data ) )
     {
     }
 
@@ -88,7 +88,7 @@ public:
 
   /** Set the requested region to match the requested region of the specified
       data object, but note that this object does not use region information. */
-  virtual void SetRequestedRegion( const DataObject * data )
+  virtual void SetRequestedRegion( const DataObject * itkNotUsed( data ) )
     {
     }
 

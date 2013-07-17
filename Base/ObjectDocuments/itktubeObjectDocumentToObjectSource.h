@@ -92,13 +92,14 @@ public:
 
   /* Graft the specified data object onto the specified indexed output, but note
      that this function should be implemented by derived classes. */
-  virtual void GraftNthOutput( unsigned int index, DataObject * data )
+  virtual void GraftNthOutput( unsigned int itkNotUsed( index ),
+                               DataObject * itkNotUsed( data ) )
     {
     }
 
   /* Graft the specified data object onto the output, but note that this
      function should be implemented by derived classes. */
-  virtual void GraftOutput( DataObject * data )
+  virtual void GraftOutput( DataObject * itkNotUsed( data ) )
     {
     }
 
