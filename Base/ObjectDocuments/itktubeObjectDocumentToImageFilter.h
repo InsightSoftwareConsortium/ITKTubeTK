@@ -82,6 +82,7 @@ public:
   itkSetObjectMacro( Interpolator, InterpolateImageFunctionType );
 
   /** Return the output. */
+  using Superclass::GetOutput;
   ImageType * GetOutput( void );
 
 protected:
