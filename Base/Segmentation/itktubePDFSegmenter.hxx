@@ -209,7 +209,7 @@ PDFSegmenter< TImage, N, TLabelMap >
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-const typename Image< float, TImage::ImageDimension >::Pointer
+typename Image< float, TImage::ImageDimension >::Pointer
 PDFSegmenter< TImage, N, TLabelMap >
 ::GetClassProbabilityForInput( unsigned int classNum ) const
 {
@@ -221,18 +221,15 @@ PDFSegmenter< TImage, N, TLabelMap >
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-const typename PDFSegmenter< TImage, N, TLabelMap >::PDFImageType::Pointer
+typename PDFSegmenter< TImage, N, TLabelMap >::PDFImageType::Pointer
 PDFSegmenter< TImage, N, TLabelMap >
-::GetClassPDFImage( unsigned int classNum )
+::GetClassPDFImage( unsigned int classNum ) const
 {
   if( classNum < m_InClassHistogram.size() )
     {
     return m_InClassHistogram[classNum];
     }
-  else
-    {
-    return NULL;
-    }
+  return NULL;
 }
 
 template< class TImage, unsigned int N, class TLabelMap >

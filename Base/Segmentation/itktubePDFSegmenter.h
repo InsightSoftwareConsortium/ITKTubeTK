@@ -114,11 +114,12 @@ public:
   itkSetMacro( OutlierRejectPortion, double );
   itkSetMacro( Draft, bool );
 
-  const typename ProbabilityImageType::Pointer
+  typename ProbabilityImageType::Pointer
     GetClassProbabilityForInput( unsigned int classNum ) const;
 
-  const typename PDFImageType::Pointer GetClassPDFImage(
-    unsigned int classNum );
+  typename PDFImageType::Pointer GetClassPDFImage(
+    unsigned int classNum ) const;
+
   void SetClassPDFImage( unsigned int classNum,
     typename PDFImageType::Pointer classPDF );
 
