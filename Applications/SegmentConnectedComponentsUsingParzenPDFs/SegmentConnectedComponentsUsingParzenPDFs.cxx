@@ -158,9 +158,9 @@ int DoIt( int argc, char * argv[] )
     if( !CheckImageAttributes( reader->GetOutput(),
         inLabelMapReader->GetOutput() ) )
       {
-      std::cout << "Image attributes of inputVolume" << i+1 <<
-        " and labelmap do not match.  Please check size, spacing, origin."
-        << std::endl;
+      std::cout << "Image attributes of inputVolume" << i+1
+        << " and label map do not match.  Please check size, spacing, "
+        << "origin." << std::endl;
       return EXIT_FAILURE;
       }
     pdfSegmenter->SetInput( i, reader->GetOutput() );

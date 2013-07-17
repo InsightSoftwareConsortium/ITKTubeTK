@@ -97,7 +97,7 @@ int DoIt( int argc, char * argv[] )
 
   if( !labelmap.empty() )
     {
-    typename LabelmapReaderType::Pointer  inLabelmapReader =
+    typename LabelmapReaderType::Pointer inLabelmapReader =
       LabelmapReaderType::New();
     inLabelmapReader->SetFileName( labelmap.c_str() );
     inLabelmapReader->Update();
@@ -172,7 +172,6 @@ int DoIt( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-// Main
 int main( int argc, char * argv[] )
 {
   PARSE_ARGS;

@@ -334,8 +334,8 @@ RidgeSeedFilter< TImage, TLabelMap >
   resultIter.GoToBegin();
   while( ! resultIter.IsAtEnd() )
     {
-    resultIter.Set( classIter.Get() *
-      ( classIter.Get() - resultIter.Get() ) / ( classIter.Get() ) );
+    resultIter.Set( classIter.Get()
+      * ( classIter.Get() - resultIter.Get() ) / ( classIter.Get() ) );
     ++resultIter;
     ++classIter;
     }

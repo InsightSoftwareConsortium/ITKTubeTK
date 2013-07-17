@@ -47,7 +47,7 @@
     <double-vector>
       <name>tubeScales</name>
       <description>Scales at which tube features are computed.</description>
-      <label>Tube scales</label>
+      <label>Tube Scales</label>
       <default>1,2,4</default>
       <longflag>tubeScales</longflag>
     </double-vector>
@@ -67,14 +67,14 @@
     </double-vector>
     <string>
       <name>saveDiscriminantInfo</name>
-      <description>Save learned info to a file.</description>
-      <label>Save learned info to file</label>
+      <description>Save learned enhancement parameters to a file.</description>
+      <label>Save Information to File</label>
       <longflag>saveDiscriminantInfo</longflag>
     </string>
     <string>
       <name>loadDiscriminantInfo</name>
-      <description>Load learned discriminant info from a file.</description>
-      <label>Load learned discriminant info from file</label>
+      <description>Load learned enhancement parameters from a file.</description>
+      <label>Load Information from File</label>
       <longflag>loadDiscriminantInfo</longflag>
     </string>
   </parameters>

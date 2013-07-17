@@ -140,27 +140,27 @@ public:
    * tric overlap measures
    */
   /** measures over all labels */
-  RealType GetTotalOverlap( void );
-  RealType GetUnionOverlap( void );
-  RealType GetMeanOverlap( void );
-  RealType GetSimilarity( void );
-  RealType GetFalseNegativeError( void );
-  RealType GetFalsePositiveError( void );
+  RealType GetTotalOverlap( void ) const;
+  RealType GetUnionOverlap( void ) const;
+  RealType GetMeanOverlap( void ) const;
+  RealType GetSimilarity( void ) const;
+  RealType GetFalseNegativeError( void ) const;
+  RealType GetFalsePositiveError( void ) const;
   /** measures over individual labels */
-  RealType GetTargetOverlap( LabelType );
-  RealType GetUnionOverlap( LabelType );
-  RealType GetMeanOverlap( LabelType );
-  RealType GetSimilarity( LabelType );
-  RealType GetFalseNegativeError( LabelType );
-  RealType GetFalsePositiveError( LabelType );
+  RealType GetTargetOverlap( LabelType ) const;
+  RealType GetUnionOverlap( LabelType ) const;
+  RealType GetMeanOverlap( LabelType ) const;
+  RealType GetSimilarity( LabelType ) const;
+  RealType GetFalseNegativeError( LabelType ) const;
+  RealType GetFalsePositiveError( LabelType ) const;
   /** alternative names */
-  RealType GetJaccardCoefficient( void )
+  RealType GetJaccardCoefficient( void ) const
     { return this->GetUnionOverlap(); }
-  RealType GetJaccardCoefficient( LabelType label )
+  RealType GetJaccardCoefficient( LabelType label ) const
     { return this->GetUnionOverlap( label ); }
-  RealType GetDiceCoefficient( void )
+  RealType GetDiceCoefficient( void ) const
     { return this->GetMeanOverlap(); }
-  RealType GetDiceCoefficient( LabelType label )
+  RealType GetDiceCoefficient( LabelType label ) const
     { return this->GetMeanOverlap( label ); }
 
 

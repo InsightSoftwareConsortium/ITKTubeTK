@@ -79,7 +79,7 @@ int itktubeNJetFeatureVectorGeneratorTest( int argc, char * argv[] )
     {
     maskReader->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject & e )
     {
     std::cout << "Exception caught during input read:" << std::endl << e;
     return EXIT_FAILURE;
@@ -107,7 +107,7 @@ int itktubeNJetFeatureVectorGeneratorTest( int argc, char * argv[] )
     {
     writer->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject & e )
     {
     std::cout << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;

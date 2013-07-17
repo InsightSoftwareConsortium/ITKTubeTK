@@ -145,7 +145,7 @@ PDFSegmenter< TImage, N, TLabelMap >
 template< class TImage, unsigned int N, class TLabelMap >
 unsigned int
 PDFSegmenter< TImage, N, TLabelMap >
-::GetNumberOfObjectIds( void )
+::GetNumberOfObjectIds( void ) const
 {
   return m_ObjectIdList.size();
 }
@@ -153,7 +153,7 @@ PDFSegmenter< TImage, N, TLabelMap >
 template< class TImage, unsigned int N, class TLabelMap >
 unsigned int
 PDFSegmenter< TImage, N, TLabelMap >
-::GetNumberOfClasses( void )
+::GetNumberOfClasses( void ) const
 {
   return m_ProbabilityImageVector.size();
 }
@@ -250,7 +250,7 @@ PDFSegmenter< TImage, N, TLabelMap >
 template< class TImage, unsigned int N, class TLabelMap >
 double
 PDFSegmenter< TImage, N, TLabelMap >
-::GetPDFBinMin( unsigned int featureNum )
+::GetPDFBinMin( unsigned int featureNum ) const
 {
   if( featureNum < N )
     {
@@ -276,7 +276,7 @@ PDFSegmenter< TImage, N, TLabelMap >
 template< class TImage, unsigned int N, class TLabelMap >
 double
 PDFSegmenter< TImage, N, TLabelMap >
-::GetPDFBinScale( unsigned int featureNum )
+::GetPDFBinScale( unsigned int featureNum ) const
 {
   if( featureNum < N )
     {
@@ -724,7 +724,7 @@ PDFSegmenter< TImage, N, TLabelMap >
 template< class TImage, unsigned int N, class TLabelMap >
 typename PDFSegmenter< TImage, N, TLabelMap >::LabeledFeatureSpaceType::Pointer
 PDFSegmenter< TImage, N, TLabelMap >
-::GetLabeledFeatureSpace( void )
+::GetLabeledFeatureSpace( void ) const
 {
   return m_LabeledFeatureSpace;
 }

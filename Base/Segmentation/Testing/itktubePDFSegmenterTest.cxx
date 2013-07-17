@@ -32,9 +32,9 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
 {
   if( argc != 12 )
     {
-    std::cerr << "Missing arguments." << std::endl;
-    std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0]
+    std::cout << "Missing arguments." << std::endl;
+    std::cout << "Usage: " << std::endl;
+    std::cout << argv[0]
       << " inputImage1 inputImage2 inputLabelMap force blur outputProbImg0"
       << " outputPDF0 outputProbImg1 outputPDF1 outputLabelMap"
       << " labeledFeatureSpace"
@@ -66,9 +66,10 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
     {
     reader->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during input read:" << std::endl << e;
+    std::cout << "Exception caught during input read:" << std::endl << e
+      << std::endl;
     return EXIT_FAILURE;
     }
   ImageType::Pointer inputImage = reader->GetOutput();
@@ -79,10 +80,10 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
     {
     reader2->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during input image2 read:" << std::endl
-      << e;
+    std::cout << "Exception caught during input image2 read:" << std::endl
+      << e << std::endl;
     return EXIT_FAILURE;
     }
   ImageType::Pointer inputImage2 = reader2->GetOutput();
@@ -94,9 +95,10 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
     {
     labelmapReader->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during input read:\n"  << e;
+    std::cout << "Exception caught during input read:" << std::endl << e
+      << std::endl;
     return EXIT_FAILURE;
     }
   ImageType::Pointer labelmapImage = labelmapReader->GetOutput();
@@ -139,9 +141,10 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
     {
     probWriter0->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cout << "Exception caught during write:" << std::endl << e
+      << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -153,9 +156,10 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
     {
     pdfWriter0->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cout << "Exception caught during write:" << std::endl << e
+      << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -167,9 +171,10 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
     {
     probWriter1->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cout << "Exception caught during write:" << std::endl << e
+      << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -181,9 +186,10 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
     {
     pdfWriter1->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cout << "Exception caught during write:" << std::endl << e
+      << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -195,9 +201,10 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
     {
     labelmapWriter->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cout << "Exception caught during write:" << std::endl << e
+      << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -211,9 +218,10 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
     {
     labeledFeatureSpaceWriter->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cout << "Exception caught during write:" << std::endl << e
+      << std::endl;
     return EXIT_FAILURE;
     }
 
