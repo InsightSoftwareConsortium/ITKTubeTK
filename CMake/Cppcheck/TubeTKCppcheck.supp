@@ -7,5 +7,6 @@ unusedFunction:*/Base/Numerics/tubeSpline1D.cxx:196
 unusedFunction:*/Base/Numerics/tubeSplineND.cxx:990
 unusedFunction:*/Base/ObjectDocuments/tubeMetaObjectDocument.cxx:89
 unusedFunction:*/Base/ObjectDocuments/tubeOptionList.cxx
+unusedFunction:*/Base/Python/tubetk/_tubetk_numpy.cxx:316
 unusedFunction:*/Base/Registration/Testing/itktubeAnisotropicDiffusiveRegistrationGenerateTestingImages.cxx:224
 variableScope:*/Applications/ConvertDICOMSeriesToImages/ConvertDICOMSeriesToImages.cxx:461
