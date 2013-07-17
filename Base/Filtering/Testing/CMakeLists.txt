@@ -83,7 +83,7 @@ add_test( itktubeSheetnessMeasureImageFilterTest
   ${BASE_FILTERING_TESTS}
     itktubeSheetnessMeasureImageFilterTest )
 
-MIDAS_ADD_TEST( itktubeExtractTubePointsSpatialObjectFilterTest
+Midas3FunctionAddTest( itktubeExtractTubePointsSpatialObjectFilterTest
   ${BASE_FILTERING_TESTS}
     itktubeExtractTubePointsSpatialObjectFilterTest
       MIDAS{VascularNetwork.tre.md5} )
