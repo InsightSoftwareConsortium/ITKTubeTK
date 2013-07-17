@@ -1,27 +1,27 @@
 
 {
-	"ParameterGroups" :
-	[
-		{
-			"Label" : "Crop Filter",
-			"Parameters" :
-			[
+  "ParameterGroups" :
+  [
+    {
+      "Label" : "Crop Filter",
+      "Parameters" :
+      [
 
-				{
-					"Name" : "min",
-					"Value" : [ 15, 15 ]
-				},
+        {
+          "Name" : "min",
+          "Value" : [ 15, 15 ]
+        },
 
-				{
-					"Name" : "size",
-					"Value" : [ 81, 81 ]
-				},
+        {
+          "Name" : "size",
+          "Value" : [ 81, 81 ]
+        },
 
-				{
-					"Name" : "boundary",
-					"Value" : [ 7, 7 ]
-				}
-			]
-		}
-	]
+        {
+          "Name" : "boundary",
+          "Value" : [ 7, 7 ]
+        }
+      ]
+    }
+  ]
 }
