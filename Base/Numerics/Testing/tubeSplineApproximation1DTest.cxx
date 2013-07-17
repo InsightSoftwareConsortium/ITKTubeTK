@@ -46,7 +46,7 @@ public:
     {
     cVal = 0;
     }
-  const double & value( const int & x )
+  const double & Value( const int & x )
     {
     cVal = vcl_sin((double)x);
     return cVal;
@@ -64,7 +64,7 @@ public:
     {
     cVal = 0;
     }
-  const double & value( const double & x )
+  const double & Value( const double & x )
     {
     cVal = vcl_sin((double)x);
     return cVal;
@@ -82,7 +82,7 @@ public:
     {
     cDeriv = 0;
     }
-  const double & value( const double & x )
+  const double & Value( const double & x )
     {
     cDeriv = vcl_cos((double)x);
     return cDeriv;
@@ -105,28 +105,28 @@ int tubeSplineApproximation1DTest( int argc, char * argv[] )
   MySA1DFuncD * myFuncD = new MySA1DFuncD();
 
   tube::BrentOptimizer1D * opt = new tube::BrentOptimizer1D();
-  opt->smallDouble( epsilon );
-  opt->searchForMin( true );
-  opt->xStep( 0.01 );
-  opt->tolerance( 0.0000001 );
+  opt->SetEpsilon( epsilon );
+  opt->SetSearchForMin( true );
+  opt->SetXStep( 0.01 );
+  opt->SetTolerance( 0.0000001 );
 
   tube::SplineApproximation1D spline( myFunc, opt );
 
   int returnStatus = EXIT_SUCCESS;
 
-  spline.clipEdge( true );
+  spline.SetClip( true );
 
-  spline.xMin( -3 );
-  if( spline.xMin() != -3 )
+  spline.SetXMin( -3 );
+  if( spline.GetXMin() != -3 )
     {
-    std::cout << "xMin should be -3 and not " << spline.xMin() << std::endl;
+    std::cout << "xMin should be -3 and not " << spline.GetXMin() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
-  spline.xMax( 6 );
-  if( spline.xMax() != 6 )
+  spline.SetXMax( 6 );
+  if( spline.GetXMax() != 6 )
     {
-    std::cout << "xMax should be 6 and not " << spline.xMax() << std::endl;
+    std::cout << "xMax should be 6 and not " << spline.GetXMax() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
@@ -172,37 +172,37 @@ int tubeSplineApproximation1DTest( int argc, char * argv[] )
       default:
       case 0:
         {
-        itIm.Set( spline.value(x) );
+        itIm.Set( spline.Value(x) );
         break;
         }
       case 1:
         {
-        itIm.Set( myFuncV->value(x) );
+        itIm.Set( myFuncV->Value(x) );
         break;
         }
       case 2:
         {
-        itIm.Set( spline.valueD(x) );
+        itIm.Set( spline.ValueD(x) );
         break;
         }
       case 3:
         {
-        itIm.Set( myFuncD->value(x) );
+        itIm.Set( myFuncD->Value(x) );
         break;
         }
       case 4:
         {
-        itIm.Set( spline.valueD2(x) );
+        itIm.Set( spline.ValueD2(x) );
         break;
         }
       case 5:
         {
-        itIm.Set( spline.curv(x) );
+        itIm.Set( spline.Curv(x) );
         break;
         }
       case 6:
         {
-        itIm.Set( spline.valueJet(x, &d, &d2) );
+        itIm.Set( spline.ValueJet(x, &d, &d2) );
         break;
         }
       }
@@ -226,7 +226,7 @@ int tubeSplineApproximation1DTest( int argc, char * argv[] )
     x = rndGen->GetNormalVariate( 0.0, 0.5 );
 
     double xVal = 0;
-    if( !spline.extreme( &x, &xVal ) )
+    if( !spline.Extreme( &x, &xVal ) )
       {
       std::cout << "Spline.Extreme() returned false." << std::endl;
       std::cout << "                x = " << x << std::endl;

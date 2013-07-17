@@ -37,30 +37,52 @@ namespace tube
 
 class BrentOptimizer1D : public Optimizer1D
 {
-
 public:
 
-  BrentOptimizer1D( void );
-  BrentOptimizer1D( UserFunction< double, double > * newFuncVal,
-              UserFunction< double, double > * newFuncDeriv );
+  typedef BrentOptimizer1D                    Self;
+  typedef Optimizer1D                         Superclass;
+  typedef Self *                              Pointer;
+  typedef const Self *                        ConstPointer;
 
+  typedef Superclass::ValueFunctionType       ValueFunctionType;
+  typedef Superclass::DerivativeFunctionType  DerivativeFunctionType;
+
+  /** Return the type of this object. */
+  tubeTypeMacro( BrentOptimizer1D );
+
+  /** Constructor. */
+  BrentOptimizer1D( void );
+
+  /** Constructor. */
+  BrentOptimizer1D( ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv );
+
+  /** Destructor. */
   ~BrentOptimizer1D( void );
 
-  void use( UserFunction< double, double > * newFuncVal,
-            UserFunction< double, double > * newFuncDeriv );
+  tubeGetMacro( Epsilon, double );
 
-  double   smallDouble( void );
-  void     smallDouble( double newSmall );
+  tubeSetMacro( Epsilon, double );
 
+  void Use( ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv );
 
 protected:
 
-  void m_Move( double & a, double & b, double & c,
-              double d, double e, double f );
+  /** Print out information about this object. */
+  void PrintSelf( std::ostream & os, Indent indent ) const;
+
+  void m_Move( double & a, double & b, double & c, double d, double e, double f );
 
   bool m_Extreme( double * x, double * xVal );
 
-  double m_Small;
+private:
+
+  // Copy constructor not implemented.
+  BrentOptimizer1D( const Self & self );
+
+  // Copy assignment operator not implemented.
+  void operator=( const Self & self );
+
+  double m_Epsilon;
 
 }; // End class BrentOptimizer1D
 

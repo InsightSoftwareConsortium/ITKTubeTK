@@ -26,57 +26,85 @@ limitations under the License.
 #include "tubeOptimizer1D.h"
 #include "tubeUserFunction.h"
 
-#include <iostream>
-
 namespace tube
 {
 
-class OptValFuncND : public UserFunction< double, double >
+class OptimizerNDValueFunction : public UserFunction< double, double >
 {
 public:
-  OptValFuncND( OptimizerND * newOpt )
+
+  typedef OptimizerNDValueFunction  Self;
+  typedef UserFunction              Superclass;
+  typedef Self *                    Pointer;
+  typedef const Self *              ConstPointer;
+
+  typedef double                    InputType;
+  typedef double                    OutputType;
+
+  tubeTypeMacro( OptimizerNDValueFunction );
+
+  OptimizerNDValueFunction( OptimizerND::Pointer optimizer )
     {
-    m_Opt = newOpt;
-    m_Val = 0;
+    m_Optimizer = optimizer;
+    m_Value = 0.0;
     }
 
-  const double & value( const double & x )
+  const OutputType & Value( const InputType & input )
     {
-    m_Val = m_Opt->funcVal( x );
-    return m_Val;
+    m_Value = m_Optimizer->FuncVal( input );
+    return m_Value;
     }
 
 private:
-  OptimizerND * m_Opt;
-  double        m_Val;
 
-}; // End class OptValFuncND
+  OptimizerNDValueFunction( const Self & self );
+  void operator=( const Self & self );
 
-class OptDerivFuncND : public UserFunction< double, double >
+  OptimizerND::Pointer  m_Optimizer;
+  OutputType            m_Value;
+
+}; // End class OptimizerNDValueFunction
+
+class OptimizerNDDerivativeFunction : public UserFunction< double, double >
 {
 public:
-  OptDerivFuncND( OptimizerND * newOpt )
+
+  typedef OptimizerNDDerivativeFunction  Self;
+  typedef UserFunction                   Superclass;
+  typedef Self *                         Pointer;
+  typedef const Self *                   ConstPointer;
+
+  typedef double                         InputType;
+  typedef double                         OutputType;
+
+  tubeTypeMacro( OptimizerNDDerivativeFunction );
+
+  OptimizerNDDerivativeFunction( OptimizerND::Pointer optimizer )
     {
-    m_Opt = newOpt;
-    m_Deriv = 0;
+    m_Optimizer = optimizer;
+    m_Derivative = 0.0;
     }
 
-  const double & value( const double & x )
+  const OutputType & Value( const InputType & input )
     {
-    m_Deriv = m_Opt->funcDeriv( x );
-    return m_Deriv;
+    m_Derivative = m_Optimizer->FuncDeriv( input );
+    return m_Derivative;
     }
 
 private:
-  OptimizerND * m_Opt;
-  double m_Deriv;
 
-}; // End class OptDerivFuncND
+  OptimizerNDDerivativeFunction( const Self & self );
+  void operator=( const Self & self );
 
+  OptimizerND::Pointer  m_Optimizer;
+  OutputType            m_Derivative;
 
+}; // End class OptimizerNDDerivativeFunction
+
+// Constructor.
 OptimizerND::OptimizerND( void )
 {
-  m_NDims = 0;
+  m_Dimension = 0;
 
   m_SearchForMin = false;
   m_Tolerance = 0.0001;
@@ -84,21 +112,18 @@ OptimizerND::OptimizerND( void )
   m_MaxIterations = 300;
   m_MaxLineSearches = 10;
 
-  m_Opt1D = NULL;
+  m_Optimizer1D = NULL;
   m_FuncValND = NULL;
   m_FuncDerivND = NULL;
 
-  m_Opt1DVal = new OptValFuncND( this );
-  m_Opt1DDeriv = new OptDerivFuncND( this );
+  m_Optimizer1DVal = new OptimizerNDValueFunction( this );
+  m_Optimizer1DDeriv = new OptimizerNDDerivativeFunction( this );
 }
 
-
-OptimizerND::OptimizerND( int newNDims,
-  UserFunction< vnl_vector<double>, double > * newFuncValND,
-  UserFunction< vnl_vector<double>, vnl_vector<double> > * newFuncDerivND,
-  Optimizer1D * newOpt1D )
+// Constructor.
+OptimizerND::OptimizerND( unsigned int dimension, ValueFunctionType::Pointer funcValND, DerivativeFunctionType::Pointer funcDerivND, Optimizer1D::Pointer optimizer1D )
 {
-  m_NDims = 0;
+  m_Dimension = 0;
 
   m_SearchForMin = false;
   m_Tolerance = 0.0001;
@@ -106,159 +131,95 @@ OptimizerND::OptimizerND( int newNDims,
   m_MaxIterations = 300;
   m_MaxLineSearches = 10;
 
-  m_Opt1D = NULL;
+  m_Optimizer1D = NULL;
   m_FuncValND = NULL;
   m_FuncDerivND = NULL;
 
-  m_Opt1DVal = new OptValFuncND( this );
-  m_Opt1DDeriv = new OptDerivFuncND( this );
+  m_Optimizer1DVal = new OptimizerNDValueFunction( this );
+  m_Optimizer1DDeriv = new OptimizerNDDerivativeFunction( this );
 
-  this->use( newNDims, newFuncValND, newFuncDerivND, newOpt1D );
+  this->Use( dimension, funcValND, funcDerivND, optimizer1D );
 }
 
+// Destructor.
 OptimizerND::~OptimizerND( void )
 {
-  delete m_Opt1DVal;
-  delete m_Opt1DDeriv;
+  delete m_Optimizer1DVal;
+  delete m_Optimizer1DDeriv;
 }
 
-void OptimizerND::use( int newNDims,
-  UserFunction< vnl_vector<double>, double > * newFuncValND,
-  UserFunction< vnl_vector<double>, vnl_vector<double> > * newFuncDerivND,
-  Optimizer1D * newOpt1D )
+void OptimizerND::Use( unsigned int dimension, ValueFunctionType::Pointer funcValND, DerivativeFunctionType::Pointer funcDerivND, Optimizer1D::Pointer optimizer1D )
 {
-  m_NDims = newNDims;
+  m_Dimension = dimension;
 
-  m_XMin.set_size( m_NDims );
+  m_XMin.set_size( m_Dimension );
   m_XMin.fill( 0.0 );
-  m_XMax.set_size( m_NDims );
+  m_XMax.set_size( m_Dimension );
   m_XMax.fill( 1.0 );
-  m_XStep.set_size( m_NDims );
+  m_XStep.set_size( m_Dimension );
   m_XStep.fill( 0.01 );
-  m_X0.set_size( m_NDims );
+  m_X0.set_size( m_Dimension );
   m_X0.fill( 0.0 );
-  m_X0Dir.set_size( m_NDims );
-  m_X0Dir.fill( 1.0/vcl_sqrt((float)m_NDims) );
-  m_X0Temp.set_size( m_NDims );
+  m_X0Dir.set_size( m_Dimension );
+  m_X0Dir.fill( 1.0/vcl_sqrt((float)m_Dimension) );
+  m_X0Temp.set_size( m_Dimension );
   m_X0Temp.fill( 0.0 );
 
-  m_FuncValND = newFuncValND;
-  m_FuncDerivND = newFuncDerivND;
+  m_FuncValND = funcValND;
+  m_FuncDerivND = funcDerivND;
 
-  m_Opt1D = newOpt1D;
-  if( m_Opt1D != NULL )
+  m_Optimizer1D = optimizer1D;
+  if( m_Optimizer1D != NULL )
     {
-    m_Opt1D->use( m_Opt1DVal, m_Opt1DDeriv );
-    m_Opt1D->searchForMin( m_SearchForMin );
-    m_Opt1D->tolerance( m_Tolerance );
-    m_Opt1D->maxIterations( m_MaxIterations );
+    m_Optimizer1D->Use( m_Optimizer1DVal, m_Optimizer1DDeriv );
+    m_Optimizer1D->SetSearchForMin( m_SearchForMin );
+    m_Optimizer1D->SetTolerance( m_Tolerance );
+    m_Optimizer1D->SetMaxIterations( m_MaxIterations );
     }
 }
 
-
-vnl_vector<double> & OptimizerND::xMin( void )
+void OptimizerND::SetTolerance( double tolerance )
 {
-  return m_XMin;
-}
-
-void OptimizerND::xMin( vnl_vector<double> & newXMinn )
-{
-  m_XMin = newXMinn;
-}
-
-vnl_vector<double> & OptimizerND::xMax( void )
-{
-  return m_XMax;
-}
-
-void OptimizerND::xMax( vnl_vector<double> & newXMaxx )
-{
-  m_XMax = newXMaxx;
-}
-
-vnl_vector<double> & OptimizerND::xStep( void )
-{
-  return m_XStep;
-}
-
-void OptimizerND::xStep( vnl_vector<double> & newXStepp )
-{
-  m_XStep = newXStepp;
-}
-
-double OptimizerND::tolerance( void )
-{
-  return m_Tolerance;
-}
-
-
-void OptimizerND::tolerance( double newTolerance )
-{
-  if( m_Opt1D != NULL )
+  if( m_Optimizer1D != NULL )
     {
-    m_Opt1D->tolerance( newTolerance );
+    m_Optimizer1D->SetTolerance( tolerance );
     }
-  m_Tolerance = newTolerance;
+  m_Tolerance = tolerance;
 }
 
-unsigned int OptimizerND::maxIterations( void )
+void OptimizerND::SetMaxIterations( unsigned int maxIterations )
 {
-  return m_MaxIterations;
-}
-
-void OptimizerND::maxIterations( unsigned int newMaxIterations )
-{
-  if( m_Opt1D != NULL )
+  if( m_Optimizer1D != NULL )
     {
-    m_Opt1D->maxIterations( newMaxIterations );
+    m_Optimizer1D->SetMaxIterations( maxIterations );
     }
-  m_MaxIterations = newMaxIterations;
+  m_MaxIterations = maxIterations;
 }
 
-unsigned int OptimizerND::maxLineSearches( void )
+void OptimizerND::SetSearchForMin( bool searchForMin )
 {
-  return m_MaxLineSearches;
-}
-
-void OptimizerND::maxLineSearches( unsigned int newMaxLineSearches )
-{
-  m_MaxLineSearches = newMaxLineSearches;
-}
-
-
-bool OptimizerND::searchForMin( void )
-{
-  return m_SearchForMin;
-}
-
-
-void OptimizerND::searchForMin( bool newSearchForMin )
-{
-  if( m_Opt1D != NULL )
+  if( m_Optimizer1D != NULL )
     {
-    m_Opt1D->searchForMin( newSearchForMin );
+    m_Optimizer1D->SetSearchForMin( searchForMin );
     }
-  m_SearchForMin = newSearchForMin;
+  m_SearchForMin = searchForMin;
 }
 
-
-double OptimizerND::funcVal(double a )
+double OptimizerND::FuncVal( double a )
 {
   m_X0Temp = ComputeLineStep( m_X0, a, m_X0Dir );
 
-  return m_FuncValND->value( m_X0Temp );
+  return m_FuncValND->Value( m_X0Temp );
 }
 
-
-double OptimizerND::funcDeriv( double a )
+double OptimizerND::FuncDeriv( double a )
 {
   m_X0Temp = ComputeLineStep( m_X0, a, m_X0Dir );
 
-  return dot_product( m_FuncDerivND->value( m_X0Temp ), m_X0Dir );
+  return dot_product( m_FuncDerivND->Value( m_X0Temp ), m_X0Dir );
 }
 
-
-bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
+bool OptimizerND::Extreme( VectorType & x, double * xVal )
 {
   m_X0 = x;
   double a = 1;
@@ -269,7 +230,7 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
   unsigned int count = 0;
   while( vnl_math_abs(a) > m_Tolerance )
     {
-    m_X0Dir = m_FuncDerivND->value( m_X0 );
+    m_X0Dir = m_FuncDerivND->Value( m_X0 );
     if( m_X0Dir.magnitude() < m_Tolerance * m_Tolerance )
       {
       a = 0;
@@ -294,7 +255,7 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
       xmin = xmax;
       xmax = tmp;
       }
-    for( unsigned int i=1; i<m_NDims; i++ )
+    for( unsigned int i=1; i<m_Dimension; i++ )
       {
       double tmin = xmin;
       double tmax = xmax;
@@ -319,11 +280,6 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
         }
       }
 
-    //std::cout << "  x = " << m_X0 << std::endl;
-    //std::cout << "  dir = " << m_X0Dir << std::endl;
-    //std::cout << "  xmin = " << xmin << std::endl;
-    //std::cout << "  xmax = " << xmax << std::endl;
-
     if( xmin == xmax )
       {
       a = 0;
@@ -334,11 +290,11 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
     double xstep = vnl_math_abs( dot_product(m_XStep, m_X0Dir) );
 
     a = 0;
-    m_Opt1D->xMin( xmin );
-    m_Opt1D->xMax( xmax );
-    m_Opt1D->xStep( xstep );
+    m_Optimizer1D->SetXMin( xmin );
+    m_Optimizer1D->SetXMax( xmax );
+    m_Optimizer1D->SetXStep( xstep );
 
-    m_Opt1D->extreme( &a, xVal );
+    m_Optimizer1D->Extreme( &a, xVal );
 
     m_X0 = ComputeLineStep( m_X0, a, m_X0Dir );
     if( count++ > m_MaxLineSearches )
@@ -359,9 +315,7 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal )
   return true;
 }
 
-
-bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal,
-  unsigned int n, MatrixType &dirs )
+bool OptimizerND::Extreme( VectorType & x, double * xVal, unsigned int n, MatrixType & directions )
 {
   m_X0 = x;
   double a;
@@ -370,7 +324,7 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal,
     {
     for(unsigned int j=0; j<x.size(); j++ )
       {
-      m_X0Dir( j ) = dirs.get( j, i%n );
+      m_X0Dir( j ) = directions.get( j, i%n );
       }
 
     m_X0Dir.normalize();
@@ -391,7 +345,7 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal,
       xmin = xmax;
       xmax = tmp;
       }
-    for( unsigned int k=1; k<m_NDims; k++ )
+    for( unsigned int k=1; k<m_Dimension; k++ )
       {
       double tmin = xmin;
       double tmax = xmax;
@@ -427,17 +381,40 @@ bool OptimizerND::extreme( vnl_vector<double> & x, double * xVal,
 
     a = 0;
 
-    m_Opt1D->xMin( xmin );
-    m_Opt1D->xMax( xmax );
-    m_Opt1D->xStep( xstep );
+    m_Optimizer1D->SetXMin( xmin );
+    m_Optimizer1D->SetXMax( xmax );
+    m_Optimizer1D->SetXStep( xstep );
 
-    m_Opt1D->extreme( &a, xVal );
+    m_Optimizer1D->Extreme( &a, xVal );
     m_X0 = ComputeLineStep( m_X0, a, m_X0Dir );
     }
 
   x = m_X0;
 
   return true;
+}
+
+// Print out information about this object.
+void OptimizerND::PrintSelf( std::ostream & os, Indent indent ) const
+{
+  this->Superclass::PrintSelf( os, indent );
+
+  os << indent << "Dimension:        " << m_Dimension << std::endl;
+  os << indent << "XMin:             " << m_XMin << std::endl;
+  os << indent << "XMax:             " << m_XMax << std::endl;
+  os << indent << "XStep:            " << m_XStep << std::endl;
+  os << indent << "X0:               " << m_X0 << std::endl;
+  os << indent << "X0Dir:            " << m_X0Dir << std::endl;
+  os << indent << "X0Temp:           " << m_X0Temp << std::endl;
+  os << indent << "SearchForMin:     " << m_SearchForMin << std::endl;
+  os << indent << "Tolerance:        " << m_Tolerance << std::endl;
+  os << indent << "MaxIterations:    " << m_MaxIterations << std::endl;
+  os << indent << "MaxLineSearches:  " << m_MaxLineSearches << std::endl;
+  os << indent << "Optimizer1DVal:   " << m_Optimizer1DVal << std::endl;
+  os << indent << "Optimizer1DDeriv: " << m_Optimizer1DDeriv << std::endl;
+  os << indent << "Optimizer1D:      " << m_Optimizer1D << std::endl;
+  os << indent << "FuncValND:        " << m_FuncValND << std::endl;
+  os << indent << "FuncDerivND:      " << m_FuncDerivND << std::endl;
 }
 
 } // End namespace tube

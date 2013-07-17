@@ -24,33 +24,49 @@ limitations under the License.
 #ifndef __tubeUserFunction_h
 #define __tubeUserFunction_h
 
-/** UserFunction Derivation Examples
- *  \example TestOptimizerND/testOptimizerND.cpp
- */
+#include "tubeMacro.h"
 
 namespace tube
 {
 
-/** Derive this class to pass functions to Spline and Optimization Classes
- * \class UserFunction
- * \author Stephen R. Aylward
- * \date 11/22/99
- */
-template< class TInVar, class TOutVar >
+/** Derive this class to pass functions to optimizer and spline and classes. */
+template< class TInput, class TOutput >
 class UserFunction
 {
 public:
-  virtual ~UserFunction( void ) = 0;
 
-  /** Derive this function */
-  virtual const TOutVar & value( const TInVar & x ) = 0;
+  typedef UserFunction  Self;
+  typedef Self *        Pointer;
+  typedef const Self *  ConstPointer;
+
+  typedef TInput        InputType;
+  typedef TOutput       OutputType;
+
+  /** Return the type of this object. */
+  tubeTypeMacro( UserFunction );
+
+  /** Constructor. */
+  UserFunction( void )
+    {
+    }
+
+  /** Destructor. */
+  virtual ~UserFunction( void )
+    {
+    }
+
+  /** Derive this function. */
+  virtual const OutputType & Value( const InputType & input ) = 0;
+
+private:
+
+  // Copy constructor not implemented.
+  UserFunction( const Self & self );
+
+  // Copy assignment operator not implemented.
+  void operator=( const Self & self );
 
 }; // End class UserFunction
-
-template< class TInVar, class TOutVar >
-inline UserFunction< TInVar, TOutVar >::~UserFunction( void )
-{
-}
 
 } // End namespace tube
 

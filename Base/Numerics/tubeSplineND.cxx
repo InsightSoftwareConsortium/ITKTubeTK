@@ -28,55 +28,84 @@ limitations under the License.
 namespace tube
 {
 
-class SplineNDValFunc : public UserFunction< vnl_vector< double >, double >
+class SplineNDValueFunction : public UserFunction< vnl_vector< double >, double >
 {
 public:
-  SplineNDValFunc( SplineND * newSpline )
+
+  typedef SplineNDValueFunction  Self;
+  typedef UserFunction           Superclass;
+  typedef Self *                 Pointer;
+  typedef const Self *           ConstPointer;
+
+  typedef SplineND::VectorType   VectorType;
+  typedef VectorType             InputType;
+  typedef double                 OutputType;
+
+  tubeTypeMacro( SplineNDValueFunction );
+
+  SplineNDValueFunction( SplineND::Pointer spline )
     {
-    m_Spline = newSpline;
-    m_Val = 0;
+    m_Spline = spline;
+    m_Value = 0.0;
     }
 
-  const double & value( const vnl_vector<double> & x )
+  const OutputType & Value( const InputType & input )
     {
-    m_Val = m_Spline->value( x );
-    return m_Val;
+    m_Value = m_Spline->Value( input );
+    return m_Value;
     }
 
 private:
-  SplineND * m_Spline;
-  double     m_Val;
 
-}; // End class SplineNDValFunc
+  SplineNDValueFunction( const Self & self );
+  void operator=( const Self & self );
 
-class SplineNDDerivFunc : public UserFunction< vnl_vector< double >,
-                                               vnl_vector< double > >
+  SplineND::Pointer  m_Spline;
+  OutputType         m_Value;
+
+}; // End class SplineNDValueFunction
+
+class SplineNDDerivativeFunction : public UserFunction< vnl_vector< double >, vnl_vector< double > >
 {
 public:
-  SplineNDDerivFunc( SplineND * newSpline )
+
+  typedef SplineNDDerivativeFunction  Self;
+  typedef UserFunction                Superclass;
+  typedef Self *                      Pointer;
+  typedef const Self *                ConstPointer;
+
+  typedef SplineND::VectorType        VectorType;
+  typedef VectorType                  InputType;
+  typedef VectorType                  OutputType;
+
+  tubeTypeMacro( SplineNDDerivativeFunction );
+
+  SplineNDDerivativeFunction( SplineND::Pointer spline )
     {
-    m_Spline = newSpline;
-    m_Dx.set_size( m_Spline->nDims() );
+    m_Spline = spline;
+    m_Derivative.set_size( m_Spline->GetDimension() );
     }
 
-  const vnl_vector<double> & value( const vnl_vector<double> & x )
+  const OutputType & Value( const InputType & input )
     {
-    m_Dx = m_Spline->valueD( x );
-    return m_Dx;
+    m_Derivative = m_Spline->ValueD( input );
+    return m_Derivative;
     }
 
 private:
-  SplineND * m_Spline;
-  vnl_vector<double> m_Dx;
 
-}; // End class SplineNDDerivFunc
+  SplineNDDerivativeFunction( const Self & self );
+  void operator=( const Self & self );
 
+  SplineND::Pointer  m_Spline;
+  OutputType         m_Derivative;
 
+}; // End class SplineNDDerivativeFunction
+
+// Constructor.
 SplineND::SplineND( void )
 {
-  m_Debug = false;
-
-  m_NDims = 0;
+  m_Dimension = 0;
 
   m_Clip = false;
   m_NewData = true;
@@ -87,26 +116,21 @@ SplineND::SplineND( void )
   m_DataWSX = NULL;
   m_DataWSXX = NULL;
 
-
   m_FuncVal = NULL;
 
-  m_OptNDVal = new SplineNDValFunc( this );
-  m_OptNDDeriv = new SplineNDDerivFunc( this );
+  m_OptimizerNDVal = new SplineNDValueFunction( this );
+  m_OptimizerNDDeriv = new SplineNDDerivativeFunction( this );
 
-  m_OptND = NULL;
+  m_OptimizerND = NULL;
   m_Spline1D = NULL;
 
-  this->use( 0, NULL, NULL, NULL );
+  this->Use( 0, NULL, NULL, NULL );
 }
 
-SplineND::SplineND( unsigned int newNDims,
-  UserFunction<IntVectorType, double> * newFunm_Val,
-  Spline1D * newSpline1D,
-  Optimizer1D * newOpt1D )
+// Constructor.
+SplineND::SplineND( unsigned int dimension, ValueFunctionType::Pointer funcVal, Spline1D::Pointer spline1D, Optimizer1D::Pointer optimizer1D )
 {
-  m_Debug = false;
-
-  m_NDims = 0;
+  m_Dimension = 0;
 
   m_Clip = false;
   m_NewData = true;
@@ -119,56 +143,49 @@ SplineND::SplineND( unsigned int newNDims,
 
   m_FuncVal = NULL;
 
-  m_OptNDVal = new SplineNDValFunc( this );
-  m_OptNDDeriv = new SplineNDDerivFunc( this );
+  m_OptimizerNDVal = new SplineNDValueFunction( this );
+  m_OptimizerNDDeriv = new SplineNDDerivativeFunction( this );
 
-  m_OptND = NULL;
+  m_OptimizerND = NULL;
   m_Spline1D = NULL;
 
-  this->use( newNDims, newFunm_Val, newSpline1D, newOpt1D );
+  this->Use( dimension, funcVal, spline1D, optimizer1D );
 }
 
+// Destructor.
 SplineND::~SplineND( void )
 {
-  delete m_OptNDVal;
-  delete m_OptNDDeriv;
-  if( m_OptND != NULL )
+  delete m_OptimizerNDVal;
+  delete m_OptimizerNDDeriv;
+  if( m_OptimizerND != NULL )
     {
-    delete m_OptND;
+    delete m_OptimizerND;
     }
 }
 
-
-void SplineND::use( unsigned int newNDims,
-  UserFunction< IntVectorType, double > * newFunm_Val,
-  Spline1D * newSpline1D,
-  Optimizer1D * newOpt1D )
+void SplineND::Use( unsigned int dimension, ValueFunctionType::Pointer funcVal, Spline1D::Pointer spline1D, Optimizer1D::Pointer optimizer1D )
 {
-  if( m_Debug )
+  if( m_OptimizerND != NULL )
     {
-    std::cout << "Spline::use()" << std::endl;
-    }
-  if( m_OptND != NULL )
-    {
-    delete m_OptND;
-    m_OptND = NULL;
+    delete m_OptimizerND;
+    m_OptimizerND = NULL;
     }
 
-  m_NDims = newNDims;
-  m_XMin.set_size( m_NDims );
+  m_Dimension = dimension;
+  m_XMin.set_size( m_Dimension );
   m_XMin.fill( ( int )0 );
-  m_XMax.set_size( m_NDims );
+  m_XMax.set_size( m_Dimension );
   m_XMax.fill( ( int )1 );
-  m_Xi.set_size( m_NDims );
-  m_D.set_size( m_NDims );
-  m_H.set_size( m_NDims, m_NDims );
+  m_Xi.set_size( m_Dimension );
+  m_D.set_size( m_Dimension );
+  m_H.set_size( m_Dimension, m_Dimension );
 
   ImageType::SizeType dimSize;
   for( unsigned int i=0; i<dimSize.GetSizeDimension(); i++ )
     {
     dimSize[i] = 1;
     }
-  for( unsigned int i=0; i<m_NDims; i++ )
+  for( unsigned int i=0; i<m_Dimension; i++ )
     {
     dimSize[i] = 4;
     }
@@ -185,8 +202,8 @@ void SplineND::use( unsigned int newNDims,
 
   m_DataWSX = VectorImageType::New();
   m_DataWSXX = VectorImageType::New();
-  m_DataWSX->Reserve( m_NDims );
-  m_DataWSXX->Reserve( m_NDims );
+  m_DataWSX->Reserve( m_Dimension );
+  m_DataWSXX->Reserve( m_Dimension );
 
   VectorImageType::Iterator itWSX  = m_DataWSX->Begin();
   VectorImageType::Iterator itWSXX = m_DataWSXX->Begin();
@@ -212,94 +229,49 @@ void SplineND::use( unsigned int newNDims,
   m_Data1D.set_size( 4 );
 
   m_Val = 0;
-  m_FuncVal = newFunm_Val;
-  m_Spline1D = newSpline1D;
+  m_FuncVal = funcVal;
+  m_Spline1D = spline1D;
 
-  if( newOpt1D != NULL )
+  if( optimizer1D != NULL )
     {
-    m_OptND = new OptimizerND( m_NDims, m_OptNDVal, m_OptNDDeriv, newOpt1D );
+    m_OptimizerND = new OptimizerND( m_Dimension, m_OptimizerNDVal, m_OptimizerNDDeriv, optimizer1D );
     }
 
   m_NewData = true;
 }
 
-//
-//
-//
-bool SplineND::clipEdge( void )
+void SplineND::SetXMin( IntVectorType xMin )
 {
-  return m_Clip;
-}
+  VectorType t( m_Dimension );
 
-void SplineND::clipEdge( bool newClip )
-{
-  m_Clip = newClip;
-}
-
-//
-//
-//
-const SplineND::IntVectorType & SplineND::xMin( void )
-{
-  return m_XMin;
-}
-
-void SplineND::xMin( const IntVectorType & newXMin )
-{
-  VectorType t( m_NDims );
-  for( unsigned int i=0; i<m_NDims; i++ )
+  for( unsigned int i = 0; i < m_Dimension; ++i )
     {
-    t( i ) = newXMin( i );
+    t( i ) = xMin( i );
     }
-  m_OptND->xMin( t );
-  m_XMin = newXMin;
+
+  m_OptimizerND->SetXMin( t );
+  m_XMin = xMin;
 }
 
-
-const SplineND::IntVectorType & SplineND::xMax( void )
+void SplineND::SetXMax( IntVectorType xMax )
 {
-  return m_XMax;
-}
+  VectorType t( m_Dimension );
 
-void SplineND::xMax( const IntVectorType & newXMax )
-{
-  VectorType t( m_NDims );
-  for( unsigned int i=0; i<m_NDims; i++ )
+  for( unsigned int i = 0; i < m_Dimension; ++i )
     {
-    t( i ) = newXMax( i );
+    t( i ) = xMax( i );
     }
-  m_OptND->xMax( t );
-  m_XMax = newXMax;
+
+  m_OptimizerND->SetXMax( t );
+  m_XMax = xMax;
 }
 
-
-//
-//
-//
-bool SplineND::newData( void )
-{
-  return m_NewData;
-}
-
-void SplineND::newData( bool newNewData )
-{
-  m_NewData = newNewData;
-}
-
-//
-//
-//
 void SplineND::m_GetData( const VectorType & x )
 {
-  if( m_Debug )
-    {
-    std::cout << "SplineND: m_GetData: " << x << std::endl;
-    }
-
   bool eql = true;
   if( !m_NewData )
     {
-    for( unsigned int i=0; i<m_NDims; i++ )
+    for( unsigned int i=0; i<m_Dimension; i++ )
       {
       if( m_Xi( i ) != ( int )x( i ) )
         {
@@ -313,7 +285,7 @@ void SplineND::m_GetData( const VectorType & x )
     if( m_NewData )
       {
       m_NewData = false;
-      for( unsigned int i=0; i<m_NDims; i++ )
+      for( unsigned int i=0; i<m_Dimension; i++ )
         {
         m_Xi( i ) = ( int )x( i );
         }
@@ -322,13 +294,13 @@ void SplineND::m_GetData( const VectorType & x )
         m_Data->GetLargestPossibleRegion() );
       it.GoToBegin();
 
-      IntVectorType p( m_NDims );
-      IntVectorType xiOffset( m_NDims, -1 );
+      IntVectorType p( m_Dimension );
+      IntVectorType xiOffset( m_Dimension, -1 );
       bool done = false;
       while( !done )
         {
         p = m_Xi + xiOffset;
-        for( unsigned int i=0; i<m_NDims; i++ )
+        for( unsigned int i=0; i<m_Dimension; i++ )
           {
           if( p( i ) < m_XMin( i ) )
             {
@@ -361,27 +333,13 @@ void SplineND::m_GetData( const VectorType & x )
               }
             }
           }
-        it.Set( m_FuncVal->value( p ) );
-        if( m_Debug )
-          {
-          std::cout << "m_Data: " << p( 0 );
-          for( unsigned int i=1; i<m_NDims; i++ )
-            {
-            std::cout << ", " << p( i );
-            }
-          std::cout << " ( " << xiOffset( 0 );
-          for( unsigned int i=1; i<m_NDims; i++ )
-            {
-            std::cout << ", " << xiOffset( i );
-            }
-          std::cout << " ) = " << it.Get() << std::endl;
-          }
+        it.Set( m_FuncVal->Value( p ) );
         ++it;
         unsigned int dim = 0;
-        while( !done && dim<m_NDims && ( ++xiOffset( dim ) )>2 )
+        while( !done && dim<m_Dimension && ( ++xiOffset( dim ) )>2 )
           {
           xiOffset( dim++ ) = -1;
-          if( dim >= m_NDims )
+          if( dim >= m_Dimension )
             {
             done = true;
             }
@@ -390,17 +348,17 @@ void SplineND::m_GetData( const VectorType & x )
       }
     else
       {
-      IntVectorType p( m_NDims );
-      IntVectorType pOld( m_NDims );
-      IntVectorType xiOffset( m_NDims );
-      IntVectorType shift( m_NDims, 100.0 );
+      IntVectorType p( m_Dimension );
+      IntVectorType pOld( m_Dimension );
+      IntVectorType xiOffset( m_Dimension );
+      IntVectorType shift( m_Dimension, 100.0 );
 
-      for( unsigned int i=0; i<m_NDims; i++ )
+      for( unsigned int i=0; i<m_Dimension; i++ )
         {
         shift[i] = ( int )x( i ) - m_Xi( i );
         }
 
-      for( unsigned int i=0; i<m_NDims; i++ )
+      for( unsigned int i=0; i<m_Dimension; i++ )
         {
         m_Xi( i ) = ( int )x( i );
         }
@@ -415,12 +373,7 @@ void SplineND::m_GetData( const VectorType & x )
         {
         p = m_Xi + xiOffset;
         pOld = xiOffset + shift + 1;
-        if( m_Debug )
-          {
-          std::cout << "newDataPoint=" << xiOffset+1
-            << " : oldDataPoint=" << pOld << std::endl;
-          }
-        for( unsigned int i=0; i<m_NDims; i++ )
+        for( unsigned int i=0; i<m_Dimension; i++ )
           {
           if( p( i ) < m_XMin( i ) )
             {
@@ -454,7 +407,7 @@ void SplineND::m_GetData( const VectorType & x )
             }
           }
         bool reuse = true;
-        for( unsigned int j=0; j<m_NDims; j++ )
+        for( unsigned int j=0; j<m_Dimension; j++ )
           {
           if( pOld[j] < 0 || pOld[j] > 3 )
             {
@@ -464,13 +417,9 @@ void SplineND::m_GetData( const VectorType & x )
           }
         if( reuse )
           {
-          if( m_Debug )
-            {
-            std::cout << "reusing" << std::endl;
-            }
           ImageType::IndexType indx;
           indx.Fill( 0 );
-          for( unsigned int i=0; i<m_NDims; i++ )
+          for( unsigned int i=0; i<m_Dimension; i++ )
             {
             indx[i] = pOld[i];
             }
@@ -478,38 +427,20 @@ void SplineND::m_GetData( const VectorType & x )
           }
         else
           {
-          it.Set( m_FuncVal->value( p ) );
-          if( m_Debug )
-            {
-            std::cout << "adding m_Data: " << p( 0 );
-            for( unsigned int i=1; i<m_NDims; i++ )
-              {
-              std::cout << ", " << p( i );
-              }
-            std::cout << " ( " << xiOffset( 0 );
-            for( unsigned int i=1; i<m_NDims; i++ )
-              {
-              std::cout << ", " << xiOffset( i );
-              }
-            std::cout << " ) = " << it.Get() << std::endl;
-            }
+          it.Set( m_FuncVal->Value( p ) );
           }
         ++it;
         unsigned int dim = 0;
-        while( !done && dim<m_NDims && ( ++xiOffset( dim ) )>2 )
+        while( !done && dim<m_Dimension && ( ++xiOffset( dim ) )>2 )
           {
           xiOffset( dim++ ) = -1;
-          if( dim >= m_NDims )
+          if( dim >= m_Dimension )
             {
             done = true;
             }
           }
         }
 
-      if( m_Debug )
-        {
-        std::cout << "m_Data = " << std::endl;
-        }
       itk::ImageRegionIterator<ImageType> itDest( m_Data,
         m_Data->GetLargestPossibleRegion() );
       it.GoToBegin();
@@ -517,33 +448,20 @@ void SplineND::m_GetData( const VectorType & x )
       while( !it.IsAtEnd() )
         {
         itDest.Set( it.Get() );
-        if( m_Debug )
-          {
-          std::cout << " " << it.GetIndex()
-            << " = " << it.Get() << std::endl;
-          }
         ++it;
         ++itDest;
-        }
-      if( m_Debug )
-        {
-        std::cout << "...done" << std::endl;
         }
       }
     }
 }
 
-
-//
-//
-//
-const double & SplineND::value( const VectorType & x )
+OptimizerND::Pointer SplineND::GetOptimizerND( void )
 {
-  if( m_Debug )
-    {
-    std::cout << "SplineND::value()" << std::endl;
-    }
+  return m_OptimizerND;
+}
 
+double SplineND::Value( const VectorType & x )
+{
   this->m_GetData( x );
 
   itk::ImageRegionIterator<ImageType> itData( m_Data,
@@ -566,7 +484,7 @@ const double & SplineND::value( const VectorType & x )
   itk::ImageRegionIterator<ImageType> itDataWSDest( m_DataWS,
     m_DataWS->GetLargestPossibleRegion() );
 
-  for( int i=( int )m_NDims-1; i>=0; i-- )
+  for( int i=( int )m_Dimension-1; i>=0; i-- )
     {
     unsigned int k = ( unsigned int )vcl_pow( ( float )4, ( int )i );
     itDataWSColumn.GoToBegin();
@@ -579,26 +497,18 @@ const double & SplineND::value( const VectorType & x )
         ++itDataWSColumn;
         }
 
-      itDataWSDest.Set( m_Spline1D->dataValue( m_Data1D,
-          ( ( x( ( int )m_NDims-i-1 )-( int )x( ( int )m_NDims-i-1 ) ) ) ) );
+      itDataWSDest.Set( m_Spline1D->DataValue( m_Data1D,
+          ( ( x( ( int )m_Dimension-i-1 )-( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
       ++itDataWSDest;
       }
     }
 
   itDataWS.GoToBegin();
-  if( m_Debug )
-    {
-    std::cout << "SplineND : value : value at " << x << " = "
-      << itDataWS.Get() << std::endl;
-    }
   m_Val = itDataWS.Get();
   return m_Val;
 }
 
-//
-//
-//
-double SplineND::valueD( const VectorType & x, IntVectorType & dx )
+double SplineND::ValueD( const VectorType & x, IntVectorType & dx )
 {
   this->m_GetData( x );
 
@@ -621,12 +531,12 @@ double SplineND::valueD( const VectorType & x, IntVectorType & dx )
   itk::ImageRegionIterator<ImageType> itDataWSDest( m_DataWS,
     m_DataWS->GetLargestPossibleRegion() );
 
-  for( int i=( int )m_NDims-1; i>=0; i-- )
+  for( int i=( int )m_Dimension-1; i>=0; i-- )
     {
     itDataWSColumn.GoToBegin();
     itDataWSDest.GoToBegin();
     unsigned int k = ( unsigned int )vcl_pow( ( float )4, ( int )i );
-    switch( dx( ( int )m_NDims-i-1 ) )
+    switch( dx( ( int )m_Dimension-i-1 ) )
       {
       default:
       case 0:
@@ -638,8 +548,8 @@ double SplineND::valueD( const VectorType & x, IntVectorType & dx )
             ++itDataWSColumn;
             }
 
-          itDataWSDest.Set( m_Spline1D->dataValue( m_Data1D,
-              ( ( x( ( int )m_NDims-i-1 )-( int )x( ( int )m_NDims-i-1 ) ) ) ) );
+          itDataWSDest.Set( m_Spline1D->DataValue( m_Data1D,
+              ( ( x( ( int )m_Dimension-i-1 )-( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
           ++itDataWSDest;
           }
         break;
@@ -652,8 +562,8 @@ double SplineND::valueD( const VectorType & x, IntVectorType & dx )
             ++itDataWSColumn;
             }
 
-          itDataWSDest.Set( m_Spline1D->dataValueD( m_Data1D,
-              ( ( x( ( int )m_NDims-i-1 )-( int )x( ( int )m_NDims-i-1 ) ) ) ) );
+          itDataWSDest.Set( m_Spline1D->DataValueD( m_Data1D,
+              ( ( x( ( int )m_Dimension-i-1 )-( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
           ++itDataWSDest;
           }
         break;
@@ -666,8 +576,8 @@ double SplineND::valueD( const VectorType & x, IntVectorType & dx )
             ++itDataWSColumn;
             }
 
-          itDataWSDest.Set( m_Spline1D->dataValueD2( m_Data1D,
-              ( ( x( ( int )m_NDims-i-1 )-( int )x( ( int )m_NDims-i-1 ) ) ) ) );
+          itDataWSDest.Set( m_Spline1D->DataValueD2( m_Data1D,
+              ( ( x( ( int )m_Dimension-i-1 )-( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
           ++itDataWSDest;
           }
         break;
@@ -679,45 +589,41 @@ double SplineND::valueD( const VectorType & x, IntVectorType & dx )
   return m_Val;
 }
 
-
-SplineND::VectorType & SplineND::valueD( const VectorType & x )
+SplineND::VectorType & SplineND::ValueD( const VectorType & x )
 {
-  IntVectorType dx( m_NDims, 0 );
+  IntVectorType dx( m_Dimension, 0 );
 
-  for( unsigned int i=0; i<m_NDims; i++ )
+  for( unsigned int i=0; i<m_Dimension; i++ )
     {
     dx( i ) = 1;
-    m_D( i ) = valueD( x, dx );
+    m_D( i ) = ValueD( x, dx );
     dx( i ) = 0;
     }
 
   return m_D;
 }
 
-//
-//
-//
-SplineND::MatrixType & SplineND::hessian( const VectorType & x )
+SplineND::MatrixType & SplineND::Hessian( const VectorType & x )
 {
 
-  IntVectorType dx( m_NDims, 0 );
+  IntVectorType dx( m_Dimension, 0 );
 
-  VectorType d( m_NDims );
-  VectorType d2( m_NDims );
-  valueVDD2( x, d, d2 );
-  for( unsigned int i=0; i<m_NDims; i++ )
+  VectorType d( m_Dimension );
+  VectorType d2( m_Dimension );
+  ValueVDD2( x, d, d2 );
+  for( unsigned int i=0; i<m_Dimension; i++ )
     {
     m_H.put( i, i, d2( i ) );
     m_D( i ) = d( i );
     }
 
-  for( unsigned int i=0; i<m_NDims; i++ )
+  for( unsigned int i=0; i<m_Dimension; i++ )
     {
-    for( unsigned int j=i+1; j<m_NDims; j++ )
+    for( unsigned int j=i+1; j<m_Dimension; j++ )
       {
       dx( i ) = 1;
       dx( j ) = 1;
-      m_H.put( i, j, valueD( x, dx ) );
+      m_H.put( i, j, ValueD( x, dx ) );
       m_H.put( j, i, m_H.get( i, j ) );
       dx( i ) = 0;
       dx( j ) = 0;
@@ -726,49 +632,35 @@ SplineND::MatrixType & SplineND::hessian( const VectorType & x )
   return m_H;
 }
 
-//
-//
-//
-double SplineND::valueJet( const VectorType & x,
-  VectorType & d, MatrixType & h )
+double SplineND::ValueJet( const VectorType & x, VectorType & d, MatrixType & h )
 {
-  IntVectorType dx( m_NDims, 0 );
+  IntVectorType dx( m_Dimension, 0 );
 
-  VectorType lD( m_NDims );
-  VectorType lD2( m_NDims );
-  double v = valueVDD2( x, lD, lD2 );
-  MatrixType tempMatrix( m_NDims, m_NDims );
+  VectorType lD( m_Dimension );
+  VectorType lD2( m_Dimension );
+  double v = ValueVDD2( x, lD, lD2 );
+  MatrixType tempMatrix( m_Dimension, m_Dimension );
 
-  if( m_Debug )
-    {
-    std::cout << "SplineND::valueJet() v= " << v << std::endl;
-    }
-  for( unsigned int i=0; i< m_NDims; i++ )
+  for( unsigned int i=0; i< m_Dimension; i++ )
     {
     m_H.put( i, i, lD2( i ) );
     m_D( i ) = lD( i );
     }
 
-  for( unsigned int i=0; i<m_NDims; i++ )
+  for( unsigned int i=0; i<m_Dimension; i++ )
     {
-    for( unsigned int j=i+1; j<m_NDims; j++ )
+    for( unsigned int j=i+1; j<m_Dimension; j++ )
       {
       dx( i ) = 1;
       dx( j ) = 1;
-      m_H.put( i, j, valueD( x, dx ) );
+      m_H.put( i, j, ValueD( x, dx ) );
       m_H.put( j, i, m_H.get( i, j ) );
       dx( i ) = 0;
       dx( j ) = 0;
       }
     }
 
-  if( m_Debug )
-    {
-    std::cout << "SplineND : valueJet : value at " << x
-      << " = " << v << std::endl;
-    }
-
-  for( unsigned int i=0; i<m_NDims; i++ )
+  for( unsigned int i=0; i<m_Dimension; i++ )
     {
     d( i ) = m_D( i );
     }
@@ -778,10 +670,7 @@ double SplineND::valueJet( const VectorType & x,
   return v;
 }
 
-//
-//
-double SplineND::valueVDD2( const VectorType & x,
-  VectorType & d, VectorType & d2 )
+double SplineND::ValueVDD2( const VectorType & x, VectorType & d, VectorType & d2 )
 {
   this->m_GetData( x );
 
@@ -830,7 +719,7 @@ double SplineND::valueVDD2( const VectorType & x,
   double vD;
   double vD2;
 
-  for( int i=( int )m_NDims-1; i>=0; i-- )
+  for( int i=( int )m_Dimension-1; i>=0; i-- )
     {
     unsigned int k = ( unsigned int )vcl_pow( ( float )4, ( int )i );
 
@@ -864,13 +753,13 @@ double SplineND::valueVDD2( const VectorType & x,
         ++itDataWSX;
         }
 
-      itDataWSX.Set( m_Spline1D->dataValueJet( m_Data1D,
-        ( ( x( ( int )m_NDims-i-1 )-( int )x( ( int )m_NDims-i-1 ) ) ), &vD, &vD2 ) );
+      itDataWSX.Set( m_Spline1D->DataValueJet( m_Data1D,
+        ( ( x( ( int )m_Dimension-i-1 )-( int )x( ( int )m_Dimension-i-1 ) ) ), &vD, &vD2 ) );
 
-      for( unsigned int l=0; l<m_NDims; l++ )
+      for( unsigned int l=0; l<m_Dimension; l++ )
         {
 
-        if( ( int )m_NDims-i != ( int )l )
+        if( ( int )m_Dimension-i != ( int )l )
           {
           VectorImageType::Iterator itWSX2  = m_DataWSX->Begin();
           VectorImageType::Iterator itWSXX2 = m_DataWSXX->Begin();
@@ -903,8 +792,8 @@ double SplineND::valueVDD2( const VectorType & x,
             {
             ++itImageWSX2;
             }
-          itImageWSX2.Set( m_Spline1D->dataValue( m_Data1D,
-              ( ( x( ( int )m_NDims-i-1 )-( int )x( ( int )m_NDims-i-1 ) ) ) ) );
+          itImageWSX2.Set( m_Spline1D->DataValue( m_Data1D,
+              ( ( x( ( int )m_Dimension-i-1 )-( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
           for( unsigned int ind=0; ind<4; ind++ )
             {
             m_Data1D( ind )= itImageWSXX2.Get();
@@ -917,8 +806,8 @@ double SplineND::valueVDD2( const VectorType & x,
             ++itImageWSXX2;
             }
 
-          itImageWSXX2.Set( m_Spline1D->dataValue( m_Data1D,
-            ( ( x( ( int )m_NDims-i-1 )-( int )x( ( int )m_NDims-i-1 ) ) ) ) );
+          itImageWSXX2.Set( m_Spline1D->DataValue( m_Data1D,
+            ( ( x( ( int )m_Dimension-i-1 )-( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
           }
         }
 
@@ -955,47 +844,61 @@ double SplineND::valueVDD2( const VectorType & x,
   return m_Val;
 }
 
-//
-//
-//
-OptimizerND * SplineND::optimizerND( void )
+bool SplineND::Extreme( VectorType & extX, double * extVal )
 {
-  return m_OptND;
+  return m_OptimizerND->Extreme( extX, extVal );
 }
 
-//
-//
-//
-bool SplineND::extreme( VectorType & extX, double * extVal )
+bool SplineND::Extreme( VectorType & extX, double * extVal, unsigned int n, MatrixType & dirs )
 {
-  return m_OptND->extreme( extX, extVal );
+  return m_OptimizerND->Extreme( extX, extVal, n, dirs );
 }
 
-bool SplineND::extreme( VectorType & extX, double *extVal,
-  unsigned int n, MatrixType &dirs )
+bool SplineND::Extreme( VectorType & extX, double * extVal, VectorType & dir )
 {
-  return m_OptND->extreme( extX, extVal, n, dirs );
-}
-
-bool SplineND::extreme( VectorType & extX, double *extVal, VectorType &dir )
-{
-  MatrixType h( m_NDims, 1 );
-  for( unsigned int i=0; i<m_NDims; i++ )
+  MatrixType h( m_Dimension, 1 );
+  for( unsigned int i=0; i<m_Dimension; i++ )
     {
     h( i,0 ) = dir( i );
     }
-  return m_OptND->extreme( extX, extVal, 1, h );
+  return m_OptimizerND->Extreme( extX, extVal, 1, h );
 }
 
-bool SplineND::extremeConjGrad( VectorType & extX, double * extVal )
+bool SplineND::ExtremeConjGrad( VectorType & extX, double * extVal )
 {
-  hessian( extX );
+  Hessian( extX );
 
-  VectorType eVals( m_NDims, 0.0 );
-  MatrixType eVects( m_NDims, m_NDims );
-  ::tube::ComputeEigen( m_H, eVects, eVals, false );
+  VectorType eVals( m_Dimension, 0.0 );
+  MatrixType eVects( m_Dimension, m_Dimension );
+  ComputeEigen( m_H, eVects, eVals, false );
 
-  return m_OptND->extreme( extX, extVal, m_NDims, eVects );
+  return m_OptimizerND->Extreme( extX, extVal, m_Dimension, eVects );
+}
+
+// Print out information about this object.
+void SplineND::PrintSelf( std::ostream & os, Indent indent ) const
+{
+  this->Superclass::PrintSelf( os, indent );
+
+  os << indent << "Dimension:        " << m_Dimension << std::endl;
+  os << indent << "Clip:             " << m_Clip << std::endl;
+  os << indent << "XMin:             " << m_XMin << std::endl;
+  os << indent << "XMax:             " << m_XMax << std::endl;
+  os << indent << "NewData:          " << m_NewData << std::endl;
+  os << indent << "Xi:               " << m_Xi << std::endl;
+  os << indent << "Val:              " << m_Val << std::endl;
+  os << indent << "D:                " << m_D << std::endl;
+  os << indent << "H:                " << m_H << std::endl;
+  os << indent << "Data:             " << m_Data << std::endl;
+  os << indent << "DataWS:           " << m_DataWS << std::endl;
+  os << indent << "Data1D:           " << m_Data1D << std::endl;
+  os << indent << "DataWSX:          " << m_DataWSX << std::endl;
+  os << indent << "DataWSXX:         " << m_DataWSXX << std::endl;
+  os << indent << "FuncVal:          " << m_FuncVal << std::endl;
+  os << indent << "OptimizerNDVal:   " << m_OptimizerNDVal << std::endl;
+  os << indent << "OptimizerNDDeriv: " << m_OptimizerNDDeriv << std::endl;
+  os << indent << "OptimizerND:      " << m_OptimizerND << std::endl;
+  os << indent << "Spline1D:         " << m_Spline1D << std::endl;
 }
 
 } // End namespace tube

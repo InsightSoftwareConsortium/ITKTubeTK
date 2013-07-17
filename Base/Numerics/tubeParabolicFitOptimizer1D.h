@@ -37,23 +37,42 @@ namespace tube
 
 class ParabolicFitOptimizer1D : public Optimizer1D
 {
-
 public:
 
+  typedef ParabolicFitOptimizer1D        Self;
+  typedef Optimizer1D                    Superclass;
+  typedef Self *                         Pointer;
+  typedef const Self *                   ConstPointer;
+
+  typedef Superclass::ValueFunctionType  ValueFunctionType;
+
+  /** Return the type of this object. */
+  tubeTypeMacro( ParabolicFitOptimizer1D );
+
+  /** Constructor. */
   ParabolicFitOptimizer1D( void );
-  ParabolicFitOptimizer1D( UserFunction< double, double > * newFuncVal );
+
+  /** Constructor. */
+  ParabolicFitOptimizer1D( ValueFunctionType::Pointer funcVal );
+
+  /** Destructor. */
   ~ParabolicFitOptimizer1D( void );
 
-  void use( UserFunction< double, double > * newFuncVal,
-            UserFunction< double, double > * deriv = NULL );
+  void Use( ValueFunctionType::Pointer funcVal );
 
 protected:
 
-  double m_Center( double x1, double y1,
-                  double x2, double y2,
-                  double x3, double y3 );
+  double m_Center( double x1, double y1, double x2, double y2, double x3, double y3 );
+
   bool m_Extreme( double * x, double * xVal );
 
+private:
+
+  // Copy constructor not implemented.
+  ParabolicFitOptimizer1D( const Self & self );
+
+  // Copy assignment operator not implemented.
+  void operator=( const Self & self );
 
 }; // End class ParabolicFitOptimizer1D
 

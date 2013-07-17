@@ -28,23 +28,16 @@ limitations under the License.
 
 #include "tubeOptimizer1D.h"
 
-#include <itkMacro.h>
-
-#include <iostream>
-
 namespace tube
 {
 
-bool
-Optimizer1D
-::m_Extreme( double * itkNotUsed( x ), double * itkNotUsed( xval ) )
+bool Optimizer1D::m_Extreme( double * tubeNotUsed( x ), double * tubeNotUsed( xval ) )
 {
   return false;
 }
 
-
-Optimizer1D
-::Optimizer1D( void )
+// Constructor.
+Optimizer1D::Optimizer1D( void )
 {
   m_SearchForMin = true;
   m_Tolerance = 0.0001;
@@ -57,9 +50,8 @@ Optimizer1D
   m_FuncDeriv = 0;
 }
 
-
-Optimizer1D::Optimizer1D( UserFunction< double, double > * newFuncVal,
-  UserFunction< double, double > * newFuncDeriv )
+// Constructor.
+Optimizer1D::Optimizer1D( ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv )
 {
   m_SearchForMin = true;
   m_Tolerance = 0.0001;
@@ -67,92 +59,24 @@ Optimizer1D::Optimizer1D( UserFunction< double, double > * newFuncVal,
   m_XMin = 0;
   m_XMax = 1;
   m_XStep = 0.01;
-  m_FuncVal = newFuncVal;
-  m_FuncDeriv = newFuncDeriv;
+  m_FuncVal = funcVal;
+  m_FuncDeriv = funcDeriv;
   m_Defined = true;
 }
 
-
+// Destructor.
 Optimizer1D::~Optimizer1D( void )
 {
 }
 
-void Optimizer1D::use( UserFunction< double, double > * newFuncVal,
-  UserFunction< double, double > * newFuncDeriv )
+void Optimizer1D::Use( ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv )
 {
-  m_FuncVal = newFuncVal;
-  m_FuncDeriv = newFuncDeriv;
+  m_FuncVal = funcVal;
+  m_FuncDeriv = funcDeriv;
   m_Defined = true;
 }
 
-
-double Optimizer1D::xMin( void )
-{
-  return m_XMin;
-}
-
-
-void Optimizer1D::xMin( double newXMin )
-{
-  m_XMin = newXMin;
-}
-
-double Optimizer1D::xMax( void )
-{
-  return m_XMax;
-}
-
-
-void Optimizer1D::xMax( double newXMax )
-{
-  m_XMax = newXMax;
-}
-
-double Optimizer1D::xStep( void )
-{
-  return m_XStep;
-}
-
-
-void Optimizer1D::xStep( double newXStep )
-{
-  m_XStep = newXStep;
-}
-
-
-double Optimizer1D::tolerance( void )
-{
-  return m_Tolerance;
-}
-
-void Optimizer1D::tolerance( double newTolerance )
-{
-  m_Tolerance = newTolerance;
-}
-
-unsigned int Optimizer1D::maxIterations( void )
-{
-  return m_MaxIterations;
-}
-
-void Optimizer1D::maxIterations( unsigned int newMaxIterations )
-{
-  m_MaxIterations = newMaxIterations;
-}
-
-
-bool Optimizer1D::searchForMin( void )
-{
-  return m_SearchForMin;
-}
-
-
-void Optimizer1D::searchForMin( bool newSearchForMin )
-{
-  m_SearchForMin = newSearchForMin;
-}
-
-bool Optimizer1D::extreme( double * x, double * xVal )
+bool Optimizer1D::Extreme( double * x, double * xVal )
 {
   if( !m_Defined )
     {
@@ -162,31 +86,20 @@ bool Optimizer1D::extreme( double * x, double * xVal )
   return m_Extreme( x, xVal );
 }
 
-void Optimizer1D::PrintSelf( std::ostream & os ) const
+// Print out information about this object.
+void Optimizer1D::PrintSelf( std::ostream & os, Indent indent ) const
 {
-  if( m_Defined )
-    {
-    os << "m_Defined = True" << std::endl;
-    }
-  else
-    {
-    os << "m_Defined = False" << std::endl;
-    }
-  os << "m_XMin = " << m_XMin << std::endl;
-  os << "m_XMax = " << m_XMax << std::endl;
-  os << "m_XStep = " << m_XStep << std::endl;
-  if( m_SearchForMin )
-    {
-    os << "m_SearchForMin = True" << std::endl;
-    }
-  else
-    {
-    os << "m_SearchForMin = False" << std::endl;
-    }
-  os << "m_Tolerance = " << m_Tolerance << std::endl;
-  os << "m_MaxIterations = " << m_MaxIterations << std::endl;
-  os << "m_FuncVal = " << m_FuncVal << std::endl;
-  os << "m_FuncDeriv = " << m_FuncDeriv << std::endl;
+  this->Superclass::PrintSelf( os, indent );
+
+  os << indent << "Defined:       " << m_Defined << std::endl;
+  os << indent << "XMin:          " << m_XMin << std::endl;
+  os << indent << "XMax:          " << m_XMax << std::endl;
+  os << indent << "XStep:         " << m_XStep << std::endl;
+  os << indent << "SearchForMin:  " << m_SearchForMin << std::endl;
+  os << indent << "Tolerance:     " << m_Tolerance << std::endl;
+  os << indent << "MaxIterations: " << m_MaxIterations << std::endl;
+  os << indent << "FuncVal:       " << m_FuncVal << std::endl;
+  os << indent << "FuncDeriv:     " << m_FuncDeriv << std::endl;
 }
 
 } // End namespace tube
