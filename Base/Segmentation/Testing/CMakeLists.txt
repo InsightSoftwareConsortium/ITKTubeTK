@@ -23,16 +23,16 @@
 
 include_regular_expression( "^.*$" )
 
-Include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
+include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseSegmentation ${PYTHON_EXECUTABLE}
     ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
     ${TubeTK_SOURCE_DIR}/Base/Segmentation )
-endif()
+endif( PYTHON_EXECUTABLE )
 
 set( BASE_SEGMENTATION_TESTS
   ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseSegmentationTests )
@@ -80,13 +80,13 @@ add_test( tubeBaseSegmentationPrintTest
   ${BASE_SEGMENTATION_TESTS}
   tubeBaseSegmentationPrintTest )
 
-MIDAS_ADD_TEST( itktubeCVTImageFilterTest
+Midas3FunctionAddTest( itktubeCVTImageFilterTest
   ${BASE_SEGMENTATION_TESTS}
     itktubeCVTImageFilterTest
       MIDAS{GDS0015_1.mha.md5}
       ${TEMP}/itkTubeCVTImageFilterTest.mha )
 
-MIDAS_ADD_TEST( itktubeOtsuThresholdMaskedImageFilterTest
+Midas3FunctionAddTest( itktubeOtsuThresholdMaskedImageFilterTest
   ${BASE_SEGMENTATION_TESTS}
     --compare MIDAS{itkTubeOtsuThresholdMaskedImageFilterTest2.mha.md5}
       ${TEMP}/itkTubeOtsuThresholdMaskedImageFilterTest2.mha
@@ -95,7 +95,7 @@ MIDAS_ADD_TEST( itktubeOtsuThresholdMaskedImageFilterTest
       ${TEMP}/itkTubeOtsuThresholdMaskedImageFilterTest1.mha
       ${TEMP}/itkTubeOtsuThresholdMaskedImageFilterTest2.mha )
 
-MIDAS_ADD_TEST( itktubePDFSegmenterTest
+Midas3FunctionAddTest( itktubePDFSegmenterTest
   ${BASE_SEGMENTATION_TESTS}
     --compare MIDAS{itkTubePDFSegmenterTest_mask.mha.md5}
       ${TEMP}/itkTubePDFSegmenterTest_mask.mha
@@ -112,7 +112,7 @@ MIDAS_ADD_TEST( itktubePDFSegmenterTest
       ${TEMP}/itkTubePDFSegmenterTest_mask.mha
       ${TEMP}/itkTubePDFSegmenterTest_labeledFeatureSpace.mha )
 
-MIDAS_ADD_TEST( itktubePDFSegmenterTest2
+Midas3FunctionAddTest( itktubePDFSegmenterTest2
   ${BASE_SEGMENTATION_TESTS}
     --compare MIDAS{itkTubePDFSegmenterTest2_mask.mha.md5}
       ${TEMP}/itkTubePDFSegmenterTest2_mask.mha
@@ -129,7 +129,7 @@ MIDAS_ADD_TEST( itktubePDFSegmenterTest2
       ${TEMP}/itkTubePDFSegmenterTest2_mask.mha
       ${TEMP}/itkTubePDFSegmenterTest2_labeledFeatureSpace.mha )
 
-MIDAS_ADD_TEST( itktubeRidgeExtractorTest
+Midas3FunctionAddTest( itktubeRidgeExtractorTest
   ${BASE_SEGMENTATION_TESTS}
     --compare MIDAS{itkTubeRidgeExtractorTest.mha.md5}
       ${TEMP}/itkTubeRidgeExtractorTest.mha
@@ -137,31 +137,31 @@ MIDAS_ADD_TEST( itktubeRidgeExtractorTest
       MIDAS{Branch.n010.sub.mha.md5}
       ${TEMP}/itkTubeRidgeExtractorTest.mha )
 
-MIDAS_ADD_TEST( itktubeRidgeExtractorTest2
+Midas3FunctionAddTest( itktubeRidgeExtractorTest2
   ${BASE_SEGMENTATION_TESTS}
     itktubeRidgeExtractorTest2
       MIDAS{Branch.n010.sub.mha.md5}
       MIDAS{Branch-truth_Subs.tre.md5} )
 
-MIDAS_ADD_TEST( itktubeRadiusExtractorTest
+Midas3FunctionAddTest( itktubeRadiusExtractorTest
   ${BASE_SEGMENTATION_TESTS}
     itktubeRadiusExtractorTest
       MIDAS{Branch.n010.mha.md5}
       MIDAS{Branch-truth.tre.md5} )
 
-MIDAS_ADD_TEST( itktubeRadiusExtractorTest2
+Midas3FunctionAddTest( itktubeRadiusExtractorTest2
   ${BASE_SEGMENTATION_TESTS}
     itktubeRadiusExtractorTest2
       MIDAS{Branch.n010.mha.md5}
       MIDAS{Branch-truth.tre.md5} )
 
-MIDAS_ADD_TEST( itktubeTubeExtractorTest
+Midas3FunctionAddTest( itktubeTubeExtractorTest
   ${BASE_SEGMENTATION_TESTS}
     itktubeTubeExtractorTest
       MIDAS{Branch.n010.sub.mha.md5}
       MIDAS{Branch-truth.tre.md5} )
 
-MIDAS_ADD_TEST( itktubeRidgeSeedFilterTest
+Midas3FunctionAddTest( itktubeRidgeSeedFilterTest
   ${BASE_SEGMENTATION_TESTS}
     --compare MIDAS{itkTubeRidgeSeedFilterTest_Output.mha.md5}
       ${TEMP}/itkTubeRidgeSeedFilterTest_Output.mha

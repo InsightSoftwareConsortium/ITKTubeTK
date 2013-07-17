@@ -44,11 +44,11 @@ set( ${proj}_DEPENDENCIES "" )
 if( NOT TubeTK_BUILD_SLICER_EXTENSION )
   if( NOT USE_SYSTEM_ITK )
     # Depends on ITK if ITK was build using superbuild
-    set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "Insight")
+    set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "Insight" )
   endif( NOT USE_SYSTEM_ITK )
 endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
 if( NOT USE_SYSTEM_JsonCpp )
-  set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "JsonCpp")
+  set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "JsonCpp" )
 endif( NOT USE_SYSTEM_JsonCpp )
 
 # Include dependent projects if any

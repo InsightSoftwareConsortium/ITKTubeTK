@@ -20,9 +20,10 @@
 # limitations under the License.
 #
 ##############################################################################
-#
-# Do not edit. To add a module see TubeTKModules.cmake
-#
+
+##############################################################################
+# Do not edit. To add a module see TubeTKModules.cmake.
+##############################################################################
 
 include( ${CMAKE_CURRENT_SOURCE_DIR}/TubeTKModules.cmake )
 

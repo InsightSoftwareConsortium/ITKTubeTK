@@ -23,10 +23,9 @@
 
 include_regular_expression( "^.*$" )
 
-Include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
+include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
-
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -39,10 +38,8 @@ set( IMAGECOMPARE_EXE
 set( TEXTCOMPARE_EXE
   ${TubeTK_BINARY_DIR}/bin/TextCompareCommand )
 
-#######
 # Test1
-#######
-MIDAS_ADD_TEST( ${MODULE_NAME}-Test1
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1
             ${PROJ_EXE}
                --saveTubeSeedInfo ${TEMP}/${MODULE_NAME}Test1.mtsi
                --labelmap MIDAS{im0001.vk.mask.mha.md5}

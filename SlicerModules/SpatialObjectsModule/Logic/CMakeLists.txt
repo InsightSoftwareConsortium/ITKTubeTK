@@ -20,27 +20,27 @@
 # limitations under the License.
 #
 ##############################################################################
-project(vtkSlicer${MODULE_NAME}ModuleLogic)
 
-set(KIT ${PROJECT_NAME})
+project( vtkSlicer${MODULE_NAME}ModuleLogic )
 
-set(${KIT}_EXPORT_DIRECTIVE "VTK_SLICER_${MODULE_NAME_UPPER}_MODULE_LOGIC_EXPORT")
+set( KIT ${PROJECT_NAME} )
 
-set(${KIT}_INCLUDE_DIRECTORIES
+set( ${KIT}_EXPORT_DIRECTIVE "VTK_SLICER_${MODULE_NAME_UPPER}_MODULE_LOGIC_EXPORT" )
+
+set( ${KIT}_INCLUDE_DIRECTORIES
   ${MRML_LIBRARIES}
   ${vtkSlicer${MODULE_NAME}ModuleMRML_SOURCE_DIR}
   ${vtkSlicer${MODULE_NAME}ModuleMRML_BINARY_DIR} )
 
-set(${KIT}_SRCS
+set( ${KIT}_SRCS
   vtkSlicerSpatialObjectsLogic.cxx
   vtkSlicerSpatialObjectsLogic.h )
 
-set(${KIT}_TARGET_LIBRARIES
+set( ${KIT}_TARGET_LIBRARIES
   ${ITK_LIBRARIES}
   ${MRML_LIBRARIES}
   vtkSlicer${MODULE_NAME}ModuleMRML )
 
-#-----------------------------------------------------------------------------
 SlicerMacroBuildModuleLogic(
   NAME ${KIT}
   EXPORT_DIRECTIVE ${${KIT}_EXPORT_DIRECTIVE}

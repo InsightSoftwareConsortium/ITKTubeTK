@@ -21,7 +21,6 @@
 #
 ##############################################################################
 
-#-----------------------------------------------------------------------------
 set( MODULE_NAME RegisterUsingSlidingGeometries )
 project( ${MODULE_NAME} )
 
@@ -39,7 +38,6 @@ include( ${USE_ITK_FILE} )
 find_package( VTK REQUIRED )
 include( ${USE_VTK_FILE} )
 
-#-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h

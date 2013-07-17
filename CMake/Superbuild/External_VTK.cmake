@@ -39,7 +39,7 @@ if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
   message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to non-existing directory" )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
-set(${proj}_QT_OPTIONS)
+set( ${proj}_QT_OPTIONS )
 if( TubeTK_USE_QT )
   set( ${proj}_QT_OPTIONS
     -DVTK_USE_QVTK_QTOPENGL:BOOL=ON

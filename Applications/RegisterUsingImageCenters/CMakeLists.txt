@@ -21,7 +21,6 @@
 #
 ##############################################################################
 
-#-----------------------------------------------------------------------------
 set( MODULE_NAME RegisterUsingImageCenters )
 project( ${MODULE_NAME} )
 
@@ -36,11 +35,10 @@ include( ${SlicerExecutionModel_USE_FILE} )
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
 
-if( "${CMAKE_COMPILER_IS_GNUCXX}" )
+if( CMAKE_COMPILER_IS_GNUCXX )
   set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -ffast-math -msse3" )
-endif()
+endif( CMAKE_COMPILER_IS_GNUCXX )
 
-#-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h

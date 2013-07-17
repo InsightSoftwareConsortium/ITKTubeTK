@@ -23,7 +23,7 @@
 
 include_regular_expression( "^.*$" )
 
-include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake )
+include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
@@ -72,11 +72,11 @@ add_test( tubeBaseCLIPrintTest
   ${BASE_CLI_TESTS}
   tubeBaseCLIPrintTest )
 
-midas_add_test( tubeCLIFilterWatcherTest
+Midas3FunctionAddTest( tubeCLIFilterWatcherTest
   ${BASE_CLI_TESTS}
   tubeCLIFilterWatcherTest MIDAS{Branch.n010.mha.md5} )
 
-midas_add_test( tubeCLIHelperFunctionsTest
+Midas3FunctionAddTest( tubeCLIHelperFunctionsTest
   ${BASE_CLI_TESTS}
   tubeCLIHelperFunctionsTest MIDAS{Branch.n010.mha.md5} )
 

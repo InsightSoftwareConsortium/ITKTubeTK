@@ -84,5 +84,5 @@ if( NOT TubeTK_SOURCE_DIR )
   include( ${TubeTK_USE_FILE} )
 endif( NOT TubeTK_SOURCE_DIR )
 
-include ( ${TubeTK_CMAKE_EXTENSIONS_DIR}/TubeTKMacroAddModules.cmake )
-TubeTKAddModules( MODULES ${TubeTK_${proj}_MODULES} )
+include( TubeTKMacroAddModules )
+TubeTKMacroAddModules( MODULES ${TubeTK_${proj}_MODULES} )

@@ -28,7 +28,7 @@ if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseIO ${PYTHON_EXECUTABLE}
     ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
     ${TubeTK_SOURCE_DIR}/Base/IO )
-endif()
+endif( PYTHON_EXECUTABLE )
 
 set( BASE_IO_TESTS
   ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseIOTests )

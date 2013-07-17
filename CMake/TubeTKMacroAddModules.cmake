@@ -25,8 +25,8 @@
 # This macro takes a list of modules directory in input.
 # Example:
 # set( My_list_of_modules m1 m2 )
-# include( TubeTKMacroAddModules.cmake )
-# TubeTKAddModules( MODULES ${My_list_of_modules} )
+# include( TubeTKMacroAddModules )
+# TubeTKMacroAddModules( MODULES ${My_list_of_modules} )
 #
 # It adds the option TubeTK_BUILD_ALL_MODULES and a dependent option
 # TubeTK_BUILD_yourmodulename for each given module. This option can then be
@@ -41,11 +41,11 @@
 
 include( CMakeParseArguments )
 
-macro( TubeTKAddModules )
+macro( TubeTKMacroAddModules )
   set( options )
   set( oneValueArgs )
   set( multiValueArgs MODULES )
-  CMAKE_PARSE_ARGUMENTS( MY_TUBETK
+  CMAKE_PARSE_ARGUMENTS( MY_TubeTK
     "${options}"
     "${oneValueArgs}"
     "${multiValueArgs}"
@@ -56,11 +56,11 @@ macro( TubeTKAddModules )
   mark_as_advanced( TubeTK_BUILD_ALL_MODULES )
 
   # Add option for each module
-  if( MY_TUBETK_MODULES )
+  if( MY_TubeTK_MODULES )
     include( CMakeDependentOption )
 
     set( tubetk_modules )
-    foreach( module ${MY_TUBETK_MODULES} )
+    foreach( module ${MY_TubeTK_MODULES} )
       CMAKE_DEPENDENT_OPTION(
         TubeTK_BUILD_${module} "Build ${module} or not. This does not take module dependencies into account." OFF
          "NOT TubeTK_BUILD_ALL_MODULES" ON )
@@ -69,9 +69,9 @@ macro( TubeTKAddModules )
       if( TubeTK_BUILD_${module} )
         list( APPEND tubetk_modules ${CMAKE_CURRENT_SOURCE_DIR}/${module} )
       endif( TubeTK_BUILD_${module} )
-    endforeach( module ${MY_TUBETK_MODULES} )
+    endforeach( module ${MY_TubeTK_MODULES} )
 
     set_property( GLOBAL APPEND PROPERTY TubeTK_MODULES ${tubetk_modules} )
-  endif( MY_TUBETK_MODULES )
+  endif( MY_TubeTK_MODULES )
 
-endmacro( TubeTKAddModules )
+endmacro( TubeTKMacroAddModules )

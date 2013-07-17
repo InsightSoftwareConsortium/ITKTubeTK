@@ -35,15 +35,6 @@ set( TubeTK_Base_ParameterSerializer_H_Files
 set( TubeTK_Base_ParameterSerializer_HXX_Files
   USTK/itkAcousticImpulseResponseImageFilterSerializer.hxx )
 
-set( TubeTK_Base_ParameterSerializer_SRCS )
-
-#add_library( TubeParameterSerializer STATIC
-  #${TubeTK_Base_ParameterSerializer_SRCS} )
-#target_link_libraries( TubeParameterSerializer
-  #${ITK_LIBRARIES}
-  #${JsonCpp_LIBRARIES}
-  #)
-
 if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )

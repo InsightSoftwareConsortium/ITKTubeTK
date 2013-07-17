@@ -63,11 +63,6 @@ if( EXISTS ${TubeTK_BINARY_DIR}/Insight-build/CMakeCache.txt )
   set( ITK_DIR "${TubeTK_BINARY_DIR}/Insight-build" CACHE PATH "Init" FORCE )
 endif( EXISTS ${TubeTK_BINARY_DIR}/Insight-build/CMakeCache.txt )
 
-if( EXISTS ${TubeTK_BINARY_DIR}/GenerateCLP-build/CMakeCache.txt )
-  set( GenerateCLP_DIR "${TubeTK_BINARY_DIR}/GenerateCLP-build"
-    CACHE PATH "Init" FORCE )
-endif( EXISTS ${TubeTK_BINARY_DIR}/GenerateCLP-build/CMakeCache.txt )
-
 if( EXISTS ${TubeTK_BINARY_DIR}/SlicerExecutionModel-build/CMakeCache.txt )
   set( SlicerExecutionModel_DIR "${TubeTK_BINARY_DIR}/SlicerExecutionModel-build"
     CACHE PATH "Init" FORCE )

@@ -40,10 +40,8 @@ endif( CMAKE_BUILD_TYPE )
 
 set( gen "${CMAKE_GENERATOR}" )
 
-##
-## Find GIT and determine proper protocol for accessing GIT repos.
-##  - Users may need to choose HTTP is they are behind a firewall.
-##
+# Find Git and determine proper protocol for accessing Git repositories. Users
+# may need to choose HTTP is they are behind a firewall.
 if( NOT GIT_EXECUTABLE )
   find_package( Git REQUIRED )
 endif( NOT GIT_EXECUTABLE )
@@ -57,9 +55,7 @@ else( GIT_PROTOCOL_HTTP )
 endif( GIT_PROTOCOL_HTTP )
 mark_as_advanced( GIT_PROTOCOL )
 
-#
 # Use for CMAKE_OSX_* in external projects.
-#
 set( CMAKE_OSX_EXTERNAL_PROJECT_ARGS )
 if( APPLE )
   list( APPEND CMAKE_OSX_EXTERNAL_PROJECT_ARGS
@@ -68,46 +64,46 @@ if( APPLE )
     -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET} )
 endif( APPLE )
 
-## Set TubeTK Dependencies
+# Set TubeTK dependencies.
 set( TubeTK_DEPENDENCIES "" )
 
-## Check if system JsonCpp or superbuild JsonCpp
+# Check whether system JsonCpp or superbuild JsonCpp.
 if( NOT USE_SYSTEM_JsonCpp )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "JsonCpp" )
 else( NOT USE_SYSTEM_JsonCpp )
   find_package( JsonCpp REQUIRED )
 endif( NOT USE_SYSTEM_JsonCpp )
 
-## Check if system ITK or superbuild ITK
+# Check whether system ITK or superbuild ITK.
 if( NOT USE_SYSTEM_ITK )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "Insight" )
 
   if( TubeTK_USE_SimpleITK )
-    set(TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "SimpleITK" )
+    set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "SimpleITK" )
   endif( TubeTK_USE_SimpleITK )
 endif( NOT USE_SYSTEM_ITK )
 
-## Check if system VTK or superbuild VTK
+# Check whether system VTK or superbuild VTK.
 if( TubeTK_USE_VTK AND NOT USE_SYSTEM_VTK )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "VTK" )
 endif( TubeTK_USE_VTK AND NOT USE_SYSTEM_VTK )
 
-## Check if system ParameterSerializer or superbuild ParameterSerializer
+# Check whether system ParameterSerializer or superbuild ParameterSerializer.
 if( NOT USE_SYSTEM_ParameterSerializer )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "ParameterSerializer" )
 else( NOT USE_SYSTEM_ParameterSerializer )
   find_package( ParameterSerializer REQUIRED )
 endif( NOT USE_SYSTEM_ParameterSerializer )
 
-## SlicerExecutionModel
+# SlicerExecutionModel.
 if( NOT USE_SYSTEM_SlicerExecutionModel )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "SlicerExecutionModel" )
 endif( NOT USE_SYSTEM_SlicerExecutionModel )
 
-## Qt
+# Qt.
 set( TubeTK_QT_VARIABLES )
 if( TubeTK_USE_QT )
-  ## CTK
+  # CTK.
   if( TubeTK_USE_CTK AND NOT USE_SYSTEM_CTK )
       set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "CTK" )
   endif( TubeTK_USE_CTK AND NOT USE_SYSTEM_CTK )
@@ -115,7 +111,7 @@ if( TubeTK_USE_QT )
        -DTubeTK_REQUIRED_QT_VERSION=${TubeTK_REQUIRED_QT_VERSION} )
 endif( TubeTK_USE_QT )
 
-## Check whether we use Slicer
+# Check whether we use 3D Slicer.
 set( TubeTK_Slicer_DIRS
     -DTubeTK_Slicer_SOURCE_DIR:PATH=${TubeTK_Slicer_SOURCE_DIR} )
 if( TubeTK_USE_Slicer )
@@ -124,29 +120,21 @@ if( TubeTK_USE_Slicer )
     -DSlicer_DIR:PATH=${Slicer_DIR} )
 endif( TubeTK_USE_Slicer )
 
-##
-## TubeTK - Check Dependencies
-##
-
+# TubeTK - check dependencies.
 set( EXTERNAL_PROJECT_DIR ${TubeTK_SOURCE_DIR}/CMake/Superbuild )
 TubeTKMacroCheckExternalProjectDependency( TubeTK )
 
-## ImageViewer - must come after TubeTK Dependency check
-##
+# ImageViewer - must come after TubeTK dependency check.
 if( TubeTK_BUILD_ImageViewer )
-  include( "External_ImageViewer.cmake" )
+  include( External_ImageViewer.cmake )
 endif( TubeTK_BUILD_ImageViewer )
 
-## LIBSVM - must come after TubeTK Dependency check
-##
+# LIBSVM - must come after TubeTK dependency check.
 if( TubeTK_USE_LIBSVM )
- include( "External_LIBSVM.cmake" )
+ include( External_LIBSVM.cmake )
 endif( TubeTK_USE_LIBSVM )
 
-##
-## TubeTK - Normal Build
-##
-
+# TubeTK - normal build.
 set( proj TubeTK )
 if( TubeTK_USE_KWSTYLE )
   set( kwstyle_dashboard_submission_arg

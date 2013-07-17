@@ -21,8 +21,7 @@
 #
 ##############################################################################
 
-#-----------------------------------------------------------------------------
-set(MODULE_NAME ComputeBinaryImageSimilarityMetrics)
+set( MODULE_NAME ComputeBinaryImageSimilarityMetrics )
 project( ${MODULE_NAME} )
 
 if( NOT TubeTK_SOURCE_DIR )
@@ -30,13 +29,12 @@ if( NOT TubeTK_SOURCE_DIR )
   include( ${TubeTK_USE_FILE} )
 endif( NOT TubeTK_SOURCE_DIR )
 
-find_package(SlicerExecutionModel REQUIRED)
-include(${SlicerExecutionModel_USE_FILE})
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
 
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
 
-#-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h

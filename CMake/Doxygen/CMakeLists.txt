@@ -22,7 +22,7 @@
 ##############################################################################
 
 # Build the documentation
-include( ${CMAKE_ROOT}/Modules/Documentation.cmake OPTIONAL )
+include( Documentation OPTIONAL )
 
 if( BUILD_DOCUMENTATION AND TubeTK_USE_DOXYGEN )
   option( DOXYGEN_SHORT_NAMES "Build Doxygen of CURRENT using short file names" OFF )

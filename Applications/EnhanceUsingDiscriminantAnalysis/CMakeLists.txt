@@ -21,7 +21,6 @@
 #
 ##############################################################################
 
-#-----------------------------------------------------------------------------
 set( MODULE_NAME EnhanceUsingDiscriminantAnalysis )
 project( ${MODULE_NAME} )
 
@@ -38,7 +37,6 @@ include( ${USE_ITK_FILE} )
 
 find_package( JsonCpp REQUIRED )
 
-#-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h

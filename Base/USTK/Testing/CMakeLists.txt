@@ -21,9 +21,9 @@
 #
 ##############################################################################
 
-include(${TubeTK_SOURCE_DIR}/CMake/MIDAS3.cmake)
+include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 set( BASE_USTK_TESTS
   ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseUSTKTests )
@@ -49,7 +49,7 @@ target_link_libraries( tubeBaseUSTKTests
   #TubeUSTK
   ${ITK_LIBRARIES} )
 
-MIDAS_ADD_TEST( itkLabelMapToAcousticImpedanceImageFilterTest
+Midas3FunctionAddTest( itkLabelMapToAcousticImpedanceImageFilterTest
   ${BASE_USTK_TESTS}
   --compare
     MIDAS{itkLabelMapToAcousticImpedanceImageFilterTest.mha.md5}
@@ -59,7 +59,7 @@ MIDAS_ADD_TEST( itkLabelMapToAcousticImpedanceImageFilterTest
     MIDAS{CIRSPhantomAbdominalLabels.nrrd.md5}
     ${TEMP}/itkLabelMapToAcousticImpedanceImageFilterTest.mha )
 
-MIDAS_ADD_TEST( itkAngleOfIncidenceImageFilterTest
+Midas3FunctionAddTest( itkAngleOfIncidenceImageFilterTest
   ${BASE_USTK_TESTS}
     itkAngleOfIncidenceImageFilterTest
     MIDAS{PrimitiveObjects.mha.md5}
@@ -69,7 +69,7 @@ MIDAS_ADD_TEST( itkAngleOfIncidenceImageFilterTest
     10
     10 )
 
-MIDAS_ADD_TEST( itkGradientBasedAngleOfIncidenceImageFilterTest
+Midas3FunctionAddTest( itkGradientBasedAngleOfIncidenceImageFilterTest
   ${BASE_USTK_TESTS}
   --compareNumberOfPixelsTolerance 50
   --compare
@@ -86,7 +86,7 @@ MIDAS_ADD_TEST( itkGradientBasedAngleOfIncidenceImageFilterTest
       31.8
       -24.8 )
 
-MIDAS_ADD_TEST( itkGradientBasedAngleOfIncidenceImageFilterTest2
+Midas3FunctionAddTest( itkGradientBasedAngleOfIncidenceImageFilterTest2
   ${BASE_USTK_TESTS}
   --compareNumberOfPixelsTolerance 50
   --compare
@@ -103,7 +103,7 @@ MIDAS_ADD_TEST( itkGradientBasedAngleOfIncidenceImageFilterTest2
       136.5
       -90.8 )
 
-MIDAS_ADD_TEST( itkGradientBasedAngleOfIncidenceImageFilterTest3
+Midas3FunctionAddTest( itkGradientBasedAngleOfIncidenceImageFilterTest3
   ${BASE_USTK_TESTS}
   --compareNumberOfPixelsTolerance 50
   --compare
@@ -120,7 +120,7 @@ MIDAS_ADD_TEST( itkGradientBasedAngleOfIncidenceImageFilterTest3
       0.0
       1.0 )
 
-MIDAS_ADD_TEST( itkGradientBasedAngleOfIncidenceImageFilterTest4
+Midas3FunctionAddTest( itkGradientBasedAngleOfIncidenceImageFilterTest4
   ${BASE_USTK_TESTS}
   --compareNumberOfPixelsTolerance 50
   --compare
@@ -137,7 +137,7 @@ MIDAS_ADD_TEST( itkGradientBasedAngleOfIncidenceImageFilterTest4
       0.5
       0.5 )
 
-MIDAS_ADD_TEST( itkAcousticImpulseResponseImageFilterTest1
+Midas3FunctionAddTest( itkAcousticImpulseResponseImageFilterTest1
   ${BASE_USTK_TESTS}
   --compareNumberOfPixelsTolerance 50
   --compare
@@ -154,7 +154,7 @@ MIDAS_ADD_TEST( itkAcousticImpulseResponseImageFilterTest1
       -24.8
       1.0 )
 
-MIDAS_ADD_TEST( itkAcousticImpulseResponseImageFilterTest2
+Midas3FunctionAddTest( itkAcousticImpulseResponseImageFilterTest2
   ${BASE_USTK_TESTS}
   --compareNumberOfPixelsTolerance 50
   --compare
@@ -171,7 +171,7 @@ MIDAS_ADD_TEST( itkAcousticImpulseResponseImageFilterTest2
       -90.8
       1.0 )
 
-MIDAS_ADD_TEST( itkAcousticImpulseResponseImageFilterTest3
+Midas3FunctionAddTest( itkAcousticImpulseResponseImageFilterTest3
   ${BASE_USTK_TESTS}
   --compareNumberOfPixelsTolerance 50
   --compare
@@ -188,7 +188,7 @@ MIDAS_ADD_TEST( itkAcousticImpulseResponseImageFilterTest3
       -90.8
       0.5 )
 
-MIDAS_ADD_TEST( itkAcousticImpulseResponseImageFilterTest4
+Midas3FunctionAddTest( itkAcousticImpulseResponseImageFilterTest4
   ${BASE_USTK_TESTS}
   --compareNumberOfPixelsTolerance 50
   --compare
@@ -205,7 +205,7 @@ MIDAS_ADD_TEST( itkAcousticImpulseResponseImageFilterTest4
       -90.8
       2.0 )
 
-MIDAS_ADD_TEST( itkUltrasoundProbeGeometryCalculatorTest
+Midas3FunctionAddTest( itkUltrasoundProbeGeometryCalculatorTest
   ${BASE_USTK_TESTS}
     itkUltrasoundProbeGeometryCalculatorTest
       MIDAS{ultrasound_screenshot_cropped.png.md5} )

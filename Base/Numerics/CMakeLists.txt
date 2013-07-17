@@ -86,7 +86,7 @@ add_library( TubeNumerics STATIC
 target_link_libraries( TubeNumerics ${ITK_LIBRARIES} )
 
 set( TARGETS TubeNumerics )
-tubetk_install_plugins( ${TARGETS} )
+TubeTKMacroInstallPlugins( ${TARGETS} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

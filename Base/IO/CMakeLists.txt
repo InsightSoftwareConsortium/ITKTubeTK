@@ -51,7 +51,7 @@ add_library( TubeIO STATIC
 target_link_libraries( TubeIO ${ITK_LIBRARIES} )
 
 set( TARGETS TubeIO )
-tubetk_install_plugins( ${TARGETS} )
+TubeTKMacroInstallPlugins( ${TARGETS} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

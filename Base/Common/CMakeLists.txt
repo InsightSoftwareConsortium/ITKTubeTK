@@ -47,7 +47,7 @@ add_library( TubeCommon STATIC
   ${TubeTK_Base_Common_HXX_Files}
   ${TubeTK_Base_Common_CXX_Files} )
 
-tubetk_install_plugins( TubeCommon )
+TubeTKMacroInstallPlugins( TubeCommon )
 
 add_executable( ImageCompareCommand ImageCompareCommand.cxx )
 target_link_libraries( ImageCompareCommand ${ITK_LIBRARIES} )

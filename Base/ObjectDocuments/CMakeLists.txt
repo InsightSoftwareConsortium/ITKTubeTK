@@ -58,7 +58,7 @@ add_library( TubeObjectDocuments STATIC
 target_link_libraries( TubeObjectDocuments ${ITK_LIBRARIES} )
 
 set( TARGETS TubeObjectDocuments )
-tubetk_install_plugins( ${TARGETS} )
+TubeTKMacroInstallPlugins( ${TARGETS} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

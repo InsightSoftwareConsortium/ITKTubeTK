@@ -69,7 +69,7 @@ macro( TubeTKMacroCheckExternalProjectDependency proj )
       else( External_${dep}_FILE_INCLUDED )
         set( dependency_str "${dependency_str}${dep}, " )
       endif( External_${dep}_FILE_INCLUDED )
-    endforeach()
+    endforeach( dep ${${proj}_DEPENDENCIES} )
     message( STATUS "SuperBuild - ${__indent}${proj} => Requires${dependency_str}" )
   endif( "${${proj}_DEPENDENCIES}" STREQUAL "" )
 
@@ -94,14 +94,14 @@ macro( TubeTKMacroCheckExternalProjectDependency proj )
             include( ${${proj}_ADDITIONAL_EXTERNAL_PROJECT_DIR}/External_${dep}.cmake )
             set( external_project_found ON )
           endif( EXISTS "${dir}/External_${dep}.cmake" AND NOT ${external_project_found} )
-        endforeach()
+        endforeach( dir ${${proj}_ADDITIONAL_EXTERNAL_PROJECT_DIRS} )
       endif( NOT ${external_project_found} )
 
       if( NOT ${external_project_found} )
         message( FATAL_ERROR "Cannot find External_${dep}.cmake" )
       endif( NOT ${external_project_found} )
     endif( NOT External_${dep}_FILE_INCLUDED )
-  endforeach()
+  endforeach( dep ${${proj}_DEPENDENCIES} )
 
   set( __${proj}_superbuild_message "SuperBuild - ${__indent}${proj}[OK]" )
   set( __${proj}_indent ${__indent} )
@@ -110,7 +110,6 @@ macro( TubeTKMacroCheckExternalProjectDependency proj )
   if( NOT "${${proj}_DEPENDENCIES}" STREQUAL "" )
     message( STATUS ${__${proj}_superbuild_message} )
   endif( NOT "${${proj}_DEPENDENCIES}" STREQUAL "" )
-
 
   # Update indent variable
   string( LENGTH "${__indent}" __indent_length )

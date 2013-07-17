@@ -43,11 +43,9 @@
 
 # See http://github.com/commontk/CTK/blob/master/CMake/ctkMacroEmptyExternalProject.cmake
 
-#
 # Convenient macro allowing to define a "empty" project in case an external one
 # is provided using for example <proj>_DIR. Doing so allows us to keep the
 # external project dependency system happy.
-#
 macro( TubeTKMacroEmptyExternalProject proj dependencies )
   ExternalProject_Add( ${proj}
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
