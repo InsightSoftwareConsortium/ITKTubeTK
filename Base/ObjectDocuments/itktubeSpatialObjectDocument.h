@@ -32,53 +32,48 @@ namespace itk
 namespace tube
 {
 
-
-/** \class SpatialObjectDocument
- * \brief Encodes a Spatial Object file name and its ordered transform file names
+/**
+ * Encodes a spatial object file name and its ordered transform file names.
+ * Spatial object documents store the file name of a spatial object and the file
+ * names of the transforms that are to be applied consecutively to the spatial
+ * object.
  *
- *  Object will store the file name of a generic type \sa SpatialObject
- *     and will a set file names for the transforms that are to be applied consecutively to the object.
- *
- *  IO is done through MetaObjectDocument.h
- *
- *  \ingroup Document
+ * \ingroup  ObjectDocuments
  */
-
 class SpatialObjectDocument : public ObjectDocument
 {
 public:
 
-  typedef SpatialObjectDocument                 Self;
-  typedef ObjectDocument                        Superclass;
+  typedef SpatialObjectDocument              Self;
+  typedef ObjectDocument                     Superclass;
+  typedef SmartPointer< Self >               Pointer;
+  typedef SmartPointer< const Self >         ConstPointer;
 
-  typedef SmartPointer< Self >                  Pointer;
-  typedef SmartPointer< const Self >            ConstPointer;
+  typedef Superclass::TransformNameListType  TransformNameListType;
 
-  typedef Superclass::DateType                  DateType;
-  typedef Superclass::CommentsType              CommentsType;
-
-  /** Not Implemented, but would allow for Document objects to be held by other documents */
-  typedef Superclass::ChildrenListType          ChildrenListType;
-  typedef Superclass::ChildrenListPointer       ChildrenListPointer;
-
-  /** list that holds the ordered transform Names */
-  typedef Superclass::TransformNameListType     TransformNameListType;
-
-  /** Method for creation through the object factory. */
   itkNewMacro( Self );
-
-  /** Run-time type information (and related methods). */
   itkTypeMacro( SpatialObjectDocument, ObjectDocument );
-
-  /** Return the type of the object within the Document (ie. "SpatialObject") */
-  std::string GetObjectType( void ) const { return LABEL_SOTYPE; }
 
 protected:
 
-  SpatialObjectDocument( void ) : LABEL_SOTYPE("SpatialObject") {}
-  ~SpatialObjectDocument( void ) {}
+  /** Constructor. */
+  SpatialObjectDocument( void )
+    {
+    this->SetObjectType( "SpatialObject" );
+    }
 
-  const std::string LABEL_SOTYPE;
+  /** Destructor. */
+  virtual ~SpatialObjectDocument( void )
+    {
+    }
+
+private:
+
+  // Copy constructor not implemented.
+  SpatialObjectDocument( const Self & self );
+
+  // Copy assignment operator not implemented.
+  void operator=( const Self & self );
 
 }; // End class SpatialObjectDocument
 

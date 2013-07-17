@@ -24,73 +24,113 @@ limitations under the License.
 #ifndef __tubeMetaDocument_h
 #define __tubeMetaDocument_h
 
+#include "tubeObject.h"
+
 #include <metaUtils.h>
 
 #include <fstream>
 
-extern int META_DEBUG;
-
 namespace tube
 {
 
-class MetaDocument
+/**
+ * Encodes a meta document file name and its information.
+ *
+ * \ingroup  ObjectDocuments
+ */
+class MetaDocument : public Object
 {
 public:
 
-  /** CTOR, DTOR */
-  MetaDocument( void );
-  MetaDocument(const std::string & _fileName);
+  typedef MetaDocument                Self;
+  typedef Object                      Superclass;
+  typedef Self *                      Pointer;
+  typedef const Self *                ConstPointer;
 
+  typedef MET_FieldRecordType         FieldType;
+  typedef std::vector< FieldType * >  FieldListType;
+
+  /** Constructor. */
+  MetaDocument( void );
+
+  /**  Destructor. */
   virtual ~MetaDocument( void );
 
-  void  FileName(const std::string & _fileName);
-  std::string FileName( void ) const;
+  /** Return the name of this class. */
+  tubeTypeMacro( MetaDocument );
 
-  void  CopyInfo(const MetaDocument * _object);
+  /** Return the comment. */
+  tubeGetStringMacro( Comment );
 
-  virtual bool  Read(const std::string & _fileName = std::string());
+  /** Return the date modified. */
+  tubeGetStringMacro( DateModified );
 
-  virtual bool  Write(const std::string & _fileName = std::string());
+  /** Return the file name. */
+  tubeGetStringMacro( FileName );
 
-  /** Writes image parameters to stdout */
-  virtual void  PrintInfo( void ) const;
+  /** Return the name. */
+  tubeGetStringMacro( Name );
 
-  std::string DateLastModified( void ) const;
-  void DateLastModified(const std::string & _dateModified);
+  /** Set the comment. */
+  tubeSetStringMacro( Comment );
 
-  /** Comment(...), Optional Field, Arbitrary String */
-  std::string Comment( void ) const;
-  void Comment(const std::string & _comment);
+  /** Set the date modified. */
+  tubeSetStringMacro( DateModified );
 
-  /** Name(...), Optional Field, Name of the current MetaDocument */
-  virtual void  Name(const std::string & _Name);
-  virtual std::string Name( void ) const;
+  /** Set the file name. */
+  tubeSetStringMacro( FileName );
 
+  /** Set the name. */
+  tubeSetStringMacro( Name );
+
+  /** Clear all the information. */
   virtual void Clear( void );
 
-  void ClearFields( void );
+  /** Copy information from the specified meta document. */
+  virtual void CopyInformation( const Self * self );
+
+  /** Read the information from the specified file. */
+  virtual bool Read( const std::string & fileName = "" );
+
+  /** Write the information to the specified file. */
+  virtual bool Write( const std::string & fileName = "" );
 
 protected:
 
-  virtual void M_SetupReadFields( void );
-  void M_PrepareNewReadStream( void );
+  /** Clear all the fields. */
+  void ClearFields( void );
 
-  virtual void M_SetupWriteFields( void );
-  void M_PrepareNewWriteStream( void );
+  /** Read the fields. */
+  virtual bool ReadFields( void );
 
-  virtual bool M_Read( void );
+  /** Initialize the read fields. */
+  virtual void SetupReadFields( void );
 
-  virtual bool M_Write( void );
+  /** Initialize the write fields. */
+  virtual void SetupWriteFields( void );
 
-  std::ifstream                      m_ReadStream;
-  std::ofstream                      m_WriteStream;
+  /** Write the fields. */
+  virtual bool WriteFields( void );
 
-  std::string                        m_Comment;
-  std::string                        m_DateLastModified;
-  std::string                        m_Name;
-  std::string                        m_FileName;
+  /** Print information about this object. */
+  virtual void PrintSelf( std::ostream & os, Indent indent ) const;
 
-  std::vector<MET_FieldRecordType *> m_Fields;
+  std::ifstream  m_ReadStream;
+  std::ofstream  m_WriteStream;
+  FieldListType  m_FieldList;
+
+private:
+
+  // Copy constructor not implemented.
+  MetaDocument( const Self & self );
+
+  // Copy assignment operator not implemented.
+  void operator=( const Self & self );
+
+  std::string  m_Comment;
+  std::string  m_DateModified;
+  std::string  m_FileName;
+  std::string  m_Name;
 
 }; // End class MetaDocument
 

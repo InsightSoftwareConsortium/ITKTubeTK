@@ -37,77 +37,93 @@ namespace tube
 {
 
 /**
- * Builds image from Object Document
- * Reads and composes all transforms from Document for single object
+ * Filter that takes an object document as input and produces an image a
+ * output.
  *
- * Note: Does not hold buffers of objects read (single read function)
+ * \ingroup  ObjectDocuments
  */
-
-template< class TInputObjectDocument, class TOutputImageType >
+template< class TObjectDocument, class TImageType >
 class ObjectDocumentToImageFilter
-  : public ObjectDocumentToObjectSource< TInputObjectDocument,
-                                         TOutputImageType::ImageDimension >
+  : public ObjectDocumentToObjectSource< TObjectDocument,
+                                         TImageType::ImageDimension >
 {
 public:
 
   enum { Dimension = 3 };
 
-  typedef ObjectDocumentToImageFilter                       Self;
-  typedef ObjectDocumentToObjectSource<TInputObjectDocument,
-    TOutputImageType::ImageDimension>                       Superclass;
+  typedef ObjectDocumentToImageFilter          Self;
+  typedef ObjectDocumentToObjectSource< TObjectDocument,
+                                        TImageType::ImageDimension >
+                                               Superclass;
+  typedef SmartPointer< Self >                 Pointer;
+  typedef SmartPointer< const Self >           ConstPointer;
 
-  typedef SmartPointer< Self >                              Pointer;
-  typedef SmartPointer< const Self >                        ConstPointer;
+  typedef TObjectDocument                      DocumentType;
+  typedef typename DocumentType::ConstPointer  ConstDocumentPointer;
 
-  typedef TInputObjectDocument                              DocumentType;
-  typedef typename DocumentType::Pointer                    DocumentPointer;
-  typedef typename DocumentType::ConstPointer               ConstDocumentPointer;
+  typedef TImageType                           ImageType;
+  typedef typename ImageType::Pointer          ImagePointer;
 
-  typedef TOutputImageType                                  OutputImageType;
-  typedef typename OutputImageType::Pointer                 OutputImagePointer;
+  typedef typename Superclass::TransformType   TransformType;
+  typedef typename TransformType::Pointer      TransformPointer;
 
-  typedef typename Superclass::TransformType                TransformType;
-  typedef typename TransformType::Pointer                   TransformPointer;
-
-  /** Interpolator function Type def. for image resampling (default is Linear) */
-  typedef InterpolateImageFunction<OutputImageType, double> InterpolateImageFunctionType;
-  typedef typename InterpolateImageFunctionType::Pointer    InterpolatorImageFunctionPointer;
-
-  /** Set a pointer to the interpolator function. (default is linear) */
-  itkSetObjectMacro( Interpolator, InterpolateImageFunctionType );
-
-  /** Get a pointer to the interpolator function. (default is linear) */
-  itkGetObjectMacro( Interpolator, InterpolateImageFunctionType );
+  typedef InterpolateImageFunction< ImageType, double >
+                                               InterpolateImageFunctionType;
+  typedef typename InterpolateImageFunctionType::Pointer
+                                               InterpolateImageFunctionPointer;
 
   itkNewMacro( Self );
   itkTypeMacro( ObjectDocumentToImageFilter, ObjectDocumentToObjectSource );
 
-  OutputImageType * GetOutput( void );
+  /** Return the interpolator. */
+  itkGetObjectMacro( Interpolator, InterpolateImageFunctionType );
+
+  /** Set the interpolator. */
+  itkSetObjectMacro( Interpolator, InterpolateImageFunctionType );
+
+  /** Return the output. */
+  ImageType * GetOutput( void );
 
 protected:
 
-  void GenerateData( void );
+  typedef ImageFileReader< ImageType >                 ImageFileReaderType;
+  typedef ResampleImageFilter< ImageType, ImageType >  ResampleImageFilterType;
+  typedef typename ImageType::SizeType                 SizeType;
+  typedef typename ImageType::PointType                PointType;
 
-  typedef ImageFileReader< OutputImageType >                        ImageFileReaderType;
-  typedef ResampleImageFilter<OutputImageType,OutputImageType>      ResampleImageFilterType;
-  typedef typename OutputImageType::SizeType                        SizeType;
-  typedef typename OutputImageType::PointType                       PointType;
-
-  /** read from Document file the defined image */
-  OutputImagePointer ReadDocument( ConstDocumentPointer );
-
-  /** Resample the input image using the inputted transform */
-  OutputImagePointer ResampleImage( OutputImagePointer, TransformPointer );
-
+  /** Constructor. */
   ObjectDocumentToImageFilter( void );
-  ~ObjectDocumentToImageFilter( void ) {}
+
+  /** Destructor. */
+  virtual ~ObjectDocumentToImageFilter( void );
+
+  /** Generate the output data. */
+  virtual void GenerateData( void );
+
+  /** Read the specified object document. */
+  virtual ImagePointer ReadDocument( ConstDocumentPointer image );
+
+  /** Resample the specified image. */
+  virtual ImagePointer ResampleImage( ImagePointer image,
+                                      TransformPointer transform );
+
+  /** Print information about the object. */
+  virtual void PrintSelf( std::ostream & os, Indent indent ) const;
 
 private:
 
-  /** Get the transformed bounding box that contains all corners of the original image */
-  void GetTransformedBoundingBox( OutputImagePointer image, TransformPointer transform, SizeType &, PointType &) const;
+  // Copy constructor not implemented.
+  ObjectDocumentToImageFilter( const Self & self );
 
-  InterpolatorImageFunctionPointer m_Interpolator;
+  // Copy assignment operator not implemented.
+  void operator=( const Self & self );
+
+  /** Return the transformed bounding box. */
+  void GetTransformedBoundingBox( ImagePointer image,
+                                  TransformPointer transform, SizeType & size,
+                                  PointType & origin ) const;
+
+  InterpolateImageFunctionPointer  m_Interpolator;
 
 }; // End class ObjectDocumentToImageFilter
 

@@ -32,113 +32,104 @@ namespace itk
 namespace tube
 {
 
-
-/** \class ObjectDocument
- * \brief Encodes an object file name and its ordered transform file names
+/**
+ * Encodes an object file name and its ordered transform file names.
  *
- *  Object Documents will store the file name of an object type (eg. image, spatial object, etc)
- *     and a set file names for the transforms that are to be applied consecutively to the object.
- *
- *  IO is done through MetaObjectDocument.h
- *
- *  \ingroup Document
+ * \ingroup  ObjectDocuments
  */
 class ObjectDocument : public Document
 {
 public:
 
-  typedef ObjectDocument          Self;
-  typedef Document                Superclass;
+  typedef ObjectDocument                   Self;
+  typedef Document                         Superclass;
+  typedef SmartPointer< Self >             Pointer;
+  typedef SmartPointer< const Self >       ConstPointer;
 
-  typedef SmartPointer< Self >        Pointer;
-  typedef SmartPointer< const Self >  ConstPointer;
+  typedef std::vector< std::string >       TransformNameListType;
 
-  typedef Superclass::DateType                  DateType;
-  typedef Superclass::CommentsType              CommentsType;
-  typedef std::string                           ObjectNameType;
-  typedef std::string                           TransformNameType;
-
-  /** Not Implemented, but would allow for Document objects to be held by other documents */
-  typedef Superclass::ChildrenListType          ChildrenListType;
-  typedef Superclass::ChildrenListPointer       ChildrenListPointer;
-
-  /** list that holds the ordered transform Names */
-  typedef std::vector< TransformNameType >      TransformNameListType;
-
-  /** Method for creation through the object factory. */
   itkNewMacro( Self );
-
-  /** Run-time type information (and related methods). */
   itkTypeMacro( ObjectDocument, Document );
 
-  /** To be implemented by the object type that inherits this class */
-  virtual std::string  GetObjectType( void ) const{ return "Object";}
+  /** Return the object name. */
+  itkGetStringMacro( ObjectName );
 
-  /** Get the Object file name -- default is undefined */
-  itkGetConstReferenceMacro( ObjectName, ObjectNameType );
+  /** Set the object name. */
+  itkSetStringMacro( ObjectName );
 
-  /** Set the Object file name */
-  itkSetMacro( ObjectName, ObjectNameType );
+  /** Return the object type. */
+  itkGetStringMacro( ObjectType );
 
-  /** Get the number of transforms associated with the object */
-  unsigned int GetNumberOfTransforms( void ) const
+  /** Return the number of transform names. */
+  virtual unsigned int GetNumberOfTransformNames( void ) const
     {
-    return static_cast<unsigned int>(m_TransformList.size());
+    return static_cast< unsigned int >( m_TransformNameList.size() );
     }
 
-  /** Get a std::vector of all the transform file names in order */
-  TransformNameListType GetTransformNames( void ) const { return m_TransformList; }
-
-  /** Add a transform name to the end of the transform list */
-  void AddTransformNameToBack( const std::string & trans ) { m_TransformList.push_back( trans ); }
-
-  /** Remove last transform from the list -- Does nothing if there are no transforms */
-  void RemoveTransformNameFromBack( void )
+  /** Return the list of transform names. */
+  virtual TransformNameListType GetTransformNames( void ) const
     {
-    if( !m_TransformList.empty() )
+    return m_TransformNameList;
+    }
+
+  /** Add the specified transform name to the back of the list. */
+  virtual void AddTransformNameToBack( const std::string & transformName )
+    {
+    m_TransformNameList.push_back( transformName );
+    }
+
+  /** Remove the transform name from the back of the list. */
+  virtual void RemoveTransformNameFromBack( void )
+    {
+    if( !m_TransformNameList.empty() )
       {
-      m_TransformList.pop_back();
+      m_TransformNameList.pop_back();
       }
     }
-
-  void Print( std::ostream& os ) const
-    {
-    os << "ObjectName: " << m_ObjectName << std::endl;
-
-    os<< "Transform List: " << std::endl;
-    TransformNameListType::const_iterator it = m_TransformList.begin();
-    while( it != m_TransformList.end() )
-      {
-      std::cout << *it << std::endl;
-      ++it;
-      }
-    }
-
-  ~ObjectDocument( void ) {}
 
 protected:
 
-  ObjectDocument( void ) {}
-
-  void PrintSelf(std::ostream& os, Indent indent) const
+  /** Constructor. */
+  ObjectDocument( void )
     {
-    Superclass::PrintSelf(os,indent);
+    this->SetObjectType( "Object" );
+    }
 
-    os << indent << "ObjectName: " << m_ObjectName << std::endl;
+  /** Destructor. */
+  virtual ~ObjectDocument( void )
+    {
+    }
 
-    os << indent << "Transform List: " << std::endl;
-    TransformNameListType::const_iterator it = m_TransformList.begin();
-    while( it != m_TransformList.end() )
+  /** Set the object type. */
+  itkSetMacro( ObjectType, std::string );
+
+  /** Print information about the object. */
+  virtual void PrintSelf( std::ostream& os, Indent indent ) const
+    {
+    Superclass::PrintSelf( os, indent );
+
+    os << indent << "ObjectName:        " << m_ObjectName << std::endl;
+    os << indent << "ObjectType:        " << m_ObjectType << std::endl;
+    os << indent << "TransformNameList:" << std::endl;
+
+    for( TransformNameListType::const_iterator it = m_TransformNameList.begin();
+         it != m_TransformNameList.end(); ++it )
       {
-      std::cout << *it << std::endl;
-      ++it;
+      std::cout << indent << *it << std::endl;
       }
     }
 
 private:
 
-  ObjectNameType                    m_ObjectName;
-  TransformNameListType             m_TransformList;
+  // Copy constructor not implemented.
+  ObjectDocument( const Self & self );
+
+  // Copy assignment operator not implemented.
+  void operator=( const Self & self );
+
+  std::string            m_ObjectName;
+  std::string            m_ObjectType;
+  TransformNameListType  m_TransformNameList;
 
 }; // End class ObjectDocument
 

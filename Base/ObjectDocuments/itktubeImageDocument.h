@@ -32,52 +32,47 @@ namespace itk
 namespace tube
 {
 
-/** \class ImageDocument
- * \brief Encodes an image file name and its ordered transform file names
+/**
+ * Encodes an image file name and its ordered transform file names. Image
+ * documents store the file name of an image and the file names of the
+ * transforms that are to be applied consecutively to the image.
  *
- *  Image Documents will store the file name of an image
- *    and set file names for the transforms that are to be applied consecutively to the image.
- *
- *  IO is done through MetaObjectDocument.h
- *
- *  \ingroup Document
+ * \ingroup  ObjectDocuments
  */
 class ImageDocument : public ObjectDocument
 {
 public:
 
-  typedef ImageDocument   Self;
-  typedef ObjectDocument  Superclass;
+  typedef ImageDocument                      Self;
+  typedef ObjectDocument                     Superclass;
+  typedef SmartPointer< Self >               Pointer;
+  typedef SmartPointer< const Self >         ConstPointer;
 
-  typedef SmartPointer< Self >        Pointer;
-  typedef SmartPointer< const Self >  ConstPointer;
+  typedef Superclass::TransformNameListType  TransformNameListType;
 
-  typedef Superclass::DateType      DateType;
-  typedef Superclass::CommentsType  CommentsType;
-
-  //*** Not Implemented, but would allow for Document objects to be held by other documents
-  typedef Superclass::ChildrenListType    ChildrenListType;
-  typedef Superclass::ChildrenListPointer ChildrenListPointer;
-
-  /** list that holds the ordered transform Names */
-  typedef Superclass::TransformNameListType TransformNameListType;
-
-  /** Method for creation through the object factory. */
   itkNewMacro( Self );
-
-  /** Run-time type information (and related methods). */
   itkTypeMacro( ImageDocument, ObjectDocument );
-
-  /** Return the type of the object within the Document (ie. "Image") */
-  std::string GetObjectType( void ) const { return LABEL_IMAGETYPE; }
-
-  ~ImageDocument( void ) {}
 
 protected:
 
-  ImageDocument( void ) : LABEL_IMAGETYPE("Image") {}
+  /** Constructor. */
+  ImageDocument( void )
+    {
+    this->SetObjectType( "Image" );
+    }
 
-  const std::string LABEL_IMAGETYPE;
+  /** Destructor. */
+  virtual ~ImageDocument( void )
+    {
+    }
+
+private:
+
+  // Copy constructor not implemented.
+  ImageDocument( const Self & self );
+
+  // Copy assignment operator not implemented.
+  void operator=( const Self & self );
 
 }; // End class ImageDocument
 
