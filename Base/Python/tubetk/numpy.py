@@ -21,18 +21,7 @@
 #
 ##############################################################################
 
-add_subdirectory( CLI )
-add_subdirectory( Common )
-add_subdirectory( Filtering )
-add_subdirectory( IO )
-add_subdirectory( Numerics )
-add_subdirectory( ObjectDocuments )
+"""Bridge between TubeTK and NumPy."""
 
-if( ParameterSerializer_FOUND )
-  add_subdirectory( ParameterSerializer )
-endif( ParameterSerializer_FOUND )
-
-add_subdirectory( Python )
-add_subdirectory( Registration )
-add_subdirectory( Segmentation )
-add_subdirectory( USTK )
+from tubetk import _tubetk_numpy
+from _tubetk_numpy import tubes_from_file

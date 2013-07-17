@@ -368,6 +368,12 @@ option( USE_SYSTEM_SlicerExecutionModel
   "Exclude SlicerExecutionModel from SuperBuild and use an existing build instead." OFF )
 mark_as_advanced( USE_SYSTEM_SlicerExecutionModel )
 
+#---------------------------------------------------------------------------
+# NumPy setup.
+option( TubeTK_USE_NumPy
+  "Build NumPy conversion Python extension module." OFF )
+mark_as_advanced( TubeTK_USE_NumPy )
+
 #-----------------------------------------------------------------------------
 # Modules
 option( TubeTK_BUILD_MODULES

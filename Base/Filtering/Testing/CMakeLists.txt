@@ -47,6 +47,7 @@ set( tubeBaseFilteringTests_SRCS
   itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest.cxx
   itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest.cxx
   itktubeAnisotropicHybridDiffusionImageFilterTest.cxx
+  itktubeExtractTubePointsSpatialObjectFilterTest.cxx
   itktubeStructureTensorRecursiveGaussianImageFilterTest.cxx
   itktubeStructureTensorRecursiveGaussianImageFilterTestNew.cxx
   itktubeSubSampleTubeSpatialObjectFilterTest.cxx
@@ -76,11 +77,16 @@ add_test( tubeBaseFilteringHeaderTest
 
 add_test( tubeBaseFilteringPrintTest
   ${BASE_FILTERING_TESTS}
-  tubeBaseFilteringPrintTest )
+    tubeBaseFilteringPrintTest )
 
 add_test( itktubeSheetnessMeasureImageFilterTest
   ${BASE_FILTERING_TESTS}
-  itktubeSheetnessMeasureImageFilterTest )
+    itktubeSheetnessMeasureImageFilterTest )
+
+MIDAS_ADD_TEST( itktubeExtractTubePointsSpatialObjectFilterTest
+  ${BASE_FILTERING_TESTS}
+    itktubeExtractTubePointsSpatialObjectFilterTest
+      MIDAS{VascularNetwork.tre.md5} )
 
 MIDAS_ADD_TEST( itktubeSheetnessMeasureImageFilterTest2
   ${BASE_FILTERING_TESTS}
@@ -95,7 +101,6 @@ MIDAS_ADD_TEST( itktubeSheetnessMeasureImageFilterTest3
       MIDAS{UltrasoundCroppedResampled.mha.md5}
       ${TEMP}/UltrasoundCroppedResampledSheetnessMeasure.mha
       ${TEMP}/UltrasoundCroppedResampledPrimaryEigenVector.mha 2.0)
-
 
 MIDAS_ADD_TEST( itktubeStructureTensorRecursiveGaussianImageFilterTest
   ${BASE_FILTERING_TESTS}
