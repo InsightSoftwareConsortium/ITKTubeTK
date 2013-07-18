@@ -25,7 +25,7 @@ limitations under the License.
 #define __itktubeFeatureVectorGenerator_h
 
 #include <itkImage.h>
-#include <itkProcessObject.h>
+#include <itkLightProcessObject.h>
 
 #include <vnl/vnl_vector.h>
 #include <vnl/vnl_matrix.h>
@@ -39,7 +39,7 @@ namespace tube
 {
 
 template< class TImage >
-class FeatureVectorGenerator : public ProcessObject
+class FeatureVectorGenerator : public LightProcessObject
 {
 public:
 
@@ -48,7 +48,7 @@ public:
   typedef SmartPointer< Self >                 Pointer;
   typedef SmartPointer< const Self >           ConstPointer;
 
-  itkTypeMacro( FeatureVectorGenerator, ProcessObject );
+  itkTypeMacro( FeatureVectorGenerator, LightProcessObject );
 
   itkNewMacro( Self );
 
