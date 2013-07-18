@@ -47,13 +47,13 @@ public:
   CompareImageWithPrior( void );
   ~CompareImageWithPrior( void );
 
-  void SetVolumeImage( typename ImageType::Pointer volImage );
-  typename ImageType::Pointer GetVolumeImage( void );
+  void SetInput( typename ImageType::Pointer volImage );
+  typename ImageType::Pointer GetInput( void );
 
   void SetMaskImage( typename ImageType::Pointer maskImage );
   typename ImageType::Pointer GetMaskImage( void );
 
-  typename ImageType::Pointer GetOutputVolumeImage( void );
+  typename ImageType::Pointer GetOutput( void );
   typename ImageType::Pointer GetOutputMaskImage( void );
 
   void SetMetricMask( typename ImageType::Pointer metricMask );

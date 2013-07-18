@@ -79,7 +79,7 @@ int itktubeNJetFeatureVectorGeneratorTest( int argc, char * argv[] )
     {
     maskReader->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject & e )
     {
     std::cout << "Exception caught during input read:" << std::endl << e;
     return EXIT_FAILURE;
@@ -92,7 +92,7 @@ int itktubeNJetFeatureVectorGeneratorTest( int argc, char * argv[] )
   FilterType::NJetScalesType scales2( 1 );
   scales2[0] = 2;
   FilterType::Pointer filter = FilterType::New();
-  filter->SetInputImage( inputImage );
+  filter->SetInput( inputImage );
   filter->SetZeroScales( scales );
   filter->SetFirstScales( scales );
   filter->SetSecondScales( scales2 );
@@ -107,7 +107,7 @@ int itktubeNJetFeatureVectorGeneratorTest( int argc, char * argv[] )
     {
     writer->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject & e )
     {
     std::cout << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;

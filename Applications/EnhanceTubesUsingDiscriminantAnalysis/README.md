@@ -1,4 +1,4 @@
-TubeTK Enhance Using N Jet Discriminant Analysis Application
+TubeTK Enhance Tubes Using Discriminant Analysis Application
 ============================================================
 
 ---

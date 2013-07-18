@@ -64,7 +64,7 @@ FeatureVectorGenerator< TImage >
 template< class TImage >
 void
 FeatureVectorGenerator< TImage >
-::SetInputImage( typename ImageType::Pointer img )
+::SetInput( typename ImageType::Pointer img )
 {
   m_InputImageList.clear();
   m_WhitenFeatureImageMean.clear();
@@ -75,22 +75,9 @@ FeatureVectorGenerator< TImage >
 template< class TImage >
 void
 FeatureVectorGenerator< TImage >
-::AddInputImage( typename ImageType::Pointer img )
+::AddInput( typename ImageType::Pointer img )
 {
   m_InputImageList.push_back( img );
-}
-
-template< class TImage >
-typename TImage::Pointer
-FeatureVectorGenerator< TImage >
-::GetInputImage( unsigned int num ) const
-{
-  if( num < m_InputImageList.size() )
-    {
-    return m_InputImageList[num];
-    }
-
-  return NULL;
 }
 
 template< class TImage >

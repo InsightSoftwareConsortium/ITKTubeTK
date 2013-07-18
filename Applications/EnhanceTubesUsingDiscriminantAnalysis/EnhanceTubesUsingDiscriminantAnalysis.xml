@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>Enhance Tubes Using Discriminant Analysis (TubeTK)</title>
+  <description>Given an image and foreground and background masks, computes multiscale Jet (0, 1, and 2 order) features at each pixel, performs a multivariate LDA or PCA for separating the classes, and generates the LDA/PCA instances of the images.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url/>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters.</description>
+    <string>
+      <name>inputVolumesString</name>
+      <label>Input Volume List</label>
+      <index>0</index>
+      <description>Input volume list.</description>
+      <default/>
+    </string>
+    <image>
+      <name>labelmap</name>
+      <label>Label Map</label>
+      <longflag>labelmap</longflag>
+      <description>Label map that designates the object of interest and "other."</description>
+      <default></default>
+    </image>
+    <integer-vector>
+      <name>objectIdList</name>
+      <label>Object ID</label>
+      <longflag>objectId</longflag>
+      <description>List of values that represent the objects in the label map.</description>
+      <default>255</default>
+    </integer-vector>
+    <string>
+      <name>outputVolume</name>
+      <label>Output Volume Name</label>
+      <index>1</index>
+      <description>Output image having enhanced tubes</description>
+      <default></default>
+    </string>
+  </parameters>
+  <parameters advanced="true">
+    <label>Basis Parameters</label>
+    <description>Parameters that determine how the basis is generated.</description>
+    <double-vector>
+      <name>tubeScales</name>
+      <description>Scales at which tube features are computed.</description>
+      <label>Tube Scales</label>
+      <default>1,2,4</default>
+      <longflag>tubeScales</longflag>
+    </double-vector>
+    <double-vector>
+      <name>whitenMeans</name>
+      <label>Whiten Means</label>
+      <description>Whiten means.</description>
+      <default></default>
+      <longflag>whitenMeans</longflag>
+    </double-vector>
+    <double-vector>
+      <name>whitenStdDevs</name>
+      <label>Whiten Standard Deviations</label>
+      <description>Whiten standard deviationss.</description>
+      <default></default>
+      <longflag>whitenStdDevs</longflag>
+    </double-vector>
+    <string>
+      <name>saveDiscriminantInfo</name>
+      <description>Save learned enhancement parameters to a file.</description>
+      <label>Save Information to File</label>
+      <longflag>saveDiscriminantInfo</longflag>
+    </string>
+    <string>
+      <name>loadDiscriminantInfo</name>
+      <description>Load learned enhancement parameters from a file.</description>
+      <label>Load Information from File</label>
+      <longflag>loadDiscriminantInfo</longflag>
+    </string>
+  </parameters>
+</executable>

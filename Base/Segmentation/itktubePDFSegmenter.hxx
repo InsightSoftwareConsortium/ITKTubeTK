@@ -69,8 +69,8 @@ PDFSegmenter< TImage, N, TLabelMap >
   m_HistogramBinScale.Fill( 0 );
   m_HistogramNumBinsND = 100;
 
-  m_InputVolumeList.clear();
-  m_InputVolumeList.resize( N, NULL );
+  m_InputImageList.clear();
+  m_InputImageList.resize( N, NULL );
 
   m_LabelMap = NULL;
 
@@ -115,14 +115,6 @@ PDFSegmenter< TImage, N, TLabelMap >
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-int
-PDFSegmenter< TImage, N, TLabelMap >
-::GetNumberOfClasses( void )
-{
-  return m_ProbabilityImageVector.size();
-}
-
-template< class TImage, unsigned int N, class TLabelMap >
 void
 PDFSegmenter< TImage, N, TLabelMap >
 ::ClearObjectIds( void )
@@ -148,6 +140,22 @@ PDFSegmenter< TImage, N, TLabelMap >
 {
   m_ObjectIdList.push_back( objectId );
   m_PDFWeightList.push_back( 1.0 );
+}
+
+template< class TImage, unsigned int N, class TLabelMap >
+unsigned int
+PDFSegmenter< TImage, N, TLabelMap >
+::GetNumberOfObjectIds( void ) const
+{
+  return m_ObjectIdList.size();
+}
+
+template< class TImage, unsigned int N, class TLabelMap >
+unsigned int
+PDFSegmenter< TImage, N, TLabelMap >
+::GetNumberOfClasses( void ) const
+{
+  return m_ProbabilityImageVector.size();
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
@@ -201,10 +209,9 @@ PDFSegmenter< TImage, N, TLabelMap >
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-const typename Image< float,
-  TImage::ImageDimension >::Pointer
+typename Image< float, TImage::ImageDimension >::Pointer
 PDFSegmenter< TImage, N, TLabelMap >
-::GetClassProbabilityForInputVolume( unsigned int classNum ) const
+::GetClassProbabilityForInput( unsigned int classNum ) const
 {
   if( classNum < m_ProbabilityImageVector.size() )
     {
@@ -214,19 +221,15 @@ PDFSegmenter< TImage, N, TLabelMap >
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-const typename PDFSegmenter< TImage, N, TLabelMap >::PDFImageType
-::Pointer
+typename PDFSegmenter< TImage, N, TLabelMap >::PDFImageType::Pointer
 PDFSegmenter< TImage, N, TLabelMap >
-::GetClassPDFImage( unsigned int classNum )
+::GetClassPDFImage( unsigned int classNum ) const
 {
   if( classNum < m_InClassHistogram.size() )
     {
     return m_InClassHistogram[classNum];
     }
-  else
-    {
-    return NULL;
-    }
+  return NULL;
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
@@ -247,7 +250,7 @@ PDFSegmenter< TImage, N, TLabelMap >
 template< class TImage, unsigned int N, class TLabelMap >
 double
 PDFSegmenter< TImage, N, TLabelMap >
-::GetPDFBinMin( unsigned int featureNum )
+::GetPDFBinMin( unsigned int featureNum ) const
 {
   if( featureNum < N )
     {
@@ -273,7 +276,7 @@ PDFSegmenter< TImage, N, TLabelMap >
 template< class TImage, unsigned int N, class TLabelMap >
 double
 PDFSegmenter< TImage, N, TLabelMap >
-::GetPDFBinScale( unsigned int featureNum )
+::GetPDFBinScale( unsigned int featureNum ) const
 {
   if( featureNum < N )
     {
@@ -288,12 +291,11 @@ PDFSegmenter< TImage, N, TLabelMap >
 template< class TImage, unsigned int N, class TLabelMap >
 void
 PDFSegmenter< TImage, N, TLabelMap >
-::SetInputVolume( unsigned int featureNum,
-  typename ImageType::Pointer vol )
+::SetInput( unsigned int featureNum, typename ImageType::Pointer vol )
 {
   if( featureNum < N )
     {
-    m_InputVolumeList[featureNum] = vol;
+    m_InputImageList[featureNum] = vol;
     }
 }
 
@@ -344,8 +346,8 @@ PDFSegmenter< TImage, N, TLabelMap >
   ConstImageIteratorType * itInIm[N];
   for( unsigned int i = 0; i < N; i++ )
     {
-    itInIm[i] = new ConstImageIteratorType( m_InputVolumeList[i],
-      m_InputVolumeList[i]->GetLargestPossibleRegion() );
+    itInIm[i] = new ConstImageIteratorType( m_InputImageList[i],
+      m_InputImageList[i]->GetLargestPossibleRegion() );
     itInIm[i]->GoToBegin();
     m_HistogramBinMin[i] = itInIm[i]->Get();
     m_HistogramBinMax[i] = itInIm[i]->Get();
@@ -722,7 +724,7 @@ PDFSegmenter< TImage, N, TLabelMap >
 template< class TImage, unsigned int N, class TLabelMap >
 typename PDFSegmenter< TImage, N, TLabelMap >::LabeledFeatureSpaceType::Pointer
 PDFSegmenter< TImage, N, TLabelMap >
-::GetLabeledFeatureSpace( void )
+::GetLabeledFeatureSpace( void ) const
 {
   return m_LabeledFeatureSpace;
 }
@@ -766,7 +768,7 @@ PDFSegmenter< TImage, N, TLabelMap >
   //
   std::cout << "Compute probability image..." << std::endl;
 
-  m_ProbabilityImageVector.resize( numClasses + 1 );
+  m_ProbabilityImageVector.resize( numClasses );
 
   itk::TimeProbesCollectorBase timeCollector;
 
@@ -775,8 +777,8 @@ PDFSegmenter< TImage, N, TLabelMap >
     {
     m_ProbabilityImageVector[c] = ProbabilityImageType::New();
     m_ProbabilityImageVector[c]->SetRegions(
-      m_InputVolumeList[0]->GetLargestPossibleRegion() );
-    m_ProbabilityImageVector[c]->CopyInformation( m_InputVolumeList[0] );
+      m_InputImageList[0]->GetLargestPossibleRegion() );
+    m_ProbabilityImageVector[c]->CopyInformation( m_InputImageList[0] );
     m_ProbabilityImageVector[c]->Allocate();
 
     itk::ImageRegionIterator<ProbabilityImageType> probIt(
@@ -789,8 +791,8 @@ PDFSegmenter< TImage, N, TLabelMap >
     std::vector< ConstImageIteratorType * > itInIm(N);
     for( unsigned int i = 0; i < N; i++ )
       {
-      itInIm[i] = new ConstImageIteratorType( m_InputVolumeList[i],
-        m_InputVolumeList[i]->GetLargestPossibleRegion() );
+      itInIm[i] = new ConstImageIteratorType( m_InputImageList[i],
+        m_InputImageList[i]->GetLargestPossibleRegion() );
       itInIm[i]->GoToBegin();
       }
 
@@ -861,9 +863,9 @@ PDFSegmenter< TImage, N, TLabelMap >
   typename LabelMapType::IndexType labelImageIndex;
 
   typename LabelMapType::Pointer tmpLabelImage = LabelMapType::New();
-  tmpLabelImage->SetRegions( m_InputVolumeList[0]
+  tmpLabelImage->SetRegions( m_InputImageList[0]
     ->GetLargestPossibleRegion() );
-  tmpLabelImage->CopyInformation( m_InputVolumeList[0] );
+  tmpLabelImage->CopyInformation( m_InputImageList[0] );
   tmpLabelImage->Allocate();
 
   if( !m_ForceClassification )
@@ -1309,7 +1311,7 @@ PDFSegmenter< TImage, N, TLabelMap >
     os << indent << "ImagesUpToDate = false" << std::endl;
     }
 
-  os << indent << "Input volume list size = " << m_InputVolumeList.size()
+  os << indent << "Input volume list size = " << m_InputImageList.size()
     << std::endl;
 
   if( m_LabelMap.IsNotNull() )

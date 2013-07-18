@@ -90,7 +90,7 @@ CompareImageWithPrior< TPixel, TDimension>::
 
 template< class TPixel, unsigned int TDimension >
 void CompareImageWithPrior< TPixel, TDimension>::
-SetVolumeImage( typename ImageType::Pointer volImage )
+SetInput( typename ImageType::Pointer volImage )
 {
   m_VolImage = volImage;
 }
@@ -98,7 +98,7 @@ SetVolumeImage( typename ImageType::Pointer volImage )
 template< class TPixel, unsigned int TDimension >
 typename itk::Image< float, TDimension >::Pointer
 CompareImageWithPrior< TPixel, TDimension>::
-GetVolumeImage( void )
+GetInput( void )
 {
   return m_VolImage;
 }
@@ -121,7 +121,7 @@ GetMaskImage( void )
 template< class TPixel, unsigned int TDimension >
 typename itk::Image< float, TDimension >::Pointer
 CompareImageWithPrior< TPixel, TDimension>::
-GetOutputVolumeImage( void )
+GetOutput( void )
 {
   return m_OutputVolImage;
 }
@@ -598,18 +598,18 @@ Update( void )
       }
 
     typedef itk::CropImageFilter< ImageType, ImageType > CropFilterType;
-    typename CropFilterType::Pointer cropVolumeFilter =
+    typename CropFilterType::Pointer cropInputFilter =
       CropFilterType::New();
     typename CropFilterType::Pointer cropMaskFilter =
       CropFilterType::New();
     typename CropFilterType::Pointer cropRegMaskFilter =
       CropFilterType::New();
 
-    cropVolumeFilter->SetLowerBoundaryCropSize( lowerCropSize );
-    cropVolumeFilter->SetUpperBoundaryCropSize( upperCropSize );
-    cropVolumeFilter->SetInput( m_OutputVolImage );
-    cropVolumeFilter->Update();
-    m_OutputVolImage = cropVolumeFilter->GetOutput();
+    cropInputFilter->SetLowerBoundaryCropSize( lowerCropSize );
+    cropInputFilter->SetUpperBoundaryCropSize( upperCropSize );
+    cropInputFilter->SetInput( m_OutputVolImage );
+    cropInputFilter->Update();
+    m_OutputVolImage = cropInputFilter->GetOutput();
 
     cropMaskFilter->SetLowerBoundaryCropSize( lowerCropSize );
     cropMaskFilter->SetUpperBoundaryCropSize( upperCropSize );

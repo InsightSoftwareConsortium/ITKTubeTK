@@ -60,7 +60,7 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     TImage::ImageDimension );
 
-  typedef typename TImage::PixelType           FeatureValueType;
+  typedef float                                FeatureValueType;
   typedef vnl_vector< FeatureValueType >       FeatureVectorType;
   typedef Image< FeatureValueType, TImage::ImageDimension >
                                                FeatureImageType;
@@ -68,11 +68,8 @@ public:
   typedef double                               ValueType;
   typedef std::vector< ValueType >             ValueListType;
 
-  void SetInputImage( typename ImageType::Pointer img );
-  void AddInputImage( typename ImageType::Pointer img );
-
-  virtual typename ImageType::Pointer GetInputImage(
-    unsigned int num ) const;
+  void SetInput( typename ImageType::Pointer img );
+  void AddInput( typename ImageType::Pointer img );
 
   unsigned int GetNumberOfInputImages() const;
 

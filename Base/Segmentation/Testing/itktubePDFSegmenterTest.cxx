@@ -32,11 +32,11 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
 {
   if( argc != 12 )
     {
-    std::cerr << "Missing arguments." << std::endl;
-    std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0]
-      << " inputImage1 inputImage2 inputLabelMap force blur outputProbImage0"
-      << " outputPDF0 outputProbImage1 outputPDF1 outputLabelMap"
+    std::cout << "Missing arguments." << std::endl;
+    std::cout << "Usage: " << std::endl;
+    std::cout << argv[0]
+      << " inputImage1 inputImage2 inputLabelMap force blur outputProbImg0"
+      << " outputPDF0 outputProbImg1 outputPDF1 outputLabelMap"
       << " labeledFeatureSpace"
       << std::endl;
     return EXIT_FAILURE;
@@ -66,9 +66,10 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
     {
     reader->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during input read:" << std::endl << e;
+    std::cout << "Exception caught during input read:" << std::endl << e
+      << std::endl;
     return EXIT_FAILURE;
     }
   ImageType::Pointer inputImage = reader->GetOutput();
@@ -79,10 +80,10 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
     {
     reader2->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during input image2 read:" << std::endl
-      << e;
+    std::cout << "Exception caught during input image2 read:" << std::endl
+      << e << std::endl;
     return EXIT_FAILURE;
     }
   ImageType::Pointer inputImage2 = reader2->GetOutput();
@@ -94,16 +95,17 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
     {
     labelmapReader->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during input read:\n"  << e;
+    std::cout << "Exception caught during input read:" << std::endl << e
+      << std::endl;
     return EXIT_FAILURE;
     }
   ImageType::Pointer labelmapImage = labelmapReader->GetOutput();
 
   FilterType::Pointer filter = FilterType::New();
-  filter->SetInputVolume( 0, inputImage );
-  filter->SetInputVolume( 1, inputImage2 );
+  filter->SetInput( 0, inputImage );
+  filter->SetInput( 1, inputImage2 );
   filter->SetLabelMap( labelmapImage );
   filter->SetObjectId( 255 );
   filter->AddObjectId( 127 );
@@ -134,14 +136,15 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
   WriterType::Pointer probWriter0 = WriterType::New();
   probWriter0->SetFileName( argv[6] );
   probWriter0->SetUseCompression( true );
-  probWriter0->SetInput( filter->GetClassProbabilityForInputVolume( 0 ) );
+  probWriter0->SetInput( filter->GetClassProbabilityForInput( 0 ) );
   try
     {
     probWriter0->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cout << "Exception caught during write:" << std::endl << e
+      << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -153,23 +156,25 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
     {
     pdfWriter0->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cout << "Exception caught during write:" << std::endl << e
+      << std::endl;
     return EXIT_FAILURE;
     }
 
   WriterType::Pointer probWriter1 = WriterType::New();
   probWriter1->SetFileName( argv[8] );
   probWriter1->SetUseCompression( true );
-  probWriter1->SetInput( filter->GetClassProbabilityForInputVolume( 1 ) );
+  probWriter1->SetInput( filter->GetClassProbabilityForInput( 1 ) );
   try
     {
     probWriter1->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cout << "Exception caught during write:" << std::endl << e
+      << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -181,9 +186,10 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
     {
     pdfWriter1->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cout << "Exception caught during write:" << std::endl << e
+      << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -195,9 +201,10 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
     {
     labelmapWriter->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cout << "Exception caught during write:" << std::endl << e
+      << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -211,9 +218,10 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
     {
     labeledFeatureSpaceWriter->Update();
     }
-  catch( itk::ExceptionObject& e )
+  catch( itk::ExceptionObject & e )
     {
-    std::cerr << "Exception caught during write:\n"  << e;
+    std::cout << "Exception caught during write:" << std::endl << e
+      << std::endl;
     return EXIT_FAILURE;
     }
 

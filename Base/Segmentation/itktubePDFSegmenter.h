@@ -85,12 +85,15 @@ public:
   //
   // Methods
   //
-  void SetInputVolume( unsigned int featureNumber,
+  void SetInput( unsigned int featureNumber,
     typename ImageType::Pointer vol );
 
   void ClearObjectIds( void );
   void SetObjectId( ObjectIdType objectId );
   void AddObjectId( ObjectIdType objectId );
+
+  unsigned int GetNumberOfClasses( void ) const;
+  unsigned int GetNumberOfObjectIds( void ) const;
 
   ObjectIdType GetObjectId( unsigned int num = 0 ) const;
   unsigned int GetObjectNumberFromId( ObjectIdType id ) const;
@@ -111,19 +114,18 @@ public:
   itkSetMacro( OutlierRejectPortion, double );
   itkSetMacro( Draft, bool );
 
-  int GetNumberOfClasses( void );
+  typename ProbabilityImageType::Pointer
+    GetClassProbabilityForInput( unsigned int classNum ) const;
 
-  const typename ProbabilityImageType::Pointer
-    GetClassProbabilityForInputVolume( unsigned int classNum ) const;
+  typename PDFImageType::Pointer GetClassPDFImage(
+    unsigned int classNum ) const;
 
-  const typename PDFImageType::Pointer GetClassPDFImage(
-    unsigned int classNum );
   void SetClassPDFImage( unsigned int classNum,
     typename PDFImageType::Pointer classPDF );
 
-  double GetPDFBinMin( unsigned int featureNum );
+  double GetPDFBinMin( unsigned int featureNum ) const;
   void   SetPDFBinMin( unsigned int featureNum, double val );
-  double GetPDFBinScale( unsigned int featureNum );
+  double GetPDFBinScale( unsigned int featureNum ) const;
   void   SetPDFBinScale( unsigned int featureNum, double val );
 
   /** Copy the input object mask to the output mask, overwritting the
@@ -150,7 +152,8 @@ public:
   void SetLabeledFeatureSpace( typename LabeledFeatureSpaceType::Pointer
     labeledFeatureSpace );
 
-  typename LabeledFeatureSpaceType::Pointer GetLabeledFeatureSpace( void );
+  typename LabeledFeatureSpaceType::Pointer GetLabeledFeatureSpace( void )
+    const;
 
   void Update( void );
   void ClassifyImages( void );
@@ -198,7 +201,7 @@ private:
   unsigned int                             m_HistogramNumBinsND;
 
   //  Data
-  std::vector< typename ImageType::Pointer > m_InputVolumeList;
+  std::vector< typename ImageType::Pointer > m_InputImageList;
 
   typename LabelMapType::Pointer  m_LabelMap;
 

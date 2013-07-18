@@ -21,7 +21,8 @@
 #
 ##############################################################################
 
-set( MODULE_NAME EnhanceUsingNJetDiscriminantAnalysis )
+set( MODULE_NAME EnhanceTubesUsingDiscriminantAnalysis )
+
 project( ${MODULE_NAME} )
 
 if( NOT TubeTK_SOURCE_DIR )
@@ -44,8 +45,9 @@ SEMMacroBuildCLI(
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/CLI
     ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Numerics
     ${TubeTK_SOURCE_DIR}/Base/Filtering
+    ${TubeTK_SOURCE_DIR}/Base/Numerics
+    ${TubeTK_SOURCE_DIR}/Base/Segmentation
     ${TubeTK_SOURCE_DIR}/Base/IO )
 
 if( BUILD_TESTING )
