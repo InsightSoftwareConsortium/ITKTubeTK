@@ -21,9 +21,23 @@
 #
 ##############################################################################
 
-set( CTEST_PROJECT_NAME "TubeTK" )
-set( CTEST_NIGHTLY_START_TIME "23:59:00 EDT" )
-set( CTEST_DROP_METHOD "http" )
-set( CTEST_DROP_SITE "open.cdash.org" )
-set( CTEST_DROP_LOCATION "/submit.php?project=TubeTK" )
-set( CTEST_DROP_SITE_CDASH TRUE )
+if( LIBSVM_DIR )
+  set( LIBSVM_INCLUDEDIR ${LIBSVM_DIR}/include )
+  set( LIBSVM_LIBDIR ${LIBSVM_DIR}/lib )
+endif( LIBSVM_DIR )
+
+find_package( PkgConfig QUIET )
+pkg_check_modules( PC_LIBSVM QUIET svm )
+
+find_path( LIBSVM_INCLUDE_DIR NAMES svm.h
+  HINTS ${LIBSVM_INCLUDEDIR} ${PC_LIBSVM_INCLUDEDIR} ${PC_LIBSVM_INCLUDE_DIRS} )
+
+find_library( LIBSVM_LIBRARIES NAMES svm libsvm
+  HINTS ${LIBSVM_LIBDIR} ${PC_LIBSVM_LIBDIR} ${PC_LIBSVM_LIBRARY_DIRS} )
+
+include( FindPackageHandleStandardArgs )
+
+find_package_handle_standard_args( LIBSVM DEFAULT_MSG LIBSVM_LIBRARIES
+  LIBSVM_INCLUDE_DIR )
+
+mark_as_advanced( LIBSVM_INCLUDE_DIR LIBSVM_LIBRARIES )

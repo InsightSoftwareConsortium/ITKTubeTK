@@ -21,37 +21,37 @@
 #
 ##############################################################################
 
-#
-# Simple ITK
-#
-
-set( proj SimpleITK )
-
-# Make sure this file is included only once
-get_filename_component( CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE} NAME_WE )
+# Make sure this file is included only once.
+get_filename_component( CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE}
+  NAME_WE )
 if( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
   return()
 endif( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
 set( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1 )
 
-# Sanity checks
+set( proj SimpleITK )
+
+# Sanity checks.
 if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
-  message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to non-existing directory" )
+  message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to a nonexistent directory" )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
-set( ${proj}_DEPENDENCIES "Insight" )
+set( ${proj}_DEPENDENCIES "ITK" )
 
-# Include dependent projects if any
+# Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
 
-if( NOT DEFINED ${proj}_DIR )
+if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_SIMPLEITK} )
+  set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
   ExternalProject_Add( ${proj}
-    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/SimpleITK/SimpleITK.git"
-    GIT_TAG "v0.6.1"
-    SOURCE_DIR "${CMAKE_BINARY_DIR}/${proj}"
+    GIT_REPOSITORY ${${proj}_GIT_REPOSITORY}
+    GIT_TAG ${${proj}_GIT_TAG}
+    DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
+    SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}
+    INSTALL_DIR ${${proj}_DIR}
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
@@ -62,7 +62,7 @@ if( NOT DEFINED ${proj}_DIR )
       -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
-      -DITK_DIR:STRING=${CMAKE_BINARY_DIR}/Insight-build
+      -DITK_DIR:STRING=${ITK_DIR}
       -DBUILD_SHARED_LIBS:BOOL=${shared}
       -DBUILD_TESTING:BOOL=OFF
       -DWRAP_JAVA:BOOL=OFF
@@ -78,8 +78,10 @@ if( NOT DEFINED ${proj}_DIR )
 
   set( TubeTK_SimpleITK_Def "-DSimpleITK_DIR:PATH=${SimpleITK_DIR}" )
 
-else( NOT DEFINED ${proj}_DIR )
-  # The project is provided using ${proj}_DIR, nevertheless since other project may depend on ${proj},
-  # let's add an 'empty' one
+else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_SIMPLEITK} )
+  if( ${USE_SYSTEM_SIMPLEITK} )
+    find_package( ${proj} REQUIRED )
+  endif( ${USE_SYSTEM_SIMPLEITK} )
+
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
-endif( NOT DEFINED ${proj}_DIR )
+endif( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_SIMPLEITK} )

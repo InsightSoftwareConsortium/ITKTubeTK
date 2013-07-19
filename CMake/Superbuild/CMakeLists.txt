@@ -21,6 +21,8 @@
 #
 ##############################################################################
 
+set( CMAKE_MODULE_PATH ${TubeTK_SOURCE_DIR}/CMake/Superbuild ${CMAKE_MODULE_PATH} )
+
 include( ExternalProject )
 include( TubeTKMacroCheckExternalProjectDependency )
 
@@ -48,12 +50,23 @@ endif( NOT GIT_EXECUTABLE )
 
 option( GIT_PROTOCOL_HTTP
   "Use HTTP for git access (useful if behind a firewall)" OFF )
+mark_as_advanced( GIT_PROTOCOL_HTTP )
+
+set( git_protocol "git" )
 if( GIT_PROTOCOL_HTTP )
-  set( GIT_PROTOCOL "http" CACHE STRING "Git protocol for file transfer" )
-else( GIT_PROTOCOL_HTTP )
-  set( GIT_PROTOCOL "git" CACHE STRING "Git protocol for file transfer" )
+  set( git_protocol "http" )
 endif( GIT_PROTOCOL_HTTP )
-mark_as_advanced( GIT_PROTOCOL )
+
+option( SVN_PROTOCOL_HTTP
+  "Use HTTP for svn access (useful if behind a firewall)" OFF )
+mark_as_advanced( SVN_PROTOCOL_HTTP )
+
+set( svn_protocol "svn" )
+if( SVN_PROTOCOL_HTTP )
+  set( svn_protocol "http" )
+endif( SVN_PROTOCOL_HTTP )
+
+include( ExternalProjectsConfig )
 
 # Use for CMAKE_OSX_* in external projects.
 set( CMAKE_OSX_EXTERNAL_PROJECT_ARGS )
@@ -65,50 +78,25 @@ if( APPLE )
 endif( APPLE )
 
 # Set TubeTK dependencies.
-set( TubeTK_DEPENDENCIES "" )
+set( TubeTK_DEPENDENCIES "ITK" "JsonCpp" "ParameterSerializer" "SlicerExecutionModel" )
 
-# Check whether system JsonCpp or superbuild JsonCpp.
-if( NOT USE_SYSTEM_JSONCPP )
-  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "JsonCpp" )
-else( NOT USE_SYSTEM_JSONCPP )
-  find_package( JsonCpp REQUIRED )
-endif( NOT USE_SYSTEM_JSONCPP )
+if( TubeTK_USE_SIMPLEITK )
+  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "SimpleITK" )
+endif( TubeTK_USE_SIMPLEITK )
 
-# Check whether system ITK or superbuild ITK.
-if( NOT USE_SYSTEM_ITK )
-  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "Insight" )
-
-  if( TubeTK_USE_SIMPLEITK )
-    set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "SimpleITK" )
-  endif( TubeTK_USE_SIMPLEITK )
-endif( NOT USE_SYSTEM_ITK )
-
-# Check whether system VTK or superbuild VTK.
-if( TubeTK_USE_VTK AND NOT USE_SYSTEM_VTK )
+if( TubeTK_USE_VTK )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "VTK" )
-endif( TubeTK_USE_VTK AND NOT USE_SYSTEM_VTK )
-
-# Check whether system ParameterSerializer or superbuild ParameterSerializer.
-if( NOT USE_SYSTEM_PARAMETER_SERIALIZER )
-  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "ParameterSerializer" )
-else( NOT USE_SYSTEM_PARAMETER_SERIALIZER )
-  find_package( ParameterSerializer REQUIRED )
-endif( NOT USE_SYSTEM_PARAMETER_SERIALIZER )
-
-# SlicerExecutionModel.
-if( NOT USE_SYSTEM_SLICER_EXECUTION_MODEL )
-  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "SlicerExecutionModel" )
-endif( NOT USE_SYSTEM_SLICER_EXECUTION_MODEL )
+endif( TubeTK_USE_VTK )
 
 # Qt.
 set( TubeTK_QT_VARIABLES )
 if( TubeTK_USE_QT )
   # CTK.
-  if( TubeTK_USE_CTK AND NOT USE_SYSTEM_CTK )
+  if( TubeTK_USE_CTK )
       set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "CTK" )
-  endif( TubeTK_USE_CTK AND NOT USE_SYSTEM_CTK )
+  endif( TubeTK_USE_CTK )
   set( TubeTK_QT_VARIABLES
-       -DTubeTK_REQUIRED_QT_VERSION=${TubeTK_REQUIRED_QT_VERSION} )
+    -DTubeTK_REQUIRED_QT_VERSION=${TubeTK_REQUIRED_QT_VERSION} )
 endif( TubeTK_USE_QT )
 
 # Check whether we use 3D Slicer.
@@ -120,32 +108,29 @@ if( TubeTK_USE_SLICER )
     -DSlicer_DIR:PATH=${Slicer_DIR} )
 endif( TubeTK_USE_SLICER )
 
+# LIBSVM - must come after TubeTK dependency check.
+if( TubeTK_USE_LIBSVM )
+  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "LIBSVM" )
+endif( TubeTK_USE_LIBSVM )
+
+if( TubeTK_BUILD_ImageViewer )
+  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "ImageViewer" )
+endif( TubeTK_BUILD_ImageViewer )
+
 # TubeTK - check dependencies.
 set( EXTERNAL_PROJECT_DIR ${TubeTK_SOURCE_DIR}/CMake/Superbuild )
 TubeTKMacroCheckExternalProjectDependency( TubeTK )
 
-# ImageViewer - must come after TubeTK dependency check.
-if( TubeTK_BUILD_ImageViewer )
-  include( External_ImageViewer.cmake )
-endif( TubeTK_BUILD_ImageViewer )
-
-# LIBSVM - must come after TubeTK dependency check.
-if( TubeTK_USE_LIBSVM )
- include( External_LIBSVM.cmake )
-endif( TubeTK_USE_LIBSVM )
-
 # TubeTK - normal build.
 set( proj TubeTK )
-if( TubeTK_USE_KWSTYLE )
-  set( kwstyle_dashboard_submission_arg
-    "-DKWSTYLE_DASHBOARD_SUBMISSION:BOOL=${KWSTYLE_DASHBOARD_SUBMISSION}" )
-endif( TubeTK_USE_KWSTYLE )
 
 ExternalProject_Add( ${proj}
   DEPENDS ${TubeTK_DEPENDENCIES}
   DOWNLOAD_COMMAND ""
-  SOURCE_DIR "${TubeTK_SOURCE_DIR}"
+  DOWNLOAD_DIR ${TubeTK_SOURCE_DIR}
+  SOURCE_DIR ${TubeTK_SOURCE_DIR}
   BINARY_DIR ${CMAKE_BINARY_DIR}/${proj}-build
+  INSTALL_DIR ${CMAKE_BINARY_DIR}/${proj}-build
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
     -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
@@ -165,8 +150,6 @@ ExternalProject_Add( ${proj}
     -DTubeTK_CONFIG_BINARY_DIR:PATH=${TubeTK_CONFIG_BINARY_DIR}
     -DTubeTK_USE_SUPERBUILD:BOOL=FALSE
     -DTubeTK_BUILD_SLICER_EXTENSION:BOOL=${TubeTK_BUILD_SLICER_EXTENSION}
-    -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
-    ${kwstyle_dashboard_submission_arg}
     -DTubeTK_USE_SLICER:BOOL=${TubeTK_USE_SLICER}
     ${TubeTK_SLICER_DIRS}
     -DITK_DIR:PATH=${ITK_DIR}
