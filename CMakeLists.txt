@@ -24,7 +24,7 @@
 project( TubeTK )
 
 # Require CMake 2.8 for its superbuild functionality.
-cmake_minimum_required( VERSION 2.8.8 )
+cmake_minimum_required( VERSION 2.8 )
 
 # Update CMake module path
 set( TubeTK_CMAKE_EXTENSIONS_DIR ${TubeTK_SOURCE_DIR}/CMake )

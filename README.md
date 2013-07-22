@@ -1,6 +1,8 @@
 TubeTK: Tubular Object Extraction, Registration, and Analysis
 =============================================================
 
+[![Build Status](https://travis-ci.org/TubeTK/TubeTK.png?branch=master)](https://travis-ci.org/TubeTK/TubeTK)
+
 [TubeTK](http://www.tubetk.org) is an open-source toolkit for the segmentation, registration, and analysis of tubes and surfaces in images, developed by [Kitware, Inc.](http://www.kitware.com)
 
 Tubes and surfaces, as generalized 1D and 2D manifolds in N-dimensional images, are essential components in a variety of image analysis tasks. Instances of tubular structures in images include blood vessels in magnetic resonance angiograms and b-mode ultrasound images, wires in microscopy images of integrated circuits, roads in aerial photographs, and nerves in confocal microscopy.
