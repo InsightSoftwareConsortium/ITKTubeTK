@@ -25,11 +25,11 @@ include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
-find_package( PythonInterp REQUIRED )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 if( ${TubeTK_USE_NumPy} )
+  find_package( PythonInterp REQUIRED )
+
   Midas3FunctionAddTest( NAME VesselTubeToNumPyTest
     COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_tubetk.py
       VesselTubeToNumPyTest
