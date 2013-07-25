@@ -23,7 +23,7 @@
 
 set( proj SlicerModules )
 
-set( TubeTK_${proj}_MODULES
+set( TubeTK_SLICER_MODULES
   SpatialObjectsModule
   InteractiveConnectedComponentsUsingParzenPDFs )
 
@@ -33,4 +33,4 @@ if( NOT TubeTK_SOURCE_DIR )
 endif( NOT TubeTK_SOURCE_DIR )
 
 include( TubeTKMacroAddModules )
-TubeTKMacroAddModules( MODULES ${TubeTK_${proj}_MODULES} )
+TubeTKMacroAddModules( MODULES ${TubeTK_SLICER_MODULES} )

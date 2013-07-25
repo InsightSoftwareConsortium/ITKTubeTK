@@ -68,19 +68,19 @@ endif( APPLE )
 set( TubeTK_DEPENDENCIES "" )
 
 # Check whether system JsonCpp or superbuild JsonCpp.
-if( NOT USE_SYSTEM_JsonCpp )
+if( NOT USE_SYSTEM_JSONCPP )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "JsonCpp" )
-else( NOT USE_SYSTEM_JsonCpp )
+else( NOT USE_SYSTEM_JSONCPP )
   find_package( JsonCpp REQUIRED )
-endif( NOT USE_SYSTEM_JsonCpp )
+endif( NOT USE_SYSTEM_JSONCPP )
 
 # Check whether system ITK or superbuild ITK.
 if( NOT USE_SYSTEM_ITK )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "Insight" )
 
-  if( TubeTK_USE_SimpleITK )
+  if( TubeTK_USE_SIMPLEITK )
     set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "SimpleITK" )
-  endif( TubeTK_USE_SimpleITK )
+  endif( TubeTK_USE_SIMPLEITK )
 endif( NOT USE_SYSTEM_ITK )
 
 # Check whether system VTK or superbuild VTK.
@@ -89,16 +89,16 @@ if( TubeTK_USE_VTK AND NOT USE_SYSTEM_VTK )
 endif( TubeTK_USE_VTK AND NOT USE_SYSTEM_VTK )
 
 # Check whether system ParameterSerializer or superbuild ParameterSerializer.
-if( NOT USE_SYSTEM_ParameterSerializer )
+if( NOT USE_SYSTEM_PARAMETER_SERIALIZER )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "ParameterSerializer" )
-else( NOT USE_SYSTEM_ParameterSerializer )
+else( NOT USE_SYSTEM_PARAMETER_SERIALIZER )
   find_package( ParameterSerializer REQUIRED )
-endif( NOT USE_SYSTEM_ParameterSerializer )
+endif( NOT USE_SYSTEM_PARAMETER_SERIALIZER )
 
 # SlicerExecutionModel.
-if( NOT USE_SYSTEM_SlicerExecutionModel )
+if( NOT USE_SYSTEM_SLICER_EXECUTION_MODEL )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "SlicerExecutionModel" )
-endif( NOT USE_SYSTEM_SlicerExecutionModel )
+endif( NOT USE_SYSTEM_SLICER_EXECUTION_MODEL )
 
 # Qt.
 set( TubeTK_QT_VARIABLES )
@@ -112,13 +112,13 @@ if( TubeTK_USE_QT )
 endif( TubeTK_USE_QT )
 
 # Check whether we use 3D Slicer.
-set( TubeTK_Slicer_DIRS
-    -DTubeTK_Slicer_SOURCE_DIR:PATH=${TubeTK_Slicer_SOURCE_DIR} )
-if( TubeTK_USE_Slicer )
-  set( TubeTK_Slicer_DIRS
-    ${TubeTK_Slicer_DIRS}
+set( TubeTK_SLICER_DIRS
+    -DTubeTK_SLICER_SOURCE_DIR:PATH=${TubeTK_SLICER_SOURCE_DIR} )
+if( TubeTK_USE_SLICER )
+  set( TubeTK_SLICER_DIRS
+    ${TubeTK_SLICER_DIRS}
     -DSlicer_DIR:PATH=${Slicer_DIR} )
-endif( TubeTK_USE_Slicer )
+endif( TubeTK_USE_SLICER )
 
 # TubeTK - check dependencies.
 set( EXTERNAL_PROJECT_DIR ${TubeTK_SOURCE_DIR}/CMake/Superbuild )
@@ -167,8 +167,8 @@ ExternalProject_Add( ${proj}
     -DTubeTK_BUILD_SLICER_EXTENSION:BOOL=${TubeTK_BUILD_SLICER_EXTENSION}
     -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
     ${kwstyle_dashboard_submission_arg}
-    -DTubeTK_USE_Slicer:BOOL=${TubeTK_USE_Slicer}
-    ${TubeTK_Slicer_DIRS}
+    -DTubeTK_USE_SLICER:BOOL=${TubeTK_USE_SLICER}
+    ${TubeTK_SLICER_DIRS}
     -DITK_DIR:PATH=${ITK_DIR}
     -DVTK_DIR:PATH=${VTK_DIR}
     -DCTK_DIR:PATH=${CTK_DIR}
@@ -177,9 +177,9 @@ ExternalProject_Add( ${proj}
     -DTubeTK_USE_VTK:BOOL=${TubeTK_USE_VTK}
     -DTubeTK_USE_CTK:BOOL=${TubeTK_USE_CTK}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
-    -DTubeTK_USE_Boost:BOOL=${TubeTK_USE_Boost}
+    -DTubeTK_USE_BOOST:BOOL=${TubeTK_USE_BOOST}
     -DTubeTK_USE_LIBSVM:BOOL=${TubeTK_USE_LIBSVM}
-    -DTubeTK_USE_NumPy:BOOL=${TubeTK_USE_NumPy}
+    -DTubeTK_USE_NUMPY:BOOL=${TubeTK_USE_NUMPY}
     -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
     -DParameterSerializer_DIR:PATH=${ParameterSerializer_DIR}
     -DTubeTK_EXECUTABLE_DIRS:STRING=${TubeTK_EXECUTABLE_DIRS}
