@@ -1,0 +1,16 @@
+language: cpp
+
+branches:
+  except:
+    - dashboard
+    - hooks
+
+compiler: clang
+
+script:
+  - mkdir _build
+  - cd _build
+  - cmake ..
+  - cmake --build .
+  - cd TubeTK-build
+  - ctest .

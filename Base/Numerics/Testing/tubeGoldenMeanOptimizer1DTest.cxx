@@ -45,7 +45,6 @@ public:
   const double & value( const double & x )
     {
     cVal = vcl_sin(x);
-    std::cout << x << " : " << cVal << std::endl;
     return cVal;
     }
 

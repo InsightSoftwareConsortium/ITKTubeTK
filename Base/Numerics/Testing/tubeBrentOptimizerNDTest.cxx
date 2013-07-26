@@ -44,7 +44,6 @@ public:
   const double & value( const vnl_vector<double> & x )
     {
     cVal = vcl_sin(x(0)) + vcl_sin(x(1));
-    std::cout << "val = " << cVal << std::endl;
     return cVal;
     }
 
