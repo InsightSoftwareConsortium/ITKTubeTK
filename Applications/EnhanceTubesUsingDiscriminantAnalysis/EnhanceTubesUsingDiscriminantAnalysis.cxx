@@ -136,8 +136,6 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Start( "Update" );
 
     tubeFilter->SetScales( tubeScales );
-    tubeFilter->SetWhitenMeans( whitenMeans );
-    tubeFilter->SetWhitenStdDevs( whitenStdDevs );
 
     tubeFilter->Update();
 
