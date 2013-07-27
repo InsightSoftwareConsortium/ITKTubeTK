@@ -31,7 +31,7 @@
       <label>Object ID</label>
       <longflag>objectId</longflag>
       <description>List of values that represent the objects in the label map.</description>
-      <default>255</default>
+      <default>255,0</default>
     </integer-vector>
     <string>
       <name>outputVolume</name>
@@ -50,20 +50,6 @@
       <label>Tube Scales</label>
       <default>1,2,4</default>
       <longflag>tubeScales</longflag>
-    </double-vector>
-    <double-vector>
-      <name>whitenMeans</name>
-      <label>Whiten Means</label>
-      <description>Whiten means.</description>
-      <default></default>
-      <longflag>whitenMeans</longflag>
-    </double-vector>
-    <double-vector>
-      <name>whitenStdDevs</name>
-      <label>Whiten Standard Deviations</label>
-      <description>Whiten standard deviationss.</description>
-      <default></default>
-      <longflag>whitenStdDevs</longflag>
     </double-vector>
     <string>
       <name>saveDiscriminantInfo</name>
