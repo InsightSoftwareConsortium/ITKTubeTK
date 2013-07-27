@@ -33,29 +33,29 @@ limitations under the License.
 namespace tube
 {
 
+// Constructor.
 GoldenMeanOptimizer1D::GoldenMeanOptimizer1D( void )
-: Optimizer1D()
+  : Optimizer1D()
 {
 }
 
-GoldenMeanOptimizer1D::GoldenMeanOptimizer1D( UserFunction<double, double> *newFuncVal )
-: Optimizer1D( newFuncVal, NULL )
+// Constructor.
+GoldenMeanOptimizer1D::GoldenMeanOptimizer1D( ValueFunctionType::Pointer funcVal )
+  : Optimizer1D( funcVal, NULL )
 {
 }
 
-
+// Destructor.
 GoldenMeanOptimizer1D::~GoldenMeanOptimizer1D( void )
 {
 }
 
-
-void GoldenMeanOptimizer1D::use( UserFunction<double, double> * newFuncVal )
+void GoldenMeanOptimizer1D::Use( ValueFunctionType::Pointer funcVal )
 {
-  Optimizer1D::use( newFuncVal, NULL );
+  Optimizer1D::Use( funcVal, NULL );
 }
 
-
-bool GoldenMeanOptimizer1D::m_Extreme( double *extX, double *extVal )
+bool GoldenMeanOptimizer1D::m_Extreme( double * extX, double * extVal )
 {
   double maxSign = 1;
   if( m_SearchForMin )
@@ -63,7 +63,7 @@ bool GoldenMeanOptimizer1D::m_Extreme( double *extX, double *extVal )
     maxSign = -1;
     }
 
-  double v = maxSign * m_FuncVal->value( *extX );
+  double v = maxSign * m_FuncVal->Value( *extX );
   double prevV = v;
   double xstep = m_XStep;
   int dir = 1;
@@ -71,13 +71,13 @@ bool GoldenMeanOptimizer1D::m_Extreme( double *extX, double *extVal )
   double v1 = v-vnl_math_abs(v*0.0001);
   if( *extX+dir*xstep <= m_XMax && *extX+dir*xstep >= m_XMin )
     {
-    v1 = maxSign * m_FuncVal->value( *extX+dir*xstep );
+    v1 = maxSign * m_FuncVal->Value( *extX+dir*xstep );
     }
 
   double v2 = v1-vnl_math_abs(v1*0.0001);
   if( *extX-dir*xstep <= m_XMax && *extX-dir*xstep >= m_XMin )
     {
-    v2 = maxSign * m_FuncVal->value( *extX-dir*xstep );
+    v2 = maxSign * m_FuncVal->Value( *extX-dir*xstep );
     }
 
   if( v2>v1 )
@@ -97,7 +97,7 @@ bool GoldenMeanOptimizer1D::m_Extreme( double *extX, double *extVal )
     dir *= -1;
     if( *extX+dir*xstep <= m_XMax && *extX+dir*xstep >= m_XMin )
       {
-      v = maxSign * m_FuncVal->value( *extX+dir*xstep );
+      v = maxSign * m_FuncVal->Value( *extX+dir*xstep );
       }
     else
       {
@@ -116,13 +116,13 @@ bool GoldenMeanOptimizer1D::m_Extreme( double *extX, double *extVal )
   if( *extX > m_XMax )
     {
     *extX = m_XMax;
-    *extVal = m_FuncVal->value( *extX );
+    *extVal = m_FuncVal->Value( *extX );
     return false;
     }
   if( *extX < m_XMin )
     {
     *extX = m_XMin;
-    *extVal = m_FuncVal->value( *extX );
+    *extVal = m_FuncVal->Value( *extX );
     return false;
     }
 
@@ -131,20 +131,20 @@ bool GoldenMeanOptimizer1D::m_Extreme( double *extX, double *extVal )
     {
     if( *extX+dir*xstep <= m_XMax && *extX+dir*xstep >= m_XMin )
       {
-      v = maxSign * m_FuncVal->value( *extX+dir*xstep );
+      v = maxSign * m_FuncVal->Value( *extX+dir*xstep );
       }
     else
       {
       if( *extX > m_XMax )
         {
         *extX = m_XMax;
-        *extVal = m_FuncVal->value( *extX );
+        *extVal = m_FuncVal->Value( *extX );
         return false;
         }
       if( *extX < m_XMin )
         {
         *extX = m_XMin;
-        *extVal = m_FuncVal->value( *extX );
+        *extVal = m_FuncVal->Value( *extX );
         return false;
         }
       }
@@ -156,16 +156,16 @@ bool GoldenMeanOptimizer1D::m_Extreme( double *extX, double *extVal )
       if( *extX > m_XMax )
         {
         *extX = m_XMax;
-        *extVal = m_FuncVal->value( *extX );
+        *extVal = m_FuncVal->Value( *extX );
         return false;
         }
       if( *extX < m_XMin )
         {
         *extX = m_XMin;
-        *extVal = m_FuncVal->value( *extX );
+        *extVal = m_FuncVal->Value( *extX );
         return false;
         }
-      v = maxSign * m_FuncVal->value( *extX+dir*xstep );
+      v = maxSign * m_FuncVal->Value( *extX+dir*xstep );
       ++iter;
       }
     if( dir == dirInit )

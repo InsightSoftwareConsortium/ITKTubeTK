@@ -28,9 +28,6 @@ limitations under the License.
 
 #include <vnl/algo/vnl_symmetric_eigensystem.h>
 
-#include <cstdlib>
-#include <iostream>
-
 namespace tube
 {
 

@@ -35,51 +35,46 @@ limitations under the License.
 namespace tube
 {
 
+// Constructor.
 BrentOptimizer1D::BrentOptimizer1D( void )
-: Optimizer1D()
+  : Optimizer1D()
 {
-  m_Small = 1.0e-20;
+  m_Epsilon = 1.0e-20;
 }
 
-BrentOptimizer1D::BrentOptimizer1D( UserFunction< double, double > * newFuncVal,
-                        UserFunction< double, double > * newFuncDeriv )
-: Optimizer1D( newFuncVal, newFuncDeriv )
+// Constructor.
+BrentOptimizer1D::BrentOptimizer1D( ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv )
+  : Optimizer1D( funcVal, funcDeriv )
 {
-  m_Small = 1.0e-20;
+  m_Epsilon = 1.0e-20;
 }
 
-
+// Destructor.
 BrentOptimizer1D::~BrentOptimizer1D( void )
 {
 }
 
-
-double BrentOptimizer1D::smallDouble( void )
+void BrentOptimizer1D::Use( ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv )
 {
-  return m_Small;
+  this->Superclass::Use( funcVal, funcDeriv );
 }
 
-void BrentOptimizer1D::smallDouble( double newSmall )
+// Print out information about this object.
+void BrentOptimizer1D::PrintSelf( std::ostream & os, Indent indent ) const
 {
-  m_Small = newSmall;
+  this->Superclass::PrintSelf( os, indent );
+
+  os << indent << "Epsilon: " << m_Epsilon << std::endl;
 }
 
-void BrentOptimizer1D::use( UserFunction< double, double > * newFuncVal,
-                      UserFunction< double, double > * newFuncDeriv )
-{
-  Optimizer1D::use( newFuncVal, newFuncDeriv );
-}
-
-
-void BrentOptimizer1D::m_Move( double & a, double & b, double & c,
-  double d, double e, double f )
+void BrentOptimizer1D::m_Move( double & a, double & b, double & c, double d, double e, double f )
 {
   a = d;
   b = e;
   c = f;
 }
 
-bool BrentOptimizer1D::m_Extreme( double *extX, double *extVal )
+bool BrentOptimizer1D::m_Extreme( double * extX, double * extVal )
 {
   unsigned int iter;
 
@@ -117,19 +112,19 @@ bool BrentOptimizer1D::m_Extreme( double *extX, double *extVal )
 
   d = -1;
   v = *extX;
-  fv = maxSign * m_FuncVal->value(v);
+  fv = maxSign * m_FuncVal->Value(v);
   x = v+d * m_XStep;
   if(x < m_XMin || x > m_XMax)
     {
     d *= -1;
     x = v + d * m_XStep;
     }
-  fx = maxSign * m_FuncVal->value(x);
+  fx = maxSign * m_FuncVal->Value(x);
   if(fx>fv)
     {
     d *= -1;
     x = v + d * m_XStep;
-    fx = maxSign * m_FuncVal->value(x);
+    fx = maxSign * m_FuncVal->Value(x);
     }
   w = 1;
 
@@ -148,22 +143,17 @@ bool BrentOptimizer1D::m_Extreme( double *extX, double *extVal )
         {
         x = m_XMax;
         }
-      fx = maxSign * m_FuncVal->value(x);
+      fx = maxSign * m_FuncVal->Value(x);
       if( fx >= fv )
         {
         *extX = v;
         *extVal = maxSign * fv;
-        //std::cout << " limit: x0 = " << x << std::endl;
-        //std::cout << " limit: v = " << v << std::endl;
-        //std::cout << " limit: vVal = " << maxSign*fv << std::endl;
         return false;
         }
       }
     else
       {
-      fx = maxSign * m_FuncVal->value(x);
-      //std::cout << " x0 = " << x << std::endl;
-      //std::cout << " xVal = " << fx << std::endl;
+      fx = maxSign * m_FuncVal->Value(x);
       w *= 1.1;
       }
     }
@@ -174,17 +164,13 @@ bool BrentOptimizer1D::m_Extreme( double *extX, double *extVal )
   b = (u > x ? u : x);
 
   w = x = v;
-  fw = fv = fx = maxSign * m_FuncVal->value(v);
-  dw = dv = dx = maxSign * m_FuncDeriv->value(v);
+  fw = fv = fx = maxSign * m_FuncVal->Value(v);
+  dw = dv = dx = maxSign * m_FuncDeriv->Value(v);
 
   for(iter = 0; iter < m_MaxIterations; iter++)
     {
     double xm = 0.5 * (a+b);
-    //std::cout << "x = " << x << std::endl;
-    //std::cout << "  fx = " << fx << std::endl;
-    //std::cout << "  a = " << a << std::endl;
-    //std::cout << "  b = " << b << std::endl;
-    double tol1 = m_Tolerance * vnl_math_abs(x) + m_Small;
+    double tol1 = m_Tolerance * vnl_math_abs(x) + m_Epsilon;
     double tol2 = 2.0 * tol1;
     if(vnl_math_abs(x-xm) <= (tol2 - 0.5*(b-a)))
       {
@@ -255,12 +241,12 @@ bool BrentOptimizer1D::m_Extreme( double *extX, double *extVal )
     if(vnl_math_abs(d) >= tol1)
       {
       u = x + d;
-      fu = maxSign * m_FuncVal->value(u);
+      fu = maxSign * m_FuncVal->Value(u);
       }
     else
       {
       u = x + tol1 * vnl_math_sgn(d);
-      fu = maxSign * m_FuncVal->value(u);
+      fu = maxSign * m_FuncVal->Value(u);
       if(fu > fx)
         {
         *extX = x;
@@ -268,7 +254,7 @@ bool BrentOptimizer1D::m_Extreme( double *extX, double *extVal )
         return true;
         }
       }
-    double du = maxSign * m_FuncDeriv->value(u);
+    double du = maxSign * m_FuncDeriv->Value(u);
     if(fu <= fx)
       {
       if(u >= x)
@@ -316,6 +302,5 @@ bool BrentOptimizer1D::m_Extreme( double *extX, double *extVal )
 
   return false;
 }
-
 
 } // End namespace tube

@@ -56,7 +56,7 @@ public:
     {
     }
 
-  const double & value( const vnl_vector<int> & x )
+  const double & Value( const vnl_vector<int> & x )
     {
     m_Eval.SetErode( x[0] );
     m_Eval.SetDilate( x[1] );
@@ -242,15 +242,15 @@ int DoIt( int argc, char * argv[] )
     xMin.fill( 1 );
     vnl_vector< int > xMax(3);
     xMax.fill( 12 );
-    spline.xMin( xMin );
-    spline.xMax( xMax );
+    spline.SetXMin( xMin );
+    spline.SetXMax( xMax );
 
     vnl_vector< double > x(3);
     x[0] = erode;
     x[1] = dilate;
     x[2] = gaussianBlur;
 
-    spline.extreme( x, &outGoF );
+    spline.Extreme( x, &outGoF );
 
     outErode = x[0];
     outDilate = x[1];

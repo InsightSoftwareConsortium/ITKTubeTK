@@ -24,6 +24,8 @@ limitations under the License.
 #ifndef __tubeMatrixMath_h
 #define __tubeMatrixMath_h
 
+#include "tubeMacro.h"
+
 #include <vnl/vnl_math.h>
 #include <vnl/vnl_vector_ref.h>
 

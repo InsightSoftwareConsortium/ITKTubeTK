@@ -48,7 +48,7 @@ public:
     {
     cVal = 0;
     }
-  const double & value( const vnl_vector<int> & x )
+  const double & Value( const vnl_vector<int> & x )
     {
     cVal = vcl_sin((double)x[0]/2);
     cVal += vcl_cos((double)x[1]/2);
@@ -67,7 +67,7 @@ public:
     {
     cVal = 0;
     }
-  const double & value( const vnl_vector<double> & x )
+  const double & Value( const vnl_vector<double> & x )
     {
     cVal = vcl_sin((double)x[0]/2);
     cVal += vcl_cos((double)x[1]/2);
@@ -88,7 +88,7 @@ public:
     cDeriv.set_size(2);
     cDeriv.fill( 0 );
     }
-  const vnl_vector<double> & value( const vnl_vector<double> & x )
+  const vnl_vector<double> & Value( const vnl_vector<double> & x )
     {
     cDeriv[0] = vcl_cos((double)x[0]/2);
     cDeriv[1] = -vcl_sin((double)x[1]/2);
@@ -118,21 +118,21 @@ int tubeSplineNDTest( int argc, char * argv[] )
 
   int returnStatus = EXIT_SUCCESS;
 
-  spline.clipEdge( true );
+  spline.SetClip( true );
 
   vnl_vector<int> xMin(2, -6);
-  spline.xMin( xMin );
-  if( spline.xMin()[0] != -6 )
+  spline.SetXMin( xMin );
+  if( spline.GetXMin()[0] != -6 )
     {
-    std::cout << "xMin should be -6 and not " << spline.xMin() << std::endl;
+    std::cout << "xMin should be -6 and not " << spline.GetXMin() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
   vnl_vector<int> xMax(2, 6);
-  spline.xMax( xMax );
-  if( spline.xMax()[0] != 6 )
+  spline.SetXMax( xMax );
+  if( spline.GetXMax()[0] != 6 )
     {
-    std::cout << "xMax should be 6 and not " << spline.xMax() << std::endl;
+    std::cout << "xMax should be 6 and not " << spline.GetXMax() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
@@ -179,50 +179,50 @@ int tubeSplineNDTest( int argc, char * argv[] )
       default:
       case 0:
         {
-        itIm.Set( spline.value(x) );
+        itIm.Set( spline.Value(x) );
         break;
         }
       case 1:
         {
-        itIm.Set( myFuncV->value(x) );
+        itIm.Set( myFuncV->Value(x) );
         break;
         }
       case 2:
         {
-        itIm.Set( spline.valueD(x, di) );
+        itIm.Set( spline.ValueD(x, di) );
         break;
         }
       case 3:
         {
-        itIm.Set( myFuncD->value(x)[1] );
+        itIm.Set( myFuncD->Value(x)[1] );
         break;
         }
       case 4:
         {
-        d = spline.valueD(x);
+        d = spline.ValueD(x);
         itIm.Set( d[0] + d[1] );
         break;
         }
       case 5:
         {
-        d = myFuncD->value(x);
+        d = myFuncD->Value(x);
         itIm.Set( d[0] + d[1] );
         break;
         }
       case 6:
         {
-        m = spline.hessian(x);
+        m = spline.Hessian(x);
         itIm.Set( m[0][0]*m[0][0] + m[1][1]*m[1][1] );
         break;
         }
       case 7:
         {
-        itIm.Set( spline.valueJet(x, d, m) );
+        itIm.Set( spline.ValueJet(x, d, m) );
         break;
         }
       case 8:
         {
-        itIm.Set( spline.valueVDD2(x, d, d2) );
+        itIm.Set( spline.ValueVDD2(x, d, d2) );
         break;
         }
       }
@@ -240,24 +240,24 @@ int tubeSplineNDTest( int argc, char * argv[] )
     = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
   rndGen->Initialize( 1 );
 
-  spline.optimizerND()->searchForMin( false );
+  spline.GetOptimizerND()->SetSearchForMin( false );
   vnl_vector<double> xStep(2, 0.1);
-  spline.optimizerND()->xStep( xStep );
-  spline.optimizerND()->tolerance( 0.0001 );
-  spline.optimizerND()->maxIterations( 1000 );
-  spline.optimizerND()->maxLineSearches( 40 );
-  if( opt->searchForMin() != false )
+  spline.GetOptimizerND()->SetXStep( xStep );
+  spline.GetOptimizerND()->SetTolerance( 0.0001 );
+  spline.GetOptimizerND()->SetMaxIterations( 1000 );
+  spline.GetOptimizerND()->SetMaxLineSearches( 40 );
+  if( opt->GetSearchForMin() != false )
     {
     std::cout << "SearchForMin not preserved." << std::endl;
     returnStatus = EXIT_FAILURE;
     }
-  if( opt->tolerance() != 0.0001 )
+  if( opt->GetTolerance() != 0.0001 )
     {
     std::cout << "tolerance not preserved." << std::endl;
     returnStatus = EXIT_FAILURE;
     }
-  opt->maxIterations( 1000 );
-  if( opt->maxIterations() != 1000 )
+  opt->SetMaxIterations( 1000 );
+  if( opt->GetMaxIterations() != 1000 )
     {
     std::cout << "maxIterations not preserved." << std::endl;
     returnStatus = EXIT_FAILURE;
@@ -269,7 +269,7 @@ int tubeSplineNDTest( int argc, char * argv[] )
     x[1] = rndGen->GetNormalVariate( 0.0, 0.5 );
     std::cout << "Optimizing from " << x[0] << ", " << x[1] << std::endl;
     double xVal = 0;
-    if( !spline.extreme( x, &xVal ) )
+    if( !spline.Extreme( x, &xVal ) )
       {
       std::cout << "Spline.extreme failed." << std::endl;
       std::cout << "  x = " << x[0] << ", " << x[1] << std::endl;

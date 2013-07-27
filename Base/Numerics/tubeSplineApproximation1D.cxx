@@ -26,9 +26,9 @@ limitations under the License.
 namespace tube
 {
 
-SplineApproximation1D::
-SplineApproximation1D( void )
-: Spline1D()
+// Constructor.
+SplineApproximation1D::SplineApproximation1D( void )
+  : Spline1D()
 {
   m_SplineApproximation1DMatrixConst = (double)(1.0/6.0);
   m_SplineApproximation1DMatrix(0, 0) = 1;
@@ -49,11 +49,9 @@ SplineApproximation1D( void )
   m_SplineApproximation1DMatrix(3, 3) = 1;
 }
 
-
-SplineApproximation1D::
-SplineApproximation1D( UserFunction<int, double> *newFunval,
-  Optimizer1D *newOpt1D )
-: Spline1D(newFunval, newOpt1D)
+// Constructor.
+SplineApproximation1D::SplineApproximation1D( ValueFunctionType::Pointer funcVal, Optimizer1D::Pointer optimizer1D )
+  : Spline1D(funcVal, optimizer1D)
 {
   m_SplineApproximation1DMatrixConst = (double)(1.0/6.0);
   m_SplineApproximation1DMatrix(0, 0) = 1;
@@ -74,15 +72,12 @@ SplineApproximation1D( UserFunction<int, double> *newFunval,
   m_SplineApproximation1DMatrix(3, 3) = 1;
 }
 
-
-SplineApproximation1D::
-~SplineApproximation1D( void )
+// Destructor.
+SplineApproximation1D::~SplineApproximation1D( void )
 {
-
 }
 
-double SplineApproximation1D::
-dataValue(const VectorType & y, double x)
+double SplineApproximation1D::DataValue( const VectorType & y, double x )
 {
   double u[4];
   u[3] = 1.0;
@@ -104,9 +99,7 @@ dataValue(const VectorType & y, double x)
   return s;
 }
 
-
-double SplineApproximation1D::
-dataValueD(const VectorType & y, double x)
+double SplineApproximation1D::DataValueD( const VectorType & y, double x )
 {
   double u[3];
   u[2] = 1.0;
@@ -127,9 +120,7 @@ dataValueD(const VectorType & y, double x)
   return s;
 }
 
-
-double SplineApproximation1D::
-dataValueD2(const VectorType & y, double x)
+double SplineApproximation1D::DataValueD2( const VectorType & y, double x )
 {
   double u[2];
   u[1] = 1.0;
@@ -148,9 +139,7 @@ dataValueD2(const VectorType & y, double x)
   return s;
 }
 
-
-double SplineApproximation1D::
-dataValueJet(const VectorType & y, double x, double *d, double *d2)
+double SplineApproximation1D::DataValueJet( const VectorType & y, double x, double * d, double * d2 )
 {
 
   double u[4];
@@ -185,6 +174,15 @@ dataValueJet(const VectorType & y, double x, double *d, double *d2)
     }
 
   return s;
+}
+
+// Print out information about this object.
+void SplineApproximation1D::PrintSelf( std::ostream & os, Indent indent ) const
+{
+  this->Superclass::PrintSelf( os, indent );
+
+  os << indent << "SplineApproximation1DMatrixConst: " << m_SplineApproximation1DMatrixConst << std::endl;
+  os << indent << "SplineApproximation1DMatrix:      " << m_SplineApproximation1DMatrix << std::endl;
 }
 
 } // End namespace tube

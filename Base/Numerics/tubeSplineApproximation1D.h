@@ -38,30 +38,50 @@ class SplineApproximation1D : public Spline1D
 {
 public:
 
-  typedef vnl_vector<double> VectorType;
+  typedef SplineApproximation1D             Self;
+  typedef Spline1D                          Superclass;
+  typedef Self *                            Pointer;
+  typedef const Self *                      ConstPointer;
 
+  typedef vnl_matrix_fixed< double, 4, 4 >  MatrixType;
+  typedef Superclass::VectorType            VectorType;
+  typedef Superclass::ValueFunctionType     ValueFunctionType;
+
+  /** Return the type of this object. */
+  tubeTypeMacro( SplineApproximation1D );
+
+  /** Constructor. */
   SplineApproximation1D( void );
-  SplineApproximation1D( UserFunction<int, double> *newFunval,
-    Optimizer1D * newOpt1D );
 
+  /** Constructor. */
+  SplineApproximation1D( ValueFunctionType::Pointer funcVal, Optimizer1D::Pointer optimizer1D );
+
+  /** Destructor. */
   virtual ~SplineApproximation1D( void );
 
-  double  dataValue( const VectorType & y, double x );
+  double DataValue( const VectorType & y, double x );
 
-  double  dataValueD( const VectorType & y, double x );
+  double DataValueD( const VectorType & y, double x );
 
-  double  dataValueD2( const VectorType & y, double x );
+  double DataValueD2( const VectorType & y, double x );
 
-  double  dataValueJet( const VectorType & y,
-    double x, double *d, double *d2 );
+  double DataValueJet( const VectorType & y, double x, double * d, double * d2 );
 
 protected:
 
-  typedef vnl_matrix_fixed<double, 4, 4> MatrixType;
+  /** Print out information about this object. */
+  void PrintSelf( std::ostream & os, Indent indent ) const;
 
   double      m_SplineApproximation1DMatrixConst;
-
   MatrixType  m_SplineApproximation1DMatrix;
+
+private:
+
+  // Copy constructor not implemented.
+  SplineApproximation1D( const Self & self );
+
+  // Copy assignment operator not implemented.
+  void operator=( const Self & self );
 
 }; // End class SplineApproximation1D
 

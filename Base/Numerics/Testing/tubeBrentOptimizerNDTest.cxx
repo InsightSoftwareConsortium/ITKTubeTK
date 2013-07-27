@@ -41,7 +41,7 @@ public:
     {
     cVal = 0;
     }
-  const double & value( const vnl_vector<double> & x )
+  const double & Value( const vnl_vector<double> & x )
     {
     cVal = vcl_sin(x(0)) + vcl_sin(x(1));
     return cVal;
@@ -60,7 +60,7 @@ public:
     {
     cDx.set_size(2);
     }
-  const vnl_vector<double> & value( const vnl_vector<double> & x )
+  const vnl_vector<double> & Value( const vnl_vector<double> & x )
     {
     cDx[0] = vcl_cos(x(0));
     cDx[1] = vcl_cos(x(1));
@@ -89,52 +89,52 @@ int tubeBrentOptimizerNDTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[
 
   VectorType xMin(2);
   xMin.fill( -3.5 );
-  opt.xMin( xMin );
-  if( opt.xMin()[0] != -3.5 )
+  opt.SetXMin( xMin );
+  if( opt.GetXMin()[0] != -3.5 )
     {
-    std::cout << "xMin should be -3.5 and not " << opt.xMin()[0]
+    std::cout << "xMin should be -3.5 and not " << opt.GetXMin()[0]
       << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
   VectorType xMax(2);
   xMax.fill( 3.5 );
-  opt.xMax( xMax );
-  if( opt.xMax()[0] != 3.5 )
+  opt.SetXMax( xMax );
+  if( opt.GetXMax()[0] != 3.5 )
     {
-    std::cout << "xMax should be 3.5 and not " << opt.xMax()[0]
+    std::cout << "xMax should be 3.5 and not " << opt.GetXMax()[0]
       << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
   VectorType xStep(2);
   xStep.fill( 0.1 );
-  opt.xStep( xStep );
-  if( opt.xStep()[0] != 0.1 )
+  opt.SetXStep( xStep );
+  if( opt.GetXStep()[0] != 0.1 )
     {
-    std::cout << "xStep should be 0.1 and not " << opt.xStep()[0]
+    std::cout << "xStep should be 0.1 and not " << opt.GetXStep()[0]
       << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
-  opt.tolerance( 0.000001 );
-  if( opt.tolerance() != 0.000001 )
+  opt.SetTolerance( 0.000001 );
+  if( opt.GetTolerance() != 0.000001 )
     {
-    std::cout << "tolerance should be 0.001 and not " << opt.tolerance()
+    std::cout << "tolerance should be 0.001 and not " << opt.GetTolerance()
       << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
-  opt.maxIterations( 300 );
-  if( opt.maxIterations() != 300 )
+  opt.SetMaxIterations( 300 );
+  if( opt.GetMaxIterations() != 300 )
     {
     std::cout << "maxIterations should be 100 and not "
-      << opt.maxIterations() << std::endl;
+      << opt.GetMaxIterations() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
-  opt.searchForMin( true );
-  if( !opt.searchForMin() )
+  opt.SetSearchForMin( true );
+  if( !opt.GetSearchForMin() )
     {
     std::cout << "searchForMin should be false and not true." << std::endl;
     returnStatus = EXIT_FAILURE;
@@ -144,7 +144,7 @@ int tubeBrentOptimizerNDTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[
   x[0] = 0.01;
   x[1] = 1.01;
   double xVal = 0;
-  if( !opt.extreme( x, &xVal ) )
+  if( !opt.Extreme( x, &xVal ) )
     {
     std::cout << "Optimization failed!" << std::endl;
     returnStatus = EXIT_FAILURE;

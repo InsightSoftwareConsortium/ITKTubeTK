@@ -42,7 +42,7 @@ public:
     cVal = 0;
     }
 
-  const double & value( const double & x )
+  const double & Value( const double & x )
     {
     cVal = vcl_sin(x);
     return cVal;
@@ -61,7 +61,7 @@ public:
     cVal = 0;
     }
 
-  const double & value( const double & x )
+  const double & Value( const double & x )
     {
     cVal = vcl_cos( x/100 );
     std::cout << x << " : " << cVal << std::endl;
@@ -93,57 +93,57 @@ int tubeGoldenMeanOptimizer1DTest( int argc, char * argv[] )
   if( funcType == 2 )
     {
     myFunc2 = new MyOGMFunc2();
-    opt->use( myFunc2 );
+    opt->Use( myFunc2 );
     }
 
   double epsilon = 0.000001 * factor;
 
   int returnStatus = EXIT_SUCCESS;
 
-  opt->xMin( xMin );
-  if( opt->xMin() != xMin )
+  opt->SetXMin( xMin );
+  if( opt->GetXMin() != xMin )
     {
     std::cout << "xMin should be " << xMin << " and not "
-              << opt->xMin() << std::endl;
+              << opt->GetXMin() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
-  opt->xMax( xMax);
-  if( opt->xMax() != xMax )
+  opt->SetXMax( xMax);
+  if( opt->GetXMax() != xMax )
     {
     std::cout << "xMax should be " << xMax << " and not "
-              << opt->xMax() << std::endl;
+              << opt->GetXMax() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
-  opt->xStep( 0.1*factor );
-  if( opt->xStep() != 0.1*factor )
+  opt->SetXStep( 0.1*factor );
+  if( opt->GetXStep() != 0.1*factor )
     {
     std::cout << "xStep should be " << 0.1*factor
-              << " and not " << opt->xStep() << std::endl;
+              << " and not " << opt->GetXStep() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
-  opt->tolerance( 0.000001*factor );
-  if( opt->tolerance() != 0.000001*factor )
+  opt->SetTolerance( 0.000001*factor );
+  if( opt->GetTolerance() != 0.000001*factor )
     {
     std::cout << "tolerance should be " << 0.000001*factor
-              << " and not " << opt->tolerance() << std::endl;
+              << " and not " << opt->GetTolerance() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
-  opt->maxIterations( 300 );
-  if( opt->maxIterations() != 300 )
+  opt->SetMaxIterations( 300 );
+  if( opt->GetMaxIterations() != 300 )
     {
     std::cout << "maxIterations should be 300 and not "
-      << opt->maxIterations() << std::endl;
+      << opt->GetMaxIterations() << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
   if( minimizing )
     {
-    opt->searchForMin( true );
-    if( !opt->searchForMin() )
+    opt->SetSearchForMin( true );
+    if( !opt->GetSearchForMin() )
       {
       std::cout << "searchForMin should be true and not false." << std::endl;
       returnStatus = EXIT_FAILURE;
@@ -151,8 +151,8 @@ int tubeGoldenMeanOptimizer1DTest( int argc, char * argv[] )
     }
   else
     {
-    opt->searchForMin( false );
-    if( opt->searchForMin() )
+    opt->SetSearchForMin( false );
+    if( opt->GetSearchForMin() )
       {
       std::cout << "searchForMin should be false and not true." << std::endl;
       returnStatus = EXIT_FAILURE;
@@ -160,7 +160,7 @@ int tubeGoldenMeanOptimizer1DTest( int argc, char * argv[] )
     }
 
   double xVal = 0;
-  if( !opt->extreme( &x, &xVal ) )
+  if( !opt->Extreme( &x, &xVal ) )
     {
     std::cout << "Optimization failed!" << std::endl;
     returnStatus = EXIT_FAILURE;

@@ -58,7 +58,7 @@ public:
     m_XIndx.Fill( 0 );
     }
 
-  const double & value( const vnl_vector<int> & x )
+  const double & Value( const vnl_vector<int> & x )
     {
     for( unsigned int i=0; i<x.size(); i++ )
       {
@@ -132,14 +132,14 @@ RidgeExtractor<TInputImage>
   m_DataSpline = new ::tube::SplineND( ImageDimension, m_SplineValueFunc,
     &m_DataSpline1D, &m_DataSplineOpt );
 
-  m_DataSpline->clipEdge( true );
+  m_DataSpline->SetClip( true );
 
-  m_DataSpline->optimizerND()->searchForMin( false );
-  m_DataSpline->optimizerND()->tolerance( 0.25 );
-  m_DataSpline->optimizerND()->maxIterations( 200 );
-  m_DataSpline->optimizerND()->maxLineSearches( 10 );
+  m_DataSpline->GetOptimizerND()->SetSearchForMin( false );
+  m_DataSpline->GetOptimizerND()->SetTolerance( 0.25 );
+  m_DataSpline->GetOptimizerND()->SetMaxIterations( 200 );
+  m_DataSpline->GetOptimizerND()->SetMaxLineSearches( 10 );
   vnl_vector< double > xStep( 3, 0.75 );
-  m_DataSpline->optimizerND()->xStep( xStep );
+  m_DataSpline->GetOptimizerND()->SetXStep( xStep );
 
   m_IdleCallBack = NULL;
   m_StatusCallBack = NULL;
@@ -212,8 +212,8 @@ RidgeExtractor<TInputImage>
       vMin[i] = m_ExtractBoundMin[i];
       vMax[i] = m_ExtractBoundMax[i];
       }
-    m_DataSpline->xMin( vMin );
-    m_DataSpline->xMax( vMax );
+    m_DataSpline->SetXMin( vMin );
+    m_DataSpline->SetXMax( vMax );
 
     if( this->GetDebug() )
       {
@@ -275,7 +275,7 @@ RidgeExtractor<TInputImage>
     {
     std::cout << "Ridge::SetScale = " << scale << std::endl;
     }
-  m_DataSpline->newData( true );
+  m_DataSpline->SetNewData( true );
   m_DataFunc->SetScale( scale );
 }
 
@@ -296,7 +296,7 @@ void
 RidgeExtractor<TInputImage>
 ::SetExtent( double extent )
 {
-  m_DataSpline->newData( true );
+  m_DataSpline->SetNewData( true );
   m_DataFunc->SetExtent( extent );
 }
 
@@ -406,7 +406,7 @@ RidgeExtractor<TInputImage>
     m_X[i] = x[i];
     }
 
-  m_XVal = m_DataSpline->valueJet( m_X, m_XD, m_XH );
+  m_XVal = m_DataSpline->ValueJet( m_X, m_XD, m_XH );
 
   if( this->GetDebug() )
     {
@@ -587,10 +587,8 @@ RidgeExtractor<TInputImage>
   os << indent << "ThreshX = " << m_ThreshX << std::endl;
   os << indent << "ExtractBoundMin = " << m_ExtractBoundMin << std::endl;
   os << indent << "ExtractBoundMax = " << m_ExtractBoundMax << std::endl;
-  os << indent << "DataSpline1D = " << std::endl;
-  m_DataSpline1D.PrintSelf( os );
-  os << indent << "DataSplineOpt = " << std::endl;
-  m_DataSplineOpt.PrintSelf( os );
+  os << indent << "DataSpline1D = " << m_DataSpline1D << std::endl;
+  os << indent << "DataSplineOpt = " << m_DataSplineOpt << std::endl;
   os << indent << "DataSpline = " << m_DataSpline << std::endl;
   os << indent << "SplineValueFunc = " << m_SplineValueFunc << std::endl;
   os << indent << "ThreshRidgeness = " << m_ThreshRidgeness << std::endl;
@@ -902,7 +900,7 @@ RidgeExtractor<TInputImage>
                 << std::endl;
       }
 
-    if( !m_DataSpline->extreme( lX, &lVal, ImageDimension-1, lSearchDir ) )
+    if( !m_DataSpline->Extreme( lX, &lVal, ImageDimension-1, lSearchDir ) )
       {
       if( this->GetDebug() )
         {
@@ -1344,7 +1342,7 @@ RidgeExtractor<TInputImage>
       {
       pX[i] = newX[i];
       }
-    m_DataSpline->extreme( pX, &val, 1, lN );
+    m_DataSpline->Extreme( pX, &val, 1, lN );
 
     // On the first gradient pursuit we don't want to wander too far, and
     // the gradient might not be ideally oriented towards the ridge, so
@@ -1446,7 +1444,7 @@ RidgeExtractor<TInputImage>
       }
 
     // Local 1D Ridge
-    m_DataSpline->extreme( pX, &val, ImageDimension-1, lN );
+    m_DataSpline->Extreme( pX, &val, ImageDimension-1, lN );
     for( int i=0; i<ImageDimension; i++ )
       {
       newX[i] = pX[i];

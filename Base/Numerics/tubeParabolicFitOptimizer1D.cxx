@@ -28,38 +28,34 @@ limitations under the License.
 
 #include "tubeParabolicFitOptimizer1D.h"
 
-#include <itkMacro.h>
-
 #include <iostream>
 
 namespace tube
 {
 
+// Constructor.
 ParabolicFitOptimizer1D::ParabolicFitOptimizer1D( void )
-: Optimizer1D()
+  : Optimizer1D()
 {
 }
 
-ParabolicFitOptimizer1D::ParabolicFitOptimizer1D( UserFunction<double, double> *newFuncVal )
-: Optimizer1D( newFuncVal, NULL )
+// Constructor.
+ParabolicFitOptimizer1D::ParabolicFitOptimizer1D( ValueFunctionType::Pointer funcVal )
+  : Optimizer1D( funcVal, NULL )
 {
 }
 
-
+// Destructor.
 ParabolicFitOptimizer1D::~ParabolicFitOptimizer1D( void )
 {
 }
 
-
-void ParabolicFitOptimizer1D::use( UserFunction<double, double> * newFuncVal,
-  UserFunction<double, double> * itkNotUsed( derivative ) )
+void ParabolicFitOptimizer1D::Use( ValueFunctionType::Pointer funcVal )
 {
-  Optimizer1D::use( newFuncVal, NULL );
+  this->Superclass::Use( funcVal, NULL );
 }
 
-
-double ParabolicFitOptimizer1D:: m_Center( double x1, double y1,
-  double x2, double y2, double x3, double y3 )
+double ParabolicFitOptimizer1D::m_Center( double x1, double y1, double x2, double y2, double x3, double y3 )
 {
   double a = ( y1 - ( ( y2-y3 )*x1 )/( x2-x3 ) - y3 + ( ( y2-y3 )*x3 )/( x2-x3 ) ) /
     ( x1*x1 - x3*x3 + ( ( x3*x3-x2*x2 )*x1 )/( x2-x3 ) -
@@ -69,7 +65,7 @@ double ParabolicFitOptimizer1D:: m_Center( double x1, double y1,
   return -b/( 2*a );
 }
 
-bool ParabolicFitOptimizer1D::m_Extreme( double *extX, double *extVal )
+bool ParabolicFitOptimizer1D::m_Extreme( double * extX, double * extVal )
 {
   double minSign = 1;
   if( !m_SearchForMin )
@@ -88,7 +84,7 @@ bool ParabolicFitOptimizer1D::m_Extreme( double *extX, double *extVal )
 
   d = -1;
   v = ( *extX );
-  fv = minSign * m_FuncVal->value( v );
+  fv = minSign * m_FuncVal->Value( v );
   x = v + d * m_XStep;
   u = v;
   fu = fv;
@@ -99,7 +95,7 @@ bool ParabolicFitOptimizer1D::m_Extreme( double *extX, double *extVal )
     x = v + d * m_XStep;
     }
 
-  fx = minSign * m_FuncVal->value( x );
+  fx = minSign * m_FuncVal->Value( x );
 
   if( fx>=fv )
     {
@@ -107,7 +103,7 @@ bool ParabolicFitOptimizer1D::m_Extreme( double *extX, double *extVal )
     fu = fx;
     d *= -1;
     x = v + d * m_XStep;
-    fx = minSign * m_FuncVal->value( x );
+    fx = minSign * m_FuncVal->Value( x );
     }
   w = 1;
   while( fx < fv )
@@ -126,7 +122,7 @@ bool ParabolicFitOptimizer1D::m_Extreme( double *extX, double *extVal )
     if( x < m_XMin || x > m_XMax )
       {
       x = v - d * m_XStep * w;
-      fx = minSign * m_FuncVal->value( x );
+      fx = minSign * m_FuncVal->Value( x );
       *extX = x;
       *extVal = minSign * fx;
       std::cout << " Exiting legal parameter space - aborting" << std::endl;
@@ -135,7 +131,7 @@ bool ParabolicFitOptimizer1D::m_Extreme( double *extX, double *extVal )
       return false;
       }
 
-    fx = minSign * m_FuncVal->value( x );
+    fx = minSign * m_FuncVal->Value( x );
     w *= 1.1;
     }
 
@@ -169,7 +165,7 @@ bool ParabolicFitOptimizer1D::m_Extreme( double *extX, double *extVal )
       return false;
       }
 
-    double fw = minSign * m_FuncVal->value( w );
+    double fw = minSign * m_FuncVal->Value( w );
 
     if( fw<fv )
       {
@@ -211,14 +207,14 @@ bool ParabolicFitOptimizer1D::m_Extreme( double *extX, double *extVal )
       x = v;
       fx = fv;
       v = x-( x-u )/3;
-      fv = minSign * m_FuncVal->value( v );
+      fv = minSign * m_FuncVal->Value( v );
       d = ( x-u )/2;
       while( fv > fx && d > m_Tolerance )
         {
         u = v;
         fu = fv;
         v = x-( x-u )/3;
-        fv = minSign * m_FuncVal->value( v );
+        fv = minSign * m_FuncVal->Value( v );
         d = ( x-u )/2;
         }
       }
@@ -227,14 +223,14 @@ bool ParabolicFitOptimizer1D::m_Extreme( double *extX, double *extVal )
       u = v;
       fu = fv;
       v = u+( x-u )/3;
-      fv = minSign * m_FuncVal->value( v );
+      fv = minSign * m_FuncVal->Value( v );
       d = ( x-u )/2;
       while( fv > fu && d > m_Tolerance )
         {
         x = v;
         fx = fv;
         v = u+( x-u )/3;
-        fv = minSign * m_FuncVal->value( v );
+        fv = minSign * m_FuncVal->Value( v );
         d = ( x-u )/2;
         }
       }
@@ -245,6 +241,5 @@ bool ParabolicFitOptimizer1D::m_Extreme( double *extX, double *extVal )
 
   return true;
 }
-
 
 } // End namespace tube
