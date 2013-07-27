@@ -27,8 +27,8 @@
 
 include( ${CMAKE_CURRENT_SOURCE_DIR}/TubeTKModules.cmake )
 
-foreach( module ${TubeTK_SlicerModules_MODULES} )
+foreach( module ${TubeTK_SLICER_MODULES} )
   if( TubeTK_BUILD_${module} )
     add_subdirectory( ${module} )
   endif( TubeTK_BUILD_${module} )
-endforeach( module ${TubeTK_SlicerModules_MODULES} )
+endforeach( module ${TubeTK_SLICER_MODULES} )

@@ -232,47 +232,47 @@ set( CMAKE_POSITION_INDEPENDENT_CODE ON )
 # Slicer library setup.
 # If available, Slicer can be used to retrieve external libraries and modules
 # used by TubeTK.
-option( TubeTK_USE_Slicer
+option( TubeTK_USE_SLICER
   "Use Slicer to extract useful commands and CLIs."
   OFF )
 
 # Slicer must be used if TubeTK is built as an extension.
 if( TubeTK_BUILD_SLICER_EXTENSION )
-  set( TubeTK_USE_Slicer ON CACHE BOOL "Use Slicer to extract useful commands and CLIs." FORCE )
+  set( TubeTK_USE_SLICER ON CACHE BOOL "Use Slicer to extract useful commands and CLIs." FORCE )
 endif( TubeTK_BUILD_SLICER_EXTENSION )
 
-# If USE_SYSTEM_Slicer is OFF, it still won't be built as an external project.
-option( USE_SYSTEM_Slicer
+# If USE_SYSTEM_SLICER is OFF, it still won't be built as an external project.
+option( USE_SYSTEM_SLICER
   "Use Slicer to configure dependencies such as ITK, VTK, CTK..."
   ON )
-mark_as_advanced( USE_SYSTEM_Slicer )
+mark_as_advanced( USE_SYSTEM_SLICER )
 
-if( TubeTK_USE_Slicer AND USE_SYSTEM_Slicer )
+if( TubeTK_USE_SLICER AND USE_SYSTEM_SLICER )
   unset( QT_QMAKE_EXECUTABLE )
   # Find Slicer to set the [ITK|VTK|CTK|...]_DIR variables
   find_package( Slicer REQUIRED )
   set( Slicer_DONT_USE_EXTENSION ${TubeTK_BUILD_SLICER_EXTENSION} )
   include( ${Slicer_USE_FILE} )
-  # TubeTK_Slicer_SOURCE_DIR is needed to get ExpertAutomatedRegistration CLI
+  # TubeTK_SLICER_SOURCE_DIR is needed to get ExpertAutomatedRegistration CLI
   if( Slicer_SOURCE_DIR )
-    set( TubeTK_Slicer_SOURCE_DIR ${Slicer_SOURCE_DIR} )
+    set( TubeTK_SLICER_SOURCE_DIR ${Slicer_SOURCE_DIR} )
   else( Slicer_SOURCE_DIR )
-    set( TubeTK_Slicer_SOURCE_DIR ${Slicer_CMAKE_DIR}/.. )
+    set( TubeTK_SLICER_SOURCE_DIR ${Slicer_CMAKE_DIR}/.. )
   endif( Slicer_SOURCE_DIR )
   # All those dependencies are already provided by Slicer
-  set( USE_SYSTEM_ITK ON CACHE BOOL "Use SimpleITK to enable additional applications and libraries." FORCE )
+  set( USE_SYSTEM_ITK ON CACHE BOOL "Use ITK to enable additional applications and libraries." FORCE )
   set( TubeTK_USE_VTK ON CACHE BOOL "Use VTK to enable additional applications and libraries." FORCE )
   set( USE_SYSTEM_VTK ON CACHE BOOL "Exclude VTK from the superbuild and use an existing build instead." FORCE )
   set( TubeTK_USE_QT ON CACHE BOOL "Use the Qt framework to enable additional applications and libraries." FORCE )
   set( TubeTK_USE_CTK ON CACHE BOOL "Use CTK to enable additional applications and build the 3D Slicer modules." FORCE )
   set( USE_SYSTEM_CTK ON CACHE BOOL "Exclude CTK from the superbuild and use an existing build instead." FORCE )
-  set( USE_SYSTEM_SlicerExecutionModel ON CACHE BOOL "Exclude SlicerExecutionModel from SuperBuild and use an existing build instead." FORCE )
-endif( TubeTK_USE_Slicer AND USE_SYSTEM_Slicer )
+  set( USE_SYSTEM_SLICER_EXECUTION_MODEL ON CACHE BOOL "Exclude SlicerExecutionModel from SuperBuild and use an existing build instead." FORCE )
+endif( TubeTK_USE_SLICER AND USE_SYSTEM_SLICER )
 
 # JsonCpp library setup.
-option( USE_SYSTEM_JsonCpp
+option( USE_SYSTEM_JSONCPP
   "Exclude JsonCpp from the superbuild and use an existing build instead." OFF )
-mark_as_advanced( USE_SYSTEM_JsonCpp )
+mark_as_advanced( USE_SYSTEM_JSONCPP )
 
 # LIBSVM library setup.
 option( TubeTK_USE_LIBSVM
@@ -280,21 +280,21 @@ option( TubeTK_USE_LIBSVM
   OFF )
 
 # Boost libraries setup.
-option( TubeTK_USE_Boost
+option( TubeTK_USE_BOOST
   "Use the Boost libraries to enable additional applications." OFF )
 
 # Parameter serializer setup.
-option( USE_SYSTEM_ParameterSerializer
+option( USE_SYSTEM_PARAMETER_SERIALIZER
   "Exclude the parameter serializer from the superbuild and use an existing build instead."
   OFF )
-mark_as_advanced( USE_SYSTEM_ParameterSerializer )
+mark_as_advanced( USE_SYSTEM_PARAMETER_SERIALIZER )
 
 # --------------------------------------------------------------------------
 # ITK setup.
 option( USE_SYSTEM_ITK
   "Exclude ITK from the superbuild and use an existing build instead." OFF )
 mark_as_advanced( USE_SYSTEM_ITK )
-option( TubeTK_USE_SimpleITK
+option( TubeTK_USE_SIMPLEITK
   "Use SimpleITK to enable additional applications and libraries."
   OFF )
 
@@ -342,14 +342,14 @@ option( USE_SYSTEM_CTK
 mark_as_advanced( USE_SYSTEM_CTK )
 
 # Slicer Execution model Setup
-option( USE_SYSTEM_SlicerExecutionModel
+option( USE_SYSTEM_SLICER_EXECUTION_MODEL
   "Exclude SlicerExecutionModel from SuperBuild and use an existing build instead." OFF )
-mark_as_advanced( USE_SYSTEM_SlicerExecutionModel )
+mark_as_advanced( USE_SYSTEM_SLICER_EXECUTION_MODEL )
 
 # NumPy setup.
-option( TubeTK_USE_NumPy
+option( TubeTK_USE_NUMPY
   "Build NumPy conversion Python extension module." OFF )
-mark_as_advanced( TubeTK_USE_NumPy )
+mark_as_advanced( TubeTK_USE_NUMPY )
 
 # Modules
 option( TubeTK_BUILD_MODULES
@@ -357,7 +357,7 @@ option( TubeTK_BUILD_MODULES
   ON )
 
 # Image viewer setup.
-option( TubeTK_BUILD_ImageViewer "Build the lightweight image viewer." OFF )
+option( TubeTK_BUILD_IMAGEVIEWER "Build the lightweight image viewer." OFF )
 
 # Indicate that this CMakeLists.txt file has already been parsed once. Keeps
 # append commands from having an effect every time CMake is run.
@@ -461,7 +461,7 @@ include( TestBigEndian )
 test_big_endian( CMAKE_WORDS_BIGENDIAN )
 
 # Setup to conform to 3D Slicer paths and define plugin copying macros.
-if( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_Slicer )
+if( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_SLICER )
   include( Slicer4MacroGetSource )
 
   Slicer4MacroGetSource( Resources )
@@ -478,13 +478,13 @@ if( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_Slicer )
 
   set( ITKFactoryRegistration_INSTALL_BIN_DIR ${TubeTK_INSTALL_BIN_DIR} )
   set( ITKFactoryRegistration_INSTALL_LIB_DIR ${TubeTK_INSTALL_LIB_DIR} )
-  add_subdirectory( ${TubeTK_Slicer_SOURCE_DIR}/Libs/ITKFactoryRegistration
-    ${TubeTK_Slicer_BINARY_DIR}/Libs/ITKFactoryRegistration )
+  add_subdirectory( ${TubeTK_SLICER_SOURCE_DIR}/Libs/ITKFactoryRegistration
+    ${TubeTK_SLICER_BINARY_DIR}/Libs/ITKFactoryRegistration )
   include_directories( ${Slicer_BINARY_DIR}/Libs/itkFactoryRegistration )
 
   # Build SlicerBaseCLI
-  add_subdirectory( ${TubeTK_Slicer_SOURCE_DIR}/Base/CLI
-    ${TubeTK_Slicer_BINARY_DIR}/Base/CLI )
+  add_subdirectory( ${TubeTK_SLICER_SOURCE_DIR}/Base/CLI
+    ${TubeTK_SLICER_BINARY_DIR}/Base/CLI )
 
   # Config SlicerExecutionModel
   set( extras ITKFactoryRegistration )
@@ -495,7 +495,7 @@ if( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_Slicer )
     ${extras}
     CACHE INTERNAL "3D Slicer execution model extra libraries." FORCE )
 
-endif( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_Slicer )
+endif( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_SLICER )
 
 include( TubeTKMacroInstallPlugins )
 
@@ -507,9 +507,9 @@ if( TubeTK_BUILD_MODULES )
 endif( TubeTK_BUILD_MODULES )
 
 # Optionally build 3D Slicer modules.
-if( TubeTK_BUILD_MODULES AND TubeTK_USE_Slicer )
+if( TubeTK_BUILD_MODULES AND TubeTK_USE_SLICER )
   add_subdirectory( SlicerModules )
-endif( TubeTK_BUILD_MODULES AND TubeTK_USE_Slicer )
+endif( TubeTK_BUILD_MODULES AND TubeTK_USE_SLICER )
 
 # Create the directory where CTest unit tests store temporary results.
 make_directory( ${TubeTK_BINARY_DIR}/Temporary )
@@ -538,7 +538,6 @@ if( MSVC )
     list( APPEND TubeTK_EXECUTABLE_DIRS
       ${VTK_DIR}/bin/${CMAKE_BUILD_TYPE} )
   endif( TubeTK_USE_VTK )
-
 else( MSVC )
   set( TubeTK_EXECUTABLE_DIRS
     ${JSonCpp_DIR}/bin
