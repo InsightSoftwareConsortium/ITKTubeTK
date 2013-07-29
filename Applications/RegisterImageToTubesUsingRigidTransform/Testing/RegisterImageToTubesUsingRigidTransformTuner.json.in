@@ -1,0 +1,130 @@
+
+{
+  "Category" : "TubeTK",
+  "Contributor" : "Matthew McCormick (Kitware)",
+  "Description" : "Registration of a vessel to its location within an image.",
+  "DocumentationURL" : "http://public.kitware.com/Wiki/TubeTK",
+  "License" : "Apache 2.0",
+  "ParameterGroups" :
+  [
+
+    {
+      "Description" : "Input/output parameters.",
+      "Label" : "IO",
+      "Parameters" :
+      [
+
+        {
+          "CPPType" : "std::string",
+          "Channel" : "input",
+          "CoordinateSystem" : "",
+          "Default" : "",
+          "Description" : "Input volume.",
+          "Flag" : "",
+          "Index" : "0",
+          "Label" : "Input Volume",
+          "LongFlag" : "",
+          "Maximum" : "",
+          "Minimum" : "",
+          "Multiple" : "false",
+          "Name" : "inputVolume",
+          "Step" : "",
+          "Tag" : "image",
+          "Value" : "@TubeTK_BINARY_DIR@/MIDAS_Data/Branch.n020.mha"
+        },
+
+        {
+          "CPPType" : "std::string",
+          "Channel" : "input",
+          "CoordinateSystem" : "",
+          "Default" : "",
+          "Description" : "Input vessel (tube).",
+          "Flag" : "",
+          "Index" : "1",
+          "Label" : "Input Vessel",
+          "LongFlag" : "",
+          "Maximum" : "",
+          "Minimum" : "",
+          "Multiple" : "false",
+          "Name" : "inputVessel",
+          "Step" : "",
+          "Tag" : "file",
+          "Value" : "@TubeTK_BINARY_DIR@/MIDAS_Data/tube.tre"
+        },
+
+        {
+          "CPPType" : "std::string",
+          "Channel" : "output",
+          "CoordinateSystem" : "",
+          "Default" : "",
+          "Description" : "Binary image demonstrating where the tube is located after it has been registered.",
+          "Flag" : "",
+          "Index" : "2",
+          "Label" : "Output Volume",
+          "LongFlag" : "",
+          "Maximum" : "",
+          "Minimum" : "",
+          "Multiple" : "false",
+          "Name" : "outputVolume",
+          "Step" : "",
+          "Tag" : "image",
+          "Value" : "@TEMP@/RegisterImageToTubesUsingRigidTransformTunerTest.mha"
+        },
+
+        {
+          "CPPType" : "std::string",
+          "Channel" : "output",
+          "CoordinateSystem" : "",
+          "Default" : "",
+          "Description" : "Output optimization parameter progression file.",
+          "Flag" : "p",
+          "Index" : "",
+          "Label" : "Parameter Progression",
+          "LongFlag" : "parameterProgression",
+          "Maximum" : "",
+          "Minimum" : "",
+          "Multiple" : "false",
+          "Name" : "parameterProgression",
+          "Step" : "",
+          "Tag" : "file",
+          "Value" : "@TEMP@/RegisterImageToTubesUsingRigidTransformTunerTestParameterProgression.h5"
+        }
+      ]
+    },
+
+    {
+      "Description" : "",
+      "Label" : "Blur Filter",
+      "Parameters" :
+      [
+
+        {
+          "CPPType" : "double",
+          "Channel" : "",
+          "CoordinateSystem" : "",
+          "Default" : "3.0",
+          "Description" : "Standard deviation of the Gaussian kernel used to blur input volume. This increases the likelihood that the vessel spatial object overlaps with the vessel image at their initial alignment and enlarges the convergence zone.",
+          "Flag" : "g",
+          "Index" : "",
+          "Label" : "Gaussian Blur Standard Deviation",
+          "LongFlag" : "gaussianBlurStdDev",
+          "Maximum" : "",
+          "Minimum" : "",
+          "Multiple" : "false",
+          "Name" : "gaussianBlurStdDev",
+          "Step" : "",
+          "Tag" : "double",
+          "Value" : 3.0
+        }
+      ]
+    }
+  ],
+  "Title" : "Register Image to Tubes Using Rigid Transform (TubeTK)",
+  "Version" : "0.1.0.$Revision: 2104 $(alpha)",
+
+  "Executables":
+  {
+    "Analysis": "@PROJ_EXE@"
+  }
+
+}

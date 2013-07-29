@@ -60,8 +60,8 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  enum { Dimension = 3 };
-  typedef double            FloatType;
+  const unsigned int Dimension = 3;
+  typedef double     FloatType;
 
   typedef itk::VesselTubeSpatialObject< Dimension >      TubeType;
   typedef itk::GroupSpatialObject< Dimension >           TubeNetType;
