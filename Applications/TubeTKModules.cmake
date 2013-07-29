@@ -65,7 +65,7 @@ if( TubeTK_USE_BOOST )
     ComputeImageQuantiles
     TransferLabelsToRegions
     TubeGraphKernel )
-endif( TubeTK_USE_Boost )
+endif( TubeTK_USE_BOOST )
 
 set( TubeTK_${proj}_VTK_MODULES )
 if( TubeTK_USE_VTK )
