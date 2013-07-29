@@ -15,29 +15,11 @@
 # limitations under the License.
 #=============================================================================
 
-# Run this script to set up local Git hooks for this project.
+. "${BASH_SOURCE%/*}/hooks-config.bash"
 
-# Project configuration instructions:
-#
-# - Publish a "hooks" branch in the project repository such that
-#   clones will have "refs/remotes/origin/hooks".
-#
-# - Populate adjacent "config" file with:
-#    hooks.url    = Repository URL publishing "hooks" branch
-#    hooks.branch = Repository branch instead of "hooks"
+# Start with project-specific hook.
+hooks_start prepare-commit-msg "$@"
 
-egrep-q() {
-	egrep "$@" >/dev/null 2>/dev/null
-}
-
-die() {
-	echo 1>&2 "$@" ; exit 1
-}
-
-# Make sure we are inside the repository.
-cd "${BASH_SOURCE%/*}" &&
-
-# Populate ".git/hooks".
-echo 'Setting up git hooks...' &&
-git_dir=$(git rev-parse --git-dir) &&
-cp -r hooks "$git_dir"
+#-----------------------------------------------------------------------------
+# Chain to project-specific hook.
+hooks_chain prepare-commit-msg "$@"
