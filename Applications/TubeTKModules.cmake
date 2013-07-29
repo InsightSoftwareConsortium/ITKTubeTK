@@ -60,7 +60,7 @@ set( TubeTK_${proj}_MODULES
   TubeTransform )
 
 set( TubeTK_${proj}_Boost_MODULES )
-if( TubeTK_USE_Boost )
+if( TubeTK_USE_BOOST )
   set( TubeTK_${proj}_Boost_MODULES
     ComputeImageQuantiles
     TransferLabelsToRegions
