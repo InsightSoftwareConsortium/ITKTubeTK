@@ -589,7 +589,7 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
     # There is a bug in NSI that does not handle full UNIX paths properly. Make
     # sure there is at least one set of four backslashes.
     set( CPACK_PACKAGE_ICON
-      "${TubeTK_SOURCE_DIR}/Documentation\\\\TubeTK_Icon.bmp" )
+      "${TubeTK_SOURCE_DIR}\\\\Icon.png" )
     set( CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\TubeTK.exe" )
     set( CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} TubeTK" )
     set( CPACK_NSIS_HELP_LINK "http:\\\\\\\\tubetk.org" )
