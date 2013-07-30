@@ -240,7 +240,7 @@ option( TubeTK_USE_SIMPLEITK
 # VTK setup.
 option( TubeTK_USE_VTK
   "Use VTK to enable additional applications and libraries."
-  OFF )
+  ON )
 option( USE_SYSTEM_VTK
   "Exclude VTK from the superbuild and use an existing build instead." OFF )
 mark_as_advanced( USE_SYSTEM_VTK )
@@ -279,6 +279,11 @@ option( TubeTK_USE_CTK
 option( USE_SYSTEM_CTK
   "Exclude CTK from the superbuild and use an existing build instead." OFF )
 mark_as_advanced( USE_SYSTEM_CTK )
+
+# Slicer Execution model Setup
+option( USE_SYSTEM_LIBSVM
+  "Exclude LIBSVM from SuperBuild and use an existing build instead." OFF )
+mark_as_advanced( USE_SYSTEM_LIBSVM )
 
 # Slicer Execution model Setup
 option( USE_SYSTEM_SLICER_EXECUTION_MODEL
@@ -347,21 +352,18 @@ set( TubeTK_INSTALL_PLUGINS_INCLUDE_DIR "${TubeTK_INSTALL_INCLUDE_DIR}" )
 set( TubeTK_INSTALL_PLUGINS_SHARE_DIR "${TubeTK_INSTALL_SHARE_DIR}" )
 set( TubeTK_INSTALL_PLUGINS_CACHE_DIR "${TubeTK_INSTALL_LIB_DIR}/CACHE" )
 
+find_package( ITK REQUIRED )
+include( ${ITK_USE_FILE} )
+
 find_package( JsonCpp REQUIRED )
 include_directories( ${JsonCpp_INCLUDE_DIRS} )
 
-# LIBSVM library setup.
 if( TubeTK_USE_LIBSVM )
-  list( APPEND CMAKE_MODULE_PATH "${TubeTK_SOURCE_DIR}/CMake/LIBSVM" )
-  include( FindLIBSVM )
   find_package( LIBSVM REQUIRED )
 endif( TubeTK_USE_LIBSVM )
 
 find_package( ParameterSerializer )
 include_directories( ${ParameterSerializer_INCLUDE_DIRS} )
-
-find_package( ITK REQUIRED )
-include( ${ITK_USE_FILE} )
 
 if( TubeTK_USE_VTK )
   find_package( VTK REQUIRED )
