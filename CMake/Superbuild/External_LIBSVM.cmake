@@ -21,36 +21,38 @@
 #
 ##############################################################################
 
-#
-# LIBSVM
-#
-
-set( proj LIBSVM )
-
-# Make sure this file is included only once
-get_filename_component( CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE} NAME_WE )
+# Make sure this file is included only once.
+get_filename_component( CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE}
+  NAME_WE )
 if( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
   return()
 endif( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
 set( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1 )
 
-# Sanity checks
+set( proj LIBSVM )
+
+# Sanity checks.
 if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
-  message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to non-existing directory" )
+  message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to a nonexistent directory" )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 set( ${proj}_DEPENDENCIES "" )
 
-# Include dependent projects if any
+# Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
 
-if( NOT DEFINED ${proj}_DIR )
+if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
+  set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
   ExternalProject_Add( ${proj}
-    SOURCE_DIR "${CMAKE_BINARY_DIR}/${proj}"
+    GIT_REPOSITORY ${${proj}_GIT_REPOSITORY}
+    GIT_TAG ${${proj}_GIT_TAG}
+    DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
+    SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}
-    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/cmake-libsvm.git"
+    INSTALL_DIR ${${proj}_DIR}
+    CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
@@ -58,15 +60,14 @@ if( NOT DEFINED ${proj}_DIR )
       -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
       -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
       -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
-      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/${proj}-build
+      -DCMAKE_INSTALL_PREFIX:PATH=${${proj}_DIR}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
       -DBUILD_SHARED_LIBS:BOOL=${shared} )
+else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
+  if( ${USE_SYSTEM_${proj}} )
+    find_package( ${proj} REQUIRED )
+  endif( ${USE_SYSTEM_${proj}} )
 
-  set( ${proj}_DIR "${CMAKE_BINARY_DIR}/${proj}-build" )
-
-else( NOT DEFINED ${proj}_DIR )
-  # The project is provided using ${proj}_DIR, nevertheless since other project may depend on ${proj},
-  # let's add an 'empty' one
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
-endif( NOT DEFINED ${proj}_DIR )
+endif( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )

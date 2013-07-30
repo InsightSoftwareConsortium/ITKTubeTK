@@ -68,9 +68,7 @@ if( TubeTK_BUILD_SLICER_EXTENSION )
 endif( TubeTK_BUILD_SLICER_EXTENSION )
 
 # CDash dashboard setup.
-include( Dart )
-mark_as_advanced( TCL_TCLSH DART_ROOT )
-enable_testing()
+include( CTest )
 if( BUILD_TESTING )
   set( BUILDNAME "${BUILDNAME}" CACHE STRING
     "Name of the build on the CDash dashboard." )
@@ -125,65 +123,6 @@ if( TubeTK_USE_CPPCHECK )
   set_tests_properties( Cppcheck
     PROPERTIES FAIL_REGULAR_EXPRESSION "error file=" )
 endif( TubeTK_USE_CPPCHECK )
-
-# KWStyle setup.
-option( TubeTK_USE_KWSTYLE
-  "Use KWStyle to check for coding standards violations."
-  OFF )
-mark_as_advanced( TubeTK_USE_KWSTYLE )
-if( TubeTK_USE_KWSTYLE )
-  find_program( KWSTYLE_EXECUTABLE
-    NAMES KWStyle
-    PATHS /usr/local/bin )
-  mark_as_advanced( KWSTYLE_EXECUTABLE )
-
-  option( KWSTYLE_USE_VIM_FORMAT
-    "Set KWStyle to generate errors in a Vim compatible format."
-    OFF )
-  mark_as_advanced( KWSTYLE_USE_VIM_FORMAT )
-  option( KWSTYLE_USE_MSVC_FORMAT
-    "Set KWStyle to generate errors in a Microsoft Visual Studio compatible format."
-    OFF )
-  mark_as_advanced( KWSTYLE_USE_MSVC_FORMAT )
-  option( KWSTYLE_DASHBOARD_SUBMISSION
-    "Set the KWStyle arguments to generate a report for CDash dashboard submission."
-    ON )
-  mark_as_advanced( KWSTYLE_DASHBOARD_SUBMISSION )
-
-  if( KWSTYLE_DASHBOARD_SUBMISSION )
-    set( KWSTYLE_ARGUMENTS -lesshtml
-      -xml ${TubeTK_BINARY_DIR}/KWStyle.kws.xml
-      -o ${TubeTK_BINARY_DIR}/KWStyle.Overwrite.txt
-      -dart ${TubeTK_BINARY_DIR} -1 1
-      -D ${TubeTK_BINARY_DIR}/KWStyle.Files.txt )
-  else( KWSTYLE_DASHBOARD_SUBMISSION )
-    set( KWSTYLE_ARGUMENTS -xml ${TubeTK_BINARY_DIR}/KWStyle.kws.xml
-      -v -o ${TubeTK_BINARY_DIR}/KWStyle.Overwrite.txt
-      -D ${TubeTK_BINARY_DIR}/KWStyle.Files.txt )
-  endif( KWSTYLE_DASHBOARD_SUBMISSION )
-
-  if( KWSTYLE_USE_VIM_FORMAT )
-    set( KWSTYLE_ARGUMENTS -vim ${KWSTYLE_ARGUMENTS} )
-  endif( KWSTYLE_USE_VIM_FORMAT )
-
-  if( KWSTYLE_USE_MSVC_FORMAT )
-    set( KWSTYLE_ARGUMENTS -msvc ${KWSTYLE_ARGUMENTS} )
-  endif( KWSTYLE_USE_MSVC_FORMAT )
-
-  configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/KWStyle.kws.xml.in
-    ${TubeTK_BINARY_DIR}/KWStyle.kws.xml )
-
-  configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/KWStyle.Files.txt.in
-    ${TubeTK_BINARY_DIR}/KWStyle.Files.txt )
-
-  configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/KWStyle.Overwrite.txt.in
-    ${TubeTK_BINARY_DIR}/KWStyle.Overwrite.txt )
-
-  add_custom_target( StyleCheck
-    COMMAND ${KWSTYLE_EXECUTABLE} ${KWSTYLE_ARGUMENTS}
-    WORKING_DIRECTORY ${TubeTK_BINARY_DIR}
-    COMMENT "Coding style checker" VERBATIM )
-endif( TubeTK_USE_KWSTYLE )
 
 # Microsoft Visual Studio setup.
 if( MSVC )
@@ -528,7 +467,7 @@ set( TubeTK_INCLUDE_DIRS
 
 if( MSVC )
   set( TubeTK_EXECUTABLE_DIRS
-    ${JSonCpp_DIR}/bin/${CMAKE_BUILD_TYPE}
+    ${JsonCpp_DIR}/bin/${CMAKE_BUILD_TYPE}
     ${ParameterSerializer_DIR}/bin/${CMAKE_BUILD_TYPE}
     ${GenerateCLP_DIR}/${CMAKE_BUILD_TYPE}
     ${ITK_DIR}/bin/${CMAKE_BUILD_TYPE}
@@ -540,7 +479,7 @@ if( MSVC )
   endif( TubeTK_USE_VTK )
 else( MSVC )
   set( TubeTK_EXECUTABLE_DIRS
-    ${JSonCpp_DIR}/bin
+    ${JsonCpp_DIR}/bin
     ${ParameterSerializer_DIR}/bin
     ${GenerateCLP_DIR}
     ${ITK_DIR}/bin

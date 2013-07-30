@@ -21,29 +21,26 @@
 #
 ##############################################################################
 
-#
-# SlicerExecutionModel
-#
-
-set( proj SlicerExecutionModel )
-
-# Make sure this file is included only once
-get_filename_component( CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE} NAME_WE )
+# Make sure this file is included only once.
+get_filename_component( CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE}
+  NAME_WE )
 if( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
   return()
 endif( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
 set( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1 )
 
-# Sanity checks
+set( proj SlicerExecutionModel )
+
+# Sanity checks.
 if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
-  message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to non-existing directory" )
+  message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to a nonexistent directory" )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 # Set dependency list
 set( ${proj}_DEPENDENCIES "" )
 if( NOT USE_SYSTEM_ITK )
   # Depends on ITK if ITK was build using superbuild
-  set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "Insight" )
+  set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "ITK" )
 endif( NOT USE_SYSTEM_ITK )
 
 if( NOT USE_SYSTEM_ParameterSerializer )
@@ -51,19 +48,20 @@ if( NOT USE_SYSTEM_ParameterSerializer )
   set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "ParameterSerializer" )
 endif( NOT USE_SYSTEM_ParameterSerializer )
 
-# Include dependent projects if any
+# Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
 
-if( NOT DEFINED ${proj}_DIR )
+if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_SLICER_EXECUTION_MODEL} )
+  set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
   ExternalProject_Add( ${proj}
-    # Has enhancements required for the SEM ParameterSerializer.
-    # Change back to upstream after pull request merged.
-    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/SlicerExecutionModel.git"
-    GIT_TAG "149520e5d0eb23abf01e5f497f0b9bdb3e356da1"
-    SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
+    GIT_REPOSITORY ${${proj}_GIT_REPOSITORY}
+    GIT_TAG ${${proj}_GIT_TAG}
+    DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
+    SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}
+    INSTALL_DIR ${${proj}_DIR}
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
@@ -85,8 +83,10 @@ if( NOT DEFINED ${proj}_DIR )
     DEPENDS
       ${${proj}_DEPENDENCIES} )
 
-else( NOT DEFINED ${proj}_DIR )
-  # The project is provided using ${proj}_DIR, nevertheless since other project may depend on ${proj},
-  # let's add an 'empty' one
+else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_SLICER_EXECUTION_MODEL} )
+  if( ${USE_SYSTEM_SLICER_EXECUTION_MODEL} )
+    find_package( ${proj} REQUIRED )
+  endif( ${USE_SYSTEM_SLICER_EXECUTION_MODEL} )
+
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
-endif( NOT DEFINED ${proj}_DIR )
+endif( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_SLICER_EXECUTION_MODEL} )

@@ -21,38 +21,37 @@
 #
 ##############################################################################
 
-#
-# Insight
-#
-
-set( proj Insight )
-
-# Make sure this file is included only once
-get_filename_component( CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE} NAME_WE )
+# Make sure this file is included only once.
+get_filename_component( CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE}
+  NAME_WE )
 if( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
   return()
 endif( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
 set( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1 )
 
-# Sanity checks
+set( proj ITK )
+
+# Sanity checks.
 if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
-  message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to non-existing directory" )
+  message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to a nonexistent directory" )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 set( ${proj}_DEPENDENCIES "" )
 
-# Include dependent projects if any
+# Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
 
-if( NOT DEFINED ${proj}_DIR )
-  set( ITK_DIR "${CMAKE_BINARY_DIR}/${proj}-build" )
+if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
+  set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
+  set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
   ExternalProject_Add( ${proj}
-    GIT_REPOSITORY "${GIT_PROTOCOL}://itk.org/ITK.git"
-    # release on 2013-07-10
-    GIT_TAG "41abd503c51277d4ead198e6dbe5020d5a0c6bbf"
-    SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
-    BINARY_DIR ${ITK_DIR}
+    GIT_REPOSITORY ${${proj}_GIT_REPOSITORY}
+    GIT_TAG ${${proj}_GIT_TAG}
+    DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
+    SOURCE_DIR ${${proj}_SOURCE_DIR}
+    BINARY_DIR ${${proj}_DIR}
+    INSTALL_DIR ${${proj}_DIR}
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
@@ -70,8 +69,10 @@ if( NOT DEFINED ${proj}_DIR )
       -DITKV3_COMPATIBILITY:BOOL=ON
     INSTALL_COMMAND "" )
 
-else( NOT DEFINED ${proj}_DIR )
-  # The project is provided using ${proj}_DIR, nevertheless since other project may depend on ${proj},
-  # let's add an 'empty' one
+else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
+  if( ${USE_SYSTEM_${proj}} )
+    find_package( ${proj} REQUIRED )
+  endif( ${USE_SYSTEM_${proj}} )
+
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
-endif( NOT DEFINED ${proj}_DIR )
+endif( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )

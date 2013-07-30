@@ -21,22 +21,19 @@
 #
 ##############################################################################
 
-#
-# CTK
-#
-
-set( proj CTK )
-
-# Make sure this file is included only once
-get_filename_component( CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE} NAME_WE )
+# Make sure this file is included only once.
+get_filename_component( CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE}
+  NAME_WE )
 if( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
   return()
 endif( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
 set( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1 )
 
-# Sanity checks
+set( proj CTK )
+
+# Sanity checks.
 if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
-  message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to non-existing directory" )
+  message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to a nonexistent directory" )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 # Set dependency list
@@ -45,17 +42,25 @@ if( TubeTK_USE_VTK AND NOT USE_SYSTEM_VTK )
   set( ${proj}_DEPENDENCIES "VTK" )
 endif( TubeTK_USE_VTK AND NOT USE_SYSTEM_VTK )
 
-# Include dependent projects if any
+# Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
 
-if( NOT DEFINED ${proj}_DIR )
+if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
+  set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
+  set( ${proj}_use_git_protocol ON )
+  if( GIT_PROTOCOL_HTTP )
+    set( ${proj}_use_git_protocol OFF )
+  endif( GIT_PROTOCOL_HTTP )
+
   ExternalProject_Add( ${proj}
-    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/commontk/CTK.git"
-    GIT_TAG "2040148f83ec7841f6f577da75e519410c3315a0"
-    SOURCE_DIR "${CMAKE_BINARY_DIR}/${proj}"
+    GIT_REPOSITORY ${${proj}_GIT_REPOSITORY}
+    GIT_TAG ${${proj}_GIT_TAG}
+    DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
+    SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}
+    INSTALL_DIR ${${proj}_DIR}
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
@@ -66,7 +71,7 @@ if( NOT DEFINED ${proj}_DIR )
       ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
       -DBUILD_SHARED_LIBS:BOOL=${shared}
       -DBUILD_TESTING:BOOL=OFF
-      -DCTK_USE_GIT_PROTOCOL:BOOL=TRUE
+      -DCTK_USE_GIT_PROTOCOL:BOOL=${${proj}_use_git_protocol}
       -DCTK_LIB_Widgets:BOOL=ON
       -DCTK_LIB_Visualization/VTK/Widgets:BOOL=OFF
       -DCTK_LIB_PluginFramework:BOOL=OFF
@@ -76,8 +81,10 @@ if( NOT DEFINED ${proj}_DIR )
     DEPENDS
       ${${proj}_DEPENDENCIES} )
 
-else( NOT DEFINED ${proj}_DIR )
-  # The project is provided using ${proj}_DIR, nevertheless since other project may depend on ${proj},
-  # let's add an 'empty' one
+else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
+  if( ${USE_SYSTEM_${proj}} )
+    find_package( ${proj} REQUIRED )
+  endif( ${USE_SYSTEM_${proj}} )
+
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
-endif( NOT DEFINED ${proj}_DIR )
+endif( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )

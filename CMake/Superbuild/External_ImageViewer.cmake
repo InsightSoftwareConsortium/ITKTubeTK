@@ -21,43 +21,40 @@
 #
 ##############################################################################
 
-#
-# A convenient 2D/3D image viewer that can handle anisotropic spacing.
-#
-
-set( proj ImageViewer )
-
-# Make sure this file is included only once
-get_filename_component( CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE} NAME_WE )
+# Make sure this file is included only once.
+get_filename_component( CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE}
+  NAME_WE )
 if( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
   return()
 endif( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
 set( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1 )
 
-# Sanity checks
+set( proj ImageViewer )
+
+# Sanity checks.
 if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
-  message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to non-existing directory" )
+  message( FATAL_ERROR "The ${proj}_DIR variable is defined, but corresponds to a nonexistent directory" )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 set( ${proj}_DEPENDENCIES "" )
 if( NOT TubeTK_BUILD_SLICER_EXTENSION )
-  if( NOT USE_SYSTEM_ITK )
-    set( ${proj}_DEPENDENCIES Insight )
-  endif( NOT USE_SYSTEM_ITK )
-else( NOT TubeTK_BUILD_SLICER_EXTENSION )
+  set( ${proj}_DEPENDENCIES "ITK" )
 endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
-# Include dependent projects if any
+# Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
 
-if( NOT DEFINED ${proj}_DIR )
+if( NOT DEFINED ${proj}_DIR OR AND NOT ${USE_SYSTEM_IMAGE_VIEWER} )
+  set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
   ExternalProject_Add( ${proj}
-    GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/TubeTK/ImageViewer.git"
-    GIT_TAG "9fbaa236d14a5364893b73c53fd7e20268a0d165"
-    SOURCE_DIR "${CMAKE_BINARY_DIR}/${proj}"
+    GIT_REPOSITORY ${${proj}_GIT_REPOSITORY}
+    GIT_TAG ${${proj}_GIT_TAG}
+    DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
+    SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}
+    INSTALL_DIR ${${proj}_DIR}
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
@@ -71,8 +68,10 @@ if( NOT DEFINED ${proj}_DIR )
     DEPENDS
       ${${proj}_DEPENDENCIES} )
 
-else( NOT DEFINED ${proj}_DIR )
-  # The project is provided using ${proj}_DIR, nevertheless since other project may depend on ${proj},
-  # let's add an 'empty' one
+else( NOT DEFINED ${proj}_DIR OR AND NOT ${USE_SYSTEM_IMAGE_VIEWER} )
+  if( ${USE_SYSTEM_IMAGE_VIEWER} )
+    find_package( ${proj} REQUIRED )
+  endif( ${USE_SYSTEM_IMAGE_VIEWER} )
+
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
-endif( NOT DEFINED ${proj}_DIR )
+endif( NOT DEFINED ${proj}_DIR OR AND NOT ${USE_SYSTEM_IMAGE_VIEWER} )

@@ -21,22 +21,24 @@
 #
 ##############################################################################
 
-# Sets LIBSVM_FOUND, LIBSVM_INCLUDE_DIR, and LIBSVM_LIBRARY.
+if( JsonCpp_DIR )
+  set( JsonCpp_INCLUDEDIR ${JsonCpp_DIR}/include )
+  set( JsonCpp_LIBDIR ${JsonCpp_DIR}/lib )
+endif( JsonCpp_DIR )
 
-if( LIBSVM_DIR )
-  set( _svm_lib_dir "${LIBSVM_DIR}/lib" )
-  set( _svm_include_dir "${LIBSVM_DIR}/include" )
-endif( LIBSVM_DIR )
+find_package( PkgConfig QUIET )
+pkg_check_modules( PC_JsonCpp QUIET json jsoncpp )
 
-find_path( LIBSVM_INCLUDE_DIR svm.h PATHS ${_svm_include_dir} DOC "Path to the LIBSVM include directory" )
-find_library( LIBSVM_LIBRARY svm PATHS ${_svm_lib_dir} DOC "The LIBSVM library." )
+find_path( JsonCpp_INCLUDE_DIR NAMES json/json.h
+  HINTS ${JsonCpp_INCLUDEDIR} ${PC_JsonCpp_INCLUDEDIR} ${PC_JsonCpp_INCLUDE_DIRS}
+  PATH_SUFFIXES jsoncpp )
 
-mark_as_advanced( LIBSVM_INCLUDE_DIR )
-mark_as_advanced( LIBSVM_LIBRARY )
+find_library( JsonCpp_LIBRARIES NAMES json jsoncpp libjson libjsoncpp
+  HINTS ${JsonCpp_LIBDIR} ${PC_JsonCpp_LIBDIR} ${PC_JsonCpp_LIBRARY_DIRS} )
 
-set( LIBSVM_FOUND 0 )
+include( FindPackageHandleStandardArgs )
 
-if( LIBSVM_INCLUDE_DIR AND LIBSVM_LIBRARY )
-  set( LIBSVM_FOUND 1 )
-  set( LIBSVM_LIBRARIES ${LIBSVM_LIBRARY} )
-endif( LIBSVM_INCLUDE_DIR AND LIBSVM_LIBRARY )
+find_package_handle_standard_args( JsonCpp DEFAULT_MSG JsonCpp_LIBRARIES
+  JsonCpp_INCLUDE_DIR )
+
+mark_as_advanced( JsonCpp_INCLUDE_DIR JsonCpp_LIBRARIES )
