@@ -70,7 +70,7 @@ class OptimizerNDDerivativeFunction : public UserFunction< double, double >
 public:
 
   typedef OptimizerNDDerivativeFunction    Self;
-  typedef UserFunction < double, double >  Superclass;
+  typedef UserFunction< double, double >   Superclass;
   typedef Self *                           Pointer;
   typedef const Self *                     ConstPointer;
 
