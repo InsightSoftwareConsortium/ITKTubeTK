@@ -240,7 +240,7 @@ option( TubeTK_USE_SIMPLEITK
 # VTK setup.
 option( TubeTK_USE_VTK
   "Use VTK to enable additional applications and libraries."
-  OFF )
+  ON )
 option( USE_SYSTEM_VTK
   "Exclude VTK from the superbuild and use an existing build instead." OFF )
 mark_as_advanced( USE_SYSTEM_VTK )
