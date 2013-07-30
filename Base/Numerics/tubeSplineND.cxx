@@ -32,14 +32,14 @@ class SplineNDValueFunction : public UserFunction< vnl_vector< double >, double 
 {
 public:
 
-  typedef SplineNDValueFunction  Self;
-  typedef UserFunction           Superclass;
-  typedef Self *                 Pointer;
-  typedef const Self *           ConstPointer;
+  typedef SplineNDValueFunction                         Self;
+  typedef UserFunction< vnl_vector< double >, double >  Superclass;
+  typedef Self *                                        Pointer;
+  typedef const Self *                                  ConstPointer;
 
-  typedef SplineND::VectorType   VectorType;
-  typedef VectorType             InputType;
-  typedef double                 OutputType;
+  typedef SplineND::VectorType                          VectorType;
+  typedef VectorType                                    InputType;
+  typedef double                                        OutputType;
 
   tubeTypeMacro( SplineNDValueFunction );
 
@@ -70,7 +70,8 @@ class SplineNDDerivativeFunction : public UserFunction< vnl_vector< double >, vn
 public:
 
   typedef SplineNDDerivativeFunction  Self;
-  typedef UserFunction                Superclass;
+  typedef UserFunction< vnl_vector< double >, vnl_vector< double > >
+                                      Superclass;
   typedef Self *                      Pointer;
   typedef const Self *                ConstPointer;
 
