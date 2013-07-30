@@ -76,8 +76,6 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_SIMPLEITK} )
     DEPENDS
       ${${proj}-DEPENDENCIES} )
 
-  set( TubeTK_SimpleITK_Def "-DSimpleITK_DIR:PATH=${SimpleITK_DIR}" )
-
 else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_SIMPLEITK} )
   if( ${USE_SYSTEM_SIMPLEITK} )
     find_package( ${proj} REQUIRED )
@@ -85,3 +83,5 @@ else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_SIMPLEITK} )
 
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
 endif( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_SIMPLEITK} )
+
+list( APPEND TubeTK_DEPENDENCIES_ARGS -DSimpleITK_DIR:PATH=${SimpleITK_DIR} )
