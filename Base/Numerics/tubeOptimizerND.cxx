@@ -33,10 +33,10 @@ class OptimizerNDValueFunction : public UserFunction< double, double >
 {
 public:
 
-  typedef OptimizerNDValueFunction  Self;
-  typedef UserFunction              Superclass;
-  typedef Self *                    Pointer;
-  typedef const Self *              ConstPointer;
+  typedef OptimizerNDValueFunction        Self;
+  typedef UserFunction< double, double >  Superclass;
+  typedef Self *                          Pointer;
+  typedef const Self *                    ConstPointer;
 
   typedef double                    InputType;
   typedef double                    OutputType;
@@ -69,13 +69,13 @@ class OptimizerNDDerivativeFunction : public UserFunction< double, double >
 {
 public:
 
-  typedef OptimizerNDDerivativeFunction  Self;
-  typedef UserFunction                   Superclass;
-  typedef Self *                         Pointer;
-  typedef const Self *                   ConstPointer;
+  typedef OptimizerNDDerivativeFunction    Self;
+  typedef UserFunction < double, double >  Superclass;
+  typedef Self *                           Pointer;
+  typedef const Self *                     ConstPointer;
 
-  typedef double                         InputType;
-  typedef double                         OutputType;
+  typedef double                           InputType;
+  typedef double                           OutputType;
 
   tubeTypeMacro( OptimizerNDDerivativeFunction );
 
