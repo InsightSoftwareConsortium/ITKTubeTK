@@ -77,7 +77,7 @@ if( APPLE )
     -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET} )
 endif( APPLE )
 
-# Set TubeTK dependencies.
+# Set dependencies.
 set( TubeTK_DEPENDENCIES "ITK" "JsonCpp" "ParameterSerializer" "SlicerExecutionModel" )
 
 if( TubeTK_USE_SIMPLEITK )
@@ -88,7 +88,6 @@ if( TubeTK_USE_VTK )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "VTK" )
 endif( TubeTK_USE_VTK )
 
-# Qt.
 set( TubeTK_QT_VARIABLES )
 if( TubeTK_USE_QT )
   # CTK.
@@ -99,7 +98,6 @@ if( TubeTK_USE_QT )
     -DTubeTK_REQUIRED_QT_VERSION=${TubeTK_REQUIRED_QT_VERSION} )
 endif( TubeTK_USE_QT )
 
-# Check whether we use 3D Slicer.
 set( TubeTK_SLICER_DIRS
     -DTubeTK_SLICER_SOURCE_DIR:PATH=${TubeTK_SLICER_SOURCE_DIR} )
 if( TubeTK_USE_SLICER )
@@ -108,7 +106,6 @@ if( TubeTK_USE_SLICER )
     -DSlicer_DIR:PATH=${Slicer_DIR} )
 endif( TubeTK_USE_SLICER )
 
-# LIBSVM - must come after TubeTK dependency check.
 if( TubeTK_USE_LIBSVM )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "LIBSVM" )
 endif( TubeTK_USE_LIBSVM )
@@ -117,11 +114,13 @@ if( TubeTK_BUILD_ImageViewer )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "ImageViewer" )
 endif( TubeTK_BUILD_ImageViewer )
 
-# TubeTK - check dependencies.
+# Check dependencies.
 set( EXTERNAL_PROJECT_DIR ${TubeTK_SOURCE_DIR}/CMake/Superbuild )
+set( TubeTK_DEPENDENCIES_ARGS )
+
 TubeTKMacroCheckExternalProjectDependency( TubeTK )
 
-# TubeTK - normal build.
+# Normal build.
 set( proj TubeTK )
 
 ExternalProject_Add( ${proj}
@@ -152,23 +151,18 @@ ExternalProject_Add( ${proj}
     -DTubeTK_BUILD_SLICER_EXTENSION:BOOL=${TubeTK_BUILD_SLICER_EXTENSION}
     -DTubeTK_USE_SLICER:BOOL=${TubeTK_USE_SLICER}
     ${TubeTK_SLICER_DIRS}
-    -DITK_DIR:PATH=${ITK_DIR}
-    -DVTK_DIR:PATH=${VTK_DIR}
-    -DCTK_DIR:PATH=${CTK_DIR}
     -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
-    -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
     -DTubeTK_USE_VTK:BOOL=${TubeTK_USE_VTK}
     -DTubeTK_USE_CTK:BOOL=${TubeTK_USE_CTK}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
     -DTubeTK_USE_BOOST:BOOL=${TubeTK_USE_BOOST}
     -DTubeTK_USE_LIBSVM:BOOL=${TubeTK_USE_LIBSVM}
     -DTubeTK_USE_NUMPY:BOOL=${TubeTK_USE_NUMPY}
-    -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
-    -DParameterSerializer_DIR:PATH=${ParameterSerializer_DIR}
     -DTubeTK_EXECUTABLE_DIRS:STRING=${TubeTK_EXECUTABLE_DIRS}
     ${TubeTK_QT_VARIABLES}
     -DTubeTK_USE_CPPCHECK:BOOL=${TubeTK_USE_CPPCHECK}
     ${TubeTK_SimpleITK_Def}
     -DTubeTK_BUILD_MODULES=${TubeTK_BUILD_MODULES}
     -DTubeTK_BUILD_ALL_MODULES=${TubeTK_BUILD_ALL_MODULES}
+    ${TubeTK_DEPENDENCIES_ARGS}
   INSTALL_COMMAND "" )

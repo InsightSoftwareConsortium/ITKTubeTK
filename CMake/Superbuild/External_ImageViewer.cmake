@@ -75,3 +75,5 @@ else( NOT DEFINED ${proj}_DIR OR AND NOT ${USE_SYSTEM_IMAGE_VIEWER} )
 
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
 endif( NOT DEFINED ${proj}_DIR OR AND NOT ${USE_SYSTEM_IMAGE_VIEWER} )
+
+list( APPEND TubeTK_DEPENDENCIES_ARGS -DImageViewer_DIR:PATH=${ImageViewer_DIR} )
