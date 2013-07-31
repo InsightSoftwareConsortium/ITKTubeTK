@@ -21,34 +21,31 @@ limitations under the License.
 
 =========================================================================*/
 
-
 #include "tubeMessage.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "itkTimeProbesCollectorBase.h"
 
-#include "itkMacro.h"
-#include "itkTimeProbe.h"
+#include <itkDanielssonDistanceMapImageFilter.h>
+#include <itkImage.h>
+#include <itkImageDuplicator.h>
+#include <itkImageToVectorImageFilter.h>
+#include <itkImageFileReader.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkImageFileWriter.h>
+#include <itkImageMomentsCalculator.h>
+#include <itkJoinImageFilter.h>
+#include <itkLabelImageToLabelMapFilter.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
+#include <itkMatrix.h>
+#include <itkMacro.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkOrientImageFilter.h>
+#include <itkResampleImageFilter.h>
+#include <itkTimeProbe.h>
+#include <itkTimeProbesCollectorBase.h>
+#include <itkTranslationTransform.h>
+#include <itkVectorImage.h>
 
-#include "itkImageToVectorImageFilter.h"
-#include "itkResampleImageFilter.h"
-#include "itkImage.h"
-#include "itkMatrix.h"
-#include "itkJoinImageFilter.h"
-#include "itkVectorImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkTranslationTransform.h"
-#include "itkImageFileWriter.h"
-#include "itkNearestNeighborInterpolateImageFunction.h"
-#include "itkOrientImageFilter.h"
-#include "itkImageMomentsCalculator.h"
-#include "itkLabelImageToLabelMapFilter.h"
-#include "itkImageDuplicator.h"
-#include "itkDanielssonDistanceMapImageFilter.h"
-#include "itkMersenneTwisterRandomVariateGenerator.h"
-
-// Convenient string formatting and FS stuff ...
 #include <boost/format.hpp>
 #include <boost/filesystem.hpp>
 
@@ -62,9 +59,9 @@ limitations under the License.
 
 // STL includes
 #include <algorithm>
-#include <vector>
-#include <set>
 #include <map>
+#include <set>
+#include <vector>
 
 typedef enum
 {
@@ -76,7 +73,6 @@ typedef enum
 template< class TPixel, unsigned int VImageDimension >
 int DoIt( int argc, char * argv[] );
 
-// Includes tube::ParseArgsAndCallDoIt function
 #include "tubeCLIHelperFunctions.h"
 
 
@@ -95,16 +91,16 @@ int main( int argc, char **argv )
  * \return true in case of equality, false else
  *
  */
-template <typename T>
-bool check_vnl_vector_equality( const vnl_vector<T> &v,
-                                const vnl_vector<T> &g,
+template< typename T >
+bool CheckVNLVectorEquality( const vnl_vector< T > &v,
+                                const vnl_vector< T > &g,
                                 double tol = 1.0e-6 )
 {
   if( v.size() != g.size() )
     {
     return false;
     }
-  for( unsigned i=0; i<v.size(); ++i)
+  for( unsigned i=0; i<v.size(); ++i )
     {
     if( vnl_math_abs(g.get(i) - v.get(i)) > tol )
       {
@@ -123,10 +119,10 @@ bool check_vnl_vector_equality( const vnl_vector<T> &v,
  * \return true in case of equality, false otherwise
  *
  */
-template < typename T >
-bool check_vnl_matrix_equality( const vnl_matrix< T > &V,
-                                const vnl_matrix< T > &G,
-                                double tol = 1.0e-6 )
+template< typename T >
+bool CheckVNLMatrixEquality( const vnl_matrix< T > &V,
+                             const vnl_matrix< T > &G,
+                             double tol = 1.0e-6 )
 {
   if( V.rows() != G.rows() || V.cols() != G.cols() )
     {
@@ -136,8 +132,7 @@ bool check_vnl_matrix_equality( const vnl_matrix< T > &V,
     {
     for( unsigned int c=0; c<V.cols(); ++c )
       {
-      // TODO: Use itk::Math::FloatAlmostEqual in the ITKv4 future
-      if( vnl_math_abs(V.get(r,c) - G.get(r,c)) > tol )
+      if( vnl_math_abs(V.get(r, c) - G.get(r, c)) > tol )
         {
         return false;
         }
@@ -154,39 +149,39 @@ bool check_vnl_matrix_equality( const vnl_matrix< T > &V,
  *  \returns true if image have equal spacing and size, false otherwise
  *
  */
-template < typename ImageType >
+template< typename ImageT >
 bool CheckCompatibility(
-  typename ImageType::Pointer imageA,
-  typename ImageType::Pointer imageB )
+  typename ImageT::Pointer imageA,
+  typename ImageT::Pointer imageB )
 {
   // Spacing tolerance is imageA's 1st coord. spacing * 1e-6
   const double spacingTol = imageA->GetSpacing()[0] * 1.0e-6;
 
-  if( !check_vnl_vector_equality(
+  if( !CheckVNLVectorEquality(
     imageA->GetOrigin().GetVnlVector(),
     imageB->GetOrigin().GetVnlVector() ) )
     {
-    tube::ErrorMessage( "Origin mismatch between input images!" );
+    tube::ErrorMessage( "Origin mismatch between input images" );
     return false;
     }
-  if( !check_vnl_vector_equality(
+  if( !CheckVNLVectorEquality(
     imageA->GetSpacing().GetVnlVector(),
     imageB->GetSpacing().GetVnlVector(), spacingTol ) )
     {
-    tube::ErrorMessage( "Spacing mismatch between input images!" );
+    tube::ErrorMessage( "Spacing mismatch between input images" );
     return false;
     }
   if( !( imageA->GetLargestPossibleRegion().GetSize() ==
          imageB->GetLargestPossibleRegion().GetSize() ) )
     {
-    tube::ErrorMessage( "Size mismatch between input images!" );
+    tube::ErrorMessage( "Size mismatch between input images" );
     return false;
     }
-  if( !check_vnl_matrix_equality(
+  if( !CheckVNLMatrixEquality(
     imageA->GetDirection().GetVnlMatrix().as_ref(),
     imageB->GetDirection().GetVnlMatrix().as_ref() ) )
     {
-    tube::ErrorMessage( "Directions mismatch between input images!" );
+    tube::ErrorMessage( "Directions mismatch between input images" );
     return false;
     }
   return true;
@@ -199,18 +194,18 @@ bool CheckCompatibility(
  *  \param targetSize Desired size of the image
  *
  */
-template < class ImageType >
+template< class ImageT >
 void CreateEmptyImage(
-  typename ImageType::Pointer &outImage,
-  typename ImageType::SizeType targetSize )
+  typename ImageT::Pointer & outImage,
+  typename ImageT::SizeType targetSize )
 {
-  typename ImageType::IndexType start; start.Fill(0);
-  typename ImageType::SizeType outImageSize = targetSize;
+  typename ImageT::IndexType start; start.Fill( 0 );
+  typename ImageT::SizeType outImageSize = targetSize;
 
-  typename ImageType::RegionType region( start, outImageSize );
+  typename ImageT::RegionType region( start, outImageSize );
   outImage->SetRegions( region );
   outImage->Allocate();
-  outImage->FillBuffer(0);
+  outImage->FillBuffer( 0 );
 }
 
 
@@ -297,26 +292,26 @@ int DoIt( int argc, char **argv )
   typename InputReaderType::Pointer segImageReader = InputReaderType::New();
   typename InputReaderType::Pointer cvtImageReader = InputReaderType::New();
 
-  segImageReader->SetFileName( argSegImageFileName.c_str( ) );
-  cvtImageReader->SetFileName( argCVTImageFileName.c_str( ) );
+  segImageReader->SetFileName( argSegImageFileName.c_str() );
+  cvtImageReader->SetFileName( argCVTImageFileName.c_str() );
 
   try
     {
-    segImageReader->Update( );
-    cvtImageReader->Update( );
+    segImageReader->Update();
+    cvtImageReader->Update();
     }
-  catch( itk::ExceptionObject &ex )
+  catch( itk::ExceptionObject & ex )
     {
     tube::ErrorMessage( ex.what() );
     return EXIT_FAILURE;
     }
-  segImage = segImageReader->GetOutput( );
-  cvtImage = cvtImageReader->GetOutput( );
+  segImage = segImageReader->GetOutput();
+  cvtImage = cvtImageReader->GetOutput();
 
   if( !IsDiscrete( argSegImageFileName ) ||
       !IsDiscrete( argCVTImageFileName ) )
     {
-    tube::ErrorMessage( "Input images contain non-discrete values!" );
+    tube::ErrorMessage( "Input images contain non-discrete values" );
     return EXIT_FAILURE;
     }
 
@@ -341,7 +336,7 @@ int DoIt( int argc, char **argv )
     while( cvtCenterFile >> c0 >> c1 >> c2 )
       {
       itkAssertOrThrowMacro( VImageDimension == 3,
-                             "No support for 2-D CVT center file!" );
+                             "No support for 2-D CVT center file" );
 
       itk::Point< float, VImageDimension > p;
       p[0] = c0;
@@ -352,7 +347,7 @@ int DoIt( int argc, char **argv )
       bool isInside = cvtImage->TransformPhysicalPointToIndex( p, targetIndex );
       if( !isInside )
         {
-        tube::ErrorMessage( "CVT cell center outside image!" );
+        tube::ErrorMessage( "CVT cell center outside image" );
         return EXIT_FAILURE;
         }
 
@@ -362,7 +357,7 @@ int DoIt( int argc, char **argv )
       }
     cvtCenterFile.close();
     itkAssertOrThrowMacro( centerCounter = nCenters,
-                           "#CVT centers mismatch!" );
+                           "#CVT centers mismatch" );
     }
   else
     {
@@ -374,7 +369,7 @@ int DoIt( int argc, char **argv )
   // Ensure compatibility of CVT and segmenation image
   if( !CheckCompatibility< InputImageType >( segImage, cvtImage ) )
     {
-    tube::FmtErrorMessage( "%s and %s are incompatible!",
+    tube::FmtErrorMessage( "%s and %s are incompatible",
       argSegImageFileName.c_str(), argCVTImageFileName.c_str() );
     return EXIT_FAILURE;
     }
@@ -394,10 +389,10 @@ int DoIt( int argc, char **argv )
     ++segImageIt;
     }
 
-  tube::FmtInfoMessage("Found %d distinct segmentation IDs!",
+  tube::FmtInfoMessage("Found %d distinct segmentation IDs",
     segmentationRegions.size() );
 
-  // Map segmentation IDs to the (artificial) segmentatin IDs {0, ..., S-1}
+  // Map segmentation IDs to the (artificial) segmentation IDs {0, ..., S-1}
   std::map< TPixel, unsigned int > fwdSegMapper;
   std::map< unsigned int, TPixel > invSegMapper;
 
@@ -414,7 +409,7 @@ int DoIt( int argc, char **argv )
 
   itkAssertOrThrowMacro( segmentationRegions.size() ==
                          segmentationRegionCounter,
-                         "Size mismatch after seg. region renumbering!" );
+                         "Size mismatch after seg. region renumbering" );
 
   // Create a map of (artificial) segmentation IDs -> Vector of voxel indices
   IdToIndexVectorType segToIndexVector;
@@ -428,7 +423,7 @@ int DoIt( int argc, char **argv )
     }
 
   itkAssertOrThrowMacro( segToIndexVector.size() == segmentationRegions.size(),
-                         "Size mismatch after region -> index vector mapping!" );
+                         "Size mismatch after region -> index vector mapping" );
 
   // Map CVT cell IDs to (artificial) CVT cell IDs {0, ..., C-1}
   ImageIteratorType cvtImageIt( cvtImage,
@@ -446,7 +441,7 @@ int DoIt( int argc, char **argv )
   CreateRenumberingMap< TPixel >( cvtCellSet, fwdCVTMapper );
 
   itkAssertOrThrowMacro( fwdCVTMapper.size() == cvtCellSet.size(),
-                         "Size mismatch after renumbering CVT cells!" );
+                         "Size mismatch after renumbering CVT cells" );
 
   // Create a map of (artificial) CVT cell IDs -> Vector of voxel indices
   IdToIndexVectorType cvtToIndexVector;
@@ -460,8 +455,8 @@ int DoIt( int argc, char **argv )
     }
 
   TPixel largestKey = cvtToIndexVector.rbegin()->first;
-  itkAssertOrThrowMacro( (largestKey+1) == cvtToIndexVector.size(),
-                         "Size mismatch after CVT to index vector mapping!" );
+  itkAssertOrThrowMacro( (largestKey + 1) == cvtToIndexVector.size(),
+                         "Size mismatch after CVT to index vector mapping" );
 
   // Build index vector for exclusion regions
   boost::dynamic_bitset<> excludeRegions( segmentationRegions.size() );
@@ -469,7 +464,7 @@ int DoIt( int argc, char **argv )
     {
     unsigned int mappedRegionID = fwdCVTMapper[ argExcludeRegions[e] ];
     itkAssertOrThrowMacro( mappedRegionID < segmentationRegions.size(),
-                           "Excluded region ID out of range!" );
+                           "Excluded region ID out of range" );
 
     excludeRegions[ mappedRegionID ] = 1;
     }
@@ -523,7 +518,7 @@ int DoIt( int argc, char **argv )
         singlePrtReader->Update();
         singleMapReader->Update();
         }
-      catch( itk::ExceptionObject &ex )
+      catch( itk::ExceptionObject & ex )
         {
         tube::ErrorMessage( ex.what() );
         return EXIT_FAILURE;
@@ -544,7 +539,7 @@ int DoIt( int argc, char **argv )
 
       itkAssertOrThrowMacro( segImage->GetLargestPossibleRegion().GetSize() ==
                              outImage->GetLargestPossibleRegion().GetSize(),
-                             "Newly created output image differs in size!" );
+                             "Newly created output image differs in size" );
 
       const InputIndexVectorType &indices = ( *mapIt ).second;
       for( unsigned int v=0; v<indices.size(); ++v )
@@ -577,10 +572,10 @@ int DoIt( int argc, char **argv )
 
       try
         {
-        mapWriter->Update( );
-        prtWriter->Update( );
+        mapWriter->Update();
+        prtWriter->Update();
         }
-      catch( itk::ExceptionObject &ex )
+      catch( itk::ExceptionObject & ex )
         {
         tube::ErrorMessage( ex.what() );
         return EXIT_FAILURE;
@@ -643,17 +638,17 @@ int DoIt( int argc, char **argv )
     {
     for( unsigned int r=0; r<signatureMatrix.rows(); ++r)
       {
-      for( unsigned int c=0; c<signatureMatrix.columns()-1; ++c)
+      for( unsigned int c=0; c<signatureMatrix.columns()-1; ++c )
         {
         outSignatureFile << signatureMatrix.get(r,c) << ",";
         }
-      outSignatureFile << signatureMatrix.get(r,signatureMatrix.columns()-1)
+      outSignatureFile << signatureMatrix.get( r, signatureMatrix.columns() - 1 )
                        << std::endl;
       }
     }
   else
     {
-    tube::FmtErrorMessage( "Could not open %s for writing!",
+    tube::FmtErrorMessage( "Could not open %s for writing",
       argDistanceSignatureFileName.c_str() );
     return EXIT_FAILURE;
     }
