@@ -71,4 +71,4 @@ else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_JSONCPP} )
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
 endif( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_JSONCPP} )
 
-list( APPEND TubeTK_DEPENDENCIES_ARGS -DJsonCpp_DIR:PATH=${JsonCpp_DIR} )
+list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DJsonCpp_DIR:PATH=${JsonCpp_DIR} )

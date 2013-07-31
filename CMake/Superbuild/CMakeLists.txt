@@ -78,7 +78,8 @@ if( APPLE )
 endif( APPLE )
 
 # Set dependencies.
-set( TubeTK_DEPENDENCIES "ITK" "JsonCpp" "ParameterSerializer" "SlicerExecutionModel" )
+set( TubeTK_DEPENDENCIES "ITK" "JsonCpp" "ParameterSerializer"
+  "SlicerExecutionModel" )
 
 if( TubeTK_USE_SIMPLEITK )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "SimpleITK" )
@@ -114,11 +115,16 @@ if( TubeTK_BUILD_ImageViewer )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "ImageViewer" )
 endif( TubeTK_BUILD_ImageViewer )
 
+set( TubeTK_EXTERNAL_PROJECTS_ARGS )
+
+if( TubeTK_USE_BOOST )
+  list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DBOOST_ROOT=${BOOST_ROOT} )
+endif( TubeTK_USE_BOOST )
+
 # Check dependencies.
 set( EXTERNAL_PROJECT_DIR ${TubeTK_SOURCE_DIR}/CMake/Superbuild )
-set( TubeTK_DEPENDENCIES_ARGS )
-
 TubeTKMacroCheckExternalProjectDependency( TubeTK )
+
 
 # Normal build.
 set( proj TubeTK )
@@ -164,5 +170,5 @@ ExternalProject_Add( ${proj}
     ${TubeTK_SimpleITK_Def}
     -DTubeTK_BUILD_MODULES=${TubeTK_BUILD_MODULES}
     -DTubeTK_BUILD_ALL_MODULES=${TubeTK_BUILD_ALL_MODULES}
-    ${TubeTK_DEPENDENCIES_ARGS}
+    ${TubeTK_EXTERNAL_PROJECTS_ARGS}
   INSTALL_COMMAND "" )

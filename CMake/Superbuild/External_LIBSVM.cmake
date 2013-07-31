@@ -72,4 +72,4 @@ else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
 endif( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
 
-list( APPEND TubeTK_DEPENDENCIES_ARGS -DLIBSVM_DIR:PATH=${LIBSVM_DIR} )
+list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DLIBSVM_DIR:PATH=${LIBSVM_DIR} )
