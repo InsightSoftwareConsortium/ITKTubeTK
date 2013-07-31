@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+  <category>Filtering</category>
+  <title>Label CVT Cells Based on Anatomical Label Map (TubeTK)</title>
+  <description>Assign an anatomical label to each cell in a Central Voronoi Tesselation (CVT).</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Roland Kwitt, Stephen Aylward (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters.</description>
+    <file>
+      <name>argSegImageFileName</name>
+      <index>0</index>
+      <description>Filename of the input image file containing segmentations.</description>
+    </file>
+    <file>
+      <name>argCVTImageFileName</name>
+      <index>1</index>
+      <description>File name of the Central-Voronoi-Tesellation (CVT) input image file.</description>
+    </file>
+    <file>
+      <name>argDistanceSignatureFileName</name>
+      <index>2</index>
+      <description>File name of the distance signature file (one entry per CVT cell).</description>
+    </file>
+    <file>
+      <name>argCVTCenterFileName</name>
+      <index>3</index>
+      <description>File name of the CVT center file.</description>
+    </file>
+    <string>
+      <name>argOutputDirectory</name>
+      <label>Distance Map Directory</label>
+      <index>4</index>
+      <description>Basepath of the directory containing the distance map files. If no distance maps exists, they are recomputed</description>
+    </string>
+    <integer>
+      <name>argSignatureSelector</name>
+      <label>Signature Type</label>
+      <description>The type of distance signature to use (0 ... D(Segment,CVT-Center), 1 ... min D(Segment,CVT cell)).</description>
+      <longflag>signatureType</longflag>
+      <default>0</default>
+    </integer>
+    <integer-vector>
+      <name>argExcludeRegions</name>
+      <longflag>excludeRegions</longflag>
+      <description>Specify regions (e.g., background) to exclude for distance signature computation.</description>
+      <label>Exclusion Regions</label>
+      <default>0</default>
+    </integer-vector>
+  </parameters>
+</executable>
