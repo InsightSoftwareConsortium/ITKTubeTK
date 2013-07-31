@@ -84,4 +84,4 @@ else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_SIMPLEITK} )
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
 endif( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_SIMPLEITK} )
 
-list( APPEND TubeTK_DEPENDENCIES_ARGS -DSimpleITK_DIR:PATH=${SimpleITK_DIR} )
+list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DSimpleITK_DIR:PATH=${SimpleITK_DIR} )

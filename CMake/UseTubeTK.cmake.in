@@ -60,6 +60,8 @@ set( TubeTK_VERSION "@TubeTK_VERSION@" )
 
 # Pass on TubeTK dependencies directories
 set( JsonCpp_DIR "@JsonCpp_DIR@" )
+set( BOOST_ROOT "@BOOST_ROOT@" )
+set( LIBSVM_DIR "@LIBSVM_DIR@" )
 set( ParameterSerializer_DIR "@ParameterSerializer_DIR@" )
 set( SlicerExecutionModel_DIR "@SlicerExecutionModel_DIR@" )
 set( GenerateCLP_DIR "@GenerateCLP_DIR@" )

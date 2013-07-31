@@ -33,8 +33,10 @@ set( BUILDNAME "@CTEST_BUILD_NAME@" CACHE STRING "Init" FORCE )
 set( BUILD_SHARED_LIBS ON CACHE BOOL "Init" FORCE )
 set( CMAKE_CXX_FLAGS "@CMAKE_CXX_FLAGS@" CACHE STRING "Init" FORCE )
 set( CMAKE_C_FLAGS "@CMAKE_C_FLAGS@" CACHE STRING "Init" FORCE )
-set( CMAKE_EXE_LINKER_FLAGS "@CMAKE_EXE_LINKER_FLAGS@" CACHE STRING "Init" FORCE )
-set( CMAKE_SHARED_LINKER_FLAGS "@CMAKE_SHARED_LINKER_FLAGS@" CACHE STRING "Init" FORCE )
+set( CMAKE_EXE_LINKER_FLAGS "@CMAKE_EXE_LINKER_FLAGS@" CACHE STRING "Init"
+  FORCE )
+set( CMAKE_SHARED_LINKER_FLAGS "@CMAKE_SHARED_LINKER_FLAGS@" CACHE STRING "Init"
+  FORCE )
 set( MAKECOMMAND "@CTEST_BUILD_COMMAND@" CACHE STRING "Init" FORCE )
 set( GITCOMMAND "@GITCOMMAND@" CACHE FILEPATH "Init" FORCE )
 set( SVNCOMMAND "@SVNCOMMAND@" CACHE FILEPATH "Init" FORCE )
@@ -59,13 +61,30 @@ set( BUILD_TESTING ON CACHE BOOL "Init" FORCE )
 set( TubeTK_USE_CPPCHECK @TubeTK_USE_CPPCHECK@ CACHE BOOL "Init" FORCE )
 set( TubeTK_USE_KWSTYLE @TubeTK_USE_KWSTYLE@ CACHE BOOL "Init" FORCE )
 
+if( EXISTS ${TubeTK_BINARY_DIR}/JsonCpp-build/CMakeCache.txt )
+  set( JsonCpp_DIR "@JsonCpp_DIR@" CACHE PATH "Init" FORCE )
+endif( EXISTS ${TubeTK_BINARY_DIR}/JsonCpp-build/CMakeCache.txt )
+
+if( EXISTS ${TubeTK_BINARY_DIR}/ParameterSerializer-build/CMakeCache.txt )
+  set( ParameterSerializer_DIR "@ParameterSerializer_DIR@" CACHE PATH "Init"
+    FORCE )
+endif( EXISTS ${TubeTK_BINARY_DIR}/ParameterSerializer-build/CMakeCache.txt )
+
+if( TubeTK_USE_BOOST )
+  set( BOOST_ROOT "@BOOST_ROOT@" CACHE PATH "Init" FORCE )
+endif( TubeTK_USE_BOOST )
+
+if( TubeTK_USE_LIBSVM )
+  set( LIBSVM_DIR "@LIBSVM_DIR@" CACHE PATH "Init" FORCE )
+endif( TubeTK_USE_LIBSVM )
+
 if( EXISTS ${TubeTK_BINARY_DIR}/ITK-build/CMakeCache.txt )
   set( ITK_DIR "${TubeTK_BINARY_DIR}/ITK-build" CACHE PATH "Init" FORCE )
 endif( EXISTS ${TubeTK_BINARY_DIR}/ITK-build/CMakeCache.txt )
 
 if( EXISTS ${TubeTK_BINARY_DIR}/SlicerExecutionModel-build/CMakeCache.txt )
-  set( SlicerExecutionModel_DIR "${TubeTK_BINARY_DIR}/SlicerExecutionModel-build"
-    CACHE PATH "Init" FORCE )
+  set( SlicerExecutionModel_DIR
+    "${TubeTK_BINARY_DIR}/SlicerExecutionModel-build" CACHE PATH "Init" FORCE )
 endif( EXISTS ${TubeTK_BINARY_DIR}/SlicerExecutionModel-build/CMakeCache.txt )
 
 if( EXISTS ${TubeTK_BINARY_DIR}/CTK-build/CMakeCache.txt )

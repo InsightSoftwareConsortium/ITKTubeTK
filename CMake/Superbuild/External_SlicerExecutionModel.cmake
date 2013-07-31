@@ -91,4 +91,4 @@ else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_SLICER_EXECUTION_MODEL} )
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
 endif( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_SLICER_EXECUTION_MODEL} )
 
-list( APPEND TubeTK_DEPENDENCIES_ARGS -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR} )
+list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR} )
