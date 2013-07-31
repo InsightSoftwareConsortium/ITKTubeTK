@@ -38,11 +38,11 @@ namespace tube
  *
  * Complete rewrite of previous versions, only using itk/vnl routines
  * for derivatives, eigensystem calculations and diffusion. Internally,
- * the input image image is converted to internalprecision (float) for
+ * the input image image is converted to internal precision (float) for
  * calculation, and converted back when returning the results.
  *
  * Uses simple forward Euler scheme (explicit) with 3x3 stencil,
- * see eg phd of Joachim Weickert for theory and implementation regarding
+ * see, e.g., PhD of Joachim Weickert for theory and implementation regarding
  * the construction of this discretization scheme. See 'Tube Enhancing
  * Diffusion', Manniesing, media 2006, for information regarding the
  * construction of the diffusion tensor.
@@ -50,15 +50,15 @@ namespace tube
  * - Stores all elements of the Hessian of the complete image during
  *   diffusion. An alternative implementation is to only store the
  *   scale for which the vesselness has maximum response, and to
- *   recalculate the hessian (locally) during diffusion. Also stores
- *   the current image, ie at iteration i + temp image, therefore the complete
+ *   recalculate the Hessian (locally) during diffusion. Also stores
+ *   the current image, i.e., at iteration i + temp image, therefore the complete
  *   memory consumption approximately peaks at 8 times the input image
  *   (input image in float)
- * - The hessian is stored as six individual images, an alternative
+ * - The Hessian is stored as six individual images, an alternative
  *   implementation is to use the itk symmetric second rank tensor
- *   as pixeltype (and eg using the class SymmetricEigenAnalysisImage
+ *   as pixel type (and e.g. using the class SymmetricEigenAnalysisImage
  *   Filter). However, we are lazy, and using this since we rely
- *   on vnl datatypes and its eigensystem calculations
+ *   on vnl data types and its eigensystem calculations
  * - note: most of computation time is spent at calculation of vesselness
  *   response
  *
@@ -66,8 +66,8 @@ namespace tube
  *   Precision      float, 2D
  *
  * - todo
- *   - using parallelism/threading eg over scales
- *   - completely itk-fying, eg eigenvalues calculation
+ *   - using parallelism/threading e.g., over scales
+ *   - completely ITK-fying, e.g., eigenvalues calculation
  *   - possibly embedding within itk-diffusion framework
  *   - itk expert to have a look at use of iterators
  *     (there must be a potential gain there)
@@ -161,21 +161,21 @@ private:
 
   unsigned int              m_CurrentIteration;
 
-  // current hessian for which we have max vesselresponse
+  // current Hessian for which we have maximum vessel response
   typename PrecisionImageType::Pointer m_Dxx;
   typename PrecisionImageType::Pointer m_Dxy;
   typename PrecisionImageType::Pointer m_Dyy;
 
   void VED2DSingleIteration( typename PrecisionImageType::Pointer );
 
-  // Calculates maxvessel response of the range
-  // of scales and stores the hessian of each voxel
+  // Calculates maximum vessel response of the range
+  // of scales and stores the Hessian of each voxel
   // into the member images m_Dij.
   void MaxTubeResponse( const typename PrecisionImageType::Pointer );
 
   // calculates diffusion tensor
-  // based on current values of hessian (for which we have
-  // maximim vessel response).
+  // based on current values of Hessian (for which we have
+  // maximum vessel response).
   void DiffusionTensor( void );
 
   // Sorted increasing magnitude: l1, l2

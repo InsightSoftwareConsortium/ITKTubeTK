@@ -43,7 +43,7 @@ void StringToVector( const std::string & s, std::vector< T > & vec )
   while( pos != std::string::npos )
     {
     std::stringstream ss;
-    // stringstream use whitespaces as delimiters, we don't want that
+    // stringstream use whitespace as a delimiter, we don't want that
     // behavior.
     std::string substr = s.substr( prevPos, pos-prevPos );
     while( substr[0] == ' ' )

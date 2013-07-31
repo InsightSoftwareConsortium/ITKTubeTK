@@ -73,7 +73,7 @@ SheetnessMeasureImageFilter< TPixel >
   const typename EigenValueOutputImageType::ConstPointer eigenImage =
     m_SymmetricEigenValueFilter->GetOutput();
 
-  // walk the region of eigen values and get the vesselness measure
+  // walk the region of eigenvalues and get the vesselness measure
   EigenValueArrayType                                   eigenValue;
   ImageRegionConstIterator< EigenValueOutputImageType > it;
   it = ImageRegionConstIterator< EigenValueOutputImageType >(
@@ -86,7 +86,7 @@ SheetnessMeasureImageFilter< TPixel >
   it.GoToBegin();
   while( !it.IsAtEnd() )
     {
-    // Get the eigen value
+    // Get the eigenvalue
     eigenValue = it.Get();
 
     double sheetness = 0.0;

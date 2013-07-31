@@ -47,7 +47,7 @@ int DoIt( int argc, char * argv[] )
 
 #include "tubeCLIHelperFunctions.h"
 
-// Typdefs independent of image type
+// Typedefs independent of image type
 typedef itk::ImageIOBase::IOComponentType ScalarPixelType;
 
 int main( int argc, char * argv[] )
@@ -150,8 +150,8 @@ int DoIt( int argc, char * argv[] )
 
 
       /*
-       * The translation that we use will be a translation of the geometrical
-       * center of the input image to the geometrical center of the reference
+       * The translation that we use will be a translation of the geometric
+       * center of the input image to the geometric center of the reference
        * image.
        */
       typedef itk::TranslationTransform< double, Dimension >
@@ -191,8 +191,8 @@ int DoIt( int argc, char * argv[] )
       /*
        * Finally, we run a resampling filter to resample the input image in
        * the new space. We have to take care that, in case of discrete pixel
-       * values (e.g., label map), we switch from the standard linear interp.
-       * to the NN interpolator.
+       * values (e.g., label map), we switch from the standard linear
+       * interpolator to the NN interpolator.
        */
       typedef itk::ResampleImageFilter<ImageType, ImageType>
         ResampleImageFilterType;

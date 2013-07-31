@@ -14,6 +14,7 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
+
 #ifndef __tubeTestMain_h
 #define __tubeTestMain_h
 
@@ -293,7 +294,7 @@ int RegressionTestImage(const char * testImageFilename,
     unsigned long status = 0;
     status = diff->GetNumberOfPixelsWithDifferences();
 
-  // if there are discrepencies, create an diff image
+  // if there are discrepancies, create an difference image
   if( (status > numberOfPixelsTolerance) && reportErrors )
     {
     typedef itk::RescaleIntensityImageFilter<ImageType,OutputType> RescaleType;
@@ -450,7 +451,7 @@ int RegressionTestImage(const char * testImageFilename,
 
 //
 // Generate all of the possible baselines
-// The possible baselines are generated fromn the baselineFilename using the following algorithm:
+// The possible baselines are generated from the baselineFilename using the following algorithm:
 // 1) strip the suffix
 // 2) append a digit .x
 // 3) append the original suffix.

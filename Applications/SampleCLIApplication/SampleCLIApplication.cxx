@@ -37,7 +37,7 @@ limitations under the License.
 // Must include CLP before including tubeCLIHelperFunctions
 #include "SampleCLIApplicationCLP.h"
 
-// Must do a forward declaraction of DoIt before including
+// Must do a forward declaration of DoIt before including
 // tubeCLIHelperFunctions
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );

@@ -39,7 +39,7 @@ namespace tube
  *  Evaluates user supplied function to determine values at integers
  *  and will then interpolate (based on derivation used) non-integer
  *  values.  Includes methods for determining value, first derivative,
- *  hessian, and local extrema.   Relies on a derivation of Spline1D to
+ *  Hessian, and local extrema.   Relies on a derivation of Spline1D to
  *  specify how interpolation is performed.
  *  \author Stephen R. Aylward
  *  \date 11/21/99
@@ -86,14 +86,14 @@ public:
   /** Returns the characteristics of spline evaluations near data bounds
   *   (xMin and xMax). If true, values beyond edges (xMin and xMax) are
   *   set to zero.  If false, values beyond edges are faded to 0 as a
-  *   function of distance from edge, squeared.
+  *   function of squared distance from edge.
   */
   tubeGetMacro( Clip, bool );
 
   /** Sets the characteristics of spline evaluations near data bounds
   *   (xMin and xMax). If true, values beyond edges (xMin and xMax) are
   *   set to zero.  If false, values beyond edges are faded to 0 as a
-  *   function of distance from edge, squeared.
+  *   function of squared distance from edge.
   */
   tubeSetMacro( Clip, bool );
 
@@ -122,7 +122,7 @@ public:
    */
   tubeGetMacro( NewData, bool );
 
-  /** User sets to true to force recalcuation of internal data.
+  /** User sets to true to force recalculation of internal data.
    * For example, use to flag that UserFunction has changed externally
    */
   tubeSetMacro( NewData, bool );
@@ -138,7 +138,7 @@ public:
    */
   bool Extreme( VectorType & extX, double * extVal );
 
-  /** Calculates the local extreme in the direction dir using the supplied
+  /** Calculates the local extreme in the direction direction using the supplied
    * instance of a derivation of OptimizerND. Function returns true on
    * successful local extreme finding, false otherwise.
    *  \param extX User supplied initial point, On return equals location of
@@ -148,13 +148,13 @@ public:
    */
   bool Extreme( VectorType & extX, double * extVal, VectorType & dir );
 
-  /** Calculates the local extreme in the basis space dirs using the
+  /** Calculates the local extreme in the basis space directions using the
    * supplied instance of a derivation of OptimizerND. Function returns
    * true on successful local extreme finding, false otherwise.
    *  \param extX User supplied initial point, On return equals location
    *         of extreme local to initial point
    *  \param extVal On return equals the value at the local extreme
-   *  \param n number of vectors in dirs to use to define the basis space
+   *  \param n number of vectors in directions to use to define the basis space
    *  \param dirs TNT::Vectors that define the basis space to search for
    *         local extreme
    */
@@ -217,7 +217,7 @@ public:
    */
   VectorType & ValueD( const VectorType & x );
 
-  /** Returns spline interpolated derivative jet (value, 1st deriv,
+  /** Returns spline interpolated derivative jet (value, 1st derivative,
    * Hessian) at x. Calculates the values at control (integer) points by
    * calling the UserFunction and returns the interpolated derivative jet
    * between those points.   Type of interpolation is dependent on which

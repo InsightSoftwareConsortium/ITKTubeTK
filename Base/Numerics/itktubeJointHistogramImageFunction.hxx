@@ -65,8 +65,9 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   m_MaskMax = 0;
   m_MaskStep = 0;
   m_ForceDiagonalHistogram = false;
+  m_HistogramSize = 40;
 
-  this->SetHistogramSize( 40 );
+  this->SetHistogramSize( m_HistogramSize );
 }
 
 template< class TInputImage, class TCoordRep >

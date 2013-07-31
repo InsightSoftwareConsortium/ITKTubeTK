@@ -34,8 +34,8 @@ namespace tube
 {
 
 /** \class BlurImageFunction
- * \brief Calculate the gaussian blurred value at point
- *        given a scale and extent of the gaussian.
+ * \brief Calculate the Gaussian blurred value at point
+ *        given a scale and extent of the Gaussian.
  * This class is templated over the input image type.
  */
 template< class TInputImage >

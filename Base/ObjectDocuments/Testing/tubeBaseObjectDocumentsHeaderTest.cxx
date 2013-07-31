@@ -28,7 +28,6 @@ limitations under the License.
 #include "itktubeObjectDocumentToImageFilter.h"
 #include "itktubeObjectDocumentToObjectSource.h"
 #include "itktubeSpatialObjectDocument.h"
-#include "itktubeSpatialObjectToSpatialObjectFilter.h"
 #include "tubeMetaDocument.h"
 #include "tubeMetaObjectDocument.h"
 #include "tubeOptionList.h"

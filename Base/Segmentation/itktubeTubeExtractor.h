@@ -218,8 +218,6 @@ protected:
 
   TubeExtractor( void );
   virtual ~TubeExtractor( void );
-  TubeExtractor( const Self& ) {}
-  void operator=( const Self& ) {}
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
@@ -232,6 +230,9 @@ protected:
   bool ( *m_AbortProcess )( void );
 
 private:
+
+  TubeExtractor( const Self& );
+  void operator=( const Self& );
 
   typename ImageType::Pointer  m_InputImage;
   float                        m_Color[4];

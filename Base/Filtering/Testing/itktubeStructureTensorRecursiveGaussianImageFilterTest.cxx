@@ -71,7 +71,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc, char * arg
   // Connect the input images
   filter->SetInput( reader->GetOutput() );
 
-  // Set the value of sigma if specificed in command line
+  // Set the value of sigma if specified in command line
   if( argc > 4 )
     {
     double sigma = std::atof( argv[4] );
@@ -97,7 +97,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc, char * arg
   eigenAnalysisFilter->SetInput( filter->GetOutput() );
   eigenAnalysisFilter->Update();
 
-  // Generate eigen vector image
+  // Generate eigenvector image
   typedef  itk::Matrix< double, 3, 3>                         EigenVectorMatrixType;
   typedef  itk::Image< EigenVectorMatrixType, Dimension>      EigenVectorImageType;
 
@@ -111,7 +111,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc, char * arg
   eigenVectorAnalysisFilter->SetInput( filter->GetOutput() );
   eigenVectorAnalysisFilter->Update();
 
-  //Generate an image with eigen vector pixel that correspond to the largest eigen value
+  //Generate an image with eigenvector pixel that correspond to the largest eigenvalue
   EigenVectorImageType::ConstPointer eigenVectorImage =
                     eigenVectorAnalysisFilter->GetOutput();
 
@@ -137,7 +137,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc, char * arg
     }
   primaryEigenVectorImage->FillBuffer( nullVector );
 
-  //Generate an image containing the largest eigen values
+  //Generate an image containing the largest eigenvalues
   typedef itk::Image< double, 3 >    PrimaryEigenValueImageType;
   PrimaryEigenValueImageType::Pointer primaryEigenValueImage = PrimaryEigenValueImageType::New();
 
@@ -172,7 +172,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc, char * arg
   primaryEigenValueImageIterator.GoToBegin();
 
 
-  //Iterator for the eigen value image
+  //Iterator for the eigenvalue image
   EigenValueImageType::ConstPointer eigenImage = eigenAnalysisFilter->GetOutput();
   itk::ImageRegionConstIterator<EigenValueImageType> eigenValueImageIterator;
   eigenValueImageIterator = itk::ImageRegionConstIterator<EigenValueImageType>(
@@ -192,7 +192,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc, char * arg
 
   while(!eigenValueImageIterator.IsAtEnd())
     {
-    // Get the eigen value
+    // Get the eigenvalue
     EigenValueArrayType eigenValue;
     eigenValue = eigenValueImageIterator.Get();
 
@@ -209,7 +209,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc, char * arg
         }
       }
 
-    // Write out the largest eigen value
+    // Write out the largest eigenvalue
     primaryEigenValueImageIterator.Set( eigenValue[largestEigenValueIndex]);
 
 
@@ -227,7 +227,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc, char * arg
     std::cout << "[" << pixelIndex[0] << "," << pixelIndex[1] << "," << pixelIndex[2] << "]"
               << "\t" << eigenValue[0] << "\t" << eigenValue[1] << "\t"  << eigenValue[2] << std::endl;
     std::cout << "[Smallest,Largest]" << "\t" << smallest << "\t" << largest << std::endl;
-    std::cout <<"Eigen Vector" << std::endl;
+    std::cout <<"eigenvector" << std::endl;
     std::cout <<"\t" <<  matrixPixel << std::endl;
     std::cout <<"Tensor pixel" << std::endl;
     std::cout << "\t" << tensorPixel(0,0) << "\t" << tensorPixel(0,1) << "\t" << tensorPixel(0,2) << std::endl;

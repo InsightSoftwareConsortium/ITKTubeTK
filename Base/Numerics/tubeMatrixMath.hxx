@@ -83,7 +83,7 @@ ComputeCrossVector(vnl_vector<T> v1, vnl_vector<T> v2)
 
 
 /**
- *return the new position folowing the vector dir */
+ *return the new position following the vector direction */
 template< class T >
 vnl_vector<T>
 ComputeLineStep(vnl_vector<T> x, double a, vnl_vector<T> dir)
@@ -128,7 +128,7 @@ ComputeEuclideanDistance( TPoint x, TPoint y )
 }
 
 /**
- * Compute eigen values and vectors  */
+ * Compute eigenvalues and vectors  */
 template< class T >
 void
 ComputeEigen( vnl_matrix<T> const & mat,
@@ -217,7 +217,7 @@ ComputeEigen( vnl_matrix<T> const & mat,
 
 
 /**
- * Preform trilinear diagonalisation in 2D */
+ * Perform trilinear diagonalization in 2D */
 template< class T >
 void
 ComputeTriDiag2D(vnl_matrix<T> &mat,
@@ -236,7 +236,7 @@ ComputeTriDiag2D(vnl_matrix<T> &mat,
 }
 
 /**
- * Preform trilinear diagonalisation in 3D */
+ * Perform trilinear diagonalization in 3D */
 template< class T >
 void
 ComputeTriDiag3D(vnl_matrix<T> &mat,

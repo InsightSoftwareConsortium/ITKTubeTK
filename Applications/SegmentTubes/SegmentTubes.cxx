@@ -117,7 +117,7 @@ int DoIt( int argc, char * argv[] )
       std::cout << "VDimension = " << VDimension << std::endl;
       std::cout << "size = " << seedX.size() << std::endl;
       tube::ErrorMessage(
-        "Errror: X vector must be specified to initiate an extraction." );
+        "Error: X vector must be specified to initiate an extraction." );
       return EXIT_FAILURE;
       }
 

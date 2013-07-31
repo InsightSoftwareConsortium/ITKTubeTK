@@ -87,8 +87,8 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef float                                 PixelType;
-  typedef itk::Image< PixelType, VDimension > ImageType;
+  typedef float                                PixelType;
+  typedef itk::Image< PixelType, VDimension >  ImageType;
 
   /** Read input images */
   typename ImageType::Pointer inVolume;

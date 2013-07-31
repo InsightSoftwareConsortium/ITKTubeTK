@@ -123,19 +123,19 @@ private:
   AngleOfIncidenceImageFilter(const Self &); //purposely not implemented
   void operator=(const Self &);          //purposely not implemented
 
-  /* Ultasound origin*/
+  /* Ultrasound origin*/
   VectorType m_UltrasoundProbeOrigin;
 
   /* Hessian analysis filter */
   typename HessianFilterType::Pointer m_HessianFilter;
 
-  /* Eigen value analysis filter */
+  /* eigenvalue analysis filter */
   typename EigenValueAnalysisFilterType::Pointer m_EigenValueAnalysisFilter;
 
-  /* Eigen vector analysis filter */
+  /* eigenvector analysis filter */
   typename EigenVectorAnalysisFilterType::Pointer m_EigenVectorAnalysisFilter;
 
-  // Primary eigen vector image
+  // Primary eigenvector image
   typename EigenVectorImageType::Pointer m_PrimaryEigenVectorImage;
 
 }; // End class AngleOfIncidenceImageFilter

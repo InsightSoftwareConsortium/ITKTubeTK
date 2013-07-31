@@ -136,7 +136,7 @@ protected:
   /** Generate Data */
   void GenerateData( void );
 
-  // Override since the filter produces the entire dataset
+  // Override since the filter produces the entire data set
   void EnlargeOutputRequestedRegion(DataObject *output);
 
 private:

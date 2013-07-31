@@ -52,7 +52,7 @@ namespace tube
  * inaccuracies.
  *
  * This filter includes a regularization term based on anisotropic diffusion
- * that accomodates deformation field discontinuities that are expected when
+ * that accommodates deformation field discontinuities that are expected when
  * considering sliding motion.
  *
  * TODO
@@ -246,7 +246,7 @@ public:
   /** Set/get the lambda that controls the decay of the weight value w as a
    *  function of the distance to the closest border point.  If gamma=-1, then
    *  w decays exponentially (w = e^(-1.0*lambda*distance)).  Otherwise, w
-   *  decays exponentially using a dirac-shaped function
+   *  decays exponentially using a Dirac-shaped function
    *  (w = 1 / ( 1 + lambda*gamma*e^(-1.0*lambda*distance^2))).  Lambda must
    *  be positive. */
   void SetLambda( WeightComponentType l )
@@ -257,7 +257,7 @@ public:
   /** Set/get the gamma that controls the decay of the weight value w as a
    *  function of the distance to the closest border point.  If gamma=-1, then
    *  w decays exponentially (w = e^(-1.0*lambda*distance)).  Otherwise, w
-   *  decays exponentially using a dirac-shaped function
+   *  decays exponentially using a Dirac-shaped function
    *  (w = 1 / ( 1 + lambda*gamma*e^(-1.0*lambda*distance^2))).  Gamma must
    *  be positive or -1.0. */
   void SetGamma( WeightComponentType g )
@@ -396,7 +396,7 @@ protected:
       const WeightComponentType distance ) const;
 
   /** Computes the weighting factor w from the distance to the border using
-   *  a dirac-shaped function.  The weight should be 1 near the border and 0
+   *  a Dirac-shaped function.  The weight should be 1 near the border and 0
    *  away from the border. */
   virtual WeightComponentType ComputeWeightFromDistanceDirac(
       const WeightComponentType distance ) const;

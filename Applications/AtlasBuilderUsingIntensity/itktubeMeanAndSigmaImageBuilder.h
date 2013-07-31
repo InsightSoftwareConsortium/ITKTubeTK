@@ -36,11 +36,11 @@ namespace tube
 {
 
 /** \class MeanAndSigmaImageBuilder
- * \brief Class builds the mean and variance from inputted images.
+ * \brief Class builds the mean and variance from inputed images.
  *   Images are processed and discarded as they are entered,
  *   which prevents memory overload.
  *
- *  All Inputted images entered to AddImage() are assumed to have the
+ *  All inputed images entered to AddImage() are assumed to have the
  *  same spacing, origin.  Optionally, the output size can be changed by using
  *  AdjustOutputImageSize() and all subsequent additions to AddImage()
  *  must have that same size.  This allows for dynamic changes to the size
@@ -161,32 +161,32 @@ public:
 
   /*
    * Turn on and off the ThresholdInputImageBelow function (default is off).
-   * Will use last inputted value, or default otherwise
+   * Will use last inputed value, or default otherwise
    * ( see ThresholdInputImageBelow )
    */
   itkGetConstMacro( ThresholdInputImageBelowOn, bool );
 
   /*
    * Turn on and off the ThresholdInputImageBelow function (default is off).
-   * Will use last inputted value, or default otherwise
+   * Will use last inputed value, or default otherwise
    * ( see ThresholdInputImageBelow )
    */
   itkSetMacro( ThresholdInputImageBelowOn, bool );
 
   /*
    * Get the bool flag of whether the output images should adjust their
-   * size dynamically based on the inputted image sizes.  Default is false
+   * size dynamically based on the inputed image sizes.  Default is false
    */
   itkGetConstMacro( DynamicallyAdjustOutputSize, bool );
 
   /*
    * Set the bool flag of whether the output images should adjust their
-   * size dynamically based on the inputted image sizes.  Default is false
+   * size dynamically based on the inputed image sizes.  Default is false
    */
   itkSetMacro( DynamicallyAdjustOutputSize, bool );
 
   /*
-   * Update the output images to the inputted size.
+   * Update the output images to the inputed size.
    *
    * Can be called at any point in the mean building process AFTER
    * the first image has been added.

@@ -143,12 +143,13 @@ protected:
 
   TubeNetworkExtractor( void );
   virtual ~TubeNetworkExtractor( void );
-  TubeNetworkExtractor( const Self& ) {}
-  void operator=( const Self& ) {}
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
 private:
+
+  TubeNetworkExtractor( const Self& );
+  void operator=( const Self& );
 
   typename ImageType::Pointer      m_Image;
   typename TubeType::Pointer       m_TubeNetwork;

@@ -37,8 +37,11 @@ ObjectDocumentToObjectSource< TObjectDocument, VDimension >
 ::ObjectDocumentToObjectSource( void )
 {
   m_ComposedTransformIsIdentity = true;
+  m_StartTransforms = 0;
+  m_EndTransforms = -1;
+  m_ApplyTransforms = true;
 
-  this->SetApplyTransforms( true );
+  this->SetApplyTransforms( m_ApplyTransforms );
   this->SetNumberOfRequiredInputs( 1 );
 }
 

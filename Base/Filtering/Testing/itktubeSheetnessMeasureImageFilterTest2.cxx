@@ -103,11 +103,11 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
   double sheetnessThresholdValue = 0.0;
   if( argc > 5 )
     {
-    sheetnessThresholdValue = atof ( argv[5] );
+    sheetnessThresholdValue = std::atof( argv[5] );
     std::cout << "Setting sheetness threshold value...:\t" << sheetnessThresholdValue << std::endl;
     }
 
-  //Compute the eigen values
+  //Compute the eigenvalues
   typedef  SheetnessFilterType::InputImageType SymmetricSecondRankTensorImageType;
   typedef  itk::FixedArray< double, Dimension>    EigenValueArrayType;
   typedef  itk::Image< EigenValueArrayType, Dimension> EigenValueImageType;
@@ -123,7 +123,7 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
   eigenAnalysisFilter->Update();
 
 
-  //Generate and write out the primary eigen vector image
+  //Generate and write out the primary eigenvector image
   typedef  itk::Matrix< double, 3, 3>                         EigenVectorMatrixType;
   typedef  itk::Image< EigenVectorMatrixType, Dimension>      EigenVectorImageType;
 
@@ -137,7 +137,7 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
   eigenVectorAnalysisFilter->SetInput( filterHessian->GetOutput() );
   eigenVectorAnalysisFilter->Update();
 
-  //Generate an image with eigen vector pixel that correspond to the largest eigen value
+  //Generate an image with eigenvector pixel that correspond to the largest eigenvalue
   EigenVectorImageType::ConstPointer eigenVectorImage =
                     eigenVectorAnalysisFilter->GetOutput();
 
@@ -171,7 +171,7 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
       eigenVectorImage, eigenVectorImage->GetRequestedRegion());
   eigenVectorImageIterator.GoToBegin();
 
-  //Iterator for the input eigen value image
+  //Iterator for the input eigenvalue image
   EigenValueImageType::ConstPointer eigenImage = eigenAnalysisFilter->GetOutput();
   itk::ImageRegionConstIterator<EigenValueImageType> eigenValueImageIterator;
   eigenValueImageIterator = itk::ImageRegionConstIterator<EigenValueImageType>(
@@ -196,7 +196,7 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
 
   while(!eigenValueImageIterator.IsAtEnd())
     {
-    // Get the eigen value
+    // Get the eigenvalue
     EigenValueArrayType eigenValue;
     eigenValue = eigenValueImageIterator.Get();
 
@@ -219,8 +219,8 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
     EigenVectorMatrixType   matrixPixel;
     matrixPixel = eigenVectorImageIterator.Get();
 
-    //If the eigen value is above the tolernace eigen value and the sheetness is above
-    //a threshold, then write out the eigen vector
+    //If the eigenvalue is above the tolerance eigenvalue and the sheetness is above
+    //a threshold, then write out the eigenvector
 
     SheetnessImageType::PixelType sheetnessValue;
     sheetnessValue = sheetnessValueImageIterator.Get();
@@ -248,7 +248,7 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
   eigenVectorWriter->SetFileName( argv[3] );
   eigenVectorWriter->SetInput( primaryEigenVectorImage );
 
-  std::cout << "Write out the primary eigen vector image" << std::endl;
+  std::cout << "Write out the primary eigenvector image" << std::endl;
   eigenVectorWriter->Update();
 
   return EXIT_SUCCESS;

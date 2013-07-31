@@ -39,7 +39,7 @@ namespace tube
 {
 /** \class AnisotropicHybridDiffusionImageFilter
  *  This class is an implementation of anisotropic hybrid diffusion with
- * continous switch:
+ *  continuous switch:
  *   Mendrik et al., Noise reduction in computed tomography scans using 3-D
  *   anisotropic hybrid diffusion with continuous switch. IEEE Transactions on
  *   Medical Imaging 28(10), pp. 1585-1594, 2009.
@@ -104,7 +104,7 @@ public:
   typedef Image< TensorPixelType, ImageDimension>
                                                          TensorImageType;
 
-   // Define the type for storing the eigen-value
+   // Define the type for storing the eigenvalue
   typedef FixedArray< double, ImageDimension >      EigenValueArrayType;
 
   // Declare the types of the output images

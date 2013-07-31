@@ -35,7 +35,7 @@ namespace tube
 {
 
 /**
- * \brief This class provides usefull mathematical operations
+ * \brief This class provides useful mathematical operations
  */
 
 /** simple function that return the orthogonal vector to one */
@@ -48,33 +48,33 @@ template< class T >
 vnl_vector<T>
 ComputeCrossVector(vnl_vector<T> v1, vnl_vector<T> v2);
 
-/** return the new position folowing the vector dir */
+/** return the new position following the vector direction */
 template< class T >
 vnl_vector<T>
 ComputeLineStep(vnl_vector<T> x, double a, vnl_vector<T> dir);
 
-/** Compute the euclidean distance */
+/** Compute the Euclidean distance */
 template< class T >
 double
 ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y);
 
-/** Compute eigen values and vectors  */
+/** Compute eigenvalues and vectors  */
 template< class T >
 void
 ComputeEigen(vnl_matrix<T> const & mat, vnl_matrix<T> &eVects,
   vnl_vector<T> &eVals, bool orderByAbs, bool minToMax = true);
 
-/** Preform trilinear diagonalisation */
+/** Perform trilinear diagonalization */
 template< class T >
 void
 ComputeTriDiag(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
 
-/** Preform trilinear diagonalisation in 2D */
+/** Perform trilinear diagonalization in 2D */
 template< class T >
 void
 ComputeTriDiag2D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
 
-/** Preform trilinear diagonalisation in 3D */
+/** Perform trilinear diagonalization in 3D */
 template< class T >
 void
 ComputeTriDiag3D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
@@ -84,7 +84,7 @@ template< class T >
 void
 ComputeTqli(vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat);
 
-/** Compute the euclidean distance for two points */
+/** Compute the Euclidean distance for two points */
 template< class TPoint >
 double
 ComputeEuclideanDistance(TPoint x, TPoint y);

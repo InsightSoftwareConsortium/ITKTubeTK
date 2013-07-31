@@ -68,17 +68,17 @@ int DoIt( int argc, char * argv[] )
   //   of your algorithm.
   itk::TimeProbesCollectorBase timeCollector;
 
-  typedef TPixel                                   InputPixelType;
-  typedef itk::Image< InputPixelType, VDimension > InputImageType;
-  typedef itk::Image< unsigned short, VDimension > MapImageType;
-  typedef itk::Image< float, VDimension >          RidgeSeedImageType;
+  typedef TPixel                                      InputPixelType;
+  typedef itk::Image< InputPixelType, VDimension >    InputImageType;
+  typedef itk::Image< unsigned short, VDimension >    MapImageType;
+  typedef itk::Image< float, VDimension >             RidgeSeedImageType;
 
-  typedef itk::ImageFileReader< RidgeSeedImageType >     ImageReaderType;
-  typedef itk::ImageFileReader< MapImageType >     MapReaderType;
-  typedef itk::ImageFileWriter< RidgeSeedImageType >     RidgeSeedImageWriterType;
+  typedef itk::ImageFileReader< RidgeSeedImageType >  ImageReaderType;
+  typedef itk::ImageFileReader< MapImageType >        MapReaderType;
+  typedef itk::ImageFileWriter< RidgeSeedImageType >  RidgeSeedImageWriterType;
 
-  typedef itk::tube::RidgeSeedSupervisedLinearBasisGenerator<
-    RidgeSeedImageType, MapImageType >             RidgeSeedGeneratorType;
+  typedef itk::tube::RidgeSeedSupervisedLinearBasisGenerator< RidgeSeedImageType,
+    MapImageType >  RidgeSeedGeneratorType;
   typename RidgeSeedGeneratorType::Pointer rsGenerator =
     RidgeSeedGeneratorType::New();
 

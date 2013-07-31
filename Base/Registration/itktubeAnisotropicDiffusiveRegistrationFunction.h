@@ -252,7 +252,7 @@ public:
   /** Compute the update value.  The intensityDistanceTerm and
    *  regularizationTerm are outputs.  Incorporates weighting between
    *  intensity distance term and regularization term, but does not yet
-   *  incorporate the timestep. */
+   *  incorporate the time step. */
   virtual PixelType ComputeUpdate(
       const NeighborhoodType & neighborhood,
       const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
@@ -345,7 +345,7 @@ private:
   void operator=(const Self&);
   // Purposely not implemented
 
-  /** The global timestep. */
+  /** The global time step. */
   TimeStepType                          m_TimeStep;
 
   /** The component functions used to calculate the results of this function. */

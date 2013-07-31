@@ -85,7 +85,7 @@ limitations under the License.
 // Inconsistent DLL linkage.
 #pragma warning ( disable : 4273 )
 
-// Non–DLL-interface class key used as base for DLL-interface class key.
+// Non-DLL-interface class key used as base for DLL-interface class key.
 #pragma warning ( disable : 4275 )
 
 // Exception specification ignored except to indicate a function is not __declspec( nothrow ).

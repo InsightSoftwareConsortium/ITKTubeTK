@@ -830,7 +830,7 @@ private:
   TensorDerivativeImageArrayVectorType  m_DeformationComponentSecondOrderDerivativeArrays;
   DeformationVectorImageArrayVectorType m_MultiplicationVectorImageArrays;
 
-  /** Variables for multiresolution registratoin.  Current level can be detected
+  /** Variables for multiresolution registration.  Current level can be detected
    *  as Initialize() is called on each new level. */
   unsigned int                              m_CurrentLevel;
 

@@ -66,11 +66,11 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
 
   /* IN THIS METHOD, the following items will be implemented
    - Compute the structure tensor
-   - Compute its eigen vectors
-   - Compute eigen values corresponding to the diffusion matrix tensor
+   - Compute its eigenvectors
+   - Compute eigenvalues corresponding to the diffusion matrix tensor
   */
 
-  //Step 1: Compute the structure tensor and identify the eigen vectors
+  //Step 1: Compute the structure tensor and identify the eigenvectors
   //Step 1.1: Compute the structure tensor
   // Instantiate the structure tensor filter
   typename StructureTensorFilterType::Pointer
@@ -81,7 +81,7 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
   StructureTensorFilter->SetSigmaOuter ( m_SigmaOuter );
   StructureTensorFilter->Update();
 
-  // Step 1.2: Identify the eigen vectors of the structure tensor
+  // Step 1.2: Identify the eigenvectors of the structure tensor
   typedef  Matrix< double, 3, 3>
     EigenVectorMatrixType;
   typedef  Image< EigenVectorMatrixType, 3>
@@ -106,7 +106,7 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
   eigenVectorAnalysisFilter->Modified();
   eigenVectorAnalysisFilter->Update();
 
-  //Step 1.3: Compute the eigen values
+  //Step 1.3: Compute the eigenvalues
   typedef itk::SymmetricEigenAnalysisImageFilter<
     SymmetricSecondRankTensorImageType, EigenValueImageType>
     EigenAnalysisFilterType;
@@ -142,7 +142,7 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
   DiffusionTensorIteratorType it( this->GetDiffusionTensorImage(),
     this->GetDiffusionTensorImage()->GetLargestPossibleRegion() );
 
-  //Iterator for the eigen value image
+  //Iterator for the eigenvalue image
   typename EigenValueImageType::ConstPointer eigenImage
     = eigenAnalysisFilter->GetOutput();
   itk::ImageRegionConstIterator<EigenValueImageType>
@@ -158,16 +158,16 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
   MatrixType  eigenValueMatrix;
   while( !it.IsAtEnd() )
     {
-    // Generate the diagonal matrix with the eigen values
+    // Generate the diagonal matrix with the eigenvalues
     eigenValueMatrix.SetIdentity();
 
     //Set the lambda's appropriately. For now, set them to be equal to the
-    //eigen values
+    //eigenvalues
     double Lambda1;
     double Lambda2;
     double Lambda3;
 
-    // Get the eigen value
+    // Get the eigenvalue
     // Make sure they are sorted
     EigenValueArrayType eigenValue;
     eigenValue = eigenValueImageIterator.Get();

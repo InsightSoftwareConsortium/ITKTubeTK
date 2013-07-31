@@ -42,13 +42,13 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 {
   m_UltrasoundProbeOrigin.Fill(0);
 
-  //Eigen vector analysis filter
+  //eigenvector analysis filter
   m_EigenVectorAnalysisFilter = EigenVectorAnalysisFilterType::New();
   m_EigenVectorAnalysisFilter->SetDimension( ImageDimension );
   m_EigenVectorAnalysisFilter->OrderEigenValuesBy(
       EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
 
-  //Eigen value analysis filter
+  //eigenvalue analysis filter
   m_EigenValueAnalysisFilter = EigenValueAnalysisFilterType::New();
   m_EigenValueAnalysisFilter->SetDimension( ImageDimension );
   m_EigenValueAnalysisFilter->OrderEigenValuesBy(
@@ -57,7 +57,7 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   //Hessian filter
   m_HessianFilter = HessianFilterType::New();
 
-  //Eigen vector image
+  //eigenvector image
   m_PrimaryEigenVectorImage = EigenVectorImageType::New();
   unsigned int vectorLength = 3; // Eigenvector length
   m_PrimaryEigenVectorImage->SetVectorLength ( vectorLength );
@@ -108,7 +108,7 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   //Compute the Normal Vector Image
   this->ComputeNormalVectorImage();
 
-  //Iterator for the primary eigen vector image with the largest eigenvector
+  //Iterator for the primary eigenvector image with the largest eigenvector
   itk::ImageRegionIterator<EigenVectorImageType> primaryEigenVectorImageIterator;
   primaryEigenVectorImageIterator = itk::ImageRegionIterator<EigenVectorImageType>(
       m_PrimaryEigenVectorImage, m_PrimaryEigenVectorImage->GetRequestedRegion());
@@ -187,7 +187,7 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   m_EigenVectorAnalysisFilter->SetInput( m_HessianFilter->GetOutput() );
   m_EigenVectorAnalysisFilter->Update();
 
-  //Generate an image with eigen vector pixel that correspond to the largest eigen value
+  //Generate an image with eigenvector pixel that correspond to the largest eigenvalue
   typename EigenVectorMatrixImageType::ConstPointer eigenVectorImage =
                     m_EigenVectorAnalysisFilter->GetOutput();
 
@@ -222,7 +222,7 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
       m_PrimaryEigenVectorImage, m_PrimaryEigenVectorImage->GetRequestedRegion());
   primaryEigenVectorImageIterator.GoToBegin();
 
-  //Iterator for the eigen value image
+  //Iterator for the eigenvalue image
   typename EigenValueImageType::ConstPointer eigenImage
     = m_EigenValueAnalysisFilter->GetOutput();
   itk::ImageRegionConstIterator<EigenValueImageType> eigenValueImageIterator;
@@ -234,7 +234,7 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 
   while(!eigenValueImageIterator.IsAtEnd())
     {
-    // Get the eigen value
+    // Get the eigenvalue
     EigenValueArrayType eigenValue;
     eigenValue = eigenValueImageIterator.Get();
 

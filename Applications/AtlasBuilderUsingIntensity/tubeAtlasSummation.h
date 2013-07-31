@@ -49,46 +49,46 @@ public:
    */
   enum { Dimension = 3, DEFAULT_PIXEL_FILL = 0 };
 
-  typedef float                                          InputPixelType;
-  typedef float                                          CountPixelType;
-  typedef float                                          OutputPixelType;
-  typedef float                                          MeanPixelType;
-  typedef float                                          VariancePixelType;
+  typedef float                                           InputPixelType;
+  typedef float                                           CountPixelType;
+  typedef float                                           OutputPixelType;
+  typedef float                                           MeanPixelType;
+  typedef float                                           VariancePixelType;
 
-  typedef itk::Image< InputPixelType, Dimension >      InputImageType;
-  typedef itk::Image< MeanPixelType, Dimension >       MeanImageType;
-  typedef itk::Image< VariancePixelType, Dimension >   VarianceImageType;
-  typedef itk::Image< CountPixelType, Dimension >      CountImageType;
-  typedef itk::AffineTransform<>                         TransformType;
+  typedef itk::Image< InputPixelType, Dimension >         InputImageType;
+  typedef itk::Image< MeanPixelType, Dimension >          MeanImageType;
+  typedef itk::Image< VariancePixelType, Dimension >      VarianceImageType;
+  typedef itk::Image< CountPixelType, Dimension >         CountImageType;
+  typedef itk::AffineTransform<>                          TransformType;
 
-  typedef InputImageType::Pointer                        InputImagePointer;
-  typedef InputImageType::ConstPointer                   InputImageConstPointer;
-  typedef MeanImageType::Pointer                         MeanImagePointer;
-  typedef VarianceImageType::Pointer                     VarianceImagePointer;
-  typedef TransformType::Pointer                         TransformPointer;
+  typedef InputImageType::Pointer                         InputImagePointer;
+  typedef InputImageType::ConstPointer                    InputImageConstPointer;
+  typedef MeanImageType::Pointer                          MeanImagePointer;
+  typedef VarianceImageType::Pointer                      VarianceImagePointer;
+  typedef TransformType::Pointer                          TransformPointer;
 
-  typedef InputImageType::SpacingType                    SpacingType;
-  typedef InputImageType::SizeType                       SizeType;
-  typedef InputImageType::PointType                      PointType;
+  typedef InputImageType::SpacingType                     SpacingType;
+  typedef InputImageType::SizeType                        SizeType;
+  typedef InputImageType::PointType                       PointType;
 
 private:
 
   /**  Pixel and Image Type for processing transition images */
-  typedef double                                        ProcessPixelType;
-  typedef itk::Image< ProcessPixelType, Dimension >   ProcessImageType;
-  typedef ProcessImageType::Pointer                     ProcessImagePointer;
+  typedef double                                          ProcessPixelType;
+  typedef itk::Image< ProcessPixelType, Dimension >       ProcessImageType;
+  typedef ProcessImageType::Pointer                       ProcessImagePointer;
 
-  typedef itk::ImageRegionConstIterator<InputImageType> InputConstIteratorType;
-  typedef itk::ImageRegionIterator< InputImageType >    InputIteratorType;
-  typedef itk::ImageRegionIterator< ProcessImageType >  ProcessIteratorType;
-  typedef itk::ImageRegionIterator< MeanImageType >     MeanIteratorType;
-  typedef itk::ImageRegionIterator< VarianceImageType > VarianceIteratorType;
-  typedef itk::ImageRegionIterator< CountImageType >    CountIteratorType;
+  typedef itk::ImageRegionConstIterator< InputImageType > InputConstIteratorType;
+  typedef itk::ImageRegionIterator< InputImageType >      InputIteratorType;
+  typedef itk::ImageRegionIterator< ProcessImageType >    ProcessIteratorType;
+  typedef itk::ImageRegionIterator< MeanImageType >       MeanIteratorType;
+  typedef itk::ImageRegionIterator< VarianceImageType >   VarianceIteratorType;
+  typedef itk::ImageRegionIterator< CountImageType >      CountIteratorType;
 
-  typedef std::vector<InputImagePointer>                MedianImageListType;
+  typedef std::vector<InputImagePointer>                  MedianImageListType;
 
   typedef itk::tube::MeanAndSigmaImageBuilder<
-    InputImageType, MeanImageType, VarianceImageType >  RobustMeanBuilderType;
+    InputImageType, MeanImageType, VarianceImageType >    RobustMeanBuilderType;
 
 public:
 
@@ -96,7 +96,7 @@ public:
   AtlasSummation( void );
   ~AtlasSummation( void );
 
-  /** Initiate image for new atlas images to be inputted */
+  /** Initiate image for new atlas images to be inputed */
   void Clear( void ) { m_IsProcessing = false; }
 
   /** Add image with or without a transform */
@@ -156,8 +156,8 @@ public:
     { return m_OutputOrigin; }
 
   /*
-   * Do we want to use the variance (S^2) or std. deviation (S)
-   * Default is to use std. deviation
+   * Do we want to use the variance (S^2) or standard deviation (S)
+   * Default is to use standard deviation
    */
   bool GetUseStdDeviation( void ) const
     { return m_UseStdDeviation; }
@@ -219,7 +219,7 @@ private:
 
   /*
    * Update the set output parameters (but not spacing) to include the area
-   * given by inputted parameters and return true if the output variables changed.
+   * given by inputed parameters and return true if the output variables changed.
    */
   bool UpdateOutputProperties( SizeType inputSize,
                                PointType inputOrigin,

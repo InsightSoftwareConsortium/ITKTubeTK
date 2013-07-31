@@ -74,6 +74,7 @@ public:
 
 protected:
   SubSampleTubeTreeSpatialObjectFilter( void );
+  virtual ~SubSampleTubeTreeSpatialObjectFilter( void );
 
   virtual void GenerateData( void );
 

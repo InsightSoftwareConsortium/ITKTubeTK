@@ -90,7 +90,7 @@ def Image2cv(pi):
 
 def gaussianFilter( inputImage, filterSize ):
     """
-        Apply gaussian filter of OpenCv to a given array
+        Apply Gaussian filter of OpenCV to a given array
     """
     # Convert from numpy array  to CvMat
     outputImage = cv.CreateImage( cv.GetSize( inputImage ), cv.IPL_DEPTH_32F, 1 )

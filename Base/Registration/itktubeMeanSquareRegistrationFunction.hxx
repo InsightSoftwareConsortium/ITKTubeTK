@@ -120,7 +120,7 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
 
 
 /**
- * Compute update at a non boundary neighbourhood
+ * Compute update at a non boundary neighborhood
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 typename MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
@@ -179,7 +179,7 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
 
 /**
  * Compute intensity difference between fixed and moving images at a
- * non boundary neighbourhood
+ * non boundary neighborhood
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 double

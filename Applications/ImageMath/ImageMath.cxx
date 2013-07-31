@@ -1798,11 +1798,11 @@ int main( int argc, char * argv[] )
     true );
 
   command.SetOption( "blur", "b", false,
-    "gaussian blur the image using the given sigma" );
+    "Gaussian blur the image using the given sigma" );
   command.AddOptionField( "blur", "sigma", MetaCommand::FLOAT, true );
 
   command.SetOption( "blurOrder", "B", false,
-    "gaussian blur the image using the given sigma and the order." );
+    "Gaussian blur the image using the given sigma and the order." );
   command.AddOptionField( "blurOrder", "sigma", MetaCommand::FLOAT, true );
   command.AddOptionField( "blurOrder", "order", MetaCommand::INT, true );
   command.AddOptionField( "blurOrder", "direction", MetaCommand::INT,

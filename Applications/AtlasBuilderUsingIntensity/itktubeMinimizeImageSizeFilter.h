@@ -38,7 +38,7 @@ namespace tube
  * \brief Cuts the edges off of an image ( either from the origin, end
  * extend or both for all dimensions ).
  *
- * Can clip the image to the first valid pixel (ie > threshold) and/or
+ * Can clip the image to the first valid pixel (i.e., > threshold) and/or
  * create a buffer around the image of the first valid pixel
  * (i.e., pixel + buffer).
  *
@@ -98,11 +98,11 @@ public:
     * (value non-inclusive -- threshold value to be removed ) */
   itkSetMacro( ThresholdValue, InputPixelType );
   /** Get whether the threshold value is upper or lower boundry
-    * (default is false: ie all values below m_ThresholdValue will be
+    * (default is false: i.e., all values below m_ThresholdValue will be
     * excluded) */
   itkGetConstMacro( ThresholdAbove, bool );
   /** Set whether the threshold value is upper or lower boundry
-    *(default is false: ie all values below m_ThresholdValue will be
+    *(default is false: i.e., all values below m_ThresholdValue will be
     excluded) */
   itkSetMacro( ThresholdAbove, bool );
 

@@ -143,7 +143,7 @@ public:
       const FloatOffsetType & = FloatOffsetType(0.0) );
 
   /** Compute the equation value using pre-computed derivatives. The spacing of
-   *  the images associated with thegiven neighborhoods and regions should be
+   *  the images associated with the given neighborhoods and regions should be
    *  the same as that given. */
   virtual PixelType ComputeUpdate(
       const DiffusionTensorNeighborhoodType & tensorNeighborhood,
@@ -167,7 +167,7 @@ public:
   const TimeStepType & GetTimeStep( void ) const
     { return m_TimeStep; }
 
-  /** Utility function to check whether the timestep is stable, optionally based
+  /** Utility function to check whether the time step is stable, optionally based
     * on the spacing of the given image */
   template< class TPixel, unsigned int VImageDimension >
   void CheckTimeStepStability(
