@@ -1,7 +1,7 @@
-pyrpca
-======
+Python Robust PCA
+=================
 
-This module implements two recent proposals for *robust PCA*:
+pyrpca implements two recent proposals for *robust PCA*:
 ```bibtex
 @article{Candes11a,
     author = {E.J.~Cand\'es and X.~Li and Y.~Ma and J.~Wright},
@@ -44,6 +44,7 @@ et al. and Xu et al.
 
 Example
 -------
+
 An illustrative example for Candes et al.'s RPCA approach is to use a
 checkerboard image (provided under the `examples` directory) which is,
 by definition, low-rank and corrupt that image with randomly distributed
@@ -63,3 +64,35 @@ python ex1.py checkerboard.png 0.3 /tmp/outlierImage.png /tmp/lowRank.png
 ```
 Two images will be written: `/tmp/outlierImage.png` (i.e., the image *with*
 outliers) and `/tmp/lowRank.png` (i.e., the *low-rank* recovered part).
+
+Using the IPhton Notebook
+=========================
+
+The following instructions were tested on an Ubuntu 12.04 machine (assuming you have ```virtualenv``` installed, e.g., using ```apt-get install python-virtualenv```):
+
+```bash
+cd ~
+mkdir tutorial-env
+virtualenv ~/tutorial-env --no-site-packages
+~/tutorial-env/bin/pip install ipython
+~/tutorial-env/bin/pip install ipython[zmq]
+~/tutorial-env/bin/pip install tornado
+~/tutorial-env/bin/pip install numpy
+~/tutorial-env/bin/pip install matplotlib
+~/tutorial-env/bin/easy_install SimpleITK
+```
+Next, launch the IPython notebook:
+```bash
+~/tutorial-env/bin/ipython notebook --pylab=inline
+```
+
+
+
+
+
+
+
+
+
+
+
