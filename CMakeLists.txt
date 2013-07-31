@@ -222,6 +222,10 @@ option( TubeTK_USE_LIBSVM
 option( TubeTK_USE_BOOST
   "Use the Boost libraries to enable additional applications." OFF )
 
+if( TubeTK_USE_BOOST )
+  find_package( Boost REQUIRED )
+endif( TubeTK_USE_BOOST )
+
 # Parameter serializer setup.
 option( USE_SYSTEM_PARAMETER_SERIALIZER
   "Exclude the parameter serializer from the superbuild and use an existing build instead."
