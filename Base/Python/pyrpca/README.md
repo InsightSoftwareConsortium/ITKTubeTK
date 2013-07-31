@@ -33,7 +33,7 @@ not just single entries are corrupted.
 Requirements
 ------------
 
-* [**numnpy**](http://www.numpy.org/)
+* [**numpy**](http://www.numpy.org/)
 * [**SimpleITK**](http://www.simpleitk.org) [Optional]
 
 Problem Statement(s)
@@ -65,10 +65,18 @@ python ex1.py checkerboard.png 0.3 /tmp/outlierImage.png /tmp/lowRank.png
 Two images will be written: `/tmp/outlierImage.png` (i.e., the image *with*
 outliers) and `/tmp/lowRank.png` (i.e., the *low-rank* recovered part).
 
-Using the IPhton Notebook
-=========================
+Using the IPython Notebook
+--------------------------
 
-The following instructions were tested on an Ubuntu 12.04 machine (assuming you have ```virtualenv``` installed, e.g., using ```apt-get install python-virtualenv```):
+We provide an IPython notebook, ```pyrpca-Tutorial.ipynb``` which can be found
+in the top-level directory of ```pyrpca```. It basically walks a new user through
+the example implemented in ```ex1.py```.
+
+The following instructions were tested on a Linux machine running 
+Ubuntu 12.03. We assume that you have ```virtualenv``` installed, 
+e.g., using ```apt-get install python-virtualenv```. Basically, we
+create a virtual environment, install all the required packages
+and eventually run the IPython notebook.
 
 ```bash
 cd ~
