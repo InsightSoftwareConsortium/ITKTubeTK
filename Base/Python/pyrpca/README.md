@@ -93,14 +93,3 @@ Next, launch the IPython notebook:
 ```bash
 ~/tutorial-env/bin/ipython notebook --pylab=inline
 ```
-
-
-
-
-
-
-
-
-
-
-
