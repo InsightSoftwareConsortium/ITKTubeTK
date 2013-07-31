@@ -1,7 +1,7 @@
-pyrpca
-======
+Python Robust Principal Component Analsysis
+===========================================
 
-This module implements two recent proposals for *robust PCA*:
+pyrpca implements two recent proposals for *robust PCA*:
 ```bibtex
 @article{Candes11a,
     author = {E.J.~Cand\'es and X.~Li and Y.~Ma and J.~Wright},
@@ -24,8 +24,8 @@ and
     year = 2012}
 ```
 Please cite these articles in case you use this code. Note that the original
-authors of those articles also provide MATLAB code. Note that the objectives
-of the two works are different. Candes et al.'s approach assumes randomly
+authors of those articles also provide MATLAB code. Further, the objectives
+of the two works are different: Candes et al.'s approach assumes randomly
 distributed corruptions throughout the dataset, while Xu et al.'s approach
 assumes that full observations (i.e., column vectors of the data matrix) and
 not just single entries are corrupted.
@@ -52,7 +52,7 @@ a *clean* version of the checkerboard image (as well as the sparsity
 pattern).
 
 The `examples` directory contains an example (`ex1.py`) that demonstrates
-exactly this scenario.  (**Note:** The example requires
+exactly this scenario.  (**Note:** The example requires 
 [SimpleITK](http://www.simpleitk.org)'s python wrapping for image loading and
 image writing; it should be easy to replace these parts with your favorite
 image handling library, though).
