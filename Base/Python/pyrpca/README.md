@@ -24,8 +24,8 @@ and
     year = 2012}
 ```
 Please cite these articles in case you use this code. Note that the original
-authors of those articles also provide MATLAB code. Note that the objectives
-of the two works are different. Candes et al.'s approach assumes randomly
+authors of those articles also provide MATLAB code. Further, the objectives
+of the two works are different: Candes et al.'s approach assumes randomly
 distributed corruptions throughout the dataset, while Xu et al.'s approach
 assumes that full observations (i.e., column vectors of the data matrix) and
 not just single entries are corrupted.
@@ -53,7 +53,7 @@ a *clean* version of the checkerboard image (as well as the sparsity
 pattern).
 
 The `examples` directory contains an example (`ex1.py`) that demonstrates
-exactly this scenario.  (**Note:** The example requires
+exactly this scenario.  (**Note:** The example requires 
 [SimpleITK](http://www.simpleitk.org)'s python wrapping for image loading and
 image writing; it should be easy to replace these parts with your favorite
 image handling library, though).
@@ -73,7 +73,7 @@ in the top-level directory of ```pyrpca```. It basically walks a new user throug
 the example implemented in ```ex1.py```.
 
 The following instructions were tested on a Linux machine running 
-Ubuntu 12.03. We assume that you have ```virtualenv``` installed, 
+Ubuntu 12.04. We assume that you have ```virtualenv``` installed, 
 e.g., using ```apt-get install python-virtualenv```. Basically, we
 create a virtual environment, install all the required packages
 and eventually run the IPython notebook.
