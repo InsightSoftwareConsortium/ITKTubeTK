@@ -23,7 +23,6 @@ limitations under the License.
 
 #include "itktubeCVTImageFilter.h"
 #include "itktubeLabelOverlapMeasuresImageFilter.h"
-#include "itktubeOtsuThresholdMaskedImageFilter.h"
 #include "itktubePDFSegmenter.h"
 #include "itktubeRadiusExtractor.h"
 #include "itktubeRidgeExtractor.h"
@@ -48,12 +47,6 @@ int tubeBaseSegmentationPrintTest( int itkNotUsed( argc ), char * itkNotUsed( ar
     itk::tube::LabelOverlapMeasuresImageFilter< CharImageType >::New();
   std::cout << "-------------itktubeLabelOverlapMeasuresImageFilter"
     << loObject << std::endl;
-
-  itk::tube::OtsuThresholdMaskedImageFilter< ImageType, ImageType >::Pointer
-    otsuObject = itk::tube::OtsuThresholdMaskedImageFilter< ImageType,
-      ImageType >::New();
-  std::cout << "-------------itktubeOtsuThresholdMaskedImageFilter"
-    << otsuObject << std::endl;
 
   itk::tube::PDFSegmenter< ImageType, 3, ImageType >::Pointer
     pdfObject = itk::tube::PDFSegmenter< ImageType, 3, ImageType >::New();

@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeOtsuThresholdMaskedImageFilter.h"
+#include "itkOtsuThresholdImageFilter.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
@@ -59,7 +59,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< OutPixType, VDimension >            OutputType;
   typedef itk::ImageFileReader< ImageType >               ReaderType;
   typedef itk::ImageFileWriter< OutputType  >             WriterType;
-  typedef itk::tube::OtsuThresholdMaskedImageFilter< ImageType, OutputType >
+  typedef itk::OtsuThresholdImageFilter< ImageType, OutputType, ImageType >
                                                           FilterType;
 
   timeCollector.Start("Load data");

@@ -23,7 +23,6 @@ limitations under the License.
 
 #include "itktubeCVTImageFilter.h"
 #include "itktubeLabelOverlapMeasuresImageFilter.h"
-#include "itktubeOtsuThresholdMaskedImageFilter.h"
 #include "itktubePDFSegmenter.h"
 #include "itktubeRadiusExtractor.h"
 #include "itktubeRidgeExtractor.h"
