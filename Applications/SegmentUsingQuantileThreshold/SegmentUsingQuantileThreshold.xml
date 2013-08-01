@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>Segment Using Quantile Threshold(TubeTK)</title>
+  <description>Marks pixels in the Nth intensity quantile</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters.</description>
+    <image>
+      <name>inputVolume</name>
+      <label>Input Volume</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input volume.</description>
+    </image>
+    <image>
+      <name>outputVolume</name>
+      <label>Output Volume</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Output volume.</description>
+    </image>
+  </parameters>
+  <parameters>
+    <label>Blur Filter</label>
+    <image>
+      <name>maskVolume</name>
+      <label>Mask Volume</label>
+      <channel>input</channel>
+      <description>Mask volume defines region for quantile threshold computation</description>
+      <longflag>maskVolume</longflag>
+      <flag>m</flag>
+      <default></default>
+    </image>
+    <double>
+      <name>thresholdQuantile</name>
+      <label>Threshold Quantile</label>
+      <description>Portion of image to threshold to a binary image.</description>
+      <longflag>thresholdQuantile</longflag>
+      <flag>t</flag>
+      <default>0.99</default>
+    </double>
+  </parameters>
+</executable>
