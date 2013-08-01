@@ -24,25 +24,31 @@
 set( CTK_GIT_REPOSITORY ${git_protocol}://github.com/commontk/CTK.git )
 set( CTK_GIT_TAG 2040148f83ec7841f6f577da75e519410c3315a0 )
 
-set( ImageViewer_GIT_REPOSITORY ${git_protocol}://github.com/TubeTK/TubeTK-ImageViewer.git )
+set( ImageViewer_GIT_REPOSITORY
+  ${git_protocol}://github.com/TubeTK/TubeTK-ImageViewer.git )
 set( ImageViewer_GIT_TAG origin/master )
 
 set( ITK_GIT_REPOSITORY ${git_protocol}://github.com/Kitware/ITK.git )
 set( ITK_GIT_TAG 41abd503c51277d4ead198e6dbe5020d5a0c6bbf )
 
-set( JsonCpp_SVN_REPOSITORY ${svn_protocol}://svn.code.sf.net/p/jsoncpp/code/trunk/jsoncpp )
+set( JsonCpp_SVN_REPOSITORY
+  ${svn_protocol}://svn.code.sf.net/p/jsoncpp/code/trunk/jsoncpp )
 set( JsonCpp_SVN_REVISION 268 )
 
-set( LIBSVM_GIT_REPOSITORY ${git_protocol}://github.com/TubeTK/TubeTK-LIBSVM.git )
+set( LIBSVM_GIT_REPOSITORY
+  ${git_protocol}://github.com/TubeTK/TubeTK-LIBSVM.git )
 set( LIBSVM_GIT_TAG origin/master )
 
-set( ParameterSerializer_GIT_REPOSITORY ${git_protocol}://github.com/TubeTK/TubeTK-ParameterSerializer.git )
+set( ParameterSerializer_GIT_REPOSITORY
+  ${git_protocol}://github.com/TubeTK/TubeTK-ParameterSerializer.git )
 set( ParameterSerializer_GIT_TAG origin/master )
 
-set( SimpleITK_GIT_REPOSITORY ${git_protocol}://github.com/SimpleITK/SimpleITK.git )
+set( SimpleITK_GIT_REPOSITORY
+  ${git_protocol}://github.com/SimpleITK/SimpleITK.git )
 set( SimpleITK_GIT_TAG v0.6.1 )
 
-set( SlicerExecutionModel_GIT_REPOSITORY ${git_protocol}://github.com/TubeTK/TubeTK-SlicerExecutionModel.git )
+set( SlicerExecutionModel_GIT_REPOSITORY
+  ${git_protocol}://github.com/TubeTK/TubeTK-SlicerExecutionModel.git )
 set( SlicerExecutionModel_GIT_TAG origin/master )
 
 set( VTK_GIT_REPOSITORY ${git_protocol}://github.com/Slicer/VTK.git )

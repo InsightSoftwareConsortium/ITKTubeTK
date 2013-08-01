@@ -44,7 +44,7 @@ endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
 # Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
 
-if( NOT DEFINED ${proj}_DIR OR AND NOT ${USE_SYSTEM_IMAGE_VIEWER} )
+if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_IMAGE_VIEWER} )
   set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
@@ -74,6 +74,6 @@ else( NOT DEFINED ${proj}_DIR OR AND NOT ${USE_SYSTEM_IMAGE_VIEWER} )
   endif( ${USE_SYSTEM_IMAGE_VIEWER} )
 
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
-endif( NOT DEFINED ${proj}_DIR OR AND NOT ${USE_SYSTEM_IMAGE_VIEWER} )
+endif( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_IMAGE_VIEWER} )
 
-list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DImageViewer_DIR:PATH=${ImageViewer_DIR} )
+list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -D${proj}_DIR:PATH=${${proj}_DIR} )

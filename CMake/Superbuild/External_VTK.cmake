@@ -85,4 +85,4 @@ else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
 endif( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
 
-list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DVTK_DIR:PATH=${VTK_DIR} )
+list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -D${proj}_DIR:PATH=${${proj}_DIR} )

@@ -33,7 +33,8 @@ set( proj JsonCpp )
 
 # Sanity checks.
 if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
-  message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to a nonexistent directory" )
+  message( FATAL_ERROR
+    "${proj}_DIR variable is defined as ${${proj}_DIR} which corresponds to a nonexistent directory" )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 set( ${proj}_DEPENDENCIES "" )
@@ -71,4 +72,4 @@ else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_JSONCPP} )
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
 endif( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_JSONCPP} )
 
-list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DJsonCpp_DIR:PATH=${JsonCpp_DIR} )
+list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -D${proj}_DIR:PATH=${${proj}_DIR} )

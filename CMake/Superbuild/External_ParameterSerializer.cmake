@@ -87,4 +87,4 @@ else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_PARAMETER_SERIALIZER} )
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
 endif( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_PARAMETER_SERIALIZER} )
 
-list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DParameterSerializer_DIR:PATH=${ParameterSerializer_DIR} )
+list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -D${proj}_DIR:PATH=${${proj}_DIR} )
