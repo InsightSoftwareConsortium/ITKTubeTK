@@ -38,5 +38,5 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/CLI
     ${TubeTK_SOURCE_DIR}/Base/Common
     ${TubeTK_SOURCE_DIR}/Base/Filtering
-    ${Slicer_SOURCE_DIR}/ExpertAutomatedRegistration
-    ${Slicer_SOURCE_DIR}/ExpertAutomatedRegistration/ITKRegistrationHelper )
+    ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration
+    ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration/ITKRegistrationHelper )
