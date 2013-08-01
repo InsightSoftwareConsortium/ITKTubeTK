@@ -73,7 +73,7 @@ in the top-level directory of ```pyrpca```. It basically walks a new user throug
 the example implemented in ```ex1.py```.
 
 The following instructions were tested on a Linux machine running 
-Ubuntu 12.03. We assume that you have ```virtualenv``` installed, 
+Ubuntu 12.04. We assume that you have ```virtualenv``` installed, 
 e.g., using ```apt-get install python-virtualenv```. Basically, we
 create a virtual environment, install all the required packages
 and eventually run the IPython notebook.
