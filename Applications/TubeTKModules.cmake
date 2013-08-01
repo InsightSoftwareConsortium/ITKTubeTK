@@ -44,6 +44,7 @@ set( TubeTK_${proj}_MODULES
   MergeAdjacentImages
   MergeTubeGraphs
   ResampleImage
+  RegisterImages
   RegisterImageToTubesUsingRigidTransform
   RegisterUsingImageCenters
   SampleCLIApplication
