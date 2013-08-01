@@ -26,7 +26,7 @@
 ##############################################################################
 
 if( TubeTK_BUILD_SETTINGS_FILE )
-  include( ${CMAKE_ROOT}/Modules/CMakeImportBuildSettings.cmake )
+  include( CMakeImportBuildSettings )
   cmake_import_build_settings( ${TubeTK_BUILD_SETTINGS_FILE} )
 endif( TubeTK_BUILD_SETTINGS_FILE )
 
@@ -37,8 +37,8 @@ set( CMAKE_EXE_LINKER_FLAGS "@CMAKE_EXE_LINKER_FLAGS@" )
 set( CMAKE_SHARED_LINKER_FLAGS "@CMAKE_SHARED_LINKER_FLAGS@" )
 
 # TubeTK hacks until packaging works
-set( TubeTK_SOURCE_DIR "@TubeTK_SOURCE_DIR@" )
 set( TubeTK_BINARY_DIR "@TubeTK_BINARY_DIR@" )
+set( TubeTK_SOURCE_DIR "@TubeTK_SOURCE_DIR@" )
 
 # Includes
 set( TubeTK_INCLUDE_DIRS "@TubeTK_INCLUDE_DIRS@" )
@@ -59,19 +59,21 @@ set( TubeTK_VERSION_BUILD "@TubeTK_VERSION_BUILD@" )
 set( TubeTK_VERSION "@TubeTK_VERSION@" )
 
 # Pass on TubeTK dependencies directories
-set( JsonCpp_DIR "@JsonCpp_DIR@" )
+set( SVNCOMMAND "@SVNCOMMAND@" )
+set( GITCOMMAND "@GITCOMMAND@" )
+set( QT_QMAKE_EXECUTABLE "@QT_QMAKE_EXECUTABLE@" )
+
 set( BOOST_ROOT "@BOOST_ROOT@" )
+set( CTK_DIR "@CTK_DIR@" )
+set( GenerateCLP_DIR "@GenerateCLP_DIR@" )
+set( ImageViewer_DIR "@ImageViewer_DIR@" )
+set( ITK_DIR "@ITK_DIR@" )
+set( JsonCpp_DIR "@JsonCpp_DIR@" )
 set( LIBSVM_DIR "@LIBSVM_DIR@" )
 set( ParameterSerializer_DIR "@ParameterSerializer_DIR@" )
+set( SimpleITK_DIR "@SimpleITK_DIR@" )
 set( SlicerExecutionModel_DIR "@SlicerExecutionModel_DIR@" )
-set( GenerateCLP_DIR "@GenerateCLP_DIR@" )
-set( ITK_DIR "@ITK_DIR@" )
-set( CTK_DIR "@CTK_DIR@" )
 set( VTK_DIR "@VTK_DIR@" )
-set( GITCOMMAND "@GITCOMMAND@" )
-set( SVNCOMMAND "@SVNCOMMAND@" )
-set( CVSCOMMAND "@CVSCOMMAND@" )
-set( QT_QMAKE_EXECUTABLE "@QT_QMAKE_EXECUTABLE@" )
 
 # Slicer variables and macros as provided by TubeTK
 # Needs to come after the definition of SlicerExecutionModel_DIR.

@@ -53,7 +53,7 @@ a *clean* version of the checkerboard image (as well as the sparsity
 pattern).
 
 The `examples` directory contains an example (`ex1.py`) that demonstrates
-exactly this scenario.  (**Note:** The example requires 
+exactly this scenario.  (**Note:** The example requires
 [SimpleITK](http://www.simpleitk.org)'s python wrapping for image loading and
 image writing; it should be easy to replace these parts with your favorite
 image handling library, though).
@@ -72,8 +72,8 @@ We provide an IPython notebook, ```pyrpca-Tutorial.ipynb``` which can be found
 in the top-level directory of ```pyrpca```. It basically walks a new user through
 the example implemented in ```ex1.py```.
 
-The following instructions were tested on a Linux machine running 
-Ubuntu 12.04. We assume that you have ```virtualenv``` installed, 
+The following instructions were tested on a Linux machine running
+Ubuntu 12.04. We assume that you have ```virtualenv``` installed,
 e.g., using ```apt-get install python-virtualenv```. Basically, we
 create a virtual environment, install all the required packages
 and eventually run the IPython notebook.
