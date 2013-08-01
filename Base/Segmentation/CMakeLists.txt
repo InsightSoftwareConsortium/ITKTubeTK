@@ -26,8 +26,6 @@ project( TubeSegmentation )
 set( TubeTK_Base_Segmentation_H_Files
   itktubeCVTImageFilter.h
   itktubeLabelOverlapMeasuresImageFilter.h
-  itktubeOtsuThresholdMaskedImageCalculator.h
-  itktubeOtsuThresholdMaskedImageFilter.h
   itktubePDFSegmenter.h
   itktubeRadiusExtractor.h
   itktubeRidgeExtractor.h
@@ -38,8 +36,6 @@ set( TubeTK_Base_Segmentation_H_Files
 set( TubeTK_Base_Segmentation_HXX_Files
   itktubeCVTImageFilter.hxx
   itktubeLabelOverlapMeasuresImageFilter.hxx
-  itktubeOtsuThresholdMaskedImageCalculator.hxx
-  itktubeOtsuThresholdMaskedImageFilter.hxx
   itktubePDFSegmenter.hxx
   itktubeRadiusExtractor.hxx
   itktubeRidgeExtractor.hxx

@@ -45,7 +45,6 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( tubeBaseSegmentation_SRCS
   tubeBaseSegmentationPrintTest.cxx
   itktubeCVTImageFilterTest.cxx
-  itktubeOtsuThresholdMaskedImageFilterTest.cxx
   itktubePDFSegmenterTest.cxx
   itktubeRadiusExtractorTest.cxx
   itktubeRadiusExtractorTest2.cxx
@@ -85,15 +84,6 @@ Midas3FunctionAddTest( itktubeCVTImageFilterTest
     itktubeCVTImageFilterTest
       MIDAS{GDS0015_1.mha.md5}
       ${TEMP}/itkTubeCVTImageFilterTest.mha )
-
-Midas3FunctionAddTest( itktubeOtsuThresholdMaskedImageFilterTest
-  ${BASE_SEGMENTATION_TESTS}
-    --compare MIDAS{itkTubeOtsuThresholdMaskedImageFilterTest2.mha.md5}
-      ${TEMP}/itkTubeOtsuThresholdMaskedImageFilterTest2.mha
-    itktubeOtsuThresholdMaskedImageFilterTest
-      MIDAS{ES0015_1.mha.md5}
-      ${TEMP}/itkTubeOtsuThresholdMaskedImageFilterTest1.mha
-      ${TEMP}/itkTubeOtsuThresholdMaskedImageFilterTest2.mha )
 
 Midas3FunctionAddTest( itktubePDFSegmenterTest
   ${BASE_SEGMENTATION_TESTS}
