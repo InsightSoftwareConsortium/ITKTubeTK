@@ -179,7 +179,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
 ::GenerateData( void )
 {
   // Create a process accumulator for tracking the progress of this
-  // minipipeline
+  // mini-pipeline
   ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
   progress->SetMiniPipelineFilter(this);
 

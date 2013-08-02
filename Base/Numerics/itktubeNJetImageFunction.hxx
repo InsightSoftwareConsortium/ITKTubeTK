@@ -52,6 +52,8 @@ NJetImageFunction<TInputImage>
   m_Extent = 3;
 
   m_ValidStats = false;
+  m_StatsMin = 0;
+  m_StatsMax = 0;
   m_InputImageMinX.Fill( 0);
   m_InputImageMaxX.Fill( 0);
   m_InputImageSize.Fill( 0);
@@ -67,6 +69,12 @@ NJetImageFunction<TInputImage>
   m_MostRecentRidgeLevelness = 0;
   m_MostRecentRidgeCurvature = 0;
   m_MostRecentRidgeTangent.Fill( 0);
+}
+
+template< class TInputImage >
+NJetImageFunction<TInputImage>
+::~NJetImageFunction( void )
+{
 }
 
 /**
@@ -188,7 +196,7 @@ NJetImageFunction<TInputImage>
 
 
 /**
- * Evaluate the fonction at the specified point
+ * Evaluate the function at the specified point
  */
 template< class TInputImage >
 void
@@ -260,7 +268,7 @@ NJetImageFunction<TInputImage>
 }
 
 /**
- * Evaluate the fonction at the specified point
+ * Evaluate the function at the specified point
  */
 template< class TInputImage >
 double
@@ -271,7 +279,7 @@ NJetImageFunction<TInputImage>
 }
 
 /**
- * Evaluate the fonction at the specified point
+ * Evaluate the function at the specified point
  */
 template< class TInputImage >
 double
@@ -282,7 +290,7 @@ NJetImageFunction<TInputImage>
 }
 
 /**
- * Evaluate the fonction at the specified point
+ * Evaluate the function at the specified point
  */
 template< class TInputImage >
 double
@@ -306,7 +314,7 @@ NJetImageFunction<TInputImage>
 }
 
 /**
- * Evaluate the fonction at the specified point
+ * Evaluate the function at the specified point
  */
 template< class TInputImage >
 double
@@ -330,7 +338,7 @@ NJetImageFunction<TInputImage>
 }
 
 /**
- * Evaluate the fonction at the specified point
+ * Evaluate the function at the specified point
  */
 template< class TInputImage >
 double
@@ -355,7 +363,7 @@ NJetImageFunction<TInputImage>
 }
 
 /**
- * Evaluate the fonction at the specified point
+ * Evaluate the function at the specified point
  */
 template< class TInputImage >
 double
@@ -378,7 +386,7 @@ NJetImageFunction<TInputImage>
 }
 
 /**
- * Evaluate the fonction at the specified point
+ * Evaluate the function at the specified point
  */
 template< class TInputImage >
 double
@@ -401,7 +409,7 @@ NJetImageFunction<TInputImage>
 }
 
 /**
- * Evaluate the fonction at the specified point
+ * Evaluate the function at the specified point
  */
 template< class TInputImage >
 double
@@ -426,7 +434,7 @@ NJetImageFunction<TInputImage>
 }
 
 /**
- * Evaluate the fonction at the specified point
+ * Evaluate the function at the specified point
  */
 template< class TInputImage >
 double

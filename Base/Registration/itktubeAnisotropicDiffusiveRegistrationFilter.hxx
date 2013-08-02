@@ -245,7 +245,7 @@ AnisotropicDiffusiveRegistrationFilter
 
   // If we are using a template or getting an image from the user, we need to
   // make sure that the attributes of the member images match those of the
-  // current output, so that they can be used to calclulate the diffusion
+  // current output, so that they can be used to calculate the diffusion
   // tensors, deformation components, etc
   if( !DiffusiveRegistrationFilterUtils::CompareImageAttributes(
         m_NormalVectorImage.GetPointer(), output.GetPointer() ) )
@@ -338,7 +338,7 @@ AnisotropicDiffusiveRegistrationFilter
 
   // Explicitly call Modified on the normal and weight images here, since
   // ThreadedGetNormalsAndDistancesFromClosestSurfacePoint changes these buffers
-  // through iterators which do not increment the update buffer timestamp
+  // through iterators which do not increment the update buffer time stamp
   this->m_NormalVectorImage->Modified();
   this->m_WeightImage->Modified();
 }
@@ -569,7 +569,7 @@ AnisotropicDiffusiveRegistrationFilter
 /**
  * Calculates the weighting between the anisotropic diffusive and diffusive
  * regularizations, based on a given distance from a voxel to the border, using
- * a dirac-shaped function
+ * a Dirac-shaped function
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 typename AnisotropicDiffusiveRegistrationFilter
@@ -701,7 +701,7 @@ AnisotropicDiffusiveRegistrationFilter
   // Allocate the images needed when using the anisotropic diffusive
   // regularization
   // There is no multiplication vector for the tangential term, and the
-  // superclass will init it to zeros for us.
+  // superclass will initialize it to zeros for us.
   // The normal multiplication vector is n_l*n
 
   // Iterate over the normal vector image
@@ -777,7 +777,7 @@ AnisotropicDiffusiveRegistrationFilter
     normalDeformationVector = ( u * n ) * n;
     normalDeformationRegion.Set( normalDeformationVector );
 
-    // Test that the normal and tangential components were computed corectly
+    // Test that the normal and tangential components were computed correctly
     // (they should be orthogonal)
 
     // tangential component = u - normal component

@@ -64,6 +64,7 @@ public:
 
 protected:
   SubSampleTubeSpatialObjectFilter( void );
+  virtual ~SubSampleTubeSpatialObjectFilter( void );
 
   virtual void GenerateData( void );
 

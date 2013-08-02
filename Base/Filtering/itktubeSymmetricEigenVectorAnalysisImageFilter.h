@@ -33,13 +33,13 @@ namespace itk
 namespace tube
 {
 
-// This functor class invokes the computation of Eigen Analysis for
+// This functor class invokes the computation of eigenanalysis for
 // every pixel. The input pixel type must provide the API for the [][]
 // operator, while the output pixel type must provide the API for the
 // [] operator. Input pixel matrices should be symmetric.
 //
-// The default operation is to order eigen values in ascending order.
-// You may also use OrderEigenValuesBy() to order eigen values by
+// The default operation is to order eigenvalues in ascending order.
+// You may also use OrderEigenValuesBy() to order eigenvalues by
 // magnitude as is common with use of tensors in vessel extraction.
 namespace Functor
 {
@@ -74,10 +74,10 @@ public:
     m_Calculator.SetDimension(n);
     }
 
-  /** Typdedefs to order eigen values.
+  /** Typedefs to order eigenvalues.
    * OrderByValue:      lambda_1 < lambda_2 < ....
    * OrderByMagnitude:  |lambda_1| < |lambda_2| < .....
-   * DoNotOrder:        Default order of eigen values obtained after QL method
+   * DoNotOrder:        Default order of eigenvalues obtained after QL method
    */
   typedef enum {
     OrderByValue=1,
@@ -85,7 +85,7 @@ public:
     DoNotOrder
   } EigenValueOrderType;
 
-  /** Order eigen values. Default is to OrderByValue:  lambda_1 < lambda_2 < .... */
+  /** Order eigenvalues. Default is to OrderByValue:  lambda_1 < lambda_2 < .... */
   void OrderEigenValuesBy( EigenValueOrderType order )
     {
     if( order == OrderByMagnitude )
@@ -136,14 +136,14 @@ public:
   typedef typename TInputImage::PixelType         InputPixelType;
   typedef typename Superclass::FunctorType        FunctorType;
 
-  /** Typdedefs to order eigen values.
+  /** Typedefs to order eigenvalues.
    * OrderByValue:      lambda_1 < lambda_2 < ....
    * OrderByMagnitude:  |lambda_1| < |lambda_2| < .....
-   * DoNotOrder:        Default order of eigen values obtained after QL method
+   * DoNotOrder:        Default order of eigenvalues obtained after QL method
    */
   typedef typename FunctorType::EigenValueOrderType         EigenValueOrderType;
 
-  /** Order eigen values. Default is to OrderByValue:  lambda_1 < lambda_2 < .... */
+  /** Order eigenvalues. Default is to OrderByValue:  lambda_1 < lambda_2 < .... */
   void OrderEigenValuesBy( EigenValueOrderType order )
     {
     this->GetFunctor().OrderEigenValuesBy( order );

@@ -239,7 +239,7 @@ Compute( void )
 
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
-    m_Pa[ ImageDimension-1 ][i] *= std::real( det );
+    m_Pa[ ImageDimension-1 ][i] *= vcl_real( det );
     }
 
   /* Remember that the moments are valid */

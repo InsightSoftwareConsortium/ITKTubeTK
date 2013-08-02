@@ -51,15 +51,15 @@ enum { Dimension = 3 };
 //using namespace boost;
 using namespace boost::accumulators;
 
-typedef itk::Image< float, Dimension >                  ImageType;
-typedef ImageType::IndexType                              ImageIndexType;
-typedef ImageType::PixelType                              ImagePixelType;
-typedef ImageType::SizeType                               ImageSizeType;
-typedef itk::ImageFileReader< ImageType >                 ImageReaderType;
-typedef itk::StatisticsImageFilter< ImageType >           StatisticsImageFilterType;
+typedef itk::Image< float, Dimension >                      ImageType;
+typedef ImageType::IndexType                                ImageIndexType;
+typedef ImageType::PixelType                                ImagePixelType;
+typedef ImageType::SizeType                                 ImageSizeType;
+typedef itk::ImageFileReader< ImageType >                   ImageReaderType;
+typedef itk::StatisticsImageFilter< ImageType >             StatisticsImageFilterType;
 typedef accumulator_set< ImagePixelType,
-                         stats<tag::p_square_quantile> >  QuantileAccumulatorType;
-typedef itk::ImageRegionConstIterator<ImageType>          ImageIteratorType;
+                         stats< tag::p_square_quantile > >  QuantileAccumulatorType;
+typedef itk::ImageRegionConstIterator<ImageType>            ImageIteratorType;
 
 
 /**

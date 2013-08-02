@@ -39,9 +39,9 @@ namespace tube
 {
 
 /** \class NJetImageFunction
- * \brief Calculate the gaussian blurred value, 1st derivatives, and
+ * \brief Calculate the Gaussian blurred value, 1st derivatives, and
  *        second derivatives at point
- *        given a scale and extent of the gaussian.
+ *        given a scale and extent of the Gaussian.
  * This class is templated over the input image type.
  */
 template< class TInputImage >
@@ -287,11 +287,9 @@ public:
 
 protected:
   NJetImageFunction( void );
-  NJetImageFunction( const Self& ) {}
 
-  ~NJetImageFunction( void ) {}
+  ~NJetImageFunction( void );
 
-  void operator=( const Self& ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
 
   typename InputImageType::ConstPointer  m_InputImage;
@@ -319,6 +317,10 @@ protected:
   double                  m_StatsMax;
 
   bool                    m_UseProjection;
+
+private:
+  NJetImageFunction( const Self& );
+  void operator=(const Self&);
 
 }; // End class NJetImageFunction
 

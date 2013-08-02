@@ -60,7 +60,7 @@ public:
   typedef SmartPointer< Self >                                    Pointer;
   typedef SmartPointer< const Self >                              ConstPointer;
 
-  // itkNewMacro( Self );  // Not included since pure virutal
+  // itkNewMacro( Self );  // Not included since pure virtual
 
   /** Run-time type information (and related methods) */
   itkTypeMacro( AnisotropicDiffusionTensorImageFilter,
@@ -83,7 +83,7 @@ public:
   typedef typename FiniteDifferenceFunctionType::DiffusionTensorImageType
       DiffusionTensorImageType;
 
-  // Define the type for storing the eigen-values
+  // Define the type for storing the eigenvalues
   typedef FixedArray< double, ImageDimension >   EigenValueArrayType;
 
   // Declare the types of the output images

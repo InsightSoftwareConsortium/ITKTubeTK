@@ -68,12 +68,12 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 
   /* IN THIS METHOD, the following items will be implemented
    - Compute the structure tensor ( Multiscale version structure tensor )
-   - Compute its eigen vectors
-   - Compute eigen values corresponding to the diffusion matrix tensor
+   - Compute its eigenvectors
+   - Compute eigenvalues corresponding to the diffusion matrix tensor
      ( Here is where all the magic happens for EED, CED and hybrid switch )
   */
 
-  //Step 1: Compute the structure tensor and identify the eigen vectors
+  //Step 1: Compute the structure tensor and identify the eigenvectors
   //Step 1.1: Compute the structure tensor
   // Instantiate the structure tensor filter
   typename StructureTensorFilterType::Pointer
@@ -84,7 +84,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   structureTensorFilter->SetSigmaOuter( m_SigmaOuter );
   structureTensorFilter->Update();
 
-  // Step 1.2: Identify the eigen vectors of the structure tensor
+  // Step 1.2: Identify the eigenvectors of the structure tensor
   typedef  Matrix< double, 3, 3>
     EigenVectorMatrixType;
   typedef  Image< EigenVectorMatrixType, 3>
@@ -109,7 +109,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   eigenVectorAnalysisFilter->Modified();
   eigenVectorAnalysisFilter->Update();
 
-  //Step 1.3: Compute the eigen values
+  //Step 1.3: Compute the eigenvalues
   typedef itk::SymmetricEigenAnalysisImageFilter<
     SymmetricSecondRankTensorImageType, EigenValueImageType>
     EigenAnalysisFilterType;
@@ -156,7 +156,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   DiffusionTensorIteratorType it( this->GetDiffusionTensorImage(),
     this->GetDiffusionTensorImage()->GetLargestPossibleRegion() );
 
-  //Iterator for the eigen value image
+  //Iterator for the eigenvalue image
   typename EigenValueImageType::ConstPointer eigenImage
     = eigenAnalysisFilter->GetOutput();
   itk::ImageRegionConstIterator<EigenValueImageType>
@@ -185,10 +185,10 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   MatrixType  eigenValueMatrix;
   while( !it.IsAtEnd() )
     {
-    // Generate the diagonal matrix with the eigen values
+    // Generate the diagonal matrix with the eigenvalues
     eigenValueMatrix.SetIdentity();
 
-    // Get the eigen value
+    // Get the eigenvalue
     EigenValueArrayType eigenValue;
     eigenValue = eigenValueImageIterator.Get();
 
@@ -295,7 +295,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
       LambdaCED3 = m_Alpha + (1.0 - m_Alpha)*expVal;
       }
 
-    /* Compute the lambda's for the continous switch */
+    /* Compute the lambda's for the continuous switch */
     double Lambda1;
     double Lambda2;
     double Lambda3;

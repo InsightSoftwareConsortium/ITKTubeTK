@@ -116,7 +116,7 @@ void readGraphList(const std::string &fileName,
 
 /** Writes VNL matrix to binary file.
  *
- *  \param baseFileName The basename of the binary file (.bin is appended).
+ *  \param baseFileName The base name of the binary file (.bin is appended).
  *  \param K The VNL kernel matrix.
  */
 void writeKernel(const std::string &baseFileName, const vnl_matrix<double> &K)
@@ -151,7 +151,7 @@ void writeKernel(const std::string &baseFileName, const vnl_matrix<double> &K)
  *  Writes VNL matrix in row-by-row manner to a plain-text file (One value on
  *  each line).
  *
- *  \param baseFileName The basename of the plain-text file (.txt is appended).
+ *  \param baseFileName The base name of the plain-text file (.txt is appended).
  *  \param K The VNL kernel matrix.
  */
 void writeKernelPlainText( const std::string &baseFileName,
@@ -185,7 +185,7 @@ void writeKernelPlainText( const std::string &baseFileName,
 
 /** Writes VNL matrix to LIBSVM compatible file.
  *
- *  \param baseFileName The basename of the LIBSVM file (.libsvm is appended).
+ *  \param baseFileName The base name of the LIBSVM file (.libsvm is appended).
  *  \param K The VNL kernel matrix.
  */
 void writeKernelLIBSVM(const std::string &baseFileName,

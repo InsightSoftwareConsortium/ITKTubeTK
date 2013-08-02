@@ -167,11 +167,11 @@ CompleteImageResampleFilter< TInputImage, TOutputImage, TNonSingularTransform,
   origin.Fill( 9999999 ); //Fill origin ( min value with large number )
 
   //Transform all of the image corners and determine the minimum bounding box
-  for( int x = 0; x <= (int)size[0]; x+= size[0] )
+  for( int x = 0; x <= (int)size[0]; x += size[0] )
     {
-    for( int y = 0; y <= (int)size[1]; y+= size[1] )
+    for( int y = 0; y <= (int)size[1]; y += size[1] )
       {
-      for( int z = 0; z <= (int)size[2]; z+= size[2] )
+      for( int z = 0; z <= (int)size[2]; z += size[2] )
         {
         typename InputImageType::IndexType index;
         index[0] = x;

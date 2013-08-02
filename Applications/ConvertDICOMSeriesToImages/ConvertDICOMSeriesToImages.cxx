@@ -732,7 +732,7 @@ int main( int argc, char * argv[] )
 
       //gdcm::FileHelper * fileReader;
 
-      // Now Anonymize the DICOM object
+      // Now anonymize the DICOM object
       for(int fileNum=splitVolumeStart;
           fileNum<(int)(splitVolumeStart+fileNames.size());
           fileNum++)
@@ -782,7 +782,7 @@ int main( int argc, char * argv[] )
 
         if(optAnonymize)
           {
-          // Open the newfile and start changing it
+          // Open the new file and start changing it
           //newfile->SetLoadMode( gdcm::LD_ALL );
           //newfile->Load();
 

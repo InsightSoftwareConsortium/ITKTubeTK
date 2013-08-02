@@ -84,7 +84,7 @@ int itkAngleOfIncidenceImageFilterTest( int argc, char * argv[] )
   writer->SetInput(filterSheetness->GetOutput());
   writer->Update();
 
-  //Generate a binary image by threshlding the sheetness measure
+  //Generate a binary image by thresholding the sheetness measure
   typedef itk::ThresholdImageFilter< SheetnessImageType >  ThresholdFilterType;
 
   ThresholdFilterType::Pointer thresholdFilter = ThresholdFilterType::New();

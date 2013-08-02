@@ -32,7 +32,7 @@ namespace tube
 {
 
 /**
- * \brief Impementation of Borgwardt's Shortest-Path Kernel
+ * \brief Implementation of Borgwardt's Shortest-Path Kernel
  *
  * This class implements the shortest-path kernel, proposed in
  *

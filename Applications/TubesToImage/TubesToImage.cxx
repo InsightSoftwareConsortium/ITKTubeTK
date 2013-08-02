@@ -44,20 +44,19 @@ using namespace tube;
 
 enum { Dimension = 3 };
 
-typedef unsigned char                                   OutputPixelType;
+typedef unsigned char                              OutputPixelType;
 
-typedef itk::Image< unsigned char, Dimension >         TemplateImageType;
-typedef itk::ImageFileReader< TemplateImageType >       TemplateImageReaderType;
-typedef itk::Image< OutputPixelType, Dimension >       OutputImageType;
+typedef itk::Image< unsigned char, Dimension >     TemplateImageType;
+typedef itk::ImageFileReader< TemplateImageType >  TemplateImageReaderType;
+typedef itk::Image< OutputPixelType, Dimension >   OutputImageType;
 
-typedef itk::tube::TubeSpatialObjectToImageFilter<
-    Dimension,
-    OutputImageType >                                   TubetoImageFilterType;
+typedef itk::tube::TubeSpatialObjectToImageFilter< Dimension, OutputImageType >
+                                                   TubetoImageFilterType;
 
-typedef itk::GroupSpatialObject< Dimension >           TubeGroupType;
-typedef TubeGroupType::Pointer                          TubeGroupPointer;
-typedef TubeGroupType                                   TubesType;
-typedef itk::SpatialObjectReader< Dimension >          TubesReaderType;
+typedef itk::GroupSpatialObject< Dimension >       TubeGroupType;
+typedef TubeGroupType::Pointer                     TubeGroupPointer;
+typedef TubeGroupType                              TubesType;
+typedef itk::SpatialObjectReader< Dimension >      TubesReaderType;
 
 /** Read tube file from disk */
 TubesType::Pointer ReadTubes( const char * file );

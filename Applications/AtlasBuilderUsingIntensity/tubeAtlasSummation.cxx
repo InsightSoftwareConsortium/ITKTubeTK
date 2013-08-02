@@ -153,7 +153,7 @@ AtlasSummation::InputImagePointer AtlasSummation
 
   /*
    * For resampling, we need to use the inverse of the transform to get
-   * the desired result. Resample needs a FIXED -> MOVING image trans.
+   * the desired result. Resample needs a FIXED -> MOVING image transform
    */
   TransformType::Pointer inverse = TransformType::New();
   trans->GetInverse(inverse);

@@ -460,7 +460,7 @@ int DoIt( int argc, char **argv )
 
   // Build index vector for exclusion regions
   boost::dynamic_bitset<> excludeRegions( segmentationRegions.size() );
-  for( int e=0; e < argExcludeRegions.size(); ++e)
+  for( unsigned int e = 0; e < argExcludeRegions.size(); ++e )
     {
     unsigned int mappedRegionID = fwdCVTMapper[ argExcludeRegions[e] ];
     itkAssertOrThrowMacro( mappedRegionID < segmentationRegions.size(),

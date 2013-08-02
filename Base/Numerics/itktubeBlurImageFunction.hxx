@@ -263,7 +263,7 @@ BlurImageFunction<TInputImage>
 }
 
 /**
- * Evaluate the fonction at the specified point */
+ * Evaluate the function at the specified point */
 template< class TInputImage >
 double
 BlurImageFunction<TInputImage>

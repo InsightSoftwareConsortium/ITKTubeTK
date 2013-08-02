@@ -253,7 +253,7 @@ MinimizeImageSizeFilter< TInputImage >
     unsigned int dim = ( i+2 ) % ImageDimension;  //Dimension that is changed
     index[dim] = it_input.GetIndex()[dim];
 
-    size[dim]  -= ( index[dim] - region.GetIndex()[dim] );
+    size[dim] -= ( index[dim] - region.GetIndex()[dim] );
     region.SetSize( size );
     region.SetIndex( index );
     }

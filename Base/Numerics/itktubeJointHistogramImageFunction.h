@@ -39,7 +39,7 @@ namespace tube
  *  Z-Score values at a given point in the image. This is done by calling the
  *  Precompute function to build up a mean and standard deviation for each bin
  *  in a joint-histogram. That mean and standard deviation is used to compute
- *  the Z-Score at a point when Evaluate is called. The neighboorhood used in
+ *  the Z-Score at a point when Evaluate is called. The neighborhood used in
  *  the computation of the joint histogram is determined by the feature width.
  */
 template< class TInputImage, class TCoordRep = float >
@@ -179,7 +179,7 @@ protected:
   /** Default destructor */
   ~JointHistogramImageFunction( void ) {}
 
-  /** Printself function for introspection. */
+  /** PrintSelf function for introspection. */
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
   typename HistogramType::Pointer & ComputeHistogramAtIndex(

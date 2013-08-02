@@ -70,7 +70,7 @@ int DoIt( int argc, char * argv[] )
   filter->SetInput( reader->GetOutput() );
   filter->SetDefaultPars();
 
-  // set paramters
+  // set parameters
   filter->SetTimeStep( timeStep );
   filter->SetIterations( numIterations );
   filter->SetRecalculateTubeness( recalculateTubeness );

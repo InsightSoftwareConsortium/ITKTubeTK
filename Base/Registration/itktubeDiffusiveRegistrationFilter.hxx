@@ -241,7 +241,7 @@ DiffusiveRegistrationFilter
   // Update the current multiresolution level (when registering, level is 1..N)
   m_CurrentLevel++;
 
-  // Check the timestep for stability if we are using the diffusive or
+  // Check the time step for stability if we are using the diffusive or
   // anisotropic diffusive regularization terms
   RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
   assert( df );
@@ -305,7 +305,7 @@ DiffusiveRegistrationFilter
   // during the registration (or set pointers to 0 if they are not being used).
   this->AllocateImageMembers();
 
-  // Set the timestep to the registration function.
+  // Set the time step to the registration function.
   this->GetRegistrationFunctionPointer()->SetTimeStep( m_OriginalTimeStep );
 
   // Compute the diffusion tensors and their derivatives
@@ -1629,9 +1629,9 @@ DiffusiveRegistrationFilter
   // Multithread the execution
   this->GetMultiThreader()->SingleMethodExecute();
 
-  // Explicitely call Modified on GetOutput here, since ThreadedApplyUpdate
+  // Explicitly call Modified on GetOutput here, since ThreadedApplyUpdate
   // changes this buffer through iterators which do not increment the
-  // output timestamp
+  // output time stamp
   outputImage->Modified();
 }
 

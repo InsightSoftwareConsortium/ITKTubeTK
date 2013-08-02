@@ -320,7 +320,7 @@ public:
    * Compute the intensity at the point x */
   double  Intensity( const IndexType & x );
 
-  /**the ridgness at point x */
+  /**the ridgeness at point x */
   double  Ridgeness( const ContinuousIndexType & x, double & roundness,
     double & curvature, double & linearity );
 
@@ -347,9 +347,6 @@ protected:
   RidgeExtractor( void );
   virtual ~RidgeExtractor( void );
 
-  RidgeExtractor( const Self& ) {}
-  void operator=( const Self& ) {}
-
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
   /**
@@ -358,6 +355,9 @@ protected:
     MatrixType & newN, int dir );
 
 private:
+
+  RidgeExtractor( const Self& );
+  void operator=( const Self& );
 
   typename ImageType::Pointer                        m_InputImage;
 

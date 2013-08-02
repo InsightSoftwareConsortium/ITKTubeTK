@@ -113,7 +113,7 @@ protected:
   TubeSpatialObjectToImageFilter( void );
   ~TubeSpatialObjectToImageFilter( void );
 
-  /** Create the ouptut images and fill it */
+  /** Create the output images and fill it */
   void GenerateData( void );
 
   void PrintSelf(std::ostream& os, Indent indent) const

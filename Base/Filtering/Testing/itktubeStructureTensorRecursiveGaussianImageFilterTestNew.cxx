@@ -44,7 +44,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTestNew( int argc, char * 
   typedef double PixelType;
   typedef itk::Image<PixelType, Dimension>  ImageType;
 
-  // Set the value of sigma if specificed in command line
+  // Set the value of sigma if specified in command line
   double sigma = 0.1;
   if(argc > 4)
     {
@@ -126,7 +126,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTestNew( int argc, char * 
     pt.Set(static_cast<ImageType::PixelType>(cosValue*cosValue)); //cosx*cosx
     }
 
-  // Compute reference image as convolution of gaussian and product of gradient
+  // Compute reference image as convolution of Gaussian and product of gradient
   typedef itk::RecursiveGaussianImageFilter<ImageType, ImageType>
                                                  GaussianFilterType;
 

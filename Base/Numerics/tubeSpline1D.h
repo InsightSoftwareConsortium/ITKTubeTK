@@ -71,7 +71,7 @@ public:
    *        used to specify values at control points (i.e., integer values)
    * \param optimizer1D a (possibly NULL constructed) instance of a derivation
    *        of the Optimizer1D class (e.g., BrentOptimizer1D). Use to find local
-   *        maxs and mins.
+   *        maximums and minimums.
    * \warning Must set xMin and xMax
    */
   Spline1D( ValueFunctionType::Pointer funcVal, Optimizer1D::Pointer optimizer1D );
@@ -82,7 +82,7 @@ public:
   /** Returns the characteristics of spline evaluations near data bounds
    * (xMin and xMax). If true, values beyond edges (xMin and xMax) are set
    * to zero. If false, values beyond edges are faded to 0 as a function of
-   * distance from edge, squeared.
+   * squared distance from edge.
    */
   tubeGetMacro( Clip, bool );
 
@@ -109,7 +109,7 @@ public:
    */
   tubeGetMacro( NewData, bool );
 
-  /** User sets to true to force recalcuation of internal data
+  /** User sets to true to force recalculation of internal data
    *  For example, use to flag that UserFunction has changed externally
    */
   tubeSetMacro( NewData, bool );
@@ -190,7 +190,7 @@ public:
    *        used to specify values at control points (i.e., integer values)
    * \param optimizer1D a (possibly NULL constructed) instance of a derivation
    *        of the Optimizer1D class (e.g., BrentOptimizer1D). Use to find local
-   *        maxs and mins.
+   *        maximums and minimums.
    * \warning Must set xMin and xMax
    */
   void Use( ValueFunctionType::Pointer funcVal, Optimizer1D::Pointer optimizer1D );
