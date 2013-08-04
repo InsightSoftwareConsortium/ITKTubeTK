@@ -34,15 +34,13 @@ set( TubeTK_Base_ObjectDocuments_H_Files
   itktubeObjectDocumentToImageFilter.h
   itktubeObjectDocumentToObjectSource.h
   itktubeSpatialObjectDocument.h
-  itktubeSpatialObjectToSpatialObjectFilter.h
   tubeMetaDocument.h
   tubeMetaObjectDocument.h
   tubeOptionList.h )
 
 set( TubeTk_Base_ObjectDocuments_HXX_Files
   itktubeObjectDocumentToImageFilter.hxx
-  itktubeObjectDocumentToObjectSource.hxx
-  itktubeSpatialObjectToSpatialObjectFilter.hxx )
+  itktubeObjectDocumentToObjectSource.hxx )
 
 set( TubeTk_Base_ObjectDocuments_SRCS
   tubeMetaDocument.cxx

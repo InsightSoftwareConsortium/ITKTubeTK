@@ -107,7 +107,7 @@ public:
   typedef itk::Image< TensorPixelType, ImageDimension>
                                                          TensorImageType;
 
-   // Define the type for storing the eigen-value
+   // Define the type for storing the eigenvalue
   typedef itk::FixedArray< double, ImageDimension >      EigenValueArrayType;
 
   // Declare the types of the output images

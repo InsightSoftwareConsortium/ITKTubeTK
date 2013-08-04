@@ -35,13 +35,13 @@ namespace tube
 
 
 /** \class RobustMeanAndSigmaImageBuilder
- * \brief Class builds the median and robust variance from inputted images.
- * Images are processed and n/2 are kept to mantain the median calculation.
- * Therefore the number of images must be inputted prior to the start of the
+ * \brief Class builds the median and robust variance from inputed images.
+ * Images are processed and n/2 are kept to maintain the median calculation.
+ * Therefore the number of images must be inputed prior to the start of the
  * image addition, as must be the number of outlier images to crop from the
  * ends.
  *
- * All Inputted images are assumed to have the same spacing, origin.
+ * All Inputed images are assumed to have the same spacing, origin.
  * Optionally, if the tag DynamicallyAdjustOutputSize() is used, then the
  * size many vary and the images will be updated to insure the largest region
  * of all images are collected.
@@ -124,7 +124,7 @@ public:
   itkGetConstMacro( TotalNumberOfImages, unsigned int );
 
   /*
-   * Update the output images to the inputted size. Can be called at any
+   * Update the output images to the inputed size. Can be called at any
    * point during the mean building process.
    *
    * This does NOT test or warn if the current output image size is decreased
@@ -183,7 +183,7 @@ protected:
    * Get the ordered image list representing the upper outlier values.
    * Size is dependent on the number of outliers to remove for robust standard
    * deviation calculation.  Used to determine sigma calculations. Order is
-   * decending starting from highest intensity
+   * descending starting from highest intensity
    */
   InputImageListType& GetUpperOutlierImages( void )
     { return m_UpperOutlierImages; }
@@ -192,7 +192,7 @@ protected:
    * Set the ordered image list representing the upper outlier values.
    * Size is dependent on the number of outliers to remove for robust standard
    * deviation calculation. Used to determine sigma calculations. Order is
-   * decending starting from highest intensity
+   * descending starting from highest intensity
    */
   void SetUpperOutlierImages( InputImageListType& list )
     { m_UpperOutlierImages = list; }

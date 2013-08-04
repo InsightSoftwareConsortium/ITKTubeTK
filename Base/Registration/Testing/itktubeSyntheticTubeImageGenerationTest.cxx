@@ -92,9 +92,9 @@ int itktubeSyntheticTubeImageGenerationTest( int argc, char * argv[] )
       }
     }
 
-  // guassian blur the images to increase the likelihood of vessel
+  // Gaussian blur the images to increase the likelihood of vessel
   // spatial object overlapping.
-  std::cout << "Apply gaussian blur..." << std::endl;
+  std::cout << "Apply Gaussian blur..." << std::endl;
   typedef itk::RecursiveGaussianImageFilter<Image3DType, Image3DType>
     GaussianBlurFilterType;
   GaussianBlurFilterType::Pointer blurFilters[3];

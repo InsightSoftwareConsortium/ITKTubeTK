@@ -374,7 +374,7 @@ UltrasoundProbeGeometryCalculator< TInputImage >
   radiiSubsample->SetSample( radiiSamples );
   radiiSubsample->InitializeWithAllInstances();
   Statistics::Algorithm::InsertSort< RadiusSubsampleType >( radiiSubsample,
-    0, 0, radiusPointsToExamine );
+    0, 0, static_cast< int >( radiusPointsToExamine ) );
   startOfAcquisitionRadius = radiiSubsample->GetMeasurementVectorByIndex( radiusPointsToExamine / 2 )[0];
 
   // Set the values to our ProcessObject outputs.

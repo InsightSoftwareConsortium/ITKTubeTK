@@ -316,7 +316,6 @@ int DoIt( int argc, char **argv )
     }
 
   // Read the CVT center file
-  std::vector< itk::Point< float, VImageDimension > >        cvtCentersPhy;
   typename std::vector< typename InputImageType::IndexType > cvtCentersIdx;
 
   std::ifstream cvtCenterFile( argCVTCenterFileName.c_str() );
@@ -326,7 +325,6 @@ int DoIt( int argc, char **argv )
     int nCenters;
 
     cvtCenterFile >> nCenters;
-    cvtCentersPhy.resize( nCenters );
     cvtCentersIdx.resize( nCenters );
 
     tube::FmtInfoMessage( "Reading %d CVT centers ...",
@@ -351,7 +349,6 @@ int DoIt( int argc, char **argv )
         return EXIT_FAILURE;
         }
 
-      cvtCentersPhy[centerCounter] = p;
       cvtCentersIdx[centerCounter] = targetIndex;
       ++centerCounter;
       }
@@ -455,12 +452,13 @@ int DoIt( int argc, char **argv )
     }
 
   TPixel largestKey = cvtToIndexVector.rbegin()->first;
-  itkAssertOrThrowMacro( (largestKey + 1) == cvtToIndexVector.size(),
+  itkAssertOrThrowMacro( (largestKey + 1)
+                         ==  static_cast< TPixel >( cvtToIndexVector.size() ),
                          "Size mismatch after CVT to index vector mapping" );
 
   // Build index vector for exclusion regions
   boost::dynamic_bitset<> excludeRegions( segmentationRegions.size() );
-  for( int e=0; e < argExcludeRegions.size(); ++e)
+  for( unsigned int e = 0; e < argExcludeRegions.size(); ++e )
     {
     unsigned int mappedRegionID = fwdCVTMapper[ argExcludeRegions[e] ];
     itkAssertOrThrowMacro( mappedRegionID < segmentationRegions.size(),

@@ -28,7 +28,6 @@ limitations under the License.
 #include "itktubeObjectDocumentToImageFilter.h"
 #include "itktubeObjectDocumentToObjectSource.h"
 #include "itktubeSpatialObjectDocument.h"
-#include "itktubeSpatialObjectToSpatialObjectFilter.h"
 #include "tubeMetaDocument.h"
 #include "tubeMetaObjectDocument.h"
 #include "tubeOptionList.h"
@@ -104,15 +103,6 @@ int tubeBaseObjectDocumentsPrintTest( int tubeNotUsed( argc ),
     = SpatialObjectDocumentType::New();
   tubeStandardOutputMacro( << "-------------itk::tube::SpatialObjectDocument"
                            << spatialObjectDocument );
-
-  typedef itk::SpatialObject< 3 > SpatialObjectType;
-  typedef itk::tube::SpatialObjectToSpatialObjectFilter< SpatialObjectType, SpatialObjectType >
-    SpatialObjectToSpatialObjectFilterType;
-
-  SpatialObjectToSpatialObjectFilterType::Pointer spatialObjectToSpatialObjectFilter
-    = SpatialObjectToSpatialObjectFilterType::New();
-  tubeStandardOutputMacro( << "-------------itk::tube::SpatialObjectToSpatialObjectFilter"
-                           << spatialObjectToSpatialObjectFilter );
 
   return EXIT_SUCCESS;
 }

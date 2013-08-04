@@ -42,6 +42,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
 {
   m_Kappa = 1.0;
   m_Extent = 3.0;
+  m_ImageMin = 0.0;
+  m_ImageMax = 0.0;
 
   m_CenterOfRotation.Fill( 0.0 );
 
@@ -328,7 +330,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   const OutputPointType & currentPoint ) const
 {
   // We convolve the 1D signal defined by the direction v at point
-  // currentPoint with a second derivative of a gaussian
+  // currentPoint with a second derivative of a Gaussian
   const InternalComputationValueType scaleSquared = scale * scale;
   const InternalComputationValueType scaleExtentProduct = scale * m_Extent;
   InternalComputationValueType result =
@@ -625,7 +627,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   const OutputPointType & currentPoint ) const
 {
   // We convolve the 1D signal defined by the direction v at point
-  // currentPoint with a second derivative of a gaussian
+  // currentPoint with a second derivative of a Gaussian
   //! \todo use ITKv4 CompensatedSummation
   InternalComputationValueType result =
     NumericTraits< InternalComputationValueType >::Zero;

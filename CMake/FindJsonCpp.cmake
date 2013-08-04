@@ -33,7 +33,7 @@ find_path( JsonCpp_INCLUDE_DIR NAMES json/json.h
   HINTS ${JsonCpp_INCLUDEDIR} ${PC_JsonCpp_INCLUDEDIR} ${PC_JsonCpp_INCLUDE_DIRS}
   PATH_SUFFIXES jsoncpp )
 
-find_library( JsonCpp_LIBRARY NAMES json jsoncpp libjson libjsoncpp
+find_library( JsonCpp_LIBRARY NAMES jsoncpp libjsoncpp
   HINTS ${JsonCpp_LIBDIR} ${PC_JsonCpp_LIBDIR} ${PC_JsonCpp_LIBRARY_DIRS} )
 
 set( JsonCpp_INCLUDE_DIRS ${JsonCpp_INCLUDE_DIR} )
@@ -41,7 +41,7 @@ set( JsonCpp_LIBRARIES ${JsonCpp_LIBRARY} )
 
 include( FindPackageHandleStandardArgs )
 
-find_package_handle_standard_args( JsonCpp DEFAULT_MSG JsonCpp_LIBRARY
-  JsonCpp_INCLUDE_DIR )
+find_package_handle_standard_args( JsonCpp DEFAULT_MSG JsonCpp_LIBRARIES
+  JsonCpp_INCLUDE_DIRS )
 
 mark_as_advanced( JsonCpp_INCLUDE_DIR JsonCpp_LIBRARY )

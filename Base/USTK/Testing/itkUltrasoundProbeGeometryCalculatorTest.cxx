@@ -62,7 +62,7 @@ int itkUltrasoundProbeGeometryCalculatorTest( int argc, char * argv[] )
   typedef itk::tube::UltrasoundProbeGeometryCalculator< ImageType > GeometryCalculatorType;
   GeometryCalculatorType::Pointer geometryCalculator = GeometryCalculatorType::New();
   geometryCalculator->SetInput( thresholdFilter->GetOutput() );
-  // The probe is orientated in the "vertical" direction in the image
+  // The probe is oriented in the "vertical" direction in the image
   geometryCalculator->SetGeneralBeamDirection( 1 );
 
   try

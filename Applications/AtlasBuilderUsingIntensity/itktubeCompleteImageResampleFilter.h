@@ -45,8 +45,8 @@ namespace tube
  *
  * Due to output region variability, this is not effect for pipelining
  *
- * ALSO :: Expects transforms in the identical manner as ResampleImageFilter
- *  (ie. Fixed->Moving )
+ * Also expects transforms in the identical manner as ResampleImageFilter
+ *  (i.e., Fixed->Moving )
  */
 template< class TInputImage, class TOutputImage, class TNonSingularTransform,
           class TInterpolatorPrecisionType = double >

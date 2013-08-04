@@ -214,8 +214,6 @@ protected:
 
   RadiusExtractor( void );
   virtual ~RadiusExtractor( void );
-  RadiusExtractor( const Self& ) {}
-  void operator=( const Self& ) {}
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
@@ -249,6 +247,9 @@ protected:
 
 
 private:
+
+  RadiusExtractor( const Self& );
+  void operator=( const Self& );
 
   typename ImageType::Pointer             m_Image;
   typename ImageType::IndexType           m_ImageXMin;

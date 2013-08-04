@@ -125,7 +125,7 @@ int itktubeImageToTubeRigidRegistrationPerformanceTest( int argc, char * argv[] 
     return EXIT_FAILURE;
     }
 
-  // guassian blur the original input image to increase the likelihood of vessel
+  // Gaussian blur the original input image to increase the likelihood of vessel
   // spatial object overlapping with the vessel image at their initial alignment.
   // this enlarges the convergence zone.
   typedef itk::RecursiveGaussianImageFilter

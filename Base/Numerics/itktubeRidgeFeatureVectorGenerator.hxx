@@ -46,6 +46,8 @@ template< class TImage >
 RidgeFeatureVectorGenerator< TImage >
 ::RidgeFeatureVectorGenerator( void )
 {
+  m_IntensityMin = 0;
+  m_IntensityMax = 0;
   m_Scales.resize( 0 );
 }
 

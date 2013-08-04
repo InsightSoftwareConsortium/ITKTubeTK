@@ -117,8 +117,9 @@ Spline1D::Spline1D( void )
   m_Optimizer1DDeriv = new Spline1DDerivativeFunction(this);
 
   m_Optimizer1D = NULL;
+  m_FuncVal = NULL;
 
-  this->Use(NULL, NULL);
+  this->Use( m_FuncVal, m_Optimizer1D );
 }
 
 // Constructor.
@@ -137,9 +138,10 @@ Spline1D::Spline1D( UserFunction< int, double >::Pointer funcVal, Optimizer1D::P
   m_Optimizer1DVal = new Spline1DValueFunction(this);
   m_Optimizer1DDeriv = new Spline1DDerivativeFunction(this);
 
-  m_Optimizer1D = NULL;
+  m_Optimizer1D = optimizer1D;
+  m_FuncVal = funcVal;
 
-  this->Use(funcVal, optimizer1D);
+  this->Use( m_FuncVal, m_Optimizer1D );
 }
 
 // Destructor.

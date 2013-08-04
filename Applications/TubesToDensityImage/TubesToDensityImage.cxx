@@ -44,12 +44,12 @@ enum { Dimension = 3 };
 
 typedef unsigned int                                  DensityPixelType;
 typedef float                                         RadiusPixelType;
-typedef itk::Vector< float, Dimension >              TangentPixelType;
+typedef itk::Vector< float, Dimension >               TangentPixelType;
 
-typedef itk::Image< unsigned char, Dimension >       TemplateImageType;
-typedef itk::Image< DensityPixelType, Dimension >    DensityImageType;
-typedef itk::Image< RadiusPixelType, Dimension >     RadiusImageType;
-typedef itk::Image< TangentPixelType, Dimension >    TangentImageType;
+typedef itk::Image< unsigned char, Dimension >        TemplateImageType;
+typedef itk::Image< DensityPixelType, Dimension >     DensityImageType;
+typedef itk::Image< RadiusPixelType, Dimension >      RadiusImageType;
+typedef itk::Image< TangentPixelType, Dimension >     TangentImageType;
 
 typedef itk::ImageFileReader< TemplateImageType >     TemplateImageReaderType;
 
@@ -57,7 +57,7 @@ typedef itk::tube::TubeSpatialObjectToDensityImage<
   DensityImageType, RadiusImageType > TubeToDensityImageBuilderType;
 
 typedef TubeToDensityImageBuilderType::TubeGroupType  TubesType;
-typedef itk::SpatialObjectReader< Dimension >        TubesReaderType;
+typedef itk::SpatialObjectReader< Dimension >         TubesReaderType;
 
 /** Max Intensity value */
 DensityPixelType   max_densityIntensity = 2048;

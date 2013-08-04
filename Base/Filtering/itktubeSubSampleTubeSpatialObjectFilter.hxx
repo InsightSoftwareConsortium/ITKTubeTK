@@ -33,6 +33,12 @@ SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
 {
 }
 
+template< class TTubeSpatialObject >
+SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
+::~SubSampleTubeSpatialObjectFilter( void )
+{
+}
+
 
 template< class TTubeSpatialObject >
 void

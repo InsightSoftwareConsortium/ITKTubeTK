@@ -952,7 +952,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 /**
  * Calculates the weighting between the anisotropic diffusive and diffusive
  * regularizations, based on a given distance from a voxel to the border, using
- * a dirac-shaped function
+ * a Dirac-shaped function
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 typename AnisotropicDiffusiveSparseRegistrationFilter

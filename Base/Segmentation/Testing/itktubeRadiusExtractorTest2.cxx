@@ -257,7 +257,7 @@ int itktubeRadiusExtractorTest2( int argc, char * argv[] )
     avgDiff /= numPoints;
     failures = failures / numPoints;
     std::cout << "Failures = " << failures << std::endl;
-    std::cout << "Averge diff = " << avgDiff << std::endl;
+    std::cout << "Average diff = " << avgDiff << std::endl;
     std::cout << "Max diff = " << maxDiff << std::endl;
     avgAvgDiff += avgDiff;
     avgMaxDiff += maxDiff;
@@ -270,7 +270,7 @@ int itktubeRadiusExtractorTest2( int argc, char * argv[] )
   avgAvgDiff /= numMCRuns;
   avgMaxDiff /= numMCRuns;
   std::cout << "Average Failures = " << avgFailures << std::endl;
-  std::cout << "Average Averge diff = " << avgAvgDiff << std::endl;
+  std::cout << "Average Average diff = " << avgAvgDiff << std::endl;
   std::cout << "Average Max diff = " << avgMaxDiff << std::endl;
 
   if( avgFailures > 0.15 )

@@ -75,7 +75,7 @@ void GetImageTypes( std::vector<std::string> fileNames,
 
 //
 // Helper function to check whether the attributes of input image match
-// those of the labelmap.
+// those of the label map.
 //
 template< class TInputImage, class TLabelMap >
 bool

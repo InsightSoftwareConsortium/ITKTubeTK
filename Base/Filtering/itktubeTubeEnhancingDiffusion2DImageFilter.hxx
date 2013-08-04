@@ -62,7 +62,8 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
     m_Omega(25.0),
     m_Sensitivity(20.0),
     m_DarkObjectLightBackground(false),
-    m_Verbose(false)
+    m_Verbose(false),
+    m_CurrentIteration(0)
 {
   this->SetNumberOfRequiredInputs(1);
 
@@ -284,13 +285,13 @@ void TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
   return;
 }
 
-// maxvesselresponse
+// maximum vessel response
 template< class TPixel, unsigned int TDimension >
 void TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 ::MaxTubeResponse(const typename PrecisionImageType::Pointer im)
 {
 
-  // alloc memory for hessian/tensor
+  // alloc memory for Hessian/tensor
   m_Dxx = PrecisionImageType::New();
   m_Dxx->SetOrigin(im->GetOrigin());
   m_Dxx->SetSpacing(im->GetSpacing());
@@ -567,7 +568,7 @@ void TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
               << std::endl;
     }
 
-  // cast back to pixeltype
+  // cast back to pixel type
   this->AllocateOutputs();
   typedef CastImageFilter<PrecisionImageType,ImageType> CTI;
   typename CTI::Pointer casti = CTI::New();

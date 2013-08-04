@@ -319,8 +319,8 @@ int RegressionTestImage( const char *testImageFilename,
   //  convert them to double
   typedef itk::Image< double, VDimension >         ImageType;
   typedef itk::Image< unsigned char, VDimension >  OutputType;
-  typedef itk::Image< unsigned char, 2 >      DiffOutputType;
-  typedef itk::ImageFileReader< ImageType >   ReaderType;
+  typedef itk::Image< unsigned char, 2 >           DiffOutputType;
+  typedef itk::ImageFileReader< ImageType >        ReaderType;
 
   // Read the baseline file
   typename ReaderType::Pointer baselineReader = ReaderType::New();

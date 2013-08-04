@@ -43,8 +43,6 @@ public:
   typedef Self *        Pointer;
   typedef const Self *  ConstPointer;
 
-  tubeTypeMacro( Indent );
-
   /** Constructor with initial level of indentation. */
   Indent( unsigned int indent = 0 )
     {

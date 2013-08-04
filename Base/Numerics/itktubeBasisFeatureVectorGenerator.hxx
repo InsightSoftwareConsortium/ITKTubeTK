@@ -59,6 +59,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
   m_GlobalMean = 0;
   m_GlobalCovariance = 0;
 
+  m_NumberOfBasis = 0;
   m_NumberOfBasisToUseAsFeatures = 0;
   m_InputFeatureVectorGenerator = NULL;
 

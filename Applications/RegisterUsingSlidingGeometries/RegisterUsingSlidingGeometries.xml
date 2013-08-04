@@ -223,7 +223,7 @@
       <flag>l</flag>
       <longflag>lambda</longflag>
       <channel>input</channel>
-      <description>Controls the function used to calculate the weight value as a function of the distance to the closest organ border point. If gamma = -1, then the function is exponential decay. Otherwise, the function is a dirac-shaped function. Must be positive.</description>
+      <description>Controls the function used to calculate the weight value as a function of the distance to the closest organ border point. If gamma = -1, then the function is exponential decay. Otherwise, the function is a Dirac-shaped function. Must be positive.</description>
       <default>0.1</default>
       <constraints>
         <step>0.01</step>
@@ -235,7 +235,7 @@
       <flag>g</flag>
       <longflag>gamma</longflag>
       <channel>input</channel>
-      <description>Controls the Dirac-shaped function used to calculate the weight value as a function of the distance to the closest organ border point. Must be positive to use a dirac-shaped function. If gamma = -1, then an exponential decay using lambda will be used instead (default behavior).</description>
+      <description>Controls the Dirac-shaped function used to calculate the weight value as a function of the distance to the closest organ border point. Must be positive to use a Dirac-shaped function. If gamma = -1, then an exponential decay using lambda will be used instead (default behavior).</description>
       <default>-1.0</default>
       <constraints>
         <step>0.01</step>

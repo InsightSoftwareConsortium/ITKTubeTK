@@ -41,6 +41,11 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
   SpatialObjectFactory< TubeSpatialObjectType >::RegisterSpatialObject();
 }
 
+template< class TSpatialObject, class TTubeSpatialObject >
+SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
+::~SubSampleTubeTreeSpatialObjectFilter( void )
+{
+}
 
 template< class TSpatialObject, class TTubeSpatialObject >
 void

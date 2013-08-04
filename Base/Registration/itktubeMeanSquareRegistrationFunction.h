@@ -48,7 +48,7 @@ namespace tube
  * interpolation. The default interpolator is of type
  * LinearInterpolateImageFunction. The user may set other
  * interpolators via method SetMovingImageInterpolator. Note that the input
- * interpolator must derive from baseclass InterpolateImageFunction.
+ * interpolator must derive from base class InterpolateImageFunction.
  *
  * This class is templated over the fixed image type, moving image type,
  * and the deformation field type.
@@ -131,7 +131,7 @@ public:
   InterpolatorType * GetMovingImageInterpolator( void )
     { return m_MovingImageInterpolator; }
 
-  /** This class uses a constant timestep of 1. */
+  /** This class uses a constant time step of 1. */
   virtual TimeStepType ComputeGlobalTimeStep( void * itkNotUsed( globalData ) ) const
     { return m_TimeStep; }
 
@@ -208,7 +208,7 @@ private:
   /** Function to interpolate the moving image. */
   InterpolatorPointer             m_MovingImageInterpolator;
 
-  /** The global timestep. */
+  /** The global time step. */
   TimeStepType                    m_TimeStep;
 
   /** Threshold below which the denominator term is considered zero. */
