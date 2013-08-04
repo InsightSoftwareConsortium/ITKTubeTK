@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <executable>
   <category>TubeTK</category>
-  <title>Segment Using Quantile Threshold(TubeTK)</title>
-  <description>Marks pixels in the Nth intensity quantile</description>
+  <title>Segment Using Quantile Threshold (TubeTK)</title>
+  <description>Marks pixels in the Nth intensity quantile.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
@@ -32,7 +32,7 @@
       <name>maskVolume</name>
       <label>Mask Volume</label>
       <channel>input</channel>
-      <description>Mask volume defines region for quantile threshold computation</description>
+      <description>Mask volume defines region for quantile threshold computation.</description>
       <longflag>maskVolume</longflag>
       <flag>m</flag>
       <default></default>

@@ -79,11 +79,11 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Load data");
+  timeCollector.Stop( "Load data" );
   double progress = 0.1;
   progressReporter.Report( progress );
 
@@ -92,7 +92,7 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::Pointer maskImage = NULL;
   if( !maskVolume.empty() )
     {
-    timeCollector.Stop("Load mask");
+    timeCollector.Start( "Load mask" );
     typename ReaderType::Pointer maskReader = ReaderType::New();
     maskReader->SetFileName( maskVolume.c_str() );
     try
@@ -102,11 +102,11 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Reading mask: Exception caught: "
-                          + std::string(err.GetDescription()) );
+                          + std::string( err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    timeCollector.Stop("Load mask");
+    timeCollector.Stop( "Load mask" );
     progress = 0.2;
     progressReporter.Report( progress );
 
@@ -115,7 +115,7 @@ int DoIt( int argc, char * argv[] )
 
   if( thresholdQuantile >= 0 && thresholdQuantile <= 1.0 )
     {
-    timeCollector.Start("Gaussian Blur");
+    timeCollector.Start( "Boost accumulate" );
 
     typedef boost::accumulators::accumulator_set< PixelType,
       boost::accumulators::stats<
@@ -181,11 +181,13 @@ int DoIt( int argc, char * argv[] )
     filter->Update();
 
     image = filter->GetOutput();
+
+    timeCollector.Stop( "Boost accumulate" );
     }
 
   typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
 
-  timeCollector.Start("Save data");
+  timeCollector.Start( "Save data" );
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
   writer->SetInput( image );
@@ -197,11 +199,11 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Writing volume: Exception caught: "
-      + std::string(err.GetDescription()) );
+      + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Save data");
+  timeCollector.Stop( "Save data" );
   progress = 1.0;
   progressReporter.Report( progress );
   progressReporter.End();
@@ -210,12 +212,9 @@ int DoIt( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-// Main
 int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  // You may need to update this line if, in the project's .xml CLI file,
-  //   you change the variable name for the inputVolume.
   return tube::ParseArgsAndCallDoIt( inputVolume, argc, argv );
 }
