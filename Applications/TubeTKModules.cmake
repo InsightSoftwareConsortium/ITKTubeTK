@@ -65,6 +65,7 @@ if( TubeTK_USE_BOOST )
   set( TubeTK_${proj}_Boost_MODULES
     ComputeImageQuantiles
     ComputeRegionSignatures
+    SegmentUsingQuantileThreshold
     TransferLabelsToRegions
     TubeGraphKernel )
 endif( TubeTK_USE_BOOST )
