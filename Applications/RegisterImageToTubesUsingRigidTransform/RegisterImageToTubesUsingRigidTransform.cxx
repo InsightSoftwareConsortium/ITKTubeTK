@@ -228,7 +228,8 @@ int DoIt( int argc, char * argv[] )
     dynamic_cast<TransformType *>(registrationMethod->GetTransform());
   outputTransform->SetParameters( registrationMethod->GetLastTransformParameters() );
 
-  typename TubeTransformFilterType::Pointer transformFilter = TubeTransformFilterType::New();
+  typename TubeTransformFilterType::Pointer transformFilter =
+    TubeTransformFilterType::New();
   transformFilter->SetInput( vesselReader->GetGroup() );
   transformFilter->SetScale( 1.0 );
   transformFilter->SetTransform( outputTransform );

@@ -70,14 +70,14 @@ public:
 
   ~MetaRidgeSeed( void );
 
-  virtual void  PrintInfo( void ) const;
+  virtual void PrintInfo( void ) const;
 
   using MetaLDA::CopyInfo;
-  virtual void  CopyInfo( const MetaRidgeSeed & _lda );
+  virtual void CopyInfo( const MetaRidgeSeed & _lda );
 
-  virtual void  Clear( void );
+  virtual void Clear( void );
 
-  bool  InitializeEssential(
+  bool InitializeEssential(
     const RidgeSeedScalesType & _ridgeScales,
     const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix,

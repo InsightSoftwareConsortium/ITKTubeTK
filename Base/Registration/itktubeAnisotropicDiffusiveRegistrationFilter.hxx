@@ -275,7 +275,8 @@ AnisotropicDiffusiveRegistrationFilter
 ::ComputeBorderSurfaceNormals( void )
 {
   assert( m_BorderSurface );
-  vtkSmartPointer< vtkPolyDataNormals > normalsFilter = vtkSmartPointer< vtkPolyDataNormals >::New();
+  vtkSmartPointer< vtkPolyDataNormals > normalsFilter
+    = vtkSmartPointer< vtkPolyDataNormals >::New();
   normalsFilter->ComputePointNormalsOn();
   normalsFilter->ComputeCellNormalsOff();
   //normalsFilter->SetFeatureAngle(30); // TODO
@@ -309,7 +310,8 @@ AnisotropicDiffusiveRegistrationFilter
                                                  bool computeWeights )
 {
   // Setup the point locator and get the normals from the polydata
-  vtkSmartPointer< vtkPointLocator > pointLocator = vtkSmartPointer< vtkPointLocator >::New();
+  vtkSmartPointer< vtkPointLocator > pointLocator
+    = vtkSmartPointer< vtkPointLocator >::New();
   pointLocator->SetDataSet( m_BorderSurface );
   pointLocator->Initialize();
   pointLocator->BuildLocator();

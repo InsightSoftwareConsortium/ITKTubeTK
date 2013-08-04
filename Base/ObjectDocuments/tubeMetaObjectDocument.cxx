@@ -26,43 +26,60 @@ limitations under the License.
 namespace tube
 {
 
-MetaObjectDocument::MetaObjectDocument( void )
+MetaObjectDocument
+::MetaObjectDocument( void )
 {
   m_MaximumNumberOfTransforms = 20;
   m_NumberOfObjectDocuments = 0;
 }
 
-MetaObjectDocument::~MetaObjectDocument( void )
+
+MetaObjectDocument
+::~MetaObjectDocument( void )
 {
   this->Clear();
 }
 
+
 MetaObjectDocument::ObjectDocumentListType &
-MetaObjectDocument::GetObjectDocumentList( void )
+MetaObjectDocument
+::GetObjectDocumentList( void )
 {
   return m_ObjectDocumentList;
 }
 
-void MetaObjectDocument::SetObjectDocumentList( ObjectDocumentListType & objectDocumentList )
+
+void
+MetaObjectDocument
+::SetObjectDocumentList( ObjectDocumentListType & objectDocumentList )
 {
   m_ObjectDocumentList = objectDocumentList;
   m_NumberOfObjectDocuments = static_cast< int >( m_ObjectDocumentList.size() );
 }
 
-void MetaObjectDocument::AddObjectDocument( ObjectDocumentType::Pointer object )
+
+void
+MetaObjectDocument
+::AddObjectDocument( ObjectDocumentType::Pointer object )
 {
   m_ObjectDocumentList.push_back( object );
   ++m_NumberOfObjectDocuments;
 }
 
-void MetaObjectDocument::Clear( void )
+
+void
+MetaObjectDocument
+::Clear( void )
 {
   this->Superclass::Clear();
 
   m_ObjectDocumentList.clear();
 }
 
-bool MetaObjectDocument::ReadFields( void )
+
+bool
+MetaObjectDocument
+::ReadFields( void )
 {
   if( !this->Superclass::ReadFields() )
     {
@@ -91,21 +108,21 @@ bool MetaObjectDocument::ReadFields( void )
       const std::string objectType = (const char *)mF->value;
 
       if( objectType == "Image" )
-          {
-          object = ImageDocumentType::New();
-          }
-        else if( objectType == "Blob" )
-          {
-          object = BlobSpatialObjectDocumentType::New();
-          }
-        else if( objectType == "SpatialObject" )
-          {
-          object = SpatialObjectDocumentType::New();
-          }
-        else
-          {
-          return false;
-          }
+        {
+        object = ImageDocumentType::New();
+        }
+      else if( objectType == "Blob" )
+        {
+        object = BlobSpatialObjectDocumentType::New();
+        }
+      else if( objectType == "SpatialObject" )
+        {
+        object = SpatialObjectDocumentType::New();
+        }
+      else
+        {
+        return false;
+        }
       }
 
     mF = MET_GetFieldRecord( "Name", &m_FieldList );
@@ -135,7 +152,10 @@ bool MetaObjectDocument::ReadFields( void )
   return true;
 }
 
-void MetaObjectDocument::SetupObjectReadFields( void )
+
+void
+MetaObjectDocument
+::SetupObjectReadFields( void )
 {
   this->Superclass::ClearFields();
 
@@ -165,7 +185,10 @@ void MetaObjectDocument::SetupObjectReadFields( void )
   m_FieldList.push_back( endObjectField );
 }
 
-void MetaObjectDocument::SetupObjectWriteFields( unsigned int index )
+
+void
+MetaObjectDocument
+::SetupObjectWriteFields( unsigned int index )
 {
   FieldType * const typeField = new FieldType();
   MET_InitWriteField( typeField, "Type", MET_STRING,
@@ -196,7 +219,10 @@ void MetaObjectDocument::SetupObjectWriteFields( unsigned int index )
   m_FieldList.push_back( endObjectField );
 }
 
-void MetaObjectDocument::SetupReadFields( void )
+
+void
+MetaObjectDocument
+::SetupReadFields( void )
 {
   this->Superclass::SetupReadFields();
 
@@ -208,7 +234,10 @@ void MetaObjectDocument::SetupReadFields( void )
   m_FieldList.push_back( numberOfObjectDocumentsField );
 }
 
-void MetaObjectDocument::SetupWriteFields( void )
+
+void
+MetaObjectDocument
+::SetupWriteFields( void )
 {
   this->Superclass::SetupWriteFields();
 
@@ -224,7 +253,10 @@ void MetaObjectDocument::SetupWriteFields( void )
     }
 }
 
-bool MetaObjectDocument::WriteFields( void )
+
+bool
+MetaObjectDocument
+::WriteFields( void )
 {
   if( !this->Superclass::WriteFields() )
     {
@@ -250,7 +282,10 @@ bool MetaObjectDocument::WriteFields( void )
   return true;
 }
 
-void MetaObjectDocument::PrintSelf( std::ostream & os, Indent indent ) const
+
+void
+MetaObjectDocument
+::PrintSelf( std::ostream & os, Indent indent ) const
 {
   this->Superclass::PrintSelf( os, indent );
 

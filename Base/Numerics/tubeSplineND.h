@@ -69,32 +69,35 @@ public:
   SplineND( void );
 
   /** Constructor.
-  *  \param dimension dimensionality of the space being interpolated
-  *  \param funcVal function evaluated at integer points to determine
-  *         control point values
-  *  \param spline1D derivation of Spline1D (e.g., SplApprox1D) used
-  *         to marginally (i.e., per dimension) interpolate values
-  *  \param optimizer1D an instance (can be NULL constructed) of OptimizerND
-  *         that is used to find local extrema
-  *  \warning xMin and xMax must be set!
-  */
-  SplineND( unsigned int dimension, ValueFunctionType::Pointer funcVal, Spline1D::Pointer spline1D, Optimizer1D::Pointer optimizer1D );
+   *  \param dimension dimensionality of the space being interpolated
+   *  \param funcVal function evaluated at integer points to determine
+   *         control point values
+   *  \param spline1D derivation of Spline1D (e.g., SplApprox1D) used
+   *         to marginally (i.e., per dimension) interpolate values
+   *  \param optimizer1D an instance (can be NULL constructed) of OptimizerND
+   *         that is used to find local extrema
+   *  \warning xMin and xMax must be set!
+   */
+  SplineND( unsigned int dimension,
+    ValueFunctionType::Pointer funcVal,
+    Spline1D::Pointer spline1D,
+    Optimizer1D::Pointer optimizer1D );
 
   /** Destructor. */
   virtual ~SplineND( void );
 
   /** Returns the characteristics of spline evaluations near data bounds
-  *   (xMin and xMax). If true, values beyond edges (xMin and xMax) are
-  *   set to zero.  If false, values beyond edges are faded to 0 as a
-  *   function of squared distance from edge.
-  */
+   *   (xMin and xMax). If true, values beyond edges (xMin and xMax) are
+   *   set to zero.  If false, values beyond edges are faded to 0 as a
+   *   function of squared distance from edge.
+   */
   tubeGetMacro( Clip, bool );
 
   /** Sets the characteristics of spline evaluations near data bounds
-  *   (xMin and xMax). If true, values beyond edges (xMin and xMax) are
-  *   set to zero.  If false, values beyond edges are faded to 0 as a
-  *   function of squared distance from edge.
-  */
+   *   (xMin and xMax). If true, values beyond edges (xMin and xMax) are
+   *   set to zero.  If false, values beyond edges are faded to 0 as a
+   *   function of squared distance from edge.
+   */
   tubeSetMacro( Clip, bool );
 
   tubeBooleanMacro( Clip );
@@ -188,7 +191,10 @@ public:
    *         that is used to find local extrema
    *  \warning xMin and xMax must be set!
    */
-  void Use( unsigned int dimension, ValueFunctionType::Pointer funcVal, Spline1D::Pointer spline1D, Optimizer1D::Pointer optimizer1D );
+  void Use( unsigned int dimension,
+    ValueFunctionType::Pointer funcVal,
+    Spline1D::Pointer spline1D,
+    Optimizer1D::Pointer optimizer1D );
 
   /** Returns spline interpolated value at x.
    * Calculates the values at control (integer) points by calling the

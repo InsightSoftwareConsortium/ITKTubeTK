@@ -35,46 +35,60 @@ limitations under the License.
 namespace tube
 {
 
-// Constructor.
-BrentOptimizer1D::BrentOptimizer1D( void )
+BrentOptimizer1D
+::BrentOptimizer1D( void )
   : Optimizer1D()
 {
   m_Epsilon = 1.0e-20;
 }
 
-// Constructor.
-BrentOptimizer1D::BrentOptimizer1D( ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv )
+
+BrentOptimizer1D
+::BrentOptimizer1D( ValueFunctionType::Pointer funcVal,
+  DerivativeFunctionType::Pointer funcDeriv )
   : Optimizer1D( funcVal, funcDeriv )
 {
   m_Epsilon = 1.0e-20;
 }
 
-// Destructor.
-BrentOptimizer1D::~BrentOptimizer1D( void )
+
+BrentOptimizer1D
+::~BrentOptimizer1D( void )
 {
 }
 
-void BrentOptimizer1D::Use( ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv )
+void
+BrentOptimizer1D
+::Use( ValueFunctionType::Pointer funcVal,
+  DerivativeFunctionType::Pointer funcDeriv )
 {
   this->Superclass::Use( funcVal, funcDeriv );
 }
 
-// Print out information about this object.
-void BrentOptimizer1D::PrintSelf( std::ostream & os, Indent indent ) const
+
+void
+BrentOptimizer1D
+::PrintSelf( std::ostream & os, Indent indent ) const
 {
   this->Superclass::PrintSelf( os, indent );
 
   os << indent << "Epsilon: " << m_Epsilon << std::endl;
 }
 
-void BrentOptimizer1D::m_Move( double & a, double & b, double & c, double d, double e, double f )
+
+void
+BrentOptimizer1D
+::m_Move( double & a, double & b, double & c, double d, double e, double f )
 {
   a = d;
   b = e;
   c = f;
 }
 
-bool BrentOptimizer1D::m_Extreme( double * extX, double * extVal )
+
+bool
+BrentOptimizer1D
+::m_Extreme( double * extX, double * extVal )
 {
   unsigned int iter;
 

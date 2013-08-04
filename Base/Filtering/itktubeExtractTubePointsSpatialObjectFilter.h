@@ -62,13 +62,10 @@ public:
   typedef SmartPointer< Self >                  Pointer;
   typedef SmartPointer< const Self >            ConstPointer;
 
-  typedef TTubeSpatialObject TubeSpatialObjectType;
-  typedef typename TubeSpatialObjectType::TubePointType
-                             TubePointType;
-  typedef VectorContainer< IdentifierType, TubePointType >
-                             PointsContainerType;
-  typedef DataObjectDecorator< PointsContainerType >
-                             PointsContainerDecoratorType;
+  typedef TTubeSpatialObject                               TubeSpatialObjectType;
+  typedef typename TubeSpatialObjectType::TubePointType    TubePointType;
+  typedef VectorContainer< IdentifierType, TubePointType > PointsContainerType;
+  typedef DataObjectDecorator< PointsContainerType >       PointsContainerDecoratorType;
 
   typedef GroupSpatialObject< TubeSpatialObjectType::ObjectDimension >
     GroupSpatialObjectType;

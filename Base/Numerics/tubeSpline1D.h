@@ -174,7 +174,10 @@ public:
    *          user.  The value of y is normally set and x is remapped
    *          internally when the function valueJet is called
    */
-  virtual double DataValueJet( const VectorType & y, double x, double * d, double * d2 ) = 0;
+  virtual double DataValueJet( const VectorType & y,
+    double x,
+    double * d,
+    double * d2 ) = 0;
 
   /** Calculates the local extreme using the supplied instance of a
    *  derivation of Optimizer1D.  Function returns true on successful local
@@ -195,42 +198,42 @@ public:
    */
   void Use( ValueFunctionType::Pointer funcVal, Optimizer1D::Pointer optimizer1D );
 
- /** Returns spline interpolated value at x
-  * Calculates the values at control (integer) points by calling the
-  * UserFunction and returns the interpolated value between those points.
-  * Type of interpolation is dependent on which spline derivation is
-  * used (e.g., SplApprox1D).   Intermediate calculations and control
-  * point evaluations are stored to speed subsequent calls
-  */
- double Value( double x );
+  /** Returns spline interpolated value at x
+   * Calculates the values at control (integer) points by calling the
+   * UserFunction and returns the interpolated value between those points.
+   * Type of interpolation is dependent on which spline derivation is
+   * used (e.g., SplApprox1D).   Intermediate calculations and control
+   * point evaluations are stored to speed subsequent calls
+   */
+  double Value( double x );
 
- /** Returns spline interpolated first derivative at x
-  *  Calculates the values at control (integer) points by calling the
-  *  UserFunction and returns the interpolated first derivative between those
-  *  points.   Type of interpolation is dependent on which spline
-  *  derivation is used (e.g., SplApprox1D).   Intermediate calculations
-  *  and control point evaluations are stored to speed subsequent calls
-  */
- double ValueD( double x );
+  /** Returns spline interpolated first derivative at x
+   *  Calculates the values at control (integer) points by calling the
+   *  UserFunction and returns the interpolated first derivative between those
+   *  points.   Type of interpolation is dependent on which spline
+   *  derivation is used (e.g., SplApprox1D).   Intermediate calculations
+   *  and control point evaluations are stored to speed subsequent calls
+   */
+  double ValueD( double x );
 
- /** Returns spline interpolated second derivative at x
-  *  Calculates the values at control (integer) points by calling the
-  *  UserFunction and returns the interpolated second derivative between those
-  *  points.   Type of interpolation is dependent on which spline
-  *  derivation is used (e.g., SplApprox1D).   Intermediate calculations
-  *  and control point evaluations are stored to speed subsequent calls
-  */
- double ValueD2( double x );
+  /** Returns spline interpolated second derivative at x
+   *  Calculates the values at control (integer) points by calling the
+   *  UserFunction and returns the interpolated second derivative between those
+   *  points.   Type of interpolation is dependent on which spline
+   *  derivation is used (e.g., SplApprox1D).   Intermediate calculations
+   *  and control point evaluations are stored to speed subsequent calls
+   */
+  double ValueD2( double x );
 
- /** Returns spline interpolated derivative jet at x
-  *  Calculates the values at control (integer) points by calling the
-  *  UserFunction and returns the interpolated value, first, and second
-  *  derivatives between those points.  Type of interpolation is dependent
-  *  on which spline derivation is used (e.g., SplApprox1D).  Intermediate
-  *  calculations and control point evaluations are stored to speed
-  *  subsequent calls
-  */
- double ValueJet( double x, double * d, double * d2 );
+  /** Returns spline interpolated derivative jet at x
+   *  Calculates the values at control (integer) points by calling the
+   *  UserFunction and returns the interpolated value, first, and second
+   *  derivatives between those points.  Type of interpolation is dependent
+   *  on which spline derivation is used (e.g., SplApprox1D).  Intermediate
+   *  calculations and control point evaluations are stored to speed
+   *  subsequent calls
+   */
+  double ValueJet( double x, double * d, double * d2 );
 
 protected:
 

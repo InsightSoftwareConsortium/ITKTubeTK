@@ -40,8 +40,8 @@ namespace tube
 {
 
 template< class TPixel, unsigned int TDimension >
-CropROI< TPixel, TDimension >::
-CropROI( void )
+CropROI< TPixel, TDimension >
+::CropROI( void )
 {
   m_InputImage = NULL;
   m_OutputImage = NULL;
@@ -62,114 +62,144 @@ CropROI( void )
   m_ProgressRange = 1;
 }
 
+
 template< class TPixel, unsigned int TDimension >
-CropROI< TPixel, TDimension >::
-~CropROI( void )
+CropROI< TPixel, TDimension >
+::~CropROI( void )
 {
 }
 
+
 template< class TPixel, unsigned int TDimension >
-void CropROI< TPixel, TDimension >::
-SetInput( typename ImageType::Pointer inputImage )
+void
+CropROI< TPixel, TDimension >
+::SetInput( typename ImageType::Pointer inputImage )
 {
   m_InputImage = inputImage;
 }
 
+
 template< class TPixel, unsigned int TDimension >
-void CropROI< TPixel, TDimension >::
-SetMin( typename ImageType::IndexType roiMin )
+void
+CropROI< TPixel, TDimension >
+::SetMin( typename ImageType::IndexType roiMin )
 {
   m_ROIMin = roiMin;
   m_UseROIMin = true;
 }
 
+
 template< class TPixel, unsigned int TDimension >
-void CropROI< TPixel, TDimension >::
-SetUseMin( bool useMin )
+void
+CropROI< TPixel, TDimension >
+::SetUseMin( bool useMin )
 {
   m_UseROIMin = useMin;
 }
 
+
 template< class TPixel, unsigned int TDimension >
-void CropROI< TPixel, TDimension >::
-SetMax( typename ImageType::IndexType roiMax )
+void
+CropROI< TPixel, TDimension >
+::SetMax( typename ImageType::IndexType roiMax )
 {
   m_ROIMax = roiMax;
   m_UseROIMax = true;
 }
 
+
 template< class TPixel, unsigned int TDimension >
-void CropROI< TPixel, TDimension >::
-SetUseMax( bool useMax )
+void
+CropROI< TPixel, TDimension >
+::SetUseMax( bool useMax )
 {
   m_UseROIMax = useMax;
 }
 
+
 template< class TPixel, unsigned int TDimension >
-void CropROI< TPixel, TDimension >::
-SetSize( typename ImageType::SizeType roiSize )
+void
+CropROI< TPixel, TDimension >
+::SetSize( typename ImageType::SizeType roiSize )
 {
   m_ROISize = roiSize;
   m_UseROISize = true;
 }
 
+
 template< class TPixel, unsigned int TDimension >
-void CropROI< TPixel, TDimension >::
-SetUseSize( bool useSize )
+void
+CropROI< TPixel, TDimension >
+::SetUseSize( bool useSize )
 {
   m_UseROISize = useSize;
 }
 
+
 template< class TPixel, unsigned int TDimension >
-void CropROI< TPixel, TDimension >::
-SetCenter( typename ImageType::IndexType roiCenter )
+void
+CropROI< TPixel, TDimension >
+::SetCenter( typename ImageType::IndexType roiCenter )
 {
   m_ROICenter = roiCenter;
   m_UseROICenter = true;
 }
 
+
 template< class TPixel, unsigned int TDimension >
-void CropROI< TPixel, TDimension >::
-SetUseCenter( bool useCenter )
+void
+CropROI< TPixel, TDimension >
+::SetUseCenter( bool useCenter )
 {
   m_UseROICenter = useCenter;
 }
 
+
 template< class TPixel, unsigned int TDimension >
-void CropROI< TPixel, TDimension >::
-SetBoundary( typename ImageType::IndexType roiBoundary )
+void
+CropROI< TPixel, TDimension >
+::SetBoundary( typename ImageType::IndexType roiBoundary )
 {
   m_ROIBoundary = roiBoundary;
   m_UseROIBoundary = true;
 }
 
+
 template< class TPixel, unsigned int TDimension >
-void CropROI< TPixel, TDimension >::
-SetUseBoundary( bool useBoundary )
+void
+CropROI< TPixel, TDimension >
+::SetUseBoundary( bool useBoundary )
 {
   m_UseROIBoundary = useBoundary;
 }
 
+
 template< class TPixel, unsigned int TDimension >
-void CropROI< TPixel, TDimension>::
-SetTimeCollector( itk::TimeProbesCollectorBase * timeCollector )
+void
+CropROI< TPixel, TDimension>
+::SetTimeCollector( itk::TimeProbesCollectorBase * timeCollector )
 {
   m_TimeCollector = timeCollector;
 }
 
+
 template< class TPixel, unsigned int TDimension >
-void CropROI< TPixel, TDimension>::
-SetProgressReporter( CLIProgressReporter * progressReporter,
-                     float progressStart, float progressRange )
+void
+CropROI< TPixel, TDimension>
+::SetProgressReporter( CLIProgressReporter * progressReporter,
+  float progressStart,
+  float progressRange )
 {
   m_ProgressReporter = progressReporter;
   m_ProgressStart = progressStart;
   m_ProgressRange = progressRange;
 }
 
+
 template< class TPixel, unsigned int TDimension >
-void CropROI< TPixel, TDimension>::
-Update( void )
+void
+CropROI< TPixel, TDimension>
+::Update( void )
 {
   if( m_ProgressReporter )
     {
@@ -328,18 +358,20 @@ Update( void )
     }
 }
 
+
 template< class TPixel, unsigned int TDimension >
 typename itk::Image< TPixel, TDimension >::Pointer
-CropROI< TPixel, TDimension>::
-GetOutput( void )
+CropROI< TPixel, TDimension>
+::GetOutput( void )
 {
   return m_OutputImage;
 }
 
+
 template< class TPixel, unsigned int TDimension >
 void
-CropROI< TPixel, TDimension>::
-PrintSelf( void )
+CropROI< TPixel, TDimension>
+::PrintSelf( void )
 {
   if( m_InputImage.IsNotNull() )
     {

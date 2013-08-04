@@ -309,11 +309,16 @@ int main( int argc, char * argv[] )
 
 // Regression Testing Code
 template< unsigned int VDimension >
-int RegressionTestImage( const char *testImageFilename,
-  const char *baselineImageFilename, bool reportErrors,
-  bool createDifferenceImage, double intensityTolerance,
-  int radiusTolerance, int numberOfPixelsTolerance,
-  bool writeOutputImage, const char *outputImageFilename )
+int
+RegressionTestImage( const char *testImageFilename,
+  const char *baselineImageFilename,
+  bool reportErrors,
+  bool createDifferenceImage,
+  double intensityTolerance,
+  int radiusTolerance,
+  int numberOfPixelsTolerance,
+  bool writeOutputImage,
+  const char *outputImageFilename )
 {
   // Use the factory mechanism to read the test and baseline files and
   //  convert them to double

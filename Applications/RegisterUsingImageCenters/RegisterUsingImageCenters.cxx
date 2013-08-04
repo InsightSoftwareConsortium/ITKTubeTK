@@ -99,10 +99,8 @@ int DoIt( int argc, char * argv[] )
     {
     case itk::ImageIOBase::SHORT:
       {
-      /*
-       * Define the image type, the reader type and the nearest-neighbor (NN)
-       * interpolator type that might be used later on.
-       */
+      // Define the image type, the reader type and the nearest-neighbor (NN)
+      // interpolator type that might be used later on.
       typedef itk::Image< short, Dimension >                ImageType;
       typedef itk::ImageFileReader< ImageType >             ReaderType;
       typedef itk::NearestNeighborInterpolateImageFunction<
@@ -115,10 +113,8 @@ int DoIt( int argc, char * argv[] )
       srcReader->Update();
 
 
-      /*
-       * First, we run an orientation correction filter that ensures that we
-       * have a RAI coordinate system.
-       */
+      // First, we run an orientation correction filter that ensures that we
+      // have a RAI coordinate system.
       typename itk::OrientImageFilter< ImageType, ImageType >::Pointer
         orientationFilter = itk::OrientImageFilter<ImageType,ImageType>::New();
       orientationFilter->UseImageDirectionOn();
@@ -137,10 +133,8 @@ int DoIt( int argc, char * argv[] )
         orientedImage->GetLargestPossibleRegion().GetSize();
 
 
-      /*
-       * Next, we read the reference image. We will use the geometric center
-       * of the volume to compute the translation for the input image.
-       */
+      // Next, we read the reference image. We will use the geometric center
+      // of the volume to compute the translation for the input image.
       typename ReaderType::Pointer refReader = ReaderType::New();
       refReader->SetFileName( referenceImageFile.c_str() );
       refReader->Update();
@@ -149,11 +143,9 @@ int DoIt( int argc, char * argv[] )
         refImage->GetLargestPossibleRegion().GetSize();
 
 
-      /*
-       * The translation that we use will be a translation of the geometric
-       * center of the input image to the geometric center of the reference
-       * image.
-       */
+      // The translation that we use will be a translation of the geometric
+      // center of the input image to the geometric center of the reference
+      // image.
       typedef itk::TranslationTransform< double, Dimension >
         TranslationTransformType;
       typename TranslationTransformType::Pointer transform =
@@ -176,10 +168,8 @@ int DoIt( int argc, char * argv[] )
       transform->Translate(translation);
 
 
-      /*
-       * We have to adjust the image origin to reflect the changes induced
-       * by the translation transform.
-       */
+      // We have to adjust the image origin to reflect the changes induced
+      // by the translation transform.
       double outImageOrigin[Dimension];
       for( unsigned int dim=0; dim<Dimension; ++dim)
          {
@@ -188,12 +178,10 @@ int DoIt( int argc, char * argv[] )
          }
 
 
-      /*
-       * Finally, we run a resampling filter to resample the input image in
-       * the new space. We have to take care that, in case of discrete pixel
-       * values (e.g., label map), we switch from the standard linear
-       * interpolator to the NN interpolator.
-       */
+      // Finally, we run a resampling filter to resample the input image in
+      // the new space. We have to take care that, in case of discrete pixel
+      // values (e.g., label map), we switch from the standard linear
+      // interpolator to the NN interpolator.
       typedef itk::ResampleImageFilter<ImageType, ImageType>
         ResampleImageFilterType;
       typename ResampleImageFilterType::Pointer resampleFilter =

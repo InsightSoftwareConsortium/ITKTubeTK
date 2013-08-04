@@ -75,22 +75,6 @@ ShortestPathKernel::FloydTransform(const GraphType &in)
       }
     }
 
-  //EdgeIteratorType x,y;
-  //for(tie(x,y) = edges(out); x!=y;++x)
-  //  {
-  //  std::cout << "(" << source(*x,out) << ", " << target(*x, out) << ") -> "
-  //      << out[source(*x,out)].type << " " << dm[source(*x,out)][target(*x,out)] << "\n";
-  //  }
-
-  // For debugging ... output shortest-path distance matrix
-  //for(int i=0; i<nVertices;++i)
-  //  {
-  //  for(int j=0; j<nVertices;++j)
-  //    {
-  //    std::cout << dm[i][j] << " ";
-  //    }
-  //  std::cout << std::endl;
-  //  }
   return out;
 }
 
@@ -127,20 +111,19 @@ double ShortestPathKernel::Compute( void )
       cntEdgeEvaluations++;
       const EdgeDescriptorType &e1 = *bIt;
 
-      /*
-       * We only consider walks of equal length --- At this point we
-       * only support weights of 1, since this gives integer lengths
-       * of the shortest paths and makes it easy to check for equality.
-       *
-       * We could also use a Brownian bridge kernel to bound the max.
-       * shortest-path length, e.g., max(0,c - |len(e)-len(e')|)
-       */
+      // We only consider walks of equal length --- At this point we
+      // only support weights of 1, since this gives integer lengths
+      // of the shortest paths and makes it easy to check for equality.
+      //
+      // We could also use a Brownian bridge kernel to bound the max.
+      // shortest-path length, e.g., max(0,c - |len(e)-len(e')|)
 
       double weightE0 = wmFG0[*aIt];
       double weightE1 = wmFG1[*bIt];
 
       // Skip edges, unless the weights are equal
-      if( !( vnl_math_abs(weightE0 - weightE1) < std::numeric_limits<double>::epsilon() ) )
+      if( !( vnl_math_abs(weightE0 - weightE1) <
+          std::numeric_limits<double>::epsilon() ) )
         {
         continue;
         }

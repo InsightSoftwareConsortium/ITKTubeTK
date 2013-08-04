@@ -199,7 +199,8 @@ void CreateEmptyImage(
   typename ImageT::Pointer & outImage,
   typename ImageT::SizeType targetSize )
 {
-  typename ImageT::IndexType start; start.Fill( 0 );
+  typename ImageT::IndexType start;
+  start.Fill( 0 );
   typename ImageT::SizeType outImageSize = targetSize;
 
   typename ImageT::RegionType region( start, outImageSize );
@@ -321,7 +322,9 @@ int DoIt( int argc, char **argv )
   std::ifstream cvtCenterFile( argCVTCenterFileName.c_str() );
   if( cvtCenterFile.is_open() )
     {
-    double c0,c1,c2;
+    double c0 = 0.0;
+    double c1 = 0.0;
+    double c2 = 0.0;
     int nCenters;
 
     cvtCenterFile >> nCenters;
@@ -581,53 +584,53 @@ int DoIt( int argc, char **argv )
       }
 
       switch( argSignatureSelector )
+      {
+      case SIGNATURE_CVT_CTR:
         {
-        case SIGNATURE_CVT_CTR:
+        for( unsigned int c=0; c<numberOfCVTCells; ++c )
           {
-          for( unsigned int c=0; c<numberOfCVTCells; ++c )
-            {
-            // Distance to c-th (i.e., c-th CVT cell) center
-            TPixel dist = mapImage->GetPixel( cvtCentersIdx[c] );
-            signatureMatrix.put(c, id , dist);
-            }
-          break;
+          // Distance to c-th (i.e., c-th CVT cell) center
+          TPixel dist = mapImage->GetPixel( cvtCentersIdx[c] );
+          signatureMatrix.put(c, id , dist);
           }
-        case SIGNATURE_CVT_MIN:
-          {
-          namespace acc = boost::accumulators;
-          typedef acc::stats< acc::tag::min >               StatsType;
-          typedef acc::accumulator_set< TPixel, StatsType > AccumulatorType;
-
-          typename IdToIndexVectorType::iterator cvtToIndexVectorIt =
-            cvtToIndexVector.begin();
-
-          while( cvtToIndexVectorIt != cvtToIndexVector.end() )
-            {
-            AccumulatorType cellAcc;
-
-            // Artificial CVT cell ID
-            TPixel cvtCell = ( *cvtToIndexVectorIt ).first;
-
-            const std::vector< typename InputImageType::IndexType > &
-              voxelIndices = ( *cvtToIndexVectorIt ).second;
-
-            // Add distances to accumulator to keep track of the minimum
-            for( unsigned int i=0; i<voxelIndices.size(); ++i )
-              {
-              TPixel dist = mapImage->GetPixel( voxelIndices[i] );
-              cellAcc( dist );
-              }
-
-            // Get the minimum distance to the current segment
-            TPixel minDist = acc::min( cellAcc );
-
-            // We need to map the original CVT cell ID to the artificial one
-            signatureMatrix.put( cvtCell, id, minDist );
-            ++cvtToIndexVectorIt;
-            }
-          break;
-          }
+        break;
         }
+      case SIGNATURE_CVT_MIN:
+        {
+        namespace acc = boost::accumulators;
+        typedef acc::stats< acc::tag::min >               StatsType;
+        typedef acc::accumulator_set< TPixel, StatsType > AccumulatorType;
+
+        typename IdToIndexVectorType::iterator cvtToIndexVectorIt =
+          cvtToIndexVector.begin();
+
+        while( cvtToIndexVectorIt != cvtToIndexVector.end() )
+          {
+          AccumulatorType cellAcc;
+
+          // Artificial CVT cell ID
+          TPixel cvtCell = ( *cvtToIndexVectorIt ).first;
+
+          const std::vector< typename InputImageType::IndexType > &
+            voxelIndices = ( *cvtToIndexVectorIt ).second;
+
+          // Add distances to accumulator to keep track of the minimum
+          for( unsigned int i=0; i<voxelIndices.size(); ++i )
+            {
+            TPixel dist = mapImage->GetPixel( voxelIndices[i] );
+            cellAcc( dist );
+            }
+
+          // Get the minimum distance to the current segment
+          TPixel minDist = acc::min( cellAcc );
+
+          // We need to map the original CVT cell ID to the artificial one
+          signatureMatrix.put( cvtCell, id, minDist );
+          ++cvtToIndexVectorIt;
+          }
+        break;
+        }
+      }
       ++mapIt;
     }
 

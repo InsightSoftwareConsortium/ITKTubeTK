@@ -129,7 +129,8 @@ SpatialObjectSource< TOutputSpatialObject >
   if( idx >= this->GetNumberOfIndexedOutputs() )
     {
     itkExceptionMacro( << "Requested to graft output " << idx
-                      << " but this filter only has " << this->GetNumberOfIndexedOutputs() << " indexed Outputs.");
+                      << " but this filter only has "
+                      << this->GetNumberOfIndexedOutputs() << " indexed Outputs." );
     }
   this->GraftOutput( this->MakeNameFromOutputIndex(idx), graft );
 }

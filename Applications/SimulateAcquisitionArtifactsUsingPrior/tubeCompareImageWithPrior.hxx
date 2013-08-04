@@ -51,8 +51,8 @@ namespace tube
 {
 
 template< class TPixel, unsigned int TDimension >
-CompareImageWithPrior< TPixel, TDimension>::
-CompareImageWithPrior( void )
+CompareImageWithPrior< TPixel, TDimension>
+::CompareImageWithPrior( void )
 {
   m_VolImage = NULL;
   m_MaskImage = NULL;
@@ -83,173 +83,191 @@ CompareImageWithPrior( void )
 }
 
 template< class TPixel, unsigned int TDimension >
-CompareImageWithPrior< TPixel, TDimension>::
-~CompareImageWithPrior( void )
+CompareImageWithPrior< TPixel, TDimension>
+::~CompareImageWithPrior( void )
 {
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-SetInput( typename ImageType::Pointer volImage )
+void
+CompareImageWithPrior< TPixel, TDimension>
+::SetInput( typename ImageType::Pointer volImage )
 {
   m_VolImage = volImage;
 }
 
 template< class TPixel, unsigned int TDimension >
 typename itk::Image< float, TDimension >::Pointer
-CompareImageWithPrior< TPixel, TDimension>::
-GetInput( void )
+CompareImageWithPrior< TPixel, TDimension>
+::GetInput( void )
 {
   return m_VolImage;
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-SetMaskImage( typename ImageType::Pointer maskImage )
+void
+CompareImageWithPrior< TPixel, TDimension>
+::SetMaskImage( typename ImageType::Pointer maskImage )
 {
   m_MaskImage = maskImage;
 }
 
 template< class TPixel, unsigned int TDimension >
 typename itk::Image< float, TDimension >::Pointer
-CompareImageWithPrior< TPixel, TDimension>::
-GetMaskImage( void )
+CompareImageWithPrior< TPixel, TDimension>
+::GetMaskImage( void )
 {
   return m_MaskImage;
 }
 
 template< class TPixel, unsigned int TDimension >
 typename itk::Image< float, TDimension >::Pointer
-CompareImageWithPrior< TPixel, TDimension>::
-GetOutput( void )
+CompareImageWithPrior< TPixel, TDimension>
+::GetOutput( void )
 {
   return m_OutputVolImage;
 }
 
 template< class TPixel, unsigned int TDimension >
 typename itk::Image< float, TDimension >::Pointer
-CompareImageWithPrior< TPixel, TDimension>::
-GetOutputMaskImage( void )
+CompareImageWithPrior< TPixel, TDimension>
+::GetOutputMaskImage( void )
 {
   return m_OutputMaskImage;
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-SetMetricMask( typename ImageType::Pointer metricMask )
+void
+CompareImageWithPrior< TPixel, TDimension>
+::SetMetricMask( typename ImageType::Pointer metricMask )
 {
   m_MetricMask = metricMask;
 }
 
 template< class TPixel, unsigned int TDimension >
 typename itk::Image< float, TDimension >::Pointer
-CompareImageWithPrior< TPixel, TDimension>::
-GetMetricMask( void )
+CompareImageWithPrior< TPixel, TDimension>
+::GetMetricMask( void )
 {
   return m_MetricMask;
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-SetForeground( float foreground )
+void
+CompareImageWithPrior< TPixel, TDimension>
+::SetForeground( float foreground )
 {
   m_Foreground = foreground;
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-SetBackground( float background )
+void
+CompareImageWithPrior< TPixel, TDimension>
+::SetBackground( float background )
 {
   m_Background = background;
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-SetErode( int erode )
+void
+CompareImageWithPrior< TPixel, TDimension>
+::SetErode( int erode )
 {
   m_Erode = erode;
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-SetDilate( int dilate )
+void
+CompareImageWithPrior< TPixel, TDimension>
+::SetDilate( int dilate )
 {
   m_Dilate = dilate;
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-SetGaussianBlur( float gaussianBlur )
+void
+CompareImageWithPrior< TPixel, TDimension>
+::SetGaussianBlur( float gaussianBlur )
 {
   m_GaussianBlur = gaussianBlur;
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-SetSamplingRate( float samplingRate )
+void
+CompareImageWithPrior< TPixel, TDimension>
+::SetSamplingRate( float samplingRate )
 {
   m_SamplingRate = samplingRate;
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-SetSeed( unsigned int seed )
+void
+CompareImageWithPrior< TPixel, TDimension>
+::SetSeed( unsigned int seed )
 {
   m_Seed = seed;
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-SetNormalize( bool normalize )
+void
+CompareImageWithPrior< TPixel, TDimension>
+::SetNormalize( bool normalize )
 {
   m_Normalize = normalize;
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-SetUseRegistration( bool reg )
+void
+CompareImageWithPrior< TPixel, TDimension>
+::SetUseRegistration( bool reg )
 {
   m_UseRegistration = reg;
 }
 
 template< class TPixel, unsigned int TDimension >
-bool CompareImageWithPrior< TPixel, TDimension>::
-GetUseRegistration( void )
+bool
+CompareImageWithPrior< TPixel, TDimension>
+::GetUseRegistration( void )
 {
   return m_UseRegistration;
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-SetUseRegistrationTransform( bool reg )
+void
+CompareImageWithPrior< TPixel, TDimension>
+::SetUseRegistrationTransform( bool reg )
 {
   m_UseRegistrationTransform = reg;
 }
 
 template< class TPixel, unsigned int TDimension >
-bool CompareImageWithPrior< TPixel, TDimension>::
-GetUseRegistrationTransform( void )
+bool
+CompareImageWithPrior< TPixel, TDimension>
+::GetUseRegistrationTransform( void )
 {
   return m_UseRegistrationTransform;
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-SetUseRegistrationOptimization( bool reg )
+void
+CompareImageWithPrior< TPixel, TDimension>
+::SetUseRegistrationOptimization( bool reg )
 {
   m_UseRegistrationOptimization = reg;
 }
 
 template< class TPixel, unsigned int TDimension >
-bool CompareImageWithPrior< TPixel, TDimension>::
-GetUseRegistrationOptimization( void )
+bool
+CompareImageWithPrior< TPixel, TDimension>
+::GetUseRegistrationOptimization( void )
 {
   return m_UseRegistrationOptimization;
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-SetRegistrationTransform(
+void
+CompareImageWithPrior< TPixel, TDimension>
+::SetRegistrationTransform(
   typename itk::RigidImageToImageRegistrationMethod<
     itk::Image< float, TDimension > >::TransformType::Pointer tfm )
 {
@@ -259,15 +277,16 @@ SetRegistrationTransform(
 template< class TPixel, unsigned int TDimension >
 typename itk::RigidImageToImageRegistrationMethod<
   itk::Image< float, TDimension > >::TransformType::Pointer
-CompareImageWithPrior< TPixel, TDimension>::
-GetRegistrationTransform( void )
+CompareImageWithPrior< TPixel, TDimension>
+::GetRegistrationTransform( void )
 {
   return m_RegistrationTransform;
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-SetBoundarySize( std::vector< int > & boundarySize )
+void
+CompareImageWithPrior< TPixel, TDimension>
+::SetBoundarySize( std::vector< int > & boundarySize )
 {
   m_BoundarySize.resize( boundarySize.size() );
   for(unsigned int i=0; i<boundarySize.size(); i++ )
@@ -277,16 +296,19 @@ SetBoundarySize( std::vector< int > & boundarySize )
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-SetTimeCollector( itk::TimeProbesCollectorBase * timeCollector )
+void
+CompareImageWithPrior< TPixel, TDimension>
+::SetTimeCollector( itk::TimeProbesCollectorBase * timeCollector )
 {
   m_TimeCollector = timeCollector;
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-SetProgressReporter( tube::CLIProgressReporter * progressReporter,
-                     float progressStart, float progressRange )
+void
+CompareImageWithPrior< TPixel, TDimension>
+::SetProgressReporter( tube::CLIProgressReporter * progressReporter,
+  float progressStart,
+  float progressRange )
 {
   m_ProgressReporter = progressReporter;
   m_ProgressStart = progressStart;
@@ -294,10 +316,10 @@ SetProgressReporter( tube::CLIProgressReporter * progressReporter,
 }
 
 template< class TPixel, unsigned int TDimension >
-void CompareImageWithPrior< TPixel, TDimension>::
-Update( void )
+void
+CompareImageWithPrior< TPixel, TDimension>
+::Update( void )
 {
-
   m_OutputVolImage = m_VolImage;
   m_OutputMaskImage = m_MaskImage;
   typename ImageType::Pointer regMaskImage = m_MaskImage;
@@ -797,8 +819,9 @@ Update( void )
 }
 
 template< class TPixel, unsigned int TDimension >
-float CompareImageWithPrior< TPixel, TDimension>::
-GetGoodnessOfFit( void )
+float
+CompareImageWithPrior< TPixel, TDimension>
+::GetGoodnessOfFit( void )
 {
   return m_GoF;
 }

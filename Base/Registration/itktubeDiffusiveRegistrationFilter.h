@@ -471,15 +471,15 @@ protected:
     }
 
   /** Set/get a multiplication vectors image. */
-  void SetMultiplicationVectorImage(
-      int index, int dimension, DeformationFieldType * mult )
+  void SetMultiplicationVectorImage( int index,
+    int dimension,
+    DeformationFieldType * mult )
     {
     assert( index < this->GetNumberOfTerms() );
     assert( dimension < ImageDimension );
     this->m_MultiplicationVectorImageArrays[index][dimension] = mult;
     }
-  DeformationFieldType * GetMultiplicationVectorImage( int index,
-                                                             int dimension )
+  DeformationFieldType * GetMultiplicationVectorImage( int index, int dimension )
     {
     assert( index < this->GetNumberOfTerms() );
     assert( dimension < ImageDimension );
@@ -488,7 +488,9 @@ protected:
 
   /** Set/Get a first-order deformation component derivative. */
   void SetDeformationComponentFirstOrderDerivative(
-      int index, int dimension, ScalarDerivativeImageType * deriv )
+      int index,
+      int dimension,
+      ScalarDerivativeImageType * deriv )
     {
     assert( index < this->GetNumberOfTerms() );
     assert( dimension < ImageDimension );
@@ -496,7 +498,8 @@ protected:
         = deriv;
     }
   ScalarDerivativeImageType * GetDeformationComponentFirstOrderDerivative(
-      int index, int dimension )
+      int index,
+      int dimension )
     {
     assert( index < this->GetNumberOfTerms() );
     assert( dimension < ImageDimension );
@@ -506,7 +509,9 @@ protected:
 
   /** Set/Get a second-order deformation component derivative. */
   void SetDeformationComponentSecondOrderDerivative(
-      int index, int dimension, TensorDerivativeImageType * deriv )
+      int index,
+      int dimension,
+      TensorDerivativeImageType * deriv )
     {
     assert( index < this->GetNumberOfTerms() );
     assert( dimension < ImageDimension );
@@ -514,7 +519,8 @@ protected:
         = deriv;
     }
   TensorDerivativeImageType * GetDeformationComponentSecondOrderDerivative(
-      int index, int dimension )
+      int index,
+      int dimension )
     {
     assert( index < this->GetNumberOfTerms() );
     assert( dimension < ImageDimension );

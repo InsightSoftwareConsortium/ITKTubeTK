@@ -248,7 +248,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   // Create a copy of the transform to keep true const correctness (thread-safe)
   // Set the parameters on the copy and uses the copy.
   LightObject::Pointer anotherTransform = this->m_Transform->CreateAnother();
-  TransformType * transformCopy = static_cast< TransformType * >( anotherTransform.GetPointer() );
+  TransformType * transformCopy =
+    static_cast< TransformType * >( anotherTransform.GetPointer() );
   transformCopy->SetFixedParameters( this->m_Transform->GetFixedParameters() );
   transformCopy->SetParameters( parameters );
 
@@ -294,7 +295,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
 
   if( weightSum == NumericTraits< InternalComputationValueType >::Zero )
     {
-    itkWarningMacro( << "GetValue: All the transformed tube points are outside the image." );
+    itkWarningMacro(
+      << "GetValue: All the transformed tube points are outside the image." );
     matchMeasure = NumericTraits< InternalComputationValueType >::min();
     }
   else
@@ -370,7 +372,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
        ++distance )
     {
     const InternalComputationValueType distanceSquared = distance * distance;
-    const InternalComputationValueType kernelValue = ( -1.0 + ( distanceSquared / scaleSquared ) )
+    const InternalComputationValueType kernelValue =
+      ( -1.0 + ( distanceSquared / scaleSquared ) )
       * vcl_exp( -0.5 * distanceSquared / scaleSquared ) - error;
 
     typename FixedImageType::PointType point;
@@ -381,8 +384,9 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
 
     if( this->m_Interpolator->IsInsideBuffer( point ) )
       {
-      const InternalComputationValueType value = static_cast< InternalComputationValueType >(
-        this->m_Interpolator->Evaluate( point ) );
+      const InternalComputationValueType value =
+        static_cast< InternalComputationValueType >(
+          this->m_Interpolator->Evaluate( point ) );
       result += value * kernelValue;
       }
     }
@@ -428,8 +432,10 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
 
   // Create a copy of the transform to keep true const correctness (thread-safe)
   // Set the parameters on the copy and uses the copy.
-  LightObject::Pointer anotherTransform = this->m_Transform->CreateAnother();
-  TransformType * transformCopy = static_cast< TransformType * >( anotherTransform.GetPointer() );
+  LightObject::Pointer anotherTransform =
+    this->m_Transform->CreateAnother();
+  TransformType * transformCopy =
+    static_cast< TransformType * >( anotherTransform.GetPointer() );
   transformCopy->SetFixedParameters( this->m_Transform->GetFixedParameters() );
   transformCopy->SetParameters( parameters );
 
@@ -656,8 +662,9 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
 
     if( this->m_Interpolator->IsInsideBuffer( point ) )
       {
-      const InternalComputationValueType value = static_cast< InternalComputationValueType >(
-        this->m_Interpolator->Evaluate( point ) );
+      const InternalComputationValueType value =
+        static_cast< InternalComputationValueType >(
+          this->m_Interpolator->Evaluate( point ) );
       result += value * kernelValue;
       }
     }

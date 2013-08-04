@@ -75,12 +75,11 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     TInputImage::ImageDimension );
 
-  typedef VesselTubeSpatialObject< TInputImage::ImageDimension >
-                                                             TubeType;
-  typedef typename TubeType::TubePointType                   TubePointType;
+  typedef VesselTubeSpatialObject< TInputImage::ImageDimension > TubeType;
+  typedef typename TubeType::TubePointType                       TubePointType;
 
-  typedef typename TubeType::PointType                       ITKPointType;
-  typedef typename TubeType::VectorType                      ITKVectorType;
+  typedef typename TubeType::PointType                           ITKPointType;
+  typedef typename TubeType::VectorType                          ITKVectorType;
 
   /**
    * Kernel is a vector of points that sparsely represent a tube
@@ -115,95 +114,82 @@ public:
    * Get the input image */
   itkGetConstObjectMacro( Image, ImageType );
 
-  /*
-   * Set Data Minimum */
+  /** Set Data Minimum */
   itkSetMacro( DataMin, double );
 
-  /**
-   * Get Data Minimum */
+  /** Get Data Minimum */
   itkGetMacro( DataMin, double );
 
-  /*
-   * Set Data Maximum */
+  /** Set Data Maximum */
   itkSetMacro( DataMax, double );
 
-  /**
-   * Get Data Maximum */
+  /** Get Data Maximum */
   itkGetMacro( DataMax, double );
 
-  /**
-   * Set Minimum Radius */
+  /** Set Minimum Radius */
   void SetRadiusMin( double radiusMin );
 
-  /**
-   * Get Minimum Radius */
+  /** Get Minimum Radius */
   itkGetMacro( RadiusMin, double );
 
-  /**
-   * Set Maximum Radius */
+  /** Set Maximum Radius */
   void SetRadiusMax( double radiusMax );
 
-  /**
-   * Get Maximum Radius */
+  /** Get Maximum Radius */
   itkGetMacro( RadiusMax, double );
 
-  /**
-   * Set Radius0 */
+  /** Set Radius0 */
   void SetRadius0( double radius0 );
 
-  /**
-   * Get Radius0 */
+  /** Get Radius0 */
   itkGetMacro( Radius0, double );
 
-  /**
-   * Set ThreshMedialness */
+  /** Set ThreshMedialness */
   itkSetMacro( ThreshMedialness, double );
 
-  /**
-   * Get ThreshMedialness */
+  /** Get ThreshMedialness */
   itkGetMacro( ThreshMedialness, double );
 
-  /**
-   * Set ThreshMedialness Start */
+  /** Set ThreshMedialness Start */
   itkSetMacro( ThreshMedialnessStart, double );
 
-  /**
-   * Get ThreshMedialness Start */
+  /** Get ThreshMedialness Start */
   itkGetMacro( ThreshMedialnessStart, double );
 
-  /**
-   * Set Extract Bright Tube (versus a Dark Tube) */
+  /** Set Extract Bright Tube (versus a Dark Tube) */
   itkSetMacro( ExtractBrightTube, bool );
 
-  /**
-   * Get Extract Bright Tube */
+  /** Get Extract Bright Tube */
   itkGetMacro( ExtractBrightTube, bool );
 
-  /**
-   * Return the optimizer */
+  /** Return the optimizer */
   OptimizerType & GetMedialnessOptimizer( void );
 
-  /**
-   * Return the optimizer */
+  /** Return the optimizer */
   SplineType & GetMedialnessOptimizerSpline( void );
 
-  void MeasuresAtPoint( TubePointType & pnt, double pntR,
-    double & mness, double & bness, bool doBNess );
+  void MeasuresAtPoint( TubePointType & pnt,
+    double pntR,
+    double & mness,
+    double & bness,
+    bool doBNess );
 
-  /**
-   * Compute medialness at a kernel array */
+  /** Compute medialness at a kernel array */
   void MeasuresInKernelArray( KernArrayType & kernArray,
-    double pntR, double & mness, double & bness, bool doBNess );
+    double pntR,
+    double & mness,
+    double & bness,
+    bool doBNess );
 
-  /**
-   * Calculate the optimal scale
-   */
-  bool OptimalRadiusAtPoint( TubePointType & pnt, double & r0,
-    double rMin, double rMax, double rStep, double rTolerance );
+  /** Calculate the optimal scale */
+  bool OptimalRadiusAtPoint( TubePointType & pnt,
+    double & r0,
+    double rMin,
+    double rMax,
+    double rStep,
+    double rTolerance );
 
-  /**
-   * Calculate Radii
-   */
+  /** Calculate Radii */
   bool ExtractRadii( TubeType * tube );
 
   void SetIdleCallBack( bool ( *idleCallBack )( void ) );
@@ -217,27 +203,37 @@ protected:
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
-  void ValuesInSubKernel( TubePointType pnt, double pntR,
-    MatrixType & kernN, VectorType & kern, double & kernCnt );
+  void ValuesInSubKernel( TubePointType pnt,
+    double pntR,
+    MatrixType & kernN,
+    VectorType & kern,
+    double & kernCnt );
 
-  void ValuesInKernel( TubePointType pnt, double pntR,
-    MatrixType & kernN, VectorType & kernPos, VectorType & kernNeg,
-    VectorType & kernBrn, bool doBNess );
+  void ValuesInKernel( TubePointType pnt,
+    double pntR,
+    MatrixType & kernN,
+    VectorType & kernPos,
+    VectorType & kernNeg,
+    VectorType & kernBrn,
+    bool doBNess );
 
   void ValuesInFullKernelArray( TubeType * tube,
     KernArrayType & kernArray,
     KernArrayTubePointIndexType & kernArrayTubePointIndex );
 
-  /**
-   * Compute medialness at a kernel */
+  /** Compute medialness at a kernel */
   void MeasuresInKernel( double pntR,
-    VectorType & kernPos, VectorType & kernNeg, VectorType & kernBrn,
-    double & mness, double & bness, bool doBNess );
+    VectorType & kernPos,
+    VectorType & kernNeg,
+    VectorType & kernBrn,
+    double & mness,
+    double & bness,
+    bool doBNess );
 
-  /**
-   * Calculate Radii one way */
+  /** Calculate Radii one way */
   void MeasuresInFullKernelArray( KernArrayType & kernArray,
-    unsigned int kernPntStart, unsigned int KernPntEnd );
+    unsigned int kernPntStart,
+    unsigned int KernPntEnd );
 
   void SmoothMeasuresInFullKernelArray( KernArrayType & kernArray );
 

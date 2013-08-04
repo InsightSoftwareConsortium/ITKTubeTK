@@ -221,7 +221,8 @@ ObjectDocumentToObjectSource< TObjectDocument, VDimension >
 }
 
 template< class TObjectDocument, unsigned int VDimension >
-void ObjectDocumentToObjectSource< TObjectDocument, VDimension >
+void
+ObjectDocumentToObjectSource< TObjectDocument, VDimension >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   this->Superclass::PrintSelf( os, indent );

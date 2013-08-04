@@ -57,7 +57,10 @@ public:
   OptimizerND( void );
 
   /** Constructor. */
-  OptimizerND( unsigned int dimension, ValueFunctionType::Pointer funcValND, DerivativeFunctionType::Pointer funcDerivND, Optimizer1D::Pointer optimizer1D );
+  OptimizerND( unsigned int dimension,
+    ValueFunctionType::Pointer funcValND,
+    DerivativeFunctionType::Pointer funcDerivND,
+    Optimizer1D::Pointer optimizer1D );
 
   /** Destructor. */
   virtual ~OptimizerND( void );
@@ -100,7 +103,10 @@ public:
 
   double FuncVal( double x );
 
-  void Use( unsigned int dimension, ValueFunctionType::Pointer funcValND, DerivativeFunctionType::Pointer funcDerivND, Optimizer1D::Pointer optimizer1D );
+  void Use( unsigned int dimension,
+    ValueFunctionType::Pointer funcValND,
+    DerivativeFunctionType::Pointer funcDerivND,
+    Optimizer1D::Pointer optimizer1D );
 
 protected:
 

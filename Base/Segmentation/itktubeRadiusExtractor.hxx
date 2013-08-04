@@ -324,7 +324,9 @@ template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::MeasuresAtPoint( TubePointType & pnt, double pntR,
-  double & mness, double & bness, bool doBNess )
+  double & mness,
+  double & bness,
+  bool doBNess )
 {
   if( pntR < m_MedialnessOptSpline->GetXMin() * m_MedialnessScaleStep )
     {
@@ -412,7 +414,10 @@ template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::MeasuresInKernelArray( KernArrayType & kernArray,
-  double pntR, double & mness, double & bness, bool doBNess )
+  double pntR,
+  double & mness,
+  double & bness,
+  bool doBNess )
 {
   unsigned int len = kernArray.size();
 
@@ -524,8 +529,12 @@ RadiusExtractor<TInputImage>
 template< class TInputImage >
 bool
 RadiusExtractor<TInputImage>
-::OptimalRadiusAtPoint( TubePointType & pnt, double & r0,
-  double rMin, double rMax, double rStep, double rTolerance )
+::OptimalRadiusAtPoint( TubePointType & pnt,
+  double & r0,
+  double rMin,
+  double rMax,
+  double rStep,
+  double rTolerance )
 {
   TubePointType tmpPnt;
   ITKPointType x;
@@ -1104,8 +1113,12 @@ template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::MeasuresInKernel( double pntR,
-  VectorType & kernPos, VectorType & kernNeg, VectorType & kernBrn,
-  double & mness, double & bness, bool doBNess )
+  VectorType & kernPos,
+  VectorType & kernNeg,
+  VectorType & kernBrn,
+  double & mness,
+  double & bness,
+  bool doBNess )
 {
   int kernAvgCnt = 0;
   for( unsigned int i=0; i<m_KernNumDirs; i++ )
@@ -1323,7 +1336,8 @@ template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
 ::MeasuresInFullKernelArray( KernArrayType & kernArray,
-  unsigned int kernPntStart, unsigned int kernPntEnd )
+  unsigned int kernPntStart,
+  unsigned int kernPntEnd )
 {
   double pntR = m_Radius0;
   double prevPntR = m_Radius0;

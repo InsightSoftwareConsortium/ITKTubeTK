@@ -29,7 +29,6 @@ namespace tube
 {
 
 
-//-----------------------------------------------------------------------------
 AtlasSummation
 ::AtlasSummation( void )
 {
@@ -56,13 +55,12 @@ AtlasSummation
   m_Count = 0;
 }
 
-//-----------------------------------------------------------------------------
+
 AtlasSummation
 ::~AtlasSummation( void )
 {}
 
 
-//-----------------------------------------------------------------------------
 void AtlasSummation
 ::AddImage( InputImageType::Pointer i )
 {
@@ -72,7 +70,6 @@ void AtlasSummation
 }
 
 
-//-----------------------------------------------------------------------------
 void AtlasSummation
 ::AddImage( InputImageType::Pointer image, TransformType::Pointer t )
 {
@@ -129,7 +126,6 @@ void AtlasSummation
 }
 
 
-//-----------------------------------------------------------------------------
 AtlasSummation::InputImagePointer AtlasSummation
 ::TransformInputImage( InputImagePointer image,
                        TransformPointer trans,
@@ -137,10 +133,8 @@ AtlasSummation::InputImagePointer AtlasSummation
                        SpacingType spacing,
                        PointType origin )
 {
-  /*
-   * Realign image to the base Image specifications. If no adjustments
-   * are done to the image, then add the transform to the filter as well
-   */
+  // Realign image to the base Image specifications. If no adjustments
+  // are done to the image, then add the transform to the filter as well
   typedef itk::ResampleImageFilter< InputImageType, InputImageType >
                ResampleFilterType;
 
@@ -151,10 +145,8 @@ AtlasSummation::InputImagePointer AtlasSummation
   transfilter->SetOutputOrigin( origin );
   transfilter->SetDefaultPixelValue( DEFAULT_PIXEL_FILL );
 
-  /*
-   * For resampling, we need to use the inverse of the transform to get
-   * the desired result. Resample needs a FIXED -> MOVING image transform
-   */
+  // For resampling, we need to use the inverse of the transform to get
+  // the desired result. Resample needs a FIXED -> MOVING image transform
   TransformType::Pointer inverse = TransformType::New();
   trans->GetInverse(inverse);
   transfilter->SetTransform(inverse);
@@ -164,7 +156,6 @@ AtlasSummation::InputImagePointer AtlasSummation
 }
 
 
-//-----------------------------------------------------------------------------
 void AtlasSummation
 ::Start( InputImageType::Pointer )
 {
@@ -172,14 +163,11 @@ void AtlasSummation
 }
 
 
-//-----------------------------------------------------------------------------
 AtlasSummation::InputImagePointer AtlasSummation
 ::GetClippedImage( InputImagePointer image, TransformType::Pointer t )
 {
-  /*
-   * The filter does only require output spacing (not size or origin)
-   * to run the resampling
-   */
+  // The filter does only require output spacing (not size or origin)
+  // to run the resampling
   typedef itk::tube::CompleteImageResampleFilter<
     InputImageType, InputImageType, TransformType> ResampleImageFilterType;
 
@@ -223,7 +211,6 @@ AtlasSummation::InputImagePointer AtlasSummation
 }
 
 
-//-----------------------------------------------------------------------------
 bool AtlasSummation
 ::UpdateOutputSizeParameter( SizeType& inputSize )
 {
@@ -242,7 +229,6 @@ bool AtlasSummation
 }
 
 
-//-----------------------------------------------------------------------------
 void AtlasSummation
 ::Finalize( void )
 {
@@ -250,7 +236,6 @@ void AtlasSummation
 }
 
 
-//-----------------------------------------------------------------------------
 void AtlasSummation
 ::WriteImage( MeanImageType::Pointer image, const std::string & file )
 {
@@ -273,7 +258,6 @@ void AtlasSummation
 }
 
 
-//-----------------------------------------------------------------------------
 void AtlasSummation
 ::WriteImage( ProcessImagePointer image, const std::string & file )
 {

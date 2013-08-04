@@ -56,13 +56,11 @@ void MeanAndSigmaImageBuilder< TInputImageType,
     BuildProcessingImages( i );
     }
 
-  /*
-   * Iterate through current_image and copy values into the Sum Image,
-   * Sum Sqared Image, and Valid Count Image
-   *
-   * Note: Must transform the base image region so that the new added
-   * image has the appropriate region value
-   */
+  // Iterate through current_image and copy values into the Sum Image,
+  // Sum Sqared Image, and Valid Count Image
+  //
+  // Note: Must transform the base image region so that the new added
+  // image has the appropriate region value
   ProcessImagePointer sumImage = this->GetSumImage();
   ProcessImagePointer sumSquareImage = this->GetSumSquareImage();
   CountImagePointer validImage = this->GetValidCountImage();
@@ -84,11 +82,9 @@ void MeanAndSigmaImageBuilder< TInputImageType,
     {
     InputPixelType p = it_image.Get();
 
-    /*
-     * If requested to be threshold, ensure that the value
-     * added has a value above the threshold (and not out of the
-     * image area), else ignore.
-     */
+    // If requested to be threshold, ensure that the value
+    // added has a value above the threshold (and not out of the
+    // image area), else ignore.
     if( this->GetThresholdInputImageBelowOn() == false
         || (this->GetThresholdInputImageBelowOn() == true
         && p > this->GetThresholdInputImageBelow() ) )
@@ -111,7 +107,7 @@ template< class TInputImageType, class TOutputMeanImageType,
           class TOutputSigmaImageType >
 void MeanAndSigmaImageBuilder< TInputImageType,
                                TOutputMeanImageType,
-                               TOutputSigmaImageType>
+                               TOutputSigmaImageType >
 ::FinalizeOutput( void )
 {
   if( !( this->GetIsProcessing() ) )
@@ -153,10 +149,8 @@ void MeanAndSigmaImageBuilder< TInputImageType,
   it_mean.GoToBegin();
   it_valid.GoToBegin();
 
-  /*
-   * The minimum number of contributing images to count the voxel
-   * in the output mean and variance
-   */
+  // The minimum number of contributing images to count the voxel
+  // in the output mean and variance
   const unsigned short countThreshold = this->GetImageCountThreshold();
 
   // Calculate standard deviation or varaince
@@ -164,14 +158,12 @@ void MeanAndSigmaImageBuilder< TInputImageType,
 
   while( !it_sum.IsAtEnd() )
     {
-    /*
-     * Ensure that the number of valid images at the point is above
-     * the set minimum image threshold
-     */
+    // Ensure that the number of valid images at the point is above
+    // the set minimum image threshold
     CountPixelType number = it_valid.Get();
     if( number >= countThreshold )
       {
-      if( number > 1 )  // Prevent potential division by zero for variance
+      if( number > 1 ) // Prevent potential division by zero for variance
         {
         ProcessPixelType sum = it_sum.Get();
         ProcessPixelType sumSqr = it_sum_sqre.Get();
@@ -311,15 +303,11 @@ MeanAndSigmaImageBuilder< TInputImageType,
   countFilter->SetInput( validImage );
   countFilter->SetSize( inputSize );
 
-  /*
-   * Keep all the spacing an origins constant for all images (so using only
-   * one to declare)
-   */
+  // Keep all the spacing an origins constant for all images (so using only
+  // one to declare)
   countFilter->SetOutputSpacing( sumImage->GetSpacing() );
-  /*
-   * Keep all the spacing an origins constant for all images (so using only
-   * one to declare)
-   */
+  // Keep all the spacing an origins constant for all images (so using only
+  // one to declare)
   countFilter->SetOutputOrigin( sumImage->GetOrigin() );
   countFilter->Update();
   this->SetValidCountImage( countFilter->GetOutput() );

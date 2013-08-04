@@ -74,10 +74,8 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
   // Add additional images to the lower outlier list if the median is used
   if( UseMedian() )
     {
-    /*
-     * Number of remaining images to add to lower group to insure that
-     * all possible median values are covered
-     */
+    // Number of remaining images to add to lower group to insure that
+    // all possible median values are covered
     unsigned int nTotal = this->GetTotalNumberOfImages();
     unsigned int nOutliers = this->GetNumberOfOutlierImagesToRemove();
     unsigned int remaining = ( nTotal / 2 ) + 1 - nOutliers;
@@ -196,17 +194,13 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
     it_list.GoToBegin();
     while( !it_list.IsAtEnd() && !it_input.IsAtEnd() )
       {
-      /*
-       * Do not count a pixel if the user requests to threshold and the pixel
-       * is below the threshold
-       */
+      // Do not count a pixel if the user requests to threshold and the pixel
+      // is below the threshold
       if( this->GetThresholdInputImageBelowOn() &&
           it_input.Get() <= this->GetThresholdInputImageBelow() )
         {
-        /*
-         * Do nothing for this pixel ( should not be included in calcualations
-         * ( same as itkMeanAndSigmaImageBuilder )
-         */
+        // Do nothing for this pixel ( should not be included in calcualations
+        // ( same as itkMeanAndSigmaImageBuilder )
         }
       /* List is ascending & the input value is less than list swap, and vice versa */
       else if( ( ListIsAscending && it_input.Get() < it_list.Get() ) ||
@@ -274,10 +268,8 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
   ProcessImagePointer sumSquareImage  = this->GetSumSquareImage();
   CountImagePointer   validImages     = this->GetValidCountImage();
 
-  /*
-   * Output region is defined by the size of the images (i.e., the largest
-   * possible region)
-   */
+  // Output region is defined by the size of the images (i.e., the largest
+  // possible region)
   ProcessIteratorType it_sum( sumImage,
                               sumImage->GetLargestPossibleRegion() );
   ProcessIteratorType it_sumSqr( sumSquareImage,
@@ -321,16 +313,12 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
   SetSumSquareImage( sumSquareImage );
   SetValidCountImage( validImages );
 
-  /*
-   * Run the finalization using the superclass (NOTE: Must occur AFTER the
-   * subtraction of the outlier images from the summed images)
-   */
+  // Run the finalization using the superclass (NOTE: Must occur AFTER the
+  // subtraction of the outlier images from the summed images)
   Superclass::FinalizeOutput();
 
-  /*
-   * NOTE: Must occur after the Superclass call to FinalizeOutput() --
-   * Otherwise Median will be overwritten by mean
-   */
+  // NOTE: Must occur after the Superclass call to FinalizeOutput() --
+  // Otherwise Median will be overwritten by mean
   if( UseMedian() )
     {
     // Build the median image and replace the mean with the median
@@ -350,15 +338,16 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
 ::GetMedianImage( void )
 {
   unsigned int totalNumImages = this->GetTotalNumberOfImages();
-  InputImageListType  lowerImages = this->GetLowerOutlierImages();
+  InputImageListType lowerImages = this->GetLowerOutlierImages();
 
   unsigned int numImages = totalNumImages/2;
+  typename InputImageType::ConstPointer lastLowerImage = lowerImages[numImages];
 
   // Build output median image
   OutputMeanImagePointer medianImage = OutputMeanImageType::New();
-  medianImage->SetRegions( lowerImages[numImages]->GetLargestPossibleRegion() );
-  medianImage->SetSpacing( lowerImages[numImages]->GetSpacing() );
-  medianImage->SetOrigin( lowerImages[numImages]->GetOrigin() );
+  medianImage->SetRegions( lastLowerImage->GetLargestPossibleRegion() );
+  medianImage->SetSpacing( lastLowerImage->GetSpacing() );
+  medianImage->SetOrigin( lastLowerImage->GetOrigin() );
   medianImage->Allocate();
 
   OutputMeanIteratorType it_median( medianImage,
@@ -367,8 +356,8 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
   if( (totalNumImages % 2) )
     {
 
-    InputConstIteratorType it_middle( lowerImages[numImages],
-                                      lowerImages[numImages]->GetLargestPossibleRegion() );
+    InputConstIteratorType it_middle( lastLowerImage,
+                                      lastLowerImage->GetLargestPossibleRegion() );
     it_middle.GoToBegin();
     it_median.GoToBegin();
 
@@ -382,10 +371,11 @@ RobustMeanAndSigmaImageBuilder< TInputImageType,
   // Even number
   else
     {
-    InputConstIteratorType it_middle1( lowerImages[numImages],
-                                       lowerImages[numImages]->GetLargestPossibleRegion() );
-    InputConstIteratorType it_middle2( lowerImages[numImages-1],
-                                       lowerImages[numImages-1]->GetLargestPossibleRegion() );
+    InputConstIteratorType it_middle1( lastLowerImage,
+                                       lastLowerImage->GetLargestPossibleRegion() );
+    typename InputImageType::ConstPointer prevLowerImage = lowerImages[numImages - 1];
+    InputConstIteratorType it_middle2( prevLowerImage,
+                                       prevLowerImage->GetLargestPossibleRegion() );
 
     it_middle1.GoToBegin();
     it_middle2.GoToBegin();

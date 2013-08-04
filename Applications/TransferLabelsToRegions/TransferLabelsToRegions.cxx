@@ -213,11 +213,9 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  /*
-   * Some typedefs - Our input image type equals the output image type, since
-   * the images are essentially the same, except that the voxel values
-   * represent different entities.
-   */
+  // Some typedefs - Our input image type equals the output image type, since
+  // the images are essentially the same, except that the voxel values
+  // represent different entities.
   typedef TPixel                                          InputPixelType;
   typedef itk::Image< InputPixelType, VImageDimension >   InputImageType;
 
@@ -238,11 +236,9 @@ int DoIt( int argc, char * argv[] )
     }
 
 
-  /*
-   * First, we try to read in the input image(s), i.e., an image of the Voronoi
-   * tesselation and an image that contains discrete label values for each
-   * voxel of the input image.
-   */
+  // First, we try to read in the input image(s), i.e., an image of the Voronoi
+  // tesselation and an image that contains discrete label values for each
+  // voxel of the input image.
   typename InputImageType::Pointer inImage;
   typename InputReaderType::Pointer inImageReader =
     InputReaderType::New();
@@ -276,11 +272,9 @@ int DoIt( int argc, char * argv[] )
   inLabelImage = inLabelImageReader->GetOutput();
 
 
-  /*
-   * Since we will use the voxel indices, extracted from the input image, to
-   * index voxels in the label image, we have to ensure compatibility w.r.t.
-   * spacing, direction, size and origin.
-   */
+  // Since we will use the voxel indices, extracted from the input image, to
+  // index voxels in the label image, we have to ensure compatibility w.r.t.
+  // spacing, direction, size and origin.
   if( !CheckCompatibility< InputImageType >( inImage, inLabelImage ) )
     {
     tube::ErrorMessage( "Exiting due to image incompatibility!" );
@@ -325,10 +319,8 @@ int DoIt( int argc, char * argv[] )
     static_cast<int>( maxCVTIndex ) );
 
 
-  /*
-   * Create a mapping from CVT cell ID to the vector of corresponding
-   * voxel indices.
-   */
+  // Create a mapping from CVT cell ID to the vector of corresponding
+  // voxel indices.
   typedef typename InputImageType::IndexType                    IndexType;
   typedef typename std::map< TPixel, std::vector< IndexType > > MapType;
 
@@ -361,10 +353,8 @@ int DoIt( int argc, char * argv[] )
     labelSet.size(), static_cast<int>( maxLabel ) );
 
 
-  /*
-   * Map { label_0, ...., label_N } -> {0, ...,  N-1}. This is convenient,
-   * since it allows us to easily build a histogram later on.
-   */
+  // Map { label_0, ...., label_N } -> {0, ...,  N-1}. This is convenient,
+  // since it allows us to easily build a histogram later on.
   unsigned int labelCounter = 0;
   std::map< TPixel, unsigned int > labelRemapFwd;
   std::map< unsigned int, TPixel > labelRemapInv;
@@ -387,9 +377,7 @@ int DoIt( int argc, char * argv[] )
     }
 
 
-  /*
-   * Create an empty output image.
-   */
+  // Create an empty output image.
   typename OutputImageType::Pointer outImage = OutputImageType::New();
   CreateEmptyImage< OutputImageType >( outImage,
     inImage->GetLargestPossibleRegion().GetSize() );
@@ -401,13 +389,11 @@ int DoIt( int argc, char * argv[] )
     omittedRegionCounter );
 
 
-  /*
-   * Relabeling algorithm:
-   *
-   *   1) Create histogram of anatomical labels occurring in CVT cell
-   *   2) Determine the anatomical label occurring most frequently
-   *   3) Set voxel values (of CVT cell) in output image to dominant label
-   */
+  // Relabeling algorithm:
+  //
+  //   1) Create histogram of anatomical labels occurring in CVT cell
+  //   2) Determine the anatomical label occurring most frequently
+  //   3) Set voxel values (of CVT cell) in output image to dominant label
   std::ofstream outMappingFile;
   outMappingFile.open( argOutMappingFileName.c_str() );
 

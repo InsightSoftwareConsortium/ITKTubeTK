@@ -65,7 +65,8 @@ private:
 
 }; // End class SplineNDValueFunction
 
-class SplineNDDerivativeFunction : public UserFunction< vnl_vector< double >, vnl_vector< double > >
+class SplineNDDerivativeFunction
+  : public UserFunction< vnl_vector< double >, vnl_vector< double > >
 {
 public:
 
@@ -103,8 +104,9 @@ private:
 
 }; // End class SplineNDDerivativeFunction
 
-// Constructor.
-SplineND::SplineND( void )
+
+SplineND
+::SplineND( void )
 {
   m_Dimension = 0;
 
@@ -128,8 +130,12 @@ SplineND::SplineND( void )
   this->Use( 0, NULL, NULL, NULL );
 }
 
-// Constructor.
-SplineND::SplineND( unsigned int dimension, ValueFunctionType::Pointer funcVal, Spline1D::Pointer spline1D, Optimizer1D::Pointer optimizer1D )
+
+SplineND
+::SplineND( unsigned int dimension,
+  ValueFunctionType::Pointer funcVal,
+  Spline1D::Pointer spline1D,
+  Optimizer1D::Pointer optimizer1D )
 {
   m_Dimension = 0;
 
@@ -153,8 +159,9 @@ SplineND::SplineND( unsigned int dimension, ValueFunctionType::Pointer funcVal, 
   this->Use( dimension, funcVal, spline1D, optimizer1D );
 }
 
-// Destructor.
-SplineND::~SplineND( void )
+
+SplineND
+::~SplineND( void )
 {
   delete m_OptimizerNDVal;
   delete m_OptimizerNDDeriv;
@@ -164,7 +171,13 @@ SplineND::~SplineND( void )
     }
 }
 
-void SplineND::Use( unsigned int dimension, ValueFunctionType::Pointer funcVal, Spline1D::Pointer spline1D, Optimizer1D::Pointer optimizer1D )
+
+void
+SplineND
+::Use( unsigned int dimension,
+  ValueFunctionType::Pointer funcVal,
+  Spline1D::Pointer spline1D,
+  Optimizer1D::Pointer optimizer1D )
 {
   if( m_OptimizerND != NULL )
     {
@@ -235,13 +248,19 @@ void SplineND::Use( unsigned int dimension, ValueFunctionType::Pointer funcVal, 
 
   if( optimizer1D != NULL )
     {
-    m_OptimizerND = new OptimizerND( m_Dimension, m_OptimizerNDVal, m_OptimizerNDDeriv, optimizer1D );
+    m_OptimizerND = new OptimizerND( m_Dimension,
+      m_OptimizerNDVal,
+      m_OptimizerNDDeriv,
+      optimizer1D );
     }
 
   m_NewData = true;
 }
 
-void SplineND::SetXMin( IntVectorType xMin )
+
+void
+SplineND
+::SetXMin( IntVectorType xMin )
 {
   VectorType t( m_Dimension );
 
@@ -254,7 +273,10 @@ void SplineND::SetXMin( IntVectorType xMin )
   m_XMin = xMin;
 }
 
-void SplineND::SetXMax( IntVectorType xMax )
+
+void
+SplineND
+::SetXMax( IntVectorType xMax )
 {
   VectorType t( m_Dimension );
 
@@ -267,7 +289,10 @@ void SplineND::SetXMax( IntVectorType xMax )
   m_XMax = xMax;
 }
 
-void SplineND::m_GetData( const VectorType & x )
+
+void
+SplineND
+::m_GetData( const VectorType & x )
 {
   bool eql = true;
   if( !m_NewData )
@@ -456,12 +481,18 @@ void SplineND::m_GetData( const VectorType & x )
     }
 }
 
-OptimizerND::Pointer SplineND::GetOptimizerND( void )
+
+OptimizerND ::Pointer
+SplineND
+::GetOptimizerND( void )
 {
   return m_OptimizerND;
 }
 
-double SplineND::Value( const VectorType & x )
+
+double
+SplineND
+::Value( const VectorType & x )
 {
   this->m_GetData( x );
 
@@ -509,7 +540,10 @@ double SplineND::Value( const VectorType & x )
   return m_Val;
 }
 
-double SplineND::ValueD( const VectorType & x, IntVectorType & dx )
+
+double
+SplineND
+::ValueD( const VectorType & x, IntVectorType & dx )
 {
   this->m_GetData( x );
 
@@ -590,7 +624,9 @@ double SplineND::ValueD( const VectorType & x, IntVectorType & dx )
   return m_Val;
 }
 
-SplineND::VectorType & SplineND::ValueD( const VectorType & x )
+SplineND::VectorType &
+SplineND
+::ValueD( const VectorType & x )
 {
   IntVectorType dx( m_Dimension, 0 );
 
@@ -604,7 +640,10 @@ SplineND::VectorType & SplineND::ValueD( const VectorType & x )
   return m_D;
 }
 
-SplineND::MatrixType & SplineND::Hessian( const VectorType & x )
+
+SplineND::MatrixType &
+SplineND
+::Hessian( const VectorType & x )
 {
 
   IntVectorType dx( m_Dimension, 0 );
@@ -633,7 +672,10 @@ SplineND::MatrixType & SplineND::Hessian( const VectorType & x )
   return m_H;
 }
 
-double SplineND::ValueJet( const VectorType & x, VectorType & d, MatrixType & h )
+
+double
+SplineND
+::ValueJet( const VectorType & x, VectorType & d, MatrixType & h )
 {
   IntVectorType dx( m_Dimension, 0 );
 
@@ -671,7 +713,10 @@ double SplineND::ValueJet( const VectorType & x, VectorType & d, MatrixType & h 
   return v;
 }
 
-double SplineND::ValueVDD2( const VectorType & x, VectorType & d, VectorType & d2 )
+
+double
+SplineND
+::ValueVDD2( const VectorType & x, VectorType & d, VectorType & d2 )
 {
   this->m_GetData( x );
 
@@ -755,7 +800,8 @@ double SplineND::ValueVDD2( const VectorType & x, VectorType & d, VectorType & d
         }
 
       itDataWSX.Set( m_Spline1D->DataValueJet( m_Data1D,
-        ( ( x( ( int )m_Dimension-i-1 )-( int )x( ( int )m_Dimension-i-1 ) ) ), &vD, &vD2 ) );
+        ( ( x( ( int )m_Dimension-i-1 ) - ( int )x( ( int )m_Dimension-i-1 ) ) ),
+          &vD, &vD2 ) );
 
       for( unsigned int l=0; l<m_Dimension; l++ )
         {
@@ -845,17 +891,26 @@ double SplineND::ValueVDD2( const VectorType & x, VectorType & d, VectorType & d
   return m_Val;
 }
 
-bool SplineND::Extreme( VectorType & extX, double * extVal )
+
+bool
+SplineND
+::Extreme( VectorType & extX, double * extVal )
 {
   return m_OptimizerND->Extreme( extX, extVal );
 }
 
-bool SplineND::Extreme( VectorType & extX, double * extVal, unsigned int n, MatrixType & dirs )
+
+bool
+SplineND
+::Extreme( VectorType & extX, double * extVal, unsigned int n, MatrixType & dirs )
 {
   return m_OptimizerND->Extreme( extX, extVal, n, dirs );
 }
 
-bool SplineND::Extreme( VectorType & extX, double * extVal, VectorType & dir )
+
+bool
+SplineND
+::Extreme( VectorType & extX, double * extVal, VectorType & dir )
 {
   MatrixType h( m_Dimension, 1 );
   for( unsigned int i=0; i<m_Dimension; i++ )
@@ -865,7 +920,10 @@ bool SplineND::Extreme( VectorType & extX, double * extVal, VectorType & dir )
   return m_OptimizerND->Extreme( extX, extVal, 1, h );
 }
 
-bool SplineND::ExtremeConjGrad( VectorType & extX, double * extVal )
+
+bool
+SplineND
+::ExtremeConjGrad( VectorType & extX, double * extVal )
 {
   Hessian( extX );
 
@@ -876,8 +934,10 @@ bool SplineND::ExtremeConjGrad( VectorType & extX, double * extVal )
   return m_OptimizerND->Extreme( extX, extVal, m_Dimension, eVects );
 }
 
-// Print out information about this object.
-void SplineND::PrintSelf( std::ostream & os, Indent indent ) const
+
+void
+SplineND
+::PrintSelf( std::ostream & os, Indent indent ) const
 {
   this->Superclass::PrintSelf( os, indent );
 

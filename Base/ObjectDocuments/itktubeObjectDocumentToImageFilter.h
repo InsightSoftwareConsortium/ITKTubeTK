@@ -51,12 +51,11 @@ public:
 
   enum { Dimension = 3 };
 
-  typedef ObjectDocumentToImageFilter          Self;
+  typedef ObjectDocumentToImageFilter                                Self;
   typedef ObjectDocumentToObjectSource< TObjectDocument,
-                                        TImageType::ImageDimension >
-                                               Superclass;
-  typedef SmartPointer< Self >                 Pointer;
-  typedef SmartPointer< const Self >           ConstPointer;
+                                        TImageType::ImageDimension > Superclass;
+  typedef SmartPointer< Self >                                       Pointer;
+  typedef SmartPointer< const Self >                                 ConstPointer;
 
   typedef TObjectDocument                      DocumentType;
   typedef typename DocumentType::ConstPointer  ConstDocumentPointer;

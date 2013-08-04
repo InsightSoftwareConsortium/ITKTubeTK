@@ -54,7 +54,8 @@ public:
   BrentOptimizer1D( void );
 
   /** Constructor. */
-  BrentOptimizer1D( ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv );
+  BrentOptimizer1D( ValueFunctionType::Pointer funcVal,
+    DerivativeFunctionType::Pointer funcDeriv );
 
   /** Destructor. */
   ~BrentOptimizer1D( void );
@@ -63,7 +64,8 @@ public:
 
   tubeSetMacro( Epsilon, double );
 
-  void Use( ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv );
+  void Use( ValueFunctionType::Pointer funcVal,
+    DerivativeFunctionType::Pointer funcDeriv );
 
 protected:
 

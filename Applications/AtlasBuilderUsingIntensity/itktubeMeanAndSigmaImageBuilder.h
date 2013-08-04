@@ -90,7 +90,7 @@ public:
   typedef Image<
     float,itkGetStaticConstMacro( ImageDimension )>           ProcessImageType;
 
-  /*
+  /**
    * Add an image to the group being summed.
    *
    * NOTE: No check is made to insure the same image is not added twice
@@ -100,7 +100,7 @@ public:
    */
   virtual void AddImage( InputImagePointer );
 
-  /*
+  /**
    * Must call this function to finish image additions and form the
    * mean and variance
    *
@@ -119,37 +119,37 @@ public:
   /** Get the output valid count image */
   itkGetObjectMacro( ValidCountImage, CountImageType );
 
-  /*
+  /**
    * Get the minimum number of contributing images for a given voxel
    * to count in the output images
    */
   itkGetConstMacro( ImageCountThreshold, unsigned short );
 
-  /*
+  /**
    * Set the minimum number of contributing images for a given voxel
    * to count in the output images
    */
   itkSetMacro( ImageCountThreshold, unsigned short );
 
-  /*
+  /**
    * Get the bool flag of whether the OutputSigmaImageType is
    * variance (false) or standard deviation (true)
    */
   itkGetConstMacro( UseStandardDeviation, bool );
 
-  /*
+  /**
    * Set the bool flag of whether the OutputSigmaImageType is
    * variance (false) or standard deviation (true).  Default is true
    */
   itkSetMacro( UseStandardDeviation, bool );
 
-  /*
+  /**
    * Get the threshold lower value where all values less than or
    * equal to input are not counted as a valid voxel
    */
   itkGetConstMacro( ThresholdInputImageBelow, InputPixelType );
 
-  /*
+  /**
    * Set the threshold lower value where all values less than or
    * equal to input are not counted as a valid voxel - default is 0
    */
@@ -159,33 +159,33 @@ public:
     this->SetThresholdInputImageBelowOn( true );
     }
 
-  /*
+  /**
    * Turn on and off the ThresholdInputImageBelow function (default is off).
    * Will use last inputed value, or default otherwise
    * ( see ThresholdInputImageBelow )
    */
   itkGetConstMacro( ThresholdInputImageBelowOn, bool );
 
-  /*
+  /**
    * Turn on and off the ThresholdInputImageBelow function (default is off).
    * Will use last inputed value, or default otherwise
    * ( see ThresholdInputImageBelow )
    */
   itkSetMacro( ThresholdInputImageBelowOn, bool );
 
-  /*
+  /**
    * Get the bool flag of whether the output images should adjust their
    * size dynamically based on the inputed image sizes.  Default is false
    */
   itkGetConstMacro( DynamicallyAdjustOutputSize, bool );
 
-  /*
+  /**
    * Set the bool flag of whether the output images should adjust their
    * size dynamically based on the inputed image sizes.  Default is false
    */
   itkSetMacro( DynamicallyAdjustOutputSize, bool );
 
-  /*
+  /**
    * Update the output images to the inputed size.
    *
    * Can be called at any point in the mean building process AFTER
@@ -246,24 +246,23 @@ protected:
   /** Set the output variance image */
   itkSetObjectMacro( OutputSigmaImage, OutputSigmaImageType );
 
-  /*
+  /**
    * Get processing variable flag.  Flag states whether the Processing
    * Images have been defined
    */
   itkGetConstMacro( IsProcessing, bool );
 
-  /*
+  /**
    * Set processing variable flag.  Flag states whether the Processing
    * Images have been defined
    */
   itkSetMacro( IsProcessing, bool );
 
-  /*
+  /**
    * Build new processing images, i.e.,
    * sumImage, sumSquareImage, validCountImage
    */
   virtual void BuildProcessingImages( InputImagePointer i );
-
 
 private:
 
@@ -280,7 +279,6 @@ private:
   bool                                    m_IsProcessing;
   bool                                    m_UseStandardDeviation;
   bool                                    m_DynamicallyAdjustOutputSize;
-
 
   SizeType                                m_OutputSize;
   SpacingType                             m_OutputSpacing;

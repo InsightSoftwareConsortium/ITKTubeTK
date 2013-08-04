@@ -23,18 +23,18 @@ limitations under the License.
 
 /*=========================================================================
 
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: tubeOptionList.cxx,v $
-  Language:  C++
-  Date:      $Date: 2004/05/06 13:45:52 $
-  Version:   $Revision: 1.1 $
+Program:   Insight Segmentation & Registration Toolkit
+Module:    $RCSfile: tubeOptionList.cxx,v $
+Language:  C++
+Date:      $Date: 2004/05/06 13:45:52 $
+Version:   $Revision: 1.1 $
 
-  Copyright (c) 2002 Insight Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+Copyright (c) 2002 Insight Consortium. All rights reserved.
+See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
 
@@ -43,20 +43,29 @@ limitations under the License.
 namespace tube
 {
 
-OptionList::OptionList( void )
+OptionList
+::OptionList( void )
 {
 }
 
-OptionList::~OptionList( void )
+
+OptionList
+::~OptionList( void )
 {
 }
 
-OptionList::OptionMapType & OptionList::GetOptionMap( void )
+
+OptionList::OptionMapType &
+OptionList
+::GetOptionMap( void )
 {
   return m_OptionMap;
 }
 
-void OptionList::CreateOptionMap( int argc, char * argv[] )
+
+void
+OptionList
+::CreateOptionMap( int argc, char * argv[] )
 {
   std::string tag;
   int index = 1;
@@ -77,7 +86,10 @@ void OptionList::CreateOptionMap( int argc, char * argv[] )
     }
 }
 
-int OptionList::GetOptions( const std::string & tag,
+
+int
+OptionList
+::GetOptions( const std::string & tag,
                             std::vector< std::string > & values ) const
 {
   values.clear();
@@ -97,8 +109,10 @@ int OptionList::GetOptions( const std::string & tag,
   return numberOfValues;
 }
 
-int OptionList::DumpOptions( const std::string & tag, bool withTag,
-                             bool withNewLine ) const
+
+int
+OptionList
+::DumpOptions( const std::string & tag, bool withTag, bool withNewLine ) const
 {
   typedef OptionMapType::const_iterator OptionIterator;
 
@@ -131,8 +145,12 @@ int OptionList::DumpOptions( const std::string & tag, bool withTag,
   return 0;
 }
 
-bool OptionList::GetBooleanOption( const std::string & tag, bool defaultValue,
-                                   bool required ) const
+
+bool
+OptionList
+::GetBooleanOption( const std::string & tag,
+  bool defaultValue,
+  bool required ) const
 {
   std::vector< std::string > values;
   const int numberOfValues = this->GetOptions( tag, values );
@@ -155,9 +173,12 @@ bool OptionList::GetBooleanOption( const std::string & tag, bool defaultValue,
   return false;
 }
 
-unsigned char OptionList::GetCharacterOption( const std::string & tag,
-                                              unsigned char defaultValue,
-                                              bool required ) const
+
+unsigned char
+OptionList
+::GetCharacterOption( const std::string & tag,
+  unsigned char defaultValue,
+  bool required ) const
 {
   std::vector< std::string > values;
   const int numberOfValues = this->GetOptions( tag, values );
@@ -175,8 +196,12 @@ unsigned char OptionList::GetCharacterOption( const std::string & tag,
   return (unsigned char)std::atoi( values[0].c_str() );
 }
 
-double OptionList::GetDoubleOption( const std::string & tag,
-                                    double defaultValue, bool required ) const
+
+double
+OptionList
+::GetDoubleOption( const std::string & tag,
+  double defaultValue,
+  bool required ) const
 {
   std::vector< std::string > tempValues;
   const int numberOfValues = this->GetOptions( tag, tempValues );
@@ -194,8 +219,12 @@ double OptionList::GetDoubleOption( const std::string & tag,
   return std::strtod( tempValues[0].c_str(), NULL );
 }
 
-int OptionList::GetIntegerOption( const std::string & tag, int defaultValue,
-                                  bool required ) const
+
+int
+OptionList
+::GetIntegerOption( const std::string & tag,
+  int defaultValue,
+  bool required ) const
 {
   std::vector< std::string > values;
   const int numberOfValues = this->GetOptions( tag, values );
@@ -213,9 +242,12 @@ int OptionList::GetIntegerOption( const std::string & tag, int defaultValue,
   return (int)std::strtol( values[0].c_str(), NULL, 0 );
 }
 
-int OptionList::GetMultipleCharactersOption( const std::string & tag,
-                                             std::vector< unsigned char > & values,
-                                             bool required ) const
+
+int
+OptionList
+::GetMultipleCharactersOption( const std::string & tag,
+  std::vector< unsigned char > & values,
+  bool required ) const
 {
   values.clear();
 
@@ -245,9 +277,12 @@ int OptionList::GetMultipleCharactersOption( const std::string & tag,
   return numberOfValues;
 }
 
-int OptionList::GetMultipleDoublesOption( const std::string & tag,
-                                          itk::Array< double > & values,
-                                          bool required ) const
+
+int
+OptionList
+::GetMultipleDoublesOption( const std::string & tag,
+  itk::Array< double > & values,
+  bool required ) const
 {
   std::vector< double > tempValues;
   const int numberOfValues = this->GetMultipleDoublesOption( tag, tempValues,
@@ -270,9 +305,12 @@ int OptionList::GetMultipleDoublesOption( const std::string & tag,
   return numberOfValues;
 }
 
-int OptionList::GetMultipleDoublesOption( const std::string & tag,
-                                          std::vector< double > & values,
-                                          bool required ) const
+
+int
+OptionList
+::GetMultipleDoublesOption( const std::string & tag,
+  std::vector< double > & values,
+  bool required ) const
 {
   values.clear();
 
@@ -302,9 +340,12 @@ int OptionList::GetMultipleDoublesOption( const std::string & tag,
   return numberOfValues;
 }
 
-int OptionList::GetMultipleIntegersOption( const std::string & tag,
-                                           std::vector< int > & values,
-                                           bool required ) const
+
+int
+OptionList
+::GetMultipleIntegersOption( const std::string & tag,
+  std::vector< int > & values,
+  bool required ) const
 {
   values.clear();
 
@@ -334,9 +375,12 @@ int OptionList::GetMultipleIntegersOption( const std::string & tag,
   return numberOfValues;
 }
 
-int OptionList::GetMultipleStringsOption( const std::string & tag,
-                                          std::vector< std::string > & values,
-                                          bool required ) const
+
+int
+OptionList
+::GetMultipleStringsOption( const std::string & tag,
+  std::vector< std::string > & values,
+  bool required ) const
 {
   values.clear();
 
@@ -361,9 +405,12 @@ int OptionList::GetMultipleStringsOption( const std::string & tag,
   return numberOfValues;
 }
 
-int OptionList::GetMultipleUnsignedIntegersOption( const std::string & tag,
-                                                   std::vector< unsigned int > & values,
-                                                   bool required ) const
+
+int
+OptionList
+::GetMultipleUnsignedIntegersOption( const std::string & tag,
+  std::vector< unsigned int > & values,
+  bool required ) const
 {
   values.clear();
 
@@ -394,8 +441,12 @@ int OptionList::GetMultipleUnsignedIntegersOption( const std::string & tag,
   return numberOfValues;
 }
 
-int OptionList::GetStringOption( const std::string & tag, std::string & value,
-                                 bool required ) const
+
+int
+OptionList
+::GetStringOption( const std::string & tag,
+  std::string & value,
+  bool required ) const
 {
   std::vector< std::string > values;
   const int numberOfValues = this->GetOptions( tag, values );
@@ -415,9 +466,12 @@ int OptionList::GetStringOption( const std::string & tag, std::string & value,
   return numberOfValues;
 }
 
-unsigned int OptionList::GetUnsignedIntegerOption( const std::string & tag,
-                                                   unsigned int defaultValue,
-                                                   bool required ) const
+
+unsigned int
+OptionList
+::GetUnsignedIntegerOption( const std::string & tag,
+  unsigned int defaultValue,
+  bool required ) const
 {
   std::vector< std::string > values;
   const int numberOfValues = this->GetOptions( tag, values );
@@ -435,7 +489,10 @@ unsigned int OptionList::GetUnsignedIntegerOption( const std::string & tag,
   return (unsigned int)std::strtoul( values[0].c_str(), NULL, 0 );
 }
 
-void OptionList::PrintSelf( std::ostream & os, Indent indent ) const
+
+void
+OptionList
+::PrintSelf( std::ostream & os, Indent indent ) const
 {
   this->Superclass::PrintSelf( os, indent );
 

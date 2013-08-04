@@ -84,7 +84,7 @@ public:
   typedef typename Superclass::PointType                    PointType;
   typedef typename Superclass::SizeType                     SizeType;
 
-  /*
+  /**
    * Add an image to the group being summed. No check is made to insure
    * the same image is not added twice
    *
@@ -93,7 +93,7 @@ public:
    */
   void AddImage( InputImagePointer );
 
-  /*
+  /**
    * Must call this function to finish image additions and form the mean
    * and variance. Any images added ( AddImage() ) after the call of this
    * function will eliminate the results of this output and will start a new
@@ -101,19 +101,19 @@ public:
    */
   void FinalizeOutput( void );
 
-  /*
+  /**
    * Get the number of outliers on either side of the mean to remove prior
    * to statistical calculations
    */
   itkGetConstMacro( NumberOfOutlierImagesToRemove, unsigned int );
 
-  /*
+  /**
    * Set the number of outliers on either side of the mean to remove prior
    * to statistical calculations
    */
   itkSetMacro( NumberOfOutlierImagesToRemove, unsigned int );
 
-  /*
+  /**
    * Function to define class to find the median image. Requires that the total
    * number of images to be added to the form mean. Median will be returned using
    * the GetOutputMeanImage() function.
@@ -123,7 +123,7 @@ public:
 
   itkGetConstMacro( TotalNumberOfImages, unsigned int );
 
-  /*
+  /**
    * Update the output images to the inputed size. Can be called at any
    * point during the mean building process.
    *
@@ -159,27 +159,27 @@ protected:
 
   typedef typename std::vector<InputImagePointer>       InputImageListType;
 
-  /*
+  /**
    * Build new processing images ( i.e., sumImage, sumSquareImage,
    * validCountImage )
    */
   void BuildProcessingImages( InputImagePointer i );
 
-  /*
+  /**
    * Get the ordered image list representing the lower half of voxel values.
    * Used to determine median.  Order is ascending pixel value
    */
   InputImageListType& GetLowerOutlierImages( void )
     { return m_LowerOutlierImages; }
 
-  /*
+  /**
    * Set the ordered image list representing the lower half of voxel values.
    * Used to determine median.
    */
   void  SetLowerOutlierImages( InputImageListType& list )
     { m_LowerOutlierImages = list; }
 
-  /*
+  /**
    * Get the ordered image list representing the upper outlier values.
    * Size is dependent on the number of outliers to remove for robust standard
    * deviation calculation.  Used to determine sigma calculations. Order is
@@ -188,7 +188,7 @@ protected:
   InputImageListType& GetUpperOutlierImages( void )
     { return m_UpperOutlierImages; }
 
-  /*
+  /**
    * Set the ordered image list representing the upper outlier values.
    * Size is dependent on the number of outliers to remove for robust standard
    * deviation calculation. Used to determine sigma calculations. Order is
@@ -209,7 +209,7 @@ protected:
   bool UseMedian( void )
     { return ( m_TotalNumberOfImages > 0 ); }
 
-  /*
+  /**
    * Builds median image from the LowerOutlierImages. Can only
    * be (reasonably) called after at least 1 image has been added
    */

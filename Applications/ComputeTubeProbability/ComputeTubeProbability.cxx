@@ -140,7 +140,8 @@ int DoIt( int argc, char * argv[] )
       pnt = tubePoint.GetPosition(); // Get point's position
       pnt = tubeTransform->TransformPoint(pnt); // Point coords to physical coords
       meanImage->TransformPhysicalPointToIndex(pnt, indx); // Get closest voxel
-      writeStream << meanImage->GetPixel(indx) << std::endl; // Write value of ATLAS EMD file at voxel
+      // Write value of ATLAS EMD file at voxel
+      writeStream << meanImage->GetPixel(indx) << std::endl;
       }
 
     ++tubeIt;

@@ -639,8 +639,10 @@ NJetImageFunction<TInputImage>
 template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
-::Derivative( const PointType& point, const VectorType & v1,
-  double scale, typename NJetImageFunction<TInputImage>::VectorType & d ) const
+::Derivative( const PointType& point,
+  const VectorType & v1,
+  double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   if( !m_InputImage )
     {
@@ -711,8 +713,10 @@ NJetImageFunction<TInputImage>
 template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
-::DerivativeAtIndex( const IndexType& index, const VectorType & v1,
-  double scale, typename NJetImageFunction<TInputImage>::VectorType & d ) const
+::DerivativeAtIndex( const IndexType& index,
+  const VectorType & v1,
+  double scale,
+  typename NJetImageFunction<TInputImage>::VectorType & d ) const
 {
   if( !m_InputImage )
     {
@@ -1114,8 +1118,10 @@ NJetImageFunction<TInputImage>
 template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
-::HessianAtIndex( const IndexType& index, const VectorType & v1,
-  double scale, typename NJetImageFunction<TInputImage>::MatrixType & h ) const
+::HessianAtIndex( const IndexType& index,
+  const VectorType & v1,
+  double scale,
+  typename NJetImageFunction<TInputImage>::MatrixType & h ) const
 {
   if( !m_InputImage )
     {
@@ -1137,7 +1143,9 @@ template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::HessianAtIndex( const IndexType& index,
-  const VectorType & v1, const VectorType & v2, double scale,
+  const VectorType & v1,
+  const VectorType & v2,
+  double scale,
   typename NJetImageFunction<TInputImage>::MatrixType & h ) const
 {
   if( !m_InputImage )
@@ -1160,7 +1168,8 @@ template< class TInputImage >
 double
 NJetImageFunction<TInputImage>
 ::HessianAtContinuousIndex( const ContinuousIndexType & cIndex,
-  double scale, typename NJetImageFunction<TInputImage>::MatrixType & h ) const
+  double scale,
+  typename NJetImageFunction<TInputImage>::MatrixType & h ) const
 {
   VectorType d;
   JetAtContinuousIndex( cIndex, d, h, scale);

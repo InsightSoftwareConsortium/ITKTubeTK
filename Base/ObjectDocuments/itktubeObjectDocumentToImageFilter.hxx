@@ -63,7 +63,9 @@ ObjectDocumentToImageFilter< TObjectDocument, TImageType >
 
   if( this->GetApplyTransforms() )
     {
-    TransformPointer transform = this->ComposeTransforms( document, this->GetStartTransforms(), this->GetEndTransforms() );
+    TransformPointer transform = this->ComposeTransforms( document,
+      this->GetStartTransforms(),
+      this->GetEndTransforms() );
     output = this->ResampleImage( output, transform );
     }
 
@@ -127,9 +129,11 @@ ObjectDocumentToImageFilter< TObjectDocument, TImageType >
 template< class TObjectDocument, class TImageType >
 void
 ObjectDocumentToImageFilter< TObjectDocument, TImageType >
-::GetTransformedBoundingBox( ImagePointer image, TransformPointer transform,
-                             SizeType & outputSize, PointType & origin ) const
-  {
+::GetTransformedBoundingBox( ImagePointer image,
+  TransformPointer transform,
+  SizeType & outputSize,
+  PointType & origin ) const
+{
   SizeType size = image->GetLargestPossibleRegion().GetSize();
   PointType maximum;
 
@@ -179,8 +183,10 @@ ObjectDocumentToImageFilter< TObjectDocument, TImageType >
     }
 }
 
+
 template< class TObjectDocument, class TImageType >
-void ObjectDocumentToImageFilter< TObjectDocument, TImageType >
+void
+ObjectDocumentToImageFilter< TObjectDocument, TImageType >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   this->Superclass::PrintSelf( os, indent );

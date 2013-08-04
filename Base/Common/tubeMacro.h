@@ -88,7 +88,8 @@ limitations under the License.
 // Non-DLL-interface class key used as base for DLL-interface class key.
 #pragma warning ( disable : 4275 )
 
-// Exception specification ignored except to indicate a function is not __declspec( nothrow ).
+// Exception specification ignored except to indicate a function
+// is not __declspec( nothrow ).
 #pragma warning ( disable : 4290 )
 
 // Truncation from type T1 to type T2.

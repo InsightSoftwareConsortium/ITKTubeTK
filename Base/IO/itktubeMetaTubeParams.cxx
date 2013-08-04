@@ -175,7 +175,8 @@ PrintInfo( void ) const
 
 void MetaTubeParams::
 SetSeedParams( const VectorType & _seedScales,
-  double _seedIntensityMin, double _seedIntensityMax,
+  double _seedIntensityMin,
+  double _seedIntensityMax,
   double _seedIntensityPercentile )
 {
   m_SeedScales = _seedScales;
@@ -230,7 +231,8 @@ SetTubeRidgeParams( double _tubeRidgeScale, double _tubeRidgeScaleExtent,
 
 void MetaTubeParams::
 SetTubeRadiusParams( double _tubeRadiusStart,
-  double _tubeRadiusMin, double _tubeRadiusMax,
+  double _tubeRadiusMin,
+  double _tubeRadiusMax,
   double _tubeRadiusThresholdMedialness,
   double _tubeRadiusThresholdMedialnessStart )
 {

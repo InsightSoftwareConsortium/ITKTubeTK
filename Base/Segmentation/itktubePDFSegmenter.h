@@ -180,12 +180,9 @@ private:
   typedef std::vector< typename HistogramImageType::Pointer >
     ClassHistogramImageType;
 
-  typedef itk::Vector< PixelType, N+ImageDimension >
-    ListVectorType;
-  typedef itk::Statistics::ListSample< ListVectorType >
-    ListSampleType;
-  typedef std::vector< typename ListSampleType::Pointer >
-    ClassListSampleType;
+  typedef itk::Vector< PixelType, N+ImageDimension >      ListVectorType;
+  typedef itk::Statistics::ListSample< ListVectorType >   ListSampleType;
+  typedef std::vector< typename ListSampleType::Pointer > ClassListSampleType;
 
   bool                                     m_SampleUpToDate;
   bool                                     m_PDFsUpToDate;
