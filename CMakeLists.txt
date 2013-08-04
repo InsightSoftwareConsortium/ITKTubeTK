@@ -140,7 +140,7 @@ if( TubeTK_USE_KWSTYLE )
 
   option( KWSTYLE_DASHBOARD_SUBMISSION
     "Set the KWStyle arguments to generate a report for CDash dashboard submission."
-    ON )
+    OFF )
   mark_as_advanced( KWSTYLE_DASHBOARD_SUBMISSION )
 
   if( KWSTYLE_DASHBOARD_SUBMISSION )
