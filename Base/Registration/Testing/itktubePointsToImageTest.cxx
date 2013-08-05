@@ -21,11 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeMessage.h"
 #include "tubeTubeMath.h"
 
-#include <itkGroupSpatialObject.h>
-#include <itkImage.h>
 #include <itkImageFileWriter.h>
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectToImageFilter.h>

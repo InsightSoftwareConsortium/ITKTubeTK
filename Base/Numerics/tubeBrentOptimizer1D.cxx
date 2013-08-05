@@ -30,8 +30,6 @@ limitations under the License.
 
 #include <vnl/vnl_math.h>
 
-#include <iostream>
-
 namespace tube
 {
 

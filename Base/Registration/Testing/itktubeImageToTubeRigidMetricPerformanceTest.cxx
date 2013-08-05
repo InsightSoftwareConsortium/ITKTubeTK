@@ -24,15 +24,10 @@ limitations under the License.
 #include "itktubeImageToTubeRigidMetric.h"
 #include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
 
-#include <itkEuler3DTransform.h>
 #include <itkImageFileReader.h>
-#include <itkImageRegionIteratorWithIndex.h>
 #include <itkMemoryProbesCollectorBase.h>
-#include <itkRecursiveGaussianImageFilter.h>
 #include <itkSpatialObjectReader.h>
-#include <itkSpatialObjectToImageFilter.h>
 #include <itkTimeProbesCollectorBase.h>
-#include <itkTubeSpatialObjectPoint.h>
 
 /**
  *  This test exercised the metric evaluation methods in the

@@ -23,8 +23,6 @@ limitations under the License.
 
 #include "tubeAtlasSummation.h"
 
-#include <cstdio>
-
 namespace tube
 {
 

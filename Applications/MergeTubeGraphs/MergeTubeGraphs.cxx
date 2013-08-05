@@ -21,30 +21,10 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeObjectDocument.h"
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 #include "tubeMetaObjectDocument.h"
 
-#include <itkImageFileReader.h>
-#include <itkMatrix.h>
-#include <itkMinimumMaximumImageFilter.h>
-#include <itkSpatialObjectReader.h>
-#include <itkSpatialObjectWriter.h>
-#include <itkTimeProbesCollectorBase.h>
-#include <itkVesselTubeSpatialObject.h>
-
-#include <metaScene.h>
-#include <metaTubeGraph.h>
-
 #include <vnl/algo/vnl_matrix_inverse.h>
-
-#include <fstream>
-#include <iostream>
-#include <list>
-#include <sstream>
-#include <vector>
 
 #include "MergeTubeGraphsCLP.h"
 

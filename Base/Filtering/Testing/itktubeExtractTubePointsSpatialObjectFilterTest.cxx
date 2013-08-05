@@ -23,10 +23,7 @@ limitations under the License.
 
 #include "itktubeExtractTubePointsSpatialObjectFilter.h"
 
-#include <itkGroupSpatialObject.h>
 #include <itkSpatialObjectReader.h>
-#include <itkSpatialObjectWriter.h>
-#include <itkVesselTubeSpatialObject.h>
 
 int itktubeExtractTubePointsSpatialObjectFilterTest( int argc, char* argv[] )
 {

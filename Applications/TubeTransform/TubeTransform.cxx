@@ -22,29 +22,16 @@ limitations under the License.
 =========================================================================*/
 
 #include "itktubeTubeToTubeTransformFilter.h"
-#include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 
 #include <itkDisplacementFieldTransform.h>
-#include <itkImage.h>
 #include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
-#include <itkInverseDisplacementFieldImageFilter.h>
-#include <itkResampleImageFilter.h>
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectWriter.h>
 #include <itkTimeProbesCollectorBase.h>
 #include <itkTransformFactory.h>
-#include <itkTransformFactoryBase.h>
 #include <itkTransformFileReader.h>
-#include <itkVector.h>
-#include <itkVectorImage.h>
-#include <itkVesselTubeSpatialObject.h>
-
-#include <vnl/vnl_inverse.h>
-#include <vnl/vnl_matrix.h>
-#include <vnl/vnl_vector.h>
 
 #include "TubeTransformCLP.h"
 

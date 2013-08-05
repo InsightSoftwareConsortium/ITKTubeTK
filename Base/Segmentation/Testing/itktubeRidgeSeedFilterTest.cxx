@@ -23,11 +23,6 @@ limitations under the License.
 
 #include "itktubeRidgeSeedFilter.h"
 
-#include <itkFilterWatcher.h>
-#include <itkImage.h>
-#include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
-
 int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
 {
   if( argc != 8 )

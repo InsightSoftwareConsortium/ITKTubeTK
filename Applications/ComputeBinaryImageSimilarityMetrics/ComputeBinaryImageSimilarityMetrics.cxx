@@ -23,10 +23,7 @@ limitations under the License.
 
 #include "itktubeLabelOverlapMeasuresImageFilter.h"
 
-#include <itkImage.h>
 #include <itkImageFileReader.h>
-
-#include <fstream>
 
 #include "ComputeBinaryImageSimilarityMetricsCLP.h"
 

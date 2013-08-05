@@ -23,13 +23,10 @@ limitations under the License.
 
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-#include "tubeMessage.h"
 
 #include <itkBSplineInterpolateImageFunction.h>
-#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkLinearInterpolateImageFunction.h>
 #include <itkNearestNeighborInterpolateImageFunction.h>
 #include <itkResampleImageFilter.h>
 #include <itkTimeProbesCollectorBase.h>

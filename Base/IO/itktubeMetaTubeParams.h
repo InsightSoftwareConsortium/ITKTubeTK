@@ -24,6 +24,8 @@ limitations under the License.
 #ifndef __itktubeMetaTubeParams_h
 #define __itktubeMetaTubeParams_h
 
+#include "tubeMacro.h"
+
 #include <metaForm.h>
 
 #include <vnl/vnl_matrix.h>

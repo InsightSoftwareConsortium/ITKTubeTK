@@ -25,8 +25,6 @@ limitations under the License.
 
 #include <itkMersenneTwisterRandomVariateGenerator.h>
 
-#include <cstdlib>
-
 template< int VDimension >
 int Test( void )
 {

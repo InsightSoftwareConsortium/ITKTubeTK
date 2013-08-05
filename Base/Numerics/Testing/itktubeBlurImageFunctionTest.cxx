@@ -23,7 +23,6 @@ limitations under the License.
 
 #include "itktubeBlurImageFunction.h"
 
-#include <itkImage.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
 

@@ -23,8 +23,6 @@ limitations under the License.
 
 #include "tubeSpline1D.h"
 
-#include <iostream>
-
 namespace tube
 {
 

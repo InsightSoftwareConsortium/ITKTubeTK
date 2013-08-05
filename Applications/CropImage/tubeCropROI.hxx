@@ -27,14 +27,7 @@ limitations under the License.
 #include "tubeCropROI.h"
 
 #include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
-
-#include <itkCropImageFilter.h>
-#include <itkImage.h>
-#include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
-#include <itkTimeProbesCollectorBase.h>
 
 namespace tube
 {

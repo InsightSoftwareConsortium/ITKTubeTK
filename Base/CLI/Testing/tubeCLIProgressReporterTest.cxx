@@ -23,8 +23,6 @@ limitations under the License.
 
 #include "tubeCLIProgressReporter.h"
 
-#include <cstdlib>
-
 void cliProgressReporterTestCallbackFunction( void * data )
 {
   if( data )

@@ -32,8 +32,6 @@ limitations under the License.
 #include <itkIntensityWindowingImageFilter.h>
 #include <itkLog10ImageAdaptor.h>
 
-#include <sstream>
-
 // Very rough B-Mode that does not take into account system properties or a
 // a realistic image formation process.
 template< class TInputImage >

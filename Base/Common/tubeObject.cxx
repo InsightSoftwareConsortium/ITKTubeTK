@@ -23,8 +23,6 @@ limitations under the License.
 
 #include "tubeObject.h"
 
-#include <typeinfo>
-
 #if __GNUC__ > 3 || ( __GNUC__ == 3 && __GNUC_MINOR__ > 0 )
 #include <cxxabi.h>
 #endif

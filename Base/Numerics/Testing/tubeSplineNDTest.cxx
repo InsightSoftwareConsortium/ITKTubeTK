@@ -22,21 +22,12 @@ limitations under the License.
 =========================================================================*/
 
 #include "tubeBrentOptimizer1D.h"
-#include "tubeParabolicFitOptimizer1D.h"
 #include "tubeSplineApproximation1D.h"
 #include "tubeSplineND.h"
-#include "tubeUserFunction.h"
 
-#include <itkImage.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
 #include <itkMersenneTwisterRandomVariateGenerator.h>
-
-#include <vcl_cmath.h>
-#include <vnl/vnl_math.h>
-
-#include <cstdlib>
-#include <iostream>
 
 class MySANDFunc : public tube::UserFunction< vnl_vector< int >, double >
 {

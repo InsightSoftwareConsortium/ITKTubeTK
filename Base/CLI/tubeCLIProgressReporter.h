@@ -24,6 +24,8 @@ limitations under the License.
 #ifndef __tubeCLIProgressReporter_h
 #define __tubeCLIProgressReporter_h
 
+#include "tubeMacro.h"
+
 #include <itkTimeProbe.h>
 
 #include <ModuleProcessInformation.h>

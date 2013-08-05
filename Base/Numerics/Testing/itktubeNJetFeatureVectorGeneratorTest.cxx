@@ -23,12 +23,6 @@ limitations under the License.
 
 #include "itktubeNJetFeatureVectorGenerator.h"
 
-#include <itkFilterWatcher.h>
-#include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
-#include <itkImageRegionIteratorWithIndex.h>
-#include <itkRecursiveGaussianImageFilter.h>
-
 int itktubeNJetFeatureVectorGeneratorTest( int argc, char * argv[] )
 {
   if( argc != 5 )

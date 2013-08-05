@@ -23,27 +23,20 @@ limitations under the License.
 
 #include "itktubeAnisotropicDiffusiveRegistrationFilter.h"
 #include "itktubeAnisotropicDiffusiveSparseRegistrationFilter.h"
-#include "itktubeDiffusiveRegistrationFilter.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 
-#include <itkGroupSpatialObject.h>
-#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkLinearInterpolateImageFunction.h>
 #include <itkMultiResolutionPDEDeformableRegistration.h>
 #include <itkOrientImageFilter.h>
-#include <itkRecursiveMultiResolutionPyramidImageFilter.h>
 #include <itkSpatialObjectReader.h>
 #include <itkTimeProbesCollectorBase.h>
-#include <itkTransform.h>
 #include <itkTransformFileReader.h>
 #include <itkWarpImageFilter.h>
 
 #include <vtkPolyDataReader.h>
-#include <vtkSmartPointer.h>
 #include <vtkTransform.h>
 #include <vtkTransformPolyDataFilter.h>
 #include <vtkXMLPolyDataReader.h>

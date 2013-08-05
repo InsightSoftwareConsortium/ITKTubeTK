@@ -21,13 +21,12 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <itkMacro.h>
+#include "tubeMacro.h"
 
 #include <fstream>
-#include <iostream>
 #include <list>
 
-int main( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
+int main( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
 {
   std::cout << "Importing your data into the MetaImage format"
     << std::endl

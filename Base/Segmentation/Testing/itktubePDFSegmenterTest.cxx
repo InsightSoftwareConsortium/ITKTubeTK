@@ -23,11 +23,6 @@ limitations under the License.
 
 #include "itktubePDFSegmenter.h"
 
-#include <itkFilterWatcher.h>
-#include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
-#include <itkImageRegionIteratorWithIndex.h>
-
 int itktubePDFSegmenterTest( int argc, char * argv[] )
 {
   if( argc != 12 )

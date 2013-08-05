@@ -22,20 +22,9 @@ limitations under the License.
 =========================================================================*/
 
 #include "itktubeStructureTensorRecursiveGaussianImageFilter.h"
-#include "itktubeSymmetricEigenVectorAnalysisImageFilter.h"
 
-#include <itkImage.h>
 #include <itkImageDuplicator.h>
-#include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkImageRegionIteratorWithIndex.h>
-#include <itkMath.h>
-#include <itkMatrix.h>
-#include <itkRecursiveGaussianImageFilter.h>
-#include <itkSymmetricEigenAnalysisImageFilter.h>
-#include <itkSymmetricSecondRankTensor.h>
-#include <itkVariableLengthVector.h>
-#include <itkVectorImage.h>
 
 int itktubeStructureTensorRecursiveGaussianImageFilterTestNew( int argc, char * argv[] )
 {

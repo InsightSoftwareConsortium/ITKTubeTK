@@ -21,17 +21,12 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
-#include "tubeMessage.h"
 #include "tubeShortestPathKernel.h"
 #include "tubeWLSubtreeKernel.h"
 
 #include <boost/filesystem.hpp>
-#include <boost/format.hpp>
 
 #include <itkMatrix.h>
-#include <itkTimeProbesCollectorBase.h>
 
 #include "TubeGraphKernelCLP.h"
 

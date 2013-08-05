@@ -24,25 +24,14 @@ limitations under the License.
 #include "tubeMessage.h"
 
 #include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics/mean.hpp>
 #include <boost/accumulators/statistics/p_square_quantile.hpp>
-#include <boost/accumulators/statistics/rolling_mean.hpp>
 #include <boost/accumulators/statistics/stats.hpp>
-#include <boost/accumulators/statistics/variance.hpp>
-#include <boost/bind.hpp>
 #include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/property_tree/json_parser.hpp>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/ref.hpp>
 
-#include <itkImage.h>
 #include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
 #include <itkImageRegionConstIterator.h>
 #include <itkStatisticsImageFilter.h>
-
-#include <sstream>
 
 #include "ComputeImageQuantilesCLP.h"
 

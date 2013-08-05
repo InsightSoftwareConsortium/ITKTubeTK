@@ -25,9 +25,7 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 
-#include <itkArray.h>
 #include <itkConnectedComponentImageFilter.h>
-#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkTimeProbesCollectorBase.h>

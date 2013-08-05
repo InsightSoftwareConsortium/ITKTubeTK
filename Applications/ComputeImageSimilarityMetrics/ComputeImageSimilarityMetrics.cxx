@@ -22,9 +22,7 @@ limitations under the License.
 =========================================================================*/
 
 #include <itkIdentityTransform.h>
-#include <itkImage.h>
 #include <itkImageFileReader.h>
-#include <itkLinearInterpolateImageFunction.h>
 #include <itkMutualInformationImageToImageMetric.h>
 #include <itkNormalizedCorrelationImageToImageMetric.h>
 #include <itkNormalizeImageFilter.h>

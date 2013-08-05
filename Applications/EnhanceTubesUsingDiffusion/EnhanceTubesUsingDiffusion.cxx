@@ -23,7 +23,6 @@ limitations under the License.
 
 #include "itktubeTubeEnhancingDiffusion2DImageFilter.h"
 
-#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 

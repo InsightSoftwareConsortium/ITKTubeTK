@@ -19,7 +19,6 @@
 #include "itkAngleOfIncidenceImageFilter.h"
 #include "itktubeSheetnessMeasureImageFilter.h"
 
-#include <itkHessianRecursiveGaussianImageFilter.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkThresholdImageFilter.h>

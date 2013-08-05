@@ -18,7 +18,6 @@
 #include "itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter.h"
 
 #include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
 
 int itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest( int argc, char * argv[] )
 {

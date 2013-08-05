@@ -23,8 +23,6 @@ limitations under the License.
 
 #include "itktubeMetaTubeParams.h"
 
-#include <cstring>
-
 namespace itk
 {
 

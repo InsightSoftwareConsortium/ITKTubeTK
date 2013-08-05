@@ -23,10 +23,8 @@ limitations under the License.
 
 #include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
 
-#include <itkGroupSpatialObject.h>
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectWriter.h>
-#include <itkVesselTubeSpatialObject.h>
 
 int itktubeSubSampleTubeTreeSpatialObjectFilterTest( int argc, char * argv[] )
 {

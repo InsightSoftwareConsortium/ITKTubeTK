@@ -17,10 +17,8 @@
 
 #include "itktubeTubeToTubeTransformFilter.h"
 
-#include <itkEuler3DTransform.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkMath.h>
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectToImageFilter.h>
 #include <itkSpatialObjectWriter.h>

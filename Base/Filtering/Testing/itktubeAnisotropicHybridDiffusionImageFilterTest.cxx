@@ -18,7 +18,6 @@
 #include "itktubeAnisotropicHybridDiffusionImageFilter.h"
 
 #include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
 
 int itktubeAnisotropicHybridDiffusionImageFilterTest( int argc, char * argv[] )
 {
