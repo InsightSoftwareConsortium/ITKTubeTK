@@ -124,8 +124,6 @@ int DoIt( int argc, char * argv[] )
     typedef itk::ImageRegionConstIterator< ImageType >
       ImageIteratorType;
 
-    double progressFraction = 0.8/VDimension;
-
     /*
      * Create a and configure a vector of length N of pointers
      * to BOOST accumulators -- Each of the N accumulators will
