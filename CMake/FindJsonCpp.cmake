@@ -27,7 +27,7 @@ if( JsonCpp_DIR )
 endif( JsonCpp_DIR )
 
 find_package( PkgConfig QUIET )
-pkg_check_modules( PC_JsonCpp QUIET json jsoncpp )
+pkg_check_modules( PC_JsonCpp QUIET jsoncpp )
 
 find_path( JsonCpp_INCLUDE_DIR NAMES json/json.h
   HINTS ${JsonCpp_INCLUDEDIR} ${PC_JsonCpp_INCLUDEDIR} ${PC_JsonCpp_INCLUDE_DIRS}
