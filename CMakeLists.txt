@@ -131,6 +131,12 @@ if( TubeTK_USE_KWSTYLE )
   find_program( KWSTYLE_EXECUTABLE NAMES KWStyle PATHS /usr/local/bin
     "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Kitware Inc.\\KWStyle 1.0.0]/bin" )
   mark_as_advanced( KWSTYLE_EXECUTABLE )
+  find_package( Git )
+  if( GIT_FOUND )
+    execute_process( COMMAND ${GIT_EXECUTABLE} config hooks.KWStyle.path
+      "${KWSTYLE_EXECUTABLE}"
+      WORKING_DIRECTORY ${TubeTK_SOURCE_DIR} )
+  endif( GIT_FOUND )
 
   option( KWSTYLE_USE_VIM_FORMAT
   "Set KWStyle to generate errors in a Vim compatible format." OFF )
