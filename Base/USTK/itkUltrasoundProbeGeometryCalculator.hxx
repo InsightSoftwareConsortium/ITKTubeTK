@@ -97,7 +97,8 @@ UltrasoundProbeGeometryCalculator< TInputImage >
 ::GetUltrasoundProbeOrigin( void ) const
 {
   typename DecoratedOriginType::ConstPointer decoratedOrigin =
-    static_cast< const DecoratedOriginType * >( this->ProcessObject::GetOutput( "UltrasoundProbeOrigin" ) );
+    static_cast< const DecoratedOriginType * >(
+      this->ProcessObject::GetOutput( "UltrasoundProbeOrigin" ) );
   return decoratedOrigin->Get();
 }
 
@@ -108,7 +109,8 @@ UltrasoundProbeGeometryCalculator< TInputImage >
 ::GetStartOfAcquisitionRadius( void ) const
 {
   typename DecoratedRadiusType::ConstPointer decoratedRadius =
-    static_cast< const DecoratedRadiusType * >( this->ProcessObject::GetOutput( "StartOfAcquisitionRadius" ) );
+    static_cast< const DecoratedRadiusType * >(
+      this->ProcessObject::GetOutput( "StartOfAcquisitionRadius" ) );
   return decoratedRadius->Get();
 }
 
@@ -122,9 +124,12 @@ UltrasoundProbeGeometryCalculator< TInputImage >
   RadiusType startOfAcquisitionRadius;
 
   typename InputImageType::ConstPointer inputImage = this->GetInput();
-  const typename InputImageType::RegionType inputRegion = inputImage->GetLargestPossibleRegion();
-  const typename InputImageType::SizeType   inputSize = inputRegion.GetSize();
-  const typename InputImageType::IndexType  inputIndex = inputRegion.GetIndex();
+  const typename InputImageType::RegionType inputRegion =
+    inputImage->GetLargestPossibleRegion();
+  const typename InputImageType::SizeType   inputSize =
+    inputRegion.GetSize();
+  const typename InputImageType::IndexType  inputIndex =
+    inputRegion.GetIndex();
 
   // Find the directions orthogonal to the general beam direction.
   unsigned int orthogonalDirections[InputImageType::ImageDimension - 1];
@@ -156,7 +161,8 @@ UltrasoundProbeGeometryCalculator< TInputImage >
     const float keepFraction = 1.0f - 2*ignoreFraction;
     const float keepStep = keepFraction / (pointsToExamine - 1);
     const SizeValueType size = inputSize[m_GeneralBeamDirection];
-    const SizeValueType offset = static_cast< SizeValueType >( size * (ignoreFraction + keepStep * ii) );
+    const SizeValueType offset =
+      static_cast< SizeValueType >( size * (ignoreFraction + keepStep * ii) );
     beamDirectionIndicesToExamine[ii] = inputIndex[m_GeneralBeamDirection] + offset;
     }
 
@@ -232,24 +238,32 @@ UltrasoundProbeGeometryCalculator< TInputImage >
     side2LineParameters->SetMeasurementVectorSize( 2 );
     for( unsigned int pointIndex = 0; pointIndex < pointsToExamine - 1; ++pointIndex )
       {
-      for( unsigned int pointIndexInc = pointIndex+1; pointIndexInc < pointsToExamine; ++pointIndexInc )
+      for( unsigned int pointIndexInc = pointIndex+1;
+           pointIndexInc < pointsToExamine;
+           ++pointIndexInc )
         {
         MeasurementVectorType side1LineParameter;
         MeasurementVectorType side2LineParameter;
         const MeasurementType slope1 =
-          (pointsOnSide1[pointIndexInc][orthogonalDirection] - pointsOnSide1[pointIndex][orthogonalDirection]) /
-          (pointsOnSide1[pointIndexInc][m_GeneralBeamDirection] - pointsOnSide1[pointIndex][m_GeneralBeamDirection]);
+          (pointsOnSide1[pointIndexInc][orthogonalDirection] -
+            pointsOnSide1[pointIndex][orthogonalDirection]) /
+          (pointsOnSide1[pointIndexInc][m_GeneralBeamDirection] -
+            pointsOnSide1[pointIndex][m_GeneralBeamDirection]);
         const MeasurementType slope2 =
-          (pointsOnSide2[pointIndexInc][orthogonalDirection] - pointsOnSide2[pointIndex][orthogonalDirection]) /
-          (pointsOnSide2[pointIndexInc][m_GeneralBeamDirection] - pointsOnSide2[pointIndex][m_GeneralBeamDirection]);
+          (pointsOnSide2[pointIndexInc][orthogonalDirection] -
+            pointsOnSide2[pointIndex][orthogonalDirection]) /
+          (pointsOnSide2[pointIndexInc][m_GeneralBeamDirection] -
+            pointsOnSide2[pointIndex][m_GeneralBeamDirection]);
 
         side1LineParameter[0] = slope1;
         side2LineParameter[0] = slope2;
 
-        const MeasurementType intercept1 = pointsOnSide1[pointIndex][orthogonalDirection] -
-          slope1 * pointsOnSide1[pointIndex][m_GeneralBeamDirection];
-        const MeasurementType intercept2 = pointsOnSide2[pointIndex][orthogonalDirection] -
-          slope2 * pointsOnSide2[pointIndex][m_GeneralBeamDirection];
+        const MeasurementType intercept1 =
+          pointsOnSide1[pointIndex][orthogonalDirection] -
+            slope1 * pointsOnSide1[pointIndex][m_GeneralBeamDirection];
+        const MeasurementType intercept2 =
+          pointsOnSide2[pointIndex][orthogonalDirection] -
+            slope2 * pointsOnSide2[pointIndex][m_GeneralBeamDirection];
         side1LineParameter[1] = intercept1;
         side2LineParameter[1] = intercept2;
         side1LineParameters->PushBack( side1LineParameter );
@@ -275,9 +289,11 @@ UltrasoundProbeGeometryCalculator< TInputImage >
     Statistics::Algorithm::InsertSort< SubsampleType >( side2LineParametersSS,
       activeDimension, 0, side2LineParametersSS->Size() );
     const MeasurementVectorType side1MedianLineParameter =
-      side1LineParametersSS->GetMeasurementVectorByIndex( side1LineParametersSS->Size() / 2 );
+      side1LineParametersSS->GetMeasurementVectorByIndex(
+        side1LineParametersSS->Size() / 2 );
     const MeasurementVectorType side2MedianLineParameter =
-      side2LineParametersSS->GetMeasurementVectorByIndex( side2LineParametersSS->Size() / 2 );
+      side2LineParametersSS->GetMeasurementVectorByIndex(
+        side2LineParametersSS->Size() / 2 );
 
     // Get the intersection of the lines -- defines the ProbeOrigin
     typedef vnl_vector< MeasurementType > VnlVectorType;
@@ -320,7 +336,8 @@ UltrasoundProbeGeometryCalculator< TInputImage >
     const float keepFraction = 1.0f - 2*ignoreFraction;
     const float keepStep = keepFraction / (radiusPointsToExamine - 1);
     const SizeValueType size = inputSize[orthogonalDirection];
-    const SizeValueType offset = static_cast< SizeValueType >( size * (ignoreFraction + keepStep * ii) );
+    const SizeValueType offset = static_cast< SizeValueType >(
+      size * (ignoreFraction + keepStep * ii) );
     orthogonalIndicesToExamine[ii] = inputIndex[m_GeneralBeamDirection] + offset;
     }
 
@@ -375,14 +392,17 @@ UltrasoundProbeGeometryCalculator< TInputImage >
   radiiSubsample->InitializeWithAllInstances();
   Statistics::Algorithm::InsertSort< RadiusSubsampleType >( radiiSubsample,
     0, 0, static_cast< int >( radiusPointsToExamine ) );
-  startOfAcquisitionRadius = radiiSubsample->GetMeasurementVectorByIndex( radiusPointsToExamine / 2 )[0];
+  startOfAcquisitionRadius =
+    radiiSubsample->GetMeasurementVectorByIndex( radiusPointsToExamine / 2 )[0];
 
   // Set the values to our ProcessObject outputs.
   typename DecoratedOriginType::Pointer decoratedProbeOrigin =
-    static_cast< DecoratedOriginType * >( this->ProcessObject::GetOutput( "UltrasoundProbeOrigin" ));
+    static_cast< DecoratedOriginType * >(
+      this->ProcessObject::GetOutput( "UltrasoundProbeOrigin" ));
   decoratedProbeOrigin->Set( probeOrigin );
   typename DecoratedRadiusType::Pointer decoratedStartOfAcquisitionRadius =
-    static_cast< DecoratedRadiusType * >( this->ProcessObject::GetOutput( "StartOfAcquisitionRadius" ));
+    static_cast< DecoratedRadiusType * >(
+      this->ProcessObject::GetOutput( "StartOfAcquisitionRadius" ));
   decoratedStartOfAcquisitionRadius->Set( startOfAcquisitionRadius );
 }
 

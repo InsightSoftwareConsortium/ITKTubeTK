@@ -65,7 +65,8 @@ public:
   virtual void  PrintInfo( void ) const;
 
   void SetSeedParams( const VectorType & _seedScales,
-    double _seedIntensityMin, double _seedIntensityMax,
+    double _seedIntensityMin,
+    double _seedIntensityMax,
     double _seedPercentile );
 
   void SetTubeParams( double _tubeIntensityMin, double _tubeIntensityMax,
@@ -88,7 +89,8 @@ public:
     int _tubeRidgeRecoveryMax );
 
   void SetTubeRadiusParams( double _tubeRadiusStart,
-    double _tubeRadiusMin, double _tubeRadiusMax,
+    double _tubeRadiusMin,
+    double _tubeRadiusMax,
     double _tubeRadiusThresholdMedialness,
     double _tubeRadiusThresholdMedialnessStart );
 

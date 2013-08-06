@@ -66,42 +66,24 @@ public:
 
   typedef RidgeFeatureVectorGenerator< TImage >   RidgeFeatureGeneratorType;
 
-  typedef typename RidgeFeatureGeneratorType::FeatureValueType
-                                                  FeatureValueType;
-  typedef typename RidgeFeatureGeneratorType::FeatureVectorType
-                                                  FeatureVectorType;
+  typedef typename RidgeFeatureGeneratorType::FeatureValueType  FeatureValueType;
+  typedef typename RidgeFeatureGeneratorType::FeatureVectorType FeatureVectorType;
 
-  typedef typename RidgeFeatureGeneratorType::IndexType
-                                                  IndexType;
+  typedef typename RidgeFeatureGeneratorType::IndexType       IndexType;
+  typedef typename RidgeFeatureGeneratorType::RidgeScalesType RidgeScalesType;
+  typedef typename RidgeFeatureGeneratorType::ValueListType   WhitenMeansType;
+  typedef typename RidgeFeatureGeneratorType::ValueListType   WhitenStdDevsType;
 
-  typedef typename RidgeFeatureGeneratorType::RidgeScalesType
-                                                  RidgeScalesType;
+  typedef BasisFeatureVectorGenerator< TImage, LabelMapType > SeedFeatureGeneratorType;
 
-  typedef typename RidgeFeatureGeneratorType::ValueListType
-                                                  WhitenMeansType;
+  typedef typename SeedFeatureGeneratorType::ObjectIdType ObjectIdType;
+  typedef typename SeedFeatureGeneratorType::VectorType   VectorType;
+  typedef typename SeedFeatureGeneratorType::MatrixType   MatrixType;
 
-  typedef typename RidgeFeatureGeneratorType::ValueListType
-                                                  WhitenStdDevsType;
+  typedef PDFSegmenter< OutputImageType, 3, LabelMapType > PDFSegmenterType;
 
-  typedef BasisFeatureVectorGenerator< TImage, LabelMapType >
-                                                  SeedFeatureGeneratorType;
-
-  typedef typename SeedFeatureGeneratorType::ObjectIdType
-                                                  ObjectIdType;
-
-  typedef typename SeedFeatureGeneratorType::VectorType
-                                                  VectorType;
-
-  typedef typename SeedFeatureGeneratorType::MatrixType
-                                                  MatrixType;
-
-  typedef PDFSegmenter< OutputImageType, 3, LabelMapType >
-                                                  PDFSegmenterType;
-
-  typedef typename PDFSegmenterType::ProbabilityPixelType
-                                                  ProbabilityPixelType;
-  typedef typename PDFSegmenterType::ProbabilityImageType
-                                                  ProbabilityImageType;
+  typedef typename  PDFSegmenterType::ProbabilityPixelType ProbabilityPixelType;
+  typedef typename  PDFSegmenterType::ProbabilityImageType ProbabilityImageType;
 
 
   void SetInput( typename ImageType::Pointer img );
@@ -109,11 +91,8 @@ public:
 
   void SetLabelMap( typename LabelMapType::Pointer img );
 
-  typename SeedFeatureGeneratorType::Pointer
-    GetSeedFeatureGenerator( void );
-
-  typename RidgeFeatureGeneratorType::Pointer
-    GetRidgeFeatureGenerator( void );
+  typename SeedFeatureGeneratorType::Pointer  GetSeedFeatureGenerator( void );
+  typename RidgeFeatureGeneratorType::Pointer GetRidgeFeatureGenerator( void );
 
   typename PDFSegmenterType::Pointer GetPDFSegmenter( void );
 

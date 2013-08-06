@@ -100,8 +100,9 @@ private:
 
 }; // End class Spline1DDerivativeFunction
 
-// Constructor.
-Spline1D::Spline1D( void )
+
+Spline1D
+::Spline1D( void )
   : m_Data(4, 0.0)
 {
   m_Defined = false;
@@ -122,8 +123,10 @@ Spline1D::Spline1D( void )
   this->Use( m_FuncVal, m_Optimizer1D );
 }
 
-// Constructor.
-Spline1D::Spline1D( UserFunction< int, double >::Pointer funcVal, Optimizer1D::Pointer optimizer1D )
+
+Spline1D
+::Spline1D( UserFunction< int, double >::Pointer funcVal,
+  Optimizer1D::Pointer optimizer1D )
   : m_Data(4, 0.0)
 {
   m_Defined = false;
@@ -144,8 +147,9 @@ Spline1D::Spline1D( UserFunction< int, double >::Pointer funcVal, Optimizer1D::P
   this->Use( m_FuncVal, m_Optimizer1D );
 }
 
-// Destructor.
-Spline1D::~Spline1D( void )
+
+Spline1D
+::~Spline1D( void )
 {
   if(m_Defined)
     {
@@ -156,7 +160,10 @@ Spline1D::~Spline1D( void )
     }
 }
 
-void Spline1D::Use( ValueFunctionType::Pointer funcVal, Optimizer1D::Pointer optimizer1D )
+
+void
+Spline1D
+::Use( ValueFunctionType::Pointer funcVal, Optimizer1D::Pointer optimizer1D )
 {
   m_Defined = true;
 
@@ -171,7 +178,10 @@ void Spline1D::Use( ValueFunctionType::Pointer funcVal, Optimizer1D::Pointer opt
   m_NewData = true;
 }
 
-void Spline1D::SetXMin( int xMin )
+
+void
+Spline1D
+::SetXMin( int xMin )
 {
   m_XMin = xMin;
 
@@ -181,7 +191,10 @@ void Spline1D::SetXMin( int xMin )
     }
 }
 
-void Spline1D::SetXMax(int xMax)
+
+void
+Spline1D
+::SetXMax( int xMax )
 {
   m_XMax = xMax;
 
@@ -191,7 +204,10 @@ void Spline1D::SetXMax(int xMax)
     }
 }
 
-void Spline1D::m_GetData( double x )
+
+void
+Spline1D
+::m_GetData( double x )
 {
   static int xi = (int)x;
 
@@ -267,7 +283,10 @@ void Spline1D::m_GetData( double x )
     }
 }
 
-double Spline1D::Value( double x )
+
+double
+Spline1D
+::Value( double x )
 {
   if(!m_Defined || (m_Clip && (x<(double)m_XMin || x>(double)m_XMax)))
     {
@@ -280,7 +299,10 @@ double Spline1D::Value( double x )
   return this->DataValue(m_Data, x - (int)x);
 }
 
-double Spline1D::ValueD( double x )
+
+double
+Spline1D
+::ValueD( double x )
 {
   if(!m_Defined || (m_Clip && (x<(double)m_XMin || x>(double)m_XMax)))
     {
@@ -292,7 +314,10 @@ double Spline1D::ValueD( double x )
   return this->DataValueD(m_Data, x - (int)x);
 }
 
-double Spline1D::ValueD2( double x )
+
+double
+Spline1D
+::ValueD2( double x )
 {
   if(!m_Defined || (m_Clip && (x<(double)m_XMin || x>(double)m_XMax)))
     {
@@ -304,7 +329,10 @@ double Spline1D::ValueD2( double x )
   return this->DataValueD2(m_Data, x - (int)x);
 }
 
-double Spline1D::Curv( double x )
+
+double
+Spline1D
+::Curv( double x )
 {
   if(!m_Defined || (m_Clip && (x<(double)m_XMin || x>(double)m_XMax)))
     {
@@ -318,7 +346,10 @@ double Spline1D::Curv( double x )
   return xpp/vcl_pow(1.0+xp*xp, 1.5);
 }
 
-double Spline1D::ValueJet( double x, double * d, double * d2 )
+
+double
+Spline1D
+::ValueJet( double x, double * d, double * d2 )
 {
   if(!m_Defined || (m_Clip && (x<(double)m_XMin || x>(double)m_XMax)))
     {
@@ -330,13 +361,18 @@ double Spline1D::ValueJet( double x, double * d, double * d2 )
   return this->DataValueJet(m_Data, x - (int)x, d, d2);
 }
 
-bool Spline1D::Extreme( double * extX, double * extVal )
+
+bool
+Spline1D
+::Extreme( double * extX, double * extVal )
 {
   return m_Optimizer1D->Extreme(extX, extVal);
 }
 
-// Print out information about this object.
-void Spline1D::PrintSelf( std::ostream & os, Indent indent ) const
+
+void
+Spline1D
+::PrintSelf( std::ostream & os, Indent indent ) const
 {
   this->Superclass::PrintSelf( os, indent );
 

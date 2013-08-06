@@ -79,29 +79,22 @@ public:
                       unsigned int,
                       TInputImage::ImageDimension );
 
-  typedef TInputImage                                 InputImageType;
-  typedef typename InputImageType::Pointer            InputImagePointer;
+  typedef TInputImage                                      InputImageType;
+  typedef typename InputImageType::Pointer                 InputImagePointer;
 
-  typedef Point<double, itkGetStaticConstMacro( ImageDimension ) >
-                                                      PointType;
+  typedef Point<double, ImageDimension >                   PointType;
+  typedef Vector< double, ImageDimension >                 VectorType;
+  typedef Matrix< double, ImageDimension, ImageDimension > MatrixType;
 
-  typedef Vector< double, itkGetStaticConstMacro( ImageDimension ) >
-                                                      VectorType;
+  typedef typename InputImageType::IndexType               IndexType;
 
-  typedef Matrix< double, itkGetStaticConstMacro( ImageDimension ),
-                  itkGetStaticConstMacro( ImageDimension ) >
-                                                      MatrixType;
+  typedef ContinuousIndex<double, ImageDimension >         ContinuousIndexType;
 
-  typedef typename InputImageType::IndexType          IndexType;
+  typedef typename InputImageType::SpacingType             SpacingType;
 
-  typedef ContinuousIndex<double, itkGetStaticConstMacro( ImageDimension ) >
-                                                      ContinuousIndexType;
+  typedef Size< ImageDimension >                           SizeType;
 
-  typedef typename InputImageType::SpacingType              SpacingType;
-
-  typedef Size<itkGetStaticConstMacro( ImageDimension )>      SizeType;
-
-  typedef Array< VectorType >                               ArrayVectorType;
+  typedef Array< VectorType >                              ArrayVectorType;
 
   /**
    * Set the input image.

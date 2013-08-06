@@ -35,6 +35,10 @@ set( JsonCpp_SVN_REPOSITORY
   ${svn_protocol}://svn.code.sf.net/p/jsoncpp/code/trunk/jsoncpp )
 set( JsonCpp_SVN_REVISION 268 )
 
+set( KWStyle_GIT_REPOSITORY
+  ${git_protocol}://public.kitware.com/KWStyle.git )
+set( KWStyle_GIT_TAG 16c5ca21e8133e6db155795dfdcb7d4bfa944af7 )
+
 set( LIBSVM_GIT_REPOSITORY
   ${git_protocol}://github.com/TubeTK/TubeTK-LIBSVM.git )
 set( LIBSVM_GIT_TAG origin/master )

@@ -76,16 +76,19 @@ ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
 
 
 template< class TTubeSpatialObject >
-const typename ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >::GroupSpatialObjectType *
+const typename ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
+  ::GroupSpatialObjectType *
 ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
 ::GetInput( void ) const
 {
-  return itkDynamicCastInDebugMode< const GroupSpatialObjectType * >( this->GetPrimaryInput() );
+  return itkDynamicCastInDebugMode< const GroupSpatialObjectType * >
+    ( this->GetPrimaryInput() );
 }
 
 
 template< class TTubeSpatialObject >
-typename ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >::PointsContainerDecoratorType *
+typename ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
+  ::PointsContainerDecoratorType *
 ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
 ::GetPointsContainerOutput( void )
 {
@@ -96,7 +99,8 @@ ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
 
 
 template< class TTubeSpatialObject >
-const typename ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >::PointsContainerDecoratorType *
+const typename ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
+  ::PointsContainerDecoratorType *
 ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
 ::GetPointsContainerOutput( void ) const
 {
@@ -107,7 +111,8 @@ ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
 
 
 template< class TTubeSpatialObject >
-const typename ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >::PointsContainerType *
+const typename ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
+  ::PointsContainerType *
 ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
 ::GetPointsContainer( void ) const
 {

@@ -54,7 +54,8 @@ public:
   SplineApproximation1D( void );
 
   /** Constructor. */
-  SplineApproximation1D( ValueFunctionType::Pointer funcVal, Optimizer1D::Pointer optimizer1D );
+  SplineApproximation1D( ValueFunctionType::Pointer funcVal,
+    Optimizer1D::Pointer optimizer1D );
 
   /** Destructor. */
   virtual ~SplineApproximation1D( void );

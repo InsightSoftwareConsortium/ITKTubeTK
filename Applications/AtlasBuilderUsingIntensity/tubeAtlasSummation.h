@@ -41,8 +41,7 @@ namespace tube
 class AtlasSummation
 {
 public:
-
-  /*
+  /**
    * DEFAULT_PIXEL_FILL is the fill value considered not part of the
    * image when image is resampled. This tells the processor not to count
    * that value
@@ -73,7 +72,7 @@ public:
 
 private:
 
-  /**  Pixel and Image Type for processing transition images */
+  /** Pixel and Image Type for processing transition images */
   typedef double                                          ProcessPixelType;
   typedef itk::Image< ProcessPixelType, Dimension >       ProcessImageType;
   typedef ProcessImageType::Pointer                       ProcessImagePointer;
@@ -108,7 +107,7 @@ public:
   /** Build Mean and variance image & end AddImage() addition abilities */
   void Finalize( void );
 
-  /*
+  /**
    * Return final Summation products-Mean (or median) & Variance
    * (or standard deviation & image count for # of valid images
    */
@@ -121,7 +120,7 @@ public:
   CountImageType * GetValidCountImage( void ) const
     { return m_MeanBuilder->GetValidCountImage(); }
 
-  /*
+  /**
    * OPTIONAL PARAMETERS
    *
    * Set output size and spacing values to have images resampled as well.
@@ -155,7 +154,7 @@ public:
   const PointType GetOutputOrigin( void ) const
     { return m_OutputOrigin; }
 
-  /*
+  /**
    * Do we want to use the variance (S^2) or standard deviation (S)
    * Default is to use standard deviation
    */
@@ -165,7 +164,7 @@ public:
   void SetUseStdDeviation( bool useStdDeviation )
     { m_UseStdDeviation = useStdDeviation; }
 
-  /*
+  /**
    * Set the minimum number of contributing images to a pixel
    * to consider that pixel valid for the mean and variance images,
    * default is 1
@@ -176,7 +175,7 @@ public:
   unsigned int GetImageCountThreshold( void ) const
     { return m_ImageCountThreshold; }
 
-  /*
+  /**
    * Use the median as a location estimate instead of the mean;
    * Note: Needs to be called BEFORE adding the first image!!!
    */
@@ -186,7 +185,7 @@ public:
   bool UseMedian( void ) const
     { return (m_NumOfImages > 0); }
 
-  /*
+  /**
    * Adjust all the resampled images origins and size (if not already defined)
    * so that no elements are cut off due to transforming & resampling the image
    * off of the screen.
@@ -204,8 +203,7 @@ public:
 
 
 private:
-
-  /*
+  /**
    * Builds appropriate bounding box for size and origin so that
    * none of original image is cut off
    */
@@ -217,7 +215,7 @@ private:
   InputImagePointer GetClippedImage( InputImagePointer image,
                                      TransformType::Pointer t );
 
-  /*
+  /**
    * Update the set output parameters (but not spacing) to include the area
    * given by inputed parameters and return true if the output variables changed.
    */
@@ -225,7 +223,7 @@ private:
                                PointType inputOrigin,
                                SpacingType inputSpacing );
 
-  /*
+  /**
    * Update the input size parameter to match the output size
    * and return true if the output size variable must be changed.
    */
@@ -265,7 +263,7 @@ private:
   bool                           m_OutputSpacingSet;
   bool                           m_OutputOriginSet;
 
-  /* State markers and Setting values */
+  /** State markers and Setting values */
   unsigned int                   m_ImageNumber;
   unsigned int                   m_ImageCountThreshold;
 

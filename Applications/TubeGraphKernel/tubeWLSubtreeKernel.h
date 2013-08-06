@@ -77,7 +77,7 @@ public:
   /** Compute the WLSubtree kernel */
   double Compute( void );
 
-  /*
+  /**
    * Take graph information and update
    *
    *  1) 'labelMap' for each subtree height with compressed label mapping
@@ -89,8 +89,7 @@ public:
                              int subtreeHeight);
 
 private:
-
-  /*
+  /**
    * Take a graph 'G' and use the label map information and the number of
    * compressed labels per subtree level to compute a feature mapping phi
    * for the graph, see [1]

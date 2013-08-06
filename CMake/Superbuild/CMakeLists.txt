@@ -121,6 +121,10 @@ if( TubeTK_USE_BOOST )
   list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DBOOST_ROOT=${BOOST_ROOT} )
 endif( TubeTK_USE_BOOST )
 
+if( TubeTK_USE_KWSTYLE )
+  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "KWStyle" )
+endif( TubeTK_USE_KWSTYLE )
+
 # Check dependencies.
 set( EXTERNAL_PROJECT_DIR ${TubeTK_SOURCE_DIR}/CMake/Superbuild )
 TubeTKMacroCheckExternalProjectDependency( TubeTK )

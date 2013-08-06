@@ -60,13 +60,12 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     TImage::ImageDimension );
 
-  typedef float                                FeatureValueType;
-  typedef vnl_vector< FeatureValueType >       FeatureVectorType;
-  typedef Image< FeatureValueType, TImage::ImageDimension >
-                                               FeatureImageType;
+  typedef float                                             FeatureValueType;
+  typedef vnl_vector< FeatureValueType >                    FeatureVectorType;
+  typedef Image< FeatureValueType, TImage::ImageDimension > FeatureImageType;
 
-  typedef double                               ValueType;
-  typedef std::vector< ValueType >             ValueListType;
+  typedef double                   ValueType;
+  typedef std::vector< ValueType > ValueListType;
 
   void SetInput( typename ImageType::Pointer img );
   void AddInput( typename ImageType::Pointer img );
@@ -75,16 +74,16 @@ public:
 
   void UpdateWhitenFeatureImageStats( void );
 
-  void SetWhitenMeans( const ValueListType & means );
-  const ValueListType & GetWhitenMeans( void ) const;
+  void   SetWhitenMeans( const ValueListType & means );
+  const  ValueListType & GetWhitenMeans( void ) const;
 
-  void SetWhitenStdDevs( const ValueListType & stdDevs );
-  const ValueListType & GetWhitenStdDevs( void ) const;
+  void   SetWhitenStdDevs( const ValueListType & stdDevs );
+  const  ValueListType & GetWhitenStdDevs( void ) const;
 
-  void SetWhitenFeatureImageMean( unsigned int num, double mean );
+  void   SetWhitenFeatureImageMean( unsigned int num, double mean );
   double GetWhitenFeatureImageMean( unsigned int num ) const;
 
-  void SetWhitenFeatureImageStdDev( unsigned int num, double stdDev );
+  void   SetWhitenFeatureImageStdDev( unsigned int num, double stdDev );
   double GetWhitenFeatureImageStdDev( unsigned int num ) const;
 
   virtual unsigned int GetNumberOfFeatures( void ) const;

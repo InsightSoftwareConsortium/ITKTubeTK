@@ -74,12 +74,12 @@ protected:
   void Execute( const Object * object, const EventObject & event );
 
   struct ParameterIteration
-  {
-  NumberOfIterationsType    Iteration;
-  ParametersValueType       Parameters[NumberOfParameters];
-  CostFunctionValueType     CostFunctionValue;
-  CostFunctionValueType     CostFunctionDerivative[NumberOfParameters];
-  };
+    {
+    NumberOfIterationsType    Iteration;
+    ParametersValueType       Parameters[NumberOfParameters];
+    CostFunctionValueType     CostFunctionValue;
+    CostFunctionValueType     CostFunctionDerivative[NumberOfParameters];
+    };
   typedef ParameterIteration ParameterIterationType;
 
   typedef std::vector< ParameterIterationType > ParameterProgressionType;
@@ -88,7 +88,8 @@ protected:
 
 private:
   // Purposely not implemented
-  RecordOptimizationParameterProgressionCommand( const RecordOptimizationParameterProgressionCommand & );
+  RecordOptimizationParameterProgressionCommand(
+    const RecordOptimizationParameterProgressionCommand & );
   // Purposely not implemented
   void operator=( const RecordOptimizationParameterProgressionCommand & );
 
@@ -97,7 +98,7 @@ private:
 
   std::string              m_FileName;
 
-  H5::CompType H5ParameterIterationType;
+  H5::CompType             m_H5ParameterIterationType;
 }; // End class RecordOptimizationParameterProgressionCommand
 
 } // End namespace tube

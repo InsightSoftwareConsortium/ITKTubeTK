@@ -55,7 +55,7 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
     HOFFSET( ParameterIterationType, CostFunctionValue ), H5::PredType::NATIVE_DOUBLE );
   memoryDataType.insertMember( "CostFunctionDerivative",
     HOFFSET( ParameterIterationType, CostFunctionDerivative ), parametersMemoryDataType );
-  this->H5ParameterIterationType = memoryDataType;
+  this->m_H5ParameterIterationType = memoryDataType;
 }
 
 
@@ -75,7 +75,7 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
   TParametersValue >
 ::GetH5ParameterIterationType() const
 {
-  return this->H5ParameterIterationType;
+  return this->m_H5ParameterIterationType;
 }
 
 
@@ -186,9 +186,10 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
     }
   H5::H5File * file = new H5::H5File( this->m_FileName, H5F_ACC_TRUNC );
 
-  H5::DataSet * dataset = new H5::DataSet( file->createDataSet( "OptimizationParameterProgression",
-      this->H5ParameterIterationType, dataSpace ) );
-  dataset->write( &(this->m_ParameterProgression[0]), this->H5ParameterIterationType );
+  H5::DataSet * dataset = new H5::DataSet(
+    file->createDataSet( "OptimizationParameterProgression",
+      this->m_H5ParameterIterationType, dataSpace ) );
+  dataset->write( &(this->m_ParameterProgression[0]), this->m_H5ParameterIterationType );
 
   delete dataset;
   delete file;

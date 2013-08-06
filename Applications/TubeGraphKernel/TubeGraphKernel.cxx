@@ -236,7 +236,8 @@ void writeKernelLIBSVM(const std::string &baseFileName,
  *  \return The constructed graph.
  */
 tube::GraphKernel::GraphType loadGraph( std::string graphFile,
-  tube::GraphKernel::DefaultNodeLabelingType defNodeLabel = tube::GraphKernel::LABEL_BY_NUM,
+  tube::GraphKernel::DefaultNodeLabelingType defNodeLabel =
+    tube::GraphKernel::LABEL_BY_NUM,
   const std::string & globalLabelFile = std::string() )
 {
   const char * labelFile = 0; // Will stay 0 as long as there is NO per-graph label file

@@ -120,8 +120,11 @@ if( TubeTK_USE_CPPCHECK )
 endif( TubeTK_USE_CPPCHECK )
 
 # KWStyle setup.
+option( USE_SYSTEM_KWSTYLE
+  "Exclude KWStyle from superbuild and use an existing build." OFF )
+mark_as_advanced( USE_SYSTEM_KWSTYLE )
 option( TubeTK_USE_KWSTYLE
-  "Use KWStyle to check for coding standards violations." OFF )
+  "Use KWStyle to check for coding standards violations." ON )
 mark_as_advanced( TubeTK_USE_KWSTYLE )
 
 if( TubeTK_USE_KWSTYLE )
@@ -140,7 +143,7 @@ if( TubeTK_USE_KWSTYLE )
 
   option( KWSTYLE_DASHBOARD_SUBMISSION
     "Set the KWStyle arguments to generate a report for CDash dashboard submission."
-    ON )
+    OFF )
   mark_as_advanced( KWSTYLE_DASHBOARD_SUBMISSION )
 
   if( KWSTYLE_DASHBOARD_SUBMISSION )

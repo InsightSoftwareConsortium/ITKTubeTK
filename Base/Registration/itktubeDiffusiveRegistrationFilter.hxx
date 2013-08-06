@@ -34,9 +34,7 @@ namespace itk
 namespace tube
 {
 
-/**
- * Constructor
- */
+
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 DiffusiveRegistrationFilter
 < TFixedImage, TMovingImage, TDeformationField >
@@ -73,9 +71,7 @@ DiffusiveRegistrationFilter
   m_PreviousUpdateMetrics.zero();
 }
 
-/**
- * PrintSelf
- */
+
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
@@ -151,9 +147,7 @@ DiffusiveRegistrationFilter
      << m_StoppingCriterionMaxTotalEnergyChange << std::endl;
 }
 
-/**
- * Create the registration function
- */
+
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
@@ -168,9 +162,7 @@ DiffusiveRegistrationFilter
       registrationFunction.GetPointer() ) );
 }
 
-/**
- * Get the registration function pointer
- */
+
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 typename DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
@@ -184,9 +176,7 @@ DiffusiveRegistrationFilter
   return df;
 }
 
-/**
- * Allocate space for the update buffer
- */
+
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
@@ -1635,6 +1625,7 @@ DiffusiveRegistrationFilter
   outputImage->Modified();
 }
 
+
 /**
  * Calls ThreadedApplyUpdate, need to reimplement here to also split the
  * diffusion tensor image
@@ -1646,7 +1637,8 @@ DiffusiveRegistrationFilter
 ::ApplyUpdateThreaderCallback( void * arg )
 {
   const ThreadIdType threadId = ((MultiThreader::ThreadInfoStruct *)(arg))->ThreadID;
-  const ThreadIdType threadCount = ((MultiThreader::ThreadInfoStruct *)(arg))->NumberOfThreads;
+  const ThreadIdType threadCount =
+    ((MultiThreader::ThreadInfoStruct *)(arg))->NumberOfThreads;
 
   DenseFDThreadStruct * str = (DenseFDThreadStruct *)
             (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
@@ -1710,7 +1702,8 @@ DiffusiveRegistrationFilter
        !updateIt.IsAtEnd();
        ++outputIt1, ++outputIt2, ++updateIt )
     {
-    outputIt2.Value() = outputIt1.Value() + static_cast< DeformationVectorType >( updateIt.Value() * dt );
+    outputIt2.Value() =
+      outputIt1.Value() + static_cast< DeformationVectorType >( updateIt.Value() * dt );
     // no adaptor support here
     }
 }

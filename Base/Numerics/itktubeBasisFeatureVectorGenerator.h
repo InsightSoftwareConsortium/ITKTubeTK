@@ -92,34 +92,31 @@ public:
   void         SetObjectId( ObjectIdType objectId );
   void         AddObjectId( ObjectIdType objectId );
   ObjectIdType GetObjectId( unsigned int num = 0 ) const;
-  unsigned int GetNumberOfObjectIds( void ) const;
+  unsigned     int GetNumberOfObjectIds( void ) const;
 
-  ValueType       GetObjectMean( ObjectIdType objectId ) const;
-  void            SetObjectMean( ObjectIdType objectId, ValueType val );
-  MatrixType      GetObjectCovariance( ObjectIdType objectId ) const;
-  void            SetObjectCovariance( ObjectIdType objectId,
-                    MatrixType val );
+  ValueType    GetObjectMean( ObjectIdType objectId ) const;
+  void         SetObjectMean( ObjectIdType objectId, ValueType val );
+  MatrixType   GetObjectCovariance( ObjectIdType objectId ) const;
+  void         SetObjectCovariance( ObjectIdType objectId, MatrixType val );
 
-  ValueType       GetGlobalMean( void ) const;
-  void            SetGlobalMean( ValueType val );
-  MatrixType      GetGlobalCovariance( void ) const;
-  void            SetGlobalCovariance( MatrixType val );
+  ValueType    GetGlobalMean( void ) const;
+  void         SetGlobalMean( ValueType val );
+  MatrixType   GetGlobalCovariance( void ) const;
+  void         SetGlobalCovariance( MatrixType val );
 
-  unsigned int    GetNumberOfBasis( void ) const;
+  unsigned     int    GetNumberOfBasis( void ) const;
 
-  double          GetBasisValue( unsigned int basisNum ) const;
-  VectorType      GetBasisVector( unsigned int basisNum ) const;
-  MatrixType      GetBasisMatrix( void ) const;
-  VectorType      GetBasisValues( void ) const;
+  double       GetBasisValue( unsigned int basisNum ) const;
+  VectorType   GetBasisVector( unsigned int basisNum ) const;
+  MatrixType   GetBasisMatrix( void ) const;
+  VectorType   GetBasisValues( void ) const;
 
-  void            SetBasisValue( unsigned int basisNum, double value );
-  void            SetBasisVector( unsigned int basisNum,
-                    const VectorType & vec );
-  void            SetBasisMatrix( const MatrixType & mat );
-  void            SetBasisValues( const VectorType & values );
+  void         SetBasisValue( unsigned int basisNum, double value );
+  void         SetBasisVector( unsigned int basisNum, const VectorType & vec );
+  void         SetBasisMatrix( const MatrixType & mat );
+  void         SetBasisValues( const VectorType & values );
 
-  typename FeatureImageType::Pointer GetFeatureImage( unsigned int fNum )
-                    const;
+  typename FeatureImageType::Pointer GetFeatureImage( unsigned int fNum ) const;
 
   itkSetMacro( PerformLDA, bool );
   itkGetMacro( PerformLDA, bool );
@@ -132,8 +129,7 @@ public:
 
   virtual unsigned int      GetNumberOfFeatures( void ) const;
 
-  virtual FeatureVectorType GetFeatureVector( const IndexType & indx )
-    const;
+  virtual FeatureVectorType GetFeatureVector( const IndexType & indx ) const;
 
   virtual FeatureValueType  GetFeatureVectorValue( const IndexType & indx,
     unsigned int fNum ) const;
@@ -152,8 +148,7 @@ private:
   void operator = ( const Self & );      // Purposely not implemented
 
   //  Data
-  typename FeatureVectorGeneratorType::Pointer
-                                  m_InputFeatureVectorGenerator;
+  typename FeatureVectorGeneratorType::Pointer m_InputFeatureVectorGenerator;
 
   typename LabelMapType::Pointer  m_LabelMap;
 

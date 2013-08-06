@@ -65,7 +65,8 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 }
 
 template< class TInputImage, class TOutputImage >
-void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
+void
+AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 ::GenerateData( void )
 {
   typedef typename TInputImage::SizeType          InputImageSizeType;
@@ -172,7 +173,8 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 }
 
 template< class TInputImage, class TOutputImage >
-void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
+void
+AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 ::ComputeNormalVectorImage( void )
 {
   m_HessianFilter->SetInput( this->GetInput() );
@@ -281,7 +283,8 @@ void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 
 
 template< class TInputImage, class TOutputImage >
-void AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
+void
+AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 ::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);

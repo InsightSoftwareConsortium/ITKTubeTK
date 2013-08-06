@@ -75,12 +75,10 @@ void computeQuantiles( ImageType::Pointer image,
 {
   assert(quantileValues.empty());
 
-  /*
-   * Create a and configure a vector of length N of pointers
-   * to BOOST accumulators -- Each of the N accumulators will
-   * estimate exactly one of the given N desired quantile. If
-   * the desired quantile is not within (0,1), throw an exception.
-   */
+  // Create a and configure a vector of length N of pointers
+  // to BOOST accumulators -- Each of the N accumulators will
+  // estimate exactly one of the given N desired quantile. If
+  // the desired quantile is not within (0,1), throw an exception.
   std::vector<QuantileAccumulatorType *> accVec;
   BOOST_FOREACH(float q, quantiles)
     {
@@ -97,11 +95,9 @@ void computeQuantiles( ImageType::Pointer image,
     }
 
 
-  /*
-   * Use an image iterator to iterate over all pixel/voxel and
-   * and then add those values to all the accumulators. Adding
-   * the values will incrementally compute the quantile estimates.
-   */
+  // Use an image iterator to iterate over all pixel/voxel and
+  // and then add those values to all the accumulators. Adding
+  // the values will incrementally compute the quantile estimates.
   ImageIteratorType imIt( image, image->GetLargestPossibleRegion() );
   imIt.GoToBegin();
   while( !imIt.IsAtEnd() )
@@ -115,10 +111,8 @@ void computeQuantiles( ImageType::Pointer image,
     }
 
 
-  /*
-   * Finally, iterate over the accumulators, query the
-   * estimated quantiles and fill the output vector
-   */
+  // Finally, iterate over the accumulators, query the
+  // estimated quantiles and fill the output vector
   BOOST_FOREACH( QuantileAccumulatorType *acc, accVec)
     {
     ImagePixelType qVal = p_square_quantile(*acc);

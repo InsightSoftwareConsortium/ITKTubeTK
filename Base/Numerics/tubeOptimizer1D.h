@@ -66,7 +66,8 @@ public:
    * function to be optimized
    * \param funcDeriv User derivation of UserFunction to define
    * derivative of function to be optimized */
-  Optimizer1D( ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv );
+  Optimizer1D( ValueFunctionType::Pointer funcVal,
+    DerivativeFunctionType::Pointer funcDeriv );
 
   /** Destructor. */
   virtual ~Optimizer1D( void );
@@ -104,7 +105,8 @@ public:
   * function to be optimized
   * \param funcDeriv User derivation of UserFunction to define
   * derivative of function to be optimized */
-  void Use( ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv );
+  void Use( ValueFunctionType::Pointer funcVal,
+    DerivativeFunctionType::Pointer funcDeriv );
 
 protected:
 

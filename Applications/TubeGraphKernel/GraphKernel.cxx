@@ -27,7 +27,6 @@ namespace tube
 {
 
 
-//-----------------------------------------------------------------------------
 std::string GraphKernel::LabelVectorToString(const std::vector<int> &labVec)
 {
   std::stringstream res;
@@ -39,7 +38,6 @@ std::string GraphKernel::LabelVectorToString(const std::vector<int> &labVec)
 }
 
 
-//-----------------------------------------------------------------------------
 std::string GraphKernel::BuildPrefixFromVertexID(int v)
 {
   std::stringstream res;
@@ -48,7 +46,6 @@ std::string GraphKernel::BuildPrefixFromVertexID(int v)
 }
 
 
-//-----------------------------------------------------------------------------
 void GraphKernel::CountingSort(std::vector<int>& vec)
 {
   int maxVal = *std::max_element(vec.begin(), vec.end());
@@ -69,18 +66,15 @@ void GraphKernel::CountingSort(std::vector<int>& vec)
 }
 
 
-//-----------------------------------------------------------------------------
 std::string GraphKernel::BuildNeighborStr(const GraphType &G, int v)
 {
-  /*
-   * Algorithm:
-   *
-   * 1) Get index map for the current graph 'G'
-   * 2) Compute the #neighbors for vertex 'v'
-   * 3) Add all neighbors of v to a 'nbVec'
-   * 4) Sort the neighbor vector (CountingSort)
-   * 5) Create string from vector
-   */
+  // Algorithm:
+  //
+  // 1) Get index map for the current graph 'G'
+  // 2) Compute the #neighbors for vertex 'v'
+  // 3) Add all neighbors of v to a 'nbVec'
+  // 4) Sort the neighbor vector (CountingSort)
+  // 5) Create string from vector
   IndexMapType index = boost::get(boost::vertex_index, G);
 
   VertexNeighborType nb = adjacent_vertices(vertex(v, G), G);
@@ -106,7 +100,6 @@ std::string GraphKernel::BuildNeighborStr(const GraphType &G, int v)
 }
 
 
-//-----------------------------------------------------------------------------
 bool GraphKernel::IsValidDefaultNodeLabeling( int desiredType )
 {
   switch( desiredType )
@@ -120,7 +113,6 @@ bool GraphKernel::IsValidDefaultNodeLabeling( int desiredType )
 }
 
 
-//-----------------------------------------------------------------------------
 GraphKernel::GraphType
 GraphKernel::GraphFromAdjFile( const char *graphFile,
                                const char *labelFile,
@@ -158,10 +150,8 @@ GraphKernel::GraphFromAdjFile( const char *graphFile,
   reader.close();
 
 
-  /*
-   * We support either the node ID or the node degree as a
-   * label (degree is suggested in [Shervashidze11a]
-   */
+  // We support either the node ID or the node degree as a
+  // label (degree is suggested in [Shervashidze11a]
   switch( defNodeLabel )
     {
     case LABEL_BY_NUM:
@@ -215,7 +205,6 @@ GraphKernel::GraphFromAdjFile( const char *graphFile,
 }
 
 
-//-----------------------------------------------------------------------------
 GraphKernel::GraphType
 GraphKernel::GraphFromJSONFile(const char *graphFile)
 {

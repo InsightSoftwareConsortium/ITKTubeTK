@@ -92,9 +92,13 @@ CheckImageAttributes( const TInputImage * input,
   std::cout << "  size =  " << mask->GetLargestPossibleRegion().GetSize() << std::endl;
   std::cout << "  index = " << mask->GetLargestPossibleRegion().GetIndex() << std::endl;
   std::cout << "  origin = " << mask->GetOrigin() << std::endl;
-  return input->GetOrigin().GetVnlVector().is_equal(mask->GetOrigin().GetVnlVector(), 0.01)
-         && input->GetLargestPossibleRegion().GetIndex() == mask->GetLargestPossibleRegion().GetIndex()
-         && input->GetLargestPossibleRegion().GetSize() == mask->GetLargestPossibleRegion().GetSize();
+  const typename TInputImage::PointType inputOrigin = input->GetOrigin();
+  const typename TLabelMap::PointType maskOrigin = mask->GetOrigin();
+  const typename TInputImage::RegionType inputRegion = input->GetLargestPossibleRegion();
+  const typename TLabelMap::RegionType maskRegion = mask->GetLargestPossibleRegion();
+  return inputOrigin.GetVnlVector().is_equal( maskOrigin.GetVnlVector(), 0.01 )
+         && inputRegion.GetIndex() == maskRegion.GetIndex()
+         && inputRegion.GetSize() == maskRegion.GetSize();
 }
 
 template< class T, unsigned int N >

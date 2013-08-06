@@ -33,29 +33,37 @@ limitations under the License.
 namespace tube
 {
 
-// Constructor.
-ParabolicFitOptimizer1D::ParabolicFitOptimizer1D( void )
+ParabolicFitOptimizer1D
+::ParabolicFitOptimizer1D( void )
   : Optimizer1D()
 {
 }
 
-// Constructor.
-ParabolicFitOptimizer1D::ParabolicFitOptimizer1D( ValueFunctionType::Pointer funcVal )
+
+ParabolicFitOptimizer1D
+::ParabolicFitOptimizer1D( ValueFunctionType::Pointer funcVal )
   : Optimizer1D( funcVal, NULL )
 {
 }
 
-// Destructor.
-ParabolicFitOptimizer1D::~ParabolicFitOptimizer1D( void )
+
+ParabolicFitOptimizer1D
+::~ParabolicFitOptimizer1D( void )
 {
 }
 
-void ParabolicFitOptimizer1D::Use( ValueFunctionType::Pointer funcVal )
+
+void
+ParabolicFitOptimizer1D
+::Use( ValueFunctionType::Pointer funcVal )
 {
   this->Superclass::Use( funcVal, NULL );
 }
 
-double ParabolicFitOptimizer1D::m_Center( double x1, double y1, double x2, double y2, double x3, double y3 )
+
+double
+ParabolicFitOptimizer1D
+::m_Center( double x1, double y1, double x2, double y2, double x3, double y3 )
 {
   double a = ( y1 - ( ( y2-y3 )*x1 )/( x2-x3 ) - y3 + ( ( y2-y3 )*x3 )/( x2-x3 ) ) /
     ( x1*x1 - x3*x3 + ( ( x3*x3-x2*x2 )*x1 )/( x2-x3 ) -
@@ -65,7 +73,10 @@ double ParabolicFitOptimizer1D::m_Center( double x1, double y1, double x2, doubl
   return -b/( 2*a );
 }
 
-bool ParabolicFitOptimizer1D::m_Extreme( double * extX, double * extVal )
+
+bool
+ParabolicFitOptimizer1D
+::m_Extreme( double * extX, double * extVal )
 {
   double minSign = 1;
   if( !m_SearchForMin )

@@ -393,8 +393,10 @@ RidgeExtractor<TInputImage>
 template< class TInputImage >
 double
 RidgeExtractor<TInputImage>
-::Ridgeness( const ContinuousIndexType & x, double & roundness,
-  double & curvature, double & linearity )
+::Ridgeness( const ContinuousIndexType & x,
+  double & roundness,
+  double & curvature,
+  double & linearity )
 {
   if( this->GetDebug() )
     {

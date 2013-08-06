@@ -31,13 +31,16 @@ limitations under the License.
 namespace tube
 {
 
-bool Optimizer1D::m_Extreme( double * tubeNotUsed( x ), double * tubeNotUsed( xval ) )
+bool
+Optimizer1D
+::m_Extreme( double * tubeNotUsed( x ), double * tubeNotUsed( xval ) )
 {
   return false;
 }
 
-// Constructor.
-Optimizer1D::Optimizer1D( void )
+
+Optimizer1D
+::Optimizer1D( void )
 {
   m_SearchForMin = true;
   m_Tolerance = 0.0001;
@@ -50,8 +53,10 @@ Optimizer1D::Optimizer1D( void )
   m_FuncDeriv = 0;
 }
 
-// Constructor.
-Optimizer1D::Optimizer1D( ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv )
+
+Optimizer1D
+::Optimizer1D( ValueFunctionType::Pointer funcVal,
+  DerivativeFunctionType::Pointer funcDeriv )
 {
   m_SearchForMin = true;
   m_Tolerance = 0.0001;
@@ -64,19 +69,27 @@ Optimizer1D::Optimizer1D( ValueFunctionType::Pointer funcVal, DerivativeFunction
   m_Defined = true;
 }
 
-// Destructor.
-Optimizer1D::~Optimizer1D( void )
+
+Optimizer1D
+::~Optimizer1D( void )
 {
 }
 
-void Optimizer1D::Use( ValueFunctionType::Pointer funcVal, DerivativeFunctionType::Pointer funcDeriv )
+
+void
+Optimizer1D
+::Use( ValueFunctionType::Pointer funcVal,
+  DerivativeFunctionType::Pointer funcDeriv )
 {
   m_FuncVal = funcVal;
   m_FuncDeriv = funcDeriv;
   m_Defined = true;
 }
 
-bool Optimizer1D::Extreme( double * x, double * xVal )
+
+bool
+Optimizer1D
+::Extreme( double * x, double * xVal )
 {
   if( !m_Defined )
     {
@@ -86,8 +99,10 @@ bool Optimizer1D::Extreme( double * x, double * xVal )
   return m_Extreme( x, xVal );
 }
 
-// Print out information about this object.
-void Optimizer1D::PrintSelf( std::ostream & os, Indent indent ) const
+
+void
+Optimizer1D
+::PrintSelf( std::ostream & os, Indent indent ) const
 {
   this->Superclass::PrintSelf( os, indent );
 

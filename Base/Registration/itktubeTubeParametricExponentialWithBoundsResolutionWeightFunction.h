@@ -125,4 +125,4 @@ private:
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeTubeParametricExponentialWithBoundsResolutionWeightFunction_h)
+#endif // End !defined(__itktub...

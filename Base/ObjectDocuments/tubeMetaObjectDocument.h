@@ -38,20 +38,19 @@ class MetaObjectDocument : public MetaDocument
 {
 public:
 
-  typedef MetaObjectDocument                    Self;
-  typedef MetaDocument                          Superclass;
-  typedef Self *                                Pointer;
-  typedef const Self *                          ConstPointer;
+  typedef MetaObjectDocument Self;
+  typedef MetaDocument       Superclass;
+  typedef Self *             Pointer;
+  typedef const Self *       ConstPointer;
 
-  typedef Superclass::FieldType                 FieldType;
-  typedef Superclass::FieldListType             FieldListType;
+  typedef Superclass::FieldType                      FieldType;
+  typedef Superclass::FieldListType                  FieldListType;
 
-  typedef itk::tube::BlobSpatialObjectDocument  BlobSpatialObjectDocumentType;
-  typedef itk::tube::ImageDocument              ImageDocumentType;
-  typedef itk::tube::ObjectDocument             ObjectDocumentType;
-  typedef itk::tube::SpatialObjectDocument      SpatialObjectDocumentType;
-  typedef std::vector< ObjectDocumentType::Pointer >
-                                                ObjectDocumentListType;
+  typedef itk::tube::BlobSpatialObjectDocument       BlobSpatialObjectDocumentType;
+  typedef itk::tube::ImageDocument                   ImageDocumentType;
+  typedef itk::tube::ObjectDocument                  ObjectDocumentType;
+  typedef itk::tube::SpatialObjectDocument           SpatialObjectDocumentType;
+  typedef std::vector< ObjectDocumentType::Pointer > ObjectDocumentListType;
 
   /** Constructor. */
   MetaObjectDocument( void );

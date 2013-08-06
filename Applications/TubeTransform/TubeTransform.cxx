@@ -102,7 +102,7 @@ ProcessTubes( itk::TransformFileReader::TransformPointer genericInputTransform,
 
   if( useInverseTransform )
     {
-      TransformType::InverseTransformBaseType::Pointer ivT =
+    TransformType::InverseTransformBaseType::Pointer ivT =
       transform->GetInverseTransform();
     transform = ( TransformType * )ivT.GetPointer();
     }
@@ -148,7 +148,8 @@ GroupSpatialObjectType::Pointer
 ApplyDisplacementField( GroupSpatialObjectType::Pointer inputTubes,
                         const std::string &displacementFieldFile )
 {
-  typedef itk::DisplacementFieldTransform< double, Dimension > DisplacementFieldTransformType;
+  typedef itk::DisplacementFieldTransform< double, Dimension >
+    DisplacementFieldTransformType;
   typedef DisplacementFieldTransformType::DisplacementFieldType
     DisplacementFieldType;
   typedef itk::ImageFileReader< DisplacementFieldType >
@@ -211,10 +212,9 @@ int DoIt( int argc, char * argv[] )
   GroupSpatialObjectType::Pointer outputTubes;
   try
     {
-    /** NOTE: In case a displacement field file is given by the user, we
-      * ignore any other given transform and just apply the displacement field
-      * to the tubes.
-      */
+    // NOTE: In case a displacement field file is given by the user, we
+    // ignore any other given transform and just apply the displacement field
+    // to the tubes.
     if( !displacementField.empty() )
       {
       timeCollector.Start(" Apply displacement field ");
