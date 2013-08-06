@@ -24,160 +24,132 @@ limitations under the License.
 #ifndef __tubeCLIHelperFunctions_h
 #define __tubeCLIHelperFunctions_h
 
+#include "tubeMacro.h"
+
 #include <itkImage.h>
 #include <itkImageIOFactory.h>
 
 namespace tube
 {
 
-// Description:
-// Get the ComponentType and dimension of the image
+// Get the component type and dimension of the image.
 void GetImageInformation( const std::string & fileName,
-                          itk::ImageIOBase::IOComponentType &componentType,
+                          itk::ImageIOBase::IOComponentType & componentType,
                           unsigned int & dimension )
 {
-  // Find out the component type of the image in file
-  typedef itk::ImageIOBase::IOComponentType  PixelType;
+  typedef itk::ImageIOBase     ImageIOType;
+  typedef itk::ImageIOFactory  ImageIOFactoryType;
 
-  itk::ImageIOBase::Pointer imageIO =
-    itk::ImageIOFactory::CreateImageIO( fileName.c_str(),
-                                        itk::ImageIOFactory::ReadMode );
-  if( !imageIO )
+  ImageIOType::Pointer imageIO =
+    ImageIOFactoryType::CreateImageIO( fileName.c_str(),
+                                       ImageIOFactoryType::ReadMode );
+
+  if( imageIO )
     {
-    std::cerr << "NO IMAGEIO WAS FOUND" << std::endl;
-    return;
+    // Read the metadata from the image file.
+    imageIO->SetFileName( fileName.c_str() );
+    imageIO->ReadImageInformation();
+
+    componentType = imageIO->GetComponentType();
+    dimension = imageIO->GetNumberOfDimensions();
     }
-
-  // Now that we found the appropriate ImageIO class, ask it to
-  // read the meta data from the image file.
-  imageIO->SetFileName( fileName.c_str() );
-  imageIO->ReadImageInformation();
-
-  componentType = imageIO->GetComponentType();
-  dimension = imageIO->GetNumberOfDimensions();
+  else
+    {
+    tubeErrorMacro( << "No ImageIO was found." );
+    }
 }
 
-#ifndef PARSE_ARGS_FLOAT_ONLY
-
-int ParseArgsAndCallDoIt( std::string inputImage, int argc, char * argv[] )
+int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
+                          char * argv[] )
 {
-  itk::ImageIOBase::IOComponentType componentType;
-  unsigned int dimension;
+  typedef itk::ImageIOBase              ImageIOType;
+  typedef ImageIOType::IOComponentType  IOComponentType;
 
-  try
-    {
-    GetImageInformation(inputImage, componentType, dimension );
-    if( dimension == 2 )
-      {
-      switch( componentType )
-        {
-        case itk::ImageIOBase::UCHAR:
-          return DoIt< unsigned char, 2 >( argc, argv );
-        case itk::ImageIOBase::CHAR:
-          return DoIt< char, 2 >( argc, argv );
-        case itk::ImageIOBase::USHORT:
-          return DoIt< unsigned short, 2 >( argc, argv );
-        case itk::ImageIOBase::SHORT:
-          return DoIt<short, 2>( argc, argv );
-//        case itk::ImageIOBase::UINT:
-//          return DoIt<unsigned int, 2>( argc, argv );
-//        case itk::ImageIOBase::INT:
-//          return DoIt<int, 2>( argc, argv );
-//        case itk::ImageIOBase::ULONG:
-//          return DoIt<unsigned long, 2>( argc, argv );
-//        case itk::ImageIOBase::LONG:
-//          return DoIt<long, 2>( argc, argv );
-        case itk::ImageIOBase::FLOAT:
-          return DoIt< float, 2 >( argc, argv );
-        case itk::ImageIOBase::DOUBLE:
-          return DoIt< double, 2 >( argc, argv );
-        case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
-      default:
-          std::cout << "unknown component type" << std::endl;
-          return EXIT_FAILURE;
-        }
-      }
-    else if( dimension == 3 )
-      {
-      switch( componentType )
-        {
-        case itk::ImageIOBase::UCHAR:
-          return DoIt <unsigned char, 3 >( argc, argv );
-        case itk::ImageIOBase::CHAR:
-          return DoIt <char, 3 >( argc, argv );
-        case itk::ImageIOBase::USHORT:
-          return DoIt <unsigned short, 3 >( argc, argv );
-        case itk::ImageIOBase::SHORT:
-          return DoIt<short, 3>( argc, argv );
-//        case itk::ImageIOBase::UINT:
-//          return DoIt<unsigned int, 3>( argc, argv );
-//        case itk::ImageIOBase::INT:
-//          return DoIt<int, 3>( argc, argv );
-//        case itk::ImageIOBase::ULONG:
-//          return DoIt<unsigned long, 3>( argc, argv );
-//        case itk::ImageIOBase::LONG:
-//          return DoIt<long, 3>( argc, argv );
-        case itk::ImageIOBase::FLOAT:
-          return DoIt <float, 3 >( argc, argv );
-        case itk::ImageIOBase::DOUBLE:
-          return DoIt <double, 3 >( argc, argv );
-        case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
-        default:
-          std::cout << "unknown component type" << std::endl;
-          return EXIT_FAILURE;
-        }
-      }
-    }
-  catch( itk::ExceptionObject & excep )
-    {
-    std::cerr << argv[0] << ": ITK exception caught !" << std::endl;
-    std::cerr << excep << std::endl;
-    return EXIT_FAILURE;
-    }
-  catch( ... )
-    {
-    std::cerr << argv[0] << ": exception caught !" << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  return EXIT_SUCCESS;
-}
-
-#else
-
-int ParseArgsAndCallDoIt( std::string inputImage, int argc, char * argv[] )
-{
-  itk::ImageIOBase::IOComponentType componentType;
-  unsigned int dimension;
+  IOComponentType componentType = ImageIOType::UNKNOWNCOMPONENTTYPE;
+  unsigned int dimension = 0;
 
   try
     {
     GetImageInformation( inputImage, componentType, dimension );
+
+#ifndef PARSE_ARGS_FLOAT_ONLY
+
+    if( dimension == 2 )
+      {
+      switch( componentType )
+        {
+        case ImageIOType::UCHAR:
+          return DoIt< unsigned char, 2 >( argc, argv );
+        case ImageIOType::CHAR:
+          return DoIt< char, 2 >( argc, argv );
+        case ImageIOType::USHORT:
+          return DoIt< unsigned short, 2 >( argc, argv );
+        case ImageIOType::SHORT:
+          return DoIt< short, 2 >( argc, argv );
+        case ImageIOType::FLOAT:
+          return DoIt< float, 2 >( argc, argv );
+        case ImageIOType::DOUBLE:
+          return DoIt< double, 2 >( argc, argv );
+        case ImageIOType::UNKNOWNCOMPONENTTYPE:
+        default:
+          tubeErrorMacro( << "Unknown component type." );
+          return EXIT_FAILURE;
+        }
+      }
+
+    if( dimension == 3 )
+      {
+      switch( componentType )
+        {
+        case ImageIOType::UCHAR:
+          return DoIt < unsigned char, 3 >( argc, argv );
+        case ImageIOType::CHAR:
+          return DoIt < char, 3 >( argc, argv );
+        case ImageIOType::USHORT:
+          return DoIt < unsigned short, 3 >( argc, argv );
+        case ImageIOType::SHORT:
+          return DoIt< short, 3 >( argc, argv );
+        case ImageIOType::FLOAT:
+          return DoIt < float, 3 >( argc, argv );
+        case ImageIOType::DOUBLE:
+          return DoIt < double, 3 >( argc, argv );
+        case ImageIOType::UNKNOWNCOMPONENTTYPE:
+        default:
+          tubeErrorMacro( << "Unknown component type." );
+          return EXIT_FAILURE;
+        }
+      }
+
+#else
+
     if( dimension == 2 )
       {
       return DoIt< float, 2 >( argc, argv );
       }
-    else if( dimension == 3 )
+
+    if( dimension == 3 )
       {
       return DoIt< float, 3 >( argc, argv );
       }
+
+#endif // End !defined(PARSE_ARGS_FLOAT_ONLY)
+
+    tubeErrorMacro( << "Unknown dimension." );
+    return EXIT_FAILURE;
     }
-  catch( itk::ExceptionObject & excep )
+  catch( itk::ExceptionObject & ex )
     {
-    std::cerr << argv[0] << ": itk exception caught !" << std::endl;
-    std::cerr << excep << std::endl;
+    tubeErrorMacro( << "ITK exception caught. " << ex );
     return EXIT_FAILURE;
     }
   catch( ... )
     {
-    std::cerr << argv[0] << ": exception caught !" << std::endl;
+    tubeErrorMacro( << "Exception caught." );
     return EXIT_FAILURE;
     }
 
   return EXIT_SUCCESS;
 }
-
-#endif
 
 } // End namespace tube
 
