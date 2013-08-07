@@ -271,7 +271,7 @@ int tubeSplineNDTest( int argc, char * argv[] )
     double xVal = 0;
     if( !spline.Extreme( x, &xVal ) )
       {
-      std::cout << "Spline.extreme failed." << std::endl;
+      std::cout << "Spline.Extreme failed." << std::endl;
       std::cout << "  x = " << x[0] << ", " << x[1] << std::endl;
       std::cout << "  xVal = " << xVal << std::endl;
       returnStatus = EXIT_FAILURE;
@@ -283,7 +283,7 @@ int tubeSplineNDTest( int argc, char * argv[] )
       if( vnl_math_abs(x[0] - 3.139) > 0.001
         || vnl_math_abs(x[1] - 0.0) > 0.001 )
         {
-        std::cout << "Spline.extreme failed." << std::endl;
+        std::cout << "Spline.Extreme failed." << std::endl;
         std::cout << "  x = (" << x[0] << ", " << x[1]
           << ") != ideal = (3.1139, 0.0)" << std::endl;
         returnStatus = EXIT_FAILURE;
@@ -291,7 +291,53 @@ int tubeSplineNDTest( int argc, char * argv[] )
         }
       if( vnl_math_abs( xVal - 1.918) > 0.001 )
         {
-        std::cout << "Spline.extreme failed." << std::endl;
+        std::cout << "Spline.Extreme failed." << std::endl;
+        std::cout << "  xVal=" << xVal << " != 1.918" << std::endl;
+        returnStatus = EXIT_FAILURE;
+        err = true;
+        }
+      if( err )
+        {
+        ++failed;
+        }
+      else
+        {
+        std::cout << "Success: x = " << x << " : xVal = "
+          << xVal << std::endl;
+        }
+      }
+    }
+  for(unsigned int c=0; c<100; c++)
+    {
+    x[0] = rndGen->GetNormalVariate( 3.14, 0.5 );
+    x[1] = rndGen->GetNormalVariate( 0.0, 0.5 );
+    std::cout << "Optimizing from " << x[0] << ", " << x[1] << std::endl;
+    double xVal = 0;
+    if( !spline.ExtremeConjGrad( x, &xVal ) )
+      {
+      std::cout << "Spline.ExtremeConjGrad failed." << std::endl;
+      std::cout << "  x = " << x[0] << ", " << x[1] << std::endl;
+      std::cout << "  xVal = " << xVal << std::endl;
+      returnStatus = EXIT_FAILURE;
+      ++failed;
+      }
+    else
+      {
+      bool err = false;
+      // Note: ExtremeConjGrad is less reliable and has poorer precision than
+      // Extreme in this case.
+      if( vnl_math_abs(x[0] - 3.139) > 0.1
+        || vnl_math_abs(x[1] - 0.0) > 1.1 )
+        {
+        std::cout << "Spline.ExtremeConjGrad failed." << std::endl;
+        std::cout << "  x = (" << x[0] << ", " << x[1]
+          << ") != ideal = (3.1139, 0.0)" << std::endl;
+        returnStatus = EXIT_FAILURE;
+        err = true;
+        }
+      if( vnl_math_abs( xVal - 1.918 ) > 0.5 )
+        {
+        std::cout << "Spline.ConjGrad failed." << std::endl;
         std::cout << "  xVal=" << xVal << " != 1.918" << std::endl;
         returnStatus = EXIT_FAILURE;
         err = true;

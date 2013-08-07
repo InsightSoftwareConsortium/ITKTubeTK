@@ -3,7 +3,6 @@ unusedFunction:*/Applications/SegmentConnectedComponentsUsingParzenPDFs/SegmentC
 unusedFunction:*/Base/CLI/Testing/tubeBaseCLITests.cxx:26
 unusedFunction:*/Base/IO/itktubeMetaLDA.cxx:251
 unusedFunction:*/Base/IO/itktubeMetaLDA.cxx:323
-unusedFunction:*/Base/Numerics/tubeSplineND.cxx:868
 unusedFunction:*/Base/ObjectDocuments/tubeMetaObjectDocument.cxx
 unusedFunction:*/Base/ObjectDocuments/tubeOptionList.cxx
 unusedFunction:*/Base/Python/tubetk/_tubetk_numpy.cxx:316
