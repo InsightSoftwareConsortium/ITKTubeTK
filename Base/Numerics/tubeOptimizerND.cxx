@@ -411,7 +411,7 @@ OptimizerND
       continue;
       }
 
-    xstep = vnl_math_abs( dot_product( m_XStep, m_X0Dir) );
+    xstep = vnl_math_abs( dot_product( m_XStep, m_X0Dir ) );
 
     a = 0;
 
