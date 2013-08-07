@@ -28,6 +28,9 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 
+#include <itkJsonCppArchiver.h>
+#include <itkGradientDescentOptimizerSerializer.h>
+
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkRecursiveGaussianImageFilter.h>
@@ -184,6 +187,35 @@ int DoIt( int argc, char * argv[] )
     gradientDescentOptimizer->SetLearningRate( 0.1 );
     gradientDescentOptimizer->SetNumberOfIterations( 1000 );
     }
+#ifdef SlicerExecutionModel_USE_SERIALIZER
+  // If SlicerExecutionModel was built with Serializer support, there is
+  // automatically a parametersToRestore argument.  This argument is a JSON
+  // file that has values for the CLI parameters, but it can also hold other
+  // entries without causing any issues.
+  if( !parametersToRestore.empty() )
+    {
+    // Parse the Json.
+    std::ifstream stream( parametersToRestore.c_str() );
+    Json::Reader reader;
+    Json::Value parametersRoot;
+    reader.parse( stream, parametersRoot );
+    stream.close();
+    // If the Json file has entries that describe the parameters for an
+    // itk::GradientDescentOptimizer, read them in, and set them on our
+    // gradientDescentOptimizer instance.
+    if( parametersRoot.isMember( "GradientDescentOptimizer" ) )
+      {
+      Json::Value & gradientDescentOptimizerValue = parametersRoot["GradientDescentOptimizer"];
+      typedef itk::GradientDescentOptimizerSerializer SerializerType;
+      SerializerType::Pointer serializer = SerializerType::New();
+      serializer->SetTargetObject( gradientDescentOptimizer );
+      itk::JsonCppArchiver::Pointer archiver =
+        dynamic_cast< itk::JsonCppArchiver * >( serializer->GetArchiver() );
+      archiver->SetJsonValue( &gradientDescentOptimizerValue );
+      serializer->DeSerialize();
+      }
+    }
+#endif
 
   // TODO: This is hard-coded now, which is sufficient since
   // ImageToTubeRigidMetric only uses a Euler3DTransform.  Will need to adjust

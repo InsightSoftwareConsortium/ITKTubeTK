@@ -31,6 +31,9 @@ endif( NOT TubeTK_SOURCE_DIR )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
+if( SlicerExecutionModel_USE_SERIALIZER )
+  add_definitions( -DSlicerExecutionModel_USE_SERIALIZER )
+endif()
 
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
@@ -38,7 +41,7 @@ include( ${USE_ITK_FILE} )
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES}
+  TARGET_LIBRARIES ${ITK_LIBRARIES} ${ParameterSerializer_LIBRARIES}
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/CLI
     ${TubeTK_SOURCE_DIR}/Base/Common

@@ -79,16 +79,15 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
   optimizer->MaximizeOn();
   optimizer->SetScales( m_ParametersScale );
 
-  /*  optimizer->SetMaximumIteration( m_NumberOfIteration );
+  //optimizer->SetMaximumIteration( m_NumberOfIteration );
 
-  Statistics::NormalVariateGenerator::Pointer generator =
-      Statistics::NormalVariateGenerator::New();
-  generator->SetReferenceCount( 2 );
-  generator->Initialize( std::time( NULL ) );
+  //Statistics::NormalVariateGenerator::Pointer generator =
+      //Statistics::NormalVariateGenerator::New();
+  //generator->SetReferenceCount( 2 );
+  //generator->Initialize( std::time( NULL ) );
 
-  optimizer->SetNormalVariateGenerator( generator );
-  optimizer->Initialize( 40 );
-  */
+  //optimizer->SetNormalVariateGenerator( generator );
+  //optimizer->Initialize( 40 );
 
   this->SetOptimizer( optimizer );
 }

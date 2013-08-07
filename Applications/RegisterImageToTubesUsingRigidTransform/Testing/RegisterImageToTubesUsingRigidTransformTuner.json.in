@@ -124,7 +124,15 @@
 
   "Executables":
   {
-    "Analysis": "@PROJ_EXE@"
+    "Analysis" : "@PROJ_EXE@"
+  },
+
+  "GradientDescentOptimizer":
+  {
+    "Debug" : true,
+    "LearningRate" : 0.80,
+    "Maximize" : false,
+    "NumberOfIterations" : 15
   }
 
 }
