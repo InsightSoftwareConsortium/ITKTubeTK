@@ -114,7 +114,7 @@
           "Name" : "gaussianBlurStdDev",
           "Step" : "",
           "Tag" : "double",
-          "Value" : 3.0
+          "Value" : 2.0
         }
       ]
     }
@@ -139,5 +139,19 @@
   {
     "Debug" : false,
     "Sampling" : 20
+  },
+
+  "Visualization" :
+  {
+    "ImageTubes" :
+    {
+      "CameraPosition" :
+      {
+        "distance" : 366.3,
+        "elevation" : 37,
+        "azimuth" : 115
+      }
+    }
   }
+
 }

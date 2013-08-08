@@ -27,6 +27,12 @@ class RegistrationTuner(QtGui.QMainWindow):
 
         self.config = config
         self.config_filename = config_filename
+
+        self.image_planes = []
+        self.image_tubes = None
+        self.input_image = None
+        self.dock_area = None
+
         self.initializeUI()
 
         self.iteration = 0
@@ -58,11 +64,16 @@ class RegistrationTuner(QtGui.QMainWindow):
                                self.run_analysis)
         self.addAction(run_action)
 
-        console_namespace = {'pg': pg, 'np': np, 'config': self.config}
+        import pprint
+        console_namespace = {'pg': pg,
+                             'np': np,
+                             'config': self.config,
+                             'tuner': self,
+                             'pp': pprint.pprint}
         console_text = """
 This is an interactive Python console.  The numpy and pyqtgraph modules have
 already been imported as 'np' and 'pg'.  The parameter configuration is
-available as 'config'.
+available as 'config'.  The RegistrationTuner instance is available as tuner.
 """
         self.console = pyqtgraph.console.ConsoleWidget(
             namespace=console_namespace,
@@ -78,7 +89,17 @@ available as 'config'.
         self.dock_area.addDock(run_console_dock, 'right')
 
         self.image_tubes = gl.GLViewWidget()
-        self.image_tubes.setCameraPosition(distance=200)
+        if 'Visualization' in self.config:
+            visualization = self.config['Visualization']
+            if 'ImageTubes' in visualization:
+                imageTubes = visualization['ImageTubes']
+                if 'CameraPosition' in imageTubes:
+                    # The current position can be obtained with
+                    # tuner.image_tubes.opts
+                    cameraPosition = imageTubes['CameraPosition']
+                    self.image_tubes.setCameraPosition(distance=cameraPosition['distance'],
+                                                       elevation=cameraPosition['elevation'],
+                                                       azimuth=cameraPosition['azimuth'])
         x_grid = gl.GLGridItem()
         grid_scale = 20
         x_grid.rotate(90, 0, 1, 0)
@@ -87,7 +108,7 @@ available as 'config'.
         y_grid.rotate(90, 1, 0, 0)
         y_grid.translate(0, -10 * grid_scale, 0)
         z_grid = gl.GLGridItem()
-        z_grid.translate( 0, 0, -10 * grid_scale)
+        z_grid.translate(0, 0, -10 * grid_scale)
         for grid in x_grid, y_grid, z_grid:
             grid.scale(grid_scale, grid_scale, grid_scale)
             self.image_tubes.addItem(grid)
@@ -101,16 +122,11 @@ available as 'config'.
 
         io_params = self.config['ParameterGroups'][0]['Parameters']
         input_volume = io_params[0]['Value']
-        image = sitk.ReadImage(str(input_volume))
-        #image_plane0 = self._image_plane(image, 0)
-        #self.image_tubes.addItem(image_plane0)
-        image_plane1 = self._image_plane(image, 1)
-        self.image_tubes.addItem(image_plane1)
-        image_plane2 = self._image_plane(image, 2)
-        self.image_tubes.addItem(image_plane2)
+        self.input_image = sitk.ReadImage(str(input_volume))
+        self.add_image_planes()
         input_vessel = io_params[1]['Value']
         tubes = tubes_from_file(input_vessel)
-        if self.config.has_key('SubSampleTubeTree'):
+        if 'SubSampleTubeTree' in self.config:
             sampling = self.config['SubSampleTubeTree']['Sampling']
             tubes = tubes[::sampling]
         circles = tubes_as_circles(tubes)
@@ -119,6 +135,24 @@ available as 'config'.
 
         self.setCentralWidget(self.dock_area)
         self.show()
+
+    def add_image_planes(self):
+        """Add the image planes.  The input image is smoothed."""
+        image = self.input_image
+        sigma = self.config['ParameterGroups'][1]['Parameters'][0]['Value']
+        if sigma > 0.0:
+            for ii in range(3):
+                image = sitk.RecursiveGaussian(image, sigma, direction=ii)
+
+        for plane in self.image_planes:
+            self.image_tubes.removeItem(plane)
+
+        self.image_planes = []
+        for direction in 1, 2:
+            self.image_planes.append(self._image_plane(image, direction))
+
+        for plane in self.image_planes:
+            self.image_tubes.addItem(plane)
 
     def run_analysis(self):
         io_params = self.config['ParameterGroups'][0]['Parameters']
@@ -131,6 +165,7 @@ available as 'config'.
                               input_vessel,
                               output_volume])
 
+        self.add_image_planes()
         self.set_iteration(0)
 
     def set_iteration(self, iteration):
@@ -138,6 +173,7 @@ available as 'config'.
         if iteration > self.number_of_iterations:
             raise ValueError("Invalid iteration")
         self.iteration = iteration
+
 
     @staticmethod
     def _image_plane(image, direction):
