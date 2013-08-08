@@ -58,6 +58,7 @@ if( TubeTK_USE_NUMPY )
 
   Midas3FunctionAddTest( ${MODULE_NAME}TunerTest
     ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../${MODULE_NAME}Tuner.py
+      --non-interactive
       ${TEMP}/${MODULE_NAME}Tuner.json
     MIDAS_FETCH_ONLY{Branch.n020.mha.md5}
     MIDAS_FETCH_ONLY{tube.tre.md5} )
