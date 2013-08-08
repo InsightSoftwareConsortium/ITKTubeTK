@@ -23,6 +23,8 @@ limitations under the License.
 
 #include "itktubeImageToTubeRigidRegistration.h"
 #include "itktubeRecordOptimizationParameterProgressionCommand.h"
+#include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
+#include "itktubeSubSampleTubeTreeSpatialObjectFilterSerializer.h"
 #include "itktubeTubeToTubeTransformFilter.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
@@ -63,6 +65,22 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
+#ifdef SlicerExecutionModel_USE_SERIALIZER
+  // If SlicerExecutionModel was built with Serializer support, there is
+  // automatically a parametersToRestore argument.  This argument is a JSON
+  // file that has values for the CLI parameters, but it can also hold other
+  // entries without causing any issues.
+  Json::Value parametersRoot;
+  if( !parametersToRestore.empty() )
+    {
+    // Parse the Json.
+    std::ifstream stream( parametersToRestore.c_str() );
+    Json::Reader reader;
+    reader.parse( stream, parametersRoot );
+    stream.close();
+    }
+#endif
+
   const unsigned int Dimension = 3;
   typedef double     FloatType;
 
@@ -78,7 +96,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::tube::TubeToTubeTransformFilter< TransformType, Dimension >
                                                          TubeTransformFilterType;
   typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
-                                                         SubSampleTubeNetFilterType;
+                                                         SubSampleTubeTreeFilterType;
 
   timeCollector.Start("Load data");
   typename ImageReaderType::Pointer reader = ImageReaderType::New();
@@ -113,13 +131,33 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   timeCollector.Start("Sub-sample data");
-  typename SubSampleTubeNetFilterType::Pointer subSampleTubeNetFilter =
-    SubSampleTubeNetFilterType::New();
-  subSampleTubeNetFilter->SetInput( vesselReader->GetGroup() );
-  subSampleTubeNetFilter->SetSampling( 100 );
+  typename SubSampleTubeTreeFilterType::Pointer subSampleTubeTreeFilter =
+    SubSampleTubeTreeFilterType::New();
+  subSampleTubeTreeFilter->SetInput( vesselReader->GetGroup() );
+  subSampleTubeTreeFilter->SetSampling( 100 );
+#ifdef SlicerExecutionModel_USE_SERIALIZER
+  if( !parametersToRestore.empty() )
+    {
+    // If the Json file has entries that describe the parameters for an
+    // itk::GradientDescentOptimizer, read them in, and set them on our
+    // gradientDescentOptimizer instance.
+    if( parametersRoot.isMember( "SubSampleTubeTree" ) )
+      {
+      Json::Value & subSampleTubeTreeFilterValue = parametersRoot["SubSampleTubeTree"];
+      typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< SubSampleTubeTreeFilterType >
+        SerializerType;
+      SerializerType::Pointer serializer = SerializerType::New();
+      serializer->SetTargetObject( subSampleTubeTreeFilter );
+      itk::JsonCppArchiver::Pointer archiver =
+        dynamic_cast< itk::JsonCppArchiver * >( serializer->GetArchiver() );
+      archiver->SetJsonValue( &subSampleTubeTreeFilterValue );
+      serializer->DeSerialize();
+      }
+    }
+#endif
   try
     {
-    subSampleTubeNetFilter->Update();
+    subSampleTubeTreeFilter->Update();
     }
   catch( itk::ExceptionObject & err )
     {
@@ -175,7 +213,7 @@ int DoIt( int argc, char * argv[] )
     RegistrationMethodType::New();
 
   registrationMethod->SetFixedImage( currentImage );
-  registrationMethod->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
+  registrationMethod->SetMovingSpatialObject( subSampleTubeTreeFilter->GetOutput() );
 
   // Set Optimizer parameters.
   typename RegistrationMethodType::OptimizerType::Pointer optimizer =
@@ -188,18 +226,8 @@ int DoIt( int argc, char * argv[] )
     gradientDescentOptimizer->SetNumberOfIterations( 1000 );
     }
 #ifdef SlicerExecutionModel_USE_SERIALIZER
-  // If SlicerExecutionModel was built with Serializer support, there is
-  // automatically a parametersToRestore argument.  This argument is a JSON
-  // file that has values for the CLI parameters, but it can also hold other
-  // entries without causing any issues.
   if( !parametersToRestore.empty() )
     {
-    // Parse the Json.
-    std::ifstream stream( parametersToRestore.c_str() );
-    Json::Reader reader;
-    Json::Value parametersRoot;
-    reader.parse( stream, parametersRoot );
-    stream.close();
     // If the Json file has entries that describe the parameters for an
     // itk::GradientDescentOptimizer, read them in, and set them on our
     // gradientDescentOptimizer instance.

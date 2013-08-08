@@ -110,6 +110,9 @@ available as 'config'.
         self.image_tubes.addItem(image_plane2)
         input_vessel = io_params[1]['Value']
         tubes = tubes_from_file(input_vessel)
+        if self.config.has_key('SubSampleTubeTree'):
+            sampling = self.config['SubSampleTubeTree']['Sampling']
+            tubes = tubes[::sampling]
         circles = tubes_as_circles(tubes)
         circles_mesh = gl.GLMeshItem(meshdata=circles, smooth=False)
         self.image_tubes.addItem(circles_mesh)
@@ -130,9 +133,8 @@ available as 'config'.
 
         self.set_iteration(0)
 
-
-
     def set_iteration(self, iteration):
+        """Set the iteration to visualize."""
         if iteration > self.number_of_iterations:
             raise ValueError("Invalid iteration")
         self.iteration = iteration

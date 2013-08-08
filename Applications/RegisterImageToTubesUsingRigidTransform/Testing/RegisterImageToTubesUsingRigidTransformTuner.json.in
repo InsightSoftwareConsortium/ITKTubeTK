@@ -127,12 +127,17 @@
     "Analysis" : "@PROJ_EXE@"
   },
 
-  "GradientDescentOptimizer":
+  "GradientDescentOptimizer" :
   {
     "Debug" : true,
     "LearningRate" : 0.80,
     "Maximize" : false,
     "NumberOfIterations" : 15
-  }
+  },
 
+  "SubSampleTubeTree" :
+  {
+    "Debug" : false,
+    "Sampling" : 20
+  }
 }
