@@ -15,6 +15,7 @@ import pyqtgraph.dockarea
 import pyqtgraph.opengl as gl
 from pyqtgraph.Qt import QtCore, QtGui
 import SimpleITK as sitk
+import tables
 
 from tubetk.pyqtgraph import tubes_as_circles
 from tubetk.numpy import tubes_from_file
@@ -36,6 +37,9 @@ class RegistrationTuner(QtGui.QMainWindow):
         self.input_image = None
         self.tubes_circles = {}
         self.dock_area = None
+        self.iteration_slider = None
+        self.iteration_spinbox = None
+        self.progression = None
 
         self.initializeUI()
 
@@ -49,7 +53,36 @@ class RegistrationTuner(QtGui.QMainWindow):
         exit_action.triggered.connect(QtGui.QApplication.instance().quit)
         self.addAction(exit_action)
 
+        iteration_dock_area_layout = QtGui.QVBoxLayout()
+        iteration_dock_area = QtGui.QWidget()
+        iteration_dock_area.setLayout(iteration_dock_area_layout)
         self.dock_area = pg.dockarea.DockArea()
+        iteration_dock_area_layout.addWidget(self.dock_area, stretch=1)
+        iteration_layout = QtGui.QHBoxLayout()
+        iteration_widget = QtGui.QWidget()
+        iteration_widget.setLayout(iteration_layout)
+        iteration_dock_area_layout.addWidget(iteration_widget)
+        iteration_layout.addWidget(QtGui.QLabel('Iteration:'))
+        iteration_layout.addSpacing(1)
+        self.iteration_spinbox = QtGui.QSpinBox()
+        self.iteration_spinbox.setMinimum(0)
+        self.iteration_spinbox.setMaximum(self.number_of_iterations)
+        QtCore.QObject.connect(self.iteration_spinbox,
+                               QtCore.SIGNAL('valueChanged(int)'),
+                               self._iteration_spinbox_changed)
+        iteration_layout.addWidget(self.iteration_spinbox)
+        self.iteration_slider = QtGui.QSlider(QtCore.Qt.Horizontal)
+        self.iteration_slider.setMinimum(0)
+        self.iteration_slider.setMaximum(self.number_of_iterations)
+        self.iteration_slider.setTickPosition(QtGui.QSlider.TicksBelow)
+        QtCore.QObject.connect(self.iteration_slider,
+                               QtCore.SIGNAL('valueChanged()'),
+                               self._iteration_slider_changed)
+        QtCore.QObject.connect(self.iteration_slider,
+                               QtCore.SIGNAL('sliderReleased()'),
+                               self._iteration_slider_changed)
+        iteration_layout.addWidget(self.iteration_slider, stretch=1)
+
         Dock = pyqtgraph.dockarea.Dock
 
         run_button = QtGui.QPushButton('Run Analysis')
@@ -137,7 +170,7 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                                   input_tubes, self.subsampled_tubes])
         self.add_tubes()
 
-        self.setCentralWidget(self.dock_area)
+        self.setCentralWidget(iteration_dock_area)
         self.show()
 
     def add_image_planes(self):
@@ -197,16 +230,41 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                               input_volume,
                               input_vessel,
                               output_volume])
+        progression_file = io_params[3]['Value']
+        progression = tables.open_file(progression_file)
+        self.progression = progression.root.OptimizationParameterProgression
+        self._set_number_of_iterations(self.progression[-1]['Iteration'])
 
         self.add_image_planes()
-        self.set_iteration(0)
+        self.set_iteration(self.number_of_iterations)
+
+    def _iteration_slider_changed(self):
+        iteration = self.iteration_slider.value()
+        self.set_iteration(iteration)
+
+    def _iteration_spinbox_changed(self):
+        iteration = self.iteration_spinbox.value()
+        self.set_iteration(iteration)
 
     def set_iteration(self, iteration):
         """Set the iteration to visualize."""
         if iteration > self.number_of_iterations:
             raise ValueError("Invalid iteration")
-        self.iteration = iteration
-        self.add_tubes()
+        if iteration != self.iteration:
+            self.iteration = iteration
+            self.add_tubes()
+        if iteration != self.iteration_slider.value():
+            self.iteration_slider.setValue(iteration)
+        if iteration != self.iteration_spinbox.value():
+            self.iteration_spinbox.setValue(iteration)
+
+    def _set_number_of_iterations(self, iterations):
+        self.number_of_iterations = iterations
+        self.iteration_slider.setMaximum(iterations)
+        self.iteration_spinbox.setMaximum(iterations)
+
+    def get_number_of_iterations(self):
+        return self.number_of_iterations
 
     @staticmethod
     def _image_plane(image, direction):
