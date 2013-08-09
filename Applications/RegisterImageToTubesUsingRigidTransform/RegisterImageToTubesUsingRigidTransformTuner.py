@@ -28,15 +28,16 @@ class RegistrationTuner(QtGui.QMainWindow):
         self.config = config
         self.config_filename = config_filename
 
+        self.iteration = 0
+        self.number_of_iterations = 0
+
         self.image_planes = []
-        self.image_tubes = None
+        self.subsampled_tubes = None
         self.input_image = None
+        self.tubes_circles = {}
         self.dock_area = None
 
         self.initializeUI()
-
-        self.iteration = 0
-        self.number_of_iterations = 0
 
     def initializeUI(self):
         self.resize(1024, 768)
@@ -73,7 +74,7 @@ class RegistrationTuner(QtGui.QMainWindow):
         console_text = """
 This is an interactive Python console.  The numpy and pyqtgraph modules have
 already been imported as 'np' and 'pg'.  The parameter configuration is
-available as 'config'.  The RegistrationTuner instance is available as tuner.
+available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
 """
         self.console = pyqtgraph.console.ConsoleWidget(
             namespace=console_namespace,
@@ -97,9 +98,10 @@ available as 'config'.  The RegistrationTuner instance is available as tuner.
                     # The current position can be obtained with
                     # tuner.image_tubes.opts
                     cameraPosition = imageTubes['CameraPosition']
-                    self.image_tubes.setCameraPosition(distance=cameraPosition['distance'],
-                                                       elevation=cameraPosition['elevation'],
-                                                       azimuth=cameraPosition['azimuth'])
+                    it = self.image_tubes
+                    it.setCameraPosition(distance=cameraPosition['distance'],
+                                         elevation=cameraPosition['elevation'],
+                                         azimuth=cameraPosition['azimuth'])
         x_grid = gl.GLGridItem()
         grid_scale = 20
         x_grid.rotate(90, 0, 1, 0)
@@ -124,14 +126,16 @@ available as 'config'.  The RegistrationTuner instance is available as tuner.
         input_volume = io_params[0]['Value']
         self.input_image = sitk.ReadImage(str(input_volume))
         self.add_image_planes()
-        input_vessel = io_params[1]['Value']
-        tubes = tubes_from_file(input_vessel)
+        input_tubes = io_params[1]['Value']
+        self.subsampled_tubes = input_tubes
         if 'SubSampleTubeTree' in self.config:
             sampling = self.config['SubSampleTubeTree']['Sampling']
-            tubes = tubes[::sampling]
-        circles = tubes_as_circles(tubes)
-        circles_mesh = gl.GLMeshItem(meshdata=circles, smooth=False)
-        self.image_tubes.addItem(circles_mesh)
+            # TODO: do this correctly (use tempfile, remove on exit, etc)
+            self.subsampled_tubes = '/tmp/tuner_subsampled_tubes.tre'
+            subprocess.check_call([config['Executables']['SubSampleTubes'],
+                                  '--samplingFactor', str(sampling),
+                                  input_tubes, self.subsampled_tubes])
+        self.add_tubes()
 
         self.setCentralWidget(self.dock_area)
         self.show()
@@ -154,6 +158,35 @@ available as 'config'.  The RegistrationTuner instance is available as tuner.
         for plane in self.image_planes:
             self.image_tubes.addItem(plane)
 
+    def add_tubes(self):
+        """Add the transformed tubes for the visualization."""
+        memory = 3
+        target_iterations = tuple(range(self.iteration,
+                                  self.iteration - memory,
+                                  -1))
+
+        for it in target_iterations:
+            if it >= 0 and it <= self.number_of_iterations:
+                if not it in self.tubes_circles:
+                    tubes = tubes_from_file(self.subsampled_tubes)
+                    circles = tubes_as_circles(tubes)
+                    circles_mesh = gl.GLMeshItem(meshdata=circles,
+                                                 smooth=False)
+                    self.tubes_circles[it] = [circles, circles_mesh]
+                else:
+                    circles = self.tubes_circles[it][0]
+                    self.image_tubes.removeItem(self.tubes_circles[it][1])
+                    circles_mesh = gl.GLMeshItem(meshdata=circles,
+                                                 smooth=False)
+                    self.tubes_circles[it] = [circles, circles_mesh]
+
+                self.image_tubes.addItem(circles_mesh)
+
+        for it, circs in self.tubes_circles.items():
+            if not it in target_iterations:
+                self.image_tubes.removeItem(circs[1])
+                self.tubes_circles.pop(it)
+
     def run_analysis(self):
         io_params = self.config['ParameterGroups'][0]['Parameters']
         input_volume = io_params[0]['Value']
@@ -173,7 +206,7 @@ available as 'config'.  The RegistrationTuner instance is available as tuner.
         if iteration > self.number_of_iterations:
             raise ValueError("Invalid iteration")
         self.iteration = iteration
-
+        self.add_tubes()
 
     @staticmethod
     def _image_plane(image, direction):

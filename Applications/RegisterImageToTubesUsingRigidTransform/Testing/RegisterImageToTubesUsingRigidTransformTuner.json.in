@@ -124,7 +124,8 @@
 
   "Executables":
   {
-    "Analysis" : "@PROJ_EXE@"
+    "Analysis" : "@PROJ_EXE@",
+    "SubSampleTubes" : "@SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY@/SubSampleTubes"
   },
 
   "GradientDescentOptimizer" :

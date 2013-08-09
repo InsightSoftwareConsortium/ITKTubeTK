@@ -47,6 +47,7 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/Common
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/Numerics
+    ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Filtering
     ${TubeTK_SOURCE_DIR}/Base/Registration )
 
 if( BUILD_TESTING )

@@ -144,7 +144,7 @@ int DoIt( int argc, char * argv[] )
     if( parametersRoot.isMember( "SubSampleTubeTree" ) )
       {
       Json::Value & subSampleTubeTreeFilterValue = parametersRoot["SubSampleTubeTree"];
-      typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< SubSampleTubeTreeFilterType >
+      typedef itk::tube::SubSampleTubeTreeSpatialObjectFilterSerializer< SubSampleTubeTreeFilterType >
         SerializerType;
       SerializerType::Pointer serializer = SerializerType::New();
       serializer->SetTargetObject( subSampleTubeTreeFilter );
