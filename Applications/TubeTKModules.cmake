@@ -54,6 +54,7 @@ set( TubeTK_${proj}_MODULES
 # SegmentTubes
   SegmentUsingOtsuThreshold
   SimulateAcquisitionArtifactsUsingPrior
+  SubSampleTubes
   TubeGraphToImage
   TubesToDensityImage
   TubesToImage
