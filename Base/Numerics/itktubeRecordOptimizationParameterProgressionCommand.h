@@ -25,6 +25,8 @@ limitations under the License.
 #define __itktubeRecordOptimizationParameterProgressionCommand_h
 
 #include <itkCommand.h>
+#include <itkOptimizerParameters.h>
+
 // Make sure to use this version to avoid accidentally getting VTK's internal
 // HDF, for example.
 #include <itk_H5Cpp.h>
@@ -58,6 +60,13 @@ public:
   typedef TParametersValue    ParametersValueType;
   typedef ParametersValueType CostFunctionValueType;
   typedef unsigned int        NumberOfIterationsType;
+
+  typedef OptimizerParameters< ParametersValueType > FixedParametersType;
+
+  /** Set/Get fixed parameters associated with the optimization. */
+  virtual void SetFixedParameters( const FixedParametersType & fixedParameters );
+  virtual const FixedParametersType & GetFixedParameters( void ) const;
+
 
   /** Set/Get the output file HDF5 file name. */
   itkSetStringMacro( FileName );
@@ -95,6 +104,7 @@ private:
 
   NumberOfIterationsType   m_CurrentIteration;
   ParameterProgressionType m_ParameterProgression;
+  FixedParametersType      m_FixedParameters;
 
   std::string              m_FileName;
 
