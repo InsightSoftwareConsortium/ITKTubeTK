@@ -207,6 +207,7 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                 alpha = np.exp(0.8*(it - self.iteration))
                 center_color = (0.8, 0.1, 0.25, alpha)
                 tubes_color = (0.2, 0.25, 0.75, alpha)
+                center = self.tubes_center
                 if self.progression:
                     parameters = self.progression[it]['Parameters']
                 else:
@@ -217,14 +218,20 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                                              glOptions='translucent',
                                              smooth=False)
                 if self.progression:
-                    circles_mesh.translate(parameters[3],
-                                           parameters[4],
-                                           parameters[5])
-                    # TODO: need to verify that this is correct (it is probably
-                    # not)
-                    circles_mesh.rotate(parameters[0], 1, 0, 0, local=True)
-                    circles_mesh.rotate(parameters[1], 0, 1, 0, local=True)
-                    circles_mesh.rotate(parameters[2], 0, 0, 1, local=True)
+                    # TODO: need to verify that this is correct
+                    circles_mesh.translate(-center[0],
+                                           -center[1],
+                                           -center[2])
+                    r2d = 180. / np.pi
+                    circles_mesh.rotate(parameters[0] * r2d, 1, 0, 0,
+                                        local=False)
+                    circles_mesh.rotate(parameters[1] * r2d, 0, 1, 0,
+                                        local=False)
+                    circles_mesh.rotate(parameters[2] * r2d, 0, 0, 1,
+                                        local=False)
+                    circles_mesh.translate(center[0] + parameters[3],
+                                           center[1] + parameters[4],
+                                           center[2] + parameters[5])
                 if it in self.tubes_circles:
                     self.image_tubes.removeItem(self.tubes_circles[it][1])
                 self.image_tubes.addItem(circles_mesh)
@@ -236,7 +243,6 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                                             smooth=False,
                                             color=center_color,
                                             glOptions='translucent')
-                center = self.tubes_center
                 center_mesh.translate(center[0] + parameters[3],
                                       center[1] + parameters[4],
                                       center[2] + parameters[5])
