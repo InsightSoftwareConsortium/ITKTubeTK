@@ -44,6 +44,7 @@ class RegistrationTuner(QtGui.QMainWindow):
         self.tubes_center = [0.0, 0.0, 0.0]
         self.translations = None
         self.progression_colors = None
+        self.metric_values_plot = None
 
         self.initializeUI()
 
@@ -122,7 +123,7 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         run_console_layout.addWidget(self.console)
         run_console = QtGui.QWidget()
         run_console.setLayout(run_console_layout)
-        run_console_dock = Dock("Console", size=(500, 300))
+        run_console_dock = Dock("Console", size=(400, 300))
         run_console_dock.addWidget(run_console)
         self.dock_area.addDock(run_console_dock, 'right')
 
@@ -173,6 +174,13 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                                   '--samplingFactor', str(sampling),
                                   input_tubes, self.subsampled_tubes])
         self.add_tubes()
+
+        metric_value_dock = Dock("Metric Value", size=(500, 300))
+        self.metric_values_plot = pg.PlotWidget()
+        self.metric_values_plot.setLabel('bottom', text='Iteration')
+        self.metric_values_plot.setLabel('left', text='Metric Value')
+        metric_value_dock.addWidget(self.metric_values_plot)
+        self.dock_area.addDock(metric_value_dock, 'right', image_tubes_dock)
 
         self.setCentralWidget(iteration_dock_area)
         self.show()
@@ -275,6 +283,24 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         self.translations = translation_points
         self.image_tubes.addItem(self.translations)
 
+    def plot_metric_values(self):
+        iterations = self.progression[:]['Iteration']
+        metric_value = self.progression[:]['CostFunctionValue']
+        min_metric = np.min(metric_value)
+        self.metric_values_plot.plot({'x': iterations,
+                                     'y': metric_value},
+                                     pen={'color': (100, 100, 200, 200),
+                                          'width': 2.5},
+                                     fillLevel=min_metric,
+                                     fillBrush=(255, 255, 255, 30),
+                                     antialias=True,
+                                     clear=True)
+        self.metric_values_plot.plot({'x': [self.iteration],
+                                     'y': [metric_value[self.iteration]]},
+                                     symbolBrush='r',
+                                     symbol='o',
+                                     symbolSize=8.0)
+
     def run_analysis(self):
         io_params = self.config['ParameterGroups'][0]['Parameters']
         input_volume = io_params[0]['Value']
@@ -310,6 +336,7 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         if iteration != self.iteration:
             self.iteration = iteration
             self.add_tubes()
+            self.plot_metric_values()
         if iteration != self.iteration_slider.value():
             self.iteration_slider.setValue(iteration)
         if iteration != self.iteration_spinbox.value():
