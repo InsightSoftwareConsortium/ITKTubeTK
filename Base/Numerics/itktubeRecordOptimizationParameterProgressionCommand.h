@@ -75,6 +75,11 @@ public:
   /** Get the HDF5 DataType for a parameter iteration. */
   H5::CompType GetH5ParameterIterationType() const;
 
+  /** Write the parameter progression to an HDF5 file.  This can be called
+   * explicitly.  Alternatively, if this command observes the EndEvent on the
+   * Optimizer, then it will be called at the end of optimization. */
+  void WriteParameterProgressionToFile( void ) const;
+
 protected:
   RecordOptimizationParameterProgressionCommand( void );
 
@@ -92,8 +97,6 @@ protected:
   typedef ParameterIteration ParameterIterationType;
 
   typedef std::vector< ParameterIterationType > ParameterProgressionType;
-
-  void WriteParameterProgressionToFile( void ) const;
 
 private:
   // Purposely not implemented

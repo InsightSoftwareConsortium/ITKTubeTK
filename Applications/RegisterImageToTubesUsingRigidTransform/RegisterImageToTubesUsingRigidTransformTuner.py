@@ -40,6 +40,7 @@ class RegistrationTuner(QtGui.QMainWindow):
         self.iteration_slider = None
         self.iteration_spinbox = None
         self.progression = None
+        self.tubes_center = None
 
         self.initializeUI()
 
@@ -200,20 +201,53 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
 
         for it in target_iterations:
             if it >= 0 and it <= self.number_of_iterations:
+                center_color = (0.2, 0.8, 0.25, 0.75)
                 if not it in self.tubes_circles:
                     tubes = tubes_from_file(self.subsampled_tubes)
                     circles = tubes_as_circles(tubes)
                     circles_mesh = gl.GLMeshItem(meshdata=circles,
                                                  smooth=False)
-                    self.tubes_circles[it] = [circles, circles_mesh]
+                    center_mesh = None
+                    if self.tubes_center:
+                        sphere = gl.MeshData.sphere(rows=10,
+                                                    cols=20,
+                                                    radius=1.0)
+                        center_mesh = gl.GLMeshItem(meshdata=sphere,
+                                                    smooth=False,
+                                                    color=center_color,
+                                                    glOptions='translucent')
+                        center_mesh.translate(self.tubes_center[0],
+                                              self.tubes_center[1],
+                                              self.tubes_center[2])
+                    self.tubes_circles[it] = [circles,
+                                              circles_mesh,
+                                              center_mesh]
                 else:
                     circles = self.tubes_circles[it][0]
                     self.image_tubes.removeItem(self.tubes_circles[it][1])
+                    if self.tubes_circles[it][2]:
+                        self.image_tubes.removeItem(self.tubes_circles[it][2])
                     circles_mesh = gl.GLMeshItem(meshdata=circles,
                                                  smooth=False)
-                    self.tubes_circles[it] = [circles, circles_mesh]
+                    center_mesh = None
+                    if self.tubes_center:
+                        sphere = gl.MeshData.sphere(rows=10,
+                                                    cols=20,
+                                                    radius=1.0)
+                        center_mesh = gl.GLMeshItem(meshdata=sphere,
+                                                    smooth=False,
+                                                    color=center_color,
+                                                    glOptions='additive')
+                        center_mesh.translate(self.tubes_center[0],
+                                              self.tubes_center[1],
+                                              self.tubes_center[2])
+                    self.tubes_circles[it] = [circles,
+                                              circles_mesh,
+                                              center_mesh]
 
                 self.image_tubes.addItem(circles_mesh)
+                if self.tubes_center:
+                    self.image_tubes.addItem(center_mesh)
 
         for it, circs in self.tubes_circles.items():
             if not it in target_iterations:
@@ -233,6 +267,7 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         progression_file = io_params[3]['Value']
         progression = tables.open_file(progression_file)
         self.progression = progression.root.OptimizationParameterProgression
+        self.tubes_center = progression.root.FixedParameters
         self._set_number_of_iterations(self.progression[-1]['Iteration'])
 
         self.add_image_planes()

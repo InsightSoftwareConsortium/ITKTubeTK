@@ -259,7 +259,6 @@ int DoIt( int argc, char * argv[] )
     recordParameterProgressionCommand->SetFileName( parameterProgression );
     optimizer->AddObserver( itk::StartEvent(), recordParameterProgressionCommand );
     optimizer->AddObserver( itk::IterationEvent(), recordParameterProgressionCommand );
-    optimizer->AddObserver( itk::EndEvent(), recordParameterProgressionCommand );
     }
 
   try
@@ -299,6 +298,13 @@ int DoIt( int argc, char * argv[] )
       + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
+    }
+
+  if( !parameterProgression.empty() )
+    {
+    recordParameterProgressionCommand->SetFixedParameters(
+      outputTransform->GetFixedParameters() );
+    recordParameterProgressionCommand->WriteParameterProgressionToFile();
     }
 
   typedef itk::SpatialObjectToImageFilter<TubeNetType, ImageType>
