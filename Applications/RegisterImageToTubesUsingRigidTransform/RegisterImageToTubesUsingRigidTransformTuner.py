@@ -40,7 +40,7 @@ class RegistrationTuner(QtGui.QMainWindow):
         self.iteration_slider = None
         self.iteration_spinbox = None
         self.progression = None
-        self.tubes_center = None
+        self.tubes_center = [0.0, 0.0, 0.0]
 
         self.initializeUI()
 
@@ -77,7 +77,7 @@ class RegistrationTuner(QtGui.QMainWindow):
         self.iteration_slider.setMaximum(self.number_of_iterations)
         self.iteration_slider.setTickPosition(QtGui.QSlider.TicksBelow)
         QtCore.QObject.connect(self.iteration_slider,
-                               QtCore.SIGNAL('valueChanged()'),
+                               QtCore.SIGNAL('valueChanged(int)'),
                                self._iteration_slider_changed)
         QtCore.QObject.connect(self.iteration_slider,
                                QtCore.SIGNAL('sliderReleased()'),
@@ -194,60 +194,56 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
 
     def add_tubes(self):
         """Add the transformed tubes for the visualization."""
-        memory = 3
+        memory = 4
         target_iterations = tuple(range(self.iteration,
                                   self.iteration - memory,
                                   -1))
 
         for it in target_iterations:
             if it >= 0 and it <= self.number_of_iterations:
-                center_color = (0.2, 0.8, 0.25, 0.75)
-                if not it in self.tubes_circles:
-                    tubes = tubes_from_file(self.subsampled_tubes)
-                    circles = tubes_as_circles(tubes)
-                    circles_mesh = gl.GLMeshItem(meshdata=circles,
-                                                 smooth=False)
-                    center_mesh = None
-                    if self.tubes_center:
-                        sphere = gl.MeshData.sphere(rows=10,
-                                                    cols=20,
-                                                    radius=1.0)
-                        center_mesh = gl.GLMeshItem(meshdata=sphere,
-                                                    smooth=False,
-                                                    color=center_color,
-                                                    glOptions='translucent')
-                        center_mesh.translate(self.tubes_center[0],
-                                              self.tubes_center[1],
-                                              self.tubes_center[2])
-                    self.tubes_circles[it] = [circles,
-                                              circles_mesh,
-                                              center_mesh]
+                alpha = np.exp(0.8*(it - self.iteration))
+                center_color = (0.2, 0.8, 0.25, alpha)
+                tubes_color = (0.2, 0.25, 0.75, alpha)
+                if self.progression:
+                    parameters = self.progression[it]['Parameters']
                 else:
-                    circles = self.tubes_circles[it][0]
+                    parameters = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+                tubes = tubes_from_file(self.subsampled_tubes)
+                circles = tubes_as_circles(tubes, point_colors=tubes_color)
+                circles_mesh = gl.GLMeshItem(meshdata=circles,
+                                             glOptions='translucent',
+                                             smooth=False)
+                if self.progression:
+                    circles_mesh.translate(parameters[3],
+                                           parameters[4],
+                                           parameters[5])
+                    # TODO: need to verify that this is correct (it is probably
+                    # not)
+                    circles_mesh.rotate(parameters[0], 1, 0, 0, local=True)
+                    circles_mesh.rotate(parameters[1], 0, 1, 0, local=True)
+                    circles_mesh.rotate(parameters[2], 0, 0, 1, local=True)
+                if it in self.tubes_circles:
                     self.image_tubes.removeItem(self.tubes_circles[it][1])
-                    if self.tubes_circles[it][2]:
-                        self.image_tubes.removeItem(self.tubes_circles[it][2])
-                    circles_mesh = gl.GLMeshItem(meshdata=circles,
-                                                 smooth=False)
-                    center_mesh = None
-                    if self.tubes_center:
-                        sphere = gl.MeshData.sphere(rows=10,
-                                                    cols=20,
-                                                    radius=1.0)
-                        center_mesh = gl.GLMeshItem(meshdata=sphere,
-                                                    smooth=False,
-                                                    color=center_color,
-                                                    glOptions='additive')
-                        center_mesh.translate(self.tubes_center[0],
-                                              self.tubes_center[1],
-                                              self.tubes_center[2])
-                    self.tubes_circles[it] = [circles,
-                                              circles_mesh,
-                                              center_mesh]
-
                 self.image_tubes.addItem(circles_mesh)
-                if self.tubes_center:
-                    self.image_tubes.addItem(center_mesh)
+
+                sphere = gl.MeshData.sphere(rows=10,
+                                            cols=20,
+                                            radius=1.0)
+                center_mesh = gl.GLMeshItem(meshdata=sphere,
+                                            smooth=False,
+                                            color=center_color,
+                                            glOptions='translucent')
+                center = self.tubes_center
+                center_mesh.translate(center[0] + parameters[3],
+                                      center[1] + parameters[4],
+                                      center[2] + parameters[5])
+                if it in self.tubes_circles:
+                    self.image_tubes.removeItem(self.tubes_circles[it][2])
+                self.image_tubes.addItem(center_mesh)
+
+                self.tubes_circles[it] = [circles,
+                                          circles_mesh,
+                                          center_mesh]
 
         for it, circs in self.tubes_circles.items():
             if not it in target_iterations:
