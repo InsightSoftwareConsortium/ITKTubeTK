@@ -16,6 +16,7 @@ import pyqtgraph.opengl as gl
 from pyqtgraph.Qt import QtCore, QtGui
 import SimpleITK as sitk
 import tables
+import matplotlib.cm
 
 from tubetk.pyqtgraph import tubes_as_circles
 from tubetk.numpy import tubes_from_file
@@ -41,6 +42,8 @@ class RegistrationTuner(QtGui.QMainWindow):
         self.iteration_spinbox = None
         self.progression = None
         self.tubes_center = [0.0, 0.0, 0.0]
+        self.translations = None
+        self.progression_colors = None
 
         self.initializeUI()
 
@@ -202,7 +205,7 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         for it in target_iterations:
             if it >= 0 and it <= self.number_of_iterations:
                 alpha = np.exp(0.8*(it - self.iteration))
-                center_color = (0.2, 0.8, 0.25, alpha)
+                center_color = (0.8, 0.1, 0.25, alpha)
                 tubes_color = (0.2, 0.25, 0.75, alpha)
                 if self.progression:
                     parameters = self.progression[it]['Parameters']
@@ -248,7 +251,23 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         for it, circs in self.tubes_circles.items():
             if not it in target_iterations:
                 self.image_tubes.removeItem(circs[1])
+                self.image_tubes.removeItem(circs[2])
                 self.tubes_circles.pop(it)
+
+    def add_translations(self):
+        """Add a plot of the translation of the tube centers throughout the
+        registration."""
+        if self.translations:
+            self.image_tubes.removeItem(self.translations)
+        translations = np.array(self.progression[:]['Parameters'][:, 3:]) + \
+            self.tubes_center
+        colors = self.progression_colors
+        colors[:, 3] = 0.9
+        translation_points = gl.GLScatterPlotItem(pos=translations,
+                                                  color=colors)
+        translation_points.setGLOptions('translucent')
+        self.translations = translation_points
+        self.image_tubes.addItem(self.translations)
 
     def run_analysis(self):
         io_params = self.config['ParameterGroups'][0]['Parameters']
@@ -267,6 +286,7 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         self._set_number_of_iterations(self.progression[-1]['Iteration'])
 
         self.add_image_planes()
+        self.add_translations()
         self.set_iteration(self.number_of_iterations)
 
     def _iteration_slider_changed(self):
@@ -293,6 +313,9 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         self.number_of_iterations = iterations
         self.iteration_slider.setMaximum(iterations)
         self.iteration_spinbox.setMaximum(iterations)
+        iterations_normalized = np.arange(0, iterations, dtype=np.float) / \
+            iterations
+        self.progression_colors = matplotlib.cm.summer(iterations_normalized)
 
     def get_number_of_iterations(self):
         return self.number_of_iterations
