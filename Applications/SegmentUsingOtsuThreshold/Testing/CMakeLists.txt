@@ -48,6 +48,7 @@ Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
                -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+
 # Test2
 Midas3FunctionAddTest( ${MODULE_NAME}-Test2
             ${PROJ_EXE}
