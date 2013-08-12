@@ -33,9 +33,10 @@ class RegistrationTuner(QtGui.QMainWindow):
         self.iteration = 0
         self.number_of_iterations = 0
 
-        self.image_planes = []
+        self.image_planes = {}
         self.subsampled_tubes = None
         self.input_image = None
+        self.image_content = None
         self.tubes_circles = {}
         self.dock_area = None
         self.iteration_slider = None
@@ -45,6 +46,7 @@ class RegistrationTuner(QtGui.QMainWindow):
         self.translations = None
         self.progression_colors = None
         self.metric_values_plot = None
+        self.image_controls = {}
 
         self.initializeUI()
 
@@ -160,6 +162,48 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         image_tubes_dock.addWidget(self.image_tubes)
         self.dock_area.addDock(image_tubes_dock, 'left')
 
+        image_controls_dock = Dock("Image Display Controls", size=(640, 60))
+        x_check = QtGui.QCheckBox("X Plane")
+        x_check.setChecked(False)
+        QtCore.QObject.connect(x_check,
+                               QtCore.SIGNAL('stateChanged(int)'),
+                               self._x_check_changed)
+        self.image_controls['x_check'] = x_check
+        image_controls_dock.addWidget(x_check, row=0, col=0)
+        x_slider = QtGui.QSlider(QtCore.Qt.Horizontal)
+        self.image_controls['x_slider'] = x_slider
+        QtCore.QObject.connect(x_slider,
+                               QtCore.SIGNAL('valueChanged(int)'),
+                               self._x_slider_changed)
+        image_controls_dock.addWidget(x_slider, row=0, col=1)
+        y_check = QtGui.QCheckBox("Y Plane")
+        y_check.setChecked(True)
+        self.image_controls['y_check'] = y_check
+        QtCore.QObject.connect(y_check,
+                               QtCore.SIGNAL('stateChanged(int)'),
+                               self._y_check_changed)
+        image_controls_dock.addWidget(y_check, row=1, col=0)
+        y_slider = QtGui.QSlider(QtCore.Qt.Horizontal)
+        self.image_controls['y_slider'] = y_slider
+        QtCore.QObject.connect(y_slider,
+                               QtCore.SIGNAL('valueChanged(int)'),
+                               self._y_slider_changed)
+        image_controls_dock.addWidget(y_slider, row=1, col=1)
+        z_check = QtGui.QCheckBox("Z Plane")
+        z_check.setChecked(True)
+        self.image_controls['z_check'] = z_check
+        QtCore.QObject.connect(z_check,
+                               QtCore.SIGNAL('stateChanged(int)'),
+                               self._z_check_changed)
+        image_controls_dock.addWidget(z_check, row=2, col=0)
+        z_slider = QtGui.QSlider(QtCore.Qt.Horizontal)
+        self.image_controls['z_slider'] = z_slider
+        QtCore.QObject.connect(z_slider,
+                               QtCore.SIGNAL('valueChanged(int)'),
+                               self._z_slider_changed)
+        image_controls_dock.addWidget(z_slider, row=2, col=1)
+        self.dock_area.addDock(image_controls_dock, 'bottom', image_tubes_dock)
+
         io_params = self.config['ParameterGroups'][0]['Parameters']
         input_volume = io_params[0]['Value']
         self.input_image = sitk.ReadImage(str(input_volume))
@@ -180,7 +224,7 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         self.metric_values_plot.setLabel('bottom', text='Iteration')
         self.metric_values_plot.setLabel('left', text='Metric Value')
         metric_value_dock.addWidget(self.metric_values_plot)
-        self.dock_area.addDock(metric_value_dock, 'right', image_tubes_dock)
+        self.dock_area.addDock(metric_value_dock, 'left', run_console_dock)
 
         self.setCentralWidget(iteration_dock_area)
         self.show()
@@ -192,16 +236,28 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         if sigma > 0.0:
             for ii in range(3):
                 image = sitk.RecursiveGaussian(image, sigma, direction=ii)
+        self.image_content = sitk.GetArrayFromImage(image)
+        self.image_controls['x_slider'].setMaximum(
+            self.image_content.shape[2] - 1)
+        self.image_controls['y_slider'].setMaximum(
+            self.image_content.shape[1] - 1)
+        self.image_controls['z_slider'].setMaximum(
+            self.image_content.shape[0] - 1)
+
+        for plane in self.image_planes.keys():
+            self.image_tubes.removeItem(self.image_planes[plane])
+            self.image_planes.pop(plane)
+
+        for direction in 'x', 'y', 'z':
+            self.image_planes[direction] = self._image_plane(direction)
+            checkbox = direction + '_check'
+            if self.image_controls[checkbox].isChecked():
+                self.image_planes[direction].setVisible(True)
+            else:
+                self.image_planes[direction].setVisible(False)
 
         for plane in self.image_planes:
-            self.image_tubes.removeItem(plane)
-
-        self.image_planes = []
-        for direction in 1, 2:
-            self.image_planes.append(self._image_plane(image, direction))
-
-        for plane in self.image_planes:
-            self.image_tubes.addItem(plane)
+            self.image_tubes.addItem(self.image_planes[plane])
 
     def add_tubes(self):
         """Add the transformed tubes for the visualization."""
@@ -321,6 +377,51 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         self.add_translations()
         self.set_iteration(self.number_of_iterations)
 
+    def _x_check_changed(self):
+        if self.image_planes['x']:
+            if self.image_controls['x_check'].isChecked():
+                self.image_planes['x'].setVisible(True)
+            else:
+                self.image_planes['x'].setVisible(False)
+
+    def _x_slider_changed(self):
+        if self.image_controls['x_check'].isChecked():
+            if self.image_planes['x']:
+                self.image_tubes.removeItem(self.image_planes['x'])
+            index = self.image_controls['x_slider'].value()
+            self.image_planes['x'] = self._image_plane('x', index)
+            self.image_tubes.addItem(self.image_planes['x'])
+
+    def _y_check_changed(self):
+        if self.image_planes['y']:
+            if self.image_controls['y_check'].isChecked():
+                self.image_planes['y'].setVisible(True)
+            else:
+                self.image_planes['y'].setVisible(False)
+
+    def _y_slider_changed(self):
+        if self.image_controls['y_check'].isChecked():
+            if self.image_planes['y']:
+                self.image_tubes.removeItem(self.image_planes['y'])
+            index = self.image_controls['y_slider'].value()
+            self.image_planes['y'] = self._image_plane('y', index)
+            self.image_tubes.addItem(self.image_planes['y'])
+
+    def _z_check_changed(self):
+        if self.image_planes['z']:
+            if self.image_controls['z_check'].isChecked():
+                self.image_planes['z'].setVisible(True)
+            else:
+                self.image_planes['z'].setVisible(False)
+
+    def _z_slider_changed(self):
+        if self.image_controls['z_check'].isChecked():
+            if self.image_planes['z']:
+                self.image_tubes.removeItem(self.image_planes['z'])
+            index = self.image_controls['z_slider'].value()
+            self.image_planes['z'] = self._image_plane('z', index)
+            self.image_tubes.addItem(self.image_planes['z'])
+
     def _iteration_slider_changed(self):
         iteration = self.iteration_slider.value()
         self.set_iteration(iteration)
@@ -353,25 +454,30 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
     def get_number_of_iterations(self):
         return self.number_of_iterations
 
-    @staticmethod
-    def _image_plane(image, direction):
+    def _image_plane(self, direction, index=None):
         """Create an image plane Item from the center plane in the given
         direction for the given SimpleITK Image."""
-        size = image.GetSize()
-        index = size[direction] / 2
-        image_content = sitk.GetArrayFromImage(image)
-        if direction == 0:
-            plane = image_content[index, :, :]
-        elif direction == 1:
-            plane = image_content[:, index, :]
+        if index is None:
+            shape = self.image_content.shape
+            if direction == 'x':
+                index = shape[0] / 2
+            elif direction == 'y':
+                index = shape[1] / 2
+            elif direction == 'z':
+                index = shape[2] / 2
+        if direction == 'x':
+            plane = self.image_content[index, :, :]
+            plane = plane.transpose()
+        elif direction == 'y':
+            plane = self.image_content[:, index, :]
         else:
-            plane = image_content[:, :, index]
+            plane = self.image_content[:, :, index]
         texture = pg.makeRGBA(plane)[0]
         image_item = gl.GLImageItem(texture)
-        spacing = image.GetSpacing()
-        if direction == 0:
+        spacing = self.input_image.GetSpacing()
+        if direction == 'x':
             image_item.translate(0, 0, spacing[2] * index)
-        elif direction == 1:
+        elif direction == 'y':
             image_item.rotate(-90, 0, 1, 0)
             image_item.rotate(-90, 0, 0, 1)
             image_item.translate(0, spacing[1] * index, 0)
