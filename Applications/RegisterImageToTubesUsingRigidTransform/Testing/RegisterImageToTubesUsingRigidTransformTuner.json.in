@@ -132,8 +132,8 @@
   {
     "Debug" : true,
     "LearningRate" : 0.20,
-    "Maximize" : false,
-    "NumberOfIterations" : 15
+    "Maximize" : true,
+    "NumberOfIterations" : 30
   },
 
   "SubSampleTubeTree" :
