@@ -124,7 +124,7 @@ option( USE_SYSTEM_KWSTYLE
   "Exclude KWStyle from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_KWSTYLE )
 option( TubeTK_USE_KWSTYLE
-  "Use KWStyle to check for coding standards violations." ON )
+  "Use KWStyle to check for coding standards violations." OFF )
 mark_as_advanced( TubeTK_USE_KWSTYLE )
 
 if( TubeTK_USE_KWSTYLE )
