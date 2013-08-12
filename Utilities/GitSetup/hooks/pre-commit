@@ -327,4 +327,8 @@ test -z "$bad" || die "$bad"
 # Chain to project-specific hook.
 hooks_chain pre-commit "$@"
 
+#-----------------------------------------------------------------------------
+# Style hooks.
+. "${BASH_SOURCE%/*}/pre-commit-style.bash"
+
 # vim: set filetype=sh tabstop=8 softtabstop=8 shiftwidth=8 noexpandtab :
