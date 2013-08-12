@@ -24,11 +24,10 @@ from tubetk.numpy import tubes_from_file
 
 class RegistrationTuner(QtGui.QMainWindow):
 
-    def __init__(self, config, config_filename):
+    def __init__(self, config):
         super(RegistrationTuner, self).__init__()
 
         self.config = config
-        self.config_filename = config_filename
 
         self.iteration = 0
         self.number_of_iterations = 0
@@ -271,7 +270,7 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                 alpha = np.exp(0.8*(it - self.iteration))
                 center_color = (0.8, 0.1, 0.25, alpha)
                 center = self.tubes_center
-                if self.progression:
+                if self.progression != None:
                     parameters = self.progression[it]['Parameters']
                 else:
                     parameters = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
@@ -286,7 +285,7 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                 circles_mesh = gl.GLMeshItem(meshdata=circles,
                                              glOptions='translucent',
                                              smooth=False)
-                if self.progression:
+                if self.progression != None:
                     # TODO: need to verify that this is correct
                     circles_mesh.translate(-center[0],
                                            -center[1],
@@ -367,15 +366,20 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         input_volume = io_params[0]['Value']
         input_vessel = io_params[1]['Value']
         output_volume = io_params[2]['Value']
+        # TODO: Do this properly with tempfile, cleanup, etc
+        config_file = '/tmp/registration_tuner.json'
+        with open(config_file, 'w') as fp:
+            json.dump(self.config, fp)
         subprocess.check_call([config['Executables']['Analysis'],
-                              '--parameterstorestore', self.config_filename,
+                              '--parameterstorestore', config_file,
                               input_volume,
                               input_vessel,
                               output_volume])
         progression_file = io_params[3]['Value']
         progression = tables.open_file(progression_file)
-        self.progression = progression.root.OptimizationParameterProgression
-        self.tubes_center = progression.root.FixedParameters
+        self.progression = np.array(progression.root.OptimizationParameterProgression)
+        self.tubes_center = np.array(progression.root.FixedParameters)
+        progression.close()
         self._set_number_of_iterations(self.progression[-1]['Iteration'])
 
         self.add_image_planes()
@@ -503,7 +507,7 @@ if __name__ == '__main__':
     config = json.load(config_file)
 
     app = pg.mkQApp()
-    tuner = RegistrationTuner(config, config_file.name)
+    tuner = RegistrationTuner(config)
     if(args.non_interactive):
         tuner.run_analysis()
     else:
