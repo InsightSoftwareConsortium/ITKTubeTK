@@ -270,14 +270,19 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
             if it >= 0 and it <= self.number_of_iterations:
                 alpha = np.exp(0.8*(it - self.iteration))
                 center_color = (0.8, 0.1, 0.25, alpha)
-                tubes_color = (0.2, 0.25, 0.75, alpha)
                 center = self.tubes_center
                 if self.progression:
                     parameters = self.progression[it]['Parameters']
                 else:
                     parameters = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
                 tubes = tubes_from_file(self.subsampled_tubes)
-                circles = tubes_as_circles(tubes, point_colors=tubes_color)
+                #tubes_color = (0.2, 0.25, 0.75, alpha)
+                tube_weights = 2./(1. + np.exp(-2 * tubes['Radius']))
+                tube_weights = tube_weights - tube_weights.min()
+                tube_weights = tube_weights / tube_weights.max()
+                tubes_colors = matplotlib.cm.PuBuGn(tube_weights)
+                tubes_colors[:, 3] = tube_weights**0.5 * alpha
+                circles = tubes_as_circles(tubes, point_colors=tubes_colors)
                 circles_mesh = gl.GLMeshItem(meshdata=circles,
                                              glOptions='translucent',
                                              smooth=False)
