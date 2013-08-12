@@ -210,13 +210,13 @@ Midas3FunctionAddTest( itktubeImageToTubeRigidMetricTest1
   ${BASE_REGISTRATION_TESTS} itktubeImageToTubeRigidMetricTest
   MIDAS{SyntheticVesselTubeImage.mha.md5}
   MIDAS{SyntheticVesselTubeManuallyModified.tre.md5}
-  0.874634 )
+  2.30028 )
 
 Midas3FunctionAddTest( itktubeImageToTubeRigidMetricTest2
   ${BASE_REGISTRATION_TESTS} itktubeImageToTubeRigidMetricTest
   MIDAS{SyntheticTransformedVesselTubeImage.mha.md5}
   MIDAS{SyntheticVesselTubeManuallyModified.tre.md5}
-  -1.35168 )
+  0.0739628 )
 
 Midas3FunctionAddTest( itktubeImageToTubeRigidMetricPerformanceTest
   ${BASE_REGISTRATION_TESTS} itktubeImageToTubeRigidMetricPerformanceTest

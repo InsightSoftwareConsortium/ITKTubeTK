@@ -116,29 +116,10 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
     itkExceptionMacro( << "No tube/image net plugged in." );
     }
 
-  this->ComputeImageRange();
   this->ComputeTubePointResolutionWeights();
 
   this->m_Interpolator->SetInputImage( this->m_FixedImage );
   this->m_DerivativeImageFunction->SetInputImage( this->m_FixedImage );
-}
-
-
-template< class TFixedImage, class TMovingSpatialObject,
-          class TTubeSpatialObject, class TResolutionWeightFunction >
-void
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
-  TResolutionWeightFunction >
-::ComputeImageRange( void )
-{
-  m_RangeCalculator = RangeCalculatorType::New();
-  m_RangeCalculator->SetImage( this->m_FixedImage );
-  m_RangeCalculator->Compute();
-  m_ImageMin = m_RangeCalculator->GetMinimum();
-  m_ImageMax = m_RangeCalculator->GetMaximum();
-
-  itkDebugMacro( << "ImageMin = " << m_ImageMin );
-  itkDebugMacro( << "ImageMax = " << m_ImageMax );
 }
 
 
@@ -284,10 +265,6 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
               scale,
               currentPoint ) );
           }
-        else
-          {
-          matchMeasure -= this->m_ImageMax;
-          }
         ++weightIterator;
         }
       } // end is a tube
@@ -301,13 +278,9 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
     }
   else
     {
-    InternalComputationValueType imageRatio =
-      static_cast< InternalComputationValueType >( m_ImageMin / m_ImageMax );
-    InternalComputationValueType normalizedMeasure =
+    const InternalComputationValueType normalizedMeasure =
       static_cast< InternalComputationValueType >( matchMeasure / weightSum );
-    matchMeasure = normalizedMeasure
-                   - imageRatio
-                   - static_cast< InternalComputationValueType >( m_ImageMin );
+    matchMeasure = normalizedMeasure;
     }
 
   itkDebugMacro( << "matchMeasure = " << matchMeasure );
