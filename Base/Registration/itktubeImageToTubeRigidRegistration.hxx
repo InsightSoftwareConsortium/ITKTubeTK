@@ -53,22 +53,20 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 
   m_IsInitialized = false;
 
-  m_InitialPosition.set_size( 6 );
-  m_InitialPosition.Fill( 0.0 );
-  m_ParametersScale.set_size( 6 );
-  m_ParametersScale[0] = 30.;
-  m_ParametersScale[1] = 30.;
-  m_ParametersScale[2] = 30.;
-  m_ParametersScale[3] = 1.;
-  m_ParametersScale[4] = 1.;
-  m_ParametersScale[5] = 1.;
-
   typename DefaultMetricType::Pointer metric = DefaultMetricType::New();
   this->SetMetric( metric );
 
   typedef LinearInterpolateImageFunction< FixedImageType > DefaultInterpolatorType;
   typename DefaultInterpolatorType::Pointer interpolator = DefaultInterpolatorType::New();
   this->SetInterpolator( interpolator );
+
+  typename Superclass::OptimizerType::ParametersType parameterScales( 6 );
+  parameterScales[0] = 30.;
+  parameterScales[1] = 30.;
+  parameterScales[2] = 30.;
+  parameterScales[3] = 1.;
+  parameterScales[4] = 1.;
+  parameterScales[5] = 1.;
 
   //typedef GradientDescentVariableStepOptimizer  DefaultOptimizerType;
   typedef GradientDescentOptimizer                DefaultOptimizerType;
@@ -77,7 +75,7 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
     DefaultOptimizerType::New();
 
   optimizer->MaximizeOn();
-  optimizer->SetScales( m_ParametersScale );
+  optimizer->SetScales( parameterScales );
 
   //optimizer->SetMaximumIteration( m_NumberOfIteration );
 
@@ -96,38 +94,10 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 template< class TFixedImage, class TMovingSpatialObject, class TMovingTube >
 void
 ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
-::SetInitialPosition( const double position[6] )
-{
-  m_InitialPosition.set_size( 6 );
-  for( unsigned int ii = 0; ii < 6; ++ii )
-    {
-    m_InitialPosition[ii]=position[ii];
-    }
-}
-
-
-template< class TFixedImage, class TMovingSpatialObject, class TMovingTube >
-void
-ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
-::SetParametersScale( const double scales[6] )
-{
-  m_ParametersScale.set_size( 6 );
-  for( unsigned int ii = 0; ii < 6; ++ii )
-    {
-    m_ParametersScale[ii]=scales[ii];
-    }
-}
-
-
-template< class TFixedImage, class TMovingSpatialObject, class TMovingTube >
-void
-ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 ::Initialize() throw ( ExceptionObject )
 {
   typename TransformType::Pointer transform = TransformType::New();
   this->SetTransform( transform );
-
-  this->SetInitialTransformParameters( m_InitialPosition );
 
   try
     {
@@ -141,7 +111,6 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
     // pass exception to caller
     throw;
     }
-  this->GetOptimizer()->SetCostFunction( this->GetMetric() );
 
   m_IsInitialized = true;
 }

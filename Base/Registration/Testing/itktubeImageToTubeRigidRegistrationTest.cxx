@@ -78,7 +78,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   for( unsigned int ii = 0; ii < Dimension; ++ii )
     {
     blurFilters[ii] = GaussianBlurFilterType::New();
-    blurFilters[ii]->SetSigma( 3.0 );
+    blurFilters[ii]->SetSigma( 2.0 );
     blurFilters[ii]->SetZeroOrder();
     blurFilters[ii]->SetDirection( ii );
     }
@@ -125,21 +125,11 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  double initialPosition[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-  if(argc > 10)
-    {
-    for(unsigned int ii = 0; ii < 6; ++ii)
-      {
-      initialPosition[ii] = std::atof( argv[5+ii] );
-      }
-    }
-
   RegistrationMethodType::Pointer registrationMethod =
     RegistrationMethodType::New();
 
   registrationMethod->SetFixedImage( blurFilters[2]->GetOutput() );
   registrationMethod->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
-  registrationMethod->SetInitialPosition( initialPosition );
 
   // Set Optimizer parameters.
   RegistrationMethodType::OptimizerType::Pointer optimizer =

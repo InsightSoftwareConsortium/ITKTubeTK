@@ -131,9 +131,11 @@
   "GradientDescentOptimizer" :
   {
     "Debug" : true,
+    "InitialPosition" : [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
     "LearningRate" : 0.20,
     "Maximize" : true,
-    "NumberOfIterations" : 30
+    "NumberOfIterations" : 20,
+    "Scales" : [ 10.0, 10.0, 10.0, 1.0, 1.0, 1.0 ]
   },
 
   "SubSampleTubeTree" :

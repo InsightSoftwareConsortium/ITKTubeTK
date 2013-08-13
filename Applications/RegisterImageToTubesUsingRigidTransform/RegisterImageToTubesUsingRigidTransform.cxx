@@ -139,8 +139,8 @@ int DoIt( int argc, char * argv[] )
   if( !parametersToRestore.empty() )
     {
     // If the Json file has entries that describe the parameters for an
-    // itk::GradientDescentOptimizer, read them in, and set them on our
-    // gradientDescentOptimizer instance.
+    // itk::tube::SubSampleTubeTreeSpatialObjectFilter, read them in, and set them on our
+    // instance.
     if( parametersRoot.isMember( "SubSampleTubeTree" ) )
       {
       Json::Value & subSampleTubeTreeFilterValue = parametersRoot["SubSampleTubeTree"];

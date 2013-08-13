@@ -181,20 +181,24 @@ int itktubeImageToTubeRigidRegistrationPerformanceTest( int argc, char * argv[] 
     = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
   randGenerator->Initialize( 137593424 );
 
-  double parameterScales[6] = {30.0, 30.0, 30.0, 1.0, 1.0, 1.0};
-  double initialPose[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
   RegistrationMethodType::Pointer registrationMethod =
     RegistrationMethodType::New();
 
   registrationMethod->SetFixedImage( blurFilters[2]->GetOutput() );
   registrationMethod->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
-  registrationMethod->SetInitialPosition( initialPose );
-  registrationMethod->SetParametersScale( parameterScales );
 
   // Set Optimizer parameters.
   RegistrationMethodType::OptimizerType::Pointer optimizer =
     registrationMethod->GetOptimizer();
+  RegistrationMethodType::OptimizerType::ScalesType parameterScales( 6 );
+  parameterScales[0] = 30.0;
+  parameterScales[1] = 30.0;
+  parameterScales[2] = 30.0;
+  parameterScales[3] = 1.0;
+  parameterScales[4] = 1.0;
+  parameterScales[5] = 1.0;
+  optimizer->SetScales( parameterScales );
   itk::GradientDescentOptimizer * gradientDescentOptimizer =
     dynamic_cast< itk::GradientDescentOptimizer * >( optimizer.GetPointer() );
   if( gradientDescentOptimizer )

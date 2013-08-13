@@ -116,12 +116,6 @@ public:
   /** Method that initiates the registration. */
   void StartRegistration( void );
 
-  /** Set the initial position */
-  void SetInitialPosition( const double position[6] );
-
-  /** Set the parameters scales */
-  void SetParametersScale( const double scales[6] );
-
   /** Initialize the registration */
   void Initialize( void ) throw ( ExceptionObject );
 
@@ -134,8 +128,6 @@ private:
   void operator=( const Self& ); //purposely not implemented
 
   bool                                     m_IsInitialized;
-  ParametersType                           m_InitialPosition;
-  ParametersType                           m_ParametersScale;
 
 }; // End class ImageToTubeRigidRegistration
 
