@@ -27,13 +27,13 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 find_package( PythonInterp )
 
-# Adjust Python to run in the virtualenv
+# This sets the virtual environment directory
 set( PythonVirtualenvHome ${TubeTK_BINARY_DIR}/Temporary/PythonVirtualenv )
 
 # Make sure we keep the original path to the Python executable
 set( ORIGINAL_PYTHON_EXECUTABLE ${PYTHON_EXECUTABLE} )
 
-# Temporarily set the Python executable to the virtual env.
+# Temporarily change the Python executable to the virtual environment one
 if( WIN32 )
   set( PYTHON_EXECUTABLE ${PythonVirtualenvHome}/Scripts/python )
 else( )
@@ -45,14 +45,14 @@ configure_file(
   "${CMAKE_CURRENT_BINARY_DIR}/PythonVirtualEnvInstall.cmake"
   @ONLY )
   
-# Install the virtualenv 
+# Install the virtual environment
 execute_process( COMMAND ${CMAKE_COMMAND} -P 
   "${CMAKE_CURRENT_BINARY_DIR}/PythonVirtualEnvInstall.cmake" )
 
-# We need SimpleITK almost surely in all examples
+# We need SimpleITK (almost surely) in all examples
 execute_process( COMMAND ${PythonVirtualenvHome}/bin/easy_install SimpleITK )
 
-# Install commonly-used Python packages
+# Install commonly-used Python packages (most are needed for proper IPython use)
 execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip -q install tornado )
 execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip -q install ipython )
 execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip -q install ipython[zmq] )

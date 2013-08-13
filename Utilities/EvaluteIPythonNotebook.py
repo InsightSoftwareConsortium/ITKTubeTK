@@ -1,3 +1,13 @@
+"""EvaluteIPythonNotebook.py
+
+   This is a modified version of minrk's script 
+   
+   https://gist.github.com/minrk/2620876
+   
+   to quickly evaluate an IPython notebook and check for failures.
+"""
+
+
 import os
 import sys
 import time
@@ -11,7 +21,21 @@ except ImportError:
 
 from IPython.nbformat.current import reads, NotebookNode
 
+
 def run_notebook(nb):
+    """Run IPython Notebook.
+    
+    Paramters:
+    ----------
+    nb : IPython Notebook in JSON format.
+    
+    Returns:
+    --------
+    ret : int
+        Return value; 0 in case of no failure, 1 otherwise
+    """
+
+
     km = KernelManager()
     km.start_kernel(stderr=open(os.devnull, 'w'))
     try:
