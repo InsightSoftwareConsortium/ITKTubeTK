@@ -49,3 +49,4 @@ Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
                -b MIDAS{${MODULE_NAME}Test1.txt.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+                      

@@ -114,6 +114,17 @@ int DoIt( int argc, char * argv[] )
   if( maskImage.IsNotNull() )
     {
     filter->SetMaskImage( maskImage );
+    
+    // Note: Output masking only keeps values at positions p, where mask(p) is
+    // NOT equal to zero. We do not want that here.
+    filter->SetMaskOutput( false );
+    
+    // Note: only pixels at positions p where mask(p) == 0 are taken into
+    // account for thresholding. So, a mask is interpreted in an inclusion 
+    // sense, rather than an exclusion sense. Hence, for a binary, i.e., 0/1
+    // mask to be used in the intuitive (i.e., we do not care about the mask
+    // region), we need to set the mask value to zero.
+    filter->SetMaskValue( 0 );
     }
 
   tube::CLIFilterWatcher watcher( filter,
@@ -122,7 +133,10 @@ int DoIt( int argc, char * argv[] )
                                   progressFraction,
                                   progress,
                                   true );
+  filter->SetOutsideValue( 0 );                                
+  filter->SetInsideValue( 1 );                           
   filter->Update();
+  std::cout << filter->GetThreshold() << std::endl;
   outImage = filter->GetOutput();
 
   std::cout << "Chosen threshold = " << filter->GetThreshold()
