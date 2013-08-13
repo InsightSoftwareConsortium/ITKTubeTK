@@ -535,6 +535,9 @@ endif( TubeTK_BUILD_MODULES AND TubeTK_USE_SLICER )
 # Create the directory where CTest unit tests store temporary results.
 make_directory( ${TubeTK_BINARY_DIR}/Temporary )
 
+# Include examples.
+add_subdirectory( Examples )
+
 # Configure variables to export.
 set( TubeTK_INCLUDE_DIRS
   ${TubeTK_SOURCE_DIR}/Base/CLI
