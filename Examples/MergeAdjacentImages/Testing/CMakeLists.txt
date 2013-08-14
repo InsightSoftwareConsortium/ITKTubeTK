@@ -23,7 +23,7 @@
 
 Midas3FunctionAddTest( NAME Python.MergeAdjacentImages
   COMMAND ${PYTHON_EXECUTABLE} 
-    "${TubeTK_SOURCE_DIR}/Utilities/EvaluateIPythonNotebook.py"
+    "${TubeTK_SOURCE_DIR}/Utilities/Python/EvaluateIPythonNotebook.py"
     "${CMAKE_CURRENT_SOURCE_DIR}/../MergeAdjacentImages.ipynb"
     "${TubeTK_BINARY_DIR}"
     MIDAS_FETCH_ONLY{ES0015_Large.mha.md5} 

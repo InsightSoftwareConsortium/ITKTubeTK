@@ -49,17 +49,19 @@ configure_file(
 execute_process( COMMAND ${CMAKE_COMMAND} -P 
   "${CMAKE_CURRENT_BINARY_DIR}/PythonVirtualEnvInstall.cmake" )
 
-# We need SimpleITK (almost surely) in all examples
+# We need SimpleITK/matplotlib (almost surely) in all examples
 execute_process( COMMAND ${PythonVirtualenvHome}/bin/easy_install SimpleITK )
 
-# Install commonly-used Python packages (most are needed for proper IPython use)
+# Install other commonly-used Python packages
 execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip -q install tornado )
 execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip -q install ipython )
 execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip -q install ipython[zmq] )
 execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip -q install jinja2 )
 execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip -q install tornado )
-execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip -q install matplotlib )
 execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip -q install numpy )
+
+# Install matplotlib via easy_install
+execute_process( COMMAND ${PythonVirtualenvHome}/bin/easy_install --quiet matplotlib )
 
 # Add notebook/example directories
 add_subdirectory( MergeAdjacentImages )

@@ -32,12 +32,12 @@ run the TubeTK examples can be set up as follows:
 ```bash
 mkdir ~/TubeTK-virtualenv
 sudo pip install virtualenv
-virtualenv ~/sitkpy --no-site-packages
+virtualenv ~/TubeTK-virtualenv --no-site-packages
 ~/TubeTK-virtualenv/bin/pip install ipython
 ~/TubeTK-virtualenv/bin/pip install ipython[zmq]
 ~/TubeTK-virtualenv/bin/pip install tornado
 ~/TubeTK-virtualenv/bin/pip install numpy
-~/TubeTK-virtualenv/bin/pip install matplotlib
+~/TubeTK-virtualenv/bin/easy_install install matplotlib
 ```
 
 **Note**: On Linux platforms you may be able to obtain many of these packages as system packages which may 
