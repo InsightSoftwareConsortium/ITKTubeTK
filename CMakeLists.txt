@@ -303,6 +303,11 @@ option( USE_SYSTEM_IMAGE_VIEWER
   "Exclude ImageViewer from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_IMAGE_VIEWER )
 
+# Do we want to test TubeTK examples (via Python virtualenv) ?
+option( TubeTK_TEST_EXAMPLES
+  "Test TubeTK examples in virtual Python environment." OFF )
+mark_as_advanced( TubeTK_TEST_EXAMPLES )
+
 # ITK setup.
 option( USE_SYSTEM_ITK "Exclude ITK from superbuild and use an existing build."
   OFF )
@@ -520,7 +525,11 @@ endif( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_SLICER )
 
 include( TubeTKMacroInstallPlugins )
 
-# Build TubeTK.
+# Test TubeTK IPython examples.
+if( TubeTK_TEST_EXAMPLES )
+  add_subdirectory( Examples )
+endif()
+
 add_subdirectory( Utilities )
 add_subdirectory( Base )
 if( TubeTK_BUILD_MODULES )
@@ -534,11 +543,6 @@ endif( TubeTK_BUILD_MODULES AND TubeTK_USE_SLICER )
 
 # Create the directory where CTest unit tests store temporary results.
 make_directory( ${TubeTK_BINARY_DIR}/Temporary )
-
-# Examples include IPython notebooks (if BUILD_TESTING is ON, they get tested)
-if( BUILD_TESTING )
-  add_subdirectory( Examples )
-endif()
 
 # Configure variables to export.
 set( TubeTK_INCLUDE_DIRS

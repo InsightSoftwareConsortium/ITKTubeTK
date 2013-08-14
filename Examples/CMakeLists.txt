@@ -53,15 +53,13 @@ execute_process( COMMAND ${CMAKE_COMMAND} -P
 execute_process( COMMAND ${PythonVirtualenvHome}/bin/easy_install SimpleITK )
 
 # Install other commonly-used Python packages
-execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip -q install tornado )
-execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip -q install ipython )
-execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip -q install ipython[zmq] )
-execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip -q install jinja2 )
-execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip -q install tornado )
-execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip -q install numpy )
-
-# Install matplotlib via easy_install
-execute_process( COMMAND ${PythonVirtualenvHome}/bin/easy_install --quiet matplotlib )
+execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip install tornado )
+execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip install ipython )
+execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip install ipython[zmq] )
+execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip install jinja2 )
+execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip install tornado )
+execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip install numpy )
+execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip install matplotlib )
 
 # Add notebook/example directories
 add_subdirectory( MergeAdjacentImages )

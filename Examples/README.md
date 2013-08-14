@@ -7,7 +7,7 @@ Python modules) in the `pylab` environment for interactive processing.
 
 ## Quickstart
 
-The easiest way to get started with TubeTK examples is to enable `BUILD_TESTING` when configuring
+The easiest way to get started with TubeTK examples is to enable `TubeTK_TEST_EXAMPLES` when configuring
 TubeTK. Only then, a Python virtual environment `PythonVirtualenv` will be automatically set up in 
 the `Temporary` folder of the TubeTK build directory (`TubeTK-build`). This virtual environment 
 **already** has all the required packages installed. To run the IPython notebooks from the `Examples`
@@ -37,7 +37,7 @@ virtualenv ~/TubeTK-virtualenv --no-site-packages
 ~/TubeTK-virtualenv/bin/pip install ipython[zmq]
 ~/TubeTK-virtualenv/bin/pip install tornado
 ~/TubeTK-virtualenv/bin/pip install numpy
-~/TubeTK-virtualenv/bin/easy_install install matplotlib
+~/TubeTK-virtualenv/bin/pip install matplotlib
 ```
 
 **Note**: On Linux platforms you may be able to obtain many of these packages as system packages which may 
