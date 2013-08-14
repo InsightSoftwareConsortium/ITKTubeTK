@@ -1,4 +1,4 @@
-"""EvaluteIPythonNotebook.py
+"""EvaluateIPythonNotebook.py
 
    This is a modified version of minrk's script 
    
@@ -83,11 +83,12 @@ def run_notebook(nb):
     
     
 if __name__ == '__main__':
-    # Open the IPython notebook
+    # opens the IPython notebook
     with open(sys.argv[1]) as f:
         nb = reads(f.read(), 'json')
     
-    # This is typically set in cmake
+    # since this code is typically used for testing IPython notebooks, the
+    # TubeTK path is passed along from cmake
     os.environ['TubeTK_BINARY_DIR'] = sys.argv[2]
     sys.exit(run_notebook(nb))
    
