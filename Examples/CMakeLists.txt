@@ -30,14 +30,14 @@ find_package( PythonInterp )
 # This sets the virtual environment directory
 set( PythonVirtualenvHome ${TubeTK_BINARY_DIR}/Temporary/PythonVirtualenv )
 
-# Make sure we keep the original path to the Python executable
+# Make the original Python executable explicit
 set( ORIGINAL_PYTHON_EXECUTABLE ${PYTHON_EXECUTABLE} )
 
 # Temporarily change the Python executable to the virtual environment one
 if( WIN32 )
-  set( PYTHON_EXECUTABLE ${PythonVirtualenvHome}/Scripts/python )
+  set( PYTHON_TESTING_EXECUTABLE ${PythonVirtualenvHome}/Scripts/python )
 else( )
-  set( PYTHON_EXECUTABLE ${PythonVirtualenvHome}/bin/python )
+  set( PYTHON_TESTING_EXECUTABLE ${PythonVirtualenvHome}/bin/python )
 endif()
 
 configure_file(
@@ -49,18 +49,27 @@ configure_file(
 execute_process( COMMAND ${CMAKE_COMMAND} -P 
   "${CMAKE_CURRENT_BINARY_DIR}/PythonVirtualEnvInstall.cmake" )
 
-# We need SimpleITK/matplotlib (almost surely) in all examples
+# Setup IPython notebook driver  
+set( NOTEBOOK_TEST_DRIVER 
+  ${TubeTK_SOURCE_DIR}/Utilities/Python/EvaluateIPythonNotebook.py)
+
+# We need SimpleITK (almost surely) in all examples
 execute_process( COMMAND ${PythonVirtualenvHome}/bin/easy_install SimpleITK )
 
-# Install other commonly-used Python packages
-execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip install tornado )
-execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip install ipython )
-execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip install ipython[zmq] )
-execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip install jinja2 )
-execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip install tornado )
-execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip install numpy )
-execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip install matplotlib )
+# These are the most commonly required Python packages
+set( PYTHON_TESTING_MODULES 
+  tornado 
+  ipython 
+  ipython[zmq]
+  jinja2
+  numpy
+  matplotlib )
 
+# Install Python packages via pip install in the virtual environment 
+foreach ( MODULE ${PYTHON_TESTING_MODULES} )
+  execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip install ${MODULE} )
+endforeach()
+  
 # Add notebook/example directories
 add_subdirectory( MergeAdjacentImages )
 
