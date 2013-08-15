@@ -1,3 +1,4 @@
+*.pyc
 *.a
 *.app
 *.clp

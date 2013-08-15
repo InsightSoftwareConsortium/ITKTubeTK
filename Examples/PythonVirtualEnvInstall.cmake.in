@@ -1,0 +1,10 @@
+
+execute_process( COMMAND "@ORIGINAL_PYTHON_EXECUTABLE@"
+        "@TubeTK_SOURCE_DIR@/Utilities/Python/virtualenv/virtualenv.py"
+        "--python=@ORIGINAL_PYTHON_EXECUTABLE@"
+        "--no-site-packages"
+        "@PythonVirtualenvHome@" )
+
+if ( failed )
+  message( ERROR ${error} )
+endif()
