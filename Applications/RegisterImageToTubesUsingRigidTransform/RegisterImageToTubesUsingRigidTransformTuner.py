@@ -218,10 +218,11 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                                   input_tubes, self.subsampled_tubes])
         self.add_tubes()
 
-        metric_value_dock = Dock("Metric Value", size=(500, 300))
+        metric_value_dock = Dock("Metric Value Inverse", size=(500, 300))
         self.metric_values_plot = pg.PlotWidget()
         self.metric_values_plot.setLabel('bottom', text='Iteration')
-        self.metric_values_plot.setLabel('left', text='Metric Value')
+        self.metric_values_plot.setLabel('left', text='Metric Value Inverse')
+        self.metric_values_plot.setLogMode(False, True)
         metric_value_dock.addWidget(self.metric_values_plot)
         self.dock_area.addDock(metric_value_dock, 'left', run_console_dock)
 
@@ -345,10 +346,10 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
 
     def plot_metric_values(self):
         iterations = self.progression[:]['Iteration']
-        metric_value = self.progression[:]['CostFunctionValue']
-        min_metric = np.min(metric_value)
+        metric_value_inverse = 1. / self.progression[:]['CostFunctionValue']
+        min_metric = np.min(metric_value_inverse)
         self.metric_values_plot.plot({'x': iterations,
-                                     'y': metric_value},
+                                     'y': metric_value_inverse},
                                      pen={'color': (100, 100, 200, 200),
                                           'width': 2.5},
                                      fillLevel=min_metric,
@@ -356,7 +357,7 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                                      antialias=True,
                                      clear=True)
         self.metric_values_plot.plot({'x': [self.iteration],
-                                     'y': [metric_value[self.iteration]]},
+                                     'y': [metric_value_inverse[self.iteration]]},
                                      symbolBrush='r',
                                      symbol='o',
                                      symbolSize=8.0)

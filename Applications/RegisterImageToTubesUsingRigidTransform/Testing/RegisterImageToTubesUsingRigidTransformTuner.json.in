@@ -141,7 +141,7 @@
   "SubSampleTubeTree" :
   {
     "Debug" : false,
-    "Sampling" : 20
+    "Sampling" : 30
   },
 
   "Visualization" :
