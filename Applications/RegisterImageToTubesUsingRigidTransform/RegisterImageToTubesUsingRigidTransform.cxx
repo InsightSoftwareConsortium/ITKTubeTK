@@ -275,13 +275,17 @@ int DoIt( int argc, char * argv[] )
     }
   progress = 0.9;
   progressReporter.Report( progress );
+
+  TransformType* outputTransform =
+    dynamic_cast<TransformType *>(registrationMethod->GetTransform());
+  outputTransform->SetParameters( registrationMethod->GetLastTransformParameters() );
+  std::ostringstream parametersMessage;
+  parametersMessage << "Transform Parameters: " << registrationMethod->GetLastTransformParameters();
+  tube::InformationMessage( parametersMessage.str() );
   timeCollector.Stop("Register image to tube");
 
 
   timeCollector.Start("Save data");
-  TransformType* outputTransform =
-    dynamic_cast<TransformType *>(registrationMethod->GetTransform());
-  outputTransform->SetParameters( registrationMethod->GetLastTransformParameters() );
 
   typename TubeTransformFilterType::Pointer transformFilter =
     TubeTransformFilterType::New();

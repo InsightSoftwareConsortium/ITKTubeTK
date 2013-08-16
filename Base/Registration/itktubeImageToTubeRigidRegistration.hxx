@@ -75,6 +75,8 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
     DefaultOptimizerType::New();
 
   optimizer->MaximizeOn();
+  optimizer->SetNumberOfIterations( 20 );
+  optimizer->SetLearningRate( 0.1 );
   optimizer->SetScales( parameterScales );
 
   //optimizer->SetMaximumIteration( m_NumberOfIteration );
