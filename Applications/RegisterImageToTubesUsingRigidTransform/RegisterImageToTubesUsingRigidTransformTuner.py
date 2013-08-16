@@ -5,6 +5,7 @@ RegisterImageToTubesUsingRigidTransform."""
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 
@@ -104,6 +105,15 @@ class RegistrationTuner(QtGui.QMainWindow):
                                self.run_analysis)
         self.addAction(run_action)
 
+        video_button = QtGui.QPushButton('Make Video Frames')
+        video_button.resize(video_button.sizeHint())
+        QtCore.QObject.connect(video_button, QtCore.SIGNAL('clicked()'),
+                               self.make_video)
+        # todo do properly
+        self.video_frame_dir = '/tmp/registration_tuner'
+        if not os.path.exists(self.video_frame_dir):
+            os.makedirs(self.video_frame_dir)
+
         import pprint
         console_namespace = {'pg': pg,
                              'np': np,
@@ -121,6 +131,7 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
 
         run_console_layout = QtGui.QVBoxLayout()
         run_console_layout.addWidget(run_button)
+        run_console_layout.addWidget(video_button)
         run_console_layout.addWidget(self.console)
         run_console = QtGui.QWidget()
         run_console.setLayout(run_console_layout)
@@ -386,6 +397,17 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         self.add_image_planes()
         self.add_translations()
         self.set_iteration(self.number_of_iterations)
+
+    def make_video(self):
+        for it in range(self.number_of_iterations + 1):
+            filename = os.path.join(self.video_frame_dir,
+                                    'frame_{0:04d}.png'.format(it))
+            self.set_iteration(it)
+            self.update()
+            QtCore.QCoreApplication.processEvents()
+            pixmap = QtGui.QPixmap.grabWindow(self.winId())
+            print('Saving ' + filename)
+            pixmap.save(filename, 'png')
 
     def _x_check_changed(self):
         if self.image_planes['x']:
