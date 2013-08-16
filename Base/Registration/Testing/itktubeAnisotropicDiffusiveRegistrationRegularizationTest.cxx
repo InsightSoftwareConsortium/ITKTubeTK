@@ -24,15 +24,9 @@ limitations under the License.
 #include "itktubeAnisotropicDiffusiveRegistrationFilter.h"
 
 #include <itkImageFileWriter.h>
-#include <itkImageLinearIteratorWithIndex.h>
 #include <itkMersenneTwisterRandomVariateGenerator.h>
 
-#include <vtkDataArray.h>
 #include <vtkPlaneSource.h>
-#include <vtkPointData.h>
-#include <vtkPolyDataNormals.h>
-#include <vtkPolyDataWriter.h>
-#include <vtkSmartPointer.h>
 
 int itkAnisotropicDiffusiveRegistrationRegularizationTest( int argc, char * argv[] )
 {

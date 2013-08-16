@@ -23,7 +23,6 @@ limitations under the License.
 
 #include "itktubeRidgeExtractor.h"
 
-#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>

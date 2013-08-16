@@ -24,14 +24,9 @@ limitations under the License.
 #include "itktubeVotingResampleImageFunction.h"
 
 #include <itkAffineTransform.h>
-#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkImageRegionIterator.h>
-#include <itkImageRegionIteratorWithIndex.h>
 #include <itkResampleImageFilter.h>
-
-#include <iostream>
 
 int itktubeVotingResampleImageFunctionTest( int argc, char * argv[] )
 {

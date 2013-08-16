@@ -21,19 +21,12 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 
 #include <itkFRPROptimizer.h>
-#include <itkIdentityTransform.h>
-#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkImageRegionIterator.h>
-#include <itkImageSpatialObject.h>
-#include <itkLinearInterpolateImageFunction.h>
-#include <itkNormalizeImageFilter.h>
 #include <itkNormalVariateGenerator.h>
 #include <itkOnePlusOneEvolutionaryOptimizer.h>
 #include <itkSmoothingRecursiveGaussianImageFilter.h>

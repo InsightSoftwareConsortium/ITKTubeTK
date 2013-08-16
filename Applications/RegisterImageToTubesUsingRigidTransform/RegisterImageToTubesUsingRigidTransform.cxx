@@ -23,21 +23,17 @@ limitations under the License.
 
 #include "itktubeImageToTubeRigidRegistration.h"
 #include "itktubeRecordOptimizationParameterProgressionCommand.h"
-#include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
 #include "itktubeTubeToTubeTransformFilter.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 
-#include <itkEuler3DTransform.h>
-#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkRecursiveGaussianImageFilter.h>
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectToImageFilter.h>
 #include <itkTimeProbesCollectorBase.h>
-#include <itkVesselTubeSpatialObject.h>
 
 #include "RegisterImageToTubesUsingRigidTransformCLP.h"
 

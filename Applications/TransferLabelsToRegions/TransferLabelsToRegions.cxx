@@ -21,30 +21,13 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 
 #include <boost/dynamic_bitset.hpp>
 
-#include <itkImage.h>
-#include <itkImageDuplicator.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkImageMomentsCalculator.h>
-#include <itkImageRegionIteratorWithIndex.h>
-#include <itkLabelImageToLabelMapFilter.h>
-#include <itkMatrix.h>
-#include <itkNearestNeighborInterpolateImageFunction.h>
-#include <itkOrientImageFilter.h>
 #include <itkResampleImageFilter.h>
-#include <itkTimeProbesCollectorBase.h>
-#include <itkTranslationTransform.h>
-
-#include <algorithm>
-#include <map>
-#include <set>
-#include <vector>
 
 #include "TransferLabelsToRegionsCLP.h"
 

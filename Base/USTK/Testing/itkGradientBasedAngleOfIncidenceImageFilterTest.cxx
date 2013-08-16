@@ -22,8 +22,6 @@
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
-#include <sstream>
-
 int itkGradientBasedAngleOfIncidenceImageFilterTest( int argc, char * argv[] )
 {
   // Argument parsing.

@@ -23,9 +23,6 @@ limitations under the License.
 
 #include "tubeOptimizerND.h"
 
-#include "tubeOptimizer1D.h"
-#include "tubeUserFunction.h"
-
 namespace tube
 {
 

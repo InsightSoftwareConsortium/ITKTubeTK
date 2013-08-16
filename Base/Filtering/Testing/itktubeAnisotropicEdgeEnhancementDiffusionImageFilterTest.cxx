@@ -18,7 +18,6 @@
 #include "itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h"
 
 #include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
 
 int itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest( int argc, char * argv[] )
 {

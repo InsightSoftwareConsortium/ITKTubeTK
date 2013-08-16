@@ -28,6 +28,8 @@ if( COMMAND CMAKE_POLICY )
   cmake_policy( SET CMP0003 NEW )
 endif( COMMAND CMAKE_POLICY )
 
+include_directories( ${TubeTK_SOURCE_DIR}/Base/Common )
+
 if( TubeTK_USE_QT )
 
   # Find QT

@@ -23,10 +23,8 @@ limitations under the License.
 
 #include "itktubeJointHistogramImageFunction.h"
 
-#include <itkFilterWatcher.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkImageRegionIteratorWithIndex.h>
 
 int itktubeJointHistogramImageFunctionTest( int argc, char * argv[] )
 {

@@ -23,10 +23,8 @@ limitations under the License.
 
 #include "itktubeCVTImageFilter.h"
 
-#include <itkFilterWatcher.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkImageRegionIteratorWithIndex.h>
 
 #define numCentroids 4
 

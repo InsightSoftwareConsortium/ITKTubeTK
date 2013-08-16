@@ -23,13 +23,6 @@ limitations under the License.
 
 #include "itktubePDFSegmenter.h"
 
-#include <itkImage.h>
-#include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
-#include <itkTimeProbesCollectorBase.h>
-
-#include <vnl/vnl_vector.h>
-
 #include "SegmentConnectedComponentsUsingParzenPDFsCLP.h"
 
 template< class T, unsigned int N >

@@ -27,31 +27,20 @@ limitations under the License.
 #include <itkBinaryBallStructuringElement.h>
 #include <itkCastImageFilter.h>
 #include <itkConnectedThresholdImageFilter.h>
-#include <itkContinuousIndex.h>
 #include <itkDilateObjectMorphologyImageFilter.h>
 #include <itkErodeObjectMorphologyImageFilter.h>
 #include <itkExtractImageFilter.h>
 #include <itkHistogramMatchingImageFilter.h>
-#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkImageIOBase.h>
-#include <itkImageIOFactory.h>
-#include <itkImageRegionIterator.h>
-#include <itkImageRegionIteratorWithIndex.h>
-#include <itkMersenneTwisterRandomVariateGenerator.h>
 #include <itkMetaImageIO.h>
 #include <itkMirrorPadImageFilter.h>
-#include <itkNearestNeighborInterpolateImageFunction.h>
 #include <itkNormalizeImageFilter.h>
 #include <itkNormalVariateGenerator.h>
 #include <itkRecursiveGaussianImageFilter.h>
 #include <itkResampleImageFilter.h>
 
 #include <metaCommand.h>
-
-#include <cmath>
-#include <iostream>
 
 /** Resamples image a to b if they are different, returns resampled_a */
 template< class TPixel, unsigned int VDimension >

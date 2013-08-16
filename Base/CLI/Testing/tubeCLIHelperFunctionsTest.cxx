@@ -23,10 +23,6 @@ limitations under the License.
 
 #include "tubeCLIHelperFunctionsTestCLP.h"
 
-#include <itkImage.h>
-
-#include <cstdlib>
-
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 

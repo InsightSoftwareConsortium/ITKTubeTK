@@ -26,8 +26,6 @@ limitations under the License.
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
-#include <fstream>
-
 template< class TLookupTable >
 int ReadLookupTableFromCSV( const char * filename, TLookupTable & lookupTable );
 

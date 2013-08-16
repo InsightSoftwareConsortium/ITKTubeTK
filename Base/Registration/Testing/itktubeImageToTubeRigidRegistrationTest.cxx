@@ -22,17 +22,14 @@ limitations under the License.
 =========================================================================*/
 
 #include "itktubeImageToTubeRigidRegistration.h"
-#include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
 #include "itktubeTubeToTubeTransformFilter.h"
 
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkMath.h>
 #include <itkRecursiveGaussianImageFilter.h>
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectToImageFilter.h>
 #include <itkSpatialObjectWriter.h>
-#include <itkVesselTubeSpatialObject.h>
 
 int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
 {

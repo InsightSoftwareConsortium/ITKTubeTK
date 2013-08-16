@@ -20,14 +20,8 @@
 #include "itktubeSymmetricEigenVectorAnalysisImageFilter.h"
 
 #include <itkHessianRecursiveGaussianImageFilter.h>
-#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkImageRegionIteratorWithIndex.h>
-#include <itkMatrix.h>
-#include <itkSymmetricEigenAnalysisImageFilter.h>
-#include <itkVariableLengthVector.h>
-#include <itkVectorImage.h>
 
 int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
 {

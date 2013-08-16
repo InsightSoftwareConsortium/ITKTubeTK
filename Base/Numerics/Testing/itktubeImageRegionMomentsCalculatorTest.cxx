@@ -23,7 +23,6 @@ limitations under the License.
 
 #include "itktubeImageRegionMomentsCalculator.h"
 
-#include <itkFilterWatcher.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 

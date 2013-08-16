@@ -23,11 +23,8 @@ limitations under the License.
 
 #include "tubeCLIFilterWatcher.h"
 
-#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkRecursiveGaussianImageFilter.h>
-
-#include <cstdlib>
 
 void testCallbackFunction( void * data )
 {

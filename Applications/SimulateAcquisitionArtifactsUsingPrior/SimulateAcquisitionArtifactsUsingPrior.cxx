@@ -22,21 +22,14 @@ limitations under the License.
 =========================================================================*/
 
 #include "tubeBrentOptimizer1D.h"
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
 #include "tubeCompareImageWithPrior.h"
-#include "tubeMessage.h"
 #include "tubeSplineApproximation1D.h"
 #include "tubeSplineND.h"
 
-#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkTimeProbesCollectorBase.h>
 #include <itkTransformFileReader.h>
 #include <itkTransformFileWriter.h>
-
-#include <map>
 
 #include "SimulateAcquisitionArtifactsUsingPriorCLP.h"
 

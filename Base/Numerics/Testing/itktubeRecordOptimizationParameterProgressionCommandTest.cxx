@@ -42,7 +42,6 @@ limitations under the License.
 #include "itktubeRecordOptimizationParameterProgressionCommand.h"
 
 #include <itkRegularStepGradientDescentOptimizer.h>
-#include <itk_H5Cpp.h>
 
 // Taken from itkRegularStepGradientDescentOptimizerTest.cxx
 /**

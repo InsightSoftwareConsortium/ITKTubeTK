@@ -22,46 +22,22 @@ limitations under the License.
 =========================================================================*/
 
 #include "tubeMessage.h"
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
 
 #include <itkDanielssonDistanceMapImageFilter.h>
-#include <itkImage.h>
-#include <itkImageDuplicator.h>
 #include <itkImageToVectorImageFilter.h>
 #include <itkImageFileReader.h>
-#include <itkImageRegionIteratorWithIndex.h>
 #include <itkImageFileWriter.h>
-#include <itkImageMomentsCalculator.h>
-#include <itkJoinImageFilter.h>
-#include <itkLabelImageToLabelMapFilter.h>
-#include <itkMersenneTwisterRandomVariateGenerator.h>
-#include <itkMatrix.h>
-#include <itkMacro.h>
-#include <itkNearestNeighborInterpolateImageFunction.h>
-#include <itkOrientImageFilter.h>
-#include <itkResampleImageFilter.h>
-#include <itkTimeProbe.h>
-#include <itkTimeProbesCollectorBase.h>
-#include <itkTranslationTransform.h>
-#include <itkVectorImage.h>
 
-#include <boost/format.hpp>
-#include <boost/filesystem.hpp>
-
-// Statistic computations ...
 #include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/statistics/min.hpp>
+#include <boost/accumulators/statistics/stats.hpp>
 #include <boost/dynamic_bitset.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/format.hpp>
 
 #include "ComputeRegionSignaturesCLP.h"
 
 // STL includes
-#include <algorithm>
-#include <map>
-#include <set>
-#include <vector>
 
 typedef enum
 {

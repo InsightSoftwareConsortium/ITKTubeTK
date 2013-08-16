@@ -23,11 +23,7 @@ limitations under the License.
 
 #include "itktubeRidgeExtractor.h"
 
-#include <itkGroupSpatialObject.h>
-#include <itkImage.h>
 #include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
-#include <itkImageRegionIteratorWithIndex.h>
 #include <itkMersenneTwisterRandomVariateGenerator.h>
 #include <itkSpatialObjectReader.h>
 

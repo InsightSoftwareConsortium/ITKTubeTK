@@ -23,8 +23,6 @@ limitations under the License.
 
 #include "itktubeMetaLDA.h"
 
-#include <cstring>
-
 namespace itk
 {
 

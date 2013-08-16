@@ -21,14 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <itkGroupSpatialObject.h>
 #include <itkImageFileWriter.h>
-#include <itkImageRegionIteratorWithIndex.h>
 #include <itkSpatialObjectWriter.h>
-#include <itkVesselTubeSpatialObject.h>
-#include <itkVesselTubeSpatialObjectPoint.h>
-
-#include <vcl_cmath.h>
 
 #include <vtkAppendPolyData.h>
 #include <vtkCubeSource.h>
@@ -36,9 +30,7 @@ limitations under the License.
 #include <vtkPlaneSource.h>
 #include <vtkPolyDataNormals.h>
 #include <vtkPolyDataWriter.h>
-#include <vtkSmoothPolyDataFilter.h>
 #include <vtkSphereSource.h>
-#include <vtkVersion.h>
 
 // Template function to fill in an image with a sphere.
 template< class TImage >

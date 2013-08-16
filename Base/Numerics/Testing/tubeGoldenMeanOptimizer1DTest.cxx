@@ -22,14 +22,8 @@ limitations under the License.
 =========================================================================*/
 
 #include "tubeGoldenMeanOptimizer1D.h"
-#include "tubeOptimizer1D.h"
-#include "tubeUserFunction.h"
 
-#include <vcl_cmath.h>
 #include <vnl/vnl_math.h>
-
-#include <cstdlib>
-#include <iostream>
 
 class MyOGMFunc : public tube::UserFunction< double, double >
 {

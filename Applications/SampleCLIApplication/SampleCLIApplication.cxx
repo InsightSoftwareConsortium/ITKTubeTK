@@ -21,18 +21,14 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <itkImage.h>
-#include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
-
-// The following three should be used in every CLI application
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
-#include <itkTimeProbesCollectorBase.h>
 
-// Includes specific to this CLI application
+#include <itkTimeProbesCollectorBase.h>
 #include <itkRecursiveGaussianImageFilter.h>
+#include <itkImageFileWriter.h>
+#include <itkImageFileReader.h>
 
 // Must include CLP before including tubeCLIHelperFunctions
 #include "SampleCLIApplicationCLP.h"

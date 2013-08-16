@@ -21,15 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 
-#include <itkDanielssonDistanceMapImageFilter.h>
-#include <itkImage.h>
-#include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
-#include <itkImageRegionIteratorWithIndex.h>
 #include <itkImageToImageRegistrationHelper.h>
 #include <itkSignedDanielssonDistanceMapImageFilter.h>
 #include <itkTimeProbesCollectorBase.h>

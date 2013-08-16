@@ -19,7 +19,6 @@
 
 #include <vnl/vnl_math.h>
 
-#include <iostream>
 #include <sstream>
 
 int RegressionTestFile ( const char *testFilename,

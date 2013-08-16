@@ -21,12 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <itkMacro.h>
+#include "tubeMacro.h"
 
-#include <vcl_cmath.h>
 #include <vnl/vnl_vector.h>
-
-#include <iostream>
 
 namespace tube
 {
@@ -73,7 +70,7 @@ private:
 
 }; // End class MyFunc2
 
-int tubeUserFunctionTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
+int tubeUserFunctionTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
 {
   MyFunc2 myFunc;
 

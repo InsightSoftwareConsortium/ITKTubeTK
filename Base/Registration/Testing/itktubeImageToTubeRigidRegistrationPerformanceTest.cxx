@@ -22,21 +22,13 @@ limitations under the License.
 =========================================================================*/
 
 #include "itktubeImageToTubeRigidRegistration.h"
-#include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
-#include "itktubeTubeToTubeTransformFilter.h"
 
-#include <itkCommand.h>
-#include <itkEuler3DTransform.h>
 #include <itkImageFileReader.h>
-#include <itkMath.h>
 #include <itkMemoryProbesCollectorBase.h>
 #include <itkMersenneTwisterRandomVariateGenerator.h>
 #include <itkRecursiveGaussianImageFilter.h>
 #include <itkSpatialObjectReader.h>
 #include <itkTimeProbesCollectorBase.h>
-
-#include <fstream>
-#include <iostream>
 
 //  The following section of code implements a Command observer
 //  used to monitor the evolution of the registration process.

@@ -21,20 +21,11 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <itkImage.h>
-#include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
-#include <itkTimeProbesCollectorBase.h>
-
 #include "itktubeMetaRidgeSeed.h"
 #include "itktubeRidgeSeedFilter.h"
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
-#include "tubeMessage.h"
 #include "tubeStringUtilities.h"
 
 #include "EnhanceTubesUsingDiscriminantAnalysisCLP.h"
-
 
 template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] );

@@ -24,13 +24,6 @@ limitations under the License.
 #include "itktubeBasisFeatureVectorGenerator.h"
 #include "itktubeNJetFeatureVectorGenerator.h"
 
-#include <itkFilterWatcher.h>
-#include <itkImage.h>
-#include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
-#include <itkImageRegionIteratorWithIndex.h>
-#include <itkRecursiveGaussianImageFilter.h>
-
 int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
 {
   if( argc != 7 )
