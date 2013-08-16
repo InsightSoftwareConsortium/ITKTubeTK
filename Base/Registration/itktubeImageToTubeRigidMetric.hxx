@@ -387,9 +387,9 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   tempV = ( pos - offsets ) - ( this->m_CenterOfRotation.GetVnlVector() );
   tempV.normalize();
 
-  dAngle[0] = dx[1] * ( -tempV[2] ) + dx[2] * tempV[1];
-  dAngle[1] = dx[0] * tempV[2] + dx[2] * ( -tempV[0] );
-  dAngle[2] = dx[0] * ( -tempV[1] ) + dx[1] * tempV[0];
+  dAngle[0] = dx[1] * -tempV[2] + dx[2] *  tempV[1];
+  dAngle[1] = dx[0] *  tempV[2] + dx[2] * -tempV[0];
+  dAngle[2] = dx[0] * -tempV[1] + dx[1] *  tempV[0];
 }
 
 
@@ -443,6 +443,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   dTubePointsContainerType dtransformedTubePoints;
   dtransformedTubePoints.reserve( this->m_ResolutionWeights.size() );
 
+  derivative.fill(0.0);
+
   typename TubeNetType::ChildrenListType * tubeList = GetTubes();
   typename TubeNetType::ChildrenListType::const_iterator tubeIterator;
   for( tubeIterator = tubeList->begin();
@@ -463,10 +465,6 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
         {
         transformedTubePoints.push_back( currentPoint );
         weightSum += *weightIterator;
-        InternalComputationValueType scalingRadius = pointIterator->GetRadius();
-        scalingRadius = std::max( scalingRadius, 0.5 );
-
-        const InternalComputationValueType scale = scalingRadius * m_Kappa;
 
         //! \todo: these should be CovariantVectors?
         Vector< InternalComputationValueType, TubeDimension > v1;
@@ -490,6 +488,11 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
         v1 = transformCopy->TransformVector( v1 );
         v2 = transformCopy->TransformVector( v2 );
 
+        InternalComputationValueType scalingRadius = pointIterator->GetRadius();
+        scalingRadius = std::max( scalingRadius, 0.5 );
+
+        const InternalComputationValueType scale = scalingRadius * m_Kappa;
+
         dXProj1 = this->ComputeThirdDerivatives( &v1, scale, currentPoint );
         dXProj2 = this->ComputeThirdDerivatives( &v2, scale, currentPoint );
 
@@ -506,6 +509,14 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
     }
   delete tubeList;
 
+  if( weightSum == NumericTraits< InternalComputationValueType >::Zero )
+    {
+    biasV = 0.0;
+    derivative.fill(0.0);
+    itkWarningMacro( << "GetDerivative : weightSum == 0 !" );
+    return;
+    }
+
   biasVI = vnl_matrix_inverse<double>( biasV ).inverse();
 
   tV( 0 ) = dPosition[0];
@@ -518,24 +529,9 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   dPosition[1] = tV( 1 );
   dPosition[2] = tV( 2 );
 
-  if( weightSum == NumericTraits< InternalComputationValueType >::Zero )
-    {
-    biasV = 0.0;
-    derivative.fill(0.0);
-    itkWarningMacro( << "GetDerivative : weightSum == 0 !" );
-    return;
-    }
-  else
-    {
-    biasV = 1.0 / weightSum * biasV;
-    }
-
-  biasVI = vnl_matrix_inverse<double>( biasV ).inverse();
-
 
   double dAngle[TubeDimension] = { 0.0, 0.0, 0.0 };
-  // ImageDimension correct here?
-  vnl_vector_fixed< InternalComputationValueType, ImageDimension > offsets;
+  vnl_vector_fixed< InternalComputationValueType, TubeDimension > offsets;
   for( unsigned int ii = 0; ii < TubeDimension; ++ii )
     {
     offsets[ii] = dPosition[ii];
@@ -554,21 +550,16 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
       }
 
     dXT = dXT * biasVI;
-    const OutputPointType & xT = *transformedTubePointsIt;
 
     InternalComputationValueType angleDelta[TubeDimension];
-    this->GetDeltaAngles( xT, dXT, offsets, angleDelta );
+    this->GetDeltaAngles( *transformedTubePointsIt, dXT, offsets, angleDelta );
     for( unsigned int ii = 0; ii < TubeDimension; ++ii )
       {
       dAngle[ii] += *weightIterator * angleDelta[ii];
       }
     ++weightIterator;
     ++dtransformedTubePointsIt;
-    }
-
-  for( unsigned int ii = 0; ii < TubeDimension; ++ii )
-    {
-    dAngle[ii] /= weightSum * dtransformedTubePoints.size();
+    ++transformedTubePointsIt;
     }
 
   derivative[0] = dAngle[0];
