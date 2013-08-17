@@ -48,13 +48,14 @@ set( tubeBaseFilteringTests_SRCS
   itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest.cxx
   itktubeAnisotropicHybridDiffusionImageFilterTest.cxx
   itktubeExtractTubePointsSpatialObjectFilterTest.cxx
+  itktubeSheetnessMeasureImageFilterTest.cxx
+  itktubeSheetnessMeasureImageFilterTest2.cxx
+  itktubeShrinkUsingMaxImageFilterTest.cxx
   itktubeStructureTensorRecursiveGaussianImageFilterTest.cxx
   itktubeStructureTensorRecursiveGaussianImageFilterTestNew.cxx
   itktubeSubSampleTubeSpatialObjectFilterTest.cxx
   itktubeSubSampleTubeTreeSpatialObjectFilterTest.cxx
-  itktubeTubeEnhancingDiffusion2DImageFilterTest.cxx
-  itktubeSheetnessMeasureImageFilterTest.cxx
-  itktubeSheetnessMeasureImageFilterTest2.cxx )
+  itktubeTubeEnhancingDiffusion2DImageFilterTest.cxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
@@ -79,14 +80,14 @@ add_test( tubeBaseFilteringPrintTest
   ${BASE_FILTERING_TESTS}
     tubeBaseFilteringPrintTest )
 
-add_test( itktubeSheetnessMeasureImageFilterTest
-  ${BASE_FILTERING_TESTS}
-    itktubeSheetnessMeasureImageFilterTest )
-
 Midas3FunctionAddTest( itktubeExtractTubePointsSpatialObjectFilterTest
   ${BASE_FILTERING_TESTS}
     itktubeExtractTubePointsSpatialObjectFilterTest
       MIDAS{VascularNetwork.tre.md5} )
+
+add_test( itktubeSheetnessMeasureImageFilterTest
+  ${BASE_FILTERING_TESTS}
+    itktubeSheetnessMeasureImageFilterTest )
 
 Midas3FunctionAddTest( itktubeSheetnessMeasureImageFilterTest2
   ${BASE_FILTERING_TESTS}
@@ -101,6 +102,15 @@ Midas3FunctionAddTest( itktubeSheetnessMeasureImageFilterTest3
       MIDAS{UltrasoundCroppedResampled.mha.md5}
       ${TEMP}/UltrasoundCroppedResampledSheetnessMeasure.mha
       ${TEMP}/UltrasoundCroppedResampledPrimaryEigenVector.mha 2.0 )
+
+Midas3FunctionAddTest( itktubeShrinkUsingMaxImageFilterTest
+  ${BASE_FILTERING_TESTS}
+    --compare MIDAS{itktubeShrinkUsingMaxImageFilterTest.mha.md5}
+      ${TEMP}/itktubeShrinkUsingMaxImageFilterTest.mha
+    itktubeShrinkUsingMaxImageFilterTest
+      MIDAS{im0001.crop.contrast.mha.md5}
+      ${TEMP}/itktubeShrinkUsingMaxImageFilterTest.mha
+      ${TEMP}/itktubeShrinkUsingMaxImageFilterTest-IndexImage.mha )
 
 Midas3FunctionAddTest( itktubeStructureTensorRecursiveGaussianImageFilterTest
   ${BASE_FILTERING_TESTS}

@@ -28,6 +28,7 @@ limitations under the License.
 #include "itktubeAnisotropicHybridDiffusionImageFilter.h"
 #include "itktubeExtractTubePointsSpatialObjectFilter.h"
 #include "itktubeSheetnessMeasureImageFilter.h"
+#include "itktubeShrinkUsingMaxImageFilter.h"
 #include "itktubeStructureTensorRecursiveGaussianImageFilter.h"
 #include "itktubeSymmetricEigenVectorAnalysisImageFilter.h"
 #include "itktubeTubeEnhancingDiffusion2DImageFilter.h"
@@ -106,6 +107,12 @@ int tubeBaseFilteringPrintTest( int itkNotUsed( argc ), char * itkNotUsed( argv 
     itk::tube::SheetnessMeasureImageFilter< float >::New();
   std::cout << "-------------SheetnessMeasureImageFilter"
     << sheetnessMeasureImageFilterObj << std::endl;
+
+  itk::tube::ShrinkUsingMaxImageFilter< ImageType, ImageType >::Pointer
+    shrinkUsingMaxImageFilterObj =
+    itk::tube::ShrinkUsingMaxImageFilter< ImageType, ImageType >::New();
+  std::cout << "-------------ShrinkUsingMaxImageFilter"
+    << shrinkUsingMaxImageFilterObj << std::endl;
 
   return EXIT_SUCCESS;
 }
