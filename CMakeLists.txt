@@ -303,10 +303,21 @@ option( USE_SYSTEM_IMAGE_VIEWER
   "Exclude ImageViewer from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_IMAGE_VIEWER )
 
-# Do we want to test TubeTK examples (via Python virtualenv) ?
-option( TubeTK_TEST_EXAMPLES
-  "Test TubeTK examples in virtual Python environment." OFF )
-mark_as_advanced( TubeTK_TEST_EXAMPLES )
+option( TubeTK_USE_PYTHON "Enable Python Support" OFF )
+if( TubeTK_USE_PYTHON )
+  # NumPy conversion support.
+  option( TubeTK_USE_NUMPY "Build NumPy conversion Python extension module." ON )
+  mark_as_advanced( TubeTK_USE_NUMPY )
+
+  # Test TubeTK examples via Python virtualenv.
+  option( TubeTK_USE_NOTEBOOKS
+    "Test TubeTK IPython Notebook examples in a Python virtualenv." ON )
+  mark_as_advanced( TubeTK_USE_NOTEBOOKS )
+
+  # PyQtGraph bridge support.
+  option( TubeTK_USE_PYQTGRAPH "Enable TubeTK PyQtGraph support." ON )
+  mark_as_advanced( TubeTK_USE_NOTEBOOKS )
+endif( TubeTK_USE_PYTHON )
 
 # ITK setup.
 option( USE_SYSTEM_ITK "Exclude ITK from superbuild and use an existing build."
@@ -323,10 +334,6 @@ option( TubeTK_USE_LIBSVM "Use LIBSVM to enable additional functionality." OFF )
 option( USE_SYSTEM_LIBSVM
   "Exclude LIBSVM from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_LIBSVM )
-
-# NumPy setup.
-option( TubeTK_USE_NUMPY "Build NumPy conversion Python extension module." OFF )
-mark_as_advanced( TubeTK_USE_NUMPY )
 
 # Parameter serializer setup.
 option( USE_SYSTEM_PARAMETER_SERIALIZER
@@ -526,7 +533,7 @@ endif( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_SLICER )
 include( TubeTKMacroInstallPlugins )
 
 # Test TubeTK IPython examples.
-if( TubeTK_TEST_EXAMPLES )
+if( TubeTK_USE_NOTEBOOKS )
   add_subdirectory( Examples )
 endif()
 
@@ -581,6 +588,11 @@ else( MSVC )
     list( APPEND ${VTK_DIR}/bin )
   endif( TubeTK_USE_VTK )
 endif( MSVC )
+
+# Setup Python VirtualEnv for testing.
+if( BUILD_TESTING AND TubeTK_USE_PYTHON )
+  include( CMake/TubeTKVirtualEnvSetup.cmake )
+endif( BUILD_TESTING AND TubeTK_USE_PYTHON )
 
 set( TubeTK_LIBRARY_DIRS
   ${TubeTK_EXECUTABLE_DIRS} )

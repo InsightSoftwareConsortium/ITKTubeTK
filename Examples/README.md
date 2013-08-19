@@ -7,12 +7,14 @@ Python modules) in the `pylab` environment for interactive processing.
 
 ## Quickstart
 
-The easiest way to get started with TubeTK examples is to enable `TubeTK_TEST_EXAMPLES` when configuring
-TubeTK. Only then, a Python virtual environment `PythonVirtualenv` will be automatically set up in 
-the `Temporary` folder of the TubeTK build directory (`TubeTK-build`). This virtual environment 
-**already** has all the required packages installed. To run the IPython notebooks from the `Examples`
-directory, you only need to set the `TubeTK_BINARY_DIR` variable and run the notebook, e.g., for 
-`MergeAdjacentImages` as
+The easiest way to get started with TubeTK examples is to enable
+`TubeTK_USE_PYTHON` and `TubeTK_USE_NOTEBOOKS` when configuring TubeTK. Only
+then, a Python virtual environment `PythonVirtualenv` will be automatically
+set up in the `Temporary` folder of the TubeTK build directory
+(`TubeTK-build`). This virtual environment **already** has all the required
+packages installed. To run the IPython notebooks from the `Examples`
+directory, you only need to set the `TubeTK_BINARY_DIR` variable and run the
+notebook, e.g., for `MergeAdjacentImages` as
 
 ```bash
 cd Examples/MergeAdjacentImages
@@ -32,8 +34,7 @@ run the TubeTK examples can be set up as follows:
 ```bash
 mkdir ~/TubeTK-virtualenv
 sudo pip install virtualenv
-virtualenv ~/TubeTK-virtualenv --no-site-packages
-~/TubeTK-virtualenv/bin/pip install ipython
+virtualenv ~/TubeTK-virtualenv --system-site-packages
 ~/TubeTK-virtualenv/bin/pip install ipython[zmq]
 ~/TubeTK-virtualenv/bin/pip install tornado
 ~/TubeTK-virtualenv/bin/pip install numpy
