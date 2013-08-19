@@ -160,15 +160,21 @@ int itktubeRecordOptimizationParameterProgressionCommandTest( int argc, char * a
   // Record the optimization parameter progression and write to a file.
   const unsigned int NumberOfParameters = CostFunctionType::SpaceDimension;
   typedef itk::tube::RecordOptimizationParameterProgressionCommand< NumberOfParameters >
-    RecordOptimizationParameterProgressionCommand;
-  RecordOptimizationParameterProgressionCommand::Pointer
+    RecordOptimizationParameterProgressionCommandType;
+  RecordOptimizationParameterProgressionCommandType::Pointer
     recordOptimizationParameterProgressionCommand =
-    RecordOptimizationParameterProgressionCommand::New();
+    RecordOptimizationParameterProgressionCommandType::New();
   recordOptimizationParameterProgressionCommand->SetFileName(
     optimizationParameterProgressionFile );
   optimizer->AddObserver( itk::StartEvent(), recordOptimizationParameterProgressionCommand );
   optimizer->AddObserver( itk::IterationEvent(), recordOptimizationParameterProgressionCommand );
   optimizer->AddObserver( itk::EndEvent(), recordOptimizationParameterProgressionCommand );
+  // some fake fixed parameters
+  RecordOptimizationParameterProgressionCommandType::FixedParametersType fixedParameters( 3 );
+  fixedParameters[0] = 33.45;
+  fixedParameters[1] = 123.4;
+  fixedParameters[2] = 746.2;
+  recordOptimizationParameterProgressionCommand->SetFixedParameters( fixedParameters );
 
   try
     {

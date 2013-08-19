@@ -29,7 +29,6 @@ limitations under the License.
 #include <itkEuler3DTransform.h>
 #include <itkGaussianDerivativeImageFunction.h>
 #include <itkImageToSpatialObjectMetric.h>
-#include <itkMinimumMaximumImageCalculator.h>
 
 namespace itk
 {
@@ -100,9 +99,6 @@ public:
     {
     return this->m_Transform->GetNumberOfParameters();
     }
-
-  /** Typedef for the Range calculator */
-  typedef MinimumMaximumImageCalculator<FixedImageType> RangeCalculatorType;
 
   /** Type used for representing point components  */
   typedef typename Superclass::CoordinateRepresentationType
@@ -181,7 +177,6 @@ private:
   ResolutionWeightFunctionType               m_ResolutionWeightFunction;
   InternalComputationValueType               m_ImageMin;
   InternalComputationValueType               m_ImageMax;
-  typename RangeCalculatorType::Pointer      m_RangeCalculator;
   double                                     m_Kappa;
   double                                     m_Extent;
 

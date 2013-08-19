@@ -63,9 +63,24 @@ template< unsigned int VNumberOfParameters, class TParametersValue >
 void
 RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
   TParametersValue >
-::Execute( Object *caller, const EventObject & event )
+::SetFixedParameters( const FixedParametersType & fixedParameters )
 {
-  this->Execute( (const itk::Object *)caller, event);
+  if( this->m_FixedParameters != fixedParameters )
+    {
+    this->m_FixedParameters = fixedParameters;
+    this->Modified();
+    }
+}
+
+
+template< unsigned int VNumberOfParameters, class TParametersValue >
+const typename RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
+      TParametersValue >::FixedParametersType &
+RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
+  TParametersValue >
+::GetFixedParameters() const
+{
+  return this->m_FixedParameters;
 }
 
 
@@ -83,14 +98,24 @@ template< unsigned int VNumberOfParameters, class TParametersValue >
 void
 RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
   TParametersValue >
+::Execute( Object *caller, const EventObject & event )
+{
+  this->Execute( (const itk::Object *)caller, event);
+}
+
+
+template< unsigned int VNumberOfParameters, class TParametersValue >
+void
+RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
+  TParametersValue >
 ::Execute( const Object * object, const EventObject & event )
 {
+  const SingleValuedNonLinearOptimizer * optimizer =
+    dynamic_cast< const SingleValuedNonLinearOptimizer * >( object );
   if( StartEvent().CheckEvent( &event ) )
     {
     this->m_CurrentIteration = 0;
 
-    const SingleValuedNonLinearOptimizer * optimizer =
-      dynamic_cast< const SingleValuedNonLinearOptimizer * >( object );
     if( object == NULL )
       {
       itkExceptionMacro( << "Could not cast to itk::Optimizer." );
@@ -127,8 +152,6 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
     {
     ++this->m_CurrentIteration;
 
-    const SingleValuedNonLinearOptimizer * optimizer =
-      dynamic_cast< const SingleValuedNonLinearOptimizer * >( object );
     if( object == NULL )
       {
       itkExceptionMacro( << "Could not cast to itk::Optimizer." );
@@ -175,23 +198,34 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
   TParametersValue >
 ::WriteParameterProgressionToFile( void ) const
 {
-  hsize_t dataspaceDimension[] = { this->m_ParameterProgression.size() };
-  const int dataspaceRank = 1;
-
-  H5::DataSpace dataSpace( dataspaceRank, dataspaceDimension );
-
   if( this->m_FileName.empty() )
     {
     itkExceptionMacro( << "FileName must be set." );
     }
   H5::H5File * file = new H5::H5File( this->m_FileName, H5F_ACC_TRUNC );
 
-  H5::DataSet * dataset = new H5::DataSet(
+  hsize_t iterationDataspaceDimension[] = { this->m_ParameterProgression.size() };
+  const int dataspaceRank = 1;
+  H5::DataSpace iterationDataSpace( dataspaceRank, iterationDataspaceDimension );
+  H5::DataSet * iterationDataset = new H5::DataSet(
     file->createDataSet( "OptimizationParameterProgression",
-      this->m_H5ParameterIterationType, dataSpace ) );
-  dataset->write( &(this->m_ParameterProgression[0]), this->m_H5ParameterIterationType );
+    this->m_H5ParameterIterationType, iterationDataSpace ) );
+  iterationDataset->write( &(this->m_ParameterProgression[0]),
+    this->m_H5ParameterIterationType );
 
-  delete dataset;
+  hsize_t fixedDataspaceDimension[] = { this->m_FixedParameters.Size() };
+  H5::DataSpace fixedDataSpace( dataspaceRank, fixedDataspaceDimension );
+
+  H5::DataSet * fixedDataset = new H5::DataSet( file->createDataSet( "FixedParameters",
+      H5::PredType::NATIVE_DOUBLE, fixedDataSpace ) );
+  if( fixedDataspaceDimension[0] > 0 )
+    {
+    fixedDataset->write( &(this->m_FixedParameters.GetElement(0)),
+      H5::PredType::NATIVE_DOUBLE );
+    }
+
+  delete iterationDataset;
+  delete fixedDataset;
   delete file;
 }
 

@@ -30,36 +30,24 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
-  ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
+ ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
 
-set( IMAGECOMPARE_EXE
-  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
+set( TEXTCOMPARE_EXE
+ ${TubeTK_BINARY_DIR}/bin/TextCompareCommand )
 
 # Test1
 Midas3FunctionAddTest( ${MODULE_NAME}-Test1
-  ${PROJ_EXE}
-  --parameterProgression ${TEMP}/${MODULE_NAME}Test1ParameterProgression.h5
-  MIDAS{Branch.n020.mha.md5}
-  MIDAS{tube.tre.md5}
-  ${TEMP}/${MODULE_NAME}Test1.mha )
+                ${PROJ_EXE}
+                  MIDAS{Branch-truth-new.tre.md5}
+                  --samplingFactor 20
+                  ${TEMP}/${MODULE_NAME}Test1.tre )
 
 # Test1-Compare
 Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
-            ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${MODULE_NAME}Test1.mha
-               -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
+                ${TEXTCOMPARE_EXE}
+                  -t ${TEMP}/${MODULE_NAME}Test1.tre
+                  -b MIDAS{${MODULE_NAME}Test1.tre.md5}
+                  -d 0.01 )
+
 set_property( TEST ${MODULE_NAME}-Test1-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
-
-if( TubeTK_USE_NUMPY )
-  configure_file( ${MODULE_NAME}Tuner.json.in
-    ${TEMP}/${MODULE_NAME}Tuner.json )
-  find_package( PythonInterp REQUIRED )
-
-  Midas3FunctionAddTest( ${MODULE_NAME}TunerTest
-    ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../${MODULE_NAME}Tuner.py
-      --non-interactive
-      ${TEMP}/${MODULE_NAME}Tuner.json
-    MIDAS_FETCH_ONLY{Branch.n020.mha.md5}
-    MIDAS_FETCH_ONLY{tube.tre.md5} )
-endif( TubeTK_USE_NUMPY )
+           APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )

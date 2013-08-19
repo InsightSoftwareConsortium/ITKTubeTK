@@ -96,14 +96,20 @@ Midas3FunctionAddTest( itktubeTubeToTubeTransformFilterTest
   0.2 0.1 0.1 5 -5 5
   0 )
 
+Midas3FunctionAddTest( itktubeImageToTubeRigidRegistrationTest
+  ${BASE_REGISTRATION_TESTS}
+  itktubeImageToTubeRigidRegistrationTest
+  MIDAS{Branch.n020.mha.md5}
+  MIDAS{tube.tre.md5}
+  ${TEMP}/itkTubeImageToTubeRigidRegistrationOutputTube.tre
+  ${TEMP}/itkTubeImageToTubeRigidRegistrationOutputImage.mha )
+
 Midas3FunctionAddTest( itktubeImageToTubeRigidRegistrationPerformanceTest
   ${BASE_REGISTRATION_TESTS}
   itktubeImageToTubeRigidRegistrationPerformanceTest
   MIDAS{Branch.n020.mha.md5}
   MIDAS{Branch-truth-new.tre.md5}
   ${TEMP}/itkTubeImageToTubeRigidRegistrationPerformance )
-set_property( TEST itktubeImageToTubeRigidRegistrationPerformanceTest
-  APPEND PROPERTY DEPENDS itktubeTubeToTubeTransformFilterTest )
 
 if( TubeTK_USE_VTK )
   Midas3FunctionAddTest(
@@ -210,13 +216,13 @@ Midas3FunctionAddTest( itktubeImageToTubeRigidMetricTest1
   ${BASE_REGISTRATION_TESTS} itktubeImageToTubeRigidMetricTest
   MIDAS{SyntheticVesselTubeImage.mha.md5}
   MIDAS{SyntheticVesselTubeManuallyModified.tre.md5}
-  0.874634 )
+  2.30028 )
 
 Midas3FunctionAddTest( itktubeImageToTubeRigidMetricTest2
   ${BASE_REGISTRATION_TESTS} itktubeImageToTubeRigidMetricTest
   MIDAS{SyntheticTransformedVesselTubeImage.mha.md5}
   MIDAS{SyntheticVesselTubeManuallyModified.tre.md5}
-  -1.35168 )
+  0.0739628 )
 
 Midas3FunctionAddTest( itktubeImageToTubeRigidMetricPerformanceTest
   ${BASE_REGISTRATION_TESTS} itktubeImageToTubeRigidMetricPerformanceTest

@@ -23,10 +23,15 @@ limitations under the License.
 
 #include "itktubeImageToTubeRigidRegistration.h"
 #include "itktubeRecordOptimizationParameterProgressionCommand.h"
+#include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
+#include "itktubeSubSampleTubeTreeSpatialObjectFilterSerializer.h"
 #include "itktubeTubeToTubeTransformFilter.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
+
+#include <itkJsonCppArchiver.h>
+#include <itkGradientDescentOptimizerSerializer.h>
 
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -56,12 +61,28 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter( "SampleCLIApplication",
+  tube::CLIProgressReporter    progressReporter( "RegisterImageToTubesUsingRigidTransform",
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  enum { Dimension = 3 };
-  typedef double            FloatType;
+#ifdef SlicerExecutionModel_USE_SERIALIZER
+  // If SlicerExecutionModel was built with Serializer support, there is
+  // automatically a parametersToRestore argument.  This argument is a JSON
+  // file that has values for the CLI parameters, but it can also hold other
+  // entries without causing any issues.
+  Json::Value parametersRoot;
+  if( !parametersToRestore.empty() )
+    {
+    // Parse the Json.
+    std::ifstream stream( parametersToRestore.c_str() );
+    Json::Reader reader;
+    reader.parse( stream, parametersRoot );
+    stream.close();
+    }
+#endif
+
+  const unsigned int Dimension = 3;
+  typedef double     FloatType;
 
   typedef itk::VesselTubeSpatialObject< Dimension >      TubeType;
   typedef itk::GroupSpatialObject< Dimension >           TubeNetType;
@@ -75,7 +96,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::tube::TubeToTubeTransformFilter< TransformType, Dimension >
                                                          TubeTransformFilterType;
   typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
-                                                         SubSampleTubeNetFilterType;
+                                                         SubSampleTubeTreeFilterType;
 
   timeCollector.Start("Load data");
   typename ImageReaderType::Pointer reader = ImageReaderType::New();
@@ -110,13 +131,33 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   timeCollector.Start("Sub-sample data");
-  typename SubSampleTubeNetFilterType::Pointer subSampleTubeNetFilter =
-    SubSampleTubeNetFilterType::New();
-  subSampleTubeNetFilter->SetInput( vesselReader->GetGroup() );
-  subSampleTubeNetFilter->SetSampling( 100 );
+  typename SubSampleTubeTreeFilterType::Pointer subSampleTubeTreeFilter =
+    SubSampleTubeTreeFilterType::New();
+  subSampleTubeTreeFilter->SetInput( vesselReader->GetGroup() );
+  subSampleTubeTreeFilter->SetSampling( 100 );
+#ifdef SlicerExecutionModel_USE_SERIALIZER
+  if( !parametersToRestore.empty() )
+    {
+    // If the Json file has entries that describe the parameters for an
+    // itk::tube::SubSampleTubeTreeSpatialObjectFilter, read them in, and set them on our
+    // instance.
+    if( parametersRoot.isMember( "SubSampleTubeTree" ) )
+      {
+      Json::Value & subSampleTubeTreeFilterValue = parametersRoot["SubSampleTubeTree"];
+      typedef itk::tube::SubSampleTubeTreeSpatialObjectFilterSerializer< SubSampleTubeTreeFilterType >
+        SerializerType;
+      SerializerType::Pointer serializer = SerializerType::New();
+      serializer->SetTargetObject( subSampleTubeTreeFilter );
+      itk::JsonCppArchiver::Pointer archiver =
+        dynamic_cast< itk::JsonCppArchiver * >( serializer->GetArchiver() );
+      archiver->SetJsonValue( &subSampleTubeTreeFilterValue );
+      serializer->DeSerialize();
+      }
+    }
+#endif
   try
     {
-    subSampleTubeNetFilter->Update();
+    subSampleTubeTreeFilter->Update();
     }
   catch( itk::ExceptionObject & err )
     {
@@ -172,7 +213,7 @@ int DoIt( int argc, char * argv[] )
     RegistrationMethodType::New();
 
   registrationMethod->SetFixedImage( currentImage );
-  registrationMethod->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
+  registrationMethod->SetMovingSpatialObject( subSampleTubeTreeFilter->GetOutput() );
 
   // Set Optimizer parameters.
   typename RegistrationMethodType::OptimizerType::Pointer optimizer =
@@ -184,6 +225,25 @@ int DoIt( int argc, char * argv[] )
     gradientDescentOptimizer->SetLearningRate( 0.1 );
     gradientDescentOptimizer->SetNumberOfIterations( 1000 );
     }
+#ifdef SlicerExecutionModel_USE_SERIALIZER
+  if( !parametersToRestore.empty() )
+    {
+    // If the Json file has entries that describe the parameters for an
+    // itk::GradientDescentOptimizer, read them in, and set them on our
+    // gradientDescentOptimizer instance.
+    if( parametersRoot.isMember( "GradientDescentOptimizer" ) )
+      {
+      Json::Value & gradientDescentOptimizerValue = parametersRoot["GradientDescentOptimizer"];
+      typedef itk::GradientDescentOptimizerSerializer SerializerType;
+      SerializerType::Pointer serializer = SerializerType::New();
+      serializer->SetTargetObject( gradientDescentOptimizer );
+      itk::JsonCppArchiver::Pointer archiver =
+        dynamic_cast< itk::JsonCppArchiver * >( serializer->GetArchiver() );
+      archiver->SetJsonValue( &gradientDescentOptimizerValue );
+      serializer->DeSerialize();
+      }
+    }
+#endif
 
   // TODO: This is hard-coded now, which is sufficient since
   // ImageToTubeRigidMetric only uses a Euler3DTransform.  Will need to adjust
@@ -199,7 +259,6 @@ int DoIt( int argc, char * argv[] )
     recordParameterProgressionCommand->SetFileName( parameterProgression );
     optimizer->AddObserver( itk::StartEvent(), recordParameterProgressionCommand );
     optimizer->AddObserver( itk::IterationEvent(), recordParameterProgressionCommand );
-    optimizer->AddObserver( itk::EndEvent(), recordParameterProgressionCommand );
     }
 
   try
@@ -216,13 +275,17 @@ int DoIt( int argc, char * argv[] )
     }
   progress = 0.9;
   progressReporter.Report( progress );
+
+  TransformType* outputTransform =
+    dynamic_cast<TransformType *>(registrationMethod->GetTransform());
+  outputTransform->SetParameters( registrationMethod->GetLastTransformParameters() );
+  std::ostringstream parametersMessage;
+  parametersMessage << "Transform Parameters: " << registrationMethod->GetLastTransformParameters();
+  tube::InformationMessage( parametersMessage.str() );
   timeCollector.Stop("Register image to tube");
 
 
   timeCollector.Start("Save data");
-  TransformType* outputTransform =
-    dynamic_cast<TransformType *>(registrationMethod->GetTransform());
-  outputTransform->SetParameters( registrationMethod->GetLastTransformParameters() );
 
   typename TubeTransformFilterType::Pointer transformFilter =
     TubeTransformFilterType::New();
@@ -239,6 +302,13 @@ int DoIt( int argc, char * argv[] )
       + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
+    }
+
+  if( !parameterProgression.empty() )
+    {
+    recordParameterProgressionCommand->SetFixedParameters(
+      outputTransform->GetFixedParameters() );
+    recordParameterProgressionCommand->WriteParameterProgressionToFile();
     }
 
   typedef itk::SpatialObjectToImageFilter<TubeNetType, ImageType>

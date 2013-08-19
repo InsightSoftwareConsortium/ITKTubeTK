@@ -43,11 +43,13 @@ set( BASE_PARAMETERSERIALIZER_HEADER_TEST
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseParameterSerializerTests_SRCS
-  USTK/itkAcousticImpulseResponseImageFilterSerializerTest.cxx )
+  USTK/itkAcousticImpulseResponseImageFilterSerializerTest.cxx
+  Filtering/itktubeSubSampleTubeTreeSpatialObjectFilterSerializerTest.cxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
   ${TubeTK_SOURCE_DIR}/Base/USTK
+  ${TubeTK_SOURCE_DIR}/Base/Filtering
   ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer
   ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Filtering
   ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/USTK )
@@ -76,3 +78,8 @@ Midas3FunctionAddTest( itkAcousticImpulseResponseImageFilterSerializerTestBaseli
   ${TubeTK_BINARY_DIR}/bin/JsonCompareCommand
   -t ${TEMP}/itkAcousticImpulseResponseImageFilterSerializerTest.json
   -b MIDAS{itkAcousticImpulseResponseImageFilterSerializerTest.json.md5} )
+
+add_test( itktubeSubSampleTubeTreeSpatialObjectFilterSerializerTest
+  ${BASE_PARAMETERSERIALIZER_TESTS}
+  itktubeSubSampleTubeTreeSpatialObjectFilterSerializerTest
+  ${TEMP}/itktubeSubSampleTubeTreeSpatialObjectFilterSerializerTest.json )

@@ -26,4 +26,5 @@ limitations under the License.
 void RegisterTests( void )
 {
   REGISTER_TEST( itkAcousticImpulseResponseImageFilterSerializerTest );
+  REGISTER_TEST( itktubeSubSampleTubeTreeSpatialObjectFilterSerializerTest );
 }

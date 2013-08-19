@@ -59,7 +59,6 @@ int itktubeImageToTubeRigidMetricPerformanceTest( int argc, char * argv[] )
 
   typedef itk::tube::ImageToTubeRigidMetric<Image3DType, TubeNetType, TubeType >
                                                             MetricType;
-  typedef itk::Array<double>                                ParametersType;
   typedef MetricType::InterpolatorType                      InterpolatorType;
   typedef MetricType::TransformType                         TransformType;
 

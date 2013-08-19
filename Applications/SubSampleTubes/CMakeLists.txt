@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-set( MODULE_NAME RegisterImageToTubesUsingRigidTransform )
+set( MODULE_NAME SubSampleTubes )
 project( ${MODULE_NAME} )
 
 if( NOT TubeTK_SOURCE_DIR )
@@ -31,9 +31,6 @@ endif( NOT TubeTK_SOURCE_DIR )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
-if( SlicerExecutionModel_USE_SERIALIZER )
-  add_definitions( -DSlicerExecutionModel_USE_SERIALIZER )
-endif()
 
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
@@ -41,14 +38,11 @@ include( ${USE_ITK_FILE} )
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} ${ParameterSerializer_LIBRARIES}
+  TARGET_LIBRARIES ${ITK_LIBRARIES}
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/CLI
     ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Filtering
-    ${TubeTK_SOURCE_DIR}/Base/Numerics
-    ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Filtering
-    ${TubeTK_SOURCE_DIR}/Base/Registration )
+    ${TubeTK_SOURCE_DIR}/Base/Filtering )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

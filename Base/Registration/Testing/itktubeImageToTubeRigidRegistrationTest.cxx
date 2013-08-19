@@ -78,7 +78,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   for( unsigned int ii = 0; ii < Dimension; ++ii )
     {
     blurFilters[ii] = GaussianBlurFilterType::New();
-    blurFilters[ii]->SetSigma( 3.0 );
+    blurFilters[ii]->SetSigma( 2.0 );
     blurFilters[ii]->SetZeroOrder();
     blurFilters[ii]->SetDirection( ii );
     }
@@ -125,21 +125,11 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  double initialPosition[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-  if(argc > 10)
-    {
-    for(unsigned int ii = 0; ii < 6; ++ii)
-      {
-      initialPosition[ii] = std::atof( argv[5+ii] );
-      }
-    }
-
   RegistrationMethodType::Pointer registrationMethod =
     RegistrationMethodType::New();
 
   registrationMethod->SetFixedImage( blurFilters[2]->GetOutput() );
   registrationMethod->SetMovingSpatialObject( subSampleTubeNetFilter->GetOutput() );
-  registrationMethod->SetInitialPosition( initialPosition );
 
   // Set Optimizer parameters.
   RegistrationMethodType::OptimizerType::Pointer optimizer =
@@ -149,7 +139,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   if( gradientDescentOptimizer )
     {
     gradientDescentOptimizer->SetLearningRate( 0.1 );
-    gradientDescentOptimizer->SetNumberOfIterations( 1000 );
+    gradientDescentOptimizer->SetNumberOfIterations( 20 );
     }
 
   try
@@ -167,17 +157,12 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   //! \todo validate against known real results.
   TransformType::Pointer outputTransform =
     dynamic_cast<TransformType *>(registrationMethod->GetTransform());
-  outputTransform->SetParameters( registrationMethod->GetLastTransformParameters() );
+  const TransformType::ParametersType lastParameters =
+    registrationMethod->GetLastTransformParameters();
+  outputTransform->SetParameters( lastParameters );
 
   TransformType::Pointer inverseTransform = TransformType::New();
   outputTransform->GetInverse( inverseTransform );
-
-  std::cout << "Registration result: ";
-  for(unsigned int ii = 0; ii < 6; ++ii)
-    {
-    std::cout << outputTransform->GetParameters().GetElement(ii) << " ";
-    }
-  std::cout << std::endl;
 
   itk::Matrix< double, Dimension, Dimension > rotationMatrix;
   itk::Vector< double, Dimension > translation;
@@ -196,6 +181,24 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   std::cout << "Translations: " << std::endl;
   std::cout << indent << translation[0] << " "
     << translation[1] << " " << translation[2] << std::endl;
+
+  double knownResult[] = { -0.071,
+    -0.115,
+    -0.1925,
+    -2.522,
+    2.563,
+    -6.09 };
+  std::cout << "Parameters: " << std::endl;
+  for(unsigned int ii = 0; ii < 6; ++ii)
+    {
+    std::cout << "Obtained: " << lastParameters[ii] << std::endl;
+    std::cout << "Known:    " << knownResult[ii] << std::endl;
+    if( std::abs( ( lastParameters[ii] - knownResult[ii] )/ knownResult[ii] ) > 0.1 )
+      {
+      std::cerr << "Registration did not convert to correct parameter!" << std::endl;
+      return EXIT_FAILURE;
+      }
+    }
 
   // Transform the input tubes.
   TubeTransformFilterType::Pointer transformFilter = TubeTransformFilterType::New();
