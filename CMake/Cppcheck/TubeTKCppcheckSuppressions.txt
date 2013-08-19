@@ -1,10 +1,10 @@
-unusedFunction:*/Applications/DeblendTomosynthesisSlicesUsingPrior/DeblendTomosynthesisSlicesUsingPrior.cxx:120
-unusedFunction:*/Applications/SegmentConnectedComponentsUsingParzenPDFs/SegmentConnectedComponentsUsingParzenPDFs.cxx:56
+unusedFunction:*/Applications/DeblendTomosynthesisSlicesUsingPrior/DeblendTomosynthesisSlicesUsingPrior.cxx:113
+unusedFunction:*/Applications/SegmentConnectedComponentsUsingParzenPDFs/SegmentConnectedComponentsUsingParzenPDFs.cxx:49
 unusedFunction:*/Base/CLI/Testing/tubeBaseCLITests.cxx:26
-unusedFunction:*/Base/IO/itktubeMetaLDA.cxx:251
-unusedFunction:*/Base/IO/itktubeMetaLDA.cxx:323
+unusedFunction:*/Base/IO/itktubeMetaLDA.cxx:249
+unusedFunction:*/Base/IO/itktubeMetaLDA.cxx:321
 unusedFunction:*/Base/ObjectDocuments/tubeMetaObjectDocument.cxx
 unusedFunction:*/Base/ObjectDocuments/tubeOptionList.cxx
 unusedFunction:*/Base/Python/tubetk/_tubetk_numpy.cxx:316
-unusedFunction:*/Base/Registration/Testing/itktubeAnisotropicDiffusiveRegistrationGenerateTestingImages.cxx:224
+unusedFunction:*/Base/Registration/Testing/itktubeAnisotropicDiffusiveRegistrationGenerateTestingImages.cxx:216
 variableScope:*/Applications/ConvertDICOMSeriesToImages/ConvertDICOMSeriesToImages.cxx:461
