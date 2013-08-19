@@ -25,54 +25,5 @@ include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
-find_package( PythonInterp )
-
-# This sets the virtual environment directory
-set( PythonVirtualenvHome ${TubeTK_BINARY_DIR}/Temporary/PythonVirtualenv )
-
-# Make the original Python executable explicit
-set( ORIGINAL_PYTHON_EXECUTABLE ${PYTHON_EXECUTABLE} )
-
-# Temporarily change the Python executable to the virtual environment one
-if( WIN32 )
-  set( PYTHON_TESTING_EXECUTABLE ${PythonVirtualenvHome}/Scripts/python )
-else( )
-  set( PYTHON_TESTING_EXECUTABLE ${PythonVirtualenvHome}/bin/python )
-endif()
-
-configure_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/PythonVirtualEnvInstall.cmake.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/PythonVirtualEnvInstall.cmake"
-  @ONLY )
-  
-# Install the virtual environment
-execute_process( COMMAND ${CMAKE_COMMAND} -P 
-  "${CMAKE_CURRENT_BINARY_DIR}/PythonVirtualEnvInstall.cmake" )
-
-# Setup IPython notebook driver  
-set( NOTEBOOK_TEST_DRIVER 
-  ${TubeTK_SOURCE_DIR}/Utilities/Python/EvaluateIPythonNotebook.py)
-
-# We need SimpleITK (almost surely) in all examples
-execute_process( COMMAND ${PythonVirtualenvHome}/bin/easy_install SimpleITK )
-
-# These are the most commonly required Python packages
-set( PYTHON_TESTING_MODULES 
-  tornado 
-  ipython 
-  ipython[zmq]
-  jinja2
-  numpy
-  matplotlib )
-
-# Install Python packages via pip install in the virtual environment 
-foreach ( MODULE ${PYTHON_TESTING_MODULES} )
-  execute_process( COMMAND ${PythonVirtualenvHome}/bin/pip install ${MODULE} )
-endforeach()
-  
 # Add notebook/example directories
 add_subdirectory( MergeAdjacentImages )
-
-
-
-

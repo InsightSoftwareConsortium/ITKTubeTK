@@ -1,0 +1,61 @@
+get_filename_component( activate_full "@PythonVirtualenvHome@/bin/activate"
+  ABSOLUTE )
+if( NOT EXISTS "${activate_full}" )
+  find_program( VIRTUALENV NAMES virtualenv virtualenv.py )
+  if( VIRTUALENV-NOTFOUND )
+    set( virtualenv_script
+      "@TubeTK_SOURCE_DIR@/Utilities/Python/virtualenv/virtualenv.py" )
+  else( VIRTUALENV-NOTFOUND )
+    set( virtualenv_script "${VIRTUALENV}" )
+  endif( VIRTUALENV-NOTFOUND )
+  # Create the virtual environment.
+  execute_process( COMMAND "@PYTHON_EXECUTABLE@"
+    "${virtualenv_script}"
+      "--python=@PYTHON_EXECUTABLE@"
+      "--system-site-packages"
+      "@PythonVirtualenvHome@"
+    RESULT_VARIABLE failed
+    ERROR_VARIABLE error )
+  if( failed )
+    message( ERROR ${error} )
+  endif()
+else( NOT EXISTS "${activate_full}" )
+  message( STATUS "Testing virtualenv found at @PythonVirtualenvHome@" )
+endif( NOT EXISTS "${activate_full}" )
+
+set( installed_packages_file
+  "@TubeTK_BINARY_DIR@/CMakeFiles/CMakeTmp/InstalledVirtualEnvPackages.txt" )
+if( NOT EXISTS ${installed_packages_file} )
+  file( WRITE ${installed_packages_file} "" )
+endif( NOT EXISTS ${installed_packages_file} )
+file( READ ${installed_packages_file} installed_packages )
+
+# We need SimpleITK (almost surely) in all examples
+string( FIND "${installed_packages}" SimpleITK SimpleITK_installed )
+if( ${SimpleITK_installed} EQUAL -1 )
+  message( STATUS "Installing SimpleITK into virtualenv" )
+  execute_process( COMMAND "@PythonVirtualenvHome@/bin/easy_install" SimpleITK
+    RESULT_VARIABLE failed
+    ERROR_VARIABLE error )
+  if( failed )
+    message( ERROR ${error} )
+  else( failed )
+    file( APPEND ${installed_packages_file} "SimpleITK\n" )
+  endif( failed )
+endif( ${SimpleITK_installed} EQUAL -1 )
+
+foreach( package @PYTHON_TESTING_MODULES@ )
+  string( FIND "${installed_packages}" ${package} package_installed )
+  if( ${package_installed} EQUAL -1 )
+    message( STATUS "Installing ${package} into virtualenv" )
+    execute_process( COMMAND "@PythonVirtualenvHome@/bin/pip"
+        install ${package}
+      RESULT_VARIABLE failed
+      ERROR_VARIABLE error )
+    if( failed )
+      message( ERROR ${error} )
+    else( failed )
+      file( APPEND ${installed_packages_file} "${package}\n" )
+    endif( failed )
+  endif( ${package_installed} EQUAL -1 )
+endforeach()

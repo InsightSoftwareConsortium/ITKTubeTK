@@ -1,12 +1,11 @@
 """EvaluateIPythonNotebook.py
 
-   This is a modified version of minrk's script 
-   
+   This is a modified version of minrk's script
+
    https://gist.github.com/minrk/2620876
-   
+
    to quickly evaluate an IPython notebook and check for failures.
 """
-
 
 import os
 import sys
@@ -24,11 +23,11 @@ from IPython.nbformat.current import reads, NotebookNode
 
 def run_notebook(nb):
     """Run IPython Notebook.
-    
+
     Paramters:
     ----------
     nb : IPython Notebook in JSON format.
-    
+
     Returns:
     --------
     ret : int
@@ -48,7 +47,7 @@ def run_notebook(nb):
     # simple ping:
     shell.execute("pass")
     reply = shell.get_msg()
-    
+
     cells = 0
     failures = 0
     for ws in nb.worksheets:
@@ -76,21 +75,18 @@ def run_notebook(nb):
     kc.stop_channels()
     km.shutdown_kernel()
     del km
-    
+
     if failures:
         return 1
     return 0
-    
-    
+
+
 if __name__ == '__main__':
     # opens the IPython notebook
     with open(sys.argv[1]) as f:
         nb = reads(f.read(), 'json')
-    
+
     # since this code is typically used for testing IPython notebooks, the
     # TubeTK path is passed along from cmake
     os.environ['TubeTK_BINARY_DIR'] = sys.argv[2]
     sys.exit(run_notebook(nb))
-   
-        
-        

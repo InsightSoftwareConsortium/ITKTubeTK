@@ -22,9 +22,9 @@
 ##############################################################################
 
 Midas3FunctionAddTest( NAME Python.MergeAdjacentImages
-  COMMAND ${PYTHON_TESTING_EXECUTABLE} 
+  COMMAND ${PYTHON_TESTING_EXECUTABLE}
     "${NOTEBOOK_TEST_DRIVER}"
     "${CMAKE_CURRENT_SOURCE_DIR}/../MergeAdjacentImages.ipynb"
     "${TubeTK_BINARY_DIR}"
-    MIDAS_FETCH_ONLY{ES0015_Large.mha.md5} 
+    MIDAS_FETCH_ONLY{ES0015_Large.mha.md5}
     MIDAS_FETCH_ONLY{ES0015_Large_Wo_offset.mha.md5} )
