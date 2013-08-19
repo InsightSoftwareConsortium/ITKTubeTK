@@ -35,7 +35,7 @@ set( PROJ_EXE
 set( IMAGECOMPARE_EXE
   ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
 
-set( imageCompareTolerance 0.000001 )
+set( imageCompareTolerance 0.00001 )
 
 # Test1
 Midas3FunctionAddTest( ${MODULE_NAME}-TestSphereNoReg
