@@ -51,15 +51,14 @@ Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
 set_property( TEST ${MODULE_NAME}-Test1-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
-if( TubeTK_USE_NUMPY )
+if( TubeTK_USE_PYQTGRAPH )
   configure_file( ${MODULE_NAME}Tuner.json.in
     ${TEMP}/${MODULE_NAME}Tuner.json )
-  find_package( PythonInterp REQUIRED )
 
   Midas3FunctionAddTest( ${MODULE_NAME}TunerTest
-    ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../${MODULE_NAME}Tuner.py
+    ${PYTHON_TESTING_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../${MODULE_NAME}Tuner.py
       --non-interactive
       ${TEMP}/${MODULE_NAME}Tuner.json
     MIDAS_FETCH_ONLY{Branch.n020.mha.md5}
     MIDAS_FETCH_ONLY{tube.tre.md5} )
-endif( TubeTK_USE_NUMPY )
+endif( TubeTK_USE_PYQTGRAPH )
