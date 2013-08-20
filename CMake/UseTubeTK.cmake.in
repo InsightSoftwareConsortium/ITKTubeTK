@@ -65,6 +65,7 @@ set( QT_QMAKE_EXECUTABLE "@QT_QMAKE_EXECUTABLE@" )
 
 set( BOOST_ROOT "@BOOST_ROOT@" )
 set( CTK_DIR "@CTK_DIR@" )
+set( CPPCHECK_EXECUTABLE "@CPPCHECK_EXECUTABLE@" )
 set( GenerateCLP_DIR "@GenerateCLP_DIR@" )
 set( ImageViewer_DIR "@ImageViewer_DIR@" )
 set( ITK_DIR "@ITK_DIR@" )

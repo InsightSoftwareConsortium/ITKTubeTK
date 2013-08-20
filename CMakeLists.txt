@@ -100,25 +100,6 @@ if( BUILD_DOCUMENTATION )
   endif( TubeTK_USE_DOXYGEN )
 endif( BUILD_DOCUMENTATION )
 
-#  Cppcheck setup.
-option( TubeTK_USE_CPPCHECK "Use Cppcheck to enable additional tests." OFF )
-mark_as_advanced( TubeTK_USE_CPPCHECK )
-if( TubeTK_USE_CPPCHECK )
-  list( APPEND CMAKE_MODULE_PATH "${TubeTK_SOURCE_DIR}/CMake/Cppcheck" )
-  include( FindCppcheck )
-  find_package( Cppcheck REQUIRED )
-  set( cppcheck_paths_to_check "${TubeTK_SOURCE_DIR}/Applications"
-    "${TubeTK_SOURCE_DIR}/Base" )
-  set( cppcheck_suppressions_file
-    "${TubeTK_SOURCE_DIR}/CMake/Cppcheck/TubeTKCppcheckSuppressions.txt" )
-  set( cppcheck_cmd_prefix "${CPPCHECK_EXECUTABLE}" -q --xml --suppressions
-    "${cppcheck_suppressions_file}" )
-  add_test( Cppcheck
-    ${cppcheck_cmd_prefix} --enable=all ${cppcheck_paths_to_check} )
-  set_tests_properties( Cppcheck
-    PROPERTIES FAIL_REGULAR_EXPRESSION "error file=" )
-endif( TubeTK_USE_CPPCHECK )
-
 # KWStyle setup.
 option( USE_SYSTEM_KWSTYLE
   "Exclude KWStyle from superbuild and use an existing build." OFF )
@@ -290,6 +271,17 @@ if( TubeTK_USE_BOOST )
   endif( NOT Boost_FOUND )
 endif( TubeTK_USE_BOOST )
 
+#  Cppcheck setup.
+option( TubeTK_USE_CPPCHECK "Use Cppcheck to enable additional tests." OFF )
+set( USE_SYSTEM_CPPCHECK_DEFAULT OFF )
+if( WIN32 )
+  set( USE_SYSTEM_CPPCHECK_DEFAULT ON )
+endif( WIN32 )
+option( USE_SYSTEM_CPPCHECK
+  "Exclude Cppcheck from superbuild and use an existing build."
+  ${USE_SYSTEM_CPPCHECK_DEFAULT} )
+mark_as_advanced( USE_SYSTEM_CPPCHECK )
+
 # CTK setup.
 option( TubeTK_USE_CTK "Use CTK to enable additional functionality." OFF )
 option( USE_SYSTEM_CTK
@@ -441,6 +433,21 @@ set( TubeTK_INSTALL_PLUGINS_CACHE_DIR "${TubeTK_INSTALL_LIB_DIR}/CACHE" )
 set( TubeTK_INSTALL_PLUGINS_INCLUDE_DIR "${TubeTK_INSTALL_INCLUDE_DIR}" )
 set( TubeTK_INSTALL_PLUGINS_LIB_DIR "${TubeTK_INSTALL_LIB_DIR}" )
 set( TubeTK_INSTALL_PLUGINS_SHARE_DIR "${TubeTK_INSTALL_SHARE_DIR}" )
+
+if( TubeTK_USE_CPPCHECK )
+  list( APPEND CMAKE_MODULE_PATH "${TubeTK_SOURCE_DIR}/CMake/Cppcheck" )
+  find_package( Cppcheck REQUIRED )
+  set( CPPCHECK_PATHS_TO_CHECK "${TubeTK_SOURCE_DIR}/Applications"
+    "${TubeTK_SOURCE_DIR}/Base" )
+  set( CPPCHECK_SUPPRESSIONS_FILE
+    "${TubeTK_SOURCE_DIR}/CMake/Cppcheck/TubeTKCppcheckSuppressions.txt" )
+  set( CPPCHECK_COMMAND_PREFIX "${CPPCHECK_EXECUTABLE}" -q --xml --suppressions
+    "${CPPCHECK_SUPPRESSIONS_FILE}" )
+  add_test( Cppcheck
+    ${CPPCHECK_COMMAND_PREFIX} --enable=all ${CPPCHECK_PATHS_TO_CHECK} )
+  set_tests_properties( Cppcheck
+    PROPERTIES FAIL_REGULAR_EXPRESSION "error file=" )
+endif( TubeTK_USE_CPPCHECK )
 
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )

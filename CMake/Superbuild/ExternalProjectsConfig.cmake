@@ -21,6 +21,10 @@
 #
 ##############################################################################
 
+set( Cppcheck_GIT_REPOSITORY
+  ${git_protocol}://github.com/danmar/cppcheck.git )
+set( Cppcheck_GIT_TAG origin/master )
+
 set( CTK_GIT_REPOSITORY ${git_protocol}://github.com/commontk/CTK.git )
 set( CTK_GIT_TAG 2040148f83ec7841f6f577da75e519410c3315a0 )
 
