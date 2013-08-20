@@ -89,6 +89,10 @@ endif( TubeTK_USE_SLICER )
 set( TubeTK_DEPENDENCIES "ITK" "JsonCpp" "ParameterSerializer"
   "SlicerExecutionModel" )
 
+if( TubeTK_USE_VTK )
+  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "VTK" )
+endif( TubeTK_USE_VTK )
+
 if( TubeTK_USE_CPPCHECK )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "Cppcheck" )
 endif( TubeTK_USE_CPPCHECK )
@@ -117,10 +121,6 @@ endif( TubeTK_USE_LIBSVM )
 if( TubeTK_USE_SIMPLEITK )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "SimpleITK" )
 endif( TubeTK_USE_SIMPLEITK )
-
-if( TubeTK_USE_VTK )
-  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "VTK" )
-endif( TubeTK_USE_VTK )
 
 set( TubeTK_EXTERNAL_PROJECTS_ARGS )
 
