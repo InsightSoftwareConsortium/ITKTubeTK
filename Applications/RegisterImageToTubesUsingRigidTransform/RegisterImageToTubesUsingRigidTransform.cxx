@@ -61,8 +61,9 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter( "RegisterImageToTubesUsingRigidTransform",
-                                                 CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter(
+    "RegisterImageToTubesUsingRigidTransform",
+    CLPProcessInformation );
   progressReporter.Start();
 
 #ifdef SlicerExecutionModel_USE_SERIALIZER
@@ -144,8 +145,8 @@ int DoIt( int argc, char * argv[] )
     if( parametersRoot.isMember( "SubSampleTubeTree" ) )
       {
       Json::Value & subSampleTubeTreeFilterValue = parametersRoot["SubSampleTubeTree"];
-      typedef itk::tube::SubSampleTubeTreeSpatialObjectFilterSerializer< SubSampleTubeTreeFilterType >
-        SerializerType;
+      typedef itk::tube::SubSampleTubeTreeSpatialObjectFilterSerializer<
+        SubSampleTubeTreeFilterType > SerializerType;
       SerializerType::Pointer serializer = SerializerType::New();
       serializer->SetTargetObject( subSampleTubeTreeFilter );
       itk::JsonCppArchiver::Pointer archiver =
@@ -233,7 +234,8 @@ int DoIt( int argc, char * argv[] )
     // gradientDescentOptimizer instance.
     if( parametersRoot.isMember( "GradientDescentOptimizer" ) )
       {
-      Json::Value & gradientDescentOptimizerValue = parametersRoot["GradientDescentOptimizer"];
+      Json::Value & gradientDescentOptimizerValue =
+        parametersRoot["GradientDescentOptimizer"];
       typedef itk::GradientDescentOptimizerSerializer SerializerType;
       SerializerType::Pointer serializer = SerializerType::New();
       serializer->SetTargetObject( gradientDescentOptimizer );
@@ -278,9 +280,11 @@ int DoIt( int argc, char * argv[] )
 
   TransformType* outputTransform =
     dynamic_cast<TransformType *>(registrationMethod->GetTransform());
-  outputTransform->SetParameters( registrationMethod->GetLastTransformParameters() );
+  outputTransform->SetParameters(
+    registrationMethod->GetLastTransformParameters() );
   std::ostringstream parametersMessage;
-  parametersMessage << "Transform Parameters: " << registrationMethod->GetLastTransformParameters();
+  parametersMessage << "Transform Parameters: "
+                    << registrationMethod->GetLastTransformParameters();
   tube::InformationMessage( parametersMessage.str() );
   timeCollector.Stop("Register image to tube");
 
