@@ -109,6 +109,9 @@ if( TubeTK_USE_SLICER )
     ${TubeTK_SLICER_DIRS}
     -DSlicer_DIR:PATH=${Slicer_DIR} )
 endif( TubeTK_USE_SLICER )
+if( TubeTK_USE_KWSTYLE )
+  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "KWStyle" )
+endif( TubeTK_USE_KWSTYLE )
 
 if( TubeTK_USE_LIBSVM )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "LIBSVM" )
