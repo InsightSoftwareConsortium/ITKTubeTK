@@ -98,13 +98,12 @@ public:
 
   typedef ImageToTubeRigidMetric< FixedImageType,
     MovingSpatialObjectType,
-    MovingTubeType,
-    Function::TubeExponentialResolutionWeightFunction<
-    typename MovingTubeType::TubePointType > >
+    MovingTubeType >
     DefaultMetricType;
 
   typedef typename DefaultMetricType::TransformParametersType     ParametersType;
   typedef typename DefaultMetricType::TransformType               TransformType;
+  typedef ParametersType                                          FeatureWeightsType;
 
   /**  Dimension of the images.  */
   enum { ImageDimension = FixedImageType::ImageDimension,
@@ -119,6 +118,12 @@ public:
   /** Initialize the registration */
   void Initialize( void ) throw ( ExceptionObject );
 
+  /** Set/Get the scalar weights associated with every point in the tube.
+   * The index of the point weights should correspond to "standard tube tree
+   * interation". */
+  void SetFeatureWeights( FeatureWeightsType & featureWeights );
+  itkGetConstReferenceMacro( FeatureWeights, FeatureWeightsType )
+
 protected:
   ImageToTubeRigidRegistration( void );
   virtual ~ImageToTubeRigidRegistration( void ) {}
@@ -129,6 +134,7 @@ private:
 
   bool                                     m_IsInitialized;
 
+  FeatureWeightsType m_FeatureWeights;
 }; // End class ImageToTubeRigidRegistration
 
 } // End namespace tube

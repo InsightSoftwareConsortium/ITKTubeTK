@@ -96,6 +96,22 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 template< class TFixedImage, class TMovingSpatialObject, class TMovingTube >
 void
 ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
+::SetFeatureWeights( FeatureWeightsType & featureWeights )
+{
+  if( this->m_FeatureWeights.data_block() != featureWeights.data_block() ||
+      this->m_FeatureWeights.GetSize() != featureWeights.GetSize() )
+    {
+    // m_FeatureWeights should treated as const.
+    this->m_FeatureWeights.SetData( featureWeights.data_block(),
+      featureWeights.GetSize(), false );
+    this->Modified();
+    }
+}
+
+
+template< class TFixedImage, class TMovingSpatialObject, class TMovingTube >
+void
+ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
 ::Initialize() throw ( ExceptionObject )
 {
   typename TransformType::Pointer transform = TransformType::New();
@@ -105,6 +121,12 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
     {
     // initialize the interconnects between components
     Superclass::Initialize();
+    DefaultMetricType * defaultMetric
+      = dynamic_cast< DefaultMetricType * >( this->GetMetric() );
+    if( defaultMetric != NULL )
+      {
+      defaultMetric->SetFeatureWeights( this->m_FeatureWeights );
+      }
     }
   catch( const ExceptionObject& )
     {

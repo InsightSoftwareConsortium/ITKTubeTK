@@ -40,5 +40,6 @@ void RegisterTests( void )
   REGISTER_TEST( itktubeTubeExponentialResolutionWeightFunctionTest );
   REGISTER_TEST( itktubeTubeParametricExponentialResolutionWeightFunctionTest );
   REGISTER_TEST( itktubeTubeParametricExponentialWithBoundsResolutionWeightFunctionTest );
+  REGISTER_TEST( itktubeTubePointWeightsCalculatorTest );
   REGISTER_TEST( itktubeTubeToTubeTransformFilterTest );
 }

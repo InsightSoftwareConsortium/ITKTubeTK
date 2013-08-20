@@ -22,12 +22,15 @@ limitations under the License.
 =========================================================================*/
 
 #include "itktubeTubeExponentialResolutionWeightFunction.h"
+#include "itktubeTubePointWeightsCalculator.h"
 
-#include <itkTubeSpatialObjectPoint.h>
+#include <itkOptimizerParameters.h>
+#include <itkTubeSpatialObject.h>
+#include <itkGroupSpatialObject.h>
 
 #include <fstream>
 
-int itktubeTubeExponentialResolutionWeightFunctionTest( int argc, char * argv[] )
+int itktubeTubePointWeightsCalculatorTest( int argc, char * argv[] )
 {
   if( argc < 2 )
     {
@@ -40,8 +43,10 @@ int itktubeTubeExponentialResolutionWeightFunctionTest( int argc, char * argv[] 
   const char * outputCSV = argv[1];
 
   enum { Dimension = 2 };
-  typedef itk::TubeSpatialObjectPoint< Dimension >  TubePointType;
-  typedef std::vector< TubePointType >              TubePointContainerType;
+  typedef itk::GroupSpatialObject< Dimension >      GroupType;
+  typedef itk::TubeSpatialObject< Dimension >       TubeType;
+  typedef TubeType::TubePointType                   TubePointType;
+  typedef TubeType::PointListType                   TubePointContainerType;
 
   // Create tube points with increasing radius.
   const unsigned int numberOfPoints = 100;
@@ -54,6 +59,13 @@ int itktubeTubeExponentialResolutionWeightFunctionTest( int argc, char * argv[] 
     tubePointContainer[ii].SetRadius( radius );
     radius += radiusIncrement;
     }
+  TubeType::Pointer tubes = TubeType::New();
+  tubes->SetPoints( tubePointContainer );
+
+  GroupType::Pointer group = GroupType::New();
+  GroupType::ChildrenListType children;
+  children.push_back( tubes.GetPointer() );
+  group->SetChildren( children );
 
   // Write the tube point weights to file.
   std::ofstream outputFile( outputCSV );
@@ -67,14 +79,30 @@ int itktubeTubeExponentialResolutionWeightFunctionTest( int argc, char * argv[] 
     TubePointType, float > WeightFunctionType;
   WeightFunctionType::Pointer weightFunction = WeightFunctionType::New();
 
+  typedef itk::OptimizerParameters< float > PointWeightsType;
+
+  typedef itk::tube::TubePointWeightsCalculator< Dimension,
+    TubeType, WeightFunctionType,
+    PointWeightsType > PointWeightsCalculatorType;
+  PointWeightsCalculatorType::Pointer resolutionWeightsCalculator
+    = PointWeightsCalculatorType::New();
+  resolutionWeightsCalculator->SetTubeTreeSpatialObject( group );
+  resolutionWeightsCalculator->SetPointWeightFunction( weightFunction );
+  resolutionWeightsCalculator->Compute();
+  const PointWeightsType & resolutionWeights
+    = resolutionWeightsCalculator->GetPointWeights();
+
   for( unsigned int ii = 0; ii < numberOfPoints; ++ii )
     {
-    const float pointWeight = weightFunction->Evaluate( tubePointContainer[ii] );
+    const float pointWeight = resolutionWeights[ii];
     outputFile << pointWeight << '\n';
     }
 
   outputFile.flush();
   outputFile.close();
+
+  // test PrintSelf
+  std::cout << resolutionWeightsCalculator << std::endl;
 
   return EXIT_SUCCESS;
 }
