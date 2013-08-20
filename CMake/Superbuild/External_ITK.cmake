@@ -45,6 +45,12 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
   set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
+  set( TubeTK_ITKHDF5_VALGRIND_ARGS )
+  if( TubeTK_USE_VALGRIND )
+    list( APPEND TubeTK_ITKHDF5_VALGRIND_ARGS
+      -DHDF5_ENABLE_USING_MEMCHECKER=ON )
+  endif( TubeTK_USE_VALGRIND )
+
   ExternalProject_Add( ${proj}
     GIT_REPOSITORY ${${proj}_GIT_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
@@ -52,6 +58,12 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
     SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}
     INSTALL_DIR ${${proj}_DIR}
+    LOG_DOWNLOAD 1
+    LOG_UPDATE 0
+    LOG_CONFIGURE 0
+    LOG_BUILD 0
+    LOG_TEST 0
+    LOG_INSTALL 0
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
@@ -67,6 +79,7 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
       -DBUILD_TESTING:BOOL=OFF
       -DITK_USE_REVIEW:BOOL=ON
       -DITKV3_COMPATIBILITY:BOOL=ON
+      ${TubeTK_ITKHDF5_VALGRIND_ARGS}
     INSTALL_COMMAND "" )
 
 else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )

@@ -21,6 +21,10 @@
 #
 ##############################################################################
 
+set( Cppcheck_GIT_REPOSITORY
+  ${git_protocol}://github.com/danmar/cppcheck.git )
+set( Cppcheck_GIT_TAG origin/master )
+
 set( CTK_GIT_REPOSITORY ${git_protocol}://github.com/commontk/CTK.git )
 set( CTK_GIT_TAG 2040148f83ec7841f6f577da75e519410c3315a0 )
 
@@ -37,7 +41,7 @@ set( JsonCpp_SVN_REVISION 268 )
 
 set( KWStyle_GIT_REPOSITORY
   ${git_protocol}://public.kitware.com/KWStyle.git )
-set( KWStyle_GIT_TAG 16c5ca21e8133e6db155795dfdcb7d4bfa944af7 )
+set( KWStyle_GIT_TAG origin/master )
 
 set( LIBSVM_GIT_REPOSITORY
   ${git_protocol}://github.com/TubeTK/TubeTK-LIBSVM.git )

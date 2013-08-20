@@ -29,29 +29,29 @@ if( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
 endif( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
 set( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1 )
 
-set( proj JsonCpp )
+set( proj Cppcheck )
 
 # Sanity checks.
-if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
-  message( FATAL_ERROR
-    "${proj}_DIR variable is defined as ${${proj}_DIR} which corresponds to a nonexistent directory" )
-endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
+if( CPPCHECK_EXECUTABLE AND NOT EXISTS ${CPPCHECK_EXECUTABLE} )
+  message( FATAL_ERROR "The CPPCHECK_EXECUTABLE variable is defined, but corresponds to a nonexistent file" )
+endif( CPPCHECK_EXECUTABLE AND NOT EXISTS ${CPPCHECK_EXECUTABLE} )
 
 set( ${proj}_DEPENDENCIES "" )
 
 # Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
 
-if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_JSONCPP} )
+if( NOT CPPCHECK_EXECUTABLE AND NOT ${USE_SYSTEM_CPPCHECK} )
   set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
+  set( CPPCHECK_EXECUTABLE ${${proj}_DIR}/bin/cppcheck )
 
   ExternalProject_Add( ${proj}
-    SVN_REPOSITORY ${${proj}_SVN_REPOSITORY}
-    SVN_REVISION -r ${${proj}_SVN_REVISION}
+    GIT_REPOSITORY ${${proj}_GIT_REPOSITORY}
+    GIT_TAG ${${proj}_GIT_TAG}
     DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
     SOURCE_DIR ${${proj}_SOURCE_DIR}
-    BINARY_DIR ${${proj}_DIR}
+    BINARY_DIR ${${proj}_SOURCE_DIR}
     INSTALL_DIR ${${proj}_DIR}
     LOG_DOWNLOAD 1
     LOG_UPDATE 0
@@ -60,22 +60,19 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_JSONCPP} )
     LOG_TEST 0
     LOG_INSTALL 0
     CMAKE_GENERATOR ${gen}
-    CMAKE_ARGS
-      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-      -DCMAKE_INSTALL_PREFIX:PATH=${${proj}_DIR}
-      -DCMAKE_BUILD_TYPE:STRING=${build_type}
-      ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
-      -DBUILD_SHARED_LIBS:BOOL=${shared}
-      -DJSONCPP_WITH_TESTS:BOOL=OFF )
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND HAVE_RULES=no CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} ${CMAKE_MAKE_PROGRAM}
+    INSTALL_COMMAND HAVE_RULES=no PREFIX=${${proj}_DIR} ${CMAKE_MAKE_PROGRAM} install
+    DEPENDS
+      ${${proj}_DEPENDENCIES} )
 
-else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_JSONCPP} )
-  if( ${USE_SYSTEM_JSONCPP} )
-    find_package( ${proj} REQUIRED )
-  endif( ${USE_SYSTEM_JSONCPP} )
+else( NOT CPPCHECK_EXECUTABLE AND NOT ${USE_SYSTEM_CPPCHECK} )
+  if( ${USE_SYSTEM_CPPCHECK} )
+    list( APPEND CMAKE_MODULE_PATH "${TubeTK_SOURCE_DIR}/CMake/Cppcheck" )
+    find_program( CPPCHECK_EXECUTABLE NAMES cppcheck PATHS /usr/local/bin )
+  endif( ${USE_SYSTEM_CPPCHECK} )
 
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
-endif( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_JSONCPP} )
+endif( NOT CPPCHECK_EXECUTABLE AND NOT ${USE_SYSTEM_CPPCHECK} )
 
-list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -D${proj}_DIR:PATH=${${proj}_DIR} )
+list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DCPPCHECK_EXECUTABLE:FILEPATH=${CPPCHECK_EXECUTABLE} )

@@ -44,7 +44,7 @@ TubeTKMacroCheckExternalProjectDependency( ${proj} )
 if( NOT KWSTYLE_EXECUTABLE AND NOT ${USE_SYSTEM_KWSTYLE} )
   set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
-  set( KWSTYLE_EXECUTABLE ${CMAKE_BINARY_DIR}/${proj}-build/bin/KWStyle )
+  set( KWSTYLE_EXECUTABLE ${${proj}_DIR}/bin/KWStyle )
 
   ExternalProject_Add( ${proj}
     GIT_REPOSITORY ${${proj}_GIT_REPOSITORY}
@@ -53,6 +53,12 @@ if( NOT KWSTYLE_EXECUTABLE AND NOT ${USE_SYSTEM_KWSTYLE} )
     SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}
     INSTALL_DIR ${${proj}_DIR}
+    LOG_DOWNLOAD 1
+    LOG_UPDATE 0
+    LOG_CONFIGURE 0
+    LOG_BUILD 0
+    LOG_TEST 0
+    LOG_INSTALL 0
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
@@ -66,7 +72,9 @@ if( NOT KWSTYLE_EXECUTABLE AND NOT ${USE_SYSTEM_KWSTYLE} )
       ${${proj}_DEPENDENCIES} )
 
 else( NOT KWSTYLE_EXECUTABLE AND NOT ${USE_SYSTEM_KWSTYLE} )
-  find_program( KWSTYLE_EXECUTABLE NAMES KWStyle PATHS /usr/local/bin )
+  if( ${USE_SYSTEM_KWSTYLE} )
+    find_package( ${proj} REQUIRED )
+  endif( ${USE_SYSTEM_KWSTYLE} )
 
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
 endif( NOT KWSTYLE_EXECUTABLE AND NOT ${USE_SYSTEM_KWSTYLE} )
