@@ -77,31 +77,6 @@ if( APPLE )
     -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET} )
 endif( APPLE )
 
-# Set dependencies.
-set( TubeTK_DEPENDENCIES "ITK" "JsonCpp" "ParameterSerializer"
-  "SlicerExecutionModel" )
-
-if( TubeTK_USE_SIMPLEITK )
-  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "SimpleITK" )
-endif( TubeTK_USE_SIMPLEITK )
-
-if( TubeTK_USE_VTK )
-  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "VTK" )
-endif( TubeTK_USE_VTK )
-if( TubeTK_USE_CPPCHECK )
-  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "Cppcheck" )
-endif( TubeTK_USE_CPPCHECK )
-
-set( TubeTK_QT_VARIABLES )
-if( TubeTK_USE_QT )
-  # CTK.
-  if( TubeTK_USE_CTK )
-      set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "CTK" )
-  endif( TubeTK_USE_CTK )
-  set( TubeTK_QT_VARIABLES
-    -DTubeTK_REQUIRED_QT_VERSION=${TubeTK_REQUIRED_QT_VERSION} )
-endif( TubeTK_USE_QT )
-
 set( TubeTK_SLICER_DIRS
     -DTubeTK_SLICER_SOURCE_DIR:PATH=${TubeTK_SLICER_SOURCE_DIR} )
 if( TubeTK_USE_SLICER )
@@ -109,6 +84,28 @@ if( TubeTK_USE_SLICER )
     ${TubeTK_SLICER_DIRS}
     -DSlicer_DIR:PATH=${Slicer_DIR} )
 endif( TubeTK_USE_SLICER )
+
+# Set dependencies.
+set( TubeTK_DEPENDENCIES "ITK" "JsonCpp" "ParameterSerializer"
+  "SlicerExecutionModel" )
+
+if( TubeTK_USE_CPPCHECK )
+  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "Cppcheck" )
+endif( TubeTK_USE_CPPCHECK )
+
+set( TubeTK_QT_VARIABLES )
+if( TubeTK_USE_QT )
+  if( TubeTK_USE_CTK )
+      set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "CTK" )
+  endif( TubeTK_USE_CTK )
+  set( TubeTK_QT_VARIABLES
+    -DTubeTK_REQUIRED_QT_VERSION=${TubeTK_REQUIRED_QT_VERSION} )
+endif( TubeTK_USE_QT )
+
+if( TubeTK_USE_IMAGE_VIEWER )
+  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "ImageViewer" )
+endif( TubeTK_USE_IMAGE_VIEWER )
+
 if( TubeTK_USE_KWSTYLE )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "KWStyle" )
 endif( TubeTK_USE_KWSTYLE )
@@ -117,9 +114,13 @@ if( TubeTK_USE_LIBSVM )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "LIBSVM" )
 endif( TubeTK_USE_LIBSVM )
 
-if( TubeTK_USE_IMAGE_VIEWER )
-  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "ImageViewer" )
-endif( TubeTK_USE_IMAGE_VIEWER )
+if( TubeTK_USE_SIMPLEITK )
+  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "SimpleITK" )
+endif( TubeTK_USE_SIMPLEITK )
+
+if( TubeTK_USE_VTK )
+  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "VTK" )
+endif( TubeTK_USE_VTK )
 
 set( TubeTK_EXTERNAL_PROJECTS_ARGS )
 
@@ -141,7 +142,6 @@ endif( TubeTK_USE_PYTHON )
 # Check dependencies.
 set( EXTERNAL_PROJECT_DIR ${TubeTK_SOURCE_DIR}/CMake/Superbuild )
 TubeTKMacroCheckExternalProjectDependency( TubeTK )
-
 
 # Normal build.
 set( proj TubeTK )

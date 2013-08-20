@@ -24,7 +24,7 @@
 project( TubeTK )
 
 # Require CMake 2.8 for its superbuild functionality.
-cmake_minimum_required( VERSION 2.8 )
+cmake_minimum_required( VERSION 2.8.7 )
 
 # Update CMake module path
 set( TubeTK_CMAKE_EXTENSIONS_DIR ${TubeTK_SOURCE_DIR}/CMake )
@@ -227,20 +227,20 @@ option( USE_SYSTEM_IMAGE_VIEWER
   "Exclude ImageViewer from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_IMAGE_VIEWER )
 
-option( TubeTK_USE_PYTHON "Enable Python Support" OFF )
+option( TubeTK_USE_PYTHON "Use Python to enable additional functionality." OFF )
 if( TubeTK_USE_PYTHON )
   # NumPy conversion support.
-  option( TubeTK_USE_NUMPY "Build NumPy conversion Python extension module." ON )
+  option( TubeTK_USE_NUMPY "Use NumPy to enable additional functionality." ON )
   mark_as_advanced( TubeTK_USE_NUMPY )
 
   # Test TubeTK examples via Python virtualenv.
   option( TubeTK_USE_NOTEBOOKS
-    "Test TubeTK IPython Notebook examples in a Python virtualenv." ON )
+    "Test IPython notebooks in a Python virtualenv." ON )
   mark_as_advanced( TubeTK_USE_NOTEBOOKS )
 
   # PyQtGraph bridge support.
-  option( TubeTK_USE_PYQTGRAPH "Enable TubeTK PyQtGraph support." ON )
-  mark_as_advanced( TubeTK_USE_NOTEBOOKS )
+  option( TubeTK_USE_PYQTGRAPH "Use PyQtGraph to enable additional functionality." ON )
+  mark_as_advanced( TubeTK_USE_PYQTGRAPH )
 endif( TubeTK_USE_PYTHON )
 
 # ITK setup.
@@ -389,6 +389,13 @@ if( TubeTK_USE_CPPCHECK )
     PROPERTIES FAIL_REGULAR_EXPRESSION "error file=" )
 endif( TubeTK_USE_CPPCHECK )
 
+if( TubeTK_USE_QT )
+  if( TubeTK_USE_CTK )
+    find_package( CTK REQUIRED )
+    include( ${CTK_USE_FILE} )
+  endif( TubeTK_USE_CTK )
+endif( TubeTK_USE_QT )
+
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
@@ -457,13 +464,8 @@ if( TubeTK_USE_LIBSVM )
   find_package( LIBSVM REQUIRED )
 endif( TubeTK_USE_LIBSVM )
 
-find_package( ParameterSerializer )
+find_package( ParameterSerializer REQUIRED )
 include_directories( ${ParameterSerializer_INCLUDE_DIRS} )
-
-if( TubeTK_USE_VTK )
-  find_package( VTK REQUIRED )
-  include( ${VTK_USE_FILE} )
-endif( TubeTK_USE_VTK )
 
 set( SlicerExecutionModel_CLI_RUNTIME_INSTALL_DIRECTORY
   ${TubeTK_INSTALL_BIN_DIR} )
@@ -490,12 +492,10 @@ set( SlicerExecutionModel_CLI_ARCHIVE_OUTPUT_DIRECTORY
 find_package( SlicerExecutionModel REQUIRED GenerateCLP )
 include( ${GenerateCLP_USE_FILE} )
 
-if( TubeTK_USE_QT )
-  if( TubeTK_USE_CTK )
-    find_package( CTK REQUIRED )
-    include( ${CTK_USE_FILE} )
-  endif( TubeTK_USE_CTK )
-endif( TubeTK_USE_QT )
+if( TubeTK_USE_VTK )
+  find_package( VTK REQUIRED )
+  include( ${VTK_USE_FILE} )
+endif( TubeTK_USE_VTK )
 
 # Check endianness.
 include( TestBigEndian )
@@ -543,7 +543,7 @@ include( TubeTKMacroInstallPlugins )
 # Test TubeTK IPython examples.
 if( TubeTK_USE_NOTEBOOKS )
   add_subdirectory( Examples )
-endif()
+endif( TubeTK_USE_NOTEBOOKS )
 
 add_subdirectory( Utilities )
 add_subdirectory( Base )
