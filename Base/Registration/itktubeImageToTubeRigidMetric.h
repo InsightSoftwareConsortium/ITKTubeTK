@@ -27,6 +27,7 @@ limitations under the License.
 #include "itktubeTubeExponentialResolutionWeightFunction.h"
 
 #include <itkEuler3DTransform.h>
+#include <itkCompensatedSummation.h>
 #include <itkGaussianDerivativeImageFunction.h>
 #include <itkImageToSpatialObjectMetric.h>
 
@@ -158,6 +159,7 @@ protected:
   typedef typename TubePointType::PointType                  PointType;
   typedef vnl_vector< ScalarType >                           VnlVectorType;
   typedef vnl_matrix< ScalarType >                           VnlMatrixType;
+  typedef CompensatedSummation< ScalarType >                 CompensatedSummationType;
 
   void ComputeImageRange( void );
 
@@ -199,7 +201,7 @@ private:
     const ScalarType scale,
     const OutputPointType & currentPoint ) const;
   ScalarType ComputeThirdDerivatives(
-    const Vector< ScalarType, TubeDimension > *v,
+    const VectorType & v,
     const ScalarType scale,
     const OutputPointType & currentPoint ) const;
 
