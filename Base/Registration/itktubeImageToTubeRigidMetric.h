@@ -78,16 +78,12 @@ public:
   typedef typename TubeType::TubePointType      TubePointType;
   typedef TResolutionWeightFunction             ResolutionWeightFunctionType;
 
-  typedef double                                InternalComputationValueType;
+  typedef double                                ScalarType;
   typedef GaussianDerivativeImageFunction< TFixedImage >
                                                 DerivativeImageFunctionType;
   typedef typename Superclass::DerivativeType   DerivativeType;
   typedef typename Superclass::ParametersType   ParametersType;
   typedef typename Superclass::MeasureType      MeasureType;
-
-  typedef vnl_vector< InternalComputationValueType >                    VectorType;
-  typedef vnl_matrix< InternalComputationValueType >                    MatrixType;
-  typedef Point< InternalComputationValueType, ImageDimension >         PointType;
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( ImageToTubeRigidMetric, ImageToSpatialObjectMetric );
@@ -135,12 +131,12 @@ public:
   void Initialize( void ) throw ( ExceptionObject );
 
   /** Control the radius scaling of the metric. */
-  itkSetMacro( Kappa, double );
-  itkGetConstMacro( Kappa, double );
+  itkSetMacro( Kappa, ScalarType );
+  itkGetConstMacro( Kappa, ScalarType );
 
   /** Set/Get the extent of the blurring calculation given in Gaussian sigma's. */
-  itkSetMacro( Extent, double );
-  itkGetConstMacro( Extent, double );
+  itkSetMacro( Extent, ScalarType );
+  itkGetConstMacro( Extent, ScalarType );
 
   /** Set/Get the function used to determine the resolution weights.  This function
    *  takes a tube point as an input and outputs a weight for that point. */
@@ -157,33 +153,37 @@ protected:
   ImageToTubeRigidMetric( void );
   virtual ~ImageToTubeRigidMetric( void );
 
+  typedef Vector< ScalarType, TubeDimension >                VectorType;
+  typedef Matrix< ScalarType, TubeDimension, TubeDimension > MatrixType;
+  typedef typename TubePointType::PointType                  PointType;
+  typedef vnl_vector< ScalarType >                           VnlVectorType;
+  typedef vnl_matrix< ScalarType >                           VnlMatrixType;
+
   void ComputeImageRange( void );
 
   void GetDeltaAngles( const OutputPointType & x,
-    const vnl_vector_fixed< InternalComputationValueType, 3> & dx,
-    const vnl_vector_fixed< InternalComputationValueType, 3> & offsets,
-    double angle[3] ) const;
+    const VnlVectorType & dx,
+    const VectorType & offsets,
+    ScalarType angle[3] ) const;
 
   /** Calculate the weighting for each tube point and its scale, which is based
    * on the local radius. */
   virtual void ComputeTubePointResolutionWeights( void );
 
 private:
-  typedef std::list< InternalComputationValueType > ResolutionWeightsContainerType;
+  typedef std::list< ScalarType > ResolutionWeightsContainerType;
   ResolutionWeightsContainerType             m_ResolutionWeights;
 
   typename DerivativeImageFunctionType::Pointer m_DerivativeImageFunction;
 
-  ResolutionWeightFunctionType               m_ResolutionWeightFunction;
-  InternalComputationValueType               m_ImageMin;
-  InternalComputationValueType               m_ImageMax;
-  double                                     m_Kappa;
-  double                                     m_Extent;
-
-  vnl_vector_fixed< InternalComputationValueType, TubeDimension >  m_Offsets;
+  ResolutionWeightFunctionType m_ResolutionWeightFunction;
+  ScalarType                   m_ImageMin;
+  ScalarType                   m_ImageMax;
+  ScalarType                   m_Kappa;
+  ScalarType                   m_Extent;
 
   /** The center of rotation of the weighted tube points. */
-  typedef typename TubePointType::PointType CenterOfRotationType;
+  typedef PointType CenterOfRotationType;
   CenterOfRotationType m_CenterOfRotation;
 
   /** Test whether the specified tube point is inside the Image.
@@ -194,13 +194,13 @@ private:
     OutputPointType & outputPoint,
     const TransformType * transform ) const;
 
-  InternalComputationValueType ComputeLaplacianMagnitude(
+  ScalarType ComputeLaplacianMagnitude(
     const typename TubePointType::CovariantVectorType & tubeNormal,
-    const InternalComputationValueType scale,
+    const ScalarType scale,
     const OutputPointType & currentPoint ) const;
-  InternalComputationValueType ComputeThirdDerivatives(
-    const Vector< InternalComputationValueType, TubeDimension > *v,
-    const InternalComputationValueType scale,
+  ScalarType ComputeThirdDerivatives(
+    const Vector< ScalarType, TubeDimension > *v,
+    const ScalarType scale,
     const OutputPointType & currentPoint ) const;
 
   /**

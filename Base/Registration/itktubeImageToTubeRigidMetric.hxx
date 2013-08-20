@@ -133,8 +133,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   typename TubeNetType::ChildrenListType* tubeList = this->GetTubes();
 
   //! \todo Use CompensatedSummation from ITKv4.
-  InternalComputationValueType resolutionWeightSum =
-    NumericTraits< InternalComputationValueType >::Zero;
+  ScalarType resolutionWeightSum =
+    NumericTraits< ScalarType >::Zero;
 
   typedef typename TubeNetType::ChildrenListType::iterator TubesIteratorType;
   for( TubesIteratorType tubeIterator = tubeList->begin();
@@ -156,7 +156,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
             tubePointIterator != currentTubePoints.end();
             ++tubePointIterator )
         {
-        const InternalComputationValueType weight =
+        const ScalarType weight =
           this->m_ResolutionWeightFunction( *tubePointIterator );
 
         this->m_ResolutionWeights.push_back( weight );
@@ -220,8 +220,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   MeasureType matchMeasure = NumericTraits< MeasureType >::Zero;
 
   // \todo replace with ITKv4 CompensatedSummation
-  InternalComputationValueType weightSum =
-    NumericTraits< InternalComputationValueType >::Zero;
+  ScalarType weightSum =
+    NumericTraits< ScalarType >::Zero;
 
   ResolutionWeightsContainerType::const_iterator weightIterator;
   weightIterator = this->m_ResolutionWeights.begin();
@@ -254,11 +254,11 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
         if( this->IsInside( inputPoint, currentPoint, transformCopy ) )
           {
           weightSum += *weightIterator;
-          InternalComputationValueType scalingRadius = pointIterator->GetRadius();
+          ScalarType scalingRadius = pointIterator->GetRadius();
           // !TODO 0.5 should be a parameter of the class
           scalingRadius = std::max( scalingRadius, 0.5 );
 
-          const InternalComputationValueType scale = scalingRadius * m_Kappa;
+          const ScalarType scale = scalingRadius * m_Kappa;
 
           matchMeasure += *weightIterator * vnl_math_abs(
             this->ComputeLaplacianMagnitude( pointIterator->GetNormal1(),
@@ -270,16 +270,16 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
       } // end is a tube
     }
 
-  if( weightSum == NumericTraits< InternalComputationValueType >::Zero )
+  if( weightSum == NumericTraits< ScalarType >::Zero )
     {
     itkWarningMacro(
       << "GetValue: All the transformed tube points are outside the image." );
-    matchMeasure = NumericTraits< InternalComputationValueType >::min();
+    matchMeasure = NumericTraits< ScalarType >::min();
     }
   else
     {
-    const InternalComputationValueType normalizedMeasure =
-      static_cast< InternalComputationValueType >( matchMeasure / weightSum );
+    const ScalarType normalizedMeasure =
+      static_cast< ScalarType >( matchMeasure / weightSum );
     matchMeasure = normalizedMeasure;
     }
 
@@ -296,26 +296,26 @@ template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject, class TResolutionWeightFunction >
 typename ImageToTubeRigidMetric< TFixedImage,
   TMovingSpatialObject, TTubeSpatialObject,
-  TResolutionWeightFunction >::InternalComputationValueType
+  TResolutionWeightFunction >::ScalarType
 ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::ComputeLaplacianMagnitude(
   const typename TubePointType::CovariantVectorType & tubeNormal,
-  const InternalComputationValueType scale,
+  const ScalarType scale,
   const OutputPointType & currentPoint ) const
 {
   // We convolve the 1D signal defined by the direction v at point
   // currentPoint with a second derivative of a Gaussian
-  const InternalComputationValueType scaleSquared = scale * scale;
-  const InternalComputationValueType scaleExtentProduct = scale * m_Extent;
-  InternalComputationValueType result =
-    NumericTraits< InternalComputationValueType >::Zero;
+  const ScalarType scaleSquared = scale * scale;
+  const ScalarType scaleExtentProduct = scale * m_Extent;
+  ScalarType result =
+    NumericTraits< ScalarType >::Zero;
   //! \todo ITKv4 CompensatedSummation
-  InternalComputationValueType kernelSum =
-    NumericTraits< InternalComputationValueType >::Zero;
+  ScalarType kernelSum =
+    NumericTraits< ScalarType >::Zero;
   SizeValueType numberOfKernelPoints = 0;
 
-  for( InternalComputationValueType distance = -scaleExtentProduct;
+  for( ScalarType distance = -scaleExtentProduct;
        distance <= scaleExtentProduct;
        //! \todo better calculation of the increment instead of just +1
        ++distance )
@@ -328,7 +328,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
 
     if( this->m_Interpolator->IsInsideBuffer( point ) )
       {
-      const InternalComputationValueType distanceSquared = distance * distance;
+      const ScalarType distanceSquared = distance * distance;
       //! \todo cache this value, so it can be used in the next loop
       kernelSum += ( -1.0 + ( distanceSquared / scaleSquared ) )
         * vcl_exp( -0.5 * distanceSquared / scaleSquared );
@@ -338,14 +338,14 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
 
   //! \todo check this normalization (where is the 1/(scale * sqrt( 2 pi ))
   //term?
-  const InternalComputationValueType error = kernelSum / numberOfKernelPoints;
-  for( InternalComputationValueType distance = -scaleExtentProduct;
+  const ScalarType error = kernelSum / numberOfKernelPoints;
+  for( ScalarType distance = -scaleExtentProduct;
        distance <= scaleExtentProduct;
        //! \todo better calculation of the increment instead of just +1
        ++distance )
     {
-    const InternalComputationValueType distanceSquared = distance * distance;
-    const InternalComputationValueType kernelValue =
+    const ScalarType distanceSquared = distance * distance;
+    const ScalarType kernelValue =
       ( -1.0 + ( distanceSquared / scaleSquared ) )
       * vcl_exp( -0.5 * distanceSquared / scaleSquared ) - error;
 
@@ -357,8 +357,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
 
     if( this->m_Interpolator->IsInsideBuffer( point ) )
       {
-      const InternalComputationValueType value =
-        static_cast< InternalComputationValueType >(
+      const ScalarType value =
+        static_cast< ScalarType >(
           this->m_Interpolator->Evaluate( point ) );
       result += value * kernelValue;
       }
@@ -374,22 +374,16 @@ void
 ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::GetDeltaAngles( const OutputPointType & tubePoint,
-  const vnl_vector_fixed<double, 3> & dx,
-  const vnl_vector_fixed<double, 3> & offsets,
-  double dAngle[3] ) const
+  const VnlVectorType & dx,
+  const VectorType & offsets,
+  ScalarType dAngle[TubeDimension] ) const
 {
-  vnl_vector_fixed<double, 3> tempV;
-  vnl_vector_fixed<double, 3> pos;
-  pos[0] = tubePoint[0];
-  pos[1] = tubePoint[1];
-  pos[2] = tubePoint[2];
+  VectorType radius = ( tubePoint - offsets ) - ( this->m_CenterOfRotation );
+  radius.Normalize();
 
-  tempV = ( pos - offsets ) - ( this->m_CenterOfRotation.GetVnlVector() );
-  tempV.normalize();
-
-  dAngle[0] = dx[1] * -tempV[2] + dx[2] *  tempV[1];
-  dAngle[1] = dx[0] *  tempV[2] + dx[2] * -tempV[0];
-  dAngle[2] = dx[0] * -tempV[1] + dx[1] *  tempV[0];
+  dAngle[0] = dx[1] * -radius[2] + dx[2] *  radius[1];
+  dAngle[1] = dx[0] *  radius[2] + dx[2] * -radius[0];
+  dAngle[2] = dx[0] * -radius[1] + dx[1] *  radius[0];
 }
 
 
@@ -415,31 +409,31 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   itkDebugMacro( << "**** Get Derivative ****" );
   itkDebugMacro( << "parameters = "<< parameters )
 
-  vnl_matrix<double> biasV( TubeDimension, TubeDimension, 0.0 );
-  vnl_matrix<double> biasVI( TubeDimension, TubeDimension, 0.0 );
+  VnlMatrixType biasV( TubeDimension, TubeDimension,
+    NumericTraits< ScalarType >::Zero );
+  VnlMatrixType biasVI( TubeDimension, TubeDimension,
+    NumericTraits< ScalarType >::Zero );
 
   ResolutionWeightsContainerType::const_iterator weightIterator;
   weightIterator = m_ResolutionWeights.begin();
 
-  double dPosition[TubeDimension] = { 0.0, 0.0, 0.0 };
-  double dXProj1;
-  double dXProj2;
+  //! \todo CompensatedSummation
+  ScalarType dPosition[TubeDimension] = { 0.0, 0.0, 0.0 };
+  ScalarType dXProj1;
+  ScalarType dXProj2;
 
-  vnl_vector<double> tV( TubeDimension );
-  vnl_matrix<double> tM( TubeDimension, TubeDimension );
-  vnl_vector<double> v1T( TubeDimension );
-  vnl_vector<double> v2T( TubeDimension );
+  VnlMatrixType tM( TubeDimension, TubeDimension );
+  VnlVectorType v1T( TubeDimension );
+  VnlVectorType v2T( TubeDimension );
 
   //! \todo replace with ITKv4 CompensatedSummation
-  InternalComputationValueType weightSum =
-    NumericTraits< InternalComputationValueType >::Zero;
+  ScalarType weightSum = NumericTraits< ScalarType >::Zero;
 
   typedef std::vector< OutputPointType > TubePointsContainerType;
   TubePointsContainerType transformedTubePoints;
   transformedTubePoints.reserve( this->m_ResolutionWeights.size() );
 
-  typedef Vector< InternalComputationValueType, TubeDimension >  dTubePointsType;
-  typedef std::vector< dTubePointsType >                         dTubePointsContainerType;
+  typedef std::vector< VectorType >      dTubePointsContainerType;
   dTubePointsContainerType dtransformedTubePoints;
   dtransformedTubePoints.reserve( this->m_ResolutionWeights.size() );
 
@@ -467,8 +461,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
         weightSum += *weightIterator;
 
         //! \todo: these should be CovariantVectors?
-        Vector< InternalComputationValueType, TubeDimension > v1;
-        Vector< InternalComputationValueType, TubeDimension > v2;
+        VectorType v1;
+        VectorType v2;
         for( unsigned int ii = 0; ii < TubeDimension; ++ii )
           {
           v1[ii] = pointIterator->GetNormal1()[ii];
@@ -488,15 +482,15 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
         v1 = transformCopy->TransformVector( v1 );
         v2 = transformCopy->TransformVector( v2 );
 
-        InternalComputationValueType scalingRadius = pointIterator->GetRadius();
+        ScalarType scalingRadius = pointIterator->GetRadius();
         scalingRadius = std::max( scalingRadius, 0.5 );
 
-        const InternalComputationValueType scale = scalingRadius * m_Kappa;
+        const ScalarType scale = scalingRadius * m_Kappa;
 
         dXProj1 = this->ComputeThirdDerivatives( &v1, scale, currentPoint );
         dXProj2 = this->ComputeThirdDerivatives( &v2, scale, currentPoint );
 
-        Vector<InternalComputationValueType, TubeDimension> dtransformedTubePoint;
+        VectorType dtransformedTubePoint;
         for( unsigned int ii = 0; ii < TubeDimension; ++ii )
           {
           dtransformedTubePoint[ii] = ( dXProj1 * v1[ii] + dXProj2 * v2[ii] );
@@ -509,7 +503,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
     }
   delete tubeList;
 
-  if( weightSum == NumericTraits< InternalComputationValueType >::Zero )
+  if( weightSum == NumericTraits< ScalarType >::Zero )
     {
     biasV = 0.0;
     derivative.fill(0.0);
@@ -517,8 +511,9 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
     return;
     }
 
-  biasVI = vnl_matrix_inverse<double>( biasV ).inverse();
+  biasVI = vnl_matrix_inverse< ScalarType >( biasV ).inverse();
 
+  VnlVectorType tV( TubeDimension );
   tV( 0 ) = dPosition[0];
   tV( 1 ) = dPosition[1];
   tV( 2 ) = dPosition[2];
@@ -530,8 +525,9 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   dPosition[2] = tV( 2 );
 
 
-  double dAngle[TubeDimension] = { 0.0, 0.0, 0.0 };
-  vnl_vector_fixed< InternalComputationValueType, TubeDimension > offsets;
+  // \! CompensatedSummation
+  ScalarType dAngle[TubeDimension] = { 0.0, 0.0, 0.0 };
+  VectorType offsets;
   for( unsigned int ii = 0; ii < TubeDimension; ++ii )
     {
     offsets[ii] = dPosition[ii];
@@ -543,7 +539,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
     dtransformedTubePoints.begin();
   while( dtransformedTubePointsIt != dtransformedTubePoints.end() )
     {
-    vnl_vector<InternalComputationValueType> dXT( 3 );
+    VnlVectorType dXT( TubeDimension );
     for( unsigned int ii = 0; ii < TubeDimension; ++ii )
       {
       dXT[ii] = ( *dtransformedTubePointsIt )[ii];
@@ -551,7 +547,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
 
     dXT = dXT * biasVI;
 
-    InternalComputationValueType angleDelta[TubeDimension];
+    ScalarType angleDelta[TubeDimension];
     this->GetDeltaAngles( *transformedTubePointsIt, dXT, offsets, angleDelta );
     for( unsigned int ii = 0; ii < TubeDimension; ++ii )
       {
@@ -588,32 +584,32 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
 template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject, class TResolutionWeightFunction >
 typename ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
-  TTubeSpatialObject, TResolutionWeightFunction >::InternalComputationValueType
+  TTubeSpatialObject, TResolutionWeightFunction >::ScalarType
 ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
   TResolutionWeightFunction >
 ::ComputeThirdDerivatives(
-  const Vector< InternalComputationValueType, TubeDimension > *tubeNormal,
-  const InternalComputationValueType scale,
+  const Vector< ScalarType, TubeDimension > *tubeNormal,
+  const ScalarType scale,
   const OutputPointType & currentPoint ) const
 {
   // We convolve the 1D signal defined by the direction v at point
   // currentPoint with a second derivative of a Gaussian
   //! \todo use ITKv4 CompensatedSummation
-  InternalComputationValueType result =
-    NumericTraits< InternalComputationValueType >::Zero;
-  InternalComputationValueType kernelSum =
-    NumericTraits< InternalComputationValueType >::Zero;
+  ScalarType result =
+    NumericTraits< ScalarType >::Zero;
+  ScalarType kernelSum =
+    NumericTraits< ScalarType >::Zero;
 
-  const InternalComputationValueType scaleSquared = scale * scale;
-  const InternalComputationValueType scaleExtentProduct = scale * m_Extent;
+  const ScalarType scaleSquared = scale * scale;
+  const ScalarType scaleExtentProduct = scale * m_Extent;
 
-  for( InternalComputationValueType distance = -scaleExtentProduct;
+  for( ScalarType distance = -scaleExtentProduct;
        distance <= scaleExtentProduct;
        //! \todo better way to calculate this increment
        distance += 0.1 )
     {
-    const InternalComputationValueType distanceSquared = distance * distance;
-    const InternalComputationValueType kernelValue =
+    const ScalarType distanceSquared = distance * distance;
+    const ScalarType kernelValue =
       2.0 * distance * vcl_exp( -0.5 * distanceSquared / scaleSquared );
 
     kernelSum += vnl_math_abs( kernelValue );
@@ -626,8 +622,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject,
 
     if( this->m_Interpolator->IsInsideBuffer( point ) )
       {
-      const InternalComputationValueType value =
-        static_cast< InternalComputationValueType >(
+      const ScalarType value =
+        static_cast< ScalarType >(
           this->m_Interpolator->Evaluate( point ) );
       result += value * kernelValue;
       }
