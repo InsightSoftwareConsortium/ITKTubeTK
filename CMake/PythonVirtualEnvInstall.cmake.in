@@ -2,12 +2,12 @@ get_filename_component( activate_full "@PythonVirtualenvHome@/bin/activate"
   ABSOLUTE )
 if( NOT EXISTS "${activate_full}" )
   find_program( VIRTUALENV NAMES virtualenv virtualenv.py )
-  if( VIRTUALENV-NOTFOUND )
+  if( VIRTUALENV )
+    set( virtualenv_script "${VIRTUALENV}" )
+  else( VIRTUALENV )
     set( virtualenv_script
       "@TubeTK_SOURCE_DIR@/Utilities/Python/virtualenv/virtualenv.py" )
-  else( VIRTUALENV-NOTFOUND )
-    set( virtualenv_script "${VIRTUALENV}" )
-  endif( VIRTUALENV-NOTFOUND )
+  endif( VIRTUALENV )
   # Create the virtual environment.
   execute_process( COMMAND "@PYTHON_EXECUTABLE@"
     "${virtualenv_script}"
@@ -49,7 +49,7 @@ foreach( package @PYTHON_TESTING_MODULES@ )
   if( ${package_installed} EQUAL -1 )
     message( STATUS "Installing ${package} into virtualenv" )
     execute_process( COMMAND "@PythonVirtualenvHome@/bin/pip"
-        install ${package}
+        install ${package} --upgrade
       RESULT_VARIABLE failed
       ERROR_VARIABLE error )
     if( failed )

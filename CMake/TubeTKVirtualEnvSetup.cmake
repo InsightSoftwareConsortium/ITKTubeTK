@@ -18,6 +18,7 @@ set( PYTHON_TESTING_MODULES
 if( TubeTK_USE_NOTEBOOKS )
   list( APPEND PYTHON_TESTING_MODULES
     tornado
+    pyzmq
     ipython[zmq]
     jinja2
     matplotlib )
