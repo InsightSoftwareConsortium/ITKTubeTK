@@ -379,6 +379,10 @@ option( USE_SYSTEM_SLICER_EXECUTION_MODEL
   OFF )
 mark_as_advanced( USE_SYSTEM_SLICER_EXECUTION_MODEL )
 
+option( TubeTK_USE_VALGRIND "Use Valgrind to enable additional functionality."
+  OFF )
+mark_as_advanced( TubeTK_USE_VALGRIND )
+
 # VTK setup.
 option( TubeTK_USE_VTK "Use VTK to enable additional functionality." ON )
 option( USE_SYSTEM_VTK "Exclude VTK from superbuild and use an existing build."
