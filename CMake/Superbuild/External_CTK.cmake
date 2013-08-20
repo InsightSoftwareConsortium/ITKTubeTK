@@ -37,10 +37,10 @@ if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 # Set dependency list
-set( ${proj}_DEPENDENCIES "" )
-if( TubeTK_USE_VTK AND NOT USE_SYSTEM_VTK )
-  set( ${proj}_DEPENDENCIES "VTK" )
-endif( TubeTK_USE_VTK AND NOT USE_SYSTEM_VTK )
+set( ${proj}_DEPENDENCIES "ITK" )
+if( TubeTK_USE_VTK )
+  set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "VTK" )
+endif( TubeTK_USE_VTK )
 
 # Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
@@ -53,6 +53,13 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
   if( GIT_PROTOCOL_HTTP )
     set( ${proj}_use_git_protocol OFF )
   endif( GIT_PROTOCOL_HTTP )
+
+  set( TubeTK_CTK_VTK_ARGS )
+  if( TubeTK_USE_VTK )
+    list( APPEND TubeTK_CTK_VTK_ARGS
+      -DCTK_LIB_Visualization/VTK/Widgets:BOOL=ON
+      -DVTK_DIR:PATH=${VTK_DIR} )
+  endif( TubeTK_USE_VTK )
 
   ExternalProject_Add( ${proj}
     GIT_REPOSITORY ${${proj}_GIT_REPOSITORY}
@@ -77,12 +84,14 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
       ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
       -DBUILD_SHARED_LIBS:BOOL=${shared}
       -DBUILD_TESTING:BOOL=OFF
-      -DCTK_USE_GIT_PROTOCOL:BOOL=${${proj}_use_git_protocol}
-      -DCTK_LIB_Widgets:BOOL=ON
-      -DCTK_LIB_Visualization/VTK/Widgets:BOOL=OFF
+      -DCTK_LIB_ImageProcessing/ITK/Core:BOOL=ON
       -DCTK_LIB_PluginFramework:BOOL=OFF
+      -DCTK_LIB_Widgets:BOOL=ON
       -DCTK_PLUGIN_org.commontk.eventbus:BOOL=OFF
+      -DCTK_USE_GIT_PROTOCOL:BOOL=${${proj}_use_git_protocol}
+      -DITK_DIR:PATH=${ITK_DIR}
       -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
+      ${TubeTK_CTK_VTK_ARGS}
     INSTALL_COMMAND ""
     DEPENDS
       ${${proj}_DEPENDENCIES} )

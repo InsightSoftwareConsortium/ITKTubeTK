@@ -36,14 +36,6 @@ if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
   message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to a nonexistent directory" )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
-set( ${proj}_QT_OPTIONS )
-if( TubeTK_USE_QT )
-  set( ${proj}_QT_OPTIONS
-    -DVTK_USE_QVTK_QTOPENGL:BOOL=ON
-    -DVTK_USE_QT:BOOL=ON
-    -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE} )
-endif( TubeTK_USE_QT )
-
 set( ${proj}_DEPENDENCIES "" )
 
 # Include dependent projects, if any.
@@ -53,10 +45,19 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
   set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
+  set( ${proj}_QT_ARGS )
+  if( TubeTK_USE_QT )
+    set( ${proj}_QT_ARGS
+      -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
+      -DVTK_USE_QT:BOOL=ON
+      -DVTK_USE_QVTK_QTOPENGL:BOOL=ON )
+  endif( TubeTK_USE_QT )
+
   set( TubeTK_VTKHDF5_VALGRIND_ARGS )
   if( TubeTK_USE_VALGRIND )
     list( APPEND TubeTK_VTKHDF5_VALGRIND_ARGS
-      -DH5_USING_MEMCHECKER:BOOL=ON )
+      -DH5_USING_MEMCHECKER:BOOL=ON
+      -DVTK_DEBUG_LEAKS:BOOL=ON )
   endif( TubeTK_USE_VALGRIND )
 
   ExternalProject_Add( ${proj}
@@ -85,8 +86,10 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
       -DBUILD_SHARED_LIBS:BOOL=${shared}
       -DBUILD_EXAMPLES:BOOL=OFF
       -DBUILD_TESTING:BOOL=OFF
+      -DVTK_LEGACY_REMOVE:BOOL=ON
       -DVTK_USE_GUISUPPORT:BOOL=ON
-      ${${proj}_QT_OPTIONS}
+      -DVTK_USE_PARALLEL:BOOL=ON
+      ${${proj}_QT_ARGS}
       ${TubeTK_VTKHDF5_VALGRIND_ARGS}
     INSTALL_COMMAND "" )
 
