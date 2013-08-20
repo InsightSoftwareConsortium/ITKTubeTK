@@ -32,7 +32,10 @@ if( ParameterSerializer_FOUND )
   add_subdirectory( ParameterSerializer )
 endif( ParameterSerializer_FOUND )
 
-add_subdirectory( Python )
+if( TubeTK_USE_PYTHON )
+  add_subdirectory( Python )
+endif( TubeTK_USE_PYTHON )
+
 add_subdirectory( Registration )
 add_subdirectory( Segmentation )
 add_subdirectory( USTK )
