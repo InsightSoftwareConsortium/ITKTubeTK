@@ -56,7 +56,7 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
   set( TubeTK_VTKHDF5_VALGRIND_ARGS )
   if( TubeTK_USE_VALGRIND )
     list( APPEND TubeTK_VTKHDF5_VALGRIND_ARGS
-      -DHDF5_ENABLE_USING_MEMCHECKER=ON )
+      -DH5_USING_MEMCHECKER:BOOL=ON )
   endif( TubeTK_USE_VALGRIND )
 
   ExternalProject_Add( ${proj}
