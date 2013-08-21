@@ -73,7 +73,6 @@ set( JsonCpp_DIR "@JsonCpp_DIR@" )
 set( KWSTYLE_EXECUTABLE "@KWSTYLE_EXECUTABLE@" )
 set( LIBSVM_DIR "@LIBSVM_DIR@" )
 set( ParameterSerializer_DIR "@ParameterSerializer_DIR@" )
-set( SimpleITK_DIR "@SimpleITK_DIR@" )
 set( SlicerExecutionModel_DIR "@SlicerExecutionModel_DIR@" )
 set( VTK_DIR "@VTK_DIR@" )
 
