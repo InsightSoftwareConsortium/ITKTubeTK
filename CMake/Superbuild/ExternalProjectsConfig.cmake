@@ -61,11 +61,6 @@ set( ParameterSerializer_GIT_REPOSITORY
   ${git_protocol}://github.com/TubeTK/TubeTK-ParameterSerializer.git )
 set( ParameterSerializer_GIT_TAG 819e3f6df97ab385f8c7b09203c07aa2fa56ade0 )
 
-# SimpleITK snapshot 2013-07-02 12:19:13
-set( SimpleITK_GIT_REPOSITORY
-  ${git_protocol}://github.com/SimpleITK/SimpleITK.git )
-set( SimpleITK_GIT_TAG d11d0454f55314beabf6fea564673a52ca983e4b )
-
 # Slicer Execution Model (TubeTK fork) snapshot 2013-08-05 10:16:50
 set( SlicerExecutionModel_GIT_REPOSITORY
   ${git_protocol}://github.com/TubeTK/TubeTK-SlicerExecutionModel.git )

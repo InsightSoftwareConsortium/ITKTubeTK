@@ -298,13 +298,6 @@ if( TubeTK_USE_QT )
   endif( QT4_FOUND )
 endif( TubeTK_USE_QT )
 
-# SimpleITK setup.
-option( TubeTK_USE_SIMPLEITK "Use SimpleITK to enable additional functionality."
-  OFF )
-option( USE_SYSTEM_SIMPLEITK
-  "Exclude SimpleITK from superbuild and use an existing build." OFF )
-mark_as_advanced( USE_SYSTEM_SIMPLEITK )
-
 # Slicer Execution model Setup
 option( USE_SYSTEM_SLICER_EXECUTION_MODEL
   "Exclude SlicerExecutionModel from superbuild and use an existing build."
