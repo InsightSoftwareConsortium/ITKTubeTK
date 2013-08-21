@@ -76,7 +76,14 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
 {
   Superclass::PrintSelf( os, indent );
 
-  os << indent << "Index Image: " << m_IndexImage << std::endl;
+  if( m_IndexImage.IsNotNull() )
+    {
+    os << indent << "Index Image: " << m_IndexImage << std::endl;
+    }
+  else
+    {
+    os << indent << "Index Image: NULL" << std::endl;
+    }
 }
 
 /**
