@@ -36,6 +36,7 @@ void RegisterTests( void )
   REGISTER_TEST( itktubeTubeEnhancingDiffusion2DImageFilterTest );
   REGISTER_TEST( itktubeSheetnessMeasureImageFilterTest );
   REGISTER_TEST( itktubeSheetnessMeasureImageFilterTest2 );
+  REGISTER_TEST( itktubeShrinkUsingMaxImageFilterTest );
   REGISTER_TEST( itktubeAnisotropicHybridDiffusionImageFilterTest );
   REGISTER_TEST( itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest );
   REGISTER_TEST( itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest );
