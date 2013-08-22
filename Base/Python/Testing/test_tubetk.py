@@ -26,8 +26,8 @@
 import sys
 
 def VesselTubeToNumPyTest(tubes, baseline_array):
-    from tubetk.numpy import tubes_from_file
     import numpy as np
+    from tubetk.numpy import tubes_from_file
 
     array = tubes_from_file(tubes)
     print(array.dtype)
@@ -93,6 +93,7 @@ if __name__ == '__main__':
 
     test_to_call = locals()[sys.argv[1]]
     # Pass arguments without an '=' as args.
+    
     args = [arg for arg in sys.argv[2:] if arg.find('=') == -1]
     args = tuple(args)
     # Pass arguments with an '=' as kwargs.

@@ -31,6 +31,7 @@ limitations under the License.
 #include <itkSpatialObjectReader.h>
 #include <itkVesselTubeSpatialObject.h>
 
+
 // A C Python extension.
 #ifdef __cplusplus
 extern "C"
