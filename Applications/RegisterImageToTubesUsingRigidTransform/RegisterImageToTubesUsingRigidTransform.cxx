@@ -25,6 +25,8 @@ limitations under the License.
 #include "itktubeRecordOptimizationParameterProgressionCommand.h"
 #include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
 #include "itktubeSubSampleTubeTreeSpatialObjectFilterSerializer.h"
+#include "itktubeTubeExponentialResolutionWeightFunction.h"
+#include "itktubeTubePointWeightsCalculator.h"
 #include "itktubeTubeToTubeTransformFilter.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
@@ -210,11 +212,27 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start("Register image to tube");
 
+  typedef itk::tube::Function::TubeExponentialResolutionWeightFunction<
+    TubeType::TubePointType, double >                WeightFunctionType;
+  typedef RegistrationMethodType::FeatureWeightsType PointWeightsType;
+  WeightFunctionType::Pointer weightFunction = WeightFunctionType::New();
+  typedef itk::tube::TubePointWeightsCalculator< Dimension,
+    TubeType, WeightFunctionType,
+    PointWeightsType > PointWeightsCalculatorType;
+  PointWeightsCalculatorType::Pointer resolutionWeightsCalculator
+    = PointWeightsCalculatorType::New();
+  resolutionWeightsCalculator->SetTubeTreeSpatialObject(
+    subSampleTubeTreeFilter->GetOutput() );
+  resolutionWeightsCalculator->SetPointWeightFunction( weightFunction );
+  resolutionWeightsCalculator->Compute();
+  PointWeightsType pointWeights = resolutionWeightsCalculator->GetPointWeights();
+
   typename RegistrationMethodType::Pointer registrationMethod =
     RegistrationMethodType::New();
 
   registrationMethod->SetFixedImage( currentImage );
   registrationMethod->SetMovingSpatialObject( subSampleTubeTreeFilter->GetOutput() );
+  registrationMethod->SetFeatureWeights( pointWeights );
 
   // Set Optimizer parameters.
   typename RegistrationMethodType::OptimizerType::Pointer optimizer =

@@ -25,6 +25,7 @@ limitations under the License.
 #define __itktubeTubeExponentialResolutionWeightFunction_h
 
 #include <vnl/vnl_math.h>
+#include <itkFunctionBase.h>
 
 namespace itk
 {
@@ -47,25 +48,43 @@ namespace Function
  * \sa TubeExponentialResolutionWeightFunction
  * \sa TubeExponentialWithBoundsResolutionWeightFunction
  */
-template< class TTubePoint, class TOperatorValue = double >
-class TubeExponentialResolutionWeightFunction
+template< class TTubePoint, class TWeight = double >
+class TubeExponentialResolutionWeightFunction:
+  public FunctionBase< TTubePoint, TWeight >
 {
 public:
-  typedef TOperatorValue OperatorValueType;
-  typedef TTubePoint     TubePointType;
+  /** Standard class typedefs. */
+  typedef TubeExponentialResolutionWeightFunction< TTubePoint, TWeight >
+                                               Self;
+  typedef FunctionBase< TTubePoint, TWeight >  Superclass;
+  typedef SmartPointer< Self >                 Pointer;
+  typedef SmartPointer< const Self >           ConstPointer;
 
+  /** Run-time type information ( and related methods ). */
+  itkTypeMacro( TubeExponentialResolutionWeightFunction, FunctionBase );
+
+  /** Method for creation through the object factory. */
+  itkNewMacro( Self );
+
+  typedef TWeight    WeightType;
+  typedef TTubePoint TubePointType;
+
+  WeightType Evaluate( const TubePointType & tubePoint ) const
+    {
+    const WeightType radius = tubePoint.GetRadius();
+    return static_cast< WeightType >( 2.0 /
+      (1.0 + vcl_exp( -2.0 * radius ) ));
+    }
+
+protected:
   TubeExponentialResolutionWeightFunction( void )
     {}
   ~TubeExponentialResolutionWeightFunction( void )
     {}
 
-  inline OperatorValueType operator()( const TubePointType & tubePoint )
-    {
-    const OperatorValueType radius = tubePoint.GetRadius();
-    return static_cast< OperatorValueType >( 2.0 /
-      (1.0 + vcl_exp( -2.0 * radius ) ));
-    }
-
+private:
+  TubeExponentialResolutionWeightFunction( const Self & ); // purposely not implemented
+  void operator=( const Self & ); // purposely not implemented
 }; // End class TubeExponentialResolutionWeightFunction
 
 } // End namespace Function

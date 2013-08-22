@@ -24,9 +24,8 @@ limitations under the License.
 #ifndef __itktubeImageToTubeRigidMetric_h
 #define __itktubeImageToTubeRigidMetric_h
 
-#include "itktubeTubeExponentialResolutionWeightFunction.h"
-
 #include <itkEuler3DTransform.h>
+#include <itkCompensatedSummation.h>
 #include <itkGaussianDerivativeImageFunction.h>
 #include <itkImageToSpatialObjectMetric.h>
 
@@ -52,11 +51,9 @@ namespace tube
  * \warning (Derivative)
  */
 
-template< class TFixedImage, class TMovingSpatialObject,
-          class TTubeSpatialObject,
-          class TResolutionWeightFunction =
-            Function::TubeExponentialResolutionWeightFunction<
-            typename TTubeSpatialObject::TubePointType > >
+template< class TFixedImage,
+          class TMovingSpatialObject,
+          class TTubeSpatialObject >
 class ImageToTubeRigidMetric
   : public ImageToSpatialObjectMetric< TFixedImage, TMovingSpatialObject >
 {
@@ -73,21 +70,16 @@ public:
   itkStaticConstMacro( TubeDimension, unsigned int, TTubeSpatialObject::ObjectDimension );
 
   typedef TFixedImage                           FixedImageType;
-  typedef TMovingSpatialObject                  TubeNetType;
+  typedef TMovingSpatialObject                  TubeTreeType;
   typedef TTubeSpatialObject                    TubeType;
   typedef typename TubeType::TubePointType      TubePointType;
-  typedef TResolutionWeightFunction             ResolutionWeightFunctionType;
 
-  typedef double                                InternalComputationValueType;
+  typedef double                                ScalarType;
   typedef GaussianDerivativeImageFunction< TFixedImage >
                                                 DerivativeImageFunctionType;
   typedef typename Superclass::DerivativeType   DerivativeType;
   typedef typename Superclass::ParametersType   ParametersType;
   typedef typename Superclass::MeasureType      MeasureType;
-
-  typedef vnl_vector< InternalComputationValueType >                    VectorType;
-  typedef vnl_matrix< InternalComputationValueType >                    MatrixType;
-  typedef Point< InternalComputationValueType, ImageDimension >         PointType;
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( ImageToTubeRigidMetric, ImageToSpatialObjectMetric );
@@ -95,7 +87,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  unsigned int GetNumberOfParameters( void ) const
+  inline unsigned int GetNumberOfParameters( void ) const
     {
     return this->m_Transform->GetNumberOfParameters();
     }
@@ -111,12 +103,13 @@ public:
   typedef typename TFixedImage::PixelType      PixelType;
 
   /**  Type of the Transform Base class */
-  typedef Euler3DTransform<double>                 TransformType;
+  typedef Euler3DTransform< ScalarType >           TransformType;
   typedef typename TransformType::Pointer          TransformPointer;
   typedef typename TransformType::InputPointType   InputPointType;
   typedef typename TransformType::OutputPointType  OutputPointType;
   typedef typename TransformType::ParametersType   TransformParametersType;
   typedef typename TransformType::JacobianType     TransformJacobianType;
+  typedef TransformType::ParametersType            FeatureWeightsType;
 
   /** Get the Derivatives of the Match Measure */
   const DerivativeType & GetDerivative( const ParametersType &
@@ -135,18 +128,18 @@ public:
   void Initialize( void ) throw ( ExceptionObject );
 
   /** Control the radius scaling of the metric. */
-  itkSetMacro( Kappa, double );
-  itkGetConstMacro( Kappa, double );
+  itkSetMacro( Kappa, ScalarType );
+  itkGetConstMacro( Kappa, ScalarType );
 
   /** Set/Get the extent of the blurring calculation given in Gaussian sigma's. */
-  itkSetMacro( Extent, double );
-  itkGetConstMacro( Extent, double );
+  itkSetMacro( Extent, ScalarType );
+  itkGetConstMacro( Extent, ScalarType );
 
-  /** Set/Get the function used to determine the resolution weights.  This function
-   *  takes a tube point as an input and outputs a weight for that point. */
-  ResolutionWeightFunctionType & GetResolutionWeightFunction( void );
-  const ResolutionWeightFunctionType & GetResolutionWeightFunction( void ) const;
-  void SetResolutionWeightFunction( const ResolutionWeightFunctionType & function );
+  /** Set/Get the scalar weights associated with every point in the tube.
+   * The index of the point weights should correspond to "standard tube tree
+   * interation". */
+  void SetFeatureWeights( FeatureWeightsType & featureWeights );
+  itkGetConstReferenceMacro( FeatureWeights, FeatureWeightsType )
 
   TransformPointer GetTransform( void ) const
     { return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() ); }
@@ -157,33 +150,34 @@ protected:
   ImageToTubeRigidMetric( void );
   virtual ~ImageToTubeRigidMetric( void );
 
-  void ComputeImageRange( void );
+  typedef Vector< ScalarType, TubeDimension >                VectorType;
+  typedef Matrix< ScalarType, TubeDimension, TubeDimension > MatrixType;
+  typedef typename TubePointType::PointType                  PointType;
+  typedef vnl_vector< ScalarType >                           VnlVectorType;
+  typedef vnl_matrix< ScalarType >                           VnlMatrixType;
+  typedef CompensatedSummation< ScalarType >                 CompensatedSummationType;
+
+  virtual void ComputeCenterOfRotation( void );
+  SizeValueType CountTubePoints( void );
 
   void GetDeltaAngles( const OutputPointType & x,
-    const vnl_vector_fixed< InternalComputationValueType, 3> & dx,
-    const vnl_vector_fixed< InternalComputationValueType, 3> & offsets,
-    double angle[3] ) const;
-
-  /** Calculate the weighting for each tube point and its scale, which is based
-   * on the local radius. */
-  virtual void ComputeTubePointResolutionWeights( void );
+    const VnlVectorType & dx,
+    const VectorType & offsets,
+    ScalarType angle[3] ) const;
 
 private:
-  typedef std::list< InternalComputationValueType > ResolutionWeightsContainerType;
-  ResolutionWeightsContainerType             m_ResolutionWeights;
+  ImageToTubeRigidMetric( const Self& ); // purposely not implemented
+  void operator=( const Self& ); // purposely not implemented
 
   typename DerivativeImageFunctionType::Pointer m_DerivativeImageFunction;
 
-  ResolutionWeightFunctionType               m_ResolutionWeightFunction;
-  InternalComputationValueType               m_ImageMin;
-  InternalComputationValueType               m_ImageMax;
-  double                                     m_Kappa;
-  double                                     m_Extent;
-
-  vnl_vector_fixed< InternalComputationValueType, TubeDimension >  m_Offsets;
+  ScalarType                   m_ImageMin;
+  ScalarType                   m_ImageMax;
+  ScalarType                   m_Kappa;
+  ScalarType                   m_Extent;
 
   /** The center of rotation of the weighted tube points. */
-  typedef typename TubePointType::PointType CenterOfRotationType;
+  typedef PointType CenterOfRotationType;
   CenterOfRotationType m_CenterOfRotation;
 
   /** Test whether the specified tube point is inside the Image.
@@ -194,24 +188,22 @@ private:
     OutputPointType & outputPoint,
     const TransformType * transform ) const;
 
-  InternalComputationValueType ComputeLaplacianMagnitude(
+  ScalarType ComputeLaplacianMagnitude(
     const typename TubePointType::CovariantVectorType & tubeNormal,
-    const InternalComputationValueType scale,
+    const ScalarType scale,
     const OutputPointType & currentPoint ) const;
-  InternalComputationValueType ComputeThirdDerivatives(
-    const Vector< InternalComputationValueType, TubeDimension > *v,
-    const InternalComputationValueType scale,
+  ScalarType ComputeThirdDerivatives(
+    const VectorType & v,
+    const ScalarType scale,
     const OutputPointType & currentPoint ) const;
 
   /**
    * \warning User is responsible for freeing the list, but not the elements
    * of the list.
    */
-  typename TubeNetType::ChildrenListType* GetTubes( void ) const;
+  typename TubeTreeType::ChildrenListType* GetTubes( void ) const;
 
-  ImageToTubeRigidMetric( const Self& ); // purposely not implemented
-  void operator=( const Self& ); // purposely not implemented
-
+  FeatureWeightsType m_FeatureWeights;
 }; // End class ImageToTubeRigidMetric
 
 } // End namespace tube

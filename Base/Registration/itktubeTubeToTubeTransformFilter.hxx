@@ -32,11 +32,8 @@ namespace itk
 namespace tube
 {
 
-/**
- * Constructor
- */
 template< class TTransformType, unsigned int TDimension >
-TubeToTubeTransformFilter<TTransformType,TDimension>
+TubeToTubeTransformFilter< TTransformType, TDimension >
 ::TubeToTubeTransformFilter( void )
 {
   m_Output = 0;

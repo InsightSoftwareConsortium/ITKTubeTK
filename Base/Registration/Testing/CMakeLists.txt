@@ -54,6 +54,7 @@ set( tubeBaseRegistration_SRCS
   itktubeTubeExponentialResolutionWeightFunctionTest.cxx
   itktubeTubeParametricExponentialResolutionWeightFunctionTest.cxx
   itktubeTubeParametricExponentialWithBoundsResolutionWeightFunctionTest.cxx
+  itktubeTubePointWeightsCalculatorTest.cxx
   itktubeTubeToTubeTransformFilterTest.cxx )
 
 # give a bit of tolerance
@@ -252,3 +253,8 @@ Midas3FunctionAddTest( itktubeTubeParametricExponentialWithBoundsResolutionWeigh
   ${BASE_REGISTRATION_TESTS}
   itktubeTubeParametricExponentialWithBoundsResolutionWeightFunctionTest
   ${TEMP}/itkTubeParametricExponentialWithBoundsResolutionWeightFunctionTest.csv )
+
+Midas3FunctionAddTest( itktubeTubePointWeightsCalculatorTest
+  ${BASE_REGISTRATION_TESTS}
+  itktubeTubePointWeightsCalculatorTest
+  ${TEMP}/itkTubePointWeightsCalculatorTest.csv )
