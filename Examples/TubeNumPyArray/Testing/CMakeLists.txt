@@ -21,10 +21,9 @@
 #
 ##############################################################################
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
-# Add notebook/example directories
-add_subdirectory( MergeAdjacentImages )
-add_subdirectory( TubeNumPyArray )
+Midas3FunctionAddTest( NAME Python.TubeNumPyArrayAndPropertyHistograms
+  COMMAND ${PYTHON_TESTING_EXECUTABLE}
+    "${NOTEBOOK_TEST_DRIVER}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../TubeNumPyArrayAndPropertyHistograms.ipynb"
+    "${TubeTK_BINARY_DIR}"
+    MIDAS{VascularNetwork.tre.md5} )

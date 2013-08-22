@@ -21,10 +21,6 @@
 #
 ##############################################################################
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
-# Add notebook/example directories
-add_subdirectory( MergeAdjacentImages )
-add_subdirectory( TubeNumPyArray )
+if( BUILD_TESTING )
+  add_subdirectory( Testing )
+endif( BUILD_TESTING )
