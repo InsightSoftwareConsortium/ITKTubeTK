@@ -49,7 +49,7 @@ Midas3FunctionAddTest( ${MODULE_NAME}-Test1
 # Test1-Compare
 Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-00
                   ${IMAGECOMPARE_EXE}
-                    -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.Image.mat.mha
+                    -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.Image.mat.mha
                     -b MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.Image.mat.mha.md5} )
 
 set_property( TEST ${MODULE_NAME}-Test1-Compare-00
