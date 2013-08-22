@@ -53,9 +53,15 @@ option( GIT_PROTOCOL_HTTP
 mark_as_advanced( GIT_PROTOCOL_HTTP )
 
 set( git_protocol "git" )
+set( github_protocol "git" )
 if( GIT_PROTOCOL_HTTP )
   set( git_protocol "http" )
+  set( github_protocol "https" )
 endif( GIT_PROTOCOL_HTTP )
+
+if( NOT Subversion_SVN_EXECUTABLE )
+  find_package( Subversion REQUIRED )
+endif( NOT Subversion_SVN_EXECUTABLE )
 
 option( SVN_PROTOCOL_HTTP
   "Use HTTP for svn access (useful if behind a firewall)" OFF )
@@ -131,9 +137,9 @@ endif( TubeTK_USE_KWSTYLE )
 
 if( TubeTK_USE_PYTHON )
   list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS
-    -DTubeTK_USE_PYQTGRAPH:BOOL=${TubeTK_USE_PYQTGRAPH}
+    -DTubeTK_USE_NOTEBOOKS:BOOL=${TubeTK_USE_NOTEBOOKS}
     -DTubeTK_USE_NUMPY:BOOL=${TubeTK_USE_NUMPY}
-    -DTubeTK_USE_NOTEBOOKS:BOOL=${TubeTK_USE_NOTEBOOKS} )
+    -DTubeTK_USE_PYQTGRAPH:BOOL=${TubeTK_USE_PYQTGRAPH} )
 endif( TubeTK_USE_PYTHON )
 
 # Check dependencies.
@@ -171,12 +177,12 @@ ExternalProject_Add( ${proj}
     -DTubeTK_BUILD_SLICER_EXTENSION:BOOL=${TubeTK_BUILD_SLICER_EXTENSION}
     -DTubeTK_CONFIG_BINARY_DIR:PATH=${TubeTK_CONFIG_BINARY_DIR}
     -DTubeTK_EXECUTABLE_DIRS:STRING=${TubeTK_EXECUTABLE_DIRS}
-    -DTubeTK_USE_PYTHON:BOOL=${TubeTK_USE_PYTHON}
     -DTubeTK_USE_BOOST:BOOL=${TubeTK_USE_BOOST}
     -DTubeTK_USE_CPPCHECK:BOOL=${TubeTK_USE_CPPCHECK}
     -DTubeTK_USE_CTK:BOOL=${TubeTK_USE_CTK}
     -DTubeTK_USE_IMAGE_VIEWER:BOOL=${TubeTK_USE_IMAGE_VIEWER}
     -DTubeTK_USE_LIBSVM:BOOL=${TubeTK_USE_LIBSVM}
+    -DTubeTK_USE_PYTHON:BOOL=${TubeTK_USE_PYTHON}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
     -DTubeTK_USE_SLICER:BOOL=${TubeTK_USE_SLICER}
     -DTubeTK_USE_SUPERBUILD:BOOL=OFF
