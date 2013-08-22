@@ -54,7 +54,8 @@ if( TubeTK_USE_PYQTGRAPH )
   # pip installable.
   list( APPEND PYTHON_TESTING_MODULES
     pyqtgraph
-    scipy )
+    scipy
+    tables )
 endif( TubeTK_USE_PYQTGRAPH )
 
 configure_file(
