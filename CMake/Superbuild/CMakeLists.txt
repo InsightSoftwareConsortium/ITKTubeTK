@@ -53,8 +53,10 @@ option( GIT_PROTOCOL_HTTP
 mark_as_advanced( GIT_PROTOCOL_HTTP )
 
 set( git_protocol "git" )
+set( github_protocol "git" )
 if( GIT_PROTOCOL_HTTP )
   set( git_protocol "http" )
+  set( github_protocol "https" )
 endif( GIT_PROTOCOL_HTTP )
 
 if( NOT Subversion_SVN_EXECUTABLE )
