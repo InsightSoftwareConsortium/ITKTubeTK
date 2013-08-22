@@ -16,7 +16,9 @@ include_directories( ${NUMPY_INCLUDE_DIR}
 python_add_module( _tubetk_numpy _tubetk_numpy.cxx )
 set_target_properties( _tubetk_numpy
   PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} )
-target_link_libraries( _tubetk_numpy ${ITK_LIBRARIES} )
+target_link_libraries( _tubetk_numpy
+  ${ITK_LIBRARIES}
+  ${PYTHON_LIBRARIES} )
 
 file( COPY ./ DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
   FILES_MATCHING PATTERN "*.py" )
