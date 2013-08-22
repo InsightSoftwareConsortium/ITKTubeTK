@@ -57,6 +57,10 @@ if( GIT_PROTOCOL_HTTP )
   set( git_protocol "http" )
 endif( GIT_PROTOCOL_HTTP )
 
+if( NOT Subversion_SVN_EXECUTABLE )
+  find_package( Subversion REQUIRED )
+endif( NOT Subversion_SVN_EXECUTABLE )
+
 option( SVN_PROTOCOL_HTTP
   "Use HTTP for svn access (useful if behind a firewall)" OFF )
 mark_as_advanced( SVN_PROTOCOL_HTTP )
