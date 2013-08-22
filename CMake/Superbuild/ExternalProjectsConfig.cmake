@@ -54,7 +54,7 @@ set( KWStyle_GIT_TAG 16c5ca21e8133e6db155795dfdcb7d4bfa944af7 )
 # LIBSVM version 3.17 (minimum version 3.1)
 set( LIBSVM_GIT_REPOSITORY
   ${github_protocol}://github.com/TubeTK/TubeTK-LIBSVM.git )
-set( LIBSVM_GIT_TAG 74907dab39c105f88dcc3f0e14c6f5562b5affb4 )
+set( LIBSVM_GIT_TAG d9c10536a55ca36a170a3def0d9f93bc01940a67 )
 
 # TubeTK Parameter Serializer snapshot 2013-08-21 11:14:41
 set( ParameterSerializer_GIT_REPOSITORY
