@@ -1,28 +1,3 @@
-get_filename_component( activate_full "@PythonVirtualenvHome@/bin/activate"
-  ABSOLUTE )
-if( NOT EXISTS "${activate_full}" )
-  find_program( VIRTUALENV NAMES virtualenv virtualenv.py )
-  if( VIRTUALENV )
-    set( virtualenv_script "${VIRTUALENV}" )
-  else( VIRTUALENV )
-    set( virtualenv_script
-      "@TubeTK_SOURCE_DIR@/Utilities/Python/virtualenv/virtualenv.py" )
-  endif( VIRTUALENV )
-  # Create the virtual environment.
-  execute_process( COMMAND "@PYTHON_EXECUTABLE@"
-    "${virtualenv_script}"
-      "--python=@PYTHON_EXECUTABLE@"
-      "--system-site-packages"
-      "@PythonVirtualenvHome@"
-    RESULT_VARIABLE failed
-    ERROR_VARIABLE error )
-  if( failed )
-    message( ERROR ${error} )
-  endif()
-else( NOT EXISTS "${activate_full}" )
-  message( STATUS "Testing virtualenv found at @PythonVirtualenvHome@" )
-endif( NOT EXISTS "${activate_full}" )
-
 set( installed_packages_file
   "@TubeTK_BINARY_DIR@/CMakeFiles/CMakeTmp/InstalledVirtualEnvPackages.txt" )
 if( NOT EXISTS ${installed_packages_file} )

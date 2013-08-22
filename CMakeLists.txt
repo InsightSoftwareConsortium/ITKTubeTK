@@ -533,6 +533,11 @@ endif( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_SLICER )
 
 include( TubeTKMacroInstallPlugins )
 
+# Setup Python VirtualEnv for testing.
+if( BUILD_TESTING AND TubeTK_USE_PYTHON )
+  include( CMake/TubeTKVirtualEnvSetup.cmake )
+endif( BUILD_TESTING AND TubeTK_USE_PYTHON )
+
 # Test TubeTK IPython examples.
 if( TubeTK_USE_NOTEBOOKS )
   add_subdirectory( Examples )
@@ -589,11 +594,6 @@ else( MSVC )
     list( APPEND ${VTK_DIR}/bin )
   endif( TubeTK_USE_VTK )
 endif( MSVC )
-
-# Setup Python VirtualEnv for testing.
-if( BUILD_TESTING AND TubeTK_USE_PYTHON )
-  include( CMake/TubeTKVirtualEnvSetup.cmake )
-endif( BUILD_TESTING AND TubeTK_USE_PYTHON )
 
 set( TubeTK_LIBRARY_DIRS
   ${TubeTK_EXECUTABLE_DIRS} )
