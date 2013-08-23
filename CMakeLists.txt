@@ -239,7 +239,8 @@ if( TubeTK_USE_PYTHON )
   mark_as_advanced( TubeTK_USE_NOTEBOOKS )
 
   # PyQtGraph bridge support.
-  option( TubeTK_USE_PYQTGRAPH "Use PyQtGraph to enable additional functionality." ON )
+  option( TubeTK_USE_PYQTGRAPH
+    "Use PyQtGraph to enable additional functionality." OFF )
   mark_as_advanced( TubeTK_USE_PYQTGRAPH )
 endif( TubeTK_USE_PYTHON )
 
