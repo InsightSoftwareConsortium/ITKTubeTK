@@ -20,3 +20,44 @@
 # limitations under the License.
 #
 ##############################################################################
+
+include_regular_expression( "^.*$" )
+
+include( Midas3FunctionAddTest )
+set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
+
+set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
+
+set( PROJ_EXE
+     ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
+
+set( TEXTCOMPARE_EXE
+     ${TubeTK_BINARY_DIR}/bin/TextCompareCommand )
+
+# Test1
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1
+                ${PROJ_EXE}
+                  MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.md5}
+                  MIDAS_FETCH_ONLY{${MODULE_NAME}-CVT50-Branch-truth.grp.mat.md5}
+                  MIDAS_FETCH_ONLY{${MODULE_NAME}-CVT50-Branch-truth.grp.brc.md5}
+                  MIDAS_FETCH_ONLY{${MODULE_NAME}-CVT50-Branch-truth.grp.rot.md5}
+                  MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.md5}
+                  ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp )
+                  
+# Test1-Compare-00
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-00
+                  ${TEXTCOMPARE_EXE}
+                    -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.matProb.txt
+                    -b MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.matProb.txt.md5} )
+
+# Test1-Compare-01
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-01
+                  ${TEXTCOMPARE_EXE}
+                    -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.cntProb.txt
+                    -b MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.cntProb.txt.md5} )
+                    
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-02
+                  ${TEXTCOMPARE_EXE}
+                    -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.brcProb.txt
+                    -b MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.brcProb.txt.md5} )                    

@@ -214,5 +214,5 @@ int DoIt( int argc, char * argv[] )
   writeBrcStream.close();
   writeCntStream.close();
 
-  return 1;
+  return EXIT_SUCCESS;
 }
