@@ -144,5 +144,5 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report(1.0);
   progressReporter.End();
 
-  return 1;
+  return EXIT_SUCCESS;
 }
