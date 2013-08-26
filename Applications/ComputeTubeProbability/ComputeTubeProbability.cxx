@@ -133,10 +133,6 @@ int DoIt( int argc, char * argv[] )
       pnt = tubeTransform->TransformPoint(pnt); // Point coords to physical coords
       meanImage->TransformPhysicalPointToIndex(pnt, indx); // Get closest voxel
       // Write value of ATLAS EMD file at voxel
-      if (meanImage->GetPixel(indx) > 100)
-        {
-        std::cout << pnt << std::endl;
-        }
       writeStream << meanImage->GetPixel(indx) << std::endl;
       }
 
