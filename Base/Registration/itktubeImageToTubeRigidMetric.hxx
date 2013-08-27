@@ -566,6 +566,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
   derivative[3] = dPosition[0].GetSum();
   derivative[4] = dPosition[1].GetSum();
   derivative[5] = dPosition[2].GetSum();
+
+  delete tubeList;
 }
 
 
