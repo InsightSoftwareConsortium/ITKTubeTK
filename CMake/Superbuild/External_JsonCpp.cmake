@@ -39,6 +39,11 @@ endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 set( ${proj}_DEPENDENCIES "" )
 
+if( TubeTK_BUILD_SLICER_EXTENSION AND UNIX )
+  # To link with shared libraries on amd64.
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+endif( TubeTK_BUILD_SLICER_EXTENSION AND UNIX )
+
 # Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
 
