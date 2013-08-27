@@ -126,12 +126,14 @@ int DoIt( int argc, char * argv[] )
     itk::Index< VDimension > indx;
     tube->ComputeObjectToWorldTransform();
     tubeTransform = tube->GetIndexToWorldTransform();
+    
     for( unsigned int i=0; i<tube->GetNumberOfPoints(); i++)
       {
       tubePoint = static_cast<TubePointType>(tube->GetPoints()[i]); // Get point
       pnt = tubePoint.GetPosition(); // Get point's position
-      pnt = tubeTransform->TransformPoint(pnt); // Point coords to physical coords
+      pnt = tubeTransform->TransformPoint(pnt); // Point to physical coords
       meanImage->TransformPhysicalPointToIndex(pnt, indx); // Get closest voxel
+  
       // Write value of ATLAS EMD file at voxel
       writeStream << meanImage->GetPixel(indx) << std::endl;
       }
