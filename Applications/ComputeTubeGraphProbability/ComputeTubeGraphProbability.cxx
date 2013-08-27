@@ -25,6 +25,8 @@ limitations under the License.
 
 #include <itkVesselTubeSpatialObject.h>
 
+#include <fstream>
+
 #include "ComputeTubeGraphProbabilityCLP.h"
 
 int DoIt( int argc, char * argv[] );
