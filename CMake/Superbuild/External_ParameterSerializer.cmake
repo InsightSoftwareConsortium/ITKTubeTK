@@ -48,6 +48,11 @@ if( NOT USE_SYSTEM_JsonCpp )
   set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "JsonCpp" )
 endif( NOT USE_SYSTEM_JsonCpp )
 
+if( TubeTK_BUILD_SLICER_EXTENSION AND UNIX )
+  # To link with shared libraries on amd64.
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+endif( TubeTK_BUILD_SLICER_EXTENSION AND UNIX )
+
 # Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
 
