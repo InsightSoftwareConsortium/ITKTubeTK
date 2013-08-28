@@ -41,12 +41,12 @@ set( IMAGECOMPARE_EXE
 # Test1
 Midas3FunctionAddTest( ${MODULE_NAME}-Test1
                 ${PROJ_EXE}
-                  MIDAS{VesselNetwork-In-SPL2012-ReferenceSpace.tre.md5}
+                  MIDAS{Branch-truth.tre.md5}
                   ${TEMP}/${MODULE_NAME}Test1-Den.mha
                   ${TEMP}/${MODULE_NAME}Test1-Rad.mha
                   ${TEMP}/${MODULE_NAME}Test1-Tan.mha
                   --inputTemplateImage
-                  MIDAS{SPL2012-ReferenceSpace.mha.md5}
+                  MIDAS{Branch.n010.mha.md5}
                   --useSquareDistance )
 
 # Test1-Compare
