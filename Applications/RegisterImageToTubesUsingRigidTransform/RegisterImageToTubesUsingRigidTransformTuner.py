@@ -489,33 +489,35 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
     def _image_plane(self, direction, index=None):
         """Create an image plane Item from the center plane in the given
         direction for the given SimpleITK Image."""
+        print('image size:')
+        print(self.image_content.shape)
         if index is None:
             shape = self.image_content.shape
             if direction == 'x':
-                index = shape[0] / 2
+                index = shape[2] / 2
             elif direction == 'y':
                 index = shape[1] / 2
             elif direction == 'z':
-                index = shape[2] / 2
+                index = shape[0] / 2
         if direction == 'x':
-            plane = self.image_content[index, :, :]
-            plane = plane.transpose()
+            plane = self.image_content[:, :, index]
         elif direction == 'y':
             plane = self.image_content[:, index, :]
         else:
-            plane = self.image_content[:, :, index]
+            plane = self.image_content[index, :, :]
+            plane = plane.transpose()
         texture = pg.makeRGBA(plane)[0]
         image_item = gl.GLImageItem(texture)
         spacing = self.input_image.GetSpacing()
         if direction == 'x':
-            image_item.translate(0, 0, spacing[2] * index)
+            image_item.rotate(-90, 0, 1, 0)
+            image_item.translate(spacing[2] * index, 0, 0)
         elif direction == 'y':
             image_item.rotate(-90, 0, 1, 0)
             image_item.rotate(-90, 0, 0, 1)
             image_item.translate(0, spacing[1] * index, 0)
         else:
-            image_item.rotate(-90, 0, 1, 0)
-            image_item.translate(spacing[0] * index, 0, 0)
+            image_item.translate(0, 0, spacing[0] * index)
         return image_item
 
 if __name__ == '__main__':
