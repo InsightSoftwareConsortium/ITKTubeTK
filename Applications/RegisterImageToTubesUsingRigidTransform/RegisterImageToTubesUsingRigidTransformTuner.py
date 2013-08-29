@@ -489,8 +489,6 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
     def _image_plane(self, direction, index=None):
         """Create an image plane Item from the center plane in the given
         direction for the given SimpleITK Image."""
-        print('image size:')
-        print(self.image_content.shape)
         if index is None:
             shape = self.image_content.shape
             if direction == 'x':
@@ -510,13 +508,16 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         image_item = gl.GLImageItem(texture)
         spacing = self.input_image.GetSpacing()
         if direction == 'x':
+            image_item.scale(spacing[2], spacing[1], 1)
             image_item.rotate(-90, 0, 1, 0)
             image_item.translate(spacing[2] * index, 0, 0)
         elif direction == 'y':
+            image_item.scale(spacing[2], spacing[0], 1)
             image_item.rotate(-90, 0, 1, 0)
             image_item.rotate(-90, 0, 0, 1)
             image_item.translate(0, spacing[1] * index, 0)
         else:
+            image_item.scale(spacing[0], spacing[1], 1)
             image_item.translate(0, 0, spacing[0] * index)
         return image_item
 
