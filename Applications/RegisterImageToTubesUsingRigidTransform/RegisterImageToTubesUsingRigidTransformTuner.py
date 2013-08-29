@@ -507,18 +507,25 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         texture = pg.makeRGBA(plane)[0]
         image_item = gl.GLImageItem(texture)
         spacing = self.input_image.GetSpacing()
+        origin = self.input_image.GetOrigin()
         if direction == 'x':
             image_item.scale(spacing[2], spacing[1], 1)
             image_item.rotate(-90, 0, 1, 0)
-            image_item.translate(spacing[2] * index, 0, 0)
+            image_item.translate(origin[0] + spacing[2] * index,
+                                 origin[1],
+                                 origin[2])
         elif direction == 'y':
             image_item.scale(spacing[2], spacing[0], 1)
             image_item.rotate(-90, 0, 1, 0)
             image_item.rotate(-90, 0, 0, 1)
-            image_item.translate(0, spacing[1] * index, 0)
+            image_item.translate(origin[0],
+                                 origin[1] + spacing[1] * index,
+                                 origin[2])
         else:
             image_item.scale(spacing[0], spacing[1], 1)
-            image_item.translate(0, 0, spacing[0] * index)
+            image_item.translate(origin[0],
+                                 origin[1],
+                                 origin[2] + spacing[0] * index)
         return image_item
 
 if __name__ == '__main__':
