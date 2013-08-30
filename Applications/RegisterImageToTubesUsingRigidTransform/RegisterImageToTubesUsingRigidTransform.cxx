@@ -304,6 +304,10 @@ int DoIt( int argc, char * argv[] )
   parametersMessage << "Transform Parameters: "
                     << registrationMethod->GetLastTransformParameters();
   tube::InformationMessage( parametersMessage.str() );
+  parametersMessage.str( "" );
+  parametersMessage << "Transform Center Of Rotation: "
+                    << outputTransform->GetFixedParameters();
+  tube::InformationMessage( parametersMessage.str() );
   timeCollector.Stop("Register image to tube");
 
 
