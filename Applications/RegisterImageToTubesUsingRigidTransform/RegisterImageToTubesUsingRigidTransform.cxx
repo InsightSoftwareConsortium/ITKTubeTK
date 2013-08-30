@@ -28,6 +28,8 @@ limitations under the License.
 #include "itktubeTubeExponentialResolutionWeightFunction.h"
 #include "itktubeTubePointWeightsCalculator.h"
 #include "itktubeTubeToTubeTransformFilter.h"
+#include "itkUltrasoundProbeGeometryCalculator.h"
+#include "itkUltrasoundProbeGeometryCalculatorSerializer.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
@@ -208,6 +210,80 @@ int DoIt( int argc, char * argv[] )
 
     timeCollector.Stop("Gaussian Blur");
     }
+
+#ifdef SlicerExecutionModel_USE_SERIALIZER
+  // Compute ultrasound probe geometry.
+  if( !parametersToRestore.empty() )
+    {
+    // If the Json file has entries that describe the parameters for an
+    // itk::tube::SubSampleTubeTreeSpatialObjectFilter, read them in, and set them on our
+    // instance.
+    if( parametersRoot.isMember( "UltrasoundProbeGeometryCalculator" ) )
+      {
+      timeCollector.Start("Compute probe geometry");
+      Json::Value & probeGeometryCalculatorValue
+        = parametersRoot["UltrasoundProbeGeometryCalculator"];
+
+      typedef itk::tube::UltrasoundProbeGeometryCalculator< ImageType >
+        GeometryCalculatorType;
+      GeometryCalculatorType::Pointer geometryCalculator
+        = GeometryCalculatorType::New();
+      geometryCalculator->SetInput( reader->GetOutput() );
+
+      typedef itk::tube::UltrasoundProbeGeometryCalculatorSerializer<
+        GeometryCalculatorType > SerializerType;
+      SerializerType::Pointer serializer = SerializerType::New();
+      serializer->SetTargetObject( geometryCalculator );
+      itk::JsonCppArchiver::Pointer archiver =
+        dynamic_cast< itk::JsonCppArchiver * >( serializer->GetArchiver() );
+      archiver->SetJsonValue( &probeGeometryCalculatorValue );
+      serializer->DeSerialize();
+
+      try
+        {
+        geometryCalculator->Update();
+        }
+      catch( itk::ExceptionObject & err )
+        {
+        tube::ErrorMessage( "Computing probe geometry: Exception caught: "
+                            + std::string(err.GetDescription()) );
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
+
+      if( parametersRoot.isMember( "UltrasoundProbeGeometryFile" ) )
+        {
+        const char * outputFile
+          = parametersRoot["UltrasoundProbeGeometryFile"].asCString();
+        std::ofstream geometryOutput( outputFile );
+        if( !geometryOutput.is_open() )
+          {
+          tube::ErrorMessage( "Could not open geometry output file: "
+                              + std::string( outputFile ) );
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
+
+        const GeometryCalculatorType::OriginType ultrasoundProbeOrigin =
+          geometryCalculator->GetUltrasoundProbeOrigin();
+        geometryOutput << "UltrasoundProbeOrigin:";
+        for( unsigned int ii = 0; ii < Dimension; ++ii )
+          {
+          geometryOutput << " " << ultrasoundProbeOrigin[ii];
+          }
+        geometryOutput << std::endl;
+
+        const GeometryCalculatorType::RadiusType startOfAcquisitionRadius =
+          geometryCalculator->GetStartOfAcquisitionRadius();
+        geometryOutput << "GetStartOfAcquisitionRadius: "
+                       << startOfAcquisitionRadius
+                       << std::endl;
+        }
+
+      timeCollector.Stop("Compute probe geometry");
+      }
+    }
+#endif
 
 
   timeCollector.Start("Register image to tube");
