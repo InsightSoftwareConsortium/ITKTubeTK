@@ -37,9 +37,9 @@ set( ImageViewer_GIT_REPOSITORY
   ${github_protocol}://github.com/TubeTK/TubeTK-ImageViewer.git )
 set( ImageViewer_GIT_TAG 44adad4d8cc00e33b7c478c4bd0f4eb901bd7814 )
 
-# Insight Segmentation and Registration Toolkit snapshot 2013-07-12 12:08:29
+# Insight Segmentation and Registration Toolkit snapshot 2013-08-28 16:10:36
 set( ITK_GIT_REPOSITORY ${github_protocol}://github.com/Kitware/ITK.git )
-set( ITK_GIT_TAG 35b90133a793ffd884820e499175db19366fe627 )
+set( ITK_GIT_TAG 237932867d8491db6a7745e6b4cc2b25f8e4470c )
 
 # JsonCpp snapshot 2013-08-08 23:08:28
 set( JsonCpp_SVN_REPOSITORY
