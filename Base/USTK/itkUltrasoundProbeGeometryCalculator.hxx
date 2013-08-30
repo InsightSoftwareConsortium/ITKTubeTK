@@ -414,7 +414,9 @@ UltrasoundProbeGeometryCalculator< TInputImage >
 {
   Superclass::PrintSelf( os, indent );
   os << indent << "GeneralBeamDirection: "
-    << m_GeneralBeamDirection << std::endl;
+     << m_GeneralBeamDirection << std::endl;
+  os << indent << "BackgroundValue: "
+     << m_BackgroundValue << std::endl;
 }
 
 } // End namespace tube

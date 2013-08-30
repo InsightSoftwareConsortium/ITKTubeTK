@@ -73,6 +73,8 @@ void
 SubSampleTubeTreeSpatialObjectFilterSerializer< TSubSampleTubeTreeSpatialObjectFilter >
 ::DeSerialize( void )
 {
+  Superclass::DeSerialize();
+
   SubSampleTubeTreeSpatialObjectFilterType * filter =
     dynamic_cast< SubSampleTubeTreeSpatialObjectFilterType * >
       ( this->GetTargetObject() );
