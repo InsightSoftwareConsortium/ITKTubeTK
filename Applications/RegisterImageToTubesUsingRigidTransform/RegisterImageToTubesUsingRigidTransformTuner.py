@@ -47,6 +47,7 @@ class RegistrationTuner(QtGui.QMainWindow):
         self.progression_colors = None
         self.metric_values_plot = None
         self.image_controls = {}
+        self.ultrasound_probe_origin = None
 
         self.initializeUI()
 
@@ -270,6 +271,26 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         for plane in self.image_planes:
             self.image_tubes.addItem(self.image_planes[plane])
 
+    def add_ultrasound_probe_origin(self):
+        """Add a sphere indicating the ultrasound probe origin."""
+        with open(self.config['UltrasoundProbeGeometryFile'], 'r') as fp:
+            line = fp.readline()
+            line = line.strip()
+            entries = line.split()
+            origin = [float(xx) for xx in entries[1:]]
+        if self.ultrasound_probe_origin:
+            self.image_tubes.removeItem(self.ultrasound_probe_origin)
+        sphere = gl.MeshData.sphere(rows=10,
+                                    cols=20,
+                                    radius=3.0)
+        center_mesh = gl.GLMeshItem(meshdata=sphere,
+                                    smooth=False,
+                                    color=(1.0, 1.0, 0.3, 0.7),
+                                    glOptions='translucent')
+        center_mesh.translate(origin[0], origin[1], origin[2])
+        self.ultrasound_probe_origin = center_mesh
+        self.image_tubes.addItem(self.ultrasound_probe_origin)
+
     def add_tubes(self):
         """Add the transformed tubes for the visualization."""
         memory = 4
@@ -395,6 +416,8 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         self._set_number_of_iterations(self.progression[-1]['Iteration'])
 
         self.add_image_planes()
+        if 'UltrasoundProbeGeometryFile' in self.config:
+            self.add_ultrasound_probe_origin()
         self.add_translations()
         self.set_iteration(self.number_of_iterations)
 
