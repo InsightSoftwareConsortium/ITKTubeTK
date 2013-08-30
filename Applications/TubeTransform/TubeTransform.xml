@@ -32,6 +32,13 @@
       <longflag>displacementField</longflag>
       <description>Specify the displacement field (e.g., generated using ANTS).</description>
     </string>
+    <double>
+      <name>scale</name>
+      <label>Isotropic Scaling</label>
+      <longflag>scale</longflag>
+      <default>1.0</default>
+      <description>When --transformFile is specified, additional isotropic scaling can also be applied.</description>
+    </double>
     <boolean>
       <name>useInverseTransform</name>
       <label>Use the Inverse of the Loaded Transform</label>
