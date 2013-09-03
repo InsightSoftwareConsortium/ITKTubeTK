@@ -24,6 +24,7 @@ limitations under the License.
 #include "itkAcousticImpulseResponseImageFilterSerializer.h"
 #include "itkUltrasoundProbeGeometryCalculatorSerializer.h"
 #include "itktubeSubSampleTubeTreeSpatialObjectFilterSerializer.h"
+#include "itktubeTubeAngleOfIncidenceWeightFunctionSerializer.h"
 
 int main ( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {

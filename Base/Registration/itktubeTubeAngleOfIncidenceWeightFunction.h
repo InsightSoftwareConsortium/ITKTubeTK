@@ -94,7 +94,7 @@ public:
   /** Set/Get the ultrasound probe origin (assuming a phase array or
    * curvilinear array transducer geometry. */
   itkSetMacro( UltrasoundProbeOrigin, PointType );
-  itkGetConstMacro( UltrasoundProbeOrigin, PointType );
+  itkGetConstReferenceMacro( UltrasoundProbeOrigin, PointType );
 
   WeightType Evaluate( const TubePointType & tubePoint ) const
     {
@@ -127,9 +127,8 @@ protected:
     {}
 
 private:
-  double m_FractionalImportance;
-  double m_AngleDependence;
-
+  double    m_FractionalImportance;
+  double    m_AngleDependence;
   PointType m_UltrasoundProbeOrigin;
 
   TubeAngleOfIncidenceWeightFunction( const Self & ); // purposely not implemented

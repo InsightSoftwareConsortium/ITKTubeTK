@@ -30,10 +30,12 @@ find_package( JsonCpp REQUIRED )
 include_directories( ${JsonCpp_INCLUDE_DIRS} )
 
 set( TubeTK_Base_ParameterSerializer_H_Files
+  Registration/itktubeTubeAngleOfIncidenceWeightFunctionSerializer.h
   USTK/itkAcousticImpulseResponseImageFilterSerializer.h
   USTK/itkUltrasoundProbeGeometryCalculatorSerializer.h )
 
 set( TubeTK_Base_ParameterSerializer_HXX_Files
+  Registration/itktubeTubeAngleOfIncidenceWeightFunctionSerializer.hxx
   USTK/itkAcousticImpulseResponseImageFilterSerializer.hxx
   USTK/itkUltrasoundProbeGeometryCalculatorSerializer.hxx )
 
