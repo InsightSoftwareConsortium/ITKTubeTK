@@ -144,6 +144,8 @@
     "Sampling" : 30
   },
 
+  "TubePointWeightsFile" : "@TEMP@/RegisterImageToTubesUsingRigidTransformTunerTestTubePointWeights.json",
+
   "Visualization" :
   {
     "ImageTubes" :

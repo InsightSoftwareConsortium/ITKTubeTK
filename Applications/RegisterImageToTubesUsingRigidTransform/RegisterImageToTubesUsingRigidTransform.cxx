@@ -46,6 +46,8 @@ limitations under the License.
 #include <itkSpatialObjectToImageFilter.h>
 #include <itkTimeProbesCollectorBase.h>
 
+#include <json/writer.h>
+
 #include "RegisterImageToTubesUsingRigidTransformCLP.h"
 
 template< class TPixel, unsigned int VDimension >
@@ -343,6 +345,33 @@ int DoIt( int argc, char * argv[] )
 
       timeCollector.Stop("Compute probe geometry");
       }
+    }
+
+  if( parametersRoot.isMember( "TubePointWeightsFile" ) )
+    {
+    Json::Value weightsJSONRoot;
+    weightsJSONRoot["TubePointWeights"] = Json::Value( Json::arrayValue );
+    Json::Value & weightsJSON = weightsJSONRoot["TubePointWeights"];
+    weightsJSON.resize( pointWeights.GetSize() );
+    for( itk::SizeValueType ii = 0; ii < pointWeights.GetSize(); ++ii )
+      {
+      weightsJSON[static_cast<Json::ArrayIndex>(ii)] = pointWeights[ii];
+      }
+
+    Json::FastWriter writer;
+    const std::string weightsString = writer.write( weightsJSONRoot );
+
+    Json::Value & tubePointWeightsFileValue =
+      parametersRoot["TubePointWeightsFile"];
+    std::ofstream tubePointWeightsFile( tubePointWeightsFileValue.asCString() );
+    if( !tubePointWeightsFile.is_open() )
+      {
+      tube::ErrorMessage( "Could not open tube point weights file: "
+                          + tubePointWeightsFileValue.asString() );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    tubePointWeightsFile << weightsString;
     }
 #endif
   timeCollector.Stop("Compute Model Feature Weights");
