@@ -51,6 +51,7 @@ set( tubeBaseRegistration_SRCS
   itktubeImageToTubeRigidRegistrationTest.cxx
   itktubePointsToImageTest.cxx
   itktubeSyntheticTubeImageGenerationTest.cxx
+  itktubeTubeAngleOfIncidenceWeightFunctionTest.cxx
   itktubeTubeExponentialResolutionWeightFunctionTest.cxx
   itktubeTubeParametricExponentialResolutionWeightFunctionTest.cxx
   itktubeTubeParametricExponentialWithBoundsResolutionWeightFunctionTest.cxx
@@ -258,3 +259,9 @@ Midas3FunctionAddTest( itktubeTubePointWeightsCalculatorTest
   ${BASE_REGISTRATION_TESTS}
   itktubeTubePointWeightsCalculatorTest
   ${TEMP}/itkTubePointWeightsCalculatorTest.csv )
+
+Midas3FunctionAddTest( itktubeTubeAngleOfIncidenceWeightFunctionTest
+  ${BASE_REGISTRATION_TESTS}
+  itktubeTubeAngleOfIncidenceWeightFunctionTest
+  MIDAS{AlmostMaxInhale01.vessels.tre.md5}
+  ${TEMP}/itkTubeAngleOfIncidenceWeightFunctionTest )
