@@ -35,7 +35,8 @@ set( tubeBaseUSTK_SRCS
   itkAcousticImpulseResponseImageFilterTest.cxx
   itkAngleOfIncidenceImageFilterTest.cxx
   itkGradientBasedAngleOfIncidenceImageFilterTest.cxx
-  itkUltrasoundProbeGeometryCalculatorTest.cxx )
+  itkUltrasoundProbeGeometryCalculatorTest.cxx
+  itkUltrasoundProbeGeometryCalculatorTest2.cxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
@@ -209,3 +210,8 @@ Midas3FunctionAddTest( itkUltrasoundProbeGeometryCalculatorTest
   ${BASE_USTK_TESTS}
     itkUltrasoundProbeGeometryCalculatorTest
       MIDAS{ultrasound_screenshot_cropped.png.md5} )
+
+Midas3FunctionAddTest( itkUltrasoundProbeGeometryCalculatorTest2
+  ${BASE_USTK_TESTS}
+    itkUltrasoundProbeGeometryCalculatorTest2
+    MIDAS{AlmostMaxInhale01.proc.downsample.mha.md5} )
