@@ -25,6 +25,8 @@ limitations under the License.
 #include "itktubeRecordOptimizationParameterProgressionCommand.h"
 #include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
 #include "itktubeSubSampleTubeTreeSpatialObjectFilterSerializer.h"
+#include "itktubeTubeAngleOfIncidenceWeightFunction.h"
+#include "itktubeTubeAngleOfIncidenceWeightFunctionSerializer.h"
 #include "itktubeTubeExponentialResolutionWeightFunction.h"
 #include "itktubeTubePointWeightsCalculator.h"
 #include "itktubeTubeToTubeTransformFilter.h"
@@ -211,6 +213,22 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop("Gaussian Blur");
     }
 
+  timeCollector.Start("Compute Model Feature Weights");
+  typedef itk::tube::Function::TubeExponentialResolutionWeightFunction<
+    TubeType::TubePointType, FloatType >             WeightFunctionType;
+  typedef RegistrationMethodType::FeatureWeightsType PointWeightsType;
+  WeightFunctionType::Pointer weightFunction = WeightFunctionType::New();
+  typedef itk::tube::TubePointWeightsCalculator< Dimension,
+    TubeType, WeightFunctionType,
+    PointWeightsType > PointWeightsCalculatorType;
+  PointWeightsCalculatorType::Pointer resolutionWeightsCalculator
+    = PointWeightsCalculatorType::New();
+  resolutionWeightsCalculator->SetTubeTreeSpatialObject(
+    subSampleTubeTreeFilter->GetOutput() );
+  resolutionWeightsCalculator->SetPointWeightFunction( weightFunction );
+  resolutionWeightsCalculator->Compute();
+  PointWeightsType pointWeights = resolutionWeightsCalculator->GetPointWeights();
+
 #ifdef SlicerExecutionModel_USE_SERIALIZER
   // Compute ultrasound probe geometry.
   if( !parametersToRestore.empty() )
@@ -280,28 +298,57 @@ int DoIt( int argc, char * argv[] )
                        << std::endl;
         }
 
+      if( parametersRoot.isMember( "AngleOfIncidenceWeightFunction" ) )
+        {
+        Json::Value & angleOfIncidenceWeightFunctionValue =
+          parametersRoot["AngleOfIncidenceWeightFunction"];
+
+        typedef itk::tube::Function::TubeAngleOfIncidenceWeightFunction<
+          TubeType::TubePointType, FloatType > AngleOfIncidenceWeightFunctionType;
+        AngleOfIncidenceWeightFunctionType::Pointer angleOfIncidenceWeightFunction =
+          AngleOfIncidenceWeightFunctionType::New();
+
+        typedef itk::tube::TubeAngleOfIncidenceWeightFunctionSerializer<
+          AngleOfIncidenceWeightFunctionType >
+            AngleOfIncidenceSerializerType;
+        AngleOfIncidenceSerializerType::Pointer angleOfIncidenceSerializer =
+          AngleOfIncidenceSerializerType::New();
+        angleOfIncidenceSerializer->SetTargetObject( angleOfIncidenceWeightFunction );
+        itk::JsonCppArchiver::Pointer angleOfIncidenceArchiver =
+          dynamic_cast< itk::JsonCppArchiver * >(
+            angleOfIncidenceSerializer->GetArchiver() );
+        angleOfIncidenceArchiver->SetJsonValue( &angleOfIncidenceWeightFunctionValue );
+        angleOfIncidenceSerializer->DeSerialize();
+
+        angleOfIncidenceWeightFunction->SetUltrasoundProbeOrigin(
+          geometryCalculator->GetUltrasoundProbeOrigin() );
+
+        typedef itk::tube::TubePointWeightsCalculator< Dimension,
+          TubeType, AngleOfIncidenceWeightFunctionType, PointWeightsType >
+            AngleOfIncidenceWeightsCalculatorType;
+        AngleOfIncidenceWeightsCalculatorType::Pointer angleOfIncidenceWeightsCalculator =
+          AngleOfIncidenceWeightsCalculatorType::New();
+        angleOfIncidenceWeightsCalculator->SetPointWeightFunction(
+          angleOfIncidenceWeightFunction );
+        angleOfIncidenceWeightsCalculator->SetTubeTreeSpatialObject(
+          subSampleTubeTreeFilter->GetOutput() );
+        angleOfIncidenceWeightsCalculator->Compute();
+        const PointWeightsType & angleOfIncidenceWeights =
+          angleOfIncidenceWeightsCalculator->GetPointWeights();
+        for( itk::SizeValueType ii = 0; ii < pointWeights.GetSize(); ++ii )
+          {
+          pointWeights[ii] *= angleOfIncidenceWeights[ii];
+          }
+        }
+
       timeCollector.Stop("Compute probe geometry");
       }
     }
 #endif
+  timeCollector.Stop("Compute Model Feature Weights");
 
 
   timeCollector.Start("Register image to tube");
-
-  typedef itk::tube::Function::TubeExponentialResolutionWeightFunction<
-    TubeType::TubePointType, double >                WeightFunctionType;
-  typedef RegistrationMethodType::FeatureWeightsType PointWeightsType;
-  WeightFunctionType::Pointer weightFunction = WeightFunctionType::New();
-  typedef itk::tube::TubePointWeightsCalculator< Dimension,
-    TubeType, WeightFunctionType,
-    PointWeightsType > PointWeightsCalculatorType;
-  PointWeightsCalculatorType::Pointer resolutionWeightsCalculator
-    = PointWeightsCalculatorType::New();
-  resolutionWeightsCalculator->SetTubeTreeSpatialObject(
-    subSampleTubeTreeFilter->GetOutput() );
-  resolutionWeightsCalculator->SetPointWeightFunction( weightFunction );
-  resolutionWeightsCalculator->Compute();
-  PointWeightsType pointWeights = resolutionWeightsCalculator->GetPointWeights();
 
   typename RegistrationMethodType::Pointer registrationMethod =
     RegistrationMethodType::New();
