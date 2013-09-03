@@ -153,6 +153,13 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                     it.setCameraPosition(distance=cameraPosition['distance'],
                                          elevation=cameraPosition['elevation'],
                                          azimuth=cameraPosition['azimuth'])
+                    # HACK: pyqtgraph needs to fix its api so this can be set
+                    # with setCameraPosition
+                    if 'center' in cameraPosition:
+                        center = cameraPosition['center']
+                        it.opts['center'] = QtGui.QVector3D(center[0],
+                                                            center[1],
+                                                            center[2])
         x_grid = gl.GLGridItem()
         grid_scale = 20
         x_grid.rotate(90, 0, 1, 0)
