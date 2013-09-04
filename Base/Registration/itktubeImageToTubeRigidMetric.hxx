@@ -39,10 +39,11 @@ template< class TFixedImage, class TMovingSpatialObject,
 ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::ImageToTubeRigidMetric( void )
 {
-  m_Kappa = 1.0;
-  m_Extent = 3.0;
   m_ImageMin = 0.0;
   m_ImageMax = 0.0;
+  m_Kappa = 1.0;
+  m_MinimumScalingRadius = 0.5;
+  m_Extent = 3.0;
 
   m_CenterOfRotation.Fill( 0.0 );
 
@@ -254,8 +255,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
           {
           weightSum += m_FeatureWeights[weightCount];
           ScalarType scalingRadius = pointIterator->GetRadius();
-          // !TODO 0.5 should be a parameter of the class
-          scalingRadius = std::max( scalingRadius, 0.5 );
+          scalingRadius = std::max( scalingRadius, m_MinimumScalingRadius );
 
           const ScalarType scale = scalingRadius * m_Kappa;
 
@@ -469,7 +469,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
           v2 = transformCopy->TransformVector( v2 );
 
           ScalarType scalingRadius = pointIterator->GetRadius();
-          scalingRadius = std::max( scalingRadius, 0.5 );
+          scalingRadius = std::max( scalingRadius, m_MinimumScalingRadius );
 
           const ScalarType scale = scalingRadius * m_Kappa;
 
