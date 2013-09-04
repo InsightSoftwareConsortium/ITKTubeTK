@@ -43,7 +43,7 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 #include <itkRecursiveGaussianImageFilter.h>
 #include <itkSpatialObjectReader.h>
-#include <itkSpatialObjectToImageFilter.h>
+#include <itkTransformFileWriter.h>
 #include <itkTimeProbesCollectorBase.h>
 
 #include <json/writer.h>
@@ -448,9 +448,9 @@ int DoIt( int argc, char * argv[] )
   progress = 0.9;
   progressReporter.Report( progress );
 
-  TransformType* outputTransform =
+  TransformType* registrationTransform =
     dynamic_cast<TransformType *>(registrationMethod->GetTransform());
-  outputTransform->SetParameters(
+  registrationTransform->SetParameters(
     registrationMethod->GetLastTransformParameters() );
   std::ostringstream parametersMessage;
   parametersMessage << "Transform Parameters: "
@@ -458,71 +458,30 @@ int DoIt( int argc, char * argv[] )
   tube::InformationMessage( parametersMessage.str() );
   parametersMessage.str( "" );
   parametersMessage << "Transform Center Of Rotation: "
-                    << outputTransform->GetFixedParameters();
+                    << registrationTransform->GetFixedParameters();
   tube::InformationMessage( parametersMessage.str() );
   timeCollector.Stop("Register image to tube");
 
 
   timeCollector.Start("Save data");
 
-  typename TubeTransformFilterType::Pointer transformFilter =
-    TubeTransformFilterType::New();
-  transformFilter->SetInput( vesselReader->GetGroup() );
-  transformFilter->SetScale( 1.0 );
-  transformFilter->SetTransform( outputTransform );
-  try
-    {
-    transformFilter->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Transforming tube: Exception caught: "
-      + std::string(err.GetDescription()) );
-    timeCollector.Report();
-    return EXIT_FAILURE;
-    }
-
   if( !parameterProgression.empty() )
     {
     recordParameterProgressionCommand->SetFixedParameters(
-      outputTransform->GetFixedParameters() );
+      registrationTransform->GetFixedParameters() );
     recordParameterProgressionCommand->WriteParameterProgressionToFile();
     }
 
-  typedef itk::SpatialObjectToImageFilter<TubeNetType, ImageType>
-                                              SpatialObjectToImageFilterType;
-  typename SpatialObjectToImageFilterType::Pointer vesselToImageFilter =
-    SpatialObjectToImageFilterType::New();
-  typename ImageType::SizeType size = currentImage->GetLargestPossibleRegion().GetSize();
-  const double decimationFactor = 4.0;
-  typedef typename ImageType::SizeType::SizeValueType SizeValueType;
-  size[0] = static_cast< SizeValueType >( size[0] / decimationFactor );
-  size[1] = static_cast< SizeValueType >( size[1] / decimationFactor );
-  size[2] = static_cast< SizeValueType >( size[2] / decimationFactor );
-
-  typename ImageType::SpacingType spacing = currentImage->GetSpacing();
-  spacing[0] = spacing[0] * decimationFactor;
-  spacing[1] = spacing[1] * decimationFactor;
-  spacing[2] = spacing[2] * decimationFactor;
-  vesselToImageFilter->SetInput( transformFilter->GetOutput() );
-  vesselToImageFilter->SetSize( size );
-  vesselToImageFilter->SetSpacing( spacing );
-  vesselToImageFilter->SetOrigin( currentImage->GetOrigin() );
-  vesselToImageFilter->SetInsideValue( 1.0 );
-  vesselToImageFilter->SetOutsideValue( 0.0 );
-  vesselToImageFilter->Update();
-
-  typename ImageWriterType::Pointer writer = ImageWriterType::New();
-  writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( vesselToImageFilter->GetOutput() );
-  writer->SetUseCompression( true );
+  itk::TransformFileWriter::Pointer writer = itk::TransformFileWriter::New();
+  writer->SetFileName( outputTransform.c_str() );
+  writer->SetInput( registrationTransform );
   try
     {
     writer->Update();
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( "Writing volume: Exception caught: "
+    tube::ErrorMessage( "Writing transform: Exception caught: "
       + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
