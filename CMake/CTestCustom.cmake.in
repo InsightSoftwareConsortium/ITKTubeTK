@@ -32,6 +32,8 @@ set( CTEST_CUSTOM_WARNING_MATCH
 
 set( CTEST_CUSTOM_WARNING_EXCEPTION
     ${CTEST_CUSTOM_WARNING_EXCEPTION}
+    "boost_1_5"
+    "C4996"
     "CosmoHaloFinderP"
     "ctk"
     "ExternalProjectsContrib_DIR"
