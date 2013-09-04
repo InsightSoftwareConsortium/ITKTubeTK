@@ -49,6 +49,11 @@ class RegistrationTuner(QtGui.QMainWindow):
         self.image_controls = {}
         self.ultrasound_probe_origin = None
 
+        # Remove old output
+        if 'TubePointWeightsFile' in self.config and \
+                os.path.exists(self.config['TubePointWeightsFile']):
+            os.remove(self.config['TubePointWeightsFile'])
+
         self.initializeUI()
 
     def initializeUI(self):
@@ -316,7 +321,13 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                     parameters = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
                 tubes = tubes_from_file(self.subsampled_tubes)
                 #tubes_color = (0.2, 0.25, 0.75, alpha)
-                tube_weights = 2./(1. + np.exp(-2 * tubes['Radius']))
+                if 'TubePointWeightsFile' in self.config and \
+                        os.path.exists(self.config['TubePointWeightsFile']):
+                    with open(self.config['TubePointWeightsFile'], 'r') as fp:
+                        tube_weights = json.load(fp)['TubePointWeights']
+                        tube_weights = np.array(tube_weights)
+                else:
+                    tube_weights = 2./(1. + np.exp(-2 * tubes['Radius']))
                 tube_weights = tube_weights - tube_weights.min()
                 tube_weights = tube_weights / tube_weights.max()
                 tubes_colors = matplotlib.cm.PuBuGn(tube_weights)

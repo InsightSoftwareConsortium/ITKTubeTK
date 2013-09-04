@@ -104,8 +104,6 @@ int DoIt( int argc, char * argv[] )
   typedef typename RegistrationMethodType::TransformType TransformType;
   typedef itk::tube::TubeToTubeTransformFilter< TransformType, Dimension >
                                                          TubeTransformFilterType;
-  typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
-                                                         SubSampleTubeTreeFilterType;
 
   timeCollector.Start("Load data");
   typename ImageReaderType::Pointer reader = ImageReaderType::New();
@@ -140,6 +138,8 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   timeCollector.Start("Sub-sample data");
+  typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
+                                                         SubSampleTubeTreeFilterType;
   typename SubSampleTubeTreeFilterType::Pointer subSampleTubeTreeFilter =
     SubSampleTubeTreeFilterType::New();
   subSampleTubeTreeFilter->SetInput( vesselReader->GetGroup() );
