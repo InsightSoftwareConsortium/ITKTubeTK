@@ -39,8 +39,6 @@ template< class TFixedImage, class TMovingSpatialObject,
 ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::ImageToTubeRigidMetric( void )
 {
-  m_ImageMin = 0.0;
-  m_ImageMax = 0.0;
   m_Kappa = 1.0;
   m_MinimumScalingRadius = 0.5;
   m_Extent = 3.0;

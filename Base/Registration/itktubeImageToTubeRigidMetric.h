@@ -175,8 +175,6 @@ private:
 
   typename DerivativeImageFunctionType::Pointer m_DerivativeImageFunction;
 
-  ScalarType                   m_ImageMin;
-  ScalarType                   m_ImageMax;
   ScalarType                   m_Kappa;
   ScalarType                   m_MinimumScalingRadius;
   ScalarType                   m_Extent;
