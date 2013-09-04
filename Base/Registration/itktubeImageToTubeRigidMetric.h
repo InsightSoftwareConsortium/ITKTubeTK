@@ -175,9 +175,9 @@ private:
 
   typename DerivativeImageFunctionType::Pointer m_DerivativeImageFunction;
 
-  ScalarType                   m_Kappa;
-  ScalarType                   m_MinimumScalingRadius;
-  ScalarType                   m_Extent;
+  ScalarType m_Kappa;
+  ScalarType m_MinimumScalingRadius;
+  ScalarType m_Extent;
 
   /** The center of rotation of the weighted tube points. */
   typedef PointType CenterOfRotationType;

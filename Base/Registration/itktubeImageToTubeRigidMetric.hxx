@@ -40,7 +40,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::ImageToTubeRigidMetric( void )
 {
   m_Kappa = 1.0;
-  m_MinimumScalingRadius = 0.5;
+  m_MinimumScalingRadius = 0.1;
   m_Extent = 3.0;
 
   m_CenterOfRotation.Fill( 0.0 );
