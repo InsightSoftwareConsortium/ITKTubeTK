@@ -369,7 +369,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::GetDeltaAngles( const OutputPointType & tubePoint,
   const VnlVectorType & dx,
   const VectorType & offsets,
-  ScalarType dAngle[TubeDimension] ) const
+  ScalarType dAngle[3] ) const
 {
   VectorType radius = ( tubePoint - offsets ) - ( this->m_CenterOfRotation );
   radius.Normalize();
