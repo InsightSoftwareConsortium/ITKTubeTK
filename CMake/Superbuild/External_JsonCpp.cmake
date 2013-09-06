@@ -52,8 +52,8 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_JSONCPP} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
   ExternalProject_Add( ${proj}
-    SVN_REPOSITORY ${${proj}_SVN_REPOSITORY}
-    SVN_REVISION -r ${${proj}_SVN_REVISION}
+    SVN_REPOSITORY ${${proj}_URL}
+    SVN_REVISION -r ${${proj}_URL_MD5_TAG}
     DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
     SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}

@@ -47,8 +47,8 @@ if( NOT KWSTYLE_EXECUTABLE AND NOT ${USE_SYSTEM_KWSTYLE} )
   set( KWSTYLE_EXECUTABLE ${${proj}_DIR}/bin/KWStyle )
 
   ExternalProject_Add( ${proj}
-    GIT_REPOSITORY ${${proj}_GIT_REPOSITORY}
-    GIT_TAG ${${proj}_GIT_TAG}
+    GIT_REPOSITORY ${${proj}_URL}
+    GIT_TAG ${${proj}_URL_MD5_TAG}
     DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
     SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}
