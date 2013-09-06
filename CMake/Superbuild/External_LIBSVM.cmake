@@ -47,7 +47,7 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
 
   ExternalProject_Add( ${proj}
     URL ${${proj}_URL}
-    URL_MD5 ${${proj}_URL_MD5}
+    URL_MD5 ${${proj}_URL_MD5_TAG}
     DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
     SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}

@@ -52,8 +52,8 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
   endif( TubeTK_USE_VALGRIND )
 
   ExternalProject_Add( ${proj}
-    GIT_REPOSITORY ${${proj}_GIT_REPOSITORY}
-    GIT_TAG ${${proj}_GIT_TAG}
+    URL ${${proj}_URL}
+    URL_MD5 ${${proj}_URL_MD5_TAG}
     DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
     SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}
