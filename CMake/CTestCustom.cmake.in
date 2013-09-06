@@ -55,6 +55,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
     "LIBSVM"
     "libsvm"
     "log4qt"
+    "ModuleDescriptionParser"
     "mrmpi"
     "netlib"
     "niftilib"
