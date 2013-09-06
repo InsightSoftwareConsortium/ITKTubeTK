@@ -24,9 +24,8 @@
 # See https://github.com/TubeTK/TubeTK/wiki/Dependencies
 
 # Cppcheck version 1.61
-set( Cppcheck_GIT_REPOSITORY
-  ${github_protocol}://github.com/danmar/cppcheck.git )
-set( Cppcheck_GIT_TAG 9e16abeb4275f01b2041972a2edbd6ad46d945c1 )
+set( Cppcheck_URL https://github.com/danmar/cppcheck/archive/1.61.tar.gz )
+set( Cppcheck_URL_MD5 362b6f8cf907262a7e3869b99183d734 )
 
 # Common Toolkit snapshot 2013-08-20 16:21:07
 set( CTK_GIT_REPOSITORY ${github_protocol}://github.com/commontk/CTK.git )
@@ -52,9 +51,9 @@ set( KWStyle_GIT_REPOSITORY
 set( KWStyle_GIT_TAG 16c5ca21e8133e6db155795dfdcb7d4bfa944af7 )
 
 # LIBSVM version 3.17 (minimum version 3.1)
-set( LIBSVM_GIT_REPOSITORY
-  ${github_protocol}://github.com/TubeTK/TubeTK-LIBSVM.git )
-set( LIBSVM_GIT_TAG d9c10536a55ca36a170a3def0d9f93bc01940a67 )
+set( LIBSVM_URL
+  http://www.csie.ntu.edu.tw/~cjlin/libsvm/oldfiles/libsvm-3.17.tar.gz )
+set( LIBSVM_URL_MD5 67f8b597ce85c1f5288d7838e57ea28a )
 
 # TubeTK Parameter Serializer snapshot 2013-08-21 11:14:41
 set( ParameterSerializer_GIT_REPOSITORY
