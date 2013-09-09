@@ -57,7 +57,7 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_SLICER_EXECUTION_MODEL} )
 
   ExternalProject_Add( ${proj}
     GIT_REPOSITORY ${${proj}_URL}
-    GIT_TAG ${${proj}_URL_MD5_TAG}
+    GIT_TAG ${${proj}_URL_HASH}
     DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
     SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}

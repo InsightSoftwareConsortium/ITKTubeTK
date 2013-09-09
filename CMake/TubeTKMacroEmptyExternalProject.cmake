@@ -48,8 +48,10 @@
 # external project dependency system happy.
 macro( TubeTKMacroEmptyExternalProject proj dependencies )
   ExternalProject_Add( ${proj}
+    DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${proj}
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
-    BINARY_DIR ${proj}-build
+    BINARY_DIR ${CMAKE_BINARY_DIR}/${proj}-build
+    INSTALL_DIR ${CMAKE_BINARY_DIR}/${proj}-build
     DOWNLOAD_COMMAND ""
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""

@@ -53,7 +53,7 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_JSONCPP} )
 
   ExternalProject_Add( ${proj}
     SVN_REPOSITORY ${${proj}_URL}
-    SVN_REVISION -r ${${proj}_URL_MD5_TAG}
+    SVN_REVISION -r ${${proj}_URL_HASH}
     DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
     SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}

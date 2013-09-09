@@ -53,7 +53,8 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
 
   ExternalProject_Add( ${proj}
     URL ${${proj}_URL}
-    URL_MD5 ${${proj}_URL_MD5_TAG}
+    URL_HASH SHA1=${${proj}_URL_HASH}
+    DOWNLOAD_NAME ${proj}-${${proj}_URL_HASH}.tar.gz
     DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
     SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}
