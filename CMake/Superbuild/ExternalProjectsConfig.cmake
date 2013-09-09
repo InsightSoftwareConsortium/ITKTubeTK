@@ -37,8 +37,8 @@ set( ImageViewer_URL
 set( ImageViewer_URL_HASH 44adad4d8cc00e33b7c478c4bd0f4eb901bd7814 )
 
 # Insight Segmentation and Registration Toolkit version 4.4.2
-set( ITK_URL https://github.com/Kitware/ITK/archive/v4.4.2.tar.gz )
-set( ITK_URL_HASH 37e12db9db9f36a8136f54b21a5e65659cf5ca40 )
+set( ITK_URL http://downloads.sourceforge.net/project/itk/itk/4.4/InsightToolkit-4.4.2.tar.gz )
+set( ITK_URL_HASH 224b16472442e31512fd99070de6babd242f1d64 )
 
 # JsonCpp snapshot 2013-08-08 23:08:28
 set( JsonCpp_URL ${svn_protocol}://svn.code.sf.net/p/jsoncpp/code/trunk/jsoncpp )
