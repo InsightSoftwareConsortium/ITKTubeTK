@@ -49,13 +49,20 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_IMAGE_VIEWER} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
   ExternalProject_Add( ${proj}
-    GIT_REPOSITORY ${${proj}_URL}
-    GIT_TAG ${${proj}_URL_HASH}
+    URL ${${proj}_URL}
+    URL_HASH SHA1=${${proj}_URL_HASH}
+    DOWNLOAD_NAME ${proj}-${${proj}_URL_HASH}.tar.gz
     DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
     SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}
     INSTALL_DIR ${${proj}_DIR}
     CMAKE_GENERATOR ${gen}
+    LOG_DOWNLOAD 1
+    LOG_UPDATE 0
+    LOG_CONFIGURE 0
+    LOG_BUILD 0
+    LOG_TEST 0
+    LOG_INSTALL 0
     CMAKE_ARGS
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
