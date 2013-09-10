@@ -48,4 +48,4 @@ Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
                -t ${TEMP}/${MODULE_NAME}Test1.mha
                -b ${BASELINE}/${MODULE_NAME}Test1.mha )
 set_property( TEST ${MODULE_NAME}-Test1-Compare
-              APPEND PROPERTY DEPENDS ${MODULE_NAME}Test1 )
+              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
