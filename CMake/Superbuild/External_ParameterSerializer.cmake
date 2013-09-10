@@ -37,16 +37,10 @@ if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 # Set dependency list
-set( ${proj}_DEPENDENCIES "" )
+set( ${proj}_DEPENDENCIES "JsonCpp" )
 if( NOT TubeTK_BUILD_SLICER_EXTENSION )
-  if( NOT USE_SYSTEM_ITK )
-    # Depends on ITK if ITK was build using superbuild
-    set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "ITK" )
-  endif( NOT USE_SYSTEM_ITK )
+  set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "ITK" )
 endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
-if( NOT USE_SYSTEM_JsonCpp )
-  set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "JsonCpp" )
-endif( NOT USE_SYSTEM_JsonCpp )
 
 if( TubeTK_BUILD_SLICER_EXTENSION AND UNIX )
   # To link with shared libraries on amd64.
