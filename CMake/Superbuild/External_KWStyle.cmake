@@ -48,7 +48,7 @@ if( NOT KWSTYLE_EXECUTABLE AND NOT ${USE_SYSTEM_KWSTYLE} )
 
   ExternalProject_Add( ${proj}
     GIT_REPOSITORY ${${proj}_URL}
-    GIT_TAG ${${proj}_URL_HASH}
+    GIT_TAG ${${proj}_HASH_OR_TAG}
     DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
     SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}
