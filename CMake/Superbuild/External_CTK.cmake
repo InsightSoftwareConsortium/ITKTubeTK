@@ -62,9 +62,9 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
   endif( TubeTK_USE_VTK )
 
   ExternalProject_Add( ${proj}
-    URL ${${proj}_URL}
-    URL_HASH SHA1=${${proj}_URL_HASH}
-    DOWNLOAD_NAME ${proj}-${${proj}_URL_HASH}.tar.gz
+    GIT_REPOSITORY ${${proj}_URL}
+    GIT_TAG ${${proj}_HASH_OR_TAG}
+    DOWNLOAD_NAME ${proj}-${${proj}_HASH_OR_TAG}.tar.gz
     DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
     SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}
