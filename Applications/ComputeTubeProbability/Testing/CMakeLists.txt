@@ -32,14 +32,19 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( PROJ_EXE
  ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
 
+set( TEXTCOMPARE_EXE ${TubeTK_BINARY_DIR}/bin/TextCompareCommand )
+
 # Test1
 Midas3FunctionAddTest( ${MODULE_NAME}-Test1
-                ${PROJ_EXE}
-                  MIDAS{${MODULE_NAME}-Branch-truth.tre.md5}
-                  MIDAS{${MODULE_NAME}-Branch-truth-TubeDensityImage.mha.md5}
-                  ${TEMP}/${MODULE_NAME}-Test1.txt )
-                  
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-01
-                COMMAND $<TARGET_FILE:TextCompareCommand>
-                    -t ${TEMP}/${MODULE_NAME}-Test1.txt
-                    -b MIDAS{${MODULE_NAME}-Test1.txt.md5} )                  
+  ${PROJ_EXE}
+    MIDAS{${MODULE_NAME}-Branch-truth.tre.md5}
+    MIDAS{${MODULE_NAME}-Branch-truth-TubeDensityImage.mha.md5}
+    ${TEMP}/${MODULE_NAME}-Test1.txt )
+
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
+  ${TEXTCOMPARE_EXE}
+    -t ${TEMP}/${MODULE_NAME}-Test1.txt
+    -b MIDAS{${MODULE_NAME}-Test1.txt.md5} )
+
+set_property( TEST ${MODULE_NAME}-Test1-Compare
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )

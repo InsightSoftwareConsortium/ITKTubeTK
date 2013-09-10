@@ -37,16 +37,7 @@ if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 # Set dependency list
-set( ${proj}_DEPENDENCIES "" )
-if( NOT USE_SYSTEM_ITK )
-  # Depends on ITK if ITK was build using superbuild
-  set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "ITK" )
-endif( NOT USE_SYSTEM_ITK )
-
-if( NOT USE_SYSTEM_ParameterSerializer )
-  # Depends on ITK if ITK was build using superbuild
-  set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "ParameterSerializer" )
-endif( NOT USE_SYSTEM_ParameterSerializer )
+set( ${proj}_DEPENDENCIES "JsonCpp" "ParameterSerializer" )
 
 # Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
