@@ -78,7 +78,7 @@ Midas3FunctionAddTest( ${MODULE_NAME}-Test2-Compare-Map
                   -t ${TEMP}/${MODULE_NAME}Test2-Map.txt
                   -b MIDAS{${MODULE_NAME}Test2-Map.txt.md5} )
 
-set_property( TEST ${MODULE_NAME}-Test1-Compare-Map
+set_property( TEST ${MODULE_NAME}-Test2-Compare-Map
                APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
 
 Midas3FunctionAddTest( ${MODULE_NAME}-Test2-Compare-Img
