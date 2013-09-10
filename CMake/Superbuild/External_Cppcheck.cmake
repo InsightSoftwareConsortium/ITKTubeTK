@@ -49,7 +49,6 @@ if( NOT CPPCHECK_EXECUTABLE AND NOT ${USE_SYSTEM_CPPCHECK} )
   ExternalProject_Add( ${proj}
     GIT_REPOSITORY ${${proj}_URL}
     GIT_TAG ${${proj}_HASH_OR_TAG}
-    DOWNLOAD_NAME ${proj}-${${proj}_HASH_OR_TAG}.tar.gz
     DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
     SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_SOURCE_DIR}
