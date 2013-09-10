@@ -44,17 +44,17 @@ Midas3FunctionAddTest( ${MODULE_NAME}-Test1
                ${TEMP}/${MODULE_NAME}_GDSTest1.mha
                -g 3 -f 0 -b 255 -B 10,10 -S 7 )
 
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare1
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}_ESTest1.mha
                -b MIDAS{${MODULE_NAME}_ESTest1.mha.md5} )
-set_property( TEST ${MODULE_NAME}-Test1-Compare
+set_property( TEST ${MODULE_NAME}-Test1-Compare1
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
-Midas3FunctionAddTest( ${MODULE_NAME}-Test2-Compare
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare2
             ${IMAGECOMPARE_EXE}
                -i 0.005
                -t ${TEMP}/${MODULE_NAME}_GDSTest1.mha
                -b MIDAS{${MODULE_NAME}_GDSTest1.mha.md5} )
-set_property( TEST ${MODULE_NAME}-Test2-Compare
+set_property( TEST ${MODULE_NAME}-Test1-Compare2
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
