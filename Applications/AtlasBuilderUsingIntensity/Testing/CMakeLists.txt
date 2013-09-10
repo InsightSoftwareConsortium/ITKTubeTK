@@ -58,7 +58,7 @@ Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare00
                   -b MIDAS{${MODULE_NAME}-Test1-Mean.mha.md5} )
 
 set_property( TEST ${MODULE_NAME}-Test1-Compare00
-              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1-02 )
+              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
 Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare01
                 ${IMAGECOMPARE_EXE}
@@ -66,4 +66,4 @@ Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare01
                   -b MIDAS{${MODULE_NAME}-Test1-Variance.mha.md5} )
 
 set_property( TEST ${MODULE_NAME}-Test1-Compare01
-              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1-02 )
+              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
