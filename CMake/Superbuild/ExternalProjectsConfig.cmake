@@ -28,9 +28,9 @@ set( Cppcheck_URL
   ${github_protocol}://github.com/danmar/cppcheck.git )
 set( Cppcheck_HASH_OR_TAG 1.61 )
 
-# Common Toolkit snapshot 2013-09-10 20:12:15
+# Common Toolkit snapshot 2013-09-16 17:59:15
 set( CTK_URL ${github_protocol}://github.com/commontk/CTK.git )
-set( CTK_HASH_OR_TAG 71c234bb8febd32f3b00b068061e93105303ebc0 )
+set( CTK_HASH_OR_TAG dcf7db15f2b43507395316dd680dba5999f886b4 )
 
 # TubeTK Image Viewer snapshot 2013-08-21 06:23:25
 set( ImageViewer_URL
