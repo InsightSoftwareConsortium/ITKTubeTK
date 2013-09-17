@@ -283,19 +283,19 @@ if( TubeTK_USE_QT )
   # variable.
   if( NOT DEFINED TubeTK_REQUIRED_QT_VERSION )
     set( TubeTK_REQUIRED_QT_VERSION "4.7.4" CACHE STRING
-      "Exact Qt framework version required." FORCE )
+      "Exact Qt4 framework version required." FORCE )
     mark_as_advanced( TubeTK_REQUIRED_QT_VERSION )
   endif( NOT DEFINED TubeTK_REQUIRED_QT_VERSION )
   if( QT4_FOUND )
     if( NOT "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
         VERSION_EQUAL "${TubeTK_REQUIRED_QT_VERSION}" )
-      message( FATAL_ERROR
-        "Error: TubeTK requires Qt version ${TubeTK_REQUIRED_QT_VERSION}" )
+      message( WARNING
+        "Warning: TubeTK requires Qt4 version 4.7.4 or 4.8.4." )
     endif( NOT "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
       VERSION_EQUAL "${TubeTK_REQUIRED_QT_VERSION}" )
     include( ${QT_USE_FILE} )
   else( QT4_FOUND )
-    message( SEND_ERROR "Error: Qt framework not found." )
+    message( SEND_ERROR "Error: Qt4 framework not found." )
   endif( QT4_FOUND )
 endif( TubeTK_USE_QT )
 
