@@ -46,11 +46,14 @@ typedef itk::GroupSpatialObject< Dimension > GroupSpatialObjectType;
   */
 GroupSpatialObjectType::Pointer ProcessTubes(
   itk::TransformFileReader::TransformPointer genericInputTransform,
-  GroupSpatialObjectType::Pointer inputTubes, bool useInverseTransform = false);
+  GroupSpatialObjectType::Pointer inputTubes,
+  double scale = 1.0,
+  bool useInverseTransform = false);
 
 GroupSpatialObjectType::Pointer ApplyTransform(
   GroupSpatialObjectType::Pointer inputTubes,
   const std::string &transformFile,
+  double scale = 1.0,
   bool useInverseTransform = false );
 
 /** Displacement fields are handled differently than transforms. The user is
@@ -77,6 +80,7 @@ int DoIt( int argc, char * argv[] );
 GroupSpatialObjectType::Pointer
 ProcessTubes( itk::TransformFileReader::TransformPointer genericInputTransform,
               GroupSpatialObjectType::Pointer inputTubes,
+              double scale,
               bool useInverseTransform )
 {
   typedef itk::Transform< double, Dimension > TransformType;
@@ -86,6 +90,7 @@ ProcessTubes( itk::TransformFileReader::TransformPointer genericInputTransform,
   TransformType::Pointer transform =
     dynamic_cast<TransformType *>( genericInputTransform.GetPointer() );
   TransformFilterType::Pointer filter = TransformFilterType::New();
+  filter->SetScale( scale );
 
   if( useInverseTransform )
     {
@@ -103,6 +108,7 @@ ProcessTubes( itk::TransformFileReader::TransformPointer genericInputTransform,
 GroupSpatialObjectType::Pointer
 ApplyTransform( GroupSpatialObjectType::Pointer inputTubes,
                 const std::string &transformFile,
+                double scale,
                 bool useInverseTransform )
 {
   // Read transform from file
@@ -126,7 +132,7 @@ ApplyTransform( GroupSpatialObjectType::Pointer inputTubes,
   itk::TransformFileReader::TransformListType::const_iterator tListIt;
   for( tListIt = tList->begin(); tListIt != tList->end(); ++tListIt )
     {
-    outputTubes = ProcessTubes( *tListIt, inputTubes, useInverseTransform );
+    outputTubes = ProcessTubes( *tListIt, inputTubes, scale, useInverseTransform );
     }
   return outputTubes;
 }
@@ -214,6 +220,7 @@ int DoIt( int argc, char * argv[] )
       timeCollector.Start( "Apply transform" );
       outputTubes = ApplyTransform( tubes,
                                     transformFile,
+                                    scale,
                                     useInverseTransform );
       timeCollector.Stop( "Apply transform" );
       }

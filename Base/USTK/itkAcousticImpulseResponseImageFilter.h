@@ -43,7 +43,7 @@ namespace itk
  *     {2 * Z(\mathbf{x})} \right)
  * \f]
  *
- * Where:
+ * where:
  *
  * \f{eqnarray*}
  *   T(\mathbf{x}) &=& \mbox{acoustic pressure impulse response}

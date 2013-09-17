@@ -121,6 +121,7 @@ UltrasoundProbeGeometryCalculator< TInputImage >
 ::GenerateData( void )
 {
   OriginType probeOrigin;
+  probeOrigin.Fill( 0.0 );
   RadiusType startOfAcquisitionRadius;
 
   typename InputImageType::ConstPointer inputImage = this->GetInput();
@@ -213,14 +214,13 @@ UltrasoundProbeGeometryCalculator< TInputImage >
         }
 
       // Walk in from the opposite edge.
-      typedef ImageRegionReverseConstIterator< InputImageType > ReverseImageIteratorType;
-      ImageIteratorType reverseImageIt( inputImage, lineRegion );
-      for( reverseImageIt.GoToBegin(); !reverseImageIt.IsAtEnd(); --reverseImageIt )
+      imageIt.GoToEnd();
+      for( --imageIt; !imageIt.IsAtBegin(); --imageIt )
         {
-        if( reverseImageIt.Value() != m_BackgroundValue )
+        if( imageIt.Value() != m_BackgroundValue )
           {
           OriginType point;
-          inputImage->TransformIndexToPhysicalPoint( reverseImageIt.GetIndex(), point );
+          inputImage->TransformIndexToPhysicalPoint( imageIt.GetIndex(), point );
           pointsOnSide2[pointIndex] = point;
           break;
           }
@@ -311,7 +311,9 @@ UltrasoundProbeGeometryCalculator< TInputImage >
     const VnlVectorType planeOrigin = qr.solve( bVector );
 
     probeOrigin[orthogonalDirection] = planeOrigin[0];
-    probeOrigin[m_GeneralBeamDirection] = planeOrigin[1];
+    // Take the average in the GeneralBeamDirection.
+    probeOrigin[m_GeneralBeamDirection] +=
+      planeOrigin[1] / (InputImageType::ImageDimension - 1);
     } // end for each plane
 
   // Now, find the radius.
@@ -414,7 +416,9 @@ UltrasoundProbeGeometryCalculator< TInputImage >
 {
   Superclass::PrintSelf( os, indent );
   os << indent << "GeneralBeamDirection: "
-    << m_GeneralBeamDirection << std::endl;
+     << m_GeneralBeamDirection << std::endl;
+  os << indent << "BackgroundValue: "
+     << m_BackgroundValue << std::endl;
 }
 
 } // End namespace tube

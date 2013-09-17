@@ -37,6 +37,7 @@ void RegisterTests( void )
   REGISTER_TEST( itktubeImageToTubeRigidRegistrationTest );
   REGISTER_TEST( itktubePointsToImageTest );
   REGISTER_TEST( itktubeSyntheticTubeImageGenerationTest );
+  REGISTER_TEST( itktubeTubeAngleOfIncidenceWeightFunctionTest );
   REGISTER_TEST( itktubeTubeExponentialResolutionWeightFunctionTest );
   REGISTER_TEST( itktubeTubeParametricExponentialResolutionWeightFunctionTest );
   REGISTER_TEST( itktubeTubeParametricExponentialWithBoundsResolutionWeightFunctionTest );

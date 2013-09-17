@@ -43,16 +43,20 @@ set( BASE_PARAMETERSERIALIZER_HEADER_TEST
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseParameterSerializerTests_SRCS
+  Filtering/itktubeSubSampleTubeTreeSpatialObjectFilterSerializerTest.cxx
   USTK/itkAcousticImpulseResponseImageFilterSerializerTest.cxx
-  Filtering/itktubeSubSampleTubeTreeSpatialObjectFilterSerializerTest.cxx )
+  USTK/itkUltrasoundProbeGeometryCalculatorSerializerTest.cxx
+  Registration/itktubeTubeAngleOfIncidenceWeightFunctionSerializerTest.cxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
   ${TubeTK_SOURCE_DIR}/Base/USTK
   ${TubeTK_SOURCE_DIR}/Base/Filtering
+  ${TubeTK_SOURCE_DIR}/Base/Registration
   ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer
   ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Filtering
-  ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/USTK )
+  ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/USTK
+  ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Registration )
 
 add_executable( tubeBaseParameterSerializerHeaderTest
   tubeBaseParameterSerializerHeaderTest.cxx )
@@ -79,7 +83,17 @@ Midas3FunctionAddTest( itkAcousticImpulseResponseImageFilterSerializerTestBaseli
   -t ${TEMP}/itkAcousticImpulseResponseImageFilterSerializerTest.json
   -b MIDAS{itkAcousticImpulseResponseImageFilterSerializerTest.json.md5} )
 
+add_test( itkUltrasoundProbeGeometryCalculatorSerializerTest
+  ${BASE_PARAMETERSERIALIZER_TESTS}
+  itkUltrasoundProbeGeometryCalculatorSerializerTest
+  ${TEMP}/itkUltrasoundProbeGeometryCalculatorSerializerTest.json )
+
 add_test( itktubeSubSampleTubeTreeSpatialObjectFilterSerializerTest
   ${BASE_PARAMETERSERIALIZER_TESTS}
   itktubeSubSampleTubeTreeSpatialObjectFilterSerializerTest
   ${TEMP}/itktubeSubSampleTubeTreeSpatialObjectFilterSerializerTest.json )
+
+add_test( itktubeTubeAngleOfIncidenceWeightFunctionSerializerTest
+  ${BASE_PARAMETERSERIALIZER_TESTS}
+  itktubeTubeAngleOfIncidenceWeightFunctionSerializerTest
+  ${TEMP}/itktubeTubeAngleOfIncidenceWeightFunctionSerializerTest.json )

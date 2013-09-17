@@ -25,9 +25,13 @@ limitations under the License.
 #include "itktubeRecordOptimizationParameterProgressionCommand.h"
 #include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
 #include "itktubeSubSampleTubeTreeSpatialObjectFilterSerializer.h"
+#include "itktubeTubeAngleOfIncidenceWeightFunction.h"
+#include "itktubeTubeAngleOfIncidenceWeightFunctionSerializer.h"
 #include "itktubeTubeExponentialResolutionWeightFunction.h"
 #include "itktubeTubePointWeightsCalculator.h"
 #include "itktubeTubeToTubeTransformFilter.h"
+#include "itkUltrasoundProbeGeometryCalculator.h"
+#include "itkUltrasoundProbeGeometryCalculatorSerializer.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
@@ -39,8 +43,10 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 #include <itkRecursiveGaussianImageFilter.h>
 #include <itkSpatialObjectReader.h>
-#include <itkSpatialObjectToImageFilter.h>
+#include <itkTransformFileWriter.h>
 #include <itkTimeProbesCollectorBase.h>
+
+#include <json/writer.h>
 
 #include "RegisterImageToTubesUsingRigidTransformCLP.h"
 
@@ -98,8 +104,6 @@ int DoIt( int argc, char * argv[] )
   typedef typename RegistrationMethodType::TransformType TransformType;
   typedef itk::tube::TubeToTubeTransformFilter< TransformType, Dimension >
                                                          TubeTransformFilterType;
-  typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
-                                                         SubSampleTubeTreeFilterType;
 
   timeCollector.Start("Load data");
   typename ImageReaderType::Pointer reader = ImageReaderType::New();
@@ -134,6 +138,8 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   timeCollector.Start("Sub-sample data");
+  typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
+                                                         SubSampleTubeTreeFilterType;
   typename SubSampleTubeTreeFilterType::Pointer subSampleTubeTreeFilter =
     SubSampleTubeTreeFilterType::New();
   subSampleTubeTreeFilter->SetInput( vesselReader->GetGroup() );
@@ -209,11 +215,9 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop("Gaussian Blur");
     }
 
-
-  timeCollector.Start("Register image to tube");
-
+  timeCollector.Start("Compute Model Feature Weights");
   typedef itk::tube::Function::TubeExponentialResolutionWeightFunction<
-    TubeType::TubePointType, double >                WeightFunctionType;
+    TubeType::TubePointType, FloatType >             WeightFunctionType;
   typedef RegistrationMethodType::FeatureWeightsType PointWeightsType;
   WeightFunctionType::Pointer weightFunction = WeightFunctionType::New();
   typedef itk::tube::TubePointWeightsCalculator< Dimension,
@@ -226,6 +230,154 @@ int DoIt( int argc, char * argv[] )
   resolutionWeightsCalculator->SetPointWeightFunction( weightFunction );
   resolutionWeightsCalculator->Compute();
   PointWeightsType pointWeights = resolutionWeightsCalculator->GetPointWeights();
+
+#ifdef SlicerExecutionModel_USE_SERIALIZER
+  // Compute ultrasound probe geometry.
+  if( !parametersToRestore.empty() )
+    {
+    // If the Json file has entries that describe the parameters for an
+    // itk::tube::SubSampleTubeTreeSpatialObjectFilter, read them in, and set them on our
+    // instance.
+    if( parametersRoot.isMember( "UltrasoundProbeGeometryCalculator" ) )
+      {
+      timeCollector.Start("Compute probe geometry");
+      Json::Value & probeGeometryCalculatorValue
+        = parametersRoot["UltrasoundProbeGeometryCalculator"];
+
+      typedef itk::tube::UltrasoundProbeGeometryCalculator< ImageType >
+        GeometryCalculatorType;
+      GeometryCalculatorType::Pointer geometryCalculator
+        = GeometryCalculatorType::New();
+      geometryCalculator->SetInput( reader->GetOutput() );
+
+      typedef itk::tube::UltrasoundProbeGeometryCalculatorSerializer<
+        GeometryCalculatorType > SerializerType;
+      SerializerType::Pointer serializer = SerializerType::New();
+      serializer->SetTargetObject( geometryCalculator );
+      itk::JsonCppArchiver::Pointer archiver =
+        dynamic_cast< itk::JsonCppArchiver * >( serializer->GetArchiver() );
+      archiver->SetJsonValue( &probeGeometryCalculatorValue );
+      serializer->DeSerialize();
+
+      try
+        {
+        geometryCalculator->Update();
+        }
+      catch( itk::ExceptionObject & err )
+        {
+        tube::ErrorMessage( "Computing probe geometry: Exception caught: "
+                            + std::string(err.GetDescription()) );
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
+
+      if( parametersRoot.isMember( "UltrasoundProbeGeometryFile" ) )
+        {
+        const char * outputFile
+          = parametersRoot["UltrasoundProbeGeometryFile"].asCString();
+        std::ofstream geometryOutput( outputFile );
+        if( !geometryOutput.is_open() )
+          {
+          tube::ErrorMessage( "Could not open geometry output file: "
+                              + std::string( outputFile ) );
+          timeCollector.Report();
+          return EXIT_FAILURE;
+          }
+
+        const GeometryCalculatorType::OriginType ultrasoundProbeOrigin =
+          geometryCalculator->GetUltrasoundProbeOrigin();
+        geometryOutput << "UltrasoundProbeOrigin:";
+        for( unsigned int ii = 0; ii < Dimension; ++ii )
+          {
+          geometryOutput << " " << ultrasoundProbeOrigin[ii];
+          }
+        geometryOutput << std::endl;
+
+        const GeometryCalculatorType::RadiusType startOfAcquisitionRadius =
+          geometryCalculator->GetStartOfAcquisitionRadius();
+        geometryOutput << "GetStartOfAcquisitionRadius: "
+                       << startOfAcquisitionRadius
+                       << std::endl;
+        }
+
+      if( parametersRoot.isMember( "AngleOfIncidenceWeightFunction" ) )
+        {
+        Json::Value & angleOfIncidenceWeightFunctionValue =
+          parametersRoot["AngleOfIncidenceWeightFunction"];
+
+        typedef itk::tube::Function::TubeAngleOfIncidenceWeightFunction<
+          TubeType::TubePointType, FloatType > AngleOfIncidenceWeightFunctionType;
+        AngleOfIncidenceWeightFunctionType::Pointer angleOfIncidenceWeightFunction =
+          AngleOfIncidenceWeightFunctionType::New();
+
+        typedef itk::tube::TubeAngleOfIncidenceWeightFunctionSerializer<
+          AngleOfIncidenceWeightFunctionType >
+            AngleOfIncidenceSerializerType;
+        AngleOfIncidenceSerializerType::Pointer angleOfIncidenceSerializer =
+          AngleOfIncidenceSerializerType::New();
+        angleOfIncidenceSerializer->SetTargetObject( angleOfIncidenceWeightFunction );
+        itk::JsonCppArchiver::Pointer angleOfIncidenceArchiver =
+          dynamic_cast< itk::JsonCppArchiver * >(
+            angleOfIncidenceSerializer->GetArchiver() );
+        angleOfIncidenceArchiver->SetJsonValue( &angleOfIncidenceWeightFunctionValue );
+        angleOfIncidenceSerializer->DeSerialize();
+
+        angleOfIncidenceWeightFunction->SetUltrasoundProbeOrigin(
+          geometryCalculator->GetUltrasoundProbeOrigin() );
+
+        typedef itk::tube::TubePointWeightsCalculator< Dimension,
+          TubeType, AngleOfIncidenceWeightFunctionType, PointWeightsType >
+            AngleOfIncidenceWeightsCalculatorType;
+        AngleOfIncidenceWeightsCalculatorType::Pointer angleOfIncidenceWeightsCalculator =
+          AngleOfIncidenceWeightsCalculatorType::New();
+        angleOfIncidenceWeightsCalculator->SetPointWeightFunction(
+          angleOfIncidenceWeightFunction );
+        angleOfIncidenceWeightsCalculator->SetTubeTreeSpatialObject(
+          subSampleTubeTreeFilter->GetOutput() );
+        angleOfIncidenceWeightsCalculator->Compute();
+        const PointWeightsType & angleOfIncidenceWeights =
+          angleOfIncidenceWeightsCalculator->GetPointWeights();
+        for( itk::SizeValueType ii = 0; ii < pointWeights.GetSize(); ++ii )
+          {
+          pointWeights[ii] *= angleOfIncidenceWeights[ii];
+          }
+        }
+
+      timeCollector.Stop("Compute probe geometry");
+      }
+    }
+
+  if( parametersRoot.isMember( "TubePointWeightsFile" ) )
+    {
+    Json::Value weightsJSONRoot;
+    weightsJSONRoot["TubePointWeights"] = Json::Value( Json::arrayValue );
+    Json::Value & weightsJSON = weightsJSONRoot["TubePointWeights"];
+    weightsJSON.resize( pointWeights.GetSize() );
+    for( itk::SizeValueType ii = 0; ii < pointWeights.GetSize(); ++ii )
+      {
+      weightsJSON[static_cast<Json::ArrayIndex>(ii)] = pointWeights[ii];
+      }
+
+    Json::FastWriter writer;
+    const std::string weightsString = writer.write( weightsJSONRoot );
+
+    Json::Value & tubePointWeightsFileValue =
+      parametersRoot["TubePointWeightsFile"];
+    std::ofstream tubePointWeightsFile( tubePointWeightsFileValue.asCString() );
+    if( !tubePointWeightsFile.is_open() )
+      {
+      tube::ErrorMessage( "Could not open tube point weights file: "
+                          + tubePointWeightsFileValue.asString() );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    tubePointWeightsFile << weightsString;
+    }
+#endif
+  timeCollector.Stop("Compute Model Feature Weights");
+
+
+  timeCollector.Start("Register image to tube");
 
   typename RegistrationMethodType::Pointer registrationMethod =
     RegistrationMethodType::New();
@@ -296,77 +448,40 @@ int DoIt( int argc, char * argv[] )
   progress = 0.9;
   progressReporter.Report( progress );
 
-  TransformType* outputTransform =
+  TransformType* registrationTransform =
     dynamic_cast<TransformType *>(registrationMethod->GetTransform());
-  outputTransform->SetParameters(
+  registrationTransform->SetParameters(
     registrationMethod->GetLastTransformParameters() );
   std::ostringstream parametersMessage;
   parametersMessage << "Transform Parameters: "
                     << registrationMethod->GetLastTransformParameters();
+  tube::InformationMessage( parametersMessage.str() );
+  parametersMessage.str( "" );
+  parametersMessage << "Transform Center Of Rotation: "
+                    << registrationTransform->GetFixedParameters();
   tube::InformationMessage( parametersMessage.str() );
   timeCollector.Stop("Register image to tube");
 
 
   timeCollector.Start("Save data");
 
-  typename TubeTransformFilterType::Pointer transformFilter =
-    TubeTransformFilterType::New();
-  transformFilter->SetInput( vesselReader->GetGroup() );
-  transformFilter->SetScale( 1.0 );
-  transformFilter->SetTransform( outputTransform );
-  try
-    {
-    transformFilter->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Transforming tube: Exception caught: "
-      + std::string(err.GetDescription()) );
-    timeCollector.Report();
-    return EXIT_FAILURE;
-    }
-
   if( !parameterProgression.empty() )
     {
     recordParameterProgressionCommand->SetFixedParameters(
-      outputTransform->GetFixedParameters() );
+      registrationTransform->GetFixedParameters() );
     recordParameterProgressionCommand->WriteParameterProgressionToFile();
     }
 
-  typedef itk::SpatialObjectToImageFilter<TubeNetType, ImageType>
-                                              SpatialObjectToImageFilterType;
-  typename SpatialObjectToImageFilterType::Pointer vesselToImageFilter =
-    SpatialObjectToImageFilterType::New();
-  typename ImageType::SizeType size = currentImage->GetLargestPossibleRegion().GetSize();
-  const double decimationFactor = 4.0;
-  typedef typename ImageType::SizeType::SizeValueType SizeValueType;
-  size[0] = static_cast< SizeValueType >( size[0] / decimationFactor );
-  size[1] = static_cast< SizeValueType >( size[1] / decimationFactor );
-  size[2] = static_cast< SizeValueType >( size[2] / decimationFactor );
-
-  typename ImageType::SpacingType spacing = currentImage->GetSpacing();
-  spacing[0] = spacing[0] * decimationFactor;
-  spacing[1] = spacing[1] * decimationFactor;
-  spacing[2] = spacing[2] * decimationFactor;
-  vesselToImageFilter->SetInput( transformFilter->GetOutput() );
-  vesselToImageFilter->SetSize( size );
-  vesselToImageFilter->SetSpacing( spacing );
-  vesselToImageFilter->SetOrigin( currentImage->GetOrigin() );
-  vesselToImageFilter->SetInsideValue( 1.0 );
-  vesselToImageFilter->SetOutsideValue( 0.0 );
-  vesselToImageFilter->Update();
-
-  typename ImageWriterType::Pointer writer = ImageWriterType::New();
-  writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( vesselToImageFilter->GetOutput() );
-  writer->SetUseCompression( true );
+  itk::TransformFileWriter::Pointer writer = itk::TransformFileWriter::New();
+  writer->SetFileName( outputTransform.c_str() );
+  writer->SetInput( registrationTransform );
   try
     {
     writer->Update();
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( "Writing volume: Exception caught: "
+    tube::ErrorMessage( "Writing transform: Exception caught: "
       + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;

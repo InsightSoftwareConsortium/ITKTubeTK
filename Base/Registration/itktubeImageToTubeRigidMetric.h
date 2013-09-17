@@ -131,6 +131,10 @@ public:
   itkSetMacro( Kappa, ScalarType );
   itkGetConstMacro( Kappa, ScalarType );
 
+  /** Set/Get the minimum scaling radius. */
+  itkSetMacro( MinimumScalingRadius, ScalarType );
+  itkGetConstMacro( MinimumScalingRadius, ScalarType );
+
   /** Set/Get the extent of the blurring calculation given in Gaussian sigma's. */
   itkSetMacro( Extent, ScalarType );
   itkGetConstMacro( Extent, ScalarType );
@@ -171,10 +175,9 @@ private:
 
   typename DerivativeImageFunctionType::Pointer m_DerivativeImageFunction;
 
-  ScalarType                   m_ImageMin;
-  ScalarType                   m_ImageMax;
-  ScalarType                   m_Kappa;
-  ScalarType                   m_Extent;
+  ScalarType m_Kappa;
+  ScalarType m_MinimumScalingRadius;
+  ScalarType m_Extent;
 
   /** The center of rotation of the weighted tube points. */
   typedef PointType CenterOfRotationType;

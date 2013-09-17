@@ -26,7 +26,7 @@ limitations under the License.
 #include <itkImageFileReader.h>
 #include <itkThresholdImageFilter.h>
 
-int itkUltrasoundProbeGeometryCalculatorTest( int argc, char * argv[] )
+int itkUltrasoundProbeGeometryCalculatorTest2( int argc, char * argv[] )
 {
   // Argument parsing.
   if( argc < 2 )
@@ -40,7 +40,7 @@ int itkUltrasoundProbeGeometryCalculatorTest( int argc, char * argv[] )
   const char * inputImage = argv[1];
 
   // Types
-  enum { Dimension = 2 };
+  enum { Dimension = 3 };
 
   typedef unsigned char                      PixelType;
   typedef itk::Image< PixelType, Dimension > ImageType;
@@ -50,19 +50,11 @@ int itkUltrasoundProbeGeometryCalculatorTest( int argc, char * argv[] )
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputImage );
 
-  // The test input image was captured with a screen grabber, and some analog
-  // noise was introduced, just using the input image with a BackgroundValue
-  // will not work.  So, we threshold the input.
-  typedef itk::ThresholdImageFilter< ImageType > ThresholdFilterType;
-  ThresholdFilterType::Pointer thresholdFilter = ThresholdFilterType::New();
-  thresholdFilter->SetInput( reader->GetOutput() );
-  thresholdFilter->ThresholdBelow( 5 );
-
   // Calculate the probe's geometry
   typedef itk::tube::UltrasoundProbeGeometryCalculator< ImageType >
     GeometryCalculatorType;
   GeometryCalculatorType::Pointer geometryCalculator = GeometryCalculatorType::New();
-  geometryCalculator->SetInput( thresholdFilter->GetOutput() );
+  geometryCalculator->SetInput( reader->GetOutput() );
   // The probe is oriented in the "vertical" direction in the image
   geometryCalculator->SetGeneralBeamDirection( 1 );
 
@@ -85,14 +77,15 @@ int itkUltrasoundProbeGeometryCalculatorTest( int argc, char * argv[] )
   std::cout << "Start of Acquisition Radius: " << startOfAcquisitionRadius << std::endl;
 
   const double tolerance = 1.0;
-  if( vnl_math_abs( ultrasoundProbeOrigin[0] - 331.5 ) > tolerance ||
-      vnl_math_abs( ultrasoundProbeOrigin[1] - -528.4 ) >  tolerance )
+  if( vnl_math_abs( ultrasoundProbeOrigin[0] - 354.9 ) > tolerance ||
+      vnl_math_abs( ultrasoundProbeOrigin[1] - -214.8 ) >  tolerance ||
+      vnl_math_abs( ultrasoundProbeOrigin[2] - 185.7 ) >  tolerance )
     {
     std::cerr << "Did not find the correct probe origin!" << std::endl;
     return EXIT_FAILURE;
     }
 
-  if( vnl_math_abs( startOfAcquisitionRadius - 555.6 ) > tolerance )
+  if( vnl_math_abs( startOfAcquisitionRadius - 74.5 ) > tolerance )
     {
     std::cerr << "Did not find the correct start of acquisition radius!" << std::endl;
     return EXIT_FAILURE;

@@ -51,3 +51,21 @@ Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
 
 set_property( TEST ${MODULE_NAME}-Test1-Compare
            APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+
+# Test2
+Midas3FunctionAddTest( ${MODULE_NAME}-Test2
+                ${PROJ_EXE}
+                  MIDAS{VascularNetwork.tre.md5}
+                  --scale 2.0
+                  --transformFile MIDAS{VascularNetwork-TestTransform.tfm.md5}
+                  ${TEMP}/${MODULE_NAME}Test2.tre )
+
+# Test2-Compare
+Midas3FunctionAddTest( ${MODULE_NAME}-Test2-Compare
+                ${TEXTCOMPARE_EXE}
+                  -t ${TEMP}/${MODULE_NAME}Test2.tre
+                  -b MIDAS{${MODULE_NAME}Test2.tre.md5}
+                  -d 0.01 )
+
+set_property( TEST ${MODULE_NAME}-Test2-Compare
+           APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )

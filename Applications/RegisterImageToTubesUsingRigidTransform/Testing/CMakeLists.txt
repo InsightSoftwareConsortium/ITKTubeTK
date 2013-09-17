@@ -32,24 +32,13 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( PROJ_EXE
   ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
 
-set( IMAGECOMPARE_EXE
-  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
-
 # Test1
 Midas3FunctionAddTest( ${MODULE_NAME}-Test1
   ${PROJ_EXE}
   --parameterProgression ${TEMP}/${MODULE_NAME}Test1ParameterProgression.h5
   MIDAS{Branch.n020.mha.md5}
   MIDAS{tube.tre.md5}
-  ${TEMP}/${MODULE_NAME}Test1.mha )
-
-# Test1-Compare
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
-            ${IMAGECOMPARE_EXE}
-               -t ${TEMP}/${MODULE_NAME}Test1.mha
-               -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
-set_property( TEST ${MODULE_NAME}-Test1-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+  ${TEMP}/${MODULE_NAME}Test1.h5 )
 
 if( TubeTK_USE_PYQTGRAPH )
   configure_file( ${MODULE_NAME}Tuner.json.in

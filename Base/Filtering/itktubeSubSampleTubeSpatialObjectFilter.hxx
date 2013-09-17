@@ -79,6 +79,8 @@ SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
     outputPoints[outputIndex] = inputPoints[inputIndex];
     }
   outputPoints[numberOfOutputPoints - 1] = inputPoints[numberOfInputPoints - 1];
+
+  output->RemoveDuplicatePoints();
 }
 
 } // End namespace tube

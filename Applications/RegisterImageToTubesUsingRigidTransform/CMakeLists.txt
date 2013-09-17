@@ -48,7 +48,10 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/Numerics
     ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Filtering
-    ${TubeTK_SOURCE_DIR}/Base/Registration )
+    ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Registration
+    ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/USTK
+    ${TubeTK_SOURCE_DIR}/Base/Registration
+    ${TubeTK_SOURCE_DIR}/Base/USTK )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

@@ -25,13 +25,13 @@
       <index>1</index>
       <description>Input vessel (tube).</description>
     </file>
-    <image>
-      <name>outputVolume</name>
-      <label>Output Volume</label>
+    <file>
+      <name>outputTransform</name>
+      <label>Output Transform</label>
       <channel>output</channel>
       <index>2</index>
-      <description>Binary image demonstrating where the tube is located after it has been registered.</description>
-    </image>
+      <description>Transform that aligns the input vessels and input image.</description>
+    </file>
     <file>
       <name>parameterProgression</name>
       <label>Parameter Progression</label>

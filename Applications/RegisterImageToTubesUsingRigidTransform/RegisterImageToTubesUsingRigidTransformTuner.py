@@ -47,6 +47,12 @@ class RegistrationTuner(QtGui.QMainWindow):
         self.progression_colors = None
         self.metric_values_plot = None
         self.image_controls = {}
+        self.ultrasound_probe_origin = None
+
+        # Remove old output
+        if 'TubePointWeightsFile' in self.config and \
+                os.path.exists(self.config['TubePointWeightsFile']):
+            os.remove(self.config['TubePointWeightsFile'])
 
         self.initializeUI()
 
@@ -152,6 +158,13 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                     it.setCameraPosition(distance=cameraPosition['distance'],
                                          elevation=cameraPosition['elevation'],
                                          azimuth=cameraPosition['azimuth'])
+                    # HACK: pyqtgraph needs to fix its api so this can be set
+                    # with setCameraPosition
+                    if 'center' in cameraPosition:
+                        center = cameraPosition['center']
+                        it.opts['center'] = QtGui.QVector3D(center[0],
+                                                            center[1],
+                                                            center[2])
         x_grid = gl.GLGridItem()
         grid_scale = 20
         x_grid.rotate(90, 0, 1, 0)
@@ -270,6 +283,26 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         for plane in self.image_planes:
             self.image_tubes.addItem(self.image_planes[plane])
 
+    def add_ultrasound_probe_origin(self):
+        """Add a sphere indicating the ultrasound probe origin."""
+        with open(self.config['UltrasoundProbeGeometryFile'], 'r') as fp:
+            line = fp.readline()
+            line = line.strip()
+            entries = line.split()
+            origin = [float(xx) for xx in entries[1:]]
+        if self.ultrasound_probe_origin:
+            self.image_tubes.removeItem(self.ultrasound_probe_origin)
+        sphere = gl.MeshData.sphere(rows=10,
+                                    cols=20,
+                                    radius=3.0)
+        center_mesh = gl.GLMeshItem(meshdata=sphere,
+                                    smooth=False,
+                                    color=(1.0, 1.0, 0.3, 0.7),
+                                    glOptions='translucent')
+        center_mesh.translate(origin[0], origin[1], origin[2])
+        self.ultrasound_probe_origin = center_mesh
+        self.image_tubes.addItem(self.ultrasound_probe_origin)
+
     def add_tubes(self):
         """Add the transformed tubes for the visualization."""
         memory = 4
@@ -288,7 +321,13 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                     parameters = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
                 tubes = tubes_from_file(self.subsampled_tubes)
                 #tubes_color = (0.2, 0.25, 0.75, alpha)
-                tube_weights = 2./(1. + np.exp(-2 * tubes['Radius']))
+                if 'TubePointWeightsFile' in self.config and \
+                        os.path.exists(self.config['TubePointWeightsFile']):
+                    with open(self.config['TubePointWeightsFile'], 'r') as fp:
+                        tube_weights = json.load(fp)['TubePointWeights']
+                        tube_weights = np.array(tube_weights)
+                else:
+                    tube_weights = 2./(1. + np.exp(-2 * tubes['Radius']))
                 tube_weights = tube_weights - tube_weights.min()
                 tube_weights = tube_weights / tube_weights.max()
                 tubes_colors = matplotlib.cm.PuBuGn(tube_weights)
@@ -395,6 +434,8 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         self._set_number_of_iterations(self.progression[-1]['Iteration'])
 
         self.add_image_planes()
+        if 'UltrasoundProbeGeometryFile' in self.config:
+            self.add_ultrasound_probe_origin()
         self.add_translations()
         self.set_iteration(self.number_of_iterations)
 
@@ -492,30 +533,40 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         if index is None:
             shape = self.image_content.shape
             if direction == 'x':
-                index = shape[0] / 2
+                index = shape[2] / 2
             elif direction == 'y':
                 index = shape[1] / 2
             elif direction == 'z':
-                index = shape[2] / 2
+                index = shape[0] / 2
         if direction == 'x':
-            plane = self.image_content[index, :, :]
-            plane = plane.transpose()
+            plane = self.image_content[:, :, index]
         elif direction == 'y':
             plane = self.image_content[:, index, :]
         else:
-            plane = self.image_content[:, :, index]
+            plane = self.image_content[index, :, :]
+            plane = plane.transpose()
         texture = pg.makeRGBA(plane)[0]
         image_item = gl.GLImageItem(texture)
         spacing = self.input_image.GetSpacing()
+        origin = self.input_image.GetOrigin()
         if direction == 'x':
-            image_item.translate(0, 0, spacing[2] * index)
+            image_item.scale(spacing[2], spacing[1], 1)
+            image_item.rotate(-90, 0, 1, 0)
+            image_item.translate(origin[0] + spacing[2] * index,
+                                 origin[1],
+                                 origin[2])
         elif direction == 'y':
+            image_item.scale(spacing[2], spacing[0], 1)
             image_item.rotate(-90, 0, 1, 0)
             image_item.rotate(-90, 0, 0, 1)
-            image_item.translate(0, spacing[1] * index, 0)
+            image_item.translate(origin[0],
+                                 origin[1] + spacing[1] * index,
+                                 origin[2])
         else:
-            image_item.rotate(-90, 0, 1, 0)
-            image_item.translate(spacing[0] * index, 0, 0)
+            image_item.scale(spacing[0], spacing[1], 1)
+            image_item.translate(origin[0],
+                                 origin[1],
+                                 origin[2] + spacing[0] * index)
         return image_item
 
 if __name__ == '__main__':

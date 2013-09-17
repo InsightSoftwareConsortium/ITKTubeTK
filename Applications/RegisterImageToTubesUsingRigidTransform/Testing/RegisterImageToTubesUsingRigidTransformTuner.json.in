@@ -57,18 +57,18 @@
           "Channel" : "output",
           "CoordinateSystem" : "",
           "Default" : "",
-          "Description" : "Binary image demonstrating where the tube is located after it has been registered.",
+          "Description" : "Transform that aligns the input vessels and input image.",
           "Flag" : "",
           "Index" : "2",
-          "Label" : "Output Volume",
+          "Label" : "Output Transform",
           "LongFlag" : "",
           "Maximum" : "",
           "Minimum" : "",
           "Multiple" : "false",
-          "Name" : "outputVolume",
+          "Name" : "outputTransform",
           "Step" : "",
-          "Tag" : "image",
-          "Value" : "@TEMP@/RegisterImageToTubesUsingRigidTransformTunerTest.mha"
+          "Tag" : "file",
+          "Value" : "@TEMP@/RegisterImageToTubesUsingRigidTransformTunerTest.h5"
         },
 
         {
@@ -143,6 +143,8 @@
     "Debug" : false,
     "Sampling" : 30
   },
+
+  "TubePointWeightsFile" : "@TEMP@/RegisterImageToTubesUsingRigidTransformTunerTestTubePointWeights.json",
 
   "Visualization" :
   {
