@@ -58,6 +58,38 @@ RidgeFeatureVectorGenerator< TImage >
 }
 
 template< class TImage >
+void
+RidgeFeatureVectorGenerator< TImage >
+::SetIntensityMin( float intensityMin )
+{
+  m_IntensityMin = intensityMin;
+}
+
+template< class TImage >
+float
+RidgeFeatureVectorGenerator< TImage >
+::GetIntensityMin( void ) const
+{
+  return m_IntensityMin;
+}
+
+template< class TImage >
+void
+RidgeFeatureVectorGenerator< TImage >
+::SetIntensityMax( float intensityMax )
+{
+  m_IntensityMax = intensityMax;
+}
+
+template< class TImage >
+float
+RidgeFeatureVectorGenerator< TImage >
+::GetIntensityMax( void ) const
+{
+  return m_IntensityMax;
+}
+
+template< class TImage >
 unsigned int
 RidgeFeatureVectorGenerator< TImage >
 ::GetNumberOfFeatures( void ) const

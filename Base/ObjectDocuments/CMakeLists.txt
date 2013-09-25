@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-project( TubeObjectDocuments )
+project( TubeTKObjectDocuments )
 
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
@@ -47,15 +47,15 @@ set( TubeTk_Base_ObjectDocuments_SRCS
   tubeMetaObjectDocument.cxx
   tubeOptionList.cxx )
 
-add_library( TubeObjectDocuments STATIC
+add_library( TubeTKObjectDocuments STATIC
   ${TubeTK_Base_ObjectDocuments_H_Files}
   ${TubeTk_Base_ObjectDocuments_HXX_Files}
   ${TubeTk_Base_ObjectDocuments_SRCS} )
 
 include_directories( ${TubeTK_SOURCE_DIR}/Base/Common )
-target_link_libraries( TubeObjectDocuments TubeCommon ${ITK_LIBRARIES} )
+target_link_libraries( TubeTKObjectDocuments TubeTKCommon ${ITK_LIBRARIES} )
 
-set( TARGETS TubeObjectDocuments )
+set( TARGETS TubeTKObjectDocuments )
 TubeTKMacroInstallPlugins( ${TARGETS} )
 
 if( BUILD_TESTING )
@@ -68,4 +68,4 @@ install( FILES
   DESTINATION include )
 
 # Export target
-set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeObjectDocuments )
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKObjectDocuments )

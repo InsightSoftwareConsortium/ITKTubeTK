@@ -51,7 +51,8 @@ set( TubeTK_${proj}_MODULES
   SegmentBinaryImageSkeleton
   SegmentConnectedComponents
   SegmentConnectedComponentsUsingParzenPDFs
-# SegmentTubes
+  SegmentTubeSeeds
+  #SegmentTubes
   SegmentUsingOtsuThreshold
   SimulateAcquisitionArtifactsUsingPrior
   SubSampleTubes

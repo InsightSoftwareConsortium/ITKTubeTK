@@ -70,14 +70,14 @@ include_directories(
 add_executable( tubeBaseNumericsHeaderTest
   tubeBaseNumericsHeaderTest.cxx )
 target_link_libraries( tubeBaseNumericsHeaderTest
-  TubeNumerics
+  TubeTKNumerics
   ${ITK_LIBRARIES} )
 
 add_executable( tubeBaseNumericsTests
   tubeBaseNumericsTests.cxx
   ${tubeBaseNumerics_SRCS} )
 target_link_libraries( tubeBaseNumericsTests
-  TubeNumerics
+  TubeTKNumerics
   ${ITK_LIBRARIES} )
 
 add_test( tubeBaseNumericsHeaderTest

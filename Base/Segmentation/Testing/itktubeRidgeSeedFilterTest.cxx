@@ -25,12 +25,12 @@ limitations under the License.
 
 int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
 {
-  if( argc != 8 )
+  if( argc != 9 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
-      << " inputImage labelmapImage objId bkgId outputClass0PDF outputFeature0Image outputImage"
+      << " inputImage labelmapImage objId bkgId outputClass0PDF outputFeature0Image outputImage maxScaleImage"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -101,9 +101,9 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   filter->SetScales( scales );
   int objId = atoi( argv[3] );
   int bkgId = atoi( argv[4] );
-  filter->SetObjectId( objId );
-  filter->AddObjectId( bkgId );
-  filter->AddObjectId( 0 );
+  filter->SetRidgeId( objId );
+  filter->SetBackgroundId( bkgId );
+  filter->SetUnknownId( 0 );
   std::cout << filter << std::endl;
   filter->Update();
   std::cout << "Update done." << std::endl;
@@ -155,6 +155,22 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
     }
+
+  FeatureImageWriterType::Pointer scaleImageWriter =
+    FeatureImageWriterType::New();
+  scaleImageWriter->SetFileName( argv[8] );
+  scaleImageWriter->SetUseCompression( true );
+  scaleImageWriter->SetInput( filter->GetOutputSeedScales() );
+  try
+    {
+    scaleImageWriter->Update();
+    }
+  catch (itk::ExceptionObject& e)
+    {
+    std::cerr << "Exception caught during write:" << std::endl << e;
+    return EXIT_FAILURE;
+    }
+
 
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;

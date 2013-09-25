@@ -1,0 +1,248 @@
+/*=========================================================================
+
+Library:   TubeTK
+
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
+
+All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+=========================================================================*/
+
+#include "itktubeRidgeSeedFilterIO.h"
+
+namespace itk
+{
+
+namespace tube
+{
+
+template< class TImage, class TLabelMap >
+RidgeSeedFilterIO< TImage, TLabelMap >::
+RidgeSeedFilterIO( void )
+{
+  Clear();
+}
+
+template< class TImage, class TLabelMap >
+RidgeSeedFilterIO< TImage, TLabelMap >::
+RidgeSeedFilterIO( const char * _headerName )
+{
+  Clear();
+
+  RidgeSeedFilterIO::Read( _headerName );
+}
+
+template< class TImage, class TLabelMap >
+RidgeSeedFilterIO< TImage, TLabelMap >::
+RidgeSeedFilterIO( const typename
+  RidgeSeedFilterType::Pointer & _filter )
+{
+  Clear();
+
+  InitializeEssential( _filter );
+}
+
+template< class TImage, class TLabelMap >
+RidgeSeedFilterIO< TImage, TLabelMap >::
+~RidgeSeedFilterIO()
+{
+}
+
+template< class TImage, class TLabelMap >
+void RidgeSeedFilterIO< TImage, TLabelMap >::
+PrintInfo() const
+{
+  std::cout << m_RidgeSeedFilter << std::endl;
+}
+
+template< class TImage, class TLabelMap >
+void RidgeSeedFilterIO< TImage, TLabelMap >::
+CopyInfo( const RidgeSeedFilterIOType & _filterIO )
+{
+  Clear();
+
+  InitializeEssential( _filterIO.GetRidgeSeedFilter() );
+}
+
+template< class TImage, class TLabelMap >
+void RidgeSeedFilterIO< TImage, TLabelMap >::
+Clear( void )
+{
+  m_RidgeSeedFilter = NULL;
+}
+
+
+template< class TImage, class TLabelMap >
+bool RidgeSeedFilterIO< TImage, TLabelMap >::
+InitializeEssential( const typename
+  RidgeSeedFilterType::Pointer & _filter )
+{
+  m_RidgeSeedFilter = _filter;
+
+  return true;
+}
+
+template< class TImage, class TLabelMap >
+void RidgeSeedFilterIO< TImage, TLabelMap >::
+SetRidgeSeedFilter( const typename
+  RidgeSeedFilterType::Pointer & _filter )
+{
+  m_RidgeSeedFilter = _filter;
+}
+
+template< class TImage, class TLabelMap >
+const typename RidgeSeedFilter< TImage, TLabelMap >::Pointer
+RidgeSeedFilterIO< TImage, TLabelMap >::
+GetRidgeSeedFilter( void ) const
+{
+  return m_RidgeSeedFilter;
+}
+
+template< class TImage, class TLabelMap >
+bool RidgeSeedFilterIO< TImage, TLabelMap >::
+CanRead( const char * _headerName ) const
+{
+  MetaRidgeSeed seedReader;
+  MetaPDF       pdfReader;
+
+  std::string pdfName = _headerName;
+  pdfName = pdfName + ".pdf.mha";
+
+  bool result = seedReader.CanRead( _headerName );
+  bool result2 = pdfReader.CanRead( pdfName.c_str() );
+
+  if( result && result2 )
+    {
+    return true;
+    }
+  else
+    {
+    return false;
+    }
+}
+
+template< class TImage, class TLabelMap >
+bool RidgeSeedFilterIO< TImage, TLabelMap >::
+Read( const char * _headerName )
+{
+  if( m_RidgeSeedFilter.IsNull() )
+    {
+    m_RidgeSeedFilter = RidgeSeedFilterType::New();
+    }
+
+  MetaRidgeSeed seedReader;
+
+  if( !seedReader.Read( _headerName ) )
+    {
+    m_RidgeSeedFilter = NULL;
+    return false;
+    }
+
+  m_RidgeSeedFilter->SetScales( seedReader.GetRidgeSeedScales() );
+  m_RidgeSeedFilter->SetIntensityMin( seedReader.GetIntensityMin() );
+  m_RidgeSeedFilter->SetIntensityMax( seedReader.GetIntensityMax() );
+  m_RidgeSeedFilter->SetRidgeId( seedReader.GetRidgeId() );
+  m_RidgeSeedFilter->SetBackgroundId( seedReader.GetBackgroundId() );
+  m_RidgeSeedFilter->SetUnknownId( seedReader.GetUnknownId() );
+  m_RidgeSeedFilter->SetSeedTolerance( seedReader.GetSeedTolerance() );
+  m_RidgeSeedFilter->SetSkeletonize( seedReader.GetSkeletonize() );
+  m_RidgeSeedFilter->SetBasisValues( seedReader.GetLDAValues() );
+  m_RidgeSeedFilter->SetBasisMatrix( seedReader.GetLDAMatrix() );
+  m_RidgeSeedFilter->SetWhitenMeans( seedReader.GetWhitenMeans() );
+  m_RidgeSeedFilter->SetWhitenStdDevs( seedReader.GetWhitenStdDevs() );
+
+  MetaPDF       pdfReader;
+  std::string pdfFileName = seedReader.GetPDFFileName();
+
+  if( !pdfReader.Read( pdfFileName.c_str() ) )
+    {
+    m_RidgeSeedFilter = NULL;
+    return false;
+    }
+
+  m_RidgeSeedFilter->GetPDFSegmenter()->ClearObjectIds();
+  int nObjectIds = pdfReader.GetObjectId().size();
+  for( unsigned int i = 0; i < nObjectIds; ++i )
+    {
+    m_RidgeSeedFilter->GetPDFSegmenter()->AddObjectId(
+      pdfReader.GetObjectId()[i] );
+    m_RidgeSeedFilter->GetPDFSegmenter()->SetObjectPDFWeight( i,
+      pdfReader.GetObjectPDFWeight()[i] );
+    }
+  m_RidgeSeedFilter->GetPDFSegmenter()->SetVoidId( pdfReader.GetVoidId() );
+  m_RidgeSeedFilter->GetPDFSegmenter()->SetErodeRadius(
+    pdfReader.GetErodeRadius() );
+  m_RidgeSeedFilter->GetPDFSegmenter()->SetHoleFillIterations(
+    pdfReader.GetHoleFillIterations() );
+  m_RidgeSeedFilter->GetPDFSegmenter()
+    ->SetProbabilityImageSmoothingStandardDeviation(
+      pdfReader.GetProbabilityImageSmoothingStandardDeviation() );
+  m_RidgeSeedFilter->GetPDFSegmenter()
+    ->SetHistogramSmoothingStandardDeviation(
+      pdfReader.GetHistogramSmoothingStandardDeviation() );
+  m_RidgeSeedFilter->GetPDFSegmenter()->SetOutlierRejectPortion(
+    pdfReader.GetOutlierRejectPortion() );
+  m_RidgeSeedFilter->GetPDFSegmenter()->SetDraft(
+    pdfReader.GetDraft() );
+  int nFeatures = pdfReader.GetNumberOfFeatures();
+  if( nFeatures != m_RidgeSeedFilter->GetPDFSegmenter()
+    ->GetNumberOfFeatures() )
+    {
+    throw( "Expected features and features in PDF file do not match" );
+    }
+  for( unsigned int i = 0; i < nFeatures; ++i )
+    {
+    m_RidgeSeedFilter->GetPDFSegmenter()->SetPDFBinMin( i,
+      pdfReader.GetBinMin()[i] );
+    m_RidgeSeedFilter->GetPDFSegmenter()->SetPDFBinScale( i,
+      pdfReader.GetBinSize()[i] );
+    }
+  m_RidgeSeedFilter->GetPDFSegmenter()->SetReclassifyObjectLabels(
+    pdfReader.GetReclassifyObjectLabels() );
+  m_RidgeSeedFilter->GetPDFSegmenter()->SetReclassifyNotObjectLabels(
+    pdfReader.GetReclassifyNotObjectLabels() );
+  m_RidgeSeedFilter->GetPDFSegmenter()->SetForceClassification(
+    pdfReader.GetForceClassification() );
+
+  return true;
+}
+
+template< class TImage, class TLabelMap >
+bool RidgeSeedFilterIO< TImage, TLabelMap >::
+Write( const char * _headerName )
+{
+  if( m_RidgeSeedFilter.IsNull() )
+    {
+    return false;
+    }
+
+  MetaRidgeSeed seedWriter;
+  MetaPDF       pdfWriter;
+
+  std::string pdfName = _headerName;
+  pdfName = pdfName + ".pdf.mha";
+
+  if( !seedWriter.Write( _headerName ) || !pdfWriter.Write( pdfName.c_str() ) )
+    {
+    return false;
+    }
+
+  return true;
+}
+
+} // End namespace tube
+
+} // End namespace itk

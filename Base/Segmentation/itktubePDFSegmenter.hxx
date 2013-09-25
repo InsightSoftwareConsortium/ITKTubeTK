@@ -743,11 +743,11 @@ void
 PDFSegmenter< TImage, N, TLabelMap >
 ::ApplyPDFs( void )
 {
-  if( !m_SampleUpToDate )
+  if( m_LabelMap.IsNotNull() && !m_SampleUpToDate )
     {
     this->GenerateSample();
     }
-  if( !m_PDFsUpToDate )
+  if( m_LabelMap.IsNotNull() && !m_PDFsUpToDate )
     {
     this->GeneratePDFs();
     }
@@ -867,6 +867,13 @@ PDFSegmenter< TImage, N, TLabelMap >
     ->GetLargestPossibleRegion() );
   tmpLabelImage->CopyInformation( m_InputImageList[0] );
   tmpLabelImage->Allocate();
+
+  if( m_LabelMap.IsNull() )
+    {
+    m_LabelMap = tmpLabelImage;
+    m_LabelMap->FillBuffer( m_VoidId );
+    m_ForceClassification = true;
+    }
 
   if( !m_ForceClassification )
     {

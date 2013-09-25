@@ -23,6 +23,7 @@ limitations under the License.
 
 #include "itktubeMetaLDA.h"
 #include "itktubeMetaNJetLDA.h"
+#include "itktubeMetaPDF.h"
 #include "itktubeMetaRidgeSeed.h"
 #include "itktubeMetaTubeParams.h"
 

@@ -56,7 +56,7 @@ SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   ADDITIONAL_SRCS tubeAtlasSummation.cxx
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} TubeObjectDocuments
+  TARGET_LIBRARIES ${ITK_LIBRARIES} TubeTKObjectDocuments
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/CLI
     ${TubeTK_SOURCE_DIR}/Base/Common

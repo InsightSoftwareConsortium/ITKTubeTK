@@ -28,9 +28,9 @@ add_subdirectory( IO )
 add_subdirectory( Numerics )
 add_subdirectory( ObjectDocuments )
 
-if( ParameterSerializer_FOUND )
-  add_subdirectory( ParameterSerializer )
-endif( ParameterSerializer_FOUND )
+#if( ParameterSerializer_FOUND )
+  #add_subdirectory( ParameterSerializer )
+#endif( ParameterSerializer_FOUND )
 
 if( TubeTK_USE_PYTHON )
   add_subdirectory( Python )

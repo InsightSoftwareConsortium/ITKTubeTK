@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-project( TubeIO )
+project( TubeTKIO )
 
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
@@ -29,28 +29,34 @@ include( ${ITK_USE_FILE} )
 set( TubeTK_Base_IO_H_Files
   itktubeMetaLDA.h
   itktubeMetaNJetLDA.h
+  itktubeMetaPDF.h
   itktubeMetaRidgeSeed.h
-  itktubeMetaTubeParams.h )
+  itktubeMetaTubeParams.h
+  itktubeRidgeSeedFilterIO.h )
 
-set( TubeTK_Base_IO_HXX_Files )
+set( TubeTK_Base_IO_HXX_Files
+  itktubeRidgeSeedFilterIO.hxx )
 
 include_directories(
+  ${TubeTK_SOURCE_DIR}/Base/Segmentation
+  ${TubeTK_SOURCE_DIR}/Base/Numerics
   ${TubeTK_SOURCE_DIR}/Base/Common )
 
 set( TubeTK_Base_IO_SRCS
   itktubeMetaLDA.cxx
   itktubeMetaNJetLDA.cxx
   itktubeMetaRidgeSeed.cxx
+  itktubeMetaPDF.cxx
   itktubeMetaTubeParams.cxx )
 
-add_library( TubeIO STATIC
+add_library( TubeTKIO STATIC
   ${TubeTK_Base_IO_H_Files}
   ${TubeTK_Base_IO_HXX_Files}
   ${TubeTK_Base_IO_SRCS} )
 
-target_link_libraries( TubeIO ${ITK_LIBRARIES} )
+target_link_libraries( TubeTKIO ${ITK_LIBRARIES} )
 
-set( TARGETS TubeIO )
+set( TARGETS TubeTKIO )
 TubeTKMacroInstallPlugins( ${TARGETS} )
 
 if( BUILD_TESTING )
@@ -63,4 +69,4 @@ install( FILES
   DESTINATION include )
 
 # Export target
-set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeIO )
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKIO )

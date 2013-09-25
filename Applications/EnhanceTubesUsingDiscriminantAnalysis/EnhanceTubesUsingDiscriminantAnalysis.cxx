@@ -97,14 +97,9 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Stop( "LoadData" );
 
-  if( !objectIdList.empty() )
-    {
-    tubeFilter->SetObjectId( objectIdList[0] );
-    for( unsigned int o = 1; o < objectIdList.size(); o++ )
-      {
-      tubeFilter->AddObjectId( objectIdList[o] );
-      }
-    }
+  tubeFilter->SetRidgeId( tubeId );
+  tubeFilter->SetBackgroundId( backgroundId );
+  tubeFilter->SetUnknownId( unknownId );
 
   if( !loadDiscriminantInfo.empty() )
     {
@@ -143,7 +138,8 @@ int DoIt( int argc, char * argv[] )
       tubeFilter->GetBasisValues(),
       tubeFilter->GetBasisMatrix(),
       tubeFilter->GetWhitenMeans(),
-      tubeFilter->GetWhitenStdDevs() );
+      tubeFilter->GetWhitenStdDevs(),
+      saveDiscriminantInfo+".pdf" );
     tubeParametersIO.Write( saveDiscriminantInfo.c_str() );
     timeCollector.Stop( "SaveBasis" );
     }

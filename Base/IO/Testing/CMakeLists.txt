@@ -42,6 +42,7 @@ set( tubeBaseIOTests_SRCS
   tubeBaseIOPrintTest.cxx
   itktubeMetaLDATest.cxx
   itktubeMetaNJetLDATest.cxx
+  itktubeMetaPDFTest.cxx
   itktubeMetaRidgeSeedTest.cxx
   itktubeMetaTubeParamsTest.cxx )
 
@@ -59,7 +60,7 @@ add_executable( tubeBaseIOTests
   tubeBaseIOTests.cxx
   ${tubeBaseIOTests_SRCS} )
 target_link_libraries( tubeBaseIOTests
-  ${ITK_LIBRARIES} TubeIO )
+  ${ITK_LIBRARIES} TubeTKIO )
 
 add_test( tubeBaseIOHeaderTest
   ${BASE_IO_HEADER_TEST} )
@@ -77,6 +78,11 @@ add_test( itktubeMetaNJetLDATest
   ${BASE_IO_TESTS}
   itktubeMetaNJetLDATest
     ${TEMP}/itkTubeMetaNJetLDATest.mnda )
+
+add_test( itktubeMetaPDFTest
+  ${BASE_IO_TESTS}
+  itktubeMetaPDFTest
+    ${TEMP}/itkTubeMetaPDFTest.pdf )
 
 add_test( itktubeMetaRidgeSeedTest
   ${BASE_IO_TESTS}

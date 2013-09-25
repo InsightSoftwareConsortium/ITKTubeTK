@@ -80,10 +80,13 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start("Binary Thinning");
 
-  typedef itk::BinaryThinningImageFilter< ImageType, ImageType >    FilterType;
-  typedef itk::BinaryBallStructuringElement< PixelType, VDimension> SEType;
+  typedef itk::BinaryThinningImageFilter< ImageType, ImageType >
+    FilterType;
+  typedef itk::BinaryBallStructuringElement< PixelType, VDimension>
+    SEType;
   typedef itk::BinaryDilateImageFilter< ImageType, ImageType, SEType >
-                                                                    DilateType;
+    DilateType;
+
   typename FilterType::Pointer filter;
   typename DilateType::Pointer dilator;
 

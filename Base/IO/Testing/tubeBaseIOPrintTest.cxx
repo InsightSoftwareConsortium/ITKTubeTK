@@ -23,6 +23,7 @@ limitations under the License.
 
 #include "itktubeMetaLDA.h"
 #include "itktubeMetaNJetLDA.h"
+#include "itktubeMetaPDF.h"
 #include "itktubeMetaRidgeSeed.h"
 #include "itktubeMetaTubeParams.h"
 
@@ -35,6 +36,10 @@ int tubeBaseIOPrintTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
   itk::tube::MetaNJetLDA metaNJetLDA;
   std::cout << "-------------metaNJetLDA" << std::endl;
   metaNJetLDA.PrintInfo();
+
+  itk::tube::MetaPDF metaPDF;
+  std::cout << "-------------metaPDF" << std::endl;
+  metaPDF.PrintInfo();
 
   itk::tube::MetaRidgeSeed metaRidgeSeed;
   std::cout << "-------------metaRidgeSeed" << std::endl;

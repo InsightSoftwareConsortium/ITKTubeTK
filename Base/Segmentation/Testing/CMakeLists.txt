@@ -62,14 +62,14 @@ include_directories(
 add_executable( tubeBaseSegmentationHeaderTest
   tubeBaseSegmentationHeaderTest.cxx )
 target_link_libraries( tubeBaseSegmentationHeaderTest
-  TubeNumerics
+  TubeTKNumerics
   ${ITK_LIBRARIES} )
 
 add_executable( tubeBaseSegmentationTests
   tubeBaseSegmentationTests.cxx
   ${tubeBaseSegmentation_SRCS} )
 target_link_libraries( tubeBaseSegmentationTests
-  TubeNumerics
+  TubeTKNumerics
   ${ITK_LIBRARIES} )
 
 add_test( tubeBaseSegmentationHeaderTest
@@ -161,4 +161,5 @@ Midas3FunctionAddTest( itktubeRidgeSeedFilterTest
       255 127
       ${TEMP}/itkTubeRidgeSeedFilterTest_Class0PDF.mha
       ${TEMP}/itkTubeRidgeSeedFilterTest_Feature0Image.mha
-      ${TEMP}/itkTubeRidgeSeedFilterTest_Output.mha )
+      ${TEMP}/itkTubeRidgeSeedFilterTest_Output.mha
+      ${TEMP}/itkTubeRidgeSeedFilterTest_MaxScale.mha )

@@ -95,6 +95,9 @@ public:
   unsigned int GetNumberOfClasses( void ) const;
   unsigned int GetNumberOfObjectIds( void ) const;
 
+  unsigned int GetNumberOfFeatures( void ) const
+    { return N; };
+
   ObjectIdType GetObjectId( unsigned int num = 0 ) const;
   unsigned int GetObjectNumberFromId( ObjectIdType id ) const;
 
@@ -108,11 +111,17 @@ public:
   itkGetObjectMacro( LabelMap, LabelMapType );
 
   itkSetMacro( ErodeRadius, int );
+  itkGetMacro( ErodeRadius, int );
   itkSetMacro( HoleFillIterations, int );
+  itkGetMacro( HoleFillIterations, int );
   itkSetMacro( ProbabilityImageSmoothingStandardDeviation, double );
+  itkGetMacro( ProbabilityImageSmoothingStandardDeviation, double );
   itkSetMacro( HistogramSmoothingStandardDeviation, double );
+  itkGetMacro( HistogramSmoothingStandardDeviation, double );
   itkSetMacro( OutlierRejectPortion, double );
+  itkGetMacro( OutlierRejectPortion, double );
   itkSetMacro( Draft, bool );
+  itkGetMacro( Draft, bool );
 
   typename ProbabilityImageType::Pointer
     GetClassProbabilityForInput( unsigned int classNum ) const;

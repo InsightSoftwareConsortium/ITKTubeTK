@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeMetaRidgeSeed.h"
-#include "itktubeRidgeSeedSupervisedLinearBasisGenerator.h"
+#include "itktubeRidgeSeedFilterIO.h"
+#include "itktubeRidgeSeedFilter.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
@@ -42,13 +42,12 @@ int DoIt( int argc, char * argv[] );
 #include "tubeCLIHelperFunctions.h"
 
 template< class TImage >
-void WriteRidgeSeed( const typename imageT::Pointer & img,
-  std::string base, std::string ext, int num )
+void WriteImageInSequence( const typename TImage::Pointer & img,
+  const std::string & base, const std::string & ext, int num )
 {
-  typedef itk::ImageFileWriter< TImage >     RidgeSeedImageWriterType;
+  typedef itk::ImageFileWriter< TImage >     ImageWriterType;
 
-  typename RidgeSeedImageWriterType::Pointer rsImageWriter =
-    RidgeSeedImageWriterType::New();
+  typename ImageWriterType::Pointer rsImageWriter = ImageWriterType::New();
   std::string fname = base;
   char c[80];
   std::sprintf( c, ext.c_str(), num );
@@ -59,28 +58,44 @@ void WriteRidgeSeed( const typename imageT::Pointer & img,
   rsImageWriter->Update();
 }
 
+template< class TImage >
+void WriteImage( const typename TImage::Pointer & img,
+  const std::string & str )
+{
+  typedef itk::ImageFileWriter< TImage >     ImageWriterType;
+
+  typename ImageWriterType::Pointer rsImageWriter = ImageWriterType::New();
+  rsImageWriter->SetUseCompression( true );
+  rsImageWriter->SetFileName( str.c_str() );
+  rsImageWriter->SetInput( img );
+  rsImageWriter->Update();
+}
+
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
   // The timeCollector is used to perform basic profiling of the components
-  //   of your algorithm.
+  //   of your algorithm.:w
+  //
   itk::TimeProbesCollectorBase timeCollector;
 
   typedef TPixel                                      InputPixelType;
   typedef itk::Image< InputPixelType, VDimension >    InputImageType;
-  typedef itk::Image< unsigned short, VDimension >    MapImageType;
+  typedef itk::Image< unsigned short, VDimension >    LabelMapImageType;
   typedef itk::Image< float, VDimension >             RidgeSeedImageType;
 
   typedef itk::ImageFileReader< RidgeSeedImageType >  ImageReaderType;
-  typedef itk::ImageFileReader< MapImageType >        MapReaderType;
-  typedef itk::ImageFileWriter< RidgeSeedImageType >  RidgeSeedImageWriterType;
+  typedef itk::ImageFileReader< LabelMapImageType >   LabelMapReaderType;
 
-  typedef itk::tube::RidgeSeedSupervisedLinearBasisGenerator< RidgeSeedImageType,
-    MapImageType >  RidgeSeedGeneratorType;
+  typedef itk::tube::RidgeSeedFilter< RidgeSeedImageType,
+    LabelMapImageType >   RidgeSeedGeneratorType;
   typename RidgeSeedGeneratorType::Pointer rsGenerator =
     RidgeSeedGeneratorType::New();
+
+  typedef itk::tube::RidgeSeedFilterIO< RidgeSeedImageType,
+    LabelMapImageType >   RidgeSeedFilterIOType;
 
   timeCollector.Start( "LoadData" );
 
@@ -88,18 +103,21 @@ int DoIt( int argc, char * argv[] )
   reader = ImageReaderType::New();
   reader->SetFileName( inputImage.c_str() );
   reader->Update();
-  rsGenerator->SetRidgeImage( reader->GetOutput() );
+  rsGenerator->SetInput( reader->GetOutput() );
 
   timeCollector.Stop( "LoadData" );
 
-  if( labelmap.size() > 0 )
+  if( labelMap.size() > 0 )
     {
     timeCollector.Start( "LoadLabelMap" );
-    typename MapReaderType::Pointer  inMapReader = MapReaderType::New();
-    inMapReader->SetFileName( labelmap.c_str() );
+    typename LabelMapReaderType::Pointer  inMapReader =
+      LabelMapReaderType::New();
+    inMapReader->SetFileName( labelMap.c_str() );
     inMapReader->Update();
     rsGenerator->SetLabelMap( inMapReader->GetOutput() );
-    rsGenerator->SetObjectId( objectId );
+    rsGenerator->SetRidgeId( tubeId );
+    rsGenerator->SetBackgroundId( backgroundId );
+    rsGenerator->SetUnknownId( unknownId );
     timeCollector.Stop( "LoadLabelMap" );
     }
 
@@ -112,17 +130,28 @@ int DoIt( int argc, char * argv[] )
 
     rsGenerator->SetBasisValues( rsReader.GetLDAValues() );
     rsGenerator->SetBasisMatrix( rsReader.GetLDAMatrix() );
-    rsGenerator->SetWhitenMeans( rsReader.GetWhitenMeans() );
-    rsGenerator->SetWhitenStdDevs( rsReader.GetWhitenStdDevs() );
     rsGenerator->SetScales( rsReader.GetRidgeSeedScales() );
+    if( rsReader.GetWhitenMeans().size() > 0 )
+      {
+      rsGenerator->SetWhitenMeans( rsReader.GetWhitenMeans() );
+      rsGenerator->SetWhitenStdDevs( rsReader.GetWhitenStdDevs() );
+      }
 
     timeCollector.Stop( "LoadTubeSeed" );
+
+    if( saveTubeSeedInfo.size() > 0 )
+      {
+      timeCollector.Start( "SaveTubeSeedInfo" );
+      RidgeSeedFilterIOType rsWriter( rsGenerator );
+      rsWriter.Write( saveTubeSeedInfo.c_str() );
+      timeCollector.Stop( "SaveTubeSeedInfo" );
+      }
     }
   else
     {
-    if( labelmap.size() == 0 )
+    if( labelMap.size() == 0 )
       {
-      std::cerr << "Must specify a labelmap if training to find seeds"
+      std::cerr << "Must specify a labelMap if training to find seeds"
                 << std::endl;
       return EXIT_FAILURE;
       }
@@ -135,25 +164,26 @@ int DoIt( int argc, char * argv[] )
     rsGenerator->SetLabelMap( NULL );
     }
 
+  rsGenerator->SetSeedTolerance( seedTolerance );
+
   timeCollector.Start( "SaveTubeSeedImage" );
-  rsGenerator->UpdateBasisImages();
-  typename RidgeSeedImageWriterType::Pointer rsImageWriter =
-    RidgeSeedImageWriterType::New();
-  rsImageWriter->SetUseCompression( true );
-  rsImageWriter->SetFileName( outputSeedImage.c_str() );
-  rsImageWriter->SetInput( rsGenerator->GetBasisImage( 0 ) );
-  rsImageWriter->Update();
+  rsGenerator->ClassifyImages();
+  WriteImage< LabelMapImageType >( rsGenerator->GetOutput(),
+    outputSeedImage );
   timeCollector.Stop( "SaveTubeSeedImage" );
+
+  if( outputSeedScaleImage.size() > 0 )
+    {
+    timeCollector.Start( "SaveTubeSeedScaleImage" );
+    WriteImage< RidgeSeedImageType >( rsGenerator->GetOutputSeedScales(),
+      outputSeedScaleImage );
+    timeCollector.Stop( "SaveTubeSeedScaleImage" );
+    }
 
   if( saveTubeSeedInfo.size() > 0 )
     {
     timeCollector.Start( "SaveTubeSeedInfo" );
-    itk::tube::MetaRidgeSeed rsWriter(
-      rsGenerator->GetScales(),
-      rsGenerator->GetBasisValues(),
-      rsGenerator->GetBasisMatrix(),
-      rsGenerator->GetWhitenMeans(),
-      rsGenerator->GetWhitenStdDevs() );
+    RidgeSeedFilterIOType rsWriter( rsGenerator );
     rsWriter.Write( saveTubeSeedInfo.c_str() );
     timeCollector.Stop( "SaveTubeSeedInfo" );
     }
@@ -161,11 +191,11 @@ int DoIt( int argc, char * argv[] )
   if( saveFeatureImages.size() > 0 )
     {
     timeCollector.Start( "SaveFeatureImages" );
-    unsigned int numFeatures = rsGenerator->GetNumberOfFeatures();
+    unsigned int numFeatures = rsGenerator->GetNumberOfBasis();
     for( unsigned int i=0; i<numFeatures; i++ )
       {
-      WriteRidgeSeed< RidgeSeedImageType >(
-        rsGenerator->GetFeatureImage( i ),
+      WriteImageInSequence< RidgeSeedImageType >(
+        rsGenerator->GetBasisImage( i ),
         saveFeatureImages, ".f%02d.mha", i );
       }
     timeCollector.Stop( "SaveFeatureImages" );

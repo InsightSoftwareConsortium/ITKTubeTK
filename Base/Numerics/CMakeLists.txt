@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-project( TubeNumerics )
+project( TubeTKNumerics )
 
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
@@ -78,14 +78,14 @@ set( TubeTK_Base_Numerics_SRCS
   tubeSplineApproximation1D.cxx
   tubeSplineND.cxx )
 
-add_library( TubeNumerics STATIC
+add_library( TubeTKNumerics STATIC
   ${TubeTK_Base_Numerics_H_Files}
   ${TubeTK_Base_Numerics_HXX_Files}
   ${TubeTK_Base_Numerics_SRCS} )
 
-target_link_libraries( TubeNumerics TubeCommon ${ITK_LIBRARIES} )
+target_link_libraries( TubeTKNumerics TubeTKCommon ${ITK_LIBRARIES} )
 
-set( TARGETS TubeNumerics )
+set( TARGETS TubeTKNumerics )
 TubeTKMacroInstallPlugins( ${TARGETS} )
 
 if( BUILD_TESTING )
@@ -98,4 +98,4 @@ install( FILES
   DESTINATION include )
 
 # Export target
-set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeNumerics )
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKNumerics )

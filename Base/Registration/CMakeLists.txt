@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-project( TubeRegistration )
+project( TubeTKRegistration )
 
 set( TubeTK_Base_Registration_H_Files
   itktubeAnisotropicDiffusiveRegistrationFilter.h
@@ -48,7 +48,7 @@ set( TubeTK_Base_Registration_HXX_Files
   itktubeMeanSquareRegistrationFunction.hxx
   itktubeTubeToTubeTransformFilter.hxx )
 
-add_custom_target( TubeRegistration SOURCES
+add_custom_target( TubeTKRegistration SOURCES
   ${TubeTK_Base_Registration_H_Files}
   ${TubeTK_Base_Registration_HXX_Files} )
 

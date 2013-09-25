@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-project( TubeSegmentation )
+project( TubeTKSegmentation )
 
 set( TubeTK_Base_Segmentation_H_Files
   itktubeCVTImageFilter.h
@@ -43,7 +43,7 @@ set( TubeTK_Base_Segmentation_HXX_Files
   itktubeTubeExtractor.hxx
   itktubeTubeNetworkExtractor.hxx )
 
-add_custom_target( TubeSegmentation SOURCES
+add_custom_target( TubeTKSegmentation SOURCES
   ${TubeTK_Base_Segmentation_H_Files}
   ${TubeTK_Base_Segmentation_HXX_Files} )
 
