@@ -59,7 +59,7 @@ set( LIBSVM_HASH_OR_TAG 67f8b597ce85c1f5288d7838e57ea28a )
 # TubeTK Parameter Serializer snapshot 2013-08-21 11:14:41
 set( ParameterSerializer_URL
   ${github_protocol}://github.com/TubeTK/TubeTK-ParameterSerializer.git )
-set( ParameterSerializer_HASH_OR_TAG 819e3f6df97ab385f8c7b09203c07aa2fa56ade0 )
+set( ParameterSerializer_HASH_OR_TAG 2dce11a61af383780d6be67950e850a8e089cd90 )
 
 # Slicer Execution Model (TubeTK fork) snapshot 2013-08-05 10:16:50
 set( SlicerExecutionModel_URL
