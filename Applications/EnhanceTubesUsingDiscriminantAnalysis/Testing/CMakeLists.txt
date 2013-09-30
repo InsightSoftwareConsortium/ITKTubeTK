@@ -45,7 +45,7 @@ Midas3FunctionAddTest( ${MODULE_NAME}-Test1
   ${PROJ_EXE}
     --tubeId 255
     --backgroundId 0
-    --voidId 10
+    --unknownId 10
     --tubeScales 0.3,1.5
     --saveDiscriminantInfo ${TEMP}/${MODULE_NAME}Test1.mrs
     --labelmap MIDAS{im0001.vk.crop.mha.md5}
@@ -67,7 +67,7 @@ set_property(TEST ${MODULE_NAME}-Test1-MRS-Compare
 #######
 Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Output-Compare
   ${IMAGECOMPARE_EXE}
-    -i 0.01
+    -i 0.02
     -t ${TEMP}/${MODULE_NAME}Test1_Output.mha
     -b MIDAS{${MODULE_NAME}Test1_Output.mha.md5} )
 set_property(TEST ${MODULE_NAME}-Test1-Output-Compare

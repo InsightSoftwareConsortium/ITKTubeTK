@@ -61,11 +61,17 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
   if( mrs1.GetLDAValues() != v || mrs1.GetLDAMatrix() != m
     || mrs1.GetRidgeSeedScales() != scales )
     {
-    std::cout << "LDA values do not match after set"
-      << std::endl;
+    std::cout << "LDA values do not match after set" << std::endl;
     return EXIT_FAILURE;
     }
 
+  mrs1.SetUnknownId( 1 );
+  mrs1.SetBackgroundId( 128 );
+  mrs1.SetRidgeId( 256 );
+  mrs1.SetIntensityMin( 0 );
+  mrs1.SetIntensityMax( 4096 );
+  mrs1.SetSeedTolerance( 0.5 );
+  mrs1.SetSkeletonize( false );
 
   itk::tube::MetaRidgeSeed mrs2( mrs1 );
   if( mrs2.GetLDAValues() != mrs1.GetLDAValues()
@@ -84,6 +90,42 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
         << std::endl;
       }
     std::cout << " PDFFileName : " << mrs2.GetPDFFileName() << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  if( mrs2.GetUnknownId() != 1 )
+    {
+    std::cout << "UnknownId incorrect" << std::endl;
+    return EXIT_FAILURE;
+    }
+  if( mrs2.GetBackgroundId() != 128 )
+    {
+    std::cout << "BackgroundId incorrect" << std::endl;
+    return EXIT_FAILURE;
+    }
+  if( mrs2.GetRidgeId() != 256 )
+    {
+    std::cout << "RidgeId incorrect" << std::endl;
+    return EXIT_FAILURE;
+    }
+  if( mrs2.GetIntensityMin() != 0 )
+    {
+    std::cout << "IntensityMin incorrect" << std::endl;
+    return EXIT_FAILURE;
+    }
+  if( mrs2.GetIntensityMax() != 4096 )
+    {
+    std::cout << "IntensityMax incorrect" << std::endl;
+    return EXIT_FAILURE;
+    }
+  if( mrs2.GetSeedTolerance() != 0.5 )
+    {
+    std::cout << "SeedTolerance incorrect" << std::endl;
+    return EXIT_FAILURE;
+    }
+  if( mrs2.GetSkeletonize() != false )
+    {
+    std::cout << "Skeletonize incorrect" << std::endl;
     return EXIT_FAILURE;
     }
 

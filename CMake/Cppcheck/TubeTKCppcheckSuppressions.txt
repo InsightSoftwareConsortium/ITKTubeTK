@@ -2,7 +2,6 @@ unusedFunction:*/Applications/DeblendTomosynthesisSlicesUsingPrior/DeblendTomosy
 unusedFunction:*/Applications/SegmentConnectedComponentsUsingParzenPDFs/SegmentConnectedComponentsUsingParzenPDFs.cxx:49
 unusedFunction:*/Base/CLI/Testing/tubeBaseCLITests.cxx:26
 unusedFunction:*/Base/IO/itktubeMetaLDA.cxx:249
-unusedFunction:*/Base/IO/itktubeMetaLDA.cxx:321
 unusedFunction:*/Base/ObjectDocuments/tubeMetaObjectDocument.cxx
 unusedFunction:*/Base/ObjectDocuments/tubeOptionList.cxx
 unusedFunction:*/Base/Python/tubetk/_tubetk_numpy.cxx:317

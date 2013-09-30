@@ -256,6 +256,23 @@ CopyInfo( const MetaPDF & _pdf )
   InitializeEssential( _pdf.GetNumberOfFeatures(),
     _pdf.GetNumberOfBinsPerFeature(), _pdf.GetBinMin(),
     _pdf.GetBinSize(), NULL );
+
+  this->SetObjectId( _pdf.GetObjectId() );
+  this->SetObjectPDFWeight( _pdf.GetObjectPDFWeight() );
+  this->SetVoidId( _pdf.GetVoidId() );
+  this->SetErodeRadius( _pdf.GetErodeRadius() );
+  this->SetHoleFillIterations( _pdf.GetHoleFillIterations() );
+  this->SetProbabilityImageSmoothingStandardDeviation(
+    _pdf.GetProbabilityImageSmoothingStandardDeviation() );
+  this->SetHistogramSmoothingStandardDeviation(
+    _pdf.GetHistogramSmoothingStandardDeviation() );
+  this->SetOutlierRejectPortion( _pdf.GetOutlierRejectPortion() );
+  this->SetDraft( _pdf.GetDraft() );
+  this->SetReclassifyObjectLabels( _pdf.GetReclassifyObjectLabels() );
+  this->SetReclassifyNotObjectLabels(
+    _pdf.GetReclassifyNotObjectLabels() );
+  this->SetForceClassification( _pdf.GetForceClassification() );
+
 }
 
 void MetaPDF::
@@ -267,14 +284,16 @@ Clear( void )
     }
 
   MetaImage::Clear();
+
   m_BinMin.clear();
   m_BinSize.clear();
 
   m_ObjectId.resize( 2 );
   m_ObjectId[0] = 255;
   m_ObjectId[1] = 127;
-  m_ObjectPDFWeight.resize( 1 );
+  m_ObjectPDFWeight.resize( 2 );
   m_ObjectPDFWeight[0] = 1;
+  m_ObjectPDFWeight[1] = 1;
   m_VoidId = 0;
 
   m_ErodeRadius = 1;
@@ -562,13 +581,63 @@ GetForceClassification( void ) const
 bool MetaPDF::
 CanRead( const char * _headerName ) const
 {
-  return MetaImage::CanRead( _headerName );
+  // First check the extension
+  METAIO_STL::string fname = _headerName;
+  if(  fname == "" )
+    {
+    return false;
+    }
+
+  bool extensionFound = false;
+
+  METAIO_STL::string::size_type stringPos = fname.rfind(".pdf");
+  if ((stringPos != METAIO_STL::string::npos)
+      && (stringPos == fname.length() - 4))
+    {
+    extensionFound = true;
+    }
+
+  if( !extensionFound )
+    {
+    return false;
+    }
+
+  // Now check the file content
+  METAIO_STREAM::ifstream inputStream;
+
+  inputStream.open( fname.c_str(), METAIO_STREAM::ios::in |
+    METAIO_STREAM::ios::binary );
+
+  if( inputStream.fail() )
+    {
+    return false;
+    }
+
+  char* buf = new char[8001];
+  inputStream.read(buf,8000);
+  unsigned long fileSize = inputStream.gcount();
+  buf[fileSize] = 0;
+  METAIO_STL::string header(buf);
+  header.resize(fileSize);
+  delete [] buf;
+  inputStream.close();
+
+  stringPos = header.find("NDims");
+  if( stringPos == METAIO_STL::string::npos )
+    {
+    return false;
+    }
+
+  METAIO_STL::string elementDataFileName = M_GetTagValue( header,
+    "ElementDataFile" );
+
+  return true;
 }
 
 bool MetaPDF::
 Read( const char * _headerName )
 {
-  return MetaImage::Read( _headerName );
+  return MetaImage::Read( _headerName, true, NULL );
 }
 
 bool MetaPDF::
@@ -620,7 +689,34 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
 bool MetaPDF::
 Write( const char * _headerName )
 {
-  return MetaImage::Write( _headerName );
+  if( _headerName != NULL )
+    {
+    FileName( _headerName );
+    }
+
+  MET_SetFileSuffix( m_FileName, "pdf" );
+
+  m_BinaryData = true;
+  ElementDataFileName( "LOCAL" );
+
+  METAIO_STREAM::ofstream * tmpWriteStream = new METAIO_STREAM::ofstream;
+
+  tmpWriteStream->open( m_FileName, METAIO_STREAM::ios::binary |
+    METAIO_STREAM::ios::out );
+
+  if( !tmpWriteStream->is_open() )
+    {
+    delete tmpWriteStream;
+    return false;
+    }
+
+  bool result = MetaImage::WriteStream(tmpWriteStream, true,
+    m_ElementData);
+
+  tmpWriteStream->close();
+  delete tmpWriteStream;
+
+  return result;
 }
 
 bool MetaPDF::
@@ -638,6 +734,10 @@ M_SetupReadFields( void )
                         << METAIO_STREAM::endl;
     }
 
+  MetaImage::Clear();
+
+  MetaImage::M_SetupReadFields();
+
   MET_FieldRecordType * mF;
 
   mF = new MET_FieldRecordType;
@@ -647,7 +747,7 @@ M_SetupReadFields( void )
   int nObjects = MET_GetFieldRecordNumber( "NObjects", &m_Fields );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "ObjectID", MET_INT_ARRAY, true, nObjects );
+  MET_InitReadField( mF, "ObjectId", MET_INT_ARRAY, true, nObjects );
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
@@ -696,8 +796,6 @@ M_SetupReadFields( void )
   mF = new MET_FieldRecordType;
   MET_InitReadField( mF, "ForceClassification", MET_STRING, true );
   m_Fields.push_back( mF );
-
-  MetaImage::M_SetupReadFields();
 }
 
 void MetaPDF::
@@ -709,28 +807,29 @@ M_SetupWriteFields( void )
   mF_LastField = m_Fields.back();
   m_Fields.erase( m_Fields.end()-1 );
 
+  int nObjects = m_ObjectId.size();
+
   MET_FieldRecordType * mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "NObjects", MET_INT, m_ObjectId.size() );
+  MET_InitWriteField( mF, "NObjects", MET_INT, nObjects );
   m_Fields.push_back( mF );
 
   int tmpI[4096];
-  for( unsigned int i = 0; i < m_ObjectId.size(); ++i )
+  for( unsigned int i = 0; i < nObjects; ++i )
     {
     tmpI[i] = m_ObjectId[i];
     }
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "ObjectId", MET_INT_ARRAY, m_ObjectId.size(),
-    tmpI );
+  MET_InitWriteField( mF, "ObjectId", MET_INT_ARRAY, nObjects, tmpI );
   m_Fields.push_back( mF );
 
   float tmpF[4096];
-  for( unsigned int i = 0; i < m_ObjectId.size(); ++i )
+  for( unsigned int i = 0; i < nObjects; ++i )
     {
     tmpF[i] = m_ObjectPDFWeight[i];
     }
   mF = new MET_FieldRecordType;
   MET_InitWriteField( mF, "ObjectPDFWeight", MET_FLOAT_ARRAY,
-    m_ObjectId.size(), tmpF );
+    nObjects, tmpF );
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
@@ -849,7 +948,6 @@ M_Read( void )
     }
 
   int nFeatures = MetaImage::NDims();
-  std::cout << "nFeatures = " << nFeatures << std::endl;
 
   m_BinMin.resize( nFeatures );
   m_BinSize.resize( nFeatures );
@@ -865,14 +963,14 @@ M_Read( void )
     &m_Fields );
   unsigned int nObjects = ( unsigned int )mF->value[0];
 
-  m_ObjectId.resize( nObjects, 0 );
+  m_ObjectId.resize( nObjects );
   mF = MET_GetFieldRecord( "ObjectId", &m_Fields );
   for( unsigned int i = 0; i < nObjects; i++ )
     {
     m_ObjectId[i] = ( int )mF->value[i];
     }
 
-  m_ObjectPDFWeight.resize( nObjects, 0 );
+  m_ObjectPDFWeight.resize( nObjects );
   mF = MET_GetFieldRecord( "ObjectPDFWeight", &m_Fields );
   if( mF && mF->defined )
     {
@@ -924,7 +1022,8 @@ M_Read( void )
   if( mF && mF->defined )
     {
     m_Draft = false;
-    if( ( char )mF->value[0] == 'T' || ( char )mF->value[0] == 't' )
+    if( (( char * )(mF->value))[0] == 'T' ||
+      (( char * )(mF->value))[0] == 't' )
       {
       m_Draft = true;
       }
@@ -934,7 +1033,8 @@ M_Read( void )
   if( mF && mF->defined )
     {
     m_ReclassifyObjectLabels = false;
-    if( ( char )mF->value[0] == 'T' || ( char )mF->value[0] == 't' )
+    if( (( char * )(mF->value))[0] == 'T' ||
+      (( char * )(mF->value))[0] == 't' )
       {
       m_ReclassifyObjectLabels = true;
       }
@@ -944,7 +1044,8 @@ M_Read( void )
   if( mF && mF->defined )
     {
     m_ReclassifyNotObjectLabels = false;
-    if( ( char )mF->value[0] == 'T' || ( char )mF->value[0] == 't' )
+    if( (( char * )(mF->value))[0] == 'T' ||
+      (( char * )(mF->value))[0] == 't' )
       {
       m_ReclassifyNotObjectLabels = true;
       }
@@ -954,11 +1055,14 @@ M_Read( void )
   if( mF && mF->defined )
     {
     m_ForceClassification = false;
-    if( ( char )mF->value[0] == 'T' || ( char )mF->value[0] == 't' )
+    if( (( char * )(mF->value))[0] == 'T' ||
+      (( char * )(mF->value))[0] == 't' )
       {
       m_ForceClassification = true;
       }
     }
+
+  return true;
 }
 
 

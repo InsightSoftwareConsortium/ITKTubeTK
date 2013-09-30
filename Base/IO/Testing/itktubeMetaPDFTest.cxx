@@ -43,11 +43,40 @@ int itktubeMetaPDFTest( int argc, char * argv[] )
   binSize[0] = 10;
   binSize[1] = 5;
   float data[100];
-  for( unsigned int i = 0; i < 100; i++ )
+  for( unsigned int i = 0; i < 100; ++i )
     {
     data[i] = i;
     }
   pdf1.InitializeEssential( 2, dimSize, binMin, binSize, data );
+
+  bool result = EXIT_SUCCESS;
+
+  if( pdf1.GetBinMin()[0] != -5 )
+    {
+    std::cout << "BinMin Initialize failed" << std::endl;
+    result = EXIT_FAILURE;
+    }
+  if( pdf1.GetBinSize()[0] != 10 )
+    {
+    std::cout << "BinMin Initialize failed" << std::endl;
+    return EXIT_FAILURE;
+    }
+  binMin[0] = 5;
+  binSize[0] = 5;
+  pdf1.SetBinMin( binMin );
+  pdf1.SetBinSize( binSize );
+
+  pdf1.SetVoidId( 1 );
+  pdf1.SetErodeRadius( 5 );
+  pdf1.SetHoleFillIterations( 20 );
+  pdf1.SetHistogramSmoothingStandardDeviation( 2 );
+  pdf1.SetProbabilityImageSmoothingStandardDeviation( 1 );
+  pdf1.SetOutlierRejectPortion( 0.2 );
+  pdf1.SetReclassifyNotObjectLabels( true );
+  pdf1.SetReclassifyObjectLabels( true );
+  pdf1.SetForceClassification( true );
+  pdf1.SetDraft( true );
+
   pdf1.Write( argv[1] );
 
   itk::tube::MetaPDF pdf2( argv[1] );
@@ -68,14 +97,73 @@ int itktubeMetaPDFTest( int argc, char * argv[] )
     std::cout << "Written file and read file do not match" << std::endl;
     return EXIT_FAILURE;
     }
-  for( unsigned int i = 0; i < 100; i++ )
+  for( unsigned int i = 0; i < 100; ++i )
     {
     if( pdf2.GetPDF()[i] != i )
       {
       std::cout << "Written and read data does not match" << std::endl;
-      return EXIT_FAILURE;
+      result = EXIT_FAILURE;
       }
     }
+
+  if( pdf1.GetVoidId() != pdf2.GetVoidId() )
+    {
+    std::cout << "VoidId Initialize failed" << std::endl;
+    result = EXIT_FAILURE;
+    }
+  if( pdf1.GetErodeRadius() != pdf2.GetErodeRadius() )
+    {
+    std::cout << "ErodeRadius Initialize failed" << std::endl;
+    result = EXIT_FAILURE;
+    }
+  if( pdf1.GetHoleFillIterations() != pdf2.GetHoleFillIterations() )
+    {
+    std::cout << "HoleFillIterations Initialize failed" << std::endl;
+    result = EXIT_FAILURE;
+    }
+  if( pdf1.GetHistogramSmoothingStandardDeviation() !=
+    pdf2.GetHistogramSmoothingStandardDeviation() )
+    {
+    std::cout << "HistogramSmoothingStandardDeviation Initialize failed"
+      << std::endl;
+    result = EXIT_FAILURE;
+    }
+  if( pdf1.GetProbabilityImageSmoothingStandardDeviation() !=
+    pdf2.GetProbabilityImageSmoothingStandardDeviation() )
+    {
+    std::cout
+      << "ProbabilityImageSmoothingStandardDeviation Initialize failed"
+      << std::endl;
+    result = EXIT_FAILURE;
+    }
+  if( pdf1.GetOutlierRejectPortion() != pdf2.GetOutlierRejectPortion() )
+    {
+    std::cout << "OutlierRejectPortion Initialize failed" << std::endl;
+    result = EXIT_FAILURE;
+    }
+  if( pdf1.GetReclassifyObjectLabels() != pdf2.GetReclassifyObjectLabels() )
+    {
+    std::cout << "ReclassifyObjectLabels Initialize failed" << std::endl;
+    result = EXIT_FAILURE;
+    }
+  if( pdf1.GetReclassifyNotObjectLabels() !=
+    pdf2.GetReclassifyNotObjectLabels() )
+    {
+    std::cout << "ReclassifyNotObjectLabels Initialize failed" << std::endl;
+    result = EXIT_FAILURE;
+    }
+  if( pdf1.GetForceClassification() != pdf2.GetForceClassification() )
+    {
+    std::cout << "ForceClassification Initialize failed" << std::endl;
+    result = EXIT_FAILURE;
+    }
+  if( pdf1.GetDraft() != pdf2.GetDraft() )
+    {
+    std::cout << "Draft Initialize failed" << std::endl;
+    result = EXIT_FAILURE;
+    }
+
+  pdf2.SetPDF( pdf1.GetPDF() );
 
   itk::tube::MetaPDF pdf3( 2, dimSize, binMin, binSize, data );
   pdf3.Write( argv[1] );
@@ -95,15 +183,14 @@ int itktubeMetaPDFTest( int argc, char * argv[] )
     std::cout << "Re-written file and read file do not match" << std::endl;
     return EXIT_FAILURE;
     }
-  for( unsigned int i = 0; i < 100; i++ )
+  for( unsigned int i = 0; i < 100; ++i )
     {
     if( pdf3.GetPDF()[i] != i )
       {
       std::cout << "Re-written and read data does not match" << std::endl;
-      return EXIT_FAILURE;
+      result = EXIT_FAILURE;
       }
     }
 
-
-  return EXIT_SUCCESS;
+  return result;
 }

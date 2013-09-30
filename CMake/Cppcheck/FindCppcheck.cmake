@@ -134,6 +134,7 @@ if( CPPCHECK_EXECUTABLE )
   execute_process( COMMAND
       ${CPPCHECK_EXECUTABLE}
       --enable=unusedFunctions
+      --check-config
       ${CPPCHECK_QUIET_ARG}
       ${_cppcheckdummyfile}
     RESULT_VARIABLE

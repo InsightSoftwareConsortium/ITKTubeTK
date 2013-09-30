@@ -133,6 +133,13 @@ CopyInfo( const MetaRidgeSeed & _lda )
 
   SetRidgeSeedScales( _lda.GetRidgeSeedScales() );
   SetPDFFileName( _lda.GetPDFFileName() );
+  SetIntensityMin( _lda.GetIntensityMin() );
+  SetIntensityMax( _lda.GetIntensityMax() );
+  SetRidgeId( _lda.GetRidgeId() );
+  SetUnknownId( _lda.GetUnknownId() );
+  SetBackgroundId( _lda.GetBackgroundId() );
+  SetSeedTolerance( _lda.GetSeedTolerance() );
+  SetSkeletonize( _lda.GetSkeletonize() );
 }
 
 void MetaRidgeSeed::
@@ -781,8 +788,8 @@ M_Read( void )
   m_SeedTolerance = (double)( mF->value[0] );
 
   mF = MET_GetFieldRecord( "Skeletonize", &m_Fields );
-  if( (char)( mF->value[0] ) == 'T'
-    || (char)( mF->value[0] ) == 't' )
+  if( (( char * )( mF->value ))[0] == 'T'
+    || (( char * )( mF->value)) [0] == 't' )
     {
     m_Skeletonize = true;
     }
