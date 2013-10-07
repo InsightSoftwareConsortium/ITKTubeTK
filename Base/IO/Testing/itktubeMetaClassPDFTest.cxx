@@ -21,9 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeMetaPDF.h"
+#include "itktubeMetaClassPDF.h"
 
-int itktubeMetaPDFTest( int argc, char * argv[] )
+int itktubeMetaClassPDFTest( int argc, char * argv[] )
 {
   if( argc != 2 )
     {
@@ -31,15 +31,15 @@ int itktubeMetaPDFTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  itk::tube::MetaPDF pdf1;
+  itk::tube::MetaClassPDF pdf1;
 
   std::vector< int > dimSize(2);
   dimSize[0] = 10;
   dimSize[1] = 10;
-  std::vector< float > binMin(2);
+  std::vector< double > binMin(2);
   binMin[0] = -5;
   binMin[1] = 20;
-  std::vector< float > binSize(2);
+  std::vector< double > binSize(2);
   binSize[0] = 10;
   binSize[1] = 5;
   float data[100];
@@ -79,7 +79,7 @@ int itktubeMetaPDFTest( int argc, char * argv[] )
 
   pdf1.Write( argv[1] );
 
-  itk::tube::MetaPDF pdf2( argv[1] );
+  itk::tube::MetaClassPDF pdf2( argv[1] );
   if( pdf1.GetNumberOfFeatures() != pdf2.GetNumberOfFeatures() ||
     pdf1.GetNumberOfBinsPerFeature()[0] !=
       pdf2.GetNumberOfBinsPerFeature()[0] ||
@@ -165,7 +165,7 @@ int itktubeMetaPDFTest( int argc, char * argv[] )
 
   pdf2.SetPDF( pdf1.GetPDF() );
 
-  itk::tube::MetaPDF pdf3( 2, dimSize, binMin, binSize, data );
+  itk::tube::MetaClassPDF pdf3( 2, dimSize, binMin, binSize, data );
   pdf3.Write( argv[1] );
   dimSize[1] = 20;
   pdf3.SetNumberOfBinsPerFeature( dimSize );

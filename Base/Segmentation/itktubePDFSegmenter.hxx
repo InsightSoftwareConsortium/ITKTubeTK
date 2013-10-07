@@ -64,9 +64,9 @@ PDFSegmenter< TImage, N, TLabelMap >
   m_OutClassList  = NULL;
 
   m_InClassHistogram.clear();
-  m_HistogramBinMin.Fill( 0 );
-  m_HistogramBinMax.Fill( 0 );
-  m_HistogramBinScale.Fill( 0 );
+  m_HistogramBinMin.resize( N, 0 );
+  m_HistogramBinMax.resize( N, 0 );
+  m_HistogramBinScale.resize( N, 0 );
   m_HistogramNumBinsND = 100;
 
   m_InputImageList.clear();
@@ -143,6 +143,22 @@ PDFSegmenter< TImage, N, TLabelMap >
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
+void
+PDFSegmenter< TImage, N, TLabelMap >
+::SetObjectId( const ObjectIdListType objectId )
+{
+  m_ObjectIdList = objectId;
+}
+
+template< class TImage, unsigned int N, class TLabelMap >
+const std::vector< int > &
+PDFSegmenter< TImage, N, TLabelMap >
+::GetObjectId( void ) const
+{
+  return m_ObjectIdList;
+}
+
+template< class TImage, unsigned int N, class TLabelMap >
 unsigned int
 PDFSegmenter< TImage, N, TLabelMap >
 ::GetNumberOfObjectIds( void ) const
@@ -156,25 +172,6 @@ PDFSegmenter< TImage, N, TLabelMap >
 ::GetNumberOfClasses( void ) const
 {
   return m_ProbabilityImageVector.size();
-}
-
-template< class TImage, unsigned int N, class TLabelMap >
-int
-PDFSegmenter< TImage, N, TLabelMap >
-::GetObjectId( unsigned int classNum ) const
-{
-  if( classNum < m_ObjectIdList.size() )
-    {
-    return m_ObjectIdList[classNum];
-    }
-
-  if( classNum == m_ObjectIdList.size() )
-    {
-    return m_VoidId;
-    }
-
-  return -1;
-
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
@@ -201,11 +198,19 @@ PDFSegmenter< TImage, N, TLabelMap >
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-double
+void
 PDFSegmenter< TImage, N, TLabelMap >
-::GetObjectPDFWeight( unsigned int num ) const
+::SetObjectPDFWeight( const VectorDoubleType & weight )
 {
-  return m_PDFWeightList[num];
+  m_PDFWeightList = weight;
+}
+
+template< class TImage, unsigned int N, class TLabelMap >
+const std::vector< double > &
+PDFSegmenter< TImage, N, TLabelMap >
+::GetObjectPDFWeight( void ) const
+{
+  return m_PDFWeightList;
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
@@ -248,44 +253,51 @@ PDFSegmenter< TImage, N, TLabelMap >
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-double
+int
 PDFSegmenter< TImage, N, TLabelMap >
-::GetPDFBinMin( unsigned int featureNum ) const
+::GetNumberOfBinsPerFeature( void ) const
 {
-  if( featureNum < N )
-    {
-    return m_HistogramBinMin[featureNum];
-    }
-  else
-    {
-    return 0;
-    }
+  return m_HistogramNumBinsND;
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
 void
 PDFSegmenter< TImage, N, TLabelMap >
-::SetPDFBinMin( unsigned int featureNum, double val )
+::SetNumberOfBinsPerFeature( int nBins )
 {
-  if( featureNum < N )
-    {
-    m_HistogramBinMin[featureNum] = val;
-    }
+  m_HistogramNumBinsND = nBins;
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-double
+const std::vector< double > &
 PDFSegmenter< TImage, N, TLabelMap >
-::GetPDFBinScale( unsigned int featureNum ) const
+::GetBinMin( void ) const
 {
-  if( featureNum < N )
-    {
-    return m_HistogramBinScale[featureNum];
-    }
-  else
-    {
-    return 0;
-    }
+  return m_HistogramBinMin;
+}
+
+template< class TImage, unsigned int N, class TLabelMap >
+void
+PDFSegmenter< TImage, N, TLabelMap >
+::SetBinMin( const VectorDoubleType & binMin )
+{
+  m_HistogramBinMin = binMin;
+}
+
+template< class TImage, unsigned int N, class TLabelMap >
+const std::vector< double > &
+PDFSegmenter< TImage, N, TLabelMap >
+::GetBinScale( void ) const
+{
+  return m_HistogramBinScale;
+}
+
+template< class TImage, unsigned int N, class TLabelMap >
+void
+PDFSegmenter< TImage, N, TLabelMap >
+::SetBinScale( const VectorDoubleType & scale )
+{
+  m_HistogramBinScale = scale;
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
@@ -298,18 +310,6 @@ PDFSegmenter< TImage, N, TLabelMap >
     m_InputImageList[featureNum] = vol;
     }
 }
-
-template< class TImage, unsigned int N, class TLabelMap >
-void
-PDFSegmenter< TImage, N, TLabelMap >
-::SetPDFBinScale( unsigned int featureNum, double val )
-{
-  if( featureNum < N )
-    {
-    m_HistogramBinScale[featureNum] = val;
-    }
-}
-
 
 template< class TImage, unsigned int N, class TLabelMap >
 void
@@ -464,14 +464,14 @@ PDFSegmenter< TImage, N, TLabelMap >
   timeCollector.Start( "ListsToHistograms" );
   // Inside
 
-  std::vector< std::vector< float > > clipMin;
-  std::vector< std::vector< float > > clipMax;
+  std::vector< std::vector< double > > clipMin;
+  std::vector< std::vector< double > > clipMax;
   if( true ) // creating a local context to limit memory footprint
     {
     clipMin.resize( numClasses );
     clipMax.resize( numClasses );
 
-    std::vector< vnl_matrix< float > > inImHistogram;
+    std::vector< vnl_matrix< double > > inImHistogram;
     inImHistogram.resize( numClasses );
     for( unsigned int c = 0; c < numClasses; c++ )
       {
@@ -1343,8 +1343,8 @@ PDFSegmenter< TImage, N, TLabelMap >
   os << indent << "Draft = " << m_Draft << std::endl;
   os << indent << "ReclassifyObjectLabels = " << m_ReclassifyObjectLabels
     << std::endl;
-  os << indent << "ReclassifyNotObjectLabels = " << m_ReclassifyNotObjectLabels
-    << std::endl;
+  os << indent << "ReclassifyNotObjectLabels = "
+    << m_ReclassifyNotObjectLabels << std::endl;
   os << indent << "Number of probability images = "
     << m_ProbabilityImageVector.size() << std::endl;
   os << indent << "InClassList size = "
@@ -1359,9 +1359,11 @@ PDFSegmenter< TImage, N, TLabelMap >
     }
   os << indent << "InClassHistogram size = "
     << m_InClassHistogram.size() << std::endl;
-  os << indent << "HistogramBinMin = " << m_HistogramBinMin << std::endl;
-  os << indent << "HistogramBinMax = " << m_HistogramBinMax << std::endl;
-  os << indent << "HistogramBinScale = " << m_HistogramBinScale
+  os << indent << "HistogramBinMin = " << m_HistogramBinMin[0]
+    << std::endl;
+  os << indent << "HistogramBinMax = " << m_HistogramBinMax[0]
+    << std::endl;
+  os << indent << "HistogramBinScale = " << m_HistogramBinScale[0]
     << std::endl;
   os << indent << "HistogramNumBinsND = "
     << m_HistogramNumBinsND << std::endl;

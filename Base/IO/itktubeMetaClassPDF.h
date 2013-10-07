@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeMetaPDF_H
-#define __itktubeMetaPDF_H
+#ifndef __itktubeMetaClassPDF_H
+#define __itktubeMetaClassPDF_H
 
 #include "metaImage.h"
 
@@ -36,51 +36,51 @@ namespace tube
 
 /**
 *
-* Reads and Writes MetaPDF Files, typically designated .mnda files
+* Reads and Writes MetaClassPDF Files, typically designated .mnda files
 *
 * \author Stephen R. Aylward
 *
 * \date August 29, 2013
 *
 */
-class MetaPDF : private MetaImage
+class MetaClassPDF : private MetaImage
 {
 public:
 
-  MetaPDF( void );
+  MetaClassPDF( void );
 
-  MetaPDF( const char * _headerName );
+  MetaClassPDF( const char * _headerName );
 
-  MetaPDF( const MetaPDF & _metaPDF );
+  MetaClassPDF( const MetaClassPDF & _metaPDF );
 
-  MetaPDF( int _nFeatures,
+  MetaClassPDF( int _nFeatures,
     const std::vector< int > & _nBinsPerFeature,
-    const std::vector< float > & _binMin,
-    const std::vector< float > & _binSize,
+    const std::vector< double > & _binMin,
+    const std::vector< double > & _binSize,
     float * _elementData = NULL );
 
-  MetaPDF( int _x, int _y,
-    float _binMinX, float _binMinY,
-    float _binSizeX, float _binSizeY,
+  MetaClassPDF( int _x, int _y,
+    double _binMinX, double _binMinY,
+    double _binSizeX, double _binSizeY,
     float * _elementData = NULL );
 
-  MetaPDF( int _x, int _y, int _z,
-    float _binMinX, float _binMinY, float _binMinZ,
-    float _binSizeX, float _binSizeY, float _binSizeZ,
+  MetaClassPDF( int _x, int _y, int _z,
+    double _binMinX, double _binMinY, double _binMinZ,
+    double _binSizeX, double _binSizeY, double _binSizeZ,
     float * _elementData = NULL );
 
-  ~MetaPDF( void );
+  ~MetaClassPDF( void );
 
   virtual void PrintInfo( void ) const;
 
-  virtual void CopyInfo( const MetaPDF & _pdf );
+  virtual void CopyInfo( const MetaClassPDF & _pdf );
 
   virtual void Clear( void );
 
   virtual bool InitializeEssential( int _nFeatures,
     const std::vector< int > & _nBinsPerFeature,
-    const std::vector< float > & _binMin,
-    const std::vector< float > & _binSize,
+    const std::vector< double > & _binMin,
+    const std::vector< double > & _binSize,
     float * _elementData = NULL );
 
   void         SetNumberOfFeatures( int _nFeatures );
@@ -90,21 +90,22 @@ public:
                  _nBins );
   const std::vector< int > & GetNumberOfBinsPerFeature( void ) const;
 
-  void          SetBinMin( const std::vector< float > & _binMin );
-  const std::vector< float > & GetBinMin( void ) const;
+  void          SetBinMin( const std::vector< double > & _binMin );
+  const std::vector< double > & GetBinMin( void ) const;
 
-  void          SetBinSize( const std::vector< float > & _binSize );
-  const std::vector< float > & GetBinSize( void ) const;
+  void          SetBinSize( const std::vector< double > & _binSize );
+  const std::vector< double > & GetBinSize( void ) const;
 
   void          SetPDF( float * _pdfData );
-  float *       GetPDF( void );
+  float *       GetPDF( void );  // Data is freed when reader is destroyed
+  float *       ExportPDF( void );  // Data persists when reader destroyed
 
   void          SetObjectId( const std::vector< int > & _objectIds );
   const std::vector< int > & GetObjectId( void ) const;
 
-  void          SetObjectPDFWeight( const std::vector< float > &
+  void          SetObjectPDFWeight( const std::vector< double > &
                   _objectWeights );
-  const std::vector< float > & GetObjectPDFWeight( void ) const;
+  const std::vector< double > & GetObjectPDFWeight( void ) const;
 
   void          SetVoidId( int _voidId );
   int           GetVoidId( void ) const;
@@ -114,13 +115,13 @@ public:
   void          SetHoleFillIterations( int _HoleFillIterations );
   int           GetHoleFillIterations( void ) const;
   void          SetProbabilityImageSmoothingStandardDeviation(
-                  float _ProbabilityImageSmoothingStandardDeviation );
-  float         GetProbabilityImageSmoothingStandardDeviation( void ) const;
+                  double _ProbabilityImageSmoothingStandardDeviation );
+  double         GetProbabilityImageSmoothingStandardDeviation( void ) const;
   void          SetHistogramSmoothingStandardDeviation(
-                  float _HistogramSmoothingStandardDeviation );
-  float         GetHistogramSmoothingStandardDeviation( void ) const;
-  void          SetOutlierRejectPortion( float _OutlierRejectPortion );
-  float         GetOutlierRejectPortion( void ) const;
+                  double _HistogramSmoothingStandardDeviation );
+  double         GetHistogramSmoothingStandardDeviation( void ) const;
+  void          SetOutlierRejectPortion( double _OutlierRejectPortion );
+  double         GetOutlierRejectPortion( void ) const;
   void          SetDraft( bool _Draft );
   bool          GetDraft( void ) const;
   void          SetReclassifyObjectLabels( bool _ReclassifyObjectLabels );
@@ -152,17 +153,17 @@ protected:
   virtual bool M_Read( void );
 
   mutable std::vector< int >   m_NumberOfBinsPerFeature;
-  mutable std::vector< float > m_BinMin;
-  mutable std::vector< float > m_BinSize;
+  mutable std::vector< double > m_BinMin;
+  mutable std::vector< double > m_BinSize;
 
   std::vector< int >   m_ObjectId;
-  std::vector< float > m_ObjectPDFWeight;
+  std::vector< double > m_ObjectPDFWeight;
   int                  m_VoidId;
   int                  m_ErodeRadius;
   int                  m_HoleFillIterations;
-  float                m_ProbabilityImageSmoothingStandardDeviation;
-  float                m_HistogramSmoothingStandardDeviation;
-  float                m_OutlierRejectPortion;
+  double                m_ProbabilityImageSmoothingStandardDeviation;
+  double                m_HistogramSmoothingStandardDeviation;
+  double                m_OutlierRejectPortion;
   bool                 m_Draft;
   bool                 m_ReclassifyObjectLabels;
   bool                 m_ReclassifyNotObjectLabels;
@@ -174,4 +175,4 @@ protected:
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeMetaPDF_H)
+#endif // End !defined(__itktubeMetaClassPDF_H)

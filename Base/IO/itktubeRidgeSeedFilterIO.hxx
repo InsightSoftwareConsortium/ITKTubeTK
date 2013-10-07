@@ -23,6 +23,8 @@ limitations under the License.
 
 #include "itktubeRidgeSeedFilterIO.h"
 
+#include "itktubePDFSegmenterIO.h"
+
 namespace itk
 {
 
@@ -116,10 +118,10 @@ bool RidgeSeedFilterIO< TImage, TLabelMap >::
 CanRead( const char * _headerName ) const
 {
   MetaRidgeSeed seedReader;
-  MetaPDF       pdfReader;
+  MetaClassPDF  pdfReader;
 
   std::string pdfName = _headerName;
-  pdfName = pdfName + ".pdf.mha";
+  pdfName = pdfName + ".pdf";
 
   bool result = seedReader.CanRead( _headerName );
   bool result2 = pdfReader.CanRead( pdfName.c_str() );
@@ -159,63 +161,20 @@ Read( const char * _headerName )
   m_RidgeSeedFilter->SetUnknownId( seedReader.GetUnknownId() );
   m_RidgeSeedFilter->SetSeedTolerance( seedReader.GetSeedTolerance() );
   m_RidgeSeedFilter->SetSkeletonize( seedReader.GetSkeletonize() );
+
   m_RidgeSeedFilter->SetBasisValues( seedReader.GetLDAValues() );
   m_RidgeSeedFilter->SetBasisMatrix( seedReader.GetLDAMatrix() );
   m_RidgeSeedFilter->SetWhitenMeans( seedReader.GetWhitenMeans() );
   m_RidgeSeedFilter->SetWhitenStdDevs( seedReader.GetWhitenStdDevs() );
 
-  MetaPDF       pdfReader;
+  PDFSegmenterIO< TImage, 3, TLabelMap > pdfReader(
+    m_RidgeSeedFilter->GetPDFSegmenter() );
   std::string pdfFileName = seedReader.GetPDFFileName();
-
   if( !pdfReader.Read( pdfFileName.c_str() ) )
     {
     m_RidgeSeedFilter = NULL;
     return false;
     }
-
-  m_RidgeSeedFilter->GetPDFSegmenter()->ClearObjectIds();
-  int nObjectIds = pdfReader.GetObjectId().size();
-  for( unsigned int i = 0; i < nObjectIds; ++i )
-    {
-    m_RidgeSeedFilter->GetPDFSegmenter()->AddObjectId(
-      pdfReader.GetObjectId()[i] );
-    m_RidgeSeedFilter->GetPDFSegmenter()->SetObjectPDFWeight( i,
-      pdfReader.GetObjectPDFWeight()[i] );
-    }
-  m_RidgeSeedFilter->GetPDFSegmenter()->SetVoidId( pdfReader.GetVoidId() );
-  m_RidgeSeedFilter->GetPDFSegmenter()->SetErodeRadius(
-    pdfReader.GetErodeRadius() );
-  m_RidgeSeedFilter->GetPDFSegmenter()->SetHoleFillIterations(
-    pdfReader.GetHoleFillIterations() );
-  m_RidgeSeedFilter->GetPDFSegmenter()
-    ->SetProbabilityImageSmoothingStandardDeviation(
-      pdfReader.GetProbabilityImageSmoothingStandardDeviation() );
-  m_RidgeSeedFilter->GetPDFSegmenter()
-    ->SetHistogramSmoothingStandardDeviation(
-      pdfReader.GetHistogramSmoothingStandardDeviation() );
-  m_RidgeSeedFilter->GetPDFSegmenter()->SetOutlierRejectPortion(
-    pdfReader.GetOutlierRejectPortion() );
-  m_RidgeSeedFilter->GetPDFSegmenter()->SetDraft(
-    pdfReader.GetDraft() );
-  int nFeatures = pdfReader.GetNumberOfFeatures();
-  if( nFeatures != m_RidgeSeedFilter->GetPDFSegmenter()
-    ->GetNumberOfFeatures() )
-    {
-    throw( "Expected features and features in PDF file do not match" );
-    }
-  for( unsigned int i = 0; i < nFeatures; ++i )
-    {
-    m_RidgeSeedFilter->GetPDFSegmenter()->SetPDFBinMin( i,
-      pdfReader.GetBinMin()[i] );
-    m_RidgeSeedFilter->GetPDFSegmenter()->SetPDFBinScale( i,
-      pdfReader.GetBinSize()[i] );
-    }
-  m_RidgeSeedFilter->GetPDFSegmenter()->SetReclassifyObjectLabels(
-    pdfReader.GetReclassifyObjectLabels() );
-  m_RidgeSeedFilter->GetPDFSegmenter()->SetReclassifyNotObjectLabels(
-    pdfReader.GetReclassifyNotObjectLabels() );
-  m_RidgeSeedFilter->GetPDFSegmenter()->SetForceClassification(
-    pdfReader.GetForceClassification() );
 
   return true;
 }
@@ -230,12 +189,30 @@ Write( const char * _headerName )
     }
 
   MetaRidgeSeed seedWriter;
-  MetaPDF       pdfWriter;
+
+  seedWriter.SetLDAValues( m_RidgeSeedFilter->GetBasisValues() );
+  seedWriter.SetLDAMatrix( m_RidgeSeedFilter->GetBasisMatrix() );
+  seedWriter.SetWhitenMeans( m_RidgeSeedFilter->GetWhitenMeans() );
+  seedWriter.SetWhitenStdDevs( m_RidgeSeedFilter->GetWhitenStdDevs() );
+  seedWriter.SetRidgeSeedScales( m_RidgeSeedFilter->GetScales() );
+  seedWriter.SetUnknownId( m_RidgeSeedFilter->GetUnknownId() );
+  seedWriter.SetBackgroundId( m_RidgeSeedFilter->GetBackgroundId() );
+  seedWriter.SetRidgeId( m_RidgeSeedFilter->GetRidgeId() );
+  seedWriter.SetIntensityMin( m_RidgeSeedFilter->GetIntensityMin() );
+  seedWriter.SetIntensityMax( m_RidgeSeedFilter->GetIntensityMax() );
+  seedWriter.SetSeedTolerance( m_RidgeSeedFilter->GetSeedTolerance() );
+  seedWriter.SetSkeletonize( m_RidgeSeedFilter->GetSkeletonize() );
 
   std::string pdfName = _headerName;
-  pdfName = pdfName + ".pdf.mha";
+  pdfName = pdfName + ".pdf";
 
-  if( !seedWriter.Write( _headerName ) || !pdfWriter.Write( pdfName.c_str() ) )
+  seedWriter.SetPDFFileName(  pdfName.c_str() );
+
+  PDFSegmenterIO< TImage, 3, TLabelMap > pdfWriter(
+    m_RidgeSeedFilter->GetPDFSegmenter() );
+
+  if( !seedWriter.Write( _headerName ) ||
+    !pdfWriter.Write( pdfName.c_str() ) )
     {
     return false;
     }

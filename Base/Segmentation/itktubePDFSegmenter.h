@@ -35,7 +35,7 @@ namespace itk
 namespace tube
 {
 
-#define MAX_NUMBER_OF_FEATURES 4
+#define MAX_NUMBER_OF_FEATURES 5
 
 template< class TImage, unsigned int N, class TLabelMap >
 class PDFSegmenter : public Object
@@ -70,8 +70,6 @@ public:
   typedef Image< ProbabilityPixelType, TImage::ImageDimension >
                                                ProbabilityImageType;
 
-  typedef std::vector< ProbabilityPixelType >  ProbabilityListType;
-
   typedef float                                HistogramPixelType;
   typedef Image< HistogramPixelType, N >       HistogramImageType;
 
@@ -80,7 +78,8 @@ public:
 
   typedef Image< LabelMapPixelType, N >        LabeledFeatureSpaceType;
 
-  typedef Vector< double, N >                  VectorDoubleNType;
+  typedef std::vector< double >                VectorDoubleType;
+  typedef std::vector< int >                   VectorIntType;
 
   //
   // Methods
@@ -91,6 +90,8 @@ public:
   void ClearObjectIds( void );
   void SetObjectId( ObjectIdType objectId );
   void AddObjectId( ObjectIdType objectId );
+  void SetObjectId( const ObjectIdListType _objectId );
+  const VectorIntType & GetObjectId( void ) const;
 
   unsigned int GetNumberOfClasses( void ) const;
   unsigned int GetNumberOfObjectIds( void ) const;
@@ -98,11 +99,11 @@ public:
   unsigned int GetNumberOfFeatures( void ) const
     { return N; };
 
-  ObjectIdType GetObjectId( unsigned int num = 0 ) const;
   unsigned int GetObjectNumberFromId( ObjectIdType id ) const;
 
   void   SetObjectPDFWeight( unsigned int num, double weight );
-  double GetObjectPDFWeight( unsigned int num ) const;
+  void   SetObjectPDFWeight( const VectorDoubleType & weight );
+  const VectorDoubleType & GetObjectPDFWeight( void ) const;
 
   itkSetMacro( VoidId, ObjectIdType );
   itkGetMacro( VoidId, ObjectIdType );
@@ -132,10 +133,12 @@ public:
   void SetClassPDFImage( unsigned int classNum,
     typename PDFImageType::Pointer classPDF );
 
-  double GetPDFBinMin( unsigned int featureNum ) const;
-  void   SetPDFBinMin( unsigned int featureNum, double val );
-  double GetPDFBinScale( unsigned int featureNum ) const;
-  void   SetPDFBinScale( unsigned int featureNum, double val );
+  int              GetNumberOfBinsPerFeature( void ) const;
+  void             SetNumberOfBinsPerFeature( int nBins );
+  const VectorDoubleType & GetBinMin( void ) const;
+  void             SetBinMin( const VectorDoubleType & binMin );
+  const VectorDoubleType & GetBinScale( void ) const;
+  void             SetBinScale( const VectorDoubleType & binMin );
 
   /** Copy the input object mask to the output mask, overwritting the
    *   classification assigned to those voxels. Default is false. */
@@ -201,9 +204,9 @@ private:
   typename ListSampleType::Pointer         m_OutClassList;
 
   ClassHistogramImageType                  m_InClassHistogram;
-  VectorDoubleNType                        m_HistogramBinMin;
-  VectorDoubleNType                        m_HistogramBinMax;
-  VectorDoubleNType                        m_HistogramBinScale;
+  VectorDoubleType                         m_HistogramBinMin;
+  VectorDoubleType                         m_HistogramBinMax;
+  VectorDoubleType                         m_HistogramBinScale;
   unsigned int                             m_HistogramNumBinsND;
 
   //  Data
@@ -214,7 +217,7 @@ private:
   ObjectIdListType                m_ObjectIdList;
   ObjectIdType                    m_VoidId;
 
-  ProbabilityListType             m_PDFWeightList;
+  VectorDoubleType                m_PDFWeightList;
 
   int                             m_ErodeRadius;
   int                             m_HoleFillIterations;

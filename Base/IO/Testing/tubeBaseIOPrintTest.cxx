@@ -23,9 +23,11 @@ limitations under the License.
 
 #include "itktubeMetaLDA.h"
 #include "itktubeMetaNJetLDA.h"
-#include "itktubeMetaPDF.h"
+#include "itktubeMetaClassPDF.h"
 #include "itktubeMetaRidgeSeed.h"
 #include "itktubeMetaTubeParams.h"
+#include "itktubePDFSegmenterIO.h"
+#include "itktubeRidgeSeedFilterIO.h"
 
 int tubeBaseIOPrintTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
 {
@@ -37,9 +39,9 @@ int tubeBaseIOPrintTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
   std::cout << "-------------metaNJetLDA" << std::endl;
   metaNJetLDA.PrintInfo();
 
-  itk::tube::MetaPDF metaPDF;
-  std::cout << "-------------metaPDF" << std::endl;
-  metaPDF.PrintInfo();
+  itk::tube::MetaClassPDF metaClassPDF;
+  std::cout << "-------------metaClassPDF" << std::endl;
+  metaClassPDF.PrintInfo();
 
   itk::tube::MetaRidgeSeed metaRidgeSeed;
   std::cout << "-------------metaRidgeSeed" << std::endl;
@@ -48,6 +50,15 @@ int tubeBaseIOPrintTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
   itk::tube::MetaTubeParams metaTubeParams;
   std::cout << "-------------metaTubeParams" << std::endl;
   metaTubeParams.PrintInfo();
+
+  typedef itk::Image< float, 3 > ImageType;
+  itk::tube::PDFSegmenterIO< ImageType, 3, ImageType > pdfSegmenterIO;
+  std::cout << "-------------pdfSegmenterIO" << std::endl;
+  pdfSegmenterIO.PrintInfo();
+
+  itk::tube::RidgeSeedFilterIO< ImageType, ImageType > ridgeSeedFilterIO;
+  std::cout << "-------------ridgeSeedFilterIO" << std::endl;
+  ridgeSeedFilterIO.PrintInfo();
 
   return EXIT_SUCCESS;
 }

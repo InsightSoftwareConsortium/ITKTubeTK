@@ -21,12 +21,12 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeRidgeSeedFilterIO_H
-#define __itktubeRidgeSeedFilterIO_H
+#ifndef __itktubePDFSegmenterIO_H
+#define __itktubePDFSegmenterIO_H
 
-#include "itktubeMetaRidgeSeed.h"
+#include "itktubeMetaClassPDF.h"
 
-#include "itktubeRidgeSeedFilter.h"
+#include "itktubePDFSegmenter.h"
 
 namespace itk
 {
@@ -36,44 +36,44 @@ namespace tube
 
 /**
 *
-* Reads and Writes RidgeSeedFilterIO Files, typically designated .mnda files
+* Reads and Writes PDFSegmenterIO Files, typically designated .mnda files
 *
 * \author Stephen R. Aylward
 *
 * \date August 29, 2013
 *
 */
-template< class TImage, class TLabelMap >
-class RidgeSeedFilterIO
+template< class TImage, unsigned int N, class TLabelMap >
+class PDFSegmenterIO
 {
 public:
 
-  typedef RidgeSeedFilterIO< TImage, TLabelMap >  RidgeSeedFilterIOType;
+  typedef PDFSegmenterIO< TImage, N, TLabelMap >  PDFSegmenterIOType;
 
-  typedef RidgeSeedFilter< TImage, TLabelMap >    RidgeSeedFilterType;
+  typedef PDFSegmenter< TImage, N, TLabelMap >    PDFSegmenterType;
 
-  RidgeSeedFilterIO( void );
+  PDFSegmenterIO( void );
 
-  RidgeSeedFilterIO( const char * _headerName );
+  PDFSegmenterIO( const char * _headerName );
 
-  RidgeSeedFilterIO( const typename
-    RidgeSeedFilterType::Pointer & _filter );
+  PDFSegmenterIO( const typename
+    PDFSegmenterType::Pointer & _filter );
 
-  ~RidgeSeedFilterIO( void );
+  ~PDFSegmenterIO( void );
 
   virtual void PrintInfo( void ) const;
 
-  virtual void CopyInfo( const RidgeSeedFilterIOType & _filterIO );
+  virtual void CopyInfo( const PDFSegmenterIOType & _filterIO );
 
   virtual void Clear( void );
 
   virtual bool InitializeEssential( const typename
-    RidgeSeedFilterType::Pointer & _filter );
+    PDFSegmenterType::Pointer & _filter );
 
-  void SetRidgeSeedFilter( const typename
-    RidgeSeedFilterType::Pointer & _filter );
+  void SetPDFSegmenter( const typename
+    PDFSegmenterType::Pointer & _filter );
 
-  const typename RidgeSeedFilterType::Pointer GetRidgeSeedFilter( void ) const;
+  const typename PDFSegmenterType::Pointer GetPDFSegmenter( void ) const;
 
   virtual bool CanRead( const char * _headerName = NULL ) const;
 
@@ -83,16 +83,16 @@ public:
 
 protected:
 
-  typename RidgeSeedFilterType::Pointer  m_RidgeSeedFilter;
+  typename PDFSegmenterType::Pointer  m_PDFSegmenter;
 
-}; // End class RidgeSeedFilterIO
+}; // End class PDFSegmenterIO
 
 } // End namespace tube
 
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeRidgeSeedFilterIO.hxx"
+#include "itktubePDFSegmenterIO.hxx"
 #endif
 
-#endif // End !defined(__itktubeRidgeSeedFilterIO_H)
+#endif // End !defined(__itktubePDFSegmenterIO_H)

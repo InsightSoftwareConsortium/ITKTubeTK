@@ -125,25 +125,20 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start( "LoadTubeSeed" );
 
-    itk::tube::MetaRidgeSeed rsReader( loadTubeSeedInfo.c_str() );
-    rsReader.Read();
-
-    rsGenerator->SetBasisValues( rsReader.GetLDAValues() );
-    rsGenerator->SetBasisMatrix( rsReader.GetLDAMatrix() );
-    rsGenerator->SetScales( rsReader.GetRidgeSeedScales() );
-    if( rsReader.GetWhitenMeans().size() > 0 )
-      {
-      rsGenerator->SetWhitenMeans( rsReader.GetWhitenMeans() );
-      rsGenerator->SetWhitenStdDevs( rsReader.GetWhitenStdDevs() );
-      }
+    std::cout << "Load tube seed info." << std::endl;
+    RidgeSeedFilterIOType rsReader( rsGenerator );
+    rsReader.Read( loadTubeSeedInfo.c_str() );
+    std::cout << "Load tube seed info." << std::endl;
 
     timeCollector.Stop( "LoadTubeSeed" );
 
     if( saveTubeSeedInfo.size() > 0 )
       {
       timeCollector.Start( "SaveTubeSeedInfo" );
+      std::cout << "Save tube seed info." << std::endl;
       RidgeSeedFilterIOType rsWriter( rsGenerator );
       rsWriter.Write( saveTubeSeedInfo.c_str() );
+      std::cout << "Save tube seed info." << std::endl;
       timeCollector.Stop( "SaveTubeSeedInfo" );
       }
     }
@@ -167,6 +162,8 @@ int DoIt( int argc, char * argv[] )
   rsGenerator->SetSeedTolerance( seedTolerance );
 
   timeCollector.Start( "SaveTubeSeedImage" );
+  std::cout << rsGenerator << std::endl;
+
   rsGenerator->ClassifyImages();
   WriteImage< LabelMapImageType >( rsGenerator->GetOutput(),
     outputSeedImage );
@@ -183,7 +180,9 @@ int DoIt( int argc, char * argv[] )
   if( saveTubeSeedInfo.size() > 0 )
     {
     timeCollector.Start( "SaveTubeSeedInfo" );
+    std::cout << "Save tube seed info." << std::endl;
     RidgeSeedFilterIOType rsWriter( rsGenerator );
+    std::cout << rsGenerator << std::endl;
     rsWriter.Write( saveTubeSeedInfo.c_str() );
     timeCollector.Stop( "SaveTubeSeedInfo" );
     }

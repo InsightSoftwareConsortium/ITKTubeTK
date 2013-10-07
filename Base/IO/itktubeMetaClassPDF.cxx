@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeMetaPDF.h"
+#include "itktubeMetaClassPDF.h"
 
 namespace itk
 {
@@ -29,36 +29,36 @@ namespace itk
 namespace tube
 {
 
-MetaPDF::
-MetaPDF( void )
+MetaClassPDF::
+MetaClassPDF( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaPDF()" << METAIO_STREAM::endl;
+    METAIO_STREAM::cout << "MetaClassPDF()" << METAIO_STREAM::endl;
     }
 
   Clear();
 }
 
-MetaPDF::
-MetaPDF( const char * _headerName )
+MetaClassPDF::
+MetaClassPDF( const char * _headerName )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaPDF()" << METAIO_STREAM::endl;
+    METAIO_STREAM::cout << "MetaClassPDF()" << METAIO_STREAM::endl;
     }
 
   Clear();
 
-  MetaPDF::Read( _headerName );
+  MetaClassPDF::Read( _headerName );
 }
 
-MetaPDF::
-MetaPDF( const MetaPDF & _metaPDF )
+MetaClassPDF::
+MetaClassPDF( const MetaClassPDF & _metaPDF )
 {
   if( META_DEBUG )
    {
-   METAIO_STREAM::cout << "MetaPDF()" << METAIO_STREAM::endl;
+   METAIO_STREAM::cout << "MetaClassPDF()" << METAIO_STREAM::endl;
    }
 
   Clear();
@@ -66,17 +66,17 @@ MetaPDF( const MetaPDF & _metaPDF )
   CopyInfo( _metaPDF );
 }
 
-MetaPDF::
-MetaPDF(
+MetaClassPDF::
+MetaClassPDF(
   int _nFeatures,
   const std::vector< int > & _nBinsPerFeature,
-  const std::vector< float > & _binMin,
-  const std::vector< float > & _binSize,
+  const std::vector< double > & _binMin,
+  const std::vector< double > & _binSize,
   float * _elementData )
 {
   if( META_DEBUG )
    {
-   METAIO_STREAM::cout << "MetaPDF()" << METAIO_STREAM::endl;
+   METAIO_STREAM::cout << "MetaClassPDF()" << METAIO_STREAM::endl;
    }
 
   Clear();
@@ -85,10 +85,10 @@ MetaPDF(
     _elementData );
 }
 
-MetaPDF::
-MetaPDF( int _x, int _y,
-  float _binMinX, float _binMinY,
-  float _binSizeX, float _binSizeY,
+MetaClassPDF::
+MetaClassPDF( int _x, int _y,
+  double _binMinX, double _binMinY,
+  double _binSizeX, double _binSizeY,
   float * _elementData )
 {
   m_NumberOfBinsPerFeature.resize( 2 );
@@ -110,10 +110,10 @@ MetaPDF( int _x, int _y,
 }
 
 
-MetaPDF::
-MetaPDF( int _x, int _y, int _z,
-  float _binMinX, float _binMinY, float _binMinZ,
-  float _binSizeX, float _binSizeY, float _binSizeZ,
+MetaClassPDF::
+MetaClassPDF( int _x, int _y, int _z,
+  double _binMinX, double _binMinY, double _binMinZ,
+  double _binSizeX, double _binSizeY, double _binSizeZ,
   float * _elementData )
 {
   std::vector< int > nBinsPerFeature;
@@ -122,13 +122,13 @@ MetaPDF( int _x, int _y, int _z,
   nBinsPerFeature[1] = _y;
   nBinsPerFeature[2] = _z;
 
-  std::vector< float > binMin;
+  std::vector< double > binMin;
   binMin.resize( 3 );
   binMin[0] = _binMinX;
   binMin[1] = _binMinY;
   binMin[2] = _binMinZ;
 
-  std::vector< float > binSize;
+  std::vector< double > binSize;
   binSize.resize( 3 );
   binSize[0] = _binSizeX;
   binSize[1] = _binSizeY;
@@ -140,12 +140,12 @@ MetaPDF( int _x, int _y, int _z,
 }
 
 
-MetaPDF::
-~MetaPDF()
+MetaClassPDF::
+~MetaClassPDF()
 {
 }
 
-void MetaPDF::
+void MetaClassPDF::
 PrintInfo( void ) const
 {
   MetaImage::PrintInfo();
@@ -248,8 +248,8 @@ PrintInfo( void ) const
     }
 }
 
-void MetaPDF::
-CopyInfo( const MetaPDF & _pdf )
+void MetaClassPDF::
+CopyInfo( const MetaClassPDF & _pdf )
 {
   Clear();
 
@@ -275,12 +275,12 @@ CopyInfo( const MetaPDF & _pdf )
 
 }
 
-void MetaPDF::
+void MetaClassPDF::
 Clear( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaPDF: Clear" << METAIO_STREAM::endl;
+    METAIO_STREAM::cout << "MetaClassPDF: Clear" << METAIO_STREAM::endl;
     }
 
   MetaImage::Clear();
@@ -308,16 +308,16 @@ Clear( void )
 }
 
 
-bool MetaPDF::
+bool MetaClassPDF::
 InitializeEssential( int _nFeatures,
   const std::vector< int > & _nBinsPerFeature,
-  const std::vector< float > & _binMin,
-  const std::vector< float > & _binSize,
+  const std::vector< double > & _binMin,
+  const std::vector< double > & _binSize,
   float * _elementData )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaPDF: Initialize" << METAIO_STREAM::endl;
+    METAIO_STREAM::cout << "MetaClassPDF: Initialize" << METAIO_STREAM::endl;
     }
 
   m_NumberOfBinsPerFeature = _nBinsPerFeature;
@@ -341,13 +341,13 @@ InitializeEssential( int _nFeatures,
   return true;
 }
 
-int MetaPDF::
+int MetaClassPDF::
 GetNumberOfFeatures( void ) const
 {
   return MetaImage::NDims();
 }
 
-void MetaPDF::
+void MetaClassPDF::
 SetNumberOfBinsPerFeature( const std::vector< int > & _nBinsPerFeature )
 {
   m_NumberOfBinsPerFeature = _nBinsPerFeature;
@@ -362,7 +362,7 @@ SetNumberOfBinsPerFeature( const std::vector< int > & _nBinsPerFeature )
     (float *)( MetaImage::ElementData() ) );
 }
 
-const std::vector< int > & MetaPDF::
+const std::vector< int > & MetaClassPDF::
 GetNumberOfBinsPerFeature( void ) const
 {
   for( unsigned int i = 0; i < MetaImage::NDims(); i++ )
@@ -372,8 +372,8 @@ GetNumberOfBinsPerFeature( void ) const
   return m_NumberOfBinsPerFeature;
 }
 
-void MetaPDF::
-SetBinMin( const std::vector< float > & _binMin )
+void MetaClassPDF::
+SetBinMin( const std::vector< double > & _binMin )
 {
   m_BinMin = _binMin;
 
@@ -385,7 +385,7 @@ SetBinMin( const std::vector< float > & _binMin )
   MetaImage::Origin( binMinTemp );
 }
 
-const std::vector< float > & MetaPDF::
+const std::vector< double > & MetaClassPDF::
 GetBinMin( void ) const
 {
   for( unsigned int i = 0; i < MetaImage::NDims(); i++ )
@@ -395,8 +395,8 @@ GetBinMin( void ) const
   return m_BinMin;
 }
 
-void MetaPDF::
-SetBinSize( const std::vector< float > & _binSize )
+void MetaClassPDF::
+SetBinSize( const std::vector< double > & _binSize )
 {
   m_BinSize = _binSize;
 
@@ -408,7 +408,7 @@ SetBinSize( const std::vector< float > & _binSize )
   MetaImage::ElementSpacing( binSizeTemp );
 }
 
-const std::vector< float > & MetaPDF::
+const std::vector< double > & MetaClassPDF::
 GetBinSize( void ) const
 {
   for( unsigned int i = 0; i < MetaImage::NDims(); i++ )
@@ -418,240 +418,197 @@ GetBinSize( void ) const
   return m_BinSize;
 }
 
-void MetaPDF::
+void MetaClassPDF::
 SetPDF( float * _pdf )
 {
   MetaImage::ElementData( ( float * )( _pdf ) );
 }
 
-float * MetaPDF::
+float * MetaClassPDF::
 GetPDF( void )
 {
   return ( float * )( MetaImage::ElementData() );
 }
 
-void MetaPDF::
+float * MetaClassPDF::
+ExportPDF( void )
+{
+  MetaImage::AutoFreeElementData( false );
+  return ( float * )( MetaImage::ElementData() );
+}
+
+void MetaClassPDF::
 SetObjectId( const std::vector< int > & _objectId )
 {
   m_ObjectId = _objectId;
 }
 
-const std::vector< int > & MetaPDF::
+const std::vector< int > & MetaClassPDF::
 GetObjectId( void ) const
 {
   return m_ObjectId;
 }
 
-void MetaPDF::
-SetObjectPDFWeight( const std::vector< float > & _objectPDFWeight )
+void MetaClassPDF::
+SetObjectPDFWeight( const std::vector< double > & _objectPDFWeight )
 {
   m_ObjectPDFWeight = _objectPDFWeight;
 }
 
-const std::vector< float > & MetaPDF::
+const std::vector< double > & MetaClassPDF::
 GetObjectPDFWeight( void ) const
 {
   return m_ObjectPDFWeight;
 }
 
-void MetaPDF::
+void MetaClassPDF::
 SetVoidId( int _VoidId )
 {
   m_VoidId = _VoidId;
 }
 
-int MetaPDF::
+int MetaClassPDF::
 GetVoidId( void ) const
 {
   return m_VoidId;
 }
 
-void MetaPDF::
+void MetaClassPDF::
 SetErodeRadius( int _ErodeRadius )
 {
   m_ErodeRadius = _ErodeRadius;
 }
 
-int MetaPDF::
+int MetaClassPDF::
 GetErodeRadius( void ) const
 {
   return m_ErodeRadius;
 }
 
-void MetaPDF::
+void MetaClassPDF::
 SetHoleFillIterations( int _HoleFillIterations )
 {
   m_HoleFillIterations = _HoleFillIterations;
 }
 
-int MetaPDF::
+int MetaClassPDF::
 GetHoleFillIterations( void ) const
 {
   return m_HoleFillIterations;
 }
 
-void MetaPDF::
-SetProbabilityImageSmoothingStandardDeviation( float
+void MetaClassPDF::
+SetProbabilityImageSmoothingStandardDeviation( double
   _ProbabilityImageSmoothingStandardDeviation )
 {
   m_ProbabilityImageSmoothingStandardDeviation =
     _ProbabilityImageSmoothingStandardDeviation;
 }
 
-float MetaPDF::
+double MetaClassPDF::
 GetProbabilityImageSmoothingStandardDeviation( void ) const
 {
   return m_ProbabilityImageSmoothingStandardDeviation;
 }
 
-void MetaPDF::
-SetHistogramSmoothingStandardDeviation( float
+void MetaClassPDF::
+SetHistogramSmoothingStandardDeviation( double
   _HistogramSmoothingStandardDeviation )
 {
   m_HistogramSmoothingStandardDeviation =
     _HistogramSmoothingStandardDeviation;
 }
 
-float MetaPDF::
+double MetaClassPDF::
 GetHistogramSmoothingStandardDeviation( void ) const
 {
   return m_HistogramSmoothingStandardDeviation;
 }
 
-void MetaPDF::
-SetOutlierRejectPortion( float _OutlierRejectPortion )
+void MetaClassPDF::
+SetOutlierRejectPortion( double _OutlierRejectPortion )
 {
   m_OutlierRejectPortion = _OutlierRejectPortion;
 }
 
-float MetaPDF::
+double MetaClassPDF::
 GetOutlierRejectPortion( void ) const
 {
   return m_OutlierRejectPortion;
 }
 
-void MetaPDF::
+void MetaClassPDF::
 SetDraft( bool _Draft )
 {
   m_Draft = _Draft;
 }
 
-bool MetaPDF::
+bool MetaClassPDF::
 GetDraft( void ) const
 {
   return m_Draft;
 }
 
-void MetaPDF::
+void MetaClassPDF::
 SetReclassifyObjectLabels( bool _ReclassifyObjectLabels )
 {
   m_ReclassifyObjectLabels = _ReclassifyObjectLabels;
 }
 
-bool MetaPDF::
+bool MetaClassPDF::
 GetReclassifyObjectLabels( void ) const
 {
   return m_ReclassifyObjectLabels;
 }
 
-void MetaPDF::
+void MetaClassPDF::
 SetReclassifyNotObjectLabels( bool _ReclassifyNotObjectLabels )
 {
   m_ReclassifyNotObjectLabels = _ReclassifyNotObjectLabels;
 }
 
-bool MetaPDF::
+bool MetaClassPDF::
 GetReclassifyNotObjectLabels( void ) const
 {
   return m_ReclassifyNotObjectLabels;
 }
 
-void MetaPDF::
+void MetaClassPDF::
 SetForceClassification( bool _ForceClassification )
 {
   m_ForceClassification = _ForceClassification;
 }
 
-bool MetaPDF::
+bool MetaClassPDF::
 GetForceClassification( void ) const
 {
   return m_ForceClassification;
 }
 
-bool MetaPDF::
+bool MetaClassPDF::
 CanRead( const char * _headerName ) const
 {
-  // First check the extension
-  METAIO_STL::string fname = _headerName;
-  if(  fname == "" )
-    {
-    return false;
-    }
-
-  bool extensionFound = false;
-
-  METAIO_STL::string::size_type stringPos = fname.rfind(".pdf");
-  if ((stringPos != METAIO_STL::string::npos)
-      && (stringPos == fname.length() - 4))
-    {
-    extensionFound = true;
-    }
-
-  if( !extensionFound )
-    {
-    return false;
-    }
-
-  // Now check the file content
-  METAIO_STREAM::ifstream inputStream;
-
-  inputStream.open( fname.c_str(), METAIO_STREAM::ios::in |
-    METAIO_STREAM::ios::binary );
-
-  if( inputStream.fail() )
-    {
-    return false;
-    }
-
-  char* buf = new char[8001];
-  inputStream.read(buf,8000);
-  unsigned long fileSize = inputStream.gcount();
-  buf[fileSize] = 0;
-  METAIO_STL::string header(buf);
-  header.resize(fileSize);
-  delete [] buf;
-  inputStream.close();
-
-  stringPos = header.find("NDims");
-  if( stringPos == METAIO_STL::string::npos )
-    {
-    return false;
-    }
-
-  METAIO_STL::string elementDataFileName = M_GetTagValue( header,
-    "ElementDataFile" );
-
-  return true;
+  return MetaImage::CanRead( _headerName );
 }
 
-bool MetaPDF::
+bool MetaClassPDF::
 Read( const char * _headerName )
 {
   return MetaImage::Read( _headerName, true, NULL );
 }
 
-bool MetaPDF::
+bool MetaClassPDF::
 CanReadStream( METAIO_STREAM::ifstream * _stream ) const
 {
   return MetaImage::CanReadStream( _stream );
 }
 
-bool MetaPDF::
+bool MetaClassPDF::
 ReadStream( METAIO_STREAM::ifstream * _stream )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaPDF: ReadStream"
+    METAIO_STREAM::cout << "MetaClassPDF: ReadStream"
       << METAIO_STREAM::endl;
     }
 
@@ -663,7 +620,7 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
 
   if( m_ReadStream )
     {
-    METAIO_STREAM::cout << "MetaPDF: ReadStream: two files open?"
+    METAIO_STREAM::cout << "MetaClassPDF: ReadStream: two files open?"
                         << METAIO_STREAM::endl;
     delete m_ReadStream;
     }
@@ -672,7 +629,7 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
 
   if( !M_Read() )
     {
-    METAIO_STREAM::cout << "MetaPDF: Read: Cannot parse file"
+    METAIO_STREAM::cout << "MetaClassPDF: Read: Cannot parse file"
                         << METAIO_STREAM::endl;
     m_ReadStream = NULL;
     return false;
@@ -686,51 +643,24 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
   return true;
 }
 
-bool MetaPDF::
+bool MetaClassPDF::
 Write( const char * _headerName )
 {
-  if( _headerName != NULL )
-    {
-    FileName( _headerName );
-    }
-
-  MET_SetFileSuffix( m_FileName, "pdf" );
-
-  m_BinaryData = true;
-  ElementDataFileName( "LOCAL" );
-
-  METAIO_STREAM::ofstream * tmpWriteStream = new METAIO_STREAM::ofstream;
-
-  tmpWriteStream->open( m_FileName, METAIO_STREAM::ios::binary |
-    METAIO_STREAM::ios::out );
-
-  if( !tmpWriteStream->is_open() )
-    {
-    delete tmpWriteStream;
-    return false;
-    }
-
-  bool result = MetaImage::WriteStream(tmpWriteStream, true,
-    m_ElementData);
-
-  tmpWriteStream->close();
-  delete tmpWriteStream;
-
-  return result;
+  return MetaImage::Write( _headerName );
 }
 
-bool MetaPDF::
+bool MetaClassPDF::
 WriteStream( METAIO_STREAM::ofstream * _stream )
 {
   return MetaImage::WriteStream( _stream );
 }
 
-void MetaPDF::
+void MetaClassPDF::
 M_SetupReadFields( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaPDF: M_SetupReadFields"
+    METAIO_STREAM::cout << "MetaClassPDF: M_SetupReadFields"
                         << METAIO_STREAM::endl;
     }
 
@@ -798,7 +728,7 @@ M_SetupReadFields( void )
   m_Fields.push_back( mF );
 }
 
-void MetaPDF::
+void MetaClassPDF::
 M_SetupWriteFields( void )
 {
   MetaImage::M_SetupWriteFields();
@@ -915,30 +845,30 @@ M_SetupWriteFields( void )
   m_Fields.push_back( mF_LastField );
 }
 
-bool MetaPDF::
+bool MetaClassPDF::
 M_Read( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaPDF: M_Read: Loading Header"
+    METAIO_STREAM::cout << "MetaClassPDF: M_Read: Loading Header"
                         << METAIO_STREAM::endl;
     }
   if( !MetaImage::M_Read() )
     {
-    METAIO_STREAM::cout << "MetaPDF: M_Read: Error parsing file"
+    METAIO_STREAM::cout << "MetaClassPDF: M_Read: Error parsing file"
                         << METAIO_STREAM::endl;
     return false;
     }
 
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaPDF: M_Read: Parsing Header"
+    METAIO_STREAM::cout << "MetaClassPDF: M_Read: Parsing Header"
                         << METAIO_STREAM::endl;
     }
 
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaPDF: M_Read: num fields = "
+    METAIO_STREAM::cout << "MetaClassPDF: M_Read: num fields = "
       << m_Fields.size() << METAIO_STREAM::endl;
     for( unsigned int i = 0; i < m_Fields.size(); i++ )
       {
@@ -976,7 +906,7 @@ M_Read( void )
     {
     for( unsigned int i = 0; i < nObjects; i++ )
       {
-      m_ObjectPDFWeight[i] = ( float )mF->value[i];
+      m_ObjectPDFWeight[i] = ( double )mF->value[i];
       }
     }
 
@@ -1002,20 +932,20 @@ M_Read( void )
     &m_Fields );
   if( mF && mF->defined )
     {
-    m_ProbabilityImageSmoothingStandardDeviation = ( float )mF->value[0];
+    m_ProbabilityImageSmoothingStandardDeviation = ( double )mF->value[0];
     }
 
   mF = MET_GetFieldRecord( "HistogramSmoothingStandardDeviation",
     &m_Fields );
   if( mF && mF->defined )
     {
-    m_HistogramSmoothingStandardDeviation = ( float )mF->value[0];
+    m_HistogramSmoothingStandardDeviation = ( double )mF->value[0];
     }
 
   mF = MET_GetFieldRecord( "OutlierRejectPortion", &m_Fields );
   if( mF && mF->defined )
     {
-    m_OutlierRejectPortion = ( float )mF->value[0];
+    m_OutlierRejectPortion = ( double )mF->value[0];
     }
 
   mF = MET_GetFieldRecord( "Draft", &m_Fields );
