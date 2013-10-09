@@ -67,7 +67,14 @@ template< class TImage, class TLabelMap >
 void RidgeSeedFilterIO< TImage, TLabelMap >::
 PrintInfo() const
 {
-  std::cout << m_RidgeSeedFilter << std::endl;
+  if( m_RidgeSeedFilter.IsNotNull() )
+    {
+    std::cout << m_RidgeSeedFilter << std::endl;
+    }
+  else
+    {
+    std::cout << "RidgeSeedFilter = NULL" << std::endl;
+    }
 }
 
 template< class TImage, class TLabelMap >

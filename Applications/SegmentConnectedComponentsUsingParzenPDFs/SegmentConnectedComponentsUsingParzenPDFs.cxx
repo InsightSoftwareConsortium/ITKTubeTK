@@ -216,7 +216,7 @@ int DoIt( int argc, char * argv[] )
           tmpSpacing[d] = spacing[d];
           }
         pdfSegmenter->SetBinMin( tmpOrigin );
-        pdfSegmenter->SetBinScale( tmpSpacing );
+        pdfSegmenter->SetBinSize( tmpSpacing );
         }
       for( unsigned int d=0; d<N; ++d )
         {
@@ -279,7 +279,7 @@ int DoIt( int argc, char * argv[] )
       for( unsigned int d = 0; d < N; d++ )
         {
         origin[d] = pdfSegmenter->GetBinMin()[d];
-        spacing[d] = pdfSegmenter->GetBinScale()[d];
+        spacing[d] = pdfSegmenter->GetBinSize()[d];
         }
       typename PDFImageType::PointType originOrg;
       typename PDFImageType::SpacingType spacingOrg;

@@ -115,10 +115,10 @@ Midas3FunctionAddTest( itktubePDFSegmenterIOTest
 Midas3FunctionAddTest( itktubeRidgeSeedFilterIOTest
   ${BASE_SEGMENTATION_TESTS}
     --compare MIDAS{itkTubeRidgeSeedFilterTest_Output.mha.md5}
-      ${TEMP}/itkTubeRidgeSeedFilterIOTest_Output2.mha
+      ${TEMP}/itktubeRidgeSeedFilterIOTest_Output2.mha
     itktubeRidgeSeedFilterIOTest
       MIDAS{im0001.crop.contrast.mha.md5}
       MIDAS{im0001.vk.maskRidge.crop.mha.md5}
-      ${TEMP}/itkTubeRidgeSeedFilterIOTest_Output.mha
-      ${TEMP}/itkTubeRidgeSeedFilterIOTest.mrs
-      ${TEMP}/itkTubeRidgeSeedFilterIOTest_Output2.mha )
+      ${TEMP}/itktubeRidgeSeedFilterIOTest_Output.mha
+      ${TEMP}/itktubeRidgeSeedFilterIOTest.mrs
+      ${TEMP}/itktubeRidgeSeedFilterIOTest_Output2.mha )

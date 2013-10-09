@@ -115,6 +115,7 @@ int itktubePDFSegmenterIOTest( int argc, char * argv[] )
   filter->SetReclassifyNotObjectLabels( true );
   filter->SetForceClassification( true );
   filter->Update();
+  std::cout << "*** Filter 1 ***" << std::endl << filter << std::endl;
   filter->ClassifyImages();
 
   WriterType::Pointer labelmapWriter = WriterType::New();
@@ -133,6 +134,10 @@ int itktubePDFSegmenterIOTest( int argc, char * argv[] )
     }
 
   itk::tube::PDFSegmenterIO< ImageType, 2, ImageType > PDFIO( filter );
+  std::cout << "*** Writing Filter 1 ***" << std::endl;
+  std::cout << "filename = " << argv[5] << std::endl;
+  std::cout << "*** PDFIO ***" << std::endl;
+  PDFIO.PrintInfo();
   PDFIO.Write( argv[5] );
 
   FilterType::Pointer filter2 = FilterType::New();
@@ -140,8 +145,13 @@ int itktubePDFSegmenterIOTest( int argc, char * argv[] )
   filter2->SetInput( 1, inputImage2 );
 
   itk::tube::PDFSegmenterIO< ImageType, 2, ImageType > PDFIO2( filter2 );
+  std::cout << "*** Reading Filter 2 ***" << std::endl;
+  std::cout << "filename = " << argv[5] << std::endl;
   PDFIO2.Read( argv[5] );
+  std::cout << "*** PDFIO2 ***" << std::endl;
+  PDFIO2.PrintInfo();
 
+  std::cout << "*** Filter 2 ***" << std::endl << filter2 << std::endl;
   filter2->ClassifyImages();
 
   WriterType::Pointer labelmapWriter2 = WriterType::New();

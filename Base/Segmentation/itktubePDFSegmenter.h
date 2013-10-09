@@ -133,12 +133,12 @@ public:
   void SetClassPDFImage( unsigned int classNum,
     typename PDFImageType::Pointer classPDF );
 
-  int              GetNumberOfBinsPerFeature( void ) const;
-  void             SetNumberOfBinsPerFeature( int nBins );
+  const VectorIntType & GetNumberOfBinsPerFeature( void ) const;
+  void             SetNumberOfBinsPerFeature( const VectorIntType & nBin );
   const VectorDoubleType & GetBinMin( void ) const;
   void             SetBinMin( const VectorDoubleType & binMin );
-  const VectorDoubleType & GetBinScale( void ) const;
-  void             SetBinScale( const VectorDoubleType & binMin );
+  const VectorDoubleType & GetBinSize( void ) const;
+  void             SetBinSize( const VectorDoubleType & binMin );
 
   /** Copy the input object mask to the output mask, overwritting the
    *   classification assigned to those voxels. Default is false. */
@@ -206,8 +206,8 @@ private:
   ClassHistogramImageType                  m_InClassHistogram;
   VectorDoubleType                         m_HistogramBinMin;
   VectorDoubleType                         m_HistogramBinMax;
-  VectorDoubleType                         m_HistogramBinScale;
-  unsigned int                             m_HistogramNumBinsND;
+  VectorDoubleType                         m_HistogramBinSize;
+  VectorIntType                            m_HistogramNumberOfBin;
 
   //  Data
   std::vector< typename ImageType::Pointer > m_InputImageList;

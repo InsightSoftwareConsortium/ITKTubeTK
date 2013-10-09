@@ -67,7 +67,14 @@ template< class TImage, unsigned int N, class TLabelMap >
 void PDFSegmenterIO< TImage, N, TLabelMap >::
 PrintInfo() const
 {
-  std::cout << m_PDFSegmenter << std::endl;
+  if( m_PDFSegmenter.IsNotNull() )
+    {
+    std::cout << m_PDFSegmenter << std::endl;
+    }
+  else
+    {
+    std::cout << "PDFSegmenter = NULL" << std::endl;
+    }
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
@@ -259,14 +266,20 @@ Read( const char * _headerName )
   metaFields.push_back( mF );
 
   // READ
-  METAIO_STREAM::ifstream * tmpReadStream = new METAIO_STREAM::ifstream;
+  METAIO_STREAM::ifstream tmpReadStream;
 
-  tmpReadStream->open(_headerName, METAIO_STREAM::ios::binary |
-                                  METAIO_STREAM::ios::in);
+  tmpReadStream.open(_headerName, METAIO_STREAM::ios::binary |
+    METAIO_STREAM::ios::in);
 
-  if(!tmpReadStream->rdbuf()->is_open())
+  if(!tmpReadStream.rdbuf()->is_open())
     {
-    delete tmpReadStream;
+    return false;
+    }
+
+  if(!MET_Read( tmpReadStream, &metaFields ) )
+    {
+    METAIO_STREAM::cerr << "PDFSegmenterIO: Read: MET_Read Failed"
+      << METAIO_STREAM::endl;
     return false;
     }
 
@@ -277,7 +290,8 @@ Read( const char * _headerName )
   if( static_cast< int >( mF->value[0] ) !=
     m_PDFSegmenter->GetNumberOfFeatures() )
     {
-    delete tmpReadStream;
+    std::cout << "NDims don't match: " << static_cast< int >( mF->value[0] )
+      << " != " << m_PDFSegmenter->GetNumberOfFeatures() << std::endl;
     throw( "Expected features and features in PDF file do not match" );
     }
 
@@ -409,6 +423,13 @@ Read( const char * _headerName )
       nPixels, true );
 
     m_PDFSegmenter->SetClassPDFImage( i, img );
+    if( i == 0 )
+      {
+      m_PDFSegmenter->SetNumberOfBinsPerFeature(
+        pdfClassReader.GetNumberOfBinsPerFeature() );
+      m_PDFSegmenter->SetBinMin( pdfClassReader.GetBinMin() );
+      m_PDFSegmenter->SetBinSize( pdfClassReader.GetBinSize() );
+      }
     }
 
   return true;
@@ -425,9 +446,13 @@ Write( const char * _headerName )
 
   std::vector< MET_FieldRecordType * > metaFields;
 
+  MET_FieldRecordType * mF = new MET_FieldRecordType;
+  MET_InitWriteField( mF, "NDims", MET_INT, N );
+  metaFields.push_back( mF );
+
   int nObjects = m_PDFSegmenter->GetNumberOfObjectIds();
 
-  MET_FieldRecordType * mF = new MET_FieldRecordType;
+  mF = new MET_FieldRecordType;
   MET_InitWriteField( mF, "NObjects", MET_INT, nObjects );
   metaFields.push_back( mF );
 
@@ -532,6 +557,89 @@ Write( const char * _headerName )
     strlen(tmpC), tmpC );
   metaFields.push_back( mF );
 
+  char fileName[4096];
+  strcpy( fileName, _headerName );
+  MET_SetFileSuffix( fileName, "mpd" );
+
+  std::string tmpString;
+  for( unsigned int i = 0; i < nObjects; ++i )
+    {
+    char objectFileName[4096];
+    sprintf( objectFileName, "%s.%02d.mha", fileName, i );
+    tmpString = tmpString + objectFileName;
+    if( i < nObjects-1 )
+      {
+      tmpString = tmpString + ",";
+      }
+    }
+
+  mF = new MET_FieldRecordType;
+  MET_InitWriteField( mF, "ObjectPDFFile", MET_STRING,
+    tmpString.size(), tmpString.c_str() );
+  metaFields.push_back( mF );
+
+  METAIO_STREAM::ofstream writeStream;
+
+  writeStream.open( fileName, METAIO_STREAM::ios::binary |
+    METAIO_STREAM::ios::out );
+
+  writeStream.precision( 6 );
+
+  if(!MET_Write(writeStream, & metaFields))
+    {
+    METAIO_STREAM::cerr << "MetaObject: Write: MET_Write Failed"
+                        << METAIO_STREAM::endl;
+    return false;
+    }
+
+  int nFeatures = m_PDFSegmenter->GetNumberOfFeatures();
+  for( unsigned int i = 0; i < nObjects; ++i )
+    {
+
+    std::vector< int > dimSize( nFeatures );
+    std::vector< double > binMin( nFeatures );
+    std::vector< double > binSize( nFeatures );
+    for( unsigned int j = 0; j < N; ++j )
+      {
+      dimSize[j] = m_PDFSegmenter->GetClassPDFImage( i )
+        ->GetLargestPossibleRegion().GetSize()[j];
+      binMin[j] = m_PDFSegmenter->GetClassPDFImage( i )->GetOrigin()[j];
+      binSize[j] = m_PDFSegmenter->GetClassPDFImage( i )->GetSpacing()[j];
+      }
+
+    std::cout << "buffer pointer = " << m_PDFSegmenter
+      ->GetClassPDFImage( i )->GetPixelContainer()->GetBufferPointer()
+      << std::endl;
+    MetaClassPDF pdfClassWriter( nFeatures, dimSize, binMin, binSize,
+      m_PDFSegmenter->GetClassPDFImage( i )->GetPixelContainer()
+      ->GetBufferPointer() );
+
+    pdfClassWriter.SetObjectId( m_PDFSegmenter->GetObjectId() );
+    pdfClassWriter.SetObjectPDFWeight(
+      m_PDFSegmenter->GetObjectPDFWeight() );
+    pdfClassWriter.SetVoidId( m_PDFSegmenter->GetVoidId() );
+    pdfClassWriter.SetErodeRadius( m_PDFSegmenter->GetErodeRadius() );
+    pdfClassWriter.SetHoleFillIterations(
+      m_PDFSegmenter->GetHoleFillIterations() );
+    pdfClassWriter.SetHistogramSmoothingStandardDeviation(
+      m_PDFSegmenter->GetHistogramSmoothingStandardDeviation() );
+    pdfClassWriter.SetProbabilityImageSmoothingStandardDeviation(
+      m_PDFSegmenter->GetProbabilityImageSmoothingStandardDeviation() );
+    pdfClassWriter.SetOutlierRejectPortion(
+      m_PDFSegmenter->GetOutlierRejectPortion() );
+    pdfClassWriter.SetReclassifyObjectLabels(
+      m_PDFSegmenter->GetReclassifyObjectLabels() );
+    pdfClassWriter.SetReclassifyNotObjectLabels(
+      m_PDFSegmenter->GetReclassifyNotObjectLabels() );
+    pdfClassWriter.SetForceClassification(
+      m_PDFSegmenter->GetForceClassification() );
+    pdfClassWriter.SetDraft( m_PDFSegmenter->GetDraft() );
+
+    char objectFileName[4096];
+    sprintf( objectFileName, "%s.%02d.mha", fileName, i );
+
+    pdfClassWriter.Write( objectFileName );
+    }
 
   return true;
 }
