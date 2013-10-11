@@ -733,6 +733,20 @@ M_SetupWriteFields( void )
 {
   MetaImage::M_SetupWriteFields();
 
+  double binMinTemp[10];
+  for( unsigned int i = 0; i < MetaImage::NDims(); i++ )
+    {
+    binMinTemp[i] = m_BinMin[i];
+    }
+  MetaImage::Origin( binMinTemp );
+
+  float binSizeTemp[10];
+  for( unsigned int i = 0; i < MetaImage::NDims(); i++ )
+    {
+    binSizeTemp[i] = m_BinSize[i];
+    }
+  MetaImage::ElementSpacing( binSizeTemp );
+
   MET_FieldRecordType * mF_LastField; // ElementDataFileName
   mF_LastField = m_Fields.back();
   m_Fields.erase( m_Fields.end()-1 );

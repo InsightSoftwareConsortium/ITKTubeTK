@@ -102,19 +102,20 @@ add_test( itktubeMetaTubeParamsTest
 
 Midas3FunctionAddTest( itktubePDFSegmenterIOTest
   ${BASE_IO_TESTS}
-    --compare ${TEMP}{itktubePDFSegmenterIOTest.mha}
-      ${TEMP}{itktubePDFSegmenterIOTest2.mha}
+    --compare ${TEMP}/itktubePDFSegmenterIOTest.mha
+      ${TEMP}/itktubePDFSegmenterIOTest2.mha
     itktubePDFSegmenterIOTest
       MIDAS{ES0015_Large.mha.md5}
       MIDAS{ES0015_Large.mha.md5}
       MIDAS{GDS0015_Large-TrainingMask.mha.md5}
       ${TEMP}/itktubePDFSegmenterIOTest.mha
       ${TEMP}/itktubePDFSegmenterIOTest.mpd
-      ${TEMP}/itktubePDFSegmenterIOTest2.mha )
+      ${TEMP}/itktubePDFSegmenterIOTest2.mha
+      ${TEMP}/itktubePDFSegmenterIOTest2.mpd )
 
 Midas3FunctionAddTest( itktubeRidgeSeedFilterIOTest
-  ${BASE_SEGMENTATION_TESTS}
-    --compare MIDAS{itkTubeRidgeSeedFilterTest_Output.mha.md5}
+  ${BASE_IO_TESTS}
+    --compare ${TEMP}/itktubeRidgeSeedFilterIOTest_Output.mha
       ${TEMP}/itktubeRidgeSeedFilterIOTest_Output2.mha
     itktubeRidgeSeedFilterIOTest
       MIDAS{im0001.crop.contrast.mha.md5}

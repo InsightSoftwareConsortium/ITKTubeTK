@@ -25,13 +25,13 @@ limitations under the License.
 
 int itktubePDFSegmenterIOTest( int argc, char * argv[] )
 {
-  if( argc != 7 )
+  if( argc != 8 )
     {
     std::cout << "Missing arguments." << std::endl;
     std::cout << "Usage: " << std::endl;
     std::cout << argv[0]
       << " inputImage1 inputImage2 inputLabelMap outputLabelMap"
-      << " pdfFile outputLabelMap2"
+      << " pdfFile outputLabelMap2 pdfFile2"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -132,13 +132,26 @@ int itktubePDFSegmenterIOTest( int argc, char * argv[] )
       << std::endl;
     return EXIT_FAILURE;
     }
+  catch( ... )
+    {
+    std::cout << "Exception caught during label write." << std::endl;
+    return EXIT_FAILURE;
+    }
 
   itk::tube::PDFSegmenterIO< ImageType, 2, ImageType > PDFIO( filter );
   std::cout << "*** Writing Filter 1 ***" << std::endl;
   std::cout << "filename = " << argv[5] << std::endl;
   std::cout << "*** PDFIO ***" << std::endl;
   PDFIO.PrintInfo();
-  PDFIO.Write( argv[5] );
+  try
+    {
+    PDFIO.Write( argv[5] );
+    }
+  catch( ... )
+    {
+    std::cout << "Exception caught during pdf write." << std::endl;
+    return EXIT_FAILURE;
+    }
 
   FilterType::Pointer filter2 = FilterType::New();
   filter2->SetInput( 0, inputImage );
@@ -147,7 +160,20 @@ int itktubePDFSegmenterIOTest( int argc, char * argv[] )
   itk::tube::PDFSegmenterIO< ImageType, 2, ImageType > PDFIO2( filter2 );
   std::cout << "*** Reading Filter 2 ***" << std::endl;
   std::cout << "filename = " << argv[5] << std::endl;
-  PDFIO2.Read( argv[5] );
+  try
+    {
+    if( !PDFIO2.Read( argv[5] ) )
+      {
+      std::cout << "Error in reading PDF file." << std::endl;
+      return EXIT_FAILURE;
+      }
+    }
+  catch( ... )
+    {
+    std::cout << "Exception caught during pdf write." << std::endl;
+    return EXIT_FAILURE;
+    }
+
   std::cout << "*** PDFIO2 ***" << std::endl;
   PDFIO2.PrintInfo();
 
@@ -164,10 +190,18 @@ int itktubePDFSegmenterIOTest( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & e )
     {
-    std::cout << "Exception caught during write2:" << std::endl << e
+    std::cout << "Exception caught during label2 write:" << std::endl << e
       << std::endl;
     return EXIT_FAILURE;
     }
+  catch( ... )
+    {
+    std::cout << "Exception caught during label2 write." << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  itk::tube::PDFSegmenterIO< ImageType, 2, ImageType > PDFIO3( filter2 );
+  PDFIO.Write( argv[7] );
 
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;

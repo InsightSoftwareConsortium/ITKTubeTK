@@ -205,7 +205,6 @@ private:
 
   ClassHistogramImageType                  m_InClassHistogram;
   VectorDoubleType                         m_HistogramBinMin;
-  VectorDoubleType                         m_HistogramBinMax;
   VectorDoubleType                         m_HistogramBinSize;
   VectorIntType                            m_HistogramNumberOfBin;
 

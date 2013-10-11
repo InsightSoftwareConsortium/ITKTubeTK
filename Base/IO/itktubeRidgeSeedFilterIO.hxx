@@ -128,7 +128,7 @@ CanRead( const char * _headerName ) const
   MetaClassPDF  pdfReader;
 
   std::string pdfName = _headerName;
-  pdfName = pdfName + ".pdf";
+  pdfName = pdfName + ".mpd";
 
   bool result = seedReader.CanRead( _headerName );
   bool result2 = pdfReader.CanRead( pdfName.c_str() );
@@ -211,7 +211,7 @@ Write( const char * _headerName )
   seedWriter.SetSkeletonize( m_RidgeSeedFilter->GetSkeletonize() );
 
   std::string pdfName = _headerName;
-  pdfName = pdfName + ".pdf";
+  pdfName = pdfName + ".mpd";
 
   seedWriter.SetPDFFileName(  pdfName.c_str() );
 

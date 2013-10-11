@@ -202,21 +202,35 @@ Read( const char * _headerName )
   MET_FieldRecordType * mF;
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "NDims", MET_INT, true );
+  MET_InitReadField( mF, "NFeatures", MET_INT, true );
+  metaFields.push_back( mF );
+  int nFeaturesRec = MET_GetFieldRecordNumber( "NFeatures", &metaFields );
+
+  mF = new MET_FieldRecordType;
+  MET_InitReadField( mF, "BinsPerFeature", MET_INT_ARRAY, true,
+    nFeaturesRec );
+  metaFields.push_back( mF );
+
+  mF = new MET_FieldRecordType;
+  MET_InitReadField( mF, "BinMin", MET_FLOAT_ARRAY, true, nFeaturesRec );
+  metaFields.push_back( mF );
+
+  mF = new MET_FieldRecordType;
+  MET_InitReadField( mF, "BinSize", MET_FLOAT_ARRAY, true, nFeaturesRec );
   metaFields.push_back( mF );
 
   mF = new MET_FieldRecordType;
   MET_InitReadField( mF, "NObjects", MET_INT, true );
   metaFields.push_back( mF );
-  int nObjects = MET_GetFieldRecordNumber( "NObjects", &metaFields );
+  int nObjectsRec = MET_GetFieldRecordNumber( "NObjects", &metaFields );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "ObjectId", MET_INT_ARRAY, true, nObjects );
+  MET_InitReadField( mF, "ObjectId", MET_INT_ARRAY, true, nObjectsRec );
   metaFields.push_back( mF );
 
   mF = new MET_FieldRecordType;
   MET_InitReadField( mF, "ObjectPDFWeight", MET_FLOAT_ARRAY, true,
-    nObjects );
+    nObjectsRec );
   metaFields.push_back( mF );
 
   mF = new MET_FieldRecordType;
@@ -273,6 +287,7 @@ Read( const char * _headerName )
 
   if(!tmpReadStream.rdbuf()->is_open())
     {
+    std::cout << "PDF::Read Could not open file." << std::endl;
     return false;
     }
 
@@ -286,7 +301,7 @@ Read( const char * _headerName )
   // Assign values to PDFSegmenter
   int nFeatures = m_PDFSegmenter->GetNumberOfFeatures();
 
-  mF = MET_GetFieldRecord( "NDims", &metaFields );
+  mF = MET_GetFieldRecord( "NFeatures", &metaFields );
   if( static_cast< int >( mF->value[0] ) !=
     m_PDFSegmenter->GetNumberOfFeatures() )
     {
@@ -298,8 +313,32 @@ Read( const char * _headerName )
   std::vector< int > tmpVectorInt;
   std::vector< double > tmpVectorDouble;
 
+  mF = MET_GetFieldRecord( "BinsPerFeature", &metaFields );
+  tmpVectorInt.resize( N );
+  for( unsigned int i = 0; i < N; ++i )
+    {
+    tmpVectorInt[i] = static_cast< int >( mF->value[i] );
+    }
+  m_PDFSegmenter->SetNumberOfBinsPerFeature( tmpVectorInt );
+
+  mF = MET_GetFieldRecord( "BinMin", &metaFields );
+  tmpVectorDouble.resize( N );
+  for( unsigned int i = 0; i < N; ++i )
+    {
+    tmpVectorDouble[i] = static_cast< double >( mF->value[i] );
+    }
+  m_PDFSegmenter->SetBinMin( tmpVectorDouble );
+
+  mF = MET_GetFieldRecord( "BinSize", &metaFields );
+  tmpVectorDouble.resize( N );
+  for( unsigned int i = 0; i < N; ++i )
+    {
+    tmpVectorDouble[i] = static_cast< double >( mF->value[i] );
+    }
+  m_PDFSegmenter->SetBinSize( tmpVectorDouble );
+
   mF = MET_GetFieldRecord( "NObjects", &metaFields );
-  nObjects = static_cast< int >( mF->value[0] );
+  int nObjects = static_cast< int >( mF->value[0] );
 
   mF = MET_GetFieldRecord( "ObjectId", &metaFields );
   tmpVectorInt.resize( nObjects );
@@ -403,11 +442,27 @@ Read( const char * _headerName )
     typename pdfImageType::SizeType size;
     typename pdfImageType::PointType origin;
     typename pdfImageType::SpacingType spacing;
-    for( unsigned int i = 0; i < N; ++i )
+    for( unsigned int j = 0; j < N; ++j )
       {
-      size[i] = pdfClassReader.GetNumberOfBinsPerFeature()[i];
-      origin[i] = pdfClassReader.GetBinMin()[i];
-      spacing[i] = pdfClassReader.GetBinSize()[i];
+      size[j] = pdfClassReader.GetNumberOfBinsPerFeature()[j];
+      if( size[j] != m_PDFSegmenter->GetNumberOfBinsPerFeature()[j] )
+        {
+        std::cout << "ERROR: N mismatch" << std::endl;
+        return false;
+        }
+      origin[j] = pdfClassReader.GetBinMin()[j];
+      if( origin[j] != m_PDFSegmenter->GetBinMin()[j] )
+        {
+        std::cout << "ERROR: Min mismatch" << std::endl;
+        return false;
+        }
+      spacing[j] = pdfClassReader.GetBinSize()[j];
+      if( vnl_math_abs( spacing[j] - m_PDFSegmenter->GetBinSize()[j] ) >
+        0.00001 * spacing[j] )
+        {
+        std::cout << "ERROR: Spacing mismatch" << std::endl;
+        return false;
+        }
       }
     region.SetSize( size );
     img->SetRegions( region );
@@ -415,21 +470,14 @@ Read( const char * _headerName )
     img->SetSpacing( spacing );
 
     int nPixels = size[0];
-    for( unsigned int i = 1; i < N; ++i )
+    for( unsigned int j = 1; j < N; ++j )
       {
-      nPixels *= size[i];
+      nPixels *= size[j];
       }
     img->GetPixelContainer()->SetImportPointer( pdfClassReader.ExportPDF(),
       nPixels, true );
 
     m_PDFSegmenter->SetClassPDFImage( i, img );
-    if( i == 0 )
-      {
-      m_PDFSegmenter->SetNumberOfBinsPerFeature(
-        pdfClassReader.GetNumberOfBinsPerFeature() );
-      m_PDFSegmenter->SetBinMin( pdfClassReader.GetBinMin() );
-      m_PDFSegmenter->SetBinSize( pdfClassReader.GetBinSize() );
-      }
     }
 
   return true;
@@ -447,7 +495,33 @@ Write( const char * _headerName )
   std::vector< MET_FieldRecordType * > metaFields;
 
   MET_FieldRecordType * mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "NDims", MET_INT, N );
+  MET_InitWriteField( mF, "NFeatures", MET_INT, N );
+  metaFields.push_back( mF );
+
+  int tmpI[4096];
+  for( unsigned int i = 0; i < N; ++i )
+    {
+    tmpI[i] = m_PDFSegmenter->GetNumberOfBinsPerFeature()[i];
+    }
+  mF = new MET_FieldRecordType;
+  MET_InitWriteField( mF, "BinsPerFeature", MET_INT_ARRAY, N, tmpI );
+  metaFields.push_back( mF );
+
+  float tmpF[4096];
+  for( unsigned int i = 0; i < N; ++i )
+    {
+    tmpF[i] = m_PDFSegmenter->GetBinMin()[i];
+    }
+  mF = new MET_FieldRecordType;
+  MET_InitWriteField( mF, "BinMin", MET_FLOAT_ARRAY, N, tmpF );
+  metaFields.push_back( mF );
+
+  for( unsigned int i = 0; i < N; ++i )
+    {
+    tmpF[i] = m_PDFSegmenter->GetBinSize()[i];
+    }
+  mF = new MET_FieldRecordType;
+  MET_InitWriteField( mF, "BinSize", MET_FLOAT_ARRAY, N, tmpF );
   metaFields.push_back( mF );
 
   int nObjects = m_PDFSegmenter->GetNumberOfObjectIds();
@@ -456,7 +530,6 @@ Write( const char * _headerName )
   MET_InitWriteField( mF, "NObjects", MET_INT, nObjects );
   metaFields.push_back( mF );
 
-  int tmpI[4096];
   for( unsigned int i = 0; i < nObjects; ++i )
     {
     tmpI[i] = m_PDFSegmenter->GetObjectId()[i];
@@ -465,7 +538,6 @@ Write( const char * _headerName )
   MET_InitWriteField( mF, "ObjectId", MET_INT_ARRAY, nObjects, tmpI );
   metaFields.push_back( mF );
 
-  float tmpF[4096];
   for( unsigned int i = 0; i < nObjects; ++i )
     {
     tmpF[i] = m_PDFSegmenter->GetObjectPDFWeight()[i];
@@ -592,27 +664,14 @@ Write( const char * _headerName )
     return false;
     }
 
-  int nFeatures = m_PDFSegmenter->GetNumberOfFeatures();
   for( unsigned int i = 0; i < nObjects; ++i )
     {
-
-    std::vector< int > dimSize( nFeatures );
-    std::vector< double > binMin( nFeatures );
-    std::vector< double > binSize( nFeatures );
-    for( unsigned int j = 0; j < N; ++j )
-      {
-      dimSize[j] = m_PDFSegmenter->GetClassPDFImage( i )
-        ->GetLargestPossibleRegion().GetSize()[j];
-      binMin[j] = m_PDFSegmenter->GetClassPDFImage( i )->GetOrigin()[j];
-      binSize[j] = m_PDFSegmenter->GetClassPDFImage( i )->GetSpacing()[j];
-      }
-
-    std::cout << "buffer pointer = " << m_PDFSegmenter
-      ->GetClassPDFImage( i )->GetPixelContainer()->GetBufferPointer()
-      << std::endl;
-    MetaClassPDF pdfClassWriter( nFeatures, dimSize, binMin, binSize,
+    MetaClassPDF pdfClassWriter( N,
+      m_PDFSegmenter->GetNumberOfBinsPerFeature(),
+      m_PDFSegmenter->GetBinMin(),
+      m_PDFSegmenter->GetBinSize(),
       m_PDFSegmenter->GetClassPDFImage( i )->GetPixelContainer()
-      ->GetBufferPointer() );
+        ->GetBufferPointer() );
 
     pdfClassWriter.SetObjectId( m_PDFSegmenter->GetObjectId() );
     pdfClassWriter.SetObjectPDFWeight(
