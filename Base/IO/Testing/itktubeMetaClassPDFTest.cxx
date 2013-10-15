@@ -163,7 +163,7 @@ int itktubeMetaClassPDFTest( int argc, char * argv[] )
     result = EXIT_FAILURE;
     }
 
-  pdf2.SetPDF( pdf1.GetPDF() );
+  pdf2.SetPDF( pdf1.ExportPDF() );
 
   itk::tube::MetaClassPDF pdf3( 2, dimSize, binMin, binSize, data );
   pdf3.Write( argv[1] );

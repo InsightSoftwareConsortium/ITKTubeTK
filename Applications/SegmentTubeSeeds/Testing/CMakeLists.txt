@@ -45,7 +45,7 @@ Midas3FunctionAddTest( ${MODULE_NAME}-Test1
     --tubeId 255
     --backgroundId 127
     --unknownId 0
-    --ridgeScales 0.5,1.0,2.5
+    --ridgeScales 0.5,1.0
     --saveTubeSeedInfo ${TEMP}/${MODULE_NAME}Test1.mrs
     --outputSeedScaleImage ${TEMP}/${MODULE_NAME}Test1_Scales.mha
     MIDAS{im0001.crop.contrast.mha.md5}
