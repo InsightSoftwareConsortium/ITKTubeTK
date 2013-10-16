@@ -6,8 +6,10 @@ RegisterImageToTubesUsingRigidTransform."""
 import argparse
 import json
 import os
+import shutil
 import subprocess
 import sys
+import tempfile
 
 import numpy as np
 import pyqtgraph as pg
@@ -55,6 +57,21 @@ class RegistrationTuner(QtGui.QMainWindow):
             os.remove(self.config['TubePointWeightsFile'])
 
         self.initializeUI()
+
+    def __enter__(self):
+        self.video_frame_dir = tempfile.mkdtemp()
+        self.config_file = tempfile.NamedTemporaryFile(suffix='TunerConfig.json', delete=False)
+        return self
+
+    def close(self):
+        shutil.rmtree(self.video_frame_dir)
+        if 'SubSampleTubeTree' in self.config:
+            os.remove(self.subsampled_tubes)
+        self.config_file.close()
+        os.remove(self.config_file.name)
+
+    def __exit__(self, type, value, traceback):
+        self.close()
 
     def initializeUI(self):
         self.resize(1024, 768)
@@ -115,10 +132,6 @@ class RegistrationTuner(QtGui.QMainWindow):
         video_button.resize(video_button.sizeHint())
         QtCore.QObject.connect(video_button, QtCore.SIGNAL('clicked()'),
                                self.make_video)
-        # todo do properly
-        self.video_frame_dir = '/tmp/registration_tuner'
-        if not os.path.exists(self.video_frame_dir):
-            os.makedirs(self.video_frame_dir)
 
         import pprint
         console_namespace = {'pg': pg,
@@ -232,14 +245,17 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         self.input_image = sitk.ReadImage(str(input_volume))
         self.add_image_planes()
         input_tubes = io_params[1]['Value']
-        self.subsampled_tubes = input_tubes
         if 'SubSampleTubeTree' in self.config:
             sampling = self.config['SubSampleTubeTree']['Sampling']
-            # TODO: do this correctly (use tempfile, remove on exit, etc)
-            self.subsampled_tubes = '/tmp/tuner_subsampled_tubes.tre'
+            subsampled_tubes_fp = tempfile.NamedTemporaryFile(suffix='SubsampledTubes.tre',
+                                        delete=False)
+            subsampled_tubes_fp.close()
+            self.subsampled_tubes = subsampled_tubes_fp.name
             subprocess.check_call([config['Executables']['SubSampleTubes'],
                                   '--samplingFactor', str(sampling),
                                   input_tubes, self.subsampled_tubes])
+        else:
+            self.subsampled_tubes = input_tubes
         self.add_tubes()
 
         metric_value_dock = Dock("Metric Value Inverse", size=(500, 300))
@@ -417,12 +433,10 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         input_volume = io_params[0]['Value']
         input_vessel = io_params[1]['Value']
         output_volume = io_params[2]['Value']
-        # TODO: Do this properly with tempfile, cleanup, etc
-        config_file = '/tmp/registration_tuner.json'
-        with open(config_file, 'w') as fp:
-            json.dump(self.config, fp)
+        self.config_file.truncate(0)
+        json.dump(self.config, self.config_file)
         subprocess.check_call([config['Executables']['Analysis'],
-                              '--parameterstorestore', config_file,
+                              '--parameterstorestore', self.config_file.name,
                               input_volume,
                               input_vessel,
                               output_volume])
@@ -581,8 +595,8 @@ if __name__ == '__main__':
     config = json.load(config_file)
 
     app = pg.mkQApp()
-    tuner = RegistrationTuner(config)
-    if(args.non_interactive):
-        tuner.run_analysis()
-    else:
-        sys.exit(app.exec_())
+    with RegistrationTuner(config) as tuner:
+        if(args.non_interactive):
+            tuner.run_analysis()
+        else:
+            sys.exit(app.exec_())
