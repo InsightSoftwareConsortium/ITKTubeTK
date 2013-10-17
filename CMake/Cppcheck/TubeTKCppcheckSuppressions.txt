@@ -5,4 +5,3 @@ unusedFunction:*/Base/ObjectDocuments/tubeMetaObjectDocument.cxx
 unusedFunction:*/Base/ObjectDocuments/tubeOptionList.cxx
 unusedFunction:*/Base/Python/tubetk/_tubetk_numpy.cxx:317
 unusedFunction:*/Base/Registration/Testing/itktubeAnisotropicDiffusiveRegistrationGenerateTestingImages.cxx:216
-variableScope:*/Applications/ConvertDICOMSeriesToImages/ConvertDICOMSeriesToImages.cxx:461

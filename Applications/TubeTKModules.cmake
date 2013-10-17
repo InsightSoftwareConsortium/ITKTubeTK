@@ -30,7 +30,6 @@ set( TubeTK_${proj}_MODULES
   ComputeImageStatisticsUsingMask
   ComputeTubeGraphProbability
   ComputeTubeProbability
-# ConvertDICOMSeriesToImages # TODO: Has not been updated for GDCM 2.0.
   ConvertToMetaImage
   CropImage
   DeblendTomosynthesisSlicesUsingPrior
