@@ -23,6 +23,8 @@ limitations under the License.
 
 #include "itktubeMetaClassPDF.h"
 
+#include <cstdlib>
+
 namespace itk
 {
 
