@@ -72,8 +72,9 @@ public:
   //
   virtual unsigned int GetNumberOfFeatures( void ) const;
 
-  void SetIntensityRange( float intensityMin, float intensityMax );
+  void  SetIntensityMin( float intensityMin );
   float GetIntensityMin( void ) const;
+  void  SetIntensityMax( float intensityMax );
   float GetIntensityMax( void ) const;
 
   void SetScales( const RidgeScalesType & scales );

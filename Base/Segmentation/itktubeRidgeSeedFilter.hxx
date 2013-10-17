@@ -33,6 +33,7 @@ limitations under the License.
 #include <itkImageRegionIteratorWithIndex.h>
 #include <itkProgressReporter.h>
 #include <itkTimeProbesCollectorBase.h>
+#include <itkBinaryThinningImageFilter.h>
 
 #include <limits>
 
@@ -52,7 +53,6 @@ RidgeSeedFilter< TImage, TLabelMap >
     m_RidgeFeatureGenerator );
 
   m_PDFSegmenter = PDFSegmenterType::New();
-  m_PDFSegmenter->SetVoidId( 10 );
   m_PDFSegmenter->SetReclassifyObjectLabels( true );
   m_PDFSegmenter->SetReclassifyNotObjectLabels( true );
   m_PDFSegmenter->SetForceClassification( true );
@@ -61,6 +61,16 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_PDFSegmenter->SetOutlierRejectPortion( 0.01 );
   m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation( 0.1 );
   m_PDFSegmenter->SetHistogramSmoothingStandardDeviation( 0.5 );
+
+  m_RidgeId = 255;
+  m_BackgroundId = 127;
+  m_UnknownId = 0;
+
+  m_SeedTolerance = 1.0;
+
+  m_LabelMap = NULL;
+
+  m_Skeletonize = true;
 }
 
 template< class TImage, class TLabelMap >
@@ -251,6 +261,14 @@ RidgeSeedFilter< TImage, TLabelMap >
 }
 
 template < class TImage, class TLabelMap >
+typename RidgeSeedFilter< TImage, TLabelMap >::BasisImageType::Pointer
+RidgeSeedFilter< TImage, TLabelMap >
+::GetBasisImage( unsigned int num ) const
+{
+  return m_SeedFeatureGenerator->GetFeatureImage( num );
+}
+
+template < class TImage, class TLabelMap >
 void
 RidgeSeedFilter< TImage, TLabelMap >
 ::SetBasisValue( unsigned int num, double value )
@@ -343,46 +361,22 @@ RidgeSeedFilter< TImage, TLabelMap >
   return resultImage;
 }
 
-template < class TImage, class LabelmapT >
-void
-RidgeSeedFilter< TImage, LabelmapT >
-::SetObjectId( ObjectIdType id )
-{
-  m_SeedFeatureGenerator->SetObjectId( id );
-  m_PDFSegmenter->SetObjectId( id );
-  m_PDFSegmenter->SetObjectPDFWeight( 0, 0.5 );
-}
-
-template< class TImage, class TLabelMap >
-void
-RidgeSeedFilter< TImage, TLabelMap >
-::AddObjectId( ObjectIdType id )
-{
-  m_SeedFeatureGenerator->AddObjectId( id );
-  m_PDFSegmenter->AddObjectId( id );
-}
-
-template< class TImage, class TLabelMap >
-typename RidgeSeedFilter< TImage, TLabelMap >::ObjectIdType
-RidgeSeedFilter< TImage, TLabelMap >
-::GetObjectId( unsigned int num ) const
-{
-  return m_PDFSegmenter->GetObjectId( num );
-}
-
-template< class TImage, class TLabelMap >
-unsigned int
-RidgeSeedFilter< TImage, TLabelMap >
-::GetNumberOfObjectIds( void ) const
-{
-  return m_PDFSegmenter->GetNumberOfObjectIds();
-}
 
 template< class TImage, class TLabelMap >
 void
 RidgeSeedFilter< TImage, TLabelMap >
 ::Update( void )
 {
+  m_SeedFeatureGenerator->SetObjectId( m_RidgeId );
+  m_SeedFeatureGenerator->AddObjectId( m_BackgroundId );
+  m_PDFSegmenter->SetObjectId( m_RidgeId );
+  m_PDFSegmenter->AddObjectId( m_BackgroundId );
+  m_PDFSegmenter->SetVoidId( m_UnknownId );
+
+  m_PDFSegmenter->SetObjectPDFWeight( 0, m_SeedTolerance * 0.25 );
+
+  m_SeedFeatureGenerator->SetNumberOfBasisToUseAsFeatures( 3 );
+
   m_SeedFeatureGenerator->GenerateBasis();
   m_PDFSegmenter->SetInput( 0,
     m_SeedFeatureGenerator->GetFeatureImage( 0 ) );
@@ -398,6 +392,14 @@ void
 RidgeSeedFilter< TImage, TLabelMap >
 ::ClassifyImages( void )
 {
+  m_SeedFeatureGenerator->SetObjectId( m_RidgeId );
+  m_SeedFeatureGenerator->AddObjectId( m_BackgroundId );
+  m_PDFSegmenter->SetObjectId( m_RidgeId );
+  m_PDFSegmenter->AddObjectId( m_BackgroundId );
+  m_PDFSegmenter->SetVoidId( m_UnknownId );
+
+  m_SeedFeatureGenerator->SetNumberOfBasisToUseAsFeatures( 3 );
+
   typename LabelMapType::Pointer tmpLabelMap =
     m_SeedFeatureGenerator->GetLabelMap();
   m_SeedFeatureGenerator->SetLabelMap( NULL );
@@ -409,6 +411,38 @@ RidgeSeedFilter< TImage, TLabelMap >
     m_SeedFeatureGenerator->GetFeatureImage( 2 ) );
   m_PDFSegmenter->ClassifyImages();
   m_SeedFeatureGenerator->SetLabelMap( tmpLabelMap );
+
+  m_LabelMap = m_PDFSegmenter->GetLabelMap();
+
+  itk::ImageRegionIterator< LabelMapType > resultIter(
+    m_LabelMap, m_LabelMap->GetLargestPossibleRegion() );
+  while( !resultIter.IsAtEnd() )
+    {
+    if( resultIter.Get() == m_RidgeId )
+      {
+      resultIter.Set( 1 );
+      }
+    else
+      {
+      resultIter.Set( 0 );
+      }
+    ++resultIter;
+    }
+
+  if( m_Skeletonize )
+    {
+    typedef itk::BinaryThinningImageFilter< LabelMapType, LabelMapType >
+      FilterType;
+    typedef itk::BinaryBallStructuringElement< LabelMapPixelType,
+      ImageDimension> SEType;
+
+    typename FilterType::Pointer filter;
+
+    filter = FilterType::New();
+    filter->SetInput( m_LabelMap );
+    filter->Update();
+    m_LabelMap = filter->GetOutput();
+    }
 }
 
 template< class TImage, class TLabelMap >
@@ -416,7 +450,19 @@ typename RidgeSeedFilter< TImage, TLabelMap >::LabelMapType::Pointer
 RidgeSeedFilter< TImage, TLabelMap >
 ::GetOutput( void )
 {
-  return m_PDFSegmenter->GetLabelMap();
+  return m_LabelMap;
+}
+
+template< class TImage, class TLabelMap >
+typename RidgeSeedFilter< TImage, TLabelMap >::OutputImageType::Pointer
+RidgeSeedFilter< TImage, TLabelMap >
+::GetOutputSeedScales( void )
+{
+  int num = m_SeedFeatureGenerator->GetInputFeatureVectorGenerator()->
+    GetNumberOfFeatures();
+  num = num - 6;
+  return m_SeedFeatureGenerator->GetInputFeatureVectorGenerator()->
+    GetFeatureImage( num );
 }
 
 

@@ -23,6 +23,10 @@
 
 include_regular_expression( "^.*$" )
 
+include( Midas3FunctionAddTest )
+set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
+
 find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseIO ${PYTHON_EXECUTABLE}
@@ -42,8 +46,11 @@ set( tubeBaseIOTests_SRCS
   tubeBaseIOPrintTest.cxx
   itktubeMetaLDATest.cxx
   itktubeMetaNJetLDATest.cxx
+  itktubeMetaClassPDFTest.cxx
   itktubeMetaRidgeSeedTest.cxx
-  itktubeMetaTubeParamsTest.cxx )
+  itktubeMetaTubeParamsTest.cxx
+  itktubePDFSegmenterIOTest.cxx
+  itktubeRidgeSeedFilterIOTest.cxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
@@ -59,31 +66,60 @@ add_executable( tubeBaseIOTests
   tubeBaseIOTests.cxx
   ${tubeBaseIOTests_SRCS} )
 target_link_libraries( tubeBaseIOTests
-  ${ITK_LIBRARIES} TubeIO )
+  ${ITK_LIBRARIES} TubeTKIO )
 
 add_test( tubeBaseIOHeaderTest
   ${BASE_IO_HEADER_TEST} )
 
 add_test( tubeBaseIOPrintTest
   ${BASE_IO_TESTS}
-  tubeBaseIOPrintTest )
+    tubeBaseIOPrintTest )
 
 add_test( itktubeMetaLDATest
   ${BASE_IO_TESTS}
-  itktubeMetaLDATest
-    ${TEMP}/itkTubeMetaLDATest.mlda )
+    itktubeMetaLDATest
+      ${TEMP}/itkTubeMetaLDATest.mlda )
 
 add_test( itktubeMetaNJetLDATest
   ${BASE_IO_TESTS}
-  itktubeMetaNJetLDATest
-    ${TEMP}/itkTubeMetaNJetLDATest.mnda )
+    itktubeMetaNJetLDATest
+      ${TEMP}/itkTubeMetaNJetLDATest.mnda )
+
+add_test( itktubeMetaClassPDFTest
+  ${BASE_IO_TESTS}
+    itktubeMetaClassPDFTest
+      ${TEMP}/itkTubeMetaClassPDFTest.mha )
 
 add_test( itktubeMetaRidgeSeedTest
   ${BASE_IO_TESTS}
-  itktubeMetaRidgeSeedTest
-    ${TEMP}/itkTubeMetaRidgeSeedTest.mrs )
+    itktubeMetaRidgeSeedTest
+      ${TEMP}/itkTubeMetaRidgeSeedTest.mrs )
 
 add_test( itktubeMetaTubeParamsTest
   ${BASE_IO_TESTS}
-  itktubeMetaTubeParamsTest
-    ${TEMP}/itkTubeMetaTubeParamsTest.mtp )
+    itktubeMetaTubeParamsTest
+      ${TEMP}/itkTubeMetaTubeParamsTest.mtp )
+
+Midas3FunctionAddTest( itktubePDFSegmenterIOTest
+  ${BASE_IO_TESTS}
+    --compare ${TEMP}/itktubePDFSegmenterIOTest.mha
+      ${TEMP}/itktubePDFSegmenterIOTest2.mha
+    itktubePDFSegmenterIOTest
+      MIDAS{ES0015_Large.mha.md5}
+      MIDAS{ES0015_Large.mha.md5}
+      MIDAS{GDS0015_Large-TrainingMask.mha.md5}
+      ${TEMP}/itktubePDFSegmenterIOTest.mha
+      ${TEMP}/itktubePDFSegmenterIOTest.mpd
+      ${TEMP}/itktubePDFSegmenterIOTest2.mha
+      ${TEMP}/itktubePDFSegmenterIOTest2.mpd )
+
+Midas3FunctionAddTest( itktubeRidgeSeedFilterIOTest
+  ${BASE_IO_TESTS}
+    --compare ${TEMP}/itktubeRidgeSeedFilterIOTest_Output.mha
+      ${TEMP}/itktubeRidgeSeedFilterIOTest_Output2.mha
+    itktubeRidgeSeedFilterIOTest
+      MIDAS{im0001.crop.contrast.mha.md5}
+      MIDAS{im0001.vk.maskRidge.crop.mha.md5}
+      ${TEMP}/itktubeRidgeSeedFilterIOTest_Output.mha
+      ${TEMP}/itktubeRidgeSeedFilterIOTest.mrs
+      ${TEMP}/itktubeRidgeSeedFilterIOTest_Output2.mha )

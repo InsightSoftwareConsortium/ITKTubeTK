@@ -28,6 +28,9 @@ void RegisterTests( void )
   REGISTER_TEST( tubeBaseIOPrintTest );
   REGISTER_TEST( itktubeMetaLDATest );
   REGISTER_TEST( itktubeMetaNJetLDATest );
+  REGISTER_TEST( itktubeMetaClassPDFTest );
   REGISTER_TEST( itktubeMetaRidgeSeedTest );
   REGISTER_TEST( itktubeMetaTubeParamsTest );
+  REGISTER_TEST( itktubePDFSegmenterIOTest );
+  REGISTER_TEST( itktubeRidgeSeedFilterIOTest );
 }

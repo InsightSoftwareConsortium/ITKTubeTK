@@ -26,13 +26,27 @@
       <description>Label map that designates the object of interest and "other."</description>
       <default></default>
     </image>
-    <integer-vector>
-      <name>objectIdList</name>
-      <label>Object ID</label>
-      <longflag>objectId</longflag>
-      <description>List of values that represent the objects in the label map.</description>
-      <default>255,0</default>
-    </integer-vector>
+    <integer>
+      <name>tubeId</name>
+      <label>Tube Id</label>
+      <longflag>tubeId</longflag>
+      <description>Value for tube points in the label map.</description>
+      <default>255</default>
+    </integer>
+    <integer>
+      <name>backgroundId</name>
+      <label>Background Id</label>
+      <longflag>backgroundId</longflag>
+      <description>Value for background points in the label map.</description>
+      <default>127</default>
+    </integer>
+    <integer>
+      <name>unknownId</name>
+      <label>Unknown Id</label>
+      <longflag>unknownId</longflag>
+      <description>Value for unlabeled points in the label map.</description>
+      <default>0</default>
+    </integer>
     <string>
       <name>outputVolume</name>
       <label>Output Volume Name</label>

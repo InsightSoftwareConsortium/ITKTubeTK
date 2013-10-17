@@ -61,13 +61,12 @@ PDFSegmenter< TImage, N, TLabelMap >
   m_ImagesUpToDate = false;
 
   m_InClassList.clear();
-  m_OutClassList  = NULL;
-
+  m_OutClassList = NULL;
   m_InClassHistogram.clear();
-  m_HistogramBinMin.Fill( 0 );
-  m_HistogramBinMax.Fill( 0 );
-  m_HistogramBinScale.Fill( 0 );
-  m_HistogramNumBinsND = 100;
+
+  m_HistogramBinMin.resize( N, 0 );
+  m_HistogramBinSize.resize( N, 0 );
+  m_HistogramNumberOfBin.resize( N, 100 );
 
   m_InputImageList.clear();
   m_InputImageList.resize( N, NULL );
@@ -130,6 +129,7 @@ PDFSegmenter< TImage, N, TLabelMap >
 {
   m_ObjectIdList.clear();
   m_ObjectIdList.push_back( objectId );
+  m_PDFWeightList.clear();
   m_PDFWeightList.push_back( 1.0 );
 }
 
@@ -140,6 +140,26 @@ PDFSegmenter< TImage, N, TLabelMap >
 {
   m_ObjectIdList.push_back( objectId );
   m_PDFWeightList.push_back( 1.0 );
+}
+
+template< class TImage, unsigned int N, class TLabelMap >
+void
+PDFSegmenter< TImage, N, TLabelMap >
+::SetObjectId( const ObjectIdListType objectId )
+{
+  m_ObjectIdList = objectId;
+  if( m_PDFWeightList.size() != m_ObjectIdList.size() )
+    {
+    m_PDFWeightList.resize( m_ObjectIdList.size(), 1.0 );
+    }
+}
+
+template< class TImage, unsigned int N, class TLabelMap >
+const typename PDFSegmenter< TImage, N, TLabelMap >::VectorIntType &
+PDFSegmenter< TImage, N, TLabelMap >
+::GetObjectId( void ) const
+{
+  return m_ObjectIdList;
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
@@ -155,26 +175,7 @@ unsigned int
 PDFSegmenter< TImage, N, TLabelMap >
 ::GetNumberOfClasses( void ) const
 {
-  return m_ProbabilityImageVector.size();
-}
-
-template< class TImage, unsigned int N, class TLabelMap >
-int
-PDFSegmenter< TImage, N, TLabelMap >
-::GetObjectId( unsigned int classNum ) const
-{
-  if( classNum < m_ObjectIdList.size() )
-    {
-    return m_ObjectIdList[classNum];
-    }
-
-  if( classNum == m_ObjectIdList.size() )
-    {
-    return m_VoidId;
-    }
-
-  return -1;
-
+  return m_ObjectIdList.size();
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
@@ -201,11 +202,19 @@ PDFSegmenter< TImage, N, TLabelMap >
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-double
+void
 PDFSegmenter< TImage, N, TLabelMap >
-::GetObjectPDFWeight( unsigned int num ) const
+::SetObjectPDFWeight( const VectorDoubleType & weight )
 {
-  return m_PDFWeightList[num];
+  m_PDFWeightList = weight;
+}
+
+template< class TImage, unsigned int N, class TLabelMap >
+const typename PDFSegmenter< TImage, N, TLabelMap >::VectorDoubleType &
+PDFSegmenter< TImage, N, TLabelMap >
+::GetObjectPDFWeight( void ) const
+{
+  return m_PDFWeightList;
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
@@ -238,54 +247,62 @@ PDFSegmenter< TImage, N, TLabelMap >
 ::SetClassPDFImage( unsigned int classNum,
   typename PDFImageType::Pointer classPDF )
 {
-  if( classNum < m_InClassHistogram.size() )
+  if( m_ObjectIdList.size() != m_InClassHistogram.size() )
     {
-    m_InClassHistogram[classNum] = classPDF;
+    m_InClassHistogram.resize( m_ObjectIdList.size() );
     }
+  m_InClassHistogram[classNum] = classPDF;
   m_SampleUpToDate = false;
   m_PDFsUpToDate = true;
   m_ImagesUpToDate = false;
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-double
+const typename PDFSegmenter< TImage, N, TLabelMap >::VectorIntType &
 PDFSegmenter< TImage, N, TLabelMap >
-::GetPDFBinMin( unsigned int featureNum ) const
+::GetNumberOfBinsPerFeature( void ) const
 {
-  if( featureNum < N )
-    {
-    return m_HistogramBinMin[featureNum];
-    }
-  else
-    {
-    return 0;
-    }
+  return m_HistogramNumberOfBin;
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
 void
 PDFSegmenter< TImage, N, TLabelMap >
-::SetPDFBinMin( unsigned int featureNum, double val )
+::SetNumberOfBinsPerFeature( const VectorIntType & nBins )
 {
-  if( featureNum < N )
-    {
-    m_HistogramBinMin[featureNum] = val;
-    }
+  m_HistogramNumberOfBin = nBins;
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-double
+const typename PDFSegmenter< TImage, N, TLabelMap >::VectorDoubleType &
 PDFSegmenter< TImage, N, TLabelMap >
-::GetPDFBinScale( unsigned int featureNum ) const
+::GetBinMin( void ) const
 {
-  if( featureNum < N )
-    {
-    return m_HistogramBinScale[featureNum];
-    }
-  else
-    {
-    return 0;
-    }
+  return m_HistogramBinMin;
+}
+
+template< class TImage, unsigned int N, class TLabelMap >
+void
+PDFSegmenter< TImage, N, TLabelMap >
+::SetBinMin( const VectorDoubleType & binMin )
+{
+  m_HistogramBinMin = binMin;
+}
+
+template< class TImage, unsigned int N, class TLabelMap >
+const typename PDFSegmenter< TImage, N, TLabelMap >::VectorDoubleType &
+PDFSegmenter< TImage, N, TLabelMap >
+::GetBinSize( void ) const
+{
+  return m_HistogramBinSize;
+}
+
+template< class TImage, unsigned int N, class TLabelMap >
+void
+PDFSegmenter< TImage, N, TLabelMap >
+::SetBinSize( const VectorDoubleType & scale )
+{
+  m_HistogramBinSize = scale;
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
@@ -298,18 +315,6 @@ PDFSegmenter< TImage, N, TLabelMap >
     m_InputImageList[featureNum] = vol;
     }
 }
-
-template< class TImage, unsigned int N, class TLabelMap >
-void
-PDFSegmenter< TImage, N, TLabelMap >
-::SetPDFBinScale( unsigned int featureNum, double val )
-{
-  if( featureNum < N )
-    {
-    m_HistogramBinScale[featureNum] = val;
-    }
-}
-
 
 template< class TImage, unsigned int N, class TLabelMap >
 void
@@ -344,13 +349,15 @@ PDFSegmenter< TImage, N, TLabelMap >
   itInLabelMap.GoToBegin();
 
   ConstImageIteratorType * itInIm[N];
+  VectorDoubleType histogramBinMax;
+  histogramBinMax.resize( N, 0 );
   for( unsigned int i = 0; i < N; i++ )
     {
     itInIm[i] = new ConstImageIteratorType( m_InputImageList[i],
       m_InputImageList[i]->GetLargestPossibleRegion() );
     itInIm[i]->GoToBegin();
     m_HistogramBinMin[i] = itInIm[i]->Get();
-    m_HistogramBinMax[i] = itInIm[i]->Get();
+    histogramBinMax[i] = itInIm[i]->Get();
     }
   ListVectorType v;
   typename LabelMapType::IndexType indx;
@@ -386,9 +393,9 @@ PDFSegmenter< TImage, N, TLabelMap >
         {
         m_HistogramBinMin[i] = v[i];
         }
-      else if( v[i]>m_HistogramBinMax[i] )
+      else if( v[i] > histogramBinMax[i] )
         {
-        m_HistogramBinMax[i] = v[i];
+        histogramBinMax[i] = v[i];
         }
       }
     ++itInLabelMap;
@@ -411,26 +418,10 @@ PDFSegmenter< TImage, N, TLabelMap >
 
   for( unsigned int i = 0; i < N; i++ )
     {
-    m_HistogramBinScale[i] = ( double )m_HistogramNumBinsND /
-      ( m_HistogramBinMax[i] - m_HistogramBinMin[i] );
+    m_HistogramBinSize[i] = ( double )m_HistogramNumberOfBin[i] /
+      ( histogramBinMax[i] - m_HistogramBinMin[i] );
     }
 
-  for( unsigned int i = 0; i < N; i++ )
-    {
-    std::cout << "  Image [" << i << "] : Intensity = "
-      << m_HistogramBinMin[i] << " - " << m_HistogramBinMax[i]
-      << std::endl;
-    }
-
-  for( unsigned int i = 0; i < m_ObjectIdList.size(); i++ )
-    {
-    std::cout << "ObjectId[" << i << "] = " << m_ObjectIdList[i]
-      << std::endl;
-    std::cout << "  size = " << m_InClassList[i]->Size() << std::endl;
-    }
-  std::cout << "VoidId = " << m_VoidId << std::endl;
-  std::cout << "NotObjectId size = " << m_OutClassList->Size()
-    << std::endl;
   for( unsigned int i = 0; i < N; i++ )
     {
     delete itInIm[i];
@@ -464,20 +455,28 @@ PDFSegmenter< TImage, N, TLabelMap >
   timeCollector.Start( "ListsToHistograms" );
   // Inside
 
-  std::vector< std::vector< float > > clipMin;
-  std::vector< std::vector< float > > clipMax;
+  std::vector< VectorDoubleType > clipMin;
+  std::vector< VectorDoubleType > clipMax;
   if( true ) // creating a local context to limit memory footprint
     {
     clipMin.resize( numClasses );
     clipMax.resize( numClasses );
 
-    std::vector< vnl_matrix< float > > inImHistogram;
+    std::vector< vnl_matrix< double > > inImHistogram;
     inImHistogram.resize( numClasses );
     for( unsigned int c = 0; c < numClasses; c++ )
       {
       clipMin[c].resize( N );
       clipMax[c].resize( N );
-      inImHistogram[c].set_size( N, m_HistogramNumBinsND );
+      unsigned int maxN = m_HistogramNumberOfBin[0];
+      for( unsigned int i = 1; i < N; ++i )
+        {
+        if( m_HistogramNumberOfBin[i] > maxN )
+          {
+          maxN = m_HistogramNumberOfBin[i];
+          }
+        }
+      inImHistogram[c].set_size( N, maxN );
       inImHistogram[c].fill( 0 );
       }
 
@@ -497,10 +496,10 @@ PDFSegmenter< TImage, N, TLabelMap >
           {
           binV = inClassListIt.GetMeasurementVector()[i];
           binV = ( int )( ( binV - m_HistogramBinMin[i] )
-            * m_HistogramBinScale[i] + 0.5 );
-          if( binV>m_HistogramNumBinsND-1 )
+            * m_HistogramBinSize[i] + 0.5 );
+          if( binV>m_HistogramNumberOfBin[i]-1 )
             {
-            binV = m_HistogramNumBinsND-1;
+            binV = m_HistogramNumberOfBin[i]-1;
             }
           else if( binV<0 )
             {
@@ -521,23 +520,23 @@ PDFSegmenter< TImage, N, TLabelMap >
       for( unsigned int i = 0; i < N; i++ )
         {
         count = 0;
-        for( unsigned int b = 0; b < m_HistogramNumBinsND; b++ )
+        for( unsigned int b = 0; b < m_HistogramNumberOfBin[i]; b++ )
           {
           count += static_cast<unsigned int>( inImHistogram[c][i][b] );
           if( count>=tailReject )
             {
-            clipMin[c][i] =  b / m_HistogramBinScale[i]
+            clipMin[c][i] =  b / m_HistogramBinSize[i]
               + m_HistogramBinMin[i];
             break;
             }
           }
         count = 0;
-        for( int b = ( int )m_HistogramNumBinsND-1; b >= 0; b-- )
+        for( int b = ( int )m_HistogramNumberOfBin[i]-1; b >= 0; b-- )
           {
           count += static_cast<unsigned int>( inImHistogram[c][i][b] );
           if( count>=tailReject )
             {
-            clipMax[c][i] =  b / m_HistogramBinScale[i]
+            clipMax[c][i] =  b / m_HistogramBinSize[i]
               + m_HistogramBinMin[i];
             break;
             }
@@ -555,7 +554,10 @@ PDFSegmenter< TImage, N, TLabelMap >
   typedef itk::ImageRegionIteratorWithIndex< HistogramImageType >
     HistogramIteratorType;
   typename HistogramImageType::SizeType size;
-  size.Fill( m_HistogramNumBinsND );
+  for( unsigned int i = 0; i < N; ++i )
+    {
+    size[i] = m_HistogramNumberOfBin[i];
+    }
 
   m_InClassHistogram.resize( numClasses );
   for( unsigned int c = 0; c < numClasses; c++ )
@@ -580,8 +582,8 @@ PDFSegmenter< TImage, N, TLabelMap >
         if( binV >= clipMin[c][i] && binV <= clipMax[c][i] )
           {
           binV = ( int )( ( binV - m_HistogramBinMin[i] )
-            * m_HistogramBinScale[i] + 0.5 );
-          if( binV<0 || binV>=m_HistogramNumBinsND )
+            * m_HistogramBinSize[i] + 0.5 );
+          if( binV<0 || binV>=m_HistogramNumberOfBin[i] )
             {
             valid = false;
             break;
@@ -601,7 +603,6 @@ PDFSegmenter< TImage, N, TLabelMap >
         }
       ++inClassListIt;
       }
-    std::cout << "m_InClassHistogram size = " << count << std::endl;
     }
   timeCollector.Stop( "JointClassHistogram" );
 
@@ -612,7 +613,6 @@ PDFSegmenter< TImage, N, TLabelMap >
   timeCollector.Start( "HistogramToPDF" );
   if( true ) // creating a local context to limit memory footprint
     {
-    std::cout << "Inside histogram image smoothing..." << std::endl;
     typedef itk::DiscreteGaussianImageFilter< HistogramImageType,
       HistogramImageType > HistogramBlurGenType;
     for( unsigned int c = 0; c < numClasses; c++ )
@@ -637,7 +637,6 @@ PDFSegmenter< TImage, N, TLabelMap >
         inPTotal += tf;
         ++m_InClassHistogramIt;
         }
-      std::cout << "m_InClassHistogramTotalP = " << inPTotal << std::endl;
 
       if( inPTotal > 0 )
         {
@@ -668,7 +667,7 @@ PDFSegmenter< TImage, N, TLabelMap >
   typename LabeledFeatureSpaceType::SizeType size;
   for( unsigned int i = 0; i < N; i++ )
     {
-    spacing[i] = m_HistogramBinScale[i];
+    spacing[i] = m_HistogramBinSize[i];
     origin[i] = m_HistogramBinMin[i];
     size[i] = 100;
     }
@@ -743,11 +742,11 @@ void
 PDFSegmenter< TImage, N, TLabelMap >
 ::ApplyPDFs( void )
 {
-  if( !m_SampleUpToDate )
+  if( m_LabelMap.IsNotNull() && !m_SampleUpToDate )
     {
     this->GenerateSample();
     }
-  if( !m_PDFsUpToDate )
+  if( m_LabelMap.IsNotNull() && !m_PDFsUpToDate )
     {
     this->GeneratePDFs();
     }
@@ -766,8 +765,6 @@ PDFSegmenter< TImage, N, TLabelMap >
   //
   //  Compute the probability at each pixel for input images
   //
-  std::cout << "Compute probability image..." << std::endl;
-
   m_ProbabilityImageVector.resize( numClasses );
 
   itk::TimeProbesCollectorBase timeCollector;
@@ -804,8 +801,8 @@ PDFSegmenter< TImage, N, TLabelMap >
         {
         double binV = itInIm[i]->Get();
         binV = ( int )( ( binV - m_HistogramBinMin[i] )
-          * m_HistogramBinScale[i] + 0.5 );
-        if( binV<0 || binV>m_HistogramNumBinsND-1 )
+          * m_HistogramBinSize[i] + 0.5 );
+        if( binV<0 || binV>m_HistogramNumberOfBin[i]-1 )
           {
           valid = false;
           break;
@@ -818,9 +815,9 @@ PDFSegmenter< TImage, N, TLabelMap >
         if( c < numClasses )
           {
           prob = m_InClassHistogram[c]->GetPixel( binIndex );
+          prob *= m_PDFWeightList[c];
           }
         }
-      prob *= m_PDFWeightList[c];
       probIt.Set( prob );
       for( unsigned int i = 0; i < N; i++ )
         {
@@ -836,7 +833,6 @@ PDFSegmenter< TImage, N, TLabelMap >
     }
   timeCollector.Stop( "ProbabilityImage" );
 
-  std::cout << "Probability image smoothing..." << std::endl;
   typedef itk::DiscreteGaussianImageFilter< ProbabilityImageType,
           ProbabilityImageType> ProbImageFilterType;
   typename ProbImageFilterType::Pointer probImageFilter;
@@ -854,8 +850,6 @@ PDFSegmenter< TImage, N, TLabelMap >
     }
   timeCollector.Stop( "ProbabilityImageDiffusion" );
 
-  std::cout << "Inside connectivity..." << std::endl;
-
   //
   //  Create label image
   //
@@ -867,6 +861,13 @@ PDFSegmenter< TImage, N, TLabelMap >
     ->GetLargestPossibleRegion() );
   tmpLabelImage->CopyInformation( m_InputImageList[0] );
   tmpLabelImage->Allocate();
+
+  if( m_LabelMap.IsNull() )
+    {
+    m_LabelMap = tmpLabelImage;
+    m_LabelMap->FillBuffer( m_VoidId );
+    m_ForceClassification = true;
+    }
 
   if( !m_ForceClassification )
     {
@@ -1008,8 +1009,6 @@ PDFSegmenter< TImage, N, TLabelMap >
         typedef itk::VotingBinaryIterativeHoleFillingImageFilter<
           LabelMapType > HoleFillingFilterType;
 
-        std::cout << "Fill holes..." << std::endl;
-
         timeCollector.Start( "HoleFiller" );
 
         typename HoleFillingFilterType::Pointer holeFiller =
@@ -1041,8 +1040,6 @@ PDFSegmenter< TImage, N, TLabelMap >
       StructuringElementType sphereOp;
       if( erodeRadius > 0 )
         {
-        std::cout << "Inside erode..." << std::endl;
-
         timeCollector.Start( "Erode" );
 
         sphereOp.SetRadius( erodeRadius );
@@ -1066,8 +1063,6 @@ PDFSegmenter< TImage, N, TLabelMap >
         {
         typedef itk::ConnectedThresholdImageFilter<LabelMapType,
           LabelMapType> ConnectedLabelMapFilterType;
-
-        std::cout << "Inside connectivity pass 2..." << std::endl;
 
         timeCollector.Start( "Connectivity2" );
 
@@ -1126,8 +1121,6 @@ PDFSegmenter< TImage, N, TLabelMap >
 
       if( erodeRadius > 0 )
         {
-        std::cout << "Inside eroded-connected dilate..." << std::endl;
-
         timeCollector.Start( "Dilate" );
 
         typename DilateFilterType::Pointer insideLabelMapDilateFilter =
@@ -1336,8 +1329,8 @@ PDFSegmenter< TImage, N, TLabelMap >
   os << indent << "Draft = " << m_Draft << std::endl;
   os << indent << "ReclassifyObjectLabels = " << m_ReclassifyObjectLabels
     << std::endl;
-  os << indent << "ReclassifyNotObjectLabels = " << m_ReclassifyNotObjectLabels
-    << std::endl;
+  os << indent << "ReclassifyNotObjectLabels = "
+    << m_ReclassifyNotObjectLabels << std::endl;
   os << indent << "Number of probability images = "
     << m_ProbabilityImageVector.size() << std::endl;
   os << indent << "InClassList size = "
@@ -1352,12 +1345,12 @@ PDFSegmenter< TImage, N, TLabelMap >
     }
   os << indent << "InClassHistogram size = "
     << m_InClassHistogram.size() << std::endl;
-  os << indent << "HistogramBinMin = " << m_HistogramBinMin << std::endl;
-  os << indent << "HistogramBinMax = " << m_HistogramBinMax << std::endl;
-  os << indent << "HistogramBinScale = " << m_HistogramBinScale
+  os << indent << "HistogramBinMin = " << m_HistogramBinMin[0]
     << std::endl;
-  os << indent << "HistogramNumBinsND = "
-    << m_HistogramNumBinsND << std::endl;
+  os << indent << "HistogramBinSize = " << m_HistogramBinSize[0]
+    << std::endl;
+  os << indent << "HistogramNumberOfBin[0] = "
+    << m_HistogramNumberOfBin[0] << std::endl;
 }
 
 } // End namespace tube

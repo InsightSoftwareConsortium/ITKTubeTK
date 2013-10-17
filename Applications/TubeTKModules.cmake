@@ -30,7 +30,6 @@ set( TubeTK_${proj}_MODULES
   ComputeImageStatisticsUsingMask
   ComputeTubeGraphProbability
   ComputeTubeProbability
-# ConvertDICOMSeriesToImages # TODO: Has not been updated for GDCM 2.0.
   ConvertToMetaImage
   CropImage
   DeblendTomosynthesisSlicesUsingPrior
@@ -51,7 +50,8 @@ set( TubeTK_${proj}_MODULES
   SegmentBinaryImageSkeleton
   SegmentConnectedComponents
   SegmentConnectedComponentsUsingParzenPDFs
-# SegmentTubes
+  SegmentTubeSeeds
+  #SegmentTubes
   SegmentUsingOtsuThreshold
   SimulateAcquisitionArtifactsUsingPrior
   SubSampleTubes

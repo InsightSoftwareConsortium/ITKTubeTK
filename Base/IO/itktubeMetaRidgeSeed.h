@@ -66,7 +66,8 @@ public:
     const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix,
     const ValueListType & _whitenMeans,
-    const ValueListType & _whitenStdDevs);
+    const ValueListType & _whitenStdDevs,
+    const std::string & _pdfFileName);
 
   ~MetaRidgeSeed( void );
 
@@ -82,10 +83,35 @@ public:
     const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix,
     const ValueListType & _whitenMeans,
-    const ValueListType & _whitenStdDevs);
+    const ValueListType & _whitenStdDevs,
+    const std::string & _pdfFileName);
 
   void  SetRidgeSeedScales( const RidgeSeedScalesType & _ridgeScales );
   const RidgeSeedScalesType & GetRidgeSeedScales( void ) const;
+
+  void  SetPDFFileName( const std::string & _pdfFileName );
+  const std::string & GetPDFFileName( void ) const;
+
+  void   SetIntensityMin( double _intensityMin );
+  double GetIntensityMin( void ) const;
+
+  void   SetIntensityMax( double _intensityMax );
+  double GetIntensityMax( void ) const;
+
+  void SetRidgeId( int _ridgeId );
+  int  GetRidgeId( void ) const;
+
+  void SetBackgroundId( int _backgroundId );
+  int  GetBackgroundId( void ) const;
+
+  void SetUnknownId( int _unknownId );
+  int  GetUnknownId( void ) const;
+
+  void   SetSeedTolerance( double _seedTolerance );
+  double GetSeedTolerance( void ) const;
+
+  void SetSkeletonize( bool _skeletonize );
+  bool GetSkeletonize( void ) const;
 
   virtual bool CanRead( const char * _headerName = NULL ) const;
 
@@ -108,8 +134,17 @@ protected:
 
   bool  M_Read( void );
 
+  double m_IntensityMin;
+  double m_IntensityMax;
+  int    m_RidgeId;
+  int    m_BackgroundId;
+  int    m_UnknownId;
+  double m_SeedTolerance;
+  bool   m_Skeletonize;
+
   RidgeSeedScalesType  m_RidgeSeedScales;
-  LDAValuesType        m_RidgeSeedScalesTmp;
+
+  std::string          m_PDFFileName;
 
 }; // End class MetaRidgeSeed
 

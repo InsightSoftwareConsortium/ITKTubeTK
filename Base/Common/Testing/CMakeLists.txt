@@ -59,7 +59,7 @@ add_executable( tubeBaseCommonTests
   ${tubeBaseCommonTests_SRCS} )
 
 target_link_libraries( tubeBaseCommonTests
-  TubeCommon
+  TubeTKCommon
   ${ITK_LIBRARIES}
   ${JsonCpp_LIBRARIES} )
 

@@ -60,39 +60,53 @@ public:
   typedef Image< float, TImage::ImageDimension >  OutputImageType;
 
   typedef TLabelMap                               LabelMapType;
+  typedef typename LabelMapType::PixelType        LabelMapPixelType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     TImage::ImageDimension );
 
-  typedef RidgeFeatureVectorGenerator< TImage >   RidgeFeatureGeneratorType;
+  typedef RidgeFeatureVectorGenerator< TImage >
+    RidgeFeatureGeneratorType;
 
-  typedef typename RidgeFeatureGeneratorType::FeatureValueType  FeatureValueType;
-  typedef typename RidgeFeatureGeneratorType::FeatureVectorType FeatureVectorType;
+  typedef typename RidgeFeatureGeneratorType::FeatureValueType
+    FeatureValueType;
+  typedef typename RidgeFeatureGeneratorType::FeatureVectorType
+    FeatureVectorType;
 
-  typedef typename RidgeFeatureGeneratorType::IndexType       IndexType;
-  typedef typename RidgeFeatureGeneratorType::RidgeScalesType RidgeScalesType;
-  typedef typename RidgeFeatureGeneratorType::ValueListType   WhitenMeansType;
-  typedef typename RidgeFeatureGeneratorType::ValueListType   WhitenStdDevsType;
+  typedef typename RidgeFeatureGeneratorType::IndexType
+    IndexType;
+  typedef typename RidgeFeatureGeneratorType::RidgeScalesType
+    RidgeScalesType;
+  typedef typename RidgeFeatureGeneratorType::ValueListType
+    WhitenMeansType;
+  typedef typename RidgeFeatureGeneratorType::ValueListType
+    WhitenStdDevsType;
 
-  typedef BasisFeatureVectorGenerator< TImage, LabelMapType > SeedFeatureGeneratorType;
+  typedef BasisFeatureVectorGenerator< TImage, LabelMapType >
+    SeedFeatureGeneratorType;
 
   typedef typename SeedFeatureGeneratorType::ObjectIdType ObjectIdType;
   typedef typename SeedFeatureGeneratorType::VectorType   VectorType;
   typedef typename SeedFeatureGeneratorType::MatrixType   MatrixType;
+  typedef typename SeedFeatureGeneratorType::FeatureImageType
+    BasisImageType;
 
-  typedef PDFSegmenter< OutputImageType, 3, LabelMapType > PDFSegmenterType;
-
-  typedef typename  PDFSegmenterType::ProbabilityPixelType ProbabilityPixelType;
-  typedef typename  PDFSegmenterType::ProbabilityImageType ProbabilityImageType;
-
+  typedef PDFSegmenter< OutputImageType, 3, LabelMapType >
+    PDFSegmenterType;
+  typedef typename  PDFSegmenterType::ProbabilityPixelType
+    ProbabilityPixelType;
+  typedef typename  PDFSegmenterType::ProbabilityImageType
+    ProbabilityImageType;
 
   void SetInput( typename ImageType::Pointer img );
   void AddInput( typename ImageType::Pointer img );
 
   void SetLabelMap( typename LabelMapType::Pointer img );
 
-  typename SeedFeatureGeneratorType::Pointer  GetSeedFeatureGenerator( void );
-  typename RidgeFeatureGeneratorType::Pointer GetRidgeFeatureGenerator( void );
+  typename SeedFeatureGeneratorType::Pointer
+    GetSeedFeatureGenerator( void );
+  typename RidgeFeatureGeneratorType::Pointer
+    GetRidgeFeatureGenerator( void );
 
   typename PDFSegmenterType::Pointer GetPDFSegmenter( void );
 
@@ -119,6 +133,9 @@ public:
   MatrixType   GetBasisMatrix( void ) const;
   VectorType   GetBasisValues( void ) const;
 
+  typename BasisImageType::Pointer GetBasisImage( unsigned int num = 0 )
+    const;
+
   void   SetBasisValue( unsigned int basisNum, double value );
   void   SetBasisVector( unsigned int basisNum, const VectorType & vec );
   void   SetBasisMatrix( const MatrixType & mat );
@@ -132,16 +149,26 @@ public:
     GetClassProbabilityDifferenceForInput( unsigned int objectNum ) const;
 
   // Ridge, Basis, and PDFSegmenter
-  void         SetObjectId( ObjectIdType objectId );
-  void         AddObjectId( ObjectIdType objectId );
-  ObjectIdType GetObjectId( unsigned int num = 0 ) const;
-  unsigned int GetNumberOfObjectIds( void ) const;
+  itkSetMacro( RidgeId, ObjectIdType );
+  itkGetMacro( RidgeId, ObjectIdType );
+  itkSetMacro( BackgroundId, ObjectIdType );
+  itkGetMacro( BackgroundId, ObjectIdType );
+  itkSetMacro( UnknownId, ObjectIdType );
+  itkGetMacro( UnknownId, ObjectIdType );
+
+  itkSetMacro( SeedTolerance, double );
+  itkGetMacro( SeedTolerance, double );
+
+  itkSetMacro( Skeletonize, bool );
+  itkGetMacro( Skeletonize, bool );
 
   // Local
   void   Update();
   void   ClassifyImages();
 
   typename LabelMapType::Pointer GetOutput( void );
+
+  typename OutputImageType::Pointer GetOutputSeedScales( void );
 
 protected:
 
@@ -158,6 +185,16 @@ private:
   typename RidgeFeatureGeneratorType::Pointer     m_RidgeFeatureGenerator;
   typename SeedFeatureGeneratorType::Pointer      m_SeedFeatureGenerator;
   typename PDFSegmenterType::Pointer              m_PDFSegmenter;
+
+  ObjectIdType   m_RidgeId;
+  ObjectIdType   m_BackgroundId;
+  ObjectIdType   m_UnknownId;
+
+  double         m_SeedTolerance;
+
+  bool           m_Skeletonize;
+
+  typename LabelMapType::Pointer m_LabelMap;
 
 }; // End class RidgeSeedFilter
 

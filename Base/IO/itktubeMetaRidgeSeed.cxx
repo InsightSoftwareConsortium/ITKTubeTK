@@ -23,6 +23,8 @@ limitations under the License.
 
 #include "itktubeMetaRidgeSeed.h"
 
+#include "tubeMetaUtils.h"
+
 namespace itk
 {
 
@@ -73,7 +75,8 @@ MetaRidgeSeed(
   const LDAValuesType & _ldaValues,
   const LDAMatrixType & _ldaMatrix,
   const ValueListType & _whitenMeans,
-  const ValueListType & _whitenStdDevs )
+  const ValueListType & _whitenStdDevs,
+  const std::string & _pdfFileName)
 {
   if( META_DEBUG )
    {
@@ -83,7 +86,7 @@ MetaRidgeSeed(
   Clear();
 
   InitializeEssential( _ridgeSeedScales,
-    _ldaValues, _ldaMatrix, _whitenMeans, _whitenStdDevs );
+    _ldaValues, _ldaMatrix, _whitenMeans, _whitenStdDevs, _pdfFileName );
 }
 
 MetaRidgeSeed::
@@ -100,8 +103,29 @@ PrintInfo() const
   METAIO_STREAM::cout << "RidgeSeedScales = " << m_RidgeSeedScales.size()
     << METAIO_STREAM::endl;
 
-  METAIO_STREAM::cout << "RidgeSeedScalesTmp = "
-    << m_RidgeSeedScalesTmp.size() << METAIO_STREAM::endl;
+  METAIO_STREAM::cout << "PDFFileaName = "
+    << m_PDFFileName << METAIO_STREAM::endl;
+
+  METAIO_STREAM::cout << "IntensityMin = " << m_IntensityMin
+    << METAIO_STREAM::endl;
+
+  METAIO_STREAM::cout << "IntensityMax = " << m_IntensityMax
+    << METAIO_STREAM::endl;
+
+  METAIO_STREAM::cout << "RidgeId = " << m_RidgeId
+    << METAIO_STREAM::endl;
+
+  METAIO_STREAM::cout << "BackgroundId = " << m_BackgroundId
+    << METAIO_STREAM::endl;
+
+  METAIO_STREAM::cout << "UnknownId = " << m_UnknownId
+    << METAIO_STREAM::endl;
+
+  METAIO_STREAM::cout << "SeedTolerance = " << m_SeedTolerance
+    << METAIO_STREAM::endl;
+
+  METAIO_STREAM::cout << "Skeletonize = "
+    << ( m_Skeletonize ? "True" : "False" ) << METAIO_STREAM::endl;
 }
 
 void MetaRidgeSeed::
@@ -110,6 +134,14 @@ CopyInfo( const MetaRidgeSeed & _lda )
   MetaLDA::CopyInfo( dynamic_cast< const MetaLDA & >( _lda ) );
 
   SetRidgeSeedScales( _lda.GetRidgeSeedScales() );
+  SetPDFFileName( _lda.GetPDFFileName() );
+  SetIntensityMin( _lda.GetIntensityMin() );
+  SetIntensityMax( _lda.GetIntensityMax() );
+  SetRidgeId( _lda.GetRidgeId() );
+  SetUnknownId( _lda.GetUnknownId() );
+  SetBackgroundId( _lda.GetBackgroundId() );
+  SetSeedTolerance( _lda.GetSeedTolerance() );
+  SetSkeletonize( _lda.GetSkeletonize() );
 }
 
 void MetaRidgeSeed::
@@ -125,6 +157,15 @@ Clear( void )
   strcpy( m_FormTypeName, "RidgeSeed" );
 
   m_RidgeSeedScales.clear();
+  m_PDFFileName.clear();
+
+  m_IntensityMin = 0;
+  m_IntensityMax = 0;
+  m_RidgeId = 255;
+  m_BackgroundId = 127;
+  m_UnknownId = 0;
+  m_SeedTolerance = 1;
+  m_Skeletonize = true;
 }
 
 bool MetaRidgeSeed::
@@ -133,7 +174,8 @@ InitializeEssential(
   const LDAValuesType & _ldaValues,
   const LDAMatrixType & _ldaMatrix,
   const ValueListType & _whitenMeans,
-  const ValueListType & _whitenStdDevs )
+  const ValueListType & _whitenStdDevs,
+  const std::string & _pdfFileName )
 {
   if( META_DEBUG )
     {
@@ -145,6 +187,8 @@ InitializeEssential(
     _whitenStdDevs );
 
   SetRidgeSeedScales( _ridgeSeedScales );
+
+  SetPDFFileName( _pdfFileName );
 
   return true;
 }
@@ -171,6 +215,198 @@ GetRidgeSeedScales( void ) const
     }
 
   return m_RidgeSeedScales;
+}
+
+void MetaRidgeSeed::
+SetPDFFileName( const std::string & _pdfFileName )
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaRidgeSeed: SetPDFFileName"
+      << METAIO_STREAM::endl;
+    }
+
+  m_PDFFileName = _pdfFileName;
+}
+
+const std::string & MetaRidgeSeed::
+GetPDFFileName( void ) const
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaRidgeSeed: GetPDFFileName"
+      << METAIO_STREAM::endl;
+    }
+
+  return m_PDFFileName;
+}
+
+void MetaRidgeSeed::
+SetIntensityMin( double _IntensityMin )
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaRidgeSeed: SetIntensityMin"
+      << METAIO_STREAM::endl;
+    }
+
+  m_IntensityMin = _IntensityMin;
+}
+
+double MetaRidgeSeed::
+GetIntensityMin( void ) const
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaRidgeSeed: GetIntensityMin"
+      << METAIO_STREAM::endl;
+    }
+
+  return m_IntensityMin;
+}
+
+void MetaRidgeSeed::
+SetIntensityMax( double _IntensityMax )
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaRidgeSeed: SetIntensityMax"
+      << METAIO_STREAM::endl;
+    }
+
+  m_IntensityMax = _IntensityMax;
+}
+
+double MetaRidgeSeed::
+GetIntensityMax( void ) const
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaRidgeSeed: GetIntensityMax"
+      << METAIO_STREAM::endl;
+    }
+
+  return m_IntensityMax;
+}
+
+void MetaRidgeSeed::
+SetRidgeId( int _RidgeId )
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaRidgeSeed: SetRidgeId"
+      << METAIO_STREAM::endl;
+    }
+
+  m_RidgeId = _RidgeId;
+}
+
+int MetaRidgeSeed::
+GetRidgeId( void ) const
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaRidgeSeed: GetRidgeId"
+      << METAIO_STREAM::endl;
+    }
+
+  return m_RidgeId;
+}
+
+void MetaRidgeSeed::
+SetBackgroundId( int _BackgroundId )
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaRidgeSeed: SetBackgroundId"
+      << METAIO_STREAM::endl;
+    }
+
+  m_BackgroundId = _BackgroundId;
+}
+
+int MetaRidgeSeed::
+GetBackgroundId( void ) const
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaRidgeSeed: GetBackgroundId"
+      << METAIO_STREAM::endl;
+    }
+
+  return m_BackgroundId;
+}
+
+void MetaRidgeSeed::
+SetUnknownId( int _UnknownId )
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaRidgeSeed: SetUnknownId"
+      << METAIO_STREAM::endl;
+    }
+
+  m_UnknownId = _UnknownId;
+}
+
+int MetaRidgeSeed::
+GetUnknownId( void ) const
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaRidgeSeed: GetUnknownId"
+      << METAIO_STREAM::endl;
+    }
+
+  return m_UnknownId;
+}
+
+void MetaRidgeSeed::
+SetSkeletonize( bool _Skeletonize )
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaRidgeSeed: SetSkeletonize"
+      << METAIO_STREAM::endl;
+    }
+
+  m_Skeletonize = _Skeletonize;
+}
+
+bool MetaRidgeSeed::
+GetSkeletonize( void ) const
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaRidgeSeed: GetSkeletonize"
+      << METAIO_STREAM::endl;
+    }
+
+  return m_Skeletonize;
+}
+
+void MetaRidgeSeed::
+SetSeedTolerance( double _SeedTolerance )
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaRidgeSeed: SetSeedTolerance"
+      << METAIO_STREAM::endl;
+    }
+
+  m_SeedTolerance = _SeedTolerance;
+}
+
+double MetaRidgeSeed::
+GetSeedTolerance( void ) const
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaRidgeSeed: GetSeedTolerance"
+      << METAIO_STREAM::endl;
+    }
+
+  return m_SeedTolerance;
 }
 
 bool MetaRidgeSeed::
@@ -208,7 +444,7 @@ CanRead( const char * _headerName ) const
     return false;
     }
 
-  const bool result = !std::strncmp( MET_ReadForm( inputStream ).c_str(),
+  const bool result = !std::strncmp( MET_ReadFormTypeName( inputStream ).c_str(),
     "RidgeSeed", 9 );
 
   inputStream.close();
@@ -249,7 +485,7 @@ Read( const char * _headerName )
 bool MetaRidgeSeed::
 CanReadStream( METAIO_STREAM::ifstream * _stream ) const
 {
-  if( !std::strncmp( MET_ReadForm( * _stream ).c_str(), "RidgeSeed", 7 ) )
+  if( !std::strncmp( MET_ReadFormTypeName( * _stream ).c_str(), "RidgeSeed", 9 ) )
     {
     return true;
     }
@@ -292,7 +528,8 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
   m_ReadStream = NULL;
 
   InitializeEssential( m_RidgeSeedScales,
-    m_LDAValues, m_LDAMatrix, m_WhitenMeans, m_WhitenStdDevs );
+    m_LDAValues, m_LDAMatrix, m_WhitenMeans, m_WhitenStdDevs,
+    m_PDFFileName );
 
   return true;
 }
@@ -376,14 +613,46 @@ M_SetupReadFields( void )
   MET_FieldRecordType * mF;
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "NRidgeSeedScales", MET_INT, false );
+  MET_InitReadField( mF, "NRidgeSeedScales", MET_INT, true );
   m_Fields.push_back( mF );
   int nScalesRecNum = MET_GetFieldRecordNumber( "NRidgeSeedScales",
     &m_Fields );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "RidgeSeedScales", MET_FLOAT_ARRAY, false,
+  MET_InitReadField( mF, "RidgeSeedScales", MET_FLOAT_ARRAY, true,
     nScalesRecNum );
+  m_Fields.push_back( mF );
+
+  mF = new MET_FieldRecordType;
+  MET_InitReadField( mF, "PDFFileName", MET_STRING, true );
+  m_Fields.push_back( mF );
+
+  mF = new MET_FieldRecordType;
+  MET_InitReadField( mF, "IntensityMin", MET_FLOAT, true );
+  m_Fields.push_back( mF );
+
+  mF = new MET_FieldRecordType;
+  MET_InitReadField( mF, "IntensityMax", MET_FLOAT, true );
+  m_Fields.push_back( mF );
+
+  mF = new MET_FieldRecordType;
+  MET_InitReadField( mF, "RidgeId", MET_INT, true );
+  m_Fields.push_back( mF );
+
+  mF = new MET_FieldRecordType;
+  MET_InitReadField( mF, "BackgroundId", MET_INT, true );
+  m_Fields.push_back( mF );
+
+  mF = new MET_FieldRecordType;
+  MET_InitReadField( mF, "UnknownId", MET_INT, true );
+  m_Fields.push_back( mF );
+
+  mF = new MET_FieldRecordType;
+  MET_InitReadField( mF, "SeedTolerance", MET_FLOAT, true );
+  m_Fields.push_back( mF );
+
+  mF = new MET_FieldRecordType;
+  MET_InitReadField( mF, "Skeletonize", MET_STRING, true );
   m_Fields.push_back( mF );
 }
 
@@ -394,20 +663,61 @@ M_SetupWriteFields( void )
 
   if( !m_RidgeSeedScales.empty() )
     {
-    m_RidgeSeedScalesTmp.set_size( m_RidgeSeedScales.size() );
+    LDAValuesType ridgeSeedScales;
+    ridgeSeedScales.set_size( m_RidgeSeedScales.size() );
     for( unsigned int i = 0; i < m_RidgeSeedScales.size(); i++ )
       {
-      m_RidgeSeedScalesTmp[i] = m_RidgeSeedScales[i];
+      ridgeSeedScales[i] = m_RidgeSeedScales[i];
       }
     MET_FieldRecordType * mF = new MET_FieldRecordType;
     MET_InitWriteField( mF, "NRidgeSeedScales", MET_INT,
       m_RidgeSeedScales.size() );
     m_Fields.push_back( mF );
+
     int nRidgeSeedScales = m_RidgeSeedScales.size();
     mF = new MET_FieldRecordType;
     MET_InitWriteField( mF, "RidgeSeedScales", MET_FLOAT_ARRAY,
-      nRidgeSeedScales,
-      m_RidgeSeedScalesTmp.data_block() );
+      nRidgeSeedScales, ridgeSeedScales.data_block() );
+    m_Fields.push_back( mF );
+
+    mF = new MET_FieldRecordType;
+    MET_InitWriteField( mF, "PDFFileName", MET_STRING,
+      m_PDFFileName.size(), m_PDFFileName.c_str() );
+    m_Fields.push_back( mF );
+
+    mF = new MET_FieldRecordType;
+    MET_InitWriteField( mF, "IntensityMin", MET_FLOAT, m_IntensityMin );
+    m_Fields.push_back( mF );
+
+    mF = new MET_FieldRecordType;
+    MET_InitWriteField( mF, "IntensityMax", MET_FLOAT, m_IntensityMax );
+    m_Fields.push_back( mF );
+
+    mF = new MET_FieldRecordType;
+    MET_InitWriteField( mF, "RidgeId", MET_INT, m_RidgeId );
+    m_Fields.push_back( mF );
+
+    mF = new MET_FieldRecordType;
+    MET_InitWriteField( mF, "BackgroundId", MET_INT, m_BackgroundId );
+    m_Fields.push_back( mF );
+
+    mF = new MET_FieldRecordType;
+    MET_InitWriteField( mF, "UnknownId", MET_INT, m_UnknownId );
+    m_Fields.push_back( mF );
+
+    mF = new MET_FieldRecordType;
+    MET_InitWriteField( mF, "SeedTolerance", MET_FLOAT, m_SeedTolerance );
+    m_Fields.push_back( mF );
+
+    mF = new MET_FieldRecordType;
+    if( m_Skeletonize )
+      {
+      MET_InitWriteField( mF, "Skeletonize", MET_STRING, 4, "True" );
+      }
+    else
+      {
+      MET_InitWriteField( mF, "Skeletonize", MET_STRING, 5, "False" );
+      }
     m_Fields.push_back( mF );
     }
 
@@ -445,23 +755,49 @@ M_Read( void )
       }
     }
 
-  MET_FieldRecordType * mF = MET_GetFieldRecord( "NRidgeSeedScales", &m_Fields );
+  MET_FieldRecordType * mF = MET_GetFieldRecord( "NRidgeSeedScales",
+    &m_Fields );
+  unsigned int nRidgeSeedScales = ( unsigned int )mF->value[0];
+  m_RidgeSeedScales.resize( nRidgeSeedScales, 0 );
+  mF = MET_GetFieldRecord( "RidgeSeedScales", &m_Fields );
   if( mF && mF->defined )
     {
-    unsigned int nRidgeSeedScales = ( unsigned int )mF->value[0];
-    m_RidgeSeedScales.resize( nRidgeSeedScales, 0 );
-    mF = MET_GetFieldRecord( "RidgeSeedScales", &m_Fields );
-    if( mF && mF->defined )
+    for( unsigned int i = 0; i < nRidgeSeedScales; i++ )
       {
-      for( unsigned int i = 0; i < nRidgeSeedScales; i++ )
-        {
-        m_RidgeSeedScales[i] = ( double )mF->value[i];
-        }
+      m_RidgeSeedScales[i] = ( double )mF->value[i];
       }
+    }
+
+  mF = MET_GetFieldRecord( "PDFFileName", &m_Fields );
+  m_PDFFileName = ( char * )( &(mF->value[0]) );
+
+  mF = MET_GetFieldRecord( "IntensityMin", &m_Fields );
+  m_IntensityMin = (double)( mF->value[0] );
+
+  mF = MET_GetFieldRecord( "IntensityMax", &m_Fields );
+  m_IntensityMax = (double)( mF->value[0] );
+
+  mF = MET_GetFieldRecord( "RidgeId", &m_Fields );
+  m_RidgeId = (int)( mF->value[0] );
+
+  mF = MET_GetFieldRecord( "BackgroundId", &m_Fields );
+  m_BackgroundId = (int)( mF->value[0] );
+
+  mF = MET_GetFieldRecord( "UnknownId", &m_Fields );
+  m_UnknownId = (int)( mF->value[0] );
+
+  mF = MET_GetFieldRecord( "SeedTolerance", &m_Fields );
+  m_SeedTolerance = (double)( mF->value[0] );
+
+  mF = MET_GetFieldRecord( "Skeletonize", &m_Fields );
+  if( (( char * )( mF->value ))[0] == 'T'
+    || (( char * )( mF->value)) [0] == 't' )
+    {
+    m_Skeletonize = true;
     }
   else
     {
-    m_RidgeSeedScales.clear();
+    m_Skeletonize = false;
     }
 
   return true;

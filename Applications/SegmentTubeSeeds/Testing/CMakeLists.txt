@@ -40,8 +40,40 @@ set( TEXTCOMPARE_EXE
 
 # Test1
 Midas3FunctionAddTest( ${MODULE_NAME}-Test1
-            ${PROJ_EXE}
-               --saveTubeSeedInfo ${TEMP}/${MODULE_NAME}Test1.mtsi
-               --labelmap MIDAS{im0001.vk.mask.mha.md5}
-               MIDAS{im0001.mha.md5}
-               ${TEMP}/${MODULE_NAME}Test1.mha )
+  ${PROJ_EXE}
+    --labelMap MIDAS{im0001.vk.mask.crop.mha.md5}
+    --tubeId 255
+    --backgroundId 127
+    --unknownId 0
+    --ridgeScales 0.5,1.0
+    --saveTubeSeedInfo ${TEMP}/${MODULE_NAME}Test1.mrs
+    --outputSeedScaleImage ${TEMP}/${MODULE_NAME}Test1_Scales.mha
+    MIDAS{im0001.crop.contrast.mha.md5}
+    ${TEMP}/${MODULE_NAME}Test1.mha )
+
+# Test1-Compare
+#Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
+  #${IMAGECOMPARE_EXE}
+    #-t ${TEMP}/${MODULE_NAME}Test1.mha
+    #-b MIDAS{${MODULE_NAME}Test1.mha.md5} )
+#set_property( TEST ${MODULE_NAME}-Test1-Compare
+  #APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+
+# Test2
+Midas3FunctionAddTest( ${MODULE_NAME}-Test2
+  ${PROJ_EXE}
+    --loadTubeSeedInfo ${TEMP}/${MODULE_NAME}Test1.mrs
+    --saveTubeSeedInfo ${TEMP}/${MODULE_NAME}Test2.mrs
+    --outputSeedScaleImage ${TEMP}/${MODULE_NAME}Test2_Scales.mha
+    MIDAS{im0001.mha.md5}
+    ${TEMP}/${MODULE_NAME}Test2.mha )
+set_property( TEST ${MODULE_NAME}-Test2
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+
+# Test2-Compare
+#Midas3FunctionAddTest( ${MODULE_NAME}-Test2-Compare
+  #${IMAGECOMPARE_EXE}
+    #-t ${TEMP}/${MODULE_NAME}Test2.mha
+    #-b MIDAS{${MODULE_NAME}Test1.mha.md5} )
+#set_property( TEST ${MODULE_NAME}-Test2-Compare
+  #APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )

@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-project( TubeFiltering )
+project( TubeTKFiltering )
 
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
@@ -55,7 +55,7 @@ set( TubeTK_Base_Filtering_HXX_Files
   itktubeSubSampleTubeTreeSpatialObjectFilter.hxx
   itktubeTubeEnhancingDiffusion2DImageFilter.hxx )
 
-add_custom_target( TubeFiltering SOURCES
+add_custom_target( TubeTKFiltering SOURCES
   ${TubeTK_Base_Filtering_H_Files}
   ${TubeTK_Base_Filtering_HXX_Files} )
 

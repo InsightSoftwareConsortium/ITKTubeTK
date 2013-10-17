@@ -61,7 +61,7 @@ set( PROJECT_SOURCE
   ${PROJECT_NAME}.cxx )
 
 add_executable( ${PROJECT_NAME} ${PROJECT_SOURCE} )
-target_link_libraries( ${PROJECT_NAME} ${ITK_LIBRARIES} TubeNumerics )
+target_link_libraries( ${PROJECT_NAME} ${ITK_LIBRARIES} TubeTKNumerics )
 
 # Add the install rule
 install( FILES DESTINATION bin COMPONENT RUNTIME )

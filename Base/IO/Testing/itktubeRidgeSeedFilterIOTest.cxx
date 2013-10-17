@@ -21,16 +21,16 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeRidgeSeedFilter.h"
+#include "itktubeRidgeSeedFilterIO.h"
 
-int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
+int itktubeRidgeSeedFilterIOTest( int argc, char * argv[] )
 {
-  if( argc != 9 )
+  if( argc != 6 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
-      << " inputImage labelmapImage objId bkgId outputClass0PDF outputFeature0Image outputImage maxScaleImage"
+      << " inputImage labelmapImage outputImage fileIO outputImage2"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -51,12 +51,6 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   typedef itk::Image< unsigned char, Dimension >    LabelMapType;
   typedef itk::ImageFileReader< LabelMapType >      LabelMapReaderType;
   typedef itk::ImageFileWriter< LabelMapType >      LabelMapWriterType;
-
-  typedef itk::Image< float, 3 >                    PDFImageType;
-  typedef itk::ImageFileWriter< PDFImageType >      PDFImageWriterType;
-
-  typedef itk::Image< float, Dimension >            FeatureImageType;
-  typedef itk::ImageFileWriter< FeatureImageType >  FeatureImageWriterType;
 
   // Declare the type for the Filter
   typedef itk::tube::RidgeSeedFilter< ImageType, LabelMapType >
@@ -99,10 +93,8 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   filter->SetInput( inputImage );
   filter->SetLabelMap( labelmapImage );
   filter->SetScales( scales );
-  int objId = atoi( argv[3] );
-  int bkgId = atoi( argv[4] );
-  filter->SetRidgeId( objId );
-  filter->SetBackgroundId( bkgId );
+  filter->SetRidgeId( 255 );
+  filter->SetBackgroundId( 127 );
   filter->SetUnknownId( 0 );
   std::cout << filter << std::endl;
   filter->Update();
@@ -111,39 +103,8 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   filter->ClassifyImages();
   std::cout << "Classification done." << std::endl;
 
-  PDFImageWriterType::Pointer pdfImageWriter = PDFImageWriterType::New();
-  pdfImageWriter->SetFileName( argv[5] );
-  pdfImageWriter->SetUseCompression( true );
-  pdfImageWriter->SetInput( filter->GetPDFSegmenter()->
-    GetClassPDFImage( 0 ) );
-  try
-    {
-    pdfImageWriter->Update();
-    }
-  catch (itk::ExceptionObject& e)
-    {
-    std::cerr << "Exception caught during write:" << std::endl << e;
-    return EXIT_FAILURE;
-    }
-
-  FeatureImageWriterType::Pointer feature2ImageWriter =
-    FeatureImageWriterType::New();
-  feature2ImageWriter->SetFileName( argv[6] );
-  feature2ImageWriter->SetUseCompression( true );
-  feature2ImageWriter->SetInput( filter->GetRidgeFeatureGenerator()->
-    GetFeatureImage( 0 ) );
-  try
-    {
-    feature2ImageWriter->Update();
-    }
-  catch (itk::ExceptionObject& e)
-    {
-    std::cerr << "Exception caught during write:" << std::endl << e;
-    return EXIT_FAILURE;
-    }
-
   LabelMapWriterType::Pointer labelmapWriter = LabelMapWriterType::New();
-  labelmapWriter->SetFileName( argv[7] );
+  labelmapWriter->SetFileName( argv[3] );
   labelmapWriter->SetUseCompression( true );
   labelmapWriter->SetInput( filter->GetOutput() );
   try
@@ -156,21 +117,32 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  FeatureImageWriterType::Pointer scaleImageWriter =
-    FeatureImageWriterType::New();
-  scaleImageWriter->SetFileName( argv[8] );
-  scaleImageWriter->SetUseCompression( true );
-  scaleImageWriter->SetInput( filter->GetOutputSeedScales() );
+  itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO(
+    filter );
+  filterIO.Write( argv[4] );
+
+  FilterType::Pointer filter2 = FilterType::New();
+  filter2->SetInput( inputImage );
+
+  itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO2(
+    filter2 );
+  filterIO2.Read( argv[4] );
+
+  filter2->ClassifyImages();
+
+  LabelMapWriterType::Pointer labelmapWriter2 = LabelMapWriterType::New();
+  labelmapWriter2->SetFileName( argv[5] );
+  labelmapWriter2->SetUseCompression( true );
+  labelmapWriter2->SetInput( filter2->GetOutput() );
   try
     {
-    scaleImageWriter->Update();
+    labelmapWriter2->Update();
     }
   catch (itk::ExceptionObject& e)
     {
-    std::cerr << "Exception caught during write:" << std::endl << e;
+    std::cerr << "Exception caught during write2:" << std::endl << e;
     return EXIT_FAILURE;
     }
-
 
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;

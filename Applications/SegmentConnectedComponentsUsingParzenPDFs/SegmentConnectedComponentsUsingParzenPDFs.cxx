@@ -206,13 +206,20 @@ int DoIt( int argc, char * argv[] )
       typename PDFImageType::Pointer img = pdfImageReader->GetOutput();
       typename PDFImageType::PointType origin = img->GetOrigin();
       typename PDFImageType::SpacingType spacing = img->GetSpacing();
-      for( unsigned int d = 0; d < N; d++ )
+      if( i == 0 )
         {
-        if( i == 0 )
+        std::vector< double > tmpOrigin;
+        std::vector< double > tmpSpacing;
+        for( unsigned int d=0; d<N; ++d )
           {
-          pdfSegmenter->SetPDFBinMin( d, origin[d] );
-          pdfSegmenter->SetPDFBinScale( d, spacing[d] );
+          tmpOrigin[d] = origin[d];
+          tmpSpacing[d] = spacing[d];
           }
+        pdfSegmenter->SetBinMin( tmpOrigin );
+        pdfSegmenter->SetBinSize( tmpSpacing );
+        }
+      for( unsigned int d=0; d<N; ++d )
+        {
         origin[d] = 0;
         spacing[d] = 1;
         }
@@ -271,8 +278,8 @@ int DoIt( int argc, char * argv[] )
       typename PDFImageType::SpacingType spacing;
       for( unsigned int d = 0; d < N; d++ )
         {
-        origin[d] = pdfSegmenter->GetPDFBinMin( d );
-        spacing[d] = pdfSegmenter->GetPDFBinScale( d );
+        origin[d] = pdfSegmenter->GetBinMin()[d];
+        spacing[d] = pdfSegmenter->GetBinSize()[d];
         }
       typename PDFImageType::PointType originOrg;
       typename PDFImageType::SpacingType spacingOrg;

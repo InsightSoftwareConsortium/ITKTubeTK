@@ -23,6 +23,8 @@ limitations under the License.
 
 #include "itktubeMetaLDA.h"
 
+#include "tubeMetaUtils.h"
+
 namespace itk
 {
 
@@ -252,6 +254,7 @@ bool MetaLDA
   METAIO_STL::string fname = headerName;
   if( fname == "" )
     {
+    std::cout << "CanRead: Error: Empty file name." << std::endl;
     return false;
     }
 
@@ -266,6 +269,7 @@ bool MetaLDA
 
   if( !extensionFound )
     {
+    std::cout << "CanRead: Error: Extension not supported." << std::endl;
     return false;
     }
 
@@ -277,11 +281,17 @@ bool MetaLDA
 
   if( !inputStream.rdbuf()->is_open() )
     {
+    std::cout << "CanRead: Error: Cannot open file." << std::endl;
     return false;
     }
 
-  const bool result = !std::strncmp( MET_ReadForm(
+  const bool result = !std::strncmp( MET_ReadFormTypeName(
                                        inputStream ).c_str(), "LDA", 3 );
+
+  if( !result )
+    {
+    std::cout << "CanRead: Error: Read form failed." << std::endl;
+    }
 
   inputStream.close();
 

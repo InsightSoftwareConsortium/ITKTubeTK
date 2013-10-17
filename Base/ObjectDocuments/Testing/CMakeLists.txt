@@ -55,7 +55,7 @@ add_executable( tubeBaseObjectDocumentsHeaderTest
   tubeBaseObjectDocumentsHeaderTest.cxx )
 
 target_link_libraries( tubeBaseObjectDocumentsHeaderTest
-  TubeObjectDocuments
+  TubeTKObjectDocuments
   ${ITK_LIBRARIES} )
 
 add_executable( tubeBaseObjectDocumentsTests
@@ -63,7 +63,7 @@ add_executable( tubeBaseObjectDocumentsTests
   ${tubeBaseObjectDocumentsTests_SRCS} )
 
 target_link_libraries( tubeBaseObjectDocumentsTests
-  TubeObjectDocuments
+  TubeTKObjectDocuments
   ${ITK_LIBRARIES} )
 
 add_test( tubeBaseObjectDocumentsHeaderTest

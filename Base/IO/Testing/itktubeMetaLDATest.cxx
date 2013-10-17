@@ -120,6 +120,12 @@ int itktubeMetaLDATest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
+  if( !mlda5.CanRead( argv[1] ) )
+    {
+    std::cout << "LDA CanRead returned false." << std::endl;
+    return EXIT_FAILURE;
+    }
+
   mlda5.Read( argv[1] );
   if( mlda5.GetLDAValues() != mlda1.GetLDAValues()
       || mlda5.GetWhitenMeans() != mlda1.GetWhitenMeans()

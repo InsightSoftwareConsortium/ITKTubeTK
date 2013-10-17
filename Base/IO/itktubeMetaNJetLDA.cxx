@@ -23,6 +23,8 @@ limitations under the License.
 
 #include "itktubeMetaNJetLDA.h"
 
+#include "tubeMetaUtils.h"
+
 namespace itk
 {
 
@@ -303,7 +305,7 @@ bool MetaNJetLDA
     return false;
     }
 
-  const bool result = !std::strncmp( MET_ReadForm(
+  const bool result = !std::strncmp( MET_ReadFormTypeName(
                                        inputStream ).c_str(), "NJetLDA", 7 );
 
   inputStream.close();
@@ -344,7 +346,7 @@ bool MetaNJetLDA
 bool MetaNJetLDA
 ::CanReadStream( METAIO_STREAM::ifstream * stream ) const
 {
-  if( !std::strncmp( MET_ReadForm( *stream ).c_str(), "NJetLDA", 7 ) )
+  if( !std::strncmp( MET_ReadFormTypeName( *stream ).c_str(), "NJetLDA", 7 ) )
     {
     return true;
     }

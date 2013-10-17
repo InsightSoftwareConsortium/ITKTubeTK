@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-project( TubeCommon )
+project( TubeTKCommon )
 
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
@@ -42,12 +42,12 @@ set( TubeTK_Base_Common_CXX_Files
   tubeIndent.cxx
   tubeObject.cxx )
 
-add_library( TubeCommon STATIC
+add_library( TubeTKCommon STATIC
   ${TubeTK_Base_Common_H_Files}
   ${TubeTK_Base_Common_HXX_Files}
   ${TubeTK_Base_Common_CXX_Files} )
 
-TubeTKMacroInstallPlugins( TubeCommon )
+TubeTKMacroInstallPlugins( TubeTKCommon )
 
 add_executable( ImageCompareCommand ImageCompareCommand.cxx )
 target_link_libraries( ImageCompareCommand ${ITK_LIBRARIES} )
@@ -76,4 +76,4 @@ install( TARGETS
   DESTINATION bin
   COMPONENT RUNTIME )
 
-set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeCommon )
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKCommon )
