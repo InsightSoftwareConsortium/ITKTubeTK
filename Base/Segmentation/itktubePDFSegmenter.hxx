@@ -155,7 +155,7 @@ PDFSegmenter< TImage, N, TLabelMap >
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-const std::vector< int > &
+const typename PDFSegmenter< TImage, N, TLabelMap >::VectorIntType &
 PDFSegmenter< TImage, N, TLabelMap >
 ::GetObjectId( void ) const
 {
@@ -210,7 +210,7 @@ PDFSegmenter< TImage, N, TLabelMap >
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-const std::vector< double > &
+const typename PDFSegmenter< TImage, N, TLabelMap >::VectorDoubleType &
 PDFSegmenter< TImage, N, TLabelMap >
 ::GetObjectPDFWeight( void ) const
 {
@@ -258,7 +258,7 @@ PDFSegmenter< TImage, N, TLabelMap >
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-const std::vector< int > &
+const typename PDFSegmenter< TImage, N, TLabelMap >::VectorIntType &
 PDFSegmenter< TImage, N, TLabelMap >
 ::GetNumberOfBinsPerFeature( void ) const
 {
@@ -274,7 +274,7 @@ PDFSegmenter< TImage, N, TLabelMap >
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-const std::vector< double > &
+const typename PDFSegmenter< TImage, N, TLabelMap >::VectorDoubleType &
 PDFSegmenter< TImage, N, TLabelMap >
 ::GetBinMin( void ) const
 {
@@ -290,7 +290,7 @@ PDFSegmenter< TImage, N, TLabelMap >
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-const std::vector< double > &
+const typename PDFSegmenter< TImage, N, TLabelMap >::VectorDoubleType &
 PDFSegmenter< TImage, N, TLabelMap >
 ::GetBinSize( void ) const
 {
@@ -349,7 +349,7 @@ PDFSegmenter< TImage, N, TLabelMap >
   itInLabelMap.GoToBegin();
 
   ConstImageIteratorType * itInIm[N];
-  std::vector< double > histogramBinMax;
+  VectorDoubleType histogramBinMax;
   histogramBinMax.resize( N, 0 );
   for( unsigned int i = 0; i < N; i++ )
     {
@@ -455,8 +455,8 @@ PDFSegmenter< TImage, N, TLabelMap >
   timeCollector.Start( "ListsToHistograms" );
   // Inside
 
-  std::vector< std::vector< double > > clipMin;
-  std::vector< std::vector< double > > clipMax;
+  std::vector< VectorDoubleType > clipMin;
+  std::vector< VectorDoubleType > clipMax;
   if( true ) // creating a local context to limit memory footprint
     {
     clipMin.resize( numClasses );

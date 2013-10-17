@@ -47,6 +47,9 @@ class MetaClassPDF : private MetaImage
 {
 public:
 
+  typedef std::vector< int >                    VectorIntType;
+  typedef std::vector< double >                 VectorDoubleType;
+
   MetaClassPDF( void );
 
   MetaClassPDF( const char * _headerName );
@@ -54,9 +57,9 @@ public:
   MetaClassPDF( const MetaClassPDF & _metaPDF );
 
   MetaClassPDF( int _nFeatures,
-    const std::vector< int > & _nBinsPerFeature,
-    const std::vector< double > & _binMin,
-    const std::vector< double > & _binSize,
+    const VectorIntType & _nBinsPerFeature,
+    const VectorDoubleType & _binMin,
+    const VectorDoubleType & _binSize,
     float * _elementData = NULL );
 
   MetaClassPDF( int _x, int _y,
@@ -78,34 +81,33 @@ public:
   virtual void Clear( void );
 
   virtual bool InitializeEssential( int _nFeatures,
-    const std::vector< int > & _nBinsPerFeature,
-    const std::vector< double > & _binMin,
-    const std::vector< double > & _binSize,
+    const VectorIntType & _nBinsPerFeature,
+    const VectorDoubleType & _binMin,
+    const VectorDoubleType & _binSize,
     float * _elementData = NULL );
 
   void         SetNumberOfFeatures( int _nFeatures );
   int          GetNumberOfFeatures( void ) const;
 
-  void         SetNumberOfBinsPerFeature( const std::vector< int > &
-                 _nBins );
-  const std::vector< int > & GetNumberOfBinsPerFeature( void ) const;
+  void         SetNumberOfBinsPerFeature( const VectorIntType & _nBins );
+  const VectorIntType & GetNumberOfBinsPerFeature( void ) const;
 
-  void          SetBinMin( const std::vector< double > & _binMin );
-  const std::vector< double > & GetBinMin( void ) const;
+  void          SetBinMin( const VectorDoubleType & _binMin );
+  const VectorDoubleType & GetBinMin( void ) const;
 
-  void          SetBinSize( const std::vector< double > & _binSize );
-  const std::vector< double > & GetBinSize( void ) const;
+  void          SetBinSize( const VectorDoubleType & _binSize );
+  const VectorDoubleType & GetBinSize( void ) const;
 
   void          SetPDF( float * _pdfData );
   float *       GetPDF( void );  // Data is freed when reader is destroyed
   float *       ExportPDF( void );  // Data persists when reader destroyed
 
-  void          SetObjectId( const std::vector< int > & _objectIds );
-  const std::vector< int > & GetObjectId( void ) const;
+  void          SetObjectId( const VectorIntType & _objectIds );
+  const VectorIntType & GetObjectId( void ) const;
 
-  void          SetObjectPDFWeight( const std::vector< double > &
+  void          SetObjectPDFWeight( const VectorDoubleType &
                   _objectWeights );
-  const std::vector< double > & GetObjectPDFWeight( void ) const;
+  const VectorDoubleType & GetObjectPDFWeight( void ) const;
 
   void          SetVoidId( int _voidId );
   int           GetVoidId( void ) const;
@@ -152,18 +154,18 @@ protected:
 
   virtual bool M_Read( void );
 
-  mutable std::vector< int >   m_NumberOfBinsPerFeature;
-  mutable std::vector< double > m_BinMin;
-  mutable std::vector< double > m_BinSize;
+  mutable VectorIntType    m_NumberOfBinsPerFeature;
+  mutable VectorDoubleType m_BinMin;
+  mutable VectorDoubleType m_BinSize;
 
-  std::vector< int >   m_ObjectId;
-  std::vector< double > m_ObjectPDFWeight;
+  VectorIntType        m_ObjectId;
+  VectorDoubleType     m_ObjectPDFWeight;
   int                  m_VoidId;
   int                  m_ErodeRadius;
   int                  m_HoleFillIterations;
-  double                m_ProbabilityImageSmoothingStandardDeviation;
-  double                m_HistogramSmoothingStandardDeviation;
-  double                m_OutlierRejectPortion;
+  double               m_ProbabilityImageSmoothingStandardDeviation;
+  double               m_HistogramSmoothingStandardDeviation;
+  double               m_OutlierRejectPortion;
   bool                 m_Draft;
   bool                 m_ReclassifyObjectLabels;
   bool                 m_ReclassifyNotObjectLabels;

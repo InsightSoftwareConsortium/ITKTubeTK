@@ -69,9 +69,9 @@ MetaClassPDF( const MetaClassPDF & _metaPDF )
 MetaClassPDF::
 MetaClassPDF(
   int _nFeatures,
-  const std::vector< int > & _nBinsPerFeature,
-  const std::vector< double > & _binMin,
-  const std::vector< double > & _binSize,
+  const VectorIntType & _nBinsPerFeature,
+  const VectorDoubleType & _binMin,
+  const VectorDoubleType & _binSize,
   float * _elementData )
 {
   if( META_DEBUG )
@@ -116,19 +116,19 @@ MetaClassPDF( int _x, int _y, int _z,
   double _binSizeX, double _binSizeY, double _binSizeZ,
   float * _elementData )
 {
-  std::vector< int > nBinsPerFeature;
+  VectorIntType nBinsPerFeature;
   nBinsPerFeature.resize( 3 );
   nBinsPerFeature[0] = _x;
   nBinsPerFeature[1] = _y;
   nBinsPerFeature[2] = _z;
 
-  std::vector< double > binMin;
+  VectorDoubleType binMin;
   binMin.resize( 3 );
   binMin[0] = _binMinX;
   binMin[1] = _binMinY;
   binMin[2] = _binMinZ;
 
-  std::vector< double > binSize;
+  VectorDoubleType binSize;
   binSize.resize( 3 );
   binSize[0] = _binSizeX;
   binSize[1] = _binSizeY;
@@ -310,9 +310,9 @@ Clear( void )
 
 bool MetaClassPDF::
 InitializeEssential( int _nFeatures,
-  const std::vector< int > & _nBinsPerFeature,
-  const std::vector< double > & _binMin,
-  const std::vector< double > & _binSize,
+  const VectorIntType & _nBinsPerFeature,
+  const VectorDoubleType & _binMin,
+  const VectorDoubleType & _binSize,
   float * _elementData )
 {
   if( META_DEBUG )
@@ -348,7 +348,7 @@ GetNumberOfFeatures( void ) const
 }
 
 void MetaClassPDF::
-SetNumberOfBinsPerFeature( const std::vector< int > & _nBinsPerFeature )
+SetNumberOfBinsPerFeature( const VectorIntType & _nBinsPerFeature )
 {
   m_NumberOfBinsPerFeature = _nBinsPerFeature;
 
@@ -362,7 +362,7 @@ SetNumberOfBinsPerFeature( const std::vector< int > & _nBinsPerFeature )
     (float *)( MetaImage::ElementData() ) );
 }
 
-const std::vector< int > & MetaClassPDF::
+const MetaClassPDF::VectorIntType & MetaClassPDF::
 GetNumberOfBinsPerFeature( void ) const
 {
   for( unsigned int i = 0; i < MetaImage::NDims(); i++ )
@@ -373,7 +373,7 @@ GetNumberOfBinsPerFeature( void ) const
 }
 
 void MetaClassPDF::
-SetBinMin( const std::vector< double > & _binMin )
+SetBinMin( const VectorDoubleType & _binMin )
 {
   m_BinMin = _binMin;
 
@@ -385,7 +385,7 @@ SetBinMin( const std::vector< double > & _binMin )
   MetaImage::Origin( binMinTemp );
 }
 
-const std::vector< double > & MetaClassPDF::
+const MetaClassPDF::VectorDoubleType & MetaClassPDF::
 GetBinMin( void ) const
 {
   for( unsigned int i = 0; i < MetaImage::NDims(); i++ )
@@ -396,7 +396,7 @@ GetBinMin( void ) const
 }
 
 void MetaClassPDF::
-SetBinSize( const std::vector< double > & _binSize )
+SetBinSize( const VectorDoubleType & _binSize )
 {
   m_BinSize = _binSize;
 
@@ -408,7 +408,7 @@ SetBinSize( const std::vector< double > & _binSize )
   MetaImage::ElementSpacing( binSizeTemp );
 }
 
-const std::vector< double > & MetaClassPDF::
+const MetaClassPDF::VectorDoubleType & MetaClassPDF::
 GetBinSize( void ) const
 {
   for( unsigned int i = 0; i < MetaImage::NDims(); i++ )
@@ -438,24 +438,24 @@ ExportPDF( void )
 }
 
 void MetaClassPDF::
-SetObjectId( const std::vector< int > & _objectId )
+SetObjectId( const VectorIntType & _objectId )
 {
   m_ObjectId = _objectId;
 }
 
-const std::vector< int > & MetaClassPDF::
+const MetaClassPDF::VectorIntType & MetaClassPDF::
 GetObjectId( void ) const
 {
   return m_ObjectId;
 }
 
 void MetaClassPDF::
-SetObjectPDFWeight( const std::vector< double > & _objectPDFWeight )
+SetObjectPDFWeight( const VectorDoubleType & _objectPDFWeight )
 {
   m_ObjectPDFWeight = _objectPDFWeight;
 }
 
-const std::vector< double > & MetaClassPDF::
+const MetaClassPDF::VectorDoubleType & MetaClassPDF::
 GetObjectPDFWeight( void ) const
 {
   return m_ObjectPDFWeight;
