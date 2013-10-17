@@ -23,6 +23,8 @@ limitations under the License.
 
 #include "itktubeMetaClassPDF.h"
 
+#include <cstdlib>
+
 int itktubeMetaClassPDFTest( int argc, char * argv[] )
 {
   if( argc != 2 )
