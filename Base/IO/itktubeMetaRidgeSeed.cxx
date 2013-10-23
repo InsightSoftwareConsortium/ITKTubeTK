@@ -23,8 +23,6 @@ limitations under the License.
 
 #include "itktubeMetaRidgeSeed.h"
 
-#include "tubeMetaUtils.h"
-
 namespace itk
 {
 
@@ -444,7 +442,7 @@ CanRead( const char * _headerName ) const
     return false;
     }
 
-  const bool result = !std::strncmp( MET_ReadFormTypeName( inputStream ).c_str(),
+  const bool result = !std::strncmp( MET_ReadForm( inputStream ).c_str(),
     "RidgeSeed", 9 );
 
   inputStream.close();
@@ -485,7 +483,7 @@ Read( const char * _headerName )
 bool MetaRidgeSeed::
 CanReadStream( METAIO_STREAM::ifstream * _stream ) const
 {
-  if( !std::strncmp( MET_ReadFormTypeName( * _stream ).c_str(), "RidgeSeed", 9 ) )
+  if( !std::strncmp( MET_ReadForm( * _stream ).c_str(), "RidgeSeed", 9 ) )
     {
     return true;
     }

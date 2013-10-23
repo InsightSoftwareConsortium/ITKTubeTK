@@ -35,7 +35,7 @@ int itktubeMetaClassPDFTest( int argc, char * argv[] )
 
   itk::tube::MetaClassPDF pdf1;
 
-  std::vector< int > dimSize(2);
+  std::vector< unsigned int > dimSize(2);
   dimSize[0] = 10;
   dimSize[1] = 10;
   std::vector< double > binMin(2);
