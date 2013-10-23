@@ -23,8 +23,6 @@ limitations under the License.
 
 #include "itktubeMetaTubeParams.h"
 
-#include "tubeMetaUtils.h"
-
 namespace itk
 {
 
@@ -558,7 +556,7 @@ CanRead( const char *_headerName ) const
     return false;
     }
 
-  bool result = !std::strncmp( MET_ReadFormTypeName( inputStream ).c_str(), "TubeParams", 10 );
+  bool result = !std::strncmp( MET_ReadForm( inputStream ).c_str(), "TubeParams", 10 );
 
   inputStream.close();
 
@@ -600,7 +598,7 @@ Read( const char *_headerName )
 bool MetaTubeParams::
 CanReadStream( METAIO_STREAM::ifstream * _stream ) const
 {
-  if( !std::strncmp( MET_ReadFormTypeName( *_stream ).c_str(), "TubeParams", 10 ) )
+  if( !std::strncmp( MET_ReadForm( *_stream ).c_str(), "TubeParams", 10 ) )
     {
     return true;
     }

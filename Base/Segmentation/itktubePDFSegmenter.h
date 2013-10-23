@@ -80,6 +80,7 @@ public:
 
   typedef std::vector< double >                VectorDoubleType;
   typedef std::vector< int >                   VectorIntType;
+  typedef std::vector< unsigned int >          VectorUIntType;
 
   //
   // Methods
@@ -133,8 +134,8 @@ public:
   void SetClassPDFImage( unsigned int classNum,
     typename PDFImageType::Pointer classPDF );
 
-  const VectorIntType & GetNumberOfBinsPerFeature( void ) const;
-  void             SetNumberOfBinsPerFeature( const VectorIntType & nBin );
+  const VectorUIntType & GetNumberOfBinsPerFeature( void ) const;
+  void             SetNumberOfBinsPerFeature( const VectorUIntType & nBin );
   const VectorDoubleType & GetBinMin( void ) const;
   void             SetBinMin( const VectorDoubleType & binMin );
   const VectorDoubleType & GetBinSize( void ) const;
@@ -206,7 +207,7 @@ private:
   ClassHistogramImageType                  m_InClassHistogram;
   VectorDoubleType                         m_HistogramBinMin;
   VectorDoubleType                         m_HistogramBinSize;
-  VectorIntType                            m_HistogramNumberOfBin;
+  VectorUIntType                           m_HistogramNumberOfBin;
 
   //  Data
   std::vector< typename ImageType::Pointer > m_InputImageList;

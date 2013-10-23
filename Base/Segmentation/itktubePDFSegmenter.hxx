@@ -258,7 +258,7 @@ PDFSegmenter< TImage, N, TLabelMap >
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-const typename PDFSegmenter< TImage, N, TLabelMap >::VectorIntType &
+const typename PDFSegmenter< TImage, N, TLabelMap >::VectorUIntType &
 PDFSegmenter< TImage, N, TLabelMap >
 ::GetNumberOfBinsPerFeature( void ) const
 {
@@ -268,7 +268,7 @@ PDFSegmenter< TImage, N, TLabelMap >
 template< class TImage, unsigned int N, class TLabelMap >
 void
 PDFSegmenter< TImage, N, TLabelMap >
-::SetNumberOfBinsPerFeature( const VectorIntType & nBins )
+::SetNumberOfBinsPerFeature( const VectorUIntType & nBins )
 {
   m_HistogramNumberOfBin = nBins;
 }

@@ -298,11 +298,8 @@ Read( const char * _headerName )
     return false;
     }
 
-  // Assign values to PDFSegmenter
-  int nFeatures = m_PDFSegmenter->GetNumberOfFeatures();
-
   mF = MET_GetFieldRecord( "NFeatures", &metaFields );
-  if( static_cast< int >( mF->value[0] ) !=
+  if( static_cast< unsigned int >( mF->value[0] ) !=
     m_PDFSegmenter->GetNumberOfFeatures() )
     {
     std::cout << "NDims don't match: " << static_cast< int >( mF->value[0] )
@@ -310,16 +307,17 @@ Read( const char * _headerName )
     throw( "Expected features and features in PDF file do not match" );
     }
 
+  std::vector< unsigned int > tmpVectorUInt;
   std::vector< int > tmpVectorInt;
   std::vector< double > tmpVectorDouble;
 
   mF = MET_GetFieldRecord( "BinsPerFeature", &metaFields );
-  tmpVectorInt.resize( N );
+  tmpVectorUInt.resize( N );
   for( unsigned int i = 0; i < N; ++i )
     {
-    tmpVectorInt[i] = static_cast< int >( mF->value[i] );
+    tmpVectorUInt[i] = static_cast< int >( mF->value[i] );
     }
-  m_PDFSegmenter->SetNumberOfBinsPerFeature( tmpVectorInt );
+  m_PDFSegmenter->SetNumberOfBinsPerFeature( tmpVectorUInt );
 
   mF = MET_GetFieldRecord( "BinMin", &metaFields );
   tmpVectorDouble.resize( N );
@@ -338,7 +336,7 @@ Read( const char * _headerName )
   m_PDFSegmenter->SetBinSize( tmpVectorDouble );
 
   mF = MET_GetFieldRecord( "NObjects", &metaFields );
-  int nObjects = static_cast< int >( mF->value[0] );
+  unsigned int nObjects = static_cast< unsigned int >( mF->value[0] );
 
   mF = MET_GetFieldRecord( "ObjectId", &metaFields );
   tmpVectorInt.resize( nObjects );
@@ -524,7 +522,7 @@ Write( const char * _headerName )
   MET_InitWriteField( mF, "BinSize", MET_FLOAT_ARRAY, N, tmpF );
   metaFields.push_back( mF );
 
-  int nObjects = m_PDFSegmenter->GetNumberOfObjectIds();
+  unsigned int nObjects = m_PDFSegmenter->GetNumberOfObjectIds();
 
   mF = new MET_FieldRecordType;
   MET_InitWriteField( mF, "NObjects", MET_INT, nObjects );

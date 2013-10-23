@@ -57,6 +57,7 @@ MetaClassPDF( const char * _headerName )
 
 MetaClassPDF::
 MetaClassPDF( const MetaClassPDF & _metaPDF )
+: MetaImage()
 {
   if( META_DEBUG )
    {
@@ -65,13 +66,13 @@ MetaClassPDF( const MetaClassPDF & _metaPDF )
 
   Clear();
 
-  CopyInfo( _metaPDF );
+  CopyInfo( & _metaPDF );
 }
 
 MetaClassPDF::
 MetaClassPDF(
-  int _nFeatures,
-  const VectorIntType & _nBinsPerFeature,
+  unsigned int _nFeatures,
+  const VectorUIntType & _nBinsPerFeature,
   const VectorDoubleType & _binMin,
   const VectorDoubleType & _binSize,
   float * _elementData )
@@ -88,37 +89,39 @@ MetaClassPDF(
 }
 
 MetaClassPDF::
-MetaClassPDF( int _x, int _y,
+MetaClassPDF( unsigned int _x, unsigned int _y,
   double _binMinX, double _binMinY,
   double _binSizeX, double _binSizeY,
   float * _elementData )
 {
-  m_NumberOfBinsPerFeature.resize( 2 );
-  m_NumberOfBinsPerFeature[0] = _x;
-  m_NumberOfBinsPerFeature[1] = _y;
+  VectorUIntType nBinsPerFeature;
+  nBinsPerFeature.resize( 2 );
+  nBinsPerFeature[0] = _x;
+  nBinsPerFeature[1] = _y;
 
-  m_BinMin.resize( 2 );
-  m_BinMin[0] = _binMinX;
-  m_BinMin[1] = _binMinY;
+  VectorDoubleType binMin;
+  binMin.resize( 2 );
+  binMin[0] = _binMinX;
+  binMin[1] = _binMinY;
 
-  m_BinSize.resize( 2 );
-  m_BinSize[0] = _binSizeX;
-  m_BinSize[1] = _binSizeY;
+  VectorDoubleType binSize;
+  binSize.resize( 2 );
+  binSize[0] = _binSizeX;
+  binSize[1] = _binSizeY;
 
   Clear();
 
-  InitializeEssential( 2, m_NumberOfBinsPerFeature, m_BinMin, m_BinSize,
-    _elementData );
+  InitializeEssential( 2, nBinsPerFeature, binMin, binSize, _elementData );
 }
 
 
 MetaClassPDF::
-MetaClassPDF( int _x, int _y, int _z,
+MetaClassPDF( unsigned int _x, unsigned int _y, unsigned int _z,
   double _binMinX, double _binMinY, double _binMinZ,
   double _binSizeX, double _binSizeY, double _binSizeZ,
   float * _elementData )
 {
-  VectorIntType nBinsPerFeature;
+  VectorUIntType nBinsPerFeature;
   nBinsPerFeature.resize( 3 );
   nBinsPerFeature[0] = _x;
   nBinsPerFeature[1] = _y;
@@ -156,7 +159,7 @@ PrintInfo( void ) const
   if( m_NumberOfBinsPerFeature.size() > 0 )
     {
     std::cout << m_NumberOfBinsPerFeature[0];
-    for( unsigned int i = 1; i < MetaImage::NDims(); i++ )
+    for( int i = 1; i < MetaImage::NDims(); i++ )
       {
       std::cout << ", " << m_NumberOfBinsPerFeature[i];
       }
@@ -167,7 +170,7 @@ PrintInfo( void ) const
   if( m_BinMin.size() > 0 )
     {
     std::cout << m_BinMin[0];
-    for( unsigned int i = 1; i < MetaImage::NDims(); i++ )
+    for( int i = 1; i < MetaImage::NDims(); i++ )
       {
       std::cout << ", " << m_BinMin[i];
       }
@@ -178,7 +181,7 @@ PrintInfo( void ) const
   if( m_BinSize.size() > 0 )
     {
     std::cout << m_BinSize[0];
-    for( unsigned int i = 1; i < MetaImage::NDims(); i++ )
+    for( int i = 1; i < MetaImage::NDims(); i++ )
       {
       std::cout << ", " << m_BinSize[i];
       }
@@ -189,7 +192,7 @@ PrintInfo( void ) const
   if( m_ObjectId.size() > 0 )
     {
     std::cout << m_ObjectId[0];
-    for( unsigned int i = 1; i < MetaImage::NDims(); i++ )
+    for( int i = 1; i < MetaImage::NDims(); i++ )
       {
       std::cout << ", " << m_ObjectId[i];
       }
@@ -200,7 +203,7 @@ PrintInfo( void ) const
   if( m_ObjectPDFWeight.size() > 0 )
     {
     std::cout << m_ObjectPDFWeight[0];
-    for( unsigned int i = 1; i < MetaImage::NDims(); i++ )
+    for( int i = 1; i < MetaImage::NDims(); i++ )
       {
       std::cout << ", " << m_ObjectPDFWeight[i];
       }
@@ -251,30 +254,50 @@ PrintInfo( void ) const
 }
 
 void MetaClassPDF::
-CopyInfo( const MetaClassPDF & _pdf )
+CopyInfo( const MetaObject * _obj )
 {
   Clear();
 
-  InitializeEssential( _pdf.GetNumberOfFeatures(),
-    _pdf.GetNumberOfBinsPerFeature(), _pdf.GetBinMin(),
-    _pdf.GetBinSize(), NULL );
+  MetaImage::CopyInfo( _obj );
 
-  this->SetObjectId( _pdf.GetObjectId() );
-  this->SetObjectPDFWeight( _pdf.GetObjectPDFWeight() );
-  this->SetVoidId( _pdf.GetVoidId() );
-  this->SetErodeRadius( _pdf.GetErodeRadius() );
-  this->SetHoleFillIterations( _pdf.GetHoleFillIterations() );
-  this->SetProbabilityImageSmoothingStandardDeviation(
-    _pdf.GetProbabilityImageSmoothingStandardDeviation() );
-  this->SetHistogramSmoothingStandardDeviation(
-    _pdf.GetHistogramSmoothingStandardDeviation() );
-  this->SetOutlierRejectPortion( _pdf.GetOutlierRejectPortion() );
-  this->SetDraft( _pdf.GetDraft() );
-  this->SetReclassifyObjectLabels( _pdf.GetReclassifyObjectLabels() );
-  this->SetReclassifyNotObjectLabels(
-    _pdf.GetReclassifyNotObjectLabels() );
-  this->SetForceClassification( _pdf.GetForceClassification() );
+  if( _obj == NULL )
+    {
+    return;
+    }
 
+  const MetaClassPDF * tmpPDF;
+  try
+    {
+    tmpPDF = (const MetaClassPDF *)( _obj );
+    }
+  catch( ... )
+    {
+    return;
+    }
+
+  if( tmpPDF )
+    {
+    InitializeEssential( tmpPDF->GetNumberOfFeatures(),
+      tmpPDF->GetNumberOfBinsPerFeature(), tmpPDF->GetBinMin(),
+      tmpPDF->GetBinSize(), NULL );
+  
+    this->SetObjectId( tmpPDF->GetObjectId() );
+    this->SetObjectPDFWeight( tmpPDF->GetObjectPDFWeight() );
+    this->SetVoidId( tmpPDF->GetVoidId() );
+    this->SetErodeRadius( tmpPDF->GetErodeRadius() );
+    this->SetHoleFillIterations( tmpPDF->GetHoleFillIterations() );
+    this->SetProbabilityImageSmoothingStandardDeviation(
+      tmpPDF->GetProbabilityImageSmoothingStandardDeviation() );
+    this->SetHistogramSmoothingStandardDeviation(
+      tmpPDF->GetHistogramSmoothingStandardDeviation() );
+    this->SetOutlierRejectPortion( tmpPDF->GetOutlierRejectPortion() );
+    this->SetDraft( tmpPDF->GetDraft() );
+    this->SetReclassifyObjectLabels( tmpPDF->GetReclassifyObjectLabels() );
+    this->SetReclassifyNotObjectLabels(
+      tmpPDF->GetReclassifyNotObjectLabels() );
+    this->SetForceClassification( tmpPDF->GetForceClassification() );
+    }
+  
 }
 
 void MetaClassPDF::
@@ -311,8 +334,8 @@ Clear( void )
 
 
 bool MetaClassPDF::
-InitializeEssential( int _nFeatures,
-  const VectorIntType & _nBinsPerFeature,
+InitializeEssential( unsigned int _nFeatures,
+  const VectorUIntType & _nBinsPerFeature,
   const VectorDoubleType & _binMin,
   const VectorDoubleType & _binSize,
   float * _elementData )
@@ -343,14 +366,14 @@ InitializeEssential( int _nFeatures,
   return true;
 }
 
-int MetaClassPDF::
+unsigned int MetaClassPDF::
 GetNumberOfFeatures( void ) const
 {
   return MetaImage::NDims();
 }
 
 void MetaClassPDF::
-SetNumberOfBinsPerFeature( const VectorIntType & _nBinsPerFeature )
+SetNumberOfBinsPerFeature( const VectorUIntType & _nBinsPerFeature )
 {
   m_NumberOfBinsPerFeature = _nBinsPerFeature;
 
@@ -364,10 +387,10 @@ SetNumberOfBinsPerFeature( const VectorIntType & _nBinsPerFeature )
     (float *)( MetaImage::ElementData() ) );
 }
 
-const MetaClassPDF::VectorIntType & MetaClassPDF::
+const MetaClassPDF::VectorUIntType & MetaClassPDF::
 GetNumberOfBinsPerFeature( void ) const
 {
-  for( unsigned int i = 0; i < MetaImage::NDims(); i++ )
+  for( int i = 0; i < MetaImage::NDims(); i++ )
     {
     m_NumberOfBinsPerFeature[i] = MetaImage::DimSize()[i];
     }
@@ -380,7 +403,7 @@ SetBinMin( const VectorDoubleType & _binMin )
   m_BinMin = _binMin;
 
   double binMinTemp[10];
-  for( unsigned int i = 0; i < MetaImage::NDims(); i++ )
+  for( int i = 0; i < MetaImage::NDims(); i++ )
     {
     binMinTemp[i] = _binMin[i];
     }
@@ -390,7 +413,7 @@ SetBinMin( const VectorDoubleType & _binMin )
 const MetaClassPDF::VectorDoubleType & MetaClassPDF::
 GetBinMin( void ) const
 {
-  for( unsigned int i = 0; i < MetaImage::NDims(); i++ )
+  for( int i = 0; i < MetaImage::NDims(); i++ )
     {
     m_BinMin[i] = MetaImage::Origin()[i];
     }
@@ -403,7 +426,7 @@ SetBinSize( const VectorDoubleType & _binSize )
   m_BinSize = _binSize;
 
   float binSizeTemp[10];
-  for( unsigned int i = 0; i < MetaImage::NDims(); i++ )
+  for( int i = 0; i < MetaImage::NDims(); i++ )
     {
     binSizeTemp[i] = _binSize[i];
     }
@@ -413,7 +436,7 @@ SetBinSize( const VectorDoubleType & _binSize )
 const MetaClassPDF::VectorDoubleType & MetaClassPDF::
 GetBinSize( void ) const
 {
-  for( unsigned int i = 0; i < MetaImage::NDims(); i++ )
+  for( int i = 0; i < MetaImage::NDims(); i++ )
     {
     m_BinSize[i] = MetaImage::ElementSpacing()[i];
     }
@@ -476,24 +499,24 @@ GetVoidId( void ) const
 }
 
 void MetaClassPDF::
-SetErodeRadius( int _ErodeRadius )
+SetErodeRadius( unsigned int _ErodeRadius )
 {
   m_ErodeRadius = _ErodeRadius;
 }
 
-int MetaClassPDF::
+unsigned int MetaClassPDF::
 GetErodeRadius( void ) const
 {
   return m_ErodeRadius;
 }
 
 void MetaClassPDF::
-SetHoleFillIterations( int _HoleFillIterations )
+SetHoleFillIterations( unsigned int _HoleFillIterations )
 {
   m_HoleFillIterations = _HoleFillIterations;
 }
 
-int MetaClassPDF::
+unsigned int MetaClassPDF::
 GetHoleFillIterations( void ) const
 {
   return m_HoleFillIterations;
@@ -676,7 +699,7 @@ M_SetupReadFields( void )
   MET_InitReadField( mF, "NObjects", MET_INT, true );
   m_Fields.push_back( mF );
 
-  int nObjects = MET_GetFieldRecordNumber( "NObjects", &m_Fields );
+  unsigned int nObjects = MET_GetFieldRecordNumber( "NObjects", &m_Fields );
 
   mF = new MET_FieldRecordType;
   MET_InitReadField( mF, "ObjectId", MET_INT_ARRAY, true, nObjects );
@@ -736,14 +759,14 @@ M_SetupWriteFields( void )
   MetaImage::M_SetupWriteFields();
 
   double binMinTemp[10];
-  for( unsigned int i = 0; i < MetaImage::NDims(); i++ )
+  for( int i = 0; i < MetaImage::NDims(); i++ )
     {
     binMinTemp[i] = m_BinMin[i];
     }
   MetaImage::Origin( binMinTemp );
 
   float binSizeTemp[10];
-  for( unsigned int i = 0; i < MetaImage::NDims(); i++ )
+  for( int i = 0; i < MetaImage::NDims(); i++ )
     {
     binSizeTemp[i] = m_BinSize[i];
     }
@@ -753,7 +776,7 @@ M_SetupWriteFields( void )
   mF_LastField = m_Fields.back();
   m_Fields.erase( m_Fields.end()-1 );
 
-  int nObjects = m_ObjectId.size();
+  unsigned int nObjects = m_ObjectId.size();
 
   MET_FieldRecordType * mF = new MET_FieldRecordType;
   MET_InitWriteField( mF, "NObjects", MET_INT, nObjects );
@@ -893,7 +916,8 @@ M_Read( void )
       }
     }
 
-  int nFeatures = MetaImage::NDims();
+  unsigned int nFeatures = static_cast< unsigned int >( 
+    MetaImage::NDims() );
 
   m_BinMin.resize( nFeatures );
   m_BinSize.resize( nFeatures );
@@ -913,7 +937,7 @@ M_Read( void )
   mF = MET_GetFieldRecord( "ObjectId", &m_Fields );
   for( unsigned int i = 0; i < nObjects; i++ )
     {
-    m_ObjectId[i] = ( int )mF->value[i];
+    m_ObjectId[i] = static_cast< int >( mF->value[i] );
     }
 
   m_ObjectPDFWeight.resize( nObjects );
@@ -929,19 +953,19 @@ M_Read( void )
   mF = MET_GetFieldRecord( "VoidId", &m_Fields );
   if( mF && mF->defined )
     {
-    m_VoidId = ( int )mF->value[0];
+    m_VoidId = static_cast< int >( mF->value[0] );
     }
 
   mF = MET_GetFieldRecord( "ErodeRadius", &m_Fields );
   if( mF && mF->defined )
     {
-    m_ErodeRadius = ( int )mF->value[0];
+    m_ErodeRadius = static_cast< unsigned int >( mF->value[0] );
     }
 
   mF = MET_GetFieldRecord( "HoleFillIterations", &m_Fields );
   if( mF && mF->defined )
     {
-    m_HoleFillIterations = ( int )mF->value[0];
+    m_HoleFillIterations = static_cast< int >( mF->value[0] );
     }
 
   mF = MET_GetFieldRecord( "ProbabilityImageSmoothingStandardDeviation",

@@ -32,8 +32,7 @@ set( TubeTK_Base_IO_H_Files
   itktubeMetaClassPDF.h
   itktubeMetaRidgeSeed.h
   itktubeMetaTubeParams.h
-  itktubeRidgeSeedFilterIO.h
-  tubeMetaUtils.h )
+  itktubeRidgeSeedFilterIO.h )
 
 set( TubeTK_Base_IO_HXX_Files
   itktubeRidgeSeedFilterIO.hxx )
@@ -48,8 +47,7 @@ set( TubeTK_Base_IO_SRCS
   itktubeMetaNJetLDA.cxx
   itktubeMetaRidgeSeed.cxx
   itktubeMetaClassPDF.cxx
-  itktubeMetaTubeParams.cxx
-  tubeMetaUtils.cxx )
+  itktubeMetaTubeParams.cxx )
 
 add_library( TubeTKIO STATIC
   ${TubeTK_Base_IO_H_Files}
