@@ -198,7 +198,7 @@ void SyncRecord::dump( ofstream &ofs )
 bool SyncRecord::loadImageAsciiHeader( void )
 {
 	// open PPM file in text mode to load its Save_CMC-specific ASCII header info
-	ifstream ifs(                                                                     ruf_image_path );
+	ifstream ifs(                                                                     ruf_image_path.c_str() );
 	if(     !ifs           ){ cerr << "SyncRecord::loadImageAsciiHeader(): file " << ruf_image_path << " not readable" << endl; return false; }
 	if(     !ifs.is_open() ){ cerr << "SyncRecord::loadImageAsciiHeader(): file " << ruf_image_path << " not readable" << endl; return false; }
 	// not loading anything here for now
@@ -242,8 +242,8 @@ static unsigned int readBinFileAnySizeWithOffset( const char *filename, unsigned
         cerr << "readBinFileAnySizeWithOffset(): could not open " << filename << " for reading" << endl;
         return 0;
     }
-    struct _stat st;
-    if( _fstat( _fileno( fp ), &st ) ){
+    struct stat st;
+    if( fstat( fileno( fp ), &st ) ){
         cerr << "readBinFileAnySizeWithOffset(): _fstat() failed on " << filename << endl;
 		fclose( fp );
         return 0;

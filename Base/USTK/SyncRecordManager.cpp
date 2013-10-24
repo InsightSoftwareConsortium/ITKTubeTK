@@ -19,6 +19,7 @@
 #include <sys/stat.h>
 #include <iostream>
 #include <fstream>
+#include <limits>
 
 #include "SyncRecordManager.h"
 //==========================================================================================================================================
@@ -190,7 +191,7 @@ bool SyncRecordManager::load( const char *disk_load_path )
 	if( recs.size() ){ cerr << "SyncRecordManager::load(): attempt to initialize non-empty SyncRecordManager object" << endl; return false; }
 
 	records_path = disk_load_path;
-	ifstream ifs( records_path );
+	ifstream ifs( records_path.c_str() );
 	if( !ifs || !ifs.is_open() ){ cerr << "SyncRecordManager::load(): file " << records_path << " is not readable" << endl; return false; }
 	cout << "SyncRecordManager::load(): reading from synchronized-records file " << records_path << endl;
 
