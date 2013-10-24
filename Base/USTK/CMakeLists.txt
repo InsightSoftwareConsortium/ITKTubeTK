@@ -32,7 +32,9 @@ set( TubeTK_Base_USTK_H_Files
   itkGradientBasedAngleOfIncidenceImageFilter.h
   itkLabelMapToAcousticImpedanceFunctor.h
   itkLabelMapToAcousticImpedanceImageFilter.h
-  itkUltrasoundProbeGeometryCalculator.h )
+  itkUltrasoundProbeGeometryCalculator.h
+  SyncRecord.h
+  SyncRecordManager.h )
 
 set( TubeTK_Base_USTK_HXX_Files
   itkAcousticImpulseResponseImageFilter.hxx
@@ -42,9 +44,17 @@ set( TubeTK_Base_USTK_HXX_Files
   itkLabelMapToAcousticImpedanceImageFilter.hxx
   itkUltrasoundProbeGeometryCalculator.hxx )
 
-add_custom_target( TubeUSTK SOURCES
+set( TubeTK_Base_USTK_SRCS
+  SyncRecord.cpp
+  SyncRecordManager.cpp )
+
+add_library( TubeTKUSTK STATIC
   ${TubeTK_Base_USTK_H_Files}
-  ${TubeTK_Base_USTK_HXX_Files} )
+  ${TubeTK_Base_USTK_HXX_Files}
+  ${TubeTK_Base_USTK_SRCS} )
+
+set( TARGETS TubeTKUSTK )
+TubeTKMacroInstallPlugins( ${TARGETS} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
@@ -54,3 +64,6 @@ install( FILES
   ${TubeTK_Base_USTK_H_Files}
   ${TubeTK_Base_USTK_HXX_Files}
   DESTINATION include )
+
+# Export target
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKUSTK )
