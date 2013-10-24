@@ -268,7 +268,7 @@ CopyInfo( const MetaObject * _obj )
   const MetaClassPDF * tmpPDF;
   try
     {
-    tmpPDF = (const MetaClassPDF *)( _obj );
+    tmpPDF = static_cast< const MetaClassPDF * >( _obj );
     }
   catch( ... )
     {
