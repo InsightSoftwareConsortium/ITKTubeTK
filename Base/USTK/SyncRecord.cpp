@@ -329,4 +329,4 @@ bool SyncRecord::unloadRawRgbPixels( void )
 	return true;
 }
 //==========================================================================================================================================
-// vim: set ts=4 sw=4 tw=0 noexpandtab lines=77 columns=195: REQUIRED BY ANDREI's EDITOR
+// vim: set noexpandtab: REQUIRED BY ANDREI's EDITOR

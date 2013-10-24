@@ -2,7 +2,7 @@
 
 Library:   TubeTK
 
-Copyright 2012 Kitware Inc. 28 Corporate Drive,
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
 Clifton Park, NY, 12065, USA.
 
 All rights reserved.
@@ -21,17 +21,32 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeTestMain.h"
-
+#include <cstdlib>
 #include <iostream>
 
-void RegisterTests( void )
+#include "SyncRecordManager.h"
+
+int SyncRecordTest( int argc, char * argv [] )
 {
-  REGISTER_TEST( itkLabelMapToAcousticImpedanceImageFilterTest );
-  REGISTER_TEST( itkAngleOfIncidenceImageFilterTest );
-  REGISTER_TEST( itkGradientBasedAngleOfIncidenceImageFilterTest );
-  REGISTER_TEST( itkAcousticImpulseResponseImageFilterTest );
-  REGISTER_TEST( itkUltrasoundProbeGeometryCalculatorTest );
-  REGISTER_TEST( itkUltrasoundProbeGeometryCalculatorTest2 );
-  REGISTER_TEST( SyncRecordTest );
+  if( argc < 2 )
+    {
+    std::cerr << "Usage: "
+              << argv[0]
+              << " metadata.txt" // :-)
+              << std::endl;
+    return EXIT_FAILURE;
+    }
+  const char * metadata = argv[1];
+
+  SyncRecordManager syncRecordManager;
+  bool loaded = syncRecordManager.load( metadata );
+  if( !loaded )
+    {
+    std::cerr << "Error during load metadata file." << std::endl;
+    return EXIT_FAILURE;
+    }
+  // metadata is now in memory; check whether return value is true
+  SyncRecord * syncRecord;
+
+  return EXIT_SUCCESS;
 }
