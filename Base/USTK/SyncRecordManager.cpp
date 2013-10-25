@@ -20,6 +20,7 @@
 #include <iostream>
 #include <fstream>
 #include <limits>
+#include <cctype>
 
 #include "SyncRecordManager.h"
 //==========================================================================================================================================
@@ -198,7 +199,7 @@ bool SyncRecordManager::load( const char *disk_load_path )
 	// skip leading comment lines starting with # or empty
 	while( !ifs.eof() && ifs.good() ){
 		char c = ifs.peek();
-		if( c == '#' || c == '\n' ){
+		if( c == '#' || std::isspace(c) ){
 			if( !istreamSkipPastEOL( ifs, 1 ) ){
 				cerr <<   "SyncRecordManager::load(): problem skipping leading blank/comment line(s)" << endl; ifs.close(); return false;
 			}
