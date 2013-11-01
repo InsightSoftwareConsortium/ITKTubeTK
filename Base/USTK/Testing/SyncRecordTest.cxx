@@ -49,10 +49,11 @@ int SyncRecordTest( int argc, char * argv [] )
   SyncRecord * syncRecord;
 
   // sequential access to records
-  while( syncRecord = syncRecordManager.getNextRecord() )
+  while( ( syncRecord = syncRecordManager.getNextRecord() ) )
     {
     const int time = syncRecord->getTimestamp();
-    // duration in msec since the start of InnerOptic's acquisition program (at acquisition time); 
+    (void) time;
+    // duration in msec since the start of InnerOptic's acquisition program (at acquisition time);
     // could be used to determine how much time had passed from one tracked image to the next.
 
     double xInRUF[MAX_US_SCAN_CROP_POLYGON_PTS];
@@ -74,6 +75,7 @@ int SyncRecordTest( int argc, char * argv [] )
     // InnerOptic has performed a manual, approximate, constant-time-offset synchronization of these tracking matrices with the ultrasound images
 
     unsigned char *rgbRUFPixels = syncRecord->loadRawRgbPixels();
+    (void) rgbRUFPixels;
     // points to 24-bit raw ultrasound frame pixels as described above; check for non-NULL return value
     // for now all ultrasound scan files are at 960x768 resolution, so this pointer currently points to 3*960*768 Bytes
 

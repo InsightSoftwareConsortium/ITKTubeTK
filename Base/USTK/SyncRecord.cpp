@@ -292,7 +292,7 @@ static unsigned int readBinFileAnySizeWithOffset( const char *filename, unsigned
 }
 //------------------------------------------------------------------------------------------------------------------------------------------
 ///                                                                                   not part of class since it should be moved out of here
-static void fastWriteFile( char *filename, unsigned char *bytes, unsigned int size, bool writeThrough, bool noBuffering )
+static void fastWriteFile( char *filename, unsigned char *bytes, unsigned int size, bool, bool )
 {
     FILE *fp = fopen( filename, "wb" );
     if( fp ){
