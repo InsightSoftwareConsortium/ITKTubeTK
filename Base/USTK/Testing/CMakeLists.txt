@@ -36,7 +36,8 @@ set( tubeBaseUSTK_SRCS
   itkAngleOfIncidenceImageFilterTest.cxx
   itkGradientBasedAngleOfIncidenceImageFilterTest.cxx
   itkUltrasoundProbeGeometryCalculatorTest.cxx
-  itkUltrasoundProbeGeometryCalculatorTest2.cxx )
+  itkUltrasoundProbeGeometryCalculatorTest2.cxx
+  SyncRecordTest.cxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
@@ -47,7 +48,7 @@ add_executable( tubeBaseUSTKTests
   tubeBaseUSTKTests.cxx
   ${tubeBaseUSTK_SRCS} )
 target_link_libraries( tubeBaseUSTKTests
-  #TubeUSTK
+  TubeTKUSTK
   ${ITK_LIBRARIES} )
 
 Midas3FunctionAddTest( itkLabelMapToAcousticImpedanceImageFilterTest
@@ -215,3 +216,13 @@ Midas3FunctionAddTest( itkUltrasoundProbeGeometryCalculatorTest2
   ${BASE_USTK_TESTS}
     itkUltrasoundProbeGeometryCalculatorTest2
     MIDAS{AlmostMaxInhale01.proc.downsample.mha.md5} )
+
+Midas3FunctionAddTest( SyncRecordTest
+  ${BASE_USTK_TESTS}
+    SyncRecordTest
+      MIDAS{reexported_tracking_data_f_Kitware_v2.txt.md5}
+      MIDAS_FETCH_ONLY{ultrasound_0002392.ppm.md5}
+      MIDAS_FETCH_ONLY{ultrasound_0002393.ppm.md5}
+      MIDAS_FETCH_ONLY{ultrasound_0002394.ppm.md5} )
+set_tests_properties( SyncRecordTest PROPERTIES
+  WORKING_DIRECTORY ${MIDAS_DATA_DIR} )
