@@ -120,9 +120,12 @@ public:
   itkStaticConstMacro( OutputImageDimension, unsigned int,
                        TOutputImage::ImageDimension );
 
-  typedef Vector< unsigned int, ImageDimension >  IndexImagePixelType;
+  typedef Vector< int, ImageDimension >         IndexImagePixelType;
   typedef Image< IndexImagePixelType, OutputImageDimension >
     IndexImageType;
+
+  itkSetMacro( Overlap, InputIndexType );
+  itkGetMacro( Overlap, InputIndexType );
 
   itkGetObjectMacro( IndexImage, IndexImageType );
 
@@ -142,6 +145,8 @@ private:
   void operator=( const Self & );            //purposely not implemented
 
   typename IndexImageType::Pointer  m_IndexImage;
+
+  typename TInputImage::IndexType   m_Overlap;
 };
 
 } // end namespace tube

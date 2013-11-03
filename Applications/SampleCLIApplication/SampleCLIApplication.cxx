@@ -62,7 +62,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( inputVolume.c_str() );
+  reader->SetFileName( inputImageFileName.c_str() );
   try
     {
     reader->Update();
@@ -119,7 +119,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start("Save data");
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
-  writer->SetFileName( outputVolume.c_str() );
+  writer->SetFileName( outputImageFileName.c_str() );
   writer->SetInput( curImage );
   writer->SetUseCompression( true );
   try
@@ -148,6 +148,6 @@ int main( int argc, char * argv[] )
   PARSE_ARGS;
 
   // You may need to update this line if, in the project's .xml CLI file,
-  //   you change the variable name for the inputVolume.
-  return tube::ParseArgsAndCallDoIt( inputVolume, argc, argv );
+  //   you change the variable name for the inputImageFileName.
+  return tube::ParseArgsAndCallDoIt( inputImageFileName, argc, argv );
 }
