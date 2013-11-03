@@ -64,6 +64,9 @@ template< class TInputImage, class TOutputImage >
 ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
 ::ShrinkUsingMaxImageFilter( void )
 {
+  m_IndexImage = NULL;
+
+  m_Overlap.Fill( 0 );
 }
 
 /**
@@ -76,6 +79,8 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
 {
   Superclass::PrintSelf( os, indent );
 
+  os << indent << "Overlap" << m_Overlap << std::endl;
+
   if( m_IndexImage.IsNotNull() )
     {
     os << indent << "Index Image: " << m_IndexImage << std::endl;
@@ -84,6 +89,7 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
     {
     os << indent << "Index Image: NULL" << std::endl;
     }
+
 }
 
 /**
@@ -102,13 +108,15 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
   typename TOutputImage::SizeType factorSize;
   for( unsigned int i = 0; i < TInputImage::ImageDimension; i++ )
     {
-    factorSize[i] = this->GetShrinkFactors()[i];
+    factorSize[ i ] = this->GetShrinkFactors()[ i ];
     }
 
   // Define a few indices that will be used to transform from an input pixel
   // to an output pixel
   OutputIndexType  outputIndex;
   InputIndexType   inputIndex;
+  InputIndexType                   inputWindowStartIndex;
+  typename TInputImage::SizeType   inputWindowSize;
   OutputOffsetType offsetIndex;
 
   typename TOutputImage::PointType tempPoint;
@@ -127,12 +135,8 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
   OffsetValueType zeroOffset = 0;
   for( unsigned int i = 0; i < TInputImage::ImageDimension; i++ )
     {
-    offsetIndex[i] = inputIndex[i] - outputIndex[i] *
-      this->GetShrinkFactors()[i];
-    // It is plausible that due to small amounts of loss of numerical
-    // precision that the offset it negaive, this would cause sampling
-    // out of out region, this is insurance against that possibility
-    offsetIndex[i] = vnl_math_max( zeroOffset, offsetIndex[i] );
+    offsetIndex[ i ] = inputIndex[ i ] - outputIndex[ i ] *
+      this->GetShrinkFactors()[ i ];
     }
 
   // Support progress methods/callbacks
@@ -141,11 +145,15 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
 
   // Define/declare an iterator that will walk the output region for this
   // thread.
-  typedef ImageRegionIteratorWithIndex< TOutputImage > OutputIterator;
-  OutputIterator outIt( outputPtr, outputRegionForThread );
+  typedef ImageRegionIteratorWithIndex< TOutputImage > OutputIteratorType;
+  OutputIteratorType outIt( outputPtr, outputRegionForThread );
 
-  typedef ImageRegionIteratorWithIndex< IndexImageType > IndexIterator;
-  IndexIterator indexIt( m_IndexImage, outputRegionForThread );
+  typedef ImageRegionIteratorWithIndex< IndexImageType > IndexIteratorType;
+  IndexIteratorType indexIt( m_IndexImage, outputRegionForThread );
+
+  typedef ImageRegionConstIteratorWithIndex< TInputImage >
+    InputIteratorType;
+  typename TInputImage::RegionType inputRegion;
 
   while( !outIt.IsAtEnd() )
     {
@@ -158,35 +166,40 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
     // but without the rounding and precision issues
     inputIndex = outputIndex * factorSize + offsetIndex;
 
-    ConstNeighborhoodIterator< InputImageType > it( factorSize,
-      this->GetInput(), this->GetInput()->GetBufferedRegion() );
-
-    // Set the iterator at the desired location
-    it.SetLocation( inputIndex );
+    for( unsigned int i = 0; i < ImageDimension; ++i )
+      {
+      inputWindowStartIndex[ i ] = inputIndex[ i ] - factorSize[ i ] / 2
+        - m_Overlap[ i ];
+      inputWindowSize[ i ] = factorSize[ i ] + m_Overlap[ i ] * 2;
+      }
+    inputRegion.SetIndex( inputWindowStartIndex );
+    inputRegion.SetSize( inputWindowSize );
+    inputRegion.Crop( this->GetInput()->GetLargestPossibleRegion() );
+    InputIteratorType it( this->GetInput(), inputRegion );
 
     // Walk the neighborhood
-    typename TInputImage::PixelType maxValue = it.GetCenterPixel();
+    typename TInputImage::PixelType maxValue = it.Get();
     typename TInputImage::IndexType maxValueIndex = it.GetIndex();
-    typename itk::Vector< unsigned int, ImageDimension > maxValueIndexVector;
+    typename itk::Vector< int, ImageDimension > maxValueIndexVector;
     for( unsigned int i = 0; i < ImageDimension; ++i )
       {
       maxValueIndexVector[ i ] = maxValueIndex[ i ];
       }
     typename TInputImage::PixelType value;
-    const unsigned int size = it.Size();
-    bool isInBounds = true;
-    for ( unsigned int i = 0; i < size; ++i )
+    ++it;
+    while( !it.IsAtEnd() )
       {
-      value = it.GetPixel( i, isInBounds );
-      if( isInBounds && value > maxValue )
+      value = it.Get();
+      if( value > maxValue )
         {
         maxValue = value;
-        maxValueIndex = it.GetIndex( i );
+        maxValueIndex = it.GetIndex();
         for( unsigned int j = 0; j < ImageDimension; ++j )
           {
           maxValueIndexVector[ j ] = (int)maxValueIndex[ j ];
           }
         }
+      ++it;
       }
 
     // Copy the input pixel to the output
@@ -233,7 +246,7 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
   typename TOutputImage::SizeType factorSize;
   for( unsigned int i = 0; i < TInputImage::ImageDimension; i++ )
     {
-    factorSize[i] = this->GetShrinkFactors()[i];
+    factorSize[ i ] = this->GetShrinkFactors()[ i ];
     }
 
   OutputIndexType  outputIndex;
@@ -258,22 +271,21 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
   for( unsigned int i = 0; i < TInputImage::ImageDimension; i++ )
     {
     // Modified from base class to request an expanded input region
-    offsetIndex[i] = inputIndex[i] - outputIndex[i] *
-      this->GetShrinkFactors()[i];
-    offsetIndex[i] = vnl_math_max(zeroOffset, offsetIndex[i]);
+    offsetIndex[ i ] = inputIndex[ i ] - outputIndex[ i ] *
+      this->GetShrinkFactors()[ i ];
     }
 
   for( unsigned int i = 0; i < TInputImage::ImageDimension; i++ )
     {
-    inputRequestedRegionIndex[i] = ( outputRequestedRegionStartIndex[i] -
-      1 ) * factorSize[i] + offsetIndex[i];
+    inputRequestedRegionIndex[ i ] = ( outputRequestedRegionStartIndex[ i ]
+      - 1 ) * factorSize[ i ] + offsetIndex[ i ] - m_Overlap[ i ];
     }
 
   // Modified from base claas to request an expanded input region
   for( unsigned int i = 0; i < TInputImage::ImageDimension; i++ )
     {
-    inputRequestedRegionSize[i] = ( outputRequestedRegionSize[i] + 2 ) *
-      factorSize[i];
+    inputRequestedRegionSize[ i ] = ( outputRequestedRegionSize[ i ] + 2 ) *
+      factorSize[ i ] + 2 * m_Overlap[ i ];
     }
 
   typename TInputImage::RegionType inputRequestedRegion;

@@ -52,7 +52,7 @@ int itktubeShrinkUsingMaxImageFilterTest( int argc, char * argv[] )
   typedef itk::ImageFileReader< ImageType > ReaderType;
   typedef itk::ImageFileWriter< ImageType > WriterType;
 
-  typedef itk::Vector< unsigned int, Dimension >   IndexPixelType;
+  typedef itk::Vector< int, Dimension >            IndexPixelType;
   typedef itk::Image< IndexPixelType, Dimension >  IndexImageType;
   typedef itk::ImageFileWriter< IndexImageType >   IndexImageWriterType;
 
@@ -80,6 +80,9 @@ int itktubeShrinkUsingMaxImageFilterTest( int argc, char * argv[] )
   FilterType::ShrinkFactorsType shrinkFactors;
   shrinkFactors.Fill( 4 );
   filter->SetShrinkFactors( shrinkFactors );
+  FilterType::InputIndexType overlap;
+  overlap.Fill( 1 );
+  filter->SetOverlap( overlap );
   filter->Update();
 
   WriterType::Pointer writer = WriterType::New();

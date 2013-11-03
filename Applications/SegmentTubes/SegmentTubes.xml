@@ -58,6 +58,13 @@
       <flag>s</flag>
       <default>2.0</default>
     </double>
+    <image>
+      <name>seedScaleVolume</name>
+      <label>Seed Scale Volume</label>
+      <channel>input</channel>
+      <flag>m</flag>
+      <description>Scales of seed points for ride extraction.</description>
+    </image>
   </parameters>
   <parameters>
     <label>Output Parameters</label>

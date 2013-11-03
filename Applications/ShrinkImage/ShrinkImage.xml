@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>Sample CLI Application (TubeTK)</title>
+  <description>Demonstration of how to write a CLI application. Performs blurring.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters.</description>
+    <image>
+      <name>inputImageFileName</name>
+      <label>Input Image</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input image.</description>
+    </image>
+    <image>
+      <name>outputImageFileName</name>
+      <label>Output Image</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Output image.</description>
+    </image>
+  </parameters>
+  <parameters>
+    <label>Shrink amount</label>
+    <integer-vector>
+      <name>divideBy</name>
+      <label>Divide by</label>
+      <description>Size of each dimension is divide by this much (must be integers)</description>
+      <longflag>divideBy</longflag>
+      <flag>d</flag>
+      <default></default>
+    </integer-vector>
+    <integer-vector>
+      <name>newSize</name>
+      <label>New size</label>
+      <description>Target size of each dimension (size/newSize must be an integer)</description>
+      <longflag>newSize</longflag>
+      <flag>n</flag>
+      <default></default>
+    </integer-vector>
+    <integer-vector>
+      <name>overlap</name>
+      <label>Sampling overlap</label>
+      <description>Amount each sliding window region should overlap (in pixels)</description>
+      <longflag>overlap</longflag>
+      <flag>o</flag>
+      <default></default>
+    </integer-vector>
+  </parameters>
+  <parameters>
+    <label>Shrink options</label>
+    <image>
+      <name>indexImageFileName</name>
+      <label>Index image file name</label>
+      <description>Save a vector image containing index of chosen pixel's original coordinate</description>
+      <longflag>indexImage</longflag>
+      <flag>i</flag>
+      <default></default>
+      <channel>output</channel>
+    </image>
+  </parameters>
+</executable>

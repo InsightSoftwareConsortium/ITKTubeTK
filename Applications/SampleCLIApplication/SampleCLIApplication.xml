@@ -12,18 +12,18 @@
     <label>IO</label>
     <description>Input/output parameters.</description>
     <image>
-      <name>inputVolume</name>
-      <label>Input Volume</label>
+      <name>inputImageFileName</name>
+      <label>Input Image</label>
       <channel>input</channel>
       <index>0</index>
-      <description>Input volume.</description>
+      <description>Input image.</description>
     </image>
     <image>
-      <name>outputVolume</name>
-      <label>Output Volume</label>
+      <name>outputImageFileName</name>
+      <label>Output Image</label>
       <channel>output</channel>
       <index>1</index>
-      <description>Output volume.</description>
+      <description>Output image.</description>
     </image>
   </parameters>
   <parameters>
