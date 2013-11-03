@@ -132,7 +132,6 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
   // Given that the size is scaled by a constant factor eq:
   // inputIndex = outputIndex * factorSize
   // is equivalent up to a fixed offset which we now compute
-  OffsetValueType zeroOffset = 0;
   for( unsigned int i = 0; i < TInputImage::ImageDimension; i++ )
     {
     offsetIndex[ i ] = inputIndex[ i ] - outputIndex[ i ] *
@@ -267,7 +266,6 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
   // Given that the size is scaled by a constant factor eq:
   // inputIndex = outputIndex * factorSize
   // is equivalent up to a fixed offset which we now compute
-  OffsetValueType zeroOffset = 0;
   for( unsigned int i = 0; i < TInputImage::ImageDimension; i++ )
     {
     // Modified from base class to request an expanded input region
