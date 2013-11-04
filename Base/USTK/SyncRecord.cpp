@@ -291,19 +291,6 @@ static unsigned int readBinFileAnySizeWithOffset( const char *filename, unsigned
     return totalRead;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------
-///                                                                                   not part of class since it should be moved out of here
-static void fastWriteFile( char *filename, unsigned char *bytes, unsigned int size, bool, bool )
-{
-    FILE *fp = fopen( filename, "wb" );
-    if( fp ){
-        fwrite( bytes, 1, size * sizeof(unsigned char), fp );
-        /*fwrite( block, size * sizeof(unsigned char), 1, fp );*/
-        //fflush( fp ); // doesn't seem to make a difference
-        fclose( fp );
-    }
-    /*slog.Exit( -1, "Wrote image to file %s\n", filename );*/
-}
-//------------------------------------------------------------------------------------------------------------------------------------------
 ///
 unsigned char *SyncRecord::loadRawRgbPixels( void )
 {
@@ -328,13 +315,6 @@ unsigned char *SyncRecord::loadRawRgbPixels( void )
 	assert( bytes_read = 3 * 960 * 768 ); // later calculate this based on PPM image resolution
 #endif
 	// cout << "SyncRecordManager::loadRawRgbPixels(): read " << bytes_read << " Bytes from " << ruf_image_path  << endl;
-
-#if 0
-	// test code to write out pixel data fr verification
-	static int first = 1; if( first ){ first = 0;
-		fastWriteFile( "_alpha.raw", allRgbPixels, 3*960*768, true, true );
-	}
-#endif
 
 	return allRgbPixels;
 }
