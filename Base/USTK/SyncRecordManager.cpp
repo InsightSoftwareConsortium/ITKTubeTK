@@ -156,7 +156,7 @@ void SyncRecordManager::getTrackerFromNavelMatrix( double m[16] )
 void SyncRecordManager::rewind( void ){ curr_rec = recs.begin(); }
 //------------------------------------------------------------------------------------------------------------------------------------------
 ///
-int SyncRecordManager::getNbRecords( void ){ return recs.size(); }
+size_t SyncRecordManager::getNbRecords( void ){ return recs.size(); }
 //------------------------------------------------------------------------------------------------------------------------------------------
 ///
 SyncRecord *SyncRecordManager::getNextRecord( void )

@@ -66,7 +66,7 @@ public:
 	SyncRecord *getRecord( const int which );
 
 	void rewind( void );
-	int getNbRecords( void );
+	size_t getNbRecords( void );
 
 protected:
 private:
