@@ -284,7 +284,7 @@ static unsigned int readBinFileAnySizeWithOffset( const char *filename, unsigned
 		}
 	}
     *bytes = new unsigned char[st.st_size-offset];
-    int totalRead = 0;
+    size_t totalRead = 0;
     while( !feof( fp ) ){ totalRead += fread( *bytes, sizeof( unsigned char ), st.st_size-offset, fp ); }
     fclose( fp );
     assert( totalRead == st.st_size-offset );

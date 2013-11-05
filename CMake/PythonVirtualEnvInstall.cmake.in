@@ -24,7 +24,7 @@ foreach( package @PYTHON_TESTING_MODULES@ )
   if( ${package_installed} EQUAL -1 )
     message( STATUS "Installing ${package} into virtualenv" )
     execute_process( COMMAND "@PythonVirtualenvHome@/bin/pip"
-        install ${package} --upgrade
+        install ${package}
       RESULT_VARIABLE failed
       ERROR_VARIABLE error )
     if( failed )
