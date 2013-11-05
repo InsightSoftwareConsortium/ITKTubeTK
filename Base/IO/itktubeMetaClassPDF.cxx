@@ -776,7 +776,7 @@ M_SetupWriteFields( void )
   mF_LastField = m_Fields.back();
   m_Fields.erase( m_Fields.end()-1 );
 
-  unsigned int nObjects = m_ObjectId.size();
+  unsigned int nObjects = static_cast< unsigned int >( m_ObjectId.size() );
 
   MET_FieldRecordType * mF = new MET_FieldRecordType;
   MET_InitWriteField( mF, "NObjects", MET_INT, nObjects );
