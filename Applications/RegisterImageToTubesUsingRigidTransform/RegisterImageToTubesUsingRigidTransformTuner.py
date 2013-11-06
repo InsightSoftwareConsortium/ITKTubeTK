@@ -441,6 +441,7 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                               input_vessel,
                               output_volume])
         progression_file = io_params[3]['Value']
+        print(progression_file)
         progression = tables.open_file(progression_file)
         self.progression = np.array(progression.root.OptimizationParameterProgression)
         self.tubes_center = np.array(progression.root.FixedParameters)

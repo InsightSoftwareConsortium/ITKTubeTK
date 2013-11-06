@@ -80,6 +80,10 @@ public:
    * Optimizer, then it will be called at the end of optimization. */
   void WriteParameterProgressionToFile( void ) const;
 
+  /** Convenience method to have this Command Observe the StartEvent,
+   * IterationEvent, and EndEvent of the given Optimizer. */
+  void Observe( Object * optimizer );
+
 protected:
   RecordOptimizationParameterProgressionCommand( void );
 
