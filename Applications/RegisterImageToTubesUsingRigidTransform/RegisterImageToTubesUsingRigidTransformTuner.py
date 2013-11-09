@@ -25,16 +25,17 @@ from tubetk.pyqtgraph import tubes_as_circles
 from tubetk.numpy import tubes_from_file
 
 
-class RegistrationTunerLogic(object):
+class RegistrationTunerLogic(QtCore.QObject):
     """Controls the business logic for registration tuning."""
 
     _iteration = 0
     _number_of_iterations = 0
-    iteration_widget = None
     main_widget = None
 
     def __init__(self):
-        pass
+        super(RegistrationTunerLogic, self).__init__()
+
+    iteration_changed = QtCore.pyqtSignal(int, name='iterationChanged')
 
     def get_iteration(self):
         return self._iteration
@@ -45,14 +46,17 @@ class RegistrationTunerLogic(object):
             raise ValueError("Invalid iteration")
         if value != self._iteration:
             self._iteration = value
+            self.iteration_changed.emit(value)
             self.main_widget.add_tubes()
             self.main_widget.plot_metric_values()
-        if value != self.iteration_widget.iteration:
-            self.iteration_widget.iteration = value
 
     iteration = property(get_iteration,
                          set_iteration,
                          doc='Currently examined iteration.')
+
+    number_of_iterations_changed = \
+        QtCore.pyqtSignal(int,
+                          name='numberOfIterationsChanged')
 
     def get_number_of_iterations(self):
         return self._number_of_iterations
@@ -60,7 +64,7 @@ class RegistrationTunerLogic(object):
     def set_number_of_iterations(self, value):
         if value != self._number_of_iterations:
             self._number_of_iterations = value
-            self.iteration_widget.number_of_iterations = value
+            self.number_of_iterations_changed.emit(value)
             iterations_normalized = np.arange(0, value, dtype=np.float) / \
                 value
             self.main_widget.progression_colors = matplotlib.cm.summer(iterations_normalized)
@@ -77,6 +81,9 @@ class IterationWidget(QtGui.QWidget):
         super(IterationWidget, self).__init__()
 
         self.logic = logic
+        self.logic.iteration_changed.connect(self.set_iteration)
+        self.logic.number_of_iterations_changed.connect(
+            self.set_number_of_iterations)
 
         self.initializeUI()
 
@@ -164,7 +171,6 @@ class IterationDockAreaWidget(QtGui.QWidget):
         layout.addWidget(self.dock_area, stretch=1)
 
         self.iteration_widget = IterationWidget(logic)
-        logic.iteration_widget = self.iteration_widget
         layout.addWidget(self.iteration_widget)
 
 
