@@ -174,10 +174,10 @@ class IterationDockAreaWidget(QtGui.QWidget):
         layout.addWidget(self.iteration_widget)
 
 
-class RegistrationTuner(QtGui.QMainWindow):
+class RegistrationTunerMainWindow(QtGui.QMainWindow):
 
     def __init__(self, config):
-        super(RegistrationTuner, self).__init__()
+        super(RegistrationTunerMainWindow, self).__init__()
 
         self.config = config
 
@@ -687,7 +687,7 @@ if __name__ == '__main__':
     config = json.load(config_file)
 
     app = pg.mkQApp()
-    with RegistrationTuner(config) as tuner:
+    with RegistrationTunerMainWindow(config) as tuner:
         if(args.non_interactive):
             tuner.run_analysis()
         else:
