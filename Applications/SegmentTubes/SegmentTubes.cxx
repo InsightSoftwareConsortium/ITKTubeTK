@@ -21,19 +21,19 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeRidgeExtractor.h"
+#include "itktubeTubeExtractor.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 
-#include <itkGroupSpatialObject.h>
-#include <itkImage.h>
+//#include <itkGroupSpatialObject.h>
+//#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkSpatialObjectReader.h>
 #include <itkTimeProbesCollectorBase.h>
-#include <itkTubeSpatialObjectPoint.h>
-#include <itkVesselTubeSpatialObject.h>
+//#include <itkTubeSpatialObjectPoint.h>
+//#include <itkVesselTubeSpatialObject.h>
 
 #include "SegmentTubesCLP.h"
 
@@ -95,14 +95,11 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  typedef itk::tube::RidgeExtractor< ImageType > RidgeOpType;
-  typename RidgeOpType::Pointer ridgeOp = RidgeOpType::New();
+  typedef itk::tube::TubeExtractor< ImageType > TubeOpType;
+  typename TubeOpType::Pointer tubeOp = TubeOpType::New();
 
-  ridgeOp->SetInputImage( inputImage );
-  ridgeOp->SetScale( scale );
-  ridgeOp->SetExtent( 3.0 );
-  ridgeOp->SetStepX( 0.75 );
-  ridgeOp->SetDynamicScale( true );
+  tubeOp->SetInputImage( inputImage );
+  tubeOp->SetRadius( scale );
 
   if( seedX.size() > 0 )
     {
@@ -129,7 +126,7 @@ int DoIt( int argc, char * argv[] )
       cIndx[i] = seedX[i];
       }
 
-    typename TubeType::Pointer xTube = ridgeOp->Extract( cIndx, 1 );
+    typename TubeType::Pointer xTube = tubeOp->ExtractTube( cIndx, 1 );
 
     if( xTube.IsNull() )
       {

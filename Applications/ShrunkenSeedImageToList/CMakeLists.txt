@@ -21,35 +21,29 @@
 #
 ##############################################################################
 
-project( TubeTKSegmentation )
+set( MODULE_NAME ShrunkenSeedImageToList )
+project( ${MODULE_NAME} )
 
-set( TubeTK_Base_Segmentation_H_Files
-  itktubeCVTImageFilter.h
-  itktubeLabelOverlapMeasuresImageFilter.h
-  itktubePDFSegmenter.h
-  itktubeRadiusExtractor.h
-  itktubeRidgeExtractor.h
-  itktubeRidgeSeedFilter.h
-  itktubeTubeExtractor.h )
+if( NOT TubeTK_SOURCE_DIR )
+  find_package( TubeTK REQUIRED )
+  include( ${TubeTK_USE_FILE} )
+endif( NOT TubeTK_SOURCE_DIR )
 
-set( TubeTK_Base_Segmentation_HXX_Files
-  itktubeCVTImageFilter.hxx
-  itktubeLabelOverlapMeasuresImageFilter.hxx
-  itktubePDFSegmenter.hxx
-  itktubeRadiusExtractor.hxx
-  itktubeRidgeExtractor.hxx
-  itktubeRidgeSeedFilter.hxx
-  itktubeTubeExtractor.hxx )
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
 
-add_custom_target( TubeTKSegmentation SOURCES
-  ${TubeTK_Base_Segmentation_H_Files}
-  ${TubeTK_Base_Segmentation_HXX_Files} )
+find_package( ITK REQUIRED )
+include( ${USE_ITK_FILE} )
+
+SEMMacroBuildCLI(
+  NAME ${MODULE_NAME}
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
+  TARGET_LIBRARIES ${ITK_LIBRARIES}
+  INCLUDE_DIRECTORIES
+    ${TubeTK_SOURCE_DIR}/Base/CLI
+    ${TubeTK_SOURCE_DIR}/Base/Common
+    ${TubeTK_SOURCE_DIR}/Base/Filtering )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )
-
-install( FILES
-  ${TubeTK_Base_Segmentation_H_Files}
-  ${TubeTK_Base_Segmentation_HXX_Files}
-  DESTINATION include )

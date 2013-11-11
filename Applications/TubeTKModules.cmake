@@ -54,6 +54,7 @@ set( TubeTK_${proj}_MODULES
   #SegmentTubes
   SegmentUsingOtsuThreshold
   ShrinkImage
+  ShrunkenSeedImageToList
   SimulateAcquisitionArtifactsUsingPrior
   SubSampleTubes
   TubeGraphToImage

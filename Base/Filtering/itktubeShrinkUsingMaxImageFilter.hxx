@@ -64,7 +64,7 @@ template< class TInputImage, class TOutputImage >
 ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
 ::ShrinkUsingMaxImageFilter( void )
 {
-  m_IndexImage = NULL;
+  m_PointImage = NULL;
 
   m_Overlap.Fill( 0 );
 }
@@ -81,9 +81,9 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
 
   os << indent << "Overlap" << m_Overlap << std::endl;
 
-  if( m_IndexImage.IsNotNull() )
+  if( m_PointImage.IsNotNull() )
     {
-    os << indent << "Index Image: " << m_IndexImage << std::endl;
+    os << indent << "Point Image: " << m_PointImage << std::endl;
     }
   else
     {
@@ -147,8 +147,8 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
   typedef ImageRegionIteratorWithIndex< TOutputImage > OutputIteratorType;
   OutputIteratorType outIt( outputPtr, outputRegionForThread );
 
-  typedef ImageRegionIteratorWithIndex< IndexImageType > IndexIteratorType;
-  IndexIteratorType indexIt( m_IndexImage, outputRegionForThread );
+  typedef ImageRegionIteratorWithIndex< PointImageType > PointIteratorType;
+  PointIteratorType pointIt( m_PointImage, outputRegionForThread );
 
   typedef ImageRegionConstIteratorWithIndex< TInputImage >
     InputIteratorType;
@@ -179,11 +179,6 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
     // Walk the neighborhood
     typename TInputImage::PixelType maxValue = it.Get();
     typename TInputImage::IndexType maxValueIndex = it.GetIndex();
-    typename itk::Vector< int, ImageDimension > maxValueIndexVector;
-    for( unsigned int i = 0; i < ImageDimension; ++i )
-      {
-      maxValueIndexVector[ i ] = maxValueIndex[ i ];
-      }
     typename TInputImage::PixelType value;
     ++it;
     while( !it.IsAtEnd() )
@@ -193,10 +188,6 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
         {
         maxValue = value;
         maxValueIndex = it.GetIndex();
-        for( unsigned int j = 0; j < ImageDimension; ++j )
-          {
-          maxValueIndexVector[ j ] = (int)maxValueIndex[ j ];
-          }
         }
       ++it;
       }
@@ -205,8 +196,16 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
     outIt.Set( maxValue );
     ++outIt;
 
-    indexIt.Set( maxValueIndexVector );
-    ++indexIt;
+    typename TInputImage::PointType point;
+    this->GetInput()->TransformIndexToPhysicalPoint( maxValueIndex, point );
+
+    typename PointImageType::PixelType pointVector;
+    for( unsigned int i = 0; i < ImageDimension; ++i )
+      {
+      pointVector[i] = point[i];
+      }
+    pointIt.Set( pointVector );
+    ++pointIt;
 
     progress.CompletedPixel();
     }
@@ -311,11 +310,11 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
     return;
     }
 
-  m_IndexImage = IndexImageType::New();
-  m_IndexImage->SetRegions(
+  m_PointImage = PointImageType::New();
+  m_PointImage->SetRegions(
     outputPtr->GetLargestPossibleRegion() );
-  m_IndexImage->CopyInformation( outputPtr );
-  m_IndexImage->Allocate();
+  m_PointImage->CopyInformation( outputPtr );
+  m_PointImage->Allocate();
 }
 
 } // end namespace tube

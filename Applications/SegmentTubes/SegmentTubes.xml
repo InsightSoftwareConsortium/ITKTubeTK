@@ -35,18 +35,19 @@
       <description>Continuous index for starting ridge extraction.</description>
     </float-vector>
     <image>
-      <name>seedMaskVolume</name>
-      <label>Seed Mask Volume</label>
+      <name>seedMask</name>
+      <label>Seed Mask Image</label>
       <channel>input</channel>
       <flag>m</flag>
       <description>Mask of seed points for ride extraction.</description>
     </image>
-    <string>
-      <name>seedList</name>
+    <file>
+      <name>seedListFile</name>
       <label>Seed List</label>
-      <flag>l</flag>
-      <description>CSV list of seed points for ride extraction.</description>
-    </string>
+      <flag>f</flag>
+      <channel>input</channel>
+      <description>List seed points stored in a file.</description>
+    </file>
   </parameters>
   <parameters>
     <label>Ridge Parameters</label>
@@ -59,21 +60,21 @@
       <default>2.0</default>
     </double>
     <image>
-      <name>seedScaleVolume</name>
-      <label>Seed Scale Volume</label>
+      <name>seedScaleMask</name>
+      <label>Seed Scale Mask</label>
       <channel>input</channel>
-      <flag>m</flag>
+      <flag>S</flag>
       <description>Scales of seed points for ride extraction.</description>
     </image>
   </parameters>
   <parameters>
     <label>Output Parameters</label>
     <image>
-      <name>outputTubeVolume</name>
-      <label>Output Filename for Tube Mask Volume</label>
+      <name>outputTubeImage</name>
+      <label>Output Rendered Tube Image</label>
       <flag>t</flag>
       <channel>output</channel>
-      <description>Output volume that is a mask of extracted tubes.</description>
+      <description>Output binary image that is a mask of extracted tubes.</description>
     </image>
   </parameters>
 </executable>

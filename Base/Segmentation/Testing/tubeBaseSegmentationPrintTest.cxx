@@ -28,7 +28,6 @@ limitations under the License.
 #include "itktubeRidgeExtractor.h"
 #include "itktubeRidgeSeedFilter.h"
 #include "itktubeTubeExtractor.h"
-#include "itktubeTubeNetworkExtractor.h"
 
 #include <itkImage.h>
 
@@ -72,12 +71,6 @@ int tubeBaseSegmentationPrintTest( int itkNotUsed( argc ), char * itkNotUsed( ar
   itk::tube::TubeExtractor< ImageType >::Pointer
     tubeObject = itk::tube::TubeExtractor< ImageType >::New();
   std::cout << "-------------itktubeTubeExtractor" << tubeObject
-    << std::endl;
-
-  itk::tube::TubeNetworkExtractor< ImageType, ImageType >::Pointer
-    netObject =
-    itk::tube::TubeNetworkExtractor< ImageType, ImageType >::New();
-  std::cout << "-------------itktubeTubeNetworkExtractor" << netObject
     << std::endl;
 
   return EXIT_SUCCESS;
