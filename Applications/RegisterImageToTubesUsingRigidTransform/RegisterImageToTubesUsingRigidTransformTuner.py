@@ -30,10 +30,51 @@ class RegistrationTunerLogic(QtCore.QObject):
 
     _iteration = 0
     _number_of_iterations = 0
+    _progression = None
+    _tubes_center = [0.0, 0.0, 0.0]
+    _subsampled_tubes = None
     main_widget = None
 
-    def __init__(self):
-        super(RegistrationTunerLogic, self).__init__()
+    def __init__(self, config, parent=None):
+        super(RegistrationTunerLogic, self).__init__(parent)
+        self.config = config
+
+        io_params = self.config['ParameterGroups'][0]['Parameters']
+        input_tubes = io_params[1]['Value']
+        if 'SubSampleTubeTree' in self.config:
+            sampling = self.config['SubSampleTubeTree']['Sampling']
+            TemporaryFile = tempfile.NamedTemporaryFile
+            subsampled_tubes_fp = TemporaryFile(suffix='SubsampledTubes.tre',
+                                                delete=False)
+            self._subsampled_tubes = subsampled_tubes_fp.name
+            subsampled_tubes_fp.close()
+            subprocess.check_call([config['Executables']['SubSampleTubes'],
+                                  '--samplingFactor', str(sampling),
+                                  input_tubes, self._subsampled_tubes])
+        else:
+            self._subsampled_tubes = input_tubes
+
+    def initialize(self):
+        self.video_frame_dir = tempfile.mkdtemp()
+
+    def __enter__(self):
+        self.initialize()
+        return self
+
+    def close(self):
+        shutil.rmtree(self.video_frame_dir)
+        if 'SubSampleTubeTree' in self.config:
+            os.remove(self.subsampled_tubes)
+
+    def __exit__(self, type, value, traceback):
+        self.close()
+
+    def get_subsampled_tubes(self):
+        return self._subsampled_tubes
+
+    subsampled_tubes = property(get_subsampled_tubes,
+                                doc='Optionally subsampled input tubes ' +
+                                'filename')
 
     iteration_changed = QtCore.pyqtSignal(int, name='iterationChanged')
 
@@ -67,11 +108,59 @@ class RegistrationTunerLogic(QtCore.QObject):
             self.number_of_iterations_changed.emit(value)
             iterations_normalized = np.arange(0, value, dtype=np.float) / \
                 value
-            self.main_widget.progression_colors = matplotlib.cm.summer(iterations_normalized)
+            colors = matplotlib.cm.summer(iterations_normalized)
+            self.main_widget.progression_colors = colors
 
     number_of_iterations = property(get_number_of_iterations,
                                     set_number_of_iterations,
                                     doc='Iterations in the optimization')
+
+    def get_progression(self):
+        return self._progression
+
+    progression = property(get_progression,
+                           doc='Parameter optimization progression')
+
+    def get_tubes_center(self):
+        return self._tubes_center
+
+    tubes_center = property(get_tubes_center,
+                           doc='Center of the tubes')
+
+    analysis_run = QtCore.pyqtSignal(name='analysisRun')
+
+    def run_analysis(self):
+        io_params = self.config['ParameterGroups'][0]['Parameters']
+        input_volume = io_params[0]['Value']
+        input_vessel = io_params[1]['Value']
+        output_transform = io_params[2]['Value']
+        NamedTemporaryFile = tempfile.NamedTemporaryFile
+        config_file = NamedTemporaryFile(suffix='TunerConfig.json',
+                                         delete=False)
+        json.dump(self.config, config_file)
+        config_file.close()
+        command = [config['Executables']['Analysis'],
+                   '--parameterstorestore', config_file.name,
+                   input_volume,
+                   input_vessel,
+                   output_transform]
+        # The next statement is to keep the unicorns happy. Without it,
+        #   OSError: [Errno 9] Bad file descriptor
+        with open(os.path.devnull, 'wb') as unicorn:
+            subprocess.call(command)
+        os.remove(config_file.name)
+        progression_file = io_params[3]['Value']
+        # TODO: is this being created correctly on a fresh run?
+        print(progression_file)
+        progression = tables.open_file(progression_file)
+        self._progression = np.array(progression.root.
+                                     OptimizationParameterProgression)
+        self._tubes_center = np.array(progression.root.FixedParameters)
+        progression.close()
+
+        self.set_number_of_iterations(self.progression[-1]['Iteration'])
+        self.analysis_run.emit()
+        self.iteration = self.number_of_iterations
 
 
 class IterationWidget(QtGui.QWidget):
@@ -176,22 +265,23 @@ class IterationDockAreaWidget(QtGui.QWidget):
 
 class RegistrationTunerMainWindow(QtGui.QMainWindow):
 
-    def __init__(self, config):
-        super(RegistrationTunerMainWindow, self).__init__()
+    def __init__(self, config, logic, parent=None):
+        super(RegistrationTunerMainWindow, self).__init__(parent)
 
         self.config = config
 
-        self.logic = RegistrationTunerLogic()
+        self.logic = logic
         self.logic.main_widget = self
+        self.logic.analysis_run.connect(self.add_image_planes)
+        if 'UltrasoundProbeGeometryFile' in self.config:
+            self.logic.analysis_run.connect(self.add_ultrasound_probe_origin)
+        self.logic.analysis_run.connect(self.add_translations)
 
         self.image_planes = {}
-        self.subsampled_tubes = None
         self.input_image = None
         self.image_content = None
         self.tubes_circles = {}
         self.dock_area = None
-        self.progression = None
-        self.tubes_center = [0.0, 0.0, 0.0]
         self.translations = None
         self.progression_colors = None
         self.metric_values_plot = None
@@ -204,23 +294,6 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
             os.remove(self.config['TubePointWeightsFile'])
 
         self.initializeUI()
-
-    def __enter__(self):
-        self.video_frame_dir = tempfile.mkdtemp()
-        NamedTemporaryFile = tempfile.NamedTemporaryFile
-        self.config_file = NamedTemporaryFile(suffix='TunerConfig.json',
-                                              delete=False)
-        return self
-
-    def close(self):
-        shutil.rmtree(self.video_frame_dir)
-        if 'SubSampleTubeTree' in self.config:
-            os.remove(self.subsampled_tubes)
-        self.config_file.close()
-        os.remove(self.config_file.name)
-
-    def __exit__(self, type, value, traceback):
-        self.close()
 
     def initializeUI(self):
         self.resize(1024, 768)
@@ -243,12 +316,12 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
                               'current parameter settings.')
         run_button.resize(run_button.sizeHint())
         QtCore.QObject.connect(run_button, QtCore.SIGNAL('clicked()'),
-                               self.run_analysis)
+                               self.logic.run_analysis)
         run_action = QtGui.QAction('&Run Analysis', self)
         run_action.setShortcut('Ctrl+R')
         run_action.setStatusTip('Run Analysis')
         QtCore.QObject.connect(run_action, QtCore.SIGNAL('triggered()'),
-                               self.run_analysis)
+                               self.logic.run_analysis)
         self.addAction(run_action)
 
         video_button = QtGui.QPushButton('Make Video Frames')
@@ -367,18 +440,6 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         input_volume = io_params[0]['Value']
         self.input_image = sitk.ReadImage(str(input_volume))
         self.add_image_planes()
-        input_tubes = io_params[1]['Value']
-        if 'SubSampleTubeTree' in self.config:
-            sampling = self.config['SubSampleTubeTree']['Sampling']
-            subsampled_tubes_fp = tempfile.NamedTemporaryFile(suffix='SubsampledTubes.tre',
-                                        delete=False)
-            subsampled_tubes_fp.close()
-            self.subsampled_tubes = subsampled_tubes_fp.name
-            subprocess.check_call([config['Executables']['SubSampleTubes'],
-                                  '--samplingFactor', str(sampling),
-                                  input_tubes, self.subsampled_tubes])
-        else:
-            self.subsampled_tubes = input_tubes
         self.add_tubes()
 
         metric_value_dock = Dock("Metric Value Inverse", size=(500, 300))
@@ -453,12 +514,12 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
             if it >= 0 and it <= self.logic.number_of_iterations:
                 alpha = np.exp(0.8*(it - self.logic.iteration))
                 center_color = (0.8, 0.1, 0.25, alpha)
-                center = self.tubes_center
-                if self.progression != None:
-                    parameters = self.progression[it]['Parameters']
+                center = self.logic.tubes_center
+                if self.logic.progression != None:
+                    parameters = self.logic.progression[it]['Parameters']
                 else:
                     parameters = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-                tubes = tubes_from_file(self.subsampled_tubes)
+                tubes = tubes_from_file(self.logic.subsampled_tubes)
                 #tubes_color = (0.2, 0.25, 0.75, alpha)
                 if 'TubePointWeightsFile' in self.config and \
                         os.path.exists(self.config['TubePointWeightsFile']):
@@ -475,7 +536,7 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                 circles_mesh = gl.GLMeshItem(meshdata=circles,
                                              glOptions='translucent',
                                              smooth=False)
-                if self.progression != None:
+                if self.logic.progression != None:
                     # TODO: need to verify that this is correct
                     circles_mesh.translate(-center[0],
                                            -center[1],
@@ -523,8 +584,8 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         registration."""
         if self.translations:
             self.image_tubes.removeItem(self.translations)
-        translations = np.array(self.progression[:]['Parameters'][:, 3:]) + \
-            self.tubes_center
+        translations = np.array(self.logic.progression[:]['Parameters'][:, 3:]) + \
+            self.logic.tubes_center
         colors = self.progression_colors
         colors[:, 3] = 0.9
         translation_points = gl.GLScatterPlotItem(pos=translations,
@@ -534,8 +595,8 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         self.image_tubes.addItem(self.translations)
 
     def plot_metric_values(self):
-        iterations = self.progression[:]['Iteration']
-        metric_value_inverse = 1. / self.progression[:]['CostFunctionValue']
+        iterations = self.logic.progression[:]['Iteration']
+        metric_value_inverse = 1. / self.logic.progression[:]['CostFunctionValue']
         min_metric = np.min(metric_value_inverse)
         self.metric_values_plot.plot({'x': iterations,
                                      'y': metric_value_inverse},
@@ -550,32 +611,6 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                                      symbolBrush='r',
                                      symbol='o',
                                      symbolSize=8.0)
-
-    def run_analysis(self):
-        io_params = self.config['ParameterGroups'][0]['Parameters']
-        input_volume = io_params[0]['Value']
-        input_vessel = io_params[1]['Value']
-        output_volume = io_params[2]['Value']
-        self.config_file.truncate(0)
-        json.dump(self.config, self.config_file)
-        subprocess.check_call([config['Executables']['Analysis'],
-                              '--parameterstorestore', self.config_file.name,
-                              input_volume,
-                              input_vessel,
-                              output_volume])
-        progression_file = io_params[3]['Value']
-        print(progression_file)
-        progression = tables.open_file(progression_file)
-        self.progression = np.array(progression.root.OptimizationParameterProgression)
-        self.tubes_center = np.array(progression.root.FixedParameters)
-        progression.close()
-        self.logic.set_number_of_iterations(self.progression[-1]['Iteration'])
-
-        self.add_image_planes()
-        if 'UltrasoundProbeGeometryFile' in self.config:
-            self.add_ultrasound_probe_origin()
-        self.add_translations()
-        self.logic.iteration = self.logic.number_of_iterations
 
     def make_video(self):
         for it in range(self.logic.number_of_iterations + 1):
@@ -675,6 +710,31 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                                  origin[2] + spacing[0] * index)
         return image_item
 
+
+class RegistrationTuner(object):
+    """Class to drive registration tuning analysis.  This is the class that in
+    instantiated and executed."""
+
+    def __init__(self, config, parent=None):
+        self.config = config
+
+        self.logic = RegistrationTunerLogic(config)
+        self.logic.initialize()
+        self.view = RegistrationTunerMainWindow(config, self.logic)
+
+    def run_analysis(self):
+        self.logic.run_analysis()
+
+    def __enter__(self):
+        return self
+
+    def close(self):
+        self.logic.close()
+
+    def __exit__(self, type, value, traceback):
+        self.close()
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('configuration', type=argparse.FileType('r'),
@@ -685,9 +745,10 @@ if __name__ == '__main__':
     config_file = args.configuration
 
     config = json.load(config_file)
+    config_file.close()
 
     app = pg.mkQApp()
-    with RegistrationTunerMainWindow(config) as tuner:
+    with RegistrationTuner(config) as tuner:
         if(args.non_interactive):
             tuner.run_analysis()
         else:
