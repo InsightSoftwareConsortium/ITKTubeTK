@@ -113,6 +113,9 @@ protected:
     ThreadIdType threadId );
 
 private:
+  AcousticImpulseResponseImageFilter( const Self & ); // purposely not implemented
+  void operator=( const Self & ); // purposely not implemented
+
   typename GradientMagnitudeFilterType::Pointer m_GradientMagnitudeFilter;
 
   double m_AngleDependence;

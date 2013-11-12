@@ -34,7 +34,8 @@ set( TubeTK_Base_USTK_H_Files
   itkLabelMapToAcousticImpedanceImageFilter.h
   itkUltrasoundProbeGeometryCalculator.h
   SyncRecord.h
-  SyncRecordManager.h )
+  SyncRecordManager.h
+  itktubeInnerOpticToPlusImageReader.h )
 
 set( TubeTK_Base_USTK_HXX_Files
   itkAcousticImpulseResponseImageFilter.hxx
@@ -46,7 +47,8 @@ set( TubeTK_Base_USTK_HXX_Files
 
 set( TubeTK_Base_USTK_SRCS
   SyncRecord.cpp
-  SyncRecordManager.cpp )
+  SyncRecordManager.cpp
+  itktubeInnerOpticToPlusImageReader.cxx )
 
 add_library( TubeTKUSTK STATIC
   ${TubeTK_Base_USTK_H_Files}

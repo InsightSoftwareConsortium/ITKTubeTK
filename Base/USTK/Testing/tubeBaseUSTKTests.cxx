@@ -34,4 +34,5 @@ void RegisterTests( void )
   REGISTER_TEST( itkUltrasoundProbeGeometryCalculatorTest );
   REGISTER_TEST( itkUltrasoundProbeGeometryCalculatorTest2 );
   REGISTER_TEST( SyncRecordTest );
+  REGISTER_TEST( itktubeInnerOpticToPlusImageReaderTest );
 }
