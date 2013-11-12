@@ -120,14 +120,14 @@ public:
   itkStaticConstMacro( OutputImageDimension, unsigned int,
                        TOutputImage::ImageDimension );
 
-  typedef Vector< int, ImageDimension >         IndexImagePixelType;
-  typedef Image< IndexImagePixelType, OutputImageDimension >
-    IndexImageType;
+  typedef Vector< float, ImageDimension >       PointImagePixelType;
+  typedef Image< PointImagePixelType, OutputImageDimension >
+    PointImageType;
 
   itkSetMacro( Overlap, InputIndexType );
   itkGetMacro( Overlap, InputIndexType );
 
-  itkGetObjectMacro( IndexImage, IndexImageType );
+  itkGetObjectMacro( PointImage, PointImageType );
 
 protected:
   ShrinkUsingMaxImageFilter( void );
@@ -144,7 +144,7 @@ private:
   ShrinkUsingMaxImageFilter( const Self & ); //purposely not implemented
   void operator=( const Self & );            //purposely not implemented
 
-  typename IndexImageType::Pointer  m_IndexImage;
+  typename PointImageType::Pointer  m_PointImage;
 
   typename TInputImage::IndexType   m_Overlap;
 };

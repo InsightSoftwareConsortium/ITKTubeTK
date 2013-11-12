@@ -34,7 +34,7 @@ int itktubeShrinkUsingMaxImageFilterTest( int argc, char * argv[] )
     {
     std::cout << "Missing arguments." << std::endl;
     std::cout << "Usage: " << std::endl;
-    std::cout << argv[0] << " inputImage outputImage indexImage"
+    std::cout << argv[0] << " inputImage outputImage pointImage"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -52,9 +52,9 @@ int itktubeShrinkUsingMaxImageFilterTest( int argc, char * argv[] )
   typedef itk::ImageFileReader< ImageType > ReaderType;
   typedef itk::ImageFileWriter< ImageType > WriterType;
 
-  typedef itk::Vector< int, Dimension >            IndexPixelType;
-  typedef itk::Image< IndexPixelType, Dimension >  IndexImageType;
-  typedef itk::ImageFileWriter< IndexImageType >   IndexImageWriterType;
+  typedef itk::Vector< float, Dimension >          PointPixelType;
+  typedef itk::Image< PointPixelType, Dimension >  PointImageType;
+  typedef itk::ImageFileWriter< PointImageType >   PointImageWriterType;
 
   // Declare the type for the Filter
   typedef itk::tube::ShrinkUsingMaxImageFilter< ImageType, ImageType >
@@ -100,14 +100,14 @@ int itktubeShrinkUsingMaxImageFilterTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  IndexImageWriterType::Pointer indexImageWriter =
-    IndexImageWriterType::New();
-  indexImageWriter->SetFileName( argv[3] );
-  indexImageWriter->SetUseCompression( true );
-  indexImageWriter->SetInput( filter->GetIndexImage() );
+  PointImageWriterType::Pointer pointImageWriter =
+    PointImageWriterType::New();
+  pointImageWriter->SetFileName( argv[3] );
+  pointImageWriter->SetUseCompression( true );
+  pointImageWriter->SetInput( filter->GetPointImage() );
   try
     {
-    indexImageWriter->Update();
+    pointImageWriter->Update();
     }
   catch( itk::ExceptionObject & e )
     {

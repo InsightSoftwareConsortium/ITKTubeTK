@@ -64,9 +64,9 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileReader< InputImageType >   ImageReaderType;
   typedef itk::ImageFileWriter< OutputImageType  > ImageWriterType;
 
-  typedef itk::Vector< int, VDimension >           IndexPixelType;
-  typedef itk::Image< IndexPixelType, VDimension > IndexImageType;
-  typedef itk::ImageFileWriter< IndexImageType >   IndexImageWriterType;
+  typedef itk::Vector< float, VDimension >         PointPixelType;
+  typedef itk::Image< PointPixelType, VDimension > PointImageType;
+  typedef itk::ImageFileWriter< PointImageType >   PointImageWriterType;
 
   typedef itk::tube::ShrinkUsingMaxImageFilter< InputImageType,
     OutputImageType > FilterType;
@@ -214,16 +214,16 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  if( inputImageFileName.empty() )
+  if( !pointImageFileName.empty() )
     {
-    typename IndexImageWriterType::Pointer indexImageWriter =
-      IndexImageWriterType::New();
-    indexImageWriter->SetFileName( indexImageFileName );
-    indexImageWriter->SetUseCompression( true );
-    indexImageWriter->SetInput( filter->GetIndexImage() );
+    typename PointImageWriterType::Pointer pointImageWriter =
+      PointImageWriterType::New();
+    pointImageWriter->SetFileName( pointImageFileName );
+    pointImageWriter->SetUseCompression( true );
+    pointImageWriter->SetInput( filter->GetPointImage() );
     try
       {
-      indexImageWriter->Update();
+      pointImageWriter->Update();
       }
     catch( itk::ExceptionObject & e )
       {

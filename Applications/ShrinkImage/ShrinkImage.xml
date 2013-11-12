@@ -56,11 +56,11 @@
   <parameters>
     <label>Shrink options</label>
     <image>
-      <name>indexImageFileName</name>
-      <label>Index image file name</label>
-      <description>Save a vector image containing index of chosen pixel's original coordinate</description>
-      <longflag>indexImage</longflag>
-      <flag>i</flag>
+      <name>pointImageFileName</name>
+      <label>Point image file name</label>
+      <description>Save a vector image containing physical point of chosen pixel's original location</description>
+      <longflag>pointImage</longflag>
+      <flag>p</flag>
       <default></default>
       <channel>output</channel>
     </image>

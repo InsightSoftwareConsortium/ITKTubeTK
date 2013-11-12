@@ -39,6 +39,7 @@ set( IMAGECOMPARE_EXE
 Midas3FunctionAddTest( ${MODULE_NAME}-Test1
             ${PROJ_EXE}
                --divideBy 2,4,2
+               -p ${TEMP}/${MODULE_NAME}Test1_Points.mha
                MIDAS{T1NoSkull.mha.md5}
                ${TEMP}/${MODULE_NAME}Test1.mha )
 
@@ -48,6 +49,13 @@ Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
                -t ${TEMP}/${MODULE_NAME}Test1.mha
                -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+
+Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare2
+            ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${MODULE_NAME}Test1_Points.mha
+               -b MIDAS{${MODULE_NAME}Test1_Points.mha.md5} )
+set_property( TEST ${MODULE_NAME}-Test1-Compare2
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
 # Test2

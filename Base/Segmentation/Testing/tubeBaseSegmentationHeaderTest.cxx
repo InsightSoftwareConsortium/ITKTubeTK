@@ -28,7 +28,6 @@ limitations under the License.
 #include "itktubeRidgeExtractor.h"
 #include "itktubeRidgeSeedFilter.h"
 #include "itktubeTubeExtractor.h"
-#include "itktubeTubeNetworkExtractor.h"
 
 #include <iostream>
 
