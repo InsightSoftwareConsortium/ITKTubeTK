@@ -44,15 +44,15 @@ class LabelMapToAcousticImpedanceImageFilter
 {
 public:
   /** Standard class typedefs. */
-  typedef LabelMapToAcousticImpedanceImageFilter                            Self;
+  typedef LabelMapToAcousticImpedanceImageFilter             Self;
   typedef UnaryFunctorImageFilter< TInputImage,
             TOutputImage,
             Functor::LabelMapToAcousticImpedanceFunctor<
               typename TInputImage::PixelType,
               typename TOutputImage::PixelType,
-              TLookupTable > >                                              Superclass;
-  typedef SmartPointer< Self >                                              Pointer;
-  typedef SmartPointer< const Self >                                        ConstPointer;
+              TLookupTable > >                               Superclass;
+  typedef SmartPointer< Self >                               Pointer;
+  typedef SmartPointer< const Self >                         ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

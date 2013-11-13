@@ -37,7 +37,8 @@ set( tubeBaseUSTK_SRCS
   itkGradientBasedAngleOfIncidenceImageFilterTest.cxx
   itkUltrasoundProbeGeometryCalculatorTest.cxx
   itkUltrasoundProbeGeometryCalculatorTest2.cxx
-  SyncRecordTest.cxx )
+  SyncRecordTest.cxx
+  itktubeInnerOpticToPlusImageReaderTest.cxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
@@ -226,3 +227,15 @@ Midas3FunctionAddTest( SyncRecordTest
       MIDAS_FETCH_ONLY{ultrasound_0002394.ppm.md5} )
 set_tests_properties( SyncRecordTest PROPERTIES
   WORKING_DIRECTORY ${MIDAS_DATA_DIR} )
+
+Midas3FunctionAddTest( itktubeInnerOpticToPlusImageReaderTest
+  ${BASE_USTK_TESTS}
+  --compare
+      MIDAS{itktubeInnerOpticToPlusImageReaderTestOutput.mha.md5}
+      ${TEMP}/itktubeInnerOpticToPlusImageReaderTestOutput.mha
+    itktubeInnerOpticToPlusImageReaderTest
+      MIDAS{reexported_tracking_data_f_Kitware_v2.txt.md5}
+      ${TEMP}/itktubeInnerOpticToPlusImageReaderTestOutput.mha
+      MIDAS_FETCH_ONLY{ultrasound_0002392.ppm.md5}
+      MIDAS_FETCH_ONLY{ultrasound_0002393.ppm.md5}
+      MIDAS_FETCH_ONLY{ultrasound_0002394.ppm.md5} )
