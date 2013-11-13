@@ -37,9 +37,10 @@ set( ImageViewer_URL
   ${github_protocol}://github.com/TubeTK/TubeTK-ImageViewer.git )
 set( ImageViewer_HASH_OR_TAG 44adad4d8cc00e33b7c478c4bd0f4eb901bd7814 )
 
-# Insight Segmentation and Registration Toolkit version 4.4.2
-set( ITK_URL ${github_protocol}://itk.org/ITK.git )
-set( ITK_HASH_OR_TAG 4c1d191ceac136b920dbb13564c419fc821dd848 )
+# Insight Segmentation and Registration Toolkit
+# release branch snapshot 2013-11-01 13:46:24
+set( ITK_URL ${github_protocol}://github.com/Kitware/ITK.git )
+set( ITK_HASH_OR_TAG 679a31f15f98a6caa1d0ab82542e81b2ac1ea7d6 )
 
 # JsonCpp snapshot 2013-08-08 23:08:28
 set( JsonCpp_URL
