@@ -30,6 +30,7 @@ set( TubeTK_${proj}_MODULES
   ComputeImageStatisticsUsingMask
   ComputeTubeGraphProbability
   ComputeTubeProbability
+  ConvertInnerOpticToPlus
   ConvertToMetaImage
   CropImage
   DeblendTomosynthesisSlicesUsingPrior

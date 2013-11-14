@@ -49,8 +49,6 @@ int itktubeInnerOpticToPlusImageReaderTest( int argc, char * argv[] )
   reader->SetFileName( innerOpticMetadata );
 
   typedef ReaderType::OutputImageType RGBImageType;
-  typedef itk::Image< ReaderType::PixelComponentType, ReaderType::ImageDimension >
-    OutputImageType;
 
   typedef itk::ImageFileWriter< RGBImageType > WriterType;
   WriterType::Pointer writer = WriterType::New();
@@ -59,7 +57,14 @@ int itktubeInnerOpticToPlusImageReaderTest( int argc, char * argv[] )
   TRY_EXPECT_NO_EXCEPTION( writer->Update() );
 
   reader->GetOutput()->Print( std::cout );
-  TEST_EXPECT_EQUAL( reader->GetOutput()->GetMetaDataDictionary().GetKeys().size(), 6 );
+  TEST_EXPECT_EQUAL( reader->GetOutput()->GetMetaDataDictionary().GetKeys().size(), 9 );
+
+  reader->SetStartIndex( 3 );
+  TEST_EXPECT_EQUAL( reader->GetStartIndex(), 3 );
+  reader->SetEndIndex( 4 );
+  TEST_EXPECT_EQUAL( reader->GetEndIndex(), 4 );
+  reader->SetIncrementIndex( 5 );
+  TEST_EXPECT_EQUAL( reader->GetIncrementIndex(), 5 );
 
   return EXIT_SUCCESS;
 }

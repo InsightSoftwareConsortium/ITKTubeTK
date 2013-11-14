@@ -35,7 +35,10 @@ namespace tube
 {
 
 InnerOpticToPlusImageReader
-::InnerOpticToPlusImageReader( void )
+::InnerOpticToPlusImageReader( void ):
+  m_StartIndex( 0 ),
+  m_EndIndex( NumericTraits< SizeValueType >::max() ),
+  m_IncrementIndex( 1 )
 {
   m_SyncRecordManager = new SyncRecordManager;
 }
@@ -105,7 +108,13 @@ InnerOpticToPlusImageReader
 
   MetaDataDictionary & metaDataDict = output->GetMetaDataDictionary();
   SizeValueType zCount = 0;
-  while( syncRecord != NULL )
+  SizeValueType frameIndex = 0;
+  for( SizeValueType ii = 0; ii < m_StartIndex; ++ii )
+    {
+    syncRecord = m_SyncRecordManager->getNextRecord();
+    ++frameIndex;
+    }
+  while( syncRecord != NULL && frameIndex <= m_EndIndex )
     {
     double transformationMatrix[16];
     syncRecord->getTrackerFromRufMatrix( transformationMatrix );
@@ -115,16 +124,24 @@ InnerOpticToPlusImageReader
     keyPrefix.width( 4 );
     keyPrefix << zCount;
     std::ostringstream value;
-    for( unsigned int ii = 0; ii < 15; ++ii )
+    for( unsigned int ii = 0; ii < 4; ++ii )
       {
-      // TODO: Use Google DoubleConversion ?
-      value << transformationMatrix[ii];
-      value << ' ';
+      for( unsigned int jj = 0; jj < 4; ++jj )
+        {
+        // TODO: Use Google DoubleConversion ?
+        value << transformationMatrix[jj * 4 + ii];
+        if( !(ii == 3 && jj == 3) )
+          {
+          value << ' ';
+          }
+        }
       }
-    value << transformationMatrix[15];
     EncapsulateMetaData< std::string >( metaDataDict,
                                         keyPrefix.str() + "_ProbeToTrackerTransform",
                                         value.str() );
+    EncapsulateMetaData< std::string >( metaDataDict,
+                                        keyPrefix.str() + "_ProbeToTrackerTransformStatus",
+                                        "OK" );
     value.str( "" );
     value << syncRecord->getTimestamp();
     EncapsulateMetaData< std::string >( metaDataDict,
@@ -132,7 +149,11 @@ InnerOpticToPlusImageReader
                                         value.str() );
 
     ++zCount;
-    syncRecord = m_SyncRecordManager->getNextRecord();
+    for( SizeValueType ii = 0; ii < m_IncrementIndex; ++ii )
+      {
+      syncRecord = m_SyncRecordManager->getNextRecord();
+      ++frameIndex;
+      }
     }
 
   // pop
@@ -143,7 +164,7 @@ InnerOpticToPlusImageReader
   regionSize[1] = yMax - yMin;
 
   regionIndex[2] = 0;
-  regionSize[2] = m_SyncRecordManager->getNbRecords();
+  regionSize[2] = zCount;
 
   RegionType largestRegion;
   largestRegion.SetIndex( regionIndex );
@@ -182,6 +203,12 @@ InnerOpticToPlusImageReader
   const SizeValueType xPrePaddingBytes = pixelBytes * index[0];
   const SizeValueType xPostPaddingBytes =
     pixelBytes * (rufXWidth - index[0] - size[0]);
+  SizeValueType frameIndex = 0;
+  for( SizeValueType ii = 0; ii < m_StartIndex; ++ii )
+    {
+    syncRecord = m_SyncRecordManager->getNextRecord();
+    ++frameIndex;
+    }
   while( syncRecord != NULL && !outputIt.IsAtEnd() )
     {
     const unsigned char * rgbRUFPixelsIt = syncRecord->loadRawRgbPixels();
@@ -201,7 +228,11 @@ InnerOpticToPlusImageReader
     // TODO: SyncRecord avoid allocation/deallocation?
     syncRecord->unloadRawRgbPixels();
 
-    syncRecord = m_SyncRecordManager->getNextRecord();
+    for( SizeValueType ii = 0; ii < m_IncrementIndex; ++ii )
+      {
+      syncRecord = m_SyncRecordManager->getNextRecord();
+      ++frameIndex;
+      }
     }
 
   // pop
