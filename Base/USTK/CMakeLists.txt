@@ -35,7 +35,8 @@ set( TubeTK_Base_USTK_H_Files
   itkUltrasoundProbeGeometryCalculator.h
   SyncRecord.h
   SyncRecordManager.h
-  itktubeInnerOpticToPlusImageReader.h )
+  itktubeInnerOpticToPlusImageReader.h
+  itktubeMarkDuplicateFramesInvalidImageFilter.h )
 
 set( TubeTK_Base_USTK_HXX_Files
   itkAcousticImpulseResponseImageFilter.hxx
@@ -43,7 +44,8 @@ set( TubeTK_Base_USTK_HXX_Files
   itkGradientBasedAngleOfIncidenceImageFilter.hxx
   itkLabelMapToAcousticImpedanceFunctor.hxx
   itkLabelMapToAcousticImpedanceImageFilter.hxx
-  itkUltrasoundProbeGeometryCalculator.hxx )
+  itkUltrasoundProbeGeometryCalculator.hxx
+  itktubeMarkDuplicateFramesInvalidImageFilter.hxx )
 
 set( TubeTK_Base_USTK_SRCS
   SyncRecord.cpp

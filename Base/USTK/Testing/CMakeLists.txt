@@ -38,7 +38,8 @@ set( tubeBaseUSTK_SRCS
   itkUltrasoundProbeGeometryCalculatorTest.cxx
   itkUltrasoundProbeGeometryCalculatorTest2.cxx
   SyncRecordTest.cxx
-  itktubeInnerOpticToPlusImageReaderTest.cxx )
+  itktubeInnerOpticToPlusImageReaderTest.cxx
+  itktubeMarkDuplicateFramesInvalidImageFilterTest.cxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
@@ -236,6 +237,15 @@ Midas3FunctionAddTest( itktubeInnerOpticToPlusImageReaderTest
     itktubeInnerOpticToPlusImageReaderTest
       MIDAS{reexported_tracking_data_f_Kitware_v2.txt.md5}
       ${TEMP}/itktubeInnerOpticToPlusImageReaderTestOutput.mha
+      MIDAS_FETCH_ONLY{ultrasound_0002392.ppm.md5}
+      MIDAS_FETCH_ONLY{ultrasound_0002393.ppm.md5}
+      MIDAS_FETCH_ONLY{ultrasound_0002394.ppm.md5} )
+
+Midas3FunctionAddTest( itktubeMarkDuplicateFramesInvalidImageFilterTest.cxx
+  ${BASE_USTK_TESTS}
+  itktubeMarkDuplicateFramesInvalidImageFilterTest
+      MIDAS{reexported_tracking_data_f_Kitware_v2.txt.md5}
+      ${TEMP}/itktubeMarkDuplicateFramesInvalidImageFilterTestOutput.mha
       MIDAS_FETCH_ONLY{ultrasound_0002392.ppm.md5}
       MIDAS_FETCH_ONLY{ultrasound_0002393.ppm.md5}
       MIDAS_FETCH_ONLY{ultrasound_0002394.ppm.md5} )

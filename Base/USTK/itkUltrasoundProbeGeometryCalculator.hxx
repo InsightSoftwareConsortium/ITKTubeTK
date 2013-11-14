@@ -48,8 +48,10 @@ UltrasoundProbeGeometryCalculator< TInputImage >
   this->SetNumberOfRequiredInputs( 1 );
   this->SetNumberOfRequiredOutputs( 2 );
   this->SetPrimaryOutputName( "UltrasoundProbeOrigin" );
-  this->ProcessObject::SetOutput( "UltrasoundProbeOrigin", this->MakeOutput( 0 ) );
-  this->ProcessObject::SetOutput( "StartOfAcquisitionRadius", this->MakeOutput( 1 ) );
+  this->ProcessObject::SetOutput( "UltrasoundProbeOrigin",
+    this->MakeOutput( 0 ) );
+  this->ProcessObject::SetOutput( "StartOfAcquisitionRadius",
+    this->MakeOutput( 1 ) );
 }
 
 
