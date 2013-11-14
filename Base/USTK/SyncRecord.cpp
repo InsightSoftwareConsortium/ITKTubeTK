@@ -287,7 +287,7 @@ static unsigned int readBinFileAnySizeWithOffset( const char *filename, unsigned
     size_t totalRead = 0;
     while( !feof( fp ) ){ totalRead += fread( *bytes, sizeof( unsigned char ), st.st_size-offset, fp ); }
     fclose( fp );
-    assert( totalRead == st.st_size-offset );
+    assert( totalRead == static_cast< size_t >( st.st_size-offset ) );
     return static_cast< unsigned int >( totalRead );
 }
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -312,7 +312,7 @@ unsigned char *SyncRecord::loadRawRgbPixels( void )
 		return NULL;
 	}
 	assert( allRgbPixels );
-	assert( bytes_read = 3 * 960 * 768 ); // later calculate this based on PPM image resolution
+	assert( bytes_read == 3 * 960 * 768 ); // later calculate this based on PPM image resolution
 #endif
 	// cout << "SyncRecordManager::loadRawRgbPixels(): read " << bytes_read << " Bytes from " << ruf_image_path  << endl;
 
