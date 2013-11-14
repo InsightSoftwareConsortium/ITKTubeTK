@@ -139,6 +139,9 @@ InnerOpticToPlusImageReader
     EncapsulateMetaData< std::string >( metaDataDict,
                                         keyPrefix.str() + "_ProbeToTrackerTransform",
                                         value.str() );
+    EncapsulateMetaData< std::string >( metaDataDict,
+                                        keyPrefix.str() + "_ProbeToTrackerTransformStatus",
+                                        "OK" );
     value.str( "" );
     value << syncRecord->getTimestamp();
     EncapsulateMetaData< std::string >( metaDataDict,
