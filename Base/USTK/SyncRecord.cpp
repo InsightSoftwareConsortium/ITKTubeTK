@@ -312,7 +312,7 @@ unsigned char *SyncRecord::loadRawRgbPixels( void )
 		return NULL;
 	}
 	assert( allRgbPixels );
-	assert( bytes_read = 3 * 960 * 768 ); // later calculate this based on PPM image resolution
+	assert( bytes_read == 3 * 960 * 768 ); // later calculate this based on PPM image resolution
 #endif
 	// cout << "SyncRecordManager::loadRawRgbPixels(): read " << bytes_read << " Bytes from " << ruf_image_path  << endl;
 
