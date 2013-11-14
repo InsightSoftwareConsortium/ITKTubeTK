@@ -59,5 +59,12 @@ int itktubeInnerOpticToPlusImageReaderTest( int argc, char * argv[] )
   reader->GetOutput()->Print( std::cout );
   TEST_EXPECT_EQUAL( reader->GetOutput()->GetMetaDataDictionary().GetKeys().size(), 6 );
 
+  reader->SetStartIndex( 3 );
+  TEST_EXPECT_EQUAL( reader->GetStartIndex(), 3 );
+  reader->SetEndIndex( 4 );
+  TEST_EXPECT_EQUAL( reader->GetEndIndex(), 4 );
+  reader->SetIncrementIndex( 5 );
+  TEST_EXPECT_EQUAL( reader->GetIncrementIndex(), 5 );
+
   return EXIT_SUCCESS;
 }

@@ -108,7 +108,13 @@ InnerOpticToPlusImageReader
 
   MetaDataDictionary & metaDataDict = output->GetMetaDataDictionary();
   SizeValueType zCount = 0;
-  while( syncRecord != NULL )
+  SizeValueType frameIndex = 0;
+  for( SizeValueType ii = 0; ii < m_StartIndex; ++ii )
+    {
+    syncRecord = m_SyncRecordManager->getNextRecord();
+    ++frameIndex;
+    }
+  while( syncRecord != NULL && frameIndex <= m_EndIndex )
     {
     double transformationMatrix[16];
     syncRecord->getTrackerFromRufMatrix( transformationMatrix );
@@ -135,7 +141,11 @@ InnerOpticToPlusImageReader
                                         value.str() );
 
     ++zCount;
-    syncRecord = m_SyncRecordManager->getNextRecord();
+    for( SizeValueType ii = 0; ii < m_IncrementIndex; ++ii )
+      {
+      syncRecord = m_SyncRecordManager->getNextRecord();
+      ++frameIndex;
+      }
     }
 
   // pop
@@ -146,7 +156,7 @@ InnerOpticToPlusImageReader
   regionSize[1] = yMax - yMin;
 
   regionIndex[2] = 0;
-  regionSize[2] = m_SyncRecordManager->getNbRecords();
+  regionSize[2] = zCount;
 
   RegionType largestRegion;
   largestRegion.SetIndex( regionIndex );
@@ -185,6 +195,12 @@ InnerOpticToPlusImageReader
   const SizeValueType xPrePaddingBytes = pixelBytes * index[0];
   const SizeValueType xPostPaddingBytes =
     pixelBytes * (rufXWidth - index[0] - size[0]);
+  SizeValueType frameIndex = 0;
+  for( SizeValueType ii = 0; ii < m_StartIndex; ++ii )
+    {
+    syncRecord = m_SyncRecordManager->getNextRecord();
+    ++frameIndex;
+    }
   while( syncRecord != NULL && !outputIt.IsAtEnd() )
     {
     const unsigned char * rgbRUFPixelsIt = syncRecord->loadRawRgbPixels();
@@ -204,7 +220,11 @@ InnerOpticToPlusImageReader
     // TODO: SyncRecord avoid allocation/deallocation?
     syncRecord->unloadRawRgbPixels();
 
-    syncRecord = m_SyncRecordManager->getNextRecord();
+    for( SizeValueType ii = 0; ii < m_IncrementIndex; ++ii )
+      {
+      syncRecord = m_SyncRecordManager->getNextRecord();
+      ++frameIndex;
+      }
     }
 
   // pop

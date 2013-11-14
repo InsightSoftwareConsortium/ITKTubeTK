@@ -27,14 +27,36 @@
     </image>
   </parameters>
   <parameters>
-    <label>Blur Filter</label>
-    <double>
-      <name>gaussianBlurStdDev</name>
-      <label>Gaussian Blur Standard Deviation</label>
-      <description>Standard deviation of the Gaussian kernel used to blur the binary mask.</description>
-      <longflag>gaussianBlurStdDev</longflag>
-      <flag>g</flag>
-      <default>4.0</default>
-    </double>
+    <label>Frame Subset</label>
+    <integer>
+      <name>startIndex</name>
+      <label>Start Index</label>
+      <description>Index of the first frame to extract (starts from zero).</description>
+      <longflag>startIndex</longflag>
+      <flag>s</flag>
+      <default>0</default>
+      <constraints>
+        <minimum>0</minimum>
+      </constraints>
+    </integer>
+    <integer>
+      <name>endIndex</name>
+      <label>End Index</label>
+      <description>Index of the last frame to extract (inclusive).</description>
+      <longflag>endIndex</longflag>
+      <flag>e</flag>
+      <default>9999</default>
+    </integer>
+    <integer>
+      <name>incrementIndex</name>
+      <label>Increment Index</label>
+      <description>Frame index increment.</description>
+      <longflag>incrementIndex</longflag>
+      <flag>i</flag>
+      <default>1</default>
+      <constraints>
+        <minimum>1</minimum>
+      </constraints>
+    </integer>
   </parameters>
 </executable>

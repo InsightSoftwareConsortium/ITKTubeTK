@@ -37,6 +37,9 @@ set( IMAGECOMPARE_EXE
 
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
+    --startIndex 0
+    --endIndex 2
+    --incrementIndex 2
     MIDAS{reexported_tracking_data_f_Kitware_v2.txt.md5}
     ${TEMP}/${MODULE_NAME}TestOutput.mha
     MIDAS_FETCH_ONLY{ultrasound_0002392.ppm.md5}

@@ -64,6 +64,9 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start("Load data");
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( innerOpticMetaDataFileName.c_str() );
+  reader->SetStartIndex( startIndex );
+  reader->SetEndIndex( endIndex );
+  reader->SetIncrementIndex( incrementIndex );
   try
     {
     reader->Update();
