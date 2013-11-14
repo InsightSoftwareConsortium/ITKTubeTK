@@ -35,7 +35,10 @@ namespace tube
 {
 
 InnerOpticToPlusImageReader
-::InnerOpticToPlusImageReader( void )
+::InnerOpticToPlusImageReader( void ):
+  m_StartIndex( 0 ),
+  m_EndIndex( NumericTraits< SizeValueType >::max() ),
+  m_IncrementIndex( 1 )
 {
   m_SyncRecordManager = new SyncRecordManager;
 }

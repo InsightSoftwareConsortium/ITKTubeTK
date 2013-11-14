@@ -49,8 +49,6 @@ int itktubeInnerOpticToPlusImageReaderTest( int argc, char * argv[] )
   reader->SetFileName( innerOpticMetadata );
 
   typedef ReaderType::OutputImageType RGBImageType;
-  typedef itk::Image< ReaderType::PixelComponentType, ReaderType::ImageDimension >
-    OutputImageType;
 
   typedef itk::ImageFileWriter< RGBImageType > WriterType;
   WriterType::Pointer writer = WriterType::New();

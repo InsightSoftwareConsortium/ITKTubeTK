@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>Convert InnerOptic to Plus (TubeTK)</title>
+  <description>Convert a sequence of ultrasound screen capture images and tracker data in InnerOptic's format to the format used by the Plus ultrasound library.  The Plus library uses the MetaImage file format where the third dimension is time.  Tracker information is stored as additional metadata fields in the MetaImage header.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Matthew M. McCormick (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters.</description>
+    <image>
+      <name>innerOpticMetaDataFileName</name>
+      <label>Input InnerOptic MetaData FileName</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>InnerOptic metadata file.  This file contain tracker information and references the ultrasound screenshot .ppm files, which should be in the same directory.</description>
+    </image>
+    <image>
+      <name>metaImageFileName</name>
+      <label>Output MetaImage FileName</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Output MetaImage FileName.  The .mha or .mhd filename extension is recommended.</description>
+    </image>
+  </parameters>
+  <parameters>
+    <label>Blur Filter</label>
+    <double>
+      <name>gaussianBlurStdDev</name>
+      <label>Gaussian Blur Standard Deviation</label>
+      <description>Standard deviation of the Gaussian kernel used to blur the binary mask.</description>
+      <longflag>gaussianBlurStdDev</longflag>
+      <flag>g</flag>
+      <default>4.0</default>
+    </double>
+  </parameters>
+</executable>

@@ -43,6 +43,9 @@ namespace tube
  * extended .ppm files into an itk::Image in the Plus ultrasound library
  * format.
  *
+ * To extract only a subset of the images referenced in the InnerOptic
+ * metadata file, use SetStartIndex, SetEndIndex, and Set IncrementIndex.
+ *
  */
 class InnerOpticToPlusImageReader
   : public ImageSource< Image< RGBPixel< unsigned char >, 3 > >
@@ -70,6 +73,19 @@ public:
   itkSetStringMacro( FileName );
   itkGetStringMacro( FileName );
 
+  /** Set the start index of the frames to extract. */
+  itkSetMacro(StartIndex, SizeValueType);
+  itkGetConstMacro(StartIndex, SizeValueType);
+
+  /** Set the end index of the frames to extract. */
+  itkSetMacro(EndIndex, SizeValueType);
+  itkGetConstMacro(EndIndex, SizeValueType);
+
+  /** Set in the increment of the frames to extract.  The default value is 1. */
+  itkSetMacro(IncrementIndex, SizeValueType);
+  itkGetConstMacro(IncrementIndex, SizeValueType);
+
+
 protected:
   InnerOpticToPlusImageReader( void );
   virtual ~InnerOpticToPlusImageReader( void );
@@ -90,6 +106,10 @@ private:
   std::string m_FileName;
 
   SyncRecordManager * m_SyncRecordManager;
+
+  SizeValueType m_StartIndex;
+  SizeValueType m_EndIndex;
+  SizeValueType m_IncrementIndex;
 
 }; // End class InnerOpticToPlusImageReader
 
