@@ -124,13 +124,18 @@ InnerOpticToPlusImageReader
     keyPrefix.width( 4 );
     keyPrefix << zCount;
     std::ostringstream value;
-    for( unsigned int ii = 0; ii < 15; ++ii )
+    for( unsigned int ii = 0; ii < 4; ++ii )
       {
-      // TODO: Use Google DoubleConversion ?
-      value << transformationMatrix[ii];
-      value << ' ';
+      for( unsigned int jj = 0; jj < 4; ++jj )
+        {
+        // TODO: Use Google DoubleConversion ?
+        value << transformationMatrix[jj * 4 + ii];
+        if( !(ii == 3 && jj == 3) )
+          {
+          value << ' ';
+          }
+        }
       }
-    value << transformationMatrix[15];
     EncapsulateMetaData< std::string >( metaDataDict,
                                         keyPrefix.str() + "_ProbeToTrackerTransform",
                                         value.str() );
