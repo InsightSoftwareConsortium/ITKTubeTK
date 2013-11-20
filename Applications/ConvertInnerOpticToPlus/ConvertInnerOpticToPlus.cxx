@@ -26,6 +26,7 @@ limitations under the License.
 #include "tubeMessage.h"
 
 #include "itktubeInnerOpticToPlusImageReader.h"
+#include "itktubeMarkDuplicateFramesInvalidImageFilter.h"
 
 #include <itkTimeProbesCollectorBase.h>
 #include <itkImageFileWriter.h>
@@ -105,6 +106,30 @@ int DoIt( int argc, char * argv[] )
   progress = 0.1;
   progressReporter.Report( progress );
 
+  typedef itk::tube::MarkDuplicateFramesInvalidImageFilter< OutputImageType >
+    DuplicateFilterType;
+  DuplicateFilterType::Pointer duplicateFilter = DuplicateFilterType::New();
+  if( ! duplicatesNotInvalid )
+    {
+    timeCollector.Start("Detecting duplicates");
+    duplicateFilter->SetInput( luminanceFilter->GetOutput() );
+    duplicateFilter->SetTolerance( duplicateTolerance );
+    duplicateFilter->SetFractionalThreshold( duplicateFractionalThreshold );
+    duplicateFilter->SetInputMetaDataDictionary(
+      &(inputImage->GetMetaDataDictionary()) );
+    try
+      {
+      duplicateFilter->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Detect duplicates: Exception caught: "
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    timeCollector.Stop("Detecting duplicates");
+    }
 
   timeCollector.Start("Save data");
   typedef itk::ImageFileWriter< OutputImageType > ImageWriterType;
@@ -114,7 +139,16 @@ int DoIt( int argc, char * argv[] )
   writer->SetUseInputMetaDataDictionary( false );
   typedef itk::MetaImageIO ImageIOType;
   ImageIOType::Pointer metaIO = ImageIOType::New();
-  metaIO->SetMetaDataDictionary( inputImage->GetMetaDataDictionary() );
+  if( duplicatesNotInvalid )
+    {
+    metaIO->SetMetaDataDictionary(
+      inputImage->GetMetaDataDictionary() );
+    }
+  else
+    {
+    metaIO->SetMetaDataDictionary(
+      duplicateFilter->GetOutputMetaDataDictionary() );
+    }
   writer->SetImageIO( metaIO );
   writer->SetUseCompression( true );
   try
