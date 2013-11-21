@@ -412,13 +412,13 @@ int DoIt( int argc, char * argv[] )
         double vDist = iterVorDistMap.Get();
         double oDist = iterOutDistMap.Get();
 
-        if( vDist < 0 )
+        if( vDist < 0 && !averagePixels )
           {
           vDist = -vDist;
           double ratio = 0.5*vDist/(oDist+vDist) + 0.5;
           oVal = ratio * oVal + (1-ratio)*iVal;
           }
-        else if( vDist > 0 )
+        else if( vDist > 0 && !averagePixels )
           {
           double ratio = 0.5*vDist/(oDist+vDist) + 0.5;
           oVal = ratio * iVal + (1-ratio)*oVal;
