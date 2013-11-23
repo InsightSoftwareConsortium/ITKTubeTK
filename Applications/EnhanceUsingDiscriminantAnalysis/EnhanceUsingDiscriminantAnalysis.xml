@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>Enhance Image Using Discriminant Analysis (TubeTK)</title>
+  <description>Given multiple, registered images and foreground and background masks, computes a multivariate LDA or PCA for separating the classes, and generates the LDA/PCA instances of the images.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url/>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters.</description>
+    <string>
+      <name>inputVolumesString</name>
+      <label>Input Volume List</label>
+      <index>0</index>
+      <description>Input volume list.</description>
+      <default/>
+    </string>
+    <image>
+      <name>labelmap</name>
+      <label>Label Map</label>
+      <channel>input</channel>
+      <longflag>labelmap</longflag>
+      <description>Label map that designates the object of interest and "other."</description>
+      <default></default>
+    </image>
+    <string>
+      <name>outputBase</name>
+      <label>Output Base Name</label>
+      <index>1</index>
+      <description>Basename for output basis images.</description>
+      <default></default>
+    </string>
+    <integer-vector>
+      <name>objectId</name>
+      <label>Object ID</label>
+      <longflag>objectId</longflag>
+      <description>List of values that represent the objects in the label map.</description>
+      <default></default>
+    </integer-vector>
+  </parameters>
+  <parameters advanced="true">
+    <label>Basis Parameters</label>
+    <description>Parameters that determine how the basis is generated.</description>
+    <boolean>
+      <name>usePCA</name>
+      <description>Use PCA</description>
+      <label>Use pca</label>
+      <default>false</default>
+      <longflag>usePCA</longflag>
+    </boolean>
+    <integer>
+      <name>useNumberOfBasis</name>
+      <description>Maximum number of basis discriminants to compute (0=all).</description>
+      <label>Number of basis</label>
+      <default>0</default>
+      <longflag>useNumberOfBasis</longflag>
+    </integer>
+    <string>
+      <name>saveBasisInfo</name>
+      <description>Save basis information to a file</description>
+      <label>Save basis to file</label>
+      <longflag>saveBasisInfo</longflag>
+    </string>
+    <string>
+      <name>loadBasisInfo</name>
+      <description>Load Basis information from a file</description>
+      <label>Load basis from file</label>
+      <longflag>loadBasisInfo</longflag>
+    </string>
+  </parameters>
+</executable>
