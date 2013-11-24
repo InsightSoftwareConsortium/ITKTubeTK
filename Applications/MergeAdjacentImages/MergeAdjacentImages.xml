@@ -103,4 +103,15 @@
       <default/>
     </string>
   </parameters>
+  <parameters>
+    <label>Blending Parameters</label>
+    <boolean>
+      <name>averagePixels</name>
+      <label>Average Overlapping Pixels</label>
+      <description>Use average of overlapping pixels instead of blending.</description>
+      <longflag>averageOverlap</longflag>
+      <flag>a</flag>
+      <default>false</default>
+    </boolean>
+  </parameters>
 </executable>
