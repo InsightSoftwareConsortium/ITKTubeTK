@@ -213,7 +213,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 
     for( unsigned int i=1; i <=2; i++ )
       {
-      if(  vnl_math_abs( eigenValue[i] > largest ) )
+      if(  vnl_math_abs( eigenValue[i] ) > largest )
         {
         largestEigenValueIndex = i;
         }
@@ -223,7 +223,8 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 
     for( unsigned int i=0; i <=2; i++ )
       {
-      if( eigenValue[i] != smallest && eigenValue[i] != largest )
+      if( vnl_math_abs( eigenValue[i] ) != smallest
+        && vnl_math_abs( eigenValue[i] ) != largest )
         {
         middleEigenValueIndex = i;
         break;
@@ -324,7 +325,8 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     eigenValueMatrix(2,2) = Lambda3;
 
     //Get the eigenVector matrix
-    EigenVectorMatrixType eigenVectorMatrix;
+    EigenVectorMatrixType eigenVectorMatrix =
+      eigenVectorImageIterator.Get();
 
     unsigned int vectorLength = 3; // Eigenvector length
 
