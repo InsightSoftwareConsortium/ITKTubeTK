@@ -65,6 +65,7 @@ if( TubeTK_BUILD_SLICER_EXTENSION )
     "http://public.kitware.com/Wiki/images/f/fd/VesselExtraction.jpg" )
   set( EXTENSION_README_FILE ${TubeTK_SOURCE_DIR}/README.md )
   set( EXTENSION_LICENSE_FILE ${TubeTK_SOURCE_DIR}/LICENSE.md )
+  set( EXTENSION_BUILD_SUBDIRECTORY "TubeTK-build")
 endif( TubeTK_BUILD_SLICER_EXTENSION )
 
 # CDash dashboard setup.
@@ -164,7 +165,6 @@ if( TubeTK_USE_SLICER AND USE_SYSTEM_SLICER )
   unset( QT_QMAKE_EXECUTABLE )
   # Find Slicer to set the [ITK|VTK|CTK|...]_DIR variables
   find_package( Slicer REQUIRED )
-  set( Slicer_DONT_USE_EXTENSION ${TubeTK_BUILD_SLICER_EXTENSION} )
   include( ${Slicer_USE_FILE} )
   # TubeTK_SLICER_SOURCE_DIR is needed to get ExpertAutomatedRegistration CLI
   if( Slicer_SOURCE_DIR )
@@ -328,9 +328,6 @@ mark_as_advanced( CMAKE_FIRST_PASS_COMPLETED )
 
 # Superbuild setup.
 set( superbuild_enabled_by_default ON )
-if( TubeTK_BUILD_SLICER_EXTENSION )
-  set( superbuild_enabled_by_default OFF )
-endif( TubeTK_BUILD_SLICER_EXTENSION )
 
 option( TubeTK_USE_SUPERBUILD
   "Build TubeTK and the projects it depends on using a superbuild."
