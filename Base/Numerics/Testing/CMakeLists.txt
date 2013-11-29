@@ -35,10 +35,10 @@ if( PYTHON_EXECUTABLE )
 endif( PYTHON_EXECUTABLE )
 
 set( BASE_NUMERICS_TESTS
-  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseNumericsTests )
+  $<TARGET_FILE:tubeBaseNumericsTests> )
 
 set( BASE_NUMERICS_HEADER_TEST
-  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseNumericsHeaderTest )
+  $<TARGET_FILE:tubeBaseNumericsHeaderTest> )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -80,79 +80,79 @@ target_link_libraries( tubeBaseNumericsTests
   TubeTKNumerics
   ${ITK_LIBRARIES} )
 
-add_test( tubeBaseNumericsHeaderTest
-  ${BASE_NUMERICS_HEADER_TEST} )
+add_test( NAME tubeBaseNumericsHeaderTest
+  COMMAND ${BASE_NUMERICS_HEADER_TEST} )
 
-add_test( tubeBaseNumericsPrintTest
-  ${BASE_NUMERICS_TESTS}
+add_test( NAME tubeBaseNumericsPrintTest
+  COMMAND ${BASE_NUMERICS_TESTS}
     tubeBaseNumericsPrintTest )
 
-add_test( tubeMatrixMathTest
-  ${BASE_NUMERICS_TESTS}
+add_test( NAME tubeMatrixMathTest
+  COMMAND ${BASE_NUMERICS_TESTS}
     tubeMatrixMathTest )
 
-add_test( tubeBrentOptimizer1DTest
-  ${BASE_NUMERICS_TESTS}
+add_test( NAME tubeBrentOptimizer1DTest
+  COMMAND ${BASE_NUMERICS_TESTS}
     tubeBrentOptimizer1DTest )
 
 # Minimization - initialized at middle of interval
-add_test( tubeGoldenMeanOptimizer1DTest
-  ${BASE_NUMERICS_TESTS}
+add_test( NAME tubeGoldenMeanOptimizer1DTest
+  COMMAND ${BASE_NUMERICS_TESTS}
     tubeGoldenMeanOptimizer1DTest
       1 1 -3 3.5 1 0.01 -0.5 -1 )
 
 # impossible maximization - not unimodal distribution
-add_test( tubeGoldenMeanOptimizer1DTest1
-  ${BASE_NUMERICS_TESTS}
+add_test( NAME tubeGoldenMeanOptimizer1DTest1
+  COMMAND ${BASE_NUMERICS_TESTS}
     tubeGoldenMeanOptimizer1DTest
       100 2 -300 350 0 350 100 -1 )
 set_tests_properties( tubeGoldenMeanOptimizer1DTest1
   PROPERTIES WILL_FAIL true )
 
 # minimization - initialized at xMax
-add_test( tubeGoldenMeanOptimizer1DTest2
-  ${BASE_NUMERICS_TESTS}
+add_test( NAME tubeGoldenMeanOptimizer1DTest2
+  COMMAND ${BASE_NUMERICS_TESTS}
     tubeGoldenMeanOptimizer1DTest
       100 2 -300 350 1 350 100 -1 )
 
 # minimization - initialized at xMin
-add_test( tubeGoldenMeanOptimizer1DTest3
-  ${BASE_NUMERICS_TESTS}
+add_test( NAME tubeGoldenMeanOptimizer1DTest3
+  COMMAND ${BASE_NUMERICS_TESTS}
     tubeGoldenMeanOptimizer1DTest
       1 1 -3 3.5 1 -3 -0.5 -1 )
 
 # maximization - initialized at middle of interval
-add_test( tubeGoldenMeanOptimizer1DTest4
-  ${BASE_NUMERICS_TESTS}
+add_test( NAME tubeGoldenMeanOptimizer1DTest4
+  COMMAND ${BASE_NUMERICS_TESTS}
     tubeGoldenMeanOptimizer1DTest
       100 2 -300 300 0 100 0 1 )
 
 # maximization - initialized at xMax
-add_test( tubeGoldenMeanOptimizer1DTest5
-  ${BASE_NUMERICS_TESTS}
+add_test( NAME tubeGoldenMeanOptimizer1DTest5
+  COMMAND ${BASE_NUMERICS_TESTS}
     tubeGoldenMeanOptimizer1DTest
       100 2 -300 300 0 300 0 1 )
 
 # maximization - initialized at xMin
-add_test( tubeGoldenMeanOptimizer1DTest6
-  ${BASE_NUMERICS_TESTS}
+add_test( NAME tubeGoldenMeanOptimizer1DTest6
+  COMMAND ${BASE_NUMERICS_TESTS}
     tubeGoldenMeanOptimizer1DTest
       100 2 -300 300 0 -300 0 1 )
 
-add_test( tubeParabolicFitOptimizer1DTest
-  ${BASE_NUMERICS_TESTS}
+add_test( NAME tubeParabolicFitOptimizer1DTest
+  COMMAND ${BASE_NUMERICS_TESTS}
     tubeParabolicFitOptimizer1DTest )
 
-add_test( tubeBrentOptimizerNDTest
-  ${BASE_NUMERICS_TESTS}
+add_test( NAME tubeBrentOptimizerNDTest
+  COMMAND ${BASE_NUMERICS_TESTS}
     tubeBrentOptimizerNDTest )
 
-add_test( tubeUserFunctionTest
-  ${BASE_NUMERICS_TESTS}
+add_test( NAME tubeUserFunctionTest
+  COMMAND ${BASE_NUMERICS_TESTS}
     tubeUserFunctionTest )
 
-Midas3FunctionAddTest( itktubeJointHistogramImageFunctionTest01
-  ${BASE_NUMERICS_TESTS}
+Midas3FunctionAddTest( NAME itktubeJointHistogramImageFunctionTest01
+  COMMAND ${BASE_NUMERICS_TESTS}
     --compare MIDAS{itkJointHistogramImageFunctionTest01.mha.md5}
       ${TEMP}/itkJointHistogramImageFunctionTest01.mha
     itktubeJointHistogramImageFunctionTest
@@ -164,8 +164,8 @@ Midas3FunctionAddTest( itktubeJointHistogramImageFunctionTest01
       ${TEMP}/itkJointHistogramImageFunctionTest01Mean.mha
       ${TEMP}/itkJointHistogramImageFunctionTest01StdDev.mha )
 
-Midas3FunctionAddTest( itktubeJointHistogramImageFunctionTest02
-  ${BASE_NUMERICS_TESTS}
+Midas3FunctionAddTest( NAME itktubeJointHistogramImageFunctionTest02
+  COMMAND ${BASE_NUMERICS_TESTS}
     --compare MIDAS{itkJointHistogramImageFunctionTest02.mha.md5}
       ${TEMP}/itkJointHistogramImageFunctionTest02.mha
     itktubeJointHistogramImageFunctionTest
@@ -177,14 +177,14 @@ Midas3FunctionAddTest( itktubeJointHistogramImageFunctionTest02
       ${TEMP}/itkJointHistogramImageFunctionTest02Mean.mha
       ${TEMP}/itkJointHistogramImageFunctionTest02StdDev.mha )
 
-Midas3FunctionAddTest( itktubeImageRegionMomentsCalculatorTest
-  ${BASE_NUMERICS_TESTS}
+Midas3FunctionAddTest( NAME itktubeImageRegionMomentsCalculatorTest
+  COMMAND ${BASE_NUMERICS_TESTS}
     itktubeImageRegionMomentsCalculatorTest
       MIDAS{scoring-test.png.md5} )
 
 foreach( testNum RANGE 0 37 )
-  Midas3FunctionAddTest( itktubeNJetImageFunctionTest${testNum}
-    ${BASE_NUMERICS_TESTS}
+  Midas3FunctionAddTest( NAME itktubeNJetImageFunctionTest${testNum}
+    COMMAND ${BASE_NUMERICS_TESTS}
       --compare MIDAS{itkTubeNJetImageFunctionTest${testNum}.mha.md5}
         ${TEMP}/itkTubeNJetImageFunctionTest${testNum}.mha
       itktubeNJetImageFunctionTest
@@ -193,8 +193,8 @@ foreach( testNum RANGE 0 37 )
         ${TEMP}/itkTubeNJetImageFunctionTest${testNum}.mha )
 endforeach( testNum )
 
-Midas3FunctionAddTest( itktubeVotingResampleImageFunctionTest0
-  ${BASE_NUMERICS_TESTS}
+Midas3FunctionAddTest( NAME itktubeVotingResampleImageFunctionTest0
+  COMMAND ${BASE_NUMERICS_TESTS}
     --compare MIDAS{itkVotingResampleImageFunctionTest0.png.md5}
       ${TEMP}/itkVotingResampleImageFunctionTest0.png
     itktubeVotingResampleImageFunctionTest
@@ -202,8 +202,8 @@ Midas3FunctionAddTest( itktubeVotingResampleImageFunctionTest0
       MIDAS{greyscale01.png.md5}
       ${TEMP}/itkVotingResampleImageFunctionTest0.png )
 
-Midas3FunctionAddTest( itktubeVotingResampleImageFunctionTest1
-  ${BASE_NUMERICS_TESTS}
+Midas3FunctionAddTest( NAME itktubeVotingResampleImageFunctionTest1
+  COMMAND ${BASE_NUMERICS_TESTS}
     --compare MIDAS{itkVotingResampleImageFunctionTest1.png.md5}
       ${TEMP}/itkVotingResampleImageFunctionTest1.png
     itktubeVotingResampleImageFunctionTest
@@ -211,8 +211,8 @@ Midas3FunctionAddTest( itktubeVotingResampleImageFunctionTest1
       MIDAS{greyscale01.png.md5}
       ${TEMP}/itkVotingResampleImageFunctionTest1.png )
 
-Midas3FunctionAddTest( itktubeVotingResampleImageFunctionTest2
-  ${BASE_NUMERICS_TESTS}
+Midas3FunctionAddTest( NAME itktubeVotingResampleImageFunctionTest2
+  COMMAND ${BASE_NUMERICS_TESTS}
     --compare MIDAS{itkVotingResampleImageFunctionTest2.png.md5}
       ${TEMP}/itkVotingResampleImageFunctionTest2.png
     itktubeVotingResampleImageFunctionTest
@@ -220,34 +220,34 @@ Midas3FunctionAddTest( itktubeVotingResampleImageFunctionTest2
       MIDAS{greyscale01.png.md5}
       ${TEMP}/itkVotingResampleImageFunctionTest2.png )
 
-Midas3FunctionAddTest( tubeSplineApproximation1DTest
-  ${BASE_NUMERICS_TESTS}
+Midas3FunctionAddTest( NAME tubeSplineApproximation1DTest
+  COMMAND ${BASE_NUMERICS_TESTS}
     --compare MIDAS{tubeSplineApprox1DTest.mha.md5}
       ${TEMP}/tubeSplineApprox1DTest.mha
     tubeSplineApproximation1DTest
       ${TEMP}/tubeSplineApprox1DTest.mha )
 
-Midas3FunctionAddTest( tubeSplineNDTest
-  ${BASE_NUMERICS_TESTS}
+Midas3FunctionAddTest( NAME tubeSplineNDTest
+  COMMAND ${BASE_NUMERICS_TESTS}
     --compare MIDAS{tubeSplineNDTest.mha.md5}
       ${TEMP}/tubeSplineNDTest.mha
     tubeSplineNDTest
       ${TEMP}/tubeSplineNDTest.mha )
 
-add_test( itktubeRecordOptimizationParameterProgressionCommandTest
-  ${BASE_NUMERICS_TESTS}
+add_test( NAME itktubeRecordOptimizationParameterProgressionCommandTest
+  COMMAND ${BASE_NUMERICS_TESTS}
     itktubeRecordOptimizationParameterProgressionCommandTest
       ${TEMP}/itkRecordOptimizationParameterProgressionCommandTest.h5 )
 
-Midas3FunctionAddTest( itktubeBlurImageFunctionTest
-  ${BASE_NUMERICS_TESTS}
+Midas3FunctionAddTest( NAME itktubeBlurImageFunctionTest
+  COMMAND ${BASE_NUMERICS_TESTS}
     --compare MIDAS{itkTubeBlurImageFunctionTest.mha.md5}
       ${TEMP}/itkTubeBlurImageFunctionTest.mha
     itktubeBlurImageFunctionTest
       ${TEMP}/itkTubeBlurImageFunctionTest.mha )
 
-Midas3FunctionAddTest( itktubeNJetFeatureVectorGeneratorTest
-  ${BASE_NUMERICS_TESTS}
+Midas3FunctionAddTest( NAME itktubeNJetFeatureVectorGeneratorTest
+  COMMAND ${BASE_NUMERICS_TESTS}
     --compare MIDAS{itkTubeNJetFeatureVectorGeneratorTest_f0.mha.md5}
       ${TEMP}/itkTubeNJetFeatureVectorGeneratorTest_f0.mha
     itktubeNJetFeatureVectorGeneratorTest
@@ -256,8 +256,8 @@ Midas3FunctionAddTest( itktubeNJetFeatureVectorGeneratorTest
       ${TEMP}/itkTubeNJetFeatureVectorGeneratorTest_f0.mha
       ${TEMP}/itkTubeNJetFeatureVectorGeneratorTest_f1.mha )
 
-Midas3FunctionAddTest( itktubeNJetBasisFeatureVectorGeneratorTest
-  ${BASE_NUMERICS_TESTS}
+Midas3FunctionAddTest( NAME itktubeNJetBasisFeatureVectorGeneratorTest
+  COMMAND ${BASE_NUMERICS_TESTS}
     --compare MIDAS{itkTubeNJetBasisFeatureVectorGeneratorTest_lda0.mha.md5}
       ${TEMP}/itkTubeNJetBasisFeatureVectorGeneratorTest_lda0.mha
     itktubeNJetBasisFeatureVectorGeneratorTest
@@ -267,15 +267,15 @@ Midas3FunctionAddTest( itktubeNJetBasisFeatureVectorGeneratorTest
       ${TEMP}/itkTubeNJetBasisFeatureVectorGeneratorTest_lda0.mha
       ${TEMP}/itkTubeNJetBasisFeatureVectorGeneratorTest_lda1.mha )
 
-Midas3FunctionAddTest( itktubeRidgeFeatureVectorGeneratorTest
-  ${BASE_NUMERICS_TESTS}
+Midas3FunctionAddTest( NAME itktubeRidgeFeatureVectorGeneratorTest
+  COMMAND ${BASE_NUMERICS_TESTS}
     itktubeRidgeFeatureVectorGeneratorTest
       MIDAS{im0001.crop.contrast.mha.md5}
       ${TEMP}/itkTubeRidgeFeatureVectorGeneratorTest_f0.mha
       ${TEMP}/itkTubeRidgeFeatureVectorGeneratorTest_f1.mha )
 
-Midas3FunctionAddTest( itktubeRidgeBasisFeatureVectorGeneratorTest
-  ${BASE_NUMERICS_TESTS}
+Midas3FunctionAddTest( NAME itktubeRidgeBasisFeatureVectorGeneratorTest
+  COMMAND ${BASE_NUMERICS_TESTS}
     itktubeRidgeBasisFeatureVectorGeneratorTest
       MIDAS{im0001.crop.contrast.mha.md5}
       MIDAS{im0001.vk.mask.crop.mha.md5}

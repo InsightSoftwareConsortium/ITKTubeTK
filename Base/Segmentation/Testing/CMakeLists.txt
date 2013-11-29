@@ -35,10 +35,10 @@ if( PYTHON_EXECUTABLE )
 endif( PYTHON_EXECUTABLE )
 
 set( BASE_SEGMENTATION_TESTS
-  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseSegmentationTests )
+  $<TARGET_FILE:tubeBaseSegmentationTests> )
 
 set( BASE_SEGMENTATION_HEADER_TEST
-  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseSegmentationHeaderTest )
+  $<TARGET_FILE:tubeBaseSegmentationHeaderTest> )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -72,21 +72,21 @@ target_link_libraries( tubeBaseSegmentationTests
   TubeTKNumerics
   ${ITK_LIBRARIES} )
 
-add_test( tubeBaseSegmentationHeaderTest
-  ${BASE_SEGMENTATION_HEADER_TEST} )
+add_test( NAME tubeBaseSegmentationHeaderTest
+  COMMAND ${BASE_SEGMENTATION_HEADER_TEST} )
 
-add_test( tubeBaseSegmentationPrintTest
-  ${BASE_SEGMENTATION_TESTS}
+add_test( NAME tubeBaseSegmentationPrintTest
+  COMMAND ${BASE_SEGMENTATION_TESTS}
   tubeBaseSegmentationPrintTest )
 
-Midas3FunctionAddTest( itktubeCVTImageFilterTest
-  ${BASE_SEGMENTATION_TESTS}
+Midas3FunctionAddTest( NAME itktubeCVTImageFilterTest
+  COMMAND ${BASE_SEGMENTATION_TESTS}
     itktubeCVTImageFilterTest
       MIDAS{GDS0015_1.mha.md5}
       ${TEMP}/itkTubeCVTImageFilterTest.mha )
 
-Midas3FunctionAddTest( itktubePDFSegmenterTest
-  ${BASE_SEGMENTATION_TESTS}
+Midas3FunctionAddTest( NAME itktubePDFSegmenterTest
+  COMMAND ${BASE_SEGMENTATION_TESTS}
     --compare MIDAS{itkTubePDFSegmenterTest_mask.mha.md5}
       ${TEMP}/itkTubePDFSegmenterTest_mask.mha
     itktubePDFSegmenterTest
@@ -102,8 +102,8 @@ Midas3FunctionAddTest( itktubePDFSegmenterTest
       ${TEMP}/itkTubePDFSegmenterTest_mask.mha
       ${TEMP}/itkTubePDFSegmenterTest_labeledFeatureSpace.mha )
 
-Midas3FunctionAddTest( itktubePDFSegmenterTest2
-  ${BASE_SEGMENTATION_TESTS}
+Midas3FunctionAddTest( NAME itktubePDFSegmenterTest2
+  COMMAND ${BASE_SEGMENTATION_TESTS}
     --compare MIDAS{itkTubePDFSegmenterTest2_mask.mha.md5}
       ${TEMP}/itkTubePDFSegmenterTest2_mask.mha
     itktubePDFSegmenterTest
@@ -119,40 +119,40 @@ Midas3FunctionAddTest( itktubePDFSegmenterTest2
       ${TEMP}/itkTubePDFSegmenterTest2_mask.mha
       ${TEMP}/itkTubePDFSegmenterTest2_labeledFeatureSpace.mha )
 
-Midas3FunctionAddTest( itktubeRidgeExtractorTest
-  ${BASE_SEGMENTATION_TESTS}
+Midas3FunctionAddTest( NAME itktubeRidgeExtractorTest
+  COMMAND ${BASE_SEGMENTATION_TESTS}
     --compare MIDAS{itkTubeRidgeExtractorTest.mha.md5}
       ${TEMP}/itkTubeRidgeExtractorTest.mha
     itktubeRidgeExtractorTest
       MIDAS{Branch.n010.sub.mha.md5}
       ${TEMP}/itkTubeRidgeExtractorTest.mha )
 
-Midas3FunctionAddTest( itktubeRidgeExtractorTest2
-  ${BASE_SEGMENTATION_TESTS}
+Midas3FunctionAddTest( NAME itktubeRidgeExtractorTest2
+  COMMAND ${BASE_SEGMENTATION_TESTS}
     itktubeRidgeExtractorTest2
       MIDAS{Branch.n010.sub.mha.md5}
       MIDAS{Branch-truth_Subs.tre.md5} )
 
-Midas3FunctionAddTest( itktubeRadiusExtractorTest
-  ${BASE_SEGMENTATION_TESTS}
+Midas3FunctionAddTest( NAME itktubeRadiusExtractorTest
+  COMMAND ${BASE_SEGMENTATION_TESTS}
     itktubeRadiusExtractorTest
       MIDAS{Branch.n010.mha.md5}
       MIDAS{Branch-truth.tre.md5} )
 
-Midas3FunctionAddTest( itktubeRadiusExtractorTest2
-  ${BASE_SEGMENTATION_TESTS}
+Midas3FunctionAddTest( NAME itktubeRadiusExtractorTest2
+  COMMAND ${BASE_SEGMENTATION_TESTS}
     itktubeRadiusExtractorTest2
       MIDAS{Branch.n010.mha.md5}
       MIDAS{Branch-truth.tre.md5} )
 
-Midas3FunctionAddTest( itktubeTubeExtractorTest
-  ${BASE_SEGMENTATION_TESTS}
+Midas3FunctionAddTest( NAME itktubeTubeExtractorTest
+  COMMAND ${BASE_SEGMENTATION_TESTS}
     itktubeTubeExtractorTest
       MIDAS{Branch.n010.sub.mha.md5}
       MIDAS{Branch-truth.tre.md5} )
 
-Midas3FunctionAddTest( itktubeRidgeSeedFilterTest
-  ${BASE_SEGMENTATION_TESTS}
+Midas3FunctionAddTest( NAME itktubeRidgeSeedFilterTest
+  COMMAND ${BASE_SEGMENTATION_TESTS}
     --compare MIDAS{itkTubeRidgeSeedFilterTest_Output.mha.md5}
       ${TEMP}/itkTubeRidgeSeedFilterTest_Output.mha
     itktubeRidgeSeedFilterTest

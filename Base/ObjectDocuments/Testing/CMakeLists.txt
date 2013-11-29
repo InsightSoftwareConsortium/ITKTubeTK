@@ -37,10 +37,10 @@ if( PYTHON_EXECUTABLE )
 endif( PYTHON_EXECUTABLE )
 
 set( BASE_OBJECT_DOCUMENTS_TESTS
-  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseObjectDocumentsTests )
+  $<TARGET_FILE:tubeBaseObjectDocumentsTests> )
 
 set( BASE_OBJECT_DOCUMENTS_HEADER_TEST
-  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseObjectDocumentsHeaderTest )
+  $<TARGET_FILE:tubeBaseObjectDocumentsHeaderTest> )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -66,9 +66,9 @@ target_link_libraries( tubeBaseObjectDocumentsTests
   TubeTKObjectDocuments
   ${ITK_LIBRARIES} )
 
-add_test( tubeBaseObjectDocumentsHeaderTest
-  ${BASE_OBJECT_DOCUMENTS_HEADER_TEST} )
+add_test( NAME tubeBaseObjectDocumentsHeaderTest
+  COMMAND ${BASE_OBJECT_DOCUMENTS_HEADER_TEST} )
 
-add_test( tubeBaseObjectDocumentsPrintTest
-  ${BASE_OBJECT_DOCUMENTS_TESTS}
+add_test( NAME tubeBaseObjectDocumentsPrintTest
+  COMMAND ${BASE_OBJECT_DOCUMENTS_TESTS}
   tubeBaseObjectDocumentsPrintTest )

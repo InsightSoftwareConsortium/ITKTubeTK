@@ -26,7 +26,7 @@ set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 set( BASE_USTK_TESTS
-  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseUSTKTests )
+  $<TARGET_FILE:tubeBaseUSTKTests> )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -53,8 +53,8 @@ target_link_libraries( tubeBaseUSTKTests
   TubeTKUSTK
   ${ITK_LIBRARIES} )
 
-Midas3FunctionAddTest( itkLabelMapToAcousticImpedanceImageFilterTest
-  ${BASE_USTK_TESTS}
+Midas3FunctionAddTest( NAME itkLabelMapToAcousticImpedanceImageFilterTest
+  COMMAND ${BASE_USTK_TESTS}
   --compare
     MIDAS{itkLabelMapToAcousticImpedanceImageFilterTest.mha.md5}
     ${TEMP}/itkLabelMapToAcousticImpedanceImageFilterTest.mha
@@ -63,8 +63,8 @@ Midas3FunctionAddTest( itkLabelMapToAcousticImpedanceImageFilterTest
     MIDAS{CIRSPhantomAbdominalLabels.nrrd.md5}
     ${TEMP}/itkLabelMapToAcousticImpedanceImageFilterTest.mha )
 
-Midas3FunctionAddTest( itkAngleOfIncidenceImageFilterTest
-  ${BASE_USTK_TESTS}
+Midas3FunctionAddTest( NAME itkAngleOfIncidenceImageFilterTest
+  COMMAND ${BASE_USTK_TESTS}
     itkAngleOfIncidenceImageFilterTest
     MIDAS{PrimitiveObjects.mha.md5}
     ${TEMP}/PrimitveObjectsSheetnessImage.mha
@@ -73,8 +73,8 @@ Midas3FunctionAddTest( itkAngleOfIncidenceImageFilterTest
     10
     10 )
 
-Midas3FunctionAddTest( itkGradientBasedAngleOfIncidenceImageFilterTest
-  ${BASE_USTK_TESTS}
+Midas3FunctionAddTest( NAME itkGradientBasedAngleOfIncidenceImageFilterTest
+  COMMAND ${BASE_USTK_TESTS}
   --compareNumberOfPixelsTolerance 50
   --compare
       MIDAS{itkGradientBasedAngleOfIncidenceImageFilterTestGradientImageFilter.mha.md5}
@@ -90,8 +90,8 @@ Midas3FunctionAddTest( itkGradientBasedAngleOfIncidenceImageFilterTest
       31.8
       -24.8 )
 
-Midas3FunctionAddTest( itkGradientBasedAngleOfIncidenceImageFilterTest2
-  ${BASE_USTK_TESTS}
+Midas3FunctionAddTest( NAME itkGradientBasedAngleOfIncidenceImageFilterTest2
+  COMMAND ${BASE_USTK_TESTS}
   --compareNumberOfPixelsTolerance 50
   --compare
       MIDAS{itkGradientBasedAngleOfIncidenceImageFilterTest2GradientImageFilter.mha.md5}
@@ -107,8 +107,8 @@ Midas3FunctionAddTest( itkGradientBasedAngleOfIncidenceImageFilterTest2
       136.5
       -90.8 )
 
-Midas3FunctionAddTest( itkGradientBasedAngleOfIncidenceImageFilterTest3
-  ${BASE_USTK_TESTS}
+Midas3FunctionAddTest( NAME itkGradientBasedAngleOfIncidenceImageFilterTest3
+  COMMAND ${BASE_USTK_TESTS}
   --compareNumberOfPixelsTolerance 50
   --compare
       MIDAS{itkGradientBasedAngleOfIncidenceImageFilterTest3GradientImageFilter.mha.md5}
@@ -124,8 +124,8 @@ Midas3FunctionAddTest( itkGradientBasedAngleOfIncidenceImageFilterTest3
       0.0
       1.0 )
 
-Midas3FunctionAddTest( itkGradientBasedAngleOfIncidenceImageFilterTest4
-  ${BASE_USTK_TESTS}
+Midas3FunctionAddTest( NAME itkGradientBasedAngleOfIncidenceImageFilterTest4
+  COMMAND ${BASE_USTK_TESTS}
   --compareNumberOfPixelsTolerance 50
   --compare
       MIDAS{itkGradientBasedAngleOfIncidenceImageFilterTest4GradientImageFilter.mha.md5}
@@ -141,8 +141,8 @@ Midas3FunctionAddTest( itkGradientBasedAngleOfIncidenceImageFilterTest4
       0.5
       0.5 )
 
-Midas3FunctionAddTest( itkAcousticImpulseResponseImageFilterTest1
-  ${BASE_USTK_TESTS}
+Midas3FunctionAddTest( NAME itkAcousticImpulseResponseImageFilterTest1
+  COMMAND ${BASE_USTK_TESTS}
   --compareNumberOfPixelsTolerance 50
   --compare
       MIDAS{itkAcousticImpulseResponseImageFilterTest1GradientImageFilter.mha.md5}
@@ -158,8 +158,8 @@ Midas3FunctionAddTest( itkAcousticImpulseResponseImageFilterTest1
       -24.8
       1.0 )
 
-Midas3FunctionAddTest( itkAcousticImpulseResponseImageFilterTest2
-  ${BASE_USTK_TESTS}
+Midas3FunctionAddTest( NAME itkAcousticImpulseResponseImageFilterTest2
+  COMMAND ${BASE_USTK_TESTS}
   --compareNumberOfPixelsTolerance 50
   --compare
       MIDAS{itkAcousticImpulseResponseImageFilterTest2GradientImageFilter.mha.md5}
@@ -175,8 +175,8 @@ Midas3FunctionAddTest( itkAcousticImpulseResponseImageFilterTest2
       -90.8
       1.0 )
 
-Midas3FunctionAddTest( itkAcousticImpulseResponseImageFilterTest3
-  ${BASE_USTK_TESTS}
+Midas3FunctionAddTest( NAME itkAcousticImpulseResponseImageFilterTest3
+  COMMAND ${BASE_USTK_TESTS}
   --compareNumberOfPixelsTolerance 50
   --compare
       MIDAS{itkAcousticImpulseResponseImageFilterTest3GradientImageFilter.mha.md5}
@@ -192,8 +192,8 @@ Midas3FunctionAddTest( itkAcousticImpulseResponseImageFilterTest3
       -90.8
       0.5 )
 
-Midas3FunctionAddTest( itkAcousticImpulseResponseImageFilterTest4
-  ${BASE_USTK_TESTS}
+Midas3FunctionAddTest( NAME itkAcousticImpulseResponseImageFilterTest4
+  COMMAND ${BASE_USTK_TESTS}
   --compareNumberOfPixelsTolerance 50
   --compare
       MIDAS{itkAcousticImpulseResponseImageFilterTest4GradientImageFilter.mha.md5}
@@ -209,18 +209,18 @@ Midas3FunctionAddTest( itkAcousticImpulseResponseImageFilterTest4
       -90.8
       2.0 )
 
-Midas3FunctionAddTest( itkUltrasoundProbeGeometryCalculatorTest
-  ${BASE_USTK_TESTS}
+Midas3FunctionAddTest( NAME itkUltrasoundProbeGeometryCalculatorTest
+  COMMAND ${BASE_USTK_TESTS}
     itkUltrasoundProbeGeometryCalculatorTest
       MIDAS{ultrasound_screenshot_cropped.png.md5} )
 
-Midas3FunctionAddTest( itkUltrasoundProbeGeometryCalculatorTest2
-  ${BASE_USTK_TESTS}
+Midas3FunctionAddTest( NAME itkUltrasoundProbeGeometryCalculatorTest2
+  COMMAND ${BASE_USTK_TESTS}
     itkUltrasoundProbeGeometryCalculatorTest2
     MIDAS{AlmostMaxInhale01.proc.downsample.mha.md5} )
 
-Midas3FunctionAddTest( SyncRecordTest
-  ${BASE_USTK_TESTS}
+Midas3FunctionAddTest( NAME SyncRecordTest
+  COMMAND ${BASE_USTK_TESTS}
     SyncRecordTest
       MIDAS{reexported_tracking_data_f_Kitware_v2.txt.md5}
       MIDAS_FETCH_ONLY{ultrasound_0002392.ppm.md5}
@@ -229,8 +229,8 @@ Midas3FunctionAddTest( SyncRecordTest
 set_tests_properties( SyncRecordTest PROPERTIES
   WORKING_DIRECTORY ${MIDAS_DATA_DIR} )
 
-Midas3FunctionAddTest( itktubeInnerOpticToPlusImageReaderTest
-  ${BASE_USTK_TESTS}
+Midas3FunctionAddTest( NAME itktubeInnerOpticToPlusImageReaderTest
+  COMMAND ${BASE_USTK_TESTS}
   --compare
       MIDAS{itktubeInnerOpticToPlusImageReaderTestOutput.mha.md5}
       ${TEMP}/itktubeInnerOpticToPlusImageReaderTestOutput.mha
@@ -241,8 +241,8 @@ Midas3FunctionAddTest( itktubeInnerOpticToPlusImageReaderTest
       MIDAS_FETCH_ONLY{ultrasound_0002393.ppm.md5}
       MIDAS_FETCH_ONLY{ultrasound_0002394.ppm.md5} )
 
-Midas3FunctionAddTest( itktubeMarkDuplicateFramesInvalidImageFilterTest.cxx
-  ${BASE_USTK_TESTS}
+Midas3FunctionAddTest( NAME itktubeMarkDuplicateFramesInvalidImageFilterTest.cxx
+  COMMAND ${BASE_USTK_TESTS}
   itktubeMarkDuplicateFramesInvalidImageFilterTest
       MIDAS{reexported_tracking_data_f_Kitware_v2.txt.md5}
       ${TEMP}/itktubeMarkDuplicateFramesInvalidImageFilterTestOutput.mha
