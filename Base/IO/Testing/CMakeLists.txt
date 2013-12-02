@@ -35,10 +35,10 @@ if( PYTHON_EXECUTABLE )
 endif( PYTHON_EXECUTABLE )
 
 set( BASE_IO_TESTS
-  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseIOTests )
+  $<TARGET_FILE:tubeBaseIOTests> )
 
 set( BASE_IO_HEADER_TEST
-  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseIOHeaderTest )
+  $<TARGET_FILE:tubeBaseIOHeaderTest> )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -68,40 +68,40 @@ add_executable( tubeBaseIOTests
 target_link_libraries( tubeBaseIOTests
   ${ITK_LIBRARIES} TubeTKIO )
 
-add_test( tubeBaseIOHeaderTest
-  ${BASE_IO_HEADER_TEST} )
+add_test( NAME tubeBaseIOHeaderTest
+  COMMAND ${BASE_IO_HEADER_TEST} )
 
-add_test( tubeBaseIOPrintTest
-  ${BASE_IO_TESTS}
+add_test( NAME tubeBaseIOPrintTest
+  COMMAND ${BASE_IO_TESTS}
     tubeBaseIOPrintTest )
 
-add_test( itktubeMetaLDATest
-  ${BASE_IO_TESTS}
+add_test( NAME itktubeMetaLDATest
+  COMMAND ${BASE_IO_TESTS}
     itktubeMetaLDATest
       ${TEMP}/itkTubeMetaLDATest.mlda )
 
-add_test( itktubeMetaNJetLDATest
-  ${BASE_IO_TESTS}
+add_test( NAME itktubeMetaNJetLDATest
+  COMMAND ${BASE_IO_TESTS}
     itktubeMetaNJetLDATest
       ${TEMP}/itkTubeMetaNJetLDATest.mnda )
 
-add_test( itktubeMetaClassPDFTest
-  ${BASE_IO_TESTS}
+add_test( NAME itktubeMetaClassPDFTest
+  COMMAND ${BASE_IO_TESTS}
     itktubeMetaClassPDFTest
       ${TEMP}/itkTubeMetaClassPDFTest.mha )
 
-add_test( itktubeMetaRidgeSeedTest
-  ${BASE_IO_TESTS}
+add_test( NAME itktubeMetaRidgeSeedTest
+  COMMAND ${BASE_IO_TESTS}
     itktubeMetaRidgeSeedTest
       ${TEMP}/itkTubeMetaRidgeSeedTest.mrs )
 
-add_test( itktubeMetaTubeParamsTest
-  ${BASE_IO_TESTS}
+add_test( NAME itktubeMetaTubeParamsTest
+  COMMAND ${BASE_IO_TESTS}
     itktubeMetaTubeParamsTest
       ${TEMP}/itkTubeMetaTubeParamsTest.mtp )
 
-Midas3FunctionAddTest( itktubePDFSegmenterIOTest
-  ${BASE_IO_TESTS}
+Midas3FunctionAddTest( NAME itktubePDFSegmenterIOTest
+  COMMAND ${BASE_IO_TESTS}
     --compare ${TEMP}/itktubePDFSegmenterIOTest.mha
       ${TEMP}/itktubePDFSegmenterIOTest2.mha
     itktubePDFSegmenterIOTest
@@ -113,8 +113,8 @@ Midas3FunctionAddTest( itktubePDFSegmenterIOTest
       ${TEMP}/itktubePDFSegmenterIOTest2.mha
       ${TEMP}/itktubePDFSegmenterIOTest2.mpd )
 
-Midas3FunctionAddTest( itktubeRidgeSeedFilterIOTest
-  ${BASE_IO_TESTS}
+Midas3FunctionAddTest( NAME itktubeRidgeSeedFilterIOTest
+  COMMAND ${BASE_IO_TESTS}
     --compare ${TEMP}/itktubeRidgeSeedFilterIOTest_Output.mha
       ${TEMP}/itktubeRidgeSeedFilterIOTest_Output2.mha
     itktubeRidgeSeedFilterIOTest

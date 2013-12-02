@@ -35,10 +35,10 @@ add_test( PrintSelf-BaseCommon ${PYTHON_EXECUTABLE}
 endif( PYTHON_EXECUTABLE )
 
 set( BASE_COMMON_TESTS
-  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseCommonTests )
+  $<TARGET_FILE:tubeBaseCommonTests> )
 
 set( BASE_COMMON_HEADER_TEST
-  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseCommonHeaderTest )
+  $<TARGET_FILE:tubeBaseCommonHeaderTest> )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -63,22 +63,22 @@ target_link_libraries( tubeBaseCommonTests
   ${ITK_LIBRARIES}
   ${JsonCpp_LIBRARIES} )
 
-add_test( tubeBaseCommonHeaderTest ${BASE_COMMON_HEADER_TEST} )
+add_test( NAME tubeBaseCommonHeaderTest COMMAND ${BASE_COMMON_HEADER_TEST} )
 
-add_test( tubeBaseCommonPrintTest
-  ${BASE_COMMON_TESTS}
+add_test( NAME tubeBaseCommonPrintTest
+  COMMAND ${BASE_COMMON_TESTS}
   tubeBaseCommonPrintTest )
 
-add_test( tubeMacroTest
-  ${BASE_COMMON_TESTS}
+add_test( NAME tubeMacroTest
+  COMMAND ${BASE_COMMON_TESTS}
   tubeMacroTest )
 
-add_test( tubeMessageTest
-  ${BASE_COMMON_TESTS}
+add_test( NAME tubeMessageTest
+  COMMAND ${BASE_COMMON_TESTS}
   tubeMessageTest )
 
-add_test( tubeObjectTest
-  ${BASE_COMMON_TESTS}
+add_test( NAME tubeObjectTest
+  COMMAND ${BASE_COMMON_TESTS}
   tubeObjectTest )
 
 Midas3FunctionAddTest( ImageCompareCommand-Test1

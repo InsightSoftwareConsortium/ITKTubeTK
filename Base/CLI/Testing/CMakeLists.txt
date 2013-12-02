@@ -35,10 +35,10 @@ if( PYTHON_EXECUTABLE )
 endif( PYTHON_EXECUTABLE )
 
 set( BASE_CLI_TESTS
-  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseCLITests )
+   $<TARGET_FILE:tubeBaseCLITests> )
 
 set( BASE_CLI_HEADER_TEST
-  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseCLIHeaderTest )
+  $<TARGET_FILE:tubeBaseCLIHeaderTest> )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -66,20 +66,20 @@ add_executable( tubeBaseCLITests
   ${tubeBaseCLITests_SRCS} )
 target_link_libraries( tubeBaseCLITests ${ITK_LIBRARIES} ${JsonCpp_LIBRARIES} )
 
-add_test( tubeBaseCLIHeaderTest ${BASE_CLI_HEADER_TEST} )
+add_test( NAME tubeBaseCLIHeaderTest COMMAND ${BASE_CLI_HEADER_TEST})
 
-add_test( tubeBaseCLIPrintTest
-  ${BASE_CLI_TESTS}
+add_test( NAME tubeBaseCLIPrintTest
+  COMMAND ${BASE_CLI_TESTS}
   tubeBaseCLIPrintTest )
 
-Midas3FunctionAddTest( tubeCLIFilterWatcherTest
-  ${BASE_CLI_TESTS}
+Midas3FunctionAddTest( NAME tubeCLIFilterWatcherTest
+  COMMAND ${BASE_CLI_TESTS}
   tubeCLIFilterWatcherTest MIDAS{Branch.n010.mha.md5} )
 
-Midas3FunctionAddTest( tubeCLIHelperFunctionsTest
-  ${BASE_CLI_TESTS}
+Midas3FunctionAddTest( NAME tubeCLIHelperFunctionsTest
+  COMMAND ${BASE_CLI_TESTS}
   tubeCLIHelperFunctionsTest MIDAS{Branch.n010.mha.md5} )
 
-add_test( tubeCLIProgressReporterTest
-  ${BASE_CLI_TESTS}
+add_test( NAME tubeCLIProgressReporterTest
+  COMMAND ${BASE_CLI_TESTS}
   tubeCLIProgressReporterTest )
