@@ -30,21 +30,21 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
- ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
+ ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 set( IMAGECOMPARE_EXE
- ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
+ ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
 
 # Test1
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1
-            ${PROJ_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+            COMMAND ${PROJ_EXE}
                -r 0.2
                MIDAS{im0001.crop.mha.md5}
                MIDAS{im0001.crop.mha.md5} )
 
 # Test2
-Midas3FunctionAddTest( ${MODULE_NAME}-Test2
-            ${PROJ_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
+            COMMAND ${PROJ_EXE}
                -c
                MIDAS{im0001.crop.mha.md5}
                MIDAS{im0001.crop.mha.md5} )

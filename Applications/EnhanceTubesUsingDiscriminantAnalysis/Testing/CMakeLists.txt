@@ -30,19 +30,19 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
-  ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 set( IMAGECOMPARE_EXE
-  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
 
 set( TEXTCOMPARE_EXE
-  ${TubeTK_BINARY_DIR}/bin/TextCompareCommand )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
 
 #######
 # Test1
 #######
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1
-  ${PROJ_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+  COMMAND ${PROJ_EXE}
     --tubeId 255
     --backgroundId 0
     --unknownId 10
@@ -55,8 +55,8 @@ Midas3FunctionAddTest( ${MODULE_NAME}-Test1
 #######
 # Test1-Compare MRS
 #######
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1-MRS-Compare
-  ${TEXTCOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-MRS-Compare
+  COMMAND ${TEXTCOMPARE_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.mrs
     -b MIDAS{${MODULE_NAME}Test1.mrs.md5} )
 set_property(TEST ${MODULE_NAME}-Test1-MRS-Compare
@@ -65,8 +65,8 @@ set_property(TEST ${MODULE_NAME}-Test1-MRS-Compare
 #######
 # Test1-Compare Output
 #######
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Output-Compare
-  ${IMAGECOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Output-Compare
+  COMMAND ${IMAGECOMPARE_EXE}
     -i 0.02
     -t ${TEMP}/${MODULE_NAME}Test1_Output.mha
     -b MIDAS{${MODULE_NAME}Test1_Output.mha.md5} )

@@ -30,25 +30,25 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
-     ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
+     ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 set( TEXTCOMPARE_EXE
-     ${TubeTK_BINARY_DIR}/bin/TextCompareCommand )
+     ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
 
 set( IMAGECOMPARE_EXE
-     ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
+     ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
 
 # Test1
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1
-                ${PROJ_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+                COMMAND ${PROJ_EXE}
                   MIDAS{Exemplary-CVT-Tessellation.mha.md5}
                   MIDAS{SPL2012-LabelMap.nrrd.md5}
                   ${TEMP}/${MODULE_NAME}Test1-Img.mha
                   ${TEMP}/${MODULE_NAME}Test1-Map.txt )
 
 # Test1
-Midas3FunctionAddTest( ${MODULE_NAME}-Test2
-                ${PROJ_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
+                COMMAND ${PROJ_EXE}
                   MIDAS{Exemplary-CVT-Tessellation.mha.md5}
                   MIDAS{SPL2012-LabelMap.nrrd.md5}
                   ${TEMP}/${MODULE_NAME}Test2-Img.mha
@@ -56,16 +56,16 @@ Midas3FunctionAddTest( ${MODULE_NAME}-Test2
                   --omitRegions 0 )
 
 # Test1-Compare
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-Map
-                ${TEXTCOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-Map
+                COMMAND ${TEXTCOMPARE_EXE}
                   -t ${TEMP}/${MODULE_NAME}Test1-Map.txt
                   -b MIDAS{${MODULE_NAME}Test1-Map.txt.md5} )
 
 set_property( TEST ${MODULE_NAME}-Test1-Compare-Map
                APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-Img
-                ${IMAGECOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-Img
+                COMMAND ${IMAGECOMPARE_EXE}
                   -t ${TEMP}/${MODULE_NAME}Test1-Img.mha
                   -b MIDAS{${MODULE_NAME}Test1-Img.mha.md5} )
 
@@ -73,16 +73,16 @@ set_property( TEST ${MODULE_NAME}-Test1-Compare-Img
                APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
 # Test2-Compare
-Midas3FunctionAddTest( ${MODULE_NAME}-Test2-Compare-Map
-                ${TEXTCOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare-Map
+                COMMAND ${TEXTCOMPARE_EXE}
                   -t ${TEMP}/${MODULE_NAME}Test2-Map.txt
                   -b MIDAS{${MODULE_NAME}Test2-Map.txt.md5} )
 
 set_property( TEST ${MODULE_NAME}-Test2-Compare-Map
                APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
 
-Midas3FunctionAddTest( ${MODULE_NAME}-Test2-Compare-Img
-                ${IMAGECOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare-Img
+                COMMAND ${IMAGECOMPARE_EXE}
                   -t ${TEMP}/${MODULE_NAME}Test2-Img.mha
                   -b MIDAS{${MODULE_NAME}Test2-Img.mha.md5} )
 

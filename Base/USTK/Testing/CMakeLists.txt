@@ -26,7 +26,7 @@ set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 set( BASE_USTK_TESTS
-  $<TARGET_FILE:tubeBaseUSTKTests> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseUSTKTests> )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 

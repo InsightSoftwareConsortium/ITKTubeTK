@@ -30,83 +30,83 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
- ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
+ ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 set( IMAGECOMPARE_EXE
- ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
+ ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
 
 # Test1
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1
-               ${PROJ_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+               COMMAND ${PROJ_EXE}
                MIDAS{ES0015_Large.mha.md5}
                ${TEMP}/${MODULE_NAME}Test1.mha
                -m 10,10 -M 100,100 )
 
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
-               ${IMAGECOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
+               COMMAND ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test1.mha
                -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
 # Test2
-Midas3FunctionAddTest( ${MODULE_NAME}-Test2
-               ${PROJ_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
+               COMMAND ${PROJ_EXE}
                MIDAS{ES0015_Large.mha.md5}
                ${TEMP}/${MODULE_NAME}Test2.mha
                -m 10,10 -s 91,91 )
 
-Midas3FunctionAddTest( ${MODULE_NAME}-Test2-Compare
-               ${IMAGECOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare
+               COMMAND ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test2.mha
                -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test2-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
 
 # Test3
-Midas3FunctionAddTest( ${MODULE_NAME}-Test3
-               ${PROJ_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3
+               COMMAND ${PROJ_EXE}
                MIDAS{ES0015_Large.mha.md5}
                ${TEMP}/${MODULE_NAME}Test3.mha
                -m 15,15 -s 81,81 -b 5,5 )
 
-Midas3FunctionAddTest( ${MODULE_NAME}-Test3-Compare
-               ${IMAGECOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3-Compare
+               COMMAND ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test3.mha
                -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test3-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test3 )
 
 # Test4
-Midas3FunctionAddTest( ${MODULE_NAME}-Test4
-               ${PROJ_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4
+               COMMAND ${PROJ_EXE}
                MIDAS{ES0015_Large.mha.md5}
                ${TEMP}/${MODULE_NAME}Test4
                -S 2,2 -b 5,5 )
 
-Midas3FunctionAddTest( ${MODULE_NAME}-Test4-Compare00
-               ${IMAGECOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare00
+               COMMAND ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test4_00.mha
                -b MIDAS{${MODULE_NAME}Test4_00.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test4-Compare00
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
 
-Midas3FunctionAddTest( ${MODULE_NAME}-Test4-Compare01
-               ${IMAGECOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare01
+               COMMAND ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test4_01.mha
                -b MIDAS{${MODULE_NAME}Test4_01.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test4-Compare01
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
 
-Midas3FunctionAddTest( ${MODULE_NAME}-Test4-Compare10
-               ${IMAGECOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare10
+               COMMAND ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test4_10.mha
                -b MIDAS{${MODULE_NAME}Test4_10.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test4-Compare10
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
 
-Midas3FunctionAddTest( ${MODULE_NAME}-Test4-Compare11
-               ${IMAGECOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare11
+               COMMAND ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test4_11.mha
                -b MIDAS{${MODULE_NAME}Test4_11.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test4-Compare11
@@ -117,15 +117,15 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
   #######
   # Test5
   #######
-  Midas3FunctionAddTest( ${MODULE_NAME}-Test5
-                 ${PROJ_EXE}
+  Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test5
+                 COMMAND ${PROJ_EXE}
                  MIDAS{ES0015_Large.mha.md5}
                  ${TEMP}/${MODULE_NAME}Test5.mha
                  --parameterstorestore ${CMAKE_CURRENT_SOURCE_DIR}/CropImage-Test5.json
                  -b 5,5 )
 
-  Midas3FunctionAddTest( ${MODULE_NAME}-Test5-Compare
-                 ${IMAGECOMPARE_EXE}
+  Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test5-Compare
+                 COMMAND ${IMAGECOMPARE_EXE}
                  -t ${TEMP}/${MODULE_NAME}Test5.mha
                  -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
   set_property( TEST ${MODULE_NAME}-Test5-Compare
@@ -134,15 +134,15 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
   #######
   # Test6
   #######
-  Midas3FunctionAddTest( ${MODULE_NAME}-Test6
-                 ${PROJ_EXE}
+  Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test6
+                 COMMAND ${PROJ_EXE}
                  MIDAS{ES0015_Large.mha.md5}
                  ${TEMP}/${MODULE_NAME}Test6.mha
                  --parameterstorestore ${CMAKE_CURRENT_SOURCE_DIR}/CropImage-Test6.json
                  -b 5,5 )
 
-  Midas3FunctionAddTest( ${MODULE_NAME}-Test6-Compare
-                 ${IMAGECOMPARE_EXE}
+  Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test6-Compare
+                 COMMAND ${IMAGECOMPARE_EXE}
                  -t ${TEMP}/${MODULE_NAME}Test6.mha
                  -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
   set_property( TEST ${MODULE_NAME}-Test6-Compare

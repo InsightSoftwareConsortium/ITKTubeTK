@@ -30,17 +30,17 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
-     ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
+     ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 set( TEXTCOMPARE_EXE
-     ${TubeTK_BINARY_DIR}/bin/TextCompareCommand )
+     ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
 
 set( IMAGECOMPARE_EXE
-     ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
+     ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
 
 # Test1
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1
-                ${PROJ_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+                COMMAND ${PROJ_EXE}
                   MIDAS{Branch-truth.tre.md5}
                   ${TEMP}/${MODULE_NAME}Test1-Den.mha
                   ${TEMP}/${MODULE_NAME}Test1-Rad.mha
@@ -50,24 +50,24 @@ Midas3FunctionAddTest( ${MODULE_NAME}-Test1
                   --useSquareDistance )
 
 # Test1-Compare
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-Den
-                ${IMAGECOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-Den
+                COMMAND ${IMAGECOMPARE_EXE}
                   -t ${TEMP}/${MODULE_NAME}Test1-Den.mha
                   -b MIDAS{${MODULE_NAME}Test1-Den.mha.md5} )
 
 set_property( TEST ${MODULE_NAME}-Test1-Compare-Den
                 APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-Rad
-                ${IMAGECOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-Rad
+                COMMAND ${IMAGECOMPARE_EXE}
                   -t ${TEMP}/${MODULE_NAME}Test1-Rad.mha
                   -b MIDAS{${MODULE_NAME}Test1-Rad.mha.md5} )
 
 set_property( TEST ${MODULE_NAME}-Test1-Compare-Rad
                 APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-Tan
-                ${IMAGECOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-Tan
+                COMMAND ${IMAGECOMPARE_EXE}
                 -t ${TEMP}/${MODULE_NAME}Test1-Tan.mha
                 -b MIDAS{${MODULE_NAME}Test1-Tan.mha.md5} )
 

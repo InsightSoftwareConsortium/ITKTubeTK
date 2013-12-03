@@ -30,45 +30,45 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
-  ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 set( IMAGECOMPARE_EXE
-  ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
 
 # Test1
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1
-            ${PROJ_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+            COMMAND ${PROJ_EXE}
                --divideBy 2,4,2
                -p ${TEMP}/${MODULE_NAME}Test1_Points.mha
                MIDAS{T1NoSkull.mha.md5}
                ${TEMP}/${MODULE_NAME}Test1.mha )
 
 # Test1-Compare
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
-            ${IMAGECOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
+            COMMAND ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test1.mha
                -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare2
-            ${IMAGECOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare2
+            COMMAND ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test1_Points.mha
                -b MIDAS{${MODULE_NAME}Test1_Points.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare2
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
 # Test2
-Midas3FunctionAddTest( ${MODULE_NAME}-Test2
-            ${PROJ_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
+            COMMAND ${PROJ_EXE}
                --newSize 88,64,4
                --overlap 1,1,10
                MIDAS{T1NoSkull.mha.md5}
                ${TEMP}/${MODULE_NAME}Test2.mha )
 
 # Test2-Compare
-Midas3FunctionAddTest( ${MODULE_NAME}-Test2-Compare
-            ${IMAGECOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare
+            COMMAND ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test2.mha
                -b MIDAS{${MODULE_NAME}Test2.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test2-Compare
