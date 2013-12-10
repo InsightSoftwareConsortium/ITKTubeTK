@@ -25,6 +25,7 @@ limitations under the License.
 
 // MRML includes
 #include <vtkMRMLConfigure.h>
+#include <vtkMRMLScene.h>
 #include "vtkMRMLSpatialObjectsDisplayPropertiesNode.h"
 #include "vtkMRMLSpatialObjectsNode.h"
 #include "vtkMRMLSpatialObjectsStorageNode.h"
@@ -34,6 +35,7 @@ limitations under the License.
 
 // VTK includes
 #include <vtkNew.h>
+#include <vtkObjectFactory.h>
 
 // ITK includes
 #include <itksys/Directory.hxx>

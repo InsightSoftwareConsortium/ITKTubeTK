@@ -123,7 +123,7 @@ int DoIt( int argc, char * argv[] )
     {
     ImageDocumentType::Pointer doc
       = static_cast< ImageDocumentType * >( ( *it_imgDoc ).GetPointer() );
-    tube::FmtInfoMessage( "Adding image: %s", doc->GetObjectName() );
+    tube::FmtInfoMessage( "Adding image: %s", doc->GetObjectName().c_str() );
 
     filter->SetInput( doc );
     filter->SetApplyTransforms( false );
