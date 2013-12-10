@@ -64,6 +64,7 @@ set( GITCOMMAND "@GITCOMMAND@" )
 set( QT_QMAKE_EXECUTABLE "@QT_QMAKE_EXECUTABLE@" )
 
 set( BOOST_ROOT "@BOOST_ROOT@" )
+set( Slicer_DIR "@Slicer_DIR@" )
 set( CTK_DIR "@CTK_DIR@" )
 set( CPPCHECK_EXECUTABLE "@CPPCHECK_EXECUTABLE@" )
 set( GenerateCLP_DIR "@GenerateCLP_DIR@" )
