@@ -83,6 +83,10 @@ if( TubeTK_USE_BOOST )
   set( BOOST_ROOT "@BOOST_ROOT@" CACHE PATH "Init" FORCE )
 endif( TubeTK_USE_BOOST )
 
+if( TubeTK_USE_SLICER )
+  set( Slicer_DIR "@Slicer_DIR@" CACHE PATH "Init" FORCE )
+endif( TubeTK_USE_SLICER )
+
 if( EXISTS ${TubeTK_BINARY_DIR}/CTK-build/CMakeCache.txt )
   set( TubeTK_USE_CTK ON CACHE BOOL "Init" FORCE )
   set( CTK_DIR "${TubeTK_BINARY_DIR}/CTK-build" CACHE PATH "Init" FORCE )

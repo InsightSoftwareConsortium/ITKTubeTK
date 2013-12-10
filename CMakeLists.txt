@@ -165,6 +165,11 @@ if( TubeTK_USE_SLICER AND USE_SYSTEM_SLICER )
   unset( QT_QMAKE_EXECUTABLE )
   # Find Slicer to set the [ITK|VTK|CTK|...]_DIR variables
   find_package( Slicer REQUIRED )
+  if( NOT Slicer_FOUND )
+    set( Slicer_DIR "NOT_FOUND" CACHE PATH
+      "Path to the Slicer-<buildtype>/Slicer-build directory." FORCE )
+    mark_as_advanced( CLEAR Slicer_DIR )
+  endif( NOT Slicer_FOUND )
   include( ${Slicer_USE_FILE} )
   # TubeTK_SLICER_SOURCE_DIR is needed to get ExpertAutomatedRegistration CLI
   if( Slicer_SOURCE_DIR )
