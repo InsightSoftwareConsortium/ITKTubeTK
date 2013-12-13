@@ -23,6 +23,9 @@
 
 include_regular_expression( "^.*$" )
 
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
+
 include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
@@ -35,10 +38,10 @@ if( PYTHON_EXECUTABLE )
 endif( PYTHON_EXECUTABLE )
 
 set( BASE_PARAMETERSERIALIZER_TESTS
-  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseParameterSerializerTests )
+  $<TARGET_FILE:tubeBaseParameterSerializerTests> )
 
 set( BASE_PARAMETERSERIALIZER_HEADER_TEST
-  ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR}/tubeBaseParameterSerializerHeaderTest )
+  $<TARGET_FILE:tubeBaseParameterSerializerHeaderTest> )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -58,42 +61,76 @@ include_directories(
   ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/USTK
   ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Registration )
 
-add_executable( tubeBaseParameterSerializerHeaderTest
-  tubeBaseParameterSerializerHeaderTest.cxx )
-target_link_libraries( tubeBaseParameterSerializerHeaderTest
-  ${ITK_LIBRARIES} )
+SEMMacroBuildCLI(
+  NAME tubeBaseParameterSerializerHeaderTest
+  ADDITIONAL_SRCS
+    Filtering/itktubeSubSampleTubeTreeSpatialObjectFilterSerializerTest.cxx
+    USTK/itkAcousticImpulseResponseImageFilterSerializerTest.cxx
+    USTK/itkUltrasoundProbeGeometryCalculatorSerializerTest.cxx
+    Registration/itktubeTubeAngleOfIncidenceWeightFunctionSerializerTest.cxx
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
+  TARGET_LIBRARIES
+    ${ITK_LIBRARIES}
+  INCLUDE_DIRECTORIES
+    ${TubeTK_SOURCE_DIR}/Base/Common
+    ${TubeTK_SOURCE_DIR}/Base/USTK
+    ${TubeTK_SOURCE_DIR}/Base/Filtering
+    ${TubeTK_SOURCE_DIR}/Base/Registration
+    ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer
+    ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Filtering
+    ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/USTK
+    ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Registration
+  INSTALL_RUNTIME_DESTINATION lib
+  INSTALL_LIBRARY_DESTINATION lib
+  INSTALL_ARCHIVE_DESTINATION bin )
 
-add_executable( tubeBaseParameterSerializerTests
-  tubeBaseParameterSerializerTests.cxx
-  ${tubeBaseParameterSerializerTests_SRCS} )
-target_link_libraries( tubeBaseParameterSerializerTests
-  ${ParameterSerializer_LIBRARIES}
-  ${ITK_LIBRARIES} )
+SEMMacroBuildCLI(
+  NAME tubeBaseParameterSerializerTests
+  ADDITIONAL_SRCS
+    Filtering/itktubeSubSampleTubeTreeSpatialObjectFilterSerializerTest.cxx
+    USTK/itkAcousticImpulseResponseImageFilterSerializerTest.cxx
+    USTK/itkUltrasoundProbeGeometryCalculatorSerializerTest.cxx
+    Registration/itktubeTubeAngleOfIncidenceWeightFunctionSerializerTest.cxx
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
+  TARGET_LIBRARIES
+    ${ITK_LIBRARIES}
+  INCLUDE_DIRECTORIES
+    ${TubeTK_SOURCE_DIR}/Base/Common
+    ${TubeTK_SOURCE_DIR}/Base/USTK
+    ${TubeTK_SOURCE_DIR}/Base/Filtering
+    ${TubeTK_SOURCE_DIR}/Base/Registration
+    ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer
+    ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Filtering
+    ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/USTK
+    ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Registration
+  INSTALL_RUNTIME_DESTINATION lib
+  INSTALL_LIBRARY_DESTINATION lib
+  INSTALL_ARCHIVE_DESTINATION bin )
 
-add_test( tubeBaseParameterSerializerHeaderTest
-  ${BASE_PARAMETERSERIALIZER_HEADER_TEST} )
+add_test( NAME tubeBaseParameterSerializerHeaderTest
+  COMMAND ${BASE_PARAMETERSERIALIZER_HEADER_TEST} )
 
-add_test( itkAcousticImpulseResponseImageFilterSerializerTest
-  ${BASE_PARAMETERSERIALIZER_TESTS}
+add_test( NAME itkAcousticImpulseResponseImageFilterSerializerTest
+  COMMAND ${BASE_PARAMETERSERIALIZER_TESTS}
   itkAcousticImpulseResponseImageFilterSerializerTest
   ${TEMP}/itkAcousticImpulseResponseImageFilterSerializerTest.json )
 
-Midas3FunctionAddTest( itkAcousticImpulseResponseImageFilterSerializerTestBaseline
-  ${TubeTK_BINARY_DIR}/bin/JsonCompareCommand
+Midas3FunctionAddTest( NAME itkAcousticImpulseResponseImageFilterSerializerTestBaseline
+  COMMAND ${TubeTK_BINARY_DIR}/bin/JsonCompareCommand
   -t ${TEMP}/itkAcousticImpulseResponseImageFilterSerializerTest.json
   -b MIDAS{itkAcousticImpulseResponseImageFilterSerializerTest.json.md5} )
 
-add_test( itkUltrasoundProbeGeometryCalculatorSerializerTest
-  ${BASE_PARAMETERSERIALIZER_TESTS}
+add_test( NAME itkUltrasoundProbeGeometryCalculatorSerializerTest
+  COMMAND ${BASE_PARAMETERSERIALIZER_TESTS}
   itkUltrasoundProbeGeometryCalculatorSerializerTest
   ${TEMP}/itkUltrasoundProbeGeometryCalculatorSerializerTest.json )
 
-add_test( itktubeSubSampleTubeTreeSpatialObjectFilterSerializerTest
-  ${BASE_PARAMETERSERIALIZER_TESTS}
+add_test( NAME itktubeSubSampleTubeTreeSpatialObjectFilterSerializerTest
+  COMMAND ${BASE_PARAMETERSERIALIZER_TESTS}
   itktubeSubSampleTubeTreeSpatialObjectFilterSerializerTest
   ${TEMP}/itktubeSubSampleTubeTreeSpatialObjectFilterSerializerTest.json )
 
-add_test( itktubeTubeAngleOfIncidenceWeightFunctionSerializerTest
-  ${BASE_PARAMETERSERIALIZER_TESTS}
+add_test( NAME itktubeTubeAngleOfIncidenceWeightFunctionSerializerTest
+  COMMAND ${BASE_PARAMETERSERIALIZER_TESTS}
   itktubeTubeAngleOfIncidenceWeightFunctionSerializerTest
   ${TEMP}/itktubeTubeAngleOfIncidenceWeightFunctionSerializerTest.json )

@@ -22,7 +22,7 @@
 #include <itkImageFileWriter.h>
 #include <itkRescaleIntensityImageFilter.h>
 
-#include <metaCommand.h>
+#include "ImageCompareCommandCLP.h"
 
 // Description:
 // Get the ComponentType and dimension of the image
@@ -58,133 +58,10 @@ int RegressionTestImage( const char *, const char *, bool, bool, double,
 int main( int argc, char * argv[] )
 {
   int bestBaselineStatus = 2001;
+  PARSE_ARGS;
 
-  // Process some command-line arguments intended for BatchMake
-  MetaCommand command;
-
-  // Option for setting the tolerable difference in intensity values
-  // between the two images.
-  command.SetOption( "toleranceIntensity", "i", false,
-    "Acceptable differences in pixels intensity" );
-  command.AddOptionField( "toleranceIntensity", "value", MetaCommand::FLOAT,
-    true );
-
-  // Option for setting the radius of the neighborhood around a pixel
-  // to search for similar intensity values.
-  command.SetOption( "toleranceRadius", "r", false,
-    "Neighbor pixels to look for similar values" );
-  command.AddOptionField( "toleranceRadius", "value", MetaCommand::INT,
-    true );
-
-  // Option for setting the number of pixel that can be tolerated to
-  // have different intensities.
-  command.SetOption( "toleranceNumberOfPixels", "n", false,
-    "Number of Pixels that are acceptable to have intensity differences" );
-  command.AddOptionField( "toleranceNumberOfPixels", "value",
-    MetaCommand::INT, true );
-
-  // Option for setting the filename of the test image.
-  command.SetOption( "testImage", "t", true,
-    "Filename of the image to be tested against the baseline images" );
-  command.AddOptionField( "testImage", "filename", MetaCommand::STRING,
-    true );
-
-  // Option for setting the filename of multiple baseline images.
-  command.SetOption( "baselineImages", "B", false,
-    "List of baseline images <N> <image1> <image2>...<imageN>" );
-  command.AddOptionField( "baselineImages", "filename", MetaCommand::LIST,
-    true );
-
-  // Option for setting the filename of a single baseline image.
-  command.SetOption( "baselineImage", "b", false,
-    "Baseline images filename" );
-  command.AddOptionField( "baselineImage", "filename", MetaCommand::STRING,
-    true );
-
-  // Option for setting the filename of a single baseline image.
-  command.SetOption( "outputImage", "o", false,
-    "Output difference image filename" );
-  command.AddOptionField( "outputImage", "filename", MetaCommand::STRING,
-    true );
-
-  command.Parse( argc, argv );
-
-  double        toleranceIntensity      = 0.0;
-  unsigned int  toleranceRadius         = 0;
-  unsigned long toleranceNumberOfPixels = 0;
-  std::string   testImageFilename;
-  std::string   baselineImageFilename;
-  std::string   outputImageFilename;
   bool          writeOutputImage = false;
-
-  std::list< std::string >   baselineImageFilenames;
-  bool                       singleBaselineImage = true;
-
-  baselineImageFilenames.clear();
-
-
-  // If a value of intensity tolerance was given in the command line
-  if( command.GetOptionWasSet( "toleranceIntensity" ) )
-    {
-    toleranceIntensity = command.GetValueAsFloat( "toleranceIntensity",
-      "value" );
-    }
-
-  // If a value of neighborhood radius tolerance was given in the command
-  //   line.
-  if( command.GetOptionWasSet( "toleranceRadius" ) )
-    {
-    toleranceRadius = command.GetValueAsInt( "toleranceRadius",
-      "value" );
-    }
-
-  // If a value of number of pixels tolerance was given in the command line
-  if( command.GetOptionWasSet( "toleranceNumberOfPixels" ) )
-    {
-    toleranceNumberOfPixels = command.GetValueAsInt(
-      "toleranceNumberOfPixels", "value" );
-    }
-
-  // Get the filename of the image to be tested
-  if( command.GetOptionWasSet( "testImage" ) )
-    {
-    testImageFilename =
-      command.GetValueAsString( "testImage", "filename" );
-    }
-
-  if( !command.GetOptionWasSet( "baselineImage" )
-    && !command.GetOptionWasSet( "baselineImages" ) )
-    {
-    std::cerr <<
-      "You must provide a -BaselineImage or -BaselineImages option"
-      << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  // Get the filename of the base line image
-  if( command.GetOptionWasSet( "baselineImage" ) )
-    {
-    singleBaselineImage = true;
-    baselineImageFilename = command.GetValueAsString( "baselineImage",
-      "filename" );
-    }
-
-  // Get the filename of the base line image
-  if( command.GetOptionWasSet( "baselineImages" ) )
-    {
-    singleBaselineImage = false;
-    baselineImageFilenames = command.GetValueAsList( "baselineImages" );
-    }
-
-  if( command.GetOptionWasSet( "outputImage" ) )
-    {
-    writeOutputImage = true;
-    outputImageFilename = command.GetValueAsString( "outputImage",
-      "filename" );
-    }
-
   std::string bestBaselineFilename;
-
   itk::ImageIOBase::IOComponentType cType = itk::ImageIOBase::UCHAR;
   unsigned int dims = 0;
 
@@ -192,59 +69,37 @@ int main( int argc, char * argv[] )
 
   try
     {
-    if( singleBaselineImage )
+    typedef std::vector< std::string >::const_iterator  nameIterator;
+    nameIterator baselineImageItr = baselineImageFilenames.begin();
+    while( baselineImageItr != baselineImageFilenames.end() )
       {
+      int currentStatus = 0;
       if( dims == 2 )
         {
-        bestBaselineStatus =
-          RegressionTestImage<2>(
-              testImageFilename.c_str(), baselineImageFilename.c_str(),
-              false, false, toleranceIntensity, toleranceRadius,
-              toleranceNumberOfPixels, false, outputImageFilename.c_str() );
+        currentStatus = RegressionTestImage<2>(
+          testImageFilename.c_str(), baselineImageItr->c_str(),
+          false, false, toleranceIntensity, toleranceRadius,
+          toleranceNumberOfPixels, false, outputImageFilename.c_str() );
         }
       else
         {
-        bestBaselineStatus =
-          RegressionTestImage<3>(
-              testImageFilename.c_str(), baselineImageFilename.c_str(),
-              false, false, toleranceIntensity, toleranceRadius,
-              toleranceNumberOfPixels, false, outputImageFilename.c_str() );
+        currentStatus = RegressionTestImage<3>(
+          testImageFilename.c_str(), baselineImageItr->c_str(),
+          false, false, toleranceIntensity, toleranceRadius,
+          toleranceNumberOfPixels, false, outputImageFilename.c_str() );
         }
-      bestBaselineFilename = baselineImageFilename;
-      }
-    else
-      {
-      typedef std::list< std::string >::const_iterator  nameIterator;
-      nameIterator baselineImageItr = baselineImageFilenames.begin();
-      while( baselineImageItr != baselineImageFilenames.end() )
+      if( currentStatus < bestBaselineStatus )
         {
-        int currentStatus = 0;
-        if( dims == 2 )
-          {
-          currentStatus = RegressionTestImage<2>(
-            testImageFilename.c_str(), baselineImageItr->c_str(),
-            false, false, toleranceIntensity, toleranceRadius,
-            toleranceNumberOfPixels, false, outputImageFilename.c_str() );
-          }
-        else
-          {
-          currentStatus = RegressionTestImage<3>(
-            testImageFilename.c_str(), baselineImageItr->c_str(),
-            false, false, toleranceIntensity, toleranceRadius,
-            toleranceNumberOfPixels, false, outputImageFilename.c_str() );
-          }
-        if( currentStatus < bestBaselineStatus )
-          {
-          bestBaselineStatus = currentStatus;
-          bestBaselineFilename = *baselineImageItr;
-          }
-        if( bestBaselineStatus == 0 )
-          {
-          break;
-          }
-        ++baselineImageItr;
+        bestBaselineStatus = currentStatus;
+        bestBaselineFilename = *baselineImageItr;
         }
+      if( bestBaselineStatus == 0 )
+        {
+        break;
+        }
+      ++baselineImageItr;
       }
+
     // generate images of our closest match
     if( bestBaselineStatus == 0 )
       {

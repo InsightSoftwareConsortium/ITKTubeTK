@@ -109,12 +109,12 @@ set_tests_properties( ImageCompareCommand-Test3 PROPERTIES WILL_FAIL true )
 Midas3FunctionAddTest( NAME ImageCompareCommand-Test4
   COMMAND ${IMAGECOMPARE_EXE}
   -t MIDAS{im0001.crop.mha.md5}
-  -B 2 MIDAS{im0001_n10.crop.mha.md5} MIDAS{im0001.crop.mha.md5} )
+  -b MIDAS{im0001_n10.crop.mha.md5},MIDAS{im0001.crop.mha.md5} )
 
 Midas3FunctionAddTest( NAME ImageCompareCommand-Test5
   COMMAND ${IMAGECOMPARE_EXE}
   -t MIDAS{im0001.crop.mha.md5}
-  -B 2 MIDAS{im0001_n10.crop.mha.md5} MIDAS{im0001_n20.crop.mha.md5} )
+  -b MIDAS{im0001_n10.crop.mha.md5},MIDAS{im0001_n20.crop.mha.md5} )
 set_tests_properties( ImageCompareCommand-Test5 PROPERTIES WILL_FAIL true )
 
 Midas3FunctionAddTest( NAME ImageCompareCommand-Test6

@@ -21,6 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "tubeBaseSegmentationTestsCLP.h"
 #include "tubeTestMain.h"
 
 #include <iostream>

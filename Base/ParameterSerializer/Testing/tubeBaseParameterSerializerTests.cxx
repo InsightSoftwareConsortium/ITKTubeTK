@@ -23,6 +23,8 @@ limitations under the License.
 
 #include "tubeTestMain.h"
 
+#include "tubeBaseParameterSerializerTestsCLP.h"
+
 void RegisterTests( void )
 {
   REGISTER_TEST( itkAcousticImpulseResponseImageFilterSerializerTest );

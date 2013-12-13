@@ -21,7 +21,12 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "tubeBaseNumericsTestsCLP.h"
 #include "tubeTestMain.h"
+
+// HACK Redefine 'main' to fix missing symbol error
+#undef main
+#define main ModuleEntryPoint
 
 #include <iostream>
 

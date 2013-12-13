@@ -26,6 +26,9 @@ project( TubeTKCommon )
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
+
 set( TubeTK_Base_Common_H_Files
   itktubeDifferenceImageFilter.h
   tubeIndent.h
@@ -49,8 +52,19 @@ add_library( TubeTKCommon STATIC
 
 TubeTKMacroInstallPlugins( TubeTKCommon )
 
-add_executable( ImageCompareCommand ImageCompareCommand.cxx )
-target_link_libraries( ImageCompareCommand ${ITK_LIBRARIES} )
+#add_executable( ImageCompareCommand ImageCompareCommand.cxx )
+#target_link_libraries( ImageCompareCommand ${ITK_LIBRARIES} )
+SEMMacroBuildCLI(
+  NAME "ImageCompareCommand"
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
+  TARGET_LIBRARIES ${ITK_LIBRARIES}
+  INCLUDE_DIRECTORIES
+    #${TubeTK_SOURCE_DIR}/Base/CLI
+    #${TubeTK_SOURCE_DIR}/Base/Common
+    #${TubeTK_SOURCE_DIR}/Base/Filtering
+    ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration
+    ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration/ITKRegistrationHelper )
+
 
 add_executable( JsonCompareCommand JsonCompareCommand.cxx )
 target_link_libraries( JsonCompareCommand

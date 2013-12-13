@@ -41,6 +41,7 @@ limitations under the License.
 #include <itkResampleImageFilter.h>
 
 #include <metaCommand.h>
+#include "ImageMathCLP.h"
 
 /** Resamples image a to b if they are different, returns resampled_a */
 template< class TPixel, unsigned int VDimension >
@@ -1700,6 +1701,7 @@ void GetImageInformation( std::string fileName,
   if( !imageIO )
     {
     std::cerr << "NO IMAGEIO WAS FOUND" << std::endl;
+    dimension = 0;
     return;
     }
 
@@ -1714,6 +1716,7 @@ void GetImageInformation( std::string fileName,
 
 int main( int argc, char * argv[] )
 {
+  //PARSE_ARGS;
   MetaCommand command;
 
   command.SetName( "ImageMath" );
@@ -2028,6 +2031,11 @@ int main( int argc, char * argv[] )
           return EXIT_FAILURE;
         }
       }
+    else
+      {
+      std::cout << "only images of dimension 2 or 3 allowed !" << std::endl;
+      return EXIT_FAILURE;
+      }
     }
   catch( itk::ExceptionObject &excep )
     {
@@ -2040,7 +2048,6 @@ int main( int argc, char * argv[] )
     std::cerr << argv[0] << ": exception caught !" << std::endl;
     return EXIT_FAILURE;
     }
-
   return EXIT_SUCCESS;
 
 }

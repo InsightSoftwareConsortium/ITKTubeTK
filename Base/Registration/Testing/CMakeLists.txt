@@ -30,11 +30,8 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
-include_directories(
-  ${TubeTK_SOURCE_DIR}/Base/Common
-  ${TubeTK_SOURCE_DIR}/Base/Filtering
-  ${TubeTK_SOURCE_DIR}/Base/Numerics
-  ${TubeTK_SOURCE_DIR}/Base/Registration )
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
 
 set( BASE_REGISTRATION_TESTS
   ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseRegistrationTests> )
@@ -71,9 +68,26 @@ if( TubeTK_USE_VTK )
     itktubeAnisotropicDiffusiveRegistrationRegularizationTest.cxx )
 endif( TubeTK_USE_VTK )
 
-add_executable( tubeBaseRegistrationTests
-  tubeBaseRegistrationTests.cxx
-  ${tubeBaseRegistration_SRCS} )
+SEMMacroBuildCLI(
+  NAME tubeBaseRegistrationTests
+  ADDITIONAL_SRCS
+    ${tubeBaseRegistration_SRCS}
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
+  TARGET_LIBRARIES
+    ${ITK_LIBRARIES}
+    ${VTK_LIBRARIES}
+  INCLUDE_DIRECTORIES
+    ${TubeTK_SOURCE_DIR}/Base/CLI
+    ${TubeTK_SOURCE_DIR}/Base/Common
+    ${TubeTK_SOURCE_DIR}/Base/Filtering
+    ${TubeTK_SOURCE_DIR}/Base/Numerics
+    ${TubeTK_SOURCE_DIR}/Base/Registration
+  INSTALL_RUNTIME_DESTINATION lib
+  INSTALL_LIBRARY_DESTINATION lib
+  INSTALL_ARCHIVE_DESTINATION bin
+  EXECUTABLE_ONLY
+  )
+
 if( TubeTK_USE_VTK )
   add_definitions( -DTubeTK_USE_VTK )
 endif( TubeTK_USE_VTK )
