@@ -51,12 +51,6 @@ public:
   itkNewMacro( Self );
   itkTypeMacro( ObjectDocument, Document );
 
-  /** Return the object name. */
-  itkGetStringMacro( ObjectName );
-
-  /** Set the object name. */
-  itkSetStringMacro( ObjectName );
-
   /** Return the object type. */
   itkGetStringMacro( ObjectType );
 
@@ -108,7 +102,6 @@ protected:
     {
     Superclass::PrintSelf( os, indent );
 
-    os << indent << "ObjectName:        " << m_ObjectName << std::endl;
     os << indent << "ObjectType:        " << m_ObjectType << std::endl;
     os << indent << "TransformNameList:" << std::endl;
 
@@ -127,7 +120,6 @@ private:
   // Copy assignment operator not implemented.
   void operator=( const Self & self );
 
-  std::string            m_ObjectName;
   std::string            m_ObjectType;
   TransformNameListType  m_TransformNameList;
 

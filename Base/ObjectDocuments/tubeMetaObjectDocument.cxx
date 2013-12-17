@@ -198,8 +198,8 @@ MetaObjectDocument
 
   FieldType * const nameField = new FieldType();
   MET_InitWriteField( nameField, "Name", MET_STRING,
-                      std::strlen( m_ObjectDocumentList[index]->GetObjectName() ),
-                      m_ObjectDocumentList[index]->GetObjectName() );
+                      std::strlen( m_ObjectDocumentList[index]->GetObjectName().c_str() ),
+                      m_ObjectDocumentList[index]->GetObjectName().c_str() );
   m_FieldList.push_back( nameField );
 
   for( unsigned int i = 0;

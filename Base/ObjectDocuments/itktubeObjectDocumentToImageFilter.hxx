@@ -79,7 +79,7 @@ ObjectDocumentToImageFilter< TObjectDocument, TImageType >
 {
   typename ImageFileReaderType::Pointer reader = ImageFileReaderType::New();
 
-  reader->SetFileName( document->GetObjectName() );
+  reader->SetFileName( document->GetObjectName().c_str() );
   reader->Update();
 
   return reader->GetOutput();

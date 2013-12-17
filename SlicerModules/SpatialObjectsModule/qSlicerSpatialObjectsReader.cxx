@@ -38,6 +38,7 @@ limitations under the License.
 // MRML includes
 #include <vtkMRMLSelectionNode.h>
 #include <vtkMRMLSpatialObjectsNode.h>
+#include <vtkMRMLScene.h>
 
 // VTK includes
 #include <vtkSmartPointer.h>
