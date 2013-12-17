@@ -26,21 +26,20 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 
-//#include <itkGroupSpatialObject.h>
-//#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
+#include <itkGroupSpatialObject.h>
 #include <itkSpatialObjectReader.h>
+#include <itkSpatialObjectWriter.h>
 #include <itkTimeProbesCollectorBase.h>
-//#include <itkTubeSpatialObjectPoint.h>
-//#include <itkVesselTubeSpatialObject.h>
 
 #include "SegmentTubesCLP.h"
 
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
-// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
+// Must follow include of "...CLP.h" and
+//   forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
 template< class TPixel, unsigned int VDimension >
@@ -61,6 +60,11 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< PixelType, VDimension >           ImageType;
   typedef itk::ImageFileReader< ImageType >             ReaderType;
 
+  typedef itk::tube::TubeExtractor< ImageType >         TubeOpType;
+  typedef typename TubeOpType::TubeMaskImageType        MaskImageType;
+  typedef itk::ImageFileReader< MaskImageType >         MaskReaderType;
+  typedef itk::ImageFileWriter< MaskImageType >         MaskWriterType;
+
   typedef itk::SpatialObject< VDimension >              SpatialObjectType;
   typedef typename SpatialObjectType::ChildrenListType  ObjectListType;
   typedef itk::GroupSpatialObject< VDimension >         GroupType;
@@ -68,6 +72,8 @@ int DoIt( int argc, char * argv[] )
   typedef typename TubeType::PointListType              PointListType;
   typedef typename TubeType::PointType                  PointType;
   typedef typename TubeType::TubePointType              TubePointType;
+
+  typedef itk::SpatialObjectWriter< VDimension >        SpatialObjectWriterType;
 
   timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
@@ -95,7 +101,6 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  typedef itk::tube::TubeExtractor< ImageType > TubeOpType;
   typename TubeOpType::Pointer tubeOp = TubeOpType::New();
 
   tubeOp->SetInputImage( inputImage );
@@ -120,11 +125,20 @@ int DoIt( int argc, char * argv[] )
 
     timeCollector.Start("Ridge Extractor");
 
+    std::cout << "Seed = ";
     itk::ContinuousIndex< double, VDimension > cIndx;
     for( unsigned int i=0; i<VDimension; i++ )
       {
       cIndx[i] = seedX[i];
+      std::cout << cIndx[i] << " ";
       }
+    std::cout << std::endl;
+
+    tubeOp->SetDebug( true );
+    tubeOp->GetRidgeOp()->SetDebug( true );
+
+    tubeOp->GetRidgeOp()->SetThreshCurvature( 0.0001 );
+    tubeOp->GetRidgeOp()->SetThreshCurvatureStart( 0.0001 );
 
     typename TubeType::Pointer xTube = tubeOp->ExtractTube( cIndx, 1 );
 
@@ -135,7 +149,23 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
-  progressReporter.Report( 0.2 );
+  // Save Tubes
+  typename SpatialObjectWriterType::Pointer soWriter =
+    SpatialObjectWriterType::New();
+  soWriter->SetFileName( outputTubeFile );
+  soWriter->SetInput( tubeOp->GetTubeGroup().GetPointer() );
+  soWriter->Update();
+
+  // Save Tube Mask Image
+  if( !outputTubeImage.empty() )
+    {
+    typename MaskWriterType::Pointer writer = MaskWriterType::New();
+    writer->SetFileName( outputTubeImage );
+    writer->SetInput( tubeOp->GetTubeMaskImage() );
+    writer->SetUseCompression( true );
+    writer->Update();
+    }
+
   timeCollector.Stop("Ridge Extractor");
 
   progressReporter.Report( 1.0 );
@@ -148,6 +178,15 @@ int DoIt( int argc, char * argv[] )
 // Main
 int main( int argc, char * argv[] )
 {
+  try
+    {
+    PARSE_ARGS;
+    }
+  catch( const std::exception & err )
+    {
+    tube::ErrorMessage( err.what() );
+    return EXIT_FAILURE;
+    }
   PARSE_ARGS;
 
   // You may need to update this line if, in the project's .xml CLI file,

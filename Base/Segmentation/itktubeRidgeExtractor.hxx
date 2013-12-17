@@ -1255,14 +1255,20 @@ RidgeExtractor<TInputImage>
       }
     }
 
-  if( dir == 1 )
+  if( dir == -1 )
     {
     std::vector< TubePointType > * curPoints = &(m_Tube->GetPoints());
-    for( unsigned int i=0; i<curPoints->size(); i++ )
+    std::vector< TubePointType > newPoints;
+    newPoints.clear();
+    for( int i=pnts.size()-1; i>=0; --i )
       {
-      pnts.push_back( (*curPoints)[i] );
+      newPoints.push_back( pnts[i] );
       }
-    m_Tube->SetPoints( pnts );
+    for( int i=0; i<curPoints->size(); ++i )
+      {
+      newPoints.push_back( (*curPoints)[i] );
+      }
+    m_Tube->SetPoints( newPoints );
     }
   else
     {
@@ -1589,7 +1595,7 @@ RidgeExtractor<TInputImage>
 template< class TInputImage >
 typename RidgeExtractor<TInputImage>::TubeType::Pointer
 RidgeExtractor<TInputImage>
-::ExtractRidge( ContinuousIndexType & newX, int tubeId )
+::ExtractRidge( const ContinuousIndexType & newX, int tubeId )
 {
   ContinuousIndexType lX;
   lX = newX;
@@ -1876,7 +1882,7 @@ template< class TInputImage >
 template< class TDrawMask >
 bool
 RidgeExtractor<TInputImage>
-::DeleteTube( TubeType * tube,  TDrawMask * drawMask )
+::DeleteTube( const TubeType * tube,  TDrawMask * drawMask )
 {
   typedef typename TDrawMask::PixelType      DrawPixelType;
   typedef NeighborhoodIterator< TDrawMask >  NeighborhoodIteratorType;
@@ -1892,10 +1898,11 @@ RidgeExtractor<TInputImage>
     }
 
   DrawPixelType zero = 0;
-  typename std::vector< TubePointType >::iterator pnt;
+  typename std::vector< TubePointType >::const_iterator pnt;
   VectorType x( ImageDimension );
   double r;
-  for( pnt = tube->GetPoints().begin(); pnt != tube->GetPoints().end(); ++pnt )
+  for( pnt = tube->GetPoints().begin(); pnt != tube->GetPoints().end();
+    ++pnt )
     {
     if( this->GetDebug() )
       {
@@ -1985,7 +1992,7 @@ RidgeExtractor<TInputImage>
 template< class TInputImage >
 bool
 RidgeExtractor<TInputImage>
-::DeleteTube( TubeType * tube )
+::DeleteTube( const TubeType * tube )
 {
   return this->DeleteTube< TubeMaskImageType >( tube, m_TubeMaskImage );
 }
@@ -1997,8 +2004,13 @@ template< class TInputImage >
 template< class TDrawMask >
 bool
 RidgeExtractor<TInputImage>
-::AddTube( TubeType * tube,  TDrawMask * drawMask )
+::AddTube( const TubeType * tube,  TDrawMask * drawMask )
 {
+  if( this->GetDebug() )
+    {
+    std::cout << "*** START: AddTube" << std::endl;
+    }
+
   typedef typename TDrawMask::PixelType DrawPixelType;
 
   typedef NeighborhoodIterator< TDrawMask > NeighborhoodIteratorType;
@@ -2014,7 +2026,7 @@ RidgeExtractor<TInputImage>
   VectorType x( ImageDimension );
   double r;
 
-  typename std::vector< TubePointType >::iterator pnt;
+  typename std::vector< TubePointType >::const_iterator pnt;
 
   for( pnt = tube->GetPoints().begin(); pnt != tube->GetPoints().end();
     pnt++ )
@@ -2104,6 +2116,12 @@ RidgeExtractor<TInputImage>
       }
     tubePointCount++;
     }
+
+  if( this->GetDebug() )
+    {
+    std::cout << "*** END: AddTube" << std::endl;
+    }
+
   return true;
 }
 
@@ -2112,7 +2130,7 @@ RidgeExtractor<TInputImage>
 template< class TInputImage >
 bool
 RidgeExtractor<TInputImage>
-::AddTube( TubeType * tube )
+::AddTube( const TubeType * tube )
 {
   return this->AddTube< TubeMaskImageType >( tube, m_TubeMaskImage );
 }

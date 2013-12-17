@@ -10,51 +10,49 @@
   <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
   <parameters>
     <label>IO</label>
-    <description>Input/output parameters.</description>
+    <description>Input/output parameters</description>
     <image>
       <name>inputVolume</name>
       <label>Input Volume</label>
       <channel>input</channel>
       <index>0</index>
-      <description>Input volume.</description>
+      <description>Input volume</description>
+      <default/>
     </image>
-    <string>
+    <file>
       <name>outputTubeFile</name>
-      <label>Output Filename for Tube File (.tre)</label>
+      <label>Output Tube File (tre)</label>
       <channel>output</channel>
       <index>1</index>
-      <description>Output tube file.</description>
-    </string>
+      <description>Output tube file</description>
+      <default/>
+    </file>
   </parameters>
-  <parameters>
-    <label>Seeds</label>
-    <float-vector>
-      <name>seedX</name>
-      <label>Seed Coordinate</label>
-      <flag>x</flag>
-      <description>Continuous index for starting ridge extraction.</description>
-    </float-vector>
+  <parameters advanced="true">
+    <label>Ridges</label>
+    <description>Ridges</description>
     <image>
       <name>seedMask</name>
       <label>Seed Mask Image</label>
       <channel>input</channel>
+      <description>Mask of seed points for ridge extraction</description>
       <flag>m</flag>
-      <description>Mask of seed points for ride extraction.</description>
+      <longflag>seedMask</longflag>
+      <default/>
     </image>
     <file>
       <name>seedListFile</name>
       <label>Seed List</label>
-      <flag>f</flag>
       <channel>input</channel>
-      <description>List seed points stored in a file.</description>
+      <flag>f</flag>
+      <longflag>seedList</longflag>
+      <description>List seed points stored in a file</description>
+      <default/>
     </file>
-  </parameters>
-  <parameters>
-    <label>Ridge Parameters</label>
     <double>
       <name>scale</name>
       <label>Scale of Ridge</label>
-      <description>Scale used for ridge measures.</description>
+      <description>Scale used for ridge measures</description>
       <longflag>scale</longflag>
       <flag>s</flag>
       <default>2.0</default>
@@ -63,18 +61,26 @@
       <name>seedScaleMask</name>
       <label>Seed Scale Mask</label>
       <channel>input</channel>
+      <longflag>seedScaleMask</longflag>
       <flag>S</flag>
-      <description>Scales of seed points for ride extraction.</description>
+      <description>Scales of seed points for ride extraction</description>
     </image>
+    <double-vector>
+      <name>seedX</name>
+      <label>Seed Coordinate</label>
+      <longflag>seedX</longflag>
+      <flag>x</flag>
+      <description>Continuous index for starting ridge extraction</description>
+    </double-vector>
   </parameters>
   <parameters>
     <label>Output Parameters</label>
     <image>
       <name>outputTubeImage</name>
       <label>Output Rendered Tube Image</label>
-      <flag>t</flag>
+      <flag>o</flag>
       <channel>output</channel>
-      <description>Output binary image that is a mask of extracted tubes.</description>
+      <description>Output binary mask of extracted tubes</description>
     </image>
   </parameters>
 </executable>

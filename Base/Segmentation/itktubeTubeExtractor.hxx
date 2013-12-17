@@ -53,10 +53,12 @@ TubeExtractor<TInputImage>
 
   m_InputImage = NULL;
 
-  m_Color[0] = 0.0f;
+  m_Color[0] = 1.0f;
   m_Color[1] = 0.0f;
   m_Color[2] = 0.0f;
   m_Color[3] = 0.0f;
+
+  m_TubeGroup = TubeGroupType::New();
 }
 
 /**
@@ -326,7 +328,7 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 typename TubeExtractor< TInputImage >::TubeType::Pointer
 TubeExtractor<TInputImage>
-::ExtractTube( ContinuousIndexType & x, unsigned int tubeID )
+::ExtractTube( const ContinuousIndexType & x, unsigned int tubeID )
 {
   if( this->m_RidgeOp.IsNull() )
     {
@@ -353,8 +355,6 @@ TubeExtractor<TInputImage>
     spacing[i] = this->m_InputImage->GetSpacing()[i];
     }
   tube->GetIndexToObjectTransform()->SetScaleComponent( spacing );
-
-  this->m_RidgeOp->SmoothTube( tube, 15 );
 
   if( this->m_AbortProcess != NULL )
     {
@@ -399,10 +399,38 @@ TubeExtractor<TInputImage>
 }
 
 /**
+ * Get list of extracted tubes */
+template< class TInputImage >
+typename TubeExtractor< TInputImage >::TubeGroupType::Pointer
+TubeExtractor<TInputImage>
+::GetTubeGroup( void )
+{
+  return m_TubeGroup;
+}
+
+/**
+ * Set list of extracted tubes */
+template< class TInputImage >
+void
+TubeExtractor<TInputImage>
+::SetTubeGroup( TubeGroupType * tubes )
+{
+  m_TubeGroup = tubes;
+  typename TubeGroupType::ChildrenListType * cList =
+    tubes->GetChildren( 9999 );
+  typename TubeGroupType::ChildrenListType::iterator iter = cList->begin();
+  while( iter != cList->end() )
+    {
+    this->AddTube( *iter );
+    ++iter;
+    }
+}
+
+/**
  * Smooth a tube */
 template< class TInputImage >
 void
-  TubeExtractor<TInputImage>
+TubeExtractor<TInputImage>
 ::SmoothTube( TubeType * tube, int h )
 {
   if( this->m_RidgeOp.IsNull() )
@@ -417,7 +445,7 @@ void
  * Add a tube */
 template< class TInputImage >
 bool
-  TubeExtractor<TInputImage>
+TubeExtractor<TInputImage>
 ::AddTube( TubeType * tube )
 {
   if( this->m_RidgeOp.IsNull() )
@@ -425,14 +453,20 @@ bool
     throw( "Input data must be set first in TubeExtractor" );
     }
 
-  return this->m_RidgeOp->AddTube( tube );
+  bool result = this->m_RidgeOp->AddTube( tube );
+  if( result )
+    {
+    m_TubeGroup->AddSpatialObject( tube );
+    }
+
+  return result;
 }
 
 /**
  * Delete a tube */
 template< class TInputImage >
 bool
-  TubeExtractor<TInputImage>
+TubeExtractor<TInputImage>
 ::DeleteTube( TubeType * tube )
 {
   if( this->m_RidgeOp.IsNull() )
@@ -440,14 +474,20 @@ bool
     throw( "Input data must be set first in TubeExtractor" );
     }
 
-  return this->m_RidgeOp->DeleteTube( tube );
+  bool result = this->m_RidgeOp->DeleteTube( tube );
+  if( result )
+    {
+    m_TubeGroup->RemoveSpatialObject( tube );
+    }
+
+  return result;
 }
 
 /**
  * Set the tube color */
 template< class TInputImage >
 void
-  TubeExtractor<TInputImage>
+TubeExtractor<TInputImage>
 ::SetColor( float color[4] )
 {
   for( unsigned int i=0; i<4; i++ )
@@ -470,7 +510,7 @@ void
  * Set the status callback  */
 template< class TInputImage >
 void
-  TubeExtractor<TInputImage>
+TubeExtractor<TInputImage>
 ::StatusCallBack( void ( *statusCallBack )( const char *, const char *,
     int ) )
 {
