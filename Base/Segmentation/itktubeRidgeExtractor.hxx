@@ -1264,7 +1264,7 @@ RidgeExtractor<TInputImage>
       {
       newPoints.push_back( pnts[i] );
       }
-    for( int i=0; i<curPoints->size(); ++i )
+    for( unsigned int i=0; i<curPoints->size(); ++i )
       {
       newPoints.push_back( (*curPoints)[i] );
       }
