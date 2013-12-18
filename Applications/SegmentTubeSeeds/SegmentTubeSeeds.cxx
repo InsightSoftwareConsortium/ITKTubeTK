@@ -28,7 +28,6 @@ limitations under the License.
 #include "tubeMessage.h"
 #include "tubeStringUtilities.h"
 
-#include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkTimeProbesCollectorBase.h>
@@ -202,7 +201,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Report();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 // Main

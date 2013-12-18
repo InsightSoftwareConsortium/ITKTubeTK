@@ -32,6 +32,8 @@ limitations under the License.
 #include "itktubeRadiusExtractor.h"
 #include "itktubeRidgeExtractor.h"
 
+#include "itkGroupSpatialObject.h"
+
 #include <itkObject.h>
 
 namespace itk
@@ -84,6 +86,8 @@ public:
   /**  Type definition for VesselTubeSpatialObject */
   typedef VesselTubeSpatialObject< ImageDimension >     TubeType;
   typedef typename TubeType::TubePointType              TubePointType;
+
+  typedef itk::GroupSpatialObject< ImageDimension >     TubeGroupType;
 
   typedef RidgeExtractor<ImageType>                     RidgeOpType;
   typedef RadiusExtractor<ImageType>                    RadiusOpType;
@@ -174,8 +178,16 @@ public:
   /**
    * Extract the ND tube given the position of the first point
    * and the tube ID */
-  typename TubeType::Pointer ExtractTube( ContinuousIndexType & x,
+  typename TubeType::Pointer ExtractTube( const ContinuousIndexType & x,
     unsigned int tubeID );
+
+  /**
+   * Get the list of tubes that have been extracted */
+  typename TubeGroupType::Pointer GetTubeGroup( void );
+
+  /**
+   * Set the list of tubes that have been extracted */
+  void SetTubeGroup( TubeGroupType * tubes );
 
   /**
    * Delete a tube */
@@ -234,8 +246,12 @@ private:
   TubeExtractor( const Self& );
   void operator=( const Self& );
 
-  typename ImageType::Pointer  m_InputImage;
-  float                        m_Color[4];
+  typename ImageType::Pointer       m_InputImage;
+
+  float                             m_Color[4];
+
+  typename TubeGroupType::Pointer   m_TubeGroup;
+
 
 }; // End class TubeExtractor
 

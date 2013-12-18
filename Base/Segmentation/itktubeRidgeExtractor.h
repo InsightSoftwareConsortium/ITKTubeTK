@@ -247,13 +247,13 @@ public:
 
   /** Delete a tube */
   template< class TDrawMask >
-  bool DeleteTube( TubeType * tube, TDrawMask * drawMask );
-  bool DeleteTube( TubeType * tube );
+  bool DeleteTube( const TubeType * tube, TDrawMask * drawMask );
+  bool DeleteTube( const TubeType * tube );
 
   /** Add a tube */
   template< class TDrawMask >
-  bool AddTube( TubeType * tube, TDrawMask * drawMask );
-  bool AddTube( TubeType * tube );
+  bool AddTube( const TubeType * tube, TDrawMask * drawMask );
+  bool AddTube( const TubeType * tube );
 
   /** Smooth a tube */
   void SmoothTube( TubeType * tube, int h );
@@ -274,7 +274,7 @@ public:
   bool   LocalRidge( ContinuousIndexType & x );
 
   /** Extract */
-  typename TubeType::Pointer  ExtractRidge( ContinuousIndexType & x,
+  typename TubeType::Pointer  ExtractRidge( const ContinuousIndexType & x,
     int tubeID );
 
   /** Set the idle callback */

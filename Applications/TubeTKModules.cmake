@@ -54,7 +54,7 @@ set( TubeTK_${proj}_MODULES
   SegmentConnectedComponents
   SegmentConnectedComponentsUsingParzenPDFs
   SegmentTubeSeeds
-  #SegmentTubes
+  SegmentTubes
   SegmentUsingOtsuThreshold
   ShrinkImage
   ShrunkenSeedImageToList

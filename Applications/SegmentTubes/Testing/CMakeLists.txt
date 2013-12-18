@@ -39,13 +39,14 @@ set( IMAGECOMPARE_EXE
 Midas3FunctionAddTest( ${MODULE_NAME}-Test1
             ${PROJ_EXE}
                -x 30,50,30
+               -o ${TEMP}/${MODULE_NAME}Test1.mha
                MIDAS{Branch.n010.mha.md5}
-               ${TEMP}/${MODULE_NAME}Test1.mha )
+               ${TEMP}/${MODULE_NAME}Test1.tre )
 
 # Test1-Compare
 Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
             ${IMAGECOMPARE_EXE}
                -t ${TEMP}/${MODULE_NAME}Test1.mha
-               -b ${BASELINE}/${MODULE_NAME}Test1.mha )
+               -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare
               APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
