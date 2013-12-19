@@ -497,6 +497,65 @@ endif( TubeTK_USE_VTK )
 include( TestBigEndian )
 test_big_endian( CMAKE_WORDS_BIGENDIAN )
 
+# Set TubeTK_EXECUTABLE_DIRS useful to configure launcher scripts
+# and set TubeTK_LIBRARY_DIRS
+if( MSVC )
+  set( TubeTK_EXECUTABLE_DIRS
+    ${JsonCpp_DIR}/bin/${CMAKE_BUILD_TYPE}
+    ${ParameterSerializer_DIR}/bin/${CMAKE_BUILD_TYPE}
+    ${GenerateCLP_DIR}/${CMAKE_BUILD_TYPE}
+    ${ITK_DIR}/bin/${CMAKE_BUILD_TYPE}
+    ${TubeTK_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}
+    ${TubeTK_BINARY_DIR}/lib/TubeTK/Plugins/${CMAKE_BUILD_TYPE} )
+  if( TubeTK_USE_VTK )
+    list( APPEND TubeTK_EXECUTABLE_DIRS
+      ${VTK_DIR}/bin/${CMAKE_BUILD_TYPE} )
+  endif( TubeTK_USE_VTK )
+else( MSVC )
+  set( TubeTK_EXECUTABLE_DIRS
+    ${JsonCpp_DIR}/bin
+    ${ParameterSerializer_DIR}/bin
+    ${GenerateCLP_DIR}
+    ${ITK_DIR}/bin
+    ${TubeTK_BINARY_DIR}/bin
+    ${TubeTK_BINARY_DIR}/lib
+    ${TubeTK_BINARY_DIR}/lib/TubeTK/Plugins )
+  if( TubeTK_USE_VTK )
+    list( APPEND ${VTK_DIR}/bin )
+  endif( TubeTK_USE_VTK )
+endif( MSVC )
+
+
+# Configure a launcher for running TubeTK methods from the command line
+message(STATUS "Configuring Launcher script")
+if( WIN32 )
+  # Microsoft Windows.
+  set(_launcher_platform "windows")
+  configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKLauncher.bat.in
+    ${TubeTK_BINARY_DIR}/TubeTKLauncher.bat @ONLY )
+
+  find_program(CMD_EXECUTABLE "cmd")
+  if( NOT CMD_EXECUTABLE )
+    message(FATAL_ERROR "Could not find 'cmd' executable required to run test using the launcher")
+  endif()
+
+  set(TubeTK_LAUNCHER ${TubeTK_BINARY_DIR}/TubeTKLauncher.bat)
+elseif( UNIX )
+  # Apple OS X, Linux, or UNIX.
+  set(_launcher_platform "unix")
+  configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKLauncher.sh.in
+    ${TubeTK_BINARY_DIR}/TubeTKLauncher.sh @ONLY )
+
+  find_program(SH_EXECUTABLE "sh")
+  if( NOT SH_EXECUTABLE )
+    message(FATAL_ERROR "Could not find 'sh' executable required to run test using the launcher")
+  endif()
+  set(TubeTK_LAUNCHER ${SH_EXECUTABLE} ${TubeTK_BINARY_DIR}/TubeTKLauncher.sh)
+else()
+  message(FATAL_ERROR "Configuring Launcher script - failed [unknown platform]")
+endif()
+message(STATUS "Configuring Launcher script - ok [${_launcher_platform}]")
+
 # Setup to conform to 3D Slicer paths and define plugin copying macros.
 if( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_SLICER )
   include( Slicer4MacroGetSource )
@@ -572,32 +631,6 @@ set( TubeTK_INCLUDE_DIRS
   ${TubeTK_SOURCE_DIR}/Base/Segmentation
   ${TubeTK_SOURCE_DIR}/Base/USTK )
 
-if( MSVC )
-  set( TubeTK_EXECUTABLE_DIRS
-    ${JsonCpp_DIR}/bin/${CMAKE_BUILD_TYPE}
-    ${ParameterSerializer_DIR}/bin/${CMAKE_BUILD_TYPE}
-    ${GenerateCLP_DIR}/${CMAKE_BUILD_TYPE}
-    ${ITK_DIR}/bin/${CMAKE_BUILD_TYPE}
-    ${TubeTK_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}
-    ${TubeTK_BINARY_DIR}/lib/TubeTK/Plugins/${CMAKE_BUILD_TYPE} )
-  if( TubeTK_USE_VTK )
-    list( APPEND TubeTK_EXECUTABLE_DIRS
-      ${VTK_DIR}/bin/${CMAKE_BUILD_TYPE} )
-  endif( TubeTK_USE_VTK )
-else( MSVC )
-  set( TubeTK_EXECUTABLE_DIRS
-    ${JsonCpp_DIR}/bin
-    ${ParameterSerializer_DIR}/bin
-    ${GenerateCLP_DIR}
-    ${ITK_DIR}/bin
-    ${TubeTK_BINARY_DIR}/bin
-    ${TubeTK_BINARY_DIR}/lib
-    ${TubeTK_BINARY_DIR}/lib/TubeTK/Plugins )
-  if( TubeTK_USE_VTK )
-    list( APPEND ${VTK_DIR}/bin )
-  endif( TubeTK_USE_VTK )
-endif( MSVC )
-
 set( TubeTK_LIBRARY_DIRS
   ${TubeTK_EXECUTABLE_DIRS} )
 
@@ -621,16 +654,6 @@ configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKConfig.cmake.in
 # Configure UseTubeTK.cmake.
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/UseTubeTK.cmake.in
   ${TubeTK_CONFIG_BINARY_DIR}/UseTubeTK.cmake @ONLY )
-
-# Configure a launcher for running TubeTK methods from the command line in
-# Microsoft Windows.
-configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKLauncher.bat.in
-  ${TubeTK_BINARY_DIR}/TubeTKLauncher.bat @ONLY )
-
-# Configure a launcher for running TubeTK methods from the command line in
-# Apple OS X, Linux, or UNIX.
-configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKLauncher.sh.in
-  ${TubeTK_BINARY_DIR}/TubeTKLauncher.sh @ONLY )
 
 # Configure CPack packaging.
 if( NOT TubeTK_BUILD_SLICER_EXTENSION )

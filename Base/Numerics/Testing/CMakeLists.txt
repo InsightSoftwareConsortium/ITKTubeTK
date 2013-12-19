@@ -27,6 +27,9 @@ include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
+
 find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseNumerics ${PYTHON_EXECUTABLE}
@@ -35,10 +38,10 @@ if( PYTHON_EXECUTABLE )
 endif( PYTHON_EXECUTABLE )
 
 set( BASE_NUMERICS_TESTS
-  $<TARGET_FILE:tubeBaseNumericsTests> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseNumericsTests> )
 
 set( BASE_NUMERICS_HEADER_TEST
-  $<TARGET_FILE:tubeBaseNumericsHeaderTest> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseNumericsHeaderTest> )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -73,12 +76,21 @@ target_link_libraries( tubeBaseNumericsHeaderTest
   TubeTKNumerics
   ${ITK_LIBRARIES} )
 
-add_executable( tubeBaseNumericsTests
-  tubeBaseNumericsTests.cxx
-  ${tubeBaseNumerics_SRCS} )
-target_link_libraries( tubeBaseNumericsTests
-  TubeTKNumerics
-  ${ITK_LIBRARIES} )
+SEMMacroBuildCLI(
+  NAME tubeBaseNumericsTests
+  ADDITIONAL_SRCS
+    ${tubeBaseNumerics_SRCS}
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
+  TARGET_LIBRARIES
+    TubeTKNumerics
+    ${ITK_LIBRARIES}
+  INCLUDE_DIRECTORIES
+    ${TubeTK_SOURCE_DIR}/Base/Common
+    ${TubeTK_SOURCE_DIR}/Base/Numerics
+  INSTALL_RUNTIME_DESTINATION lib
+  INSTALL_LIBRARY_DESTINATION lib
+  INSTALL_ARCHIVE_DESTINATION bin
+  )
 
 add_test( NAME tubeBaseNumericsHeaderTest
   COMMAND ${BASE_NUMERICS_HEADER_TEST} )

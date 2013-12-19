@@ -25,8 +25,11 @@ include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
+
 set( BASE_USTK_TESTS
-  $<TARGET_FILE:tubeBaseUSTKTests> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseUSTKTests> )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -41,17 +44,22 @@ set( tubeBaseUSTK_SRCS
   itktubeInnerOpticToPlusImageReaderTest.cxx
   itktubeMarkDuplicateFramesInvalidImageFilterTest.cxx )
 
-include_directories(
-  ${TubeTK_SOURCE_DIR}/Base/Common
-  ${TubeTK_SOURCE_DIR}/Base/USTK
-  ${TubeTK_SOURCE_DIR}/Base/Filtering )
-
-add_executable( tubeBaseUSTKTests
-  tubeBaseUSTKTests.cxx
-  ${tubeBaseUSTK_SRCS} )
-target_link_libraries( tubeBaseUSTKTests
-  TubeTKUSTK
-  ${ITK_LIBRARIES} )
+SEMMacroBuildCLI(
+  NAME tubeBaseUSTKTests
+  ADDITIONAL_SRCS
+    ${tubeBaseUSTK_SRCS}
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
+  TARGET_LIBRARIES
+    TubeTKUSTK
+    ${ITK_LIBRARIES}
+  INCLUDE_DIRECTORIES
+    ${TubeTK_SOURCE_DIR}/Base/Common
+    ${TubeTK_SOURCE_DIR}/Base/USTK
+    ${TubeTK_SOURCE_DIR}/Base/Filtering
+  INSTALL_RUNTIME_DESTINATION lib
+  INSTALL_LIBRARY_DESTINATION lib
+  INSTALL_ARCHIVE_DESTINATION bin
+  )
 
 Midas3FunctionAddTest( NAME itkLabelMapToAcousticImpedanceImageFilterTest
   COMMAND ${BASE_USTK_TESTS}

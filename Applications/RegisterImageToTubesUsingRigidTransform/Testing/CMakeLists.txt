@@ -30,11 +30,11 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
-  ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 # Test1
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1
-  ${PROJ_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+  COMMAND ${PROJ_EXE}
   --parameterProgression ${TEMP}/${MODULE_NAME}Test1ParameterProgression.h5
   MIDAS{Branch.n020.mha.md5}
   MIDAS{tube.tre.md5}
@@ -44,8 +44,8 @@ if( TubeTK_USE_PYQTGRAPH )
   configure_file( ${MODULE_NAME}Tuner.json.in
     ${TEMP}/${MODULE_NAME}Tuner.json )
 
-  Midas3FunctionAddTest( ${MODULE_NAME}TunerTest
-    ${PYTHON_TESTING_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../${MODULE_NAME}Tuner.py
+  Midas3FunctionAddTest( NAME ${MODULE_NAME}TunerTest
+    COMMAND ${PYTHON_TESTING_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../${MODULE_NAME}Tuner.py
       --non-interactive
       ${TEMP}/${MODULE_NAME}Tuner.json
     MIDAS_FETCH_ONLY{Branch.n020.mha.md5}

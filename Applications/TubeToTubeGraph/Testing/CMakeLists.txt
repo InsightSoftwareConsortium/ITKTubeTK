@@ -30,48 +30,48 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
-     ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
+     ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 set( TEXTCOMPARE_EXE
-     ${TubeTK_BINARY_DIR}/bin/TextCompareCommand )
+     ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
 
 set( IMAGECOMPARE_EXE
-     ${TubeTK_BINARY_DIR}/bin/ImageCompareCommand )
+     ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
 
 # Test1
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1
-                ${PROJ_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+                COMMAND ${PROJ_EXE}
                   MIDAS{VesselNetwork-In-SPL2012-ReferenceSpace.tre.md5}
                   MIDAS{Exemplary-CVT-Tessellation.mha.md5}
                   ${TEMP}/${MODULE_NAME}-VesselNetwork-In-SPL2012-ReferenceSpace.grp )
 
 # Test1-Compare
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-00
-                  ${TEXTCOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-00
+                  COMMAND ${TEXTCOMPARE_EXE}
                     -t ${TEMP}/${MODULE_NAME}-VesselNetwork-In-SPL2012-ReferenceSpace.grp
                     -b MIDAS{${MODULE_NAME}Test1.grp.md5} )
 
 set_property( TEST ${MODULE_NAME}-Test1-Compare-00
               APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-01
-                  ${TEXTCOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-01
+                  COMMAND ${TEXTCOMPARE_EXE}
                     -t ${TEMP}/${MODULE_NAME}-VesselNetwork-In-SPL2012-ReferenceSpace.grp.brc
                     -b MIDAS{${MODULE_NAME}Test1.grp.brc.md5} )
 
 set_property( TEST ${MODULE_NAME}-Test1-Compare-01
               APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-02
-                  ${TEXTCOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-02
+                  COMMAND ${TEXTCOMPARE_EXE}
                     -t ${TEMP}/${MODULE_NAME}-VesselNetwork-In-SPL2012-ReferenceSpace.grp.mat
                     -b MIDAS{${MODULE_NAME}Test1.grp.mat.md5} )
 
 set_property( TEST ${MODULE_NAME}-Test1-Compare-02
               APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare-03
-                  ${TEXTCOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-03
+                  COMMAND ${TEXTCOMPARE_EXE}
                     -t ${TEMP}/${MODULE_NAME}-VesselNetwork-In-SPL2012-ReferenceSpace.grp.rot
                     -b MIDAS{${MODULE_NAME}Test1.grp.rot.md5} )
 

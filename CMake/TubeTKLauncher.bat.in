@@ -26,5 +26,10 @@ set OLD_PATH=%PATH%
 set PATH="@TubeTK_EXECUTABLE_DIRS@;%PATH%"
 
 %*
+:: Collect the exit code from the launcher command.
+set err=%errorlevel%
 
 set PATH=%OLD_PATH%
+
+:: Exit and pass along our exit code.
+exit /B %err%

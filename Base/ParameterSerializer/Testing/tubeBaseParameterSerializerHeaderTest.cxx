@@ -26,6 +26,8 @@ limitations under the License.
 #include "itktubeSubSampleTubeTreeSpatialObjectFilterSerializer.h"
 #include "itktubeTubeAngleOfIncidenceWeightFunctionSerializer.h"
 
+#include "tubeBaseParameterSerializerHeaderTestCLP.h"
+
 int main ( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {
   return EXIT_SUCCESS;

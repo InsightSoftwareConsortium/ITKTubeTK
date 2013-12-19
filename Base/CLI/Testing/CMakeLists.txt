@@ -35,10 +35,10 @@ if( PYTHON_EXECUTABLE )
 endif( PYTHON_EXECUTABLE )
 
 set( BASE_CLI_TESTS
-   $<TARGET_FILE:tubeBaseCLITests> )
+   ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseCLITests> )
 
 set( BASE_CLI_HEADER_TEST
-  $<TARGET_FILE:tubeBaseCLIHeaderTest> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseCLIHeaderTest> )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 

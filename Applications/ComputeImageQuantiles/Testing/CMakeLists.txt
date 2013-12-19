@@ -30,21 +30,21 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
- ${SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY}/${MODULE_NAME} )
+ ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 set( TEXTCOMPARE_EXE
- ${TubeTK_BINARY_DIR}/bin/TextCompareCommand )
+ ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
 
 # Test1
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1
-                ${PROJ_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+                COMMAND ${PROJ_EXE}
                   MIDAS{T1NoSkull.mha.md5}
                   ${TEMP}/${MODULE_NAME}Test1.txt
                   --outputPlainText )
 
 # Test1-Compare
-Midas3FunctionAddTest( ${MODULE_NAME}-Test1-Compare
-                ${TEXTCOMPARE_EXE}
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
+                COMMAND ${TEXTCOMPARE_EXE}
                   -t ${TEMP}/${MODULE_NAME}Test1.txt
                   -b MIDAS{${MODULE_NAME}Test1.txt.md5} )
 

@@ -27,6 +27,9 @@ include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
+
 find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseFiltering ${PYTHON_EXECUTABLE}
@@ -35,10 +38,10 @@ if( PYTHON_EXECUTABLE )
 endif( PYTHON_EXECUTABLE )
 
 set( BASE_FILTERING_TESTS
-  $<TARGET_FILE:tubeBaseFilteringTests> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseFilteringTests> )
 
 set( BASE_FILTERING_HEADER_TEST
-  $<TARGET_FILE:tubeBaseFilteringHeaderTest> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseFilteringHeaderTest> )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -67,11 +70,22 @@ add_executable( tubeBaseFilteringHeaderTest
 target_link_libraries( tubeBaseFilteringHeaderTest
   ${ITK_LIBRARIES} )
 
-add_executable( tubeBaseFilteringTests
-  tubeBaseFilteringTests.cxx
-  ${tubeBaseFilteringTests_SRCS} )
-target_link_libraries( tubeBaseFilteringTests
-  ${ITK_LIBRARIES} )
+SEMMacroBuildCLI(
+  NAME tubeBaseFilteringTests
+  ADDITIONAL_SRCS
+    ${tubeBaseFilteringTests_SRCS}
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
+  TARGET_LIBRARIES
+    ${ITK_LIBRARIES}
+  INCLUDE_DIRECTORIES
+    ${TubeTK_SOURCE_DIR}/Base/Common
+    ${TubeTK_SOURCE_DIR}/Base/Filtering
+    ${TubeTK_SOURCE_DIR}/Base/Numerics
+  INSTALL_RUNTIME_DESTINATION lib
+  INSTALL_LIBRARY_DESTINATION lib
+  INSTALL_ARCHIVE_DESTINATION bin
+  EXECUTABLE_ONLY
+  )
 
 add_test( NAME tubeBaseFilteringHeaderTest
   COMMAND ${BASE_FILTERING_HEADER_TEST} )

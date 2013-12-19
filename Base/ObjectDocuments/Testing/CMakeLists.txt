@@ -37,10 +37,10 @@ if( PYTHON_EXECUTABLE )
 endif( PYTHON_EXECUTABLE )
 
 set( BASE_OBJECT_DOCUMENTS_TESTS
-  $<TARGET_FILE:tubeBaseObjectDocumentsTests> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseObjectDocumentsTests> )
 
 set( BASE_OBJECT_DOCUMENTS_HEADER_TEST
-  $<TARGET_FILE:tubeBaseObjectDocumentsHeaderTest> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseObjectDocumentsHeaderTest> )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 

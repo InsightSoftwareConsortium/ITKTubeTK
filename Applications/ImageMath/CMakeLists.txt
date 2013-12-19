@@ -49,30 +49,23 @@ endif( NOT TubeTK_SOURCE_DIR )
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
 
-# Include Base/CLI to access tubeCLIHelperFunctions.h
-include_directories(
-  ${TubeTK_SOURCE_DIR}/Base/CLI
-  ${TubeTK_SOURCE_DIR}/Base/Common
-  ${TubeTK_SOURCE_DIR}/Base/Numerics
-  ${TubeTK_SOURCE_DIR}/Base/Filtering
-  ${TubeTK_SOURCE_DIR}/Base/Segmentation )
+# Find SEM
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
 
-set( PROJECT_SOURCE
-  ${PROJECT_NAME}.cxx )
-
-add_executable( ${PROJECT_NAME} ${PROJECT_SOURCE} )
-target_link_libraries( ${PROJECT_NAME} ${ITK_LIBRARIES} TubeTKNumerics )
-
-# Add the install rule
-install( FILES DESTINATION bin COMPONENT RUNTIME )
-
-# Installation file
-install(
-  TARGETS ${PROJECT_NAME}
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION bin
-  COMPONENT RUNTIME )
+SEMMacroBuildCLI(
+  NAME ${PROJECT_NAME}
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
+  TARGET_LIBRARIES ${ITK_LIBRARIES} TubeTKNumerics
+  INCLUDE_DIRECTORIES
+    ${TubeTK_SOURCE_DIR}/Base/CLI
+    ${TubeTK_SOURCE_DIR}/Base/Common
+    ${TubeTK_SOURCE_DIR}/Base/Numerics
+    ${TubeTK_SOURCE_DIR}/Base/Filtering
+    ${TubeTK_SOURCE_DIR}/Base/Segmentation
+  INSTALL_RUNTIME_DESTINATION lib
+  INSTALL_LIBRARY_DESTINATION lib
+  INSTALL_ARCHIVE_DESTINATION bin )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

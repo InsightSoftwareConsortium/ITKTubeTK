@@ -26,5 +26,6 @@ export OLD_PATH=$PATH
 export PATH="@TubeTK_EXECUTABLE_DIRS@;${PATH}"
 
 $*
-
+RET=$?
 export PATH=${OLD_PATH}
+exit $RET
