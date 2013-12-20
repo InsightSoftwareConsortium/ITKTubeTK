@@ -28,12 +28,11 @@ namespace tube
 
 
 AtlasSummation
-::AtlasSummation( void )
+::AtlasSummation( void ):
+  m_MeanBuilder( RobustMeanBuilderType::New() )
 {
   m_UseStdDeviation = true;
   m_IsProcessing = false;
-
-  m_MeanBuilder = RobustMeanBuilderType::New();
 
   m_AdjustResampledImageSize    = false;
   m_AdjustResampledImageOrigin  = false;
