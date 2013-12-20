@@ -511,6 +511,10 @@ if( MSVC )
     list( APPEND TubeTK_EXECUTABLE_DIRS
       ${VTK_DIR}/bin/${CMAKE_BUILD_TYPE} )
   endif( TubeTK_USE_VTK )
+  if( TubeTK_USE_SLICER )
+    list( APPEND TubeTK_EXECUTABLE_DIRS
+      ${Slicer_DIR}/bin/${CMAKE_BUILD_TYPE} )
+  endif( TubeTK_USE_SLICER )
 else( MSVC )
   set( TubeTK_EXECUTABLE_DIRS
     ${JsonCpp_DIR}/bin
