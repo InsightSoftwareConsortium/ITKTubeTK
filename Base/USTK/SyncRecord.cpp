@@ -91,7 +91,6 @@ void SyncRecord::setRufImageFileIndex( const int index )
 	ss << "ultrasound_" << setw( 7 ) << setfill( '0' ) << index << ".ppm";
 	
 	ruf_image_path.assign( ss.str() );
-	/*cout << ruf_image_path;*/
 }
 //------------------------------------------------------------------------------------------------------------------------------------------
 ///
@@ -313,7 +312,6 @@ unsigned char *SyncRecord::loadRawRgbPixels( void )
 	}
 	assert( allRgbPixels );
 #endif
-	// cout << "SyncRecordManager::loadRawRgbPixels(): read " << bytes_read << " Bytes from " << ruf_image_path  << endl;
 
 	return allRgbPixels;
 }

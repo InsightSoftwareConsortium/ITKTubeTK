@@ -103,7 +103,6 @@ bool SyncRecordManager::dump( const char *disk_write_path, char *ident )
 
 	ofstream ofs( disk_write_path );
 	if( !ofs || !ofs.is_open() ){ cerr << "SyncRecordManager::dump(): file " << disk_write_path << " is not writable" << endl; return false; }
-	cout << "SyncRecordManager::dump(): dumping to playback file " << disk_write_path << endl;
 
 	// write a few leading comment lines starting with #, and empty
 	ofs << "# Synchronized ultrasound scan / tracking data acquired and processed by InnerOptic" << endl;
@@ -128,7 +127,6 @@ bool SyncRecordManager::dump( const char *disk_write_path, char *ident )
 	for( vector<SyncRecord>::iterator i = recs.begin() ; i != recs.end() ; i++ ) (*i).dump( ofs );
 
 	ofs.close();
-	cout << "SyncRecordManager::dump(): dumped " << recs.size() << " synchronized tracked ultrasound frame records" << endl;
 
 	return true;
 }
@@ -216,7 +214,6 @@ bool SyncRecordManager::load( const char *disk_load_path )
 	records_path = disk_load_path;
 	ifstream ifs( records_path.c_str() );
 	if( !ifs || !ifs.is_open() ){ cerr << "SyncRecordManager::load(): file " << records_path << " is not readable" << endl; return false; }
-	cout << "SyncRecordManager::load(): reading from synchronized-records file " << records_path << endl;
 
 	// skip leading comment lines starting with # or empty
 	while( !ifs.eof() && ifs.good() ){
@@ -230,14 +227,13 @@ bool SyncRecordManager::load( const char *disk_load_path )
 
 	// volume dataset path
 	if( !ifs.eof() && ifs.good() ) if( !( ifs >> volume_path ) ){ cerr << "SyncRecordManager::load(): missing volume dataset path" << endl; ifs.close(); return false; }
-	cout << "SyncRecordManager::load(): read volume dataset path " << volume_path << endl;
 	if( !istreamSkipPastEOL( ifs, 1 ) ){
 		cerr <<   "SyncRecordManager::load(): problem skipping newline after volume_path" << endl; ifs.close(); return false;
 	}
 
 	// navel registration matrices
-	if( !istreamMatrix( ifs, "tracker_f_volume", tracker_f_volume, true ) ){ ifs.close(); return false; }
-	if( !istreamMatrix( ifs, "tracker_f_navel" , tracker_f_navel , true ) ){ ifs.close(); return false; }
+	if( !istreamMatrix( ifs, "tracker_f_volume", tracker_f_volume, false ) ){ ifs.close(); return false; }
+	if( !istreamMatrix( ifs, "tracker_f_navel" , tracker_f_navel , false ) ){ ifs.close(); return false; }
 
 	// skip column titles line
 	if( !istreamSkipPastEOL( ifs, 1 ) ){ cerr << "SyncRecordManager::load(): cannot skip column titles line" << endl; ifs.close(); return false; }
@@ -246,21 +242,12 @@ bool SyncRecordManager::load( const char *disk_load_path )
 	count = 0;
 	recs.resize( 2222 );
 	while( !ifs.eof() && ifs.good() ){
-		/*cout << " " << count;*/
 		if( !recs[count].load( ifs ) ) break;
-
-#if 0
-		if( count > 1150 ){
-			cout << "==============> " << count << endl;
-			recs[count].print();
-		}
-#endif
 
 		if( ++count >= recs.size() ) recs.resize( recs.size() + 1111 );
 	}
 	recs.resize( count );
 	ifs.close();
-	cout << "SyncRecordManager::load(): loaded " << count << " synchronized tracked ultrasound frame records" << endl;
 
 	// here we may have to check and enforce some limit on the number of records (based on main or video memory sizes, texture subsampling, etc.
 
