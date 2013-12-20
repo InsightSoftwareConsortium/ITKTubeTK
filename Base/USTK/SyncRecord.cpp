@@ -49,12 +49,34 @@ limitations under the License.
 SyncRecord::SyncRecord( void )
 {
 	allRgbPixels = NULL;
+	usGreyPixels = NULL;
 
 	// hardcoded (and thus not drift-corrected) laparo image corners; top left is 0,0
 	endo_x0_in_ruf =   3; // upper left corner
 	endo_y0_in_ruf = 291;
 	endo_x1_in_ruf = 262; // bottom right corner
 	endo_y1_in_ruf = 485;
+
+	timestamp = 0;
+        for( unsigned int ii = 0; ii < MAX_US_SCAN_CROP_POLYGON_PTS; ++ii )
+	  {
+	  scanCropPolygon_in_ruf_x[ii] = 0.0;
+	  scanCropPolygon_in_ruf_y[ii] = 0.0;
+	  }
+	// Initialize OpenGL transform matrices as identity
+	for( unsigned int ii = 0; ii < 16; ++ii )
+	  {
+	  tracker_f_ruf[ii] = 0.0;
+	  transducer_f_ruf[ii] = 0.0;
+	  }
+	tracker_f_ruf[0] = 1.0;
+	transducer_f_ruf[0] = 1.0;
+	tracker_f_ruf[5] = 1.0;
+	transducer_f_ruf[5] = 1.0;
+	tracker_f_ruf[10] = 1.0;
+	transducer_f_ruf[10] = 1.0;
+	tracker_f_ruf[15] = 1.0;
+	transducer_f_ruf[15] = 1.0;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------
 ///
@@ -70,7 +92,7 @@ void SyncRecord::ostreamMatrix( ostream &os, const char *header, const double m[
 	for( int i = 0 ; i < 4 ; ++i ) for( int j = 0 ; j < 4 ; ++j ) { os << m[4*i+j]; if( j < 3 ) os << " "; else os << endl; }
 }
 //==========================================================================================================================================
-#ifdef INNEROPTIC_INTERNAL_ONLY
+//#ifdef INNEROPTIC_INTERNAL_ONLY
 //------------------------------------------------------------------------------------------------------------------------------------------
 ///
 void SyncRecord::setTimestamp( int stamp )
@@ -127,7 +149,7 @@ void SyncRecord::setEndoImageGeometry_in_ruf( const int x0, const int y0, const 
 	endo_y1_in_ruf = y1;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------
-#endif
+//#endif
 //==========================================================================================================================================
 ///
 int SyncRecord::getTimestamp( void )
@@ -166,15 +188,6 @@ void SyncRecord::getTransducerFromRufMatrix( double m[16] )
 }
 //------------------------------------------------------------------------------------------------------------------------------------------
 ///
-void SyncRecord::getEndoImageGeometry_in_ruf( int &x0, int &y0, int &x1, int &y1 )
-{
-	x0 = endo_x0_in_ruf;
-	y0 = endo_y0_in_ruf;
-	x1 = endo_x1_in_ruf;
-	y1 = endo_y1_in_ruf;
-}
-//------------------------------------------------------------------------------------------------------------------------------------------
-///                                                                                                   prints human-readable record to stdout
 void SyncRecord::print( void )
 {
 	streamsize oldp = cout.precision(); cout.precision( 9 ); // arbitrary; the matrices come from Mat44d types, so they are double precision
@@ -305,8 +318,8 @@ unsigned char *SyncRecord::loadRawRgbPixels( void )
 #else
 	// use fread() for max speed
 	// should calculate an offset to read only from top of highest bounding box in file to bottom of lowest one
-	unsigned int bytes_read;
-	if( !( bytes_read = readBinFileAnySizeWithOffset( ruf_image_path.c_str(), &allRgbPixels, (long)4096 ) ) ){
+	unsigned int bytes_read = readBinFileAnySizeWithOffset( ruf_image_path.c_str(), &allRgbPixels, (long)4096 );
+	if( ! bytes_read ){
         cerr << "SyncRecord::loadRawRgbPixels(): could not load raw RGB pixels" << endl;
 		if( allRgbPixels ){ delete allRgbPixels; allRgbPixels = NULL; }
 		return NULL;

@@ -49,13 +49,13 @@ public:
 
 	bool load( const char *disk_load_path );
 
-#   ifdef INNEROPTIC_INTERNAL_ONLY
+//#   ifdef INNEROPTIC_INTERNAL_ONLY
 		void setVolumeImagePath( const char *vol_path );
 		void setTrackerFromVolumeImageMatrix( const double m[16] );
 		void setTrackerFromNavelMatrix(       const double m[16] );
 		SyncRecord *newSequentialAppendedRecord( void );
 		bool dump( const char *disk_write_path, char *ident );
-#   endif
+//#   endif
 	const char *getVolumeImagePath( void );
 	void getTrackerFromVolumeImageMatrix( double m[16] );
 	void getTrackerFromNavelMatrix(       double m[16] );
