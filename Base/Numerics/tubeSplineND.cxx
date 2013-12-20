@@ -107,6 +107,7 @@ private:
 
 SplineND
 ::SplineND( void )
+  : m_FuncVal( NULL )
 {
   m_Dimension = 0;
 
@@ -118,8 +119,6 @@ SplineND
   m_DataWS = NULL;
   m_DataWSX = NULL;
   m_DataWSXX = NULL;
-
-  m_FuncVal = NULL;
 
   m_OptimizerNDVal = new SplineNDValueFunction( this );
   m_OptimizerNDDeriv = new SplineNDDerivativeFunction( this );

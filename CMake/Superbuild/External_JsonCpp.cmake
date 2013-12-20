@@ -65,6 +65,11 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_JSONCPP} )
     LOG_TEST 0
     LOG_INSTALL 0
     CMAKE_GENERATOR ${gen}
+    PATCH_COMMAND
+      ${CMAKE_COMMAND}
+      -E copy
+        ${TubeTK_SOURCE_DIR}/ThirdParty/${proj}/CMakeLists.txt
+        ${${proj}_SOURCE_DIR}/CMakeLists.txt
     CMAKE_ARGS
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}

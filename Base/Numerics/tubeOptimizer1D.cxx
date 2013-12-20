@@ -41,6 +41,7 @@ Optimizer1D
 
 Optimizer1D
 ::Optimizer1D( void )
+  : m_FuncVal( NULL ), m_FuncDeriv( NULL )
 {
   m_SearchForMin = true;
   m_Tolerance = 0.0001;
@@ -49,8 +50,6 @@ Optimizer1D
   m_XMax = 1;
   m_XStep = 0.01;
   m_Defined = false;
-  m_FuncVal = 0;
-  m_FuncDeriv = 0;
 }
 
 
