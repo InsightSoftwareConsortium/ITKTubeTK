@@ -58,9 +58,9 @@ int RegressionTestImage( const char *, const char *, bool, bool, double,
 int main( int argc, char * argv[] )
 {
   int bestBaselineStatus = 2001;
+  bool writeOutputImage = false;
   PARSE_ARGS;
 
-  bool          writeOutputImage = false;
   std::string bestBaselineFilename;
   itk::ImageIOBase::IOComponentType cType = itk::ImageIOBase::UCHAR;
   unsigned int dims = 0;

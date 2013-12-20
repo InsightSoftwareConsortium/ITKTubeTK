@@ -101,6 +101,7 @@ private:
 
 OptimizerND
 ::OptimizerND( void )
+ : m_FuncValND( NULL ), m_FuncDerivND( NULL )
 {
   m_Dimension = 0;
 
@@ -111,8 +112,6 @@ OptimizerND
   m_MaxLineSearches = 10;
 
   m_Optimizer1D = NULL;
-  m_FuncValND = NULL;
-  m_FuncDerivND = NULL;
 
   m_Optimizer1DVal = new OptimizerNDValueFunction( this );
   m_Optimizer1DDeriv = new OptimizerNDDerivativeFunction( this );

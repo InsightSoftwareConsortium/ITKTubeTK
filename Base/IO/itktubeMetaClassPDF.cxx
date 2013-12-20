@@ -156,7 +156,7 @@ PrintInfo( void ) const
   MetaImage::PrintInfo();
 
   std::cout << "NumberOfBinsPerFeature : ";
-  if( m_NumberOfBinsPerFeature.size() > 0 )
+  if( ! m_NumberOfBinsPerFeature.empty() )
     {
     std::cout << m_NumberOfBinsPerFeature[0];
     for( int i = 1; i < MetaImage::NDims(); i++ )
@@ -167,7 +167,7 @@ PrintInfo( void ) const
   std::cout << std::endl;
 
   std::cout << "BinMin : ";
-  if( m_BinMin.size() > 0 )
+  if( ! m_BinMin.empty() )
     {
     std::cout << m_BinMin[0];
     for( int i = 1; i < MetaImage::NDims(); i++ )
@@ -178,7 +178,7 @@ PrintInfo( void ) const
   std::cout << std::endl;
 
   std::cout << "BinSize : ";
-  if( m_BinSize.size() > 0 )
+  if( ! m_BinSize.empty() )
     {
     std::cout << m_BinSize[0];
     for( int i = 1; i < MetaImage::NDims(); i++ )
@@ -189,7 +189,7 @@ PrintInfo( void ) const
   std::cout << std::endl;
 
   std::cout << "ObjectId : ";
-  if( m_ObjectId.size() > 0 )
+  if( ! m_ObjectId.empty() )
     {
     std::cout << m_ObjectId[0];
     for( int i = 1; i < MetaImage::NDims(); i++ )
@@ -200,7 +200,7 @@ PrintInfo( void ) const
   std::cout << std::endl;
 
   std::cout << "ObjectPDFWeight : ";
-  if( m_ObjectPDFWeight.size() > 0 )
+  if( ! m_ObjectPDFWeight.empty() )
     {
     std::cout << m_ObjectPDFWeight[0];
     for( int i = 1; i < MetaImage::NDims(); i++ )
