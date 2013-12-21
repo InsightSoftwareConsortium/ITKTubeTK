@@ -50,7 +50,7 @@ public:
 	SyncRecord( void );
    ~SyncRecord( void );
 
-#   ifdef INNEROPTIC_INTERNAL_ONLY
+//#   ifdef INNEROPTIC_INTERNAL_ONLY
 		void setTimestamp( int stamp );
 		void setRufImageFilePath( const char *ruf_path );
 		void setRufImageFileIndex( const int index );
@@ -58,13 +58,12 @@ public:
 		void setTrackerFromRufMatrix(    const double m[16] );
 		void setTransducerFromRufMatrix( const double m[16] );
 		void setEndoImageGeometry_in_ruf( const int x0, const int y0, const int x1, const int y1 );
-#   endif
+//#   endif
 	int getTimestamp( void );
 	const char *getRufImageFilePath( void );
 	bool getScanCropVertex_in_ruf( const int index, double &x, double &y );
 	void getTrackerFromRufMatrix(    double m[16] );
 	void getTransducerFromRufMatrix( double m[16] );
-	void getEndoImageGeometry_in_ruf( int &x0, int &y0, int &x1, int &y1 );
 	bool loadRufImageRgbPixels( unsigned char **rgb_pixels );
 
 	void print( void );

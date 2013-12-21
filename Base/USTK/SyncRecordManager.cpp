@@ -68,7 +68,7 @@ void SyncRecordManager::ostreamMatrix( ostream &os, const char *header, const do
 	for( int i = 0 ; i < 4 ; ++i ) for( int j = 0 ; j < 4 ; ++j ) { os << m[4*i+j]; if( j < 3 ) os << " "; else os << endl; }
 }
 //==========================================================================================================================================
-#ifdef INNEROPTIC_INTERNAL_ONLY
+//#ifdef INNEROPTIC_INTERNAL_ONLY
 //------------------------------------------------------------------------------------------------------------------------------------------
 ///
 void SyncRecordManager::setVolumeImagePath( const char *vol_path )
@@ -125,7 +125,7 @@ bool SyncRecordManager::dump( const char *disk_write_path, char *ident )
 	ofs << SYNCRECORD_DUMP_ORDER << endl;
 
 	// dump all records line by line
-	for( vector<SyncRecord>::iterator i = recs.begin() ; i != recs.end() ; i++ ) (*i).dump( ofs );
+	for( vector<SyncRecord>::iterator i = recs.begin() ; i != recs.end() ; ++i ) (*i).dump( ofs );
 
 	ofs.close();
 	cout << "SyncRecordManager::dump(): dumped " << recs.size() << " synchronized tracked ultrasound frame records" << endl;
@@ -133,7 +133,7 @@ bool SyncRecordManager::dump( const char *disk_write_path, char *ident )
 	return true;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------
-#endif
+//#endif // INNEROPTIC_INTERNAL_ONLY
 //==========================================================================================================================================
 const char *SyncRecordManager::getVolumeImagePath( void )
 {

@@ -58,7 +58,6 @@ int RegressionTestImage( const char *, const char *, bool, bool, double,
 int main( int argc, char * argv[] )
 {
   int bestBaselineStatus = 2001;
-  bool writeOutputImage = false;
   PARSE_ARGS;
 
   std::string bestBaselineFilename;
@@ -100,6 +99,7 @@ int main( int argc, char * argv[] )
       ++baselineImageItr;
       }
 
+    bool writeOutputImage = false;
     // generate images of our closest match
     if( bestBaselineStatus == 0 )
       {
