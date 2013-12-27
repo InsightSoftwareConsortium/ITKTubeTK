@@ -46,7 +46,6 @@ find_package( GenerateCLP REQUIRED )
 include( ${GenerateCLP_USE_FILE} )
 
 set( tubeCLIHelperFunctionsTest_SOURCE tubeCLIHelperFunctionsTest.cxx )
-generateclp( tubeCLIHelperFunctionsTest_SOURCE tubeCLIHelperFunctionsTest.xml )
 
 set( tubeBaseCLITests_SRCS
   tubeBaseCLIPrintTest.cxx
@@ -61,10 +60,22 @@ include_directories(
 add_executable( tubeBaseCLIHeaderTest tubeBaseCLIHeaderTest.cxx )
 target_link_libraries( tubeBaseCLIHeaderTest ${ITK_LIBRARIES} )
 
-add_executable( tubeBaseCLITests
-  tubeBaseCLITests.cxx
-  ${tubeBaseCLITests_SRCS} )
-target_link_libraries( tubeBaseCLITests ${ITK_LIBRARIES} ${JsonCpp_LIBRARIES} )
+SEMMacroBuildCLI(
+  NAME tubeBaseCLITests
+  ADDITIONAL_SRCS
+    ${tubeBaseCLITests_SRCS}
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
+  TARGET_LIBRARIES
+    ${ITK_LIBRARIES}
+    ${JsonCpp_LIBRARIES}
+  INCLUDE_DIRECTORIES
+    ${TubeTK_SOURCE_DIR}/Base/CLI
+    ${TubeTK_SOURCE_DIR}/Base/Common
+  INSTALL_RUNTIME_DESTINATION lib
+  INSTALL_LIBRARY_DESTINATION lib
+  INSTALL_ARCHIVE_DESTINATION bin
+  EXECUTABLE_ONLY
+  )
 
 add_test( NAME tubeBaseCLIHeaderTest COMMAND ${BASE_CLI_HEADER_TEST})
 
