@@ -60,6 +60,11 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
       -DVTK_DEBUG_LEAKS:BOOL=ON )
   endif( TubeTK_USE_VALGRIND )
 
+  if( UNIX )
+    # Ignore in VTK5 that has limited maintenance.
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-strict-overflow" )
+  endif( UNIX )
+
   ExternalProject_Add( ${proj}
     GIT_REPOSITORY ${${proj}_URL}
     GIT_TAG ${${proj}_HASH_OR_TAG}
