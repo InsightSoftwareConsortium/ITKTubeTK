@@ -29,7 +29,7 @@ limitations under the License.
 #include <itkImageRegionIterator.h>
 
 // Must include CLP before including tubeCLIHelperFunctions
-#include "ShrunkenSeedImageToListCLP.h"
+#include "ConvertShrunkenSeedImageToListCLP.h"
 
 // Must do a forward declaration of DoIt before including
 // tubeCLIHelperFunctions

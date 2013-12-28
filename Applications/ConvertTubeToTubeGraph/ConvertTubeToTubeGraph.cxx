@@ -30,7 +30,7 @@ limitations under the License.
 
 #include <metaTubeGraph.h>
 
-#include "TubeToTubeGraphCLP.h"
+#include "ConvertTubeToTubeGraphCLP.h"
 
 int DoIt( int argc, char * argv[] );
 

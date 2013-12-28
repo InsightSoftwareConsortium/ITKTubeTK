@@ -30,7 +30,7 @@ limitations under the License.
 #include <itkSpatialObjectReader.h>
 #include <itkTimeProbesCollectorBase.h>
 
-#include "TubesToImageCLP.h"
+#include "ConvertTubesToImageCLP.h"
 
 using namespace tube;
 

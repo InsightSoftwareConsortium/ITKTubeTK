@@ -26,7 +26,7 @@ limitations under the License.
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
-#include "TubeGraphToImageCLP.h"
+#include "ConvertTubeGraphToImageCLP.h"
 
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
@@ -145,7 +145,7 @@ int DoIt( int argc, char * argv[] )
 
   // Read in CENTRALITY file
   // std::string centralityFilename = inGraphFile + ".cnt";
-  
+
   // logMsg.str( "" );
   // logMsg << "Reading (centrality) file: " << centralityFilename;
   // tube::InfoMessage( logMsg.str() );
@@ -158,7 +158,7 @@ int DoIt( int argc, char * argv[] )
   //   tube::ErrorMessage( "Error: fileList's #Centroids != centrality #Centroids" );
   //   return EXIT_FAILURE;
   //   }
-  
+
   for(int i=0; i<numberOfCentroids; i++)
     {
     readStream >> tf;

@@ -31,7 +31,12 @@ set( TubeTK_${proj}_MODULES
   ComputeTubeGraphProbability
   ComputeTubeProbability
   ConvertInnerOpticToPlus
+  ConvertShrunkenSeedImageToList
   ConvertToMetaImage
+  ConvertTubeGraphToImage
+  ConvertTubesToDensityImage
+  ConvertTubesToImage
+  ConvertTubeToTubeGraph
   CropImage
   DeblendTomosynthesisSlicesUsingPrior
   EnhanceCoherenceAndEdgesUsingDiffusion
@@ -57,14 +62,9 @@ set( TubeTK_${proj}_MODULES
   SegmentTubes
   SegmentUsingOtsuThreshold
   ShrinkImage
-  ShrunkenSeedImageToList
   SimulateAcquisitionArtifactsUsingPrior
   SubSampleTubes
-  TubeGraphToImage
-  TubesToDensityImage
-  TubesToImage
-  TubeToTubeGraph
-  TubeTransform )
+  TransformTubes )
 
 set( TubeTK_${proj}_Boost_MODULES )
 if( TubeTK_USE_BOOST )
@@ -74,17 +74,17 @@ if( TubeTK_USE_BOOST )
     SegmentUsingQuantileThreshold
     TransferLabelsToRegions
     TubeGraphKernel )
+  list( APPEND TubeTK_${proj}_MODULES
+    ${TubeTK_${proj}_Boost_MODULES} )
 endif( TubeTK_USE_BOOST )
 
 set( TubeTK_${proj}_VTK_MODULES )
 if( TubeTK_USE_VTK )
   set( TubeTK_${proj}_VTK_MODULES
     RegisterUsingSlidingGeometries )
+  list( APPEND TubeTK_${proj}_MODULES
+    ${TubeTK_${proj}_VTK_MODULES} )
 endif( TubeTK_USE_VTK )
-
-list( APPEND TubeTK_${proj}_MODULES
-  ${TubeTK_${proj}_Boost_MODULES}
-  ${TubeTK_${proj}_VTK_MODULES} )
 
 if( NOT TubeTK_SOURCE_DIR )
   find_package( TubeTK REQUIRED )
