@@ -71,9 +71,9 @@ if( TubeTK_USE_BOOST )
   set( TubeTK_${proj}_Boost_MODULES
     ComputeImageQuantiles
     ComputeRegionSignatures
+    ComputeTubeGraphSimilarityKernelMatrix
     SegmentUsingQuantileThreshold
-    TransferLabelsToRegions
-    TubeGraphKernel )
+    TransferLabelsToRegions )
   list( APPEND TubeTK_${proj}_MODULES
     ${TubeTK_${proj}_Boost_MODULES} )
 endif( TubeTK_USE_BOOST )
