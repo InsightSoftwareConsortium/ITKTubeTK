@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-set( MODULE_NAME TubeGraphKernel )
+set( MODULE_NAME ComputeTubeGraphSimilarityKernelMatrix )
 project( ${MODULE_NAME} )
 
 set( TubeGraphKernel_H_Files

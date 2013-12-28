@@ -28,7 +28,7 @@ limitations under the License.
 
 #include <itkMatrix.h>
 
-#include "TubeGraphKernelCLP.h"
+#include "ComputeTubeGraphSimilarityKernelMatrixCLP.h"
 
 enum { GK_SPKernel = 0, GK_WLKernel = 1 };
 
