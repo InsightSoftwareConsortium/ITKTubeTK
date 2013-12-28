@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-set( MODULE_NAME TubeToTubeGraph )
+set( MODULE_NAME ConvertShrunkenSeedImageToList )
 project( ${MODULE_NAME} )
 
 if( NOT TubeTK_SOURCE_DIR )
@@ -42,8 +42,7 @@ SEMMacroBuildCLI(
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/CLI
     ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Filtering
-    ${TubeTK_SOURCE_DIR}/Base/Registration )
+    ${TubeTK_SOURCE_DIR}/Base/Filtering )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

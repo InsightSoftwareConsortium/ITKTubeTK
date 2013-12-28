@@ -37,20 +37,20 @@ set( IMAGECOMPARE_EXE
 
 # Test1
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
-                COMMAND ${PROJ_EXE}
-                  MIDAS{${MODULE_NAME}-CVT50-Branch-truth.cvt.mha.md5}
-                  MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.md5}
-                  MIDAS_FETCH_ONLY{${MODULE_NAME}-CVT50-Branch-truth.grp.md5}
-                  MIDAS_FETCH_ONLY{${MODULE_NAME}-CVT50-Branch-truth.grp.mat.md5}
-                  MIDAS_FETCH_ONLY{${MODULE_NAME}-CVT50-Branch-truth.grp.brc.md5}
-                  MIDAS_FETCH_ONLY{${MODULE_NAME}-CVT50-Branch-truth.grp.rot.md5}
-                  ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.Image )
-                  
+  COMMAND ${PROJ_EXE}
+    MIDAS{${MODULE_NAME}-CVT50-Branch-truth.cvt.mha.md5}
+    MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.md5}
+    MIDAS_FETCH_ONLY{${MODULE_NAME}-CVT50-Branch-truth.grp.md5}
+    MIDAS_FETCH_ONLY{${MODULE_NAME}-CVT50-Branch-truth.grp.mat.md5}
+    MIDAS_FETCH_ONLY{${MODULE_NAME}-CVT50-Branch-truth.grp.brc.md5}
+    MIDAS_FETCH_ONLY{${MODULE_NAME}-CVT50-Branch-truth.grp.rot.md5}
+    ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.Image )
+
 # Test1-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-00
-                  COMMAND ${IMAGECOMPARE_EXE}
-                    -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.Image.mat.mha
-                    -b MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.Image.mat.mha.md5} )
+  COMMAND ${IMAGECOMPARE_EXE}
+    -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.Image.mat.mha
+    -b MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.Image.mat.mha.md5} )
 
 set_property( TEST ${MODULE_NAME}-Test1-Compare-00
-              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )

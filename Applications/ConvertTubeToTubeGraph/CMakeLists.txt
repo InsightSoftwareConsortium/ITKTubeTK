@@ -21,22 +21,8 @@
 #
 ##############################################################################
 
-set( MODULE_NAME TubesToDensityImage )
+set( MODULE_NAME ConvertTubeToTubeGraph )
 project( ${MODULE_NAME} )
-
-set( TubesToDensityImage_H_Files
-  itktubeInverseIntensityImageFilter.h
-  itktubeSpatialObjectToImageFilter.h
-  itktubeTubeSpatialObjectToDensityImage.h )
-
-set( TubesToDensityImage_HXX_Files
-  itktubeInverseIntensityImageFilter.hxx
-  itktubeSpatialObjectToImageFilter.hxx
-  itktubeTubeSpatialObjectToDensityImage.hxx )
-
-add_custom_target( TubesToDensityImageInclude SOURCES
-  ${TubesToDensityImage_H_Files}
-  ${TubesToDensityImage_HXX_Files} )
 
 if( NOT TubeTK_SOURCE_DIR )
   find_package( TubeTK REQUIRED )
@@ -57,8 +43,7 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/CLI
     ${TubeTK_SOURCE_DIR}/Base/Common
     ${TubeTK_SOURCE_DIR}/Base/Filtering
-    ${TubeTK_SOURCE_DIR}/Base/Registration
-    ${TubeTK_SOURCE_DIR}/Base/ObjectDocument )
+    ${TubeTK_SOURCE_DIR}/Base/Registration )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

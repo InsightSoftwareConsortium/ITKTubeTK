@@ -106,7 +106,19 @@ int DoIt( int argc, char * argv[] )
   tubeOp->SetInputImage( inputImage );
   tubeOp->SetRadius( scale );
 
-  if( seedX.size() > 0 )
+  typedef itk::ContinuousIndex< double, VDimension >  seedIndexType;
+  typedef double                                      seedScaleType;
+  typedef std::vector< seedIndexType >                seedIndexListType;
+  typedef std::vector< seedScaleType >                seedScaleListType;
+
+  seedIndexType seedIndex;
+  seedIndexListType seedIndexList;
+  seedScaleListType seedScaleList;
+
+  seedIndexList.clear();
+  seedScaleList.clear();
+
+  if( !seedX.empty() )
     {
     if( seedX.size() != VDimension )
       {
@@ -123,16 +135,43 @@ int DoIt( int argc, char * argv[] )
       return EXIT_FAILURE;
       }
 
-    timeCollector.Start("Ridge Extractor");
-
-    std::cout << "Seed = ";
-    itk::ContinuousIndex< double, VDimension > cIndx;
     for( unsigned int i=0; i<VDimension; i++ )
       {
-      cIndx[i] = seedX[i];
-      std::cout << cIndx[i] << " ";
+      seedIndex[i] = seedX[i];
       }
-    std::cout << std::endl;
+    seedIndexList.push_back( seedIndex );
+    seedScaleList.push_back( scale );
+    }
+
+  if( !seedListFile.empty() )
+    {
+    }
+
+  if( seedMask.empty() )
+    {
+    if( seedScaleMask.empty() )
+      {
+      }
+    else
+      {
+      seedScaleList.push_back( scale );
+      }
+
+    }
+  else if( seedScaleMask.empty() )
+    {
+    }
+
+
+  typename seedIndexListType::iterator seedIndexIter =
+    seedIndexList.begin();
+  seedScaleListType::iterator seedScaleIter =
+    seedScaleList.begin();
+
+  unsigned int count = 1;
+  while( seedIndexIter != seedIndexList.end() )
+    {
+    timeCollector.Start("Ridge Extractor");
 
     tubeOp->SetDebug( true );
     tubeOp->GetRidgeOp()->SetDebug( true );
@@ -140,13 +179,20 @@ int DoIt( int argc, char * argv[] )
     tubeOp->GetRidgeOp()->SetThreshCurvature( 0.0001 );
     tubeOp->GetRidgeOp()->SetThreshCurvatureStart( 0.0001 );
 
-    typename TubeType::Pointer xTube = tubeOp->ExtractTube( cIndx, 1 );
+    tubeOp->SetRadius( *seedScaleIter );
+
+    typename TubeType::Pointer xTube = tubeOp->ExtractTube( *seedIndexIter,
+      count );
 
     if( xTube.IsNull() )
       {
       tube::ErrorMessage( "Errror: Ridge not found. " );
       return EXIT_FAILURE;
       }
+
+    ++seedIndexIter;
+    ++seedScaleIter;
+    ++count;
     }
 
   // Save Tubes

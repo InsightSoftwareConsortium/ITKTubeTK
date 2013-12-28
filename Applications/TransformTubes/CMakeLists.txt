@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-set( MODULE_NAME TubeTransform )
+set( MODULE_NAME TransformTubes )
 project( ${MODULE_NAME} )
 
 if( NOT TubeTK_SOURCE_DIR )
