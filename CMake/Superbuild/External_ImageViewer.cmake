@@ -37,11 +37,9 @@ if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
    "${proj}_DIR is defined, but corresponds to a nonexistent directory" )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
-if( TubeTK_USE_SLICER )
-  set( ${proj}_DEPENDENCIES "ITKv4" )
-else( TubeTK_USE_SLICER )
+if( NOT TubeTK_USE_SLICER )
   set( ${proj}_DEPENDENCIES "ITK" )
-endif( TubeTK_USE_SLICER )
+endif( NOT TubeTK_USE_SLICER )
 
 # Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
