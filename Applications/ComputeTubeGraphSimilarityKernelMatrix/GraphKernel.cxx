@@ -266,9 +266,9 @@ GraphKernel::GraphFromJSONFile(const char *graphFile)
       }
 
     assert(linkInfo.size() == distInfo.size() &&
-        linkInfo.size() <= nVertices &&
-        distInfo.size() <= nVertices &&
-        typeInfo.size() <= nVertices);
+        static_cast< int >( linkInfo.size() ) <= nVertices &&
+        static_cast< int >( distInfo.size() ) <= nVertices &&
+        static_cast< int >( typeInfo.size() ) <= nVertices);
 
     // Now build the graph
     GraphKernel::GraphType g(nVertices);

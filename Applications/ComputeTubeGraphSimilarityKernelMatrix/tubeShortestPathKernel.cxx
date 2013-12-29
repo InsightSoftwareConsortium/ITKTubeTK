@@ -41,7 +41,7 @@ ShortestPathKernel::FloydTransform(const GraphType &in)
   floyd_warshall_all_pairs_shortest_paths( in, dm );
 
   GraphType out( nVertices );
-  assert( nVertices == num_vertices( out) );
+  assert( nVertices == static_cast< int >( num_vertices( out ) ) );
 
   ConstVertexAllMapType mapIn = boost::get( boost::vertex_all, in );
   VertexAllMapType mapOut     = boost::get( boost::vertex_all, out );
