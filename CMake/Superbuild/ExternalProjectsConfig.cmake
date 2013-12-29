@@ -30,7 +30,7 @@ set( Cppcheck_HASH_OR_TAG 1.61 )
 
 # Common Toolkit snapshot 2013-09-16 17:59:15
 set( CTK_URL ${github_protocol}://github.com/commontk/CTK.git )
-set( CTK_HASH_OR_TAG dcf7db15f2b43507395316dd680dba5999f886b4 )
+set( CTK_HASH_OR_TAG 00be8fae583173f338893659b9d8296ce9d5765b )
 
 # TubeTK Image Viewer snapshot 2013-08-21 06:23:25
 set( ImageViewer_URL
@@ -69,4 +69,4 @@ set( SlicerExecutionModel_HASH_OR_TAG 5ba7ca1b8ed954e83c82fce604c8501a089d24e8 )
 
 # Visualization Toolkit (3D Slicer fork) snapshot 2013-08-20 06:54:45
 set( VTK_URL ${github_protocol}://github.com/Slicer/VTK.git )
-set( VTK_HASH_OR_TAG 6da2c7235b8de9d8663a62f3246198d6865ecfae )
+set( VTK_HASH_OR_TAG f387593148a8bc49cf46c1e27537674d5b779f49 )
