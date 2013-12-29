@@ -57,7 +57,7 @@ vtkMRMLSpatialObjectsDisplayPropertiesNode( void )
 
   // Tube Glyph parameters
   this->TubeGlyphRadius = 0.1;
-  this->TubeGlyphNumberOfSides = 6;
+  this->TubeGlyphNumberOfSides = 32;
 
   // VTK Objects
   this->GlyphSource = NULL;

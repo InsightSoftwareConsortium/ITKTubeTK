@@ -51,8 +51,10 @@ vtkMRMLSpatialObjectsTubeDisplayNode::vtkMRMLSpatialObjectsTubeDisplayNode( void
 
   this->TubeFilter = vtkTubeFilter::New();
   this->TubeFilter->SetVaryRadiusToVaryRadiusByAbsoluteScalar();
-  this->TubeNumberOfSides = 6;
+  this->TubeNumberOfSides = 36;
+  this->TubeFilter->SetNumberOfSides( this->TubeNumberOfSides );
   this->TubeRadius = 0.5;
+  this->TubeFilter->SetRadius( this->TubeRadius );
 
   this->Ambient = 0.25;
   this->Diffuse = 0.8;
