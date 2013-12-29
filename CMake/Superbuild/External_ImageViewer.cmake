@@ -33,13 +33,11 @@ set( proj ImageViewer )
 
 # Sanity checks.
 if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
-  message( FATAL_ERROR "The ${proj}_DIR variable is defined, but corresponds to a nonexistent directory" )
+  message( FATAL_ERROR
+   "${proj}_DIR is defined, but corresponds to a nonexistent directory" )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
-set( ${proj}_DEPENDENCIES "" )
-if( NOT TubeTK_BUILD_SLICER_EXTENSION )
-  set( ${proj}_DEPENDENCIES "ITK" )
-endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
+set( ${proj}_DEPENDENCIES "ITK" )
 
 # Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
