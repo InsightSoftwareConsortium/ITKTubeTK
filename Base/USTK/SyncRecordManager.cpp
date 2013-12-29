@@ -99,7 +99,7 @@ SyncRecord *SyncRecordManager::newSequentialAppendedRecord( void )
 ///
 bool SyncRecordManager::dump( const char *disk_write_path, char *ident )
 {
-	if( !recs.size() ){ cerr << "SyncRecordManager::dump(): attempt to dump empty SyncRecordManager object" << endl; return false; }
+	if( recs.empty() ){ cerr << "SyncRecordManager::dump(): attempt to dump empty SyncRecordManager object" << endl; return false; }
 
 	ofstream ofs( disk_write_path );
 	if( !ofs || !ofs.is_open() ){ cerr << "SyncRecordManager::dump(): file " << disk_write_path << " is not writable" << endl; return false; }
@@ -159,7 +159,7 @@ size_t SyncRecordManager::getNbRecords( void ){ return recs.size(); }
 ///
 SyncRecord *SyncRecordManager::getNextRecord( void )
 {
-	if( !recs.size() ){ cerr << "SyncRecordManager::getNextRecord(): manager object is empty" << endl; return NULL; }
+	if( recs.empty() ){ cerr << "SyncRecordManager::getNextRecord(): manager object is empty" << endl; return NULL; }
 	if( curr_rec == recs.end() ) return NULL;
 	SyncRecord *ret_rec = &*(curr_rec++);
 
@@ -209,7 +209,7 @@ bool SyncRecordManager::istreamMatrix( istream &is, const char *header, double m
 ///
 bool SyncRecordManager::load( const char *disk_load_path )
 {
-	if( recs.size() ){ cerr << "SyncRecordManager::load(): attempt to initialize non-empty SyncRecordManager object" << endl; return false; }
+	if( !recs.empty() ){ cerr << "SyncRecordManager::load(): attempt to initialize non-empty SyncRecordManager object" << endl; return false; }
 
 	records_path = disk_load_path;
 	ifstream ifs( records_path.c_str() );
