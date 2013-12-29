@@ -21,8 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubeCLIHelperFunctionsTestCLP.h"
-
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
@@ -32,14 +30,12 @@ int DoIt( int argc, char * argv[] );
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
-  PARSE_ARGS;
-
   return EXIT_SUCCESS;
 }
 
 int tubeCLIHelperFunctionsTest( int argc, char * argv[] )
 {
-  PARSE_ARGS;
+  std::string inputVolume = argv[1];
 
   return tube::ParseArgsAndCallDoIt( inputVolume, argc, argv );
 }
