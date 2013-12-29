@@ -660,7 +660,7 @@ configure_file( ${TubeTK_SOURCE_DIR}/CMake/UseTubeTK.cmake.in
   ${TubeTK_CONFIG_BINARY_DIR}/UseTubeTK.cmake @ONLY )
 
 # Configure CPack packaging.
-if( NOT TubeTK_BUILD_SLICER_EXTENSION )
+if( NOT TubeTK_USE_SLICER )
   # Record ITK, VTK, CTK, and GenerateCLP libraries used by TubeTK for
   # packaging.
   file( GLOB_RECURSE ITK_BINARIES "${ITK_DIR}/lib/lib*" )
@@ -770,6 +770,6 @@ if( NOT TubeTK_BUILD_SLICER_EXTENSION )
 
   # Include CPack model once all variables are set.
   include( CPack )
-else( NOT TubeTK_BUILD_SLICER_EXTENSION )
+else( NOT TubeTK_USE_SLICER )
   include( ${Slicer_EXTENSION_CPACK} )
-endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
+endif( NOT TubeTK_USE_SLICER )

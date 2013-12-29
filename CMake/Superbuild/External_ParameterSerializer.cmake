@@ -38,14 +38,24 @@ endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 # Set dependency list
 set( ${proj}_DEPENDENCIES "JsonCpp" )
-if( NOT TubeTK_BUILD_SLICER_EXTENSION )
+if( TubeTK_USE_SLICER )
+  set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "ITKv4" )
+else( TubeTK_USE_SLICER )
   set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "ITK" )
-endif( NOT TubeTK_BUILD_SLICER_EXTENSION )
+endif( TubeTK_USE_SLICER )
 
-if( TubeTK_BUILD_SLICER_EXTENSION AND UNIX )
-  # To link with shared libraries on amd64.
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-endif( TubeTK_BUILD_SLICER_EXTENSION AND UNIX )
+if( UNIX )
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing"
+    CACHE STRING "Flags used by all build types." FORCE )
+  set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing"
+    CACHE STRING "Flags used by all build types." FORCE )
+  if( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC"
+         CACHE STRING "Flags used by all build types." FORCE )
+    set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC"
+         CACHE STRING "Flags used by all build types." FORCE )
+  endif( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
+endif( UNIX )
 
 # Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
