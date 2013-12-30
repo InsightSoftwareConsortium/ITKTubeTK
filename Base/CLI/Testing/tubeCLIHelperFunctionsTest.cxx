@@ -24,11 +24,14 @@ limitations under the License.
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
-// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
+// Must follow
+//   include "...CLP.h"
+// and follow forward declaration of
+//   int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
 template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] )
+int DoIt( int , char *[] )
 {
   return EXIT_SUCCESS;
 }
