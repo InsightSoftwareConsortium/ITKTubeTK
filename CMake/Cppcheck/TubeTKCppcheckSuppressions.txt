@@ -1,6 +1,6 @@
 unusedFunction:*/Applications/DeblendTomosynthesisSlicesUsingPrior/DeblendTomosynthesisSlicesUsingPrior.cxx:113
 unusedFunction:*/Applications/SegmentConnectedComponentsUsingParzenPDFs/SegmentConnectedComponentsUsingParzenPDFs.cxx:49
-unusedFunction:*/Base/CLI/Testing/tubeBaseCLITests.cxx:26
+unusedFunction:*/Base/CLI/Testing/tubeBaseCLITests.cxx:27
 unusedFunction:*/Base/ObjectDocuments/tubeMetaObjectDocument.cxx
 unusedFunction:*/Base/ObjectDocuments/tubeOptionList.cxx
 unusedFunction:*/Base/Python/tubetk/_tubetk_numpy.cxx:317
