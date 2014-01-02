@@ -1,3 +1,4 @@
+@ECHO off
 REM ###########################################################################
 REM
 REM  Library:   TubeTK
@@ -21,15 +22,18 @@ REM  limitations under the License.
 REM
 REM ###########################################################################
 
-set OLD_PATH=%PATH%
+SET OLD_PATH=%PATH%
 
-set PATH="@TubeTK_EXECUTABLE_DIRS@;%PATH%"
+SET PATH="@TubeTK_EXECUTABLE_DIRS@;%PATH%"
 
 %*
-:: Collect the exit code from the launcher command.
-set err=%errorlevel%
+IF %ERRORLEVEL% NEQ 0 (
+  SET err=1
+) ELSE (
+  SET err=0
+)
 
-set PATH=%OLD_PATH%
+SET PATH=%OLD_PATH%
 
 :: Exit and pass along our exit code.
-exit /B %err%
+EXIT /B %err%
