@@ -36,6 +36,7 @@ set( TubeTK_${proj}_MODULES
   ConvertTubeGraphToImage
   ConvertTubesToDensityImage
   ConvertTubesToImage
+  ConvertTubesToSurface
   ConvertTubeToTubeGraph
   CropImage
   DeblendTomosynthesisSlicesUsingPrior
