@@ -532,32 +532,35 @@ endif( MSVC )
 
 # Configure a launcher for running TubeTK methods from the command line
 message(STATUS "Configuring Launcher script")
-if( WIN32 )
-  # Microsoft Windows.
-  set(_launcher_platform "windows")
-  configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKLauncher.bat.in
-    ${TubeTK_BINARY_DIR}/TubeTKLauncher.bat @ONLY )
+set(TubeTK_LAUNCHER )
+if( TubeTK_USE_SLICER )
+  if( WIN32 )
+    # Microsoft Windows.
+    set(_launcher_platform "windows")
+    configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKLauncher.bat.in
+      ${TubeTK_BINARY_DIR}/TubeTKLauncher.bat @ONLY )
 
-  find_program(CMD_EXECUTABLE "cmd")
-  if( NOT CMD_EXECUTABLE )
-    message(FATAL_ERROR "Could not find 'cmd' executable required to run test using the launcher")
+    find_program(CMD_EXECUTABLE "cmd")
+    if( NOT CMD_EXECUTABLE )
+      message(FATAL_ERROR "Could not find 'cmd' executable required to run test using the launcher")
+    endif()
+
+    set(TubeTK_LAUNCHER ${TubeTK_BINARY_DIR}/TubeTKLauncher.bat)
+  elseif( UNIX )
+    # Apple OS X, Linux, or UNIX.
+    set(_launcher_platform "unix")
+    configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKLauncher.sh.in
+      ${TubeTK_BINARY_DIR}/TubeTKLauncher.sh @ONLY )
+
+    find_program(SH_EXECUTABLE "sh")
+    if( NOT SH_EXECUTABLE )
+      message(FATAL_ERROR "Could not find 'sh' executable required to run test using the launcher")
+    endif()
+    set(TubeTK_LAUNCHER ${SH_EXECUTABLE} ${TubeTK_BINARY_DIR}/TubeTKLauncher.sh)
+  else()
+    message(FATAL_ERROR "Configuring Launcher script - failed [unknown platform]")
   endif()
-
-  set(TubeTK_LAUNCHER ${TubeTK_BINARY_DIR}/TubeTKLauncher.bat)
-elseif( UNIX )
-  # Apple OS X, Linux, or UNIX.
-  set(_launcher_platform "unix")
-  configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKLauncher.sh.in
-    ${TubeTK_BINARY_DIR}/TubeTKLauncher.sh @ONLY )
-
-  find_program(SH_EXECUTABLE "sh")
-  if( NOT SH_EXECUTABLE )
-    message(FATAL_ERROR "Could not find 'sh' executable required to run test using the launcher")
-  endif()
-  set(TubeTK_LAUNCHER ${SH_EXECUTABLE} ${TubeTK_BINARY_DIR}/TubeTKLauncher.sh)
-else()
-  message(FATAL_ERROR "Configuring Launcher script - failed [unknown platform]")
-endif()
+endif( TubeTK_USE_SLICER )
 message(STATUS "Configuring Launcher script - ok [${_launcher_platform}]")
 
 # Setup to conform to 3D Slicer paths and define plugin copying macros.
