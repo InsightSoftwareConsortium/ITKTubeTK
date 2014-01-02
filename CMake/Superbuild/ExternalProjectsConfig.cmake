@@ -43,8 +43,7 @@ set( ITK_URL ${github_protocol}://github.com/Kitware/ITK.git )
 set( ITK_HASH_OR_TAG 1b62d2bb5bedcf7fa80e96e79064a2043811d616 )
 
 # JsonCpp snapshot 2014-01-01
-set( JsonCpp_URL
-  ${svn_protocol}://svn.code.sf.net/p/jsoncpp/code/trunk/jsoncpp )
+set( JsonCpp_URL ${svn_protocol}://svn.code.sf.net/p/jsoncpp/code/trunk/jsoncpp )
 set( JsonCpp_HASH_OR_TAG 275 )
 
 # KWStyle snapshot 2012-04-19 04:05:19
