@@ -120,10 +120,13 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
 
         currTube->RemoveDuplicatePoints();
 
-        if(currTube->GetNumberOfPoints() < 2)
+        const itk::SizeValueType numberOfPoints = currTube->GetNumberOfPoints();
+        if( numberOfPoints < 2 )
+          {
           continue;
+          }
 
-        totalNumberOfPoints += currTube->GetNumberOfPoints();
+        totalNumberOfPoints += numberOfPoints;
         }
 
       // Create the points
@@ -144,7 +147,7 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
       tubeIDs->SetName("TubeIDs");
       tubeIDs->SetNumberOfTuples(totalNumberOfPoints);
 
-      // Create scalar array that indicates both tangeantes at each
+      // Create scalar array that indicates both tangents at each
       // centerline point.
       vtkNew<vtkDoubleArray> tan1;
       tan1->SetName("Tan1");
@@ -175,11 +178,11 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
         TubeType* currTube =
           static_cast<TubeType*>((*tubeIT).GetPointer());
 
-        currTube->RemoveDuplicatePoints();
-
-        int tubeSize = currTube->GetNumberOfPoints();
-        if(tubeSize < 2)
+        const itk::SizeValueType tubeSize = currTube->GetNumberOfPoints();
+        if( tubeSize < 2 )
+          {
           continue;
+          }
 
         currTube->ComputeTangentAndNormals();
 
@@ -314,14 +317,14 @@ int vtkMRMLSpatialObjectsStorageNode::WriteDataInternal(vtkMRMLNode *refNode)
   vtkMRMLSpatialObjectsNode* spatialObjects =
     vtkMRMLSpatialObjectsNode::SafeDownCast(refNode);
 
-  std::string fullName = this->GetFullNameFromFileName();
+  const std::string fullName = this->GetFullNameFromFileName();
   if(fullName == std::string(""))
     {
     vtkErrorMacro("vtkMRMLModelNode: File name not specified");
     return 0;
     }
 
-  std::string extension =
+  const std::string extension =
     itksys::SystemTools::GetFilenameLastExtension(fullName);
 
   int result = 1;
