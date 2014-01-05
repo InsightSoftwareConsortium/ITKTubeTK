@@ -53,7 +53,7 @@ void GetImageInformation( std::string fileName,
 
 template< unsigned int VDimension >
 int RegressionTestImage( const char *, const char *, bool, bool, double,
-  int, int, bool, const char * );
+  int, int, double, bool, const char * );
 
 int main( int argc, char * argv[] )
 {
@@ -78,14 +78,16 @@ int main( int argc, char * argv[] )
         currentStatus = RegressionTestImage<2>(
           testImageFilename.c_str(), baselineImageItr->c_str(),
           false, false, toleranceIntensity, toleranceRadius,
-          toleranceNumberOfPixels, false, outputImageFilename.c_str() );
+          toleranceNumberOfPixels, toleranceCoordinates,
+          false, outputImageFilename.c_str() );
         }
       else
         {
         currentStatus = RegressionTestImage<3>(
           testImageFilename.c_str(), baselineImageItr->c_str(),
           false, false, toleranceIntensity, toleranceRadius,
-          toleranceNumberOfPixels, false, outputImageFilename.c_str() );
+          toleranceNumberOfPixels, toleranceCoordinates,
+          false, outputImageFilename.c_str() );
         }
       if( currentStatus < bestBaselineStatus )
         {
@@ -108,7 +110,8 @@ int main( int argc, char * argv[] )
         RegressionTestImage<2>(
           testImageFilename.c_str(),
           bestBaselineFilename.c_str(), true, false,
-          toleranceIntensity, toleranceRadius, toleranceNumberOfPixels,
+          toleranceIntensity, toleranceRadius,
+          toleranceNumberOfPixels, toleranceCoordinates,
           writeOutputImage, outputImageFilename.c_str() );
         }
       else
@@ -116,7 +119,8 @@ int main( int argc, char * argv[] )
         RegressionTestImage<3>(
           testImageFilename.c_str(),
           bestBaselineFilename.c_str(), true, false,
-          toleranceIntensity, toleranceRadius, toleranceNumberOfPixels,
+          toleranceIntensity, toleranceRadius,
+          toleranceNumberOfPixels, toleranceCoordinates,
           writeOutputImage, outputImageFilename.c_str() );
         }
       }
@@ -127,7 +131,8 @@ int main( int argc, char * argv[] )
         RegressionTestImage<2>(
           testImageFilename.c_str(),
           bestBaselineFilename.c_str(), true, true,
-          toleranceIntensity, toleranceRadius, toleranceNumberOfPixels,
+          toleranceIntensity, toleranceRadius,
+          toleranceNumberOfPixels, toleranceCoordinates,
           writeOutputImage, outputImageFilename.c_str() );
         }
       else
@@ -135,7 +140,8 @@ int main( int argc, char * argv[] )
         RegressionTestImage<3>(
           testImageFilename.c_str(),
           bestBaselineFilename.c_str(), true, true,
-          toleranceIntensity, toleranceRadius, toleranceNumberOfPixels,
+          toleranceIntensity, toleranceRadius,
+          toleranceNumberOfPixels, toleranceCoordinates,
           writeOutputImage, outputImageFilename.c_str() );
         }
       }
@@ -172,6 +178,7 @@ RegressionTestImage( const char *testImageFilename,
   double intensityTolerance,
   int radiusTolerance,
   int numberOfPixelsTolerance,
+  double coordinateTolerance,
   bool writeOutputImage,
   const char *outputImageFilename )
 {
@@ -237,6 +244,7 @@ RegressionTestImage( const char *testImageFilename,
 
   diff->SetDifferenceThreshold( intensityTolerance );
   diff->SetToleranceRadius( radiusTolerance );
+  diff->SetCoordinateTolerance( coordinateTolerance );
 
   diff->UpdateLargestPossibleRegion();
 
