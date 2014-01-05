@@ -63,6 +63,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
 # Test2-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare
             COMMAND ${IMAGECOMPARE_EXE}
+               --toleranceCoordinates 1.0e-4
                -t ${TEMP}/${MODULE_NAME}Test2.mha
                -b MIDAS{${MODULE_NAME}Test2.mha.md5}
                -n 3 )
