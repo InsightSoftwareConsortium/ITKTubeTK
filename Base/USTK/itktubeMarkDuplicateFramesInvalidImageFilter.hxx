@@ -44,7 +44,7 @@ MarkDuplicateFramesInvalidImageFilterThreader< TAssociate >
   m_InvalidFramesPerThread.resize( numberOfThreads );
   for( ThreadIdType ii = 0; ii < numberOfThreads; ++ii )
     {
-    m_InvalidFramesPerThread.clear();
+    m_InvalidFramesPerThread[ii].clear();
     }
 }
 
