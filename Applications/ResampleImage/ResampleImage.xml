@@ -36,30 +36,30 @@
       <channel>input</channel>
       <description>The image from which origin, orientation, and spacing should be taken.</description>
     </image>
-    <float-vector>
+    <double-vector>
       <name>spacing</name>
       <label>Use Spacing</label>
       <longflag>spacing</longflag>
       <description>Spacing to be used. Should be an N-vector. Overrides matchImage.</description>
-    </float-vector>
-    <float-vector>
+    </double-vector>
+    <double-vector>
       <name>origin</name>
       <label>Use Origin</label>
       <longflag>origin</longflag>
       <description>Origin to be used. Should be an N-vector. Overrides matchImage.</description>
-    </float-vector>
+    </double-vector>
     <integer-vector>
       <name>index</name>
       <label>Use Index</label>
       <longflag>index</longflag>
       <description>Index to be used. Should be an N-vector. Overrides matchImage.</description>
     </integer-vector>
-    <float-vector>
+    <double-vector>
       <name>resampleFactor</name>
       <label>Resample Factor</label>
       <longflag>resampleFactor</longflag>
       <description>Factor to increase size. 2,2,2 doubles size in each dimension. Should be an N-vector. Overrides matchImage and setSpacing.</description>
-    </float-vector>
+    </double-vector>
     <boolean>
       <name>makeIsotropic</name>
       <label>Make Isotropic</label>

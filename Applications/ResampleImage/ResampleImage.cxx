@@ -25,6 +25,7 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 
 #include <itkBSplineInterpolateImageFunction.h>
+#include <itkCompensatedSummation.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkNearestNeighborInterpolateImageFunction.h>
@@ -142,8 +143,9 @@ int DoIt( int argc, char * argv[] )
 
   if( makeIsotropic )
     {
-    double iso = outSpacing[0];
-    for( unsigned int i=1; i<DimensionI-1; i++ )
+    typedef itk::CompensatedSummation< double > CompensatedSummationType;
+    CompensatedSummationType iso;
+    for( unsigned int i=0; i<DimensionI-1; i++ )
       {
       iso += outSpacing[i];
       }
@@ -152,7 +154,7 @@ int DoIt( int argc, char * argv[] )
     iso /= 2;
     for( unsigned int i=0; i<DimensionI; i++ )
       {
-      outSpacing[i] = iso;
+      outSpacing[i] = iso.GetSum();
       }
     }
 
