@@ -604,9 +604,9 @@ endif( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_SLICER )
 include( TubeTKMacroInstallPlugins )
 
 # Setup Python VirtualEnv for testing.
-if( BUILD_TESTING AND TubeTK_USE_PYTHON )
+if( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_USE_SLICER )
   include( CMake/TubeTKVirtualEnvSetup.cmake )
-endif( BUILD_TESTING AND TubeTK_USE_PYTHON )
+endif( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_USE_SLICER )
 
 # Test TubeTK IPython examples.
 if( TubeTK_USE_NOTEBOOKS )
