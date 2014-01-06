@@ -123,6 +123,12 @@ Midas3FunctionAddTest( NAME ImageCompareCommand-Test6
   -b ${TEMP}/filedoesnotexist.mha )
 set_tests_properties( ImageCompareCommand-Test6 PROPERTIES WILL_FAIL true )
 
+Midas3FunctionAddTest( NAME ImageCompareCommand-Test7
+  COMMAND ${IMAGECOMPARE_EXE}
+  -c 1.0e-4
+  -t MIDAS{ResampleImageTest2.mha.md5}
+  -b MIDAS{ResampleImageTest2SpacingOff.mha.md5} )
+
 add_test( NAME JsonCompareCommand-Test1
   COMMAND ${JSONCOMPARE_EXE}
   -t ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestTest1.json
