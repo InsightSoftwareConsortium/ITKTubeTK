@@ -41,6 +41,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
   ${TEMP}/${MODULE_NAME}Test1.h5 )
 
 if( TubeTK_USE_PYQTGRAPH )
+  get_target_property( ANALYSIS_EXE ${MODULE_NAME} LOCATION )
   configure_file( ${MODULE_NAME}Tuner.json.in
     ${TEMP}/${MODULE_NAME}Tuner.json )
 
