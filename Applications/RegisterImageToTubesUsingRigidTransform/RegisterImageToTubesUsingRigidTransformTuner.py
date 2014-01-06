@@ -33,7 +33,6 @@ class RegistrationTunerLogic(QtCore.QObject):
     _progression = None
     _tubes_center = [0.0, 0.0, 0.0]
     _subsampled_tubes = None
-    main_widget = None
 
     def __init__(self, config, parent=None):
         super(RegistrationTunerLogic, self).__init__(parent)
@@ -88,8 +87,6 @@ class RegistrationTunerLogic(QtCore.QObject):
         if value != self._iteration:
             self._iteration = value
             self.iteration_changed.emit(value)
-            self.main_widget.add_tubes()
-            self.main_widget.plot_metric_values()
 
     iteration = property(get_iteration,
                          set_iteration,
@@ -106,10 +103,6 @@ class RegistrationTunerLogic(QtCore.QObject):
         if value != self._number_of_iterations:
             self._number_of_iterations = value
             self.number_of_iterations_changed.emit(value)
-            iterations_normalized = np.arange(0, value, dtype=np.float) / \
-                value
-            colors = matplotlib.cm.summer(iterations_normalized)
-            self.main_widget.progression_colors = colors
 
     number_of_iterations = property(get_number_of_iterations,
                                     set_number_of_iterations,
@@ -202,6 +195,48 @@ class IterationWidget(QtGui.QWidget):
             self.slider.setMaximum(value)
 
 
+class RunConsoleWidget(QtGui.QWidget):
+    """The interactive Python console and buttons to run the analysis."""
+
+    def __init__(self, config, tuner):
+        super(RunConsoleWidget, self).__init__()
+        self.config = config
+        self.tuner = tuner
+        self.initializeUI()
+
+    def initializeUI(self):
+        layout = QtGui.QVBoxLayout()
+        self.setLayout(layout)
+
+        run_button = QtGui.QPushButton('Run Analysis')
+        run_button.setToolTip('Run the analysis with ' +
+                              'current parameter settings.')
+        run_button.resize(run_button.sizeHint())
+        layout.addWidget(run_button)
+        self.run_button = run_button
+
+        video_button = QtGui.QPushButton('Make Video Frames')
+        video_button.resize(video_button.sizeHint())
+        layout.addWidget(video_button)
+        self.video_button = video_button
+
+        import pprint
+        console_namespace = {'pg': pg,
+                             'np': np,
+                             'config': self.config,
+                             'tuner': self.tuner,
+                             'pp': pprint.pprint}
+        console_text = """
+This is an interactive Python console.  The numpy and pyqtgraph modules have
+already been imported as 'np' and 'pg'.  The parameter configuration is
+available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
+"""
+        self.console = pyqtgraph.console.ConsoleWidget(
+            namespace=console_namespace,
+            text=console_text)
+        layout.addWidget(self.console)
+
+
 class IterationDockAreaWidget(QtGui.QWidget):
     """Widgets related to iteration analysis. A DockArea containing Dock's that
     give different views on the analysis and a widget to control the current
@@ -240,8 +275,9 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         self.config = config
 
         self.logic = logic
-        self.logic.main_widget = self
         self.logic.analysis_run.connect(self.add_image_planes)
+        self.logic.iteration_changed.connect(self.add_tubes)
+        self.logic.iteration_changed.connect(self.plot_metric_values)
         if 'UltrasoundProbeGeometryFile' in self.config:
             self.logic.analysis_run.connect(self.add_ultrasound_probe_origin)
         self.logic.analysis_run.connect(self.add_translations)
@@ -252,7 +288,7 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         self.tubes_circles = {}
         self.dock_area = None
         self.translations = None
-        self.progression_colors = None
+        self.compute_progression_colors(1)
         self.metric_values_plot = None
         self.image_controls = {}
         self.ultrasound_probe_origin = None
@@ -280,12 +316,6 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
 
         Dock = pyqtgraph.dockarea.Dock
 
-        run_button = QtGui.QPushButton('Run Analysis')
-        run_button.setToolTip('Run the analysis with ' +
-                              'current parameter settings.')
-        run_button.resize(run_button.sizeHint())
-        QtCore.QObject.connect(run_button, QtCore.SIGNAL('clicked()'),
-                               self.logic.run_analysis)
         run_action = QtGui.QAction('&Run Analysis', self)
         run_action.setShortcut('Ctrl+R')
         run_action.setStatusTip('Run Analysis')
@@ -293,32 +323,13 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
                                self.logic.run_analysis)
         self.addAction(run_action)
 
-        video_button = QtGui.QPushButton('Make Video Frames')
-        video_button.resize(video_button.sizeHint())
-        QtCore.QObject.connect(video_button, QtCore.SIGNAL('clicked()'),
+        run_console = RunConsoleWidget(self.config, self)
+        QtCore.QObject.connect(run_console.run_button,
+                               QtCore.SIGNAL('clicked()'),
+                               self.logic.run_analysis)
+        QtCore.QObject.connect(run_console.video_button,
+                               QtCore.SIGNAL('clicked()'),
                                self.make_video)
-
-        import pprint
-        console_namespace = {'pg': pg,
-                             'np': np,
-                             'config': self.config,
-                             'tuner': self,
-                             'pp': pprint.pprint}
-        console_text = """
-This is an interactive Python console.  The numpy and pyqtgraph modules have
-already been imported as 'np' and 'pg'.  The parameter configuration is
-available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
-"""
-        self.console = pyqtgraph.console.ConsoleWidget(
-            namespace=console_namespace,
-            text=console_text)
-
-        run_console_layout = QtGui.QVBoxLayout()
-        run_console_layout.addWidget(run_button)
-        run_console_layout.addWidget(video_button)
-        run_console_layout.addWidget(self.console)
-        run_console = QtGui.QWidget()
-        run_console.setLayout(run_console_layout)
         run_console_dock = Dock("Console", size=(400, 300))
         run_console_dock.addWidget(run_console)
         self.dock_area.addDock(run_console_dock, 'right')
@@ -580,6 +591,14 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
                                      symbolBrush='r',
                                      symbol='o',
                                      symbolSize=8.0)
+
+    def compute_progression_colors(self, number_of_iterations):
+        iterations_normalized = np.arange(0,
+                                          number_of_iterations,
+                                          dtype=np.float) / \
+            number_of_iterations
+        colors = matplotlib.cm.summer(iterations_normalized)
+        self.progression_colors = colors
 
     def make_video(self):
         for it in range(self.logic.number_of_iterations + 1):
