@@ -166,14 +166,8 @@ class RegistrationTunerLogic(QtCore.QObject):
 class IterationWidget(QtGui.QWidget):
     """Control the currently viewed iteration."""
 
-    def __init__(self, logic):
+    def __init__(self):
         super(IterationWidget, self).__init__()
-
-        self.logic = logic
-        self.logic.iteration_changed.connect(self.set_iteration)
-        self.logic.number_of_iterations_changed.connect(
-            self.set_number_of_iterations)
-
         self.initializeUI()
 
     def initializeUI(self):
@@ -186,61 +180,26 @@ class IterationWidget(QtGui.QWidget):
 
         self.spinbox = QtGui.QSpinBox()
         self.spinbox.setMinimum(0)
-        self.spinbox.setMaximum(self.logic.number_of_iterations)
-        QtCore.QObject.connect(self.spinbox,
-                               QtCore.SIGNAL('valueChanged(int)'),
-                               self._spinbox_changed)
+        self.spinbox.setMaximum(0)
         layout.addWidget(self.spinbox)
 
         self.slider = QtGui.QSlider(QtCore.Qt.Horizontal)
         self.slider.setMinimum(0)
-        self.slider.setMaximum(self.logic.number_of_iterations)
+        self.slider.setMaximum(0)
         self.slider.setTickPosition(QtGui.QSlider.TicksBelow)
-        QtCore.QObject.connect(self.slider,
-                               QtCore.SIGNAL('valueChanged(int)'),
-                               self._slider_changed)
-        QtCore.QObject.connect(self.slider,
-                               QtCore.SIGNAL('sliderReleased()'),
-                               self._slider_changed)
         layout.addWidget(self.slider, stretch=1)
-
-    def _spinbox_changed(self):
-        value = self.spinbox.value()
-        self.logic.set_iteration(value)
-
-    def _slider_changed(self):
-        value = self.slider.value()
-        self.logic.set_iteration(value)
-
-    def get_iteration(self):
-        return self.logic.iteration
 
     def set_iteration(self, value):
         if value != self.slider.value():
             self.slider.setValue(value)
         if value != self.spinbox.value():
             self.spinbox.setValue(value)
-        if value != self.logic.iteration:
-            self.logic.value = value
-
-    iteration = property(get_iteration,
-                         set_iteration,
-                         doc='Currently examined iteration.')
-
-    def get_number_of_iterations(self):
-        return self.logic.number_of_iterations
 
     def set_number_of_iterations(self, value):
         if self.spinbox.maximum() != value:
             self.spinbox.setMaximum(value)
         if self.slider.maximum() != value:
             self.slider.setMaximum(value)
-        if value != self.logic.number_of_iterations:
-            self.logic.number_of_iterations = value
-
-    number_of_iterations = property(get_number_of_iterations,
-                                    set_number_of_iterations,
-                                    doc='Iterations in the optimization')
 
 
 class IterationDockAreaWidget(QtGui.QWidget):
@@ -259,8 +218,18 @@ class IterationDockAreaWidget(QtGui.QWidget):
 
         layout.addWidget(self.dock_area, stretch=1)
 
-        self.iteration_widget = IterationWidget(logic)
-        layout.addWidget(self.iteration_widget)
+        iteration_widget = IterationWidget()
+        self.logic.iteration_changed.connect(iteration_widget.set_iteration)
+        layout.addWidget(iteration_widget)
+        self.logic.number_of_iterations_changed.connect(
+            iteration_widget.set_number_of_iterations)
+        QtCore.QObject.connect(iteration_widget.spinbox,
+                               QtCore.SIGNAL('valueChanged(int)'),
+                               logic.set_iteration)
+        QtCore.QObject.connect(iteration_widget.slider,
+                               QtCore.SIGNAL('valueChanged(int)'),
+                               logic.set_iteration)
+        self.iteration_widget = iteration_widget
 
 
 class RegistrationTunerMainWindow(QtGui.QMainWindow):
