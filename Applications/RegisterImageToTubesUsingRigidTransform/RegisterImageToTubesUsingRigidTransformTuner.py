@@ -237,6 +237,50 @@ available as 'config'.  The RegistrationTuner instance is available as 'tuner'.
         layout.addWidget(self.console)
 
 
+class ImageTubesWidget(gl.GLViewWidget):
+    """The visualization of the image and tubes in 3D space."""
+
+    def __init__(self, config):
+        super(ImageTubesWidget, self).__init__()
+        if 'Visualization' in config:
+            visualization = config['Visualization']
+            if 'ImageTubes' in visualization:
+                imageTubes = visualization['ImageTubes']
+                if 'CameraPosition' in imageTubes:
+                    # The current position can be obtained with
+                    # tuner.image_tubes.opts
+                    position = imageTubes['CameraPosition']
+                    self.setCameraPosition(distance=position['distance'],
+                                           elevation=position['elevation'],
+                                           azimuth=position['azimuth'])
+                    # HACK: pyqtgraph needs to fix its api so this can be set
+                    # with setCameraPosition
+                    if 'center' in position:
+                        center = position['center']
+                        self.opts['center'] = QtGui.QVector3D(center[0],
+                                                              center[1],
+                                                              center[2])
+        self.initializeUI()
+
+    def initializeUI(self):
+        x_grid = gl.GLGridItem()
+        grid_scale = 20
+        x_grid.rotate(90, 0, 1, 0)
+        x_grid.translate(-10 * grid_scale, 0, 0)
+        y_grid = gl.GLGridItem()
+        y_grid.rotate(90, 1, 0, 0)
+        y_grid.translate(0, -10 * grid_scale, 0)
+        z_grid = gl.GLGridItem()
+        z_grid.translate(0, 0, -10 * grid_scale)
+        for grid in x_grid, y_grid, z_grid:
+            grid.scale(grid_scale, grid_scale, grid_scale)
+            self.image_tubes.addItem(grid)
+        axis = gl.GLAxisItem()
+        axis_scale = 20
+        axis.scale(axis_scale, axis_scale, axis_scale)
+        self.addItem(axis)
+
+
 class IterationDockAreaWidget(QtGui.QWidget):
     """Widgets related to iteration analysis. A DockArea containing Dock's that
     give different views on the analysis and a widget to control the current
@@ -334,42 +378,7 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         run_console_dock.addWidget(run_console)
         self.dock_area.addDock(run_console_dock, 'right')
 
-        self.image_tubes = gl.GLViewWidget()
-        if 'Visualization' in self.config:
-            visualization = self.config['Visualization']
-            if 'ImageTubes' in visualization:
-                imageTubes = visualization['ImageTubes']
-                if 'CameraPosition' in imageTubes:
-                    # The current position can be obtained with
-                    # tuner.image_tubes.opts
-                    cameraPosition = imageTubes['CameraPosition']
-                    it = self.image_tubes
-                    it.setCameraPosition(distance=cameraPosition['distance'],
-                                         elevation=cameraPosition['elevation'],
-                                         azimuth=cameraPosition['azimuth'])
-                    # HACK: pyqtgraph needs to fix its api so this can be set
-                    # with setCameraPosition
-                    if 'center' in cameraPosition:
-                        center = cameraPosition['center']
-                        it.opts['center'] = QtGui.QVector3D(center[0],
-                                                            center[1],
-                                                            center[2])
-        x_grid = gl.GLGridItem()
-        grid_scale = 20
-        x_grid.rotate(90, 0, 1, 0)
-        x_grid.translate(-10 * grid_scale, 0, 0)
-        y_grid = gl.GLGridItem()
-        y_grid.rotate(90, 1, 0, 0)
-        y_grid.translate(0, -10 * grid_scale, 0)
-        z_grid = gl.GLGridItem()
-        z_grid.translate(0, 0, -10 * grid_scale)
-        for grid in x_grid, y_grid, z_grid:
-            grid.scale(grid_scale, grid_scale, grid_scale)
-            self.image_tubes.addItem(grid)
-        axis = gl.GLAxisItem()
-        axis_scale = 20
-        axis.scale(axis_scale, axis_scale, axis_scale)
-        self.image_tubes.addItem(axis)
+        self.image_tubes = ImageTubesWidget(self.config)
         image_tubes_dock = Dock("Image and Tubes", size=(640, 480))
         image_tubes_dock.addWidget(self.image_tubes)
         self.dock_area.addDock(image_tubes_dock, 'left')
