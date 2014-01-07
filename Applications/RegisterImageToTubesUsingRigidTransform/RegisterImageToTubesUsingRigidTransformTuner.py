@@ -603,6 +603,41 @@ class ImageDisplayControlsDock(pyqtgraph.dockarea.Dock):
             self.sliders[direction].setMaximum(size - 1)
 
 
+class MetricValueDock(pyqtgraph.dockarea.Dock):
+    """Displays the metric value over the iterations."""
+
+    def __init__(self, logic, *args, **kwargs):
+        super(MetricValueDock, self).__init__(*args, **kwargs)
+        self.logic = logic
+        self.initializeUI()
+
+    def initializeUI(self):
+        self.metric_values_plot = pg.PlotWidget()
+        self.metric_values_plot.setLabel('bottom', text='Iteration')
+        self.metric_values_plot.setLabel('left', text='Metric Value Inverse')
+        self.metric_values_plot.setLogMode(False, True)
+        self.addWidget(self.metric_values_plot)
+
+    def plot_metric_values(self):
+        iterations = self.logic.progression[:]['Iteration']
+        metric_value_inverse = 1. / \
+            self.logic.progression[:]['CostFunctionValue']
+        min_metric = np.min(metric_value_inverse)
+        self.metric_values_plot.plot({'x': iterations,
+                                     'y': metric_value_inverse},
+                                     pen={'color': (100, 100, 200, 200),
+                                          'width': 2.5},
+                                     fillLevel=min_metric,
+                                     fillBrush=(255, 255, 255, 30),
+                                     antialias=True,
+                                     clear=True)
+        self.metric_values_plot.plot({'x': [self.logic.iteration],
+                                     'y': [metric_value_inverse[self.logic.iteration]]},
+                                     symbolBrush='r',
+                                     symbol='o',
+                                     symbolSize=8.0)
+
+
 class IterationDockAreaWidget(QtGui.QWidget):
     """Widgets related to iteration analysis. A DockArea containing Dock's that
     give different views on the analysis and a widget to control the current
@@ -641,7 +676,6 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         self.config = config
 
         self.logic = logic
-        self.logic.iteration_changed.connect(self.plot_metric_values)
         if 'UltrasoundProbeGeometryFile' in self.config:
             self.logic.analysis_run.connect(self.add_ultrasound_probe_origin)
         self.logic.analysis_run.connect(self.add_translations)
@@ -650,7 +684,6 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         self.dock_area = None
         self.translations = None
         self.compute_progression_colors(1)
-        self.metric_values_plot = None
         self.ultrasound_probe_origin = None
 
         # Remove old output
@@ -661,6 +694,7 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         self.initializeUI()
         self.logic.analysis_run.connect(self.image_tubes.add_image_planes)
         self.logic.iteration_changed.connect(self.image_tubes.add_tubes)
+        self.logic.iteration_changed.connect(self.metric_value_dock.plot_metric_values)
 
     def initializeUI(self):
         self.resize(1024, 768)
@@ -713,13 +747,10 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
 
         self.dock_area.addDock(image_controls_dock, 'bottom', image_tubes_dock)
 
-        metric_value_dock = Dock("Metric Value Inverse", size=(500, 300))
-        self.metric_values_plot = pg.PlotWidget()
-        self.metric_values_plot.setLabel('bottom', text='Iteration')
-        self.metric_values_plot.setLabel('left', text='Metric Value Inverse')
-        self.metric_values_plot.setLogMode(False, True)
-        metric_value_dock.addWidget(self.metric_values_plot)
-        self.dock_area.addDock(metric_value_dock, 'left', run_console_dock)
+        self.metric_value_dock = MetricValueDock(self.logic,
+                                            "Metric Value Inverse",
+                                            size=(500, 300))
+        self.dock_area.addDock(self.metric_value_dock, 'left', run_console_dock)
 
         self.setCentralWidget(self.iteration_dock_area)
         self.show()
@@ -758,24 +789,6 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         translation_points.setGLOptions('translucent')
         self.translations = translation_points
         self.image_tubes.addItem(self.translations)
-
-    def plot_metric_values(self):
-        iterations = self.logic.progression[:]['Iteration']
-        metric_value_inverse = 1. / self.logic.progression[:]['CostFunctionValue']
-        min_metric = np.min(metric_value_inverse)
-        self.metric_values_plot.plot({'x': iterations,
-                                     'y': metric_value_inverse},
-                                     pen={'color': (100, 100, 200, 200),
-                                          'width': 2.5},
-                                     fillLevel=min_metric,
-                                     fillBrush=(255, 255, 255, 30),
-                                     antialias=True,
-                                     clear=True)
-        self.metric_values_plot.plot({'x': [self.logic.iteration],
-                                     'y': [metric_value_inverse[self.logic.iteration]]},
-                                     symbolBrush='r',
-                                     symbol='o',
-                                     symbolSize=8.0)
 
     def compute_progression_colors(self, number_of_iterations):
         iterations_normalized = np.arange(0,
