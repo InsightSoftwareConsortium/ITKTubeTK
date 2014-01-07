@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <executable>
   <category>TubeTK</category>
-  <title>Sample CLI Application (TubeTK)</title>
-  <description>Demonstration of how to write a CLI application. Performs blurring.</description>
+  <title>Shrink Image (TubeTK)</title>
+  <description>Project an image into fewer slices. Integration uses the "max" function.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
