@@ -356,9 +356,11 @@ class ImageTubesWidget(gl.GLViewWidget):
         self.add_grids()
         self.image_planes = [None, None, None]
         self.add_image_planes()
+        self.change_plane_visibility(0, False)
         self.tubes_circles = {}
         self.add_tubes()
-        self.change_plane_visibility(0, False)
+        self.ultrasound_probe_origin = None
+        self.translations = None
 
     def add_grids(self):
         x_grid = gl.GLGridItem()
@@ -536,6 +538,47 @@ class ImageTubesWidget(gl.GLViewWidget):
                 self.removeItem(circs[2])
                 self.tubes_circles.pop(it)
 
+    def add_ultrasound_probe_origin(self):
+        """Add a sphere indicating the ultrasound probe origin."""
+        with open(self.config['UltrasoundProbeGeometryFile'], 'r') as fp:
+            line = fp.readline()
+            line = line.strip()
+            entries = line.split()
+            origin = [float(xx) for xx in entries[1:]]
+        if self.ultrasound_probe_origin:
+            self.removeItem(self.ultrasound_probe_origin)
+        sphere = gl.MeshData.sphere(rows=10,
+                                    cols=20,
+                                    radius=3.0)
+        center_mesh = gl.GLMeshItem(meshdata=sphere,
+                                    smooth=False,
+                                    color=(1.0, 1.0, 0.3, 0.7),
+                                    glOptions='translucent')
+        center_mesh.translate(origin[0], origin[1], origin[2])
+        self.ultrasound_probe_origin = center_mesh
+        self.addItem(self.ultrasound_probe_origin)
+
+    def add_translations(self):
+        """Add a plot of the translation of the tube centers throughout the
+        registration."""
+        if self.translations:
+            self.removeItem(self.translations)
+        translations = np.array(self.logic.progression[:]['Parameters'][:, 3:]) + \
+            self.logic.tubes_center
+        number_of_iterations = self.logic.number_of_iterations
+        iterations_normalized = np.arange(0,
+                                          number_of_iterations,
+                                          dtype=np.float) / \
+            number_of_iterations
+        colors = matplotlib.cm.summer(iterations_normalized)
+        colors[:, 3] = 0.9
+        translation_points = gl.GLScatterPlotItem(pos=translations,
+                                                  color=colors)
+        translation_points.setGLOptions('translucent')
+        self.translations = translation_points
+        self.addItem(self.translations)
+
+
 class ImageDisplayControlsDock(pyqtgraph.dockarea.Dock):
     """Controls the image planes visualized."""
 
@@ -674,17 +717,9 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         super(RegistrationTunerMainWindow, self).__init__(parent)
 
         self.config = config
-
         self.logic = logic
-        if 'UltrasoundProbeGeometryFile' in self.config:
-            self.logic.analysis_run.connect(self.add_ultrasound_probe_origin)
-        self.logic.analysis_run.connect(self.add_translations)
-
-        self.image_display_logic = None
-        self.dock_area = None
-        self.translations = None
-        self.compute_progression_colors(1)
-        self.ultrasound_probe_origin = None
+        image_display_logic = ImageDisplayLogic()
+        self.image_display_logic = image_display_logic
 
         # Remove old output
         if 'TubePointWeightsFile' in self.config and \
@@ -695,6 +730,9 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         self.logic.analysis_run.connect(self.image_tubes.add_image_planes)
         self.logic.iteration_changed.connect(self.image_tubes.add_tubes)
         self.logic.iteration_changed.connect(self.metric_value_dock.plot_metric_values)
+        if 'UltrasoundProbeGeometryFile' in self.config:
+            self.logic.analysis_run.connect(self.image_tubes.add_ultrasound_probe_origin)
+        self.logic.analysis_run.connect(self.image_tubes.add_translations)
 
     def initializeUI(self):
         self.resize(1024, 768)
@@ -730,9 +768,7 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         run_console_dock.addWidget(run_console)
         self.dock_area.addDock(run_console_dock, 'right')
 
-        image_display_logic = ImageDisplayLogic()
-        self.image_display_logic = image_display_logic
-
+        image_display_logic = self.image_display_logic
         self.image_tubes = ImageTubesWidget(self.logic,
                                             image_display_logic,
                                             self.config)
@@ -748,55 +784,12 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         self.dock_area.addDock(image_controls_dock, 'bottom', image_tubes_dock)
 
         self.metric_value_dock = MetricValueDock(self.logic,
-                                            "Metric Value Inverse",
-                                            size=(500, 300))
+                                                 "Metric Value Inverse",
+                                                 size=(500, 300))
         self.dock_area.addDock(self.metric_value_dock, 'left', run_console_dock)
 
         self.setCentralWidget(self.iteration_dock_area)
         self.show()
-
-    def add_ultrasound_probe_origin(self):
-        """Add a sphere indicating the ultrasound probe origin."""
-        with open(self.config['UltrasoundProbeGeometryFile'], 'r') as fp:
-            line = fp.readline()
-            line = line.strip()
-            entries = line.split()
-            origin = [float(xx) for xx in entries[1:]]
-        if self.ultrasound_probe_origin:
-            self.image_tubes.removeItem(self.ultrasound_probe_origin)
-        sphere = gl.MeshData.sphere(rows=10,
-                                    cols=20,
-                                    radius=3.0)
-        center_mesh = gl.GLMeshItem(meshdata=sphere,
-                                    smooth=False,
-                                    color=(1.0, 1.0, 0.3, 0.7),
-                                    glOptions='translucent')
-        center_mesh.translate(origin[0], origin[1], origin[2])
-        self.ultrasound_probe_origin = center_mesh
-        self.image_tubes.addItem(self.ultrasound_probe_origin)
-
-    def add_translations(self):
-        """Add a plot of the translation of the tube centers throughout the
-        registration."""
-        if self.translations:
-            self.image_tubes.removeItem(self.translations)
-        translations = np.array(self.logic.progression[:]['Parameters'][:, 3:]) + \
-            self.logic.tubes_center
-        colors = self.progression_colors
-        colors[:, 3] = 0.9
-        translation_points = gl.GLScatterPlotItem(pos=translations,
-                                                  color=colors)
-        translation_points.setGLOptions('translucent')
-        self.translations = translation_points
-        self.image_tubes.addItem(self.translations)
-
-    def compute_progression_colors(self, number_of_iterations):
-        iterations_normalized = np.arange(0,
-                                          number_of_iterations,
-                                          dtype=np.float) / \
-            number_of_iterations
-        colors = matplotlib.cm.summer(iterations_normalized)
-        self.progression_colors = colors
 
     def make_video(self):
         for it in range(self.logic.number_of_iterations + 1):
@@ -808,37 +801,6 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
             pixmap = QtGui.QPixmap.grabWindow(self.winId())
             print('Saving ' + filename)
             pixmap.save(filename, 'png')
-
-    def _y_check_changed(self):
-        if self.image_planes['y']:
-            if self.image_controls['y_check'].isChecked():
-                self.image_planes['y'].setVisible(True)
-            else:
-                self.image_planes['y'].setVisible(False)
-
-    def _y_slider_changed(self):
-        if self.image_controls['y_check'].isChecked():
-            if self.image_planes['y']:
-                self.image_tubes.removeItem(self.image_planes['y'])
-            index = self.image_controls['y_slider'].value()
-            self.image_planes['y'] = self._image_plane('y', index)
-            self.image_tubes.addItem(self.image_planes['y'])
-
-    def _z_check_changed(self):
-        if self.image_planes['z']:
-            if self.image_controls['z_check'].isChecked():
-                self.image_planes['z'].setVisible(True)
-            else:
-                self.image_planes['z'].setVisible(False)
-
-    def _z_slider_changed(self):
-        if self.image_controls['z_check'].isChecked():
-            if self.image_planes['z']:
-                self.image_tubes.removeItem(self.image_planes['z'])
-            index = self.image_controls['z_slider'].value()
-            self.image_planes['z'] = self._image_plane('z', index)
-            self.image_tubes.addItem(self.image_planes['z'])
-
 
 
 class RegistrationTuner(object):
