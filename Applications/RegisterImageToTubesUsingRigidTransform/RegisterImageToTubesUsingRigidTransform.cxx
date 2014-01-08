@@ -429,8 +429,7 @@ int DoIt( int argc, char * argv[] )
     {
     // Record the optimization parameter progression and write to a file.
     recordParameterProgressionCommand->SetFileName( parameterProgression );
-    optimizer->AddObserver( itk::StartEvent(), recordParameterProgressionCommand );
-    optimizer->AddObserver( itk::IterationEvent(), recordParameterProgressionCommand );
+    recordParameterProgressionCommand->Observe( optimizer );
     }
 
   try

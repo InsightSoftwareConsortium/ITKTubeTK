@@ -229,8 +229,20 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
   delete file;
 }
 
-} // End namespace itk
+
+template< unsigned int VNumberOfParameters, class TParametersValue >
+void
+RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
+  TParametersValue >
+::Observe( Object * optimizer )
+{
+  optimizer->AddObserver( StartEvent(), this );
+  optimizer->AddObserver( IterationEvent(), this );
+  optimizer->AddObserver( EndEvent(), this );
+}
 
 } // End namespace tube
+
+} // End namespace itk
 
 #endif // End !defined(__itktubeRecordOptimizationParameterProgressionCommand_hxx)
