@@ -113,6 +113,8 @@ int DoIt( int argc, char * argv[] )
 
   seedIndexType seedIndex;
   seedIndexListType seedIndexList;
+
+  double seedScale;
   seedScaleListType seedScaleList;
 
   seedIndexList.clear();
@@ -145,6 +147,21 @@ int DoIt( int argc, char * argv[] )
 
   if( !seedListFile.empty() )
     {
+    std::ifstream readStream;
+    readStream.open( seedListFile.c_str(), std::ios::binary |
+      std::ios::in );
+    std::string line;
+    while( std::getline( readStream, line ) )
+      {
+      std::istringstream iss(line);
+      for( unsigned int i = 0; i < VDimension; ++i )
+        {
+        iss >> seedIndex[i];
+        }
+      iss >> seedScale;
+      }
+    seedIndexList.push_back( seedIndex );
+    seedScaleList.push_back( seedScale );
     }
 
   if( seedMask.empty() )

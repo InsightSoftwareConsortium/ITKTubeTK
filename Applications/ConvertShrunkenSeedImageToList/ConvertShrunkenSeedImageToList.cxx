@@ -144,7 +144,7 @@ int DoIt( int argc, char * argv[] )
       {
       for( unsigned int i = 0; i < VDimension; ++i )
         {
-        writeStream << itPoint.Get()[i] << ", ";
+        writeStream << itPoint.Get()[i] << " ";
         }
       writeStream << itScale.Get() << std::endl;
       }
