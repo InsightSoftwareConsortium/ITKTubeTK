@@ -28,12 +28,12 @@ SET PATH="@TubeTK_EXECUTABLE_DIRS@;%PATH%"
 
 %*
 IF %ERRORLEVEL% NEQ 0 (
-  SET err=1
+  SET PATH=%OLD_PATH%
+  EXIT 1
 ) ELSE (
-  SET err=0
+  SET PATH=%OLD_PATH%
+  EXIT 0
 )
 
-SET PATH=%OLD_PATH%
 
 :: Exit and pass along our exit code.
-EXIT /B %err%
