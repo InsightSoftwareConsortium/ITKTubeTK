@@ -38,9 +38,7 @@ endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 # Set dependency list
 set( ${proj}_DEPENDENCIES "JsonCpp" )
-if( NOT TubeTK_USE_SLICER )
-  set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "ITK" )
-endif( NOT TubeTK_USE_SLICER )
+set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "ITK" )
 
 if( UNIX )
   set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing"
