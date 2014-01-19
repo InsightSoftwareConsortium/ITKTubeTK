@@ -39,10 +39,12 @@ set( CTEST_BUILD_CONFIGURATION "@CTEST_CONFIGURATION_TYPE@"
 
 set( CMAKE_CXX_FLAGS "@CMAKE_CXX_FLAGS@" CACHE STRING "Init" FORCE )
 set( CMAKE_C_FLAGS "@CMAKE_C_FLAGS@" CACHE STRING "Init" FORCE )
-set( CMAKE_EXE_LINKER_FLAGS "@CMAKE_EXE_LINKER_FLAGS@" CACHE STRING "Init" FORCE )
+set( CMAKE_EXE_LINKER_FLAGS "@CMAKE_EXE_LINKER_FLAGS@"
+  CACHE STRING "Init" FORCE )
 set( CMAKE_GENERATOR "@SITE_CMAKE_GENERATOR@" CACHE INTERNAL "Init" FORCE )
 set( CMAKE_PROJECT_NAME "TubeTK" CACHE STRING "Init" FORCE )
-set( CMAKE_SHARED_LINKER_FLAGS "@CMAKE_SHARED_LINKER_FLAGS@" CACHE STRING "Init" FORCE )
+set( CMAKE_SHARED_LINKER_FLAGS "@CMAKE_SHARED_LINKER_FLAGS@"
+  CACHE STRING "Init" FORCE )
 set( SITE "@CTEST_SITE@" CACHE STRING "Init" FORCE )
 
 set( MAKECOMMAND "@CTEST_BUILD_COMMAND@" CACHE STRING "Init" FORCE )
@@ -60,7 +62,8 @@ set( TubeTK_USE_BOOST @TubeTK_USE_BOOST@ CACHE BOOL "Init" FORCE )
 set( TubeTK_USE_CPPCHECK @TubeTK_USE_CPPCHECK@ CACHE BOOL "Init" FORCE )
 set( TubeTK_USE_CTK @TubeTK_USE_CTK@ CACHE BOOL "Init" FORCE )
 set( TubeTK_USE_DOXYGEN @TubeTK_USE_DOXYGEN@ CACHE BOOL "Init" FORCE )
-set( TubeTK_BUILD_IMAGE_VIEWER @TubeTK_BUILD_IMAGE_VIEWER@ CACHE BOOL "Init" FORCE )
+set( TubeTK_BUILD_IMAGE_VIEWER @TubeTK_BUILD_IMAGE_VIEWER@
+  CACHE BOOL "Init" FORCE )
 set( TubeTK_USE_KWSTYLE @TubeTK_USE_KWSTYLE@ CACHE BOOL "Init" FORCE )
 set( TubeTK_USE_LIBSVM @TubeTK_USE_LIBSVM@ CACHE BOOL "Init" FORCE )
 set( TubeTK_USE_NOTEBOOKS @TubeTK_USE_NOTEBOOKS@ CACHE BOOL "Init" FORCE )
@@ -79,9 +82,11 @@ set( USE_SYSTEM_ITK @USE_SYSTEM_ITK@ CACHE BOOL "Init" FORCE )
 set( USE_SYSTEM_JSONCPP @USE_SYSTEM_JSONCPP@ CACHE BOOL "Init" FORCE )
 set( USE_SYSTEM_KWSTYLE @USE_SYSTEM_KWSTYLE@ CACHE BOOL "Init" FORCE )
 set( USE_SYSTEM_LIBSVM @USE_SYSTEM_LIBSVM@ CACHE BOOL "Init" FORCE )
-set( USE_SYSTEM_PARAMETER_SERIALIZER @USE_SYSTEM_PARAMETER_SERIALIZER@ CACHE BOOL "Init" FORCE )
+set( USE_SYSTEM_PARAMETER_SERIALIZER @USE_SYSTEM_PARAMETER_SERIALIZER@
+  CACHE BOOL "Init" FORCE )
 set( USE_SYSTEM_SLICER @USE_SYSTEM_SLICER@ CACHE BOOL "Init" FORCE )
-set( USE_SYSTEM_SLICER_EXECUTION_MODEL @USE_SYSTEM_SLICER_EXECUTION_MODEL@ CACHE BOOL "Init" FORCE )
+set( USE_SYSTEM_SLICER_EXECUTION_MODEL @USE_SYSTEM_SLICER_EXECUTION_MODEL@
+  CACHE BOOL "Init" FORCE )
 set( USE_SYSTEM_VTK @USE_SYSTEM_VTK@ CACHE BOOL "Init" FORCE )
 
 if( TubeTK_USE_BOOST )
@@ -93,13 +98,14 @@ if( TubeTK_USE_SLICER )
 endif( TubeTK_USE_SLICER )
 
 if( EXISTS ${TubeTK_BINARY_DIR}/CTK-build/CMakeCache.txt )
-  set( TubeTK_USE_CTK ON CACHE BOOL "Init" FORCE )
+  # set( TubeTK_USE_CTK ON CACHE BOOL "Init" FORCE )
   set( CTK_DIR "${TubeTK_BINARY_DIR}/CTK-build" CACHE PATH "Init" FORCE )
 endif( EXISTS ${TubeTK_BINARY_DIR}/CTK-build/CMakeCache.txt )
 
 if( EXISTS ${TubeTK_BINARY_DIR}/ImageViewer-build/CMakeCache.txt )
-  set( TubeTK_BUILD_IMAGE_VIEWER ON CACHE BOOL "Init" FORCE )
-  set( ImageViewer_DIR "${TubeTK_BINARY_DIR}/ImageViewer-build" CACHE PATH "Init" FORCE )
+  # set( TubeTK_BUILD_IMAGE_VIEWER ON CACHE BOOL "Init" FORCE )
+  set( ImageViewer_DIR "${TubeTK_BINARY_DIR}/ImageViewer-build"
+    CACHE PATH "Init" FORCE )
 endif( EXISTS ${TubeTK_BINARY_DIR}/ImageViewer-build/CMakeCache.txt )
 
 if( EXISTS ${TubeTK_BINARY_DIR}/ITK-build/CMakeCache.txt )
@@ -107,28 +113,32 @@ if( EXISTS ${TubeTK_BINARY_DIR}/ITK-build/CMakeCache.txt )
 endif( EXISTS ${TubeTK_BINARY_DIR}/ITK-build/CMakeCache.txt )
 
 if( EXISTS ${TubeTK_BINARY_DIR}/JsonCpp-build/CMakeCache.txt )
-  set( JsonCpp_DIR "${TubeTK_BINARY_DIR}/JsonCpp-build" CACHE PATH "Init" FORCE )
+  set( JsonCpp_DIR "${TubeTK_BINARY_DIR}/JsonCpp-build"
+    CACHE PATH "Init" FORCE )
 endif( EXISTS ${TubeTK_BINARY_DIR}/JsonCpp-build/CMakeCache.txt )
 
 if( EXISTS ${TubeTK_BINARY_DIR}/KWStyle-build/CMakeCache.txt )
-  set( TubeTK_USE_KWSTYLE ON CACHE BOOL "Init" FORCE )
-  set( KWSTYLE_EXECUTABLE "${TubeTK_BINARY_DIR}/KWStyle-build/bin/KWStyle" CACHE PATH "Init" FORCE )
+  # set( TubeTK_USE_KWSTYLE ON CACHE BOOL "Init" FORCE )
+  set( KWSTYLE_EXECUTABLE "${TubeTK_BINARY_DIR}/KWStyle-build/bin/KWStyle"
+    CACHE PATH "Init" FORCE )
 endif( EXISTS ${TubeTK_BINARY_DIR}/KWStyle-build/CMakeCache.txt )
 
 if( EXISTS ${TubeTK_BINARY_DIR}/LIBSVM-build/CMakeCache.txt )
-  set( TubeTK_USE_LIBSVM ON CACHE BOOL "Init" FORCE )
+  # set( TubeTK_USE_LIBSVM ON CACHE BOOL "Init" FORCE )
   set( LIBSVM_DIR "${TubeTK_BINARY_DIR}/LIBSVM-build" CACHE PATH "Init" FORCE )
 endif( EXISTS ${TubeTK_BINARY_DIR}/LIBSVM-build/CMakeCache.txt )
 
 if( EXISTS ${TubeTK_BINARY_DIR}/ParameterSerializer-build/CMakeCache.txt )
-  set( ParameterSerializer_DIR "${TubeTK_BINARY_DIR}/ParameterSerializer-build" CACHE PATH "Init" FORCE )
+  set( ParameterSerializer_DIR "${TubeTK_BINARY_DIR}/ParameterSerializer-build"
+    CACHE PATH "Init" FORCE )
 endif( EXISTS ${TubeTK_BINARY_DIR}/ParameterSerializer-build/CMakeCache.txt )
 
 if( EXISTS ${TubeTK_BINARY_DIR}/SlicerExecutionModel-build/CMakeCache.txt )
-  set( SlicerExecutionModel_DIR "${TubeTK_BINARY_DIR}/SlicerExecutionModel-build" CACHE PATH "Init" FORCE )
+  set( SlicerExecutionModel_DIR
+    "${TubeTK_BINARY_DIR}/SlicerExecutionModel-build" CACHE PATH "Init" FORCE )
 endif( EXISTS ${TubeTK_BINARY_DIR}/SlicerExecutionModel-build/CMakeCache.txt )
 
 if( EXISTS ${TubeTK_BINARY_DIR}/VTK-build/CMakeCache.txt )
-  set( TubeTK_USE_VTK ON CACHE BOOL "Init" FORCE )
+  # set( TubeTK_USE_VTK ON CACHE BOOL "Init" FORCE )
   set( VTK_DIR "${TubeTK_BINARY_DIR}/VTK-build" CACHE PATH "Init" FORCE )
 endif( EXISTS ${TubeTK_BINARY_DIR}/VTK-build/CMakeCache.txt )
