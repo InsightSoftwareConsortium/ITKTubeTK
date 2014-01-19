@@ -153,10 +153,6 @@ set( CMAKE_POSITION_INDEPENDENT_CODE ON )
 # used by TubeTK.
 option( TubeTK_USE_SLICER "Use Slicer to extract useful commands and CLIs."
   OFF )
-# If USE_SYSTEM_SLICER is OFF, it still won't be built as an external project.
-option( USE_SYSTEM_SLICER
-  "Use 3D Slicer to configure dependencies such as ITK, VTK, CTK..." ON )
-mark_as_advanced( USE_SYSTEM_SLICER )
 
 # Slicer must be used if TubeTK is built as an extension.
 if( TubeTK_BUILD_SLICER_EXTENSION )
@@ -164,7 +160,7 @@ if( TubeTK_BUILD_SLICER_EXTENSION )
     "Use 3D Slicer to extract useful commands and CLIs." FORCE )
 endif( TubeTK_BUILD_SLICER_EXTENSION )
 
-if( TubeTK_USE_SLICER AND USE_SYSTEM_SLICER )
+if( TubeTK_USE_SLICER )
   unset( QT_QMAKE_EXECUTABLE )
   # Find Slicer to set the [ITK|VTK|CTK|...]_DIR variables
   find_package( Slicer REQUIRED )
@@ -195,10 +191,10 @@ if( TubeTK_USE_SLICER AND USE_SYSTEM_SLICER )
     FORCE )
   set( USE_SYSTEM_CTK ON CACHE BOOL
     "Exclude CTK from superbuild and use an existing build." FORCE )
-  set( USE_SYSTEM_SLICER_EXECUTION_MODEL ON CACHE BOOL
+  set( USE_YSTEM_SLICER_EXECUTION_MODEL ON CACHE BOOL
     "Exclude SlicerExecutionModel from superbuild and use an existing build."
     FORCE )
-endif( TubeTK_USE_SLICER AND USE_SYSTEM_SLICER )
+endif( TubeTK_USE_SLICER )
 
 # Boost libraries setup.
 option( TubeTK_USE_BOOST
@@ -213,43 +209,45 @@ if( TubeTK_USE_BOOST )
 endif( TubeTK_USE_BOOST )
 
 #  Cppcheck setup.
-option( TubeTK_USE_CPPCHECK "Use Cppcheck to enable additional tests." OFF )
+set( TubeTK_USE_CPPCHECK_DEFAULT ON )
 set( USE_SYSTEM_CPPCHECK_DEFAULT OFF )
 if( WIN32 )
+  set( TubeTK_USE_CPPCHECK_DEFAULT OFF )
   set( USE_SYSTEM_CPPCHECK_DEFAULT ON )
 endif( WIN32 )
+option( TubeTK_USE_CPPCHECK "Use Cppcheck to enable additional tests."
+  ${TubeTK_USE_CPPCHECK_DEFAULT} )
 option( USE_SYSTEM_CPPCHECK
   "Exclude Cppcheck from superbuild and use an existing build."
   ${USE_SYSTEM_CPPCHECK_DEFAULT} )
 mark_as_advanced( USE_SYSTEM_CPPCHECK )
 
 # CTK setup.
-option( TubeTK_USE_CTK "Use CTK to enable additional functionality." OFF )
+option( TubeTK_USE_CTK "Use CTK to enable additional functionality." ON )
 option( USE_SYSTEM_CTK
   "Exclude CTK from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_CTK )
 
 # Image viewer setup.
-option( TubeTK_USE_IMAGE_VIEWER "Use ImageViewer." OFF )
-option( USE_SYSTEM_IMAGE_VIEWER
-  "Exclude ImageViewer from superbuild and use an existing build." OFF )
-mark_as_advanced( USE_SYSTEM_IMAGE_VIEWER )
+option( TubeTK_BUILD_IMAGE_VIEWER "Use ImageViewer." OFF )
 
-option( TubeTK_USE_PYTHON "Use Python to enable additional functionality." OFF )
+set( TubeTK_USE_PYTHON_DEFAULT ON )
+if( WIN32 )
+  set( TubeTK_USE_PYTHON_DEFAULT OFF )
+endif( WIN32 )
+option( TubeTK_USE_PYTHON "Use Python to enable additional functionality."
+  ${TubeTK_USE_PYTHON_DEFAULT} )
 if( TubeTK_USE_PYTHON )
   # NumPy conversion support.
   option( TubeTK_USE_NUMPY "Use NumPy to enable additional functionality." ON )
-  mark_as_advanced( TubeTK_USE_NUMPY )
 
   # Test TubeTK examples via Python virtualenv.
   option( TubeTK_USE_NOTEBOOKS
     "Test IPython notebooks in a Python virtualenv." ON )
-  mark_as_advanced( TubeTK_USE_NOTEBOOKS )
 
   # PyQtGraph bridge support.
   option( TubeTK_USE_PYQTGRAPH
     "Use PyQtGraph to enable additional functionality." OFF )
-  mark_as_advanced( TubeTK_USE_PYQTGRAPH )
 endif( TubeTK_USE_PYTHON )
 
 # ITK setup.
@@ -264,13 +262,13 @@ mark_as_advanced( USE_SYSTEM_JSONCPP )
 
 # KWStyle setup.
 option( TubeTK_USE_KWSTYLE
-  "Use KWStyle to check for coding standards violations." OFF )
+  "Use KWStyle to check for coding standards violations." ON )
 option( USE_SYSTEM_KWSTYLE
   "Exclude KWStyle from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_KWSTYLE )
 
 # LIBSVM setup.
-option( TubeTK_USE_LIBSVM "Use LIBSVM to enable additional functionality." OFF )
+option( TubeTK_USE_LIBSVM "Use LIBSVM to enable additional functionality." ON )
 option( USE_SYSTEM_LIBSVM
   "Exclude LIBSVM from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_LIBSVM )
@@ -283,7 +281,7 @@ mark_as_advanced( USE_SYSTEM_PARAMETER_SERIALIZER )
 
 # Qt framework setup.
 option( TubeTK_USE_QT
-  "Use the Qt framework to enable additional applications and libraries." OFF )
+  "Use the Qt framework to enable additional applications and libraries." ON )
 if( TubeTK_USE_QT )
   find_package( Qt4 )
   # 3D Slicer only tests against a specific Qt 4 version. To
@@ -315,7 +313,6 @@ mark_as_advanced( USE_SYSTEM_SLICER_EXECUTION_MODEL )
 
 option( TubeTK_USE_VALGRIND "Use Valgrind to enable additional functionality."
   OFF )
-mark_as_advanced( TubeTK_USE_VALGRIND )
 
 # VTK setup.
 option( TubeTK_USE_VTK "Use VTK to enable additional functionality." ON )
@@ -334,12 +331,9 @@ set( CMAKE_FIRST_PASS_COMPLETED ON CACHE BOOL
   FORCE )
 mark_as_advanced( CMAKE_FIRST_PASS_COMPLETED )
 
-# Superbuild setup.
-set( superbuild_enabled_by_default ON )
 
 option( TubeTK_USE_SUPERBUILD
-  "Build TubeTK and the projects it depends on using a superbuild."
-  ${superbuild_enabled_by_default} )
+  "Build TubeTK and the projects it depends on using a superbuild." ON )
 mark_as_advanced( TubeTK_USE_SUPERBUILD )
 
 # If TubeTK_CONFIG_BINARY_DIR isn't defined, it means TubeTK is *NOT* build
