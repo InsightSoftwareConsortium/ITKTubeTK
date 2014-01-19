@@ -104,6 +104,9 @@ if( BUILD_DOCUMENTATION )
   endif( TubeTK_USE_DOXYGEN )
 endif( BUILD_DOCUMENTATION )
 
+# Image viewer setup.
+option( TubeTK_BUILD_IMAGE_VIEWER "Use ImageViewer." OFF )
+
 # Microsoft Visual Studio setup.
 if( MSVC )
   add_definitions( -D_SCL_SECURE_NO_WARNINGS )
@@ -191,7 +194,7 @@ if( TubeTK_USE_SLICER )
     FORCE )
   set( USE_SYSTEM_CTK ON CACHE BOOL
     "Exclude CTK from superbuild and use an existing build." FORCE )
-  set( USE_YSTEM_SLICER_EXECUTION_MODEL ON CACHE BOOL
+  set( USE_SYSTEM_SLICER_EXECUTION_MODEL ON CACHE BOOL
     "Exclude SlicerExecutionModel from superbuild and use an existing build."
     FORCE )
 endif( TubeTK_USE_SLICER )
@@ -228,9 +231,6 @@ option( USE_SYSTEM_CTK
   "Exclude CTK from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_CTK )
 
-# Image viewer setup.
-option( TubeTK_BUILD_IMAGE_VIEWER "Use ImageViewer." OFF )
-
 set( TubeTK_USE_PYTHON_DEFAULT ON )
 if( WIN32 )
   set( TubeTK_USE_PYTHON_DEFAULT OFF )
@@ -247,7 +247,7 @@ if( TubeTK_USE_PYTHON )
 
   # PyQtGraph bridge support.
   option( TubeTK_USE_PYQTGRAPH
-    "Use PyQtGraph to enable additional functionality." OFF )
+    "Use PyQtGraph to enable additional functionality." ON )
 endif( TubeTK_USE_PYTHON )
 
 # ITK setup.
@@ -274,6 +274,10 @@ option( USE_SYSTEM_LIBSVM
 mark_as_advanced( USE_SYSTEM_LIBSVM )
 
 # Parameter serializer setup.
+option( USE_SYSTEM_SLICER_EXECUTION_MODEL
+  "Exclude slicer execution model from superbuild and use an existing build."
+  OFF )
+mark_as_advanced( USE_SYSTEM_SLICER_EXECUTION_MODEL )
 option( USE_SYSTEM_PARAMETER_SERIALIZER
   "Exclude parameter serializer from superbuild and use an existing build."
   OFF )
