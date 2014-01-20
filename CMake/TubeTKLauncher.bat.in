@@ -22,18 +22,13 @@ REM  limitations under the License.
 REM
 REM ###########################################################################
 
-SET OLD_PATH=%PATH%
-
 SET PATH="@TubeTK_EXECUTABLE_DIRS@;%PATH%"
 
 %*
 IF %ERRORLEVEL% NEQ 0 (
-  SET PATH=%OLD_PATH%
   EXIT 1
 ) ELSE (
-  SET PATH=%OLD_PATH%
   EXIT 0
 )
-
 
 :: Exit and pass along our exit code.
