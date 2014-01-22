@@ -39,6 +39,7 @@ void RegisterTests( void )
   REGISTER_TEST( itktubeNJetBasisFeatureVectorGeneratorTest );
   REGISTER_TEST( itktubeNJetFeatureVectorGeneratorTest );
   REGISTER_TEST( itktubeNJetImageFunctionTest );
+  REGISTER_TEST( itktubeSingleValuedCostFunctionImageSourceTest );
   REGISTER_TEST( itktubeRecordOptimizationParameterProgressionCommandTest );
   REGISTER_TEST( itktubeRidgeBasisFeatureVectorGeneratorTest );
   REGISTER_TEST( itktubeRidgeFeatureVectorGeneratorTest );
