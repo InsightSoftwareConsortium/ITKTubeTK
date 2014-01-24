@@ -32,7 +32,6 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-# Test1
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
   --parameterProgression ${TEMP}/${MODULE_NAME}Test1ParameterProgression.h5
@@ -52,3 +51,12 @@ if( TubeTK_USE_PYQTGRAPH )
     MIDAS_FETCH_ONLY{Branch.n020.mha.md5}
     MIDAS_FETCH_ONLY{tube.tre.md5} )
 endif( TubeTK_USE_PYQTGRAPH )
+
+set( MODULE_NAME ComputeImageToTubeRigidMetricImage )
+set( PROJ_EXE
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+  COMMAND ${PROJ_EXE}
+  MIDAS{Branch.n020.mha.md5}
+  MIDAS{tube.tre.md5}
+  ${TEMP}/${MODULE_NAME}Test1.mha )

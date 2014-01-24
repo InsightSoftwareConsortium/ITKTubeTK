@@ -74,7 +74,7 @@ protected:
 
 private:
   ArthurDentCostFunction(const Self &); //purposely not implemented
-  void operator=(const Self &);           //purposely not implemented
+  void operator=(const Self &);         //purposely not implemented
 };
 
 } // end namespace itk
@@ -125,7 +125,8 @@ int itktubeSingleValuedCostFunctionImageSourceTest( int argc, char * argv[] )
 
   typedef itk::Image< FloatType, Dimension > OutputImageType;
 
-  typedef itk::CastImageFilter< CostFunctionImageSourceType::OutputImageType, OutputImageType > CastImageFilterType;
+  typedef itk::CastImageFilter< CostFunctionImageSourceType::OutputImageType,
+    OutputImageType > CastImageFilterType;
   CastImageFilterType::Pointer castImageFilter = CastImageFilterType::New();
   castImageFilter->SetInput( costFunctionImageSource->GetOutput() );
 

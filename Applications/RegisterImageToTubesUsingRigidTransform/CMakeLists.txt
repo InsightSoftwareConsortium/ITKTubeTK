@@ -38,20 +38,28 @@ endif()
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
 
+set(tubetk_base_includes
+  ${TubeTK_SOURCE_DIR}/Base/CLI
+  ${TubeTK_SOURCE_DIR}/Base/Common
+  ${TubeTK_SOURCE_DIR}/Base/Filtering
+  ${TubeTK_SOURCE_DIR}/Base/Numerics
+  ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Filtering
+  ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Registration
+  ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/USTK
+  ${TubeTK_SOURCE_DIR}/Base/Registration
+  ${TubeTK_SOURCE_DIR}/Base/USTK )
+
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES ${ITK_LIBRARIES} ${ParameterSerializer_LIBRARIES}
-  INCLUDE_DIRECTORIES
-    ${TubeTK_SOURCE_DIR}/Base/CLI
-    ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Filtering
-    ${TubeTK_SOURCE_DIR}/Base/Numerics
-    ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Filtering
-    ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Registration
-    ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/USTK
-    ${TubeTK_SOURCE_DIR}/Base/Registration
-    ${TubeTK_SOURCE_DIR}/Base/USTK )
+  INCLUDE_DIRECTORIES ${tubetk_base_includes} )
+
+SEMMacroBuildCLI(
+  NAME ComputeImageToTubeRigidMetricImage
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
+  TARGET_LIBRARIES ${ITK_LIBRARIES} ${ParameterSerializer_LIBRARIES}
+  INCLUDE_DIRECTORIES ${tubetk_base_includes} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
