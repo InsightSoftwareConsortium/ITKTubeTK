@@ -32,15 +32,14 @@ set( Cppcheck_HASH_OR_TAG 1.61 )
 set( CTK_URL ${github_protocol}://github.com/commontk/CTK.git )
 set( CTK_HASH_OR_TAG 7cf06ada5e490a06dab7efaa3aaf0cd784671253 )
 
-# TubeTK Image Viewer snapshot 2013-08-21 06:23:25
+# TubeTK Image Viewer snapshot 2014-01-26
 set( ImageViewer_URL
   ${github_protocol}://github.com/TubeTK/TubeTK-ImageViewer.git )
-set( ImageViewer_HASH_OR_TAG 44adad4d8cc00e33b7c478c4bd0f4eb901bd7814 )
+set( ImageViewer_HASH_OR_TAG 9bcd8196a14552d9fb5a70005e9a95bbaabcd8fd )
 
 # Insight Segmentation and Registration Toolkit
-# v4.5
 set( ITK_URL ${github_protocol}://github.com/Kitware/ITK.git )
-set( ITK_HASH_OR_TAG 1b62d2bb5bedcf7fa80e96e79064a2043811d616 )
+set( ITK_HASH_OR_TAG 9fb84edbf9f6a5bb0846acbf6ecd767ca5cab2e1 )
 
 # JsonCpp snapshot 2014-01-01 r287
 # ${svn_protocol}://svn.code.sf.net/p/jsoncpp/code/trunk/jsoncpp )
