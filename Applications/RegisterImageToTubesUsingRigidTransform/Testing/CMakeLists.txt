@@ -39,11 +39,21 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
   MIDAS{tube.tre.md5}
   ${TEMP}/${MODULE_NAME}Test1.h5 )
 
-if( TubeTK_USE_PYQTGRAPH )
-  get_target_property( ANALYSIS_EXE ${MODULE_NAME} LOCATION )
-  configure_file( ${MODULE_NAME}Tuner.json.in
-    ${TEMP}/${MODULE_NAME}Tuner.json )
+set( METRIC_SAMPLER ComputeImageToTubeRigidMetricImage )
+set( METRIC_SAMPLER_EXE
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:${METRIC_SAMPLER}> )
+Midas3FunctionAddTest( NAME ${METRIC_SAMPLER}-Test1
+  COMMAND ${METRIC_SAMPLER_EXE}
+  MIDAS{Branch.n020.mha.md5}
+  MIDAS{tube.tre.md5}
+  ${TEMP}/${METRIC_SAMPLER}Test1.mha )
 
+get_target_property( METRIC_SAMPLER_LOC ${METRIC_SAMPLER} LOCATION )
+get_target_property( ANALYSIS_EXE ${MODULE_NAME} LOCATION )
+configure_file( ${MODULE_NAME}Tuner.json.in
+  ${TEMP}/${MODULE_NAME}Tuner.json )
+
+if( TubeTK_USE_PYQTGRAPH )
   Midas3FunctionAddTest( NAME ${MODULE_NAME}TunerTest
     COMMAND ${PYTHON_TESTING_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../${MODULE_NAME}Tuner.py
       --non-interactive
@@ -52,11 +62,9 @@ if( TubeTK_USE_PYQTGRAPH )
     MIDAS_FETCH_ONLY{tube.tre.md5} )
 endif( TubeTK_USE_PYQTGRAPH )
 
-set( MODULE_NAME ComputeImageToTubeRigidMetricImage )
-set( PROJ_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
-  COMMAND ${PROJ_EXE}
+Midas3FunctionAddTest( NAME ${METRIC_SAMPLER}-Test2
+  COMMAND ${METRIC_SAMPLER_EXE}
+      --parameterstorestore ${TEMP}/${MODULE_NAME}Tuner.json
   MIDAS{Branch.n020.mha.md5}
   MIDAS{tube.tre.md5}
-  ${TEMP}/${MODULE_NAME}Test1.mha )
+  ${TEMP}/${METRIC_SAMPLER}Test2.mha )
