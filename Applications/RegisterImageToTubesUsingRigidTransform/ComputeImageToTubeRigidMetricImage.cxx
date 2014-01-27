@@ -169,17 +169,17 @@ int DoIt( int argc, char * argv[] )
       {
       const Json::Value & metricSampler = parametersRoot["MetricSampler"];
       const Json::Value & lowerBound = metricSampler["LowerBound"];
-      for( int ii = 0; ii < NumberOfParameters; ++ii )
+      for( int ii = 0; ii < static_cast< int >( NumberOfParameters) ; ++ii )
         {
         parametersLowerBound[ii] = lowerBound[ii].asDouble();
         }
       const Json::Value & upperBound = metricSampler["UpperBound"];
-      for( int ii = 0; ii < NumberOfParameters; ++ii )
+      for( int ii = 0; ii < static_cast< int >( NumberOfParameters) ; ++ii )
         {
         parametersUpperBound[ii] = upperBound[ii].asDouble();
         }
       const Json::Value & step = metricSampler["Step"];
-      for( int ii = 0; ii < NumberOfParameters; ++ii )
+      for( int ii = 0; ii < static_cast< int >( NumberOfParameters) ; ++ii )
         {
         parametersStep[ii] = step[ii].asDouble();
         }
