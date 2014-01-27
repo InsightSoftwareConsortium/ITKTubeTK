@@ -593,7 +593,7 @@ if( WIN32 )
   endif()
 
   set(TubeTK_LAUNCHER ${TubeTK_BINARY_DIR}/TubeTKLauncher.bat)
-elseif( UNIX AND NOT TubeTK_USE_SLICER )
+elseif( UNIX AND TubeTK_USE_SLICER )
   # Apple OS X, Linux, or UNIX.
   set(_launcher_platform "unix")
   configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKLauncher.sh.in
