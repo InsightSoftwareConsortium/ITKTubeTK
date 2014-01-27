@@ -212,7 +212,7 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
     ParametersType parameters( NumberOfParameters );
     parameters.SetData( point.GetDataPointer() );
     const MeasureType measure = this->m_CostFunction->GetValue( parameters );
-    imageIt.Set( measure );
+    imageIt.Set( static_cast< typename OutputImageType::PixelType >( measure ) );
     progress.CompletedPixel();
     }
 }
