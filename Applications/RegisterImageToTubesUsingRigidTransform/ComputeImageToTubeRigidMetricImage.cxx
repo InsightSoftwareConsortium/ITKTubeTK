@@ -161,6 +161,32 @@ int DoIt( int argc, char * argv[] )
   parametersStep[4] = 5.0;
   parametersStep[5] = 5.0;
 
+#ifdef SlicerExecutionModel_USE_SERIALIZER
+  // Load parameter space to examine from file.
+  if( !parametersToRestore.empty() )
+    {
+    if( parametersRoot.isMember( "MetricSampler" ) )
+      {
+      const Json::Value & metricSampler = parametersRoot["MetricSampler"];
+      const Json::Value & lowerBound = metricSampler["LowerBound"];
+      for( int ii = 0; ii < NumberOfParameters; ++ii )
+        {
+        parametersLowerBound[ii] = lowerBound[ii].asDouble();
+        }
+      const Json::Value & upperBound = metricSampler["UpperBound"];
+      for( int ii = 0; ii < NumberOfParameters; ++ii )
+        {
+        parametersUpperBound[ii] = upperBound[ii].asDouble();
+        }
+      const Json::Value & step = metricSampler["Step"];
+      for( int ii = 0; ii < NumberOfParameters; ++ii )
+        {
+        parametersStep[ii] = step[ii].asDouble();
+        }
+      }
+    }
+#endif
+
   costFunctionImageSource->SetParametersLowerBound( parametersLowerBound );
   costFunctionImageSource->SetParametersUpperBound( parametersUpperBound );
   costFunctionImageSource->SetParametersStep( parametersStep );
