@@ -142,6 +142,8 @@ if( TubeTK_USE_PYTHON )
     -DTubeTK_USE_PYQTGRAPH:BOOL=${TubeTK_USE_PYQTGRAPH} )
 endif( TubeTK_USE_PYTHON )
 
+list( APPEND CMAKE_CXX_FLAGS "-Wno-unused-local-typedefs" )
+
 # Check dependencies.
 set( EXTERNAL_PROJECT_DIR ${TubeTK_SOURCE_DIR}/CMake/Superbuild )
 TubeTKMacroCheckExternalProjectDependency( TubeTK )

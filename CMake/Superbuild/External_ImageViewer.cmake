@@ -42,7 +42,7 @@ set( ${proj}_DEPENDENCIES "ITK" )
 # Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
 
-if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_IMAGE_VIEWER} )
+if( NOT DEFINED ${proj}_DIR )
   set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
@@ -72,12 +72,12 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_IMAGE_VIEWER} )
     DEPENDS
       ${${proj}_DEPENDENCIES} )
 
-else( NOT DEFINED ${proj}_DIR OR AND NOT ${USE_SYSTEM_IMAGE_VIEWER} )
-  if( ${USE_SYSTEM_IMAGE_VIEWER} )
-    find_package( ${proj} REQUIRED )
-  endif( ${USE_SYSTEM_IMAGE_VIEWER} )
+else( NOT DEFINED ${proj}_DIR )
+
+  find_package( ${proj} REQUIRED )
 
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
-endif( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_IMAGE_VIEWER} )
+
+endif( NOT DEFINED ${proj}_DIR )
 
 list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -D${proj}_DIR:PATH=${${proj}_DIR} )
