@@ -25,9 +25,9 @@ set( MODULE_NAME RegisterImageToTubesUsingRigidTransform )
 project( ${MODULE_NAME} )
 # To silence the warning about getting LOCATION (Tuner only targets non-VS for
 # now)
-if( ${CMAKE_VERSION} VERSION_GREATER 2.8.12 )
+if( NOT ${CMAKE_VERSION} VERSION_LESS 3.0 )
   cmake_policy(SET CMP0026 OLD)
-endif( ${CMAKE_VERSION} VERSION_GREATER 2.8.12 )
+endif( NOT ${CMAKE_VERSION} VERSION_LESS 3.0 )
 
 if( NOT TubeTK_SOURCE_DIR )
   find_package( TubeTK REQUIRED )
