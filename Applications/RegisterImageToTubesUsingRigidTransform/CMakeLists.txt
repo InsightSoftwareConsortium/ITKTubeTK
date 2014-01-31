@@ -66,6 +66,12 @@ SEMMacroBuildCLI(
   TARGET_LIBRARIES ${ITK_LIBRARIES} ${ParameterSerializer_LIBRARIES}
   INCLUDE_DIRECTORIES ${tubetk_base_includes} )
 
+SEMMacroBuildCLI(
+  NAME ExtractMetricImageSlice
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
+  TARGET_LIBRARIES ${ITK_LIBRARIES} ${ParameterSerializer_LIBRARIES}
+  INCLUDE_DIRECTORIES ${tubetk_base_includes} )
+
 if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )
