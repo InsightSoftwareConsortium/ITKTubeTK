@@ -336,7 +336,7 @@ bool SyncRecord::unloadRawRgbPixels( void )
         cerr << "SyncRecord::loadRawRgbPixels(): no raw RGB pixels to unload" << endl;
 		return false;
 	}
-	delete allRgbPixels;
+	delete[] allRgbPixels;
 	allRgbPixels = NULL;
 	return true;
 }
