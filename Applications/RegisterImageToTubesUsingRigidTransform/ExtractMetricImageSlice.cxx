@@ -68,7 +68,7 @@ int main( int argc, char * argv[] )
   MetricImageType::IndexType extractionIndex =
     extractionRegion.GetIndex();
   unsigned int indexCount = 0;
-  for( unsigned int ii = 0; ii < MetricDimension; ++ii )
+  for( int ii = 0; ii < MetricDimension; ++ii )
     {
     if( ii != sliceDirections[0] && ii != sliceDirections[1] )
       {
