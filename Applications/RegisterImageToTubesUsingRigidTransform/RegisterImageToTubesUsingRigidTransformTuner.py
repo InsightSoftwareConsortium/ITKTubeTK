@@ -33,6 +33,7 @@ class RegistrationTunerLogic(QtCore.QObject):
     _progression = None
     _tubes_center = [0.0, 0.0, 0.0]
     _subsampled_tubes = None
+    _metric_image = None
 
     def __init__(self, config, parent=None):
         super(RegistrationTunerLogic, self).__init__(parent)
@@ -53,6 +54,12 @@ class RegistrationTunerLogic(QtCore.QObject):
         else:
             self._subsampled_tubes = input_tubes
 
+        TemporaryFile = tempfile.NamedTemporaryFile
+        metric_image_fp = TemporaryFile(suffix='MetricImage.mha',
+                                        delete=False)
+        self._metric_image = metric_image_fp.name
+        metric_image_fp.close()
+
     def initialize(self):
         self.video_frame_dir = tempfile.mkdtemp()
 
@@ -64,6 +71,7 @@ class RegistrationTunerLogic(QtCore.QObject):
         shutil.rmtree(self.video_frame_dir)
         if 'SubSampleTubeTree' in self.config:
             os.remove(self.subsampled_tubes)
+        os.remove(self._metric_image)
 
     def __exit__(self, type, value, traceback):
         self.close()
@@ -74,6 +82,12 @@ class RegistrationTunerLogic(QtCore.QObject):
     subsampled_tubes = property(get_subsampled_tubes,
                                 doc='Optionally subsampled input tubes ' +
                                 'filename')
+
+    def get_metric_image(self):
+        return self._metric_image
+
+    metric_image = property(get_metric_image,
+                            doc='Metric image filename')
 
     iteration_changed = QtCore.pyqtSignal(int, name='iterationChanged')
 
@@ -154,6 +168,26 @@ class RegistrationTunerLogic(QtCore.QObject):
         self.set_number_of_iterations(self.progression[-1]['Iteration'])
         self.analysis_run.emit()
         self.iteration = self.number_of_iterations
+
+    def sample_metric(self):
+        io_params = self.config['ParameterGroups'][0]['Parameters']
+        input_volume = io_params[0]['Value']
+        input_vessel = io_params[1]['Value']
+        NamedTemporaryFile = tempfile.NamedTemporaryFile
+        config_file = NamedTemporaryFile(suffix='TunerConfig.json',
+                                         delete=False)
+        json.dump(self.config, config_file)
+        config_file.close()
+        command = [config['Executables']['MetricSampler'],
+                   '--parameterstorestore', config_file.name,
+                   input_volume,
+                   input_vessel,
+                   self.metric_image]
+        # The next statement is to keep the unicorns happy. Without it,
+        #   OSError: [Errno 9] Bad file descriptor
+        with open(os.path.devnull, 'wb') as unicorn:
+            subprocess.call(command)
+        os.remove(config_file.name)
 
 
 class ImageDisplayLogic(QtCore.QObject):
@@ -288,6 +322,13 @@ class RunConsoleWidget(QtGui.QWidget):
         run_button.resize(run_button.sizeHint())
         layout.addWidget(run_button)
         self.run_button = run_button
+
+        sample_metric_button = QtGui.QPushButton('Sample Metric')
+        sample_metric_button.setToolTip('Sample the metric space with ' +
+                              'current parameter settings.')
+        sample_metric_button.resize(sample_metric_button.sizeHint())
+        layout.addWidget(sample_metric_button)
+        self.sample_metric_button = sample_metric_button
 
         video_button = QtGui.QPushButton('Make Video Frames')
         video_button.resize(video_button.sizeHint())
@@ -757,6 +798,13 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
                                self.logic.run_analysis)
         self.addAction(run_action)
 
+        sample_metric_action = QtGui.QAction('&Sample Metric', self)
+        sample_metric_action.setShortcut('Ctrl+M')
+        sample_metric_action.setStatusTip('Sample Metric')
+        QtCore.QObject.connect(sample_metric_action, QtCore.SIGNAL('triggered()'),
+                               self.logic.sample_metric)
+        self.addAction(sample_metric_action)
+
         run_console = RunConsoleWidget(self.config, self)
         QtCore.QObject.connect(run_console.run_button,
                                QtCore.SIGNAL('clicked()'),
@@ -764,6 +812,9 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         QtCore.QObject.connect(run_console.video_button,
                                QtCore.SIGNAL('clicked()'),
                                self.make_video)
+        QtCore.QObject.connect(run_console.sample_metric_button,
+                               QtCore.SIGNAL('clicked()'),
+                               self.logic.sample_metric)
         run_console_dock = Dock("Console", size=(400, 300))
         run_console_dock.addWidget(run_console)
         self.dock_area.addDock(run_console_dock, 'right')
