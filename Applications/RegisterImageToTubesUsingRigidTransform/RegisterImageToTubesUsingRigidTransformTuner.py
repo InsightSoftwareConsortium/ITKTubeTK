@@ -722,6 +722,65 @@ class MetricValueDock(pyqtgraph.dockarea.Dock):
                                      symbolSize=8.0)
 
 
+class MetricSpaceDock(pyqtgraph.dockarea.Dock):
+    """Displays the metric function over the iterations."""
+
+    _u_direction = 0
+    _v_direction = 1
+    _scales = [1000, 1000, 1000, 100, 100, 100]
+
+    def __init__(self, logic, *args, **kwargs):
+        super(MetricSpaceDock, self).__init__(*args, **kwargs)
+        self.logic = logic
+        self.initializeUI()
+
+    def initializeUI(self):
+        self.view_widget = pg.opengl.GLViewWidget()
+        grid = pg.opengl.GLGridItem()
+        factor = 20
+        grid.scale(factor, factor, factor)
+        # does not overlap with the axis
+        grid.translate(0, 0, -1)
+        self.view_widget.addItem(grid)
+        self.scatter_plot_item = None
+        axis = gl.GLAxisItem()
+        axis.scale(factor, factor, factor)
+        self.view_widget.addItem(axis)
+        self.addWidget(self.view_widget)
+        print(self.view_widget.cameraPosition())
+        self.view_widget.setCameraPosition(distance=500)
+        print(self.view_widget.cameraPosition())
+
+    def plot_metric_values(self):
+        metric_value = self.logic.progression[:]['CostFunctionValue']
+        u_value = []
+        v_value = []
+        for ii in range(len(metric_value)):
+            u_value.append(
+                self.logic.progression[:]['Parameters'][ii][self._u_direction])
+            v_value.append(
+                self.logic.progression[:]['Parameters'][ii][self._v_direction])
+        u_value = np.array(u_value) * self._scales[self._u_direction]
+        v_value = np.array(v_value) * self._scales[self._v_direction]
+        print(metric_value)
+        print(u_value)
+        print(v_value)
+        pos = np.vstack((u_value, v_value, metric_value)).transpose()
+        number_of_iterations = self.logic.number_of_iterations
+        iterations_normalized = np.arange(0,
+                                          number_of_iterations,
+                                          dtype=np.float) / \
+            number_of_iterations
+        colors = matplotlib.cm.summer(iterations_normalized)
+        colors[:, 3] = 0.9
+        if self.scatter_plot_item:
+            self.scatter_plot_item.setData(pos=pos, colors=colors)
+        else:
+            self.scatter_plot_item = pg.opengl.GLScatterPlotItem(pos=pos,
+                                                                 color=colors)
+            self.view_widget.addItem(self.scatter_plot_item)
+
+
 class IterationDockAreaWidget(QtGui.QWidget):
     """Widgets related to iteration analysis. A DockArea containing Dock's that
     give different views on the analysis and a widget to control the current
@@ -771,6 +830,7 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         self.logic.analysis_run.connect(self.image_tubes.add_image_planes)
         self.logic.iteration_changed.connect(self.image_tubes.add_tubes)
         self.logic.iteration_changed.connect(self.metric_value_dock.plot_metric_values)
+        self.logic.iteration_changed.connect(self.metric_space_dock.plot_metric_values)
         if 'UltrasoundProbeGeometryFile' in self.config:
             self.logic.analysis_run.connect(self.image_tubes.add_ultrasound_probe_origin)
         self.logic.analysis_run.connect(self.image_tubes.add_translations)
@@ -838,6 +898,12 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
                                                  "Metric Value Inverse",
                                                  size=(500, 300))
         self.dock_area.addDock(self.metric_value_dock, 'left', run_console_dock)
+
+        self.metric_space_dock = MetricSpaceDock(self.logic,
+                                                 "Metric Space",
+                                                 size=(500, 300))
+        self.dock_area.addDock(self.metric_space_dock, 'above',
+                self.metric_value_dock)
 
         self.setCentralWidget(self.iteration_dock_area)
         self.show()
