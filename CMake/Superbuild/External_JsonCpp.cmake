@@ -39,19 +39,6 @@ endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 set( ${proj}_DEPENDENCIES "" )
 
-if( UNIX )
-  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing"
-    CACHE STRING "Flags used by all build types." FORCE )
-  set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing"
-    CACHE STRING "Flags used by all build types." FORCE )
-  if( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC"
-         CACHE STRING "Flags used by all build types." FORCE )
-    set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC"
-         CACHE STRING "Flags used by all build types." FORCE )
-  endif( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
-endif( UNIX )
-
 # Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
 
@@ -80,6 +67,7 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_JSONCPP} )
       -DCMAKE_INSTALL_PREFIX:PATH=${${proj}_DIR}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
+      -DBUILD_SHARED_LIBS:BOOL=${shared}
       -DJSONCPP_LIB_BUILD_SHARED:BOOL=${shared}
       -DJSONCPP_WITH_TESTS:BOOL=OFF )
 

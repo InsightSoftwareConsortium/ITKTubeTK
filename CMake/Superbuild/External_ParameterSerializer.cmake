@@ -40,19 +40,6 @@ endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 set( ${proj}_DEPENDENCIES "JsonCpp" )
 set( ${proj}_DEPENDENCIES ${${proj}_DEPENDENCIES} "ITK" )
 
-if( UNIX )
-  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing"
-    CACHE STRING "Flags used by all build types." FORCE )
-  set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing"
-    CACHE STRING "Flags used by all build types." FORCE )
-  if( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC"
-         CACHE STRING "Flags used by all build types." FORCE )
-    set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC"
-         CACHE STRING "Flags used by all build types." FORCE )
-  endif( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
-endif( UNIX )
-
 # Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
 
