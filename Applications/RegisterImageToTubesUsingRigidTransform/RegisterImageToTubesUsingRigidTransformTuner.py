@@ -722,16 +722,161 @@ class MetricValueDock(pyqtgraph.dockarea.Dock):
                                      symbolSize=8.0)
 
 
-class MetricSpaceDock(pyqtgraph.dockarea.Dock):
-    """Displays the metric function over the iterations."""
+class MetricSpaceLogic(QtCore.QObject):
+    """Controls the metric space display logic."""
 
     _u_direction = 0
     _v_direction = 1
+
+    def __init__(self, parent=None):
+        super(MetricSpaceLogic, self).__init__(parent)
+
+    u_direction_changed = QtCore.pyqtSignal(int,
+                                            name='uDirectionChanged')
+
+    def get_u_direction(self):
+        return self._u_direction
+
+    def set_u_direction(self, direction):
+        if self._u_direction != direction:
+            self._u_direction = direction
+            self.u_direction_changed.emit(direction)
+
+    u_direction = property(get_u_direction,
+                           set_u_direction,
+                           doc='Metric parameter to display in the u direction.')
+
+    v_direction_changed = QtCore.pyqtSignal(int,
+                                            name='vDirectionChanged')
+
+    def get_v_direction(self):
+        return self._v_direction
+
+    def set_v_direction(self, direction):
+        if self._v_direction != direction:
+            self._v_direction = direction
+            self.v_direction_changed.emit(direction)
+
+    v_direction = property(get_v_direction,
+                           set_v_direction,
+                           doc='Metric parameter to display in the v direction.')
+
+
+class MetricSpaceControlsDock(pyqtgraph.dockarea.Dock):
+    """Controls what is visualized in the metric space display."""
+
+    _parameters_descriptions = ['X rotation', 'Y rotation', 'Z rotation',
+                                'X translation',
+                                'Y translation',
+                                'Z translation']
+
+    def __init__(self, metric_space_logic, *args, **kwargs):
+        super(MetricSpaceControlsDock, self).__init__(*args, **kwargs)
+        self.metric_space_logic = metric_space_logic
+        self.initializeUI()
+
+    def initializeUI(self):
+        self.u_buttons = []
+        self.v_buttons = []
+
+        logic = self.metric_space_logic
+
+        u_buttons_layout = QtGui.QGridLayout()
+        for ii in range(6):
+            button = QtGui.QRadioButton(self._parameters_descriptions[ii])
+            QtCore.QObject.connect(button,
+                                   QtCore.SIGNAL('clicked(bool)'),
+                                   self.set_logic_u_direction)
+            u_buttons_layout.addWidget(button, ii / 3, ii % 3)
+            self.u_buttons.append(button)
+        self.u_buttons[0].setChecked(True)
+        QtCore.QObject.connect(logic,
+                               QtCore.SIGNAL('uDirectionChanged(int)'),
+                               self.set_u_direction)
+        u_buttons_widget = QtGui.QWidget()
+        u_buttons_widget.setLayout(u_buttons_layout)
+
+        u_controls_layout = QtGui.QVBoxLayout()
+        u_controls_layout.addWidget(u_buttons_widget)
+        u_controls = QtGui.QGroupBox('U Direction')
+        u_controls.setLayout(u_controls_layout)
+        self.addWidget(u_controls, row=0, col=0)
+
+        v_buttons_layout = QtGui.QGridLayout()
+        for ii in range(6):
+            button = QtGui.QRadioButton(self._parameters_descriptions[ii])
+            QtCore.QObject.connect(button,
+                                   QtCore.SIGNAL('clicked(bool)'),
+                                   self.set_logic_v_direction)
+            v_buttons_layout.addWidget(button, ii / 3, ii % 3)
+            self.v_buttons.append(button)
+        self.v_buttons[1].setChecked(True)
+        QtCore.QObject.connect(logic,
+                               QtCore.SIGNAL('vDirectionChanged(int)'),
+                               self.set_v_direction)
+        v_buttons_widget = QtGui.QWidget()
+        v_buttons_widget.setLayout(v_buttons_layout)
+
+        v_controls_layout = QtGui.QVBoxLayout()
+        v_controls_layout.addWidget(v_buttons_widget)
+        v_controls = QtGui.QGroupBox('V Direction')
+        v_controls.setLayout(v_controls_layout)
+        self.addWidget(v_controls, row=1, col=0)
+
+    def set_u_direction(self, direction):
+        """Only set the given direction radio button as checked."""
+        for ii in range(6):
+            if ii != direction:
+                self.u_buttons[ii].setChecked(False)
+            else:
+                self.metric_space_logic.set_u_direction(ii)
+
+    def get_u_direction(self):
+        """Get the currently checked u direction."""
+        for ii in range(6):
+            if self.u_buttons[ii].isChecked():
+                return ii
+        return 0
+
+    def set_logic_u_direction(self):
+        direction = self.get_u_direction()
+        self.metric_space_logic.set_u_direction(direction)
+
+    def set_v_direction(self, direction):
+        """Only set the given direction radio button as checked."""
+        for ii in range(6):
+            if ii != direction:
+                self.v_buttons[ii].setChecked(False)
+            else:
+                self.metric_space_logic.set_v_direction(ii)
+
+    def get_v_direction(self):
+        """Get the currently checked u direction."""
+        for ii in range(6):
+            if self.v_buttons[ii].isChecked():
+                return ii
+        return 0
+
+    def set_logic_v_direction(self):
+        direction = self.get_v_direction()
+        self.metric_space_logic.set_v_direction(direction)
+
+
+class MetricSpaceDock(pyqtgraph.dockarea.Dock):
+    """Displays the metric function over the iterations."""
+
     _scales = [1000, 1000, 1000, 100, 100, 100]
 
-    def __init__(self, logic, *args, **kwargs):
+    def __init__(self, logic, metric_space_logic, *args, **kwargs):
         super(MetricSpaceDock, self).__init__(*args, **kwargs)
         self.logic = logic
+        self.metric_space_logic = metric_space_logic
+        QtCore.QObject.connect(metric_space_logic,
+                               QtCore.SIGNAL('uDirectionChanged(int)'),
+                               self.plot_metric_values)
+        QtCore.QObject.connect(metric_space_logic,
+                               QtCore.SIGNAL('vDirectionChanged(int)'),
+                               self.plot_metric_values)
         self.initializeUI()
 
     def initializeUI(self):
@@ -744,27 +889,32 @@ class MetricSpaceDock(pyqtgraph.dockarea.Dock):
         self.view_widget.addItem(grid)
         self.scatter_plot_item = None
         axis = gl.GLAxisItem()
+        factor = 40
         axis.scale(factor, factor, factor)
         self.view_widget.addItem(axis)
         self.addWidget(self.view_widget)
-        print(self.view_widget.cameraPosition())
         self.view_widget.setCameraPosition(distance=500)
-        print(self.view_widget.cameraPosition())
 
     def plot_metric_values(self):
+        if not hasattr(self.logic.progression, '__getitem__'):
+            return
         metric_value = self.logic.progression[:]['CostFunctionValue']
+        parameters = self.logic.progression[:]['Parameters']
+        u_direction = self.metric_space_logic.u_direction
+        v_direction = self.metric_space_logic.v_direction
+
         u_value = []
         v_value = []
         for ii in range(len(metric_value)):
             u_value.append(
-                self.logic.progression[:]['Parameters'][ii][self._u_direction])
+                parameters[ii][u_direction])
             v_value.append(
-                self.logic.progression[:]['Parameters'][ii][self._v_direction])
-        u_value = np.array(u_value) * self._scales[self._u_direction]
-        v_value = np.array(v_value) * self._scales[self._v_direction]
-        print(metric_value)
-        print(u_value)
-        print(v_value)
+                parameters[ii][v_direction])
+        u_value = np.array(u_value) * self._scales[u_direction]
+        v_value = np.array(v_value) * self._scales[v_direction]
+        print('metric_value', metric_value)
+        print('u_value', u_value)
+        print('v_value', v_value)
         pos = np.vstack((u_value, v_value, metric_value)).transpose()
         number_of_iterations = self.logic.number_of_iterations
         iterations_normalized = np.arange(0,
@@ -774,7 +924,7 @@ class MetricSpaceDock(pyqtgraph.dockarea.Dock):
         colors = matplotlib.cm.summer(iterations_normalized)
         colors[:, 3] = 0.9
         if self.scatter_plot_item:
-            self.scatter_plot_item.setData(pos=pos, colors=colors)
+            self.scatter_plot_item.setData(pos=pos, color=colors)
         else:
             self.scatter_plot_item = pg.opengl.GLScatterPlotItem(pos=pos,
                                                                  color=colors)
@@ -820,6 +970,8 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         self.logic = logic
         image_display_logic = ImageDisplayLogic()
         self.image_display_logic = image_display_logic
+        metric_space_logic = MetricSpaceLogic()
+        self.metric_space_logic = metric_space_logic
 
         # Remove old output
         if 'TubePointWeightsFile' in self.config and \
@@ -900,10 +1052,17 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         self.dock_area.addDock(self.metric_value_dock, 'left', run_console_dock)
 
         self.metric_space_dock = MetricSpaceDock(self.logic,
+                                                 self.metric_space_logic,
                                                  "Metric Space",
                                                  size=(500, 300))
         self.dock_area.addDock(self.metric_space_dock, 'above',
-                self.metric_value_dock)
+                               self.metric_value_dock)
+        self.metric_space_controls_dock = \
+            MetricSpaceControlsDock(self.metric_space_logic,
+                                    "Metric Space Controls",
+                                    size=(500, 60))
+        self.dock_area.addDock(self.metric_space_controls_dock, 'bottom',
+                               self.metric_space_dock)
 
         self.setCentralWidget(self.iteration_dock_area)
         self.show()
