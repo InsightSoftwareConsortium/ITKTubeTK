@@ -83,6 +83,24 @@ if( APPLE )
     -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET} )
 endif( APPLE )
 
+if( UNIX )
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-local-typedefs"
+    CACHE STRING "Flags used by all build types." FORCE )
+  set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-local-typedefs"
+    CACHE STRING "Flags used by all build types." FORCE )
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing"
+    CACHE STRING "Flags used by all build types." FORCE )
+  set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing"
+    CACHE STRING "Flags used by all build types." FORCE )
+  if( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC"
+         CACHE STRING "Flags used by all build types." FORCE )
+    set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC"
+         CACHE STRING "Flags used by all build types." FORCE )
+  endif( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
+endif( UNIX )
+
+
 set( TubeTK_SLICER_DIRS
     -DTubeTK_SLICER_SOURCE_DIR:PATH=${TubeTK_SLICER_SOURCE_DIR} )
 if( TubeTK_USE_SLICER )
@@ -141,8 +159,6 @@ if( TubeTK_USE_PYTHON )
     -DTubeTK_USE_NUMPY:BOOL=${TubeTK_USE_NUMPY}
     -DTubeTK_USE_PYQTGRAPH:BOOL=${TubeTK_USE_PYQTGRAPH} )
 endif( TubeTK_USE_PYTHON )
-
-list( APPEND CMAKE_CXX_FLAGS "-Wno-unused-local-typedefs" )
 
 # Check dependencies.
 set( EXTERNAL_PROJECT_DIR ${TubeTK_SOURCE_DIR}/CMake/Superbuild )
