@@ -169,6 +169,8 @@ class RegistrationTunerLogic(QtCore.QObject):
         self.analysis_run.emit()
         self.iteration = self.number_of_iterations
 
+    metric_sampled = QtCore.pyqtSignal(name='metricSampled')
+
     def sample_metric(self):
         io_params = self.config['ParameterGroups'][0]['Parameters']
         input_volume = io_params[0]['Value']
@@ -188,6 +190,7 @@ class RegistrationTunerLogic(QtCore.QObject):
         with open(os.path.devnull, 'wb') as unicorn:
             subprocess.call(command)
         os.remove(config_file.name)
+        self.metric_sampled.emit()
 
 
 class ImageDisplayLogic(QtCore.QObject):
@@ -877,6 +880,14 @@ class MetricSpaceDock(pyqtgraph.dockarea.Dock):
         QtCore.QObject.connect(metric_space_logic,
                                QtCore.SIGNAL('vDirectionChanged(int)'),
                                self.plot_metric_values)
+        QtCore.QObject.connect(metric_space_logic,
+                               QtCore.SIGNAL('uDirectionChanged(int)'),
+                               self.plot_metric_surface)
+        QtCore.QObject.connect(metric_space_logic,
+                               QtCore.SIGNAL('vDirectionChanged(int)'),
+                               self.plot_metric_surface)
+        logic.metric_sampled.connect(self.plot_metric_surface)
+        logic.iteration_changed.connect(self.plot_metric_surface)
         self.initializeUI()
 
     def initializeUI(self):
@@ -888,6 +899,7 @@ class MetricSpaceDock(pyqtgraph.dockarea.Dock):
         grid.translate(0, 0, -1)
         self.view_widget.addItem(grid)
         self.scatter_plot_item = None
+        self.surface_plot_item = None
         axis = gl.GLAxisItem()
         factor = 40
         axis.scale(factor, factor, factor)
@@ -929,6 +941,88 @@ class MetricSpaceDock(pyqtgraph.dockarea.Dock):
             self.scatter_plot_item = pg.opengl.GLScatterPlotItem(pos=pos,
                                                                  color=colors)
             self.view_widget.addItem(self.scatter_plot_item)
+
+    def plot_metric_surface(self):
+        metric_image = self.logic.metric_image
+        statinfo = os.stat(metric_image)
+        if statinfo.st_size == 0:
+            return
+        config = self.logic.config
+
+        TemporaryFile = tempfile.NamedTemporaryFile
+        slice_fp = TemporaryFile(suffix='MetricSlice.mha',
+                                 delete=False)
+        slice_filename = slice_fp.name
+
+        exe = config['Executables']['ExtractMetricSlice']
+        metric_image = self.logic.metric_image
+        u_direction = self.metric_space_logic.u_direction
+        v_direction = self.metric_space_logic.v_direction
+        lower_direction = min(u_direction, v_direction)
+        higher_direction = max(u_direction, v_direction)
+        directions = str(lower_direction)
+        directions += ','
+        directions += str(higher_direction)
+
+        if self.logic.progression != None:
+            iteration = self.logic.iteration
+            parameters = self.logic.progression[iteration]['Parameters']
+        else:
+            parameters = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        lower_bound = config['MetricSampler']['LowerBound']
+        upper_bound = config['MetricSampler']['UpperBound']
+        step = config['MetricSampler']['Step']
+        def get_closest_index(direction, value):
+            if value <= lower_bound[direction]:
+                return 0
+            if value > upper_bound[direction]:
+                index = (upper_bound[direction] - lower_bound[direction]) \
+                        / step[direction]
+            else:
+                index = (value - lower_bound[direction]) / step[direction]
+            return int(index)
+        indices = ''
+        for ii in range(6):
+            if u_direction != ii and v_direction != ii:
+                indices += str(get_closest_index(ii, parameters[ii]))
+                indices += ','
+        indices = indices[:-1]
+
+        subprocess.check_call([exe,
+                              '--sliceDirections', directions,
+                              '--indices', indices,
+                              metric_image, slice_filename])
+
+        slice_image = sitk.ReadImage(slice_filename)
+        os.remove(slice_filename)
+
+        z = sitk.GetArrayFromImage(slice_image)
+        z = z.transpose()
+        print('z.shape',z.shape)
+        print('u_direction',u_direction)
+        print('v_direction',v_direction)
+        print('lower_bound',lower_bound)
+        print('center value', z[z.shape[0]/2, z.shape[1]/2])
+        if lower_direction == v_direction:
+            # correct?
+            z = z.transpose()
+        u = np.linspace(lower_bound[u_direction], upper_bound[u_direction],
+                        z.shape[0])
+        u *= self._scales[u_direction]
+        v = np.linspace(lower_bound[v_direction], upper_bound[v_direction],
+                        z.shape[1])
+        v *= self._scales[v_direction]
+        if self.surface_plot_item:
+            self.surface_plot_item.setData(x=u, y=v, z=z)
+        else:
+            self.surface_plot_item = pg.opengl.GLSurfacePlotItem(x=u, y=v, z=z,
+                                                                 edgeColor=(0.1, 0.1, 0.1, 0.8),
+                                                                 drawEdges=True,
+                                                                 shader='heightColor',
+                                                                 computeNormals=False,
+                                                                 color=(0.4, 0.4, 0.9, 0.01))
+            self.surface_plot_item.shader()['colorMap'] = np.array([0.01, 2, 0.5, 0.01, 1, 1, 0.01, 0, 2])
+            self.view_widget.addItem(self.surface_plot_item)
 
 
 class IterationDockAreaWidget(QtGui.QWidget):

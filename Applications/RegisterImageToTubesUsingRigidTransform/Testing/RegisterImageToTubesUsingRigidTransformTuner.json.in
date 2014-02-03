@@ -126,7 +126,8 @@
   {
     "Analysis" : "@ANALYSIS_EXE@",
     "SubSampleTubes" : "@SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY@/SubSampleTubes",
-    "MetricSampler" : "@METRIC_SAMPLER_LOC@"
+    "MetricSampler" : "@METRIC_SAMPLER_LOC@",
+    "ExtractMetricSlice" : "@METRIC_EXTRACTOR_LOC@"
   },
 
   "GradientDescentOptimizer" :
