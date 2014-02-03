@@ -49,6 +49,10 @@ set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/TubeTK" )
 set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/TubeTK" )
 
 include( TubeTKBlockSetCMakeOSXVariables )
+mark_as_advanced( CMAKE_OSX_ARCHITECTURES )
+mark_as_advanced( CMAKE_OSX_DEPLOYMENT_TARGET )
+mark_as_advanced( CMAKE_OSX_SYSROOT )
+
 include( TubeTKMacroEmptyExternalProject )
 
 # Setup for building 3D Slicer extensions.
