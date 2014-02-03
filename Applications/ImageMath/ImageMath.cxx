@@ -1167,6 +1167,7 @@ int DoIt( MetaCommand & command )
       imIn2->SetRegions( imIn->GetLargestPossibleRegion() );
       imIn2->SetOrigin( imIn->GetOrigin() );
       imIn2->SetSpacing( imIn->GetSpacing() );
+      imIn2->CopyInformation( imIn );
       imIn2->Allocate();
 
       itk::ImageRegionIteratorWithIndex< ImageType > it1( imIn,
