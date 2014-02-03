@@ -33,6 +33,7 @@ class RegistrationTunerLogic(QtCore.QObject):
     _progression = None
     _tubes_center = [0.0, 0.0, 0.0]
     _subsampled_tubes = None
+    _metric_image = None
 
     def __init__(self, config, parent=None):
         super(RegistrationTunerLogic, self).__init__(parent)
@@ -53,6 +54,12 @@ class RegistrationTunerLogic(QtCore.QObject):
         else:
             self._subsampled_tubes = input_tubes
 
+        TemporaryFile = tempfile.NamedTemporaryFile
+        metric_image_fp = TemporaryFile(suffix='MetricImage.mha',
+                                        delete=False)
+        self._metric_image = metric_image_fp.name
+        metric_image_fp.close()
+
     def initialize(self):
         self.video_frame_dir = tempfile.mkdtemp()
 
@@ -64,6 +71,7 @@ class RegistrationTunerLogic(QtCore.QObject):
         shutil.rmtree(self.video_frame_dir)
         if 'SubSampleTubeTree' in self.config:
             os.remove(self.subsampled_tubes)
+        os.remove(self._metric_image)
 
     def __exit__(self, type, value, traceback):
         self.close()
@@ -74,6 +82,12 @@ class RegistrationTunerLogic(QtCore.QObject):
     subsampled_tubes = property(get_subsampled_tubes,
                                 doc='Optionally subsampled input tubes ' +
                                 'filename')
+
+    def get_metric_image(self):
+        return self._metric_image
+
+    metric_image = property(get_metric_image,
+                            doc='Metric image filename')
 
     iteration_changed = QtCore.pyqtSignal(int, name='iterationChanged')
 
@@ -154,6 +168,29 @@ class RegistrationTunerLogic(QtCore.QObject):
         self.set_number_of_iterations(self.progression[-1]['Iteration'])
         self.analysis_run.emit()
         self.iteration = self.number_of_iterations
+
+    metric_sampled = QtCore.pyqtSignal(name='metricSampled')
+
+    def sample_metric(self):
+        io_params = self.config['ParameterGroups'][0]['Parameters']
+        input_volume = io_params[0]['Value']
+        input_vessel = io_params[1]['Value']
+        NamedTemporaryFile = tempfile.NamedTemporaryFile
+        config_file = NamedTemporaryFile(suffix='TunerConfig.json',
+                                         delete=False)
+        json.dump(self.config, config_file)
+        config_file.close()
+        command = [config['Executables']['MetricSampler'],
+                   '--parameterstorestore', config_file.name,
+                   input_volume,
+                   input_vessel,
+                   self.metric_image]
+        # The next statement is to keep the unicorns happy. Without it,
+        #   OSError: [Errno 9] Bad file descriptor
+        with open(os.path.devnull, 'wb') as unicorn:
+            subprocess.call(command)
+        os.remove(config_file.name)
+        self.metric_sampled.emit()
 
 
 class ImageDisplayLogic(QtCore.QObject):
@@ -288,6 +325,13 @@ class RunConsoleWidget(QtGui.QWidget):
         run_button.resize(run_button.sizeHint())
         layout.addWidget(run_button)
         self.run_button = run_button
+
+        sample_metric_button = QtGui.QPushButton('Sample Metric')
+        sample_metric_button.setToolTip('Sample the metric space with ' +
+                              'current parameter settings.')
+        sample_metric_button.resize(sample_metric_button.sizeHint())
+        layout.addWidget(sample_metric_button)
+        self.sample_metric_button = sample_metric_button
 
         video_button = QtGui.QPushButton('Make Video Frames')
         video_button.resize(video_button.sizeHint())
@@ -681,6 +725,306 @@ class MetricValueDock(pyqtgraph.dockarea.Dock):
                                      symbolSize=8.0)
 
 
+class MetricSpaceLogic(QtCore.QObject):
+    """Controls the metric space display logic."""
+
+    _u_direction = 0
+    _v_direction = 1
+
+    def __init__(self, parent=None):
+        super(MetricSpaceLogic, self).__init__(parent)
+
+    u_direction_changed = QtCore.pyqtSignal(int,
+                                            name='uDirectionChanged')
+
+    def get_u_direction(self):
+        return self._u_direction
+
+    def set_u_direction(self, direction):
+        if self._u_direction != direction:
+            self._u_direction = direction
+            self.u_direction_changed.emit(direction)
+
+    u_direction = property(get_u_direction,
+                           set_u_direction,
+                           doc='Metric parameter to display in the u direction.')
+
+    v_direction_changed = QtCore.pyqtSignal(int,
+                                            name='vDirectionChanged')
+
+    def get_v_direction(self):
+        return self._v_direction
+
+    def set_v_direction(self, direction):
+        if self._v_direction != direction:
+            self._v_direction = direction
+            self.v_direction_changed.emit(direction)
+
+    v_direction = property(get_v_direction,
+                           set_v_direction,
+                           doc='Metric parameter to display in the v direction.')
+
+
+class MetricSpaceControlsDock(pyqtgraph.dockarea.Dock):
+    """Controls what is visualized in the metric space display."""
+
+    _parameters_descriptions = ['X rotation', 'Y rotation', 'Z rotation',
+                                'X translation',
+                                'Y translation',
+                                'Z translation']
+
+    def __init__(self, metric_space_logic, *args, **kwargs):
+        super(MetricSpaceControlsDock, self).__init__(*args, **kwargs)
+        self.metric_space_logic = metric_space_logic
+        self.initializeUI()
+
+    def initializeUI(self):
+        self.u_buttons = []
+        self.v_buttons = []
+
+        logic = self.metric_space_logic
+
+        u_buttons_layout = QtGui.QGridLayout()
+        for ii in range(6):
+            button = QtGui.QRadioButton(self._parameters_descriptions[ii])
+            QtCore.QObject.connect(button,
+                                   QtCore.SIGNAL('clicked(bool)'),
+                                   self.set_logic_u_direction)
+            u_buttons_layout.addWidget(button, ii / 3, ii % 3)
+            self.u_buttons.append(button)
+        self.u_buttons[0].setChecked(True)
+        QtCore.QObject.connect(logic,
+                               QtCore.SIGNAL('uDirectionChanged(int)'),
+                               self.set_u_direction)
+        u_buttons_widget = QtGui.QWidget()
+        u_buttons_widget.setLayout(u_buttons_layout)
+
+        u_controls_layout = QtGui.QVBoxLayout()
+        u_controls_layout.addWidget(u_buttons_widget)
+        u_controls = QtGui.QGroupBox('U Direction')
+        u_controls.setLayout(u_controls_layout)
+        self.addWidget(u_controls, row=0, col=0)
+
+        v_buttons_layout = QtGui.QGridLayout()
+        for ii in range(6):
+            button = QtGui.QRadioButton(self._parameters_descriptions[ii])
+            QtCore.QObject.connect(button,
+                                   QtCore.SIGNAL('clicked(bool)'),
+                                   self.set_logic_v_direction)
+            v_buttons_layout.addWidget(button, ii / 3, ii % 3)
+            self.v_buttons.append(button)
+        self.v_buttons[1].setChecked(True)
+        QtCore.QObject.connect(logic,
+                               QtCore.SIGNAL('vDirectionChanged(int)'),
+                               self.set_v_direction)
+        v_buttons_widget = QtGui.QWidget()
+        v_buttons_widget.setLayout(v_buttons_layout)
+
+        v_controls_layout = QtGui.QVBoxLayout()
+        v_controls_layout.addWidget(v_buttons_widget)
+        v_controls = QtGui.QGroupBox('V Direction')
+        v_controls.setLayout(v_controls_layout)
+        self.addWidget(v_controls, row=1, col=0)
+
+    def set_u_direction(self, direction):
+        """Only set the given direction radio button as checked."""
+        for ii in range(6):
+            if ii != direction:
+                self.u_buttons[ii].setChecked(False)
+            else:
+                self.metric_space_logic.set_u_direction(ii)
+
+    def get_u_direction(self):
+        """Get the currently checked u direction."""
+        for ii in range(6):
+            if self.u_buttons[ii].isChecked():
+                return ii
+        return 0
+
+    def set_logic_u_direction(self):
+        direction = self.get_u_direction()
+        self.metric_space_logic.set_u_direction(direction)
+
+    def set_v_direction(self, direction):
+        """Only set the given direction radio button as checked."""
+        for ii in range(6):
+            if ii != direction:
+                self.v_buttons[ii].setChecked(False)
+            else:
+                self.metric_space_logic.set_v_direction(ii)
+
+    def get_v_direction(self):
+        """Get the currently checked u direction."""
+        for ii in range(6):
+            if self.v_buttons[ii].isChecked():
+                return ii
+        return 0
+
+    def set_logic_v_direction(self):
+        direction = self.get_v_direction()
+        self.metric_space_logic.set_v_direction(direction)
+
+
+class MetricSpaceDock(pyqtgraph.dockarea.Dock):
+    """Displays the metric function over the iterations."""
+
+    _scales = [1000, 1000, 1000, 100, 100, 100]
+
+    def __init__(self, logic, metric_space_logic, *args, **kwargs):
+        super(MetricSpaceDock, self).__init__(*args, **kwargs)
+        self.logic = logic
+        self.metric_space_logic = metric_space_logic
+        QtCore.QObject.connect(metric_space_logic,
+                               QtCore.SIGNAL('uDirectionChanged(int)'),
+                               self.plot_metric_values)
+        QtCore.QObject.connect(metric_space_logic,
+                               QtCore.SIGNAL('vDirectionChanged(int)'),
+                               self.plot_metric_values)
+        QtCore.QObject.connect(metric_space_logic,
+                               QtCore.SIGNAL('uDirectionChanged(int)'),
+                               self.plot_metric_surface)
+        QtCore.QObject.connect(metric_space_logic,
+                               QtCore.SIGNAL('vDirectionChanged(int)'),
+                               self.plot_metric_surface)
+        logic.metric_sampled.connect(self.plot_metric_surface)
+        logic.iteration_changed.connect(self.plot_metric_surface)
+        self.initializeUI()
+
+    def initializeUI(self):
+        self.view_widget = pg.opengl.GLViewWidget()
+        grid = pg.opengl.GLGridItem()
+        factor = 20
+        grid.scale(factor, factor, factor)
+        # does not overlap with the axis
+        grid.translate(0, 0, -1)
+        self.view_widget.addItem(grid)
+        self.scatter_plot_item = None
+        self.surface_plot_item = None
+        axis = gl.GLAxisItem()
+        factor = 40
+        axis.scale(factor, factor, factor)
+        self.view_widget.addItem(axis)
+        self.addWidget(self.view_widget)
+        self.view_widget.setCameraPosition(distance=500)
+
+    def plot_metric_values(self):
+        if not hasattr(self.logic.progression, '__getitem__'):
+            return
+        metric_value = self.logic.progression[:]['CostFunctionValue']
+        parameters = self.logic.progression[:]['Parameters']
+        u_direction = self.metric_space_logic.u_direction
+        v_direction = self.metric_space_logic.v_direction
+
+        u_value = []
+        v_value = []
+        for ii in range(len(metric_value)):
+            u_value.append(
+                parameters[ii][u_direction])
+            v_value.append(
+                parameters[ii][v_direction])
+        u_value = np.array(u_value) * self._scales[u_direction]
+        v_value = np.array(v_value) * self._scales[v_direction]
+        print('metric_value', metric_value)
+        print('u_value', u_value)
+        print('v_value', v_value)
+        pos = np.vstack((u_value, v_value, metric_value)).transpose()
+        number_of_iterations = self.logic.number_of_iterations
+        iterations_normalized = np.arange(0,
+                                          number_of_iterations,
+                                          dtype=np.float) / \
+            number_of_iterations
+        colors = matplotlib.cm.summer(iterations_normalized)
+        colors[:, 3] = 0.9
+        if self.scatter_plot_item:
+            self.scatter_plot_item.setData(pos=pos, color=colors)
+        else:
+            self.scatter_plot_item = pg.opengl.GLScatterPlotItem(pos=pos,
+                                                                 color=colors)
+            self.view_widget.addItem(self.scatter_plot_item)
+
+    def plot_metric_surface(self):
+        metric_image = self.logic.metric_image
+        statinfo = os.stat(metric_image)
+        if statinfo.st_size == 0:
+            return
+        config = self.logic.config
+
+        TemporaryFile = tempfile.NamedTemporaryFile
+        slice_fp = TemporaryFile(suffix='MetricSlice.mha',
+                                 delete=False)
+        slice_filename = slice_fp.name
+
+        exe = config['Executables']['ExtractMetricSlice']
+        metric_image = self.logic.metric_image
+        u_direction = self.metric_space_logic.u_direction
+        v_direction = self.metric_space_logic.v_direction
+        lower_direction = min(u_direction, v_direction)
+        higher_direction = max(u_direction, v_direction)
+        directions = str(lower_direction)
+        directions += ','
+        directions += str(higher_direction)
+
+        if self.logic.progression != None:
+            iteration = self.logic.iteration
+            parameters = self.logic.progression[iteration]['Parameters']
+        else:
+            parameters = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        lower_bound = config['MetricSampler']['LowerBound']
+        upper_bound = config['MetricSampler']['UpperBound']
+        step = config['MetricSampler']['Step']
+        def get_closest_index(direction, value):
+            if value <= lower_bound[direction]:
+                return 0
+            if value > upper_bound[direction]:
+                index = (upper_bound[direction] - lower_bound[direction]) \
+                        / step[direction]
+            else:
+                index = (value - lower_bound[direction]) / step[direction]
+            return int(index)
+        indices = ''
+        for ii in range(6):
+            if u_direction != ii and v_direction != ii:
+                indices += str(get_closest_index(ii, parameters[ii]))
+                indices += ','
+        indices = indices[:-1]
+
+        subprocess.check_call([exe,
+                              '--sliceDirections', directions,
+                              '--indices', indices,
+                              metric_image, slice_filename])
+
+        slice_image = sitk.ReadImage(slice_filename)
+        os.remove(slice_filename)
+
+        z = sitk.GetArrayFromImage(slice_image)
+        z = z.transpose()
+        print('z.shape',z.shape)
+        print('u_direction',u_direction)
+        print('v_direction',v_direction)
+        print('lower_bound',lower_bound)
+        print('center value', z[z.shape[0]/2, z.shape[1]/2])
+        if lower_direction == v_direction:
+            # correct?
+            z = z.transpose()
+        u = np.linspace(lower_bound[u_direction], upper_bound[u_direction],
+                        z.shape[0])
+        u *= self._scales[u_direction]
+        v = np.linspace(lower_bound[v_direction], upper_bound[v_direction],
+                        z.shape[1])
+        v *= self._scales[v_direction]
+        if self.surface_plot_item:
+            self.surface_plot_item.setData(x=u, y=v, z=z)
+        else:
+            self.surface_plot_item = pg.opengl.GLSurfacePlotItem(x=u, y=v, z=z,
+                                                                 edgeColor=(0.1, 0.1, 0.1, 0.8),
+                                                                 drawEdges=True,
+                                                                 shader='heightColor',
+                                                                 computeNormals=False,
+                                                                 color=(0.4, 0.4, 0.9, 0.01))
+            self.surface_plot_item.shader()['colorMap'] = np.array([0.01, 2, 0.5, 0.01, 1, 1, 0.01, 0, 2])
+            self.view_widget.addItem(self.surface_plot_item)
+
+
 class IterationDockAreaWidget(QtGui.QWidget):
     """Widgets related to iteration analysis. A DockArea containing Dock's that
     give different views on the analysis and a widget to control the current
@@ -720,6 +1064,8 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         self.logic = logic
         image_display_logic = ImageDisplayLogic()
         self.image_display_logic = image_display_logic
+        metric_space_logic = MetricSpaceLogic()
+        self.metric_space_logic = metric_space_logic
 
         # Remove old output
         if 'TubePointWeightsFile' in self.config and \
@@ -730,6 +1076,7 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         self.logic.analysis_run.connect(self.image_tubes.add_image_planes)
         self.logic.iteration_changed.connect(self.image_tubes.add_tubes)
         self.logic.iteration_changed.connect(self.metric_value_dock.plot_metric_values)
+        self.logic.iteration_changed.connect(self.metric_space_dock.plot_metric_values)
         if 'UltrasoundProbeGeometryFile' in self.config:
             self.logic.analysis_run.connect(self.image_tubes.add_ultrasound_probe_origin)
         self.logic.analysis_run.connect(self.image_tubes.add_translations)
@@ -757,6 +1104,13 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
                                self.logic.run_analysis)
         self.addAction(run_action)
 
+        sample_metric_action = QtGui.QAction('&Sample Metric', self)
+        sample_metric_action.setShortcut('Ctrl+M')
+        sample_metric_action.setStatusTip('Sample Metric')
+        QtCore.QObject.connect(sample_metric_action, QtCore.SIGNAL('triggered()'),
+                               self.logic.sample_metric)
+        self.addAction(sample_metric_action)
+
         run_console = RunConsoleWidget(self.config, self)
         QtCore.QObject.connect(run_console.run_button,
                                QtCore.SIGNAL('clicked()'),
@@ -764,6 +1118,9 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         QtCore.QObject.connect(run_console.video_button,
                                QtCore.SIGNAL('clicked()'),
                                self.make_video)
+        QtCore.QObject.connect(run_console.sample_metric_button,
+                               QtCore.SIGNAL('clicked()'),
+                               self.logic.sample_metric)
         run_console_dock = Dock("Console", size=(400, 300))
         run_console_dock.addWidget(run_console)
         self.dock_area.addDock(run_console_dock, 'right')
@@ -787,6 +1144,19 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
                                                  "Metric Value Inverse",
                                                  size=(500, 300))
         self.dock_area.addDock(self.metric_value_dock, 'left', run_console_dock)
+
+        self.metric_space_dock = MetricSpaceDock(self.logic,
+                                                 self.metric_space_logic,
+                                                 "Metric Space",
+                                                 size=(500, 300))
+        self.dock_area.addDock(self.metric_space_dock, 'above',
+                               self.metric_value_dock)
+        self.metric_space_controls_dock = \
+            MetricSpaceControlsDock(self.metric_space_logic,
+                                    "Metric Space Controls",
+                                    size=(500, 60))
+        self.dock_area.addDock(self.metric_space_controls_dock, 'bottom',
+                               self.metric_space_dock)
 
         self.setCentralWidget(self.iteration_dock_area)
         self.show()

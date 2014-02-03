@@ -73,9 +73,6 @@ int main( int argc, char * argv[] )
     if( ii != sliceDirections[0] && ii != sliceDirections[1] )
       {
       extractionSize[ii] = 0;
-      }
-    else
-      {
       extractionIndex[ii] = indices[indexCount];
       ++indexCount;
       }

@@ -59,6 +59,7 @@ set_property( TEST ${METRIC_EXTRACTOR}-Test1
   APPEND PROPERTY DEPENDS ${METRIC_SAMPLER}-Test1 )
 
 get_target_property( METRIC_SAMPLER_LOC ${METRIC_SAMPLER} LOCATION )
+get_target_property( METRIC_EXTRACTOR_LOC ${METRIC_EXTRACTOR} LOCATION )
 get_target_property( ANALYSIS_EXE ${MODULE_NAME} LOCATION )
 configure_file( ${MODULE_NAME}Tuner.json.in
   ${TEMP}/${MODULE_NAME}Tuner.json )
