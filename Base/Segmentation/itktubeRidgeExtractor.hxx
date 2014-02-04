@@ -120,8 +120,8 @@ RidgeExtractor<TInputImage>
   m_ThreshX = 3.0;
   m_ThreshRidgeness = 0.85;    // near 1 = harder
   m_ThreshRidgenessStart = 0.75;
-  m_ThreshRoundness = 0.6;    // near 1 = harder
-  m_ThreshRoundnessStart = 0.5;
+  m_ThreshRoundness = 0.0012;    // near 1 = harder
+  m_ThreshRoundnessStart = 0.001;
   m_ThreshCurvature = 0.0012;
   m_ThreshCurvatureStart = 0.001;
   m_ThreshLinearity = 0.8;
@@ -503,32 +503,31 @@ RidgeExtractor<TInputImage>
   roundness = ( vnl_math_abs( m_XHEVal[ ImageDimension-2 ] ) / meanCurv)
     * ridge;
   */
-  roundness = 0.;
-  if( sumv != 0 )
+  roundness = ridge * ( sumv - ( ( ( m_XHEVal[0] * m_XHEVal[0] ) - sumv )
+    * ( ( m_XHEVal[0] * m_XHEVal[0] ) - sumv ) ) );
+  if( roundness < 0 )
     {
-    roundness = ( m_XHEVal[ImageDimension-2] * m_XHEVal[ImageDimension-2] )
-      / sumv;
-    }
-  roundness = 1. - vnl_math_abs( roundness - 1 );
-  if( roundness < 0. )
-    {
-    roundness = 0.;
+    roundness = 0;
     }
 
   //curvature = 1.0 - vnl_math_abs( m_XHEVal[0] ) * ridge;
-  curvature = sumv;
+  curvature = ridge * sumv;
+  if( curvature < 0 )
+    {
+    curvature = 0;
+    }
 
   linearity = 0;
-  if( sumv != 0 )
+  if( ridge > 0 && ( sumv + m_XHEVal[ImageDimension-1] ) != 0 )
     {
     linearity = ( m_XHEVal[ImageDimension-1] * m_XHEVal[ImageDimension-1] )
       / (sumv +
           ( m_XHEVal[ImageDimension-1] * m_XHEVal[ImageDimension-1] ) );
-    if( linearity > 0.5 )
+    if( linearity > 1.0 )
       {
-      linearity = 0.5;
+      linearity = 1.0;
       }
-    linearity = ( 1 - linearity );
+    linearity = 1.0 - linearity;
     }
 
   return ridgeness;

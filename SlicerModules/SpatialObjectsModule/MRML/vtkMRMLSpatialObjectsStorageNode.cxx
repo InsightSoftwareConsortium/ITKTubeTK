@@ -193,6 +193,8 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
         // Get the tube element spacing information.
         const double* axesRatio = currTube->GetSpacing();
 
+        currTube->ComputeObjectToWorldTransform();
+
         int index = 0;
         std::vector<TubePointType>::iterator  tubePointIterator;
         for(tubePointIterator = currTube->GetPoints().begin();
@@ -200,13 +202,19 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
              ++tubePointIterator, ++pointID, ++index)
           {
           PointType inputPoint = tubePointIterator->GetPosition();
+
+          currTube->GetIndexToWorldTransform()->TransformPoint(
+            inputPoint );
+          inputPoint[0] = -inputPoint[0];
+          inputPoint[1] = -inputPoint[1];
+
           pointIDs[index] = pointID;
 
           // Insert points using the element spacing information.
-          vesselsPoints->SetPoint(pointID,
-                                  inputPoint[0],
-                                  inputPoint[1] * axesRatio[1] / axesRatio[0],
-                                  inputPoint[2] * axesRatio[2] / axesRatio[0]);
+          vesselsPoints->SetPoint( pointID, inputPoint[0], inputPoint[1],
+            inputPoint[2] );
+            //inputPoint[1] * axesRatio[1] / axesRatio[0],
+            //inputPoint[2] * axesRatio[2] / axesRatio[0]);
 
           // TubeID
           tubeIDs->SetTuple1(pointID, currTube->GetId());

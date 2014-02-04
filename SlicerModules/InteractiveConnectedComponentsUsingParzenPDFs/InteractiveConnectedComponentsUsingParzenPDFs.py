@@ -32,7 +32,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
 
     ioCollapsibleButton = ctk.ctkCollapsibleGroupBox()
     ioCollapsibleButton.title = "IO"
-    ioCollapsibleButton.collapsed = 1
+    ioCollapsibleButton.collapsed = 0
     self.frame.layout().addWidget(ioCollapsibleButton)
 
     # Layout within the io collapsible button
@@ -162,6 +162,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     erosionSpinBox.objectName = 'erosionSpinBox'
     erosionSpinBox.toolTip = "Set the erosion radius."
     erosionSpinBox.setMinimum(0)
+    erosionSpinBox.setValue(5) # Default
     paramsFormLayout.addRow("Erosion Radius:", erosionSpinBox)
     self.erosionSpinBox = erosionSpinBox
     self.connections.append( (self.erosionSpinBox, "valueChanged(int)", self.updateMRMLFromGUI ) )
@@ -170,6 +171,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     holeFillSpinBox.objectName = 'holeFillSpinBox'
     holeFillSpinBox.toolTip = "Set the hole fill iterations."
     holeFillSpinBox.setMinimum(0)
+    holeFillSpinBox.setValue(5) #Default
     paramsFormLayout.addRow("Hole Fill Iterations:", holeFillSpinBox)
     self.holeFillSpinBox = holeFillSpinBox
     self.connections.append( (self.holeFillSpinBox, "valueChanged(int)", self.updateMRMLFromGUI ) )
@@ -180,7 +182,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     probabilitySmoothingStdDevSpinBox.toolTip = "Standard deviation of blur applied to probability images prior to computing maximum likelihood of each class at each pixel."
     probabilitySmoothingStdDevSpinBox.setMinimum(0.0)
     probabilitySmoothingStdDevSpinBox.setValue(3.0) # Default
-    probabilitySmoothingStdDevSpinBox.setSingleStep(0.1)
+    probabilitySmoothingStdDevSpinBox.setSingleStep(0.5)
     paramsFormLayout.addRow("Probability Smoothing Standard Deviation:", probabilitySmoothingStdDevSpinBox)
     self.probabilitySmoothingStdDevSpinBox = probabilitySmoothingStdDevSpinBox
     self.connections.append( (self.probabilitySmoothingStdDevSpinBox, "valueChanged(double)", self.updateMRMLFromGUI ) )
@@ -254,8 +256,8 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
       ("labelmap", "0"),
       ("voidId", "0"),
       ("objectId", "1,2,3"),
-      ("erodeRadius", "0"),
-      ("holeFillIterations", "0"),
+      ("erodeRadius", "5"),
+      ("holeFillIterations", "5"),
       ("objectPDFWeight", "1.0,1.0"),
       ("probSmoothingStdDev", "3.0"),
       ("draft", "0"),
@@ -557,8 +559,11 @@ class InteractiveConnectedComponentsUsingParzenPDFs:
                            "Stephen Aylward (Kitware)",
                            "Johan Andruejol (Kitware)",]
     parent.helpText = """
-    The PDF Segmenter is a framework for using connected components alonside intensity
-    histograms for classifying images in pixel space.
+    The PDF Segmenter is a framework for using connected components in
+    conjunction with intensity histograms for classifying images in pixel space.
+
+    This module is available as an editor tool via the editor module in Slicer.
+    This module cannot be run as a standard module in Slicer.
     """
     parent.acknowledgementText = """
     This work is part of the TubeTK project at Kitware.
