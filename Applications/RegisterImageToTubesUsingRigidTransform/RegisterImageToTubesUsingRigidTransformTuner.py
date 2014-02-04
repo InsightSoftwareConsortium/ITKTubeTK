@@ -16,6 +16,8 @@ import pyqtgraph as pg
 import pyqtgraph.console
 import pyqtgraph.dockarea
 import pyqtgraph.opengl as gl
+from pyqtgraph.widgets.HistogramLUTWidget import HistogramLUTWidget
+from pyqtgraph.graphicsItems.ImageItem import ImageItem
 from pyqtgraph.Qt import QtCore, QtGui
 import SimpleITK as sitk
 import tables
@@ -25,11 +27,20 @@ from tubetk.pyqtgraph import tubes_as_circles
 from tubetk.numpy import tubes_from_file
 
 
+class HistogramWidget(HistogramLUTWidget):
+    """Like HistogramLUTWidget, but hide the LUT."""
+
+    def __init__(self, *args, **kwargs):
+        super(HistogramWidget, self).__init__(*args, **kwargs)
+        self.gradient.setVisible(False)
+
+
 class RegistrationTunerLogic(QtCore.QObject):
     """Controls the business logic for registration tuning."""
 
     _iteration = 0
     _number_of_iterations = 0
+    _iterations_colors = None
     _progression = None
     _tubes_center = [0.0, 0.0, 0.0]
     _subsampled_tubes = None
@@ -116,11 +127,21 @@ class RegistrationTunerLogic(QtCore.QObject):
     def set_number_of_iterations(self, value):
         if value != self._number_of_iterations:
             self._number_of_iterations = value
+            iterations_normalized = np.arange(0,
+                                              self._number_of_iterations,
+                                              dtype=np.float) / \
+                self._number_of_iterations
+            colors = matplotlib.cm.summer(iterations_normalized)
+            colors[:, 3] = 0.9
+            self._iterations_colors = colors
             self.number_of_iterations_changed.emit(value)
 
     number_of_iterations = property(get_number_of_iterations,
                                     set_number_of_iterations,
                                     doc='Iterations in the optimization')
+
+    def get_iterations_colors(self):
+        return self._iterations_colors
 
     def get_progression(self):
         return self._progression
@@ -609,13 +630,7 @@ class ImageTubesWidget(gl.GLViewWidget):
             self.removeItem(self.translations)
         translations = np.array(self.logic.progression[:]['Parameters'][:, 3:]) + \
             self.logic.tubes_center
-        number_of_iterations = self.logic.number_of_iterations
-        iterations_normalized = np.arange(0,
-                                          number_of_iterations,
-                                          dtype=np.float) / \
-            number_of_iterations
-        colors = matplotlib.cm.summer(iterations_normalized)
-        colors[:, 3] = 0.9
+        colors = self.logic.get_iterations_colors()
         translation_points = gl.GLScatterPlotItem(pos=translations,
                                                   color=colors)
         translation_points.setGLOptions('translucent')
@@ -731,8 +746,9 @@ class MetricSpaceLogic(QtCore.QObject):
     _u_direction = 0
     _v_direction = 1
 
-    def __init__(self, parent=None):
+    def __init__(self, logic, parent=None):
         super(MetricSpaceLogic, self).__init__(parent)
+        self.logic = logic
 
     u_direction_changed = QtCore.pyqtSignal(int,
                                             name='uDirectionChanged')
@@ -764,25 +780,54 @@ class MetricSpaceLogic(QtCore.QObject):
                            set_v_direction,
                            doc='Metric parameter to display in the v direction.')
 
+    def get_metric_range(self, direction):
+        config = self.logic.config
+        lower_bound = config['MetricSampler']['LowerBound']
+        upper_bound = config['MetricSampler']['UpperBound']
+        return lower_bound[direction], upper_bound[direction]
+
+    def set_u_metric_range(self, bounds):
+        self.set_metric_range('u', bounds)
+
+    def set_v_metric_range(self, bounds):
+        self.set_metric_range('v', bounds)
+
+    def set_metric_range(self, u_or_v, bounds):
+        if u_or_v == 'u':
+            direction = self.u_direction
+        else:
+            direction = self.v_direction
+        config = self.logic.config
+        lower_bound = config['MetricSampler']['LowerBound']
+        upper_bound = config['MetricSampler']['UpperBound']
+        lower_bound[direction] = bounds[0]
+        upper_bound[direction] = bounds[1]
+        self.logic.config['MetricSampler']['LowerBound'] = lower_bound
+        self.logic.config['MetricSampler']['UpperBound'] = upper_bound
+
 
 class MetricSpaceControlsDock(pyqtgraph.dockarea.Dock):
     """Controls what is visualized in the metric space display."""
 
-    _parameters_descriptions = ['X rotation', 'Y rotation', 'Z rotation',
+    _parameters_descriptions = ['X rotation',
+                                'Y rotation',
+                                'Z rotation',
                                 'X translation',
                                 'Y translation',
                                 'Z translation']
 
-    def __init__(self, metric_space_logic, *args, **kwargs):
+    def __init__(self, logic, metric_space_logic, *args, **kwargs):
         super(MetricSpaceControlsDock, self).__init__(*args, **kwargs)
         self.metric_space_logic = metric_space_logic
+        self.logic = logic
         self.initializeUI()
 
     def initializeUI(self):
         self.u_buttons = []
         self.v_buttons = []
 
-        logic = self.metric_space_logic
+        metric_space_logic = self.metric_space_logic
+        logic = self.logic
 
         u_buttons_layout = QtGui.QGridLayout()
         for ii in range(6):
@@ -790,10 +835,10 @@ class MetricSpaceControlsDock(pyqtgraph.dockarea.Dock):
             QtCore.QObject.connect(button,
                                    QtCore.SIGNAL('clicked(bool)'),
                                    self.set_logic_u_direction)
-            u_buttons_layout.addWidget(button, ii / 3, ii % 3)
+            u_buttons_layout.addWidget(button, ii % 3, ii / 3)
             self.u_buttons.append(button)
         self.u_buttons[0].setChecked(True)
-        QtCore.QObject.connect(logic,
+        QtCore.QObject.connect(metric_space_logic,
                                QtCore.SIGNAL('uDirectionChanged(int)'),
                                self.set_u_direction)
         u_buttons_widget = QtGui.QWidget()
@@ -804,6 +849,22 @@ class MetricSpaceControlsDock(pyqtgraph.dockarea.Dock):
         u_controls = QtGui.QGroupBox('U Direction')
         u_controls.setLayout(u_controls_layout)
         self.addWidget(u_controls, row=0, col=0)
+        QtCore.QObject.connect(metric_space_logic,
+                               QtCore.SIGNAL('uDirectionChanged(int)'),
+                               self.set_u_direction)
+
+        u_histogram_widget = HistogramWidget()
+        self.u_histogram_widget = u_histogram_widget
+        self.addWidget(u_histogram_widget, row=0, col=1)
+        self.u_image_item = ImageItem()
+        u_histogram_widget.setImageItem(self.u_image_item)
+        logic.analysis_run.connect(self.update_u_histogram)
+        QtCore.QObject.connect(metric_space_logic,
+                               QtCore.SIGNAL('uDirectionChanged(int)'),
+                               self.update_u_histogram)
+        bounds = self.metric_space_logic.get_metric_range(0)
+        u_histogram_widget.setLevels(bounds[0], bounds[1])
+        u_histogram_widget.sigLevelChangeFinished.connect(self.set_u_metric_range)
 
         v_buttons_layout = QtGui.QGridLayout()
         for ii in range(6):
@@ -811,10 +872,10 @@ class MetricSpaceControlsDock(pyqtgraph.dockarea.Dock):
             QtCore.QObject.connect(button,
                                    QtCore.SIGNAL('clicked(bool)'),
                                    self.set_logic_v_direction)
-            v_buttons_layout.addWidget(button, ii / 3, ii % 3)
+            v_buttons_layout.addWidget(button, ii % 3, ii / 3)
             self.v_buttons.append(button)
         self.v_buttons[1].setChecked(True)
-        QtCore.QObject.connect(logic,
+        QtCore.QObject.connect(metric_space_logic,
                                QtCore.SIGNAL('vDirectionChanged(int)'),
                                self.set_v_direction)
         v_buttons_widget = QtGui.QWidget()
@@ -825,6 +886,19 @@ class MetricSpaceControlsDock(pyqtgraph.dockarea.Dock):
         v_controls = QtGui.QGroupBox('V Direction')
         v_controls.setLayout(v_controls_layout)
         self.addWidget(v_controls, row=1, col=0)
+
+        v_histogram_widget = HistogramWidget()
+        self.v_histogram_widget = v_histogram_widget
+        self.addWidget(v_histogram_widget, row=1, col=1)
+        self.v_image_item = ImageItem()
+        v_histogram_widget.setImageItem(self.v_image_item)
+        logic.analysis_run.connect(self.update_v_histogram)
+        QtCore.QObject.connect(metric_space_logic,
+                               QtCore.SIGNAL('vDirectionChanged(int)'),
+                               self.update_v_histogram)
+        bounds = self.metric_space_logic.get_metric_range(1)
+        v_histogram_widget.setLevels(bounds[0], bounds[1])
+        v_histogram_widget.sigLevelChangeFinished.connect(self.set_v_metric_range)
 
     def set_u_direction(self, direction):
         """Only set the given direction radio button as checked."""
@@ -863,6 +937,47 @@ class MetricSpaceControlsDock(pyqtgraph.dockarea.Dock):
     def set_logic_v_direction(self):
         direction = self.get_v_direction()
         self.metric_space_logic.set_v_direction(direction)
+
+    def update_histogram(self, u_or_v):
+        """Update the histogram content and displayed levels for the given
+        direction."""
+        if u_or_v == 'u':
+            direction = self.get_u_direction()
+        else:
+            direction = self.get_v_direction()
+
+        bounds = self.metric_space_logic.get_metric_range(direction)
+        if u_or_v == 'u':
+            self.u_histogram_widget.setLevels(bounds[0], bounds[1])
+        else:
+            self.v_histogram_widget.setLevels(bounds[0], bounds[1])
+
+        progression = self.logic.progression
+        if progression is None:
+            return
+        values = [params[direction] for params in progression[:]['Parameters']]
+        values = np.array(values)
+        values.shape = (len(values), 1)
+        print('parameter values', values)
+        if u_or_v == 'u':
+            self.u_image_item.setImage(values)
+        else:
+            self.v_image_item.setImage(values)
+
+
+    def update_u_histogram(self):
+        self.update_histogram('u')
+
+    def update_v_histogram(self):
+        self.update_histogram('v')
+
+    def set_u_metric_range(self):
+        bounds = self.u_histogram_widget.getLevels()
+        self.metric_space_logic.set_u_metric_range(bounds)
+
+    def set_v_metric_range(self):
+        bounds = self.v_histogram_widget.getLevels()
+        self.metric_space_logic.set_v_metric_range(bounds)
 
 
 class MetricSpaceDock(pyqtgraph.dockarea.Dock):
@@ -925,16 +1040,10 @@ class MetricSpaceDock(pyqtgraph.dockarea.Dock):
         u_value = np.array(u_value) * self._scales[u_direction]
         v_value = np.array(v_value) * self._scales[v_direction]
         print('metric_value', metric_value)
-        print('u_value', u_value)
-        print('v_value', v_value)
+        #print('u_value', u_value)
+        #print('v_value', v_value)
         pos = np.vstack((u_value, v_value, metric_value)).transpose()
-        number_of_iterations = self.logic.number_of_iterations
-        iterations_normalized = np.arange(0,
-                                          number_of_iterations,
-                                          dtype=np.float) / \
-            number_of_iterations
-        colors = matplotlib.cm.summer(iterations_normalized)
-        colors[:, 3] = 0.9
+        colors = self.logic.get_iterations_colors()
         if self.scatter_plot_item:
             self.scatter_plot_item.setData(pos=pos, color=colors)
         else:
@@ -1059,7 +1168,7 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         self.logic = logic
         image_display_logic = ImageDisplayLogic()
         self.image_display_logic = image_display_logic
-        metric_space_logic = MetricSpaceLogic()
+        metric_space_logic = MetricSpaceLogic(logic)
         self.metric_space_logic = metric_space_logic
 
         # Remove old output
@@ -1147,7 +1256,8 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         self.dock_area.addDock(self.metric_space_dock, 'above',
                                self.metric_value_dock)
         self.metric_space_controls_dock = \
-            MetricSpaceControlsDock(self.metric_space_logic,
+            MetricSpaceControlsDock(self.logic,
+                                    self.metric_space_logic,
                                     "Metric Space Controls",
                                     size=(500, 60))
         self.dock_area.addDock(self.metric_space_controls_dock, 'bottom',
