@@ -176,8 +176,8 @@ int DoIt( int argc, char * argv[] )
     tubeOp->SetDebug( true );
     tubeOp->GetRidgeOp()->SetDebug( true );
 
-    tubeOp->GetRidgeOp()->SetThreshRoundness( 0.2 );
-    tubeOp->GetRidgeOp()->SetThreshRoundnessStart( 0.2 );
+    tubeOp->GetRidgeOp()->SetThreshRoundness( 0.0001 );
+    tubeOp->GetRidgeOp()->SetThreshRoundnessStart( 0.0001 );
     tubeOp->GetRidgeOp()->SetThreshCurvature( 0.0001 );
     tubeOp->GetRidgeOp()->SetThreshCurvatureStart( 0.0001 );
 
