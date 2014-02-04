@@ -998,11 +998,6 @@ class MetricSpaceDock(pyqtgraph.dockarea.Dock):
 
         z = sitk.GetArrayFromImage(slice_image)
         z = z.transpose()
-        print('z.shape',z.shape)
-        print('u_direction',u_direction)
-        print('v_direction',v_direction)
-        print('lower_bound',lower_bound)
-        print('center value', z[z.shape[0]/2, z.shape[1]/2])
         if lower_direction == v_direction:
             # correct?
             z = z.transpose()
