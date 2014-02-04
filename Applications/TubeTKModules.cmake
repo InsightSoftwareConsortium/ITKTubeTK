@@ -28,6 +28,7 @@ set( TubeTK_${proj}_MODULES
   ComputeBinaryImageSimilarityMetrics
   ComputeImageSimilarityMetrics
   ComputeImageStatisticsUsingMask
+  ComputeSegmentTubesParameters
   ComputeTubeGraphProbability
   ComputeTubeProbability
   ConvertInnerOpticToPlus

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>Sample CLI Application (TubeTK)</title>
+  <description>Demonstration of how to write a CLI application. Performs blurring.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters.</description>
+    <image>
+      <name>inputImageFileName</name>
+      <label>Input Image</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input image.</description>
+    </image>
+    <image>
+      <name>outputImagesBaseFileName</name>
+      <label>Output Ridgeness Images Base File Name</label>
+      <index>1</index>
+      <channel>output</channel>
+      <description>Output file name base for ridgeness measures. Each measure will be saved to a different image.</description>
+    </image>
+  </parameters>
+  <parameters>
+    <label>Segment Tubes Options</label>
+    <double>
+      <name>scale</name>
+      <label>Scale</label>
+      <description>Scale used for ridge measures.</description>
+      <longflag>scale</longflag>
+      <flag>s</flag>
+      <default>2.0</default>
+    </double>
+  </parameters>
+  <parameters>
+    <label>Ridgeness Computation Options</label>
+    <double>
+      <name>supersample</name>
+      <label>Supersample</label>
+      <description>Factor to supersample each pixel when generating output ridgeness images.</description>
+      <longflag>supersample</longflag>
+      <flag>S</flag>
+      <default>1</default>
+    </double>
+  </parameters>
+</executable>
