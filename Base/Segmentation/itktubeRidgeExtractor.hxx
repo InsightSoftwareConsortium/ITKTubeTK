@@ -120,8 +120,8 @@ RidgeExtractor<TInputImage>
   m_ThreshX = 3.0;
   m_ThreshRidgeness = 0.85;    // near 1 = harder
   m_ThreshRidgenessStart = 0.75;
-  m_ThreshRoundness = 0.6;    // near 1 = harder
-  m_ThreshRoundnessStart = 0.5;
+  m_ThreshRoundness = 0.0012;    // near 1 = harder
+  m_ThreshRoundnessStart = 0.001;
   m_ThreshCurvature = 0.0012;
   m_ThreshCurvatureStart = 0.001;
   m_ThreshLinearity = 0.8;

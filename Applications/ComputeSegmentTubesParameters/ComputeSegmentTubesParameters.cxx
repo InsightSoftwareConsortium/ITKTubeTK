@@ -175,14 +175,14 @@ int DoIt( int argc, char * argv[] )
   ridgeFunc->SetInputImage( inImage );
   ridgeFunc->SetScale( scale );
 
-  double supersampleFactor = 1.0 / supersample;
-  double ridgeness = 0;
-  double roundness = 0;
-  double curvature = 0;
-  double linearity = 0;
-  typename RidgeFuncType::ContinuousIndexType cIndx;
   while( !itR.IsAtEnd() )
     {
+    double supersampleFactor = 1.0 / supersample;
+    double ridgeness = 0;
+    double roundness = 0;
+    double curvature = 0;
+    double linearity = 0;
+    typename RidgeFuncType::ContinuousIndexType cIndx;
     if( supersample != 1 )
       {
       for( unsigned int i = 0; i < VDimension; ++i )
