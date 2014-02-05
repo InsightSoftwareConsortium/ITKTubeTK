@@ -213,6 +213,27 @@ class RegistrationTunerLogic(QtCore.QObject):
         os.remove(config_file.name)
         self.metric_sampled.emit()
 
+    def center_metric_sampling_on_converged(self):
+        """Center the metric sampling based on the most recent optimized
+        parameter progression."""
+        progression = self.progression
+        if progression == None:
+            return
+        last_params = progression[-1]['Parameters']
+        print('last_params', last_params)
+        number_of_params = len(last_params)
+        metric_sampler_settings = self.config['MetricSampler']
+        upper_bound = metric_sampler_settings['UpperBound']
+        lower_bound = metric_sampler_settings['LowerBound']
+        for ii in range(number_of_params):
+            half_bound = (upper_bound[ii] - lower_bound[ii]) / 2
+            center = last_params[ii]
+            upper_bound[ii] = center + half_bound
+            lower_bound[ii] = center - half_bound
+        metric_sampler_settings['UpperBound'] = upper_bound
+        metric_sampler_settings['LowerBound'] = lower_bound
+        self.sample_metric()
+
 
 class ImageDisplayLogic(QtCore.QObject):
     """Controls the business logic for viewing the image."""
@@ -340,24 +361,58 @@ class RunConsoleWidget(QtGui.QWidget):
         layout = QtGui.QVBoxLayout()
         self.setLayout(layout)
 
+        run_action = QtGui.QAction('&Run Analysis', self)
+        run_action.setShortcut('Ctrl+R')
+        run_action.setStatusTip('Run Analysis')
+        QtCore.QObject.connect(run_action, QtCore.SIGNAL('triggered()'),
+                               self.tuner.logic.run_analysis)
+        self.tuner.addAction(run_action)
+
         run_button = QtGui.QPushButton('Run Analysis')
         run_button.setToolTip('Run the analysis with ' +
                               'current parameter settings.')
         run_button.resize(run_button.sizeHint())
         layout.addWidget(run_button)
-        self.run_button = run_button
+        QtCore.QObject.connect(run_button,
+                               QtCore.SIGNAL('clicked()'),
+                               self.tuner.logic.run_analysis)
 
+        sample_metric_action = QtGui.QAction('&Sample Metric', self)
+        sample_metric_action.setShortcut('Ctrl+M')
+        sample_metric_action.setStatusTip('Sample Metric')
+        QtCore.QObject.connect(sample_metric_action, QtCore.SIGNAL('triggered()'),
+                               self.tuner.logic.sample_metric)
+        self.tuner.addAction(sample_metric_action)
         sample_metric_button = QtGui.QPushButton('Sample Metric')
         sample_metric_button.setToolTip('Sample the metric space with ' +
                               'current parameter settings.')
         sample_metric_button.resize(sample_metric_button.sizeHint())
         layout.addWidget(sample_metric_button)
-        self.sample_metric_button = sample_metric_button
+        QtCore.QObject.connect(sample_metric_button,
+                               QtCore.SIGNAL('clicked()'),
+                               self.tuner.logic.sample_metric)
+
+        center_metric_action = QtGui.QAction('Center Metric &Sampling', self)
+        center_metric_action.setShortcut('Ctrl+S')
+        center_metric_action.setStatusTip('Center Metric Sampling')
+        QtCore.QObject.connect(center_metric_action, QtCore.SIGNAL('triggered()'),
+                               self.tuner.logic.center_metric_sampling_on_converged)
+        self.tuner.addAction(center_metric_action)
+        center_metric_button = QtGui.QPushButton('Center Metric Sampling')
+        center_metric_button.setToolTip('Center the metric space sampling domain ' +
+                              'on the last optimized values.')
+        center_metric_button.resize(center_metric_button.sizeHint())
+        layout.addWidget(center_metric_button)
+        QtCore.QObject.connect(center_metric_button,
+                               QtCore.SIGNAL('clicked()'),
+                               self.tuner.logic.center_metric_sampling_on_converged)
 
         video_button = QtGui.QPushButton('Make Video Frames')
         video_button.resize(video_button.sizeHint())
         layout.addWidget(video_button)
-        self.video_button = video_button
+        QtCore.QObject.connect(video_button,
+                               QtCore.SIGNAL('clicked()'),
+                               self.tuner.make_video)
 
         import pprint
         console_namespace = {'pg': pg,
@@ -1080,15 +1135,16 @@ class MetricSpaceDock(pyqtgraph.dockarea.Dock):
             parameters = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
         lower_bound = config['MetricSampler']['LowerBound']
         upper_bound = config['MetricSampler']['UpperBound']
-        step = config['MetricSampler']['Step']
+        size = config['MetricSampler']['Size']
         def get_closest_index(direction, value):
             if value <= lower_bound[direction]:
                 return 0
             if value > upper_bound[direction]:
-                index = (upper_bound[direction] - lower_bound[direction]) \
-                        / step[direction]
+                index = size[direction] - 1
             else:
-                index = (value - lower_bound[direction]) / step[direction]
+                step = (upper_bound[direction] - lower_bound[direction]) / \
+                    size[direction]
+                index = (value - lower_bound[direction]) / step
             return int(index)
         indices = ''
         for ii in range(6):
@@ -1201,30 +1257,7 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
 
         Dock = pyqtgraph.dockarea.Dock
 
-        run_action = QtGui.QAction('&Run Analysis', self)
-        run_action.setShortcut('Ctrl+R')
-        run_action.setStatusTip('Run Analysis')
-        QtCore.QObject.connect(run_action, QtCore.SIGNAL('triggered()'),
-                               self.logic.run_analysis)
-        self.addAction(run_action)
-
-        sample_metric_action = QtGui.QAction('&Sample Metric', self)
-        sample_metric_action.setShortcut('Ctrl+M')
-        sample_metric_action.setStatusTip('Sample Metric')
-        QtCore.QObject.connect(sample_metric_action, QtCore.SIGNAL('triggered()'),
-                               self.logic.sample_metric)
-        self.addAction(sample_metric_action)
-
         run_console = RunConsoleWidget(self.config, self)
-        QtCore.QObject.connect(run_console.run_button,
-                               QtCore.SIGNAL('clicked()'),
-                               self.logic.run_analysis)
-        QtCore.QObject.connect(run_console.video_button,
-                               QtCore.SIGNAL('clicked()'),
-                               self.make_video)
-        QtCore.QObject.connect(run_console.sample_metric_button,
-                               QtCore.SIGNAL('clicked()'),
-                               self.logic.sample_metric)
         run_console_dock = Dock("Console", size=(400, 300))
         run_console_dock.addWidget(run_console)
         self.dock_area.addDock(run_console_dock, 'right')
