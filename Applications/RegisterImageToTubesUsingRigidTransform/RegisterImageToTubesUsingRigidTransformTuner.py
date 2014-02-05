@@ -860,6 +860,20 @@ class MetricSpaceLogic(QtCore.QObject):
         self.logic.config['MetricSampler']['LowerBound'] = lower_bound
         self.logic.config['MetricSampler']['UpperBound'] = upper_bound
 
+    def set_sampling_size(self, u_or_v, size):
+        if u_or_v == 'u':
+            direction = self.u_direction
+        else:
+            direction = self.v_direction
+        config = self.logic.config
+        config['MetricSampler']['Size'][direction] = size
+
+    def set_u_sampling_size(self, size):
+        self.set_sampling_size('u', size)
+
+    def set_v_sampling_size(self, size):
+        self.set_sampling_size('v', size)
+
 
 class MetricSpaceControlsDock(pyqtgraph.dockarea.Dock):
     """Controls what is visualized in the metric space display."""
@@ -903,7 +917,7 @@ class MetricSpaceControlsDock(pyqtgraph.dockarea.Dock):
         u_controls_layout.addWidget(u_buttons_widget)
         u_controls = QtGui.QGroupBox('U Direction')
         u_controls.setLayout(u_controls_layout)
-        self.addWidget(u_controls, row=0, col=0)
+        self.addWidget(u_controls, row=0, col=0, rowspan=3)
         QtCore.QObject.connect(metric_space_logic,
                                QtCore.SIGNAL('uDirectionChanged(int)'),
                                self.set_u_direction)
@@ -920,6 +934,17 @@ class MetricSpaceControlsDock(pyqtgraph.dockarea.Dock):
         bounds = self.metric_space_logic.get_metric_range(0)
         u_histogram_widget.setLevels(bounds[0], bounds[1])
         u_histogram_widget.sigLevelChangeFinished.connect(self.set_u_metric_range)
+
+        self.addWidget(QtGui.QLabel('U Samples'), row=1, col=1)
+        u_size_spinbox = QtGui.QSpinBox()
+        u_size_spinbox.setMinimum(3)
+        u_size_spinbox.setSingleStep(2) # keep it odd so samples in the center
+        u_size_spinbox.setValue(self.logic.config['MetricSampler']['Size'][0])
+        QtCore.QObject.connect(u_size_spinbox,
+                               QtCore.SIGNAL('valueChanged(int)'),
+                               metric_space_logic.set_u_sampling_size)
+        self.addWidget(u_size_spinbox, row=2, col=1)
+        self.u_size_spinbox = u_size_spinbox
 
         v_buttons_layout = QtGui.QGridLayout()
         for ii in range(6):
@@ -940,11 +965,11 @@ class MetricSpaceControlsDock(pyqtgraph.dockarea.Dock):
         v_controls_layout.addWidget(v_buttons_widget)
         v_controls = QtGui.QGroupBox('V Direction')
         v_controls.setLayout(v_controls_layout)
-        self.addWidget(v_controls, row=1, col=0)
+        self.addWidget(v_controls, row=3, col=0, rowspan=3)
 
         v_histogram_widget = HistogramWidget()
         self.v_histogram_widget = v_histogram_widget
-        self.addWidget(v_histogram_widget, row=1, col=1)
+        self.addWidget(v_histogram_widget, row=3, col=1)
         self.v_image_item = ImageItem()
         v_histogram_widget.setImageItem(self.v_image_item)
         logic.analysis_run.connect(self.update_v_histogram)
@@ -955,6 +980,17 @@ class MetricSpaceControlsDock(pyqtgraph.dockarea.Dock):
         v_histogram_widget.setLevels(bounds[0], bounds[1])
         v_histogram_widget.sigLevelChangeFinished.connect(self.set_v_metric_range)
 
+        self.addWidget(QtGui.QLabel('V Samples'), row=4, col=1)
+        v_size_spinbox = QtGui.QSpinBox()
+        v_size_spinbox.setMinimum(3)
+        v_size_spinbox.setSingleStep(2) # keep it odd so samples in the center
+        v_size_spinbox.setValue(self.logic.config['MetricSampler']['Size'][1])
+        QtCore.QObject.connect(v_size_spinbox,
+                               QtCore.SIGNAL('valueChanged(int)'),
+                               metric_space_logic.set_v_sampling_size)
+        self.addWidget(v_size_spinbox, row=5, col=1)
+        self.v_size_spinbox = v_size_spinbox
+
     def set_u_direction(self, direction):
         """Only set the given direction radio button as checked."""
         for ii in range(6):
@@ -962,6 +998,8 @@ class MetricSpaceControlsDock(pyqtgraph.dockarea.Dock):
                 self.u_buttons[ii].setChecked(False)
             else:
                 self.metric_space_logic.set_u_direction(ii)
+                samples = self.logic.config['MetricSampler']['Size'][ii]
+                self.u_size_spinbox.setValue(samples)
 
     def get_u_direction(self):
         """Get the currently checked u direction."""
@@ -981,6 +1019,8 @@ class MetricSpaceControlsDock(pyqtgraph.dockarea.Dock):
                 self.v_buttons[ii].setChecked(False)
             else:
                 self.metric_space_logic.set_v_direction(ii)
+                samples = self.logic.config['MetricSampler']['Size'][ii]
+                self.v_size_spinbox.setValue(samples)
 
     def get_v_direction(self):
         """Get the currently checked u direction."""
@@ -1018,7 +1058,6 @@ class MetricSpaceControlsDock(pyqtgraph.dockarea.Dock):
             self.u_image_item.setImage(values)
         else:
             self.v_image_item.setImage(values)
-
 
     def update_u_histogram(self):
         self.update_histogram('u')
