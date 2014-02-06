@@ -132,7 +132,7 @@ class RegistrationTunerLogic(QtCore.QObject):
                                               dtype=np.float) / \
                 self._number_of_iterations
             colors = matplotlib.cm.summer(iterations_normalized)
-            colors[:, 3] = 0.9
+            colors[:, 3] = 0.95
             self._iterations_colors = colors
             self.number_of_iterations_changed.emit(value)
 
@@ -1211,16 +1211,19 @@ class MetricSpaceDock(pyqtgraph.dockarea.Dock):
         v = np.linspace(lower_bound[v_direction], upper_bound[v_direction],
                         z.shape[1])
         v *= self._scales[v_direction]
+        max_expected_metric = 100
+        z_normalized = z / max_expected_metric
+        colors = matplotlib.cm.autumn(z_normalized)
+        colors[:, :, 3] = 0.75
         if self.surface_plot_item:
-            self.surface_plot_item.setData(x=u, y=v, z=z)
+            self.surface_plot_item.setData(x=u, y=v, z=z, colors=colors)
         else:
             self.surface_plot_item = pg.opengl.GLSurfacePlotItem(x=u, y=v, z=z,
                                                                  edgeColor=(0.1, 0.1, 0.1, 0.8),
                                                                  drawEdges=True,
-                                                                 shader='heightColor',
-                                                                 computeNormals=False,
-                                                                 color=(0.4, 0.4, 0.9, 0.01))
-            self.surface_plot_item.shader()['colorMap'] = np.array([0.01, 2, 0.5, 0.01, 1, 1, 0.01, 0, 2])
+                                                                 shader='shaded',
+                                                                 glOptions='translucent',
+                                                                 colors=colors)
             self.view_widget.addItem(self.surface_plot_item)
 
 
