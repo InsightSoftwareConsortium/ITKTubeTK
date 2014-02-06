@@ -178,10 +178,11 @@ int DoIt( int argc, char * argv[] )
         {
         parametersUpperBound[ii] = upperBound[ii].asDouble();
         }
-      const Json::Value & step = metricSampler["Step"];
+      const Json::Value & size = metricSampler["Size"];
       for( int ii = 0; ii < static_cast< int >( NumberOfParameters) ; ++ii )
         {
-        parametersStep[ii] = step[ii].asDouble();
+        parametersStep[ii] = ( parametersUpperBound[ii] - parametersLowerBound[ii] ) /
+          ( size[ii].asUInt() - 1 );
         }
       }
     }
