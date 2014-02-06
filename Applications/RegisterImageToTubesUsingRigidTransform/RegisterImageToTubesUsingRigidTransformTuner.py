@@ -1109,6 +1109,7 @@ class MetricSpaceDock(pyqtgraph.dockarea.Dock):
         self.view_widget.addItem(grid)
         self.scatter_plot_item = None
         self.surface_plot_item = None
+        self.line_plot_item = None
         axis = gl.GLAxisItem()
         factor = 40
         axis.scale(factor, factor, factor)
@@ -1138,12 +1139,22 @@ class MetricSpaceDock(pyqtgraph.dockarea.Dock):
         #print('v_value', v_value)
         pos = np.vstack((u_value, v_value, metric_value)).transpose()
         colors = self.logic.get_iterations_colors()
-        if self.scatter_plot_item:
+        if self.scatter_plot_item != None:
             self.scatter_plot_item.setData(pos=pos, color=colors)
         else:
             self.scatter_plot_item = pg.opengl.GLScatterPlotItem(pos=pos,
                                                                  color=colors)
             self.view_widget.addItem(self.scatter_plot_item)
+        if self.line_plot_item != None:
+            self.line_plot_item.setData(pos=pos)
+        else:
+            self.line_plot_item = pg.opengl.GLLinePlotItem(pos=pos,
+                                                           color=(1.0, 0.8, 0.5,
+                                                                  1.0),
+                                                           width=2.0,
+                                                           antialias=True)
+            self.view_widget.addItem(self.line_plot_item)
+
 
     def plot_metric_surface(self):
         metric_image = self.logic.metric_image
