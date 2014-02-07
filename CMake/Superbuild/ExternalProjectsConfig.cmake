@@ -56,10 +56,10 @@ set( LIBSVM_URL
   http://www.csie.ntu.edu.tw/~cjlin/libsvm/oldfiles/libsvm-3.17.tar.gz )
 set( LIBSVM_HASH_OR_TAG 67f8b597ce85c1f5288d7838e57ea28a )
 
-# TubeTK Parameter Serializer snapshot 2013-12-20 01:04)
+# TubeTK Parameter Serializer snapshot 2014-02-05 )
 set( ParameterSerializer_URL
   ${github_protocol}://github.com/TubeTK/TubeTK-ParameterSerializer.git )
-set( ParameterSerializer_HASH_OR_TAG 4b41039e4e8e1098f41bbff13527ab9f5ee26188 )
+set( ParameterSerializer_HASH_OR_TAG fe360ce153bfe4efc36b276750d4606bb1d7b156 )
 
 # Slicer Execution Model (TubeTK fork) snapshot 2014-02-04
 set( SlicerExecutionModel_URL
