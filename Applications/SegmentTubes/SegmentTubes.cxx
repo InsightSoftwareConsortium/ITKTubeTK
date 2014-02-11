@@ -114,7 +114,6 @@ int DoIt( int argc, char * argv[] )
   seedIndexType seedIndex;
   seedIndexListType seedIndexList;
 
-  double seedScale;
   seedScaleListType seedScaleList;
 
   seedIndexList.clear();
@@ -151,6 +150,7 @@ int DoIt( int argc, char * argv[] )
     readStream.open( seedListFile.c_str(), std::ios::binary |
       std::ios::in );
     std::string line;
+    double seedScale;
     while( std::getline( readStream, line ) )
       {
       std::istringstream iss(line);
