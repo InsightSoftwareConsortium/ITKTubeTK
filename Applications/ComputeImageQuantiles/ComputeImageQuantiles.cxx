@@ -71,7 +71,7 @@ void computeQuantiles( ImageType::Pointer image,
   std::vector<QuantileAccumulatorType *> accVec;
   BOOST_FOREACH(float q, quantiles)
     {
-    if(q <= 0 || q >= 1)
+    if(q <= 0.f || q >= 1.f)
       {
       tube::ErrorMessage("Check quantile range!");
       throw std::exception();
