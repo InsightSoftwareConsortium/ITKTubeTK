@@ -4,6 +4,7 @@
 RegisterImageToTubesUsingRigidTransform."""
 
 import argparse
+import copy
 import json
 import os
 import shutil
@@ -35,6 +36,30 @@ class HistogramWidget(HistogramLUTWidget):
         self.gradient.setVisible(False)
 
 
+class SharedIterationLogic(QtCore.QObject):
+    """Shares the current iteration between multiple registration instances."""
+
+    _iteration = 0
+
+    def __init__(self, parent=None):
+        super(SharedIterationLogic, self).__init__(parent)
+
+    def get_iteration(self):
+        return self._iteration
+
+    def set_iteration(self, value):
+        """Set the iteration to visualize."""
+        if value != self._iteration:
+            self._iteration = value
+            self.iteration_changed.emit(value)
+
+    iteration = property(get_iteration,
+                         set_iteration,
+                         doc='Currently examined iteration.')
+
+    iteration_changed = QtCore.pyqtSignal(int, name='iterationChanged')
+
+
 class RegistrationTunerLogic(QtCore.QObject):
     """Controls the business logic for registration tuning."""
 
@@ -45,16 +70,25 @@ class RegistrationTunerLogic(QtCore.QObject):
     _tubes_center = [0.0, 0.0, 0.0]
     _subsampled_tubes = None
     _metric_image = None
+    _tube_point_weights = None
+    _tuner_clones = []
 
-    def __init__(self, config, parent=None):
+    def __init__(self, config, shared_iteration_logic=None, parent=None):
         super(RegistrationTunerLogic, self).__init__(parent)
         self.config = config
 
+        if shared_iteration_logic is None:
+            self.shared_iteration_logic = SharedIterationLogic(self)
+        else:
+            self.shared_iteration_logic = shared_iteration_logic
+        self.shared_iteration_logic.iteration_changed.connect(self.set_iteration)
+        self.iteration_changed.connect(self.shared_iteration_logic.set_iteration)
+
+        TemporaryFile = tempfile.NamedTemporaryFile
         io_params = self.config['ParameterGroups'][0]['Parameters']
         input_tubes = io_params[1]['Value']
         if 'SubSampleTubeTree' in self.config:
             sampling = self.config['SubSampleTubeTree']['Sampling']
-            TemporaryFile = tempfile.NamedTemporaryFile
             subsampled_tubes_fp = TemporaryFile(suffix='SubsampledTubes.tre',
                                                 delete=False)
             self._subsampled_tubes = subsampled_tubes_fp.name
@@ -65,11 +99,15 @@ class RegistrationTunerLogic(QtCore.QObject):
         else:
             self._subsampled_tubes = input_tubes
 
-        TemporaryFile = tempfile.NamedTemporaryFile
         metric_image_fp = TemporaryFile(suffix='MetricImage.mha',
                                         delete=False)
         self._metric_image = metric_image_fp.name
         metric_image_fp.close()
+        tube_point_weights_fp = TemporaryFile(suffix='TubePointWeights.json',
+                                              delete=False)
+        self._tube_point_weights = tube_point_weights_fp.name
+        tube_point_weights_fp.close()
+        self.config['TubePointWeightsFile'] = self._tube_point_weights
 
     def initialize(self):
         self.video_frame_dir = tempfile.mkdtemp()
@@ -83,9 +121,17 @@ class RegistrationTunerLogic(QtCore.QObject):
         if 'SubSampleTubeTree' in self.config:
             os.remove(self.subsampled_tubes)
         os.remove(self._metric_image)
+        os.remove(self._tube_point_weights)
 
     def __exit__(self, type, value, traceback):
         self.close()
+
+    def create_new_tuner(self):
+        """Create a new tuner with a copy of the config, and the same shared
+        set of target iterations."""
+        new_config = copy.deepcopy(self.config)
+        tuner_clone = RegistrationTuner(new_config, self.shared_iteration_logic)
+        self._tuner_clones.append(tuner_clone)
 
     def get_subsampled_tubes(self):
         return self._subsampled_tubes
@@ -108,7 +154,7 @@ class RegistrationTunerLogic(QtCore.QObject):
     def set_iteration(self, value):
         """Set the iteration to visualize."""
         if value > self.number_of_iterations:
-            raise ValueError("Invalid iteration")
+            return
         if value != self._iteration:
             self._iteration = value
             self.iteration_changed.emit(value)
@@ -407,6 +453,23 @@ class RunConsoleWidget(QtGui.QWidget):
                                QtCore.SIGNAL('clicked()'),
                                self.tuner.logic.center_metric_sampling_on_converged)
 
+        new_tuner_action = QtGui.QAction('&New Tuner', self)
+        new_tuner_action.setShortcut('Ctrl+N')
+        new_tuner_action.setStatusTip(
+            'Create a new tuner based on the current configuration.')
+        QtCore.QObject.connect(new_tuner_action, QtCore.SIGNAL('triggered()'),
+                               self.tuner.logic.create_new_tuner)
+        self.tuner.addAction(new_tuner_action)
+
+        new_tuner_button = QtGui.QPushButton('New Tuner')
+        new_tuner_button.setToolTip(
+            'Create a new tuner based on the current configuration.')
+        new_tuner_button.resize(new_tuner_button.sizeHint())
+        layout.addWidget(new_tuner_button)
+        QtCore.QObject.connect(new_tuner_button,
+                               QtCore.SIGNAL('clicked()'),
+                               self.tuner.logic.create_new_tuner)
+
         video_button = QtGui.QPushButton('Make Video Frames')
         video_button.resize(video_button.sizeHint())
         layout.addWidget(video_button)
@@ -600,12 +663,17 @@ class ImageTubesWidget(gl.GLViewWidget):
                     parameters = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
                 tubes = tubes_from_file(self.logic.subsampled_tubes)
                 #tubes_color = (0.2, 0.25, 0.75, alpha)
+                have_point_weights_file = False
                 if 'TubePointWeightsFile' in self.config and \
                         os.path.exists(self.config['TubePointWeightsFile']):
-                    with open(self.config['TubePointWeightsFile'], 'r') as fp:
-                        tube_weights = json.load(fp)['TubePointWeights']
-                        tube_weights = np.array(tube_weights)
-                else:
+                    tube_point_weights = self.config['TubePointWeightsFile']
+                    statinfo = os.stat(tube_point_weights)
+                    if statinfo.st_size != 0:
+                        with open(tube_point_weights, 'r') as fp:
+                            tube_weights = json.load(fp)['TubePointWeights']
+                            tube_weights = np.array(tube_weights)
+                            have_point_weights_file = True
+                if not have_point_weights_file:
                     tube_weights = 2./(1. + np.exp(-2 * tubes['Radius']))
                 tube_weights = tube_weights - tube_weights.min()
                 tube_weights = tube_weights / tube_weights.max()
@@ -1280,11 +1348,6 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         metric_space_logic = MetricSpaceLogic(logic)
         self.metric_space_logic = metric_space_logic
 
-        # Remove old output
-        if 'TubePointWeightsFile' in self.config and \
-                os.path.exists(self.config['TubePointWeightsFile']):
-            os.remove(self.config['TubePointWeightsFile'])
-
         self.initializeUI()
         self.logic.analysis_run.connect(self.image_tubes.add_image_planes)
         self.logic.iteration_changed.connect(self.image_tubes.add_tubes)
@@ -1368,10 +1431,10 @@ class RegistrationTuner(object):
     """Class to drive registration tuning analysis.  This is the class that in
     instantiated and executed."""
 
-    def __init__(self, config, parent=None):
+    def __init__(self, config, shared_iteration_logic=None, parent=None):
         self.config = config
 
-        self.logic = RegistrationTunerLogic(config)
+        self.logic = RegistrationTunerLogic(config, shared_iteration_logic)
         self.logic.initialize()
         self.view = RegistrationTunerMainWindow(config, self.logic)
 
