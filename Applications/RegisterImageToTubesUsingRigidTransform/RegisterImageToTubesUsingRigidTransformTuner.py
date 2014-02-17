@@ -768,9 +768,8 @@ class ImageDisplayControlsDock(pyqtgraph.dockarea.Dock):
         super(ImageDisplayControlsDock, self).__init__(*args, **kwargs)
         self.image_display_logic = image_display_logic
         self.initializeUI()
-        QtCore.QObject.connect(image_display_logic,
-                               QtCore.SIGNAL('numberOfPlanesChanged(int, int)'),
-                               self.set_number_of_planes)
+        planes_changed = image_display_logic.number_of_planes_changed
+        planes_changed.connect(self.set_number_of_planes)
 
     def initializeUI(self):
         self.checkboxes = []
@@ -1379,19 +1378,20 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
         self.dock_area.addDock(run_console_dock, 'right')
 
         image_display_logic = self.image_display_logic
+        dock_title = "Image Display Controls"
+        # Note: must be initialized before ImageTubesWidget to get the correct
+        # number of planes set.
+        image_controls_dock = ImageDisplayControlsDock(image_display_logic,
+                                                       dock_title,
+                                                       size=(640, 60))
         self.image_tubes = ImageTubesWidget(self.logic,
                                             image_display_logic,
                                             self.config)
         image_tubes_dock = Dock("Image and Tubes", size=(640, 480))
         image_tubes_dock.addWidget(self.image_tubes)
         self.dock_area.addDock(image_tubes_dock, 'left')
-
-        dock_title = "Image Display Controls"
-        image_controls_dock = ImageDisplayControlsDock(image_display_logic,
-                                                       dock_title,
-                                                       size=(640, 60))
-
         self.dock_area.addDock(image_controls_dock, 'bottom', image_tubes_dock)
+
 
         self.metric_value_dock = MetricValueDock(self.logic,
                                                  "Metric Value Inverse",
