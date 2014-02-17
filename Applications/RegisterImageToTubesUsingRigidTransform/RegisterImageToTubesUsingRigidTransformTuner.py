@@ -73,7 +73,8 @@ class RegistrationTunerLogic(QtCore.QObject):
     _tube_point_weights = None
     _tuner_clones = []
 
-    def __init__(self, config, shared_iteration_logic=None, parent=None):
+    def __init__(self, config, shared_iteration_logic=None,
+                 image_display_logic=None, parent=None):
         super(RegistrationTunerLogic, self).__init__(parent)
         self.config = config
 
@@ -83,6 +84,10 @@ class RegistrationTunerLogic(QtCore.QObject):
             self.shared_iteration_logic = shared_iteration_logic
         self.shared_iteration_logic.iteration_changed.connect(self.set_iteration)
         self.iteration_changed.connect(self.shared_iteration_logic.set_iteration)
+
+        if image_display_logic is None:
+            image_display_logic = ImageDisplayLogic()
+        self.image_display_logic = image_display_logic
 
         TemporaryFile = tempfile.NamedTemporaryFile
         io_params = self.config['ParameterGroups'][0]['Parameters']
@@ -130,7 +135,9 @@ class RegistrationTunerLogic(QtCore.QObject):
         """Create a new tuner with a copy of the config, and the same shared
         set of target iterations."""
         new_config = copy.deepcopy(self.config)
-        tuner_clone = RegistrationTuner(new_config, self.shared_iteration_logic)
+        tuner_clone = RegistrationTuner(new_config,
+                                        self.shared_iteration_logic,
+                                        self.image_display_logic)
         self._tuner_clones.append(tuner_clone)
 
     def get_subsampled_tubes(self):
@@ -1342,8 +1349,7 @@ class RegistrationTunerMainWindow(QtGui.QMainWindow):
 
         self.config = config
         self.logic = logic
-        image_display_logic = ImageDisplayLogic()
-        self.image_display_logic = image_display_logic
+        self.image_display_logic = self.logic.image_display_logic
         metric_space_logic = MetricSpaceLogic(logic)
         self.metric_space_logic = metric_space_logic
 
@@ -1431,10 +1437,14 @@ class RegistrationTuner(object):
     """Class to drive registration tuning analysis.  This is the class that in
     instantiated and executed."""
 
-    def __init__(self, config, shared_iteration_logic=None, parent=None):
+    def __init__(self, config,
+                 shared_iteration_logic=None,
+                 image_display_logic=None, parent=None):
         self.config = config
 
-        self.logic = RegistrationTunerLogic(config, shared_iteration_logic)
+        self.logic = RegistrationTunerLogic(config,
+                                            shared_iteration_logic,
+                                            image_display_logic)
         self.logic.initialize()
         self.view = RegistrationTunerMainWindow(config, self.logic)
 
