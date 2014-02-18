@@ -77,7 +77,7 @@ if( NOT TubeTK_USE_SLICER )
 
   Midas3FunctionAddTest( NAME ${METRIC_SAMPLER}-Test2
     COMMAND ${METRIC_SAMPLER_EXE}
-        --parameterstorestore ${TEMP}/${MODULE_NAME}Tuner.json
+        --deserialize ${TEMP}/${MODULE_NAME}Tuner.json
     MIDAS{Branch.n020.mha.md5}
     MIDAS{tube.tre.md5}
     ${TEMP}/${METRIC_SAMPLER}Test2.mha )
