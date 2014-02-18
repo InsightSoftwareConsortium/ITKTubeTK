@@ -67,14 +67,14 @@ int DoIt( int argc, char * argv[] )
 
 #ifdef SlicerExecutionModel_USE_SERIALIZER
   // If SlicerExecutionModel was built with Serializer support, there is
-  // automatically a parametersToRestore argument.  This argument is a JSON
+  // automatically a parametersSerialize argument.  This argument is a JSON
   // file that has values for the CLI parameters, but it can also hold other
   // entries without causing any issues.
   Json::Value parametersRoot;
-  if( !parametersToRestore.empty() )
+  if( !parametersSerialize.empty() )
     {
     // Parse the Json.
-    std::ifstream stream( parametersToRestore.c_str() );
+    std::ifstream stream( parametersSerialize.c_str() );
     Json::Reader reader;
     reader.parse( stream, parametersRoot );
     stream.close();
@@ -163,7 +163,7 @@ int DoIt( int argc, char * argv[] )
 
 #ifdef SlicerExecutionModel_USE_SERIALIZER
   // Load parameter space to examine from file.
-  if( !parametersToRestore.empty() )
+  if( !parametersSerialize.empty() )
     {
     if( parametersRoot.isMember( "MetricSampler" ) )
       {

@@ -221,7 +221,7 @@ class RegistrationTunerLogic(QtCore.QObject):
         json.dump(self.config, config_file)
         config_file.close()
         command = [config['Executables']['Analysis'],
-                   '--parameterstorestore', config_file.name,
+                   '--deserialize', config_file.name,
                    input_volume,
                    input_vessel,
                    output_transform]
@@ -255,7 +255,7 @@ class RegistrationTunerLogic(QtCore.QObject):
         json.dump(self.config, config_file)
         config_file.close()
         command = [config['Executables']['MetricSampler'],
-                   '--parameterstorestore', config_file.name,
+                   '--deserialize', config_file.name,
                    input_volume,
                    input_vessel,
                    self.metric_image]

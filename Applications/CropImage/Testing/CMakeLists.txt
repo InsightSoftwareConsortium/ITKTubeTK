@@ -121,7 +121,7 @@ if( NOT TubeTK_USE_SLICER )
                  COMMAND ${PROJ_EXE}
                  MIDAS{ES0015_Large.mha.md5}
                  ${TEMP}/${MODULE_NAME}Test5.mha
-                 --parameterstorestore ${CMAKE_CURRENT_SOURCE_DIR}/CropImage-Test5.json
+                 --deserialize ${CMAKE_CURRENT_SOURCE_DIR}/CropImage-Test5.json
                  -b 5,5 )
 
   Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test5-Compare
@@ -138,7 +138,7 @@ if( NOT TubeTK_USE_SLICER )
                  COMMAND ${PROJ_EXE}
                  MIDAS{ES0015_Large.mha.md5}
                  ${TEMP}/${MODULE_NAME}Test6.mha
-                 --parameterstorestore ${CMAKE_CURRENT_SOURCE_DIR}/CropImage-Test6.json
+                 --deserialize ${CMAKE_CURRENT_SOURCE_DIR}/CropImage-Test6.json
                  -b 5,5 )
 
   Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test6-Compare
