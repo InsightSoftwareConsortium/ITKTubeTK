@@ -95,6 +95,7 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
   imOut->Allocate();
   imOut->FillBuffer( 0 );
 
+  double intensity;
   double roundness;
   double curvature;
   double linearity;
@@ -136,8 +137,8 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
           std::cout << "Ridgeness: " << contIndx << std::endl;
           prev2 = itOut.GetIndex()[2];
           }
-        itOut.Set( ridgeOp->Ridgeness( contIndx, roundness, curvature,
-          linearity ) );
+        itOut.Set( ridgeOp->Ridgeness( contIndx, intensity, roundness,
+          curvature, linearity ) );
         firstSearch = true;
         break;
         }
@@ -148,7 +149,7 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
           std::cout << "Roundness: " << contIndx << std::endl;
           prev2 = itOut.GetIndex()[2];
           }
-        ridgeOp->Ridgeness( contIndx, roundness,
+        ridgeOp->Ridgeness( contIndx, intensity, roundness,
           curvature, linearity );
         itOut.Set( roundness );
         firstSearch = true;
@@ -161,7 +162,7 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
           std::cout << "Curvature: " << contIndx << std::endl;
           prev2 = itOut.GetIndex()[2];
           }
-        ridgeOp->Ridgeness( contIndx, roundness,
+        ridgeOp->Ridgeness( contIndx, intensity, roundness,
           curvature, linearity );
         itOut.Set( curvature*1000 );
         firstSearch = true;
@@ -174,7 +175,7 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
           std::cout << "Linearity: " << contIndx << std::endl;
           prev2 = itOut.GetIndex()[2];
           }
-        ridgeOp->Ridgeness( contIndx, roundness,
+        ridgeOp->Ridgeness( contIndx,  intensity,roundness,
           curvature, linearity );
         itOut.Set( linearity );
         firstSearch = true;

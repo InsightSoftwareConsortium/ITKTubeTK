@@ -394,6 +394,7 @@ template< class TInputImage >
 double
 RidgeExtractor<TInputImage>
 ::Ridgeness( const ContinuousIndexType & x,
+  double & intensity,
   double & roundness,
   double & curvature,
   double & linearity )
@@ -479,55 +480,38 @@ RidgeExtractor<TInputImage>
       ridge = -1;
       }
     }
-  sums /= (ImageDimension-1);
-  sumv /= (ImageDimension-1);
+  double avgv = sumv / ( ImageDimension - 1 );
 
-  // sums is avg(P^2, Q^2) = 0 for ridge
-  // sumv is (v1^2 + v2^2) / (v1^2 + v2^2 + v3^2) = 1 for a flat ridge
-
+  // ridgeness is 1 - sums = 1 - ( P^2 + Q^2 )
   double ridgeness = (1.0 - sums) * ridge;
-  //double ridgeness = (1.0 - sums) * (1.0 - sumv) * ridge;
 
   if( this->GetDebug() )
     {
     std::cout << "  ridgeness = " << ridgeness << std::endl;
     }
 
-  /*
-  double meanCurv = vnl_math_abs( m_XHEVal[0] );
-  for( unsigned int i=1; i<ImageDimension-1; i++ )
+  intensity = m_XVal;
+
+  // roundness is 1 - || 1 - v2^2 / v1^2  ||
+  // However, since v1^2 can be extremely small, we use the average
+  roundness = 0;
+  if( m_XHEVal[0] != 0 )
     {
-    meanCurv += vnl_math_abs( m_XHEVal[i] );
-    }
-  meanCurv /= ( ImageDimension-1 );
-  roundness = ( vnl_math_abs( m_XHEVal[ ImageDimension-2 ] ) / meanCurv)
-    * ridge;
-  */
-  roundness = ridge * ( sumv - ( ( ( m_XHEVal[0] * m_XHEVal[0] ) - sumv )
-    * ( ( m_XHEVal[0] * m_XHEVal[0] ) - sumv ) ) );
-  if( roundness < 0 )
-    {
-    roundness = 0;
+    roundness =
+      1 - vnl_math_abs( 1 - ( ( m_XHEVal[ ImageDimension-2 ] *
+        m_XHEVal[ ImageDimension-2] ) / avgv ) );
     }
 
-  //curvature = 1.0 - vnl_math_abs( m_XHEVal[0] ) * ridge;
-  curvature = ridge * sumv;
-  if( curvature < 0 )
-    {
-    curvature = 0;
-    }
+  // curvature is (v1^2 + v2^2) / 2.0
+  curvature = ridge * avgv;
 
+  // linearity is (v1^2 + v2^2) / (v1^2 + v2^2 + v3^2) = 1 for a flat ridge
   linearity = 0;
-  if( ridge > 0 && ( sumv + m_XHEVal[ImageDimension-1] ) != 0 )
+  double denom =
+    ( sumv + m_XHEVal[ ImageDimension-1 ] * m_XHEVal[ ImageDimension-1] );
+  if( denom != 0 )
     {
-    linearity = ( m_XHEVal[ImageDimension-1] * m_XHEVal[ImageDimension-1] )
-      / (sumv +
-          ( m_XHEVal[ImageDimension-1] * m_XHEVal[ImageDimension-1] ) );
-    if( linearity > 1.0 )
-      {
-      linearity = 1.0;
-      }
-    linearity = 1.0 - linearity;
+    linearity = sumv / denom;
     }
 
   return ridgeness;
@@ -698,6 +682,7 @@ RidgeExtractor<TInputImage>
       }
     }
 
+  double intensity;
   double ridgeness;
   double roundness;
   double curvature;
@@ -735,7 +720,8 @@ RidgeExtractor<TInputImage>
         {
         std::cout << "Initial point ridgeness..." << std::endl;
         }
-      ridgeness = Ridgeness( indxX, roundness, curvature, linearity );
+      ridgeness = Ridgeness( indxX, intensity, roundness, curvature,
+        linearity );
 
       if( this->GetDebug() )
         {
@@ -942,7 +928,8 @@ RidgeExtractor<TInputImage>
       {
       indxX[i] = lX[i];
       }
-    ridgeness = Ridgeness( indxX, roundness, curvature, linearity );
+    ridgeness = Ridgeness( indxX, intensity, roundness, curvature,
+      linearity );
 
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
@@ -1018,6 +1005,7 @@ RidgeExtractor<TInputImage>
         {
         std::cout << "*** Ridge term: Rapid change in step direction "
           << "( " << vnl_math_abs( dProd ) << " )" << std::endl;
+        std::cout << "       Ridgeness = " << intensity << std::endl;
         std::cout << "       Ridgeness = " << ridgeness << std::endl;
         std::cout << "       Roundness = " << roundness << std::endl;
         std::cout << "       Curvature = " << curvature << std::endl;
@@ -1328,10 +1316,12 @@ RidgeExtractor<TInputImage>
       }
     }
 
+  double intensity;
   double roundness;
   double curvature;
   double linearity;
-  double ridgeness = Ridgeness( newX, roundness, curvature, linearity );
+  double ridgeness = Ridgeness( newX, intensity, roundness, curvature,
+    linearity );
 
   double     val;
   MatrixType lN( ImageDimension, ImageDimension-1 );
@@ -1404,7 +1394,8 @@ RidgeExtractor<TInputImage>
       return false;
       }
 
-    ridgeness = Ridgeness( newX, roundness, curvature, linearity );
+    ridgeness = Ridgeness( newX, intensity, roundness, curvature,
+      linearity );
     if( ridgeness >= m_ThreshRidgenessStart &&
       roundness >= m_ThreshRoundnessStart &&
       curvature >= m_ThreshCurvatureStart &&
@@ -1490,7 +1481,8 @@ RidgeExtractor<TInputImage>
       return false;
       }
 
-    ridgeness = Ridgeness( newX, roundness, curvature, linearity );
+    ridgeness = Ridgeness( newX, intensity, roundness, curvature,
+      linearity );
     if( ridgeness >= m_ThreshRidgenessStart &&
       roundness >= m_ThreshRoundnessStart &&
       curvature >= m_ThreshCurvatureStart &&

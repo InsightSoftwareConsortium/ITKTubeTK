@@ -1175,6 +1175,7 @@ int DoIt( MetaCommand & command )
       itk::ImageRegionIterator< ImageType > it2( imIn2,
             imIn2->GetLargestPossibleRegion() );
 
+      double intensity = 0;
       double ridgeness = 0;
       double roundness = 0;
       double curvature = 0;
@@ -1191,8 +1192,8 @@ int DoIt( MetaCommand & command )
           {
           cIndx[d] = it1.GetIndex()[d];
           }
-        ridgeness = imFunc->Ridgeness( cIndx, roundness, curvature,
-          linearity );
+        ridgeness = imFunc->Ridgeness( cIndx, intensity, roundness,
+          curvature, linearity );
         it2.Set( ( PixelType )ridgeness );
         ++it1;
         ++it2;
@@ -1210,8 +1211,8 @@ int DoIt( MetaCommand & command )
             {
             cIndx[d] = it1.GetIndex()[d];
             }
-          ridgeness = imFunc->Ridgeness( cIndx, roundness, curvature,
-            linearity );
+          ridgeness = imFunc->Ridgeness( cIndx, intensity, roundness,
+            curvature, linearity );
           if( ridgeness > it2.Get() )
             {
             it2.Set( ( PixelType )ridgeness );
