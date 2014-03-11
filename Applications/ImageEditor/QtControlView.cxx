@@ -74,13 +74,12 @@ QtControlView::QtControlView(QWidget* parent, Qt::WindowFlags fl ) :
   QObject::connect(m_SigmaLineEdit, SIGNAL(textChanged(QString)), this,
                    SLOT(setDisplaySigma(QString)));
 
-  this->m_ImageData = ImageType::New();
+  this->m_ImageData = 0;
 
 }
 
 QtControlView::~QtControlView()
 {
-  this->m_ImageData->Delete();
 }
 
 void QtControlView::setTab()

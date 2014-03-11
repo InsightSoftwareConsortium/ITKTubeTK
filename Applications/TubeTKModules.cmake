@@ -37,7 +37,6 @@ set( TubeTK_${proj}_MODULES
   ConvertTubeGraphToImage
   ConvertTubesToDensityImage
   ConvertTubesToImage
-  ConvertTubesToSurface
   ConvertTubeToTubeGraph
   CropImage
   DeblendTomosynthesisSlicesUsingPrior
@@ -84,6 +83,7 @@ endif( TubeTK_USE_BOOST )
 set( TubeTK_${proj}_VTK_MODULES )
 if( TubeTK_USE_VTK )
   set( TubeTK_${proj}_VTK_MODULES
+    ConvertTubesToSurface
     RegisterUsingSlidingGeometries )
   list( APPEND TubeTK_${proj}_MODULES
     ${TubeTK_${proj}_VTK_MODULES} )
