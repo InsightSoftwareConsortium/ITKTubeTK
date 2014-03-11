@@ -49,6 +49,7 @@ set( TubeTK_${proj}_MODULES
   EnhanceTubesUsingDiscriminantAnalysis
   EnhanceUsingDiscriminantAnalysis
   EnhanceUsingNJetDiscriminantAnalysis
+  ImageEditor
   ImageMath
   MergeAdjacentImages
   MergeTubeGraphs
