@@ -34,6 +34,9 @@ if( NOT TubeTK_SOURCE_DIR )
   include( ${TubeTK_USE_FILE} )
 endif( NOT TubeTK_SOURCE_DIR )
 
+find_package( ParameterSerializer REQUIRED )
+include_directories( ${ParameterSerializer_INCLUDE_DIRS} )
+
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 if( SlicerExecutionModel_USE_SERIALIZER )

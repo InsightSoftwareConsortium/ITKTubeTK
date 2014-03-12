@@ -701,6 +701,10 @@ set( TubeTK_TARGETS_FILE
 set( TubeTK_USE_FILE
   ${TubeTK_CONFIG_BINARY_DIR}/UseTubeTK.cmake )
 
+set(TubeTK_CONFIG_CODE "
+set(ParameterSerializer_DIR \"${ParameterSerializer_DIR}\")
+")
+
 # Configure TubeTKConfig.cmake.
 # The variables set above are for building against a TubeTK build tree.
 # A different TubeTKConfig.cmake will need to be generated in order to build
