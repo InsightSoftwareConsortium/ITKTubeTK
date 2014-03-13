@@ -107,7 +107,6 @@ RidgeExtractor<TInputImage>
   m_XHEVal.fill( 0.0 );
   m_XHEVect.set_size( ImageDimension, ImageDimension );
   m_XHEVect.fill( 0.0 );
-  m_CurvatureExpectedMax = NumericTraits< double >::min();
 
   m_DynamicScale = false;
   m_DynamicScaleUsed = 3;
@@ -116,16 +115,18 @@ RidgeExtractor<TInputImage>
   m_ExtractBoundMin.Fill( 0 );
   m_ExtractBoundMax.Fill( 0 );
 
+  m_CurvatureExpectedMax = 0.0005;
+
   m_ThreshT = 0.75;
   m_ThreshX = 3.0;
-  m_ThreshRidgeness = 0.85;    // near 1 = harder
-  m_ThreshRidgenessStart = 0.75;
-  m_ThreshRoundness = 0.0012;    // near 1 = harder
-  m_ThreshRoundnessStart = 0.001;
-  m_ThreshCurvature = 0.0012;
-  m_ThreshCurvatureStart = 0.001;
+  m_ThreshRidgeness = 0.95;    // near 1 = harder
+  m_ThreshRidgenessStart = 0.9;
+  m_ThreshRoundness = 0.3;    // near 1 = harder
+  m_ThreshRoundnessStart = 0.25;
+  m_ThreshCurvature = 0.0002;
+  m_ThreshCurvatureStart = 0.00021;
   m_ThreshLinearity = 0.8;
-  m_ThreshLinearityStart = 0.6;
+  m_ThreshLinearityStart = 0.85;
   m_RecoveryMax = 4;
 
   m_SplineValueFunc = new RidgeExtractorSplineValue<TInputImage>( this );
@@ -504,6 +505,7 @@ RidgeExtractor<TInputImage>
 
   // curvature is (v1^2 + v2^2) / 2.0
   curvature = ridge * avgv;
+  curvature /= m_CurvatureExpectedMax;
 
   // linearity is (v1^2 + v2^2) / (v1^2 + v2^2 + v3^2) = 1 for a flat ridge
   linearity = 0;
@@ -1005,7 +1007,7 @@ RidgeExtractor<TInputImage>
         {
         std::cout << "*** Ridge term: Rapid change in step direction "
           << "( " << vnl_math_abs( dProd ) << " )" << std::endl;
-        std::cout << "       Ridgeness = " << intensity << std::endl;
+        std::cout << "       Intensity = " << intensity << std::endl;
         std::cout << "       Ridgeness = " << ridgeness << std::endl;
         std::cout << "       Roundness = " << roundness << std::endl;
         std::cout << "       Curvature = " << curvature << std::endl;
@@ -1023,6 +1025,7 @@ RidgeExtractor<TInputImage>
         {
         std::cout << "*** Ridge term: Rapid change in spatial location "
           << "( " << diffX << " )" << std::endl;
+        std::cout << "       Intensity = " << intensity << std::endl;
         std::cout << "       Ridgeness = " << ridgeness << std::endl;
         std::cout << "       Roundness = " << roundness << std::endl;
         std::cout << "       Curvature = " << curvature << std::endl;
@@ -1038,6 +1041,7 @@ RidgeExtractor<TInputImage>
         {
         std::cout << "*** Ridge terminated: Local max not a ridge point "
           << "( ridgeness = " << ridgeness << " )" << std::endl;
+        std::cout << "       Intensity = " << intensity << std::endl;
         std::cout << "       Ridgeness = " << ridgeness << std::endl;
         std::cout << "       Roundness = " << roundness << std::endl;
         std::cout << "       Curvature = " << curvature << std::endl;
@@ -1060,6 +1064,7 @@ RidgeExtractor<TInputImage>
         {
         std::cout << "*** Ridge terminated: Low curvature "
           << "( " << curvature << " )" << std::endl;
+        std::cout << "       Intensity = " << intensity << std::endl;
         std::cout << "       Ridgeness = " << ridgeness << std::endl;
         std::cout << "       Roundness = " << roundness << std::endl;
         std::cout << "       Curvature = " << curvature << std::endl;
@@ -1075,6 +1080,7 @@ RidgeExtractor<TInputImage>
         {
         std::cout << "*** Ridge terminated: Low linearity "
           << "( " << linearity << " )" << std::endl;
+        std::cout << "       Intensity = " << intensity << std::endl;
         std::cout << "       Ridgeness = " << ridgeness << std::endl;
         std::cout << "       Roundness = " << roundness << std::endl;
         std::cout << "       Curvature = " << curvature << std::endl;
@@ -1090,6 +1096,7 @@ RidgeExtractor<TInputImage>
         {
         std::cout << "*** Ridge terminated: Roundness : Planar point "
                   << "( " << roundness << " )" << std::endl;
+        std::cout << "       Intensity = " << intensity << std::endl;
         std::cout << "       Ridgeness = " << ridgeness << std::endl;
         std::cout << "       Roundness = " << roundness << std::endl;
         std::cout << "       Curvature = " << curvature << std::endl;
