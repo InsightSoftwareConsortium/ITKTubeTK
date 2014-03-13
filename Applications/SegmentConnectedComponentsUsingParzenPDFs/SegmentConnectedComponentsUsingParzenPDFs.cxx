@@ -22,54 +22,37 @@ limitations under the License.
 =========================================================================*/
 
 #include "itktubePDFSegmenter.h"
+#include "tubeMacro.h"
 
 #include "SegmentConnectedComponentsUsingParzenPDFsCLP.h"
 
-template< class T, unsigned int N >
-int DoIt( int argc, char * argv[] );
-
-// Description:
-// Get the PixelType and ComponentType from fileName
-void GetImageType( std::string fileName,
-  itk::ImageIOBase::IOPixelType &pixelType,
-  itk::ImageIOBase::IOComponentType &componentType )
+// Get the component type and dimension of the image.
+void GetImageInformation( const std::string & fileName,
+                          itk::ImageIOBase::IOComponentType & componentType,
+                          unsigned int & dimension )
 {
-  typedef itk::Image<short, 3> ImageType;
-  itk::ImageFileReader<ImageType>::Pointer imageReader =
-        itk::ImageFileReader<ImageType>::New();
-  imageReader->SetFileName( fileName.c_str() );
-  imageReader->UpdateOutputInformation();
+  typedef itk::ImageIOBase     ImageIOType;
+  typedef itk::ImageIOFactory  ImageIOFactoryType;
 
-  pixelType = imageReader->GetImageIO()->GetPixelType();
-  componentType = imageReader->GetImageIO()->GetComponentType();
-}
+  ImageIOType::Pointer imageIO =
+    ImageIOFactoryType::CreateImageIO( fileName.c_str(),
+                                       ImageIOFactoryType::ReadMode );
 
-// Description:
-// Get the PixelTypes and ComponentTypes from fileNames
-void GetImageTypes( std::vector<std::string> fileNames,
-  std::vector<itk::ImageIOBase::IOPixelType> &pixelTypes,
-  std::vector<itk::ImageIOBase::IOComponentType> &componentTypes )
-{
-  pixelTypes.clear();
-  componentTypes.clear();
-
-  // For each file, find the pixel and component type
-  for( std::vector<std::string>::size_type i = 0; i < fileNames.size(); i++ )
+  if( imageIO )
     {
-    itk::ImageIOBase::IOPixelType pixelType;
-    itk::ImageIOBase::IOComponentType componentType;
-    GetImageType( fileNames[i],
-                  pixelType,
-                  componentType );
-    pixelTypes.push_back( pixelType );
-    componentTypes.push_back( componentType );
+    // Read the metadata from the image file.
+    imageIO->SetFileName( fileName.c_str() );
+    imageIO->ReadImageInformation();
+
+    componentType = imageIO->GetComponentType();
+    dimension = imageIO->GetNumberOfDimensions();
+    }
+  else
+    {
+    tubeErrorMacro( << "No ImageIO was found." );
     }
 }
 
-//
-// Helper function to check whether the attributes of input image match
-// those of the label map.
-//
 template< class TInputImage, class TLabelMap >
 bool
 CheckImageAttributes( const TInputImage * input,
@@ -77,35 +60,31 @@ CheckImageAttributes( const TInputImage * input,
 {
   assert( input );
   assert( mask );
-  std::cout << "inputVolume1: " << std::endl;
-  std::cout << "  size =  " << input->GetLargestPossibleRegion().GetSize() << std::endl;
-  std::cout << "  index = " << input->GetLargestPossibleRegion().GetIndex() << std::endl;
-  std::cout << "  origin = " << input->GetOrigin() << std::endl;
-  std::cout << "mask: " << std::endl;
-  std::cout << "  size =  " << mask->GetLargestPossibleRegion().GetSize() << std::endl;
-  std::cout << "  index = " << mask->GetLargestPossibleRegion().GetIndex() << std::endl;
-  std::cout << "  origin = " << mask->GetOrigin() << std::endl;
   const typename TInputImage::PointType inputOrigin = input->GetOrigin();
   const typename TLabelMap::PointType maskOrigin = mask->GetOrigin();
-  const typename TInputImage::RegionType inputRegion = input->GetLargestPossibleRegion();
-  const typename TLabelMap::RegionType maskRegion = mask->GetLargestPossibleRegion();
-  return inputOrigin.GetVnlVector().is_equal( maskOrigin.GetVnlVector(), 0.01 )
-         && inputRegion.GetIndex() == maskRegion.GetIndex()
-         && inputRegion.GetSize() == maskRegion.GetSize();
+  const typename TInputImage::RegionType inputRegion =
+    input->GetLargestPossibleRegion();
+  const typename TLabelMap::RegionType maskRegion =
+    mask->GetLargestPossibleRegion();
+  return (
+    inputOrigin.GetVnlVector().is_equal( maskOrigin.GetVnlVector(), 0.01 )
+    && inputRegion.GetIndex() == maskRegion.GetIndex()
+    && inputRegion.GetSize() == maskRegion.GetSize() );
 }
 
-template< class T, unsigned int N >
+template< class T, unsigned int N, unsigned int dimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
   itk::TimeProbesCollectorBase timeCollector;
 
-  typedef T                                InputPixelType;
-  typedef itk::Image< InputPixelType, 3 >  InputImageType;
-  typedef itk::Image< unsigned short, 3 >  LabelMapType;
-  typedef itk::Image< float, 3 >           ProbImageType;
-  typedef itk::Image< float, N >           PDFImageType;
+  typedef T                                        InputPixelType;
+  typedef itk::Image< InputPixelType, dimension >  InputImageType;
+  typedef itk::Image< float, dimension >           ProbImageType;
+  typedef itk::Image< unsigned short, dimension >  LabelMapType;
+
+  typedef itk::Image< float, N >                   PDFImageType;
 
   typedef itk::ImageFileReader< InputImageType >   ImageReaderType;
   typedef itk::ImageFileReader< LabelMapType >     LabelMapReaderType;
@@ -120,7 +99,8 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start( "LoadData" );
 
-  LabelMapReaderType::Pointer  inLabelMapReader = LabelMapReaderType::New();
+  typename LabelMapReaderType::Pointer  inLabelMapReader =
+    LabelMapReaderType::New();
   inLabelMapReader->SetFileName( labelmap.c_str() );
   inLabelMapReader->Update();
   pdfSegmenter->SetLabelMap( inLabelMapReader->GetOutput() );
@@ -204,12 +184,14 @@ int DoIt( int argc, char * argv[] )
       pdfImageReader->SetFileName( fname.c_str() );
       pdfImageReader->Update();
       typename PDFImageType::Pointer img = pdfImageReader->GetOutput();
-      typename PDFImageType::PointType origin = img->GetOrigin();
-      typename PDFImageType::SpacingType spacing = img->GetSpacing();
       if( i == 0 )
         {
         std::vector< double > tmpOrigin;
+        tmpOrigin.resize( dimension );
         std::vector< double > tmpSpacing;
+        tmpSpacing.resize( dimension );
+        typename PDFImageType::PointType origin = img->GetOrigin();
+        typename PDFImageType::SpacingType spacing = img->GetSpacing();
         for( unsigned int d=0; d<N; ++d )
           {
           tmpOrigin[d] = origin[d];
@@ -218,13 +200,6 @@ int DoIt( int argc, char * argv[] )
         pdfSegmenter->SetBinMin( tmpOrigin );
         pdfSegmenter->SetBinSize( tmpSpacing );
         }
-      for( unsigned int d=0; d<N; ++d )
-        {
-        origin[d] = 0;
-        spacing[d] = 1;
-        }
-      img->SetOrigin( origin );
-      img->SetSpacing( spacing );
       pdfSegmenter->SetClassPDFImage( i, img );
       }
     pdfSegmenter->ClassifyImages();
@@ -246,7 +221,7 @@ int DoIt( int argc, char * argv[] )
       char c[80];
       std::sprintf(c, ".c%u.mha", i );
       fname += std::string( c );
-      ProbImageWriterType::Pointer probImageWriter =
+      typename ProbImageWriterType::Pointer probImageWriter =
         ProbImageWriterType::New();
       probImageWriter->SetFileName( fname.c_str() );
       probImageWriter->SetInput( pdfSegmenter->
@@ -255,7 +230,7 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
-  LabelMapWriterType::Pointer writer = LabelMapWriterType::New();
+  typename LabelMapWriterType::Pointer writer = LabelMapWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
   writer->SetInput( pdfSegmenter->GetLabelMap() );
   writer->Update();
@@ -265,8 +240,6 @@ int DoIt( int argc, char * argv[] )
     unsigned int numClasses = pdfSegmenter->GetNumberOfClasses();
     for( unsigned int i = 0; i < numClasses; i++ )
       {
-      itk::Index< PDFImageType::ImageDimension > indx;
-      indx.Fill( 100 );
       std::string fname = saveClassPDFBase;
       char c[80];
       std::sprintf(c, ".c%u.mha", i );
@@ -274,25 +247,8 @@ int DoIt( int argc, char * argv[] )
       typename PDFImageWriterType::Pointer pdfImageWriter =
         PDFImageWriterType::New();
       pdfImageWriter->SetFileName( fname.c_str() );
-      typename PDFImageType::PointType origin;
-      typename PDFImageType::SpacingType spacing;
-      for( unsigned int d = 0; d < N; d++ )
-        {
-        origin[d] = pdfSegmenter->GetBinMin()[d];
-        spacing[d] = pdfSegmenter->GetBinSize()[d];
-        }
-      typename PDFImageType::PointType originOrg;
-      typename PDFImageType::SpacingType spacingOrg;
-      typename PDFImageType::Pointer img =
-        pdfSegmenter->GetClassPDFImage( i );
-      originOrg = img->GetOrigin();
-      spacingOrg = img->GetSpacing();
-      img->SetOrigin( origin );
-      img->SetSpacing( spacing );
-      pdfImageWriter->SetInput( img );
+      pdfImageWriter->SetInput( pdfSegmenter->GetClassPDFImage( i ) );
       pdfImageWriter->Update();
-      img->SetOrigin( originOrg );
-      img->SetSpacing( spacingOrg );
       }
     }
 
@@ -307,117 +263,216 @@ int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  itk::ImageIOBase::IOPixelType pixelType;
-  itk::ImageIOBase::IOComponentType componentType;
+  unsigned int imageDimension = 3;
+  itk::ImageIOBase::IOComponentType imageType;
 
   if( objectId.size() < 2)
     {
-    std::cout << "Please specify a foreground and a background object." << std::endl;
+    std::cout << "Please specify a foreground and a background object."
+      << std::endl;
     return EXIT_FAILURE;
     }
 
   try
     {
-    GetImageType( inputVolume1, pixelType, componentType );
+    GetImageInformation( inputVolume1, imageType, imageDimension );
 
     int N = 1;
-    if( inputVolume2.length() > 1 )
+    if( !inputVolume2.empty() )
       {
       ++N;
-      if( inputVolume3.length() > 1 )
+      if( !inputVolume3.empty() )
         {
         ++N;
-        if( inputVolume4.length() > 1 )
+        if( !inputVolume4.empty() )
           {
           ++N;
           }
         }
       }
 
-    switch( componentType )
+    if( imageDimension == 2 )
       {
-      case itk::ImageIOBase::UCHAR:
-        if( N == 1 )
-          {
-          return DoIt<unsigned char, 1>( argc, argv );
-          }
-        else if( N == 2 )
-          {
-          return DoIt<unsigned char, 2>( argc, argv );
-          }
-        else if( N == 3 )
-          {
-          return DoIt<unsigned char, 3>( argc, argv );
-          }
-        else
-          {
-          return DoIt<unsigned char, 4>( argc, argv );
-          }
-        break;
-      case itk::ImageIOBase::USHORT:
-        if( N == 1 )
-          {
-          return DoIt<unsigned short, 1>( argc, argv );
-          }
-        else if( N == 2 )
-          {
-          return DoIt<unsigned short, 2>( argc, argv );
-          }
-        else if( N == 3 )
-          {
-          return DoIt<unsigned short, 3>( argc, argv );
-          }
-        else
-          {
-          return DoIt<unsigned short, 4>( argc, argv );
-          }
-        break;
-      case itk::ImageIOBase::CHAR:
-      case itk::ImageIOBase::SHORT:
-        if( N == 1 )
-          {
-          return DoIt<short, 1>( argc, argv );
-          }
-        else if( N == 2 )
-          {
-          return DoIt<short, 2>( argc, argv );
-          }
-        else if( N == 3 )
-          {
-          return DoIt<short, 3>( argc, argv );
-          }
-        else
-          {
-          return DoIt<short, 4>( argc, argv );
-          }
-        break;
-      case itk::ImageIOBase::UINT:
-      case itk::ImageIOBase::INT:
-      case itk::ImageIOBase::ULONG:
-      case itk::ImageIOBase::LONG:
-      case itk::ImageIOBase::FLOAT:
-      case itk::ImageIOBase::DOUBLE:
-        if( N == 1 )
-          {
-          return DoIt<float, 1>( argc, argv );
-          }
-        else if( N == 2 )
-          {
-          return DoIt<float, 2>( argc, argv );
-          }
-        else if( N == 3 )
-          {
-          return DoIt<float, 3>( argc, argv );
-          }
-        else
-          {
-          return DoIt<float, 4>( argc, argv );
-          }
-        break;
-      case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
-      default:
-        std::cout << "unknown component type" << std::endl;
-        break;
+      switch( imageType )
+        {
+        case itk::ImageIOBase::UCHAR:
+          if( N == 1 )
+            {
+            return DoIt<unsigned char, 1, 2>( argc, argv );
+            }
+          else if( N == 2 )
+            {
+            return DoIt<unsigned char, 2, 2>( argc, argv );
+            }
+          else if( N == 3 )
+            {
+            return DoIt<unsigned char, 3, 2>( argc, argv );
+            }
+          else
+            {
+            return DoIt<unsigned char, 4, 2>( argc, argv );
+            }
+          break;
+        case itk::ImageIOBase::USHORT:
+          if( N == 1 )
+            {
+            return DoIt<unsigned short, 1, 2>( argc, argv );
+            }
+          else if( N == 2 )
+            {
+            return DoIt<unsigned short, 2, 2>( argc, argv );
+            }
+          else if( N == 3 )
+            {
+            return DoIt<unsigned short, 3, 2>( argc, argv );
+            }
+          else
+            {
+            return DoIt<unsigned short, 4, 2>( argc, argv );
+            }
+          break;
+        case itk::ImageIOBase::CHAR:
+        case itk::ImageIOBase::SHORT:
+          if( N == 1 )
+            {
+            return DoIt<short, 1, 2>( argc, argv );
+            }
+          else if( N == 2 )
+            {
+            return DoIt<short, 2, 2>( argc, argv );
+            }
+          else if( N == 3 )
+            {
+            return DoIt<short, 3, 2>( argc, argv );
+            }
+          else
+            {
+            return DoIt<short, 4, 2>( argc, argv );
+            }
+          break;
+        case itk::ImageIOBase::UINT:
+        case itk::ImageIOBase::INT:
+        case itk::ImageIOBase::ULONG:
+        case itk::ImageIOBase::LONG:
+        case itk::ImageIOBase::FLOAT:
+        case itk::ImageIOBase::DOUBLE:
+          if( N == 1 )
+            {
+            return DoIt<float, 1, 2>( argc, argv );
+            }
+          else if( N == 2 )
+            {
+            return DoIt<float, 2, 2>( argc, argv );
+            }
+          else if( N == 3 )
+            {
+            return DoIt<float, 3, 2>( argc, argv );
+            }
+          else
+            {
+            return DoIt<float, 4, 2>( argc, argv );
+            }
+          break;
+        case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
+        default:
+          std::cout << "unknown image type" << std::endl;
+          break;
+        }
+      }
+    else if( imageDimension == 3 )
+      {
+      switch( imageType )
+        {
+        case itk::ImageIOBase::UCHAR:
+          if( N == 1 )
+            {
+            return DoIt<unsigned char, 1, 3>( argc, argv );
+            }
+          else if( N == 2 )
+            {
+            return DoIt<unsigned char, 2, 3>( argc, argv );
+            }
+          else if( N == 3 )
+            {
+            return DoIt<unsigned char, 3, 3>( argc, argv );
+            }
+          else
+            {
+            return DoIt<unsigned char, 4, 3>( argc, argv );
+            }
+          break;
+        case itk::ImageIOBase::USHORT:
+          if( N == 1 )
+            {
+            return DoIt<unsigned short, 1, 3>( argc, argv );
+            }
+          else if( N == 2 )
+            {
+            return DoIt<unsigned short, 2, 3>( argc, argv );
+            }
+          else if( N == 3 )
+            {
+            return DoIt<unsigned short, 3, 3>( argc, argv );
+            }
+          else
+            {
+            return DoIt<unsigned short, 4, 3>( argc, argv );
+            }
+          break;
+        case itk::ImageIOBase::CHAR:
+        case itk::ImageIOBase::SHORT:
+          if( N == 1 )
+            {
+            return DoIt<short, 1, 3>( argc, argv );
+            }
+          else if( N == 2 )
+            {
+            return DoIt<short, 2, 3>( argc, argv );
+            }
+          else if( N == 3 )
+            {
+            return DoIt<short, 3, 3>( argc, argv );
+            }
+          else
+            {
+            return DoIt<short, 4, 3>( argc, argv );
+            }
+          break;
+        case itk::ImageIOBase::UINT:
+        case itk::ImageIOBase::INT:
+        case itk::ImageIOBase::ULONG:
+        case itk::ImageIOBase::LONG:
+        case itk::ImageIOBase::FLOAT:
+        case itk::ImageIOBase::DOUBLE:
+          if( N == 1 )
+            {
+            return DoIt<float, 1, 3>( argc, argv );
+            }
+          else if( N == 2 )
+            {
+            return DoIt<float, 2, 3>( argc, argv );
+            }
+          else if( N == 3 )
+            {
+            return DoIt<float, 3, 3>( argc, argv );
+            }
+          else
+            {
+            return DoIt<float, 4, 3>( argc, argv );
+            }
+          break;
+        case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
+        default:
+          std::cout << "unknown image type" << std::endl;
+          return EXIT_FAILURE;
+          break;
+        }
+      }
+    else
+      {
+      std::cout << "Only 2 and 3 dimensional images supported."
+        << std::endl;
+      return EXIT_FAILURE;
       }
     }
   catch( itk::ExceptionObject &excep )

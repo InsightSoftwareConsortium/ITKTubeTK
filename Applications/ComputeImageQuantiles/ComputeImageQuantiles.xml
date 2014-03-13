@@ -11,12 +11,12 @@
   <parameters>
     <label>IO</label>
     <description>Input/output parameters.</description>
-    <file>
+    <image>
       <name>imageFile</name>
       <label>Image File</label>
       <index>0</index>
       <description>Image file.</description>
-    </file>
+    </image>
     <float-vector>
       <name>quantiles</name>
       <label>Quantiles</label>

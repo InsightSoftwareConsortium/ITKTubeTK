@@ -155,8 +155,8 @@ RadiusExtractor<TInputImage>
       m_KernX(1, dir) = vcl_sin( theta );
       m_KernX(2, dir) = 0;
       ++dir;
-      m_KernX(0, dir) = -cos( theta );
-      m_KernX(1, dir) = -sin( theta );
+      m_KernX(0, dir) = -vcl_cos( theta );
+      m_KernX(1, dir) = -vcl_sin( theta );
       m_KernX(2, dir) = 0;
       ++dir;
       }

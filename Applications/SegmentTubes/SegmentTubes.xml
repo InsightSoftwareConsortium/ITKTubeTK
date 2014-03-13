@@ -65,13 +65,13 @@
       <flag>S</flag>
       <description>Scales of seed points for ride extraction</description>
     </image>
-    <double-vector>
+    <point multiple="true">
       <name>seedX</name>
       <label>Seed Coordinate</label>
       <longflag>seedX</longflag>
       <flag>x</flag>
       <description>Continuous index for starting ridge extraction</description>
-    </double-vector>
+    </point>
   </parameters>
   <parameters>
     <label>Output Parameters</label>

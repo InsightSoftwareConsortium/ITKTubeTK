@@ -32,6 +32,7 @@ limitations under the License.
 #include <itkBinaryErodeImageFilter.h>
 #include <itkConnectedThresholdImageFilter.h>
 #include <itkCurvatureAnisotropicDiffusionImageFilter.h>
+#include <itkRecursiveGaussianImageFilter.h>
 #include <itkDiscreteGaussianImageFilter.h>
 #include <itkHistogram.h>
 #include <itkHistogramToProbabilityImageFilter.h>
@@ -554,16 +555,24 @@ PDFSegmenter< TImage, N, TLabelMap >
   typedef itk::ImageRegionIteratorWithIndex< HistogramImageType >
     HistogramIteratorType;
   typename HistogramImageType::SizeType size;
-  for( unsigned int i = 0; i < N; ++i )
+  typename HistogramImageType::SpacingType spacing;
+  typename HistogramImageType::PointType origin;
+  typename HistogramImageType::RegionType region;
+  for( unsigned int i = 0; i < N; i++ )
     {
+    spacing[i] = m_HistogramBinSize[i];
+    origin[i] = m_HistogramBinMin[i];
     size[i] = m_HistogramNumberOfBin[i];
     }
+  region.SetSize( size );
 
   m_InClassHistogram.resize( numClasses );
   for( unsigned int c = 0; c < numClasses; c++ )
     {
     m_InClassHistogram[c] = HistogramImageType::New();
     m_InClassHistogram[c]->SetRegions( size );
+    m_InClassHistogram[c]->SetOrigin( origin );
+    m_InClassHistogram[c]->SetSpacing( spacing );
     m_InClassHistogram[c]->Allocate();
     m_InClassHistogram[c]->FillBuffer( 0 );
 
@@ -613,7 +622,7 @@ PDFSegmenter< TImage, N, TLabelMap >
   timeCollector.Start( "HistogramToPDF" );
   if( true ) // creating a local context to limit memory footprint
     {
-    typedef itk::DiscreteGaussianImageFilter< HistogramImageType,
+    typedef itk::RecursiveGaussianImageFilter< HistogramImageType,
       HistogramImageType > HistogramBlurGenType;
     for( unsigned int c = 0; c < numClasses; c++ )
       {
@@ -621,31 +630,41 @@ PDFSegmenter< TImage, N, TLabelMap >
 
       typename HistogramBlurGenType::Pointer inClassHistogramBlurGen =
         HistogramBlurGenType::New();
-      inClassHistogramBlurGen->SetInput( m_InClassHistogram[c] );
-      inClassHistogramBlurGen->SetVariance(
-        m_HistogramSmoothingStandardDeviation *
-        m_HistogramSmoothingStandardDeviation );
-      inClassHistogramBlurGen->Update();
-      m_InClassHistogram[c] = inClassHistogramBlurGen->GetOutput();
+      for( unsigned int f = 0; f < N; f++ )
+        {
+        inClassHistogramBlurGen->SetInput( m_InClassHistogram[c] );
+        inClassHistogramBlurGen->SetDirection( f );
+        inClassHistogramBlurGen->SetOrder(
+          HistogramBlurGenType::ZeroOrder );
+        inClassHistogramBlurGen->SetSigma(
+          m_HistogramSmoothingStandardDeviation *
+          m_HistogramBinSize[ f ] );
+        inClassHistogramBlurGen->Update();
+        m_InClassHistogram[c] = inClassHistogramBlurGen->GetOutput();
+        }
 
-      itk::ImageRegionIterator<HistogramImageType> m_InClassHistogramIt(
+      itk::ImageRegionIterator<HistogramImageType> inClassHistogramIt(
         m_InClassHistogram[c],
         m_InClassHistogram[c]->GetLargestPossibleRegion() );
-      while( !m_InClassHistogramIt.IsAtEnd() )
+      while( !inClassHistogramIt.IsAtEnd() )
         {
-        double tf = m_InClassHistogramIt.Get();
+        double tf = inClassHistogramIt.Get();
         inPTotal += tf;
-        ++m_InClassHistogramIt;
+        ++inClassHistogramIt;
         }
 
       if( inPTotal > 0 )
         {
-        m_InClassHistogramIt.GoToBegin();
-        while( !m_InClassHistogramIt.IsAtEnd() )
+        inClassHistogramIt.GoToBegin();
+        while( !inClassHistogramIt.IsAtEnd() )
           {
-          double tf = m_InClassHistogramIt.Get();
-          m_InClassHistogramIt.Set( tf / inPTotal );
-          ++m_InClassHistogramIt;
+          double tf = inClassHistogramIt.Get() / inPTotal;
+          if( tf < 0 )
+            {
+            tf = 0;
+            }
+          inClassHistogramIt.Set( tf );
+          ++inClassHistogramIt;
           }
         }
       }
@@ -669,7 +688,7 @@ PDFSegmenter< TImage, N, TLabelMap >
     {
     spacing[i] = m_HistogramBinSize[i];
     origin[i] = m_HistogramBinMin[i];
-    size[i] = 100;
+    size[i] = m_HistogramNumberOfBin[i];
     }
   region.SetSize( size );
   m_LabeledFeatureSpace->CopyInformation( m_InClassHistogram[0] );

@@ -266,6 +266,7 @@ public:
 
   /** The ridgeness at point x */
   double  Ridgeness( const ContinuousIndexType & x,
+    double & intensity,
     double & roundness,
     double & curvature,
     double & linearity );

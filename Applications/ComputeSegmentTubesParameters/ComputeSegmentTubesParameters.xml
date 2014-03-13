@@ -18,13 +18,40 @@
       <index>0</index>
       <description>Input image.</description>
     </image>
+    <file>
+      <name>outputParametersFile</name>
+      <label>Output Parameters File</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Parameters for SegmentTubes are written to this file.</description>
+      </file>
     <image>
+      <name>maskImageFileName</name>
+      <label>Mask</label>
+      <channel>input</channel>
+      <description>Mask image which indicates vessel and background pixels for computing statistics</description>
+      <longflag>mask</longflag>
+      <flag>m</flag>
+      <default></default>
+    </image>
+    <string>
       <name>outputImagesBaseFileName</name>
       <label>Output Ridgeness Images Base File Name</label>
-      <index>1</index>
-      <channel>output</channel>
       <description>Output file name base for ridgeness measures. Each measure will be saved to a different image.</description>
-    </image>
+      <channel>input</channel>
+      <longflag>outImageBase</longflag>
+      <flag>o</flag>
+      <default></default>
+    </string>
+    <file>
+      <name>outputDataFileBaseName</name>
+      <label>Output Data File</label>
+      <channel>output</channel>
+      <description>Measures written file+".Tube.txt" and ".Bkg.txt".</description>
+      <longflag>outData</longflag>
+      <flag>d</flag>
+      <default></default>
+    </file>
   </parameters>
   <parameters>
     <label>Segment Tubes Options</label>
@@ -36,6 +63,22 @@
       <flag>s</flag>
       <default>2.0</default>
     </double>
+    <integer>
+      <name>maskTubeId</name>
+      <label>Mask Tube Id</label>
+      <description>Value used to indicate vessel pixels in the mask.</description>
+      <longflag>maskTubeId</longflag>
+      <flag>v</flag>
+      <default>255</default>
+    </integer>
+    <integer>
+      <name>maskBackgroundId</name>
+      <label>Mask Background Id</label>
+      <description>Value used to indicate background pixels in the mask.</description>
+      <longflag>maskBackgroundId</longflag>
+      <flag>b</flag>
+      <default>128</default>
+    </integer>
   </parameters>
   <parameters>
     <label>Ridgeness Computation Options</label>

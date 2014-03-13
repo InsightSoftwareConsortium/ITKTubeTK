@@ -97,7 +97,7 @@ int DoIt( int argc, char * argv[] )
 
   if( scale < 0.3 )
     {
-    tube::ErrorMessage( "Errror: Scale < 0.3 is unsupported." );
+    tube::ErrorMessage( "Error: Scale < 0.3 is unsupported." );
     return EXIT_FAILURE;
     }
 
@@ -121,27 +121,19 @@ int DoIt( int argc, char * argv[] )
 
   if( !seedX.empty() )
     {
-    if( seedX.size() != VDimension )
+    for( unsigned int seedXNum=0; seedXNum<seedX.size(); ++seedXNum )
       {
-      std::cout << "seedX = ";
-      for( unsigned int i=0; i<seedX.size(); i++ )
+      for( unsigned int i=0; i<seedX[seedXNum].size(); i++ )
         {
-        std::cout << seedX[i] << " ";
+        std::cout << seedX[seedXNum][i] << " ";
         }
-      std::cout << std::endl;
-      std::cout << "VDimension = " << VDimension << std::endl;
-      std::cout << "size = " << seedX.size() << std::endl;
-      tube::ErrorMessage(
-        "Error: X vector must be specified to initiate an extraction." );
-      return EXIT_FAILURE;
+      for( unsigned int i=0; i<VDimension; i++ )
+        {
+        seedIndex[i] = seedX[seedXNum][i];
+        }
+      seedIndexList.push_back( seedIndex );
+      seedScaleList.push_back( scale );
       }
-
-    for( unsigned int i=0; i<VDimension; i++ )
-      {
-      seedIndex[i] = seedX[i];
-      }
-    seedIndexList.push_back( seedIndex );
-    seedScaleList.push_back( scale );
     }
 
   if( !seedListFile.empty() )
@@ -205,7 +197,7 @@ int DoIt( int argc, char * argv[] )
 
     if( xTube.IsNull() )
       {
-      tube::ErrorMessage( "Errror: Ridge not found. " );
+      tube::ErrorMessage( "Error: Ridge not found. " );
       return EXIT_FAILURE;
       }
 
