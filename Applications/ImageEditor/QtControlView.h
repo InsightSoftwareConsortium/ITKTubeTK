@@ -61,6 +61,7 @@ public:
 public:
 
 public slots:
+  void setMaximumSlice();
   void setDisplaySigma(QString value);
   void setDisplayPosition(int x, int y , int z, double value);
   void setInputImage(ImageType *newImData);
@@ -76,9 +77,11 @@ private:
 
   QTabWidget   *m_TabWidget;
   QWidget      *m_FilterControlWidget;
+  QWidget      *m_Buttons;
   QGridLayout  *m_FilterGridLayout;
   QLineEdit    *m_SigmaLineEdit;
   QPushButton  *m_ApplyButton;
+  QHBoxLayout  *m_ButtonsLayout;
   ImageType    *m_ImageData;
 };
 

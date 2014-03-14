@@ -35,40 +35,41 @@ include( ${ITK_USE_FILE} )
 
 find_package(OpenGL REQUIRED )
 
-find_package( ImageViewer REQUIRED )
-include( ${ImageViewer_USE_FILE} )
+if( TubeTK_BUILD_IMAGE_VIEWER )
+    find_package( ImageViewer REQUIRED )
+    include( ${ImageViewer_USE_FILE} )
 
-set(${MODULE_NAME}_INCLUDE_DIRS
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${ImageViewer_INCLUDE_DIRS}
-  ${QT_INCLUDE_DIRS}
-  ${OPENGL_INCLUDE_DIRS}
-)
-include_directories(
-  ${${MODULE_NAME}_INCLUDE_DIRS}
-)
+    set(${MODULE_NAME}_INCLUDE_DIRS
+      ${CMAKE_CURRENT_SOURCE_DIR}
+      ${CMAKE_CURRENT_BINARY_DIR}
+      ${ImageViewer_INCLUDE_DIRS}
+      ${QT_INCLUDE_DIRS}
+      ${OPENGL_INCLUDE_DIRS}
+    )
+    include_directories(
+      ${${MODULE_NAME}_INCLUDE_DIRS}
+    )
 
-set(${MODULE_NAME}_MOC_SRCS
-  QtControlView.h
-)
+    set(${MODULE_NAME}_MOC_SRCS
+        QtControlView.h
+    )
 
-set( ${MODULE_NAME}_SRCS
-#  ImageEditor.cxx
-  QtControlView.cxx
-)
+    set( ${MODULE_NAME}_SRCS
+        QtControlView.cxx
+    )
 
-QT4_WRAP_CPP( ${MODULE_NAME}_SRCS ${${MODULE_NAME}_MOC_SRCS} )
+    QT4_WRAP_CPP( ${MODULE_NAME}_SRCS ${${MODULE_NAME}_MOC_SRCS} )
 
-add_library( ${MODULE_NAME}Lib SHARED ${${MODULE_NAME}_SRCS} )
-target_link_libraries( ${MODULE_NAME}Lib
-  ${ImageViewer_LIBRARIES}
-  ${ITK_LIBRARIES}
-  ${QT_LIBRARIES}
-  ${OPENGL_LIBRARIES}
-)
+    add_library( ${MODULE_NAME}Lib SHARED ${${MODULE_NAME}_SRCS} )
+    target_link_libraries( ${MODULE_NAME}Lib
+        ${ImageViewer_LIBRARIES}
+        ${ITK_LIBRARIES}
+        ${QT_LIBRARIES}
+        ${OPENGL_LIBRARIES}
+    )
 
-add_executable( ${MODULE_NAME} ImageEditor.cxx )
-target_link_libraries( ${MODULE_NAME}
-  ${MODULE_NAME}Lib
-)
+    add_executable( ${MODULE_NAME} ImageEditor.cxx )
+    target_link_libraries( ${MODULE_NAME}
+        ${MODULE_NAME}Lib
+    )
+endif( TubeTK_BUILD_IMAGE_VIEWER )

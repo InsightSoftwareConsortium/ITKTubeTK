@@ -73,6 +73,8 @@ QtControlView::QtControlView(QWidget* parent, Qt::WindowFlags fl ) :
   QObject::connect(m_ApplyButton, SIGNAL(clicked()), this, SLOT(setFilter()));
   QObject::connect(m_SigmaLineEdit, SIGNAL(textChanged(QString)), this,
                    SLOT(setDisplaySigma(QString)));
+  QObject::connect(OpenGlWindow, SIGNAL(orientationChanged(int)), this,
+                   SLOT(setMaximumSlice()));
 
   this->m_ImageData = 0;
 
@@ -82,48 +84,71 @@ QtControlView::~QtControlView()
 {
 }
 
+
+void QtControlView::setMaximumSlice()
+{
+  this->SliceNumSlider->setMaximum(static_cast<int>
+                                   (this->OpenGlWindow->maxSliceNum() -1));
+  this->SliceNumSlider->setValue(static_cast<int>
+                                 (this->SliceValue->text().toInt()));
+}
+
+
 void QtControlView::setTab()
 {
   this->m_TabWidget = new QTabWidget(this);
   this->m_TabWidget->setMaximumHeight(300);
 
-  this->Controls->setParent(m_TabWidget);
+  this->Controls->setParent(this->m_TabWidget);
   this->m_TabWidget->insertTab(0, this->Controls, "Control Widgets");
 
+  this->m_FilterControlWidget = new QWidget(this->m_TabWidget);
+  this->m_TabWidget->insertTab(1, this->m_FilterControlWidget, "Filter");
 
-  this->m_FilterControlWidget = new QWidget(m_TabWidget);
-  this->m_TabWidget->insertTab(1, m_FilterControlWidget, "Filter");
-
-  this->m_FilterGridLayout = new QGridLayout(m_FilterControlWidget);
+  this->m_FilterGridLayout = new QGridLayout(this->m_FilterControlWidget);
   this->m_SigmaLineEdit = new QLineEdit();
   this->m_SigmaLineEdit->setMaximumWidth(80);
   this->m_SigmaLineEdit->setText("0.2");
-  this->m_FilterGridLayout->addWidget(m_SigmaLineEdit, 0, 0);
+  this->m_FilterGridLayout->addWidget(this->m_SigmaLineEdit, 0, 0);
 
   this->m_ApplyButton = new QPushButton();
   this->m_ApplyButton->setText("Apply");
-  this->m_FilterGridLayout->addWidget(m_ApplyButton, 0, 1);
+  this->m_FilterGridLayout->addWidget(this->m_ApplyButton, 0, 1);
 
-  this->gridLayout->addWidget(m_TabWidget, 3, 0);
+  this->m_Buttons = new QWidget(this);
+  this->m_ButtonsLayout = new QHBoxLayout(this->m_Buttons);
+  this->m_ButtonsLayout->insertSpacing(0,250);
+  this->m_ButtonsLayout->addWidget(this->ButtonHelp);
+  this->m_ButtonsLayout->addWidget(this->ButtonOk);
+
+  this->gridLayout->addWidget(this->m_Buttons, 2, 0,1,2);
+
+  this->gridLayout->addWidget(m_TabWidget, 1, 0,1,2);
 }
 
 void QtControlView::setInputImage(ImageType * newImData)
 {
   this->m_ImageData = newImData;
   this->OpenGlWindow->setInputImage(newImData);
-  this->SliceNumSlider->setMaximum(newImData->GetLargestPossibleRegion().GetSize()[2]-1);
-
-  // Set the slice slider at z/2
-  this->OpenGlWindow->changeSlice(SliceValue->text().toInt());
-  //this->SliceNumSlider->setValue(newImData->GetLargestPossibleRegion().GetSize()[2]/2);
-  //this->setDisplaySliceNumber(newImData->GetLargestPossibleRegion().GetSize()[2]/2);
-
-  this->IntensityMin->setMinimum( static_cast<int>( this->OpenGlWindow->minIntensity() ));
-  this->IntensityMin->setMaximum( static_cast<int>( this->OpenGlWindow->maxIntensity() ));
-  this->IntensityMin->setValue( static_cast<int>( this->OpenGlWindow->minIntensity() ));
-  this->IntensityMax->setMinimum( static_cast<int>( this->OpenGlWindow->minIntensity() ));
-  this->IntensityMax->setMaximum( static_cast<int>( this->OpenGlWindow->maxIntensity() ));
-  this->IntensityMax->setValue( static_cast<int>( this->OpenGlWindow->maxIntensity() ));
+  this->SliceNumSlider->setMaximum( static_cast<int>
+                                    (this->OpenGlWindow->maxSliceNum() -1));
+  this->OpenGlWindow->changeSlice(((this->OpenGlWindow->maxSliceNum() -1)/2));
+  this->SliceNumSlider->setValue(static_cast<int>
+                                   ((this->OpenGlWindow->maxSliceNum() -1)/2));
+  this->setDisplaySliceNumber(static_cast<int>
+                                ((this->OpenGlWindow->maxSliceNum() -1)/2));
+  this->IntensityMin->setMinimum( static_cast<int>
+                                  ( this->OpenGlWindow->minIntensity() ));
+  this->IntensityMin->setMaximum( static_cast<int>
+                                  ( this->OpenGlWindow->maxIntensity() ));
+  this->IntensityMin->setValue( static_cast<int>
+                                ( this->OpenGlWindow->minIntensity() ));
+  this->IntensityMax->setMinimum( static_cast<int>
+                                  ( this->OpenGlWindow->minIntensity() ));
+  this->IntensityMax->setMaximum( static_cast<int>
+                                  ( this->OpenGlWindow->maxIntensity() ));
+  this->IntensityMax->setValue( static_cast<int>
+                                ( this->OpenGlWindow->maxIntensity() ));
 
   char* tempchar = new char[20];
   sprintf(tempchar,"%.0f",this->OpenGlWindow->minIntensity());
@@ -183,7 +208,6 @@ void QtControlView::setDisplaySigma(QString value)
 
 void QtControlView::setFilter()
 {
-  qDebug()<< "ImageData" << this->m_ImageData->GetImageDimension();
   if(this->m_ImageData == NULL)
     {
     return;
@@ -208,8 +232,6 @@ void QtControlView::setFilter()
 
   const double sigma = m_SigmaLineEdit->text().toDouble();
 
-  qDebug()<<"sigma"<<sigma;
-
   FilterX->SetSigma( sigma );
   FilterY->SetSigma( sigma );
 
@@ -222,27 +244,3 @@ void QtControlView::setFilter()
 }
 
 }
-
-//void QtControlView::loadFile(const QString& fname)
-//{
-
-//  if(fname.isEmpty())
-//    {
-//    return;
-//    }
-//  qDebug() << "Loading File: " << fname ;
-
-//  Reader->SetFileName(fname.toLatin1().data());
-
-//    try
-//      {
-//      Reader->Update();
-//      }
-//   catch (itk::ExceptionObject &e)
-//      {
-//      std::cerr << e << std::endl;
-//      return;
-//      }
-//   std::cout << "...Done Loading File" << std::endl;
-//  ImageData = Reader->GetOutput();
-//}

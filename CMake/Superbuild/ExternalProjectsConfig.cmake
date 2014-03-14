@@ -35,7 +35,7 @@ set( CTK_HASH_OR_TAG 7cf06ada5e490a06dab7efaa3aaf0cd784671253 )
 # TubeTK Image Viewer snapshot 2014-01-26
 set( ImageViewer_URL
   ${github_protocol}://github.com/TubeTK/TubeTK-ImageViewer.git )
-set( ImageViewer_HASH_OR_TAG 517c8f4525316d41caa6b56435d67997ba918301 )
+set( ImageViewer_HASH_OR_TAG 84380bd78b0858d58be670274595faaf6721cbb7 )
 
 # Insight Segmentation and Registration Toolkit
 set( ITK_URL ${github_protocol}://github.com/Kitware/ITK.git )
