@@ -30,7 +30,7 @@ set( Cppcheck_HASH_OR_TAG 1.61 )
 
 # Common Toolkit snapshot 2014-01-03
 set( CTK_URL ${github_protocol}://github.com/commontk/CTK.git )
-set( CTK_HASH_OR_TAG 7cf06ada5e490a06dab7efaa3aaf0cd784671253 )
+set( CTK_HASH_OR_TAG 8bebbc92df4b310c150e6a017b6b8966b4625089 )
 
 # TubeTK Image Viewer snapshot 2014-01-26
 set( ImageViewer_URL
@@ -38,8 +38,10 @@ set( ImageViewer_URL
 set( ImageViewer_HASH_OR_TAG 9bcd8196a14552d9fb5a70005e9a95bbaabcd8fd )
 
 # Insight Segmentation and Registration Toolkit
-set( ITK_URL ${github_protocol}://github.com/Kitware/ITK.git )
-set( ITK_HASH_OR_TAG 9fb84edbf9f6a5bb0846acbf6ecd767ca5cab2e1 )
+#set( ITK_URL ${github_protocol}://github.com/Kitware/ITK.git )
+#set( ITK_HASH_OR_TAG 9fb84edbf9f6a5bb0846acbf6ecd767ca5cab2e1 )
+set( ITK_URL ${github_protocol}://itk.org/ITK.git )
+set( ITK_HASH_OR_TAG 754278cb7ab50ae3e64dc0a413aef4b9ff0ff1f0 )
 
 # JsonCpp snapshot 2014-01-01 r287
 # ${svn_protocol}://svn.code.sf.net/p/jsoncpp/code/trunk/jsoncpp )
@@ -68,4 +70,4 @@ set( SlicerExecutionModel_HASH_OR_TAG 46f3d892fc6deb9be2ce929257a5411d02c1ae75 )
 
 # Visualization Toolkit (3D Slicer fork) snapshot 2013-08-20 06:54:45
 set( VTK_URL ${github_protocol}://github.com/Slicer/VTK.git )
-set( VTK_HASH_OR_TAG f387593148a8bc49cf46c1e27537674d5b779f49 )
+set( VTK_HASH_OR_TAG c88dfedb277969e5f1f6c5349d8f7898610e75f4 )
