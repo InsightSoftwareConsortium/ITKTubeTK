@@ -263,9 +263,6 @@ int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  unsigned int imageDimension = 3;
-  itk::ImageIOBase::IOComponentType imageType;
-
   if( objectId.size() < 2)
     {
     std::cout << "Please specify a foreground and a background object."
@@ -275,6 +272,9 @@ int main( int argc, char * argv[] )
 
   try
     {
+    unsigned int imageDimension = 3;
+    itk::ImageIOBase::IOComponentType imageType;
+
     GetImageInformation( inputVolume1, imageType, imageDimension );
 
     int N = 1;

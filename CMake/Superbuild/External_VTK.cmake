@@ -65,6 +65,15 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-strict-overflow" )
   endif( UNIX )
 
+  if(APPLE)
+    list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS
+      -DVTK_USE_CARBON:BOOL=OFF
+      -DVTK_USE_COCOA:BOOL=ON
+      -DVTK_USE_X:BOOL=OFF
+      )
+  endif()
+
+
   ExternalProject_Add( ${proj}
     GIT_REPOSITORY ${${proj}_URL}
     GIT_TAG ${${proj}_HASH_OR_TAG}

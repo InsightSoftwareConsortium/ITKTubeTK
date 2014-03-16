@@ -374,8 +374,6 @@ int DoIt( int argc, char * argv[] )
     outputDataStreamBkg.precision( 6 );
     }
 
-  double bignum = 99999999;
-
   SampleListType seed;
   SampleListType tube;
   MetricVectorType tubeMean( 5, 0 );
@@ -577,7 +575,7 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Start("Save data");
 
     std::string outName = outputImagesBaseFileName + ".ridge.mha";
-    int result = WriteOutputImage< OutputImageType >( outName,
+    result = WriteOutputImage< OutputImageType >( outName,
       outImageRidgeness );
 
     outName = outputImagesBaseFileName + ".round.mha";
