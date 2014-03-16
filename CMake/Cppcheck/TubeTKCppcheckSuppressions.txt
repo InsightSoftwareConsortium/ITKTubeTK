@@ -1,5 +1,4 @@
 unusedFunction:*/Applications/DeblendTomosynthesisSlicesUsingPrior/DeblendTomosynthesisSlicesUsingPrior.cxx:113
-unusedFunction:*/Applications/SegmentConnectedComponentsUsingParzenPDFs/SegmentConnectedComponentsUsingParzenPDFs.cxx:49
 unusedFunction:*/Base/CLI/Testing/tubeBaseCLITests.cxx:27
 unusedFunction:*/Base/ObjectDocuments/tubeMetaObjectDocument.cxx
 unusedFunction:*/Base/ObjectDocuments/tubeOptionList.cxx

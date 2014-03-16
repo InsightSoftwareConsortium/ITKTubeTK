@@ -35,18 +35,24 @@ set( PROJ_EXE
 set( IMAGECOMPARE_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
 
+set( TEXTCOMPARE_EXE
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
+
 # Test1
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
-    --scale 2
-    --supersample 0.5
-    MIDAS{Branch.n010.sub.mha.md5}
+    -m MIDAS{im0001.vk.mask.crop.mha.md5}
+    -b 127 -v 255
+    -s 2
+    -d ${TEMP}/${MODULE_NAME}Test1
+    -o ${TEMP}/${MODULE_NAME}Test1
+    MIDAS{im0001.crop.contrast.mha.md5}
     ${TEMP}/${MODULE_NAME}Test1 )
 
 # Test1-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
-  COMMAND ${IMAGECOMPARE_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test1.ridge.mha
-    -b MIDAS{${MODULE_NAME}Test1.ridge.mha.md5} )
+  COMMAND ${TEXTCOMPARE_EXE}
+    -t ${TEMP}/${MODULE_NAME}Test1.mtp
+    -b MIDAS{${MODULE_NAME}Test1.mtp.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare
   APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )

@@ -39,6 +39,7 @@ set( IMAGECOMPARE_EXE
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
             COMMAND ${PROJ_EXE}
                --objectId 127,255
+               --probSmoothingStdDev 4
                --holeFillIterations 3
                --erodeRadius 1
                --voidId 0

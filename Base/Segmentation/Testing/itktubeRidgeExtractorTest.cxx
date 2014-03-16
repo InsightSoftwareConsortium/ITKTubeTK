@@ -164,7 +164,7 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
           }
         ridgeOp->Ridgeness( contIndx, intensity, roundness,
           curvature, linearity );
-        itOut.Set( curvature*1000 );
+        itOut.Set( curvature );
         firstSearch = true;
         break;
         }
