@@ -85,10 +85,14 @@ endif( APPLE )
 
 if( UNIX )
   if( CMAKE_COMPILER_IS_GNUCXX )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-local-typedefs"
-      CACHE STRING "Flags used by all build types." FORCE )
-    set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-local-typedefs"
-      CACHE STRING "Flags used by all build types." FORCE )
+    include(CheckCCompilerFlag)
+    check_c_compiler_flag(-Wno-unused-local-typedefs HAS_NO_UNUSED_LOCAL_TYPEDEFS)
+    if (HAS_NO_UNUSED_LOCAL_TYPEDEFS)
+      set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-local-typedefs"
+        CACHE STRING "Flags used by all build types." FORCE )
+      set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-local-typedefs"
+        CACHE STRING "Flags used by all build types." FORCE )
+    endif(HAS_NO_UNUSED_LOCAL_TYPEDEFS)
   endif( CMAKE_COMPILER_IS_GNUCXX )
   set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing"
     CACHE STRING "Flags used by all build types." FORCE )
