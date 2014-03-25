@@ -132,6 +132,40 @@ void QtImageEditor::setDisplaySliceNumber(int number)
 }
 
 
+int QtImageEditor::loadImage(std::string path)
+{
+  ReaderType::Pointer reader = ReaderType::New();
+  QString filePathToLoad = QString::fromStdString(path);
+  if( filePathToLoad.isNull() )
+    {
+    filePathToLoad = QFileDialog::getOpenFileName(
+        0,"", QDir::currentPath());
+    }
+
+  if(filePathToLoad.isEmpty())
+    {
+    return 0;
+    }
+  reader->SetFileName( filePathToLoad.toLatin1().data() );
+
+  qDebug() << "loading image " << filePathToLoad << " ... ";
+  try
+    {
+    reader->Update();
+    }
+  catch (itk::ExceptionObject & e)
+    {
+    std::cerr << "Exception in file reader " << std::endl;
+    std::cerr << e << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  std::cout << "Done!" << std::endl;
+  setInputImage( reader->GetOutput() );
+
+  show();
+}
+
 int QtImageEditor::loadImage()
 {
   ReaderType::Pointer reader = ReaderType::New();

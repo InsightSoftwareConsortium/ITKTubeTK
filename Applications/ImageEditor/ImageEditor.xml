@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+    <category>TubeTK</category>
+    <title>ImageEditor (TubeTK)</title>
+    <version>0.1.0.$Revision: 2104 $(alpha)</version>
+    <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+    <license>Apache 2.0</license>
+    <contributor>Kitware</contributor>
+    <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+    <parameters>
+        <file>
+            <name>inputImage</name>
+            <label>Input Image File</label>
+            <description>Input Image.</description>
+        </file>
+    </parameters>
+</executable>

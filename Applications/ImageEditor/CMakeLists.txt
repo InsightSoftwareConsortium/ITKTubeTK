@@ -38,15 +38,14 @@ find_package(OpenGL REQUIRED )
 find_package( ImageViewer REQUIRED )
 include( ${ImageViewer_USE_FILE} )
 
-set( ${MODULE_NAME}_INCLUDE_DIRS
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${ImageViewer_INCLUDE_DIRS}
-  ${QT_INCLUDE_DIRS}
-  ${OPENGL_INCLUDE_DIRS}
-)
-include_directories(
-  ${${MODULE_NAME}_INCLUDE_DIRS}
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
+
+find_package( JsonCpp REQUIRED )
+
+set( ${MODULE_NAME}_SRCS
+  QtImageEditor.cxx
+  QtOverlayControlsWidget.cxx
 )
 
 set( ${MODULE_NAME}_MOC_SRCS
@@ -58,11 +57,6 @@ set( ${MODULE_NAME}_GUI_SRCS
   Resources/UI/QtOverlayControlsWidgetGUI.ui
   )
 
-set( ${MODULE_NAME}_SRCS
-  QtImageEditor.cxx
-  QtOverlayControlsWidget.cxx
-)
-
 set( ${MODULE_NAME}_RESOURCES
   Resources/qtImageEditorResources.qrc
   )
@@ -71,19 +65,31 @@ QT4_WRAP_UI( ${MODULE_NAME}_UI_CXX ${${MODULE_NAME}_GUI_SRCS} )
 QT4_WRAP_CPP( ${MODULE_NAME}_SRCS ${${MODULE_NAME}_MOC_SRCS} )
 QT4_ADD_RESOURCES( ${MODULE_NAME}_QRC_SRCS ${${MODULE_NAME}_RESOURCES} )
 
-add_library( ${MODULE_NAME}Lib SHARED ${${MODULE_NAME}_SRCS}
-  ${${MODULE_NAME}_GUI_SRCS}
-  ${${MODULE_NAME}_UI_CXX}
-  ${${MODULE_NAME}_QRC_SRCS}
-)
-target_link_libraries( ${MODULE_NAME}Lib
-  ${ImageViewer_LIBRARIES}
-  ${ITK_LIBRARIES}
-  ${QT_LIBRARIES}
-  ${OPENGL_LIBRARIES}
+set( ${MODULE_NAME}_INCLUDE_DIRS
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${ImageViewer_INCLUDE_DIRS}
+  ${QT_INCLUDE_DIRS}
+  ${OPENGL_INCLUDE_DIRS}
 )
 
-add_executable( ${MODULE_NAME} ImageEditor.cxx )
-target_link_libraries( ${MODULE_NAME}
-  ${MODULE_NAME}Lib
-)
+SEMMacroBuildCLI(
+  NAME ${MODULE_NAME}
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
+  ADDITIONAL_SRCS
+    ${${MODULE_NAME}_SRCS}
+    ${${MODULE_NAME}_GUI_SRCS}
+    ${${MODULE_NAME}_QRC_SRCS}
+    ${${MODULE_NAME}_UI_CXX}
+  TARGET_LIBRARIES
+    ${ImageViewer_LIBRARIES}
+    ${ITK_LIBRARIES}
+    ${QT_LIBRARIES}
+    ${OPENGL_LIBRARIES}
+  INCLUDE_DIRECTORIES
+    ${TubeTK_SOURCE_DIR}/Base/CLI
+    ${TubeTK_SOURCE_DIR}/Base/Common
+    ${TubeTK_SOURCE_DIR}/Base/Numerics
+    ${TubeTK_SOURCE_DIR}/Base/Filtering
+    ${TubeTK_SOURCE_DIR}/Base/IO
+    ${${MODULE_NAME}_INCLUDE_DIRS} )

@@ -17,10 +17,14 @@
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkMetaImageIOFactory.h"
 
+#include "ImageEditorCLP.h"
+
 using namespace tube;
 
 int main( int argc, char* argv[] )
 {
+  PARSE_ARGS;
+
   QApplication myApp( argc, argv );
 
   QtImageEditor qtSlicerWindow(0,0);
@@ -29,6 +33,7 @@ int main( int argc, char* argv[] )
   myApp.setStyle(new QPlastiqueStyle );
   QPalette p( QColor( 239, 239, 239 ) );
   myApp.setPalette( p );
+  qtSlicerWindow.loadImage(inputImage);
   qtSlicerWindow.show();
   int execReturn;
   try

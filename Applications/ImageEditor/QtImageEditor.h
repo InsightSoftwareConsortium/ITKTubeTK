@@ -28,6 +28,7 @@ limitations under the License.
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QLineEdit>
+#include <QString>
 
 //itk includes
 #include "itkImage.h"
@@ -74,6 +75,7 @@ public slots:
   void setDisplaySigma(QString value);
   void setInputImage(ImageType *newImData);
   void setDisplaySliceNumber(int number);
+  int loadImage(std::string path);
   int loadImage();
 
 private slots:
