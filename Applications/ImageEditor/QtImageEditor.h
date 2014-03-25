@@ -21,11 +21,13 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __QtControlView_h
-#define __QtControlView_h
+#ifndef __QtImageEditor_h
+#define __QtImageEditor_h
 
 //Qt includes
 #include <QDialog>
+#include <QDialogButtonBox>
+#include <QLineEdit>
 
 //itk includes
 #include "itkImage.h"
@@ -37,16 +39,20 @@ limitations under the License.
 #include "ui_QtSlicerGUI.h"
 #include "ui_QtSlicerHelpGUI.h"
 
+//TubeTK includes
+#include "QtOverlayControlsWidget.h"
+#include "ui_QtOverlayControlsWidgetGUI.h"
+
 namespace tube
 {
 
-class QtControlView : public QDialog, public Ui::GuiDialogBase
+class QtImageEditor : public QDialog, public Ui::GuiDialogBase
 {
   Q_OBJECT
 public:
 
-  QtControlView( QWidget* parent = 0, Qt::WindowFlags fl = 0 );
-  ~QtControlView();
+  QtImageEditor( QWidget* parent = 0, Qt::WindowFlags fl = 0 );
+  ~QtImageEditor();
 
   typedef itk::Image< double, 3 > ImageType;
 
@@ -58,31 +64,24 @@ public:
   typedef itk::RecursiveGaussianImageFilter<
                InputImageType, OutputImageType > FilterType;
 
+  typedef itk::ImageFileReader<ImageType>   ReaderType;
+
 public:
 
 public slots:
+  //void toggleTextEdit(int viewDetail);
   void setMaximumSlice();
   void setDisplaySigma(QString value);
-  void setDisplayPosition(int x, int y , int z, double value);
   void setInputImage(ImageType *newImData);
   void setDisplaySliceNumber(int number);
-  void setDisplayIMin(int value);
-  void setDisplayIMax(int value);
+  int loadImage();
 
 private slots:
   void setFilter();
 
 private:
-  void setTab();
-
-  QTabWidget   *m_TabWidget;
-  QWidget      *m_FilterControlWidget;
-  QWidget      *m_Buttons;
-  QGridLayout  *m_FilterGridLayout;
-  QLineEdit    *m_SigmaLineEdit;
-  QPushButton  *m_ApplyButton;
-  QHBoxLayout  *m_ButtonsLayout;
-  ImageType    *m_ImageData;
+  QLineEdit   *m_SigmaLineEdit;
+  ImageType   *m_ImageData;
 };
 
 } // End namespace tube
