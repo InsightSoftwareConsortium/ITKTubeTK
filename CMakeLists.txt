@@ -183,12 +183,10 @@ if( TubeTK_USE_SLICER )
     mark_as_advanced( CLEAR Slicer_DIR )
   endif( NOT Slicer_FOUND )
   include( ${Slicer_USE_FILE} )
-  # TubeTK_SLICER_SOURCE_DIR is needed to get ExpertAutomatedRegistration CLI
-  if( Slicer_SOURCE_DIR )
-    set( TubeTK_SLICER_SOURCE_DIR ${Slicer_SOURCE_DIR} )
-  else( Slicer_SOURCE_DIR )
-    set( TubeTK_SLICER_SOURCE_DIR ${Slicer_CMAKE_DIR}/.. )
-  endif( Slicer_SOURCE_DIR )
+  # Slicer_SOURCE_DIR is needed to get ExpertAutomatedRegistration CLI
+  if( NOT Slicer_SOURCE_DIR )
+    set( Slicer_SOURCE_DIR ${Slicer_CMAKE_DIR}/.. )
+  endif( NOT Slicer_SOURCE_DIR )
   # All those dependencies are already provided by Slicer
   set( USE_SYSTEM_ITK ON CACHE BOOL
     "Exclude ITK from superbuild and use an existing build." FORCE )
@@ -631,12 +629,12 @@ if( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_SLICER )
 
   set( ITKFactoryRegistration_INSTALL_BIN_DIR ${TubeTK_INSTALL_BIN_DIR} )
   set( ITKFactoryRegistration_INSTALL_LIB_DIR ${TubeTK_INSTALL_LIB_DIR} )
-  add_subdirectory( ${TubeTK_SLICER_SOURCE_DIR}/Libs/ITKFactoryRegistration
+  add_subdirectory( ${Slicer_SOURCE_DIR}/Libs/ITKFactoryRegistration
     ${TubeTK_SLICER_BINARY_DIR}/Libs/ITKFactoryRegistration )
   include_directories( ${Slicer_BINARY_DIR}/Libs/itkFactoryRegistration )
 
   # Build SlicerBaseCLI
-  add_subdirectory( ${TubeTK_SLICER_SOURCE_DIR}/Base/CLI
+  add_subdirectory( ${Slicer_SOURCE_DIR}/Base/CLI
     ${TubeTK_SLICER_BINARY_DIR}/Base/CLI )
 
   # Config SlicerExecutionModel
