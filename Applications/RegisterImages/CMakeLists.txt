@@ -30,10 +30,6 @@ include( ${SlicerExecutionModel_USE_FILE} )
 find_package( ITK REQUIRED )
 include( ${USE_ITK_FILE} )
 
-if(TubeTK_SLICER_SOURCE_DIR)
-  set(Slicer_SOURCE_DIR ${TubeTK_SLICER_SOURCE_DIR})
-endif(TubeTK_SLICER_SOURCE_DIR)
-
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h

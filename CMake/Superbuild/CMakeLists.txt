@@ -108,7 +108,7 @@ endif( UNIX )
 
 
 set( TubeTK_SLICER_DIRS
-    -DTubeTK_SLICER_SOURCE_DIR:PATH=${TubeTK_SLICER_SOURCE_DIR} )
+    -DSlicer_SOURCE_DIR:PATH=${Slicer_SOURCE_DIR} )
 if( TubeTK_USE_SLICER )
   set( TubeTK_SLICER_DIRS
     ${TubeTK_SLICER_DIRS}
