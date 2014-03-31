@@ -77,9 +77,7 @@ public slots:
   void setDisplaySliceNumber(int number);
   int loadImage(std::string path);
   int loadImage();
-
-private slots:
-  void setFilter();
+  void applyFilter();
 
 private:
   QLineEdit   *m_SigmaLineEdit;

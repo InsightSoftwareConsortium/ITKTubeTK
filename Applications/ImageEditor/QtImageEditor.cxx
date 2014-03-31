@@ -85,7 +85,7 @@ QtImageEditor::QtImageEditor(QWidget* parent, Qt::WindowFlags fl ) :
                    SLOT(setDisplaySliceNumber(int)));
   QObject::connect(OpenGlWindow, SIGNAL(sliceNumChanged(int)), this,
                    SLOT(setDisplaySliceNumber(int)));
-  QObject::connect(applyButton, SIGNAL(clicked()), this, SLOT(setFilter()));
+  QObject::connect(applyButton, SIGNAL(clicked()), this, SLOT(applyFilter()));
   QObject::connect(this->m_SigmaLineEdit, SIGNAL(textChanged(QString)), this,
                    SLOT(setDisplaySigma(QString)));
   QObject::connect(OpenGlWindow, SIGNAL(orientationChanged(int)), this,
@@ -203,7 +203,7 @@ void QtImageEditor::setDisplaySigma(QString value)
 }
 
 
-void QtImageEditor::setFilter()
+void QtImageEditor::applyFilter()
 {
   if(this->m_ImageData == NULL)
     {

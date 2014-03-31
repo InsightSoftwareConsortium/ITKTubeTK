@@ -1,3 +1,25 @@
+/*=========================================================================
+
+Library:   TubeTK
+
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
+
+All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+=========================================================================*/
 //Qt includes
 #include <QApplication>
 #include <QDebug>
@@ -34,6 +56,32 @@ int main( int argc, char* argv[] )
   QPalette p( QColor( 239, 239, 239 ) );
   myApp.setPalette( p );
   qtSlicerWindow.loadImage(inputImage);
+
+  qtSlicerWindow.OpenGlWindow->setOrientation(orientation);
+  qtSlicerWindow.OpenGlWindow->setSliceNum(sliceOffset);
+  qtSlicerWindow.OpenGlWindow->setMaxIntensity(maxIntensity);
+  qtSlicerWindow.OpenGlWindow->setMinIntensity(minIntensity);
+  qtSlicerWindow.OpenGlWindow->setZoom(zoom);
+  qtSlicerWindow.OpenGlWindow->transpose(transpose);
+  qtSlicerWindow.OpenGlWindow->flipZ(zFlipped);
+  qtSlicerWindow.OpenGlWindow->flipY(yFlipped);
+  qtSlicerWindow.OpenGlWindow->flipX(xFlipped);
+  qtSlicerWindow.OpenGlWindow->setOverlayOpacity(overlayOpacity);
+  qtSlicerWindow.OpenGlWindow->setViewCrosshairs(crosshairs);
+  qtSlicerWindow.OpenGlWindow->setViewDetails(details);
+  qtSlicerWindow.OpenGlWindow->setViewValuePhysicalUnits(physicalUnits);
+  qtSlicerWindow.OpenGlWindow->setViewValue(value);
+  qtSlicerWindow.OpenGlWindow->setViewAxisLabel(axisLabel);
+  qtSlicerWindow.OpenGlWindow->setViewClickedPoints(clickedPoints);
+  qtSlicerWindow.OpenGlWindow->setImageMode(imageMode.c_str());
+  qtSlicerWindow.OpenGlWindow->setIWModeMax(iwModeMax.c_str());
+  qtSlicerWindow.OpenGlWindow->setIWModeMin(iwModeMin.c_str());
+  double sig = sigma;
+  qtSlicerWindow.setDisplaySigma(QString::number(sigma, 'f', 2));
+  if(sig != 0) qtSlicerWindow.applyFilter();
+
+  qtSlicerWindow.OpenGlWindow->update();
+
   qtSlicerWindow.show();
   int execReturn;
   try
