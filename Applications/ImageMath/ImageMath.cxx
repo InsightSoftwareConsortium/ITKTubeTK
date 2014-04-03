@@ -1843,7 +1843,7 @@ int main( int argc, char * argv[] )
     MetaCommand::STRING, true );
 
   command.SetOption( "Masking", "m", false,
-    "if tLow<=inFile2(x)<=tHigh then I(x)=I(x) else I(x)=vFalse" );
+    "if inFile(x) in [tLow, tHigh] then I(x)=I(x) else I(x)=vFalse" );
   command.AddOptionField( "Masking", "threshLow", MetaCommand::FLOAT,
     true );
   command.AddOptionField( "Masking", "threshHigh", MetaCommand::FLOAT,
@@ -1915,7 +1915,7 @@ int main( int argc, char * argv[] )
     true );
 
   command.SetOption( "Threshold", "t", false,
-    "if tLow<=I(x)<=tHigh then I(x)=vTrue else I(x)=vFalse" );
+    "if I(x) in [tLow,tHigh] then I(x)=vTrue else I(x)=vFalse" );
   command.AddOptionField( "Threshold", "threshLow", MetaCommand::FLOAT,
     true );
   command.AddOptionField( "Threshold", "threshHigh", MetaCommand::FLOAT,
