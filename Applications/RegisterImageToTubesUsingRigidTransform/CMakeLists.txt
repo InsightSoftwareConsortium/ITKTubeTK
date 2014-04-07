@@ -44,7 +44,7 @@ if( SlicerExecutionModel_USE_SERIALIZER )
 endif()
 
 find_package( ITK REQUIRED )
-include( ${USE_ITK_FILE} )
+include( ${ITK_USE_FILE} )
 
 set(tubetk_base_includes
   ${TubeTK_SOURCE_DIR}/Base/CLI

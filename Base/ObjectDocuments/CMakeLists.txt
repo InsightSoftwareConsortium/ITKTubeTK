@@ -24,7 +24,7 @@
 project( TubeTKObjectDocuments )
 
 find_package( ITK REQUIRED )
-include( ${USE_ITK_FILE} )
+include( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_ObjectDocuments_H_Files
   itktubeBlobSpatialObjectDocument.h

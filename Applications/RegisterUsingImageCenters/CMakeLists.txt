@@ -33,7 +33,7 @@ find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 
 find_package( ITK REQUIRED )
-include( ${USE_ITK_FILE} )
+include( ${ITK_USE_FILE} )
 
 if( CMAKE_COMPILER_IS_GNUCXX )
   set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -ffast-math -msse3" )
