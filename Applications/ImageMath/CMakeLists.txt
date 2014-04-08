@@ -47,7 +47,7 @@ endif( NOT TubeTK_SOURCE_DIR )
 
 # Find ITK
 find_package( ITK REQUIRED )
-include( ${USE_ITK_FILE} )
+include( ${ITK_USE_FILE} )
 
 # Find SEM
 find_package( SlicerExecutionModel REQUIRED )

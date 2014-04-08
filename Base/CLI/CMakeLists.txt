@@ -24,7 +24,7 @@
 project( TubeCLI )
 
 find_package( ITK REQUIRED )
-include( ${USE_ITK_FILE} )
+include( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_CLI_H_Files
   tubeCLIFilterWatcher.h
