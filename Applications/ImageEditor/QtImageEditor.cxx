@@ -59,9 +59,9 @@ QtImageEditor::QtImageEditor(QWidget* parent, Qt::WindowFlags fl ) :
   applyButton->setText("Apply");
   filterGridLayout->addWidget(applyButton, 0, 1);
 
-  QtOverlayControlsWidget *overlayWidget = new QtOverlayControlsWidget(tabWidget);
-  overlayWidget->setSliceView(this->OpenGlWindow);
-  tabWidget->insertTab(2, overlayWidget, "Overlay");
+  this->m_OverlayWidget = new QtOverlayControlsWidget(tabWidget);
+  this->m_OverlayWidget->setSliceView(this->OpenGlWindow);
+  tabWidget->insertTab(2, this->m_OverlayWidget, "Overlay");
 
   QDialogButtonBox *buttons = new QDialogButtonBox(Qt::Horizontal);
   buttons->addButton(this->ButtonOk, QDialogButtonBox::AcceptRole);
@@ -194,6 +194,12 @@ int QtImageEditor::loadImage()
   setInputImage( reader->GetOutput() );
 
   show();
+}
+
+
+int QtImageEditor::loadOverlay(std::string path)
+{
+  this->m_OverlayWidget->loadOverlay(path);
 }
 
 

@@ -111,6 +111,42 @@ int QtOverlayControlsWidget::loadOverlay()
   show();
 }
 
+int QtOverlayControlsWidget::loadOverlay(std::string path)
+{
+  OverlayReaderType::Pointer overlayReader = OverlayReaderType::New();
+  QString pathOverlay = QString::fromStdString(path);
+
+  if(pathOverlay.isNull())
+    {
+    pathOverlay = QFileDialog::getOpenFileName(
+            0,"", QDir::currentPath());
+    return 0;
+    }
+
+  if(pathOverlay.isEmpty())
+    {
+    return 0;
+    }
+  overlayReader->SetFileName( pathOverlay.toLatin1().data() );
+
+  qDebug() << "loading image " << pathOverlay << " ... ";
+  try
+    {
+    overlayReader->Update();
+    }
+  catch (itk::ExceptionObject & e)
+    {
+    std::cerr << "Exception in file reader " << std::endl;
+    std::cerr << e << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  std::cout << "Done!" << std::endl;
+  setInputOverlay( overlayReader->GetOutput() );
+
+  show();
+}
+
 void QtOverlayControlsWidget::setInputOverlay(OverlayType* overlayImage)
 {
   this->m_SliceView->setInputOverlay(overlayImage);

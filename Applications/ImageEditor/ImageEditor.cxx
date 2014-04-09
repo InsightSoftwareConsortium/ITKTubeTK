@@ -56,6 +56,7 @@ int main( int argc, char* argv[] )
   QPalette p( QColor( 239, 239, 239 ) );
   myApp.setPalette( p );
   qtSlicerWindow.loadImage(inputImage);
+  qtSlicerWindow.loadOverlay(overlayImage);
 
   qtSlicerWindow.OpenGlWindow->setOrientation(orientation);
   qtSlicerWindow.OpenGlWindow->setSliceNum(sliceOffset);

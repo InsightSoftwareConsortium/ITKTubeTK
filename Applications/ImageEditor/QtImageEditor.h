@@ -77,11 +77,13 @@ public slots:
   void setDisplaySliceNumber(int number);
   int loadImage(std::string path);
   int loadImage();
+  int loadOverlay(std::string path);
   void applyFilter();
 
 private:
-  QLineEdit   *m_SigmaLineEdit;
-  ImageType   *m_ImageData;
+  QLineEdit               *m_SigmaLineEdit;
+  ImageType               *m_ImageData;
+  QtOverlayControlsWidget *m_OverlayWidget;
 };
 
 } // End namespace tube

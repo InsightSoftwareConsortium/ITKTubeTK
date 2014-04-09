@@ -64,6 +64,7 @@ public slots:
   /// Set the new opacity changed in the SliceView to the Slider
   void setOpacity(double value);
   int loadOverlay();
+  int loadOverlay(std::string path);
   void setInputOverlay(OverlayType* overlayImage);
   /// Load Overlay if the check box is checked by a user, Disable overlay if
   /// the check box is unchecked by the user.
