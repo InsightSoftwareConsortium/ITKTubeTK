@@ -35,7 +35,7 @@ set( CTK_HASH_OR_TAG 8bebbc92df4b310c150e6a017b6b8966b4625089 )
 # TubeTK Image Viewer snapshot 2014-01-26
 set( ImageViewer_URL
   ${github_protocol}://github.com/TubeTK/TubeTK-ImageViewer.git )
-set( ImageViewer_HASH_OR_TAG 9bcd8196a14552d9fb5a70005e9a95bbaabcd8fd )
+set( ImageViewer_HASH_OR_TAG ef5e163c7d3f417a4d6180c5d12a5a06b462ad4c )
 
 # Insight Segmentation and Registration Toolkit
 #set( ITK_URL ${github_protocol}://github.com/Kitware/ITK.git )
@@ -51,7 +51,7 @@ set( JsonCpp_HASH_OR_TAG 43301ad1118004fbdc69b6f7b14a4cd5 )
 # KWStyle snapshot 2012-04-19 04:05:19
 set( KWStyle_URL
   ${git_protocol}://github.com/Kitware/KWStyle.git )
-set( KWStyle_HASH_OR_TAG 525bd4700b630accc831dba990e64d2fd49791c3 )
+set( KWStyle_HASH_OR_TAG 9711cdbd35af37a9abcdd8b1dbd8e2b5a4ac8779 )
 
 # LIBSVM version 3.17 (minimum version 3.1)
 set( LIBSVM_URL

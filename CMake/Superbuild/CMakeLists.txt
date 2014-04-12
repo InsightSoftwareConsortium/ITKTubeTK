@@ -98,12 +98,12 @@ if( UNIX )
     CACHE STRING "Flags used by all build types." FORCE )
   set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing"
     CACHE STRING "Flags used by all build types." FORCE )
-  if( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
+  if( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC"
          CACHE STRING "Flags used by all build types." FORCE )
     set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC"
          CACHE STRING "Flags used by all build types." FORCE )
-  endif( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
+  endif( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
 endif( UNIX )
 
 

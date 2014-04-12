@@ -36,9 +36,6 @@ set( Slicer4_INSTALL_PLUGINS_CACHE_DIR "${Slicer4_INSTALL_LIB_DIR}/CACHE" )
 
 set( Slicer4_HOME "${Slicer4_BINARY_DIR}" )
 
-include( ${TubeTK_SOURCE_DIR}/CMake/Slicer4MacroSetPluginsOutputPath.cmake )
-include( ${SlicerExecutionModel_DIR}/CMake/SEMMacroBuildCLI.cmake )
-
 # Needed by SlicerBaseCLI
 set( Slicer_INSTALL_BIN_DIR ${Slicer4_INSTALL_BIN_DIR} )
 set( Slicer_INSTALL_LIB_DIR ${Slicer4_INSTALL_LIB_DIR} )
