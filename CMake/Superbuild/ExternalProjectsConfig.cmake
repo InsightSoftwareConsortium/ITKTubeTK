@@ -43,10 +43,10 @@ set( ImageViewer_HASH_OR_TAG ef5e163c7d3f417a4d6180c5d12a5a06b462ad4c )
 set( ITK_URL ${github_protocol}://itk.org/ITK.git )
 set( ITK_HASH_OR_TAG 754278cb7ab50ae3e64dc0a413aef4b9ff0ff1f0 )
 
-# JsonCpp snapshot 2014-01-01 r287
+# JsonCpp snapshot 2014-04-15 r276
 # ${svn_protocol}://svn.code.sf.net/p/jsoncpp/code/trunk/jsoncpp )
-set( JsonCpp_URL http://midas3.kitware.com/midas/download/bitstream/337068/JsonCpp_r275.tar.gz )
-set( JsonCpp_HASH_OR_TAG 43301ad1118004fbdc69b6f7b14a4cd5 )
+set( JsonCpp_URL http://midas3.kitware.com/midas/download/bitstream/366544/JsonCpp_r276.tar.gz )
+set( JsonCpp_HASH_OR_TAG 192f0cf2b00798d4f4fb29c99a3aa83c )
 
 # KWStyle snapshot 2012-04-19 04:05:19
 set( KWStyle_URL
