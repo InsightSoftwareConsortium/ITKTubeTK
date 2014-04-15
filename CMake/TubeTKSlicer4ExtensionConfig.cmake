@@ -20,23 +20,16 @@
 # limitations under the License.
 #
 ##############################################################################
-
-set( MODULE_NAME RegisterImages )
-project( ${MODULE_NAME} )
-
-find_package( SlicerExecutionModel REQUIRED )
-include( ${SlicerExecutionModel_USE_FILE} )
-
-find_package( ITK REQUIRED )
-include( ${ITK_USE_FILE} )
-
-SEMMacroBuildCLI(
-  NAME ${MODULE_NAME}
-  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES}
-  INCLUDE_DIRECTORIES
-    ${TubeTK_SOURCE_DIR}/Base/CLI
-    ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Filtering
-    ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration
-    ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration/ITKRegistrationHelper )
+set( EXTENSION_NAME TubeTK )
+set( EXTENSION_HOMEPAGE "http://www.tubetk.org" )
+set( EXTENSION_CATEGORY "TubeTK" )
+set( EXTENSION_CONTRIBUTORS "TubeTK Team at Kitware, Inc." )
+set( EXTENSION_DESCRIPTION
+  "Using local image geometry for segmentation, registration, and filtering" )
+set( EXTENSION_ICONURL
+  "http://public.kitware.com/Wiki/images/a/ad/TubeTK_Icon.jpg" )
+set( EXTENSION_SCREENSHOTURLS
+  "http://public.kitware.com/Wiki/images/f/fd/VesselExtraction.jpg" )
+set( EXTENSION_README_FILE ${TubeTK_SOURCE_DIR}/README.md )
+set( EXTENSION_LICENSE_FILE ${TubeTK_SOURCE_DIR}/LICENSE.md )
+set( EXTENSION_BUILD_SUBDIRECTORY "TubeTK-build")

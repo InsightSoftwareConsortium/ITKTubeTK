@@ -30,12 +30,12 @@ set( Cppcheck_HASH_OR_TAG 1.61 )
 
 # Common Toolkit snapshot 2014-01-03
 set( CTK_URL ${github_protocol}://github.com/commontk/CTK.git )
-set( CTK_HASH_OR_TAG 8bebbc92df4b310c150e6a017b6b8966b4625089 )
+set( CTK_HASH_OR_TAG 233d87b70db2ce7f00bc71be93d009d8b2ee063d )
 
 # TubeTK Image Viewer snapshot 2014-01-26
 set( ImageViewer_URL
   ${github_protocol}://github.com/TubeTK/TubeTK-ImageViewer.git )
-set( ImageViewer_HASH_OR_TAG 9bcd8196a14552d9fb5a70005e9a95bbaabcd8fd )
+set( ImageViewer_HASH_OR_TAG ef5e163c7d3f417a4d6180c5d12a5a06b462ad4c )
 
 # Insight Segmentation and Registration Toolkit
 #set( ITK_URL ${github_protocol}://github.com/Kitware/ITK.git )
@@ -51,7 +51,7 @@ set( JsonCpp_HASH_OR_TAG 43301ad1118004fbdc69b6f7b14a4cd5 )
 # KWStyle snapshot 2012-04-19 04:05:19
 set( KWStyle_URL
   ${git_protocol}://github.com/Kitware/KWStyle.git )
-set( KWStyle_HASH_OR_TAG 525bd4700b630accc831dba990e64d2fd49791c3 )
+set( KWStyle_HASH_OR_TAG 9711cdbd35af37a9abcdd8b1dbd8e2b5a4ac8779 )
 
 # LIBSVM version 3.17 (minimum version 3.1)
 set( LIBSVM_URL
@@ -70,4 +70,4 @@ set( SlicerExecutionModel_HASH_OR_TAG 46f3d892fc6deb9be2ce929257a5411d02c1ae75 )
 
 # Visualization Toolkit (3D Slicer fork) snapshot 2013-08-20 06:54:45
 set( VTK_URL ${github_protocol}://github.com/Slicer/VTK.git )
-set( VTK_HASH_OR_TAG c88dfedb277969e5f1f6c5349d8f7898610e75f4 )
+set( VTK_HASH_OR_TAG d8540e7ee356bbc025cb9917a41b7c7fa0548d4b )

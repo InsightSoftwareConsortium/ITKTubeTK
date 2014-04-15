@@ -113,7 +113,7 @@ set_property( TEST ${MODULE_NAME}-Test4-Compare11
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
 
 # Needs ParameterSerializer
-if( NOT TubeTK_USE_SLICER )
+if( NOT TubeTK_BUILD_SLICER_MODULES )
   #######
   # Test5
   #######
@@ -147,4 +147,4 @@ if( NOT TubeTK_USE_SLICER )
                  -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
   set_property( TEST ${MODULE_NAME}-Test6-Compare
                         APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test6 )
-endif( NOT TubeTK_USE_SLICER )
+endif( NOT TubeTK_BUILD_SLICER_MODULES )

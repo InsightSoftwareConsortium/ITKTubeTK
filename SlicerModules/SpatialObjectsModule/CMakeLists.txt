@@ -26,15 +26,6 @@ set( MODULE_TITLE "SpatialObjects Display" )
 
 string( TOUPPER ${MODULE_NAME} MODULE_NAME_UPPER )
 
-# To build each module against a given 3D Slicer build tree without having to
-# build the complete extensions. This is now handled by top-level
-# CMakeLists.txt file.
-#
-#   if( NOT Slicer_SOURCE_DIR )
-#     find_package( Slicer REQUIRED )
-#     include( ${Slicer_USE_FILE} )
-#   endif( NOT Slicer_SOURCE_DIR )
-
 add_subdirectory( MRML )
 add_subdirectory( Logic )
 add_subdirectory( Widgets )

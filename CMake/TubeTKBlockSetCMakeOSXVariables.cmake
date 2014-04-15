@@ -83,4 +83,9 @@ if(APPLE)
       message(FATAL_ERROR "error: CMAKE_OSX_SYSROOT='${CMAKE_OSX_SYSROOT}' does not exist")
     endif()
   endif()
+
+  mark_as_advanced( CMAKE_OSX_ARCHITECTURES )
+  mark_as_advanced( CMAKE_OSX_DEPLOYMENT_TARGET )
+  mark_as_advanced( CMAKE_OSX_SYSROOT )
+
 endif()

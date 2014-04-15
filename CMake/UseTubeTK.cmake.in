@@ -79,8 +79,9 @@ set( VTK_DIR "@VTK_DIR@" )
 
 # Slicer variables and macros as provided by TubeTK
 # Needs to come after the definition of SlicerExecutionModel_DIR.
-set( TubeTK_USE_SLICER "@TubeTK_USE_SLICER@" )
-if( TubeTK_USE_SLICER )
-  include( "@TubeTK_CMAKE_EXTENSIONS_DIR@/Slicer4Config.cmake" )
-endif( TubeTK_USE_SLICER )
-set( Slicer_SOURCE_DIR "@Slicer_SOURCE_DIR@" )
+set( TubeTK_BUILD_SLICER_MODULES "@TubeTK_BUILD_SLICER_MODULES@" )
+if( TubeTK_BUILD_SLICER_MODULES )
+  include( "@TubeTK_CMAKE_EXTENSIONS_DIR@/TubeTKSlicer4Config.cmake" )
+endif( TubeTK_BUILD_SLICER_MODULES )
+set( TubeTK_SLICER_SOURCE_DIR "@TubeTK_SLICER_SOURCE_DIR@" )
+set( TubeTK_SLICER_BINARY_DIR "@TubeTK_SLICER_BINARY_DIR@" )

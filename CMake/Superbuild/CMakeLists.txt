@@ -86,7 +86,8 @@ endif( APPLE )
 if( UNIX )
   if( CMAKE_COMPILER_IS_GNUCXX )
     include(CheckCCompilerFlag)
-    check_c_compiler_flag(-Wno-unused-local-typedefs HAS_NO_UNUSED_LOCAL_TYPEDEFS)
+    check_c_compiler_flag(-Wno-unused-local-typedefs
+      HAS_NO_UNUSED_LOCAL_TYPEDEFS)
     if (HAS_NO_UNUSED_LOCAL_TYPEDEFS)
       set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-local-typedefs"
         CACHE STRING "Flags used by all build types." FORCE )
@@ -98,24 +99,15 @@ if( UNIX )
     CACHE STRING "Flags used by all build types." FORCE )
   set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing"
     CACHE STRING "Flags used by all build types." FORCE )
-  if( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
+  if( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC"
          CACHE STRING "Flags used by all build types." FORCE )
     set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC"
          CACHE STRING "Flags used by all build types." FORCE )
-  endif( ${CMAKE_SIZEOF_VOID_P} EQUAL 8 )
+  endif( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
 endif( UNIX )
 
 
-set( TubeTK_SLICER_DIRS
-    -DSlicer_SOURCE_DIR:PATH=${Slicer_SOURCE_DIR} )
-if( TubeTK_USE_SLICER )
-  set( TubeTK_SLICER_DIRS
-    ${TubeTK_SLICER_DIRS}
-    -DSlicer_DIR:PATH=${Slicer_DIR} )
-endif( TubeTK_USE_SLICER )
-
-# Set dependencies.
 set( TubeTK_DEPENDENCIES "ITK" "JsonCpp" "ParameterSerializer"
   "SlicerExecutionModel" )
 
@@ -126,16 +118,6 @@ endif( TubeTK_USE_VTK )
 if( TubeTK_USE_CPPCHECK )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "Cppcheck" )
 endif( TubeTK_USE_CPPCHECK )
-
-set( TubeTK_QT_VARIABLES )
-if( TubeTK_USE_QT )
-  if( TubeTK_USE_CTK )
-      set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "CTK" )
-  endif( TubeTK_USE_CTK )
-  set( TubeTK_QT_VARIABLES
-    -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
-    -DTubeTK_REQUIRED_QT_VERSION=${TubeTK_REQUIRED_QT_VERSION} )
-endif( TubeTK_USE_QT )
 
 if( TubeTK_BUILD_IMAGE_VIEWER )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "ImageViewer" )
@@ -149,15 +131,26 @@ if( TubeTK_USE_LIBSVM )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "LIBSVM" )
 endif( TubeTK_USE_LIBSVM )
 
+if( TubeTK_USE_CTK )
+  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "CTK" )
+endif( TubeTK_USE_CTK )
+
 set( TubeTK_EXTERNAL_PROJECTS_ARGS )
 
 if( TubeTK_USE_BOOST )
   list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DBOOST_ROOT=${BOOST_ROOT} )
 endif( TubeTK_USE_BOOST )
 
-if( TubeTK_USE_SLICER )
+if( TubeTK_BUILD_SLICER_MODULES )
   list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DSlicer_DIR=${Slicer_DIR} )
-endif( TubeTK_USE_SLICER )
+endif( TubeTK_BUILD_SLICER_MODULES )
+
+if( TubeTK_USE_QT )
+  list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS
+    -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
+    -DTubeTK_REQUIRED_QT_VERSION=${TubeTK_REQUIRED_QT_VERSION} )
+endif( TubeTK_USE_QT )
+
 
 if( TubeTK_USE_PYTHON )
   list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS
@@ -196,23 +189,19 @@ ExternalProject_Add( ${proj}
     -DBUILD_TESTING:BOOL=${BUILD_TESTING}
     -DMAKECOMMAND:STRING=${MAKECOMMAND}
     -DSITE:STRING=${SITE}
-    -DTubeTK_BUILD_ALL_MODULES=${TubeTK_BUILD_ALL_MODULES}
-    -DTubeTK_BUILD_MODULES=${TubeTK_BUILD_MODULES}
-    -DTubeTK_BUILD_SLICER_EXTENSION:BOOL=${TubeTK_BUILD_SLICER_EXTENSION}
     -DTubeTK_CONFIG_BINARY_DIR:PATH=${TubeTK_CONFIG_BINARY_DIR}
     -DTubeTK_EXECUTABLE_DIRS:STRING=${TubeTK_EXECUTABLE_DIRS}
+    -DTubeTK_BUILD_APPLICATIONS=${TubeTK_BUILD_APPLICATIONS}
+    -DTubeTK_BUILD_IMAGE_VIEWER:BOOL=${TubeTK_BUILD_IMAGE_VIEWER}
+    -DTubeTK_BUILD_SLICER_MODULES:BOOL=${TubeTK_BUILD_SLICER_MODULES}
     -DTubeTK_USE_BOOST:BOOL=${TubeTK_USE_BOOST}
     -DTubeTK_USE_CPPCHECK:BOOL=${TubeTK_USE_CPPCHECK}
     -DTubeTK_USE_CTK:BOOL=${TubeTK_USE_CTK}
-    -DTubeTK_BUILD_IMAGE_VIEWER:BOOL=${TubeTK_BUILD_IMAGE_VIEWER}
     -DTubeTK_USE_LIBSVM:BOOL=${TubeTK_USE_LIBSVM}
     -DTubeTK_USE_PYTHON:BOOL=${TubeTK_USE_PYTHON}
     -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
-    -DTubeTK_USE_SLICER:BOOL=${TubeTK_USE_SLICER}
     -DTubeTK_USE_SUPERBUILD:BOOL=OFF
     -DTubeTK_USE_VTK:BOOL=${TubeTK_USE_VTK}
     ${TubeTK_EXTERNAL_PROJECTS_ARGS}
-    ${TubeTK_QT_VARIABLES}
-    ${TubeTK_SLICER_DIRS}
   INSTALL_COMMAND "" )
