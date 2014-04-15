@@ -63,6 +63,8 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/Numerics
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/Segmentation
+    ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration
+    ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration/ITKRegistrationHelper
   INSTALL_RUNTIME_DESTINATION lib
   INSTALL_LIBRARY_DESTINATION lib
   INSTALL_ARCHIVE_DESTINATION bin )

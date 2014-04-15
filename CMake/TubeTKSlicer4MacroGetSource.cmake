@@ -21,22 +21,17 @@
 #
 ##############################################################################
 
-set( Slicer_SOURCE_DIR "${TubeTK_BINARY_DIR}/Slicer" )
-set( TubeTK_SLICER_BINARY_DIR "${TubeTK_BINARY_DIR}/Slicer-build" )
-make_directory( ${Slicer_SOURCE_DIR} )
-make_directory( ${TubeTK_SLICER_BINARY_DIR} )
-
 # Define macros for downloading Slicer4 applications and libs used by TubeTK
 if( NOT SVNCOMMAND )
   find_package( Subversion REQUIRED )
   set( SVNCOMMAND ${Subversion_SVN_EXECUTABLE} )
 endif( NOT SVNCOMMAND )
 
-macro( Slicer4MacroGetSource FILENAME )
+macro( TubeTKSlicer4MacroGetSource FILENAME )
   set( svnCmd "co" )
   set( svnSite "http://svn.slicer.org/Slicer4/trunk/" )
   execute_process(
-    COMMAND "${SVNCOMMAND}" ${svnCmd} ${svnSite}/${FILENAME} ${Slicer_SOURCE_DIR}/${FILENAME}
+    COMMAND "${SVNCOMMAND}" ${svnCmd} ${svnSite}/${FILENAME} ${TubeTK_SLICER_SOURCE_DIR}/${FILENAME}
     OUTPUT_VARIABLE svnOutput
     ERROR_VARIABLE svnError
     RESULT_VARIABLE svnResult )
@@ -46,12 +41,12 @@ macro( Slicer4MacroGetSource FILENAME )
     message( "Command = ${svnCmd}" )
     message( "Site = ${svnSite}" )
     message( "File = ${FILENAME}" )
-    message( "Dir = ${Slicer_SOURCE_DIR}" )
+    message( "Dir = ${TubeTK_SLICER_SOURCE_DIR}" )
     message( "Output = ${svnOutput}" )
     message( FATAL "Result = ${svnResult}" )
   endif( svnError )
-endmacro( Slicer4MacroGetSource FILENAME )
+endmacro( TubeTKSlicer4MacroGetSource FILENAME )
 
-macro( Slicer4MacroGetCLISource FILENAME )
-  Slicer4MacroGetSource( "Modules/CLI/${FILENAME}" )
-endmacro( Slicer4MacroGetCLISource FILENAME )
+macro( TubeTKSlicer4MacroGetCLISource FILENAME )
+  TubeTKSlicer4MacroGetSource( "Modules/CLI/${FILENAME}" )
+endmacro( TubeTKSlicer4MacroGetCLISource FILENAME )

@@ -23,8 +23,7 @@
 
 project( TubeTK )
 
-# Require CMake 2.8 for its superbuild functionality.
-cmake_minimum_required( VERSION 2.8.7 )
+cmake_minimum_required( VERSION 2.8.9 )
 if( NOT ${CMAKE_VERSION} VERSION_LESS 2.8.13 )
   cmake_policy( SET CMP0026 OLD )
 endif( NOT ${CMAKE_VERSION} VERSION_LESS 2.8.13 )
@@ -152,49 +151,37 @@ endif( UNIX )
 set( CMAKE_POSITION_INDEPENDENT_CODE ON )
 
 #
-# Use Slicer
+# Build TubeTK to operate as a Slicer module
 #
-# If available, Slicer can be used to retrieve external libraries and modules
-# used by TubeTK.
-option( TubeTK_USE_SLICER "Use Slicer to extract useful commands and CLIs."
-  OFF )
-
-#
-# Setup for building TubeTK as a 3D Slicer extensions.
-#
-option( TubeTK_BUILD_SLICER_EXTENSION
-  "Build TubeTK as a 3D Slicer extension." OFF )
-
-if( TubeTK_BUILD_SLICER_EXTENSION )
+option( TubeTK_BUILD_SLICER_MODULES
+  "Use Slicer to extract useful commands and CLIs." OFF )
+if( TubeTK_BUILD_SLICER_MODULES )
   include( TubeTKSlicer4ExtensionConfig )
-  set( TubeTK_USE_SLICER ON CACHE BOOL
-    "Use 3D Slicer to extract useful commands and CLIs." FORCE )
-  mark_as_advanced( TubeTK_USE_SLICER )
-else( TubeTK_BUILD_SLICER_EXTENSION )
-  mark_as_advanced( CLEAR TubeTK_USE_SLICER )
-endif( TubeTK_BUILD_SLICER_EXTENSION )
 
-if( TubeTK_USE_SLICER )
   mark_as_advanced( TubeTK_USE_ITK TubeTK_USE_VTK TubeTK_USE_QT
     TubeTK_USE_CTK )
+
   unset( QT_QMAKE_EXECUTABLE )
   unset( PYTHON_EXECUTABLE )
 
   # Find Slicer to set the [ITK|VTK|CTK|...]_DIR variables
   find_package( Slicer REQUIRED )
-  if( NOT Slicer_FOUND )
-    set( Slicer_DIR "NOT_FOUND" CACHE PATH
-      "Path to the Slicer-<buildtype>/Slicer-build directory." FORCE )
-    mark_as_advanced( CLEAR Slicer_DIR )
-  else( NOT Slicer_FOUND )
-    message( STATUS "Slicer use file = ${Slicer_USE_FILE}" )
-    include( ${Slicer_USE_FILE} )
-  endif( NOT Slicer_FOUND )
+  if( NOT Slicer_USE_FILE )
+    message( FATAL "Slicer_USE_FILE not defined. Find Slicer silently failed." )
+  endif( NOT Slicer_USE_FILE )
+  include( ${Slicer_USE_FILE} )
 
-  # Slicer_SOURCE_DIR is needed to get ExpertAutomatedRegistration CLI
-  #if( NOT Slicer_SOURCE_DIR )
-    #set( Slicer_SOURCE_DIR ${Slicer_CMAKE_DIR}/.. )
-  #endif( NOT Slicer_SOURCE_DIR )
+  if( Slicer_SOURCE_DIR )
+    set( TubeTK_SLICER_SOURCE_DIR "${Slicer_SOURCE_DIR}" )
+  else( Slicer_SOURCE_DIR )
+    set( TubeTK_SLICER_SOURCE_DIR "${Slicer_CMAKE_DIR}/.." )
+  endif( Slicer_SOURCE_DIR )
+
+  if( Slicer_BINARY_DIR )
+    set( TubeTK_SLICER_BINARY_DIR "${Slicer_BINARY_DIR}" )
+  else( Slicer_BINARY_DIR )
+    set( TubeTK_SLICER_BINARY_DIR "${Slicer_HOME}" )
+  endif( Slicer_BINARY_DIR )
 
   # All those dependencies are already provided by Slicer
   set( USE_SYSTEM_ITK ON CACHE BOOL
@@ -205,8 +192,6 @@ if( TubeTK_USE_SLICER )
     "Exclude VTK from superbuild and use an existing build." FORCE )
   set( TubeTK_USE_QT ON CACHE BOOL
     "Use the Qt framework to enable additional functionality." FORCE )
-  set( TubeTK_USE_CTK ON CACHE BOOL
-    "Use CTK to enable additional functionality." FORCE )
   set( USE_SYSTEM_CTK ON CACHE BOOL
     "Exclude CTK from superbuild and use an existing build." FORCE )
   set( USE_SYSTEM_SLICER_EXECUTION_MODEL ON CACHE BOOL
@@ -218,13 +203,13 @@ if( TubeTK_USE_SLICER )
     VTK_DIR ZLIB_INCLUDE_DIR ZLIB_LIBRARY ZLIB_ROOT jqPlot_DIR qRestAPI_DIR
     CURL_INCLUDE_DIR CURL_LIBRARY ZLIB_LIBRARY ZLIB_ROOT ZLIB_INCLUDE_DIR
     jpPlot_DIR MIDAS_PACKAGE_API_KEY MIDAS_PACKAGE_EMAIL MIDAS_PACKAGE_URL )
-else( TubeTK_USE_SLICER )
+else( TubeTK_BUILD_SLICER_MODULES )
   mark_as_advanced( CLEAR TubeTK_USE_ITK TubeTK_USE_VTK TubeTK_USE_QT )
   if( TubeTK_USE_QT )
     mark_as_advanced( CLEAR TubeTK_USE_CTK )
   endif( TubeTK_USE_QT )
   mark_as_advanced( Slicer_DIR )
-endif( TubeTK_USE_SLICER )
+endif( TubeTK_BUILD_SLICER_MODULES )
 
 include( TubeTKSlicer4Config )
 
@@ -349,14 +334,14 @@ option( TubeTK_USE_QT
 if( TubeTK_USE_QT )
   # CTK setup.
   option( TubeTK_USE_CTK "Use CTK to enable additional functionality." ON )
-  if( NOT TubeTK_USE_SLICER )
+  if( NOT TubeTK_BUILD_SLICER_MODULES )
     mark_as_advanced( CLEAR TubeTK_USE_CTK )
-  endif( NOT TubeTK_USE_SLICER )
+  endif( NOT TubeTK_BUILD_SLICER_MODULES )
   option( USE_SYSTEM_CTK
     "Exclude CTK from superbuild and use an existing build." OFF )
-  if( NOT TubeTK_USE_SLICER )
+  if( NOT TubeTK_BUILD_SLICER_MODULES )
     mark_as_advanced( USE_SYSTEM_CTK )
-  endif( NOT TubeTK_USE_SLICER )
+  endif( NOT TubeTK_BUILD_SLICER_MODULES )
 
   find_package( Qt4 )
   # 3D Slicer only tests against a specific Qt 4 version. To
@@ -410,8 +395,8 @@ mark_as_advanced( USE_SYSTEM_VTK )
 #
 # Modules
 #
-option( TubeTK_BUILD_MODULES
-  "Build modules. If not, only TubeTK library is built" ON )
+option( TubeTK_BUILD_APPLICATIONS
+  "Build applications. If not, only TubeTK library is built" ON )
 
 #
 # Indicate that this CMakeLists.txt file has already been parsed once. Keeps
@@ -437,13 +422,13 @@ option( TubeTK_USE_SUPERBUILD
 mark_as_advanced( TubeTK_USE_SUPERBUILD )
 
 if( TubeTK_USE_SUPERBUILD )
-  if( TubeTK_BUILD_MODULES )
+  if( TubeTK_BUILD_APPLICATIONS )
     # Expose the TubeTK_BUILD_* variables to Superbuild
     file( GLOB_RECURSE TubeTK_modules_files "TubeTKModules.cmake" )
     foreach( f ${TubeTK_modules_files} )
       include( ${f} )
     endforeach( f ${TubeTK_modules_files} )
-  endif( TubeTK_BUILD_MODULES )
+  endif( TubeTK_BUILD_APPLICATIONS )
 
   add_subdirectory( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/Superbuild" )
   return()
@@ -526,7 +511,7 @@ set( SlicerExecutionModel_CLI_ARCHIVE_OUTPUT_DIRECTORY
 
 find_package( SlicerExecutionModel REQUIRED GenerateCLP )
 include( ${GenerateCLP_USE_FILE} )
-include( ${TubeTK_SOURCE_DIR}/CMake/Slicer4MacroSetPluginsOutputPath.cmake )
+#include( ${TubeTK_SOURCE_DIR}/CMake/Slicer4MacroSetPluginsOutputPath.cmake )
 include( ${SlicerExecutionModel_DIR}/CMake/SEMMacroBuildCLI.cmake )
 
 if( TubeTK_USE_VTK )
@@ -558,10 +543,10 @@ if( MSVC )
       list( APPEND TubeTK_EXECUTABLE_DIRS
         ${VTK_DIR}/bin/${_build_type} )
     endif( TubeTK_USE_VTK )
-    if( TubeTK_USE_SLICER )
+    if( TubeTK_BUILD_SLICER_MODULES )
       list( APPEND TubeTK_EXECUTABLE_DIRS
         ${Slicer_DIR}/bin/${_build_type} )
-    endif( TubeTK_USE_SLICER )
+    endif( TubeTK_BUILD_SLICER_MODULES )
   endforeach()
 else( MSVC )
   set( TubeTK_EXECUTABLE_DIRS
@@ -595,7 +580,7 @@ if( WIN32 )
   endif()
 
   set(TubeTK_LAUNCHER ${TubeTK_BINARY_DIR}/TubeTKLauncher.bat)
-elseif( UNIX AND TubeTK_USE_SLICER )
+elseif( UNIX AND TubeTK_BUILD_SLICER_MODULES )
   # Apple OS X, Linux, or UNIX.
   set(_launcher_platform "unix")
   configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKLauncher.sh.in
@@ -613,28 +598,34 @@ endif()
 message(STATUS "Configuring Launcher script - ok [${_launcher_platform}]")
 
 # Setup to conform to 3D Slicer paths and define plugin copying macros.
-if( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_SLICER )
-  include( Slicer4MacroGetSource )
+if( TubeTK_BUILD_APPLICATIONS AND NOT TubeTK_BUILD_SLICER_MODULES )
+  set( TubeTK_SLICER_SOURCE_DIR "${TubeTK_BINARY_DIR}/Slicer" )
+  set( TubeTK_SLICER_BINARY_DIR "${TubeTK_BINARY_DIR}/Slicer-build" )
+  make_directory( ${TubeTK_SLICER_SOURCE_DIR} )
+  make_directory( ${TubeTK_SLICER_BINARY_DIR} )
 
-  Slicer4MacroGetSource( Resources )
-  Slicer4MacroGetSource( Base/CLI )
-  Slicer4MacroGetSource( Libs/ITKFactoryRegistration )
+  include( TubeTKSlicer4MacroGetSource )
 
-  Slicer4MacroGetCLISource( ExpertAutomatedRegistration )
+  TubeTKSlicer4MacroGetSource( Resources )
+  TubeTKSlicer4MacroGetSource( Base/CLI )
+  TubeTKSlicer4MacroGetSource( Libs/ITKFactoryRegistration )
+
+  # Get slicer registration library used in TubeTK
+  TubeTKSlicer4MacroGetCLISource( ExpertAutomatedRegistration )
+  set( SUPPORT_2D_IMAGES on )
 
   # Build ITKFactorRegistration
   set( CXX_TEST_PATH ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR} )
   set( LAUNCH_EXE "" )
-  set( SUPPORT_2D_IMAGES on )
 
   set( ITKFactoryRegistration_INSTALL_BIN_DIR ${TubeTK_INSTALL_BIN_DIR} )
   set( ITKFactoryRegistration_INSTALL_LIB_DIR ${TubeTK_INSTALL_LIB_DIR} )
-  add_subdirectory( ${Slicer_SOURCE_DIR}/Libs/ITKFactoryRegistration
+  add_subdirectory( ${TubeTK_SLICER_SOURCE_DIR}/Libs/ITKFactoryRegistration
     ${TubeTK_SLICER_BINARY_DIR}/Libs/ITKFactoryRegistration )
-  include_directories( ${Slicer_BINARY_DIR}/Libs/itkFactoryRegistration )
+  include_directories( ${TubeTK_SLICER_BINARY_DIR}/Libs/itkFactoryRegistration )
 
   # Build SlicerBaseCLI
-  add_subdirectory( ${Slicer_SOURCE_DIR}/Base/CLI
+  add_subdirectory( ${TubeTK_SLICER_SOURCE_DIR}/Base/CLI
     ${TubeTK_SLICER_BINARY_DIR}/Base/CLI )
 
   # Config SlicerExecutionModel
@@ -645,15 +636,14 @@ if( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_SLICER )
   set( SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES
     ${extras}
     CACHE INTERNAL "3D Slicer execution model extra libraries." FORCE )
-
-endif( TubeTK_BUILD_MODULES AND NOT TubeTK_USE_SLICER )
+endif( TubeTK_BUILD_APPLICATIONS AND NOT TubeTK_BUILD_SLICER_MODULES )
 
 include( TubeTKMacroInstallPlugins )
 
 # Setup Python VirtualEnv for testing.
-if( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_USE_SLICER )
+if( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_SLICER_MODULES )
   include( TubeTKVirtualEnvSetup )
-endif( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_USE_SLICER )
+endif( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_SLICER_MODULES )
 
 # Test TubeTK IPython examples.
 if( TubeTK_USE_NOTEBOOKS )
@@ -662,14 +652,12 @@ endif( TubeTK_USE_NOTEBOOKS )
 
 add_subdirectory( Utilities )
 add_subdirectory( Base )
-if( TubeTK_BUILD_MODULES )
+if( TubeTK_BUILD_APPLICATIONS )
   add_subdirectory( Applications )
-endif( TubeTK_BUILD_MODULES )
-
-# Optionally build 3D Slicer modules.
-if( TubeTK_BUILD_MODULES AND TubeTK_USE_SLICER )
-  add_subdirectory( SlicerModules )
-endif( TubeTK_BUILD_MODULES AND TubeTK_USE_SLICER )
+  if( TubeTK_BUILD_SLICER_MODULES )
+    add_subdirectory( SlicerModules )
+  endif( TubeTK_BUILD_SLICER_MODULES )
+endif( TubeTK_BUILD_APPLICATIONS )
 
 # Create the directory where CTest unit tests store temporary results.
 make_directory( ${TubeTK_BINARY_DIR}/Temporary )
@@ -715,8 +703,8 @@ configure_file( ${TubeTK_SOURCE_DIR}/CMake/UseTubeTK.cmake.in
   ${TubeTK_CONFIG_BINARY_DIR}/UseTubeTK.cmake @ONLY )
 
 # Configure CPack packaging.
-if( NOT TubeTK_USE_SLICER )
+if( NOT TubeTK_BUILD_SLICER_MODULES )
   include( TubeTKCPackConfig )
- else( NOT TubeTK_USE_SLICER )
+ else( NOT TubeTK_BUILD_SLICER_MODULES )
   include( ${Slicer_EXTENSION_CPACK} )
-endif( NOT TubeTK_USE_SLICER )
+endif( NOT TubeTK_BUILD_SLICER_MODULES )

@@ -52,8 +52,6 @@ add_library( TubeTKCommon STATIC
 
 TubeTKMacroInstallPlugins( TubeTKCommon )
 
-#add_executable( ImageCompareCommand ImageCompareCommand.cxx )
-#target_link_libraries( ImageCompareCommand ${ITK_LIBRARIES} )
 SEMMacroBuildCLI(
   NAME "ImageCompareCommand"
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
@@ -62,9 +60,8 @@ SEMMacroBuildCLI(
     #${TubeTK_SOURCE_DIR}/Base/CLI
     #${TubeTK_SOURCE_DIR}/Base/Common
     #${TubeTK_SOURCE_DIR}/Base/Filtering
-    ${Slicer_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration
-    ${Slicer_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration/ITKRegistrationHelper )
-
+    ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration
+    ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration/ITKRegistrationHelper )
 
 add_executable( JsonCompareCommand JsonCompareCommand.cxx )
 target_link_libraries( JsonCompareCommand

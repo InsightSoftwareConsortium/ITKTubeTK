@@ -65,7 +65,7 @@ configure_file( ${MODULE_NAME}Tuner.json.in
   ${TEMP}/${MODULE_NAME}Tuner.json )
 
 # Needs ParameterSerializer
-if( NOT TubeTK_USE_SLICER )
+if( NOT TubeTK_BUILD_SLICER_MODULES )
   if( TubeTK_USE_PYQTGRAPH )
     Midas3FunctionAddTest( NAME ${MODULE_NAME}TunerTest
       COMMAND ${PYTHON_TESTING_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../${MODULE_NAME}Tuner.py
@@ -81,4 +81,4 @@ if( NOT TubeTK_USE_SLICER )
     MIDAS{Branch.n020.mha.md5}
     MIDAS{tube.tre.md5}
     ${TEMP}/${METRIC_SAMPLER}Test2.mha )
-endif( NOT TubeTK_USE_SLICER )
+endif( NOT TubeTK_BUILD_SLICER_MODULES )
