@@ -147,6 +147,8 @@ int QtImageEditor::loadImage(std::string path)
     return 0;
     }
   reader->SetFileName( filePathToLoad.toLatin1().data() );
+  QStringList fileName = filePathToLoad.split("/");
+  setWindowTitle("ImageEditor: " + fileName.at(fileName.count() -1));
 
   qDebug() << "loading image " << filePathToLoad << " ... ";
   try
@@ -177,6 +179,8 @@ int QtImageEditor::loadImage()
     return 0;
     }
   reader->SetFileName( filePathToLoad.toLatin1().data() );
+  QStringList fileName = filePathToLoad.split("/");
+  setWindowTitle("ImageEditor: " + fileName.at(fileName.count() -1));
 
   qDebug() << "loading image " << filePathToLoad << " ... ";
   try

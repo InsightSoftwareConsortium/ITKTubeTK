@@ -10,8 +10,6 @@
     <parameters>
         <file>
             <name>inputImage</name>
-            <flag>i</flag>
-            <longflag>inputImage</longflag>
             <label>Input Image</label>
             <description>Input Image.</description>
         </file>

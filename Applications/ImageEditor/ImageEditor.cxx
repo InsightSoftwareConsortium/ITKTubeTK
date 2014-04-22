@@ -45,13 +45,37 @@ using namespace tube;
 
 int main( int argc, char* argv[] )
 {
+  if(argc == 1 )
+    {
+    QApplication myApp( argc, argv );
+
+    QtImageEditor qtSlicerWindow(0,0);
+
+    qtSlicerWindow.setWindowTitle("ImageEditor");
+    myApp.setStyle(new QPlastiqueStyle );
+    QPalette p( QColor( 239, 239, 239 ) );
+    myApp.setPalette( p );
+    qtSlicerWindow.show();
+    int execReturn;
+    try
+      {
+      execReturn = myApp.exec();
+      }
+    catch (itk::ExceptionObject & e)
+      {
+      std::cerr << "Exception during GUI execution" << std::endl;
+      std::cerr << e << std::endl;
+      return EXIT_FAILURE;
+      }
+    return execReturn;
+    }
   PARSE_ARGS;
 
   QApplication myApp( argc, argv );
 
   QtImageEditor qtSlicerWindow(0,0);
 
-  qtSlicerWindow.setWindowTitle("Insight Qt Slicer" );
+  qtSlicerWindow.setWindowTitle("ImageEditor");
   myApp.setStyle(new QPlastiqueStyle );
   QPalette p( QColor( 239, 239, 239 ) );
   myApp.setPalette( p );
