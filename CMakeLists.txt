@@ -219,6 +219,9 @@ include( TubeTKSlicer4Config )
 option( TubeTK_USE_BOOST
   "Use the Boost libraries to enable additional functionality." OFF )
 if( TubeTK_USE_BOOST )
+  set( Boost_USE_STATIC_LIBS ON )
+  set( Boost_USE_MULTITHREADED ON )
+  set( Boost_USE_STATIC_RUNTIME OFF )
   find_package( Boost REQUIRED )
   if( NOT Boost_FOUND )
     set( BOOST_ROOT "NOT_FOUND" CACHE PATH
@@ -226,6 +229,7 @@ if( TubeTK_USE_BOOST )
     mark_as_advanced( CLEAR BOOST_ROOT )
   endif( NOT Boost_FOUND )
 endif( TubeTK_USE_BOOST )
+
 
 #
 #  Cppcheck setup.
@@ -484,6 +488,13 @@ if( TubeTK_USE_LIBSVM )
   find_package( LIBSVM REQUIRED )
 endif( TubeTK_USE_LIBSVM )
 
+if( TubeTK_USE_BOOST )
+  set( Boost_USE_STATIC_LIBS ON )
+  set( Boost_USE_MULTITHREADED ON )
+  set( Boost_USE_STATIC_RUNTIME OFF )
+  find_package( Boost REQUIRED )
+endif( TubeTK_USE_BOOST )
+
 find_package( ParameterSerializer REQUIRED )
 include_directories( ${ParameterSerializer_INCLUDE_DIRS} )
 
@@ -511,7 +522,6 @@ set( SlicerExecutionModel_CLI_ARCHIVE_OUTPUT_DIRECTORY
 
 find_package( SlicerExecutionModel REQUIRED GenerateCLP )
 include( ${GenerateCLP_USE_FILE} )
-#include( ${TubeTK_SOURCE_DIR}/CMake/Slicer4MacroSetPluginsOutputPath.cmake )
 include( ${SlicerExecutionModel_DIR}/CMake/SEMMacroBuildCLI.cmake )
 
 if( TubeTK_USE_VTK )
@@ -530,12 +540,13 @@ test_big_endian( CMAKE_WORDS_BIGENDIAN )
 # Set TubeTK_EXECUTABLE_DIRS useful to configure launcher scripts
 # and set TubeTK_LIBRARY_DIRS
 if( MSVC )
-  set(TubeTK_EXECUTABLE_DIRS )
+  set(TubeTK_EXECUTABLE_DIRS CACHE INTERNAL "Bin and Lib dirs for running apps." FORCE )
   foreach(_build_type "" Debug Release)
     list( APPEND TubeTK_EXECUTABLE_DIRS
       ${JsonCpp_DIR}/bin/${_build_type}
       ${ParameterSerializer_DIR}/bin/${_build_type}
       ${GenerateCLP_DIR}/${_build_type}
+      ${Boost_LIBRARY_DIR}
       ${ITK_DIR}/bin/${_build_type}
       ${TubeTK_BINARY_DIR}/bin/${_build_type}
       ${TubeTK_BINARY_DIR}/lib/TubeTK/Plugins/${_build_type} )
@@ -553,10 +564,12 @@ else( MSVC )
     ${JsonCpp_DIR}/bin
     ${ParameterSerializer_DIR}/bin
     ${GenerateCLP_DIR}
+    ${Boost_LIBRARY_DIR}
     ${ITK_DIR}/bin
     ${TubeTK_BINARY_DIR}/bin
     ${TubeTK_BINARY_DIR}/lib
-    ${TubeTK_BINARY_DIR}/lib/TubeTK/Plugins )
+    ${TubeTK_BINARY_DIR}/lib/TubeTK/Plugins
+    CACHE INTERNAL "Bin and Lib dirs for running apps." FORCE )
   if( TubeTK_USE_VTK )
     list( APPEND ${VTK_DIR}/bin )
   endif( TubeTK_USE_VTK )
