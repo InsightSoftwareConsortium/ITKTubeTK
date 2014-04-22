@@ -219,6 +219,9 @@ include( TubeTKSlicer4Config )
 option( TubeTK_USE_BOOST
   "Use the Boost libraries to enable additional functionality." OFF )
 if( TubeTK_USE_BOOST )
+  set( Boost_USE_STATIC_LIBS ON )
+  set( Boost_USE_MULTITHREADED ON )
+  set( Boost_USE_STATIC_RUNTIME OFF )
   find_package( Boost REQUIRED )
   if( NOT Boost_FOUND )
     set( BOOST_ROOT "NOT_FOUND" CACHE PATH
@@ -486,6 +489,9 @@ if( TubeTK_USE_LIBSVM )
 endif( TubeTK_USE_LIBSVM )
 
 if( TubeTK_USE_BOOST )
+  set( Boost_USE_STATIC_LIBS ON )
+  set( Boost_USE_MULTITHREADED ON )
+  set( Boost_USE_STATIC_RUNTIME OFF )
   find_package( Boost REQUIRED )
 endif( TubeTK_USE_BOOST )
 

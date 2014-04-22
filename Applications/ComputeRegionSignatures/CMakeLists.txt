@@ -37,6 +37,9 @@ include( ${ITK_USE_FILE} )
 
 # Find Boost
 set( Boost_ADDITIONAL_VERSIONS "1.51 1.52 1.53 1.54" )
+set( Boost_USE_STATIC_LIBS ON )
+set( Boost_USE_MULTITHREADED ON )
+set( Boost_USE_STATIC_RUNTIME OFF )
 find_package(Boost 1.49 COMPONENTS system filesystem REQUIRED)
 
 #-----------------------------------------------------------------------------
@@ -45,7 +48,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -ffast-math -msse3" ${CMAKE_FLAGS_RELEASE})
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
+  TARGET_LIBRARIES
+    ${ITK_LIBRARIES} ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
   INCLUDE_DIRECTORIES
     ${Boost_INCLUDE_DIRS}
     ${TubeTK_SOURCE_DIR}/Utilities
