@@ -162,6 +162,10 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
     # Git
     "HEAD is now"
 
+    #Mac Framework
+    "System/Library/Frameworks"
+
+    "VTK_LEGACY"
     "boost_1_5"
     "C4251"
     "C4996"
