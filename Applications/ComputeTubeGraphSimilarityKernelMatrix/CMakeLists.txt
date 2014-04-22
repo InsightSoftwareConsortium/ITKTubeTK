@@ -44,7 +44,7 @@ find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
 # Find Boost
-set( Boost_ADDITIONAL_VERSIONS "1.51" )
+set( Boost_ADDITIONAL_VERSIONS "1.51 1.52 1.53 1.54" )
 find_package( Boost 1.49 COMPONENTS system filesystem REQUIRED )
 
 if( CMAKE_COMPILER_IS_GNUCXX )
@@ -54,8 +54,10 @@ endif( CMAKE_COMPILER_IS_GNUCXX )
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
-  ADDITIONAL_SRCS GraphKernel.cxx tubeShortestPathKernel.cxx tubeWLSubtreeKernel.cxx
+  TARGET_LIBRARIES
+    ${ITK_LIBRARIES} ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
+  ADDITIONAL_SRCS
+    GraphKernel.cxx tubeShortestPathKernel.cxx tubeWLSubtreeKernel.cxx
   INCLUDE_DIRECTORIES
     ${Boost_INCLUDE_DIRS}
     ${TubeTK_SOURCE_DIR}/Base/CLI
