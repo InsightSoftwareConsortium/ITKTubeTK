@@ -21,12 +21,14 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "itkGeneralizedDistanceTransformImageFilter.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 
 #include <itkImageToImageRegistrationHelper.h>
 #include <itkSignedDanielssonDistanceMapImageFilter.h>
 #include <itkTimeProbesCollectorBase.h>
+#include <itkBinaryThresholdImageFilter.h>
 
 #include "MergeAdjacentImagesCLP.h"
 
@@ -253,6 +255,7 @@ int DoIt( int argc, char * argv[] )
   typename RegFilterType::Pointer regOp = RegFilterType::New();
   regOp->SetFixedImage( curImage1 );
   regOp->SetMovingImage( curImage2 );
+  regOp->SetRigidMetricMethodEnum( RegFilterType::RigidRegistrationMethodType::NORMALIZED_CORRELATION_METRIC );
   regOp->SetSampleFromOverlap( true );
   regOp->SetEnableLoadedRegistration( false );
   regOp->SetEnableInitialRegistration( false );
@@ -265,7 +268,10 @@ int DoIt( int argc, char * argv[] )
   regOp->SetExpectedRotationMagnitude( expectedRotation );
 
   regOp->Initialize();
+  std::cout << "HERE1" << std::endl;
+  regOp->SetReportProgress( true );
   regOp->Update();
+  std::cout << "HERE2" << std::endl;
 
   if( saveTransform.size() > 1 )
     {
@@ -336,15 +342,27 @@ int DoIt( int argc, char * argv[] )
 
 
   timeCollector.Start("Out Distance Map");
-  typedef typename itk::DanielssonDistanceMapImageFilter< ImageType,
-    ImageType>   MapFilterType;
+  typedef typename itk::GeneralizedDistanceTransformImageFilter< ImageType,
+    ImageType >   MapFilterType;
   typename MapFilterType::Pointer mapDistFilter = MapFilterType::New();
-  mapDistFilter->SetInput( outImageMap );
-  mapDistFilter->SetInputIsBinary( false );
-  mapDistFilter->SetUseImageSpacing( false );
+
+  std::cout << "HERE" << std::endl;
+  typedef itk::BinaryThresholdImageFilter<ImageType, ImageType> Indicator;
+  typename Indicator::Pointer indicator = Indicator::New();
+  indicator->SetLowerThreshold(0);
+  indicator->SetUpperThreshold(0);
+  indicator->SetOutsideValue(0);
+  indicator->SetInsideValue( mapDistFilter->GetMaximalSquaredDistance() );
+  indicator->SetInput( outImageMap );
+  indicator->Update();
+
+  mapDistFilter->SetInput1( indicator->GetOutput() );
+  mapDistFilter->SetInput2( outImageMap );
+  mapDistFilter->UseImageSpacingOff();
+  mapDistFilter->CreateVoronoiMapOn();
   mapDistFilter->Update();
   typename ImageType::Pointer outImageDistMap =
-    mapDistFilter->GetDistanceMap();
+    mapDistFilter->GetOutput();
   typename ImageType::Pointer outImageVoronoiMap =
     mapDistFilter->GetVoronoiMap();
   timeCollector.Stop("Out Distance Map");
@@ -352,6 +370,7 @@ int DoIt( int argc, char * argv[] )
   progress += 1.0/(double)inputVolume2.size() * 0.2;
   progressReporter.Report( progress );
 
+  timeCollector.Start("Distance Map Selection");
   typename ImageType::Pointer vorImageMap = ImageType::New();
   vorImageMap->CopyInformation( outImage );
   vorImageMap->SetRegions( outImage->GetLargestPossibleRegion() );
@@ -371,19 +390,29 @@ int DoIt( int argc, char * argv[] )
     ++iterOutVor;
     ++iterVorMap;
     }
+  timeCollector.Stop("Distance Map Selection");
+
+  typename MapFilterType::Pointer mapVorFilter = MapFilterType::New();
 
   timeCollector.Start("Voronoi Distance Map");
-  typedef typename itk::SignedDanielssonDistanceMapImageFilter< ImageType,
-    ImageType>   SignedMapFilterType;
-  typename SignedMapFilterType::Pointer mapVorFilter =
-    SignedMapFilterType::New();
-  mapVorFilter->SetInput( vorImageMap );
-  mapVorFilter->SetUseImageSpacing( false );
+  typename Indicator::Pointer indicator2 = Indicator::New();
+  indicator2->SetLowerThreshold(0);
+  indicator2->SetUpperThreshold(0);
+  indicator2->SetOutsideValue(0);
+  indicator2->SetInsideValue( mapVorFilter->GetMaximalSquaredDistance() );
+  indicator2->SetInput( vorImageMap );
+  indicator2->Update();
+
+  mapVorFilter->SetInput1( indicator2->GetOutput() );
+  mapVorFilter->SetInput2( vorImageMap );
+  mapVorFilter->UseImageSpacingOff();
+  mapVorFilter->CreateVoronoiMapOn();
   mapVorFilter->Update();
   typename ImageType::Pointer vorImageDistMap =
-    mapVorFilter->GetDistanceMap();
+    mapVorFilter->GetOutput();
   timeCollector.Stop("Voronoi Distance Map");
 
+  timeCollector.Start("Voronoi Distance Selection");
   iter2.GoToBegin();
   iterOut.GoToBegin();
   itk::ImageRegionIteratorWithIndex< ImageType > iterOutDistMap(
@@ -441,6 +470,7 @@ int DoIt( int argc, char * argv[] )
     ++iterOutDistMap;
     ++iterVorDistMap;
     }
+  timeCollector.Stop("Voronoi Distance Selection");
 
   timeCollector.Start("Save data");
   writer->SetFileName( outputVolume.c_str() );
