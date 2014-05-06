@@ -25,6 +25,7 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 
+#include <itkImageRegionIteratorWithIndex.h>
 #include <itkImageToImageRegistrationHelper.h>
 #include <itkSignedDanielssonDistanceMapImageFilter.h>
 #include <itkTimeProbesCollectorBase.h>
@@ -232,30 +233,14 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
   timeCollector.Stop("Allocate output image");
 
-  timeCollector.Start("Load data");
-  reader2->SetFileName( inputVolume2.c_str() );
-  try
-    {
-    reader2->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
-    timeCollector.Stop("Load data");
-    timeCollector.Report();
-    return EXIT_FAILURE;
-    }
-  curImage2 = reader2->GetOutput();
-  timeCollector.Stop("Load data");
-
-  timeCollector.Start("Register images");
+  typename ImageType::ConstPointer tmpImage;
   typedef typename itk::ImageToImageRegistrationHelper< ImageType >
-                                                            RegFilterType;
+    RegFilterType;
   typename RegFilterType::Pointer regOp = RegFilterType::New();
   regOp->SetFixedImage( curImage1 );
   regOp->SetMovingImage( curImage2 );
-  regOp->SetRigidMetricMethodEnum( RegFilterType::RigidRegistrationMethodType::NORMALIZED_CORRELATION_METRIC );
+  regOp->SetRigidMetricMethodEnum( RegFilterType::
+    RigidRegistrationMethodType::NORMALIZED_CORRELATION_METRIC );
   regOp->SetSampleFromOverlap( true );
   regOp->SetEnableLoadedRegistration( false );
   regOp->SetEnableInitialRegistration( false );
@@ -268,209 +253,253 @@ int DoIt( int argc, char * argv[] )
   regOp->SetExpectedRotationMagnitude( expectedRotation );
 
   regOp->Initialize();
-  std::cout << "HERE1" << std::endl;
-  regOp->SetReportProgress( true );
-  regOp->Update();
-  std::cout << "HERE2" << std::endl;
+  if( iterations > 0 )
+    {
+    timeCollector.Start("Register images");
+    regOp->SetReportProgress( true );
+    regOp->Update();
+    timeCollector.Stop("Register images");
+    }
 
   if( saveTransform.size() > 1 )
     {
     regOp->SaveTransform( saveTransform );
     }
-  timeCollector.Stop("Register images");
 
   timeCollector.Start("Resample Image");
   regOp->SetFixedImage( outImage );
-  typename ImageType::ConstPointer tmpImage = regOp->ResampleImage(
+  tmpImage = regOp->ResampleImage(
     RegFilterType::OptimizedRegistrationMethodType::
     NEAREST_NEIGHBOR_INTERPOLATION,
-    NULL, NULL, NULL, background );
-
-  typename ImageType::Pointer curImage2Reg = ImageType::New();
-  curImage2Reg->CopyInformation( tmpImage );
-  curImage2Reg->SetRegions( tmpImage->GetLargestPossibleRegion() );
-  curImage2Reg->Allocate();
-  curImage2Reg->FillBuffer( background );
-
-  typename ImageType::Pointer outImageMap = ImageType::New();
-  outImageMap->CopyInformation( tmpImage );
-  outImageMap->SetRegions( tmpImage->GetLargestPossibleRegion() );
-  outImageMap->Allocate();
-  outImageMap->FillBuffer( 3 );
-  itk::ImageRegionConstIteratorWithIndex< ImageType > iterTmp(
-    tmpImage, tmpImage->GetLargestPossibleRegion() );
-  itk::ImageRegionIteratorWithIndex< ImageType > iter2(
-    curImage2Reg, curImage2Reg->GetLargestPossibleRegion() );
-  itk::ImageRegionIteratorWithIndex< ImageType > iterOut(
-    outImage, outImage->GetLargestPossibleRegion() );
-  itk::ImageRegionIteratorWithIndex< ImageType > iterOutMap(
-    outImageMap, outImageMap->GetLargestPossibleRegion() );
-
-  while( !iter2.IsAtEnd() )
-    {
-    double iVal = iterTmp.Get();
-    iter2.Set( iVal );
-    bool image2Point = false;
-    if( iVal != background && (!mask || iVal != 0) )
-      {
-      image2Point = true;
-      }
-    double oVal = iterOut.Get();
-    bool imageOutPoint = false;
-    if( oVal != background && (!mask || oVal != 0) )
-      {
-      imageOutPoint = true;
-      }
-    if( image2Point && imageOutPoint )
-      {
-      iterOutMap.Set( 0 );
-      }
-    else if( image2Point )
-      {
-      iterOutMap.Set( 2 );
-      }
-    else if( imageOutPoint )
-      {
-      iterOutMap.Set( 1 );
-      }
-    ++iterTmp;
-    ++iter2;
-    ++iterOut;
-    ++iterOutMap;
-    }
+    curImage2, NULL, NULL, background );
   timeCollector.Stop("Resample Image");
 
-
-  timeCollector.Start("Out Distance Map");
-  typedef typename itk::GeneralizedDistanceTransformImageFilter< ImageType,
-    ImageType >   MapFilterType;
-  typename MapFilterType::Pointer mapDistFilter = MapFilterType::New();
-
-  std::cout << "HERE" << std::endl;
-  typedef itk::BinaryThresholdImageFilter<ImageType, ImageType> Indicator;
-  typename Indicator::Pointer indicator = Indicator::New();
-  indicator->SetLowerThreshold(0);
-  indicator->SetUpperThreshold(0);
-  indicator->SetOutsideValue(0);
-  indicator->SetInsideValue( mapDistFilter->GetMaximalSquaredDistance() );
-  indicator->SetInput( outImageMap );
-  indicator->Update();
-
-  mapDistFilter->SetInput1( indicator->GetOutput() );
-  mapDistFilter->SetInput2( outImageMap );
-  mapDistFilter->UseImageSpacingOff();
-  mapDistFilter->CreateVoronoiMapOn();
-  mapDistFilter->Update();
-  typename ImageType::Pointer outImageDistMap =
-    mapDistFilter->GetOutput();
-  typename ImageType::Pointer outImageVoronoiMap =
-    mapDistFilter->GetVoronoiMap();
-  timeCollector.Stop("Out Distance Map");
-
-  progress += 1.0/(double)inputVolume2.size() * 0.2;
-  progressReporter.Report( progress );
-
-  timeCollector.Start("Distance Map Selection");
-  typename ImageType::Pointer vorImageMap = ImageType::New();
-  vorImageMap->CopyInformation( outImage );
-  vorImageMap->SetRegions( outImage->GetLargestPossibleRegion() );
-  vorImageMap->Allocate();
-  vorImageMap->FillBuffer( 1 );
-  itk::ImageRegionConstIteratorWithIndex< ImageType > iterOutVor(
-    outImageVoronoiMap, outImageVoronoiMap->GetLargestPossibleRegion() );
-  itk::ImageRegionIteratorWithIndex< ImageType > iterVorMap(
-    vorImageMap, vorImageMap->GetLargestPossibleRegion() );
-  while( !iterOutVor.IsAtEnd() )
+  if( averagePixels )
     {
-    double tf = iterOutVor.Get();
-    if( tf != 1 )
+    itk::ImageRegionConstIteratorWithIndex< ImageType > iter2( tmpImage,
+      tmpImage->GetLargestPossibleRegion() );
+    itk::ImageRegionIteratorWithIndex< ImageType > iterOut( outImage,
+      outImage->GetLargestPossibleRegion() );
+    while( !iter2.IsAtEnd() )
       {
-      iterVorMap.Set( 0 );
-      }
-    ++iterOutVor;
-    ++iterVorMap;
-    }
-  timeCollector.Stop("Distance Map Selection");
-
-  typename MapFilterType::Pointer mapVorFilter = MapFilterType::New();
-
-  timeCollector.Start("Voronoi Distance Map");
-  typename Indicator::Pointer indicator2 = Indicator::New();
-  indicator2->SetLowerThreshold(0);
-  indicator2->SetUpperThreshold(0);
-  indicator2->SetOutsideValue(0);
-  indicator2->SetInsideValue( mapVorFilter->GetMaximalSquaredDistance() );
-  indicator2->SetInput( vorImageMap );
-  indicator2->Update();
-
-  mapVorFilter->SetInput1( indicator2->GetOutput() );
-  mapVorFilter->SetInput2( vorImageMap );
-  mapVorFilter->UseImageSpacingOff();
-  mapVorFilter->CreateVoronoiMapOn();
-  mapVorFilter->Update();
-  typename ImageType::Pointer vorImageDistMap =
-    mapVorFilter->GetOutput();
-  timeCollector.Stop("Voronoi Distance Map");
-
-  timeCollector.Start("Voronoi Distance Selection");
-  iter2.GoToBegin();
-  iterOut.GoToBegin();
-  itk::ImageRegionIteratorWithIndex< ImageType > iterOutDistMap(
-    outImageDistMap, outImageDistMap->GetLargestPossibleRegion() );
-  itk::ImageRegionIteratorWithIndex< ImageType > iterVorDistMap(
-    vorImageDistMap, vorImageDistMap->GetLargestPossibleRegion() );
-  while( !iter2.IsAtEnd() )
-    {
-    double iVal = iter2.Get();
-    bool image2Point = false;
-    if( iVal != background && (!mask || iVal != 0) )
-      {
-      image2Point = true;
-      }
-    double oVal = iterOut.Get();
-    bool imageOutPoint = false;
-    if( oVal != background && (!mask || oVal != 0) )
-      {
-      imageOutPoint = true;
-      }
-
-    if( imageOutPoint )
-      {
-      if( image2Point )
+      double iVal = iter2.Get();
+      bool image2Point = false;
+      if( iVal != background && (!mask || iVal != 0) )
         {
-        double vDist = iterVorDistMap.Get();
-        double oDist = iterOutDistMap.Get();
+        image2Point = true;
+        }
+      double oVal = iterOut.Get();
+      bool imageOutPoint = false;
+      if( oVal != background && (!mask || oVal != 0) )
+        {
+        imageOutPoint = true;
+        }
 
-        if( vDist < 0 && !averagePixels )
-          {
-          vDist = -vDist;
-          double ratio = 0.5*vDist/(oDist+vDist) + 0.5;
-          oVal = ratio * oVal + (1-ratio)*iVal;
-          }
-        else if( vDist > 0 && !averagePixels )
-          {
-          double ratio = 0.5*vDist/(oDist+vDist) + 0.5;
-          oVal = ratio * iVal + (1-ratio)*oVal;
-          }
-        else
+      if( imageOutPoint )
+        {
+        if( image2Point )
           {
           oVal = 0.5 * iVal + 0.5 * oVal;
           }
         }
-      }
-    else if( image2Point )
-      {
-      oVal = iVal;
-      }
+      else if( image2Point )
+        {
+        oVal = iVal;
+        }
 
-    iterOut.Set( oVal );
+      iterOut.Set( oVal );
 
-    ++iter2;
-    ++iterOut;
-    ++iterOutDistMap;
-    ++iterVorDistMap;
+      ++iter2;
+      ++iterOut;
+      }
     }
-  timeCollector.Stop("Voronoi Distance Selection");
+  else
+    {
+    timeCollector.Start("Resample Image2");
+    typename ImageType::Pointer curImage2Reg = ImageType::New();
+    curImage2Reg->CopyInformation( tmpImage );
+    curImage2Reg->SetRegions( tmpImage->GetLargestPossibleRegion() );
+    curImage2Reg->Allocate();
+    curImage2Reg->FillBuffer( background );
+
+    typename ImageType::Pointer outImageMap = ImageType::New();
+    outImageMap->CopyInformation( tmpImage );
+    outImageMap->SetRegions( tmpImage->GetLargestPossibleRegion() );
+    outImageMap->Allocate();
+    outImageMap->FillBuffer( 3 );
+    itk::ImageRegionConstIteratorWithIndex< ImageType > iterTmp(
+      tmpImage, tmpImage->GetLargestPossibleRegion() );
+    itk::ImageRegionIteratorWithIndex< ImageType > iter2(
+      curImage2Reg, curImage2Reg->GetLargestPossibleRegion() );
+    itk::ImageRegionIteratorWithIndex< ImageType > iterOut(
+      outImage, outImage->GetLargestPossibleRegion() );
+    itk::ImageRegionIteratorWithIndex< ImageType > iterOutMap(
+      outImageMap, outImageMap->GetLargestPossibleRegion() );
+
+    while( !iter2.IsAtEnd() )
+      {
+      double iVal = iterTmp.Get();
+      iter2.Set( iVal );
+      bool image2Point = false;
+      if( iVal != background && (!mask || iVal != 0) )
+        {
+        image2Point = true;
+        }
+      double oVal = iterOut.Get();
+      bool imageOutPoint = false;
+      if( oVal != background && (!mask || oVal != 0) )
+        {
+        imageOutPoint = true;
+        }
+      if( image2Point && imageOutPoint )
+        {
+        iterOutMap.Set( 0 );
+        }
+      else if( image2Point )
+        {
+        iterOutMap.Set( 2 );
+        }
+      else if( imageOutPoint )
+        {
+        iterOutMap.Set( 1 );
+        }
+      ++iterTmp;
+      ++iter2;
+      ++iterOut;
+      ++iterOutMap;
+      }
+    timeCollector.Stop("Resample Image2");
+
+    timeCollector.Start("Out Distance Map");
+    typedef typename itk::GeneralizedDistanceTransformImageFilter<
+      ImageType, ImageType >   MapFilterType;
+    typename MapFilterType::Pointer mapDistFilter = MapFilterType::New();
+
+    typedef itk::BinaryThresholdImageFilter<ImageType, ImageType> Indicator;
+    typename Indicator::Pointer indicator = Indicator::New();
+    indicator->SetLowerThreshold(0);
+    indicator->SetUpperThreshold(0);
+    indicator->SetOutsideValue(0);
+    indicator->SetInsideValue( mapDistFilter->GetMaximalSquaredDistance() );
+    indicator->SetInput( outImageMap );
+    indicator->Update();
+
+    mapDistFilter->SetInput1( indicator->GetOutput() );
+    mapDistFilter->SetInput2( outImageMap );
+    mapDistFilter->UseImageSpacingOff();
+    mapDistFilter->CreateVoronoiMapOn();
+    mapDistFilter->Update();
+    typename ImageType::Pointer outImageDistMap =
+      mapDistFilter->GetOutput();
+    typename ImageType::Pointer outImageVoronoiMap =
+      mapDistFilter->GetVoronoiMap();
+    timeCollector.Stop("Out Distance Map");
+
+    progress += 1.0/(double)inputVolume2.size() * 0.2;
+    progressReporter.Report( progress );
+
+    timeCollector.Start("Distance Map Selection");
+    typename ImageType::Pointer vorImageMap = ImageType::New();
+    vorImageMap->CopyInformation( outImage );
+    vorImageMap->SetRegions( outImage->GetLargestPossibleRegion() );
+    vorImageMap->Allocate();
+    vorImageMap->FillBuffer( 1 );
+    itk::ImageRegionConstIteratorWithIndex< ImageType > iterOutVor(
+      outImageVoronoiMap, outImageVoronoiMap->GetLargestPossibleRegion() );
+    itk::ImageRegionIteratorWithIndex< ImageType > iterVorMap(
+      vorImageMap, vorImageMap->GetLargestPossibleRegion() );
+    while( !iterOutVor.IsAtEnd() )
+      {
+      double tf = iterOutVor.Get();
+      if( tf != 1 )
+        {
+        iterVorMap.Set( 0 );
+        }
+      ++iterOutVor;
+      ++iterVorMap;
+      }
+    timeCollector.Stop("Distance Map Selection");
+
+    typename MapFilterType::Pointer mapVorFilter = MapFilterType::New();
+
+    timeCollector.Start("Voronoi Distance Map");
+    typename Indicator::Pointer indicator2 = Indicator::New();
+    indicator2->SetLowerThreshold(0);
+    indicator2->SetUpperThreshold(0);
+    indicator2->SetOutsideValue(0);
+    indicator2->SetInsideValue( mapVorFilter->GetMaximalSquaredDistance() );
+    indicator2->SetInput( vorImageMap );
+    indicator2->Update();
+
+    mapVorFilter->SetInput1( indicator2->GetOutput() );
+    mapVorFilter->SetInput2( vorImageMap );
+    mapVorFilter->UseImageSpacingOff();
+    mapVorFilter->CreateVoronoiMapOn();
+    mapVorFilter->Update();
+    typename ImageType::Pointer vorImageDistMap =
+      mapVorFilter->GetOutput();
+    timeCollector.Stop("Voronoi Distance Map");
+
+    timeCollector.Start("Voronoi Distance Selection");
+    iter2.GoToBegin();
+    iterOut.GoToBegin();
+    itk::ImageRegionIteratorWithIndex< ImageType > iterOutDistMap(
+      outImageDistMap, outImageDistMap->GetLargestPossibleRegion() );
+    itk::ImageRegionIteratorWithIndex< ImageType > iterVorDistMap(
+      vorImageDistMap, vorImageDistMap->GetLargestPossibleRegion() );
+    while( !iter2.IsAtEnd() )
+      {
+      double iVal = iter2.Get();
+      bool image2Point = false;
+      if( iVal != background && (!mask || iVal != 0) )
+        {
+        image2Point = true;
+        }
+      double oVal = iterOut.Get();
+      bool imageOutPoint = false;
+      if( oVal != background && (!mask || oVal != 0) )
+        {
+        imageOutPoint = true;
+        }
+
+      if( imageOutPoint )
+        {
+        if( image2Point )
+          {
+          double vDist = iterVorDistMap.Get();
+          double oDist = iterOutDistMap.Get();
+
+          if( vDist < 0 && !averagePixels )
+            {
+            vDist = -vDist;
+            double ratio = 0.5*vDist/(oDist+vDist) + 0.5;
+            oVal = ratio * oVal + (1-ratio)*iVal;
+            }
+          else if( vDist > 0 && !averagePixels )
+            {
+            double ratio = 0.5*vDist/(oDist+vDist) + 0.5;
+            oVal = ratio * iVal + (1-ratio)*oVal;
+            }
+          else
+            {
+            oVal = 0.5 * iVal + 0.5 * oVal;
+            }
+          }
+        }
+      else if( image2Point )
+        {
+        oVal = iVal;
+        }
+
+      iterOut.Set( oVal );
+
+      ++iter2;
+      ++iterOut;
+      ++iterOutDistMap;
+      ++iterVorDistMap;
+      }
+    timeCollector.Stop("Voronoi Distance Selection");
+    }
 
   timeCollector.Start("Save data");
   writer->SetFileName( outputVolume.c_str() );
