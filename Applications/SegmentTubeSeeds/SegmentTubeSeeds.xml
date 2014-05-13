@@ -16,6 +16,7 @@
       <name>inputImage</name>
       <label>Input Image</label>
       <index>0</index>
+      <channel>input</channel>
       <description>Input volume list.</description>
       <default/>
     </image>
