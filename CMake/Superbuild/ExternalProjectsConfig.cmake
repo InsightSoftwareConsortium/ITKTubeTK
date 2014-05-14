@@ -63,10 +63,10 @@ set( ParameterSerializer_URL
   ${github_protocol}://github.com/TubeTK/TubeTK-ParameterSerializer.git )
 set( ParameterSerializer_HASH_OR_TAG fe360ce153bfe4efc36b276750d4606bb1d7b156 )
 
-# Slicer Execution Model snapshot 2014-02-18
+# Slicer Execution Model snapshot 2014-05-13
 set( SlicerExecutionModel_URL
   ${github_protocol}://github.com/Slicer/SlicerExecutionModel.git )
-set( SlicerExecutionModel_HASH_OR_TAG 46f3d892fc6deb9be2ce929257a5411d02c1ae75 )
+set( SlicerExecutionModel_HASH_OR_TAG e96f2965378cd9a9e5217cd43c8023350138b1cf )
 
 # Visualization Toolkit (3D Slicer fork) snapshot 2013-08-20 06:54:45
 set( VTK_URL ${github_protocol}://github.com/Slicer/VTK.git )
