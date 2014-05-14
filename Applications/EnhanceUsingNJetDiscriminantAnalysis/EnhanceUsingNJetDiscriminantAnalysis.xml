@@ -23,6 +23,7 @@
       <name>labelmap</name>
       <label>Label Map</label>
       <longflag>labelmap</longflag>
+      <channel>input</channel>
       <description>Label map that designates the object of interest and "other."</description>
       <default></default>
     </image>

@@ -23,6 +23,7 @@
       <name>labelmap</name>
       <label>Label Map</label>
       <longflag>labelmap</longflag>
+      <channel>input</channel>
       <description>Label map that designates the object of interest and "other."</description>
       <default></default>
     </image>
@@ -47,13 +48,13 @@
       <description>Value for unlabeled points in the label map.</description>
       <default>0</default>
     </integer>
-    <string>
+    <image>
       <name>outputVolume</name>
       <label>Output Volume Name</label>
       <index>1</index>
       <description>Output image having enhanced tubes</description>
-      <default></default>
-    </string>
+      <channel>output</channel>
+    </image>
   </parameters>
   <parameters advanced="true">
     <label>Basis Parameters</label>
