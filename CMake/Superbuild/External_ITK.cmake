@@ -33,7 +33,7 @@ set( proj ITK )
 
 # Sanity checks.
 if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
-  message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to a nonexistent directory" )
+  message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to a nonexistent directory (${${proj}_DIR})" )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 set( ${proj}_DEPENDENCIES "" )
