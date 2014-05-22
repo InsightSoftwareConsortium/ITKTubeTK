@@ -37,9 +37,6 @@ limitations under the License.
 //ImageEditor includes
 #include "ui_QtOverlayControlsWidgetGUI.h"
 
-//namespace Ui {
-//class Overlay;
-//}
 namespace tube
 {
 
@@ -81,6 +78,5 @@ private:
 
   Q_DISABLE_COPY(QtOverlayControlsWidget)
 };
-
 }
 #endif

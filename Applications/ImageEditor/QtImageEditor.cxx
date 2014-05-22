@@ -23,16 +23,21 @@ limitations under the License.
 
 //Qt includes
 #include <QDebug>
+#include <QDialogButtonBox>
 #include <QFileDialog>
 
 //QtImageViewer includes
 #include "QtGlSliceView.h"
+#include "ui_QtSlicerHelpGUI.h"
 
 //ImageEditor includes
 #include "QtImageEditor.h"
 #include "QtOverlayControlsWidget.h"
+#include "ui_QtOverlayControlsWidgetGUI.h"
 
-namespace tube{
+
+namespace tube {
+
 
 QtImageEditor::QtImageEditor(QWidget* parent, Qt::WindowFlags fl ) :
   QDialog( parent, fl )
@@ -200,7 +205,7 @@ bool QtImageEditor::loadImage(QString filePathToLoad)
 
 void QtImageEditor::loadOverlay(QString overlayImagePath)
 {
-  this->m_OverlayWidget->loadOverlay(overlayImagePath);
+  this->m_OverlayWidget->loadOverlay(path.toStdString());
 }
 
 
@@ -250,17 +255,11 @@ void QtImageEditor::applyFFT()
     {
     return;
     }
-  itk::TimeProbe clock;
-  clock.Start();
   qDebug()<<"Start FFT";
 
   //Compute the FFT
   this->m_FFTFilter->SetInput(this->m_ImageData);
   this->m_FFTFilter->Update();
-
-  clock.Stop();
-  qDebug()<<"Mean Time"<<clock.GetMean();
-  qDebug()<<"Total Time"<<clock.GetTotal();
 }
 
 
@@ -270,41 +269,79 @@ void QtImageEditor::applyInverseFFT()
     {
     return;
     }
-  itk::TimeProbe clock;
-  clock.Start();
   qDebug()<<"Start IFFT";
   this->m_InverseFFTFilter = InverseFFTType::New();
   this->m_InverseFFTFilter->SetInput(this->m_FFTFilter->GetOutput());
   this->m_InverseFFTFilter->Update();
   setInputImage(this->m_InverseFFTFilter->GetOutput());
-
-  clock.Stop();
-  qDebug()<<"Mean Time"<<clock.GetMean();
-  qDebug()<<"Total Time"<<clock.GetTotal();
 }
 
 
 void QtImageEditor::applyFilter()
 {
-  //Gaussian Filter
-  itk::TimeProbe clock;
-  clock.Start();
-  qDebug()<<"Start gaussian filter";
-  // Some FFT filter implementations, like VNL's, need the image size to be a
-  // multiple of small prime numbers.
-  this->m_PadFilter = PadFilterType::New();
-  this->m_PadFilter->SetInput( this->m_ImageData );
-  PadFilterType::SizeType padding;
-  // Input size is [48, 62, 42].  Pad to [48, 64, 48].
-  padding[0] = 0;
-  padding[1] = 0;
-  padding[2] = 64;
-  this->m_PadFilter->SetPadUpperBound( padding );
-  applyFFT();
+  itk::TimeProbe clockFFT;
+  itk::TimeProbe clockGaussian;
+  itk::TimeProbe clockIFFT;
 
+  clockFFT.Start();
+  applyFFT();
+  clockFFT.Stop();
+
+  qDebug()<<"Output FFT mean"<<clockFFT.GetMean();
+  qDebug()<<"Output FFT total"<<clockFFT.GetTotal();
   // A Gaussian is used here to create a low-pass filter.
-  GaussianSourceType::Pointer gaussianSource = GaussianSourceType::New();
-  gaussianSource->SetNormalized( true );
+  clockGaussian.Start();
+  qDebug()<<"Start gaussian filter";
+  GaussianDerivativeSourceType::VectorType order;
+  order[0] = 0;
+  order[1] = 1;
+  order[2] = 1;
+
+  GaussianDerivativeSourceType::Pointer gaussian =
+    this->createGaussianDerivative(order);
+  FFTShiftFilterType::Pointer fftShiftFilter = FFTShiftFilterType::New();
+  fftShiftFilter->SetInput( gaussian->GetOutput() );
+
+  clockGaussian.Stop();
+  qDebug()<<"Output Shift Filter mean"<<clockGaussian.GetMean();
+  qDebug()<<"Output Shift Filter meantime"<<QString::fromStdString(
+  clockGaussian.GetUnit());
+  qDebug()<<"Output Shift Filter"<<clockGaussian.GetTotal();
+  clockGaussian.Start();
+
+  MultiplyFilterType::Pointer multiplyFilter = MultiplyFilterType::New();
+  multiplyFilter->SetInput1( this->m_FFTFilter->GetOutput() );
+  multiplyFilter->SetInput2( fftShiftFilter->GetOutput() );
+
+  clockGaussian.Stop();
+  qDebug()<<"Output Multiply Filter"<<clockGaussian.GetMean();
+  qDebug()<<"Output Multiply Filter"<<clockGaussian.GetTotal();
+
+  clockIFFT.Start();
+  qDebug()<<"Start IFFT";
+  this->m_InverseFFTFilter = InverseFFTType::New();
+  this->m_InverseFFTFilter->SetInput(multiplyFilter->GetOutput());
+  this->m_InverseFFTFilter->Update();
+
+  clockIFFT.Stop();
+  qDebug()<<"Mean Time"<<clockIFFT.GetMean();
+  qDebug()<<"Total Time"<<clockIFFT.GetTotal();
+  qDebug()<<"Total"<<clockIFFT.GetTotal() + clockFFT.GetTotal() +
+  clockGaussian.GetTotal();
+
+  setInputImage(m_InverseFFTFilter->GetOutput());
+  this->OpenGlWindow->update();
+  show();
+}
+
+QtImageEditor::GaussianDerivativeSourceType::Pointer
+QtImageEditor::createGaussianDerivative(
+    GaussianDerivativeSourceType::VectorType order)
+{
+  GaussianDerivativeSourceType::Pointer gaussianDerivativeSource =
+  GaussianDerivativeSourceType::New();
+  gaussianDerivativeSource->SetNormalized( true );
+  this->m_FFTFilter->Update();
 
   ComplexImageType::ConstPointer transformedInput
     = this->m_FFTFilter->GetOutput();
@@ -318,51 +355,28 @@ void QtImageEditor::applyFilter()
     transformedInput->GetOrigin();
   const ComplexImageType::DirectionType inputDirection =
     transformedInput->GetDirection();
-  gaussianSource->SetSize( inputSize );
-  gaussianSource->SetSpacing( inputSpacing );
-  gaussianSource->SetOrigin( inputOrigin );
-  gaussianSource->SetDirection( inputDirection );
-  GaussianSourceType::ArrayType sigma;
-  GaussianSourceType::PointType mean;
+
+  gaussianDerivativeSource->SetSize( inputSize );
+  gaussianDerivativeSource->SetSpacing( inputSpacing );
+  gaussianDerivativeSource->SetOrigin( inputOrigin );
+  gaussianDerivativeSource->SetDirection( inputDirection );
+
+  GaussianDerivativeSourceType::ArrayType sigma;
+  GaussianDerivativeSourceType::PointType mean;
   const double sigmaLineEdit = m_SigmaLineEdit->text().toDouble();
-  //sigma.Fill( sigmaLineEdit );
 
   for( unsigned int ii = 0; ii < 3; ++ii )
     {
     const double halfLength = inputSize[ii]  / 2.0;
-    qDebug()<<"halfLength"<<halfLength<<"inputSize"<<inputSize[ii]
-              <<"inputOrigin"<<inputOrigin[ii];
-    sigma[ii] = sigmaLineEdit/** halfLength*/;
-    qDebug()<<"sigma"<<sigma[ii];
+    sigma[ii] = sigmaLineEdit;
     mean[ii] = inputOrigin[ii] + halfLength;
-    qDebug()<<"mean"<<mean[ii];
     }
-
   mean = inputDirection * mean;
-  for(int i=0; i<3; i++) qDebug()<<"mean"<<i<<": "<<mean[i];
-  gaussianSource->SetSigma( sigma );
-  gaussianSource->SetMean( mean );
-
-  FFTShiftFilterType::Pointer fftShiftFilter = FFTShiftFilterType::New();
-  fftShiftFilter->SetInput( gaussianSource->GetOutput() );
-
-  MultiplyFilterType::Pointer multiplyFilter = MultiplyFilterType::New();
-  multiplyFilter->SetInput1( this->m_FFTFilter->GetOutput() );
-  multiplyFilter->SetInput2( fftShiftFilter->GetOutput() );
-
-  clock.Stop();
-  qDebug()<<"Mean Time"<<clock.GetMean();
-
-  clock.Start();
-  qDebug()<<"Start IFFT";
-  this->m_InverseFFTFilter = InverseFFTType::New();
-  this->m_InverseFFTFilter->SetInput(multiplyFilter->GetOutput());
-  this->m_InverseFFTFilter->Update();
-  clock.Stop();
-  qDebug()<<"Mean Time"<<clock.GetMean();
-  setInputImage(this->m_InverseFFTFilter->GetOutput());
-  this->OpenGlWindow->update();
-  show();
+  gaussianDerivativeSource->SetSigma( sigma );
+  gaussianDerivativeSource->SetMean( mean );
+  gaussianDerivativeSource->SetOrdersVector(order);
+  gaussianDerivativeSource->Update();
+  return gaussianDerivativeSource;
 }
 
 

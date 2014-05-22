@@ -27,7 +27,6 @@ limitations under the License.
 #include <QApplication>
 #include <QDebug>
 #include <QFileDialog>
-#include <QPlastiqueStyle>
 
 //QtImageViewer includes
 #include "QtGlSliceView.h"

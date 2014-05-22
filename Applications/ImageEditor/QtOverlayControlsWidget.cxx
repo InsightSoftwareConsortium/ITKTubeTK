@@ -28,7 +28,8 @@ limitations under the License.
 #include <QDir>
 #include <QFileDialog>
 
-namespace tube{
+namespace tube
+{
 
 
 QtOverlayControlsWidget::QtOverlayControlsWidget(QWidget* parent)
