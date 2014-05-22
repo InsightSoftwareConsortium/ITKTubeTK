@@ -38,6 +38,8 @@ QtImageEditor::QtImageEditor(QWidget* parent, Qt::WindowFlags fl ) :
   QDialog( parent, fl )
 {
   this->m_ImageData = 0;
+  this->m_FFTFilter = FFTType::New();
+  this->m_ComplexeImage = 0;
   this->setupUi(this);
   this->Controls->setSliceView(this->OpenGlWindow);
 
@@ -47,17 +49,29 @@ QtImageEditor::QtImageEditor(QWidget* parent, Qt::WindowFlags fl ) :
   tabWidget->insertTab(0, this->Controls, "Controls");
 
   QWidget *filterControlWidget = new QWidget(tabWidget);
-  tabWidget->insertTab(1, filterControlWidget, "Filter");
+  tabWidget->insertTab(1, filterControlWidget, "FFT Filter");
 
   QGridLayout *filterGridLayout = new QGridLayout(filterControlWidget);
   this->m_SigmaLineEdit = new QLineEdit();
   this->m_SigmaLineEdit->setMaximumWidth(80);
-  this->m_SigmaLineEdit->setText("0.2");
-  filterGridLayout->addWidget(this->m_SigmaLineEdit, 0, 0);
+  this->m_SigmaLineEdit->setText("1");
+  filterGridLayout->addWidget(this->m_SigmaLineEdit, 2, 1);
 
-  QPushButton *applyButton = new QPushButton();
-  applyButton->setText("Apply");
-  filterGridLayout->addWidget(applyButton, 0, 1);
+  QLabel *sigmaLabel = new QLabel(filterControlWidget);
+  sigmaLabel->setText("Sigma:");
+  filterGridLayout->addWidget(sigmaLabel, 2, 0);
+
+  QPushButton *fftButton = new QPushButton();
+  fftButton->setText("FFT");
+  filterGridLayout->addWidget(fftButton, 0, 2);
+
+  QPushButton *inverseFFTButton = new QPushButton();
+  inverseFFTButton->setText("Inverse FFT");
+  filterGridLayout->addWidget(inverseFFTButton, 1, 2);
+
+  QPushButton *gaussianButton = new QPushButton();
+  gaussianButton->setText("FFT-BLUR-INVERSE FFT");
+  filterGridLayout->addWidget(gaussianButton, 2, 2);
 
   this->m_OverlayWidget = new QtOverlayControlsWidget(tabWidget);
   this->m_OverlayWidget->setSliceView(this->OpenGlWindow);
@@ -85,7 +99,9 @@ QtImageEditor::QtImageEditor(QWidget* parent, Qt::WindowFlags fl ) :
                    SLOT(setDisplaySliceNumber(int)));
   QObject::connect(OpenGlWindow, SIGNAL(sliceNumChanged(int)), this,
                    SLOT(setDisplaySliceNumber(int)));
-  QObject::connect(applyButton, SIGNAL(clicked()), this, SLOT(applyFilter()));
+  QObject::connect(fftButton, SIGNAL(clicked()), this, SLOT(applyFFT()));
+  QObject::connect(inverseFFTButton, SIGNAL(clicked()), this, SLOT(applyInverseFFT()));
+  QObject::connect(gaussianButton, SIGNAL(clicked()), this, SLOT(applyFilter()));
   QObject::connect(this->m_SigmaLineEdit, SIGNAL(textChanged(QString)), this,
                    SLOT(setDisplaySigma(QString)));
   QObject::connect(OpenGlWindow, SIGNAL(orientationChanged(int)), this,
@@ -194,40 +210,212 @@ void QtImageEditor::setDisplaySigma(QString value)
 }
 
 
-void QtImageEditor::applyFilter()
+void QtImageEditor::blurFilter()
+{
+  this->m_FilterX = FilterType::New();
+  this->m_FilterY = FilterType::New();
+  this->m_FilterZ = FilterType::New();
+
+  this->m_FilterX->SetDirection( 0 );   // 0 --> X direction
+  this->m_FilterY->SetDirection( 1 );   // 1 --> Y direction
+  this->m_FilterZ->SetDirection( 2 );   // 2 --> Z direction
+
+  this->m_FilterX->SetOrder( FilterType::ZeroOrder );
+  this->m_FilterY->SetOrder( FilterType::ZeroOrder );
+  this->m_FilterZ->SetOrder( FilterType::ZeroOrder );
+
+  this->m_FilterX->SetNormalizeAcrossScale( true );
+  this->m_FilterY->SetNormalizeAcrossScale( true );
+  this->m_FilterZ->SetNormalizeAcrossScale( true );
+
+  this->m_FilterX->SetInput( this->m_FFTFilter->GetOutput() );
+  this->m_FilterY->SetInput( this->m_FilterX->GetOutput() );
+  this->m_FilterY->SetInput( this->m_FilterY->GetOutput() );
+
+  const double sigma = m_SigmaLineEdit->text().toDouble();
+
+  this->m_FilterX->SetSigma( sigma );
+  this->m_FilterY->SetSigma( sigma );
+  this->m_FilterZ->SetSigma( sigma );
+
+  this->m_FilterX->Update();
+  this->m_FilterY->Update();
+  this->m_FilterZ->Update();
+}
+
+
+void QtImageEditor::applyFFT()
 {
   if(this->m_ImageData == NULL)
     {
     return;
     }
-  FilterType::Pointer filterX;
-  FilterType::Pointer filterY;
+  itk::TimeProbe clock;
+  clock.Start();
+  qDebug()<<"Start FFT";
 
-  filterX = FilterType::New();
-  filterY = FilterType::New();
+  //Compute the FFT
+  this->m_FFTFilter->SetInput(this->m_ImageData);
+  this->m_FFTFilter->Update();
 
-  filterX->SetDirection( 0 );   // 0 --> X direction
-  filterY->SetDirection( 1 );   // 1 --> Y direction
+  clock.Stop();
+  qDebug()<<"Mean Time"<<clock.GetMean();
+  qDebug()<<"Total Time"<<clock.GetTotal();
+}
 
-  filterX->SetOrder( FilterType::ZeroOrder );
-  filterY->SetOrder( FilterType::ZeroOrder );
 
-  filterX->SetNormalizeAcrossScale( true );
-  filterY->SetNormalizeAcrossScale( true );
+void QtImageEditor::applyInverseFFT()
+{
+  if(this->m_ImageData == NULL)
+    {
+    return;
+    }
+  itk::TimeProbe clock;
+  clock.Start();
+  qDebug()<<"Start IFFT";
+  this->m_InverseFFTFilter = InverseFFTType::New();
+  this->m_InverseFFTFilter->SetInput(this->m_FFTFilter->GetOutput());
+  this->m_InverseFFTFilter->Update();
+  setInputImage(this->m_InverseFFTFilter->GetOutput());
 
-  filterX->SetInput( this->m_ImageData );
-  filterY->SetInput( filterX->GetOutput() );
+  clock.Stop();
+  qDebug()<<"Mean Time"<<clock.GetMean();
+  qDebug()<<"Total Time"<<clock.GetTotal();
+}
 
-  const double sigma = m_SigmaLineEdit->text().toDouble();
 
-  filterX->SetSigma( sigma );
-  filterY->SetSigma( sigma );
+void QtImageEditor::applyFilter()
+{
+  //Gaussian Filter
+  itk::TimeProbe clock;
+  clock.Start();
+  qDebug()<<"Start gaussian filter";
+  // Some FFT filter implementations, like VNL's, need the image size to be a
+  // multiple of small prime numbers.
+  this->m_PadFilter = PadFilterType::New();
+  this->m_PadFilter->SetInput( this->m_ImageData );
+  PadFilterType::SizeType padding;
+  // Input size is [48, 62, 42].  Pad to [48, 64, 48].
+  padding[0] = 0;
+  padding[1] = 0;
+  padding[2] = 64;
+  this->m_PadFilter->SetPadUpperBound( padding );
+  applyFFT();
 
-  filterX->Update();
-  filterY->Update();
+  // A Gaussian is used here to create a low-pass filter.
+  GaussianSourceType::Pointer gaussianSource = GaussianSourceType::New();
+  gaussianSource->SetNormalized( true );
 
+  ComplexImageType::ConstPointer transformedInput
+    = this->m_FFTFilter->GetOutput();
+  const ComplexImageType::RegionType inputRegion(
+    transformedInput->GetLargestPossibleRegion() );
+  const ComplexImageType::SizeType inputSize
+    = inputRegion.GetSize();
+  const ComplexImageType::SpacingType inputSpacing =
+    transformedInput->GetSpacing();
+  const ComplexImageType::PointType inputOrigin =
+    transformedInput->GetOrigin();
+  const ComplexImageType::DirectionType inputDirection =
+    transformedInput->GetDirection();
+  gaussianSource->SetSize( inputSize );
+  gaussianSource->SetSpacing( inputSpacing );
+  gaussianSource->SetOrigin( inputOrigin );
+  gaussianSource->SetDirection( inputDirection );
+  GaussianSourceType::ArrayType sigma;
+  GaussianSourceType::PointType mean;
+  const double sigmaLineEdit = m_SigmaLineEdit->text().toDouble();
+  //sigma.Fill( sigmaLineEdit );
+
+  for( unsigned int ii = 0; ii < 3; ++ii )
+    {
+    const double halfLength = inputSize[ii]  / 2.0;
+    qDebug()<<"halfLength"<<halfLength<<"inputSize"<<inputSize[ii]
+              <<"inputOrigin"<<inputOrigin[ii];
+    sigma[ii] = sigmaLineEdit/** halfLength*/;
+    qDebug()<<"sigma"<<sigma[ii];
+    mean[ii] = inputOrigin[ii] + halfLength;
+    qDebug()<<"mean"<<mean[ii];
+    }
+
+  mean = inputDirection * mean;
+  for(int i=0; i<3; i++) qDebug()<<"mean"<<i<<": "<<mean[i];
+  gaussianSource->SetSigma( sigma );
+  gaussianSource->SetMean( mean );
+
+  FFTShiftFilterType::Pointer fftShiftFilter = FFTShiftFilterType::New();
+  fftShiftFilter->SetInput( gaussianSource->GetOutput() );
+
+  MultiplyFilterType::Pointer multiplyFilter = MultiplyFilterType::New();
+  multiplyFilter->SetInput1( this->m_FFTFilter->GetOutput() );
+  multiplyFilter->SetInput2( fftShiftFilter->GetOutput() );
+
+  clock.Stop();
+  qDebug()<<"Mean Time"<<clock.GetMean();
+
+  clock.Start();
+  qDebug()<<"Start IFFT";
+  this->m_InverseFFTFilter = InverseFFTType::New();
+  this->m_InverseFFTFilter->SetInput(multiplyFilter->GetOutput());
+  this->m_InverseFFTFilter->Update();
+  clock.Stop();
+  qDebug()<<"Mean Time"<<clock.GetMean();
+  setInputImage(this->m_InverseFFTFilter->GetOutput());
   this->OpenGlWindow->update();
-  setInputImage(filterY->GetOutput());
+  show();
+}
+
+
+void QtImageEditor::displayFFT()
+{
+  //Extract the real part
+  RealFilterType::Pointer realFilter = RealFilterType::New();
+  realFilter->SetInput(this->m_FFTFilter->GetOutput());
+  realFilter->Update();
+
+  RescaleFilterType::Pointer realRescaleFilter = RescaleFilterType::New();
+  realRescaleFilter->SetInput(realFilter->GetOutput());
+  realRescaleFilter->SetOutputMinimum(0);
+  realRescaleFilter->SetOutputMaximum(255);
+  realRescaleFilter->Update();
+
+  //Extract the imaginary part
+  ImaginaryFilterType::Pointer imaginaryFilter = ImaginaryFilterType::New();
+  imaginaryFilter->SetInput(this->m_FFTFilter->GetOutput());
+  imaginaryFilter->Update();
+
+  RescaleFilterType::Pointer imaginaryRescaleFilter = RescaleFilterType::New();
+  imaginaryRescaleFilter->SetInput(imaginaryFilter->GetOutput());
+  imaginaryRescaleFilter->SetOutputMinimum(0);
+  imaginaryRescaleFilter->SetOutputMaximum(255);
+  imaginaryRescaleFilter->Update();
+
+  // Compute the magnitude
+  ModulusFilterType::Pointer modulusFilter = ModulusFilterType::New();
+  modulusFilter->SetInput(this->m_FFTFilter->GetOutput());
+  modulusFilter->Update();
+
+  RescaleFilterType::Pointer magnitudeRescaleFilter = RescaleFilterType::New();
+  magnitudeRescaleFilter->SetInput(modulusFilter->GetOutput());
+  magnitudeRescaleFilter->SetOutputMinimum(0);
+  magnitudeRescaleFilter->SetOutputMaximum(255);
+  magnitudeRescaleFilter->Update();
+
+  // Write the images
+  WriterType::Pointer realWriter = WriterType::New();
+  realWriter->SetFileName("real.png");
+  realWriter->SetInput(realRescaleFilter->GetOutput());
+  realWriter->Update();
+
+  WriterType::Pointer imaginaryWriter = WriterType::New();
+  imaginaryWriter->SetFileName("imaginary.png");
+  imaginaryWriter->SetInput(imaginaryRescaleFilter->GetOutput());
+  imaginaryWriter->Update();
+
+  WriterType::Pointer magnitudeWriter = WriterType::New();
+  magnitudeWriter->SetFileName("magnitude.png");
+  magnitudeWriter->SetInput(magnitudeRescaleFilter->GetOutput());
+  magnitudeWriter->Update();
 }
 
 

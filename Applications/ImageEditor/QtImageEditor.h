@@ -31,10 +31,23 @@ limitations under the License.
 #include <QString>
 
 //itk includes
+#include "itkComplexToRealImageFilter.h"
+#include "itkComplexToImaginaryImageFilter.h"
+#include "itkComplexToModulusImageFilter.h"
+#include "itkFFTShiftImageFilter.h"
+#include "itkForwardFFTImageFilter.h"
+#include "itkGaussianImageSource.h"
 #include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
+#include "itkInverseFFTImageFilter.h"
+#include "itkMultiplyImageFilter.h"
 #include "itkRecursiveGaussianImageFilter.h"
+#include "itkRescaleIntensityImageFilter.h"
+#include "itkTimeProbe.h"
+#include "itkVnlForwardFFTImageFilter.h"
+#include "itkVnlInverseFFTImageFilter.h"
+#include "itkWrapPadImageFilter.h"
 
 //QtImageViewer includes
 #include "ui_QtSlicerGUI.h"
@@ -54,18 +67,43 @@ public:
 
   QtImageEditor( QWidget* parent = 0, Qt::WindowFlags fl = 0 );
   ~QtImageEditor();
-
   typedef itk::Image< double, 3 > ImageType;
 
   typedef double InputPixelType;
-  typedef double OutputPixelType;
+  //typedef float PixelType;
+  //  typedef double OutputPixelType;
 
-  typedef itk::Image< InputPixelType, 3 >  InputImageType;
-  typedef itk::Image< OutputPixelType, 3 > OutputImageType;
-  typedef itk::RecursiveGaussianImageFilter<
-               InputImageType, OutputImageType > FilterType;
+  typedef itk::Image< InputPixelType, 3 >         InputImageType;
+  typedef itk::Image< InputPixelType, 3 >         OutputImageType;
+  typedef itk::Image<unsigned char, 3>            UnsignedCharImageType;
 
-  typedef itk::ImageFileReader<ImageType>   ReaderType;
+
+  typedef itk::ImageFileReader<ImageType>                           ReaderType;
+  typedef itk::ImageFileWriter<UnsignedCharImageType>               WriterType;
+  typedef itk::ForwardFFTImageFilter<InputImageType>                FFTType;
+  typedef FFTType::OutputImageType                                  ComplexImageType;
+  typedef itk::GaussianImageSource< InputImageType >                GaussianSourceType;
+  typedef itk::WrapPadImageFilter< InputImageType, InputImageType > PadFilterType;
+
+  typedef itk::FFTShiftImageFilter< InputImageType,
+  InputImageType > FFTShiftFilterType;
+  typedef itk::InverseFFTImageFilter<ComplexImageType,
+  OutputImageType> InverseFFTType;
+  typedef itk::RecursiveGaussianImageFilter<ComplexImageType,
+  ComplexImageType >  FilterType;
+  typedef itk::ComplexToRealImageFilter<ComplexImageType,
+  OutputImageType> RealFilterType;
+  typedef itk::RescaleIntensityImageFilter< InputImageType,
+  UnsignedCharImageType > RescaleFilterType;
+  typedef itk::ComplexToImaginaryImageFilter<ComplexImageType,
+  OutputImageType> ImaginaryFilterType;
+  typedef itk::ComplexToModulusImageFilter<ComplexImageType,
+  OutputImageType> ModulusFilterType;
+  typedef itk::MultiplyImageFilter< ComplexImageType,
+  InputImageType, ComplexImageType > MultiplyFilterType;
+
+
+public:
 
 
 public slots:
@@ -77,13 +115,27 @@ public slots:
   void setDisplaySliceNumber(int number);
   bool loadImage(QString filePathToLoad = QString());
   void loadOverlay(QString overlayImagePath = QString());
+  int loadImage(std::string path);
+  int loadImage();
+  int loadOverlay(std::string path);
+  void applyFFT();
+  void applyInverseFFT();
   void applyFilter();
+  void displayFFT();
+  void blurFilter();
 
 private:
-  QLineEdit               *m_SigmaLineEdit;
-  ImageType               *m_ImageData;
-  QtOverlayControlsWidget *m_OverlayWidget;
-  QDialog                 *m_HelpDialog;
+  QLineEdit                  *m_SigmaLineEdit;
+  ImageType                  *m_ImageData;
+  FFTType::OutputImageType   *m_ComplexeImage;
+  QtOverlayControlsWidget    *m_OverlayWidget;
+  FFTType::Pointer            m_FFTFilter;
+  FilterType::Pointer         m_FilterX;
+  FilterType::Pointer         m_FilterY;
+  FilterType::Pointer         m_FilterZ;
+  InverseFFTType::Pointer     m_InverseFFTFilter;
+  PadFilterType::Pointer      m_PadFilter;
+
 };
 
 } // End namespace tube
