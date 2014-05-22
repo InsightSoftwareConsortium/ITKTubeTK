@@ -76,7 +76,7 @@ QtImageEditor::QtImageEditor(QWidget* parent, Qt::WindowFlags fl ) :
   this->gridLayout->addWidget(tabWidget, 1, 0,1,2);
 
   QObject::connect(ButtonOk, SIGNAL(clicked()), this, SLOT(accept()));
-  QObject::connect(ButtonHelp, SIGNAL(clicked()), OpenGlWindow, SLOT(showHelp()));
+  QObject::connect(ButtonHelp, SIGNAL(toggled(bool)), this, SLOT(showHelp(bool)));
   QObject::connect(SliceNumSlider, SIGNAL(sliderMoved(int)), OpenGlWindow,
                    SLOT(changeSlice(int)));
   QObject::connect(OpenGlWindow, SIGNAL(sliceNumChanged(int)), SliceNumSlider,
@@ -99,28 +99,41 @@ QtImageEditor::~QtImageEditor()
 {
 }
 
-//void QtImageEditor::toggleTextEdit(int viewDetail)
-//{
-//  bool hidden;
-//  viewDetail = VD_TEXTBOX ? hidden = false : hidden  = true;
-//  this->Details->setHidden(hidden);
-//}
+
+void QtImageEditor::showHelp(bool checked)
+{
+  if(!checked && this->m_HelpDialog != 0)
+    {
+    this->m_HelpDialog->reject();
+    }
+  else
+    {
+    this->OpenGlWindow->showHelp();
+    this->m_HelpDialog = this->OpenGlWindow->helpWindow();
+    if(this->m_HelpDialog != 0)
+      {
+      QObject::connect(m_HelpDialog, SIGNAL(rejected()), this,
+                       SLOT(hideHelp()),Qt::UniqueConnection);
+      }
+    }
+}
+
+
+void QtImageEditor::hideHelp()
+{
+  this->ButtonHelp->setChecked(false);
+}
 
 
 void QtImageEditor::setInputImage(ImageType * newImData)
 {
   this->m_ImageData = newImData;
   this->OpenGlWindow->setInputImage(newImData);
-//  this->SliceNumSlider->setMaximum( static_cast<int>
-//                                    (this->OpenGlWindow->maxSliceNum() -1));
   setMaximumSlice();
   this->OpenGlWindow->changeSlice(((this->OpenGlWindow->maxSliceNum() -1)/2));
-  //this->SliceNumSlider->setValue(static_cast<int>
-//                                   (this->OpenGlWindow->sliceNum()));
   this->setDisplaySliceNumber(static_cast<int>
                                 (this->OpenGlWindow->sliceNum()));
   this->Controls->setInputImage();
-  this->OpenGlWindow->show();
   this->OpenGlWindow->update();
 }
 
@@ -132,11 +145,10 @@ void QtImageEditor::setDisplaySliceNumber(int number)
 }
 
 
-int QtImageEditor::loadImage(std::string path)
+bool QtImageEditor::loadImage(QString filePathToLoad)
 {
   ReaderType::Pointer reader = ReaderType::New();
-  QString filePathToLoad = QString::fromStdString(path);
-  if( filePathToLoad.isNull() )
+  if( filePathToLoad.isEmpty() )
     {
     filePathToLoad = QFileDialog::getOpenFileName(
         0,"", QDir::currentPath());
@@ -144,11 +156,11 @@ int QtImageEditor::loadImage(std::string path)
 
   if(filePathToLoad.isEmpty())
     {
-    return 0;
+    return false;
     }
   reader->SetFileName( filePathToLoad.toLatin1().data() );
-  QStringList fileName = filePathToLoad.split("/");
-  setWindowTitle("ImageEditor: " + fileName.at(fileName.count() -1));
+  QFileInfo filePath(filePathToLoad);
+  setWindowTitle(filePath.fileName());
 
   qDebug() << "loading image " << filePathToLoad << " ... ";
   try
@@ -166,44 +178,13 @@ int QtImageEditor::loadImage(std::string path)
   setInputImage( reader->GetOutput() );
 
   show();
-}
-
-int QtImageEditor::loadImage()
-{
-  ReaderType::Pointer reader = ReaderType::New();
-  QString filePathToLoad = QFileDialog::getOpenFileName(
-        0,"", QDir::currentPath());
-
-  if(filePathToLoad.isEmpty())
-    {
-    return 0;
-    }
-  reader->SetFileName( filePathToLoad.toLatin1().data() );
-  QStringList fileName = filePathToLoad.split("/");
-  setWindowTitle("ImageEditor: " + fileName.at(fileName.count() -1));
-
-  qDebug() << "loading image " << filePathToLoad << " ... ";
-  try
-    {
-    reader->Update();
-    }
-  catch (itk::ExceptionObject & e)
-    {
-    std::cerr << "Exception in file reader " << std::endl;
-    std::cerr << e << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  std::cout << "Done!" << std::endl;
-  setInputImage( reader->GetOutput() );
-
-  show();
+  return true;
 }
 
 
-int QtImageEditor::loadOverlay(std::string path)
+void QtImageEditor::loadOverlay(QString overlayImagePath)
 {
-  this->m_OverlayWidget->loadOverlay(path);
+  this->m_OverlayWidget->loadOverlay(overlayImagePath);
 }
 
 
@@ -247,7 +228,6 @@ void QtImageEditor::applyFilter()
 
   this->OpenGlWindow->update();
   setInputImage(filterY->GetOutput());
-  show();
 }
 
 

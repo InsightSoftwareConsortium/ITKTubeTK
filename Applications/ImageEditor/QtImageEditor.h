@@ -67,23 +67,23 @@ public:
 
   typedef itk::ImageFileReader<ImageType>   ReaderType;
 
-public:
 
 public slots:
-  //void toggleTextEdit(int viewDetail);
+  void hideHelp();
+  void showHelp(bool checked);
   void setMaximumSlice();
   void setDisplaySigma(QString value);
   void setInputImage(ImageType *newImData);
   void setDisplaySliceNumber(int number);
-  int loadImage(std::string path);
-  int loadImage();
-  int loadOverlay(std::string path);
+  bool loadImage(QString filePathToLoad = QString());
+  void loadOverlay(QString overlayImagePath = QString());
   void applyFilter();
 
 private:
   QLineEdit               *m_SigmaLineEdit;
   ImageType               *m_ImageData;
   QtOverlayControlsWidget *m_OverlayWidget;
+  QDialog                 *m_HelpDialog;
 };
 
 } // End namespace tube

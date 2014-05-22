@@ -73,7 +73,13 @@ set( ${MODULE_NAME}_INCLUDE_DIRS
   ${OPENGL_INCLUDE_DIRS}
 )
 
+set(BUILD_EXEC_ONLY EXECUTABLE_ONLY)
+if(BUILD_SHARED_LIBS)
+  set(BUILD_EXEC_ONLY)
+endif(BUILD_SHARED_LIBS)
+
 SEMMacroBuildCLI(
+  ${BUILD_EXEC_ONLY}
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   ADDITIONAL_SRCS
@@ -93,3 +99,7 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/IO
     ${${MODULE_NAME}_INCLUDE_DIRS} )
+
+# Configure ImageEditorConfigure.h.
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/ImageEditorConfigure.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/ImageEditorConfigure.h @ONLY )

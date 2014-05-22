@@ -20,6 +20,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+#include "ImageEditorConfigure.h"
+#include "ImageEditorCLP.h"
+
 //Qt includes
 #include <QApplication>
 #include <QDebug>
@@ -33,59 +36,61 @@ limitations under the License.
 //QtImageEditor includes
 #include "QtImageEditor.h"
 
-// itk includes
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageRegionIteratorWithIndex.h"
-#include "itkMetaImageIOFactory.h"
-
-#include "ImageEditorCLP.h"
 
 using namespace tube;
 
-int main( int argc, char* argv[] )
+int execImageEditor(int argc, char* argv[])
 {
-  if(argc == 1 )
-    {
-    QApplication myApp( argc, argv );
-
-    QtImageEditor qtSlicerWindow(0,0);
-
-    qtSlicerWindow.setWindowTitle("ImageEditor");
-    myApp.setStyle(new QPlastiqueStyle );
-    QPalette p( QColor( 239, 239, 239 ) );
-    myApp.setPalette( p );
-    qtSlicerWindow.show();
-    int execReturn;
-    try
-      {
-      execReturn = myApp.exec();
-      }
-    catch (itk::ExceptionObject & e)
-      {
-      std::cerr << "Exception during GUI execution" << std::endl;
-      std::cerr << e << std::endl;
-      return EXIT_FAILURE;
-      }
-    return execReturn;
-    }
-  PARSE_ARGS;
-
   QApplication myApp( argc, argv );
 
   QtImageEditor qtSlicerWindow(0,0);
 
   qtSlicerWindow.setWindowTitle("ImageEditor");
-  myApp.setStyle(new QPlastiqueStyle );
-  QPalette p( QColor( 239, 239, 239 ) );
-  myApp.setPalette( p );
-  qtSlicerWindow.loadImage(inputImage);
-  qtSlicerWindow.loadOverlay(overlayImage);
+  qtSlicerWindow.loadImage();
+  qtSlicerWindow.show();
+
+  int execReturn;
+  try
+    {
+    execReturn = myApp.exec();
+    }
+  catch (itk::ExceptionObject & e)
+    {
+    std::cerr << "Exception during GUI execution" << std::endl;
+    std::cerr << e << std::endl;
+    return EXIT_FAILURE;
+    }
+  return execReturn;
+}
+
+int parseAndExecImageEditor(int argc, char* argv[])
+{
+  PARSE_ARGS;
+  QApplication myApp( argc, argv );
+
+  QtImageEditor qtSlicerWindow(0);
+
+  qtSlicerWindow.setWindowTitle("ImageEditor");
+
+  qtSlicerWindow.loadImage(QString::fromStdString(inputImage));
+  if(!overlayImage.empty())
+    {
+    qtSlicerWindow.loadOverlay(QString::fromStdString(overlayImage));
+    }
 
   qtSlicerWindow.OpenGlWindow->setOrientation(orientation);
-  qtSlicerWindow.OpenGlWindow->setSliceNum(sliceOffset);
-  qtSlicerWindow.OpenGlWindow->setMaxIntensity(maxIntensity);
-  qtSlicerWindow.OpenGlWindow->setMinIntensity(minIntensity);
+  if(sliceOffset != -1)
+    {
+    qtSlicerWindow.OpenGlWindow->setSliceNum(sliceOffset);
+    }
+  if(maxIntensityArg.isSet())
+    {
+    qtSlicerWindow.OpenGlWindow->setMaxIntensity(maxIntensity);
+    }
+  if(minIntensityArg.isSet())
+    {
+    qtSlicerWindow.OpenGlWindow->setMinIntensity(minIntensity);
+    }
   qtSlicerWindow.OpenGlWindow->setZoom(zoom);
   qtSlicerWindow.OpenGlWindow->transpose(transpose);
   qtSlicerWindow.OpenGlWindow->flipZ(zFlipped);
@@ -101,10 +106,11 @@ int main( int argc, char* argv[] )
   qtSlicerWindow.OpenGlWindow->setImageMode(imageMode.c_str());
   qtSlicerWindow.OpenGlWindow->setIWModeMax(iwModeMax.c_str());
   qtSlicerWindow.OpenGlWindow->setIWModeMin(iwModeMin.c_str());
-  double sig = sigma;
-  qtSlicerWindow.setDisplaySigma(QString::number(sigma, 'f', 2));
-  if(sig != 0) qtSlicerWindow.applyFilter();
-
+  if(sigmaArg.isSet())
+    {
+    qtSlicerWindow.setDisplaySigma(QString::number(sigma, 'f', 2));
+    qtSlicerWindow.applyFilter();
+    }
   qtSlicerWindow.OpenGlWindow->update();
 
   qtSlicerWindow.show();
@@ -120,4 +126,21 @@ int main( int argc, char* argv[] )
     return EXIT_FAILURE;
     }
   return execReturn;
+}
+
+int main( int argc, char* argv[] )
+{
+#if !defined(BUILD_SHARED_LIBS)
+  Q_INIT_RESOURCE(qtImageViewerResources);
+#endif
+  int res;
+  if(argc == 1)
+    {
+    res = execImageEditor(argc, argv);
+    }
+  else
+    {
+    res = parseAndExecImageEditor(argc, argv);
+    }
+  return res;
 }

@@ -33,7 +33,7 @@
             <flag>f</flag>
             <longflag>sliceOffset</longflag>
             <label>Slice offset</label>
-            <default>15</default>
+            <default>-1</default>
             <description>Set slice's offset.</description>
         </integer>
         <double>
@@ -41,6 +41,7 @@
             <flag>q</flag>
             <longflag>maxIntensity</longflag>
             <label>Maximum intensity</label>
+            <default>0</default>
             <description>Set the upper of the intensity widowing.</description>
         </double>
         <double>
@@ -48,6 +49,7 @@
             <flag>a</flag>
             <longflag>minIntensity</longflag>
             <label>Minimum intensity</label>
+            <default>0</default>
             <description>Set the lower of the intensity widowing.</description>
         </double>
         <double>
@@ -62,7 +64,6 @@
             <name>transpose</name>
             <flag>t</flag>
             <longflag>transpose</longflag>
-            <default>false</default>
             <label>Transpose</label>
             <description>Transpose the axis of the slice being viewed.</description>
         </boolean>
@@ -70,7 +71,6 @@
             <name>zFlipped</name>
             <flag>z</flag>
             <longflag>zFlipped</longflag>
-            <default>false</default>
             <label>Z Flipped</label>
             <description>Flip the Z axis.</description>
         </boolean>
@@ -78,7 +78,6 @@
             <name>yFlipped</name>
             <flag>y</flag>
             <longflag>yFlipped</longflag>
-            <default>true</default>
             <label>Y Flipped</label>
             <description>Flip the Y axis.</description>
         </boolean>
@@ -86,7 +85,6 @@
             <name>xFlipped</name>
             <flag>x</flag>
             <longflag>xFlipped</longflag>
-            <default>false</default>
             <label>X Flipped</label>
             <description>Flip the X axis.</description>
         </boolean>
@@ -126,7 +124,6 @@
             <name>value</name>
             <flag>V</flag>
             <longflag>value</longflag>
-            <default>true</default>
             <label>Value displayed</label>
             <description>View image values as an overlay on the image.</description>
         </boolean>
@@ -189,7 +186,7 @@
             <name>sigma</name>
             <flag>s</flag>
             <longflag>sigma</longflag>
-            <default>1</default>
+            <default>0</default>
             <label>Sigma</label>
             <description>Sigma value of the recursive gaussian filter</description>
         </double>

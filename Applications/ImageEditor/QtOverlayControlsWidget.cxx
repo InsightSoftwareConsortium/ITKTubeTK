@@ -74,58 +74,24 @@ void QtOverlayControlsWidget::setSliceView(QtGlSliceView* sliceView)
                    SLOT(setOverlayOpacity(double)));
   QObject::connect(m_SliceView, SIGNAL(overlayOpacityChanged(double)), this,
                    SLOT(setOpacity(double)));
-  QObject::connect(m_SliceView, SIGNAL(validOverlayDataChanged(bool)),
-                   this->m_UI->OverlayCheckBox, SLOT(setChecked(bool)));
   QObject::connect(this->m_UI->OverlayCheckBox, SIGNAL(toggled(bool)), this,
                    SLOT(setOverlayVisibility(bool)));
+
 }
 
 
-int QtOverlayControlsWidget::loadOverlay()
+bool QtOverlayControlsWidget::loadOverlay(QString pathOverlay)
 {
   OverlayReaderType::Pointer overlayReader = OverlayReaderType::New();
-  QString pathOverlay = QFileDialog::getOpenFileName(
-        0,"", QDir::currentPath());
 
   if(pathOverlay.isEmpty())
-    {
-    return 0;
-    }
-  overlayReader->SetFileName( pathOverlay.toLatin1().data() );
-
-  qDebug() << "loading image " << pathOverlay << " ... ";
-  try
-    {
-    overlayReader->Update();
-    }
-  catch (itk::ExceptionObject & e)
-    {
-    std::cerr << "Exception in file reader " << std::endl;
-    std::cerr << e << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  std::cout << "Done!" << std::endl;
-  setInputOverlay( overlayReader->GetOutput() );
-
-  show();
-}
-
-int QtOverlayControlsWidget::loadOverlay(std::string path)
-{
-  OverlayReaderType::Pointer overlayReader = OverlayReaderType::New();
-  QString pathOverlay = QString::fromStdString(path);
-
-  if(pathOverlay.isNull())
     {
     pathOverlay = QFileDialog::getOpenFileName(
             0,"", QDir::currentPath());
-    return 0;
     }
-
   if(pathOverlay.isEmpty())
     {
-    return 0;
+    return false;
     }
   overlayReader->SetFileName( pathOverlay.toLatin1().data() );
 
@@ -143,8 +109,8 @@ int QtOverlayControlsWidget::loadOverlay(std::string path)
 
   std::cout << "Done!" << std::endl;
   setInputOverlay( overlayReader->GetOutput() );
-
-  show();
+  this->m_UI->OverlayCheckBox->setChecked(true);
+  return true;
 }
 
 void QtOverlayControlsWidget::setInputOverlay(OverlayType* overlayImage)
@@ -153,8 +119,8 @@ void QtOverlayControlsWidget::setInputOverlay(OverlayType* overlayImage)
   this->m_UI->OverlayOpacity->setMaximum(this->m_SliceView->overlayOpacity()*100);
   this->setOpacity(this->m_SliceView->overlayOpacity());
 
-  this->m_SliceView->setFocus();
-  this->m_SliceView->update();
+  this->m_SliceView->show();
+  //this->m_SliceView->update();
   this->m_UI->OverlayOpacityLineEdit->setText(QString::number
                               (this->m_SliceView->overlayOpacity(),'f',3));
 }
@@ -167,16 +133,13 @@ void QtOverlayControlsWidget::setOverlayVisibility(bool show)
       {
       loadOverlay();
       }
-    else
-      {
-      this->m_SliceView->setValidOverlayData(show);
-      }
     }
   else
     {
     this->m_SliceView->setValidOverlayData(show);
+    this->m_SliceView->setViewOverlayData(show);
     }
+  this->m_SliceView->show();
   this->m_SliceView->update();
 }
-
 }
