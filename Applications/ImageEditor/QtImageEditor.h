@@ -48,7 +48,7 @@ limitations under the License.
 
 //QtImageViewer includes
 #include "ui_QtSlicerGUI.h"
-//#include "ui_QtSlicerHelpGUI.h"
+#include "ui_QtSlicerHelpGUI.h"
 
 //TubeTK includes
 #include "QtOverlayControlsWidget.h"
@@ -121,6 +121,7 @@ private:
   FilterType::Pointer         m_FilterY;
   FilterType::Pointer         m_FilterZ;
   InverseFFTType::Pointer     m_InverseFFTFilter;
+  QDialog                    *m_HelpDialog;
 };
 }
 #endif

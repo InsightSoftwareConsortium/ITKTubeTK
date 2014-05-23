@@ -205,7 +205,7 @@ bool QtImageEditor::loadImage(QString filePathToLoad)
 
 void QtImageEditor::loadOverlay(QString overlayImagePath)
 {
-  this->m_OverlayWidget->loadOverlay(path.toStdString());
+  this->m_OverlayWidget->loadOverlay(overlayImagePath);
 }
 
 

@@ -23,7 +23,6 @@
 #include "itkImageRegionIterator.h"
 #include "itkProgressReporter.h"
 #include "itkObjectFactory.h"
-#include <QDebug>
 
 namespace tube
 {
@@ -171,8 +170,7 @@ GaussianDerivativeImageSource< TOutputImage >
         - m_Mean[i])),m_Order) - (m_Order == 2 ? vcl_pow(m_Sigma[1], m_Order) : 0));
         }
       }
-   // if( m_OrdersVector!= NULL)
-      //{
+
     for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
       {
       if(m_OrdersVector[i] != 0)
@@ -182,16 +180,7 @@ GaussianDerivativeImageSource< TOutputImage >
         ? vcl_pow(m_Sigma[1], m_OrdersVector[i]) : 0));
         }
       }
-      //}
-    //if( m_Order==2)
-      //{
-      //for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
-        //{
 
-        //prefixDenom *= vcl_pow(m_Sigma[i], 2*m_Order )/ (vcl_pow((evalPoint[i]
-          //- m_Mean[i]), m_Order)- (vcl_pow(m_Sigma[i], m_Order)));
-        //}
-      //}git push c
     double suffixExp = 0;
 
     for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
