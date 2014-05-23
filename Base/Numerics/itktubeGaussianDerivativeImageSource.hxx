@@ -15,17 +15,18 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-#ifndef __itkGaussianDerivativeImageSource_hxx
-#define __itkGaussianDerivativeImageSource_hxx
+#ifndef __itktubeGaussianDerivativeImageSource_hxx
+#define __itktubeGaussianDerivativeImageSource_hxx
 
-#include "itkGaussianDerivativeImageSource.h"
+#include "itktubeGaussianDerivativeImageSource.h"
 #include "itkGaussianSpatialFunction.h"
 #include "itkImageRegionIterator.h"
 #include "itkProgressReporter.h"
 #include "itkObjectFactory.h"
 
-namespace tube
-{
+namespace itk {
+
+namespace tube {
 //----------------------------------------------------------------------------
 template< typename TOutputImage >
 GaussianDerivativeImageSource< TOutputImage >
@@ -46,7 +47,7 @@ GaussianDerivativeImageSource< TOutputImage >
 template< typename TOutputImage >
 void
 GaussianDerivativeImageSource< TOutputImage >
-::PrintSelf(std::ostream & os, itk::Indent indent) const
+::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
 
@@ -140,9 +141,9 @@ GaussianDerivativeImageSource< TOutputImage >
                                          outputPtr->GetRequestedRegion() );
 
   // The position at which the function is evaluated
-  itk::Point< double, TOutputImage::ImageDimension > evalPoint;
+  Point< double, TOutputImage::ImageDimension > evalPoint;
 
-  itk::ProgressReporter progress( this, 0,
+  ProgressReporter progress( this, 0,
                              outputPtr->GetRequestedRegion()
                              .GetNumberOfPixels() );
  //  Walk the output image, evaluating the spatial function at each pixel
@@ -196,6 +197,8 @@ GaussianDerivativeImageSource< TOutputImage >
     progress.CompletedPixel();
     }
 }
-}
+} // End namespace tube
+
+} // End namespace itk
 
 #endif

@@ -15,8 +15,8 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-#ifndef __itkGaussianDerivativeImageSource_h
-#define __itkGaussianDerivativeImageSource_h
+#ifndef __itktubeGaussianDerivativeImageSource_h
+#define __itktubeGaussianDerivativeImageSource_h
 
 #include "itkParametricImageSource.h"
 #include "itkFixedArray.h"
@@ -29,6 +29,9 @@
 
 #include <vnl/vnl_c_vector.h>
 #include <vnl/vnl_vector.h>
+
+namespace itk
+{
 
 namespace tube
 {
@@ -52,14 +55,14 @@ namespace tube
 
 template< typename TOutputImage >
 class GaussianDerivativeImageSource :
-    public itk::ParametricImageSource< TOutputImage >
+    public ParametricImageSource< TOutputImage >
 {
 public:
   /** Standard class typedefs. */
   typedef GaussianDerivativeImageSource              Self;
-  typedef itk::ParametricImageSource< TOutputImage > Superclass;
-  typedef itk::SmartPointer< Self >                  Pointer;
-  typedef itk::SmartPointer< const Self >            ConstPointer;
+  typedef ParametricImageSource< TOutputImage >      Superclass;
+  typedef SmartPointer< Self >                       Pointer;
+  typedef SmartPointer< const Self >                 ConstPointer;
 
   /** Typedef for the output image type. */
   typedef TOutputImage                     OutputImageType;
@@ -86,9 +89,9 @@ public:
   itkStaticConstMacro(NDimensions, unsigned int, TOutputImage::ImageDimension);
 
   /** Type used to store Gaussian parameters. */
-  typedef itk::FixedArray< double, itkGetStaticConstMacro(NDimensions) > ArrayType;
+  typedef FixedArray< double, itkGetStaticConstMacro(NDimensions) > ArrayType;
 
-  typedef itk::Vector<int, TOutputImage::ImageDimension> VectorType;
+  typedef Vector<int, TOutputImage::ImageDimension> VectorType;
 
   /** Size type matches that used for images */
   typedef typename TOutputImage::SizeType      SizeType;
@@ -98,7 +101,7 @@ public:
   typedef typename Superclass::ParametersValueType ParametersValueType;
   typedef typename Superclass::ParametersType      ParametersType;
 
-  typedef itk::ContinuousIndex<double, TOutputImage::ImageDimension > ContinuousIndexType;
+  typedef ContinuousIndex<double, TOutputImage::ImageDimension > ContinuousIndexType;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(GaussianDerivativeImageSource, ParametricImageSource);
@@ -136,7 +139,7 @@ public:
 protected:
   GaussianDerivativeImageSource();
   // ~GaussianImageSource(); default implementation ok
-  void PrintSelf(std::ostream & os, itk::Indent indent) const;
+  void PrintSelf(std::ostream & os, Indent indent) const;
 
   void GenerateData();
 
@@ -160,14 +163,17 @@ private:
   /** Whether or not to normalize the Gaussian. */
   bool m_Normalized;
 
-  itk::Vector<double, TOutputImage::ImageDimension> m_DerivativeVector;
+  Vector<double, TOutputImage::ImageDimension> m_DerivativeVector;
 
   VectorType m_OrdersVector;
-};
-}
+}; // End class GaussianDerivativeImageSource
+
+} // End namespace tube
+
+} // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkGaussianDerivativeImageSource.hxx"
+#include "itktubeGaussianDerivativeImageSource.hxx"
 #endif
 
 #endif

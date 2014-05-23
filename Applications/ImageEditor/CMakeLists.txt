@@ -65,13 +65,13 @@ QT4_WRAP_UI( ${MODULE_NAME}_UI_CXX ${${MODULE_NAME}_GUI_SRCS} )
 QT4_WRAP_CPP( ${MODULE_NAME}_SRCS ${${MODULE_NAME}_MOC_SRCS} )
 QT4_ADD_RESOURCES( ${MODULE_NAME}_QRC_SRCS ${${MODULE_NAME}_RESOURCES} )
 
-set( ${MODULE_NAME}_H_FILES
-  itkGaussianDerivativeImageSource.h
-  )
+#set( ${MODULE_NAME}_H_FILES
+#  itkGaussianDerivativeImageSource.h
+#  )
 
-set( ${MODULE_NAME}_HXX_FILES
-  itkGaussianDerivativeImageSource.hxx
-  )
+#set( ${MODULE_NAME}_HXX_FILES
+#  itkGaussianDerivativeImageSource.hxx
+#  )
 
 add_custom_target( ${MODULE_NAME}Include SOURCES
   ${${MODULE_NAME}_H_FILES}

@@ -36,7 +36,8 @@ limitations under the License.
 #include "ui_QtOverlayControlsWidgetGUI.h"
 
 
-namespace tube {
+namespace tube
+{
 
 
 QtImageEditor::QtImageEditor(QWidget* parent, Qt::WindowFlags fl ) :
@@ -188,7 +189,7 @@ bool QtImageEditor::loadImage(QString filePathToLoad)
     {
     reader->Update();
     }
-  catch (itk::ExceptionObject & e)
+  catch (ExceptionObject & e)
     {
     std::cerr << "Exception in file reader " << std::endl;
     std::cerr << e << std::endl;
@@ -273,15 +274,15 @@ void QtImageEditor::applyInverseFFT()
   this->m_InverseFFTFilter = InverseFFTType::New();
   this->m_InverseFFTFilter->SetInput(this->m_FFTFilter->GetOutput());
   this->m_InverseFFTFilter->Update();
-  setInputImage(this->m_InverseFFTFilter->GetOutput());
 }
 
 
 void QtImageEditor::applyFilter()
 {
-  itk::TimeProbe clockFFT;
-  itk::TimeProbe clockGaussian;
-  itk::TimeProbe clockIFFT;
+  TimeProbe clockFFT;
+  TimeProbe clockGaussian;
+  TimeProbe clockMultiply;
+  TimeProbe clockIFFT;
 
   clockFFT.Start();
   applyFFT();
@@ -294,8 +295,8 @@ void QtImageEditor::applyFilter()
   qDebug()<<"Start gaussian filter";
   GaussianDerivativeSourceType::VectorType order;
   order[0] = 0;
-  order[1] = 1;
-  order[2] = 1;
+  order[1] = 2;
+  order[2] = 0;
 
   GaussianDerivativeSourceType::Pointer gaussian =
     this->createGaussianDerivative(order);
@@ -304,18 +305,17 @@ void QtImageEditor::applyFilter()
 
   clockGaussian.Stop();
   qDebug()<<"Output Shift Filter mean"<<clockGaussian.GetMean();
-  qDebug()<<"Output Shift Filter meantime"<<QString::fromStdString(
-  clockGaussian.GetUnit());
+
   qDebug()<<"Output Shift Filter"<<clockGaussian.GetTotal();
-  clockGaussian.Start();
+  clockMultiply.Start();
 
   MultiplyFilterType::Pointer multiplyFilter = MultiplyFilterType::New();
   multiplyFilter->SetInput1( this->m_FFTFilter->GetOutput() );
   multiplyFilter->SetInput2( fftShiftFilter->GetOutput() );
 
-  clockGaussian.Stop();
-  qDebug()<<"Output Multiply Filter"<<clockGaussian.GetMean();
-  qDebug()<<"Output Multiply Filter"<<clockGaussian.GetTotal();
+  clockMultiply.Stop();
+  qDebug()<<"Output Multiply Filter"<<clockMultiply.GetMean();
+  qDebug()<<"Output Multiply Filter"<<clockMultiply.GetTotal();
 
   clockIFFT.Start();
   qDebug()<<"Start IFFT";

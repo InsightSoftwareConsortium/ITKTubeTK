@@ -35,7 +35,7 @@ limitations under the License.
 #include "itkComplexToModulusImageFilter.h"
 #include "itkFFTShiftImageFilter.h"
 #include "itkForwardFFTImageFilter.h"
-#include "itkGaussianDerivativeImageSource.h"
+#include "itktubeGaussianDerivativeImageSource.h"
 #include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
@@ -52,10 +52,9 @@ limitations under the License.
 
 //TubeTK includes
 #include "QtOverlayControlsWidget.h"
-//#include "ui_QtOverlayControlsWidgetGUI.h"
 
-namespace tube
-{
+
+namespace tube {
 
 class QtImageEditor : public QDialog, public Ui::GuiDialogBase
 {
@@ -64,8 +63,8 @@ public:
 
   QtImageEditor( QWidget* parent = 0, Qt::WindowFlags fl = 0 );
   ~QtImageEditor();
-  typedef itk::Image< double, 3 > ImageType;
-  typedef double                  InputPixelType;
+  typedef itk::Image< double, 3 >      ImageType;
+  typedef double                       InputPixelType;
 
   typedef itk::Image< InputPixelType, 3 >              InputImageType;
   typedef itk::Image< InputPixelType, 3 >              OutputImageType;
@@ -74,7 +73,7 @@ public:
   typedef itk::ImageFileWriter<UnsignedCharImageType>  WriterType;
   typedef itk::ForwardFFTImageFilter<InputImageType>   FFTType;
   typedef FFTType::OutputImageType                     ComplexImageType;
-  typedef tube::GaussianDerivativeImageSource< InputImageType >
+  typedef itk::tube::GaussianDerivativeImageSource< InputImageType >
   GaussianDerivativeSourceType;
 
   typedef itk::FFTShiftImageFilter< InputImageType,
@@ -123,5 +122,7 @@ private:
   InverseFFTType::Pointer     m_InverseFFTFilter;
   QDialog                    *m_HelpDialog;
 };
-}
+
+} // End namespace tube
+
 #endif
