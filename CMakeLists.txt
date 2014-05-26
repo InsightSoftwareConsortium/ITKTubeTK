@@ -313,7 +313,11 @@ mark_as_advanced( USE_SYSTEM_KWSTYLE )
 #
 # LIBSVM setup.
 #
-option( TubeTK_USE_LIBSVM "Use LIBSVM to enable additional functionality." ON )
+if( MSVC )
+  option( TubeTK_USE_LIBSVM "Use LIBSVM to enable additional functionality." OFF )
+else( MSVC )
+  option( TubeTK_USE_LIBSVM "Use LIBSVM to enable additional functionality." ON )
+endif( MSVC )
 option( USE_SYSTEM_LIBSVM
   "Exclude LIBSVM from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_LIBSVM )
