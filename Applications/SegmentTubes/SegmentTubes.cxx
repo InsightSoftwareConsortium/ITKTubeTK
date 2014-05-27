@@ -204,10 +204,10 @@ int DoIt( int argc, char * argv[] )
   seedScaleListType::iterator seedScaleIter =
     seedScaleList.begin();
 
+  timeCollector.Start("Ridge Extractor");
   unsigned int count = 1;
   while( seedIndexIter != seedIndexList.end() )
     {
-    timeCollector.Start("Ridge Extractor");
 
     tubeOp->SetDebug( true );
     tubeOp->GetRidgeOp()->SetDebug( true );
