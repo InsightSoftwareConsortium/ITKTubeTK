@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-# See https://github.com/TubeTK/TubeTK/wiki/Dependencies
+# See https://github.com/KitwareMedical/TubeTK/wiki/Dependencies
 
 # Cppcheck version 1.61
 set( Cppcheck_URL
@@ -33,7 +33,7 @@ set( CTK_URL ${github_protocol}://github.com/commontk/CTK.git )
 set( CTK_HASH_OR_TAG 233d87b70db2ce7f00bc71be93d009d8b2ee063d )
 
 # TubeTK Image Viewer snapshot 2014-01-26
-set( ImageViewer_URL ${github_protocol}://github.com/TubeTK/TubeTK-ImageViewer.git )
+set( ImageViewer_URL ${github_protocol}://github.com/KitwareMedical/TubeTK-ImageViewer.git )
 set( ImageViewer_HASH_OR_TAG 9133a934e3238020332ff6e2d51bc5736abd59f1 )
 
 # Insight Segmentation and Registration Toolkit
@@ -59,7 +59,7 @@ set( LIBSVM_HASH_OR_TAG 67f8b597ce85c1f5288d7838e57ea28a )
 
 # TubeTK Parameter Serializer snapshot 2014-02-05 )
 set( ParameterSerializer_URL
-  ${github_protocol}://github.com/TubeTK/TubeTK-ParameterSerializer.git )
+  ${github_protocol}://github.com/KitwareMedical/TubeTK-ParameterSerializer.git )
 set( ParameterSerializer_HASH_OR_TAG fe360ce153bfe4efc36b276750d4606bb1d7b156 )
 
 # Slicer Execution Model snapshot 2014-05-13
