@@ -35,7 +35,7 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   this->m_GaussianDerivative = GaussianDerivativeType::New();
   this->m_FFTFilter = FFTType::New();
   this->m_InverseFFTFilter = InverseFFTType::New();
-  this->m_ImageData = this->GetInput();
+  this->m_ImageData = 0;
   this->m_Orders = 0;
   this->m_Sigma = 0;
 }
@@ -53,9 +53,9 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 template< typename TInputImage, typename TOutputImage >
 void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
-::applyIFFT()
+::applyIFFT(ComplexImageType image)
 {
-  this->m_InverseFFTFilter->SetInput(this->m_GaussianDerivative->GetOutput());
+  this->m_InverseFFTFilter->SetInput( image );
   this->m_InverseFFTFilter->Update();
 }
 
@@ -65,6 +65,7 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 ::applyGaussianDerivativeFilterIFFT()
 {
   createGaussianDerivative();
+
   FFTShiftFilterType::Pointer fftShiftFilter = FFTShiftFilterType::New();
   fftShiftFilter->SetInput( this->m_GaussianDerivative->GetOutput() );
 
@@ -72,8 +73,7 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   multiplyFilter->SetInput1( this->m_FFTFilter->GetOutput() );
   multiplyFilter->SetInput2( fftShiftFilter->GetOutput() );
 
-  this->m_InverseFFTFilter->SetInput(fftShiftFilter->GetOutput());
-  this->m_InverseFFTFilter->Update();
+  applyIFFT( multiplyFilter->GetOutput() );
 
 }
 
@@ -119,7 +119,7 @@ void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 ::GenerateData()
 {
-  if(this->GetInput() != this->m_ImageData )
+  if( this->m_ImageData == 0 || ( this->m_ImageData != this->GetInput() ) )
     {
     this->m_ImageData = this->GetInput();
     applyFFT();

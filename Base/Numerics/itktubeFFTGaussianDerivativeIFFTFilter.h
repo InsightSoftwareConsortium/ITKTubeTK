@@ -47,16 +47,14 @@ public:
 
   itkNewMacro(Self);
   itkTypeMacro(FFTGaussianDerivativeIFFTFilter, ImageToImageFilter);
-  typedef itk::Image< double, 3 >                      ImageType;
-  typedef double                                       InputPixelType;
+  typedef TInputImage                                  InputPixelType;
+  typedef TOutputImage                                 OutputPixelType;
   typedef GaussianDerivativeImageSource<TInputImage>   GaussianDerivativeType;
   typedef itk::ForwardFFTImageFilter<InputImageType>   FFTType;
   typedef FFTType::OutputImageType                     ComplexImageType;
   typedef itk::Image< InputPixelType, 3 >              InputImageType;
-  typedef itk::Image< InputPixelType, 3 >              OutputImageType;
-  typedef itk::Image<unsigned char, 3>                 UnsignedCharImageType;
-  typedef itk::ImageFileReader<ImageType>              ReaderType;
-  typedef itk::ImageFileWriter<UnsignedCharImageType>  WriterType;
+  typedef itk::Image< OutputPixelType, 3 >             OutputImageType;
+  typedef itk::Image< unsigned char, 3 >               UnsignedCharImageType;
   typedef itk::FFTShiftImageFilter< InputImageType,
   InputImageType > FFTShiftFilterType;
   typedef itk::InverseFFTImageFilter<ComplexImageType,
@@ -64,8 +62,6 @@ public:
   typedef itk::MultiplyImageFilter< ComplexImageType,
   InputImageType, ComplexImageType > MultiplyFilterType;
 
-  /** Typedef for the output image type. */
-  typedef TOutputImage                     OutputImageType;
 
   itkSetMacro(Orders, GaussianDerivativeType::VectorType);
   itkGetConstReferenceMacro(Orders, GaussianDerivativeType::VectorType);
@@ -74,8 +70,8 @@ public:
 
 protected:
   void applyFFT();
-  void applyIFFT();
-  void applyGaussianDerivativeFilter();
+  void applyIFFT(ComplexImageType image);
+  void applyGaussianDerivativeFilterIFFT();
   void createGaussianDerivative();
   void GenerateData();
 
@@ -83,7 +79,7 @@ private:
   GaussianDerivativeType::Pointer      m_GaussianDerivative;
   FFTType::Pointer                     m_FFTFilter;
   InverseFFTType::Pointer              m_InverseFFTFilter;
-  ImageType::Pointer                   m_ImageData;
+  InputImageType                      *m_ImageData;
   GaussianDerivativeType::VectorType   m_Orders;
   GaussianDerivativeType::ArrayType    m_Sigma;
 };

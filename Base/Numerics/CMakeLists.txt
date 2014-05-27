@@ -30,6 +30,7 @@ set( TubeTK_Base_Numerics_H_Files
   itktubeBasisFeatureVectorGenerator.h
   itktubeBlurImageFunction.h
   itktubeFeatureVectorGenerator.h
+  itktubeFFTGaussianDerivativeIFFTFilter.h
   itktubeGaussianDerivativeImageSource.h
   itktubeImageRegionMomentsCalculator.h
   itktubeJointHistogramImageFunction.h
@@ -56,6 +57,7 @@ set( TubeTK_Base_Numerics_HXX_Files
   itktubeBasisFeatureVectorGenerator.hxx
   itktubeBlurImageFunction.hxx
   itktubeFeatureVectorGenerator.hxx
+  itktubeFFTGaussianDerivativeIFFTFilter.hxx
   itktubeGaussianDerivativeImageSource.hxx
   itktubeImageRegionMomentsCalculator.hxx
   itktubeJointHistogramImageFunction.hxx
