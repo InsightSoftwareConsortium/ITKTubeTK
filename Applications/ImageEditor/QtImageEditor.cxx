@@ -21,31 +21,147 @@ limitations under the License.
 
 =========================================================================*/
 
-//Qt includes
+// Qt includes
 #include <QDebug>
 #include <QDialogButtonBox>
 #include <QFileDialog>
 
-//QtImageViewer includes
+// QtImageViewer includes
 #include "QtGlSliceView.h"
 #include "ui_QtSlicerHelpGUI.h"
 
-//ImageEditor includes
+// ImageEditor includes
 #include "QtImageEditor.h"
 #include "QtOverlayControlsWidget.h"
 #include "ui_QtOverlayControlsWidgetGUI.h"
 
+// TubeTK includes
+#include "itktubeGaussianDerivativeImageSource.h"
+
+// ITK includes
+#include <itkComplexToImaginaryImageFilter.h>
+#include <itkComplexToModulusImageFilter.h>
+#include <itkComplexToRealImageFilter.h>
+#include <itkFFTShiftImageFilter.h>
+#include <itkForwardFFTImageFilter.h>
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkInverseFFTImageFilter.h>
+#include <itkMultiplyImageFilter.h>
+#include <itkRescaleIntensityImageFilter.h>
+#include <itkTimeProbe.h>
 
 namespace tube
 {
+
+class QtImageEditor::Internals
+{
+public:
+  typedef QtImageEditor::ImageType                     ImageType;
+  typedef itk::Image<unsigned char, 3>                 UnsignedCharImageType;
+
+  typedef itk::ImageFileReader<ImageType>              ReaderType;
+  typedef itk::ImageFileWriter<UnsignedCharImageType>  WriterType;
+
+  typedef itk::ForwardFFTImageFilter<ImageType>        FFTType;
+  typedef FFTType::OutputImageType                     ComplexImageType;
+  typedef itk::InverseFFTImageFilter<ComplexImageType, ImageType>
+                                                       InverseFFTType;
+  typedef itk::tube::GaussianDerivativeImageSource<ImageType>
+                                                       GaussianDerivativeSourceType;
+  typedef itk::FFTShiftImageFilter<ImageType, ImageType>
+                                                       FFTShiftFilterType;
+  typedef itk::MultiplyImageFilter<ComplexImageType, ImageType, ComplexImageType>
+                                                       MultiplyFilterType;
+protected:
+  ImageType                  *m_CurrentImageData;
+  ImageType                  *m_ImageData;
+  QtOverlayControlsWidget    *m_OverlayWidget;
+  FFTType::Pointer            m_FFTFilter;
+  QLineEdit                  *m_SigmaLineEdit;
+  MultiplyFilterType::Pointer m_MultiplyFilter;
+  FFTShiftFilterType::Pointer m_FFTShiftFilter;
+  InverseFFTType::Pointer     m_InverseFFTFilter;
+  QDialog                    *m_HelpDialog;
+
+  GaussianDerivativeSourceType::Pointer createGaussianDerivative(
+    GaussianDerivativeSourceType::VectorType order);/*,
+    ImageType::Pointer image);*/
+
+  void setupFFTPipeline(ImageType::Pointer image);
+
+  friend class QtImageEditor;
+};
+
+
+void QtImageEditor::Internals::setupFFTPipeline(ImageType::Pointer image)
+{
+  this->m_FFTFilter->SetInput( image );
+  this->m_MultiplyFilter->SetInput1( this->m_FFTFilter->GetOutput() );
+  this->m_MultiplyFilter->SetInput2( this->m_FFTShiftFilter->GetOutput() );
+
+  this->m_InverseFFTFilter->SetInput( this->m_MultiplyFilter->GetOutput() );
+}
+
+
+QtImageEditor::Internals::GaussianDerivativeSourceType::Pointer
+QtImageEditor::Internals::createGaussianDerivative(
+  GaussianDerivativeSourceType::VectorType order)/*,
+  ImageType::Pointer image)*/
+{
+  GaussianDerivativeSourceType::Pointer gaussianDerivativeSource =
+  GaussianDerivativeSourceType::New();
+  gaussianDerivativeSource->SetNormalized( true );
+
+  ComplexImageType::ConstPointer transformedInput
+    = this->m_FFTFilter->GetOutput();
+  const ComplexImageType::RegionType inputRegion(
+    transformedInput->GetLargestPossibleRegion() );
+  const ComplexImageType::SizeType inputSize =
+    inputRegion.GetSize();
+  const ComplexImageType::SpacingType inputSpacing =
+    transformedInput->GetSpacing();
+  const ComplexImageType::PointType inputOrigin =
+    transformedInput->GetOrigin();
+  const ComplexImageType::DirectionType inputDirection =
+    transformedInput->GetDirection();
+
+  gaussianDerivativeSource->SetSize( inputSize );
+  gaussianDerivativeSource->SetSpacing( inputSpacing );
+  gaussianDerivativeSource->SetOrigin( inputOrigin );
+  gaussianDerivativeSource->SetDirection( inputDirection );
+
+  GaussianDerivativeSourceType::ArrayType sigma;
+  GaussianDerivativeSourceType::PointType mean;
+  const double sigmaLineEdit = this->m_SigmaLineEdit->text().toDouble();
+
+  for( unsigned int ii = 0; ii < 3; ++ii )
+    {
+    const double halfLength = inputSize[ii]  / 2.0;
+    sigma[ii] = sigmaLineEdit;
+    mean[ii] = inputOrigin[ii] + halfLength;
+    }
+  mean = inputDirection * mean;
+  gaussianDerivativeSource->SetSigma( sigma );
+  gaussianDerivativeSource->SetMean( mean );
+  gaussianDerivativeSource->SetOrdersVector(order);
+
+  gaussianDerivativeSource->Update();
+
+  return gaussianDerivativeSource;
+}
 
 
 QtImageEditor::QtImageEditor(QWidget* parent, Qt::WindowFlags fl ) :
   QDialog( parent, fl )
 {
-  this->m_ImageData = 0;
-  this->m_FFTFilter = FFTType::New();
-  this->m_ComplexeImage = 0;
+  this->m_Internals = new Internals;
+  this->m_Internals->m_ImageData = 0;
+  this->m_Internals->m_FFTFilter = Internals::FFTType::New();
+  this->m_Internals->m_FFTShiftFilter = Internals::FFTShiftFilterType::New();
+  this->m_Internals->m_MultiplyFilter = Internals::MultiplyFilterType::New();
+  this->m_Internals->m_InverseFFTFilter = Internals::InverseFFTType::New();
+
   this->setupUi(this);
   this->Controls->setSliceView(this->OpenGlWindow);
 
@@ -58,10 +174,10 @@ QtImageEditor::QtImageEditor(QWidget* parent, Qt::WindowFlags fl ) :
   tabWidget->insertTab(1, filterControlWidget, "FFT Filter");
 
   QGridLayout *filterGridLayout = new QGridLayout(filterControlWidget);
-  this->m_SigmaLineEdit = new QLineEdit();
-  this->m_SigmaLineEdit->setMaximumWidth(80);
-  this->m_SigmaLineEdit->setText("1");
-  filterGridLayout->addWidget(this->m_SigmaLineEdit, 2, 1);
+  this->m_Internals->m_SigmaLineEdit = new QLineEdit();
+  this->m_Internals->m_SigmaLineEdit->setMaximumWidth(80);
+  this->m_Internals->m_SigmaLineEdit->setText("1");
+  filterGridLayout->addWidget(this->m_Internals->m_SigmaLineEdit, 2, 1);
 
   QLabel *sigmaLabel = new QLabel(filterControlWidget);
   sigmaLabel->setText("Sigma:");
@@ -79,9 +195,9 @@ QtImageEditor::QtImageEditor(QWidget* parent, Qt::WindowFlags fl ) :
   gaussianButton->setText("FFT-BLUR-INVERSE FFT");
   filterGridLayout->addWidget(gaussianButton, 2, 2);
 
-  this->m_OverlayWidget = new QtOverlayControlsWidget(tabWidget);
-  this->m_OverlayWidget->setSliceView(this->OpenGlWindow);
-  tabWidget->insertTab(2, this->m_OverlayWidget, "Overlay");
+  this->m_Internals->m_OverlayWidget = new QtOverlayControlsWidget(tabWidget);
+  this->m_Internals->m_OverlayWidget->setSliceView(this->OpenGlWindow);
+  tabWidget->insertTab(2, this->m_Internals->m_OverlayWidget, "Overlay");
 
   QDialogButtonBox *buttons = new QDialogButtonBox(Qt::Horizontal);
   buttons->addButton(this->ButtonOk, QDialogButtonBox::AcceptRole);
@@ -108,7 +224,7 @@ QtImageEditor::QtImageEditor(QWidget* parent, Qt::WindowFlags fl ) :
   QObject::connect(fftButton, SIGNAL(clicked()), this, SLOT(applyFFT()));
   QObject::connect(inverseFFTButton, SIGNAL(clicked()), this, SLOT(applyInverseFFT()));
   QObject::connect(gaussianButton, SIGNAL(clicked()), this, SLOT(applyFilter()));
-  QObject::connect(this->m_SigmaLineEdit, SIGNAL(textChanged(QString)), this,
+  QObject::connect(this->m_Internals->m_SigmaLineEdit, SIGNAL(textChanged(QString)), this,
                    SLOT(setDisplaySigma(QString)));
   QObject::connect(OpenGlWindow, SIGNAL(orientationChanged(int)), this,
                    SLOT(setMaximumSlice()));
@@ -124,18 +240,18 @@ QtImageEditor::~QtImageEditor()
 
 void QtImageEditor::showHelp(bool checked)
 {
-  if(!checked && this->m_HelpDialog != 0)
+  if(!checked && this->m_Internals->m_HelpDialog != 0)
     {
-    this->m_HelpDialog->reject();
+    this->m_Internals->m_HelpDialog->reject();
     }
   else
     {
     this->OpenGlWindow->showHelp();
-    this->m_HelpDialog = this->OpenGlWindow->helpWindow();
-    if(this->m_HelpDialog != 0)
+    this->m_Internals->m_HelpDialog = this->OpenGlWindow->helpWindow();
+    if(this->m_Internals->m_HelpDialog != 0)
       {
-      QObject::connect(m_HelpDialog, SIGNAL(rejected()), this,
-                       SLOT(hideHelp()),Qt::UniqueConnection);
+      QObject::connect(this->m_Internals->m_HelpDialog, SIGNAL(rejected()),
+                       this, SLOT(hideHelp()),Qt::UniqueConnection);
       }
     }
 }
@@ -147,16 +263,22 @@ void QtImageEditor::hideHelp()
 }
 
 
-void QtImageEditor::setInputImage(ImageType * newImData)
+void QtImageEditor::setInputImage(ImageType* newImageData)
 {
-  this->m_ImageData = newImData;
-  this->OpenGlWindow->setInputImage(newImData);
-  setMaximumSlice();
+  if (this->m_Internals->m_ImageData == 0)
+    {
+    this->m_Internals->m_ImageData = newImageData;
+    }
+  this->m_Internals->m_CurrentImageData = newImageData;
+  this->OpenGlWindow->setInputImage(newImageData);
+  this->setMaximumSlice();
   this->OpenGlWindow->changeSlice(((this->OpenGlWindow->maxSliceNum() -1)/2));
   this->setDisplaySliceNumber(static_cast<int>
-                                (this->OpenGlWindow->sliceNum()));
+                              (this->OpenGlWindow->sliceNum()));
   this->Controls->setInputImage();
   this->OpenGlWindow->update();
+
+  this->m_Internals->setupFFTPipeline(this->m_Internals->m_ImageData);
 }
 
 
@@ -169,7 +291,7 @@ void QtImageEditor::setDisplaySliceNumber(int number)
 
 bool QtImageEditor::loadImage(QString filePathToLoad)
 {
-  ReaderType::Pointer reader = ReaderType::New();
+  Internals::ReaderType::Pointer reader = Internals::ReaderType::New();
   if( filePathToLoad.isEmpty() )
     {
     filePathToLoad = QFileDialog::getOpenFileName(
@@ -184,40 +306,42 @@ bool QtImageEditor::loadImage(QString filePathToLoad)
   QFileInfo filePath(filePathToLoad);
   setWindowTitle(filePath.fileName());
 
-  qDebug() << "loading image " << filePathToLoad << " ... ";
+  std::cout << "Loading image " << filePathToLoad.toStdString() << "... ";
   try
     {
     reader->Update();
     }
   catch (ExceptionObject & e)
     {
-    std::cerr << "Exception in file reader " << std::endl;
+    std::cerr << "exception in file reader " << std::endl;
     std::cerr << e << std::endl;
     return EXIT_FAILURE;
     }
 
-  std::cout << "Done!" << std::endl;
-  setInputImage( reader->GetOutput() );
+  std::cout << "done!" << std::endl;
 
-  show();
+  this->m_Internals->m_ImageData = 0;
+  this->setInputImage( reader->GetOutput() );
+
   return true;
 }
 
 
 void QtImageEditor::loadOverlay(QString overlayImagePath)
 {
-  this->m_OverlayWidget->loadOverlay(overlayImagePath);
+  this->m_Internals->m_OverlayWidget->loadOverlay(overlayImagePath);
 }
 
 
 void QtImageEditor::setDisplaySigma(QString value)
 {
-  this->m_SigmaLineEdit->setText(value);
+  this->m_Internals->m_SigmaLineEdit->setText(value);
 }
 
 
 void QtImageEditor::blurFilter()
 {
+  /*
   this->m_FilterX = FilterType::New();
   this->m_FilterY = FilterType::New();
   this->m_FilterZ = FilterType::New();
@@ -234,11 +358,11 @@ void QtImageEditor::blurFilter()
   this->m_FilterY->SetNormalizeAcrossScale( true );
   this->m_FilterZ->SetNormalizeAcrossScale( true );
 
-  this->m_FilterX->SetInput( this->m_FFTFilter->GetOutput() );
-  this->m_FilterY->SetInput( this->m_FilterX->GetOutput() );
-  this->m_FilterY->SetInput( this->m_FilterY->GetOutput() );
+  this->m_FilterX->SetInput( this->m_Internals->m_FFTFilter->GetOutput() );
+  this->m_FilterY->SetInput( this->m_Internals->m_FilterX->GetOutput() );
+  this->m_FilterZ->SetInput( this->m_Internals->m_FilterY->GetOutput() );
 
-  const double sigma = m_SigmaLineEdit->text().toDouble();
+  const double sigma = this->m_Internals->m_SigmaLineEdit->text().toDouble();
 
   this->m_FilterX->SetSigma( sigma );
   this->m_FilterY->SetSigma( sigma );
@@ -247,144 +371,78 @@ void QtImageEditor::blurFilter()
   this->m_FilterX->Update();
   this->m_FilterY->Update();
   this->m_FilterZ->Update();
+  */
 }
 
 
 void QtImageEditor::applyFFT()
 {
-  if(this->m_ImageData == NULL)
+  if(this->m_Internals->m_ImageData == NULL)
     {
+    qDebug() << "No image to transform";
     return;
     }
-  qDebug()<<"Start FFT";
 
-  //Compute the FFT
-  this->m_FFTFilter->SetInput(this->m_ImageData);
-  this->m_FFTFilter->Update();
-}
+  qDebug() << "Start FFT";
 
+  TimeProbe clockFFT;
+  clockFFT.Start();
+  this->m_Internals->m_FFTFilter->Update();
+  clockFFT.Stop();
 
-void QtImageEditor::applyInverseFFT()
-{
-  if(this->m_ImageData == NULL)
-    {
-    return;
-    }
-  qDebug()<<"Start IFFT";
-  this->m_InverseFFTFilter = InverseFFTType::New();
-  this->m_InverseFFTFilter->SetInput(this->m_FFTFilter->GetOutput());
-  this->m_InverseFFTFilter->Update();
+  qDebug() << "FFT total time:" << clockFFT.GetTotal();
 }
 
 
 void QtImageEditor::applyFilter()
 {
-  TimeProbe clockFFT;
-  TimeProbe clockGaussian;
   TimeProbe clockMultiply;
-  TimeProbe clockIFFT;
-
-  clockFFT.Start();
   applyFFT();
-  clockFFT.Stop();
-
-  qDebug()<<"Output FFT mean"<<clockFFT.GetMean();
-  qDebug()<<"Output FFT total"<<clockFFT.GetTotal();
-  // A Gaussian is used here to create a low-pass filter.
-  clockGaussian.Start();
-  qDebug()<<"Start gaussian filter";
-  GaussianDerivativeSourceType::VectorType order;
+  clockMultiply.Start();
+  Internals::GaussianDerivativeSourceType::VectorType order;
   order[0] = 0;
   order[1] = 2;
   order[2] = 0;
-
-  GaussianDerivativeSourceType::Pointer gaussian =
-    this->createGaussianDerivative(order);
-  FFTShiftFilterType::Pointer fftShiftFilter = FFTShiftFilterType::New();
-  fftShiftFilter->SetInput( gaussian->GetOutput() );
-
-  clockGaussian.Stop();
-  qDebug()<<"Output Shift Filter mean"<<clockGaussian.GetMean();
-
-  qDebug()<<"Output Shift Filter"<<clockGaussian.GetTotal();
-  clockMultiply.Start();
-
-  MultiplyFilterType::Pointer multiplyFilter = MultiplyFilterType::New();
-  multiplyFilter->SetInput1( this->m_FFTFilter->GetOutput() );
-  multiplyFilter->SetInput2( fftShiftFilter->GetOutput() );
-
+  Internals::GaussianDerivativeSourceType::Pointer gaussianFilter =
+    this->m_Internals->createGaussianDerivative( order );
+  this->m_Internals->m_FFTShiftFilter->SetInput(gaussianFilter->GetOutput());
+  this->m_Internals->m_FFTShiftFilter->Update();
+  this->m_Internals->m_MultiplyFilter->Update();
   clockMultiply.Stop();
-  qDebug()<<"Output Multiply Filter"<<clockMultiply.GetMean();
-  qDebug()<<"Output Multiply Filter"<<clockMultiply.GetTotal();
 
-  clockIFFT.Start();
-  qDebug()<<"Start IFFT";
-  this->m_InverseFFTFilter = InverseFFTType::New();
-  this->m_InverseFFTFilter->SetInput(multiplyFilter->GetOutput());
-  this->m_InverseFFTFilter->Update();
-
-  clockIFFT.Stop();
-  qDebug()<<"Mean Time"<<clockIFFT.GetMean();
-  qDebug()<<"Total Time"<<clockIFFT.GetTotal();
-  qDebug()<<"Total"<<clockIFFT.GetTotal() + clockFFT.GetTotal() +
-  clockGaussian.GetTotal();
-
-  setInputImage(m_InverseFFTFilter->GetOutput());
-  this->OpenGlWindow->update();
-  show();
+  qDebug() << "Multiply total time:" << clockMultiply.GetTotal();
+  applyInverseFFT();
 }
 
-QtImageEditor::GaussianDerivativeSourceType::Pointer
-QtImageEditor::createGaussianDerivative(
-    GaussianDerivativeSourceType::VectorType order)
+
+void QtImageEditor::applyInverseFFT()
 {
-  GaussianDerivativeSourceType::Pointer gaussianDerivativeSource =
-  GaussianDerivativeSourceType::New();
-  gaussianDerivativeSource->SetNormalized( true );
-  this->m_FFTFilter->Update();
-
-  ComplexImageType::ConstPointer transformedInput
-    = this->m_FFTFilter->GetOutput();
-  const ComplexImageType::RegionType inputRegion(
-    transformedInput->GetLargestPossibleRegion() );
-  const ComplexImageType::SizeType inputSize
-    = inputRegion.GetSize();
-  const ComplexImageType::SpacingType inputSpacing =
-    transformedInput->GetSpacing();
-  const ComplexImageType::PointType inputOrigin =
-    transformedInput->GetOrigin();
-  const ComplexImageType::DirectionType inputDirection =
-    transformedInput->GetDirection();
-
-  gaussianDerivativeSource->SetSize( inputSize );
-  gaussianDerivativeSource->SetSpacing( inputSpacing );
-  gaussianDerivativeSource->SetOrigin( inputOrigin );
-  gaussianDerivativeSource->SetDirection( inputDirection );
-
-  GaussianDerivativeSourceType::ArrayType sigma;
-  GaussianDerivativeSourceType::PointType mean;
-  const double sigmaLineEdit = m_SigmaLineEdit->text().toDouble();
-
-  for( unsigned int ii = 0; ii < 3; ++ii )
+  if(this->m_Internals->m_ImageData == NULL)
     {
-    const double halfLength = inputSize[ii]  / 2.0;
-    sigma[ii] = sigmaLineEdit;
-    mean[ii] = inputOrigin[ii] + halfLength;
+    return;
     }
-  mean = inputDirection * mean;
-  gaussianDerivativeSource->SetSigma( sigma );
-  gaussianDerivativeSource->SetMean( mean );
-  gaussianDerivativeSource->SetOrdersVector(order);
-  gaussianDerivativeSource->Update();
-  return gaussianDerivativeSource;
+
+  qDebug()<<"Start IFFT";
+
+  TimeProbe clockIFFT;
+  clockIFFT.Start();
+  this->m_Internals->m_InverseFFTFilter->Update();
+  clockIFFT.Stop();
+
+  qDebug() << "IFFT total time:" << clockIFFT.GetTotal();
+
+  this->setInputImage(
+    this->m_Internals->m_InverseFFTFilter->GetOutput());
+  this->OpenGlWindow->update();
 }
 
 
 void QtImageEditor::displayFFT()
 {
+  /*
   //Extract the real part
   RealFilterType::Pointer realFilter = RealFilterType::New();
-  realFilter->SetInput(this->m_FFTFilter->GetOutput());
+  realFilter->SetInput(this->m_Internals->m_FFTFilter->GetOutput());
   realFilter->Update();
 
   RescaleFilterType::Pointer realRescaleFilter = RescaleFilterType::New();
@@ -395,7 +453,7 @@ void QtImageEditor::displayFFT()
 
   //Extract the imaginary part
   ImaginaryFilterType::Pointer imaginaryFilter = ImaginaryFilterType::New();
-  imaginaryFilter->SetInput(this->m_FFTFilter->GetOutput());
+  imaginaryFilter->SetInput(this->m_Internals->m_FFTFilter->GetOutput());
   imaginaryFilter->Update();
 
   RescaleFilterType::Pointer imaginaryRescaleFilter = RescaleFilterType::New();
@@ -406,7 +464,7 @@ void QtImageEditor::displayFFT()
 
   // Compute the magnitude
   ModulusFilterType::Pointer modulusFilter = ModulusFilterType::New();
-  modulusFilter->SetInput(this->m_FFTFilter->GetOutput());
+  modulusFilter->SetInput(this->m_Internals->m_FFTFilter->GetOutput());
   modulusFilter->Update();
 
   RescaleFilterType::Pointer magnitudeRescaleFilter = RescaleFilterType::New();
@@ -430,6 +488,7 @@ void QtImageEditor::displayFFT()
   magnitudeWriter->SetFileName("magnitude.png");
   magnitudeWriter->SetInput(magnitudeRescaleFilter->GetOutput());
   magnitudeWriter->Update();
+  */
 }
 
 
@@ -441,4 +500,4 @@ void QtImageEditor::setMaximumSlice()
                                  (this->SliceValue->text().toInt()));
 }
 
-}
+} // End namespace tube

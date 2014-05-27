@@ -18,13 +18,12 @@
 #ifndef __itktubeGaussianDerivativeImageSource_h
 #define __itktubeGaussianDerivativeImageSource_h
 
-#include "itkParametricImageSource.h"
-#include "itkFixedArray.h"
-#include "itkSize.h"
-
 #include <itkArray.h>
+#include <itkFixedArray.h>
 #include <itkImageFunction.h>
 #include <itkMatrix.h>
+#include <itkParametricImageSource.h>
+#include <itkSize.h>
 #include <itkVector.h>
 
 #include <vnl/vnl_c_vector.h>

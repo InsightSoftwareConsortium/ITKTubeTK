@@ -19,14 +19,17 @@
 #define __itktubeGaussianDerivativeImageSource_hxx
 
 #include "itktubeGaussianDerivativeImageSource.h"
-#include "itkGaussianSpatialFunction.h"
-#include "itkImageRegionIterator.h"
-#include "itkProgressReporter.h"
-#include "itkObjectFactory.h"
+#include <itkGaussianSpatialFunction.h>
+#include <itkImageRegionIterator.h>
+#include <itkObjectFactory.h>
+#include <itkProgressReporter.h>
 
-namespace itk {
+namespace itk
+{
 
-namespace tube {
+namespace tube
+{
+
 //----------------------------------------------------------------------------
 template< typename TOutputImage >
 GaussianDerivativeImageSource< TOutputImage >
