@@ -83,6 +83,10 @@ protected:
   FFTShiftFilterType::Pointer m_FFTShiftFilter;
   InverseFFTType::Pointer     m_InverseFFTFilter;
   QDialog                    *m_HelpDialog;
+  QLineEdit                  *m_Order_x;
+  QLineEdit                  *m_Order_y;
+  QLineEdit                  *m_Order_z;
+
 
   GaussianDerivativeSourceType::Pointer createGaussianDerivative(
     GaussianDerivativeSourceType::VectorType order);/*,
@@ -179,21 +183,34 @@ QtImageEditor::QtImageEditor(QWidget* parent, Qt::WindowFlags fl ) :
   this->m_Internals->m_SigmaLineEdit->setText("1");
   filterGridLayout->addWidget(this->m_Internals->m_SigmaLineEdit, 2, 1);
 
+  QLabel *orderLabel = new QLabel(filterControlWidget);
+  orderLabel->setText("Order Vector:");
+  filterGridLayout->addWidget(orderLabel, 0, 0);
+
+  this->m_Internals->m_Order_x = new QLineEdit();
+  filterGridLayout->addWidget(this->m_Internals->m_Order_x, 0, 1);
+
+  this->m_Internals->m_Order_y = new QLineEdit();
+  filterGridLayout->addWidget(this->m_Internals->m_Order_y, 0, 2);
+
+  this->m_Internals->m_Order_z = new QLineEdit();
+  filterGridLayout->addWidget(this->m_Internals->m_Order_z, 0, 3);
+
   QLabel *sigmaLabel = new QLabel(filterControlWidget);
   sigmaLabel->setText("Sigma:");
   filterGridLayout->addWidget(sigmaLabel, 2, 0);
 
   QPushButton *fftButton = new QPushButton();
   fftButton->setText("FFT");
-  filterGridLayout->addWidget(fftButton, 0, 2);
+  filterGridLayout->addWidget(fftButton, 0, 4);
 
   QPushButton *inverseFFTButton = new QPushButton();
   inverseFFTButton->setText("Inverse FFT");
-  filterGridLayout->addWidget(inverseFFTButton, 1, 2);
+  filterGridLayout->addWidget(inverseFFTButton, 1, 4);
 
   QPushButton *gaussianButton = new QPushButton();
   gaussianButton->setText("FFT-BLUR-INVERSE FFT");
-  filterGridLayout->addWidget(gaussianButton, 2, 2);
+  filterGridLayout->addWidget(gaussianButton, 2, 4);
 
   this->m_Internals->m_OverlayWidget = new QtOverlayControlsWidget(tabWidget);
   this->m_Internals->m_OverlayWidget->setSliceView(this->OpenGlWindow);
@@ -400,9 +417,9 @@ void QtImageEditor::applyFilter()
   applyFFT();
   clockMultiply.Start();
   Internals::GaussianDerivativeSourceType::VectorType order;
-  order[0] = 0;
-  order[1] = 2;
-  order[2] = 0;
+  order[0] = this->m_Internals->m_Order_x->text().toInt();
+  order[1] = this->m_Internals->m_Order_y->text().toInt();
+  order[2] = this->m_Internals->m_Order_z->text().toInt();
   Internals::GaussianDerivativeSourceType::Pointer gaussianFilter =
     this->m_Internals->createGaussianDerivative( order );
   this->m_Internals->m_FFTShiftFilter->SetInput(gaussianFilter->GetOutput());

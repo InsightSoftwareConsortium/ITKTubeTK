@@ -133,7 +133,6 @@ GaussianDerivativeImageSource< TOutputImage >
 ::GenerateData()
 {
   TOutputImage * outputPtr = this->GetOutput();
-  std::cout <<"spacing-GenerateData"<<Superclass::GetSpacing();
   // allocate the output buffer
   outputPtr->SetBufferedRegion( outputPtr->GetRequestedRegion() );
   outputPtr->Allocate();
