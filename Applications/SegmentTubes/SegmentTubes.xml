@@ -67,10 +67,16 @@
     </image>
     <point multiple="true">
       <name>seedX</name>
-      <label>Seed Coordinate</label>
+      <label>Seed index</label>
       <longflag>seedX</longflag>
       <flag>x</flag>
       <description>Continuous index for starting ridge extraction</description>
+    </point>
+    <point multiple="true" coordinateSystem="ras">
+      <name>seedPhysicalPoint</name>
+      <label>Seed coordinate</label>
+      <longflag>seedPhysicalPoint</longflag>
+      <description>Phisycal coordinate seed for starting ridge extraction</description>
     </point>
   </parameters>
   <parameters>
