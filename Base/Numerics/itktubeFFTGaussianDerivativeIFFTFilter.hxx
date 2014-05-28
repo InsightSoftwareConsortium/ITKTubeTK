@@ -35,9 +35,8 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   this->m_GaussianDerivative = GaussianDerivativeType::New();
   this->m_FFTFilter = FFTType::New();
   this->m_InverseFFTFilter = InverseFFTType::New();
-  this->m_ImageData = 0;
-  this->m_Orders = 0;
-  this->m_Sigma = 0;
+  this->m_Orders.Fill(0);
+  this->m_Sigma.Fill(0);
 }
 
 template< typename TInputImage, typename TOutputImage >
@@ -46,14 +45,14 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 ::applyFFT()
 {
   //Compute the FFT
-  this->m_FFTFilter->SetInput(this->m_ImageData);
+  this->m_FFTFilter->SetInput(this->GetInput());
   this->m_FFTFilter->Update();
 }
 
 template< typename TInputImage, typename TOutputImage >
 void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
-::applyIFFT(ComplexImageType image)
+::applyIFFT(ComplexImageType* image)
 {
   this->m_InverseFFTFilter->SetInput( image );
   this->m_InverseFFTFilter->Update();
@@ -66,10 +65,10 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 {
   createGaussianDerivative();
 
-  FFTShiftFilterType::Pointer fftShiftFilter = FFTShiftFilterType::New();
+  typename FFTShiftFilterType::Pointer fftShiftFilter = FFTShiftFilterType::New();
   fftShiftFilter->SetInput( this->m_GaussianDerivative->GetOutput() );
 
-  MultiplyFilterType::Pointer multiplyFilter = MultiplyFilterType::New();
+  typename MultiplyFilterType::Pointer multiplyFilter = MultiplyFilterType::New();
   multiplyFilter->SetInput1( this->m_FFTFilter->GetOutput() );
   multiplyFilter->SetInput2( fftShiftFilter->GetOutput() );
 
@@ -83,24 +82,24 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 ::createGaussianDerivative()
 {
   this->m_GaussianDerivative->SetNormalized( true );
-  ComplexImageType::ConstPointer transformedInput
+  typename ComplexImageType::ConstPointer transformedInput
     = this->m_FFTFilter->GetOutput();
-  const ComplexImageType::RegionType inputRegion(
+  const typename ComplexImageType::RegionType inputRegion(
     transformedInput->GetLargestPossibleRegion() );
-  const ComplexImageType::SizeType inputSize
+  const typename ComplexImageType::SizeType inputSize
     = inputRegion.GetSize();
-  const ComplexImageType::SpacingType inputSpacing =
+  const typename ComplexImageType::SpacingType inputSpacing =
     transformedInput->GetSpacing();
-  const ComplexImageType::PointType inputOrigin =
+  const typename ComplexImageType::PointType inputOrigin =
     transformedInput->GetOrigin();
-  const ComplexImageType::DirectionType inputDirection =
+  const typename ComplexImageType::DirectionType inputDirection =
     transformedInput->GetDirection();
 
   this->m_GaussianDerivative->SetSize( inputSize );
   this->m_GaussianDerivative->SetSpacing( inputSpacing );
   this->m_GaussianDerivative->SetOrigin( inputOrigin );
   this->m_GaussianDerivative->SetDirection( inputDirection );
-  GaussianDerivativeType::PointType mean;
+  typename GaussianDerivativeType::PointType mean;
 
   for( unsigned int ii = 0; ii < 3; ++ii )
     {
@@ -119,11 +118,7 @@ void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 ::GenerateData()
 {
-  if( this->m_ImageData == 0 || ( this->m_ImageData != this->GetInput() ) )
-    {
-    this->m_ImageData = this->GetInput();
-    applyFFT();
-    }
+  applyFFT();
   applyGaussianDerivativeFilterIFFT();
   this->GraftOutput(this->m_InverseFFTFilter->GetOutput());
 }

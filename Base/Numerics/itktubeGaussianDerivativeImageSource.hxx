@@ -183,9 +183,7 @@ GaussianDerivativeImageSource< TOutputImage >
         ? vcl_pow(m_Sigma[1], m_OrdersVector[i]) : 0));
         }
       }
-
     double suffixExp = 0;
-
     for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
       {
       suffixExp += ( evalPoint[i] - m_Mean[i] ) * ( evalPoint[i] - m_Mean[i] )

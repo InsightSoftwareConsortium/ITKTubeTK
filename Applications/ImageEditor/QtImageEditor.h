@@ -67,6 +67,7 @@ public slots:
   void applyFilter();
   void displayFFT();
   void blurFilter();
+  void useNewFilter();
 
 private:
   class Internals;

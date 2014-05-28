@@ -47,41 +47,41 @@ public:
 
   itkNewMacro(Self);
   itkTypeMacro(FFTGaussianDerivativeIFFTFilter, ImageToImageFilter);
-  typedef TInputImage                                  InputPixelType;
-  typedef TOutputImage                                 OutputPixelType;
-  typedef GaussianDerivativeImageSource<TInputImage>   GaussianDerivativeType;
-  typedef itk::ForwardFFTImageFilter<InputImageType>   FFTType;
-  typedef FFTType::OutputImageType                     ComplexImageType;
-  typedef itk::Image< InputPixelType, 3 >              InputImageType;
-  typedef itk::Image< OutputPixelType, 3 >             OutputImageType;
-  typedef itk::Image< unsigned char, 3 >               UnsignedCharImageType;
+  typedef typename TInputImage::PixelType                InputPixelType;
+  typedef typename TOutputImage::PixelType               OutputPixelType;
+  typedef itk::Image< InputPixelType, 3 >                InputImageType;
+  typedef itk::Image< OutputPixelType, 3 >               OutputImageTypeFilter;
+  typedef itk::Image< unsigned char, 3 >                 UnsignedCharImageType;
+  typedef GaussianDerivativeImageSource<InputImageType>  GaussianDerivativeType;
+  typedef itk::ForwardFFTImageFilter<InputImageType>     FFTType;
+  typedef typename FFTType::OutputImageType              ComplexImageType;
   typedef itk::FFTShiftImageFilter< InputImageType,
   InputImageType > FFTShiftFilterType;
   typedef itk::InverseFFTImageFilter<ComplexImageType,
-  OutputImageType> InverseFFTType;
+  OutputImageTypeFilter> InverseFFTType;
   typedef itk::MultiplyImageFilter< ComplexImageType,
   InputImageType, ComplexImageType > MultiplyFilterType;
 
 
-  itkSetMacro(Orders, GaussianDerivativeType::VectorType);
-  itkGetConstReferenceMacro(Orders, GaussianDerivativeType::VectorType);
-  itkSetMacro(Sigma, GaussianDerivativeType::ArrayType);
-  itkGetConstReferenceMacro(Sigma, GaussianDerivativeType::ArrayType);
+  itkSetMacro(Orders, typename GaussianDerivativeType::VectorType);
+  itkGetConstReferenceMacro(Orders, typename GaussianDerivativeType::VectorType);
+  itkSetMacro(Sigma, typename GaussianDerivativeType::ArrayType);
+  itkGetConstReferenceMacro(Sigma, typename GaussianDerivativeType::ArrayType);
 
 protected:
+  FFTGaussianDerivativeIFFTFilter();
   void applyFFT();
-  void applyIFFT(ComplexImageType image);
+  void applyIFFT(ComplexImageType* image);
   void applyGaussianDerivativeFilterIFFT();
   void createGaussianDerivative();
   void GenerateData();
 
 private:
-  GaussianDerivativeType::Pointer      m_GaussianDerivative;
-  FFTType::Pointer                     m_FFTFilter;
-  InverseFFTType::Pointer              m_InverseFFTFilter;
-  InputImageType                      *m_ImageData;
-  GaussianDerivativeType::VectorType   m_Orders;
-  GaussianDerivativeType::ArrayType    m_Sigma;
+  typename GaussianDerivativeType::Pointer      m_GaussianDerivative;
+  typename FFTType::Pointer                     m_FFTFilter;
+  typename InverseFFTType::Pointer              m_InverseFFTFilter;
+  typename GaussianDerivativeType::VectorType   m_Orders;
+  typename GaussianDerivativeType::ArrayType    m_Sigma;
 };
 
 

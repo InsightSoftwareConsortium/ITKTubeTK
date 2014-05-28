@@ -37,6 +37,7 @@ limitations under the License.
 
 // TubeTK includes
 #include "itktubeGaussianDerivativeImageSource.h"
+#include "itktubeFFTGaussianDerivativeIFFTFilter.h"
 
 // ITK includes
 #include <itkComplexToImaginaryImageFilter.h>
@@ -69,6 +70,8 @@ public:
                                                        InverseFFTType;
   typedef itk::tube::GaussianDerivativeImageSource<ImageType>
                                                        GaussianDerivativeSourceType;
+  typedef itk::tube::FFTGaussianDerivativeIFFTFilter<ImageType,ImageType>
+                                                       FFTGaussianDerivativeIFFTType;
   typedef itk::FFTShiftImageFilter<ImageType, ImageType>
                                                        FFTShiftFilterType;
   typedef itk::MultiplyImageFilter<ComplexImageType, ImageType, ComplexImageType>
@@ -238,7 +241,7 @@ QtImageEditor::QtImageEditor(QWidget* parent, Qt::WindowFlags fl ) :
                    SLOT(setDisplaySliceNumber(int)));
   QObject::connect(OpenGlWindow, SIGNAL(sliceNumChanged(int)), this,
                    SLOT(setDisplaySliceNumber(int)));
-  QObject::connect(fftButton, SIGNAL(clicked()), this, SLOT(applyFFT()));
+  QObject::connect(fftButton, SIGNAL(clicked()), this, SLOT(useNewFilter()));
   QObject::connect(inverseFFTButton, SIGNAL(clicked()), this, SLOT(applyInverseFFT()));
   QObject::connect(gaussianButton, SIGNAL(clicked()), this, SLOT(applyFilter()));
   QObject::connect(this->m_Internals->m_SigmaLineEdit, SIGNAL(textChanged(QString)), this,
@@ -336,8 +339,6 @@ bool QtImageEditor::loadImage(QString filePathToLoad)
     }
 
   std::cout << "done!" << std::endl;
-
-  this->m_Internals->m_ImageData = 0;
   this->setInputImage( reader->GetOutput() );
 
   return true;
@@ -421,7 +422,7 @@ void QtImageEditor::applyFilter()
   order[1] = this->m_Internals->m_Order_y->text().toInt();
   order[2] = this->m_Internals->m_Order_z->text().toInt();
   Internals::GaussianDerivativeSourceType::Pointer gaussianFilter =
-    this->m_Internals->createGaussianDerivative( order );
+  this->m_Internals->createGaussianDerivative( order );
   this->m_Internals->m_FFTShiftFilter->SetInput(gaussianFilter->GetOutput());
   this->m_Internals->m_FFTShiftFilter->Update();
   this->m_Internals->m_MultiplyFilter->Update();
@@ -450,6 +451,25 @@ void QtImageEditor::applyInverseFFT()
 
   this->setInputImage(
     this->m_Internals->m_InverseFFTFilter->GetOutput());
+  this->OpenGlWindow->update();
+}
+
+
+void QtImageEditor::useNewFilter()
+{
+  Internals::FFTGaussianDerivativeIFFTType::Pointer FFTgaussianDerivativeIFFT =
+  Internals::FFTGaussianDerivativeIFFTType::New();
+  FFTgaussianDerivativeIFFT->SetInput(this->m_Internals->m_ImageData);
+  Internals::GaussianDerivativeSourceType::VectorType order;
+  Internals::GaussianDerivativeSourceType::ArrayType sigma;
+  order[0] = this->m_Internals->m_Order_x->text().toInt();
+  order[1] = this->m_Internals->m_Order_y->text().toInt();
+  order[2] = this->m_Internals->m_Order_z->text().toInt();
+  FFTgaussianDerivativeIFFT->SetOrders(order);
+  sigma.Fill(this->m_Internals->m_SigmaLineEdit->text().toDouble());
+  FFTgaussianDerivativeIFFT->SetSigma(sigma);
+  FFTgaussianDerivativeIFFT->Update();
+  this->setInputImage(FFTgaussianDerivativeIFFT->GetOutput());
   this->OpenGlWindow->update();
 }
 

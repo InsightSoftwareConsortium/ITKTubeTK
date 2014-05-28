@@ -137,7 +137,6 @@ public:
 
 protected:
   GaussianDerivativeImageSource();
-  // ~GaussianImageSource(); default implementation ok
   void PrintSelf(std::ostream & os, Indent indent) const;
 
   void GenerateData();
