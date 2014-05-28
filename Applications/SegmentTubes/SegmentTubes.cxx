@@ -136,6 +136,33 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
+  if( !seedPhysicalPoint.empty() )
+    {
+    for(size_t seedNum=0; seedNum<seedPhysicalPoint.size(); ++seedNum)
+      {
+      typename ImageType::PointType point;
+      for( unsigned int i=0; i<VDimension; i++ )
+        {
+        point[i] = seedPhysicalPoint[seedNum][i];
+        }
+
+      point[0]*=-1;
+      point[1]*=-1;
+
+      bool transformSuccess =
+        inputImage->TransformPhysicalPointToContinuousIndex(point, seedIndex);
+      if (!transformSuccess)
+        {
+        std::cerr<<"Could not transform point #"
+          <<seedNum<<" to seed index."<<std::endl;
+        continue;
+        }
+
+      seedIndexList.push_back( seedIndex );
+      seedScaleList.push_back( scale );
+      }
+    }
+
   if( !seedListFile.empty() )
     {
     std::ifstream readStream;
@@ -177,10 +204,10 @@ int DoIt( int argc, char * argv[] )
   seedScaleListType::iterator seedScaleIter =
     seedScaleList.begin();
 
+  timeCollector.Start("Ridge Extractor");
   unsigned int count = 1;
   while( seedIndexIter != seedIndexList.end() )
     {
-    timeCollector.Start("Ridge Extractor");
 
     tubeOp->SetDebug( true );
     tubeOp->GetRidgeOp()->SetDebug( true );

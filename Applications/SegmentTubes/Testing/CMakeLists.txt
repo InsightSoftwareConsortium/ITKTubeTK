@@ -50,3 +50,20 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
                -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare
               APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+
+
+# Test2
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
+            COMMAND ${PROJ_EXE}
+               --seedPhysicalPoint -30.0,-50.0,30
+               -o ${TEMP}/${MODULE_NAME}Test2.mha
+               MIDAS{Branch.n010.mha.md5}
+               ${TEMP}/${MODULE_NAME}Test2.tre )
+
+# Test2-Compare
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare
+            COMMAND ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${MODULE_NAME}Test2.mha
+               -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
+set_property( TEST ${MODULE_NAME}-Test2-Compare
+              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
