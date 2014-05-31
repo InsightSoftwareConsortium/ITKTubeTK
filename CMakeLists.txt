@@ -627,8 +627,9 @@ if( TubeTK_BUILD_APPLICATIONS AND NOT TubeTK_BUILD_SLICER_MODULES )
   TubeTKSlicer4MacroGetSource( Base/CLI )
   TubeTKSlicer4MacroGetSource( Libs/ITKFactoryRegistration )
 
-  # Get slicer registration library used in TubeTK
-  TubeTKSlicer4MacroGetCLISource( ExpertAutomatedRegistration )
+  # Build SlicerBaseCLI
+  add_subdirectory( ${TubeTK_SLICER_SOURCE_DIR}/Base/CLI
+    ${TubeTK_SLICER_BINARY_DIR}/Base/CLI )
   set( SUPPORT_2D_IMAGES on )
 
   # Build ITKFactorRegistration
@@ -639,11 +640,8 @@ if( TubeTK_BUILD_APPLICATIONS AND NOT TubeTK_BUILD_SLICER_MODULES )
   set( ITKFactoryRegistration_INSTALL_LIB_DIR ${TubeTK_INSTALL_LIB_DIR} )
   add_subdirectory( ${TubeTK_SLICER_SOURCE_DIR}/Libs/ITKFactoryRegistration
     ${TubeTK_SLICER_BINARY_DIR}/Libs/ITKFactoryRegistration )
-  include_directories( ${TubeTK_SLICER_BINARY_DIR}/Libs/itkFactoryRegistration )
-
-  # Build SlicerBaseCLI
-  add_subdirectory( ${TubeTK_SLICER_SOURCE_DIR}/Base/CLI
-    ${TubeTK_SLICER_BINARY_DIR}/Base/CLI )
+  include_directories( ${TubeTK_SLICER_SOURCE_DIR}/Libs/itkFactoryRegistration
+    ${TubeTK_SLICER_BINARY_DIR}/Libs/itkFactoryRegistration )
 
   # Config SlicerExecutionModel
   set( extras ITKFactoryRegistration )
