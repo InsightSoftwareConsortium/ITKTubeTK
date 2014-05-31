@@ -501,39 +501,11 @@ OptimizedImageToImageRegistrationMethod<TImage>
       {
       reg->Update();
       }
-    catch( itk::ExceptionObject & excep )
-      {
-      std::cout << "Exception caught in evolutionary registration."
-                << excep << std::endl;
-      std::cout << "Continuing using best values..." << std::endl;
-      if( reg->GetLastTransformParameters().size() !=
-        this->GetTransform()->GetNumberOfParameters() )
-        {
-        std::cout << "  Pos = " << reg->GetInitialTransformParameters()
-                  << std::endl << std::endl;
-        }
-      else
-        {
-        std::cout << "  Pos = " << reg->GetLastTransformParameters()
-                  << std::endl << std::endl;
-        }
-      }
     catch( ... )
       {
       std::cout << "Exception caught in evolutionary registration."
                 << std::endl;
       std::cout << "Continuing using best values..." << std::endl;
-      if( reg->GetLastTransformParameters().size() !=
-        this->GetTransform()->GetNumberOfParameters() )
-        {
-        std::cout << "  Pos = " << reg->GetInitialTransformParameters()
-                  << std::endl << std::endl;
-        }
-      else
-        {
-        std::cout << "  Pos = " << reg->GetLastTransformParameters()
-                  << std::endl << std::endl;
-        }
       }
 
     if( reg->GetLastTransformParameters().size() !=
@@ -545,13 +517,14 @@ OptimizedImageToImageRegistrationMethod<TImage>
     else
       {
       this->GetTransform()->SetParametersByValue(
-        this->GetLastTransformParameters() );
+        reg->GetLastTransformParameters() );
       }
 
     m_FinalMetricValue = reg->GetOptimizer()->GetValue(
-        this->GetTransform()->GetParameters() );
+      this->GetTransform()->GetParameters() );
 
-    this->SetLastTransformParameters( this->GetTransform()->GetParameters() );
+    this->SetLastTransformParameters(
+      this->GetTransform()->GetParameters() );
 
     if( this->GetReportProgress() )
       {
@@ -604,9 +577,12 @@ OptimizedImageToImageRegistrationMethod<TImage>
   reg->SetFixedImage( fixedImage );
   reg->SetMovingImage( movingImage );
   reg->SetFixedImageRegion( this->GetFixedImage()
-                            ->GetLargestPossibleRegion() );
+    ->GetLargestPossibleRegion() );
   reg->SetTransform( this->GetTransform() );
-  reg->SetInitialTransformParameters( this->GetTransform()->GetParameters() );
+  reg->SetInitialTransformParameters(
+    this->GetTransform()->GetParameters() );
+  std::cout << "Grad init params = " <<
+    this->GetTransform()->GetParameters() << std::endl;
   reg->SetMetric( metric );
   reg->SetInterpolator( interpolator );
   reg->SetOptimizer( gradOpt );
