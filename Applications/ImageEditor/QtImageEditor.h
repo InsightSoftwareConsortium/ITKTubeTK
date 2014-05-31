@@ -24,30 +24,24 @@ limitations under the License.
 #ifndef __QtImageEditor_h
 #define __QtImageEditor_h
 
-//Qt includes
+// Qt includes
 #include <QDialog>
-#include <QDialogButtonBox>
 #include <QLineEdit>
-#include <QString>
 
-//itk includes
-#include "itkImage.h"
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkRecursiveGaussianImageFilter.h"
+// ITK includes
+#include <itkImage.h>
 
-//QtImageViewer includes
+// QtImageViewer includes
 #include "ui_QtSlicerGUI.h"
-#include "ui_QtSlicerHelpGUI.h"
 
-//TubeTK includes
-#include "QtOverlayControlsWidget.h"
-#include "ui_QtOverlayControlsWidgetGUI.h"
+// TubeTK includes
+class QtOverlayControlsWidget;
 
 namespace tube
 {
 
-class QtImageEditor : public QDialog, public Ui::GuiDialogBase
+class QtImageEditor
+  : public QDialog, public Ui::GuiDialogBase
 {
   Q_OBJECT
 public:
@@ -55,17 +49,8 @@ public:
   QtImageEditor( QWidget* parent = 0, Qt::WindowFlags fl = 0 );
   ~QtImageEditor();
 
-  typedef itk::Image< double, 3 > ImageType;
-
-  typedef double InputPixelType;
-  typedef double OutputPixelType;
-
-  typedef itk::Image< InputPixelType, 3 >  InputImageType;
-  typedef itk::Image< OutputPixelType, 3 > OutputImageType;
-  typedef itk::RecursiveGaussianImageFilter<
-               InputImageType, OutputImageType > FilterType;
-
-  typedef itk::ImageFileReader<ImageType>   ReaderType;
+  typedef double                      PixelType;
+  typedef itk::Image< PixelType, 3 >  ImageType;
 
 
 public slots:
@@ -77,13 +62,16 @@ public slots:
   void setDisplaySliceNumber(int number);
   bool loadImage(QString filePathToLoad = QString());
   void loadOverlay(QString overlayImagePath = QString());
+  void applyFFT();
+  void applyInverseFFT();
   void applyFilter();
+  void displayFFT();
+  void blurFilter();
+  void useNewFilter();
 
 private:
-  QLineEdit               *m_SigmaLineEdit;
-  ImageType               *m_ImageData;
-  QtOverlayControlsWidget *m_OverlayWidget;
-  QDialog                 *m_HelpDialog;
+  class Internals;
+  Internals* m_Internals;
 };
 
 } // End namespace tube
