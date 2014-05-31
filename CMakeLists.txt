@@ -636,7 +636,8 @@ if( TubeTK_BUILD_APPLICATIONS AND NOT TubeTK_BUILD_SLICER_MODULES )
   set( ITKFactoryRegistration_INSTALL_LIB_DIR ${TubeTK_INSTALL_LIB_DIR} )
   add_subdirectory( ${TubeTK_SLICER_SOURCE_DIR}/Libs/ITKFactoryRegistration
     ${TubeTK_SLICER_BINARY_DIR}/Libs/ITKFactoryRegistration )
-  include_directories( ${TubeTK_SLICER_BINARY_DIR}/Libs/itkFactoryRegistration )
+  include_directories( ${TubeTK_SLICER_SOURCE_DIR}/Libs/itkFactoryRegistration
+    ${TubeTK_SLICER_BINARY_DIR}/Libs/itkFactoryRegistration )
 
   # Config SlicerExecutionModel
   set( extras ITKFactoryRegistration )
