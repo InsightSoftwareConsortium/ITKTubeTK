@@ -371,28 +371,45 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop("Resample Image2");
 
     timeCollector.Start("Out Distance Map");
-    typedef typename itk::GeneralizedDistanceTransformImageFilter<
-      ImageType, ImageType >   MapFilterType;
-    typename MapFilterType::Pointer mapDistFilter = MapFilterType::New();
+    typename ImageType::Pointer outImageDistMap = NULL;
+    typename ImageType::Pointer outImageVoronoiMap = NULL;
+    if( useFastBlending )
+      {
+      typedef typename itk::GeneralizedDistanceTransformImageFilter<
+        ImageType, ImageType >   MapFilterType;
+      typename MapFilterType::Pointer mapDistFilter = MapFilterType::New();
 
-    typedef itk::BinaryThresholdImageFilter<ImageType, ImageType> Indicator;
-    typename Indicator::Pointer indicator = Indicator::New();
-    indicator->SetLowerThreshold(0);
-    indicator->SetUpperThreshold(0);
-    indicator->SetOutsideValue(0);
-    indicator->SetInsideValue( mapDistFilter->GetMaximalSquaredDistance() );
-    indicator->SetInput( outImageMap );
-    indicator->Update();
+      typedef itk::BinaryThresholdImageFilter<ImageType, ImageType>
+        Indicator;
+      typename Indicator::Pointer indicator = Indicator::New();
+      indicator->SetLowerThreshold(0);
+      indicator->SetUpperThreshold(0);
+      indicator->SetOutsideValue(0);
+      indicator->SetInsideValue(
+        mapDistFilter->GetMaximalSquaredDistance() );
+      indicator->SetInput( outImageMap );
+      indicator->Update();
 
-    mapDistFilter->SetInput1( indicator->GetOutput() );
-    mapDistFilter->SetInput2( outImageMap );
-    mapDistFilter->UseImageSpacingOff();
-    mapDistFilter->CreateVoronoiMapOn();
-    mapDistFilter->Update();
-    typename ImageType::Pointer outImageDistMap =
-      mapDistFilter->GetOutput();
-    typename ImageType::Pointer outImageVoronoiMap =
-      mapDistFilter->GetVoronoiMap();
+      mapDistFilter->SetInput1( indicator->GetOutput() );
+      mapDistFilter->SetInput2( outImageMap );
+      mapDistFilter->UseImageSpacingOff();
+      mapDistFilter->CreateVoronoiMapOn();
+      mapDistFilter->Update();
+      outImageDistMap = mapDistFilter->GetOutput();
+      outImageVoronoiMap = mapDistFilter->GetVoronoiMap();
+      }
+    else
+      {
+      typedef typename itk::DanielssonDistanceMapImageFilter< ImageType,
+        ImageType>   MapFilterType;
+      typename MapFilterType::Pointer mapDistFilter = MapFilterType::New();
+      mapDistFilter->SetInput( outImageMap );
+      mapDistFilter->SetInputIsBinary( false );
+      mapDistFilter->SetUseImageSpacing( false );
+      mapDistFilter->Update();
+      outImageDistMap = mapDistFilter->GetDistanceMap();
+      outImageVoronoiMap = mapDistFilter->GetVoronoiMap();
+      }
     timeCollector.Stop("Out Distance Map");
 
     progress += 1.0/(double)inputVolume2.size() * 0.2;
@@ -420,25 +437,46 @@ int DoIt( int argc, char * argv[] )
       }
     timeCollector.Stop("Distance Map Selection");
 
-    typename MapFilterType::Pointer mapVorFilter = MapFilterType::New();
+    typename ImageType::Pointer vorImageDistMap = NULL;
+    if( useFastBlending )
+      {
+      typedef typename itk::GeneralizedDistanceTransformImageFilter<
+        ImageType, ImageType >   MapFilterType;
+      typename MapFilterType::Pointer mapVorFilter = MapFilterType::New();
 
-    timeCollector.Start("Voronoi Distance Map");
-    typename Indicator::Pointer indicator2 = Indicator::New();
-    indicator2->SetLowerThreshold(0);
-    indicator2->SetUpperThreshold(0);
-    indicator2->SetOutsideValue(0);
-    indicator2->SetInsideValue( mapVorFilter->GetMaximalSquaredDistance() );
-    indicator2->SetInput( vorImageMap );
-    indicator2->Update();
+      timeCollector.Start("Voronoi Distance Map");
+      typedef itk::BinaryThresholdImageFilter<ImageType, ImageType>
+        Indicator;
+      typename Indicator::Pointer indicator2 = Indicator::New();
+      indicator2->SetLowerThreshold(0);
+      indicator2->SetUpperThreshold(0);
+      indicator2->SetOutsideValue(0);
+      indicator2->SetInsideValue(
+        mapVorFilter->GetMaximalSquaredDistance() );
+      indicator2->SetInput( vorImageMap );
+      indicator2->Update();
 
-    mapVorFilter->SetInput1( indicator2->GetOutput() );
-    mapVorFilter->SetInput2( vorImageMap );
-    mapVorFilter->UseImageSpacingOff();
-    mapVorFilter->CreateVoronoiMapOn();
-    mapVorFilter->Update();
-    typename ImageType::Pointer vorImageDistMap =
-      mapVorFilter->GetOutput();
-    timeCollector.Stop("Voronoi Distance Map");
+      mapVorFilter->SetInput1( indicator2->GetOutput() );
+      mapVorFilter->SetInput2( vorImageMap );
+      mapVorFilter->UseImageSpacingOff();
+      mapVorFilter->CreateVoronoiMapOn();
+      mapVorFilter->Update();
+      vorImageDistMap = mapVorFilter->GetOutput();
+      timeCollector.Stop("Voronoi Distance Map");
+      }
+    else
+      {
+      timeCollector.Start("Voronoi Distance Map");
+      typedef typename itk::SignedDanielssonDistanceMapImageFilter<
+        ImageType, ImageType>   SignedMapFilterType;
+      typename SignedMapFilterType::Pointer mapVorFilter =
+        SignedMapFilterType::New();
+      mapVorFilter->SetInput( vorImageMap );
+      mapVorFilter->SetUseImageSpacing( false );
+      mapVorFilter->Update();
+      vorImageDistMap = mapVorFilter->GetDistanceMap();
+      timeCollector.Stop("Voronoi Distance Map");
+      }
 
     timeCollector.Start("Voronoi Distance Selection");
     iter2.GoToBegin();

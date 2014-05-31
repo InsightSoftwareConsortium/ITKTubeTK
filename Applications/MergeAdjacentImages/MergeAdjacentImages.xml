@@ -113,5 +113,13 @@
       <flag>a</flag>
       <default>false</default>
     </boolean>
+    <boolean>
+      <name>useFastBlending</name>
+      <label>Use fast blending</label>
+      <description>Use experimental method for blending.</description>
+      <longflag>useFastBlending</longflag>
+      <flag>f</flag>
+      <default>false</default>
+    </boolean>
   </parameters>
 </executable>

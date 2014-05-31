@@ -42,6 +42,7 @@ set( TEXTCOMPARE_EXE
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
              COMMAND ${PROJ_EXE}
                MIDAS{ES0015_Large.mha.md5}
+               -a
                --saveTransform ${TEMP}/${MODULE_NAME}Test1.tfm
                MIDAS{ES0015_Large_Wo_offset.mha.md5}
                ${TEMP}/${MODULE_NAME}Test1.mha )
