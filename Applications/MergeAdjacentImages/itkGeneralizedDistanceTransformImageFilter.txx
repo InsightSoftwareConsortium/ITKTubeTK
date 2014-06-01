@@ -18,7 +18,7 @@ namespace
   // makes hardly a difference.
   template <class TSpacingType>
   void updateDivisionTable(
-    TSpacingType table[], TSpacingType spacing, size_t size)
+    std::vector< TSpacingType > & table, TSpacingType spacing, size_t size)
   {
     for (size_t i = 1; i < size; ++i)
       table[i] = TSpacingType(1)/(spacing*spacing*i);
@@ -303,7 +303,7 @@ GeneralizedDistanceTransformImageFilter<
   // With the division table, we reduce the cost of the code that needs to
   // take image spacing into account.
   // It will be initialized later, once for each dimension.
-  SpacingType divisionTable[maxSize];
+  std::vector< SpacingType > divisionTable( maxSize, 0 );
 
   // Loop over all dimensions and compute the generalized distance transform
   // and voronoi map for each scanline.
@@ -580,7 +580,7 @@ GeneralizedDistanceTransformImageFilter<
         //
         // In the output buffers, the scanlines are maxSize elements apart.
         bool stripNeedsCopy = true;
-        bool lineNeedsCopy[parallelLines];
+        std::vector< bool > lineNeedsCopy( parallelLines, false );
         if (m_UseImageSpacing)
           for (size_t line = 0, offset = 0;
                 line < parallelLines;
@@ -670,9 +670,9 @@ typename GeneralizedDistanceTransformImageFilter<
 GeneralizedDistanceTransformImageFilter<
   TFunctionImage, TDistanceImage, TLabelImage >
 ::intersection(const Parabola &p, const Parabola &q,
-             const SpacingType divisionTable[],
-             const AbscissaIndexType &from,
-             const AbscissaIndexType &to)
+  const std::vector< SpacingType > & divisionTable,
+  const AbscissaIndexType &from,
+  const AbscissaIndexType &to)
 {
   // Parabolas must be different, because the intersection abscissa is not
   // defined otherwise
@@ -767,7 +767,8 @@ GeneralizedDistanceTransformImageFilter<
   Parabolas &envelope,
   const AbscissaIndexType& to,
   const AbscissaIndexType& pi, const DistancePixelType& py,
-  const LabelPixelType& pl, const SpacingType divisionTable[])
+  const LabelPixelType& pl,
+  const std::vector< SpacingType > & divisionTable )
 {
   // We do not care for background values
   if (py >= MaximalSquaredDistance)
