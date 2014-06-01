@@ -143,7 +143,7 @@ public:
    *
    * Use the value returned by GetMaximalSquaredDistance in order to define
    * background voxels in your input image. */
-  const double GetMaximalSquaredDistance() const;
+  double GetMaximalSquaredDistance() const;
 
   /** Connect the function image */
   void SetInput1(const FunctionImageType *functionImage);

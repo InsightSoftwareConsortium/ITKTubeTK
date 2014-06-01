@@ -67,7 +67,7 @@ GeneralizedDistanceTransformImageFilter<
 }
 
 template < class TFunctionImage,class TDistanceImage, class TLabelImage >
-const double
+double
 GeneralizedDistanceTransformImageFilter<
   TFunctionImage, TDistanceImage, TLabelImage >
 ::GetMaximalSquaredDistance() const
@@ -293,11 +293,11 @@ GeneralizedDistanceTransformImageFilter<
   // Compute the maximal extent in number of pixels, rounded up to fill full
   // cache lines.
   // This is used to set up various vectors, buffers, and a division table
-  typedef typename DistanceImageType::SizeValueType SizeValueType;
-  SizeValueType maxSize = 0;
+  typedef typename DistanceImageType::SizeValueType DistSizeValueType;
+  DistSizeValueType maxSize = 0;
   for (unsigned int d = 0; d < FunctionImageType::ImageDimension; ++d)
     maxSize = std::max(maxSize, size[d]);
-  maxSize = (SizeValueType)(
+  maxSize = (DistSizeValueType)(
     std::ceil((double)maxSize / CacheLineSize) * CacheLineSize);
 
   // With the division table, we reduce the cost of the code that needs to
@@ -351,9 +351,6 @@ GeneralizedDistanceTransformImageFilter<
       DistancePixelType *rawDistance = &distanceIt.Value();
       LabelPixelType *rawLabel =
         this->m_CreateVoronoiMap ?  &voronoiMapIt.Value() : 0;
-#pragma omp parallel for \
-      default(shared) firstprivate(envelope) \
-      schedule(static, 1)
       for (size_t i = 0; i < size[ 1 ]; ++i)
       {
         // Where does the scanline start in rawDistance?
@@ -429,9 +426,9 @@ GeneralizedDistanceTransformImageFilter<
   // The number of scanlines is the number of pixels that fit in a L1 cache
   // line or a small multiple thereof. This way, we will use everything from L1
   // cache (when the memory is properly aligned).
-  const SizeValueType pixelsInCacheLine =
-    std::max((SizeValueType)1,
-             (SizeValueType)CacheLineSize/
+  const DistSizeValueType pixelsInCacheLine =
+    std::max((DistSizeValueType)1,
+             (DistSizeValueType)CacheLineSize/
              sizeof(typename DistanceImageType::PixelType));
 
   // We are using a buffer for each thread for intermediate output.
@@ -515,9 +512,6 @@ GeneralizedDistanceTransformImageFilter<
       //
       // Each thread will handle a single strip and therefore have everything in
       // L1 cache of its CPU.
-#pragma omp parallel for default(shared) \
-      firstprivate(envelope, valuesBuffer, voronoiBuffer) \
-      schedule (static, 1)
       for (int i = 0; i < strips; ++i)
       {
         const IndexValueType currentStripOffset = i * pixelsInCacheLine;
@@ -525,7 +519,7 @@ GeneralizedDistanceTransformImageFilter<
         // We can work on at most linesInCache lines in parallel to be cache
         // effective. To avoid wrap-around effects at the end of a line, we also
         // need to take the image size in dimension 0 in account.
-        const SizeValueType parallelLines = std::min(
+        const DistSizeValueType parallelLines = std::min(
           pixelsInCacheLine,
           size[0] - i * pixelsInCacheLine);
 
@@ -774,7 +768,7 @@ GeneralizedDistanceTransformImageFilter<
   if (py >= MaximalSquaredDistance)
     return;
 
-  Parabola p = {pi, py, pl};
+  Parabola p = {pi, py, pl, 0};
 
   // Parabolas have to be added with increasing abscissas
   assert(envelope.empty() || p.i > envelope.back().i);
@@ -824,7 +818,7 @@ GeneralizedDistanceTransformImageFilter<
   if (py >= MaximalSquaredDistance)
     return;
 
-  Parabola p = {pi, py, pl};
+  Parabola p = {pi, py, pl, 0};
   assert(envelope.empty() || p.i > envelope.back().i);
   AbscissaIndexType i = 0;
   while (!envelope.empty() &&

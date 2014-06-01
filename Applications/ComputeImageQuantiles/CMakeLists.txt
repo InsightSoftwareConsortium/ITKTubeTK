@@ -36,7 +36,7 @@ find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
 # Find Boost
-set( Boost_ADDITIONAL_VERSIONS "1.51 1.52 1.53" )
+set( Boost_ADDITIONAL_VERSIONS "1.51 1.52 1.53 1.54" )
 set( Boost_USE_STATIC_LIBS ON )
 set( Boost_USE_MULTITHREADED ON )
 set( Boost_USE_STATIC_RUNTIME OFF )
