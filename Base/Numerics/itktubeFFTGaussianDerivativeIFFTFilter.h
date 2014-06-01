@@ -36,52 +36,76 @@ namespace tube
 
 template< typename TInputImage, typename TOutputImage >
 class FFTGaussianDerivativeIFFTFilter :
-    public ImageToImageFilter<TInputImage, TOutputImage>
+    public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
 
-  typedef FFTGaussianDerivativeIFFTFilter               Self;
-  typedef ImageToImageFilter<TInputImage, TOutputImage> Superclass;
-  typedef SmartPointer<Self>                            Pointer;
-  typedef SmartPointer<const Self>                      ConstPointer;
+  typedef FFTGaussianDerivativeIFFTFilter                 Self;
+  typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
+  typedef SmartPointer< Self >                            Pointer;
+  typedef SmartPointer< const Self >                      ConstPointer;
 
-  itkNewMacro(Self);
-  itkTypeMacro(FFTGaussianDerivativeIFFTFilter, ImageToImageFilter);
-  typedef typename TInputImage::PixelType                InputPixelType;
-  typedef typename TOutputImage::PixelType               OutputPixelType;
-  typedef itk::Image< InputPixelType, 3 >                InputImageType;
-  typedef itk::Image< OutputPixelType, 3 >               OutputImageTypeFilter;
-  typedef itk::Image< unsigned char, 3 >                 UnsignedCharImageType;
-  typedef GaussianDerivativeImageSource<InputImageType>  GaussianDerivativeType;
-  typedef itk::ForwardFFTImageFilter<InputImageType>     FFTType;
-  typedef typename FFTType::OutputImageType              ComplexImageType;
-  typedef itk::FFTShiftImageFilter< InputImageType,
-  InputImageType > FFTShiftFilterType;
-  typedef itk::InverseFFTImageFilter<ComplexImageType,
-  OutputImageTypeFilter> InverseFFTType;
-  typedef itk::MultiplyImageFilter< ComplexImageType,
-  InputImageType, ComplexImageType > MultiplyFilterType;
+  itkNewMacro( Self );
 
+  itkTypeMacro( FFTGaussianDerivativeIFFTFilter, ImageToImageFilter );
 
-  itkSetMacro(Orders, typename GaussianDerivativeType::VectorType);
-  itkGetConstReferenceMacro(Orders, typename GaussianDerivativeType::VectorType);
-  itkSetMacro(Sigma, typename GaussianDerivativeType::ArrayType);
-  itkGetConstReferenceMacro(Sigma, typename GaussianDerivativeType::ArrayType);
+  itkStaticConstMacro( ImageDimension, unsigned int,
+    TInputImage::ImageDimension );
+
+  typedef TInputImage                                 InputImageType;
+
+  typedef TOutputImage                                OutputImageTypeFilter;
+
+  typedef GaussianDerivativeImageSource< InputImageType >
+                                                     GaussianDerivativeType;
+
+  itkSetMacro( Orders, typename GaussianDerivativeType::VectorType );
+  itkGetConstReferenceMacro( Orders,
+    typename GaussianDerivativeType::VectorType );
+
+  itkSetMacro( Sigma, typename GaussianDerivativeType::ArrayType );
+  itkGetConstReferenceMacro( Sigma,
+    typename GaussianDerivativeType::ArrayType );
 
 protected:
-  FFTGaussianDerivativeIFFTFilter();
-  void applyFFT();
-  void applyIFFT(ComplexImageType* image);
-  void applyGaussianDerivativeFilterIFFT();
-  void createGaussianDerivative();
+  typedef itk::ForwardFFTImageFilter< InputImageType > FFTType;
+  typedef typename FFTType::OutputImageType            ComplexImageType;
+
+  typedef itk::FFTShiftImageFilter< InputImageType, InputImageType >
+                                                       FFTShiftFilterType;
+  typedef itk::InverseFFTImageFilter<ComplexImageType, 
+    OutputImageTypeFilter>                             InverseFFTType;
+
+  typedef itk::MultiplyImageFilter< ComplexImageType, InputImageType,
+    ComplexImageType >                                 MultiplyFilterType;
+
+  FFTGaussianDerivativeIFFTFilter( void );
+  virtual ~FFTGaussianDerivativeIFFTFilter( void ) {}
+
+  void ApplyFFT();
+
+  void CreateGaussianDerivative();
+
+  void ApplyGaussianDerivativeIFFT();
+
   void GenerateData();
 
 private:
-  typename GaussianDerivativeType::Pointer      m_GaussianDerivative;
+  // Purposely not implemented
+  FFTGaussianDerivativeIFFTFilter( const Self & );
+  void operator = ( const Self & );
+
   typename FFTType::Pointer                     m_FFTFilter;
+
   typename InverseFFTType::Pointer              m_InverseFFTFilter;
+
+  typename GaussianDerivativeType::Pointer      m_GaussianDerivative;
+
   typename GaussianDerivativeType::VectorType   m_Orders;
+
   typename GaussianDerivativeType::ArrayType    m_Sigma;
+
+  const InputImageType *                        m_LastInputImage;
 };
 
 

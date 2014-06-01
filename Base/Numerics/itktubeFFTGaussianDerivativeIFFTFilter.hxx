@@ -32,19 +32,22 @@ template< typename TInputImage, typename TOutputImage >
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 ::FFTGaussianDerivativeIFFTFilter()
 {
-  this->m_GaussianDerivative = GaussianDerivativeType::New();
   this->m_FFTFilter = FFTType::New();
   this->m_InverseFFTFilter = InverseFFTType::New();
+
+  this->m_GaussianDerivative = GaussianDerivativeType::New();
+
   this->m_Orders.Fill(0);
   this->m_Sigma.Fill(0);
+
+  this->m_LastInputImage = NULL;
 }
 
 template< typename TInputImage, typename TOutputImage >
 void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
-::applyFFT()
+::ApplyFFT()
 {
-  //Compute the FFT
   this->m_FFTFilter->SetInput(this->GetInput());
   this->m_FFTFilter->Update();
 }
@@ -52,38 +55,13 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 template< typename TInputImage, typename TOutputImage >
 void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
-::applyIFFT(ComplexImageType* image)
-{
-  this->m_InverseFFTFilter->SetInput( image );
-  this->m_InverseFFTFilter->Update();
-}
-
-template< typename TInputImage, typename TOutputImage >
-void
-FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
-::applyGaussianDerivativeFilterIFFT()
-{
-  createGaussianDerivative();
-
-  typename FFTShiftFilterType::Pointer fftShiftFilter = FFTShiftFilterType::New();
-  fftShiftFilter->SetInput( this->m_GaussianDerivative->GetOutput() );
-
-  typename MultiplyFilterType::Pointer multiplyFilter = MultiplyFilterType::New();
-  multiplyFilter->SetInput1( this->m_FFTFilter->GetOutput() );
-  multiplyFilter->SetInput2( fftShiftFilter->GetOutput() );
-
-  applyIFFT( multiplyFilter->GetOutput() );
-
-}
-
-template< typename TInputImage, typename TOutputImage >
-void
-FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
-::createGaussianDerivative()
+::CreateGaussianDerivative()
 {
   this->m_GaussianDerivative->SetNormalized( true );
+
   typename ComplexImageType::ConstPointer transformedInput
     = this->m_FFTFilter->GetOutput();
+
   const typename ComplexImageType::RegionType inputRegion(
     transformedInput->GetLargestPossibleRegion() );
   const typename ComplexImageType::SizeType inputSize
@@ -99,14 +77,15 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   this->m_GaussianDerivative->SetSpacing( inputSpacing );
   this->m_GaussianDerivative->SetOrigin( inputOrigin );
   this->m_GaussianDerivative->SetDirection( inputDirection );
-  typename GaussianDerivativeType::PointType mean;
 
-  for( unsigned int ii = 0; ii < 3; ++ii )
+  typename GaussianDerivativeType::PointType mean;
+  for( unsigned int ii = 0; ii < ImageDimension; ++ii )
     {
     const double halfLength = inputSize[ii]  / 2.0;
     mean[ii] = inputOrigin[ii] + halfLength;
     }
   mean = inputDirection * mean;
+
   this->m_GaussianDerivative->SetSigma( this->m_Sigma );
   this->m_GaussianDerivative->SetMean( mean );
   this->m_GaussianDerivative->SetOrdersVector( this->m_Orders);
@@ -116,10 +95,36 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 template< typename TInputImage, typename TOutputImage >
 void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
+::ApplyGaussianDerivativeIFFT()
+{
+  CreateGaussianDerivative();
+
+  typename FFTShiftFilterType::Pointer fftShiftFilter =
+    FFTShiftFilterType::New();
+  fftShiftFilter->SetInput( this->m_GaussianDerivative->GetOutput() );
+
+  typename MultiplyFilterType::Pointer multiplyFilter =
+    MultiplyFilterType::New();
+  multiplyFilter->SetInput1( this->m_FFTFilter->GetOutput() );
+  multiplyFilter->SetInput2( fftShiftFilter->GetOutput() );
+
+  this->m_InverseFFTFilter->SetInput( multiplyFilter->GetOutput() );
+  this->m_InverseFFTFilter->Update();
+}
+
+template< typename TInputImage, typename TOutputImage >
+void
+FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 ::GenerateData()
 {
-  applyFFT();
-  applyGaussianDerivativeFilterIFFT();
+  if( m_LastInputImage != this->GetInput() )
+    {
+    m_LastInputImage = this->GetInput();
+    ApplyFFT();
+    }
+
+  ApplyGaussianDerivativeIFFT();
+
   this->GraftOutput(this->m_InverseFFTFilter->GetOutput());
 }
 
