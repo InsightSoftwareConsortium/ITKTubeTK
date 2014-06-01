@@ -229,19 +229,17 @@ private:
    * \param from Lowest possible output value
    * \param to Largest possible output value
    * \return The smallest index for which the parabola q is below p */
-  inline
   AbscissaIndexType
   intersection(const Parabola &p, const Parabola &q,
-               const SpacingType divisionTable[],
-               const AbscissaIndexType &from,
-               const AbscissaIndexType &to);
+    const std::vector< SpacingType > & divisionTable,
+    const AbscissaIndexType &from,
+    const AbscissaIndexType &to);
 
   /** \overload Does not use spacing */
-  inline
-  AbscissaIndexType
+  inline AbscissaIndexType
   intersection(const Parabola &p, const Parabola &q,
-               const AbscissaIndexType &from,
-               const AbscissaIndexType &to);
+    const AbscissaIndexType &from,
+    const AbscissaIndexType &to);
 
   /** Add a new parabola. The apex abscissa has to be larger than those already
    * in the envelope.
@@ -257,7 +255,8 @@ private:
     Parabolas &envelope,
     const AbscissaIndexType& to,
     const AbscissaIndexType& pi, const DistancePixelType& py,
-    const LabelPixelType& pl, const SpacingType divisionTable[]);
+    const LabelPixelType& pl,
+    const std::vector< SpacingType > & divisionTable);
 
   /** \overload Does not use spacing */
   inline void addParabola(
