@@ -433,8 +433,6 @@ RidgeSeedFilter< TImage, TLabelMap >
     {
     typedef itk::BinaryThinningImageFilter< LabelMapType, LabelMapType >
       FilterType;
-    typedef itk::BinaryBallStructuringElement< LabelMapPixelType,
-      ImageDimension> SEType;
 
     typename FilterType::Pointer filter;
 

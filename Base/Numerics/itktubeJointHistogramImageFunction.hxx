@@ -204,19 +204,6 @@ void
 JointHistogramImageFunction<TInputImage,TCoordRep>
 ::ComputeMeanAndStandardDeviation( void ) const
 {
-  typedef itk::DivideImageFilter< HistogramType, double,
-    HistogramType >                                          DividerType;
-  typedef itk::MultiplyImageFilter< HistogramType, double,
-    HistogramType >                                          MultiplierType;
-  typedef itk::AddImageFilter< HistogramType, HistogramType, HistogramType>
-                                                             AdderType;
-  typedef itk::SubtractImageFilter< HistogramType, HistogramType,
-    HistogramType>                                           SubtracterType;
-  typedef itk::SquareImageFilter< HistogramType,
-    HistogramType >                                          SquareType;
-  typedef itk::SqrtImageFilter< HistogramType,
-    HistogramType >                                          SqrtType;
-
   typedef itk::DiscreteGaussianImageFilter< HistogramType,
           HistogramType > SmootherType;
 
@@ -348,7 +335,6 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   m_Histogram->FillBuffer( 0 );
 
   typedef itk::ImageRegionConstIterator<InputImageType> ConstIteratorType;
-  typedef itk::ImageRegionIterator<InputImageType>      IteratorType;
 
   typename InputImageType::IndexType minIndex;
   typename InputImageType::IndexType maxIndex;
