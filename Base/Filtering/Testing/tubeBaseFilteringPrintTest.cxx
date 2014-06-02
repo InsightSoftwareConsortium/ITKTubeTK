@@ -27,6 +27,7 @@ limitations under the License.
 #include "itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h"
 #include "itktubeAnisotropicHybridDiffusionImageFilter.h"
 #include "itktubeExtractTubePointsSpatialObjectFilter.h"
+#include "itktubeFFTGaussianDerivativeIFFTFilter.h"
 #include "itktubeSheetnessMeasureImageFilter.h"
 #include "itktubeShrinkUsingMaxImageFilter.h"
 #include "itktubeStructureTensorRecursiveGaussianImageFilter.h"
@@ -73,6 +74,12 @@ int tubeBaseFilteringPrintTest( int itkNotUsed( argc ), char * itkNotUsed( argv 
   ExtractTubePointsSpatialObjectFilterType::Pointer etpsof =
     ExtractTubePointsSpatialObjectFilterType::New();
   std::cout << "-------------etpsof" << etpsof << std::endl;
+
+  typedef itk::tube::FFTGaussianDerivativeIFFTFilter< ImageType >
+    FFTGaussianDerivativeIFFTFilter;
+  FFTGaussianDerivativeIFFTFilter::Pointer fgdif =
+    FFTGaussianDerivativeIFFTFilter::New();
+  std::cout << "-------------fgdif " << fgdif << std::endl;
 
   itk::tube::StructureTensorRecursiveGaussianImageFilter< ImageType >
     ::Pointer strgif =

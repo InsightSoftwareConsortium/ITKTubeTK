@@ -18,6 +18,8 @@
 #ifndef __itktubeFFTGaussianDerivativeIFFTFilter_h
 #define __itktubeFFTGaussianDerivativeIFFTFilter_h
 
+#include "itktubeGaussianDerivativeImageSource.h"
+
 #include "itkFFTShiftImageFilter.h"
 #include "itkForwardFFTImageFilter.h"
 #include "itkImageToImageFilter.h"
@@ -25,7 +27,6 @@
 #include "itkInverseFFTImageFilter.h"
 #include "itkMultiplyImageFilter.h"
 #include "itkParametricImageSource.h"
-#include "itkFixedArray.h"
 #include "itkSize.h"
 
 namespace itk
@@ -34,7 +35,7 @@ namespace itk
 namespace tube
 {
 
-template< typename TInputImage, typename TOutputImage >
+template< typename TInputImage, typename TOutputImage = TInputImage >
 class FFTGaussianDerivativeIFFTFilter :
     public ImageToImageFilter< TInputImage, TOutputImage >
 {
@@ -52,31 +53,40 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     TInputImage::ImageDimension );
 
-  typedef TInputImage                                 InputImageType;
+  typedef TInputImage                         InputImageType;
 
-  typedef TOutputImage                                OutputImageTypeFilter;
+  typedef TOutputImage                        OutputImageType;
 
-  typedef GaussianDerivativeImageSource< InputImageType >
-                                                     GaussianDerivativeType;
+  typedef Image< float, ImageDimension >      FloatImageType;
 
-  itkSetMacro( Orders, typename GaussianDerivativeType::VectorType );
-  itkGetConstReferenceMacro( Orders,
-    typename GaussianDerivativeType::VectorType );
+  typedef GaussianDerivativeImageSource< FloatImageType >
+                                         GaussianDerivativeImageSourceType;
 
-  itkSetMacro( Sigma, typename GaussianDerivativeType::ArrayType );
-  itkGetConstReferenceMacro( Sigma,
-    typename GaussianDerivativeType::ArrayType );
+  typedef typename GaussianDerivativeImageSourceType::OrdersType
+                                         OrdersType;
+
+  typedef typename GaussianDerivativeImageSourceType::SigmasType
+                                         SigmasType;
+
+  itkSetMacro( Orders, OrdersType );
+  itkGetConstReferenceMacro( Orders, OrdersType );
+
+  itkSetMacro( Sigmas, SigmasType );
+  itkGetConstReferenceMacro( Sigmas, SigmasType );
 
 protected:
   typedef itk::ForwardFFTImageFilter< InputImageType > FFTType;
   typedef typename FFTType::OutputImageType            ComplexImageType;
 
-  typedef itk::FFTShiftImageFilter< InputImageType, InputImageType >
-                                                       FFTShiftFilterType;
-  typedef itk::InverseFFTImageFilter<ComplexImageType, 
-    OutputImageTypeFilter>                             InverseFFTType;
+  typedef itk::ForwardFFTImageFilter< FloatImageType > FFTFloatType;
 
-  typedef itk::MultiplyImageFilter< ComplexImageType, InputImageType,
+  typedef itk::FFTShiftImageFilter< FloatImageType, FloatImageType >
+                                                       FFTShiftFilterType;
+
+  typedef itk::InverseFFTImageFilter< ComplexImageType,
+    OutputImageType >                                  InverseFFTFilterType;
+
+  typedef itk::MultiplyImageFilter< ComplexImageType, ComplexImageType,
     ComplexImageType >                                 MultiplyFilterType;
 
   FFTGaussianDerivativeIFFTFilter( void );
@@ -90,22 +100,24 @@ protected:
 
   void GenerateData();
 
+  void PrintSelf( std::ostream & os, Indent indent ) const;
+
 private:
   // Purposely not implemented
   FFTGaussianDerivativeIFFTFilter( const Self & );
   void operator = ( const Self & );
 
-  typename FFTType::Pointer                     m_FFTFilter;
+  typename ComplexImageType::Pointer                  m_FFTImage;
 
-  typename InverseFFTType::Pointer              m_InverseFFTFilter;
+  typename OutputImageType::Pointer                   m_IFFTImage;
 
-  typename GaussianDerivativeType::Pointer      m_GaussianDerivative;
+  typename FloatImageType::Pointer                    m_KernelImage;
 
-  typename GaussianDerivativeType::VectorType   m_Orders;
+  OrdersType                                          m_Orders;
 
-  typename GaussianDerivativeType::ArrayType    m_Sigma;
+  SigmasType                                          m_Sigmas;
 
-  const InputImageType *                        m_LastInputImage;
+  const InputImageType *                              m_LastInputImage;
 };
 
 
