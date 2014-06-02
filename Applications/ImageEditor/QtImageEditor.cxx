@@ -92,7 +92,7 @@ protected:
 
 
   GaussianDerivativeSourceType::Pointer createGaussianDerivative(
-    GaussianDerivativeSourceType::VectorType order);/*,
+    GaussianDerivativeSourceType::OrdersType order);/*,
     ImageType::Pointer image);*/
 
   void setupFFTPipeline(ImageType::Pointer image);
@@ -113,7 +113,7 @@ void QtImageEditor::Internals::setupFFTPipeline(ImageType::Pointer image)
 
 QtImageEditor::Internals::GaussianDerivativeSourceType::Pointer
 QtImageEditor::Internals::createGaussianDerivative(
-  GaussianDerivativeSourceType::VectorType order)/*,
+  GaussianDerivativeSourceType::OrdersType order)/*,
   ImageType::Pointer image)*/
 {
   GaussianDerivativeSourceType::Pointer gaussianDerivativeSource =
@@ -138,7 +138,7 @@ QtImageEditor::Internals::createGaussianDerivative(
   gaussianDerivativeSource->SetOrigin( inputOrigin );
   gaussianDerivativeSource->SetDirection( inputDirection );
 
-  GaussianDerivativeSourceType::ArrayType sigma;
+  GaussianDerivativeSourceType::SigmasType sigma;
   GaussianDerivativeSourceType::PointType mean;
   const double sigmaLineEdit = this->m_SigmaLineEdit->text().toDouble();
 
@@ -149,9 +149,9 @@ QtImageEditor::Internals::createGaussianDerivative(
     mean[ii] = inputOrigin[ii] + halfLength;
     }
   mean = inputDirection * mean;
-  gaussianDerivativeSource->SetSigma( sigma );
+  gaussianDerivativeSource->SetSigmas( sigma );
   gaussianDerivativeSource->SetMean( mean );
-  gaussianDerivativeSource->SetOrdersVector(order);
+  gaussianDerivativeSource->SetOrders(order);
 
   gaussianDerivativeSource->Update();
 
@@ -417,7 +417,7 @@ void QtImageEditor::applyFilter()
   TimeProbe clockMultiply;
   applyFFT();
   clockMultiply.Start();
-  Internals::GaussianDerivativeSourceType::VectorType order;
+  Internals::GaussianDerivativeSourceType::OrdersType order;
   order[0] = this->m_Internals->m_Order_x->text().toInt();
   order[1] = this->m_Internals->m_Order_y->text().toInt();
   order[2] = this->m_Internals->m_Order_z->text().toInt();
@@ -460,14 +460,14 @@ void QtImageEditor::useNewFilter()
   Internals::FFTGaussianDerivativeIFFTType::Pointer FFTgaussianDerivativeIFFT =
   Internals::FFTGaussianDerivativeIFFTType::New();
   FFTgaussianDerivativeIFFT->SetInput(this->m_Internals->m_ImageData);
-  Internals::GaussianDerivativeSourceType::VectorType order;
-  Internals::GaussianDerivativeSourceType::ArrayType sigma;
+  Internals::GaussianDerivativeSourceType::OrdersType order;
+  Internals::GaussianDerivativeSourceType::SigmasType sigma;
   order[0] = this->m_Internals->m_Order_x->text().toInt();
   order[1] = this->m_Internals->m_Order_y->text().toInt();
   order[2] = this->m_Internals->m_Order_z->text().toInt();
   FFTgaussianDerivativeIFFT->SetOrders(order);
   sigma.Fill(this->m_Internals->m_SigmaLineEdit->text().toDouble());
-  FFTgaussianDerivativeIFFT->SetSigma(sigma);
+  FFTgaussianDerivativeIFFT->SetSigmas(sigma);
   FFTgaussianDerivativeIFFT->Update();
   this->setInputImage(FFTgaussianDerivativeIFFT->GetOutput());
   this->OpenGlWindow->update();

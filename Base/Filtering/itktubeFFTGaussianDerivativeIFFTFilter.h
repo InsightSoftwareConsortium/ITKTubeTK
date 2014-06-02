@@ -57,9 +57,9 @@ public:
 
   typedef TOutputImage                        OutputImageType;
 
-  typedef Image< float, ImageDimension >      FloatImageType;
+  typedef Image< float, ImageDimension >      RealImageType;
 
-  typedef GaussianDerivativeImageSource< FloatImageType >
+  typedef GaussianDerivativeImageSource< RealImageType >
                                          GaussianDerivativeImageSourceType;
 
   typedef typename GaussianDerivativeImageSourceType::OrdersType
@@ -75,12 +75,13 @@ public:
   itkGetConstReferenceMacro( Sigmas, SigmasType );
 
 protected:
-  typedef itk::ForwardFFTImageFilter< InputImageType > FFTType;
-  typedef typename FFTType::OutputImageType            ComplexImageType;
+  typedef itk::ForwardFFTImageFilter< InputImageType > FFTInputType;
+  typedef typename FFTInputType::OutputImageType       ComplexImageType;
 
-  typedef itk::ForwardFFTImageFilter< FloatImageType > FFTFloatType;
+  typedef itk::ForwardFFTImageFilter< RealImageType, ComplexImageType >
+                                                       FFTRealType;
 
-  typedef itk::FFTShiftImageFilter< FloatImageType, FloatImageType >
+  typedef itk::FFTShiftImageFilter< RealImageType, RealImageType >
                                                        FFTShiftFilterType;
 
   typedef itk::InverseFFTImageFilter< ComplexImageType,
@@ -111,7 +112,7 @@ private:
 
   typename OutputImageType::Pointer                   m_IFFTImage;
 
-  typename FloatImageType::Pointer                    m_KernelImage;
+  typename RealImageType::Pointer                     m_KernelImage;
 
   OrdersType                                          m_Orders;
 
