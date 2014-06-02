@@ -80,8 +80,6 @@ int DoIt( int argc, char * argv[] )
   //
   itk::TimeProbesCollectorBase timeCollector;
 
-  typedef TPixel                                      InputPixelType;
-  typedef itk::Image< InputPixelType, VDimension >    InputImageType;
   typedef itk::Image< unsigned short, VDimension >    LabelMapImageType;
   typedef itk::Image< float, VDimension >             RidgeSeedImageType;
 

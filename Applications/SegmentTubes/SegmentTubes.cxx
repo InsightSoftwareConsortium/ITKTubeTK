@@ -64,7 +64,6 @@ int DoIt( int argc, char * argv[] )
   typedef typename TubeOpType::TubeMaskImageType        MaskImageType;
   typedef itk::ImageFileWriter< MaskImageType >         MaskWriterType;
 
-  typedef itk::SpatialObject< VDimension >              SpatialObjectType;
   typedef itk::VesselTubeSpatialObject< VDimension >    TubeType;
 
   typedef itk::SpatialObjectWriter< VDimension >        SpatialObjectWriterType;
