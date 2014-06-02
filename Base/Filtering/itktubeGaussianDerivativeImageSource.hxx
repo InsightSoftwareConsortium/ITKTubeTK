@@ -39,10 +39,10 @@ GaussianDerivativeImageSource< TOutputImage >
   // is centered in the default image
   m_Index.Fill(0);
 
-  m_Mean.Fill(32.0);
-  m_Sigmas.Fill(16.0);
+  m_Mean.Fill(0);
+  m_Sigmas.Fill(1);
   m_Orders.Fill(0);
-  m_Scale = 255.0;
+  m_Scale = 1.0;
 
   m_Normalized = false;
 }
@@ -83,6 +83,7 @@ GaussianDerivativeImageSource< TOutputImage >
     sigmas[i]  = parameters[i + TOutputImage::ImageDimension];
     mean[i]  = parameters[i + 2*TOutputImage::ImageDimension];
     }
+  this->SetOrders( orders );
   this->SetSigmas( sigmas );
   this->SetMean( mean );
 
@@ -177,11 +178,11 @@ GaussianDerivativeImageSource< TOutputImage >
 
     for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
       {
-      if(m_Orders[i] != 0)
+      if( m_Orders[i] != 0 )
         {
-        prefixDenom *= vcl_pow(m_Sigmas[i], 2*m_Orders[i])/ (vcl_pow((- (
-          evalPoint[i]- m_Mean[i])),m_Orders[i]) - (m_Orders[i] == 2
-          ? vcl_pow(m_Sigmas[1], m_Orders[i]) : 0));
+        prefixDenom *= vcl_pow( m_Sigmas[i], 2*m_Orders[i] )
+          / (vcl_pow( ( -(evalPoint[i] - m_Mean[i]) ), m_Orders[i] ) 
+             - ( m_Orders[i] == 2 ? vcl_pow(m_Sigmas[1], m_Orders[i]) : 0));
         }
       }
     double suffixExp = 0;

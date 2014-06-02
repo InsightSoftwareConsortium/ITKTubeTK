@@ -49,9 +49,8 @@ void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 ::ApplyFFT()
 {
-  typedef PadImageFilter< TInputImage >   PadFilterType;
-  typename PadFilterType::Pointer padFilter =
-    PadFilterType::New();
+  typedef PadImageFilter< TInputImage, TInputImage >   PadFilterType;
+  typename PadFilterType::Pointer padFilter = PadFilterType::New();
   padFilter->SetInput1( this->GetInput() );
   padFilter->SetInput2( this->GetInput() );
   padFilter->SetGreatestPrimeFactor( 5 );
@@ -75,34 +74,37 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   gaussSource->SetNormalized( true );
 
   const typename ComplexImageType::RegionType inputRegion(
-    m_FFTImage->GetLargestPossibleRegion() );
+    this->GetInput()->GetLargestPossibleRegion() );
   const typename ComplexImageType::SizeType inputSize
     = inputRegion.GetSize();
-  const typename ComplexImageType::SpacingType inputSpacing =
+
+  const typename ComplexImageType::RegionType fftRegion(
+    m_FFTImage->GetLargestPossibleRegion() );
+  const typename ComplexImageType::SizeType fftSize
+    = fftRegion.GetSize();
+  const typename ComplexImageType::SpacingType fftSpacing =
     m_FFTImage->GetSpacing();
-  const typename ComplexImageType::PointType inputOrigin =
+  const typename ComplexImageType::PointType fftOrigin =
     m_FFTImage->GetOrigin();
-  const typename ComplexImageType::DirectionType inputDirection =
+  const typename ComplexImageType::DirectionType fftDirection =
     m_FFTImage->GetDirection();
 
-  gaussSource->SetIndex( inputRegion.GetIndex() );
-  gaussSource->SetSize( inputSize );
-  gaussSource->SetSpacing( inputSpacing );
-  gaussSource->SetOrigin( inputOrigin );
-  gaussSource->SetDirection( inputDirection );
+  gaussSource->SetIndex( fftRegion.GetIndex() );
+  gaussSource->SetSize( fftSize );
+  gaussSource->SetSpacing( fftSpacing );
+  gaussSource->SetOrigin( fftOrigin );
+  gaussSource->SetDirection( fftDirection );
 
   typename GaussianDerivativeImageSourceType::PointType mean;
-  Point< double, TInputImage::ImageDimension > cornerPoint;
-  m_FFTImage->TransformIndexToPhysicalPoint( inputRegion.GetIndex(),
-    cornerPoint );
+  typename GaussianDerivativeImageSourceType::IndexType meanIndex;
   for( unsigned int ii = 0; ii < ImageDimension; ++ii )
     {
-    const double halfLength = (inputSize[ii]  / 2.0) * inputSpacing[ii];
-    mean[ii] = cornerPoint[ii] + halfLength;
+    const int halfLength = (inputSize[ii]  / 2.0);
+    meanIndex[ii] = inputRegion.GetIndex()[ii] + halfLength;
     }
-  mean = inputDirection * mean;
+  this->GetInput()->TransformIndexToPhysicalPoint( meanIndex, mean );
 
-  gaussSource->SetSigmas( this->m_Sigmas );
+  gaussSource->SetSigmas( m_Sigmas );
   gaussSource->SetMean( mean );
   gaussSource->SetOrders( this->m_Orders );
 
@@ -120,12 +122,16 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   typename FFTShiftFilterType::Pointer fftShiftFilter =
     FFTShiftFilterType::New();
   fftShiftFilter->SetInput( m_KernelImage );
+  fftShiftFilter->Update();
+
+  typename FFTFloatType::Pointer fftFilter = FFTFloatType::New();
+  fftFilter->SetInput( fftShiftFilter->GetOutput() );
+  fftFilter->Update();
 
   typename MultiplyFilterType::Pointer multiplyFilter =
     MultiplyFilterType::New();
   multiplyFilter->SetInput1( m_FFTImage );
-  //multiplyFilter->SetInput2( m_KernelImage );
-  multiplyFilter->SetInput2( fftShiftFilter->GetOutput() );
+  multiplyFilter->SetInput2( fftFilter->GetOutput() );
   multiplyFilter->Update();
 
   typename InverseFFTFilterType::Pointer 

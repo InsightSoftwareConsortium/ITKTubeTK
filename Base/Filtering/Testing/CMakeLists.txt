@@ -100,13 +100,32 @@ Midas3FunctionAddTest( NAME itktubeExtractTubePointsSpatialObjectFilterTest
     itktubeExtractTubePointsSpatialObjectFilterTest
       MIDAS{VascularNetwork.tre.md5} )
 
-    #--compare MIDAS{itkTubeFFTGaussianDerivativeIFFTFilterTest.mha.md5}
-      #${TEMP}/itkTubeFFTGaussianDerivativeIFFTFilterTest.mha
-Midas3FunctionAddTest( NAME itktubeFFTGaussianDerivativeIFFTFilterTest
+Midas3FunctionAddTest( NAME itktubeFFTGaussianDerivativeIFFTFilterTest1
   COMMAND ${BASE_FILTERING_TESTS}
+    --compare MIDAS{itkTubeFFTGaussianDerivativeIFFTFilterTest1.mha.md5}
+      ${TEMP}/itkTubeFFTGaussianDerivativeIFFTFilterTest1.mha
     itktubeFFTGaussianDerivativeIFFTFilterTest
+      0 0 0.1 0.1
       MIDAS{im0001.mha.md5}
-      ${TEMP}/itkTubeFFTGaussianDerivativeIFFTFilterTest.mha )
+      ${TEMP}/itkTubeFFTGaussianDerivativeIFFTFilterTest1.mha )
+
+Midas3FunctionAddTest( NAME itktubeFFTGaussianDerivativeIFFTFilterTest2
+  COMMAND ${BASE_FILTERING_TESTS}
+    --compare MIDAS{itkTubeFFTGaussianDerivativeIFFTFilterTest2.mha.md5}
+      ${TEMP}/itkTubeFFTGaussianDerivativeIFFTFilterTest2.mha
+    itktubeFFTGaussianDerivativeIFFTFilterTest
+      0 1 0.1 1
+      MIDAS{im0001.mha.md5}
+      ${TEMP}/itkTubeFFTGaussianDerivativeIFFTFilterTest2.mha )
+
+Midas3FunctionAddTest( NAME itktubeFFTGaussianDerivativeIFFTFilterTest3
+  COMMAND ${BASE_FILTERING_TESTS}
+    --compare MIDAS{itkTubeFFTGaussianDerivativeIFFTFilterTest3.mha.md5}
+      ${TEMP}/itkTubeFFTGaussianDerivativeIFFTFilterTest3.mha
+    itktubeFFTGaussianDerivativeIFFTFilterTest
+      2 2 2 2
+      MIDAS{im0001.mha.md5}
+      ${TEMP}/itkTubeFFTGaussianDerivativeIFFTFilterTest3.mha )
 
 add_test( NAME itktubeSheetnessMeasureImageFilterTest
   COMMAND ${BASE_FILTERING_TESTS}

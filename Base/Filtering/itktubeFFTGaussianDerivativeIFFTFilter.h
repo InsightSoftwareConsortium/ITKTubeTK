@@ -57,7 +57,9 @@ public:
 
   typedef TOutputImage                        OutputImageType;
 
-  typedef GaussianDerivativeImageSource< InputImageType >
+  typedef Image< float, ImageDimension >      FloatImageType;
+
+  typedef GaussianDerivativeImageSource< FloatImageType >
                                          GaussianDerivativeImageSourceType;
 
   typedef typename GaussianDerivativeImageSourceType::OrdersType
@@ -76,12 +78,15 @@ protected:
   typedef itk::ForwardFFTImageFilter< InputImageType > FFTType;
   typedef typename FFTType::OutputImageType            ComplexImageType;
 
-  typedef itk::FFTShiftImageFilter< InputImageType, InputImageType >
+  typedef itk::ForwardFFTImageFilter< FloatImageType > FFTFloatType;
+
+  typedef itk::FFTShiftImageFilter< FloatImageType, FloatImageType >
                                                        FFTShiftFilterType;
+
   typedef itk::InverseFFTImageFilter< ComplexImageType,
     OutputImageType >                                  InverseFFTFilterType;
 
-  typedef itk::MultiplyImageFilter< ComplexImageType, InputImageType,
+  typedef itk::MultiplyImageFilter< ComplexImageType, ComplexImageType,
     ComplexImageType >                                 MultiplyFilterType;
 
   FFTGaussianDerivativeIFFTFilter( void );
@@ -106,7 +111,7 @@ private:
 
   typename OutputImageType::Pointer                   m_IFFTImage;
 
-  typename InputImageType::Pointer                    m_KernelImage;
+  typename FloatImageType::Pointer                    m_KernelImage;
 
   OrdersType                                          m_Orders;
 

@@ -28,11 +28,11 @@ limitations under the License.
 
 int itktubeFFTGaussianDerivativeIFFTFilterTest( int argc, char * argv[] )
 {
-  if( argc < 3 )
+  if( argc < 7 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << " inputImage outputImage" << std::endl;
+    std::cerr << argv[0] << " orderX orderY scaleX scaleY inputImage outputImage" << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -55,7 +55,7 @@ int itktubeFFTGaussianDerivativeIFFTFilterTest( int argc, char * argv[] )
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( argv[1] );
+  reader->SetFileName( argv[5] );
   try
     {
     reader->Update();
@@ -72,17 +72,17 @@ int itktubeFFTGaussianDerivativeIFFTFilterTest( int argc, char * argv[] )
   func->SetInput( inputImage );
 
   FunctionType::OrdersType orders;
-  orders[0] = 1;
-  orders[1] = 1;
+  orders[0] = atoi( argv[1] );
+  orders[1] = atoi( argv[2] );
   func->SetOrders( orders );
   FunctionType::SigmasType sigmas;
-  sigmas[0] = 0.1;
-  sigmas[1] = 0.1;
+  sigmas[0] = atof( argv[3] );
+  sigmas[1] = atof( argv[4] );
   func->SetSigmas( sigmas );
   func->Update();
 
   WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( argv[2] );
+  writer->SetFileName( argv[6] );
   writer->SetInput( func->GetOutput() );
   writer->SetUseCompression( true );
 
