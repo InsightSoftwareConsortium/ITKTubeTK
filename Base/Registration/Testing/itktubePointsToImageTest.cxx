@@ -45,7 +45,6 @@ int itktubePointsToImageTest( int argc, char * argv[] )
   typedef itk::GroupSpatialObject< Dimension >       GroupType;
   typedef itk::VesselTubeSpatialObject< Dimension >  TubeType;
   typedef TubeType::PointListType                         PointListType;
-  typedef TubeType::PointType                             PointType;
   typedef TubeType::TubePointType                         TubePointType;
   typedef itk::Image< float, Dimension >             ImageType;
 

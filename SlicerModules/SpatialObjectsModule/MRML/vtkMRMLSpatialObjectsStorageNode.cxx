@@ -191,7 +191,7 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
         vtkNew<vtkPolyLine> vesselLine;
 
         // Get the tube element spacing information.
-        const double* axesRatio = currTube->GetSpacing();
+        //const double* axesRatio = currTube->GetSpacing();
 
         currTube->ComputeObjectToWorldTransform();
 

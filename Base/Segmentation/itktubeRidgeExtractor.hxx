@@ -2009,8 +2009,6 @@ RidgeExtractor<TInputImage>
     std::cout << "*** START: AddTube" << std::endl;
     }
 
-  typedef typename TDrawMask::PixelType DrawPixelType;
-
   typedef NeighborhoodIterator< TDrawMask > NeighborhoodIteratorType;
 
   int tubeId = tube->GetId();

@@ -199,7 +199,6 @@ bool  ComputeTubeTangentsAndNormals( TTube * tube )
 template< class TTubePoint >
 bool  ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
 {
-  typedef TTubePoint                                 TubePointType;
   typedef typename TTubePoint::PointType             PointType;
   typedef typename TTubePoint::VectorType            VectorType;
   typedef typename TTubePoint::CovariantVectorType   CovariantVectorType;

@@ -49,7 +49,6 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< InputPixelType, TDimension >  InputImageType;
   typedef itk::ImageFileReader< InputImageType >    InputImageReaderType;
 
-  typedef unsigned short                            LabelmapPixelType;
   typedef itk::Image< unsigned short, TDimension >  LabelmapType;
   typedef itk::ImageFileReader< LabelmapType >      LabelmapReaderType;
 
@@ -58,8 +57,6 @@ int DoIt( int argc, char * argv[] )
   typedef itk::tube::RidgeSeedFilter< InputImageType, LabelmapType >
                                                     RidgeSeedFilterType;
 
-  typedef typename RidgeSeedFilterType::ProbabilityPixelType
-                                                    OutputPixelType;
   typedef typename RidgeSeedFilterType::ProbabilityImageType
                                                     OutputImageType;
   typedef itk::ImageFileWriter< OutputImageType >   OutputImageWriterType;

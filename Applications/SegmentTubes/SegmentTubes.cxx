@@ -62,16 +62,9 @@ int DoIt( int argc, char * argv[] )
 
   typedef itk::tube::TubeExtractor< ImageType >         TubeOpType;
   typedef typename TubeOpType::TubeMaskImageType        MaskImageType;
-  typedef itk::ImageFileReader< MaskImageType >         MaskReaderType;
   typedef itk::ImageFileWriter< MaskImageType >         MaskWriterType;
 
-  typedef itk::SpatialObject< VDimension >              SpatialObjectType;
-  typedef typename SpatialObjectType::ChildrenListType  ObjectListType;
-  typedef itk::GroupSpatialObject< VDimension >         GroupType;
   typedef itk::VesselTubeSpatialObject< VDimension >    TubeType;
-  typedef typename TubeType::PointListType              PointListType;
-  typedef typename TubeType::PointType                  PointType;
-  typedef typename TubeType::TubePointType              TubePointType;
 
   typedef itk::SpatialObjectWriter< VDimension >        SpatialObjectWriterType;
 

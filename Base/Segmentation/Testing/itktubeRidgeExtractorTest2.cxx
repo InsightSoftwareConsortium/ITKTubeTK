@@ -61,7 +61,6 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
   typedef itk::GroupSpatialObject<>                    GroupType;
   typedef itk::VesselTubeSpatialObject<>               TubeType;
   typedef TubeType::PointListType                      PointListType;
-  typedef TubeType::PointType                          PointType;
   typedef TubeType::TubePointType                      TubePointType;
 
   ReaderType::Pointer reader = ReaderType::New();

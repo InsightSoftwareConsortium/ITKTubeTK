@@ -141,7 +141,6 @@ int DoIt( int argc, char * argv[] )
   const unsigned int                                      ImageDimension = 3;
   typedef TPixel                                          FixedPixelType;
   typedef TPixel                                          MovingPixelType;
-  typedef MovingPixelType                                 OutputPixelType;
   typedef itk::Image< FixedPixelType, ImageDimension >    FixedImageType;
   typedef itk::Image< MovingPixelType, ImageDimension >   MovingImageType;
   typedef double                                          VectorScalarType;

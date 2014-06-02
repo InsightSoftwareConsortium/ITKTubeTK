@@ -552,8 +552,6 @@ PDFSegmenter< TImage, N, TLabelMap >
   //
   timeCollector.Start( "JointClassHistogram" );
 
-  typedef itk::ImageRegionIteratorWithIndex< HistogramImageType >
-    HistogramIteratorType;
   typename HistogramImageType::SizeType size;
   typename HistogramImageType::SpacingType spacing;
   typename HistogramImageType::PointType origin;
