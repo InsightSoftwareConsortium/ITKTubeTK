@@ -51,6 +51,7 @@ set( tubeBaseFilteringTests_SRCS
   itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest.cxx
   itktubeAnisotropicHybridDiffusionImageFilterTest.cxx
   itktubeExtractTubePointsSpatialObjectFilterTest.cxx
+  itktubeFFTGaussianDerivativeIFFTFilterTest.cxx
   itktubeSheetnessMeasureImageFilterTest.cxx
   itktubeSheetnessMeasureImageFilterTest2.cxx
   itktubeShrinkUsingMaxImageFilterTest.cxx
@@ -98,6 +99,14 @@ Midas3FunctionAddTest( NAME itktubeExtractTubePointsSpatialObjectFilterTest
   COMMAND ${BASE_FILTERING_TESTS}
     itktubeExtractTubePointsSpatialObjectFilterTest
       MIDAS{VascularNetwork.tre.md5} )
+
+    #--compare MIDAS{itkTubeFFTGaussianDerivativeIFFTFilterTest.mha.md5}
+      #${TEMP}/itkTubeFFTGaussianDerivativeIFFTFilterTest.mha
+Midas3FunctionAddTest( NAME itktubeFFTGaussianDerivativeIFFTFilterTest
+  COMMAND ${BASE_FILTERING_TESTS}
+    itktubeFFTGaussianDerivativeIFFTFilterTest
+      MIDAS{im0001.mha.md5}
+      ${TEMP}/itkTubeFFTGaussianDerivativeIFFTFilterTest.mha )
 
 add_test( NAME itktubeSheetnessMeasureImageFilterTest
   COMMAND ${BASE_FILTERING_TESTS}

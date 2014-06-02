@@ -37,13 +37,14 @@ GaussianDerivativeImageSource< TOutputImage >
 {
   // Gaussian parameters, defined so that the gaussian
   // is centered in the default image
+  m_Index.Fill(0);
+
   m_Mean.Fill(32.0);
-  m_Sigma.Fill(16.0);
+  m_Sigmas.Fill(16.0);
+  m_Orders.Fill(0);
   m_Scale = 255.0;
 
   m_Normalized = false;
-  m_Order = 0;
-  m_OrdersVector.Filled(0);
 }
 
 //----------------------------------------------------------------------------
@@ -54,31 +55,17 @@ GaussianDerivativeImageSource< TOutputImage >
 {
   Superclass::PrintSelf(os, indent);
 
-  os << indent << "Gaussian sigma: [";
-  for ( unsigned int ii = 0; ii < NDimensions; ++ii )
-    {
-    os << m_Sigma[ii];
-    if( ii != NDimensions - 1 )
-      {
-      os << ", ";
-      }
-    }
-  os << "]" << std::endl;
+  os << indent << "Index: " << m_Index << std::endl;
 
-  os << indent << "Gaussian mean: [";
-  for ( unsigned int ii = 0; ii < NDimensions; ++ii )
-    {
-    os << m_Mean[ii];
-    if( ii != NDimensions - 1 )
-      {
-      os << ", ";
-      }
-    }
-  os << "]" << std::endl;
+  os << indent << "Gaussian order: " << m_Orders << std::endl;
+
+  os << indent << "Gaussian sigma: " << m_Sigmas << std::endl;
+
+  os << indent << "Gaussian mean: " << m_Mean << std::endl;
 
   os << indent << "Gaussian scale: " << m_Scale << std::endl;
+
   os << indent << "Normalized Gaussian?: " << m_Normalized << std::endl;
-  os << indent << "Gaussian order: " << m_Order << std::endl;
 }
 
 //----------------------------------------------------------------------------
@@ -87,16 +74,19 @@ void
 GaussianDerivativeImageSource< TOutputImage >
 ::SetParameters(const ParametersType & parameters)
 {
-  ArrayType sigma, mean;
-  for ( unsigned int i = 0; i < ArrayType::Length; i++ )
+  OrdersType orders;
+  SigmasType sigmas;
+  PointType mean;
+  for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
     {
-    sigma[i] = parameters[i];
-    mean[i]  = parameters[i + ArrayType::Length];
+    orders[i] = parameters[i];
+    sigmas[i]  = parameters[i + TOutputImage::ImageDimension];
+    mean[i]  = parameters[i + 2*TOutputImage::ImageDimension];
     }
-  this->SetSigma( sigma );
+  this->SetSigmas( sigmas );
   this->SetMean( mean );
 
-  double scale = parameters[2*ArrayType::Length];
+  double scale = parameters[3*TOutputImage::ImageDimension];
   this->SetScale( scale );
 }
 
@@ -106,13 +96,14 @@ typename GaussianDerivativeImageSource< TOutputImage >::ParametersType
 GaussianDerivativeImageSource< TOutputImage >
 ::GetParameters() const
 {
-  ParametersType parameters( 2*ArrayType::Length + 1 );
-  for ( unsigned int i = 0; i < ArrayType::Length; i++ )
+  ParametersType parameters( 2*TOutputImage::ImageDimension + 1 );
+  for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
     {
-    parameters[i] = m_Sigma[i];
-    parameters[i + ArrayType::Length] = m_Mean[i];
+    parameters[i] = m_Orders[i];
+    parameters[i + TOutputImage::ImageDimension] = m_Sigmas[i];
+    parameters[i + 2*TOutputImage::ImageDimension] = m_Mean[i];
     }
-  parameters[2*ArrayType::Length] = m_Scale;
+  parameters[3*TOutputImage::ImageDimension] = m_Scale;
 
   return parameters;
 }
@@ -123,7 +114,25 @@ unsigned int
 GaussianDerivativeImageSource< TOutputImage >
 ::GetNumberOfParameters() const
 {
-  return 2*ArrayType::Length + 1;
+  return 3*TOutputImage::ImageDimension + 1;
+}
+
+//----------------------------------------------------------------------------
+template< typename TOutputImage >
+void
+GaussianDerivativeImageSource< TOutputImage >
+::GenerateOutputInformation()
+{
+  OutputImageType *output = this->GetOutput(0);
+
+  typename OutputImageType::RegionType largestPossibleRegion;
+  largestPossibleRegion.SetSize( this->GetSize() );
+  largestPossibleRegion.SetIndex( this->m_Index );
+  output->SetLargestPossibleRegion( largestPossibleRegion );
+
+  output->SetSpacing( this->GetSpacing() );
+  output->SetOrigin( this->GetOrigin() );
+  output->SetDirection( this->GetDirection() );
 }
 
 //----------------------------------------------------------------------------
@@ -162,32 +171,25 @@ GaussianDerivativeImageSource< TOutputImage >
 
       for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
         {
-        prefixDenom *= m_Sigma[i] * squareRootOfTwoPi;
-        }
-      }
-    if( m_Order==1 || m_Order==2)
-      {
-      for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
-        {
-        prefixDenom *= vcl_pow(m_Sigma[i], 2*m_Order)/ (vcl_pow((- (evalPoint[i]
-        - m_Mean[i])),m_Order) - (m_Order == 2 ? vcl_pow(m_Sigma[1], m_Order) : 0));
+        prefixDenom *= m_Sigmas[i] * squareRootOfTwoPi;
         }
       }
 
     for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
       {
-      if(m_OrdersVector[i] != 0)
+      if(m_Orders[i] != 0)
         {
-        prefixDenom *= vcl_pow(m_Sigma[i], 2*m_OrdersVector[i])/ (vcl_pow((- (
-        evalPoint[i]- m_Mean[i])),m_OrdersVector[i]) - (m_OrdersVector[i] == 2
-        ? vcl_pow(m_Sigma[1], m_OrdersVector[i]) : 0));
+        prefixDenom *= vcl_pow(m_Sigmas[i], 2*m_Orders[i])/ (vcl_pow((- (
+          evalPoint[i]- m_Mean[i])),m_Orders[i]) - (m_Orders[i] == 2
+          ? vcl_pow(m_Sigmas[1], m_Orders[i]) : 0));
         }
       }
     double suffixExp = 0;
     for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
       {
-      suffixExp += ( evalPoint[i] - m_Mean[i] ) * ( evalPoint[i] - m_Mean[i] )
-                   / ( 2 * m_Sigma[i] * m_Sigma[i] );
+      suffixExp += ( evalPoint[i] - m_Mean[i] ) 
+                   * ( evalPoint[i] - m_Mean[i] )
+                   / ( 2 * m_Sigmas[i] * m_Sigmas[i] );
       }
 
     double value = m_Scale * ( 1 / prefixDenom ) * vcl_exp(-1 * suffixExp);

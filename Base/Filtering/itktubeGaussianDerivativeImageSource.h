@@ -18,8 +18,6 @@
 #ifndef __itktubeGaussianDerivativeImageSource_h
 #define __itktubeGaussianDerivativeImageSource_h
 
-#include <itkArray.h>
-#include <itkFixedArray.h>
 #include <itkImageFunction.h>
 #include <itkMatrix.h>
 #include <itkParametricImageSource.h>
@@ -85,14 +83,14 @@ public:
   typedef typename TOutputImage::DirectionType DirectionType;
 
   /** Dimensionality of the output image */
-  itkStaticConstMacro(NDimensions, unsigned int, TOutputImage::ImageDimension);
+  itkStaticConstMacro( NDimensions, unsigned int,
+    TOutputImage::ImageDimension );
 
-  /** Type used to store Gaussian parameters. */
-  typedef FixedArray< double, itkGetStaticConstMacro(NDimensions) > ArrayType;
-
-  typedef Vector<int, TOutputImage::ImageDimension> VectorType;
+  typedef Vector< double, TOutputImage::ImageDimension > SigmasType;
+  typedef Vector< int, TOutputImage::ImageDimension > OrdersType;
 
   /** Size type matches that used for images */
+  typedef typename TOutputImage::IndexType     IndexType;
   typedef typename TOutputImage::SizeType      SizeType;
   typedef typename TOutputImage::SizeValueType SizeValueType;
 
@@ -100,27 +98,30 @@ public:
   typedef typename Superclass::ParametersValueType ParametersValueType;
   typedef typename Superclass::ParametersType      ParametersType;
 
-  typedef ContinuousIndex<double, TOutputImage::ImageDimension > ContinuousIndexType;
-
   /** Run-time type information (and related methods). */
   itkTypeMacro(GaussianDerivativeImageSource, ParametricImageSource);
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
+  itkSetMacro(Index, IndexType);
+  itkGetConstReferenceMacro(Index, IndexType);
+
   /** Gets and sets for Gaussian parameters */
   itkSetMacro(Scale, double);
   itkGetConstReferenceMacro(Scale, double);
+
   itkSetMacro(Normalized, bool);
   itkGetConstReferenceMacro(Normalized, bool);
-  itkSetMacro(Sigma, ArrayType);
-  itkGetConstReferenceMacro(Sigma, ArrayType);
-  itkSetMacro(Mean, ArrayType);
-  itkGetConstReferenceMacro(Mean, ArrayType);
-  itkSetMacro(Order, int);
-  itkGetConstReferenceMacro(Order, int);
-  itkSetMacro(OrdersVector, VectorType);
-  itkGetConstReferenceMacro(OrdersVector, VectorType);
+
+  itkSetMacro(Sigmas, SigmasType);
+  itkGetConstReferenceMacro(Sigmas, SigmasType);
+
+  itkSetMacro(Mean, PointType );
+  itkGetConstReferenceMacro(Mean, PointType );
+
+  itkSetMacro(Orders, OrdersType);
+  itkGetConstReferenceMacro(Orders, OrdersType);
 
   /** Set/get the parameters for this source. When this source is
    * templated over an N-dimensional output image type, the first N
@@ -139,6 +140,8 @@ protected:
   GaussianDerivativeImageSource();
   void PrintSelf(std::ostream & os, Indent indent) const;
 
+  virtual void GenerateOutputInformation();
+
   void GenerateData();
 
 private:
@@ -146,14 +149,14 @@ private:
   //purposely not implemented
   void operator=(const GaussianDerivativeImageSource &);
   //purposely not implemented
-  int           m_Order;
-  /** Parameters for the Gaussian. */
+
+  IndexType m_Index;
 
   /** The standard deviation in each direction. */
-  ArrayType m_Sigma;
+  SigmasType m_Sigmas;
 
   /** The mean in each direction. */
-  ArrayType m_Mean;
+  PointType m_Mean;
 
   /** A scale factor multiplied by the true value of the Gaussian. */
   double m_Scale;
@@ -161,9 +164,7 @@ private:
   /** Whether or not to normalize the Gaussian. */
   bool m_Normalized;
 
-  Vector<double, TOutputImage::ImageDimension> m_DerivativeVector;
-
-  VectorType m_OrdersVector;
+  OrdersType m_Orders;
 }; // End class GaussianDerivativeImageSource
 
 } // End namespace tube

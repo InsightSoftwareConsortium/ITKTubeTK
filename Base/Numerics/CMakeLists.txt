@@ -31,13 +31,10 @@ set( TubeTK_Base_Numerics_H_Files
   itktubeBasisFeatureVectorGenerator.h
   itktubeBlurImageFunction.h
   itktubeFeatureVectorGenerator.h
-  itktubeFFTGaussianDerivativeIFFTFilter.h
-  itktubeGaussianDerivativeImageSource.h
   itktubeImageRegionMomentsCalculator.h
   itktubeJointHistogramImageFunction.h
   itktubeNJetFeatureVectorGenerator.h
   itktubeNJetImageFunction.h
-  itktubeSingleValuedCostFunctionImageSource.h
   itktubeRecordOptimizationParameterProgressionCommand.h
   itktubeRidgeFeatureVectorGenerator.h
   itktubeVectorImageToListGenerator.h
@@ -58,13 +55,10 @@ set( TubeTK_Base_Numerics_HXX_Files
   itktubeBasisFeatureVectorGenerator.hxx
   itktubeBlurImageFunction.hxx
   itktubeFeatureVectorGenerator.hxx
-  itktubeFFTGaussianDerivativeIFFTFilter.hxx
-  itktubeGaussianDerivativeImageSource.hxx
   itktubeImageRegionMomentsCalculator.hxx
   itktubeJointHistogramImageFunction.hxx
   itktubeNJetFeatureVectorGenerator.hxx
   itktubeNJetImageFunction.hxx
-  itktubeSingleValuedCostFunctionImageSource.hxx
   itktubeRecordOptimizationParameterProgressionCommand.hxx
   itktubeRidgeFeatureVectorGenerator.hxx
   itktubeVectorImageToListGenerator.hxx
