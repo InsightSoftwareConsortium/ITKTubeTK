@@ -57,7 +57,7 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   padFilter->SetPadMethod( PadFilterType::ZERO_FLUX_NEUMANN );
   padFilter->Update();
 
-  typename FFTType::Pointer fftFilter = FFTType::New();
+  typename FFTInputType::Pointer fftFilter = FFTInputType::New();
   fftFilter->SetInput( padFilter->GetOutput() );
   fftFilter->Update();
 
@@ -124,14 +124,15 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   fftShiftFilter->SetInput( m_KernelImage );
   fftShiftFilter->Update();
 
-  typename FFTFloatType::Pointer fftFilter = FFTFloatType::New();
+  typename FFTRealType::Pointer fftFilter = FFTRealType::New();
   fftFilter->SetInput( fftShiftFilter->GetOutput() );
   fftFilter->Update();
+  typename ComplexImageType::Pointer fftKernel = fftFilter->GetOutput();
 
   typename MultiplyFilterType::Pointer multiplyFilter =
     MultiplyFilterType::New();
   multiplyFilter->SetInput1( m_FFTImage );
-  multiplyFilter->SetInput2( fftFilter->GetOutput() );
+  multiplyFilter->SetInput2( fftKernel );
   multiplyFilter->Update();
 
   typename InverseFFTFilterType::Pointer 
