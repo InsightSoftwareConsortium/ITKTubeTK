@@ -159,8 +159,8 @@ QtImageEditor::Internals::createGaussianDerivative(
 }
 
 
-QtImageEditor::QtImageEditor(QWidget* parent, Qt::WindowFlags fl ) :
-  QDialog( parent, fl )
+QtImageEditor::QtImageEditor(QWidget* _parent, Qt::WindowFlags fl ) :
+  QDialog( _parent, fl )
 {
   this->m_Internals = new Internals;
   this->m_Internals->m_ImageData = 0;
