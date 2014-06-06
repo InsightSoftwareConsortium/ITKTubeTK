@@ -55,7 +55,7 @@ set_property( TEST ${MODULE_NAME}-Test1-Compare
 # Test2
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
             COMMAND ${PROJ_EXE}
-               --seedPhysicalPoint -30.0,-50.0,30
+               --seedPhysicalPoint 30.0,50.0,30
                -o ${TEMP}/${MODULE_NAME}Test2.mha
                MIDAS{Branch.n010.mha.md5}
                ${TEMP}/${MODULE_NAME}Test2.tre )

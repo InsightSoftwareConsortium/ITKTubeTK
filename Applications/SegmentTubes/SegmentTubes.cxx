@@ -148,9 +148,6 @@ int DoIt( int argc, char * argv[] )
         point[i] = seedPhysicalPoint[seedNum][i];
         }
 
-      point[0]*=-1;
-      point[1]*=-1;
-
       bool transformSuccess =
         inputImage->TransformPhysicalPointToContinuousIndex(point, seedIndex);
       if (!transformSuccess)

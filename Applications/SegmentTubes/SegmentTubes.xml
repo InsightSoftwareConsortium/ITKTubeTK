@@ -56,7 +56,7 @@
       <description>Continuous index for starting ridge extraction</description>
       <default/>
     </point>
-    <point multiple="true" coordinateSystem="ras">
+    <point multiple="true" coordinateSystem="lps">
       <name>seedPhysicalPoint</name>
       <label>Seed coordinate</label>
       <longflag>seedPhysicalPoint</longflag>
