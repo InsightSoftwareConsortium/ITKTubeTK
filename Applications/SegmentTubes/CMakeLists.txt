@@ -45,7 +45,7 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/Numerics
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/Segmentation
-  EXECUTABLE_ONLY )
+  )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

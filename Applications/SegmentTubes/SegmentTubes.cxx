@@ -35,6 +35,8 @@ limitations under the License.
 
 #include "SegmentTubesCLP.h"
 
+#include <sstream>
+
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
@@ -183,52 +185,38 @@ int DoIt( int argc, char * argv[] )
     seedScaleList.push_back( seedScale );
     }
 
-  if( seedMask.empty() )
-    {
-    if( seedScaleMask.empty() )
-      {
-      }
-    else
-      {
-      seedScaleList.push_back( scale );
-      }
-
-    }
-  else if( seedScaleMask.empty() )
-    {
-    }
-
-
   typename seedIndexListType::iterator seedIndexIter =
     seedIndexList.begin();
   seedScaleListType::iterator seedScaleIter =
     seedScaleList.begin();
 
+  tubeOp->SetDebug( false );
+  tubeOp->GetRidgeOp()->SetDebug( false );
+  tubeOp->GetRadiusOp()->SetDebug( false );
+
+  tubeOp->GetRidgeOp()->SetThreshRoundness( 0.0001 );
+  tubeOp->GetRidgeOp()->SetThreshRoundnessStart( 0.0001 );
+  tubeOp->GetRidgeOp()->SetThreshCurvature( 0.0001 );
+  tubeOp->GetRidgeOp()->SetThreshCurvatureStart( 0.0001 );
+
   timeCollector.Start("Ridge Extractor");
   unsigned int count = 1;
   while( seedIndexIter != seedIndexList.end() )
     {
-
-    tubeOp->SetDebug( true );
-    tubeOp->GetRidgeOp()->SetDebug( true );
-
-    tubeOp->GetRidgeOp()->SetThreshRoundness( 0.0001 );
-    tubeOp->GetRidgeOp()->SetThreshRoundnessStart( 0.0001 );
-    tubeOp->GetRidgeOp()->SetThreshCurvature( 0.0001 );
-    tubeOp->GetRidgeOp()->SetThreshCurvatureStart( 0.0001 );
-
     tubeOp->SetRadius( *seedScaleIter );
 
-    typename TubeType::Pointer xTube = tubeOp->ExtractTube( *seedIndexIter,
-      count );
-
-    if( xTube.IsNull() )
+    typename TubeType::Pointer xTube =
+      tubeOp->ExtractTube( *seedIndexIter, count );
+    if( !xTube.IsNull() )
       {
-      tube::ErrorMessage( "Error: Ridge not found. " );
-      return EXIT_FAILURE;
+      tubeOp->AddTube( xTube );
       }
-
-    tubeOp->AddTube( xTube );
+    else
+      {
+      std::stringstream ss;
+      ss << "Error: Ridge not found for seed #" << count;
+      tube::ErrorMessage(ss.str());
+      }
 
     ++seedIndexIter;
     ++seedScaleIter;
