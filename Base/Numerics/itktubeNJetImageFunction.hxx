@@ -24,6 +24,7 @@ limitations under the License.
 #ifndef __itktubeNJetImageFunction_hxx
 #define __itktubeNJetImageFunction_hxx
 
+#include "tubeMatrixMath.h"
 #include "itktubeNJetImageFunction.h"
 
 #include <itkImageRegionConstIterator.h>
@@ -69,6 +70,8 @@ NJetImageFunction<TInputImage>
   m_MostRecentRidgeLevelness = 0;
   m_MostRecentRidgeCurvature = 0;
   m_MostRecentRidgeTangent.Fill( 0);
+
+  m_CurvatureExpectedMax = 0.005;
 }
 
 template< class TInputImage >
@@ -1655,109 +1658,25 @@ NJetImageFunction<TInputImage>
   MatrixType h;
   VectorType p;
 
-  JetAtContinuousIndex( cIndex, d, h, scale);
+  double intensity = JetAtContinuousIndex( cIndex, d, h, scale);
 
-  vnl_symmetric_eigensystem< double > eigSys( h.GetVnlMatrix());
-
-  // Ensure ordering of eigenvalues; According to VNL documentation,
-  // eigenvalues are in increasing order (with smallest eigenvalues
-  // first)
-  assert( eigSys.get_eigenvalue( 0 ) <= eigSys.get_eigenvalue( 1 ) );
-
-  const double dNorm = d.GetNorm();
-  if( dNorm == 0 )
-    {
-    d.SetVnlVector( eigSys.get_eigenvector( ImageDimension-1 ) );
-    for( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      p[i] = 0;
-      }
-    }
-  else
-    {
-    d.Normalize();
-    for( unsigned int i = 0; i < ImageDimension; i++ )
-      {
-      p[i] = 0;
-      for( unsigned int j=0; j<ImageDimension; j++ )
-        {
-        p[i] += eigSys.get_eigenvector( i)[j] * d[j];
-        }
-      }
-    }
-
-  double sums = 0;
-  double sumv = 0;
-  int ridge = 1;
-  for( unsigned int i = 0; i < ImageDimension-1; i++ )
-    {
-    sums += p[i]*p[i];
-    sumv += eigSys.get_eigenvalue( i)
-            * eigSys.get_eigenvalue( i);
-    if( eigSys.get_eigenvalue( i) >= 0 )
-      {
-      ridge = -1;
-      }
-    }
-  sums /= ( ImageDimension-1);
-
-  double ridgeness = ( 1.0 - sums) * ridge;
-
+  double ridgeness = 0;
   double roundness = 0;
-  if( sumv != 0 )
-    {
-    if( ImageDimension > 2 )
-      {
-      if( eigSys.get_eigenvalue( 0) != 0
-          && eigSys.get_eigenvalue( ImageDimension-2) != 0 )
-        {
-        double r0 = ( eigSys.get_eigenvalue( 0)
-                      * eigSys.get_eigenvalue( 0) )
-                    / ( eigSys.get_eigenvalue( ImageDimension-2)
-                        * eigSys.get_eigenvalue( ImageDimension-2) );
-        double r1 = ( eigSys.get_eigenvalue( ImageDimension-2)
-                        * eigSys.get_eigenvalue( ImageDimension-2) )
-                    / ( eigSys.get_eigenvalue( 0)
-                        * eigSys.get_eigenvalue( 0) );
-        roundness = ( r0 < r1 ) ? r0 : r1;
-        }
-      }
-    else
-      {
-      if( eigSys.get_eigenvalue( 0) != 0
-          && eigSys.get_eigenvalue( ImageDimension-1) != 0 )
-        {
-        double r0 = ( eigSys.get_eigenvalue( 0)
-                      * eigSys.get_eigenvalue( 0) )
-                    / ( eigSys.get_eigenvalue( ImageDimension-1)
-                        * eigSys.get_eigenvalue( ImageDimension-1) );
-        double r1 = ( eigSys.get_eigenvalue( ImageDimension-1)
-                        * eigSys.get_eigenvalue( ImageDimension-1) )
-                    / ( eigSys.get_eigenvalue( 0)
-                        * eigSys.get_eigenvalue( 0) );
-        roundness = ( r0 < r1 ) ? r0 : r1;
-        roundness = ( 1 - roundness );
-        }
-      }
-    }
-
-
+  double curvature = 0;
   double levelness = 0;
-  if( sumv != 0 )
-    {
-    levelness = sumv / ( sumv
-                         + eigSys.get_eigenvalue( ImageDimension-1)
-                          * eigSys.get_eigenvalue( ImageDimension-1) );
-    }
+  vnl_matrix<double> eVect;
+  vnl_vector<double> eVal;
+  ::tube::ComputeRidgeness<double>( h.GetVnlMatrix(), d.GetVnlVector(),
+    m_CurvatureExpectedMax,
+    ridgeness, roundness, curvature, levelness,
+    eVect, eVal );
 
-  double curvature = vcl_sqrt( sumv / ( ImageDimension-1 ) );
-
-
+  m_MostRecentIntensity = intensity;
   m_MostRecentRidgeness = ridgeness;
   m_MostRecentRidgeRoundness = roundness;
-  m_MostRecentRidgeLevelness = levelness;
   m_MostRecentRidgeCurvature = curvature;
-  m_MostRecentRidgeTangent.SetVnlVector( eigSys.get_eigenvector(
+  m_MostRecentRidgeLevelness = levelness;
+  m_MostRecentRidgeTangent.SetVnlVector( eVect.get_column(
     ImageDimension-1 ) );
 
   return m_MostRecentRidgeness;

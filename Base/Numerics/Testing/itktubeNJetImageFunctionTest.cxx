@@ -268,6 +268,7 @@ int itktubeNJetImageFunctionTest( int argc, char * argv[] )
       case 24:
         {
         val = func->Ridgeness( pnt, scale );
+        val *= val;
         val *= func->GetMostRecentRidgeLevelness();
         val *= func->GetMostRecentRidgeRoundness();
         val *= func->GetMostRecentRidgeCurvature();

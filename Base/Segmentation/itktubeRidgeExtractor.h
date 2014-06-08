@@ -185,17 +185,17 @@ public:
   /** Get Curvature  Threshold */
   itkGetMacro( ThreshCurvatureStart, double );
 
-  /** Set Linearity  Threshold */
-  itkSetMacro( ThreshLinearity, double );
+  /** Set Levelness  Threshold */
+  itkSetMacro( ThreshLevelness, double );
 
-  /** Get Linearity  Threshold */
-  itkGetMacro( ThreshLinearity, double );
+  /** Get Levelness  Threshold */
+  itkGetMacro( ThreshLevelness, double );
 
-  /** Set Linearity  Threshold */
-  itkSetMacro( ThreshLinearityStart, double );
+  /** Set Levelness  Threshold */
+  itkSetMacro( ThreshLevelnessStart, double );
 
-  /** Get Linearity  Threshold */
-  itkGetMacro( ThreshLinearityStart, double );
+  /** Get Levelness  Threshold */
+  itkGetMacro( ThreshLevelnessStart, double );
 
 
   /** Set Extract Bound Minimum */
@@ -269,7 +269,7 @@ public:
     double & intensity,
     double & roundness,
     double & curvature,
-    double & linearity );
+    double & levelness );
 
   /** Compute the local Ridge */
   bool   LocalRidge( ContinuousIndexType & x );
@@ -337,8 +337,8 @@ private:
   double                                             m_ThreshRoundnessStart;
   double                                             m_ThreshCurvature;
   double                                             m_ThreshCurvatureStart;
-  double                                             m_ThreshLinearity;
-  double                                             m_ThreshLinearityStart;
+  double                                             m_ThreshLevelness;
+  double                                             m_ThreshLevelnessStart;
 
   VectorType                                         m_X;
   VectorType                                         m_XP;

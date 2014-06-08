@@ -127,6 +127,95 @@ ComputeEuclideanDistance( TPoint x, TPoint y )
   return vcl_sqrt(s);
 }
 
+template< class T >
+void
+ComputeRidgeness( const vnl_matrix<T> & H,
+  const vnl_vector<T> & D,
+  double maxExpectedCurvature, 
+  double & ridgeness, double & roundness, double & curvature,
+  double & levelness,
+  vnl_matrix<T> & HEVect, vnl_vector<T> & HEVal )
+{
+  unsigned int ImageDimension = D.size();
+
+  ::tube::ComputeEigen( H, HEVect, HEVal, false, true );
+
+  // Ensure ordering of eigenvalues; According to VNL documentation,
+  // eigenvalues are in increasing order (with smallest eigenvalues
+  // first)
+  assert( HEVal[0] <= HEVal[1] );
+
+  vnl_vector<T> Dv = D;
+  if( Dv.magnitude() != 0 )
+    {
+    Dv.normalize();
+    }
+  else
+    {
+    Dv = HEVect.get_column( ImageDimension-1 );
+    }
+
+  vnl_vector<T> P( ImageDimension );
+  for( unsigned int i=0; i<ImageDimension; i++ )
+    {
+    P[i] = dot_product( HEVect.get_column( i ), Dv );
+    }
+
+  double sums = 0;
+  double sumv = 0;
+  int ridge = 1;
+  for( unsigned int i=0; i<ImageDimension-1; i++ )
+    {
+    sums += P[i]*P[i];
+    sumv += HEVal[i]*HEVal[i];
+    if( HEVal[i] >= 0 )
+      {
+      ridge = -1;
+      }
+    }
+  sums /= ( ImageDimension - 1 );
+  double avgv = sumv / ( ImageDimension - 1 );
+
+  // ridgeness is 1 - sums = 1 - ( P^2 + Q^2 )
+  ridgeness = (1.0 - sums) * ridge;
+
+  // roundness is 1 - || 1 - v2^2 / v1^2  ||
+  // However, since v1^2 can be extremely small, we use the average
+  roundness = 0;
+  if( avgv != 0 )
+    {
+    if( ImageDimension > 2 )
+      {
+      roundness =
+        1 - vnl_math_abs( 1 - ( ( HEVal[ ImageDimension-2 ] *
+          HEVal[ ImageDimension-2] ) / avgv ) );
+      }
+    else
+      {
+      roundness =
+        vnl_math_abs( 1 - ( ( HEVal[ ImageDimension-1 ] *
+          HEVal[ ImageDimension-1] ) / avgv ) );
+      }
+    }
+
+  // curvature is (v1^2 + v2^2) / 2.0
+  curvature = 0;
+  if( avgv > 0 )
+    {
+    curvature = ridge * vcl_sqrt( avgv );
+    curvature /= maxExpectedCurvature;
+    }
+
+  // levelness is (v1^2 + v2^2) / (v1^2 + v2^2 + v3^2) = 1 for a flat ridge
+  levelness = 0;
+  double denom =
+     sumv + ( HEVal[ ImageDimension-1 ] * HEVal[ ImageDimension-1] );
+  if( denom != 0 )
+    {
+    levelness = sumv / denom;
+    }
+} 
+
 /**
  * Compute eigenvalues and vectors  */
 template< class T >

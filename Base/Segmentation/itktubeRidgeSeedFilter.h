@@ -26,7 +26,7 @@ limitations under the License.
 
 #include "itktubeBasisFeatureVectorGenerator.h"
 #include "itktubePDFSegmenter.h"
-#include "itktubeRidgeFeatureVectorGenerator.h"
+#include "itktubeRidgeFFTFeatureVectorGenerator.h"
 
 #include <itkImage.h>
 
@@ -65,7 +65,7 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     TImage::ImageDimension );
 
-  typedef RidgeFeatureVectorGenerator< TImage >
+  typedef RidgeFFTFeatureVectorGenerator< TImage >
     RidgeFeatureGeneratorType;
 
   typedef typename RidgeFeatureGeneratorType::FeatureValueType

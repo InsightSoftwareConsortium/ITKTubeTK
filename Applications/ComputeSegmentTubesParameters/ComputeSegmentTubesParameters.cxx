@@ -75,7 +75,7 @@ int WriteOutputImage( std::string & fileName, typename ImageT::Pointer
 template< int VDimension >
 int WriteOutputData( std::ofstream & fileStream, itk::ContinuousIndex<
   double, VDimension > & cIndx, double intensity, double ridgeness,
-  double roundness, double curvature, double linearity )
+  double roundness, double curvature, double levelness )
 {
   for( unsigned int i = 0; i < VDimension; ++i )
     {
@@ -85,7 +85,7 @@ int WriteOutputData( std::ofstream & fileStream, itk::ContinuousIndex<
   fileStream << ridgeness << " ";
   fileStream << roundness << " ";
   fileStream << curvature << " ";
-  fileStream << linearity << std::endl;
+  fileStream << levelness << std::endl;
 
   return EXIT_SUCCESS;
 }
@@ -326,7 +326,7 @@ int DoIt( int argc, char * argv[] )
     OutputImageType::New();
   typename OutputImageType::Pointer outImageCurvature =
     OutputImageType::New();
-  typename OutputImageType::Pointer outImageLinearity =
+  typename OutputImageType::Pointer outImageLevelness =
     OutputImageType::New();
   if( !outputImagesBaseFileName.empty() )
     {
@@ -347,10 +347,10 @@ int DoIt( int argc, char * argv[] )
     outImageCurvature->SetRegions( region );
     outImageCurvature->Allocate();
 
-    outImageLinearity->CopyInformation( inImage );
-    outImageLinearity->SetSpacing( spacing );
-    outImageLinearity->SetRegions( region );
-    outImageLinearity->Allocate();
+    outImageLevelness->CopyInformation( inImage );
+    outImageLevelness->SetSpacing( spacing );
+    outImageLevelness->SetRegions( region );
+    outImageLevelness->Allocate();
     }
 
   bool useOutputDataStream = false;
@@ -388,7 +388,7 @@ int DoIt( int argc, char * argv[] )
   itk::ImageRegionIteratorWithIndex< OutputImageType > itC(
     outImageCurvature, region );
   itk::ImageRegionIteratorWithIndex< OutputImageType > itL(
-    outImageLinearity, region );
+    outImageLevelness, region );
 
   typename RidgeFuncType::Pointer ridgeFunc = RidgeFuncType::New();
   ridgeFunc->SetInputImage( inImage );
@@ -405,7 +405,7 @@ int DoIt( int argc, char * argv[] )
       double ridgeness = 0;
       double roundness = 0;
       double curvature = 0;
-      double linearity = 0;
+      double levelness = 0;
       typename RidgeFuncType::ContinuousIndexType cIndx;
       if( supersample != 1 )
         {
@@ -424,33 +424,33 @@ int DoIt( int argc, char * argv[] )
       if( itM.Get() == maskTubeId )
         {
         ridgeness = ridgeFunc->Ridgeness( cIndx, intensity, roundness,
-          curvature, linearity );
+          curvature, levelness );
 
         MetricVectorType instance(5, 0);
         instance[0] = intensity;
         instance[1] = ridgeness;
         instance[2] = roundness;
         instance[3] = curvature;
-        instance[4] = linearity;
+        instance[4] = levelness;
         seed.push_back( instance );
 
         if( useOutputDataStream )
           {
           WriteOutputData< VDimension >( outputDataStreamInit, cIndx,
-            intensity, ridgeness, roundness, curvature, linearity );
+            intensity, ridgeness, roundness, curvature, levelness );
           }
 
         ridgeFunc->LocalRidge( cIndx );
         }
 
       ridgeness = ridgeFunc->Ridgeness( cIndx, intensity, roundness,
-        curvature, linearity );
+        curvature, levelness );
       if( useOutputImages )
         {
         itR.Set( (OutputPixelType) ridgeness );
         itO.Set( (OutputPixelType) roundness );
         itC.Set( (OutputPixelType) curvature );
-        itL.Set( (OutputPixelType) linearity );
+        itL.Set( (OutputPixelType) levelness );
         }
 
       if( itM.Get() == maskTubeId )
@@ -460,7 +460,7 @@ int DoIt( int argc, char * argv[] )
         instance[1] = ridgeness;
         instance[2] = roundness;
         instance[3] = curvature;
-        instance[4] = linearity;
+        instance[4] = levelness;
         tube.push_back( instance );
 
         int count = tube.size();
@@ -472,7 +472,7 @@ int DoIt( int argc, char * argv[] )
         if( useOutputDataStream )
           {
           WriteOutputData< VDimension >( outputDataStreamTube, cIndx,
-            intensity, ridgeness, roundness, curvature, linearity );
+            intensity, ridgeness, roundness, curvature, levelness );
           }
         }
       else if( itM.Get() == maskBackgroundId )
@@ -482,13 +482,13 @@ int DoIt( int argc, char * argv[] )
         instance[1] = ridgeness;
         instance[2] = roundness;
         instance[3] = curvature;
-        instance[4] = linearity;
+        instance[4] = levelness;
         bkg.push_back( instance );
 
         if( useOutputDataStream )
           {
           WriteOutputData< VDimension >( outputDataStreamBkg, cIndx,
-            intensity, ridgeness, roundness, curvature, linearity );
+            intensity, ridgeness, roundness, curvature, levelness );
           }
         }
       }
@@ -588,7 +588,7 @@ int DoIt( int argc, char * argv[] )
 
     outName = outputImagesBaseFileName + ".line.mha";
     result += WriteOutputImage< OutputImageType >( outName,
-      outImageLinearity );
+      outImageLevelness );
 
     timeCollector.Stop("Save data");
     }
@@ -627,8 +627,8 @@ int DoIt( int argc, char * argv[] )
   double ridgeCurvatureMax = x[3];
   double ridgeThreshCurvature = x[3];
   double ridgeThreshCurvatureStart = x[3];
-  double ridgeThreshLinearity = x[4];
-  double ridgeThreshLinearityStart = x[4];
+  double ridgeThreshLevelness = x[4];
+  double ridgeThreshLevelnessStart = x[4];
   int    ridgeRecoveryMax = 3;
   params.SetTubeRidgeParams( ridgeScale, ridgeScaleExtent,
     ridgeDynamicScale, ridgeStepX,
@@ -638,7 +638,7 @@ int DoIt( int argc, char * argv[] )
     ridgeThreshRoundness, ridgeThreshRoundnessStart,
     ridgeCurvatureMax,
     ridgeThreshCurvature, ridgeThreshCurvatureStart,
-    ridgeThreshLinearity, ridgeThreshLinearityStart,
+    ridgeThreshLevelness, ridgeThreshLevelnessStart,
     ridgeRecoveryMax );
 
   double radiusScale = scale;

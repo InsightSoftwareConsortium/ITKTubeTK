@@ -115,18 +115,18 @@ RidgeExtractor<TInputImage>
   m_ExtractBoundMin.Fill( 0 );
   m_ExtractBoundMax.Fill( 0 );
 
-  m_CurvatureExpectedMax = 0.0005;
+  m_CurvatureExpectedMax = 0.025;
 
   m_ThreshT = 0.75;
   m_ThreshX = 3.0;
-  m_ThreshRidgeness = 0.95;    // near 1 = harder
-  m_ThreshRidgenessStart = 0.9;
-  m_ThreshRoundness = 0.3;    // near 1 = harder
-  m_ThreshRoundnessStart = 0.25;
-  m_ThreshCurvature = 0.0002;
-  m_ThreshCurvatureStart = 0.00021;
-  m_ThreshLinearity = 0.8;
-  m_ThreshLinearityStart = 0.85;
+  m_ThreshRidgeness = 0.9;    // near 1 = harder
+  m_ThreshRidgenessStart = 0.85;
+  m_ThreshRoundness = 0.9;    // near 1 = harder
+  m_ThreshRoundnessStart = 0.85;
+  m_ThreshCurvature = 0.9;
+  m_ThreshCurvatureStart = 0.85;
+  m_ThreshLevelness = 0.9;
+  m_ThreshLevelnessStart = 0.85;
   m_RecoveryMax = 4;
 
   m_SplineValueFunc = new RidgeExtractorSplineValue<TInputImage>( this );
@@ -398,7 +398,7 @@ RidgeExtractor<TInputImage>
   double & intensity,
   double & roundness,
   double & curvature,
-  double & linearity )
+  double & levelness )
 {
   if( this->GetDebug() )
     {
@@ -411,6 +411,7 @@ RidgeExtractor<TInputImage>
     }
 
   m_XVal = m_DataSpline->ValueJet( m_X, m_XD, m_XH );
+  intensity = m_XVal;
 
   if( this->GetDebug() )
     {
@@ -420,101 +421,9 @@ RidgeExtractor<TInputImage>
     std::cout << "  XH = " << m_XH << std::endl;
     }
 
-  ::tube::ComputeEigen( m_XH, m_XHEVect, m_XHEVal, false, true );
-
-  if( this->GetDebug() )
-    {
-    std::cout << "   m_XHEVal = " << m_XHEVal << std::endl;
-    for( unsigned int i=0; i<ImageDimension; i++ )
-      {
-      std::cout << "   m_XHEVect( " << i << " ) = "
-        << m_XHEVect.get_column( i ) << std::endl;
-      }
-    for( unsigned int i=0; i<ImageDimension; i++ )
-      {
-      std::cout << "   m_XHEVect( " << i << " ).mag = "
-        << m_XHEVect.get_column( i ).magnitude() << std::endl;
-      }
-    for( unsigned int i=1; i<ImageDimension; i++ )
-      {
-      std::cout << "   m_XHEVect( 0 )*m_XHEVect( " << i << " ) = "
-                << dot_product( m_XHEVect.get_column( 0 ),
-                  m_XHEVect.get_column( i ) )
-                << std::endl;
-      }
-    }
-
-  if( m_XD.magnitude() != 0 )
-    {
-    m_XD.normalize();
-    }
-  else
-    {
-    m_XD = m_XHEVect.get_column( ImageDimension-1 );
-    }
-
-  if( this->GetDebug() )
-    {
-    std::cout << "   XD.Norm = " << m_XD << std::endl;
-    for( unsigned int i=0; i<ImageDimension; i++ )
-      {
-      std::cout << "   m_XHEVect( " << i << " )*m_XD = "
-                << dot_product( m_XHEVect.get_column( i ), m_XD )
-                << std::endl;
-      }
-    }
-
-  for( unsigned int i=0; i<ImageDimension; i++ )
-    {
-    m_XP[i] = dot_product( m_XHEVect.get_column( i ), m_XD );
-    }
-
-  double sums = 0;
-  double sumv = 0;
-  int ridge = 1;
-  for( unsigned int i=0; i<ImageDimension-1; i++ )
-    {
-    sums += m_XP[i]*m_XP[i];
-    sumv += m_XHEVal[i]*m_XHEVal[i];
-    if( m_XHEVal[i] >= 0 )
-      {
-      ridge = -1;
-      }
-    }
-  double avgv = sumv / ( ImageDimension - 1 );
-
-  // ridgeness is 1 - sums = 1 - ( P^2 + Q^2 )
-  double ridgeness = (1.0 - sums) * ridge;
-
-  if( this->GetDebug() )
-    {
-    std::cout << "  ridgeness = " << ridgeness << std::endl;
-    }
-
-  intensity = m_XVal;
-
-  // roundness is 1 - || 1 - v2^2 / v1^2  ||
-  // However, since v1^2 can be extremely small, we use the average
-  roundness = 0;
-  if( m_XHEVal[0] != 0 )
-    {
-    roundness =
-      1 - vnl_math_abs( 1 - ( ( m_XHEVal[ ImageDimension-2 ] *
-        m_XHEVal[ ImageDimension-2] ) / avgv ) );
-    }
-
-  // curvature is (v1^2 + v2^2) / 2.0
-  curvature = ridge * avgv;
-  curvature /= m_CurvatureExpectedMax;
-
-  // linearity is (v1^2 + v2^2) / (v1^2 + v2^2 + v3^2) = 1 for a flat ridge
-  linearity = 0;
-  double denom =
-    ( sumv + m_XHEVal[ ImageDimension-1 ] * m_XHEVal[ ImageDimension-1] );
-  if( denom != 0 )
-    {
-    linearity = sumv / denom;
-    }
+  double ridgeness = 0;
+  ::tube::ComputeRidgeness<double>( m_XH, m_XD, m_CurvatureExpectedMax,
+    ridgeness, roundness, curvature, levelness, m_XHEVect, m_XHEVal );
 
   return ridgeness;
 }
@@ -589,8 +498,8 @@ RidgeExtractor<TInputImage>
   os << indent << "ThreshCurvature = " << m_ThreshCurvature << std::endl;
   os << indent << "ThreshCurvatureStart = " << m_ThreshCurvatureStart
     << std::endl;
-  os << indent << "ThreshLinearity = " << m_ThreshLinearity << std::endl;
-  os << indent << "ThreshLinearityStart = " << m_ThreshLinearityStart
+  os << indent << "ThreshLevelness = " << m_ThreshLevelness << std::endl;
+  os << indent << "ThreshLevelnessStart = " << m_ThreshLevelnessStart
     << std::endl;
   os << std::endl;
 
@@ -688,7 +597,7 @@ RidgeExtractor<TInputImage>
   double ridgeness;
   double roundness;
   double curvature;
-  double linearity;
+  double levelness;
 
   std::vector< TubePointType > pnts;
   pnts.clear();
@@ -723,7 +632,7 @@ RidgeExtractor<TInputImage>
         std::cout << "Initial point ridgeness..." << std::endl;
         }
       ridgeness = Ridgeness( indxX, intensity, roundness, curvature,
-        linearity );
+        levelness );
 
       if( this->GetDebug() )
         {
@@ -931,7 +840,7 @@ RidgeExtractor<TInputImage>
       indxX[i] = lX[i];
       }
     ridgeness = Ridgeness( indxX, intensity, roundness, curvature,
-      linearity );
+      levelness );
 
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
@@ -1011,7 +920,7 @@ RidgeExtractor<TInputImage>
         std::cout << "       Ridgeness = " << ridgeness << std::endl;
         std::cout << "       Roundness = " << roundness << std::endl;
         std::cout << "       Curvature = " << curvature << std::endl;
-        std::cout << "       Linearity = " << linearity << std::endl;
+        std::cout << "       Levelness = " << levelness << std::endl;
         }
       recovery++;
       continue;
@@ -1029,7 +938,7 @@ RidgeExtractor<TInputImage>
         std::cout << "       Ridgeness = " << ridgeness << std::endl;
         std::cout << "       Roundness = " << roundness << std::endl;
         std::cout << "       Curvature = " << curvature << std::endl;
-        std::cout << "       Linearity = " << linearity << std::endl;
+        std::cout << "       Levelness = " << levelness << std::endl;
         }
       recovery++;
       continue;
@@ -1045,7 +954,7 @@ RidgeExtractor<TInputImage>
         std::cout << "       Ridgeness = " << ridgeness << std::endl;
         std::cout << "       Roundness = " << roundness << std::endl;
         std::cout << "       Curvature = " << curvature << std::endl;
-        std::cout << "       Linearity = " << linearity << std::endl;
+        std::cout << "       Levelness = " << levelness << std::endl;
         }
       if( ridgeness != 0 && curvature != 0 )
         {
@@ -1068,23 +977,23 @@ RidgeExtractor<TInputImage>
         std::cout << "       Ridgeness = " << ridgeness << std::endl;
         std::cout << "       Roundness = " << roundness << std::endl;
         std::cout << "       Curvature = " << curvature << std::endl;
-        std::cout << "       Linearity = " << linearity << std::endl;
+        std::cout << "       Levelness = " << levelness << std::endl;
         }
       recovery++;
       continue;
       }
 
-    if( linearity < m_ThreshLinearity )
+    if( levelness < m_ThreshLevelness )
       {
       if( this->GetDebug() )
         {
-        std::cout << "*** Ridge terminated: Low linearity "
-          << "( " << linearity << " )" << std::endl;
+        std::cout << "*** Ridge terminated: Low levelness "
+          << "( " << levelness << " )" << std::endl;
         std::cout << "       Intensity = " << intensity << std::endl;
         std::cout << "       Ridgeness = " << ridgeness << std::endl;
         std::cout << "       Roundness = " << roundness << std::endl;
         std::cout << "       Curvature = " << curvature << std::endl;
-        std::cout << "       Linearity = " << linearity << std::endl;
+        std::cout << "       Levelness = " << levelness << std::endl;
         }
       recovery++;
       continue;
@@ -1100,7 +1009,7 @@ RidgeExtractor<TInputImage>
         std::cout << "       Ridgeness = " << ridgeness << std::endl;
         std::cout << "       Roundness = " << roundness << std::endl;
         std::cout << "       Curvature = " << curvature << std::endl;
-        std::cout << "       Linearity = " << linearity << std::endl;
+        std::cout << "       Levelness = " << levelness << std::endl;
         }
       if( vnl_math_abs( lNTEVal[0] ) )
         {
@@ -1326,9 +1235,9 @@ RidgeExtractor<TInputImage>
   double intensity;
   double roundness;
   double curvature;
-  double linearity;
+  double levelness;
   double ridgeness = Ridgeness( newX, intensity, roundness, curvature,
-    linearity );
+    levelness );
 
   double     val;
   MatrixType lN( ImageDimension, ImageDimension-1 );
@@ -1402,11 +1311,11 @@ RidgeExtractor<TInputImage>
       }
 
     ridgeness = Ridgeness( newX, intensity, roundness, curvature,
-      linearity );
+      levelness );
     if( ridgeness >= m_ThreshRidgenessStart &&
       roundness >= m_ThreshRoundnessStart &&
       curvature >= m_ThreshCurvatureStart &&
-      linearity >= m_ThreshLinearityStart )
+      levelness >= m_ThreshLevelnessStart )
       {
       if( this->GetDebug() )
         {
@@ -1417,8 +1326,8 @@ RidgeExtractor<TInputImage>
           << m_ThreshRoundnessStart << std::endl;
         std::cout << "  Curvature: " << curvature << " >= "
           << m_ThreshCurvatureStart << std::endl;
-        std::cout << "  Linearity: " << linearity << " >= "
-          << m_ThreshLinearityStart << std::endl;
+        std::cout << "  Levelness: " << levelness << " >= "
+          << m_ThreshLevelnessStart << std::endl;
         }
       return true;
       }
@@ -1432,8 +1341,8 @@ RidgeExtractor<TInputImage>
         << m_ThreshRoundnessStart << std::endl;
       std::cout << "  Curvature: " << curvature << " >= "
         << m_ThreshCurvatureStart << std::endl;
-      std::cout << "  Linearity: " << linearity << " >= "
-        << m_ThreshLinearityStart << std::endl;
+      std::cout << "  Levelness: " << levelness << " >= "
+        << m_ThreshLevelnessStart << std::endl;
       }
     }
 
@@ -1489,11 +1398,11 @@ RidgeExtractor<TInputImage>
       }
 
     ridgeness = Ridgeness( newX, intensity, roundness, curvature,
-      linearity );
+      levelness );
     if( ridgeness >= m_ThreshRidgenessStart &&
       roundness >= m_ThreshRoundnessStart &&
       curvature >= m_ThreshCurvatureStart &&
-      linearity >= m_ThreshLinearityStart )
+      levelness >= m_ThreshLevelnessStart )
       {
       if( this->GetDebug() )
         {
@@ -1504,8 +1413,8 @@ RidgeExtractor<TInputImage>
           << m_ThreshRoundnessStart << std::endl;
         std::cout << "  Curvature: " << curvature << " >= "
           << m_ThreshCurvatureStart << std::endl;
-        std::cout << "  Linearity: " << linearity << " >= "
-          << m_ThreshLinearityStart << std::endl;
+        std::cout << "  Levelness: " << levelness << " >= "
+          << m_ThreshLevelnessStart << std::endl;
         }
       return true;
       }
@@ -1519,8 +1428,8 @@ RidgeExtractor<TInputImage>
         << m_ThreshRoundnessStart << std::endl;
       std::cout << "  Curvature: " << curvature << " >= "
         << m_ThreshCurvatureStart << std::endl;
-      std::cout << "  Linearity: " << linearity << " >= "
-        << m_ThreshLinearityStart << std::endl;
+      std::cout << "  Levelness: " << levelness << " >= "
+        << m_ThreshLevelnessStart << std::endl;
       }
     }
 
@@ -1560,15 +1469,15 @@ RidgeExtractor<TInputImage>
       }
     }
 
-  if( linearity < m_ThreshLinearityStart )
+  if( levelness < m_ThreshLevelnessStart )
     {
     if( m_StatusCallBack )
       {
-      m_StatusCallBack( NULL, "Linearity failure", 0 );
+      m_StatusCallBack( NULL, "Levelness failure", 0 );
       }
     if( this->GetDebug() )
       {
-      std::cout << "LocalRidge : Linearity failure" << std::endl;
+      std::cout << "LocalRidge : Levelness failure" << std::endl;
       }
     }
 
@@ -1581,8 +1490,8 @@ RidgeExtractor<TInputImage>
       << m_ThreshRoundnessStart << std::endl;
     std::cout << "  Curvature: " << curvature << " >= "
       << m_ThreshCurvatureStart << std::endl;
-    std::cout << "  Linearity: " << linearity << " >= "
-      << m_ThreshLinearityStart << std::endl;
+    std::cout << "  Levelness: " << levelness << " >= "
+      << m_ThreshLevelnessStart << std::endl;
     }
   return false;
 }

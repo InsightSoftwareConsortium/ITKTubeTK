@@ -67,6 +67,7 @@ set( TubeTK_Base_Numerics_HXX_Files
   tubeTubeMath.hxx )
 
 include_directories(
+  ${TubeTK_SOURCE_DIR}/Base/Filtering
   ${TubeTK_SOURCE_DIR}/Base/Common )
 
 set( TubeTK_Base_Numerics_SRCS

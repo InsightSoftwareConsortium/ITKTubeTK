@@ -52,6 +52,7 @@ set( tubeBaseFilteringTests_SRCS
   itktubeAnisotropicHybridDiffusionImageFilterTest.cxx
   itktubeExtractTubePointsSpatialObjectFilterTest.cxx
   itktubeFFTGaussianDerivativeIFFTFilterTest.cxx
+  itktubeRidgeFFTFilterTest.cxx
   itktubeSheetnessMeasureImageFilterTest.cxx
   itktubeSheetnessMeasureImageFilterTest2.cxx
   itktubeShrinkUsingMaxImageFilterTest.cxx
@@ -126,6 +127,18 @@ Midas3FunctionAddTest( NAME itktubeFFTGaussianDerivativeIFFTFilterTest3
       2 2 2 2
       MIDAS{im0001.mha.md5}
       ${TEMP}/itkTubeFFTGaussianDerivativeIFFTFilterTest3.mha )
+
+    #--compare MIDAS{itktubeRidgeFFTFilterTest1.mha.md5}
+      #${TEMP}/itktubeRidgeFFTFilterTest1.mha
+Midas3FunctionAddTest( NAME itktubeRidgeFFTFilterTest1
+  COMMAND ${BASE_FILTERING_TESTS}
+    itktubeRidgeFFTFilterTest
+      2
+      MIDAS{Branch.n010.mha.md5}
+      ${TEMP}/itktubeRidgeFFTFilterTest1_Ridgeness.mha 
+      ${TEMP}/itktubeRidgeFFTFilterTest1_Roundness.mha 
+      ${TEMP}/itktubeRidgeFFTFilterTest1_Curvature.mha 
+      ${TEMP}/itktubeRidgeFFTFilterTest1_Levelness.mha )
 
 add_test( NAME itktubeSheetnessMeasureImageFilterTest
   COMMAND ${BASE_FILTERING_TESTS}

@@ -367,6 +367,8 @@ void
 RidgeSeedFilter< TImage, TLabelMap >
 ::Update( void )
 {
+  m_RidgeFeatureGenerator->GenerateData();
+
   m_SeedFeatureGenerator->SetObjectId( m_RidgeId );
   m_SeedFeatureGenerator->AddObjectId( m_BackgroundId );
   m_PDFSegmenter->SetObjectId( m_RidgeId );
@@ -392,6 +394,8 @@ void
 RidgeSeedFilter< TImage, TLabelMap >
 ::ClassifyImages( void )
 {
+  m_RidgeFeatureGenerator->GenerateData();
+
   m_SeedFeatureGenerator->SetObjectId( m_RidgeId );
   m_SeedFeatureGenerator->AddObjectId( m_BackgroundId );
   m_PDFSegmenter->SetObjectId( m_RidgeId );

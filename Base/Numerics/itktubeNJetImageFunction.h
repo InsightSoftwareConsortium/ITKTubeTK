@@ -305,6 +305,8 @@ protected:
   mutable double          m_MostRecentRidgeCurvature;
   mutable VectorType      m_MostRecentRidgeTangent;
 
+  double                  m_CurvatureExpectedMax;
+
   bool                    m_ValidStats;
   double                  m_StatsMin;
   double                  m_StatsMax;

@@ -98,7 +98,7 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
   double intensity;
   double roundness;
   double curvature;
-  double linearity;
+  double levelness;
   unsigned int skip = 0;
   itk::ImageRegionIteratorWithIndex<ImageType> itOut( imOut,
     imOut->GetLargestPossibleRegion() );
@@ -138,7 +138,7 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
           prev2 = itOut.GetIndex()[2];
           }
         itOut.Set( ridgeOp->Ridgeness( contIndx, intensity, roundness,
-          curvature, linearity ) );
+          curvature, levelness ) );
         firstSearch = true;
         break;
         }
@@ -150,7 +150,7 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
           prev2 = itOut.GetIndex()[2];
           }
         ridgeOp->Ridgeness( contIndx, intensity, roundness,
-          curvature, linearity );
+          curvature, levelness );
         itOut.Set( roundness );
         firstSearch = true;
         break;
@@ -163,7 +163,7 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
           prev2 = itOut.GetIndex()[2];
           }
         ridgeOp->Ridgeness( contIndx, intensity, roundness,
-          curvature, linearity );
+          curvature, levelness );
         itOut.Set( curvature );
         firstSearch = true;
         break;
@@ -172,12 +172,12 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
         {
         if( prev2 != itOut.GetIndex()[2] )
           {
-          std::cout << "Linearity: " << contIndx << std::endl;
+          std::cout << "Levelness: " << contIndx << std::endl;
           prev2 = itOut.GetIndex()[2];
           }
         ridgeOp->Ridgeness( contIndx,  intensity,roundness,
-          curvature, linearity );
-        itOut.Set( linearity );
+          curvature, levelness );
+        itOut.Set( levelness );
         firstSearch = true;
         break;
         }

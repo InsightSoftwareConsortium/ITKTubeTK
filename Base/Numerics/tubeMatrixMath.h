@@ -58,6 +58,20 @@ template< class T >
 double
 ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y);
 
+/** Compute the Euclidean distance for two points */
+template< class TPoint >
+double
+ComputeEuclideanDistance(TPoint x, TPoint y);
+
+/** Compute Ridgeness measures */
+template< class T >
+void
+ComputeRidgeness( const vnl_matrix<T> & H, const vnl_vector<T> & D,
+  double maxCurvature, 
+  double & ridgeness, double & roundness, double & curvature,
+  double & linearity,
+  vnl_matrix<T> & HEVect, vnl_vector<T> & HEVal );
+
 /** Compute eigenvalues and vectors  */
 template< class T >
 void
@@ -84,10 +98,6 @@ template< class T >
 void
 ComputeTqli(vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat);
 
-/** Compute the Euclidean distance for two points */
-template< class TPoint >
-double
-ComputeEuclideanDistance(TPoint x, TPoint y);
 
 } // End namespace tube
 

@@ -28,6 +28,7 @@ limitations under the License.
 #include "itktubeAnisotropicHybridDiffusionImageFilter.h"
 #include "itktubeExtractTubePointsSpatialObjectFilter.h"
 #include "itktubeFFTGaussianDerivativeIFFTFilter.h"
+#include "itktubeRidgeFFTFilter.h"
 #include "itktubeSheetnessMeasureImageFilter.h"
 #include "itktubeShrinkUsingMaxImageFilter.h"
 #include "itktubeSpatialObjectToSpatialObjectFilter.h"
