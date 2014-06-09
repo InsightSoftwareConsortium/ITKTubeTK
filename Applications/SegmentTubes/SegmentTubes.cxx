@@ -200,6 +200,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start("Ridge Extractor");
   unsigned int count = 1;
+  bool foundOneTube = false;
   while( seedIndexIter != seedIndexList.end() )
     {
     tubeOp->SetRadius( *seedScaleIter );
@@ -209,6 +210,7 @@ int DoIt( int argc, char * argv[] )
     if( !xTube.IsNull() )
       {
       tubeOp->AddTube( xTube );
+      foundOneTube = true;
       }
     else
       {
@@ -222,6 +224,11 @@ int DoIt( int argc, char * argv[] )
     ++count;
     }
 
+  if (!foundOneTube)
+    {
+    tube::ErrorMessage("No Ridge found at all");
+    return EXIT_FAILURE;
+    }
 
   // Update tubes transform
   typename TransformType::InputVectorType scaleVector;
