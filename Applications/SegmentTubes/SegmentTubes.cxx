@@ -75,6 +75,8 @@ int DoIt( int argc, char * argv[] )
   typedef typename TubeType::PointType                  PointType;
   typedef typename TubeType::TubePointType              TubePointType;
 
+  typedef typename TubeType::TransformType              TransformType;
+
   typedef itk::SpatialObjectWriter< VDimension >        SpatialObjectWriterType;
 
   timeCollector.Start("Load data");
@@ -219,6 +221,25 @@ int DoIt( int argc, char * argv[] )
     ++seedScaleIter;
     ++count;
     }
+
+
+  // Update tubes transform
+  typename TransformType::InputVectorType scaleVector;
+  typename TransformType::OffsetType offsetVector;
+  typename TransformType::MatrixType directionMatrix;
+  typename ImageType::SpacingType spacing = inputImage->GetSpacing();
+  typename ImageType::PointType origin = inputImage->GetOrigin();
+
+  for (unsigned int i = 0; i < VDimension; ++i)
+    {
+    scaleVector[i] = spacing[i];
+    offsetVector[i] = origin[i];
+    }
+
+  tubeOp->GetTubeGroup()->GetObjectToParentTransform()->SetScale( scaleVector );
+  tubeOp->GetTubeGroup()->GetObjectToParentTransform()->SetOffset( offsetVector );
+  tubeOp->GetTubeGroup()->GetObjectToParentTransform()->SetMatrix( inputImage->GetDirection() );
+  tubeOp->GetTubeGroup()->ComputeObjectToWorldTransform();
 
   // Save Tubes
   typename SpatialObjectWriterType::Pointer soWriter =
