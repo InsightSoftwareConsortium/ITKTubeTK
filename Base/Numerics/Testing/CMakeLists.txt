@@ -57,6 +57,7 @@ set( tubeBaseNumerics_SRCS
   itktubeRecordOptimizationParameterProgressionCommandTest.cxx
   itktubeRidgeBasisFeatureVectorGeneratorTest.cxx
   itktubeRidgeFeatureVectorGeneratorTest.cxx
+  itktubeRidgeFFTFeatureVectorGeneratorTest.cxx
   itktubeVotingResampleImageFunctionTest.cxx
   tubeBrentOptimizer1DTest.cxx
   tubeBrentOptimizerNDTest.cxx
@@ -293,6 +294,13 @@ Midas3FunctionAddTest( NAME itktubeRidgeFeatureVectorGeneratorTest
       MIDAS{im0001.crop.contrast.mha.md5}
       ${TEMP}/itkTubeRidgeFeatureVectorGeneratorTest_f0.mha
       ${TEMP}/itkTubeRidgeFeatureVectorGeneratorTest_f1.mha )
+
+Midas3FunctionAddTest( NAME itktubeRidgeFFTFeatureVectorGeneratorTest
+  COMMAND ${BASE_NUMERICS_TESTS}
+    itktubeRidgeFFTFeatureVectorGeneratorTest
+      MIDAS{im0001.crop.contrast.mha.md5}
+      ${TEMP}/itkTubeRidgeFFTFeatureVectorGeneratorTest_f0.mha
+      ${TEMP}/itkTubeRidgeFFTFeatureVectorGeneratorTest_f1.mha )
 
 Midas3FunctionAddTest( NAME itktubeRidgeBasisFeatureVectorGeneratorTest
   COMMAND ${BASE_NUMERICS_TESTS}

@@ -28,6 +28,7 @@ limitations under the License.
 #include "itktubeNJetFeatureVectorGenerator.h"
 #include "itktubeNJetImageFunction.h"
 #include "itktubeRidgeFeatureVectorGenerator.h"
+#include "itktubeRidgeFFTFeatureVectorGenerator.h"
 #include "itktubeVectorImageToListGenerator.h"
 #include "itktubeVotingResampleImageFunction.h"
 
@@ -81,6 +82,11 @@ int tubeBaseNumericsPrintTest( int itkNotUsed( argc ), char * itkNotUsed( argv )
   std::cout << "-------------RidgeFeatureVectorGenerator"
     << ridgeFeatureVectorGenerator << std::endl;
 
+  itk::tube::RidgeFFTFeatureVectorGenerator< ImageType >::Pointer
+    ridgeFFTFeatureVectorGenerator =
+    itk::tube::RidgeFFTFeatureVectorGenerator< ImageType >::New();
+  std::cout << "-------------RidgeFFTFeatureVectorGenerator"
+    << ridgeFFTFeatureVectorGenerator << std::endl;
 
   itk::tube::Statistics::VectorImageToListGenerator< VectorImageType,
       ImageType >::Pointer

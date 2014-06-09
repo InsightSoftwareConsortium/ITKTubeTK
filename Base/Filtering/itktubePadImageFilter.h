@@ -45,8 +45,7 @@ namespace tube {
  *
  * \sa FFTShiftImageFilter NormalizeToConstantImageFilter FFTRealToComplexConjugateImageFilter
  */
-template<class TInputImage, class TInputKernel=TInputImage,
-         class TOutputImage=TInputImage, class TOutputKernel=TInputKernel>
+template<class TInputImage, class TOutputImage=TInputImage>
 class ITK_EXPORT PadImageFilter : 
     public ImageToImageFilter<TInputImage, TOutputImage>
 {
@@ -62,8 +61,6 @@ public:
   /** Some convenient typedefs. */
   typedef TInputImage                              InputImageType;
   typedef TOutputImage                             OutputImageType;
-  typedef TInputKernel                             InputKernelType;
-  typedef TOutputKernel                            OutputKernelType;
   typedef typename InputImageType::Pointer         InputImagePointer;
   typedef typename InputImageType::ConstPointer    InputImageConstPointer;
   typedef typename InputImageType::PixelType       InputImagePixelType;
@@ -130,39 +127,6 @@ public:
   itkGetConstMacro(PadMethod, int);
   itkSetMacro(PadMethod, int);
   
-  /** Set the kernel image */
-  void SetInputKernel(const InputKernelType *input)
-    {
-    // Process object is not const-correct so the const casting is required.
-    this->SetNthInput( 1, const_cast<InputKernelType *>(input) );
-    }
-
-  /** Get the kernel image */
-  const InputKernelType * GetInputKernel() const
-    {
-    return static_cast<InputKernelType*>(
-      const_cast<DataObject *>(this->ProcessObject::GetInput(1)));
-    }
-
-  /** Get the kernel image */
-  OutputKernelType * GetOutputKernel() const
-    {
-    return static_cast<OutputKernelType*>(
-      const_cast<DataObject *>(this->ProcessObject::GetOutput(1)));
-    }
-
-  /** Set the input image */
-  void SetInput1(const TInputImage *input)
-    {
-    this->SetInput( input );
-    }
-
-  /** Set the kernel image */
-  void SetInput2(const InputKernelType *input)
-    {
-    this->SetInputKernel( input );
-    }
-
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
   itkConceptMacro(InputHasPixelTraitsCheck,

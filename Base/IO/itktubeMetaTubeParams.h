@@ -86,8 +86,8 @@ public:
     double _tubeRidgeCurvatureMax,
     double _tubeRidgeThresholdCurvature,
     double _tubeRidgeThresholdCurvatureStart,
-    double _tubeRidgeThresholdLinearity,
-    double _tubeRidgeThresholdLinearityStart,
+    double _tubeRidgeThresholdLevelness,
+    double _tubeRidgeThresholdLevelnessStart,
     int _tubeRidgeRecoveryMax );
 
   void SetTubeRadiusParams( double _tubeRadiusStart,
@@ -119,8 +119,8 @@ public:
   double GetTubeRidgeCurvatureMax( void ) const;
   double GetTubeRidgeThresholdCurvature( void ) const;
   double GetTubeRidgeThresholdCurvatureStart( void ) const;
-  double GetTubeRidgeThresholdLinearity( void ) const;
-  double GetTubeRidgeThresholdLinearityStart( void ) const;
+  double GetTubeRidgeThresholdLevelness( void ) const;
+  double GetTubeRidgeThresholdLevelnessStart( void ) const;
   int GetTubeRidgeRecoveryMax( void ) const;
 
   double GetTubeRadiusStart( void ) const;
@@ -179,8 +179,8 @@ protected:
   double       m_TubeRidgeCurvatureMax;
   double       m_TubeRidgeThresholdCurvature;
   double       m_TubeRidgeThresholdCurvatureStart;
-  double       m_TubeRidgeThresholdLinearity;
-  double       m_TubeRidgeThresholdLinearityStart;
+  double       m_TubeRidgeThresholdLevelness;
+  double       m_TubeRidgeThresholdLevelnessStart;
   int          m_TubeRidgeRecoveryMax;
 
   double       m_TubeRadiusStart;

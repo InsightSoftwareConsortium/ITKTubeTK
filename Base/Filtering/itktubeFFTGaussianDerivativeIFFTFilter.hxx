@@ -47,17 +47,35 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 template< typename TInputImage, typename TOutputImage >
 void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
+::SetOrders( OrdersType & orders )
+{
+  m_Orders = orders;
+  this->Modified();
+}
+
+template< typename TInputImage, typename TOutputImage >
+void
+FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
+::SetSigmas( SigmasType & sigmas )
+{
+  m_Sigmas = sigmas;
+  this->Modified();
+}
+
+template< typename TInputImage, typename TOutputImage >
+void
+FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 ::ApplyFFT()
 {
-  typedef PadImageFilter< TInputImage, TInputImage >   PadFilterType;
+  typedef PadImageFilter< InputImageType, RealImageType >
+    PadFilterType;
   typename PadFilterType::Pointer padFilter = PadFilterType::New();
-  padFilter->SetInput1( this->GetInput() );
-  padFilter->SetInput2( this->GetInput() );
+  padFilter->SetInput( this->GetInput() );
   padFilter->SetGreatestPrimeFactor( 5 );
   padFilter->SetPadMethod( PadFilterType::ZERO_FLUX_NEUMANN );
   padFilter->Update();
 
-  typename FFTInputType::Pointer fftFilter = FFTInputType::New();
+  typename FFTFilterType::Pointer fftFilter = FFTFilterType::New();
   fftFilter->SetInput( padFilter->GetOutput() );
   fftFilter->Update();
 
@@ -124,7 +142,7 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   fftShiftFilter->SetInput( m_KernelImage );
   fftShiftFilter->Update();
 
-  typename FFTRealType::Pointer fftFilter = FFTRealType::New();
+  typename FFTFilterType::Pointer fftFilter = FFTFilterType::New();
   fftFilter->SetInput( fftShiftFilter->GetOutput() );
   fftFilter->Update();
   typename ComplexImageType::Pointer fftKernel = fftFilter->GetOutput();
@@ -156,7 +174,7 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 
   ApplyGaussianDerivativeIFFT();
 
-  typedef RegionFromReferenceImageFilter< TOutputImage > 
+  typedef RegionFromReferenceImageFilter< RealImageType, TOutputImage >
     RegionFromFilterType;
   typename RegionFromFilterType::Pointer regionFrom = 
     RegionFromFilterType::New();
@@ -165,7 +183,7 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   regionFrom->SetInput2( this->GetInput() );
   regionFrom->Update();
 
-  this->GraftOutput( regionFrom->GetOutput() );
+  this->SetNthOutput( 0, regionFrom->GetOutput() );
 }
 
 template< typename TInputImage, typename TOutputImage >

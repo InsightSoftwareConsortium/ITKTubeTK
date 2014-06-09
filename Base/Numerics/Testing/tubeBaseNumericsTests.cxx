@@ -43,6 +43,7 @@ void RegisterTests( void )
   REGISTER_TEST( itktubeRecordOptimizationParameterProgressionCommandTest );
   REGISTER_TEST( itktubeRidgeBasisFeatureVectorGeneratorTest );
   REGISTER_TEST( itktubeRidgeFeatureVectorGeneratorTest );
+  REGISTER_TEST( itktubeRidgeFFTFeatureVectorGeneratorTest );
   REGISTER_TEST( itktubeVotingResampleImageFunctionTest );
   REGISTER_TEST( tubeBrentOptimizer1DTest );
   REGISTER_TEST( tubeBrentOptimizerNDTest );

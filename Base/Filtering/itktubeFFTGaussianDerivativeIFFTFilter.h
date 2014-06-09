@@ -35,7 +35,8 @@ namespace itk
 namespace tube
 {
 
-template< typename TInputImage, typename TOutputImage = TInputImage >
+template< typename TInputImage, typename TOutputImage = 
+  Image< float, TInputImage::ImageDimension >  >
 class FFTGaussianDerivativeIFFTFilter :
     public ImageToImageFilter< TInputImage, TOutputImage >
 {
@@ -60,35 +61,33 @@ public:
   typedef Image< float, ImageDimension >      RealImageType;
 
   typedef GaussianDerivativeImageSource< RealImageType >
-                                         GaussianDerivativeImageSourceType;
+                                              GaussianDerivativeImageSourceType;
 
   typedef typename GaussianDerivativeImageSourceType::OrdersType
-                                         OrdersType;
+                                              OrdersType;
 
   typedef typename GaussianDerivativeImageSourceType::SigmasType
-                                         SigmasType;
+                                              SigmasType;
 
-  itkSetMacro( Orders, OrdersType );
+  void SetOrders( OrdersType & orders );
   itkGetConstReferenceMacro( Orders, OrdersType );
 
-  itkSetMacro( Sigmas, SigmasType );
+  void SetSigmas( SigmasType & sigmas );
   itkGetConstReferenceMacro( Sigmas, SigmasType );
 
 protected:
-  typedef itk::ForwardFFTImageFilter< InputImageType > FFTInputType;
-  typedef typename FFTInputType::OutputImageType       ComplexImageType;
+  typedef ForwardFFTImageFilter< RealImageType >          FFTFilterType;
 
-  typedef itk::ForwardFFTImageFilter< RealImageType, ComplexImageType >
-                                                       FFTRealType;
+  typedef typename FFTFilterType::OutputImageType         ComplexImageType;
 
-  typedef itk::FFTShiftImageFilter< RealImageType, RealImageType >
-                                                       FFTShiftFilterType;
+  typedef FFTShiftImageFilter< RealImageType, RealImageType >
+                                                          FFTShiftFilterType;
 
-  typedef itk::InverseFFTImageFilter< ComplexImageType,
-    OutputImageType >                                  InverseFFTFilterType;
+  typedef InverseFFTImageFilter< ComplexImageType, RealImageType >
+                                                          InverseFFTFilterType;
 
-  typedef itk::MultiplyImageFilter< ComplexImageType, ComplexImageType,
-    ComplexImageType >                                 MultiplyFilterType;
+  typedef MultiplyImageFilter< ComplexImageType, ComplexImageType,
+    ComplexImageType >                                    MultiplyFilterType;
 
   FFTGaussianDerivativeIFFTFilter( void );
   virtual ~FFTGaussianDerivativeIFFTFilter( void ) {}
@@ -110,7 +109,7 @@ private:
 
   typename ComplexImageType::Pointer                  m_FFTImage;
 
-  typename OutputImageType::Pointer                   m_IFFTImage;
+  typename RealImageType::Pointer                     m_IFFTImage;
 
   typename RealImageType::Pointer                     m_KernelImage;
 

@@ -31,6 +31,7 @@ void RegisterTests( void )
   REGISTER_TEST( tubeBaseFilteringPrintTest );
   REGISTER_TEST( itktubeExtractTubePointsSpatialObjectFilterTest );
   REGISTER_TEST( itktubeFFTGaussianDerivativeIFFTFilterTest );
+  REGISTER_TEST( itktubeRidgeFFTFilterTest );
   REGISTER_TEST( itktubeSubSampleTubeSpatialObjectFilterTest );
   REGISTER_TEST( itktubeSubSampleTubeTreeSpatialObjectFilterTest );
   REGISTER_TEST( itktubeStructureTensorRecursiveGaussianImageFilterTest );

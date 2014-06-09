@@ -145,11 +145,11 @@ PrintInfo( void ) const
   METAIO_STREAM::cout << "TubeRidgeThresholdCurvatureStart = "
     << m_TubeRidgeThresholdCurvatureStart << METAIO_STREAM::endl;
 
-  METAIO_STREAM::cout << "TubeRidgeThresholdLinearity = "
-    << m_TubeRidgeThresholdLinearity << METAIO_STREAM::endl;
+  METAIO_STREAM::cout << "TubeRidgeThresholdLevelness = "
+    << m_TubeRidgeThresholdLevelness << METAIO_STREAM::endl;
 
-  METAIO_STREAM::cout << "TubeRidgeThresholdLinearityStart = "
-    << m_TubeRidgeThresholdLinearityStart << METAIO_STREAM::endl;
+  METAIO_STREAM::cout << "TubeRidgeThresholdLevelnessStart = "
+    << m_TubeRidgeThresholdLevelnessStart << METAIO_STREAM::endl;
 
   METAIO_STREAM::cout << "TubeRidgeRecoveryMax = "
     << m_TubeRidgeRecoveryMax << METAIO_STREAM::endl;
@@ -205,8 +205,8 @@ SetTubeRidgeParams( double _tubeRidgeScale, double _tubeRidgeScaleExtent,
   double _tubeRidgeCurvatureMax,
   double _tubeRidgeThresholdCurvature,
   double _tubeRidgeThresholdCurvatureStart,
-  double _tubeRidgeThresholdLinearity,
-  double _tubeRidgeThresholdLinearityStart,
+  double _tubeRidgeThresholdLevelness,
+  double _tubeRidgeThresholdLevelnessStart,
   int _tubeRidgeRecoveryMax )
 {
   m_TubeRidgeScale = _tubeRidgeScale;
@@ -222,8 +222,8 @@ SetTubeRidgeParams( double _tubeRidgeScale, double _tubeRidgeScaleExtent,
   m_TubeRidgeCurvatureMax = _tubeRidgeCurvatureMax;
   m_TubeRidgeThresholdCurvature = _tubeRidgeThresholdCurvature;
   m_TubeRidgeThresholdCurvatureStart = _tubeRidgeThresholdCurvatureStart;
-  m_TubeRidgeThresholdLinearity = _tubeRidgeThresholdLinearity;
-  m_TubeRidgeThresholdLinearityStart = _tubeRidgeThresholdLinearityStart;
+  m_TubeRidgeThresholdLevelness = _tubeRidgeThresholdLevelness;
+  m_TubeRidgeThresholdLevelnessStart = _tubeRidgeThresholdLevelnessStart;
   m_TubeRidgeRecoveryMax = _tubeRidgeRecoveryMax;
 }
 
@@ -368,15 +368,15 @@ GetTubeRidgeThresholdCurvatureStart( void ) const
 }
 
 double MetaTubeParams::
-GetTubeRidgeThresholdLinearity( void ) const
+GetTubeRidgeThresholdLevelness( void ) const
 {
-  return m_TubeRidgeThresholdLinearity;
+  return m_TubeRidgeThresholdLevelness;
 }
 
 double MetaTubeParams::
-GetTubeRidgeThresholdLinearityStart( void ) const
+GetTubeRidgeThresholdLevelnessStart( void ) const
 {
-  return m_TubeRidgeThresholdLinearityStart;
+  return m_TubeRidgeThresholdLevelnessStart;
 }
 
 int MetaTubeParams::
@@ -443,8 +443,8 @@ CopyInfo( const MetaTubeParams & _tubeParams )
     _tubeParams.GetTubeRidgeCurvatureMax(),
     _tubeParams.GetTubeRidgeThresholdCurvature(),
     _tubeParams.GetTubeRidgeThresholdCurvatureStart(),
-    _tubeParams.GetTubeRidgeThresholdLinearity(),
-    _tubeParams.GetTubeRidgeThresholdLinearityStart(),
+    _tubeParams.GetTubeRidgeThresholdLevelness(),
+    _tubeParams.GetTubeRidgeThresholdLevelnessStart(),
     _tubeParams.GetTubeRidgeRecoveryMax() );
 
   SetTubeRadiusParams( _tubeParams.GetTubeRadiusStart(),
@@ -489,8 +489,8 @@ Clear( void )
   m_TubeRidgeCurvatureMax = 0.8;
   m_TubeRidgeThresholdCurvature = 0.8;
   m_TubeRidgeThresholdCurvatureStart = 0.8;
-  m_TubeRidgeThresholdLinearity = 0.8;
-  m_TubeRidgeThresholdLinearityStart = 0.8;
+  m_TubeRidgeThresholdLevelness = 0.8;
+  m_TubeRidgeThresholdLevelnessStart = 0.8;
   m_TubeRidgeRecoveryMax = 3;
 
   m_TubeRadiusStart = 1;
@@ -814,11 +814,11 @@ M_SetupReadFields( void )
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "TubeRidgeThresholdLinearity", MET_FLOAT, true );
+  MET_InitReadField( mF, "TubeRidgeThresholdLevelness", MET_FLOAT, true );
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "TubeRidgeThresholdLinearityStart", MET_FLOAT,
+  MET_InitReadField( mF, "TubeRidgeThresholdLevelnessStart", MET_FLOAT,
     true );
   m_Fields.push_back( mF );
 
@@ -984,13 +984,13 @@ M_SetupWriteFields( void )
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "TubeRidgeThresholdLinearity", MET_FLOAT,
-    m_TubeRidgeThresholdLinearity );
+  MET_InitWriteField( mF, "TubeRidgeThresholdLevelness", MET_FLOAT,
+    m_TubeRidgeThresholdLevelness );
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "TubeRidgeThresholdLinearityStart", MET_FLOAT,
-    m_TubeRidgeThresholdLinearityStart );
+  MET_InitWriteField( mF, "TubeRidgeThresholdLevelnessStart", MET_FLOAT,
+    m_TubeRidgeThresholdLevelnessStart );
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
@@ -1133,11 +1133,11 @@ M_Read( void )
   mF = MET_GetFieldRecord( "TubeRidgeThresholdCurvatureStart", &m_Fields );
   m_TubeRidgeThresholdCurvatureStart = ( double )mF->value[0];
 
-  mF = MET_GetFieldRecord( "TubeRidgeThresholdLinearity", &m_Fields );
-  m_TubeRidgeThresholdLinearity = ( double )mF->value[0];
+  mF = MET_GetFieldRecord( "TubeRidgeThresholdLevelness", &m_Fields );
+  m_TubeRidgeThresholdLevelness = ( double )mF->value[0];
 
-  mF = MET_GetFieldRecord( "TubeRidgeThresholdLinearityStart", &m_Fields );
-  m_TubeRidgeThresholdLinearityStart = ( double )mF->value[0];
+  mF = MET_GetFieldRecord( "TubeRidgeThresholdLevelnessStart", &m_Fields );
+  m_TubeRidgeThresholdLevelnessStart = ( double )mF->value[0];
 
   mF = MET_GetFieldRecord( "TubeRidgeRecoveryMax", &m_Fields );
   m_TubeRidgeRecoveryMax = ( int )mF->value[0];

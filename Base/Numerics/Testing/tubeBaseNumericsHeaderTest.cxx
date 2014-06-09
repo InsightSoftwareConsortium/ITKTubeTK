@@ -30,6 +30,7 @@ limitations under the License.
 #include "itktubeNJetImageFunction.h"
 #include "itktubeRecordOptimizationParameterProgressionCommand.h"
 #include "itktubeRidgeFeatureVectorGenerator.h"
+#include "itktubeRidgeFFTFeatureVectorGenerator.h"
 #include "itktubeSingleValuedCostFunctionImageSource.h"
 #include "itktubeVectorImageToListGenerator.h"
 #include "itktubeVotingResampleImageFunction.h"

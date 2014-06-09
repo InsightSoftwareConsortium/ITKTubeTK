@@ -39,6 +39,7 @@ set( TubeTK_Base_IO_HXX_Files
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Segmentation
+  ${TubeTK_SOURCE_DIR}/Base/Filtering
   ${TubeTK_SOURCE_DIR}/Base/Numerics
   ${TubeTK_SOURCE_DIR}/Base/Common )
 

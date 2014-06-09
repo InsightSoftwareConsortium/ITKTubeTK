@@ -41,7 +41,7 @@ class ITK_EXPORT RegionFromReferenceImageFilter:
 {
 public:
   /** Standard class typedefs. */
-  typedef RegionFromReferenceImageFilter                               Self;
+  typedef RegionFromReferenceImageFilter                Self;
   typedef ExtractImageFilter<TInputImage,TOutputImage>  Superclass;
   typedef SmartPointer<Self>                            Pointer;
   typedef SmartPointer<const Self>                      ConstPointer;

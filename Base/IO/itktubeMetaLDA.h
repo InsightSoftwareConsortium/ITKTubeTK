@@ -30,6 +30,7 @@ limitations under the License.
 
 #include <vnl/vnl_matrix.h>
 #include <vnl/vnl_vector.h>
+#include <vnl/vnl_c_vector.h>
 
 namespace itk
 {
