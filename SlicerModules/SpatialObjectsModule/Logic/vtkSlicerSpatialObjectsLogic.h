@@ -49,9 +49,9 @@ public:
 
   // Description:
   // Create SpatialObjectsNode and
-  // read their polydata from a specified directory.
+  // read their polydata from a specified directory if a filename is specified.
   // Also create the logic object for its display.
-  vtkMRMLSpatialObjectsNode* AddSpatialObject(const char* filename);
+  vtkMRMLSpatialObjectsNode* AddSpatialObject(const char* filename = 0);
 
   // Description:
   // Create SpatialObjectsNode and
@@ -71,6 +71,16 @@ public:
   // Write SpatialObjectsNode's polydata  to a specified file.
   int SaveSpatialObject(const char* filename,
                         vtkMRMLSpatialObjectsNode *spatialObjectsNode);
+
+  // Description:
+  // Utility function to copy a spatial object from a node to another
+  // (implemented since python doesn't wrap itk objects)
+  void CopySpatialObject(
+    vtkMRMLSpatialObjectsNode* from, vtkMRMLSpatialObjectsNode* to);
+
+  // Description:
+  // Utility function to add the display nodes to a given spatial object node.
+  void AddDisplayNodes(vtkMRMLSpatialObjectsNode* spatialObjectsNode);
 
   // Description:
   // Register MRML Node classes to Scene.
