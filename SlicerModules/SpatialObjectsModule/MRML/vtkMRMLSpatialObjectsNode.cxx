@@ -22,8 +22,10 @@ limitations under the License.
 =========================================================================*/
 
 // VTK includes
+#include <vtkCellArray.h>
 #include <vtkCleanPolyData.h>
 #include <vtkCommand.h>
+#include <vtkDoubleArray.h>
 #include <vtkEventBroker.h>
 #include <vtkExtractPolyDataGeometry.h>
 #include <vtkExtractSelectedPolyDataIds.h>
@@ -32,6 +34,8 @@ limitations under the License.
 #include <vtkNew.h>
 #include <vtkObjectFactory.h>
 #include <vtkPlanes.h>
+#include <vtkPointData.h>
+#include <vtkPolyLine.h>
 #include <vtkSelection.h>
 #include <vtkSelectionNode.h>
 
@@ -60,7 +64,10 @@ vtkMRMLSpatialObjectsNode::vtkMRMLSpatialObjectsNode( void )
 {
   this->PrepareSubsampling();
   this->SubsamplingRatio = 1;
-  this->SpatialObject = 0;
+
+  this->SpatialObject = TubeNetType::New();
+  this->SpatialObject->Initialize();
+  this->UpdatePolyDataFromSpatialObject();
 }
 
 //------------------------------------------------------------------------------
@@ -114,6 +121,25 @@ void vtkMRMLSpatialObjectsNode::Copy(vtkMRMLNode *anode)
     }
 
   this->EndModify(disabledModify);
+}
+
+//------------------------------------------------------------------------------
+vtkMRMLSpatialObjectsNode::TubeNetPointerType
+vtkMRMLSpatialObjectsNode::GetSpatialObject()
+{
+  return this->SpatialObject;
+}
+
+//------------------------------------------------------------------------------
+void vtkMRMLSpatialObjectsNode::SetSpatialObject(TubeNetPointerType object)
+{
+  if (this->SpatialObject == object)
+    {
+    return;
+    }
+
+  this->SpatialObject = object;
+  this->UpdatePolyDataFromSpatialObject();
 }
 
 //------------------------------------------------------------------------------
@@ -401,6 +427,206 @@ void vtkMRMLSpatialObjectsNode::CleanSubsampling( void )
 {
   this->CleanPolyDataPostSubsampling->Delete();
   this->ShuffledIds->Delete();
+}
+
+//------------------------------------------------------------------------------
+void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
+{
+  typedef itk::VesselTubeSpatialObjectPoint<3> TubePointType;
+  typedef itk::Point<double, 3>                PointType;
+  typedef itk::VesselTubeSpatialObject<3>      TubeType;
+
+  char childName[] = "Tube";
+  TubeNetType::ChildrenListType* tubeList =
+    this->SpatialObject->GetChildren(
+      this->SpatialObject->GetMaximumDepth(), childName);
+
+  // -----------------------------------------------------------------------
+  // Copy skeleton points from vessels into polydata structure
+  // -----------------------------------------------------------------------
+
+  // Initialize the SpatialObject
+  // Count number of points && remove dupplicate
+  int totalNumberOfPoints = 0;
+  for(TubeNetType::ChildrenListType::iterator tubeIT = tubeList->begin();
+        tubeIT != tubeList->end();
+        ++tubeIT )
+    {
+    TubeType* currTube =
+      static_cast<TubeType*>((*tubeIT).GetPointer());
+
+    currTube->RemoveDuplicatePoints();
+
+    const itk::SizeValueType numberOfPoints = currTube->GetNumberOfPoints();
+    if( numberOfPoints < 2 )
+      {
+      continue;
+      }
+
+    totalNumberOfPoints += numberOfPoints;
+    }
+
+  // Create the points
+  vtkNew<vtkPoints> vesselsPoints;
+  vesselsPoints->SetNumberOfPoints(totalNumberOfPoints);
+
+  // Create the Lines
+  vtkNew<vtkCellArray> vesselLinesCA;
+
+  // Create scalar array that indicates the radius at each
+  // centerline point.
+  vtkNew<vtkDoubleArray> tubeRadius;
+  tubeRadius->SetName("TubeRadius");
+  tubeRadius->SetNumberOfTuples(totalNumberOfPoints);
+
+  // Create scalar array that indicates TubeID.
+  vtkNew<vtkDoubleArray> tubeIDs;
+  tubeIDs->SetName("TubeIDs");
+  tubeIDs->SetNumberOfTuples(totalNumberOfPoints);
+
+  // Create scalar array that indicates both tangents at each
+  // centerline point.
+  vtkNew<vtkDoubleArray> tan1;
+  tan1->SetName("Tan1");
+  tan1->SetNumberOfTuples(3 * totalNumberOfPoints);
+  tan1->SetNumberOfComponents(3);
+
+  vtkNew<vtkDoubleArray> tan2;
+  tan2->SetName("Tan2");
+  tan2->SetNumberOfTuples(3 * totalNumberOfPoints);
+  tan2->SetNumberOfComponents(3);
+
+  // Create scalar array that indicates Ridgness and medialness at each
+  // centerline point.
+  bool containsMidialnessInfo = false;
+  vtkNew<vtkDoubleArray> medialness;
+  medialness->SetName("Medialness");
+  medialness->SetNumberOfTuples(totalNumberOfPoints);
+
+  bool containsRidgnessInfo = false;
+  vtkNew<vtkDoubleArray> ridgeness;
+  ridgeness->SetName("Ridgeness");
+  ridgeness->SetNumberOfTuples(totalNumberOfPoints);
+
+  int pointID = 0;
+  for(TubeNetType::ChildrenListType::iterator tubeIT = tubeList->begin();
+        tubeIT != tubeList->end(); ++tubeIT )
+    {
+    TubeType* currTube =
+      static_cast<TubeType*>((*tubeIT).GetPointer());
+
+    const itk::SizeValueType tubeSize = currTube->GetNumberOfPoints();
+    if( tubeSize < 2 )
+      {
+      continue;
+      }
+
+    currTube->ComputeTangentAndNormals();
+
+    // Create a pointID list [linear for a polyline]
+    vtkIdType* pointIDs = new vtkIdType[tubeSize];
+    vtkNew<vtkPolyLine> vesselLine;
+
+    // Get the tube element spacing information.
+    //const double* axesRatio = currTube->GetSpacing();
+
+    currTube->ComputeObjectToWorldTransform();
+
+    int index = 0;
+    std::vector<TubePointType>::iterator  tubePointIterator;
+    for(tubePointIterator = currTube->GetPoints().begin();
+          tubePointIterator != currTube->GetPoints().end();
+          ++tubePointIterator, ++pointID, ++index)
+      {
+      PointType inputPoint = tubePointIterator->GetPosition();
+
+      inputPoint =
+        currTube->GetIndexToWorldTransform()->TransformPoint( inputPoint );
+      inputPoint[0] = -inputPoint[0];
+      inputPoint[1] = -inputPoint[1];
+
+      pointIDs[index] = pointID;
+
+      // Insert points using the element spacing information.
+      vesselsPoints->SetPoint( pointID, inputPoint[0], inputPoint[1],
+        inputPoint[2] );
+        //inputPoint[1] * axesRatio[1] / axesRatio[0],
+        //inputPoint[2] * axesRatio[2] / axesRatio[0]);
+
+      // TubeID
+      tubeIDs->SetTuple1(pointID, currTube->GetId());
+
+      // Radius
+      tubeRadius->SetTuple1(pointID, tubePointIterator->GetRadius());
+
+      // Tangeantes
+      tan1->SetTuple3(pointID,
+                      (*tubePointIterator).GetNormal1()[0],
+                      (*tubePointIterator).GetNormal1()[1],
+                      (*tubePointIterator).GetNormal1()[2]);
+
+      tan2->SetTuple3(pointID,
+                      (*tubePointIterator).GetNormal2()[0],
+                      (*tubePointIterator).GetNormal2()[1],
+                      (*tubePointIterator).GetNormal2()[2]);
+
+      // Medialness & Ridgness
+      if(tubePointIterator->GetMedialness() != 0)
+        {
+        containsMidialnessInfo = true;
+        }
+      medialness->SetTuple1(pointID, tubePointIterator->GetMedialness());
+
+      if(tubePointIterator->GetRidgeness() != 0)
+        {
+        containsRidgnessInfo = true;
+        }
+      ridgeness->SetTuple1(pointID, tubePointIterator->GetRidgeness());
+      }
+
+    vesselLine->Initialize(tubeSize,
+                            pointIDs,
+                            vesselsPoints.GetPointer());
+    vesselLinesCA->InsertNextCell(vesselLine.GetPointer());
+    delete [] pointIDs;
+    }
+
+  // Convert spatial objects to a PolyData
+  vtkNew<vtkPolyData> vesselsPD;
+  vesselsPD->SetLines(vesselLinesCA.GetPointer());
+  vesselsPD->SetPoints(vesselsPoints.GetPointer());
+
+  // Add the Radius information
+  vesselsPD->GetPointData()->AddArray(tubeRadius.GetPointer());
+  vesselsPD->GetPointData()->SetActiveScalars("TubeRadius");
+
+  // Add the TudeID information
+  vesselsPD->GetPointData()->AddArray(tubeIDs.GetPointer());
+
+  // Add Tangeantes information
+  vesselsPD->GetPointData()->AddArray(tan1.GetPointer());
+  vesselsPD->GetPointData()->AddArray(tan2.GetPointer());
+
+  // Add Medialness & Ridgness if contains information
+  if(containsMidialnessInfo == true)
+    {
+    vesselsPD->GetPointData()->AddArray(medialness.GetPointer());
+    }
+
+  if(containsRidgnessInfo == true)
+    {
+    vesselsPD->GetPointData()->AddArray(ridgeness.GetPointer());
+    }
+
+  // Remove any duplicate points from polydata.
+  // The tubes generation will fails if any duplicates points are present.
+  // Cleaned before, could create degeneration problems with the cells
+  //vtkNew<vtkCleanPolyData> cleanedVesselPD;
+  //cleanedVesselPD->SetInput(vesselsPD.GetPointer());
+
+  vtkDebugMacro("Points: " << totalNumberOfPoints);
+
+  this->SetAndObservePolyData(vesselsPD.GetPointer());
 }
 
 //------------------------------------------------------------------------------
