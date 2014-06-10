@@ -428,8 +428,8 @@ GeneralizedDistanceTransformImageFilter<
   // cache (when the memory is properly aligned).
   const DistSizeValueType pixelsInCacheLine =
     std::max((DistSizeValueType)1,
-             (DistSizeValueType)CacheLineSize/
-             sizeof(typename DistanceImageType::PixelType));
+             (DistSizeValueType)(CacheLineSize/
+             sizeof(typename DistanceImageType::PixelType)));
 
   // We are using a buffer for each thread for intermediate output.
   std::vector< DistancePixelType > valuesBuffer;
