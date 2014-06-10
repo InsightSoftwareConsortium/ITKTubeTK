@@ -60,6 +60,7 @@ vtkMRMLSpatialObjectsNode::vtkMRMLSpatialObjectsNode( void )
 {
   this->PrepareSubsampling();
   this->SubsamplingRatio = 1;
+  this->SpatialObject = 0;
 }
 
 //------------------------------------------------------------------------------

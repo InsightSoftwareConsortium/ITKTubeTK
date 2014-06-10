@@ -35,6 +35,8 @@ limitations under the License.
 
 #include "SegmentTubesCLP.h"
 
+#include <sstream>
+
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
@@ -65,6 +67,8 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileWriter< MaskImageType >         MaskWriterType;
 
   typedef itk::VesselTubeSpatialObject< VDimension >    TubeType;
+
+  typedef typename TubeType::TransformType              TransformType;
 
   typedef itk::SpatialObjectWriter< VDimension >        SpatialObjectWriterType;
 
@@ -139,9 +143,6 @@ int DoIt( int argc, char * argv[] )
         point[i] = seedPhysicalPoint[seedNum][i];
         }
 
-      point[0]*=-1;
-      point[1]*=-1;
-
       bool transformSuccess =
         inputImage->TransformPhysicalPointToContinuousIndex(point, seedIndex);
       if (!transformSuccess)
@@ -176,57 +177,69 @@ int DoIt( int argc, char * argv[] )
     seedScaleList.push_back( seedScale );
     }
 
-  if( seedMask.empty() )
-    {
-    if( seedScaleMask.empty() )
-      {
-      }
-    else
-      {
-      seedScaleList.push_back( scale );
-      }
-
-    }
-  else if( seedScaleMask.empty() )
-    {
-    }
-
-
   typename seedIndexListType::iterator seedIndexIter =
     seedIndexList.begin();
   seedScaleListType::iterator seedScaleIter =
     seedScaleList.begin();
 
+  tubeOp->SetDebug( false );
+  tubeOp->GetRidgeOp()->SetDebug( false );
+  tubeOp->GetRadiusOp()->SetDebug( false );
+
+  tubeOp->GetRidgeOp()->SetThreshRoundness( 0.0001 );
+  tubeOp->GetRidgeOp()->SetThreshRoundnessStart( 0.0001 );
+  tubeOp->GetRidgeOp()->SetThreshCurvature( 0.0001 );
+  tubeOp->GetRidgeOp()->SetThreshCurvatureStart( 0.0001 );
+
   timeCollector.Start("Ridge Extractor");
   unsigned int count = 1;
+  bool foundOneTube = false;
   while( seedIndexIter != seedIndexList.end() )
     {
-
-    tubeOp->SetDebug( true );
-    tubeOp->GetRidgeOp()->SetDebug( true );
-
-    tubeOp->GetRidgeOp()->SetThreshRoundness( 0.0001 );
-    tubeOp->GetRidgeOp()->SetThreshRoundnessStart( 0.0001 );
-    tubeOp->GetRidgeOp()->SetThreshCurvature( 0.0001 );
-    tubeOp->GetRidgeOp()->SetThreshCurvatureStart( 0.0001 );
-
     tubeOp->SetRadius( *seedScaleIter );
 
-    typename TubeType::Pointer xTube = tubeOp->ExtractTube( *seedIndexIter,
-      count );
-
-    if( xTube.IsNull() )
+    typename TubeType::Pointer xTube =
+      tubeOp->ExtractTube( *seedIndexIter, count );
+    if( !xTube.IsNull() )
       {
-      tube::ErrorMessage( "Error: Ridge not found. " );
-      return EXIT_FAILURE;
+      tubeOp->AddTube( xTube );
+      foundOneTube = true;
       }
-
-    tubeOp->AddTube( xTube );
+    else
+      {
+      std::stringstream ss;
+      ss << "Error: Ridge not found for seed #" << count;
+      tube::ErrorMessage(ss.str());
+      }
 
     ++seedIndexIter;
     ++seedScaleIter;
     ++count;
     }
+
+  if (!foundOneTube)
+    {
+    tube::ErrorMessage("No Ridge found at all");
+    return EXIT_FAILURE;
+    }
+
+  // Update tubes transform
+  typename TransformType::InputVectorType scaleVector;
+  typename TransformType::OffsetType offsetVector;
+  typename TransformType::MatrixType directionMatrix;
+  typename ImageType::SpacingType spacing = inputImage->GetSpacing();
+  typename ImageType::PointType origin = inputImage->GetOrigin();
+
+  for (unsigned int i = 0; i < VDimension; ++i)
+    {
+    scaleVector[i] = spacing[i];
+    offsetVector[i] = origin[i];
+    }
+
+  tubeOp->GetTubeGroup()->GetObjectToParentTransform()->SetScale( scaleVector );
+  tubeOp->GetTubeGroup()->GetObjectToParentTransform()->SetOffset( offsetVector );
+  tubeOp->GetTubeGroup()->GetObjectToParentTransform()->SetMatrix( inputImage->GetDirection() );
+  tubeOp->GetTubeGroup()->ComputeObjectToWorldTransform();
 
   // Save Tubes
   typename SpatialObjectWriterType::Pointer soWriter =

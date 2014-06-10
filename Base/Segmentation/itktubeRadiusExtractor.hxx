@@ -366,11 +366,11 @@ RadiusExtractor<TInputImage>
     //   ComputeTangents on the tube prior to calling this function
     //   to avoid this situation.  If inconsistent normals are used,
     //   branchness computations suffer due to normal flipping.
-    std::cout
-      << "Warning: Point normals invalid. Recomputing. Frenet frame lost."
-      << std::endl;
     if( this->GetDebug() )
-      {
+        {
+      std::cout
+        << "Warning: Point normals invalid. Recomputing. Frenet frame lost."
+        << std::endl;
       std::cout << "   DotProd = " << dotP << " and Norm = " << len
         << std::endl;
       }
@@ -648,11 +648,14 @@ RadiusExtractor<TInputImage>
     }
   else
     {
-    std::cout
-      << "RadiusExtractor: calcOptimalScale: kernel fit insufficient"
-      << std::endl;
-    std::cout << "  Medialness = " << mness << " < thresh = "
-      << m_ThreshMedialness << std::endl;
+    if ( this->GetDebug() )
+      {
+      std::cout
+        << "RadiusExtractor: calcOptimalScale: kernel fit insufficient"
+        << std::endl;
+      std::cout << "  Medialness = " << mness << " < thresh = "
+        << m_ThreshMedialness << std::endl;
+      }
     return false;
     }
 
@@ -864,11 +867,11 @@ RadiusExtractor<TInputImage>
     //   ComputeTangents on the tube prior to calling this function
     //   to avoid this situation.  If inconsistent normals are used,
     //   branchness computations suffer due to normal flipping.
-    std::cout
-      << "Warning: Point normals invalid. Recomputing. Frenet frame lost."
-      << std::endl;
     if( this->GetDebug() )
       {
+      std::cout
+        << "Warning: Point normals invalid. Recomputing. Frenet frame lost."
+        << std::endl;
       std::cout << "   DotProd = " << dotP << " and Norm = " << sum
         << std::endl;
       std::cout << "   pos = " << pnt.GetPosition() << std::endl;
@@ -1003,10 +1006,10 @@ RadiusExtractor<TInputImage>
     }
   if( kernCnt < 2 )
     {
-    std::cout << "Warning: Medialness kernel does not intersect image."
-      << std::endl;
     if( this->GetDebug() )
       {
+      std::cout << "Warning: Medialness kernel does not intersect image."
+        << std::endl;
       std::cout << "   Warn pos = " << pnt.GetPosition() << std::endl;
       std::cout << "   Warn tan = " << pnt.GetTangent() << std::endl;
       std::cout << "   Warn kern = " << std::endl;
@@ -1131,9 +1134,12 @@ RadiusExtractor<TInputImage>
 
   if( kernAvgCnt<0.25*m_KernNumDirs )
     {
-    std::cout
-      << "Error: insufficient neg/pos kernel pairs intersect image."
-      << std::endl;
+    if ( this->GetDebug() )
+      {
+      std::cout
+        << "Error: insufficient neg/pos kernel pairs intersect image."
+        << std::endl;
+      }
     mness = 0;
     bness = 0;
     return;
@@ -1251,9 +1257,13 @@ RadiusExtractor<TInputImage>
     kernNegAvg = 0;
     }
   mness = ( kernPosAvg - kernNegAvg ) / ( pntR / 4 );
-  std::cout << "** MNESS = " << mness << std::endl;
-  std::cout << "   kernPosAvg = " << kernPosAvg << std::endl;
-  std::cout << "   kernNegAvg = " << kernNegAvg << std::endl;
+
+  if ( this->GetDebug() )
+    {
+    std::cout << "** MNESS = " << mness << std::endl;
+    std::cout << "   kernPosAvg = " << kernPosAvg << std::endl;
+    std::cout << "   kernNegAvg = " << kernNegAvg << std::endl;
+    }
 
   if( doBNess )
     {
@@ -1690,8 +1700,11 @@ RadiusExtractor<TInputImage>
 
   if( pntIter == tube->GetPoints().end() )
     {
-    std::cout << "Warning: PointID 0 not found. Using mid-point of tube."
-      << std::endl;
+    if ( this->GetDebug() )
+      {
+      std::cout << "Warning: PointID 0 not found. Using mid-point of tube."
+        << std::endl;
+      }
     pntIter = tube->GetPoints().begin();
     unsigned int psize = tube->GetPoints().size();
     for( unsigned int i=0; i<psize/2; i++ )

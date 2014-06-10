@@ -203,8 +203,8 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
           {
           PointType inputPoint = tubePointIterator->GetPosition();
 
-          currTube->GetIndexToWorldTransform()->TransformPoint(
-            inputPoint );
+          inputPoint =
+            currTube->GetIndexToWorldTransform()->TransformPoint( inputPoint );
           inputPoint[0] = -inputPoint[0];
           inputPoint[1] = -inputPoint[1];
 

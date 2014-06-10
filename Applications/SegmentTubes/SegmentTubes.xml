@@ -31,15 +31,6 @@
   <parameters advanced="true">
     <label>Ridges</label>
     <description>Ridges</description>
-    <image>
-      <name>seedMask</name>
-      <label>Seed Mask Image</label>
-      <channel>input</channel>
-      <description>Mask of seed points for ridge extraction</description>
-      <flag>m</flag>
-      <longflag>seedMask</longflag>
-      <default/>
-    </image>
     <file>
       <name>seedListFile</name>
       <label>Seed List</label>
@@ -57,26 +48,20 @@
       <flag>s</flag>
       <default>2.0</default>
     </double>
-    <image>
-      <name>seedScaleMask</name>
-      <label>Seed Scale Mask</label>
-      <channel>input</channel>
-      <longflag>seedScaleMask</longflag>
-      <flag>S</flag>
-      <description>Scales of seed points for ride extraction</description>
-    </image>
     <point multiple="true">
       <name>seedX</name>
       <label>Seed index</label>
       <longflag>seedX</longflag>
       <flag>x</flag>
       <description>Continuous index for starting ridge extraction</description>
+      <default/>
     </point>
-    <point multiple="true" coordinateSystem="ras">
+    <point multiple="true" coordinateSystem="lps">
       <name>seedPhysicalPoint</name>
       <label>Seed coordinate</label>
       <longflag>seedPhysicalPoint</longflag>
       <description>Phisycal coordinate seed for starting ridge extraction</description>
+      <default/>
     </point>
   </parameters>
   <parameters>
