@@ -50,10 +50,6 @@ public:
   typedef itk::SpatialObjectWriter<3> WriterType;
   typedef itk::GroupSpatialObject<3>  TubeNetType;
 
-  typedef itk::VesselTubeSpatialObjectPoint<3> TubePointType;
-  typedef itk::Point<double, 3>                PointType;
-  typedef itk::VesselTubeSpatialObject<3>      TubeType;
-
   static vtkMRMLSpatialObjectsStorageNode *New( void );
   vtkTypeMacro(vtkMRMLSpatialObjectsStorageNode, vtkMRMLModelStorageNode);
   void PrintSelf(ostream& os, vtkIndent indent);

@@ -55,6 +55,7 @@ class VTK_SLICER_SPATIALOBJECTS_MODULE_MRML_EXPORT vtkMRMLSpatialObjectsNode
 {
 public:
   typedef itk::GroupSpatialObject<3> TubeNetType;
+  typedef TubeNetType::Pointer TubeNetPointerType;
 
   static vtkMRMLSpatialObjectsNode* New( void );
   vtkTypeMacro(vtkMRMLSpatialObjectsNode, vtkMRMLModelNode);
@@ -139,8 +140,8 @@ public:
 
   // Description:
   // Get/Set the SpatialObject when a new node is set
-  vtkGetMacro(SpatialObject, TubeNetType*);
-  vtkSetMacro(SpatialObject, TubeNetType*);
+  TubeNetPointerType GetSpatialObject( void );
+  void SetSpatialObject(TubeNetPointerType object);
 
   /// Set and observe poly data for this model
   virtual void SetAndObservePolyData(vtkPolyData* polyData);
@@ -155,13 +156,14 @@ protected:
   // Contains the SpatialObject structure used to generate the differents
   // PolyData for visualization and allow keeping further informations
   // for object processing and editions.
-  TubeNetType* SpatialObject;
+  TubeNetPointerType SpatialObject;
 
   vtkIdTypeArray* ShuffledIds;
 
   virtual void PrepareSubsampling( void );
   virtual void UpdateSubsampling( void );
   virtual void CleanSubsampling( void );
+  virtual void UpdatePolyDataFromSpatialObject( void );
 
   vtkCleanPolyData* CleanPolyDataPostSubsampling;
   float SubsamplingRatio;

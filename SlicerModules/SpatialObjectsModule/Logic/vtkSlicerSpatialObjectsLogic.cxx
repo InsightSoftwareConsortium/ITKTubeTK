@@ -120,10 +120,48 @@ AddSpatialObjects(const char* dirname, std::vector<std::string> suffix)
 vtkMRMLSpatialObjectsNode*
 vtkSlicerSpatialObjectsLogic::AddSpatialObject(const char* filename)
 {
-  vtkDebugMacro("Adding spatial objects from filename " << filename);
+  vtkDebugMacro("Adding spatial objects from filename ");
 
   vtkNew<vtkMRMLSpatialObjectsNode> spatialObjectsNode;
-  vtkNew<vtkMRMLSpatialObjectsStorageNode> storageNode;
+  vtkMRMLSpatialObjectsStorageNode* storageNode = 0;
+  if (filename)
+    {
+    storageNode = vtkMRMLSpatialObjectsStorageNode::New();
+    storageNode->SetFileName(filename);
+
+    if(storageNode->ReadData(spatialObjectsNode.GetPointer()) != 0)
+      {
+      const itksys_stl::string fname(filename);
+      itksys_stl::string name =
+        itksys::SystemTools::GetFilenameWithoutExtension(fname);
+      std::string uname(
+        this->GetMRMLScene()->GetUniqueNameByString(name.c_str()));
+      spatialObjectsNode->SetName(uname.c_str());
+      }
+    }
+
+  this->GetMRMLScene()->SaveStateForUndo();
+  if (storageNode)
+    {
+    this->GetMRMLScene()->AddNode(storageNode);
+    storageNode->Delete();
+    }
+  this->GetMRMLScene()->AddNode(spatialObjectsNode.GetPointer());
+  this->AddDisplayNodes(spatialObjectsNode.GetPointer());
+  this->Modified();
+
+  return spatialObjectsNode.GetPointer();
+}
+
+//------------------------------------------------------------------------------
+void vtkSlicerSpatialObjectsLogic::
+AddDisplayNodes(vtkMRMLSpatialObjectsNode* spatialObjectsNode)
+{
+  if (!spatialObjectsNode)
+    {
+    return;
+    }
+
   vtkNew<vtkMRMLSpatialObjectsLineDisplayNode> displayLineNode;
   vtkNew<vtkMRMLSpatialObjectsTubeDisplayNode> displayTubeNode;
   vtkNew<vtkMRMLSpatialObjectsGlyphDisplayNode> displayGlyphNode;
@@ -134,66 +172,36 @@ vtkSlicerSpatialObjectsLogic::AddSpatialObject(const char* filename)
   glyphProperties->SetGlyphGeometry(
     vtkMRMLSpatialObjectsDisplayPropertiesNode::Lines);
 
-  storageNode->SetFileName(filename);
-  if(storageNode->ReadData(spatialObjectsNode.GetPointer()) != 0)
-    {
-    const itksys_stl::string fname(filename);
-    itksys_stl::string name =
-      itksys::SystemTools::GetFilenameWithoutExtension(fname);
-    std::string uname(
-      this->GetMRMLScene()->GetUniqueNameByString(name.c_str()));
-    spatialObjectsNode->SetName(uname.c_str());
+  displayLineNode->SetVisibility(1);
+  displayTubeNode->SetVisibility(0);
+  displayGlyphNode->SetVisibility(0);
 
-    spatialObjectsNode->SetScene(this->GetMRMLScene());
-    storageNode->SetScene(this->GetMRMLScene());
-    displayLineNode->SetScene(this->GetMRMLScene());
-    displayTubeNode->SetScene(this->GetMRMLScene());
-    displayGlyphNode->SetScene(this->GetMRMLScene());
+  this->GetMRMLScene()->SaveStateForUndo();
+  this->GetMRMLScene()->AddNode(lineProperties.GetPointer());
+  this->GetMRMLScene()->AddNode(tubeProperties.GetPointer());
+  this->GetMRMLScene()->AddNode(glyphProperties.GetPointer());
 
-    displayLineNode->SetVisibility(1);
-    displayTubeNode->SetVisibility(0);
-    displayGlyphNode->SetVisibility(0);
+  displayLineNode->
+    SetAndObserveSpatialObjectsDisplayPropertiesNodeID(
+      lineProperties->GetID());
+  displayTubeNode->
+    SetAndObserveSpatialObjectsDisplayPropertiesNodeID(
+      tubeProperties->GetID());
+  displayGlyphNode->
+    SetAndObserveSpatialObjectsDisplayPropertiesNodeID(
+      glyphProperties->GetID());
 
-    this->GetMRMLScene()->SaveStateForUndo();
-    this->GetMRMLScene()->AddNode(lineProperties.GetPointer());
-    this->GetMRMLScene()->AddNode(tubeProperties.GetPointer());
-    this->GetMRMLScene()->AddNode(glyphProperties.GetPointer());
+  this->GetMRMLScene()->AddNode(displayLineNode.GetPointer());
+  this->GetMRMLScene()->AddNode(displayTubeNode.GetPointer());
+  this->GetMRMLScene()->AddNode(displayGlyphNode.GetPointer());
 
-    displayLineNode->
-      SetAndObserveSpatialObjectsDisplayPropertiesNodeID(
-        lineProperties->GetID());
-    displayTubeNode->
-      SetAndObserveSpatialObjectsDisplayPropertiesNodeID(
-        tubeProperties->GetID());
-    displayGlyphNode->
-      SetAndObserveSpatialObjectsDisplayPropertiesNodeID(
-        glyphProperties->GetID());
+  displayLineNode->SetAndObserveColorNodeID("vtkMRMLColorTableNodeRainbow");
+  displayTubeNode->SetAndObserveColorNodeID("vtkMRMLColorTableNodeRainbow");
+  displayGlyphNode->SetAndObserveColorNodeID("vtkMRMLColorTableNodeRainbow");
 
-    this->GetMRMLScene()->AddNode(storageNode.GetPointer());
-    this->GetMRMLScene()->AddNode(displayLineNode.GetPointer());
-    this->GetMRMLScene()->AddNode(displayTubeNode.GetPointer());
-    this->GetMRMLScene()->AddNode(displayGlyphNode.GetPointer());
-
-    spatialObjectsNode->SetAndObserveStorageNodeID(storageNode->GetID());
-    displayLineNode->SetAndObserveColorNodeID("vtkMRMLColorTableNodeRainbow");
-    displayTubeNode->SetAndObserveColorNodeID("vtkMRMLColorTableNodeRainbow");
-    displayGlyphNode->SetAndObserveColorNodeID("vtkMRMLColorTableNodeRainbow");
-
-    spatialObjectsNode->SetAndObserveDisplayNodeID(displayLineNode->GetID());
-    spatialObjectsNode->AddAndObserveDisplayNodeID(displayTubeNode->GetID());
-    spatialObjectsNode->AddAndObserveDisplayNodeID(displayGlyphNode->GetID());
-
-    this->GetMRMLScene()->AddNode(spatialObjectsNode.GetPointer());
-    this->Modified();
-    }
-  else
-    {
-    vtkErrorMacro("Couldn't read file, returning null SpatialObjectsNode: "
-                  << filename);
-    return 0;
-    }
-
-  return spatialObjectsNode.GetPointer();
+  spatialObjectsNode->SetAndObserveDisplayNodeID(displayLineNode->GetID());
+  spatialObjectsNode->AddAndObserveDisplayNodeID(displayTubeNode->GetID());
+  spatialObjectsNode->AddAndObserveDisplayNodeID(displayGlyphNode->GetID());
 }
 
 //------------------------------------------------------------------------------
@@ -225,6 +233,17 @@ SaveSpatialObject(const char* filename,
   storageNode->SetFileName(filename);
 
   return storageNode->WriteData(spatialObjectsNode);
+}
+
+//------------------------------------------------------------------------------
+void vtkSlicerSpatialObjectsLogic
+::CopySpatialObject(vtkMRMLSpatialObjectsNode* from,
+                    vtkMRMLSpatialObjectsNode* to)
+{
+  if (from && to)
+    {
+    to->SetSpatialObject(from->GetSpatialObject());
+    }
 }
 
 //------------------------------------------------------------------------------
