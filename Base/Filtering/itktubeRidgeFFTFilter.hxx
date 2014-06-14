@@ -133,7 +133,7 @@ RidgeFFTFilter< TInputImage >
     ImageDimension );
   std::vector< ImageRegionIterator< OutputImageType > > iterDdx(
     ImageDimension * ImageDimension );
-  int count = 0;
+  unsigned int count = 0;
   for( unsigned int i=0; i<ImageDimension; ++i )
     {
     iterDx[i] = ImageRegionIterator< OutputImageType >( dx[i],
@@ -156,7 +156,7 @@ RidgeFFTFilter< TInputImage >
   vnl_vector<double> HEVal( ImageDimension );
   while( !iterRidge.IsAtEnd() )
     {
-    unsigned int count = 0;
+    count = 0;
     for( unsigned int i=0; i<ImageDimension; ++i )
       {
       D[i] = iterDx[i].Get();

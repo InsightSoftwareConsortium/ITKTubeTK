@@ -564,14 +564,14 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
     VectorType ldaBasisValues;
     ::tube::ComputeEigen<double>( H, ldaBasisMatrix, ldaBasisValues,
       true, false );
-    for( int f = m_BasisValues.size()-1; f >= m_NumberOfLDABasisToUseAsFeatures;
-      --f )
+    for( int f = m_BasisValues.size()-1;
+      f >= (int)m_NumberOfLDABasisToUseAsFeatures; --f )
       {
       m_BasisValues[f] = m_BasisValues[ f - m_NumberOfLDABasisToUseAsFeatures ];
       m_BasisMatrix.set_column( f, m_BasisMatrix.get_column( f -
         m_NumberOfLDABasisToUseAsFeatures ) );
       }
-    for( int f = 0; f < m_NumberOfLDABasisToUseAsFeatures; ++f )
+    for( unsigned int f = 0; f < m_NumberOfLDABasisToUseAsFeatures; ++f )
       {
       m_BasisValues[f] = ldaBasisValues[ f ];
       m_BasisMatrix.set_column( f, ldaBasisMatrix.get_column( f  ) );
