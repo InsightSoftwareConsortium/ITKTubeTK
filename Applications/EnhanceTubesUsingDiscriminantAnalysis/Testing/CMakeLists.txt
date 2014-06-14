@@ -44,11 +44,11 @@ set( TEXTCOMPARE_EXE
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
     --tubeId 255
-    --backgroundId 0
-    --unknownId 10
-    --tubeScales 0.3,1.5
+    --backgroundId 127
+    --unknownId 0
+    --tubeScales 0.3,0.6,1.2,1.8
     --saveDiscriminantInfo ${TEMP}/${MODULE_NAME}Test1.mrs
-    --labelmap MIDAS{im0001.vk.crop.mha.md5}
+    --labelmap MIDAS{im0001.vk.mask.crop.mha.md5}
     MIDAS{im0001.crop.contrast.mha.md5}
     ${TEMP}/${MODULE_NAME}Test1_Output.mha )
 

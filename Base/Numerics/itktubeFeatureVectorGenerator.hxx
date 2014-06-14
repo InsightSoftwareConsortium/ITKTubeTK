@@ -93,12 +93,10 @@ void
 FeatureVectorGenerator< TImage >
 ::UpdateWhitenFeatureImageStats( void )
 {
-  const unsigned int numFeatures = this->GetNumberOfFeatures();
+  const unsigned int numFeatures = m_InputImageList.size();
 
   m_WhitenFeatureImageMean.resize( numFeatures );
   m_WhitenFeatureImageStdDev.resize( numFeatures );
-  ValueListType imVal;
-  imVal.resize( numFeatures );
   ValueListType delta;
   delta.resize( numFeatures );
   ValueListType imMean;
@@ -109,7 +107,6 @@ FeatureVectorGenerator< TImage >
     {
     m_WhitenFeatureImageMean[i] = 0;
     m_WhitenFeatureImageStdDev[i] = 1;
-    imVal[i] = 0;
     delta[i] = 0;
     imMean[i] = 0;
     imStdDev[i] = 0;
@@ -122,16 +119,17 @@ FeatureVectorGenerator< TImage >
     m_InputImageList[0]->GetLargestPossibleRegion() );
 
   IndexType indx;
+  double imVal;
   while( !itIm.IsAtEnd() )
     {
     indx = itIm.GetIndex();
-    imVal = this->GetFeatureVector( indx );
     ++imCount;
     for( unsigned int i = 0; i < numFeatures; i++ )
       {
-      delta[i] = imVal[i] - imMean[i];
+      imVal = m_InputImageList[i]->GetPixel( indx );
+      delta[i] = imVal - imMean[i];
       imMean[i] += delta[i] / imCount;
-      imStdDev[i] += delta[i] * ( imVal[i] - imMean[i] );
+      imStdDev[i] += delta[i] * ( imVal - imMean[i] );
       }
     ++itIm;
     }

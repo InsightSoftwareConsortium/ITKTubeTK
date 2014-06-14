@@ -62,7 +62,6 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
             COMMAND ${PROJ_EXE}
                --useNumberOfBasis 2
                --objectId 0,255
-               --usePCA
                MIDAS{ES0015_Large.mha.md5},MIDAS{ES0015_Large_Blur1.mha.md5},MIDAS{ES0015_Large_Blur2.mha.md5}
                --labelmap MIDAS{GDS0015_Large.mha.md5}
                ${TEMP}/${MODULE_NAME}Test2 )

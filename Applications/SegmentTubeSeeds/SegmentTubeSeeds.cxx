@@ -106,7 +106,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Stop( "LoadData" );
 
-  if( labelMap.size() > 0 )
+  if( !labelMap.empty() )
     {
     timeCollector.Start( "LoadLabelMap" );
     typename LabelMapReaderType::Pointer  inMapReader =
@@ -120,30 +120,26 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "LoadLabelMap" );
     }
 
-  if( loadTubeSeedInfo.size() > 0 )
+  if( !loadTubeSeedInfo.empty() )
     {
     timeCollector.Start( "LoadTubeSeed" );
 
-    std::cout << "Load tube seed info." << std::endl;
     RidgeSeedFilterIOType rsReader( rsGenerator );
     rsReader.Read( loadTubeSeedInfo.c_str() );
-    std::cout << "Load tube seed info." << std::endl;
 
     timeCollector.Stop( "LoadTubeSeed" );
 
-    if( saveTubeSeedInfo.size() > 0 )
+    if( !saveTubeSeedInfo.empty() )
       {
       timeCollector.Start( "SaveTubeSeedInfo" );
-      std::cout << "Save tube seed info." << std::endl;
       RidgeSeedFilterIOType rsWriter( rsGenerator );
       rsWriter.Write( saveTubeSeedInfo.c_str() );
-      std::cout << "Save tube seed info." << std::endl;
       timeCollector.Stop( "SaveTubeSeedInfo" );
       }
     }
   else
     {
-    if( labelMap.size() == 0 )
+    if( labelMap.empty() )
       {
       std::cerr << "Must specify a labelMap if training to find seeds"
                 << std::endl;
@@ -161,7 +157,6 @@ int DoIt( int argc, char * argv[] )
   rsGenerator->SetSeedTolerance( seedTolerance );
 
   timeCollector.Start( "SaveTubeSeedImage" );
-  std::cout << rsGenerator << std::endl;
 
   rsGenerator->ClassifyImages();
   WriteImage< LabelMapImageType >( rsGenerator->GetOutput(),
@@ -179,9 +174,7 @@ int DoIt( int argc, char * argv[] )
   if( saveTubeSeedInfo.size() > 0 )
     {
     timeCollector.Start( "SaveTubeSeedInfo" );
-    std::cout << "Save tube seed info." << std::endl;
     RidgeSeedFilterIOType rsWriter( rsGenerator );
-    std::cout << rsGenerator << std::endl;
     rsWriter.Write( saveTubeSeedInfo.c_str() );
     timeCollector.Stop( "SaveTubeSeedInfo" );
     }

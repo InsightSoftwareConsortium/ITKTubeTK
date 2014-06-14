@@ -67,7 +67,6 @@ ComputeEuclideanDistance(TPoint x, TPoint y);
 template< class T >
 void
 ComputeRidgeness( const vnl_matrix<T> & H, const vnl_vector<T> & D,
-  double maxCurvature, 
   double & ridgeness, double & roundness, double & curvature,
   double & linearity,
   vnl_matrix<T> & HEVect, vnl_vector<T> & HEVal );

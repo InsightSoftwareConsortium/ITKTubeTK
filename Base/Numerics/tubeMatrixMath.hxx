@@ -131,7 +131,6 @@ template< class T >
 void
 ComputeRidgeness( const vnl_matrix<T> & H,
   const vnl_vector<T> & D,
-  double maxExpectedCurvature, 
   double & ridgeness, double & roundness, double & curvature,
   double & levelness,
   vnl_matrix<T> & HEVect, vnl_vector<T> & HEVal )
@@ -193,8 +192,7 @@ ComputeRidgeness( const vnl_matrix<T> & H,
     else
       {
       roundness =
-        vnl_math_abs( 1 - ( ( HEVal[ ImageDimension-1 ] *
-          HEVal[ ImageDimension-1] ) / avgv ) );
+        ridgeness * vcl_sqrt( avgv ) * 50;
       }
     }
 
@@ -202,8 +200,8 @@ ComputeRidgeness( const vnl_matrix<T> & H,
   curvature = 0;
   if( avgv > 0 )
     {
-    curvature = ridge * vcl_sqrt( avgv );
-    curvature /= maxExpectedCurvature;
+    // Multiplied by 50 assuming the image is from 0 to 1;
+    curvature = ridge * vcl_sqrt( avgv ) * 50;
     }
 
   // levelness is (v1^2 + v2^2) / (v1^2 + v2^2 + v3^2) = 1 for a flat ridge

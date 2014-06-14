@@ -174,8 +174,8 @@ Read( const char * _headerName )
   m_RidgeSeedFilter->SetWhitenMeans( seedReader.GetWhitenMeans() );
   m_RidgeSeedFilter->SetWhitenStdDevs( seedReader.GetWhitenStdDevs() );
 
-  PDFSegmenterIO< TImage, 3, TLabelMap > pdfReader(
-    m_RidgeSeedFilter->GetPDFSegmenter() );
+  PDFSegmenterIO< Image< float, TImage::ImageDimension >, 4, TLabelMap >
+    pdfReader( m_RidgeSeedFilter->GetPDFSegmenter() );
   std::string pdfFileName = seedReader.GetPDFFileName();
   if( !pdfReader.Read( pdfFileName.c_str() ) )
     {
@@ -215,13 +215,13 @@ Write( const char * _headerName )
 
   seedWriter.SetPDFFileName(  pdfName.c_str() );
 
-  PDFSegmenterIO< TImage, 3, TLabelMap > pdfWriter(
-    m_RidgeSeedFilter->GetPDFSegmenter() );
+  PDFSegmenterIO< Image< float, TImage::ImageDimension >, 4, TLabelMap >
+    pdfWriter( m_RidgeSeedFilter->GetPDFSegmenter() );
 
-  if( !seedWriter.Write( _headerName ) ||
-    !pdfWriter.Write( pdfName.c_str() ) )
+  bool result = seedWriter.Write( _headerName );
+  if( !pdfWriter.Write( pdfName.c_str() ) )
     {
-    return false;
+    result = false;
     }
 
   return true;

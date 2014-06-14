@@ -141,27 +141,26 @@ RidgeFFTFeatureVectorGenerator< TImage >
     {
     iterF[f] = IterType( m_FeatureImageList[f], region );
     }
-  unsigned int fiRidge = 1;
   unsigned int foScale = numFeatures - 6;
   unsigned int foFeat = numFeatures - 5;
   while( !iterF[0].IsAtEnd() )
     {
     unsigned int extremeS = 0;
-    double extremeR = 0;
     for( unsigned int s=0; s<m_Scales.size(); s++ )
       {
       feat = s * 5;
-      if( s == 0 || iterF[ feat + fiRidge ].Get() > extremeR )
+      for( unsigned int f=0; f<5; ++f )
         {
-        extremeS = s;
-        extremeR = iterF[ feat + fiRidge ].Get();
+        if( s == 0 || iterF[ feat + f ].Get() > iterF[ foFeat + f ].Get() )
+          {
+          iterF[ foFeat + f ].Set( iterF[ feat + f ].Get() );
+          if( f == 0 )
+            {
+            extremeS = s;
+            }
+          }
         }
-      }
-    feat = extremeS * 5;
-    iterF[ foScale ].Set( m_Scales[extremeS] );
-    for( unsigned int f=0; f<5; ++f )
-      {
-      iterF[ foFeat + f ].Set( iterF[ feat + f ].Get() );
+      iterF[ foScale ].Set( m_Scales[ extremeS ] );
       }
     for( unsigned int f=0; f<numFeatures; ++f )
       {

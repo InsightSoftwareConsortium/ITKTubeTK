@@ -47,9 +47,6 @@ template< class TImage, class TLabelMap >
 BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::BasisFeatureVectorGenerator( void )
 {
-  m_PerformLDA = true;
-  m_PerformPCA = false;
-
   m_LabelMap = NULL;
 
   m_ObjectIdList.clear();
@@ -60,7 +57,10 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
   m_GlobalCovariance = 0;
 
   m_NumberOfBasis = 0;
+
   m_NumberOfBasisToUseAsFeatures = 0;
+  m_NumberOfLDABasisToUseAsFeatures = 0;
+
   m_InputFeatureVectorGenerator = NULL;
 
   m_BasisValues.set_size( 0 );
@@ -96,6 +96,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 {
   m_ObjectIdList.clear();
   m_ObjectIdList.push_back( objectId );
+  m_NumberOfLDABasisToUseAsFeatures = 1;
 }
 
 template< class TImage, class TLabelMap >
@@ -104,6 +105,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::AddObjectId( ObjectIdType objectId )
 {
   m_ObjectIdList.push_back( objectId );
+  ++m_NumberOfLDABasisToUseAsFeatures;
 }
 
 template< class TImage, class TLabelMap >
@@ -237,7 +239,8 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
     }
   else
     {
-    throw;
+    std::cerr << "Basis does not exist." << std::endl;
+    return m_BasisMatrix.get_column( 0 );
     }
 }
 
@@ -252,7 +255,8 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
     }
   else
     {
-    throw;
+    std::cerr << "Basis does not exist." << std::endl;
+    return m_BasisValues[basisNum];
     }
 }
 
@@ -521,7 +525,11 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 
   timeCollector.Start( "GenerateBasis" );
 
-  if( m_PerformLDA )
+  // PCA
+  ::tube::ComputeEigen<double>( m_GlobalCovariance,
+    m_BasisMatrix, m_BasisValues, true, false );
+
+  if( m_NumberOfLDABasisToUseAsFeatures > 0 )
     {
     MatrixType covarianceOfMeans( numInputFeatures, numInputFeatures );
     covarianceOfMeans.fill( 0 );
@@ -546,51 +554,28 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
       for( unsigned int j = 0; j < numInputFeatures; j++ )
         {
         covarianceOfMeans[i][j] /= numClasses;
-        meanCovariance[i][j] /= numClasses;
         }
       }
 
     MatrixType H;
     H = covarianceOfMeans * vnl_matrix_inverse<double>( meanCovariance );
 
-    // true = re-order by abs(eval) - zeros will be at end
-    ::tube::ComputeEigen<double>( H, m_BasisMatrix, m_BasisValues,
+    MatrixType ldaBasisMatrix;
+    VectorType ldaBasisValues;
+    ::tube::ComputeEigen<double>( H, ldaBasisMatrix, ldaBasisValues,
       true, false );
-    }
-  else if( m_PerformPCA )
-    {
-    // true = re-order by abs(eval) - zeros will be at end
-    ::tube::ComputeEigen<double>( m_GlobalCovariance,
-      m_BasisMatrix, m_BasisValues, true, false );
-    }
-  else
-    {
-    MatrixType covarianceOfMeans( numInputFeatures, numInputFeatures );
-    covarianceOfMeans.fill( 0 );
-    for( unsigned int c = 0; c < numClasses; c++ )
+    for( int f = m_BasisValues.size()-1; f >= m_NumberOfLDABasisToUseAsFeatures;
+      --f )
       {
-      for( unsigned int i = 0; i < numInputFeatures; i++ )
-        {
-        for( unsigned int j = 0; j < numInputFeatures; j++ )
-          {
-          covarianceOfMeans[i][j] +=
-            ( m_ObjectMeanList[c][i] - m_GlobalMean[i] )
-            * ( m_ObjectMeanList[c][j] - m_GlobalMean[j] );
-          }
-        }
+      m_BasisValues[f] = m_BasisValues[ f - m_NumberOfLDABasisToUseAsFeatures ];
+      m_BasisMatrix.set_column( f, m_BasisMatrix.get_column( f -
+        m_NumberOfLDABasisToUseAsFeatures ) );
       }
-
-    for( unsigned int i = 0; i < numInputFeatures; i++ )
+    for( int f = 0; f < m_NumberOfLDABasisToUseAsFeatures; ++f )
       {
-      for( unsigned int j = 0; j < numInputFeatures; j++ )
-        {
-        covarianceOfMeans[i][j] /= numClasses;
-        }
+      m_BasisValues[f] = ldaBasisValues[ f ];
+      m_BasisMatrix.set_column( f, ldaBasisMatrix.get_column( f  ) );
       }
-
-    // true = re-order by abs(eval) - zeros will be at end
-    ::tube::ComputeEigen<double>( covarianceOfMeans, m_BasisMatrix,
-      m_BasisValues, true, false );
     }
 
   m_NumberOfBasisToUseAsFeatures = m_BasisValues.size();
@@ -606,6 +591,14 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::SetNumberOfBasisToUseAsFeatures( unsigned int numBasisUsed )
 {
   m_NumberOfBasisToUseAsFeatures = numBasisUsed;
+}
+
+template< class TImage, class TLabelMap >
+void
+BasisFeatureVectorGenerator< TImage, TLabelMap >
+::SetNumberOfLDABasisToUseAsFeatures( unsigned int numBasisUsed )
+{
+  m_NumberOfLDABasisToUseAsFeatures = numBasisUsed;
 }
 
 template< class TImage, class TLabelMap >
@@ -669,23 +662,6 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
-
-  if( m_PerformLDA )
-    {
-    os << indent << "PerformLDA = true" << std::endl;
-    }
-  else
-    {
-    os << indent << "PerformLDA = false" << std::endl;
-    }
-  if( m_PerformPCA )
-    {
-    os << indent << "PerformPCA = true" << std::endl;
-    }
-  else
-    {
-    os << indent << "PerformPCA = false" << std::endl;
-    }
 
   if( m_LabelMap )
     {

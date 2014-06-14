@@ -540,7 +540,7 @@ Write( const char * _headName )
     FileName( _headName );
     }
 
-  MET_SetFileSuffix( m_FileName, "mrs" );
+  MET_SetFileSuffix( m_FileName, ".mrs" );
 
   METAIO_STREAM::ofstream * tmpWriteStream = new METAIO_STREAM::ofstream;
 

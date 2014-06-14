@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeMetaRidgeSeed.h"
 #include "itktubeRidgeSeedFilter.h"
+#include "itktubeRidgeSeedFilterIO.h"
 #include "tubeStringUtilities.h"
 
 #include "EnhanceTubesUsingDiscriminantAnalysisCLP.h"
@@ -53,7 +53,8 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< unsigned short, TDimension >  LabelmapType;
   typedef itk::ImageFileReader< LabelmapType >      LabelmapReaderType;
 
-  typedef itk::tube::MetaRidgeSeed                  TubeParametersIOType;
+  typedef itk::tube::RidgeSeedFilterIO< InputImageType, LabelmapType >
+                                                    RidgeSeedFilterIOType;
 
   typedef itk::tube::RidgeSeedFilter< InputImageType, LabelmapType >
                                                     RidgeSeedFilterType;
@@ -105,15 +106,8 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start( "LoadBasis" );
 
-    TubeParametersIOType tubeParametersIO( loadDiscriminantInfo.c_str() );
-    tubeParametersIO.Read();
-
-    tubeFilter->SetScales( tubeParametersIO.GetRidgeSeedScales() );
-    tubeFilter->SetWhitenMeans( tubeParametersIO.GetWhitenMeans() );
-    tubeFilter->SetWhitenStdDevs( tubeParametersIO.GetWhitenStdDevs() );
-
-    tubeFilter->SetBasisValues( tubeParametersIO.GetLDAValues() );
-    tubeFilter->SetBasisMatrix( tubeParametersIO.GetLDAMatrix() );
+    RidgeSeedFilterIOType ridgeSeedFilterIO;
+    ridgeSeedFilterIO.SetRidgeSeedFilter( tubeFilter );
 
     timeCollector.Stop( "LoadBasis" );
     }
@@ -122,6 +116,9 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Start( "Update" );
 
     tubeFilter->SetScales( tubeScales );
+    tubeFilter->SetSkeletonize( false );
+    tubeFilter->GetPDFSegmenter()->SetProbabilityImageSmoothingStandardDeviation(
+     tubeScales[0] / 2 );
 
     tubeFilter->Update();
 
@@ -133,14 +130,9 @@ int DoIt( int argc, char * argv[] )
   if( !saveDiscriminantInfo.empty() )
     {
     timeCollector.Start( "SaveBasis" );
-    TubeParametersIOType tubeParametersIO(
-      tubeFilter->GetScales(),
-      tubeFilter->GetBasisValues(),
-      tubeFilter->GetBasisMatrix(),
-      tubeFilter->GetWhitenMeans(),
-      tubeFilter->GetWhitenStdDevs(),
-      saveDiscriminantInfo+".pdf" );
-    tubeParametersIO.Write( saveDiscriminantInfo.c_str() );
+    RidgeSeedFilterIOType ridgeSeedFilterIO;
+    ridgeSeedFilterIO.SetRidgeSeedFilter( tubeFilter );
+    ridgeSeedFilterIO.Write( saveDiscriminantInfo.c_str() );
     timeCollector.Stop( "SaveBasis" );
     }
 
@@ -149,7 +141,7 @@ int DoIt( int argc, char * argv[] )
   outputWriter->SetFileName( outputVolume.c_str() );
   outputWriter->SetUseCompression( true );
   outputWriter->SetInput( tubeFilter->
-    GetClassProbabilityForInput( 0 ) );
+    GetClassProbabilityDifferenceForInput( 0 ) );
   outputWriter->Update();
 
   timeCollector.Report();

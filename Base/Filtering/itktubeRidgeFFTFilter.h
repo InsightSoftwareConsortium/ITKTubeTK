@@ -54,9 +54,6 @@ public:
   itkSetMacro( Scale, double );
   itkGetMacro( Scale, double );
 
-  itkSetMacro( CurvatureExpectedMax, double );
-  itkGetMacro( CurvatureExpectedMax, double );
-
   itkGetConstReferenceMacro( Intensity, typename OutputImageType::Pointer );
   itkGetConstReferenceMacro( Ridgeness, typename OutputImageType::Pointer );
   itkGetConstReferenceMacro( Curvature, typename OutputImageType::Pointer );
@@ -83,8 +80,6 @@ private:
   typename OutputImageType::Pointer                     m_Roundness;
 
   double                                                m_Scale;
-
-  double                                                m_CurvatureExpectedMax;
 
   const InputImageType *                                m_LastInputImage;
 };

@@ -41,11 +41,11 @@ set( TEXTCOMPARE_EXE
 # Test1
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
-    -m MIDAS{im0001.vk.mask.crop.mha.md5}
     -b 127 -v 255
     -s 2
     -d ${TEMP}/${MODULE_NAME}Test1
     -o ${TEMP}/${MODULE_NAME}Test1
+    MIDAS{im0001.vk.mask.crop.mha.md5}
     MIDAS{im0001.crop.contrast.mha.md5}
     ${TEMP}/${MODULE_NAME}Test1 )
 

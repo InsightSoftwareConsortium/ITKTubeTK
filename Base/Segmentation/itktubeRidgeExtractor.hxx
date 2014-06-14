@@ -115,18 +115,18 @@ RidgeExtractor<TInputImage>
   m_ExtractBoundMin.Fill( 0 );
   m_ExtractBoundMax.Fill( 0 );
 
-  m_CurvatureExpectedMax = 0.025;
+  m_CurvatureExpectedMax = 1.0;
 
   m_ThreshT = 0.75;
   m_ThreshX = 3.0;
-  m_ThreshRidgeness = 0.9;    // near 1 = harder
-  m_ThreshRidgenessStart = 0.85;
-  m_ThreshRoundness = 0.9;    // near 1 = harder
-  m_ThreshRoundnessStart = 0.85;
-  m_ThreshCurvature = 0.9;
-  m_ThreshCurvatureStart = 0.85;
-  m_ThreshLevelness = 0.9;
-  m_ThreshLevelnessStart = 0.85;
+  m_ThreshRidgeness = 0.97;    // near 1 = harder
+  m_ThreshRidgenessStart = 0.95;
+  m_ThreshRoundness = 0.83;    // near 1 = harder
+  m_ThreshRoundnessStart = 0.8;
+  m_ThreshCurvature = 0.7;
+  m_ThreshCurvatureStart = 0.65;
+  m_ThreshLevelness = 0.95;
+  m_ThreshLevelnessStart = 0.90;
   m_RecoveryMax = 4;
 
   m_SplineValueFunc = new RidgeExtractorSplineValue<TInputImage>( this );
@@ -422,7 +422,7 @@ RidgeExtractor<TInputImage>
     }
 
   double ridgeness = 0;
-  ::tube::ComputeRidgeness<double>( m_XH, m_XD, m_CurvatureExpectedMax,
+  ::tube::ComputeRidgeness<double>( m_XH, m_XD,
     ridgeness, roundness, curvature, levelness, m_XHEVect, m_XHEVal );
 
   return ridgeness;
@@ -674,7 +674,7 @@ RidgeExtractor<TInputImage>
       pnt.SetPosition( tubeX );
       if( m_XHEVal[0] != 0 )
         {
-        pnt.SetRidgeness( roundness );
+        pnt.SetRidgeness( ridgeness );
         }
       else
         {
