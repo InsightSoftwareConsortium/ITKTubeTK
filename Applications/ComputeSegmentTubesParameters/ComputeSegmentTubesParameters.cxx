@@ -292,8 +292,6 @@ int DoIt( int argc, char * argv[] )
 
   typename OutputImageType::RegionType region =
     inImage->GetLargestPossibleRegion();
-  typename OutputImageType::SpacingType spacing =
-    inImage->GetSpacing();
 
   typedef itk::RescaleIntensityImageFilter< InputImageType,
     OutputImageType > RescaleFilterType;

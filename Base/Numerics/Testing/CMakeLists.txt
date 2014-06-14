@@ -169,6 +169,7 @@ Midas3FunctionAddTest( NAME itktubeJointHistogramImageFunctionTest01
   COMMAND ${BASE_NUMERICS_TESTS}
     --compare MIDAS{itkJointHistogramImageFunctionTest01.mha.md5}
       ${TEMP}/itkJointHistogramImageFunctionTest01.mha
+    --compareNumberOfPixelsTolerance 7
     itktubeJointHistogramImageFunctionTest
       MIDAS{GDS0015_1_match_Subs.mha.md5}
       MIDAS{ES0015_1_Subs.mha.md5}
@@ -182,6 +183,7 @@ Midas3FunctionAddTest( NAME itktubeJointHistogramImageFunctionTest02
   COMMAND ${BASE_NUMERICS_TESTS}
     --compare MIDAS{itkJointHistogramImageFunctionTest02.mha.md5}
       ${TEMP}/itkJointHistogramImageFunctionTest02.mha
+    --compareNumberOfPixelsTolerance 7
     itktubeJointHistogramImageFunctionTest
       MIDAS{GDS0015_1_match_Subs.mha.md5}
       MIDAS{ES0015_1_Subs.mha.md5}
