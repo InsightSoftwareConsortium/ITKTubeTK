@@ -105,6 +105,7 @@ Midas3FunctionAddTest( NAME itktubeFFTGaussianDerivativeIFFTFilterTest1
   COMMAND ${BASE_FILTERING_TESTS}
     --compare MIDAS{itkTubeFFTGaussianDerivativeIFFTFilterTest1.mha.md5}
       ${TEMP}/itkTubeFFTGaussianDerivativeIFFTFilterTest1.mha
+    --compareIntensityTolerance 0.001
     itktubeFFTGaussianDerivativeIFFTFilterTest
       0 0 0.1 0.1
       MIDAS{im0001.mha.md5}
@@ -228,21 +229,21 @@ Midas3FunctionAddTest( NAME itktubeTubeEnhancingDiffusion2DImageFilterRetina10Te
 
 Midas3FunctionAddTest( NAME itktubeAnisotropicHybridDiffusionImageFilterTest
  COMMAND ${BASE_FILTERING_TESTS}
- itktubeAnisotropicHybridDiffusionImageFilterTest
- MIDAS{CroppedWholeLungCTScan.mhd.md5}
- ${TEMP}/CroppedWholeLungCTScanHybridDiffused.mha
- MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5} )
+   itktubeAnisotropicHybridDiffusionImageFilterTest
+     MIDAS{CroppedWholeLungCTScan.mhd.md5}
+     ${TEMP}/CroppedWholeLungCTScanHybridDiffused.mha
+     MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5} )
 
 Midas3FunctionAddTest( NAME itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest
  COMMAND ${BASE_FILTERING_TESTS}
- itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest
- MIDAS{CroppedWholeLungCTScan.mhd.md5}
- ${TEMP}/CroppedWholeLungCTCoherenceEnhanced.mha
- MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5} )
+   itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest
+     MIDAS{CroppedWholeLungCTScan.mhd.md5}
+     ${TEMP}/CroppedWholeLungCTCoherenceEnhanced.mha
+     MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5} )
 
 Midas3FunctionAddTest( NAME itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest
  COMMAND ${BASE_FILTERING_TESTS}
- itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest
- MIDAS{CroppedWholeLungCTScan.mhd.md5}
- ${TEMP}/CroppedWholeLungCTEdgeEnhanced.mha
- MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5} )
+   itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest
+     MIDAS{CroppedWholeLungCTScan.mhd.md5}
+     ${TEMP}/CroppedWholeLungCTEdgeEnhanced.mha
+     MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5} )
