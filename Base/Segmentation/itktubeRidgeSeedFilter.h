@@ -91,7 +91,7 @@ public:
   typedef typename SeedFeatureGeneratorType::FeatureImageType
     BasisImageType;
 
-  typedef PDFSegmenter< OutputImageType, 3, LabelMapType >
+  typedef PDFSegmenter< OutputImageType, 4, LabelMapType >
     PDFSegmenterType;
   typedef typename  PDFSegmenterType::ProbabilityPixelType
     ProbabilityPixelType;

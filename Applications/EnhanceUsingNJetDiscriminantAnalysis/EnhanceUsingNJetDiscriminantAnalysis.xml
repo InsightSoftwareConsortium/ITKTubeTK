@@ -46,13 +46,6 @@
     <label>Basis Parameters</label>
     <description>Parameters that determine how the basis is generated.</description>
     <boolean>
-      <name>usePCA</name>
-      <description>Use PCA</description>
-      <label>Use pca</label>
-      <default>false</default>
-      <longflag>usePCA</longflag>
-    </boolean>
-    <boolean>
       <name>forceSymmetry</name>
       <description>Post-process the eigenvectors so that x/y directions are weighted equally.</description>
       <label>Force x/y symmetry</label>

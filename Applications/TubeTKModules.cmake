@@ -30,6 +30,7 @@ set( TubeTK_${proj}_MODULES
   ComputeImageStatisticsUsingMask
   ComputeSegmentTubesParameters
   ComputeTubeGraphProbability
+  ComputeTubeMeasures
   ComputeTubeProbability
   ConvertInnerOpticToPlus
   ConvertShrunkenSeedImageToList

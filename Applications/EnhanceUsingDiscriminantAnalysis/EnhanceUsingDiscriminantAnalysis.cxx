@@ -118,11 +118,6 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
-  if( usePCA )
-    {
-    basisGenerator->SetPerformPCA( true );
-    }
-
   if( loadBasisInfo.size() > 0 )
     {
     timeCollector.Start( "LoadBasis" );

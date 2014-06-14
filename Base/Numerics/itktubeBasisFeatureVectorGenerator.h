@@ -118,14 +118,10 @@ public:
 
   typename FeatureImageType::Pointer GetFeatureImage( unsigned int fNum ) const;
 
-  itkSetMacro( PerformLDA, bool );
-  itkGetMacro( PerformLDA, bool );
-  itkSetMacro( PerformPCA, bool );
-  itkGetMacro( PerformPCA, bool );
-
   virtual void GenerateBasis( void );
 
   void SetNumberOfBasisToUseAsFeatures( unsigned int numBasisUsed );
+  void SetNumberOfLDABasisToUseAsFeatures( unsigned int numBasisUsed );
 
   virtual unsigned int      GetNumberOfFeatures( void ) const;
 
@@ -159,11 +155,9 @@ private:
   VectorType                      m_GlobalMean;
   MatrixType                      m_GlobalCovariance;
 
-  bool                            m_PerformLDA;
-  bool                            m_PerformPCA;
-
   unsigned int                    m_NumberOfBasis;
   unsigned int                    m_NumberOfBasisToUseAsFeatures;
+  unsigned int                    m_NumberOfLDABasisToUseAsFeatures;
 
   MatrixType                      m_BasisMatrix;
   VectorType                      m_BasisValues;

@@ -38,8 +38,6 @@ RidgeFFTFilter< TInputImage >
 
   m_Scale = 1;
 
-  m_CurvatureExpectedMax = 0.005;
-
   m_LastInputImage = NULL;
 }
 
@@ -171,8 +169,8 @@ RidgeFFTFilter< TInputImage >
         ++count;
         }
       }
-    ::tube::ComputeRidgeness( H, D, m_CurvatureExpectedMax, ridgeness, roundness,
-      curvature, levelness, HEVect, HEVal );
+    ::tube::ComputeRidgeness( H, D, ridgeness, roundness, curvature, levelness,
+      HEVect, HEVal );
     iterRidge.Set( ridgeness );
     iterRound.Set( roundness );
     iterCurve.Set( curvature );

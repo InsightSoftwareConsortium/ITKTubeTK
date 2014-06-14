@@ -390,7 +390,7 @@ PDFSegmenter< TImage, N, TLabelMap >
       }
     for( unsigned int i = 0; i < N; i++ )
       {
-      if( v[i]<m_HistogramBinMin[i] )
+      if( v[i] < m_HistogramBinMin[i] )
         {
         m_HistogramBinMin[i] = v[i];
         }
@@ -419,8 +419,11 @@ PDFSegmenter< TImage, N, TLabelMap >
 
   for( unsigned int i = 0; i < N; i++ )
     {
-    m_HistogramBinSize[i] = ( double )m_HistogramNumberOfBin[i] /
-      ( histogramBinMax[i] - m_HistogramBinMin[i] );
+    m_HistogramBinSize[i] = ( histogramBinMax[i] - m_HistogramBinMin[i] ) /
+      ( double )( m_HistogramNumberOfBin[i] );
+      std::cout << m_HistogramBinMin[i] << " - " << histogramBinMax[i]
+      << " = " << m_HistogramBinSize[i] << " : " << m_HistogramNumberOfBin[i] 
+      << std::endl;
     }
 
   for( unsigned int i = 0; i < N; i++ )
@@ -497,7 +500,7 @@ PDFSegmenter< TImage, N, TLabelMap >
           {
           binV = inClassListIt.GetMeasurementVector()[i];
           binV = ( int )( ( binV - m_HistogramBinMin[i] )
-            * m_HistogramBinSize[i] + 0.5 );
+            / m_HistogramBinSize[i] + 0.5 );
           if( binV>m_HistogramNumberOfBin[i]-1 )
             {
             binV = m_HistogramNumberOfBin[i]-1;
@@ -526,7 +529,7 @@ PDFSegmenter< TImage, N, TLabelMap >
           count += static_cast<unsigned int>( inImHistogram[c][i][b] );
           if( count>=tailReject )
             {
-            clipMin[c][i] =  b / m_HistogramBinSize[i]
+            clipMin[c][i] =  b * m_HistogramBinSize[i]
               + m_HistogramBinMin[i];
             break;
             }
@@ -537,7 +540,7 @@ PDFSegmenter< TImage, N, TLabelMap >
           count += static_cast<unsigned int>( inImHistogram[c][i][b] );
           if( count>=tailReject )
             {
-            clipMax[c][i] =  b / m_HistogramBinSize[i]
+            clipMax[c][i] =  b * m_HistogramBinSize[i]
               + m_HistogramBinMin[i];
             break;
             }
@@ -589,7 +592,7 @@ PDFSegmenter< TImage, N, TLabelMap >
         if( binV >= clipMin[c][i] && binV <= clipMax[c][i] )
           {
           binV = ( int )( ( binV - m_HistogramBinMin[i] )
-            * m_HistogramBinSize[i] + 0.5 );
+            / m_HistogramBinSize[i] + 0.5 );
           if( binV<0 || binV>=m_HistogramNumberOfBin[i] )
             {
             valid = false;
@@ -622,9 +625,15 @@ PDFSegmenter< TImage, N, TLabelMap >
     {
     typedef itk::RecursiveGaussianImageFilter< HistogramImageType,
       HistogramImageType > HistogramBlurGenType;
+    typename HistogramImageType::SpacingType tempSpacing;
+    typename HistogramImageType::SpacingType oneSpacing;
+    oneSpacing.Fill( 1 );
     for( unsigned int c = 0; c < numClasses; c++ )
       {
       double inPTotal = 0;
+
+      tempSpacing = m_InClassHistogram[c]->GetSpacing();
+      m_InClassHistogram[c]->SetSpacing( oneSpacing );
 
       typename HistogramBlurGenType::Pointer inClassHistogramBlurGen =
         HistogramBlurGenType::New();
@@ -635,11 +644,12 @@ PDFSegmenter< TImage, N, TLabelMap >
         inClassHistogramBlurGen->SetOrder(
           HistogramBlurGenType::ZeroOrder );
         inClassHistogramBlurGen->SetSigma(
-          m_HistogramSmoothingStandardDeviation *
-          m_HistogramBinSize[ f ] );
+          m_HistogramSmoothingStandardDeviation );
         inClassHistogramBlurGen->Update();
         m_InClassHistogram[c] = inClassHistogramBlurGen->GetOutput();
         }
+
+      m_InClassHistogram[c]->SetSpacing( tempSpacing );
 
       itk::ImageRegionIterator<HistogramImageType> inClassHistogramIt(
         m_InClassHistogram[c],
@@ -818,7 +828,7 @@ PDFSegmenter< TImage, N, TLabelMap >
         {
         double binV = itInIm[i]->Get();
         binV = ( int )( ( binV - m_HistogramBinMin[i] )
-          * m_HistogramBinSize[i] + 0.5 );
+          / m_HistogramBinSize[i] + 0.5 );
         if( binV<0 || binV>m_HistogramNumberOfBin[i]-1 )
           {
           valid = false;

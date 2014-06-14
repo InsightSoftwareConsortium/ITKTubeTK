@@ -2,7 +2,7 @@
 <executable>
   <category>TubeTK</category>
   <title>Enhance Image Using Discriminant Analysis (TubeTK)</title>
-  <description>Given multiple, registered images and foreground and background masks, computes a multivariate LDA or PCA for separating the classes, and generates the LDA/PCA instances of the images.</description>
+  <description>Given multiple, registered images and foreground and background masks, computes a LDA (nClasses-1) + PCA space for separating the classes, and generates the LDA and PCA instances of the images.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <documentation-url/>
@@ -45,13 +45,6 @@
   <parameters advanced="true">
     <label>Basis Parameters</label>
     <description>Parameters that determine how the basis is generated.</description>
-    <boolean>
-      <name>usePCA</name>
-      <description>Use PCA</description>
-      <label>Use pca</label>
-      <default>false</default>
-      <longflag>usePCA</longflag>
-    </boolean>
     <integer>
       <name>useNumberOfBasis</name>
       <description>Maximum number of basis discriminants to compute (0=all).</description>

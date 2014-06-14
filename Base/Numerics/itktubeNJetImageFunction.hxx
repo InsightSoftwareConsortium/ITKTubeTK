@@ -70,8 +70,6 @@ NJetImageFunction<TInputImage>
   m_MostRecentRidgeLevelness = 0;
   m_MostRecentRidgeCurvature = 0;
   m_MostRecentRidgeTangent.Fill( 0);
-
-  m_CurvatureExpectedMax = 0.005;
 }
 
 template< class TInputImage >
@@ -1667,7 +1665,6 @@ NJetImageFunction<TInputImage>
   vnl_matrix<double> eVect;
   vnl_vector<double> eVal;
   ::tube::ComputeRidgeness<double>( h.GetVnlMatrix(), d.GetVnlVector(),
-    m_CurvatureExpectedMax,
     ridgeness, roundness, curvature, levelness,
     eVect, eVal );
 

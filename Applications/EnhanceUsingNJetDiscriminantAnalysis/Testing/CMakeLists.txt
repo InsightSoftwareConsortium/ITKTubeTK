@@ -66,7 +66,6 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
             COMMAND ${PROJ_EXE}
                --useNumberOfBasis 2
                --objectId 0,255
-               --usePCA
                --zeroScales 1
                --firstScales 3
                --secondScales 5
