@@ -224,7 +224,7 @@ Write( const char * _headerName )
     result = false;
     }
 
-  return true;
+  return result;
 }
 
 } // End namespace tube
