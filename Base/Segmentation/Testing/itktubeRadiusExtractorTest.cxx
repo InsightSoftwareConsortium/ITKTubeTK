@@ -82,24 +82,24 @@ int itktubeRadiusExtractorTest( int argc, char * argv[] )
     returnStatus = EXIT_FAILURE;
     }
 
-  radiusOp->SetRadius0( 2.0 );
-  if( radiusOp->GetRadius0() != 2.0 )
+  radiusOp->SetRadiusStart( 2.0 );
+  if( radiusOp->GetRadiusStart() != 2.0 )
     {
     tube::ErrorMessage( "Radius 0 != 2.0" );
     returnStatus = EXIT_FAILURE;
     }
 
-  radiusOp->SetThreshMedialness( 0.005 );
-  if( radiusOp->GetThreshMedialness() != 0.005 )
+  radiusOp->SetMinMedialness( 0.005 );
+  if( radiusOp->GetMinMedialness() != 0.005 )
     {
-    tube::ErrorMessage( "ThreshMedialness != 0.005" );
+    tube::ErrorMessage( "MinMedialness != 0.005" );
     returnStatus = EXIT_FAILURE;
     }
 
-  radiusOp->SetThreshMedialnessStart( 0.002 );
-  if( radiusOp->GetThreshMedialnessStart() != 0.002 )
+  radiusOp->SetMinMedialnessStart( 0.002 );
+  if( radiusOp->GetMinMedialnessStart() != 0.002 )
     {
-    tube::ErrorMessage( "ThreshMedialnessStart != 0.002" );
+    tube::ErrorMessage( "MinMedialnessStart != 0.002" );
     returnStatus = EXIT_FAILURE;
     }
 

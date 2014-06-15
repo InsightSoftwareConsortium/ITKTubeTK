@@ -115,19 +115,17 @@ RidgeExtractor<TInputImage>
   m_ExtractBoundMin.Fill( 0 );
   m_ExtractBoundMax.Fill( 0 );
 
-  m_CurvatureExpectedMax = 1.0;
-
-  m_ThreshT = 0.75;
-  m_ThreshX = 3.0;
-  m_ThreshRidgeness = 0.97;    // near 1 = harder
-  m_ThreshRidgenessStart = 0.95;
-  m_ThreshRoundness = 0.725;    // near 1 = harder
-  m_ThreshRoundnessStart = 0.7;
-  m_ThreshCurvature = 0.7;
-  m_ThreshCurvatureStart = 0.65;
-  m_ThreshLevelness = 0.95;
-  m_ThreshLevelnessStart = 0.90;
-  m_RecoveryMax = 4;
+  m_MaxTangentChange = 0.75;
+  m_MaxXChange = 3.0;
+  m_MinRidgeness = 0.97;    // near 1 = harder
+  m_MinRidgenessStart = 0.95;
+  m_MinRoundness = 0.5;    // near 1 = harder
+  m_MinRoundnessStart = 0.45;
+  m_MinCurvature = 0.7;
+  m_MinCurvatureStart = 0.65;
+  m_MinLevelness = 0.7;
+  m_MinLevelnessStart = 0.65;
+  m_MaxRecoveryAttempts = 4;
 
   m_SplineValueFunc = new RidgeExtractorSplineValue<TInputImage>( this );
   m_DataSpline = new ::tube::SplineND( ImageDimension, m_SplineValueFunc,
@@ -136,10 +134,10 @@ RidgeExtractor<TInputImage>
   m_DataSpline->SetClip( true );
 
   m_DataSpline->GetOptimizerND()->SetSearchForMin( false );
-  m_DataSpline->GetOptimizerND()->SetTolerance( 0.25 );
+  m_DataSpline->GetOptimizerND()->SetTolerance( 0.1 );
   m_DataSpline->GetOptimizerND()->SetMaxIterations( 200 );
   m_DataSpline->GetOptimizerND()->SetMaxLineSearches( 10 );
-  vnl_vector< double > xStep( 3, 0.75 );
+  vnl_vector< double > xStep( 3, 0.5 );
   m_DataSpline->GetOptimizerND()->SetXStep( xStep );
 
   m_IdleCallBack = NULL;
@@ -295,7 +293,7 @@ RidgeExtractor<TInputImage>
 template< class TInputImage >
 void
 RidgeExtractor<TInputImage>
-::SetExtent( double extent )
+::SetScaleKernelExtent( double extent )
 {
   m_DataSpline->SetNewData( true );
   m_DataFunc->SetExtent( extent );
@@ -307,7 +305,7 @@ RidgeExtractor<TInputImage>
 template< class TInputImage >
 double
 RidgeExtractor<TInputImage>
-::GetExtent( void )
+::GetScaleKernelExtent( void )
 {
   return m_DataFunc->GetExtent();
 }
@@ -474,32 +472,30 @@ RidgeExtractor<TInputImage>
     }
   os << indent << "DynamicScaleUsed = " << m_DynamicScaleUsed << std::endl;
   os << indent << "RadiusExtractor = " << m_RadiusExtractor << std::endl;
-  os << indent << "RecoveryMax = " << m_RecoveryMax << std::endl;
+  os << indent << "MaxRecoveryAttempts = " << m_MaxRecoveryAttempts << std::endl;
   os << indent << "DataMin = " << m_DataMin << std::endl;
   os << indent << "DataMax = " << m_DataMax << std::endl;
   os << indent << "DataRange = " << m_DataRange << std::endl;
   os << indent << "StepX = " << m_StepX << std::endl;
-  os << indent << "ThreshT = " << m_ThreshT << std::endl;
-  os << indent << "ThreshX = " << m_ThreshX << std::endl;
+  os << indent << "MaxTangentChange = " << m_MaxTangentChange << std::endl;
+  os << indent << "MaxXChange = " << m_MaxXChange << std::endl;
   os << indent << "ExtractBoundMin = " << m_ExtractBoundMin << std::endl;
   os << indent << "ExtractBoundMax = " << m_ExtractBoundMax << std::endl;
   os << indent << "DataSpline1D = " << m_DataSpline1D << std::endl;
   os << indent << "DataSplineOpt = " << m_DataSplineOpt << std::endl;
   os << indent << "DataSpline = " << m_DataSpline << std::endl;
   os << indent << "SplineValueFunc = " << m_SplineValueFunc << std::endl;
-  os << indent << "ThreshRidgeness = " << m_ThreshRidgeness << std::endl;
-  os << indent << "ThreshRidgenessStart = " << m_ThreshRidgenessStart
+  os << indent << "MinRidgeness = " << m_MinRidgeness << std::endl;
+  os << indent << "MinRidgenessStart = " << m_MinRidgenessStart
     << std::endl;
-  os << indent << "ThreshRoundness = " << m_ThreshRoundness << std::endl;
-  os << indent << "ThreshRoundnessStart = " << m_ThreshRoundnessStart
+  os << indent << "MinRoundness = " << m_MinRoundness << std::endl;
+  os << indent << "MinRoundnessStart = " << m_MinRoundnessStart
     << std::endl;
-  os << indent << "CurvatureExpectedMax = " << m_CurvatureExpectedMax
+  os << indent << "MinCurvature = " << m_MinCurvature << std::endl;
+  os << indent << "MinCurvatureStart = " << m_MinCurvatureStart
     << std::endl;
-  os << indent << "ThreshCurvature = " << m_ThreshCurvature << std::endl;
-  os << indent << "ThreshCurvatureStart = " << m_ThreshCurvatureStart
-    << std::endl;
-  os << indent << "ThreshLevelness = " << m_ThreshLevelness << std::endl;
-  os << indent << "ThreshLevelnessStart = " << m_ThreshLevelnessStart
+  os << indent << "MinLevelness = " << m_MinLevelness << std::endl;
+  os << indent << "MinLevelnessStart = " << m_MinLevelnessStart
     << std::endl;
   os << std::endl;
 
@@ -697,7 +693,7 @@ RidgeExtractor<TInputImage>
 
   int recovery = 0;
   int prevRecoveryPoint = tubePointCount;
-  while( recovery < m_RecoveryMax &&
+  while( recovery < m_MaxRecoveryAttempts &&
     prevRecoveryPoint+(2.0/m_StepX) > tubePointCount )
     {
     if( recovery > 0 )
@@ -747,7 +743,7 @@ RidgeExtractor<TInputImage>
         }
 
       if( vnl_math_abs( dot_product( lStepDir, pStepDir ) ) <
-        1-0.5*( 1-m_ThreshT ) )
+        1-0.5*( 1-m_MaxTangentChange ) )
         {
         if( this->GetDebug() )
           {
@@ -910,7 +906,7 @@ RidgeExtractor<TInputImage>
       }
 
     dProd = dot_product( lStepDir, pStepDir );
-    if( m_ThreshT>0 && vnl_math_abs( dProd )<m_ThreshT )
+    if( m_MaxTangentChange>0 && vnl_math_abs( dProd )<m_MaxTangentChange )
       {
       if( this->GetDebug() )
         {
@@ -928,7 +924,7 @@ RidgeExtractor<TInputImage>
 
     double diffX = vcl_sqrt(
       ::tube::ComputeEuclideanDistanceVector( lX, pX ) );
-    if( m_ThreshX > 0 && diffX > m_ThreshX*m_StepX + 0.1*recovery )
+    if( m_MaxXChange > 0 && diffX > m_MaxXChange*m_StepX + 0.1*recovery )
       {
       if( this->GetDebug() )
         {
@@ -944,7 +940,7 @@ RidgeExtractor<TInputImage>
       continue;
       }
 
-    if( ridgeness < m_ThreshRidgeness )
+    if( ridgeness < m_MinRidgeness )
       {
       if( this->GetDebug() )
         {
@@ -962,12 +958,12 @@ RidgeExtractor<TInputImage>
         }
       else
         {
-        recovery = m_RecoveryMax;
+        recovery = m_MaxRecoveryAttempts;
         }
       continue;
       }
 
-    if( curvature < m_ThreshCurvature )
+    if( curvature < m_MinCurvature )
       {
       if( this->GetDebug() )
         {
@@ -983,7 +979,7 @@ RidgeExtractor<TInputImage>
       continue;
       }
 
-    if( levelness < m_ThreshLevelness )
+    if( levelness < m_MinLevelness )
       {
       if( this->GetDebug() )
         {
@@ -999,7 +995,7 @@ RidgeExtractor<TInputImage>
       continue;
       }
 
-    if( roundness < m_ThreshRoundness )
+    if( roundness < m_MinRoundness )
       {
       if( this->GetDebug() )
         {
@@ -1017,7 +1013,7 @@ RidgeExtractor<TInputImage>
         }
       else
         {
-        recovery = m_RecoveryMax;
+        recovery = m_MaxRecoveryAttempts;
         }
       continue;
       }
@@ -1127,7 +1123,7 @@ RidgeExtractor<TInputImage>
           tmpPoint.SetPosition( tubeX );
           tmpPoint.SetTangent( tubeV );
           tmpPoint.SetRadius( m_DynamicScaleUsed );
-          m_RadiusExtractor->SetRadius0( m_DynamicScaleUsed );
+          m_RadiusExtractor->SetRadiusStart( m_DynamicScaleUsed );
           if( !m_RadiusExtractor->OptimalRadiusAtPoint( tmpPoint,
             m_DynamicScaleUsed, m_DynamicScaleUsed/4, m_DynamicScaleUsed*2,
             m_DynamicScaleUsed/8, m_DynamicScaleUsed/16 ) )
@@ -1152,7 +1148,7 @@ RidgeExtractor<TInputImage>
               << std::endl;
             }
           SetScale( m_DynamicScaleUsed );
-          m_RadiusExtractor->SetRadius0( m_DynamicScaleUsed );
+          m_RadiusExtractor->SetRadiusStart( m_DynamicScaleUsed );
           }
         }
       }
@@ -1312,22 +1308,22 @@ RidgeExtractor<TInputImage>
 
     ridgeness = Ridgeness( newX, intensity, roundness, curvature,
       levelness );
-    if( ridgeness >= m_ThreshRidgenessStart &&
-      roundness >= m_ThreshRoundnessStart &&
-      curvature >= m_ThreshCurvatureStart &&
-      levelness >= m_ThreshLevelnessStart )
+    if( ridgeness >= m_MinRidgenessStart &&
+      roundness >= m_MinRoundnessStart &&
+      curvature >= m_MinCurvatureStart &&
+      levelness >= m_MinLevelnessStart )
       {
       if( this->GetDebug() )
         {
         std::cout << " Success: Local grad: " << newX << std::endl;
         std::cout << "  Ridgeness: " << ridgeness << " >= "
-          << m_ThreshRidgenessStart << std::endl;
+          << m_MinRidgenessStart << std::endl;
         std::cout << "  Roundness: " << roundness << " >= "
-          << m_ThreshRoundnessStart << std::endl;
+          << m_MinRoundnessStart << std::endl;
         std::cout << "  Curvature: " << curvature << " >= "
-          << m_ThreshCurvatureStart << std::endl;
+          << m_MinCurvatureStart << std::endl;
         std::cout << "  Levelness: " << levelness << " >= "
-          << m_ThreshLevelnessStart << std::endl;
+          << m_MinLevelnessStart << std::endl;
         }
       return true;
       }
@@ -1336,13 +1332,13 @@ RidgeExtractor<TInputImage>
       {
       std::cout << " Local grad: " << newX << std::endl;
       std::cout << "  Ridgeness: " << ridgeness << " >= "
-        << m_ThreshRidgenessStart << std::endl;
+        << m_MinRidgenessStart << std::endl;
       std::cout << "  Roundness: " << roundness << " >= "
-        << m_ThreshRoundnessStart << std::endl;
+        << m_MinRoundnessStart << std::endl;
       std::cout << "  Curvature: " << curvature << " >= "
-        << m_ThreshCurvatureStart << std::endl;
+        << m_MinCurvatureStart << std::endl;
       std::cout << "  Levelness: " << levelness << " >= "
-        << m_ThreshLevelnessStart << std::endl;
+        << m_MinLevelnessStart << std::endl;
       }
     }
 
@@ -1399,22 +1395,22 @@ RidgeExtractor<TInputImage>
 
     ridgeness = Ridgeness( newX, intensity, roundness, curvature,
       levelness );
-    if( ridgeness >= m_ThreshRidgenessStart &&
-      roundness >= m_ThreshRoundnessStart &&
-      curvature >= m_ThreshCurvatureStart &&
-      levelness >= m_ThreshLevelnessStart )
+    if( ridgeness >= m_MinRidgenessStart &&
+      roundness >= m_MinRoundnessStart &&
+      curvature >= m_MinCurvatureStart &&
+      levelness >= m_MinLevelnessStart )
       {
       if( this->GetDebug() )
         {
         std::cout << " Success: Local norm max: " << newX << std::endl;
         std::cout << "  Ridgeness: " << ridgeness << " >= "
-          << m_ThreshRidgenessStart << std::endl;
+          << m_MinRidgenessStart << std::endl;
         std::cout << "  Roundness: " << roundness << " >= "
-          << m_ThreshRoundnessStart << std::endl;
+          << m_MinRoundnessStart << std::endl;
         std::cout << "  Curvature: " << curvature << " >= "
-          << m_ThreshCurvatureStart << std::endl;
+          << m_MinCurvatureStart << std::endl;
         std::cout << "  Levelness: " << levelness << " >= "
-          << m_ThreshLevelnessStart << std::endl;
+          << m_MinLevelnessStart << std::endl;
         }
       return true;
       }
@@ -1423,17 +1419,17 @@ RidgeExtractor<TInputImage>
       {
       std::cout << " Local norm max: " << newX << std::endl;
       std::cout << "  Ridgeness: " << ridgeness << " >= "
-        << m_ThreshRidgenessStart << std::endl;
+        << m_MinRidgenessStart << std::endl;
       std::cout << "  Roundness: " << roundness << " >= "
-        << m_ThreshRoundnessStart << std::endl;
+        << m_MinRoundnessStart << std::endl;
       std::cout << "  Curvature: " << curvature << " >= "
-        << m_ThreshCurvatureStart << std::endl;
+        << m_MinCurvatureStart << std::endl;
       std::cout << "  Levelness: " << levelness << " >= "
-        << m_ThreshLevelnessStart << std::endl;
+        << m_MinLevelnessStart << std::endl;
       }
     }
 
-  if( ridgeness < m_ThreshRidgenessStart )
+  if( ridgeness < m_MinRidgenessStart )
     {
     if( m_StatusCallBack )
       {
@@ -1445,7 +1441,7 @@ RidgeExtractor<TInputImage>
       }
     }
 
-  if( roundness < m_ThreshRoundnessStart )
+  if( roundness < m_MinRoundnessStart )
     {
     if( m_StatusCallBack )
       {
@@ -1457,7 +1453,7 @@ RidgeExtractor<TInputImage>
       }
     }
 
-  if( curvature < m_ThreshCurvatureStart )
+  if( curvature < m_MinCurvatureStart )
     {
     if( m_StatusCallBack )
       {
@@ -1469,7 +1465,7 @@ RidgeExtractor<TInputImage>
       }
     }
 
-  if( levelness < m_ThreshLevelnessStart )
+  if( levelness < m_MinLevelnessStart )
     {
     if( m_StatusCallBack )
       {
@@ -1485,13 +1481,13 @@ RidgeExtractor<TInputImage>
     {
     std::cout << "Failure: LocalRidge exiting: " << newX << std::endl;
     std::cout << "  Ridgeness: " << ridgeness << " >= "
-      << m_ThreshRidgenessStart << std::endl;
+      << m_MinRidgenessStart << std::endl;
     std::cout << "  Roundness: " << roundness << " >= "
-      << m_ThreshRoundnessStart << std::endl;
+      << m_MinRoundnessStart << std::endl;
     std::cout << "  Curvature: " << curvature << " >= "
-      << m_ThreshCurvatureStart << std::endl;
+      << m_MinCurvatureStart << std::endl;
     std::cout << "  Levelness: " << levelness << " >= "
-      << m_ThreshLevelnessStart << std::endl;
+      << m_MinLevelnessStart << std::endl;
     }
   return false;
 }
@@ -1512,7 +1508,7 @@ RidgeExtractor<TInputImage>
   double radiusOriginal = scaleOriginal;
   if( m_RadiusExtractor )
     {
-    radiusOriginal = m_RadiusExtractor->GetRadius0();
+    radiusOriginal = m_RadiusExtractor->GetRadiusStart();
     }
 
   if( !LocalRidge( lX ) )
@@ -1577,7 +1573,7 @@ RidgeExtractor<TInputImage>
       }
 
     SetScale( m_DynamicScaleUsed );
-    m_RadiusExtractor->SetRadius0( m_DynamicScaleUsed );
+    m_RadiusExtractor->SetRadiusStart( m_DynamicScaleUsed );
     if( this->GetDebug() )
       {
       std::cout << "DynamicScale = " << GetScale() << std::endl;
@@ -1598,12 +1594,12 @@ RidgeExtractor<TInputImage>
         }
       m_DynamicScaleUsed = scaleOriginal;
       SetScale( scaleOriginal );
-      m_RadiusExtractor->SetRadius0( radiusOriginal );
+      m_RadiusExtractor->SetRadiusStart( radiusOriginal );
       return NULL;
       }
     scale0 = m_DynamicScaleUsed;
     SetScale( scale0 );
-    m_RadiusExtractor->SetRadius0( scale0 );
+    m_RadiusExtractor->SetRadiusStart( scale0 );
     }
 
   m_Tube = TubeType::New();
@@ -1633,7 +1629,7 @@ RidgeExtractor<TInputImage>
     SetScale( scale0 );
     if( m_RadiusExtractor )
       {
-      m_RadiusExtractor->SetRadius0( scale0 );
+      m_RadiusExtractor->SetRadiusStart( scale0 );
       }
     }
 
@@ -1662,7 +1658,7 @@ RidgeExtractor<TInputImage>
     SetScale( scaleOriginal );
     if( m_RadiusExtractor )
       {
-      m_RadiusExtractor->SetRadius0( radiusOriginal );
+      m_RadiusExtractor->SetRadiusStart( radiusOriginal );
       }
     }
 

@@ -238,7 +238,7 @@ TubeExtractor<TInputImage>
     }
 
   this->m_RidgeOp->SetScale( radius );
-  this->m_RadiusOp->SetRadius0( radius );
+  this->m_RadiusOp->SetRadiusStart( radius );
 }
 
 /**
@@ -368,19 +368,19 @@ TubeExtractor<TInputImage>
       }
     }
 
-  double tR = this->m_RadiusOp->GetRadius0();
+  double tR = this->m_RadiusOp->GetRadiusStart();
 
   if( this->m_RidgeOp->GetDynamicScale() )
     {
-    this->m_RadiusOp->SetRadius0( this->m_RidgeOp->GetDynamicScaleUsed() );
+    this->m_RadiusOp->SetRadiusStart( this->m_RidgeOp->GetDynamicScaleUsed() );
     }
 
   if( !this->m_RadiusOp->ExtractRadii( tube ) )
     {
-    this->m_RadiusOp->SetRadius0( tR );
+    this->m_RadiusOp->SetRadiusStart( tR );
     return NULL;
     }
-  this->m_RadiusOp->SetRadius0( tR );
+  this->m_RadiusOp->SetRadiusStart( tR );
 
   if( this->m_NewTubeCallBack != NULL )
     {

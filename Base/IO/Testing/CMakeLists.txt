@@ -51,7 +51,7 @@ set( tubeBaseIOTests_SRCS
   itktubeMetaNJetLDATest.cxx
   itktubeMetaClassPDFTest.cxx
   itktubeMetaRidgeSeedTest.cxx
-  itktubeMetaTubeParamsTest.cxx
+  itktubeMetaTubeExtractorTest.cxx
   itktubePDFSegmenterIOTest.cxx
   itktubeRidgeSeedFilterIOTest.cxx )
 
@@ -109,10 +109,10 @@ add_test( NAME itktubeMetaRidgeSeedTest
     itktubeMetaRidgeSeedTest
       ${TEMP}/itkTubeMetaRidgeSeedTest.mrs )
 
-add_test( NAME itktubeMetaTubeParamsTest
+add_test( NAME itktubeMetaTubeExtractorTest
   COMMAND ${BASE_IO_TESTS}
-    itktubeMetaTubeParamsTest
-      ${TEMP}/itkTubeMetaTubeParamsTest.mtp )
+    itktubeMetaTubeExtractorTest
+      ${TEMP}/itkTubeMetaTubeExtractorTest.mtp )
 
 Midas3FunctionAddTest( NAME itktubePDFSegmenterIOTest
   COMMAND ${BASE_IO_TESTS}

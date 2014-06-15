@@ -25,7 +25,7 @@ limitations under the License.
 #include "itktubeMetaNJetLDA.h"
 #include "itktubeMetaClassPDF.h"
 #include "itktubeMetaRidgeSeed.h"
-#include "itktubeMetaTubeParams.h"
+#include "itktubeMetaTubeExtractor.h"
 #include "itktubePDFSegmenterIO.h"
 #include "itktubeRidgeSeedFilterIO.h"
 
@@ -47,9 +47,9 @@ int tubeBaseIOPrintTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
   std::cout << "-------------metaRidgeSeed" << std::endl;
   metaRidgeSeed.PrintInfo();
 
-  itk::tube::MetaTubeParams metaTubeParams;
-  std::cout << "-------------metaTubeParams" << std::endl;
-  metaTubeParams.PrintInfo();
+  itk::tube::MetaTubeExtractor metaTubeExtractor;
+  std::cout << "-------------metaTubeExtractor" << std::endl;
+  metaTubeExtractor.PrintInfo();
 
   typedef itk::Image< float, 3 > ImageType;
   itk::tube::PDFSegmenterIO< ImageType, 3, ImageType > pdfSegmenterIO;

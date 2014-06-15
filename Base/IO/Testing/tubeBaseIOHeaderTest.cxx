@@ -25,7 +25,7 @@ limitations under the License.
 #include "itktubeMetaNJetLDA.h"
 #include "itktubeMetaClassPDF.h"
 #include "itktubeMetaRidgeSeed.h"
-#include "itktubeMetaTubeParams.h"
+#include "itktubeMetaTubeExtractor.h"
 #include "itktubePDFSegmenterIO.h"
 
 int main( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )

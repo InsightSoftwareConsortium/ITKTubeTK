@@ -52,8 +52,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
   ridgeOp->SetDebug( true );
 
   ridgeOp->SetInputImage( im );
-  ridgeOp->SetStepX( 0.75 );
-  ridgeOp->SetExtent( 2.5 );
+  ridgeOp->SetStepX( 0.5 );
   ridgeOp->SetDynamicScale( true );
 
   typedef itk::SpatialObjectReader<>                   ReaderType;
