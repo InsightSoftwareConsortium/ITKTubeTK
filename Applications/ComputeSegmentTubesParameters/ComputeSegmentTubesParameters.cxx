@@ -37,7 +37,7 @@ limitations under the License.
 #include <tubeGoldenMeanOptimizer1D.h>
 #include <tubeOptimizerND.h>
 
-#include <itktubeMetaTubeParams.h>
+#include <itktubeMetaTubeExtractor.h>
 
 // Must include CLP before including tubeCLIHelperFunctions
 #include "ComputeSegmentTubesParametersCLP.h"
@@ -506,60 +506,50 @@ int DoIt( int argc, char * argv[] )
 
   //
   //
-  itk::tube::MetaTubeParams params;
+  itk::tube::MetaTubeExtractor params;
 
-  itk::tube::MetaTubeParams::VectorType seedScales( 1, 1.0 );
-  double seedIntensityMin = 0;
-  double seedIntensityMax = 0;
-  double seedIntensityPercentile = 0;
-  params.SetSeedParams( seedScales, seedIntensityMin, seedIntensityMax,
-    seedIntensityPercentile );
-
-  double tubeIntensityMin = 0;
-  double tubeIntensityMax = 0;
+  double dataMin = 0;
+  double dataMax = 0;
   bool   tubeBright = true;
-  itk::tube::MetaTubeParams::VectorType tubeColor(4, 0.0);
+  itk::tube::MetaTubeExtractor::VectorType tubeColor(4, 0.0);
   tubeColor[0] = 1.0;
   tubeColor[3] = 1.0;
-
-  params.SetTubeParams( tubeIntensityMin, tubeIntensityMax,
+  params.SetGeneralProperties( dataMin, dataMax,
     tubeBright, tubeColor );
 
   double ridgeScale = scale;
-  double ridgeScaleExtent = 1.5;
+  double ridgeScaleKernelExtent = 1.5;
   bool   ridgeDynamicScale = true;
   double ridgeStepX = 0.2;
-  double ridgeThreshTangentChange = 0.8;
-  double ridgeThreshXChange = 0.5;
-  double ridgeThreshRidgeness = x[1];
-  double ridgeThreshRidgenessStart = x[1];
-  double ridgeThreshRoundness = x[2];
-  double ridgeThreshRoundnessStart = x[2];
-  double ridgeCurvatureMax = x[3];
-  double ridgeThreshCurvature = x[3];
-  double ridgeThreshCurvatureStart = x[3];
-  double ridgeThreshLevelness = x[4];
-  double ridgeThreshLevelnessStart = x[4];
-  int    ridgeRecoveryMax = 3;
-  params.SetTubeRidgeParams( ridgeScale, ridgeScaleExtent,
+  double ridgeMaxTangentChange = 0.8;
+  double ridgeMaxXChange = 0.5;
+  double ridgeMinRidgeness = x[1];
+  double ridgeMinRidgenessStart = x[1];
+  double ridgeMinRoundness = x[2];
+  double ridgeMinRoundnessStart = x[2];
+  double ridgeMinCurvature = x[3];
+  double ridgeMinCurvatureStart = x[3];
+  double ridgeMinLevelness = x[4];
+  double ridgeMinLevelnessStart = x[4];
+  int    ridgeMaxRecoveryAttempts = 3;
+  params.SetRidgeProperties( ridgeScale, ridgeScaleKernelExtent,
     ridgeDynamicScale, ridgeStepX,
-    ridgeThreshTangentChange,
-    ridgeThreshXChange,
-    ridgeThreshRidgeness, ridgeThreshRidgenessStart,
-    ridgeThreshRoundness, ridgeThreshRoundnessStart,
-    ridgeCurvatureMax,
-    ridgeThreshCurvature, ridgeThreshCurvatureStart,
-    ridgeThreshLevelness, ridgeThreshLevelnessStart,
-    ridgeRecoveryMax );
+    ridgeMaxTangentChange,
+    ridgeMaxXChange,
+    ridgeMinRidgeness, ridgeMinRidgenessStart,
+    ridgeMinRoundness, ridgeMinRoundnessStart,
+    ridgeMinCurvature, ridgeMinCurvatureStart,
+    ridgeMinLevelness, ridgeMinLevelnessStart,
+    ridgeMaxRecoveryAttempts );
 
   double radiusScale = scale;
   double radiusMin = 0.3;
   double radiusMax = 10;
-  double radiusThreshMedialness = 0.04;
-  double radiusThreshMedialnessStart = 0.01;
-  params.SetTubeRadiusParams( radiusScale,
+  double radiusMinMedialness = 0.04;
+  double radiusMinMedialnessStart = 0.01;
+  params.SetRadiusProperties( radiusScale,
     radiusMin, radiusMax,
-    radiusThreshMedialness, radiusThreshMedialnessStart );
+    radiusMinMedialness, radiusMinMedialnessStart );
 
   params.Write( outputParametersFile.c_str() );
 

@@ -17,7 +17,7 @@
       <channel>input</channel>
       <index>0</index>
       <description>Input volume</description>
-      <default/>
+      <default></default>
     </image>
     <file>
       <name>outputTubeFile</name>
@@ -25,7 +25,7 @@
       <channel>output</channel>
       <index>1</index>
       <description>Output tube file</description>
-      <default/>
+      <default></default>
     </file>
   </parameters>
   <parameters advanced="true">
@@ -38,7 +38,7 @@
       <flag>f</flag>
       <longflag>seedList</longflag>
       <description>List seed points stored in a file</description>
-      <default/>
+      <default></default>
     </file>
     <double>
       <name>scale</name>
@@ -49,20 +49,51 @@
       <default>2.0</default>
     </double>
     <point multiple="true">
-      <name>seedX</name>
+      <name>seedI</name>
       <label>Seed index</label>
-      <longflag>seedX</longflag>
-      <flag>x</flag>
+      <longflag>seedI</longflag>
+      <flag>i</flag>
       <description>Continuous index for starting ridge extraction</description>
-      <default/>
+      <default></default>
     </point>
     <point multiple="true" coordinateSystem="lps">
-      <name>seedPhysicalPoint</name>
-      <label>Seed coordinate</label>
-      <longflag>seedPhysicalPoint</longflag>
-      <description>Phisycal coordinate seed for starting ridge extraction</description>
-      <default/>
+      <name>seedP</name>
+      <label>Seed physical coordinate</label>
+      <longflag>seedP</longflag>
+      <flag>p</flag>
+      <description>Phisycal coordinate seed for ridge extraction</description>
+      <default></default>
     </point>
+    <image>
+      <name>seedMask</name>
+      <label>Seed mask file</label>
+      <longflag>seedMask</longflag>
+      <flag>M</flag>
+      <description>Image mask where non-zero values are used as seeds.</description>
+      <channel>input</channel>
+      <default></default>
+    </image>
+    <image>
+      <name>scaleMask</name>
+      <label>Scale mask file</label>
+      <longflag>scaleMask</longflag>
+      <flag>S</flag>
+      <description>Intensity is initial extraction scale for that point</description>
+      <channel>input</channel>
+      <default></default>
+    </image>
+  </parameters>
+  <parameters>
+    <label>Input Parameters</label>
+    <file>
+      <name>parametersFile</name>
+      <label>Parameters File</label>
+      <channel>input</channel>
+      <flag>P</flag>
+      <longflag>parametersFile</longflag>
+      <description>Parameters for ridge and radius extraction</description>
+      <default></default>
+    </file>
   </parameters>
   <parameters>
     <label>Output Parameters</label>

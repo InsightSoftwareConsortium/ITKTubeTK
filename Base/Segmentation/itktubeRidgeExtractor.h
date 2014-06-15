@@ -132,70 +132,64 @@ public:
   itkGetMacro( StepX, double );
 
   /** Set Tangent change threshold */
-  itkSetMacro( ThreshT, double );
+  itkSetMacro( MaxTangentChange, double );
 
   /** Get Tangent change threshold */
-  itkGetMacro( ThreshT, double );
+  itkGetMacro( MaxTangentChange, double );
 
   /** Set Spatial change threshold */
-  itkSetMacro( ThreshX, double );
+  itkSetMacro( MaxXChange, double );
 
   /** Get Spatial change threshold */
-  itkGetMacro( ThreshX, double );
+  itkGetMacro( MaxXChange, double );
 
   /** Set Ridgeness Threshold */
-  itkSetMacro( ThreshRidgeness, double );
+  itkSetMacro( MinRidgeness, double );
 
   /** Get Ridgeness Threshold */
-  itkGetMacro( ThreshRidgeness, double );
+  itkGetMacro( MinRidgeness, double );
 
   /** Set Ridgeness start Threshold */
-  itkSetMacro( ThreshRidgenessStart, double );
+  itkSetMacro( MinRidgenessStart, double );
 
   /** Get Ridgeness start Threshold */
-  itkGetMacro( ThreshRidgenessStart, double );
+  itkGetMacro( MinRidgenessStart, double );
 
   /** Set Roundness Threshold */
-  itkSetMacro( ThreshRoundness, double );
+  itkSetMacro( MinRoundness, double );
 
   /** Get Roundness Threshold */
-  itkGetMacro( ThreshRoundness, double );
+  itkGetMacro( MinRoundness, double );
 
   /** Set Roundness start Threshold */
-  itkSetMacro( ThreshRoundnessStart, double );
+  itkSetMacro( MinRoundnessStart, double );
 
   /** Get Roundness start Threshold */
-  itkGetMacro( ThreshRoundnessStart, double );
-
-  /** Set Curvature  Normalization Factor (multiplier for curvature) */
-  itkSetMacro( CurvatureExpectedMax, double );
-
-  /** Get Curvature  Normalization Factor */
-  itkGetMacro( CurvatureExpectedMax, double );
+  itkGetMacro( MinRoundnessStart, double );
 
   /** Set Curvature  Threshold */
-  itkSetMacro( ThreshCurvature, double );
+  itkSetMacro( MinCurvature, double );
 
   /** Get Curvature  Threshold */
-  itkGetMacro( ThreshCurvature, double );
+  itkGetMacro( MinCurvature, double );
 
   /** Set Curvature  Threshold */
-  itkSetMacro( ThreshCurvatureStart, double );
+  itkSetMacro( MinCurvatureStart, double );
 
   /** Get Curvature  Threshold */
-  itkGetMacro( ThreshCurvatureStart, double );
+  itkGetMacro( MinCurvatureStart, double );
 
   /** Set Levelness  Threshold */
-  itkSetMacro( ThreshLevelness, double );
+  itkSetMacro( MinLevelness, double );
 
   /** Get Levelness  Threshold */
-  itkGetMacro( ThreshLevelness, double );
+  itkGetMacro( MinLevelness, double );
 
   /** Set Levelness  Threshold */
-  itkSetMacro( ThreshLevelnessStart, double );
+  itkSetMacro( MinLevelnessStart, double );
 
   /** Get Levelness  Threshold */
-  itkGetMacro( ThreshLevelnessStart, double );
+  itkGetMacro( MinLevelnessStart, double );
 
 
   /** Set Extract Bound Minimum */
@@ -226,10 +220,10 @@ public:
   double GetScale( void );
 
   /** Set the extent */
-  void SetExtent( double extent );
+  void SetScaleKernelExtent( double extent );
 
   /** Get the extent */
-  double GetExtent( void );
+  double GetScaleKernelExtent( void );
 
   /** Set the dynamic Scale */
   void SetDynamicScale( bool dynamicScale );
@@ -240,10 +234,10 @@ public:
   itkGetMacro( DynamicScaleUsed, double );
 
   /** Set the Recovery Maximum */
-  itkSetMacro( RecoveryMax, int );
+  itkSetMacro( MaxRecoveryAttempts, int );
 
   /** Get the Recovery Maximum */
-  itkGetMacro( RecoveryMax, int );
+  itkGetMacro( MaxRecoveryAttempts, int );
 
   /** Delete a tube */
   template< class TDrawMask >
@@ -311,15 +305,15 @@ private:
   double                                             m_DynamicScaleUsed;
   RadiusExtractor<TInputImage>                     * m_RadiusExtractor;
 
-  int                                                m_RecoveryMax;
+  int                                                m_MaxRecoveryAttempts;
 
   double                                             m_DataMin;
   double                                             m_DataMax;
   double                                             m_DataRange;
 
   double                                             m_StepX;
-  double                                             m_ThreshT;
-  double                                             m_ThreshX;
+  double                                             m_MaxTangentChange;
+  double                                             m_MaxXChange;
 
   IndexType                                          m_ExtractBoundMin;
   IndexType                                          m_ExtractBoundMax;
@@ -329,16 +323,14 @@ private:
   ::tube::SplineND                                 * m_DataSpline;
   ::tube::UserFunction< vnl_vector<int>, double >  * m_SplineValueFunc;
 
-  double                                             m_CurvatureExpectedMax;
-
-  double                                             m_ThreshRidgeness;
-  double                                             m_ThreshRidgenessStart;
-  double                                             m_ThreshRoundness;
-  double                                             m_ThreshRoundnessStart;
-  double                                             m_ThreshCurvature;
-  double                                             m_ThreshCurvatureStart;
-  double                                             m_ThreshLevelness;
-  double                                             m_ThreshLevelnessStart;
+  double                                             m_MinRidgeness;
+  double                                             m_MinRidgenessStart;
+  double                                             m_MinRoundness;
+  double                                             m_MinRoundnessStart;
+  double                                             m_MinCurvature;
+  double                                             m_MinCurvatureStart;
+  double                                             m_MinLevelness;
+  double                                             m_MinLevelnessStart;
 
   VectorType                                         m_X;
   VectorType                                         m_XP;

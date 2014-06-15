@@ -54,17 +54,17 @@ int itktubeRadiusExtractorTest2( int argc, char * argv[] )
 
   bool returnStatus = EXIT_SUCCESS;
 
-  radiusOp->SetThreshMedialness( 0.005 );
-  if( radiusOp->GetThreshMedialness() != 0.005 )
+  radiusOp->SetMinMedialness( 0.005 );
+  if( radiusOp->GetMinMedialness() != 0.005 )
     {
-    tube::ErrorMessage( "ThreshMedialness != 0.005" );
+    tube::ErrorMessage( "MinMedialness != 0.005" );
     returnStatus = EXIT_FAILURE;
     }
 
-  radiusOp->SetThreshMedialnessStart( 0.002 );
-  if( radiusOp->GetThreshMedialnessStart() != 0.002 )
+  radiusOp->SetMinMedialnessStart( 0.002 );
+  if( radiusOp->GetMinMedialnessStart() != 0.002 )
     {
-    tube::ErrorMessage( "ThreshMedialnessStart != 0.002" );
+    tube::ErrorMessage( "MinMedialnessStart != 0.002" );
     returnStatus = EXIT_FAILURE;
     }
 
@@ -135,7 +135,7 @@ int itktubeRadiusExtractorTest2( int argc, char * argv[] )
 
     unsigned int startPoint = rndGen->GetUniformVariate( 0, 1 )
       * (numPoints-10) + 5;
-    double radius0 = rndGen->GetUniformVariate( 0, 1 ) * 2 + 1;
+    double radiusStart = rndGen->GetUniformVariate( 0, 1 ) * 2 + 1;
 
     double failures = 0;
     std::vector< double > idealR;
@@ -146,7 +146,7 @@ int itktubeRadiusExtractorTest2( int argc, char * argv[] )
       if( i == startPoint )
         {
         pntIter->SetID( 0 );
-        radius0 = (radius0 + pntIter->GetRadius() ) / 2;
+        radiusStart = (radiusStart + pntIter->GetRadius() ) / 2;
         }
       else
         {
@@ -207,7 +207,7 @@ int itktubeRadiusExtractorTest2( int argc, char * argv[] )
       ++pntIter;
       }
 
-    radiusOp->SetRadius0( radius0 );
+    radiusOp->SetRadiusStart( radiusStart );
 
     //radiusOp->SetDebug( true );
     radiusOp->ExtractRadii( tubep );

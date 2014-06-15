@@ -139,22 +139,22 @@ public:
   itkGetMacro( RadiusMax, double );
 
   /** Set Radius0 */
-  void SetRadius0( double radius0 );
+  void SetRadiusStart( double radius0 );
 
   /** Get Radius0 */
-  itkGetMacro( Radius0, double );
+  itkGetMacro( RadiusStart, double );
 
   /** Set ThreshMedialness */
-  itkSetMacro( ThreshMedialness, double );
+  itkSetMacro( MinMedialness, double );
 
   /** Get ThreshMedialness */
-  itkGetMacro( ThreshMedialness, double );
+  itkGetMacro( MinMedialness, double );
 
   /** Set ThreshMedialness Start */
-  itkSetMacro( ThreshMedialnessStart, double );
+  itkSetMacro( MinMedialnessStart, double );
 
   /** Get ThreshMedialness Start */
-  itkGetMacro( ThreshMedialnessStart, double );
+  itkGetMacro( MinMedialnessStart, double );
 
   /** Set Extract Bright Tube (versus a Dark Tube) */
   itkSetMacro( ExtractBrightTube, bool );
@@ -265,12 +265,12 @@ private:
   /** Determine if the algorithm extracts ridge or a valley */
   bool                                    m_ExtractBrightTube;
 
-  double                                  m_Radius0;
+  double                                  m_RadiusStart;
   double                                  m_RadiusMin;
   double                                  m_RadiusMax;
 
-  double                                  m_ThreshMedialness;
-  double                                  m_ThreshMedialnessStart;
+  double                                  m_MinMedialness;
+  double                                  m_MinMedialnessStart;
 
   ::tube::UserFunction<int, double> *     m_MedialnessFunc;
 

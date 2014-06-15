@@ -31,11 +31,15 @@ set( TubeTK_Base_IO_H_Files
   itktubeMetaNJetLDA.h
   itktubeMetaClassPDF.h
   itktubeMetaRidgeSeed.h
-  itktubeMetaTubeParams.h
-  itktubeRidgeSeedFilterIO.h )
+  itktubeMetaTubeExtractor.h
+  itktubePDFSegmenterIO.h
+  itktubeRidgeSeedFilterIO.h
+  itktubeTubeExtractorIO.h )
 
 set( TubeTK_Base_IO_HXX_Files
-  itktubeRidgeSeedFilterIO.hxx )
+  itktubePDFSegmenterIO.hxx
+  itktubeRidgeSeedFilterIO.hxx
+  itktubeTubeExtractorIO.hxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Segmentation
@@ -44,11 +48,11 @@ include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common )
 
 set( TubeTK_Base_IO_SRCS
+  itktubeMetaClassPDF.cxx
   itktubeMetaLDA.cxx
   itktubeMetaNJetLDA.cxx
   itktubeMetaRidgeSeed.cxx
-  itktubeMetaClassPDF.cxx
-  itktubeMetaTubeParams.cxx )
+  itktubeMetaTubeExtractor.cxx )
 
 add_library( TubeTKIO STATIC
   ${TubeTK_Base_IO_H_Files}

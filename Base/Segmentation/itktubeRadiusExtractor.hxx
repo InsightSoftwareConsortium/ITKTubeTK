@@ -125,14 +125,14 @@ RadiusExtractor<TInputImage>
   m_NumKernelPoints = 5;
   m_KernelPointSpacing = 10;
 
-  m_Radius0 = 1.0;
+  m_RadiusStart = 1.0;
   m_RadiusMin = 0.3;
   m_RadiusMax = 10.0;
 
   m_ExtractBrightTube = true;
 
-  m_ThreshMedialness = 0.04;       // 0.015; larger = harder
-  m_ThreshMedialnessStart = 0.01;
+  m_MinMedialness = 0.04;       // 0.015; larger = harder
+  m_MinMedialnessStart = 0.01;
 
   if( ImageDimension == 2 )
     {
@@ -215,18 +215,18 @@ RadiusExtractor<TInputImage>
 template< class TInputImage >
 void
 RadiusExtractor<TInputImage>
-::SetRadius0( double radius0 )
+::SetRadiusStart( double radius0 )
 {
-  m_Radius0 = radius0;
+  m_RadiusStart = radius0;
 
-  if( m_Radius0 < m_RadiusMin )
+  if( m_RadiusStart < m_RadiusMin )
     {
-    m_Radius0 = m_RadiusMin;
+    m_RadiusStart = m_RadiusMin;
     }
 
-  if( m_Radius0 > m_RadiusMax )
+  if( m_RadiusStart > m_RadiusMax )
     {
-    m_Radius0 = m_RadiusMax;
+    m_RadiusStart = m_RadiusMax;
     }
 }
 
@@ -243,9 +243,9 @@ RadiusExtractor<TInputImage>
   m_RadiusMin = radiusMin;
   m_MedialnessOptSpline->SetXMin( m_RadiusMin / m_MedialnessScaleStep );
 
-  if( m_Radius0 < m_RadiusMin )
+  if( m_RadiusStart < m_RadiusMin )
     {
-    m_Radius0 = m_RadiusMin;
+    m_RadiusStart = m_RadiusMin;
     }
 }
 
@@ -257,9 +257,9 @@ RadiusExtractor<TInputImage>
 {
   this->m_RadiusMax = radiusMax;
   m_MedialnessOptSpline->SetXMax( this->m_RadiusMax / m_MedialnessScaleStep );
-  if( m_Radius0 > m_RadiusMax )
+  if( m_RadiusStart > m_RadiusMax )
     {
-    m_Radius0 = m_RadiusMax;
+    m_RadiusStart = m_RadiusMax;
     }
 }
 
@@ -642,7 +642,7 @@ RadiusExtractor<TInputImage>
 
   pnt.SetRadius( r0 );
 
-  if( mness > m_ThreshMedialnessStart )
+  if( mness > m_MinMedialnessStart )
     {
     return true;
     }
@@ -654,7 +654,7 @@ RadiusExtractor<TInputImage>
         << "RadiusExtractor: calcOptimalScale: kernel fit insufficient"
         << std::endl;
       std::cout << "  Medialness = " << mness << " < thresh = "
-        << m_ThreshMedialness << std::endl;
+        << m_MinMedialness << std::endl;
       }
     return false;
     }
@@ -711,11 +711,11 @@ RadiusExtractor<TInputImage>
     }
   os << indent << "DataMin = " << m_DataMin << std::endl;
   os << indent << "DataMax = " << m_DataMax << std::endl;
-  os << indent << "Radius0 = " << m_Radius0 << std::endl;
+  os << indent << "RadiusStart = " << m_RadiusStart << std::endl;
   os << indent << "RadiusMin = " << m_RadiusMin << std::endl;
   os << indent << "RadiusMax = " << m_RadiusMax << std::endl;
-  os << indent << "ThreshMedialness = " << m_ThreshMedialness << std::endl;
-  os << indent << "ThreshMedialnessStart = " << m_ThreshMedialnessStart
+  os << indent << "MinMedialness = " << m_MinMedialness << std::endl;
+  os << indent << "MinMedialnessStart = " << m_MinMedialnessStart
     << std::endl;
   os << indent << "MedialnessFunc = " << m_MedialnessFunc << std::endl;
   os << indent << "KernNumDirs = " << m_KernNumDirs << std::endl;
@@ -1349,8 +1349,8 @@ RadiusExtractor<TInputImage>
   unsigned int kernPntStart,
   unsigned int kernPntEnd )
 {
-  double pntR = m_Radius0;
-  double prevPntR = m_Radius0;
+  double pntR = m_RadiusStart;
+  double prevPntR = m_RadiusStart;
   double mness = 0;
 
   unsigned int kernMid = ( m_NumKernelPoints - 1 ) / 2;
@@ -1407,7 +1407,7 @@ RadiusExtractor<TInputImage>
       std::cout << std::endl;
       }
 
-    if( mness < m_ThreshMedialness )
+    if( mness < m_MinMedialness )
       {
       if( this->GetDebug() )
         {
@@ -1439,14 +1439,14 @@ RadiusExtractor<TInputImage>
         std::cout << "  prev radius = " << oldPntR << std::endl;
         std::cout << std::endl;
         }
-      if( mness >= m_ThreshMedialness )
+      if( mness >= m_MinMedialness )
         {
         if( this->GetDebug() )
           {
           std::cout << "   *** new mnessVal( " << pntR << " ) = " << mness
             << std::endl;
           }
-        if( mness > 2 * m_ThreshMedialness )
+        if( mness > 2 * m_MinMedialness )
           {
           prevPntR = pntR;
           }
@@ -1454,7 +1454,7 @@ RadiusExtractor<TInputImage>
       else
         {
         pntR = prevPntR;
-        mness = 2 * m_ThreshMedialness;
+        mness = 2 * m_MinMedialness;
         if( this->GetDebug() )
           {
           std::cout << "   using old mnessVal( " << pntR << " ) = "
@@ -1464,7 +1464,7 @@ RadiusExtractor<TInputImage>
       }
     else
       {
-      if( mness > 2 * m_ThreshMedialness )
+      if( mness > 2 * m_MinMedialness )
         {
         prevPntR = pntR;
         }

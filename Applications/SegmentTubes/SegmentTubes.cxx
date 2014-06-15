@@ -22,6 +22,8 @@ limitations under the License.
 =========================================================================*/
 
 #include "itktubeTubeExtractor.h"
+#include "itktubeTubeExtractorIO.h"
+
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
@@ -58,13 +60,24 @@ int DoIt( int argc, char * argv[] )
     CLPProcessInformation );
   progressReporter.Start();
 
-  typedef float                                         PixelType;
+  typedef TPixel                                        PixelType;
   typedef itk::Image< PixelType, VDimension >           ImageType;
   typedef itk::ImageFileReader< ImageType >             ReaderType;
 
   typedef itk::tube::TubeExtractor< ImageType >         TubeOpType;
+
   typedef typename TubeOpType::TubeMaskImageType        MaskImageType;
+  typedef itk::ImageFileReader< MaskImageType >         MaskReaderType;
   typedef itk::ImageFileWriter< MaskImageType >         MaskWriterType;
+
+  typedef float                                         ScaleType;
+  typedef itk::Image< ScaleType, VDimension >           ScaleImageType;
+  typedef itk::ImageFileReader< ScaleImageType >        ScaleReaderType;
+
+  typedef itk::ContinuousIndex< double, VDimension >    IndexType;
+  typedef std::vector< IndexType >                      IndexListType;
+
+  typedef std::vector< ScaleType >                      ScaleListType;
 
   typedef itk::VesselTubeSpatialObject< VDimension >    TubeType;
 
@@ -103,44 +116,39 @@ int DoIt( int argc, char * argv[] )
   tubeOp->SetInputImage( inputImage );
   tubeOp->SetRadius( scale );
 
-  typedef itk::ContinuousIndex< double, VDimension >  seedIndexType;
-  typedef double                                      seedScaleType;
-  typedef std::vector< seedIndexType >                seedIndexListType;
-  typedef std::vector< seedScaleType >                seedScaleListType;
-
-  seedIndexType seedIndex;
-  seedIndexListType seedIndexList;
-
-  seedScaleListType seedScaleList;
-
+  IndexType seedIndex;
+  IndexListType seedIndexList;
   seedIndexList.clear();
+
+  ScaleType seedScale;
+  ScaleListType seedScaleList;
   seedScaleList.clear();
 
-  if( !seedX.empty() )
+  if( !seedI.empty() )
     {
-    for( unsigned int seedXNum=0; seedXNum<seedX.size(); ++seedXNum )
+    for( unsigned int seedINum=0; seedINum<seedI.size(); ++seedINum )
       {
-      for( unsigned int i=0; i<seedX[seedXNum].size(); i++ )
+      for( unsigned int i=0; i<seedI[seedINum].size(); i++ )
         {
-        std::cout << seedX[seedXNum][i] << " ";
+        std::cout << seedI[seedINum][i] << " ";
         }
       for( unsigned int i=0; i<VDimension; i++ )
         {
-        seedIndex[i] = seedX[seedXNum][i];
+        seedIndex[i] = seedI[seedINum][i];
         }
       seedIndexList.push_back( seedIndex );
       seedScaleList.push_back( scale );
       }
     }
 
-  if( !seedPhysicalPoint.empty() )
+  if( !seedP.empty() )
     {
-    for(size_t seedNum=0; seedNum<seedPhysicalPoint.size(); ++seedNum)
+    for(size_t seedNum=0; seedNum<seedP.size(); ++seedNum)
       {
       typename ImageType::PointType point;
       for( unsigned int i=0; i<VDimension; i++ )
         {
-        point[i] = seedPhysicalPoint[seedNum][i];
+        point[i] = seedP[seedNum][i];
         }
 
       bool transformSuccess =
@@ -177,19 +185,84 @@ int DoIt( int argc, char * argv[] )
     seedScaleList.push_back( seedScale );
     }
 
-  typename seedIndexListType::iterator seedIndexIter =
+  if( !seedMask.empty() )
+    {
+    typename MaskReaderType::Pointer maskReader = MaskReaderType::New();
+    maskReader->SetFileName( seedMask.c_str() );
+    try
+      {
+      maskReader->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Reading mask: Exception caught: "
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    typename MaskImageType::Pointer maskImage = maskReader->GetOutput();
+
+    if( !scaleMask.empty() )
+      {
+      typename ScaleReaderType::Pointer scaleReader =
+        ScaleReaderType::New();
+      scaleReader->SetFileName( scaleMask.c_str() );
+      try
+        {
+        scaleReader->Update();
+        }
+      catch( itk::ExceptionObject & err )
+        {
+        tube::ErrorMessage( "Reading scale: Exception caught: "
+                            + std::string(err.GetDescription()) );
+        timeCollector.Report();
+        return EXIT_FAILURE;
+        }
+      typename ScaleImageType::Pointer scaleImage = scaleReader->GetOutput();
+
+      itk::ImageRegionConstIteratorWithIndex< MaskImageType > iter( maskImage,
+        maskImage->GetLargestPossibleRegion() );
+      itk::ImageRegionConstIterator< ScaleImageType > iterS( scaleImage,
+        scaleImage->GetLargestPossibleRegion() );
+      while( !iter.IsAtEnd() )
+        {
+        if( iter.Get() )
+          {
+          seedIndexList.push_back( iter.GetIndex() );
+          seedScaleList.push_back( iterS.Get() );
+          }
+        ++iter;
+        ++iterS;
+        }
+      }
+    else
+      {
+      itk::ImageRegionConstIteratorWithIndex< MaskImageType > iter( maskImage,
+        maskImage->GetLargestPossibleRegion() );
+      while( !iter.IsAtEnd() )
+        {
+        if( iter.Get() )
+          {
+          seedIndexList.push_back( iter.GetIndex() );
+          seedScaleList.push_back( scale );
+          }
+        ++iter;
+        }
+      }
+    }
+
+  if( !parametersFile.empty() )
+    {
+    }
+
+  typename IndexListType::iterator seedIndexIter =
     seedIndexList.begin();
-  seedScaleListType::iterator seedScaleIter =
+  ScaleListType::iterator seedScaleIter =
     seedScaleList.begin();
 
   tubeOp->SetDebug( false );
   tubeOp->GetRidgeOp()->SetDebug( false );
   tubeOp->GetRadiusOp()->SetDebug( false );
-
-  tubeOp->GetRidgeOp()->SetThreshRoundness( 0.0001 );
-  tubeOp->GetRidgeOp()->SetThreshRoundnessStart( 0.0001 );
-  tubeOp->GetRidgeOp()->SetThreshCurvature( 0.0001 );
-  tubeOp->GetRidgeOp()->SetThreshCurvatureStart( 0.0001 );
 
   timeCollector.Start("Ridge Extractor");
   unsigned int count = 1;
