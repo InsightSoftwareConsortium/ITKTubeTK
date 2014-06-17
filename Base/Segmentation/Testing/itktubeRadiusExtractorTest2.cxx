@@ -68,13 +68,6 @@ int itktubeRadiusExtractorTest2( int argc, char * argv[] )
     returnStatus = EXIT_FAILURE;
     }
 
-  radiusOp->SetExtractBrightTube( true );
-  if( radiusOp->GetExtractBrightTube() != true )
-    {
-    tube::ErrorMessage( "ExtractBrightTube != true" );
-    returnStatus = EXIT_FAILURE;
-    }
-
   typedef itk::SpatialObjectReader<>                   ReaderType;
   typedef itk::SpatialObject<>::ChildrenListType       ObjectListType;
   typedef itk::GroupSpatialObject<>                    GroupType;

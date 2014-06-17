@@ -363,6 +363,8 @@ InitializeEssential( unsigned int _nFeatures,
     MET_FLOAT, 1, (void *)_elementData, true );
   MetaImage::Origin( minD );
 
+  MetaImage::CompressedData( true );
+
   return true;
 }
 

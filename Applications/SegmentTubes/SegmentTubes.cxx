@@ -120,7 +120,6 @@ int DoIt( int argc, char * argv[] )
   IndexListType seedIndexList;
   seedIndexList.clear();
 
-  ScaleType seedScale;
   ScaleListType seedScaleList;
   seedScaleList.clear();
 
@@ -128,10 +127,6 @@ int DoIt( int argc, char * argv[] )
     {
     for( unsigned int seedINum=0; seedINum<seedI.size(); ++seedINum )
       {
-      for( unsigned int i=0; i<seedI[seedINum].size(); i++ )
-        {
-        std::cout << seedI[seedINum][i] << " ";
-        }
       for( unsigned int i=0; i<VDimension; i++ )
         {
         seedIndex[i] = seedI[seedINum][i];
@@ -253,6 +248,9 @@ int DoIt( int argc, char * argv[] )
 
   if( !parametersFile.empty() )
     {
+    itk::tube::TubeExtractorIO< ImageType > teReader;
+    teReader.SetTubeExtractor( tubeOp );
+    teReader.Read( parametersFile.c_str() );
     }
 
   typename IndexListType::iterator seedIndexIter =
@@ -271,11 +269,15 @@ int DoIt( int argc, char * argv[] )
     {
     tubeOp->SetRadius( *seedScaleIter );
 
+    std::cout << "Extracting from index point " << *seedIndexIter << " at radius "
+      << *seedScaleIter << std::endl;
     typename TubeType::Pointer xTube =
       tubeOp->ExtractTube( *seedIndexIter, count );
     if( !xTube.IsNull() )
       {
       tubeOp->AddTube( xTube );
+      std::cout << "  Extracted " << xTube->GetPoints().size() << " points." 
+        << std::endl;
       foundOneTube = true;
       }
     else

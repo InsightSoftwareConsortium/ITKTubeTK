@@ -156,12 +156,6 @@ public:
   /** Get ThreshMedialness Start */
   itkGetMacro( MinMedialnessStart, double );
 
-  /** Set Extract Bright Tube (versus a Dark Tube) */
-  itkSetMacro( ExtractBrightTube, bool );
-
-  /** Get Extract Bright Tube */
-  itkGetMacro( ExtractBrightTube, bool );
-
   /** Return the optimizer */
   OptimizerType & GetMedialnessOptimizer( void );
 
@@ -261,9 +255,6 @@ private:
 
   unsigned int                            m_NumKernelPoints;
   unsigned int                            m_KernelPointSpacing;
-
-  /** Determine if the algorithm extracts ridge or a valley */
-  bool                                    m_ExtractBrightTube;
 
   double                                  m_RadiusStart;
   double                                  m_RadiusMin;
