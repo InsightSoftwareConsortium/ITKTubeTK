@@ -33,12 +33,13 @@ namespace tube
 {
 
 template< class T >
-void StringToVector( const std::string & s, std::vector< T > & vec )
+void StringToVector( const std::string & s, std::vector< T > & vec,
+  std::string sep="," )
 {
   vec.clear();
 
   std::string::size_type prevPos = 0;
-  std::string::size_type pos = s.find( ",", prevPos );
+  std::string::size_type pos = s.find( sep, prevPos );
   T tVal;
   while( pos != std::string::npos )
     {
@@ -65,7 +66,7 @@ void StringToVector( const std::string & s, std::vector< T > & vec )
     vec.push_back( tVal );
 
     prevPos = pos+1;
-    pos = s.find( ",", prevPos );
+    pos = s.find( sep, prevPos );
     }
   std::string substr = s.substr( prevPos, s.size()-prevPos );
   while( substr[0] == ' ' )

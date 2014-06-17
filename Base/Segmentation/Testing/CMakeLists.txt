@@ -167,6 +167,7 @@ Midas3FunctionAddTest( NAME itktubeTubeExtractorTest
 
 Midas3FunctionAddTest( NAME itktubeRidgeSeedFilterTest
   COMMAND ${BASE_SEGMENTATION_TESTS}
+    --compareNumberOfPixelsTolerance 100
     --compare MIDAS{itkTubeRidgeSeedFilterTest_Output.mha.md5}
       ${TEMP}/itkTubeRidgeSeedFilterTest_Output.mha
     itktubeRidgeSeedFilterTest

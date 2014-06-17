@@ -53,10 +53,11 @@ TubeExtractor<TInputImage>
 
   m_InputImage = NULL;
 
-  m_Color[0] = 1.0f;
-  m_Color[1] = 0.0f;
-  m_Color[2] = 0.0f;
-  m_Color[3] = 0.0f;
+  m_TubeColor.set_size( 4 );
+  m_TubeColor[0] = 1.0f;
+  m_TubeColor[1] = 0.0f;
+  m_TubeColor[2] = 0.0f;
+  m_TubeColor[3] = 1.0f;
 
   m_TubeGroup = TubeGroupType::New();
 }
@@ -254,36 +255,6 @@ TubeExtractor<TInputImage>
     }
 
   return this->m_RidgeOp->GetScale();
-}
-
-/**
- * Extract the ridge */
-template< class TInputImage >
-void
-TubeExtractor<TInputImage>
-::ExtractBrightTube( bool extractRidge )
-{
-  if( this->m_RidgeOp.IsNull() )
-    {
-    throw( "Input data must be set first in TubeExtractor" );
-    }
-
-  this->m_RadiusOp->SetExtractBrightTube( extractRidge );
-}
-
-/**
- * Get Extract ridge */
-template< class TInputImage >
-bool
-TubeExtractor<TInputImage>
-::ExtractBrightTube( void )
-{
-  if( this->m_RidgeOp.IsNull() )
-    {
-    throw( "Input data must be set first in TubeExtractor" );
-    }
-
-  return this->m_RadiusOp->GetExtractBrightTube();
 }
 
 /**
@@ -488,12 +459,29 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 void
 TubeExtractor<TInputImage>
-::SetColor( float color[4] )
+::SetTubeColor( const vnl_vector<double> & color )
 {
-  for( unsigned int i=0; i<4; i++ )
+  int nc = color.size();
+  if( nc > 4 )
     {
-    this->m_Color[i] = color[i];
+    nc = 4;
     }
+  else if( nc < 4 )
+    {
+    this->m_TubeColor[3] = 1.0;
+    }
+  for( unsigned int i=0; i<nc; i++ )
+    {
+    this->m_TubeColor[i] = color[i];
+    }
+}
+
+template< class TInputImage >
+vnl_vector<double> & 
+TubeExtractor<TInputImage>
+::GetTubeColor( void )
+{
+  return m_TubeColor;
 }
 
 /**
@@ -561,10 +549,10 @@ void TubeExtractor<TInputImage>
     os << indent << "Input Image = NULL" << std::endl;
     }
 
-  os << indent << "Color.r = " << this->m_Color[0] << std::endl;
-  os << indent << "Color.g = " << this->m_Color[1] << std::endl;
-  os << indent << "Color.b = " << this->m_Color[2] << std::endl;
-  os << indent << "Color.a = " << this->m_Color[3] << std::endl;
+  os << indent << "TubeColor.r = " << this->m_TubeColor[0] << std::endl;
+  os << indent << "TubeColor.g = " << this->m_TubeColor[1] << std::endl;
+  os << indent << "TubeColor.b = " << this->m_TubeColor[2] << std::endl;
+  os << indent << "TubeColor.a = " << this->m_TubeColor[3] << std::endl;
 }
 
 } // End namespace tube

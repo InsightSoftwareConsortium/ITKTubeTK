@@ -510,12 +510,10 @@ int DoIt( int argc, char * argv[] )
 
   double dataMin = 0;
   double dataMax = 0;
-  bool   tubeBright = true;
   itk::tube::MetaTubeExtractor::VectorType tubeColor(4, 0.0);
   tubeColor[0] = 1.0;
   tubeColor[3] = 1.0;
-  params.SetGeneralProperties( dataMin, dataMax,
-    tubeBright, tubeColor );
+  params.SetGeneralProperties( dataMin, dataMax, tubeColor );
 
   double ridgeScale = scale;
   double ridgeScaleKernelExtent = 1.5;

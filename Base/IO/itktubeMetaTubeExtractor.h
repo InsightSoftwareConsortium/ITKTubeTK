@@ -67,7 +67,7 @@ public:
   virtual void  PrintInfo( void ) const;
 
   void SetGeneralProperties( double _dataMin, double _dataMax,
-    bool _extractBrightTube, const VectorType & _tubeColor );
+    const VectorType & _tubeColor );
 
   void SetRidgeProperties( double _ridgeScale,
     double _ridgeScaleKernelExtent,
@@ -94,7 +94,6 @@ public:
   double GetDataMin( void ) const;
   double GetDataMax( void ) const;
 
-  bool GetExtractBrightTube( void ) const;
   VectorType GetTubeColor( void ) const;
 
   double GetRidgeScale( void ) const;
@@ -148,7 +147,6 @@ protected:
 
   double       m_DataMin;
   double       m_DataMax;
-  bool         m_ExtractBrightTube;
   VectorType   m_TubeColor;
 
   double       m_RidgeScale;

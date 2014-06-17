@@ -769,8 +769,12 @@ RidgeExtractor<TInputImage>
       pSearchDir = lSearchDir;
       }
 
-    vnl_vector<double> v = ::tube::ComputeLineStep( lX, m_StepX*stepFactor,
-      lStepDir );
+    double currentStepX = m_StepX * GetScale() * stepFactor;
+    if( currentStepX < m_StepX )
+      {
+      currentStepX = m_StepX;
+      }
+    vnl_vector<double> v = ::tube::ComputeLineStep( lX, currentStepX, lStepDir );
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
       lX[i] = v[i];
@@ -924,7 +928,7 @@ RidgeExtractor<TInputImage>
 
     double diffX = vcl_sqrt(
       ::tube::ComputeEuclideanDistanceVector( lX, pX ) );
-    if( m_MaxXChange > 0 && diffX > m_MaxXChange*m_StepX + 0.1*recovery )
+    if( m_MaxXChange > 0 && diffX > m_MaxXChange * GetScale() * stepFactor )
       {
       if( this->GetDebug() )
         {
@@ -935,6 +939,8 @@ RidgeExtractor<TInputImage>
         std::cout << "       Roundness = " << roundness << std::endl;
         std::cout << "       Curvature = " << curvature << std::endl;
         std::cout << "       Levelness = " << levelness << std::endl;
+        std::cout << "       maxDiffX = " << m_MaxXChange * GetScale()
+          * stepFactor << std::endl;
         }
       recovery++;
       continue;
@@ -1032,13 +1038,19 @@ RidgeExtractor<TInputImage>
         if( this->GetDebug() )
           {
           std::cout << "*** Ridge terminated: Revisited voxel" << std::endl;
+          std::cout << "  indx = " << indx << std::endl;
+          std::cout << "  maskVal = " << maskVal << std::endl;
+          std::cout << "  tubeId = " << tubeId << std::endl;
+          std::cout << "  tubePointCount = " << tubePointCount << std::endl;
+          std::cout << "  StepX = " << m_StepX << std::endl;
+          std::cout << "  20/StepX = " << 20/m_StepX << std::endl;
           }
         break;
         }
       }
     else
       {
-      m_TubeMaskImage->SetPixel( indx, ( PixelType )( tubeId
+      m_TubeMaskImage->SetPixel( indx, ( float )( tubeId
           + ( tubePointCount/10000.0 ) ) );
       }
 

@@ -21,6 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "tubeStringUtilities.h"
 #include "itktubeMetaTubeExtractor.h"
 
 namespace itk
@@ -87,9 +88,6 @@ PrintInfo( void ) const
 
   METAIO_STREAM::cout << "DataMax = "
     << m_DataMax << METAIO_STREAM::endl;
-
-  METAIO_STREAM::cout << "ExtractBrightTube = "
-    << m_ExtractBrightTube << METAIO_STREAM::endl;
 
   METAIO_STREAM::cout << "TubeColor = "
     << m_TubeColor << METAIO_STREAM::endl;
@@ -158,11 +156,10 @@ PrintInfo( void ) const
 
 void MetaTubeExtractor::
 SetGeneralProperties( double _dataMin, double _dataMax,
-  bool _tubeBrighterThanBackground, const VectorType & _tubeColor )
+  const VectorType & _tubeColor )
 {
   m_DataMin = _dataMin;
   m_DataMax = _dataMax;
-  m_ExtractBrightTube = _tubeBrighterThanBackground;
   m_TubeColor = _tubeColor;
 }
 
@@ -222,12 +219,6 @@ double MetaTubeExtractor::
 GetDataMax( void ) const
 {
   return m_DataMax;
-}
-
-bool MetaTubeExtractor::
-GetExtractBrightTube( void ) const
-{
-  return m_ExtractBrightTube;
 }
 
 vnl_vector<double> MetaTubeExtractor::
@@ -363,7 +354,6 @@ CopyInfo( const MetaTubeExtractor & _tubeExtractor )
 
   SetGeneralProperties( _tubeExtractor.GetDataMin(),
     _tubeExtractor.GetDataMax(),
-    _tubeExtractor.GetExtractBrightTube(),
     _tubeExtractor.GetTubeColor() );
 
   SetRidgeProperties( _tubeExtractor.GetRidgeScale(),
@@ -399,11 +389,11 @@ Clear( void )
 
   m_DataMin = 0;
   m_DataMax = 0;
-  m_ExtractBrightTube = true;
-  m_TubeColor.set_size( 3 );
+  m_TubeColor.set_size( 4 );
   m_TubeColor[0] = 1;
   m_TubeColor[1] = 0;
   m_TubeColor[2] = 0;
+  m_TubeColor[3] = 1;
 
   m_RidgeScale = 1;
   m_RidgeScaleKernelExtent = 2;
@@ -657,11 +647,7 @@ M_SetupReadFields( void )
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "ExtractBrightTube", MET_STRING, true );
-  m_Fields.push_back( mF );
-
-  mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "TubeColor", MET_FLOAT_ARRAY, true, 3 );
+  MET_InitReadField( mF, "TubeColor", MET_STRING, true );
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
@@ -762,6 +748,7 @@ M_SetupWriteFields( void )
     }
 
   strcpy( m_FormTypeName, "TubeExtractor" );
+
   MetaForm::M_SetupWriteFields();
 
   MET_FieldRecordType * mF;
@@ -776,20 +763,12 @@ M_SetupWriteFields( void )
     m_DataMax );
   m_Fields.push_back( mF );
 
+  char colorString[80];
+  sprintf( colorString, "%f %f %f %f", m_TubeColor[0], m_TubeColor[1],
+    m_TubeColor[2], m_TubeColor[3] );
   mF = new MET_FieldRecordType;
-  if( m_ExtractBrightTube )
-    {
-    MET_InitWriteField( mF, "ExtractBrightTube", MET_STRING, 4, "True" );
-    }
-  else
-    {
-    MET_InitWriteField( mF, "ExtractBrightTube", MET_STRING, 5, "False" );
-    }
-  m_Fields.push_back( mF );
-
-  mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "TubeColor", MET_FLOAT_ARRAY, 3,
-    m_TubeColor.data_block() );
+  MET_InitWriteField( mF, "TubeColor", MET_STRING, strlen( colorString ),
+    colorString );
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
@@ -924,20 +903,14 @@ M_Read( void )
   mF = MET_GetFieldRecord( "DataMax", &m_Fields );
   m_DataMax = ( double )mF->value[0];
 
-  mF = MET_GetFieldRecord( "ExtractBrightTube", &m_Fields );
-  if( (char)(mF->value[0]) == 't' || (char)(mF->value[0]) == 'T' )
-    {
-    m_ExtractBrightTube = true;
-    }
-  else
-    {
-    m_ExtractBrightTube = false;
-    }
-
   mF = MET_GetFieldRecord( "TubeColor", &m_Fields );
-  m_TubeColor[0] = ( double )mF->value[0];
-  m_TubeColor[1] = ( double )mF->value[1];
-  m_TubeColor[2] = ( double )mF->value[2];
+  std::string str = (char *)(mF->value);
+  std::vector< double > clr(4);
+  ::tube::StringToVector( str, clr, " " );
+  m_TubeColor[0] = clr[0];
+  m_TubeColor[1] = clr[1];
+  m_TubeColor[2] = clr[2];
+  m_TubeColor[3] = clr[3];
 
   mF = MET_GetFieldRecord( "RidgeScale", &m_Fields );
   m_RidgeScale = ( double )mF->value[0];

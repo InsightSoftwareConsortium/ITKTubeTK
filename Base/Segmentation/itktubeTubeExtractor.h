@@ -156,14 +156,6 @@ public:
   double GetRadius( void );
 
   /**
-   * Set Extract Ridge */
-  void ExtractBrightTube( bool extractRidge );
-
-  /**
-   * Get Extract Ridge */
-  bool ExtractBrightTube( void );
-
-  /**
    * Get the ridge extractor */
   typename RidgeExtractor<ImageType>::Pointer GetRidgeOp( void );
 
@@ -203,11 +195,11 @@ public:
 
   /**
    * Set the tube color */
-  void SetColor( float color[4] );
+  void SetTubeColor( const vnl_vector< double > & color );
 
   /**
    * Get the tube color */
-  itkGetMacro( Color, float * );
+  vnl_vector<double> & GetTubeColor( void );
 
   /**
    * Set the idle callback */
@@ -248,7 +240,7 @@ private:
 
   typename ImageType::Pointer       m_InputImage;
 
-  float                             m_Color[4];
+  vnl_vector<double>                m_TubeColor;
 
   typename TubeGroupType::Pointer   m_TubeGroup;
 

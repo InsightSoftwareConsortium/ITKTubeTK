@@ -146,13 +146,13 @@ Read( const char * _headerName )
     return false;
     }
 
-  typename TubeExtractorType::RidgeOpType ridgeOp = m_TubeExtractor->GetRidgeOp();
-  typename TubeExtractorType::RadiusOpType radiusOp = 
+  typename TubeExtractorType::RidgeOpType::Pointer ridgeOp =
+    m_TubeExtractor->GetRidgeOp();
+  typename TubeExtractorType::RadiusOpType::Pointer radiusOp = 
     m_TubeExtractor->GetRadiusOp();
 
   m_TubeExtractor->SetDataMin( teReader.GetDataMin() );
   m_TubeExtractor->SetDataMax( teReader.GetDataMax() );
-  m_TubeExtractor->SetExtractBrightTube( teReader.GetExtractBrightTube() );
   m_TubeExtractor->SetTubeColor( teReader.GetTubeColor() );
 
   ridgeOp->SetScale( teReader.GetRidgeScale() );
@@ -191,14 +191,13 @@ Write( const char * _headerName )
 
   MetaTubeExtractor teWriter;
 
-  typename TubeExtractorType::RidgeOpType ridgeOp = m_TubeExtractor->GetRidgeOp();
-  typename TubeExtractorType::RadiusOpType radiusOp = 
+  typename TubeExtractorType::RidgeOpType::Pointer ridgeOp =
+    m_TubeExtractor->GetRidgeOp();
+  typename TubeExtractorType::RadiusOpType::Pointer radiusOp = 
     m_TubeExtractor->GetRadiusOp();
 
   teWriter.SetGeneralProperties( m_TubeExtractor->GetDataMin(),
     m_TubeExtractor->GetDataMax(),
-    m_TubeExtractor->GetRadius(),
-    m_TubeExtractor->GetExtractBrightTube(),
     m_TubeExtractor->GetTubeColor() );
 
   teWriter.SetRidgeProperties( ridgeOp->GetScale(),
