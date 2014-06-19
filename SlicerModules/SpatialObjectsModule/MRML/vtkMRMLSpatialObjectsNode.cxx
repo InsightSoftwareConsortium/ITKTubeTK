@@ -63,11 +63,7 @@ vtkMRMLNodeNewMacro(vtkMRMLSpatialObjectsNode);
 vtkMRMLSpatialObjectsNode::vtkMRMLSpatialObjectsNode( void )
 {
   this->PrepareSubsampling();
-  this->SubsamplingRatio = 1;
-
-  this->SpatialObject = TubeNetType::New();
-  this->SpatialObject->Initialize();
-  this->UpdatePolyDataFromSpatialObject();
+  this->Reset();
 }
 
 //------------------------------------------------------------------------------
@@ -121,6 +117,16 @@ void vtkMRMLSpatialObjectsNode::Copy(vtkMRMLNode *anode)
     }
 
   this->EndModify(disabledModify);
+}
+
+//------------------------------------------------------------------------------
+void vtkMRMLSpatialObjectsNode::Reset()
+{
+  this->SubsamplingRatio = 1;
+
+  this->SpatialObject = TubeNetType::New();
+  this->SpatialObject->Initialize();
+  this->UpdatePolyDataFromSpatialObject();
 }
 
 //------------------------------------------------------------------------------

@@ -80,6 +80,10 @@ public:
   virtual void Copy(vtkMRMLNode *node);
 
   ///
+  /// Reset the node to an empty spatial object
+  virtual void Reset();
+
+  ///
   /// Updates this node if it depends on other nodes
   /// when the node is deleted in the scene
   virtual void UpdateReferences( void );

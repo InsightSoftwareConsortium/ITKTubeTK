@@ -117,35 +117,62 @@ AddSpatialObjects(const char* dirname, std::vector<std::string> suffix)
 }
 
 //------------------------------------------------------------------------------
-vtkMRMLSpatialObjectsNode*
-vtkSlicerSpatialObjectsLogic::AddSpatialObject(const char* filename)
+void vtkSlicerSpatialObjectsLogic
+::SetSpatialObject(vtkMRMLSpatialObjectsNode* spatialObjectNode,
+                   const char* filename)
 {
-  vtkDebugMacro("Adding spatial objects from filename ");
+  if (!spatialObjectNode)
+    {
+    return;
+    }
 
-  vtkNew<vtkMRMLSpatialObjectsNode> spatialObjectsNode;
-  vtkMRMLSpatialObjectsStorageNode* storageNode = 0;
+  vtkMRMLSpatialObjectsStorageNode* storageNode =
+    vtkMRMLSpatialObjectsStorageNode::SafeDownCast(
+      spatialObjectNode->GetStorageNode());
+  bool addStorageNodeToScene = false;
+  if (!storageNode)
+    {
+    addStorageNodeToScene = true;
+    storageNode = vtkMRMLSpatialObjectsStorageNode::New();
+    }
   if (filename)
     {
-    storageNode = vtkMRMLSpatialObjectsStorageNode::New();
     storageNode->SetFileName(filename);
 
-    if(storageNode->ReadData(spatialObjectsNode.GetPointer()) != 0)
+    if(storageNode->ReadData(spatialObjectNode) != 0)
       {
       const itksys_stl::string fname(filename);
       itksys_stl::string name =
         itksys::SystemTools::GetFilenameWithoutExtension(fname);
       std::string uname(
         this->GetMRMLScene()->GetUniqueNameByString(name.c_str()));
-      spatialObjectsNode->SetName(uname.c_str());
+      spatialObjectNode->SetName(uname.c_str());
       }
+    }
+  else
+    {
+    spatialObjectNode->Reset();
     }
 
   this->GetMRMLScene()->SaveStateForUndo();
-  if (storageNode)
+  if (storageNode && addStorageNodeToScene)
     {
     this->GetMRMLScene()->AddNode(storageNode);
     storageNode->Delete();
     }
+  this->Modified();
+}
+
+//------------------------------------------------------------------------------
+vtkMRMLSpatialObjectsNode*
+vtkSlicerSpatialObjectsLogic::AddSpatialObject(const char* filename)
+{
+  vtkDebugMacro("Adding spatial objects from filename ");
+
+  vtkNew<vtkMRMLSpatialObjectsNode> spatialObjectsNode;
+  this->SetSpatialObject(spatialObjectsNode.GetPointer(), filename);
+
+  this->GetMRMLScene()->SaveStateForUndo();
   this->GetMRMLScene()->AddNode(spatialObjectsNode.GetPointer());
   this->AddDisplayNodes(spatialObjectsNode.GetPointer());
   this->Modified();

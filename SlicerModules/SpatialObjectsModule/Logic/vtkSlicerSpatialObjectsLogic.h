@@ -48,6 +48,13 @@ public:
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
+  // Read and update the given spatial object from the new spatial object
+  // stored in the filename. If not storage node exists for the given spatial
+  // object, one will be created.
+  void SetSpatialObject(
+    vtkMRMLSpatialObjectsNode* spatialObject, const char* filename);
+
+  // Description:
   // Create SpatialObjectsNode and
   // read their polydata from a specified directory if a filename is specified.
   // Also create the logic object for its display.
