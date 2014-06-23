@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>Sample CLI Application (TubeTK)</title>
+  <description>Demonstration of how to write a CLI application. Performs blurring.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters.</description>
+    <boolean>
+      <name>reverse</name>
+      <label>Reverse conversion</label>
+      <description>Convert tre files from TubeTK to TubeX.</description>
+      <longflag>reverse</longflag>
+      <flag>r</flag>
+      <default>false</default>
+    </boolean>
+    <file>
+      <name>inputTREFileName</name>
+      <label>Input TRE</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input TRE.</description>
+    </file>
+    <file>
+      <name>outputTREFileName</name>
+      <label>Output TRE</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Output TRE.</description>
+    </file>
+  </parameters>
+</executable>

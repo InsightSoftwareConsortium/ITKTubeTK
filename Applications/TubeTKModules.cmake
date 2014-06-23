@@ -35,6 +35,7 @@ set( TubeTK_${proj}_MODULES
   ConvertInnerOpticToPlus
   ConvertShrunkenSeedImageToList
   ConvertToMetaImage
+  ConvertTRE
   ConvertTubeGraphToImage
   ConvertTubesToDensityImage
   ConvertTubesToImage

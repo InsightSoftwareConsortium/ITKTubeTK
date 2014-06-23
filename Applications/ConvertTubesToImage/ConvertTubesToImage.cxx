@@ -57,18 +57,7 @@ TubesType::Pointer ReadTubes( const char * file );
 void WriteImage( const char * file, OutputImageType::Pointer image );
 
 /** Main routine */
-int DoIt( int argc, char * argv[] );
-
-
 int main( int argc, char * argv[] )
-{
-  PARSE_ARGS;
-  return DoIt( argc, argv );
-}
-
-
-/** Main work happens here */
-int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
@@ -114,7 +103,7 @@ int DoIt( int argc, char * argv[] )
     tubeFilter = TubetoImageFilterType::New();
   tubeFilter->SetBuildRadiusImage( false );
   tubeFilter->SetBuildTangentImage( false );
-  tubeFilter->SetUseRadius( false );
+  tubeFilter->SetUseRadius( useRadii );
   tubeFilter->SetSize( size );
   tubeFilter->SetSpacing( spacing );
   tubeFilter->SetInput( tubes );
