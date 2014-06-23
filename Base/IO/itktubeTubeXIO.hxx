@@ -96,7 +96,8 @@ TubeXIO< TDimension >
   mF->terminateRead = true;
   fields.push_back(mF);
 
-  std::ifstream tmpReadStream( _fileName, std::ios::binary | std::ios::in );
+  std::ifstream tmpReadStream( _fileName.c_str(), std::ios::binary |
+    std::ios::in );
 
   if( !tmpReadStream.rdbuf()->is_open() )
     {
@@ -294,8 +295,8 @@ TubeXIO< TDimension >
 {
   typedef typename TubeType::PointListType  PointListType;
 
-  std::ofstream tmpWriteStream(_fileName, METAIO_STREAM::ios::binary |
-    METAIO_STREAM::ios::out);
+  std::ofstream tmpWriteStream( _fileName.c_str(), std::ios::binary |
+    std::ios::out);
 
   tmpWriteStream << "NDims: " << TDimension << std::endl;
   tmpWriteStream << "Dimensions: 512 512 393" << std::endl;
