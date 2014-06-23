@@ -34,12 +34,14 @@ set( TubeTK_Base_IO_H_Files
   itktubeMetaTubeExtractor.h
   itktubePDFSegmenterIO.h
   itktubeRidgeSeedFilterIO.h
-  itktubeTubeExtractorIO.h )
+  itktubeTubeExtractorIO.h 
+  itktubeTubeXIO.h )
 
 set( TubeTK_Base_IO_HXX_Files
   itktubePDFSegmenterIO.hxx
   itktubeRidgeSeedFilterIO.hxx
-  itktubeTubeExtractorIO.hxx )
+  itktubeTubeExtractorIO.hxx 
+  itktubeTubeXIO.hxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Segmentation

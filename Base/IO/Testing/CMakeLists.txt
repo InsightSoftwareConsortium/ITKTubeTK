@@ -37,6 +37,12 @@ if( PYTHON_EXECUTABLE )
     ${TubeTK_SOURCE_DIR}/Base/IO )
 endif( PYTHON_EXECUTABLE )
 
+set( IMAGECOMPARE_EXE
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
+
+set( TEXTCOMPARE_EXE
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
+
 set( BASE_IO_TESTS
   ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseIOTests> )
 
@@ -53,7 +59,9 @@ set( tubeBaseIOTests_SRCS
   itktubeMetaRidgeSeedTest.cxx
   itktubeMetaTubeExtractorTest.cxx
   itktubePDFSegmenterIOTest.cxx
-  itktubeRidgeSeedFilterIOTest.cxx )
+  itktubeRidgeSeedFilterIOTest.cxx
+  itktubeTubeExtractorIOTest.cxx
+  itktubeTubeXIOTest.cxx )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
@@ -72,6 +80,7 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     TubeTKIO
+    TubeTKNumerics
     ${ITK_LIBRARIES}
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/Common
@@ -137,3 +146,37 @@ Midas3FunctionAddTest( NAME itktubeRidgeSeedFilterIOTest
       ${TEMP}/itktubeRidgeSeedFilterIOTest_Output.mha
       ${TEMP}/itktubeRidgeSeedFilterIOTest.mrs
       ${TEMP}/itktubeRidgeSeedFilterIOTest_Output2.mha )
+
+Midas3FunctionAddTest( NAME itktubeTubeExtractorIOTest
+  COMMAND ${BASE_IO_TESTS}
+    itktubeTubeExtractorIOTest
+      MIDAS{TubeExtractorIOTest.mtp.md5}
+      ${TEMP}/itktubeTubeExtractorIOTest.mtp
+      ${TEMP}/itktubeTubeExtractorIOTest2.mtp )
+
+Midas3FunctionAddTest( NAME itktubeTubeExtractorIOTest-Compare
+  COMMAND ${TEXTCOMPARE_EXE}
+    -b MIDAS{TubeExtractorIOTest.mtp.md5}
+    -t ${TEMP}/itktubeTubeExtractorIOTest.mtp )
+set_property( TEST itktubeTubeExtractorIOTest-Compare APPEND PROPERTY DEPENDS
+  itktubeTubeExtractorIOTest )
+
+Midas3FunctionAddTest( NAME itktubeTubeExtractorIOTest-Compare2
+  COMMAND ${TEXTCOMPARE_EXE}
+    -b MIDAS{TubeExtractorIOTest.mtp.md5}
+    -t ${TEMP}/itktubeTubeExtractorIOTest2.mtp )
+set_property( TEST itktubeTubeExtractorIOTest-Compare2 APPEND PROPERTY DEPENDS
+  itktubeTubeExtractorIOTest )
+
+Midas3FunctionAddTest( NAME itktubeTubeXIOTest
+  COMMAND ${BASE_IO_TESTS}
+    itktubeTubeXIOTest
+      MIDAS{TubeXIOTest.tre.md5}
+      ${TEMP}/itktubeTubeXIOTest.tre )
+
+Midas3FunctionAddTest( NAME itktubeTubeXIOTest-Compare
+  COMMAND ${TEXTCOMPARE_EXE}
+    -b MIDAS{TubeXIOTest.tre.md5}
+    -t ${TEMP}/itktubeTubeXIOTest.tre )
+set_property( TEST itktubeTubeXIOTest-Compare APPEND PROPERTY DEPENDS
+  itktubeTubeXIOTest )
