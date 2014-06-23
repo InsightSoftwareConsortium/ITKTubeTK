@@ -35,14 +35,14 @@ template< class TImage >
 TubeExtractorIO< TImage >::
 TubeExtractorIO( void )
 {
-  Clear();
+  this->Clear();
 }
 
 template< class TImage >
 TubeExtractorIO< TImage >::
 TubeExtractorIO( const char * _headerName )
 {
-  Clear();
+  this->Clear();
 
   TubeExtractorIO::Read( _headerName );
 }
@@ -52,9 +52,9 @@ TubeExtractorIO< TImage >::
 TubeExtractorIO( const typename
   TubeExtractorType::Pointer & _filter )
 {
-  Clear();
+  this->Clear();
 
-  InitializeEssential( _filter );
+  this->InitializeEssential( _filter );
 }
 
 template< class TImage >
@@ -81,9 +81,9 @@ template< class TImage >
 void TubeExtractorIO< TImage >::
 CopyInfo( const TubeExtractorIO< TImage > & _filterIO )
 {
-  Clear();
+  this->Clear();
 
-  InitializeEssential( _filterIO.GetTubeExtractor() );
+  this->InitializeEssential( _filterIO.GetTubeExtractor() );
 }
 
 template< class TImage >
@@ -135,7 +135,23 @@ Read( const char * _headerName )
 {
   if( m_TubeExtractor.IsNull() )
     {
-    m_TubeExtractor = TubeExtractorType::New();
+    std::cout << 
+      "ERROR: Set a TubeExtractor prior to reading TubeExtractor parameters."
+      << std::endl;
+    return false;
+    }
+
+  typename TubeExtractorType::RidgeOpType::Pointer ridgeOp =
+    m_TubeExtractor->GetRidgeOp();
+  typename TubeExtractorType::RadiusOpType::Pointer radiusOp = 
+    m_TubeExtractor->GetRadiusOp();
+
+  if( ridgeOp.IsNull() || radiusOp.IsNull() )
+    {
+    std::cout << 
+      "ERROR: Set a tubeExtractor input image prior to reading parameters."
+      << std::endl;
+    return false;
     }
 
   MetaTubeExtractor teReader;
@@ -145,11 +161,6 @@ Read( const char * _headerName )
     m_TubeExtractor = NULL;
     return false;
     }
-
-  typename TubeExtractorType::RidgeOpType::Pointer ridgeOp =
-    m_TubeExtractor->GetRidgeOp();
-  typename TubeExtractorType::RadiusOpType::Pointer radiusOp = 
-    m_TubeExtractor->GetRadiusOp();
 
   m_TubeExtractor->SetDataMin( teReader.GetDataMin() );
   m_TubeExtractor->SetDataMax( teReader.GetDataMax() );
@@ -162,7 +173,7 @@ Read( const char * _headerName )
   ridgeOp->SetMaxTangentChange( teReader.GetRidgeMaxTangentChange() );
   ridgeOp->SetMaxXChange( teReader.GetRidgeMaxXChange() );
   ridgeOp->SetMinRidgeness( teReader.GetRidgeMinRidgeness() );
-  ridgeOp->SetMinRidgenessStart( teReader.GetRidgeMinRidgeness() );
+  ridgeOp->SetMinRidgenessStart( teReader.GetRidgeMinRidgenessStart() );
   ridgeOp->SetMinRoundness( teReader.GetRidgeMinRoundness() );
   ridgeOp->SetMinRoundnessStart( teReader.GetRidgeMinRoundnessStart() );
   ridgeOp->SetMinCurvature( teReader.GetRidgeMinCurvature() );
@@ -186,6 +197,9 @@ Write( const char * _headerName )
 {
   if( m_TubeExtractor.IsNull() )
     {
+    std::cout << 
+      "ERROR: Set a tubeExtractor input image prior to writing parameters."
+      << std::endl;
     return false;
     }
 

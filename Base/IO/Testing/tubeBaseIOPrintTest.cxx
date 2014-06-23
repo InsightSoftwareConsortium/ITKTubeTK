@@ -28,6 +28,8 @@ limitations under the License.
 #include "itktubeMetaTubeExtractor.h"
 #include "itktubePDFSegmenterIO.h"
 #include "itktubeRidgeSeedFilterIO.h"
+#include "itktubeTubeExtractorIO.h"
+#include "itktubeTubeXIO.h"
 
 int tubeBaseIOPrintTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
 {
@@ -59,6 +61,13 @@ int tubeBaseIOPrintTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
   itk::tube::RidgeSeedFilterIO< ImageType, ImageType > ridgeSeedFilterIO;
   std::cout << "-------------ridgeSeedFilterIO" << std::endl;
   ridgeSeedFilterIO.PrintInfo();
+
+  itk::tube::TubeExtractorIO< ImageType > tubeExtractorIO;
+  std::cout << "-------------tubeExtractorIO" << std::endl;
+  tubeExtractorIO.PrintInfo();
+
+  itk::tube::TubeXIO< 3 >::Pointer tubeTubeXIO;
+  std::cout << "-------------tubeTubeXIO" << tubeTubeXIO << std::endl;
 
   return EXIT_SUCCESS;
 }

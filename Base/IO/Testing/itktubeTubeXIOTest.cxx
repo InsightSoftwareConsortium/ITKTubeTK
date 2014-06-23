@@ -21,17 +21,39 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeMetaClassPDF.h"
-#include "itktubeMetaLDA.h"
-#include "itktubeMetaNJetLDA.h"
-#include "itktubeMetaRidgeSeed.h"
-#include "itktubeMetaTubeExtractor.h"
-#include "itktubePDFSegmenterIO.h"
-#include "itktubeRidgeSeedFilterIO.h"
-#include "itktubeTubeExtractorIO.h"
 #include "itktubeTubeXIO.h"
 
-int main( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
+int itktubeTubeXIOTest( int argc, char * argv[] )
 {
+  if( argc != 3 )
+    {
+    std::cerr << "Missing arguments." << std::endl;
+    std::cerr << "Usage: " << std::endl;
+    std::cerr << argv[0] << " input.tre output.tre" << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  // Declare the type for the Filter
+  typedef itk::tube::TubeXIO< 3 >    IOMethodType;
+  IOMethodType::Pointer ioMethod = IOMethodType::New();
+
+  if( !ioMethod->Read( argv[1] ) )
+    {
+    return EXIT_FAILURE;
+    }
+
+  IOMethodType::TubeGroupType::Pointer tubeGroup = 
+    ioMethod->GetTubeGroup();
+
+  IOMethodType::Pointer ioMethod2 = IOMethodType::New();
+
+  ioMethod2->SetTubeGroup( tubeGroup );
+
+  if( !ioMethod2->Write( argv[2] ) )
+    {
+    return EXIT_FAILURE;
+    }
+
+  // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;
 }

@@ -453,7 +453,7 @@ CanRead( const char *_headerName ) const
 
   METAIO_STL::string::size_type stringPos = fname.rfind( ".mtp" );
   if ( ( stringPos != METAIO_STL::string::npos )
-      && ( stringPos == fname.length() - 5 ) )
+      && ( stringPos == fname.length() - 4 ) )
     {
     extensionFound = true;
     }
@@ -474,7 +474,7 @@ CanRead( const char *_headerName ) const
     return false;
     }
 
-  bool result = !std::strncmp( MET_ReadForm( inputStream ).c_str(), "TubeExtractor", 10 );
+  bool result = !std::strncmp( MET_ReadForm( inputStream ).c_str(), "TubeExtractor", 13 );
 
   inputStream.close();
 

@@ -234,9 +234,9 @@ void
 RadiusExtractor<TInputImage>
 ::SetRadiusMin( double radiusMin )
 {
-  if( radiusMin < 0.5 )
+  if( radiusMin < 0.3 )
     {
-    radiusMin = 0.5;
+    radiusMin = 0.3;
     }
   m_RadiusMin = radiusMin;
   m_MedialnessOptSpline->SetXMin( m_RadiusMin / m_MedialnessScaleStep );
