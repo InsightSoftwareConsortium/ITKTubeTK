@@ -89,7 +89,6 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 {
   typename GaussianDerivativeImageSourceType::Pointer gaussSource =
     GaussianDerivativeImageSourceType::New();
-  gaussSource->SetNormalized( true );
 
   const typename ComplexImageType::RegionType inputRegion(
     this->GetInput()->GetLargestPossibleRegion() );

@@ -37,12 +37,6 @@ namespace tube
  * \brief Generate an n-dimensional image of a Gaussian.
  *
  * GaussianImageSource generates an image of a Gaussian.
- * m_Normalized determines whether or not the Gaussian is normalized
- * (whether or not the sum over infinite space is 1.0)
- * When creating an image, it is preferable to _not_ normalize the Gaussian
- * m_Scale scales the output of the Gaussian to span a range
- * larger than 0->1, and is typically set to the maximum value
- * of the output data type (for instance, 255 for uchars)
  *
  * The output image may be of any dimension.
  *
@@ -107,13 +101,6 @@ public:
   itkSetMacro(Index, IndexType);
   itkGetConstReferenceMacro(Index, IndexType);
 
-  /** Gets and sets for Gaussian parameters */
-  itkSetMacro(Scale, double);
-  itkGetConstReferenceMacro(Scale, double);
-
-  itkSetMacro(Normalized, bool);
-  itkGetConstReferenceMacro(Normalized, bool);
-
   itkSetMacro(Sigmas, SigmasType);
   itkGetConstReferenceMacro(Sigmas, SigmasType);
 
@@ -157,12 +144,6 @@ private:
 
   /** The mean in each direction. */
   PointType m_Mean;
-
-  /** A scale factor multiplied by the true value of the Gaussian. */
-  double m_Scale;
-
-  /** Whether or not to normalize the Gaussian. */
-  bool m_Normalized;
 
   OrdersType m_Orders;
 }; // End class GaussianDerivativeImageSource

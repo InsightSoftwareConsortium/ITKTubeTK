@@ -42,9 +42,6 @@ GaussianDerivativeImageSource< TOutputImage >
   m_Mean.Fill(0);
   m_Sigmas.Fill(1);
   m_Orders.Fill(0);
-  m_Scale = 1.0;
-
-  m_Normalized = false;
 }
 
 //----------------------------------------------------------------------------
@@ -62,10 +59,6 @@ GaussianDerivativeImageSource< TOutputImage >
   os << indent << "Gaussian sigma: " << m_Sigmas << std::endl;
 
   os << indent << "Gaussian mean: " << m_Mean << std::endl;
-
-  os << indent << "Gaussian scale: " << m_Scale << std::endl;
-
-  os << indent << "Normalized Gaussian?: " << m_Normalized << std::endl;
 }
 
 //----------------------------------------------------------------------------
@@ -86,9 +79,6 @@ GaussianDerivativeImageSource< TOutputImage >
   this->SetOrders( orders );
   this->SetSigmas( sigmas );
   this->SetMean( mean );
-
-  double scale = parameters[3*TOutputImage::ImageDimension];
-  this->SetScale( scale );
 }
 
 //----------------------------------------------------------------------------
@@ -97,14 +87,13 @@ typename GaussianDerivativeImageSource< TOutputImage >::ParametersType
 GaussianDerivativeImageSource< TOutputImage >
 ::GetParameters() const
 {
-  ParametersType parameters( 2*TOutputImage::ImageDimension + 1 );
+  ParametersType parameters( 2*TOutputImage::ImageDimension );
   for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
     {
     parameters[i] = m_Orders[i];
     parameters[i + TOutputImage::ImageDimension] = m_Sigmas[i];
     parameters[i + 2*TOutputImage::ImageDimension] = m_Mean[i];
     }
-  parameters[3*TOutputImage::ImageDimension] = m_Scale;
 
   return parameters;
 }
@@ -115,7 +104,7 @@ unsigned int
 GaussianDerivativeImageSource< TOutputImage >
 ::GetNumberOfParameters() const
 {
-  return 3*TOutputImage::ImageDimension + 1;
+  return 3*TOutputImage::ImageDimension;
 }
 
 //----------------------------------------------------------------------------
@@ -158,23 +147,21 @@ GaussianDerivativeImageSource< TOutputImage >
   ProgressReporter progress( this, 0,
                              outputPtr->GetRequestedRegion()
                              .GetNumberOfPixels() );
- //  Walk the output image, evaluating the spatial function at each pixel
-  for (; !outIt.IsAtEnd(); ++outIt )
+  double prefixDenom = 1.0;
+  const double squareRootOfTwoPi = vcl_sqrt(2.0 * vnl_math::pi);
+  for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
+    {
+    prefixDenom *= m_Sigmas[i] * squareRootOfTwoPi;
+    }
+  double initPrefixDenom = prefixDenom;
+
+  double total = 0;
+  while( !outIt.IsAtEnd() )
     {
     typename TOutputImage::IndexType index = outIt.GetIndex();
     outputPtr->TransformIndexToPhysicalPoint(index, evalPoint);
 
-    double prefixDenom = 1.0;
-
-    if ( m_Normalized )
-      {
-      const double squareRootOfTwoPi = vcl_sqrt(2.0 * vnl_math::pi);
-
-      for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
-        {
-        prefixDenom *= m_Sigmas[i] * squareRootOfTwoPi;
-        }
-      }
+    prefixDenom = initPrefixDenom;
 
     for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
       {
@@ -193,11 +180,22 @@ GaussianDerivativeImageSource< TOutputImage >
                    / ( 2 * m_Sigmas[i] * m_Sigmas[i] );
       }
 
-    double value = m_Scale * ( 1 / prefixDenom ) * vcl_exp(-1 * suffixExp);
+    double value = ( 1 / prefixDenom ) * vcl_exp( -suffixExp );
+    total += vcl_abs( value );
 
     // Set the pixel value to the function value
     outIt.Set( ( typename TOutputImage::PixelType )value );
+
     progress.CompletedPixel();
+
+    ++outIt;
+    }
+
+  outIt.GoToBegin();
+  while( !outIt.IsAtEnd() )
+    {
+    outIt.Set( outIt.Get() / total );
+    ++outIt;
     }
 }
 } // End namespace tube

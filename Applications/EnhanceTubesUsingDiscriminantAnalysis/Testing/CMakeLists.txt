@@ -79,6 +79,7 @@ set_property(TEST ${MODULE_NAME}-Test1-Output-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
   COMMAND ${PROJ_EXE}
     --loadDiscriminantInfo ${TEMP}/${MODULE_NAME}Test1.mrs
+    --saveDiscriminantInfo ${TEMP}/${MODULE_NAME}Test2.mrs
     MIDAS{im0001.crop.contrast.mha.md5}
     ${TEMP}/${MODULE_NAME}Test2_Output.mha )
 set_property(TEST ${MODULE_NAME}-Test2
@@ -93,5 +94,15 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Output-Compare
     -t ${TEMP}/${MODULE_NAME}Test2_Output.mha
     -b MIDAS{${MODULE_NAME}Test1_Output.mha.md5} )
 set_property(TEST ${MODULE_NAME}-Test2-Output-Compare
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
+
+#######
+# Test2-Compare MRS
+#######
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-MRS-Compare
+  COMMAND ${TEXTCOMPARE_EXE}
+    -t ${TEMP}/${MODULE_NAME}Test2.mrs
+    -b MIDAS{${MODULE_NAME}Test2.mrs.md5} )
+set_property(TEST ${MODULE_NAME}-Test2-MRS-Compare
   APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
 

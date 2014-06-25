@@ -92,12 +92,6 @@ public:
   void  SetPDFFileName( const std::string & _pdfFileName );
   const std::string & GetPDFFileName( void ) const;
 
-  void   SetIntensityMin( double _intensityMin );
-  double GetIntensityMin( void ) const;
-
-  void   SetIntensityMax( double _intensityMax );
-  double GetIntensityMax( void ) const;
-
   void SetRidgeId( int _ridgeId );
   int  GetRidgeId( void ) const;
 
@@ -134,8 +128,6 @@ protected:
 
   bool  M_Read( void );
 
-  double m_IntensityMin;
-  double m_IntensityMax;
   int    m_RidgeId;
   int    m_BackgroundId;
   int    m_UnknownId;

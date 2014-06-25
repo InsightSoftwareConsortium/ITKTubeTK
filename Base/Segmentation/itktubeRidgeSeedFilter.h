@@ -110,13 +110,6 @@ public:
 
   typename PDFSegmenterType::Pointer GetPDFSegmenter( void );
 
-  // Ridge
-  void   SetIntensityRange( float intensityMin, float intensityMax );
-  void   SetIntensityMin( float intensityMin );
-  float  GetIntensityMin( void ) const;
-  void   SetIntensityMax( float intensityMax );
-  float  GetIntensityMax( void ) const;
-
   void            SetScales( const RidgeScalesType & Scales );
   RidgeScalesType GetScales( void ) const;
 
@@ -162,6 +155,9 @@ public:
   itkSetMacro( Skeletonize, bool );
   itkGetMacro( Skeletonize, bool );
 
+  itkSetMacro( TrainClassifier, bool );
+  itkGetMacro( TrainClassifier, bool );
+
   // Local
   void   Update();
   void   ClassifyImages();
@@ -193,6 +189,8 @@ private:
   double         m_SeedTolerance;
 
   bool           m_Skeletonize;
+
+  bool           m_TrainClassifier;
 
   typename LabelMapType::Pointer m_LabelMap;
 

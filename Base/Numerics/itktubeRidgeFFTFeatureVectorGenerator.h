@@ -77,11 +77,6 @@ public:
   //
   virtual unsigned int GetNumberOfFeatures( void ) const;
 
-  void  SetIntensityMin( float intensityMin );
-  float GetIntensityMin( void ) const;
-  void  SetIntensityMax( float intensityMax );
-  float GetIntensityMax( void ) const;
-
   void SetScales( const RidgeScalesType & scales );
   const RidgeScalesType & GetScales( void ) const;
 
@@ -108,9 +103,6 @@ private:
   // Purposely not implemented
   RidgeFFTFeatureVectorGenerator( const Self & );
   void operator = ( const Self & );      // Purposely not implemented
-
-  double                             m_IntensityMin;
-  double                             m_IntensityMax;
 
   RidgeScalesType                    m_Scales;
 

@@ -23,6 +23,8 @@ limitations under the License.
 
 #include "itktubeMetaLDA.h"
 
+#include "metaUtilsTemp.h"
+
 namespace itk
 {
 
@@ -475,12 +477,12 @@ void MetaLDA
   const int nDims = m_LDAValues.size();
 
   mF = new MET_FieldRecordType();
-  MET_InitWriteField( mF, "Values", MET_FLOAT_ARRAY, nDims,
+  MET_InitWriteField_Temp( mF, "Values", MET_FLOAT_ARRAY, nDims,
                       m_LDAValues.data_block() );
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType();
-  MET_InitWriteField( mF, "Matrix", MET_FLOAT_MATRIX, nDims,
+  MET_InitWriteField_Temp( mF, "Matrix", MET_FLOAT_MATRIX, nDims,
                       m_LDAMatrix.data_block() );
   m_Fields.push_back( mF );
 
