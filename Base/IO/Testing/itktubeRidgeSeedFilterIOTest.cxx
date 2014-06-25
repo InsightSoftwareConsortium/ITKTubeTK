@@ -95,7 +95,7 @@ int itktubeRidgeSeedFilterIOTest( int argc, char * argv[] )
   filter->SetRidgeId( 255 );
   filter->SetBackgroundId( 127 );
   filter->SetUnknownId( 0 );
-  std::cout << filter << std::endl;
+  filter->SetTrainClassifier( true );
   filter->Update();
   std::cout << "Update done." << std::endl;
 
@@ -127,6 +127,8 @@ int itktubeRidgeSeedFilterIOTest( int argc, char * argv[] )
     filter2 );
   filterIO2.Read( argv[4] );
 
+  filter2->SetTrainClassifier( false );
+  filter2->Update();
   filter2->ClassifyImages();
 
   LabelMapWriterType::Pointer labelmapWriter2 = LabelMapWriterType::New();
@@ -142,6 +144,12 @@ int itktubeRidgeSeedFilterIOTest( int argc, char * argv[] )
     std::cerr << "Exception caught during write2:" << std::endl << e;
     return EXIT_FAILURE;
     }
+
+  char out3[255];
+  sprintf( out3, "%s.mrs", argv[5] );
+  itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO3(
+    filter2 );
+  filterIO3.Write( out3 );
 
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;

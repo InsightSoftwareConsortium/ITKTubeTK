@@ -118,7 +118,6 @@ QtImageEditor::Internals::createGaussianDerivative(
 {
   GaussianDerivativeSourceType::Pointer gaussianDerivativeSource =
   GaussianDerivativeSourceType::New();
-  gaussianDerivativeSource->SetNormalized( true );
 
   ComplexImageType::ConstPointer transformedInput
     = this->m_FFTFilter->GetOutput();

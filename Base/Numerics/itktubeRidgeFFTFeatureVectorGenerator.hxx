@@ -44,8 +44,6 @@ template< class TImage >
 RidgeFFTFeatureVectorGenerator< TImage >
 ::RidgeFFTFeatureVectorGenerator( void )
 {
-  m_IntensityMin = 0;
-  m_IntensityMax = 0;
   m_Scales.resize( 0 );
   m_FeatureImageList.resize( 0 );
 }
@@ -54,38 +52,6 @@ template< class TImage >
 RidgeFFTFeatureVectorGenerator< TImage >
 ::~RidgeFFTFeatureVectorGenerator( void )
 {
-}
-
-template< class TImage >
-void
-RidgeFFTFeatureVectorGenerator< TImage >
-::SetIntensityMin( float intensityMin )
-{
-  m_IntensityMin = intensityMin;
-}
-
-template< class TImage >
-float
-RidgeFFTFeatureVectorGenerator< TImage >
-::GetIntensityMin( void ) const
-{
-  return m_IntensityMin;
-}
-
-template< class TImage >
-void
-RidgeFFTFeatureVectorGenerator< TImage >
-::SetIntensityMax( float intensityMax )
-{
-  m_IntensityMax = intensityMax;
-}
-
-template< class TImage >
-float
-RidgeFFTFeatureVectorGenerator< TImage >
-::GetIntensityMax( void ) const
-{
-  return m_IntensityMax;
 }
 
 template< class TImage >
@@ -113,7 +79,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
   m_FeatureImageList.resize( numFeatures );
 
   unsigned int feat = 0;
-  for( unsigned int s=0; s<m_Scales.size(); s++ )
+  for( unsigned int s=0; s<m_Scales.size(); ++s )
     {
     ridgeF->SetScale( m_Scales[s] );
     ridgeF->Update();
@@ -146,12 +112,16 @@ RidgeFFTFeatureVectorGenerator< TImage >
   while( !iterF[0].IsAtEnd() )
     {
     unsigned int extremeS = 0;
-    for( unsigned int s=0; s<m_Scales.size(); s++ )
+    for( unsigned int f=0; f<5; ++f )
+      {
+      iterF[ foFeat + f ].Set( iterF[ f ].Get() );
+      }
+    for( unsigned int s=0; s<m_Scales.size(); ++s )
       {
       feat = s * 5;
       for( unsigned int f=0; f<5; ++f )
         {
-        if( s == 0 || iterF[ feat + f ].Get() > iterF[ foFeat + f ].Get() )
+        if( iterF[ feat + f ].Get() > iterF[ foFeat + f ].Get() )
           {
           iterF[ foFeat + f ].Set( iterF[ feat + f ].Get() );
           if( f == 0 )
@@ -160,8 +130,8 @@ RidgeFFTFeatureVectorGenerator< TImage >
             }
           }
         }
-      iterF[ foScale ].Set( m_Scales[ extremeS ] );
       }
+    iterF[ foScale ].Set( m_Scales[ extremeS ] );
     for( unsigned int f=0; f<numFeatures; ++f )
       {
       ++iterF[ f ];

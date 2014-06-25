@@ -104,7 +104,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   filter->SetRidgeId( objId );
   filter->SetBackgroundId( bkgId );
   filter->SetUnknownId( 0 );
-  std::cout << filter << std::endl;
+  filter->SetTrainClassifier( true );
   filter->Update();
   std::cout << "Update done." << std::endl;
 

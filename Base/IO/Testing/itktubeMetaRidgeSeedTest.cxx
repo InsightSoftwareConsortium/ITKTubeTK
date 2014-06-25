@@ -68,8 +68,6 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
   mrs1.SetUnknownId( 1 );
   mrs1.SetBackgroundId( 128 );
   mrs1.SetRidgeId( 256 );
-  mrs1.SetIntensityMin( 0 );
-  mrs1.SetIntensityMax( 4096 );
   mrs1.SetSeedTolerance( 0.5 );
   mrs1.SetSkeletonize( false );
 
@@ -106,16 +104,6 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
   if( mrs2.GetRidgeId() != 256 )
     {
     std::cout << "RidgeId incorrect" << std::endl;
-    return EXIT_FAILURE;
-    }
-  if( mrs2.GetIntensityMin() != 0 )
-    {
-    std::cout << "IntensityMin incorrect" << std::endl;
-    return EXIT_FAILURE;
-    }
-  if( mrs2.GetIntensityMax() != 4096 )
-    {
-    std::cout << "IntensityMax incorrect" << std::endl;
     return EXIT_FAILURE;
     }
   if( mrs2.GetSeedTolerance() != 0.5 )

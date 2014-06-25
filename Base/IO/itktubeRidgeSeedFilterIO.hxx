@@ -161,8 +161,6 @@ Read( const char * _headerName )
     }
 
   m_RidgeSeedFilter->SetScales( seedReader.GetRidgeSeedScales() );
-  m_RidgeSeedFilter->SetIntensityMin( seedReader.GetIntensityMin() );
-  m_RidgeSeedFilter->SetIntensityMax( seedReader.GetIntensityMax() );
   m_RidgeSeedFilter->SetRidgeId( seedReader.GetRidgeId() );
   m_RidgeSeedFilter->SetBackgroundId( seedReader.GetBackgroundId() );
   m_RidgeSeedFilter->SetUnknownId( seedReader.GetUnknownId() );
@@ -197,18 +195,17 @@ Write( const char * _headerName )
 
   MetaRidgeSeed seedWriter;
 
+  seedWriter.SetRidgeSeedScales( m_RidgeSeedFilter->GetScales() );
+  seedWriter.SetRidgeId( m_RidgeSeedFilter->GetRidgeId() );
+  seedWriter.SetBackgroundId( m_RidgeSeedFilter->GetBackgroundId() );
+  seedWriter.SetUnknownId( m_RidgeSeedFilter->GetUnknownId() );
+  seedWriter.SetSeedTolerance( m_RidgeSeedFilter->GetSeedTolerance() );
+  seedWriter.SetSkeletonize( m_RidgeSeedFilter->GetSkeletonize() );
+
   seedWriter.SetLDAValues( m_RidgeSeedFilter->GetBasisValues() );
   seedWriter.SetLDAMatrix( m_RidgeSeedFilter->GetBasisMatrix() );
   seedWriter.SetWhitenMeans( m_RidgeSeedFilter->GetWhitenMeans() );
   seedWriter.SetWhitenStdDevs( m_RidgeSeedFilter->GetWhitenStdDevs() );
-  seedWriter.SetRidgeSeedScales( m_RidgeSeedFilter->GetScales() );
-  seedWriter.SetUnknownId( m_RidgeSeedFilter->GetUnknownId() );
-  seedWriter.SetBackgroundId( m_RidgeSeedFilter->GetBackgroundId() );
-  seedWriter.SetRidgeId( m_RidgeSeedFilter->GetRidgeId() );
-  seedWriter.SetIntensityMin( m_RidgeSeedFilter->GetIntensityMin() );
-  seedWriter.SetIntensityMax( m_RidgeSeedFilter->GetIntensityMax() );
-  seedWriter.SetSeedTolerance( m_RidgeSeedFilter->GetSeedTolerance() );
-  seedWriter.SetSkeletonize( m_RidgeSeedFilter->GetSkeletonize() );
 
   std::string pdfName = _headerName;
   pdfName = pdfName + ".mpd";

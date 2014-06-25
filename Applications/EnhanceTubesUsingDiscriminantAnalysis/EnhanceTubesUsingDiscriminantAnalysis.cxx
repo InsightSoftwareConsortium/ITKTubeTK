@@ -91,22 +91,22 @@ int DoIt( int argc, char * argv[] )
     inLabelmapReader->SetFileName( labelmap.c_str() );
     inLabelmapReader->Update();
     tubeFilter->SetLabelMap( inLabelmapReader->GetOutput() );
+
+    tubeFilter->SetRidgeId( tubeId );
+    tubeFilter->SetBackgroundId( backgroundId );
+    tubeFilter->SetUnknownId( unknownId );
     }
 
   timeCollector.Stop( "LoadData" );
 
-  tubeFilter->SetRidgeId( tubeId );
-  tubeFilter->SetBackgroundId( backgroundId );
-  tubeFilter->SetUnknownId( unknownId );
-
   if( !loadDiscriminantInfo.empty() )
     {
     timeCollector.Start( "LoadBasis" );
-
-    RidgeSeedFilterIOType ridgeSeedFilterIO;
-    ridgeSeedFilterIO.SetRidgeSeedFilter( tubeFilter );
-
+    RidgeSeedFilterIOType ridgeSeedFilterIO( tubeFilter );
+    ridgeSeedFilterIO.Read( loadDiscriminantInfo.c_str() );
     timeCollector.Stop( "LoadBasis" );
+
+    tubeFilter->SetTrainClassifier( false );
     }
   else
     {
@@ -117,18 +117,19 @@ int DoIt( int argc, char * argv[] )
     tubeFilter->GetPDFSegmenter()->SetProbabilityImageSmoothingStandardDeviation(
      tubeScales[0] / 2 );
 
-    tubeFilter->Update();
+    tubeFilter->SetTrainClassifier( true );
 
     timeCollector.Stop( "Update" );
     }
 
+  tubeFilter->Update();
   tubeFilter->ClassifyImages();
+  std::cout << tubeFilter << std::endl;
 
   if( !saveDiscriminantInfo.empty() )
     {
     timeCollector.Start( "SaveBasis" );
-    RidgeSeedFilterIOType ridgeSeedFilterIO;
-    ridgeSeedFilterIO.SetRidgeSeedFilter( tubeFilter );
+    RidgeSeedFilterIOType ridgeSeedFilterIO( tubeFilter );
     ridgeSeedFilterIO.Write( saveDiscriminantInfo.c_str() );
     timeCollector.Stop( "SaveBasis" );
     }

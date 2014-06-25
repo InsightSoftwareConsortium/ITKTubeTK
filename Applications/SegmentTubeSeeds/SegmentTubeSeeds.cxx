@@ -104,20 +104,6 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Stop( "LoadData" );
 
-  if( !labelMap.empty() )
-    {
-    timeCollector.Start( "LoadLabelMap" );
-    typename LabelMapReaderType::Pointer  inMapReader =
-      LabelMapReaderType::New();
-    inMapReader->SetFileName( labelMap.c_str() );
-    inMapReader->Update();
-    rsGenerator->SetLabelMap( inMapReader->GetOutput() );
-    rsGenerator->SetRidgeId( tubeId );
-    rsGenerator->SetBackgroundId( backgroundId );
-    rsGenerator->SetUnknownId( unknownId );
-    timeCollector.Stop( "LoadLabelMap" );
-    }
-
   if( !loadTubeSeedInfo.empty() )
     {
     timeCollector.Start( "LoadTubeSeed" );
@@ -127,13 +113,7 @@ int DoIt( int argc, char * argv[] )
 
     timeCollector.Stop( "LoadTubeSeed" );
 
-    if( !saveTubeSeedInfo.empty() )
-      {
-      timeCollector.Start( "SaveTubeSeedInfo" );
-      RidgeSeedFilterIOType rsWriter( rsGenerator );
-      rsWriter.Write( saveTubeSeedInfo.c_str() );
-      timeCollector.Stop( "SaveTubeSeedInfo" );
-      }
+    rsGenerator->SetTrainClassifier( false );
     }
   else
     {
@@ -144,20 +124,32 @@ int DoIt( int argc, char * argv[] )
       return EXIT_FAILURE;
       }
 
+    timeCollector.Start( "LoadLabelMap" );
+    typename LabelMapReaderType::Pointer  inMapReader =
+      LabelMapReaderType::New();
+    inMapReader->SetFileName( labelMap.c_str() );
+    inMapReader->Update();
+    rsGenerator->SetLabelMap( inMapReader->GetOutput() );
+    timeCollector.Stop( "LoadLabelMap" );
+
+    rsGenerator->SetRidgeId( tubeId );
+    rsGenerator->SetBackgroundId( backgroundId );
+    rsGenerator->SetUnknownId( unknownId );
     rsGenerator->SetScales( ridgeScales );
 
-    timeCollector.Start( "Update" );
-    rsGenerator->Update();
-    timeCollector.Stop( "Update" );
-    rsGenerator->SetLabelMap( NULL );
+    rsGenerator->SetSeedTolerance( seedTolerance );
+
+    rsGenerator->SetTrainClassifier( true );
     }
 
-  rsGenerator->SetSeedTolerance( seedTolerance );
+  timeCollector.Start( "Update" );
+  rsGenerator->Update();
+  rsGenerator->ClassifyImages();
+  timeCollector.Stop( "Update" );
 
   timeCollector.Start( "SaveTubeSeedImage" );
-
-  rsGenerator->ClassifyImages();
-  WriteImage< LabelMapImageType >( rsGenerator->GetOutput(),
+  WriteImage< RidgeSeedImageType >(
+    rsGenerator->GetClassProbabilityDifferenceForInput( 0 ),
     outputSeedImage );
   timeCollector.Stop( "SaveTubeSeedImage" );
 
