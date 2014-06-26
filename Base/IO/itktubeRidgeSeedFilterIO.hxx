@@ -207,7 +207,11 @@ Write( const char * _headerName )
   seedWriter.SetWhitenMeans( m_RidgeSeedFilter->GetWhitenMeans() );
   seedWriter.SetWhitenStdDevs( m_RidgeSeedFilter->GetWhitenStdDevs() );
 
-  std::string pdfName = _headerName;
+  char fileName[255];
+  MET_GetFilePath( _headerName, fileName );
+  int skip = strlen( fileName );
+  std::string pdfName = &(_headerName[skip]);
+
   pdfName = pdfName + ".mpd";
 
   seedWriter.SetPDFFileName(  pdfName.c_str() );
