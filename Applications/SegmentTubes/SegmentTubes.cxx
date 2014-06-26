@@ -284,7 +284,7 @@ int DoIt( int argc, char * argv[] )
       {
       std::stringstream ss;
       ss << "Error: Ridge not found for seed #" << count;
-      tube::ErrorMessage(ss.str());
+      tube::Message(ss.str());
       }
 
     ++seedIndexIter;
