@@ -76,14 +76,13 @@ int WriteOutputImage( std::string & fileName, typename ImageT::Pointer
 
 template< int VDimension >
 int WriteOutputData( std::ofstream & fileStream, itk::ContinuousIndex<
-  double, VDimension > & cIndx, double intensity, double ridgeness,
+  double, VDimension > & cIndx, double ridgeness,
   double roundness, double curvature, double levelness )
 {
   for( unsigned int i = 0; i < VDimension; ++i )
     {
     fileStream << cIndx[i] << " ";
     }
-  fileStream << intensity << " ";
   fileStream << ridgeness << " ";
   fileStream << roundness << " ";
   fileStream << curvature << " ";
@@ -163,7 +162,8 @@ public:
       ++itrBkg;
       }
 
-    m_Error = ( 4 * bkgCount ) + tubeCount;
+    m_Error = ( bkgCount / (double)(m_Bkg->size()) ) +
+      4 * (tubeCount / (double)(m_Tube->size()) );
 
     std::cout << x << " = " << m_Error << std::endl;
 
@@ -182,9 +182,9 @@ private:
 public:
   MyOptFuncDeriv( void )
     {
-    m_XStep.set_size( 5 );
+    m_XStep.set_size( 4 );
     m_XStep = 0.01;
-    m_Error.set_size( 5 );
+    m_Error.set_size( 4 );
     }
 
   void SetXStep( const vnl_vector< double > & xStep )
@@ -206,7 +206,7 @@ public:
     {
     vnl_vector< double > xx = x;
     double e0 = m_Func.Value( xx );
-    for( unsigned int f=0; f<5; ++f )
+    for( unsigned int f=0; f<4; ++f )
       {
       xx[f] += m_XStep[f];
       m_Error[f] = ( m_Func.Value( xx ) - e0 ) * ( m_Func.Value( xx ) - e0 );
@@ -233,7 +233,7 @@ int DoIt( int argc, char * argv[] )
     "ComputeSegmentTubesParameters", CLPProcessInformation );
   progressReporter.Start();
 
-  typedef TPixel                                    InputPixelType;
+  typedef float                                     InputPixelType;
   typedef itk::Image< InputPixelType, VDimension >  InputImageType;
   typedef itk::ImageFileReader< InputImageType >    ReaderType;
 
@@ -293,21 +293,12 @@ int DoIt( int argc, char * argv[] )
   typename OutputImageType::RegionType region =
     inImage->GetLargestPossibleRegion();
 
-  typedef itk::RescaleIntensityImageFilter< InputImageType,
-    OutputImageType > RescaleFilterType;
-  typename RescaleFilterType::Pointer rescaleFilter = RescaleFilterType::New();
-  rescaleFilter->SetInput( inImage );
-  rescaleFilter->SetOutputMinimum(0);
-  rescaleFilter->SetOutputMaximum(1);
-
   typedef itk::tube::RidgeFFTFilter< OutputImageType > RidgeFilterType;
   typename RidgeFilterType::Pointer ridgeFilter = RidgeFilterType::New();
-  ridgeFilter->SetInput( rescaleFilter->GetOutput() );
+  ridgeFilter->SetInput( inImage );
   ridgeFilter->SetScale( scale );
   ridgeFilter->Update();
 
-  typename OutputImageType::Pointer outImageIntensity = ridgeFilter->
-    GetOutput();
   typename OutputImageType::Pointer outImageRidgeness = ridgeFilter->
     GetRidgeness();
   typename OutputImageType::Pointer outImageRoundness = ridgeFilter->
@@ -337,7 +328,7 @@ int DoIt( int argc, char * argv[] )
 
   SampleListType seed;
   SampleListType tube;
-  MetricVectorType tubeMean( 5, 0 );
+  MetricVectorType tubeMean( 4, 0 );
   SampleListType bkg;
 
   itk::ImageRegionIteratorWithIndex< MaskImageType > itM(
@@ -349,7 +340,7 @@ int DoIt( int argc, char * argv[] )
   ridgeExtractor->SetInputImage( inImage );
   ridgeExtractor->SetScale( scale );
 
-  std::vector< int > failedCount( 5, 0 );
+  std::vector< int > failedCount( 4, 0 );
   while( !itR.IsAtEnd() )
     {
     if( itM.Get() == maskBackgroundId
@@ -365,16 +356,15 @@ int DoIt( int argc, char * argv[] )
 
       if( itM.Get() == maskTubeId )
         {
-        MetricVectorType instance(5, 0);
-        instance[0] = outImageIntensity->GetPixel( indx );
-        instance[1] = outImageRidgeness->GetPixel( indx );
-        instance[2] = outImageRoundness->GetPixel( indx );
-        instance[3] = outImageCurvature->GetPixel( indx );
-        instance[4] = outImageLevelness->GetPixel( indx );
+        MetricVectorType instance(4, 0);
+        instance[0] = outImageRidgeness->GetPixel( indx );
+        instance[1] = outImageRoundness->GetPixel( indx );
+        instance[2] = outImageCurvature->GetPixel( indx );
+        instance[3] = outImageLevelness->GetPixel( indx );
         seed.push_back( instance );
 
         WriteOutputData< VDimension >( outputDataStreamInit, cIndx,
-          instance[0], instance[1], instance[2], instance[3], instance[4] );
+          instance[0], instance[1], instance[2], instance[3] );
 
         std::cout << "Initial point = " << cIndx << std::endl;
         ridgeExtractor->LocalRidge( cIndx );
@@ -388,34 +378,32 @@ int DoIt( int argc, char * argv[] )
         ridgeness = ridgeExtractor->Ridgeness( cIndx, intensity, roundness,
           curvature, levelness );
 
-        instance[0] = intensity;
-        instance[1] = ridgeness;
-        instance[2] = roundness;
-        instance[3] = curvature;
-        instance[4] = levelness;
+        instance[0] = ridgeness;
+        instance[1] = roundness;
+        instance[2] = curvature;
+        instance[3] = levelness;
         tube.push_back( instance );
 
         int count = tube.size();
-        for( unsigned int f=0; f<5; ++f )
+        for( unsigned int f=0; f<4; ++f )
           {
           tubeMean[f] += ( instance[f] - tubeMean[f] ) / ( count + 1 );
           }
 
         WriteOutputData< VDimension >( outputDataStreamTube, cIndx,
-          intensity, ridgeness, roundness, curvature, levelness );
+          ridgeness, roundness, curvature, levelness );
         }
       else if( itM.Get() == maskBackgroundId )
         {
-        MetricVectorType instance(5, 0);
-        instance[0] = outImageIntensity->GetPixel( indx );
-        instance[1] = outImageRidgeness->GetPixel( indx );
-        instance[2] = outImageRoundness->GetPixel( indx );
-        instance[3] = outImageCurvature->GetPixel( indx );
-        instance[4] = outImageLevelness->GetPixel( indx );
+        MetricVectorType instance(4, 0);
+        instance[0] = outImageRidgeness->GetPixel( indx );
+        instance[1] = outImageRoundness->GetPixel( indx );
+        instance[2] = outImageCurvature->GetPixel( indx );
+        instance[3] = outImageLevelness->GetPixel( indx );
         bkg.push_back( instance );
 
         WriteOutputData< VDimension >( outputDataStreamBkg, cIndx,
-          instance[0], instance[1], instance[2], instance[3], instance[4] );
+          instance[0], instance[1], instance[2], instance[3] );
         }
       }
     ++itM;
@@ -432,10 +420,10 @@ int DoIt( int argc, char * argv[] )
   tube::GoldenMeanOptimizer1D opt1D;
   tube::OptimizerND opt( 2, &myFunc, &myFuncD, &opt1D );
 
-  MetricVectorType xMin( 5, 0 );
+  MetricVectorType xMin( 4, 0 );
   opt.SetXMin( xMin );
 
-  MetricVectorType xMax( 5, 1 );
+  MetricVectorType xMax( 4, 10 );
   opt.SetXMax( xMax );
 
   opt.SetTolerance( 0.01 );
@@ -443,13 +431,13 @@ int DoIt( int argc, char * argv[] )
   opt.SetSearchForMin( true );
 
   double xVal = 500;
-  MetricVectorType x( 5 );
-  for( unsigned int f=0; f<5; ++f )
+  MetricVectorType x( 4 );
+  for( unsigned int f=0; f<4; ++f )
     {
     x[f] = tubeMean[f];
     }
 
-  MetricVectorType xStep( 5, 0.1 );
+  MetricVectorType xStep( 4, 0.1 );
   opt.SetXStep( xStep );
   myFuncD.SetXStep( xStep );
   if( !opt.Extreme( x, &xVal ) )
@@ -459,7 +447,7 @@ int DoIt( int argc, char * argv[] )
   std::cout << "x = " << x << std::endl;
   std::cout << "   xVal = " << xVal << std::endl;
 
-  MetricVectorType xStep2( 5, 0.01 );
+  MetricVectorType xStep2( 4, 0.01 );
   opt.SetXStep( xStep2 );
   myFuncD.SetXStep( xStep2 );
   if( !opt.Extreme( x, &xVal ) )
@@ -469,7 +457,7 @@ int DoIt( int argc, char * argv[] )
   std::cout << "x = " << x << std::endl;
   std::cout << "   xVal = " << xVal << std::endl;
 
-  MetricVectorType xStep3( 5, 0.001 );
+  MetricVectorType xStep3( 4, 0.001 );
   opt.SetXStep( xStep3 );
   myFuncD.SetXStep( xStep3 );
   if( !opt.Extreme( x, &xVal ) )
