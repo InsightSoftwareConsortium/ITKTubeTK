@@ -150,6 +150,10 @@ public:
   /// Set and observe poly data for this model
   virtual void SetAndObservePolyData(vtkPolyData* polyData);
 
+  // Description:
+  // Reset and recompute the polydata from the spatial object.
+  virtual void UpdatePolyDataFromSpatialObject( void );
+
 protected:
   vtkMRMLSpatialObjectsNode( void );
   ~vtkMRMLSpatialObjectsNode( void );
@@ -167,7 +171,6 @@ protected:
   virtual void PrepareSubsampling( void );
   virtual void UpdateSubsampling( void );
   virtual void CleanSubsampling( void );
-  virtual void UpdatePolyDataFromSpatialObject( void );
 
   vtkCleanPolyData* CleanPolyDataPostSubsampling;
   float SubsamplingRatio;

@@ -86,6 +86,21 @@ public:
     vtkMRMLSpatialObjectsNode* from, vtkMRMLSpatialObjectsNode* to);
 
   // Description:
+  // Given a filename pointing to a spatial object file and a spatial object
+  // node, merge the spatial object read from file in the recipient node.
+  // The updated recipient is returned.
+  // \sa MergeSpatialObject
+  vtkMRMLSpatialObjectsNode* MergeSpatialObjectFromFilename(
+    vtkMRMLSpatialObjectsNode* recipient, const char* filename);
+
+  // Description:
+  // Given two spatial object nodes, add the donor spatial object to the
+  // recipient. The donor stays intact and the updated recipient is returned.
+  // \sa MergeSpatialObjectFromFilename
+  vtkMRMLSpatialObjectsNode* MergeSpatialObject(
+    vtkMRMLSpatialObjectsNode* recipient, vtkMRMLSpatialObjectsNode* donor);
+
+  // Description:
   // Utility function to add the display nodes to a given spatial object node.
   void AddDisplayNodes(vtkMRMLSpatialObjectsNode* spatialObjectsNode);
 
