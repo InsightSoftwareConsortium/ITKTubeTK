@@ -180,6 +180,42 @@ vtkSlicerSpatialObjectsLogic::AddSpatialObject(const char* filename)
   return spatialObjectsNode.GetPointer();
 }
 
+
+//------------------------------------------------------------------------------
+vtkMRMLSpatialObjectsNode*
+vtkSlicerSpatialObjectsLogic::MergeSpatialObjectFromFilename(
+  vtkMRMLSpatialObjectsNode* recipient, const char* filename)
+{
+  if (!filename)
+    {
+    return recipient;
+    }
+
+  vtkNew<vtkMRMLSpatialObjectsNode> donor;
+  vtkNew<vtkMRMLSpatialObjectsStorageNode> donorReader;
+  donorReader->SetFileName(filename);
+  donorReader->ReadData(donor.GetPointer());
+  this->SetSpatialObject(donor.GetPointer(), filename);
+
+  this->MergeSpatialObject(recipient, donor.GetPointer());
+  return recipient;
+}
+
+//------------------------------------------------------------------------------
+vtkMRMLSpatialObjectsNode*
+vtkSlicerSpatialObjectsLogic::MergeSpatialObject(
+  vtkMRMLSpatialObjectsNode* recipient, vtkMRMLSpatialObjectsNode* donor)
+{
+  if (!recipient || !donor)
+    {
+    return recipient;
+    }
+
+  recipient->GetSpatialObject()->AddSpatialObject(donor->GetSpatialObject());
+  recipient->UpdatePolyDataFromSpatialObject();
+  return recipient;
+}
+
 //------------------------------------------------------------------------------
 void vtkSlicerSpatialObjectsLogic::
 AddDisplayNodes(vtkMRMLSpatialObjectsNode* spatialObjectsNode)
