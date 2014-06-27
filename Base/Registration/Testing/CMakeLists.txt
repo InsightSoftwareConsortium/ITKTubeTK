@@ -107,9 +107,9 @@ Midas3FunctionAddTest( NAME itktubeTubeToTubeTransformFilterTest
   COMMAND ${BASE_REGISTRATION_TESTS}
   itktubeTubeToTubeTransformFilterTest
   MIDAS{Branch-truth-new.tre.md5}
-  ${TEMP}/itkTubeToTubeTransformFilter.tre
+  ${TEMP}/itktubeToTubeTransformFilter.tre
   MIDAS{Branch.n020.mha.md5}
-  ${TEMP}/itkTubeToTubeTransformFilter.mha
+  ${TEMP}/itktubeToTubeTransformFilter.mha
   0.2 0.1 0.1 5 -5 5
   0 )
 
@@ -118,15 +118,15 @@ Midas3FunctionAddTest( NAME itktubeImageToTubeRigidRegistrationTest
   itktubeImageToTubeRigidRegistrationTest
   MIDAS{Branch.n020.mha.md5}
   MIDAS{tube.tre.md5}
-  ${TEMP}/itkTubeImageToTubeRigidRegistrationOutputTube.tre
-  ${TEMP}/itkTubeImageToTubeRigidRegistrationOutputImage.mha )
+  ${TEMP}/itktubeImageToTubeRigidRegistrationOutputTube.tre
+  ${TEMP}/itktubeImageToTubeRigidRegistrationOutputImage.mha )
 
 Midas3FunctionAddTest( NAME itktubeImageToTubeRigidRegistrationPerformanceTest
   COMMAND ${BASE_REGISTRATION_TESTS}
   itktubeImageToTubeRigidRegistrationPerformanceTest
   MIDAS{Branch.n020.mha.md5}
   MIDAS{Branch-truth-new.tre.md5}
-  ${TEMP}/itkTubeImageToTubeRigidRegistrationPerformance )
+  ${TEMP}/itktubeImageToTubeRigidRegistrationPerformance )
 
 if( TubeTK_USE_VTK )
   Midas3FunctionAddTest(
@@ -258,25 +258,25 @@ Midas3FunctionAddTest( NAME itktubeSyntheticTubeImageGenerationTest
 Midas3FunctionAddTest( NAME itktubeTubeExponentialResolutionWeightFunctionTest
   COMMAND ${BASE_REGISTRATION_TESTS}
   itktubeTubeExponentialResolutionWeightFunctionTest
-  ${TEMP}/itkTubeExponentialResolutionWeightFunctionTest.csv )
+  ${TEMP}/itktubeExponentialResolutionWeightFunctionTest.csv )
 
 Midas3FunctionAddTest( NAME itktubeTubeParametricExponentialResolutionWeightFunctionTest
   COMMAND ${BASE_REGISTRATION_TESTS}
   itktubeTubeParametricExponentialResolutionWeightFunctionTest
-  ${TEMP}/itkTubeParametricExponentialResolutionWeightFunctionTest.csv )
+  ${TEMP}/itktubeParametricExponentialResolutionWeightFunctionTest.csv )
 
 Midas3FunctionAddTest( NAME itktubeTubeParametricExponentialWithBoundsResolutionWeightFunctionTest
   COMMAND ${BASE_REGISTRATION_TESTS}
   itktubeTubeParametricExponentialWithBoundsResolutionWeightFunctionTest
-  ${TEMP}/itkTubeParametricExponentialWithBoundsResolutionWeightFunctionTest.csv )
+  ${TEMP}/itktubeParametricExponentialWithBoundsResolutionWeightFunctionTest.csv )
 
 Midas3FunctionAddTest( NAME itktubeTubePointWeightsCalculatorTest
   COMMAND ${BASE_REGISTRATION_TESTS}
   itktubeTubePointWeightsCalculatorTest
-  ${TEMP}/itkTubePointWeightsCalculatorTest.csv )
+  ${TEMP}/itktubePointWeightsCalculatorTest.csv )
 
 Midas3FunctionAddTest( NAME itktubeTubeAngleOfIncidenceWeightFunctionTest
   COMMAND ${BASE_REGISTRATION_TESTS}
   itktubeTubeAngleOfIncidenceWeightFunctionTest
   MIDAS{AlmostMaxInhale01.vessels.tre.md5}
-  ${TEMP}/itkTubeAngleOfIncidenceWeightFunctionTest )
+  ${TEMP}/itktubeAngleOfIncidenceWeightFunctionTest )

@@ -433,7 +433,11 @@ Read( const char * _headerName )
     {
     typedef Image< float, N >  pdfImageType;
 
-    MetaClassPDF pdfClassReader( fileName[i].c_str() );
+    char filePath[255];
+    MET_GetFilePath( _headerName, filePath );
+    std::string fullFileName = filePath + fileName[i];
+
+    MetaClassPDF pdfClassReader( fullFileName.c_str() );
 
     typename pdfImageType::Pointer img = pdfImageType::New();
     typename pdfImageType::RegionType region;
@@ -627,15 +631,20 @@ Write( const char * _headerName )
     strlen(tmpC), tmpC );
   metaFields.push_back( mF );
 
-  char fileName[4096];
-  strcpy( fileName, _headerName );
-  MET_SetFileSuffix( fileName, "mpd" );
+  char filePath[255];
+  MET_GetFilePath( _headerName, filePath );
+  int skip = strlen( filePath );
+  char shortFileName[255];
+  sprintf( shortFileName, "%s", &(_headerName[skip]) );
+  MET_SetFileSuffix( shortFileName, "mpd" );
+  std::string fullFileName = filePath;
+  fullFileName = fullFileName + shortFileName;
 
   std::string tmpString;
   for( unsigned int i = 0; i < nObjects; ++i )
     {
     char objectFileName[4096];
-    sprintf( objectFileName, "%s.%02d.mha", fileName, i );
+    sprintf( objectFileName, "%s.%02d.mha", shortFileName, i );
     tmpString = tmpString + objectFileName;
     if( i < nObjects-1 )
       {
@@ -650,7 +659,7 @@ Write( const char * _headerName )
 
   METAIO_STREAM::ofstream writeStream;
 
-  writeStream.open( fileName, METAIO_STREAM::ios::binary |
+  writeStream.open( fullFileName.c_str(), METAIO_STREAM::ios::binary |
     METAIO_STREAM::ios::out );
 
   writeStream.precision( 6 );
@@ -693,7 +702,7 @@ Write( const char * _headerName )
     pdfClassWriter.SetDraft( m_PDFSegmenter->GetDraft() );
 
     char objectFileName[4096];
-    sprintf( objectFileName, "%s.%02d.mha", fileName, i );
+    sprintf( objectFileName, "%s.%02d.mha", fullFileName.c_str(), i );
 
     pdfClassWriter.Write( objectFileName );
     }

@@ -34,9 +34,10 @@ template< typename TInputImage, typename TOutputImage >
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 ::FFTGaussianDerivativeIFFTFilter()
 {
-  m_FFTImage = NULL;
-  m_IFFTImage = NULL;
-  m_KernelImage = NULL;
+  m_InputImageFFT = NULL;
+  m_KernelImageFFT = NULL;
+  m_ConvolvedImageFFT = NULL;
+  m_ConvolvedImage = NULL;
 
   this->m_Orders.Fill(0);
   this->m_Sigmas.Fill(0);
@@ -65,8 +66,10 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 template< typename TInputImage, typename TOutputImage >
 void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
-::ApplyFFT()
+::ComputeInputImageFFT()
 {
+  std::cout << "FFTGaussianDerivativeIFFT: ComputeInputImageFFT" << std::endl;
+
   typedef PadImageFilter< InputImageType, RealImageType >
     PadFilterType;
   typename PadFilterType::Pointer padFilter = PadFilterType::New();
@@ -79,14 +82,15 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   fftFilter->SetInput( padFilter->GetOutput() );
   fftFilter->Update();
 
-  m_FFTImage = fftFilter->GetOutput();
+  m_InputImageFFT = fftFilter->GetOutput();
 }
 
 template< typename TInputImage, typename TOutputImage >
 void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
-::CreateGaussianDerivative()
+::ComputeKernelImageFFT()
 {
+  std::cout << "FFTGaussianDerivativeIFFT: ComputeKernelImageFFT" << std::endl;
   typename GaussianDerivativeImageSourceType::Pointer gaussSource =
     GaussianDerivativeImageSourceType::New();
 
@@ -96,15 +100,15 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
     = inputRegion.GetSize();
 
   const typename ComplexImageType::RegionType fftRegion(
-    m_FFTImage->GetLargestPossibleRegion() );
+    m_InputImageFFT->GetLargestPossibleRegion() );
   const typename ComplexImageType::SizeType fftSize
     = fftRegion.GetSize();
   const typename ComplexImageType::SpacingType fftSpacing =
-    m_FFTImage->GetSpacing();
+    m_InputImageFFT->GetSpacing();
   const typename ComplexImageType::PointType fftOrigin =
-    m_FFTImage->GetOrigin();
+    m_InputImageFFT->GetOrigin();
   const typename ComplexImageType::DirectionType fftDirection =
-    m_FFTImage->GetDirection();
+    m_InputImageFFT->GetDirection();
 
   gaussSource->SetIndex( fftRegion.GetIndex() );
   gaussSource->SetSize( fftSize );
@@ -126,38 +130,55 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   gaussSource->SetOrders( this->m_Orders );
 
   gaussSource->Update();
-  m_KernelImage = gaussSource->GetOutput();
-}
-
-template< typename TInputImage, typename TOutputImage >
-void
-FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
-::ApplyGaussianDerivativeIFFT()
-{
-  CreateGaussianDerivative();
 
   typename FFTShiftFilterType::Pointer fftShiftFilter =
     FFTShiftFilterType::New();
-  fftShiftFilter->SetInput( m_KernelImage );
+  fftShiftFilter->SetInput( gaussSource->GetOutput() );
   fftShiftFilter->Update();
 
   typename FFTFilterType::Pointer fftFilter = FFTFilterType::New();
   fftFilter->SetInput( fftShiftFilter->GetOutput() );
   fftFilter->Update();
-  typename ComplexImageType::Pointer fftKernel = fftFilter->GetOutput();
+  m_KernelImageFFT = fftFilter->GetOutput();
+}
 
+template< typename TInputImage, typename TOutputImage >
+void
+FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
+::ComputeConvolvedImageFFT()
+{
+  std::cout << "FFTGaussianDerivativeIFFT: ComputeConvolvedImageFFT" << std::endl;
   typename MultiplyFilterType::Pointer multiplyFilter =
     MultiplyFilterType::New();
-  multiplyFilter->SetInput1( m_FFTImage );
-  multiplyFilter->SetInput2( fftKernel );
+  multiplyFilter->SetInput1( m_InputImageFFT );
+  multiplyFilter->SetInput2( m_KernelImageFFT );
   multiplyFilter->Update();
+
+  m_ConvolvedImageFFT = multiplyFilter->GetOutput();
+}
+
+template< typename TInputImage, typename TOutputImage >
+void
+FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
+::ComputeConvolvedImage()
+{
+  std::cout << "FFTGaussianDerivativeIFFT: ComputeConvolvedImage" << std::endl;
 
   typename InverseFFTFilterType::Pointer 
     iFFTFilter = InverseFFTFilterType::New();
-  iFFTFilter->SetInput( multiplyFilter->GetOutput() );
+  iFFTFilter->SetInput( m_ConvolvedImageFFT );
   iFFTFilter->Update();
 
-  m_IFFTImage = iFFTFilter->GetOutput();
+  typedef RegionFromReferenceImageFilter< RealImageType, TOutputImage >
+    RegionFromFilterType;
+  typename RegionFromFilterType::Pointer regionFrom = 
+    RegionFromFilterType::New();
+
+  regionFrom->SetInput1( iFFTFilter->GetOutput() );
+  regionFrom->SetInput2( this->GetInput() );
+  regionFrom->Update();
+
+  m_ConvolvedImage = regionFrom->GetOutput();
 }
 
 template< typename TInputImage, typename TOutputImage >
@@ -168,21 +189,86 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   if( m_LastInputImage != this->GetInput() )
     {
     m_LastInputImage = this->GetInput();
-    ApplyFFT();
+    ComputeInputImageFFT();
     }
 
-  ApplyGaussianDerivativeIFFT();
+  ComputeKernelImageFFT();
+  ComputeConvolvedImageFFT();
+  ComputeConvolvedImage();
+
+  this->SetNthOutput( 0, m_ConvolvedImage );
+}
+
+template< typename TInputImage, typename TOutputImage >
+void
+FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
+::GenerateNJet( typename TOutputImage::Pointer & D,
+  std::vector< typename TOutputImage::Pointer > & dX,
+  std::vector< typename TOutputImage::Pointer > & dXX )
+{
+  if( m_LastInputImage != this->GetInput() )
+    {
+    m_LastInputImage = this->GetInput();
+    ComputeInputImageFFT();
+    }
 
   typedef RegionFromReferenceImageFilter< RealImageType, TOutputImage >
     RegionFromFilterType;
-  typename RegionFromFilterType::Pointer regionFrom = 
-    RegionFromFilterType::New();
 
-  regionFrom->SetInput1( m_IFFTImage );
-  regionFrom->SetInput2( this->GetInput() );
-  regionFrom->Update();
+  if( dX.size() != ImageDimension )
+    {
+    dX.resize( ImageDimension );
+    }
+  std::vector< typename ComplexImageType::Pointer > 
+    dXKernelImageFFT( ImageDimension );
 
-  this->SetNthOutput( 0, regionFrom->GetOutput() );
+  if( dXX.size() != ImageDimension * (ImageDimension-1) )
+    {
+    dXX.resize( ImageDimension * (ImageDimension-1) );
+    }
+
+  this->m_Orders.Fill( 0 );
+  this->ComputeKernelImageFFT();
+  this->ComputeConvolvedImageFFT();
+  this->ComputeConvolvedImage();
+  D = m_ConvolvedImage;
+
+  for( unsigned int i = 0; i<ImageDimension; ++i )
+    {
+    this->m_Orders[i] = 1;
+    this->ComputeKernelImageFFT();
+    dXKernelImageFFT[i] = m_KernelImageFFT;
+    this->ComputeConvolvedImageFFT();
+    this->ComputeConvolvedImage();
+    dX[i] = m_ConvolvedImage;
+    this->m_Orders[i] = 0;
+    }
+
+  typename ComplexImageType::Pointer tmpInputImageFFT = m_InputImageFFT;
+  typename ComplexImageType::Pointer tmpFirstConvolutionFFT;
+  unsigned int count = 0;
+  for( unsigned int i = 0; i<ImageDimension; ++i )
+    {
+    m_InputImageFFT = tmpInputImageFFT;
+    m_KernelImageFFT = dXKernelImageFFT[i];
+    this->ComputeConvolvedImageFFT();
+    tmpFirstConvolutionFFT = m_ConvolvedImageFFT;
+    
+    for( unsigned int j = i; j<ImageDimension; ++j )
+      {
+      m_InputImageFFT = tmpFirstConvolutionFFT;
+      m_KernelImageFFT = dXKernelImageFFT[j];
+      this->ComputeConvolvedImageFFT();
+      this->ComputeConvolvedImage();
+      dXX[ count++ ] = m_ConvolvedImage;
+      this->m_Orders[i] = 0;
+      this->m_Orders[j] = 0;
+      }
+    }
+
+  m_InputImageFFT = tmpInputImageFFT;
+
+  this->SetNthOutput( 0, D );
 }
 
 template< typename TInputImage, typename TOutputImage >
@@ -192,29 +278,37 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 {
   this->Superclass::PrintSelf( os, indent );
 
-  if( m_FFTImage.IsNotNull() )
+  if( m_InputImageFFT.IsNotNull() )
     {
-    os << indent << "FFT Image           : " << m_FFTImage << std::endl;
+    os << indent << "FFT Image           : " << m_InputImageFFT << std::endl;
     }
   else
     {
     os << indent << "FFT Image           : NULL" << std::endl;
     }
-  if( m_IFFTImage.IsNotNull() )
+  if( m_KernelImageFFT.IsNotNull() )
     {
-    os << indent << "Inverse FFT Image   : " << m_IFFTImage << std::endl;
-    }
-  else
-    {
-    os << indent << "Inverse FFT Image   : NULL" << std::endl;
-    }
-  if( m_KernelImage.IsNotNull() )
-    {
-    os << indent << "Kernel Image        : " << m_KernelImage << std::endl;
+    os << indent << "Kernel Image        : " << m_KernelImageFFT << std::endl;
     }
   else
     {
     os << indent << "Kernel Image        : NULL" << std::endl;
+    }
+  if( m_ConvolvedImageFFT.IsNotNull() )
+    {
+    os << indent << "Convolved Image FFT : " << m_ConvolvedImageFFT << std::endl;
+    }
+  else
+    {
+    os << indent << "Convolved Image FFT : NULL" << std::endl;
+    }
+  if( m_ConvolvedImage.IsNotNull() )
+    {
+    os << indent << "Convolved Image   : " << m_ConvolvedImage << std::endl;
+    }
+  else
+    {
+    os << indent << "Convolved Image   : NULL" << std::endl;
     }
   os << indent << "Orders              : " << m_Orders << std::endl;
   os << indent << "Sigmas               : " << m_Sigmas << std::endl;

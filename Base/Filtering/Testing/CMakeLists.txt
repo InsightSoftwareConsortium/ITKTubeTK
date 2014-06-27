@@ -104,32 +104,32 @@ Midas3FunctionAddTest( NAME itktubeExtractTubePointsSpatialObjectFilterTest
 Midas3FunctionAddTest( NAME itktubeFFTGaussianDerivativeIFFTFilterTest1
   COMMAND ${BASE_FILTERING_TESTS}
     --compareIntensityTolerance 0.01
-    --compare MIDAS{itkTubeFFTGaussianDerivativeIFFTFilterTest1.mha.md5}
-      ${TEMP}/itkTubeFFTGaussianDerivativeIFFTFilterTest1.mha
+    --compare MIDAS{itktubeFFTGaussianDerivativeIFFTFilterTest1.mha.md5}
+      ${TEMP}/itktubeFFTGaussianDerivativeIFFTFilterTest1.mha
     itktubeFFTGaussianDerivativeIFFTFilterTest
       0 0 0.1 0.1
       MIDAS{im0001.mha.md5}
-      ${TEMP}/itkTubeFFTGaussianDerivativeIFFTFilterTest1.mha )
+      ${TEMP}/itktubeFFTGaussianDerivativeIFFTFilterTest1.mha )
 
 Midas3FunctionAddTest( NAME itktubeFFTGaussianDerivativeIFFTFilterTest2
   COMMAND ${BASE_FILTERING_TESTS}
     --compareIntensityTolerance 0.01
-    --compare MIDAS{itkTubeFFTGaussianDerivativeIFFTFilterTest2.mha.md5}
-      ${TEMP}/itkTubeFFTGaussianDerivativeIFFTFilterTest2.mha
+    --compare MIDAS{itktubeFFTGaussianDerivativeIFFTFilterTest2.mha.md5}
+      ${TEMP}/itktubeFFTGaussianDerivativeIFFTFilterTest2.mha
     itktubeFFTGaussianDerivativeIFFTFilterTest
       0 1 0.1 1
       MIDAS{im0001.mha.md5}
-      ${TEMP}/itkTubeFFTGaussianDerivativeIFFTFilterTest2.mha )
+      ${TEMP}/itktubeFFTGaussianDerivativeIFFTFilterTest2.mha )
 
 Midas3FunctionAddTest( NAME itktubeFFTGaussianDerivativeIFFTFilterTest3
   COMMAND ${BASE_FILTERING_TESTS}
     --compareIntensityTolerance 0.01
-    --compare MIDAS{itkTubeFFTGaussianDerivativeIFFTFilterTest3.mha.md5}
-      ${TEMP}/itkTubeFFTGaussianDerivativeIFFTFilterTest3.mha
+    --compare MIDAS{itktubeFFTGaussianDerivativeIFFTFilterTest3.mha.md5}
+      ${TEMP}/itktubeFFTGaussianDerivativeIFFTFilterTest3.mha
     itktubeFFTGaussianDerivativeIFFTFilterTest
       2 2 2 2
       MIDAS{im0001.mha.md5}
-      ${TEMP}/itkTubeFFTGaussianDerivativeIFFTFilterTest3.mha )
+      ${TEMP}/itktubeFFTGaussianDerivativeIFFTFilterTest3.mha )
 
     #--compare MIDAS{itktubeRidgeFFTFilterTest1.mha.md5}
       #${TEMP}/itktubeRidgeFFTFilterTest1.mha
@@ -203,30 +203,30 @@ Midas3FunctionAddTest( NAME itktubeSubSampleTubeTreeSpatialObjectFilterTest
 Midas3FunctionAddTest( NAME itktubeTubeEnhancingDiffusion2DImageFilterTest
   COMMAND ${BASE_FILTERING_TESTS}
     --compareIntensityTolerance 0.001
-    --compare MIDAS{itkTubeEnhancingDiffusion2DImageFilterTest.mha.md5}
-      ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha
+    --compare MIDAS{itktubeEnhancingDiffusion2DImageFilterTest.mha.md5}
+      ${TEMP}/itktubeEnhancingDiffusion2DImageFilterTest.mha
     itktubeTubeEnhancingDiffusion2DImageFilterTest
       MIDAS{ES0015_1_Subs.mha.md5}
-      ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterTest.mha )
+      ${TEMP}/itktubeEnhancingDiffusion2DImageFilterTest.mha )
 
 Midas3FunctionAddTest( NAME itktubeTubeEnhancingDiffusion2DImageFilterRetinaTest
   COMMAND ${BASE_FILTERING_TESTS}
     --compareIntensityTolerance 0.001
-    --compare MIDAS{itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha.md5}
-      ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha
+    --compare MIDAS{itktubeEnhancingDiffusion2DImageFilterRetinaTest.mha.md5}
+      ${TEMP}/itktubeEnhancingDiffusion2DImageFilterRetinaTest.mha
     itktubeTubeEnhancingDiffusion2DImageFilterTest
       MIDAS{im0001.crop2.mha.md5}
-      ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetinaTest.mha
+      ${TEMP}/itktubeEnhancingDiffusion2DImageFilterRetinaTest.mha
       true )
 
 Midas3FunctionAddTest( NAME itktubeTubeEnhancingDiffusion2DImageFilterRetina10Test
   COMMAND ${BASE_FILTERING_TESTS}
     --compareIntensityTolerance 0.001
-    --compare MIDAS{itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha.md5}
-      ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
+    --compare MIDAS{itktubeEnhancingDiffusion2DImageFilterRetina10Test.mha.md5}
+      ${TEMP}/itktubeEnhancingDiffusion2DImageFilterRetina10Test.mha
     itktubeTubeEnhancingDiffusion2DImageFilterTest
       MIDAS{im0001_n10.crop2.mha.md5}
-      ${TEMP}/itkTubeEnhancingDiffusion2DImageFilterRetina10Test.mha
+      ${TEMP}/itktubeEnhancingDiffusion2DImageFilterRetina10Test.mha
       true )
 
 Midas3FunctionAddTest( NAME itktubeAnisotropicHybridDiffusionImageFilterTest

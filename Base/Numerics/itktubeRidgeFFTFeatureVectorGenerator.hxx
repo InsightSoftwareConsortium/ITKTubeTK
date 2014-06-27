@@ -93,12 +93,13 @@ RidgeFFTFeatureVectorGenerator< TImage >
 
   typename FeatureImageType::RegionType region = 
     this->m_InputImageList[0]->GetLargestPossibleRegion();
-  for( unsigned int f=numFeatures-6; f<numFeatures; ++f )
+  while( feat < numFeatures )
     {
-    m_FeatureImageList[f] = FeatureImageType::New();
-    m_FeatureImageList[f]->CopyInformation( this->m_InputImageList[0] );
-    m_FeatureImageList[f]->SetRegions( region );
-    m_FeatureImageList[f]->Allocate();
+    m_FeatureImageList[feat] = FeatureImageType::New();
+    m_FeatureImageList[feat]->CopyInformation( this->m_InputImageList[0] );
+    m_FeatureImageList[feat]->SetRegions( region );
+    m_FeatureImageList[feat]->Allocate();
+    ++feat;
     }
 
   typedef ImageRegionIterator< FeatureImageType >  IterType;
@@ -111,12 +112,12 @@ RidgeFFTFeatureVectorGenerator< TImage >
   unsigned int foFeat = numFeatures - 5;
   while( !iterF[0].IsAtEnd() )
     {
-    unsigned int extremeS = 0;
     for( unsigned int f=0; f<5; ++f )
       {
       iterF[ foFeat + f ].Set( iterF[ f ].Get() );
       }
-    for( unsigned int s=0; s<m_Scales.size(); ++s )
+    iterF[ foScale ].Set( m_Scales[ 0 ] );
+    for( unsigned int s=1; s<m_Scales.size(); ++s )
       {
       feat = s * 5;
       for( unsigned int f=0; f<5; ++f )
@@ -126,12 +127,11 @@ RidgeFFTFeatureVectorGenerator< TImage >
           iterF[ foFeat + f ].Set( iterF[ feat + f ].Get() );
           if( f == 0 )
             {
-            extremeS = s;
+            iterF[ foScale ].Set( m_Scales[ s ] );
             }
           }
         }
       }
-    iterF[ foScale ].Set( m_Scales[ extremeS ] );
     for( unsigned int f=0; f<numFeatures; ++f )
       {
       ++iterF[ f ];

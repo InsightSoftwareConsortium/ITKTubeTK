@@ -201,12 +201,12 @@ Midas3FunctionAddTest( NAME itktubeImageRegionMomentsCalculatorTest
 foreach( testNum RANGE 0 37 )
   Midas3FunctionAddTest( NAME itktubeNJetImageFunctionTest${testNum}
     COMMAND ${BASE_NUMERICS_TESTS}
-      --compare MIDAS{itkTubeNJetImageFunctionTest${testNum}.mha.md5}
-        ${TEMP}/itkTubeNJetImageFunctionTest${testNum}.mha
+      --compare MIDAS{itktubeNJetImageFunctionTest${testNum}.mha.md5}
+        ${TEMP}/itktubeNJetImageFunctionTest${testNum}.mha
       itktubeNJetImageFunctionTest
         ${testNum}
         MIDAS{im0001.crop2.mha.md5}
-        ${TEMP}/itkTubeNJetImageFunctionTest${testNum}.mha )
+        ${TEMP}/itktubeNJetImageFunctionTest${testNum}.mha )
 endforeach( testNum )
 
 Midas3FunctionAddTest( NAME itktubeVotingResampleImageFunctionTest0
@@ -257,31 +257,31 @@ add_test( NAME itktubeRecordOptimizationParameterProgressionCommandTest
 
 Midas3FunctionAddTest( NAME itktubeBlurImageFunctionTest
   COMMAND ${BASE_NUMERICS_TESTS}
-    --compare MIDAS{itkTubeBlurImageFunctionTest.mha.md5}
-      ${TEMP}/itkTubeBlurImageFunctionTest.mha
+    --compare MIDAS{itktubeBlurImageFunctionTest.mha.md5}
+      ${TEMP}/itktubeBlurImageFunctionTest.mha
     itktubeBlurImageFunctionTest
-      ${TEMP}/itkTubeBlurImageFunctionTest.mha )
+      ${TEMP}/itktubeBlurImageFunctionTest.mha )
 
 Midas3FunctionAddTest( NAME itktubeNJetFeatureVectorGeneratorTest
   COMMAND ${BASE_NUMERICS_TESTS}
-    --compare MIDAS{itkTubeNJetFeatureVectorGeneratorTest_f0.mha.md5}
-      ${TEMP}/itkTubeNJetFeatureVectorGeneratorTest_f0.mha
+    --compare MIDAS{itktubeNJetFeatureVectorGeneratorTest_f0.mha.md5}
+      ${TEMP}/itktubeNJetFeatureVectorGeneratorTest_f0.mha
     itktubeNJetFeatureVectorGeneratorTest
       MIDAS{ES0015_Large_Subs.mha.md5}
       MIDAS{GDS0015_Large-TrainingMask_Subs.mha.md5}
-      ${TEMP}/itkTubeNJetFeatureVectorGeneratorTest_f0.mha
-      ${TEMP}/itkTubeNJetFeatureVectorGeneratorTest_f1.mha )
+      ${TEMP}/itktubeNJetFeatureVectorGeneratorTest_f0.mha
+      ${TEMP}/itktubeNJetFeatureVectorGeneratorTest_f1.mha )
 
 Midas3FunctionAddTest( NAME itktubeNJetBasisFeatureVectorGeneratorTest
   COMMAND ${BASE_NUMERICS_TESTS}
-    --compare MIDAS{itkTubeNJetBasisFeatureVectorGeneratorTest_lda0.mha.md5}
-      ${TEMP}/itkTubeNJetBasisFeatureVectorGeneratorTest_lda0.mha
+    --compare MIDAS{itktubeNJetBasisFeatureVectorGeneratorTest_lda0.mha.md5}
+      ${TEMP}/itktubeNJetBasisFeatureVectorGeneratorTest_lda0.mha
     itktubeNJetBasisFeatureVectorGeneratorTest
       MIDAS{ES0015_Large_Subs.mha.md5}
       MIDAS{GDS0015_Large-TrainingMask_Subs.mha.md5}
       255 0
-      ${TEMP}/itkTubeNJetBasisFeatureVectorGeneratorTest_lda0.mha
-      ${TEMP}/itkTubeNJetBasisFeatureVectorGeneratorTest_lda1.mha )
+      ${TEMP}/itktubeNJetBasisFeatureVectorGeneratorTest_lda0.mha
+      ${TEMP}/itktubeNJetBasisFeatureVectorGeneratorTest_lda1.mha )
 
 Midas3FunctionAddTest( NAME itktubeSingleValuedCostFunctionImageSourceTest
   COMMAND ${BASE_NUMERICS_TESTS}
@@ -294,15 +294,15 @@ Midas3FunctionAddTest( NAME itktubeRidgeFeatureVectorGeneratorTest
   COMMAND ${BASE_NUMERICS_TESTS}
     itktubeRidgeFeatureVectorGeneratorTest
       MIDAS{im0001.crop.contrast.mha.md5}
-      ${TEMP}/itkTubeRidgeFeatureVectorGeneratorTest_f0.mha
-      ${TEMP}/itkTubeRidgeFeatureVectorGeneratorTest_f1.mha )
+      ${TEMP}/itktubeRidgeFeatureVectorGeneratorTest_f0.mha
+      ${TEMP}/itktubeRidgeFeatureVectorGeneratorTest_f1.mha )
 
 Midas3FunctionAddTest( NAME itktubeRidgeFFTFeatureVectorGeneratorTest
   COMMAND ${BASE_NUMERICS_TESTS}
     itktubeRidgeFFTFeatureVectorGeneratorTest
       MIDAS{im0001.crop.contrast.mha.md5}
-      ${TEMP}/itkTubeRidgeFFTFeatureVectorGeneratorTest_f0.mha
-      ${TEMP}/itkTubeRidgeFFTFeatureVectorGeneratorTest_f1.mha )
+      ${TEMP}/itktubeRidgeFFTFeatureVectorGeneratorTest_f0.mha
+      ${TEMP}/itktubeRidgeFFTFeatureVectorGeneratorTest_f1.mha )
 
 Midas3FunctionAddTest( NAME itktubeRidgeBasisFeatureVectorGeneratorTest
   COMMAND ${BASE_NUMERICS_TESTS}
@@ -310,5 +310,5 @@ Midas3FunctionAddTest( NAME itktubeRidgeBasisFeatureVectorGeneratorTest
       MIDAS{im0001.crop.contrast.mha.md5}
       MIDAS{im0001.vk.mask.crop.mha.md5}
       255 127
-      ${TEMP}/itkTubeRidgeBasisFeatureVectorGeneratorTest_lda0.mha
-      ${TEMP}/itkTubeRidgeBasisFeatureVectorGeneratorTest_lda1.mha )
+      ${TEMP}/itktubeRidgeBasisFeatureVectorGeneratorTest_lda0.mha
+      ${TEMP}/itktubeRidgeBasisFeatureVectorGeneratorTest_lda1.mha )

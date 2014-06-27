@@ -101,27 +101,27 @@ add_test( NAME tubeBaseIOPrintTest
 add_test( NAME itktubeMetaLDATest
   COMMAND ${BASE_IO_TESTS}
     itktubeMetaLDATest
-      ${TEMP}/itkTubeMetaLDATest.mlda )
+      ${TEMP}/itktubeMetaLDATest.mlda )
 
 add_test( NAME itktubeMetaNJetLDATest
   COMMAND ${BASE_IO_TESTS}
     itktubeMetaNJetLDATest
-      ${TEMP}/itkTubeMetaNJetLDATest.mnda )
+      ${TEMP}/itktubeMetaNJetLDATest.mnda )
 
 add_test( NAME itktubeMetaClassPDFTest
   COMMAND ${BASE_IO_TESTS}
     itktubeMetaClassPDFTest
-      ${TEMP}/itkTubeMetaClassPDFTest.mha )
+      ${TEMP}/itktubeMetaClassPDFTest.mha )
 
 add_test( NAME itktubeMetaRidgeSeedTest
   COMMAND ${BASE_IO_TESTS}
     itktubeMetaRidgeSeedTest
-      ${TEMP}/itkTubeMetaRidgeSeedTest.mrs )
+      ${TEMP}/itktubeMetaRidgeSeedTest.mrs )
 
 add_test( NAME itktubeMetaTubeExtractorTest
   COMMAND ${BASE_IO_TESTS}
     itktubeMetaTubeExtractorTest
-      ${TEMP}/itkTubeMetaTubeExtractorTest.mtp )
+      ${TEMP}/itktubeMetaTubeExtractorTest.mtp )
 
 Midas3FunctionAddTest( NAME itktubePDFSegmenterIOTest
   COMMAND ${BASE_IO_TESTS}
