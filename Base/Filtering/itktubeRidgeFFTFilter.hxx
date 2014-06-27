@@ -85,7 +85,7 @@ RidgeFFTFilter< TInputImage >
 
   std::vector< typename OutputImageType::Pointer > dx( ImageDimension );
   std::vector< typename OutputImageType::Pointer > ddx( ImageDimension
-    * ImageDimension );
+    * ( ImageDimension - 1 ) );
 
   m_DerivativeFilter->GenerateNJet( m_Intensity, dx, ddx );
 
@@ -101,7 +101,7 @@ RidgeFFTFilter< TInputImage >
   std::vector< ImageRegionIterator< OutputImageType > > iterDx( 
     ImageDimension );
   std::vector< ImageRegionIterator< OutputImageType > > iterDdx(
-    ImageDimension * ImageDimension );
+    ImageDimension * ( ImageDimension - 1 ) );
   unsigned int count = 0;
   for( unsigned int i=0; i<ImageDimension; ++i )
     {
