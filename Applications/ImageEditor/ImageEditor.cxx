@@ -30,19 +30,20 @@ limitations under the License.
 
 //QtImageViewer includes
 #include "QtGlSliceView.h"
-#include "QtSlicer.h"
+#include "QtImageViewer.h"
 
 //QtImageEditor includes
-#include "QtImageEditor.h"
+//#include "QtImageEditor.h"
 
 int execImageEditor(int argc, char* argv[])
 {
   QApplication myApp( argc, argv );
 
-  tube::QtImageEditor qtSlicerWindow(0,0);
-
-  qtSlicerWindow.setWindowTitle("ImageEditor");
-  qtSlicerWindow.show();
+  //tube::QtImageEditor imageEditor(0,0);
+  QtImageViewer imageEditor(0,0);
+  imageEditor.setWindowTitle("ImageEditor");
+  imageEditor.loadInputImage();
+  imageEditor.show();
   int execReturn;
   try
     {
@@ -62,51 +63,52 @@ int parseAndExecImageEditor(int argc, char* argv[])
   PARSE_ARGS;
   QApplication myApp( argc, argv );
 
-  tube::QtImageEditor qtSlicerWindow(0);
+  //tube::QtImageEditor imageEditor(0);
+  QtImageViewer imageEditor(0);
 
-  qtSlicerWindow.setWindowTitle("ImageEditor");
+  imageEditor.setWindowTitle("ImageEditor");
 
-  qtSlicerWindow.loadImage(QString::fromStdString(inputImage));
+  imageEditor.loadInputImage(QString::fromStdString(inputImage));
   if(!overlayImage.empty())
     {
-    qtSlicerWindow.loadOverlay(QString::fromStdString(overlayImage));
+    imageEditor.loadOverlayImage(QString::fromStdString(overlayImage));
     }
 
-  qtSlicerWindow.OpenGlWindow->setOrientation(orientation);
+  imageEditor.sliceView()->setOrientation(orientation);
   if(sliceOffset != -1)
     {
-    qtSlicerWindow.OpenGlWindow->setSliceNum(sliceOffset);
+    imageEditor.sliceView()->setSliceNum(sliceOffset);
     }
   if(maxIntensityArg.isSet())
     {
-    qtSlicerWindow.OpenGlWindow->setMaxIntensity(maxIntensity);
+    imageEditor.sliceView()->setMaxIntensity(maxIntensity);
     }
   if(minIntensityArg.isSet())
     {
-    qtSlicerWindow.OpenGlWindow->setMinIntensity(minIntensity);
+    imageEditor.sliceView()->setMinIntensity(minIntensity);
     }
-  qtSlicerWindow.OpenGlWindow->setZoom(zoom);
-  qtSlicerWindow.OpenGlWindow->transpose(transpose);
-  qtSlicerWindow.OpenGlWindow->flipZ(zFlipped);
-  qtSlicerWindow.OpenGlWindow->flipY(yFlipped);
-  qtSlicerWindow.OpenGlWindow->flipX(xFlipped);
-  qtSlicerWindow.OpenGlWindow->setOverlayOpacity(overlayOpacity);
-  qtSlicerWindow.OpenGlWindow->setViewCrosshairs(crosshairs);
-  qtSlicerWindow.OpenGlWindow->setViewDetails(details);
-  qtSlicerWindow.OpenGlWindow->setViewValuePhysicalUnits(physicalUnits);
-  qtSlicerWindow.OpenGlWindow->setViewValue(value);
-  qtSlicerWindow.OpenGlWindow->setViewAxisLabel(axisLabel);
-  qtSlicerWindow.OpenGlWindow->setViewClickedPoints(clickedPoints);
-  qtSlicerWindow.OpenGlWindow->setImageMode(imageMode.c_str());
-  qtSlicerWindow.OpenGlWindow->setIWModeMax(iwModeMax.c_str());
-  qtSlicerWindow.OpenGlWindow->setIWModeMin(iwModeMin.c_str());
+  imageEditor.sliceView()->setZoom(zoom);
+  imageEditor.sliceView()->transpose(transpose);
+  imageEditor.sliceView()->flipZ(zFlipped);
+  imageEditor.sliceView()->flipY(yFlipped);
+  imageEditor.sliceView()->flipX(xFlipped);
+  imageEditor.sliceView()->setOverlayOpacity(overlayOpacity);
+  imageEditor.sliceView()->setViewCrosshairs(crosshairs);
+  imageEditor.sliceView()->setDisplayState(details);
+  imageEditor.sliceView()->setViewValuePhysicalUnits(physicalUnits);
+  imageEditor.sliceView()->setViewValue(value);
+  imageEditor.sliceView()->setViewAxisLabel(axisLabel);
+  imageEditor.sliceView()->setViewClickedPoints(clickedPoints);
+  imageEditor.sliceView()->setImageMode(imageMode.c_str());
+  imageEditor.sliceView()->setIWModeMax(iwModeMax.c_str());
+  imageEditor.sliceView()->setIWModeMin(iwModeMin.c_str());
   if(sigmaArg.isSet())
     {
-    qtSlicerWindow.setDisplaySigma(QString::number(sigma, 'f', 2));
-    qtSlicerWindow.applyFilter();
+    //imageEditor.setDisplaySigma(QString::number(sigma, 'f', 2));
+    //imageEditor.applyFilter();
     }
-  qtSlicerWindow.show();
-  qtSlicerWindow.OpenGlWindow->update();
+  imageEditor.show();
+  imageEditor.sliceView()->update();
   int execReturn;
   try
     {

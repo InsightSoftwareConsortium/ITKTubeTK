@@ -109,7 +109,7 @@
             <flag>D</flag>
             <longflag>details</longflag>
             <label>Details displayed</label>
-            <default>VD_OFF</default>
+            <default>1</default>
             <description>Display details as an overlay on the image, inside a Controls Widget or turn it off.</description>
         </integer-enumeration>
         <boolean>

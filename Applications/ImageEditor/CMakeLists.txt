@@ -44,21 +44,23 @@ include( ${SlicerExecutionModel_USE_FILE} )
 find_package( JsonCpp REQUIRED )
 
 set( ${MODULE_NAME}_SRCS
-  QtImageEditor.cxx
-  QtOverlayControlsWidget.cxx
+  #QtImageEditor.cxx
+  #QtOverlayControlsWidget.cxx
 )
 
 set( ${MODULE_NAME}_MOC_SRCS
-  QtImageEditor.h
-  QtOverlayControlsWidget.h
+  #QtImageEditor.h
+  #QtOverlayControlsWidget.h
 )
 
 set( ${MODULE_NAME}_GUI_SRCS
-  Resources/UI/QtOverlayControlsWidgetGUI.ui
+  #Resources/UI/QtOverlayControlsWidgetGUI.ui
   )
 
+# \todo: expose resource file into ImageViewer package
 set( ${MODULE_NAME}_RESOURCES
-  Resources/qtImageEditorResources.qrc
+#  Resources/qtImageEditorResources.qrc
+  ${ImageViewer_SOURCE_DIR}/QtImageViewer/Resources/qtImageViewerResources.qrc
   )
 
 QT4_WRAP_UI( ${MODULE_NAME}_UI_CXX ${${MODULE_NAME}_GUI_SRCS} )
