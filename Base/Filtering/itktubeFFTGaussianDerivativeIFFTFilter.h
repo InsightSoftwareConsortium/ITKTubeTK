@@ -75,6 +75,10 @@ public:
   void SetSigmas( SigmasType & sigmas );
   itkGetConstReferenceMacro( Sigmas, SigmasType );
 
+  void GenerateNJet( typename OutputImageType::Pointer & D,
+    std::vector< typename TOutputImage::Pointer > & Dx,
+    std::vector< typename TOutputImage::Pointer > & Dxx );
+
 protected:
   typedef ForwardFFTImageFilter< RealImageType >          FFTFilterType;
 
@@ -92,11 +96,10 @@ protected:
   FFTGaussianDerivativeIFFTFilter( void );
   virtual ~FFTGaussianDerivativeIFFTFilter( void ) {}
 
-  void ApplyFFT();
-
-  void CreateGaussianDerivative();
-
-  void ApplyGaussianDerivativeIFFT();
+  void ComputeInputImageFFT();
+  void ComputeKernelImageFFT();
+  void ComputeConvolvedImageFFT();
+  void ComputeConvolvedImage();
 
   void GenerateData();
 
@@ -107,11 +110,13 @@ private:
   FFTGaussianDerivativeIFFTFilter( const Self & );
   void operator = ( const Self & );
 
-  typename ComplexImageType::Pointer                  m_FFTImage;
+  typename ComplexImageType::Pointer                  m_InputImageFFT;
 
-  typename RealImageType::Pointer                     m_IFFTImage;
+  typename ComplexImageType::Pointer                  m_KernelImageFFT;
 
-  typename RealImageType::Pointer                     m_KernelImage;
+  typename ComplexImageType::Pointer                  m_ConvolvedImageFFT;
+
+  typename TOutputImage::Pointer                      m_ConvolvedImage;
 
   OrdersType                                          m_Orders;
 

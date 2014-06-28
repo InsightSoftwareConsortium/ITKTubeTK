@@ -129,6 +129,9 @@ CanRead( const char * _headerName ) const
 
   std::string pdfName = _headerName;
   pdfName = pdfName + ".mpd";
+  char pdfPath[255];
+  MET_GetFilePath( _headerName, pdfPath );
+  pdfName = pdfPath + pdfName;
 
   bool result = seedReader.CanRead( _headerName );
   bool result2 = pdfReader.CanRead( pdfName.c_str() );
@@ -175,6 +178,9 @@ Read( const char * _headerName )
   PDFSegmenterIO< Image< float, TImage::ImageDimension >, 4, TLabelMap >
     pdfReader( m_RidgeSeedFilter->GetPDFSegmenter() );
   std::string pdfFileName = seedReader.GetPDFFileName();
+  char pdfPath[255];
+  MET_GetFilePath( _headerName, pdfPath );
+  pdfFileName = pdfPath + pdfFileName;
   if( !pdfReader.Read( pdfFileName.c_str() ) )
     {
     m_RidgeSeedFilter = NULL;
@@ -216,11 +222,15 @@ Write( const char * _headerName )
 
   seedWriter.SetPDFFileName(  pdfName.c_str() );
 
+  char pdfPath[255];
+  MET_GetFilePath( _headerName, pdfPath );
+  std::string pdfWriteName = pdfPath + pdfName;
+
   PDFSegmenterIO< Image< float, TImage::ImageDimension >, 4, TLabelMap >
     pdfWriter( m_RidgeSeedFilter->GetPDFSegmenter() );
 
   bool result = seedWriter.Write( _headerName );
-  if( !pdfWriter.Write( pdfName.c_str() ) )
+  if( !pdfWriter.Write( pdfWriteName.c_str() ) )
     {
     result = false;
     }

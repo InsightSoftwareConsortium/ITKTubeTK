@@ -95,5 +95,15 @@ int itktubeRidgeFFTFilterTest( int argc, char * argv[] )
   writer->SetUseCompression( true );
   writer->Update();
 
+  func->SetScale( atof( argv[1] ) + 1 );
+  func->Update();
+  std::string tmpStr = argv[3];
+  tmpStr = tmpStr + "2.mha";
+  writer->SetFileName( tmpStr.c_str() );
+  writer->SetInput( func->GetRidgeness() );
+  writer->SetUseCompression( true );
+  writer->Update();
+
+
   return EXIT_SUCCESS;
 }

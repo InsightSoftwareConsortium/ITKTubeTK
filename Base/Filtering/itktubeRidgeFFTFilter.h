@@ -51,6 +51,7 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     TInputImage::ImageDimension );
 
+
   itkSetMacro( Scale, double );
   itkGetMacro( Scale, double );
 
@@ -73,6 +74,11 @@ private:
   RidgeFFTFilter( const Self & );
   void operator = ( const Self & );
 
+  typedef FFTGaussianDerivativeIFFTFilter< InputImageType, OutputImageType >
+    DerivativeFilterType;
+
+  typename DerivativeFilterType::Pointer                m_DerivativeFilter;
+
   typename OutputImageType::Pointer                     m_Intensity;
   typename OutputImageType::Pointer                     m_Ridgeness;
   typename OutputImageType::Pointer                     m_Curvature;
@@ -80,8 +86,6 @@ private:
   typename OutputImageType::Pointer                     m_Roundness;
 
   double                                                m_Scale;
-
-  const InputImageType *                                m_LastInputImage;
 };
 
 

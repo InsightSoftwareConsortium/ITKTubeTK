@@ -110,7 +110,6 @@ int DoIt( int argc, char * argv[] )
     }
   else
     {
-    timeCollector.Start( "Update" );
 
     tubeFilter->SetScales( tubeScales );
     tubeFilter->SetSkeletonize( false );
@@ -118,13 +117,15 @@ int DoIt( int argc, char * argv[] )
      tubeScales[0] / 2 );
 
     tubeFilter->SetTrainClassifier( true );
-
-    timeCollector.Stop( "Update" );
     }
 
+  timeCollector.Start( "Update" );
   tubeFilter->Update();
+  timeCollector.Stop( "Update" );
+
+  timeCollector.Start( "Classify" );
   tubeFilter->ClassifyImages();
-  std::cout << tubeFilter << std::endl;
+  timeCollector.Stop( "Classify" );
 
   if( !saveDiscriminantInfo.empty() )
     {
@@ -134,6 +135,7 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "SaveBasis" );
     }
 
+  timeCollector.Start( "WriteOutput" );
   typename OutputImageWriterType::Pointer outputWriter =
     OutputImageWriterType::New();
   outputWriter->SetFileName( outputVolume.c_str() );
@@ -141,6 +143,7 @@ int DoIt( int argc, char * argv[] )
   outputWriter->SetInput( tubeFilter->
     GetClassProbabilityDifferenceForInput( 0 ) );
   outputWriter->Update();
+  timeCollector.Stop( "WriteOutput" );
 
   timeCollector.Report();
 

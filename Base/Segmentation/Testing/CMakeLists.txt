@@ -97,49 +97,49 @@ Midas3FunctionAddTest( NAME itktubeCVTImageFilterTest
   COMMAND ${BASE_SEGMENTATION_TESTS}
     itktubeCVTImageFilterTest
       MIDAS{GDS0015_1.mha.md5}
-      ${TEMP}/itkTubeCVTImageFilterTest.mha )
+      ${TEMP}/itktubeCVTImageFilterTest.mha )
 
 Midas3FunctionAddTest( NAME itktubePDFSegmenterTest
   COMMAND ${BASE_SEGMENTATION_TESTS}
-    --compare MIDAS{itkTubePDFSegmenterTest_mask.mha.md5}
-      ${TEMP}/itkTubePDFSegmenterTest_mask.mha
+    --compare MIDAS{itktubePDFSegmenterTest_mask.mha.md5}
+      ${TEMP}/itktubePDFSegmenterTest_mask.mha
     itktubePDFSegmenterTest
       MIDAS{ES0015_Large.mha.md5}
       MIDAS{ES0015_Large.mha.md5}
       true
       5.0
       MIDAS{GDS0015_Large-TrainingMask.mha.md5}
-      ${TEMP}/itkTubePDFSegmenterTest_prob0.mha
-      ${TEMP}/itkTubePDFSegmenterTest_pdf0.mha
-      ${TEMP}/itkTubePDFSegmenterTest_prob1.mha
-      ${TEMP}/itkTubePDFSegmenterTest_pdf1.mha
-      ${TEMP}/itkTubePDFSegmenterTest_mask.mha
-      ${TEMP}/itkTubePDFSegmenterTest_labeledFeatureSpace.mha )
+      ${TEMP}/itktubePDFSegmenterTest_prob0.mha
+      ${TEMP}/itktubePDFSegmenterTest_pdf0.mha
+      ${TEMP}/itktubePDFSegmenterTest_prob1.mha
+      ${TEMP}/itktubePDFSegmenterTest_pdf1.mha
+      ${TEMP}/itktubePDFSegmenterTest_mask.mha
+      ${TEMP}/itktubePDFSegmenterTest_labeledFeatureSpace.mha )
 
 Midas3FunctionAddTest( NAME itktubePDFSegmenterTest2
   COMMAND ${BASE_SEGMENTATION_TESTS}
-    --compare MIDAS{itkTubePDFSegmenterTest2_mask.mha.md5}
-      ${TEMP}/itkTubePDFSegmenterTest2_mask.mha
+    --compare MIDAS{itktubePDFSegmenterTest2_mask.mha.md5}
+      ${TEMP}/itktubePDFSegmenterTest2_mask.mha
     itktubePDFSegmenterTest
       MIDAS{im0001.crop.mha.md5}
       MIDAS{im0001.crop.contrast.mha.md5}
       false
       0.4
       MIDAS{im0001.vk.mask.crop.mha.md5}
-      ${TEMP}/itkTubePDFSegmenterTest2_prob0.mha
-      ${TEMP}/itkTubePDFSegmenterTest2_pdf0.mha
-      ${TEMP}/itkTubePDFSegmenterTest2_prob1.mha
-      ${TEMP}/itkTubePDFSegmenterTest2_pdf1.mha
-      ${TEMP}/itkTubePDFSegmenterTest2_mask.mha
-      ${TEMP}/itkTubePDFSegmenterTest2_labeledFeatureSpace.mha )
+      ${TEMP}/itktubePDFSegmenterTest2_prob0.mha
+      ${TEMP}/itktubePDFSegmenterTest2_pdf0.mha
+      ${TEMP}/itktubePDFSegmenterTest2_prob1.mha
+      ${TEMP}/itktubePDFSegmenterTest2_pdf1.mha
+      ${TEMP}/itktubePDFSegmenterTest2_mask.mha
+      ${TEMP}/itktubePDFSegmenterTest2_labeledFeatureSpace.mha )
 
 Midas3FunctionAddTest( NAME itktubeRidgeExtractorTest
   COMMAND ${BASE_SEGMENTATION_TESTS}
-    --compare MIDAS{itkTubeRidgeExtractorTest.mha.md5}
-      ${TEMP}/itkTubeRidgeExtractorTest.mha
+    --compare MIDAS{itktubeRidgeExtractorTest.mha.md5}
+      ${TEMP}/itktubeRidgeExtractorTest.mha
     itktubeRidgeExtractorTest
       MIDAS{Branch.n010.sub.mha.md5}
-      ${TEMP}/itkTubeRidgeExtractorTest.mha )
+      ${TEMP}/itktubeRidgeExtractorTest.mha )
 
 Midas3FunctionAddTest( NAME itktubeRidgeExtractorTest2
   COMMAND ${BASE_SEGMENTATION_TESTS}
@@ -168,13 +168,13 @@ Midas3FunctionAddTest( NAME itktubeTubeExtractorTest
 Midas3FunctionAddTest( NAME itktubeRidgeSeedFilterTest
   COMMAND ${BASE_SEGMENTATION_TESTS}
     --compareNumberOfPixelsTolerance 100
-    --compare MIDAS{itkTubeRidgeSeedFilterTest_Output.mha.md5}
-      ${TEMP}/itkTubeRidgeSeedFilterTest_Output.mha
+    --compare MIDAS{itktubeRidgeSeedFilterTest_Output.mha.md5}
+      ${TEMP}/itktubeRidgeSeedFilterTest_Output.mha
     itktubeRidgeSeedFilterTest
       MIDAS{im0001.crop.contrast.mha.md5}
       MIDAS{im0001.vk.maskRidge.crop.mha.md5}
       255 127
-      ${TEMP}/itkTubeRidgeSeedFilterTest_Class0PDF.mha
-      ${TEMP}/itkTubeRidgeSeedFilterTest_Feature0Image.mha
-      ${TEMP}/itkTubeRidgeSeedFilterTest_Output.mha
-      ${TEMP}/itkTubeRidgeSeedFilterTest_MaxScale.mha )
+      ${TEMP}/itktubeRidgeSeedFilterTest_Class0PDF.mha
+      ${TEMP}/itktubeRidgeSeedFilterTest_Feature0Image.mha
+      ${TEMP}/itktubeRidgeSeedFilterTest_Output.mha
+      ${TEMP}/itktubeRidgeSeedFilterTest_MaxScale.mha )

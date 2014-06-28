@@ -38,37 +38,30 @@ RidgeFFTFilter< TInputImage >
 
   m_Scale = 1;
 
-  m_LastInputImage = NULL;
+  m_DerivativeFilter = DerivativeFilterType::New();
 }
+
 
 template< typename TInputImage >
 void
 RidgeFFTFilter< TInputImage >
 ::GenerateData()
 {
-  if( m_LastInputImage == this->GetInput() )
-    {
-    return;
-    }
-  m_LastInputImage = this->GetInput();
+  std::cout << "Ridge FFT Filter: GenerateData" << std::endl;
 
-  typedef FFTGaussianDerivativeIFFTFilter< InputImageType, OutputImageType >
-    DerivFilterType;
+  m_DerivativeFilter->SetInput( this->GetInput() );
 
-  typename DerivFilterType::Pointer df = DerivFilterType::New();
-  df->SetInput( this->GetInput() );
-
-  typename DerivFilterType::OrdersType orders;
-  typename DerivFilterType::SigmasType sigmas;
+  typename DerivativeFilterType::OrdersType orders;
+  typename DerivativeFilterType::SigmasType sigmas;
 
   sigmas.Fill( m_Scale );
-  df->SetSigmas( sigmas );
+  m_DerivativeFilter->SetSigmas( sigmas );
 
   // Intensity
   orders.Fill( 0 );
-  df->SetOrders( orders );
-  df->Update();
-  m_Intensity = df->GetOutput();
+  m_DerivativeFilter->SetOrders( orders );
+  m_DerivativeFilter->Update();
+  m_Intensity = m_DerivativeFilter->GetOutput();
 
   m_Ridgeness = OutputImageType::New();
   m_Ridgeness->CopyInformation( m_Intensity );
@@ -90,35 +83,16 @@ RidgeFFTFilter< TInputImage >
   m_Levelness->SetRegions( m_Intensity->GetLargestPossibleRegion() );
   m_Levelness->Allocate();
 
-  typename OutputImageType::IndexType indx;
-  indx[0] = 50;
-  indx[1] = 50; 
   std::vector< typename OutputImageType::Pointer > dx( ImageDimension );
-  for( unsigned int i=0; i<ImageDimension; ++i )
-    {
-    orders.Fill( 0 );
-    orders[i] = 1;
-    df->SetOrders( orders );
-    df->Update();
-    dx[i] = df->GetOutput();
-    }
 
-  int ddxCount = 0;
-  std::vector< typename OutputImageType::Pointer > ddx( ImageDimension
-    * ImageDimension );
-  for( unsigned int i=0; i<ImageDimension; ++i )
+  int ddxSize = 0;
+  for( unsigned int i=1; i<=ImageDimension; ++i )
     {
-    orders.Fill( 0 );
-    orders[i] = 1;
-    for( unsigned int j=i; j<ImageDimension; ++j )
-      {
-      ++orders[j];
-      df->SetOrders( orders );
-      df->Update();
-      ddx[ ddxCount++ ] = df->GetOutput();
-      --orders[j];
-      }
+    ddxSize += i;
     }
+  std::vector< typename OutputImageType::Pointer > ddx( ddxSize );
+
+  m_DerivativeFilter->GenerateNJet( m_Intensity, dx, ddx );
 
   ImageRegionIterator< OutputImageType > iterRidge( m_Ridgeness, 
     m_Ridgeness->GetLargestPossibleRegion() );
@@ -131,8 +105,9 @@ RidgeFFTFilter< TInputImage >
 
   std::vector< ImageRegionIterator< OutputImageType > > iterDx( 
     ImageDimension );
-  std::vector< ImageRegionIterator< OutputImageType > > iterDdx(
-    ImageDimension * ImageDimension );
+
+  std::vector< ImageRegionIterator< OutputImageType > > iterDdx( ddxSize );
+
   unsigned int count = 0;
   for( unsigned int i=0; i<ImageDimension; ++i )
     {
@@ -182,7 +157,7 @@ RidgeFFTFilter< TInputImage >
     ++iterLevel;
     }
 
-  this->GraftOutput( m_Intensity );
+  this->SetNthOutput( 0, m_Intensity );
 }
 
 template< typename TInputImage >
@@ -238,7 +213,6 @@ RidgeFFTFilter< TInputImage >
     }
 
   os << indent << "Scale             : " << m_Scale << std::endl;
-  os << indent << "Last Input Image  : " << m_LastInputImage << std::endl;
 }
 
 } // End namespace tube
