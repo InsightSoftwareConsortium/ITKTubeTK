@@ -84,8 +84,13 @@ RidgeFFTFilter< TInputImage >
   m_Levelness->Allocate();
 
   std::vector< typename OutputImageType::Pointer > dx( ImageDimension );
-  std::vector< typename OutputImageType::Pointer > ddx( ImageDimension
-    * ( ImageDimension - 1 ) );
+
+  int ddxSize = 0;
+  for( unsigned int i=1; i<=ImageDimension; ++i )
+    {
+    ddxSize += i;
+    }
+  std::vector< typename OutputImageType::Pointer > ddx( ddxSize );
 
   m_DerivativeFilter->GenerateNJet( m_Intensity, dx, ddx );
 
@@ -100,8 +105,9 @@ RidgeFFTFilter< TInputImage >
 
   std::vector< ImageRegionIterator< OutputImageType > > iterDx( 
     ImageDimension );
-  std::vector< ImageRegionIterator< OutputImageType > > iterDdx(
-    ImageDimension * ( ImageDimension - 1 ) );
+
+  std::vector< ImageRegionIterator< OutputImageType > > iterDdx( ddxSize );
+
   unsigned int count = 0;
   for( unsigned int i=0; i<ImageDimension; ++i )
     {

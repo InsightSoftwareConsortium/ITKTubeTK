@@ -222,9 +222,14 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   std::vector< typename ComplexImageType::Pointer > 
     dXKernelImageFFT( ImageDimension );
 
-  if( dXX.size() != ImageDimension * (ImageDimension-1) )
+  int ddxSize = 0;
+  for( unsigned int i = 1; i<=ImageDimension; ++i )
     {
-    dXX.resize( ImageDimension * (ImageDimension-1) );
+    ddxSize += i;
+    }
+  if( dXX.size() != ddxSize )
+    {
+    dXX.resize( ddxSize );
     }
 
   this->m_Orders.Fill( 0 );
