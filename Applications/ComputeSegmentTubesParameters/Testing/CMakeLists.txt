@@ -41,10 +41,9 @@ set( TEXTCOMPARE_EXE
 # Test1
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
-    -v 255
-    -b 127
-    -s 2
-    MIDAS{im0001.vk.mask.crop.mha.md5}
+    -v 1
+    MIDAS{SegmentTubeSeedsTest1.threshSkel.mha.md5}
+    MIDAS{SegmentTubeSeedsTest1_Scales.mha.md5}
     MIDAS{im0001.crop.contrast.mha.md5}
     ${TEMP}/${MODULE_NAME}Test1 )
 
