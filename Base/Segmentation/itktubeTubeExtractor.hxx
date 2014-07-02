@@ -470,7 +470,7 @@ TubeExtractor<TInputImage>
     {
     this->m_TubeColor[3] = 1.0;
     }
-  for( unsigned int i=0; i<nc; i++ )
+  for( int i=0; i<nc; i++ )
     {
     this->m_TubeColor[i] = color[i];
     }

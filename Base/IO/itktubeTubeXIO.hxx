@@ -187,7 +187,7 @@ TubeXIO< TDimension >
   mF->terminateRead = true;
   fields.push_back(mF);
 
-  for( unsigned int obj = 0; obj < nObjects; ++obj )
+  for( int obj = 0; obj < nObjects; ++obj )
     {
     if( !MET_Read( tmpReadStream, &fields, ':', false, true, &extraFields ) )
       {
