@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <executable>
   <category>TubeTK</category>
-  <title>Sample CLI Application (TubeTK)</title>
-  <description>Demonstration of how to write a CLI application. Performs blurring.</description>
+  <title>Convert TRE (TubeTK)</title>
+  <description>Convert a TubeX file from to a TubeTK file.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
@@ -24,14 +24,14 @@
       <label>Input TRE</label>
       <channel>input</channel>
       <index>0</index>
-      <description>Input TRE.</description>
+      <description>Input TRE</description>
     </file>
     <file>
       <name>outputTREFileName</name>
       <label>Output TRE</label>
       <channel>output</channel>
       <index>1</index>
-      <description>Output TRE.</description>
+      <description>Output TRE</description>
     </file>
   </parameters>
 </executable>

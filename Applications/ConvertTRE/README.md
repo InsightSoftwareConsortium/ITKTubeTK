@@ -1,4 +1,4 @@
-TubeTK Sample CLI Application
+TubeTK ConvertTRE Application
 =============================
 
 ---
