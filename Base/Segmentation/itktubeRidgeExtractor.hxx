@@ -910,7 +910,7 @@ RidgeExtractor<TInputImage>
       }
 
     dProd = dot_product( lStepDir, pStepDir );
-    if( m_MaxTangentChange>0 && vnl_math_abs( dProd )<m_MaxTangentChange )
+    if( vnl_math_abs( dProd ) < m_MaxTangentChange )
       {
       if( this->GetDebug() )
         {
@@ -928,7 +928,7 @@ RidgeExtractor<TInputImage>
 
     double diffX = vcl_sqrt(
       ::tube::ComputeEuclideanDistanceVector( lX, pX ) );
-    if( m_MaxXChange > 0 && diffX > m_MaxXChange * GetScale() * stepFactor )
+    if( diffX > m_MaxXChange * GetScale() * stepFactor )
       {
       if( this->GetDebug() )
         {

@@ -13,36 +13,35 @@
     <description>Input/output parameters.</description>
     <image>
       <name>maskImageFileName</name>
-      <label>Mask</label>
+      <label>Mask Image</label>
       <channel>input</channel>
       <index>0</index>
-      <description>Mask indicates vessel and background labels for statistics</description>
+      <description>Mask indicates vessel and background labels</description>
+    </image>
+    <image>
+      <name>scaleImageFileName</name>
+      <label>Scale Image</label>
+      <channel>input</channel>
+      <index>1</index>
+      <description>Scale of potential vessel at every point.</description>
     </image>
     <image>
       <name>inputImageFileName</name>
       <label>Input Image</label>
       <channel>input</channel>
-      <index>1</index>
+      <index>2</index>
       <description>Input image.</description>
     </image>
     <file>
       <name>outputParametersFile</name>
       <label>Output Parameters File</label>
       <channel>output</channel>
-      <index>2</index>
+      <index>3</index>
       <description>Parameters for SegmentTubes are written to this file.</description>
     </file>
   </parameters>
   <parameters>
     <label>Segment Tubes Options</label>
-    <double>
-      <name>scale</name>
-      <label>Scale</label>
-      <description>Scale used for ridge measures.</description>
-      <longflag>scale</longflag>
-      <flag>s</flag>
-      <default>2.0</default>
-    </double>
     <integer>
       <name>maskBackgroundId</name>
       <label>Mask Background Id</label>
