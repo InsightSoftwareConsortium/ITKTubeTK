@@ -438,9 +438,11 @@ void vtkMRMLSpatialObjectsNode::CleanSubsampling( void )
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
 {
-  typedef itk::VesselTubeSpatialObjectPoint<3> TubePointType;
   typedef itk::Point<double, 3>                PointType;
-  typedef itk::VesselTubeSpatialObject<3>      TubeType;
+  typedef itk::TubeSpatialObject<3>            TubeType;
+  typedef itk::VesselTubeSpatialObject<3>      VesselTubeType;
+  typedef VesselTubeType::TubePointType        VesselTubePointType;
+  typedef TubeType::TubePointType              TubePointType;
 
   char childName[] = "Tube";
   TubeNetType::ChildrenListType* tubeList =
@@ -458,11 +460,13 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
         tubeIT != tubeList->end();
         ++tubeIT )
     {
-    TubeType* currTube =
-      static_cast<TubeType*>((*tubeIT).GetPointer());
+    TubeType* currTube = dynamic_cast<TubeType*>((*tubeIT).GetPointer());
+    if (!currTube)
+      {
+      continue;
+      }
 
     currTube->RemoveDuplicatePoints();
-
     const itk::SizeValueType numberOfPoints = currTube->GetNumberOfPoints();
     if( numberOfPoints < 2 )
       {
@@ -518,8 +522,11 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
   for(TubeNetType::ChildrenListType::iterator tubeIT = tubeList->begin();
         tubeIT != tubeList->end(); ++tubeIT )
     {
-    TubeType* currTube =
-      static_cast<TubeType*>((*tubeIT).GetPointer());
+    TubeType* currTube = dynamic_cast<TubeType*>((*tubeIT).GetPointer());
+    if (!currTube)
+      {
+      continue;
+      }
 
     const itk::SizeValueType tubeSize = currTube->GetNumberOfPoints();
     if( tubeSize < 2 )
@@ -538,13 +545,14 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
 
     currTube->ComputeObjectToWorldTransform();
 
-    int index = 0;
-    std::vector<TubePointType>::iterator  tubePointIterator;
-    for(tubePointIterator = currTube->GetPoints().begin();
-          tubePointIterator != currTube->GetPoints().end();
-          ++tubePointIterator, ++pointID, ++index)
+    size_t numberOfPoints = currTube->GetPoints().size();
+    for(size_t index = 0; index < numberOfPoints; ++pointID, ++index)
       {
-      PointType inputPoint = tubePointIterator->GetPosition();
+      TubePointType* tubePoint =
+        dynamic_cast<TubePointType*>(currTube->GetPoint(index));
+      assert(tubePoint);
+
+      PointType inputPoint = tubePoint->GetPosition();
 
       inputPoint =
         currTube->GetIndexToWorldTransform()->TransformPoint( inputPoint );
@@ -563,31 +571,34 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
       tubeIDs->SetTuple1(pointID, currTube->GetId());
 
       // Radius
-      tubeRadius->SetTuple1(pointID, tubePointIterator->GetRadius());
+      tubeRadius->SetTuple1(pointID, tubePoint->GetRadius());
 
       // Tangeantes
       tan1->SetTuple3(pointID,
-                      (*tubePointIterator).GetNormal1()[0],
-                      (*tubePointIterator).GetNormal1()[1],
-                      (*tubePointIterator).GetNormal1()[2]);
+                      tubePoint->GetNormal1()[0],
+                      tubePoint->GetNormal1()[1],
+                      tubePoint->GetNormal1()[2]);
 
       tan2->SetTuple3(pointID,
-                      (*tubePointIterator).GetNormal2()[0],
-                      (*tubePointIterator).GetNormal2()[1],
-                      (*tubePointIterator).GetNormal2()[2]);
+                      tubePoint->GetNormal2()[0],
+                      tubePoint->GetNormal2()[1],
+                      tubePoint->GetNormal2()[2]);
 
       // Medialness & Ridgness
-      if(tubePointIterator->GetMedialness() != 0)
+      VesselTubePointType* vesselTubePoint =
+        dynamic_cast<VesselTubePointType*>(tubePoint);
+
+      if(vesselTubePoint && vesselTubePoint->GetMedialness() != 0)
         {
         containsMidialnessInfo = true;
+        medialness->SetTuple1(pointID, vesselTubePoint->GetMedialness());
         }
-      medialness->SetTuple1(pointID, tubePointIterator->GetMedialness());
 
-      if(tubePointIterator->GetRidgeness() != 0)
+      if(vesselTubePoint && vesselTubePoint->GetRidgeness() != 0)
         {
         containsRidgnessInfo = true;
+        ridgeness->SetTuple1(pointID, vesselTubePoint->GetRidgeness());
         }
-      ridgeness->SetTuple1(pointID, tubePointIterator->GetRidgeness());
       }
 
     vesselLine->Initialize(tubeSize,
