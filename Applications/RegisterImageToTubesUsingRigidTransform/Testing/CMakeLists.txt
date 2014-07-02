@@ -46,14 +46,14 @@ Midas3FunctionAddTest( NAME ${METRIC_SAMPLER}-Test1
   COMMAND ${METRIC_SAMPLER_EXE}
     MIDAS{Branch.n020.mha.md5}
     MIDAS{tube.tre.md5}
-    ${TEMP}/${METRIC_SAMPLER}Test1.mha )
+    ${TEMP}/${METRIC_SAMPLER}Test1.nrrd )
 
 set( METRIC_EXTRACTOR ExtractMetricImageSlice )
 set( METRIC_EXTRACTOR_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${METRIC_EXTRACTOR}> )
 Midas3FunctionAddTest( NAME ${METRIC_EXTRACTOR}-Test1
   COMMAND ${METRIC_EXTRACTOR_EXE}
-    ${TEMP}/${METRIC_SAMPLER}Test1.mha
+    ${TEMP}/${METRIC_SAMPLER}Test1.nrrd
     ${TEMP}/${METRIC_EXTRACTOR}Test1.mha )
 set_property( TEST ${METRIC_EXTRACTOR}-Test1
   APPEND PROPERTY DEPENDS ${METRIC_SAMPLER}-Test1 )
@@ -80,5 +80,5 @@ if( NOT TubeTK_BUILD_SLICER_MODULES )
         --deserialize ${TEMP}/${MODULE_NAME}Tuner.json
     MIDAS{Branch.n020.mha.md5}
     MIDAS{tube.tre.md5}
-    ${TEMP}/${METRIC_SAMPLER}Test2.mha )
+    ${TEMP}/${METRIC_SAMPLER}Test2.nrrd )
 endif( NOT TubeTK_BUILD_SLICER_MODULES )
