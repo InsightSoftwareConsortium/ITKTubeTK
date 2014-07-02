@@ -137,7 +137,7 @@ RidgeExtractor<TInputImage>
   m_DataSpline->GetOptimizerND()->SetTolerance( 0.1 );
   m_DataSpline->GetOptimizerND()->SetMaxIterations( 200 );
   m_DataSpline->GetOptimizerND()->SetMaxLineSearches( 10 );
-  vnl_vector< double > xStep( 3, 0.5 );
+  vnl_vector< double > xStep( ImageDimension, 0.5 );
   m_DataSpline->GetOptimizerND()->SetXStep( xStep );
 
   m_IdleCallBack = NULL;
