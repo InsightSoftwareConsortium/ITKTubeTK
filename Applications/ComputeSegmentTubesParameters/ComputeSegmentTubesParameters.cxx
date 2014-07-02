@@ -323,7 +323,6 @@ int DoIt( int argc, char * argv[] )
           ridgeExtractor->Ridgeness( cIndx, intensity, roundness, curvature,
             levelness );
   
-          MetricVectorType instance(5, 0);
           instance[0] = intensity;
           instance[1] = ridgeness;
           instance[2] = roundness;
