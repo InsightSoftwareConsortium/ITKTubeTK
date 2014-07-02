@@ -44,6 +44,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
 # Test1-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
             COMMAND ${TEXTCOMPARE_EXE}
+               -d 0.001
                -t ${TEMP}/${MODULE_NAME}Test1.mha
                -b MIDAS{TubeXIOTestConvTRE.tre.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare

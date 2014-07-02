@@ -57,6 +57,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
 #######
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-MRS-Compare
   COMMAND ${TEXTCOMPARE_EXE}
+    -d 0.01
     -t ${TEMP}/${MODULE_NAME}Test1.mrs
     -b MIDAS{${MODULE_NAME}Test1.mrs.md5} )
 set_property(TEST ${MODULE_NAME}-Test1-MRS-Compare
@@ -67,7 +68,7 @@ set_property(TEST ${MODULE_NAME}-Test1-MRS-Compare
 #######
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Output-Compare
   COMMAND ${IMAGECOMPARE_EXE}
-    -i 0.05
+    -i 0.001
     -t ${TEMP}/${MODULE_NAME}Test1_Output.mha
     -b MIDAS{${MODULE_NAME}Test1_Output.mha.md5} )
 set_property(TEST ${MODULE_NAME}-Test1-Output-Compare
@@ -101,6 +102,7 @@ set_property(TEST ${MODULE_NAME}-Test2-Output-Compare
 #######
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-MRS-Compare
   COMMAND ${TEXTCOMPARE_EXE}
+    -d 0.001
     -t ${TEMP}/${MODULE_NAME}Test2.mrs
     -b MIDAS{${MODULE_NAME}Test2.mrs.md5} )
 set_property(TEST ${MODULE_NAME}-Test2-MRS-Compare
