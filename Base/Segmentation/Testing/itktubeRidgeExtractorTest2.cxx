@@ -175,7 +175,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
 
 
     RidgeOpType::ContinuousIndexType x1 = x0;
-    if( !ridgeOp->LocalRidge( x1 ) )
+    if( ridgeOp->LocalRidge( x1 ) != RidgeOpType::SUCCESS )
       {
       std::cout << "Local ridge test failed.  No ridge found." << std::endl;
       std::cout << "   Source = " << x0 << std::endl;

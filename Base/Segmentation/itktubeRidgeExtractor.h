@@ -93,7 +93,6 @@ public:
   /** Defines the type of vectors used */
   typedef vnl_vector< double >                  VectorType;
 
-
   /** Defines the type of matrix used */
   typedef vnl_matrix< double >                  MatrixType;
 
@@ -103,6 +102,9 @@ public:
 
   /** Defines the type of vectors used */
   typedef typename TubeType::CovariantVectorType CovariantVectorType;
+
+  typedef enum {SUCCESS, EXITED_IMAGE, REVISITED_VOXEL, RIDGE_FAIL, ROUND_FAIL,
+    CURVE_FAIL, LEVEL_FAIL, OTHER_FAIL} RidgeExtractionFailureEnum;
 
   /** Set the input image */
   void SetInputImage( typename ImageType::Pointer inputImage );
@@ -266,11 +268,12 @@ public:
     double & levelness );
 
   /** Compute the local Ridge */
-  bool   LocalRidge( ContinuousIndexType & x );
+  RidgeExtractionFailureEnum LocalRidge( ContinuousIndexType & x,
+    bool verbose=false );
 
   /** Extract */
   typename TubeType::Pointer  ExtractRidge( const ContinuousIndexType & x,
-    int tubeID );
+    int tubeID, bool verbose=false );
 
   /** Set the idle callback */
   void   IdleCallBack( bool ( *idleCallBack )( void ) );
@@ -288,7 +291,7 @@ protected:
 
   /** Traverse the ridge one way */
   bool  TraverseOneWay( ContinuousIndexType & newX, VectorType & newT,
-    MatrixType & newN, int dir );
+    MatrixType & newN, int dir, bool verbose=false );
 
 private:
 

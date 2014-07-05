@@ -288,7 +288,7 @@ int DoIt( int argc, char * argv[] )
           WriteOutputData< VDimension >( outputDataStreamInit, cIndx,
             instance[0], instance[1], instance[2], instance[3], instance[4] );
   
-          if( ridgeExtractor->LocalRidge( cIndx ) )
+          if( ridgeExtractor->LocalRidge( cIndx ) == RidgeExtractorType::SUCCESS )
             {
             if( scale < scaleMin )
               {

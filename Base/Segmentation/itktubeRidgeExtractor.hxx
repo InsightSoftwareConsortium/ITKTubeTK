@@ -108,7 +108,7 @@ RidgeExtractor<TInputImage>
   m_XHEVect.set_size( ImageDimension, ImageDimension );
   m_XHEVect.fill( 0.0 );
 
-  m_DynamicScale = false;
+  m_DynamicScale = true;
   m_DynamicScaleUsed = 3;
   m_RadiusExtractor = NULL;
 
@@ -121,8 +121,8 @@ RidgeExtractor<TInputImage>
   m_MinRidgenessStart = 0.95;
   m_MinRoundness = 0.5;    // near 1 = harder
   m_MinRoundnessStart = 0.45;
-  m_MinCurvature = 0.7;
-  m_MinCurvatureStart = 0.65;
+  m_MinCurvature = 0.25;
+  m_MinCurvatureStart = 0.2;
   m_MinLevelness = 0.7;
   m_MinLevelnessStart = 0.65;
   m_MaxRecoveryAttempts = 4;
@@ -527,7 +527,7 @@ template< class TInputImage >
 bool
 RidgeExtractor<TInputImage>
 ::TraverseOneWay( ContinuousIndexType & newX, VectorType & newT,
-                  MatrixType & newN, int dir )
+                  MatrixType & newN, int dir, bool verbose )
 {
   if( this->GetDebug() )
     {
@@ -581,7 +581,7 @@ RidgeExtractor<TInputImage>
     if( lX[i] < (double)m_ExtractBoundMin[i]
       || lX[i]+0.5 > (double)m_ExtractBoundMax[i] )
       {
-      if( this->GetDebug() )
+      if( verbose || this->GetDebug() )
         {
         std::cout << "Ridge: TraverseOneWay: Exited boundary" << std::endl;
         }
@@ -602,7 +602,7 @@ RidgeExtractor<TInputImage>
     m_TubeMaskImage->GetPixel( indx );
   if( value != 0 && ( int )value != tubeId )
     {
-    if( this->GetDebug() )
+    if( verbose || this->GetDebug() )
       {
       std::cout << "Ridge: TraverseOneWay: Encountered another tube"
         << std::endl;
@@ -611,8 +611,10 @@ RidgeExtractor<TInputImage>
     }
   else
     {
-    m_TubeMaskImage->SetPixel( indx, ( PixelType )( tubeId
-        + ( tubePointCount/10000.0 ) ) );
+    m_TubeMaskImage->SetPixel( indx, ( float )( tubeId
+      + ( tubePointCount/10000.0 ) ) );
+    std::cout << "Mask(" << indx << ") = "
+      << tubeId + ( tubePointCount / 10000.0 ) << std::endl;
     if( dir == 1 )
       {
       if( this->GetDebug() )
@@ -679,7 +681,7 @@ RidgeExtractor<TInputImage>
       pnts.push_back( pnt );
       tubePointCount++;
 
-      if( this->GetDebug() )
+      if( verbose || this->GetDebug() )
         {
         std::cout << "Ridge: Added initial tube point." << std::endl;
         }
@@ -698,7 +700,7 @@ RidgeExtractor<TInputImage>
     {
     if( recovery > 0 )
       {
-      if( this->GetDebug() )
+      if( verbose || this->GetDebug() )
         {
         std::cout << "Attempting recovery : " << recovery;
         std::cout << " : Scale = " << GetScale() << std::endl;
@@ -745,7 +747,7 @@ RidgeExtractor<TInputImage>
       if( vnl_math_abs( dot_product( lStepDir, pStepDir ) ) <
         1-0.5*( 1-m_MaxTangentChange ) )
         {
-        if( this->GetDebug() )
+        if( verbose || this->GetDebug() )
           {
           std::cout << "Curving" << std::endl;
           }
@@ -800,7 +802,7 @@ RidgeExtractor<TInputImage>
 
     if( !m_DataSpline->Extreme( lX, &lVal, ImageDimension-1, lSearchDir ) )
       {
-      if( this->GetDebug() )
+      if( verbose || this->GetDebug() )
         {
         std::cout << "*** Ridge terminated: Local max not found"
           << std::endl;
@@ -821,7 +823,7 @@ RidgeExtractor<TInputImage>
         || lX[i] + 0.5 > (double)m_ExtractBoundMax[i] )
         {
         inbounds = false;
-        if( this->GetDebug() )
+        if( verbose || this->GetDebug() )
           {
           std::cout << "*** Ridge term: Exited extraction bounds"
             << std::endl;
@@ -863,7 +865,7 @@ RidgeExtractor<TInputImage>
       }
     if( closestV != ImageDimension-1 )
       {
-      if( this->GetDebug() )
+      if( verbose || this->GetDebug() )
         {
         std::cout << "Mixing things up: Chosen t=evect#" << closestV
           << " dotProd = " << closestVProd << std::endl;
@@ -912,7 +914,7 @@ RidgeExtractor<TInputImage>
     dProd = dot_product( lStepDir, pStepDir );
     if( vnl_math_abs( dProd ) < m_MaxTangentChange )
       {
-      if( this->GetDebug() )
+      if( verbose || this->GetDebug() )
         {
         std::cout << "*** Ridge term: Rapid change in step direction "
           << "( " << vnl_math_abs( dProd ) << " )" << std::endl;
@@ -930,7 +932,7 @@ RidgeExtractor<TInputImage>
       ::tube::ComputeEuclideanDistanceVector( lX, pX ) );
     if( diffX > m_MaxXChange * GetScale() * stepFactor )
       {
-      if( this->GetDebug() )
+      if( verbose || this->GetDebug() )
         {
         std::cout << "*** Ridge term: Rapid change in spatial location "
           << "( " << diffX << " )" << std::endl;
@@ -948,7 +950,7 @@ RidgeExtractor<TInputImage>
 
     if( ridgeness < m_MinRidgeness )
       {
-      if( this->GetDebug() )
+      if( verbose || this->GetDebug() )
         {
         std::cout << "*** Ridge terminated: Local max not a ridge point "
           << "( ridgeness = " << ridgeness << " )" << std::endl;
@@ -971,7 +973,7 @@ RidgeExtractor<TInputImage>
 
     if( curvature < m_MinCurvature )
       {
-      if( this->GetDebug() )
+      if( verbose || this->GetDebug() )
         {
         std::cout << "*** Ridge terminated: Low curvature "
           << "( " << curvature << " )" << std::endl;
@@ -987,7 +989,7 @@ RidgeExtractor<TInputImage>
 
     if( levelness < m_MinLevelness )
       {
-      if( this->GetDebug() )
+      if( verbose || this->GetDebug() )
         {
         std::cout << "*** Ridge terminated: Low levelness "
           << "( " << levelness << " )" << std::endl;
@@ -1003,7 +1005,7 @@ RidgeExtractor<TInputImage>
 
     if( roundness < m_MinRoundness )
       {
-      if( this->GetDebug() )
+      if( verbose || this->GetDebug() )
         {
         std::cout << "*** Ridge terminated: Roundness : Planar point "
                   << "( " << roundness << " )" << std::endl;
@@ -1035,7 +1037,7 @@ RidgeExtractor<TInputImage>
       if( ( int )maskVal != tubeId ||
          tubePointCount-( ( maskVal-( int )maskVal )*10000 )>20/m_StepX )
         {
-        if( this->GetDebug() )
+        if( verbose || this->GetDebug() )
           {
           std::cout << "*** Ridge terminated: Revisited voxel" << std::endl;
           std::cout << "  indx = " << indx << std::endl;
@@ -1051,7 +1053,9 @@ RidgeExtractor<TInputImage>
     else
       {
       m_TubeMaskImage->SetPixel( indx, ( float )( tubeId
-          + ( tubePointCount/10000.0 ) ) );
+        + ( tubePointCount/10000.0 ) ) );
+      std::cout << "Mask(" << indx << ") = "
+        << tubeId + ( tubePointCount / 10000.0 ) << std::endl;
       }
 
     /** Show the satus every 50 points */
@@ -1064,7 +1068,7 @@ RidgeExtractor<TInputImage>
         m_StatusCallBack( NULL, st, 0 );
         }
       }
-    if( this->GetDebug() )
+    if( verbose || this->GetDebug() )
       {
       std::cout << "Ridge: TraverseOW: Adding point " << tubePointCount
         << " = " << lX << std::endl;
@@ -1189,7 +1193,7 @@ RidgeExtractor<TInputImage>
       }
     }
 
-  if( this->GetDebug() )
+  if( verbose || this->GetDebug() )
     {
     std::cout << "*** Ridge terminated: Cannot recover" << std::endl;
     std::cout << "    Added " << pnts.size() << " points." << std::endl;
@@ -1210,9 +1214,9 @@ RidgeExtractor<TInputImage>
  * Compute the local ridge
  */
 template< class TInputImage >
-bool
+typename RidgeExtractor<TInputImage>::RidgeExtractionFailureEnum
 RidgeExtractor<TInputImage>
-::LocalRidge( ContinuousIndexType & newX )
+::LocalRidge( ContinuousIndexType & newX, bool verbose )
 {
   if( this->GetDebug() )
     {
@@ -1231,12 +1235,12 @@ RidgeExtractor<TInputImage>
         {
         m_StatusCallBack( NULL, "Exited Image", 0 );
         }
-      if( this->GetDebug() )
+      if( verbose || this->GetDebug() )
         {
         std::cout << "RidgeExtractor::LocalRidge() : Exited Image 2"
           << std::endl;
         }
-      return false;
+      return EXITED_IMAGE;
       }
     }
 
@@ -1295,12 +1299,12 @@ RidgeExtractor<TInputImage>
           {
           m_StatusCallBack( NULL, "Exited Image", 0 );
           }
-        if( this->GetDebug() )
+        if( verbose || this->GetDebug() )
           {
           std::cout << "RidgeExtractor::LocalRidge() : Exited Image 3"
             << std::endl;
           }
-        return false;
+        return EXITED_IMAGE;
         }
       }
 
@@ -1310,12 +1314,12 @@ RidgeExtractor<TInputImage>
         {
         m_StatusCallBack( NULL, "Revisited voxel", 0 );
         }
-      if( this->GetDebug() )
+      if( verbose || this->GetDebug() )
         {
-        std::cout << "RidgeExtractor::LocalRidge() : Revisited voxel 1"
-          << std::endl;
+        std::cout << "RidgeExtractor::LocalRidge() : Revisited voxel 1 : "
+          << m_TubeMaskImage->GetPixel( indx ) << std::endl;
         }
-      return false;
+      return REVISITED_VOXEL;
       }
 
     ridgeness = Ridgeness( newX, intensity, roundness, curvature,
@@ -1337,7 +1341,7 @@ RidgeExtractor<TInputImage>
         std::cout << "  Levelness: " << levelness << " >= "
           << m_MinLevelnessStart << std::endl;
         }
-      return true;
+      return SUCCESS;
       }
 
     if( this->GetDebug() )
@@ -1382,12 +1386,12 @@ RidgeExtractor<TInputImage>
           {
           m_StatusCallBack( NULL, "Exited Image", 0 );
           }
-        if( this->GetDebug() )
+        if( verbose || this->GetDebug() )
           {
           std::cout << "RidgeExtractor::LocalRidge() : Exited Image 5"
             << std::endl;
           }
-        return false;
+        return EXITED_IMAGE;
         }
       }
 
@@ -1397,12 +1401,12 @@ RidgeExtractor<TInputImage>
         {
         m_StatusCallBack( NULL, "Revisited voxel", 0 );
         }
-      if( this->GetDebug() )
+      if( verbose || this->GetDebug() )
         {
         std::cout << "RidgeExtractor::LocalRidge() : Revisited voxel 3"
-          << std::endl;
+          << m_TubeMaskImage->GetPixel( indx ) << std::endl;
         }
-      return false;
+      return REVISITED_VOXEL;
       }
 
     ridgeness = Ridgeness( newX, intensity, roundness, curvature,
@@ -1424,7 +1428,7 @@ RidgeExtractor<TInputImage>
         std::cout << "  Levelness: " << levelness << " >= "
           << m_MinLevelnessStart << std::endl;
         }
-      return true;
+      return SUCCESS;
       }
 
     if( this->GetDebug() )
@@ -1441,6 +1445,19 @@ RidgeExtractor<TInputImage>
       }
     }
 
+  if( verbose || this->GetDebug() )
+    {
+    std::cout << " FAIL: Local norm max: " << newX << std::endl;
+    std::cout << "  Ridgeness: " << ridgeness << " >= "
+      << m_MinRidgenessStart << std::endl;
+    std::cout << "  Roundness: " << roundness << " >= "
+      << m_MinRoundnessStart << std::endl;
+    std::cout << "  Curvature: " << curvature << " >= "
+      << m_MinCurvatureStart << std::endl;
+    std::cout << "  Levelness: " << levelness << " >= "
+      << m_MinLevelnessStart << std::endl;
+    }
+
   if( ridgeness < m_MinRidgenessStart )
     {
     if( m_StatusCallBack )
@@ -1451,6 +1468,7 @@ RidgeExtractor<TInputImage>
       {
       std::cout << "LocalRidge : Ridgeness failure" << std::endl;
       }
+    return RIDGE_FAIL;
     }
 
   if( roundness < m_MinRoundnessStart )
@@ -1463,6 +1481,7 @@ RidgeExtractor<TInputImage>
       {
       std::cout << "LocalRidge : Roundness failure" << std::endl;
       }
+    return ROUND_FAIL;
     }
 
   if( curvature < m_MinCurvatureStart )
@@ -1475,6 +1494,7 @@ RidgeExtractor<TInputImage>
       {
       std::cout << "LocalRidge : Curvature failure" << std::endl;
       }
+    return CURVE_FAIL;
     }
 
   if( levelness < m_MinLevelnessStart )
@@ -1487,21 +1507,10 @@ RidgeExtractor<TInputImage>
       {
       std::cout << "LocalRidge : Levelness failure" << std::endl;
       }
+    return LEVEL_FAIL;
     }
 
-  if( this->GetDebug() )
-    {
-    std::cout << "Failure: LocalRidge exiting: " << newX << std::endl;
-    std::cout << "  Ridgeness: " << ridgeness << " >= "
-      << m_MinRidgenessStart << std::endl;
-    std::cout << "  Roundness: " << roundness << " >= "
-      << m_MinRoundnessStart << std::endl;
-    std::cout << "  Curvature: " << curvature << " >= "
-      << m_MinCurvatureStart << std::endl;
-    std::cout << "  Levelness: " << levelness << " >= "
-      << m_MinLevelnessStart << std::endl;
-    }
-  return false;
+  return OTHER_FAIL;
 }
 
 /**
@@ -1510,7 +1519,7 @@ RidgeExtractor<TInputImage>
 template< class TInputImage >
 typename RidgeExtractor<TInputImage>::TubeType::Pointer
 RidgeExtractor<TInputImage>
-::ExtractRidge( const ContinuousIndexType & newX, int tubeId )
+::ExtractRidge( const ContinuousIndexType & newX, int tubeId, bool verbose )
 {
   ContinuousIndexType lX;
   lX = newX;
@@ -1523,15 +1532,15 @@ RidgeExtractor<TInputImage>
     radiusOriginal = m_RadiusExtractor->GetRadiusStart();
     }
 
-  if( !LocalRidge( lX ) )
+  if( LocalRidge( lX, verbose ) != SUCCESS )
     {
-    if( this->GetDebug() )
+    if( verbose || this->GetDebug() )
       {
       std::cout << "LocalRidge fails at " << lX << std::endl;
       }
     return NULL;
     }
-  if( this->GetDebug() )
+  if( verbose || this->GetDebug() )
     {
     std::cout << "*** Ridge found at " << lX << std::endl;
     }
@@ -1586,7 +1595,7 @@ RidgeExtractor<TInputImage>
 
     SetScale( m_DynamicScaleUsed );
     m_RadiusExtractor->SetRadiusStart( m_DynamicScaleUsed );
-    if( this->GetDebug() )
+    if( verbose || this->GetDebug() )
       {
       std::cout << "DynamicScale = " << GetScale() << std::endl;
       }
@@ -1594,13 +1603,13 @@ RidgeExtractor<TInputImage>
       {
       lX[i] = ( lX[i] + newX[i] )/2;
       }
-    if( !LocalRidge( lX ) )
+    if( LocalRidge( lX, verbose ) != SUCCESS )
       {
       if( m_StatusCallBack )
         {
         m_StatusCallBack( "AS Failure", NULL, 0 );
         }
-      if( this->GetDebug() )
+      if( verbose || this->GetDebug() )
         {
         std::cout << "RidgeExtractor:Extract(): AS Failure" << std::endl;
         }
@@ -1626,12 +1635,12 @@ RidgeExtractor<TInputImage>
       lN[i][j] = m_XHEVect( i, j );
       }
     }
-  if( this->GetDebug() )
+  if( verbose || this->GetDebug() )
     {
     std::cout << "Traversing one way" << std::endl;
     }
   TraverseOneWay( lX, lT, lN, 1 );
-  if( this->GetDebug() )
+  if( verbose || this->GetDebug() )
     {
     std::cout << "End traversing one way" << std::endl;
     }
@@ -1650,12 +1659,12 @@ RidgeExtractor<TInputImage>
     lT[i] = -1 * lT[i];
     }
 
-  if( this->GetDebug() )
+  if( verbose || this->GetDebug() )
     {
     std::cout << "Traversing the other way" << std::endl;
     }
   TraverseOneWay( lX, lT, lN, -1 );
-  if( this->GetDebug() )
+  if( verbose || this->GetDebug() )
     {
     std::cout << "End traversing the other way" << std::endl;
     }
@@ -1687,7 +1696,7 @@ RidgeExtractor<TInputImage>
     return m_Tube;
     }
 
-  if( this->GetDebug() )
+  if( verbose || this->GetDebug() )
     {
     std::cout << "*** Extracted ridge of " << m_Tube->GetPoints().size()
               << " points." << std::endl;

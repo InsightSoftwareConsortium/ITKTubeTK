@@ -129,7 +129,7 @@ RadiusExtractor<TInputImage>
   m_RadiusMin = 0.3;
   m_RadiusMax = 10.0;
 
-  m_MinMedialness = 0.04;       // 0.015; larger = harder
+  m_MinMedialness = 0.015;       // 0.015; larger = harder
   m_MinMedialnessStart = 0.01;
 
   if( ImageDimension == 2 )
@@ -290,6 +290,7 @@ RadiusExtractor<TInputImage>
   if( m_Image )
     {
     m_DataOp->SetInputImage( m_Image );
+    m_DataOp->SetScale( m_Image->GetSpacing()[0] );
     typedef MinimumMaximumImageFilter<ImageType> MinMaxFilterType;
     typename MinMaxFilterType::Pointer minMaxFilter =
       MinMaxFilterType::New();
@@ -767,6 +768,7 @@ RadiusExtractor<TInputImage>
       */
 
     bool inBounds = true;
+    ContinuousIndex<double, ImageDimension> nodeCIndx;
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
       if( nodePnt[i] < m_ImageXMin[i] || nodePnt[i] > m_ImageXMax[i] )
@@ -774,17 +776,11 @@ RadiusExtractor<TInputImage>
         inBounds = false;
         break;
         }
+      nodeCIndx[i] = nodePnt[i];
       }
 
     if( inBounds )
       {
-      ContinuousIndex<double, ImageDimension> nodeCIndx;
-
-      for( unsigned int i=0; i<ImageDimension; i++ )
-        {
-        nodeCIndx[i] = nodePnt[i];
-        }
-
       double val = ( m_DataOp->EvaluateAtContinuousIndex( nodeCIndx )
         - m_DataMin ) / ( m_DataMax - m_DataMin );
 
@@ -942,7 +938,7 @@ RadiusExtractor<TInputImage>
     f = ( ( pntR * e ) / 3.1 + f ) / 2;
     e = 3.1 / ( pntR / f );
     }
-  m_DataOp->SetScale( pntR / f );
+  m_DataOp->SetScale( pntR / f * m_Image->GetSpacing()[0] );
   m_DataOp->SetExtent( e );
   //double r = (f-e)/f * pntR;
   double r = pntR - (pntR/f) * e;
@@ -984,7 +980,7 @@ RadiusExtractor<TInputImage>
       f = ( ( pntR * e ) / 3.1 + f ) / 2;
       e = 3.1 / ( pntR / f );
       }
-    m_DataOp->SetScale( pntR / f ); // mess with this -  and r
+    m_DataOp->SetScale( pntR / f * m_Image->GetSpacing()[0] ); // mess with this -  and r
     m_DataOp->SetExtent( e );
     r = f * pntR;
     if( this->GetDebug() )
