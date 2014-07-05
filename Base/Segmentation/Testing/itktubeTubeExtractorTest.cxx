@@ -174,8 +174,8 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
     TubeOpType::ContinuousIndexType x1 = x0;
     tubeOp->SetDebug( true );
     tubeOp->GetRidgeOp()->SetDebug( true );
-    //tubeOp->GetRadiusOp()->SetDebug( true );
-    if( !tubeOp->LocalTube( x1 ) )
+    tubeOp->GetRadiusOp()->SetDebug( true );
+    if( tubeOp->LocalTube( x1 ) != TubeOpType::RidgeOpType::SUCCESS )
       {
       std::cout << "Local tube test failed.  No tube found." << std::endl;
       std::cout << "   Source = " << x0 << std::endl;

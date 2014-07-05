@@ -160,7 +160,7 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
           skip = 0;
           std::cout << "Local ridge: " << contIndx << std::endl;
           contIndx[1] = size[1]/2;
-          if( ridgeOp->LocalRidge( contIndx ) )
+          if( ridgeOp->LocalRidge( contIndx ) == RidgeOpType::SUCCESS )
             {
             std::cout << "   leads to: " << contIndx << std::endl;
             for( unsigned int i=0; i<3; i++ )

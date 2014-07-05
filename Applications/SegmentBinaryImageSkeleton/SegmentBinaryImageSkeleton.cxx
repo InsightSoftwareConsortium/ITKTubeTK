@@ -87,13 +87,11 @@ int DoIt( int argc, char * argv[] )
   typedef itk::BinaryDilateImageFilter< ImageType, ImageType, SEType >
     DilateType;
 
-  typename FilterType::Pointer filter;
-  typename DilateType::Pointer dilator;
 
   // Progress per iteration
   double progressFraction = 0.8/VDimension;
 
-  filter = FilterType::New();
+  typename FilterType::Pointer filter = FilterType::New();
   filter->SetInput( curImage );
   tube::CLIFilterWatcher watcher( filter,
                                   "Binary Thinning",
@@ -105,21 +103,27 @@ int DoIt( int argc, char * argv[] )
   curImage = filter->GetOutput();
   timeCollector.Stop("Binary Thinning");
 
-  SEType binaryBall;
-  binaryBall.SetRadius( radius );
-  binaryBall.CreateStructuringElement();
-  dilator = DilateType::New();
-  dilator->SetInput( curImage );
-  dilator->SetForegroundValue( 1 );
-  dilator->SetKernel( binaryBall );
-  dilator->Update();
+  if( radius > 0 )
+    {
+    typename DilateType::Pointer dilator;
 
+    SEType binaryBall;
+    binaryBall.SetRadius( radius );
+    binaryBall.CreateStructuringElement();
+    dilator = DilateType::New();
+    dilator->SetInput( curImage );
+    dilator->SetForegroundValue( 1 );
+    dilator->SetKernel( binaryBall );
+    dilator->Update();
+    curImage = dilator->GetOutput();
+    }
+  
   typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
 
   timeCollector.Start("Save data");
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( dilator->GetOutput() );
+  writer->SetInput( curImage );
   writer->SetUseCompression( true );
   try
     {

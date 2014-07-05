@@ -84,6 +84,17 @@
     </image>
   </parameters>
   <parameters>
+    <label>Extraction Parameters</label>
+    <double>
+      <name>border</name>
+      <label>Edge border</label>
+      <description>Distance from edge (in voxels) to ignore</description>
+      <longflag>border</longflag>
+      <flag>b</flag>
+      <default>5</default>
+    </double>
+  </parameters>
+  <parameters>
     <label>Input Parameters</label>
     <file>
       <name>parametersFile</name>

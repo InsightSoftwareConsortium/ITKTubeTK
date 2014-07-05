@@ -301,8 +301,10 @@ TubeXIO< TDimension >
   tmpWriteStream << "NDims: " << TDimension << std::endl;
   tmpWriteStream << "Dimensions: 512 512 393" << std::endl;
 
+  char soType[80];
+  sprintf( soType, "Tube" );
   typename TubeType::ChildrenListType * tubeList = 
-    m_TubeGroup->GetChildren( 99999 );
+    m_TubeGroup->GetChildren( 99999, soType );
   tmpWriteStream << "VoxelSize:";
   for( unsigned int i=0; i<TDimension; ++i ) 
     {
@@ -310,7 +312,7 @@ TubeXIO< TDimension >
     }
   tmpWriteStream << std::endl;
 
-  unsigned int nObjects = m_TubeGroup->GetNumberOfChildren( 99999 );
+  unsigned int nObjects = tubeList->size();
   tmpWriteStream << "NObjects: " << nObjects << std::endl;
 
   tmpWriteStream << "End Header:" << std::endl << std::endl;
@@ -327,18 +329,19 @@ TubeXIO< TDimension >
     tmpWriteStream << "TreeType: orphan" << std::endl;
     tmpWriteStream << "Color: 1 0.3 0.21" << std::endl;
     tmpWriteStream << "PointDim: 4 x y z r" << std::endl;
-    tmpWriteStream << "NPoints: " << tube->GetNumberOfPoints() << std::endl;
+    unsigned int nPoints = tube ->GetNumberOfPoints();
+    tmpWriteStream << "NPoints: " << nPoints << std::endl;
     tmpWriteStream << "Points:" << std::endl;
-    typename PointListType::const_iterator it = tube->GetPoints().begin();
-    typename PointListType::const_iterator end = tube->GetPoints().end();
-    while( it != end )
+    for( unsigned int i=0; i<nPoints; ++i )
       {
+      typedef const typename TubeType::TubePointType  TubePointType;
+      TubePointType * pnt;
+      pnt = static_cast< TubePointType * >( tube->GetPoint( i ) );
       for( unsigned int k=0; k<TDimension; ++k )
         {
-        tmpWriteStream << it->GetPosition()[k] << " ";
+        tmpWriteStream << pnt->GetPosition()[k] << " ";
         }
-      tmpWriteStream << it->GetRadius() << std::endl;
-      ++it;
+      tmpWriteStream << pnt->GetRadius() << std::endl;
       }
     tmpWriteStream << std::endl;
 

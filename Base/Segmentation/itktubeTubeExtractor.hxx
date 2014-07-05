@@ -306,6 +306,21 @@ TubeExtractor<TInputImage>
     throw( "Input data must be set first in TubeExtractor" );
     }
 
+  IndexType xi;
+  for( unsigned int i=0; i<ImageDimension; ++i )
+    {
+    xi[i] = x[i];
+    }
+  if( this->m_RidgeOp->GetTubeMaskImage()->GetPixel( xi ) != 0 )
+    {
+    if( this->GetDebug() )
+      {
+      std::cout << "Initial pixel on prior tube." << std::endl;
+      std::cout << "  x = " << x << std::endl;
+      }
+    return NULL;
+    }
+
   typename TubeType::Pointer tube = this->m_RidgeOp->ExtractRidge( x,
     tubeID );
 

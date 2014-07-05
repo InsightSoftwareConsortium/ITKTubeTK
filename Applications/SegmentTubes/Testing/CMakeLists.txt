@@ -38,7 +38,8 @@ set( IMAGECOMPARE_EXE
 # Test1
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
             COMMAND ${PROJ_EXE}
-               -x 30,50,30
+               -b 0
+               -i 30,50,30
                -o ${TEMP}/${MODULE_NAME}Test1.mha
                MIDAS{Branch.n010.mha.md5}
                ${TEMP}/${MODULE_NAME}Test1.tre )
@@ -55,7 +56,8 @@ set_property( TEST ${MODULE_NAME}-Test1-Compare
 # Test2
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
             COMMAND ${PROJ_EXE}
-               --seedPhysicalPoint 30.0,50.0,30
+               -b 0
+               --seedP 32.0,50.0,32
                -o ${TEMP}/${MODULE_NAME}Test2.mha
                MIDAS{Branch.n010.mha.md5}
                ${TEMP}/${MODULE_NAME}Test2.tre )
@@ -63,6 +65,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
 # Test2-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare
             COMMAND ${IMAGECOMPARE_EXE}
+               -r 1
                -t ${TEMP}/${MODULE_NAME}Test2.mha
                -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test2-Compare
