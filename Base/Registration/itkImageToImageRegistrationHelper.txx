@@ -152,7 +152,7 @@ ImageToImageRegistrationHelper<TImage>
 template <class TImage>
 void
 ImageToImageRegistrationHelper<TImage>
-::LoadFixedImage( const std::string filename )
+::LoadFixedImage( const std::string & filename )
 {
   typedef ImageFileReader<TImage> ImageReaderType;
 
@@ -173,7 +173,7 @@ ImageToImageRegistrationHelper<TImage>
 template <class TImage>
 void
 ImageToImageRegistrationHelper<TImage>
-::LoadMovingImage( const std::string filename )
+::LoadMovingImage( const std::string & filename )
 {
   typedef ImageFileReader<TImage> ImageReaderType;
 
@@ -194,7 +194,7 @@ ImageToImageRegistrationHelper<TImage>
 template <class TImage>
 void
 ImageToImageRegistrationHelper<TImage>
-::SaveImage( const std::string filename, const TImage * image )
+::SaveImage( const std::string & filename, const TImage * image )
 {
   typedef ImageFileWriter<TImage> FileWriterType;
 
@@ -1014,7 +1014,7 @@ ImageToImageRegistrationHelper<TImage>
 template <class TImage>
 void
 ImageToImageRegistrationHelper<TImage>
-::LoadBaselineImage( const std::string filename )
+::LoadBaselineImage( const std::string & filename )
 {
   typedef ImageFileReader<TImage> ImageReaderType;
 
@@ -1074,21 +1074,21 @@ ImageToImageRegistrationHelper<TImage>
 template <class TImage>
 void
 ImageToImageRegistrationHelper<TImage>
-::LoadParameters( const std::string itkNotUsed(filename) )
+::LoadParameters( const std::string & itkNotUsed(filename) )
 {
 }
 
 template <class TImage>
 void
 ImageToImageRegistrationHelper<TImage>
-::SaveParameters( const std::string itkNotUsed(filename) )
+::SaveParameters( const std::string & itkNotUsed(filename) )
 {
 }
 
 template <class TImage>
 void
 ImageToImageRegistrationHelper<TImage>
-::LoadTransform( std::string filename )
+::LoadTransform( const std::string & filename )
 {
   typedef TransformFileReader                    TransformReaderType;
   typedef TransformReaderType::TransformListType TransformListType;
@@ -1127,7 +1127,7 @@ ImageToImageRegistrationHelper<TImage>
 template <class TImage>
 void
 ImageToImageRegistrationHelper<TImage>
-::SaveTransform( std::string filename )
+::SaveTransform( const std::string & filename )
 {
   typedef TransformFileWriter TransformWriterType;
 
@@ -1244,7 +1244,7 @@ template <class TImage>
 void
 ImageToImageRegistrationHelper<TImage>
 ::PrintSelfHelper( std::ostream & os, Indent indent,
-                   const std::string basename,
+                   const std::string & basename,
                    MetricMethodEnumType metric,
                    InterpolationMethodEnumType interpolation ) const
 {

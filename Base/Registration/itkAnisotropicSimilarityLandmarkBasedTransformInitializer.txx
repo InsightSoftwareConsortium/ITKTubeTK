@@ -303,9 +303,9 @@ AnisotropicSimilarityLandmarkBasedTransformInitializer<TTransform, TFixedImage, 
             pnt[1] = (*fixedItr)[1];
             pnt[2] = (*fixedItr)[2];
             fixedCentered = transform->TransformPoint( pnt );
-            double tf;
             for( int i = 0; i < 3; i++ )
               {
+              double tf;
               tf = ( (fixedCentered[i] - movingCentroid[i])
                      * (fixedCentered[i] - movingCentroid[i]) );
               if( ( fixedCentered[i] - movingCentroid[i] )

@@ -98,7 +98,7 @@ template <
   class TFunctionImage,
   class TDistanceImage=TFunctionImage,
   class TLabelImage=TFunctionImage >
-class ITK_EXPORT GeneralizedDistanceTransformImageFilter :
+class GeneralizedDistanceTransformImageFilter :
     public ImageToImageFilter<TFunctionImage,TDistanceImage>
 {
 public:

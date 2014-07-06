@@ -130,12 +130,12 @@ public:
   //  Specify the fixed and moving images
   // **************
   // **************
-  void LoadFixedImage( const std::string filename );
+  void LoadFixedImage( const std::string & filename );
 
   itkSetConstObjectMacro( FixedImage, TImage );
   itkGetConstObjectMacro( FixedImage, TImage );
 
-  void LoadMovingImage( const std::string filename );
+  void LoadMovingImage( const std::string & filename );
 
   itkSetConstObjectMacro( MovingImage, TImage );
   itkGetConstObjectMacro( MovingImage, TImage );
@@ -143,7 +143,7 @@ public:
   // **************
   //  Generic file-save function
   // **************
-  void SaveImage( const std::string filename, const TImage * image );
+  void SaveImage( const std::string & filename, const TImage * image );
 
   itkSetMacro( RandomNumberSeed, unsigned int );
   itkGetMacro( RandomNumberSeed, unsigned int );
@@ -227,7 +227,7 @@ public:
   // **************
 
   // Specify the baseline image.
-  void LoadBaselineImage( const std::string filename );
+  void LoadBaselineImage( const std::string & filename );
 
   itkSetConstObjectMacro( BaselineImage, TImage );
 
@@ -311,9 +311,9 @@ public:
   // **************
   //  Not implemented at this time :(
   // **************
-  void LoadParameters( const std::string filename );
+  void LoadParameters( const std::string & filename );
 
-  void SaveParameters( const std::string filename );
+  void SaveParameters( const std::string & filename );
 
   // **************
   //  Final metric value after the pipeline has completed
@@ -334,9 +334,9 @@ public:
   //
   // Loaded transforms parameters
   //
-  void LoadTransform( const std::string filename );
+  void LoadTransform( const std::string & filename );
 
-  void SaveTransform( const std::string filename );
+  void SaveTransform( const std::string & filename );
 
   void SetLoadedMatrixTransform( const MatrixTransformType & tfm );
 
@@ -425,8 +425,9 @@ protected:
   ImageToImageRegistrationHelper( void );
   virtual ~ImageToImageRegistrationHelper( void );
 
-  void PrintSelfHelper( std::ostream & os, Indent indent, const std::string basename, MetricMethodEnumType metric,
-                        InterpolationMethodEnumType interpolation ) const;
+  void PrintSelfHelper( std::ostream & os, Indent indent,
+    const std::string & basename, MetricMethodEnumType metric,
+    InterpolationMethodEnumType interpolation ) const;
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 

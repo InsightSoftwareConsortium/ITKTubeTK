@@ -1,9 +1,9 @@
 unusedFunction:*/Applications/DeblendTomosynthesisSlicesUsingPrior/DeblendTomosynthesisSlicesUsingPrior.cxx:113
+unusedFunction:*/Applications/ImageEditor/QtOverlayControlsWidget.cxx:53
 unusedFunction:*/Base/CLI/Testing/tubeBaseCLITests.cxx:27
 unusedFunction:*/Base/ObjectDocuments/tubeMetaObjectDocument.cxx
 unusedFunction:*/Base/ObjectDocuments/tubeOptionList.cxx
 unusedFunction:*/Base/Python/tubetk/_tubetk_numpy.cxx:317
 unusedFunction:*/Base/Registration/Testing/itktubeAnisotropicDiffusiveRegistrationGenerateTestingImages.cxx:216
 unusedFunction:*/Base/USTK/itktubeInnerOpticToPlusImageReader.cxx:56
-unusedFunction:*/Base/USTK/itktubeInnerOpticToPlusImageReader.cxx:179
 unusedFunction:*/Base/USTK/itktubeInnerOpticToPlusImageReader.cxx:245
