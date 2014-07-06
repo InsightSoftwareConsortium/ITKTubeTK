@@ -245,6 +245,13 @@ int DoIt( int argc, char * argv[] )
     minIndx[i] = region.GetIndex()[i] + 10;
     maxIndx[i] = region.GetIndex()[i] + region.GetSize()[i] - 10;
     }
+
+  ridgeExtractor->SetMinRoundness( 0 );
+  ridgeExtractor->SetMinRoundnessStart( 0 );
+  ridgeExtractor->SetMinCurvature( 0 );
+  ridgeExtractor->SetMinCurvatureStart( 0 );
+  ridgeExtractor->SetMinLevelness( 0 );
+  ridgeExtractor->SetMinLevelnessStart( 0 );
   while( !itM.IsAtEnd() )
     {
     if( itM.Get() == maskBackgroundId
