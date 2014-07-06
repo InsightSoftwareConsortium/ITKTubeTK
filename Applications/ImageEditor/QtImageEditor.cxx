@@ -356,42 +356,6 @@ void QtImageEditor::setDisplaySigma(QString value)
 }
 
 
-void QtImageEditor::blurFilter()
-{
-  /*
-  this->m_FilterX = FilterType::New();
-  this->m_FilterY = FilterType::New();
-  this->m_FilterZ = FilterType::New();
-
-  this->m_FilterX->SetDirection( 0 );   // 0 --> X direction
-  this->m_FilterY->SetDirection( 1 );   // 1 --> Y direction
-  this->m_FilterZ->SetDirection( 2 );   // 2 --> Z direction
-
-  this->m_FilterX->SetOrder( FilterType::ZeroOrder );
-  this->m_FilterY->SetOrder( FilterType::ZeroOrder );
-  this->m_FilterZ->SetOrder( FilterType::ZeroOrder );
-
-  this->m_FilterX->SetNormalizeAcrossScale( true );
-  this->m_FilterY->SetNormalizeAcrossScale( true );
-  this->m_FilterZ->SetNormalizeAcrossScale( true );
-
-  this->m_FilterX->SetInput( this->m_Internals->m_FFTFilter->GetOutput() );
-  this->m_FilterY->SetInput( this->m_Internals->m_FilterX->GetOutput() );
-  this->m_FilterZ->SetInput( this->m_Internals->m_FilterY->GetOutput() );
-
-  const double sigma = this->m_Internals->m_SigmaLineEdit->text().toDouble();
-
-  this->m_FilterX->SetSigma( sigma );
-  this->m_FilterY->SetSigma( sigma );
-  this->m_FilterZ->SetSigma( sigma );
-
-  this->m_FilterX->Update();
-  this->m_FilterY->Update();
-  this->m_FilterZ->Update();
-  */
-}
-
-
 void QtImageEditor::applyFFT()
 {
   if(this->m_Internals->m_ImageData == NULL)
@@ -471,62 +435,6 @@ void QtImageEditor::useNewFilter()
   this->setInputImage(FFTgaussianDerivativeIFFT->GetOutput());
   this->OpenGlWindow->update();
 }
-
-
-void QtImageEditor::displayFFT()
-{
-  /*
-  //Extract the real part
-  RealFilterType::Pointer realFilter = RealFilterType::New();
-  realFilter->SetInput(this->m_Internals->m_FFTFilter->GetOutput());
-  realFilter->Update();
-
-  RescaleFilterType::Pointer realRescaleFilter = RescaleFilterType::New();
-  realRescaleFilter->SetInput(realFilter->GetOutput());
-  realRescaleFilter->SetOutputMinimum(0);
-  realRescaleFilter->SetOutputMaximum(255);
-  realRescaleFilter->Update();
-
-  //Extract the imaginary part
-  ImaginaryFilterType::Pointer imaginaryFilter = ImaginaryFilterType::New();
-  imaginaryFilter->SetInput(this->m_Internals->m_FFTFilter->GetOutput());
-  imaginaryFilter->Update();
-
-  RescaleFilterType::Pointer imaginaryRescaleFilter = RescaleFilterType::New();
-  imaginaryRescaleFilter->SetInput(imaginaryFilter->GetOutput());
-  imaginaryRescaleFilter->SetOutputMinimum(0);
-  imaginaryRescaleFilter->SetOutputMaximum(255);
-  imaginaryRescaleFilter->Update();
-
-  // Compute the magnitude
-  ModulusFilterType::Pointer modulusFilter = ModulusFilterType::New();
-  modulusFilter->SetInput(this->m_Internals->m_FFTFilter->GetOutput());
-  modulusFilter->Update();
-
-  RescaleFilterType::Pointer magnitudeRescaleFilter = RescaleFilterType::New();
-  magnitudeRescaleFilter->SetInput(modulusFilter->GetOutput());
-  magnitudeRescaleFilter->SetOutputMinimum(0);
-  magnitudeRescaleFilter->SetOutputMaximum(255);
-  magnitudeRescaleFilter->Update();
-
-  // Write the images
-  WriterType::Pointer realWriter = WriterType::New();
-  realWriter->SetFileName("real.png");
-  realWriter->SetInput(realRescaleFilter->GetOutput());
-  realWriter->Update();
-
-  WriterType::Pointer imaginaryWriter = WriterType::New();
-  imaginaryWriter->SetFileName("imaginary.png");
-  imaginaryWriter->SetInput(imaginaryRescaleFilter->GetOutput());
-  imaginaryWriter->Update();
-
-  WriterType::Pointer magnitudeWriter = WriterType::New();
-  magnitudeWriter->SetFileName("magnitude.png");
-  magnitudeWriter->SetInput(magnitudeRescaleFilter->GetOutput());
-  magnitudeWriter->Update();
-  */
-}
-
 
 void QtImageEditor::setMaximumSlice()
 {

@@ -246,6 +246,8 @@ int DoIt( int argc, char * argv[] )
     maxIndx[i] = region.GetIndex()[i] + region.GetSize()[i] - 10;
     }
 
+  ridgeExtractor->SetMinRidgeness( 0.8 );
+  ridgeExtractor->SetMinRidgenessStart( 0.8 );
   ridgeExtractor->SetMinRoundness( 0 );
   ridgeExtractor->SetMinRoundnessStart( 0 );
   ridgeExtractor->SetMinCurvature( 0 );

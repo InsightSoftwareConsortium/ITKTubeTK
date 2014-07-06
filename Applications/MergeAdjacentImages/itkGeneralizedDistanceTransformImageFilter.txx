@@ -435,8 +435,10 @@ GeneralizedDistanceTransformImageFilter<
   std::vector< DistancePixelType > valuesBuffer;
   valuesBuffer.resize(pixelsInCacheLine*maxSize);
   std::vector< LabelPixelType > voronoiBuffer;
-  if (this-m_UseImageSpacing)
+  if( this->m_UseImageSpacing )
+    {
     voronoiBuffer.resize(pixelsInCacheLine*maxSize);
+    }
 
   // We are looping over the remaining image dimensions starting with the
   // highest. This is due to the following observation:
