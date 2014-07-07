@@ -23,7 +23,7 @@ limitations under the License.
 #ifndef TUBE_TUBEX_IO_H
 #define TUBE_TUBEX_IO_H
 
-#include "itkTubeSpatialObject.h"
+#include "itkVesselTubeSpatialObject.h"
 #include "itkGroupSpatialObject.h"
 
 #include <list>
@@ -44,7 +44,7 @@ public:
   typedef SmartPointer< Self >                    Pointer;
   typedef SmartPointer< const Self >              ConstPointer;
 
-  typedef TubeSpatialObject< TDimension >         TubeType;
+  typedef VesselTubeSpatialObject< TDimension >   TubeType;
   typedef GroupSpatialObject< TDimension >        TubeGroupType;
 
   itkTypeMacro( TubeXIO, Object );
