@@ -338,6 +338,8 @@ public:
 
   void SaveTransform( const std::string filename );
 
+  void SaveDisplacementField( const std::string &filename );
+
   void SetLoadedMatrixTransform( const MatrixTransformType & tfm );
 
   itkGetConstObjectMacro( LoadedMatrixTransform, MatrixTransformType );
