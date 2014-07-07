@@ -21,22 +21,29 @@
 #
 ##############################################################################
 
-set( proj SlicerModules )
+project( vtkSlicer${MODULE_NAME}ModuleLogic )
 
-set( TubeTK_SLICER_MODULES
-  InteractiveConnectedComponentsUsingParzenPDFs
-  SpatialObjectsModule
-  TortuosityModule
+set( KIT ${PROJECT_NAME} )
+
+set( ${KIT}_EXPORT_DIRECTIVE "VTK_SLICER_${MODULE_NAME_UPPER}_MODULE_LOGIC_EXPORT" )
+
+set( ${KIT}_INCLUDE_DIRECTORIES
+  ${MRML_LIBRARIES}
+  ${vtkSlicer${MODULE_NAME}ModuleMRML_SOURCE_DIR}
+  ${vtkSlicer${MODULE_NAME}ModuleMRML_BINARY_DIR} )
+
+set( ${KIT}_SRCS
+  vtkSlicerTortuosityLogic.cxx
+  vtkSlicerTortuosityLogic.h )
+
+set( ${KIT}_TARGET_LIBRARIES
+  ${ITK_LIBRARIES}
+  ${MRML_LIBRARIES}
   )
 
-if( NOT TubeTK_SOURCE_DIR )
-  find_package( TubeTK REQUIRED )
-  include( ${TubeTK_USE_FILE} )
-endif( NOT TubeTK_SOURCE_DIR )
-
-if( ${CMAKE_PROJECT_NAME} STREQUAL "Slicer" )
-  include( ${CMAKE_CURRENT_SOURCE_DIR}/../CMake/TubeTKMacroAddModules.cmake )
-else()
-  include(TubeTKMacroAddModules)
-endif( ${CMAKE_PROJECT_NAME} STREQUAL "Slicer" )
-TubeTKMacroAddModules( MODULES ${TubeTK_SLICER_MODULES} )
+SlicerMacroBuildModuleLogic(
+  NAME ${KIT}
+  EXPORT_DIRECTIVE ${${KIT}_EXPORT_DIRECTIVE}
+  INCLUDE_DIRECTORIES ${${KIT}_INCLUDE_DIRECTORIES}
+  SRCS ${${KIT}_SRCS}
+  TARGET_LIBRARIES ${${KIT}_TARGET_LIBRARIES} )
