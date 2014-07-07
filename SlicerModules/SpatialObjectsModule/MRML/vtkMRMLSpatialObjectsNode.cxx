@@ -439,10 +439,8 @@ void vtkMRMLSpatialObjectsNode::CleanSubsampling( void )
 void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
 {
   typedef itk::Point<double, 3>                PointType;
-  typedef itk::TubeSpatialObject<3>            TubeType;
   typedef itk::VesselTubeSpatialObject<3>      VesselTubeType;
   typedef VesselTubeType::TubePointType        VesselTubePointType;
-  typedef TubeType::TubePointType              TubePointType;
 
   char childName[] = "Tube";
   TubeNetType::ChildrenListType* tubeList =
@@ -460,7 +458,8 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
         tubeIT != tubeList->end();
         ++tubeIT )
     {
-    TubeType* currTube = dynamic_cast<TubeType*>((*tubeIT).GetPointer());
+    VesselTubeType* currTube =
+      dynamic_cast<VesselTubeType*>((*tubeIT).GetPointer());
     if (!currTube)
       {
       continue;
@@ -522,7 +521,8 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
   for(TubeNetType::ChildrenListType::iterator tubeIT = tubeList->begin();
         tubeIT != tubeList->end(); ++tubeIT )
     {
-    TubeType* currTube = dynamic_cast<TubeType*>((*tubeIT).GetPointer());
+    VesselTubeType* currTube =
+      dynamic_cast<VesselTubeType*>((*tubeIT).GetPointer());
     if (!currTube)
       {
       continue;
@@ -548,8 +548,8 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
     size_t numberOfPoints = currTube->GetPoints().size();
     for(size_t index = 0; index < numberOfPoints; ++pointID, ++index)
       {
-      TubePointType* tubePoint =
-        dynamic_cast<TubePointType*>(currTube->GetPoint(index));
+      VesselTubePointType* tubePoint =
+        dynamic_cast<VesselTubePointType*>(currTube->GetPoint(index));
       assert(tubePoint);
 
       PointType inputPoint = tubePoint->GetPosition();
@@ -585,19 +585,16 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
                       tubePoint->GetNormal2()[2]);
 
       // Medialness & Ridgness
-      VesselTubePointType* vesselTubePoint =
-        dynamic_cast<VesselTubePointType*>(tubePoint);
-
-      if(vesselTubePoint && vesselTubePoint->GetMedialness() != 0)
+      if(tubePoint->GetMedialness() != 0)
         {
         containsMidialnessInfo = true;
-        medialness->SetTuple1(pointID, vesselTubePoint->GetMedialness());
+        medialness->SetTuple1(pointID, tubePoint->GetMedialness());
         }
 
-      if(vesselTubePoint && vesselTubePoint->GetRidgeness() != 0)
+      if(tubePoint->GetRidgeness() != 0)
         {
         containsRidgnessInfo = true;
-        ridgeness->SetTuple1(pointID, vesselTubePoint->GetRidgeness());
+        ridgeness->SetTuple1(pointID, tubePoint->GetRidgeness());
         }
       }
 
