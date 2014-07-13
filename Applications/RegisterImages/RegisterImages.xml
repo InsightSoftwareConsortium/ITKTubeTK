@@ -53,6 +53,14 @@
       <channel>output</channel>
       <default/>
     </transform>
+    <image type="vector">
+      <name>saveDisplacementField</name>
+      <label>Displacement Field</label>
+      <channel>output</channel>
+      <longflag>saveDisplacementField</longflag>
+      <description>Save displacement field result from registration</description>
+      <default/>
+    </image>
     <string-enumeration>
       <name>initialization</name>
       <description>Method to prime the registration process</description>

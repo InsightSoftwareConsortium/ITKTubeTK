@@ -34,6 +34,7 @@
 #include "itkTransformFactory.h"
 #include "itkSubtractImageFilter.h"
 #include "itkMinimumMaximumImageCalculator.h"
+#include "itkVector.h"
 
 namespace itk
 {
@@ -1150,6 +1151,60 @@ ImageToImageRegistrationHelper<TImage>
     transformWriter->SetInput( m_CurrentBSplineTransform );
     transformWriter->Update();
     }
+}
+
+template <class TImage>
+void
+ImageToImageRegistrationHelper<TImage>
+::SaveDisplacementField( const std::string &filename )
+{
+  typedef itk::Vector<PixelType,3>  VectorType;
+  typedef itk::Image<VectorType,3>  DisplacementFieldType;
+  typedef itk::ImageRegionIterator< DisplacementFieldType > FieldIterator;
+
+  typename TImage::RegionType fixedImageRegion = m_FixedImage->GetBufferedRegion();
+
+  typename DisplacementFieldType::Pointer field = DisplacementFieldType::New();
+  field->SetRegions( fixedImageRegion );
+  field->SetOrigin( m_FixedImage->GetOrigin() );
+  field->SetSpacing( m_FixedImage->GetSpacing() );
+  field->SetDirection( m_FixedImage->GetDirection() );
+  field->Allocate();
+
+  typename BSplineTransformType::InputPointType  fixedPoint;
+  typename BSplineTransformType::OutputPointType movingPoint;
+  typename DisplacementFieldType::IndexType index;
+
+  VectorType dx;
+
+  FieldIterator it( field, fixedImageRegion );
+  it.GoToBegin();
+
+  while( ! it.IsAtEnd() )
+   {
+    index = it.GetIndex();
+    field->TransformIndexToPhysicalPoint( index, fixedPoint );
+    movingPoint = fixedPoint;
+    if(m_InitialTransform.IsNotNull())
+      movingPoint = m_InitialTransform->TransformPoint( movingPoint );
+    if(m_RigidTransform.IsNotNull())
+      movingPoint = m_RigidTransform->TransformPoint( movingPoint );
+    if(m_AffineTransform.IsNotNull())
+      movingPoint = m_AffineTransform->TransformPoint( movingPoint );
+    if(m_BSplineTransform.IsNotNull())
+      movingPoint = m_BSplineTransform->TransformPoint( movingPoint );
+    dx = movingPoint - fixedPoint;
+    it.Set( dx );
+    ++it;
+   }
+
+  typedef itk::ImageFileWriter< DisplacementFieldType >  FieldWriterType;
+  typename FieldWriterType::Pointer fieldWriter = FieldWriterType::New();
+
+  fieldWriter->SetInput( field );
+  fieldWriter->SetFileName( filename );
+
+  fieldWriter->Update();
 }
 
 template <class TImage>
