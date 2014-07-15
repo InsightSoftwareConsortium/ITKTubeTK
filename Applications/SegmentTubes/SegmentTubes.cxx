@@ -109,8 +109,9 @@ int DoIt( int argc, char * argv[] )
   double radius = scale * scaleNorm;
   if( radius < 0.3 )
     {
-    tube::ErrorMessage( "Error: Radius (=spacing*scale = "
-      <<radius<<") < 0.3 is unsupported." );
+    std::stringstream ss;
+    ss<<"Error: Radius (=spacing*scale = "<<radius<<") < 0.3 is unsupported.";
+    tube::ErrorMessage( ss.str() );
     return EXIT_FAILURE;
     }
 
