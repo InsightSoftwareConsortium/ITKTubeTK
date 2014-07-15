@@ -251,9 +251,9 @@ mark_as_advanced( USE_SYSTEM_CPPCHECK )
 # Setup python
 #
 set( TubeTK_USE_PYTHON_DEFAULT ON )
-if( WIN32 )
+if( WIN32 OR TubeTK_BUILD_SLICER_MODULES )
   set( TubeTK_USE_PYTHON_DEFAULT OFF )
-endif( WIN32 )
+endif( WIN32 OR TubeTK_BUILD_SLICER_MODULES )
 option( TubeTK_USE_PYTHON "Use Python to enable additional functionality."
   ${TubeTK_USE_PYTHON_DEFAULT} )
 if( TubeTK_USE_PYTHON )
