@@ -106,17 +106,18 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::Pointer inputImage = reader->GetOutput();
 
   double scaleNorm = inputImage->GetSpacing()[0];
-
-  if( scale / scaleNorm < 0.3 )
+  double radius = scale * scaleNorm;
+  if( radius < 0.3 )
     {
-    tube::ErrorMessage( "Error: Scale < 0.3 is unsupported." );
+    tube::ErrorMessage( "Error: Radius (=spacing*scale = "
+      <<radius<<") < 0.3 is unsupported." );
     return EXIT_FAILURE;
     }
 
   typename TubeOpType::Pointer tubeOp = TubeOpType::New();
 
   tubeOp->SetInputImage( inputImage );
-  tubeOp->SetRadius( scale / scaleNorm );
+  tubeOp->SetRadius( radius );
 
   IndexType seedIndex;
   IndexListType seedIndexList;
@@ -134,7 +135,7 @@ int DoIt( int argc, char * argv[] )
         seedIndex[i] = seedI[seedINum][i];
         }
       seedIndexList.push_back( seedIndex );
-      seedScaleList.push_back( scale / scaleNorm );
+      seedScaleList.push_back( radius );
       }
     }
 
@@ -158,7 +159,7 @@ int DoIt( int argc, char * argv[] )
         }
 
       seedIndexList.push_back( seedIndex );
-      seedScaleList.push_back( scale / scaleNorm );
+      seedScaleList.push_back( radius );
       }
     }
 
@@ -226,7 +227,7 @@ int DoIt( int argc, char * argv[] )
         if( iter.Get() )
           {
           seedIndexList.push_back( iter.GetIndex() );
-          seedScaleList.push_back( iterS.Get() / scaleNorm );
+          seedScaleList.push_back( iterS.Get() * scaleNorm );
           }
         ++iter;
         ++iterS;
@@ -241,7 +242,7 @@ int DoIt( int argc, char * argv[] )
         if( iter.Get() )
           {
           seedIndexList.push_back( iter.GetIndex() );
-          seedScaleList.push_back( scale / scaleNorm );
+          seedScaleList.push_back( radius );
           }
         ++iter;
         }
@@ -283,7 +284,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start("Ridge Extractor");
   unsigned int count = 1;
   bool foundOneTube = false;
-  tubeOp->GetRidgeOp()->SetDebug( true );
+  tubeOp->GetRidgeOp()->SetDebug( false );
   while( seedIndexIter != seedIndexList.end() )
     {
     tubeOp->SetRadius( *seedScaleIter );
