@@ -94,14 +94,24 @@
       <flag>s</flag>
       <default>0.01</default>
     </float>
-    <string>
+    <file>
       <name>saveTransform</name>
       <label>Save Transform</label>
       <description>Filename to save the transform to.</description>
       <longflag>saveTransform</longflag>
+      <channel>output</channel>
       <flag>S</flag>
-      <default/>
-    </string>
+      <default></default>
+    </file>
+    <file>
+      <name>loadTransform</name>
+      <label>Load Transform</label>
+      <description>Filename to load the transform from.</description>
+      <longflag>loadTransform</longflag>
+      <channel>input</channel>
+      <flag>L</flag>
+      <default></default>
+    </file>
   </parameters>
   <parameters>
     <label>Blending Parameters</label>

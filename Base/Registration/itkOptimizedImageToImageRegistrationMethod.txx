@@ -204,7 +204,8 @@ OptimizedImageToImageRegistrationMethod<TImage>
 
   this->Initialize();
 
-  this->GetTransform()->SetParametersByValue( this->GetInitialTransformParameters() );
+  this->GetTransform()->SetParametersByValue(
+    this->GetInitialTransformParameters() );
 
   typename MetricType::Pointer metric;
 
@@ -212,7 +213,8 @@ OptimizedImageToImageRegistrationMethod<TImage>
     {
     case MATTES_MI_METRIC:
         {
-        typedef MattesMutualInformationImageToImageMetric<TImage, TImage> TypedMetricType;
+        typedef MattesMutualInformationImageToImageMetric<TImage, TImage>
+          TypedMetricType;
 
         typename TypedMetricType::Pointer typedMetric = TypedMetricType::New();
 
@@ -262,7 +264,7 @@ OptimizedImageToImageRegistrationMethod<TImage>
       }
 
     itk::ImageRegionConstIteratorWithIndex<ImageType> iter( fixedImage,
-                                                            fixedImage->GetLargestPossibleRegion() );
+      fixedImage->GetLargestPossibleRegion() );
     typename ImageType::IndexType index;
     typename ImageType::IndexType movingIndex;
     typename MetricType::InputPointType fixedPoint;
@@ -277,7 +279,8 @@ OptimizedImageToImageRegistrationMethod<TImage>
       if( this->GetSampleFromOverlap() )
         {
         movingPoint = this->GetTransform()->TransformPoint( fixedPoint );
-        if( !movingImage->TransformPhysicalPointToIndex( movingPoint, movingIndex ) )
+        if( !movingImage->TransformPhysicalPointToIndex( movingPoint,
+          movingIndex ) )
           {
           continue;
           }
@@ -325,13 +328,15 @@ OptimizedImageToImageRegistrationMethod<TImage>
     double samplingRate = (double)(m_NumberOfSamples + 2) / (double)count;
     if( this->GetReportProgress() )
       {
-      std::cout << "...Second pass, sampling rate = " << samplingRate << std::endl;
+      std::cout << "...Second pass, sampling rate = " << samplingRate
+        << std::endl;
       }
 
     if( samplingRate > 1 )
       {
       samplingRate = 1;
-      itkWarningMacro(<< "Adjusting the number of samples due to restrictive threshold/overlap criteria.");
+      itkWarningMacro(
+         << "Adjusting the number of samples due to restrictive criteria.");
       this->SetNumberOfSamples( count );
       metric->SetNumberOfSpatialSamples( m_NumberOfSamples );
       }
@@ -345,7 +350,8 @@ OptimizedImageToImageRegistrationMethod<TImage>
       if( this->GetSampleFromOverlap() )
         {
         movingPoint = this->GetTransform()->TransformPoint( fixedPoint );
-        if( !movingImage->TransformPhysicalPointToIndex( movingPoint, movingIndex ) )
+        if( !movingImage->TransformPhysicalPointToIndex( movingPoint,
+          movingIndex ) )
           {
           continue;
           }
@@ -399,7 +405,8 @@ OptimizedImageToImageRegistrationMethod<TImage>
     {
     if( this->GetMovingImageMaskObject() )
       {
-      metric->SetMovingImageMask( const_cast<itk::SpatialObject<ImageDimension> *>(this->GetMovingImageMaskObject() ) );
+      metric->SetMovingImageMask( const_cast<itk::SpatialObject<ImageDimension> *>
+        (this->GetMovingImageMaskObject() ) );
       }
     }
 
@@ -408,7 +415,8 @@ OptimizedImageToImageRegistrationMethod<TImage>
   switch( this->GetInterpolationMethodEnum() )
     {
     case NEAREST_NEIGHBOR_INTERPOLATION:
-      interpolator = NearestNeighborInterpolateImageFunction<TImage, double>::New();
+      interpolator = NearestNeighborInterpolateImageFunction<TImage,
+        double>::New();
       break;
     case LINEAR_INTERPOLATION:
       interpolator = LinearInterpolateImageFunction<TImage, double>::New();
@@ -417,11 +425,9 @@ OptimizedImageToImageRegistrationMethod<TImage>
       interpolator = BSplineInterpolateImageFunction<TImage, double>::New();
       break;
     case SINC_INTERPOLATION:
-      interpolator = WindowedSincInterpolateImageFunction<TImage,
-                                                          4,
-                                                          Function::HammingWindowFunction<4>,
-                                                          ConstantBoundaryCondition<TImage>,
-                                                          double>::New();
+      interpolator = WindowedSincInterpolateImageFunction<TImage, 4,
+        Function::HammingWindowFunction<4>, ConstantBoundaryCondition<TImage>,
+        double>::New();
       break;
     }
   interpolator->SetInputImage( this->GetMovingImage() );
@@ -651,17 +657,22 @@ OptimizedImageToImageRegistrationMethod<TImage>
 {
   Superclass::PrintSelf(os, indent);
 
-  os << indent << "Initial Transform Parameters = " << m_InitialTransformParameters << std::endl;
+  os << indent << "Initial Transform Parameters = " <<
+    m_InitialTransformParameters << std::endl;
 
-  os << indent << "Initial Transform Fixed Parameters = " << m_InitialTransformFixedParameters << std::endl;
+  os << indent << "Initial Transform Fixed Parameters = " <<
+    m_InitialTransformFixedParameters << std::endl;
 
-  os << indent << "Last Transform Parameters = " << m_LastTransformParameters << std::endl;
+  os << indent << "Last Transform Parameters = " <<
+    m_LastTransformParameters << std::endl;
 
-  os << indent << "Transform Parameter Scales = " << m_TransformParametersScales << std::endl;
+  os << indent << "Transform Parameter Scales = " <<
+    m_TransformParametersScales << std::endl;
 
   os << indent << "Max Iterations = " << m_MaxIterations << std::endl;
 
-  os << indent << "Use Evolutionary Optimization = " << m_UseEvolutionaryOptimization << std::endl;
+  os << indent << "Use Evolutionary Optimization = " <<
+    m_UseEvolutionaryOptimization << std::endl;
 
   os << indent << "Sample From Overlap = " << m_SampleFromOverlap << std::endl;
 
@@ -669,7 +680,8 @@ OptimizedImageToImageRegistrationMethod<TImage>
 
   os << indent << "Number of Samples = " << m_NumberOfSamples << std::endl;
 
-  os << indent << "Samples threshold = " << m_FixedImageSamplesIntensityThreshold << std::endl;
+  os << indent << "Samples threshold = " <<
+    m_FixedImageSamplesIntensityThreshold << std::endl;
 
   os << indent << "Target Error = " << m_TargetError << std::endl;
 

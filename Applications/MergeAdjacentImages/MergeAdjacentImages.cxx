@@ -145,6 +145,37 @@ int DoIt( int argc, char * argv[] )
 
   typename ImageType::Pointer curImage2 = reader2->GetOutput();
 
+  if( ! loadTransform.empty() )
+    {
+    typedef itk::AffineTransform<double, VDimension >   AffineTransformType;
+    typedef itk::TransformFileReader                    TransformReaderType;
+    typedef TransformReaderType::TransformListType      TransformListType;
+
+    TransformReaderType::Pointer transformReader = TransformReaderType::New();
+    transformReader->SetFileName( loadTransform );
+    transformReader->Update();
+
+    TransformListType * transforms = transformReader->GetTransformList();
+    TransformListType::const_iterator transformIt = transforms->begin();
+    while( transformIt != transforms->end() )
+      {
+      if( !strcmp( (*transformIt)->GetNameOfClass(), "AffineTransform") )
+        {
+        typename AffineTransformType::Pointer affine_read =
+          static_cast<AffineTransformType *>( (*transformIt).GetPointer() );
+        typename AffineTransformType::ConstPointer affine =
+          affine_read.GetPointer();
+        typename ImageType::PointType origin = curImage2->GetOrigin();
+        typename ImageType::PointType originNew =
+          affine->TransformPoint( origin );
+        curImage2->SetOrigin( originNew );
+        break;
+        }
+  
+      ++transformIt;
+      }
+    }
+
   typename ImageType::IndexType minX2;
   typename ImageType::IndexType minX2Org;
   minX2Org = curImage2->GetLargestPossibleRegion().GetIndex();
@@ -239,8 +270,6 @@ int DoIt( int argc, char * argv[] )
   typename RegFilterType::Pointer regOp = RegFilterType::New();
   regOp->SetFixedImage( curImage1 );
   regOp->SetMovingImage( curImage2 );
-  regOp->SetRigidMetricMethodEnum( RegFilterType::
-    RigidRegistrationMethodType::NORMALIZED_CORRELATION_METRIC );
   regOp->SetSampleFromOverlap( true );
   regOp->SetEnableLoadedRegistration( false );
   regOp->SetEnableInitialRegistration( false );
@@ -252,6 +281,7 @@ int DoIt( int argc, char * argv[] )
   regOp->SetExpectedOffsetPixelMagnitude( expectedOffset );
   regOp->SetExpectedRotationMagnitude( expectedRotation );
 
+
   regOp->Initialize();
   if( iterations > 0 )
     {
@@ -261,7 +291,7 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop("Register images");
     }
 
-  if( saveTransform.size() > 1 )
+  if( ! saveTransform.empty() )
     {
     regOp->SaveTransform( saveTransform );
     }
