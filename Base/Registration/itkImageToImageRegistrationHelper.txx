@@ -321,12 +321,15 @@ ImageToImageRegistrationHelper<TImage>
         {
         std::cout << "*** Resampling using loaded transform ***" << std::endl;
         }
-      m_LoadedTransformResampledImage = ResampleImage(
-          m_AffineInterpolationMethodEnum,
-          m_MovingImage,
-          m_LoadedMatrixTransform,
-          m_LoadedBSplineTransform );
-      m_CurrentMovingImage = m_LoadedTransformResampledImage;
+      if( m_LoadedBSplineTransform.IsNotNull() )
+        {
+        m_LoadedTransformResampledImage = ResampleImage(
+            m_AffineInterpolationMethodEnum,
+            m_MovingImage,
+            m_LoadedMatrixTransform,
+            m_LoadedBSplineTransform );
+        m_CurrentMovingImage = m_LoadedTransformResampledImage;
+        }
       // this->SaveImage("transform.mha",m_CurrentMovingImage);
       }
 
@@ -389,15 +392,25 @@ ImageToImageRegistrationHelper<TImage>
       default:
         break;
       }
+    regInit->Update();
+    m_InitialTransform = regInit->GetAffineTransform();
     }
   else
     {
-    regInit->SetComputeCenterOfRotationOnly( true );
+    if( m_EnableLoadedRegistration
+      && m_LoadedMatrixTransform.IsNotNull()
+      && ! m_LoadedBSplineTransform.IsNotNull() )
+      {
+      m_InitialTransform = m_LoadedMatrixTransform;
+      }
+    else
+      {
+      regInit->SetComputeCenterOfRotationOnly( true );
+      regInit->Update();
+      m_InitialTransform = regInit->GetAffineTransform();
+      }
     }
 
-  regInit->Update();
-
-  m_InitialTransform = regInit->GetAffineTransform();
   m_CurrentMatrixTransform = m_InitialTransform;
   m_CurrentBSplineTransform = 0;
 
@@ -846,8 +859,7 @@ ImageToImageRegistrationHelper<TImage>
   interpolator->SetInputImage( mImage );
 
   if( doLoaded
-      && ( m_LoadedMatrixTransform.IsNotNull()
-           || m_LoadedBSplineTransform.IsNotNull() ) )
+      && m_LoadedBSplineTransform.IsNotNull() )
     {
     if( m_LoadedMatrixTransform.IsNotNull() )
       {
@@ -1061,8 +1073,10 @@ ImageToImageRegistrationHelper<TImage>
 
   this->m_BaselineDifferenceImage = differ->GetOutput();
 
-  this->m_BaselineNumberOfFailedPixels = differ->GetNumberOfPixelsWithDifferences();
-  if( this->m_BaselineNumberOfFailedPixels > this->m_BaselineNumberOfFailedPixelsTolerance )
+  this->m_BaselineNumberOfFailedPixels =
+    differ->GetNumberOfPixelsWithDifferences();
+  if( this->m_BaselineNumberOfFailedPixels >
+    this->m_BaselineNumberOfFailedPixelsTolerance )
     {
     m_BaselineTestPassed = false;
     }
@@ -1101,7 +1115,7 @@ ImageToImageRegistrationHelper<TImage>
 
   transformReader->Update();
 
-  TransformListType *               transforms = transformReader->GetTransformList();
+  TransformListType *transforms = transformReader->GetTransformList();
   TransformListType::const_iterator transformIt = transforms->begin();
   while( transformIt != transforms->end() )
     {
@@ -1109,15 +1123,18 @@ ImageToImageRegistrationHelper<TImage>
       {
       typename MatrixTransformType::Pointer affine_read =
         static_cast<MatrixTransformType *>( (*transformIt).GetPointer() );
-      typename MatrixTransformType::ConstPointer affine = affine_read.GetPointer();
+      typename MatrixTransformType::ConstPointer affine =
+        affine_read.GetPointer();
       SetLoadedMatrixTransform( *affine.GetPointer() );
       }
 
-    if( !strcmp( (*transformIt)->GetNameOfClass(), "BSplineDeformableTransform") )
+    if( !strcmp( (*transformIt)->GetNameOfClass(),
+        "BSplineDeformableTransform") )
       {
       typename BSplineTransformType::Pointer bspline_read =
         static_cast<BSplineTransformType *>( (*transformIt).GetPointer() );
-      typename BSplineTransformType::ConstPointer bspline = bspline_read.GetPointer();
+      typename BSplineTransformType::ConstPointer bspline =
+        bspline_read.GetPointer();
       SetLoadedBSplineTransform( *bspline.GetPointer() );
       }
 
