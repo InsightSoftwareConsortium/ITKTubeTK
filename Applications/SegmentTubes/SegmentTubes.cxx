@@ -109,7 +109,7 @@ int DoIt( int argc, char * argv[] )
 
   if( scale / scaleNorm < 0.3 )
     {
-    tube::ErrorMessage( "Error: Scale < 0.3 is unsupported." );
+    tube::ErrorMessage( "Error: Scale < 0.3 * voxel spacing is unsupported." );
     return EXIT_FAILURE;
     }
 

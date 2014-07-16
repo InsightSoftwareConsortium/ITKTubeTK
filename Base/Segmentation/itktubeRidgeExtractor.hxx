@@ -182,6 +182,7 @@ RidgeExtractor<TInputImage>
 
   if( m_InputImage )
     {
+    m_DataFunc->SetUseRelativeSpacing( true );
     m_DataFunc->SetInputImage( inputImage );
 
     typedef MinimumMaximumImageFilter<ImageType> MinMaxFilterType;

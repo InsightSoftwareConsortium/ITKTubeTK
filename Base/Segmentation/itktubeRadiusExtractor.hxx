@@ -117,7 +117,7 @@ RadiusExtractor<TInputImage>
   m_ImageXMax.Fill( -1 );
 
   m_DataOp = BlurImageFunction<ImageType>::New();
-  m_DataOp->SetScale( 1.0 );
+  m_DataOp->SetScale( 3.0 );
   m_DataOp->SetExtent( 1.1 );
   m_DataMin = 0;
   m_DataMax = -1;
@@ -289,8 +289,9 @@ RadiusExtractor<TInputImage>
 
   if( m_Image )
     {
+    m_DataOp->SetUseRelativeSpacing( true );
     m_DataOp->SetInputImage( m_Image );
-    m_DataOp->SetScale( m_Image->GetSpacing()[0] );
+    m_DataOp->SetScale( 3.0 );
     typedef MinimumMaximumImageFilter<ImageType> MinMaxFilterType;
     typename MinMaxFilterType::Pointer minMaxFilter =
       MinMaxFilterType::New();
@@ -938,7 +939,7 @@ RadiusExtractor<TInputImage>
     f = ( ( pntR * e ) / 3.1 + f ) / 2;
     e = 3.1 / ( pntR / f );
     }
-  m_DataOp->SetScale( pntR / f * m_Image->GetSpacing()[0] );
+  m_DataOp->SetScale( pntR / f  );
   m_DataOp->SetExtent( e );
   //double r = (f-e)/f * pntR;
   double r = pntR - (pntR/f) * e;
@@ -980,7 +981,7 @@ RadiusExtractor<TInputImage>
       f = ( ( pntR * e ) / 3.1 + f ) / 2;
       e = 3.1 / ( pntR / f );
       }
-    m_DataOp->SetScale( pntR / f * m_Image->GetSpacing()[0] ); // mess with this -  and r
+    m_DataOp->SetScale( pntR / f );
     m_DataOp->SetExtent( e );
     r = f * pntR;
     if( this->GetDebug() )
