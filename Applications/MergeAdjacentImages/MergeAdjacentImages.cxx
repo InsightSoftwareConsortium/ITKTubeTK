@@ -145,9 +145,12 @@ int DoIt( int argc, char * argv[] )
 
   typename ImageType::Pointer curImage2 = reader2->GetOutput();
 
+  bool useInitialTransform = false;
+  typedef itk::AffineTransform<double, VDimension >   AffineTransformType;
+  typename AffineTransformType::ConstPointer initialTransform;
   if( ! loadTransform.empty() )
     {
-    typedef itk::AffineTransform<double, VDimension >   AffineTransformType;
+    useInitialTransform = true;
     typedef itk::TransformFileReader                    TransformReaderType;
     typedef TransformReaderType::TransformListType      TransformListType;
 
@@ -163,15 +166,9 @@ int DoIt( int argc, char * argv[] )
         {
         typename AffineTransformType::Pointer affine_read =
           static_cast<AffineTransformType *>( (*transformIt).GetPointer() );
-        typename AffineTransformType::ConstPointer affine =
-          affine_read.GetPointer();
-        typename ImageType::PointType origin = curImage2->GetOrigin();
-        typename ImageType::PointType originNew =
-          affine->TransformPoint( origin );
-        curImage2->SetOrigin( originNew );
+        initialTransform = affine_read.GetPointer();
         break;
         }
-  
       ++transformIt;
       }
     }
@@ -187,6 +184,10 @@ int DoIt( int argc, char * argv[] )
       }
     }
   curImage2->TransformIndexToPhysicalPoint( minX2Org, pointX );
+  if( useInitialTransform )
+    {
+    pointX = initialTransform->GetInverseTransform()->TransformPoint( pointX );
+    }
   curImage1->TransformPhysicalPointToIndex( pointX, minX2 );
 
   typename ImageType::SizeType size2 = curImage2->
@@ -206,6 +207,10 @@ int DoIt( int argc, char * argv[] )
       }
     }
   curImage2->TransformIndexToPhysicalPoint( maxX2Org, pointX );
+  if( useInitialTransform )
+    {
+    pointX = initialTransform->GetInverseTransform()->TransformPoint( pointX );
+    }
   curImage1->TransformPhysicalPointToIndex( pointX, maxX2 );
 
   for( unsigned int i=0; i<VDimension; i++ )
@@ -281,6 +286,10 @@ int DoIt( int argc, char * argv[] )
   regOp->SetExpectedOffsetPixelMagnitude( expectedOffset );
   regOp->SetExpectedRotationMagnitude( expectedRotation );
 
+  if( useInitialTransform )
+    {
+    regOp->SetLoadedMatrixTransform( *initialTransform );
+    }
 
   regOp->Initialize();
   if( iterations > 0 )
@@ -300,7 +309,7 @@ int DoIt( int argc, char * argv[] )
   regOp->SetFixedImage( outImage );
   tmpImage = regOp->ResampleImage(
     RegFilterType::OptimizedRegistrationMethodType::
-    NEAREST_NEIGHBOR_INTERPOLATION,
+    LINEAR_INTERPOLATION,
     curImage2, NULL, NULL, background );
   timeCollector.Stop("Resample Image");
 
