@@ -20,11 +20,22 @@
       <default/>
     </string>
     <image>
+      <name>outputVolume</name>
+      <label>Output Volume Name</label>
+      <index>1</index>
+      <description>Output image having enhanced tubes</description>
+      <channel>output</channel>
+    </image>
+  </parameters>
+  <parameters>
+    <label>Training</label>
+    <description>Training parameters.</description>
+    <image>
       <name>labelmap</name>
       <label>Label Map</label>
       <longflag>labelmap</longflag>
       <channel>input</channel>
-      <description>Label map that designates the object of interest and "other."</description>
+      <description>Label map for object of interest and "other."</description>
       <default></default>
     </image>
     <integer>
@@ -48,17 +59,20 @@
       <description>Value for unlabeled points in the label map.</description>
       <default>0</default>
     </integer>
+    <file>
+      <name>saveDiscriminantInfo</name>
+      <description>Save learned enhancement parameters to a file.</description>
+      <label>Save Information to File</label>
+      <longflag>saveDiscriminantInfo</longflag>
+    </file>
     <image>
-      <name>outputVolume</name>
-      <label>Output Volume Name</label>
-      <index>1</index>
-      <description>Output image having enhanced tubes</description>
+      <name>outputSeedScaleImage</name>
+      <label>Save Scale of Seeds</label>
       <channel>output</channel>
+      <description>Image that contains the chosen seed scale at each voxel.</description>
+      <longflag>outputSeedScaleImage</longflag>
+      <default></default>
     </image>
-  </parameters>
-  <parameters advanced="true">
-    <label>Basis Parameters</label>
-    <description>Parameters that determine how the basis is generated.</description>
     <double-vector>
       <name>tubeScales</name>
       <description>Scales at which tube features are computed.</description>
@@ -66,17 +80,39 @@
       <default>1,2,4</default>
       <longflag>tubeScales</longflag>
     </double-vector>
-    <string>
-      <name>saveDiscriminantInfo</name>
-      <description>Save learned enhancement parameters to a file.</description>
-      <label>Save Information to File</label>
-      <longflag>saveDiscriminantInfo</longflag>
-    </string>
-    <string>
+    <boolean>
+      <name>useIntensityOnly</name>
+      <label>Use intensity only</label>
+      <description>Use intensity information at each scale only</description>
+      <longflag>useIntensityOnly</longflag>
+      <flag>i</flag>
+      <default>false</default>
+    </boolean>
+  </parameters>
+  <parameters>
+    <label>Application</label>
+    <description>Parameters for appluying a pre-trained system</description>
+    <file>
       <name>loadDiscriminantInfo</name>
       <description>Load learned enhancement parameters from a file.</description>
       <label>Load Information from File</label>
       <longflag>loadDiscriminantInfo</longflag>
+    </file>
+    <double>
+      <name>seedTolerance</name>
+      <label>Seed tolerance</label>
+      <description>Tradeoff between sensitivity and specificity (higher value = more seeds)</description>
+      <default>1.0</default>
+      <longflag>seedTolerance</longflag>
+    </double>
+  </parameters>
+  <parameters advanced="true">
+    <label>Debugging Parameters</label>
+    <string>
+      <name>saveFeatureImages</name>
+      <description>Base filename for saving feature images.</description>
+      <label>Feature images base filename</label>
+      <longflag>saveFeatureImages</longflag>
     </string>
   </parameters>
 </executable>

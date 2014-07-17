@@ -72,6 +72,8 @@ RidgeSeedFilter< TImage, TLabelMap >
 
   m_Skeletonize = true;
 
+  m_UseIntensityOnly = false;
+
   m_TrainClassifier = true;
 }
 
@@ -329,6 +331,7 @@ void
 RidgeSeedFilter< TImage, TLabelMap >
 ::Update( void )
 {
+  m_RidgeFeatureGenerator->SetUseIntensityOnly( m_UseIntensityOnly );
   m_RidgeFeatureGenerator->GenerateData();
 
   m_SeedFeatureGenerator->SetObjectId( m_RidgeId );
@@ -429,7 +432,14 @@ RidgeSeedFilter< TImage, TLabelMap >
 {
   int num = m_SeedFeatureGenerator->GetInputFeatureVectorGenerator()->
     GetNumberOfFeatures();
-  num = num - 6;
+  if( !m_UseIntensityOnly )
+    {
+    num = num - 6;
+    }
+  else
+    {
+    num = num - 3;
+    }
   return m_SeedFeatureGenerator->GetInputFeatureVectorGenerator()->
     GetFeatureImage( num );
 }

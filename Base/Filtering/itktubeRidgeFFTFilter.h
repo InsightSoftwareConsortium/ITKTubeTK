@@ -51,9 +51,11 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     TInputImage::ImageDimension );
 
-
   itkSetMacro( Scale, double );
   itkGetMacro( Scale, double );
+
+  itkSetMacro( UseIntensityOnly, bool );
+  itkGetMacro( UseIntensityOnly, bool );
 
   itkGetConstReferenceMacro( Intensity, typename OutputImageType::Pointer );
   itkGetConstReferenceMacro( Ridgeness, typename OutputImageType::Pointer );
@@ -86,6 +88,7 @@ private:
   typename OutputImageType::Pointer                     m_Roundness;
 
   double                                                m_Scale;
+  bool                                                  m_UseIntensityOnly;
 };
 
 

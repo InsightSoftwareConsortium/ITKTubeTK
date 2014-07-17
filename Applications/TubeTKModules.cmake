@@ -61,7 +61,6 @@ set( TubeTK_${proj}_MODULES
   SegmentBinaryImageSkeleton
   SegmentConnectedComponents
   SegmentConnectedComponentsUsingParzenPDFs
-  SegmentTubeSeeds
   SegmentTubes
   SegmentUsingOtsuThreshold
   ShrinkImage

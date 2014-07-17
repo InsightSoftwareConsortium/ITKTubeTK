@@ -37,6 +37,7 @@ RidgeFFTFilter< TInputImage >
   m_Roundness = NULL;
 
   m_Scale = 1;
+  m_UseIntensityOnly = false;
 
   m_DerivativeFilter = DerivativeFilterType::New();
 }
@@ -63,101 +64,104 @@ RidgeFFTFilter< TInputImage >
   m_DerivativeFilter->Update();
   m_Intensity = m_DerivativeFilter->GetOutput();
 
-  m_Ridgeness = OutputImageType::New();
-  m_Ridgeness->CopyInformation( m_Intensity );
-  m_Ridgeness->SetRegions( m_Intensity->GetLargestPossibleRegion() );
-  m_Ridgeness->Allocate();
-
-  m_Roundness = OutputImageType::New();
-  m_Roundness->CopyInformation( m_Intensity );
-  m_Roundness->SetRegions( m_Intensity->GetLargestPossibleRegion() );
-  m_Roundness->Allocate();
-
-  m_Curvature = OutputImageType::New();
-  m_Curvature->CopyInformation( m_Intensity );
-  m_Curvature->SetRegions( m_Intensity->GetLargestPossibleRegion() );
-  m_Curvature->Allocate();
-
-  m_Levelness = OutputImageType::New();
-  m_Levelness->CopyInformation( m_Intensity );
-  m_Levelness->SetRegions( m_Intensity->GetLargestPossibleRegion() );
-  m_Levelness->Allocate();
-
-  std::vector< typename OutputImageType::Pointer > dx( ImageDimension );
-
-  int ddxSize = 0;
-  for( unsigned int i=1; i<=ImageDimension; ++i )
+  if( !m_UseIntensityOnly )
     {
-    ddxSize += i;
-    }
-  std::vector< typename OutputImageType::Pointer > ddx( ddxSize );
-
-  m_DerivativeFilter->GenerateNJet( m_Intensity, dx, ddx );
-
-  ImageRegionIterator< OutputImageType > iterRidge( m_Ridgeness, 
-    m_Ridgeness->GetLargestPossibleRegion() );
-  ImageRegionIterator< OutputImageType > iterRound( m_Roundness, 
-    m_Roundness->GetLargestPossibleRegion() );
-  ImageRegionIterator< OutputImageType > iterCurve( m_Curvature, 
-    m_Curvature->GetLargestPossibleRegion() );
-  ImageRegionIterator< OutputImageType > iterLevel( m_Levelness, 
-    m_Levelness->GetLargestPossibleRegion() );
-
-  std::vector< ImageRegionIterator< OutputImageType > > iterDx( 
-    ImageDimension );
-
-  std::vector< ImageRegionIterator< OutputImageType > > iterDdx( ddxSize );
-
-  unsigned int count = 0;
-  for( unsigned int i=0; i<ImageDimension; ++i )
-    {
-    iterDx[i] = ImageRegionIterator< OutputImageType >( dx[i],
-      dx[i]->GetLargestPossibleRegion() );
-    for( unsigned int j=i; j<ImageDimension; ++j )
+    m_Ridgeness = OutputImageType::New();
+    m_Ridgeness->CopyInformation( m_Intensity );
+    m_Ridgeness->SetRegions( m_Intensity->GetLargestPossibleRegion() );
+    m_Ridgeness->Allocate();
+  
+    m_Roundness = OutputImageType::New();
+    m_Roundness->CopyInformation( m_Intensity );
+    m_Roundness->SetRegions( m_Intensity->GetLargestPossibleRegion() );
+    m_Roundness->Allocate();
+  
+    m_Curvature = OutputImageType::New();
+    m_Curvature->CopyInformation( m_Intensity );
+    m_Curvature->SetRegions( m_Intensity->GetLargestPossibleRegion() );
+    m_Curvature->Allocate();
+  
+    m_Levelness = OutputImageType::New();
+    m_Levelness->CopyInformation( m_Intensity );
+    m_Levelness->SetRegions( m_Intensity->GetLargestPossibleRegion() );
+    m_Levelness->Allocate();
+  
+    std::vector< typename OutputImageType::Pointer > dx( ImageDimension );
+  
+    int ddxSize = 0;
+    for( unsigned int i=1; i<=ImageDimension; ++i )
       {
-      iterDdx[count] = ImageRegionIterator< OutputImageType >( ddx[count],
-        ddx[count]->GetLargestPossibleRegion() );
-      ++count;
+      ddxSize += i;
       }
-    }
-
-  double ridgeness = 0;
-  double roundness = 0;
-  double curvature = 0;
-  double levelness = 0;
-  vnl_matrix<double> H( ImageDimension, ImageDimension);
-  vnl_vector<double> D( ImageDimension );
-  vnl_matrix<double> HEVect( ImageDimension, ImageDimension);
-  vnl_vector<double> HEVal( ImageDimension );
-  while( !iterRidge.IsAtEnd() )
-    {
-    count = 0;
+    std::vector< typename OutputImageType::Pointer > ddx( ddxSize );
+  
+    m_DerivativeFilter->GenerateNJet( m_Intensity, dx, ddx );
+  
+    ImageRegionIterator< OutputImageType > iterRidge( m_Ridgeness, 
+      m_Ridgeness->GetLargestPossibleRegion() );
+    ImageRegionIterator< OutputImageType > iterRound( m_Roundness, 
+      m_Roundness->GetLargestPossibleRegion() );
+    ImageRegionIterator< OutputImageType > iterCurve( m_Curvature, 
+      m_Curvature->GetLargestPossibleRegion() );
+    ImageRegionIterator< OutputImageType > iterLevel( m_Levelness, 
+      m_Levelness->GetLargestPossibleRegion() );
+  
+    std::vector< ImageRegionIterator< OutputImageType > > iterDx( 
+      ImageDimension );
+  
+    std::vector< ImageRegionIterator< OutputImageType > > iterDdx( ddxSize );
+  
+    unsigned int count = 0;
     for( unsigned int i=0; i<ImageDimension; ++i )
       {
-      D[i] = iterDx[i].Get();
-      ++iterDx[i];
+      iterDx[i] = ImageRegionIterator< OutputImageType >( dx[i],
+        dx[i]->GetLargestPossibleRegion() );
       for( unsigned int j=i; j<ImageDimension; ++j )
         {
-        H[i][j] = iterDdx[count].Get();
-        H[j][i] = H[i][j];
-        ++iterDdx[count];
+        iterDdx[count] = ImageRegionIterator< OutputImageType >( ddx[count],
+          ddx[count]->GetLargestPossibleRegion() );
         ++count;
         }
       }
-    ::tube::ComputeRidgeness( H, D, ridgeness, roundness, curvature, levelness,
-      HEVect, HEVal );
-    iterRidge.Set( ridgeness );
-    iterRound.Set( roundness );
-    iterCurve.Set( curvature );
-    iterLevel.Set( levelness );
-
-    ++iterRidge;
-    ++iterRound;
-    ++iterCurve;
-    ++iterLevel;
+  
+    double ridgeness = 0;
+    double roundness = 0;
+    double curvature = 0;
+    double levelness = 0;
+    vnl_matrix<double> H( ImageDimension, ImageDimension);
+    vnl_vector<double> D( ImageDimension );
+    vnl_matrix<double> HEVect( ImageDimension, ImageDimension);
+    vnl_vector<double> HEVal( ImageDimension );
+    while( !iterRidge.IsAtEnd() )
+      {
+      count = 0;
+      for( unsigned int i=0; i<ImageDimension; ++i )
+        {
+        D[i] = iterDx[i].Get();
+        ++iterDx[i];
+        for( unsigned int j=i; j<ImageDimension; ++j )
+          {
+          H[i][j] = iterDdx[count].Get();
+          H[j][i] = H[i][j];
+          ++iterDdx[count];
+          ++count;
+          }
+        }
+      ::tube::ComputeRidgeness( H, D, ridgeness, roundness, curvature, levelness,
+        HEVect, HEVal );
+      iterRidge.Set( ridgeness );
+      iterRound.Set( roundness );
+      iterCurve.Set( curvature );
+      iterLevel.Set( levelness );
+  
+      ++iterRidge;
+      ++iterRound;
+      ++iterCurve;
+      ++iterLevel;
+      }
+  
+    this->SetNthOutput( 0, m_Intensity );
     }
-
-  this->SetNthOutput( 0, m_Intensity );
 }
 
 template< typename TInputImage >
@@ -213,6 +217,7 @@ RidgeFFTFilter< TInputImage >
     }
 
   os << indent << "Scale             : " << m_Scale << std::endl;
+  os << indent << "UseIntensityOnly  : " << m_UseIntensityOnly << std::endl;
 }
 
 } // End namespace tube

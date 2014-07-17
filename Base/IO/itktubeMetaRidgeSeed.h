@@ -63,6 +63,7 @@ public:
 
   MetaRidgeSeed(
     const RidgeSeedScalesType & _ridgeScales,
+    const bool _useIntensityOnly,
     const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix,
     const ValueListType & _whitenMeans,
@@ -80,6 +81,7 @@ public:
 
   bool InitializeEssential(
     const RidgeSeedScalesType & _ridgeScales,
+    const bool _useIntensityOnly,
     const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix,
     const ValueListType & _whitenMeans,
@@ -107,6 +109,9 @@ public:
   void SetSkeletonize( bool _skeletonize );
   bool GetSkeletonize( void ) const;
 
+  void SetUseIntensityOnly( bool _useIntensityOnly );
+  bool GetUseIntensityOnly( void ) const;
+
   virtual bool CanRead( const char * _headerName = NULL ) const;
 
   virtual bool Read( const char * _headerName = NULL );
@@ -133,6 +138,7 @@ protected:
   int    m_UnknownId;
   double m_SeedTolerance;
   bool   m_Skeletonize;
+  bool   m_UseIntensityOnly;
 
   RidgeSeedScalesType  m_RidgeSeedScales;
 

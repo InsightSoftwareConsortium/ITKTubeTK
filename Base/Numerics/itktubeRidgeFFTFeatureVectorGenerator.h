@@ -91,6 +91,9 @@ public:
 
   void GenerateData( void );
 
+  itkSetMacro( UseIntensityOnly, bool );
+  itkGetMacro( UseIntensityOnly, bool );
+
 protected:
 
   RidgeFFTFeatureVectorGenerator( void );
@@ -107,6 +110,8 @@ private:
   RidgeScalesType                    m_Scales;
 
   FeatureImageListType               m_FeatureImageList;
+
+  bool                               m_UseIntensityOnly;
 
 }; // End class RidgeFFTFeatureVectorGenerator
 

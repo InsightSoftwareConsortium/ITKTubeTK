@@ -164,6 +164,7 @@ Read( const char * _headerName )
     }
 
   m_RidgeSeedFilter->SetScales( seedReader.GetRidgeSeedScales() );
+  m_RidgeSeedFilter->SetUseIntensityOnly( seedReader.GetUseIntensityOnly() );
   m_RidgeSeedFilter->SetRidgeId( seedReader.GetRidgeId() );
   m_RidgeSeedFilter->SetBackgroundId( seedReader.GetBackgroundId() );
   m_RidgeSeedFilter->SetUnknownId( seedReader.GetUnknownId() );
@@ -202,6 +203,7 @@ Write( const char * _headerName )
   MetaRidgeSeed seedWriter;
 
   seedWriter.SetRidgeSeedScales( m_RidgeSeedFilter->GetScales() );
+  seedWriter.SetUseIntensityOnly( m_RidgeSeedFilter->GetUseIntensityOnly() );
   seedWriter.SetRidgeId( m_RidgeSeedFilter->GetRidgeId() );
   seedWriter.SetBackgroundId( m_RidgeSeedFilter->GetBackgroundId() );
   seedWriter.SetUnknownId( m_RidgeSeedFilter->GetUnknownId() );

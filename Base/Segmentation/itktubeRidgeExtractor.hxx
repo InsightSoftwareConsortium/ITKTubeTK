@@ -410,6 +410,19 @@ RidgeExtractor<TInputImage>
     }
 
   m_XVal = m_DataSpline->ValueJet( m_X, m_XD, m_XH );
+
+  // test for nan
+  if( m_XVal != m_XVal || m_XD[0] != m_XD[0] || m_XH[0][0] != m_XH[0][0] )
+    {
+    std::cout << "NAN at " << m_X << std::endl;
+    intensity = 0;
+    roundness = 0;
+    curvature = 0;
+    levelness = 0;
+
+    return 0;
+    }
+
   intensity = m_XVal;
 
   if( this->GetDebug() )
@@ -1251,6 +1264,11 @@ RidgeExtractor<TInputImage>
   double levelness;
   double ridgeness = Ridgeness( newX, intensity, roundness, curvature,
     levelness );
+  if( ridgeness == 0 )
+    {
+    std::cout << "Ridgeness = 0, aborting" << std::endl;
+    return RIDGE_FAIL;
+    }
 
   double     val;
   MatrixType lN( ImageDimension, ImageDimension-1 );
