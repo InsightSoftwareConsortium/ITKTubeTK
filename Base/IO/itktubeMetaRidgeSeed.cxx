@@ -70,6 +70,7 @@ MetaRidgeSeed( const MetaRidgeSeed & _metaRidgeSeed )
 MetaRidgeSeed::
 MetaRidgeSeed(
   const RidgeSeedScalesType & _ridgeSeedScales,
+  bool _useIntensityOnly,
   const LDAValuesType & _ldaValues,
   const LDAMatrixType & _ldaMatrix,
   const ValueListType & _whitenMeans,
@@ -83,7 +84,7 @@ MetaRidgeSeed(
 
   Clear();
 
-  InitializeEssential( _ridgeSeedScales,
+  InitializeEssential( _ridgeSeedScales, _useIntensityOnly,
     _ldaValues, _ldaMatrix, _whitenMeans, _whitenStdDevs, _pdfFileName );
 }
 
@@ -118,6 +119,9 @@ PrintInfo() const
 
   METAIO_STREAM::cout << "Skeletonize = "
     << ( m_Skeletonize ? "True" : "False" ) << METAIO_STREAM::endl;
+
+  METAIO_STREAM::cout << "UseIntensityOnly = "
+    << ( m_UseIntensityOnly ? "True" : "False" ) << METAIO_STREAM::endl;
 }
 
 void MetaRidgeSeed::
@@ -126,6 +130,7 @@ CopyInfo( const MetaRidgeSeed & _lda )
   MetaLDA::CopyInfo( dynamic_cast< const MetaLDA & >( _lda ) );
 
   SetRidgeSeedScales( _lda.GetRidgeSeedScales() );
+  SetUseIntensityOnly( _lda.GetUseIntensityOnly() );
   SetPDFFileName( _lda.GetPDFFileName() );
   SetRidgeId( _lda.GetRidgeId() );
   SetUnknownId( _lda.GetUnknownId() );
@@ -147,6 +152,8 @@ Clear( void )
   strcpy( m_FormTypeName, "RidgeSeed" );
 
   m_RidgeSeedScales.clear();
+  m_UseIntensityOnly = false;
+
   m_PDFFileName.clear();
 
   m_RidgeId = 255;
@@ -159,6 +166,7 @@ Clear( void )
 bool MetaRidgeSeed::
 InitializeEssential(
   const RidgeSeedScalesType & _ridgeSeedScales,
+  bool _useIntensityOnly,
   const LDAValuesType & _ldaValues,
   const LDAMatrixType & _ldaMatrix,
   const ValueListType & _whitenMeans,
@@ -175,6 +183,8 @@ InitializeEssential(
     _whitenStdDevs );
 
   SetRidgeSeedScales( _ridgeSeedScales );
+
+  SetUseIntensityOnly( _useIntensityOnly );
 
   SetPDFFileName( _pdfFileName );
 
@@ -204,6 +214,31 @@ GetRidgeSeedScales( void ) const
 
   return m_RidgeSeedScales;
 }
+
+void MetaRidgeSeed::
+SetUseIntensityOnly( bool _UseIntensityOnly )
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaRidgeSeed: SetUseIntensityOnly"
+      << METAIO_STREAM::endl;
+    }
+
+  m_UseIntensityOnly = _UseIntensityOnly;
+}
+
+bool MetaRidgeSeed::
+GetUseIntensityOnly( void ) const
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaRidgeSeed: GetUseIntensityOnly"
+      << METAIO_STREAM::endl;
+    }
+
+  return m_UseIntensityOnly;
+}
+
 
 void MetaRidgeSeed::
 SetPDFFileName( const std::string & _pdfFileName )
@@ -467,7 +502,7 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
 
   m_ReadStream = NULL;
 
-  InitializeEssential( m_RidgeSeedScales,
+  InitializeEssential( m_RidgeSeedScales, m_UseIntensityOnly,
     m_LDAValues, m_LDAMatrix, m_WhitenMeans, m_WhitenStdDevs,
     m_PDFFileName );
 
@@ -564,6 +599,10 @@ M_SetupReadFields( void )
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
+  MET_InitReadField( mF, "UseIntensityOnly", MET_STRING, true );
+  m_Fields.push_back( mF );
+
+  mF = new MET_FieldRecordType;
   MET_InitReadField( mF, "PDFFileName", MET_STRING, true );
   m_Fields.push_back( mF );
 
@@ -612,6 +651,17 @@ M_SetupWriteFields( void )
       nRidgeSeedScales, ridgeSeedScales.data_block() );
     m_Fields.push_back( mF );
 
+    mF = new MET_FieldRecordType;
+    if( m_UseIntensityOnly )
+      {
+      MET_InitWriteField( mF, "UseIntensityOnly", MET_STRING, 4, "True" );
+      }
+    else
+      {
+      MET_InitWriteField( mF, "UseIntensityOnly", MET_STRING, 5, "False" );
+      }
+
+    m_Fields.push_back( mF );
     mF = new MET_FieldRecordType;
     MET_InitWriteField( mF, "PDFFileName", MET_STRING,
       m_PDFFileName.size(), m_PDFFileName.c_str() );
@@ -690,6 +740,17 @@ M_Read( void )
       {
       m_RidgeSeedScales[i] = ( double )mF->value[i];
       }
+    }
+
+  mF = MET_GetFieldRecord( "UseIntensityOnly", &m_Fields );
+  if( (( char * )( mF->value ))[0] == 'T'
+    || (( char * )( mF->value)) [0] == 't' )
+    {
+    m_UseIntensityOnly = true;
+    }
+  else
+    {
+    m_UseIntensityOnly = false;
     }
 
   mF = MET_GetFieldRecord( "PDFFileName", &m_Fields );

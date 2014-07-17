@@ -155,6 +155,9 @@ public:
   itkSetMacro( Skeletonize, bool );
   itkGetMacro( Skeletonize, bool );
 
+  itkSetMacro( UseIntensityOnly, bool );
+  itkGetMacro( UseIntensityOnly, bool );
+
   itkSetMacro( TrainClassifier, bool );
   itkGetMacro( TrainClassifier, bool );
 
@@ -189,6 +192,8 @@ private:
   double         m_SeedTolerance;
 
   bool           m_Skeletonize;
+
+  bool           m_UseIntensityOnly;
 
   bool           m_TrainClassifier;
 

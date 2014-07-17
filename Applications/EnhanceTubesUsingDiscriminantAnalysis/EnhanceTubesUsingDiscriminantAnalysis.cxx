@@ -34,6 +34,36 @@ int DoIt( int argc, char * argv[] );
 //   and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
+template< class TImage >
+void WriteImageInSequence( const typename TImage::Pointer & img,
+  const std::string & base, const std::string & ext, int num )
+{
+  typedef itk::ImageFileWriter< TImage >     ImageWriterType;
+
+  typename ImageWriterType::Pointer rsImageWriter = ImageWriterType::New();
+  std::string fname = base;
+  char c[80];
+  std::sprintf( c, ext.c_str(), num );
+  fname += std::string( c );
+  rsImageWriter->SetUseCompression( true );
+  rsImageWriter->SetFileName( fname.c_str() );
+  rsImageWriter->SetInput( img );
+  rsImageWriter->Update();
+}
+
+template< class TImage >
+void WriteImage( const typename TImage::Pointer & img,
+  const std::string & str )
+{
+  typedef itk::ImageFileWriter< TImage >     ImageWriterType;
+
+  typename ImageWriterType::Pointer rsImageWriter = ImageWriterType::New();
+  rsImageWriter->SetUseCompression( true );
+  rsImageWriter->SetFileName( str.c_str() );
+  rsImageWriter->SetInput( img );
+  rsImageWriter->Update();
+}
+
 template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] )
 {
@@ -62,6 +92,7 @@ int DoIt( int argc, char * argv[] )
                                                     OutputImageType;
   typedef itk::ImageFileWriter< OutputImageType >   OutputImageWriterType;
 
+  typedef itk::Image< float, TDimension >           RidgeSeedImageType;
 
   typename RidgeSeedFilterType::Pointer tubeFilter =
     RidgeSeedFilterType::New();
@@ -110,14 +141,16 @@ int DoIt( int argc, char * argv[] )
     }
   else
     {
-
     tubeFilter->SetScales( tubeScales );
-    tubeFilter->SetSkeletonize( false );
     tubeFilter->GetPDFSegmenter()->SetProbabilityImageSmoothingStandardDeviation(
-     tubeScales[0] / 2 );
+      tubeScales[0] / 2 );
 
     tubeFilter->SetTrainClassifier( true );
     }
+
+  tubeFilter->SetSkeletonize( false );
+  tubeFilter->SetUseIntensityOnly( useIntensityOnly );
+  tubeFilter->SetSeedTolerance( seedTolerance );
 
   timeCollector.Start( "Update" );
   tubeFilter->Update();
@@ -126,6 +159,27 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start( "Classify" );
   tubeFilter->ClassifyImages();
   timeCollector.Stop( "Classify" );
+
+  if( outputSeedScaleImage.size() > 0 )
+    {
+    timeCollector.Start( "SaveTubeSeedScaleImage" );
+    WriteImage< RidgeSeedImageType >( tubeFilter->GetOutputSeedScales(),
+      outputSeedScaleImage );
+    timeCollector.Stop( "SaveTubeSeedScaleImage" );
+    }
+
+  if( saveFeatureImages.size() > 0 )
+    {
+    timeCollector.Start( "SaveFeatureImages" );
+    unsigned int numFeatures = tubeFilter->GetNumberOfBasis();
+    for( unsigned int i=0; i<numFeatures; i++ )
+      {
+      WriteImageInSequence< RidgeSeedImageType >(
+        tubeFilter->GetBasisImage( i ),
+        saveFeatureImages, ".f%02d.mha", i );
+      }
+    timeCollector.Stop( "SaveFeatureImages" );
+    }
 
   if( !saveDiscriminantInfo.empty() )
     {

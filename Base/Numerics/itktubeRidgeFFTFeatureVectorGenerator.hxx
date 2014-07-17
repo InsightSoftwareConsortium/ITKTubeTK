@@ -44,6 +44,7 @@ template< class TImage >
 RidgeFFTFeatureVectorGenerator< TImage >
 ::RidgeFFTFeatureVectorGenerator( void )
 {
+  m_UseIntensityOnly = false;
   m_Scales.resize( 0 );
   m_FeatureImageList.resize( 0 );
 }
@@ -59,7 +60,12 @@ unsigned int
 RidgeFFTFeatureVectorGenerator< TImage >
 ::GetNumberOfFeatures( void ) const
 {
-  const unsigned int numFeatures = m_Scales.size() * 5 + 6;
+  unsigned int numFeatures = m_Scales.size() * 5 + 6;
+
+  if( m_UseIntensityOnly )
+    {
+    numFeatures = m_Scales.size() * 2 + 3;
+    }
 
   return numFeatures;
 }
@@ -76,65 +82,178 @@ RidgeFFTFeatureVectorGenerator< TImage >
 
   const unsigned int numFeatures = this->GetNumberOfFeatures();
 
+  unsigned int numFeaturesPerScale = 5;
+  if( m_UseIntensityOnly )
+    {
+    numFeaturesPerScale = 2;
+    }
+
   m_FeatureImageList.resize( numFeatures );
 
-  unsigned int feat = 0;
-  for( unsigned int s=0; s<m_Scales.size(); ++s )
+  if( !m_UseIntensityOnly )
     {
-    ridgeF->SetScale( m_Scales[s] );
-    ridgeF->Update();
+    ridgeF->SetUseIntensityOnly( false );
 
-    m_FeatureImageList[feat++] = ridgeF->GetIntensity();
-    m_FeatureImageList[feat++] = ridgeF->GetRidgeness();
-    m_FeatureImageList[feat++] = ridgeF->GetRoundness();
-    m_FeatureImageList[feat++] = ridgeF->GetCurvature();
-    m_FeatureImageList[feat++] = ridgeF->GetLevelness();
-    }
-
-  typename FeatureImageType::RegionType region = 
-    this->m_InputImageList[0]->GetLargestPossibleRegion();
-  while( feat < numFeatures )
-    {
-    m_FeatureImageList[feat] = FeatureImageType::New();
-    m_FeatureImageList[feat]->CopyInformation( this->m_InputImageList[0] );
-    m_FeatureImageList[feat]->SetRegions( region );
-    m_FeatureImageList[feat]->Allocate();
-    ++feat;
-    }
-
-  typedef ImageRegionIterator< FeatureImageType >  IterType;
-  std::vector< IterType > iterF( numFeatures );
-  for( unsigned int f=0; f<numFeatures; ++f )
-    {
-    iterF[f] = IterType( m_FeatureImageList[f], region );
-    }
-  unsigned int foScale = numFeatures - 6;
-  unsigned int foFeat = numFeatures - 5;
-  while( !iterF[0].IsAtEnd() )
-    {
-    for( unsigned int f=0; f<5; ++f )
+    unsigned int feat = 0;
+    for( unsigned int s=0; s<m_Scales.size(); ++s )
       {
-      iterF[ foFeat + f ].Set( iterF[ f ].Get() );
+      ridgeF->SetScale( m_Scales[s] );
+      ridgeF->Update();
+  
+      m_FeatureImageList[feat++] = ridgeF->GetIntensity();
+      m_FeatureImageList[feat++] = ridgeF->GetRidgeness();
+      m_FeatureImageList[feat++] = ridgeF->GetRoundness();
+      m_FeatureImageList[feat++] = ridgeF->GetCurvature();
+      m_FeatureImageList[feat++] = ridgeF->GetLevelness();
       }
-    iterF[ foScale ].Set( m_Scales[ 0 ] );
-    for( unsigned int s=1; s<m_Scales.size(); ++s )
+  
+    typename FeatureImageType::RegionType region = 
+      this->m_InputImageList[0]->GetLargestPossibleRegion();
+    while( feat < numFeatures )
       {
-      feat = s * 5;
-      for( unsigned int f=0; f<5; ++f )
+      m_FeatureImageList[feat] = FeatureImageType::New();
+      m_FeatureImageList[feat]->CopyInformation( this->m_InputImageList[0] );
+      m_FeatureImageList[feat]->SetRegions( region );
+      m_FeatureImageList[feat]->Allocate();
+      ++feat;
+      }
+  
+    typedef ImageRegionIterator< FeatureImageType >  IterType;
+    std::vector< IterType > iterF( numFeatures );
+    for( unsigned int f=0; f<numFeatures; ++f )
+      {
+      iterF[f] = IterType( m_FeatureImageList[f], region );
+      }
+    unsigned int foScale = numFeatures - numFeaturesPerScale - 1;
+    unsigned int foFeat = numFeatures - numFeaturesPerScale;
+    while( !iterF[0].IsAtEnd() )
+      {
+      for( unsigned int f=0; f<numFeaturesPerScale; ++f )
         {
-        if( iterF[ feat + f ].Get() > iterF[ foFeat + f ].Get() )
+        iterF[ foFeat + f ].Set( iterF[ f ].Get() );
+        }
+      iterF[ foScale ].Set( m_Scales[ 0 ] );
+      for( unsigned int s=1; s<m_Scales.size(); ++s )
+        {
+        feat = s * numFeaturesPerScale;
+        for( unsigned int f=0; f<numFeaturesPerScale; ++f )
           {
-          iterF[ foFeat + f ].Set( iterF[ feat + f ].Get() );
-          if( f == 0 )
+          if( iterF[ feat + f ].Get() > iterF[ foFeat + f ].Get() )
             {
-            iterF[ foScale ].Set( m_Scales[ s ] );
+            iterF[ foFeat + f ].Set( iterF[ feat + f ].Get() );
+            if( f == 0 )
+              {
+              iterF[ foScale ].Set( m_Scales[ s ] );
+              }
             }
           }
         }
+      for( unsigned int f=0; f<numFeatures; ++f )
+        {
+        ++iterF[ f ];
+        }
       }
+    }
+  else
+    {
+    typedef ImageRegionIterator< FeatureImageType >  IterType;
+
+    typename FeatureImageType::RegionType region = 
+      this->m_InputImageList[0]->GetLargestPossibleRegion();
+
+    ridgeF->SetUseIntensityOnly( true );
+
+    unsigned int feat = 0;
+    for( unsigned int s=0; s<m_Scales.size(); ++s )
+      {
+      ridgeF->SetScale( m_Scales[s] );
+      ridgeF->Update();
+  
+      m_FeatureImageList[feat] = ridgeF->GetIntensity();
+
+      if( s > 0 )
+        {
+        m_FeatureImageList[feat-1] = FeatureImageType::New();
+        m_FeatureImageList[feat-1]->CopyInformation( this->m_InputImageList[0] );
+        m_FeatureImageList[feat-1]->SetRegions( region );
+        m_FeatureImageList[feat-1]->Allocate();
+
+        IterType iterPrevS( m_FeatureImageList[ feat-2 ], region );
+        IterType iterCurS( m_FeatureImageList[ feat ], region );
+        IterType iterDiff( m_FeatureImageList[ feat-1 ], region );
+        while( !iterPrevS.IsAtEnd() )
+          {
+          iterDiff.Set( iterPrevS.Get() - iterCurS.Get() );
+          ++iterPrevS;
+          ++iterCurS;
+          ++iterDiff;
+          }
+        }
+
+      if( s == m_Scales.size() - 1 )
+        {
+        m_FeatureImageList[feat+1] = FeatureImageType::New();
+        m_FeatureImageList[feat+1]->CopyInformation( this->m_InputImageList[0] );
+        m_FeatureImageList[feat+1]->SetRegions( region );
+        m_FeatureImageList[feat+1]->Allocate();
+
+        IterType iterPrevS( m_FeatureImageList[ (s / 2) * 2 ], region );
+        IterType iterCurS( m_FeatureImageList[ feat ], region );
+        IterType iterDiff( m_FeatureImageList[ feat+1 ], region );
+        while( !iterPrevS.IsAtEnd() )
+          {
+          iterDiff.Set( iterPrevS.Get() - iterCurS.Get() );
+          ++iterPrevS;
+          ++iterCurS;
+          ++iterDiff;
+          }
+        }
+
+      feat += numFeaturesPerScale;
+      }
+
+    while( feat < numFeatures )
+      {
+      m_FeatureImageList[feat] = FeatureImageType::New();
+      m_FeatureImageList[feat]->CopyInformation( this->m_InputImageList[0] );
+      m_FeatureImageList[feat]->SetRegions( region );
+      m_FeatureImageList[feat]->Allocate();
+      ++feat;
+      }
+  
+    std::vector< IterType > iterF( numFeatures );
     for( unsigned int f=0; f<numFeatures; ++f )
       {
-      ++iterF[ f ];
+      iterF[f] = IterType( m_FeatureImageList[f], region );
+      }
+    unsigned int foScale = numFeatures - numFeaturesPerScale - 1;
+    unsigned int foFeat = numFeatures - numFeaturesPerScale;
+    while( !iterF[0].IsAtEnd() )
+      {
+      for( unsigned int f=0; f<numFeaturesPerScale; ++f )
+        {
+        iterF[ foFeat + f ].Set( iterF[ f ].Get() );
+        }
+      iterF[ foScale ].Set( m_Scales[ 0 ] );
+      for( unsigned int s=1; s<m_Scales.size(); ++s )
+        {
+        feat = s * numFeaturesPerScale;
+        for( unsigned int f=0; f<numFeaturesPerScale; ++f )
+          {
+          if( iterF[ feat + f ].Get() > iterF[ foFeat + f ].Get() )
+            {
+            iterF[ foFeat + f ].Set( iterF[ feat + f ].Get() );
+            if( f == 1 )
+              {
+              iterF[ foScale ].Set( m_Scales[ s ] );
+              }
+            }
+          }
+        }
+      for( unsigned int f=0; f<numFeatures; ++f )
+        {
+        ++iterF[ f ];
+        }
       }
     }
 }

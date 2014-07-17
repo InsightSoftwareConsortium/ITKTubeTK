@@ -423,6 +423,9 @@ int DoIt( int argc, char * argv[] )
   int clippedMax = (int)(tube.size() * 0.01);
   int clippedMaxStart = (int)(tube.size() * 0.005);
 
+  int levelnessClippedMax = (int)(tube.size() * 0.005);
+  int levelnessClippedMaxStart = (int)(tube.size() * 0.001);
+
   sort_column = 1;
   std::sort( tube.begin(), tube.end(), sort_column_compare );
   double ridgeMinRidgeness = tube[clippedMax][1];
@@ -440,8 +443,8 @@ int DoIt( int argc, char * argv[] )
 
   sort_column = 4;
   std::sort( tube.begin(), tube.end(), sort_column_compare );
-  double ridgeMinLevelness = tube[clippedMax][4];
-  double ridgeMinLevelnessStart = tube[clippedMaxStart][4];
+  double ridgeMinLevelness = tube[levelnessClippedMax][4];
+  double ridgeMinLevelnessStart = tube[levelnessClippedMaxStart][4];
 
   int    ridgeMaxRecoveryAttempts = 3;
 
