@@ -31,7 +31,7 @@ limitations under the License.
 
 #include "itktubeBlurImageFunction.h"
 #include "itktubeRadiusExtractor.h"
-#include "tubeBrentOptimizer1D.h"
+#include "tubeGoldenMeanOptimizer1D.h"
 #include "tubeSplineApproximation1D.h"
 #include "tubeSplineND.h"
 
@@ -322,7 +322,7 @@ private:
   IndexType                                          m_ExtractBoundMax;
 
   ::tube::SplineApproximation1D                      m_DataSpline1D;
-  ::tube::BrentOptimizer1D                           m_DataSplineOpt;
+  ::tube::GoldenMeanOptimizer1D                      m_DataSplineOpt;
   ::tube::SplineND                                 * m_DataSpline;
   ::tube::UserFunction< vnl_vector<int>, double >  * m_SplineValueFunc;
 

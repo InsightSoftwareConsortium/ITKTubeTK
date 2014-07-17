@@ -142,15 +142,17 @@ int DoIt( int argc, char * argv[] )
   else
     {
     tubeFilter->SetScales( tubeScales );
+
     tubeFilter->GetPDFSegmenter()->SetProbabilityImageSmoothingStandardDeviation(
       tubeScales[0] / 2 );
 
     tubeFilter->SetTrainClassifier( true );
+
+    tubeFilter->SetUseIntensityOnly( useIntensityOnly );
+    tubeFilter->SetSeedTolerance( seedTolerance );
     }
 
   tubeFilter->SetSkeletonize( false );
-  tubeFilter->SetUseIntensityOnly( useIntensityOnly );
-  tubeFilter->SetSeedTolerance( seedTolerance );
 
   timeCollector.Start( "Update" );
   tubeFilter->Update();
