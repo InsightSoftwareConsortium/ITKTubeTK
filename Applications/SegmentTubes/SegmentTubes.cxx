@@ -221,12 +221,17 @@ int DoIt( int argc, char * argv[] )
         maskImage->GetLargestPossibleRegion() );
       itk::ImageRegionConstIterator< ScaleImageType > iterS( scaleImage,
         scaleImage->GetLargestPossibleRegion() );
+      unsigned int count = 0;
       while( !iter.IsAtEnd() )
         {
         if( iter.Get() )
           {
-          seedIndexList.push_back( iter.GetIndex() );
-          seedScaleList.push_back( iterS.Get() / scaleNorm );
+          if( ++count == seedMaskStride )
+            {
+            count = 0;
+            seedIndexList.push_back( iter.GetIndex() );
+            seedScaleList.push_back( iterS.Get() / scaleNorm );
+            }
           }
         ++iter;
         ++iterS;
@@ -234,14 +239,19 @@ int DoIt( int argc, char * argv[] )
       }
     else
       {
+      unsigned int count = 0;
       itk::ImageRegionConstIteratorWithIndex< MaskImageType > iter( maskImage,
         maskImage->GetLargestPossibleRegion() );
       while( !iter.IsAtEnd() )
         {
         if( iter.Get() )
           {
-          seedIndexList.push_back( iter.GetIndex() );
-          seedScaleList.push_back( scale / scaleNorm );
+          if( ++count == seedMaskStride )
+            {
+            count = 0;
+            seedIndexList.push_back( iter.GetIndex() );
+            seedScaleList.push_back( scale / scaleNorm );
+            }
           }
         ++iter;
         }

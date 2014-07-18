@@ -30,7 +30,7 @@ limitations under the License.
 #define __itktubeRadiusExtractor_h
 
 #include "itktubeBlurImageFunction.h"
-#include "tubeGoldenMeanOptimizer1D.h"
+#include "tubeBrentOptimizer1D.h"
 #include "tubeSplineApproximation1D.h"
 
 #include <itkVesselTubeSpatialObject.h>
@@ -62,7 +62,7 @@ public:
   typedef SmartPointer< Self >                               Pointer;
   typedef SmartPointer< const Self >                         ConstPointer;
 
-  typedef ::tube::GoldenMeanOptimizer1D                      OptimizerType;
+  typedef ::tube::BrentOptimizer1D                           OptimizerType;
   typedef ::tube::SplineApproximation1D                      SplineType;
 
   itkTypeMacro( RadiusExtractor, Object );
