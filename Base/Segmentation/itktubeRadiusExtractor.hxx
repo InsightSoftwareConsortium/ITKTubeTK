@@ -57,12 +57,12 @@ public:
 
   RadiusExtractorMedialnessFunc( RadiusExtractor< TImage > *
     newRadiusExtractor,
-    double newMedialnessScaleStep )
+    double newMedialnessRadiusStep )
     : m_KernelArray(0),
       m_Value(0.0)
     {
     m_RadiusExtractor = newRadiusExtractor;
-    m_MedialnessScaleStep = newMedialnessScaleStep;
+    m_MedialnessRadiusStep = newMedialnessRadiusStep;
     }
 
   void SetKernelArray( std::vector<TubePointType> * newKernelArray )
@@ -70,9 +70,9 @@ public:
     m_KernelArray = newKernelArray;
     }
 
-  void SetMedialnessScaleStep( double newMedialnessScaleStep )
+  void SetMedialnessRadiusStep( double newMedialnessRadiusStep )
     {
-    m_MedialnessScaleStep = newMedialnessScaleStep;
+    m_MedialnessRadiusStep = newMedialnessRadiusStep;
     }
 
   const double & Value( const int & x )
@@ -80,7 +80,7 @@ public:
     double bness = 0;
 
     m_RadiusExtractor->MeasuresInKernelArray(
-      *m_KernelArray, x*m_MedialnessScaleStep, m_Value, bness, false );
+      *m_KernelArray, x*m_MedialnessRadiusStep, m_Value, bness, false );
 
     return m_Value;
     }
@@ -103,7 +103,7 @@ private:
 
   double                                   m_Value;
 
-  double                                   m_MedialnessScaleStep;
+  double                                   m_MedialnessRadiusStep;
 
 }; // End class RadiusExtractorMedialnessFunc
 
@@ -129,8 +129,8 @@ RadiusExtractor<TInputImage>
   m_RadiusMin = 0.3;
   m_RadiusMax = 10.0;
 
-  m_MinMedialness = 0.015;       // 0.015; larger = harder
-  m_MinMedialnessStart = 0.01;
+  m_MinMedialness = 0.0015;       // 0.015; larger = harder
+  m_MinMedialnessStart = 0.001;
 
   if( ImageDimension == 2 )
     {
@@ -167,14 +167,14 @@ RadiusExtractor<TInputImage>
     throw "Error: Radius estimation only supports 2 & 3 dimensions.";
     }
 
-  m_MedialnessScaleStep = 0.25;
+  m_MedialnessRadiusStep = 0.25;
 
   m_MedialnessFunc = new RadiusExtractorMedialnessFunc<TInputImage>(
-    this, m_MedialnessScaleStep );
+    this, m_MedialnessRadiusStep );
 
-  m_MedialnessOpt.SetTolerance( 0.01 / m_MedialnessScaleStep );
+  m_MedialnessOpt.SetTolerance( 0.01 / m_MedialnessRadiusStep );
 
-  m_MedialnessOpt.SetXStep( 1.5 / m_MedialnessScaleStep );
+  m_MedialnessOpt.SetXStep( 1.5 / m_MedialnessRadiusStep );
 
   m_MedialnessOpt.SetSearchForMin( false );
 
@@ -182,8 +182,8 @@ RadiusExtractor<TInputImage>
     &m_MedialnessOpt );
 
   m_MedialnessOptSpline->SetClip( true );
-  m_MedialnessOptSpline->SetXMin( 0.5 / m_MedialnessScaleStep );
-  m_MedialnessOptSpline->SetXMax( 20 / m_MedialnessScaleStep );
+  m_MedialnessOptSpline->SetXMin( 0.5 / m_MedialnessRadiusStep );
+  m_MedialnessOptSpline->SetXMax( 20 / m_MedialnessRadiusStep );
 
 
   m_IdleCallBack = NULL;
@@ -239,7 +239,7 @@ RadiusExtractor<TInputImage>
     radiusMin = 0.3;
     }
   m_RadiusMin = radiusMin;
-  m_MedialnessOptSpline->SetXMin( m_RadiusMin / m_MedialnessScaleStep );
+  m_MedialnessOptSpline->SetXMin( m_RadiusMin / m_MedialnessRadiusStep );
 
   if( m_RadiusStart < m_RadiusMin )
     {
@@ -254,7 +254,7 @@ RadiusExtractor<TInputImage>
 ::SetRadiusMax( double radiusMax )
 {
   this->m_RadiusMax = radiusMax;
-  m_MedialnessOptSpline->SetXMax( this->m_RadiusMax / m_MedialnessScaleStep );
+  m_MedialnessOptSpline->SetXMax( this->m_RadiusMax / m_MedialnessRadiusStep );
   if( m_RadiusStart > m_RadiusMax )
     {
     m_RadiusStart = m_RadiusMax;
@@ -328,14 +328,14 @@ RadiusExtractor<TInputImage>
   double & bness,
   bool doBNess )
 {
-  if( pntR < m_MedialnessOptSpline->GetXMin() * m_MedialnessScaleStep )
+  if( pntR < m_MedialnessOptSpline->GetXMin() * m_MedialnessRadiusStep )
     {
-    pntR = m_MedialnessOptSpline->GetXMin() * m_MedialnessScaleStep;
+    pntR = m_MedialnessOptSpline->GetXMin() * m_MedialnessRadiusStep;
     }
 
-  if( pntR > m_MedialnessOptSpline->GetXMax() * m_MedialnessScaleStep )
+  if( pntR > m_MedialnessOptSpline->GetXMax() * m_MedialnessRadiusStep )
     {
-    pntR = m_MedialnessOptSpline->GetXMax() * m_MedialnessScaleStep;
+    pntR = m_MedialnessOptSpline->GetXMax() * m_MedialnessRadiusStep;
     }
 
   MatrixType n( ImageDimension, ImageDimension-1 );
@@ -447,14 +447,14 @@ RadiusExtractor<TInputImage>
     w[i] /= wTot;
     }
 
-  if( pntR < m_MedialnessOptSpline->GetXMin() * m_MedialnessScaleStep )
+  if( pntR < m_MedialnessOptSpline->GetXMin() * m_MedialnessRadiusStep )
     {
-    pntR = m_MedialnessOptSpline->GetXMin() * m_MedialnessScaleStep;
+    pntR = m_MedialnessOptSpline->GetXMin() * m_MedialnessRadiusStep;
     }
 
-  if( pntR > m_MedialnessOptSpline->GetXMax() * m_MedialnessScaleStep )
+  if( pntR > m_MedialnessOptSpline->GetXMax() * m_MedialnessRadiusStep )
     {
-    pntR = m_MedialnessOptSpline->GetXMax() * m_MedialnessScaleStep;
+    pntR = m_MedialnessOptSpline->GetXMax() * m_MedialnessRadiusStep;
     }
 
   if( this->GetDebug() )
@@ -592,16 +592,16 @@ RadiusExtractor<TInputImage>
     rMin = 0.5;
     }
   double tempXMin = m_MedialnessOptSpline->GetXMin();
-  m_MedialnessOptSpline->SetXMin( rMin / m_MedialnessScaleStep );
+  m_MedialnessOptSpline->SetXMin( rMin / m_MedialnessRadiusStep );
 
   double tempXMax = m_MedialnessOptSpline->GetXMax();
-  m_MedialnessOptSpline->SetXMax( rMax / m_MedialnessScaleStep );
+  m_MedialnessOptSpline->SetXMax( rMax / m_MedialnessRadiusStep );
 
   double tempXStep = m_MedialnessOpt.GetXStep();
-  m_MedialnessOpt.SetXStep( rStep / m_MedialnessScaleStep );
+  m_MedialnessOpt.SetXStep( rStep / m_MedialnessRadiusStep );
 
   double tempTol = m_MedialnessOpt.GetTolerance();
-  m_MedialnessOpt.SetTolerance( rTolerance / m_MedialnessScaleStep );
+  m_MedialnessOpt.SetTolerance( rTolerance / m_MedialnessRadiusStep );
 
   /*
   if( this->GetDebug() )
@@ -613,20 +613,20 @@ RadiusExtractor<TInputImage>
     m_MedialnessFunc )->SetKernelArray( & kernArray );
   m_MedialnessOptSpline->SetNewData( true );
   double oldR0 = r0;
-  r0 /= m_MedialnessScaleStep;
+  r0 /= m_MedialnessRadiusStep;
   m_MedialnessOptSpline->Extreme( &r0, &mness );
   if( this->GetDebug() )
     {
-    std::cout << " cmp: " << r0-0.1/m_MedialnessScaleStep << " - "
-      << m_MedialnessOptSpline->Value( r0-0.1/m_MedialnessScaleStep )
+    std::cout << " cmp: " << r0-0.1/m_MedialnessRadiusStep << " - "
+      << m_MedialnessOptSpline->Value( r0-0.1/m_MedialnessRadiusStep )
       << std::endl;
     std::cout << " cmp: " << r0 << " - "
       << m_MedialnessOptSpline->Value( r0 ) << std::endl;
-    std::cout << " cmp: " << r0+0.1/m_MedialnessScaleStep << " - "
-      << m_MedialnessOptSpline->Value( r0+0.1/m_MedialnessScaleStep )
+    std::cout << " cmp: " << r0+0.1/m_MedialnessRadiusStep << " - "
+      << m_MedialnessOptSpline->Value( r0+0.1/m_MedialnessRadiusStep )
       << std::endl;
     }
-  r0 *= m_MedialnessScaleStep;
+  r0 *= m_MedialnessRadiusStep;
 
   if( this->GetDebug() )
     {
@@ -688,7 +688,7 @@ RadiusExtractor<TInputImage>
     {
     os << indent << "DataOp = NULL" << std::endl;
     }
-  os << indent << "MedialnessScaleStep = " << m_MedialnessScaleStep
+  os << indent << "MedialnessRadiusStep = " << m_MedialnessRadiusStep
     << std::endl;
   os << indent << "MedialnessOpt = " << m_MedialnessOpt << std::endl;
   if( m_MedialnessOptSpline != NULL )
@@ -723,14 +723,14 @@ RadiusExtractor<TInputImage>
 ::ValuesInSubKernel( TubePointType pnt, double pntR,
   MatrixType & kernN, VectorType & kern, double & kernCnt )
 {
-  if( pntR < m_MedialnessOptSpline->GetXMin() * m_MedialnessScaleStep )
+  if( pntR < m_MedialnessOptSpline->GetXMin() * m_MedialnessRadiusStep )
     {
-    pntR = m_MedialnessOptSpline->GetXMin() * m_MedialnessScaleStep;
+    pntR = m_MedialnessOptSpline->GetXMin() * m_MedialnessRadiusStep;
     }
 
-  if( pntR > m_MedialnessOptSpline->GetXMax() * m_MedialnessScaleStep )
+  if( pntR > m_MedialnessOptSpline->GetXMax() * m_MedialnessRadiusStep )
     {
-    pntR = m_MedialnessOptSpline->GetXMax() * m_MedialnessScaleStep;
+    pntR = m_MedialnessOptSpline->GetXMax() * m_MedialnessRadiusStep;
     }
 
   /*
@@ -812,14 +812,14 @@ RadiusExtractor<TInputImage>
   MatrixType & kernN, VectorType & kernPos, VectorType & kernNeg,
   VectorType & kernBrn, bool doBNess )
 {
-  if( pntR < m_MedialnessOptSpline->GetXMin() * m_MedialnessScaleStep )
+  if( pntR < m_MedialnessOptSpline->GetXMin() * m_MedialnessRadiusStep )
     {
-    pntR = m_MedialnessOptSpline->GetXMin() * m_MedialnessScaleStep;
+    pntR = m_MedialnessOptSpline->GetXMin() * m_MedialnessRadiusStep;
     }
 
-  if( pntR > m_MedialnessOptSpline->GetXMax() * m_MedialnessScaleStep )
+  if( pntR > m_MedialnessOptSpline->GetXMax() * m_MedialnessRadiusStep )
     {
-    pntR = m_MedialnessOptSpline->GetXMax() * m_MedialnessScaleStep;
+    pntR = m_MedialnessOptSpline->GetXMax() * m_MedialnessRadiusStep;
     }
 
   MatrixType n( ImageDimension, ImageDimension-1 );
@@ -1378,24 +1378,24 @@ RadiusExtractor<TInputImage>
       m_MedialnessFunc )->SetKernelArray( & pntKernArray );
     m_MedialnessOptSpline->SetNewData( true );
     double oldPntR = pntR;
-    pntR /= m_MedialnessScaleStep;
+    pntR /= m_MedialnessRadiusStep;
     pntR = (int)pntR;
     m_MedialnessOptSpline->Extreme( &pntR, &mness );
     if( this->GetDebug() )
       {
-      std::cout << " cmp: " << (pntR-0.1/m_MedialnessScaleStep)
-        * m_MedialnessScaleStep << " - "
-        << m_MedialnessOptSpline->Value( pntR-0.1/m_MedialnessScaleStep )
+      std::cout << " cmp: " << (pntR-0.1/m_MedialnessRadiusStep)
+        * m_MedialnessRadiusStep << " - "
+        << m_MedialnessOptSpline->Value( pntR-0.1/m_MedialnessRadiusStep )
         << std::endl;
-      std::cout << " cmp: " << pntR * m_MedialnessScaleStep << " - "
+      std::cout << " cmp: " << pntR * m_MedialnessRadiusStep << " - "
         << m_MedialnessOptSpline->Value( pntR )
         << std::endl;
-      std::cout << " cmp: " << (pntR+0.1/m_MedialnessScaleStep)
-        * m_MedialnessScaleStep << " - "
-        << m_MedialnessOptSpline->Value( pntR+0.1/m_MedialnessScaleStep )
+      std::cout << " cmp: " << (pntR+0.1/m_MedialnessRadiusStep)
+        * m_MedialnessRadiusStep << " - "
+        << m_MedialnessOptSpline->Value( pntR+0.1/m_MedialnessRadiusStep )
         << std::endl;
       }
-    pntR *= m_MedialnessScaleStep;
+    pntR *= m_MedialnessRadiusStep;
 
     if( this->GetDebug() )
       {
@@ -1414,24 +1414,24 @@ RadiusExtractor<TInputImage>
         }
       pntR = prevPntR;
       oldPntR = pntR;
-      pntR /= m_MedialnessScaleStep;
+      pntR /= m_MedialnessRadiusStep;
       pntR = (int)pntR;
       m_MedialnessOptSpline->Extreme( &pntR, &mness );
       if( this->GetDebug() )
         {
-        std::cout << " cmp: " << (pntR-0.1/m_MedialnessScaleStep)
-          * m_MedialnessScaleStep << " - "
-          << m_MedialnessOptSpline->Value( pntR-0.1/m_MedialnessScaleStep )
+        std::cout << " cmp: " << (pntR-0.1/m_MedialnessRadiusStep)
+          * m_MedialnessRadiusStep << " - "
+          << m_MedialnessOptSpline->Value( pntR-0.1/m_MedialnessRadiusStep )
           << std::endl;
-        std::cout << " cmp: " << pntR * m_MedialnessScaleStep << " - "
+        std::cout << " cmp: " << pntR * m_MedialnessRadiusStep << " - "
           << m_MedialnessOptSpline->Value( pntR )
           << std::endl;
-        std::cout << " cmp: " << (pntR+0.1/m_MedialnessScaleStep)
-          * m_MedialnessScaleStep << " - "
-          << m_MedialnessOptSpline->Value( pntR+0.1/m_MedialnessScaleStep )
+        std::cout << " cmp: " << (pntR+0.1/m_MedialnessRadiusStep)
+          * m_MedialnessRadiusStep << " - "
+          << m_MedialnessOptSpline->Value( pntR+0.1/m_MedialnessRadiusStep )
           << std::endl;
         }
-      pntR *= m_MedialnessScaleStep;
+      pntR *= m_MedialnessRadiusStep;
       if( this->GetDebug() )
         {
         std::cout << "Local extreme at radius pntR2 = " << pntR

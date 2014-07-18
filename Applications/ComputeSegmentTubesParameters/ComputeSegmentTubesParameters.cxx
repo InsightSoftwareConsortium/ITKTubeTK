@@ -408,8 +408,12 @@ int DoIt( int argc, char * argv[] )
 
   params.SetGeneralProperties( dataMin, dataMax, tubeColor );
 
+  if( scaleMax == scaleMin )
+    {
+    scaleMax = 20 * scaleMin;
+    }
   double scaleUnit = 0.1 * ( scaleMax - scaleMin );
-  double ridgeScale = scaleMin + scaleUnit;
+  double ridgeScale = scaleMin + 2 * scaleUnit;
   double ridgeScaleKernelExtent = 1.5;
 
   bool   ridgeDynamicScale = true;
@@ -458,15 +462,15 @@ int DoIt( int argc, char * argv[] )
     ridgeMinLevelness, ridgeMinLevelnessStart,
     ridgeMaxRecoveryAttempts );
 
-  double radiusScale = ridgeScale;
-  double radiusMin = scaleMin - 4 * scaleUnit;
-  double radiusMax = scaleMax + 4 * scaleUnit;
+  double radiusStart = ridgeScale / inputImage->GetSpacing()[0];
+  double radiusMin = scaleMin / inputImage->GetSpacing()[0];
+  double radiusMax = ( scaleMax + 5 * scaleUnit ) / inputImage->GetSpacing()[0];
 
   // Should be a function of curvature
-  double radiusMinMedialness = 0.04;
-  double radiusMinMedialnessStart = 0.01;
+  double radiusMinMedialness = ridgeMinCurvature / 100;
+  double radiusMinMedialnessStart = ridgeMinCurvatureStart / 100;
 
-  params.SetRadiusProperties( radiusScale,
+  params.SetRadiusProperties( radiusStart,
     radiusMin, radiusMax,
     radiusMinMedialness, radiusMinMedialnessStart );
 

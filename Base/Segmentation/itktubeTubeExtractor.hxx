@@ -334,14 +334,6 @@ TubeExtractor<TInputImage>
     return tube;
     }
 
-  // Set the Spacing of the tube as the same spacing of the image
-  typename ImageType::SpacingType spacing;
-  for( unsigned int i=0; i<ImageDimension; i++ )
-    {
-    spacing[i] = this->m_InputImage->GetSpacing()[i];
-    }
-  tube->GetIndexToObjectTransform()->SetScaleComponent( spacing );
-
   if( this->m_AbortProcess != NULL )
     {
     if( this->m_AbortProcess() )
@@ -379,6 +371,14 @@ TubeExtractor<TInputImage>
     std::sprintf( s, "%ld points", tube->GetPoints().size() );
     this->m_StatusCallBack( "Extract: Ridge", s, 0 );
     }
+
+  // Set the Spacing of the tube as the same spacing of the image
+  typename ImageType::SpacingType spacing;
+  for( unsigned int i=0; i<ImageDimension; i++ )
+    {
+    spacing[i] = this->m_InputImage->GetSpacing()[i];
+    }
+  tube->GetIndexToObjectTransform()->SetScaleComponent( spacing );
 
   return tube;
 

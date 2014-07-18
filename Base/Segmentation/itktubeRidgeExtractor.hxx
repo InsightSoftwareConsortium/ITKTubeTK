@@ -349,10 +349,7 @@ void
 RidgeExtractor<TInputImage>
 ::SetDynamicScale( bool dynamicScale )
 {
-  if( m_RadiusExtractor )
-    {
-    this->m_DynamicScale = dynamicScale;
-    }
+  this->m_DynamicScale = dynamicScale;
 }
 
 
@@ -1137,12 +1134,13 @@ RidgeExtractor<TInputImage>
         }
       if( m_DynamicScale && tubePointCount/50.0 == tubePointCount/50 )
         {
-        if( this->GetDebug() )
-          {
-          std::cout << "Ridge: TraverseOW: DynamicScale" << std::endl;
-          }
         if( m_RadiusExtractor )
           {
+          if( this->GetDebug() )
+            {
+            std::cout << "Ridge: TraverseOW: DynamicScale" << std::endl;
+            }
+
           TubePointType tmpPoint;
           for( unsigned int i=0; i<ImageDimension; i++ )
             {
