@@ -248,7 +248,7 @@ private:
   double                                          m_DataMin;
   double                                          m_DataMax;
 
-  double                                  m_MedialnessScaleStep;
+  double                                  m_MedialnessRadiusStep;
   OptimizerType                           m_MedialnessOpt;
   SplineType                            * m_MedialnessOptSpline;
 

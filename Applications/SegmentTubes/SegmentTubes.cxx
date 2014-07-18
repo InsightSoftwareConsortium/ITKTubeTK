@@ -122,8 +122,8 @@ int DoIt( int argc, char * argv[] )
   IndexListType seedIndexList;
   seedIndexList.clear();
 
-  ScaleListType seedScaleList;
-  seedScaleList.clear();
+  ScaleListType seedRadiusList;
+  seedRadiusList.clear();
 
   if( !seedI.empty() )
     {
@@ -134,7 +134,7 @@ int DoIt( int argc, char * argv[] )
         seedIndex[i] = seedI[seedINum][i];
         }
       seedIndexList.push_back( seedIndex );
-      seedScaleList.push_back( scale / scaleNorm );
+      seedRadiusList.push_back( scale / scaleNorm );
       }
     }
 
@@ -158,7 +158,7 @@ int DoIt( int argc, char * argv[] )
         }
 
       seedIndexList.push_back( seedIndex );
-      seedScaleList.push_back( scale / scaleNorm );
+      seedRadiusList.push_back( scale / scaleNorm );
       }
     }
 
@@ -179,7 +179,7 @@ int DoIt( int argc, char * argv[] )
       iss >> seedScale;
       }
     seedIndexList.push_back( seedIndex );
-    seedScaleList.push_back( seedScale );
+    seedRadiusList.push_back( seedScale / scaleNorm );
     }
 
   if( !seedMask.empty() )
@@ -230,7 +230,7 @@ int DoIt( int argc, char * argv[] )
             {
             count = 0;
             seedIndexList.push_back( iter.GetIndex() );
-            seedScaleList.push_back( iterS.Get() / scaleNorm );
+            seedRadiusList.push_back( iterS.Get() / scaleNorm );
             }
           }
         ++iter;
@@ -250,7 +250,7 @@ int DoIt( int argc, char * argv[] )
             {
             count = 0;
             seedIndexList.push_back( iter.GetIndex() );
-            seedScaleList.push_back( scale / scaleNorm );
+            seedRadiusList.push_back( scale / scaleNorm );
             }
           }
         ++iter;
@@ -267,8 +267,8 @@ int DoIt( int argc, char * argv[] )
 
   typename IndexListType::iterator seedIndexIter =
     seedIndexList.begin();
-  ScaleListType::iterator seedScaleIter =
-    seedScaleList.begin();
+  ScaleListType::iterator seedRadiusIter =
+    seedRadiusList.begin();
 
   tubeOp->SetDebug( false );
   tubeOp->GetRidgeOp()->SetDebug( false );
@@ -296,10 +296,10 @@ int DoIt( int argc, char * argv[] )
   tubeOp->GetRidgeOp()->SetDebug( true );
   while( seedIndexIter != seedIndexList.end() )
     {
-    tubeOp->SetRadius( *seedScaleIter );
+    tubeOp->SetRadius( *seedRadiusIter );
 
     std::cout << "Extracting from index point " << *seedIndexIter << " at radius "
-      << *seedScaleIter << std::endl;
+      << *seedRadiusIter << std::endl;
     typename TubeType::Pointer xTube =
       tubeOp->ExtractTube( *seedIndexIter, count );
     if( !xTube.IsNull() )
@@ -317,7 +317,7 @@ int DoIt( int argc, char * argv[] )
       }
 
     ++seedIndexIter;
-    ++seedScaleIter;
+    ++seedRadiusIter;
     ++count;
     }
 
