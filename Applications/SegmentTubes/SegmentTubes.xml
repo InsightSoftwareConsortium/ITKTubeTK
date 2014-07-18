@@ -82,6 +82,14 @@
       <channel>input</channel>
       <default></default>
     </image>
+    <integer>
+      <name>seedMaskStride</name>
+      <label>Scale mask stride</label>
+      <longflag>seedMaskStride</longflag>
+      <flag>T</flag>
+      <description>Only use 1/stride seed points</description>
+      <default>4</default>
+    </integer>
   </parameters>
   <parameters>
     <label>Extraction Parameters</label>
