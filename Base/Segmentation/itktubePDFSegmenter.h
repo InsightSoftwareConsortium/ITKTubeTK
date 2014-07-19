@@ -114,6 +114,8 @@ public:
 
   itkSetMacro( ErodeRadius, int );
   itkGetMacro( ErodeRadius, int );
+  itkSetMacro( DilateFirst, bool );
+  itkGetMacro( DilateFirst, bool );
   itkSetMacro( HoleFillIterations, int );
   itkGetMacro( HoleFillIterations, int );
   itkSetMacro( ProbabilityImageSmoothingStandardDeviation, double );
@@ -220,6 +222,7 @@ private:
   VectorDoubleType                m_PDFWeightList;
 
   int                             m_ErodeRadius;
+  bool                            m_DilateFirst;
   int                             m_HoleFillIterations;
   double                          m_ProbabilityImageSmoothingStandardDeviation;
   double                          m_HistogramSmoothingStandardDeviation;

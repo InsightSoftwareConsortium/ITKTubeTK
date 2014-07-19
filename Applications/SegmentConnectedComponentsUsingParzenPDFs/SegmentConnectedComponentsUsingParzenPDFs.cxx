@@ -152,6 +152,7 @@ int DoIt( int argc, char * argv[] )
   pdfSegmenter->SetVoidId( voidId );
   pdfSegmenter->SetErodeRadius( erodeRadius );
   pdfSegmenter->SetHoleFillIterations( holeFillIterations );
+  pdfSegmenter->SetDilateFirst( dilateFirst );
   if( objectPDFWeight.size() == objectId.size() )
     {
     for( unsigned int i = 0; i < objectPDFWeight.size(); i++ )
