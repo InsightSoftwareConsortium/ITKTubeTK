@@ -92,6 +92,13 @@
       <default>1</default>
       <longflag>holeFillIterations</longflag>
     </integer>
+    <boolean>
+      <name>dilateFirst</name>
+      <label>Dilate first</label>
+      <description>Performs dilation then erosion (versus opposite order) to help fill-in sparse models.</description>
+      <default>false</default>
+      <longflag>dilateFirst</longflag>
+    </boolean>
     <double-vector>
       <name>objectPDFWeight</name>
       <label>PDF Weight</label>

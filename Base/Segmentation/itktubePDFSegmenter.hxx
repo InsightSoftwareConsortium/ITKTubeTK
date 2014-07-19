@@ -1058,29 +1058,46 @@ PDFSegmenter< TImage, N, TLabelMap >
       // Erode
       //
       typedef BinaryBallStructuringElement< LabelMapPixelType,
-        ImageType::ImageDimension >
-          StructuringElementType;
+        ImageType::ImageDimension >                      StructuringElementType;
       typedef BinaryErodeImageFilter< LabelMapType, LabelMapType,
-        StructuringElementType >
-          ErodeFilterType;
+        StructuringElementType >                         ErodeFilterType;
+      typedef itk::BinaryDilateImageFilter< LabelMapType,
+        LabelMapType, StructuringElementType >           DilateFilterType;
 
       StructuringElementType sphereOp;
       if( erodeRadius > 0 )
         {
-        timeCollector.Start( "Erode" );
-
         sphereOp.SetRadius( erodeRadius );
         sphereOp.CreateStructuringElement();
-
-        typename ErodeFilterType::Pointer insideLabelMapErodeFilter =
-          ErodeFilterType::New();
-        insideLabelMapErodeFilter->SetKernel( sphereOp );
-        insideLabelMapErodeFilter->SetErodeValue( 255 );
-        insideLabelMapErodeFilter->SetInput( tmpLabelImage );
-        insideLabelMapErodeFilter->Update();
-        tmpLabelImage = insideLabelMapErodeFilter->GetOutput();
-
-        timeCollector.Stop( "Erode" );
+  
+        if( m_DilateFirst )
+          {
+          timeCollector.Start( "Dilate" );
+  
+          typename DilateFilterType::Pointer insideLabelMapDilateFilter =
+            DilateFilterType::New();
+          insideLabelMapDilateFilter->SetKernel( sphereOp );
+          insideLabelMapDilateFilter->SetDilateValue( 255 );
+          insideLabelMapDilateFilter->SetInput( tmpLabelImage );
+          insideLabelMapDilateFilter->Update();
+          tmpLabelImage = insideLabelMapDilateFilter->GetOutput();
+  
+          timeCollector.Stop( "Dilate" );
+          }
+        else
+          {
+          timeCollector.Start( "Erode" );
+  
+          typename ErodeFilterType::Pointer insideLabelMapErodeFilter =
+            ErodeFilterType::New();
+          insideLabelMapErodeFilter->SetKernel( sphereOp );
+          insideLabelMapErodeFilter->SetErodeValue( 255 );
+          insideLabelMapErodeFilter->SetInput( tmpLabelImage );
+          insideLabelMapErodeFilter->Update();
+          tmpLabelImage = insideLabelMapErodeFilter->GetOutput();
+  
+          timeCollector.Stop( "Erode" );
+          }
         }
 
       //
@@ -1143,22 +1160,36 @@ PDFSegmenter< TImage, N, TLabelMap >
       //
       // Dilate back to original size
       //
-      typedef itk::BinaryDilateImageFilter< LabelMapType,
-        LabelMapType, StructuringElementType >           DilateFilterType;
-
       if( erodeRadius > 0 )
         {
-        timeCollector.Start( "Dilate" );
-
-        typename DilateFilterType::Pointer insideLabelMapDilateFilter =
-          DilateFilterType::New();
-        insideLabelMapDilateFilter->SetKernel( sphereOp );
-        insideLabelMapDilateFilter->SetDilateValue( 255 );
-        insideLabelMapDilateFilter->SetInput( tmpLabelImage );
-        insideLabelMapDilateFilter->Update();
-        tmpLabelImage = insideLabelMapDilateFilter->GetOutput();
-
-        timeCollector.Stop( "Dilate" );
+        if( m_DilateFirst )
+          {
+          timeCollector.Start( "Erode" );
+  
+          typename ErodeFilterType::Pointer insideLabelMapErodeFilter =
+            ErodeFilterType::New();
+          insideLabelMapErodeFilter->SetKernel( sphereOp );
+          insideLabelMapErodeFilter->SetErodeValue( 255 );
+          insideLabelMapErodeFilter->SetInput( tmpLabelImage );
+          insideLabelMapErodeFilter->Update();
+          tmpLabelImage = insideLabelMapErodeFilter->GetOutput();
+  
+          timeCollector.Stop( "Erode" );
+          }
+        else
+          {
+          timeCollector.Start( "Dilate" );
+  
+          typename DilateFilterType::Pointer insideLabelMapDilateFilter =
+            DilateFilterType::New();
+          insideLabelMapDilateFilter->SetKernel( sphereOp );
+          insideLabelMapDilateFilter->SetDilateValue( 255 );
+          insideLabelMapDilateFilter->SetInput( tmpLabelImage );
+          insideLabelMapDilateFilter->Update();
+          tmpLabelImage = insideLabelMapDilateFilter->GetOutput();
+  
+          timeCollector.Stop( "Dilate" );
+          }
         }
 
       // Merge with input mask
