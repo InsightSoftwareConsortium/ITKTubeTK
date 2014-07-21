@@ -21,6 +21,26 @@
       <default/>
     </image>
     <image>
+      <name>labelmap</name>
+      <label>Label Map</label>
+      <channel>input</channel>
+      <index>1</index>
+      <description>Label map that designates the object of interest and "other."</description>
+      <default/>
+    </image>
+    <image>
+      <name>outputVolume</name>
+      <label>Output Volume</label>
+      <channel>output</channel>
+      <index>2</index>
+      <description>Segmentation results.</description>
+      <default/>
+    </image>
+  </parameters>
+  <parameters advanced="true">
+    <label>IO Options</label>
+    <description>Input/output parameters.</description>
+    <image>
       <name>inputVolume2</name>
       <label>Input Volume 2</label>
       <longflag>inputVolume2</longflag>
@@ -49,7 +69,7 @@
       <label>Object ID</label>
       <longflag>objectId</longflag>
       <description>List of values that represent the objects in the label map.</description>
-      <default>255</default>
+      <default>255,127</default>
     </integer-vector>
     <integer>
       <name>voidId</name>
@@ -58,22 +78,6 @@
       <description>Value that represents "nothing" in the label map.</description>
       <default>0</default>
     </integer>
-    <image>
-      <name>labelmap</name>
-      <label>Label Map</label>
-      <channel>input</channel>
-      <index>3</index>
-      <description>Label map that designates the object of interest and "other."</description>
-      <default/>
-    </image>
-    <image>
-      <name>outputVolume</name>
-      <label>Output Volume</label>
-      <channel>output</channel>
-      <index>4</index>
-      <description>Segmentation results.</description>
-      <default/>
-    </image>
   </parameters>
   <parameters advanced="true">
     <label>PDF Parameters</label>

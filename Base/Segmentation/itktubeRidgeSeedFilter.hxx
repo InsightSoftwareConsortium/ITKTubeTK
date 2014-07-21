@@ -316,8 +316,12 @@ RidgeSeedFilter< TImage, TLabelMap >
   resultIter.GoToBegin();
   while( ! resultIter.IsAtEnd() )
     {
-    resultIter.Set( classIter.Get()
-      / ( classIter.Get() + resultIter.Get() ) );
+    double denum = classIter.Get() + resultIter.Get();
+    if( denum == denum && denum != 0 )
+      {
+      resultIter.Set( classIter.Get()
+        / ( classIter.Get() + resultIter.Get() ) );
+      }
     ++resultIter;
     ++classIter;
     }
