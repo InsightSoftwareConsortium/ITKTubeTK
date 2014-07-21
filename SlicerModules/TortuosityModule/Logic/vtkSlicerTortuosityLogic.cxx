@@ -37,6 +37,8 @@ limitations under the License.
 #include "vtkPointData.h"
 #include "vtkPolyData.h"
 
+#include <math.h>
+
 vtkCxxRevisionMacro(vtkSlicerTortuosityLogic, "$Revision: 1.9.12.1 $");
 vtkStandardNewMacro(vtkSlicerTortuosityLogic);
 
@@ -170,6 +172,40 @@ bool vtkSlicerTortuosityLogic
 }
 
 //------------------------------------------------------------------------------
+namespace
+{
+template<typename PointType> void CopyPoints(PointType* point, double* p)
+{
+  for (int i = 0; i < 3; ++i)
+    {
+    p[i] = static_cast<double>(point->GetPosition()[i]);
+    }
+}
+
+void CopyVector3(double* from, double* to)
+{
+  for (int i = 0; i < 3; ++i)
+    {
+    to[i] = from[i];
+    }
+}
+
+double SafeAcos(double x)
+{
+  if (x < -1.0)
+    {
+    x = -1.0;
+    }
+  else if (x > 1.0)
+    {
+    x = 1.0;
+    }
+  return acos(x);
+}
+
+} // end namespace
+
+//------------------------------------------------------------------------------
 bool vtkSlicerTortuosityLogic
 ::RunMetrics(vtkMRMLSpatialObjectsNode* node, int flag)
 {
@@ -188,7 +224,7 @@ bool vtkSlicerTortuosityLogic
   typedef vtkMRMLSpatialObjectsNode::TubeNetType  TubeNetType;
   typedef itk::VesselTubeSpatialObject<3>         VesselTubeType;
   typedef VesselTubeType::TubePointType           VesselTubePointType;
-  typedef VesselTubePointType::PointType          PointType;
+  typedef itk::SpatialObjectPoint<3>              PointType;
 
   TubeNetType* spatialObject = node->GetSpatialObject();
 
@@ -218,6 +254,9 @@ bool vtkSlicerTortuosityLogic
     double previousN[3] = {0.0, 0.0, 0.0};
     int inflectionCount = 1;
 
+    // SOAM variables
+    double totalCurvature = 0.0;
+
     size_t numberOfPoints = currTube->GetPoints().size();
     for(size_t index = 0; index < numberOfPoints; ++index)
       {
@@ -226,9 +265,7 @@ bool vtkSlicerTortuosityLogic
       assert(point);
 
       double currentPoint[3];
-      currentPoint[0] = currTube->GetPoint(index)->GetPosition()[0];
-      currentPoint[1] = currTube->GetPoint(index)->GetPosition()[1];
-      currentPoint[2] = currTube->GetPoint(index)->GetPosition()[2];
+      CopyPoints<PointType>(currTube->GetPoint(index), currentPoint);
 
       //
       // General variables
@@ -236,35 +273,42 @@ bool vtkSlicerTortuosityLogic
       double nextPoint[3] = {0.0, 0.0, 0.0};
       if (nextPointAvailable)
         {
-        nextPoint[0] = currTube->GetPoint(index + 1)->GetPosition()[0];
-        nextPoint[1] = currTube->GetPoint(index + 1)->GetPosition()[1];
-        nextPoint[2] = currTube->GetPoint(index + 1)->GetPosition()[2];
+        CopyPoints<PointType>(currTube->GetPoint(index + 1), nextPoint);
         }
       bool previousPointAvailable = (index > 0);
       double previousPoint[3] = {0.0, 0.0, 0.0};
       if (previousPointAvailable)
         {
-        previousPoint[0] = currTube->GetPoint(index - 1)->GetPosition()[0];
-        previousPoint[1] = currTube->GetPoint(index - 1)->GetPosition()[1];
-        previousPoint[2] = currTube->GetPoint(index - 1)->GetPosition()[2];
+        CopyPoints<PointType>(currTube->GetPoint(index - 1), previousPoint);
+        }
+      // t1 and t2, used both in icm and soam
+      double t1[3] = {0.0, 0.0, 0.0};
+      double t2[3] = {0.0, 0.0, 0.0};
+      if (previousPointAvailable && nextPointAvailable)
+        {
+        vtkMath::Subtract(currentPoint, previousPoint, t1);
+        vtkMath::Subtract(nextPoint, currentPoint, t2);
+        }
+
+      bool nPlus2PointAvailable = (index < numberOfPoints - 2);
+      double nPlus2Point[3] = {0.0, 0.0, 0.0};
+      if (nPlus2PointAvailable)
+        {
+        CopyPoints<PointType>(currTube->GetPoint(index + 2), nPlus2Point);
         }
 
       //
       // DM Computations
       if (index == 0)
         {
-        start[0] = currentPoint[0];
-        start[1] = currentPoint[1];
-        start[2] = currentPoint[2];
+        CopyVector3(currentPoint, start);
         }
       if (index == numberOfPoints - 1)
         {
-        end[0] = currentPoint[0];
-        end[1] = currentPoint[1];
-        end[2] = currentPoint[2];
+        CopyVector3(currentPoint, end);
         }
 
-      if ((dm || icm || ip) && nextPointAvailable)
+      if ((dm || icm || ip || soam) && nextPointAvailable)
         {
         double currentToNext[3];
         vtkMath::Subtract(nextPoint, currentPoint, currentToNext);
@@ -274,13 +318,11 @@ bool vtkSlicerTortuosityLogic
       //
       // ICM Computations
       double inflectionValue = 0.0;
-      if (previousPointAvailable && nextPointAvailable)
+      if ((icm || ip) && previousPointAvailable && nextPointAvailable)
         {
         // Compute velocity and acceleration
-        double v[3], t1[3], t2[3], a[3];
+        double v[3], a[3];
         vtkMath::Subtract(nextPoint, previousPoint, v);
-        vtkMath::Subtract(currentPoint, previousPoint, t1);
-        vtkMath::Subtract(nextPoint, currentPoint, t2);
         vtkMath::Subtract(t2, t1, a);
 
         // Compute n
@@ -302,15 +344,45 @@ bool vtkSlicerTortuosityLogic
             }
           }
 
-        previousN[0] = n[0];
-        previousN[1] = n[1];
-        previousN[2] = n[2];
+        CopyVector3(n, previousN);
         }
 
       // Set the inflection value for this point
       if (ip)
         {
         ip->SetValue(index, inflectionValue);
+        }
+
+      //
+      // SOAM Computations
+      if (soam &&
+        previousPointAvailable && nextPointAvailable && nPlus2PointAvailable)
+        {
+        double t3[3];
+        vtkMath::Subtract(nPlus2Point, nextPoint, t3);
+
+        // Compute in-plane angle
+        double normT1[3], normT2[3];
+        CopyVector3(t1, normT1);
+        vtkMath::Normalize(normT1);
+        CopyVector3(t2, normT2);
+        vtkMath::Normalize(normT2);
+
+        double inPlaneAngle = SafeAcos( vtkMath::Dot(normT1, normT2) );
+
+        // Compute torsionnal angle
+        double t1t2Cross[3];
+        vtkMath::Cross(t1, t2, t1t2Cross);
+        vtkMath::Normalize(t1t2Cross);
+        double t2t3Cross[3];
+        vtkMath::Cross(t2, t3, t2t3Cross);
+        vtkMath::Normalize(t2t3Cross);
+
+        double torsionAngle = SafeAcos( vtkMath::Dot(t1t2Cross, t2t3Cross) );
+
+        // Finally get the curvature
+        totalCurvature +=
+          sqrt(inPlaneAngle*inPlaneAngle + torsionAngle*torsionAngle);
         }
       }
 
@@ -335,7 +407,19 @@ bool vtkSlicerTortuosityLogic
       }
 
     // ICM final calculation
-    // Nothing to do
+    double icmResult = inflectionCount * dmResult;
+
+    // SOAM final calculation
+    double soamResult = 0.0;
+    if (pathLength > 0.0)
+      {
+      soamResult = totalCurvature / pathLength;
+      }
+    else
+      {
+      std::cerr<<"Cannot compute SOAM, total tube path (="
+        <<pathLength<<") <= 0.0"<<std::endl;
+      }
 
     //
     // Fill the arrays
@@ -348,7 +432,11 @@ bool vtkSlicerTortuosityLogic
         }
       if (icm)
         {
-        icm->SetValue(index, inflectionCount * dmResult);
+        icm->SetValue(index, icmResult);
+        }
+      if (soam)
+        {
+        soam->SetValue(index, soamResult);
         }
       }
     totalNumberOfPointsAdded += numberOfPoints;
