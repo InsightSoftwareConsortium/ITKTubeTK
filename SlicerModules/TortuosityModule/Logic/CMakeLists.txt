@@ -30,15 +30,20 @@ set( ${KIT}_EXPORT_DIRECTIVE "VTK_SLICER_${MODULE_NAME_UPPER}_MODULE_LOGIC_EXPOR
 set( ${KIT}_INCLUDE_DIRECTORIES
   ${MRML_LIBRARIES}
   ${vtkSlicer${MODULE_NAME}ModuleMRML_SOURCE_DIR}
-  ${vtkSlicer${MODULE_NAME}ModuleMRML_BINARY_DIR} )
+  ${vtkSlicer${MODULE_NAME}ModuleMRML_BINARY_DIR}
+  ${vtkSlicerSpatialObjectsModuleMRML_SOURCE_DIR}
+  ${vtkSlicerSpatialObjectsModuleMRML_BINARY_DIR}
+  )
 
 set( ${KIT}_SRCS
   vtkSlicerTortuosityLogic.cxx
-  vtkSlicerTortuosityLogic.h )
+  vtkSlicerTortuosityLogic.h
+  )
 
 set( ${KIT}_TARGET_LIBRARIES
   ${ITK_LIBRARIES}
   ${MRML_LIBRARIES}
+  vtkSlicerSpatialObjectsModuleMRML
   )
 
 SlicerMacroBuildModuleLogic(

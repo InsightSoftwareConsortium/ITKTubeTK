@@ -33,6 +33,10 @@ limitations under the License.
 
 class qSlicerTortuosityModuleWidgetPrivate;
 
+class vtkMRMLNode;
+class vtkMRMLSpatialObjectsNode;
+class vtkSlicerTortuosityLogic;
+
 /// \ingroup Slicer_QtModules_Tortuosity
 class Q_SLICER_MODULE_TORTUOSITY_WIDGETS_EXPORT
 qSlicerTortuosityModuleWidget : public qSlicerAbstractModuleWidget
@@ -45,13 +49,17 @@ public:
   virtual ~qSlicerTortuosityModuleWidget();
 
 public slots:
+  void setCurrentSpatialObjectsNode(vtkMRMLNode* node);
+  void setCurrentSpatialObjectsNode(vtkMRMLSpatialObjectsNode* node);
 
-signals:
+  void runMetrics(int flag);
+
+protected slots:
+  void runSelectedMetrics();
 
 protected:
   virtual void setup();
 
-protected:
   QScopedPointer<qSlicerTortuosityModuleWidgetPrivate> d_ptr;
 
 private:

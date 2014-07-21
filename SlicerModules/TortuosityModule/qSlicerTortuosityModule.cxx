@@ -58,18 +58,15 @@ qSlicerTortuosityModule::~qSlicerTortuosityModule()
 //------------------------------------------------------------------------------
 QString qSlicerTortuosityModule::helpText() const
 {
-  QString help = QString(
-    "\todo");
+  QString help = QString("TODO");
 
-  return help.arg(this->slicerWikiUrl()).
-                    arg(Slicer_VERSION_MAJOR).arg(Slicer_VERSION_MINOR);
+  return help;
 }
 
 //------------------------------------------------------------------------------
 QString qSlicerTortuosityModule::acknowledgementText() const
 {
-  QString acknowledgement = QString(
-    "\todo");
+  QString acknowledgement = QString("TODO");
 
   return acknowledgement;
 }

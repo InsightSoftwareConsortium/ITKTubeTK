@@ -31,7 +31,10 @@ set( ${KIT}_EXPORT_DIRECTIVE
 set( ${KIT}_INCLUDE_DIRECTORIES
   ${CMAKE_BUILD_DIR}
   ${vtkSlicerTortuosityModuleMRML_SOURCE_DIR}
-  ${vtkSlicerTortuosityModuleMRML_BINARY_DIR} )
+  ${vtkSlicerTortuosityModuleMRML_BINARY_DIR}
+  ${vtkSlicerSpatialObjectsModuleMRML_SOURCE_DIR}
+  ${vtkSlicerSpatialObjectsModuleMRML_BINARY_DIR}
+  )
 
 set( ${KIT}_SRCS
   qSlicerTortuosityModuleWidget.cxx

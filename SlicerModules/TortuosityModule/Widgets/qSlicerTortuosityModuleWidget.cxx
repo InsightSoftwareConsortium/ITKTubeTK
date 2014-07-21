@@ -26,7 +26,8 @@ limitations under the License.
 #include "ui_qSlicerTortuosityModule.h"
 
 // MRML includes
-
+#include "vtkMRMLSpatialObjectsNode.h"
+#include "vtkSlicerTortuosityLogic.h"
 
 //------------------------------------------------------------------------------
 /// \ingroup Slicer_QtModules_Tortuosity
@@ -42,6 +43,9 @@ public:
   qSlicerTortuosityModuleWidgetPrivate(
     qSlicerTortuosityModuleWidget& object);
   void init();
+  vtkSlicerTortuosityLogic* logic() const;
+
+  vtkMRMLSpatialObjectsNode* currentSpatialObject;
 };
 
 //------------------------------------------------------------------------------
@@ -50,6 +54,7 @@ qSlicerTortuosityModuleWidgetPrivate
   qSlicerTortuosityModuleWidget& object)
   : q_ptr(&object)
 {
+  this->currentSpatialObject = 0;
 }
 
 //------------------------------------------------------------------------------
@@ -58,6 +63,21 @@ void qSlicerTortuosityModuleWidgetPrivate::init()
   Q_Q(qSlicerTortuosityModuleWidget);
 
   this->setupUi(q);
+
+  QObject::connect(
+    this->CurrentSpatialObjectComboBox, SIGNAL(currentNodeChanged(vtkMRMLNode*)),
+    q, SLOT(setCurrentSpatialObjectsNode(vtkMRMLNode*)));
+
+  QObject::connect(
+    this->RunPushButton, SIGNAL(clicked()),
+    q, SLOT(runSelectedMetrics()));
+}
+
+//-----------------------------------------------------------------------------
+vtkSlicerTortuosityLogic* qSlicerTortuosityModuleWidgetPrivate::logic() const
+{
+  Q_Q(const qSlicerTortuosityModuleWidget);
+  return vtkSlicerTortuosityLogic::SafeDownCast(q->logic());
 }
 
 //------------------------------------------------------------------------------
@@ -70,11 +90,59 @@ qSlicerTortuosityModuleWidget(QWidget* _parent)
 
 //------------------------------------------------------------------------------
 qSlicerTortuosityModuleWidget::~qSlicerTortuosityModuleWidget()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 void qSlicerTortuosityModuleWidget::setup()
 {
   Q_D(qSlicerTortuosityModuleWidget);
   d->init();
+}
+
+//------------------------------------------------------------------------------
+void qSlicerTortuosityModuleWidget
+::setCurrentSpatialObjectsNode(vtkMRMLNode* node)
+{
+  this->setCurrentSpatialObjectsNode(
+    vtkMRMLSpatialObjectsNode::SafeDownCast(node));
+}
+
+//------------------------------------------------------------------------------
+void qSlicerTortuosityModuleWidget
+::setCurrentSpatialObjectsNode(vtkMRMLSpatialObjectsNode* node)
+{
+  Q_D(qSlicerTortuosityModuleWidget);
+  if (d->currentSpatialObject == node)
+    {
+    return;
+    }
+
+  d->currentSpatialObject = node;
+}
+
+//------------------------------------------------------------------------------
+void qSlicerTortuosityModuleWidget::runMetrics(int flag)
+{
+  Q_D(qSlicerTortuosityModuleWidget);
+  d->logic()->RunMetrics(d->currentSpatialObject, flag);
+}
+
+//------------------------------------------------------------------------------
+void qSlicerTortuosityModuleWidget::runSelectedMetrics()
+{
+  Q_D(qSlicerTortuosityModuleWidget);
+  int flag = d->DistanceMetricCheckBox->isChecked() ?
+    vtkSlicerTortuosityLogic::DistanceMetric : 0;
+
+  flag |= d->InflectionCountMetricCheckBox->isChecked() ?
+    vtkSlicerTortuosityLogic::InflectionCountMetric : 0;
+  
+  flag |= d->InflectionPointsCheckBox->isChecked() ?
+    vtkSlicerTortuosityLogic::InflectionPoints : 0;
+
+  flag |= d->SumOfAnglesMetricCheckBox->isChecked() ?
+    vtkSlicerTortuosityLogic::SumOfAnglesMetric : 0;
+
+  this->runMetrics(flag);
 }
