@@ -21,74 +21,113 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "QtOverlayControlsWidget.h"
-
-//Qt includes
+// Qt includes
 #include <QDebug>
 #include <QDir>
 #include <QFileDialog>
+
+// ImageEditor includes
+#include "QtOverlayControlsWidget.h"
+#include "ui_QtOverlayControlsWidget.h"
 
 namespace tube
 {
 
 
+class QtOverlayControlsWidgetPrivate: public Ui_QtOverlayControlsWidget
+{
+  Q_DECLARE_PUBLIC(QtOverlayControlsWidget);
+public:
+  typedef Ui_QtOverlayControlsWidget Superclass;
+  QtOverlayControlsWidgetPrivate(QtOverlayControlsWidget& obj);
+
+  virtual void setupUi(QWidget* widgetToSetup);
+
+  QtGlSliceView  *m_SliceView;
+
+protected:
+  QtOverlayControlsWidget* const q_ptr;
+};
+
+
+QtOverlayControlsWidgetPrivate::QtOverlayControlsWidgetPrivate(QtOverlayControlsWidget& obj)
+  : q_ptr(&obj)
+  , m_SliceView(0)
+{
+}
+
+void QtOverlayControlsWidgetPrivate::setupUi(QWidget* widgetToSetup)
+{
+  Q_Q(QtOverlayControlsWidget);
+  this->Superclass::setupUi(widgetToSetup);
+
+  QObject::connect(this->LoadOverlayButton, SIGNAL(clicked()),
+                   q, SLOT(loadOverlay()));
+  QObject::connect(this->OverlayOpacitySlider, SIGNAL(sliderMoved(int)),
+                   q, SLOT(onOpacityChanged(int)));
+
+}
+
 QtOverlayControlsWidget::QtOverlayControlsWidget(QWidget* parent)
   : QWidget(parent)
+  , d_ptr(new QtOverlayControlsWidgetPrivate(*this))
 {
-  this->m_UI = new Ui::Overlay;
-  m_UI->setupUi(this);
+  Q_D(QtOverlayControlsWidget);
+  d->setupUi(this);
 }
+
 
 QtOverlayControlsWidget::~QtOverlayControlsWidget()
 {
 }
 
+
 void QtOverlayControlsWidget::onOpacityChanged(int newOpacity)
 {
+  Q_D(QtOverlayControlsWidget);
   double opacity = (static_cast<double>(newOpacity)/100.);
+  if (d->m_SliceView)
+    {
+    d->m_SliceView->setOverlayOpacity(opacity);
+    }
   emit opacityChanged(opacity);
 }
 
 
-double QtOverlayControlsWidget::getOpacity() const
+double QtOverlayControlsWidget::opacity() const
 {
-  return (this->m_UI->OverlayOpacity->value() / 100 );
+  Q_D(const QtOverlayControlsWidget);
+  return (d->OverlayOpacitySpinBox->value() / 100 );
 }
 
 
 void QtOverlayControlsWidget::setOpacity(double value)
 {
+  Q_D(QtOverlayControlsWidget);
   int valueSlider = value*100;
-  this->m_UI->OverlayOpacity->setValue(valueSlider);
-  this->m_UI->OverlayOpacityLineEdit->setText(QString::number(value, 'f', 3));
+  d->OverlayOpacitySlider->setValue(valueSlider);
+  d->OverlayOpacitySpinBox->setValue(value);
 }
 
 
 void QtOverlayControlsWidget::setSliceView(QtGlSliceView* sliceView)
 {
-  this->m_SliceView = sliceView;
-  QObject::connect(this->m_UI->LoadOverlayButton, SIGNAL(clicked()),
-                   this, SLOT(loadOverlay()));
-  QObject::connect(this->m_UI->OverlayOpacity, SIGNAL(sliderMoved(int)), this,
-                   SLOT(onOpacityChanged(int)));
-  QObject::connect(this, SIGNAL(opacityChanged(double)), m_SliceView,
-                   SLOT(setOverlayOpacity(double)));
-  QObject::connect(m_SliceView, SIGNAL(overlayOpacityChanged(double)), this,
-                   SLOT(setOpacity(double)));
-  QObject::connect(this->m_UI->OverlayCheckBox, SIGNAL(toggled(bool)), this,
-                   SLOT(setOverlayVisibility(bool)));
-
+  Q_D(QtOverlayControlsWidget);
+  d->m_SliceView = sliceView;
+  QObject::connect(d->m_SliceView, SIGNAL(overlayOpacityChanged(double)),
+                   this, SLOT(setOpacity(double)));
 }
 
 
 bool QtOverlayControlsWidget::loadOverlay(QString pathOverlay)
 {
+  Q_D(QtOverlayControlsWidget);
   OverlayReaderType::Pointer overlayReader = OverlayReaderType::New();
 
   if(pathOverlay.isEmpty())
     {
     pathOverlay = QFileDialog::getOpenFileName(
-            0,"", QDir::currentPath());
+      0,"", QDir::currentPath());
     }
   if(pathOverlay.isEmpty())
     {
@@ -109,38 +148,19 @@ bool QtOverlayControlsWidget::loadOverlay(QString pathOverlay)
     }
 
   std::cout << "Done!" << std::endl;
-  setInputOverlay( overlayReader->GetOutput() );
-  this->m_UI->OverlayCheckBox->setChecked(true);
+  this->setInputOverlay( overlayReader->GetOutput() );
   return true;
 }
 
 void QtOverlayControlsWidget::setInputOverlay(OverlayType* overlayImage)
 {
-  this->m_SliceView->setInputOverlay(overlayImage);
-  this->m_UI->OverlayOpacity->setMaximum(this->m_SliceView->overlayOpacity()*100);
-  this->setOpacity(this->m_SliceView->overlayOpacity());
+  Q_D(QtOverlayControlsWidget);
+  d->m_SliceView->setInputOverlay(overlayImage);
 
-  this->m_SliceView->show();
-  //this->m_SliceView->update();
-  this->m_UI->OverlayOpacityLineEdit->setText(QString::number
-                              (this->m_SliceView->overlayOpacity(),'f',3));
+  d->OverlayOpacitySpinBox->setEnabled(d->m_SliceView->validOverlayData());
+  d->OverlayOpacitySlider->setEnabled(d->m_SliceView->validOverlayData());
+
+  this->setOpacity(d->m_SliceView->overlayOpacity());
 }
 
-void QtOverlayControlsWidget::setOverlayVisibility(bool show)
-{
-  if(show)
-    {
-    if(!(this->m_SliceView->validOverlayData()))
-      {
-      loadOverlay();
-      }
-    }
-  else
-    {
-    this->m_SliceView->setValidOverlayData(show);
-    this->m_SliceView->setViewOverlayData(show);
-    }
-  this->m_SliceView->show();
-  this->m_SliceView->update();
-}
 }

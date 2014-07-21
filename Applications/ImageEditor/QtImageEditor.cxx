@@ -24,16 +24,19 @@ limitations under the License.
 // Qt includes
 #include <QDebug>
 #include <QDialogButtonBox>
+#include <QDoubleSpinBox>
 #include <QFileDialog>
+#include <QGridLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QTabWidget>
 
 // QtImageViewer includes
 #include "QtGlSliceView.h"
-#include "ui_QtSlicerHelpGUI.h"
 
 // ImageEditor includes
 #include "QtImageEditor.h"
 #include "QtOverlayControlsWidget.h"
-#include "ui_QtOverlayControlsWidgetGUI.h"
 
 // TubeTK includes
 #include "itktubeGaussianDerivativeImageSource.h"
@@ -55,7 +58,41 @@ limitations under the License.
 namespace tube
 {
 
-class QtImageEditor::Internals
+/**
+ * Helper function for forceUpdate(). Not self-sufficient!
+ */
+void invalidateLayout(QLayout *layout) {
+    // Recompute the given layout and all its child layouts.
+    for (int i = 0; i < layout->count(); i++) {
+        QLayoutItem *item = layout->itemAt(i);
+        if (item->layout()) {
+            invalidateLayout(item->layout());
+        } else {
+            item->invalidate();
+        }
+    }
+    layout->invalidate();
+    layout->update();
+    layout->activate();
+}
+
+void forceUpdate(QWidget *widget) {
+    // Update all child widgets.
+    for (int i = 0; i < widget->children().size(); i++) {
+        QObject *child = widget->children()[i];
+        if (child->isWidgetType()) {
+            forceUpdate((QWidget *)child);
+        }
+    }
+
+    // Invalidate the layout of the widget.
+    if (widget->layout()) {
+        invalidateLayout(widget->layout());
+    }
+}
+
+
+class QtImageEditorPrivate
 {
 public:
   typedef QtImageEditor::ImageType                     ImageType;
@@ -76,51 +113,137 @@ public:
                                                        FFTShiftFilterType;
   typedef itk::MultiplyImageFilter<ComplexImageType, ImageType, ComplexImageType>
                                                        MultiplyFilterType;
+
+  QtImageEditorPrivate(QtImageEditor& obj);
+  void setupUi(QDialog* widgetToSetup);
+
 protected:
+  QtImageEditor              *q_ptr;
+
   ImageType                  *m_CurrentImageData;
   ImageType                  *m_ImageData;
   QtOverlayControlsWidget    *m_OverlayWidget;
   FFTType::Pointer            m_FFTFilter;
-  QLineEdit                  *m_SigmaLineEdit;
+  QDoubleSpinBox             *m_SigmaSpinBox;
   MultiplyFilterType::Pointer m_MultiplyFilter;
   FFTShiftFilterType::Pointer m_FFTShiftFilter;
   InverseFFTType::Pointer     m_InverseFFTFilter;
-  QDialog                    *m_HelpDialog;
-  QLineEdit                  *m_Order_x;
-  QLineEdit                  *m_Order_y;
-  QLineEdit                  *m_Order_z;
-
+  QTabWidget                 *m_TabWidget;
+  QSpinBox                   *m_XOrderSpinBox;
+  QSpinBox                   *m_YOrderSpinBox;
+  QSpinBox                   *m_ZOrderSpinBox;
 
   GaussianDerivativeSourceType::Pointer createGaussianDerivative(
     GaussianDerivativeSourceType::OrdersType order);/*,
     ImageType::Pointer image);*/
 
   void setupFFTPipeline(ImageType::Pointer image);
-
-  friend class QtImageEditor;
+private:
+  Q_DECLARE_PUBLIC(QtImageEditor);
 };
 
+QtImageEditorPrivate::QtImageEditorPrivate(QtImageEditor& obj)
+  : q_ptr(&obj)
+  , m_CurrentImageData(0)
+  , m_ImageData(0)
+  , m_OverlayWidget(0)
+  , m_SigmaSpinBox(0)
+  , m_TabWidget(0)
+  , m_XOrderSpinBox(0)
+  , m_YOrderSpinBox(0)
+  , m_ZOrderSpinBox(0)
+{
+  this->m_ImageData = 0;
+  this->m_FFTFilter = FFTType::New();
+  this->m_FFTShiftFilter = FFTShiftFilterType::New();
+  this->m_MultiplyFilter = MultiplyFilterType::New();
+  this->m_InverseFFTFilter = InverseFFTType::New();
+}
 
-void QtImageEditor::Internals::setupFFTPipeline(ImageType::Pointer image)
+void QtImageEditorPrivate::setupUi(QDialog* widgetToSetup)
+{
+  Q_Q(QtImageEditor);
+
+  QGridLayout* gridLayout = qobject_cast<QGridLayout*>(q->layout());
+  QWidget* imageControls = gridLayout->itemAtPosition(1,0)->widget();
+
+  this->m_TabWidget = new QTabWidget(q);
+  this->m_TabWidget->insertTab(0, imageControls, "Controls");
+  this->m_TabWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+
+  QWidget *filterControlWidget = new QWidget(this->m_TabWidget);
+  this->m_TabWidget->insertTab(1, filterControlWidget, "FFT Filter");
+
+  /// \todo create ui file
+  QGridLayout *filterGridLayout = new QGridLayout(filterControlWidget);
+  filterGridLayout->setContentsMargins(0, 0, 0, 0);
+
+  QLabel *orderLabel = new QLabel(filterControlWidget);
+  orderLabel->setText("Order:");
+  filterGridLayout->addWidget(orderLabel, 0, 0);
+
+  this->m_XOrderSpinBox = new QSpinBox(filterControlWidget);
+  filterGridLayout->addWidget(this->m_XOrderSpinBox, 0, 1);
+
+  this->m_YOrderSpinBox = new QSpinBox(filterControlWidget);
+  filterGridLayout->addWidget(this->m_YOrderSpinBox, 0, 2);
+
+  this->m_ZOrderSpinBox = new QSpinBox(filterControlWidget);
+  filterGridLayout->addWidget(this->m_ZOrderSpinBox, 0, 3);
+
+  QLabel *sigmaLabel = new QLabel(filterControlWidget);
+  sigmaLabel->setText("Sigma:");
+  filterGridLayout->addWidget(sigmaLabel, 2, 0);
+
+  this->m_SigmaSpinBox = new QDoubleSpinBox();
+  this->m_SigmaSpinBox->setMinimum(1);
+  filterGridLayout->addWidget(this->m_SigmaSpinBox, 2, 1, 1, 3);
+
+  QPushButton *fftButton = new QPushButton(filterControlWidget);
+  fftButton->setText("FFT Gaussian Derivative");
+  filterGridLayout->addWidget(fftButton, 0, 4);
+
+  QPushButton *gaussianButton = new QPushButton(filterControlWidget);
+  gaussianButton->setText("Gaussian Derivative in Frequency Domain");
+  filterGridLayout->addWidget(gaussianButton, 2, 4);
+
+  this->m_OverlayWidget = new QtOverlayControlsWidget(this->m_TabWidget);
+  this->m_OverlayWidget->setSliceView(q->sliceView());
+  this->m_TabWidget->insertTab(2, this->m_OverlayWidget, "Overlay");
+
+  QDialogButtonBox* buttons = q->findChild<QDialogButtonBox*>();
+  QPushButton *loadImageButton = new QPushButton(buttons);
+  loadImageButton->setText("Load");
+  buttons->addButton(loadImageButton, QDialogButtonBox::ActionRole);
+
+  gridLayout->addWidget(this->m_TabWidget, 1, 0, 1, 2);
+
+  QObject::connect(fftButton, SIGNAL(clicked()),
+                   q, SLOT(useNewFilter()));
+  QObject::connect(gaussianButton, SIGNAL(clicked()),
+                   q, SLOT(applyFilter()));
+  QObject::connect(loadImageButton, SIGNAL(clicked()),
+                   q, SLOT(loadInputImage()));
+}
+
+void QtImageEditorPrivate::setupFFTPipeline(ImageType::Pointer image)
 {
   this->m_FFTFilter->SetInput( image );
   this->m_MultiplyFilter->SetInput1( this->m_FFTFilter->GetOutput() );
   this->m_MultiplyFilter->SetInput2( this->m_FFTShiftFilter->GetOutput() );
-
   this->m_InverseFFTFilter->SetInput( this->m_MultiplyFilter->GetOutput() );
 }
 
 
-QtImageEditor::Internals::GaussianDerivativeSourceType::Pointer
-QtImageEditor::Internals::createGaussianDerivative(
-  GaussianDerivativeSourceType::OrdersType order)/*,
-  ImageType::Pointer image)*/
+QtImageEditorPrivate::GaussianDerivativeSourceType::Pointer
+QtImageEditorPrivate::createGaussianDerivative(
+  GaussianDerivativeSourceType::OrdersType order)
 {
   GaussianDerivativeSourceType::Pointer gaussianDerivativeSource =
-  GaussianDerivativeSourceType::New();
+    GaussianDerivativeSourceType::New();
 
-  ComplexImageType::ConstPointer transformedInput
-    = this->m_FFTFilter->GetOutput();
+  ComplexImageType::ConstPointer transformedInput =
+    this->m_FFTFilter->GetOutput();
   const ComplexImageType::RegionType inputRegion(
     transformedInput->GetLargestPossibleRegion() );
   const ComplexImageType::SizeType inputSize =
@@ -137,20 +260,20 @@ QtImageEditor::Internals::createGaussianDerivative(
   gaussianDerivativeSource->SetOrigin( inputOrigin );
   gaussianDerivativeSource->SetDirection( inputDirection );
 
-  GaussianDerivativeSourceType::SigmasType sigma;
+  GaussianDerivativeSourceType::SigmasType sigmas;
   GaussianDerivativeSourceType::PointType mean;
-  const double sigmaLineEdit = this->m_SigmaLineEdit->text().toDouble();
+  const double sigma = this->m_SigmaSpinBox->value();
 
   for( unsigned int ii = 0; ii < 3; ++ii )
     {
     const double halfLength = inputSize[ii]  / 2.0;
-    sigma[ii] = sigmaLineEdit;
+    sigmas[ii] = sigma;
     mean[ii] = inputOrigin[ii] + halfLength;
     }
   mean = inputDirection * mean;
-  gaussianDerivativeSource->SetSigmas( sigma );
+  gaussianDerivativeSource->SetSigmas( sigmas );
   gaussianDerivativeSource->SetMean( mean );
-  gaussianDerivativeSource->SetOrders(order);
+  gaussianDerivativeSource->SetOrders( order );
 
   gaussianDerivativeSource->Update();
 
@@ -158,207 +281,105 @@ QtImageEditor::Internals::createGaussianDerivative(
 }
 
 
-QtImageEditor::QtImageEditor(QWidget* _parent, Qt::WindowFlags fl ) :
-  QDialog( _parent, fl )
+QtImageEditor::QtImageEditor(QWidget* _parent, Qt::WindowFlags fl )
+  : Superclass( _parent, fl )
+  , d_ptr(new QtImageEditorPrivate(*this))
 {
-  this->m_Internals = new Internals;
-  this->m_Internals->m_ImageData = 0;
-  this->m_Internals->m_FFTFilter = Internals::FFTType::New();
-  this->m_Internals->m_FFTShiftFilter = Internals::FFTShiftFilterType::New();
-  this->m_Internals->m_MultiplyFilter = Internals::MultiplyFilterType::New();
-  this->m_Internals->m_InverseFFTFilter = Internals::InverseFFTType::New();
-
-  this->setupUi(this);
-  this->Controls->setSliceView(this->OpenGlWindow);
-
-  QTabWidget *tabWidget = new QTabWidget(this);
-  tabWidget->setMaximumHeight(300);
-
-  tabWidget->insertTab(0, this->Controls, "Controls");
-
-  QWidget *filterControlWidget = new QWidget(tabWidget);
-  tabWidget->insertTab(1, filterControlWidget, "FFT Filter");
-
-  QGridLayout *filterGridLayout = new QGridLayout(filterControlWidget);
-  this->m_Internals->m_SigmaLineEdit = new QLineEdit();
-  this->m_Internals->m_SigmaLineEdit->setMaximumWidth(80);
-  this->m_Internals->m_SigmaLineEdit->setText("1");
-  filterGridLayout->addWidget(this->m_Internals->m_SigmaLineEdit, 2, 1);
-
-  QLabel *orderLabel = new QLabel(filterControlWidget);
-  orderLabel->setText("Order Vector:");
-  filterGridLayout->addWidget(orderLabel, 0, 0);
-
-  this->m_Internals->m_Order_x = new QLineEdit();
-  filterGridLayout->addWidget(this->m_Internals->m_Order_x, 0, 1);
-
-  this->m_Internals->m_Order_y = new QLineEdit();
-  filterGridLayout->addWidget(this->m_Internals->m_Order_y, 0, 2);
-
-  this->m_Internals->m_Order_z = new QLineEdit();
-  filterGridLayout->addWidget(this->m_Internals->m_Order_z, 0, 3);
-
-  QLabel *sigmaLabel = new QLabel(filterControlWidget);
-  sigmaLabel->setText("Sigma:");
-  filterGridLayout->addWidget(sigmaLabel, 2, 0);
-
-  QPushButton *fftButton = new QPushButton();
-  fftButton->setText("FFT");
-  filterGridLayout->addWidget(fftButton, 0, 4);
-
-  QPushButton *inverseFFTButton = new QPushButton();
-  inverseFFTButton->setText("Inverse FFT");
-  filterGridLayout->addWidget(inverseFFTButton, 1, 4);
-
-  QPushButton *gaussianButton = new QPushButton();
-  gaussianButton->setText("FFT-BLUR-INVERSE FFT");
-  filterGridLayout->addWidget(gaussianButton, 2, 4);
-
-  this->m_Internals->m_OverlayWidget = new QtOverlayControlsWidget(tabWidget);
-  this->m_Internals->m_OverlayWidget->setSliceView(this->OpenGlWindow);
-  tabWidget->insertTab(2, this->m_Internals->m_OverlayWidget, "Overlay");
-
-  QDialogButtonBox *buttons = new QDialogButtonBox(Qt::Horizontal);
-  buttons->addButton(this->ButtonOk, QDialogButtonBox::AcceptRole);
-  QPushButton *loadImageButton = new QPushButton();
-  loadImageButton->setText("Load");
-
-  buttons->addButton(loadImageButton, QDialogButtonBox::ActionRole);
-  buttons->addButton(this->ButtonHelp, QDialogButtonBox::HelpRole);
-
-
-  this->gridLayout->addWidget(buttons, 2, 0,1,2);
-  this->gridLayout->addWidget(tabWidget, 1, 0,1,2);
-
-  QObject::connect(ButtonOk, SIGNAL(clicked()), this, SLOT(accept()));
-  QObject::connect(ButtonHelp, SIGNAL(toggled(bool)), this, SLOT(showHelp(bool)));
-  QObject::connect(SliceNumSlider, SIGNAL(sliderMoved(int)), OpenGlWindow,
-                   SLOT(changeSlice(int)));
-  QObject::connect(OpenGlWindow, SIGNAL(sliceNumChanged(int)), SliceNumSlider,
-                   SLOT(setValue(int)));
-  QObject::connect(SliceNumSlider, SIGNAL(sliderMoved(int)), this,
-                   SLOT(setDisplaySliceNumber(int)));
-  QObject::connect(OpenGlWindow, SIGNAL(sliceNumChanged(int)), this,
-                   SLOT(setDisplaySliceNumber(int)));
-  QObject::connect(fftButton, SIGNAL(clicked()), this, SLOT(useNewFilter()));
-  QObject::connect(inverseFFTButton, SIGNAL(clicked()), this, SLOT(applyInverseFFT()));
-  QObject::connect(gaussianButton, SIGNAL(clicked()), this, SLOT(applyFilter()));
-  QObject::connect(this->m_Internals->m_SigmaLineEdit, SIGNAL(textChanged(QString)), this,
-                   SLOT(setDisplaySigma(QString)));
-  QObject::connect(OpenGlWindow, SIGNAL(orientationChanged(int)), this,
-                   SLOT(setMaximumSlice()));
-//  QObject::connect(OpenGlWindow, SIGNAL(viewDetailsChanged(int)), this,
-//                   SLOT(toggleTextEdit(int)));
-  QObject::connect(loadImageButton, SIGNAL(clicked()), this, SLOT(loadImage()));
+  Q_D(QtImageEditor);
+  this->setAttribute(Qt::WA_WState_ExplicitShowHide, true);
+  this->setAttribute(Qt::WA_WState_Hidden, false);
+  //this->setAttribute(Qt::WA_DontShowOnScreen, true);
+  d->setupUi(this);
+  this->layout()->invalidate();
+  this->layout()->update();
+  this->layout()->activate();
+  //qDebug() << "1" << sizeHint() << this->geometry().size() << this->layout()->minimumSize() << this->minimumSizeHint();
+  forceUpdate(this);
+  //qDebug() << "2" << sizeHint() << this->geometry().size() << d->m_TabWidget->sizeHint();
+  this->resize(this->sizeHint());
+  //d->m_TabWidget->layout()->invalidate();
+  //d->m_TabWidget->layout()->activate();
+  //qDebug() << "3" << sizeHint() << this->geometry().size() << d->m_TabWidget->sizeHint();
+  this->resize(this->sizeHint());
+  //this->adjustSize();
+  //qDebug() << "4" << sizeHint() << this->geometry().size();
+  this->setAttribute(Qt::WA_WState_ExplicitShowHide, true);
+  this->setAttribute(Qt::WA_WState_Hidden, true);
+//  this->setAttribute(Qt::WA_DontShowOnScreen, false);
 }
+
 
 QtImageEditor::~QtImageEditor()
 {
 }
 
 
-void QtImageEditor::showHelp(bool checked)
-{
-  if(!checked && this->m_Internals->m_HelpDialog != 0)
-    {
-    this->m_Internals->m_HelpDialog->reject();
-    }
-  else
-    {
-    this->OpenGlWindow->showHelp();
-    this->m_Internals->m_HelpDialog = this->OpenGlWindow->helpWindow();
-    if(this->m_Internals->m_HelpDialog != 0)
-      {
-      QObject::connect(this->m_Internals->m_HelpDialog, SIGNAL(rejected()),
-                       this, SLOT(hideHelp()),Qt::UniqueConnection);
-      }
-    }
-}
-
-
-void QtImageEditor::hideHelp()
-{
-  this->ButtonHelp->setChecked(false);
-}
-
-
 void QtImageEditor::setInputImage(ImageType* newImageData)
 {
-  if (this->m_Internals->m_ImageData == 0)
-    {
-    this->m_Internals->m_ImageData = newImageData;
-    }
-  this->m_Internals->m_CurrentImageData = newImageData;
-  this->OpenGlWindow->setInputImage(newImageData);
-  this->setMaximumSlice();
-  this->OpenGlWindow->changeSlice(((this->OpenGlWindow->maxSliceNum() -1)/2));
-  this->setDisplaySliceNumber(static_cast<int>
-                              (this->OpenGlWindow->sliceNum()));
-  this->Controls->setInputImage();
-  this->OpenGlWindow->update();
+  Q_D(QtImageEditor);
+  this->Superclass::setInputImage(newImageData);
 
-  this->m_Internals->setupFFTPipeline(this->m_Internals->m_ImageData);
+  d->m_ImageData = newImageData;
+  d->m_CurrentImageData = newImageData;
+  d->setupFFTPipeline(d->m_ImageData);
 }
 
 
-void QtImageEditor::setDisplaySliceNumber(int number)
+void QtImageEditor::setOverlayImage(OverlayImageType* newOverlayImage)
 {
-  QString tempchar = QString::number(number);
-  this->SliceValue->setText(tempchar);
+  Q_D(QtImageEditor);
+  this->Superclass::setOverlayImage(newOverlayImage);
+  d->m_OverlayWidget->setInputOverlay(newOverlayImage);
 }
 
 
-bool QtImageEditor::loadImage(QString filePathToLoad)
+void QtImageEditor::setDisplaySigma(double sigma)
 {
-  Internals::ReaderType::Pointer reader = Internals::ReaderType::New();
-  if( filePathToLoad.isEmpty() )
-    {
-    filePathToLoad = QFileDialog::getOpenFileName(
-        0,"", QDir::currentPath());
-    }
-
-  if(filePathToLoad.isEmpty())
-    {
-    return false;
-    }
-  reader->SetFileName( filePathToLoad.toLatin1().data() );
-  QFileInfo filePath(filePathToLoad);
-  setWindowTitle(filePath.fileName());
-
-  std::cout << "Loading image " << filePathToLoad.toStdString() << "... ";
-  try
-    {
-    reader->Update();
-    }
-  catch (ExceptionObject & e)
-    {
-    std::cerr << "exception in file reader " << std::endl;
-    std::cerr << e << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  std::cout << "done!" << std::endl;
-  this->setInputImage( reader->GetOutput() );
-
-  return true;
+  Q_D(QtImageEditor);
+  d->m_SigmaSpinBox->setValue(sigma);
 }
 
 
-void QtImageEditor::loadOverlay(QString overlayImagePath)
+void QtImageEditor::blurFilter()
 {
-  this->m_Internals->m_OverlayWidget->loadOverlay(overlayImagePath);
-}
+  /*
+  this->m_FilterX = FilterType::New();
+  this->m_FilterY = FilterType::New();
+  this->m_FilterZ = FilterType::New();
 
+  this->m_FilterX->SetDirection( 0 );   // 0 --> X direction
+  this->m_FilterY->SetDirection( 1 );   // 1 --> Y direction
+  this->m_FilterZ->SetDirection( 2 );   // 2 --> Z direction
 
-void QtImageEditor::setDisplaySigma(QString value)
-{
-  this->m_Internals->m_SigmaLineEdit->setText(value);
+  this->m_FilterX->SetOrder( FilterType::ZeroOrder );
+  this->m_FilterY->SetOrder( FilterType::ZeroOrder );
+  this->m_FilterZ->SetOrder( FilterType::ZeroOrder );
+
+  this->m_FilterX->SetNormalizeAcrossScale( true );
+  this->m_FilterY->SetNormalizeAcrossScale( true );
+  this->m_FilterZ->SetNormalizeAcrossScale( true );
+
+  this->m_FilterX->SetInput( this->m_Internals->m_FFTFilter->GetOutput() );
+  this->m_FilterY->SetInput( this->m_Internals->m_FilterX->GetOutput() );
+  this->m_FilterZ->SetInput( this->m_Internals->m_FilterY->GetOutput() );
+
+  const double sigma = this->m_Internals->m_SigmaSpinBox->text().toDouble();
+
+  this->m_FilterX->SetSigma( sigma );
+  this->m_FilterY->SetSigma( sigma );
+  this->m_FilterZ->SetSigma( sigma );
+
+  this->m_FilterX->Update();
+  this->m_FilterY->Update();
+  this->m_FilterZ->Update();
+  */
 }
 
 
 void QtImageEditor::applyFFT()
 {
-  if(this->m_Internals->m_ImageData == NULL)
+  Q_D(QtImageEditor);
+  if (d->m_ImageData == NULL)
     {
     qDebug() << "No image to transform";
     return;
@@ -368,7 +389,7 @@ void QtImageEditor::applyFFT()
 
   TimeProbe clockFFT;
   clockFFT.Start();
-  this->m_Internals->m_FFTFilter->Update();
+  d->m_FFTFilter->Update();
   clockFFT.Stop();
 
   qDebug() << "FFT total time:" << clockFFT.GetTotal();
@@ -377,28 +398,30 @@ void QtImageEditor::applyFFT()
 
 void QtImageEditor::applyFilter()
 {
+  Q_D(QtImageEditor);
   TimeProbe clockMultiply;
-  applyFFT();
+  this->applyFFT();
   clockMultiply.Start();
-  Internals::GaussianDerivativeSourceType::OrdersType order;
-  order[0] = this->m_Internals->m_Order_x->text().toInt();
-  order[1] = this->m_Internals->m_Order_y->text().toInt();
-  order[2] = this->m_Internals->m_Order_z->text().toInt();
-  Internals::GaussianDerivativeSourceType::Pointer gaussianFilter =
-  this->m_Internals->createGaussianDerivative( order );
-  this->m_Internals->m_FFTShiftFilter->SetInput(gaussianFilter->GetOutput());
-  this->m_Internals->m_FFTShiftFilter->Update();
-  this->m_Internals->m_MultiplyFilter->Update();
+  QtImageEditorPrivate::GaussianDerivativeSourceType::OrdersType order;
+  order[0] = d->m_XOrderSpinBox->value();
+  order[1] = d->m_YOrderSpinBox->value();
+  order[2] = d->m_ZOrderSpinBox->value();
+  QtImageEditorPrivate::GaussianDerivativeSourceType::Pointer gaussianFilter =
+    d->createGaussianDerivative( order );
+  d->m_FFTShiftFilter->SetInput(gaussianFilter->GetOutput());
+  d->m_FFTShiftFilter->Update();
+  d->m_MultiplyFilter->Update();
   clockMultiply.Stop();
 
   qDebug() << "Multiply total time:" << clockMultiply.GetTotal();
-  applyInverseFFT();
+  this->applyInverseFFT();
 }
 
 
 void QtImageEditor::applyInverseFFT()
 {
-  if(this->m_Internals->m_ImageData == NULL)
+  Q_D(QtImageEditor);
+  if (d->m_ImageData == NULL)
     {
     return;
     }
@@ -407,41 +430,93 @@ void QtImageEditor::applyInverseFFT()
 
   TimeProbe clockIFFT;
   clockIFFT.Start();
-  this->m_Internals->m_InverseFFTFilter->Update();
+  d->m_InverseFFTFilter->Update();
   clockIFFT.Stop();
 
   qDebug() << "IFFT total time:" << clockIFFT.GetTotal();
 
-  this->setInputImage(
-    this->m_Internals->m_InverseFFTFilter->GetOutput());
-  this->OpenGlWindow->update();
+  this->Superclass::setInputImage(d->m_InverseFFTFilter->GetOutput());
 }
 
 
 void QtImageEditor::useNewFilter()
 {
-  Internals::FFTGaussianDerivativeIFFTType::Pointer FFTgaussianDerivativeIFFT =
-  Internals::FFTGaussianDerivativeIFFTType::New();
-  FFTgaussianDerivativeIFFT->SetInput(this->m_Internals->m_ImageData);
-  Internals::GaussianDerivativeSourceType::OrdersType order;
-  Internals::GaussianDerivativeSourceType::SigmasType sigma;
-  order[0] = this->m_Internals->m_Order_x->text().toInt();
-  order[1] = this->m_Internals->m_Order_y->text().toInt();
-  order[2] = this->m_Internals->m_Order_z->text().toInt();
+  Q_D(QtImageEditor);
+  QtImageEditorPrivate::FFTGaussianDerivativeIFFTType::Pointer FFTgaussianDerivativeIFFT =
+    QtImageEditorPrivate::FFTGaussianDerivativeIFFTType::New();
+  FFTgaussianDerivativeIFFT->SetInput(d->m_ImageData);
+  QtImageEditorPrivate::GaussianDerivativeSourceType::OrdersType order;
+  order[0] = d->m_XOrderSpinBox->value();
+  order[1] = d->m_YOrderSpinBox->value();
+  order[2] = d->m_ZOrderSpinBox->value();
   FFTgaussianDerivativeIFFT->SetOrders(order);
-  sigma.Fill(this->m_Internals->m_SigmaLineEdit->text().toDouble());
-  FFTgaussianDerivativeIFFT->SetSigmas(sigma);
+  QtImageEditorPrivate::GaussianDerivativeSourceType::SigmasType sigmas;
+  sigmas.Fill(d->m_SigmaSpinBox->value());
+  FFTgaussianDerivativeIFFT->SetSigmas(sigmas);
   FFTgaussianDerivativeIFFT->Update();
-  this->setInputImage(FFTgaussianDerivativeIFFT->GetOutput());
-  this->OpenGlWindow->update();
+  this->Superclass::setInputImage(FFTgaussianDerivativeIFFT->GetOutput());
 }
 
-void QtImageEditor::setMaximumSlice()
+
+void QtImageEditor::displayFFT()
 {
-  this->SliceNumSlider->setMaximum(static_cast<int>
-                                   (this->OpenGlWindow->maxSliceNum() -1));
-  this->SliceNumSlider->setValue(static_cast<int>
-                                 (this->SliceValue->text().toInt()));
+  /*
+  //Extract the real part
+  RealFilterType::Pointer realFilter = RealFilterType::New();
+  realFilter->SetInput(this->m_Internals->m_FFTFilter->GetOutput());
+  realFilter->Update();
+
+  RescaleFilterType::Pointer realRescaleFilter = RescaleFilterType::New();
+  realRescaleFilter->SetInput(realFilter->GetOutput());
+  realRescaleFilter->SetOutputMinimum(0);
+  realRescaleFilter->SetOutputMaximum(255);
+  realRescaleFilter->Update();
+
+  //Extract the imaginary part
+  ImaginaryFilterType::Pointer imaginaryFilter = ImaginaryFilterType::New();
+  imaginaryFilter->SetInput(this->m_Internals->m_FFTFilter->GetOutput());
+  imaginaryFilter->Update();
+
+  RescaleFilterType::Pointer imaginaryRescaleFilter = RescaleFilterType::New();
+  imaginaryRescaleFilter->SetInput(imaginaryFilter->GetOutput());
+  imaginaryRescaleFilter->SetOutputMinimum(0);
+  imaginaryRescaleFilter->SetOutputMaximum(255);
+  imaginaryRescaleFilter->Update();
+
+  // Compute the magnitude
+  ModulusFilterType::Pointer modulusFilter = ModulusFilterType::New();
+  modulusFilter->SetInput(this->m_Internals->m_FFTFilter->GetOutput());
+  modulusFilter->Update();
+
+  RescaleFilterType::Pointer magnitudeRescaleFilter = RescaleFilterType::New();
+  magnitudeRescaleFilter->SetInput(modulusFilter->GetOutput());
+  magnitudeRescaleFilter->SetOutputMinimum(0);
+  magnitudeRescaleFilter->SetOutputMaximum(255);
+  magnitudeRescaleFilter->Update();
+
+  // Write the images
+  WriterType::Pointer realWriter = WriterType::New();
+  realWriter->SetFileName("real.png");
+  realWriter->SetInput(realRescaleFilter->GetOutput());
+  realWriter->Update();
+
+  WriterType::Pointer imaginaryWriter = WriterType::New();
+  imaginaryWriter->SetFileName("imaginary.png");
+  imaginaryWriter->SetInput(imaginaryRescaleFilter->GetOutput());
+  imaginaryWriter->Update();
+
+  WriterType::Pointer magnitudeWriter = WriterType::New();
+  magnitudeWriter->SetFileName("magnitude.png");
+  magnitudeWriter->SetInput(magnitudeRescaleFilter->GetOutput());
+  magnitudeWriter->Update();
+  */
+}
+
+void QtImageEditor::setControlsVisible(bool controlsVisible)
+{
+  Q_D(QtImageEditor);
+  d->m_TabWidget->setVisible(controlsVisible);
+  this->Superclass::setControlsVisible(controlsVisible);
 }
 
 } // End namespace tube

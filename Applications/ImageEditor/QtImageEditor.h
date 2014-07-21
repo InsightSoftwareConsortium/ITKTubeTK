@@ -24,44 +24,29 @@ limitations under the License.
 #ifndef __QtImageEditor_h
 #define __QtImageEditor_h
 
-// Qt includes
-#include <QDialog>
-#include <QLineEdit>
-
-// ITK includes
-#include <itkImage.h>
-
 // QtImageViewer includes
-#include "ui_QtSlicerGUI.h"
-
-// TubeTK includes
-class QtOverlayControlsWidget;
+#include "QtImageViewer.h"
 
 namespace tube
 {
+// TubeTK includes
+class QtImageEditorPrivate;
 
-class QtImageEditor
-  : public QDialog, public Ui::GuiDialogBase
+class QtImageEditor: public QtImageViewer
 {
   Q_OBJECT
 public:
+  typedef QtImageViewer Superclass;
 
   QtImageEditor( QWidget* parent = 0, Qt::WindowFlags fl = 0 );
-  ~QtImageEditor();
+  virtual ~QtImageEditor();
 
-  typedef double                      PixelType;
-  typedef itk::Image< PixelType, 3 >  ImageType;
-
+public:
+  virtual void setInputImage(ImageType *newImData);
+  virtual void setOverlayImage(OverlayImageType* newImData);
 
 public slots:
-  void hideHelp();
-  void showHelp(bool checked);
-  void setMaximumSlice();
-  void setDisplaySigma(QString value);
-  void setInputImage(ImageType *newImData);
-  void setDisplaySliceNumber(int number);
-  bool loadImage(QString filePathToLoad = QString());
-  void loadOverlay(QString overlayImagePath = QString());
+  void setDisplaySigma(double value);
   void applyFFT();
   void applyInverseFFT();
   void applyFilter();
@@ -69,9 +54,13 @@ public slots:
   void blurFilter();
   void useNewFilter();
 
+protected:
+  QScopedPointer<QtImageEditorPrivate> d_ptr;
+  virtual void setControlsVisible(bool visible);
+
 private:
-  class Internals;
-  Internals* m_Internals;
+  Q_DECLARE_PRIVATE(QtImageEditor);
+  Q_DISABLE_COPY(QtImageEditor);
 };
 
 } // End namespace tube
