@@ -31,24 +31,23 @@ limitations under the License.
 #include "itkImage.h"
 #include "itkImageFileReader.h"
 
-//ImageViewer includes
+// ImageViewer includes
 #include "QtGlSliceView.h"
-
-//ImageEditor includes
-#include "ui_QtOverlayControlsWidgetGUI.h"
 
 
 namespace tube
 {
+// ImageEditor includes
+class QtOverlayControlsWidgetPrivate;
 
-class QtOverlayControlsWidget : public QWidget
+class QtOverlayControlsWidget: public QWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY(double opacity READ getOpacity WRITE setOpacity NOTIFY opacityChanged);
+  Q_PROPERTY(double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged);
 public:
   QtOverlayControlsWidget(QWidget* parent);
-  ~QtOverlayControlsWidget();
+  virtual ~QtOverlayControlsWidget();
   typedef itk::Image< double, 3 >             ImageType;
 
   typedef unsigned char                       OverlayPixelType;
@@ -56,29 +55,32 @@ public:
   typedef itk::ImageFileReader<OverlayType>   OverlayReaderType;
 
   void setSliceView(QtGlSliceView *sliceView);
-  double getOpacity() const;
+  /// Return the opacity property value.
+  /// \sa opacity
+  double opacity() const;
 
 public slots:
   /// Set the new opacity changed in the SliceView to the Slider
   void setOpacity(double value);
+
   bool loadOverlay(QString pathOverlay = QString());
   void setInputOverlay(OverlayType* overlayImage);
-  /// Load Overlay if the check box is checked by a user, Disable overlay if
-  /// the check box is unchecked by the user.
-  void setOverlayVisibility(bool show);
 
 protected slots:
   void onOpacityChanged(int newOpacity);
 
 signals:
-  void opacityChanged(double getOpacity);
+  void opacityChanged(double opacity);
+
+protected:
+  QScopedPointer<tube::QtOverlayControlsWidgetPrivate> d_ptr;
 
 private:
-  QtGlSliceView  *m_SliceView;
-  Ui::Overlay    *m_UI;
+  Q_DECLARE_PRIVATE(QtOverlayControlsWidget);
 
   Q_DISABLE_COPY(QtOverlayControlsWidget)
 };
+
 }
 
 #endif

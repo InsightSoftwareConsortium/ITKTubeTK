@@ -23,24 +23,24 @@ limitations under the License.
 #include "ImageEditorConfigure.h"
 #include "ImageEditorCLP.h"
 
-//Qt includes
+// Qt includes
 #include <QApplication>
 #include <QDebug>
 #include <QFileDialog>
 
-//QtImageViewer includes
+// QtImageViewer includes
 #include "QtGlSliceView.h"
 #include "QtImageViewer.h"
 
-//QtImageEditor includes
-//#include "QtImageEditor.h"
+// QtImageEditor includes
+#include "QtImageEditor.h"
 
 int execImageEditor(int argc, char* argv[])
 {
   QApplication myApp( argc, argv );
 
-  //tube::QtImageEditor imageEditor(0,0);
-  QtImageViewer imageEditor(0,0);
+  tube::QtImageEditor imageEditor(0,0);
+  //QtImageViewer imageEditor(0,0);
   imageEditor.setWindowTitle("ImageEditor");
   imageEditor.loadInputImage();
   imageEditor.show();
@@ -63,8 +63,8 @@ int parseAndExecImageEditor(int argc, char* argv[])
   PARSE_ARGS;
   QApplication myApp( argc, argv );
 
-  //tube::QtImageEditor imageEditor(0);
-  QtImageViewer imageEditor(0);
+  tube::QtImageEditor imageEditor(0);
+  //QtImageViewer imageEditor(0);
 
   imageEditor.setWindowTitle("ImageEditor");
 
@@ -81,11 +81,11 @@ int parseAndExecImageEditor(int argc, char* argv[])
     }
   if(maxIntensityArg.isSet())
     {
-    imageEditor.sliceView()->setMaxIntensity(maxIntensity);
+    imageEditor.sliceView()->setIWMax(maxIntensity);
     }
   if(minIntensityArg.isSet())
     {
-    imageEditor.sliceView()->setMinIntensity(minIntensity);
+    imageEditor.sliceView()->setIWMin(minIntensity);
     }
   imageEditor.sliceView()->setZoom(zoom);
   imageEditor.sliceView()->transpose(transpose);
@@ -104,8 +104,8 @@ int parseAndExecImageEditor(int argc, char* argv[])
   imageEditor.sliceView()->setIWModeMin(iwModeMin.c_str());
   if(sigmaArg.isSet())
     {
-    //imageEditor.setDisplaySigma(QString::number(sigma, 'f', 2));
-    //imageEditor.applyFilter();
+    imageEditor.setDisplaySigma(sigma);
+    imageEditor.applyFilter();
     }
   imageEditor.show();
   imageEditor.sliceView()->update();
