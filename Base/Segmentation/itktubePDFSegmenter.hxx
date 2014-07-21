@@ -83,7 +83,7 @@ PDFSegmenter< TImage, N, TLabelMap >
   m_Draft = false;
   m_ProbabilityImageSmoothingStandardDeviation = 1;
   m_HistogramSmoothingStandardDeviation = 1;
-  m_OutlierRejectPortion = 0.02;
+  m_OutlierRejectPortion = 0.01;
   m_ReclassifyObjectLabels = false;
   m_ReclassifyNotObjectLabels = false;
   m_ForceClassification = false;
@@ -351,14 +351,14 @@ PDFSegmenter< TImage, N, TLabelMap >
 
   ConstImageIteratorType * itInIm[N];
   VectorDoubleType histogramBinMax;
-  histogramBinMax.resize( N, 0 );
+  histogramBinMax.resize( N );
   for( unsigned int i = 0; i < N; i++ )
     {
     itInIm[i] = new ConstImageIteratorType( m_InputImageList[i],
       m_InputImageList[i]->GetLargestPossibleRegion() );
     itInIm[i]->GoToBegin();
-    m_HistogramBinMin[i] = itInIm[i]->Get();
-    histogramBinMax[i] = itInIm[i]->Get();
+    m_HistogramBinMin[i] = 99999999999;
+    histogramBinMax[i] = -99999999999;
     }
   ListVectorType v;
   typename LabelMapType::IndexType indx;
@@ -392,11 +392,17 @@ PDFSegmenter< TImage, N, TLabelMap >
       {
       if( v[i] < m_HistogramBinMin[i] )
         {
-        m_HistogramBinMin[i] = v[i];
+        if( v[i] == v[i] )  // verify not NAN
+          {
+          m_HistogramBinMin[i] = v[i];
+          }
         }
       else if( v[i] > histogramBinMax[i] )
         {
-        histogramBinMax[i] = v[i];
+        if( v[i] == v[i] )  // verify not NAN
+          {
+          histogramBinMax[i] = v[i];
+          }
         }
       }
     ++itInLabelMap;
@@ -421,7 +427,7 @@ PDFSegmenter< TImage, N, TLabelMap >
     {
     m_HistogramBinSize[i] = ( histogramBinMax[i] - m_HistogramBinMin[i] ) /
       ( double )( m_HistogramNumberOfBin[i] );
-      std::cout << m_HistogramBinMin[i] << " - " << histogramBinMax[i]
+    std::cout << m_HistogramBinMin[i] << " - " << histogramBinMax[i]
       << " = " << m_HistogramBinSize[i] << " : " << m_HistogramNumberOfBin[i] 
       << std::endl;
     }

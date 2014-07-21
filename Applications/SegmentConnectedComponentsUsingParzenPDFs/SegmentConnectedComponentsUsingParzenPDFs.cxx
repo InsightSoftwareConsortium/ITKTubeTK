@@ -145,7 +145,8 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Stop( "LoadData" );
 
-  for( unsigned int o = 0; o < objectId.size(); o++ )
+  pdfSegmenter->SetObjectId( objectId[0] );
+  for( unsigned int o = 1; o < objectId.size(); o++ )
     {
     pdfSegmenter->AddObjectId( objectId[o] );
     }
