@@ -37,7 +37,7 @@ if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
    "${proj}_DIR is defined, but corresponds to a nonexistent directory" )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
-set( ${proj}_DEPENDENCIES "ITK" )
+set( ${proj}_DEPENDENCIES "ITK" "JsonCpp" "SlicerExecutionModel")
 
 # Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
@@ -68,6 +68,8 @@ if( NOT DEFINED ${proj}_DIR )
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
       -DITK_DIR:PATH=${ITK_DIR}
+      -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
+      -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
       -DQT_QMAKE_EXECUTABLE:PATH=${QT_QMAKE_EXECUTABLE}
     INSTALL_COMMAND ""
     DEPENDS
