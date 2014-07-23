@@ -293,7 +293,6 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start("Ridge Extractor");
   unsigned int count = 1;
   bool foundOneTube = false;
-  tubeOp->GetRidgeOp()->SetDebug( true );
   while( seedIndexIter != seedIndexList.end() )
     {
     tubeOp->SetRadius( *seedRadiusIter );
