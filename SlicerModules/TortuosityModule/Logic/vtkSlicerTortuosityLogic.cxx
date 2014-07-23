@@ -190,6 +190,14 @@ void CopyVector3(double* from, double* to)
     }
 }
 
+void InitVector3(double* v)
+{
+  for (int i = 0; i < 3; ++i)
+    {
+    v[i] = 0.0;
+    }
+}
+
 double SafeAcos(double x)
 {
   if (x < -1.0)
@@ -213,6 +221,8 @@ bool vtkSlicerTortuosityLogic
     {
     return false;
     }
+
+  bool noProblem = true;
 
   // 1 - Get the metric arrays
   vtkDoubleArray* dm = this->GetDistanceMetricArray(node, flag);
@@ -252,7 +262,13 @@ bool vtkSlicerTortuosityLogic
 
     // ICM variables
     double previousN[3] = {0.0, 0.0, 0.0};
+    double T[3], N[3], B[3]; // for the Frenet frame
+    bool vectorBIsValid = false;
     int inflectionCount = 1;
+
+    InitVector3(T);
+    InitVector3(N);
+    InitVector3(B);
 
     // SOAM variables
     double totalCurvature = 0.0;
@@ -325,26 +341,52 @@ bool vtkSlicerTortuosityLogic
         vtkMath::Subtract(nextPoint, previousPoint, v);
         vtkMath::Subtract(t2, t1, a);
 
-        // Compute n
-        double n[3];
-        vtkMath::Cross(v, a, n);
-        vtkMath::Cross(v, n, n);
-        vtkMath::Normalize(n);
+        // Compute the Frenet frame
+        // 1 - T = v / |v|
+        CopyVector3(v, T);
+        vtkMath::Normalize(T);
 
-        if (vtkMath::Norm(a) > 1e-6) // make sure acceleration isn't to small
+        // 2 - N = v × a × v / |v × a × v|
+        bool canCheckForinflection = vtkMath::Norm(a) > 1e-6;
+        if (canCheckForinflection)
+          {
+          vtkMath::Cross(v, a, N);
+          vtkMath::Cross(v, N, N);
+          vtkMath::Normalize(N);
+          vectorBIsValid = true;
+          }
+        else if (vectorBIsValid) // 2nd chance
+          {
+          // Acceleration can be null when the curve approximates a straight
+          // line (sin around pi for example). Unfortunately that could happen
+          // when the curve is crossing the straight line and the inflection
+          // would be missed...
+          // This assumes that no pure torsion along the N vector happened.
+          // Note that this is only valid is B was already computed at least
+          // once.
+          vtkMath::Cross(B, T, N);
+          vtkMath::Normalize(N);
+          canCheckForinflection = true;
+          }
+
+        // 3 - B = T x N (in case of null acceleration. See above)
+        vtkMath::Cross(T, N, B);
+        vtkMath::Normalize(B);
+
+        if (canCheckForinflection)
           {
           // Check for inflection
           double deltaN[3];
-          vtkMath::Subtract(n, previousN, deltaN);
+          vtkMath::Subtract(N, previousN, deltaN);
 
           inflectionValue = vtkMath::Dot(deltaN, deltaN);
-          if (inflectionValue > 1.0)
+          if (inflectionValue > 1.0 + 1e-6)
             {
             inflectionCount += 1;
             }
           }
 
-        CopyVector3(n, previousN);
+        CopyVector3(N, previousN);
         }
 
       // Set the inflection value for this point
@@ -373,13 +415,19 @@ bool vtkSlicerTortuosityLogic
         // Compute torsionnal angle
         double t1t2Cross[3];
         vtkMath::Cross(t1, t2, t1t2Cross);
-        vtkMath::Normalize(t1t2Cross);
         double t2t3Cross[3];
         vtkMath::Cross(t2, t3, t2t3Cross);
-        vtkMath::Normalize(t2t3Cross);
 
-        double torsionAngle = SafeAcos( vtkMath::Dot(t1t2Cross, t2t3Cross) );
-
+        double torsionAngle = 0.0;
+        double t1t2Norm = vtkMath::Normalize(t1t2Cross);
+        double t2t3Norm = vtkMath::Normalize(t2t3Cross);
+        if (t1t2Norm > 1e-6 || t2t3Norm > 1e-6)
+          {
+          // We need to make sure we don't artificially scale those vectors
+          // back to life. Otherwise we end up with a torsion angles where
+          // there should not be one
+          torsionAngle = SafeAcos( vtkMath::Dot(t1t2Cross, t2t3Cross) );
+          }
         // Finally get the curvature
         totalCurvature +=
           sqrt(inPlaneAngle*inPlaneAngle + torsionAngle*torsionAngle);
@@ -393,6 +441,7 @@ bool vtkSlicerTortuosityLogic
       {
       double startToEnd[3];
       vtkMath::Subtract(start, end, startToEnd);
+
       double straighLineLength = vtkMath::Norm(startToEnd);
       if (straighLineLength > 0.0)
         {
@@ -403,6 +452,7 @@ bool vtkSlicerTortuosityLogic
         {
         std::cerr<<"Error while computing the distance metric."
           <<"DM (="<<dmResult<<") > 1.0"<<std::endl;
+        noProblem = false;
         }
       }
 
@@ -411,14 +461,15 @@ bool vtkSlicerTortuosityLogic
 
     // SOAM final calculation
     double soamResult = 0.0;
-    if (pathLength > 0.0)
+    if (soam && pathLength > 0.0)
       {
       soamResult = totalCurvature / pathLength;
       }
-    else
+    else if (soam && pathLength <= 0.0)
       {
       std::cerr<<"Cannot compute SOAM, total tube path (="
         <<pathLength<<") <= 0.0"<<std::endl;
+      noProblem = false;
       }
 
     //
@@ -442,5 +493,5 @@ bool vtkSlicerTortuosityLogic
     totalNumberOfPointsAdded += numberOfPoints;
     }
 
-  return true;
+  return noProblem;
 }
