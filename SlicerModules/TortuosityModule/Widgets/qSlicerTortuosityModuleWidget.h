@@ -55,7 +55,7 @@ public slots:
   void runMetrics(int flag);
 
 protected slots:
-  void runSelectedMetrics();
+  void runSelectedMetrics(bool run);
 
 protected:
   virtual void setup();

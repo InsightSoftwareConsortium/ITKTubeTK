@@ -21,9 +21,12 @@ limitations under the License.
 
 =========================================================================*/
 
-// Qt includes
+// Module includes
 #include "qSlicerTortuosityModuleWidget.h"
 #include "ui_qSlicerTortuosityModule.h"
+
+// Qt includes
+#include <QDebug>
 
 // MRML includes
 #include "vtkMRMLSpatialObjectsNode.h"
@@ -69,8 +72,8 @@ void qSlicerTortuosityModuleWidgetPrivate::init()
     q, SLOT(setCurrentSpatialObjectsNode(vtkMRMLNode*)));
 
   QObject::connect(
-    this->RunPushButton, SIGNAL(clicked()),
-    q, SLOT(runSelectedMetrics()));
+    this->RunPushButton, SIGNAL(toggled(bool)),
+    q, SLOT(runSelectedMetrics(bool)));
 }
 
 //-----------------------------------------------------------------------------
@@ -125,13 +128,24 @@ void qSlicerTortuosityModuleWidget
 void qSlicerTortuosityModuleWidget::runMetrics(int flag)
 {
   Q_D(qSlicerTortuosityModuleWidget);
-  d->logic()->RunMetrics(d->currentSpatialObject, flag);
+  d->RunPushButton->setEnabled(false);
+  if (!d->logic()->RunMetrics(d->currentSpatialObject, flag))
+    {
+    qCritical("Error while running metrics !");
+    }
+  d->RunPushButton->setChecked(false);
+  d->RunPushButton->setEnabled(true);
 }
 
 //------------------------------------------------------------------------------
-void qSlicerTortuosityModuleWidget::runSelectedMetrics()
+void qSlicerTortuosityModuleWidget::runSelectedMetrics(bool run)
 {
   Q_D(qSlicerTortuosityModuleWidget);
+  if (!run)
+    {
+    return;
+    }
+
   int flag = d->DistanceMetricCheckBox->isChecked() ?
     vtkSlicerTortuosityLogic::DistanceMetric : 0;
 

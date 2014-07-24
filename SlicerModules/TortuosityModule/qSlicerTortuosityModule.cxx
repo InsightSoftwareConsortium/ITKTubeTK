@@ -58,7 +58,7 @@ qSlicerTortuosityModule::~qSlicerTortuosityModule()
 //------------------------------------------------------------------------------
 QString qSlicerTortuosityModule::helpText() const
 {
-  QString help = QString("TODO");
+  QString help = QString("Run tortuosity metrics on spatial objects.");
 
   return help;
 }
@@ -66,7 +66,7 @@ QString qSlicerTortuosityModule::helpText() const
 //------------------------------------------------------------------------------
 QString qSlicerTortuosityModule::acknowledgementText() const
 {
-  QString acknowledgement = QString("TODO");
+  QString acknowledgement = QString("");
 
   return acknowledgement;
 }
