@@ -195,7 +195,7 @@ private:
   typedef std::vector< typename HistogramImageType::Pointer >
     ClassHistogramImageType;
 
-  typedef itk::Vector< PixelType, N+ImageDimension >      ListVectorType;
+  typedef itk::Vector< ProbabilityPixelType, N+ImageDimension >      ListVectorType;
   typedef itk::Statistics::ListSample< ListVectorType >   ListSampleType;
   typedef std::vector< typename ListSampleType::Pointer > ClassListSampleType;
 

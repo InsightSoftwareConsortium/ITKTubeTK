@@ -388,20 +388,23 @@ PDFSegmenter< TImage, N, TLabelMap >
       {
       m_OutClassList->PushBack( v );
       }
-    for( unsigned int i = 0; i < N; i++ )
+    if( found )
       {
-      if( v[i] < m_HistogramBinMin[i] )
+      for( unsigned int i = 0; i < N; i++ )
         {
-        if( v[i] == v[i] )  // verify not NAN
+        if( v[i] < m_HistogramBinMin[i] )
           {
-          m_HistogramBinMin[i] = v[i];
+          if( v[i] == v[i] )  // verify not NAN
+            {
+            m_HistogramBinMin[i] = v[i];
+            }
           }
-        }
-      else if( v[i] > histogramBinMax[i] )
-        {
-        if( v[i] == v[i] )  // verify not NAN
+        else if( v[i] > histogramBinMax[i] )
           {
-          histogramBinMax[i] = v[i];
+          if( v[i] == v[i] )  // verify not NAN
+            {
+            histogramBinMax[i] = v[i];
+            }
           }
         }
       }
@@ -425,6 +428,9 @@ PDFSegmenter< TImage, N, TLabelMap >
 
   for( unsigned int i = 0; i < N; i++ )
     {
+    double buffer = 0.05 * ( histogramBinMax[i] - m_HistogramBinMin[i] );
+    m_HistogramBinMin[i] -= buffer;
+    histogramBinMax[i] += buffer;
     m_HistogramBinSize[i] = ( histogramBinMax[i] - m_HistogramBinMin[i] ) /
       ( double )( m_HistogramNumberOfBin[i] );
     std::cout << m_HistogramBinMin[i] << " - " << histogramBinMax[i]
@@ -523,7 +529,7 @@ PDFSegmenter< TImage, N, TLabelMap >
         }
       }
 
-    unsigned int count;
+    unsigned int count, prevCount;
     for( unsigned int c = 0; c < numClasses; c++ )
       {
       double tailReject = totalInClass[c] * ( m_OutlierRejectPortion/2 );
@@ -532,25 +538,39 @@ PDFSegmenter< TImage, N, TLabelMap >
         count = 0;
         for( unsigned int b = 0; b < m_HistogramNumberOfBin[i]; b++ )
           {
+          prevCount = count;
           count += static_cast<unsigned int>( inImHistogram[c][i][b] );
           if( count>=tailReject )
             {
-            clipMin[c][i] =  b * m_HistogramBinSize[i]
-              + m_HistogramBinMin[i];
+            if( b > 0 )
+              {
+              clipMin[c][i] =  (b-1) * m_HistogramBinSize[i]
+                + m_HistogramBinMin[i];
+              }
+            clipMin[c][i] += m_HistogramBinSize[i]
+              * ((tailReject-prevCount) / (count-prevCount));
             break;
             }
           }
         count = 0;
         for( int b = ( int )m_HistogramNumberOfBin[i]-1; b >= 0; b-- )
           {
+          prevCount = count;
           count += static_cast<unsigned int>( inImHistogram[c][i][b] );
           if( count>=tailReject )
             {
-            clipMax[c][i] =  b * m_HistogramBinSize[i]
-              + m_HistogramBinMin[i];
+            if( b < ( int )m_HistogramNumberOfBin[i]-1 )
+              {
+              clipMax[c][i] =  (b+1) * m_HistogramBinSize[i]
+                + m_HistogramBinMin[i];
+              }
+            clipMax[c][i] -= m_HistogramBinSize[i]
+              * ((tailReject-prevCount) / (count-prevCount));
             break;
             }
           }
+        std::cout << "Class " << c << " : Feature " << i << " : using "
+          << clipMin[c][i] << " - " << clipMax[c][i] << std::endl;
         }
       }
     }
