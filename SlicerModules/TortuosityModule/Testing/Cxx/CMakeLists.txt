@@ -21,22 +21,31 @@
 #
 ##############################################################################
 
-set( proj SlicerModules )
+set( KIT qSlicer${MODULE_NAME}Module )
 
-set( TubeTK_SLICER_MODULES
-  InteractiveConnectedComponentsUsingParzenPDFs
-  SpatialObjectsModule
-  TortuosityModule
-  )
+set( KIT_TEST_SRCS
+     TestTortuosityMetrics.cxx
+     )
+set( KIT_TEST_NAMES
+     TestTortuosityMetrics
+     )
+set( KIT_TEST_NAMES_CXX
+     TestTortuosityMetrics.cxx
+     )
+SlicerMacroConfigureGenericCxxModuleTests( ${MODULE_NAME} KIT_TEST_SRCS KIT_TEST_NAMES KIT_TEST_NAMES_CXX )
 
-if( NOT TubeTK_SOURCE_DIR )
-  find_package( TubeTK REQUIRED )
-  include( ${TubeTK_USE_FILE} )
-endif( NOT TubeTK_SOURCE_DIR )
+set( CMAKE_TESTDRIVER_BEFORE_TESTMAIN "DEBUG_LEAKS_ENABLE_EXIT_ERROR();" )
+create_test_sourcelist( Tests ${KIT}CxxTests.cxx
+  ${KIT_TEST_NAMES_CXX}
+  EXTRA_INCLUDE vtkMRMLDebugLeaksMacro.h )
+list( REMOVE_ITEM Tests ${KIT_TEST_NAMES_CXX} )
+list( APPEND Tests ${KIT_TEST_SRCS} )
 
-if( ${CMAKE_PROJECT_NAME} STREQUAL "Slicer" )
-  include( ${CMAKE_CURRENT_SOURCE_DIR}/../CMake/TubeTKMacroAddModules.cmake )
-else()
-  include(TubeTKMacroAddModules)
-endif( ${CMAKE_PROJECT_NAME} STREQUAL "Slicer" )
-TubeTKMacroAddModules( MODULES ${TubeTK_SLICER_MODULES} )
+set( LIBRARY_NAME ${lib_name} )
+
+add_executable( ${KIT}CxxTests ${Tests} )
+target_link_libraries( ${KIT}CxxTests ${KIT} )
+
+foreach( testname ${KIT_TEST_NAMES} )
+  SIMPLE_TEST( ${testname} )
+endforeach( testname ${KIT_TEST_NAMES} )

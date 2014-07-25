@@ -21,22 +21,4 @@
 #
 ##############################################################################
 
-set( proj SlicerModules )
-
-set( TubeTK_SLICER_MODULES
-  InteractiveConnectedComponentsUsingParzenPDFs
-  SpatialObjectsModule
-  TortuosityModule
-  )
-
-if( NOT TubeTK_SOURCE_DIR )
-  find_package( TubeTK REQUIRED )
-  include( ${TubeTK_USE_FILE} )
-endif( NOT TubeTK_SOURCE_DIR )
-
-if( ${CMAKE_PROJECT_NAME} STREQUAL "Slicer" )
-  include( ${CMAKE_CURRENT_SOURCE_DIR}/../CMake/TubeTKMacroAddModules.cmake )
-else()
-  include(TubeTKMacroAddModules)
-endif( ${CMAKE_PROJECT_NAME} STREQUAL "Slicer" )
-TubeTKMacroAddModules( MODULES ${TubeTK_SLICER_MODULES} )
+add_subdirectory( Cxx )
