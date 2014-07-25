@@ -168,13 +168,14 @@ RadiusExtractor<TInputImage>
     }
 
   m_MedialnessRadiusStep = 0.25;
+  m_MedialnessRadiusTolerance = 0.01;
 
   m_MedialnessFunc = new RadiusExtractorMedialnessFunc<TInputImage>(
     this, m_MedialnessRadiusStep );
 
-  m_MedialnessOpt.SetTolerance( 0.01 / m_MedialnessRadiusStep );
+  m_MedialnessOpt.SetTolerance( m_MedialnessRadiusTolerance / m_MedialnessRadiusStep );
 
-  m_MedialnessOpt.SetXStep( 1.5 / m_MedialnessRadiusStep );
+  m_MedialnessOpt.SetXStep( 1 );
 
   m_MedialnessOpt.SetSearchForMin( false );
 
@@ -182,8 +183,8 @@ RadiusExtractor<TInputImage>
     &m_MedialnessOpt );
 
   m_MedialnessOptSpline->SetClip( true );
-  m_MedialnessOptSpline->SetXMin( 0.5 / m_MedialnessRadiusStep );
-  m_MedialnessOptSpline->SetXMax( 20 / m_MedialnessRadiusStep );
+  m_MedialnessOptSpline->SetXMin( m_RadiusMin / m_MedialnessRadiusStep );
+  m_MedialnessOptSpline->SetXMax( m_RadiusMax / m_MedialnessRadiusStep );
 
 
   m_IdleCallBack = NULL;
@@ -226,6 +227,38 @@ RadiusExtractor<TInputImage>
     {
     m_RadiusStart = m_RadiusMax;
     }
+}
+
+template< class TInputImage >
+void
+RadiusExtractor<TInputImage>
+::SetRadiusStep( double radiusStep )
+{
+  m_MedialnessRadiusStep = radiusStep;
+}
+
+template< class TInputImage >
+double
+RadiusExtractor<TInputImage>
+::GetRadiusStep( void )
+{
+  return m_MedialnessRadiusStep;
+}
+
+template< class TInputImage >
+void
+RadiusExtractor<TInputImage>
+::SetRadiusTolerance( double radiusTolerance )
+{
+  m_MedialnessRadiusTolerance = radiusTolerance;
+}
+
+template< class TInputImage >
+double
+RadiusExtractor<TInputImage>
+::GetRadiusTolerance( void )
+{
+  return m_MedialnessRadiusTolerance;
 }
 
 /** Set Radius Min */

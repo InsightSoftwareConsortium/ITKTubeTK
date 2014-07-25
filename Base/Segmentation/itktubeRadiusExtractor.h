@@ -143,6 +143,18 @@ public:
   /** Get Radius0 */
   itkGetMacro( RadiusStart, double );
 
+  /** Set Radius step size when searching */
+  void SetRadiusStep( double radiusStep );
+
+  /** Get Radius step size when searching */
+  double GetRadiusStep( void );
+
+  /** Set Radius tolerance when searching */
+  void SetRadiusTolerance( double radiusTolerance );
+
+  /** Get Radius tolerance when searching */
+  double GetRadiusTolerance( void );
+
   /** Set ThreshMedialness */
   itkSetMacro( MinMedialness, double );
 
@@ -249,6 +261,7 @@ private:
   double                                          m_DataMax;
 
   double                                  m_MedialnessRadiusStep;
+  double                                  m_MedialnessRadiusTolerance;
   OptimizerType                           m_MedialnessOpt;
   SplineType                            * m_MedialnessOptSpline;
 
