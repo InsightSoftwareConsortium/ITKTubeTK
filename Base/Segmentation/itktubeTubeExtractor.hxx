@@ -299,7 +299,7 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 typename TubeExtractor< TInputImage >::TubeType::Pointer
 TubeExtractor<TInputImage>
-::ExtractTube( const ContinuousIndexType & x, unsigned int tubeID )
+::ExtractTube( const ContinuousIndexType & x, unsigned int tubeID, bool verbose )
 {
   if( this->m_RidgeOp.IsNull() )
     {
@@ -322,7 +322,7 @@ TubeExtractor<TInputImage>
     }
 
   typename TubeType::Pointer tube = this->m_RidgeOp->ExtractRidge( x,
-    tubeID );
+    tubeID, verbose );
 
   if( tube.IsNull() )
     {
@@ -346,19 +346,10 @@ TubeExtractor<TInputImage>
       }
     }
 
-  double tR = this->m_RadiusOp->GetRadiusStart();
-
-  if( this->m_RidgeOp->GetDynamicScale() )
-    {
-    this->m_RadiusOp->SetRadiusStart( this->m_RidgeOp->GetDynamicScaleUsed() );
-    }
-
   if( !this->m_RadiusOp->ExtractRadii( tube ) )
     {
-    this->m_RadiusOp->SetRadiusStart( tR );
     return NULL;
     }
-  this->m_RadiusOp->SetRadiusStart( tR );
 
   if( this->m_NewTubeCallBack != NULL )
     {

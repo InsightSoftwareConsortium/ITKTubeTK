@@ -171,7 +171,7 @@ public:
    * Extract the ND tube given the position of the first point
    * and the tube ID */
   typename TubeType::Pointer ExtractTube( const ContinuousIndexType & x,
-    unsigned int tubeID );
+    unsigned int tubeID, bool verbose=false );
 
   /**
    * Get the list of tubes that have been extracted */

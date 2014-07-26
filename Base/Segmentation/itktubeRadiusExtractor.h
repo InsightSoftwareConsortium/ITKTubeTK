@@ -236,9 +236,8 @@ protected:
     bool doBNess );
 
   /** Calculate Radii one way */
-  void MeasuresInFullKernelArray( KernArrayType & kernArray,
-    unsigned int kernPntStart,
-    unsigned int KernPntEnd );
+  void MeasuresInFullKernelArray( KernArrayType & kernArray, unsigned int kernPntStart,
+    unsigned int KernPntEnd, double radiusStart );
 
   void SmoothMeasuresInFullKernelArray( KernArrayType & kernArray );
 

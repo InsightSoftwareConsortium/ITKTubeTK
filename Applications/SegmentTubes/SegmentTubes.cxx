@@ -300,7 +300,7 @@ int DoIt( int argc, char * argv[] )
     std::cout << "Extracting from index point " << *seedIndexIter << " at radius "
       << *seedRadiusIter << std::endl;
     typename TubeType::Pointer xTube =
-      tubeOp->ExtractTube( *seedIndexIter, count );
+      tubeOp->ExtractTube( *seedIndexIter, count, true );
     if( !xTube.IsNull() )
       {
       tubeOp->AddTube( xTube );
