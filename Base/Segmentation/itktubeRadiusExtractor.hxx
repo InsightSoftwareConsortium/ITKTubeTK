@@ -117,7 +117,7 @@ RadiusExtractor<TInputImage>
   m_ImageXMax.Fill( -1 );
 
   m_DataOp = BlurImageFunction<ImageType>::New();
-  m_DataOp->SetScale( 3.0 );
+  m_DataOp->SetScale( 1.0 );
   m_DataOp->SetExtent( 1.1 );
   m_DataMin = 0;
   m_DataMax = -1;
@@ -125,8 +125,8 @@ RadiusExtractor<TInputImage>
   m_NumKernelPoints = 5;
   m_KernelPointSpacing = 10;
 
-  m_RadiusStart = 1.0;
-  m_RadiusMin = 0.3;
+  m_RadiusStart = 1.5;
+  m_RadiusMin = 0.5;
   m_RadiusMax = 10.0;
 
   m_MinMedialness = 0.0015;       // 0.015; larger = harder
@@ -168,22 +168,22 @@ RadiusExtractor<TInputImage>
     }
 
   m_MedialnessRadiusStep = 0.25;
+  m_MedialnessRadiusTolerance = 0.01;
 
   m_MedialnessFunc = new RadiusExtractorMedialnessFunc<TInputImage>(
     this, m_MedialnessRadiusStep );
 
-  m_MedialnessOpt.SetTolerance( 0.01 / m_MedialnessRadiusStep );
+  m_MedialnessOpt.SetTolerance( m_MedialnessRadiusTolerance / m_MedialnessRadiusStep );
 
-  m_MedialnessOpt.SetXStep( 1.5 / m_MedialnessRadiusStep );
+  m_MedialnessOpt.SetXStep( 0.5 / m_MedialnessRadiusStep );
 
   m_MedialnessOpt.SetSearchForMin( false );
 
-  m_MedialnessOptSpline = new SplineType( m_MedialnessFunc,
-    &m_MedialnessOpt );
+  m_MedialnessOptSpline = new SplineType( m_MedialnessFunc, &m_MedialnessOpt );
 
   m_MedialnessOptSpline->SetClip( true );
-  m_MedialnessOptSpline->SetXMin( 0.5 / m_MedialnessRadiusStep );
-  m_MedialnessOptSpline->SetXMax( 20 / m_MedialnessRadiusStep );
+  m_MedialnessOptSpline->SetXMin( m_RadiusMin / m_MedialnessRadiusStep );
+  m_MedialnessOptSpline->SetXMax( m_RadiusMax / m_MedialnessRadiusStep );
 
 
   m_IdleCallBack = NULL;
@@ -226,6 +226,38 @@ RadiusExtractor<TInputImage>
     {
     m_RadiusStart = m_RadiusMax;
     }
+}
+
+template< class TInputImage >
+void
+RadiusExtractor<TInputImage>
+::SetRadiusStep( double radiusStep )
+{
+  m_MedialnessRadiusStep = radiusStep;
+}
+
+template< class TInputImage >
+double
+RadiusExtractor<TInputImage>
+::GetRadiusStep( void )
+{
+  return m_MedialnessRadiusStep;
+}
+
+template< class TInputImage >
+void
+RadiusExtractor<TInputImage>
+::SetRadiusTolerance( double radiusTolerance )
+{
+  m_MedialnessRadiusTolerance = radiusTolerance;
+}
+
+template< class TInputImage >
+double
+RadiusExtractor<TInputImage>
+::GetRadiusTolerance( void )
+{
+  return m_MedialnessRadiusTolerance;
 }
 
 /** Set Radius Min */
@@ -373,16 +405,37 @@ RadiusExtractor<TInputImage>
         << std::endl;
       std::cout << "   DotProd = " << dotP << " and Norm = " << len
         << std::endl;
+      std::cout << "   pos = " << pnt.GetPosition() << std::endl;
+      std::cout << "   t = " << pnt.GetTangent() << std::endl;
+      std::cout << "   n1 = " << pnt.GetNormal1() << std::endl;
+      if( ImageDimension == 3 )
+        {
+        std::cout << "   n2 = " << pnt.GetNormal2() << std::endl;
+        }
       }
     n.set_column( 0,
       ::tube::ComputeOrthogonalVector( pnt.GetTangent().GetVnlVector() ) );
-    n.get_column( 0 ).normalize();
+    n.set_column( 0, n.get_column( 0 ).normalize() );
     if( ImageDimension == 3 )
       {
       n.set_column( 1,
         ::tube::ComputeCrossVector( pnt.GetTangent().GetVnlVector(),
           n.get_column( 0 ) ) );
-      n.get_column( 1 ).normalize();
+      n.set_column( 1, n.get_column( 1 ).normalize() );
+      pnt.SetNormal1( n.get_column(0)[0], n.get_column(0)[1], n.get_column(0)[2] );
+      pnt.SetNormal2( n.get_column(1)[0], n.get_column(1)[1], n.get_column(1)[2] );
+      }
+    else
+      {
+      pnt.SetNormal1( n.get_column(0)[0], n.get_column(0)[1] );
+      }
+    if( this->GetDebug() )
+      {
+      std::cout << "   new n1 = " << pnt.GetNormal1() << std::endl;
+      if( ImageDimension == 3 )
+        {
+        std::cout << "   new n2 = " << pnt.GetNormal2() << std::endl;
+        }
       }
     }
 
@@ -403,6 +456,7 @@ RadiusExtractor<TInputImage>
   this->MeasuresInKernel( pntR, kernPos,
     kernNeg, kernBrn, mness, bness, doBNess );
   pnt.SetMedialness( mness );
+  std::cout << "   " << pntR << " : " << mness << std::endl;
   if( doBNess )
     {
     pnt.SetBranchness( bness );
@@ -479,10 +533,71 @@ RadiusExtractor<TInputImage>
   kernBrn.fill( 0 );
 
   MatrixType norms( ImageDimension, ImageDimension-1 );
-  norms.set_column(0, kernArray[mid].GetNormal1().GetVnlVector() );
-  if( ImageDimension > 2 )
+  double dotP = vnl_math_abs( dot_product( kernArray[mid].GetNormal1().GetVnlVector(),
+    kernArray[mid].GetTangent().GetVnlVector() ) );
+  if( ImageDimension == 3 )
     {
-    norms.set_column(1, kernArray[mid].GetNormal2().GetVnlVector() );
+    dotP += vnl_math_abs( dot_product( kernArray[mid].GetNormal2().GetVnlVector(),
+      kernArray[mid].GetTangent().GetVnlVector() ) );
+    }
+  double sum = kernArray[mid].GetNormal1().GetNorm();
+  if( dotP < 0.001 && vnl_math_abs( 1 - sum ) < 0.01 )
+    {
+    norms.set_column(0, kernArray[mid].GetNormal1().GetVnlVector() );
+    if( ImageDimension > 2 )
+      {
+      norms.set_column(1, kernArray[mid].GetNormal2().GetVnlVector() );
+      }
+    }
+  else
+    {
+    // If the point's normals, aren't normal, then create new normals.
+    //   However, given only one point, we cannot compute the tube's
+    //   local Frenet frame.   Ideally the user should call
+    //   ComputeTangents on the tube prior to calling this function
+    //   to avoid this situation.  If inconsistent normals are used,
+    //   branchness computations suffer due to normal flipping.
+    if( this->GetDebug() )
+      {
+      std::cout
+        << "Warning: Point normals invalid. Recomputing. Frenet frame lost."
+        << std::endl;
+      std::cout << "   DotProd = " << dotP << " and Norm = " << sum
+        << std::endl;
+      std::cout << "   pos = " << kernArray[mid].GetPosition() << std::endl;
+      std::cout << "   t = " << kernArray[mid].GetTangent() << std::endl;
+      std::cout << "   n1 = " << kernArray[mid].GetNormal1() << std::endl;
+      if( ImageDimension == 3 )
+        {
+        std::cout << "   n2 = " << kernArray[mid].GetNormal2() << std::endl;
+        }
+      }
+    norms.set_column( 0,
+      ::tube::ComputeOrthogonalVector( kernArray[mid].GetTangent().GetVnlVector() ) );
+    norms.set_column( 0, norms.get_column( 0 ).normalize() );
+    if( ImageDimension == 3 )
+      {
+      norms.set_column( 1,
+        ::tube::ComputeCrossVector( kernArray[mid].GetTangent().GetVnlVector(),
+          norms.get_column( 0 ) ) );
+      norms.set_column( 1, norms.get_column( 1 ).normalize() );
+      kernArray[mid].SetNormal1( norms.get_column(0)[0], norms.get_column(0)[1],
+        norms.get_column(0)[2] );
+      kernArray[mid].SetNormal2( norms.get_column(1)[0], norms.get_column(1)[1],
+        norms.get_column(1)[2] );
+      }
+    else
+      {
+      kernArray[mid].SetNormal1( norms.get_column(0)[0], norms.get_column(0)[1] );
+      }
+    if( this->GetDebug() )
+      {
+      std::cout << "   new n1 = " << kernArray[mid].GetNormal1() << std::endl;
+      if( ImageDimension == 3 )
+        {
+        std::cout << "   new n2 = " << kernArray[mid].GetNormal2() << std::endl;
+        }
+      }
     }
 
   // With the coordinate frame defined, compute medialness for other points
@@ -520,7 +635,7 @@ RadiusExtractor<TInputImage>
     mness, bness, doBNess );
   if( this->GetDebug() )
     {
-    std::cout << "At radius = " << pntR << " medialness = " << mness
+    std::cout << "      At radius = " << pntR << " medialness = " << mness
       << std::endl;
     }
 }
@@ -734,14 +849,17 @@ RadiusExtractor<TInputImage>
     }
 
   /*
-  std::cout << "Kern pnt = " << pnt.GetPosition() << std::endl;
-  for( unsigned int i=0; i<ImageDimension-1; i++ )
+  if( this->GetDebug() )
     {
-    std::cout << "Kern N[" << i << "] = " << kernN.get_column( i )
-      << std::endl;
+    std::cout << "Kern pnt = " << pnt.GetPosition() << std::endl;
+    for( unsigned int i=0; i<ImageDimension-1; i++ )
+      {
+      std::cout << "Kern N[" << i << "] = " << kernN.get_column( i )
+        << std::endl;
+      }
+    std::cout << "Kern r = " << pntR << std::endl;
+    std::cout << "Kern X = " << m_KernX << std::endl;
     }
-  std::cout << "Kern r = " << pntR << std::endl;
-  std::cout << "Kern X = " << m_KernX << std::endl;
   */
 
   VectorType nodePnt;
@@ -756,17 +874,18 @@ RadiusExtractor<TInputImage>
         }
       }
 
-    /*
-    VectorType xV = nodePnt - pnt.GetPosition().GetVnlVector();
-    std::cout << "  dirX = " << m_KernX.get_column( dir ) << std::endl;
-    std::cout << "  node pnt = " << nodePnt << std::endl;
-    std::cout << "  dist(kernPnt, nodePnt) = " << xV.magnitude()
-      << std::endl;
-    xV.normalize();
-    double dotP = dot_product( pnt.GetTangent().GetVnlVector(), xV );
-    std::cout << "  dotp(kernPnt.tan, nodePnt.dist) = " << dotP
-      << std::endl;
-      */
+    if( this->GetDebug() )
+      {
+      VectorType xV = nodePnt - pnt.GetPosition().GetVnlVector();
+      std::cout << "  dirX = " << m_KernX.get_column( dir ) << std::endl;
+      std::cout << "  node pnt = " << nodePnt << std::endl;
+      std::cout << "  dist(kernPnt, nodePnt) = " << xV.magnitude()
+        << std::endl;
+      xV = xV.normalize();
+      double dotP = dot_product( pnt.GetTangent().GetVnlVector(), xV );
+      std::cout << "  dotp(kernPnt.tan, nodePnt.dist) = " << dotP
+        << std::endl;
+      }
 
     bool inBounds = true;
     ContinuousIndex<double, ImageDimension> nodeCIndx;
@@ -867,23 +986,29 @@ RadiusExtractor<TInputImage>
       }
     n.set_column( 0,
       ::tube::ComputeOrthogonalVector( pnt.GetTangent().GetVnlVector() ) );
-    n.get_column( 0 ).normalize();
-    // Should we set the point's normals?
+    n.set_column( 0, n.get_column( 0 ).normalize() );
     if( ImageDimension == 3 )
       {
       n.set_column( 1,
         ::tube::ComputeCrossVector( pnt.GetTangent().GetVnlVector(),
           n.get_column( 0 ) ) );
-      n.get_column( 1 ).normalize();
+      n.set_column( 1, n.get_column( 1 ).normalize() );
+      pnt.SetNormal1( n.get_column(0)[0], n.get_column(0)[1], n.get_column(0)[2] );
+      pnt.SetNormal2( n.get_column(1)[0], n.get_column(1)[1], n.get_column(1)[2] );
+      }
+    else
+      {
+      pnt.SetNormal1( n.get_column(0)[0], n.get_column(0)[1] );
+      }
+    if( this->GetDebug() )
+      {
+      std::cout << "   new n1 = " << pnt.GetNormal1() << std::endl;
+      if( ImageDimension == 3 )
+        {
+        std::cout << "   new n2 = " << pnt.GetNormal2() << std::endl;
+        }
       }
     }
-
-  /*
-  if( this->GetDebug() )
-    {
-    std::cout << "kernN0 = " << kernN.get_column( 0 ) << std::endl;
-    std::cout << "kernN1 = " << kernN.get_column( 1 ) << std::endl;
-    }*/
 
   VectorType n0( ImageDimension );
   n0.fill( 0 );
@@ -893,25 +1018,24 @@ RadiusExtractor<TInputImage>
       n.get_column( j ) );
     n0 += dp * n.get_column( j );
     }
-  n0.normalize();
-  /*
+  n0 = n0.normalize();
   if( this->GetDebug() )
     {
     std::cout << "n0 = " << n0 << std::endl;
-    } */
+    std::cout << "kernN0 = " << kernN.get_column(0) << std::endl;
+    }
   n.set_column( 0, n0 );
   if( ImageDimension == 3 )
     {
     n.set_column( 1,
       ::tube::ComputeCrossVector( pnt.GetTangent().GetVnlVector(),
         n.get_column( 0 ) ) );
-    n.get_column( 1 ).normalize();
-    /*
+    n.set_column( 1, n.get_column( 1 ).normalize() );
     if( this->GetDebug() )
       {
       std::cout << "n1 = " << n.get_column( 1 ) << std::endl;
-      } */
-
+      std::cout << "kernN1 = " << kernN.get_column(1) << std::endl;
+      }
     double tf = dot_product( kernN.get_column( 1 ),
       n.get_column( 1 ) );
     if( tf < 0 )
@@ -940,7 +1064,7 @@ RadiusExtractor<TInputImage>
     e = 3.1 / ( pntR / f );
     }
   m_DataOp->SetScale( pntR / f  );
-  m_DataOp->SetExtent( e );
+  m_DataOp->SetExtent( e * 1.1 );
   //double r = (f-e)/f * pntR;
   double r = pntR - (pntR/f) * e;
   if( r < 0 )
@@ -948,24 +1072,31 @@ RadiusExtractor<TInputImage>
     r = 0;
     e = f;
     }
-  /*
   if( this->GetDebug() )
     {
     std::cout << "Pos: opR = " << pntR << " r = " << r << " opE = " << e
       << " dist = " << r + pntR/f * e << std::endl;
-    }*/
+    std::cout << "   n = " << n << std::endl;
+    }
   this->ValuesInSubKernel( pnt, r, n, kernPos, kernPosCnt );
+  if( this->GetDebug() )
+    {
+    std::cout << "   kernPos = " << kernPos << std::endl;
+    }
 
   // r = (f+e)/f * pntR;
   r = pntR + (pntR/f) * e;
 
-  /*
   if( this->GetDebug() )
     {
     std::cout << "Neg: opR = " << pntR << " r = " << r << " opE = " << e
       << " dist = " << r - pntR/f * e << std::endl;
-    } */
+    }
   this->ValuesInSubKernel( pnt, r, n, kernNeg, kernNegCnt );
+  if( this->GetDebug() )
+    {
+    std::cout << "   kernNeg = " << kernNeg << std::endl;
+    }
 
   if( doBNess )
     {
@@ -1252,13 +1383,13 @@ RadiusExtractor<TInputImage>
     kernPosAvg = 0;
     kernNegAvg = 0;
     }
-  mness = ( kernPosAvg - kernNegAvg ) / ( pntR / 4 );
+  mness = ( kernPosAvg - kernNegAvg );
 
-  if ( this->GetDebug() )
+  // if( this->GetDebug() )
     {
-    std::cout << "** MNESS = " << mness << std::endl;
-    std::cout << "   kernPosAvg = " << kernPosAvg << std::endl;
-    std::cout << "   kernNegAvg = " << kernNegAvg << std::endl;
+    std::cout << "  PntR = " << pntR << " MNESS = " << mness
+      << " kernPosAvg = " << kernPosAvg
+      << " kernNegAvg = " << kernNegAvg << std::endl;
     }
 
   if( doBNess )
@@ -1343,10 +1474,11 @@ void
 RadiusExtractor<TInputImage>
 ::MeasuresInFullKernelArray( KernArrayType & kernArray,
   unsigned int kernPntStart,
-  unsigned int kernPntEnd )
+  unsigned int kernPntEnd,
+  double radiusStart )
 {
-  double pntR = m_RadiusStart;
-  double prevPntR = m_RadiusStart;
+  double pntR = radiusStart;
+  double prevPntR = pntR;
   double mness = 0;
 
   unsigned int kernMid = ( m_NumKernelPoints - 1 ) / 2;
@@ -1379,66 +1511,56 @@ RadiusExtractor<TInputImage>
     m_MedialnessOptSpline->SetNewData( true );
     double oldPntR = pntR;
     pntR /= m_MedialnessRadiusStep;
-    pntR = (int)pntR;
     m_MedialnessOptSpline->Extreme( &pntR, &mness );
-    if( this->GetDebug() )
-      {
-      std::cout << " cmp: " << (pntR-0.1/m_MedialnessRadiusStep)
-        * m_MedialnessRadiusStep << " - "
-        << m_MedialnessOptSpline->Value( pntR-0.1/m_MedialnessRadiusStep )
-        << std::endl;
-      std::cout << " cmp: " << pntR * m_MedialnessRadiusStep << " - "
-        << m_MedialnessOptSpline->Value( pntR )
-        << std::endl;
-      std::cout << " cmp: " << (pntR+0.1/m_MedialnessRadiusStep)
-        * m_MedialnessRadiusStep << " - "
-        << m_MedialnessOptSpline->Value( pntR+0.1/m_MedialnessRadiusStep )
-        << std::endl;
-      }
     pntR *= m_MedialnessRadiusStep;
 
-    if( this->GetDebug() )
+    //if( this->GetDebug() )
       {
       std::cout << "Local extreme at radius pntR = " << pntR
         << " with medialness = " << mness << std::endl;
       std::cout << "  prev radius = " << oldPntR << std::endl;
+      /*
+      std::cout << "  cmp: " << pntR-0.1 << " - "
+        << m_MedialnessOptSpline->Value( (pntR-0.1)/m_MedialnessRadiusStep )
+        << std::endl;
+      std::cout << "  cmp: " << pntR << " - "
+        << m_MedialnessOptSpline->Value( pntR / m_MedialnessRadiusStep )
+        << std::endl;
+      std::cout << "  cmp: " << pntR+0.1 << " - "
+        << m_MedialnessOptSpline->Value( (pntR+0.1)/m_MedialnessRadiusStep )
+        << std::endl;
+        */
       std::cout << std::endl;
       }
 
     if( mness < m_MinMedialness )
       {
-      if( this->GetDebug() )
+      //if( this->GetDebug() )
         {
-        std::cout << "Bad mnessVal( " << pntR << " ) = " << mness
-          << std::endl;
+        std::cout << "Bad mnessVal( " << pntR << " ) = " << mness << std::endl;
         }
       pntR = prevPntR;
       oldPntR = pntR;
       pntR /= m_MedialnessRadiusStep;
-      pntR = (int)pntR;
       m_MedialnessOptSpline->Extreme( &pntR, &mness );
-      if( this->GetDebug() )
-        {
-        std::cout << " cmp: " << (pntR-0.1/m_MedialnessRadiusStep)
-          * m_MedialnessRadiusStep << " - "
-          << m_MedialnessOptSpline->Value( pntR-0.1/m_MedialnessRadiusStep )
-          << std::endl;
-        std::cout << " cmp: " << pntR * m_MedialnessRadiusStep << " - "
-          << m_MedialnessOptSpline->Value( pntR )
-          << std::endl;
-        std::cout << " cmp: " << (pntR+0.1/m_MedialnessRadiusStep)
-          * m_MedialnessRadiusStep << " - "
-          << m_MedialnessOptSpline->Value( pntR+0.1/m_MedialnessRadiusStep )
-          << std::endl;
-        }
       pntR *= m_MedialnessRadiusStep;
       if( this->GetDebug() )
         {
-        std::cout << "Local extreme at radius pntR2 = " << pntR
+        std::cout << "NEW local extreme at radius pntR = " << pntR
           << " with medialness = " << mness << std::endl;
         std::cout << "  prev radius = " << oldPntR << std::endl;
+        std::cout << "  cmp: " << pntR-0.1 << " - "
+          << m_MedialnessOptSpline->Value( (pntR-0.1)/m_MedialnessRadiusStep )
+          << std::endl;
+        std::cout << "  cmp: " << pntR << " - "
+          << m_MedialnessOptSpline->Value( pntR / m_MedialnessRadiusStep )
+          << std::endl;
+        std::cout << "  cmp: " << pntR+0.1 << " - "
+          << m_MedialnessOptSpline->Value( (pntR+0.1)/m_MedialnessRadiusStep )
+          << std::endl;
         std::cout << std::endl;
         }
+
       if( mness >= m_MinMedialness )
         {
         if( this->GetDebug() )
@@ -1717,7 +1839,6 @@ RadiusExtractor<TInputImage>
     std::cout << "Found point " << ( *pntIter ).GetID() << std::endl;
     }
 
-
   int minDistI = 0;
   double minDist = ::tube::ComputeEuclideanDistance(
     kernArray[0].GetPosition(), (*pntIter).GetPosition() );
@@ -1731,39 +1852,24 @@ RadiusExtractor<TInputImage>
       minDistI = (int)(kPnt);
       }
     }
-
   if( this->GetDebug() )
     {
     std::cout << "Found point i = " << minDistI << std::endl;
     }
 
   int kernPnt = minDistI;
-
-  /*
-  kernPnt = minDistI - 1;
-  if( kernPnt < 0 )
-    {
-    kernPnt = 0;
-    } */
-
   if( this->GetDebug() )
     {
     std::cout << "Calling MeasuresInFullKernelArray" << std::endl;
     }
-  this->MeasuresInFullKernelArray( kernArray, kernPnt, len-1 );
-
-  /*
-  kernPnt = minDistI + 1;
-  if( kernPnt > (int)(len)-1 )
-    {
-    kernPnt = (int)(len) - 1;
-    } */
+  this->MeasuresInFullKernelArray( kernArray, kernPnt, len-1, m_RadiusStart );
 
   if( this->GetDebug() )
     {
     std::cout << "Calling MeasuresInFullKernelArray2" << std::endl;
     }
-  this->MeasuresInFullKernelArray( kernArray, kernPnt, 0 );
+  this->MeasuresInFullKernelArray( kernArray, kernPnt, 0,
+    kernArray[kernPnt].GetRadius() );
 
   if( this->GetDebug() )
     {
@@ -1776,10 +1882,11 @@ RadiusExtractor<TInputImage>
 
   if( this->GetDebug() )
     {
+    std::cout << "Radius results:" << std::endl;
     pntIter = tube->GetPoints().begin();
     while( pntIter != tube->GetPoints().end() )
       {
-      std::cout << pntIter->GetID() << " : " << pntIter->GetRadius()
+      std::cout << "   " << pntIter->GetID() << " : " << pntIter->GetRadius()
         << std::endl;
       ++pntIter;
       }

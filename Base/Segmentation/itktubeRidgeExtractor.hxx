@@ -117,8 +117,8 @@ RidgeExtractor<TInputImage>
 
   m_MaxTangentChange = 0.75;
   m_MaxXChange = 3.0;
-  m_MinRidgeness = 0.97;    // near 1 = harder
-  m_MinRidgenessStart = 0.95;
+  m_MinRidgeness = 0.95;    // near 1 = harder
+  m_MinRidgenessStart = 0.925;
   m_MinRoundness = 0.5;    // near 1 = harder
   m_MinRoundnessStart = 0.45;
   m_MinCurvature = 0.25;
@@ -726,7 +726,6 @@ RidgeExtractor<TInputImage>
           break;
         case 2:
           stepFactor = 0.5 * stepFactor0;
-          SetScale( GetScale() * 1.25 );
           break;
         case 3:
           stepFactor = 2.0 * stepFactor0;
@@ -1152,9 +1151,20 @@ RidgeExtractor<TInputImage>
           tmpPoint.SetTangent( tubeV );
           tmpPoint.SetRadius( m_DynamicScaleUsed );
           m_RadiusExtractor->SetRadiusStart( m_DynamicScaleUsed );
-          if( !m_RadiusExtractor->OptimalRadiusAtPoint( tmpPoint,
-            m_DynamicScaleUsed, m_DynamicScaleUsed/4, m_DynamicScaleUsed*2,
-            m_DynamicScaleUsed/8, m_DynamicScaleUsed/16 ) )
+          double radiusMin = m_DynamicScaleUsed/4;
+          if( radiusMin < m_RadiusExtractor->GetRadiusMin() )
+            {
+            radiusMin = m_RadiusExtractor->GetRadiusMin();
+            }
+          double radiusMax = m_DynamicScaleUsed*2;
+          if( radiusMax > m_RadiusExtractor->GetRadiusMax() )
+            {
+            radiusMax = m_RadiusExtractor->GetRadiusMax();
+            }
+          double radiusStep = m_RadiusExtractor->GetRadiusStep() * 2;
+          double radiusTolerance = m_RadiusExtractor->GetRadiusTolerance() * 10;
+          if( !m_RadiusExtractor->OptimalRadiusAtPoint( tmpPoint, m_DynamicScaleUsed,
+            radiusMin, radiusMax, radiusStep, radiusTolerance ) )
             {
             m_DynamicScaleUsed = ( 2 * tmpPoint.GetRadius()
               + m_DynamicScaleUsed ) / 3;
@@ -1170,7 +1180,7 @@ RidgeExtractor<TInputImage>
               m_DynamicScaleUsed );
             m_StatusCallBack( s, NULL, 0 );
             }
-          else if( this->GetDebug() )
+          else if( this->GetDebug() || verbose )
             {
             std::cout << "Dynamic Scale = " << m_DynamicScaleUsed
               << std::endl;
@@ -1591,8 +1601,20 @@ RidgeExtractor<TInputImage>
     tmpPoint.SetPosition( tubeX );
     tmpPoint.SetTangent( tubeV );
     tmpPoint.SetRadius( scale0 );
+    double radiusMin = scale0/4;
+    if( radiusMin < m_RadiusExtractor->GetRadiusMin() )
+      {
+      radiusMin = m_RadiusExtractor->GetRadiusMin();
+      }
+    double radiusMax = scale0*2;
+    if( radiusMax > m_RadiusExtractor->GetRadiusMax() )
+      {
+      radiusMax = m_RadiusExtractor->GetRadiusMax();
+      }
+    double radiusStep = m_RadiusExtractor->GetRadiusStep() * 2;
+    double radiusTolerance = m_RadiusExtractor->GetRadiusTolerance() * 10;
     if( !m_RadiusExtractor->OptimalRadiusAtPoint( tmpPoint,
-      scale0, scale0/4, scale0*2, scale0/8, scale0/16 ) )
+      scale0, radiusMin, radiusMax, radiusStep, radiusTolerance ) )
       {
       if( this->GetDebug() && m_StatusCallBack )
         {
@@ -1656,7 +1678,7 @@ RidgeExtractor<TInputImage>
     {
     std::cout << "Traversing one way" << std::endl;
     }
-  TraverseOneWay( lX, lT, lN, 1 );
+  TraverseOneWay( lX, lT, lN, 1, verbose );
   if( verbose || this->GetDebug() )
     {
     std::cout << "End traversing one way" << std::endl;
@@ -1680,7 +1702,7 @@ RidgeExtractor<TInputImage>
     {
     std::cout << "Traversing the other way" << std::endl;
     }
-  TraverseOneWay( lX, lT, lN, -1 );
+  TraverseOneWay( lX, lT, lN, -1, verbose );
   if( verbose || this->GetDebug() )
     {
     std::cout << "End traversing the other way" << std::endl;
