@@ -221,7 +221,7 @@ int DoIt( int argc, char * argv[] )
         maskImage->GetLargestPossibleRegion() );
       itk::ImageRegionConstIterator< ScaleImageType > iterS( scaleImage,
         scaleImage->GetLargestPossibleRegion() );
-      unsigned int count = 0;
+      int count = 0;
       while( !iter.IsAtEnd() )
         {
         if( iter.Get() )
@@ -239,7 +239,7 @@ int DoIt( int argc, char * argv[] )
       }
     else
       {
-      unsigned int count = 0;
+      int count = 0;
       itk::ImageRegionConstIteratorWithIndex< MaskImageType > iter( maskImage,
         maskImage->GetLargestPossibleRegion() );
       while( !iter.IsAtEnd() )
