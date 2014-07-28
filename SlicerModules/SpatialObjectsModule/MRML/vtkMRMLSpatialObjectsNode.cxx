@@ -545,6 +545,12 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
 
     currTube->ComputeObjectToWorldTransform();
 
+    double spacingX = currTube->GetSpacing()[0];
+    if( spacingX == 0 )
+      {
+      spacingX = 1;
+      }
+
     size_t numberOfPoints = currTube->GetPoints().size();
     for(size_t index = 0; index < numberOfPoints; ++pointID, ++index)
       {
@@ -571,7 +577,7 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
       tubeIDs->SetTuple1(pointID, currTube->GetId());
 
       // Radius
-      tubeRadius->SetTuple1(pointID, tubePoint->GetRadius());
+      tubeRadius->SetTuple1(pointID, tubePoint->GetRadius() * spacingX );
 
       // Tangeantes
       tan1->SetTuple3(pointID,
