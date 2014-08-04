@@ -481,10 +481,11 @@ RadiusExtractor<TInputImage>
     bness = 0;
     return;
     }
-  else if( len == 1 )
+  else if( len <= 2 )
     {
     this->MeasuresAtPoint( kernArray[0], pntR, mness, bness,
       doBNess );
+    return;
     }
 
   unsigned int mid = ( len - 1 ) / 2;
@@ -557,7 +558,7 @@ RadiusExtractor<TInputImage>
     //   ComputeTangents on the tube prior to calling this function
     //   to avoid this situation.  If inconsistent normals are used,
     //   branchness computations suffer due to normal flipping.
-    if( this->GetDebug() )
+    //if( this->GetDebug() )
       {
       std::cout
         << "Warning: Point normals invalid. Recomputing. Frenet frame lost."
@@ -616,12 +617,12 @@ RadiusExtractor<TInputImage>
       }*/
     for( unsigned int d=0; d<m_KernNumDirs; d++ )
       {
-      /*if( this->GetDebug() )
+      if( this->GetDebug() )
         {
         std::cout << "  Pos[" << d << "] = " << kernPos[d] << std::endl;
         std::cout << "  Neg[" << d << "] = " << kernNeg[d] << std::endl;
         std::cout << "  Brn[" << d << "] = " << kernBrn[d] << std::endl;
-        }*/
+        }
       kernPosTot[d] += w[i] * kernPos[d];
       kernNegTot[d] += w[i] * kernNeg[d];
       kernBrnTot[d] += w[i] * kernBrn[d];
@@ -730,7 +731,7 @@ RadiusExtractor<TInputImage>
   double oldR0 = r0;
   r0 /= m_MedialnessRadiusStep;
   m_MedialnessOptSpline->Extreme( &r0, &mness );
-  if( this->GetDebug() )
+  //if( this->GetDebug() )
     {
     std::cout << " cmp: " << r0-0.1/m_MedialnessRadiusStep << " - "
       << m_MedialnessOptSpline->Value( r0-0.1/m_MedialnessRadiusStep )
