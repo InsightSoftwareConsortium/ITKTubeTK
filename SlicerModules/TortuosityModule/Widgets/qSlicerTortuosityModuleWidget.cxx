@@ -122,6 +122,8 @@ void qSlicerTortuosityModuleWidget
     }
 
   d->currentSpatialObject = node;
+
+  d->RunPushButton->setEnabled(node != 0);
 }
 
 //------------------------------------------------------------------------------
