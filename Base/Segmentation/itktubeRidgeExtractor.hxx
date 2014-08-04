@@ -581,6 +581,7 @@ RidgeExtractor<TInputImage>
 
   int tubeId = m_Tube->GetId();
   int tubePointCount = m_Tube->GetPoints().size();
+  int tubePointCountStart = tubePointCount;
 
   VectorType prod( ImageDimension );
   VectorType tV( ImageDimension );
@@ -1044,8 +1045,10 @@ RidgeExtractor<TInputImage>
 
     if( maskVal != 0 )
       {
+      int oldPoint = ( maskVal - (int)maskVal ) * 10000;
       if( ( int )maskVal != tubeId ||
-         tubePointCount-( ( maskVal-( int )maskVal )*10000 )>20/m_StepX )
+         ( ( tubePointCount - oldPoint ) > ( 20 / m_StepX ) 
+           && ( tubePointCount - tubePointCountStart ) > ( 20 / m_StepX ) ) )
         {
         if( verbose || this->GetDebug() )
           {
