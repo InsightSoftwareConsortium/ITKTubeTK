@@ -44,7 +44,7 @@
          </stringlist>
         </property>
         <property name="removeEnabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="renameEnabled">
          <bool>true</bool>
