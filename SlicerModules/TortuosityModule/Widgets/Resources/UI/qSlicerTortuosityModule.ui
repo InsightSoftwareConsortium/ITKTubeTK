@@ -175,6 +175,19 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="SaveCSVPushButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Save as CSV...</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
   </layout>
