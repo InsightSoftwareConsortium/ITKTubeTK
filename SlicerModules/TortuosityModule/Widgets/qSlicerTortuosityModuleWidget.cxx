@@ -27,6 +27,7 @@ limitations under the License.
 
 // Qt includes
 #include <QDebug>
+#include <QFileDialog>
 
 // MRML includes
 #include "vtkMRMLSpatialObjectsNode.h"
@@ -74,6 +75,10 @@ void qSlicerTortuosityModuleWidgetPrivate::init()
   QObject::connect(
     this->RunPushButton, SIGNAL(toggled(bool)),
     q, SLOT(runSelectedMetrics(bool)));
+
+  QObject::connect(
+    this->SaveCSVPushButton, SIGNAL(toggled(bool)),
+    q, SLOT(saveCurrentSpatialObjectAsCSV(bool)));
 }
 
 //-----------------------------------------------------------------------------
@@ -122,6 +127,9 @@ void qSlicerTortuosityModuleWidget
     }
 
   d->currentSpatialObject = node;
+
+  d->RunPushButton->setEnabled(node != 0);
+  d->SaveCSVPushButton->setEnabled(node != 0);
 }
 
 //------------------------------------------------------------------------------
@@ -159,4 +167,33 @@ void qSlicerTortuosityModuleWidget::runSelectedMetrics(bool run)
     vtkSlicerTortuosityLogic::SumOfAnglesMetric : 0;
 
   this->runMetrics(flag);
+}
+
+//------------------------------------------------------------------------------
+void qSlicerTortuosityModuleWidget::saveCurrentSpatialObjectAsCSV(bool save)
+{
+  Q_D(qSlicerTortuosityModuleWidget);
+
+  if (!d->currentSpatialObject || !save)
+    {
+    return;
+    }
+
+  d->SaveCSVPushButton->setEnabled(false);
+
+  QString filename =
+    QFileDialog::getSaveFileName(
+      this, "Save tortuosity as csv...", "", "Comma Separated Value (*.csv)");
+  int flag = vtkSlicerTortuosityLogic::DistanceMetric
+    | vtkSlicerTortuosityLogic::InflectionCountMetric
+    | vtkSlicerTortuosityLogic::SumOfAnglesMetric;
+  if (!d->logic()->SaveAsCSV(d->currentSpatialObject, filename.toLatin1(), flag))
+    {
+    QString msg = "Failed to write CSV at %1. Make sure you have run the "
+      "tortuosity metrics at least once.";
+    qCritical(msg.arg(filename).toLatin1());
+    }
+
+  d->SaveCSVPushButton->setChecked(false);
+  d->SaveCSVPushButton->setEnabled(true);
 }

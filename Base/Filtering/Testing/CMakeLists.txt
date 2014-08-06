@@ -60,6 +60,7 @@ set( tubeBaseFilteringTests_SRCS
   itktubeStructureTensorRecursiveGaussianImageFilterTestNew.cxx
   itktubeSubSampleTubeSpatialObjectFilterTest.cxx
   itktubeSubSampleTubeTreeSpatialObjectFilterTest.cxx
+  itktubeTortuositySpatialObjectFilterTest.cxx
   itktubeTubeEnhancingDiffusion2DImageFilterTest.cxx )
 
 include_directories(
@@ -95,6 +96,10 @@ add_test( NAME tubeBaseFilteringHeaderTest
 add_test( NAME tubeBaseFilteringPrintTest
   COMMAND ${BASE_FILTERING_TESTS}
     tubeBaseFilteringPrintTest )
+
+add_test( NAME itktubeTortuositySpatialObjectFilterTest
+  COMMAND ${BASE_FILTERING_TESTS}
+    itktubeTortuositySpatialObjectFilterTest )
 
 Midas3FunctionAddTest( NAME itktubeExtractTubePointsSpatialObjectFilterTest
   COMMAND ${BASE_FILTERING_TESTS}

@@ -33,6 +33,7 @@ limitations under the License.
 #include <vtkSlicerTortuosityModuleLogicExport.h>
 
 #include <map>
+#include <vector>
 
 class vtkDoubleArray;
 class vtkMRMLSpatialObjectsNode;
@@ -52,14 +53,15 @@ public:
     InflectionCountMetric = 0x02,
     InflectionPoints = 0x04,
     SumOfAnglesMetric = 0x08,
+    All = 0xFF,
     };
 
   // Return whether the flag asks for an unique measure or not.
   bool UniqueMeasure(int flag);
 
   // Return the array corresponding to the metric array. If a flag is
-  // passed, the array is valid only if the flag contains the correspoding
-  // metric.
+  // passed, the array is valid only if the flag uniquely corresponds
+  // to a metric.
   // \sa GetArray()
   vtkDoubleArray* GetDistanceMetricArray(
     vtkMRMLSpatialObjectsNode* node, int flag = DistanceMetric);
@@ -71,8 +73,8 @@ public:
     vtkMRMLSpatialObjectsNode* node, int flag = SumOfAnglesMetric);
 
   // Get the metric array on the given node. If no array corresponding to
-  // the flag, an empty array will be created.
-  vtkDoubleArray* GetArray(vtkMRMLSpatialObjectsNode* node, int flag);
+  // the flag (or name), an empty array will be created.
+  vtkDoubleArray* GetOrCreateArray(vtkMRMLSpatialObjectsNode* node, int flag);
 
   // Run the metric on the given spatial object node.
   // \sa RunMetrics()
@@ -84,11 +86,27 @@ public:
   // Run the metric specified by the flag on the given spatial object node.
   bool RunMetrics(vtkMRMLSpatialObjectsNode* node, int flag);
 
+  // Save the given metrics to CSV. Only value will be saved per vessel.
+  bool SaveAsCSV(
+    vtkMRMLSpatialObjectsNode* node, const char* filename, int flag = All);
+
 protected:
   vtkSlicerTortuosityLogic( void );
   ~vtkSlicerTortuosityLogic( void );
   vtkSlicerTortuosityLogic(const vtkSlicerTortuosityLogic&);
   void operator=(const vtkSlicerTortuosityLogic&);
+
+  // Get names from the given flag
+  std::vector<std::string> GetNamesFromFlag(int flag);
+
+  // Get the array of the type T with the given name on the node's polydata
+  // pointdata.
+  template<typename T>
+    T* GetArray(vtkMRMLSpatialObjectsNode* node, const char* name);
+
+  // Same than GetArray() but if no array exists, one will be created.
+  template<typename T>
+    T* GetOrCreateArray(vtkMRMLSpatialObjectsNode* node, const char* name);
 
 private:
   std::map<int, std::string> FlagToArrayNames;

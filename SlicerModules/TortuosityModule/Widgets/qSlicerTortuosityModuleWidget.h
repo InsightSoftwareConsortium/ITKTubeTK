@@ -56,6 +56,7 @@ public slots:
 
 protected slots:
   void runSelectedMetrics(bool run);
+  void saveCurrentSpatialObjectAsCSV(bool save);
 
 protected:
   virtual void setup();
