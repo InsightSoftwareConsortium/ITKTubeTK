@@ -116,6 +116,14 @@ public:
     */
   double GetInflectionPointValue( int i, int flag = INFLECTION_POINTS ) const;
 
+
+  /** Set/Get the sensibility of the filter. This is used in internal
+    * computation when comparing whether a value should be considered null or
+    * not. Default value (1e-6) should be acceptable for most cases.
+    */
+  itkSetMacro( Epsilon, double );
+  itkGetConstMacro( Epsilon, double );
+
 protected:
   TortuositySpatialObjectFilter( void );
   virtual ~TortuositySpatialObjectFilter( void );
@@ -131,6 +139,7 @@ private:
   double m_DistanceMetric;
   double m_InflectionCountMetric;
   double m_SumOfAnglesMetric;
+  double m_Epsilon;
 
 }; // End class TortuositySpatialObjectFilter
 

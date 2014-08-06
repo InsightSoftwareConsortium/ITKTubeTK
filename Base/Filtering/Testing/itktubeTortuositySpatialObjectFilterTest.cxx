@@ -27,6 +27,7 @@ limitations under the License.
 
 // ITK includes
 #include <itkMath.h>
+#include <itkSpatialObjectWriter.h>
 
 typedef itk::VesselTubeSpatialObject<3> VesselTubeType;
 typedef VesselTubeType::VectorType VectorType;
@@ -109,7 +110,7 @@ VesselTubeType::Pointer GenerateCosTube(double length,
 }
 
 //-----------------------------------------------------------------------------
-bool TestVesselMetrics(VesselTubeType::Pointer vessel, double results[3], int i)
+bool TestVesselMetrics(VesselTubeType::Pointer vessel, double results[3])
 {
   // Run the metrics
   FilterType::Pointer filter = FilterType::New();
@@ -132,9 +133,9 @@ bool TestVesselMetrics(VesselTubeType::Pointer vessel, double results[3], int i)
   bool success = true;
   for (int i = 0; i < 3; ++i)
     {
-    success &= itk::Math::FloatAlmostEqual(dm, results[0]);
-    success &= itk::Math::FloatAlmostEqual(icm, results[1]);
-    success &= itk::Math::FloatAlmostEqual(soam, results[2]);
+    success &= itk::Math::FloatAlmostEqual(dm, results[0], 4, 1e-4);
+    success &= itk::Math::FloatAlmostEqual(icm, results[1], 4, 1e-4);
+    success &= itk::Math::FloatAlmostEqual(soam, results[2], 4, 1e-4);
 
     if (!success)
       {
@@ -153,6 +154,10 @@ bool TestVesselMetrics(VesselTubeType::Pointer vessel, double results[3], int i)
 //-----------------------------------------------------------------------------
 int itktubeTortuositySpatialObjectFilterTest( int argc, char * argv[] )
 {
+
+  typedef itk::SpatialObjectWriter< 3 > WriterType;
+  WriterType::Pointer writer = WriterType::New();
+
   //
   // Test straight spatial objects
   //
@@ -186,7 +191,13 @@ int itktubeTortuositySpatialObjectFilterTest( int argc, char * argv[] )
     VesselTubeType::Pointer vessel =
       GenerateStraightTube(start[i], increment[i], numberOfPoints[i]);
 
-    if (!TestVesselMetrics(vessel, straightObjectResults[i], i))
+    //std::stringstream ss;
+    //ss << "W:/Prometheus/Data/SegmentTubesTest/line_test" << i << ".tre";
+    //writer->SetFileName(ss.str().c_str());
+    //writer->SetInput(vessel);
+    //writer->Update();
+
+    if (!TestVesselMetrics(vessel, straightObjectResults[i]))
       {
       std::cerr<<"Error in straight object test for object #"<<i<<std::endl;
       return EXIT_FAILURE;
@@ -219,12 +230,12 @@ int itktubeTortuositySpatialObjectFilterTest( int argc, char * argv[] )
     {
       1.21581,
       1.21581 * 2.0,
-      0.411187
+      0.411651
     },
     {
       1.21581,
       1.21581 * 4.0,
-      0.411187
+      0.411651
     },
     {
       5.87042,
@@ -244,9 +255,15 @@ int itktubeTortuositySpatialObjectFilterTest( int argc, char * argv[] )
     VesselTubeType::Pointer vessel =
       GenerateCosTube(length[i], amplitude[i], frequency[i]);
 
-    if (!TestVesselMetrics(vessel, cosResults[i], i))
+    //std::stringstream ss;
+    //ss << "W:/Prometheus/Data/SegmentTubesTest/cosinus_test" << i << ".tre";
+    //writer->SetFileName(ss.str().c_str());
+    //writer->SetInput(vessel);
+    //writer->Update();
+
+    if (!TestVesselMetrics(vessel, cosResults[i]))
       {
-      std::cerr<<"Error in straight object test for object #"<<i<<std::endl;
+      std::cerr<<"Error in cos object test for object #"<<i<<std::endl;
       return EXIT_FAILURE;
       }
     }
