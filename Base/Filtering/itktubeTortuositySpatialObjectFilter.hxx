@@ -146,7 +146,7 @@ double SafeAcos(double x)
 }
 
 template<typename VectorType >
-typename VectorType::RealValueType SafeNormalize(typename VectorType& v)
+typename VectorType::RealValueType SafeNormalize(VectorType& v)
 {
   typedef typename VectorType::RealValueType  RealType;
   typedef typename VectorType::ValueType      ValueType;
