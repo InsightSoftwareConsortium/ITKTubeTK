@@ -25,8 +25,10 @@ project( vtkSlicer${MODULE_NAME}ModuleLogic )
 
 set( KIT ${PROJECT_NAME} )
 
-find_package( TubeTK REQUIRED )
-include( ${TubeTK_USE_FILE} )
+if( NOT TubeTK_SOURCE_DIR )
+  find_package( TubeTK REQUIRED )
+  include( ${TubeTK_USE_FILE} )
+endif( NOT TubeTK_SOURCE_DIR )
 
 set( ${KIT}_EXPORT_DIRECTIVE "VTK_SLICER_${MODULE_NAME_UPPER}_MODULE_LOGIC_EXPORT" )
 
