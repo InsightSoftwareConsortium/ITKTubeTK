@@ -25,6 +25,9 @@ project( vtkSlicer${MODULE_NAME}ModuleLogic )
 
 set( KIT ${PROJECT_NAME} )
 
+find_package( TubeTK REQUIRED )
+include( ${TubeTK_USE_FILE} )
+
 set( ${KIT}_EXPORT_DIRECTIVE "VTK_SLICER_${MODULE_NAME_UPPER}_MODULE_LOGIC_EXPORT" )
 
 set( ${KIT}_INCLUDE_DIRECTORIES
@@ -33,6 +36,7 @@ set( ${KIT}_INCLUDE_DIRECTORIES
   ${vtkSlicer${MODULE_NAME}ModuleMRML_BINARY_DIR}
   ${vtkSlicerSpatialObjectsModuleMRML_SOURCE_DIR}
   ${vtkSlicerSpatialObjectsModuleMRML_BINARY_DIR}
+  ${TubeTK_SOURCE_DIR}/Base/Filtering
   )
 
 set( ${KIT}_SRCS

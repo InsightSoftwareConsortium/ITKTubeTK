@@ -44,7 +44,7 @@
          </stringlist>
         </property>
         <property name="removeEnabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="renameEnabled">
          <bool>true</bool>
@@ -164,8 +164,24 @@
      </item>
      <item>
       <widget class="QPushButton" name="RunPushButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Run</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="SaveCSVPushButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Save as CSV...</string>
        </property>
        <property name="checkable">
         <bool>true</bool>

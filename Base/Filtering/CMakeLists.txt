@@ -44,6 +44,7 @@ set( TubeTK_Base_Filtering_H_Files
   itktubeSubSampleTubeSpatialObjectFilter.h
   itktubeSubSampleTubeTreeSpatialObjectFilter.h
   itktubeSymmetricEigenVectorAnalysisImageFilter.h
+  itktubeTortuositySpatialObjectFilter.h
   itktubeTubeEnhancingDiffusion2DImageFilter.h )
 
 set( TubeTK_Base_Filtering_HXX_Files
@@ -63,6 +64,7 @@ set( TubeTK_Base_Filtering_HXX_Files
   itktubeStructureTensorRecursiveGaussianImageFilter.hxx
   itktubeSubSampleTubeSpatialObjectFilter.hxx
   itktubeSubSampleTubeTreeSpatialObjectFilter.hxx
+  itktubeTortuositySpatialObjectFilter.h
   itktubeTubeEnhancingDiffusion2DImageFilter.hxx )
 
 add_custom_target( TubeTKFiltering SOURCES
