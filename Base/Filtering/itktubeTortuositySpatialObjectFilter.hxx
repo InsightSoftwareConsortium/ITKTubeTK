@@ -154,10 +154,9 @@ typename VectorType::RealValueType SafeNormalize(VectorType& v)
   typename VectorType::RealValueType norm = v.GetNorm();
   if (norm != 0.0)
     {
-    for ( unsigned int i = 0; i < typename VectorType::Dimension; ++i )
+    for ( unsigned int i = 0; i < VectorType::Dimension; ++i )
       {
-      v[i] = static_cast< typename ValueType>(
-        static_cast< typename RealType >( v[i] ) / norm );
+      v[i] = static_cast< ValueType >( static_cast< RealType >( v[i] ) / norm );
       }
     }
   return norm;
