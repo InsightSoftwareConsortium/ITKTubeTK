@@ -34,10 +34,10 @@
       <description>Output TRE</description>
     </file>
     <image>
-      <name>inputImage</name>
+      <name>inputImageFileName</name>
       <label>Input image</label>
       <channel>output</channel>
-      <longflag>--inputImage</longflag>
+      <longflag>--image</longflag>
       <flag>-i</flag>
       <description>(Optional) Input image used when converting from TubeTK to TubeX. Ignored in normal mode.</description>
       <default></default>

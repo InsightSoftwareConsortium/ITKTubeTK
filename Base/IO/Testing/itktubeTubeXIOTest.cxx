@@ -47,7 +47,7 @@ int itktubeTubeXIOTest( int argc, char * argv[] )
     {
     std::stringstream ss;
     ss << argv[ i + 3 ];
-    int dim;
+    unsigned int dim;
     ss >> dim;
     if ( ioMethod->GetDimensions()[i] != dim )
       {

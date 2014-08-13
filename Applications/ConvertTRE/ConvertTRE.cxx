@@ -118,7 +118,7 @@ int main( int argc, char * argv[] )
       }
 
     ImageReaderType::Pointer inputImageReader = ImageReaderType::New();
-    inputImageReader->SetFileName( inputImage.c_str() );
+    inputImageReader->SetFileName( inputImageFileName.c_str() );
     ImageType* inputImage = 0;
     try
       {
@@ -140,7 +140,7 @@ int main( int argc, char * argv[] )
     TubeXIOType::Pointer writer = TubeXIOType::New();
     writer->SetTubeGroup( reader->GetGroup() );
 
-    SizeType size = { 1, 1, 1 };
+    SizeType size = {1, 1, 1};
     if ( inputImage )
       {
       size =

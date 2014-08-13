@@ -39,7 +39,7 @@ TubeXIO< TDimension >
 ::TubeXIO()
 {
   m_TubeGroup = TubeGroupType::New();
-  for (int i = 0; i < TDimension; ++i)
+  for ( unsigned int i = 0; i < TDimension; ++i )
     {
     m_Dimensions[i] = 1;
     }
