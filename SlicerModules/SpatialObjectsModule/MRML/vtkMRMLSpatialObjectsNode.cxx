@@ -62,14 +62,14 @@ vtkMRMLNodeNewMacro(vtkMRMLSpatialObjectsNode);
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsNode::vtkMRMLSpatialObjectsNode( void )
 {
-  this->PrepareSubsampling();
+  this->PrepareCleaning();
   this->Reset();
 }
 
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsNode::~vtkMRMLSpatialObjectsNode( void )
 {
-  this->CleanSubsampling();
+  this->RemoveCleaning();
 }
 
 //------------------------------------------------------------------------------
@@ -85,18 +85,13 @@ void vtkMRMLSpatialObjectsNode::ReadXMLAttributes(const char** atts)
 
   Superclass::ReadXMLAttributes(atts);
 
-  const char* attName;
-  const char* attValue;
-  while(*atts != NULL)
-    {
-    attName = *(atts++);
-    attValue = *(atts++);
-
-    if(!std::strcmp(attName, "SubsamplingRatio"))
-      {
-      this->SubsamplingRatio = std::atof(attValue);
-      }
-    }
+  //const char* attName;
+  //const char* attValue;
+  //while(*atts != NULL)
+  //  {
+  //  attName = *(atts++);
+  //  attValue = *(atts++);
+  //  }
 
   this->EndModify(disabledModify);
 }
@@ -113,7 +108,7 @@ void vtkMRMLSpatialObjectsNode::Copy(vtkMRMLNode *anode)
 
   if(node)
     {
-    this->SetSubsamplingRatio(node->SubsamplingRatio);
+    this->SetSpatialObject(node->GetSpatialObject());
     }
 
   this->EndModify(disabledModify);
@@ -122,8 +117,6 @@ void vtkMRMLSpatialObjectsNode::Copy(vtkMRMLNode *anode)
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsNode::Reset()
 {
-  this->SubsamplingRatio = 1;
-
   this->SpatialObject = TubeNetType::New();
   this->SpatialObject->Initialize();
   this->UpdatePolyDataFromSpatialObject();
@@ -155,22 +148,6 @@ void vtkMRMLSpatialObjectsNode::PrintSelf(ostream& os, vtkIndent indent)
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsNode::UpdateScene(vtkMRMLScene *scene)
-{
-  Superclass::UpdateScene(scene);
-
-  int disabledModify = this->StartModify();
-
-  // We are forcing the update of the fields as UpdateScene
-  // should only be called after loading data
-  double ActualSubsamplingRatio = this->SubsamplingRatio;
-  this->SubsamplingRatio = 0.;
-  this->SetSubsamplingRatio(ActualSubsamplingRatio);
-
-  this->EndModify(disabledModify);
-}
-
-//------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsNode::UpdateReferences( void )
 {
   for(int ii = 0; ii < this->GetNumberOfDisplayNodes(); ++ii)
@@ -189,8 +166,8 @@ void vtkMRMLSpatialObjectsNode::UpdateReferences( void )
 //------------------------------------------------------------------------------
 vtkPolyData* vtkMRMLSpatialObjectsNode::GetFilteredPolyData( void )
 {
-  return this->PolyData;
-  //return this->CleanPolyDataPostSubsampling->GetOutput();
+  this->CleanPolyData->Update();
+  return this->CleanPolyData->GetOutput();
 }
 
 //------------------------------------------------------------------------------
@@ -362,44 +339,24 @@ void vtkMRMLSpatialObjectsNode::SetAndObservePolyData(vtkPolyData* polyData)
     this->ShuffledIds->SetValue(i, idVector[i]);
     }
 
-  float subsamplingRatio = 1.f;
-  this->SetSubsamplingRatio(subsamplingRatio);
-  this->UpdateSubsampling();
+  this->UpdateCleaning();
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsNode::SetSubsamplingRatio(float ratio)
-{
-  vtkDebugMacro(<< this->GetClassName()
-                << " (" << this << "): setting subsamplingRatio to " << ratio);
-
-  const float oldSubsampling = this->SubsamplingRatio;
-  // Clamp
-  const float newSubsamplingRatio =
-    (ratio < 0. ? 0. : (ratio > 1. ? 1.: ratio));
-  if(oldSubsampling != newSubsamplingRatio)
-    {
-    this->SubsamplingRatio = newSubsamplingRatio;
-    this->UpdateSubsampling();
-    this->Modified();
-    }
-}
-
-//------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsNode::PrepareSubsampling( void )
+void vtkMRMLSpatialObjectsNode::PrepareCleaning( void )
 {
   this->ShuffledIds = vtkIdTypeArray::New();
-  this->CleanPolyDataPostSubsampling = vtkCleanPolyData::New();
-  this->CleanPolyDataPostSubsampling->ConvertLinesToPointsOff();
-  this->CleanPolyDataPostSubsampling->ConvertPolysToLinesOff();
-  this->CleanPolyDataPostSubsampling->ConvertStripsToPolysOff();
-  this->CleanPolyDataPostSubsampling->PointMergingOff();
+  this->CleanPolyData = vtkCleanPolyData::New();
+  this->CleanPolyData->ConvertLinesToPointsOff();
+  this->CleanPolyData->ConvertPolysToLinesOff();
+  this->CleanPolyData->ConvertStripsToPolysOff();
+  this->CleanPolyData->PointMergingOff();
 
-  this->CleanPolyDataPostSubsampling->SetInput(this->PolyData);
+  this->CleanPolyData->SetInput(this->PolyData);
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsNode::UpdateSubsampling( void )
+void vtkMRMLSpatialObjectsNode::UpdateCleaning( void )
 {
   if(!this->GetPolyData())
     {
@@ -429,9 +386,9 @@ void vtkMRMLSpatialObjectsNode::UpdateSubsampling( void )
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsNode::CleanSubsampling( void )
+void vtkMRMLSpatialObjectsNode::RemoveCleaning( void )
 {
-  this->CleanPolyDataPostSubsampling->Delete();
+  this->CleanPolyData->Delete();
   this->ShuffledIds->Delete();
 }
 

@@ -89,22 +89,9 @@ public:
   virtual void UpdateReferences( void );
 
   ///
-  /// Finds the storage node and read the data
-  virtual void UpdateScene(vtkMRMLScene *scene);
-
-  ///
   /// Get node XML tag name (like Volume, Model)
   virtual const char* GetNodeTagName( void )
   {return "SpatialObjects";}
-
-  /// Get the subsampling ratio for the polydata
-  vtkGetMacro(SubsamplingRatio, float);
-
-  /// Set the subsampling ratio for the polydata
-  //
-  virtual void SetSubsamplingRatio(float);
-  virtual float GetSubsamplingRatioMinValue( void ) {return 0.;}
-  virtual float GetSubsamplingRatioMaxValue( void ) {return 1.;}
 
   ///
   /// Get the subsampled PolyData converted from the real data in the node.
@@ -168,12 +155,11 @@ protected:
 
   vtkIdTypeArray* ShuffledIds;
 
-  virtual void PrepareSubsampling( void );
-  virtual void UpdateSubsampling( void );
-  virtual void CleanSubsampling( void );
+  virtual void PrepareCleaning( void );
+  virtual void UpdateCleaning( void );
+  virtual void RemoveCleaning( void );
 
-  vtkCleanPolyData* CleanPolyDataPostSubsampling;
-  float SubsamplingRatio;
+  vtkCleanPolyData* CleanPolyData;
 
 }; // End class vtkMRMLSpatialObjectsNode
 
