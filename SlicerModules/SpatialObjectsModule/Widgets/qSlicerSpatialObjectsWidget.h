@@ -79,6 +79,8 @@ public slots:
   void onColorByScalarRangeChanged(double,double);
   void setColorByCellScalars();
   void setColorBySolid();
+  void setSliceIntersection(int);
+  void setSliceIntersectionThickness(double);
   void clickColorBySolid(bool);
   void onColorBySolidChanged(const QColor&);
   void setColorByCellScalarsColorTable(vtkMRMLNode*);

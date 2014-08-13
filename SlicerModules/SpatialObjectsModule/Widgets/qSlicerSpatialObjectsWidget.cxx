@@ -84,6 +84,13 @@ void qSlicerSpatialObjectsWidgetPrivate::init()
                    SIGNAL(clicked()), q,
                    SLOT(setColorBySolid()));
 
+  QObject::connect(this->SliceIntersectionCheckBox,
+                   SIGNAL(stateChanged(int)), q,
+                   SLOT(setSliceIntersection(int)));
+  QObject::connect(this->SliceIntersectionThicknessSpinBox,
+                   SIGNAL(valueChanged(double)), q,
+                   SLOT(setSliceIntersectionThickness(double)));
+
   QObject::connect(this->ColorBySolidColorPicker,
                    SIGNAL(colorChanged(QColor)), q,
                    SLOT(onColorBySolidChanged(QColor)));
@@ -302,6 +309,32 @@ void qSlicerSpatialObjectsWidget::setColorBySolid()
 
   d->SpatialObjectsDisplayNode->SetColorModeToSolid();
   d->SpatialObjectsDisplayNode->SetScalarVisibility(0);
+}
+
+//------------------------------------------------------------------------------
+void qSlicerSpatialObjectsWidget::setSliceIntersection(int intersection)
+{
+  Q_D(qSlicerSpatialObjectsWidget);
+
+  if(!d->SpatialObjectsDisplayNode)
+    {
+    return;
+    }
+
+  d->SpatialObjectsDisplayNode->SetSliceIntersectionVisibility(intersection);
+}
+
+//------------------------------------------------------------------------------
+void qSlicerSpatialObjectsWidget::setSliceIntersectionThickness(double value)
+{
+  Q_D(qSlicerSpatialObjectsWidget);
+
+  if(!d->SpatialObjectsDisplayNode)
+    {
+    return;
+    }
+
+  d->SpatialObjectsDisplayNode->SetSliceIntersectionThickness(value);
 }
 
 //------------------------------------------------------------------------------
