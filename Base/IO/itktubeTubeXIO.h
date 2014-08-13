@@ -78,7 +78,7 @@ private:
   void operator=( const Self& );
 
   typename TubeGroupType::Pointer  m_TubeGroup;
-  typename SizeType                m_Dimensions;
+  SizeType                         m_Dimensions;
 
 }; // TubeXIO
 
