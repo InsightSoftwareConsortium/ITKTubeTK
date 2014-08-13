@@ -22,14 +22,15 @@ limitations under the License.
 =========================================================================*/
 
 #include "itktubeTubeXIO.h"
+#include <sstream>
 
 int itktubeTubeXIOTest( int argc, char * argv[] )
 {
-  if( argc != 3 )
+  if( argc != 6 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << " input.tre output.tre" << std::endl;
+    std::cerr << argv[0] << " input.tre output.tre dimX dimY dimZ" << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -42,12 +43,28 @@ int itktubeTubeXIOTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
+  for (int i = 0; i < 3; ++i)
+    {
+    std::stringstream ss;
+    ss << argv[ i + 3 ];
+    int dim;
+    ss >> dim;
+    if ( ioMethod->GetDimensions()[i] != dim )
+      {
+      std::cerr << "Error, dimensions are not the same." <<std::endl
+        << " Expected: " << ioMethod->GetDimensions()[i]
+        <<" got: " << dim << std::endl;
+      return EXIT_FAILURE;
+      }
+    }
+
   IOMethodType::TubeGroupType::Pointer tubeGroup = 
     ioMethod->GetTubeGroup();
 
   IOMethodType::Pointer ioMethod2 = IOMethodType::New();
 
   ioMethod2->SetTubeGroup( tubeGroup );
+  ioMethod2->SetDimensions( ioMethod->GetDimensions() );
 
   if( !ioMethod2->Write( argv[2] ) )
     {

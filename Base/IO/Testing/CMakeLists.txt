@@ -172,7 +172,9 @@ Midas3FunctionAddTest( NAME itktubeTubeXIOTest
   COMMAND ${BASE_IO_TESTS}
     itktubeTubeXIOTest
       MIDAS{TubeXIOTest.tre.md5}
-      ${TEMP}/itktubeTubeXIOTest.tre )
+      ${TEMP}/itktubeTubeXIOTest.tre
+      512 512 393
+      )
 
 Midas3FunctionAddTest( NAME itktubeTubeXIOTest-Compare
   COMMAND ${TEXTCOMPARE_EXE}

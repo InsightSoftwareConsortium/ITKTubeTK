@@ -30,6 +30,7 @@ limitations under the License.
 #include "itkSpatialObjectReader.h"
 #include "itkSpatialObjectWriter.h"
 #include "itkTimeProbesCollectorBase.h"
+#include "itkImageFileReader.h"
 
 #include "ConvertTRECLP.h"
 
@@ -41,6 +42,12 @@ int main( int argc, char * argv[] )
   typedef itk::tube::TubeXIO< 3 >       TubeXIOType;
   typedef itk::SpatialObjectReader< 3 > SOReaderType;
   typedef itk::SpatialObjectWriter< 3 > SOWriterType;
+
+  // The image type does not matter. We're only interested in the image size.
+  typedef itk::Image< float, 3 >            ImageType;
+  typedef itk::ImageFileReader< ImageType > ImageReaderType;
+  typedef TubeXIOType::SizeType             SizeType;
+
 
   // The timeCollector is used to perform basic profiling of the components
   //   of your algorithm.
@@ -109,6 +116,21 @@ int main( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
+
+    ImageReaderType::Pointer inputImageReader = ImageReaderType::New();
+    inputImageReader->SetFileName( inputImage.c_str() );
+    ImageType* inputImage = 0;
+    try
+      {
+      inputImageReader->Update();
+      inputImage = inputImageReader->GetOutput();
+      }
+    catch( ... )
+      {
+      tube::WarningMessage(
+        "No input image found. Defaulting to a (1, 1, 1) size." );
+      timeCollector.Report();
+      }
     timeCollector.Stop("Load data");
 
     progress = 0.5;
@@ -117,6 +139,15 @@ int main( int argc, char * argv[] )
     timeCollector.Start("Save data");
     TubeXIOType::Pointer writer = TubeXIOType::New();
     writer->SetTubeGroup( reader->GetGroup() );
+
+    SizeType size = { 1, 1, 1 };
+    if ( inputImage )
+      {
+      size =
+        inputImageReader->GetOutput()->GetLargestPossibleRegion().GetSize();
+      }
+    writer->SetDimensions( size );
+
     try
       {
       writer->Write( outputTREFileName.c_str() );

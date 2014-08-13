@@ -39,6 +39,10 @@ TubeXIO< TDimension >
 ::TubeXIO()
 {
   m_TubeGroup = TubeGroupType::New();
+  for (int i = 0; i < TDimension; ++i)
+    {
+    m_Dimensions[i] = 1;
+    }
 }
 
 template< unsigned int TDimension >
@@ -125,13 +129,12 @@ TubeXIO< TDimension >
       }
     }
 
-  std::vector< int > dimSize( TDimension, 0 );
   mF = MET_GetFieldRecord( "Dimensions", &fields );
   if(mF->defined)
     {
     for( unsigned int i=0; i<TDimension; ++i )
       {
-      dimSize[i] = (int)( mF->value[i] );
+      this->m_Dimensions[i] = (int)( mF->value[i] );
       }
     }
 
@@ -299,7 +302,16 @@ TubeXIO< TDimension >
     std::ios::out);
 
   tmpWriteStream << "NDims: " << TDimension << std::endl;
-  tmpWriteStream << "Dimensions: 512 512 393" << std::endl;
+  tmpWriteStream << "Dimensions: ";
+  for ( unsigned int i = 0; i < TDimension; ++i )
+    {
+    tmpWriteStream << this->m_Dimensions[i];
+    if ( i != TDimension - 1 )
+      {
+      tmpWriteStream << " ";
+      }
+    }
+  tmpWriteStream << std::endl;
 
   char soType[80];
   sprintf( soType, "Tube" );
