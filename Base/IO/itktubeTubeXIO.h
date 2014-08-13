@@ -47,6 +47,8 @@ public:
   typedef VesselTubeSpatialObject< TDimension >   TubeType;
   typedef GroupSpatialObject< TDimension >        TubeGroupType;
 
+  typedef Size< TDimension >                      SizeType;
+
   itkTypeMacro( TubeXIO, Object );
 
   itkNewMacro( TubeXIO );
@@ -58,6 +60,10 @@ public:
   void  SetTubeGroup( TubeGroupType * _tubes );
 
   typename TubeGroupType::Pointer & GetTubeGroup( void );
+
+  /** Set the TubeX file dimensions */
+  itkSetMacro( Dimensions, SizeType );
+  itkGetConstMacro( Dimensions, SizeType );
 
 protected:
 
@@ -72,6 +78,7 @@ private:
   void operator=( const Self& );
 
   typename TubeGroupType::Pointer  m_TubeGroup;
+  typename SizeType                m_Dimensions;
 
 }; // TubeXIO
 
