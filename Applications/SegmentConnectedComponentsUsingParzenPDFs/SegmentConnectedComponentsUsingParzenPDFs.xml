@@ -111,11 +111,18 @@
       <longflag>objectPDFWeight</longflag>
     </double-vector>
     <double>
-      <name>probSmoothingStdDev</name>
-      <label>Probability Smoothing Standard Deviation</label>
+      <name>probImageSmoothingStdDev</name>
+      <label>Probability Image, Smoothing Standard Deviation</label>
       <description>Standard deviation of blur applied to probability images prior to computing maximum likelihood of each class at each pixel</description>
-      <default>3.0</default>
-      <longflag>probSmoothingStdDev</longflag>
+      <default>1.0</default>
+      <longflag>probImageSmoothingStdDev</longflag>
+    </double>
+    <double>
+      <name>histogramSmoothingStdDev</name>
+      <label>Histogram Smoothing Standard Deviation</label>
+      <description>Standard deviation of blur applied to convert the histogram to a probability density function estimate</description>
+      <default>5.0</default>
+      <longflag>histogramSmoothingStdDev</longflag>
     </double>
     <boolean>
       <name>draft</name>

@@ -162,7 +162,9 @@ int DoIt( int argc, char * argv[] )
       }
     }
   pdfSegmenter->SetProbabilityImageSmoothingStandardDeviation(
-    probSmoothingStdDev );
+    probImageSmoothingStdDev );
+  pdfSegmenter->SetHistogramSmoothingStandardDeviation(
+    histogramSmoothingStdDev );
   pdfSegmenter->SetDraft( draft );
   pdfSegmenter->SetReclassifyNotObjectLabels( reclassifyNotObjectLabels );
   pdfSegmenter->SetReclassifyObjectLabels( reclassifyObjectLabels );

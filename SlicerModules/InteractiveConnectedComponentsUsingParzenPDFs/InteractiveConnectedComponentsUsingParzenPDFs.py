@@ -120,28 +120,6 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     backgroundPopup.verticalDirection = 0 # Qt::TopToBottom
     backgroundPopup.animationEffect = 1 # Qt::ScrollEffect
 
-    barrierLabel = slicer.qMRMLLabelComboBox()
-    barrierLabel.objectName = 'Barrier label selector'
-    barrierLabel.setMRMLScene(slicer.mrmlScene)
-    barrierLabel.setMRMLColorNode(self.editUtil.getColorNode())
-    barrierLabel.labelValueVisible = True
-    barrierLabel.currentColor = 3
-    objectFormLayout.addRow("Barrier Label:", barrierLabel)
-    self.barrierLabel = barrierLabel
-    self.connections.append( (self.barrierLabel, "currentColorChanged(int)", self.updateMRMLFromGUI ) )
-
-    voidLabel = slicer.qMRMLLabelComboBox()
-    voidLabel.objectName = 'Void label selector'
-    voidLabel.setMRMLScene(slicer.mrmlScene)
-    voidLabel.setMRMLColorNode(self.editUtil.getColorNode())
-    voidLabel.labelValueVisible = True
-    # HACK: Set this to 1 first to get around a bug in the labelComboBox MRML interaction
-    voidLabel.setCurrentColor(1)
-    voidLabel.setCurrentColor(0)
-    objectFormLayout.addRow("Void Label:", voidLabel)
-    self.voidLabel = voidLabel
-    self.connections.append( (self.voidLabel, "currentColorChanged(int)", self.updateMRMLFromGUI ) )
-
     # Presets
     # Placeholder
     presetsCollapsibleGroupBox = ctk.ctkCollapsibleGroupBox()
@@ -181,11 +159,22 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     probabilitySmoothingStdDevSpinBox.objectName = 'probabilitySmoothingStdDevSpinBox'
     probabilitySmoothingStdDevSpinBox.toolTip = "Standard deviation of blur applied to probability images prior to computing maximum likelihood of each class at each pixel."
     probabilitySmoothingStdDevSpinBox.setMinimum(0.0)
-    probabilitySmoothingStdDevSpinBox.setValue(3.0) # Default
+    probabilitySmoothingStdDevSpinBox.setValue(1.0) # Default
     probabilitySmoothingStdDevSpinBox.setSingleStep(0.5)
     paramsFormLayout.addRow("Probability Smoothing Standard Deviation:", probabilitySmoothingStdDevSpinBox)
     self.probabilitySmoothingStdDevSpinBox = probabilitySmoothingStdDevSpinBox
     self.connections.append( (self.probabilitySmoothingStdDevSpinBox, "valueChanged(double)", self.updateMRMLFromGUI ) )
+
+    # histogramSmoothingStandardDeviation spin box
+    histogramSmoothingStdDevSpinBox = qt.QDoubleSpinBox()
+    histogramSmoothingStdDevSpinBox.objectName = 'histogramSmoothingStdDevSpinBox'
+    histogramSmoothingStdDevSpinBox.toolTip = "Standard deviation of blur applied to histograms to convert them to probability density function estimates."
+    histogramSmoothingStdDevSpinBox.setMinimum(0.0)
+    histogramSmoothingStdDevSpinBox.setValue(5.0) # Default
+    histogramSmoothingStdDevSpinBox.setSingleStep(0.5)
+    paramsFormLayout.addRow("Probability Smoothing Standard Deviation:", histogramSmoothingStdDevSpinBox)
+    self.histogramSmoothingStdDevSpinBox = histogramSmoothingStdDevSpinBox
+    self.connections.append( (self.histogramSmoothingStdDevSpinBox, "valueChanged(double)", self.updateMRMLFromGUI ) )
 
     # draft check box
     draftCheckBox = qt.QCheckBox()
@@ -195,30 +184,23 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     self.draftCheckBox = draftCheckBox
     self.connections.append( (self.draftCheckBox, "stateChanged(int)", self.updateMRMLFromGUI ) )
 
-    # reclassifyObjectMask check box
-    reclassifyObjectMaskCheckBox = qt.QCheckBox()
-    reclassifyObjectMaskCheckBox.objectName = 'reclassifyObjectMaskCheckBox'
-    reclassifyObjectMaskCheckBox.toolTip = "Perform classification on voxels within the foreground mask?"
-    paramsFormLayout.addRow("Reclassify Foreground Mask:", reclassifyObjectMaskCheckBox)
-    self.reclassifyObjectMaskCheckBox = reclassifyObjectMaskCheckBox
-    self.connections.append( (self.reclassifyObjectMaskCheckBox, "stateChanged(int)", self.updateMRMLFromGUI ) )
-
-    # reclassifyNotObjectMask check box
-    reclassifyNotObjectMaskCheckBox = qt.QCheckBox()
-    reclassifyNotObjectMaskCheckBox.objectName = 'reclassifyNotObjectMaskCheckBox'
-    reclassifyNotObjectMaskCheckBox.toolTip = "Perform classification on voxels within the barrier mask?"
-    paramsFormLayout.addRow("Reclassify Barrier Mask:", reclassifyNotObjectMaskCheckBox)
-    self.reclassifyNotObjectMaskCheckBox = reclassifyNotObjectMaskCheckBox
-    self.connections.append( (self.reclassifyNotObjectMaskCheckBox, "stateChanged(int)", self.updateMRMLFromGUI ) )
-
     # force classification check box
     forceClassificationCheckBox = qt.QCheckBox()
     forceClassificationCheckBox.objectName = 'forceClassificationCheckBox'
     forceClassificationCheckBox.toolTip = "Perform the classification of all voxels?"
     forceClassificationCheckBox.setChecked(False)
-    paramsFormLayout.addRow("Force Classification: ", forceClassificationCheckBox)
+    paramsFormLayout.addRow("Classify all voxels: ", forceClassificationCheckBox)
     self.forceClassificationCheckBox = forceClassificationCheckBox
     self.connections.append( (self.forceClassificationCheckBox, "stateChanged(int)", self.updateMRMLFromGUI ) )
+
+    # dilate first check box
+    dilateFirstCheckBox = qt.QCheckBox()
+    dilateFirstCheckBox.objectName = 'dilateFirstCheckBox'
+    dilateFirstCheckBox.toolTip = "Dilate and then erode so as to fill-in holes?"
+    dilateFirstCheckBox.setChecked(False)
+    paramsFormLayout.addRow("Dilate First: ", dilateFirstCheckBox)
+    self.dilateFirstCheckBox = dilateFirstCheckBox
+    self.connections.append( (self.dilateFirstCheckBox, "stateChanged(int)", self.updateMRMLFromGUI ) )
 
     self.helpLabel = qt.QLabel("Run the PDF Segmentation on the current label map.", self.frame)
     self.frame.layout().addWidget(self.helpLabel)
@@ -228,7 +210,7 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     self.frame.layout().addWidget(self.apply)
     self.widgets.append(self.apply)
 
-    EditorLib.HelpButton(self.frame, "Use this tool to apply segmentation using Parzen windowed PDFs.\n\n Select different label colors and paint on the foreground, background, or barrier voxels using the paint effect.\nTo run segmentation correctly, you need to supply a minimum or two class labels.")
+    EditorLib.HelpButton(self.frame, "Use this tool to apply segmentation using Parzen windowed PDFs.\n\n Select different label colors and paint on the foreground or background voxels using the paint effect.\nTo run segmentation correctly, you need to supply a minimum or two class labels.")
 
     self.connections.append( (self.apply, 'clicked()', self.onApply) )
 
@@ -254,16 +236,15 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     defaults = [
       ("outputVolume", "0"),
       ("labelmap", "0"),
-      ("voidId", "0"),
-      ("objectId", "1,2,3"),
+      ("objectId", "1,2"),
       ("erodeRadius", "5"),
       ("holeFillIterations", "5"),
       ("objectPDFWeight", "1.0,1.0"),
-      ("probSmoothingStdDev", "3.0"),
+      ("probImageSmoothingStdDev", "1.0"),
+      ("histogramSmoothingStdDev", "5.0"),
       ("draft", "0"),
-      ("reclassifyObjectMask", "0"),
-      ("reclassifyNotObjectMask", "0"),
       ("forceClassification", "0"),
+      ("dilateFirst", "0"),
       ]
     for i in range(0, 2):
       defaults.append(("additionalInputVolumeID" + str(i), "0"))
@@ -279,16 +260,15 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
     self.parameterNode.SetDisableModifiedEvent(disableState)
 
   def updateGUIFromMRML(self,caller,event):
-    parameters = ["voidId",
-                  "objectId",
+    parameters = ["objectId",
                   "erodeRadius",
                   "holeFillIterations",
                   "objectPDFWeight",
-                  "probSmoothingStdDev",
+                  "probImageSmoothingStdDev",
+                  "histogramSmoothingStdDev",
                   "draft",
-                  "reclassifyObjectMask",
-                  "reclassifyNotObjectMask",
                   "forceClassification",
+                  "dilateFirst",
                   ]
     for i in range(0, 2):
       parameters.append("additionalInputVolumeID" + str(i))
@@ -305,20 +285,18 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
       self.additionalInputNodeSelectors[i].currentNodeID = self.getParameter("additionalInputVolumeID" + str(i))
 
     # labels
-    self.voidLabel.currentColor = int(self.getParameter("voidId"))
     objectIds = self.logic.listFromStringList(self.getParameter("objectId"))
     self.foregroundLabel.currentColor = objectIds[0]
     self.backgroundLabel.currentColor = objectIds[1]
-    self.barrierLabel.currentColor = objectIds[2]
 
     # Parameters
     self.erosionSpinBox.value = int(self.getParameter("erodeRadius"))
     self.holeFillSpinBox.value = int(self.getParameter("holeFillIterations"))
-    self.probabilitySmoothingStdDevSpinBox.value = float(self.getParameter("probSmoothingStdDev"))
+    self.probabilitySmoothingStdDevSpinBox.value = float(self.getParameter("probImageSmoothingStdDev"))
+    self.histogramSmoothingStdDevSpinBox.value = float(self.getParameter("histogramSmoothingStdDev"))
     self.draftCheckBox.setChecked(int(self.getParameter("draft")))
-    self.reclassifyObjectMaskCheckBox.setChecked(int(self.getParameter("reclassifyObjectMask")))
     self.forceClassificationCheckBox.setChecked(int(self.getParameter("forceClassification")))
-    self.reclassifyNotObjectMaskCheckBox.setChecked(int(self.getParameter("reclassifyNotObjectMask")))
+    self.dilateFirstCheckBox.setChecked(int(self.getParameter("dilateFirst")))
 
     self.connectWidgets()
 
@@ -339,21 +317,19 @@ class InteractiveConnectedComponentsUsingParzenPDFsOptions(EditorLib.LabelEffect
       self.setParameter("additionalInputVolumeID" + str(i), self.additionalInputNodeSelectors[i].currentNodeID)
 
     # Labels
-    self.setParameter("voidId", str(self.voidLabel.currentColor))
     objectIds = (str(self.foregroundLabel.currentColor) + ","
-                 + str(self.backgroundLabel.currentColor) + ","
-                 + str(self.barrierLabel.currentColor)
+                 + str(self.backgroundLabel.currentColor)
                 )
     self.setParameter("objectId", objectIds)
 
     # Parameters
     self.setParameter("erodeRadius", self.erosionSpinBox.text)
     self.setParameter("holeFillIterations", self.holeFillSpinBox.text)
-    self.setParameter("probSmoothingStdDev", self.probabilitySmoothingStdDevSpinBox.text)
+    self.setParameter("probImageSmoothingStdDev", self.probabilitySmoothingStdDevSpinBox.text)
+    self.setParameter("histogramSmoothingStdDev", self.histogramSmoothingStdDevSpinBox.text)
     self.setParameter("draft", str(int(self.draftCheckBox.isChecked())))
-    self.setParameter("reclassifyObjectMask", str(int(self.reclassifyObjectMaskCheckBox.isChecked())))
-    self.setParameter("reclassifyNotObjectMask", str(int(self.reclassifyNotObjectMaskCheckBox.isChecked())))
     self.setParameter("forceClassification", str(int(self.forceClassificationCheckBox.isChecked())))
+    self.setParameter("dilateFirst", str(int(self.dilateFirstCheckBox.isChecked())))
 
     self.parameterNode.SetDisableModifiedEvent(disableState)
     if not disableState:
@@ -504,18 +480,17 @@ class InteractiveConnectedComponentsUsingParzenPDFsLogic(LabelEffect.LabelEffect
     cliParameters["outputVolume"] = self.editUtil.getLabelVolume()
 
     # Labels
-    cliParameters["voidId"] = int(self.getParameter( "voidId"))
     cliParameters["objectId"] = self.listFromStringList(self.getParameter("objectId"))
 
     # Parameters
     cliParameters["erodeRadius"] = int(self.getParameter( "erodeRadius"))
     cliParameters["holeFillIterations"] = int(self.getParameter("holeFillIterations"))
     cliParameters["objectPDFWeight"] = self.listFromStringList(self.getParameter("objectPDFWeight"))
-    cliParameters["probSmoothingStdDev"] = float(self.getParameter("probSmoothingStdDev"))
+    cliParameters["probImageSmoothingStdDev"] = float(self.getParameter("probImageSmoothingStdDev"))
+    cliParameters["histogramSmoothingStdDev"] = float(self.getParameter("histogramSmoothingStdDev"))
     cliParameters["draft"] = int(self.getParameter("draft"))
-    cliParameters["reclassifyObjectMask"] = int(self.getParameter("reclassifyObjectMask"))
-    cliParameters["reclassifyNotObjectMask"] = int(self.getParameter("reclassifyNotObjectMask"))
     cliParameters["forceClassification"] = int(self.getParameter("forceClassification"))
+    cliParameters["dilateFirst"] = int(self.getParameter("dilateFirst"))
 
     module = slicer.modules.segmentconnectedcomponentsusingparzenpdfs
     cliNode = self.getCLINode(module, "PDFSegmenterEditorEffect")
