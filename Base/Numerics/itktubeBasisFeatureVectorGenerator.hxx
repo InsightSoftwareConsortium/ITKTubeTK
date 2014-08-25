@@ -544,7 +544,8 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
           covarianceOfMeans[i][j] +=
             ( m_ObjectMeanList[c][i] - m_GlobalMean[i] )
             * ( m_ObjectMeanList[c][j] - m_GlobalMean[j] );
-          meanCovariance[i][j] += m_ObjectCovarianceList[c][i][j];
+          meanCovariance[i][j] += ( m_ObjectCovarianceList[c][i][j]
+            * m_ObjectCovarianceList[c][i][j] );
           }
         }
       }
@@ -554,6 +555,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
       for( unsigned int j = 0; j < numInputFeatures; j++ )
         {
         covarianceOfMeans[i][j] /= numClasses;
+        meanCovariance[i][j] = vcl_sqrt( meanCovariance[i][j] / numClasses );
         }
       }
 
