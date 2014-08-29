@@ -424,8 +424,11 @@ int DoIt( int argc, char * argv[] )
 
   double ridgeMaxXChange = 3.0;
 
-  int clippedMax = (int)(tube.size() * 0.01);
-  int clippedMaxStart = (int)(tube.size() * 0.005);
+  int clippedMax = (int)(tube.size() * 0.001);
+  int clippedMaxStart = (int)(tube.size() * 0.0005);
+
+  int curvatureClippedMax = (int)(tube.size() * 0.0001);
+  int curvatureClippedMaxStart = (int)(tube.size() * 0.00001);
 
   int levelnessClippedMax = (int)(tube.size() * 0.0001);
   int levelnessClippedMaxStart = (int)(tube.size() * 0.00001);
@@ -442,8 +445,8 @@ int DoIt( int argc, char * argv[] )
 
   sort_column = 3;
   std::sort( tube.begin(), tube.end(), sort_column_compare );
-  double ridgeMinCurvature = tube[clippedMax][3];
-  double ridgeMinCurvatureStart = tube[clippedMaxStart][3];
+  double ridgeMinCurvature = tube[curvatureClippedMax][3];
+  double ridgeMinCurvatureStart = tube[curvatureClippedMaxStart][3];
 
   sort_column = 4;
   std::sort( tube.begin(), tube.end(), sort_column_compare );
