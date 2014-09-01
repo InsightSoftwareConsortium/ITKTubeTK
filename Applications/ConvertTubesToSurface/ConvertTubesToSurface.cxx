@@ -40,6 +40,7 @@ limitations under the License.
 #include <vtkSTLWriter.h>
 #include <vtkTubeFilter.h>
 #include <vtkTriangleFilter.h>
+#include <vtkVersion.h>
 
 #include "ConvertTubesToSurfaceCLP.h"
 

@@ -232,7 +232,11 @@ void vtkMRMLSpatialObjectsDisplayPropertiesNode::UpdateGlyphSource( void )
       if(this->GlyphGeometry == Tubes)
         {
         vtkTubeFilter *tube = vtkTubeFilter::New();
+#if VTK_MAJOR_VERSION > 5
+        tube->SetInputData(line->GetOutput());
+#else
         tube->SetInput(line->GetOutput());
+#endif
         tube->SetRadius( this->TubeGlyphRadius );
         tube->SetNumberOfSides( this->TubeGlyphNumberOfSides );
         tube->Update();

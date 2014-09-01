@@ -153,7 +153,11 @@ PrintSelf(ostream& os, vtkIndent indent)
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsTubeDisplayNode::SetInputToPolyDataPipeline(vtkPolyData* polyData)
 {
+#if (VTK_MAJOR_VERSION < 6)
   this->amontAssignAttribute->SetInput(polyData);
+#else
+  this->amontAssignAttribute->SetInputData(polyData);
+#endif
 }
 
 //------------------------------------------------------------------------------

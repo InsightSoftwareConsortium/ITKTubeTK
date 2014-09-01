@@ -43,7 +43,6 @@ limitations under the License.
 
 #include <math.h>
 
-vtkCxxRevisionMacro(vtkSlicerTortuosityLogic, "$Revision: 1.9.12.1 $");
 vtkStandardNewMacro(vtkSlicerTortuosityLogic);
 
 //------------------------------------------------------------------------------
@@ -364,6 +363,12 @@ bool vtkSlicerTortuosityLogic
   // Write out the table to file
   vtkNew<vtkDelimitedTextWriter> writer;
   writer->SetFileName(filename);
+
+#if (VTK_MAJOR_VERSION < 6)
   writer->SetInput(table.GetPointer());
+#else
+  writer->SetInputData(table.GetPointer());
+#endif
+
   return writer->Write();
 }

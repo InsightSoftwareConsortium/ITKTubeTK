@@ -42,6 +42,7 @@ limitations under the License.
 
 typedef itk::VesselTubeSpatialObject<3> VesselTubeType;
 double EPSILON = 1e-3;
+double TWOPI = 2.0*vtkMath::Pi();
 
 //-----------------------------------------------------------------------------
 VesselTubeType::Pointer GenerateStraightTube(double start[3],
@@ -95,7 +96,7 @@ VesselTubeType::Pointer GenerateCosTube(double length,
   int numberOfSamples = 1e3;
   for (double l = 0.0; l < length; l += length / numberOfSamples)
     {
-    double t = Modulus(l, vtkMath::DoubleTwoPi());
+    double t = Modulus(l, TWOPI);
 
     VesselTubeType::TubePointType point;
     point.SetPosition(pos[0], pos[1], pos[2]);
@@ -247,10 +248,10 @@ int TestTortuosityMetrics( int argc, char * argv[] )
   //
   const int NUMBER_OF_COSINUS_OBJECT_TESTS = 4;
   double length[NUMBER_OF_COSINUS_OBJECT_TESTS] = {
-      vtkMath::DoubleTwoPi(),
-      2.0 * vtkMath::DoubleTwoPi(),
-      vtkMath::DoubleTwoPi(),
-      vtkMath::DoubleTwoPi(),
+      TWOPI,
+      2.0 * TWOPI,
+      TWOPI,
+      TWOPI,
     };
   double amplitude[NUMBER_OF_COSINUS_OBJECT_TESTS] = {
       1.0,
