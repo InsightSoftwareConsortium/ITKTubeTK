@@ -43,7 +43,7 @@ class VTK_SLICER_TORTUOSITY_MODULE_LOGIC_EXPORT vtkSlicerTortuosityLogic
 {
 public:
   static vtkSlicerTortuosityLogic *New( void );
-  vtkTypeRevisionMacro(vtkSlicerTortuosityLogic,vtkSlicerModuleLogic);
+  vtkTypeMacro(vtkSlicerTortuosityLogic,vtkSlicerModuleLogic);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Different kind of metrics that can be run on a spatial object node.

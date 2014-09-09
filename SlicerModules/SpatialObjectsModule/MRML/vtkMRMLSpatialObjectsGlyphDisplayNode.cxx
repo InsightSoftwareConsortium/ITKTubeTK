@@ -27,7 +27,6 @@ limitations under the License.
 // VTK includes
 #include <vtkConeSource.h>
 #include <vtkGlyph3DMapper.h>
-#include <vtkSource.h>
 
 // MRML includes
 #include <vtkMRMLScene.h>

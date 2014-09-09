@@ -44,7 +44,7 @@ class VTK_SLICER_SPATIALOBJECTS_MODULE_LOGIC_EXPORT vtkSlicerSpatialObjectsLogic
 {
 public:
   static vtkSlicerSpatialObjectsLogic *New( void );
-  vtkTypeRevisionMacro(vtkSlicerSpatialObjectsLogic,vtkSlicerModuleLogic);
+  vtkTypeMacro(vtkSlicerSpatialObjectsLogic,vtkSlicerModuleLogic);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:

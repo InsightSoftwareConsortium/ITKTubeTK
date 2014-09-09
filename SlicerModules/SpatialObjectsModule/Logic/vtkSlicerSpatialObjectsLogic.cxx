@@ -41,7 +41,6 @@ limitations under the License.
 #include <itksys/Directory.hxx>
 #include <itksys/SystemTools.hxx>
 
-vtkCxxRevisionMacro(vtkSlicerSpatialObjectsLogic, "$Revision: 1.9.12.1 $");
 vtkStandardNewMacro(vtkSlicerSpatialObjectsLogic);
 
 //------------------------------------------------------------------------------

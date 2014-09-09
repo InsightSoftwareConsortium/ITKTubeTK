@@ -31,6 +31,7 @@ limitations under the License.
 #include <vtkPolyDataNormals.h>
 #include <vtkPolyDataWriter.h>
 #include <vtkSphereSource.h>
+#include <vtkVersion.h>
 
 // Template function to fill in an image with a sphere.
 template< class TImage >
