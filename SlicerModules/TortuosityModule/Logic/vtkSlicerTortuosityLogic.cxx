@@ -222,9 +222,6 @@ bool vtkSlicerTortuosityLogic
   vtkDoubleArray* icm = this->GetInflectionCountMetricArray(node, flag);
   vtkDoubleArray* ip = this->GetInflectionPointsArray(node, flag);
   vtkDoubleArray* soam = this->GetSumOfAnglesMetricArray(node, flag);
-  vtkIntArray* nop =
-    this->GetOrCreateArray<vtkIntArray>(node, "NumberOfPoints");
-  assert(nop);
 
   // 2 - Fill the metric arrays
   typedef vtkMRMLSpatialObjectsNode::TubeNetType                    TubeNetType;
@@ -263,27 +260,26 @@ bool vtkSlicerTortuosityLogic
 
     // Fill the arrays
     size_t numberOfPoints = currTube->GetPoints().size();
-    for(size_t index = totalNumberOfPointsAdded;
-      index < numberOfPoints + totalNumberOfPointsAdded; ++index)
+    for(size_t filterIndex = 0, tubeIndex = totalNumberOfPointsAdded;
+      filterIndex < numberOfPoints; ++filterIndex, ++tubeIndex)
       {
       if (dm)
         {
-        dm->SetValue(index, filter->GetDistanceMetric());
+        dm->SetValue(tubeIndex, filter->GetDistanceMetric());
         }
       if (icm)
         {
-        icm->SetValue(index, filter->GetInflectionCountMetric());
+        icm->SetValue(tubeIndex, filter->GetInflectionCountMetric());
         }
       if (soam)
         {
-        soam->SetValue(index, filter->GetSumOfAnglesMetric());
+        soam->SetValue(tubeIndex, filter->GetSumOfAnglesMetric());
         }
       if (ip)
         {
-        ip->SetValue(index, filter->GetInflectionPointValue(index));
+        ip->SetValue(tubeIndex, filter->GetInflectionPointValue(filterIndex));
         }
       }
-    nop->InsertNextValue(numberOfPoints);
 
     totalNumberOfPointsAdded += numberOfPoints;
     }
