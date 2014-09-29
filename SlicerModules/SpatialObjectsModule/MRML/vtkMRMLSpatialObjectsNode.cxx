@@ -179,7 +179,8 @@ vtkPolyData* vtkMRMLSpatialObjectsNode::GetFilteredPolyData( void )
 vtkAlgorithmOutput* vtkMRMLSpatialObjectsNode::
 GetFilteredPolyDataConnection( void )
 {
-  return this->GetPolyDataConnection();
+  this->CleanPolyData->Update();
+  return this->CleanPolyData->GetOutputPort();
 }
 #endif
 
