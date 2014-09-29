@@ -150,15 +150,20 @@ PrintSelf(ostream& os, vtkIndent indent)
   os << indent << "TubeRadius: " << this->TubeRadius << "\n";
 }
 
+#if (VTK_MAJOR_VERSION < 6)
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsTubeDisplayNode::SetInputToPolyDataPipeline(vtkPolyData* polyData)
 {
-#if (VTK_MAJOR_VERSION < 6)
   this->amontAssignAttribute->SetInput(polyData);
-#else
-  this->amontAssignAttribute->SetInputData(polyData);
-#endif
 }
+#else
+//------------------------------------------------------------------------------
+void vtkMRMLSpatialObjectsTubeDisplayNode
+::SetInputToPolyDataPipeline(vtkAlgorithmOutput* polyDataConnection)
+{
+  this->amontAssignAttribute->SetInputConnection(polyDataConnection);
+}
+#endif
 
 //------------------------------------------------------------------------------
 vtkPolyData* vtkMRMLSpatialObjectsTubeDisplayNode::GetInputPolyData( void )

@@ -103,7 +103,11 @@ protected:
   void operator=(const vtkMRMLSpatialObjectsTubeDisplayNode&);
 
   /// To be reimplemented in subclasses if the input of the pipeline changes
+#if (VTK_MAJOR_VERSION <= 5)
   virtual void SetInputToPolyDataPipeline(vtkPolyData* polyData);
+#else
+  virtual void SetInputToPolyDataPipeline(vtkAlgorithmOutput* polyDataConnection);
+#endif
 
   /// Return the polydata that is processed by the display node.
   /// This is the polydata that needs to be connected with the mappers.
