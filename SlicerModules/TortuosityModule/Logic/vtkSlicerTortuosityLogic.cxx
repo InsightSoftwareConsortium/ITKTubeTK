@@ -223,6 +223,15 @@ bool vtkSlicerTortuosityLogic
   vtkDoubleArray* ip = this->GetInflectionPointsArray(node, flag);
   vtkDoubleArray* soam = this->GetSumOfAnglesMetricArray(node, flag);
 
+  if (!dm && !icm && !ip && !soam)
+    {
+    std::cerr<<"Tortuosity flag mode unknown."<<std::endl;
+    return false;
+    }
+
+  // Rewrite number of points array everytime
+  vtkIntArray* nop = this->GetOrCreateArray<vtkIntArray>(node, "NumberOfPoints");
+
   // 2 - Fill the metric arrays
   typedef vtkMRMLSpatialObjectsNode::TubeNetType                    TubeNetType;
   typedef itk::VesselTubeSpatialObject<3>                           VesselTubeType;
@@ -244,7 +253,14 @@ bool vtkSlicerTortuosityLogic
       {
       continue;
       }
-    assert(currTube->GetNumberOfPoints() >= 2);
+
+    if (currTube->GetNumberOfPoints() < 2)
+      {
+      std::cerr<<"Error, vessel #"<<currTube->GetId()
+        <<" has less than 2 points !"<<std::endl
+        <<"Skipping the vessel."<<std::endl;
+      continue;
+      }
 
     // Update filter
     FilterType::Pointer filter = FilterType::New();
@@ -279,6 +295,8 @@ bool vtkSlicerTortuosityLogic
         {
         ip->SetValue(tubeIndex, filter->GetInflectionPointValue(filterIndex));
         }
+
+      nop->InsertNextValue(numberOfPoints);
       }
 
     totalNumberOfPointsAdded += numberOfPoints;
@@ -326,31 +344,34 @@ bool vtkSlicerTortuosityLogic
       }
     }
 
+  // Make sure we have everything we need for export
   if (metricArrays.size() <= 0)
     {
+    std::cout<<"No array found for given flag: "<<flag<<std::endl;
+    return false;
+    }
+
+  vtkIntArray* numberOfPointsArray =
+    this->GetArray<vtkIntArray>(node, "NumberOfPoints");
+  if (!numberOfPointsArray)
+    {
+    std::cerr<<"Expected ''NumberOfPoints'' array on the node point data."
+      <<std::endl<<"Cannot proceed."<<std::endl;
     return false;
     }
 
   // Create  the table. Each column has only one value per vessel
   // instead of one value per each point of the vessel.
   vtkNew<vtkTable> table;
-  vtkIntArray* numberOfPointsArray =
-    this->GetArray<vtkIntArray>(node, "NumberOfPoints");
   for(std::vector<vtkDoubleArray*>::iterator it = metricArrays.begin();
     it != metricArrays.end(); ++it)
     {
     vtkNew<vtkDoubleArray> newArray;
     newArray->SetName((*it)->GetName());
-    newArray->SetNumberOfValues(numberOfPointsArray->GetNumberOfTuples());
 
-    int index = 0;
-    for (int j = 0; j < numberOfPointsArray->GetNumberOfTuples(); ++j)
+    for (int j = 0; j < numberOfPointsArray->GetNumberOfTuples(); j += numberOfPointsArray->GetValue(j))
       {
-      newArray->SetValue(j, (*it)->GetValue(index));
-
-      std::cout<<(*it)->GetName()<<": "<<index<<" = "<<(*it)->GetValue(index)<<std::endl;
-
-      index += numberOfPointsArray->GetValue(j);
+      newArray->InsertNextValue((*it)->GetValue(j));
       }
 
     table->AddColumn(newArray.GetPointer());

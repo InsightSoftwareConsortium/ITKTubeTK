@@ -22,9 +22,10 @@ limitations under the License.
 =========================================================================*/
 
 // .NAME vtkSlicerTortuosityLogic -
-// \todo
+// Interface with TubeTK Tortuosity methods and provides additionnal support
 // .SECTION Description
-// \todo
+// The tortuosity logic is in charge of interfacing with the TubeTK Tortuosity
+// module. It is also used for convience methods on tube objects.
 
 #ifndef __vtkSlicerTortuosityLogic_h
 #define __vtkSlicerTortuosityLogic_h
@@ -77,6 +78,9 @@ public:
   vtkDoubleArray* GetOrCreateArray(vtkMRMLSpatialObjectsNode* node, int flag);
 
   // Run the metric on the given spatial object node.
+  // Running any metric will create a field data array on the node if none
+  // already exists. A field data array called NumberOfPoints will also be
+  // created automatically to help when exporting.
   // \sa RunMetrics()
   bool RunDistanceMetric(vtkMRMLSpatialObjectsNode* node);
   bool RunInflectionCountMetric(vtkMRMLSpatialObjectsNode* node);
@@ -87,6 +91,8 @@ public:
   bool RunMetrics(vtkMRMLSpatialObjectsNode* node, int flag);
 
   // Save the given metrics to CSV. Only value will be saved per vessel.
+  // The export MUST find the "NumberOfPoints" array generated during the
+  // metric run on the node's polydata point data.
   bool SaveAsCSV(
     vtkMRMLSpatialObjectsNode* node, const char* filename, int flag = All);
 
