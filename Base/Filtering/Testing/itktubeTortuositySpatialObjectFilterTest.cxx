@@ -101,10 +101,6 @@ VesselTubeType::Pointer GenerateCosTube(double length,
     pos[2] = 0.0;
     }
 
-  VectorType origin(0.0);
-  VectorType vec = lastPos - origin;
-  length = (lastPos - origin).GetNorm();
-
   vessel->SetPoints(pointList);
   return vessel;
 }
@@ -152,7 +148,7 @@ bool TestVesselMetrics(VesselTubeType::Pointer vessel, double results[3])
 }
 
 //-----------------------------------------------------------------------------
-int itktubeTortuositySpatialObjectFilterTest( int argc, char * argv[] )
+int itktubeTortuositySpatialObjectFilterTest( int, char*[] )
 {
 
   typedef itk::SpatialObjectWriter< 3 > WriterType;

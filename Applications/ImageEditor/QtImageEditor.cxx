@@ -162,6 +162,7 @@ QtImageEditorPrivate::QtImageEditorPrivate(QtImageEditor& obj)
 
 void QtImageEditorPrivate::setupUi(QDialog* widgetToSetup)
 {
+  Q_UNUSED(widgetToSetup);
   Q_Q(QtImageEditor);
 
   QGridLayout* gridLayout = qobject_cast<QGridLayout*>(q->layout());
