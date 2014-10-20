@@ -26,7 +26,6 @@ set( proj SlicerModules )
 set( TubeTK_SLICER_MODULES
   InteractiveConnectedComponentsUsingParzenPDFs
   SpatialObjectsModule
-  TortuosityModule
   )
 
 if( NOT TubeTK_SOURCE_DIR )
