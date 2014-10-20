@@ -384,7 +384,6 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   this->m_InflectionCountMetric = inflectionCount * this->m_DistanceMetric;
 
   // SOAM final calculation
-  double soamResult = 0.0;
   if ( soam && pathLength > 0.0 )
     {
     this->m_SumOfAnglesMetric = totalCurvature / pathLength;

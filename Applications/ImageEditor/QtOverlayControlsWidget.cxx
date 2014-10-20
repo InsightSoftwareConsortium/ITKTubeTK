@@ -44,9 +44,6 @@ public:
   virtual void setupUi(QWidget* widgetToSetup);
 
   QtGlSliceView  *m_SliceView;
-
-protected:
-  QtOverlayControlsWidget* const q_ptr;
 };
 
 
