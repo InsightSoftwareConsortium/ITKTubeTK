@@ -44,12 +44,15 @@ public:
   virtual void setupUi(QWidget* widgetToSetup);
 
   QtGlSliceView  *m_SliceView;
+
+protected:
+  QtOverlayControlsWidget* const q_ptr;
 };
 
 
 QtOverlayControlsWidgetPrivate::QtOverlayControlsWidgetPrivate(QtOverlayControlsWidget& obj)
-  : q_ptr(&obj)
-  , m_SliceView(0)
+  : m_SliceView(0),
+    q_ptr(&obj)
 {
 }
 
@@ -65,8 +68,8 @@ void QtOverlayControlsWidgetPrivate::setupUi(QWidget* widgetToSetup)
 
 }
 
-QtOverlayControlsWidget::QtOverlayControlsWidget(QWidget* parent)
-  : QWidget(parent)
+QtOverlayControlsWidget::QtOverlayControlsWidget(QWidget* _parent)
+  : QWidget(_parent)
   , d_ptr(new QtOverlayControlsWidgetPrivate(*this))
 {
   Q_D(QtOverlayControlsWidget);
@@ -82,12 +85,12 @@ QtOverlayControlsWidget::~QtOverlayControlsWidget()
 void QtOverlayControlsWidget::onOpacityChanged(int newOpacity)
 {
   Q_D(QtOverlayControlsWidget);
-  double opacity = (static_cast<double>(newOpacity)/100.);
+  double normalizedOpacity = (static_cast<double>(newOpacity)/100.);
   if (d->m_SliceView)
     {
-    d->m_SliceView->setOverlayOpacity(opacity);
+    d->m_SliceView->setOverlayOpacity(normalizedOpacity);
     }
-  emit opacityChanged(opacity);
+  emit opacityChanged(normalizedOpacity);
 }
 
 
