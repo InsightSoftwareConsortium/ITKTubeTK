@@ -665,7 +665,7 @@ void vtkMRMLSpatialObjectsNode::CreateDefaultDisplayNodes( void )
   vtkMRMLSpatialObjectsDisplayNode *sodn = this->AddLineDisplayNode();
   sodn->SetVisibility(1);
   sodn = this->AddTubeDisplayNode();
-  sodn->SetVisibility(0);
+  sodn->SetVisibility(1);
   sodn = this->AddGlyphDisplayNode();
   sodn->SetVisibility(0);
 }
