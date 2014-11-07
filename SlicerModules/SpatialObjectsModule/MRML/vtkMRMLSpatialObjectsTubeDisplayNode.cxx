@@ -63,7 +63,8 @@ vtkMRMLSpatialObjectsTubeDisplayNode::vtkMRMLSpatialObjectsTubeDisplayNode( void
 
   // Pipeline
   this->amontAssignAttribute = vtkAssignAttribute::New();
-  this->amontAssignAttribute->Assign("TubeRadius",
+  this->SetActiveScalarName("TubeRadius");
+  this->amontAssignAttribute->Assign(this->GetActiveScalarName(),
                                      vtkDataSetAttributes::SCALARS,
                                      vtkAssignAttribute::POINT_DATA);
   this->TubeFilter->SetInputConnection(
