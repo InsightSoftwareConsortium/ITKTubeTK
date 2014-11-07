@@ -216,28 +216,20 @@ vtkMRMLSpatialObjectsDisplayNode*
   TemplatedAddDisplayNode(vtkMRMLSpatialObjectsNode* self)
 {
   vtkMRMLSpatialObjectsDisplayNode* node = TemplatedGetDisplayNode<T>(self);
-  if(node == NULL)
+  if(node == NULL && self->GetScene())
     {
-    node = T::New();
+    node = T::New(); // No smart pointer, it's returned at the end
+    vtkNew<vtkMRMLSpatialObjectsDisplayPropertiesNode> properties;
+    self->GetScene()->SaveStateForUndo();
 
-    if(self->GetScene())
-      {
-      self->GetScene()->AddNode(node);
-      node->Delete();
+    self->GetScene()->AddNode(properties.GetPointer());
+    node->SetAndObserveSpatialObjectsDisplayPropertiesNodeID(
+      properties->GetID());
 
-      vtkNew<vtkMRMLSpatialObjectsDisplayPropertiesNode> glyphSOPN;
-      self->GetScene()->AddNode(glyphSOPN.GetPointer());
-      node->
-        SetAndObserveSpatialObjectsDisplayPropertiesNodeID(glyphSOPN->GetID());
-      node->SetAndObserveColorNodeID("vtkMRMLColorTableNodeRainbow");
-
-      self->AddAndObserveDisplayNodeID(node->GetID());
-#if VTK_MAJOR_VERSION <= 5
-      node->SetInputPolyData(self->GetFilteredPolyData());
-#else
-      node->SetInputPolyDataConnection(self->GetFilteredPolyDataConnection());
-#endif
-      }
+    self->GetScene()->AddNode(node);
+    node->Delete(); // See vtkMRMLScene::AddNode
+    node->SetAndObserveColorNodeID("vtkMRMLColorTableNodeRainbow");
+    self->AddAndObserveDisplayNodeID(node->GetID());
     }
 
   return node;
@@ -615,5 +607,7 @@ void vtkMRMLSpatialObjectsNode::CreateDefaultDisplayNodes( void )
   sodn = this->AddTubeDisplayNode();
   sodn->SetVisibility(1);
   sodn = this->AddGlyphDisplayNode();
+  sodn->GetSpatialObjectsDisplayPropertiesNode()->SetGlyphGeometry(
+    vtkMRMLSpatialObjectsDisplayPropertiesNode::Lines);
   sodn->SetVisibility(0);
 }
