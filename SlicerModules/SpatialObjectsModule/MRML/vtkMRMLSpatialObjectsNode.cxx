@@ -179,7 +179,6 @@ vtkPolyData* vtkMRMLSpatialObjectsNode::GetFilteredPolyData( void )
 vtkAlgorithmOutput* vtkMRMLSpatialObjectsNode::
 GetFilteredPolyDataConnection( void )
 {
-  this->CleanPolyData->Update();
   return this->CleanPolyData->GetOutputPort();
 }
 #endif
@@ -261,21 +260,30 @@ GetGlyphDisplayNode( void )
 vtkMRMLSpatialObjectsDisplayNode* vtkMRMLSpatialObjectsNode::
 AddLineDisplayNode( void )
 {
-  return TemplatedAddDisplayNode<vtkMRMLSpatialObjectsLineDisplayNode>(this);
+  vtkMRMLSpatialObjectsDisplayNode* displayNode =
+    TemplatedAddDisplayNode<vtkMRMLSpatialObjectsLineDisplayNode>(this);
+  this->UpdateCleaning();
+  return displayNode;
 }
 
 //----------------------------------------------------------------------------
 vtkMRMLSpatialObjectsDisplayNode* vtkMRMLSpatialObjectsNode::
 AddTubeDisplayNode( void )
 {
-  return TemplatedAddDisplayNode<vtkMRMLSpatialObjectsTubeDisplayNode>(this);
+  vtkMRMLSpatialObjectsDisplayNode* displayNode =
+    TemplatedAddDisplayNode<vtkMRMLSpatialObjectsTubeDisplayNode>(this);
+  this->UpdateCleaning();
+  return displayNode;
 }
 
 //----------------------------------------------------------------------------
 vtkMRMLSpatialObjectsDisplayNode* vtkMRMLSpatialObjectsNode::
 AddGlyphDisplayNode( void )
 {
-  return TemplatedAddDisplayNode<vtkMRMLSpatialObjectsGlyphDisplayNode>(this);
+  vtkMRMLSpatialObjectsDisplayNode* displayNode =
+    TemplatedAddDisplayNode<vtkMRMLSpatialObjectsGlyphDisplayNode>(this);
+  this->UpdateCleaning();
+  return displayNode;
 }
 
 //------------------------------------------------------------------------------
@@ -317,12 +325,6 @@ void vtkMRMLSpatialObjectsNode::PrepareCleaning( void )
   this->CleanPolyData->ConvertPolysToLinesOff();
   this->CleanPolyData->ConvertStripsToPolysOff();
   this->CleanPolyData->PointMergingOff();
-
-#if VTK_MAJOR_VERSION <= 5
-  this->CleanPolyData->SetInput(this->PolyData);
-#else
-  this->CleanPolyData->SetInputConnection(this->GetPolyDataConnection());
-#endif
 }
 
 //------------------------------------------------------------------------------
@@ -332,6 +334,12 @@ void vtkMRMLSpatialObjectsNode::UpdateCleaning( void )
     {
     return;
     }
+
+#if VTK_MAJOR_VERSION <= 5
+  this->CleanPolyData->SetInput(this->GetPolyData());
+#else
+  this->CleanPolyData->SetInputConnection(this->GetPolyDataConnection());
+#endif
 
   vtkDebugMacro(<< this->GetClassName() << "Updating the subsampling");
 
@@ -354,6 +362,7 @@ void vtkMRMLSpatialObjectsNode::UpdateCleaning( void )
     node->SetInputPolyDataConnection(this->GetFilteredPolyDataConnection());
 #endif
     }
+
   node = this->GetGlyphDisplayNode();
   if(node != NULL)
     {
