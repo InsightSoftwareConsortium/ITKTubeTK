@@ -224,46 +224,7 @@ AddDisplayNodes(vtkMRMLSpatialObjectsNode* spatialObjectsNode)
     return;
     }
 
-  vtkNew<vtkMRMLSpatialObjectsLineDisplayNode> displayLineNode;
-  vtkNew<vtkMRMLSpatialObjectsTubeDisplayNode> displayTubeNode;
-  vtkNew<vtkMRMLSpatialObjectsGlyphDisplayNode> displayGlyphNode;
-
-  vtkNew<vtkMRMLSpatialObjectsDisplayPropertiesNode> lineProperties;
-  vtkNew<vtkMRMLSpatialObjectsDisplayPropertiesNode> tubeProperties;
-  vtkNew<vtkMRMLSpatialObjectsDisplayPropertiesNode> glyphProperties;
-  glyphProperties->SetGlyphGeometry(
-    vtkMRMLSpatialObjectsDisplayPropertiesNode::Lines);
-
-  displayLineNode->SetVisibility(1);
-  displayTubeNode->SetVisibility(0);
-  displayGlyphNode->SetVisibility(0);
-
-  this->GetMRMLScene()->SaveStateForUndo();
-  this->GetMRMLScene()->AddNode(lineProperties.GetPointer());
-  this->GetMRMLScene()->AddNode(tubeProperties.GetPointer());
-  this->GetMRMLScene()->AddNode(glyphProperties.GetPointer());
-
-  displayLineNode->
-    SetAndObserveSpatialObjectsDisplayPropertiesNodeID(
-      lineProperties->GetID());
-  displayTubeNode->
-    SetAndObserveSpatialObjectsDisplayPropertiesNodeID(
-      tubeProperties->GetID());
-  displayGlyphNode->
-    SetAndObserveSpatialObjectsDisplayPropertiesNodeID(
-      glyphProperties->GetID());
-
-  this->GetMRMLScene()->AddNode(displayLineNode.GetPointer());
-  this->GetMRMLScene()->AddNode(displayTubeNode.GetPointer());
-  this->GetMRMLScene()->AddNode(displayGlyphNode.GetPointer());
-
-  displayLineNode->SetAndObserveColorNodeID("vtkMRMLColorTableNodeRainbow");
-  displayTubeNode->SetAndObserveColorNodeID("vtkMRMLColorTableNodeRainbow");
-  displayGlyphNode->SetAndObserveColorNodeID("vtkMRMLColorTableNodeRainbow");
-
-  spatialObjectsNode->SetAndObserveDisplayNodeID(displayLineNode->GetID());
-  spatialObjectsNode->AddAndObserveDisplayNodeID(displayTubeNode->GetID());
-  spatialObjectsNode->AddAndObserveDisplayNodeID(displayGlyphNode->GetID());
+  spatialObjectsNode->CreateDefaultDisplayNodes();
 }
 
 //------------------------------------------------------------------------------
