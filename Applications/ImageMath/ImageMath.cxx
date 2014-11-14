@@ -1729,7 +1729,7 @@ int main( int argc, char * argv[] )
     "", "output filename", MetaCommand::DATA_OUT );
 
   command.SetOption( "WriteType", "W", false,
-    "writes 0=UC 1=US 2=S 3=Old (4-6 uncomp UC,US,S) 7=uncomp F");
+    "writes 0=UChar 1=UShort 2=Short 3=Old (4-6 uncomp UChar,UShort,Short) 7=uncomp Float");
   command.AddOptionField( "WriteType", "Type", MetaCommand::INT, true );
   command.AddOptionField( "WriteType", "filename", MetaCommand::STRING,
     true, "", "output filename", MetaCommand::DATA_OUT );
