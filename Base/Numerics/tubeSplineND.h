@@ -141,7 +141,7 @@ public:
    */
   bool Extreme( VectorType & extX, double * extVal );
 
-  /** Calculates the local extreme in the direction direction using the supplied
+  /** Calculates the local extreme in the specified direction using the supplied
    * instance of a derivation of OptimizerND. Function returns true on
    * successful local extreme finding, false otherwise.
    *  \param extX User supplied initial point, On return equals location of

@@ -260,14 +260,53 @@ public:
   /** Compute the intensity at the point x */
   double  Intensity( const IndexType & x );
 
-  /** The ridgeness at point x */
+  /** Computes ridge measures at the given point x
+   *  and stores them so that they can be queried later.
+   *  Returns the ridgeness at x
+   *  \param x User supplied point at which ridge measures will be computed
+   *  \param intensity On return equals the interpolated intensity at x
+   * 		       Can be queried later using GetCurrentIntensity()		
+   *  \param roundness On return equals the roundness at x
+   *  		       Can be queried later using GetCurrentRoundness()		
+   *  \param curvature On return equals the curvature at x
+   *   		       Can be queried later using GetCurrentCurvature()		
+   *  \param levelness On return equals the levelness at x
+   *   		       Can be queried later using GetCurrentLevelness()		
+   */
   double  Ridgeness( const ContinuousIndexType & x,
     double & intensity,
     double & roundness,
     double & curvature,
     double & levelness );
 
-  /** Compute the local Ridge */
+  /** Get current location 
+   *  This is location at which the Ridgness function was last called
+   */
+  const VectorType & GetCurrentLocation() const;
+
+  /** Get the Hessian Eigen Basis at the current location 
+   *  Each column of the return matrix is an eigen vector
+   *  in increasing order of the eigen values.
+   *  The third column is an approximation to the ridge tangent.
+   */
+  const MatrixType & GetCurrentBasis() const;
+  
+  /** Get intensity at the current location*/
+  double GetCurrentIntensity() const;
+
+  /** Get ridgness at the current location */
+  double GetCurrentRidgeness() const;
+
+  /** Get roundess at the current location */
+  double GetCurrentRoundness() const;
+
+  /** Get curvature at the current location */
+  double GetCurrentCurvature() const;
+  
+  /** Get levelness at the current location */
+  double GetCurrentLevelness() const;
+  
+  /** Compute/find the local Ridge */
   RidgeExtractionFailureEnum LocalRidge( ContinuousIndexType & x,
     bool verbose=false );
 
@@ -335,14 +374,19 @@ private:
   double                                             m_MinLevelness;
   double                                             m_MinLevelnessStart;
 
-  VectorType                                         m_X;
+  VectorType                                         m_X; // current location
   VectorType                                         m_XP;
-  double                                             m_XVal;
+  double                                             m_XVal; // current intensity
 
-  VectorType                                         m_XD;
-  MatrixType                                         m_XH;
-  VectorType                                         m_XHEVal;
-  MatrixType                                         m_XHEVect;
+  VectorType                                         m_XD; // current gradient
+  MatrixType                                         m_XH; // current Hessian
+  VectorType                                         m_XHEVal; // current Hessian Eigen Values
+  MatrixType                                         m_XHEVect; // current Hessian Eigen Vectors
+  
+  double					     m_XRidgeness; // current ridgeness 
+  double					     m_XRoundness; // current roundness
+  double					     m_XCurvature; // current curvature
+  double					     m_XLevelness; // current levelness 
 
   typename TubeType::Pointer                         m_Tube;
 

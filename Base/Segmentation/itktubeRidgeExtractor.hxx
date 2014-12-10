@@ -106,7 +106,11 @@ RidgeExtractor<TInputImage>
   m_XHEVal.set_size( ImageDimension );
   m_XHEVal.fill( 0.0 );
   m_XHEVect.set_size( ImageDimension, ImageDimension );
-  m_XHEVect.fill( 0.0 );
+  m_XHEVect.fill( 0.0 );  
+  m_XRidgeness = 0;
+  m_XRoundness = 0;
+  m_XCurvature = 0;
+  m_XLevelness = 0;
 
   m_DynamicScale = true;
   m_DynamicScaleUsed = 3;
@@ -401,23 +405,27 @@ RidgeExtractor<TInputImage>
     std::cout << "Ridge::Ridgeness" << std::endl;
     }
 
+  // update current location - m_X  
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
     m_X[i] = x[i];
     }
 
+  // compute and update the intensity value, first-derivative, and hessian at m_X  
   m_XVal = m_DataSpline->ValueJet( m_X, m_XD, m_XH );
 
   // test for nan
   if( m_XVal != m_XVal || m_XD[0] != m_XD[0] || m_XH[0][0] != m_XH[0][0] )
     {
     std::cout << "NAN at " << m_X << std::endl;
+  
     intensity = 0;
-    roundness = 0;
-    curvature = 0;
-    levelness = 0;
-
-    return 0;
+    m_XRoundness = roundness = 0;
+    m_XCurvature = curvature = 0;
+    m_XLevelness = levelness = 0;
+    m_XRidgeness = 0;
+  
+    return m_XRidgeness;
     }
 
   intensity = m_XVal;
@@ -430,11 +438,79 @@ RidgeExtractor<TInputImage>
     std::cout << "  XH = " << m_XH << std::endl;
     }
 
-  double ridgeness = 0;
   ::tube::ComputeRidgeness<double>( m_XH, m_XD,
-    ridgeness, roundness, curvature, levelness, m_XHEVect, m_XHEVal );
+    m_XRidgeness, m_XRoundness, m_XCurvature, m_XLevelness, m_XHEVect, m_XHEVal );
 
-  return ridgeness;
+  roundness = m_XRoundness;
+  curvature = m_XCurvature;
+  levelness = m_XLevelness;
+  
+  return m_XRidgeness;
+}
+
+/**
+ * Get Current Location
+ */
+template< class TInputImage >
+const typename RidgeExtractor<TInputImage>::VectorType & 
+RidgeExtractor<TInputImage>::GetCurrentLocation() const
+{
+  return m_X;
+}
+
+/**
+ * Get the Hessian Eigen Basis at the Current Location
+ */
+template< class TInputImage >
+const typename RidgeExtractor<TInputImage>::MatrixType & 
+RidgeExtractor<TInputImage>::GetCurrentBasis() const
+{
+  return m_XHEVect;
+}
+
+/**
+ * Get Intensity at the Current Location
+ */
+template< class TInputImage >
+double RidgeExtractor<TInputImage>::GetCurrentIntensity() const
+{
+  return m_XVal;
+}
+
+/**
+ * Get Ridgeness at the Current Location
+ */
+template< class TInputImage >
+double RidgeExtractor<TInputImage>::GetCurrentRidgeness() const
+{
+  return m_XRidgeness;
+}
+
+/**
+ * Get Roundess at the Current Location
+ */
+template< class TInputImage >
+double RidgeExtractor<TInputImage>::GetCurrentRoundness() const
+{
+  return m_XRoundness;
+}
+
+/**
+ * Get Curvature at the Current Location
+ */
+template< class TInputImage >
+double RidgeExtractor<TInputImage>::GetCurrentCurvature() const
+{
+  return m_XCurvature;
+}
+
+/**
+ * Get Levelness at the Current Location
+ */
+template< class TInputImage >
+double RidgeExtractor<TInputImage>::GetCurrentLevelness() const
+{
+  return m_XLevelness;
 }
 
 /**
@@ -517,6 +593,10 @@ RidgeExtractor<TInputImage>
   os << indent << "XH = " << m_XH << std::endl;
   os << indent << "XHEVal = " << m_XHEVal << std::endl;
   os << indent << "XHEVect = " << m_XHEVect << std::endl;
+  os << indent << "XRidgeness = " << m_XRidgeness << std::endl;
+  os << indent << "XRoundness = " << m_XRoundness << std::endl;
+  os << indent << "XCurvature = " << m_XCurvature << std::endl;
+  os << indent << "XLevelness = " << m_XLevelness << std::endl;
   os << std::endl;
 
   if( m_Tube.IsNotNull() )
@@ -1252,7 +1332,7 @@ RidgeExtractor<TInputImage>
   typename ImageType::IndexType indx;
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
-    indx[i] = ( int )( newX[i] + 0.5 );
+    indx[i] = ( int )( newX[i] + 0.5 ); // rounding
     if( newX[i] < (double)m_ExtractBoundMin[i]
       || newX[i] + 0.5 > (double)m_ExtractBoundMax[i] )
       {
@@ -1321,7 +1401,7 @@ RidgeExtractor<TInputImage>
 
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
-      indx[i] = ( int )( newX[i] + 0.5 );
+      indx[i] = ( int )( newX[i] + 0.5 ); // rounding
       if( newX[i] < (double)m_ExtractBoundMin[i]
         || newX[i] + 0.5 > (double)m_ExtractBoundMax[i] )
         {
@@ -1408,7 +1488,7 @@ RidgeExtractor<TInputImage>
 
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
-      indx[i]=( int )( newX[i] + 0.5 );
+      indx[i]=( int )( newX[i] + 0.5 ); // rounding
       if( newX[i] < (double)m_ExtractBoundMin[i]
         || newX[i] + 0.5 > (double)m_ExtractBoundMax[i] )
         {

@@ -94,6 +94,8 @@ RidgeFFTFeatureVectorGenerator< TImage >
     {
     ridgeF->SetUseIntensityOnly( false );
 
+    // compute intensity, ridgeness, roundness, curvature, 
+    // and levelness features (in that order) for each scale 
     unsigned int feat = 0;
     for( unsigned int s=0; s<m_Scales.size(); ++s )
       {
