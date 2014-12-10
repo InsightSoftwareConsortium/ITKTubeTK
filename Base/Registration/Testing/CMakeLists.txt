@@ -28,6 +28,7 @@ set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 find_package( ITK REQUIRED )
+set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 )
 include( ${ITK_USE_FILE} )
 
 find_package( SlicerExecutionModel REQUIRED )
@@ -74,7 +75,7 @@ SEMMacroBuildCLI(
     ${tubeBaseRegistration_SRCS}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
-    ${ITK_LIBRARIES}
+    ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects ITKOptimizers
     ${VTK_LIBRARIES}
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/CLI

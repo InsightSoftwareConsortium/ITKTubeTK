@@ -30,17 +30,20 @@ set( Cppcheck_HASH_OR_TAG 1.61 )
 
 # Common Toolkit snapshot 2014-01-03
 set( CTK_URL ${github_protocol}://github.com/commontk/CTK.git )
-set( CTK_HASH_OR_TAG 282abc745a7db700a822822375d0b8c170ec1a56 )
+set( CTK_HASH_OR_TAG 1c97e5426f898bc7d074e6122992d0dd12bab56b )
 
 # TubeTK Image Viewer snapshot 2014-01-26
 set( ImageViewer_URL ${github_protocol}://github.com/KitwareMedical/ImageViewer.git )
-set( ImageViewer_HASH_OR_TAG 0d688a34f5ce2b6deac96be5c34c46f64b2f08a8 )
+set( ImageViewer_HASH_OR_TAG 960a2a7ce69e81e86c87fd1606b28e40097a205b )
 
 # Insight Segmentation and Registration Toolkit
-#set( ITK_URL ${github_protocol}://github.com/Kitware/ITK.git )
-#set( ITK_HASH_OR_TAG 9fb84edbf9f6a5bb0846acbf6ecd767ca5cab2e1 )
-set( ITK_URL ${github_protocol}://github.com/Slicer/ITK.git )
-set( ITK_HASH_OR_TAG 3307a27de52d921ab40573e77097bfc72d70f5d6 )
+if( TubeTK_BUILD_SLICER_MODULES )
+  set( ITK_URL ${github_protocol}://github.com/Slicer/ITK.git )
+  set( ITK_HASH_OR_TAG 56fae278ad0ae805da4f4dbea5a4b9979cf4262c )
+else( TubeTK_BUILD_SLICER_MODULES )
+  set( ITK_URL ${github_protocol}://github.com/Kitware/ITK.git )
+  set( ITK_HASH_OR_TAG a0b2c43a2e5c96bdf55b402d1031a03e8b349f21 )
+endif( TubeTK_BUILD_SLICER_MODULES )
 
 # JsonCpp snapshot 2014-04-15 r276
 # ${svn_protocol}://svn.code.sf.net/p/jsoncpp/code/trunk/jsoncpp )
@@ -65,8 +68,8 @@ set( ParameterSerializer_HASH_OR_TAG d7e94d3ff9de9a8782db6997f8e1bc45626cfa3b )
 # Slicer Execution Model snapshot 2014-05-13
 set( SlicerExecutionModel_URL
   ${github_protocol}://github.com/Slicer/SlicerExecutionModel.git )
-set( SlicerExecutionModel_HASH_OR_TAG ecb58ad73c5dcdebf8c4d46257c7e44a07a7cdd4 )
+set( SlicerExecutionModel_HASH_OR_TAG a6616b527dc0dced26256f6a303174a98f373f6f )
 
 # Visualization Toolkit (3D Slicer fork) snapshot 2013-08-20 06:54:45
 set( VTK_URL ${github_protocol}://github.com/Slicer/VTK.git )
-set( VTK_HASH_OR_TAG d8540e7ee356bbc025cb9917a41b7c7fa0548d4b )
+set( VTK_HASH_OR_TAG b55dad7dbdf8bdbe25d814b411aa5f211b68c09f )

@@ -112,7 +112,6 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare11
 set_property( TEST ${MODULE_NAME}-Test4-Compare11
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
 
-# Needs ParameterSerializer
 if( NOT TubeTK_BUILD_SLICER_MODULES )
   #######
   # Test5

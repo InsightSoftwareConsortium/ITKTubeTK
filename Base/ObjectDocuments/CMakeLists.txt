@@ -24,6 +24,7 @@
 project( TubeTKObjectDocuments )
 
 find_package( ITK REQUIRED )
+set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 )
 include( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_ObjectDocuments_H_Files
@@ -53,7 +54,7 @@ add_library( TubeTKObjectDocuments STATIC
   ${TubeTk_Base_ObjectDocuments_SRCS} )
 
 include_directories( ${TubeTK_SOURCE_DIR}/Base/Common )
-target_link_libraries( TubeTKObjectDocuments TubeTKCommon ${ITK_LIBRARIES} )
+target_link_libraries( TubeTKObjectDocuments TubeTKCommon ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects )
 
 set( TARGETS TubeTKObjectDocuments )
 TubeTKMacroInstallPlugins( ${TARGETS} )
