@@ -27,13 +27,10 @@ limitations under the License.
 #include "PreProcessRegistrationInputs.h"
 
 #include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
-#include "itktubeSubSampleTubeTreeSpatialObjectFilterSerializer.h"
 #include "itktubeTubeAngleOfIncidenceWeightFunction.h"
-#include "itktubeTubeAngleOfIncidenceWeightFunctionSerializer.h"
 #include "itktubeTubeExponentialResolutionWeightFunction.h"
 #include "itktubeTubePointWeightsCalculator.h"
 #include "itkUltrasoundProbeGeometryCalculator.h"
-#include "itkUltrasoundProbeGeometryCalculatorSerializer.h"
 
 #include <itkImageFileReader.h>
 #include <itkRecursiveGaussianImageFilter.h>
@@ -69,6 +66,9 @@ PreProcessRegistrationInputs( int argc,
   PARSE_ARGS;
 
 #ifdef SlicerExecutionModel_USE_SERIALIZER
+  #include "itkUltrasoundProbeGeometryCalculatorSerializer.h"
+  #include "itktubeSubSampleTubeTreeSpatialObjectFilterSerializer.h"
+  #include "itktubeTubeAngleOfIncidenceWeightFunctionSerializer.h"
   // If SlicerExecutionModel was built with Serializer support, there is
   // automatically a parametersDeSerialize argument.  This argument is a JSON
   // file that has values for the CLI parameters, but it can also hold other

@@ -34,9 +34,6 @@ if( NOT TubeTK_SOURCE_DIR )
   include( ${TubeTK_USE_FILE} )
 endif( NOT TubeTK_SOURCE_DIR )
 
-find_package( ParameterSerializer REQUIRED )
-include_directories( ${ParameterSerializer_INCLUDE_DIRS} )
-
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 if( SlicerExecutionModel_USE_SERIALIZER )
@@ -44,6 +41,7 @@ if( SlicerExecutionModel_USE_SERIALIZER )
 endif()
 
 find_package( ITK REQUIRED )
+set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 )
 include( ${ITK_USE_FILE} )
 
 set(tubetk_base_includes
@@ -51,28 +49,28 @@ set(tubetk_base_includes
   ${TubeTK_SOURCE_DIR}/Base/Common
   ${TubeTK_SOURCE_DIR}/Base/Filtering
   ${TubeTK_SOURCE_DIR}/Base/Numerics
-  ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Filtering
-  ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/Registration
-  ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer/USTK
   ${TubeTK_SOURCE_DIR}/Base/Registration
   ${TubeTK_SOURCE_DIR}/Base/USTK )
 
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} ${ParameterSerializer_LIBRARIES}
+  TARGET_LIBRARIES ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects
+    ITKOptimizers ITKIOHDF5 ITKIOTransformBase
   INCLUDE_DIRECTORIES ${tubetk_base_includes} )
 
 SEMMacroBuildCLI(
   NAME ComputeImageToTubeRigidMetricImage
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} ${ParameterSerializer_LIBRARIES}
+  TARGET_LIBRARIES ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects
+    ITKOptimizers ITKIOHDF5 ITKIOTransformBase
   INCLUDE_DIRECTORIES ${tubetk_base_includes} )
 
 SEMMacroBuildCLI(
   NAME ExtractMetricImageSlice
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} ${ParameterSerializer_LIBRARIES}
+  TARGET_LIBRARIES ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects
+    ITKOptimizers ITKIOHDF5 ITKIOTransformBase
   INCLUDE_DIRECTORIES ${tubetk_base_includes} )
 
 if( BUILD_TESTING )

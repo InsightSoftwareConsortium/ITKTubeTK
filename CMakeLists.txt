@@ -323,18 +323,6 @@ option( USE_SYSTEM_LIBSVM
 mark_as_advanced( USE_SYSTEM_LIBSVM )
 
 #
-# Parameter serializer setup.
-#
-option( USE_SYSTEM_SLICER_EXECUTION_MODEL
-  "Exclude slicer execution model from superbuild and use an existing build."
-  OFF )
-mark_as_advanced( USE_SYSTEM_SLICER_EXECUTION_MODEL )
-option( USE_SYSTEM_PARAMETER_SERIALIZER
-  "Exclude parameter serializer from superbuild and use an existing build."
-  OFF )
-mark_as_advanced( USE_SYSTEM_PARAMETER_SERIALIZER )
-
-#
 # Qt framework setup.
 #
 option( TubeTK_USE_QT
@@ -479,6 +467,7 @@ if( TubeTK_USE_QT )
 endif( TubeTK_USE_QT )
 
 find_package( ITK REQUIRED )
+set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 )
 include( ${ITK_USE_FILE} )
 
 find_package( JsonCpp REQUIRED )
@@ -498,9 +487,6 @@ if( TubeTK_USE_BOOST )
   set( Boost_USE_STATIC_RUNTIME OFF )
   find_package( Boost REQUIRED )
 endif( TubeTK_USE_BOOST )
-
-find_package( ParameterSerializer REQUIRED )
-include_directories( ${ParameterSerializer_INCLUDE_DIRS} )
 
 set( SlicerExecutionModel_CLI_RUNTIME_INSTALL_DIRECTORY
   ${TubeTK_INSTALL_BIN_DIR} )
@@ -527,6 +513,10 @@ set( SlicerExecutionModel_CLI_ARCHIVE_OUTPUT_DIRECTORY
 find_package( SlicerExecutionModel REQUIRED GenerateCLP )
 include( ${GenerateCLP_USE_FILE} )
 include( ${SlicerExecutionModel_DIR}/CMake/SEMMacroBuildCLI.cmake )
+set(SlicerExecutionModel_CLI_LIBRARY_WRAPPER_CXX
+  ${TubeTK_SOURCE_DIR}/Base/CLI/tubeCLISharedLibraryWrapper.cxx
+  CACHE INTERNAL "SlicerExecutionModel extra includes" FORCE
+  )
 
 if( TubeTK_USE_VTK )
   find_package( VTK REQUIRED )
@@ -548,7 +538,6 @@ if( MSVC )
   foreach(_build_type "" Debug Release)
     list( APPEND TubeTK_EXECUTABLE_DIRS
       ${JsonCpp_DIR}/bin/${_build_type}
-      ${ParameterSerializer_DIR}/bin/${_build_type}
       ${GenerateCLP_DIR}/${_build_type}
       ${Boost_LIBRARY_DIR}
       ${ITK_DIR}/bin/${_build_type}
@@ -566,7 +555,6 @@ if( MSVC )
 else( MSVC )
   set( TubeTK_EXECUTABLE_DIRS
     ${JsonCpp_DIR}/bin
-    ${ParameterSerializer_DIR}/bin
     ${GenerateCLP_DIR}
     ${Boost_LIBRARY_DIR}
     ${ITK_DIR}/bin
@@ -615,68 +603,69 @@ endif()
 message(STATUS "Configuring Launcher script - ok [${_launcher_platform}]")
 
 # Setup to conform to 3D Slicer paths and define plugin copying macros.
-if( TubeTK_BUILD_APPLICATIONS AND NOT TubeTK_BUILD_SLICER_MODULES )
-  set( TubeTK_SLICER_SOURCE_DIR "${TubeTK_BINARY_DIR}/Slicer" )
-  set( TubeTK_SLICER_BINARY_DIR "${TubeTK_BINARY_DIR}/Slicer-build" )
-  make_directory( ${TubeTK_SLICER_SOURCE_DIR} )
-  make_directory( ${TubeTK_SLICER_BINARY_DIR} )
+#if( TubeTK_BUILD_APPLICATIONS AND NOT TubeTK_BUILD_SLICER_MODULES )
 
-  include( TubeTKSlicer4MacroGetSource )
+  #set( TubeTK_SLICER_SOURCE_DIR "${TubeTK_BINARY_DIR}/Slicer" )
+  #set( TubeTK_SLICER_BINARY_DIR "${TubeTK_BINARY_DIR}/Slicer-build" )
+  #make_directory( ${TubeTK_SLICER_SOURCE_DIR} )
+  #make_directory( ${TubeTK_SLICER_BINARY_DIR} )
 
-  TubeTKSlicer4MacroGetSource( Resources )
-  TubeTKSlicer4MacroGetSource( Base/CLI )
-  TubeTKSlicer4MacroGetSource( Libs/ITKFactoryRegistration )
+  #include( TubeTKSlicer4MacroGetSource )
+
+  #TubeTKSlicer4MacroGetSource( Resources )
+  #TubeTKSlicer4MacroGetSource( Base/CLI )
+  #TubeTKSlicer4MacroGetSource( Libs/ITKFactoryRegistration )
 
   # Build SlicerBaseCLI
-  add_subdirectory( ${TubeTK_SLICER_SOURCE_DIR}/Base/CLI
-    ${TubeTK_SLICER_BINARY_DIR}/Base/CLI )
-  set( Slicer_BaseCLI_INCLUDE_DIRS
-    ${SlicerBaseCLI_SOURCE_DIR}
-    ${SlicerBaseCLI_BINARY_DIR} )
-  set( SUPPORT_2D_IMAGES on )
+  #add_subdirectory( ${TubeTK_SLICER_SOURCE_DIR}/Base/CLI
+    #${TubeTK_SLICER_BINARY_DIR}/Base/CLI )
+  #set( Slicer_BaseCLI_INCLUDE_DIRS
+    #${SlicerBaseCLI_SOURCE_DIR}
+    #${SlicerBaseCLI_BINARY_DIR} )
+  #set( SUPPORT_2D_IMAGES on )
 
   # Build ITKFactorRegistration
-  set( CXX_TEST_PATH ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR} )
-  set( LAUNCH_EXE "" )
+  #set( CXX_TEST_PATH ${TubeTK_BINARY_DIR}/${Slicer4_INSTALL_BIN_DIR} )
+  #set( LAUNCH_EXE "" )
 
-  set( ITKFactoryRegistration_INSTALL_BIN_DIR ${TubeTK_INSTALL_BIN_DIR} )
-  set( ITKFactoryRegistration_INSTALL_LIB_DIR ${TubeTK_INSTALL_LIB_DIR} )
-  add_subdirectory(
-    ${TubeTK_SLICER_SOURCE_DIR}/Libs/ITKFactoryRegistration
-    ${TubeTK_SLICER_BINARY_DIR}/Libs/ITKFactoryRegistration )
-  set( ITKFactoryRegistration_INCLUDE_DIRS
-    ${ITKFactoryRegistration_SOURCE_DIR}
-    ${ITKFactoryRegistration_BINARY_DIR} )
+  #set( ITKFactoryRegistration_INSTALL_BIN_DIR ${TubeTK_INSTALL_BIN_DIR} )
+  #set( ITKFactoryRegistration_INSTALL_LIB_DIR ${TubeTK_INSTALL_LIB_DIR} )
+  #add_subdirectory(
+    #${TubeTK_SLICER_SOURCE_DIR}/Libs/ITKFactoryRegistration
+    #${TubeTK_SLICER_BINARY_DIR}/Libs/ITKFactoryRegistration )
+  #set( ITKFactoryRegistration_INCLUDE_DIRS
+    #${ITKFactoryRegistration_SOURCE_DIR}
+    #${ITKFactoryRegistration_BINARY_DIR} )
 
   # Config SlicerExecutionModel
-  set( _sem_extra_executable_target_libraries ITKFactoryRegistration )
-  if( TubeTK_USE_VTK )
-    list( APPEND _sem_extra_executable_target_libraries SlicerBaseCLI )
-  endif( TubeTK_USE_VTK )
+  #set( _sem_extra_executable_target_libraries ITKFactoryRegistration )
+  #if( TubeTK_USE_VTK )
+    #list( APPEND _sem_extra_executable_target_libraries SlicerBaseCLI )
+  #endif( TubeTK_USE_VTK )
 
-  set( SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES
-    ${_sem_extra_executable_target_libraries}
-    CACHE INTERNAL "3D Slicer execution model extra libraries." FORCE )
+  #set( SlicerExecutionModel_EXTRA_EXECUTABLE_TARGET_LIBRARIES
+    #${_sem_extra_executable_target_libraries}
+    #CACHE INTERNAL "3D Slicer execution model extra libraries." FORCE )
 
-  set( _sem_extra_include_directories ${ITKFactoryRegistration_INCLUDE_DIRS} )
-  if( TubeTK_USE_VTK )
-    list( APPEND _sem_extra_include_directories ${Slicer_BaseCLI_INCLUDE_DIRS})
-  endif( TubeTK_USE_VTK )
+  #set( _sem_extra_include_directories ${ITKFactoryRegistration_INCLUDE_DIRS} )
+  #if( TubeTK_USE_VTK )
+    #list( APPEND _sem_extra_include_directories ${Slicer_BaseCLI_INCLUDE_DIRS})
+  #endif( TubeTK_USE_VTK )
 
-  set(SlicerExecutionModel_EXTRA_INCLUDE_DIRECTORIES
-    ${_sem_extra_include_directories}
-    CACHE INTERNAL "SlicerExecutionModel extra includes" FORCE )
+  #set(SlicerExecutionModel_EXTRA_INCLUDE_DIRECTORIES
+    #${_sem_extra_include_directories}
+    #CACHE INTERNAL "SlicerExecutionModel extra includes" FORCE )
 
-  set(SlicerExecutionModel_CLI_LIBRARY_WRAPPER_CXX
-    ${TubeTK_SLICER_BINARY_DIR}/Base/CLI/SEMCommandLineLibraryWrapper.cxx
-    CACHE INTERNAL "SlicerExecutionModel extra includes" FORCE
-    )
-  configure_file(
-    ${TubeTK_SLICER_SOURCE_DIR}/Base/CLI/SEMCommandLineLibraryWrapper.cxx.in
-    ${SlicerExecutionModel_CLI_LIBRARY_WRAPPER_CXX}
-    )
+  #set(SlicerExecutionModel_CLI_LIBRARY_WRAPPER_CXX
+    #${TubeTK_SLICER_BINARY_DIR}/Base/CLI/SEMCommandLineLibraryWrapper.cxx
+    #CACHE INTERNAL "SlicerExecutionModel extra includes" FORCE
+    #)
+  #configure_file(
+    #${TubeTK_SLICER_SOURCE_DIR}/Base/CLI/SEMCommandLineLibraryWrapper.cxx.in
+    #${SlicerExecutionModel_CLI_LIBRARY_WRAPPER_CXX}
+    #)
 
-endif( TubeTK_BUILD_APPLICATIONS AND NOT TubeTK_BUILD_SLICER_MODULES )
+#endif( TubeTK_BUILD_APPLICATIONS AND NOT TubeTK_BUILD_SLICER_MODULES )
 
 include( TubeTKMacroInstallPlugins )
 
@@ -727,9 +716,6 @@ set( TubeTK_TARGETS_FILE
 
 set( TubeTK_USE_FILE
   ${TubeTK_CONFIG_BINARY_DIR}/UseTubeTK.cmake )
-
-set(TubeTK_CONFIG_CODE
-  "set(ParameterSerializer_DIR \"${ParameterSerializer_DIR}\")")
 
 # Configure TubeTKConfig.cmake.
 # The variables set above are for building against a TubeTK build tree.

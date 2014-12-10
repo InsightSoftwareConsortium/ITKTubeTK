@@ -85,7 +85,7 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     TubeTKNumerics
-    ${ITK_LIBRARIES}
+    ${ITK_LIBRARIES} ITKIOMeta ITKIOHDF5 ITKOptimizers
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/Common
     ${TubeTK_SOURCE_DIR}/Base/Numerics

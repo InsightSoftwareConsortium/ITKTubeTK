@@ -82,6 +82,7 @@ SEMMacroBuildCLI(
     TubeTKIO
     TubeTKNumerics
     ${ITK_LIBRARIES}
+    ITKIOMeta
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/Common
     ${TubeTK_SOURCE_DIR}/Base/Numerics
