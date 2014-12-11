@@ -420,15 +420,17 @@ RidgeExtractor<TInputImage>
     std::cout << "NAN at " << m_X << std::endl;
   
     intensity = 0;
-    m_XRoundness = roundness = 0;
-    m_XCurvature = curvature = 0;
-    m_XLevelness = levelness = 0;
+    roundness = 0;
+    curvature = 0;
+    levelness = 0;
+
+    m_XRoundness = 0;
+    m_XCurvature = 0;
+    m_XLevelness = 0;
     m_XRidgeness = 0;
   
     return m_XRidgeness;
     }
-
-  intensity = m_XVal;
 
   if( this->GetDebug() )
     {
@@ -441,6 +443,7 @@ RidgeExtractor<TInputImage>
   ::tube::ComputeRidgeness<double>( m_XH, m_XD,
     m_XRidgeness, m_XRoundness, m_XCurvature, m_XLevelness, m_XHEVect, m_XHEVal );
 
+  intensity = m_XVal;
   roundness = m_XRoundness;
   curvature = m_XCurvature;
   levelness = m_XLevelness;
