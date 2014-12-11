@@ -30,7 +30,6 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 
-#include <itkJsonCppArchiver.h>
 
 #include <itkCastImageFilter.h>
 #include <itkImageFileWriter.h>
@@ -66,6 +65,9 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
 #ifdef SlicerExecutionModel_USE_SERIALIZER
+
+  #include <itkJsonCppArchiver.h>
+
   // If SlicerExecutionModel was built with Serializer support, there is
   // automatically a parametersDeSerialize argument.  This argument is a JSON
   // file that has values for the CLI parameters, but it can also hold other

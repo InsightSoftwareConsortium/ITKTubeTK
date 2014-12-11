@@ -24,6 +24,7 @@
 project( TubeTKCommon )
 
 find_package( ITK REQUIRED )
+set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 )
 include( ${ITK_USE_FILE} )
 
 find_package( SlicerExecutionModel REQUIRED )
@@ -66,10 +67,11 @@ SEMMacroBuildCLI(
 add_executable( JsonCompareCommand JsonCompareCommand.cxx )
 target_link_libraries( JsonCompareCommand
   ${ITK_LIBRARIES}
+  ITKIOMeta
   ${JsonCpp_LIBRARIES} )
 
 add_executable( TextCompareCommand TextCompareCommand.cxx )
-target_link_libraries( TextCompareCommand ${ITK_LIBRARIES} )
+target_link_libraries( TextCompareCommand ${ITK_LIBRARIES} ITKIOMeta )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

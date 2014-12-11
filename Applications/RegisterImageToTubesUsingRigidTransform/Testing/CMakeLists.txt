@@ -64,7 +64,6 @@ get_target_property( ANALYSIS_EXE ${MODULE_NAME} LOCATION )
 configure_file( ${MODULE_NAME}Tuner.json.in
   ${TEMP}/${MODULE_NAME}Tuner.json )
 
-# Needs ParameterSerializer
 if( NOT TubeTK_BUILD_SLICER_MODULES )
   if( TubeTK_USE_PYQTGRAPH )
     Midas3FunctionAddTest( NAME ${MODULE_NAME}TunerTest

@@ -28,13 +28,9 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 
-#include <itkJsonCppArchiver.h>
-#include <itkGradientDescentOptimizerSerializer.h>
-
 #include <itkTransformFileWriter.h>
 #include <itkTimeProbesCollectorBase.h>
 
-#include <json/writer.h>
 
 #include "RegisterImageToTubesUsingRigidTransformCLP.h"
 #include "PreProcessRegistrationInputs.h"
@@ -47,6 +43,12 @@ int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
+
+#ifdef SlicerExecutionModel_USE_SERIALIZER
+  #include <itkJsonCppArchiver.h>
+  #include <json/writer.h>
+  #include <itkGradientDescentOptimizerSerializer.h>
+#endif
 
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
