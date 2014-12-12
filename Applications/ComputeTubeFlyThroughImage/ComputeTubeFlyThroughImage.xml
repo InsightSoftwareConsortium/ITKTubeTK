@@ -12,11 +12,11 @@
     <label>IO</label>
     <description>Input/output parameters.</description>
     <image>
-      <name>inputVolume</name>
-      <label>Input Volume</label>
+      <name>inputImageFile</name>
+      <label>Input Image</label>
       <channel>input</channel>
       <index>0</index>
-      <description>Input volume</description>
+      <description>Input Image</description>
     </image>
     <file>
       <name>inputTREFileName</name>
