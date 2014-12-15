@@ -6,7 +6,7 @@
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
-  <contributor>Deepak R. Chittajallu (Kitware)</contributor>
+  <contributor>Deepak Roy Chittajallu (Kitware)</contributor>
   <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
   <parameters>
     <label>IO</label>
@@ -19,11 +19,11 @@
       <description>Input Image</description>
     </image>
     <file>
-      <name>inputTREFileName</name>
+      <name>inputTREFile</name>
       <label>Input TRE File</label>
       <channel>input</channel>
       <index>1</index>
-      <description>Input TRE File</description>
+      <description>Input TRE file containing the tubes</description>
     </file>
     <integer>
       <name>inputTubeId</name>
@@ -37,7 +37,7 @@
       <label>Output image</label>
       <channel>output</channel>
       <index>3</index>
-      <description>Output fly through image being generated</description>
+      <description>Output fly through image that will be generated</description>
     </image>
   </parameters>
 </executable>

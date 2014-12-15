@@ -1645,6 +1645,7 @@ RidgeExtractor<TInputImage>
     radiusOriginal = m_RadiusExtractor->GetRadiusStart();
     }
 
+  // Try to find a ridge voxel close by
   if( LocalRidge( lX, verbose ) != SUCCESS )
     {
     if( verbose || this->GetDebug() )
@@ -1657,7 +1658,7 @@ RidgeExtractor<TInputImage>
     {
     std::cout << "*** Ridge found at " << lX << std::endl;
     }
-
+    
   typename TubeMaskImageType::IndexType indx;
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
