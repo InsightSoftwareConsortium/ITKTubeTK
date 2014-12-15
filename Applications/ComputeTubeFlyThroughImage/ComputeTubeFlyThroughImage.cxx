@@ -51,12 +51,6 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  std::cout << VDimension << std::endl;
-  std::cout << inputImageFile << std::endl;
-  std::cout << inputTREFile << std::endl;
-  std::cout << inputTubeId << std::endl;
-  std::cout << outputImageFile << std::endl;
-  
   // Ensure that the input image dimension is valid
   // We only support 2D and 3D Images due to the 
   // limitation of itkTubeSpatialObject
