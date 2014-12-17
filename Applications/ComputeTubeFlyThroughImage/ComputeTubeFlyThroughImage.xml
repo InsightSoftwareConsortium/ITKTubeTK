@@ -39,5 +39,12 @@
       <index>3</index>
       <description>Output fly through image that will be generated</description>
     </image>
+    <image>
+      <name>outputTubeMaskFile</name>
+      <label>Output Tube Mask</label>
+      <channel>output</channel>
+      <index>4</index>
+      <description>Output tube mask indicating the tube pixels in the generated fly through image that will be genera</description>
+    </image>
   </parameters>
 </executable>

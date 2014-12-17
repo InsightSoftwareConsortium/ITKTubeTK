@@ -210,7 +210,7 @@ int DoIt( int argc, char * argv[] )
   }
     
   // Setup the output image and allocate space for it
-  typename ImageType::Pointer pOutputImage = ImageType::New();  
+  typename ImageType::Pointer pFlyThroughImage = ImageType::New();  
 
     // set spacing
     // For last dimension its set to mean consecutive point distance  
@@ -224,7 +224,7 @@ int DoIt( int argc, char * argv[] )
     
     outputSpacing[VDimension-1] = meanTubePointDist;
     
-    pOutputImage->SetSpacing(outputSpacing);
+    pFlyThroughImage->SetSpacing(outputSpacing);
       
     // set start index
     typename ImageType::IndexType startIndex;
@@ -243,28 +243,43 @@ int DoIt( int argc, char * argv[] )
     typename ImageType::RegionType region;  
     region.SetIndex( startIndex );  
     region.SetSize( size );    
-    pOutputImage->SetRegions( region );  
+    pFlyThroughImage->SetRegions( region );  
     
     // Allocate and initialize 
-    pOutputImage->Allocate();
-    pOutputImage->FillBuffer( 0 );
+    pFlyThroughImage->Allocate();
+    pFlyThroughImage->FillBuffer( 0 );
+    
+  // Setup tube mask image and allocate space for it
+  typedef unsigned char 				MaskPixelType;
+  typedef itk::Image< MaskPixelType, VDimension > 	MaskImageType;
   
+  typename MaskImageType::Pointer pTubeMaskFlyThroughImage 
+  = MaskImageType::New();    
+  
+  pTubeMaskFlyThroughImage->SetRegions( region );
+  pTubeMaskFlyThroughImage->CopyInformation( pFlyThroughImage );
+  pTubeMaskFlyThroughImage->Allocate();
+  pTubeMaskFlyThroughImage->FillBuffer( 0 );
+    
   // For each tube point, extract normal plane image
   // and fill into corresponding slice in the output image
   typedef typename TubeType::TubePointType TubePointType;
   typedef typename TubePointType::CovariantVectorType TubeNormalType;  
   
   typedef itk::ImageRegionIteratorWithIndex< ImageType > ImageIteratorType;  
+  typedef itk::ImageRegionIterator< MaskImageType > MaskIteratorType;
   
-  typedef itk::LinearInterpolateImageFunction< ImageType, double > InterpolatorType;
+  typedef itk::LinearInterpolateImageFunction< ImageType, double > 
+  InterpolatorType;
 
   typedef itk::MinimumMaximumImageFilter< ImageType > MinMaxImageFilterType;
 
-  timeCollector.Start("Generating output image");
+  timeCollector.Start("Generating fly through images");
 
   unsigned int ptInd = 0;
 
-  typename MinMaxImageFilterType::Pointer minmaxFilter = MinMaxImageFilterType::New();
+  typename MinMaxImageFilterType::Pointer minmaxFilter = 
+  MinMaxImageFilterType::New();
   minmaxFilter->SetInput( pInputImage );
   minmaxFilter->Update();
   TPixel outsideVal = minmaxFilter->GetMinimum();
@@ -292,16 +307,20 @@ int DoIt( int argc, char * argv[] )
       sliceStartIndex[VDimension-1] = ptInd;
       
       typename ImageType::SizeType sliceSize;
-      sliceSize = pOutputImage->GetLargestPossibleRegion().GetSize();
+      sliceSize = pFlyThroughImage->GetLargestPossibleRegion().GetSize();
       sliceSize[VDimension-1] = 0;
     
     sliceRegion.SetIndex( sliceStartIndex );
     sliceRegion.SetSize( sliceSize );
     
     // Iterate through corresponding slice of output image and fill each pixel
-    ImageIteratorType itOutSlice(pOutputImage, sliceRegion);
+    ImageIteratorType itOutSlice(pFlyThroughImage, sliceRegion);
+    MaskIteratorType itMask(pTubeMaskFlyThroughImage, sliceRegion);
     
-    for( itOutSlice.GoToBegin(); !itOutSlice.IsAtEnd(); ++itOutSlice )
+    for( itOutSlice.GoToBegin(), itMask.GoToBegin(); 
+	!itOutSlice.IsAtEnd(); 
+	++itOutSlice, ++itMask 
+       )
     {
       // get index of the current output pixel
       typename ImageType::IndexType curOutIndex = itOutSlice.GetIndex();
@@ -335,11 +354,18 @@ int DoIt( int argc, char * argv[] )
 	distToCenter = std::sqrt( stepN1 * stepN1 + stepN2 * stepN2  );
       }
       
-      // Get the intensity value from the input image using interpolation
-      if( distToCenter <= curTubeRadius &&
-	  pInterpolator->IsInsideBuffer(curInputPoint) )
+      // set pixel values in the output images
+      if( pInterpolator->IsInsideBuffer(curInputPoint) )
       {
+	// set intensity value by getting it from input image using 
+	// interpolation
 	itOutSlice.Set( pInterpolator->Evaluate(curInputPoint) );
+
+	// if point is within the tube set tube mask pixel to on  
+	if( distToCenter <= curTubeRadius )
+	{
+	  itMask.Set( 1.0 );
+	}
       }
       else
       {
@@ -348,30 +374,53 @@ int DoIt( int argc, char * argv[] )
     }
   }  
     
-  timeCollector.Stop("Generating output image");
+  timeCollector.Stop("Generating fly through images");
   
-  // Write output image
+  // Write fly through image
   typedef itk::ImageFileWriter< ImageType > ImageWriterType;
   
-  timeCollector.Start("Writing output image");
+  timeCollector.Start("Writing fly through image");
   
   typename ImageWriterType::Pointer imageWriter = ImageWriterType::New();
   
   try
   {
     imageWriter->SetFileName( outputImageFile.c_str() );    
-    imageWriter->SetInput( pOutputImage );
+    imageWriter->SetInput( pFlyThroughImage );
     imageWriter->Update();
   }
   catch( itk::ExceptionObject & err )
   {
-    tube::ErrorMessage( "Error writing output image: "
+    tube::ErrorMessage( "Error writing fly through image: "
                         + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
   }
   
-  timeCollector.Stop("Writing output image");
+  timeCollector.Stop("Writing fly through image");
+
+  // Write tube mask fly through image
+  typedef itk::ImageFileWriter< MaskImageType > MaskWriterType;
+  
+  timeCollector.Start("Writing tube mask fly through image");
+  
+  typename MaskWriterType::Pointer maskWriter = MaskWriterType::New();
+  
+  try
+  {
+    maskWriter->SetFileName( outputTubeMaskFile.c_str() );    
+    maskWriter->SetInput( pTubeMaskFlyThroughImage );
+    maskWriter->Update();
+  }
+  catch( itk::ExceptionObject & err )
+  {
+    tube::ErrorMessage( "Error writing tube mask fly through image: "
+                        + std::string(err.GetDescription()) );
+    timeCollector.Report();
+    return EXIT_FAILURE;
+  }
+  
+  timeCollector.Stop("Writing tube mask fly through image");
   
   // All done
   timeCollector.Report();
