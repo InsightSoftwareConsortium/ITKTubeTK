@@ -510,13 +510,8 @@ set( SlicerExecutionModel_CLI_SHARE_OUTPUT_DIRECTORY
 set( SlicerExecutionModel_CLI_ARCHIVE_OUTPUT_DIRECTORY
   "${CMAKE_BINARY_DIR}/lib/TubeTK" )
 
-find_package( SlicerExecutionModel REQUIRED GenerateCLP )
-include( ${GenerateCLP_USE_FILE} )
-include( ${SlicerExecutionModel_DIR}/CMake/SEMMacroBuildCLI.cmake )
-set(SlicerExecutionModel_CLI_LIBRARY_WRAPPER_CXX
-  ${TubeTK_SOURCE_DIR}/Base/CLI/tubeCLISharedLibraryWrapper.cxx
-  CACHE INTERNAL "SlicerExecutionModel extra includes" FORCE
-  )
+find_package( SlicerExecutionModel )
+include( ${SlicerExecutionModel_USE_FILE} )
 
 if( TubeTK_USE_VTK )
   find_package( VTK REQUIRED )

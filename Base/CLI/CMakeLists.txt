@@ -33,12 +33,8 @@ set( TubeTK_Base_CLI_H_Files
   tubeCLIProgressReporter.h
   TubeTKLogo.h )
 
-set( TubeTK_Base_CLI_SRCS
-  tubeCLISharedLibraryWrapper.cxx )
-
 add_custom_target( TubeCLI SOURCES
-  ${TubeTK_Base_CLI_H_Files}
-  ${TubeTK_Base_CLI_SRCS} )
+  ${TubeTK_Base_CLI_H_Files} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
