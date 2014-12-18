@@ -27,12 +27,11 @@ include( Midas3FunctionAddTest )
 set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
-find_package( ITK REQUIRED )
-set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 )
-include( ${ITK_USE_FILE} )
-
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
+
+find_package( ITK REQUIRED )
+include( ${ITK_USE_FILE} )
 
 set( BASE_REGISTRATION_TESTS
   ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseRegistrationTests> )

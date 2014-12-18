@@ -24,7 +24,6 @@
 project( TubeTKObjectDocuments )
 
 find_package( ITK REQUIRED )
-set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 )
 include( ${ITK_USE_FILE} )
 
 set( TubeTK_Base_ObjectDocuments_H_Files

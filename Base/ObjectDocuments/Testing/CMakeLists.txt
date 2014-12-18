@@ -29,12 +29,17 @@ set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
 set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 find_package( PythonInterp )
-
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseObjectDocuments ${PYTHON_EXECUTABLE}
     ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
     ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments )
 endif( PYTHON_EXECUTABLE )
+
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
+
+find_package( ITK REQUIRED )
+include( ${ITK_USE_FILE} )
 
 set( BASE_OBJECT_DOCUMENTS_TESTS
   ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseObjectDocumentsTests> )
