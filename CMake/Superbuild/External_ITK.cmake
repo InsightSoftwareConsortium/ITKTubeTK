@@ -89,7 +89,6 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
 else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
   if( ${USE_SYSTEM_${proj}} )
     find_package( ${proj} REQUIRED )
-    set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 )
   endif( ${USE_SYSTEM_${proj}} )
 
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )

@@ -41,7 +41,6 @@ if( SlicerExecutionModel_USE_SERIALIZER )
 endif()
 
 find_package( ITK REQUIRED )
-set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 )
 include( ${ITK_USE_FILE} )
 
 set(tubetk_base_includes
