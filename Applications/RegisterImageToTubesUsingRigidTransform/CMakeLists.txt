@@ -36,6 +36,7 @@ endif( NOT TubeTK_SOURCE_DIR )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
+
 if( SlicerExecutionModel_USE_SERIALIZER )
   add_definitions( -DSlicerExecutionModel_USE_SERIALIZER )
 endif()

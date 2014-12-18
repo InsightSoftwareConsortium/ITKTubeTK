@@ -37,6 +37,12 @@ if( PYTHON_EXECUTABLE )
     ${TubeTK_SOURCE_DIR}/Base/ParameterSerializer )
 endif( PYTHON_EXECUTABLE )
 
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
+
+find_package( ITK REQUIRED )
+include( ${ITK_USE_FILE} )
+
 set( BASE_PARAMETERSERIALIZER_TESTS
   $<TARGET_FILE:tubeBaseParameterSerializerTests> )
 
