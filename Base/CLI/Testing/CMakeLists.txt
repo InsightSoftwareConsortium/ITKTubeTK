@@ -34,6 +34,12 @@ if( PYTHON_EXECUTABLE )
     ${TubeTK_SOURCE_DIR}/Base/CLI )
 endif( PYTHON_EXECUTABLE )
 
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
+
+find_package( ITK REQUIRED )
+include( ${ITK_USE_FILE} )
+
 set( BASE_CLI_TESTS
    ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseCLITests> )
 
@@ -41,9 +47,6 @@ set( BASE_CLI_HEADER_TEST
   ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseCLIHeaderTest> )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
-find_package( GenerateCLP REQUIRED )
-include( ${GenerateCLP_USE_FILE} )
 
 set( tubeCLIHelperFunctionsTest_SOURCE tubeCLIHelperFunctionsTest.cxx )
 
