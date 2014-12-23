@@ -128,25 +128,36 @@ int DoIt( int argc, char * argv[] )
 
   if( minSize > 0 )
     {
+     
+    // compute the size (number of pixels) of each connected component
     iter.GoToBegin();
     unsigned int numObjects = filter->GetObjectCount()+1;
-    std::vector< unsigned int > cSize( numObjects, 0 );
+    std::vector<unsigned int> cPixelCount( numObjects, 0 );
     while( !iter.IsAtEnd() )
       {
       unsigned int c = iter.Get();
       if( c > 0 && c < numObjects )
         {
-        ++cSize[ c ];
+	  cPixelCount[c]++;
         }
       ++iter;
       }
+
+    // compute voxelVolume  
+    double voxelVolume = 1;  
+    for(unsigned int i = 0; i < VDimension; i++)
+    {
+      voxelVolume *= curMask.GetSpacing()[i];
+    }
+      
+    // drop connected components of size (physp) below a user-specified cutoff  
     iter.GoToBegin();
     while( !iter.IsAtEnd() )
       {
       unsigned int c = iter.Get();
       if( c > 0 && c < numObjects )
         {
-        if( cSize[c] < (unsigned int)minSize )
+        if( cPixelCount[c] * voxelVolume < minSize )
           {
           iter.Set( 0 );
           }

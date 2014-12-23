@@ -29,13 +29,13 @@
   <parameters>
     <label>Advanced</label>
     <description>Optional parameters.</description>
-    <integer>
+    <double>
       <name>minSize</name>
       <label>Minimum Size</label>
-      <description>Any connected component whose size is less than this is ignored.</description>
+      <description>Any connected component whose size (in physical space) is less than this is ignored.</description>
       <longflag>minSize</longflag>
-      <default>0</default>
-    </integer>
+      <default>0.0</default>
+    </double>
     <image>
       <name>seedMask</name>
       <label>Seed Mask</label>
