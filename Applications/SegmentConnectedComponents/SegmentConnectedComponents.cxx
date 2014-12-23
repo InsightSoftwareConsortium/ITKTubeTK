@@ -147,7 +147,7 @@ int DoIt( int argc, char * argv[] )
     double voxelVolume = 1;  
     for(unsigned int i = 0; i < VDimension; i++)
     {
-      voxelVolume *= curMask.GetSpacing()[i];
+      voxelVolume *= curMask->GetSpacing()[i];
     }
       
     // drop connected components of size (physp) below a user-specified cutoff  
