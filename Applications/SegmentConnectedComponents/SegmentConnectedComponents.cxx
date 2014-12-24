@@ -132,7 +132,7 @@ int DoIt( int argc, char * argv[] )
     // compute the size (number of pixels) of each connected component
     iter.GoToBegin();
     unsigned int numObjects = filter->GetObjectCount()+1;
-    std::vector<unsigned int> cPixelCount( numObjects, 0 );
+    std::vector< unsigned int > cPixelCount( numObjects, 0 );
     while( !iter.IsAtEnd() )
       {
       unsigned int c = iter.Get();
