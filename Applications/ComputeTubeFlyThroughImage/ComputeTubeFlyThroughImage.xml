@@ -44,7 +44,7 @@
       <label>Output Tube Mask</label>
       <channel>output</channel>
       <index>4</index>
-      <description>Output tube mask indicating the tube pixels in the generated fly through image that will be genera</description>
+      <description>Output tube mask indicating the tube pixels in the generated fly through image</description>
     </image>
   </parameters>
 </executable>
