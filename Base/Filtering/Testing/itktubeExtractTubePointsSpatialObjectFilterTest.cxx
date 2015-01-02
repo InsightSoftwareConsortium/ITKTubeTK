@@ -55,11 +55,10 @@ int itktubeExtractTubePointsSpatialObjectFilterTest( int argc, char* argv[] )
     }
   GroupSpatialObjectType::Pointer groupSpatialObject = reader->GetGroup();
   std::cout << "Number of children = "
-    << groupSpatialObject->GetNumberOfChildren()
-    << std::endl;
+    << groupSpatialObject->GetNumberOfChildren() << std::endl;
 
-  typedef itk::tube::ExtractTubePointsSpatialObjectFilter< TubeSpatialObjectType >
-      ExtractTubePointsSpatialObjectFilterType;
+  typedef itk::tube::ExtractTubePointsSpatialObjectFilter< 
+    TubeSpatialObjectType > ExtractTubePointsSpatialObjectFilterType;
   ExtractTubePointsSpatialObjectFilterType::Pointer extractTubePointsFilter =
     ExtractTubePointsSpatialObjectFilterType::New();
   extractTubePointsFilter->SetInput( reader->GetGroup() );
@@ -72,12 +71,15 @@ int itktubeExtractTubePointsSpatialObjectFilterTest( int argc, char* argv[] )
     std::cerr << "Error: " << error << std::endl;
     return EXIT_FAILURE;
     }
+  std::cout << "extractTubePointsFilter->Update() SUCCESS" << std::endl;
 
   typedef ExtractTubePointsSpatialObjectFilterType::PointsContainerType
     PointsContainerType;
-  const PointsContainerType * pointsContainer = extractTubePointsFilter->GetPointsContainer();
+  const PointsContainerType * pointsContainer = 
+    extractTubePointsFilter->GetPointsContainer();
   const itk::SizeValueType numberOfPoints = pointsContainer->Size();
-  std::cout << "Output points container size: " << numberOfPoints << std::endl;
+  std::cout << "Output points container size: " << numberOfPoints 
+    << std::endl;
   const itk::SizeValueType expectedNumberOfPoints = 110655;
   if( numberOfPoints != expectedNumberOfPoints )
     {
