@@ -64,6 +64,8 @@ public:
   MetaRidgeSeed(
     const RidgeSeedScalesType & _ridgeScales,
     const bool _useIntensityOnly,
+    unsigned int _numberOfPCABasis,
+    unsigned int _numberOfLDABasis,
     const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix,
     const ValueListType & _whitenMeans,
@@ -82,6 +84,8 @@ public:
   bool InitializeEssential(
     const RidgeSeedScalesType & _ridgeScales,
     const bool _useIntensityOnly,
+    unsigned int _numberOfPCABasis,
+    unsigned int _numberOfLDABasis,
     const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix,
     const ValueListType & _whitenMeans,

@@ -47,8 +47,6 @@ NJetFeatureVectorGenerator< TImage >
   m_FirstScales.resize( 0 );
   m_SecondScales.resize( 0 );
   m_RidgeScales.resize( 0 );
-
-  m_ForceOrientationInsensitivity = true;
 }
 
 template< class TImage >
@@ -108,10 +106,6 @@ NJetFeatureVectorGenerator< TImage >
       njet->DerivativeAtIndex( indx, m_FirstScales[s], v );
       for( unsigned int d = 0; d < ImageDimension; d++ )
         {
-        if( m_ForceOrientationInsensitivity && v[d] < 0 )
-          {
-          v[d] *= -1;
-          }
         featureVector[featureCount++] = v[d];
         val += v[d] * v[d];
         }
@@ -120,13 +114,10 @@ NJetFeatureVectorGenerator< TImage >
 
     for( unsigned int s = 0; s < m_SecondScales.size(); s++ )
       {
+      val = 0.0;
       njet->HessianAtIndex( indx, m_SecondScales[s], m );
       for( unsigned int d = 0; d < ImageDimension; d++ )
         {
-        if( m_ForceOrientationInsensitivity && m[d][d] < 0 )
-          {
-          m[d][d] *= -1;
-          }
         featureVector[featureCount++] = m[d][d];
         val += m[d][d]*m[d][d];
         }
@@ -185,10 +176,6 @@ NJetFeatureVectorGenerator< TImage >
         njet->DerivativeAtIndex( indx, 4, v );
         for( unsigned int d = 0; d < ImageDimension; d++ )
           {
-          if( m_ForceOrientationInsensitivity && v[d] < 0 )
-            {
-            v[d] *= -1;
-            }
           if( featureCount == fNum )
             {
             return v[d];
@@ -211,13 +198,10 @@ NJetFeatureVectorGenerator< TImage >
         + (m_FirstScales.size() * ImageDimension) + 1;
       for( unsigned int s = 0; s < m_SecondScales.size(); s++ )
         {
+        val = 0.0;
         njet->HessianAtIndex( indx, m_SecondScales[s], m );
         for( unsigned int d = 0; d < ImageDimension; d++ )
           {
-          if( m_ForceOrientationInsensitivity && m[d][d] < 0 )
-            {
-            m[d][d] *= -1;
-            }
           if( featureCount == fNum )
             {
             return m[d][d];
@@ -332,34 +316,9 @@ NJetFeatureVectorGenerator< TImage >
 template< class TImage >
 void
 NJetFeatureVectorGenerator< TImage >
-::SetForceOrientationInsensitivity( bool _forceOrientationInsensitivity )
-{
-  m_ForceOrientationInsensitivity = _forceOrientationInsensitivity;
-}
-
-template< class TImage >
-bool
-NJetFeatureVectorGenerator< TImage >
-::GetForceOrientationInsensitivity( void ) const
-{
-  return m_ForceOrientationInsensitivity;
-}
-
-template< class TImage >
-void
-NJetFeatureVectorGenerator< TImage >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
-
-  if( m_ForceOrientationInsensitivity )
-    {
-    os << indent << "ForceOrientationInsensitivity = true" << std::endl;
-    }
-  else
-    {
-    os << indent << "ForceOrientationInsensitivity = false" << std::endl;
-    }
 
   os << indent << "ZeroScales.size() = " << m_ZeroScales.size()
     << std::endl;

@@ -29,79 +29,77 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
-set( PROJ_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
+set( PROJ_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-set( IMAGECOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
+set( IMAGECOMPARE_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
 
-set( TEXTCOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
+set( TEXTCOMPARE_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
 
 # Test1
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
-            COMMAND ${PROJ_EXE}
-               --useNumberOfBasis 1
-               --objectId 0,255
-               --saveBasisInfo ${TEMP}/${MODULE_NAME}Test1.mlda
-               MIDAS{ES0015_Large.mha.md5},MIDAS{ES0015_Large_Blur1.mha.md5},MIDAS{ES0015_Large_Blur2.mha.md5}
-               --labelmap MIDAS{GDS0015_Large.mha.md5}
-               ${TEMP}/${MODULE_NAME}Test1 )
+  COMMAND ${PROJ_EXE}
+    --useNumberOfLDABasis 1
+    --useNumberOfPCABasis 0
+    --objectId 0,255
+    --saveBasisInfo ${TEMP}/${MODULE_NAME}Test1.mlda
+    --labelmap MIDAS{GDS0015_Large.mha.md5}
+    MIDAS{ES0015_Large.mha.md5},MIDAS{ES0015_Large_Blur1.mha.md5},MIDAS{ES0015_Large_Blur2.mha.md5}
+    ${TEMP}/${MODULE_NAME}Test1 )
 
 # Test1-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
-               -i 0.02
-               -t ${TEMP}/${MODULE_NAME}Test1.basis00.mha
-               -b MIDAS{${MODULE_NAME}Test1.basis00.mha.md5} )
+  COMMAND ${IMAGECOMPARE_EXE}
+    -i 0.02
+    -t ${TEMP}/${MODULE_NAME}Test1.basis00.mha
+    -b MIDAS{${MODULE_NAME}Test1.basis00.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
 # Test2
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
-            COMMAND ${PROJ_EXE}
-               --useNumberOfBasis 2
-               --objectId 0,255
-               MIDAS{ES0015_Large.mha.md5},MIDAS{ES0015_Large_Blur1.mha.md5},MIDAS{ES0015_Large_Blur2.mha.md5}
-               --labelmap MIDAS{GDS0015_Large.mha.md5}
-               ${TEMP}/${MODULE_NAME}Test2 )
+  COMMAND ${PROJ_EXE}
+    --useNumberOfLDABasis 2
+    --objectId 0,255
+    MIDAS{ES0015_Large.mha.md5},MIDAS{ES0015_Large_Blur1.mha.md5},MIDAS{ES0015_Large_Blur2.mha.md5}
+    --labelmap MIDAS{GDS0015_Large.mha.md5}
+    ${TEMP}/${MODULE_NAME}Test2 )
 
 # Test2-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
-               -i 0.02
-               -t ${TEMP}/${MODULE_NAME}Test2.basis01.mha
-               -b MIDAS{${MODULE_NAME}Test2.basis01.mha.md5} )
+  COMMAND ${IMAGECOMPARE_EXE}
+    -i 0.02
+    -t ${TEMP}/${MODULE_NAME}Test2.basis01.mha
+    -b MIDAS{${MODULE_NAME}Test2.basis01.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test2-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
 
 # Test3
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3
-            COMMAND ${PROJ_EXE}
-               --useNumberOfBasis 1
-               --objectId 0,255
-               --loadBasisInfo ${TEMP}/${MODULE_NAME}Test1.mlda
-               --saveBasisInfo ${TEMP}/${MODULE_NAME}Test3.mlda
-               MIDAS{ES0015_Large.mha.md5},MIDAS{ES0015_Large_Blur1.mha.md5},MIDAS{ES0015_Large_Blur2.mha.md5}
-               --labelmap MIDAS{GDS0015_Large.mha.md5}
-               ${TEMP}/${MODULE_NAME}Test3 )
+  COMMAND ${PROJ_EXE}
+    --useNumberOfLDABasis 1
+    --objectId 0,255
+    --loadBasisInfo ${TEMP}/${MODULE_NAME}Test1.mlda
+    --saveBasisInfo ${TEMP}/${MODULE_NAME}Test3.mlda
+    MIDAS{ES0015_Large.mha.md5},MIDAS{ES0015_Large_Blur1.mha.md5},MIDAS{ES0015_Large_Blur2.mha.md5}
+    --labelmap MIDAS{GDS0015_Large.mha.md5}
+    ${TEMP}/${MODULE_NAME}Test3 )
 set_property( TEST ${MODULE_NAME}-Test3
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
 # Test3-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
-               -i 0.02
-               -t ${TEMP}/${MODULE_NAME}Test3.basis00.mha
-               -b MIDAS{${MODULE_NAME}Test1.basis00.mha.md5} )
+  COMMAND ${IMAGECOMPARE_EXE}
+    -i 0.02
+    -t ${TEMP}/${MODULE_NAME}Test3.basis00.mha
+    -b MIDAS{${MODULE_NAME}Test1.basis00.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test3-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test3 )
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test3 )
 
 # Test3-Compare2
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3-Compare2
-            COMMAND ${TEXTCOMPARE_EXE}
-               -d 0.01
-               -t ${TEMP}/${MODULE_NAME}Test3.mlda
-               -b MIDAS{${MODULE_NAME}Test3.mlda.md5} )
+  COMMAND ${TEXTCOMPARE_EXE}
+    -d 0.01
+    -t ${TEMP}/${MODULE_NAME}Test3.mlda
+    -b MIDAS{${MODULE_NAME}Test3.mlda.md5} )
 set_property( TEST ${MODULE_NAME}-Test3-Compare2
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test3 )
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test3 )

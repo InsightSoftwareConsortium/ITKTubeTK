@@ -87,7 +87,8 @@ int itktubeMetaNJetLDATest( int argc, char * argv[] )
       || mlda2.GetSecondScales() != mlda1.GetSecondScales()
       || mlda2.GetRidgeScales() != mlda1.GetRidgeScales() )
     {
-    std::cout << "LDA values do not match after copy constructor." << std::endl;
+    std::cout << "LDA values do not match after copy constructor." 
+      << std::endl;
     mlda1.PrintInfo();
     for( unsigned int i = 0; i < mlda2.GetZeroScales().size(); i++ )
       {
@@ -108,7 +109,8 @@ int itktubeMetaNJetLDATest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  itk::tube::MetaNJetLDA mlda3( scales0, scales1, scales2, scalesR, v, m, wm,
+  itk::tube::MetaNJetLDA mlda3( scales0, scales1, scales2, scalesR, 4, 6, v,
+    m, wm,
                                 ws );
   if( mlda3.GetLDAValues() != mlda1.GetLDAValues()
       || mlda3.GetLDAMatrix() != mlda1.GetLDAMatrix()
@@ -142,7 +144,8 @@ int itktubeMetaNJetLDATest( int argc, char * argv[] )
     }
 
   itk::tube::MetaNJetLDA mlda5;
-  mlda5.InitializeEssential( scales0, scales1, scales2, scalesR, v, m, wm, ws );
+  mlda5.InitializeEssential( scales0, scales1, scales2, scalesR, 4, 6, v, m,
+    wm, ws );
   if( mlda5.GetLDAValues() != mlda1.GetLDAValues()
       || mlda5.GetLDAMatrix() != mlda1.GetLDAMatrix()
       || mlda5.GetWhitenMeans() != mlda1.GetWhitenMeans()

@@ -125,6 +125,11 @@ int DoIt( int argc, char * argv[] )
     itk::tube::MetaLDA basisReader( loadBasisInfo.c_str() );
     basisReader.Read();
 
+    basisGenerator->SetNumberOfPCABasisToUseAsFeatures( 
+      basisReader.GetNumberOfPCABasisToUseAsFeatures() );
+    basisGenerator->SetNumberOfLDABasisToUseAsFeatures( 
+      basisReader.GetNumberOfLDABasisToUseAsFeatures() );
+
     basisGenerator->SetBasisValues( basisReader.GetLDAValues() );
     basisGenerator->SetBasisMatrix( basisReader.GetLDAMatrix() );
     basisGenerator->SetWhitenMeans( basisReader.GetWhitenMeans() );
@@ -136,6 +141,17 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start( "Update" );
 
+    if( useNumberOfPCABasis != 0 )
+      {
+      basisGenerator->SetNumberOfPCABasisToUseAsFeatures( 
+        useNumberOfPCABasis );
+      }
+    if( useNumberOfLDABasis != 0 )
+      {
+      basisGenerator->SetNumberOfLDABasisToUseAsFeatures( 
+        useNumberOfLDABasis );
+      }
+
     basisGenerator->GenerateBasis();
 
     timeCollector.Stop( "Update" );
@@ -145,14 +161,7 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start( "SaveBasisImages" );
 
-    unsigned int numBasis = basisGenerator->GetNumberOfBasis();
-    if( useNumberOfBasis>0 && useNumberOfBasis < (int)numBasis )
-      {
-      numBasis = useNumberOfBasis;
-      }
-    basisGenerator->SetNumberOfBasisToUseAsFeatures( numBasis );
-
-    std::cout << "Num basis = " << numBasis << std::endl;
+    unsigned int numBasis = basisGenerator->GetNumberOfFeatures();
     for( unsigned int i = 0; i < numBasis; i++ )
       {
       typename BasisImageWriterType::Pointer basisImageWriter =
@@ -172,7 +181,10 @@ int DoIt( int argc, char * argv[] )
   if( saveBasisInfo.size() > 0 )
     {
     timeCollector.Start( "SaveBasis" );
-    itk::tube::MetaLDA basisWriter( basisGenerator->GetBasisValues(),
+    itk::tube::MetaLDA basisWriter( 
+      basisGenerator->GetNumberOfPCABasisToUseAsFeatures(),
+      basisGenerator->GetNumberOfLDABasisToUseAsFeatures(),
+      basisGenerator->GetBasisValues(),
       basisGenerator->GetBasisMatrix(),
       basisGenerator->GetWhitenMeans(),
       basisGenerator->GetWhitenStdDevs() );

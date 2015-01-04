@@ -155,6 +155,38 @@ RidgeSeedFilter< TImage, TLabelMap >
 template< class TImage, class TLabelMap >
 void
 RidgeSeedFilter< TImage, TLabelMap >
+::SetNumberOfPCABasisToUseAsFeatures( unsigned int num )
+{
+  m_SeedFeatureGenerator->SetNumberOfPCABasisToUseAsFeatures( num );
+}
+
+template< class TImage, class TLabelMap >
+unsigned int
+RidgeSeedFilter< TImage, TLabelMap >
+::GetNumberOfPCABasisToUseAsFeatures( void ) const
+{
+  return m_SeedFeatureGenerator->GetNumberOfPCABasisToUseAsFeatures();
+}
+
+template< class TImage, class TLabelMap >
+void
+RidgeSeedFilter< TImage, TLabelMap >
+::SetNumberOfLDABasisToUseAsFeatures( unsigned int num )
+{
+  m_SeedFeatureGenerator->SetNumberOfLDABasisToUseAsFeatures( num );
+}
+
+template< class TImage, class TLabelMap >
+unsigned int
+RidgeSeedFilter< TImage, TLabelMap >
+::GetNumberOfLDABasisToUseAsFeatures( void ) const
+{
+  return m_SeedFeatureGenerator->GetNumberOfLDABasisToUseAsFeatures();
+}
+
+template< class TImage, class TLabelMap >
+void
+RidgeSeedFilter< TImage, TLabelMap >
 ::SetWhitenMeans( const WhitenMeansType & means )
 {
   m_RidgeFeatureGenerator->SetWhitenMeans( means );
@@ -189,7 +221,7 @@ unsigned int
 RidgeSeedFilter< TImage, TLabelMap >
 ::GetNumberOfBasis( void ) const
 {
-  return m_SeedFeatureGenerator->GetNumberOfBasis();
+  return m_SeedFeatureGenerator->GetNumberOfFeatures();
 }
 
 template < class TImage, class TLabelMap >
@@ -346,8 +378,8 @@ RidgeSeedFilter< TImage, TLabelMap >
 
   m_PDFSegmenter->SetObjectPDFWeight( 0, m_SeedTolerance );
 
-  m_SeedFeatureGenerator->SetNumberOfBasisToUseAsFeatures( 4 );
   m_SeedFeatureGenerator->SetNumberOfLDABasisToUseAsFeatures( 1 );
+  m_SeedFeatureGenerator->SetNumberOfPCABasisToUseAsFeatures( 3 );
 
   if( m_TrainClassifier )
     {

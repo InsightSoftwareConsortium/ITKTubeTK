@@ -84,7 +84,7 @@ public:
   void         SetInputFeatureVectorGenerator( FeatureVectorGeneratorType
                  * fGen );
   typename FeatureVectorGenerator< TImage >::Pointer
-               GetInputFeatureVectorGenerator( void );
+                 GetInputFeatureVectorGenerator( void );
 
   itkSetObjectMacro( LabelMap, LabelMapType );
   itkGetObjectMacro( LabelMap, LabelMapType );
@@ -104,7 +104,12 @@ public:
   MatrixType   GetGlobalCovariance( void ) const;
   void         SetGlobalCovariance( MatrixType val );
 
-  unsigned     int    GetNumberOfBasis( void ) const;
+  void         SetNumberOfPCABasisToUseAsFeatures( 
+                 unsigned int numBasisUsed );
+  unsigned int GetNumberOfPCABasisToUseAsFeatures( void ) const;
+  void         SetNumberOfLDABasisToUseAsFeatures( 
+                 unsigned int numBasisUsed );
+  unsigned int GetNumberOfLDABasisToUseAsFeatures( void ) const;
 
   double       GetBasisValue( unsigned int basisNum ) const;
   VectorType   GetBasisVector( unsigned int basisNum ) const;
@@ -112,23 +117,22 @@ public:
   VectorType   GetBasisValues( void ) const;
 
   void         SetBasisValue( unsigned int basisNum, double value );
-  void         SetBasisVector( unsigned int basisNum, const VectorType & vec );
+  void         SetBasisVector( unsigned int basisNum,
+                 const VectorType & vec );
   void         SetBasisMatrix( const MatrixType & mat );
   void         SetBasisValues( const VectorType & values );
 
-  typename FeatureImageType::Pointer GetFeatureImage( unsigned int fNum ) const;
+  typename FeatureImageType::Pointer GetFeatureImage( 
+                                       unsigned int fNum ) const;
 
   virtual void GenerateBasis( void );
-
-  void SetNumberOfBasisToUseAsFeatures( unsigned int numBasisUsed );
-  void SetNumberOfLDABasisToUseAsFeatures( unsigned int numBasisUsed );
 
   virtual unsigned int      GetNumberOfFeatures( void ) const;
 
   virtual FeatureVectorType GetFeatureVector( const IndexType & indx ) const;
 
   virtual FeatureValueType  GetFeatureVectorValue( const IndexType & indx,
-    unsigned int fNum ) const;
+                              unsigned int fNum ) const;
 
 protected:
 
@@ -155,9 +159,8 @@ private:
   VectorType                      m_GlobalMean;
   MatrixType                      m_GlobalCovariance;
 
-  unsigned int                    m_NumberOfBasis;
-  unsigned int                    m_NumberOfBasisToUseAsFeatures;
-  unsigned int                    m_NumberOfLDABasisToUseAsFeatures;
+  int                             m_NumberOfPCABasisToUseAsFeatures;
+  int                             m_NumberOfLDABasisToUseAsFeatures;
 
   MatrixType                      m_BasisMatrix;
   VectorType                      m_BasisValues;
