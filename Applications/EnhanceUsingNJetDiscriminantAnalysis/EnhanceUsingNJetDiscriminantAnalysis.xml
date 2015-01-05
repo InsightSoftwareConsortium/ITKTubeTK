@@ -89,16 +89,16 @@
     </double-vector>
     <integer>
       <name>useNumberOfPCABasis</name>
-      <description>Maximum number of PCA basis to compute (0=none).</description>
+      <description>Maximum number of PCA basis to compute.</description>
       <label>Number of basis</label>
       <default>0</default>
       <longflag>useNumberOfPCABasis</longflag>
     </integer>
     <integer>
       <name>useNumberOfLDABasis</name>
-      <description>Maximum number of LDA basis to compute (0=all).</description>
+      <description>Maximum number of LDA basis to compute (-1=all).</description>
       <label>Number of basis</label>
-      <default>0</default>
+      <default>-1</default>
       <longflag>useNumberOfLDABasis</longflag>
     </integer>
     <string>

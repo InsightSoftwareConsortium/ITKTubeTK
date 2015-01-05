@@ -36,6 +36,7 @@ limitations under the License.
 #include <itkDiscreteGaussianImageFilter.h>
 #include <itkHistogram.h>
 #include <itkHistogramToProbabilityImageFilter.h>
+#include <itkNormalizeToConstantImageFilter.h>
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -81,9 +82,9 @@ PDFSegmenter< TImage, N, TLabelMap >
   m_ErodeRadius = 1;
   m_HoleFillIterations = 1;
   m_Draft = false;
-  m_ProbabilityImageSmoothingStandardDeviation = 1;
-  m_HistogramSmoothingStandardDeviation = 4;
-  m_OutlierRejectPortion = 0.002;
+  m_ProbabilityImageSmoothingStandardDeviation = 0;
+  m_HistogramSmoothingStandardDeviation = 2;
+  m_OutlierRejectPortion = 0.0025;
   m_ReclassifyObjectLabels = false;
   m_ReclassifyNotObjectLabels = false;
   m_ForceClassification = false;
@@ -694,7 +695,6 @@ PDFSegmenter< TImage, N, TLabelMap >
     m_InClassHistogram[c]->Allocate();
     m_InClassHistogram[c]->FillBuffer( 0 );
 
-    unsigned int count = 0;
     typename ListSampleType::ConstIterator
       inClassListIt( m_InClassList[c]->Begin() );
     typename ListSampleType::ConstIterator
@@ -717,7 +717,6 @@ PDFSegmenter< TImage, N, TLabelMap >
           }
         indxHistogram[i] = binN;
         }
-      ++count;
       ++( m_InClassHistogram[c]->GetPixel( indxHistogram ) );
       ++inClassListIt;
       }
@@ -733,53 +732,25 @@ PDFSegmenter< TImage, N, TLabelMap >
     {
     typedef itk::DiscreteGaussianImageFilter< HistogramImageType,
       HistogramImageType > HistogramBlurGenType;
-    typename HistogramImageType::SpacingType tempSpacing;
-    typename HistogramImageType::SpacingType oneSpacing;
-    oneSpacing.Fill( 1 );
+    typedef itk::NormalizeToConstantImageFilter< HistogramImageType, 
+      HistogramImageType > NormalizeImageFilterType;
     for( unsigned int c = 0; c < numClasses; c++ )
       {
-      tempSpacing = m_InClassHistogram[c]->GetSpacing();
-      m_InClassHistogram[c]->SetSpacing( oneSpacing );
-
-      typename HistogramBlurGenType::Pointer inClassHistogramBlurGen =
+      typename HistogramBlurGenType::Pointer blurFilter =
         HistogramBlurGenType::New();
-      for( unsigned int f = 0; f < N; f++ )
-        {
-        inClassHistogramBlurGen->SetInput( m_InClassHistogram[c] );
-        inClassHistogramBlurGen->SetVariance(
-          m_HistogramSmoothingStandardDeviation 
-          * m_HistogramSmoothingStandardDeviation );
-        inClassHistogramBlurGen->Update();
-        m_InClassHistogram[c] = inClassHistogramBlurGen->GetOutput();
-        }
+      blurFilter->SetInput( m_InClassHistogram[c] );
+      blurFilter->SetVariance( m_HistogramSmoothingStandardDeviation 
+        * m_HistogramSmoothingStandardDeviation );
+      blurFilter->SetMaximumError( 0.1 );
+      blurFilter->SetUseImageSpacing( false );
+      blurFilter->Update();
+      m_InClassHistogram[c] = blurFilter->GetOutput();
 
-      m_InClassHistogram[c]->SetSpacing( tempSpacing );
-
-      itk::ImageRegionIterator<HistogramImageType> inClassHistogramIt(
-        m_InClassHistogram[c],
-        m_InClassHistogram[c]->GetLargestPossibleRegion() );
-      double inPTotal = 0;
-      while( !inClassHistogramIt.IsAtEnd() )
-        {
-        double tf = inClassHistogramIt.Get();
-        inPTotal += tf;
-        ++inClassHistogramIt;
-        }
-
-      if( inPTotal > 0 )
-        {
-        inClassHistogramIt.GoToBegin();
-        while( !inClassHistogramIt.IsAtEnd() )
-          {
-          double tf = inClassHistogramIt.Get() / inPTotal;
-          if( tf < 0 || tf != tf )
-            {
-            tf = 0;
-            }
-          inClassHistogramIt.Set( tf );
-          ++inClassHistogramIt;
-          }
-        }
+      typename NormalizeImageFilterType::Pointer normFilter = 
+        NormalizeImageFilterType::New();
+      normFilter->SetInput( m_InClassHistogram[c] );
+      normFilter->Update();
+      m_InClassHistogram[c] = normFilter->GetOutput();
       }
     }
   timeCollector.Stop( "HistogramToPDF" );

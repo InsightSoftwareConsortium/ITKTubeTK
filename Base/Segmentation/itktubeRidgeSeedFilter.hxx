@@ -52,6 +52,9 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_SeedFeatureGenerator->SetInputFeatureVectorGenerator(
     m_RidgeFeatureGenerator );
 
+  m_SeedFeatureGenerator->SetNumberOfLDABasisToUseAsFeatures( 1 );
+  m_SeedFeatureGenerator->SetNumberOfPCABasisToUseAsFeatures( 3 );
+
   m_PDFSegmenter = PDFSegmenterType::New();
   m_PDFSegmenter->SetReclassifyObjectLabels( true );
   m_PDFSegmenter->SetReclassifyNotObjectLabels( true );
@@ -378,23 +381,18 @@ RidgeSeedFilter< TImage, TLabelMap >
 
   m_PDFSegmenter->SetObjectPDFWeight( 0, m_SeedTolerance );
 
-  m_SeedFeatureGenerator->SetNumberOfLDABasisToUseAsFeatures( 1 );
-  m_SeedFeatureGenerator->SetNumberOfPCABasisToUseAsFeatures( 3 );
-
   if( m_TrainClassifier )
     {
     m_SeedFeatureGenerator->UpdateWhitenFeatureImageStats();
 
     m_SeedFeatureGenerator->GenerateBasis();
 
-    m_PDFSegmenter->SetInput( 0,
-      m_SeedFeatureGenerator->GetFeatureImage( 0 ) );
-    m_PDFSegmenter->SetInput( 1,
-      m_SeedFeatureGenerator->GetFeatureImage( 1 ) );
-    m_PDFSegmenter->SetInput( 2,
-      m_SeedFeatureGenerator->GetFeatureImage( 2 ) );
-    m_PDFSegmenter->SetInput( 3,
-      m_SeedFeatureGenerator->GetFeatureImage( 3 ) );
+    for( unsigned int i=0; i<m_SeedFeatureGenerator->GetNumberOfFeatures();
+      ++i )
+      {
+      m_PDFSegmenter->SetInput( i,
+        m_SeedFeatureGenerator->GetFeatureImage( i ) );
+      }
 
     m_PDFSegmenter->Update();
     }
@@ -409,14 +407,12 @@ RidgeSeedFilter< TImage, TLabelMap >
     m_SeedFeatureGenerator->GetLabelMap();
   m_SeedFeatureGenerator->SetLabelMap( NULL );
 
-  m_PDFSegmenter->SetInput( 0,
-    m_SeedFeatureGenerator->GetFeatureImage( 0 ) );
-  m_PDFSegmenter->SetInput( 1,
-    m_SeedFeatureGenerator->GetFeatureImage( 1 ) );
-  m_PDFSegmenter->SetInput( 2,
-    m_SeedFeatureGenerator->GetFeatureImage( 2 ) );
-  m_PDFSegmenter->SetInput( 3,
-    m_SeedFeatureGenerator->GetFeatureImage( 3 ) );
+  for( unsigned int i=0; i<m_SeedFeatureGenerator->GetNumberOfFeatures();
+    ++i )
+    {
+    m_PDFSegmenter->SetInput( i,
+      m_SeedFeatureGenerator->GetFeatureImage( i ) );
+    }
 
   m_PDFSegmenter->ClassifyImages();
 

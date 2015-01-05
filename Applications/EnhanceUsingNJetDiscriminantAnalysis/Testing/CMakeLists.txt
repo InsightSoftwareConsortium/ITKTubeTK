@@ -129,13 +129,13 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4
   COMMAND ${PROJ_EXE}
     --useNumberOfLDABasis 1
     --useNumberOfPCABasis 3
-    --objectId 127,255
+    --objectId 0,255
     --zeroScales 1
-    --firstScales 3,4
+    --firstScales 3
     --secondScales 5
     --loadBasisInfo ${TEMP}/${MODULE_NAME}Test1.mnda
     --saveBasisInfo ${TEMP}/${MODULE_NAME}Test4.mnda
-    MIDAS{im0001_n05.crop.mha.md5}
+    MIDAS{ES0015_Large_Subs.mha.md5}
     ${TEMP}/${MODULE_NAME}Test4 )
 set_property( TEST ${MODULE_NAME}-Test4
   APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )

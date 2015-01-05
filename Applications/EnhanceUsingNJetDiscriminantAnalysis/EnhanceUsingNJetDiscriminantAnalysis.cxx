@@ -172,7 +172,16 @@ int DoIt( int argc, char * argv[] )
     fvGenerator->SetSecondScales( secondScales );
     fvGenerator->SetRidgeScales( ridgeScales );
     basisGenerator->SetNumberOfPCABasisToUseAsFeatures( useNumberOfPCABasis );
-    basisGenerator->SetNumberOfLDABasisToUseAsFeatures( useNumberOfLDABasis );
+    if( useNumberOfLDABasis == -1 )
+      {
+      basisGenerator->SetNumberOfLDABasisToUseAsFeatures( 
+        objectIdList.size() - 1 );
+      }
+    else
+      {
+      basisGenerator->SetNumberOfLDABasisToUseAsFeatures( 
+        useNumberOfLDABasis );
+      }
     basisGenerator->SetWhitenMeans( whitenMeans );
     basisGenerator->SetWhitenStdDevs( whitenStdDevs );
 

@@ -141,12 +141,13 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start( "Update" );
 
-    if( useNumberOfPCABasis != 0 )
+    basisGenerator->SetNumberOfPCABasisToUseAsFeatures( useNumberOfPCABasis );
+    if( useNumberOfLDABasis == -1 )
       {
-      basisGenerator->SetNumberOfPCABasisToUseAsFeatures( 
-        useNumberOfPCABasis );
+      basisGenerator->SetNumberOfLDABasisToUseAsFeatures( 
+        objectId.size() - 1 );
       }
-    if( useNumberOfLDABasis != 0 )
+    else
       {
       basisGenerator->SetNumberOfLDABasisToUseAsFeatures( 
         useNumberOfLDABasis );
