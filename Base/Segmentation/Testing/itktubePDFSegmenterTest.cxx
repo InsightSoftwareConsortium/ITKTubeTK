@@ -110,8 +110,6 @@ int itktubePDFSegmenterTest( int argc, char * argv[] )
   float blur = atof( argv[4] );
   filter->SetProbabilityImageSmoothingStandardDeviation( blur );
   filter->SetHistogramSmoothingStandardDeviation( 2 );
-  filter->SetOutlierRejectPortion( 0.1 );
-  filter->SetObjectPDFWeight( 0, 1.5 );
   filter->SetDraft( false );
   if( argv[3][0] == 't' || argv[3][0] == 'T' || argv[3][0] == '1' )
     {

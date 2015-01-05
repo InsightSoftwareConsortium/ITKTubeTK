@@ -119,6 +119,9 @@ endif( MSVC )
 #
 if( APPLE )
   include( TubeTKBlockSetCMakeOSXVariables )
+  if( NOT ${CMAKE_VERSION} VERSION_LESS 3.1 )
+    cmake_policy( SET CMP0042 OLD )
+  endif( NOT ${CMAKE_VERSION} VERSION_LESS 3.1 )
   if( NOT CMAKE_FIRST_PASS_COMPLETED )
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-common"
       CACHE STRING "Flags used by all build types." FORCE )

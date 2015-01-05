@@ -36,6 +36,7 @@ limitations under the License.
 #include <itkDiscreteGaussianImageFilter.h>
 #include <itkHistogram.h>
 #include <itkHistogramToProbabilityImageFilter.h>
+#include <itkNormalizeToConstantImageFilter.h>
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -81,9 +82,9 @@ PDFSegmenter< TImage, N, TLabelMap >
   m_ErodeRadius = 1;
   m_HoleFillIterations = 1;
   m_Draft = false;
-  m_ProbabilityImageSmoothingStandardDeviation = 1;
-  m_HistogramSmoothingStandardDeviation = 1;
-  m_OutlierRejectPortion = 0.01;
+  m_ProbabilityImageSmoothingStandardDeviation = 0;
+  m_HistogramSmoothingStandardDeviation = 2;
+  m_OutlierRejectPortion = 0.0025;
   m_ReclassifyObjectLabels = false;
   m_ReclassifyNotObjectLabels = false;
   m_ForceClassification = false;
@@ -358,6 +359,9 @@ PDFSegmenter< TImage, N, TLabelMap >
     }
   ListVectorType v;
   typename LabelMapType::IndexType indx;
+  bool found = false;
+  int prevVal = itInLabelMap.Get() + 1;
+  int prevC = 0;
   while( !itInLabelMap.IsAtEnd() )
     {
     int val = itInLabelMap.Get();
@@ -378,17 +382,25 @@ PDFSegmenter< TImage, N, TLabelMap >
         {
         v[N+i] = indx[i];
         }
-      bool found = false;
-      for( unsigned int c = 0; c < numClasses; c++ )
+      if( val != prevVal )
         {
-        if( val == m_ObjectIdList[c] )
+        found = false;
+        for( unsigned int c = 0; c < numClasses; c++ )
           {
-          found = true;
-          m_InClassList[c]->PushBack( v );
-          break;
+          if( val == m_ObjectIdList[c] )
+            {
+            found = true;
+            prevVal = val;
+            prevC = c;
+            break;
+            }
           }
         }
-      if( !found && val != m_VoidId )
+      if( found )
+        {
+        m_InClassList[prevC]->PushBack( v );
+        }
+      else if( !found && val != m_VoidId )
         {
         m_OutClassList->PushBack( v );
         }
@@ -410,7 +422,6 @@ PDFSegmenter< TImage, N, TLabelMap >
         }
       }
     }
-
 
   for( unsigned int i = 0; i < N; i++ )
     {
@@ -459,12 +470,11 @@ PDFSegmenter< TImage, N, TLabelMap >
       inClassListIt( m_InClassList[c]->Begin() );
     typename ListSampleType::ConstIterator
       inClassListItEnd( m_InClassList[c]->End() );
-    double binV;
     while( inClassListIt != inClassListItEnd )
       {
       for( unsigned int i = 0; i < N; i++ )
         {
-        binV = inClassListIt.GetMeasurementVector()[i];
+        double binV = inClassListIt.GetMeasurementVector()[i];
         if( binV < m_HistogramBinMin[i] )
           {
           m_HistogramBinMin[i] = binV;
@@ -480,16 +490,13 @@ PDFSegmenter< TImage, N, TLabelMap >
 
   for( unsigned int i = 0; i < N; i++ )
     {
-    double buffer = 0.05 * ( histogramBinMax[i] - m_HistogramBinMin[i] );
+    double buffer = 0.025 * ( histogramBinMax[i] - m_HistogramBinMin[i] );
     m_HistogramBinMin[i] -= buffer;
     histogramBinMax[i] += buffer;
     m_HistogramBinSize[i] = ( histogramBinMax[i] - m_HistogramBinMin[i] ) /
       ( double )( m_HistogramNumberOfBin[i] );
-    std::cout << m_HistogramBinMin[i] << " - " << histogramBinMax[i]
-      << " = " << m_HistogramBinSize[i] << " : " << m_HistogramNumberOfBin[i] 
-      << std::endl;
     }
-
+  
   std::vector< VectorDoubleType > clipMin;
   std::vector< VectorDoubleType > clipMax;
   if( true ) // creating a local context to limit memory footprint
@@ -524,23 +531,22 @@ PDFSegmenter< TImage, N, TLabelMap >
         inClassListIt( m_InClassList[c]->Begin() );
       typename ListSampleType::ConstIterator
         inClassListItEnd( m_InClassList[c]->End() );
-      double binV;
       while( inClassListIt != inClassListItEnd )
         {
         for( unsigned int i = 0; i < N; i++ )
           {
-          binV = inClassListIt.GetMeasurementVector()[i];
-          binV = ( int )( ( binV - m_HistogramBinMin[i] )
-            / m_HistogramBinSize[i] + 0.5 );
-          if( binV>m_HistogramNumberOfBin[i]-1 )
+          double binV = inClassListIt.GetMeasurementVector()[i];
+          int binN = static_cast< int >( ( binV - m_HistogramBinMin[i] )
+            / m_HistogramBinSize[i] );
+          if( binN < 0 )
             {
-            binV = m_HistogramNumberOfBin[i]-1;
+            binN = 0;
             }
-          else if( binV<0 )
+          else if( binN >= m_HistogramNumberOfBin[i] )
             {
-            binV = 0;
+            binN = m_HistogramNumberOfBin[i] - 1;
             }
-          ++( ( inImHistogram[c][i] )[( int )binV] );
+          ++( ( inImHistogram[c][i] )[ binN ] );
           }
         ++totalIn;
         ++totalInClass[c];
@@ -548,18 +554,19 @@ PDFSegmenter< TImage, N, TLabelMap >
         }
       }
 
-    unsigned int count, prevCount;
+    unsigned int count;
+    unsigned int prevCount;
     for( unsigned int c = 0; c < numClasses; c++ )
       {
-      double tailReject = totalInClass[c] * ( m_OutlierRejectPortion/2 );
+      double tailReject = totalInClass[c] * ( m_OutlierRejectPortion / 2.0 );
       for( unsigned int i = 0; i < N; i++ )
         {
         count = 0;
-        for( unsigned int b = 0; b < m_HistogramNumberOfBin[i]; b++ )
+        for( unsigned int b = 0; b < m_HistogramNumberOfBin[i]; ++b )
           {
           prevCount = count;
           count += static_cast<unsigned int>( inImHistogram[c][i][b] );
-          if( count>=tailReject )
+          if( count >= tailReject )
             {
             if( b > 0 )
               {
@@ -572,11 +579,11 @@ PDFSegmenter< TImage, N, TLabelMap >
             }
           }
         count = 0;
-        for( int b = ( int )m_HistogramNumberOfBin[i]-1; b >= 0; b-- )
+        for( int b = ( int )m_HistogramNumberOfBin[i]-1; b >= 0; --b )
           {
           prevCount = count;
           count += static_cast<unsigned int>( inImHistogram[c][i][b] );
-          if( count>=tailReject )
+          if( count >= tailReject )
             {
             if( b < ( int )m_HistogramNumberOfBin[i]-1 )
               {
@@ -588,8 +595,10 @@ PDFSegmenter< TImage, N, TLabelMap >
             break;
             }
           }
-        std::cout << "Class " << c << " : Feature " << i << " : using "
-          << clipMin[c][i] << " - " << clipMax[c][i] << std::endl;
+        //std::cout << "Class " << c << " : Feature " << i << " : using "
+          //<< clipMin[c][i] << "(prev. " << m_HistogramBinMin[i] << ") - " 
+          //<< clipMax[c][i] << "(prev. " << histogramBinMax[i] << ")" 
+          //<< std::endl;
         }
       }
 
@@ -617,14 +626,15 @@ PDFSegmenter< TImage, N, TLabelMap >
 
     for( unsigned int i = 0; i < N; i++ )
       {
-      double buffer = 0.05 * ( histogramBinMax[i] - m_HistogramBinMin[i] );
+      double buffer = 0.025 * ( histogramBinMax[i] - m_HistogramBinMin[i] );
       m_HistogramBinMin[i] -= buffer;
       histogramBinMax[i] += buffer;
       m_HistogramBinSize[i] = ( histogramBinMax[i] - m_HistogramBinMin[i] ) /
         ( double )( m_HistogramNumberOfBin[i] );
-      std::cout << m_HistogramBinMin[i] << " - " << histogramBinMax[i]
-        << " = " << m_HistogramBinSize[i] << " : " << m_HistogramNumberOfBin[i] 
-        << std::endl;
+      //std::cout << "Feature " << i << " : buffered : " 
+        //<< m_HistogramBinMin[i] << " - " << histogramBinMax[i]
+        //<< " = " << m_HistogramBinSize[i] << " * " 
+        //<< m_HistogramNumberOfBin[i] << std::endl;
       }
   
     for( unsigned int c = 0; c < numClasses; c++ )
@@ -633,23 +643,22 @@ PDFSegmenter< TImage, N, TLabelMap >
         inClassListIt( m_InClassList[c]->Begin() );
       typename ListSampleType::ConstIterator
         inClassListItEnd( m_InClassList[c]->End() );
-      double binV;
       while( inClassListIt != inClassListItEnd )
         {
         for( unsigned int i = 0; i < N; i++ )
           {
-          binV = inClassListIt.GetMeasurementVector()[i];
-          binV = ( int )( ( binV - m_HistogramBinMin[i] )
-            / m_HistogramBinSize[i] + 0.5 );
-          if( binV>m_HistogramNumberOfBin[i]-1 )
+          double binV = inClassListIt.GetMeasurementVector()[i];
+          int binN = static_cast< int >( ( binV - m_HistogramBinMin[i] )
+            / m_HistogramBinSize[i] );
+          if( binN < 0 )
             {
-            binV = m_HistogramNumberOfBin[i]-1;
+            binN = 0;
             }
-          else if( binV<0 )
+          else if( binN >= m_HistogramNumberOfBin[i] )
             {
-            binV = 0;
+            binN = m_HistogramNumberOfBin[i] - 1;
             }
-          ++( ( inImHistogram[c][i] )[( int )binV] );
+          ++( ( inImHistogram[c][i] )[ binN ] );
           }
         ++totalIn;
         ++totalInClass[c];
@@ -686,7 +695,6 @@ PDFSegmenter< TImage, N, TLabelMap >
     m_InClassHistogram[c]->Allocate();
     m_InClassHistogram[c]->FillBuffer( 0 );
 
-    unsigned int count = 0;
     typename ListSampleType::ConstIterator
       inClassListIt( m_InClassList[c]->Begin() );
     typename ListSampleType::ConstIterator
@@ -694,24 +702,22 @@ PDFSegmenter< TImage, N, TLabelMap >
     typename HistogramImageType::IndexType indxHistogram;
     while( inClassListIt != inClassListItEnd )
       {
-      bool valid = true;
       for( unsigned int i = 0; i < N; i++ )
         {
         double binV = inClassListIt.GetMeasurementVector()[i];
-        binV = ( int )( ( binV - m_HistogramBinMin[i] )
-          / m_HistogramBinSize[i] + 0.5 );
-        if( binV<0 || binV>=m_HistogramNumberOfBin[i] )
+        int binN = static_cast< int >( ( binV - m_HistogramBinMin[i] )
+          / m_HistogramBinSize[i] );
+        if( binN < 0 )
           {
-          valid = false;
-          break;
+          binN = 0;
           }
-        indxHistogram[i] = ( int )binV;
+        else if( binN >= m_HistogramNumberOfBin[i] )
+          {
+          binN = m_HistogramNumberOfBin[i] - 1;
+          }
+        indxHistogram[i] = binN;
         }
-      if( valid )
-        {
-        ++count;
-        ++( m_InClassHistogram[c]->GetPixel( indxHistogram ) );
-        }
+      ++( m_InClassHistogram[c]->GetPixel( indxHistogram ) );
       ++inClassListIt;
       }
     }
@@ -724,58 +730,27 @@ PDFSegmenter< TImage, N, TLabelMap >
   timeCollector.Start( "HistogramToPDF" );
   if( true ) // creating a local context to limit memory footprint
     {
-    typedef itk::RecursiveGaussianImageFilter< HistogramImageType,
+    typedef itk::DiscreteGaussianImageFilter< HistogramImageType,
       HistogramImageType > HistogramBlurGenType;
-    typename HistogramImageType::SpacingType tempSpacing;
-    typename HistogramImageType::SpacingType oneSpacing;
-    oneSpacing.Fill( 1 );
+    typedef itk::NormalizeToConstantImageFilter< HistogramImageType, 
+      HistogramImageType > NormalizeImageFilterType;
     for( unsigned int c = 0; c < numClasses; c++ )
       {
-      double inPTotal = 0;
-
-      tempSpacing = m_InClassHistogram[c]->GetSpacing();
-      m_InClassHistogram[c]->SetSpacing( oneSpacing );
-
-      typename HistogramBlurGenType::Pointer inClassHistogramBlurGen =
+      typename HistogramBlurGenType::Pointer blurFilter =
         HistogramBlurGenType::New();
-      for( unsigned int f = 0; f < N; f++ )
-        {
-        inClassHistogramBlurGen->SetInput( m_InClassHistogram[c] );
-        inClassHistogramBlurGen->SetDirection( f );
-        inClassHistogramBlurGen->SetOrder(
-          HistogramBlurGenType::ZeroOrder );
-        inClassHistogramBlurGen->SetSigma(
-          m_HistogramSmoothingStandardDeviation );
-        inClassHistogramBlurGen->Update();
-        m_InClassHistogram[c] = inClassHistogramBlurGen->GetOutput();
-        }
+      blurFilter->SetInput( m_InClassHistogram[c] );
+      blurFilter->SetVariance( m_HistogramSmoothingStandardDeviation 
+        * m_HistogramSmoothingStandardDeviation );
+      blurFilter->SetMaximumError( 0.1 );
+      blurFilter->SetUseImageSpacing( false );
+      blurFilter->Update();
+      m_InClassHistogram[c] = blurFilter->GetOutput();
 
-      m_InClassHistogram[c]->SetSpacing( tempSpacing );
-
-      itk::ImageRegionIterator<HistogramImageType> inClassHistogramIt(
-        m_InClassHistogram[c],
-        m_InClassHistogram[c]->GetLargestPossibleRegion() );
-      while( !inClassHistogramIt.IsAtEnd() )
-        {
-        double tf = inClassHistogramIt.Get();
-        inPTotal += tf;
-        ++inClassHistogramIt;
-        }
-
-      if( inPTotal > 0 )
-        {
-        inClassHistogramIt.GoToBegin();
-        while( !inClassHistogramIt.IsAtEnd() )
-          {
-          double tf = inClassHistogramIt.Get() / inPTotal;
-          if( tf < 0 )
-            {
-            tf = 0;
-            }
-          inClassHistogramIt.Set( tf );
-          ++inClassHistogramIt;
-          }
-        }
+      typename NormalizeImageFilterType::Pointer normFilter = 
+        NormalizeImageFilterType::New();
+      normFilter->SetInput( m_InClassHistogram[c] );
+      normFilter->Update();
+      m_InClassHistogram[c] = normFilter->GetOutput();
       }
     }
   timeCollector.Stop( "HistogramToPDF" );
@@ -924,27 +899,26 @@ PDFSegmenter< TImage, N, TLabelMap >
     typename HistogramImageType::IndexType binIndex;
     while( !probIt.IsAtEnd() )
       {
-      bool valid = true;
       for( unsigned int i = 0; i < N; i++ )
         {
         double binV = itInIm[i]->Get();
-        binV = ( int )( ( binV - m_HistogramBinMin[i] )
-          / m_HistogramBinSize[i] + 0.5 );
-        if( binV<0 || binV>m_HistogramNumberOfBin[i]-1 )
+        int binN = static_cast< int >( ( binV - m_HistogramBinMin[i] )
+          / m_HistogramBinSize[i] );
+        if( binN < 0 )
           {
-          valid = false;
-          break;
+          binN = 0;
           }
-        binIndex[i] = static_cast<long>( binV );
+        else if( binN >= m_HistogramNumberOfBin[i] )
+          {
+          binN = m_HistogramNumberOfBin[i] - 1;
+          }
+        binIndex[i] = binN;
         }
       double prob = 0;
-      if( valid )
+      if( c < numClasses )
         {
-        if( c < numClasses )
-          {
-          prob = m_InClassHistogram[c]->GetPixel( binIndex );
-          prob *= m_PDFWeightList[c];
-          }
+        prob = m_InClassHistogram[c]->GetPixel( binIndex );
+        prob *= m_PDFWeightList[c];
         }
       probIt.Set( prob );
       for( unsigned int i = 0; i < N; i++ )
@@ -1049,7 +1023,7 @@ PDFSegmenter< TImage, N, TLabelMap >
         {
         for( unsigned int i = 0; i < ImageDimension; i++ )
           {
-          indx[i] = static_cast<long int>(
+          indx[i] = static_cast<int>(
             inClassListIt.GetMeasurementVector()[N+i] );
           }
         insideConnecter->AddSeed( indx );
@@ -1073,7 +1047,7 @@ PDFSegmenter< TImage, N, TLabelMap >
           {
           for( unsigned int i = 0; i < ImageDimension; i++ )
             {
-            indx[i] = static_cast<long int>(
+            indx[i] = static_cast<int>(
               inClassListIt.GetMeasurementVector()[N+i] );
             }
           tmpLabelImage->SetPixel( indx, 128 );
@@ -1094,7 +1068,7 @@ PDFSegmenter< TImage, N, TLabelMap >
               {
               for( unsigned int i = 0; i < ImageDimension; i++ )
                 {
-                indx[i] = static_cast<long int>(
+                indx[i] = static_cast<int>(
                   inClassListIt.GetMeasurementVector()[N+i] );
                 }
               tmpLabelImage->SetPixel( indx, 0 );
@@ -1112,7 +1086,7 @@ PDFSegmenter< TImage, N, TLabelMap >
           {
           for( unsigned int i = 0; i < ImageDimension; i++ )
             {
-            indx[i] = static_cast<long int>(
+            indx[i] = static_cast<int>(
               outListIt.GetMeasurementVector()[N+i] );
             }
           tmpLabelImage->SetPixel( indx, 0 );
@@ -1226,7 +1200,7 @@ PDFSegmenter< TImage, N, TLabelMap >
           {
           for( unsigned int i = 0; i < ImageDimension; i++ )
             {
-            indx[i] = static_cast<long int>(
+            indx[i] = static_cast<int>(
               inClassListIt.GetMeasurementVector()[N+i] );
             }
 

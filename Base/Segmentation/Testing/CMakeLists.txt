@@ -177,7 +177,6 @@ Midas3FunctionAddTest( NAME itktubeRidgeSeedFilterTest
       MIDAS{im0001.crop.contrast.mha.md5}
       MIDAS{im0001.vk.maskRidge.crop.mha.md5}
       255 127
-      ${TEMP}/itktubeRidgeSeedFilterTest_Class0PDF.mha
       ${TEMP}/itktubeRidgeSeedFilterTest_Feature0Image.mha
       ${TEMP}/itktubeRidgeSeedFilterTest_Output.mha
       ${TEMP}/itktubeRidgeSeedFilterTest_MaxScale.mha )

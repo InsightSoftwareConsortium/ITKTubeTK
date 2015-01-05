@@ -78,7 +78,7 @@ int itktubeMetaLDATest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  itk::tube::MetaLDA mlda3( v, m, wm, ws );
+  itk::tube::MetaLDA mlda3( 1, 2, v, m, wm, ws );
   if( mlda3.GetLDAValues() != mlda1.GetLDAValues()
       || mlda3.GetWhitenMeans() != mlda1.GetWhitenMeans()
       || mlda3.GetWhitenStdDevs() != mlda1.GetWhitenStdDevs()
@@ -102,7 +102,7 @@ int itktubeMetaLDATest( int argc, char * argv[] )
     }
 
   itk::tube::MetaLDA mlda5;
-  mlda5.InitializeEssential( v, m, wm, ws );
+  mlda5.InitializeEssential( 1, 2, v, m, wm, ws );
   if( mlda5.GetLDAValues() != mlda1.GetLDAValues()
       || mlda5.GetWhitenMeans() != mlda1.GetWhitenMeans()
       || mlda5.GetWhitenStdDevs() != mlda1.GetWhitenStdDevs()

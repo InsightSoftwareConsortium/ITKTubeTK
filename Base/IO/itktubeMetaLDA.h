@@ -61,7 +61,9 @@ public:
 
   MetaLDA( const MetaLDA & metaLDA );
 
-  MetaLDA( const LDAValuesType & _ldaValues,
+  MetaLDA( unsigned int _numberOfPCABasisToUseAsFeatures,
+    unsigned int _numberOfLDABasisToUseAsFeatures,
+    const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix,
     const ValueListType & _whitenMeans,
     const ValueListType & _whitenStdDevs );
@@ -75,9 +77,21 @@ public:
 
   virtual void Clear( void );
 
-  bool  InitializeEssential( const LDAValuesType & _ldaValues,
+  bool  InitializeEssential( unsigned int _numberOfPCABasisToUseAsFeatures,
+    unsigned int _numberOfLDABasisToUseAsFeatures,
+    const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix, const ValueListType & _whitenMeans,
     const ValueListType & _whitenStdDevs );
+
+  void SetNumberOfPCABasisToUseAsFeatures( unsigned int 
+    numberOfPCABasisToUseAsFeatures );
+
+  unsigned int GetNumberOfPCABasisToUseAsFeatures( void ) const;
+
+  void SetNumberOfLDABasisToUseAsFeatures( unsigned int 
+    numberOfLDABasisToUseAsFeatures );
+
+  unsigned int GetNumberOfLDABasisToUseAsFeatures( void ) const;
 
   void SetLDAValues( const LDAValuesType & ldaValues );
 
@@ -116,6 +130,10 @@ protected:
   void M_SetupWriteFields( void );
 
   bool M_Read( void );
+
+  unsigned int   m_NumberOfPCABasisToUseAsFeatures;
+
+  unsigned int   m_NumberOfLDABasisToUseAsFeatures;
 
   LDAValuesType  m_LDAValues;
 

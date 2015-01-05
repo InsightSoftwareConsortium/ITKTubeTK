@@ -171,6 +171,11 @@ Read( const char * _headerName )
   m_RidgeSeedFilter->SetSeedTolerance( seedReader.GetSeedTolerance() );
   m_RidgeSeedFilter->SetSkeletonize( seedReader.GetSkeletonize() );
 
+  m_RidgeSeedFilter->SetNumberOfPCABasisToUseAsFeatures( 
+    seedReader.GetNumberOfPCABasisToUseAsFeatures() );
+  m_RidgeSeedFilter->SetNumberOfLDABasisToUseAsFeatures( 
+    seedReader.GetNumberOfLDABasisToUseAsFeatures() );
+
   m_RidgeSeedFilter->SetBasisValues( seedReader.GetLDAValues() );
   m_RidgeSeedFilter->SetBasisMatrix( seedReader.GetLDAMatrix() );
   m_RidgeSeedFilter->SetWhitenMeans( seedReader.GetWhitenMeans() );
@@ -209,6 +214,11 @@ Write( const char * _headerName )
   seedWriter.SetUnknownId( m_RidgeSeedFilter->GetUnknownId() );
   seedWriter.SetSeedTolerance( m_RidgeSeedFilter->GetSeedTolerance() );
   seedWriter.SetSkeletonize( m_RidgeSeedFilter->GetSkeletonize() );
+
+  seedWriter.SetNumberOfPCABasisToUseAsFeatures( 
+    m_RidgeSeedFilter->GetNumberOfPCABasisToUseAsFeatures() );
+  seedWriter.SetNumberOfLDABasisToUseAsFeatures( 
+    m_RidgeSeedFilter->GetNumberOfLDABasisToUseAsFeatures() );
 
   seedWriter.SetLDAValues( m_RidgeSeedFilter->GetBasisValues() );
   seedWriter.SetLDAMatrix( m_RidgeSeedFilter->GetBasisMatrix() );

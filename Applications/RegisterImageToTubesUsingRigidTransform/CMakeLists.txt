@@ -23,6 +23,7 @@
 
 set( MODULE_NAME RegisterImageToTubesUsingRigidTransform )
 project( ${MODULE_NAME} )
+
 # To silence the warning about getting LOCATION (Tuner only targets non-VS for
 # now)
 if( NOT ${CMAKE_VERSION} VERSION_LESS 3.0 )
@@ -34,6 +35,9 @@ if( NOT TubeTK_SOURCE_DIR )
   include( ${TubeTK_USE_FILE} )
 endif( NOT TubeTK_SOURCE_DIR )
 
+find_package( ITK REQUIRED )
+include( ${ITK_USE_FILE} )
+
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 
@@ -41,10 +45,7 @@ if( SlicerExecutionModel_USE_SERIALIZER )
   add_definitions( -DSlicerExecutionModel_USE_SERIALIZER )
 endif()
 
-find_package( ITK REQUIRED )
-include( ${ITK_USE_FILE} )
-
-set(tubetk_base_includes
+set( ${MODULE_NAME}_INCLUDE_DIRS
   ${TubeTK_SOURCE_DIR}/Base/CLI
   ${TubeTK_SOURCE_DIR}/Base/Common
   ${TubeTK_SOURCE_DIR}/Base/Filtering
@@ -55,23 +56,20 @@ set(tubetk_base_includes
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects
-    ITKOptimizers ITKIOHDF5 ITKIOTransformBase
-  INCLUDE_DIRECTORIES ${tubetk_base_includes} )
+  TARGET_LIBRARIES ${ITK_LIBRARIES} ITKIOSpatialObjects ITKIOMeta
+  INCLUDE_DIRECTORIES ${${MODULE_NAME}_INCLUDE_DIRS} )
 
 SEMMacroBuildCLI(
   NAME ComputeImageToTubeRigidMetricImage
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects
-    ITKOptimizers ITKIOHDF5 ITKIOTransformBase
-  INCLUDE_DIRECTORIES ${tubetk_base_includes} )
+  TARGET_LIBRARIES ${ITK_LIBRARIES} ITKIOSpatialObjects ITKIOMeta
+  INCLUDE_DIRECTORIES ${${MODULE_NAME}_INCLUDE_DIRS} )
 
 SEMMacroBuildCLI(
   NAME ExtractMetricImageSlice
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects
-    ITKOptimizers ITKIOHDF5 ITKIOTransformBase
-  INCLUDE_DIRECTORIES ${tubetk_base_includes} )
+  TARGET_LIBRARIES ${ITK_LIBRARIES} ITKIOSpatialObjects ITKIOMeta
+  INCLUDE_DIRECTORIES ${${MODULE_NAME}_INCLUDE_DIRS} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

@@ -106,30 +106,16 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   filter->SetBackgroundId( bkgId );
   filter->SetUnknownId( 0 );
   filter->SetTrainClassifier( true );
+  filter->SetNumberOfPCABasisToUseAsFeatures( 2 );
   filter->Update();
   std::cout << "Update done." << std::endl;
 
   filter->ClassifyImages();
   std::cout << "Classification done." << std::endl;
 
-  PDFImageWriterType::Pointer pdfImageWriter = PDFImageWriterType::New();
-  pdfImageWriter->SetFileName( argv[5] );
-  pdfImageWriter->SetUseCompression( true );
-  pdfImageWriter->SetInput( filter->GetPDFSegmenter()->
-    GetClassPDFImage( 0 ) );
-  try
-    {
-    pdfImageWriter->Update();
-    }
-  catch (itk::ExceptionObject& e)
-    {
-    std::cerr << "Exception caught during write:" << std::endl << e;
-    return EXIT_FAILURE;
-    }
-
   FeatureImageWriterType::Pointer feature2ImageWriter =
     FeatureImageWriterType::New();
-  feature2ImageWriter->SetFileName( argv[6] );
+  feature2ImageWriter->SetFileName( argv[5] );
   feature2ImageWriter->SetUseCompression( true );
   feature2ImageWriter->SetInput( filter->GetRidgeFeatureGenerator()->
     GetFeatureImage( 0 ) );
@@ -144,7 +130,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     }
 
   LabelMapWriterType::Pointer labelmapWriter = LabelMapWriterType::New();
-  labelmapWriter->SetFileName( argv[7] );
+  labelmapWriter->SetFileName( argv[6] );
   labelmapWriter->SetUseCompression( true );
   labelmapWriter->SetInput( filter->GetOutput() );
   try
@@ -159,7 +145,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
 
   FeatureImageWriterType::Pointer scaleImageWriter =
     FeatureImageWriterType::New();
-  scaleImageWriter->SetFileName( argv[8] );
+  scaleImageWriter->SetFileName( argv[7] );
   scaleImageWriter->SetUseCompression( true );
   scaleImageWriter->SetInput( filter->GetOutputSeedScales() );
   try
