@@ -114,8 +114,12 @@ public:
   RidgeScalesType GetScales( void ) const;
 
   // Basis
-  void   SetWhitenMeans( const WhitenMeansType & means );
-  void   SetWhitenStdDevs( const WhitenStdDevsType & stdDevs );
+  void         SetNumberOfPCABasisToUseAsFeatures( unsigned int num );
+  unsigned int GetNumberOfPCABasisToUseAsFeatures( void ) const;
+  void         SetNumberOfLDABasisToUseAsFeatures( unsigned int num );
+  unsigned int GetNumberOfLDABasisToUseAsFeatures( void ) const;
+  void         SetWhitenMeans( const WhitenMeansType & means );
+  void         SetWhitenStdDevs( const WhitenStdDevsType & stdDevs );
   const WhitenMeansType &   GetWhitenMeans( void ) const;
   const WhitenStdDevsType & GetWhitenStdDevs( void ) const;
 

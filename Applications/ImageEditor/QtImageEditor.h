@@ -50,8 +50,6 @@ public slots:
   void applyFFT();
   void applyInverseFFT();
   void applyFilter();
-  void displayFFT();
-  void blurFilter();
   void useNewFilter();
 
 protected:

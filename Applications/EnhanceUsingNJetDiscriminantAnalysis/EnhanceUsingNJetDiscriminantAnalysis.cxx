@@ -152,13 +152,14 @@ int DoIt( int argc, char * argv[] )
     fvGenerator->SetFirstScales( basisReader.GetFirstScales() );
     fvGenerator->SetSecondScales( basisReader.GetSecondScales() );
     fvGenerator->SetRidgeScales( basisReader.GetRidgeScales() );
+    basisGenerator->SetNumberOfPCABasisToUseAsFeatures( 
+      basisReader.GetNumberOfPCABasisToUseAsFeatures() );
+    basisGenerator->SetNumberOfLDABasisToUseAsFeatures( 
+      basisReader.GetNumberOfLDABasisToUseAsFeatures() );
     basisGenerator->SetWhitenMeans( basisReader.GetWhitenMeans() );
     basisGenerator->SetWhitenStdDevs( basisReader.GetWhitenStdDevs() );
     basisGenerator->SetBasisValues( basisReader.GetLDAValues() );
     basisGenerator->SetBasisMatrix( basisReader.GetLDAMatrix() );
-
-    //basisGenerator->SetForceIntensityConsistency( !forceSignOff );
-    //basisGenerator->SetForceOrientationInsensitivity( forceSymmetry );
 
     timeCollector.Stop( "LoadBasis" );
     }
@@ -170,29 +171,30 @@ int DoIt( int argc, char * argv[] )
     fvGenerator->SetFirstScales( firstScales );
     fvGenerator->SetSecondScales( secondScales );
     fvGenerator->SetRidgeScales( ridgeScales );
+    basisGenerator->SetNumberOfPCABasisToUseAsFeatures( useNumberOfPCABasis );
+    if( useNumberOfLDABasis == -1 )
+      {
+      basisGenerator->SetNumberOfLDABasisToUseAsFeatures( 
+        objectIdList.size() - 1 );
+      }
+    else
+      {
+      basisGenerator->SetNumberOfLDABasisToUseAsFeatures( 
+        useNumberOfLDABasis );
+      }
     basisGenerator->SetWhitenMeans( whitenMeans );
     basisGenerator->SetWhitenStdDevs( whitenStdDevs );
-
-    //basisGenerator->SetForceIntensityConsistency( !forceSignOff );
-    //basisGenerator->SetForceOrientationInsensitivity( forceSymmetry );
 
     basisGenerator->GenerateBasis();
 
     timeCollector.Stop( "Update" );
     }
 
-  unsigned int numBasis = basisGenerator->GetNumberOfBasis();
-  if( useNumberOfBasis > 0 &&
-    useNumberOfBasis < static_cast<int>( numBasis ) )
-    {
-    numBasis = useNumberOfBasis;
-    }
-  basisGenerator->SetNumberOfBasisToUseAsFeatures( numBasis );
-
   if( !outputBase.empty() )
     {
     timeCollector.Start( "SaveBasisImages" );
 
+    int numBasis = basisGenerator->GetNumberOfFeatures();
     for( unsigned int i = 0; i < numBasis; i++ )
       {
       typename BasisImageWriterType::Pointer basisImageWriter =
@@ -217,6 +219,8 @@ int DoIt( int argc, char * argv[] )
       fvGenerator->GetFirstScales(),
       fvGenerator->GetSecondScales(),
       fvGenerator->GetRidgeScales(),
+      basisGenerator->GetNumberOfPCABasisToUseAsFeatures(),
+      basisGenerator->GetNumberOfLDABasisToUseAsFeatures(),
       basisGenerator->GetBasisValues(),
       basisGenerator->GetBasisMatrix(),
       basisGenerator->GetWhitenMeans(),

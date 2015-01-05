@@ -56,7 +56,7 @@ set( TubeTK_${proj}_MODULES
   MergeTubeGraphs
   ResampleImage
   RegisterImages
-  RegisterImageToTubesUsingRigidTransform
+  # RegisterImageToTubesUsingRigidTransform
   RegisterUsingImageCenters
   SampleCLIApplication
   SegmentBinaryImageSkeleton

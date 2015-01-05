@@ -25,21 +25,6 @@
 # following line to configure this CMakeLists.txt file.
 project( ImageMath )
 
-cmake_minimum_required( VERSION 2.8 )
-if( COMMAND CMAKE_POLICY )
-  cmake_policy( SET CMP0003 NEW )
-endif( COMMAND CMAKE_POLICY )
-
-# Disable MSVC 8 warnings
-if( WIN32 )
-  option( DISABLE_MSVC8_DEPRECATED_WARNINGS
-    "Disable Visual Studio 8 deprecated warnings" ON )
-  mark_as_advanced( FORCE DISABLE_MSVC8_DEPRECATED_WARNINGS )
-  if( DISABLE_MSVC8_DEPRECATED_WARNINGS )
-    add_definitions( -D_CRT_SECURE_NO_DEPRECATE )
-  endif( DISABLE_MSVC8_DEPRECATED_WARNINGS )
-endif( WIN32 )
-
 if( NOT TubeTK_SOURCE_DIR )
   find_package( TubeTK REQUIRED )
   include( ${TubeTK_USE_FILE} )

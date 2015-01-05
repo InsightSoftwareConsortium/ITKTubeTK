@@ -71,6 +71,8 @@ MetaRidgeSeed::
 MetaRidgeSeed(
   const RidgeSeedScalesType & _ridgeSeedScales,
   bool _useIntensityOnly,
+  unsigned int _numberOfPCABasis,
+  unsigned int _numberOfLDABasis,
   const LDAValuesType & _ldaValues,
   const LDAMatrixType & _ldaMatrix,
   const ValueListType & _whitenMeans,
@@ -84,8 +86,9 @@ MetaRidgeSeed(
 
   Clear();
 
-  InitializeEssential( _ridgeSeedScales, _useIntensityOnly,
-    _ldaValues, _ldaMatrix, _whitenMeans, _whitenStdDevs, _pdfFileName );
+  InitializeEssential( _ridgeSeedScales, _useIntensityOnly, _numberOfPCABasis,
+    _numberOfLDABasis, _ldaValues, _ldaMatrix, _whitenMeans, _whitenStdDevs,
+    _pdfFileName );
 }
 
 MetaRidgeSeed::
@@ -167,6 +170,8 @@ bool MetaRidgeSeed::
 InitializeEssential(
   const RidgeSeedScalesType & _ridgeSeedScales,
   bool _useIntensityOnly,
+  unsigned int _numberOfPCABasis,
+  unsigned int _numberOfLDABasis,
   const LDAValuesType & _ldaValues,
   const LDAMatrixType & _ldaMatrix,
   const ValueListType & _whitenMeans,
@@ -179,8 +184,8 @@ InitializeEssential(
       << METAIO_STREAM::endl;
     }
 
-  MetaLDA::InitializeEssential( _ldaValues, _ldaMatrix, _whitenMeans,
-    _whitenStdDevs );
+  MetaLDA::InitializeEssential( _numberOfPCABasis, _numberOfLDABasis,
+    _ldaValues, _ldaMatrix, _whitenMeans, _whitenStdDevs );
 
   SetRidgeSeedScales( _ridgeSeedScales );
 
@@ -503,6 +508,7 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
   m_ReadStream = NULL;
 
   InitializeEssential( m_RidgeSeedScales, m_UseIntensityOnly,
+    m_NumberOfPCABasisToUseAsFeatures, m_NumberOfLDABasisToUseAsFeatures,
     m_LDAValues, m_LDAMatrix, m_WhitenMeans, m_WhitenStdDevs,
     m_PDFFileName );
 

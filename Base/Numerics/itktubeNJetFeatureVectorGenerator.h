@@ -80,9 +80,6 @@ public:
   const NJetScalesType & GetSecondScales( void ) const;
   const NJetScalesType & GetRidgeScales( void ) const;
 
-  void SetForceOrientationInsensitivity( bool _forceOrientation );
-  bool GetForceOrientationInsensitivity( void ) const;
-
   virtual FeatureVectorType GetFeatureVector(
     const IndexType & indx ) const;
 
@@ -106,8 +103,6 @@ private:
   NJetScalesType m_FirstScales;
   NJetScalesType m_SecondScales;
   NJetScalesType m_RidgeScales;
-
-  bool m_ForceOrientationInsensitivity;
 
 }; // End class NJetFeatureVectorGenerator
 

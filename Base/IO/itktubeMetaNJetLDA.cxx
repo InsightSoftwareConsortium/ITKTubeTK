@@ -70,6 +70,8 @@ MetaNJetLDA
                const NJetScalesType & firstScales,
                const NJetScalesType & secondScales,
                const NJetScalesType & ridgeScales,
+               unsigned int numberOfPCABasis,
+               unsigned int numberOfLDABasis,
                const LDAValuesType & ldaValues,
                const LDAMatrixType & ldaMatrix,
                const ValueListType & whitenMeans,
@@ -81,8 +83,9 @@ MetaNJetLDA
     }
 
   this->Clear();
-  this->InitializeEssential( zeroScales, firstScales, secondScales, ridgeScales,
-                             ldaValues, ldaMatrix, whitenMeans, whitenStdDevs );
+  this->InitializeEssential( zeroScales, firstScales, secondScales,
+    ridgeScales, numberOfPCABasis, numberOfLDABasis, ldaValues, ldaMatrix,
+    whitenMeans, whitenStdDevs );
 }
 
 MetaNJetLDA
@@ -150,6 +153,8 @@ bool MetaNJetLDA
                        const NJetScalesType & firstScales,
                        const NJetScalesType & secondScales,
                        const NJetScalesType & ridgeScales,
+                       unsigned int numberOfPCABasis,
+                       unsigned int numberOfLDABasis,
                        const LDAValuesType & ldaValues,
                        const LDAMatrixType & ldaMatrix,
                        const ValueListType & whitenMeans,
@@ -160,8 +165,8 @@ bool MetaNJetLDA
     METAIO_STREAM::cout << "MetaNJetLDA: Initialize" << METAIO_STREAM::endl;
     }
 
-  MetaLDA::InitializeEssential( ldaValues, ldaMatrix, whitenMeans,
-                                whitenStdDevs );
+  MetaLDA::InitializeEssential( numberOfPCABasis, numberOfLDABasis,
+    ldaValues, ldaMatrix, whitenMeans, whitenStdDevs );
 
   this->SetZeroScales( zeroScales );
   this->SetFirstScales( firstScales );
@@ -384,8 +389,9 @@ bool MetaNJetLDA
   m_ReadStream = NULL;
 
   this->InitializeEssential( m_ZeroScales, m_FirstScales, m_SecondScales,
-                             m_RidgeScales, m_LDAValues, m_LDAMatrix,
-                             m_WhitenMeans, m_WhitenStdDevs );
+    m_RidgeScales, m_NumberOfPCABasisToUseAsFeatures,
+    m_NumberOfLDABasisToUseAsFeatures, m_LDAValues, m_LDAMatrix,
+    m_WhitenMeans, m_WhitenStdDevs );
 
   return true;
 }

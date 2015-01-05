@@ -73,9 +73,7 @@ VesselTubeType::Pointer GenerateCosTube(double length,
   VesselTubeType::Pointer vessel = VesselTubeType::New();
   VesselTubeType::PointListType pointList;
 
-  VectorType pos(0.0), lastPos(0.0);
-  double curveLength = 0.0;
-  bool lastPosValid = false;
+  VectorType pos(0.0);
 
   int numberOfSamples = 1e3;
   for (double l = 0.0; l < length; l += length / numberOfSamples)
@@ -85,16 +83,6 @@ VesselTubeType::Pointer GenerateCosTube(double length,
     VesselTubeType::TubePointType point;
     point.SetPosition(pos[0], pos[1], pos[2]);
     pointList.push_back(point);
-
-    if (lastPosValid)
-      {
-      curveLength += (pos - lastPos).GetNorm();
-      }
-    else
-      {
-      lastPosValid = true;
-      }
-    lastPos = pos;
 
     pos[0] = l;
     pos[1] = amplitude * sin(frequency * t);
