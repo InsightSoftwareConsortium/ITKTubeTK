@@ -113,6 +113,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
     "VTK.*Filtering.*cxx"
     "VTK.*IO.*cxx"
     "VTK.*Infovis.*cxx"
+    "VTK.*Rendering.*cxx"
     #class member redeclared
     "vtkFieldData"
     "vtkInformation"
