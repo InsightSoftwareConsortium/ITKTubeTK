@@ -35,10 +35,6 @@ set( PROJ_EXE
 set( TEXTCOMPARE_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
 
- ComputeTubeFlyThroughImage Synthetic/Cylinder_2D.mha Synthetic/Cylinder_2D.tre 
- 1 Synthetic/Cylinder_2D.flyThrough.mha 
- Synthetic/Cylinder_2D.flyThrough.tubeMask.mha
- 
 #  
 # Test with 2D Cylinder
 #
@@ -47,7 +43,7 @@ set( TEXTCOMPARE_EXE
   Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
   MIDAS{Cylinder_2D.mha.md5}
-  MIDAS{Cylinder_2D.tre.md5}
+  MIDAS{Cylinder_2D.tre.md5} 1
   ${TEMP}/${MODULE_NAME}Test1.flyThrough.mha
   ${TEMP}/${MODULE_NAME}Test1.flyThrough.tubeMask.mha)
 
@@ -78,7 +74,7 @@ set( TEXTCOMPARE_EXE
   Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
   COMMAND ${PROJ_EXE}
   MIDAS{Cylinder_3D.mha.md5}
-  MIDAS{Cylinder_3D.tre.md5}
+  MIDAS{Cylinder_3D.tre.md5} 1
   ${TEMP}/${MODULE_NAME}Test2.flyThrough.mha
   ${TEMP}/${MODULE_NAME}Test2.flyThrough.tubeMask.mha)
 
