@@ -35,3 +35,68 @@ set( PROJ_EXE
 set( TEXTCOMPARE_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
 
+ ComputeTubeFlyThroughImage Synthetic/Cylinder_2D.mha Synthetic/Cylinder_2D.tre 
+ 1 Synthetic/Cylinder_2D.flyThrough.mha 
+ Synthetic/Cylinder_2D.flyThrough.tubeMask.mha
+ 
+#  
+# Test with 2D Cylinder
+#
+
+  # Run module and generate result on test case
+  Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+  COMMAND ${PROJ_EXE}
+  MIDAS{Cylinder_2D.mha.md5}
+  MIDAS{Cylinder_2D.tre.md5}
+  ${TEMP}/${MODULE_NAME}Test1.flyThrough.mha
+  ${TEMP}/${MODULE_NAME}Test1.flyThrough.tubeMask.mha)
+
+  # compare outputs with groundtruth		       
+  Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-flyThrough
+  COMMAND ${IMAGECOMPARE_EXE}
+  -t ${TEMP}/${MODULE_NAME}Test1.flyThrough.mha 
+  -b MIDAS{${MODULE_NAME}Test1.flyThrough.mha.md5} 
+  -i 0.001 )
+
+  set_property( TEST ${MODULE_NAME}-Test1-Compare-flyThrough
+		APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+  
+  Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-flyThrough-TubeMask
+  COMMAND ${IMAGECOMPARE_EXE}
+  -t ${TEMP}/${MODULE_NAME}Test1.flyThrough.tubeMask.mha
+  -b MIDAS{${MODULE_NAME}Test1.flyThrough.tubeMask.mha.md5} 
+  -i 0.001 )
+
+  set_property( TEST ${MODULE_NAME}-Test1-Compare-flyThrough-TubeMask
+		APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+
+#  
+# Test with 3D Cylinder
+#
+
+  # Run module and generate result on test case
+  Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
+  COMMAND ${PROJ_EXE}
+  MIDAS{Cylinder_3D.mha.md5}
+  MIDAS{Cylinder_3D.tre.md5}
+  ${TEMP}/${MODULE_NAME}Test2.flyThrough.mha
+  ${TEMP}/${MODULE_NAME}Test2.flyThrough.tubeMask.mha)
+
+  # compare outputs with groundtruth		       
+  Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare-flyThrough
+  COMMAND ${IMAGECOMPARE_EXE}
+  -t ${TEMP}/${MODULE_NAME}Test2.flyThrough.mha 
+  -b MIDAS{${MODULE_NAME}Test2.flyThrough.mha.md5} 
+  -i 0.001 )
+
+  set_property( TEST ${MODULE_NAME}-Test2-Compare-flyThrough
+		APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
+  
+  Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare-flyThrough-TubeMask
+  COMMAND ${IMAGECOMPARE_EXE}
+  -t ${TEMP}/${MODULE_NAME}Test2.flyThrough.tubeMask.mha
+  -b MIDAS{${MODULE_NAME}Test2.flyThrough.tubeMask.mha.md5} 
+  -i 0.001 )
+
+  set_property( TEST ${MODULE_NAME}-Test2-Compare-flyThrough-TubeMask
+		APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
