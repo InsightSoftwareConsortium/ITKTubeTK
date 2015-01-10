@@ -108,8 +108,7 @@ if( UNIX )
 endif( UNIX )
 
 
-set( TubeTK_DEPENDENCIES "ITK" "JsonCpp" "ParameterSerializer"
-  "SlicerExecutionModel" )
+set( TubeTK_DEPENDENCIES "ITK" "JsonCpp" "SlicerExecutionModel" )
 
 if( TubeTK_USE_VTK )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "VTK" )
