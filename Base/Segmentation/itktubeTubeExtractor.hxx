@@ -88,7 +88,18 @@ TubeExtractor<TInputImage>
 }
 
 /**
- * Set the input image */
+ * Set the tube mask image */
+template< class TInputImage >
+void
+TubeExtractor<TInputImage>
+::SetTubeMaskImage( typename 
+  TubeExtractor<TInputImage>::TubeMaskImageType::Pointer & mask )
+{
+  m_RidgeOp->SetTubeMaskImage( mask );
+}
+
+/**
+ * Get the tube mask image */
 template< class TInputImage >
 typename TubeExtractor<TInputImage>::TubeMaskImageType::Pointer
 TubeExtractor<TInputImage>
@@ -170,7 +181,7 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 void
 TubeExtractor<TInputImage>
-::SetExtractBoundMin( typename TInputImage::IndexType dataMin )
+::SetExtractBoundMin( const typename TInputImage::IndexType & dataMin )
 {
   if( this->m_RidgeOp.IsNull() )
     {
@@ -200,7 +211,7 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 void
 TubeExtractor<TInputImage>
-::SetExtractBoundMax( typename TInputImage::IndexType dataMax )
+::SetExtractBoundMax( const typename TInputImage::IndexType & dataMax )
 {
   if( this->m_RidgeOp.IsNull() )
     {

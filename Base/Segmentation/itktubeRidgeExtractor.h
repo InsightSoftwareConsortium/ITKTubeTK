@@ -115,6 +115,9 @@ public:
   /** Get the mask image */
   itkGetObjectMacro( TubeMaskImage, TubeMaskImageType );
 
+  /** Set the mask image */
+  itkSetObjectMacro( TubeMaskImage, TubeMaskImageType );
+
   /** Set Data Minimum */
   void SetDataMin( double dataMin );
 
