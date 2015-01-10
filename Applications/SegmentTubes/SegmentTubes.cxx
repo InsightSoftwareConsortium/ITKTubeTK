@@ -60,30 +60,31 @@ int DoIt( int argc, char * argv[] )
     CLPProcessInformation );
   progressReporter.Start();
 
-  typedef TPixel                                        PixelType;
-  typedef itk::Image< PixelType, VDimension >           ImageType;
-  typedef itk::ImageFileReader< ImageType >             ReaderType;
+  typedef TPixel                                     PixelType;
+  typedef itk::Image< PixelType, VDimension >        ImageType;
+  typedef itk::ImageFileReader< ImageType >          ReaderType;
 
-  typedef itk::tube::TubeExtractor< ImageType >         TubeOpType;
+  typedef itk::tube::TubeExtractor< ImageType >      TubeOpType;
 
-  typedef typename TubeOpType::TubeMaskImageType        MaskImageType;
-  typedef itk::ImageFileReader< MaskImageType >         MaskReaderType;
-  typedef itk::ImageFileWriter< MaskImageType >         MaskWriterType;
+  typedef typename TubeOpType::TubeMaskImageType     MaskImageType;
+  typedef itk::ImageFileReader< MaskImageType >      MaskReaderType;
+  typedef itk::ImageFileWriter< MaskImageType >      MaskWriterType;
 
-  typedef float                                         ScaleType;
-  typedef itk::Image< ScaleType, VDimension >           ScaleImageType;
-  typedef itk::ImageFileReader< ScaleImageType >        ScaleReaderType;
+  typedef float                                      ScaleType;
+  typedef itk::Image< ScaleType, VDimension >        ScaleImageType;
+  typedef itk::ImageFileReader< ScaleImageType >     ScaleReaderType;
 
-  typedef itk::ContinuousIndex< double, VDimension >    IndexType;
-  typedef std::vector< IndexType >                      IndexListType;
+  typedef itk::ContinuousIndex< double, VDimension > IndexType;
+  typedef std::vector< IndexType >                   IndexListType;
 
-  typedef std::vector< ScaleType >                      ScaleListType;
+  typedef std::vector< ScaleType >                   ScaleListType;
 
-  typedef itk::VesselTubeSpatialObject< VDimension >    TubeType;
+  typedef itk::VesselTubeSpatialObject< VDimension > TubeType;
 
-  typedef typename TubeType::TransformType              TransformType;
+  typedef typename TubeType::TransformType           TransformType;
 
-  typedef itk::SpatialObjectWriter< VDimension >        SpatialObjectWriterType;
+  typedef itk::SpatialObjectWriter< VDimension >     TubesWriterType;
+  typedef itk::SpatialObjectReader< VDimension >     TubesReaderType;
 
   timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
@@ -109,7 +110,8 @@ int DoIt( int argc, char * argv[] )
 
   if( scale / scaleNorm < 0.3 )
     {
-    tube::ErrorMessage( "Error: Scale < 0.3 * voxel spacing is unsupported." );
+    tube::ErrorMessage( 
+      "Error: Scale < 0.3 * voxel spacing is unsupported." );
     return EXIT_FAILURE;
     }
 
@@ -197,7 +199,7 @@ int DoIt( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    typename MaskImageType::Pointer maskImage = maskReader->GetOutput();
+    typename MaskImageType::Pointer seedMaskImage = maskReader->GetOutput();
 
     if( !scaleMask.empty() )
       {
@@ -217,8 +219,8 @@ int DoIt( int argc, char * argv[] )
         }
       typename ScaleImageType::Pointer scaleImage = scaleReader->GetOutput();
 
-      itk::ImageRegionConstIteratorWithIndex< MaskImageType > iter( maskImage,
-        maskImage->GetLargestPossibleRegion() );
+      itk::ImageRegionConstIteratorWithIndex< MaskImageType > iter( 
+        seedMaskImage, seedMaskImage->GetLargestPossibleRegion() );
       itk::ImageRegionConstIterator< ScaleImageType > iterS( scaleImage,
         scaleImage->GetLargestPossibleRegion() );
       int count = 0;
@@ -240,8 +242,8 @@ int DoIt( int argc, char * argv[] )
     else
       {
       int count = 0;
-      itk::ImageRegionConstIteratorWithIndex< MaskImageType > iter( maskImage,
-        maskImage->GetLargestPossibleRegion() );
+      itk::ImageRegionConstIteratorWithIndex< MaskImageType > iter( 
+        seedMaskImage, seedMaskImage->GetLargestPossibleRegion() );
       while( !iter.IsAtEnd() )
         {
         if( iter.Get() )
@@ -255,6 +257,55 @@ int DoIt( int argc, char * argv[] )
           }
         ++iter;
         }
+      }
+    }
+
+  if( !existingVesselsMask.empty() )
+    {
+    typename MaskReaderType::Pointer maskReader = MaskReaderType::New();
+    maskReader->SetFileName( existingVesselsMask.c_str() );
+    try
+      {
+      maskReader->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Reading vessels mask: Exception caught: "
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    typename MaskImageType::Pointer maskImage = maskReader->GetOutput();
+    tubeOp->SetTubeMaskImage( maskImage );
+    }
+
+  if( !existingVessels.empty() )
+    {
+    typedef typename TubeType::ChildrenListType  ChildrenListType;
+    typedef typename ChildrenListType::iterator  ChildrenIteratorType;
+
+    typename TubesReaderType::Pointer reader = TubesReaderType::New();
+    
+    try
+      {
+      reader->SetFileName( existingVessels.c_str() );
+      reader->Update();
+      }
+    catch( ... )
+      {
+      std::cerr << "Error:: No readable Tubes found " << std::endl;
+      }
+
+    char tubeName[] = "Tube";
+    ChildrenListType* tubeList = reader->GetGroup()->GetChildren( 999999,
+      tubeName );
+
+    ChildrenIteratorType tubeIterator = tubeList->begin();
+    while( tubeIterator != tubeList->end() )
+      {
+      tubeOp->AddTube( static_cast< TubeType * >( 
+          tubeIterator->GetPointer() ) );
+      ++tubeIterator;
       }
     }
 
@@ -297,8 +348,8 @@ int DoIt( int argc, char * argv[] )
     {
     tubeOp->SetRadius( *seedRadiusIter );
 
-    std::cout << "Extracting from index point " << *seedIndexIter << " at radius "
-      << *seedRadiusIter << std::endl;
+    std::cout << "Extracting from index point " << *seedIndexIter
+      << " at radius " << *seedRadiusIter << std::endl;
     typename TubeType::Pointer xTube =
       tubeOp->ExtractTube( *seedIndexIter, count, true );
     if( !xTube.IsNull() )
@@ -339,14 +390,16 @@ int DoIt( int argc, char * argv[] )
     offsetVector[i] = origin[i];
     }
 
-  tubeOp->GetTubeGroup()->GetObjectToParentTransform()->SetScale( scaleVector );
-  tubeOp->GetTubeGroup()->GetObjectToParentTransform()->SetOffset( offsetVector );
-  tubeOp->GetTubeGroup()->GetObjectToParentTransform()->SetMatrix( inputImage->GetDirection() );
+  tubeOp->GetTubeGroup()->GetObjectToParentTransform()->SetScale( 
+    scaleVector );
+  tubeOp->GetTubeGroup()->GetObjectToParentTransform()->SetOffset( 
+    offsetVector );
+  tubeOp->GetTubeGroup()->GetObjectToParentTransform()->SetMatrix( 
+    inputImage->GetDirection() );
   tubeOp->GetTubeGroup()->ComputeObjectToWorldTransform();
 
   // Save Tubes
-  typename SpatialObjectWriterType::Pointer soWriter =
-    SpatialObjectWriterType::New();
+  typename TubesWriterType::Pointer soWriter = TubesWriterType::New();
   soWriter->SetFileName( outputTubeFile );
   soWriter->SetInput( tubeOp->GetTubeGroup().GetPointer() );
   soWriter->Update();

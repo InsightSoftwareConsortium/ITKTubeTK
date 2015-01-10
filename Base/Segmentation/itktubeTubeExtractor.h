@@ -112,7 +112,11 @@ public:
   itkGetConstObjectMacro( InputImage, ImageType );
 
   /**
-   * Get the input image */
+   * Set the tube mask image */
+  void SetTubeMaskImage( typename TubeMaskImageType::Pointer & mask );
+
+  /**
+   * Get the tube mask image */
   typename TubeMaskImageType::Pointer GetTubeMaskImage( void );
 
   /**
@@ -133,7 +137,7 @@ public:
 
   /**
    * Set ExtractBound Minimum */
-  void SetExtractBoundMin( IndexType dataMin );
+  void SetExtractBoundMin( const IndexType & dataMin );
 
   /**
    * Get ExtractBound Minimum */
@@ -141,7 +145,7 @@ public:
 
   /**
    * Set ExtractBound Maximum */
-  void SetExtractBoundMax( IndexType dataMax );
+  void SetExtractBoundMax( const IndexType & dataMax );
 
   /**
    * Get ExtractBound Maximum */
