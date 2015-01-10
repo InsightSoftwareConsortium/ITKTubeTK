@@ -520,7 +520,7 @@ set( SlicerExecutionModel_CLI_SHARE_OUTPUT_DIRECTORY
 set( SlicerExecutionModel_CLI_ARCHIVE_OUTPUT_DIRECTORY
   "${CMAKE_BINARY_DIR}/lib/TubeTK" )
 
-find_package( SlicerExecutionModel )
+find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 
 if( TubeTK_USE_VTK )
