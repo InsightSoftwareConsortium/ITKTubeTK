@@ -251,6 +251,12 @@ option( USE_SYSTEM_CPPCHECK
 mark_as_advanced( USE_SYSTEM_CPPCHECK )
 
 #
+# Setup examples as tests
+#
+option( TubeTK_USE_EXAMPLES_AS_TESTS
+  "Test TubeTK examples as (long running) tests." OFF )
+
+#
 # Setup python
 #
 set( TubeTK_USE_PYTHON_DEFAULT ON )
@@ -259,30 +265,33 @@ if( WIN32 OR TubeTK_BUILD_SLICER_MODULES )
 endif( WIN32 OR TubeTK_BUILD_SLICER_MODULES )
 option( TubeTK_USE_PYTHON "Use Python to enable additional functionality."
   ${TubeTK_USE_PYTHON_DEFAULT} )
+
 if( TubeTK_USE_PYTHON )
+
   # NumPy conversion support.
   option( TubeTK_USE_NUMPY "Use NumPy to enable additional functionality." ON )
   mark_as_advanced( CLEAR TubeTK_USE_NUMPY )
 
   # Test TubeTK examples via Python virtualenv.
-  option( TubeTK_USE_NOTEBOOKS
-    "Test IPython notebooks in a Python virtualenv." ON )
-  mark_as_advanced( CLEAR TubeTK_USE_NOTEBOOKS )
+  option( TubeTK_USE_IPYTHON_NOTEBOOKS "Use IPython notebooks in TubeTK." ON )
+  mark_as_advanced( CLEAR TubeTK_USE_IPYTHON_NOTEBOOKS )
 
   # PyQtGraph bridge support.
   option( TubeTK_USE_PYQTGRAPH
     "Use PyQtGraph to enable additional functionality." ON )
   mark_as_advanced( CLEAR TubeTK_USE_PYQTGRAPH )
+
 else( TubeTK_USE_PYTHON )
+
   # NumPy conversion support.
   set( TubeTK_USE_NUMPY OFF CACHE BOOL
     "Use NumPy to enable additional functionality." FORCE )
   mark_as_advanced( TubeTK_USE_NUMPY )
 
   # Test TubeTK examples via Python virtualenv.
-  set( TubeTK_USE_NOTEBOOKS OFF CACHE BOOL
-    "Test IPython notebooks in a Python virtualenv." FORCE )
-  mark_as_advanced( TubeTK_USE_NOTEBOOKS )
+  set( TubeTK_USE_IPYTHON_NOTEBOOKS OFF CACHE BOOL
+    "Use IPython notebooks in TubeTK." FORCE )
+  mark_as_advanced( TubeTK_USE_IPYTHON_NOTEBOOKS )
 
   # PyQtGraph bridge support.
   set( TubeTK_USE_PYQTGRAPH OFF CACHE BOOL
@@ -680,9 +689,9 @@ if( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_SLICER_MODULES )
 endif( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_SLICER_MODULES )
 
 # Test TubeTK IPython examples.
-if( TubeTK_USE_NOTEBOOKS )
+if( TubeTK_USE_EXAMPLES_AS_TESTS )
   add_subdirectory( Examples )
-endif( TubeTK_USE_NOTEBOOKS )
+endif( TubeTK_USE_EXAMPLES_AS_TESTS )
 
 add_subdirectory( Utilities )
 add_subdirectory( Base )
