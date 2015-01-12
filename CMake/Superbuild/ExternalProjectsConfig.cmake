@@ -32,9 +32,9 @@ set( Cppcheck_HASH_OR_TAG 1.61 )
 set( CTK_URL ${github_protocol}://github.com/commontk/CTK.git )
 set( CTK_HASH_OR_TAG cb53ac3a1906e7a9535e8c7920a6436c5ad23b4b )
 
-# TubeTK Image Viewer snapshot 2014-01-26
+# TubeTK Image Viewer snapshot 2015-01-09
 set( ImageViewer_URL ${github_protocol}://github.com/KitwareMedical/ImageViewer.git )
-set( ImageViewer_HASH_OR_TAG 960a2a7ce69e81e86c87fd1606b28e40097a205b )
+set( ImageViewer_HASH_OR_TAG ff54833ac9b7e2a0a1726d692df6466a7a1b88c3 )
 
 # Insight Segmentation and Registration Toolkit
 set( ITK_URL ${github_protocol}://github.com/Slicer/ITK.git )
@@ -54,11 +54,6 @@ set( KWStyle_HASH_OR_TAG 9711cdbd35af37a9abcdd8b1dbd8e2b5a4ac8779 )
 set( LIBSVM_URL
   http://www.csie.ntu.edu.tw/~cjlin/libsvm/oldfiles/libsvm-3.17.tar.gz )
 set( LIBSVM_HASH_OR_TAG 67f8b597ce85c1f5288d7838e57ea28a )
-
-# Parameter Serializer snapshot 2014-05-31 )
-set( ParameterSerializer_URL
-  ${github_protocol}://github.com/Slicer/ParameterSerializer.git )
-set( ParameterSerializer_HASH_OR_TAG d7e94d3ff9de9a8782db6997f8e1bc45626cfa3b )
 
 # Slicer Execution Model snapshot 2014-05-13
 set( SlicerExecutionModel_URL

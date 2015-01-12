@@ -93,7 +93,7 @@ if( BUILD_DOCUMENTATION )
 endif( BUILD_DOCUMENTATION )
 
 #
-# Image viewer setup.
+# ImageViewer setup.
 #
 option( TubeTK_BUILD_IMAGE_VIEWER "Use ImageViewer." OFF )
 
@@ -380,6 +380,14 @@ option( USE_SYSTEM_SLICER_EXECUTION_MODEL
   OFF )
 mark_as_advanced( USE_SYSTEM_SLICER_EXECUTION_MODEL )
 
+option( SlicerExecutionModel_USE_SERIALIZER
+  "Enable the ParameterSerializer use within SlicerExecutionModel"
+  OFF )
+mark_as_advanced( SlicerExecutionModel_USE_SERIALIZER )
+
+#
+# Provide option for Valgrind
+#
 option( TubeTK_USE_VALGRIND "Use Valgrind to enable additional functionality."
   OFF )
 
@@ -512,7 +520,7 @@ set( SlicerExecutionModel_CLI_SHARE_OUTPUT_DIRECTORY
 set( SlicerExecutionModel_CLI_ARCHIVE_OUTPUT_DIRECTORY
   "${CMAKE_BINARY_DIR}/lib/TubeTK" )
 
-find_package( SlicerExecutionModel )
+find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 
 if( TubeTK_USE_VTK )
