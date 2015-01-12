@@ -496,7 +496,7 @@ PDFSegmenter< TImage, N, TLabelMap >
     m_HistogramBinSize[i] = ( histogramBinMax[i] - m_HistogramBinMin[i] ) /
       ( double )( m_HistogramNumberOfBin[i] );
     }
-  
+
   std::vector< VectorDoubleType > clipMin;
   std::vector< VectorDoubleType > clipMax;
   if( true ) // creating a local context to limit memory footprint
@@ -542,7 +542,8 @@ PDFSegmenter< TImage, N, TLabelMap >
             {
             binN = 0;
             }
-          else if( binN >= m_HistogramNumberOfBin[i] )
+          else if( static_cast< unsigned int >( binN )
+            >= m_HistogramNumberOfBin[i] )
             {
             binN = m_HistogramNumberOfBin[i] - 1;
             }
@@ -596,8 +597,8 @@ PDFSegmenter< TImage, N, TLabelMap >
             }
           }
         //std::cout << "Class " << c << " : Feature " << i << " : using "
-          //<< clipMin[c][i] << "(prev. " << m_HistogramBinMin[i] << ") - " 
-          //<< clipMax[c][i] << "(prev. " << histogramBinMax[i] << ")" 
+          //<< clipMin[c][i] << "(prev. " << m_HistogramBinMin[i] << ") - "
+          //<< clipMax[c][i] << "(prev. " << histogramBinMax[i] << ")"
           //<< std::endl;
         }
       }
@@ -631,12 +632,12 @@ PDFSegmenter< TImage, N, TLabelMap >
       histogramBinMax[i] += buffer;
       m_HistogramBinSize[i] = ( histogramBinMax[i] - m_HistogramBinMin[i] ) /
         ( double )( m_HistogramNumberOfBin[i] );
-      //std::cout << "Feature " << i << " : buffered : " 
+      //std::cout << "Feature " << i << " : buffered : "
         //<< m_HistogramBinMin[i] << " - " << histogramBinMax[i]
-        //<< " = " << m_HistogramBinSize[i] << " * " 
+        //<< " = " << m_HistogramBinSize[i] << " * "
         //<< m_HistogramNumberOfBin[i] << std::endl;
       }
-  
+
     for( unsigned int c = 0; c < numClasses; c++ )
       {
       typename ListSampleType::ConstIterator
@@ -654,7 +655,8 @@ PDFSegmenter< TImage, N, TLabelMap >
             {
             binN = 0;
             }
-          else if( binN >= m_HistogramNumberOfBin[i] )
+          else if( static_cast< unsigned int >( binN )
+            >= m_HistogramNumberOfBin[i] )
             {
             binN = m_HistogramNumberOfBin[i] - 1;
             }
@@ -711,7 +713,8 @@ PDFSegmenter< TImage, N, TLabelMap >
           {
           binN = 0;
           }
-        else if( binN >= m_HistogramNumberOfBin[i] )
+        else if( static_cast< unsigned int >( binN )
+          >= m_HistogramNumberOfBin[i] )
           {
           binN = m_HistogramNumberOfBin[i] - 1;
           }
@@ -732,21 +735,21 @@ PDFSegmenter< TImage, N, TLabelMap >
     {
     typedef itk::DiscreteGaussianImageFilter< HistogramImageType,
       HistogramImageType > HistogramBlurGenType;
-    typedef itk::NormalizeToConstantImageFilter< HistogramImageType, 
+    typedef itk::NormalizeToConstantImageFilter< HistogramImageType,
       HistogramImageType > NormalizeImageFilterType;
     for( unsigned int c = 0; c < numClasses; c++ )
       {
       typename HistogramBlurGenType::Pointer blurFilter =
         HistogramBlurGenType::New();
       blurFilter->SetInput( m_InClassHistogram[c] );
-      blurFilter->SetVariance( m_HistogramSmoothingStandardDeviation 
+      blurFilter->SetVariance( m_HistogramSmoothingStandardDeviation
         * m_HistogramSmoothingStandardDeviation );
       blurFilter->SetMaximumError( 0.1 );
       blurFilter->SetUseImageSpacing( false );
       blurFilter->Update();
       m_InClassHistogram[c] = blurFilter->GetOutput();
 
-      typename NormalizeImageFilterType::Pointer normFilter = 
+      typename NormalizeImageFilterType::Pointer normFilter =
         NormalizeImageFilterType::New();
       normFilter->SetInput( m_InClassHistogram[c] );
       normFilter->Update();
@@ -908,7 +911,8 @@ PDFSegmenter< TImage, N, TLabelMap >
           {
           binN = 0;
           }
-        else if( binN >= m_HistogramNumberOfBin[i] )
+        else if( static_cast< unsigned int >( binN )
+          >= m_HistogramNumberOfBin[i] )
           {
           binN = m_HistogramNumberOfBin[i] - 1;
           }
@@ -1144,11 +1148,11 @@ PDFSegmenter< TImage, N, TLabelMap >
         {
         sphereOp.SetRadius( erodeRadius );
         sphereOp.CreateStructuringElement();
-  
+
         if( m_DilateFirst )
           {
           timeCollector.Start( "Dilate" );
-  
+
           typename DilateFilterType::Pointer insideLabelMapDilateFilter =
             DilateFilterType::New();
           insideLabelMapDilateFilter->SetKernel( sphereOp );
@@ -1156,13 +1160,13 @@ PDFSegmenter< TImage, N, TLabelMap >
           insideLabelMapDilateFilter->SetInput( tmpLabelImage );
           insideLabelMapDilateFilter->Update();
           tmpLabelImage = insideLabelMapDilateFilter->GetOutput();
-  
+
           timeCollector.Stop( "Dilate" );
           }
         else
           {
           timeCollector.Start( "Erode" );
-  
+
           typename ErodeFilterType::Pointer insideLabelMapErodeFilter =
             ErodeFilterType::New();
           insideLabelMapErodeFilter->SetKernel( sphereOp );
@@ -1170,7 +1174,7 @@ PDFSegmenter< TImage, N, TLabelMap >
           insideLabelMapErodeFilter->SetInput( tmpLabelImage );
           insideLabelMapErodeFilter->Update();
           tmpLabelImage = insideLabelMapErodeFilter->GetOutput();
-  
+
           timeCollector.Stop( "Erode" );
           }
         }
@@ -1223,7 +1227,7 @@ PDFSegmenter< TImage, N, TLabelMap >
         if( m_DilateFirst )
           {
           timeCollector.Start( "Erode" );
-  
+
           typename ErodeFilterType::Pointer insideLabelMapErodeFilter =
             ErodeFilterType::New();
           insideLabelMapErodeFilter->SetKernel( sphereOp );
@@ -1231,13 +1235,13 @@ PDFSegmenter< TImage, N, TLabelMap >
           insideLabelMapErodeFilter->SetInput( tmpLabelImage );
           insideLabelMapErodeFilter->Update();
           tmpLabelImage = insideLabelMapErodeFilter->GetOutput();
-  
+
           timeCollector.Stop( "Erode" );
           }
         else
           {
           timeCollector.Start( "Dilate" );
-  
+
           typename DilateFilterType::Pointer insideLabelMapDilateFilter =
             DilateFilterType::New();
           insideLabelMapDilateFilter->SetKernel( sphereOp );
@@ -1245,7 +1249,7 @@ PDFSegmenter< TImage, N, TLabelMap >
           insideLabelMapDilateFilter->SetInput( tmpLabelImage );
           insideLabelMapDilateFilter->Update();
           tmpLabelImage = insideLabelMapDilateFilter->GetOutput();
-  
+
           timeCollector.Stop( "Dilate" );
           }
         }
