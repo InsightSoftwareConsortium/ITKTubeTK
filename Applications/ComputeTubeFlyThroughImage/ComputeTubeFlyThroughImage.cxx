@@ -55,16 +55,19 @@ int DoIt( int argc, char * argv[] );
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
+  
   PARSE_ARGS;
 
   // Ensure that the input image dimension is valid
   // We only support 2D and 3D Images due to the 
   // limitation of itkTubeSpatialObject
-  if(VDimension != 2 && VDimension != 3)
-  {
+  if( VDimension != 2 && VDimension != 3 )
+    {
+      
     tube::ErrorMessage( "Error: Only 2D and 3D Images are currently supported." );
     return EXIT_FAILURE;
-  }
+  
+    }
   
   // The timeCollector to perform basic profiling of algorithmic components
   itk::TimeProbesCollectorBase timeCollector;
@@ -76,26 +79,28 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< PixelType, VDimension >           ImageType;
   typedef itk::ImageFileReader< ImageType >             ImageReaderType;
   
-  timeCollector.Start("Loading Input Image");
+  timeCollector.Start( "Loading Input Image" );
   
   typename ImageReaderType::Pointer pImageReader = ImageReaderType::New();
   
   try
-  {
+    {
+      
     pImageReader->SetFileName( inputImageFile.c_str() );    
     pImageReader->Update();
-  }
+    
+    }
   catch( itk::ExceptionObject & err )
-  {
+    {
     tube::ErrorMessage( "Error loading input image: "
-                        + std::string(err.GetDescription()) );
+			+ std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
-  }
+    }
   
   typename ImageType::Pointer pInputImage = pImageReader->GetOutput();
   
-  timeCollector.Stop("Loading Input Image");
+  timeCollector.Stop( "Loading Input Image" );
 
   // Load TRE File
   //std::cout << "Loading TRE File" << std::endl;
@@ -103,26 +108,30 @@ int DoIt( int argc, char * argv[] )
   typedef itk::SpatialObjectReader< VDimension >      	TubesReaderType;  
   typedef itk::GroupSpatialObject< VDimension >        	TubeGroupType;
 
-  timeCollector.Start("Loading Input TRE File");
+  timeCollector.Start( "Loading Input TRE File" );
   
   typename TubesReaderType::Pointer pTubeFileReader = TubesReaderType::New();
   
-  try
-  {
+  try  
+    {
+      
     pTubeFileReader->SetFileName( inputTREFile.c_str() );
     pTubeFileReader->Update();
-  }
+    
+    }
   catch( itk::ExceptionObject & err )
-  {
+    {
+      
     tube::ErrorMessage( "Error loading TRE File: "
-			+ std::string(err.GetDescription()));
+			+ std::string( err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
-  }
+    
+    }
 
   typename TubeGroupType::Pointer pTubeGroup = pTubeFileReader->GetGroup(); 
   
-  timeCollector.Stop("Loading Input TRE File");
+  timeCollector.Stop( "Loading Input TRE File" );
 
   // Find the user-specified tube
   //std::cout << "Finding user specified tube" << std::endl;
@@ -133,7 +142,7 @@ int DoIt( int argc, char * argv[] )
   TubeType * pInputTube = NULL;  
   bool blnTubeFound = false;
   
-  timeCollector.Start("Finding the user specified tube");
+  timeCollector.Start( "Finding the user specified tube" );
   
   char tubeName[] = "Tube";
   TubeListType * pTubeList = 
@@ -142,32 +151,40 @@ int DoIt( int argc, char * argv[] )
   typename TubeListType::const_iterator itTubes = pTubeList->begin();
   
   while( itTubes != pTubeList->end() )
-  {
-      //std::cout << (*itTubes)->GetId() << std::endl;
+    {
       
-      if( (*itTubes)->GetId() == inputTubeId )
+    //std::cout << (*itTubes)->GetId() << std::endl;
+    
+    if( (*itTubes)->GetId() == inputTubeId )
       {		
-	pInputTube = dynamic_cast< TubeType * >( itTubes->GetPointer() );	
-	  
-	if( pInputTube )
-	{
-	    blnTubeFound = true;
-	}
 	
-	break;
-      }    
+      pInputTube = dynamic_cast< TubeType * >( itTubes->GetPointer() );	
+	
+      if( pInputTube )
+	{
+	  
+	blnTubeFound = true;
       
-      itTubes++;
-  }
+	}
+      
+      break;
+      
+      }    
+    
+    itTubes++;
+    
+    }
   
   delete pTubeList;  
   
   if( !blnTubeFound )
-  {
-      tube::ErrorMessage("Unable to find the specified tube");
-      timeCollector.Report();
-      return EXIT_FAILURE;
-  }
+    {
+      
+    tube::ErrorMessage( "Unable to find the specified tube" );
+    timeCollector.Report();
+    return EXIT_FAILURE;
+  
+    }
 
   pInputTube->ComputeObjectToWorldTransform();
   pInputTube->RemoveDuplicatePoints();
@@ -175,34 +192,42 @@ int DoIt( int argc, char * argv[] )
 
   //pInputTube->Print(std::cout);
   
-  timeCollector.Stop("Finding the user specified tube");  
+  timeCollector.Stop( "Finding the user specified tube" );  
   
   // Get list of tube points
   typedef typename TubeType::PointListType		TubePointListType;     
   
   TubePointListType tubePointList = pInputTube->GetPoints();
+  
   if( tubePointList.size() <= 0 )
-  {
-      tube::ErrorMessage("The specified tube does not contain any points");
-      timeCollector.Report();
-      return EXIT_FAILURE;
-  }
+    {
+      
+    tube::ErrorMessage("The specified tube does not contain any points");
+    timeCollector.Report();
+    return EXIT_FAILURE;
+  
+    }
     
   std::cout << "Num Tube Points = " << tubePointList.size() << std::endl;
   
   // Determine maximum radius among all tube points 
   typename TubePointListType::const_iterator itPts = tubePointList.begin();
+  
   double maxTubeRadius = itPts->GetRadius();
   
   while( itPts != tubePointList.end() )
-  {
-      if( itPts->GetRadius() > maxTubeRadius )
-      {
-	  maxTubeRadius = itPts->GetRadius();	
-      }    
+    {
       
-      itPts++;
-  }  
+    if( itPts->GetRadius() > maxTubeRadius )
+      {
+	
+      maxTubeRadius = itPts->GetRadius();	
+    
+      }    
+    
+    itPts++;
+  
+    }  
 
   std::cout << "Max Radius = " << maxTubeRadius << std::endl;
   
@@ -210,20 +235,24 @@ int DoIt( int argc, char * argv[] )
   double meanTubePointDist = 0; 
   
   for(unsigned int pid = 1; pid < tubePointList.size(); pid++)
-  {
+    {
+    
     // compute distance between current and previous tube point
     double curDist = 0;
     typename TubeType::PointType p1 = tubePointList[pid-1].GetPosition();
     typename TubeType::PointType p2 = tubePointList[pid].GetPosition();     
     
     for(unsigned int i = 0; i < VDimension; i++)
-    {
-      curDist += (p2[i] - p1[i]) * (p2[i] - p1[i]);
-    }
+      {
+	
+      curDist += ( p2[i] - p1[i] ) * ( p2[i] - p1[i] );
     
+      }
+      
     // update mean
     meanTubePointDist += curDist;
-  }
+    
+    }
 
   meanTubePointDist /= tubePointList.size();
   
@@ -234,12 +263,16 @@ int DoIt( int argc, char * argv[] )
   double minInputSpacing = inputSpacing[0];
   
   for(unsigned int i = 1; i < VDimension; i++)
-  {
-    if( inputSpacing[i] < minInputSpacing )
     {
+      
+    if( inputSpacing[i] < minInputSpacing )
+      {
+	
       minInputSpacing = inputSpacing[i];
-    }  
-  }
+    
+      }  
+      
+    }
 
   std::cout << "Min Input Spacing = " << minInputSpacing << std::endl;
   
@@ -252,13 +285,13 @@ int DoIt( int argc, char * argv[] )
     typename ImageType::SpacingType outputSpacing;
     
     for(unsigned int i = 0; i < VDimension-1; i++)
-    {
+      {
       outputSpacing[i] = minInputSpacing;
-    }
+      }
     
     outputSpacing[VDimension-1] = meanTubePointDist;
     
-    pFlyThroughImage->SetSpacing(outputSpacing);
+    pFlyThroughImage->SetSpacing( outputSpacing );
       
     // set start index
     typename ImageType::IndexType startIndex;
@@ -267,10 +300,12 @@ int DoIt( int argc, char * argv[] )
     // set size
     typename ImageType::SizeType size;  
     for(unsigned int i = 0; i < VDimension-1; i++)
-    {
-	size[i] = 2 * (typename ImageType::SizeValueType)
-		  (0.5 + (maxTubeRadius / outputSpacing[i])) + 1;
-    }
+      {
+	
+      size[i] = 2 * (typename ImageType::SizeValueType)
+		(0.5 + (maxTubeRadius / outputSpacing[i])) + 1;
+		
+      }
     size[VDimension-1] = tubePointList.size();	
 
     // set regions
@@ -308,7 +343,7 @@ int DoIt( int argc, char * argv[] )
 
   typedef itk::MinimumMaximumImageFilter< ImageType > MinMaxImageFilterType;
 
-  timeCollector.Start("Generating fly through images");
+  timeCollector.Start( "Generating fly through images" );
 
   typename TubeType::TransformType * pTubeIndexPhysTransform = 
     pInputTube->GetIndexToWorldTransform();
@@ -325,24 +360,25 @@ int DoIt( int argc, char * argv[] )
   unsigned int ptInd = 0;
   unsigned long tubePixelCount = 0;
   
-  for( itPts = tubePointList.begin(); 
+  for(  itPts = tubePointList.begin(); 
 	itPts != tubePointList.end(); 
 	itPts++, ptInd++ 
-      )
-  { 
+     )
+    {
+      
     // Get position, radius and frenet-serret basis of current tube point
     // in the world coordinate system
     typename TubeType::PointType curTubePosition = 
       pTubeIndexPhysTransform->TransformPoint( itPts->GetPosition() );
     
     TubeNormalType curTubeNormal1 = 
-     pTubeIndexPhysTransform->TransformCovariantVector( itPts->GetNormal1() );
+    pTubeIndexPhysTransform->TransformCovariantVector( itPts->GetNormal1() );
     curTubeNormal1.Normalize();  
-     
+    
     TubeNormalType curTubeNormal2 = 
-     pTubeIndexPhysTransform->TransformCovariantVector( itPts->GetNormal2() );
+    pTubeIndexPhysTransform->TransformCovariantVector( itPts->GetNormal2() );
     curTubeNormal2.Normalize();
-     
+    
     double curTubeRadius = (*itPts).GetRadius();
     
     //std::cout << curTubeNormal1.GetNorm() << std::endl;
@@ -363,124 +399,142 @@ int DoIt( int argc, char * argv[] )
     sliceRegion.SetSize( sliceSize );
     
     // Iterate through corresponding slice of output image and fill each pixel
-    ImageIteratorType itOutSlice(pFlyThroughImage, sliceRegion);
-    MaskIteratorType itMask(pTubeMaskFlyThroughImage, sliceRegion);
+    ImageIteratorType itOutSlice( pFlyThroughImage, sliceRegion );
+    MaskIteratorType itMask( pTubeMaskFlyThroughImage, sliceRegion );
     
     for( itOutSlice.GoToBegin(), itMask.GoToBegin(); 
-	!itOutSlice.IsAtEnd(); 
-	++itOutSlice, ++itMask 
-       )
-    {
-      // get index of the current output pixel
-      typename ImageType::IndexType curOutIndex = itOutSlice.GetIndex();
-      
-      // compute corresponding position in the input image
-      //typename InterpolatorType::ContinuousIndexType curInputPoint;
-      typename ImageType::PointType curInputPoint;      
-      
-      double distToCenter = 0;
+	  !itOutSlice.IsAtEnd(); 
+	  ++itOutSlice, ++itMask 
+	)
+      {
+	// get index of the current output pixel
+	typename ImageType::IndexType curOutIndex = itOutSlice.GetIndex();
+	
+	// compute corresponding position in the input image
+	//typename InterpolatorType::ContinuousIndexType curInputPoint;
+	typename ImageType::PointType curInputPoint;      
+	
+	double distToCenter = 0;
 
-      for(unsigned int i = 0; i < VDimension; i++)
-      {
-	curInputPoint[i] = curTubePosition[i];
-      }
-      
-      if(VDimension == 2) 
-      {
-	double stepN1 = (curOutIndex[0] - 0.5 * sliceSize[0]) * outputSpacing[0];
-	
 	for(unsigned int i = 0; i < VDimension; i++)
-	{
+	  {
+	  curInputPoint[i] = curTubePosition[i];
+	  }
+	
+	if(VDimension == 2) 
+	  {
+	    
+	  double stepN1 = ( curOutIndex[0] - 0.5 * sliceSize[0] ) 
+			  * outputSpacing[0];
+	  
+	  for(unsigned int i = 0; i < VDimension; i++)
+	    {
 	    curInputPoint[i] += stepN1 * curTubeNormal1[i]; 	  
-	}
+	    }
+	  
+	  distToCenter = stepN1;
 	
-	distToCenter = stepN1;
-      }
-      else if (VDimension == 3)
-      {
-	double stepN1 = (curOutIndex[0] - 0.5 * sliceSize[0]) * outputSpacing[0];
-	double stepN2 = (curOutIndex[1] - 0.5 * sliceSize[1]) * outputSpacing[1];
+	  }
+	else if (VDimension == 3)
+	  {
+	    
+	    double stepN1 = ( curOutIndex[0] - 0.5 * sliceSize[0] ) 
+			    * outputSpacing[0];
+			    
+	    double stepN2 = ( curOutIndex[1] - 0.5 * sliceSize[1] ) 
+			    * outputSpacing[1];
+	    
+	    for(unsigned int i = 0; i < VDimension; i++)
+	      {
+	      curInputPoint[i] += stepN1 * curTubeNormal1[i]; 	  
+	      curInputPoint[i] += stepN2 * curTubeNormal2[i]; 	  
+	      }	
+	    
+	    distToCenter = std::sqrt( stepN1 * stepN1 + stepN2 * stepN2  );
+	    
+	  }
 	
-	for(unsigned int i = 0; i < VDimension; i++)
-	{
-	    curInputPoint[i] += stepN1 * curTubeNormal1[i]; 	  
-	    curInputPoint[i] += stepN2 * curTubeNormal2[i]; 	  
-	}	
-	
-	distToCenter = std::sqrt( stepN1 * stepN1 + stepN2 * stepN2  );
-      }
-      
-      // set pixel values in the output images
-      if( pInterpolator->IsInsideBuffer(curInputPoint) )
-      {
-	// set intensity value by getting it from input image using 
-	// interpolation
-	itOutSlice.Set( pInterpolator->Evaluate(curInputPoint) );
+	// set pixel values in the output images
+	if( pInterpolator->IsInsideBuffer( curInputPoint ) )
+	  {
+	    
+	  // set intensity value by getting it from input image using 
+	  // interpolation
+	  itOutSlice.Set( pInterpolator->Evaluate( curInputPoint ) );
 
-	// if point is within the tube set tube mask pixel to on  
-	if( distToCenter <= curTubeRadius )
-	{
-	  itMask.Set( 1.0 );
-	}
+	  // if point is within the tube set tube mask pixel to on  
+	  if( distToCenter <= curTubeRadius )
+	    {
+	    itMask.Set( 1.0 );
+	    }
+	  
+	  tubePixelCount++;
+	  
+	  }
+	else
+	  {
+	    
+	  itOutSlice.Set( outsideVal );
 	
-	tubePixelCount++;
+	  }
       }
-      else
-      {
-	itOutSlice.Set( outsideVal );
-      }
-    }
-  }  
+    }  
 
   std::cout << "Num pixels inside tube " << tubePixelCount << std::endl;
   
-  timeCollector.Stop("Generating fly through images");
+  timeCollector.Stop( "Generating fly through images" );
   
   // Write fly through image
   typedef itk::ImageFileWriter< ImageType > ImageWriterType;
   
-  timeCollector.Start("Writing fly through image");
+  timeCollector.Start( "Writing fly through image" );
   
   typename ImageWriterType::Pointer imageWriter = ImageWriterType::New();
   
   try
-  {
+    {
+      
     imageWriter->SetFileName( outputImageFile.c_str() );    
     imageWriter->SetInput( pFlyThroughImage );
     imageWriter->Update();
-  }
+    
+    }
   catch( itk::ExceptionObject & err )
-  {
+    {
+      
     tube::ErrorMessage( "Error writing fly through image: "
-                        + std::string(err.GetDescription()) );
+			+ std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
-  }
+    
+    }
   
-  timeCollector.Stop("Writing fly through image");
+  timeCollector.Stop( "Writing fly through image" );
 
   // Write tube mask fly through image
   typedef itk::ImageFileWriter< MaskImageType > MaskWriterType;
   
-  timeCollector.Start("Writing tube mask fly through image");
+  timeCollector.Start( "Writing tube mask fly through image" );
   
   typename MaskWriterType::Pointer maskWriter = MaskWriterType::New();
   
   try
-  {
+    {
+      
     maskWriter->SetFileName( outputTubeMaskFile.c_str() );    
     maskWriter->SetInput( pTubeMaskFlyThroughImage );
     maskWriter->Update();
-  }
+    
+    }
   catch( itk::ExceptionObject & err )
-  {
+    {
     tube::ErrorMessage( "Error writing tube mask fly through image: "
-                        + std::string(err.GetDescription()) );
+			+ std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
-  }
+    }
   
-  timeCollector.Stop("Writing tube mask fly through image");
+  timeCollector.Stop( "Writing tube mask fly through image" );
   
   // All done
   timeCollector.Report();
@@ -490,18 +544,23 @@ int DoIt( int argc, char * argv[] )
 // Main
 int main( int argc, char * argv[] )
 {
+    
   try
-  {
+    {
+      
     PARSE_ARGS;
-  }
+    
+    }
   catch( const std::exception & err )
-  {
+    {
+      
     tube::ErrorMessage( err.what() );
     return EXIT_FAILURE;
-  }
+    
+    }
 
   PARSE_ARGS;
   
   return tube::ParseArgsAndCallDoIt( inputImageFile, argc, argv );
-  
+    
 }
