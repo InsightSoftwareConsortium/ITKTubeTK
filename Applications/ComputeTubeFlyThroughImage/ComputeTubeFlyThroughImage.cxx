@@ -143,7 +143,7 @@ int DoIt( int argc, char * argv[] )
   
   while( itTubes != pTubeList->end() )
   {
-      std::cout << (*itTubes)->GetId() << std::endl;
+      //std::cout << (*itTubes)->GetId() << std::endl;
       
       if( (*itTubes)->GetId() == inputTubeId )
       {		
@@ -173,7 +173,7 @@ int DoIt( int argc, char * argv[] )
   pInputTube->RemoveDuplicatePoints();
   pInputTube->ComputeTangentAndNormals();  
 
-  pInputTube->Print(std::cout);
+  //pInputTube->Print(std::cout);
   
   timeCollector.Stop("Finding the user specified tube");  
   
