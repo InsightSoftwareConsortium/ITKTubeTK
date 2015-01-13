@@ -67,6 +67,13 @@
       <description>Make spacing isotropic. Overrides other matchImage and setSpacing.</description>
       <default>false</default>
     </boolean>
+    <boolean>
+      <name>makeHighResIso</name>
+      <label>Make High Resolution Isotropic</label>
+      <longflag>makeHighResIso</longflag>
+      <description>Make spacing isotropic - using smallest voxel size. Overrides other matchImage and setSpacing.</description>
+      <default>false</default>
+    </boolean>
     <string-enumeration>
       <name>interpolator</name>
       <label>Interpolation Method</label>
@@ -75,6 +82,7 @@
       <element>NearestNeighbor</element>
       <element>Linear</element>
       <element>BSpline</element>
+      <element>Sinc</element>
       <default>Linear</default>
     </string-enumeration>
     <transform fileExtensions=".tfm">

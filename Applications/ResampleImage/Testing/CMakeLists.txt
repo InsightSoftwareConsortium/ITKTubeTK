@@ -37,11 +37,11 @@ set( IMAGECOMPARE_EXE
 
 # Test1
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
-            COMMAND ${PROJ_EXE}
-               --interpolator Linear
-               --resampleFactor 0.2,0.2
-               MIDAS{ES0015_Large.mha.md5}
-               ${TEMP}/${MODULE_NAME}Test1.mha )
+  COMMAND ${PROJ_EXE}
+    --interpolator Linear
+    --resampleFactor 0.2,0.2
+    MIDAS{ES0015_Large.mha.md5}
+    ${TEMP}/${MODULE_NAME}Test1.mha )
 
 # Test1-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
@@ -49,7 +49,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
     -t ${TEMP}/${MODULE_NAME}Test1.mha
     -b MIDAS{${MODULE_NAME}Test1.mha.md5},MIDAS{${MODULE_NAME}Test1_2.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
 # Test2
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
@@ -68,7 +68,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare
     -b MIDAS{${MODULE_NAME}Test2.mha.md5}
     -n 3 )
 set_property( TEST ${MODULE_NAME}-Test2-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
 
 # Test3
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3
@@ -85,7 +85,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3-Compare
     -t ${TEMP}/${MODULE_NAME}Test3.mha
     -b MIDAS{${MODULE_NAME}Test3.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test3-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test3 )
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test3 )
 
 # Test4
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4
@@ -100,4 +100,21 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare
     -t ${TEMP}/${MODULE_NAME}Test4.mha
     -b MIDAS{${MODULE_NAME}Test4.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test4-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
+
+# Test5
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test5
+  COMMAND ${PROJ_EXE}
+    --interpolator Sinc
+    --makeHighResIso
+    MIDAS{CroppedWholeLungCTScan.mhd.md5}
+    ${TEMP}/${MODULE_NAME}Test5.mha
+    MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5} )
+
+# Test5-Compare
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test5-Compare
+  COMMAND ${IMAGECOMPARE_EXE}
+    -t ${TEMP}/${MODULE_NAME}Test5.mha
+    -b MIDAS{${MODULE_NAME}Test5.mha.md5} )
+set_property( TEST ${MODULE_NAME}-Test5-Compare
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test5 )
