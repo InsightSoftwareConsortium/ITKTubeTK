@@ -25,12 +25,13 @@ limitations under the License.
 
 int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
 {
-  if( argc != 9 )
+  if( argc != 8 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
-      << " inputImage labelmapImage objId bkgId outputClass0PDF outputFeature0Image outputImage maxScaleImage"
+      << " inputImage labelmapImage objId bkgId outputFeature0Image"
+      << " outputImage maxScaleImage"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -52,14 +53,14 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   typedef itk::ImageFileReader< LabelMapType >      LabelMapReaderType;
   typedef itk::ImageFileWriter< LabelMapType >      LabelMapWriterType;
 
-  typedef itk::Image< float, 4 >                    PDFImageType;
+  typedef itk::Image< float, 3 >                    PDFImageType;
   typedef itk::ImageFileWriter< PDFImageType >      PDFImageWriterType;
 
   typedef itk::Image< float, Dimension >            FeatureImageType;
   typedef itk::ImageFileWriter< FeatureImageType >  FeatureImageWriterType;
 
   // Declare the type for the Filter
-  typedef itk::tube::RidgeSeedFilter< ImageType, LabelMapType >
+  typedef itk::tube::RidgeSeedFilter< ImageType, LabelMapType, 3 >
     FilterType;
 
   // Create the reader

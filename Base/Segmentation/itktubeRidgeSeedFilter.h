@@ -41,7 +41,7 @@ namespace itk
 namespace tube
 {
 
-template< class TImage, class TLabelMap >
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures=4 >
 class RidgeSeedFilter : public Object
 {
 public:
@@ -91,7 +91,7 @@ public:
   typedef typename SeedFeatureGeneratorType::FeatureImageType
     BasisImageType;
 
-  typedef PDFSegmenter< OutputImageType, 4, LabelMapType >
+  typedef PDFSegmenter< OutputImageType, TNumberOfFeatures, LabelMapType >
     PDFSegmenterType;
   typedef typename  PDFSegmenterType::ProbabilityPixelType
     ProbabilityPixelType;
