@@ -102,6 +102,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
     "([Ii]nsight|ITKv3|BRAINSFit).*Informational: catch(...) semantics changed since Visual C\\+\\+ 7.1; structured exceptions (SEH) are no longer caught"
 
     # VTK suppressions
+    "vtkWrapPython.cmake"
     "vtkfreetype"
     "Utilities.vtktiff"
     "VTK.*IO.vtkMySQLQuery.cxx"
