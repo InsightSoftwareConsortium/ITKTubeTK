@@ -1,0 +1,16 @@
+itk.* Namespace Disable
+.*\.cxx Namespace Disable
+qSlicer.* Namespace Disable
+qSlicer.* MemberFunctions Disable
+qSlicer.* InternalVariables Disable
+.*UI\.h Namespace Disable
+ImageCompareCommand.cxx Header Disable
+itktubeMeta.*\.h InternalVariables Disable
+itktubeRadiusExtractor.h MemberFunctions Disable
+itktubeRidgeExtractor.h MemberFunctions Disable
+itktubeTubeExtractor.h MemberFunctions Disable
+itktubeSpatialObjectToSpatialObjectFilter.h Header Disable
+itktubeSpatialObjectToSpatialObjectFilter.hxx Header Disable
+TextCompareCommand.cxx Header Disable
+tubeOptionList.cxx Header Disable
+tubeOptionList.h Header Disable

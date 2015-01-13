@@ -156,7 +156,8 @@ typename VectorType::RealValueType SafeNormalize(VectorType& v)
     {
     for ( unsigned int i = 0; i < VectorType::Dimension; ++i )
       {
-      v[i] = static_cast< ValueType >( static_cast< RealType >( v[i] ) / norm );
+      v[i] = static_cast< ValueType >( static_cast< RealType >( v[i] )
+        / norm );
       }
     }
   return norm;
@@ -173,8 +174,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   PointBasedSpatialObject* output = this->GetOutput();
   const PointBasedSpatialObject* input = this->GetInput();
 
-  typedef typename PointBasedSpatialObject::PointType PointType;
-  typedef typename PointBasedSpatialObject::VectorType VectorType;
+  typedef typename PointBasedSpatialObject::VectorType SOVectorType;
 
   if ( input->GetNumberOfPoints() < 2 )
     {
@@ -191,15 +191,16 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 
   //
   // DM variables
-  VectorType start, end;
+  SOVectorType start;
+  SOVectorType end;
   double pathLength = 0.0;
 
   // ICM variables
-  VectorType previousN(0.0);
-  VectorType T(0.0), N(0.0), B(0.0); // for the Frenet frame
+  SOVectorType previousN(0.0);
+  SOVectorType T(0.0), N(0.0), B(0.0); // for the Frenet frame
   bool vectorBIsValid = false;
   int inflectionCount = 1;
-  
+
   // SOAM variables
   double totalCurvature = 0.0;
 
@@ -211,27 +212,27 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 
   for(size_t index = 0; index < numberOfPoints; ++index)
     {
-    VectorType currentPoint =
+    SOVectorType currentPoint =
       input->GetPoint( index )->GetPosition().GetVectorFromOrigin();
 
     //
     // General variables
     bool nextPointAvailable = ( index < numberOfPoints - 1 );
-    VectorType nextPoint(0.0);
+    SOVectorType nextPoint(0.0);
     if ( nextPointAvailable )
       {
       nextPoint =
         input->GetPoint( index + 1 )->GetPosition().GetVectorFromOrigin();
       }
     bool previousPointAvailable = ( index > 0 );
-    VectorType previousPoint(0.0);
+    SOVectorType previousPoint(0.0);
     if ( previousPointAvailable )
       {
       previousPoint =
         input->GetPoint( index - 1 )->GetPosition().GetVectorFromOrigin();
       }
     // t1 and t2, used both in icm and soam
-    VectorType t1(0.0), t2(0.0);
+    SOVectorType t1(0.0), t2(0.0);
     if ( previousPointAvailable && nextPointAvailable )
       {
       t1 = currentPoint - previousPoint;
@@ -239,7 +240,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
       }
 
     bool nPlus2PointAvailable = ( index < numberOfPoints - 2 );
-    VectorType nPlus2Point(0.0);
+    SOVectorType nPlus2Point(0.0);
     if ( nPlus2PointAvailable )
       {
       nPlus2Point =
@@ -269,15 +270,15 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     if ( ( icm || ip ) && previousPointAvailable && nextPointAvailable )
       {
       // Compute velocity and acceleration
-      VectorType v = nextPoint - previousPoint;
-      VectorType a = t2 - t1;
+      SOVectorType v = nextPoint - previousPoint;
+      SOVectorType a = t2 - t1;
 
       // Compute the Frenet frame
       // 1 - T = v / |v|
       T = v;
       SafeNormalize(T);
 
-      // 2 - N = v × a × v / |v × a × v|
+      // 2 - N = v x a x v / | v x a x v |
       bool canCheckForinflection = a.GetNorm() > this->m_Epsilon;
       if ( canCheckForinflection )
         {
@@ -307,7 +308,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
       if ( canCheckForinflection )
         {
         // Check for inflection
-        VectorType deltaN = N - previousN;
+        SOVectorType deltaN = N - previousN;
 
         inflectionValue = deltaN * deltaN;
         if ( inflectionValue > 1.0 + this->m_Epsilon )
@@ -331,8 +332,8 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
        previousPointAvailable && nextPointAvailable && nPlus2PointAvailable )
       {
       // Compute in-plane angle
-      VectorType normT1 = t1;
-      VectorType normT2 = t2;
+      SOVectorType normT1 = t1;
+      SOVectorType normT2 = t2;
 
       double inPlaneAngle = 0.0;
       if ( SafeNormalize(normT1) > this->m_Epsilon
@@ -342,9 +343,9 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
         }
 
       // Compute torsionnal angle
-      VectorType t3 = nPlus2Point - nextPoint;
-      VectorType t1t2Cross = CrossProduct( t1, t2 );
-      VectorType t2t3Cross = CrossProduct( t2, t3 );
+      SOVectorType t3 = nPlus2Point - nextPoint;
+      SOVectorType t1t2Cross = CrossProduct( t1, t2 );
+      SOVectorType t2t3Cross = CrossProduct( t2, t3 );
 
       double torsionAngle = 0.0;
       if ( SafeNormalize(t1t2Cross) > this->m_Epsilon
@@ -366,7 +367,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   // DM final calculation
   if ( dm || icm )
     {
-    VectorType startToEnd = start- end;
+    SOVectorType startToEnd = start- end;
     double straighLineLength = startToEnd.GetNorm();
     if ( straighLineLength > 0.0 )
       {

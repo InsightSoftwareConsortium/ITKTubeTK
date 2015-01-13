@@ -413,9 +413,16 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
   const unsigned int numInputFeatures =
     m_InputFeatureVectorGenerator->GetNumberOfFeatures();
 
+  if( numClasses == 0 )
+    {
+    std::cerr << "Number of classes (object ids) = 0.  Cannot compute basis."
+      << std::endl;
+    return;
+    }
+
   if( m_NumberOfLDABasisToUseAsFeatures > numClasses - 1 )
     {
-    std::cerr << "ERROR: Number of LDA basis > ( number of classes - 1 )." 
+    std::cerr << "ERROR: Number of LDA basis > ( number of classes - 1 )."
       << std::endl;
     std::cerr << "   Reducing number of LDA basis." << std::endl;
     m_NumberOfLDABasisToUseAsFeatures = numClasses - 1;
@@ -524,10 +531,10 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
   int numberOfBasisToUseAsFeatures = this->GetNumberOfFeatures();
   if( numInputFeatures < numberOfBasisToUseAsFeatures )
     {
-    std::cerr << "ERROR: Number of input features < number of basis." 
+    std::cerr << "ERROR: Number of input features < number of basis."
       << std::endl;
     std::cerr << "   Reducing number of PCA basis." << std::endl;
-    m_NumberOfPCABasisToUseAsFeatures = numInputFeatures 
+    m_NumberOfPCABasisToUseAsFeatures = numInputFeatures
       - m_NumberOfLDABasisToUseAsFeatures;
     if( m_NumberOfPCABasisToUseAsFeatures < 0 )
       {
@@ -656,7 +663,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 {
   const unsigned int numClasses = this->GetNumberOfObjectIds();
 
-  const unsigned int numInputFeatures = 
+  const unsigned int numInputFeatures =
     m_InputFeatureVectorGenerator->GetNumberOfFeatures();
 
   FeatureVectorType featureVector;
@@ -701,7 +708,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 {
   const unsigned int numClasses = this->GetNumberOfObjectIds();
 
-  const unsigned int numInputFeatures = 
+  const unsigned int numInputFeatures =
     m_InputFeatureVectorGenerator->GetNumberOfFeatures();
 
   VectorType vBasis;
@@ -748,9 +755,9 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
   os << indent << "GlobalCovariance = " << m_GlobalCovariance << std::endl;
   os << indent << "BasisMatrix = " << m_BasisMatrix << std::endl;
   os << indent << "BasisValues = " << m_BasisValues << std::endl;
-  os << indent << "NumberOfPCABasisToUseAsFeatures = " 
+  os << indent << "NumberOfPCABasisToUseAsFeatures = "
     << m_NumberOfPCABasisToUseAsFeatures << std::endl;
-  os << indent << "NumberOfLDABasisToUseAsFeatures = " 
+  os << indent << "NumberOfLDABasisToUseAsFeatures = "
     << m_NumberOfLDABasisToUseAsFeatures << std::endl;
 }
 

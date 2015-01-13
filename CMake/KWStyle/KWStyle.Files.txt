@@ -1,0 +1,9 @@
+Applications/*/*.h
+Applications/*/*.hxx
+Applications/*/*.cxx
+Base/*/*.h
+Base/*/*.hxx
+Base/*/*.cxx
+SlicerModules/*/*.h
+SlicerModules/*/*.hxx
+SlicerModules/*/*.cxx

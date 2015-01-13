@@ -92,7 +92,7 @@ public:
   void         SetObjectId( ObjectIdType objectId );
   void         AddObjectId( ObjectIdType objectId );
   ObjectIdType GetObjectId( unsigned int num = 0 ) const;
-  unsigned     int GetNumberOfObjectIds( void ) const;
+  unsigned int GetNumberOfObjectIds( void ) const;
 
   ValueType    GetObjectMean( ObjectIdType objectId ) const;
   void         SetObjectMean( ObjectIdType objectId, ValueType val );
@@ -104,10 +104,10 @@ public:
   MatrixType   GetGlobalCovariance( void ) const;
   void         SetGlobalCovariance( MatrixType val );
 
-  void         SetNumberOfPCABasisToUseAsFeatures( 
+  void         SetNumberOfPCABasisToUseAsFeatures(
                  unsigned int numBasisUsed );
   unsigned int GetNumberOfPCABasisToUseAsFeatures( void ) const;
-  void         SetNumberOfLDABasisToUseAsFeatures( 
+  void         SetNumberOfLDABasisToUseAsFeatures(
                  unsigned int numBasisUsed );
   unsigned int GetNumberOfLDABasisToUseAsFeatures( void ) const;
 
@@ -122,7 +122,7 @@ public:
   void         SetBasisMatrix( const MatrixType & mat );
   void         SetBasisValues( const VectorType & values );
 
-  typename FeatureImageType::Pointer GetFeatureImage( 
+  typename FeatureImageType::Pointer GetFeatureImage(
                                        unsigned int fNum ) const;
 
   virtual void GenerateBasis( void );
@@ -159,8 +159,8 @@ private:
   VectorType                      m_GlobalMean;
   MatrixType                      m_GlobalCovariance;
 
-  int                             m_NumberOfPCABasisToUseAsFeatures;
-  int                             m_NumberOfLDABasisToUseAsFeatures;
+  unsigned int                    m_NumberOfPCABasisToUseAsFeatures;
+  unsigned int                    m_NumberOfLDABasisToUseAsFeatures;
 
   MatrixType                      m_BasisMatrix;
   VectorType                      m_BasisValues;
