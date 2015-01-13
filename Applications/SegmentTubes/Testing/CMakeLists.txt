@@ -70,3 +70,31 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare
                -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test2-Compare
               APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
+
+# Test 3
+# Test duplicate extraction - using prior extraction mask
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3
+            COMMAND ${PROJ_EXE}
+               -b 0
+               --seedP 32.0,50.0,32
+               -e ${TEMP}/${MODULE_NAME}Test2.mha
+               -o ${TEMP}/${MODULE_NAME}Test3.mha
+               MIDAS{Branch.n010.mha.md5}
+               ${TEMP}/${MODULE_NAME}Test3.tre )
+set_tests_properties( ${MODULE_NAME}-Test3 PROPERTIES WILL_FAIL true )
+set_property( TEST ${MODULE_NAME}-Test3
+              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
+
+# Test 4
+# Test duplicate extraction - using prior extraction tubes
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4
+            COMMAND ${PROJ_EXE}
+               -b 0
+               --seedP 32.0,50.0,32
+               -v ${TEMP}/${MODULE_NAME}Test2.tre
+               -o ${TEMP}/${MODULE_NAME}Test4.mha
+               MIDAS{Branch.n010.mha.md5}
+               ${TEMP}/${MODULE_NAME}Test4.tre )
+set_tests_properties( ${MODULE_NAME}-Test4 PROPERTIES WILL_FAIL true )
+set_property( TEST ${MODULE_NAME}-Test4
+              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )

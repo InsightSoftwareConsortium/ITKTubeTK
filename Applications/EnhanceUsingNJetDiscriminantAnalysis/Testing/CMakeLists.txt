@@ -66,7 +66,7 @@ set_property( TEST ${MODULE_NAME}-Test1-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
   COMMAND ${PROJ_EXE}
     --useNumberOfLDABasis 1
-    --useNumberOfPCABasis 0
+    --useNumberOfPCABasis 1
     --objectId 0,255
     --zeroScales 1
     --firstScales 3

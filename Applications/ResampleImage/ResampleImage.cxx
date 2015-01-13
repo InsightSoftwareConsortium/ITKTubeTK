@@ -24,6 +24,7 @@ limitations under the License.
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 
+#include <itkWindowedSincInterpolateImageFunction.h>
 #include <itkBSplineInterpolateImageFunction.h>
 #include <itkCompensatedSummation.h>
 #include <itkImageFileReader.h>
@@ -158,6 +159,22 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
+  if( makeHighResIso )
+    {
+    double iso = outSpacing[0];
+    for( unsigned int i=1; i<DimensionI; i++ )
+      {
+      if( outSpacing[i] < iso )
+        {
+        iso = outSpacing[i];
+        }
+      }
+    for( unsigned int i=0; i<DimensionI; i++ )
+      {
+      outSpacing[i] = iso;
+      }
+    }
+
   for( unsigned int i=0; i<DimensionI; i++ )
     {
     if( outSpacing[i]<=0 )
@@ -194,7 +211,13 @@ int DoIt( int argc, char * argv[] )
   typedef typename itk::InterpolateImageFunction< InputImageType,
           double >                      InterpType;
   typename InterpType::Pointer interp;
-  if( interpolator == "BSpline" )
+  if( interpolator == "Sinc" )
+    {
+    typedef typename itk::WindowedSincInterpolateImageFunction<
+      InputImageType, 3 >          MyInterpType;
+    interp = MyInterpType::New();
+    }
+  else if( interpolator == "BSpline" )
     {
     typedef typename itk::BSplineInterpolateImageFunction< InputImageType,
             double >                    MyInterpType;

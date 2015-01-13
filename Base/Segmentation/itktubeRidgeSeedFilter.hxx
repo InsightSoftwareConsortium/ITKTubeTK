@@ -43,8 +43,8 @@ namespace itk
 namespace tube
 {
 
-template< class TImage, class TLabelMap >
-RidgeSeedFilter< TImage, TLabelMap >
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::RidgeSeedFilter( void )
 {
   m_SeedFeatureGenerator = SeedFeatureGeneratorType::New();
@@ -53,7 +53,8 @@ RidgeSeedFilter< TImage, TLabelMap >
     m_RidgeFeatureGenerator );
 
   m_SeedFeatureGenerator->SetNumberOfLDABasisToUseAsFeatures( 1 );
-  m_SeedFeatureGenerator->SetNumberOfPCABasisToUseAsFeatures( 3 );
+  m_SeedFeatureGenerator->SetNumberOfPCABasisToUseAsFeatures(
+    TNumberOfFeatures-1 );
 
   m_PDFSegmenter = PDFSegmenterType::New();
   m_PDFSegmenter->SetReclassifyObjectLabels( true );
@@ -80,236 +81,245 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_TrainClassifier = true;
 }
 
-template< class TImage, class TLabelMap >
-RidgeSeedFilter< TImage, TLabelMap >
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::~RidgeSeedFilter( void )
 {
 }
 
-template< class TImage, class TLabelMap >
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 void
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::SetInput( typename ImageType::Pointer img )
 {
   m_SeedFeatureGenerator->SetInput( img );
   m_RidgeFeatureGenerator->SetInput( img );
 }
 
-template < class TImage, class TLabelMap >
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 void
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::AddInput( typename ImageType::Pointer img )
 {
   m_SeedFeatureGenerator->AddInput( img );
   m_RidgeFeatureGenerator->AddInput( img );
 }
 
-template< class TImage, class TLabelMap >
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 void
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::SetLabelMap( typename LabelMapType::Pointer img )
 {
   m_SeedFeatureGenerator->SetLabelMap( img );
   m_PDFSegmenter->SetLabelMap( img );
 }
 
-template< class TImage, class TLabelMap >
-typename RidgeSeedFilter< TImage, TLabelMap >::SeedFeatureGeneratorType::
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+typename RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures
+  >::SeedFeatureGeneratorType::
 Pointer
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::GetSeedFeatureGenerator( void )
 {
   return m_SeedFeatureGenerator;
 }
 
-template< class TImage, class TLabelMap >
-typename RidgeSeedFilter< TImage, TLabelMap >::RidgeFeatureGeneratorType::
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+typename RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures
+  >::RidgeFeatureGeneratorType::
 Pointer
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::GetRidgeFeatureGenerator( void )
 {
   return m_RidgeFeatureGenerator;
 }
 
-template< class TImage, class TLabelMap >
-typename RidgeSeedFilter< TImage, TLabelMap >::PDFSegmenterType::Pointer
-RidgeSeedFilter< TImage, TLabelMap >
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+typename RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures
+  >::PDFSegmenterType::Pointer
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::GetPDFSegmenter( void )
 {
   return m_PDFSegmenter;
 }
 
-template< class TImage, class TLabelMap >
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 void
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::SetScales( const RidgeScalesType & scales )
 {
   m_RidgeFeatureGenerator->SetScales( scales );
 }
 
-template< class TImage, class TLabelMap >
-typename RidgeSeedFilter< TImage, TLabelMap >::RidgeScalesType
-RidgeSeedFilter< TImage, TLabelMap >
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+typename RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures
+  >::RidgeScalesType
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::GetScales( void ) const
 {
   return m_RidgeFeatureGenerator->GetScales();
 }
 
-template< class TImage, class TLabelMap >
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 void
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::SetNumberOfPCABasisToUseAsFeatures( unsigned int num )
 {
   m_SeedFeatureGenerator->SetNumberOfPCABasisToUseAsFeatures( num );
 }
 
-template< class TImage, class TLabelMap >
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 unsigned int
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::GetNumberOfPCABasisToUseAsFeatures( void ) const
 {
   return m_SeedFeatureGenerator->GetNumberOfPCABasisToUseAsFeatures();
 }
 
-template< class TImage, class TLabelMap >
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 void
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::SetNumberOfLDABasisToUseAsFeatures( unsigned int num )
 {
   m_SeedFeatureGenerator->SetNumberOfLDABasisToUseAsFeatures( num );
 }
 
-template< class TImage, class TLabelMap >
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 unsigned int
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::GetNumberOfLDABasisToUseAsFeatures( void ) const
 {
   return m_SeedFeatureGenerator->GetNumberOfLDABasisToUseAsFeatures();
 }
 
-template< class TImage, class TLabelMap >
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 void
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::SetWhitenMeans( const WhitenMeansType & means )
 {
   m_RidgeFeatureGenerator->SetWhitenMeans( means );
 }
 
-template < class TImage, class TLabelMap >
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 void
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::SetWhitenStdDevs( const WhitenStdDevsType & stdDevs )
 {
   m_RidgeFeatureGenerator->SetWhitenStdDevs( stdDevs );
 }
 
-template < class TImage, class TLabelMap >
-const typename RidgeSeedFilter< TImage, TLabelMap >::WhitenMeansType &
-RidgeSeedFilter< TImage, TLabelMap >
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+const typename RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures
+  >::WhitenMeansType &
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::GetWhitenMeans( void ) const
 {
   return m_RidgeFeatureGenerator->GetWhitenMeans();
 }
 
-template < class TImage, class TLabelMap >
-const typename RidgeSeedFilter< TImage, TLabelMap >::WhitenStdDevsType &
-RidgeSeedFilter< TImage, TLabelMap >
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+const typename RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures
+  >::WhitenStdDevsType &
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::GetWhitenStdDevs( void ) const
 {
   return m_RidgeFeatureGenerator->GetWhitenStdDevs();
 }
 
-template < class TImage, class TLabelMap >
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 unsigned int
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::GetNumberOfBasis( void ) const
 {
   return m_SeedFeatureGenerator->GetNumberOfFeatures();
 }
 
-template < class TImage, class TLabelMap >
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 double
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::GetBasisValue( unsigned int num ) const
 {
   return m_SeedFeatureGenerator->GetBasisValue( num );
 }
 
-template < class TImage, class TLabelMap >
-typename RidgeSeedFilter< TImage, TLabelMap >::VectorType
-RidgeSeedFilter< TImage, TLabelMap >
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+typename RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >::VectorType
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::GetBasisVector( unsigned int num ) const
 {
   return m_SeedFeatureGenerator->GetBasisVector( num );
 }
 
-template < class TImage, class TLabelMap >
-typename RidgeSeedFilter< TImage, TLabelMap >::MatrixType
-RidgeSeedFilter< TImage, TLabelMap >
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+typename RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >::MatrixType
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::GetBasisMatrix( void ) const
 {
   return m_SeedFeatureGenerator->GetBasisMatrix();
 }
 
-template < class TImage, class TLabelMap >
-typename RidgeSeedFilter< TImage, TLabelMap >::VectorType
-RidgeSeedFilter< TImage, TLabelMap >
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+typename RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >::VectorType
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::GetBasisValues( void ) const
 {
   return m_SeedFeatureGenerator->GetBasisValues();
 }
 
-template < class TImage, class TLabelMap >
-typename RidgeSeedFilter< TImage, TLabelMap >::BasisImageType::Pointer
-RidgeSeedFilter< TImage, TLabelMap >
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+typename RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures
+  >::BasisImageType::Pointer
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::GetBasisImage( unsigned int num ) const
 {
   return m_SeedFeatureGenerator->GetFeatureImage( num );
 }
 
-template < class TImage, class TLabelMap >
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 void
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::SetBasisValue( unsigned int num, double value )
 {
   return m_SeedFeatureGenerator->SetBasisValue( num, value );
 }
 
-template < class TImage, class TLabelMap >
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 void
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::SetBasisVector( unsigned int num, const VectorType & vector )
 {
   return m_SeedFeatureGenerator->SetBasisVector( num, vector );
 }
 
-template < class TImage, class TLabelMap >
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 void
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::SetBasisMatrix( const MatrixType & matrix )
 {
   return m_SeedFeatureGenerator->SetBasisMatrix( matrix );
 }
 
-template < class TImage, class TLabelMap >
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 void
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::SetBasisValues( const VectorType & values )
 {
   return m_SeedFeatureGenerator->SetBasisValues( values );
 }
 
-template < class TImage, class TLabelMap >
-typename RidgeSeedFilter< TImage, TLabelMap >::ProbabilityImageType::Pointer
-RidgeSeedFilter< TImage, TLabelMap >
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+typename RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures
+  >::ProbabilityImageType::Pointer
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::GetClassProbabilityForInput( unsigned int objectNum ) const
 {
   return m_PDFSegmenter->GetClassProbabilityForInput( objectNum );
 }
 
-template < class TImage, class TLabelMap >
-typename RidgeSeedFilter< TImage, TLabelMap >::ProbabilityImageType::Pointer
-RidgeSeedFilter< TImage, TLabelMap >
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+typename RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures
+  >::ProbabilityImageType::Pointer
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::GetClassProbabilityDifferenceForInput( unsigned int objectNum ) const
 {
   typename ProbabilityImageType::Pointer classImage = m_PDFSegmenter->
@@ -365,9 +375,9 @@ RidgeSeedFilter< TImage, TLabelMap >
 }
 
 
-template< class TImage, class TLabelMap >
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 void
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::Update( void )
 {
   m_RidgeFeatureGenerator->SetUseIntensityOnly( m_UseIntensityOnly );
@@ -380,6 +390,9 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_PDFSegmenter->SetVoidId( m_UnknownId );
 
   m_PDFSegmenter->SetObjectPDFWeight( 0, m_SeedTolerance );
+
+  std::cout << "NumFeatures = "
+    << m_SeedFeatureGenerator->GetNumberOfFeatures() << std::endl;
 
   if( m_TrainClassifier )
     {
@@ -398,9 +411,9 @@ RidgeSeedFilter< TImage, TLabelMap >
     }
 }
 
-template< class TImage, class TLabelMap >
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 void
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::ClassifyImages( void )
 {
   typename LabelMapType::Pointer tmpLabelMap =
@@ -449,17 +462,19 @@ RidgeSeedFilter< TImage, TLabelMap >
     }
 }
 
-template< class TImage, class TLabelMap >
-typename RidgeSeedFilter< TImage, TLabelMap >::LabelMapType::Pointer
-RidgeSeedFilter< TImage, TLabelMap >
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+typename RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures
+  >::LabelMapType::Pointer
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::GetOutput( void )
 {
   return m_LabelMap;
 }
 
-template< class TImage, class TLabelMap >
-typename RidgeSeedFilter< TImage, TLabelMap >::OutputImageType::Pointer
-RidgeSeedFilter< TImage, TLabelMap >
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+typename RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures
+  >::OutputImageType::Pointer
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::GetOutputSeedScales( void )
 {
   int num = m_SeedFeatureGenerator->GetInputFeatureVectorGenerator()->
@@ -477,9 +492,9 @@ RidgeSeedFilter< TImage, TLabelMap >
 }
 
 
-template< class TImage, class TLabelMap >
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 void
-RidgeSeedFilter< TImage, TLabelMap >
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );

@@ -38,21 +38,22 @@ else( )
 endif()
 
 set( PYTHON_TESTING_MODULES
-  numpy )
+  numpy sh )
 
-if( TubeTK_USE_NOTEBOOKS )
+if( TubeTK_USE_IPYTHON_NOTEBOOKS )
   list( APPEND PYTHON_TESTING_MODULES
     tornado
     pyzmq
     ipython[zmq]
     jinja2
     matplotlib )
-endif( TubeTK_USE_NOTEBOOKS )
+endif( TubeTK_USE_IPYTHON_NOTEBOOKS )
 
 if( TubeTK_USE_PYQTGRAPH )
   # Note: PyQt4 or PySide are required as is python-opengl, but these are not
   # pip installable.
   list( APPEND PYTHON_TESTING_MODULES
+    pyside
     pyqtgraph
     scipy
     tables )
