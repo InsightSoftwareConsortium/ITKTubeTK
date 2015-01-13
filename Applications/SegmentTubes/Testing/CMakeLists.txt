@@ -81,17 +81,9 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3
                -o ${TEMP}/${MODULE_NAME}Test3.mha
                MIDAS{Branch.n010.mha.md5}
                ${TEMP}/${MODULE_NAME}Test3.tre )
+set_tests_properties( ${MODULE_NAME}-Test3 PROPERTIES WILL_FAIL true )
 set_property( TEST ${MODULE_NAME}-Test3
               APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
-
-# Test3-Compare
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
-               -r 1
-               -t ${TEMP}/${MODULE_NAME}Test3.mha
-               -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
-set_property( TEST ${MODULE_NAME}-Test3-Compare
-              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test3 )
 
 # Test 4
 # Test duplicate extraction - using prior extraction tubes
@@ -103,15 +95,6 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4
                -o ${TEMP}/${MODULE_NAME}Test4.mha
                MIDAS{Branch.n010.mha.md5}
                ${TEMP}/${MODULE_NAME}Test4.tre )
+set_tests_properties( ${MODULE_NAME}-Test4 PROPERTIES WILL_FAIL true )
 set_property( TEST ${MODULE_NAME}-Test4
               APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
-
-# Test4-Compare
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
-               -r 1
-               -t ${TEMP}/${MODULE_NAME}Test4.mha
-               -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
-set_property( TEST ${MODULE_NAME}-Test3-Compare
-              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test3 )
-
