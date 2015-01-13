@@ -528,8 +528,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 
   timeCollector.Start( "GenerateBasis" );
 
-  int numberOfBasisToUseAsFeatures = this->GetNumberOfFeatures();
-  if( numInputFeatures < numberOfBasisToUseAsFeatures )
+  if( numInputFeatures < this->GetNumberOfFeatures() )
     {
     std::cerr << "ERROR: Number of input features < number of basis."
       << std::endl;
