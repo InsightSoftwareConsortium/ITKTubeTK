@@ -14,3 +14,4 @@ itktubeSpatialObjectToSpatialObjectFilter.hxx Header Disable
 TextCompareCommand.cxx Header Disable
 tubeOptionList.cxx Header Disable
 tubeOptionList.h Header Disable
+itktubeRidgeSeedFilter.h Indent Disable
