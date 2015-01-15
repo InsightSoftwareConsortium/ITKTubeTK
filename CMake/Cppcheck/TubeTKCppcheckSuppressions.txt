@@ -1,5 +1,5 @@
 unusedFunction:*/Applications/DeblendTomosynthesisSlicesUsingPrior/DeblendTomosynthesisSlicesUsingPrior.cxx:113
-unusedFunction:*/Applications/ImageEditor/QtOverlayControlsWidget.cxx:97
+unusedFunction:*/Applications/ImageEditor/QtOverlayControlsWidget.cxx:98
 unusedFunction:*/Base/CLI/Testing/tubeBaseCLITests.cxx:27
 unusedFunction:*/Base/ObjectDocuments/tubeMetaObjectDocument.cxx
 unusedFunction:*/Base/ObjectDocuments/tubeOptionList.cxx
