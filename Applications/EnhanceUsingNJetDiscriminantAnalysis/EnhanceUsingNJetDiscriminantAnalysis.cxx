@@ -152,9 +152,9 @@ int DoIt( int argc, char * argv[] )
     fvGenerator->SetFirstScales( basisReader.GetFirstScales() );
     fvGenerator->SetSecondScales( basisReader.GetSecondScales() );
     fvGenerator->SetRidgeScales( basisReader.GetRidgeScales() );
-    basisGenerator->SetNumberOfPCABasisToUseAsFeatures( 
+    basisGenerator->SetNumberOfPCABasisToUseAsFeatures(
       basisReader.GetNumberOfPCABasisToUseAsFeatures() );
-    basisGenerator->SetNumberOfLDABasisToUseAsFeatures( 
+    basisGenerator->SetNumberOfLDABasisToUseAsFeatures(
       basisReader.GetNumberOfLDABasisToUseAsFeatures() );
     basisGenerator->SetWhitenMeans( basisReader.GetWhitenMeans() );
     basisGenerator->SetWhitenStdDevs( basisReader.GetWhitenStdDevs() );
@@ -174,12 +174,12 @@ int DoIt( int argc, char * argv[] )
     basisGenerator->SetNumberOfPCABasisToUseAsFeatures( useNumberOfPCABasis );
     if( useNumberOfLDABasis == -1 )
       {
-      basisGenerator->SetNumberOfLDABasisToUseAsFeatures( 
+      basisGenerator->SetNumberOfLDABasisToUseAsFeatures(
         objectIdList.size() - 1 );
       }
     else
       {
-      basisGenerator->SetNumberOfLDABasisToUseAsFeatures( 
+      basisGenerator->SetNumberOfLDABasisToUseAsFeatures(
         useNumberOfLDABasis );
       }
     basisGenerator->SetWhitenMeans( whitenMeans );
@@ -194,7 +194,7 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start( "SaveBasisImages" );
 
-    int numBasis = basisGenerator->GetNumberOfFeatures();
+    unsigned int numBasis = basisGenerator->GetNumberOfFeatures();
     for( unsigned int i = 0; i < numBasis; i++ )
       {
       typename BasisImageWriterType::Pointer basisImageWriter =
