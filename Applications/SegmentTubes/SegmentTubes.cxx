@@ -110,7 +110,7 @@ int DoIt( int argc, char * argv[] )
 
   if( scale / scaleNorm < 0.3 )
     {
-    tube::ErrorMessage( 
+    tube::ErrorMessage(
       "Error: Scale < 0.3 * voxel spacing is unsupported." );
     return EXIT_FAILURE;
     }
@@ -219,7 +219,7 @@ int DoIt( int argc, char * argv[] )
         }
       typename ScaleImageType::Pointer scaleImage = scaleReader->GetOutput();
 
-      itk::ImageRegionConstIteratorWithIndex< MaskImageType > iter( 
+      itk::ImageRegionConstIteratorWithIndex< MaskImageType > iter(
         seedMaskImage, seedMaskImage->GetLargestPossibleRegion() );
       itk::ImageRegionConstIterator< ScaleImageType > iterS( scaleImage,
         scaleImage->GetLargestPossibleRegion() );
@@ -242,7 +242,7 @@ int DoIt( int argc, char * argv[] )
     else
       {
       int count = 0;
-      itk::ImageRegionConstIteratorWithIndex< MaskImageType > iter( 
+      itk::ImageRegionConstIteratorWithIndex< MaskImageType > iter(
         seedMaskImage, seedMaskImage->GetLargestPossibleRegion() );
       while( !iter.IsAtEnd() )
         {
@@ -284,12 +284,12 @@ int DoIt( int argc, char * argv[] )
     typedef typename TubeType::ChildrenListType  ChildrenListType;
     typedef typename ChildrenListType::iterator  ChildrenIteratorType;
 
-    typename TubesReaderType::Pointer reader = TubesReaderType::New();
-    
+    typename TubesReaderType::Pointer tubeReader = TubesReaderType::New();
+
     try
       {
-      reader->SetFileName( existingVessels.c_str() );
-      reader->Update();
+      tubeReader->SetFileName( existingVessels.c_str() );
+      tubeReader->Update();
       }
     catch( ... )
       {
@@ -297,13 +297,13 @@ int DoIt( int argc, char * argv[] )
       }
 
     char tubeName[] = "Tube";
-    ChildrenListType* tubeList = reader->GetGroup()->GetChildren( 999999,
+    ChildrenListType* tubeList = tubeReader->GetGroup()->GetChildren( 999999,
       tubeName );
 
     ChildrenIteratorType tubeIterator = tubeList->begin();
     while( tubeIterator != tubeList->end() )
       {
-      tubeOp->AddTube( static_cast< TubeType * >( 
+      tubeOp->AddTube( static_cast< TubeType * >(
           tubeIterator->GetPointer() ) );
       ++tubeIterator;
       }
@@ -355,7 +355,7 @@ int DoIt( int argc, char * argv[] )
     if( !xTube.IsNull() )
       {
       tubeOp->AddTube( xTube );
-      std::cout << "  Extracted " << xTube->GetPoints().size() << " points." 
+      std::cout << "  Extracted " << xTube->GetPoints().size() << " points."
         << std::endl;
       foundOneTube = true;
       }
@@ -390,11 +390,11 @@ int DoIt( int argc, char * argv[] )
     offsetVector[i] = origin[i];
     }
 
-  tubeOp->GetTubeGroup()->GetObjectToParentTransform()->SetScale( 
+  tubeOp->GetTubeGroup()->GetObjectToParentTransform()->SetScale(
     scaleVector );
-  tubeOp->GetTubeGroup()->GetObjectToParentTransform()->SetOffset( 
+  tubeOp->GetTubeGroup()->GetObjectToParentTransform()->SetOffset(
     offsetVector );
-  tubeOp->GetTubeGroup()->GetObjectToParentTransform()->SetMatrix( 
+  tubeOp->GetTubeGroup()->GetObjectToParentTransform()->SetMatrix(
     inputImage->GetDirection() );
   tubeOp->GetTubeGroup()->ComputeObjectToWorldTransform();
 

@@ -50,7 +50,8 @@ protected:
 };
 
 
-QtOverlayControlsWidgetPrivate::QtOverlayControlsWidgetPrivate(QtOverlayControlsWidget& obj)
+QtOverlayControlsWidgetPrivate::QtOverlayControlsWidgetPrivate(
+  QtOverlayControlsWidget& obj)
   : m_SliceView(0),
     q_ptr(&obj)
 {
@@ -121,7 +122,6 @@ void QtOverlayControlsWidget::setSliceView(QtGlSliceView* sliceView)
 
 bool QtOverlayControlsWidget::loadOverlay(QString pathOverlay)
 {
-  Q_D(QtOverlayControlsWidget);
   OverlayReaderType::Pointer overlayReader = OverlayReaderType::New();
 
   if(pathOverlay.isEmpty())
