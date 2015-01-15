@@ -533,9 +533,9 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
     std::cerr << "ERROR: Number of input features < number of basis."
       << std::endl;
     std::cerr << "   Reducing number of PCA basis." << std::endl;
-    m_NumberOfPCABasisToUseAsFeatures = numInputFeatures
+    int tmpNumFeatures = static_cast<int>( numInputFeatures )
       - m_NumberOfLDABasisToUseAsFeatures;
-    if( m_NumberOfPCABasisToUseAsFeatures < 0 )
+    if( tmpNumFeatures < 0 )
       {
       m_NumberOfPCABasisToUseAsFeatures = 0;
       if( m_NumberOfLDABasisToUseAsFeatures > numInputFeatures )
@@ -547,6 +547,10 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
           m_NumberOfLDABasisToUseAsFeatures = 1;
           }
         }
+      }
+    else
+      {
+      m_NumberOfPCABasisToUseAsFeatures = tmpNumFeatures;
       }
     }
 
