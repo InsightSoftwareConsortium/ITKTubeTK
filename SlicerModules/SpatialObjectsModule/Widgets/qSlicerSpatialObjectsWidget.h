@@ -70,9 +70,6 @@ public slots:
   void setSpatialObjectsNode(vtkMRMLNode *node);
   void setSpatialObjectsNode(vtkMRMLSpatialObjectsNode *node);
 
-  void setSpatialObjectsDisplayNode(vtkMRMLNode *node);
-  void setSpatialObjectsDisplayNode(vtkMRMLSpatialObjectsDisplayNode *node);
-
   void setVisibility(bool);
   void setColorByScalar();
   void onColorByScalarChanged(int);
@@ -98,6 +95,9 @@ protected slots:
   void updateWidgetFromMRML();
 
 protected:
+  void setSpatialObjectsDisplayNode(vtkMRMLNode *node);
+  void setSpatialObjectsDisplayNode(vtkMRMLSpatialObjectsDisplayNode *node);
+
   QScopedPointer<qSlicerSpatialObjectsWidgetPrivate> d_ptr;
 
 private:

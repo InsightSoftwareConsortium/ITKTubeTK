@@ -29,6 +29,7 @@ limitations under the License.
 #include "qSlicerSpatialObjectsGlyphWidget.h"
 
 // MRML includes
+#include <vtkMRMLSpatialObjectsNode.h>
 #include <vtkMRMLSpatialObjectsGlyphDisplayNode.h>
 #include <vtkMRMLSpatialObjectsDisplayPropertiesNode.h>
 #include <vtkMRMLScene.h>
@@ -43,19 +44,27 @@ int qSlicerSpatialObjectsGlyphWidgetTest1( int argc, char * argv[] )
 
   vtkNew<vtkMRMLScene> scene;
 
+  vtkNew<vtkMRMLSpatialObjectsNode> so;
+  scene->AddNode(so.GetPointer());
   vtkNew<vtkMRMLSpatialObjectsGlyphDisplayNode> soDisplay;
   scene->AddNode(soDisplay.GetPointer());
   vtkNew<vtkMRMLSpatialObjectsDisplayPropertiesNode> soDisplayProperties;
   scene->AddNode(soDisplayProperties.GetPointer());
 
   qSlicerSpatialObjectsGlyphWidget widget;
-  widget.setSpatialObjectsDisplayNode(static_cast<vtkMRMLNode*>(0));
-  widget.setSpatialObjectsDisplayNode(soDisplay.GetPointer());
+  widget.setSpatialObjectsDisplayNode(so->GetDisplayNode());
+
+  so->SetAndObserveDisplayNodeID(soDisplay->GetID());
+
+  vtkMRMLNode* nullNode = NULL;
+  widget.setSpatialObjectsDisplayNode(nullNode);
+  widget.setSpatialObjectsDisplayNode(so->GetDisplayNode());
 
   soDisplay->SetAndObserveSpatialObjectsDisplayPropertiesNodeID(
       soDisplayProperties->GetID());
 
-  widget.setSpatialObjectsDisplayNode(soDisplay.GetPointer());
+  widget.setSpatialObjectsDisplayNode(nullNode);
+  widget.setSpatialObjectsDisplayNode(so->GetDisplayNode());
   widget.show();
 
   if(argc < 2 || QString(argv[1]) != "-I")

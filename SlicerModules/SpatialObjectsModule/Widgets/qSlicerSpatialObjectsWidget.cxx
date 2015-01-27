@@ -196,6 +196,9 @@ setSpatialObjectsNode(vtkMRMLSpatialObjectsNode* SpatialObjectsNode)
   vtkMRMLSpatialObjectsNode *oldNode = this->SpatialObjectsNode();
   d->SpatialObjectsNode = SpatialObjectsNode;
 
+  this->setSpatialObjectsDisplayNode(
+    d->SpatialObjectsNode ? d->SpatialObjectsNode->GetDisplayNode() : NULL);
+
   qvtkReconnect(oldNode, this->SpatialObjectsNode(),
                 vtkCommand::ModifiedEvent, this,
                 SLOT(updateWidgetFromMRML()));

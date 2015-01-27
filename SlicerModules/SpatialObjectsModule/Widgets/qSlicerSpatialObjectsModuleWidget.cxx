@@ -119,16 +119,6 @@ setSpatialObjectsNode(vtkMRMLSpatialObjectsNode* spatialObjectsNode)
   d->TubeDisplayWidget->setSpatialObjectsNode(spatialObjectsNode);
   d->GlyphDisplayWidget->setSpatialObjectsNode(spatialObjectsNode);
 
-  if(spatialObjectsNode)
-    {
-    d->LineDisplayWidget->
-      setSpatialObjectsDisplayNode(spatialObjectsNode->GetLineDisplayNode());
-    d->TubeDisplayWidget->
-      setSpatialObjectsDisplayNode(spatialObjectsNode->GetTubeDisplayNode());
-    d->GlyphDisplayWidget->
-      setSpatialObjectsDisplayNode(spatialObjectsNode->GetGlyphDisplayNode());
-    }
-
   emit currentNodeChanged(d->spatialObjectsNode);
 }
 
