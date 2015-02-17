@@ -26,6 +26,8 @@ limitations under the License.
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
+#include <itkImageRegionConstIterator.h>
+
 #include "CropImageCLP.h"
 
 template< class TPixel, unsigned int VDimension >
@@ -72,7 +74,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( 0.1 );
 
   if( size.size() > 0 || max.size() > 0 || min.size() > 0 ||
-    matchVolume.size() > 0)
+    matchVolume.size() > 0 || matchMask.size() > 0 )
     {
     if( size.size() > 0 && max.size() > 0 )
       {
@@ -100,8 +102,7 @@ int DoIt( int argc, char * argv[] )
       typename ReaderType::Pointer matchReader = ReaderType::New();
       matchReader->SetFileName( matchVolume.c_str() );
       matchReader->UpdateOutputInformation();
-      typename ImageType::ConstPointer match =
-        matchReader->GetOutput();
+      typename ImageType::ConstPointer match = matchReader->GetOutput();
 
       const typename ImageType::RegionType matchRegion =
         match->GetLargestPossibleRegion();
@@ -126,17 +127,95 @@ int DoIt( int argc, char * argv[] )
       typename ImageType::IndexType minI;
       typename ImageType::SizeType sizeI;
 
-      for( unsigned int i = 0; i < VDimension; i++ )
+      if( imgOrigin != matchOrigin || imgSpacing != matchSpacing )
         {
-        minI[i] = vnl_math_rnd( ( ( matchOrigin[i]
-          + matchIndex[i] * matchSpacing[i] ) - ( imgOrigin[i]
-          + imgIndex[i] * imgSpacing[i] ) )
-          / imgSpacing[i] );
-        sizeI[i] = vnl_math_rnd( ( matchSize[i] * matchSpacing[i] )
-          / imgSpacing[i] );
+        for( unsigned int i = 0; i < VDimension; i++ )
+          {
+          minI[i] = vnl_math_rnd( ( ( matchOrigin[i]
+            + matchIndex[i] * matchSpacing[i] ) - ( imgOrigin[i]
+            + imgIndex[i] * imgSpacing[i] ) )
+            / imgSpacing[i] );
+          sizeI[i] = vnl_math_rnd( ( matchSize[i] * matchSpacing[i] )
+            / imgSpacing[i] );
+          }
+        }
+      else
+        {
+        for( unsigned int i = 0; i < VDimension; i++ )
+          {
+          minI[i] = matchIndex[i];
+          sizeI[i] = matchSize[i];
+          }
         }
       cropFilter.SetMin( minI );
       cropFilter.SetSize( sizeI );
+      }
+
+    if( matchMask.size() > 0 )
+      {
+      timeCollector.Start( "Mask Bounding Box" );
+
+      typename ReaderType::Pointer maskReader = ReaderType::New();
+      maskReader->SetFileName( matchMask.c_str() );
+      maskReader->Update();
+      typename ImageType::Pointer maskImage = maskReader->GetOutput();
+
+      typename ImageType::IndexType minI;
+      typename ImageType::IndexType maxI;
+
+      itk::ImageRegionConstIterator< ImageType > it( maskImage,
+        maskImage->GetLargestPossibleRegion() );
+      while( !it.IsAtEnd() && it.Get() == 0 )
+        {
+        ++it;
+        }
+      minI = it.GetIndex();
+      while( !it.IsAtEnd() && it.Get() != 0 )
+        {
+        ++it;
+        }
+      maxI = it.GetIndex();
+      while( !it.IsAtEnd() )
+        {
+        while( !it.IsAtEnd() && it.Get() == 0 )
+          {
+          ++it;
+          }
+        if( !it.IsAtEnd() )
+          {
+          for( unsigned int i=0; i<VDimension; ++i )
+            {
+            if( it.GetIndex()[i] < minI[i] )
+              {
+              minI[i] = it.GetIndex()[i];
+              }
+            }
+          }
+        while( !it.IsAtEnd() && it.Get() != 0 )
+          {
+          ++it;
+          }
+        if( !it.IsAtEnd() )
+          {
+          for( unsigned int i=0; i<VDimension; ++i )
+            {
+            if( it.GetIndex()[i] > maxI[i] )
+              {
+              maxI[i] = it.GetIndex()[i];
+              }
+            }
+          }
+        }
+
+      typename ImageType::SizeType sizeI;
+      for( unsigned int i=0; i<VDimension; ++i )
+        {
+        sizeI[i] = maxI[i] - minI[i];
+        }
+
+      cropFilter.SetMin( minI );
+      cropFilter.SetSize( sizeI );
+      timeCollector.Stop( "Mask Bounding Box" );
       }
 
     if( min.size() > 0 )
