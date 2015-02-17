@@ -36,6 +36,14 @@
       <longflag>matchVolume</longflag>
       <flag>v</flag>
     </image>
+    <image>
+      <name>matchMask</name>
+      <label>Match crop to mask.</label>
+      <channel>input</channel>
+      <description>Match crop to the axis-aligned box that fits the mask</description>
+      <longflag>matchMask</longflag>
+      <flag>k</flag>
+    </image>
     <integer-vector>
       <name>min</name>
       <label>Minimum Coordinate</label>
