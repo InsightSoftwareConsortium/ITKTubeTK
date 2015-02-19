@@ -351,10 +351,14 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
       if ( SafeNormalize(t1t2Cross) > this->m_Epsilon
         && SafeNormalize(t2t3Cross) > this->m_Epsilon )
         {
-        // We need to make sure we don't artificially scale those vectors
-        // back to life. Otherwise we end up with a torsion angles where
-        // there should not be one
-        torsionAngle = SafeAcos( t1t2Cross * t2t3Cross );
+        double t1t2t2t3Dot = t1t2Cross * t2t3Cross;
+        // It is confusing to include points with torsional angles of 180°
+        // when analyzing a planar curve, so we set the angle to 0.
+        if(t1t2t2t3Dot < -1 + this->m_Epsilon)
+          {
+          t1t2t2t3Dot = 1;
+          }
+        torsionAngle = SafeAcos(t1t2t2t3Dot);
         }
 
       // Finally get the curvature
