@@ -67,8 +67,8 @@ public:
     SpatialObjectsDisplayPropertiesNode() const;
 
 public slots:
-  void setSpatialObjectsNode(vtkMRMLNode *node);
-  void setSpatialObjectsNode(vtkMRMLSpatialObjectsNode *node);
+  void setSpatialObjectsNode(vtkMRMLNode *node, int DisplayNodeIndex = 0);
+  void setSpatialObjectsNode(vtkMRMLSpatialObjectsNode* SpatialObjectsNode, int DisplayNodeIndex = 0);
 
   void setVisibility(bool);
   void setColorByScalar();
