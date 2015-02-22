@@ -27,7 +27,14 @@
       <name>outputPlainText</name>
       <label>Output Plain Text</label>
       <longflag>outputPlainText</longflag>
-      <description>If set, an ASCII file with quantile values is written instead of a file in JSON format.</description>
+      <description>Write an ASCII file instead of a JSON file.</description>
+      <default>false</default>
+    </boolean>
+    <boolean>
+      <name>outputCSV</name>
+      <label>Output CSV</label>
+      <longflag>outputCSV</longflag>
+      <description>Write a CSV file instead of a JSON file.</description>
       <default>false</default>
     </boolean>
     <file>
