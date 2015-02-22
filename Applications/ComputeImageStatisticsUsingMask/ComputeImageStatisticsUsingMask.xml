@@ -26,11 +26,21 @@
       <description>Input volume.</description>
     </image>
     <image>
-      <name>outputStatistics</name>
-      <label>Output Statistics Volume</label>
+      <name>outputMeanImage</name>
+      <label>Output Mean Image Volume</label>
       <channel>output</channel>
       <index>2</index>
-      <description>Output statistics volume.</description>
+      <description>Each mask component is represented by the mean image value for that component.</description>
     </image>
+  </parameters>
+  <parameters>
+    <file>
+      <name>csvStatisticsFile</name>
+      <label>CSV File of Statistics</label>
+      <longflag>csvStatisticsFile</longflag>
+      <description>Write component statistics to a CSV formatted file</description>
+      <default></default>
+    </file>
+
   </parameters>
 </executable>

@@ -135,8 +135,8 @@ void computeQuantiles( ImageType::Pointer image,
  *   }
  */
 void writeQuantilesToJSONFile( const std::vector<float>& quantiles,
-                           const std::vector<ImagePixelType>& quantileValues,
-                           const std::string &outFile )
+  const std::vector<ImagePixelType>& quantileValues,
+  const std::string &outFile )
 {
   tube::FmtInfoMessage( "Writing %d quantiles to %s",
         quantiles.size(), outFile.c_str());
@@ -173,13 +173,27 @@ void writeQuantilesToJSONFile( const std::vector<float>& quantiles,
  * quantile value per line.
  */
 void writeQuantilesToTextFile( const std::vector<float> &quantiles,
-                               const std::string &outFile )
+  const std::string &outFile )
 {
   std::ofstream quantileFile;
   quantileFile.open( outFile.c_str() );
   for( unsigned int i=0; i<quantiles.size(); ++i )
     {
     quantileFile << quantiles[i] << std::endl;
+    }
+  quantileFile.close();
+}
+
+void writeQuantilesToCSVFile( const std::vector<float> &quantiles,
+  const std::vector<ImagePixelType>& quantileValues,
+  const std::string &outFile )
+{
+  std::ofstream quantileFile;
+  quantileFile.open( outFile.c_str() );
+  quantileFile << "Qauntile, Value" << std::endl;
+  for( unsigned int i=0; i<quantiles.size(); ++i )
+    {
+    quantileFile << quantiles[i] << ", " << quantileValues[i] << std::endl;
     }
   quantileFile.close();
 }
@@ -210,7 +224,11 @@ int main( int argc, char * argv[] )
    try
     {
     computeQuantiles(im, quantiles, quantileValues);
-    if( outputPlainText )
+    if( outputCSV )
+      {
+      writeQuantilesToCSVFile( quantiles, quantileValues, outFile );
+      }
+    else if( outputPlainText )
       {
       writeQuantilesToTextFile( quantileValues, outFile );
       }
