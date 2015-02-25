@@ -182,14 +182,14 @@ SpatialObjectsDisplayPropertiesNode() const
 }
 
 //------------------------------------------------------------------------------
-void qSlicerSpatialObjectsWidget::setSpatialObjectsNode(vtkMRMLNode* node)
+void qSlicerSpatialObjectsWidget::setSpatialObjectsNode(vtkMRMLNode* node, int DisplayNodeIndex)
 {
-  this->setSpatialObjectsNode(vtkMRMLSpatialObjectsNode::SafeDownCast(node));
+  this->setSpatialObjectsNode(vtkMRMLSpatialObjectsNode::SafeDownCast(node), DisplayNodeIndex);
 }
 
 //------------------------------------------------------------------------------
 void qSlicerSpatialObjectsWidget::
-setSpatialObjectsNode(vtkMRMLSpatialObjectsNode* SpatialObjectsNode)
+setSpatialObjectsNode(vtkMRMLSpatialObjectsNode* SpatialObjectsNode, int DisplayNodeIndex)
 {
   Q_D(qSlicerSpatialObjectsWidget);
 
@@ -197,7 +197,7 @@ setSpatialObjectsNode(vtkMRMLSpatialObjectsNode* SpatialObjectsNode)
   d->SpatialObjectsNode = SpatialObjectsNode;
 
   this->setSpatialObjectsDisplayNode(
-    d->SpatialObjectsNode ? d->SpatialObjectsNode->GetDisplayNode() : NULL);
+    d->SpatialObjectsNode ? d->SpatialObjectsNode->GetNthDisplayNode(DisplayNodeIndex) : NULL);
 
   qvtkReconnect(oldNode, this->SpatialObjectsNode(),
                 vtkCommand::ModifiedEvent, this,
@@ -604,7 +604,7 @@ void qSlicerSpatialObjectsWidget::updateWidgetFromMRML()
     d->SpatialObjectsDisplayNode->GetVisibility());
   d->OpacitySlider->setValue(d->SpatialObjectsDisplayNode->GetOpacity());
 
-  d->ColorByScalarsColorTableComboBox->setCurrentNode
+  d->ColorByScalarsColorTableComboBox->setCurrentNodeID
     (d->SpatialObjectsDisplayNode->GetColorNodeID());
   d->ColorByScalarComboBox->setDataSet(
     vtkDataSet::SafeDownCast(d->SpatialObjectsNode->GetPolyData()));
