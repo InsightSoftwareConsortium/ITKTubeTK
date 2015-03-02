@@ -35,7 +35,7 @@ set( TubeTK_Base_Numerics_H_Files
   itktubeNJetFeatureVectorGenerator.h
   itktubeNJetImageFunction.h
   itktubeRecordOptimizationParameterProgressionCommand.h
-  itktubeRidgeFeatureVectorGenerator.h
+  itktubeRidgeFFTFeatureVectorGenerator.h
   itktubeVectorImageToListGenerator.h
   itktubeVotingResampleImageFunction.h
   tubeBrentOptimizer1D.h
@@ -59,7 +59,7 @@ set( TubeTK_Base_Numerics_HXX_Files
   itktubeNJetFeatureVectorGenerator.hxx
   itktubeNJetImageFunction.hxx
   itktubeRecordOptimizationParameterProgressionCommand.hxx
-  itktubeRidgeFeatureVectorGenerator.hxx
+  itktubeRidgeFFTFeatureVectorGenerator.hxx
   itktubeVectorImageToListGenerator.hxx
   itktubeVotingResampleImageFunction.hxx
   tubeMatrixMath.hxx

@@ -92,24 +92,26 @@ RidgeFFTFeatureVectorGenerator< TImage >
 
   if( !m_UseIntensityOnly )
     {
+    unsigned int featureForOptimalScale = 1;
+
     ridgeF->SetUseIntensityOnly( false );
 
-    // compute intensity, ridgeness, roundness, curvature, 
-    // and levelness features (in that order) for each scale 
+    // compute intensity, ridgeness, roundness, curvature,
+    // and levelness features (in that order) for each scale
     unsigned int feat = 0;
     for( unsigned int s=0; s<m_Scales.size(); ++s )
       {
       ridgeF->SetScale( m_Scales[s] );
       ridgeF->Update();
-  
+
       m_FeatureImageList[feat++] = ridgeF->GetIntensity();
       m_FeatureImageList[feat++] = ridgeF->GetRidgeness();
       m_FeatureImageList[feat++] = ridgeF->GetRoundness();
       m_FeatureImageList[feat++] = ridgeF->GetCurvature();
       m_FeatureImageList[feat++] = ridgeF->GetLevelness();
       }
-  
-    typename FeatureImageType::RegionType region = 
+
+    typename FeatureImageType::RegionType region =
       this->m_InputImageList[0]->GetLargestPossibleRegion();
     while( feat < numFeatures )
       {
@@ -119,7 +121,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
       m_FeatureImageList[feat]->Allocate();
       ++feat;
       }
-  
+
     typedef ImageRegionIterator< FeatureImageType >  IterType;
     std::vector< IterType > iterF( numFeatures );
     for( unsigned int f=0; f<numFeatures; ++f )
@@ -143,7 +145,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
           if( iterF[ feat + f ].Get() > iterF[ foFeat + f ].Get() )
             {
             iterF[ foFeat + f ].Set( iterF[ feat + f ].Get() );
-            if( f == 0 )
+            if( f == featureForOptimalScale )
               {
               iterF[ foScale ].Set( m_Scales[ s ] );
               }
@@ -158,9 +160,11 @@ RidgeFFTFeatureVectorGenerator< TImage >
     }
   else
     {
+    unsigned int featureForOptimalScale = 1;
+
     typedef ImageRegionIterator< FeatureImageType >  IterType;
 
-    typename FeatureImageType::RegionType region = 
+    typename FeatureImageType::RegionType region =
       this->m_InputImageList[0]->GetLargestPossibleRegion();
 
     ridgeF->SetUseIntensityOnly( true );
@@ -170,7 +174,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
       {
       ridgeF->SetScale( m_Scales[s] );
       ridgeF->Update();
-  
+
       m_FeatureImageList[feat] = ridgeF->GetIntensity();
 
       if( s > 0 )
@@ -222,7 +226,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
       m_FeatureImageList[feat]->Allocate();
       ++feat;
       }
-  
+
     std::vector< IterType > iterF( numFeatures );
     for( unsigned int f=0; f<numFeatures; ++f )
       {
@@ -245,7 +249,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
           if( iterF[ feat + f ].Get() > iterF[ foFeat + f ].Get() )
             {
             iterF[ foFeat + f ].Set( iterF[ feat + f ].Get() );
-            if( f == 1 )
+            if( f == featureForOptimalScale )
               {
               iterF[ foScale ].Set( m_Scales[ s ] );
               }

@@ -73,9 +73,9 @@ int WriteOutputImage( std::string & fileName, typename ImageT::Pointer
 }
 
 template< int VDimension >
-int WriteOutputData( std::ofstream & fileStream, itk::ContinuousIndex<
-  double, VDimension > & cIndx, double intensity, double ridgeness,
-  double roundness, double curvature, double levelness )
+int WriteOutputData( std::ofstream & fileStream,
+  itk::ContinuousIndex< double, VDimension > & cIndx, double intensity,
+  double ridgeness, double roundness, double curvature, double levelness )
 {
   for( unsigned int i = 0; i < VDimension; ++i )
     {
@@ -90,7 +90,7 @@ int WriteOutputData( std::ofstream & fileStream, itk::ContinuousIndex<
   return EXIT_SUCCESS;
 }
 
-typedef vnl_vector< double >  MetricVectorType;
+typedef vnl_vector< double >            MetricVectorType;
 typedef std::vector< MetricVectorType > SampleListType;
 
 int sort_column = 0;
@@ -276,7 +276,7 @@ int DoIt( int argc, char * argv[] )
         {
         scale = itS.Get();
         ridgeExtractor->SetScale( scale );
-  
+
         if( itM.Get() == maskTubeId )
           {
           double intensity = 0;
@@ -286,17 +286,17 @@ int DoIt( int argc, char * argv[] )
           double levelness = 0;
           ridgeExtractor->Ridgeness( cIndx, intensity, roundness, curvature,
             levelness );
-  
+
           instance[0] = intensity;
           instance[1] = ridgeness;
           instance[2] = roundness;
           instance[3] = curvature;
           instance[4] = levelness;
           seed.push_back( instance );
-  
+
           WriteOutputData< VDimension >( outputDataStreamInit, cIndx,
             instance[0], instance[1], instance[2], instance[3], instance[4] );
-  
+
           if( ridgeExtractor->LocalRidge( cIndx ) == RidgeExtractorType::SUCCESS )
             {
             if( scale < scaleMin )
@@ -307,17 +307,17 @@ int DoIt( int argc, char * argv[] )
               {
               scaleMax = scale;
               }
-  
+
             ridgeness = ridgeExtractor->Ridgeness( cIndx, intensity, roundness,
               curvature, levelness );
-  
+
             instance[0] = intensity;
             instance[1] = ridgeness;
             instance[2] = roundness;
             instance[3] = curvature;
             instance[4] = levelness;
             tube.push_back( instance );
-    
+
             WriteOutputData< VDimension >( outputDataStreamTube, cIndx,
               intensity, ridgeness, roundness, curvature, levelness );
             }
@@ -331,14 +331,14 @@ int DoIt( int argc, char * argv[] )
           double levelness = 0;
           ridgeExtractor->Ridgeness( cIndx, intensity, roundness, curvature,
             levelness );
-  
+
           instance[0] = intensity;
           instance[1] = ridgeness;
           instance[2] = roundness;
           instance[3] = curvature;
           instance[4] = levelness;
           bkg.push_back( instance );
-  
+
           WriteOutputData< VDimension >( outputDataStreamBkg, cIndx,
             instance[0], instance[1], instance[2], instance[3], instance[4] );
           }
@@ -376,7 +376,7 @@ int DoIt( int argc, char * argv[] )
   // Heuristics to identify common intensity ranges
   if( dataMin > -0.5 && dataMin < 0.5 &&
     dataMax > 0.5 && dataMax <= 1.5 )
-    { 
+    {
     // Synthetic: 0 to 1
     dataMin = 0;
     dataMax = 1;
@@ -413,12 +413,12 @@ int DoIt( int argc, char * argv[] )
     scaleMax = 20 * scaleMin;
     }
   double scaleUnit = 0.1 * ( scaleMax - scaleMin );
-  double ridgeScale = scaleMin + 2 * scaleUnit;
-  double ridgeScaleKernelExtent = 1.5;
+  double ridgeScale = scaleMin + 4 * scaleUnit;
+  double ridgeScaleKernelExtent = 2.0;
 
   bool   ridgeDynamicScale = true;
 
-  double ridgeStepX = 0.2;
+  double ridgeStepX = 0.1;
 
   double ridgeMaxTangentChange = 0.75;
 

@@ -42,7 +42,6 @@ void RegisterTests( void )
   REGISTER_TEST( itktubeSingleValuedCostFunctionImageSourceTest );
   REGISTER_TEST( itktubeRecordOptimizationParameterProgressionCommandTest );
   REGISTER_TEST( itktubeRidgeBasisFeatureVectorGeneratorTest );
-  REGISTER_TEST( itktubeRidgeFeatureVectorGeneratorTest );
   REGISTER_TEST( itktubeRidgeFFTFeatureVectorGeneratorTest );
   REGISTER_TEST( itktubeVotingResampleImageFunctionTest );
   REGISTER_TEST( tubeBrentOptimizer1DTest );

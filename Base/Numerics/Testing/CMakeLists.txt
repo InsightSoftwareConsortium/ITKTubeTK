@@ -59,7 +59,6 @@ set( tubeBaseNumerics_SRCS
   itktubeSingleValuedCostFunctionImageSourceTest.cxx
   itktubeRecordOptimizationParameterProgressionCommandTest.cxx
   itktubeRidgeBasisFeatureVectorGeneratorTest.cxx
-  itktubeRidgeFeatureVectorGeneratorTest.cxx
   itktubeRidgeFFTFeatureVectorGeneratorTest.cxx
   itktubeVotingResampleImageFunctionTest.cxx
   tubeBrentOptimizer1DTest.cxx
@@ -292,13 +291,6 @@ Midas3FunctionAddTest( NAME itktubeSingleValuedCostFunctionImageSourceTest
       ${TEMP}/itktubeSingleValuedCostFunctionImageSourceTest.mha
     itktubeSingleValuedCostFunctionImageSourceTest
       ${TEMP}/itktubeSingleValuedCostFunctionImageSourceTest.mha )
-
-Midas3FunctionAddTest( NAME itktubeRidgeFeatureVectorGeneratorTest
-  COMMAND ${BASE_NUMERICS_TESTS}
-    itktubeRidgeFeatureVectorGeneratorTest
-      MIDAS{im0001.crop.contrast.mha.md5}
-      ${TEMP}/itktubeRidgeFeatureVectorGeneratorTest_f0.mha
-      ${TEMP}/itktubeRidgeFeatureVectorGeneratorTest_f1.mha )
 
 Midas3FunctionAddTest( NAME itktubeRidgeFFTFeatureVectorGeneratorTest
   COMMAND ${BASE_NUMERICS_TESTS}
