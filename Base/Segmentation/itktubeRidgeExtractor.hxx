@@ -106,7 +106,7 @@ RidgeExtractor<TInputImage>
   m_XHEVal.set_size( ImageDimension );
   m_XHEVal.fill( 0.0 );
   m_XHEVect.set_size( ImageDimension, ImageDimension );
-  m_XHEVect.fill( 0.0 );  
+  m_XHEVect.fill( 0.0 );
   m_XRidgeness = 0;
   m_XRoundness = 0;
   m_XCurvature = 0;
@@ -405,20 +405,21 @@ RidgeExtractor<TInputImage>
     std::cout << "Ridge::Ridgeness" << std::endl;
     }
 
-  // update current location - m_X  
+  // update current location - m_X
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
     m_X[i] = x[i];
     }
 
-  // compute and update the intensity value, first-derivative, and hessian at m_X  
+  // compute and update the intensity value, first-derivative,
+  // and hessian at m_X
   m_XVal = m_DataSpline->ValueJet( m_X, m_XD, m_XH );
 
   // test for nan
   if( m_XVal != m_XVal || m_XD[0] != m_XD[0] || m_XH[0][0] != m_XH[0][0] )
     {
     std::cout << "NAN at " << m_X << std::endl;
-  
+
     intensity = 0;
     roundness = 0;
     curvature = 0;
@@ -428,7 +429,7 @@ RidgeExtractor<TInputImage>
     m_XCurvature = 0;
     m_XLevelness = 0;
     m_XRidgeness = 0;
-  
+
     return m_XRidgeness;
     }
 
@@ -440,14 +441,14 @@ RidgeExtractor<TInputImage>
     std::cout << "  XH = " << m_XH << std::endl;
     }
 
-  ::tube::ComputeRidgeness<double>( m_XH, m_XD,
-    m_XRidgeness, m_XRoundness, m_XCurvature, m_XLevelness, m_XHEVect, m_XHEVal );
+  ::tube::ComputeRidgeness<double>( m_XH, m_XD, m_XRidgeness, m_XRoundness,
+    m_XCurvature, m_XLevelness, m_XHEVect, m_XHEVal );
 
   intensity = m_XVal;
   roundness = m_XRoundness;
   curvature = m_XCurvature;
   levelness = m_XLevelness;
-  
+
   return m_XRidgeness;
 }
 
@@ -455,7 +456,7 @@ RidgeExtractor<TInputImage>
  * Get Current Location
  */
 template< class TInputImage >
-const typename RidgeExtractor<TInputImage>::VectorType & 
+const typename RidgeExtractor<TInputImage>::VectorType &
 RidgeExtractor<TInputImage>::GetCurrentLocation() const
 {
   return m_X;
@@ -465,7 +466,7 @@ RidgeExtractor<TInputImage>::GetCurrentLocation() const
  * Get the Hessian Eigen Basis at the Current Location
  */
 template< class TInputImage >
-const typename RidgeExtractor<TInputImage>::MatrixType & 
+const typename RidgeExtractor<TInputImage>::MatrixType &
 RidgeExtractor<TInputImage>::GetCurrentBasis() const
 {
   return m_XHEVect;
@@ -708,8 +709,6 @@ RidgeExtractor<TInputImage>
     {
     m_TubeMaskImage->SetPixel( indx, ( float )( tubeId
       + ( tubePointCount/10000.0 ) ) );
-    std::cout << "Mask(" << indx << ") = "
-      << tubeId + ( tubePointCount / 10000.0 ) << std::endl;
     if( dir == 1 )
       {
       if( this->GetDebug() )
@@ -1130,7 +1129,7 @@ RidgeExtractor<TInputImage>
       {
       int oldPoint = ( maskVal - (int)maskVal ) * 10000;
       if( ( int )maskVal != tubeId ||
-         ( ( tubePointCount - oldPoint ) > ( 20 / m_StepX ) 
+         ( ( tubePointCount - oldPoint ) > ( 20 / m_StepX )
            && ( tubePointCount - tubePointCountStart ) > ( 20 / m_StepX ) ) )
         {
         if( verbose || this->GetDebug() )
@@ -1150,8 +1149,6 @@ RidgeExtractor<TInputImage>
       {
       m_TubeMaskImage->SetPixel( indx, ( float )( tubeId
         + ( tubePointCount/10000.0 ) ) );
-      std::cout << "Mask(" << indx << ") = "
-        << tubeId + ( tubePointCount / 10000.0 ) << std::endl;
       }
 
     /** Show the satus every 50 points */
@@ -1168,6 +1165,11 @@ RidgeExtractor<TInputImage>
       {
       std::cout << "Ridge: TraverseOW: Adding point " << tubePointCount
         << " = " << lX << std::endl;
+      std::cout << "       Intensity = " << intensity << std::endl;
+      std::cout << "       Ridgeness = " << ridgeness << std::endl;
+      std::cout << "       Roundness = " << roundness << std::endl;
+      std::cout << "       Curvature = " << curvature << std::endl;
+      std::cout << "       Levelness = " << levelness << std::endl;
       }
 
     TubePointType pnt;
@@ -1658,7 +1660,7 @@ RidgeExtractor<TInputImage>
     {
     std::cout << "*** Ridge found at " << lX << std::endl;
     }
-    
+
   typename TubeMaskImageType::IndexType indx;
   for( unsigned int i=0; i<ImageDimension; i++ )
     {

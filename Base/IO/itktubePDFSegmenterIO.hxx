@@ -20,10 +20,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+#ifndef __itktubePDFSegmenterIO_hxx
+#define __itktubePDFSegmenterIO_hxx
 
 #include "itktubePDFSegmenterIO.h"
 #include "itktubeMetaClassPDF.h"
 #include "metaUtils.h"
+
 
 namespace itk
 {
@@ -64,7 +67,8 @@ PDFSegmenterIO< TImage, N, TLabelMap >::
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-void PDFSegmenterIO< TImage, N, TLabelMap >::
+void
+PDFSegmenterIO< TImage, N, TLabelMap >::
 PrintInfo() const
 {
   if( m_PDFSegmenter.IsNotNull() )
@@ -78,7 +82,8 @@ PrintInfo() const
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-void PDFSegmenterIO< TImage, N, TLabelMap >::
+void
+PDFSegmenterIO< TImage, N, TLabelMap >::
 CopyInfo( const PDFSegmenterIOType & _filterIO )
 {
   Clear();
@@ -87,7 +92,8 @@ CopyInfo( const PDFSegmenterIOType & _filterIO )
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-void PDFSegmenterIO< TImage, N, TLabelMap >::
+void
+PDFSegmenterIO< TImage, N, TLabelMap >::
 Clear( void )
 {
   m_PDFSegmenter = NULL;
@@ -105,7 +111,8 @@ InitializeEssential( const typename
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-void PDFSegmenterIO< TImage, N, TLabelMap >::
+void
+PDFSegmenterIO< TImage, N, TLabelMap >::
 SetPDFSegmenter( const typename
   PDFSegmenterType::Pointer & _filter )
 {
@@ -452,17 +459,23 @@ Read( const char * _headerName )
         std::cout << "ERROR: N mismatch" << std::endl;
         return false;
         }
-      origin[j] = pdfClassReader.GetBinMin()[j];
-      if( origin[j] != m_PDFSegmenter->GetBinMin()[j] )
-        {
-        std::cout << "ERROR: Min mismatch" << std::endl;
-        return false;
-        }
       spacing[j] = pdfClassReader.GetBinSize()[j];
       if( vnl_math_abs( spacing[j] - m_PDFSegmenter->GetBinSize()[j] ) >
-        0.00001 * spacing[j] )
+        0.005 * spacing[j] )
         {
         std::cout << "ERROR: Spacing mismatch" << std::endl;
+        return false;
+        }
+      origin[j] = pdfClassReader.GetBinMin()[j];
+      if( vnl_math_abs( origin[j] - m_PDFSegmenter->GetBinMin()[j] ) >
+        0.005 * spacing[j] )
+        {
+        std::cout << "ERROR: Min mismatch" << std::endl;
+        std::cout << "   Origin[" << j << "] = " << origin[j] << std::endl;
+        std::cout << "   PDFMin[" << j << "] = "
+          << m_PDFSegmenter->GetBinMin()[j] << std::endl;
+        std::cout << "      spacing[" << j << "] = "
+          << spacing[j] << std::endl;
         return false;
         }
       }
@@ -713,3 +726,5 @@ Write( const char * _headerName )
 } // End namespace tube
 
 } // End namespace itk
+
+#endif // __itktubePDFSegmenterIO_hxx

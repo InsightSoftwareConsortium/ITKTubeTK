@@ -68,7 +68,7 @@ configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/KWStyle.kws.xml.in
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/KWStyle.Files.txt.in
   ${TubeTK_BINARY_DIR}/KWStyle.Files.txt )
 
-configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/KWStyle.Overwrite.txt.in
+configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/KWStyle.Overwrite.txt
   ${TubeTK_BINARY_DIR}/KWStyle.Overwrite.txt )
 
 add_custom_target( StyleCheck

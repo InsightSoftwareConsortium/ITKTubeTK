@@ -22,7 +22,7 @@ limitations under the License.
 =========================================================================*/
 
 #include "itktubeBasisFeatureVectorGenerator.h"
-#include "itktubeRidgeFeatureVectorGenerator.h"
+#include "itktubeRidgeFFTFeatureVectorGenerator.h"
 
 int itktubeRidgeBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
 {
@@ -54,7 +54,7 @@ int itktubeRidgeBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
 
 
   // Declare the type for the Filter
-  typedef itk::tube::RidgeFeatureVectorGenerator< ImageType >
+  typedef itk::tube::RidgeFFTFeatureVectorGenerator< ImageType >
     FilterType;
   typedef itk::tube::BasisFeatureVectorGenerator< ImageType, LabelMapType >
     BasisFilterType;
