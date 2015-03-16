@@ -158,12 +158,16 @@ set( CMAKE_POSITION_INDEPENDENT_CODE ON )
 #
 option( TubeTK_BUILD_SLICER_MODULES
   "Use Slicer to extract useful commands and CLIs." OFF )
+option( TubeTK_RUN_MODULES_IN_SLICER
+  "Whether TubeTK's CLIs modules are configured to be ran from Slicer or alone."
+  OFF )
 if( TubeTK_BUILD_SLICER_MODULES )
   include( TubeTKSlicer4ExtensionConfig )
 
   mark_as_advanced( TubeTK_USE_ITK TubeTK_USE_VTK TubeTK_USE_QT
     TubeTK_USE_CTK )
 
+  set(TubeTK_RUN_MODULES_IN_SLICER ${TubeTK_BUILD_SLICER_MODULES})
   unset( QT_QMAKE_EXECUTABLE )
   unset( PYTHON_EXECUTABLE )
 
