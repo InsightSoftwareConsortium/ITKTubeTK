@@ -843,7 +843,7 @@ BSplineImageToImageRegistrationMethod<TImage>
       std::string name;
       ss << "inCoeImage" << k << ".mha";
       ss >> name;
-      writer->SetInput( this->GetTypedTransform()->GetCoefficientImage()[k] );
+      writer->SetInput( this->GetTypedTransform()->GetCoefficientImages()[k] );
       writer->SetFileName( name );
       try
         {
@@ -857,7 +857,7 @@ BSplineImageToImageRegistrationMethod<TImage>
     */
 
     upsampler->SetInput( this->GetTypedTransform()
-                         ->GetCoefficientImage()[k] );
+                         ->GetCoefficientImages()[k] );
     upsampler->SetInterpolator( function );
     upsampler->SetTransform( identity );
     upsampler->SetSize( gridSize );
