@@ -32,6 +32,9 @@ endif( NOT TubeTK_SOURCE_DIR )
 
 # Find ITK
 find_package( ITK REQUIRED )
+if( TubeTK_RUN_MODULES_IN_SLICER )
+  set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 ) # See Libs/ITKFactoryRegistration/CMakeLists.txt
+endif( TubeTK_RUN_MODULES_IN_SLICER )
 include( ${ITK_USE_FILE} )
 
 # Find SEM
