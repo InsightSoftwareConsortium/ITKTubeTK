@@ -254,9 +254,6 @@ public:
   bool AddTube( const TubeType * tube, TDrawMask * drawMask );
   bool AddTube( const TubeType * tube );
 
-  /** Smooth a tube */
-  void SmoothTube( TubeType * tube, int h );
-
   /** Set the radius Extractor */
   void  SetRadiusExtractor( RadiusExtractor<TInputImage> * radiusExtractor );
 
@@ -268,13 +265,13 @@ public:
    *  Returns the ridgeness at x
    *  \param x User supplied point at which ridge measures will be computed
    *  \param intensity On return equals the interpolated intensity at x
-   * 		       Can be queried later using GetCurrentIntensity()		
+   *    Can be queried later using GetCurrentIntensity()
    *  \param roundness On return equals the roundness at x
-   *  		       Can be queried later using GetCurrentRoundness()		
+   *    Can be queried later using GetCurrentRoundness()
    *  \param curvature On return equals the curvature at x
-   *   		       Can be queried later using GetCurrentCurvature()		
+   *    Can be queried later using GetCurrentCurvature()
    *  \param levelness On return equals the levelness at x
-   *   		       Can be queried later using GetCurrentLevelness()		
+   *    Can be queried later using GetCurrentLevelness()
    */
   double  Ridgeness( const ContinuousIndexType & x,
     double & intensity,
@@ -282,19 +279,19 @@ public:
     double & curvature,
     double & levelness );
 
-  /** Get current location 
+  /** Get current location
    *  This is location at which the Ridgness function was last called
    */
   const VectorType & GetCurrentLocation() const;
 
-  /** Get the Hessian Eigen Basis at the current location 
+  /** Get the Hessian Eigen Basis at the current location
    *  Each column of the return matrix is an eigen vector
    *  in increasing order of the eigen values.
    *  The third column is an approximation to the ridge tangent.
    */
   const MatrixType & GetCurrentBasis() const;
-  
-  /** Get intensity at the current location*/
+
+  /** Get intensity at the current location */
   double GetCurrentIntensity() const;
 
   /** Get ridgness at the current location */
@@ -305,17 +302,18 @@ public:
 
   /** Get curvature at the current location */
   double GetCurrentCurvature() const;
-  
+
   /** Get levelness at the current location */
   double GetCurrentLevelness() const;
-  
+
   /** Compute/find the local Ridge */
   RidgeExtractionFailureEnum LocalRidge( ContinuousIndexType & x,
     bool verbose=false );
 
   /** Extract */
   typename TubeType::Pointer  ExtractRidge( const ContinuousIndexType & x,
-    int tubeID, bool verbose=false );
+    int tubeID,
+    bool verbose=false );
 
   /** Set the idle callback */
   void   IdleCallBack( bool ( *idleCallBack )( void ) );
@@ -377,19 +375,37 @@ private:
   double                                             m_MinLevelness;
   double                                             m_MinLevelnessStart;
 
-  VectorType                                         m_X; // current location
-  VectorType                                         m_XP;
-  double                                             m_XVal; // current intensity
+  // current location
+  VectorType                                         m_X;
 
-  VectorType                                         m_XD; // current gradient
-  MatrixType                                         m_XH; // current Hessian
-  VectorType                                         m_XHEVal; // current Hessian Eigen Values
-  MatrixType                                         m_XHEVect; // current Hessian Eigen Vectors
-  
-  double					     m_XRidgeness; // current ridgeness 
-  double					     m_XRoundness; // current roundness
-  double					     m_XCurvature; // current curvature
-  double					     m_XLevelness; // current levelness 
+  VectorType                                         m_XP;
+
+  // current intensity
+  double                                             m_XVal;
+
+  // current gradient
+  VectorType                                         m_XD;
+
+  // current Hessian
+  MatrixType                                         m_XH;
+
+  // current Hessian Eigen Values
+  VectorType                                         m_XHEVal;
+
+  // current Hessian Eigen Vectors
+  MatrixType                                         m_XHEVect;
+
+  // current ridgeness
+  double                                             m_XRidgeness;
+
+  // current roundness
+  double                                             m_XRoundness;
+
+  // current curvature
+  double                                             m_XCurvature;
+
+  // current levelness
+  double                                             m_XLevelness;
 
   typename TubeType::Pointer                         m_Tube;
 

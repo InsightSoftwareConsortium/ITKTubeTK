@@ -58,7 +58,7 @@ if(APPLE)
     /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs
     /Developer/SDKs
     )
-  set(SDK_VERSIONS_TO_CHECK 10.9 10.8 10.7 10.6 10.5)
+  set(SDK_VERSIONS_TO_CHECK 10.10 10.9 10.8 10.7 10.6 10.5)
   foreach(SDK_VERSION ${SDK_VERSIONS_TO_CHECK})
     if(NOT CMAKE_OSX_DEPLOYMENT_TARGET OR "${CMAKE_OSX_DEPLOYMENT_TARGET}" STREQUAL "")
       foreach(SDK_ROOT ${OSX_SDK_ROOTS})

@@ -28,7 +28,7 @@ limitations under the License.
 #include <itkSpatialObjectReader.h>
 
 int itktubeRidgeExtractorTest2( int argc, char * argv[] )
-  {
+{
   if( argc != 3 )
     {
     std::cout
@@ -252,8 +252,6 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       continue;
       }
 
-    ridgeOp->SmoothTube( xTube, 5 );
-
     if( !ridgeOp->AddTube( xTube ) )
       {
       std::cout << "Add tube failed" << std::endl;
@@ -292,4 +290,4 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
     }
 
   return EXIT_SUCCESS;
-  }
+}

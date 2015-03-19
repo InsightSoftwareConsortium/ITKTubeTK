@@ -29,7 +29,7 @@ limitations under the License.
 #include <itkSpatialObjectReader.h>
 
 int itktubeRadiusExtractorTest( int argc, char * argv[] )
-  {
+{
   if( argc != 3 )
     {
     std::cout
@@ -150,7 +150,7 @@ int itktubeRadiusExtractorTest( int argc, char * argv[] )
       tubeIter->GetPointer() );
     TubeType::Pointer tube = static_cast< TubeType * >(
       tubeIter->GetPointer() );
-    tube::ComputeTubeTangentsAndNormals< TubeType >( tubep );
+    tube::ComputeTubeTangentsAndNormals< TubeType >( tube );
 
     std::cout << "Test tube = " << rndTubeNum << std::endl;
 
@@ -222,4 +222,4 @@ int itktubeRadiusExtractorTest( int argc, char * argv[] )
     }
 
   return returnStatus;
-  }
+}

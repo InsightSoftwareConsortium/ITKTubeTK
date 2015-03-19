@@ -51,5 +51,6 @@ void RegisterTests( void )
   REGISTER_TEST( tubeParabolicFitOptimizer1DTest );
   REGISTER_TEST( tubeSplineApproximation1DTest );
   REGISTER_TEST( tubeSplineNDTest );
+  REGISTER_TEST( tubeTubeMathTest );
   REGISTER_TEST( tubeUserFunctionTest );
 }

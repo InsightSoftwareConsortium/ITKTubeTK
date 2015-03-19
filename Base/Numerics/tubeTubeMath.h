@@ -33,11 +33,20 @@ namespace tube
 
 template< class TTube >
 bool
-ComputeTubeTangentsAndNormals( TTube * tube );
+ComputeTubeTangentsAndNormals( typename TTube::Pointer & tube );
 
 template< class TTubePoint >
 bool
 ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tube );
+
+enum SmoothTubeFunctionEnum { SMOOTH_TUBE_USING_INDEX_AVERAGE,
+  SMOOTH_TUBE_USING_INDEX_GAUSSIAN, SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN };
+
+template< class TTube >
+typename TTube::Pointer
+SmoothTube( const typename TTube::Pointer & tube, double h = 2,
+  SmoothTubeFunctionEnum smoothFunction=SMOOTH_TUBE_USING_INDEX_AVERAGE );
+
 
 } // End namespace tube
 
