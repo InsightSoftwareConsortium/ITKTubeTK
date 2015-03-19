@@ -21,6 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "tubeTubeMath.h"
 #include "itktubeTubeExtractor.h"
 
 #include <itkImageFileReader.h>
@@ -28,7 +29,7 @@ limitations under the License.
 #include <itkSpatialObjectReader.h>
 
 int itktubeTubeExtractorTest( int argc, char * argv[] )
-  {
+{
   if( argc != 3 )
     {
     std::cout << "itktubeTubeExtractorTest <inputImage> <vessel.tre>"
@@ -260,7 +261,7 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
       }
 
     std::cout << "***** Attempting smooth tube *****" << std::endl;
-    tubeOp->SmoothTube( xTube, 5 );
+    tube::SmoothTube< TubeType >( xTube, 5 );
 
     std::cout << "***** Attempting add tube *****" << std::endl;
     if( !tubeOp->AddTube( xTube ) )
@@ -305,4 +306,4 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
     }
 
   return EXIT_SUCCESS;
-  }
+}

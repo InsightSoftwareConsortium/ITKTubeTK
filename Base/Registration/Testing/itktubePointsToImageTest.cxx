@@ -44,8 +44,8 @@ int itktubePointsToImageTest( int argc, char * argv[] )
       ObjectListType;
   typedef itk::GroupSpatialObject< Dimension >       GroupType;
   typedef itk::VesselTubeSpatialObject< Dimension >  TubeType;
-  typedef TubeType::PointListType                         PointListType;
-  typedef TubeType::TubePointType                         TubePointType;
+  typedef TubeType::PointListType                    PointListType;
+  typedef TubeType::TubePointType                    TubePointType;
   typedef itk::Image< float, Dimension >             ImageType;
 
   // Read the tube
@@ -92,7 +92,7 @@ int itktubePointsToImageTest( int argc, char * argv[] )
     {
     std::cout << "----tube " << i << std::endl;
     tube = static_cast< TubeType * >( tubeIt->GetPointer() );
-    tube::ComputeTubeTangentsAndNormals< TubeType >( tube.GetPointer() );
+    tube::ComputeTubeTangentsAndNormals< TubeType >( tube );
 
     // Get the list of points in the tube
     tubePointList = tube->GetPoints();

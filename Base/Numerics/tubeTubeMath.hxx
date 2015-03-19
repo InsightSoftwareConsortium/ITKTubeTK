@@ -32,8 +32,11 @@ namespace tube
 
 /** Compute the tangent of the centerline of the tube */
 template< class TTube >
-bool  ComputeTubeTangentsAndNormals( TTube * tube )
+bool  ComputeTubeTangentsAndNormals( typename TTube::Pointer & tube )
 {
+  return ComputeVectorTangentsAndNormals( tube->GetPoints() );
+
+  /*
   typedef typename TTube::PointType             PointType;
   typedef typename TTube::TubePointType         TubePointType;
   typedef typename TTube::VectorType            VectorType;
@@ -193,6 +196,7 @@ bool  ComputeTubeTangentsAndNormals( TTube * tube )
     }
 
   return true;
+  */
 }
 
 /** Compute the tangent of the centerline of the tube */
@@ -392,6 +396,81 @@ bool  ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
     }
 
   return true;
+}
+
+/**
+ * Smooth a tube */
+template< class TTube >
+typename TTube::Pointer
+SmoothTube( const typename TTube::Pointer & tube, double h,
+  SmoothTubeFunctionEnum smoothFunction )
+{
+  typename TTube::PointType avg;
+
+  typename TTube::PointListType & pointList = tube->GetPoints();
+  typename TTube::PointListType::iterator pointItr;
+  typename TTube::PointListType::iterator tmpPointItr;
+
+  typename TTube::PointListType::iterator beginItr = pointList.begin();
+  typename TTube::PointListType::iterator endItr = pointList.end();
+
+  typename TTube::Pointer newTube = TTube::New();
+  newTube->CopyInformation( tube );
+
+  typename TTube::PointListType newPointList;
+
+  int hInt = static_cast< int >( h );
+  std::vector< double > w( 2 * hInt + 1, 1.0);
+  if( smoothFunction == SMOOTH_TUBE_USING_INDEX_AVERAGE ||
+    smoothFunction == SMOOTH_TUBE_USING_INDEX_GAUSSIAN )
+    {
+    h = hInt;
+    if( smoothFunction == SMOOTH_TUBE_USING_INDEX_GAUSSIAN )
+      {
+      // Set w for Gaussians
+      }
+    }
+
+  unsigned int pointDimension = TTube::ObjectDimension;
+  for( pointItr = beginItr; pointItr != endItr; ++pointItr )
+    {
+    typename TTube::TubePointType newPoint = *pointItr;
+
+    double wTotal = 0;
+    avg.Fill( 0 );
+    tmpPointItr = pointItr;
+    int pos = hInt;
+    while( pos > 0 && tmpPointItr != beginItr )
+      {
+      --pos;
+      --tmpPointItr;
+      }
+    while( pos < 2*hInt+1 && tmpPointItr != endItr )
+      {
+      for( unsigned int j=0; j<pointDimension; j++ )
+        {
+        avg[j] += w[pos] * tmpPointItr->GetPosition()[j];
+        }
+      wTotal += w[pos];
+      ++pos;
+      ++tmpPointItr;
+      }
+    if( wTotal > 0 )
+      {
+      for( unsigned int i=0; i<pointDimension; i++ )
+        {
+        avg[i] /= wTotal;
+        }
+      newPoint.SetPosition( avg );
+      }
+
+    newPointList.push_back( newPoint );
+    }
+
+  newTube->SetPoints( newPointList );
+  ::tube::ComputeTubeTangentsAndNormals< TTube >( newTube );
+
+  return newTube;
 }
 
 } // End namespace tube

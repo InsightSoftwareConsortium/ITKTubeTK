@@ -1868,68 +1868,6 @@ RidgeExtractor<TInputImage>
   return m_Tube;
 }
 
-
-/**
- * Smooth a tube */
-template< class TInputImage >
-void
-RidgeExtractor<TInputImage>
-::SmoothTube( TubeType * tube, int h )
-{
-  typename TubeType::PointType avg;
-
-  typename TubeType::PointListType &points = tube->GetPoints();
-  typename TubeType::PointListType::iterator pnt, pntT;
-
-  typename TubeType::PointListType::iterator begin = points.begin();
-  typename TubeType::PointListType::iterator end = points.end();
-
-  this->DeleteTube( tube );
-
-  for( pnt = begin; pnt != end; pnt++ )
-    {
-    int cnt = 0;
-    avg.Fill( 0 );
-
-    if( pnt != begin )
-      {
-      pntT = pnt;
-      for( int i=0; i<h/2 && pntT!=begin; i++, pntT-- )
-        {
-        for( unsigned int j=0; j<ImageDimension; j++ )
-          {
-          avg[j] += ( *pntT ).GetPosition()[j];
-          }
-        cnt++;
-        }
-      }
-    if( pnt != end )
-      {
-      pntT = pnt;
-      pntT++;
-      for( int i=0; i<h/2 && pntT!=tube->GetPoints().end(); i++, pntT++ )
-        {
-        for( unsigned int j=0; j<ImageDimension; j++ )
-          {
-          avg[j] += ( *pntT ).GetPosition()[j];
-          }
-        cnt++;
-        }
-      }
-    if( cnt>0 )
-      {
-      for( unsigned int i=0; i<ImageDimension; i++ )
-        {
-        avg[i] /= cnt;
-        }
-      ( *pnt ).SetPosition( avg );
-      }
-    }
-
-  this->AddTube( tube );
-}
-
-
 template< class TInputImage >
 template< class TDrawMask >
 bool

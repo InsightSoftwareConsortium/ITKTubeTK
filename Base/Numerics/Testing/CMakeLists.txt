@@ -68,6 +68,7 @@ set( tubeBaseNumerics_SRCS
   tubeParabolicFitOptimizer1DTest.cxx
   tubeSplineApproximation1DTest.cxx
   tubeSplineNDTest.cxx
+  tubeTubeMathTest.cxx
   tubeUserFunctionTest.cxx )
 
 include_directories(
@@ -307,3 +308,7 @@ Midas3FunctionAddTest( NAME itktubeRidgeBasisFeatureVectorGeneratorTest
       255 127
       ${TEMP}/itktubeRidgeBasisFeatureVectorGeneratorTest_lda0.mha
       ${TEMP}/itktubeRidgeBasisFeatureVectorGeneratorTest_lda1.mha )
+
+add_test( NAME tubeTubeMathTest
+  COMMAND ${BASE_NUMERICS_TESTS}
+  tubeTubeMathTest )
