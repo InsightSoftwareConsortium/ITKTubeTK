@@ -81,31 +81,37 @@ int tubeTubeMathTest( int tubeNotUsed( argc ),
     double rndX = rndGen->GetNormalVariate( 0, 1 );
     double rndY = rndGen->GetNormalVariate( 0, 1 );
     double rndZ = rndGen->GetNormalVariate( 0, 1 );
-    std::cout << "      " << rndX << ", " << rndY << ", " << rndZ
-      << std::endl;
     x += rndX;
     y += rndY;
     z += rndZ;
     point.SetPosition( x, y, z );
     pointList.push_back( point );
-    std::cout << i << " : " << x << ", " << y << ", " << z << std::endl;
     }
 
   std::cout << "Tangents and normals..." << std::endl;
   tube->SetPoints( pointList );
   ::tube::ComputeTubeTangentsAndNormals< TubeType >( tube );
 
-  std::cout << "Smoothing..." << std::endl;
-  TubeType::Pointer tube2 = ::tube::SmoothTube< TubeType >( tube, 2,
-    ::tube::SMOOTH_TUBE_USING_INDEX_AVERAGE );
-
   double tLength = tubeLength( tube );
-  double t2Length = tubeLength( tube2 );
-  if( tLength <= t2Length )
+  std::cout << "Length = " << tLength << std::endl;
+
+  for( unsigned int i = 0; i < 20; ++i )
     {
-    std::cout << "ERROR: Raw length = " << tLength << " <= Smooth length = "
-      << t2Length << std::endl;
-    returnStatus = EXIT_FAILURE;
+    std::cout << "Smoothing..." << std::endl;
+    TubeType::Pointer tube2 = ::tube::SmoothTube< TubeType >( tube, 2,
+      ::tube::SMOOTH_TUBE_USING_INDEX_AVERAGE );
+
+    double t2Length = tubeLength( tube2 );
+    std::cout << "Length = " << t2Length << std::endl;
+    if( tLength <= t2Length )
+      {
+      std::cout << "ERROR: Raw length = " << tLength
+        << " <= Smooth length = " << t2Length << std::endl;
+      returnStatus = EXIT_FAILURE;
+      }
+
+    tube = tube2;
+    tLength = t2Length;
     }
 
   return returnStatus;

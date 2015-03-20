@@ -24,7 +24,6 @@ limitations under the License.
 #include "tubeMessage.h"
 
 #include <itkDanielssonDistanceMapImageFilter.h>
-#include <itkImageToVectorImageFilter.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
