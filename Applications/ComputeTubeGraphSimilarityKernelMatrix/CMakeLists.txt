@@ -41,9 +41,9 @@ find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 
 find_package( ITK REQUIRED )
-if( TubeTK_RUN_MODULES_IN_SLICER )
+if( TubeTK_BUILD_WITHIN_SLICER )
   set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 ) # See Libs/ITKFactoryRegistration/CMakeLists.txt
-endif( TubeTK_RUN_MODULES_IN_SLICER )
+endif( TubeTK_BUILD_WITHIN_SLICER )
 include( ${ITK_USE_FILE} )
 
 # Find Boost
