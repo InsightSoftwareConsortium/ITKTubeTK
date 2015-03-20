@@ -30,7 +30,7 @@
 #
 set( TubeTK_C_PYTHON_EXTENSION_DIR ${CMAKE_CURRENT_BINARY_DIR} )
 configure_file( tubetk.pth.in tubetk.pth )
-if( BUILD_TESTING AND NOT TubeTK_BUILD_SLICER_MODULES )
+if( BUILD_TESTING AND NOT TubeTK_BUILD_USING_SLICER )
   # Install into the testing virtualenv.
   execute_process( COMMAND ${PYTHON_TESTING_EXECUTABLE}
       -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
@@ -46,12 +46,12 @@ if( BUILD_TESTING AND NOT TubeTK_BUILD_SLICER_MODULES )
     message( STATUS "Detected testing virtualenv packages directory: ${site_packages}" )
     configure_file( tubetk.pth.in "${site_packages}/tubetk.pth" )
   endif( ${_result_variable} )
-endif( BUILD_TESTING AND NOT TubeTK_BUILD_SLICER_MODULES )
+endif( BUILD_TESTING AND NOT TubeTK_BUILD_USING_SLICER )
 
 include_directories( ${TubeTK_SOURCE_DIR}/Base/Filtering )
 
 add_subdirectory( tubetk )
 
-if( BUILD_TESTING AND NOT TubeTK_BUILD_SLICER_MODULES )
+if( BUILD_TESTING AND NOT TubeTK_BUILD_USING_SLICER )
   add_subdirectory( Testing )
-endif( BUILD_TESTING AND NOT TubeTK_BUILD_SLICER_MODULES )
+endif( BUILD_TESTING AND NOT TubeTK_BUILD_USING_SLICER )
