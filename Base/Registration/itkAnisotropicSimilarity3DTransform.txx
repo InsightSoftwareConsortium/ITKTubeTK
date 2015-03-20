@@ -1,12 +1,12 @@
 /*=========================================================================
 
   Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itkAnisotropicSimilarity3DTransform.txx,v $
+  Module:    $RCSfile: ITKHeader.h,v $
   Language:  C++
-  Date:      $Date: 2007/11/27 16:04:48 $
-  Version:   $Revision: 1.9 $
+  Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
+  Version:   $Revision: 0 $
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
+  Copyright (c) 2002 Insight Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
@@ -14,8 +14,8 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef _itkAnisotropicSimilarity3DTransform_txx
-#define _itkAnisotropicSimilarity3DTransform_txx
+#ifndef __itkAnisotropicSimilarity3DTransform_txx
+#define __itkAnisotropicSimilarity3DTransform_txx
 
 #include "itkAnisotropicSimilarity3DTransform.h"
 #include "vnl/vnl_math.h"
@@ -37,15 +37,17 @@ AnisotropicSimilarity3DTransform<TScalarType>
 
 // Constructor with arguments
 template <class TScalarType>
-AnisotropicSimilarity3DTransform<TScalarType>::AnisotropicSimilarity3DTransform(unsigned int paramDim) :
+AnisotropicSimilarity3DTransform<TScalarType>
+::AnisotropicSimilarity3DTransform(unsigned int paramDim) :
   Superclass(paramDim)
 {
 }
 
 // Constructor with arguments
 template <class TScalarType>
-AnisotropicSimilarity3DTransform<TScalarType>::AnisotropicSimilarity3DTransform( const MatrixType & matrix,
-                                                                                 const OutputVectorType & offset) :
+AnisotropicSimilarity3DTransform<TScalarType>
+::AnisotropicSimilarity3DTransform( const MatrixType & matrix,
+  const OutputVectorType & offset) :
   Superclass(matrix, offset)
 {
 }
@@ -80,6 +82,16 @@ void
 AnisotropicSimilarity3DTransform<TScalarType>
 ::SetMatrix( const MatrixType & matrix )
 {
+  const double tolerance = 1e-10;
+  this->SetMatrix( matrix, tolerance );
+}
+
+// Directly set the matrix
+template <class TScalarType>
+void
+AnisotropicSimilarity3DTransform<TScalarType>
+::SetMatrix( const MatrixType & matrix, double tolerance )
+{
   //
   // Since the matrix should be an orthogonal matrix
   // multiplied by the scale factor, then its determinant
@@ -111,10 +123,11 @@ AnisotropicSimilarity3DTransform<TScalarType>
 
   MatrixType testForOrthogonal = matrix * scaleMatrix;
 
-  const double tolerance = 1e-10;
   if( !this->MatrixIsOrthogonal( testForOrthogonal, tolerance ) )
     {
-    itkExceptionMacro( << "Attempting to set a non-orthogonal matrix (after removing scaling)" );
+    itkExceptionMacro(
+      << "Attempting to set non-orthogonal matrix (after removing scaling)"
+      );
     }
 
   typedef MatrixOffsetTransformBase<TScalarType, 3> Baseclass;
@@ -189,7 +202,7 @@ template <class TScalarType>
 const typename AnisotropicSimilarity3DTransform<TScalarType>::ParametersType
 & AnisotropicSimilarity3DTransform<TScalarType>
 ::GetParameters( void ) const
-  {
+{
   itkDebugMacro( << "Getting parameters ");
 
   this->m_Parameters[0] = this->GetVersor().GetX();
@@ -208,21 +221,24 @@ const typename AnisotropicSimilarity3DTransform<TScalarType>::ParametersType
   itkDebugMacro(<< "After getting parameters " << this->m_Parameters );
 
   return this->m_Parameters;
-  }
+}
 
 // Set parameters
 template <class TScalarType>
 const typename AnisotropicSimilarity3DTransform<TScalarType>::JacobianType
 & AnisotropicSimilarity3DTransform<TScalarType>::
 GetJacobian( const InputPointType &p ) const
-  {
-  ComputeJacobianWithRespectToParameters( p, this->m_NonThreadsafeSharedJacobian );
+{
+  ComputeJacobianWithRespectToParameters( p,
+    this->m_NonThreadsafeSharedJacobian );
   return this->m_NonThreadsafeSharedJacobian;
-  }
+}
+
 template <class TScalarType>
 void
-AnisotropicSimilarity3DTransform<TScalarType>::ComputeJacobianWithRespectToParameters(const InputPointType & p,
-                                                                                      JacobianType & jacobian) const
+AnisotropicSimilarity3DTransform<TScalarType>
+::ComputeJacobianWithRespectToParameters(const InputPointType & p,
+  JacobianType & jacobian) const
 {
   typedef typename VersorType::ValueType ValueType;
 
@@ -326,15 +342,18 @@ AnisotropicSimilarity3DTransform<TScalarType>
 {
   MatrixType matrix = this->GetMatrix();
 
-  m_Scale[0] = sqrt( fabs( matrix.GetVnlMatrix()[0][0] * matrix.GetVnlMatrix()[0][0]
-                           + matrix.GetVnlMatrix()[0][1] * matrix.GetVnlMatrix()[0][1]
-                           + matrix.GetVnlMatrix()[0][2] * matrix.GetVnlMatrix()[0][2] ) );
-  m_Scale[1] = sqrt( fabs( matrix.GetVnlMatrix()[1][0] * matrix.GetVnlMatrix()[1][0]
-                           + matrix.GetVnlMatrix()[1][1] * matrix.GetVnlMatrix()[1][1]
-                           + matrix.GetVnlMatrix()[1][2] * matrix.GetVnlMatrix()[1][2] ) );
-  m_Scale[2] = sqrt( fabs( matrix.GetVnlMatrix()[2][0] * matrix.GetVnlMatrix()[2][0]
-                           + matrix.GetVnlMatrix()[2][1] * matrix.GetVnlMatrix()[2][1]
-                           + matrix.GetVnlMatrix()[2][2] * matrix.GetVnlMatrix()[2][2] ) );
+  m_Scale[0] = sqrt( fabs( matrix.GetVnlMatrix()[0][0] *
+    matrix.GetVnlMatrix()[0][0]
+    + matrix.GetVnlMatrix()[0][1] * matrix.GetVnlMatrix()[0][1]
+    + matrix.GetVnlMatrix()[0][2] * matrix.GetVnlMatrix()[0][2] ) );
+  m_Scale[1] = sqrt( fabs( matrix.GetVnlMatrix()[1][0] *
+    matrix.GetVnlMatrix()[1][0]
+    + matrix.GetVnlMatrix()[1][1] * matrix.GetVnlMatrix()[1][1]
+    + matrix.GetVnlMatrix()[1][2] * matrix.GetVnlMatrix()[1][2] ) );
+  m_Scale[2] = sqrt( fabs( matrix.GetVnlMatrix()[2][0] *
+    matrix.GetVnlMatrix()[2][0]
+    + matrix.GetVnlMatrix()[2][1] * matrix.GetVnlMatrix()[2][1]
+    + matrix.GetVnlMatrix()[2][2] * matrix.GetVnlMatrix()[2][2] ) );
 
   MatrixType scaleMatrix;
   scaleMatrix(0, 0) = m_Scale[0];
@@ -352,7 +371,8 @@ AnisotropicSimilarity3DTransform<TScalarType>
 // Print self
 template <class TScalarType>
 void
-AnisotropicSimilarity3DTransform<TScalarType>::PrintSelf(std::ostream & os, Indent indent) const
+AnisotropicSimilarity3DTransform<TScalarType>::PrintSelf(
+  std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf(os, indent);
   os << indent << "Scale = " << m_Scale << std::endl;

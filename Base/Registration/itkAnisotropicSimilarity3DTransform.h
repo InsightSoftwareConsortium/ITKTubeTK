@@ -1,12 +1,12 @@
 /*=========================================================================
 
   Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itkAnisotropicSimilarity3DTransform.h,v $
+  Module:    $RCSfile: ITKHeader.h,v $
   Language:  C++
-  Date:      $Date: 2006/08/09 04:35:32 $
-  Version:   $Revision: 1.3 $
+  Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
+  Version:   $Revision: 0 $
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
+  Copyright (c) 2002 Insight Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
@@ -14,7 +14,6 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-
 #ifndef __itkAnisotropicSimilarity3DTransform_h
 #define __itkAnisotropicSimilarity3DTransform_h
 
@@ -81,10 +80,11 @@ public:
   typedef typename Superclass::OutputVectorType    OutputVectorType;
   typedef typename Superclass::InputVnlVectorType  InputVnlVectorType;
   typedef typename Superclass::OutputVnlVectorType OutputVnlVectorType;
+
   typedef typename Superclass::InputCovariantVectorType
-  InputCovariantVectorType;
+                                                 InputCovariantVectorType;
   typedef typename Superclass::OutputCovariantVectorType
-  OutputCovariantVectorType;
+                                                 OutputCovariantVectorType;
   typedef typename Superclass::MatrixType        MatrixType;
   typedef typename Superclass::InverseMatrixType InverseMatrixType;
   typedef typename Superclass::CenterType        CenterType;
@@ -103,7 +103,8 @@ public:
    * to within a specified tolerance, else an exception is thrown.
    *
    * \sa MatrixOffsetTransformBase::SetMatrix() */
-  virtual void SetMatrix(const MatrixType & matrix);
+  virtual void SetMatrix( const MatrixType & matrix );
+  virtual void SetMatrix( const MatrixType & matrix, double tolerance );
 
   /** Set the transformation from a container of parameters This is typically
    * used by optimizers.  There are 7 parameters. The first three represent the
@@ -126,15 +127,17 @@ public:
    * transform is invertible at this point. */
   virtual const JacobianType & GetJacobian(const InputPointType  & point ) const;
 
-  virtual void ComputeJacobianWithRespectToParameters(const InputPointType & p, JacobianType & jacobian) const;
+  virtual void ComputeJacobianWithRespectToParameters(
+    const InputPointType & p, JacobianType & jacobian) const;
 
 protected:
-  AnisotropicSimilarity3DTransform(const MatrixType & matrix, const OutputVectorType & offset);
+  AnisotropicSimilarity3DTransform(const MatrixType & matrix,
+    const OutputVectorType & offset);
   AnisotropicSimilarity3DTransform(unsigned int paramDim);
   AnisotropicSimilarity3DTransform();
   ~AnisotropicSimilarity3DTransform()
-  {
-  };
+    {
+    };
 
   void PrintSelf(std::ostream & os, Indent indent) const;
 
