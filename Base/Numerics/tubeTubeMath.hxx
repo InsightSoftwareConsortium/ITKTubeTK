@@ -278,56 +278,101 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
 
   typename TTube::PointListType newPointList;
 
-  int hInt = static_cast< int >( h );
-  std::vector< double > w( 2 * hInt + 1, 1.0);
-  if( smoothFunction == SMOOTH_TUBE_USING_INDEX_AVERAGE ||
-    smoothFunction == SMOOTH_TUBE_USING_INDEX_GAUSSIAN )
+  if( h == 0 )
     {
-    h = hInt;
-    if( smoothFunction == SMOOTH_TUBE_USING_INDEX_GAUSSIAN )
+    return newTube;
+    }
+
+  std::vector< double > w;
+  int wSize = 0;
+
+  if(smoothFunction == SMOOTH_TUBE_USING_INDEX_AVERAGE ||
+     smoothFunction == SMOOTH_TUBE_USING_INDEX_GAUSSIAN )
+    {
+    // Calculate the weighing window w
+    if( smoothFunction == SMOOTH_TUBE_USING_INDEX_AVERAGE)
       {
-      // Set w for Gaussians
+      int maxIndex = static_cast< int >( h );
+      wSize = 2 * maxIndex + 1;
+      w.resize(wSize, 1.0);
+      }
+    else
+      {
+      // Standard Deviation
+      double sigma = h;
+      // Consider the points until 3*sigma
+      int maxIndex = static_cast< int >( 3*sigma );
+      wSize = 2 * maxIndex + 1;
+      w.resize(wSize, 0.0);
+      for(int i = 0; i <= maxIndex; i++)
+        {
+        // The multiplication term 1/sigma*sqrt(2*pi) isn't necessary
+        // since we normalize at the end by the sum of w
+        w[maxIndex+i] = exp(-i*i/(2.0*sigma*sigma));
+        w[maxIndex-i] = w[maxIndex+i];
+        }
+      }
+
+    // Apply the weighing window
+    int count = 0;
+    unsigned int pointDimension = TTube::ObjectDimension;
+    for( pointItr = beginItr; pointItr != endItr; ++pointItr )
+      {
+      typename TTube::TubePointType newPoint = *pointItr;
+      double wTotal = 0;
+      avg.Fill( 0 );
+      tmpPointItr = pointItr;
+      int wCenter = (wSize-1)/2;
+
+      // Place the tmpPointItr at the beginning of the window
+      tmpPointItr -= std::min( count, wCenter );
+
+      // Place the window iterator so that the window center
+      // is aligned to the current point.
+      int pos = std::max(wCenter - count, 0);
+
+      // Compute the average over the window, weighing with w
+      while( pos < wSize && tmpPointItr != endItr )
+        {
+        for( unsigned int j=0; j<pointDimension; ++j)
+          {
+          avg[j] += w[pos] * tmpPointItr->GetPosition()[j];
+          }
+        wTotal += w[pos];
+        ++pos;
+        ++tmpPointItr;
+        }
+
+      // Divide by sum of weights -> finish average
+      if( wTotal > 0 )
+        {
+        for( unsigned int i=0; i<pointDimension; ++i )
+          {
+          avg[i] /= wTotal;
+          }
+        // Update the new point coordinates
+        newPoint.SetPosition( avg );
+        }
+
+      newPointList.push_back( newPoint );
+      ++count;
       }
     }
 
-  unsigned int pointDimension = TTube::ObjectDimension;
-  for( pointItr = beginItr; pointItr != endItr; ++pointItr )
+  if( smoothFunction == SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN )
     {
-    typename TTube::TubePointType newPoint = *pointItr;
+    // // Set w for Gaussians
+    // double sigma = h;
+    // double dist = (pointItr->GetPosition()-tmpPointItr->GetPosition()).GetNorm();
+    // w[pos] = 1/(sigma*2.50663)*exp(-dist*dist/(2.0*sigma*sigma));
 
-    double wTotal = 0;
-    avg.Fill( 0 );
-    tmpPointItr = pointItr;
-    int pos = hInt;
-    while( pos > 0 && tmpPointItr != beginItr )
-      {
-      --pos;
-      --tmpPointItr;
-      }
-    while( pos < 2*hInt+1 && tmpPointItr != endItr )
-      {
-      for( unsigned int j=0; j<pointDimension; j++ )
-        {
-        avg[j] += w[pos] * tmpPointItr->GetPosition()[j];
-        }
-      wTotal += w[pos];
-      ++pos;
-      ++tmpPointItr;
-      }
-    if( wTotal > 0 )
-      {
-      for( unsigned int i=0; i<pointDimension; i++ )
-        {
-        avg[i] /= wTotal;
-        }
-      newPoint.SetPosition( avg );
-      }
+    // TODO : Finish implementation
+    std::cerr<<" Function not yet implemented, results you might get are false.\n";
 
-    newPointList.push_back( newPoint );
     }
 
   newTube->SetPoints( newPointList );
-  ::tube::ComputeTubeTangentsAndNormals< TTube >( newTube );
+  tube::ComputeTubeTangentsAndNormals< TTube >( newTube );
 
   return newTube;
 }
