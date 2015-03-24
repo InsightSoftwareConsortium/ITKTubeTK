@@ -141,7 +141,6 @@ int DoIt( int argc, char * argv[] )
   unsigned int numberOfComponents = 0;
   unsigned int id = 0;
   TPixel maskV = 0;
-  double volumeV = 0;
   while( !connCompIter.IsAtEnd() )
     {
     maskV = maskIter.Get();
@@ -158,7 +157,7 @@ int DoIt( int argc, char * argv[] )
       ++numberOfComponents;
       }
 
-    volumeV = volumeIter.Get();
+    double volumeV = volumeIter.Get();
     compMean[id] += volumeV;
     compStdDev[id] += volumeV * volumeV;
     if( compCount[id] == 0 )
