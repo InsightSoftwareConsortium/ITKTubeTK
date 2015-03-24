@@ -290,7 +290,7 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
      smoothFunction == SMOOTH_TUBE_USING_INDEX_GAUSSIAN )
     {
     // Calculate the weighing window w
-    if( smoothFunction == SMOOTH_TUBE_USING_INDEX_AVERAGE)
+    if( smoothFunction == SMOOTH_TUBE_USING_INDEX_AVERAGE )
       {
       int maxIndex = static_cast< int >( h );
       wSize = 2 * maxIndex + 1;
@@ -303,7 +303,7 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
       // Consider the points until 3*sigma
       int maxIndex = static_cast< int >( 3*sigma );
       wSize = 2 * maxIndex + 1;
-      w.resize(wSize, 0.0);
+      w.resize( wSize, 0.0 );
       for(int i = 0; i <= maxIndex; i++)
         {
         // The multiplication term 1/sigma*sqrt(2*pi) isn't necessary
@@ -329,12 +329,12 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
 
       // Place the window iterator so that the window center
       // is aligned to the current point.
-      int pos = std::max(wCenter - count, 0);
+      int pos = std::max( wCenter - count, 0 );
 
       // Compute the average over the window, weighing with w
       while( pos < wSize && tmpPointItr != endItr )
         {
-        for( unsigned int j=0; j<pointDimension; ++j)
+        for( unsigned int j=0; j<pointDimension; ++j )
           {
           avg[j] += w[pos] * tmpPointItr->GetPosition()[j];
           }
@@ -376,6 +376,58 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
 
   return newTube;
 }
+
+
+/**
+ * Subsample a tube */
+template< class TTube >
+typename TTube::Pointer
+SubsampleTube( const typename TTube::Pointer & tube, int N )
+{
+  typename TTube::PointListType & pointList = tube->GetPoints();
+  typename TTube::PointListType::iterator pointItr;
+
+  typename TTube::PointListType::iterator beginItr = pointList.begin();
+  typename TTube::PointListType::iterator endItr = pointList.end();
+
+  typename TTube::Pointer newTube = TTube::New();
+  newTube->CopyInformation( tube );
+
+  typename TTube::PointListType newPointList;
+
+  // Cannot subsample by 0
+  if( N == 0 )
+    {
+    return NULL;
+    }
+  // Subsample by 1 = do nothing
+  if( N == 1 )
+    {
+    return newTube;
+    }
+
+  int count = 0;
+  for( pointItr = beginItr; pointItr != endItr; ++pointItr )
+    {
+    typename TTube::TubePointType newPoint = *pointItr;
+
+    // An offset of N/2 on each side of the tube is chosen to
+    // delete the end and the beginning of it,
+    // which usually aren't very good.
+    if( ( count - N/2 ) % N == 0 )
+      {
+      newPointList.push_back( newPoint );
+      }
+
+    ++count;
+    }
+
+  newTube->SetPoints( newPointList );
+  tube::ComputeTubeTangentsAndNormals< TTube >( newTube );
+
+  return newTube;
+}
+
 
 } // End namespace tube
 

@@ -54,6 +54,9 @@ typename TTube::Pointer
 SmoothTube( const typename TTube::Pointer & tube, double h = 2,
   SmoothTubeFunctionEnum smoothFunction = SMOOTH_TUBE_USING_INDEX_AVERAGE );
 
+template< class TTube >
+typename TTube::Pointer
+SubsampleTube( const typename TTube::Pointer & tube, int N = 2 );
 
 } // End namespace tube
 
