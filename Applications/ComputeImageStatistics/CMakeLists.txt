@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-set( MODULE_NAME ComputeImageStatisticsUsingMask )
+set( MODULE_NAME ComputeImageStatistics )
 project( ${MODULE_NAME} )
 
 if( NOT TubeTK_SOURCE_DIR )

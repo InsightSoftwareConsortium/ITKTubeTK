@@ -92,7 +92,7 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 void
 TubeExtractor<TInputImage>
-::SetTubeMaskImage( typename 
+::SetTubeMaskImage( typename
   TubeExtractor<TInputImage>::TubeMaskImageType::Pointer & mask )
 {
   m_RidgeOp->SetTubeMaskImage( mask );
@@ -426,7 +426,7 @@ TubeExtractor<TInputImage>
     throw( "Input data must be set first in TubeExtractor" );
     }
 
-  this->m_RidgeOp->SmoothTube( tube, h );
+  tube = ::tube::SmoothTube< TubeType >( tube, h );
 }
 
 /**
@@ -494,7 +494,7 @@ TubeExtractor<TInputImage>
 }
 
 template< class TInputImage >
-vnl_vector<double> & 
+vnl_vector<double> &
 TubeExtractor<TInputImage>
 ::GetTubeColor( void )
 {

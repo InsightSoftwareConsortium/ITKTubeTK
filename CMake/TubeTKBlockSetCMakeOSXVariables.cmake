@@ -97,22 +97,14 @@ if(APPLE)
     string(REGEX MATCH "MacOSX([0-9]+\\.[0-9]+)\\.sdk" _match "${CMAKE_OSX_SYSROOT}")
     set(SDK_VERSION "${CMAKE_MATCH_1}")
     if( "${SDK_VERSION}" VERSION_GREATER "10.8" )
-      # add to cache to allow interactive editing after fatal error
-      set(CMAKE_OSX_DEPLOYMENT_TARGET "" CACHE PATH "Deployment target needs to be explicitly set." FORCE)
-      message(FATAL_ERROR
-        "The OSX_SYSROOT is set to version ${SDK_VERSION} (>10.8) and OSX_DEPLOYMENT_TARGET is not explicitly set!\n"
-        "Since:\n"
-        " (1) the default runtime associated with >=10.9 deployment target is 'libc++'.[1]\n"
-        " (2) the default runtime associated with <=10.8 deployment target is 'libstdc++'.\n"
-        " (3) Qt support for 'macx-clang-libc++' is listed as 'unsupported' mkspecs.\n"
-        " (4) Qt binaries may be build against 'libstdc++' or 'libc++'.\n"
-        " (5) Mixing the two different runtime in binaries is unstable.\n"
-        "  [1]http://stackoverflow.com/questions/19637164/c-linking-error-after-upgrading-to-mac-os-x-10-9-xcode-5-0-1/19637199#19637199\n"
-        "--------------------------------\n"
-        "Run '$otool -L $(which qmake) |grep lib.\\*c++' to check what library Qt is built against:\n"
-        " (1) if it is libstdc++ then add '-DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.8' (or older) to the cmake command line.\n"
-        " (2) if it is libc++ then add '-DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.9' (or newer) to the cmake command line.\n"
-        )
+      execute_process( COMMAND "otool -L $QT_QMAKE_COMMAND | grep stdc"
+        OUTPUT_VARIABLE QMAKE_USE_STDC
+        OUTPUT_STRIP_TRAILING_WHITESPACE )
+      if( "x${QMAKE_USE_STDC}x" strequal "xx" )
+        set(CMAKE_OSX_DEPLOYMENT_TARGET "10.8" CACHE PATH "Deployment target needs to be explicitly set." FORCE)
+      else()
+        set(CMAKE_OSX_DEPLOYMENT_TARGET "${SDK_VERSION}" CACHE PATH "Deployment target needs to be explicitly set." FORCE)
+      endif()
     endif()
   endif()
 

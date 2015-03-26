@@ -11,7 +11,7 @@ if( NOT EXISTS "${activate_full}" )
     set( virtualenv_script "${VIRTUALENV}" )
   else( VIRTUALENV )
     set( virtualenv_script
-      "@TubeTK_SOURCE_DIR@/Utilities/Python/virtualenv/virtualenv.py" )
+      "${TubeTK_SOURCE_DIR}/Utilities/Python/virtualenv/virtualenv.py" )
   endif( VIRTUALENV )
   # Create the virtual environment.
   execute_process( COMMAND "${PYTHON_EXECUTABLE}"
@@ -44,9 +44,10 @@ if( TubeTK_USE_IPYTHON_NOTEBOOKS )
   list( APPEND PYTHON_TESTING_MODULES
     tornado
     pyzmq
-    ipython[zmq]
+    ipython
     jinja2
     matplotlib )
+    # ipython[zmq]
 endif( TubeTK_USE_IPYTHON_NOTEBOOKS )
 
 if( TubeTK_USE_PYQTGRAPH )

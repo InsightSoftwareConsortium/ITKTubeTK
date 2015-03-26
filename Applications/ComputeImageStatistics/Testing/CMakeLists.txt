@@ -30,23 +30,22 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
- ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-set( TEXTCOMPARE_EXE
- ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
+set( IMAGECOMPARE_EXE
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
 
 # Test1
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
-                COMMAND ${PROJ_EXE}
-                  MIDAS{T1NoSkull.mha.md5}
-                  ${TEMP}/${MODULE_NAME}Test1.txt
-                  --outputPlainText )
+            COMMAND ${PROJ_EXE}
+               -m MIDAS{im0001.vk.mha.md5}
+               MIDAS{im0001.mha.md5}
+               ${TEMP}/${MODULE_NAME}Test1.mha )
 
 # Test1-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
-                COMMAND ${TEXTCOMPARE_EXE}
-                  -t ${TEMP}/${MODULE_NAME}Test1.txt
-                  -b MIDAS{${MODULE_NAME}Test1.txt.md5} )
-
+            COMMAND ${IMAGECOMPARE_EXE}
+               -t ${TEMP}/${MODULE_NAME}Test1.mha
+               -b MIDAS{${MODULE_NAME}Test1.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare
-               APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
