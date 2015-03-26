@@ -30,7 +30,7 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 #include <itkTimeProbesCollectorBase.h>
 
-#include "ComputeImageStatisticsUsingMaskCLP.h"
+#include "ComputeImageStatisticsCLP.h"
 
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
