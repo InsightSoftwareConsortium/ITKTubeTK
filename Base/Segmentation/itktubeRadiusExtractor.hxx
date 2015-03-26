@@ -173,18 +173,21 @@ RadiusExtractor<TInputImage>
   m_MedialnessFunc = new RadiusExtractorMedialnessFunc<TInputImage>(
     this, m_MedialnessRadiusStep );
 
-  m_MedialnessOpt.SetTolerance( m_MedialnessRadiusTolerance / m_MedialnessRadiusStep );
+  m_MedialnessOpt.SetTolerance( m_MedialnessRadiusTolerance /
+    m_MedialnessRadiusStep );
 
   m_MedialnessOpt.SetXStep( 0.5 / m_MedialnessRadiusStep );
 
   m_MedialnessOpt.SetSearchForMin( false );
 
-  m_MedialnessOptSpline = new SplineType( m_MedialnessFunc, &m_MedialnessOpt );
+  m_MedialnessOptSpline = new SplineType( m_MedialnessFunc,
+    &m_MedialnessOpt );
 
   m_MedialnessOptSpline->SetClip( true );
   m_MedialnessOptSpline->SetXMin( m_RadiusMin / m_MedialnessRadiusStep );
   m_MedialnessOptSpline->SetXMax( m_RadiusMax / m_MedialnessRadiusStep );
 
+  m_OptimalRadiusMetric = MAXIMIZE_NORMALIZED_DIFFERENCE;
 
   m_IdleCallBack = NULL;
   m_StatusCallBack = NULL;
@@ -399,7 +402,7 @@ RadiusExtractor<TInputImage>
     //   to avoid this situation.  If inconsistent normals are used,
     //   branchness computations suffer due to normal flipping.
     if( this->GetDebug() )
-        {
+      {
       std::cout
         << "Warning: Point normals invalid. Recomputing. Frenet frame lost."
         << std::endl;
@@ -534,11 +537,13 @@ RadiusExtractor<TInputImage>
   kernBrn.fill( 0 );
 
   MatrixType norms( ImageDimension, ImageDimension-1 );
-  double dotP = vnl_math_abs( dot_product( kernArray[mid].GetNormal1().GetVnlVector(),
+  double dotP = vnl_math_abs( dot_product(
+    kernArray[mid].GetNormal1().GetVnlVector(),
     kernArray[mid].GetTangent().GetVnlVector() ) );
   if( ImageDimension == 3 )
     {
-    dotP += vnl_math_abs( dot_product( kernArray[mid].GetNormal2().GetVnlVector(),
+    dotP += vnl_math_abs( dot_product(
+      kernArray[mid].GetNormal2().GetVnlVector(),
       kernArray[mid].GetTangent().GetVnlVector() ) );
     }
   double sum = kernArray[mid].GetNormal1().GetNorm();
@@ -565,38 +570,45 @@ RadiusExtractor<TInputImage>
         << std::endl;
       std::cout << "   DotProd = " << dotP << " and Norm = " << sum
         << std::endl;
-      std::cout << "   pos = " << kernArray[mid].GetPosition() << std::endl;
+      std::cout << "   pos = " << kernArray[mid].GetPosition()
+        << std::endl;
       std::cout << "   t = " << kernArray[mid].GetTangent() << std::endl;
       std::cout << "   n1 = " << kernArray[mid].GetNormal1() << std::endl;
       if( ImageDimension == 3 )
         {
-        std::cout << "   n2 = " << kernArray[mid].GetNormal2() << std::endl;
+        std::cout << "   n2 = " << kernArray[mid].GetNormal2()
+          << std::endl;
         }
       }
     norms.set_column( 0,
-      ::tube::ComputeOrthogonalVector( kernArray[mid].GetTangent().GetVnlVector() ) );
+      ::tube::ComputeOrthogonalVector(
+      kernArray[mid].GetTangent().GetVnlVector() ) );
     norms.set_column( 0, norms.get_column( 0 ).normalize() );
     if( ImageDimension == 3 )
       {
       norms.set_column( 1,
-        ::tube::ComputeCrossVector( kernArray[mid].GetTangent().GetVnlVector(),
-          norms.get_column( 0 ) ) );
+        ::tube::ComputeCrossVector(
+        kernArray[mid].GetTangent().GetVnlVector(),
+        norms.get_column( 0 ) ) );
       norms.set_column( 1, norms.get_column( 1 ).normalize() );
-      kernArray[mid].SetNormal1( norms.get_column(0)[0], norms.get_column(0)[1],
-        norms.get_column(0)[2] );
-      kernArray[mid].SetNormal2( norms.get_column(1)[0], norms.get_column(1)[1],
-        norms.get_column(1)[2] );
+      kernArray[mid].SetNormal1( norms.get_column(0)[0],
+        norms.get_column(0)[1], norms.get_column(0)[2] );
+      kernArray[mid].SetNormal2( norms.get_column(1)[0],
+        norms.get_column(1)[1], norms.get_column(1)[2] );
       }
     else
       {
-      kernArray[mid].SetNormal1( norms.get_column(0)[0], norms.get_column(0)[1] );
+      kernArray[mid].SetNormal1( norms.get_column(0)[0],
+        norms.get_column(0)[1] );
       }
     if( this->GetDebug() )
       {
-      std::cout << "   new n1 = " << kernArray[mid].GetNormal1() << std::endl;
+      std::cout << "   new n1 = " << kernArray[mid].GetNormal1()
+        << std::endl;
       if( ImageDimension == 3 )
         {
-        std::cout << "   new n2 = " << kernArray[mid].GetNormal2() << std::endl;
+        std::cout << "   new n2 = " << kernArray[mid].GetNormal2()
+          << std::endl;
         }
       }
     }
@@ -657,6 +669,11 @@ RadiusExtractor<TInputImage>
 
   KernArrayType kernArray;
 
+  if( rMin < 0.5 )
+    {
+    rMin = 0.5;
+    }
+
   if( r0 < rMin )
     {
     r0 = rMin;
@@ -703,10 +720,6 @@ RadiusExtractor<TInputImage>
 
   double mness = 0.0;
 
-  if( rMin < 0.5 )
-    {
-    rMin = 0.5;
-    }
   double tempXMin = m_MedialnessOptSpline->GetXMin();
   m_MedialnessOptSpline->SetXMin( rMin / m_MedialnessRadiusStep );
 
@@ -723,7 +736,7 @@ RadiusExtractor<TInputImage>
   if( this->GetDebug() )
     {
     std::cout << "kern pnt = " << kernArray.begin()->GetPosition()
-      << std::endl;
+    << std::endl;
     } */
   static_cast< RadiusExtractorMedialnessFunc< TInputImage > *>(
     m_MedialnessFunc )->SetKernelArray( & kernArray );
@@ -809,7 +822,8 @@ RadiusExtractor<TInputImage>
   os << indent << "MedialnessOpt = " << m_MedialnessOpt << std::endl;
   if( m_MedialnessOptSpline != NULL )
     {
-    os << indent << "MedialnessOptSpline = " << m_MedialnessOptSpline << std::endl;
+    os << indent << "MedialnessOptSpline = " << m_MedialnessOptSpline
+      << std::endl;
     }
   else
     {
@@ -992,10 +1006,12 @@ RadiusExtractor<TInputImage>
       {
       n.set_column( 1,
         ::tube::ComputeCrossVector( pnt.GetTangent().GetVnlVector(),
-          n.get_column( 0 ) ) );
+        n.get_column( 0 ) ) );
       n.set_column( 1, n.get_column( 1 ).normalize() );
-      pnt.SetNormal1( n.get_column(0)[0], n.get_column(0)[1], n.get_column(0)[2] );
-      pnt.SetNormal2( n.get_column(1)[0], n.get_column(1)[1], n.get_column(1)[2] );
+      pnt.SetNormal1( n.get_column(0)[0], n.get_column(0)[1],
+        n.get_column(0)[2] );
+      pnt.SetNormal2( n.get_column(1)[0], n.get_column(1)[1],
+        n.get_column(1)[2] );
       }
     else
       {
@@ -1030,7 +1046,7 @@ RadiusExtractor<TInputImage>
     {
     n.set_column( 1,
       ::tube::ComputeCrossVector( pnt.GetTangent().GetVnlVector(),
-        n.get_column( 0 ) ) );
+      n.get_column( 0 ) ) );
     n.set_column( 1, n.get_column( 1 ).normalize() );
     if( this->GetDebug() )
       {
@@ -1052,27 +1068,21 @@ RadiusExtractor<TInputImage>
   double kernNegCnt = 0;
   double kernBrnCnt = 0;
 
-  double e = 1.1;
-  double f = 4.0;
+  double e = 1.0;
+  double f = 2.0;
   if( ( pntR / f ) * e < 0.71 )  // std::sqrt( 2 )/2 = 0.7071 approx = 0.71
     {
-    f = ( ( pntR * e ) / 0.71 + f ) / 2;
-    e = 0.71 / ( pntR / f );
+    e = ( 0.71 * f ) / pntR;
     }
-  if( ( pntR / f ) * e > 3.1 )
-    {
-    f = ( ( pntR * e ) / 3.1 + f ) / 2;
-    e = 3.1 / ( pntR / f );
-    }
-  m_DataOp->SetScale( pntR / f  );
-  m_DataOp->SetExtent( e * 1.1 );
-  //double r = (f-e)/f * pntR;
   double r = pntR - (pntR/f) * e;
   if( r < 0 )
     {
     r = 0;
-    e = f;
+    e = 1;
+    f = 1;
     }
+  m_DataOp->SetScale( pntR / f  );
+  m_DataOp->SetExtent( e );
   if( this->GetDebug() )
     {
     std::cout << "Pos: opR = " << pntR << " r = " << r << " opE = " << e
@@ -1085,9 +1095,7 @@ RadiusExtractor<TInputImage>
     std::cout << "   kernPos = " << kernPos << std::endl;
     }
 
-  // r = (f+e)/f * pntR;
-  r = pntR + (pntR/f) * e;
-
+  r = pntR + (pntR - r);
   if( this->GetDebug() )
     {
     std::cout << "Neg: opR = " << pntR << " r = " << r << " opE = " << e
@@ -1308,36 +1316,20 @@ RadiusExtractor<TInputImage>
       }
     }
 
-  if( kernAvgCnt > 3 )
+  if( kernAvgCnt > 5 )
     {
-    /* do the following code twice - once to remove the most-positive
-    * of the negative kernel values and once to remove the most-negative
-    * of the positive kernel values.   This increases the spread and
-    * provide insensitivity to local bumps/divots in the vessel boundary
-    */
-    int iter = 0;
-    while( iter < 2 )
+    int kernI = kernNegMaxI;  // first dampen most positive negative-node
+    kernPosAvg -= kernPos[kernI];
+    kernNegAvg -= kernNeg[kernI];
+    /* Dampens the effect of the extreme, by replacing it with a point
+     * 1/2 to the extreme. */
+    kernPosAvg += ( kernPos[kernI] + kernPosAvg / ( kernAvgCnt-1 ) )
+      / 2;
+    kernNegAvg += ( kernNeg[kernI] + kernNegAvg / ( kernAvgCnt-1 ) )
+      / 2;
+
+    if( kernPosMinI == kernNegMaxI )
       {
-      int kernI;
-      if( iter == 0 )
-        {
-        kernI = kernNegMaxI;  // first dampen most positive negative-node
-        }
-      else
-        {
-        kernI = kernPosMinI; // second dampen most negative positive-node
-        }
-
-      kernPosAvg -= kernPos[kernI];
-      kernNegAvg -= kernNeg[kernI];
-
-      /* Dampens the effect of the extreme, by replacing it with a point
-       * 1/2 to the extreme. */
-      kernPosAvg += ( kernPos[kernI] + kernPosAvg / ( kernAvgCnt-1 ) )
-        / 2;
-      kernNegAvg += ( kernNeg[kernI] + kernNegAvg / ( kernAvgCnt-1 ) )
-        / 2;
-
       /* Dampens the effect of the largest adjacent node */
       int l = kernI + 1;
       if( l >= (int)m_KernNumDirs )
@@ -1349,12 +1341,12 @@ RadiusExtractor<TInputImage>
         {
         m = m_KernNumDirs - 1;
         }
+
       if( kernNeg[l] != 0 && kernPos[l] != 0 &&
           kernNeg[m] != 0 && kernPos[m] != 0 )
         {
         int kernAdjI;
-        if( (iter == 0 && kernNeg[l] > kernNeg[m] ) ||
-            (iter == 1 && kernPos[l] < kernPos[m] ) )
+        if( ( kernPos[l] - kernNeg[l] ) < ( kernPos[m] - kernNeg[m] ) )
           {
           kernAdjI = l;
           }
@@ -1369,22 +1361,70 @@ RadiusExtractor<TInputImage>
         kernNegAvg += ( kernNeg[kernAdjI] + kernNegAvg / (kernAvgCnt-1) )
           / 2;
         }
-
-      ++iter;
+      }
+    else
+      {
+      kernI = kernPosMinI; // second dampen most negative positive-node
+      kernPosAvg -= kernPos[kernI];
+      kernNegAvg -= kernNeg[kernI];
+      /* Dampens the effect of the extreme, by replacing it with a point
+       * 1/2 to the extreme. */
+      kernPosAvg += ( kernPos[kernI] + kernPosAvg / ( kernAvgCnt-1 ) )
+        / 2;
+      kernNegAvg += ( kernNeg[kernI] + kernNegAvg / ( kernAvgCnt-1 ) )
+        / 2;
       }
     }
 
-  if( kernAvgCnt != 0 )
-    {
-    kernPosAvg /= kernAvgCnt;
-    kernNegAvg /= kernAvgCnt;
-    }
-  else
+  if( kernAvgCnt == 0 )
     {
     kernPosAvg = 0;
     kernNegAvg = 0;
+    mness = 0;
     }
-  mness = ( kernPosAvg - kernNegAvg );
+  else
+    {
+    kernPosAvg /= kernAvgCnt;
+    kernNegAvg /= kernAvgCnt;
+    switch( m_OptimalRadiusMetric )
+      {
+      default:
+      case MAXIMIZE_DIFFERENCE:
+        {
+        mness = ( kernPosAvg - kernNegAvg );
+        break;
+        }
+      case MAXIMIZE_RATIO:
+        {
+        if( kernPosAvg != 0 )
+          {
+          // We put kernPosAvg in the denominator since kernNegAvg could
+          // go towards zero resulting in INF results.   This way the
+          // result varies 0 to 1, in most cases;
+          mness = kernPosAvg / kernNegAvg;
+          }
+        else
+          {
+          mness = 0;
+          }
+        break;
+        }
+      case MAXIMIZE_NORMALIZED_DIFFERENCE:
+        {
+        if( kernPosAvg != 0 )
+          {
+          // See comment on MAXIMIZE_RATIO to understand this formulation.
+          mness = ( kernPosAvg - kernNegAvg ) / kernNegAvg;
+          }
+        else
+          {
+          mness = 0;
+          }
+        break;
+        }
+      }
+    }
+
 
   // if( this->GetDebug() )
     {
@@ -1626,7 +1666,7 @@ RadiusExtractor<TInputImage>
       }
     }
 
-  for( unsigned int iter=0; iter<20; iter++ )
+  for( unsigned int iter=0; iter<2; iter++ )
     {
     for( unsigned int kernPnt=0; kernPnt<len-1; kernPnt++ )
       {
@@ -1786,6 +1826,24 @@ RadiusExtractor<TInputImage>
     std::sprintf( loc, "Extract:Widths" );
     m_StatusCallBack( loc, mesg, 0 );
     }
+}
+
+/** Specify function to be optimized when selecting a radius */
+template< class TInputImage >
+void
+RadiusExtractor<TInputImage>
+::SetOptimalRadiusMetric( const OptimalRadiusMetricEnum & metric )
+{
+  m_OptimalRadiusMetric = metric;
+}
+
+/** Get function to be optimized when selecting a radius */
+template< class TInputImage >
+const typename RadiusExtractor<TInputImage>::OptimalRadiusMetricEnum &
+RadiusExtractor<TInputImage>
+::GetOptimalRadiusMetric( void ) const
+{
+  return m_OptimalRadiusMetric;
 }
 
 /** Compute Radii */

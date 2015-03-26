@@ -261,7 +261,7 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
       }
 
     std::cout << "***** Attempting smooth tube *****" << std::endl;
-    tube::SmoothTube< TubeType >( xTube, 5 );
+    xTube = ::tube::SmoothTube< TubeType >( xTube, 5 );
 
     std::cout << "***** Attempting add tube *****" << std::endl;
     if( !tubeOp->AddTube( xTube ) )

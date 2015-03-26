@@ -74,11 +74,12 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     TInputImage::ImageDimension );
 
-  typedef VesselTubeSpatialObject< TInputImage::ImageDimension > TubeType;
-  typedef typename TubeType::TubePointType                       TubePointType;
+  typedef VesselTubeSpatialObject< TInputImage::ImageDimension >
+                                                             TubeType;
+  typedef typename TubeType::TubePointType                   TubePointType;
 
-  typedef typename TubeType::PointType                           ITKPointType;
-  typedef typename TubeType::VectorType                          ITKVectorType;
+  typedef typename TubeType::PointType                       ITKPointType;
+  typedef typename TubeType::VectorType                      ITKVectorType;
 
   /**
    * Kernel is a vector of points that sparsely represent a tube
@@ -104,6 +105,12 @@ public:
    * Defines the type of matrix used
    */
   typedef vnl_matrix< double >                               MatrixType;
+
+  /**
+   * Types of radius optimization functions
+   */
+  enum OptimalRadiusMetricEnum { MAXIMIZE_DIFFERENCE, MAXIMIZE_RATIO,
+    MAXIMIZE_NORMALIZED_DIFFERENCE };
 
   /**
    * Set the input image */
@@ -194,6 +201,9 @@ public:
     double rStep,
     double rTolerance );
 
+  void SetOptimalRadiusMetric( const OptimalRadiusMetricEnum & metric );
+  const OptimalRadiusMetricEnum & GetOptimalRadiusMetric( void ) const;
+
   /** Calculate Radii */
   bool ExtractRadii( TubeType * tube );
 
@@ -236,8 +246,10 @@ protected:
     bool doBNess );
 
   /** Calculate Radii one way */
-  void MeasuresInFullKernelArray( KernArrayType & kernArray, unsigned int kernPntStart,
-    unsigned int KernPntEnd, double radiusStart );
+  void MeasuresInFullKernelArray( KernArrayType & kernArray,
+    unsigned int kernPntStart,
+    unsigned int KernPntEnd,
+    double radiusStart );
 
   void SmoothMeasuresInFullKernelArray( KernArrayType & kernArray );
 
@@ -275,6 +287,8 @@ private:
   double                                  m_MinMedialnessStart;
 
   ::tube::UserFunction<int, double> *     m_MedialnessFunc;
+
+  OptimalRadiusMetricEnum                 m_OptimalRadiusMetric;
 
   unsigned int                            m_KernNumDirs;
   MatrixType                              m_KernX;
