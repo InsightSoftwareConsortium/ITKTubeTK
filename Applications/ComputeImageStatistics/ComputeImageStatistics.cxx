@@ -38,6 +38,7 @@ int DoIt( int argc, char * argv[] );
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
+
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
@@ -130,6 +131,12 @@ int DoIt( int argc, char * argv[] )
   compStdDev.Fill( 0 );
   itk::Array< double > compCount(maxNumComponents);
   compCount.Fill( 0 );
+  itk::Array< TPixel > compValue(maxNumComponents);
+  compValue.Fill( 0 );
+
+  unsigned int maxNumBins = 1000;
+  vnl_matrix< unsigned int > compHisto( maxNumComponents, maxNumBins );
+  compHisto.fill( 0 );
 
   itk::ImageRegionIterator< MaskType > maskIter( curMask,
     curMask->GetLargestPossibleRegion() );
@@ -140,46 +147,52 @@ int DoIt( int argc, char * argv[] )
   typename MapType::iterator mapIter;
   unsigned int numberOfComponents = 0;
   unsigned int id = 0;
+  TPixel lastMaskV = maskIter.Get() + 1;
   TPixel maskV = 0;
   while( !connCompIter.IsAtEnd() )
     {
     maskV = maskIter.Get();
 
-    mapIter = maskMap.find( maskV );
-    if( mapIter != maskMap.end() )
+    if( maskV != lastMaskV )
       {
-      id = mapIter->second;
-      }
-    else
-      {
-      id = numberOfComponents;
-      maskMap[ maskV ] = id;
-      ++numberOfComponents;
-      }
-
-    double volumeV = volumeIter.Get();
-    compMean[id] += volumeV;
-    compStdDev[id] += volumeV * volumeV;
-    if( compCount[id] == 0 )
-      {
-      compMin[id] = volumeV;
-      compMax[id] = volumeV;
-      }
-    else
-      {
-      if( volumeV < compMin[id] )
+      lastMaskV = maskV;
+      mapIter = maskMap.find( maskV );
+      if( mapIter != maskMap.end() )
         {
-        compMin[id] = volumeV;
+        id = mapIter->second;
         }
       else
         {
-        if( volumeV > compMax[id] )
+        id = numberOfComponents;
+        maskMap[ maskV ] = id;
+        compValue[ id ] = maskV;
+        ++numberOfComponents;
+        }
+      }
+
+    double volumeV = volumeIter.Get();
+    compMean[ id ] += volumeV;
+    compStdDev[ id ] += volumeV * volumeV;
+    if( compCount[ id ] == 0 )
+      {
+      compMin[ id ] = volumeV;
+      compMax[ id ] = volumeV;
+      }
+    else
+      {
+      if( volumeV < compMin[ id ] )
+        {
+        compMin[ id ] = volumeV;
+        }
+      else
+        {
+        if( volumeV > compMax[ id ] )
           {
-          compMax[id] = volumeV;
+          compMax[ id ] = volumeV;
           }
         }
       }
-    ++compCount[id];
+    ++compCount[ id ];
 
     connCompIter.Set( id );
 
@@ -187,6 +200,48 @@ int DoIt( int argc, char * argv[] )
     ++volumeIter;
     ++connCompIter;
     }
+
+  maskIter.GoToBegin();
+  volumeIter.GoToBegin();
+  while( !volumeIter.IsAtEnd() )
+    {
+    maskV = maskIter.Get();
+    mapIter = maskMap.find( maskV );
+    id = mapIter->second;
+    unsigned int bin = static_cast< unsigned int >( ( ( volumeIter.Get() -
+      compMin[id] ) /
+      ( compMax[id] - compMin[id] ) ) * maxNumBins + 0.5 );
+    ++compHisto[id][bin];
+    ++maskIter;
+    ++volumeIter;
+    }
+
+  unsigned int numberOfQuantiles = quantiles.size();
+  vnl_matrix< double > quantileValue( numberOfComponents,
+    numberOfQuantiles );
+  for( unsigned int quantileNumber=0; quantileNumber<numberOfQuantiles;
+    ++quantileNumber )
+    {
+    double quant = quantiles[ quantileNumber ];
+    for( int comp=0; comp<numberOfComponents; ++comp )
+      {
+      unsigned int targetCount = static_cast< unsigned int >( quant *
+        compCount[ comp ] );
+      unsigned int bin = 0;
+      unsigned int binCount = 0;
+      while( binCount + compHisto[ comp ][ bin ] < targetCount )
+        {
+        binCount += compHisto[ comp ][ bin ];
+        ++bin;
+        }
+      double binPortion = static_cast< double >( compHisto[ comp ][ bin ]
+        - (targetCount - binCount) ) / compHisto[ comp ][ bin ];
+      double binSize = ( compMax[ comp ] - compMin[ comp ] ) / maxNumBins;
+      quantileValue[ comp ][ quantileNumber ] = ( bin + binPortion )
+        * binSize + compMin[ comp ];
+      }
+    }
+
   std::cout << "Number of components = " << numberOfComponents << std::endl;
   std::ofstream writeStream;
   if( ! csvStatisticsFile.empty() )
@@ -200,39 +255,59 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
-  std::cout << "id, Value, Count, Mean, StdDev, Min, Max" << std::endl;
+  std::cout << "id, Value, Count, Mean, StdDev, Min, Max";
+  for( unsigned int q=0; q<numberOfQuantiles; ++q )
+    {
+    std::cout << ", " << quantiles[ q ];
+    }
+  std::cout << std::endl;
   if( ! csvStatisticsFile.empty() )
     {
-    writeStream << "id, Value, Count, Mean, StdDev, Min, Max" << std::endl;
+    writeStream << "id, Value, Count, Mean, StdDev, Min, Max";
+    for( unsigned int q=0; q<numberOfQuantiles; ++q )
+      {
+      writeStream << ", " << quantiles[ q ];
+      }
+    writeStream << std::endl;
     }
-  for( unsigned int i=0; i<numberOfComponents; i++ )
+  for( unsigned int i=0; i<numberOfComponents; ++i )
     {
     std::cout << i << ", ";
-    std::cout << maskMap[i] << ", ";
-    std::cout << compCount[i] << ", ";
+    std::cout << static_cast< double >( compValue[ i ] ) << ", ";
+    std::cout << compCount[ i ] << ", ";
     if( ! csvStatisticsFile.empty() )
       {
       writeStream << i << ", ";
-      writeStream << maskMap[i] << ", ";
-      writeStream << compCount[i] << ", ";
+      writeStream << static_cast< double >( compValue[ i ] ) << ", ";
+      writeStream << compCount[ i ] << ", ";
       }
-    if( compCount[i] > 0 )
+    if( compCount[ i ] > 0 )
       {
-      compStdDev[i] = vcl_sqrt( ( compStdDev[i]
-        - ( ( compMean[i] * compMean[i] ) / compCount[i] ) )
-        / ( compCount[i] - 1 ) );
-      compMean[i] /= compCount[i];
+      compStdDev[ i ] = vcl_sqrt( ( compStdDev[ i ]
+        - ( ( compMean[ i ] * compMean[ i ] ) / compCount[ i ] ) )
+        / ( compCount[ i ] - 1 ) );
+      compMean[ i ] /= compCount[ i ];
       }
-    std::cout << compMean[i] << ", ";
-    std::cout << compStdDev[i] << ", ";
-    std::cout << compMin[i] << ", ";
-    std::cout << compMax[i] << std::endl;
+    std::cout << compMean[ i ] << ", ";
+    std::cout << compStdDev[ i ] << ", ";
+    std::cout << compMin[ i ] << ", ";
+    std::cout << compMax[ i ];
+    for( unsigned int q=0; q<numberOfQuantiles; ++q )
+      {
+      std::cout << ", " << quantileValue[ i ][ q ];
+      }
+    std::cout << std::endl;
     if( ! csvStatisticsFile.empty() )
       {
-      writeStream << compMean[i] << ", ";
-      writeStream << compStdDev[i] << ", ";
-      writeStream << compMin[i] << ", ";
-      writeStream << compMax[i] << std::endl;
+      writeStream << compMean[ i ] << ", ";
+      writeStream << compStdDev[ i ] << ", ";
+      writeStream << compMin[ i ] << ", ";
+      writeStream << compMax[ i ];
+      for( unsigned int q=0; q<numberOfQuantiles; ++q )
+        {
+        writeStream << ", " << quantileValue[ i ][ q ];
+        }
+      writeStream << std::endl;
       }
     }
   if( ! csvStatisticsFile.empty() )
@@ -246,7 +321,7 @@ int DoIt( int argc, char * argv[] )
     {
     id = connCompIter.Get();
 
-    volumeIter.Set( compMean[id] );
+    volumeIter.Set( compMean[ id ] );
 
     ++connCompIter;
     ++volumeIter;

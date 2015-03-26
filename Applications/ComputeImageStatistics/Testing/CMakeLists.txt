@@ -38,7 +38,7 @@ set( IMAGECOMPARE_EXE
 # Test1
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
             COMMAND ${PROJ_EXE}
-               MIDAS{im0001.vk.mha.md5}
+               -m MIDAS{im0001.vk.mha.md5}
                MIDAS{im0001.mha.md5}
                ${TEMP}/${MODULE_NAME}Test1.mha )
 

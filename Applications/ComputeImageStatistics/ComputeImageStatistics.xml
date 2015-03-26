@@ -12,13 +12,6 @@
     <label>IO</label>
     <description>Input/output parameters.</description>
     <image>
-      <name>inputMask</name>
-      <label>Input Mask</label>
-      <channel>input</channel>
-      <index>0</index>
-      <description>Input mask.</description>
-    </image>
-    <image>
       <name>inputVolume</name>
       <label>Input Volume</label>
       <channel>input</channel>
@@ -34,13 +27,44 @@
     </image>
   </parameters>
   <parameters>
+    <float-vector>
+      <name>quantiles</name>
+      <label>Quantiles</label>
+      <flag>q</flag>
+      <longflag>quantiles</longflag>
+      <default>0.25,0.5,0.75</default>
+    </float-vector>
+    <image>
+      <name>inputMask</name>
+      <label>Input Mask</label>
+      <channel>input</channel>
+      <description>Input mask.</description>
+      <flag>m</flag>
+      <longflag>mask</longflag>
+    </image>
     <file>
       <name>csvStatisticsFile</name>
       <label>CSV File of Statistics</label>
+      <flag>c</flag>
       <longflag>csvStatisticsFile</longflag>
-      <description>Write component statistics to a CSV formatted file</description>
+      <description>Write statistics to a CSV formatted file</description>
       <default></default>
     </file>
-
+    <file>
+      <name>textStatisticsFile</name>
+      <label>Human readable file for statistics</label>
+      <flag>t</flag>
+      <longflag>textStatisticsFile</longflag>
+      <description>Write statistics to a plain text file</description>
+      <default></default>
+    </file>
+    <file>
+      <name>jsonStatisticsFile</name>
+      <label>JSon file for statistics</label>
+      <flag>j</flag>
+      <longflag>jsonStatisticsFile</longflag>
+      <description>Write statistics to a json file</description>
+      <default></default>
+    </file>
   </parameters>
 </executable>

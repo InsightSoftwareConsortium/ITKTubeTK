@@ -27,7 +27,7 @@ set( TubeTK_${proj}_MODULES
   AtlasBuilderUsingIntensity
   ComputeBinaryImageSimilarityMetrics
   ComputeImageSimilarityMetrics
-  ComputeImageStatisticsUsingMask
+  ComputeImageStatistics
   ComputeSegmentTubesParameters
   ComputeTubeFlyThroughImage
   ComputeTubeGraphProbability
@@ -80,7 +80,6 @@ endif( TubeTK_BUILD_IMAGE_VIEWER)
 set( TubeTK_${proj}_Boost_MODULES )
 if( TubeTK_USE_BOOST )
   set( TubeTK_${proj}_Boost_MODULES
-    ComputeImageQuantiles
     ComputeRegionSignatures
     ComputeTubeGraphSimilarityKernelMatrix
     SegmentUsingQuantileThreshold
