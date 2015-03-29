@@ -134,7 +134,7 @@ int DoIt( int argc, char * argv[] )
   itk::Array< TPixel > compValue(maxNumComponents);
   compValue.Fill( 0 );
 
-  unsigned int maxNumBins = 1000;
+  unsigned int maxNumBins = 2000;
   vnl_matrix< unsigned int > compHisto( maxNumComponents, maxNumBins );
   compHisto.fill( 0 );
 
@@ -234,8 +234,8 @@ int DoIt( int argc, char * argv[] )
         binCount += compHisto[ comp ][ bin ];
         ++bin;
         }
-      double binPortion = static_cast< double >( compHisto[ comp ][ bin ]
-        - (targetCount - binCount) ) / compHisto[ comp ][ bin ];
+      double binPortion = static_cast< double >( targetCount - binCount )
+        / compHisto[ comp ][ bin ];
       double binSize = ( compMax[ comp ] - compMin[ comp ] ) / maxNumBins;
       quantileValue[ comp ][ quantileNumber ] = ( bin + binPortion )
         * binSize + compMin[ comp ];
