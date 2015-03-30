@@ -559,12 +559,11 @@ if( MSVC )
   set(TubeTK_EXECUTABLE_DIRS CACHE INTERNAL "Bin and Lib dirs for running apps." FORCE )
   foreach(_build_type "" Debug Release)
     list( APPEND TubeTK_EXECUTABLE_DIRS
-      ${JsonCpp_DIR}/bin/${_build_type}
       ${GenerateCLP_DIR}/${_build_type}
       ${Boost_LIBRARY_DIR}
       ${ITK_DIR}/bin/${_build_type}
       ${TubeTK_BINARY_DIR}/bin/${_build_type}
-      ${TubeTK_BINARY_DIR}/lib/TubeTK/Plugins/${_build_type} )
+      ${TubeTK_BINARY_DIR}/lib/TubeTK/${_build_type} )
     if( TubeTK_USE_VTK )
       list( APPEND TubeTK_EXECUTABLE_DIRS
         ${VTK_DIR}/bin/${_build_type} )
@@ -576,13 +575,11 @@ if( MSVC )
   endforeach()
 else( MSVC )
   set( TubeTK_EXECUTABLE_DIRS
-    ${JsonCpp_DIR}/bin
     ${GenerateCLP_DIR}
     ${Boost_LIBRARY_DIR}
     ${ITK_DIR}/bin
     ${TubeTK_BINARY_DIR}/bin
-    ${TubeTK_BINARY_DIR}/lib
-    ${TubeTK_BINARY_DIR}/lib/TubeTK/Plugins
+    ${TubeTK_BINARY_DIR}/lib/TubeTK
     CACHE INTERNAL "Bin and Lib dirs for running apps." FORCE )
   if( TubeTK_USE_VTK )
     list( APPEND ${VTK_DIR}/bin )

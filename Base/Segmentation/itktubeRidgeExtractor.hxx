@@ -140,12 +140,16 @@ RidgeExtractor<TInputImage>
   m_DataSpline->GetOptimizerND()->SetSearchForMin( false );
   m_DataSpline->GetOptimizerND()->SetTolerance( 0.01 );
   m_DataSpline->GetOptimizerND()->SetMaxIterations( 200 );
-  m_DataSpline->GetOptimizerND()->SetMaxLineSearches( 20 );
-  vnl_vector< double > xStep( ImageDimension, 0.5 );
+  m_DataSpline->GetOptimizerND()->SetMaxLineSearches( 10 );
+  vnl_vector< double > xStep( ImageDimension, 0.1 );
   m_DataSpline->GetOptimizerND()->SetXStep( xStep );
 
   m_IdleCallBack = NULL;
   m_StatusCallBack = NULL;
+
+  m_CurrentFailureCode = SUCCESS;
+  m_FailureCodeCount.set_size( this->GetNumberOfFailureCodes() );
+  m_FailureCodeCount.fill( 0 );
 
   m_Tube = NULL;
 }
@@ -681,6 +685,8 @@ RidgeExtractor<TInputImage>
         {
         std::cout << "Ridge: TraverseOneWay: Exited boundary" << std::endl;
         }
+      m_CurrentFailureCode = EXITED_IMAGE;
+      ++m_FailureCodeCount[ m_CurrentFailureCode ];
       return false;
       }
     }
@@ -703,6 +709,8 @@ RidgeExtractor<TInputImage>
       std::cout << "Ridge: TraverseOneWay: Encountered another tube"
         << std::endl;
       }
+    m_CurrentFailureCode = REVISITED_VOXEL;
+    ++m_FailureCodeCount[ m_CurrentFailureCode ];
     return false;
     }
   else
@@ -869,7 +877,8 @@ RidgeExtractor<TInputImage>
       {
       currentStepX = m_StepX;
       }
-    vnl_vector<double> v = ::tube::ComputeLineStep( lX, currentStepX, lStepDir );
+    vnl_vector<double> v = ::tube::ComputeLineStep( lX, currentStepX,
+      lStepDir );
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
       lX[i] = v[i];
@@ -901,6 +910,8 @@ RidgeExtractor<TInputImage>
           << std::endl;
         }
       recovery++;
+      m_CurrentFailureCode = OTHER_FAIL;
+      ++m_FailureCodeCount[ m_CurrentFailureCode ];
       continue;
       }
 
@@ -921,6 +932,8 @@ RidgeExtractor<TInputImage>
           std::cout << "*** Ridge term: Exited extraction bounds"
             << std::endl;
           }
+        m_CurrentFailureCode = EXITED_IMAGE;
+        ++m_FailureCodeCount[ m_CurrentFailureCode ];
         break;
         }
       }
@@ -1017,6 +1030,8 @@ RidgeExtractor<TInputImage>
         std::cout << "       Curvature = " << curvature << std::endl;
         std::cout << "       Levelness = " << levelness << std::endl;
         }
+      m_CurrentFailureCode = TANGENT_FAIL;
+      ++m_FailureCodeCount[ m_CurrentFailureCode ];
       recovery++;
       continue;
       }
@@ -1037,6 +1052,8 @@ RidgeExtractor<TInputImage>
         std::cout << "       maxDiffX = " << m_MaxXChange * GetScale()
           * stepFactor << std::endl;
         }
+      m_CurrentFailureCode = DISTANCE_FAIL;
+      ++m_FailureCodeCount[ m_CurrentFailureCode ];
       recovery++;
       continue;
       }
@@ -1053,6 +1070,8 @@ RidgeExtractor<TInputImage>
         std::cout << "       Curvature = " << curvature << std::endl;
         std::cout << "       Levelness = " << levelness << std::endl;
         }
+      m_CurrentFailureCode = RIDGE_FAIL;
+      ++m_FailureCodeCount[ m_CurrentFailureCode ];
       if( ridgeness != 0 && curvature != 0 )
         {
         recovery++;
@@ -1076,6 +1095,8 @@ RidgeExtractor<TInputImage>
         std::cout << "       Curvature = " << curvature << std::endl;
         std::cout << "       Levelness = " << levelness << std::endl;
         }
+      m_CurrentFailureCode = CURVE_FAIL;
+      ++m_FailureCodeCount[ m_CurrentFailureCode ];
       recovery++;
       continue;
       }
@@ -1092,6 +1113,8 @@ RidgeExtractor<TInputImage>
         std::cout << "       Curvature = " << curvature << std::endl;
         std::cout << "       Levelness = " << levelness << std::endl;
         }
+      m_CurrentFailureCode = LEVEL_FAIL;
+      ++m_FailureCodeCount[ m_CurrentFailureCode ];
       recovery++;
       continue;
       }
@@ -1108,6 +1131,8 @@ RidgeExtractor<TInputImage>
         std::cout << "       Curvature = " << curvature << std::endl;
         std::cout << "       Levelness = " << levelness << std::endl;
         }
+      m_CurrentFailureCode = ROUND_FAIL;
+      ++m_FailureCodeCount[ m_CurrentFailureCode ];
       if( vnl_math_abs( lNTEVal[0] ) )
         {
         recovery++;
@@ -1132,6 +1157,8 @@ RidgeExtractor<TInputImage>
          ( ( tubePointCount - oldPoint ) > ( 20 / m_StepX )
            && ( tubePointCount - tubePointCountStart ) > ( 20 / m_StepX ) ) )
         {
+        m_CurrentFailureCode = REVISITED_VOXEL;
+        ++m_FailureCodeCount[ m_CurrentFailureCode ];
         if( verbose || this->GetDebug() )
           {
           std::cout << "*** Ridge terminated: Revisited voxel" << std::endl;
@@ -1250,9 +1277,11 @@ RidgeExtractor<TInputImage>
             radiusMax = m_RadiusExtractor->GetRadiusMax();
             }
           double radiusStep = m_RadiusExtractor->GetRadiusStep() * 2;
-          double radiusTolerance = m_RadiusExtractor->GetRadiusTolerance() * 10;
-          if( !m_RadiusExtractor->OptimalRadiusAtPoint( tmpPoint, m_DynamicScaleUsed,
-            radiusMin, radiusMax, radiusStep, radiusTolerance ) )
+          double radiusTolerance = m_RadiusExtractor->GetRadiusTolerance()
+            * 10;
+          if( !m_RadiusExtractor->OptimalRadiusAtPoint( tmpPoint,
+            m_DynamicScaleUsed, radiusMin, radiusMax, radiusStep,
+            radiusTolerance ) )
             {
             m_DynamicScaleUsed = ( 2 * tmpPoint.GetRadius()
               + m_DynamicScaleUsed ) / 3;
@@ -1320,11 +1349,87 @@ RidgeExtractor<TInputImage>
     }
 }
 
+template< class TInputImage >
+unsigned int
+RidgeExtractor<TInputImage>
+::GetNumberOfFailureCodes( void ) const
+{
+  return 10;
+}
+
+template< class TInputImage >
+const std::string
+RidgeExtractor<TInputImage>
+::GetFailureCodeName( FailureCodeEnum code ) const
+{
+  switch( code )
+    {
+    case SUCCESS:
+      {
+      return "SUCCESS";
+      }
+    case EXITED_IMAGE:
+      {
+      return "EXITED_IMAGE";
+      }
+    case REVISITED_VOXEL:
+      {
+      return "REVISITED_VOXEL";
+      }
+    case RIDGE_FAIL:
+      {
+      return "RIDGE_FAIL";
+      }
+    case ROUND_FAIL:
+      {
+      return "ROUND_FAIL";
+      }
+    case CURVE_FAIL:
+      {
+      return "CURVE_FAIL";
+      }
+    case LEVEL_FAIL:
+      {
+      return "LEVEL_FAIL";
+      }
+    case TANGENT_FAIL:
+      {
+      return "TANGENT_FAIL";
+      }
+    case DISTANCE_FAIL:
+      {
+      return "DISTANCE_FAIL";
+      }
+    default:
+    case OTHER_FAIL:
+      {
+      return "OTHER_FAIL";
+      }
+    }
+}
+
+template< class TInputImage >
+unsigned int
+RidgeExtractor<TInputImage>
+::GetFailureCodeCount( FailureCodeEnum code ) const
+{
+  return m_FailureCodeCount[ code ];
+}
+
+template< class TInputImage >
+void
+RidgeExtractor<TInputImage>
+::ResetFailureCodeCounts( void )
+{
+  m_FailureCodeCount.fill( 0 );
+}
+
+
 /**
  * Compute the local ridge
  */
 template< class TInputImage >
-typename RidgeExtractor<TInputImage>::RidgeExtractionFailureEnum
+typename RidgeExtractor<TInputImage>::FailureCodeEnum
 RidgeExtractor<TInputImage>
 ::LocalRidge( ContinuousIndexType & newX, bool verbose )
 {
@@ -1634,7 +1739,8 @@ RidgeExtractor<TInputImage>
 template< class TInputImage >
 typename RidgeExtractor<TInputImage>::TubeType::Pointer
 RidgeExtractor<TInputImage>
-::ExtractRidge( const ContinuousIndexType & newX, int tubeId, bool verbose )
+::ExtractRidge( const ContinuousIndexType & newX, int tubeId,
+  bool verbose )
 {
   ContinuousIndexType lX;
   lX = newX;
@@ -1648,8 +1754,10 @@ RidgeExtractor<TInputImage>
     }
 
   // Try to find a ridge voxel close by
-  if( LocalRidge( lX, verbose ) != SUCCESS )
+  m_CurrentFailureCode = LocalRidge( lX, verbose );
+  if( m_CurrentFailureCode != SUCCESS )
     {
+    ++m_FailureCodeCount[ m_CurrentFailureCode ];
     if( verbose || this->GetDebug() )
       {
       std::cout << "LocalRidge fails at " << lX << std::endl;
@@ -1670,6 +1778,8 @@ RidgeExtractor<TInputImage>
     m_TubeMaskImage->GetPixel( indx );
   if( value != 0 && ( int )value != tubeId )
     {
+    m_CurrentFailureCode = REVISITED_VOXEL;
+    ++m_FailureCodeCount[ m_CurrentFailureCode ];
     return NULL;
     }
 
@@ -1731,8 +1841,10 @@ RidgeExtractor<TInputImage>
       {
       lX[i] = ( lX[i] + newX[i] )/2;
       }
-    if( LocalRidge( lX, verbose ) != SUCCESS )
+    m_CurrentFailureCode = LocalRidge( lX, verbose );
+    if( m_CurrentFailureCode != SUCCESS )
       {
+      ++m_FailureCodeCount[ m_CurrentFailureCode ];
       if( m_StatusCallBack )
         {
         m_StatusCallBack( "AS Failure", NULL, 0 );

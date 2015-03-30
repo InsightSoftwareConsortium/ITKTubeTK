@@ -201,6 +201,8 @@ int itktubeRadiusExtractorTest2( int argc, char * argv[] )
       }
 
     radiusOp->SetRadiusStart( radiusStart );
+    radiusOp->SetRadiusMin( 0.5 );
+    radiusOp->SetRadiusMax( 10.0 );
 
     //radiusOp->SetDebug( true );
     radiusOp->ExtractRadii( tubep );
