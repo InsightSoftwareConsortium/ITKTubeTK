@@ -283,6 +283,16 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
     ++maskIt;
     }
 
+  std::cout << "Ridge termination code counts:" << std::endl;
+  for( unsigned int code = 0; code < ridgeOp->GetNumberOfFailureCodes();
+    ++code )
+    {
+    std::cout << "   " << ridgeOp->GetFailureCodeName(
+      RidgeOpType::FailureCodeEnum( code ) ) << " : "
+      << ridgeOp->GetFailureCodeCount( RidgeOpType::FailureCodeEnum(
+      code ) ) << std::endl;
+    }
+
   std::cout << "Number of failures = " << failures << std::endl;
   if( failures > 0 )
     {

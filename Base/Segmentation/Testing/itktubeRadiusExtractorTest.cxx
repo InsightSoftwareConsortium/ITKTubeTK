@@ -68,10 +68,10 @@ int itktubeRadiusExtractorTest( int argc, char * argv[] )
     returnStatus = EXIT_FAILURE;
     }
 
-  radiusOp->SetRadiusMin( 0.75 );
-  if( radiusOp->GetRadiusMin() != 0.75 )
+  radiusOp->SetRadiusMin( 0.5 );
+  if( radiusOp->GetRadiusMin() != 0.5 )
     {
-    tube::ErrorMessage( "Radius min != 0.75" );
+    tube::ErrorMessage( "Radius min != 0.5" );
     returnStatus = EXIT_FAILURE;
     }
 
@@ -181,7 +181,7 @@ int itktubeRadiusExtractorTest( int argc, char * argv[] )
     std::cout << "  n1 = " << pnt->GetNormal1() << std::endl;
     std::cout << "  n2 = " << pnt->GetNormal2() << std::endl;
 
-    double rMin = 0.75;
+    double rMin = 0.5;
     double rMax = 10;
     double rStep = 0.25;
     double rTol = 0.1;

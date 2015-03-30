@@ -91,6 +91,9 @@ public:
                                                 ContinuousIndexType;
 
   /** Defines the type of vectors used */
+  typedef vnl_vector< unsigned int >            IntVectorType;
+
+  /** Defines the type of vectors used */
   typedef vnl_vector< double >                  VectorType;
 
   /** Defines the type of matrix used */
@@ -98,13 +101,15 @@ public:
 
   /** Tube SpatialObject typedefs */
   typedef VesselTubeSpatialObject< TInputImage::ImageDimension > TubeType;
-  typedef typename TubeType::TubePointType                       TubePointType;
+
+  typedef typename TubeType::TubePointType      TubePointType;
 
   /** Defines the type of vectors used */
   typedef typename TubeType::CovariantVectorType CovariantVectorType;
 
-  typedef enum {SUCCESS, EXITED_IMAGE, REVISITED_VOXEL, RIDGE_FAIL, ROUND_FAIL,
-    CURVE_FAIL, LEVEL_FAIL, OTHER_FAIL} RidgeExtractionFailureEnum;
+  typedef enum { SUCCESS, EXITED_IMAGE, REVISITED_VOXEL, RIDGE_FAIL,
+    ROUND_FAIL, CURVE_FAIL, LEVEL_FAIL, TANGENT_FAIL, DISTANCE_FAIL,
+    OTHER_FAIL }                                FailureCodeEnum;
 
   /** Set the input image */
   void SetInputImage( typename ImageType::Pointer inputImage );
@@ -307,13 +312,20 @@ public:
   double GetCurrentLevelness() const;
 
   /** Compute/find the local Ridge */
-  RidgeExtractionFailureEnum LocalRidge( ContinuousIndexType & x,
+  FailureCodeEnum LocalRidge( ContinuousIndexType & x,
     bool verbose=false );
 
   /** Extract */
-  typename TubeType::Pointer  ExtractRidge( const ContinuousIndexType & x,
+  typename TubeType::Pointer ExtractRidge( const ContinuousIndexType & x,
     int tubeID,
     bool verbose=false );
+
+  itkGetMacro( CurrentFailureCode, FailureCodeEnum );
+
+  unsigned int      GetNumberOfFailureCodes( void ) const;
+  const std::string GetFailureCodeName( FailureCodeEnum code ) const;
+  unsigned int      GetFailureCodeCount( FailureCodeEnum code ) const;
+  void              ResetFailureCodeCounts( void );
 
   /** Set the idle callback */
   void   IdleCallBack( bool ( *idleCallBack )( void ) );
@@ -365,6 +377,9 @@ private:
   ::tube::BrentOptimizer1D                           m_DataSplineOpt;
   ::tube::SplineND                                 * m_DataSpline;
   ::tube::UserFunction< vnl_vector<int>, double >  * m_SplineValueFunc;
+
+  FailureCodeEnum                                    m_CurrentFailureCode;
+  IntVectorType                                      m_FailureCodeCount;
 
   double                                             m_MinRidgeness;
   double                                             m_MinRidgenessStart;
