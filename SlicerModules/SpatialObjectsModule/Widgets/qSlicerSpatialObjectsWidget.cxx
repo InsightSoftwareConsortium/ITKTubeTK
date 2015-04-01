@@ -202,8 +202,6 @@ setSpatialObjectsNode(vtkMRMLSpatialObjectsNode* SpatialObjectsNode, int Display
   qvtkReconnect(oldNode, this->SpatialObjectsNode(),
                 vtkCommand::ModifiedEvent, this,
                 SLOT(updateWidgetFromMRML()));
-
-  this->updateWidgetFromMRML();
 }
 
 //------------------------------------------------------------------------------
@@ -384,9 +382,9 @@ void qSlicerSpatialObjectsWidget::onColorByScalarChanged(int scalarIndex)
       GetPointData()->GetScalars(activeScalarName.toLatin1());
     currentScalar->GetRange(range, -1);
 
+    d->ScalarRangeWidget->setSingleStep((range[1]-range[0])/100);
     d->ScalarRangeWidget->setRange(range[0], range[1]);
     d->ScalarRangeWidget->setValues(range[0], range[1]);
-    d->ScalarRangeWidget->setSingleStep((range[1]-range[0])/100);
     }
 
   // Color spatial object as the range has changed
@@ -606,8 +604,24 @@ void qSlicerSpatialObjectsWidget::updateWidgetFromMRML()
 
   d->ColorByScalarsColorTableComboBox->setCurrentNodeID
     (d->SpatialObjectsDisplayNode->GetColorNodeID());
+  bool wasBlocking = d->ColorByScalarComboBox->blockSignals(true);
   d->ColorByScalarComboBox->setDataSet(
     vtkDataSet::SafeDownCast(d->SpatialObjectsNode->GetPolyData()));
+  d->ColorByScalarComboBox->blockSignals(wasBlocking);
+
+  // If we don't check if the active scalar name is not Null,
+  // the app won't crash but the combobox will be empty at the beginning,
+  // instead of having "TubeRadius". Change it to meet desired behavior.
+  // Curiously, this is only happenning for the LineDisplayNode.
+  // The TubeDisplayNode never has a null active scalar name.
+  if(d->SpatialObjectsDisplayNode->GetActiveScalarName()
+     && (d->ColorByScalarComboBox->currentArrayName()
+     != d->SpatialObjectsDisplayNode->GetActiveScalarName()))
+    {
+    d->ColorByScalarComboBox->setCurrentArray(
+    d->SpatialObjectsDisplayNode->GetActiveScalarName());
+    }
+
 
   switch(d->SpatialObjectsDisplayNode->GetColorMode())
     {
