@@ -414,6 +414,18 @@ int DoIt( int argc, char * argv[] )
     writer->Update();
     }
 
+  std::cout << "Ridge termination code counts:" << std::endl;
+  for( unsigned int code = 0; code < tubeOp->GetRidgeOp()
+    ->GetNumberOfFailureCodes(); ++code )
+    {
+    std::cout << "   " << tubeOp->GetRidgeOp()->GetFailureCodeName(
+      typename TubeOpType::RidgeOpType::FailureCodeEnum( code ) ) << " : "
+      << tubeOp->GetRidgeOp()->GetFailureCodeCount(
+      typename TubeOpType::RidgeOpType::FailureCodeEnum(
+      code ) ) << std::endl;
+    }
+
+
   timeCollector.Stop("Ridge Extractor");
 
   progressReporter.Report( 1.0 );
