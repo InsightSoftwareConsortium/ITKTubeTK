@@ -348,6 +348,7 @@ void qSlicerSpatialObjectsWidget::setColorByScalar()
     return;
     }
 
+  d->SpatialObjectsDisplayNode->SetScalarRangeFlag(vtkMRMLDisplayNode::UseDisplayNodeScalarRange);
   d->SpatialObjectsDisplayNode->SetColorModeToScalarData();
   d->SpatialObjectsDisplayNode->SetScalarVisibility(1);
   this->onColorByScalarChanged(d->ColorByScalarComboBox->currentIndex());
