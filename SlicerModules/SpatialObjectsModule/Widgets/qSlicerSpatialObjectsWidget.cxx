@@ -620,7 +620,7 @@ void qSlicerSpatialObjectsWidget::updateWidgetFromMRML()
      != d->SpatialObjectsDisplayNode->GetActiveScalarName()))
     {
     d->ColorByScalarComboBox->setCurrentArray(
-    d->SpatialObjectsDisplayNode->GetActiveScalarName());
+      d->SpatialObjectsDisplayNode->GetActiveScalarName());
     }
 
 
