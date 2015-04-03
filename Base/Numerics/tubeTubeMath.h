@@ -31,6 +31,11 @@ limitations under the License.
 namespace tube
 {
 
+template< class TTubePoint >
+void
+ComputeNormalsFromTangent( TTubePoint & tubePoint,
+  const typename TTubePoint::VectorType & prevT );
+
 template< class TTube >
 bool
 ComputeTubeTangentsAndNormals( typename TTube::Pointer & tube );
