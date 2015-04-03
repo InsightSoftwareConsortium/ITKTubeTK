@@ -418,6 +418,8 @@ int DoIt( int argc, char * argv[] )
 
   bool   ridgeDynamicScale = true;
 
+  bool   ridgeDynamicStepSize = true;
+
   double ridgeStepX = 0.1;
 
   double ridgeMaxTangentChange = 0.75;
@@ -456,7 +458,9 @@ int DoIt( int argc, char * argv[] )
   int    ridgeMaxRecoveryAttempts = 3;
 
   params.SetRidgeProperties( ridgeScale, ridgeScaleKernelExtent,
-    ridgeDynamicScale, ridgeStepX,
+    ridgeDynamicScale,
+    ridgeDynamicStepSize,
+    ridgeStepX,
     ridgeMaxTangentChange,
     ridgeMaxXChange,
     ridgeMinRidgeness, ridgeMinRidgenessStart,

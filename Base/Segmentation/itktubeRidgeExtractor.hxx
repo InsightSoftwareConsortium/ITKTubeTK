@@ -114,12 +114,13 @@ RidgeExtractor<TInputImage>
 
   m_DynamicScale = true;
   m_DynamicScaleUsed = 3;
+  m_DynamicStepSize = true;
   m_RadiusExtractor = NULL;
 
   m_ExtractBoundMin.Fill( 0 );
   m_ExtractBoundMax.Fill( 0 );
 
-  m_MaxTangentChange = 0.75;
+  m_MaxTangentChange = 0.80;
   m_MaxXChange = 3.0;
   m_MinRidgeness = 0.95;    // near 1 = harder
   m_MinRidgenessStart = 0.925;
@@ -349,7 +350,6 @@ RidgeExtractor<TInputImage>
   return & m_DataSplineOpt;
 }
 
-
 /**
  * Set the dynamic scale */
 template< class TInputImage >
@@ -358,6 +358,16 @@ RidgeExtractor<TInputImage>
 ::SetDynamicScale( bool dynamicScale )
 {
   this->m_DynamicScale = dynamicScale;
+}
+
+/**
+ * Set the dynamic step size */
+template< class TInputImage >
+void
+RidgeExtractor<TInputImage>
+::SetDynamicStepSize( bool dynamicStepSize )
+{
+  this->m_DynamicStepSize = dynamicStepSize;
 }
 
 
@@ -566,8 +576,17 @@ RidgeExtractor<TInputImage>
     os << indent << "DynamicScale = False" << std::endl;
     }
   os << indent << "DynamicScaleUsed = " << m_DynamicScaleUsed << std::endl;
+  if( m_DynamicStepSize )
+    {
+    os << indent << "DynamicStepSize = True" << std::endl;
+    }
+  else
+    {
+    os << indent << "DynamicStepSize = False" << std::endl;
+    }
   os << indent << "RadiusExtractor = " << m_RadiusExtractor << std::endl;
-  os << indent << "MaxRecoveryAttempts = " << m_MaxRecoveryAttempts << std::endl;
+  os << indent << "MaxRecoveryAttempts = " << m_MaxRecoveryAttempts
+    << std::endl;
   os << indent << "DataMin = " << m_DataMin << std::endl;
   os << indent << "DataMax = " << m_DataMax << std::endl;
   os << indent << "DataRange = " << m_DataRange << std::endl;
@@ -872,10 +891,14 @@ RidgeExtractor<TInputImage>
       pSearchDir = lSearchDir;
       }
 
-    double currentStepX = m_StepX * GetScale() * stepFactor;
-    if( currentStepX < m_StepX )
+    double currentStepX = m_StepX * stepFactor;
+    if( m_DynamicStepSize )
       {
-      currentStepX = m_StepX;
+      currentStepX *= GetScale();
+      }
+    if( currentStepX < 0.5 * m_StepX )
+      {
+      currentStepX = 0.5 * m_StepX;
       }
     vnl_vector<double> v = ::tube::ComputeLineStep( lX, currentStepX,
       lStepDir );

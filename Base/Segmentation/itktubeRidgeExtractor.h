@@ -235,13 +235,23 @@ public:
   /** Get the extent */
   double GetScaleKernelExtent( void );
 
-  /** Set the dynamic Scale */
+  /** Set to re-estimate (based on local radius estimate) the scale to be
+   * used for image measures made during ridge extraction */
   void SetDynamicScale( bool dynamicScale );
 
-  /** Get the dynamicScale */
+  /** Is the scale of ridge measures optimized during ridge traversal */
   itkGetMacro( DynamicScale, bool );
 
+  /** Get the scale currently being used for ridge traversal measures. */
   itkGetMacro( DynamicScaleUsed, double );
+
+  /** Set to dynamic update the ridge step size to be proportional to
+   * estimated tube radius during ridge traversal. */
+  void SetDynamicStepSize( bool dynamicStepSize );
+
+  /** Are step sizes made along a ridge fixed, or do they change based on
+   * local tube radius estimates. */
+  itkGetMacro( DynamicStepSize, bool );
 
   /** Set the Recovery Maximum */
   itkSetMacro( MaxRecoveryAttempts, int );
@@ -358,6 +368,7 @@ private:
 
   bool                                               m_DynamicScale;
   double                                             m_DynamicScaleUsed;
+  bool                                               m_DynamicStepSize;
   RadiusExtractor<TInputImage>                     * m_RadiusExtractor;
 
   int                                                m_MaxRecoveryAttempts;
