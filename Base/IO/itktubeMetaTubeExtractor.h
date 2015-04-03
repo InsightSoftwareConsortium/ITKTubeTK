@@ -72,6 +72,7 @@ public:
   void SetRidgeProperties( double _ridgeScale,
     double _ridgeScaleKernelExtent,
     bool _ridgeDynamicScale,
+    bool _ridgeDynamicStepSize,
     double _ridgeStepX,
     double _ridgeMaxTangentChange,
     double _ridgeMaxXChange,
@@ -99,6 +100,7 @@ public:
   double GetRidgeScale( void ) const;
   double GetRidgeScaleKernelExtent( void ) const;
   bool GetRidgeDynamicScale( void ) const;
+  bool GetRidgeDynamicStepSize( void ) const;
   double GetRidgeStepX( void ) const;
   double GetRidgeMaxTangentChange( void ) const;
   double GetRidgeMaxXChange( void ) const;
@@ -152,6 +154,7 @@ protected:
   double       m_RidgeScale;
   double       m_RidgeScaleKernelExtent;
   bool         m_RidgeDynamicScale;
+  bool         m_RidgeDynamicStepSize;
   double       m_RidgeStepX;
   double       m_RidgeMaxTangentChange;
   double       m_RidgeMaxXChange;

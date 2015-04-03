@@ -20,6 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+#ifndef __itktubeTubeExtractorIO_hxx
+#define __itktubeTubeExtractorIO_hxx
 
 #include "itktubeTubeExtractorIO.h"
 
@@ -135,7 +137,7 @@ Read( const char * _headerName )
 {
   if( m_TubeExtractor.IsNull() )
     {
-    std::cout << 
+    std::cout <<
       "ERROR: Set a TubeExtractor prior to reading TubeExtractor parameters."
       << std::endl;
     return false;
@@ -143,12 +145,12 @@ Read( const char * _headerName )
 
   typename TubeExtractorType::RidgeOpType::Pointer ridgeOp =
     m_TubeExtractor->GetRidgeOp();
-  typename TubeExtractorType::RadiusOpType::Pointer radiusOp = 
+  typename TubeExtractorType::RadiusOpType::Pointer radiusOp =
     m_TubeExtractor->GetRadiusOp();
 
   if( ridgeOp.IsNull() || radiusOp.IsNull() )
     {
-    std::cout << 
+    std::cout <<
       "ERROR: Set a tubeExtractor input image prior to reading parameters."
       << std::endl;
     return false;
@@ -169,6 +171,7 @@ Read( const char * _headerName )
   ridgeOp->SetScale( teReader.GetRidgeScale() );
   ridgeOp->SetScaleKernelExtent( teReader.GetRidgeScaleKernelExtent() );
   ridgeOp->SetDynamicScale( teReader.GetRidgeDynamicScale() );
+  ridgeOp->SetDynamicStepSize( teReader.GetRidgeDynamicStepSize() );
   ridgeOp->SetStepX( teReader.GetRidgeStepX() );
   ridgeOp->SetMaxTangentChange( teReader.GetRidgeMaxTangentChange() );
   ridgeOp->SetMaxXChange( teReader.GetRidgeMaxXChange() );
@@ -197,7 +200,7 @@ Write( const char * _headerName )
 {
   if( m_TubeExtractor.IsNull() )
     {
-    std::cout << 
+    std::cout <<
       "ERROR: Set a tubeExtractor input image prior to writing parameters."
       << std::endl;
     return false;
@@ -207,7 +210,7 @@ Write( const char * _headerName )
 
   typename TubeExtractorType::RidgeOpType::Pointer ridgeOp =
     m_TubeExtractor->GetRidgeOp();
-  typename TubeExtractorType::RadiusOpType::Pointer radiusOp = 
+  typename TubeExtractorType::RadiusOpType::Pointer radiusOp =
     m_TubeExtractor->GetRadiusOp();
 
   teWriter.SetGeneralProperties( m_TubeExtractor->GetDataMin(),
@@ -217,6 +220,7 @@ Write( const char * _headerName )
   teWriter.SetRidgeProperties( ridgeOp->GetScale(),
     ridgeOp->GetScaleKernelExtent(),
     ridgeOp->GetDynamicScale(),
+    ridgeOp->GetDynamicStepSize(),
     ridgeOp->GetStepX(),
     ridgeOp->GetMaxTangentChange(),
     ridgeOp->GetMaxXChange(),
@@ -242,3 +246,5 @@ Write( const char * _headerName )
 } // End namespace tube
 
 } // End namespace itk
+
+#endif // __itktubeTubeExtractorIO_hxx

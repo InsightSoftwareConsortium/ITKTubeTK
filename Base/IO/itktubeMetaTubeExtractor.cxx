@@ -101,6 +101,9 @@ PrintInfo( void ) const
   METAIO_STREAM::cout << "RidgeDynamicScale = "
     << m_RidgeDynamicScale << METAIO_STREAM::endl;
 
+  METAIO_STREAM::cout << "RidgeDynamicStepSize = "
+    << m_RidgeDynamicStepSize << METAIO_STREAM::endl;
+
   METAIO_STREAM::cout << "RidgeStepX = "
     << m_RidgeStepX << METAIO_STREAM::endl;
 
@@ -165,7 +168,9 @@ SetGeneralProperties( double _dataMin, double _dataMax,
 
 void MetaTubeExtractor::
 SetRidgeProperties( double _ridgeScale, double _ridgeScaleKernelExtent,
-  bool _ridgeDynamicScale, double _ridgeStepX,
+  bool _ridgeDynamicScale,
+  bool _ridgeDynamicStepSize,
+  double _ridgeStepX,
   double _ridgeMaxTangentChange,
   double _ridgeMaxXChange,
   double _ridgeMinRidgeness,
@@ -181,6 +186,7 @@ SetRidgeProperties( double _ridgeScale, double _ridgeScaleKernelExtent,
   m_RidgeScale = _ridgeScale;
   m_RidgeScaleKernelExtent = _ridgeScaleKernelExtent;
   m_RidgeDynamicScale = _ridgeDynamicScale;
+  m_RidgeDynamicStepSize = _ridgeDynamicStepSize;
   m_RidgeStepX = _ridgeStepX;
   m_RidgeMaxTangentChange = _ridgeMaxTangentChange;
   m_RidgeMaxXChange = _ridgeMaxXChange;
@@ -243,6 +249,12 @@ bool MetaTubeExtractor::
 GetRidgeDynamicScale( void ) const
 {
   return m_RidgeDynamicScale;
+}
+
+bool MetaTubeExtractor::
+GetRidgeDynamicStepSize( void ) const
+{
+  return m_RidgeDynamicStepSize;
 }
 
 double MetaTubeExtractor::
@@ -359,6 +371,7 @@ CopyInfo( const MetaTubeExtractor & _tubeExtractor )
   SetRidgeProperties( _tubeExtractor.GetRidgeScale(),
     _tubeExtractor.GetRidgeScaleKernelExtent(),
     _tubeExtractor.GetRidgeDynamicScale(),
+    _tubeExtractor.GetRidgeDynamicStepSize(),
     _tubeExtractor.GetRidgeStepX(),
     _tubeExtractor.GetRidgeMaxTangentChange(),
     _tubeExtractor.GetRidgeMaxXChange(),
@@ -398,6 +411,7 @@ Clear( void )
   m_RidgeScale = 1;
   m_RidgeScaleKernelExtent = 2;
   m_RidgeDynamicScale = true;
+  m_RidgeDynamicStepSize = true;
   m_RidgeStepX = 0.2;
   m_RidgeMaxTangentChange = 0.8;
   m_RidgeMaxXChange = 0.8;
@@ -663,6 +677,10 @@ M_SetupReadFields( void )
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
+  MET_InitReadField( mF, "RidgeDynamicStepSize", MET_STRING, true );
+  m_Fields.push_back( mF );
+
+  mF = new MET_FieldRecordType;
   MET_InitReadField( mF, "RidgeStepX", MET_FLOAT, true );
   m_Fields.push_back( mF );
 
@@ -788,6 +806,19 @@ M_SetupWriteFields( void )
   else
     {
     MET_InitWriteField( mF, "RidgeDynamicScale", MET_STRING, 5, "False" );
+    }
+  m_Fields.push_back( mF );
+
+  mF = new MET_FieldRecordType;
+  if( m_RidgeDynamicStepSize )
+    {
+    MET_InitWriteField( mF, "RidgeDynamicStepSize", MET_STRING, 4,
+      "True" );
+    }
+  else
+    {
+    MET_InitWriteField( mF, "RidgeDynamicStepSize", MET_STRING, 5,
+      "False" );
     }
   m_Fields.push_back( mF );
 
@@ -928,6 +959,15 @@ M_Read( void )
     m_RidgeDynamicScale = false;
     }
 
+  mF = MET_GetFieldRecord( "RidgeDynamicStepSize", &m_Fields );
+  if( (char)(mF->value[0]) == 't' || (char)(mF->value[0]) == 'T' )
+    {
+    m_RidgeDynamicStepSize = true;
+    }
+  else
+    {
+    m_RidgeDynamicStepSize = false;
+    }
 
   mF = MET_GetFieldRecord( "RidgeStepX", &m_Fields );
   m_RidgeStepX = ( double )mF->value[0];

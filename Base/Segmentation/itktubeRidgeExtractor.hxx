@@ -350,7 +350,6 @@ RidgeExtractor<TInputImage>
   return & m_DataSplineOpt;
 }
 
-
 /**
  * Set the dynamic scale */
 template< class TInputImage >
@@ -359,6 +358,16 @@ RidgeExtractor<TInputImage>
 ::SetDynamicScale( bool dynamicScale )
 {
   this->m_DynamicScale = dynamicScale;
+}
+
+/**
+ * Set the dynamic step size */
+template< class TInputImage >
+void
+RidgeExtractor<TInputImage>
+::SetDynamicStepSize( bool dynamicStepSize )
+{
+  this->m_DynamicStepSize = dynamicStepSize;
 }
 
 
