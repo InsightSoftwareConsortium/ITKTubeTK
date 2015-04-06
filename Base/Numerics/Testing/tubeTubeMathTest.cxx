@@ -65,6 +65,7 @@ int tubeTubeMathTest( int tubeNotUsed( argc ),
   typedef itk::TubeSpatialObject<3>   TubeType;
 
   TubeType::Pointer tube = TubeType::New();
+  TubeType::Pointer tube0 = TubeType::New();
 
   TubeType::PointListType pointList;
   TubeType::TubePointType point;
@@ -73,6 +74,7 @@ int tubeTubeMathTest( int tubeNotUsed( argc ),
   RandomType::Pointer rndGen = RandomType::New();
   rndGen->Initialize( 1 );
 
+  // Build the vessel
   double x = 0;
   double y = 0;
   double z = 0;
@@ -89,9 +91,14 @@ int tubeTubeMathTest( int tubeNotUsed( argc ),
     }
 
   std::cout << "Tangents and normals..." << std::endl;
-  tube->SetPoints( pointList );
-  ::tube::ComputeTubeTangentsAndNormals< TubeType >( tube );
+  tube0->SetPoints( pointList );
+  ::tube::ComputeTubeTangentsAndNormals< TubeType >( tube0 );
 
+  // Run tests
+  std::cout << std::endl << "*********** Smoothing Tests *************" << std::endl;
+
+  std::cout << std::endl << "-----> Smoothing by average on index" << std::endl;
+  tube = tube0;
   double tLength = tubeLength( tube );
   std::cout << "Length = " << tLength << std::endl;
 
@@ -112,6 +119,66 @@ int tubeTubeMathTest( int tubeNotUsed( argc ),
 
     tube = tube2;
     tLength = t2Length;
+    }
+
+  std::cout << std::endl << "-----> Smoothing by gaussian on index" << std::endl;
+  tube = tube0;
+  tLength = tubeLength( tube );
+  std::cout << "Length = " << tLength << std::endl;
+
+  for( unsigned int i = 0; i < 20; ++i )
+    {
+    std::cout << "Smoothing..." << std::endl;
+    TubeType::Pointer tube2 = ::tube::SmoothTube< TubeType >( tube, 4,
+      ::tube::SMOOTH_TUBE_USING_INDEX_GAUSSIAN );
+
+    double t2Length = tubeLength( tube2 );
+    std::cout << "Length = " << t2Length << std::endl;
+    if( tLength <= t2Length )
+      {
+      std::cout << "ERROR: Raw length = " << tLength
+        << " <= Smooth length = " << t2Length << std::endl;
+      returnStatus = EXIT_FAILURE;
+      }
+
+    tube = tube2;
+    tLength = t2Length;
+    }
+
+
+  std::cout << std::endl << "*********** Subsampling Tests *************" << std::endl;
+  tube = tube0;
+  tLength = tubeLength( tube );
+  int tNumPoints = tube->GetNumberOfPoints();
+  std::cout << "Length = " << tLength << std::endl;
+  std::cout<< "Number of Points = " << tNumPoints <<std::endl;
+
+  for( unsigned int i = 0; i < 5; ++i )
+    {
+    std::cout << "Subsampling..." << std::endl;
+    TubeType::Pointer tube3 = ::tube::SubsampleTube< TubeType >(tube, 2);
+
+    double t3Length = tubeLength( tube3 );
+    int t3NumPoints = tube3->GetNumberOfPoints();
+    std::cout << "Length = " << t3Length << std::endl;
+    std::cout<< "Number of Points = " << t3NumPoints <<std::endl;
+    if( tLength <= t3Length )
+      {
+      std::cout << "ERROR: Raw length = " << tLength
+        << " <= Smooth length = " << t3Length << std::endl;
+      returnStatus = EXIT_FAILURE;
+      }
+    if( t3NumPoints >= tNumPoints)
+      {
+      std::cout << "ERROR: Raw: NumberOfPoints = " << tube->GetNumberOfPoints()
+        << " <= Subsampled: NumberOfPoints = " << tube3->GetNumberOfPoints()
+        << std::endl;
+      returnStatus = EXIT_FAILURE;
+      }
+
+    tube = tube3;
+    tLength = t3Length;
+    tNumPoints = t3NumPoints;
     }
 
   return returnStatus;
