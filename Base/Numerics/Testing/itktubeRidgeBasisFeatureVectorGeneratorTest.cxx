@@ -108,6 +108,7 @@ int itktubeRidgeBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   basisFilter->AddObjectId( 0 );
   std::cout << "Start" << std::endl;
   std::cout << basisFilter << std::endl;
+  filter->GenerateData();
   basisFilter->GenerateBasis();
   std::cout << "Stop" << std::endl;
   std::cout << basisFilter << std::endl;
