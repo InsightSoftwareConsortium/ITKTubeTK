@@ -323,7 +323,7 @@ int DoIt( int argc, char * argv[] )
 
   tubeOp->SetDebug( false );
   tubeOp->GetRidgeOp()->SetDebug( false );
-  tubeOp->GetRadiusOp()->SetDebug( false );
+  tubeOp->GetRadiusOp()->SetDebug( true );
 
   if( border > 0 )
     {
