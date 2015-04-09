@@ -112,7 +112,7 @@ int tubeTubeMathTest( int tubeNotUsed( argc ),
     std::cout << "Length = " << t2Length << std::endl;
     if( tLength <= t2Length )
       {
-      std::cout << "ERROR: Raw length = " << tLength
+      std::cerr << "ERROR: Raw length = " << tLength
         << " <= Smooth length = " << t2Length << std::endl;
       returnStatus = EXIT_FAILURE;
       }
@@ -136,7 +136,7 @@ int tubeTubeMathTest( int tubeNotUsed( argc ),
     std::cout << "Length = " << t2Length << std::endl;
     if( tLength <= t2Length )
       {
-      std::cout << "ERROR: Raw length = " << tLength
+      std::cerr << "ERROR: Raw length = " << tLength
         << " <= Smooth length = " << t2Length << std::endl;
       returnStatus = EXIT_FAILURE;
       }
@@ -164,13 +164,13 @@ int tubeTubeMathTest( int tubeNotUsed( argc ),
     std::cout<< "Number of Points = " << t3NumPoints <<std::endl;
     if( tLength <= t3Length )
       {
-      std::cout << "ERROR: Raw length = " << tLength
+      std::cerr << "ERROR: Raw length = " << tLength
         << " <= Smooth length = " << t3Length << std::endl;
       returnStatus = EXIT_FAILURE;
       }
     if( t3NumPoints >= tNumPoints)
       {
-      std::cout << "ERROR: Raw: NumberOfPoints = " << tube->GetNumberOfPoints()
+      std::cerr << "ERROR: Raw: NumberOfPoints = " << tube->GetNumberOfPoints()
         << " <= Subsampled: NumberOfPoints = " << tube3->GetNumberOfPoints()
         << std::endl;
       returnStatus = EXIT_FAILURE;
