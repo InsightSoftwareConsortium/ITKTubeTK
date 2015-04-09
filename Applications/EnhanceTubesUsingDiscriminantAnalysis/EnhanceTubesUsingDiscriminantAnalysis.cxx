@@ -143,10 +143,11 @@ int DoIt( int argc, char * argv[] )
     {
     tubeFilter->SetScales( tubeScales );
 
-    tubeFilter->GetPDFSegmenter()->SetProbabilityImageSmoothingStandardDeviation(
-      tubeScales[0]/2 );
+    tubeFilter->GetPDFSegmenter()->
+      SetProbabilityImageSmoothingStandardDeviation( tubeScales[0]/2 );
 
-    tubeFilter->GetPDFSegmenter()->SetHistogramSmoothingStandardDeviation( 10 );
+    tubeFilter->GetPDFSegmenter()->
+      SetHistogramSmoothingStandardDeviation( 10 );
 
     tubeFilter->SetTrainClassifier( true );
 

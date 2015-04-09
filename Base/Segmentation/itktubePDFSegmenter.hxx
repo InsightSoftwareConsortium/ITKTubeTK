@@ -32,8 +32,8 @@ limitations under the License.
 #include <itkBinaryErodeImageFilter.h>
 #include <itkConnectedThresholdImageFilter.h>
 #include <itkCurvatureAnisotropicDiffusionImageFilter.h>
-#include <itkRecursiveGaussianImageFilter.h>
-#include <itkDiscreteGaussianImageFilter.h>
+#include <itkSmoothingRecursiveGaussianImageFilter.h>
+#include <itkThresholdImageFilter.h>
 #include <itkHistogram.h>
 #include <itkHistogramToProbabilityImageFilter.h>
 #include <itkNormalizeToConstantImageFilter.h>
@@ -731,24 +731,40 @@ PDFSegmenter< TImage, N, TLabelMap >
   //    generate parzen window density estimates
   //
   timeCollector.Start( "HistogramToPDF" );
-  if( true ) // creating a local context to limit memory footprint
+  if( true )
     {
-    typedef itk::DiscreteGaussianImageFilter< HistogramImageType,
+    typedef itk::SmoothingRecursiveGaussianImageFilter< HistogramImageType,
       HistogramImageType > HistogramBlurGenType;
-    typedef itk::NormalizeToConstantImageFilter< HistogramImageType,
-      HistogramImageType > NormalizeImageFilterType;
+    typename HistogramBlurGenType::SigmaArrayType sigmas;
+    for( unsigned int d = 0; d < N; ++d )
+      {
+      sigmas[d] = spacing[d] * m_HistogramSmoothingStandardDeviation;
+      }
+
     for( unsigned int c = 0; c < numClasses; c++ )
       {
-      typename HistogramBlurGenType::Pointer blurFilter =
-        HistogramBlurGenType::New();
-      blurFilter->SetInput( m_InClassHistogram[c] );
-      blurFilter->SetVariance( m_HistogramSmoothingStandardDeviation
-        * m_HistogramSmoothingStandardDeviation );
-      blurFilter->SetMaximumError( 0.1 );
-      blurFilter->SetUseImageSpacing( false );
-      blurFilter->Update();
-      m_InClassHistogram[c] = blurFilter->GetOutput();
+      if( m_HistogramSmoothingStandardDeviation > 0 )
+        {
+        typename HistogramBlurGenType::Pointer blurFilter =
+          HistogramBlurGenType::New();
+        blurFilter->SetInput( m_InClassHistogram[c] );
+        blurFilter->SetSigmaArray( sigmas );
+        blurFilter->Update();
+        m_InClassHistogram[c] = blurFilter->GetOutput();
 
+        typedef itk::ThresholdImageFilter< HistogramImageType >
+          ThresholdFilterType;
+        typename ThresholdFilterType::Pointer thresholdFilter =
+          ThresholdFilterType::New();
+        thresholdFilter->SetInput( m_InClassHistogram[c] );
+        thresholdFilter->SetOutsideValue( 0 );
+        thresholdFilter->ThresholdBelow( 0 );
+        thresholdFilter->Update();
+        m_InClassHistogram[c] = thresholdFilter->GetOutput();
+        }
+
+      typedef itk::NormalizeToConstantImageFilter< HistogramImageType,
+        HistogramImageType > NormalizeImageFilterType;
       typename NormalizeImageFilterType::Pointer normFilter =
         NormalizeImageFilterType::New();
       normFilter->SetInput( m_InClassHistogram[c] );
@@ -939,20 +955,31 @@ PDFSegmenter< TImage, N, TLabelMap >
     }
   timeCollector.Stop( "ProbabilityImage" );
 
-  typedef itk::DiscreteGaussianImageFilter< ProbabilityImageType,
-          ProbabilityImageType> ProbImageFilterType;
+  typedef itk::SmoothingRecursiveGaussianImageFilter< ProbabilityImageType,
+    ProbabilityImageType > ProbImageFilterType;
   typename ProbImageFilterType::Pointer probImageFilter;
+
+  typedef itk::ThresholdImageFilter< ProbabilityImageType >
+      ThresholdProbImageFilterType;
+  typename ThresholdProbImageFilterType::Pointer thresholdProbImageFilter =
+    ThresholdProbImageFilterType::New();
 
   timeCollector.Start( "ProbabilityImageDiffusion" );
   for( unsigned int c = 0; c < numClasses; c++ )
     {
     probImageFilter = ProbImageFilterType::New();
     probImageFilter->SetInput( m_ProbabilityImageVector[c] );
-    probImageFilter->SetVariance(
-      m_ProbabilityImageSmoothingStandardDeviation *
+    probImageFilter->SetSigma(
       m_ProbabilityImageSmoothingStandardDeviation );
     probImageFilter->Update();
     m_ProbabilityImageVector[c] = probImageFilter->GetOutput();
+
+    thresholdProbImageFilter = ThresholdProbImageFilterType::New();
+    thresholdProbImageFilter->SetInput( m_ProbabilityImageVector[c] );
+    thresholdProbImageFilter->SetOutsideValue( 0 );
+    thresholdProbImageFilter->ThresholdBelow( 0 );
+    thresholdProbImageFilter->Update();
+    m_ProbabilityImageVector[c] = thresholdProbImageFilter->GetOutput();
     }
   timeCollector.Stop( "ProbabilityImageDiffusion" );
 

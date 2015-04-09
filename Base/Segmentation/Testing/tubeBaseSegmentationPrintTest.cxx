@@ -25,6 +25,7 @@ limitations under the License.
 #include "itktubeLabelOverlapMeasuresImageFilter.h"
 #include "itktubePDFSegmenter.h"
 #include "itktubeRadiusExtractor.h"
+#include "itktubeRadiusExtractor2.h"
 #include "itktubeRidgeExtractor.h"
 #include "itktubeRidgeSeedFilter.h"
 #include "itktubeTubeExtractor.h"
@@ -33,7 +34,7 @@ limitations under the License.
 
 int tubeBaseSegmentationPrintTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {
-  typedef itk::Image< float, 2 > ImageType;
+  typedef itk::Image< float, 2 >         ImageType;
   typedef itk::Image< unsigned char, 2 > CharImageType;
 
   itk::tube::CVTImageFilter< ImageType >::Pointer
@@ -57,6 +58,11 @@ int tubeBaseSegmentationPrintTest( int itkNotUsed( argc ), char * itkNotUsed( ar
   std::cout << "-------------itktubeRadiusExtractor" << radiusObject
     << std::endl;
 
+  itk::tube::RadiusExtractor2< ImageType >::Pointer
+    radius2Object = itk::tube::RadiusExtractor2< ImageType >::New();
+  std::cout << "-------------itktubeRadiusExtractor2" << radius2Object
+    << std::endl;
+
   itk::tube::RidgeExtractor< ImageType >::Pointer
     ridgeObject = itk::tube::RidgeExtractor< ImageType >::New();
   std::cout << "-------------itktubeRidgeExtractor" << ridgeObject
@@ -64,14 +70,14 @@ int tubeBaseSegmentationPrintTest( int itkNotUsed( argc ), char * itkNotUsed( ar
 
   itk::tube::RidgeSeedFilter< ImageType, CharImageType >::Pointer
     seedObject = itk::tube::RidgeSeedFilter< ImageType,
-      CharImageType >::New();
+    CharImageType >::New();
   std::cout << "-------------itktubeRidgeSeedFilter" << seedObject
     << std::endl;
 
-  itk::tube::TubeExtractor< ImageType >::Pointer
-    tubeObject = itk::tube::TubeExtractor< ImageType >::New();
-  std::cout << "-------------itktubeTubeExtractor" << tubeObject
-    << std::endl;
+  itk::tube::TubeExtractor< ImageType >::Pointer tubeObject =
+    itk::tube::TubeExtractor< ImageType >::New();
+  std::cout << "-------------itktubeTubeExtractor" << tubeObject <<
+  std::endl;
 
   return EXIT_SUCCESS;
 }

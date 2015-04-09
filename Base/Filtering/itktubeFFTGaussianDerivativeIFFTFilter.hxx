@@ -1,20 +1,19 @@
 /*=========================================================================
- *
- *  Copyright Insight Software Consortium
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0.txt
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- *=========================================================================*/
+
+  Program:   Insight Segmentation & Registration Toolkit
+  Module:    $RCSfile: ITKHeader.h,v $
+  Language:  C++
+  Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
+  Version:   $Revision: 0 $
+
+  Copyright (c) 2002 Insight Consortium. All rights reserved.
+  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.  See the above copyright notices for more information.
+
+=========================================================================*/
 #ifndef __itktubeFFTGaussianDerivativeIFFTFilter_hxx
 #define __itktubeFFTGaussianDerivativeIFFTFilter_hxx
 
@@ -23,8 +22,9 @@
 #include "itktubePadImageFilter.h"
 #include "itktubeRegionFromReferenceImageFilter.h"
 
-#include "itkParametricImageSource.h"
-#include "itkSize.h"
+#include <itkTimeProbesCollectorBase.h>
+#include <itkParametricImageSource.h>
+#include <itkSize.h>
 
 namespace itk {
 
@@ -68,10 +68,7 @@ void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 ::ComputeInputImageFFT()
 {
-  std::cout << "FFTGaussianDerivativeIFFT: ComputeInputImageFFT" << std::endl;
-
-  typedef PadImageFilter< InputImageType, RealImageType >
-    PadFilterType;
+  typedef PadImageFilter< InputImageType, RealImageType >   PadFilterType;
   typename PadFilterType::Pointer padFilter = PadFilterType::New();
   padFilter->SetInput( this->GetInput() );
   padFilter->SetGreatestPrimeFactor( 5 );
@@ -90,7 +87,6 @@ void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 ::ComputeKernelImageFFT()
 {
-  std::cout << "FFTGaussianDerivativeIFFT: ComputeKernelImageFFT" << std::endl;
   typename GaussianDerivativeImageSourceType::Pointer gaussSource =
     GaussianDerivativeImageSourceType::New();
 
@@ -147,7 +143,6 @@ void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 ::ComputeConvolvedImageFFT()
 {
-  std::cout << "FFTGaussianDerivativeIFFT: ComputeConvolvedImageFFT" << std::endl;
   typename MultiplyFilterType::Pointer multiplyFilter =
     MultiplyFilterType::New();
   multiplyFilter->SetInput1( m_InputImageFFT );
@@ -162,16 +157,14 @@ void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 ::ComputeConvolvedImage()
 {
-  std::cout << "FFTGaussianDerivativeIFFT: ComputeConvolvedImage" << std::endl;
-
-  typename InverseFFTFilterType::Pointer 
+  typename InverseFFTFilterType::Pointer
     iFFTFilter = InverseFFTFilterType::New();
   iFFTFilter->SetInput( m_ConvolvedImageFFT );
   iFFTFilter->Update();
 
   typedef RegionFromReferenceImageFilter< RealImageType, TOutputImage >
     RegionFromFilterType;
-  typename RegionFromFilterType::Pointer regionFrom = 
+  typename RegionFromFilterType::Pointer regionFrom =
     RegionFromFilterType::New();
 
   regionFrom->SetInput1( iFFTFilter->GetOutput() );
@@ -186,17 +179,29 @@ void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 ::GenerateData()
 {
+  itk::TimeProbesCollectorBase timeCollector;
+
   if( m_LastInputImage != this->GetInput() )
     {
+    timeCollector.Start( "ComputeInputImageFFT" );
     m_LastInputImage = this->GetInput();
     ComputeInputImageFFT();
+    timeCollector.Stop( "ComputeInputImageFFT" );
     }
 
+  timeCollector.Start( "ComputeKernelImageFFT" );
   ComputeKernelImageFFT();
+  timeCollector.Stop( "ComputeKernelImageFFT" );
+  timeCollector.Start( "ComputeConvolvedImageFFT" );
   ComputeConvolvedImageFFT();
+  timeCollector.Stop( "ComputeConvolvedImageFFT" );
+  timeCollector.Start( "ComputeConvolvedImage" );
   ComputeConvolvedImage();
+  timeCollector.Stop( "ComputeConvolvedImage" );
 
   this->SetNthOutput( 0, m_ConvolvedImage );
+
+  timeCollector.Report();
 }
 
 template< typename TInputImage, typename TOutputImage >
@@ -206,10 +211,14 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   std::vector< typename TOutputImage::Pointer > & dX,
   std::vector< typename TOutputImage::Pointer > & dXX )
 {
+  itk::TimeProbesCollectorBase timeCollector;
+
   if( m_LastInputImage != this->GetInput() )
     {
     m_LastInputImage = this->GetInput();
+    timeCollector.Start( "NJet-ComputeInputImageFFT" );
     ComputeInputImageFFT();
+    timeCollector.Stop( "NJet-ComputeInputImageFFT" );
     }
 
   typedef RegionFromReferenceImageFilter< RealImageType, TOutputImage >
@@ -219,7 +228,7 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
     {
     dX.resize( ImageDimension );
     }
-  std::vector< typename ComplexImageType::Pointer > 
+  std::vector< typename ComplexImageType::Pointer >
     dXKernelImageFFT( ImageDimension );
 
   unsigned int ddxSize = 0;
@@ -233,18 +242,30 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
     }
 
   this->m_Orders.Fill( 0 );
+  timeCollector.Start( "NJet-ComputeKernelImageFFT" );
   this->ComputeKernelImageFFT();
+  timeCollector.Stop( "NJet-ComputeKernelImageFFT" );
+  timeCollector.Start( "NJet-ComputeConvolvedImageFFT" );
   this->ComputeConvolvedImageFFT();
+  timeCollector.Stop( "NJet-ComputeConvolvedImageFFT" );
+  timeCollector.Start( "NJet-ComputeConvolvedImage" );
   this->ComputeConvolvedImage();
+  timeCollector.Stop( "NJet-ComputeConvolvedImage" );
   D = m_ConvolvedImage;
 
   for( unsigned int i = 0; i<ImageDimension; ++i )
     {
     this->m_Orders[i] = 1;
+    timeCollector.Start( "NJet-ComputeKernelImageFFT" );
     this->ComputeKernelImageFFT();
+    timeCollector.Stop( "NJet-ComputeKernelImageFFT" );
     dXKernelImageFFT[i] = m_KernelImageFFT;
+    timeCollector.Start( "NJet-ComputeConvolvedImageFFT" );
     this->ComputeConvolvedImageFFT();
+    timeCollector.Stop( "NJet-ComputeConvolvedImageFFT" );
+    timeCollector.Start( "NJet-ComputeConvolvedImage" );
     this->ComputeConvolvedImage();
+    timeCollector.Stop( "NJet-ComputeConvolvedImage" );
     dX[i] = m_ConvolvedImage;
     this->m_Orders[i] = 0;
     }
@@ -256,15 +277,21 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
     {
     m_InputImageFFT = tmpInputImageFFT;
     m_KernelImageFFT = dXKernelImageFFT[i];
+    timeCollector.Start( "NJet-ComputeConvolvedImageFFT" );
     this->ComputeConvolvedImageFFT();
+    timeCollector.Stop( "NJet-ComputeConvolvedImageFFT" );
     tmpFirstConvolutionFFT = m_ConvolvedImageFFT;
-    
+
     for( unsigned int j = i; j<ImageDimension; ++j )
       {
       m_InputImageFFT = tmpFirstConvolutionFFT;
       m_KernelImageFFT = dXKernelImageFFT[j];
+      timeCollector.Start( "NJet-ComputeConvolvedImageFFT" );
       this->ComputeConvolvedImageFFT();
+      timeCollector.Stop( "NJet-ComputeConvolvedImageFFT" );
+      timeCollector.Start( "NJet-ComputeConvolvedImage" );
       this->ComputeConvolvedImage();
+      timeCollector.Stop( "NJet-ComputeConvolvedImage" );
       dXX[ count++ ] = m_ConvolvedImage;
       this->m_Orders[i] = 0;
       this->m_Orders[j] = 0;

@@ -206,6 +206,7 @@ foreach( testNum RANGE 0 37 )
     COMMAND ${BASE_NUMERICS_TESTS}
       --compare MIDAS{itktubeNJetImageFunctionTest${testNum}.mha.md5}
         ${TEMP}/itktubeNJetImageFunctionTest${testNum}.mha
+        --compareIntensityTolerance 0.000000000001
       itktubeNJetImageFunctionTest
         ${testNum}
         MIDAS{im0001.crop2.mha.md5}

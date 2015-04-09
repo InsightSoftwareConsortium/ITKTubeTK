@@ -391,9 +391,6 @@ RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 
   m_PDFSegmenter->SetObjectPDFWeight( 0, m_SeedTolerance );
 
-  std::cout << "NumFeatures = "
-    << m_SeedFeatureGenerator->GetNumberOfFeatures() << std::endl;
-
   if( m_TrainClassifier )
     {
     m_SeedFeatureGenerator->UpdateWhitenFeatureImageStats();

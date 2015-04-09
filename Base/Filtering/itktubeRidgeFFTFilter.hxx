@@ -1,20 +1,19 @@
 /*=========================================================================
- *
- *  Copyright Insight Software Consortium
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0.txt
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- *=========================================================================*/
+
+  Program:   Insight Segmentation & Registration Toolkit
+  Module:    $RCSfile: ITKHeader.h,v $
+  Language:  C++
+  Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
+  Version:   $Revision: 0 $
+
+  Copyright (c) 2002 Insight Consortium. All rights reserved.
+  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.  See the above copyright notices for more information.
+
+=========================================================================*/
 #ifndef __itktubeRidgeFFTFilter_hxx
 #define __itktubeRidgeFFTFilter_hxx
 
@@ -48,7 +47,8 @@ void
 RidgeFFTFilter< TInputImage >
 ::GenerateData()
 {
-  std::cout << "Ridge FFT Filter: GenerateData" << std::endl;
+  std::cout << "Ridge FFT Filter: GenerateData (Scale = " << m_Scale << ")"
+    << std::endl;
 
   m_DerivativeFilter->SetInput( this->GetInput() );
 
@@ -70,47 +70,48 @@ RidgeFFTFilter< TInputImage >
     m_Ridgeness->CopyInformation( m_Intensity );
     m_Ridgeness->SetRegions( m_Intensity->GetLargestPossibleRegion() );
     m_Ridgeness->Allocate();
-  
+
     m_Roundness = OutputImageType::New();
     m_Roundness->CopyInformation( m_Intensity );
     m_Roundness->SetRegions( m_Intensity->GetLargestPossibleRegion() );
     m_Roundness->Allocate();
-  
+
     m_Curvature = OutputImageType::New();
     m_Curvature->CopyInformation( m_Intensity );
     m_Curvature->SetRegions( m_Intensity->GetLargestPossibleRegion() );
     m_Curvature->Allocate();
-  
+
     m_Levelness = OutputImageType::New();
     m_Levelness->CopyInformation( m_Intensity );
     m_Levelness->SetRegions( m_Intensity->GetLargestPossibleRegion() );
     m_Levelness->Allocate();
-  
+
     std::vector< typename OutputImageType::Pointer > dx( ImageDimension );
-  
+
     int ddxSize = 0;
     for( unsigned int i=1; i<=ImageDimension; ++i )
       {
       ddxSize += i;
       }
     std::vector< typename OutputImageType::Pointer > ddx( ddxSize );
-  
+
     m_DerivativeFilter->GenerateNJet( m_Intensity, dx, ddx );
-  
-    ImageRegionIterator< OutputImageType > iterRidge( m_Ridgeness, 
+
+    ImageRegionIterator< OutputImageType > iterRidge( m_Ridgeness,
       m_Ridgeness->GetLargestPossibleRegion() );
-    ImageRegionIterator< OutputImageType > iterRound( m_Roundness, 
+    ImageRegionIterator< OutputImageType > iterRound( m_Roundness,
       m_Roundness->GetLargestPossibleRegion() );
-    ImageRegionIterator< OutputImageType > iterCurve( m_Curvature, 
+    ImageRegionIterator< OutputImageType > iterCurve( m_Curvature,
       m_Curvature->GetLargestPossibleRegion() );
-    ImageRegionIterator< OutputImageType > iterLevel( m_Levelness, 
+    ImageRegionIterator< OutputImageType > iterLevel( m_Levelness,
       m_Levelness->GetLargestPossibleRegion() );
-  
-    std::vector< ImageRegionIterator< OutputImageType > > iterDx( 
+
+    std::vector< ImageRegionIterator< OutputImageType > > iterDx(
       ImageDimension );
-  
-    std::vector< ImageRegionIterator< OutputImageType > > iterDdx( ddxSize );
-  
+
+    std::vector< ImageRegionIterator< OutputImageType > > iterDdx(
+      ddxSize );
+
     unsigned int count = 0;
     for( unsigned int i=0; i<ImageDimension; ++i )
       {
@@ -123,7 +124,9 @@ RidgeFFTFilter< TInputImage >
         ++count;
         }
       }
-  
+
+    itk::TimeProbesCollectorBase timeCollector;
+
     double ridgeness = 0;
     double roundness = 0;
     double curvature = 0;
@@ -132,6 +135,7 @@ RidgeFFTFilter< TInputImage >
     vnl_vector<double> D( ImageDimension );
     vnl_matrix<double> HEVect( ImageDimension, ImageDimension);
     vnl_vector<double> HEVal( ImageDimension );
+    timeCollector.Start( "ComputeRidgenessMeasures" );
     while( !iterRidge.IsAtEnd() )
       {
       count = 0;
@@ -147,20 +151,23 @@ RidgeFFTFilter< TInputImage >
           ++count;
           }
         }
-      ::tube::ComputeRidgeness( H, D, ridgeness, roundness, curvature, levelness,
-        HEVect, HEVal );
+      ::tube::ComputeRidgeness( H, D, ridgeness, roundness, curvature,
+        levelness, HEVect, HEVal );
       iterRidge.Set( ridgeness );
       iterRound.Set( roundness );
       iterCurve.Set( curvature );
       iterLevel.Set( levelness );
-  
+
       ++iterRidge;
       ++iterRound;
       ++iterCurve;
       ++iterLevel;
       }
-  
+    timeCollector.Stop( "ComputeRidgenessMeasures" );
+
     this->SetNthOutput( 0, m_Intensity );
+
+    timeCollector.Report();
     }
 }
 

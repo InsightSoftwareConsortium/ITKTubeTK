@@ -43,6 +43,7 @@ ComputeNormalsFromTangent( TTubePoint & tubePoint,
   unsigned int dimension = tubePoint.GetPosition().GetPointDimension();
 
   VectorType t = tubePoint.GetTangent();
+  t.Normalize();
 
   if( t.GetNorm() == 0 )
     {
@@ -58,17 +59,23 @@ ComputeNormalsFromTangent( TTubePoint & tubePoint,
       }
     tubePoint.SetTangent(t);
 
-    CovariantVectorType n;
+    CovariantVectorType n1;
+    CovariantVectorType n2;
 
-    n.Fill( 0.0 );
-    n[0] = 1;
-    tubePoint.SetNormal1(n);
+    n2.SetVnlVector( ::tube::ComputeOrthogonalVector( t.GetVnlVector() )
+      .normalize() );
+    tubePoint.SetNormal2(n2);
 
     if( dimension == 3 )
       {
-      n.Fill( 0.0 );
-      n[1] = 1;
-      tubePoint.SetNormal2(n);
+      n1.SetVnlVector( ::tube::ComputeCrossVector( t.GetVnlVector(),
+        n2.GetVnlVector() ).normalize() );
+      if( n1[0] != n1[0] )
+        {
+        n1.Fill( 0 );
+        n1[0] = 1;
+        }
+      tubePoint.SetNormal1(n1);
       }
 
     return;
@@ -77,8 +84,6 @@ ComputeNormalsFromTangent( TTubePoint & tubePoint,
   // Compute the normal
   CovariantVectorType n1;
   CovariantVectorType n2;
-
-  t = tubePoint.GetTangent();
 
   if( dimension == 2 )
     {
@@ -101,14 +106,16 @@ ComputeNormalsFromTangent( TTubePoint & tubePoint,
 
     vnl_vector< double > vv = ::tube::ComputeCrossVector(
       t.GetVnlVector(), tt.GetVnlVector() );
-
+    if( t * prevT > 0.99999 )
+      {
+      vv = ::tube::ComputeOrthogonalVector( t.GetVnlVector() );
+      }
     n2[0] = vv[0];
     n2[1] = vv[1];
     n2[2] = vv[2];
     n2.Normalize();
 
-    vv = ::tube::ComputeCrossVector( t.GetVnlVector(),
-      n2.GetVnlVector() );
+    vv = ::tube::ComputeCrossVector( t.GetVnlVector(), n2.GetVnlVector() );
     n1[0] = vv[0];
     n1[1] = vv[1];
     n1[2] = vv[2];
@@ -132,7 +139,8 @@ template< class TTube >
 bool
 ComputeTubeTangentsAndNormals( typename TTube::Pointer & tube )
 {
-  return ComputeVectorTangentsAndNormals( tube->GetPoints() );
+  typename TTube::PointListType & pointList = tube->GetPoints();
+  return ComputeVectorTangentsAndNormals( pointList );
 }
 
 /** Compute the tangent of the centerline of the tube */
@@ -208,44 +216,13 @@ ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
   t = tubeV[it2].GetTangent();
   tubeV[it1].SetTangent(t);
 
-
-  // Compute the normal
-  CovariantVectorType n1;
-  CovariantVectorType n2;
-
   it1 = 0;
   VectorType prevT = tubeV[it1].GetTangent();
   while(it1 < length-1)
     {
-    t = tubeV[it1].GetTangent();
+    t = tubeV[it1+1].GetTangent();
 
-    VectorType tt;
-    it2 = it1+1;
-    while( it2 < length )
-      {
-      tt = tubeV[it2].GetTangent();
-      double diff = 0;
-      for( unsigned int i=0; i<dimension; ++i )
-        {
-        diff += vnl_math_abs( tt[i] - t[i] );
-        }
-      if( diff > 0.0001 )
-        {
-        break;
-        }
-      ++it2;
-      }
-    if( it2 >= length )
-      {
-      tt[0] = t[1]+0.5;
-      tt[1] = t[0]-0.5;
-      tt[2] = t[2];
-      tt.Normalize();
-      std::cout << "Warning: Ilconditioned frenet frame, linear tube."
-        << std::endl;
-      }
-
-    ::tube::ComputeNormalsFromTangent( tubeV[it1], tt );
+    ::tube::ComputeNormalsFromTangent( tubeV[it1], t );
 
     ++it1;
     }

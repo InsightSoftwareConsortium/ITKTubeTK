@@ -119,29 +119,8 @@ int DoIt( int argc, char * argv[] )
 
   MapType maskMap;
 
-  unsigned int maxNumComponents = curVolume->GetLargestPossibleRegion().
-    GetNumberOfPixels();
-  itk::Array< double > compMean(maxNumComponents);
-  compMean.Fill( 0 );
-  itk::Array< double > compMin(maxNumComponents);
-  compMin.Fill( 0 );
-  itk::Array< double > compMax(maxNumComponents);
-  compMax.Fill( 0 );
-  itk::Array< double > compStdDev(maxNumComponents);
-  compStdDev.Fill( 0 );
-  itk::Array< double > compCount(maxNumComponents);
-  compCount.Fill( 0 );
-  itk::Array< TPixel > compValue(maxNumComponents);
-  compValue.Fill( 0 );
-
-  unsigned int maxNumBins = 2000;
-  vnl_matrix< unsigned int > compHisto( maxNumComponents, maxNumBins );
-  compHisto.fill( 0 );
-
   itk::ImageRegionIterator< MaskType > maskIter( curMask,
     curMask->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< VolumeType > volumeIter( curVolume,
-    curVolume->GetLargestPossibleRegion() );
   itk::ImageRegionIterator< ConnCompType > connCompIter( curConnComp,
     curConnComp->GetLargestPossibleRegion() );
   typename MapType::iterator mapIter;
@@ -149,6 +128,54 @@ int DoIt( int argc, char * argv[] )
   unsigned int id = 0;
   TPixel lastMaskV = maskIter.Get() + 1;
   TPixel maskV = 0;
+  while( !connCompIter.IsAtEnd() )
+    {
+    maskV = maskIter.Get();
+
+    if( maskV != lastMaskV )
+      {
+      lastMaskV = maskV;
+      mapIter = maskMap.find( maskV );
+      if( mapIter != maskMap.end() )
+        {
+        id = mapIter->second;
+        }
+      else
+        {
+        id = numberOfComponents;
+        maskMap[ maskV ] = id;
+        ++numberOfComponents;
+        }
+      }
+    ++maskIter;
+    ++connCompIter;
+    }
+
+  itk::Array< double > compMean( numberOfComponents );
+  compMean.Fill( 0 );
+  itk::Array< double > compMin( numberOfComponents );
+  compMin.Fill( 0 );
+  itk::Array< double > compMax( numberOfComponents );
+  compMax.Fill( 0 );
+  itk::Array< double > compStdDev( numberOfComponents );
+  compStdDev.Fill( 0 );
+  itk::Array< double > compCount( numberOfComponents );
+  compCount.Fill( 0 );
+  itk::Array< TPixel > compValue( numberOfComponents );
+  compValue.Fill( 0 );
+
+  unsigned int maxNumBins = 2000;
+  vnl_matrix< unsigned int > compHisto( numberOfComponents, maxNumBins );
+  compHisto.fill( 0 );
+
+
+  maskIter.GoToBegin();
+  connCompIter.GoToBegin();
+  itk::ImageRegionIterator< VolumeType > volumeIter( curVolume,
+    curVolume->GetLargestPossibleRegion() );
+  id = 0;
+  lastMaskV = maskIter.Get() + 1;
+  maskV = 0;
   while( !connCompIter.IsAtEnd() )
     {
     maskV = maskIter.Get();
