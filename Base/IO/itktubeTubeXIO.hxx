@@ -281,6 +281,7 @@ TubeXIO< TDimension >
 
     tube->SetSpacing( voxelSize );
     tube->SetId( tubeId );
+    tube->RemoveDuplicatePoints();
     tube->ComputeTangentAndNormals();
 
     m_TubeGroup->AddSpatialObject( tube );
