@@ -200,11 +200,12 @@ int itktubeRadiusExtractor2Test2( int argc, char * argv[] )
       ++pntIter;
       }
 
-    radiusOp->SetRadiusStart( radiusStart );
-    radiusOp->SetRadiusMin( 0.5 );
-    radiusOp->SetRadiusMax( 5.0 );
+    radiusOp->SetRadiusStart( 1.0 );
+    radiusOp->SetRadiusMin( 0.25 );
+    radiusOp->SetRadiusMax( 6.0 );
+    radiusOp->SetRadiusStep( 0.25 );
 
-    radiusOp->SetDebug( true );
+    radiusOp->SetDebug( false );
     radiusOp->ExtractRadii( tubep );
 
     double avgDiff = 0;

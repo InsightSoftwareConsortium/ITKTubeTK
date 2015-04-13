@@ -376,7 +376,7 @@ RidgeExtractor<TInputImage>
 template< class TInputImage >
 void
 RidgeExtractor<TInputImage>
-::SetRadiusExtractor( RadiusExtractor<TInputImage> * radiusExtractor )
+::SetRadiusExtractor( RadiusExtractor2<TInputImage> * radiusExtractor )
 {
   m_RadiusExtractor = radiusExtractor;
 }
@@ -1302,7 +1302,9 @@ RidgeExtractor<TInputImage>
           double radiusStep = m_RadiusExtractor->GetRadiusStep() * 2;
           double radiusTolerance = m_RadiusExtractor->GetRadiusTolerance()
             * 10;
-          if( !m_RadiusExtractor->OptimalRadiusAtPoint( tmpPoint,
+          std::vector< TubePointType > points;
+          points.push_back( tmpPoint );
+          if( !m_RadiusExtractor->GetPointVectorOptimalRadius( points,
             m_DynamicScaleUsed, radiusMin, radiusMax, radiusStep,
             radiusTolerance ) )
             {
@@ -1835,7 +1837,9 @@ RidgeExtractor<TInputImage>
       }
     double radiusStep = m_RadiusExtractor->GetRadiusStep() * 2;
     double radiusTolerance = m_RadiusExtractor->GetRadiusTolerance() * 10;
-    if( !m_RadiusExtractor->OptimalRadiusAtPoint( tmpPoint,
+    std::vector< TubePointType > points;
+    points.push_back( tmpPoint );
+    if( !m_RadiusExtractor->GetPointVectorOptimalRadius( points,
       scale0, radiusMin, radiusMax, radiusStep, radiusTolerance ) )
       {
       if( this->GetDebug() && m_StatusCallBack )

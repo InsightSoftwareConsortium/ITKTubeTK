@@ -29,7 +29,7 @@ limitations under the License.
 #ifndef __itktubeTubeExtractor_h
 #define __itktubeTubeExtractor_h
 
-#include "itktubeRadiusExtractor.h"
+#include "itktubeRadiusExtractor2.h"
 #include "itktubeRidgeExtractor.h"
 
 #include "itkGroupSpatialObject.h"
@@ -90,7 +90,7 @@ public:
   typedef itk::GroupSpatialObject< ImageDimension >     TubeGroupType;
 
   typedef RidgeExtractor<ImageType>                     RidgeOpType;
-  typedef RadiusExtractor<ImageType>                    RadiusOpType;
+  typedef RadiusExtractor2<ImageType>                   RadiusOpType;
 
   /**
    * Type definition for the input image pixel type. */
@@ -165,7 +165,7 @@ public:
 
   /**
    * Get the radius extractor */
-  typename RadiusExtractor<ImageType>::Pointer GetRadiusOp( void );
+  typename RadiusExtractor2<ImageType>::Pointer GetRadiusOp( void );
 
   /**
    * Return true if a tube is found from the given seed point */
@@ -175,7 +175,8 @@ public:
    * Extract the ND tube given the position of the first point
    * and the tube ID */
   typename TubeType::Pointer ExtractTube( const ContinuousIndexType & x,
-    unsigned int tubeID, bool verbose=false );
+    unsigned int tubeID,
+    bool verbose=false );
 
   /**
    * Get the list of tubes that have been extracted */
@@ -229,8 +230,8 @@ protected:
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
-  typename RidgeExtractor<ImageType>::Pointer  m_RidgeOp;
-  typename RadiusExtractor<ImageType>::Pointer m_RadiusOp;
+  typename RidgeExtractor<ImageType>::Pointer   m_RidgeOp;
+  typename RadiusExtractor2<ImageType>::Pointer m_RadiusOp;
 
   bool ( *m_IdleCallBack )( void );
   void ( *m_StatusCallBack )( const char *, const char *, int );

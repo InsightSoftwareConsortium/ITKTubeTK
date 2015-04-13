@@ -71,7 +71,7 @@ int itktubeRadiusExtractor2Test( int argc, char * argv[] )
   radiusOp->SetRadiusMin( 0.25 );
   if( radiusOp->GetRadiusMin() != 0.25 )
     {
-    tube::ErrorMessage( "Radius min != 0.5" );
+    tube::ErrorMessage( "Radius min != 0.25" );
     returnStatus = EXIT_FAILURE;
     }
 
@@ -190,7 +190,7 @@ int itktubeRadiusExtractor2Test( int argc, char * argv[] )
 
     double rMin = 0.25;
     double rMax = 5;
-    double rStep = 1.0;
+    double rStep = 0.25;
     double rTol = 0.05;
     if( !radiusOp->GetPointVectorOptimalRadius( tubePoints, r1, rMin, rMax,
       rStep, rTol ) )
