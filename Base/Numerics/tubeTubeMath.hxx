@@ -189,7 +189,7 @@ ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
     l = vcl_sqrt(l);
     if(l < 0.0001)
       {
-      std::cerr << "TubeSpatialObject::ComputeTangentAndNormals() : ";
+      std::cerr << "tubeTubeMath::ComputeVectorTangentsAndNormals() : ";
       std::cerr << "length between two consecutive points is 0";
       std::cerr << " (use RemoveDuplicatePoints())" << std::endl;
       std::cerr << "   p1 = " << x1 << std::endl;
@@ -344,8 +344,8 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
     // w[pos] = 1/(sigma*2.50663)*exp(-dist*dist/(2.0*sigma*sigma));
 
     // TODO : Finish implementation
-    std::cerr<<" Function not yet implemented, results you might get are false.\n";
-
+    std::cerr<<" Smoothing method not yet implemented. Please choose another one.\n";
+    return NULL;
     }
 
   newTube->SetPoints( newPointList );
