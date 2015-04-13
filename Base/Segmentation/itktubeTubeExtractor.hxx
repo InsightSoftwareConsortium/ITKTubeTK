@@ -82,7 +82,7 @@ TubeExtractor<TInputImage>
   this->m_RidgeOp = RidgeExtractor<ImageType>::New();
   this->m_RidgeOp->SetInputImage( this->m_InputImage );
 
-  this->m_RadiusOp = RadiusExtractor<ImageType>::New();
+  this->m_RadiusOp = RadiusExtractor2<ImageType>::New();
   this->m_RadiusOp->SetInputImage( this->m_InputImage );
   this->m_RidgeOp->SetRadiusExtractor( this->m_RadiusOp );
 }
@@ -281,7 +281,7 @@ TubeExtractor<TInputImage>
 /**
  * Get the radius extractor */
 template< class TInputImage >
-typename RadiusExtractor<TInputImage>::Pointer
+typename RadiusExtractor2<TInputImage>::Pointer
 TubeExtractor<TInputImage>
 ::GetRadiusOp( void )
 {

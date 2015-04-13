@@ -168,7 +168,7 @@ if( TubeTK_BUILD_USING_SLICER )
   mark_as_advanced( TubeTK_USE_ITK TubeTK_USE_VTK TubeTK_USE_QT
     TubeTK_USE_CTK )
 
-  set(TubeTK_BUILD_WITHIN_SLICER ${TubeTK_BUILD_USING_SLICER})
+  #set(TubeTK_BUILD_WITHIN_SLICER ${TubeTK_BUILD_USING_SLICER})
   unset( QT_QMAKE_EXECUTABLE )
   unset( PYTHON_EXECUTABLE )
 
@@ -637,10 +637,11 @@ add_subdirectory( Utilities )
 add_subdirectory( Base )
 if( TubeTK_BUILD_APPLICATIONS )
   add_subdirectory( Applications )
-  if( TubeTK_BUILD_USING_SLICER )
-    add_subdirectory( SlicerModules )
-  endif( TubeTK_BUILD_USING_SLICER )
 endif( TubeTK_BUILD_APPLICATIONS )
+
+if( TubeTK_BUILD_USING_SLICER )
+  add_subdirectory( SlicerModules )
+endif( TubeTK_BUILD_USING_SLICER )
 
 # Create the directory where CTest unit tests store temporary results.
 make_directory( ${TubeTK_BINARY_DIR}/Temporary )
