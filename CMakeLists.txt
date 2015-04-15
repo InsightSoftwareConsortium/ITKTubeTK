@@ -240,6 +240,12 @@ if( TubeTK_USE_BOOST )
   endif( NOT Boost_FOUND )
 endif( TubeTK_USE_BOOST )
 
+#
+# GPU ArrayFire setup
+#
+option( TubeTK_USE_GPU_ARRAYFIRE
+  "Use the ArrayFire library to speedup filtering opertions using the GPU." OFF)
+mark_as_advanced( TubeTK_USE_GPU_ARRAYFIRE )
 
 #
 #  Cppcheck setup.

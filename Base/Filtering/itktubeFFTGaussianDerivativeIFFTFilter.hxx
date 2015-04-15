@@ -39,28 +39,7 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   m_ConvolvedImageFFT = NULL;
   m_ConvolvedImage = NULL;
 
-  this->m_Orders.Fill(0);
-  this->m_Sigmas.Fill(0);
-
   this->m_LastInputImage = NULL;
-}
-
-template< typename TInputImage, typename TOutputImage >
-void
-FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
-::SetOrders( OrdersType & orders )
-{
-  m_Orders = orders;
-  this->Modified();
-}
-
-template< typename TInputImage, typename TOutputImage >
-void
-FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
-::SetSigmas( SigmasType & sigmas )
-{
-  m_Sigmas = sigmas;
-  this->Modified();
 }
 
 template< typename TInputImage, typename TOutputImage >
@@ -121,7 +100,7 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
     }
   this->GetInput()->TransformIndexToPhysicalPoint( meanIndex, mean );
 
-  gaussSource->SetSigmas( m_Sigmas );
+  gaussSource->SetSigmas( this->m_Sigmas );
   gaussSource->SetMean( mean );
   gaussSource->SetOrders( this->m_Orders );
 
@@ -342,8 +321,6 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
     {
     os << indent << "Convolved Image   : NULL" << std::endl;
     }
-  os << indent << "Orders              : " << m_Orders << std::endl;
-  os << indent << "Sigmas               : " << m_Sigmas << std::endl;
   os << indent << "Last Input Image    : " << m_LastInputImage << std::endl;
 }
 

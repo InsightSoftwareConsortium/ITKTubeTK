@@ -14,17 +14,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
- *=========================================================================*/
+*=========================================================================*/
 #ifndef __itktubeRidgeFFTFilter_h
 #define __itktubeRidgeFFTFilter_h
 
-#include "itktubeFFTGaussianDerivativeIFFTFilter.h"
-
 #include "itkImageToImageFilter.h"
+
+#include "itktubeGaussianDerivativeFilterBase.h"
 
 namespace itk
 {
-
 namespace tube
 {
 
@@ -76,7 +75,7 @@ private:
   RidgeFFTFilter( const Self & );
   void operator = ( const Self & );
 
-  typedef FFTGaussianDerivativeIFFTFilter< InputImageType, OutputImageType >
+  typedef GaussianDerivativeFilterBase< InputImageType, OutputImageType >
     DerivativeFilterType;
 
   typename DerivativeFilterType::Pointer                m_DerivativeFilter;

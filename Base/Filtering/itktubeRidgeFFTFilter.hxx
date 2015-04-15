@@ -21,6 +21,12 @@
 
 #include "tubeMatrixMath.h"
 
+#include "itktubeFFTGaussianDerivativeIFFTFilter.h"
+
+#if defined( TubeTK_USE_GPU_ARRAYFIRE )
+  #include "itktubeGPUArrayFireGaussianDerivativeFilter.h"
+#endif
+
 namespace itk {
 
 namespace tube {
@@ -38,7 +44,13 @@ RidgeFFTFilter< TInputImage >
   m_Scale = 1;
   m_UseIntensityOnly = false;
 
-  m_DerivativeFilter = DerivativeFilterType::New();
+  #if defined( TubeTK_USE_GPU_ARRAYFIRE )
+    m_DerivativeFilter = GPUArrayFireGaussianDerivativeFilter< InputImageType,
+      OutputImageType >::New();
+  #else
+    m_DerivativeFilter = FFTGaussianDerivativeIFFTFilter< InputImageType,
+      OutputImageType >::New();
+  #endif
 }
 
 
