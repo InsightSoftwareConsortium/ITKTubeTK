@@ -15,6 +15,7 @@ before_script:
   - cd /tmp/cmake-3.2.2 && make -j4 && sudo make install
 
 script:
+  - rm -rf _build
   - mkdir _build
   - cd _build
   - cmake -DUSE_SYSTEM_ITK:BOOL=ON -DUSE_SYSTEM_JSONCPP:BOOL=ON -DUSE_SYSTEM_VTK:BOOL=ON -DTubeTK_USE_QT:BOOL=OFF -DTubeTK_USE_LIBSVM:BOOL=OFF -DTubeTK_USE_PYTHON:BOOL=OFF -DTubeTK_USE_KWSTYLE:BOOL=OFF ..
