@@ -20,8 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef TUBE_TUBEX_IO_H
-#define TUBE_TUBEX_IO_H
+#ifndef __itktubeTubeXIO_h
+#define __itktubeTubeXIO_h
 
 #include "itkVesselTubeSpatialObject.h"
 #include "itkGroupSpatialObject.h"
@@ -82,9 +82,9 @@ private:
 
 }; // TubeXIO
 
-}; // namespace tube
+} // namespace tube
 
-}; // namespace itk
+} // namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itktubeTubeXIO.hxx"
