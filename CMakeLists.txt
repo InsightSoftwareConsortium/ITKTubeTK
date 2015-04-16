@@ -23,10 +23,7 @@
 
 project( TubeTK )
 
-cmake_minimum_required( VERSION 2.8.7 )
-if( NOT ${CMAKE_VERSION} VERSION_LESS 2.8.13 )
-  cmake_policy( SET CMP0026 OLD )
-endif( NOT ${CMAKE_VERSION} VERSION_LESS 2.8.13 )
+cmake_minimum_required( VERSION 3.0.0 )
 
 # Update CMake module path
 set( TubeTK_CMAKE_EXTENSIONS_DIR ${TubeTK_SOURCE_DIR}/CMake )
