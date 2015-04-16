@@ -8,6 +8,12 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq libinsighttoolkit-dev libjsoncpp-dev libvtk-dev
 
+before_script:
+  - wget -P /tmp http://www.cmake.org/files/v3.2/cmake-3.2.2-Linux-x86_64.tar.gz
+  - tar xz -C /tmp -f /tmp/cmake-3.2.2.tar.gz
+  - cd /tmp/cmake-3.2.2 && ./configure --prefix=/usr/local -- -DCMAKE_USE_OPENSSL:BOOL=ON
+  - cd /tmp/cmake-3.2.2 && make -j4 && sudo make install
+
 script:
   - mkdir _build
   - cd _build
