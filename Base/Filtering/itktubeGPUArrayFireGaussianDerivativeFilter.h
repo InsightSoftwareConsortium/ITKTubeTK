@@ -23,7 +23,7 @@
 #include "itkParametricImageSource.h"
 #include "itkSize.h"
 
-#include "itktubeGaussianDerivativeFilterBase.h"
+#include "itktubeGaussianDerivativeFilter.h"
 #include "itkFFTShiftImageFilter.h"
 
 #include <arrayfire.h>
@@ -36,12 +36,12 @@ namespace tube
 template< typename TInputImage, typename TOutputImage =
 Image< float, TInputImage::ImageDimension >  >
 class GPUArrayFireGaussianDerivativeFilter :
-  public GaussianDerivativeFilterBase< TInputImage, TOutputImage >
+  public GaussianDerivativeFilter< TInputImage, TOutputImage >
 {
 public:
 
   typedef GPUArrayFireGaussianDerivativeFilter                  Self;
-  typedef GaussianDerivativeFilterBase< TInputImage,
+  typedef GaussianDerivativeFilter< TInputImage,
           TOutputImage >                                        Superclass;
   typedef SmartPointer< Self >                                  Pointer;
   typedef SmartPointer< const Self >                            ConstPointer;
@@ -49,7 +49,7 @@ public:
   itkNewMacro ( Self );
 
   itkTypeMacro ( GPUArrayFireGaussianDerivativeFilter,
-                 GaussianDerivativeFilterBase );
+                 GaussianDerivativeFilter );
 
   itkStaticConstMacro ( ImageDimension, unsigned int,
                         TInputImage::ImageDimension );

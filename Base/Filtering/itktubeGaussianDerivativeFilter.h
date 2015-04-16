@@ -15,8 +15,8 @@
  *  limitations under the License.
  *
 *=========================================================================*/
-#ifndef __itktubeGaussianDerivativeFilterBase_h
-#define __itktubeGaussianDerivativeFilterBase_h
+#ifndef __itktubeGaussianDerivativeFilter_h
+#define __itktubeGaussianDerivativeFilter_h
 
 #include "itkImage.h"
 #include "itkImageToImageFilter.h"
@@ -29,13 +29,13 @@ namespace tube
 
 template< typename TInputImage, typename TOutputImage =
 Image< float, TInputImage::ImageDimension >  >
-class GaussianDerivativeFilterBase :
+class GaussianDerivativeFilter :
   public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
 
   /** Standard class typedefs. */
-  typedef GaussianDerivativeFilterBase                    Self;
+  typedef GaussianDerivativeFilter                        Self;
   typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
   typedef SmartPointer< Self >                            Pointer;
   typedef SmartPointer< const Self >                      ConstPointer;
@@ -69,8 +69,8 @@ public:
 
 protected:
 
-  GaussianDerivativeFilterBase ( void );
-  virtual ~GaussianDerivativeFilterBase ( void ) {}
+  GaussianDerivativeFilter ( void );
+  virtual ~GaussianDerivativeFilter ( void ) {}
 
   void PrintSelf ( std::ostream & os, Indent indent ) const ITK_OVERRIDE;
 
@@ -79,7 +79,7 @@ protected:
 
 private:
   // Purposely not implemented
-  GaussianDerivativeFilterBase ( const Self & );
+  GaussianDerivativeFilter ( const Self & );
   void operator = ( const Self & );
 
 }; // End class GaussianDerivativeFilter
@@ -88,7 +88,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeGaussianDerivativeFilterBase.hxx"
+#include "itktubeGaussianDerivativeFilter.hxx"
 #endif
 
 #endif

@@ -44,8 +44,8 @@ set( TubeTK_Base_Filtering_H_Files
   itktubeAnisotropicHybridDiffusionImageFilter.h
   itktubeExtractTubePointsSpatialObjectFilter.h
   itktubeFFTGaussianDerivativeIFFTFilter.h
+  itktubeGaussianDerivativeFilter.h
   itktubeGaussianDerivativeImageSource.h
-  itktubeGaussianDerivativeFilterBase.h
   itktubePadImageFilter.h
   itktubeRegionFromReferenceImageFilter.h
   itktubeSheetnessMeasureImageFilter.h
@@ -66,8 +66,8 @@ set( TubeTK_Base_Filtering_HXX_Files
   itktubeAnisotropicHybridDiffusionImageFilter.hxx
   itktubeExtractTubePointsSpatialObjectFilter.hxx
   itktubeFFTGaussianDerivativeIFFTFilter.hxx
+  itktubeGaussianDerivativeFilter.hxx
   itktubeGaussianDerivativeImageSource.hxx
-  itktubeGaussianDerivativeFilterBase.hxx
   itktubePadImageFilter.hxx
   itktubeRegionFromReferenceImageFilter.hxx
   itktubeSheetnessMeasureImageFilter.hxx

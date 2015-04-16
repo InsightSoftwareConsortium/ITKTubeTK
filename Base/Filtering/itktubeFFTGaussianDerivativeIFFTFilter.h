@@ -24,7 +24,7 @@ limitations under the License.
 #ifndef __itktubeFFTGaussianDerivativeIFFTFilter_h
 #define __itktubeFFTGaussianDerivativeIFFTFilter_h
 
-#include "itktubeGaussianDerivativeFilterBase.h"
+#include "itktubeGaussianDerivativeFilter.h"
 
 #include "itkFFTShiftImageFilter.h"
 #include "itkForwardFFTImageFilter.h"
@@ -43,19 +43,19 @@ namespace tube
 template< typename TInputImage, typename TOutputImage =
   Image< float, TInputImage::ImageDimension >  >
 class FFTGaussianDerivativeIFFTFilter :
-    public GaussianDerivativeFilterBase< TInputImage, TOutputImage >
+    public GaussianDerivativeFilter< TInputImage, TOutputImage >
 {
 public:
 
   typedef FFTGaussianDerivativeIFFTFilter               Self;
-  typedef GaussianDerivativeFilterBase< TInputImage,
+  typedef GaussianDerivativeFilter< TInputImage,
     TOutputImage >                                      Superclass;
   typedef SmartPointer< Self >                          Pointer;
   typedef SmartPointer< const Self >                    ConstPointer;
 
   itkNewMacro( Self );
 
-  itkTypeMacro( FFTGaussianDerivativeIFFTFilter, GaussianDerivativeFilterBase );
+  itkTypeMacro( FFTGaussianDerivativeIFFTFilter, GaussianDerivativeFilter );
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     TInputImage::ImageDimension );

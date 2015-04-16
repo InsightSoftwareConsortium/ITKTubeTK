@@ -15,8 +15,8 @@
  *  limitations under the License.
  *
 *=========================================================================*/
-#ifndef __itktubeGaussianDerivativeFilterBase_hxx
-#define __itktubeGaussianDerivativeFilterBase_hxx
+#ifndef __itktubeGaussianDerivativeFilter_hxx
+#define __itktubeGaussianDerivativeFilter_hxx
 
 namespace itk
 {
@@ -25,8 +25,8 @@ namespace tube
 //----------------------------------------------------------------------------
 
 template< typename TInputImage, typename TOutputImage >
-GaussianDerivativeFilterBase<TInputImage, TOutputImage>
-::GaussianDerivativeFilterBase()
+GaussianDerivativeFilter<TInputImage, TOutputImage>
+::GaussianDerivativeFilter()
 {
   this->m_Orders.Fill ( 0 );
   this->m_Sigmas.Fill ( 0 );
@@ -34,7 +34,7 @@ GaussianDerivativeFilterBase<TInputImage, TOutputImage>
 
 template< typename TInputImage, typename TOutputImage >
 void
-GaussianDerivativeFilterBase<TInputImage, TOutputImage>
+GaussianDerivativeFilter<TInputImage, TOutputImage>
 ::PrintSelf ( std::ostream & os, Indent indent ) const
 {
   this->Superclass::PrintSelf ( os, indent );

@@ -20,7 +20,7 @@
 
 #include "itkImageToImageFilter.h"
 
-#include "itktubeGaussianDerivativeFilterBase.h"
+#include "itktubeGaussianDerivativeFilter.h"
 
 namespace itk
 {
@@ -75,7 +75,7 @@ private:
   RidgeFFTFilter( const Self & );
   void operator = ( const Self & );
 
-  typedef GaussianDerivativeFilterBase< InputImageType, OutputImageType >
+  typedef GaussianDerivativeFilter< InputImageType, OutputImageType >
     DerivativeFilterType;
 
   typename DerivativeFilterType::Pointer                m_DerivativeFilter;
