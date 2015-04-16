@@ -35,24 +35,6 @@ GaussianDerivativeFilterBase<TInputImage, TOutputImage>
 template< typename TInputImage, typename TOutputImage >
 void
 GaussianDerivativeFilterBase<TInputImage, TOutputImage>
-::SetOrders ( OrdersType & orders )
-{
-  m_Orders = orders;
-  this->Modified();
-}
-
-template< typename TInputImage, typename TOutputImage >
-void
-GaussianDerivativeFilterBase<TInputImage, TOutputImage>
-::SetSigmas ( SigmasType & sigmas )
-{
-  m_Sigmas = sigmas;
-  this->Modified();
-}
-
-template< typename TInputImage, typename TOutputImage >
-void
-GaussianDerivativeFilterBase<TInputImage, TOutputImage>
 ::PrintSelf ( std::ostream & os, Indent indent ) const
 {
   this->Superclass::PrintSelf ( os, indent );

@@ -40,9 +40,6 @@ public:
   typedef SmartPointer< Self >                            Pointer;
   typedef SmartPointer< const Self >                      ConstPointer;
 
-  /** Method for creation through the object factory. */
-  static Pointer New();
-
   /** Run-time type information (and related methods). */
   itkTypeMacro( GaussianDerivativeFilter, ImageToImageFilter );
 
@@ -60,10 +57,10 @@ public:
   typedef typename GaussianDerivativeImageSourceType::SigmasType
                                               SigmasType;
 
-  virtual void SetOrders( OrdersType & orders );
+  itkSetMacro( Orders, OrdersType );
   itkGetConstReferenceMacro( Orders, OrdersType );
 
-  virtual void SetSigmas( SigmasType & sigmas );
+  itkSetMacro( Sigmas, SigmasType );
   itkGetConstReferenceMacro( Sigmas, SigmasType );
 
   virtual void GenerateNJet( typename OutputImageType::Pointer & D,
