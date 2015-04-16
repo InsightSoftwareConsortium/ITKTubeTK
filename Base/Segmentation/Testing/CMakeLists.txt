@@ -79,6 +79,7 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     TubeTKSegmentation
+    TubeTKFiltering
     ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/Common

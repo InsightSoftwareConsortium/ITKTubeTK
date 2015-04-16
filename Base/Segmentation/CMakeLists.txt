@@ -43,10 +43,6 @@ set( TubeTK_Base_Segmentation_HXX_Files
   itktubeRidgeSeedFilter.hxx
   itktubeTubeExtractor.hxx )
 
-# add_custom_target( TubeTKSegmentation SOURCES
-#  ${TubeTK_Base_Segmentation_H_Files}
-#  ${TubeTK_Base_Segmentation_HXX_Files} )
-
 add_library( TubeTKSegmentation INTERFACE )
 
 target_link_libraries( TubeTKSegmentation INTERFACE

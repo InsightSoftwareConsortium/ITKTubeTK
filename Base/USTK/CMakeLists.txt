@@ -23,9 +23,6 @@
 
 project( TubeUSTK )
 
-find_package( ITK REQUIRED )
-include( ${ITK_USE_FILE} )
-
 set( TubeTK_Base_USTK_H_Files
   itkAcousticImpulseResponseImageFilter.h
   itkAngleOfIncidenceImageFilter.h

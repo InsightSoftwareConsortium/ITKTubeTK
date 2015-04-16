@@ -23,17 +23,8 @@
 
 project( TubeTKFiltering )
 
-find_package( ITK REQUIRED )
-include( ${ITK_USE_FILE} )
-
 if( TubeTK_USE_GPU_ARRAYFIRE )
-
-  find_package( ArrayFire REQUIRED )
-
-  add_definitions( -DTubeTK_USE_GPU_ARRAYFIRE )
-
   include_directories( ${ArrayFire_INCLUDE_DIRS} )
-
 endif( TubeTK_USE_GPU_ARRAYFIRE )
 
 set( TubeTK_Base_Filtering_H_Files
