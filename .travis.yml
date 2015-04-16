@@ -10,11 +10,10 @@ before_install:
   - sudo add-apt-repository --yes ppa:jamie-snape/tubetk
   - sudo apt-get update -qq
   - sudo apt-get install -qq libinsighttoolkit-dev libjsoncpp-dev libvtk-dev
-  - export CMAKE_PREFIX_PATH=/usr/lib/insighttoolkit-4.5/cmake:$CMAKE_PREFIX_PATH
 
 script:
   - rm -rf _build
   - mkdir _build
   - cd _build
-  - cmake -DUSE_SYSTEM_ITK:BOOL=ON -DUSE_SYSTEM_JSONCPP:BOOL=ON -DUSE_SYSTEM_VTK:BOOL=ON -DTubeTK_USE_QT:BOOL=OFF -DTubeTK_USE_LIBSVM:BOOL=OFF -DTubeTK_USE_PYTHON:BOOL=OFF -DTubeTK_USE_KWSTYLE:BOOL=OFF ..
+  - cmake -DUSE_SYSTEM_ITK:BOOL=OFF -DUSE_SYSTEM_JSONCPP:BOOL=ON -DUSE_SYSTEM_VTK:BOOL=ON -DTubeTK_USE_QT:BOOL=OFF -DTubeTK_USE_LIBSVM:BOOL=OFF -DTubeTK_USE_PYTHON:BOOL=OFF -DTubeTK_USE_KWSTYLE:BOOL=OFF ..
   - cmake --build .
