@@ -122,7 +122,7 @@ TubeXIO< TDimension >
 
     if( (int)mF->value[0] != TDimension )
       {
-      std::cerr << "Tube: Read failed: object is " << nDims 
+      std::cerr << "Tube: Read failed: object is " << nDims
         << " dimensional and was expecting " << TDimension << " dimensional."
         << std::endl;
       return false;
@@ -204,7 +204,7 @@ TubeXIO< TDimension >
       {
       tubeId = (int)( mF->value[0] );
       }
-  
+
     char tubeType[80];
     strcpy( tubeType, "" );
     mF = MET_GetFieldRecord( "Type", &fields );
@@ -212,7 +212,7 @@ TubeXIO< TDimension >
       {
       strcpy( tubeType, (char *)(mF->value) );
       }
-  
+
     char tubeAnat[80];
     strcpy( tubeAnat, "" );
     mF = MET_GetFieldRecord( "Anat", &fields );
@@ -220,7 +220,7 @@ TubeXIO< TDimension >
       {
       strcpy( tubeAnat, (char *)(mF->value) );
       }
-  
+
     char tubeTreeType[80];
     strcpy( tubeTreeType, "" );
     mF = MET_GetFieldRecord( "TreeType", &fields );
@@ -228,7 +228,7 @@ TubeXIO< TDimension >
       {
       strcpy( tubeTreeType, (char *)(mF->value) );
       }
-  
+
     char tubeColor[80];
     strcpy( tubeColor, "" );
     mF = MET_GetFieldRecord( "Color", &fields );
@@ -236,7 +236,7 @@ TubeXIO< TDimension >
       {
       strcpy( tubeColor, (char *)(mF->value) );
       }
-  
+
     char tubePointDim[80];
     strcpy( tubePointDim, "" );
     mF = MET_GetFieldRecord( "PointDim", &fields );
@@ -244,14 +244,14 @@ TubeXIO< TDimension >
       {
       strcpy( tubePointDim, (char *)(mF->value) );
       }
-    
+
     unsigned int nPoints = 0;
     mF = MET_GetFieldRecord( "NPoints", &fields );
     if(mF->defined)
       {
       nPoints = (unsigned int)( mF->value[0] );
       }
-  
+
     typename TubeType::Pointer tube = TubeType::New();
 
     for( unsigned int j=0; j<nPoints; ++j )
@@ -271,12 +271,12 @@ TubeXIO< TDimension >
       pnt.SetRadius( r );
 
       tube->GetPoints().push_back( pnt );
-      }
 
-    char c = ' ';
-    while( c != '\n' && !tmpReadStream.eof() )
-      {
-      c = tmpReadStream.get();// to avoid unrecognize charactere
+      char c = ' ';
+      while( c != '\n' && !tmpReadStream.eof() )
+        {
+        c = tmpReadStream.get();// to avoid unrecognize charactere
+        }
       }
 
     tube->SetSpacing( voxelSize );
@@ -315,10 +315,10 @@ TubeXIO< TDimension >
 
   char soType[80];
   sprintf( soType, "Tube" );
-  typename TubeType::ChildrenListType * tubeList = 
+  typename TubeType::ChildrenListType * tubeList =
     m_TubeGroup->GetChildren( 99999, soType );
   tmpWriteStream << "VoxelSize:";
-  for( unsigned int i=0; i<TDimension; ++i ) 
+  for( unsigned int i=0; i<TDimension; ++i )
     {
     tmpWriteStream << " " << ( *(tubeList->begin()) )->GetSpacing()[i];
     }
@@ -380,9 +380,8 @@ TubeXIO< TDimension >
   return m_TubeGroup;
 }
 
-}; // tube namespace
+} // tube namespace
 
-}; // itk namespace
+} // itk namespace
 
 #endif
-
