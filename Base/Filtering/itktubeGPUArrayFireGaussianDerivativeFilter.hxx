@@ -48,7 +48,7 @@ void
 GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
 ::ComputeInputImageFFT()
 {
-  std::cout << "ArrayFireGPUGaussianDerivative: ComputeInputImageFFT" << std::endl;
+  // std::cout << "ArrayFireGPUGaussianDerivative: ComputeInputImageFFT" << std::endl;
 
   typedef PadImageFilter< InputImageType, RealImageType >
   PadFilterType;
@@ -410,8 +410,6 @@ GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
   // Compute G_0
   this->m_Orders.Fill ( 0 );
 
-  // std::cout << "Orders: " << this->m_Orders << std::endl;
-
   this->ComputeKernelImageFFT();
   this->ComputeConvolvedImageFFT();
   this->ComputeConvolvedImage();
@@ -422,9 +420,6 @@ GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
   for ( unsigned int i = 0; i<ImageDimension; ++i )
     {
     this->m_Orders[i] = 1;
-
-    // std::cout << "Orders: " << this->m_Orders << std::endl;
-
     this->ComputeKernelImageFFT();
     dXKernelImageFFT[i] = m_KernelImageFFTAfArr;
     this->ComputeConvolvedImageFFT();
@@ -446,7 +441,6 @@ GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
     for( unsigned int j = i; j<ImageDimension; ++j )
       {
       this->m_Orders[j] += 1;
-      std::cout << "Orders: " << this->m_Orders << std::endl;
       this->ComputeKernelImageFFT();
       this->ComputeConvolvedImageFFT();
       this->ComputeConvolvedImage();
