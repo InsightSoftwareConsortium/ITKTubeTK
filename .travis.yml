@@ -4,15 +4,12 @@ compiler:
   - clang
 
 before_install:
+  - wget http://www.cmake.org/files/v3.2/cmake-3.2.2-Linux-x86_64.tar.gz
+  - tar xf cmake-3.2.2-Linux-x86_64.tar.gz
+  - export PATH=$TRAVIS_BUILD_DIR/cmake-3.2.2-Linux-x86_64:$PATH
   - sudo add-apt-repository --yes ppa:jamie-snape/tubetk
   - sudo apt-get update -qq
   - sudo apt-get install -qq libinsighttoolkit-dev libjsoncpp-dev libvtk-dev
-
-before_script:
-  - wget -P /tmp http://www.cmake.org/files/v3.2/cmake-3.2.2-Linux-x86_64.tar.gz
-  - tar xz -C /tmp -f /tmp/cmake-3.2.2-Linux-x86_64.tar.gz
-  - cd /tmp/cmake-3.2.2-Linux-x86_64 && ./configure --prefix=/usr/local -- -DCMAKE_USE_OPENSSL:BOOL=ON
-  - cd /tmp/cmake-3.2.2-Linux-x86_64 && make -j4 && sudo make install
 
 script:
   - mkdir _build
