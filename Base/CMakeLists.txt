@@ -21,9 +21,6 @@
 #
 ##############################################################################
 
-find_package( ITK REQUIRED )
-include( ${ITK_USE_FILE} )
-
 add_subdirectory( CLI )
 add_subdirectory( Common )
 add_subdirectory( Filtering )
