@@ -91,6 +91,19 @@
       <default>4</default>
     </integer>
   </parameters>
+  <parameters advanced="true">
+    <label>Radius</label>
+    <description>Parameters for radius estimation</description>
+    <image>
+      <name>radiusInputVolume</name>
+      <label>Radius input image</label>
+      <longflag>radiusInputVolume</longflag>
+      <flag>R</flag>
+      <description>Use for radius estimation instead of input image</description>
+      <channel>input</channel>
+      <default></default>
+    </image>
+  </parameters>
   <parameters>
     <label>Extraction Parameters</label>
     <image>

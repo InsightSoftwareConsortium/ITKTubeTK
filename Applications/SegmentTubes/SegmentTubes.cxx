@@ -100,11 +100,29 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Report();
     return EXIT_FAILURE;
     }
+  typename ImageType::Pointer inputImage = reader->GetOutput();
+
+  typename ImageType::Pointer radiusInputImage = NULL;
+  if( ! radiusInputVolume.empty() )
+    {
+    typename ReaderType::Pointer radiusReader = ReaderType::New();
+    radiusReader->SetFileName( radiusInputVolume.c_str() );
+    try
+      {
+      radiusReader->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Reading radius volume: Exception caught: "
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    radiusInputImage = radiusReader->GetOutput();
+    }
   timeCollector.Stop("Load data");
   double progress = 0.1;
   progressReporter.Report( progress );
-
-  typename ImageType::Pointer inputImage = reader->GetOutput();
 
   double scaleNorm = inputImage->GetSpacing()[0];
 
@@ -118,6 +136,11 @@ int DoIt( int argc, char * argv[] )
   typename TubeOpType::Pointer tubeOp = TubeOpType::New();
 
   tubeOp->SetInputImage( inputImage );
+  if( radiusInputImage.IsNotNull() )
+    {
+    tubeOp->SetRadiusInputImage( radiusInputImage );
+    }
+
   tubeOp->SetRadius( scale / scaleNorm );
 
   IndexType seedIndex;
