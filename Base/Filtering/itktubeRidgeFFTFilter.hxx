@@ -17,6 +17,8 @@
 #ifndef __itktubeRidgeFFTFilter_hxx
 #define __itktubeRidgeFFTFilter_hxx
 
+#include "tubetkConfigure.h"
+
 #include "itktubeRidgeFFTFilter.h"
 
 #include "tubeMatrixMath.h"
@@ -45,11 +47,13 @@ RidgeFFTFilter< TInputImage >
   m_UseIntensityOnly = false;
 
   #if defined( TubeTK_USE_GPU_ARRAYFIRE )
-    m_DerivativeFilter = GPUArrayFireGaussianDerivativeFilter< InputImageType,
-      OutputImageType >::New();
+  // std::cout << "Using GPU Derivative" << std::endl;
+  m_DerivativeFilter = GPUArrayFireGaussianDerivativeFilter< InputImageType,
+    OutputImageType >::New();
   #else
-    m_DerivativeFilter = FFTGaussianDerivativeIFFTFilter< InputImageType,
-      OutputImageType >::New();
+  // std::cout << "Using CPU Derivative" << std::endl;
+  m_DerivativeFilter = FFTGaussianDerivativeIFFTFilter< InputImageType,
+    OutputImageType >::New();
   #endif
 }
 

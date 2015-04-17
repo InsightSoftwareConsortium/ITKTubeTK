@@ -548,6 +548,16 @@ if( TubeTK_USE_VTK )
   include( ${VTK_USE_FILE} )
 endif( TubeTK_USE_VTK )
 
+# ArrayFire
+if( TubeTK_USE_GPU_ARRAYFIRE )
+  find_package( ArrayFire REQUIRED )
+endif( TubeTK_USE_GPU_ARRAYFIRE )
+
+configure_file ( "${TubeTK_SOURCE_DIR}/CMake/tubetkConfigure.h.in"
+  tubetkConfigure.h @ONLY )
+
+include_directories( ${TubeTK_BINARY_DIR} )
+
 # Check endianness.
 include( TestBigEndian )
 test_big_endian( CMAKE_WORDS_BIGENDIAN )

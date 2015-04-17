@@ -24,6 +24,8 @@ limitations under the License.
 #include "tubeBaseFilteringTestsCLP.h"
 #include "tubeTestMain.h"
 
+#include "tubetkConfigure.h"
+
 #include <iostream>
 
 void RegisterTests( void )

@@ -120,3 +120,8 @@ endif( NOT TubeTK_NO_LIBRARY_DEPENDS AND EXISTS "@TubeTK_LIBRARY_DEPENDS_FILE@" 
 if( EXISTS "@TubeTK_TARGETS_FILE@" AND NOT TARGET TubeTKIO )
   include( "@TubeTK_TARGETS_FILE@" )
 endif( EXISTS "@TubeTK_TARGETS_FILE@" AND NOT TARGET TubeTKIO )
+
+# ArrayFire Library
+if( TubeTK_USE_GPU_ARRAYFIRE )
+  find_package( ArrayFire REQUIRED )
+endif( TubeTK_USE_GPU_ARRAYFIRE )

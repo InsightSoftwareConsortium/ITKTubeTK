@@ -83,8 +83,6 @@ int itktubeGPUArrayFireGaussianDerivativeFilterTest( int argc, char * argv[] )
   func->SetSigmas( sigmas );
   func->Update();
 
-  std::cout << func << std::endl;
-
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( argv[6] );
   writer->SetInput( func->GetOutput() );

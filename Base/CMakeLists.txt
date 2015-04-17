@@ -24,11 +24,6 @@
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
-if( TubeTK_USE_GPU_ARRAYFIRE )
-  find_package( ArrayFire REQUIRED )
-  add_definitions( -DTubeTK_USE_GPU_ARRAYFIRE )
-endif( TubeTK_USE_GPU_ARRAYFIRE )
-
 add_subdirectory( CLI )
 add_subdirectory( Common )
 add_subdirectory( Filtering )
