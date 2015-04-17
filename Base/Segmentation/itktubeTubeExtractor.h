@@ -108,6 +108,10 @@ public:
   void SetInputImage( typename ImageType::Pointer inputImage );
 
   /**
+   * Optionally set a different input image to use for radius estimation */
+  void SetRadiusInputImage( typename ImageType::Pointer radiusInputImage );
+
+  /**
    * Get the input image */
   itkGetConstObjectMacro( InputImage, ImageType );
 
@@ -244,6 +248,8 @@ private:
   void operator=( const Self& );
 
   typename ImageType::Pointer       m_InputImage;
+
+  typename ImageType::Pointer       m_RadiusInputImage;
 
   vnl_vector<double>                m_TubeColor;
 

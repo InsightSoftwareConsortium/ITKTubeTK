@@ -29,7 +29,7 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 #include <itkNormalVariateGenerator.h>
 #include <itkOnePlusOneEvolutionaryOptimizer.h>
-#include <itkSmoothingRecursiveGaussianImageFilter.h>
+#include <itktubeSmoothingRecursiveGaussianImageFilter.h>
 #include <itkTimeProbesCollectorBase.h>
 
 #include "DeblendTomosynthesisSlicesUsingPriorCLP.h"
@@ -270,8 +270,8 @@ public:
   typedef Superclass::DerivativeType      DerivativeType;
   typedef itk::Image<TPixel, VDimension>  ImageType;
 
-  typedef itk::SmoothingRecursiveGaussianImageFilter< ImageType, ImageType >
-                                                  BlurFilterType;
+  typedef itk::tube::SmoothingRecursiveGaussianImageFilter< ImageType,
+    ImageType >                           BlurFilterType;
 
   unsigned int GetNumberOfParameters( void ) const
     {

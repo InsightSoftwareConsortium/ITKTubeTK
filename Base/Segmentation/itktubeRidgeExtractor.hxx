@@ -432,7 +432,7 @@ RidgeExtractor<TInputImage>
   // test for nan
   if( m_XVal != m_XVal || m_XD[0] != m_XD[0] || m_XH[0][0] != m_XH[0][0] )
     {
-    std::cout << "NAN at " << m_X << std::endl;
+    std::cerr << "NAN at " << m_X << std::endl;
 
     intensity = 0;
     roundness = 0;
@@ -1991,6 +1991,7 @@ RidgeExtractor<TInputImage>
       j = i;
       ++j;
       tangent = ( *j ).GetPosition() - ( *i ).GetPosition();
+      tangent.Normalize();
       ( *i ).SetTangent( tangent );
       ++i;
       }

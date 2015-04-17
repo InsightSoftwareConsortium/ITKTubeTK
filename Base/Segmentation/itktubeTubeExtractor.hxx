@@ -52,6 +52,7 @@ TubeExtractor<TInputImage>
   m_AbortProcess = NULL;
 
   m_InputImage = NULL;
+  m_RadiusInputImage = NULL;
 
   m_TubeColor.set_size( 4 );
   m_TubeColor[0] = 1.0f;
@@ -81,6 +82,23 @@ TubeExtractor<TInputImage>
 
   this->m_RidgeOp = RidgeExtractor<ImageType>::New();
   this->m_RidgeOp->SetInputImage( this->m_InputImage );
+
+  if( ! m_RadiusOp.IsNotNull() )
+    {
+    this->m_RadiusOp = RadiusExtractor2<ImageType>::New();
+    this->m_RadiusOp->SetInputImage( this->m_InputImage );
+    this->m_RidgeOp->SetRadiusExtractor( this->m_RadiusOp );
+    }
+}
+
+/**
+ * Optionally set a different image for radius estimation */
+template< class TInputImage >
+void
+TubeExtractor<TInputImage>
+::SetRadiusInputImage( typename ImageType::Pointer inputImage )
+{
+  this->m_RadiusInputImage = inputImage;
 
   this->m_RadiusOp = RadiusExtractor2<ImageType>::New();
   this->m_RadiusOp->SetInputImage( this->m_InputImage );
@@ -310,7 +328,8 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 typename TubeExtractor< TInputImage >::TubeType::Pointer
 TubeExtractor<TInputImage>
-::ExtractTube( const ContinuousIndexType & x, unsigned int tubeID, bool verbose )
+::ExtractTube( const ContinuousIndexType & x, unsigned int tubeID,
+  bool verbose )
 {
   if( this->m_RidgeOp.IsNull() )
     {
@@ -505,7 +524,7 @@ TubeExtractor<TInputImage>
  * Set the idle call back */
 template< class TInputImage >
 void
-  TubeExtractor<TInputImage>
+TubeExtractor<TInputImage>
 ::IdleCallBack( bool ( *idleCallBack )() )
 {
   this->m_IdleCallBack = idleCallBack;
@@ -564,6 +583,16 @@ void TubeExtractor<TInputImage>
   else
     {
     os << indent << "Input Image = NULL" << std::endl;
+    }
+
+  if( this->m_RadiusInputImage.IsNotNull() )
+    {
+    os << indent << "Radius Input Image = " << this->m_RadiusInputImage
+      << std::endl;
+    }
+  else
+    {
+    os << indent << "Radius Input Image = NULL" << std::endl;
     }
 
   os << indent << "TubeColor.r = " << this->m_TubeColor[0] << std::endl;
