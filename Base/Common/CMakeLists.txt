@@ -26,6 +26,9 @@ project( TubeTKCommon )
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 
+find_package( ITK REQUIRED )
+include( ${ITK_USE_FILE} )
+
 set( TubeTK_Base_Common_H_Files
   itktubeDifferenceImageFilter.h
   tubeIndent.h
