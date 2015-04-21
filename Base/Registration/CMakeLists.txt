@@ -48,9 +48,14 @@ set( TubeTK_Base_Registration_HXX_Files
   itktubeMeanSquareRegistrationFunction.hxx
   itktubeTubeToTubeTransformFilter.hxx )
 
-add_custom_target( TubeTKRegistration SOURCES
-  ${TubeTK_Base_Registration_H_Files}
-  ${TubeTK_Base_Registration_HXX_Files} )
+add_library( TubeTKRegistration INTERFACE )
+
+target_link_libraries( TubeTKRegistration INTERFACE
+  TubeTKCommon TubeTKNumerics TubeTKFiltering
+  ${ITK_LIBRARIES}
+)
+
+TubeTKMacroInstallPlugins( TubeTKRegistration )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
@@ -60,3 +65,6 @@ install( FILES
   ${TubeTK_Base_Segmentation_H_Files}
   ${TubeTK_Base_Segmentation_HXX_Files}
   DESTINATION include )
+
+# Export target
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKRegistration )

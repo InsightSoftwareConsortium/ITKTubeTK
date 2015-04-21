@@ -24,6 +24,8 @@ limitations under the License.
 #include "tubeBaseFilteringTestsCLP.h"
 #include "tubeTestMain.h"
 
+#include "tubetkConfigure.h"
+
 #include <iostream>
 
 void RegisterTests( void )
@@ -44,4 +46,8 @@ void RegisterTests( void )
   REGISTER_TEST( itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest );
   REGISTER_TEST( itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest );
   REGISTER_TEST( itktubeTortuositySpatialObjectFilterTest );
+
+  #if defined( TubeTK_USE_GPU_ARRAYFIRE )
+    REGISTER_TEST( itktubeGPUArrayFireGaussianDerivativeFilterTest );
+  #endif
 }

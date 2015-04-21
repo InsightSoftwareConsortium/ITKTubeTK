@@ -70,8 +70,7 @@ include_directories(
 add_executable( tubeBaseSegmentationHeaderTest
   tubeBaseSegmentationHeaderTest.cxx )
 target_link_libraries( tubeBaseSegmentationHeaderTest
-  TubeTKNumerics
-  ${ITK_LIBRARIES} )
+  TubeTKSegmentation ${ITK_LIBRARIES} )
 
 SEMMacroBuildCLI(
   NAME tubeBaseSegmentationTests
@@ -79,7 +78,8 @@ SEMMacroBuildCLI(
     ${tubeBaseSegmentation_SRCS}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
-    TubeTKNumerics
+    TubeTKSegmentation
+    TubeTKFiltering
     ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/Common

@@ -74,6 +74,7 @@ SEMMacroBuildCLI(
     ${tubeBaseRegistration_SRCS}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
+    TubeTKRegistration
     ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects ITKOptimizers
     ${VTK_LIBRARIES}
   INCLUDE_DIRECTORIES

@@ -23,9 +23,6 @@
 
 project( TubeTKNumerics )
 
-find_package( ITK REQUIRED )
-include( ${ITK_USE_FILE} )
-
 set( TubeTK_Base_Numerics_H_Files
   itktubeBasisFeatureVectorGenerator.h
   itktubeBlurImageFunction.h
@@ -84,7 +81,9 @@ add_library( TubeTKNumerics STATIC
   ${TubeTK_Base_Numerics_HXX_Files}
   ${TubeTK_Base_Numerics_SRCS} )
 
-target_link_libraries( TubeTKNumerics TubeTKCommon ${ITK_LIBRARIES} )
+target_link_libraries( TubeTKNumerics
+  TubeTKCommon TubeTKFiltering
+  ${ITK_LIBRARIES} )
 
 set( TARGETS TubeTKNumerics )
 TubeTKMacroInstallPlugins( ${TARGETS} )

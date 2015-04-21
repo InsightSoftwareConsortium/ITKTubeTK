@@ -23,10 +23,7 @@
 
 project( TubeTK )
 
-cmake_minimum_required( VERSION 2.8.7 )
-if( NOT ${CMAKE_VERSION} VERSION_LESS 2.8.13 )
-  cmake_policy( SET CMP0026 OLD )
-endif( NOT ${CMAKE_VERSION} VERSION_LESS 2.8.13 )
+cmake_minimum_required( VERSION 3.0.0 )
 
 # Update CMake module path
 set( TubeTK_CMAKE_EXTENSIONS_DIR ${TubeTK_SOURCE_DIR}/CMake )
@@ -240,6 +237,12 @@ if( TubeTK_USE_BOOST )
   endif( NOT Boost_FOUND )
 endif( TubeTK_USE_BOOST )
 
+#
+# GPU ArrayFire setup
+#
+option( TubeTK_USE_GPU_ARRAYFIRE
+  "Use the ArrayFire library to speedup filtering opertions using the GPU." OFF)
+mark_as_advanced( TubeTK_USE_GPU_ARRAYFIRE )
 
 #
 #  Cppcheck setup.
@@ -544,6 +547,16 @@ if( TubeTK_USE_VTK )
   find_package( VTK REQUIRED )
   include( ${VTK_USE_FILE} )
 endif( TubeTK_USE_VTK )
+
+# ArrayFire
+if( TubeTK_USE_GPU_ARRAYFIRE )
+  find_package( ArrayFire REQUIRED )
+endif( TubeTK_USE_GPU_ARRAYFIRE )
+
+configure_file ( "${TubeTK_SOURCE_DIR}/CMake/tubetkConfigure.h.in"
+  tubetkConfigure.h @ONLY )
+
+include_directories( ${TubeTK_BINARY_DIR} )
 
 # Check endianness.
 include( TestBigEndian )
