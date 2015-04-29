@@ -38,6 +38,7 @@ limitations under the License.
 #include <vtkPolyLine.h>
 #include <vtkSelection.h>
 #include <vtkSelectionNode.h>
+#include <vtkUnsignedCharArray.h>
 
 // TractographyMRML includes
 #include "vtkMRMLSpatialObjectsGlyphDisplayNode.h"
@@ -430,16 +431,38 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
   // Create the Lines
   vtkNew<vtkCellArray> vesselLinesCA;
 
+  // Create scalar array that indicates TubeID.
+  vtkNew<vtkDoubleArray> tubeIDs;
+  tubeIDs->SetName("TubeIDs");
+  tubeIDs->SetNumberOfTuples(totalNumberOfPoints);
+
+  // Create scalar array that indicates Parent TubeID.
+  vtkNew<vtkDoubleArray> parentTubeIDs;
+  tubeIDs->SetName("ParentTubeIDs");
+  tubeIDs->SetNumberOfTuples(totalNumberOfPoints);
+
+  // Create scalar array that indicates Parent TubeID.
+  vtkNew<vtkDoubleArray> rootTubeIDs;
+  tubeIDs->SetName("RootTubeIDs");
+  tubeIDs->SetNumberOfTuples(totalNumberOfPoints);
+
+  // Create scalar array that indicates native point colors given in tre file
+  vtkNew< vtkUnsignedCharArray > tubeColors;
+  tubeColors->SetName("Tube Color");
+  tubeColors->SetNumberOfTuples(totalNumberOfPoints);
+  tubeColors->SetNumberOfComponents( 4 );
+
+  // Create scalar array that indicates native point colors given in tre file
+  vtkNew< vtkUnsignedCharArray > tubePointColors;
+  tubePointColors->SetName("Tube Point Color");
+  tubePointColors->SetNumberOfTuples(totalNumberOfPoints);
+  tubePointColors->SetNumberOfComponents( 4 );
+
   // Create scalar array that indicates the radius at each
   // centerline point.
   vtkNew<vtkDoubleArray> tubeRadius;
   tubeRadius->SetName("TubeRadius");
   tubeRadius->SetNumberOfTuples(totalNumberOfPoints);
-
-  // Create scalar array that indicates TubeID.
-  vtkNew<vtkDoubleArray> tubeIDs;
-  tubeIDs->SetName("TubeIDs");
-  tubeIDs->SetNumberOfTuples(totalNumberOfPoints);
 
   // Create scalar array that indicates both tangents at each
   // centerline point.
@@ -499,6 +522,17 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
       spacingX = 1;
       }
 
+    // compute root tube ID
+    itk::SpatialObject< 3 >* curRootTube = currTube;
+
+    while( curRootTube->HasParent() )
+      {
+      curRootTube = curRootTube->GetParent();
+      }
+
+    VesselTubeType::PropertyType::PixelType curTubeColor =
+      currTube->GetProperty()->GetColor();
+
     size_t numberOfPoints = currTube->GetPoints().size();
     for(size_t index = 0; index < numberOfPoints; ++pointID, ++index)
       {
@@ -518,11 +552,31 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
       // Insert points using the element spacing information.
       vesselsPoints->SetPoint( pointID, inputPoint[0], inputPoint[1],
         inputPoint[2] );
-        //inputPoint[1] * axesRatio[1] / axesRatio[0],
-        //inputPoint[2] * axesRatio[2] / axesRatio[0]);
+      //inputPoint[1] * axesRatio[1] / axesRatio[0],
+      //inputPoint[2] * axesRatio[2] / axesRatio[0]);
 
       // TubeID
       tubeIDs->SetTuple1(pointID, currTube->GetId());
+
+      // Parent TubeID
+      parentTubeIDs->SetTuple1(pointID, currTube->GetParentId());
+
+      // Parent TubeID
+      rootTubeIDs->SetTuple1(pointID, curRootTube->GetParentId());
+
+      // Native tube color from tre file
+      tubeColors->SetTuple4(pointID,
+        curTubeColor.GetRed(),
+        curTubeColor.GetGreen(),
+        curTubeColor.GetBlue(),
+        curTubeColor.GetAlpha() );
+
+      // Native tube point color from tre file
+      tubePointColors->SetTuple4(pointID,
+        tubePoint->GetRed(),
+        tubePoint->GetGreen(),
+        tubePoint->GetBlue(),
+        tubePoint->GetAlpha() );
 
       // Radius
       tubeRadius->SetTuple1(pointID, tubePoint->GetRadius() * spacingX );
@@ -570,6 +624,18 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
 
   // Add the TudeID information
   vesselsPD->GetPointData()->AddArray(tubeIDs.GetPointer());
+
+  // Add the Parent TudeID information
+  vesselsPD->GetPointData()->AddArray(parentTubeIDs.GetPointer());
+
+  // Add the Root TudeID information
+  vesselsPD->GetPointData()->AddArray(rootTubeIDs.GetPointer());
+
+  // Add tube point color information
+  vesselsPD->GetPointData()->AddArray(tubeColors.GetPointer());
+
+  // Add tube point color information
+  vesselsPD->GetPointData()->AddArray(tubePointColors.GetPointer());
 
   // Add Tangeantes information
   vesselsPD->GetPointData()->AddArray(tan1.GetPointer());

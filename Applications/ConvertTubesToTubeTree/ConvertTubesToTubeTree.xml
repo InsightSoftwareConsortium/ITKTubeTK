@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>Convert Tube To Tree (TubeTK)</title>
+  <description>Constructs a tree from a set of disjoint tubes</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Deepak Roy Chittajallu (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters.</description>
+    <file>
+      <name>inputTREFile</name>
+      <label>Input Tre File</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input TRE file containing disjoint tubes</description>
+    </file>
+    <image>
+      <name>outputTREFile</name>
+      <label>Output TRE File</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Output TRE file containing a tree of tubes</description>
+    </image>
+  </parameters>
+  <parameters advanced="true">
+    <label>Algorithm Parameters</label>
+    <integer-vector>
+      <name>rootTubeIdList</name>
+      <label>Input Root Tube ID List</label>
+      <description>List of root tube Ids</description>
+      <longflag>rootTubeIdList</longflag>
+    </integer-vector>
+    <double>
+      <name>maxTubeDistanceToRadiusRatio</name>
+      <label>Maximum Tube Distance To Radius Ratio</label>
+      <description>Maximum allowed distance to radius ratio to connect tubes</description>
+      <longflag>maxTubeDistanceToRadiusRatio</longflag>
+      <default>2.0</default>
+    </double>
+    <double>
+      <name>maxContinuityAngleError</name>
+      <label>Maximum Continuity Angle Error</label>
+      <description>Maximum continuity angle error</description>
+      <longflag>maxContinuityAngleError</longflag>
+      <default>180</default>
+    </double>
+    <boolean>
+      <name>removeOrphanTubes</name>
+      <label>Remove Orphan Tubes</label>
+      <description>Specify if orphan tubes should be removed</description>
+      <longflag>removeOrphanTubes</longflag>
+      <default>false</default>
+    </boolean>
+  </parameters>
+</executable>
