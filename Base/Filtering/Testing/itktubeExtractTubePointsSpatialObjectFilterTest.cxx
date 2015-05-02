@@ -50,14 +50,20 @@ int itktubeExtractTubePointsSpatialObjectFilterTest( int argc, char* argv[] )
     }
   catch( itk::ExceptionObject & error )
     {
-    std::cerr << "Error: " << error << std::endl;
+    std::cerr << "Read Error: " << error << std::endl;
     return EXIT_FAILURE;
     }
+  catch( ... )
+    {
+    std::cerr << "Read failed." << std::endl;
+    return EXIT_FAILURE;
+    }
+
   GroupSpatialObjectType::Pointer groupSpatialObject = reader->GetGroup();
   std::cout << "Number of children = "
     << groupSpatialObject->GetNumberOfChildren() << std::endl;
 
-  typedef itk::tube::ExtractTubePointsSpatialObjectFilter< 
+  typedef itk::tube::ExtractTubePointsSpatialObjectFilter<
     TubeSpatialObjectType > ExtractTubePointsSpatialObjectFilterType;
   ExtractTubePointsSpatialObjectFilterType::Pointer extractTubePointsFilter =
     ExtractTubePointsSpatialObjectFilterType::New();
@@ -68,17 +74,22 @@ int itktubeExtractTubePointsSpatialObjectFilterTest( int argc, char* argv[] )
     }
   catch( itk::ExceptionObject & error )
     {
-    std::cerr << "Error: " << error << std::endl;
+    std::cerr << "Update Error: " << error << std::endl;
+    return EXIT_FAILURE;
+    }
+  catch( ... )
+    {
+    std::cerr << "Update failed." << std::endl;
     return EXIT_FAILURE;
     }
   std::cout << "extractTubePointsFilter->Update() SUCCESS" << std::endl;
 
   typedef ExtractTubePointsSpatialObjectFilterType::PointsContainerType
     PointsContainerType;
-  const PointsContainerType * pointsContainer = 
+  const PointsContainerType * pointsContainer =
     extractTubePointsFilter->GetPointsContainer();
   const itk::SizeValueType numberOfPoints = pointsContainer->Size();
-  std::cout << "Output points container size: " << numberOfPoints 
+  std::cout << "Output points container size: " << numberOfPoints
     << std::endl;
   const itk::SizeValueType expectedNumberOfPoints = 110655;
   if( numberOfPoints != expectedNumberOfPoints )
@@ -99,6 +110,8 @@ int itktubeExtractTubePointsSpatialObjectFilterTest( int argc, char* argv[] )
               << "  Point Tangent:  " << tubePoint.GetTangent() << '\n'
               << std::endl;
     }
+
+  delete pointsContainer;
 
   return EXIT_SUCCESS;
 }
