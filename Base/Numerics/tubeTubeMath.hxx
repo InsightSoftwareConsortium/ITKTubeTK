@@ -217,7 +217,6 @@ ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
   tubeV[it1].SetTangent(t);
 
   it1 = 0;
-  VectorType prevT = tubeV[it1].GetTangent();
   while(it1 < length-1)
     {
     t = tubeV[it1+1].GetTangent();

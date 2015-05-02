@@ -252,10 +252,8 @@ RadiusExtractor2<TInputImage>
     r0 = rMax;
     }
 
-  double mness = 0.0;
-
   unsigned int tempNumPoints = this->GetNumKernelPoints();
-  int numPoints = points.size();
+  unsigned int numPoints = points.size();
   this->SetNumKernelPoints( numPoints );
 
   this->SetKernelTubePoints( points );
@@ -448,8 +446,6 @@ double
 RadiusExtractor2<TInputImage>
 ::GetKernelMedialness( double r )
 {
-  unsigned int dimension = m_Image->GetImageDimension();
-
   double gfact = -0.5 / ( 0.5 * r * 0.5 * r );
 
   double pVal = 0;
@@ -689,7 +685,7 @@ RadiusExtractor2<TInputImage>
   double rStart0 = this->GetRadiusStart();
   double rStart = rStart0;
   for( int p = static_cast< int >( pntCount );
-    p < tube->GetPoints().size();
+    p < static_cast< int >( tube->GetPoints().size() );
     p += this->GetKernelStep() )
     {
     this->SetRadiusStart( rStart );
@@ -761,7 +757,7 @@ RadiusExtractor2<TInputImage>
         }
       m_KernelTubePoints[ count ].SetPosition( p2 );
       }
-    else if( p > tubeSize-1 )
+    else if( p > static_cast< int >( tubeSize ) - 1 )
       {
       typename TubeType::PointType p1 =
         tube->GetPoints()[ tubeSize - 1 ].GetPosition();
@@ -792,8 +788,6 @@ RadiusExtractor2<TInputImage>
   TubeType * tube )
 {
   int tubeSize = tube->GetPoints().size();
-
-  int halfBuffer = m_NumKernelPoints / 2;
 
   double r1 = this->GetKernelOptimalRadius();
   double m1 = this->GetKernelOptimalRadiusMedialness();
@@ -831,10 +825,10 @@ RadiusExtractor2<TInputImage>
 
   for( int p = startP; p <= endP; ++p )
     {
-    if( p < tubePointNum )
+    if( p < static_cast< int >( tubePointNum ) )
       {
       double d = 1;
-      if( tubePointNum != startP )
+      if( static_cast< int >( tubePointNum ) != startP )
         {
         d = static_cast< double >( tubePointNum - p )
           / ( tubePointNum - startP );
@@ -846,7 +840,7 @@ RadiusExtractor2<TInputImage>
     else
       {
       double d = 1;
-      if( tubePointNum != endP )
+      if( static_cast< int >( tubePointNum ) != endP )
         {
         d = static_cast< double >( p - tubePointNum )
           / ( endP - tubePointNum );

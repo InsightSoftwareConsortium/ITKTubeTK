@@ -140,11 +140,12 @@ int main( int argc, char * argv[] )
     TubeXIOType::Pointer writer = TubeXIOType::New();
     writer->SetTubeGroup( reader->GetGroup() );
 
-    SizeType size = {1, 1, 1};
-    if ( inputImage )
+    SizeType size;
+    size.Fill( 1 );
+    if( inputImage )
       {
-      size =
-        inputImageReader->GetOutput()->GetLargestPossibleRegion().GetSize();
+      size = inputImageReader->GetOutput()->GetLargestPossibleRegion().
+        GetSize();
       }
     writer->SetDimensions( size );
 

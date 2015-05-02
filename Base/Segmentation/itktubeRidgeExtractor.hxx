@@ -1304,16 +1304,12 @@ RidgeExtractor<TInputImage>
             * 10;
           std::vector< TubePointType > points;
           points.push_back( tmpPoint );
-          if( !m_RadiusExtractor->GetPointVectorOptimalRadius( points,
+          if( m_RadiusExtractor->GetPointVectorOptimalRadius( points,
             m_DynamicScaleUsed, radiusMin, radiusMax, radiusStep,
             radiusTolerance ) )
             {
             m_DynamicScaleUsed = ( 2 * tmpPoint.GetRadius()
               + m_DynamicScaleUsed ) / 3;
-            }
-          if( m_DynamicScaleUsed<0.5 )
-            {
-            m_DynamicScaleUsed = 0.5;
             }
           if( m_StatusCallBack )
             {
