@@ -250,7 +250,7 @@ int DoIt( int argc, char * argv[] )
     ++quantileNumber )
     {
     double quant = quantiles[ quantileNumber ];
-    for( int comp=0; comp<numberOfComponents; ++comp )
+    for( unsigned int comp=0; comp<numberOfComponents; ++comp )
       {
       unsigned int targetCount = static_cast< unsigned int >( quant *
         compCount[ comp ] );
