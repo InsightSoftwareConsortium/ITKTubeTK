@@ -733,7 +733,7 @@ PDFSegmenter< TImage, N, TLabelMap >
   timeCollector.Start( "HistogramToPDF" );
   if( true )
     {
-    typedef itk::SmoothingRecursiveGaussianImageFilter< HistogramImageType,
+    typedef itk::tube::SmoothingRecursiveGaussianImageFilter< HistogramImageType,
       HistogramImageType > HistogramBlurGenType;
     typename HistogramBlurGenType::SigmaArrayType sigmas;
     for( unsigned int d = 0; d < N; ++d )
@@ -955,7 +955,7 @@ PDFSegmenter< TImage, N, TLabelMap >
     }
   timeCollector.Stop( "ProbabilityImage" );
 
-  typedef itk::SmoothingRecursiveGaussianImageFilter< ProbabilityImageType,
+  typedef itk::tube::SmoothingRecursiveGaussianImageFilter< ProbabilityImageType,
     ProbabilityImageType > ProbImageFilterType;
   typename ProbImageFilterType::Pointer probImageFilter;
 
