@@ -36,7 +36,6 @@ void
 ComputeNormalsFromTangent( TTubePoint & tubePoint,
   const typename TTubePoint::VectorType & prevT )
 {
-  typedef typename TTubePoint::PointType             PointType;
   typedef typename TTubePoint::VectorType            VectorType;
   typedef typename TTubePoint::CovariantVectorType   CovariantVectorType;
 
@@ -150,7 +149,6 @@ ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
 {
   typedef typename TTubePoint::PointType             PointType;
   typedef typename TTubePoint::VectorType            VectorType;
-  typedef typename TTubePoint::CovariantVectorType   CovariantVectorType;
 
   unsigned int dimension = tubeV[0].GetPosition().GetPointDimension();
 

@@ -347,9 +347,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
     const ThreadDiffusionTensorImageRegionType & diffusionRegionToProcess,
     ThreadIdType )
 {
-  typedef typename OutputImageType::RegionType      RegionType;
   typedef typename OutputImageType::SizeType        SizeType;
-  typedef typename OutputImageType::IndexType       IndexType;
 
   typedef typename FiniteDifferenceFunctionType::NeighborhoodType
                                            NeighborhoodIteratorType;

@@ -97,20 +97,6 @@ public:
     OutputImageType
     >    CastingFilterType;
 
-  /**  Pointer to a gaussian filter.  */
-  typedef typename InternalGaussianFilterType::Pointer
-    InternalGaussianFilterPointer;
-
-  /**  Pointer to the first gaussian filter.  */
-  typedef typename FirstGaussianFilterType::Pointer
-    FirstGaussianFilterPointer;
-
-  /**  Pointer to the last filter, casting  */
-  typedef typename CastingFilterType::Pointer CastingFilterPointer;
-
-  /**  Pointer to the Output Image */
-  typedef typename OutputImageType::Pointer   OutputImagePointer;
-
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
@@ -172,10 +158,12 @@ private:
 
   // implemented
 
-  InternalGaussianFilterPointer m_SmoothingFilters[
-    itkGetStaticConstMacro(ImageDimension) - 1 ];
-  FirstGaussianFilterPointer    m_FirstSmoothingFilter;
-  CastingFilterPointer          m_CastingFilter;
+  typedef std::vector< typename InternalGaussianFilterType::Pointer >
+    SmoothingFiltersArrayType;
+  SmoothingFiltersArrayType m_SmoothingFilters;
+
+  typename FirstGaussianFilterType::Pointer    m_FirstSmoothingFilter;
+  typename CastingFilterType::Pointer          m_CastingFilter;
 
   /** Normalize the image across scale space */
   bool m_NormalizeAcrossScale;

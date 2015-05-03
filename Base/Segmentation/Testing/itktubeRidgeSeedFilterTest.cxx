@@ -47,14 +47,12 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
 
   // Declare the reader and writer
   typedef itk::ImageFileReader< ImageType > ReaderType;
-  typedef itk::ImageFileWriter< ImageType > WriterType;
 
   typedef itk::Image< unsigned char, Dimension >    LabelMapType;
   typedef itk::ImageFileReader< LabelMapType >      LabelMapReaderType;
   typedef itk::ImageFileWriter< LabelMapType >      LabelMapWriterType;
 
   typedef itk::Image< float, 3 >                    PDFImageType;
-  typedef itk::ImageFileWriter< PDFImageType >      PDFImageWriterType;
 
   typedef itk::Image< float, Dimension >            FeatureImageType;
   typedef itk::ImageFileWriter< FeatureImageType >  FeatureImageWriterType;

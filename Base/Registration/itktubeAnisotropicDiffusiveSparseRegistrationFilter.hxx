@@ -31,7 +31,7 @@ limitations under the License.
 #include "tubeTubeMath.h"
 
 #include <itkImageRegionSplitter.h>
-#include <itkSmoothingRecursiveGaussianImageFilter.h>
+#include <itktubeSmoothingRecursiveGaussianImageFilter.h>
 
 #include <vtkFloatArray.h>
 #include <vtkPointData.h>
@@ -894,7 +894,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   if( computeWeightRegularizations )
     {
     double weightSmoothingSigma = 1.0;
-    typedef itk::SmoothingRecursiveGaussianImageFilter
+    typedef itk::tube::SmoothingRecursiveGaussianImageFilter
         < WeightComponentImageType, WeightComponentImageType >
         WeightSmoothingFilterType;
     typename WeightSmoothingFilterType::Pointer weightSmooth
