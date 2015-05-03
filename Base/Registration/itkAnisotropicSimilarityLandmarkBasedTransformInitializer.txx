@@ -21,7 +21,7 @@
 #include "itkMatrix.h"
 #include "itkSymmetricEigenAnalysis.h"
 
-#include < math.h >
+#include <math.h>
 
 namespace itk
 {
