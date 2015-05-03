@@ -17,7 +17,7 @@
 #ifndef __itktubeSmoothingRecursiveGaussianImageFilter_hxx
 #define __itktubeSmoothingRecursiveGaussianImageFilter_hxx
 
-#include "itkSmoothingRecursiveGaussianImageFilter.h"
+#include "itktubeSmoothingRecursiveGaussianImageFilter.h"
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkProgressAccumulator.h"
 
@@ -49,6 +49,7 @@ SmoothingRecursiveGaussianImageFilter< TInputImage, TOutputImage >
   m_FirstSmoothingFilter->ReleaseDataFlagOn();
   // InPlace will be set conditionally in the GenerateData method.
 
+  m_SmoothingFilters.resize( ImageDimension - 1 );
   for ( unsigned int i = 0; i < ImageDimension - 1; i++ )
     {
     m_SmoothingFilters[i] = InternalGaussianFilterType::New();
@@ -59,7 +60,10 @@ SmoothingRecursiveGaussianImageFilter< TInputImage, TOutputImage >
     m_SmoothingFilters[i]->InPlaceOn();
     }
 
-  m_SmoothingFilters[0]->SetInput( m_FirstSmoothingFilter->GetOutput() );
+  if( ImageDimension > 1 )
+    {
+    m_SmoothingFilters[0]->SetInput( m_FirstSmoothingFilter->GetOutput() );
+    }
   for ( unsigned int i = 1; i < ImageDimension - 1; i++ )
     {
     m_SmoothingFilters[i]->SetInput(
@@ -67,8 +71,15 @@ SmoothingRecursiveGaussianImageFilter< TInputImage, TOutputImage >
     }
 
   m_CastingFilter = CastingFilterType::New();
-  m_CastingFilter->SetInput( m_SmoothingFilters[ImageDimension - 2]
-    ->GetOutput() );
+  if( ImageDimension > 1 )
+    {
+    m_CastingFilter->SetInput( m_SmoothingFilters[ImageDimension - 2]
+      ->GetOutput() );
+    }
+  else
+    {
+    m_CastingFilter->SetInput( m_FirstSmoothingFilter->GetOutput() );
+    }
   m_CastingFilter->InPlaceOn();
 
   this->InPlaceOff();
