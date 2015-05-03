@@ -595,7 +595,6 @@ int DoIt( int argc, char * argv[] )
                                                   BlendCostFunctionType;
     typedef itk::OnePlusOneEvolutionaryOptimizer  InitialOptimizerType;
     typedef itk::FRPROptimizer                    OptimizerType;
-    typedef itk::ImageRegionIterator< ImageType > ImageIteratorType;
 
     typename BlendCostFunctionType::Pointer costFunc =
       BlendCostFunctionType::New();
@@ -693,7 +692,6 @@ int DoIt( int argc, char * argv[] )
                                                   BlendScaleCostFunctionType;
     typedef itk::OnePlusOneEvolutionaryOptimizer  InitialOptimizerType;
     typedef itk::FRPROptimizer                    OptimizerType;
-    typedef itk::ImageRegionIterator< ImageType > ImageIteratorType;
 
     typename BlendScaleCostFunctionType::Pointer costFunc =
       BlendScaleCostFunctionType::New();

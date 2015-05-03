@@ -1,12 +1,12 @@
 /*=========================================================================
 
   Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: MomentRegistrator.txx,v $
+  Module:    $RCSfile: ITKHeader.h,v $
   Language:  C++
-  Date:      $Date: 2007/03/29 17:52:55 $
-  Version:   $Revision: 1.6 $
+  Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
+  Version:   $Revision: 0 $
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
+  Copyright (c) 2002 Insight Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
@@ -14,9 +14,8 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-
-#ifndef __BSplineImageToImageRegistrationMethod_txx
-#define __BSplineImageToImageRegistrationMethod_txx
+#ifndef __itkBSplineImageToImageRegistrationMethod_txx
+#define __itkBSplineImageToImageRegistrationMethod_txx
 
 #include "itkBSplineImageToImageRegistrationMethod.h"
 
@@ -54,18 +53,19 @@ public:
   itkSetMacro(UpdateInterval, int);
 
   void Execute( Object * caller, const EventObject & event )
-  {
+    {
     Execute( (const Object *)caller, event );
-  }
+    }
 
   void Execute( const Object * object, const EventObject & event )
-  {
+    {
     if( typeid( event ) != typeid( IterationEvent ) || object == NULL )
       {
       return;
       }
 
-    const OptimizerType * opt = dynamic_cast<const OptimizerType *>(object);
+    const OptimizerType * opt = dynamic_cast< const OptimizerType * >(
+      object );
 
     if( ++m_Iteration % m_UpdateInterval == 0 )
       {
@@ -87,12 +87,12 @@ public:
         }
       m_LastTime = t;
       }
-  }
+    }
 
   void Update()
-  {
+    {
     this->Execute( (const Object *)NULL, IterationEvent() );
-  }
+    }
 
 protected:
 
@@ -104,16 +104,17 @@ protected:
   bool m_DontShowParameters;
 
   BSplineImageRegistrationViewer()
-  {
+    {
     m_Clock = RealTimeClock::New();
     m_LastTime = m_Clock->GetTimeInSeconds();
     m_Iteration = 0;
     m_UpdateInterval = 1;
     m_DontShowParameters = false;
-  };
+    }
+
   ~BSplineImageRegistrationViewer()
-  {
-  };
+    {
+    }
 
 };
 
@@ -143,35 +144,40 @@ template <class TImage>
 void
 BSplineImageToImageRegistrationMethod<TImage>
 ::ComputeGridRegion( int numberOfControlPoints,
-                     typename TransformType::RegionType::SizeType & gridSize,
-                     typename TransformType::SpacingType & gridSpacing,
-                     typename TransformType::OriginType & gridOrigin,
-                     typename TransformType::DirectionType & gridDirection)
+  typename TransformType::RegionType::SizeType & gridSize,
+  typename TransformType::SpacingType & gridSpacing,
+  typename TransformType::OriginType & gridOrigin,
+  typename TransformType::DirectionType & gridDirection )
 {
   if( numberOfControlPoints < 3 )
     {
-    itkWarningMacro(<< "ComputeGridRegion: numberOfControlPoints=1; changing to 2.");
+    itkWarningMacro( <<
+      "ComputeGridRegion: numberOfControlPoints=1; changing to 2." );
     numberOfControlPoints = 3;
     }
 
   typename TransformType::RegionType::SizeType gridSizeOnImage;
   typename TransformType::RegionType::SizeType gridBorderSize;
 
-  typename TImage::SizeType fixedImageSize = this->GetFixedImage()->GetLargestPossibleRegion().GetSize();
+  typename TImage::SizeType fixedImageSize = this->GetFixedImage()
+    ->GetLargestPossibleRegion().GetSize();
 
   gridSpacing   = this->GetFixedImage()->GetSpacing();
 
-  double scale = ( (fixedImageSize[0] - 1) * gridSpacing[0]) / (numberOfControlPoints - 1);
+  double scale = ( (fixedImageSize[0] - 1) * gridSpacing[0]) /
+    (numberOfControlPoints - 1);
   gridSizeOnImage[0] = numberOfControlPoints;
   for( unsigned int i = 1; i < ImageDimension; i++ )
     {
-    gridSizeOnImage[i] = (int)( ( (fixedImageSize[i] - 1) * gridSpacing[i]) / scale + 0.01 ) + 1;
+    gridSizeOnImage[i] = (int)( ( (fixedImageSize[i] - 1) * gridSpacing[i])
+      / scale + 0.01 ) + 1;
     if( gridSizeOnImage[i] < 3 )
       {
       gridSizeOnImage[i] = 3;
       }
     }
-  gridBorderSize.Fill( 3 );  // Border for spline order = 3 ( 1 lower, 2 upper )
+  gridBorderSize.Fill( 3 );
+  // Border for spline order = 3 ( 1 lower, 2 upper )
 
   gridSize = gridSizeOnImage + gridBorderSize;
 
@@ -179,7 +185,7 @@ BSplineImageToImageRegistrationMethod<TImage>
   gridDirection    = this->GetFixedImage()->GetDirection();
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    gridSpacing[i] *=  static_cast<double>(fixedImageSize[i] - 1)
+    gridSpacing[i] *= static_cast<double>( fixedImageSize[i] - 1 )
       / static_cast<double>(gridSizeOnImage[i] - 1);
     }
 
@@ -220,28 +226,28 @@ BSplineImageToImageRegistrationMethod<TImage>
 
   const unsigned int numberOfParameters =
     this->GetTypedTransform()->GetNumberOfParameters();
-  std::cout << "   numberOfParameters = " << numberOfParameters << std::endl;
+  std::cout << "   numberOfParameters = "
+    << numberOfParameters << std::endl;
 
-  /**/
-  /*   Remember the fixed parameters for this transform */
-  /**/
-  this->SetInitialTransformFixedParameters( this->GetTypedTransform()->GetFixedParameters() );
+  /* Remember the fixed parameters for this transform */
+  this->SetInitialTransformFixedParameters(
+    this->GetTypedTransform()->GetFixedParameters() );
 
-  /**/
-  /*   Make sure Initial Transform Parameters are valid */
-  /**/
-  if( numberOfParameters != this->GetInitialTransformParameters().GetSize() )
+  /* Make sure Initial Transform Parameters are valid */
+  if( numberOfParameters !=
+    this->GetInitialTransformParameters().GetSize() )
     {
-    typename Superclass::TransformParametersType params( numberOfParameters );
+    typename Superclass::TransformParametersType params(
+      numberOfParameters );
     params.Fill( 0.0 );
     this->SetInitialTransformParameters( params );
     }
 
-  /**/
-  /*  Set scales = expected amount of movement of a control point */
-  /**/
-  typename Superclass::TransformParametersType params( numberOfParameters );
-  typename TransformType::SpacingType spacing   = this->GetFixedImage()->GetSpacing();
+  /* Set scales = expected amount of movement of a control point */
+  typename Superclass::TransformParametersType params(
+    numberOfParameters );
+  typename TransformType::SpacingType spacing = this->GetFixedImage()
+    ->GetSpacing();
   double scale = 1.0 / (m_ExpectedDeformationMagnitude * spacing[0]);
   params.Fill( scale );
   this->SetTransformParametersScales( params );
@@ -319,8 +325,10 @@ BSplineImageToImageRegistrationMethod<TImage>
   tmpOpt->SetCostFunctionConvergenceFactor( 1000.0 );
   tmpOpt->SetProjectedGradientTolerance( 1e-50 );
   tmpOpt->SetMaximumNumberOfIterations( this->GetMaxIterations() );
-  tmpOpt->SetMaximumNumberOfEvaluations( this->GetMaxIterations()*this->GetMaxIterations() );
-  tmpOpt->SetMaximumNumberOfCorrections( this->GetMaxIterations()*this->GetMaxIterations() );
+  tmpOpt->SetMaximumNumberOfEvaluations(
+    this->GetMaxIterations()*this->GetMaxIterations() );
+  tmpOpt->SetMaximumNumberOfCorrections(
+    this->GetMaxIterations()*this->GetMaxIterations() );
   */
 
   /**/
@@ -347,7 +355,8 @@ BSplineImageToImageRegistrationMethod<TImage>
    *  and plug-in optimizer, interpolator, etc. */
   /**/
   typedef ImageRegistrationMethod<TImage, TImage> ImageRegistrationType;
-  typename ImageRegistrationType::Pointer reg = ImageRegistrationType::New();
+  typename ImageRegistrationType::Pointer reg =
+    ImageRegistrationType::New();
   typename ImageType::ConstPointer fixedImage = this->GetFixedImage();
   typename ImageType::ConstPointer movingImage = this->GetMovingImage();
   reg->SetFixedImage( fixedImage );
@@ -381,8 +390,9 @@ BSplineImageToImageRegistrationMethod<TImage>
     }
   catch( itk::ExceptionObject & excep )
     {
-    std::cout << "Exception caught during gradient registration of BSpline."
-              << excep << std::endl;
+    std::cout
+      << "Exception caught during gradient registration of BSpline."
+      << excep << std::endl;
     std::cout << "Continuing using best values..." << std::endl;
     std::cout << "  Pos = " << reg->GetLastTransformParameters()
               << std::endl << std::endl;
@@ -391,7 +401,8 @@ BSplineImageToImageRegistrationMethod<TImage>
       {
       std::cout << "  Invalid position, using initial parameters."
                 << std::endl;
-      reg->GetTransform()->SetParametersByValue( reg->GetInitialTransformParameters() );
+      reg->GetTransform()->SetParametersByValue(
+        reg->GetInitialTransformParameters() );
       failure = true;
       }
     }
@@ -405,8 +416,9 @@ BSplineImageToImageRegistrationMethod<TImage>
         != reg->GetInitialTransformParameters().size() )
       {
       std::cout << "  Invalid position, using initial parameters."
-                << std::endl;
-      reg->GetTransform()->SetParametersByValue( reg->GetInitialTransformParameters() );
+        << std::endl;
+      reg->GetTransform()->SetParametersByValue(
+        reg->GetInitialTransformParameters() );
       failure = true;
       }
     }
@@ -425,16 +437,17 @@ BSplineImageToImageRegistrationMethod<TImage>
   if( failure )
     {
     this->SetFinalMetricValue( reg->GetOptimizer()
-                               ->GetValue( reg->GetInitialTransformParameters() ) );
+      ->GetValue( reg->GetInitialTransformParameters() ) );
 
-    this->SetLastTransformParameters( reg->GetInitialTransformParameters() );
+    this->SetLastTransformParameters(
+      reg->GetInitialTransformParameters() );
     this->GetTransform()->SetParametersByValue(
       this->GetInitialTransformParameters() );
     }
   else
     {
     this->SetFinalMetricValue( reg->GetOptimizer()
-                               ->GetValue( reg->GetLastTransformParameters() ) );
+      ->GetValue( reg->GetLastTransformParameters() ) );
 
     this->SetLastTransformParameters( reg->GetLastTransformParameters() );
     this->GetTransform()->SetParametersByValue(
@@ -465,7 +478,8 @@ BSplineImageToImageRegistrationMethod<TImage>
   typename PyramidType::Pointer movingPyramid = PyramidType::New();
 
   /**/
-  /* Determine the control points, samples, and scales to be used at each level */
+  /* Determine the control points, samples, and scales to be used at
+   * each level */
   /**/
   double       controlPointFactor = 2;
   unsigned int levelNumberOfControlPoints =
@@ -475,7 +489,8 @@ BSplineImageToImageRegistrationMethod<TImage>
     {
     for( unsigned int level = 1; level < this->m_NumberOfLevels; level++ )
       {
-      levelNumberOfControlPoints = (unsigned int)(levelNumberOfControlPoints / controlPointFactor);
+      levelNumberOfControlPoints = (unsigned int)(
+        levelNumberOfControlPoints / controlPointFactor );
       levelScale *= controlPointFactor;
       }
     }
@@ -507,13 +522,13 @@ BSplineImageToImageRegistrationMethod<TImage>
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     fixedSchedule[0][i] = (unsigned int)(levelScale
-                                         * fixedSpacing[0] / fixedSpacing[i]);
+      * fixedSpacing[0] / fixedSpacing[i]);
     if( fixedSchedule[0][i] < 1 )
       {
       fixedSchedule[0][i] = 1;
       }
     movingSchedule[0][i] = (unsigned int)(levelScale
-                                          * fixedSpacing[0] / movingSpacing[i]);
+      * fixedSpacing[0] / movingSpacing[i]);
     if( movingSchedule[0][i] < 1 )
       {
       movingSchedule[0][i] = 1;
@@ -609,14 +624,18 @@ BSplineImageToImageRegistrationMethod<TImage>
       writer->SetFileName( name );
       writer->Update();
       }
-     */
+    */
 
-    double levelFactor = levelNumberOfControlPoints / (double)(this->GetNumberOfControlPoints() );
+    double levelFactor = levelNumberOfControlPoints /
+      (double)(this->GetNumberOfControlPoints() );
 
-    double levelDeformationMagnitude = this->GetExpectedDeformationMagnitude() / levelFactor;
+    double levelDeformationMagnitude =
+      this->GetExpectedDeformationMagnitude() / levelFactor;
 
-    unsigned int levelNumberOfSamples = (unsigned int)(this->GetNumberOfSamples() / levelFactor);
-    unsigned int fixedImageNumberOfSamples = fixedImage->GetLargestPossibleRegion().GetNumberOfPixels();
+    unsigned int levelNumberOfSamples = (unsigned int)(
+      this->GetNumberOfSamples() / levelFactor);
+    unsigned int fixedImageNumberOfSamples =
+      fixedImage->GetLargestPossibleRegion().GetNumberOfPixels();
     if( levelNumberOfSamples > fixedImageNumberOfSamples )
       {
       levelNumberOfSamples = fixedImageNumberOfSamples;
@@ -624,17 +643,21 @@ BSplineImageToImageRegistrationMethod<TImage>
 
     if( this->GetReportProgress() )
       {
-      std::cout << "   Deformation magnitude = " << levelDeformationMagnitude
-                << std::endl;
+      std::cout << "   Deformation magnitude = "
+        << levelDeformationMagnitude
+        << std::endl;
       std::cout << "   Number of samples = " << levelNumberOfSamples
-                << std::endl;
+        << std::endl;
       }
 
     /**/
-    /* Create a BSpline registration module (an instance of this class!) that
-     *    will perform gradient optimization (instead of pyramid optimization). */
+    /* Create a BSpline registration module (an instance of this class!)
+     * that
+     * will perform gradient optimization (instead of pyramid
+     * optimization). */
     /**/
-    typedef BSplineImageToImageRegistrationMethod<ImageType> BSplineRegType;
+    typedef BSplineImageToImageRegistrationMethod<ImageType>
+      BSplineRegType;
     typename BSplineRegType::Pointer reg = BSplineRegType::New();
     reg->SetReportProgress( this->GetReportProgress() );
     reg->SetFixedImage( fixedImage );
@@ -649,7 +672,8 @@ BSplineImageToImageRegistrationMethod<TImage>
       this->GetFixedImageSamplesIntensityThreshold() );
     reg->SetUseFixedImageSamplesIntensityThreshold(
       this->GetUseFixedImageSamplesIntensityThreshold() );
-    reg->SetMaxIterations( (unsigned int)(this->GetMaxIterations() / ( (level + 1) / 2.0) ) );
+    reg->SetMaxIterations( (unsigned int)(this->GetMaxIterations()
+      / ( (level + 1) / 2.0) ) );
     reg->SetMetricMethodEnum( this->GetMetricMethodEnum() );
     reg->SetInterpolationMethodEnum( this->GetInterpolationMethodEnum() );
     reg->SetInitialTransformParameters( levelParameters );
@@ -682,47 +706,12 @@ BSplineImageToImageRegistrationMethod<TImage>
                 << std::endl;
       }
 
-    /*
-    if( this->GetReportProgress() )
-      {
-      typedef itk::ResampleImageFilter< ImageType, ImageType > ResamplerType;
-      typename ResamplerType::Pointer resampler = ResamplerType::New();
-      resampler->SetInput( movingImage );
-      // We should not be casting away constness here, but SetOutputParametersFromImage
-      // Does not change the image.  This is needed to workaround fixes to ITK
-      typename ImageType::Pointer tmp = const_cast<ImageType*>(fixedImage.GetPointer());
-      resampler->SetOutputParametersFromImage( tmp );
-      reg->GetTransform()->SetParametersByValue( reg->GetLastTransformParameters() );
-      resampler->SetTransform( reg->GetTransform() );
-      try
-        {
-        resampler->Update();
-        }
-      catch( itk::ExceptionObject & excep )
-        {
-        std::cout << "Exception during resmpling for logs:" << std::endl;
-        std::cout << excep << std::endl;
-        break;
-        }
-      catch( ... )
-        {
-        std::cout << "Exception during resmpling for logs:" << std::endl;
-        break;
-        }
-      writer->SetInput( resampler->GetOutput() );
-      ss.clear();
-      ss << "level" << level << "ResampledMoving.mha";
-      ss >> name;
-      writer->SetFileName( name );
-      writer->Update();
-      }
-    */
-
     if( level < this->m_NumberOfLevels - 1 )
       {
-      levelNumberOfControlPoints = (unsigned int)(levelNumberOfControlPoints * controlPointFactor);
+      levelNumberOfControlPoints = (unsigned int)(
+        levelNumberOfControlPoints * controlPointFactor);
       if( levelNumberOfControlPoints > this->GetNumberOfControlPoints() ||
-          level == this->m_NumberOfLevels - 2 )
+        level == this->m_NumberOfLevels - 2 )
         {
         levelNumberOfControlPoints = this->GetNumberOfControlPoints();
         }
@@ -734,7 +723,7 @@ BSplineImageToImageRegistrationMethod<TImage>
           std::cout << "   Resampling grid..." << std::endl;
           }
         reg->ResampleControlGrid( levelNumberOfControlPoints,
-                                  levelParameters );
+          levelParameters );
         }
       else
         {
@@ -747,8 +736,10 @@ BSplineImageToImageRegistrationMethod<TImage>
       /*  Remember the results */
       /**/
       this->SetFinalMetricValue( reg->GetFinalMetricValue() );
-      this->SetLastTransformParameters( reg->GetLastTransformParameters() );
-      this->GetTransform()->SetParametersByValue( this->GetLastTransformParameters() );
+      this->SetLastTransformParameters(
+        reg->GetLastTransformParameters() );
+      this->GetTransform()->SetParametersByValue(
+        this->GetLastTransformParameters() );
       }
 
     if( this->GetReportProgress() )
@@ -767,27 +758,30 @@ template <class TImage>
 typename BSplineImageToImageRegistrationMethod<TImage>::TransformType
 * BSplineImageToImageRegistrationMethod<TImage>
 ::GetTypedTransform( void )
-  {
+{
   return static_cast<TransformType  *>( Superclass::GetTransform() );
-  }
+}
 
 template <class TImage>
 const typename BSplineImageToImageRegistrationMethod<TImage>::TransformType
 * BSplineImageToImageRegistrationMethod<TImage>
 ::GetTypedTransform( void ) const
-  {
+{
   return static_cast<const TransformType  *>( Superclass::GetTransform() );
-  }
+}
 
 template <class TImage>
 typename BSplineImageToImageRegistrationMethod<TImage>::BSplineTransformPointer
 BSplineImageToImageRegistrationMethod<TImage>
 ::GetBSplineTransform( void ) const
 {
-  typename BSplineTransformType::Pointer trans = BSplineTransformType::New();
+  typename BSplineTransformType::Pointer trans =
+    BSplineTransformType::New();
 
-  trans->SetFixedParameters( this->GetTypedTransform()->GetFixedParameters() );
-  trans->SetParametersByValue( this->GetTypedTransform()->GetParameters() );
+  trans->SetFixedParameters(
+    this->GetTypedTransform()->GetFixedParameters() );
+  trans->SetParametersByValue(
+    this->GetTypedTransform()->GetParameters() );
 
   return trans;
 }
@@ -796,7 +790,7 @@ template <class TImage>
 void
 BSplineImageToImageRegistrationMethod<TImage>
 ::ResampleControlGrid(int numberOfControlPoints,
-                      ParametersType & parameters )
+  ParametersType & parameters )
 {
   typename TransformType::RegionType::SizeType gridSize;
   typename TransformType::SpacingType  gridSpacing;
@@ -818,13 +812,14 @@ BSplineImageToImageRegistrationMethod<TImage>
 
   int parameterCounter = 0;
 
-  typedef typename BSplineTransformType::ImageType ParametersImageType;
+  typedef typename BSplineTransformType::ImageType
+    ParametersImageType;
   typedef ResampleImageFilter<ParametersImageType, ParametersImageType>
-  ResamplerType;
+    ResamplerType;
   typedef BSplineResampleImageFunction<ParametersImageType, double>
-  FunctionType;
-  typedef IdentityTransform<double, ImageDimension> IdentityTransformType;
-  typedef itk::ImageFileWriter<ParametersImageType> WriterType;
+    FunctionType;
+  typedef IdentityTransform<double, ImageDimension>
+    IdentityTransformType;
   for( unsigned int k = 0; k < ImageDimension; k++ )
     {
     typename ResamplerType::Pointer upsampler = ResamplerType::New();
@@ -838,12 +833,14 @@ BSplineImageToImageRegistrationMethod<TImage>
     /*
     if( this->GetReportProgress() )
       {
+      /typedef itk::ImageFileWriter<ParametersImageType> WriterType;
       typename WriterType::Pointer writer = WriterType::New();
       std::stringstream ss;
       std::string name;
       ss << "inCoeImage" << k << ".mha";
       ss >> name;
-      writer->SetInput( this->GetTypedTransform()->GetCoefficientImages()[k] );
+      writer->SetInput(
+        this->GetTypedTransform()->GetCoefficientImages()[k] );
       writer->SetFileName( name );
       try
         {
@@ -851,7 +848,8 @@ BSplineImageToImageRegistrationMethod<TImage>
         }
       catch( ... )
         {
-        std::cout << "Error writing coefficient image.  Ignoring." << std::endl;
+        std::cout << "Error writing coefficient image.  Ignoring."
+          << std::endl;
         }
       }
     */
@@ -904,6 +902,7 @@ BSplineImageToImageRegistrationMethod<TImage>
     /*
     if( this->GetReportProgress() )
       {
+      /typedef itk::ImageFileWriter<ParametersImageType> WriterType;
       typename WriterType::Pointer writer = WriterType::New();
       std::stringstream ss;
       std::string name;
@@ -917,10 +916,11 @@ BSplineImageToImageRegistrationMethod<TImage>
         }
       catch( ... )
         {
-        std::cout << "Error while writing coefficient image.  Ignoring." << std::endl;
+        std::cout << "Error while writing coefficient image.  Ignoring."
+          << std::endl;
         }
       }
-      */
+    */
 
     // copy the coefficients into the parameter array
     typedef ImageRegionIterator<ParametersImageType> Iterator;
@@ -942,6 +942,6 @@ BSplineImageToImageRegistrationMethod<TImage>
   Superclass::PrintSelf(os, indent);
 }
 
-};
+}
 
 #endif

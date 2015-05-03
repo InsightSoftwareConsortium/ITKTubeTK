@@ -297,8 +297,6 @@ bool
 TubeXIO< TDimension >
 ::Write( const std::string & _fileName )
 {
-  typedef typename TubeType::PointListType  PointListType;
-
   std::ofstream tmpWriteStream( _fileName.c_str(), std::ios::binary |
     std::ios::out);
 

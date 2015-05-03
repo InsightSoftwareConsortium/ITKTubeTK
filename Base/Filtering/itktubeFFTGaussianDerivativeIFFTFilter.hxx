@@ -200,9 +200,6 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
     timeCollector.Stop( "NJet-ComputeInputImageFFT" );
     }
 
-  typedef RegionFromReferenceImageFilter< RealImageType, TOutputImage >
-    RegionFromFilterType;
-
   if( dX.size() != ImageDimension )
     {
     dX.resize( ImageDimension );
