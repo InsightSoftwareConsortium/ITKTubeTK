@@ -20,7 +20,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-
 #ifndef __tubeTubeMath_h
 #define __tubeTubeMath_h
 
@@ -44,15 +43,17 @@ template< class TTubePoint >
 bool
 ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tube );
 
-enum SmoothTubeFunctionEnum {
-  SMOOTH_TUBE_USING_INDEX_AVERAGE,
-  SMOOTH_TUBE_USING_INDEX_GAUSSIAN,
-  SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN};
+enum SmoothTubeFunctionEnum { SMOOTH_TUBE_USING_INDEX_AVERAGE,
+  SMOOTH_TUBE_USING_INDEX_GAUSSIAN, SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN };
 
 template< class TTube >
 typename TTube::Pointer
 SmoothTube( const typename TTube::Pointer & tube, double h = 2,
   SmoothTubeFunctionEnum smoothFunction = SMOOTH_TUBE_USING_INDEX_AVERAGE );
+
+template< class TTube >
+int
+RemoveDuplicateTubePoints( typename TTube::Pointer & tube );
 
 template< class TTube >
 typename TTube::Pointer

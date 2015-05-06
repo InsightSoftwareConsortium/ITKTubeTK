@@ -352,6 +352,43 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
 }
 
 
+/** Remove duplicate points */
+template< class TTube >
+int
+RemoveDuplicateTubePoints( typename TTube::Pointer & tube )
+{
+  int length = tube->GetNumberOfPoints();
+
+  if ( length <= 1 )
+    {
+    return 0;
+    }
+
+  int nPoints = 0;
+  for ( int i = 0; i < length - 1; i++ )
+    {
+    if ( tube->GetPoint(i)->GetPosition() ==
+      tube->GetPoint(i + 1)->GetPosition() )
+      {
+      tube->RemovePoint(i + 1);
+      i--;
+      length--;
+      nPoints++;
+      }
+    if ( i >= 0 && i < length - 2
+         && tube->GetPoint(i)->GetPosition() ==
+         tube->GetPoint(i + 2)->GetPosition() )
+      {
+      tube->RemovePoint(i + 2);
+      i--;
+      length--;
+      nPoints++;
+      }
+    }
+
+  return nPoints;
+}
+
 /**
  * Subsample a tube */
 template< class TTube >
