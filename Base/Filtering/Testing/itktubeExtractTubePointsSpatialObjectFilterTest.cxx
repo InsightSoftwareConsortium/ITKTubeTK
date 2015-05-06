@@ -118,7 +118,7 @@ int itktubeExtractTubePointsSpatialObjectFilterTest( int argc, char* argv[] )
               << std::endl;
     }
 
-  delete pointsContainer;
+  //delete pointsContainer;
 
   return EXIT_SUCCESS;
 }
