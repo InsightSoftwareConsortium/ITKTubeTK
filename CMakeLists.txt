@@ -661,6 +661,7 @@ make_directory( ${TubeTK_BINARY_DIR}/Temporary )
 
 # Configure variables to export.
 set( TubeTK_INCLUDE_DIRS
+  ${TubeTK_BINARY_DIR}
   ${TubeTK_SOURCE_DIR}/Base/CLI
   ${TubeTK_SOURCE_DIR}/Base/Common
   ${TubeTK_SOURCE_DIR}/Base/Filtering
