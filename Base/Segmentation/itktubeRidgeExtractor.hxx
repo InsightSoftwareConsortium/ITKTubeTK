@@ -900,6 +900,10 @@ RidgeExtractor<TInputImage>
       {
       currentStepX = 0.5 * m_StepX;
       }
+    else if( currentStepX > 4.0 * m_StepX )
+      {
+      currentStepX = 4.0 * m_StepX;
+      }
     vnl_vector<double> v = ::tube::ComputeLineStep( lX, currentStepX,
       lStepDir );
     for( unsigned int i=0; i<ImageDimension; i++ )
@@ -1190,7 +1194,6 @@ RidgeExtractor<TInputImage>
           std::cout << "  tubeId = " << tubeId << std::endl;
           std::cout << "  tubePointCount = " << tubePointCount << std::endl;
           std::cout << "  StepX = " << m_StepX << std::endl;
-          std::cout << "  20/StepX = " << 20/m_StepX << std::endl;
           }
         break;
         }
@@ -1220,6 +1223,9 @@ RidgeExtractor<TInputImage>
       std::cout << "       Roundness = " << roundness << std::endl;
       std::cout << "       Curvature = " << curvature << std::endl;
       std::cout << "       Levelness = " << levelness << std::endl;
+      std::cout << "       StepX = " << currentStepX << std::endl;
+      std::cout << "       Scale = " << this->GetScale()
+        << std::endl;
       }
 
     TubePointType pnt;
@@ -1258,74 +1264,74 @@ RidgeExtractor<TInputImage>
       pnt.SetRidgeness( 0.0 );
       }
     pnts.push_back( pnt );
-    tubePointCount++;
+    ++tubePointCount;
 
     recovery = 0;
     prevRecoveryPoint = tubePointCount;
 
-    if( tubePointCount/25.0 == tubePointCount/25 )
+    if( tubePointCount % static_cast< int >( 2 / currentStepX ) == 0 )
       {
       if( m_IdleCallBack )
         {
         m_IdleCallBack();
         }
-      if( m_DynamicScale && tubePointCount/50.0 == tubePointCount/50 )
+      if( m_DynamicScale
+        && ( tubePointCount % static_cast< int >( 4 / currentStepX ) ) == 0
+        && m_RadiusExtractor )
         {
-        if( m_RadiusExtractor )
+        if( this->GetDebug() )
           {
-          if( this->GetDebug() )
-            {
-            std::cout << "Ridge: TraverseOW: DynamicScale" << std::endl;
-            }
-
-          TubePointType tmpPoint;
-          for( unsigned int i=0; i<ImageDimension; i++ )
-            {
-            pX[i] = ( pX[i]+lX[i] )/2;
-            tubeX[i] = pX[i];
-            tubeV[i] = lStepDir[i];
-            }
-          tmpPoint.SetPosition( tubeX );
-          tmpPoint.SetTangent( tubeV );
-          tmpPoint.SetRadius( m_DynamicScaleUsed );
-          m_RadiusExtractor->SetRadiusStart( m_DynamicScaleUsed );
-          double radiusMin = m_DynamicScaleUsed/4;
-          if( radiusMin < m_RadiusExtractor->GetRadiusMin() )
-            {
-            radiusMin = m_RadiusExtractor->GetRadiusMin();
-            }
-          double radiusMax = m_DynamicScaleUsed*2;
-          if( radiusMax > m_RadiusExtractor->GetRadiusMax() )
-            {
-            radiusMax = m_RadiusExtractor->GetRadiusMax();
-            }
-          double radiusStep = m_RadiusExtractor->GetRadiusStep() * 2;
-          double radiusTolerance = m_RadiusExtractor->GetRadiusTolerance()
-            * 10;
-          std::vector< TubePointType > points;
-          points.push_back( tmpPoint );
-          if( m_RadiusExtractor->GetPointVectorOptimalRadius( points,
-            m_DynamicScaleUsed, radiusMin, radiusMax, radiusStep,
-            radiusTolerance ) )
-            {
-            m_DynamicScaleUsed = ( 2 * tmpPoint.GetRadius()
-              + m_DynamicScaleUsed ) / 3;
-            }
-          if( m_StatusCallBack )
-            {
-            char s[80];
-            std::sprintf( s, "Extract: Ridge: DS = %1.1f",
-              m_DynamicScaleUsed );
-            m_StatusCallBack( s, NULL, 0 );
-            }
-          else if( this->GetDebug() || verbose )
-            {
-            std::cout << "Dynamic Scale = " << m_DynamicScaleUsed
-              << std::endl;
-            }
-          SetScale( m_DynamicScaleUsed );
-          m_RadiusExtractor->SetRadiusStart( m_DynamicScaleUsed );
+          std::cout << "Ridge: TraverseOW: DynamicScale" << std::endl;
           }
+
+        TubePointType tmpPoint;
+        for( unsigned int i=0; i<ImageDimension; i++ )
+          {
+          tubeV[i] = lStepDir[i];
+          }
+        tmpPoint.SetTangent( tubeV );
+        tmpPoint.SetRadius( this->GetScale() );
+        ::tube::ComputeNormalsFromTangent( tmpPoint, tubeV );
+        m_RadiusExtractor->SetRadiusStart( this->GetScale() );
+        double radiusMin = m_RadiusExtractor->GetRadiusMin();
+        double radiusMax = m_RadiusExtractor->GetRadiusMax();
+        double radiusStep = m_RadiusExtractor->GetRadiusStep();
+        double radiusTolerance = m_RadiusExtractor->GetRadiusTolerance();
+        std::vector< TubePointType > points;
+        for( unsigned int i=0; i<ImageDimension; i++ )
+          {
+          tubeX[i] = pX[i];
+          }
+        tmpPoint.SetPosition( tubeX );
+        points.push_back( tmpPoint );
+        for( unsigned int i=0; i<ImageDimension; i++ )
+          {
+          tubeX[i] = ( pX[i] + lX[i] ) / 2;
+          }
+        tmpPoint.SetPosition( tubeX );
+        points.push_back( tmpPoint );
+        points.push_back( pnt );
+        if( m_RadiusExtractor->GetPointVectorOptimalRadius( points,
+          m_DynamicScaleUsed, radiusMin, radiusMax, radiusStep,
+          radiusTolerance ) )
+          {
+          m_DynamicScaleUsed = ( tmpPoint.GetRadius()
+            + m_DynamicScaleUsed ) / 2;
+          }
+        if( m_StatusCallBack )
+          {
+          char s[80];
+          std::sprintf( s, "Extract: Ridge: DS = %1.1f",
+            m_DynamicScaleUsed );
+          m_StatusCallBack( s, NULL, 0 );
+          }
+        else if( this->GetDebug() || verbose )
+          {
+          std::cout << "Dynamic Scale = " << m_DynamicScaleUsed
+            << std::endl;
+          }
+        SetScale( m_DynamicScaleUsed );
+        m_RadiusExtractor->SetRadiusStart( m_DynamicScaleUsed );
         }
       }
     }
@@ -1821,18 +1827,10 @@ RidgeExtractor<TInputImage>
     tmpPoint.SetPosition( tubeX );
     tmpPoint.SetTangent( tubeV );
     tmpPoint.SetRadius( scale0 );
-    double radiusMin = scale0/4;
-    if( radiusMin < m_RadiusExtractor->GetRadiusMin() )
-      {
-      radiusMin = m_RadiusExtractor->GetRadiusMin();
-      }
-    double radiusMax = scale0*2;
-    if( radiusMax > m_RadiusExtractor->GetRadiusMax() )
-      {
-      radiusMax = m_RadiusExtractor->GetRadiusMax();
-      }
-    double radiusStep = m_RadiusExtractor->GetRadiusStep() * 2;
-    double radiusTolerance = m_RadiusExtractor->GetRadiusTolerance() * 10;
+    double radiusMin = m_RadiusExtractor->GetRadiusMin();
+    double radiusMax = m_RadiusExtractor->GetRadiusMax();
+    double radiusStep = m_RadiusExtractor->GetRadiusStep();
+    double radiusTolerance = m_RadiusExtractor->GetRadiusTolerance();
     std::vector< TubePointType > points;
     points.push_back( tmpPoint );
     if( !m_RadiusExtractor->GetPointVectorOptimalRadius( points,
@@ -1847,11 +1845,7 @@ RidgeExtractor<TInputImage>
       }
     else
       {
-      m_DynamicScaleUsed = ( 2*tmpPoint.GetRadius()+GetScale() )/3;
-      }
-    if( m_DynamicScaleUsed<0.5 )
-      {
-      m_DynamicScaleUsed = 0.5;
+      m_DynamicScaleUsed = ( tmpPoint.GetRadius() + GetScale() ) / 2;
       }
 
     SetScale( m_DynamicScaleUsed );
@@ -1862,7 +1856,7 @@ RidgeExtractor<TInputImage>
       }
     for( int i=0; i<ImageDimension; i++ )
       {
-      lX[i] = ( lX[i] + newX[i] )/2;
+      lX[i] = ( lX[i] + newX[i] ) / 2;
       }
     m_CurrentFailureCode = LocalRidge( lX, verbose );
     if( m_CurrentFailureCode != SUCCESS )
@@ -1908,13 +1902,10 @@ RidgeExtractor<TInputImage>
     std::cout << "End traversing one way" << std::endl;
     }
 
-  if( m_DynamicScale )
+  SetScale( scale0 );
+  if( m_RadiusExtractor )
     {
-    SetScale( scale0 );
-    if( m_RadiusExtractor )
-      {
-      m_RadiusExtractor->SetRadiusStart( scale0 );
-      }
+    m_RadiusExtractor->SetRadiusStart( scale0 );
     }
 
   for( unsigned int i=0; i<ImageDimension; i++ )
@@ -1933,17 +1924,10 @@ RidgeExtractor<TInputImage>
     }
 
   // return to user defaults
-  if( m_DynamicScale )
+  SetScale( scaleOriginal );
+  if( m_RadiusExtractor )
     {
-    if( this->GetDebug() )
-      {
-      std::cout << "Restoring initial scale" << std::endl;
-      }
-    SetScale( scaleOriginal );
-    if( m_RadiusExtractor )
-      {
-      m_RadiusExtractor->SetRadiusStart( radiusOriginal );
-      }
+    m_RadiusExtractor->SetRadiusStart( radiusOriginal );
     }
 
   if( m_Tube->GetPoints().size() < 2.0/m_StepX )
@@ -1974,25 +1958,7 @@ RidgeExtractor<TInputImage>
       {
       std::cout << "Calculating tangents." << std::endl;
       }
-    typename TubePointType::VectorType tangent;
-    tangent.Fill( 0.0 );
-    tangent[0] = 1;
-
-    typename std::vector< TubePointType >::iterator i, j, k;
-    i = m_Tube->GetPoints().begin();
-    k = m_Tube->GetPoints().end();
-    k--;
-    while( i != k )
-      {
-      j = i;
-      ++j;
-      tangent = ( *j ).GetPosition() - ( *i ).GetPosition();
-      tangent.Normalize();
-      ( *i ).SetTangent( tangent );
-      ++i;
-      }
-
-    ( *k ).SetTangent( tangent );
+    ::tube::ComputeTubeTangentsAndNormals< TubeType >( m_Tube );
     }
 
   if( m_StatusCallBack )
@@ -2001,6 +1967,7 @@ RidgeExtractor<TInputImage>
     std::sprintf( s, "%d points", (int)(m_Tube->GetPoints().size()) );
     m_StatusCallBack( "Extract: Ridge", s, 0 );
     }
+
   return m_Tube;
 }
 
