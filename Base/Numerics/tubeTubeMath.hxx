@@ -177,7 +177,7 @@ ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
     {
     x1 = tubeV[it1].GetPosition();
     x3 = tubeV[it3].GetPosition();
-    double l=0;
+    double l = 0;
     for(unsigned int i=0; i<dimension; i++)
       {
       t[i] = (x3[i] - x1[i]);
@@ -192,17 +192,20 @@ ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
       std::cerr << " (use RemoveDuplicatePoints())" << std::endl;
       std::cerr << "   p1 = " << x1 << std::endl;
       std::cerr << "   p3 = " << x3 << std::endl;
-      return false;
+      t = tubeV[it1].GetTangent();
       }
-    for(unsigned int i=0; i<dimension; i++)
+    else
       {
-      t[i] /= l;
+      for(unsigned int i=0; i<dimension; i++)
+        {
+        t[i] /= l;
+        }
       }
 
     tubeV[it2].SetTangent(t);
-    it1++;
-    it2++;
-    it3++;
+    ++it1;
+    ++it2;
+    ++it3;
     }
 
   it1 = 0;

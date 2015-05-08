@@ -1908,13 +1908,10 @@ RidgeExtractor<TInputImage>
     std::cout << "End traversing one way" << std::endl;
     }
 
-  if( m_DynamicScale )
+  if( m_DynamicScale && m_RadiusExtractor )
     {
     SetScale( scale0 );
-    if( m_RadiusExtractor )
-      {
-      m_RadiusExtractor->SetRadiusStart( scale0 );
-      }
+    m_RadiusExtractor->SetRadiusStart( scale0 );
     }
 
   for( unsigned int i=0; i<ImageDimension; i++ )
@@ -1933,17 +1930,14 @@ RidgeExtractor<TInputImage>
     }
 
   // return to user defaults
-  if( m_DynamicScale )
+  if( m_DynamicScale && m_RadiusExtractor )
     {
     if( this->GetDebug() )
       {
       std::cout << "Restoring initial scale" << std::endl;
       }
     SetScale( scaleOriginal );
-    if( m_RadiusExtractor )
-      {
-      m_RadiusExtractor->SetRadiusStart( radiusOriginal );
-      }
+    m_RadiusExtractor->SetRadiusStart( radiusOriginal );
     }
 
   if( m_Tube->GetPoints().size() < 2.0/m_StepX )
@@ -1974,25 +1968,7 @@ RidgeExtractor<TInputImage>
       {
       std::cout << "Calculating tangents." << std::endl;
       }
-    typename TubePointType::VectorType tangent;
-    tangent.Fill( 0.0 );
-    tangent[0] = 1;
-
-    typename std::vector< TubePointType >::iterator i, j, k;
-    i = m_Tube->GetPoints().begin();
-    k = m_Tube->GetPoints().end();
-    k--;
-    while( i != k )
-      {
-      j = i;
-      ++j;
-      tangent = ( *j ).GetPosition() - ( *i ).GetPosition();
-      tangent.Normalize();
-      ( *i ).SetTangent( tangent );
-      ++i;
-      }
-
-    ( *k ).SetTangent( tangent );
+    ::tube::ComputeTubeTangentsAndNormals< TubeType >( m_Tube );
     }
 
   if( m_StatusCallBack )
@@ -2001,6 +1977,7 @@ RidgeExtractor<TInputImage>
     std::sprintf( s, "%d points", (int)(m_Tube->GetPoints().size()) );
     m_StatusCallBack( "Extract: Ridge", s, 0 );
     }
+
   return m_Tube;
 }
 

@@ -184,6 +184,7 @@ public:
 
   itkGetMacro( KernelValues, std::vector< double > );
   itkGetMacro( KernelDistances, std::vector< double > );
+  itkGetMacro( KernelTangentDistances, std::vector< double > );
 
   double GetKernelMedialness( double r );
   double GetKernelBranchness( double r );
@@ -245,6 +246,7 @@ private:
 
   std::vector< double >                   m_KernelValues;
   std::vector< double >                   m_KernelDistances;
+  std::vector< double >                   m_KernelTangentDistances;
 
   double                                  m_KernelOptimalRadius;
   double                                  m_KernelOptimalRadiusMedialness;
