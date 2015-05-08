@@ -32,7 +32,6 @@ limitations under the License.
 
 #include "tubeMatrixMath.h"
 #include "tubeTubeMath.h"
-#include "tubeUserFunction.h"
 
 #include <itkMinimumMaximumImageFilter.h>
 
@@ -41,43 +40,6 @@ namespace itk
 
 namespace tube
 {
-
-/** Define the Medialness Function
- * \class RadiusExtractor2MedialnessFunc
- */
-template< class TImage >
-class RadiusExtractor2MedialnessFunc : public ::tube::UserFunction< int, double >
-{
-public:
-
-  typedef itk::VesselTubeSpatialObject< TImage::ImageDimension >
-                                                           TubeType;
-  typedef typename TubeType::TubePointType                 TubePointType;
-
-  RadiusExtractor2MedialnessFunc( RadiusExtractor2< TImage > *
-    newRadiusExtractor )
-    {
-    m_RadiusExtractor = newRadiusExtractor;
-    }
-
-  const double & Value( const int & x )
-    {
-    double r = m_RadiusExtractor->GetRadiusStep() * x;
-    m_Value = m_RadiusExtractor->GetKernelMedialness( r );
-    return m_Value;
-    }
-
-  RadiusExtractor2< TImage > * GetRadiusExtractor( void  )
-    {
-    return m_RadiusExtractor;
-    }
-
-private:
-
-  double                                    m_Value;
-  RadiusExtractor2< TImage >              * m_RadiusExtractor;
-
-}; // End class RadiusExtractorMedialnessFunc
 
 /** Constructor */
 template< class TInputImage >
@@ -97,14 +59,6 @@ RadiusExtractor2<TInputImage>
 
   m_MinMedialness = 0.15;       // 0.015; larger = harder
   m_MinMedialnessStart = 0.1;
-
-  m_MedialnessFunc = new RadiusExtractor2MedialnessFunc<TInputImage>(
-    this );
-
-  m_MedialnessOpt.SetSearchForMin( false );
-
-  m_MedialnessOptSpline = new SplineType( m_MedialnessFunc,
-    &m_MedialnessOpt );
 
   m_NumKernelPoints = 7;
   m_KernelTubePoints.resize( m_NumKernelPoints );
@@ -130,35 +84,6 @@ template< class TInputImage >
 RadiusExtractor2<TInputImage>
 ::~RadiusExtractor2( void )
 {
-  if( m_MedialnessFunc != NULL )
-    {
-    delete m_MedialnessFunc;
-    }
-  m_MedialnessFunc = NULL;
-
-  if( m_MedialnessOptSpline != NULL )
-    {
-    delete m_MedialnessOptSpline;
-    }
-  m_MedialnessOptSpline = NULL;
-}
-
-/** Get the medialness operator */
-template< class TInputImage >
-typename RadiusExtractor2<TInputImage>::OptimizerType &
-RadiusExtractor2<TInputImage>
-::GetMedialnessOptimizer( void )
-{
-  return & m_MedialnessOpt;
-}
-
-/** Get the medialness operator */
-template< class TInputImage >
-typename RadiusExtractor2<TInputImage>::SplineType &
-RadiusExtractor2<TInputImage>
-::GetMedialnessOptimizerSpline( void )
-{
-  return m_MedialnessOptSpline;
 }
 
 /** Set the input image */
@@ -198,16 +123,6 @@ RadiusExtractor2<TInputImage>
   double & bness,
   bool doBNess )
 {
-  if( pntR < m_MedialnessOptSpline->GetXMin() )
-    {
-    pntR = m_MedialnessOptSpline->GetXMin();
-    }
-
-  if( pntR > m_MedialnessOptSpline->GetXMax() )
-    {
-    pntR = m_MedialnessOptSpline->GetXMax();
-    }
-
   ::tube::ComputeVectorTangentsAndNormals( points );
 
   if( this->GetDebug() )
@@ -596,14 +511,6 @@ bool
 RadiusExtractor2<TInputImage>
 ::UpdateKernelOptimalRadius( void )
 {
-  m_MedialnessOptSpline->SetNewData( true );
-
-  m_MedialnessOpt.SetXStep( m_RadiusStep );
-  m_MedialnessOpt.SetTolerance( m_RadiusTolerance );
-  m_MedialnessOptSpline->SetClip( false );
-  m_MedialnessOptSpline->SetXMin( m_RadiusMin / m_RadiusStep );
-  m_MedialnessOptSpline->SetXMax( m_RadiusMax / m_RadiusStep );
-
   double r0 = m_RadiusStart;
   r0 = static_cast<int>( r0 / m_RadiusStep ) * m_RadiusStep;
   int r0Range = static_cast<int>( ( 0.5 * r0 ) / m_RadiusStep );
@@ -632,32 +539,13 @@ RadiusExtractor2<TInputImage>
     }
   r0 = r0Max;
 
-  /*
-  r0 = r0 / m_RadiusStep;
-  m_MedialnessOptSpline->Extreme( &r0, &r0Medialness );
-  r0 = r0 * m_RadiusStep;
-  */
-
-  if( this->GetDebug() )
-    {
-    std::cout << " cmp: " << r0-m_RadiusStep/2 << " - "
-      << m_MedialnessOptSpline->Value( (r0-m_RadiusStep/2) / m_RadiusStep )
-      << std::endl;
-    std::cout << " cmp: " << r0 << " - "
-      << m_MedialnessOptSpline->Value( r0 / m_RadiusStep ) << std::endl;
-    std::cout << " cmp: " << r0+m_RadiusStep/2 << " - "
-      << m_MedialnessOptSpline->Value( (r0+m_RadiusStep/2) / m_RadiusStep )
-      << std::endl;
-    }
-
   if( this->GetDebug() )
     {
     std::cout << "Local extreme at radius r0 = " << r0
       << " with medialness = " << r0Medialness << std::endl;
     std::cout << "  prev radius = " << this->GetRadiusStart()
-      << " with medialness = " << m_MedialnessOptSpline->Value(
-      this->GetRadiusStart() / m_RadiusStep )
-      << std::endl;
+      << " with medialness = " << this->GetKernelMedialness(
+      this->GetRadiusStart() ) << std::endl;
     }
 
   m_KernelOptimalRadius = r0;
@@ -917,17 +805,6 @@ RadiusExtractor2<TInputImage>
   os << indent << "DataMin = " << m_DataMin << std::endl;
   os << indent << "DataMax = " << m_DataMax << std::endl;
 
-  os << indent << "MedialnessOpt = " << m_MedialnessOpt << std::endl;
-  if( m_MedialnessOptSpline != NULL )
-    {
-    os << indent << "MedialnessOptSpline = " << m_MedialnessOptSpline
-      << std::endl;
-    }
-  else
-    {
-    os << indent << "MedialnessOptSpline = NULL" << std::endl;
-    }
-
   os << indent << "RadiusStart = " << m_RadiusStart << std::endl;
   os << indent << "RadiusMin = " << m_RadiusMin << std::endl;
   os << indent << "RadiusMax = " << m_RadiusMax << std::endl;
@@ -937,7 +814,6 @@ RadiusExtractor2<TInputImage>
   os << indent << "MinMedialness = " << m_MinMedialness << std::endl;
   os << indent << "MinMedialnessStart = " << m_MinMedialnessStart
     << std::endl;
-  os << indent << "MedialnessFunc = " << m_MedialnessFunc << std::endl;
 
   os << indent << "NumKernelPoints = " << m_NumKernelPoints << std::endl;
   os << indent << "KernelTubePoints = " << m_KernelTubePoints.size()

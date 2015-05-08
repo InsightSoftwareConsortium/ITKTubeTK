@@ -30,8 +30,6 @@ limitations under the License.
 #define __itktubeRadiusExtractor2_h
 
 #include "itktubeBlurImageFunction.h"
-#include "tubeBrentOptimizer1D.h"
-#include "tubeSplineApproximation1D.h"
 
 #include <itkVesselTubeSpatialObject.h>
 
@@ -61,9 +59,6 @@ public:
   typedef Object                                             Superclass;
   typedef SmartPointer< Self >                               Pointer;
   typedef SmartPointer< const Self >                         ConstPointer;
-
-  typedef ::tube::BrentOptimizer1D                           OptimizerType;
-  typedef ::tube::SplineApproximation1D                      SplineType;
 
   itkTypeMacro( RadiusExtractor2, Object );
   itkNewMacro( RadiusExtractor2 );
@@ -145,12 +140,6 @@ public:
   itkSetMacro( MinMedialnessStart, double );
   itkGetMacro( MinMedialnessStart, double );
 
-  /** Return the optimizer */
-  OptimizerType & GetMedialnessOptimizer( void );
-
-  /** Return the optimizer */
-  SplineType & GetMedialnessOptimizerSpline( void );
-
   void GetPointVectorMeasures( std::vector< TubePointType > & points,
     double pntR,
     double & mness,
@@ -223,9 +212,6 @@ private:
   double                                  m_DataMin;
   double                                  m_DataMax;
 
-  OptimizerType                           m_MedialnessOpt;
-  SplineType                            * m_MedialnessOptSpline;
-
   double                                  m_RadiusStart;
   double                                  m_RadiusMin;
   double                                  m_RadiusMax;
@@ -234,8 +220,6 @@ private:
 
   double                                  m_MinMedialness;
   double                                  m_MinMedialnessStart;
-
-  ::tube::UserFunction<int, double>     * m_MedialnessFunc;
 
   unsigned int                            m_NumKernelPoints;
   std::vector< TubePointType >            m_KernelTubePoints;
