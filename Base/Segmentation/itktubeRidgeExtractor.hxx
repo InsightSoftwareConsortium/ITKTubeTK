@@ -1903,7 +1903,10 @@ RidgeExtractor<TInputImage>
     }
 
   SetScale( scale0 );
-  m_RadiusExtractor->SetRadiusStart( scale0 );
+  if( m_RadiusExtractor )
+    {
+    m_RadiusExtractor->SetRadiusStart( scale0 );
+    }
 
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
@@ -1922,7 +1925,10 @@ RidgeExtractor<TInputImage>
 
   // return to user defaults
   SetScale( scaleOriginal );
-  m_RadiusExtractor->SetRadiusStart( radiusOriginal );
+  if( m_RadiusExtractor )
+    {
+    m_RadiusExtractor->SetRadiusStart( radiusOriginal );
+    }
 
   if( m_Tube->GetPoints().size() < 2.0/m_StepX )
     {
