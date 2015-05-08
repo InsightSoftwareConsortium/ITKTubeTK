@@ -75,35 +75,40 @@ Where:
 #### Algorithm:
 
 1. **Build tube adjancency graph:**
- Given a tre file with a set of tubes, we build a weighted tube adjacency graph
- wherein vertices correspond to tubes in the given tre file and edges connect
- adjacent tubes. We add an edge from Tube A to Tube B in the tube adjacency
- graph, if the following two conditions are satisfied:
+ Given a tre file with a set of tubes, we build a weighted directed tube
+ adjacency graph wherein vertices correspond to tubes in the given tre file
+ and edges connect adjacent tubes. We add an edge from tube A to tube B in the
+ tube adjacency graph, if the following two criterion are satisfied for any of
+ the two end points of tube B:
 
-  * The distance of either of the two end points of tube B to tube A is less
- than *maxTubeDistToRadRatio* times the radius of the closest point in tube A
+  * **Distance criterion**: distance of the end point of tube B to its closest
+ point in tube A is less than *maxTubeDistanceToRadiusRatio* times the radius
+ of the closest point in tube A.
 
-  * The continuity angle error (angle between the tangent vector at the
- end point of tube B and the vector connecting the end point of tube B to
- closest point of tube A) is less than *maxContinuityAngleError*. The weights
- of the edges are set equal to the minimum of the distance between either
- end points of tube B to tube A.
+  * **Continuity angle criterion**: The angle between the "vector ending at the
+  end point of tube B and starting at its closest point in tube A" and the
+  "vector joining the end point of tube B to its adjacent point in tube B" is
+  less than *maxContinuityAngleError*.
+
+ The weights of the edges are set equal to the minimum of the distance between
+ either end points of tube B to tube A that satisfy the above two criterion.
 
 2. **Prepare a list of root tubes:**
- Since the tube adgacency graph could potentially have multiple connected
- components, we allow the user to optionally provide a list of root tube ids
- to pick the desired connected components. If a list of root tube ids is not
- given, we consider each tube as a potential root tube to retain all
- connected components in the output tre file.
+ Since the tube adjacency graph could potentially contain multiple connected
+ components, we allow the user to choose the desired connected components by
+ specifiying the *rootTubeIdList* parameter. If this is not provided, we
+ consider each input tube as a potential root to retain all connected
+ components in output.
 
 3. **Build tube trees:**
- We pick root tubes in decreasing order of out-degree (in the tube adjacency
- graph) and number of tube points and run a minimum spanning tree style
- algorithm on them that produces a tree out of the tubes reachable from the
- picked root tube in the graph. So, if the list of root tube ids contains
+ We pick root tubes in decreasing order of out-degree in the tube adjacency
+ graph (in case of duplicates, pick in decreasing order of length) and run a
+ minimum spanning tree style algorithm to obtain a tree of all tubes reachable
+ from it in the tube adjacency graph. If the list of root tube ids contains
  multiple root tubes within the same connected component, then the root tube
  with largest out-degree with largest number of points will end up being the
- root for its connected component.
+ root for its connected component and all others will become its descendants in
+ the generated tube tree.
 
 ----
 *This file is part of [TubeTK](http://www.tubetk.org). TubeTK is developed by

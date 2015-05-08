@@ -105,6 +105,7 @@ private:
   // purposely not implemented
   void operator=( const Self & );
 
+  double ComputeTubeLength( );
   void BuildTubeGraph( void );
   void ComputeTubeConnectivity( void );
   void VisitTube( TubePointerType pTube );
@@ -136,21 +137,21 @@ private:
     bool operator>( const ConnectionPointType & rhs ) const;
     };
 
-  struct TubePQElementType
-    {
-    int outDegree;
-    int numPoints;
-    TubeIdType tubeId;
-
-    bool operator<( const TubePQElementType & rhs ) const;
-    };
-
   typedef itksys::hash_map< TubeIdType, GraphEdgeType >
   GraphEdgeListType;
   typedef itksys::hash_map< TubeIdType, GraphEdgeListType >
   TubeAdjacencyListGraphType;
   typedef itksys::hash_map< TubeIdType, TubePointerType >
   TubeIdToPointerMapType;
+
+  struct TubePQElementType
+    {
+    TubeIdType tubeId;
+    typename GraphEdgeListType::size_type outDegree;
+    double tubeLength;
+
+    bool operator<( const TubePQElementType & rhs ) const;
+    };
 
   double                                  m_MaxTubeDistanceToRadiusRatio;
   double                                  m_MaxContinuityAngleError;
