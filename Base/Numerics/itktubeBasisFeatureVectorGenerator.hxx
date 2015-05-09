@@ -553,13 +553,14 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
       m_NumberOfPCABasisToUseAsFeatures = tmpNumFeatures;
       }
     }
-
   m_BasisValues.set_size( numInputFeatures );
   m_BasisMatrix.set_size( numInputFeatures, numInputFeatures );
 
-  MatrixType covarianceOfMeans( numInputFeatures, numInputFeatures );
+  MatrixType covarianceOfMeans;
+  covarianceOfMeans.set_size( numInputFeatures, numInputFeatures );
   covarianceOfMeans.fill( 0 );
-  MatrixType meanCovariance( numInputFeatures, numInputFeatures );
+  MatrixType meanCovariance;
+  meanCovariance.set_size( numInputFeatures, numInputFeatures );
   meanCovariance.fill( 0 );
   for( unsigned int c = 0; c < numClasses; c++ )
     {
@@ -594,7 +595,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
     true, false );
 
   int basisNum = 0;
-  for( unsigned int f = 0; f < numClasses-1; ++f )
+  for( unsigned int f = 0; f < m_NumberOfLDABasisToUseAsFeatures; ++f )
     {
     m_BasisValues[ basisNum ] = ldaBasisValues[ f ];
     m_BasisMatrix.set_column( basisNum, ldaBasisMatrix.get_column( f  ) );
