@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <executable>
   <category>TubeTK</category>
-  <title>Convert Tube To Tree (TubeTK)</title>
+  <title>Convert Tubes To Tree (TubeTK)</title>
   <description>Constructs a tree from a set of disjoint tubes</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>

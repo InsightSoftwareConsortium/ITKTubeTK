@@ -438,24 +438,29 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
 
   // Create scalar array that indicates Parent TubeID.
   vtkNew<vtkDoubleArray> parentTubeIDs;
-  tubeIDs->SetName("ParentTubeIDs");
-  tubeIDs->SetNumberOfTuples(totalNumberOfPoints);
+  parentTubeIDs->SetName("ParentTubeIDs");
+  parentTubeIDs->SetNumberOfTuples(totalNumberOfPoints);
 
-  // Create scalar array that indicates Parent TubeID.
+  // Create scalar array that indicates root TubeID.
   vtkNew<vtkDoubleArray> rootTubeIDs;
-  tubeIDs->SetName("RootTubeIDs");
-  tubeIDs->SetNumberOfTuples(totalNumberOfPoints);
+  rootTubeIDs->SetName("RootTubeIDs");
+  rootTubeIDs->SetNumberOfTuples(totalNumberOfPoints);
+
+  // Create scalar array that indicates whether or not a tube is root
+  vtkNew<vtkUnsignedCharArray> rootIndicator;
+  rootIndicator->SetName("IsRoot");
+  rootIndicator->SetNumberOfTuples(totalNumberOfPoints);
 
   // Create scalar array that indicates native point colors given in tre file
   vtkNew< vtkUnsignedCharArray > tubeColors;
-  tubeColors->SetName("Tube Color");
-  tubeColors->SetNumberOfTuples(totalNumberOfPoints);
+  tubeColors->SetName("TubeColor");
+  tubeColors->SetNumberOfTuples(4 * totalNumberOfPoints);
   tubeColors->SetNumberOfComponents( 4 );
 
   // Create scalar array that indicates native point colors given in tre file
   vtkNew< vtkUnsignedCharArray > tubePointColors;
-  tubePointColors->SetName("Tube Point Color");
-  tubePointColors->SetNumberOfTuples(totalNumberOfPoints);
+  tubePointColors->SetName("TubePointColor");
+  tubePointColors->SetNumberOfTuples(4 * totalNumberOfPoints);
   tubePointColors->SetNumberOfComponents( 4 );
 
   // Create scalar array that indicates the radius at each
@@ -523,11 +528,17 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
       }
 
     // compute root tube ID
-    itk::SpatialObject< 3 >* curRootTube = currTube;
+    VesselTubeType* curRootTube = currTube;
 
-    while( curRootTube->HasParent() )
+    while( !curRootTube->GetRoot() )
       {
-      curRootTube = curRootTube->GetParent();
+      VesselTubeType* curParentTube =
+        dynamic_cast<VesselTubeType*>( curRootTube->GetParent() );
+      if( !curParentTube )
+        {
+        break;
+        }
+      curRootTube = curParentTube;
       }
 
     VesselTubeType::PropertyType::PixelType curTubeColor =
@@ -561,8 +572,11 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
       // Parent TubeID
       parentTubeIDs->SetTuple1(pointID, currTube->GetParentId());
 
-      // Parent TubeID
-      rootTubeIDs->SetTuple1(pointID, curRootTube->GetParentId());
+      // Root TubeID
+      rootTubeIDs->SetTuple1(pointID, curRootTube->GetId());
+
+      // Is the current tube a root
+      rootIndicator->SetTuple1(pointID, currTube->GetRoot());
 
       // Native tube color from tre file
       tubeColors->SetTuple4(pointID,
@@ -630,6 +644,9 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
 
   // Add the Root TudeID information
   vesselsPD->GetPointData()->AddArray(rootTubeIDs.GetPointer());
+
+  // Add the info about whether or not a tube is a root
+  vesselsPD->GetPointData()->AddArray(rootIndicator.GetPointer());
 
   // Add tube point color information
   vesselsPD->GetPointData()->AddArray(tubeColors.GetPointer());

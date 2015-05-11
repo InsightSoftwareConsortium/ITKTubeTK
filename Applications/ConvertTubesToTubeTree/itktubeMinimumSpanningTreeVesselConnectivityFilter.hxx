@@ -28,6 +28,7 @@
 #include "tubeMatrixMath.h"
 #include "itkMath.h"
 #include "tubeMacro.h"
+#include "tubeTubeMath.h"
 
 #include <utility>
 #include <algorithm>
@@ -96,7 +97,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     }
   else
     {
-    return numPoints < rhs.numPoints;
+    return tubeLength < rhs.tubeLength;
     }
 }
 
@@ -189,6 +190,11 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
         TubePointListType targetPointList = curTargetTube->GetPoints();
 
+        if( targetPointList.size() <= 1 )
+          {
+          continue;
+          }
+
         int ptCandidateIdList[] = {0, (int) targetPointList.size() - 1};
 
         std::priority_queue< ConnectionPointType,
@@ -216,17 +222,25 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
             }
 
           // compute and check angular continuity
-          PositionVectorType curTangent = ptCur.GetTangent();
+          PositionVectorType ptNextPos;
 
-          if( curPtId > 0 )
+          if( curPtId == 0 )
             {
-            curTangent *= -1;
+            ptNextPos = targetPointList[ curPtId + 1 ].GetPosition()
+                                                      .GetVectorFromOrigin();
+            }
+            else
+            {
+            ptNextPos = targetPointList[ curPtId - 1 ].GetPosition()
+                                                      .GetVectorFromOrigin();
             }
 
-          vecToCurPt.Normalize();
-          curTangent.Normalize();
+          PositionVectorType curVecToNextPt = ptNextPos - ptCurPos;
 
-          double curAngle = std::acos( vecToCurPt * curTangent );
+          vecToCurPt.Normalize();
+          curVecToNextPt.Normalize();
+
+          double curAngle = std::acos( vecToCurPt * curVecToNextPt );
           curAngle *= 180.0 / itk::Math::pi;
 
           if( curAngle > m_MaxContinuityAngleError )
@@ -514,9 +528,10 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
       TubePQElementType epTube;
       epTube.tubeId = *itRootTubeId;
-      epTube.outDegree = (int) m_TubeGraph[epTube.tubeId].size();
-      epTube.numPoints
-        = (int) m_TubeIdToObjectMap[epTube.tubeId]->GetNumberOfPoints();
+      epTube.outDegree = m_TubeGraph[epTube.tubeId].size();
+      epTube.tubeLength =
+        ::tube::ComputeTubeLength< TubeType >(
+          m_TubeIdToObjectMap[epTube.tubeId] );
 
       // check if orphan and drop if requested
       if( m_RemoveOrphanTubes && epTube.outDegree == 0 )
@@ -535,9 +550,10 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       {
       TubePQElementType epTube;
       epTube.tubeId = itV->first;
-      epTube.outDegree = (int) itV->second.size();
-      epTube.numPoints
-        = (int) m_TubeIdToObjectMap[epTube.tubeId]->GetNumberOfPoints();
+      epTube.outDegree = itV->second.size();
+      epTube.tubeLength =
+        ::tube::ComputeTubeLength< TubeType >(
+          m_TubeIdToObjectMap[epTube.tubeId] );
 
       if( m_RemoveOrphanTubes && epTube.outDegree == 0 )
         {

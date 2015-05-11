@@ -405,6 +405,43 @@ SubsampleTube( const typename TTube::Pointer & tube, int N )
   return newTube;
 }
 
+/**
+ * Compute tube length */
+template< class TTube >
+double
+ComputeTubeLength( const typename TTube::Pointer & tube )
+{
+  if( tube->GetNumberOfPoints() <= 1 )
+    return 0;
+
+  typedef typename TTube::PointListType     TubePointListType;
+  typedef typename TTube::PointType         PositionType;
+  typedef typename PositionType::VectorType PositionVectorType;
+
+  TubePointListType tubePointsList = tube->GetPoints();
+
+  typename TubePointListType::const_iterator itTubePoints =
+    tubePointsList.begin();
+
+  PositionVectorType ptPrevPosVec =
+    itTubePoints->GetPosition().GetVectorFromOrigin();
+
+  ++itTubePoints;
+
+  double tubeLength = 0;
+  while( itTubePoints != tubePointsList.end() )
+    {
+    PositionVectorType ptCurPosVec =
+      itTubePoints->GetPosition().GetVectorFromOrigin();
+
+    tubeLength += (ptCurPosVec - ptPrevPosVec).GetNorm();
+
+    ptPrevPosVec = ptCurPosVec;
+    ++itTubePoints;
+    }
+
+  return tubeLength;
+}
 
 } // End namespace tube
 
