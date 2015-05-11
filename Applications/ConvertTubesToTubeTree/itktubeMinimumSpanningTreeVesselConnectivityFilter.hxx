@@ -151,7 +151,6 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
   typedef typename TubeType::TubePointType  TubePointType;
   typedef typename TubeType::PointType      PositionType;
   typedef typename PositionType::VectorType PositionVectorType;
-  GraphEdgeType e;
 
   m_TubeGraph.clear();
 
@@ -267,6 +266,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
           minpqConnPoint.pop();
           }
 
+        GraphEdgeType e;
         e.sourceTube       = pCurSourceTube;
         e.sourceTubeId      = curSourceTubeId;
         e.sourceTubePointId = curSourceTubePointId;
