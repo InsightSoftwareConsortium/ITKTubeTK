@@ -49,7 +49,6 @@ add_library( TubeTKObjectDocuments STATIC
   ${TubeTk_Base_ObjectDocuments_HXX_Files}
   ${TubeTk_Base_ObjectDocuments_SRCS} )
 
-include_directories( ${TubeTK_SOURCE_DIR}/Base/Common )
 target_link_libraries( TubeTKObjectDocuments TubeTKCommon ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects )
 
 set( TARGETS TubeTKObjectDocuments )
