@@ -26,6 +26,8 @@ limitations under the License.
 
 #include "itktubeExtractTubePointsSpatialObjectFilter.h"
 
+#include "tubeTubeMath.h"
+
 namespace itk
 {
 
@@ -36,15 +38,8 @@ template< class TTubeSpatialObject >
 ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
 ::ExtractTubePointsSpatialObjectFilter( void )
 {
-  // Create the output. We use static_cast<> here because we know the default
-  // output must be of type PointsContainerDecoratorType.
-  typename PointsContainerDecoratorType::Pointer output =
-    static_cast< PointsContainerDecoratorType * >( this->MakeOutput( 0 ).GetPointer() );
-  this->m_PointsContainer = PointsContainerType::New();
-  output->Set( this->m_PointsContainer );
-
   this->ProcessObject::SetNumberOfRequiredOutputs( 1 );
-  this->ProcessObject::SetNthOutput( 0, output.GetPointer() );
+  this->MakeOutput( 0 );
 }
 
 
@@ -58,9 +53,18 @@ ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
 template< class TTubeSpatialObject >
 ProcessObject::DataObjectPointer
 ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
-::MakeOutput( ProcessObject::DataObjectPointerArraySizeType itkNotUsed( idx ) )
+::MakeOutput( ProcessObject::DataObjectPointerArraySizeType
+  itkNotUsed( idx ) )
 {
-  return PointsContainerDecoratorType::New().GetPointer();
+  this->m_PointsContainerDecorator = PointsContainerDecoratorType::New();
+  this->m_PointsContainer = PointsContainerType::New();
+
+  this->m_PointsContainerDecorator->Set( this->m_PointsContainer );
+
+  this->ProcessObject::SetNthOutput( 0,
+    m_PointsContainerDecorator.GetPointer() );
+
+  return this->m_PointsContainerDecorator.GetPointer();
 }
 
 
@@ -71,7 +75,7 @@ ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
 {
   // ProcessObject is not const-correct so a const_cast is required here.
   this->ProcessObject::SetNthInput( 0,
-                                    const_cast< GroupSpatialObjectType * >( group ) );
+    const_cast< GroupSpatialObjectType * >( group ) );
 }
 
 
@@ -92,9 +96,7 @@ typename ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
 ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
 ::GetPointsContainerOutput( void )
 {
-  // we assume that the first output is of the templated type
-  return itkDynamicCastInDebugMode< PointsContainerDecoratorType * >
-    ( this->GetPrimaryOutput() );
+  return this->m_PointsContainerDecorator.GetPointer();
 }
 
 
@@ -104,9 +106,7 @@ const typename ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
 ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
 ::GetPointsContainerOutput( void ) const
 {
-  // we assume that the first output is of the templated type
-  return itkDynamicCastInDebugMode< const PointsContainerDecoratorType * >
-    ( this->GetPrimaryOutput() );
+  return this->m_PointsContainerDecorator.GetPointer();
 }
 
 
@@ -116,8 +116,7 @@ const typename ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
 ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
 ::GetPointsContainer( void ) const
 {
-  const PointsContainerDecoratorType * output = this->GetPointsContainerOutput();
-  return output->Get();
+  return this->m_PointsContainer.GetPointer();
 }
 
 
@@ -126,10 +125,6 @@ void
 ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
 ::GenerateData( void )
 {
-  typename PointsContainerType::STLContainerType & pointsContainer =
-    m_PointsContainer->CastToSTLContainer();
-  pointsContainer.clear();
-
   const GroupSpatialObjectType * inputGroup = this->GetInput();
 
   char childName[] = "Tube";
@@ -137,21 +132,27 @@ ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
   ChildrenListType * childrenList =
     inputGroup->GetChildren( inputGroup->GetMaximumDepth(), childName );
 
-  for( typename ChildrenListType::const_iterator childrenIt = childrenList->begin();
-       childrenIt != childrenList->end();
-       ++childrenIt )
+  for( typename ChildrenListType::const_iterator childrenIt =
+    childrenList->begin(); childrenIt != childrenList->end();
+    ++childrenIt )
     {
-    TubeSpatialObjectType * tube =
-      dynamic_cast< TubeSpatialObjectType * >( ( *childrenIt ).GetPointer() );
-    if( tube != NULL )
+    typename TubeSpatialObjectType::Pointer tube;
+    tube = dynamic_cast< TubeSpatialObjectType * >(
+      childrenIt->GetPointer() );
+    if( tube.IsNotNull() )
       {
-      tube->RemoveDuplicatePoints();
-      tube->ComputeTangentAndNormals();
-      const typename TubeSpatialObjectType::PointListType pointsForThisTube =
-        tube->GetPoints();
-      pointsContainer.insert( pointsContainer.end(),
-        pointsForThisTube.begin(),
-        pointsForThisTube.end() );
+      ::tube::RemoveDuplicateTubePoints< TubeSpatialObjectType >( tube );
+      ::tube::ComputeTubeTangentsAndNormals< TubeSpatialObjectType >(
+        tube );
+      const typename TubeSpatialObjectType::PointListType
+        pointsForThisTube = tube->GetPoints();
+      unsigned int count = m_PointsContainer->Size();
+      m_PointsContainer->Reserve( count +
+        pointsForThisTube.size() );
+      for( unsigned int i=0; i<pointsForThisTube.size(); ++i )
+        {
+        m_PointsContainer->SetElement( count++, pointsForThisTube[i] );
+        }
       }
     }
 

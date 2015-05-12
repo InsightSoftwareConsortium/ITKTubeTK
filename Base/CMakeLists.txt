@@ -21,17 +21,26 @@
 #
 ##############################################################################
 
+include_directories( CLI
+  Common
+  IO
+  ObjectDocuments
+  Numerics
+  Filtering
+  Registration
+  Segmentation
+  )
 add_subdirectory( CLI )
 add_subdirectory( Common )
-add_subdirectory( Filtering )
 add_subdirectory( IO )
-add_subdirectory( Numerics )
 add_subdirectory( ObjectDocuments )
+add_subdirectory( Numerics )
 
 if( TubeTK_USE_PYTHON )
   add_subdirectory( Python )
 endif( TubeTK_USE_PYTHON )
 
+add_subdirectory( Filtering )
 add_subdirectory( Registration )
 add_subdirectory( Segmentation )
 add_subdirectory( USTK )

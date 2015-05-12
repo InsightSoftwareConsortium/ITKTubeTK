@@ -86,8 +86,15 @@ int itktubeExtractTubePointsSpatialObjectFilterTest( int argc, char* argv[] )
 
   typedef ExtractTubePointsSpatialObjectFilterType::PointsContainerType
     PointsContainerType;
+
   const PointsContainerType * pointsContainer =
     extractTubePointsFilter->GetPointsContainer();
+  if( pointsContainer == NULL )
+    {
+    std::cerr << "Point container is null" << std::endl;
+    return EXIT_FAILURE;
+    }
+
   const itk::SizeValueType numberOfPoints = pointsContainer->Size();
   std::cout << "Output points container size: " << numberOfPoints
     << std::endl;
@@ -111,7 +118,7 @@ int itktubeExtractTubePointsSpatialObjectFilterTest( int argc, char* argv[] )
               << std::endl;
     }
 
-  delete pointsContainer;
+  //delete pointsContainer;
 
   return EXIT_SUCCESS;
 }
