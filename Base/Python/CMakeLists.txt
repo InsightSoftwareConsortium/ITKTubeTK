@@ -48,8 +48,6 @@ if( BUILD_TESTING AND NOT TubeTK_BUILD_USING_SLICER )
   endif( ${_result_variable} )
 endif( BUILD_TESTING AND NOT TubeTK_BUILD_USING_SLICER )
 
-include_directories( ${TubeTK_SOURCE_DIR}/Base/Filtering )
-
 add_subdirectory( tubetk )
 
 if( BUILD_TESTING AND NOT TubeTK_BUILD_USING_SLICER )
