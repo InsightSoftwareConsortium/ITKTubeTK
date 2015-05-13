@@ -34,7 +34,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << "  inputImage primaryEigenVectorOutputImage"
+    std::cerr << argv[0] << "  inputImage primaryEigenVectorOutputImage";
     std::cerr << " primaryEigenValueOutputImage [Sigma]"<< std::endl;
     return EXIT_FAILURE;
     }

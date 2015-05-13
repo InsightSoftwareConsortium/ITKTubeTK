@@ -34,8 +34,8 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << "  inputImage sheetnessImage"
-    std::cerr << " primaryEigenVectorOutputImage [sigma]"
+    std::cerr << argv[0] << "  inputImage sheetnessImage";
+    std::cerr << " primaryEigenVectorOutputImage [sigma]";
     std::cerr << " [sheetnessThresholdValue]"<< std::endl;
     return EXIT_FAILURE;
     }
