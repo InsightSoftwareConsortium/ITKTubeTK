@@ -31,8 +31,6 @@ void GetImageInformation( std::string fileName,
                           unsigned int & dimension )
 {
   // Find out the component type of the image in file
-  typedef itk::ImageIOBase::IOComponentType  PixelType;
-
   itk::ImageIOBase::Pointer imageIO =
     itk::ImageIOFactory::CreateImageIO( fileName.c_str(),
                                         itk::ImageIOFactory::ReadMode );

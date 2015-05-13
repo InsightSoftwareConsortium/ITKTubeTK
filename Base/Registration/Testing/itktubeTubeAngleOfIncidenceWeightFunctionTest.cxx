@@ -50,7 +50,6 @@ int itktubeTubeAngleOfIncidenceWeightFunctionTest( int argc, char * argv[] )
   typedef itk::VesselTubeSpatialObject< Dimension > TubeSpatialObjectType;
   typedef itk::GroupSpatialObject< Dimension >      GroupSpatialObjectType;
   typedef itk::TubeSpatialObjectPoint< Dimension >  TubePointType;
-  typedef std::vector< TubePointType >              TubePointContainerType;
   typedef float                                     WeightType;
 
   // Read input tube tree.
