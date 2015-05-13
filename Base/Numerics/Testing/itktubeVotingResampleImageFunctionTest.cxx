@@ -42,10 +42,9 @@ int itktubeVotingResampleImageFunctionTest( int argc, char * argv[] )
 
   const unsigned int Dimension = 2;
   typedef unsigned char                       PixelType;
-  typedef itk::Image<PixelType, Dimension>  ImageType;
+  typedef itk::Image<PixelType, Dimension>    ImageType;
 
   typedef ImageType::IndexType                ImageIndexType;
-  typedef ImageType::RegionType               ImageRegionType;
   typedef ImageType::SizeType                 ImageSizeType;
   typedef double                              CoordRepType;
   typedef itk::AffineTransform<CoordRepType,Dimension>

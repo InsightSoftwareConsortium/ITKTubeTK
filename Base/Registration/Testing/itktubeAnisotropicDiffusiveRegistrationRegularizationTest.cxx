@@ -52,7 +52,6 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest( int argc, char * argv
   typedef itk::Image< PixelType, Dimension >              FixedImageType;
   typedef itk::Image< PixelType, Dimension >              MovingImageType;
   typedef itk::Vector< VectorScalarType, Dimension >      VectorType;
-  typedef itk::Image< VectorType, Dimension >             VectorImageType;
   typedef itk::Image< VectorType, Dimension >             DeformationFieldType;
   typedef itk::ImageRegionIterator< DeformationFieldType >
                                                           IteratorType;

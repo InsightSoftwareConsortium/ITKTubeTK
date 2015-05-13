@@ -49,7 +49,6 @@ int itktubeImageRegionMomentsCalculatorTest( int argc, char * argv[] )
 
   // Declare the reader and writer
   typedef itk::ImageFileReader< ImageType > ReaderType;
-  typedef itk::ImageFileWriter< ImageType > WriterType;
 
 
   // Declare the type for the Filter

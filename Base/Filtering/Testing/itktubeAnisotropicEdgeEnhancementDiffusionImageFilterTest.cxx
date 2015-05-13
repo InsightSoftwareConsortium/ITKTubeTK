@@ -1,20 +1,25 @@
 /*=========================================================================
 
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest.cxx,v $
-  Language:  C++
-  Date:      $Date: 2007/06/20 16:03:23 $
-  Version:   $Revision: 1.5 $
+Library:   TubeTK
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notices for more information.
+All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 =========================================================================*/
-
 #include "itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h"
 
 #include <itkImageFileReader.h>
@@ -33,7 +38,6 @@ int itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest( int argc, char * 
   // Define the dimension of the images
   enum { Dimension = 3 };
   typedef double      InputPixelType;
-  typedef double      OutputPixelType;
 
   // Declare the types of the images
   typedef itk::Image< InputPixelType, Dimension>           InputImageType;
@@ -57,40 +61,40 @@ int itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest( int argc, char * 
 
 
   // Declare the anisotropic diffusion edge enhancement filter
-  typedef itk::tube::AnisotropicEdgeEnhancementDiffusionImageFilter< InputImageType,
-                                            OutputImageType>  EdgeEnhancementFilterType;
+  typedef itk::tube::AnisotropicEdgeEnhancementDiffusionImageFilter<
+    InputImageType, OutputImageType>  EdgeEnhancementFilterType;
 
   // Create a edge enhancement Filter
   EdgeEnhancementFilterType::Pointer EdgeEnhancementFilter =
-                                      EdgeEnhancementFilterType::New();
+    EdgeEnhancementFilterType::New();
   EdgeEnhancementFilter->SetInput( reader->GetOutput() );
 
   //Set/Get VED parameters
 
   //Set scale/sigma value
   if( argc > 3 )
-  {
-  double scaleParameter = std::atof(argv[3]);
-  EdgeEnhancementFilter->SetSigma( scaleParameter );
-  }
+    {
+    double scaleParameter = std::atof(argv[3]);
+    EdgeEnhancementFilter->SetSigma( scaleParameter );
+    }
   //Set contrast parameter
   if( argc > 4 )
-  {
-  double contrastParameter = std::atof(argv[4]);
-  EdgeEnhancementFilter->SetContrastParameterLambdaE( contrastParameter );
-  }
+    {
+    double contrastParameter = std::atof(argv[4]);
+    EdgeEnhancementFilter->SetContrastParameterLambdaE( contrastParameter );
+    }
   //Set time step
   if( argc > 5 )
-  {
-  double timeStep = std::atof(argv[5]);
-  EdgeEnhancementFilter->SetTimeStep( timeStep );
-  }
+    {
+    double timeStep = std::atof(argv[5]);
+    EdgeEnhancementFilter->SetTimeStep( timeStep );
+    }
   //Set number of iterations
   if( argc > 6 )
-  {
-  double numberOfIterations = std::atoi(argv[6]);
-  EdgeEnhancementFilter->SetNumberOfIterations( numberOfIterations );
-  }
+    {
+    double numberOfIterations = std::atoi(argv[6]);
+    EdgeEnhancementFilter->SetNumberOfIterations( numberOfIterations );
+    }
 
   std::cout << "Enhancing .........: " << argv[1] << std::endl;
 
