@@ -383,8 +383,30 @@ void qSlicerSpatialObjectsWidget::onColorByScalarChanged(int scalarIndex)
       GetPointData()->GetScalars(activeScalarName.toLatin1());
     currentScalar->GetRange(range, -1);
 
-    d->ScalarRangeWidget->setSingleStep((range[1]-range[0])/100);
-    d->ScalarRangeWidget->setRange(range[0], range[1]);
+    double singleStep;
+    // If range is 0, set singlestep to 1 to avoid having a singleStep of 0
+    if(range[0] == range[1])
+      {
+      singleStep = 1;
+      }
+    else
+      {
+      singleStep = (range[1]-range[0])/100;
+      }
+
+    // Workaround a bug of ctkRangeWidget
+    // TO FIX in CTK
+    if(range[1]-range[0] < d->ScalarRangeWidget->singleStep())
+      {
+      d->ScalarRangeWidget->setSingleStep(singleStep);
+      d->ScalarRangeWidget->setRange(range[0], range[1]);
+      }
+    else
+      {
+      d->ScalarRangeWidget->setRange(range[0], range[1]);
+      d->ScalarRangeWidget->setSingleStep(singleStep);
+      }
+
     d->ScalarRangeWidget->setValues(range[0], range[1]);
     }
 }
