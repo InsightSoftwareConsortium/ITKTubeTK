@@ -387,9 +387,6 @@ void qSlicerSpatialObjectsWidget::onColorByScalarChanged(int scalarIndex)
     d->ScalarRangeWidget->setRange(range[0], range[1]);
     d->ScalarRangeWidget->setValues(range[0], range[1]);
     }
-
-  // Color spatial object as the range has changed
-  this->onColorByScalarValuesChanged(range[0], range[1]);
 }
 
 //------------------------------------------------------------------------------
