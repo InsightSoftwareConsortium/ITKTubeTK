@@ -107,7 +107,7 @@ void qSlicerSpatialObjectsWidgetPrivate::init()
 
   QObject::connect(this->ScalarRangeWidget,
                    SIGNAL(valuesChanged(double,double)), q,
-                   SLOT(onColorByScalarRangeChanged(double,double)));
+                   SLOT(onColorByScalarValuesChanged(double,double)));
 
   QObject::connect(this->OpacitySlider,
                    SIGNAL(valueChanged(double)), q,
@@ -389,11 +389,11 @@ void qSlicerSpatialObjectsWidget::onColorByScalarChanged(int scalarIndex)
     }
 
   // Color spatial object as the range has changed
-  this->onColorByScalarRangeChanged(range[0], range[1]);
+  this->onColorByScalarValuesChanged(range[0], range[1]);
 }
 
 //------------------------------------------------------------------------------
-void qSlicerSpatialObjectsWidget::onColorByScalarRangeChanged(double minValue,
+void qSlicerSpatialObjectsWidget::onColorByScalarValuesChanged(double minValue,
                                                               double maxValue)
 {
   Q_D(qSlicerSpatialObjectsWidget);
@@ -407,11 +407,11 @@ void qSlicerSpatialObjectsWidget::onColorByScalarRangeChanged(double minValue,
     return;
     }
 
-    // Set the Range given the current ScalarColor
-    double range[2];
-    range[0] = minValue;
-    range[1] = maxValue;
-    d->SpatialObjectsDisplayNode->SetScalarRange(range);
+    // Set the values for coloring by scalar
+    double values[2];
+    values[0] = minValue;
+    values[1] = maxValue;
+    d->SpatialObjectsDisplayNode->SetScalarRange(values);
 }
 
 //------------------------------------------------------------------------------
