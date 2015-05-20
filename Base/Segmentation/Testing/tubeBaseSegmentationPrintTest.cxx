@@ -24,7 +24,6 @@ limitations under the License.
 #include "itktubeCVTImageFilter.h"
 #include "itktubeLabelOverlapMeasuresImageFilter.h"
 #include "itktubePDFSegmenter.h"
-#include "itktubeRadiusExtractor.h"
 #include "itktubeRadiusExtractor2.h"
 #include "itktubeRidgeExtractor.h"
 #include "itktubeRidgeSeedFilter.h"
@@ -51,11 +50,6 @@ int tubeBaseSegmentationPrintTest( int itkNotUsed( argc ), char * itkNotUsed( ar
   itk::tube::PDFSegmenter< ImageType, 3, ImageType >::Pointer
     pdfObject = itk::tube::PDFSegmenter< ImageType, 3, ImageType >::New();
   std::cout << "-------------itktubePDFImageFilter" << pdfObject
-    << std::endl;
-
-  itk::tube::RadiusExtractor< ImageType >::Pointer
-    radiusObject = itk::tube::RadiusExtractor< ImageType >::New();
-  std::cout << "-------------itktubeRadiusExtractor" << radiusObject
     << std::endl;
 
   itk::tube::RadiusExtractor2< ImageType >::Pointer

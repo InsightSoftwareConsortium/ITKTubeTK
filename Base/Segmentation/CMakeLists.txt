@@ -27,7 +27,6 @@ set( TubeTK_Base_Segmentation_H_Files
   itktubeCVTImageFilter.h
   itktubeLabelOverlapMeasuresImageFilter.h
   itktubePDFSegmenter.h
-  itktubeRadiusExtractor.h
   itktubeRadiusExtractor2.h
   itktubeRidgeExtractor.h
   itktubeRidgeSeedFilter.h
@@ -37,7 +36,6 @@ set( TubeTK_Base_Segmentation_HXX_Files
   itktubeCVTImageFilter.hxx
   itktubeLabelOverlapMeasuresImageFilter.hxx
   itktubePDFSegmenter.hxx
-  itktubeRadiusExtractor.hxx
   itktubeRadiusExtractor2.hxx
   itktubeRidgeExtractor.hxx
   itktubeRidgeSeedFilter.hxx
