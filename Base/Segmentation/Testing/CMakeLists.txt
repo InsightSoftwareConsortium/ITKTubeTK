@@ -52,8 +52,6 @@ set( tubeBaseSegmentation_SRCS
   tubeBaseSegmentationPrintTest.cxx
   itktubeCVTImageFilterTest.cxx
   itktubePDFSegmenterTest.cxx
-  itktubeRadiusExtractorTest.cxx
-  itktubeRadiusExtractorTest2.cxx
   itktubeRadiusExtractor2Test.cxx
   itktubeRadiusExtractor2Test2.cxx
   itktubeRidgeExtractorTest.cxx
@@ -151,18 +149,6 @@ Midas3FunctionAddTest( NAME itktubeRidgeExtractorTest2
     itktubeRidgeExtractorTest2
       MIDAS{Branch.n010.sub.mha.md5}
       MIDAS{Branch-truth_Subs.tre.md5} )
-
-Midas3FunctionAddTest( NAME itktubeRadiusExtractorTest
-  COMMAND ${BASE_SEGMENTATION_TESTS}
-    itktubeRadiusExtractorTest
-      MIDAS{Branch.n010.mha.md5}
-      MIDAS{Branch-truth.tre.md5} )
-
-Midas3FunctionAddTest( NAME itktubeRadiusExtractorTest2
-  COMMAND ${BASE_SEGMENTATION_TESTS}
-    itktubeRadiusExtractorTest2
-      MIDAS{Branch.n010.mha.md5}
-      MIDAS{Branch-truth.tre.md5} )
 
 Midas3FunctionAddTest( NAME itktubeRadiusExtractor2Test
   COMMAND ${BASE_SEGMENTATION_TESTS}
