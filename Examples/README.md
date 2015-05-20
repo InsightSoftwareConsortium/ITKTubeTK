@@ -6,6 +6,18 @@ demonstrations of TubeTK **applications** and **use-cases**. All notebooks use
 SimpleITK's Python wrapping (among other Python modules) in the `pylab`
 environment for interactive processing.
 
+## Papers
+
+- **Kwitt13a-MICCAI** : Code to reproduce the experiments of the MICCAI '13 paper:
+
+```
+@inproceedings{Kwitt13a,
+ author      = {R.~Kwitt and D.~Pace and M.~Niethammer and S.~Aylward},
+ title       = {Studying Cerebral Vasculature Using Structure Proximity and Graph Kernels},
+ booktitle   = {MICCAI},
+ year        = {2013}}
+
+
 ## Quickstart
 
 The easiest way to get started with TubeTK examples is to enable
