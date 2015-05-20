@@ -57,7 +57,6 @@ public:
   typedef SmartPointer< const Self >        ConstPointer;
 
   typedef TPointBasedSpatialObject PointBasedSpatialObject;
-  typedef Array<double>            InflectionPointsArrayType;
 
   /** Run-time type information (and related methods).   */
   itkTypeMacro( TortuositySpatialObjectFilter,
@@ -95,8 +94,8 @@ public:
     };
   
   /** Set/Get the measure flag. This flag governs what metric is computed. */
-  itkSetMacro( MeasureFlag, int );
-  itkGetConstMacro( MeasureFlag, int );
+  itkSetMacro( MeasureFlag, int )
+  itkGetConstMacro( MeasureFlag, int )
 
   /** Return whether the given flag is only on measure or not. */
   bool IsUniqueMeasure( int flag );
@@ -121,8 +120,8 @@ public:
     * computation when comparing whether a value should be considered null or
     * not. Default value (1e-6) should be acceptable for most cases.
     */
-  itkSetMacro( Epsilon, double );
-  itkGetConstMacro( Epsilon, double );
+  itkSetMacro( Epsilon, double )
+  itkGetConstMacro( Epsilon, double )
 
 protected:
   TortuositySpatialObjectFilter( void );
@@ -135,7 +134,7 @@ private:
   void operator=( const Self & ); // purposely not implemented
 
   int m_MeasureFlag;
-  InflectionPointsArrayType m_InflectionPoints;
+  Array<double> m_InflectionPoints;
   double m_DistanceMetric;
   double m_InflectionCountMetric;
   double m_SumOfAnglesMetric;
