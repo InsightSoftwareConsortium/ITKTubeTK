@@ -26,6 +26,7 @@ limitations under the License.
 
 #include "itktubeTubeXIO.h"
 
+#include "tubeStringUtilities.h"
 #include "metaUtils.h"
 
 namespace itk
@@ -174,6 +175,14 @@ TubeXIO< TDimension >
   fields.push_back(mF);
 
   mF = new MET_FieldRecordType;
+  MET_InitReadField(mF, "VParent", MET_INT, false);
+  fields.push_back(mF);
+
+  mF = new MET_FieldRecordType;
+  MET_InitReadField(mF, "Attachpt", MET_INT, false);
+  fields.push_back(mF);
+
+  mF = new MET_FieldRecordType;
   MET_InitReadField(mF, "Color", MET_STRING, false);
   fields.push_back(mF);
 
@@ -229,12 +238,34 @@ TubeXIO< TDimension >
       strcpy( tubeTreeType, (char *)(mF->value) );
       }
 
-    char tubeColor[80];
-    strcpy( tubeColor, "" );
-    mF = MET_GetFieldRecord( "Color", &fields );
+    int tubeParentId = -1;
+    mF = MET_GetFieldRecord( "VParent", &fields );
     if(mF->defined)
       {
-      strcpy( tubeColor, (char *)(mF->value) );
+      tubeParentId = ( int )(mF->value[0]);
+      }
+
+    int tubeParentPoint = -1;
+    mF = MET_GetFieldRecord( "Attachpt", &fields );
+    if(mF->defined)
+      {
+      tubeParentPoint = ( int )(mF->value[0]);
+      }
+
+    float tubeColor[4];
+    mF = MET_GetFieldRecord( "Color", &fields );
+    tubeColor[0] = 1;
+    tubeColor[1] = 0;
+    tubeColor[2] = 0;
+    tubeColor[3] = 1;
+    if(mF->defined)
+      {
+      std::vector< float > colors;
+      ::tube::StringToVector( ( char * )( mF->value ), colors, " " );
+      for( unsigned int c=0; c<colors.size() && c<4; ++c )
+        {
+        tubeColor[ c ] = colors[c];
+        }
       }
 
     char tubePointDim[80];
@@ -283,6 +314,36 @@ TubeXIO< TDimension >
     tube->SetId( tubeId );
     tube->RemoveDuplicatePoints();
     tube->ComputeTangentAndNormals();
+    tube->GetProperty()->SetColor( tubeColor[0], tubeColor[1],
+      tubeColor[2] );
+    tube->GetProperty()->SetAlpha( tubeColor[3] );
+    if( strlen( tubeAnat ) > 0 )
+      {
+      if( tubeAnat[0] == 'a' || tubeAnat[0] == 'A' )
+        {
+        tube->SetArtery( true );
+        }
+      else
+        {
+        tube->SetArtery( false );
+        }
+      }
+    if( strlen( tubeTreeType ) > 0 )
+      {
+      if( tubeTreeType[0] == 'r' || tubeTreeType[0] == 'R' )
+        {
+        tube->SetRoot( true );
+        }
+      else
+        {
+        tube->SetRoot( false );
+        if( tubeTreeType[0] == 'c' || tubeTreeType[0] == 'C' )
+          {
+          tube->SetParentId( tubeParentId );
+          tube->SetParentPoint( tubeParentPoint );
+          }
+        }
+      }
 
     m_TubeGroup->AddSpatialObject( tube );
     }
@@ -336,9 +397,31 @@ TubeXIO< TDimension >
 
     tmpWriteStream << "ID: " << tube->GetId() << std::endl;
     tmpWriteStream << "Type: Tube" << std::endl;
-    tmpWriteStream << "Anat: artery" << std::endl;
-    tmpWriteStream << "TreeType: orphan" << std::endl;
-    tmpWriteStream << "Color: 1 0.3 0.21" << std::endl;
+    if( tube->GetArtery() )
+      {
+      tmpWriteStream << "Anat: artery" << std::endl;
+      }
+    if( tube->GetRoot() )
+      {
+      tmpWriteStream << "TreeType: root" << std::endl;
+      }
+    else if( tube->GetParentPoint() > 0 )
+      {
+      tmpWriteStream << "TreeType: child" << std::endl;
+      tmpWriteStream << "VParent: " << tube->GetParentId() << std::endl;
+      tmpWriteStream << "Attachpt: " << tube->GetParentPoint() << std::endl;
+      }
+    else
+      {
+      tmpWriteStream << "TreeType: orphan" << std::endl;
+      }
+    if( tube->GetProperty() )
+      {
+      tmpWriteStream << "Color: "
+        << tube->GetProperty()->GetRed() << " "
+        << tube->GetProperty()->GetGreen() << " "
+        << tube->GetProperty()->GetBlue() << std::endl;
+      }
     tmpWriteStream << "PointDim: 4 x y z r" << std::endl;
     unsigned int nPoints = tube ->GetNumberOfPoints();
     tmpWriteStream << "NPoints: " << nPoints << std::endl;
