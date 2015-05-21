@@ -171,25 +171,26 @@ void
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::GenerateData( void )
 {
-  PointBasedSpatialObject* output = this->GetOutput();
-  const PointBasedSpatialObject* input = this->GetInput();
+  // Get I/O
+  PointBasedSpatialObjectPointer output = this->GetOutput();
+  PointBasedSpatialObjectPointer originalInput = PointBasedSpatialObject::New();
+  originalInput = const_cast< PointBasedSpatialObject * >( this->GetInput() );
 
-  typedef typename PointBasedSpatialObject::VectorType SOVectorType;
-
-  if ( input->GetNumberOfPoints() < 2 )
+  // Safety check
+  if ( originalInput->GetNumberOfPoints() < 2 )
     {
     itkExceptionMacro( << "Cannot run Tortuosity on input. "
                        << "Input has less than 2 points.");
     return;
     }
 
+  // Determine metrics to compute
   bool noProblem = true;
   bool dm = this->m_MeasureFlag & DISTANCE_METRIC;
   bool icm = this->m_MeasureFlag & INFLECTION_COUNT_METRIC;
   bool ip = this->m_MeasureFlag & INFLECTION_POINTS;
   bool soam = this->m_MeasureFlag & SUM_OF_ANGLES_METRIC;
 
-  //
   // DM variables
   SOVectorType start;
   SOVectorType end;
@@ -203,33 +204,58 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 
   // SOAM variables
   double totalCurvature = 0.0;
+  // Preprocessing
+  PointBasedSpatialObjectPointer smoothedTube = PointBasedSpatialObject::New();
 
-  size_t numberOfPoints = input->GetPoints().size();
-  if (ip)
+  // Smooth the vessel
+  smoothedTube = ::tube::SmoothTube<PointBasedSpatialObject>( originalInput, m_SmoothingScale, m_SmoothingMethod );
+  if(!smoothedTube)
     {
-    this->m_InflectionPoints.SetSize(numberOfPoints);
+    itkExceptionMacro( << "Cannot run Tortuosity on input. "
+                       << "Input cannot be smoothed");
+    return ;
     }
 
-  for(size_t index = 0; index < numberOfPoints; ++index)
+  // Subsample the vessel
+  // This is not implemented yet.
+
+  // Make the measurements on the pre-processed tube.
+  PointBasedSpatialObjectPointer processedInput = smoothedTube;
+
+  if ( processedInput->GetNumberOfPoints() < 2 )
+    {
+    itkExceptionMacro( << "Cannot run Tortuosity on input. "
+                       << "Input has less than 2 points.");
+    return;
+    }
+
+  this->m_NumberOfPoints = processedInput->GetPoints().size();
+  this->m_TubeID = processedInput->GetId();
+  if (ip)
+    {
+    this->m_InflectionPoints.SetSize(this->m_NumberOfPoints);
+    }
+
+  for(size_t index = 0; index < this->m_NumberOfPoints; ++index)
     {
     SOVectorType currentPoint =
-      input->GetPoint( index )->GetPosition().GetVectorFromOrigin();
+      processedInput->GetPoint( index )->GetPosition().GetVectorFromOrigin();
 
     //
     // General variables
-    bool nextPointAvailable = ( index < numberOfPoints - 1 );
+    bool nextPointAvailable = ( index < this->m_NumberOfPoints - 1 );
     SOVectorType nextPoint(0.0);
     if ( nextPointAvailable )
       {
       nextPoint =
-        input->GetPoint( index + 1 )->GetPosition().GetVectorFromOrigin();
+        processedInput->GetPoint( index + 1 )->GetPosition().GetVectorFromOrigin();
       }
     bool previousPointAvailable = ( index > 0 );
     SOVectorType previousPoint(0.0);
     if ( previousPointAvailable )
       {
       previousPoint =
-        input->GetPoint( index - 1 )->GetPosition().GetVectorFromOrigin();
+        processedInput->GetPoint( index - 1 )->GetPosition().GetVectorFromOrigin();
       }
     // t1 and t2, used both in icm and soam
     SOVectorType t1(0.0), t2(0.0);
@@ -239,12 +265,12 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
       t2 = nextPoint - currentPoint;
       }
 
-    bool nPlus2PointAvailable = ( index < numberOfPoints - 2 );
+    bool nPlus2PointAvailable = ( index < this->m_NumberOfPoints - 2 );
     SOVectorType nPlus2Point(0.0);
     if ( nPlus2PointAvailable )
       {
       nPlus2Point =
-        input->GetPoint( index + 2 )->GetPosition().GetVectorFromOrigin();
+        processedInput->GetPoint( index + 2 )->GetPosition().GetVectorFromOrigin();
       }
 
     //
@@ -254,7 +280,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
       start = currentPoint;
       currentPoint = start;
       }
-    if  (index == numberOfPoints - 1 )
+    if  (index == this->m_NumberOfPoints - 1 )
       {
       end = currentPoint;
       }
@@ -406,7 +432,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     return;
     }
 
-  output->CopyInformation(input);
+  output->CopyInformation(processedInput);
 }
 
 } // End namespace tube

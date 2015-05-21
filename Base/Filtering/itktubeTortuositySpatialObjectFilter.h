@@ -26,6 +26,8 @@ limitations under the License.
 
 #include "itktubeSpatialObjectToSpatialObjectFilter.h"
 
+#include "tubeTubeMath.h"
+
 namespace itk
 {
 
@@ -57,6 +59,9 @@ public:
   typedef SmartPointer< const Self >        ConstPointer;
 
   typedef TPointBasedSpatialObject PointBasedSpatialObject;
+
+  typedef typename TPointBasedSpatialObject::VectorType SOVectorType;
+  typedef typename PointBasedSpatialObject::Pointer PointBasedSpatialObjectPointer;
 
   /** Run-time type information (and related methods).   */
   itkTypeMacro( TortuositySpatialObjectFilter,
@@ -120,8 +125,14 @@ public:
     * computation when comparing whether a value should be considered null or
     * not. Default value (1e-6) should be acceptable for most cases.
     */
-  itkSetMacro( Epsilon, double )
+  itkSetClampMacro( Epsilon, double, 0, std::numeric_limits<double>::max())
   itkGetConstMacro( Epsilon, double )
+
+  itkSetMacro( SmoothingMethod, ::tube::SmoothTubeFunctionEnum  )
+  itkGetConstMacro( SmoothingMethod, ::tube::SmoothTubeFunctionEnum  )
+
+  itkSetClampMacro( SmoothingScale, double, 0, std::numeric_limits<double>::max())
+  itkGetConstMacro( SmoothingScale, double )
 
 protected:
   TortuositySpatialObjectFilter( void );
@@ -133,8 +144,13 @@ private:
   TortuositySpatialObjectFilter( const Self & ); // purposely not implemented
   void operator=( const Self & ); // purposely not implemented
 
+  //Input parameters
   int m_MeasureFlag;
   Array<double> m_InflectionPoints;
+  ::tube::SmoothTubeFunctionEnum m_SmoothingMethod;
+  double m_SmoothingScale;
+  int m_NumberOfPoints;
+  int m_TubeID;
   double m_DistanceMetric;
   double m_InflectionCountMetric;
   double m_SumOfAnglesMetric;
