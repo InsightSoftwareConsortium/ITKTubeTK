@@ -429,8 +429,8 @@ int DoIt( int argc, char * argv[] )
   int clippedMax = (int)(tube.size() * 0.001);
   int clippedMaxStart = (int)(tube.size() * 0.0005);
 
-  int curvatureClippedMax = (int)(tube.size() * 0.0001);
-  int curvatureClippedMaxStart = (int)(tube.size() * 0.00001);
+  int curvatureClippedMax = (int)(tube.size() * 0.00001);
+  int curvatureClippedMaxStart = (int)(tube.size() * 0.000001);
 
   int levelnessClippedMax = (int)(tube.size() * 0.0001);
   int levelnessClippedMaxStart = (int)(tube.size() * 0.00001);
