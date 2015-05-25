@@ -43,11 +43,10 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
                   ${TEMP}/${MODULE_NAME}Test1.tre )
 
 # Test1-Compare
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
-                COMMAND ${TEXTCOMPARE_EXE}
-                  -t ${TEMP}/${MODULE_NAME}Test1.tre
-                  -b MIDAS{${MODULE_NAME}Test1.tre.md5}
-                  -d 0.01 )
-
-set_property( TEST ${MODULE_NAME}-Test1-Compare
-           APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+#Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
+#COMMAND ${TEXTCOMPARE_EXE}
+#-t ${TEMP}/${MODULE_NAME}Test1.tre
+#-b MIDAS{${MODULE_NAME}Test1.tre.md5}
+#-d 0.01 )
+#set_property( TEST ${MODULE_NAME}-Test1-Compare
+#APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )

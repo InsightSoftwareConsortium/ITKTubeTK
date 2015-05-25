@@ -222,7 +222,6 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   // Transform the input tubes.
   TubeTransformFilterType::Pointer transformFilter = TubeTransformFilterType::New();
   transformFilter->SetInput( vesselReader->GetGroup() );
-  transformFilter->SetScale( 1.0 );
   transformFilter->SetTransform( outputTransform );
   std::cout << "Outputting transformed tubes...";
   try

@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-set( MODULE_NAME SubSampleTubes )
+set( MODULE_NAME ResampleTubes )
 project( ${MODULE_NAME} )
 
 if( NOT TubeTK_SOURCE_DIR )
@@ -45,7 +45,8 @@ SEMMacroBuildCLI(
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/CLI
     ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Filtering )
+    ${TubeTK_SOURCE_DIR}/Base/Filtering
+    ${TubeTK_SOURCE_DIR}/Base/Registration )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

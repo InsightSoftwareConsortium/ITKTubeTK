@@ -1,20 +1,25 @@
 /*=========================================================================
 
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itktubeTubeToTubeTransformFilterTest.cxx,v $
-  Language:  C++
-  Date:      $Date: 2007/06/20 16:03:23 $
-  Version:   $Revision: 1.5 $
+Library:   TubeTK
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notices for more information.
+All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 =========================================================================*/
-
 #include "itktubeTubeToTubeTransformFilter.h"
 
 #include <itkImageFileReader.h>
@@ -41,7 +46,9 @@ int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
   typedef itk::SpatialObjectReader<3>                     TubeNetReaderType;
   typedef itk::SpatialObjectWriter<3>                     TubeNetWriterType;
   typedef itk::Euler3DTransform<double>                   TransformType;
-  typedef itk::tube::TubeToTubeTransformFilter<TransformType,3> TubeTransformFilterType;
+
+  typedef itk::tube::TubeToTubeTransformFilter<TransformType,3>
+    TubeTransformFilterType;
 
   // read in vessel
   TubeNetReaderType::Pointer reader = TubeNetReaderType::New();
@@ -64,16 +71,16 @@ int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
   rotation[1] = std::atof(argv[6]);//-0.5/itk::Math::one_over_pi;
   rotation[2] = std::atof(argv[7]);//0.0
 
-  std::cout << "input rotation: " << rotation[0] << " " << rotation[1] << " "
-    << rotation[2] << std::endl;
+  std::cout << "input rotation: " << rotation[0] << " " << rotation[1]
+    << " " << rotation[2] << std::endl;
 
   itk::Vector<double,3> translation;
   translation[0] = std::atof(argv[8]);
   translation[1] = std::atof(argv[9]);
   translation[2] = std::atof(argv[10]);
 
-  std::cout << "input translation: " << translation[0] << " " << translation[1] << " "
-    << translation[2] << std::endl;
+  std::cout << "input translation: " << translation[0] << " "
+    << translation[1] << " " << translation[2] << std::endl;
 
   double ca=cos(rotation[0]);
   double sa=sin(rotation[0]);
@@ -95,21 +102,24 @@ int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
 
   transform->SetMatrix(rotationMatrix);
 
-  std::cout << rotationMatrix(0,0) << " " << rotationMatrix(0,1) << " " << rotationMatrix(0,2) << std::endl;
-  std::cout << rotationMatrix(1,0) << " " << rotationMatrix(1,1) << " " << rotationMatrix(1,2) << std::endl;
-  std::cout << rotationMatrix(2,0) << " " << rotationMatrix(2,1) << " " << rotationMatrix(2,2) << std::endl;
+  std::cout << rotationMatrix(0,0) << " " << rotationMatrix(0,1) << " "
+    << rotationMatrix(0,2) << std::endl;
+  std::cout << rotationMatrix(1,0) << " " << rotationMatrix(1,1) << " "
+    << rotationMatrix(1,2) << std::endl;
+  std::cout << rotationMatrix(2,0) << " " << rotationMatrix(2,1) << " "
+    << rotationMatrix(2,2) << std::endl;
 
   //transform->SetRotation(rotation[0], rotation[1], rotation[2]);
 
   transform->Translate(translation);
 
-  std::cout << translation[0] << " " << translation[1] << " " << translation[2]
-      << std::endl;
+  std::cout << translation[0] << " " << translation[1] << " " <<
+    translation[2] << std::endl;
 
   // create transform filter
-  TubeTransformFilterType::Pointer transformFilter = TubeTransformFilterType::New();
+  TubeTransformFilterType::Pointer transformFilter =
+    TubeTransformFilterType::New();
   transformFilter->SetInput(reader->GetGroup());
-  transformFilter->SetScale(1.0);
   transformFilter->SetTransform(transform);
 
   try
@@ -149,7 +159,7 @@ int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
     imageReader->Update();
 
     typedef itk::SpatialObjectToImageFilter<TubeNetType, ImageType>
-                                                SpatialObjectToImageFilterType;
+      SpatialObjectToImageFilterType;
     SpatialObjectToImageFilterType::Pointer vesselToImageFilter =
       SpatialObjectToImageFilterType::New();
 
