@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>Resample Tubes (TubeTK)</title>
+  <description>Resample the points comprising a tube tree.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Matthew M. McCormick and Stephen Aylward (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters.</description>
+    <file>
+      <name>inputTubeFile</name>
+      <label>Input Tube File</label>
+      <description>Input tubes.</description>
+    </file>
+    <file>
+      <name>outputTubeFile</name>
+      <label>Output Tube File</label>
+      <description>Output tubes.</description>
+    </file>
+  </parameters>
+    <parameters>
+    <label>Resampling Options</label>
+    <description>Parameters that determine how the resmpling is performed.</description>
+    <image>
+      <name>matchImage</name>
+      <label>Match to Image</label>
+      <longflag>matchImage</longflag>
+      <channel>input</channel>
+      <description>Output tube will be as-if extracted directly from this image.</description>
+    </image>
+    <integer>
+      <name>samplingFactor</name>
+      <flag>s</flag>
+      <longflag>samplingFactor</longflag>
+      <label>Sampling Factor</label>
+      <default>1</default>
+      <description>Output tube will have Factor-times (e.g., 2x) more points</description>
+    </integer>
+    <transform fileExtensions=".tfm">
+      <name>loadTransform</name>
+      <label>Transform</label>
+      <description>Load the transform to be applied.</description>
+      <longflag>loadTransform</longflag>
+      <channel>input</channel>
+      <default/>
+    </transform>
+    <string>
+      <name>loadDisplacementField</name>
+      <label>Displacement Field</label>
+      <longflag>loadDisplacementField</longflag>
+      <description>Specify the displacement field (e.g., generated using ANTS).</description>
+    </string>
+    <boolean>
+      <name>useInverseTransform</name>
+      <label>Use the Inverse of the Loaded Transform</label>
+      <longflag>useInverseTransform</longflag>
+      <description>Instead of using the transform directly, compute its inverse and apply. For a displacement field, the user is responsible for inputting the inverse displacement field.</description>
+      <default>false</default>
+    </boolean>
+  </parameters>
+</executable>

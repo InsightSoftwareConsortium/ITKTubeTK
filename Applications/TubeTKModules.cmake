@@ -56,6 +56,7 @@ set( TubeTK_${proj}_MODULES
   MergeAdjacentImages
   MergeTubeGraphs
   ResampleImage
+  ResampleTubes
   RegisterImages
   # RegisterImageToTubesUsingRigidTransform
   RegisterUsingImageCenters
@@ -66,9 +67,7 @@ set( TubeTK_${proj}_MODULES
   SegmentTubes
   SegmentUsingOtsuThreshold
   ShrinkImage
-  SimulateAcquisitionArtifactsUsingPrior
-  SubSampleTubes
-  TransformTubes )
+  SimulateAcquisitionArtifactsUsingPrior )
 
 set( TubeTK_${proj}_ImageViewer_MODULES "" )
 if( TubeTK_BUILD_IMAGE_VIEWER )
