@@ -82,10 +82,6 @@ if( TubeTK_USE_GPU_ARRAYFIRE )
 
 endif( TubeTK_USE_GPU_ARRAYFIRE )
 
-include_directories(
-  ${TubeTK_SOURCE_DIR}/Base/Common
-  ${TubeTK_SOURCE_DIR}/Base/Numerics )
-
 add_library( TubeTKFiltering INTERFACE )
 
 target_link_libraries( TubeTKFiltering INTERFACE

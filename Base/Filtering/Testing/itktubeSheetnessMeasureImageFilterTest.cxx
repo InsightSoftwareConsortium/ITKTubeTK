@@ -115,8 +115,6 @@ int itktubeSheetnessMeasureImageFilterTest(int ,char *[] )
   typedef itk::HessianRecursiveGaussianImageFilter<
                                             myImageType >  myHessianFilterType;
 
-  typedef myHessianFilterType::OutputImageType myHessianImageType;
-
   // Declare the type for the sheetness measure filter
   typedef itk::tube::SheetnessMeasureImageFilter< float >  mySheetnessFilterType;
 

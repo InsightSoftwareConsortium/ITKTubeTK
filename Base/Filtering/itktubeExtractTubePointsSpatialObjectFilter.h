@@ -40,10 +40,10 @@ namespace tube
  *
  * ExtractTubePointsSpatialObjectFilter iterates through a tree of
  * TubeSpatialObject's (or classes derived from
- * itk::TubeSpatialObject), and places all the TubeSpatialObjectPointType points
+ * itk::TubeSpatialObject), and places all the TubeSpatialObjectPointType
+ * points
  * into an itk::VectorContainer< TubeSpatialObjectType::TubePointType >.
  * It is assumed that
- *
  * This filter is templated over the type of the TubeSpatialObject.
  *
  * \sa GroupSpatialObject
@@ -57,18 +57,22 @@ class ExtractTubePointsSpatialObjectFilter : public ProcessObject
 {
 public:
   /** Standard class typedefs. */
-  typedef ExtractTubePointsSpatialObjectFilter  Self;
-  typedef ProcessObject                         Superclass;
-  typedef SmartPointer< Self >                  Pointer;
-  typedef SmartPointer< const Self >            ConstPointer;
+  typedef ExtractTubePointsSpatialObjectFilter Self;
+  typedef ProcessObject                        Superclass;
+  typedef SmartPointer< Self >                 Pointer;
+  typedef SmartPointer< const Self >           ConstPointer;
 
-  typedef TTubeSpatialObject                               TubeSpatialObjectType;
-  typedef typename TubeSpatialObjectType::TubePointType    TubePointType;
+  typedef TTubeSpatialObject                   TubeSpatialObjectType;
+
+  typedef typename TTubeSpatialObject::TubePointType   TubePointType;
+
   typedef VectorContainer< IdentifierType, TubePointType > PointsContainerType;
-  typedef DataObjectDecorator< PointsContainerType >       PointsContainerDecoratorType;
+
+  typedef DataObjectDecorator< PointsContainerType >
+                                               PointsContainerDecoratorType;
 
   typedef GroupSpatialObject< TubeSpatialObjectType::ObjectDimension >
-    GroupSpatialObjectType;
+                                               GroupSpatialObjectType;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro( ExtractTubePointsSpatialObjectFilter, ProcessObject );
@@ -82,7 +86,7 @@ public:
   const GroupSpatialObjectType * GetInput( void ) const;
 
   /** Get the output PointsContainerType decorated as an itk::DataObject. */
-  PointsContainerDecoratorType * GetPointsContainerOutput( void );
+  PointsContainerDecoratorType *       GetPointsContainerOutput( void );
   const PointsContainerDecoratorType * GetPointsContainerOutput( void ) const;
 
   /** Get the output PointsContainerType. */
@@ -99,10 +103,14 @@ protected:
   virtual void GenerateData();
 
 private:
-  ExtractTubePointsSpatialObjectFilter( const Self & ); // purposely not implemented
-  void operator=( const Self & );      // purposely not implemented
+  // purposely not implemented
+  ExtractTubePointsSpatialObjectFilter( const Self & );
 
-  typename PointsContainerType::Pointer m_PointsContainer;
+  // purposely not implemented
+  void operator=( const Self & );
+
+  typename PointsContainerDecoratorType::Pointer m_PointsContainerDecorator;
+  typename PointsContainerType::Pointer          m_PointsContainer;
 
 }; // End class ExtractTubePointsSpatialObjectFilter
 

@@ -48,9 +48,9 @@ class SubSampleTubeTreeSpatialObjectFilter
 {
 public:
   /** Standard class typedefs. */
-  typedef SubSampleTubeTreeSpatialObjectFilter  Self;
-  typedef SpatialObjectToSpatialObjectFilter< TSpatialObject, TSpatialObject >
-    Superclass;
+  typedef SubSampleTubeTreeSpatialObjectFilter      Self;
+  typedef SpatialObjectToSpatialObjectFilter< TSpatialObject,
+    TSpatialObject >                                Superclass;
   typedef SmartPointer< Self >                      Pointer;
   typedef SmartPointer< const Self >                ConstPointer;
 
@@ -67,9 +67,10 @@ public:
   itkStaticConstMacro( ObjectDimension, unsigned int,
     SpatialObjectType::ObjectDimension );
 
-  /** Set the sampling factor.  The output points taken every sampling factor
-   * from the input points. */
-  itkSetClampMacro( Sampling, SizeValueType, 1, NumericTraits< SizeValueType >::max() );
+  /** Set the sampling factor.  The output points taken every sampling
+  * factor from the input points. */
+  itkSetClampMacro( Sampling, SizeValueType, 1, NumericTraits<
+    SizeValueType >::max() );
   itkGetConstMacro( Sampling, SizeValueType );
 
 protected:
@@ -80,14 +81,17 @@ protected:
 
   typedef SpatialObject< ObjectDimension > SpatialObjectBaseType;
 
-  /** Sub-sample at the tubes at a given level, then sub-sample their children.
-   * */
+  /** Sub-sample at the tubes at a given level, then sub-sample their
+  * children. */
   virtual void SubSampleLevel( const SpatialObjectBaseType * input,
     SpatialObjectBaseType * output );
 
 private:
-  SubSampleTubeTreeSpatialObjectFilter( const Self & ); // purposely not implemented
-  void operator=( const Self & ); // purposely not implemented
+  // purposely not implemented
+  SubSampleTubeTreeSpatialObjectFilter( const Self & );
+
+  // purposely not implemented
+  void operator=( const Self & );
 
   SizeValueType m_Sampling;
 

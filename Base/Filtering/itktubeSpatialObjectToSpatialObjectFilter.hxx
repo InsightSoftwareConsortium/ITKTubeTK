@@ -47,7 +47,7 @@ SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
 {
   // Process object is not const-correct so the const_cast is required here
   this->ProcessObject::SetNthInput( 0,
-                                    const_cast< TInputSpatialObject * >( input ) );
+    const_cast< TInputSpatialObject * >( input ) );
 }
 
 
@@ -58,7 +58,7 @@ SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
 {
   // Process object is not const-correct so the const_cast is required here
   this->ProcessObject::SetNthInput( index,
-                                    const_cast< TInputSpatialObject * >( input ) );
+    const_cast< TInputSpatialObject * >( input ) );
 }
 
 
@@ -79,8 +79,8 @@ const typename SpatialObjectToSpatialObjectFilter
 SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
 ::GetInput( unsigned int index ) const
 {
-  const TInputSpatialObject * input = dynamic_cast< const TInputSpatialObject * >
-    ( this->ProcessObject::GetInput( index ) );
+  const TInputSpatialObject * input = dynamic_cast< const
+    TInputSpatialObject * >( this->ProcessObject::GetInput( index ) );
 
   if( input == NULL && this->ProcessObject::GetInput( input ) != NULL )
     {

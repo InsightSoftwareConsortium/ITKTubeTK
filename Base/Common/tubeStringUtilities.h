@@ -34,7 +34,7 @@ namespace tube
 
 template< class T >
 void StringToVector( const std::string & s, std::vector< T > & vec,
-  std::string sep="," )
+  std::string sep = "," )
 {
   vec.clear();
 
@@ -43,45 +43,54 @@ void StringToVector( const std::string & s, std::vector< T > & vec,
   T tVal;
   while( pos != std::string::npos )
     {
-    std::stringstream ss;
     // stringstream use whitespace as a delimiter, we don't want that
     // behavior.
     std::string substr = s.substr( prevPos, pos-prevPos );
-    while( substr[0] == ' ' )
+    while( isspace( substr[ 0 ] ) )
       {
       substr = substr.substr( 1, substr.size()-1 );
       }
-    while( substr[substr.size()-1] == ' ' )
+    while( isspace( substr[ substr.size()-1 ] ) )
       {
       substr = substr.substr( 0, substr.size()-1 );
       }
-    std::string::size_type whitespacePos = substr.find( ' ' );
-    while( whitespacePos != std::string::npos )
+    for( std::string::size_type checkspace = 0; checkspace < substr.size();
+      ++checkspace )
       {
-      substr[whitespacePos] = '_';
-      whitespacePos = substr.find( ' ' );
+      if( isspace( substr[ checkspace ] ) )
+        {
+        substr[ checkspace ] = '_';
+        }
       }
+    std::stringstream ss;
     ss << substr;
     ss >> tVal;
     vec.push_back( tVal );
 
     prevPos = pos+1;
+    while( isspace( s[ prevPos ] ) && prevPos < s.size() )
+      {
+      ++prevPos;
+      }
     pos = s.find( sep, prevPos );
     }
+
   std::string substr = s.substr( prevPos, s.size()-prevPos );
-  while( substr[0] == ' ' )
+  while( isspace( substr[ 0 ] ) )
     {
     substr = substr.substr( 1, substr.size()-1 );
     }
-  while( substr[substr.size()-1] == ' ' )
+  while( isspace( substr[ substr.size()-1 ] ) )
     {
     substr = substr.substr( 0, substr.size()-1 );
     }
-  std::string::size_type whitespacePos = substr.find( ' ' );
-  while( whitespacePos != std::string::npos )
+  for( std::string::size_type checkspace = 0; checkspace < substr.size();
+    ++checkspace )
     {
-    substr[whitespacePos] = '_';
-    whitespacePos = substr.find( ' ' );
+    if( isspace( substr[ checkspace ] ) )
+      {
+      substr[ checkspace ] = '_';
+      }
     }
   std::stringstream ss;
   ss << substr;

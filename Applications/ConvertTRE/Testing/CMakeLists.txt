@@ -39,13 +39,13 @@ set( TEXTCOMPARE_EXE
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
             COMMAND ${PROJ_EXE}
                MIDAS{TubeXIOTest.tre.md5}
-               ${TEMP}/${MODULE_NAME}Test1.mha )
+               ${TEMP}/${MODULE_NAME}-Test1.tre )
 
 # Test1-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
             COMMAND ${TEXTCOMPARE_EXE}
                -d 0.01
-               -t ${TEMP}/${MODULE_NAME}Test1.mha
-               -b MIDAS{TubeXIOTestConvTRE.tre.md5} )
+               -t ${TEMP}/${MODULE_NAME}-Test1.tre
+               -b MIDAS{${MODULE_NAME}-Test1.tre.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )

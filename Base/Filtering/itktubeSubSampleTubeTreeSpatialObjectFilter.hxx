@@ -87,7 +87,8 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
     typename SubSampleTubeFilterType::Pointer subSampleTubeFilter
       = SubSampleTubeFilterType::New();
     subSampleTubeFilter->SetSampling( this->GetSampling() );
-    subSampleTubeFilter->SetInput( const_cast< TubeSpatialObjectType * >( inputAsTube ) );
+    subSampleTubeFilter->SetInput( const_cast< TubeSpatialObjectType * >(
+        inputAsTube ) );
     subSampleTubeFilter->Update();
     newSpatialObjectBase = subSampleTubeFilter->GetOutput();
     }
@@ -129,7 +130,8 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
     typename SubSampleTubeFilterType::Pointer subSampleTubeFilter
       = SubSampleTubeFilterType::New();
     subSampleTubeFilter->SetSampling( this->GetSampling() );
-    subSampleTubeFilter->SetInput( const_cast< TubeSpatialObjectType * >( inputAsTube ) );
+    subSampleTubeFilter->SetInput( const_cast< TubeSpatialObjectType * >(
+        inputAsTube ) );
     subSampleTubeFilter->Update();
     output = subSampleTubeFilter->GetOutput();
     }

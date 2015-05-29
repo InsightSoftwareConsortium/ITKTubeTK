@@ -39,29 +39,28 @@ limitations under the License.
 #include <itkMatrix.h>
 #include <itkTubeSpatialObject.h>
 
-int tubeBaseFilteringPrintTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
+int tubeBaseFilteringPrintTest( int itkNotUsed( argc ), char * itkNotUsed(
+  argv )[] )
 {
   const unsigned int Dimension = 3;
   typedef itk::Image< float, Dimension >      ImageType;
-  typedef itk::Matrix< float, Dimension >     MatrixType;
   typedef itk::TubeSpatialObject< Dimension > TubeSpatialObjectType;
 
   itk::tube::AnisotropicCoherenceEnhancingDiffusionImageFilter< ImageType,
-    ImageType >
-    ::Pointer acedif =
+    ImageType > ::Pointer acedif =
     itk::tube::AnisotropicCoherenceEnhancingDiffusionImageFilter< ImageType,
     ImageType >::New();
   std::cout << "-------------acedif" << acedif << std::endl;
 
   itk::tube::AnisotropicDiffusionTensorFunction< ImageType >
-    ::Pointer adtf =
-    itk::tube::AnisotropicDiffusionTensorFunction< ImageType >::New();
+    ::Pointer adtf = itk::tube::AnisotropicDiffusionTensorFunction<
+    ImageType >::New();
   std::cout << "-------------adtf" << adtf << std::endl;
 
-  itk::tube::AnisotropicEdgeEnhancementDiffusionImageFilter< ImageType, ImageType >
-    ::Pointer aeedif =
-    itk::tube::AnisotropicEdgeEnhancementDiffusionImageFilter< ImageType, ImageType >
-    ::New();
+  itk::tube::AnisotropicEdgeEnhancementDiffusionImageFilter< ImageType,
+    ImageType >::Pointer aeedif =
+    itk::tube::AnisotropicEdgeEnhancementDiffusionImageFilter< ImageType,
+    ImageType >::New();
   std::cout << "-------------aeedif" << aeedif << std::endl;
 
    itk::tube::AnisotropicHybridDiffusionImageFilter< ImageType, ImageType >
@@ -70,8 +69,8 @@ int tubeBaseFilteringPrintTest( int itkNotUsed( argc ), char * itkNotUsed( argv 
     ::New();
   std::cout << "-------------ahdif" << ahdif << std::endl;
 
-  typedef itk::tube::ExtractTubePointsSpatialObjectFilter< TubeSpatialObjectType >
-    ExtractTubePointsSpatialObjectFilterType;
+  typedef itk::tube::ExtractTubePointsSpatialObjectFilter<
+    TubeSpatialObjectType > ExtractTubePointsSpatialObjectFilterType;
   ExtractTubePointsSpatialObjectFilterType::Pointer etpsof =
     ExtractTubePointsSpatialObjectFilterType::New();
   std::cout << "-------------etpsof" << etpsof << std::endl;
@@ -96,21 +95,21 @@ int tubeBaseFilteringPrintTest( int itkNotUsed( argc ), char * itkNotUsed( argv 
   typedef itk::Matrix< float, 3, 3 >             EigenVectorMatrixType;
   typedef itk::Image< EigenValueArrayType, 3>    EigenValueImageType;
   typedef itk::Image< EigenVectorMatrixType, 3>  EigenVectorImageType;
-  typedef itk::tube::StructureTensorRecursiveGaussianImageFilter< ImageType >::
-    OutputImageType SymmetricSecondRankTensorImageType;
+
+  typedef itk::tube::StructureTensorRecursiveGaussianImageFilter<
+    ImageType >::OutputImageType SymmetricSecondRankTensorImageType;
   itk::tube::SymmetricEigenVectorAnalysisImageFilter<
     SymmetricSecondRankTensorImageType,
     EigenValueImageType,
     EigenVectorImageType >::Pointer sevaif =
-      itk::tube::SymmetricEigenVectorAnalysisImageFilter<
-        SymmetricSecondRankTensorImageType,
-        EigenValueImageType,
-        EigenVectorImageType >::New();
+    itk::tube::SymmetricEigenVectorAnalysisImageFilter<
+    SymmetricSecondRankTensorImageType, EigenValueImageType,
+    EigenVectorImageType >::New();
   std::cout << "-------------sevaif" << sevaif << std::endl;
 
   itk::tube::TubeEnhancingDiffusion2DImageFilter< float, 2 >::Pointer
-    vesselEnahncingObj =
-    itk::tube::TubeEnhancingDiffusion2DImageFilter< float, 2 >::New();
+    vesselEnahncingObj = itk::tube::TubeEnhancingDiffusion2DImageFilter<
+    float, 2 >::New();
   std::cout << "-------------TubeEnhancingDiffusion2DImageFilter"
     << vesselEnahncingObj << std::endl;
 

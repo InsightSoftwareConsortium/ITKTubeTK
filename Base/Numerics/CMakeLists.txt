@@ -62,10 +62,6 @@ set( TubeTK_Base_Numerics_HXX_Files
   tubeMatrixMath.hxx
   tubeTubeMath.hxx )
 
-include_directories(
-  ${TubeTK_SOURCE_DIR}/Base/Filtering
-  ${TubeTK_SOURCE_DIR}/Base/Common )
-
 set( TubeTK_Base_Numerics_SRCS
   tubeBrentOptimizer1D.cxx
   tubeGoldenMeanOptimizer1D.cxx
@@ -82,8 +78,7 @@ add_library( TubeTKNumerics STATIC
   ${TubeTK_Base_Numerics_SRCS} )
 
 target_link_libraries( TubeTKNumerics
-  TubeTKCommon TubeTKFiltering
-  ${ITK_LIBRARIES} )
+  TubeTKCommon ${ITK_LIBRARIES} )
 
 set( TARGETS TubeTKNumerics )
 TubeTKMacroInstallPlugins( ${TARGETS} )
