@@ -107,7 +107,7 @@ void qSlicerSpatialObjectsWidgetPrivate::init()
 
   QObject::connect(this->ScalarRangeWidget,
                    SIGNAL(valuesChanged(double,double)), q,
-                   SLOT(onColorByScalarRangeChanged(double,double)));
+                   SLOT(onColorByScalarValuesChanged(double,double)));
 
   QObject::connect(this->OpacitySlider,
                    SIGNAL(valueChanged(double)), q,
@@ -383,17 +383,36 @@ void qSlicerSpatialObjectsWidget::onColorByScalarChanged(int scalarIndex)
       GetPointData()->GetScalars(activeScalarName.toLatin1());
     currentScalar->GetRange(range, -1);
 
-    d->ScalarRangeWidget->setSingleStep((range[1]-range[0])/100);
-    d->ScalarRangeWidget->setRange(range[0], range[1]);
+    double singleStep;
+    // If range is 0, set singlestep to 1 to avoid having a singleStep of 0
+    if(range[0] == range[1])
+      {
+      singleStep = 1;
+      }
+    else
+      {
+      singleStep = (range[1]-range[0])/100;
+      }
+
+    // Workaround a bug of ctkRangeWidget
+    // TO FIX in CTK
+    if(range[1]-range[0] < d->ScalarRangeWidget->singleStep())
+      {
+      d->ScalarRangeWidget->setSingleStep(singleStep);
+      d->ScalarRangeWidget->setRange(range[0], range[1]);
+      }
+    else
+      {
+      d->ScalarRangeWidget->setRange(range[0], range[1]);
+      d->ScalarRangeWidget->setSingleStep(singleStep);
+      }
+
     d->ScalarRangeWidget->setValues(range[0], range[1]);
     }
-
-  // Color spatial object as the range has changed
-  this->onColorByScalarRangeChanged(range[0], range[1]);
 }
 
 //------------------------------------------------------------------------------
-void qSlicerSpatialObjectsWidget::onColorByScalarRangeChanged(double minValue,
+void qSlicerSpatialObjectsWidget::onColorByScalarValuesChanged(double minValue,
                                                               double maxValue)
 {
   Q_D(qSlicerSpatialObjectsWidget);
@@ -407,11 +426,11 @@ void qSlicerSpatialObjectsWidget::onColorByScalarRangeChanged(double minValue,
     return;
     }
 
-    // Set the Range given the current ScalarColor
-    double range[2];
-    range[0] = minValue;
-    range[1] = maxValue;
-    d->SpatialObjectsDisplayNode->SetScalarRange(range);
+    // Set the values for coloring by scalar
+    double values[2];
+    values[0] = minValue;
+    values[1] = maxValue;
+    d->SpatialObjectsDisplayNode->SetScalarRange(values);
 }
 
 //------------------------------------------------------------------------------
@@ -605,23 +624,38 @@ void qSlicerSpatialObjectsWidget::updateWidgetFromMRML()
 
   d->ColorByScalarsColorTableComboBox->setCurrentNodeID
     (d->SpatialObjectsDisplayNode->GetColorNodeID());
-  bool wasBlocking = d->ColorByScalarComboBox->blockSignals(true);
-  d->ColorByScalarComboBox->setDataSet(
-    vtkDataSet::SafeDownCast(d->SpatialObjectsNode->GetPolyData()));
-  d->ColorByScalarComboBox->blockSignals(wasBlocking);
 
-  // If we don't check if the active scalar name is not Null,
-  // the app won't crash but the combobox will be empty at the beginning,
-  // instead of having "TubeRadius". Change it to meet desired behavior.
-  // Curiously, this is only happenning for the LineDisplayNode.
-  // The TubeDisplayNode never has a null active scalar name.
-  if(d->SpatialObjectsDisplayNode->GetActiveScalarName()
-     && (d->ColorByScalarComboBox->currentArrayName()
-     != d->SpatialObjectsDisplayNode->GetActiveScalarName()))
+  // We have to make that check, otherwise, if the datasets are the same,
+  // when calling d->ColorByScalarComboBox->setCurrentArray(), it will always actually
+  // change the current array (when it's the same name, it doesn't change it) and fire
+  // signals (because the currentArray was previously "")
+  // If the signals are fired, it calls back onColorByScalarChanged, which resets the
+  // range to the min and max of the dataArray. We have an override situation, and it
+  // makes it impossible to move the slider.
+  if(d->ColorByScalarComboBox->dataSet() != d->SpatialObjectsNode->GetPolyData())
     {
-    d->ColorByScalarComboBox->setCurrentArray(
-      d->SpatialObjectsDisplayNode->GetActiveScalarName());
+    // Block the signals, because setDatSet modifies the comboBox which triggers
+    // updateWidgetFromMRML, and onColorByScalarChanged which also triggers
+    // updateWidgetFromMRML.
+    // In total, updateWidgetFromMRML will be called 5 times...
+    // the currentIndexChanged(int) of the combobox is fired twice when doing
+    // setDataset(). This has to be fixed in CTK.
+    bool wasBlocking = d->ColorByScalarComboBox->blockSignals(true);
+
+    // This function has to be fixed in CTK, it shouldn't fire 2 signals (see above)
+    d->ColorByScalarComboBox->setDataSet(
+      vtkDataSet::SafeDownCast(d->SpatialObjectsNode->GetPolyData()));
+    // Reset the current Array to blank, because setDataSet sets
+    // the currentIndex to "TubeRadius" by default, and if we leave it like this,
+    // the signal currentIndexChanged won't be fired when we switch to a node which
+    // activeScalarName is TubeRadius (and the rangeWidget won't be updated)
+    d->ColorByScalarComboBox->setCurrentArray("");
+
+    d->ColorByScalarComboBox->blockSignals(wasBlocking);
     }
+
+  d->ColorByScalarComboBox->setCurrentArray(
+    d->SpatialObjectsDisplayNode->GetActiveScalarName());
 
 
   switch(d->SpatialObjectsDisplayNode->GetColorMode())

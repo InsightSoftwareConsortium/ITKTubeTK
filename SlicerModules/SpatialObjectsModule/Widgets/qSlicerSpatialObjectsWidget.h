@@ -73,7 +73,7 @@ public slots:
   void setVisibility(bool);
   void setColorByScalar();
   void onColorByScalarChanged(int);
-  void onColorByScalarRangeChanged(double,double);
+  void onColorByScalarValuesChanged(double,double);
   void setColorByCellScalars();
   void setColorBySolid();
   void setSliceIntersection(int);
