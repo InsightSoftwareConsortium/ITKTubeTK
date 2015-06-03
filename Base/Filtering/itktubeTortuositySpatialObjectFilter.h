@@ -286,12 +286,12 @@ private:
   double m_HistogramMin;
   double m_Lambda;
   int m_MeasureFlag;
-  int m_NumberOfBins;
+  size_t m_NumberOfBins;
   ::tube::SmoothTubeFunctionEnum m_SmoothingMethod;
   double m_SmoothingScale;
 
   /** Vessel parameters */
-  int m_NumberOfPoints;
+  size_t m_NumberOfPoints;
   int m_TubeID;
 
   /** Vessel-wise Metrics */
