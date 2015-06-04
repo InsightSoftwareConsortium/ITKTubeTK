@@ -203,7 +203,7 @@ bool TestVesselMetrics(VesselTubeType::Pointer vessel, double results[])
 int itktubeTortuositySpatialObjectFilterTest( int, char*[] )
 {
 
-  typedef itk::SpatialObjectWriter< 3 > WriterType;
+//  typedef itk::SpatialObjectWriter< 3 > WriterType;
 //  WriterType::Pointer writer = WriterType::New();
 
   //

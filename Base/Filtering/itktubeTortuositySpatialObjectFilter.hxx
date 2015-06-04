@@ -296,7 +296,6 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   bool soam = this->m_MeasureFlag & SUM_OF_ANGLES_METRIC;
   bool tcm = this->m_MeasureFlag & TOTAL_CURVATURE_METRIC;
   bool tscm = this->m_MeasureFlag & TOTAL_SQUARED_CURVATURE_METRIC;
-  bool csm = this->m_MeasureFlag & CURVATURE_SCALAR_METRIC;
   bool cvm = this->m_MeasureFlag & CURVATURE_VECTOR_METRIC;
   bool chm = this->m_MeasureFlag & CURVATURE_HISTOGRAM_METRICS;
 
@@ -548,7 +547,8 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 
       // Calculate curvature scalar
       curvatureScalar = curvatureVector.GetNorm();
-      // Don't check if(cs) because it's used by every other metrics
+      // If any curvature metric is asked, we want the curvature scalars
+      // to be computed, so the "csm" flag is not necessary
       this->m_CurvatureScalar.at(index) = curvatureScalar;
 
       if( tcm )
@@ -632,7 +632,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
             itk::Statistics::DenseFrequencyContainer2 > HistogramType;
 
     SampleType::Pointer sample = SampleType::New();
-    for( int i = 0 ; i < this->m_CurvatureScalar.size() ; ++i)
+    for( size_t i = 0 ; i < this->m_CurvatureScalar.size() ; ++i)
       {
       MeasurementVectorType mv;
       mv = this->m_CurvatureScalar[i];
@@ -672,7 +672,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
       int inflectionCount2 = 0;
       double threshold2 = this->m_Percentile95Metric;
 
-      for( int i = 1 ; i <this->m_CurvatureScalar.size() ; ++i)
+      for( size_t i = 1 ; i <this->m_CurvatureScalar.size() ; ++i)
         {
         if( ic1m && (this->m_CurvatureScalar[i-1]-threshold1)*
             (this->m_CurvatureScalar[i]-threshold1) < 0 )
