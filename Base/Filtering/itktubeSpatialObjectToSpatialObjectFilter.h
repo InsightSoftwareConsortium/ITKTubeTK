@@ -33,8 +33,8 @@ namespace tube
 {
 /** \class SpatialObjectToSpatialObjectFilter
  *
- * \brief Base class for filters that take a SpatialObject as input and produce
- * a SpatialObject as output.
+ * \brief Base class for filters that take a SpatialObject as input
+ * and produce a SpatialObject as output.
  */
 template< class TInputSpatialObject, class TOutputSpatialObject >
 class SpatialObjectToSpatialObjectFilter
@@ -67,8 +67,12 @@ protected:
   virtual ~SpatialObjectToSpatialObjectFilter( void ) {}
 
 private:
-  SpatialObjectToSpatialObjectFilter( const Self & ); // purposely not implemented
-  void operator=( const Self & );                     // purposely not implemented
+  // purposely not implemented
+  SpatialObjectToSpatialObjectFilter( const Self & );
+
+  // purposely not implemented
+  void operator=( const Self & );
+
 }; // End class SpatialObjectToSpatialObjectFilter
 
 } // End namespace tube

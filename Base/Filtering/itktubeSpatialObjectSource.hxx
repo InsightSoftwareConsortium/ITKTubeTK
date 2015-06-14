@@ -36,10 +36,11 @@ template< class TOutputSpatialObject >
 SpatialObjectSource< TOutputSpatialObject >
 ::SpatialObjectSource( void )
 {
-  // Create the output. We use static_cast<> here because we know the default
-  // output must be of type TOutputSpatialObject
+  // Create the output. We use static_cast<> here because we know the
+  // default output must be of type TOutputSpatialObject
   typename TOutputSpatialObject::Pointer output =
-    static_cast< TOutputSpatialObject * >( this->MakeOutput(0).GetPointer() );
+    static_cast< TOutputSpatialObject * >(
+    this->MakeOutput(0).GetPointer() );
   this->ProcessObject::SetNumberOfRequiredOutputs(1);
   this->ProcessObject::SetNthOutput( 0, output.GetPointer() );
 }
@@ -48,20 +49,22 @@ SpatialObjectSource< TOutputSpatialObject >
 template< class TOutputSpatialObject >
 ProcessObject::DataObjectPointer
 SpatialObjectSource< TOutputSpatialObject >
-::MakeOutput( ProcessObject::DataObjectPointerArraySizeType itkNotUsed( idx ) )
+::MakeOutput( ProcessObject::DataObjectPointerArraySizeType itkNotUsed(
+  idx ) )
 {
   return OutputSpatialObjectType::New().GetPointer();
 }
 
 
 template< class TOutputSpatialObject >
-typename SpatialObjectSource< TOutputSpatialObject >::OutputSpatialObjectType *
+typename SpatialObjectSource< TOutputSpatialObject >::
+OutputSpatialObjectType *
 SpatialObjectSource< TOutputSpatialObject >
 ::GetOutput( void )
 {
   // we assume that the first output is of the templated type
-  return itkDynamicCastInDebugMode< TOutputSpatialObject * >
-    ( this->GetPrimaryOutput() );
+  return itkDynamicCastInDebugMode< TOutputSpatialObject * >(
+    this->GetPrimaryOutput() );
 }
 
 
@@ -71,23 +74,24 @@ SpatialObjectSource< TOutputSpatialObject >
 ::GetOutput( void ) const
 {
   // we assume that the first output is of the templated type
-  return itkDynamicCastInDebugMode< const TOutputSpatialObject * >
-    ( this->GetPrimaryOutput() );
+  return itkDynamicCastInDebugMode< const TOutputSpatialObject * >(
+    this->GetPrimaryOutput() );
 }
 
 
 template< class TOutputSpatialObject >
-typename SpatialObjectSource< TOutputSpatialObject >::OutputSpatialObjectType *
+typename SpatialObjectSource< TOutputSpatialObject >::
+OutputSpatialObjectType *
 SpatialObjectSource< TOutputSpatialObject >
 ::GetOutput( unsigned int idx )
 {
-  OutputSpatialObjectType * output = dynamic_cast< OutputSpatialObjectType * >
-                      ( this->ProcessObject::GetOutput(idx) );
+  OutputSpatialObjectType * output = dynamic_cast<
+    OutputSpatialObjectType * >( this->ProcessObject::GetOutput(idx) );
 
   if( output == NULL && this->ProcessObject::GetOutput(idx) != NULL )
     {
-    itkWarningMacro( << "Unable to convert output number " << idx << " to type "
-                     << typeid( OutputSpatialObjectType ).name() );
+    itkWarningMacro( << "Unable to convert output number " << idx
+      << " to type " << typeid( OutputSpatialObjectType ).name() );
     }
   return output;
 }
@@ -109,14 +113,16 @@ SpatialObjectSource< TOutputSpatialObject >
 {
   if( !graft )
     {
-    itkExceptionMacro( << "Requested to graft output that is a NULL pointer." );
+    itkExceptionMacro( <<
+      "Requested to graft output that is a NULL pointer." );
     }
 
   // we use the process object method since all out output may not be
   // of the same type
   DataObject *output = this->ProcessObject::GetOutput(key);
 
-  // Call GraftImage to copy meta-information, regions, and the pixel container
+  // Call GraftImage to copy meta-information, regions, and the pixel
+  // container
   output->Graft(graft);
 }
 
@@ -129,8 +135,8 @@ SpatialObjectSource< TOutputSpatialObject >
   if( idx >= this->GetNumberOfIndexedOutputs() )
     {
     itkExceptionMacro( << "Requested to graft output " << idx
-                      << " but this filter only has "
-                      << this->GetNumberOfIndexedOutputs() << " indexed Outputs." );
+      << " but this filter only has " << this->GetNumberOfIndexedOutputs()
+      << " indexed Outputs." );
     }
   this->GraftOutput( this->MakeNameFromOutputIndex(idx), graft );
 }
