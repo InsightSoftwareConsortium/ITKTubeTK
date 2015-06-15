@@ -147,8 +147,9 @@ ApplyDisplacementField(
 }
 
 template< unsigned int Dimension >
-typename itk::GroupSpatialObject< Dimension >::Pointer
-ReadTubeFile( const char * fileName )
+bool
+ReadTubeFile( const char * fileName, typename itk::GroupSpatialObject<
+  Dimension >::Pointer & group )
 {
   typedef itk::SpatialObjectReader< Dimension > SpatialObjectReaderType;
 
@@ -157,10 +158,16 @@ ReadTubeFile( const char * fileName )
   reader->SetFileName( fileName );
   reader->Update();
 
-  typename SpatialObjectReaderType::GroupType::Pointer group =
-    reader->GetGroup();
-  group->ComputeObjectToWorldTransform();
-  return group;
+  group = reader->GetGroup();
+  if( group.IsNotNull() )
+    {
+    group->ComputeObjectToWorldTransform();
+    return true;
+    }
+  else
+    {
+    return false;
+    }
 }
 
 template< unsigned int Dimension, class TransformType >
@@ -226,7 +233,13 @@ int DoIt( int argc, char * argv[] )
   // Read in the tubes
   timeCollector.Start( "Read tubes" );
   typename GroupSpatialObjectType::Pointer tubesGroup =
-    ReadTubeFile<Dimension>( inputTubeFile.c_str() );
+    GroupSpatialObjectType::New();
+  if( !ReadTubeFile<Dimension>( inputTubeFile.c_str(), tubesGroup ) )
+    {
+    std::cerr << "Cannot read tubes from file: " << inputTubeFile
+      << std::endl;
+    return EXIT_FAILURE;
+    }
   timeCollector.Stop( "Read tubes" );
 
   progress = 0.3;
@@ -265,6 +278,10 @@ int DoIt( int argc, char * argv[] )
       outputTubes = ApplyTransform< Dimension >( tubesGroup, loadTransform,
         outputIndexToObjectTransform, useInverseTransform );
       timeCollector.Stop( "Apply transform" );
+      }
+    else
+      {
+      outputTubes = tubesGroup;
       }
     }
   catch( const std::exception &e )

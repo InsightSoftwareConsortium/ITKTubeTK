@@ -59,19 +59,19 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
 ::SubSampleLevel( const SpatialObjectBaseType * input,
   SpatialObjectBaseType * output )
 {
-  const std::string spatialObjectType = input->GetSpatialObjectTypeAsString();
+  const std::string spatialObjectType = input->
+    GetSpatialObjectTypeAsString();
   LightObject::Pointer newSpatialObject =
     ObjectFactoryBase::CreateInstance( spatialObjectType.c_str() );
 
   typename SpatialObjectBaseType::Pointer newSpatialObjectBase =
-    dynamic_cast< SpatialObjectBaseType * >( newSpatialObject.GetPointer() );
+    dynamic_cast< SpatialObjectBaseType * >(
+    newSpatialObject.GetPointer() );
   if( newSpatialObjectBase.IsNull() )
     {
     itkExceptionMacro( << "Could not create an instance of "
-                       << spatialObjectType << ". The usual cause of this "
-                       << "error is not registering the SpatialObject with "
-                       << "SpatialFactory." );
-
+      << spatialObjectType << ". The usual cause of this error is not"
+      << "registering the SpatialObject with SpatialFactory." );
     }
 
   // Correct for extra reference count from CreateInstance().

@@ -33,7 +33,8 @@ namespace tube
 {
 
 template< class TInputSpatialObject, class TOutputSpatialObject >
-SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
+SpatialObjectToSpatialObjectFilter< TInputSpatialObject,
+TOutputSpatialObject >
 ::SpatialObjectToSpatialObjectFilter( void )
 {
   this->SetNumberOfRequiredInputs( 1 );
@@ -42,51 +43,58 @@ SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
 
 template< class TInputSpatialObject, class TOutputSpatialObject >
 void
-SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
+SpatialObjectToSpatialObjectFilter< TInputSpatialObject,
+TOutputSpatialObject >
 ::SetInput( const InputSpatialObjectType * input )
 {
+  std::cout << "HERE1" << std::endl;
   // Process object is not const-correct so the const_cast is required here
-  this->ProcessObject::SetNthInput( 0,
+  this->SpatialObjectSource< TOutputSpatialObject >::SetNthInput( 0,
     const_cast< TInputSpatialObject * >( input ) );
 }
 
 
 template< class TInputSpatialObject, class TOutputSpatialObject >
 void
-SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
+SpatialObjectToSpatialObjectFilter< TInputSpatialObject,
+TOutputSpatialObject >
 ::SetInput( unsigned int index, const InputSpatialObjectType * input )
 {
+  std::cout << "HERE2" << std::endl;
   // Process object is not const-correct so the const_cast is required here
-  this->ProcessObject::SetNthInput( index,
+  this->SpatialObjectSource< TOutputSpatialObject >::SetNthInput( index,
     const_cast< TInputSpatialObject * >( input ) );
 }
 
 
 template< class TInputSpatialObject, class TOutputSpatialObject >
-const typename SpatialObjectToSpatialObjectFilter
-< TInputSpatialObject, TOutputSpatialObject >::InputSpatialObjectType *
-SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
+const typename SpatialObjectToSpatialObjectFilter < TInputSpatialObject,
+TOutputSpatialObject >::InputSpatialObjectType *
+SpatialObjectToSpatialObjectFilter< TInputSpatialObject,
+TOutputSpatialObject >
 ::GetInput( void ) const
 {
-  return itkDynamicCastInDebugMode< const TInputSpatialObject * >
-    ( this->GetPrimaryInput() );
+  return itkDynamicCastInDebugMode< const TInputSpatialObject * >(
+    this->GetPrimaryInput() );
 }
 
 
 template< class TInputSpatialObject, class TOutputSpatialObject >
-const typename SpatialObjectToSpatialObjectFilter
-< TInputSpatialObject, TOutputSpatialObject >::InputSpatialObjectType *
-SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TOutputSpatialObject >
+const typename SpatialObjectToSpatialObjectFilter < TInputSpatialObject,
+TOutputSpatialObject >::InputSpatialObjectType *
+SpatialObjectToSpatialObjectFilter< TInputSpatialObject,
+TOutputSpatialObject >
 ::GetInput( unsigned int index ) const
 {
   const TInputSpatialObject * input = dynamic_cast< const
-    TInputSpatialObject * >( this->ProcessObject::GetInput( index ) );
+    TInputSpatialObject * >( this->SpatialObjectSource<
+    TOutputSpatialObject >::GetInput( index ) );
 
-  if( input == NULL && this->ProcessObject::GetInput( input ) != NULL )
+  if( input == NULL && this->SpatialObjectSource< TOutputSpatialObject >::
+    GetInput( input ) != NULL )
     {
     itkWarningMacro( << "Unable to convert input number " << index
-                     << " to type "
-                     << typeid( InputSpatialObjectType ).name () );
+      << " to type " << typeid( InputSpatialObjectType ).name () );
     }
   return input;
 }

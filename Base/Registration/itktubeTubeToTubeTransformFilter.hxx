@@ -37,6 +37,7 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
 ::TubeToTubeTransformFilter( void )
 {
   m_Output = 0;
+  m_OutputIndexToObjectTransform = 0;
   m_Transform = 0;
 }
 
@@ -80,32 +81,51 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
     typename TubeType::Pointer inputTube =
       ((TubeType *)((*TubeIterator).GetPointer()));
 
+    inputTube->ComputeObjectToWorldTransform();
+    typename TubeType::TransformType::Pointer
+      inputTubeIndexToObjectTransform =
+      inputTube->GetIndexToObjectTransform();
+    typename TubeType::TransformType::Pointer
+      inputTubeIndexToWorldTransform =
+      inputTube->GetIndexToWorldTransform();
+    typename TubeType::TransformType::Pointer
+      inputTubeObjectToWorldTransform =
+      inputTube->GetObjectToWorldTransform();
+
     typename TubeType::Pointer outputTube = TubeType::New();
 
     outputTube->CopyInformation( inputTube );
     outputTube->GetModifiableIndexToObjectTransform()->SetIdentity();
-    outputTube->GetModifiableIndexToObjectTransform()->SetCenter(
-      m_OutputIndexToObjectTransform->GetCenter() );
-    outputTube->GetModifiableIndexToObjectTransform()->SetMatrix(
-      m_OutputIndexToObjectTransform->GetMatrix() );
-    outputTube->GetModifiableIndexToObjectTransform()->SetOffset(
-      m_OutputIndexToObjectTransform->GetOffset() );
-
-    inputTube->ComputeObjectToWorldTransform();
-    typename TubeType::TransformType::Pointer inputTubeIndexToObjectTransform =
-      inputTube->GetIndexToObjectTransform();
-    typename TubeType::TransformType::Pointer inputTubeIndexToWorldTransform =
-      inputTube->GetIndexToWorldTransform();
-    typename TubeType::TransformType::Pointer inputTubeObjectToWorldTransform =
-      inputTube->GetObjectToWorldTransform();
+    if( m_OutputIndexToObjectTransform.IsNotNull() )
+      {
+      outputTube->GetModifiableIndexToObjectTransform()->SetCenter(
+        m_OutputIndexToObjectTransform->GetCenter() );
+      outputTube->GetModifiableIndexToObjectTransform()->SetMatrix(
+        m_OutputIndexToObjectTransform->GetMatrix() );
+      outputTube->GetModifiableIndexToObjectTransform()->SetOffset(
+        m_OutputIndexToObjectTransform->GetOffset() );
+      }
+    else
+      {
+      outputTube->GetModifiableIndexToObjectTransform()->SetCenter(
+        inputTubeIndexToObjectTransform->GetCenter() );
+      outputTube->GetModifiableIndexToObjectTransform()->SetMatrix(
+        inputTubeIndexToObjectTransform->GetMatrix() );
+      outputTube->GetModifiableIndexToObjectTransform()->SetOffset(
+        inputTubeIndexToObjectTransform->GetOffset() );
+      }
 
     outputTube->ComputeObjectToWorldTransform();
+
     typename TubeType::TransformType::Pointer
-      outputTubeInverseIndexToWorldTransform;
+      outputTubeInverseIndexToWorldTransform =
+      TubeType::TransformType::New();
     outputTube->GetIndexToWorldTransform()->GetInverse(
       outputTubeInverseIndexToWorldTransform );
+
     typename TubeType::TransformType::Pointer
-      outputTubeInverseObjectToWorldTransform;
+      outputTubeInverseObjectToWorldTransform =
+      TubeType::TransformType::New();
     outputTube->GetObjectToWorldTransform()->GetInverse(
       outputTubeInverseObjectToWorldTransform );
 
@@ -123,10 +143,10 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
 
       transformedWorldPoint = m_Transform->TransformPoint( worldPoint );
 
-      outputObjectPoint = outputTubeInverseIndexToWorldTransform
-        ->TransformPoint( transformedWorldPoint );
-      outputPoint = outputTubeInverseIndexToWorldTransform
-        ->TransformPoint( transformedWorldPoint );
+      outputObjectPoint = outputTubeInverseIndexToWorldTransform->
+        TransformPoint( transformedWorldPoint );
+      outputPoint = outputTubeInverseIndexToWorldTransform->
+        TransformPoint( transformedWorldPoint );
 
       VesselTubeSpatialObjectPoint<TDimension> pnt;
       pnt.SetPosition( outputPoint );
@@ -195,6 +215,8 @@ TubeToTubeTransformFilter< TTransformType,TDimension >
 {
   Superclass::PrintSelf(os,indent);
   os << indent << "Transformation: " << m_Transform << std::endl;
+  os << indent << "Transformation: " << m_OutputIndexToObjectTransform
+    << std::endl;
 }
 
 } // End namespace tube
