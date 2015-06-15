@@ -47,7 +47,6 @@ SpatialObjectToSpatialObjectFilter< TInputSpatialObject,
 TOutputSpatialObject >
 ::SetInput( const InputSpatialObjectType * input )
 {
-  std::cout << "HERE1" << std::endl;
   // Process object is not const-correct so the const_cast is required here
   this->SpatialObjectSource< TOutputSpatialObject >::SetNthInput( 0,
     const_cast< TInputSpatialObject * >( input ) );
@@ -60,10 +59,20 @@ SpatialObjectToSpatialObjectFilter< TInputSpatialObject,
 TOutputSpatialObject >
 ::SetInput( unsigned int index, const InputSpatialObjectType * input )
 {
-  std::cout << "HERE2" << std::endl;
   // Process object is not const-correct so the const_cast is required here
   this->SpatialObjectSource< TOutputSpatialObject >::SetNthInput( index,
     const_cast< TInputSpatialObject * >( input ) );
+}
+
+template< class TInputSpatialObject, class TOutputSpatialObject >
+void
+SpatialObjectToSpatialObjectFilter< TInputSpatialObject,
+TOutputSpatialObject >
+::SetInput( const itk::ProcessObject::DataObjectIdentifierType & index,
+  itk::DataObject * input)
+{
+  // Process object is not const-correct so the const_cast is required here
+  this->ProcessObject::SetInput( index, input );
 }
 
 
