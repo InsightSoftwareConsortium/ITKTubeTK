@@ -95,6 +95,7 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
     typename TubeType::Pointer outputTube = TubeType::New();
 
     outputTube->CopyInformation( inputTube );
+    outputTube->Clear();
     outputTube->GetModifiableIndexToObjectTransform()->SetIdentity();
     if( m_OutputIndexToObjectTransform.IsNotNull() )
       {
@@ -170,8 +171,8 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
           ->TransformCovariantVector( n1, transformedWorldPoint );
         n2 = outputTubeInverseObjectToWorldTransform
           ->TransformCovariantVector( n2, transformedWorldPoint );
-        //n1.Normalize();
-        //n2.Normalize();
+        n1.Normalize();
+        n2.Normalize();
         pnt.SetNormal1( n1 );
         pnt.SetNormal2( n2 );
         }

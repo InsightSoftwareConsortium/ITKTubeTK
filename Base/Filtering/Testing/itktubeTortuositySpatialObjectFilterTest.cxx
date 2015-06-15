@@ -32,15 +32,15 @@ limitations under the License.
 // STD includes
 #include <iomanip>
 
-typedef itk::VesselTubeSpatialObject<3> VesselTubeType;
-typedef VesselTubeType::VectorType VectorType;
-typedef itk::tube::TortuositySpatialObjectFilter<VesselTubeType> FilterType;
-
-//-----------------------------------------------------------------------------
-VesselTubeType::Pointer GenerateStraightTube(VectorType start,
-                                             VectorType increment,
-                                             int numberOfPoints)
+//--------------------------------------------------------------------------
+itk::VesselTubeSpatialObject<3>::Pointer
+GenerateStraightTube( itk::VesselTubeSpatialObject<3>::VectorType
+  start, itk::VesselTubeSpatialObject<3>::VectorType increment,
+  int numberOfPoints)
 {
+  typedef itk::VesselTubeSpatialObject<3>  VesselTubeType;
+  typedef VesselTubeType::VectorType       VectorType;
+
   VesselTubeType::Pointer vessel = VesselTubeType::New();
   VesselTubeType::PointListType pointList;
 
@@ -68,13 +68,15 @@ double Modulus(double v, double mod)
   return Modulus(v-mod, mod);
 }
 
-//-----------------------------------------------------------------------------
-VesselTubeType::Pointer GenerateCosTube(double length,
-                                        double amplitude,
-                                        double frequency
-                                        )
+//--------------------------------------------------------------------------
+void
+GenerateCosTube( double length, double amplitude, double frequency,
+  itk::VesselTubeSpatialObject<3>::Pointer & vessel )
 {
-  VesselTubeType::Pointer vessel = VesselTubeType::New();
+  typedef itk::VesselTubeSpatialObject<3>  VesselTubeType;
+  typedef VesselTubeType::VectorType       VectorType;
+
+  vessel = VesselTubeType::New();
   VesselTubeType::PointListType pointList;
 
   VectorType pos(0.0);
@@ -95,12 +97,18 @@ VesselTubeType::Pointer GenerateCosTube(double length,
 
   vessel->SetPoints(pointList);
   std::cout<<"Cosine vessel generated"<<std::endl;
-  return vessel;
 }
 
-//-----------------------------------------------------------------------------
-bool TestVesselMetrics(VesselTubeType::Pointer vessel, double results[])
+//--------------------------------------------------------------------------
+bool TestVesselMetrics( itk::VesselTubeSpatialObject<3>::Pointer
+  vessel, double results[])
 {
+  typedef itk::VesselTubeSpatialObject<3>
+    VesselTubeType;
+
+  typedef itk::tube::TortuositySpatialObjectFilter<VesselTubeType>
+    FilterType;
+
   // Run the metrics
   FilterType::Pointer filter = FilterType::New();
   filter->SetMeasureFlag(FilterType::BITMASK_ALL_METRICS);
@@ -199,9 +207,11 @@ bool TestVesselMetrics(VesselTubeType::Pointer vessel, double results[])
   return true;
 }
 
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 int itktubeTortuositySpatialObjectFilterTest( int, char*[] )
 {
+  typedef itk::VesselTubeSpatialObject<3> VesselTubeType;
+  typedef itk::SpatialObjectWriter< 3 >   WriterType;
 
 //  typedef itk::SpatialObjectWriter< 3 > WriterType;
 //  WriterType::Pointer writer = WriterType::New();
@@ -338,16 +348,16 @@ int itktubeTortuositySpatialObjectFilterTest( int, char*[] )
 
   for (int i = 0; i < NUMBER_OF_COSINUS_OBJECT_TESTS; ++i)
     {
-    std::cerr<<"Cos object test #"<<i<<std::endl;
-    VesselTubeType::Pointer vessel =
-      GenerateCosTube(length[i], amplitude[i], frequency[i]);
+    std::cerr << "Cos object test #" << i << std::endl;
+    VesselTubeType::Pointer vessel;
+    GenerateCosTube(length[i], amplitude[i], frequency[i], vessel);
 
-//    std::stringstream ss;
-//    ss << "/home/matthieu/Data/Vessels/TortuosityTests/cos_test" << i << ".tre";
-//    writer->SetFileName(ss.str().c_str());
-//    writer->SetInput(vessel);
-//    writer->Update();
-//    std::cout<<"File "<<ss.str().c_str()<<" written"<<std::endl;
+    //std::stringstream ss;
+    //ss << "W:/Prometheus/Data/SegmentTubesTest/cosinus_test" << i
+    //<< ".tre";
+    //writer->SetFileName(ss.str().c_str());
+    //writer->SetInput(vessel);
+    //writer->Update();
 
     if (!TestVesselMetrics(vessel, cosResults[i]))
       {

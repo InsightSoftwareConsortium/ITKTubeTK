@@ -55,8 +55,13 @@ public:
 
   virtual void SetInput( const InputSpatialObjectType * spatialObject );
 
-  virtual void SetInput( unsigned int,
-    const InputSpatialObjectType * spatialObject );
+  virtual void SetInput( unsigned int, const InputSpatialObjectType *
+    spatialObject );
+
+  // from itkProcessObject
+  virtual void SetInput(const
+    itk::ProcessObject::DataObjectIdentifierType & index, itk::DataObject *
+    input );
 
   const InputSpatialObjectType * GetInput( void ) const;
 

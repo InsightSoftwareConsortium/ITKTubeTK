@@ -33,7 +33,8 @@ int itktubeTubeEnhancingDiffusion2DImageFilterTest( int argc, char * argv[] )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
-    std::cerr << argv[0] << "  inputImage outputImage [UseParameterSet2]" << std::endl;
+    std::cerr << argv[0] << "  inputImage outputImage [UseParameterSet2]"
+      << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -53,7 +54,7 @@ int itktubeTubeEnhancingDiffusion2DImageFilterTest( int argc, char * argv[] )
 
   // Declare the type for the Filter
   typedef itk::tube::TubeEnhancingDiffusion2DImageFilter<
-                           PixelType, Dimension > FilterType;
+    PixelType, Dimension > FilterType;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
