@@ -252,6 +252,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
     "vtkGeoAdaptiveArcs"
     "vtkGESignaReader"
     "vtkHardwareSelector"
+    "vtkImageBSplineInterpolator"
     "vtkImageCroppingRegionsWidget"
     "vtkImageReader"
     "vtkImageReslice"
