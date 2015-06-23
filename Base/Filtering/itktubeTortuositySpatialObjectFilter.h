@@ -263,8 +263,9 @@ public:
   /** Set/Get the number of bins that the histogram must have.
   * Used for CURVATURE_HISTOGRAM_METRICS. Default value is 20.
   */
-  itkSetClampMacro( NumberOfBins, int, 0, std::numeric_limits<int>::max() )
-  itkGetConstMacro( NumberOfBins, int )
+  itkSetClampMacro( NumberOfBins, size_t, 0,
+    std::numeric_limits<size_t>::max() )
+  itkGetConstMacro( NumberOfBins, size_t )
 
   /** Set/Get the smoothing method to be applied to the vessel before
   * computing the metrics. Default method is

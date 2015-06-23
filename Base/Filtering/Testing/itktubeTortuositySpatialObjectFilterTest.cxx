@@ -27,7 +27,6 @@ limitations under the License.
 
 // ITK includes
 #include <itkMath.h>
-#include <itkSpatialObjectWriter.h>
 
 // STD includes
 #include <iomanip>
@@ -211,10 +210,6 @@ bool TestVesselMetrics( itk::VesselTubeSpatialObject<3>::Pointer
 int itktubeTortuositySpatialObjectFilterTest( int, char*[] )
 {
   typedef itk::VesselTubeSpatialObject<3> VesselTubeType;
-  typedef itk::SpatialObjectWriter< 3 >   WriterType;
-
-//  typedef itk::SpatialObjectWriter< 3 > WriterType;
-//  WriterType::Pointer writer = WriterType::New();
 
   //
   // Test straight spatial objects
@@ -253,13 +248,6 @@ int itktubeTortuositySpatialObjectFilterTest( int, char*[] )
     std::cerr<<"Straight object test #"<<i<<std::endl;
     VesselTubeType::Pointer vessel =
       GenerateStraightTube(start[i], increment[i], numberOfPoints[i]);
-
-//    std::stringstream ss;
-//    ss << "/home/matthieu/Data/Vessels/TortuosityTests/line_test" << i << ".tre";
-//    writer->SetFileName(ss.str().c_str());
-//    writer->SetInput(vessel);
-//    writer->Update();
-//    std::cout<<"File "<<ss.str().c_str()<<" written"<<std::endl;
 
     if (!TestVesselMetrics(vessel, straightObjectResults[i]))
       {
@@ -351,13 +339,6 @@ int itktubeTortuositySpatialObjectFilterTest( int, char*[] )
     std::cerr << "Cos object test #" << i << std::endl;
     VesselTubeType::Pointer vessel;
     GenerateCosTube(length[i], amplitude[i], frequency[i], vessel);
-
-    //std::stringstream ss;
-    //ss << "W:/Prometheus/Data/SegmentTubesTest/cosinus_test" << i
-    //<< ".tre";
-    //writer->SetFileName(ss.str().c_str());
-    //writer->SetInput(vessel);
-    //writer->Update();
 
     if (!TestVesselMetrics(vessel, cosResults[i]))
       {
