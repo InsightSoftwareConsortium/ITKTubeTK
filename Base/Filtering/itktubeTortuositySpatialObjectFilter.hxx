@@ -329,7 +329,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     {
     itkExceptionMacro( << "Cannot run Tortuosity on input. "
                        << "Input cannot be smoothed");
-    return ;
+    return;
     }
 
   // Subsample the vessel
@@ -499,8 +499,9 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
         && SafeNormalize(t2t3Cross) > this->m_EpsilonForZero )
         {
         double t1t2t2t3Dot = t1t2Cross * t2t3Cross;
-        // It is confusing to include points with torsional angles of 180°
-        // when analyzing a planar curve, so we set the angle to 0.
+        // It is confusing to include points with torsional angles of
+        // 180 degrees when analyzing a planar curve, so we set the angle
+        // to 0.
         if(t1t2t2t3Dot < -1 + this->m_EpsilonForZero)
           {
           t1t2t2t3Dot = 1;
@@ -522,8 +523,12 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     // Metrics that require curvature computation
     if ( m_MeasureFlag & BITMASK_CURVATURE_METRICS )
       {
-      SOVectorType dg, d2g, curvatureVector;
-      double dtl, dtr, curvatureScalar;
+      SOVectorType dg;
+      SOVectorType d2g;
+      SOVectorType curvatureVector;
+      double dtl;
+      double dtr;
+      double curvatureScalar;
 
       // Calculate first derivative
       dg = t2;
@@ -626,13 +631,13 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     {
     // Histogram computation
     typedef itk::Vector<double, 1> MeasurementVectorType;
-    typedef itk::Statistics::ListSample< MeasurementVectorType > SampleType ;
+    typedef itk::Statistics::ListSample< MeasurementVectorType > SampleType;
 
     typedef itk::Statistics::Histogram< double,
             itk::Statistics::DenseFrequencyContainer2 > HistogramType;
 
     SampleType::Pointer sample = SampleType::New();
-    for( size_t i = 0 ; i < this->m_CurvatureScalar.size() ; ++i)
+    for( size_t i = 0; i < this->m_CurvatureScalar.size(); ++i)
       {
       MeasurementVectorType mv;
       mv = this->m_CurvatureScalar[i];
@@ -672,7 +677,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
       int inflectionCount2 = 0;
       double threshold2 = this->m_Percentile95Metric;
 
-      for( size_t i = 1 ; i <this->m_CurvatureScalar.size() ; ++i)
+      for( size_t i = 1; i <this->m_CurvatureScalar.size(); ++i)
         {
         if( ic1m && (this->m_CurvatureScalar[i-1]-threshold1)*
             (this->m_CurvatureScalar[i]-threshold1) < 0 )
@@ -736,7 +741,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
       else
         {
         // Add bin values to the metric array
-        for (int i=0 ; i < this->m_NumberOfBins ; ++i)
+        for (unsigned int i=0; i < this->m_NumberOfBins; ++i)
           {
           this->m_CurvatureHistogramMetrics.push_back(
             histogramForFeatures->GetFrequency(i));
