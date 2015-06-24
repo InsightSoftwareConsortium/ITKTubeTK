@@ -37,16 +37,48 @@ set( TEXTCOMPARE_EXE
 
 # Test1
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
-                COMMAND ${PROJ_EXE}
-                  MIDAS{Branch-truth-new.tre.md5}
-                  --samplingFactor 20
-                  ${TEMP}/${MODULE_NAME}Test1.tre )
+  COMMAND ${PROJ_EXE}
+    MIDAS{Branch-truth-new.tre.md5}
+    --samplingFactor 20
+    ${TEMP}/${MODULE_NAME}Test1.tre )
 
 # Test1-Compare
-#Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
-#COMMAND ${TEXTCOMPARE_EXE}
-#-t ${TEMP}/${MODULE_NAME}Test1.tre
-#-b MIDAS{${MODULE_NAME}Test1.tre.md5}
-#-d 0.01 )
-#set_property( TEST ${MODULE_NAME}-Test1-Compare
-#APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
+  COMMAND ${TEXTCOMPARE_EXE}
+    -t ${TEMP}/${MODULE_NAME}Test1.tre
+    -b MIDAS{${MODULE_NAME}Test1.tre.md5}
+    -d 0.01 )
+set_property( TEST ${MODULE_NAME}-Test1-Compare APPEND PROPERTY DEPENDS
+  ${MODULE_NAME}-Test1 )
+
+# Test2
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
+  COMMAND ${PROJ_EXE}
+    MIDAS{Branch-truth-new.tre.md5}
+    --loadTransform MIDAS{VascularNetwork-TestTransform.tfm.md5}
+    ${TEMP}/${MODULE_NAME}Test2.tre )
+
+# Test2-Compare
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare
+  COMMAND ${TEXTCOMPARE_EXE}
+    -t ${TEMP}/${MODULE_NAME}Test2.tre
+    -b MIDAS{${MODULE_NAME}Test2.tre.md5}
+    -d 0.01 )
+set_property( TEST ${MODULE_NAME}-Test2-Compare APPEND PROPERTY DEPENDS
+  ${MODULE_NAME}-Test2 )
+
+# Test3
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3
+  COMMAND ${PROJ_EXE}
+    MIDAS{Branch-truth-new.tre.md5}
+    --matchImage MIDAS{SyntheticSurfaceImage.mha.md5}
+    ${TEMP}/${MODULE_NAME}Test3.tre )
+
+# Test3-Compare
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3-Compare
+  COMMAND ${TEXTCOMPARE_EXE}
+    -t ${TEMP}/${MODULE_NAME}Test3.tre
+    -b MIDAS{${MODULE_NAME}Test3.tre.md5}
+    -d 0.01 )
+set_property( TEST ${MODULE_NAME}-Test3-Compare APPEND PROPERTY DEPENDS
+  ${MODULE_NAME}-Test3 )
