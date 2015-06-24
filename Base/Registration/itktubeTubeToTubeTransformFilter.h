@@ -75,6 +75,9 @@ public:
   typedef typename VesselTubeSpatialObject<VDimension>::TransformType
     TubeTransformType;
 
+  typedef typename VesselTubeSpatialObject<VDimension>::
+    AffineGeometryFrameType                                  TubeFrameType;
+
   /** Typedef for the transformations */
   typedef TTransformType                                     TransformType;
 
@@ -92,7 +95,7 @@ public:
   itkSetObjectMacro( Transform, TransformType );
 
   /** Set the Transformation */
-  itkSetObjectMacro( OutputIndexToObjectTransform, TubeTransformType );
+  itkSetObjectMacro( OutputIndexToObjectFrame, TubeFrameType );
 
   /** Get the output tubenet */
   itkGetObjectMacro( Output, GroupType );
@@ -109,7 +112,10 @@ private:
   void operator=(const Self&);            //purposely not implemented
 
   typename TransformType::Pointer            m_Transform;
-  typename TubeType::TransformType::Pointer  m_OutputIndexToObjectTransform;
+
+  typename TubeType::AffineGeometryFrameType::Pointer
+    m_OutputIndexToObjectFrame;
+
   typename GroupType::Pointer                m_Output;
 
 }; // End class TubeToTubeTransformFilter

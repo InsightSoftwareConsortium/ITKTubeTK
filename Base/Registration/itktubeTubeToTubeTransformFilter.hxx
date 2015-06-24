@@ -37,7 +37,7 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
 ::TubeToTubeTransformFilter( void )
 {
   m_Output = 0;
-  m_OutputIndexToObjectTransform = 0;
+  m_OutputIndexToObjectFrame = 0;
   m_Transform = 0;
 }
 
@@ -82,14 +82,21 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
       ((TubeType *)((*TubeIterator).GetPointer()));
 
     inputTube->ComputeObjectToWorldTransform();
+
     typename TubeType::TransformType::Pointer
-      inputTubeIndexToObjectTransform =
+      inputIndexToObjectTransform =
       inputTube->GetIndexToObjectTransform();
+
+    typename TubeType::AffineGeometryFrameType::Pointer
+      inputIndexToObjectFrame =
+      inputTube->GetAffineGeometryFrame();
+
     typename TubeType::TransformType::Pointer
-      inputTubeIndexToWorldTransform =
+      inputIndexToWorldTransform =
       inputTube->GetIndexToWorldTransform();
+
     typename TubeType::TransformType::Pointer
-      inputTubeObjectToWorldTransform =
+      inputObjectToWorldTransform =
       inputTube->GetObjectToWorldTransform();
 
     typename TubeType::Pointer outputTube = TubeType::New();
@@ -97,38 +104,28 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
     outputTube->CopyInformation( inputTube );
     outputTube->Clear();
     outputTube->GetModifiableIndexToObjectTransform()->SetIdentity();
-    if( m_OutputIndexToObjectTransform.IsNotNull() )
+    if( m_OutputIndexToObjectFrame.IsNotNull() )
       {
-      outputTube->GetModifiableIndexToObjectTransform()->SetCenter(
-        m_OutputIndexToObjectTransform->GetCenter() );
-      outputTube->GetModifiableIndexToObjectTransform()->SetMatrix(
-        m_OutputIndexToObjectTransform->GetMatrix() );
-      outputTube->GetModifiableIndexToObjectTransform()->SetOffset(
-        m_OutputIndexToObjectTransform->GetOffset() );
+      outputTube->SetAffineGeometryFrame( m_OutputIndexToObjectFrame );
       }
     else
       {
-      outputTube->GetModifiableIndexToObjectTransform()->SetCenter(
-        inputTubeIndexToObjectTransform->GetCenter() );
-      outputTube->GetModifiableIndexToObjectTransform()->SetMatrix(
-        inputTubeIndexToObjectTransform->GetMatrix() );
-      outputTube->GetModifiableIndexToObjectTransform()->SetOffset(
-        inputTubeIndexToObjectTransform->GetOffset() );
+      outputTube->SetAffineGeometryFrame( inputIndexToObjectFrame );
       }
 
     outputTube->ComputeObjectToWorldTransform();
 
     typename TubeType::TransformType::Pointer
-      outputTubeInverseIndexToWorldTransform =
+      outputInverseIndexToWorldTransform =
       TubeType::TransformType::New();
     outputTube->GetIndexToWorldTransform()->GetInverse(
-      outputTubeInverseIndexToWorldTransform );
+      outputInverseIndexToWorldTransform );
 
     typename TubeType::TransformType::Pointer
-      outputTubeInverseObjectToWorldTransform =
+      outputInverseObjectToWorldTransform =
       TubeType::TransformType::New();
     outputTube->GetObjectToWorldTransform()->GetInverse(
-      outputTubeInverseObjectToWorldTransform );
+      outputInverseObjectToWorldTransform );
 
     TubePointListType tubeList = inputTube->GetPoints();
     typename TubePointListType::const_iterator tubePointIterator =
@@ -137,16 +134,16 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
     while( tubePointIterator != tubeList.end() )
       {
       inputPoint = (*tubePointIterator).GetPosition();
-      inputObjectPoint = inputTubeIndexToObjectTransform
+      inputObjectPoint = inputIndexToObjectTransform
         ->TransformPoint( inputPoint );
-      worldPoint = inputTubeIndexToWorldTransform->TransformPoint(
+      worldPoint = inputIndexToWorldTransform->TransformPoint(
         inputPoint );
 
       transformedWorldPoint = m_Transform->TransformPoint( worldPoint );
 
-      outputObjectPoint = outputTubeInverseIndexToWorldTransform->
+      outputObjectPoint = outputInverseIndexToWorldTransform->
         TransformPoint( transformedWorldPoint );
-      outputPoint = outputTubeInverseIndexToWorldTransform->
+      outputPoint = outputInverseIndexToWorldTransform->
         TransformPoint( transformedWorldPoint );
 
       VesselTubeSpatialObjectPoint<TDimension> pnt;
@@ -159,17 +156,17 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
         ->GetNormal2();
 
       // only try transformation of normals if both are non-zero
-      if ( !n1.GetVnlVector().is_zero() && !n2.GetVnlVector().is_zero() )
+      if( !n1.GetVnlVector().is_zero() && !n2.GetVnlVector().is_zero() )
         {
-        n1 = inputTubeObjectToWorldTransform->TransformCovariantVector(
+        n1 = inputObjectToWorldTransform->TransformCovariantVector(
           n1, inputObjectPoint );
-        n2 = inputTubeObjectToWorldTransform->TransformCovariantVector(
+        n2 = inputObjectToWorldTransform->TransformCovariantVector(
           n2, inputObjectPoint );
         n1 = m_Transform->TransformCovariantVector( n1, worldPoint );
         n2 = m_Transform->TransformCovariantVector( n2, worldPoint );
-        n1 = outputTubeInverseObjectToWorldTransform
+        n1 = outputInverseObjectToWorldTransform
           ->TransformCovariantVector( n1, transformedWorldPoint );
-        n2 = outputTubeInverseObjectToWorldTransform
+        n2 = outputInverseObjectToWorldTransform
           ->TransformCovariantVector( n2, transformedWorldPoint );
         n1.Normalize();
         n2.Normalize();
@@ -177,23 +174,30 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
         pnt.SetNormal2( n2 );
         }
 
+      typename TubeType::VectorType tang = tubePointIterator->
+        GetTangent();
+      if( !tang.GetVnlVector().is_zero() )
+        {
+        tang = inputObjectToWorldTransform->TransformVector(
+          tang, inputObjectPoint );
+        tang = m_Transform->TransformVector( tang, worldPoint );
+        tang = outputInverseObjectToWorldTransform->
+          TransformVector( tang, transformedWorldPoint );
+        tang.Normalize();
+        pnt.SetTangent( tang );
+        }
+
+      typename TubeType::VectorType radi;
       for( unsigned int i=0; i<TDimension; ++i )
         {
-        inputPoint[i] = tubePointIterator->GetRadius();
+        radi[i] = tubePointIterator->GetRadius();
         }
-      worldPoint = inputTubeIndexToWorldTransform->TransformPoint(
+      radi = inputIndexToWorldTransform->TransformVector( radi,
         inputPoint );
-      worldPoint = m_Transform->TransformPoint( worldPoint );
-      outputPoint = outputTubeInverseIndexToWorldTransform
-        ->TransformPoint( worldPoint );
-      double radius = 0;
-      for( unsigned int i=0; i<TDimension; ++i )
-        {
-        radius += outputPoint[i] * outputPoint[i];
-        }
-      radius /= TDimension;
-      radius = vcl_sqrt( radius );
-      pnt.SetRadius( radius );
+      radi = m_Transform->TransformVector( radi, worldPoint );
+      radi = outputInverseIndexToWorldTransform->
+        TransformVector( radi, worldPoint );
+      pnt.SetRadius( radi[0] );
 
       pnt.SetMedialness( (*tubePointIterator).GetMedialness() );
       pnt.SetRidgeness( (*tubePointIterator).GetRidgeness() );
@@ -215,9 +219,9 @@ TubeToTubeTransformFilter< TTransformType,TDimension >
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf(os,indent);
+
   os << indent << "Transformation: " << m_Transform << std::endl;
-  os << indent << "Transformation: " << m_OutputIndexToObjectTransform
-    << std::endl;
+  os << indent << "Frame: " << m_OutputIndexToObjectFrame << std::endl;
 }
 
 } // End namespace tube
