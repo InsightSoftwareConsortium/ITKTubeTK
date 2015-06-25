@@ -155,6 +155,90 @@ SetPropertyFromImage( typename itk::GroupSpatialObject< DimensionT >::
     }
 }
 
+template< class PixelT, unsigned int DimensionT >
+void
+SetPropertyFromImageMean( typename itk::GroupSpatialObject< DimensionT >::
+  Pointer & inputTubes, int currentTube, typename itk::Image< PixelT,
+  DimensionT>::Pointer & inputImage, char propertyId )
+{
+  typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
+  typedef typename TubeType::PointListType            TubePointListType;
+  typedef typename TubeType::TubePointType            TubePointType;
+  typedef itk::Image< PixelT, DimensionT >            ImageType;
+
+  typename TubeType::ChildrenListType::iterator tubeIterator;
+
+  char soTypeName[80];
+  strcpy( soTypeName, "VesselTubeSpatialObject" );
+  typename TubeType::ChildrenListPointer inputTubeList =
+    inputTubes->GetChildren( inputTubes->GetMaximumDepth(), soTypeName );
+  for( tubeIterator = inputTubeList->begin(); tubeIterator !=
+    inputTubeList->end(); tubeIterator++ )
+    {
+    typename TubeType::Pointer inputTube = ((TubeType *)( tubeIterator->
+      GetPointer()));
+
+    if( currentTube == ALL_TUBES_CURRENT || inputTube->GetId() ==
+      currentTube )
+      {
+      inputTube->ComputeObjectToWorldTransform();
+
+      double valAvg = 0;
+      unsigned int valCount = 0;
+      unsigned int pointListSize = inputTube->GetNumberOfPoints();
+      for( unsigned int pointNum = 0; pointNum < pointListSize; ++pointNum)
+        {
+        TubePointType * currentPoint = static_cast< TubePointType * >(
+          inputTube->GetPoint( pointNum ) );
+        typename TubeType::PointType pointIndex;
+        pointIndex = currentPoint->GetPosition();
+
+        typename TubeType::PointType pointWorld;
+        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint(
+          pointIndex );
+
+        typename ImageType::IndexType imageIndex;
+        if( inputImage->TransformPhysicalPointToIndex( pointWorld,
+          imageIndex ) )
+          {
+          valAvg += inputImage->GetPixel( imageIndex );
+          ++valCount;
+          }
+        }
+      valAvg /= valCount;
+      for( unsigned int pointNum = 0; pointNum < pointListSize; ++pointNum)
+        {
+        TubePointType * currentPoint = static_cast< TubePointType * >(
+          inputTube->GetPoint( pointNum ) );
+        typename TubeType::PointType pointIndex;
+        pointIndex = currentPoint->GetPosition();
+
+        typename TubeType::PointType pointWorld;
+        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint(
+          pointIndex );
+
+        typename ImageType::IndexType imageIndex;
+        switch( propertyId )
+          {
+          default:
+          case 'R':
+            currentPoint->SetRidgeness( valAvg );
+            break;
+          case 'M':
+            currentPoint->SetMedialness( valAvg );
+            break;
+          case 'B':
+            currentPoint->SetBranchness( valAvg );
+            break;
+          case 'r':
+            currentPoint->SetRadius( valAvg );
+            break;
+          }
+        }
+      }
+    }
+}
+
 template< unsigned int DimensionT >
 int DoIt( MetaCommand & command )
 {
@@ -184,41 +268,24 @@ int DoIt( MetaCommand & command )
       ::tube::Message( "Select All Tubes" );
       currentTube = ALL_TUBES_CURRENT;
       }
-    else if( it->name == "LoadRidgeness" )
+    else if( it->name == "LoadValueFromImage" )
       {
-      ::tube::Message( "Load Ridgness" );
+      ::tube::Message( "Load Value From Image" );
       typedef itk::Image< double, DimensionT > ImageType;
       typename ImageType::Pointer ridgeImage = ReadImageFile< double,
         DimensionT >( command.GetValueAsString( *it, "filename" ).c_str() );
       SetPropertyFromImage< double, DimensionT >( inputTubes, currentTube,
-        ridgeImage, 'R' );
+        ridgeImage, command.GetValueAsString( *it, "value" ).c_str()[0] );
       }
-    else if( it->name == "LoadMedialness" )
+    else if( it->name == "LoadValueFromImageMean" )
       {
-      ::tube::Message( "Load Medialness" );
+      ::tube::Message( "Load Value From Image Mean" );
       typedef itk::Image< double, DimensionT > ImageType;
       typename ImageType::Pointer ridgeImage = ReadImageFile< double,
         DimensionT >( command.GetValueAsString( *it, "filename" ).c_str() );
-      SetPropertyFromImage< double, DimensionT >( inputTubes, currentTube,
-        ridgeImage, 'M' );
-      }
-    else if( it->name == "LoadBranchness" )
-      {
-      ::tube::Message( "Load Branchness" );
-      typedef itk::Image< double, DimensionT > ImageType;
-      typename ImageType::Pointer ridgeImage = ReadImageFile< double,
-        DimensionT >( command.GetValueAsString( *it, "filename" ).c_str() );
-      SetPropertyFromImage< double, DimensionT >( inputTubes, currentTube,
-        ridgeImage, 'B' );
-      }
-    else if( it->name == "LoadRadius" )
-      {
-      ::tube::Message( "Load Radius" );
-      typedef itk::Image< double, DimensionT > ImageType;
-      typename ImageType::Pointer ridgeImage = ReadImageFile< double,
-        DimensionT >( command.GetValueAsString( *it, "filename" ).c_str() );
-      SetPropertyFromImage< double, DimensionT >( inputTubes, currentTube,
-        ridgeImage, 'r' );
+      SetPropertyFromImageMean< double, DimensionT >( inputTubes,
+        currentTube, ridgeImage,
+        command.GetValueAsString( *it, "value" ).c_str()[0] );
       }
     else if( it->name == "Delete" )
       {
@@ -373,24 +440,22 @@ int main( int argc, char * argv[] )
   command.SetOption( "SelectAllTubes", "T", false,
     "Sets the target tube to be all tubes." );
 
-  command.SetOption( "LoadRidgeness", "R", false,
-    "Sets tube points' ridgeness values to the values in the image." );
-  command.AddOptionField( "LoadRidgeness", "filename",
+  command.SetOption( "LoadValueFromImage", "l", false,
+    "Sets tube points' ridge/medial values to the values in the image." );
+  command.AddOptionField( "LoadValueFromImage", "value",
+    MetaCommand::STRING, true, "",
+    "[R]idgeness, [M]edialness, [B]ranchness, [r]adius",
+    MetaCommand::DATA_IN );
+  command.AddOptionField( "LoadValueFromImage", "filename",
     MetaCommand::STRING, true, "", "Image filename", MetaCommand::DATA_IN );
 
-  command.SetOption( "LoadMedialness", "M", false,
-    "Sets tube points' medialness values to the values in the image." );
-  command.AddOptionField( "LoadMedialness", "filename",
-    MetaCommand::STRING, true, "", "Image filename", MetaCommand::DATA_IN );
-
-  command.SetOption( "LoadBranchness", "B", false,
-    "Sets tube points' branchness values to the values in the image." );
-  command.AddOptionField( "LoadBranchness", "filename",
-    MetaCommand::STRING, true, "", "Image filename", MetaCommand::DATA_IN );
-
-  command.SetOption( "LoadRadius", "r", false,
-    "Sets tube points' radius values to the values in the image." );
-  command.AddOptionField( "LoadRadius", "filename",
+  command.SetOption( "LoadValueFromImageMean", "L", false,
+    "Sets tube points' ridge/medial values to mean value in the image." );
+  command.AddOptionField( "LoadValueFromImageMean", "value",
+    MetaCommand::STRING, true, "",
+    "[R]idgeness, [M]edialness, [B]ranchness, [r]adius",
+    MetaCommand::DATA_IN );
+  command.AddOptionField( "LoadValueFromImageMean", "filename",
     MetaCommand::STRING, true, "", "Image filename", MetaCommand::DATA_IN );
 
   command.SetOption( "ComputeTangentsAndNormals", "n", false,

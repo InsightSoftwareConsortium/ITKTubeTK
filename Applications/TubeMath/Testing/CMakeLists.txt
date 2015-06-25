@@ -54,10 +54,10 @@ set_property( TEST ${MODULE_NAME}-Test1-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
   COMMAND ${PROJ_EXE}
     MIDAS{Branch-truth-new.tre.md5}
-    -R MIDAS{Branch.n010.mha.md5}
-    -M MIDAS{Branch.n020.mha.md5}
-    -B MIDAS{Branch.n010.mha.md5}
-    -r MIDAS{Branch.n020.mha.md5}
+    -l R MIDAS{Branch.n010.mha.md5}
+    -l M MIDAS{Branch.n020.mha.md5}
+    -l B MIDAS{Branch.n010.mha.md5}
+    -l r MIDAS{Branch.n020.mha.md5}
     -u
     -t 100
     -a
