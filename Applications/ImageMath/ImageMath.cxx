@@ -54,6 +54,7 @@ ResampleImage(
 
   typename ImageType::Pointer output = a;
 
+  bool doResample = false;
   for( unsigned int i = 0; i < VDimension; i++ )
     {
     if( a->GetLargestPossibleRegion().GetSize()[i]
@@ -63,17 +64,24 @@ ResampleImage(
         || a->GetSpacing()[i] != b->GetSpacing()[i]
         || a->GetOrigin()[i] != b->GetOrigin()[i]  )
       {
-      typedef typename itk::ResampleImageFilter< ImageType,
-                ImageType> ResampleFilterType;
-      typename ResampleFilterType::Pointer filter =
-        ResampleFilterType::New();
-      filter->SetInput( a );
-      filter->SetUseReferenceImage(true);
-      filter->SetReferenceImage(b);
-      filter->Update();
-      output = filter->GetOutput();
+      doResample = true;
+      break;
       }
     }
+
+  if( doResample )
+    {
+    typedef typename itk::ResampleImageFilter< ImageType,
+              ImageType> ResampleFilterType;
+    typename ResampleFilterType::Pointer filter =
+      ResampleFilterType::New();
+    filter->SetInput( a );
+    filter->SetUseReferenceImage(true);
+    filter->SetReferenceImage(b);
+    filter->Update();
+    output = filter->GetOutput();
+    }
+
   return output;
 }
 
@@ -1729,7 +1737,8 @@ int main( int argc, char * argv[] )
     "", "output filename", MetaCommand::DATA_OUT );
 
   command.SetOption( "WriteType", "W", false,
-    "writes 0=UChar 1=UShort 2=Short 3=Old (4-6 uncomp UChar,UShort,Short) 7=uncomp Float");
+    "write UChar,UShort,Short,Old Meta,U-UChar,U-UShort,U-Short,U-Float)"
+    );
   command.AddOptionField( "WriteType", "Type", MetaCommand::INT, true );
   command.AddOptionField( "WriteType", "filename", MetaCommand::STRING,
     true, "", "output filename", MetaCommand::DATA_OUT );

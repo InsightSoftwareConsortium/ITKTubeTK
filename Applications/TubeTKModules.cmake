@@ -67,7 +67,8 @@ set( TubeTK_${proj}_MODULES
   SegmentTubes
   SegmentUsingOtsuThreshold
   ShrinkImage
-  SimulateAcquisitionArtifactsUsingPrior )
+  SimulateAcquisitionArtifactsUsingPrior
+  TubeMath )
 
 set( TubeTK_${proj}_ImageViewer_MODULES "" )
 if( TubeTK_BUILD_IMAGE_VIEWER )
