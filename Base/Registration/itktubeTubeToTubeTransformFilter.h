@@ -75,9 +75,6 @@ public:
   typedef typename VesselTubeSpatialObject<VDimension>::TransformType
     TubeTransformType;
 
-  typedef typename VesselTubeSpatialObject<VDimension>::
-    AffineGeometryFrameType                                  TubeFrameType;
-
   /** Typedef for the transformations */
   typedef TTransformType                                     TransformType;
 
@@ -94,8 +91,8 @@ public:
   /** Set the Transformation */
   itkSetObjectMacro( Transform, TransformType );
 
-  /** Set the Transformation */
-  itkSetObjectMacro( OutputIndexToObjectFrame, TubeFrameType );
+  /** Set the Object to Index transform for the output tubes */
+  itkSetObjectMacro( OutputIndexToObjectTransform, TubeTransformType );
 
   /** Get the output tubenet */
   itkGetObjectMacro( Output, GroupType );
@@ -113,8 +110,7 @@ private:
 
   typename TransformType::Pointer            m_Transform;
 
-  typename TubeType::AffineGeometryFrameType::Pointer
-    m_OutputIndexToObjectFrame;
+  typename TubeTransformType::Pointer        m_OutputIndexToObjectTransform;
 
   typename GroupType::Pointer                m_Output;
 

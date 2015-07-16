@@ -513,53 +513,69 @@ RadiusExtractor2<TInputImage>
 {
   double r0 = m_RadiusStart;
   r0 = static_cast<int>( r0 / m_RadiusStep ) * m_RadiusStep;
-  int r0Range = static_cast<int>( ( 0.5 * r0 ) / m_RadiusStep );
-  if( r0Range < 4 )
-    {
-    r0Range = 4;
-    }
-  r0 = r0 - r0Range * m_RadiusStep;
+  double dir = 1;
   if( r0 < m_RadiusMin )
     {
     r0 = m_RadiusMin;
     }
-  double r0Max = r0;
-  double r0MaxMedialness = 0;
-  double r0Medialness = this->GetKernelMedialness( r0 );
-  double rEnd = r0 + 4 * r0Range * m_RadiusStep;
-  while( r0 < rEnd )
+  if( r0 > m_RadiusMax )
     {
-    r0 += m_RadiusStep;
-    r0Medialness = this->GetKernelMedialness( r0 );
-    if( r0Medialness > r0MaxMedialness )
+    r0 = m_RadiusMax;
+    dir = -1;
+    }
+  double r0Max = r0;
+  double r0MaxMedialness = this->GetKernelMedialness( r0 );
+  bool first = true;
+  bool done = false;
+  while( !done )
+    {
+    double tempR0 = r0 + dir * m_RadiusStep;
+    if( tempR0 < m_RadiusMin || tempR0 > m_RadiusMax )
       {
-      r0Max = r0;
-      r0MaxMedialness = r0Medialness;
+      done = true;
+      }
+    else
+      {
+      double tempR0Med = this->GetKernelMedialness( tempR0 );
+      if( tempR0Med > r0MaxMedialness )
+        {
+        r0 = tempR0;
+        r0Max = tempR0;
+        r0MaxMedialness = tempR0Med;
+        first = false;
+        }
+      else if( first )
+        {
+        first = false;
+        dir *= -1;
+        }
+      else
+        {
+        done = true;
+        }
       }
     }
-  r0 = r0Max;
-
   if( this->GetDebug() )
     {
-    std::cout << "Local extreme at radius r0 = " << r0
-      << " with medialness = " << r0Medialness << std::endl;
+    std::cout << "Local extreme at radius r0 = " << r0Max
+      << " with medialness = " << r0MaxMedialness << std::endl;
     std::cout << "  prev radius = " << this->GetRadiusStart()
       << " with medialness = " << this->GetKernelMedialness(
       this->GetRadiusStart() ) << std::endl;
     }
 
-  m_KernelOptimalRadius = r0;
-  m_KernelOptimalRadiusMedialness = r0Medialness;
+  m_KernelOptimalRadius = r0Max;
+  m_KernelOptimalRadiusMedialness = r0MaxMedialness;
   //m_KernelOptimalRadiusBranchness = this->GetKernelBranchness( r0 );
 
-  if( r0Medialness < m_MinMedialnessStart )
+  if( r0MaxMedialness < m_MinMedialnessStart )
     {
     if ( this->GetDebug() )
       {
       std::cout
         << "RadiusExtractor2: calcOptimalScale: kernel fit insufficient"
         << std::endl;
-      std::cout << "  Medialness = " << r0Medialness << " < thresh = "
+      std::cout << "  Medialness = " << r0MaxMedialness << " < thresh = "
         << m_MinMedialness << std::endl;
       }
     return false;

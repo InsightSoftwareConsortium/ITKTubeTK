@@ -1516,16 +1516,25 @@ RidgeExtractor<TInputImage>
       }
     m_DataSpline->Extreme( pX, &val, 1, lN );
 
-    // On the first gradient pursuit we don't want to wander too far, and
-    // the gradient might not be ideally oriented towards the ridge, so
-    // only step half-way towards the max in the initial gradient dir for
-    // the first iteration.   For all subsequent iterations, step all of
-    // the way to the local max in the gradient direction.
-    if( loop == 0 )
+    // We don't want to wander too far since the gradient might not be
+    // ideally oriented towards the ridge, so limit the step towards the
+    // max to a specific radius.
+    double norm = 0;
+    for( unsigned int i=0; i<ImageDimension; i++ )
       {
+      norm += (newX[i] - pX[i]) * (newX[i] - pX[i]);
+      }
+    norm = vcl_sqrt( norm );
+    double maxMove = m_MaxXChange * this->GetScale();
+    if( norm > maxMove )
+      {
+      if( this->GetDebug() )
+        {
+        std::cout << "Limiting local ridge search radius." << std::endl;
+        }
       for( unsigned int i=0; i<ImageDimension; i++ )
         {
-        newX[i] = (pX[i]+newX[i])/2;
+        newX[i] = pX[i] + maxMove * ( (newX[i]-pX[i]) / norm );
         }
       }
     else
