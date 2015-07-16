@@ -324,6 +324,10 @@ int DoIt( int argc, char * argv[] )
           }
         else if( itM.Get() == maskBackgroundId )
           {
+          for( unsigned int i = 0; i < VDimension; ++i )
+            {
+            cIndx[i] = indx[i];
+            }
           double intensity = 0;
           double ridgeness = 0;
           double roundness = 0;
@@ -410,10 +414,10 @@ int DoIt( int argc, char * argv[] )
 
   if( scaleMax == scaleMin )
     {
-    scaleMax = 20 * scaleMin;
+    scaleMax = 10 * scaleMin;
     }
-  double scaleUnit = 0.1 * ( scaleMax - scaleMin );
-  double ridgeScale = scaleMin + 4 * scaleUnit;
+  double scaleRange = 0.2 * ( scaleMax - scaleMin );
+  double ridgeScale = scaleMin + 0.25 * scaleRange;
   double ridgeScaleKernelExtent = 2.0;
 
   bool   ridgeDynamicScale = true;
@@ -470,8 +474,13 @@ int DoIt( int argc, char * argv[] )
     ridgeMaxRecoveryAttempts );
 
   double radiusStart = ridgeScale / inputImage->GetSpacing()[0];
-  double radiusMin = scaleMin / inputImage->GetSpacing()[0];
-  double radiusMax = ( scaleMax + 5 * scaleUnit ) / inputImage->GetSpacing()[0];
+  double radiusMin = ( 0.2 * scaleMin ) / inputImage->GetSpacing()[0];
+  if( radiusMin < 0.3 )
+    {
+    radiusMin = 0.3;
+    }
+  double radiusMax = ( scaleMax + 0.5 * scaleRange ) /
+    inputImage->GetSpacing()[0];
 
   // Should be a function of curvature
   double radiusMinMedialness = ridgeMinCurvature / 100;

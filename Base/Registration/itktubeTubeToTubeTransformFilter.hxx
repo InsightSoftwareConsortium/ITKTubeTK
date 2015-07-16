@@ -37,7 +37,7 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
 ::TubeToTubeTransformFilter( void )
 {
   m_Output = 0;
-  m_OutputIndexToObjectFrame = 0;
+  m_OutputIndexToObjectTransform = 0;
   m_Transform = 0;
 }
 
@@ -61,7 +61,6 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
   Point<double, TDimension> inputObjectPoint;
   Point<double, TDimension> worldPoint;
   Point<double, TDimension> transformedWorldPoint;
-  Point<double, TDimension> outputObjectPoint;
   Point<double, TDimension> outputPoint;
   CovariantVector< double, TDimension > normal1;
   CovariantVector< double, TDimension > normal2;
@@ -74,6 +73,7 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
   strcpy( soTypeName, "VesselTubeSpatialObject" );
   typename TubeType::ChildrenListPointer inputTubeList =
     inputGroup->GetChildren( inputGroup->GetMaximumDepth(), soTypeName );
+
   for( TubeIterator = inputTubeList->begin();
     TubeIterator != inputTubeList->end();
     TubeIterator++ )
@@ -87,10 +87,6 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
       inputIndexToObjectTransform =
       inputTube->GetIndexToObjectTransform();
 
-    typename TubeType::AffineGeometryFrameType::Pointer
-      inputIndexToObjectFrame =
-      inputTube->GetAffineGeometryFrame();
-
     typename TubeType::TransformType::Pointer
       inputIndexToWorldTransform =
       inputTube->GetIndexToWorldTransform();
@@ -103,14 +99,19 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
 
     outputTube->CopyInformation( inputTube );
     outputTube->Clear();
-    outputTube->GetModifiableIndexToObjectTransform()->SetIdentity();
-    if( m_OutputIndexToObjectFrame.IsNotNull() )
+    if( m_OutputIndexToObjectTransform.IsNotNull() )
       {
-      outputTube->SetAffineGeometryFrame( m_OutputIndexToObjectFrame );
+      typename TubeType::TransformType::Pointer tfm = TubeType::
+        TransformType::New();
+      tfm->SetIdentity();
+      tfm->SetMatrix( m_OutputIndexToObjectTransform->GetMatrix() );
+      tfm->SetOffset( m_OutputIndexToObjectTransform->GetOffset() );
+      outputTube->SetObjectToParentTransform( tfm );
+      outputTube->SetSpacing( m_OutputIndexToObjectTransform->GetScale() );
       }
     else
       {
-      outputTube->SetAffineGeometryFrame( inputIndexToObjectFrame );
+      outputTube->SetSpacing( inputTube->GetSpacing() );
       }
 
     outputTube->ComputeObjectToWorldTransform();
@@ -141,8 +142,6 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
 
       transformedWorldPoint = m_Transform->TransformPoint( worldPoint );
 
-      outputObjectPoint = outputInverseIndexToWorldTransform->
-        TransformPoint( transformedWorldPoint );
       outputPoint = outputInverseIndexToWorldTransform->
         TransformPoint( transformedWorldPoint );
 
@@ -221,7 +220,8 @@ TubeToTubeTransformFilter< TTransformType,TDimension >
   Superclass::PrintSelf(os,indent);
 
   os << indent << "Transformation: " << m_Transform << std::endl;
-  os << indent << "Frame: " << m_OutputIndexToObjectFrame << std::endl;
+  os << indent << "OutputIndexToObject Transform: " <<
+    m_OutputIndexToObjectTransform << std::endl;
 }
 
 } // End namespace tube
