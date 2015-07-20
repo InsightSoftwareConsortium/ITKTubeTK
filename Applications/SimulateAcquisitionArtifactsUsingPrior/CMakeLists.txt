@@ -51,8 +51,9 @@ include( ${ITK_USE_FILE} )
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} TubeTKNumerics ITKStatistics ITKOptimizers
-    ITKIOTransformBase
+  TARGET_LIBRARIES
+    ${ITK_LIBRARIES} ITKStatistics ITKOptimizers ITKIOTransformBase
+    TubeTKNumerics TubeTKCommon
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/CLI
     ${TubeTK_SOURCE_DIR}/Base/Common

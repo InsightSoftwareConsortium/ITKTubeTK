@@ -77,9 +77,6 @@ add_library( TubeTKNumerics STATIC
   ${TubeTK_Base_Numerics_HXX_Files}
   ${TubeTK_Base_Numerics_SRCS} )
 
-target_link_libraries( TubeTKNumerics
-  TubeTKCommon ${ITK_LIBRARIES} )
-
 set( TARGETS TubeTKNumerics )
 TubeTKMacroInstallPlugins( ${TARGETS} )
 
