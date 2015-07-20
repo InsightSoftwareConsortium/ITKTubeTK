@@ -43,11 +43,6 @@ set( TubeTK_Base_Segmentation_HXX_Files
 
 add_library( TubeTKSegmentation INTERFACE )
 
-target_link_libraries( TubeTKSegmentation INTERFACE
-  TubeTKCommon TubeTKNumerics TubeTKFiltering
-  ${ITK_LIBRARIES}
-)
-
 TubeTKMacroInstallPlugins( TubeTKSegmentation )
 
 if( BUILD_TESTING )

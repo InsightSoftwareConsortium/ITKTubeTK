@@ -44,7 +44,9 @@ include( ${SlicerExecutionModel_USE_FILE} )
 SEMMacroBuildCLI(
   NAME ${PROJECT_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} TubeTKNumerics ITKIOMeta ITKStatistics
+  TARGET_LIBRARIES
+    TubeTKSegmentation TubeTKNumerics TubeTKCommon ITKIOMeta ITKStatistics
+    ${ITK_LIBRARIES}
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/CLI
     ${TubeTK_SOURCE_DIR}/Base/Common

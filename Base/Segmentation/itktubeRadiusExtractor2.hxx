@@ -32,6 +32,9 @@ limitations under the License.
 
 #include "tubeMatrixMath.h"
 #include "tubeTubeMath.h"
+#include "tubeUserFunction.h"
+#include "tubeParabolicFitOptimizer1D.h"
+#include "tubeSplineApproximation1D.h"
 
 #include <itkMinimumMaximumImageFilter.h>
 
@@ -40,6 +43,36 @@ namespace itk
 
 namespace tube
 {
+
+template< class TInputImage >
+class LocalMedialnessSplineValueFunction
+: public ::tube::UserFunction< int, double >
+{
+public:
+
+  LocalMedialnessSplineValueFunction( RadiusExtractor2< TInputImage > *
+    _radiusExtractor )
+    {
+    m_Value = 0;
+
+    m_RadiusExtractor = _radiusExtractor;
+    }
+
+  const double & Value( const int & x )
+    {
+    m_Value = m_RadiusExtractor->GetKernelMedialness( x *
+      m_RadiusExtractor->GetRadiusTolerance() );
+
+    return m_Value;
+    }
+
+private:
+
+  double   m_Value;
+
+  typename RadiusExtractor2< TInputImage >::Pointer   m_RadiusExtractor;
+};
+
 
 /** Constructor */
 template< class TInputImage >
@@ -51,11 +84,11 @@ RadiusExtractor2<TInputImage>
   m_DataMin = 0;
   m_DataMax = -1;
 
-  m_RadiusStart = 0.5;
-  m_RadiusMin = 0.3;
+  m_RadiusStart = 1.5;
+  m_RadiusMin = 0.25;
   m_RadiusMax = 6.0;
-  m_RadiusStep = 0.1;
-  m_RadiusTolerance = 0.01;
+  m_RadiusStep = 0.5;
+  m_RadiusTolerance = 0.5;
 
   m_MinMedialness = 0.15;       // 0.015; larger = harder
   m_MinMedialnessStart = 0.1;
@@ -511,6 +544,37 @@ bool
 RadiusExtractor2<TInputImage>
 ::UpdateKernelOptimalRadius( void )
 {
+  ::tube::UserFunction< int, double > * myFunc = new
+    LocalMedialnessSplineValueFunction< TInputImage >( this );
+
+  ::tube::ParabolicFitOptimizer1D * opt = new
+    ::tube::ParabolicFitOptimizer1D();
+  opt->SetXStep( m_RadiusStep / m_RadiusTolerance );
+  opt->SetTolerance( 1 );
+  opt->SetMaxIterations( 20 );
+  opt->SetSearchForMin( false );
+  opt->SetXMin( (int)vnl_math_ceil( m_RadiusMin / m_RadiusTolerance ) );
+  opt->SetXMax( (int)vnl_math_floor( m_RadiusMax / m_RadiusTolerance ) );
+
+  ::tube::SplineApproximation1D * spline = new
+    ::tube::SplineApproximation1D( myFunc, opt );
+
+  spline->SetClip( true );
+  spline->SetXMin( (int)vnl_math_ceil( m_RadiusMin / m_RadiusTolerance ) );
+  spline->SetXMax( (int)vnl_math_floor( m_RadiusMax / m_RadiusTolerance ) );
+
+  double x = m_RadiusStart / m_RadiusTolerance;
+  double xVal = myFunc->Value( x );
+  bool result = spline->Extreme( &x, &xVal );
+  m_KernelOptimalRadius = x * m_RadiusTolerance;
+  m_KernelOptimalRadiusMedialness = xVal;
+
+  delete spline;
+  delete opt;
+  delete myFunc;
+
+  return result;
+  /*
   double r0 = m_RadiusStart;
   r0 = static_cast<int>( r0 / m_RadiusStep ) * m_RadiusStep;
   double dir = 1;
@@ -527,12 +591,21 @@ RadiusExtractor2<TInputImage>
   double r0MaxMedialness = this->GetKernelMedialness( r0 );
   bool first = true;
   bool done = false;
+  double curRadiusStep = m_RadiusStep;
   while( !done )
     {
-    double tempR0 = r0 + dir * m_RadiusStep;
+    double tempR0 = r0 + dir * curRadiusStep;
     if( tempR0 < m_RadiusMin || tempR0 > m_RadiusMax )
       {
-      done = true;
+      dir *= -1;
+      if( first )
+        {
+        first = false;
+        }
+      else
+        {
+        done = true;
+        }
       }
     else
       {
@@ -546,8 +619,54 @@ RadiusExtractor2<TInputImage>
         }
       else if( first )
         {
+        if( curRadiusStep <= m_RadiusTolerance )
+          {
+          first = false;
+          dir *= -1;
+          curRadiusStep = m_RadiusStep * 0.75;
+          }
+        }
+      else
+        {
+        done = true;
+        }
+      }
+    }
+  while( !done )
+    {
+    double tempR0 = r0 + dir * curRadiusStep;
+    if( tempR0 < m_RadiusMin || tempR0 > m_RadiusMax )
+      {
+      curRadiusStep *= 0.75;
+      if( curRadiusStep <= m_RadiusTolerance )
+        {
+        done = true;
+        }
+      }
+    else
+      {
+      double tempR0Med = this->GetKernelMedialness( tempR0 );
+      if( tempR0Med > r0MaxMedialness )
+        {
+        r0 = tempR0;
+        r0Max = tempR0;
+        r0MaxMedialness = tempR0Med;
         first = false;
-        dir *= -1;
+        curRadiusStep *= 1.1;
+        if( curRadiusStep > m_RadiusStep )
+          {
+          curRadiusStep = m_RadiusStep;
+          }
+        }
+      else if( first )
+        {
+        curRadiusStep *= 0.75;
+        if( curRadiusStep <= m_RadiusTolerance )
+          {
+          first = false;
+          dir *= -1;
+          curRadiusStep = m_RadiusStep * 0.75;
+          }
         }
       else
         {
@@ -582,6 +701,7 @@ RadiusExtractor2<TInputImage>
     }
 
   return true;
+  */
 }
 
 template< class TInputImage >

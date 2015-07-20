@@ -50,11 +50,6 @@ set( TubeTK_Base_Registration_HXX_Files
 
 add_library( TubeTKRegistration INTERFACE )
 
-target_link_libraries( TubeTKRegistration INTERFACE
-  TubeTKCommon TubeTKNumerics TubeTKFiltering
-  ${ITK_LIBRARIES}
-)
-
 TubeTKMacroInstallPlugins( TubeTKRegistration )
 
 if( BUILD_TESTING )

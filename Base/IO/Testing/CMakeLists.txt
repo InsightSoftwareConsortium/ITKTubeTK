@@ -75,7 +75,7 @@ include_directories(
 add_executable( tubeBaseIOHeaderTest
   tubeBaseIOHeaderTest.cxx )
 target_link_libraries( tubeBaseIOHeaderTest
-  ${ITK_LIBRARIES} )
+  TubeTKCommon TubeTKNumerics TubeTKIO ${ITK_LIBRARIES} )
 
 SEMMacroBuildCLI(
   NAME tubeBaseIOTests
@@ -83,8 +83,9 @@ SEMMacroBuildCLI(
     ${tubeBaseIOTests_SRCS}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
-    TubeTKIO
+    TubeTKCommon
     TubeTKNumerics
+    TubeTKIO
     ${ITK_LIBRARIES}
     ITKIOMeta
   INCLUDE_DIRECTORIES

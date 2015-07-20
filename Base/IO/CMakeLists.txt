@@ -58,8 +58,6 @@ add_library( TubeTKIO STATIC
   ${TubeTK_Base_IO_HXX_Files}
   ${TubeTK_Base_IO_SRCS} )
 
-target_link_libraries( TubeTKIO TubeTKFiltering ${ITK_LIBRARIES} )
-
 set( TARGETS TubeTKIO )
 TubeTKMacroInstallPlugins( ${TARGETS} )
 
