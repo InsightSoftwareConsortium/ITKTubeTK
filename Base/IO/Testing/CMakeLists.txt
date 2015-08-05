@@ -77,12 +77,18 @@ add_executable( tubeBaseIOHeaderTest
 target_link_libraries( tubeBaseIOHeaderTest
   TubeTKCommon TubeTKNumerics TubeTKIO ${ITK_LIBRARIES} )
 
+set( tubeBaseIO_External_Libraries )
+if( TubeTK_USE_GPU_ARRAYFIRE )
+  set( tubeBaseIO_External_Libraries ${ArrayFire_LIBRARIES} )
+endif( TubeTK_USE_GPU_ARRAYFIRE )
+
 SEMMacroBuildCLI(
   NAME tubeBaseIOTests
   ADDITIONAL_SRCS
     ${tubeBaseIOTests_SRCS}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
+    ${tubeBaseIO_External_Libraries}
     TubeTKCommon
     TubeTKNumerics
     TubeTKIO

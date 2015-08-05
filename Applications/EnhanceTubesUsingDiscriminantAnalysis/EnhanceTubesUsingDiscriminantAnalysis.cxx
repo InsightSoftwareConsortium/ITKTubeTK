@@ -144,7 +144,7 @@ int DoIt( int argc, char * argv[] )
     tubeFilter->SetScales( tubeScales );
 
     tubeFilter->GetPDFSegmenter()->
-      SetProbabilityImageSmoothingStandardDeviation( tubeScales[0]/2 );
+      SetProbabilityImageSmoothingStandardDeviation( tubeScales[0] );
 
     tubeFilter->GetPDFSegmenter()->
       SetHistogramSmoothingStandardDeviation( 10 );

@@ -246,8 +246,8 @@ int DoIt( int argc, char * argv[] )
     maxIndx[i] = region.GetIndex()[i] + region.GetSize()[i] - 10;
     }
 
-  ridgeExtractor->SetMinRidgeness( 0.8 );
-  ridgeExtractor->SetMinRidgenessStart( 0.8 );
+  ridgeExtractor->SetMinRidgeness( 0.6 );
+  ridgeExtractor->SetMinRidgenessStart( 0.6 );
   ridgeExtractor->SetMinRoundness( 0 );
   ridgeExtractor->SetMinRoundnessStart( 0 );
   ridgeExtractor->SetMinCurvature( 0 );
@@ -416,13 +416,13 @@ int DoIt( int argc, char * argv[] )
     {
     scaleMax = 10 * scaleMin;
     }
-  double scaleRange = 0.2 * ( scaleMax - scaleMin );
+  double scaleRange = scaleMax - scaleMin;
   double ridgeScale = scaleMin + 0.25 * scaleRange;
-  double ridgeScaleKernelExtent = 2.0;
+  double ridgeScaleKernelExtent = 2.5;
 
-  bool   ridgeDynamicScale = true;
+  bool   ridgeDynamicScale = false;
 
-  bool   ridgeDynamicStepSize = true;
+  bool   ridgeDynamicStepSize = false;
 
   double ridgeStepX = 0.1;
 
@@ -430,14 +430,10 @@ int DoIt( int argc, char * argv[] )
 
   double ridgeMaxXChange = 3.0;
 
-  int clippedMax = (int)(tube.size() * 0.001);
-  int clippedMaxStart = (int)(tube.size() * 0.0005);
-
-  int curvatureClippedMax = (int)(tube.size() * 0.00001);
-  int curvatureClippedMaxStart = (int)(tube.size() * 0.000001);
-
-  int levelnessClippedMax = (int)(tube.size() * 0.0001);
-  int levelnessClippedMaxStart = (int)(tube.size() * 0.00001);
+  double portion = 1.0 / 250.0;
+  int clippedMax = (int)(tube.size() * portion);
+  portion = 1.0 / 500.0;
+  int clippedMaxStart = (int)(tube.size() * portion);
 
   sort_column = 1;
   std::sort( tube.begin(), tube.end(), sort_column_compare );
@@ -451,13 +447,13 @@ int DoIt( int argc, char * argv[] )
 
   sort_column = 3;
   std::sort( tube.begin(), tube.end(), sort_column_compare );
-  double ridgeMinCurvature = tube[curvatureClippedMax][3];
-  double ridgeMinCurvatureStart = tube[curvatureClippedMaxStart][3];
+  double ridgeMinCurvature = tube[clippedMax][3];
+  double ridgeMinCurvatureStart = tube[clippedMaxStart][3];
 
   sort_column = 4;
   std::sort( tube.begin(), tube.end(), sort_column_compare );
-  double ridgeMinLevelness = tube[levelnessClippedMax][4];
-  double ridgeMinLevelnessStart = tube[levelnessClippedMaxStart][4];
+  double ridgeMinLevelness = tube[clippedMax][4];
+  double ridgeMinLevelnessStart = tube[clippedMaxStart][4];
 
   int    ridgeMaxRecoveryAttempts = 3;
 

@@ -93,7 +93,7 @@ RidgeExtractor<TInputImage>
   m_DataMax = NumericTraits< double >::min();
   m_DataRange = NumericTraits< double >::max();
 
-  m_StepX = 0.2;
+  m_StepX = 0.1;
   m_X.set_size( ImageDimension );
   m_X.fill( 0.0 );
   m_XP.set_size( ImageDimension );
@@ -114,22 +114,22 @@ RidgeExtractor<TInputImage>
 
   m_DynamicScale = true;
   m_DynamicScaleUsed = 3;
-  m_DynamicStepSize = true;
+  m_DynamicStepSize = false;
   m_RadiusExtractor = NULL;
 
   m_ExtractBoundMin.Fill( 0 );
   m_ExtractBoundMax.Fill( 0 );
 
-  m_MaxTangentChange = 0.80;
+  m_MaxTangentChange = 0.75;
   m_MaxXChange = 3.0;
-  m_MinRidgeness = 0.95;    // near 1 = harder
-  m_MinRidgenessStart = 0.925;
-  m_MinRoundness = 0.5;    // near 1 = harder
-  m_MinRoundnessStart = 0.45;
-  m_MinCurvature = 0.25;
-  m_MinCurvatureStart = 0.2;
-  m_MinLevelness = 0.7;
-  m_MinLevelnessStart = 0.65;
+  m_MinRidgeness = 0.80;    // near 1 = harder
+  m_MinRidgenessStart = 0.79;
+  m_MinRoundness = 0.001;    // near 1 = harder
+  m_MinRoundnessStart = 0.0005;
+  m_MinCurvature = 0.01;
+  m_MinCurvatureStart = 0.005;
+  m_MinLevelness = 0.025;
+  m_MinLevelnessStart = 0.01;
   m_MaxRecoveryAttempts = 4;
 
   m_SplineValueFunc = new RidgeExtractorSplineValue<TInputImage>( this );
@@ -139,7 +139,7 @@ RidgeExtractor<TInputImage>
   m_DataSpline->SetClip( true );
 
   m_DataSpline->GetOptimizerND()->SetSearchForMin( false );
-  m_DataSpline->GetOptimizerND()->SetTolerance( 0.01 );
+  m_DataSpline->GetOptimizerND()->SetTolerance( 0.001 );
   m_DataSpline->GetOptimizerND()->SetMaxIterations( 200 );
   m_DataSpline->GetOptimizerND()->SetMaxLineSearches( 10 );
   vnl_vector< double > xStep( ImageDimension, 0.1 );
@@ -861,7 +861,7 @@ RidgeExtractor<TInputImage>
         }
       if( !m_DynamicScale && GetScale() != iScale0 )
         {
-        SetScale( iScale0+0.5*( iScale0-GetScale() ) );
+        SetScale( iScale0 + 0.5 * ( GetScale() - iScale0 ) );
         }
 
       if( vnl_math_abs( dot_product( lStepDir, pStepDir ) ) <
