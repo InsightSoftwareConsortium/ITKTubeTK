@@ -50,8 +50,6 @@ add_library( TubeTKCommon STATIC
   ${TubeTK_Base_Common_HXX_Files}
   ${TubeTK_Base_Common_CXX_Files} )
 
-target_link_libraries( TubeTKCommon ${ITK_LIBRARIES} ITKIOMeta )
-
 TubeTKMacroInstallPlugins( TubeTKCommon )
 
 SEMMacroBuildCLI(

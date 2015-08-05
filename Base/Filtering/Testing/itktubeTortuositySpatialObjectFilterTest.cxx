@@ -27,20 +27,19 @@ limitations under the License.
 
 // ITK includes
 #include <itkMath.h>
-#include <itkSpatialObjectWriter.h>
 
 // STD includes
 #include <iomanip>
 
-typedef itk::VesselTubeSpatialObject<3> VesselTubeType;
-typedef VesselTubeType::VectorType VectorType;
-typedef itk::tube::TortuositySpatialObjectFilter<VesselTubeType> FilterType;
-
-//-----------------------------------------------------------------------------
-VesselTubeType::Pointer GenerateStraightTube(VectorType start,
-                                             VectorType increment,
-                                             int numberOfPoints)
+//--------------------------------------------------------------------------
+itk::VesselTubeSpatialObject<3>::Pointer
+GenerateStraightTube( itk::VesselTubeSpatialObject<3>::VectorType
+  start, itk::VesselTubeSpatialObject<3>::VectorType increment,
+  int numberOfPoints)
 {
+  typedef itk::VesselTubeSpatialObject<3>  VesselTubeType;
+  typedef VesselTubeType::VectorType       VectorType;
+
   VesselTubeType::Pointer vessel = VesselTubeType::New();
   VesselTubeType::PointListType pointList;
 
@@ -68,13 +67,15 @@ double Modulus(double v, double mod)
   return Modulus(v-mod, mod);
 }
 
-//-----------------------------------------------------------------------------
-VesselTubeType::Pointer GenerateCosTube(double length,
-                                        double amplitude,
-                                        double frequency
-                                        )
+//--------------------------------------------------------------------------
+void
+GenerateCosTube( double length, double amplitude, double frequency,
+  itk::VesselTubeSpatialObject<3>::Pointer & vessel )
 {
-  VesselTubeType::Pointer vessel = VesselTubeType::New();
+  typedef itk::VesselTubeSpatialObject<3>  VesselTubeType;
+  typedef VesselTubeType::VectorType       VectorType;
+
+  vessel = VesselTubeType::New();
   VesselTubeType::PointListType pointList;
 
   VectorType pos(0.0);
@@ -95,12 +96,18 @@ VesselTubeType::Pointer GenerateCosTube(double length,
 
   vessel->SetPoints(pointList);
   std::cout<<"Cosine vessel generated"<<std::endl;
-  return vessel;
 }
 
-//-----------------------------------------------------------------------------
-bool TestVesselMetrics(VesselTubeType::Pointer vessel, double results[])
+//--------------------------------------------------------------------------
+bool TestVesselMetrics( itk::VesselTubeSpatialObject<3>::Pointer
+  vessel, double results[])
 {
+  typedef itk::VesselTubeSpatialObject<3>
+    VesselTubeType;
+
+  typedef itk::tube::TortuositySpatialObjectFilter<VesselTubeType>
+    FilterType;
+
   // Run the metrics
   FilterType::Pointer filter = FilterType::New();
   filter->SetMeasureFlag(FilterType::BITMASK_ALL_METRICS);
@@ -199,12 +206,10 @@ bool TestVesselMetrics(VesselTubeType::Pointer vessel, double results[])
   return true;
 }
 
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 int itktubeTortuositySpatialObjectFilterTest( int, char*[] )
 {
-
-//  typedef itk::SpatialObjectWriter< 3 > WriterType;
-//  WriterType::Pointer writer = WriterType::New();
+  typedef itk::VesselTubeSpatialObject<3> VesselTubeType;
 
   //
   // Test straight spatial objects
@@ -243,13 +248,6 @@ int itktubeTortuositySpatialObjectFilterTest( int, char*[] )
     std::cerr<<"Straight object test #"<<i<<std::endl;
     VesselTubeType::Pointer vessel =
       GenerateStraightTube(start[i], increment[i], numberOfPoints[i]);
-
-//    std::stringstream ss;
-//    ss << "/home/matthieu/Data/Vessels/TortuosityTests/line_test" << i << ".tre";
-//    writer->SetFileName(ss.str().c_str());
-//    writer->SetInput(vessel);
-//    writer->Update();
-//    std::cout<<"File "<<ss.str().c_str()<<" written"<<std::endl;
 
     if (!TestVesselMetrics(vessel, straightObjectResults[i]))
       {
@@ -338,16 +336,9 @@ int itktubeTortuositySpatialObjectFilterTest( int, char*[] )
 
   for (int i = 0; i < NUMBER_OF_COSINUS_OBJECT_TESTS; ++i)
     {
-    std::cerr<<"Cos object test #"<<i<<std::endl;
-    VesselTubeType::Pointer vessel =
-      GenerateCosTube(length[i], amplitude[i], frequency[i]);
-
-//    std::stringstream ss;
-//    ss << "/home/matthieu/Data/Vessels/TortuosityTests/cos_test" << i << ".tre";
-//    writer->SetFileName(ss.str().c_str());
-//    writer->SetInput(vessel);
-//    writer->Update();
-//    std::cout<<"File "<<ss.str().c_str()<<" written"<<std::endl;
+    std::cerr << "Cos object test #" << i << std::endl;
+    VesselTubeType::Pointer vessel;
+    GenerateCosTube(length[i], amplitude[i], frequency[i], vessel);
 
     if (!TestVesselMetrics(vessel, cosResults[i]))
       {

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>TubeMath (TubeTK)</title>
+  <description>Manipulate the tubes in a tube tree.</description>
+  <version>1.0</version>
+  <documentation-url>http://tubetk.org</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+  </parameters>
+</executable>

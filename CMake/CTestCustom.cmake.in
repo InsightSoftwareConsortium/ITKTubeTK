@@ -168,6 +168,8 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
     # Git
     "HEAD is now"
 
+    "unrecognized command line option \"-Wno-unused-local-typedefs\""
+
     #Mac Framework
     "System/Library/Frameworks"
 
@@ -250,6 +252,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
     "vtkGeoAdaptiveArcs"
     "vtkGESignaReader"
     "vtkHardwareSelector"
+    "vtkImageBSplineInterpolator"
     "vtkImageCroppingRegionsWidget"
     "vtkImageReader"
     "vtkImageReslice"

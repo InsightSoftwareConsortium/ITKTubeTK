@@ -91,7 +91,7 @@ public:
   /** Set the Transformation */
   itkSetObjectMacro( Transform, TransformType );
 
-  /** Set the Transformation */
+  /** Set the Object to Index transform for the output tubes */
   itkSetObjectMacro( OutputIndexToObjectTransform, TubeTransformType );
 
   /** Get the output tubenet */
@@ -109,7 +109,9 @@ private:
   void operator=(const Self&);            //purposely not implemented
 
   typename TransformType::Pointer            m_Transform;
-  typename TubeType::TransformType::Pointer  m_OutputIndexToObjectTransform;
+
+  typename TubeTransformType::Pointer        m_OutputIndexToObjectTransform;
+
   typename GroupType::Pointer                m_Output;
 
 }; // End class TubeToTubeTransformFilter

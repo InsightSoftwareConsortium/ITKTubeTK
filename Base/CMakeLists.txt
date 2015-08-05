@@ -32,9 +32,9 @@ include_directories( CLI
   )
 add_subdirectory( CLI )
 add_subdirectory( Common )
+add_subdirectory( Numerics )
 add_subdirectory( IO )
 add_subdirectory( ObjectDocuments )
-add_subdirectory( Numerics )
 
 if( TubeTK_USE_PYTHON )
   add_subdirectory( Python )

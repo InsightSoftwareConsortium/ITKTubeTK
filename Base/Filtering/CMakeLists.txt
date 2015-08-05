@@ -84,9 +84,6 @@ endif( TubeTK_USE_GPU_ARRAYFIRE )
 
 add_library( TubeTKFiltering INTERFACE )
 
-target_link_libraries( TubeTKFiltering INTERFACE
-  TubeTKCommon TubeTKNumerics ${ITK_LIBRARIES} )
-
 if( TubeTK_USE_GPU_ARRAYFIRE )
   target_link_libraries( TubeTKFiltering INTERFACE ${ArrayFire_LIBRARIES} )
 endif( TubeTK_USE_GPU_ARRAYFIRE )
