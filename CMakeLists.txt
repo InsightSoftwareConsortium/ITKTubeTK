@@ -36,6 +36,13 @@ set( TubeTK_VERSION_MAJOR "0" )
 set( TubeTK_VERSION_MINOR "9" )
 set( TubeTK_VERSION_PATCH "0" )
 
+mark_as_advanced( CMAKE_BACKWARDS_COMPATIBILITY )
+mark_as_advanced( EXECUTABLE_OUTPUT_PATH )
+mark_as_advanced( LIBRARY_OUTPUT_PATH )
+mark_as_advanced( CMAKE_INSTALL_PREFIX )
+mark_as_advanced( BUILD_TESTING )
+mark_as_advanced( BUILD_DOCUMENTATION )
+
 include( TubeTKFunctionToday )
 TubeTKFunctionToday( TubeTK_VERSION_BUILD )
 
@@ -209,7 +216,8 @@ if( TubeTK_BUILD_USING_SLICER )
     CURL_INCLUDE_DIR CURL_LIBRARY ZLIB_LIBRARY ZLIB_ROOT ZLIB_INCLUDE_DIR
     jpPlot_DIR MIDAS_PACKAGE_API_KEY MIDAS_PACKAGE_EMAIL MIDAS_PACKAGE_URL
     SimpleITK_DIR GENERATECLP_EXE OPENSSL_CRYPTO_LIBRARY OPENSSL_INCLUDE_DIR
-    OPENSSL_SSL_LIBRARY )
+    OPENSSL_SSL_LIBRARY HIDE_CONSOLE NUMPY_INCLUDE_DIR SH_EXECUTABLE
+    USE_SYSTEM_CTK )
 else( TubeTK_BUILD_USING_SLICER )
   mark_as_advanced( CLEAR TubeTK_USE_ITK TubeTK_USE_VTK TubeTK_USE_QT )
   if( TubeTK_USE_QT )
@@ -242,7 +250,6 @@ endif( TubeTK_USE_BOOST )
 #
 option( TubeTK_USE_GPU_ARRAYFIRE
   "Use the ArrayFire library to speedup filtering opertions using the GPU." OFF)
-mark_as_advanced( TubeTK_USE_GPU_ARRAYFIRE )
 
 #
 #  Cppcheck setup.
@@ -322,6 +329,7 @@ mark_as_advanced( USE_SYSTEM_ITK )
 option( USE_SYSTEM_JSONCPP
   "Exclude JsonCpp from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_JSONCPP )
+mark_as_advanced( JsonCpp_DIR )
 
 #
 # KWStyle setup.
@@ -343,6 +351,7 @@ endif( MSVC )
 option( USE_SYSTEM_LIBSVM
   "Exclude LIBSVM from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_LIBSVM )
+mark_as_advanced( LIBSVM_DIR )
 
 #
 # Qt framework setup.
@@ -358,7 +367,7 @@ if( TubeTK_USE_QT )
   option( USE_SYSTEM_CTK
     "Exclude CTK from superbuild and use an existing build." OFF )
   if( NOT TubeTK_BUILD_USING_SLICER )
-    mark_as_advanced( USE_SYSTEM_CTK )
+    mark_as_advanced( CLEAR USE_SYSTEM_CTK )
   endif( NOT TubeTK_BUILD_USING_SLICER )
 
   find_package( Qt4 )
@@ -440,6 +449,7 @@ mark_as_advanced( CMAKE_FIRST_PASS_COMPLETED )
 if( NOT DEFINED TubeTK_CONFIG_BINARY_DIR )
   set( TubeTK_CONFIG_BINARY_DIR ${CMAKE_BINARY_DIR} )
 endif( NOT DEFINED TubeTK_CONFIG_BINARY_DIR )
+mark_as_advanced( TubeTK_CONFIG_BINARY_DIR )
 
 #
 # Setup Superbuild

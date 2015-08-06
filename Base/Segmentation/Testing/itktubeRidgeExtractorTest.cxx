@@ -28,7 +28,7 @@ limitations under the License.
 #include <itkImageRegionIteratorWithIndex.h>
 
 int itktubeRidgeExtractorTest( int argc, char * argv[] )
-  {
+{
   if( argc != 3 )
     {
     std::cout
@@ -168,6 +168,14 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
               indx[i] = contIndx[i];
               }
             imOut->SetPixel( indx, 1 );
+            std::cout << "      ridgeness = " <<
+              ridgeOp->GetCurrentRidgeness() << std::endl;
+            std::cout << "      roundness = " <<
+              ridgeOp->GetCurrentRoundness() << std::endl;
+            std::cout << "      curvature = " <<
+              ridgeOp->GetCurrentCurvature() << std::endl;
+            std::cout << "      levelness = " <<
+              ridgeOp->GetCurrentLevelness() << std::endl;
             }
           }
         break;
@@ -185,4 +193,4 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
   imWriter->Update();
 
   return EXIT_SUCCESS;
-  }
+}

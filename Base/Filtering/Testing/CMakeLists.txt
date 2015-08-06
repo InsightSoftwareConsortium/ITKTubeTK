@@ -68,11 +68,8 @@ set( tubeBaseFilteringTests_SRCS
 
 # Add tests of filters based on the ArrayFire Library
 if( TubeTK_USE_GPU_ARRAYFIRE )
-
   list( APPEND tubeBaseFilteringTests_SRCS
-    itktubeGPUArrayFireGaussianDerivativeFilterTest.cxx
-  )
-
+    itktubeGPUArrayFireGaussianDerivativeFilterTest.cxx )
 endif( TubeTK_USE_GPU_ARRAYFIRE )
 
 include_directories(
@@ -84,6 +81,9 @@ add_executable( tubeBaseFilteringHeaderTest
   tubeBaseFilteringHeaderTest.cxx )
 target_link_libraries( tubeBaseFilteringHeaderTest
   TubeTKFiltering ${ITK_LIBRARIES} )
+if( TubeTK_USE_GPU_ARRAYFIRE )
+  target_link_libraries( tubeBaseFilteringHeaderTest ${ArrayFire_LIBRARIES} )
+endif( TubeTK_USE_GPU_ARRAYFIRE )
 
 SEMMacroBuildCLI(
   NAME tubeBaseFilteringTests
@@ -102,6 +102,9 @@ SEMMacroBuildCLI(
   INSTALL_ARCHIVE_DESTINATION bin
   EXECUTABLE_ONLY
   )
+if( TubeTK_USE_GPU_ARRAYFIRE )
+  target_link_libraries( tubeBaseFilteringTests ${ArrayFire_LIBRARIES} )
+endif( TubeTK_USE_GPU_ARRAYFIRE )
 
 add_test( NAME tubeBaseFilteringHeaderTest
   COMMAND ${BASE_FILTERING_HEADER_TEST} )
@@ -151,50 +154,49 @@ Midas3FunctionAddTest( NAME itktubeFFTGaussianDerivativeIFFTFilterTest3
 
 # GPU ArrayFire Gaussian Derivative Tests - begin
 if( TubeTK_USE_GPU_ARRAYFIRE )
+  Midas3FunctionAddTest( NAME itktubeGPUArrayFireGaussianDerivativeFilterTest1
+    COMMAND ${BASE_FILTERING_TESTS}
+      --compareIntensityTolerance 0.01
+      --compare MIDAS{itktubeGPUArrayFireGaussianDerivativeFilterTest1.mha.md5}
+        ${TEMP}/itktubeGPUArrayFireGaussianDerivativeFilterTest1.mha
+      itktubeGPUArrayFireGaussianDerivativeFilterTest
+        0 0 0.1 0.1
+        MIDAS{im0001.mha.md5}
+        ${TEMP}/itktubeGPUArrayFireGaussianDerivativeFilterTest1.mha )
 
-Midas3FunctionAddTest( NAME itktubeGPUArrayFireGaussianDerivativeFilterTest1
-  COMMAND ${BASE_FILTERING_TESTS}
-    --compareIntensityTolerance 0.01
-    --compare MIDAS{itktubeGPUArrayFireGaussianDerivativeFilterTest1.mha.md5}
-      ${TEMP}/itktubeGPUArrayFireGaussianDerivativeFilterTest1.mha
-    itktubeGPUArrayFireGaussianDerivativeFilterTest
-      0 0 0.1 0.1
-      MIDAS{im0001.mha.md5}
-      ${TEMP}/itktubeGPUArrayFireGaussianDerivativeFilterTest1.mha )
+  Midas3FunctionAddTest( NAME itktubeGPUArrayFireGaussianDerivativeFilterTest2
+    COMMAND ${BASE_FILTERING_TESTS}
+      --compareIntensityTolerance 0.01
+      --compare MIDAS{itktubeGPUArrayFireGaussianDerivativeFilterTest2.mha.md5}
+        ${TEMP}/itktubeGPUArrayFireGaussianDerivativeFilterTest2.mha
+      itktubeGPUArrayFireGaussianDerivativeFilterTest
+        0 1 0.1 1
+        MIDAS{im0001.mha.md5}
+        ${TEMP}/itktubeGPUArrayFireGaussianDerivativeFilterTest2.mha )
 
-Midas3FunctionAddTest( NAME itktubeGPUArrayFireGaussianDerivativeFilterTest2
-  COMMAND ${BASE_FILTERING_TESTS}
-    --compareIntensityTolerance 0.01
-    --compare MIDAS{itktubeGPUArrayFireGaussianDerivativeFilterTest2.mha.md5}
-      ${TEMP}/itktubeGPUArrayFireGaussianDerivativeFilterTest2.mha
-    itktubeGPUArrayFireGaussianDerivativeFilterTest
-      0 1 0.1 1
-      MIDAS{im0001.mha.md5}
-      ${TEMP}/itktubeGPUArrayFireGaussianDerivativeFilterTest2.mha )
-
-Midas3FunctionAddTest( NAME itktubeGPUArrayFireGaussianDerivativeFilterTest3
-  COMMAND ${BASE_FILTERING_TESTS}
-    --compareIntensityTolerance 0.01
-    --compare MIDAS{itktubeGPUArrayFireGaussianDerivativeFilterTest3.mha.md5}
-      ${TEMP}/itktubeGPUArrayFireGaussianDerivativeFilterTest3.mha
-    itktubeGPUArrayFireGaussianDerivativeFilterTest
-      2 2 2 2
-      MIDAS{im0001.mha.md5}
-      ${TEMP}/itktubeGPUArrayFireGaussianDerivativeFilterTest3.mha )
+  Midas3FunctionAddTest( NAME itktubeGPUArrayFireGaussianDerivativeFilterTest3
+    COMMAND ${BASE_FILTERING_TESTS}
+      --compareIntensityTolerance 0.01
+      --compare MIDAS{itktubeGPUArrayFireGaussianDerivativeFilterTest3.mha.md5}
+        ${TEMP}/itktubeGPUArrayFireGaussianDerivativeFilterTest3.mha
+      itktubeGPUArrayFireGaussianDerivativeFilterTest
+        2 2 2 2
+        MIDAS{im0001.mha.md5}
+        ${TEMP}/itktubeGPUArrayFireGaussianDerivativeFilterTest3.mha )
 
 endif( TubeTK_USE_GPU_ARRAYFIRE )
 # GPU ArrayFire Gaussian Derivative Tests - end
 
-    #--compare MIDAS{itktubeRidgeFFTFilterTest1.mha.md5}
-      #${TEMP}/itktubeRidgeFFTFilterTest1.mha
+#--compare MIDAS{itktubeRidgeFFTFilterTest1.mha.md5}
+#${TEMP}/itktubeRidgeFFTFilterTest1.mha
 Midas3FunctionAddTest( NAME itktubeRidgeFFTFilterTest1
   COMMAND ${BASE_FILTERING_TESTS}
     itktubeRidgeFFTFilterTest
       2
       MIDAS{Branch.n010.mha.md5}
-      ${TEMP}/itktubeRidgeFFTFilterTest1_Ridgeness.mha 
-      ${TEMP}/itktubeRidgeFFTFilterTest1_Roundness.mha 
-      ${TEMP}/itktubeRidgeFFTFilterTest1_Curvature.mha 
+      ${TEMP}/itktubeRidgeFFTFilterTest1_Ridgeness.mha
+      ${TEMP}/itktubeRidgeFFTFilterTest1_Roundness.mha
+      ${TEMP}/itktubeRidgeFFTFilterTest1_Curvature.mha
       ${TEMP}/itktubeRidgeFFTFilterTest1_Levelness.mha )
 
 add_test( NAME itktubeSheetnessMeasureImageFilterTest
