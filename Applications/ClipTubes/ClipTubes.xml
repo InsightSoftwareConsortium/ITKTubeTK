@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>BoxBelonging</title>
+  <description>First CLI Tutorial for boxBelonging</description>
+  <version>0.1</version>
+  <documentation-url></documentation-url>
+  <license></license>
+  <contributor>Lucas Gandel (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters.</description>
+    <file>
+      <name>inputTREFile</name>
+      <label>Input Tre File</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input TRE file containing disjoint tubes</description>
+    </file>
+  </parameters>
+</executable>
