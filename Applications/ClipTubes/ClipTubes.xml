@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <executable>
   <category>TubeTK</category>
-  <title>BoxBelonging</title>
-  <description>First CLI Tutorial for boxBelonging</description>
+  <title>Cliptubes</title>
+  <description>Return a set of tubes contained in a bounding box</description>
   <version>0.1</version>
   <documentation-url></documentation-url>
   <license></license>
@@ -16,7 +16,29 @@
       <label>Input Tre File</label>
       <channel>input</channel>
       <index>0</index>
-      <description>Input TRE file containing disjoint tubes</description>
+      <description>Input TRE file containing tubes</description>
     </file>
+    <double-vector>
+      <name>boxCorner</name>
+      <label>Top Left Corner of Bounding Box</label>
+      <description>3D position from where to start bounding box</description>
+      <!--<index>1</index>-->
+      <longflag>boxCorner</longflag>
+    </double-vector>
+    <double-vector>
+      <name>boxSize</name>
+      <label>Bounding Box Size </label>
+      <!--<index>2</index>-->
+      <description>Lenght (x radius), Height (y radius) and Depth (z radius) of the Box </description>
+      <longflag>boxSize</longflag>
+    </double-vector>
+<!--    <file>
+      <name>outputTREFile</name>
+      <label>Output TRE File</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Output TRE file containing a tree of tubes</description>
+    </file>-->
+
   </parameters>
 </executable>
