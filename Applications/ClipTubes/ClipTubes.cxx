@@ -9,6 +9,7 @@
 #include "metaScene.h"
 
 #include "itkSpatialObjectReader.h"
+#include "itkSpatialObjectWriter.h"
 #include "itkGroupSpatialObject.h"
 // #include "itkTubeSpatialObject.h"               // WARNING include?
 // #include "itkTubeSpatialObjectPoint.h"
@@ -20,8 +21,8 @@
 template< unsigned int VDimension >
 bool isInside (itk::Point<double,VDimension> pointPos, double tubeRadius, std::vector<double> boxPos, std::vector<double> boxSize)
 {
-  // Return a boolean indicating if a slice of the tube is included in the box
-  // A slice of the tube is considered as a point and an associated radius
+  // Return a boolean indicating if any slice of the tube is included in the box
+  // A slice is considered as a point and an associated radius
   bool hasXInside=false,hasYInside=false,hasZInside=false;
   
   if((pointPos[0]+tubeRadius)>=boxPos[0] && (pointPos[0]-tubeRadius)<=(boxPos[0]+boxSize[0]))
@@ -71,14 +72,20 @@ int DoIt (int argc, char * argv[])
                           + std::string( err.GetDescription() ) );
      return EXIT_FAILURE;
     }
-    
+  
+  
   // Get source tubes   
-  typename TubeGroupType::Pointer pTubeGroup = tubeFileReader->GetGroup();
-  typename TubeGroupType::ChildrenListPointer pTubeList = pTubeGroup->GetChildren();
-
+  tubeStandardOutputMacro( << "\n>> Finding Tubes" );
+  
+  typename TubeGroupType::Pointer pSourceTubeGroup = tubeFileReader->GetGroup();
+  typename TubeGroupType::ChildrenListPointer pSourceTubeList = pSourceTubeGroup->GetChildren();
+  
+  typename TubeGroupType::Pointer pTargetTubeGroup = TubeGroupType::New();//Target Group to save desired tubes
+//   typename TubeType::Pointer pTargetTube = TubeType::New();//Target Tube to add to Group
+  
   for( typename TubeGroupType::ChildrenListType::iterator
-       tubeList_it = pTubeList->begin();
-       tubeList_it != pTubeList->end(); ++tubeList_it)
+       tubeList_it = pSourceTubeList->begin();
+       tubeList_it != pSourceTubeList->end(); ++tubeList_it)
     {
       typename TubeType::Pointer pCurSourceTube = dynamic_cast< TubeType* >( tubeList_it->GetPointer() ); 
       //dynamic_cast verification
@@ -92,18 +99,49 @@ int DoIt (int argc, char * argv[])
 	{
 	  TubePointType curSourcePoint = *pointList_it;
 	  typename TubePointType::PointType curSourcePos = curSourcePoint.GetPosition();
+	  //Save tube if any point belongs to the box  
 	  if(isInside(curSourcePos,curSourcePoint.GetRadius(),boxCorner,boxSize))
-	  {
-	    std::cout<<pCurSourceTube->GetId()<<std::endl;
+	  { 
+	    
+	    pTargetTubeGroup->AddSpatialObject(pCurSourceTube);
 	    break;
-	  }  
-	 
+	  }  	 
 	}
     }
-  
-  
+    
+//    typename TubeGroupType::ChildrenListPointer pTargetTubeList = pTargetGroup->GetChildren(); 
+//    for( typename TubeGroupType::ChildrenListType::iterator
+//        targetTubeList_it = pTargetTubeList->begin();
+//        targetTubeList_it != pTargetTubeList->end(); ++targetTubeList_it)
+//      {
+// 	 std::cout<<(*targetTubeList_it)->GetId()<<std::endl;
+//      }  
+
+   // Write output TRE file   WARNING: Tubes will keep their ID from the Input file, should it be sorted?
+  tubeStandardOutputMacro(
+    << "\n>> Writing TRE file" );
+
+  typedef itk::SpatialObjectWriter< VDimension > TubeWriterType;
+  typename TubeWriterType::Pointer tubeWriter = TubeWriterType::New();
+
+  try
+    {
+    tubeWriter->SetFileName( outputTREFile.c_str() );
+    tubeWriter->SetInput(pTargetTubeGroup);
+    tubeWriter->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    tube::ErrorMessage( "Error writing TRE file: "
+                        + std::string( err.GetDescription() ) );
+//     timeCollector.Report();
+    return EXIT_FAILURE;
+    }
+
   return EXIT_SUCCESS;
 }
+
+
 // Main
 int main( int argc, char * argv[] )
 {

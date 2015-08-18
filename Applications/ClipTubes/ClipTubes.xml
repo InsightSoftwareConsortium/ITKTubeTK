@@ -32,13 +32,13 @@
       <description>Lenght (x radius), Height (y radius) and Depth (z radius) of the Box </description>
       <longflag>boxSize</longflag>
     </double-vector>
-<!--    <file>
+    <file>
       <name>outputTREFile</name>
       <label>Output TRE File</label>
       <channel>output</channel>
       <index>1</index>
-      <description>Output TRE file containing a tree of tubes</description>
-    </file>-->
+      <description>Output TRE file containing tubes going through the Box</description>
+    </file>
 
   </parameters>
 </executable>
