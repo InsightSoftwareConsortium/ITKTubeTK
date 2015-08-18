@@ -74,23 +74,28 @@ int DoIt (int argc, char * argv[])
     }
   
   
-  // Get source tubes   
-  tubeStandardOutputMacro( << "\n>> Finding Tubes" );
+  // Compute clipping   
+  tubeStandardOutputMacro( << "\n>> Finding Tubes for Clipping" );
   
   typename TubeGroupType::Pointer pSourceTubeGroup = tubeFileReader->GetGroup();
   typename TubeGroupType::ChildrenListPointer pSourceTubeList = pSourceTubeGroup->GetChildren();
   
   typename TubeGroupType::Pointer pTargetTubeGroup = TubeGroupType::New();//Target Group to save desired tubes
-//   typename TubeType::Pointer pTargetTube = TubeType::New();//Target Tube to add to Group
+  
+  int targetTubeId=0;
   
   for( typename TubeGroupType::ChildrenListType::iterator
        tubeList_it = pSourceTubeList->begin();
        tubeList_it != pSourceTubeList->end(); ++tubeList_it)
-    {
+    { 
+      //**** Source Tube **** :
       typename TubeType::Pointer pCurSourceTube = dynamic_cast< TubeType* >( tubeList_it->GetPointer() ); 
       //dynamic_cast verification
       if(!pCurSourceTube)
 	return EXIT_FAILURE;
+      
+      typename TubeType::PointListType TargetPointList;//Point List for TargetTube
+      
       //Get points in current source tube
       typename TubeType::PointListType pointList = pCurSourceTube->GetPoints(); 
       for( typename TubeType::PointListType::const_iterator
@@ -99,14 +104,38 @@ int DoIt (int argc, char * argv[])
 	{
 	  TubePointType curSourcePoint = *pointList_it;
 	  typename TubePointType::PointType curSourcePos = curSourcePoint.GetPosition();
-	  //Save tube if any point belongs to the box  
+	  //Save point in target tube if it belongs to the box  
 	  if(isInside(curSourcePos,curSourcePoint.GetRadius(),boxCorner,boxSize))
 	  { 
-	    
-	    pTargetTubeGroup->AddSpatialObject(pCurSourceTube);
-	    break;
+	    if(ClipTubes)
+	    {
+	      TargetPointList.push_back(curSourcePoint);
+	    }
+	    else
+	    {
+	       pCurSourceTube->SetId(targetTubeId);
+	       ++targetTubeId;
+	       pTargetTubeGroup->AddSpatialObject(pCurSourceTube);
+	       break;
+	    }  
 	  }  	 
-	}
+	  else
+	  {
+	    if(TargetPointList.size()>0)
+	    {
+	      //**** Target Tube **** :
+	      typename TubeType::Pointer pTargetTube = TubeType::New();//Target Tube to add to Group
+	      pTargetTube->SetId(targetTubeId);
+	      ++targetTubeId;
+	      //Save clipped tube
+	      pTargetTube->SetPoints(TargetPointList);
+	      pTargetTubeGroup->AddSpatialObject(pTargetTube);
+	      
+	      TargetPointList.clear();
+	    }
+	  }
+	} 
+     
     }
     
 //    typename TubeGroupType::ChildrenListPointer pTargetTubeList = pTargetGroup->GetChildren(); 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <executable>
   <category>TubeTK</category>
-  <title>Cliptubes</title>
+  <title>ClipTubes</title>
   <description>Return a set of tubes contained in a bounding box</description>
   <version>0.1</version>
   <documentation-url></documentation-url>
@@ -17,6 +17,13 @@
       <channel>input</channel>
       <index>0</index>
       <description>Input TRE file containing tubes</description>
+    </file> 
+    <file>
+      <name>outputTREFile</name>
+      <label>Output TRE File</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Output TRE file containing tubes going through the Box</description>
     </file>
     <double-vector>
       <name>boxCorner</name>
@@ -32,13 +39,13 @@
       <description>Lenght (x radius), Height (y radius) and Depth (z radius) of the Box </description>
       <longflag>boxSize</longflag>
     </double-vector>
-    <file>
-      <name>outputTREFile</name>
-      <label>Output TRE File</label>
-      <channel>output</channel>
-      <index>1</index>
-      <description>Output TRE file containing tubes going through the Box</description>
-    </file>
+    <boolean>
+      <name>ClipTubes</name>
+      <label>Clip Tubes</label>
+      <description>Specify if tubes should be clipped</description>
+      <longflag>ClipTubes</longflag>
+      <default>false</default>
+    </boolean>
 
   </parameters>
 </executable>
