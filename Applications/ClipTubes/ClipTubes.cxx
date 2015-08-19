@@ -2,7 +2,7 @@
 #include <iostream>
 #include <sstream>
 
-
+#include "itkTimeProbesCollectorBase.h"
 #include "tubeMessage.h"
 
 #include "tubeMacro.h"
@@ -25,12 +25,26 @@ bool isInside (itk::Point<double,VDimension> pointPos, double tubeRadius, std::v
   // A slice is considered as a point and an associated radius
   bool hasXInside=false,hasYInside=false,hasZInside=false;
   
-  if((pointPos[0]+tubeRadius)>=boxPos[0] && (pointPos[0]-tubeRadius)<=(boxPos[0]+boxSize[0]))
+  if( (pointPos[0]+tubeRadius)>=boxPos[0] && (pointPos[0]-tubeRadius)<=(boxPos[0]+boxSize[0]) )
     hasXInside=true;
-  if(pointPos[1]<=boxPos[1] && pointPos[1]>=(boxPos[1]-boxSize[1]))
+  if( pointPos[1]<=boxPos[1] && pointPos[1]>=(boxPos[1]-boxSize[1]) )
     hasYInside=true;
-  if((pointPos[2]+tubeRadius)>=boxPos[2] && (pointPos[2]-tubeRadius)<=(boxPos[2]+boxSize[2]))
-    hasZInside=true;
+  switch( VDimension )
+    {
+    case 2:
+      hasZInside=true;
+      break;
+
+    case 3:
+      if( (pointPos[2]+tubeRadius)>=boxPos[2] && (pointPos[2]-tubeRadius)<=(boxPos[2]+boxSize[2]) )
+	hasZInside=true;
+      break;
+
+    default:
+      tubeErrorMacro(<< "Error: Only 2D and 3D data is currently supported.");
+      return EXIT_FAILURE;
+    }
+ 
   
   return (hasXInside && hasYInside && hasZInside);
 }
@@ -49,6 +63,9 @@ int DoIt (int argc, char * argv[])
     tube::ErrorMessage("Error: Only 2D and 3D data is currently supported.");
     return EXIT_FAILURE;
     }
+    
+  // The timeCollector to perform basic profiling of algorithmic components
+  itk::TimeProbesCollectorBase timeCollector;
   
   // Load TRE File
   tubeStandardOutputMacro( << "\n>> Loading TRE File" );
@@ -59,6 +76,8 @@ int DoIt (int argc, char * argv[])
   typedef itk::VesselTubeSpatialObject< VDimension >  TubeType; //          so TubeType corresponds to VesselTubeType to prevent issues
   typedef itk::VesselTubeSpatialObjectPoint< VDimension >  TubePointType;// so TubePointType corresponds to VesselTubePointType WARNING
 
+  timeCollector.Start( "Loading Input TRE File" );
+  
   typename TubesReaderType::Pointer tubeFileReader = TubesReaderType::New();
   
   try
@@ -70,15 +89,19 @@ int DoIt (int argc, char * argv[])
     {
      tube::ErrorMessage( "Error loading TRE File: "
                           + std::string( err.GetDescription() ) );
+     timeCollector.Report();
      return EXIT_FAILURE;
     }
   
+  typename TubeGroupType::Pointer pSourceTubeGroup = tubeFileReader->GetGroup();
+  typename TubeGroupType::ChildrenListPointer pSourceTubeList = pSourceTubeGroup->GetChildren();
+  
+  timeCollector.Stop( "Loading Input TRE File" );
   
   // Compute clipping   
   tubeStandardOutputMacro( << "\n>> Finding Tubes for Clipping" );
   
-  typename TubeGroupType::Pointer pSourceTubeGroup = tubeFileReader->GetGroup();
-  typename TubeGroupType::ChildrenListPointer pSourceTubeList = pSourceTubeGroup->GetChildren();
+  timeCollector.Start( "Selecting Tubes" );
   
   typename TubeGroupType::Pointer pTargetTubeGroup = TubeGroupType::New();//Target Group to save desired tubes
   
@@ -138,18 +161,14 @@ int DoIt (int argc, char * argv[])
      
     }
     
-//    typename TubeGroupType::ChildrenListPointer pTargetTubeList = pTargetGroup->GetChildren(); 
-//    for( typename TubeGroupType::ChildrenListType::iterator
-//        targetTubeList_it = pTargetTubeList->begin();
-//        targetTubeList_it != pTargetTubeList->end(); ++targetTubeList_it)
-//      {
-// 	 std::cout<<(*targetTubeList_it)->GetId()<<std::endl;
-//      }  
-
-   // Write output TRE file   WARNING: Tubes will keep their ID from the Input file, should it be sorted?
+  timeCollector.Stop( "Selecting Tubes" );
+  
+  // Write output TRE file
   tubeStandardOutputMacro(
     << "\n>> Writing TRE file" );
 
+  timeCollector.Start( "Writing output TRE file" );
+  
   typedef itk::SpatialObjectWriter< VDimension > TubeWriterType;
   typename TubeWriterType::Pointer tubeWriter = TubeWriterType::New();
 
@@ -163,10 +182,12 @@ int DoIt (int argc, char * argv[])
     {
     tube::ErrorMessage( "Error writing TRE file: "
                         + std::string( err.GetDescription() ) );
-//     timeCollector.Report();
+    timeCollector.Report();
     return EXIT_FAILURE;
     }
 
+  timeCollector.Stop( "Writing output TRE file" );
+  timeCollector.Report();
   return EXIT_SUCCESS;
 }
 
