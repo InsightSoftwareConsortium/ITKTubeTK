@@ -205,7 +205,13 @@ int main( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
   PARSE_ARGS;
-
+  
+  if(boxCorner.empty() || boxSize.empty())
+  {
+    tube::ErrorMessage("Error: longflags --boxCorner and --boxSize are both required");
+    return EXIT_FAILURE;
+  }
+  
   MetaScene *mScene = new MetaScene;
   mScene->Read( inputTREFile.c_str() );
   

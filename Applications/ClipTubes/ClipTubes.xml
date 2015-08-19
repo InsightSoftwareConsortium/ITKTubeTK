@@ -28,22 +28,25 @@
     <double-vector>
       <name>boxCorner</name>
       <label>Top Left Corner of Bounding Box</label>
-      <description>3D position from where to start bounding box</description>
-      <!--<index>1</index>-->
+      <description>Required : 3D position from where to start bounding box</description>
+<!--       <index>2</index> -->
       <longflag>boxCorner</longflag>
+      <flag>p</flag>
     </double-vector>
     <double-vector>
       <name>boxSize</name>
       <label>Bounding Box Size </label>
-      <!--<index>2</index>-->
-      <description>Lenght (x radius), Height (y radius) and Depth (z radius) of the Box </description>
+<!--       <index>3</index> -->
+      <description>Required : Lenght (x radius), Height (y radius) and Depth (z radius) of the Box </description>
       <longflag>boxSize</longflag>
+      <flag>s</flag>
     </double-vector>
     <boolean>
       <name>ClipTubes</name>
       <label>Clip Tubes</label>
       <description>Specify if tubes should be clipped</description>
       <longflag>ClipTubes</longflag>
+      <flag>c</flag>
       <default>false</default>
     </boolean>
 
