@@ -11,24 +11,27 @@
 #include "itkSpatialObjectReader.h"
 #include "itkSpatialObjectWriter.h"
 #include "itkGroupSpatialObject.h"
-// #include "itkTubeSpatialObject.h"               // WARNING include?
-// #include "itkTubeSpatialObjectPoint.h"
-// #include "itkVesselTubeSpatialObject.h"
-// #include "itkVesselTubeSpatialObjectPoint.h"
 
 #include "ClipTubesCLP.h"
 
 template< unsigned int VDimension >
-bool isInside (itk::Point<double,VDimension> pointPos, double tubeRadius, std::vector<double> boxPos, std::vector<double> boxSize)
+bool isInside (itk::Point<double,VDimension> pointPos, double tubeRadius,
+		  std::vector<double> boxPos, std::vector<double> boxSize)
 {
   // Return a boolean indicating if any slice of the tube is included in the box
   // A slice is considered as a point and an associated radius
   bool hasXInside=false,hasYInside=false,hasZInside=false;
   
-  if( (pointPos[0]+tubeRadius)>=boxPos[0] && (pointPos[0]-tubeRadius)<=(boxPos[0]+boxSize[0]) )
+  if( (pointPos[0]+tubeRadius)>=boxPos[0] 
+      && (pointPos[0]-tubeRadius)<=(boxPos[0]+boxSize[0]) )
+    {
     hasXInside=true;
-  if( pointPos[1]<=boxPos[1] && pointPos[1]>=(boxPos[1]-boxSize[1]) )
+    }
+  if( pointPos[1]<=boxPos[1] 
+      && pointPos[1]>=(boxPos[1]-boxSize[1]) )
+    {
     hasYInside=true;
+    }
   switch( VDimension )
     {
     case 2:
@@ -36,8 +39,11 @@ bool isInside (itk::Point<double,VDimension> pointPos, double tubeRadius, std::v
       break;
 
     case 3:
-      if( (pointPos[2]+tubeRadius)>=boxPos[2] && (pointPos[2]-tubeRadius)<=(boxPos[2]+boxSize[2]) )
+      if( (pointPos[2]+tubeRadius)>=boxPos[2] 
+	  && (pointPos[2]-tubeRadius)<=(boxPos[2]+boxSize[2]) )
+	{
 	hasZInside=true;
+	}
       break;
 
     default:
@@ -45,7 +51,6 @@ bool isInside (itk::Point<double,VDimension> pointPos, double tubeRadius, std::v
       return EXIT_FAILURE;
     }
  
-  
   return (hasXInside && hasYInside && hasZInside);
 }
 
@@ -94,7 +99,8 @@ int DoIt (int argc, char * argv[])
     }
   
   typename TubeGroupType::Pointer pSourceTubeGroup = tubeFileReader->GetGroup();
-  typename TubeGroupType::ChildrenListPointer pSourceTubeList = pSourceTubeGroup->GetChildren();
+  typename TubeGroupType::ChildrenListPointer pSourceTubeList =
+  pSourceTubeGroup->GetChildren();
   
   timeCollector.Stop( "Loading Input TRE File" );
   
@@ -112,7 +118,8 @@ int DoIt (int argc, char * argv[])
        tubeList_it != pSourceTubeList->end(); ++tubeList_it)
     { 
       //**** Source Tube **** :
-      typename TubeType::Pointer pCurSourceTube = dynamic_cast< TubeType* >( tubeList_it->GetPointer() ); 
+      typename TubeType::Pointer pCurSourceTube = 
+      dynamic_cast< TubeType* >( tubeList_it->GetPointer() ); 
       //dynamic_cast verification
       if(!pCurSourceTube)
 	return EXIT_FAILURE;
@@ -126,7 +133,8 @@ int DoIt (int argc, char * argv[])
 	   pointList_it != pointList.end(); ++pointList_it)
 	{
 	  TubePointType curSourcePoint = *pointList_it;
-	  typename TubePointType::PointType curSourcePos = curSourcePoint.GetPosition();
+	  typename TubePointType::PointType curSourcePos = 
+	  curSourcePoint.GetPosition();
 	  //Save point in target tube if it belongs to the box  
 	  if(isInside(curSourcePos,curSourcePoint.GetRadius(),boxCorner,boxSize))
 	  { 
@@ -208,7 +216,8 @@ int main( int argc, char * argv[] )
   
   if(boxCorner.empty() || boxSize.empty())
   {
-    tube::ErrorMessage("Error: longflags --boxCorner and --boxSize are both required");
+    tube::ErrorMessage(
+      "Error: longflags --boxCorner and --boxSize are both required");
     return EXIT_FAILURE;
   }
   
@@ -232,7 +241,8 @@ int main( int argc, char * argv[] )
       break;
 
     default:
-      tubeErrorMacro(<< "Error: Only 2D and 3D data is currently supported.");
+      tubeErrorMacro(
+	<< "Error: Only 2D and 3D data is currently supported.");
       return EXIT_FAILURE;
     }
 }
