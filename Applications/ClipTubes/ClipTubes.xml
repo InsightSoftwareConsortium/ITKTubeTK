@@ -4,8 +4,8 @@
   <title>ClipTubes</title>
   <description>Return a set of tubes contained in a bounding box</description>
   <version>0.1</version>
-  <documentation-url></documentation-url>
-  <license></license>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
   <contributor>Lucas Gandel (Kitware)</contributor>
   <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
   <parameters>
@@ -29,14 +29,12 @@
       <name>boxCorner</name>
       <label>Top Left Corner of Bounding Box</label>
       <description>Required : 3D position from where to start bounding box</description>
-<!--       <index>2</index> -->
       <longflag>boxCorner</longflag>
       <flag>p</flag>
     </double-vector>
     <double-vector>
       <name>boxSize</name>
       <label>Bounding Box Size </label>
-<!--       <index>3</index> -->
       <description>Required : Lenght (x radius), Height (y radius) and Depth (z radius) of the Box </description>
       <longflag>boxSize</longflag>
       <flag>s</flag>
