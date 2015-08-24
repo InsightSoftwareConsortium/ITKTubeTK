@@ -1,4 +1,4 @@
-##############################################################################
+############################################################################
 #
 # Library:   TubeTK
 #
@@ -19,7 +19,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-##############################################################################
+############################################################################
 include_regular_expression( "^.*$" )
 
 include( Midas3FunctionAddTest )
@@ -32,15 +32,15 @@ set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 set( TEXTCOMPARE_EXE
- ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
 
 # Test1 - Unclipped
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Unclipped
-COMMAND ${PROJ_EXE}
-  MIDAS{ClipTubes-Test1.tre.md5}
-  ${TEMP}/${MODULE_NAME}Test1.tre 
-  --boxCorner 20,40,0
-  --boxSize 50,40,30)
+  COMMAND ${PROJ_EXE}
+    MIDAS{ClipTubes-Test1.tre.md5}
+    ${TEMP}/${MODULE_NAME}Test1.tre 
+    --boxCorner 20,40,0
+    --boxSize 50,40,30)
 
 # Test1 - Compare - Unclipped
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Unclipped-Compare
@@ -50,7 +50,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Unclipped-Compare
     -d 0.01 )
 
 set_property( TEST ${MODULE_NAME}-Test1-Unclipped-Compare
-              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1-Unclipped )
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1-Unclipped )
 
 # Test2 - Clipped
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Clipped
@@ -69,4 +69,4 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Clipped-Compare
     -d 0.01 )
 
 set_property( TEST ${MODULE_NAME}-Test2-Clipped-Compare
-              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2-Clipped )
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2-Clipped )

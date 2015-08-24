@@ -37,19 +37,20 @@ template< unsigned int VDimension >
 bool isInside (itk::Point<double,VDimension> pointPos, double tubeRadius,
 		 std::vector<double> boxPos, std::vector<double> boxSize)
 {
-  // Return a boolean indicating if any slice of the tube is included in the box
+  // Return a boolean indicating if any slice of the tube 
+  // is included in the box.
   // A slice is considered as a point and an associated radius
   bool hasXInside=false;
   bool hasYInside=false,
   bool hasZInside=false;
   
   if( pointPos[0] + tubeRadius >= boxPos[0] &&
-      pointPos[0] - tubeRadius <= boxPos[0] + boxSize[0] )
+    pointPos[0] - tubeRadius <= boxPos[0] + boxSize[0] )
     {
     hasXInside = true;
     }
   if( pointPos[1] <= boxPos[1] &&
-      pointPos[1] >= boxPos[1] - boxSize[1] )
+    pointPos[1] >= boxPos[1] - boxSize[1] )
     {
     hasYInside = true;
     }
@@ -63,7 +64,7 @@ bool isInside (itk::Point<double,VDimension> pointPos, double tubeRadius,
     case 3:
       {
       if( pointPos[2] + tubeRadius >= boxPos[2] &&
-	  pointPos[2] - tubeRadius <= boxPos[2] + boxSize[2] )
+	pointPos[2] - tubeRadius <= boxPos[2] + boxSize[2] )
 	{
 	hasZInside = true;
 	}
@@ -104,9 +105,14 @@ int DoIt (int argc, char * argv[])
 
   typedef itk::SpatialObjectReader< VDimension > 	   TubesReaderType;
   typedef itk::GroupSpatialObject< VDimension >  	   TubeGroupType;
-//   typedef itk::TubeSpatialObject< VDimension >  TubeType;    	 //WARNING : dynamic_cast on "typedef itk::TubeSpatialObject< VDimension > TubeType" (before GetPoints() call) causes SEGFAULT 
-  typedef itk::VesselTubeSpatialObject< VDimension >  	   TubeType;     // so TubeType corresponds to VesselTubeType to prevent issues
-  typedef itk::VesselTubeSpatialObjectPoint< VDimension >  TubePointType;// so TubePointType corresponds to VesselTubePointType WARNING
+//   typedef itk::TubeSpatialObject< VDimension >  TubeType;    	 
+/*WARNING : 
+  dynamic_cast on "typedef itk::TubeSpatialObject< VDimension > TubeType"
+  causes SEGFAULT
+  so TubeType corresponds to VesselTubeType to prevent issues
+  so TubePointType corresponds to VesselTubePointType */
+  typedef itk::VesselTubeSpatialObject< VDimension >  	   TubeType;    
+  typedef itk::VesselTubeSpatialObjectPoint< VDimension >  TubePointType;
 
   timeCollector.Start( "Loading Input TRE File" );
   
@@ -120,7 +126,7 @@ int DoIt (int argc, char * argv[])
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Error loading TRE File: "
-                          + std::string( err.GetDescription() ) );
+      + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -136,8 +142,8 @@ int DoIt (int argc, char * argv[])
   tubeStandardOutputMacro( << "\n>> Finding Tubes for Clipping" );
   
   timeCollector.Start( "Selecting Tubes" );
-  
-  typename TubeGroupType::Pointer pTargetTubeGroup = TubeGroupType::New();//Target Group to save desired tubes
+  //Target Group to save desired tubes
+  typename TubeGroupType::Pointer pTargetTubeGroup = TubeGroupType::New();
   
   int targetTubeId=0;
   
@@ -152,8 +158,9 @@ int DoIt (int argc, char * argv[])
     if(!pCurSourceTube)
       {
       return EXIT_FAILURE;
-      }     
-    typename TubeType::PointListType TargetPointList;//Point List for TargetTube
+      } 
+    //Point List for TargetTube    
+    typename TubeType::PointListType TargetPointList;
     //Get points in current source tube
     typename TubeType::PointListType pointList = 
       pCurSourceTube->GetPoints(); 
@@ -185,7 +192,7 @@ int DoIt (int argc, char * argv[])
 	if( TargetPointList.size() > 0 )
 	  {
 	  //**** Target Tube **** :
-	  typename TubeType::Pointer pTargetTube = TubeType::New();//Target Tube to add to Group
+	  typename TubeType::Pointer pTargetTube = TubeType::New();
 	  pTargetTube->SetId(targetTubeId);
 	  ++targetTubeId;
 	  //Save clipped tube
