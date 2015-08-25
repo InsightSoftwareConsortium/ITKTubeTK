@@ -35,9 +35,9 @@
 
 template< unsigned int VDimension >
 bool isInside (itk::Point<double,VDimension> pointPos, double tubeRadius,
-		 std::vector<double> boxPos, std::vector<double> boxSize)
+                 std::vector<double> boxPos, std::vector<double> boxSize)
 {
-  // Return a boolean indicating if any slice of the tube 
+  // Return a boolean indicating if any slice of the tube
   // is included in the box.
   // A slice is considered as a point and an associated radius
   bool hasXInside=false;
@@ -57,22 +57,22 @@ bool isInside (itk::Point<double,VDimension> pointPos, double tubeRadius,
   switch( VDimension )
     {
     case 2:
-      {  
+      {
       hasZInside = true;
       break;
       }
     case 3:
       {
       if( pointPos[2] + tubeRadius >= boxPos[2] &&
-	pointPos[2] - tubeRadius <= boxPos[2] + boxSize[2] )
-	{
-	hasZInside = true;
-	}
+        pointPos[2] - tubeRadius <= boxPos[2] + boxSize[2] )
+        {
+        hasZInside = true;
+        }
       break;
       }
     default:
       {
-      tubeErrorMacro( 
+      tubeErrorMacro(
         << "Error: Only 2D and 3D data is currently supported." );
       return EXIT_FAILURE;
       }
@@ -103,16 +103,16 @@ int DoIt (int argc, char * argv[])
   // Load TRE File
   tubeStandardOutputMacro( << "\n>> Loading TRE File" );
 
-  typedef itk::SpatialObjectReader< VDimension > 	   TubesReaderType;
-  typedef itk::GroupSpatialObject< VDimension >  	   TubeGroupType;
-//   typedef itk::TubeSpatialObject< VDimension >  TubeType;    	 
-/*WARNING : 
+  typedef itk::SpatialObjectReader< VDimension >          TubesReaderType;
+  typedef itk::GroupSpatialObject< VDimension >           TubeGroupType;
+//typedef itk::TubeSpatialObject< VDimension >            TubeType;
+/*WARNING :
   dynamic_cast on "typedef itk::TubeSpatialObject< VDimension > TubeType"
   causes SEGFAULT
   so TubeType corresponds to VesselTubeType to prevent issues
   so TubePointType corresponds to VesselTubePointType */
-  typedef itk::VesselTubeSpatialObject< VDimension >  	   TubeType;    
-  typedef itk::VesselTubeSpatialObjectPoint< VDimension >  TubePointType;
+  typedef itk::VesselTubeSpatialObject< VDimension >      TubeType;
+  typedef itk::VesselTubeSpatialObjectPoint< VDimension > TubePointType;
 
   timeCollector.Start( "Loading Input TRE File" );
   
@@ -131,14 +131,14 @@ int DoIt (int argc, char * argv[])
     return EXIT_FAILURE;
     }
   
-  typename TubeGroupType::Pointer pSourceTubeGroup = 
+  typename TubeGroupType::Pointer pSourceTubeGroup =
     tubeFileReader->GetGroup();
   typename TubeGroupType::ChildrenListPointer pSourceTubeList =
     pSourceTubeGroup->GetChildren();
   
   timeCollector.Stop( "Loading Input TRE File" );
   
-  // Compute clipping   
+  // Compute clipping
   tubeStandardOutputMacro( << "\n>> Finding Tubes for Clipping" );
   
   timeCollector.Start( "Selecting Tubes" );
@@ -150,60 +150,60 @@ int DoIt (int argc, char * argv[])
   for( typename TubeGroupType::ChildrenListType::iterator
     tubeList_it = pSourceTubeList->begin();
     tubeList_it != pSourceTubeList->end(); ++tubeList_it)
-    { 
+    {
     //**** Source Tube **** :
-    typename TubeType::Pointer pCurSourceTube = 
-      dynamic_cast< TubeType* >( tubeList_it->GetPointer() ); 
+    typename TubeType::Pointer pCurSourceTube =
+      dynamic_cast< TubeType* >( tubeList_it->GetPointer() );
     //dynamic_cast verification
     if(!pCurSourceTube)
       {
       return EXIT_FAILURE;
-      } 
-    //Point List for TargetTube    
+      }
+    //Point List for TargetTube
     typename TubeType::PointListType TargetPointList;
     //Get points in current source tube
-    typename TubeType::PointListType pointList = 
-      pCurSourceTube->GetPoints(); 
+    typename TubeType::PointListType pointList =
+      pCurSourceTube->GetPoints();
       
     for( typename TubeType::PointListType::const_iterator
       pointList_it = pointList.begin();
       pointList_it != pointList.end(); ++pointList_it )
       {
       TubePointType curSourcePoint = *pointList_it;
-      typename TubePointType::PointType curSourcePos = 
+      typename TubePointType::PointType curSourcePos =
         curSourcePoint.GetPosition();
-      //Save point in target tube if it belongs to the box  
+      //Save point in target tube if it belongs to the box
       if(isInside(curSourcePos,curSourcePoint.GetRadius(),boxCorner,boxSize))
-	{ 
-	if(ClipTubes)
-	  {
-	  TargetPointList.push_back(curSourcePoint);
-	  }
-	else
-	  {
-	  pCurSourceTube->SetId(targetTubeId);
-	  ++targetTubeId;
-	  pTargetTubeGroup->AddSpatialObject(pCurSourceTube);
-	  break;
-	  }  
-	}  	 
+        {
+        if(ClipTubes)
+          {
+          TargetPointList.push_back(curSourcePoint);
+          }
+        else
+          {
+          pCurSourceTube->SetId(targetTubeId);
+          ++targetTubeId;
+          pTargetTubeGroup->AddSpatialObject(pCurSourceTube);
+          break;
+          }
+        }
       else
-	{
-	if( TargetPointList.size() > 0 )
-	  {
-	  //**** Target Tube **** :
-	  typename TubeType::Pointer pTargetTube = TubeType::New();
-	  pTargetTube->SetId(targetTubeId);
-	  ++targetTubeId;
-	  //Save clipped tube
-	  pTargetTube->SetPoints(TargetPointList);
-	  pTargetTubeGroup->AddSpatialObject(pTargetTube);
-	      
-	  TargetPointList.clear();
-	  }
-	}
-      }  
-    } 
+        {
+        if( TargetPointList.size() > 0 )
+          {
+          //**** Target Tube **** :
+          typename TubeType::Pointer pTargetTube = TubeType::New();
+          pTargetTube->SetId(targetTubeId);
+          ++targetTubeId;
+          //Save clipped tube
+          pTargetTube->SetPoints(TargetPointList);
+          pTargetTubeGroup->AddSpatialObject(pTargetTube);
+
+          TargetPointList.clear();
+          }
+        }
+      }
+    }
   timeCollector.Stop( "Selecting Tubes" );
   
   // Write output TRE file
@@ -282,7 +282,7 @@ int main( int argc, char * argv[] )
     default:
       {
       tubeErrorMacro(
-	<< "Error: Only 2D and 3D data is currently supported.");
+        << "Error: Only 2D and 3D data is currently supported.");
       return EXIT_FAILURE;
       }
     }
