@@ -39,8 +39,8 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Unclipped
   COMMAND ${PROJ_EXE}
     MIDAS{ClipTubes-Test1.tre.md5}
     ${TEMP}/${MODULE_NAME}Test1.tre 
-    --boxCorner 20,40,0
-    --boxSize 50,40,30)
+    --boxCorner 350,280,145
+    --boxSize 100,100,100)
 
 # Test1 - Compare - Unclipped
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Unclipped-Compare
@@ -57,8 +57,8 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Clipped
 COMMAND ${PROJ_EXE}
   MIDAS{ClipTubes-Test1.tre.md5}
   ${TEMP}/${MODULE_NAME}Test2.tre 
-  --boxCorner 20,40,0
-  --boxSize 50,40,30
+  --boxCorner 350,280,145
+  --boxSize 100,100,100
   --ClipTubes)
 
 # Test2 - Compare - Clipped

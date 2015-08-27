@@ -31,6 +31,9 @@ endif( NOT TubeTK_SOURCE_DIR )
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 
+find_package( VTK REQUIRED )
+include( ${VTK_USE_FILE} )
+
 find_package( ITK REQUIRED )
 if( TubeTK_BUILD_WITHIN_SLICER )
   set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 ) # See Libs/ITKFactoryRegistration/CMakeLists.txt
@@ -41,7 +44,7 @@ SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
-    ${ITK_LIBRARIES} TubeTKIO TubeTKNumerics ITKIOMeta ITKIOSpatialObjects
+    ${ITK_LIBRARIES} ${VTK_LIBRARIES} TubeTKIO TubeTKNumerics ITKIOMeta ITKIOSpatialObjects
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/CLI
     ${TubeTK_SOURCE_DIR}/Base/Common
