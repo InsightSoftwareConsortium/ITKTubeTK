@@ -71,9 +71,9 @@ add_executable( tubeBaseCommonTests
   ${tubeBaseCommonTests_SRCS} )
 
 target_link_libraries( tubeBaseCommonTests
-  TubeTKCommon
   ${ITK_LIBRARIES}
-  ${JsonCpp_LIBRARIES} )
+  ${JsonCpp_LIBRARIES}
+  TubeTKCommon )
 
 add_test( NAME tubeBaseCommonHeaderTest COMMAND ${BASE_COMMON_HEADER_TEST} )
 

@@ -33,7 +33,7 @@ limitations under the License.
 #include "tubeMatrixMath.h"
 #include "tubeTubeMath.h"
 #include "tubeUserFunction.h"
-#include "tubeParabolicFitOptimizer1D.h"
+#include "tubeGoldenMeanOptimizer1D.h"
 #include "tubeSplineApproximation1D.h"
 
 #include <itkMinimumMaximumImageFilter.h>
@@ -418,136 +418,10 @@ RadiusExtractor2<TInputImage>
   std::vector< double >::iterator iterTanDist;
   std::vector< double >::iterator iterValue;
 
-  /*
-  double dwPTot = 0;
-  double dwNTot = 0;
-  double distMax = this->GetKernelExtent() * r;
-  double distMin = r - ( distMax - r );
-  if( distMin < 0 || distMax - distMin < m_RadiusStep )
-    {
-    distMin = 0;
-    distMax = 2 * r;
-    }
+  double distMax = r * this->GetKernelExtent();
+  double distMin = 0;
 
-  double edgeR = ( ( this->GetKernelExtent() - 1 ) * r ) * 0.5;
-  double gfact = -0.5 / ( edgeR * edgeR );
-
-  const unsigned int histoBins = 100;
-  double histoPortionToReject = 0.05;
-  unsigned int histoPos[histoBins];
-  unsigned int histoNeg[histoBins];
-  double histoPosDW[histoBins];
-  double histoNegDW[histoBins];
-  unsigned int histoPosCount = 0;
-  unsigned int histoNegCount = 0;
-  for( unsigned int i=0; i<histoBins; ++i )
-    {
-    histoPos[i] = 0;
-    histoNeg[i] = 0;
-    histoPosDW[i] = 0;
-    histoNegDW[i] = 0;
-    }
-  iterDist = m_KernelDistances.begin();
-  iterTanDist = m_KernelTangentDistances.begin();
-  iterValue = m_KernelValues.begin();
-  while( iterDist != m_KernelDistances.end() )
-    {
-    if( ( *iterTanDist ) < 0.75 * r
-      && ( *iterDist ) >= distMin && ( *iterDist ) <= distMax )
-      {
-      double w = vcl_exp( gfact * ( r - ( *iterDist ) )
-        * ( r - ( *iterDist ) ) );
-      double dw = 2 * ( ( *iterDist ) - r ) * gfact * w;
-      int bin = ( *iterValue ) * histoBins;
-      if( bin < 0 )
-        {
-        bin = 0;
-        }
-      else if( bin > histoBins - 1 )
-        {
-        bin = histoBins - 1;
-        }
-      if( dw > 0 )
-        {
-        pVal += dw * ( *iterValue );
-        dwPTot += dw;
-        histoPosDW[bin] += dw;
-        ++histoPos[bin];
-        ++histoPosCount;
-        }
-      else
-        {
-        nVal += -dw * ( *iterValue );
-        dwNTot += -dw;
-        histoNegDW[bin] += (-dw);
-        ++histoNeg[bin];
-        ++histoNegCount;
-        }
-      }
-    ++iterDist;
-    ++iterTanDist;
-    ++iterValue;
-    }
-  if( dwPTot > 0 )
-    {
-    unsigned int bin = 0;
-    unsigned int binCount = 0;
-    double binValue = 0;
-    double binValueDW = 0;
-    if( histoPortionToReject * histoPosCount > 1 )
-      {
-      while( binCount < histoPortionToReject * histoPosCount &&
-        bin < histoBins )
-        {
-        if( histoPos[bin] > 0 )
-          {
-          binCount += histoPos[bin];
-          binValue += ( histoPosDW[bin] * ( bin + 0.5 ) / histoBins ) ;
-          binValueDW += histoPosDW[bin];
-          }
-        ++bin;
-        }
-      pVal -= binValue;
-      dwPTot -= binValueDW;
-      }
-    pVal /= dwPTot;
-    }
-    if( dwNTot > 0 )
-    {
-    int bin = histoBins - 1;
-    unsigned int binCount = 0;
-    double binValue = 0;
-    double binValueDW = 0;
-    if( histoPortionToReject * histoNegCount > 1 )
-      {
-      while( binCount < histoPortionToReject * histoNegCount && bin > 1 )
-        {
-        if( histoNeg[bin] > 0 )
-          {
-          binCount += histoNeg[bin];
-          binValue += ( histoNegDW[bin] * ( bin + 0.5 ) / histoBins ) ;
-          binValueDW += histoNegDW[bin];
-          }
-        --bin;
-        }
-      nVal -= binValue;
-      dwNTot -= binValueDW;
-      }
-    nVal /= dwNTot;
-    }
-
-  double val = ( pVal - nVal );
-  */
-
-  double distMax = r + this->GetKernelExtent();
-  double distMin = r - this->GetKernelExtent();
-  if( distMin < 0 || distMax - distMin < m_RadiusStep )
-    {
-    distMin = 0;
-    distMax = 2 * r;
-    }
-
-  const unsigned int histoBins = 1000;
+  const unsigned int histoBins = 500;
   unsigned int histoPos[histoBins];
   unsigned int histoNeg[histoBins];
   unsigned int histoPosCount = 0;
@@ -563,8 +437,8 @@ RadiusExtractor2<TInputImage>
   iterValue = m_KernelValues.begin();
   while( iterDist != m_KernelDistances.end() )
     {
-    if( ( *iterTanDist ) < 0.75 * r * this->GetKernelExtent() &&
-      ( *iterDist ) >= distMin && ( *iterDist ) <= distMax )
+    if( ( *iterTanDist ) < r
+      && ( *iterDist ) >= distMin && ( *iterDist ) <= distMax )
       {
       bin = ( *iterValue ) * histoBins;
       if( bin < 0 )
@@ -586,11 +460,12 @@ RadiusExtractor2<TInputImage>
         ++histoNegCount;
         }
       }
+    ++iterValue;
     ++iterDist;
     ++iterTanDist;
-    ++iterValue;
     }
-  unsigned int binCount = 0;
+
+  int binCount = 0;
   pVal = 0;
   if( histoPosCount > 1 )
     {
@@ -615,11 +490,9 @@ RadiusExtractor2<TInputImage>
     nVal = ( bin - 0.5 ) / histoBins;
     }
 
-  double val = ( pVal - nVal );
+  double medialness = ( pVal - nVal );
 
-  //std::cout << "Radius = " << r << "   Value = " << val << std::endl;
-
-  return val;
+  return medialness;
 }
 
 template< class TInputImage >
@@ -627,39 +500,104 @@ double
 RadiusExtractor2<TInputImage>
 ::GetKernelBranchness( double r )
 {
-  double gfact = -0.5 / ( r * r );
-
-  double val = 0;
-  double wTot = 0;
-  std::vector< double >::iterator iterDist;
-  iterDist = m_KernelDistances.begin();
-  std::vector< double >::iterator iterValue;
-  iterValue = m_KernelValues.begin();
-  double distMax = this->GetKernelExtent() * r;
-  double distMin = r - ( distMax - r );
-  if( distMin < 0 )
+  if( r < m_RadiusMin )
     {
-    distMin = 0;
-    distMax = 2 * r;
+    double factor = ( m_RadiusMin - r ) / m_RadiusTolerance;
+    double m0 = this->GetKernelBranchness( m_RadiusMin );
+    double m1 = this->GetKernelBranchness( m_RadiusMin
+      + m_RadiusTolerance );
+    return m0 - factor * vnl_math_abs(m0 - m1);
     }
+  else if( r > m_RadiusMax )
+    {
+    double factor = ( r - m_RadiusMax ) / m_RadiusTolerance;
+    double m0 = this->GetKernelBranchness( m_RadiusMax );
+    double m1 = this->GetKernelBranchness( m_RadiusMax
+      - m_RadiusTolerance );
+    return m0 - factor * vnl_math_abs(m0 - m1);
+    }
+  double pVal = 0;
+  double nVal = 0;
+
+  std::vector< double >::iterator iterDist;
+  std::vector< double >::iterator iterTanDist;
+  std::vector< double >::iterator iterValue;
+
+  double distMax = r * this->GetKernelExtent();
+  double distMin = 0;
+
+  const int histoBins = 500;
+  unsigned int histoPos[histoBins];
+  unsigned int histoNeg[histoBins];
+  unsigned int histoPosCount = 0;
+  unsigned int histoNegCount = 0;
+  for( unsigned int i=0; i<histoBins; ++i )
+    {
+    histoPos[i] = 0;
+    histoNeg[i] = 0;
+    }
+  int bin = 0;
+  iterDist = m_KernelDistances.begin();
+  iterTanDist = m_KernelTangentDistances.begin();
+  iterValue = m_KernelValues.begin();
   while( iterDist != m_KernelDistances.end() )
     {
-    if( ( *iterDist ) > distMin && ( *iterDist ) < distMax )
+    if( ( *iterTanDist ) < r
+      && ( *iterDist ) >= distMin && ( *iterDist ) <= distMax )
       {
-      double w = vcl_exp( gfact * ( 1.25*r - ( *iterDist ) )
-        * ( 1.25*r - ( *iterDist ) ) );
-      val += w * ( *iterValue );
-      wTot += vnl_math_abs( w );
+      bin = ( *iterValue ) * histoBins;
+      if( bin < 0 )
+        {
+        bin = 0;
+        }
+      else if( bin > histoBins - 1 )
+        {
+        bin = histoBins - 1;
+        }
+      if( (*iterDist) <= r )
+        {
+        ++histoPos[bin];
+        ++histoPosCount;
+        }
+      else
+        {
+        ++histoNeg[bin];
+        ++histoNegCount;
+        }
       }
-    ++iterDist;
     ++iterValue;
-    }
-  if( wTot > 0 )
-    {
-    val /= wTot;
+    ++iterDist;
+    ++iterTanDist;
     }
 
-  return val;
+  int binCount = 0;
+  pVal = 0;
+  if( histoPosCount > 1 )
+    {
+    bin = 0;
+    while( binCount < 0.5 * histoPosCount && bin < histoBins )
+      {
+      binCount += histoPos[bin];
+      ++bin;
+      }
+    pVal = ( bin + 0.5 ) / histoBins;
+    }
+  nVal = 1;
+  if( histoNegCount > 1 )
+    {
+    binCount = 0;
+    bin = histoBins - 1;
+    while( binCount < 0.75 * histoNegCount && bin > 1 )
+      {
+      binCount += histoNeg[bin];
+      --bin;
+      }
+    nVal = ( bin - 0.5 ) / histoBins;
+    }
+
+  double branchness = 1.0 - vnl_math_abs( pVal - nVal );
+
+  return branchness;
 }
 
 template< class TInputImage >
@@ -670,8 +608,8 @@ RadiusExtractor2<TInputImage>
   ::tube::UserFunction< int, double > * myFunc = new
     LocalMedialnessSplineValueFunction< TInputImage >( this );
 
-  ::tube::ParabolicFitOptimizer1D * opt = new
-    ::tube::ParabolicFitOptimizer1D();
+  ::tube::GoldenMeanOptimizer1D * opt = new
+    ::tube::GoldenMeanOptimizer1D();
   opt->SetXStep( m_RadiusStep / m_RadiusTolerance );
   opt->SetTolerance( 1 );
   opt->SetMaxIterations( 20 );
@@ -682,74 +620,14 @@ RadiusExtractor2<TInputImage>
   ::tube::SplineApproximation1D * spline = new
     ::tube::SplineApproximation1D( myFunc, opt );
 
-  spline->SetClip( true );
+  //spline->SetClip( true );
   spline->SetXMin( (int)vnl_math_ceil( m_RadiusMin / m_RadiusTolerance ) );
   spline->SetXMax( (int)vnl_math_floor( m_RadiusMax / m_RadiusTolerance ) );
 
-  double x = m_RadiusStart;
-  double xVal = 0;
-  bool done = false;
-  bool first = true;
-  bool second = true;
-  bool result = false;
-  while( !done )
-    {
-    x = x / m_RadiusTolerance;
-    result = spline->Extreme( &x, &xVal );
-    x = x * m_RadiusTolerance;
-    if( vnl_math_abs( x - m_RadiusStart ) > m_RadiusStep * 5 )
-      {
-      std::cout << "WARNING: Verifying extreme radius estimation changed."
-        << std::endl;
-      if( !first )
-        {
-        if( !second )
-          {
-          std::cout << "   Verified." << std::endl;
-          done = true;
-          }
-        else
-          {
-          second = false;
-          x = ( x + m_RadiusStart ) / 2;
-          }
-        }
-      else
-        {
-        first = false;
-        second = true;
-        if( x - m_RadiusStart > 0 )
-          {
-          if( m_RadiusStart - 2 * m_RadiusStep > m_RadiusMin )
-            {
-            x = ( m_RadiusStart - 2 * m_RadiusStep );
-            }
-          else
-            {
-            std::cout << "   Verified." << std::endl;
-            done = true;
-            }
-          }
-        else
-          {
-          if( m_RadiusStart + 2 * m_RadiusStep < m_RadiusMax )
-            {
-            x = ( m_RadiusStart + 2 * m_RadiusStep );
-            }
-          else
-            {
-            std::cout << "   Verified." << std::endl;
-            done = true;
-            }
-          }
-        }
-      }
-    else
-      {
-      done = true;
-      }
-    }
-  m_KernelOptimalRadius = x;
+  double x = m_RadiusStart / m_RadiusTolerance;
+  double xVal = myFunc->Value( x );
+  bool result = spline->Extreme( &x, &xVal );
+  m_KernelOptimalRadius = x * m_RadiusTolerance;
   m_KernelOptimalRadiusMedialness = xVal;
 
   delete spline;

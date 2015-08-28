@@ -48,7 +48,7 @@ set( JsonCpp_HASH_OR_TAG 192f0cf2b00798d4f4fb29c99a3aa83c )
 # KWStyle snapshot 2012-04-19 04:05:19
 set( KWStyle_URL
   ${git_protocol}://github.com/Kitware/KWStyle.git )
-set( KWStyle_HASH_OR_TAG 9711cdbd35af37a9abcdd8b1dbd8e2b5a4ac8779 )
+set( KWStyle_HASH_OR_TAG c502d2c92b76e925f709f7747353ff0ecb7200d8 )
 
 # LIBSVM version 3.17 (minimum version 3.1)
 set( LIBSVM_URL
