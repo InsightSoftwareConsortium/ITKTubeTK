@@ -217,7 +217,6 @@ SetPropertyFromImageMean( typename itk::GroupSpatialObject< DimensionT >::
         pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint(
           pointIndex );
 
-        typename ImageType::IndexType imageIndex;
         switch( propertyId )
           {
           default:
