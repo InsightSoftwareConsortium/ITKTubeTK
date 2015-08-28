@@ -435,7 +435,7 @@ RadiusExtractor2<TInputImage>
     distMax = 2 * r;
     }*/
 
-  const unsigned int histoBins = 1000;
+  const int histoBins = 1000;
   unsigned int histoPos[histoBins];
   unsigned int histoNeg[histoBins];
   unsigned int histoPosCount = 0;
@@ -480,7 +480,7 @@ RadiusExtractor2<TInputImage>
     ++iterTanDist;
     }
 
-  unsigned int binCount = 0;
+  int binCount = 0;
   pVal = 0;
   if( histoPosCount > 1 )
     {
@@ -519,14 +519,16 @@ RadiusExtractor2<TInputImage>
     {
     double factor = ( m_RadiusMin - r ) / m_RadiusTolerance;
     double m0 = this->GetKernelBranchness( m_RadiusMin );
-    double m1 = this->GetKernelBranchness( m_RadiusMin + m_RadiusTolerance );
+    double m1 = this->GetKernelBranchness( m_RadiusMin
+      + m_RadiusTolerance );
     return m0 - factor * vnl_math_abs(m0 - m1);
     }
   else if( r > m_RadiusMax )
     {
     double factor = ( r - m_RadiusMax ) / m_RadiusTolerance;
     double m0 = this->GetKernelBranchness( m_RadiusMax );
-    double m1 = this->GetKernelBranchness( m_RadiusMax - m_RadiusTolerance );
+    double m1 = this->GetKernelBranchness( m_RadiusMax
+      - m_RadiusTolerance );
     return m0 - factor * vnl_math_abs(m0 - m1);
     }
   double pVal = 0;
@@ -545,7 +547,7 @@ RadiusExtractor2<TInputImage>
     distMax = 2 * r;
     } */
 
-  const unsigned int histoBins = 1000;
+  const int histoBins = 1000;
   unsigned int histoPos[histoBins];
   unsigned int histoNeg[histoBins];
   unsigned int histoPosCount = 0;
@@ -589,7 +591,7 @@ RadiusExtractor2<TInputImage>
     ++iterTanDist;
     }
 
-  unsigned int binCount = 0;
+  int binCount = 0;
   pVal = 0;
   if( histoPosCount > 1 )
     {

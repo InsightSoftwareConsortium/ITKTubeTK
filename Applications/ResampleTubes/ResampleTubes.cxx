@@ -202,8 +202,7 @@ ReadImageTransform( const char * fileName,
 
 template< unsigned int Dimension >
 void WriteOutput( typename itk::GroupSpatialObject<Dimension>::Pointer
-  tubesGroup, const char * fileName, typename itk::GroupSpatialObject<
-  Dimension >::TransformType::Pointer & outputTransform )
+  tubesGroup, const char * fileName )
 {
   typedef itk::SpatialObjectWriter< Dimension > SpatialObjectWriterType;
 
@@ -346,8 +345,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   timeCollector.Start( "Write output");
-  WriteOutput< Dimension >( outputTubes, outputTubeFile.c_str(),
-    outputTransform );
+  WriteOutput< Dimension >( outputTubes, outputTubeFile.c_str() );
   timeCollector.Stop( "Write output" );
 
   progress = 1.0;
