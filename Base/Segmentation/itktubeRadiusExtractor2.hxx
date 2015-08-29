@@ -421,7 +421,7 @@ RadiusExtractor2<TInputImage>
   double distMax = r * this->GetKernelExtent();
   double distMin = 0;
 
-  const unsigned int histoBins = 500;
+  const int histoBins = 500;
   unsigned int histoPos[histoBins];
   unsigned int histoNeg[histoBins];
   unsigned int histoPosCount = 0;
