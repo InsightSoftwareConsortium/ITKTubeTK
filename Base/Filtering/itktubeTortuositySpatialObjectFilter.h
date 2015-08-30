@@ -263,7 +263,7 @@ public:
   /** Set/Get the number of bins that the histogram must have.
   * Used for CURVATURE_HISTOGRAM_METRICS. Default value is 20.
   */
-  itkSetClampMacro( NumberOfBins, size_t, 0,
+  itkSetClampMacro( NumberOfBins, size_t, 1,
     std::numeric_limits<size_t>::max() )
   itkGetConstMacro( NumberOfBins, size_t )
 
