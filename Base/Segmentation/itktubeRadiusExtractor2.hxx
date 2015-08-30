@@ -426,7 +426,7 @@ RadiusExtractor2<TInputImage>
   unsigned int histoNeg[histoBins];
   unsigned int histoPosCount = 0;
   unsigned int histoNegCount = 0;
-  for( unsigned int i=0; i<histoBins; ++i )
+  for( int i=0; i<histoBins; ++i )
     {
     histoPos[i] = 0;
     histoNeg[i] = 0;
