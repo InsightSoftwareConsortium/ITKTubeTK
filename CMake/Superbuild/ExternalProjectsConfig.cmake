@@ -31,7 +31,7 @@ set( Cppcheck_HASH_OR_TAG 1.61 )
 
 # TubeTK Image Viewer
 set( ImageViewer_URL ${github_protocol}://github.com/KitwareMedical/ImageViewer.git )
-set( ImageViewer_HASH_OR_TAG 0b182bcdf863fc30640dc9451f467ea694243fda )
+set( ImageViewer_HASH_OR_TAG 2f728d05fe159828e6221e1420b9c3a00295315b )
 
 # JsonCpp
 # ${svn_protocol}://svn.code.sf.net/p/jsoncpp/code/trunk/jsoncpp )
