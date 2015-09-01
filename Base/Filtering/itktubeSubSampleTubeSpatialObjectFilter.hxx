@@ -53,6 +53,8 @@ SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
 {
   TubeSpatialObjectType * output = this->GetOutput();
   const TubeSpatialObjectType * input = this->GetInput();
+  output->CopyInformation( input );
+  output->Clear();
 
   typedef typename TubeSpatialObjectType::PointListType PointListType;
   const PointListType & inputPoints = input->GetPoints();
