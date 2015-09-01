@@ -49,6 +49,8 @@ add_library( TubeTKCommon STATIC
   ${TubeTK_Base_Common_H_Files}
   ${TubeTK_Base_Common_HXX_Files}
   ${TubeTK_Base_Common_CXX_Files} )
+target_link_libraries( TubeTKCommon
+  ${ITK_LIBRARIES} )
 
 TubeTKMacroInstallPlugins( TubeTKCommon )
 
