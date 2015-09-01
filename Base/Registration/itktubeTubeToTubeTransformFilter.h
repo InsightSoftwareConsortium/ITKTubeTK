@@ -50,29 +50,29 @@ namespace tube
  *  The resulting tube could be cropped and/or a narrow band could be
  *  defined.
  */
-template< class TTransformType, unsigned int VDimension >
+template< class TTransformType, unsigned int TDimension >
 class TubeToTubeTransformFilter :
   public SpatialObjectToSpatialObjectFilter<
-  GroupSpatialObject< VDimension >,
-  GroupSpatialObject< VDimension > >
+  GroupSpatialObject< TDimension >,
+  GroupSpatialObject< TDimension > >
 {
 public:
 
-  typedef GroupSpatialObject<VDimension>                     GroupType;
+  typedef GroupSpatialObject< TDimension >                   GroupType;
 
   /** Standard class typedefs. */
-  typedef TubeToTubeTransformFilter<TTransformType,VDimension>
+  typedef TubeToTubeTransformFilter< TTransformType, TDimension >
     Self;
 
-  typedef SpatialObjectToSpatialObjectFilter<GroupType, GroupType>
+  typedef SpatialObjectToSpatialObjectFilter< GroupType, GroupType >
     Superclass;
 
   typedef SmartPointer< Self >                               Pointer;
   typedef SmartPointer< const Self >                         ConstPointer;
 
-  typedef VesselTubeSpatialObject<VDimension>                TubeType;
+  typedef VesselTubeSpatialObject< TDimension >              TubeType;
 
-  typedef typename VesselTubeSpatialObject<VDimension>::TransformType
+  typedef typename VesselTubeSpatialObject< TDimension >::TransformType
     TubeTransformType;
 
   /** Typedef for the transformations */
@@ -107,6 +107,9 @@ private:
 
   TubeToTubeTransformFilter(const Self&); //purposely not implemented
   void operator=(const Self&);            //purposely not implemented
+
+  void UpdateLevel( SpatialObject< TDimension > * inputSO,
+    SpatialObject< TDimension > * parentSO );
 
   typename TransformType::Pointer            m_Transform;
 
