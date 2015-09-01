@@ -84,4 +84,4 @@ else( NOT DEFINED ${proj}_DIR )
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
 
 endif( NOT DEFINED ${proj}_DIR )
-list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -D${proj}_DIR:PATH=${${proj}_DIR}/${proj}-build )
+list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -D${proj}_DIR:PATH=${${proj}_DIR} )
