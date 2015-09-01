@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-set( MODULE_NAME InteractiveConnectedComponentsUsingParzenPDFs )
+set( MODULE_NAME SegmentConnectedParzenPDF )
 
 set( MODULE_PYTHON_SCRIPTS
    ${MODULE_NAME}.py )
