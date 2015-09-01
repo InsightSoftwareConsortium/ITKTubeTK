@@ -3,7 +3,7 @@
   <category>TubeTK</category>
   <title>ClipTubes</title>
   <description>Return a set of tubes contained in a bounding box</description>
-  <version>0.1</version>
+  <version>1.0</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
   <contributor>Lucas Gandel (Kitware)</contributor>
