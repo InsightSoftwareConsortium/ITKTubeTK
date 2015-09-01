@@ -70,4 +70,4 @@ set( SlicerExecutionModel_HASH_OR_TAG 608c7b06f9402b35f0ec01550a3b9e313582f683 )
 
 # Visualization Toolkit (3D Slicer fork)
 set( VTK_URL ${github_protocol}://github.com/Slicer/VTK.git )
-set( VTK_HASH_OR_TAG 716b0f56fc4bd4b9fcca05f386ec375bcd674122 )
+set( VTK_HASH_OR_TAG d23ea3680dcdd375d6fdab50de9dae7090f73ed6 )
