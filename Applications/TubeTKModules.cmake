@@ -25,6 +25,7 @@ set( proj Applications )
 
 set( TubeTK_${proj}_MODULES
   AtlasBuilderUsingIntensity
+  ClipTubes
   ComputeBinaryImageSimilarityMetrics
   ComputeImageSimilarityMetrics
   ComputeImageStatistics
