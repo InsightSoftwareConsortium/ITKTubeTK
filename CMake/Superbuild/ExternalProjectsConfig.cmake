@@ -41,7 +41,7 @@ set( JsonCpp_HASH_OR_TAG 192f0cf2b00798d4f4fb29c99a3aa83c )
 # KWStyle
 set( KWStyle_URL
   ${git_protocol}://github.com/Kitware/KWStyle.git )
-set( KWStyle_HASH_OR_TAG c502d2c92b76e925f709f7747353ff0ecb7200d8 )
+set( KWStyle_HASH_OR_TAG d23ea3680dcdd375d6fdab50de9dae7090f73ed6 )
 
 # LIBSVM version 3.17 (minimum version 3.1)
 set( LIBSVM_URL
@@ -70,4 +70,4 @@ set( SlicerExecutionModel_HASH_OR_TAG 608c7b06f9402b35f0ec01550a3b9e313582f683 )
 
 # Visualization Toolkit (3D Slicer fork)
 set( VTK_URL ${github_protocol}://github.com/Slicer/VTK.git )
-set( VTK_HASH_OR_TAG d23ea3680dcdd375d6fdab50de9dae7090f73ed6 )
+set( VTK_HASH_OR_TAG 716b0f56fc4bd4b9fcca05f386ec375bcd674122 )
