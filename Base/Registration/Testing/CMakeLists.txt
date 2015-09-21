@@ -104,7 +104,6 @@ if( TubeTK_USE_VTK )
 endif( TubeTK_USE_VTK )
 target_link_libraries( ${tubeBaseRegistration_LIBS} )
 
-# --compare #MIDAS{itktubeTubeToTubeTransformFilterTest.mha.md5}
 Midas3FunctionAddTest( NAME itktubeTubeToTubeTransformFilterTest
   COMMAND ${BASE_REGISTRATION_TESTS}
     --compare
