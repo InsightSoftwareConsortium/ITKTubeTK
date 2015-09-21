@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>ConvertImagesToCSV (TubeTK)</title>
+  <description>For each non-zero pixel in the mask, output that pixel's values from the other images to a CSV file.</description>
+  <version>1.0</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Stephen@Aylward.org</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters.</description>
+    <image>
+      <name>inputImageFileName</name>
+      <label>Mask Image</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Mask image that defines</description>
+    </image>
+    <string>
+      <name>inputImageFileNameList</name>
+      <label>Input Image List</label>
+      <description>Comma separated list of image files to be read</description>
+      <channel>input</channel>
+      <index>1</index>
+    </string>
+    <file>
+      <name>outputCSVFileName</name>
+      <label>Output CSV File</label>
+      <channel>output</channel>
+      <description>Output csv file to be created.</description>
+      <channel>output</channel>
+      <index>2</index>
+    </file>
+  </parameters>
+    <parameters>
+    <label>Options</label>
+    <integer>
+      <name>stride</name>
+      <label>Stride</label>
+      <description>Skip this many pixels between mask queries, to reduce output size.</description>
+      <longflag>stride</longflag>
+      <flag>s</flag>
+      <default>3</default>
+    </integer>
+  </parameters>
+</executable>
