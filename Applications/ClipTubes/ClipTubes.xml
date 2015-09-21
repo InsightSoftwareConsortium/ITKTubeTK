@@ -17,7 +17,7 @@
       <channel>input</channel>
       <index>0</index>
       <description>Input TRE file containing tubes</description>
-    </file> 
+    </file>
     <file>
       <name>outputTREFile</name>
       <label>Output TRE File</label>
@@ -39,6 +39,14 @@
       <longflag>boxSize</longflag>
       <flag>s</flag>
     </double-vector>
+    <file>
+      <name>outputBoxFile</name>
+      <label>Output VTK Box File</label>
+      <channel>output</channel>
+      <longflag>boxFile</longflag>
+      <description>Output vtk file that renders the box used in clipping.</description>
+      <default></default>
+    </file>
     <boolean>
       <name>ClipTubes</name>
       <label>Clip Tubes</label>
