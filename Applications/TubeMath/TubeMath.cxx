@@ -94,7 +94,6 @@ SetPropertyFromImage( typename itk::GroupSpatialObject< DimensionT >::
   DimensionT>::Pointer & inputImage, char propertyId )
 {
   typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
-  typedef typename TubeType::PointListType            TubePointListType;
   typedef typename TubeType::TubePointType            TubePointType;
   typedef itk::Image< PixelT, DimensionT >            ImageType;
 
@@ -162,7 +161,6 @@ SetPropertyFromImageMean( typename itk::GroupSpatialObject< DimensionT >::
   DimensionT>::Pointer & inputImage, char propertyId )
 {
   typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
-  typedef typename TubeType::PointListType            TubePointListType;
   typedef typename TubeType::TubePointType            TubePointType;
   typedef itk::Image< PixelT, DimensionT >            ImageType;
 
@@ -298,8 +296,6 @@ int DoIt( MetaCommand & command )
       {
       ::tube::Message( "Compute Tangents and Normals" );
       typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
-      typedef typename TubeType::PointListType            TubePointListType;
-      typedef typename TubeType::TubePointType            TubePointType;
 
       typename TubeType::ChildrenListType::iterator tubeIterator;
 
@@ -329,8 +325,6 @@ int DoIt( MetaCommand & command )
       {
       ::tube::Message( "Mark as Artery" );
       typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
-      typedef typename TubeType::PointListType            TubePointListType;
-      typedef typename TubeType::TubePointType            TubePointType;
 
       typename TubeType::ChildrenListType::iterator tubeIterator;
 
@@ -356,8 +350,6 @@ int DoIt( MetaCommand & command )
       {
       ::tube::Message( "Mark as Root" );
       typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
-      typedef typename TubeType::PointListType            TubePointListType;
-      typedef typename TubeType::TubePointType            TubePointType;
 
       typename TubeType::ChildrenListType::iterator tubeIterator;
 
@@ -383,8 +375,6 @@ int DoIt( MetaCommand & command )
       {
       ::tube::Message( "Assign Unique IDs" );
       typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
-      typedef typename TubeType::PointListType            TubePointListType;
-      typedef typename TubeType::TubePointType            TubePointType;
 
       typename TubeType::ChildrenListType::iterator tubeIterator;
 
