@@ -250,7 +250,7 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
   typename ChildrenListType::const_iterator it = children->begin();
   while( it != children->end() )
     {
-    this->UpdateLevel( *it, inputSO );
+    this->UpdateLevel( *it, outputSO );
     ++it;
     }
   delete children;
