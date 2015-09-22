@@ -69,7 +69,7 @@ int DoIt( int argc, char * argv[] )
     }
   typename InputImageType::Pointer maskImage = reader->GetOutput();
 
-  int numImages = 0;
+  unsigned int numImages = 0;
   std::vector< typename InputImageType::Pointer > imageList;
   std::vector< std::string > imageFileNameList;
   tube::StringToVector< std::string >( inputImageFileNameList,
@@ -121,7 +121,7 @@ int DoIt( int argc, char * argv[] )
         }
       outFile << maskIter.Get() << std::endl;
       }
-    for( unsigned int s=0; s<stride && !maskIter.IsAtEnd(); ++s )
+    for( int s=0; s<stride && !maskIter.IsAtEnd(); ++s )
       {
       for( unsigned int i=0; i<numImages; ++i )
         {
