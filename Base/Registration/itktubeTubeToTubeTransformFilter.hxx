@@ -47,7 +47,6 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
     RegisterSpatialObject();
   SpatialObjectFactory< GroupType >::RegisterSpatialObject();
   SpatialObjectFactory< TubeType >::RegisterSpatialObject();
-
 }
 
 /**
@@ -176,6 +175,10 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
         TransformPoint( transformedWorldPoint );
 
       VesselTubeSpatialObjectPoint<TDimension> pnt;
+
+      pnt.SetID( tubePointIterator->GetID() );
+      pnt.SetColor( tubePointIterator->GetColor() );
+
       pnt.SetPosition( outputPoint );
 
       // get both normals
