@@ -323,7 +323,7 @@ RegressionTestImage( const char *testImageFilename,
       std::cout << numberOfPixelsWithDifferences;
       std::cout <<  "</DartMeasurement>" << std::endl;
 
-      itksys_ios::ostringstream diffName;
+      std::ostringstream diffName;
       diffName << testImageFilename << ".diff.png";
       try
         {
@@ -363,7 +363,7 @@ RegressionTestImage( const char *testImageFilename,
       std::cout << diffName.str();
       std::cout << "</DartMeasurementFile>" << std::endl;
       }
-    itksys_ios::ostringstream baseName;
+    std::ostringstream baseName;
     baseName << testImageFilename << ".base.png";
     try
       {
@@ -401,7 +401,7 @@ RegressionTestImage( const char *testImageFilename,
     std::cout << baseName.str();
     std::cout << "</DartMeasurementFile>" << std::endl;
 
-    itksys_ios::ostringstream testName;
+    std::ostringstream testName;
     testName << testImageFilename << ".test.png";
     try
       {
