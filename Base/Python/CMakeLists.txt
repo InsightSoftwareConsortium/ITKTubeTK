@@ -29,11 +29,13 @@
 # to make TubeTK Python packages and modules importable.
 #
 set( TubeTK_C_PYTHON_EXTENSION_DIR ${CMAKE_CURRENT_BINARY_DIR} )
+
 configure_file( tubetk.pth.in tubetk.pth )
+
 if( BUILD_TESTING AND NOT TubeTK_BUILD_USING_SLICER )
   # Install into the testing virtualenv.
-  execute_process( COMMAND ${PYTHON_TESTING_EXECUTABLE}
-      -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
+  execute_process(
+    COMMAND ${PYTHON_TESTING_EXECUTABLE} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
     RESULT_VARIABLE _result_variable
     ERROR_VARIABLE _error_variable
     OUTPUT_VARIABLE site_packages )
@@ -43,7 +45,8 @@ if( BUILD_TESTING AND NOT TubeTK_BUILD_USING_SLICER )
       ${_error_variable}" )
   else( ${_result_variable} )
     string( STRIP "${site_packages}" site_packages )
-    message( STATUS "Detected testing virtualenv packages directory: ${site_packages}" )
+    message( STATUS
+      "Detected testing virtualenv packages directory: ${site_packages}" )
     configure_file( tubetk.pth.in "${site_packages}/tubetk.pth" )
   endif( ${_result_variable} )
 endif( BUILD_TESTING AND NOT TubeTK_BUILD_USING_SLICER )

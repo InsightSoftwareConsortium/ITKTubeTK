@@ -43,8 +43,6 @@ set( TubeTK_Base_Segmentation_HXX_Files
 
 add_library( TubeTKSegmentation INTERFACE )
 
-TubeTKMacroInstallPlugins( TubeTKSegmentation )
-
 if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )
@@ -54,5 +52,6 @@ install( FILES
   ${TubeTK_Base_Segmentation_HXX_Files}
   DESTINATION include )
 
-# Export target
+TubeTKMacroInstallPlugins( TubeTKSegmentation )
+
 set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKSegmentation )

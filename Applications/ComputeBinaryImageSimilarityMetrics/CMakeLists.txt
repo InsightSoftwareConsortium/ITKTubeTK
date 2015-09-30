@@ -39,13 +39,17 @@ endif( TubeTK_BUILD_WITHIN_SLICER )
 include( ${ITK_USE_FILE} )
 
 SEMMacroBuildCLI(
-  NAME ${MODULE_NAME}
-  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} ${VTK_LIBRARIES}
+  NAME
+    ${MODULE_NAME}
+  LOGO_HEADER
+    ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
+  TARGET_LIBRARIES
+    ${ITK_LIBRARIES} ${VTK_LIBRARIES}
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/CLI
     ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Segmentation )
+    ${TubeTK_SOURCE_DIR}/Base/Segmentation
+  INSTALL_RUNTIME_DESTINATION bin )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

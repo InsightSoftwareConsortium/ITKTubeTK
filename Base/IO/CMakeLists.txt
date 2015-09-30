@@ -58,9 +58,6 @@ add_library( TubeTKIO STATIC
   ${TubeTK_Base_IO_HXX_Files}
   ${TubeTK_Base_IO_SRCS} )
 
-set( TARGETS TubeTKIO )
-TubeTKMacroInstallPlugins( ${TARGETS} )
-
 if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )
@@ -70,5 +67,6 @@ install( FILES
   ${TubeTK_Base_Numerics_HXX_Files}
   DESTINATION include )
 
-# Export target
+TubeTKMacroInstallPlugins( TubeTKIO )
+
 set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKIO )

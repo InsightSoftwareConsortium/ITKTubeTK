@@ -128,25 +128,31 @@ int itktubeRidgeSeedFilterIOTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
   timeCollector.Stop("Labelmap Writer");
+  std::cout << "Labelmap Written" << std::endl;
 
   timeCollector.Start("Filter copy and write");
   itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO(
     filter );
   filterIO.Write( argv[4] );
   timeCollector.Stop("Filter copy and write");
+  std::cout << "Filter copy and write done." << std::endl;
 
   timeCollector.Start("Filter read and process 2");
   FilterType::Pointer filter2 = FilterType::New();
   filter2->SetInput( inputImage );
+  std::cout << "Filter2 setinput." << std::endl;
 
   itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO2(
     filter2 );
   filterIO2.Read( argv[4] );
+  std::cout << "FilterIO2 Read." << std::endl;
 
   filter2->SetTrainClassifier( false );
   filter2->Update();
+  std::cout << "Filter2 Update." << std::endl;
   filter2->ClassifyImages();
   timeCollector.Stop("Filter read and process 2");
+  std::cout << "Filter2 ClassifyImages." << std::endl;
 
   timeCollector.Start("Labelmap Writer2");
   LabelMapWriterType::Pointer labelmapWriter2 = LabelMapWriterType::New();
@@ -163,6 +169,7 @@ int itktubeRidgeSeedFilterIOTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
   timeCollector.Stop("Labelmap Writer2");
+  std::cout << "Labelmap2 Written" << std::endl;
 
   timeCollector.Start("Filter Writer3");
   char out3[255];
@@ -171,6 +178,7 @@ int itktubeRidgeSeedFilterIOTest( int argc, char * argv[] )
     filter2 );
   filterIO3.Write( out3 );
   timeCollector.Stop("Filter Writer3");
+  std::cout << "Filter Writer3" << std::endl;
 
   timeCollector.Report();
 

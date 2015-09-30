@@ -82,12 +82,6 @@ endif( TubeTK_USE_GPU_ARRAYFIRE )
 
 add_library( TubeTKFiltering INTERFACE )
 
-TubeTKMacroInstallPlugins( TubeTKFiltering )
-
-#add_custom_target( TubeTKFiltering SOURCES
-#  ${TubeTK_Base_Filtering_H_Files}
-#  ${TubeTK_Base_Filtering_HXX_Files} )
-
 if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )
@@ -97,5 +91,6 @@ install( FILES
   ${TubeTK_Base_Filtering_HXX_Files}
   DESTINATION include )
 
-# Export target
+TubeTKMacroInstallPlugins( TubeTKFiltering )
+
 set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKFiltering )
