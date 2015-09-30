@@ -73,15 +73,10 @@ if( TubeTK_USE_QT )
     ${QT_QTGUI_LIBRARY}
     ${QT_QTDESIGNER_LIBRARY} )
 
-  # Add the install rule
-  install( FILES DESTINATION bin COMPONENT RUNTIME )
-
   # Installation file
-  install(
-    TARGETS ConvertToMetaImage
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    RUNTIME DESTINATION bin
+  install( TARGETS
+    ConvertToMetaImage
+    DESTINATION bin
     COMPONENT RUNTIME )
 
 endif( TubeTK_USE_QT )

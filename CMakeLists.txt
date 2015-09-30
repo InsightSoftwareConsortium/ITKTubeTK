@@ -475,8 +475,8 @@ endif( TubeTK_USE_SUPERBUILD )
 # Once superbuild is done, build TubeTK
 #
 set( TubeTK_INSTALL_BIN_DIR "bin" )
-set( TubeTK_INSTALL_LIB_DIR "lib/TubeTK" )
-set( TubeTK_INSTALL_INCLUDE_DIR "include/TubeTK" )
+set( TubeTK_INSTALL_LIB_DIR "lib" )
+set( TubeTK_INSTALL_INCLUDE_DIR "include" )
 set( TubeTK_INSTALL_SHARE_DIR "share/TubeTK" )
 
 set( TubeTK_INSTALL_PLUGINS_BIN_DIR "${TubeTK_INSTALL_BIN_DIR}" )
@@ -542,13 +542,13 @@ set( SlicerExecutionModel_CLI_ARCHIVE_INSTALL_DIRECTORY
 set( SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY
   "${CMAKE_BINARY_DIR}/bin" )
 set( SlicerExecutionModel_CLI_LIBRARY_OUTPUT_DIRECTORY
-  "${CMAKE_BINARY_DIR}/lib/TubeTK" )
+  "${CMAKE_BINARY_DIR}/lib" )
 set( SlicerExecutionModel_CLI_INCLUDE_OUTPUT_DIRECTORY
-  "${CMAKE_BINARY_DIR}/include/TubeTK" )
+  "${CMAKE_BINARY_DIR}/include" )
 set( SlicerExecutionModel_CLI_SHARE_OUTPUT_DIRECTORY
   "${CMAKE_BINARY_DIR}/share/TubeTK" )
 set( SlicerExecutionModel_CLI_ARCHIVE_OUTPUT_DIRECTORY
-  "${CMAKE_BINARY_DIR}/lib/TubeTK" )
+  "${CMAKE_BINARY_DIR}/lib" )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )

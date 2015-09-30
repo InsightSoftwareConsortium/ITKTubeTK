@@ -24,7 +24,6 @@
 project( TubeTKParameterSerializer )
 
 find_package( JsonCpp REQUIRED )
-#include_directories( ${JsonCpp_INCLUDE_DIRS} )
 
 set( TubeTK_Base_ParameterSerializer_H_Files
   Registration/itktubeTubeAngleOfIncidenceWeightFunctionSerializer.h

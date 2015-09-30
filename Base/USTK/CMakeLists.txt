@@ -66,5 +66,4 @@ install( FILES
   ${TubeTK_Base_USTK_HXX_Files}
   DESTINATION include )
 
-# Export target
 set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKUSTK )

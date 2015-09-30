@@ -34,7 +34,7 @@ include( ${SlicerExecutionModel_USE_FILE} )
 
 find_package( ITK REQUIRED )
 if( TubeTK_BUILD_WITHIN_SLICER )
-  set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 ) # See Libs/ITKFactoryRegistration/CMakeLists.txt
+  set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 )
 endif( TubeTK_BUILD_WITHIN_SLICER )
 include( ${ITK_USE_FILE} )
 
@@ -50,7 +50,8 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/Numerics
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/IO
-    ${JsonCpp_INCLUDE_DIRS} )
+    ${JsonCpp_INCLUDE_DIRS}
+  INSTALL_RUNTIME_DESTINATION bin )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

@@ -65,7 +65,8 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/Common
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/Registration
-    ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments )
+    ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments
+  INSTALL_RUNTIME_DESTINATION bin )
 
 if( BUILD_TESTING )
   find_package( PythonInterp )
