@@ -66,14 +66,21 @@ include_directories(
 add_executable( tubeBaseCommonHeaderTest tubeBaseCommonHeaderTest.cxx )
 target_link_libraries( tubeBaseCommonHeaderTest ${ITK_LIBRARIES} )
 
-add_executable( tubeBaseCommonTests
-  tubeBaseCommonTests.cxx
-  ${tubeBaseCommonTests_SRCS} )
-
-target_link_libraries( tubeBaseCommonTests
-  TubeTKCommon
-  ${ITK_LIBRARIES}
-  ${JsonCpp_LIBRARIES} )
+SEMMacroBuildCLI(
+  NAME tubeBaseCommonTests
+  ADDITIONAL_SRCS
+    ${tubeBaseCommonTests_SRCS}
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
+  TARGET_LIBRARIES
+    ${ITK_LIBRARIES}
+    ${JsonCpp_LIBRARIES}
+    TubeTKCommon
+  INCLUDE_DIRECTORIES
+    ${TubeTK_SOURCE_DIR}/Base/CLI
+    ${TubeTK_SOURCE_DIR}/Base/Common
+  INSTALL_RUNTIME_DESTINATION bin
+  EXECUTABLE_ONLY
+  )
 
 add_test( NAME tubeBaseCommonHeaderTest COMMAND ${BASE_COMMON_HEADER_TEST} )
 

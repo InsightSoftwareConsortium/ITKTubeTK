@@ -33,35 +33,26 @@ void convertITKImageToArrayFire ( const ImageType * pItkImage, af::array &afArr 
   typename ImageType::SizeType imageSize =
     pItkImage->GetLargestPossibleRegion().GetSize();
 
-  switch ( ImageType::ImageDimension )
+  if( ImageType::ImageDimension == 1 )
     {
-    case 1:
-
-      afArr = af::array ( imageSize[0],
-                          pItkImage->GetBufferPointer() );
-
-      break;
-
-    case 2:
-
-      afArr = af::array ( imageSize[0], imageSize[1],
-                          pItkImage->GetBufferPointer() );
-
-      break;
-
-    case 3:
-
-      afArr = af::array ( imageSize[0], imageSize[1], imageSize[2],
-                          pItkImage->GetBufferPointer() );
-
-      break;
-
-    default:
-
-      itk::InvalidArgumentError e ( __FILE__, __LINE__ );
-      e.SetDescription ( "Only Dimensions upto 3 is not supported" );
-      e.SetLocation ( "convertITKImageToArrayFire" );
-      throw e;
+    afArr = af::array ( imageSize[0], pItkImage->GetBufferPointer() );
+    }
+  else if( ImageType::ImageDimension == 2 )
+    {
+    afArr = af::array ( imageSize[0], imageSize[1],
+      pItkImage->GetBufferPointer() );
+    }
+  else if( ImageType::ImageDimension == 3 )
+    {
+    afArr = af::array ( imageSize[0], imageSize[1], imageSize[2],
+      pItkImage->GetBufferPointer() );
+    }
+  else
+    {
+    itk::InvalidArgumentError e ( __FILE__, __LINE__ );
+    e.SetDescription ( "Only Dimensions upto 3 is not supported" );
+    e.SetLocation ( "convertITKImageToArrayFire" );
+    throw e;
     }
 }
 

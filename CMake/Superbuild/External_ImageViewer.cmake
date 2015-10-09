@@ -67,8 +67,11 @@ if( NOT DEFINED ${proj}_DIR )
       -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
+      -DUSE_SYSTEM_ITK:BOOL=TRUE
       -DITK_DIR:PATH=${ITK_DIR}
+      -DUSE_SYSTEM_SlicerExecutionModel:BOOL=TRUE
       -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
+      -DImageViewer_USE_SUPERBUILD:BOOL=FALSE
       -DQT_QMAKE_EXECUTABLE:PATH=${QT_QMAKE_EXECUTABLE}
     INSTALL_COMMAND ""
     DEPENDS
@@ -81,4 +84,4 @@ else( NOT DEFINED ${proj}_DIR )
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
 
 endif( NOT DEFINED ${proj}_DIR )
-list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -D${proj}_DIR:PATH=${${proj}_DIR}/${proj}-build )
+list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -D${proj}_DIR:PATH=${${proj}_DIR} )

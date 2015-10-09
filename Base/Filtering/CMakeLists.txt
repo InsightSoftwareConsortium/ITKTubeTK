@@ -72,27 +72,15 @@ set( TubeTK_Base_Filtering_HXX_Files
 
 # Add GPU Array Fire based filter source files here
 if( TubeTK_USE_GPU_ARRAYFIRE )
+  list( APPEND TubeTK_Base_Filtering_H_Files
+    itktubeArrayFireGlueUtilities.h
+    itktubeGPUArrayFireGaussianDerivativeFilter.h )
 
-    list( APPEND TubeTK_Base_Filtering_H_Files
-      itktubeArrayFireGlueUtilities.h
-      itktubeGPUArrayFireGaussianDerivativeFilter.h )
-
-    list( APPEND TubeTK_Base_Filtering_HXX_Files
-      itktubeGPUArrayFireGaussianDerivativeFilter.hxx )
-
+  list( APPEND TubeTK_Base_Filtering_HXX_Files
+    itktubeGPUArrayFireGaussianDerivativeFilter.hxx )
 endif( TubeTK_USE_GPU_ARRAYFIRE )
 
 add_library( TubeTKFiltering INTERFACE )
-
-if( TubeTK_USE_GPU_ARRAYFIRE )
-  target_link_libraries( TubeTKFiltering INTERFACE ${ArrayFire_LIBRARIES} )
-endif( TubeTK_USE_GPU_ARRAYFIRE )
-
-TubeTKMacroInstallPlugins( TubeTKFiltering )
-
-#add_custom_target( TubeTKFiltering SOURCES
-#  ${TubeTK_Base_Filtering_H_Files}
-#  ${TubeTK_Base_Filtering_HXX_Files} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
@@ -103,5 +91,6 @@ install( FILES
   ${TubeTK_Base_Filtering_HXX_Files}
   DESTINATION include )
 
-# Export target
+TubeTKMacroInstallPlugins( TubeTKFiltering )
+
 set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKFiltering )

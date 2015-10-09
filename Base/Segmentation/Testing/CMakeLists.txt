@@ -84,9 +84,8 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/Numerics
     ${TubeTK_SOURCE_DIR}/Base/Segmentation
-  INSTALL_RUNTIME_DESTINATION lib
-  INSTALL_LIBRARY_DESTINATION lib
-  INSTALL_ARCHIVE_DESTINATION bin
+  INSTALL_RUNTIME_DESTINATION bin
+  EXECUTABLE_ONLY
   )
 
 add_test( NAME tubeBaseSegmentationHeaderTest

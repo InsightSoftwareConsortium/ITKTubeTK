@@ -68,14 +68,13 @@ if( APPLE )
   foreach( SDK_ROOT ${OSX_SDK_ROOTS} )
     if( "x${CMAKE_OSX_SYSROOT}x" STREQUAL "xx" )
       file( GLOB SDK_SYSROOTS "${SDK_ROOT}/MacOSX*.sdk" )
-
       if( NOT "x${SDK_SYSROOTS}x" STREQUAL "xx" )
         set( SDK_SYSROOT_NEWEST "" )
         set( SDK_VERSION "0" )
         # find the latest SDK
         foreach( SDK_ROOT_I ${SDK_SYSROOTS} )
           # extract version from SDK
-          string( REGEX MATCH "MacOSX([0-9]+\\.[0-9]+ )\\.sdk" _match
+          string( REGEX MATCH "MacOSX([0-9]+\\.[0-9]+)\\.sdk" _match
             "${SDK_ROOT_I}")
           if( "${CMAKE_MATCH_1}" VERSION_GREATER "${SDK_VERSION}" )
             set( SDK_SYSROOT_NEWEST "${SDK_ROOT_I}" )
@@ -100,7 +99,7 @@ if( APPLE )
   endforeach()
 
   if( "x${CMAKE_OSX_DEPLOYMENT_TARGET}x" STREQUAL "xx" )
-    string( REGEX MATCH "MacOSX([0-9]+\\.[0-9]+ )\\.sdk" _match
+    string( REGEX MATCH "MacOSX([0-9]+\\.[0-9]+)\\.sdk" _match
       "${CMAKE_OSX_SYSROOT}" )
     set( SDK_VERSION "${CMAKE_MATCH_1}" )
     if( "${SDK_VERSION}" VERSION_GREATER "10.8" )

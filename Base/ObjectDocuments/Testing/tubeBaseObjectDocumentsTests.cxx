@@ -21,6 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "tubeBaseObjectDocumentsTestsCLP.h"
 #include "tubeTestMain.h"
 
 #include <iostream>

@@ -38,3 +38,7 @@ add_custom_target( TubeCLI SOURCES
 if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )
+
+install( FILES
+  ${TubeTK_Base_CLI_H_Files}
+  DESTINATION include )

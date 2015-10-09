@@ -49,10 +49,8 @@ add_library( TubeTKObjectDocuments STATIC
   ${TubeTk_Base_ObjectDocuments_HXX_Files}
   ${TubeTk_Base_ObjectDocuments_SRCS} )
 
-target_link_libraries( TubeTKObjectDocuments TubeTKCommon ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects )
-
-set( TARGETS TubeTKObjectDocuments )
-TubeTKMacroInstallPlugins( ${TARGETS} )
+target_link_libraries( TubeTKObjectDocuments
+  TubeTKCommon ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
@@ -63,5 +61,6 @@ install( FILES
   ${TubeTK_Base_ObjectDocuments_HXX_Files}
   DESTINATION include )
 
-# Export target
+TubeTKMacroInstallPlugins( TubeTKObjectDocuments )
+
 set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKObjectDocuments )

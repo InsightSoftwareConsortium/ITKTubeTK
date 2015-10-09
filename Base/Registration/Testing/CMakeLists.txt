@@ -58,6 +58,7 @@ set( tubeBaseRegistration_SRCS
 # give a bit of tolerance
 set( imageCompareTolerance 0.000001 )
 
+set( tubeBaseRegistration_ADDITIONAL_LIBRARIES )
 if( TubeTK_USE_VTK )
   find_package( VTK REQUIRED )
   include( ${VTK_USE_FILE} )
@@ -66,6 +67,9 @@ if( TubeTK_USE_VTK )
     ${tubeBaseRegistration_SRCS}
     itktubeAnisotropicDiffusiveRegistrationGenerateTestingImages.cxx
     itktubeAnisotropicDiffusiveRegistrationRegularizationTest.cxx )
+
+  set( tubeBaseRegistration_ADDITIONAL_LIBRARIES
+    ${VTK_LIBRARIES} )
 endif( TubeTK_USE_VTK )
 
 SEMMacroBuildCLI(
@@ -76,16 +80,14 @@ SEMMacroBuildCLI(
   TARGET_LIBRARIES
     TubeTKRegistration
     ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects ITKOptimizers
-    ${VTK_LIBRARIES}
+    ${tubeBaseRegistration_ADDITIONAL_LIBRARIES}
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/CLI
     ${TubeTK_SOURCE_DIR}/Base/Common
     ${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SOURCE_DIR}/Base/Numerics
     ${TubeTK_SOURCE_DIR}/Base/Registration
-  INSTALL_RUNTIME_DESTINATION lib
-  INSTALL_LIBRARY_DESTINATION lib
-  INSTALL_ARCHIVE_DESTINATION bin
+  INSTALL_RUNTIME_DESTINATION bin
   EXECUTABLE_ONLY
   )
 
@@ -93,18 +95,6 @@ if( TubeTK_USE_VTK )
   add_definitions( -DTubeTK_USE_VTK )
 endif( TubeTK_USE_VTK )
 
-set( tubeBaseRegistration_LIBS
-  tubeBaseRegistrationTests
-  ${ITK_LIBRARIES} )
-
-if( TubeTK_USE_VTK )
-  set( tubeBaseRegistration_LIBS
-    ${tubeBaseRegistration_LIBS}
-    ${VTK_LIBRARIES} )
-endif( TubeTK_USE_VTK )
-target_link_libraries( ${tubeBaseRegistration_LIBS} )
-
-# --compare #MIDAS{itktubeTubeToTubeTransformFilterTest.mha.md5}
 Midas3FunctionAddTest( NAME itktubeTubeToTubeTransformFilterTest
   COMMAND ${BASE_REGISTRATION_TESTS}
     --compare

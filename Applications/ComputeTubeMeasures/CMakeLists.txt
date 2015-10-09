@@ -34,19 +34,20 @@ include( ${SlicerExecutionModel_USE_FILE} )
 
 find_package( ITK REQUIRED )
 if( TubeTK_BUILD_WITHIN_SLICER )
-  set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 ) # See Libs/ITKFactoryRegistration/CMakeLists.txt
+  set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 )
 endif( TubeTK_BUILD_WITHIN_SLICER )
 include( ${ITK_USE_FILE} )
 
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES TubeTKFiltering ${ITK_LIBRARIES}
+  TARGET_LIBRARIES TubeTKNumerics TubeTKFiltering ${ITK_LIBRARIES}
   INCLUDE_DIRECTORIES
     ${TubeTK_SOURCE_DIR}/Base/CLI
     ${TubeTK_SOURCE_DIR}/Base/Common
     ${TubeTK_SOURCE_DIR}/Base/Numerics
-    ${TubeTK_SOURCE_DIR}/Base/Filtering )
+    ${TubeTK_SOURCE_DIR}/Base/Filtering
+  INSTALL_RUNTIME_DESTINATION bin )
 
 #if( BUILD_TESTING )
   #add_subdirectory( Testing )

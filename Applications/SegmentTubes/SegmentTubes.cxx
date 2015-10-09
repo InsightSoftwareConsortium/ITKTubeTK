@@ -330,6 +330,8 @@ int DoIt( int argc, char * argv[] )
           tubeIterator->GetPointer() ) );
       ++tubeIterator;
       }
+
+    delete tubeList;
     }
 
   if( !parametersFile.empty() )

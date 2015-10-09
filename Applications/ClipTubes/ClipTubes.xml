@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>ClipTubes</title>
+  <description>Return a set of tubes contained in a bounding box</description>
+  <version>1.0</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Lucas Gandel (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters.</description>
+    <file>
+      <name>inputTREFile</name>
+      <label>Input Tre File</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input TRE file containing tubes</description>
+    </file>
+    <file>
+      <name>outputTREFile</name>
+      <label>Output TRE File</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Output TRE file containing tubes going through the Box</description>
+    </file>
+    <double-vector>
+      <name>boxCorner</name>
+      <label>Top Left Corner of Bounding Box</label>
+      <description>Required : 3D position from where to start bounding box</description>
+      <longflag>boxCorner</longflag>
+      <flag>p</flag>
+    </double-vector>
+    <double-vector>
+      <name>boxSize</name>
+      <label>Bounding Box Size </label>
+      <description>Required : Lenght (x radius), Height (y radius) and Depth (z radius) of the Box </description>
+      <longflag>boxSize</longflag>
+      <flag>s</flag>
+    </double-vector>
+    <file>
+      <name>outputBoxFile</name>
+      <label>Output VTK Box File</label>
+      <channel>output</channel>
+      <longflag>boxFile</longflag>
+      <description>Output vtk file that renders the box used in clipping.</description>
+      <default></default>
+    </file>
+    <boolean>
+      <name>ClipTubes</name>
+      <label>Clip Tubes</label>
+      <description>Specify if tubes should be clipped</description>
+      <longflag>ClipTubes</longflag>
+      <flag>c</flag>
+      <default>false</default>
+    </boolean>
+  </parameters>
+</executable>

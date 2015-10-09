@@ -25,6 +25,7 @@ set( proj Applications )
 
 set( TubeTK_${proj}_MODULES
   AtlasBuilderUsingIntensity
+  ClipTubes
   ComputeBinaryImageSimilarityMetrics
   ComputeImageSimilarityMetrics
   ComputeImageStatistics
@@ -33,6 +34,7 @@ set( TubeTK_${proj}_MODULES
   ComputeTubeGraphProbability
   ComputeTubeMeasures
   ComputeTubeProbability
+  ConvertImagesToCSV
   ConvertInnerOpticToPlus
   ConvertShrunkenSeedImageToList
   ConvertToMetaImage

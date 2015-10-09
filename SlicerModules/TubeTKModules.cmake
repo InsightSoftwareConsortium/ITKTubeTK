@@ -24,7 +24,7 @@
 set( proj SlicerModules )
 
 set( TubeTK_SLICER_MODULES
-  InteractiveConnectedComponentsUsingParzenPDFs
+  SegmentConnectedParzenPDF
   SpatialObjectsModule
   )
 

@@ -21,6 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "tubeBaseCommonTestsCLP.h"
 #include "tubeTestMain.h"
 
 void RegisterTests( void )

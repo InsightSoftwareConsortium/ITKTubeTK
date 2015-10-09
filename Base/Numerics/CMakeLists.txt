@@ -76,9 +76,9 @@ add_library( TubeTKNumerics STATIC
   ${TubeTK_Base_Numerics_H_Files}
   ${TubeTK_Base_Numerics_HXX_Files}
   ${TubeTK_Base_Numerics_SRCS} )
-
-set( TARGETS TubeTKNumerics )
-TubeTKMacroInstallPlugins( ${TARGETS} )
+if( TubeTK_USE_GPU_ARRAYFIRE )
+  target_link_libraries( TubeTKNumerics ${ArrayFire_LIBRARIES} )
+endif( TubeTK_USE_GPU_ARRAYFIRE )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
@@ -89,5 +89,6 @@ install( FILES
   ${TubeTK_Base_Numerics_HXX_Files}
   DESTINATION include )
 
-# Export target
+TubeTKMacroInstallPlugins( TubeTKNumerics )
+
 set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKNumerics )

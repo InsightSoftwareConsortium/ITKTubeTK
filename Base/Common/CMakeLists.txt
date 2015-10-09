@@ -49,6 +49,8 @@ add_library( TubeTKCommon STATIC
   ${TubeTK_Base_Common_H_Files}
   ${TubeTK_Base_Common_HXX_Files}
   ${TubeTK_Base_Common_CXX_Files} )
+target_link_libraries( TubeTKCommon
+  ${ITK_LIBRARIES} )
 
 TubeTKMacroInstallPlugins( TubeTKCommon )
 
@@ -57,9 +59,6 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES ${ITK_LIBRARIES}
   INCLUDE_DIRECTORIES
-    #${TubeTK_SOURCE_DIR}/Base/CLI
-    #${TubeTK_SOURCE_DIR}/Base/Common
-    #${TubeTK_SOURCE_DIR}/Base/Filtering
     ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration
     ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration/ITKRegistrationHelper )
 
@@ -87,5 +86,7 @@ install( TARGETS
   TextCompareCommand
   DESTINATION bin
   COMPONENT RUNTIME )
+
+TubeTKMacroInstallPlugins( TubeTKCommon )
 
 set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKCommon )
