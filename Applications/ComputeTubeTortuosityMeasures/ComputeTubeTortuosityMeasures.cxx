@@ -175,6 +175,8 @@ int DoIt( int argc, char * argv[] )
     pTortuosityFilter->SetSmoothingScale( smoothingScale );
     pTortuosityFilter->SetSmoothingMethod( smoothingMethodEnum );
     pTortuosityFilter->SetNumberOfBins( numberOfHistogramBins );
+    pTortuosityFilter->SetHistogramMin( histogramMin );
+    pTortuosityFilter->SetHistogramMax( histogramMax );
     pTortuosityFilter->Update();
     }
 

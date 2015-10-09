@@ -118,6 +118,24 @@
       <longflag>numberOfHistogramBins</longflag>
       <default>20</default>
     </integer>
+    <double>
+      <name>histogramMin</name>
+      <label>Histogram Minimum</label>
+      <description>
+        Minimum of the range of values the histogram is computed on.
+      </description>
+      <longflag>histogramMin</longflag>
+      <default>0.0</default>
+    </double>
+    <double>
+      <name>histogramMax</name>
+      <label>Histogram Maximum</label>
+      <description>
+        Maximum of the range of values the histogram is computed on.
+      </description>
+      <longflag>histogramMax</longflag>
+      <default>1.0</default>
+    </double>
   </parameters>
 
 </executable>
