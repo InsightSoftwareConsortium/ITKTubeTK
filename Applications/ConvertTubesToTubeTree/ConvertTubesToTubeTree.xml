@@ -18,13 +18,13 @@
       <index>0</index>
       <description>Input TRE file containing disjoint tubes</description>
     </file>
-    <image>
+    <file>
       <name>outputTREFile</name>
       <label>Output TRE File</label>
       <channel>output</channel>
       <index>1</index>
       <description>Output TRE file containing a tree of tubes</description>
-    </image>
+    </file>
   </parameters>
   <parameters advanced="true">
     <label>Algorithm Parameters</label>
