@@ -19,13 +19,13 @@
       <index>0</index>
       <description>Input TRE file containing a set of tubes</description>
     </file>
-    <image>
+    <file>
       <name>outputCSVFile</name>
       <label>Output CSV File containing the tortuosity measures</label>
       <channel>output</channel>
       <index>1</index>
       <description>Output TRE file containing the tortuosity measures</description>
-    </image>
+    </file>
   </parameters>
 
   <parameters advanced="true">
