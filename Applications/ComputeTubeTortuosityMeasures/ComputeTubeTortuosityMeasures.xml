@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <executable>
   <category>TubeTK</category>
-  <title>Convert Tubes To Tree (TubeTK)</title>
-  <description>Constructs a tree from a set of disjoint tubes</description>
+  <title>Compute Tube Tortuosity Measures (TubeTK)</title>
+  <description>Computes Tortuosity Measures and writes them to a CSV file</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
   <license>Apache 2.0</license>
   <contributor>Deepak Roy Chittajallu (Kitware)</contributor>
   <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
-
   <parameters>
     <label>IO</label>
     <description>Input/output parameters.</description>
@@ -27,43 +26,26 @@
       <description>Output TRE file containing the tortuosity measures</description>
     </file>
   </parameters>
-
   <parameters advanced="true">
     <label>Metrics</label>
     <boolean>
       <name>basicMetrics</name>
       <label>Basic Metrics</label>
-      <description>
-        AverageRadiusMetric,
-         ChordLengthMetric,
-         PathLengthMetric.
-      </description>
+      <description>AverageRadiusMetric, ChordLengthMetric, PathLengthMetric.</description>
       <longflag>basicMetrics</longflag>
       <default>true</default>
     </boolean>
     <boolean>
       <name>oldMetrics</name>
       <label>Old Metrics</label>
-      <description>
-        InflectionCountMetric,
-         InflectionPointsMetric,
-         SumOfAnglesMetric.
-      </description>
+      <description>InflectionCountMetric, InflectionPointsMetric, SumOfAnglesMetric.</description>
       <longflag>oldMetrics</longflag>
       <default>true</default>
     </boolean>
     <boolean>
       <name>curvatureMetrics</name>
       <label>Curvature Metrics</label>
-      <description>
-        CurvatureScalarMetric,
-         InflectionCount1Metric,
-         InflectionCount2Metric,
-         Percentile95Metric,
-         Tau4Metric,
-         TotalCurvatureMetric,
-         TotalSquaredCurvatureMetric
-      </description>
+      <description>CurvatureScalarMetric, InflectionCount1Metric, InflectionCount2Metric, Percentile95Metric, Tau4Metric, TotalCurvatureMetric, TotalSquaredCurvatureMetric</description>
       <longflag>curvatureMetrics</longflag>
       <default>true</default>
     </boolean>
@@ -77,65 +59,45 @@
       <default>true</default>
     </boolean>
   </parameters>
-
   <parameters advanced="true">
     <label>Advanced</label>
     <string-enumeration>
       <name>smoothingMethod</name>
       <label>Smoothing Method</label>
-      <description>
-      Specifies the smoothing method to be applied to the vessel before
-      computing the tortuosity measures. See SmoothTubeFunctionEnum in
-      tubeTubeMath.h for more details.
-      </description>
+      <description>Specifies the smoothing method to be applied to the vessel before computing the tortuosity measures. See SmoothTubeFunctionEnum in tubeTubeMath.h for more details.</description>
       <longflag>smoothingMethod</longflag>
+      <default>SMOOTH_TUBE_USING_INDEX_AVERAGE</default>
       <element>SMOOTH_TUBE_USING_INDEX_AVERAGE</element>
       <element>SMOOTH_TUBE_USING_INDEX_GAUSSIAN</element>
       <element>SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN</element>
-      <default>SMOOTH_TUBE_USING_INDEX_AVERAGE</default>
     </string-enumeration>
     <double>
       <name>smoothingScale</name>
       <label>Smoothing Scale</label>
-      <description>
-      This parameter as different meanings depending on the smoothing method
-      used.
-      If smoothing method is SMOOTH_TUBE_USING_INDEX_AVERAGE then
-       smoothing scale is half of the window size.
-      If smoothing method is SMOOTH_TUBE_USING_INDEX_GAUSSIAN or
-       SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN then smoothing scale is the gaussian's
-       standard deviation.
-      </description>
+      <description>This parameter has different meanings depending on the smoothing method used. If smoothing method is SMOOTH_TUBE_USING_INDEX_AVERAGE then smoothing scale is half of the window size. If smoothing method is SMOOTH_TUBE_USING_INDEX_GAUSSIAN or SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN then smoothing scale is the gaussian's standard deviation.</description>
       <longflag>smoothingScale</longflag>
       <default>5.0</default>
     </double>
     <integer>
       <name>numberOfHistogramBins</name>
       <label>Number of histogram bins</label>
-      <description>
-        Number of bins to use for the curvature histogram
-      </description>
+      <description>Number of bins to use for the curvature histogram</description>
       <longflag>numberOfHistogramBins</longflag>
       <default>20</default>
     </integer>
     <double>
       <name>histogramMin</name>
       <label>Histogram Minimum</label>
-      <description>
-        Minimum of the range of values the histogram is computed on.
-      </description>
+      <description>Minimum of the range of values the histogram is computed on.</description>
       <longflag>histogramMin</longflag>
       <default>0.0</default>
     </double>
     <double>
       <name>histogramMax</name>
       <label>Histogram Maximum</label>
-      <description>
-        Maximum of the range of values the histogram is computed on.
-      </description>
+      <description>Maximum of the range of values the histogram is computed on.</description>
       <longflag>histogramMax</longflag>
       <default>1.0</default>
     </double>
   </parameters>
-
 </executable>

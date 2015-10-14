@@ -22,9 +22,9 @@
 =========================================================================*/
 
 // TubeTK INCLUDES
-#include "tubeCLIProgressReporter.h"
-#include "tubeMessage.h"
 #include "tubeMacro.h"
+#include "tubeMessage.h"
+#include "tubeCLIProgressReporter.h"
 #include "itktubeTortuositySpatialObjectFilter.h"
 #include "tubeTubeMath.h"
 
@@ -72,16 +72,14 @@ int DoIt( int argc, char * argv[] )
 
   // typedefs
   typedef itk::VesselTubeSpatialObject< VDimension >  TubeType;
-  typedef typename TubeType::Pointer                  TubePointerType;
+  typedef itk::SpatialObjectReader< VDimension >      TubesReaderType;
+  typedef itk::GroupSpatialObject< VDimension >       TubeGroupType;
   typedef typename TubeGroupType::ChildrenListPointer TubeListPointerType;
   typedef itk::tube::TortuositySpatialObjectFilter< TubeType >
   TortuosityFilterType;
 
   // Load TRE File
   tubeStandardOutputMacro( << "\n>> Loading TRE File" );
-
-  typedef itk::SpatialObjectReader< VDimension > TubesReaderType;
-  typedef itk::GroupSpatialObject< VDimension >  TubeGroupType;
 
   timeCollector.Start( "Loading Input TRE File" );
 
@@ -105,22 +103,22 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Stop( "Loading Input TRE File" );
 
   // Get specified smoothing method
-  ::tube::SmoothTubeFunctionEnum smoothingMethodEnum;
+  tube::SmoothTubeFunctionEnum smoothingMethodEnum;
 
-  if( strcmp( smoothingMethod, "SMOOTH_TUBE_USING_INDEX_AVERAGE" ) == 0 )
+  if(smoothingMethod == "SMOOTH_TUBE_USING_INDEX_AVERAGE" )
     {
     smoothingMethodEnum =
-      ::tube::SmoothTubeFunctionEnum::SMOOTH_TUBE_USING_INDEX_AVERAGE;
+      tube::SMOOTH_TUBE_USING_INDEX_AVERAGE;
     }
-  else if( strcmp( smoothingMethod, "SMOOTH_TUBE_USING_INDEX_GAUSSIAN" ) == 0 )
+  else if(smoothingMethod == "SMOOTH_TUBE_USING_INDEX_GAUSSIAN")
     {
     smoothingMethodEnum =
-      ::tube::SmoothTubeFunctionEnum::SMOOTH_TUBE_USING_INDEX_GAUSSIAN;
+      tube::SMOOTH_TUBE_USING_INDEX_GAUSSIAN;
     }
-  else if( strcmp( smoothingMethod, "SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN" ) == 0 )
+  else if(smoothingMethod == "SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN")
     {
     smoothingMethodEnum =
-      ::tube::SmoothTubeFunctionEnum::SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN;
+      tube::SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN;
     }
 
   // Prepare tortuosity measure flag
@@ -220,7 +218,7 @@ int DoIt( int argc, char * argv[] )
       vtkSmartPointer< vtkDoubleArray > metricArray =
         vtkSmartPointer< vtkDoubleArray >::New();
       metricArray->Initialize();
-      metricArray->SetName( MetricFlagToNameMap[compareFlag] );
+      metricArray->SetName( MetricFlagToNameMap[compareFlag].c_str() );
       metricArray->SetNumberOfValues( tubeList->size() );
       metricArrayVec.push_back( metricArray );
       }
@@ -265,15 +263,14 @@ int DoIt( int argc, char * argv[] )
       }
 
     typename TortuosityFilterType::Pointer tortuosityFilter =
-    TortuosityFilterType::New();
-
-    tortuosityFilter->SetInput( curTube );
-    tortuosityFilter->SetMeasureFlag( measureFlag );
+      TortuosityFilterType::New();
+    tortuosityFilter->SetMeasureFlag( metricFlag );
     tortuosityFilter->SetSmoothingScale( smoothingScale );
     tortuosityFilter->SetSmoothingMethod( smoothingMethodEnum );
     tortuosityFilter->SetNumberOfBins( numberOfHistogramBins );
     tortuosityFilter->SetHistogramMin( histogramMin );
     tortuosityFilter->SetHistogramMax( histogramMax );
+    tortuosityFilter->SetInput( curTube );
     tortuosityFilter->Update();
 
     tubeIdArray->SetValue( tubeIndex, tubeIndex );
@@ -387,11 +384,7 @@ int DoIt( int argc, char * argv[] )
 
   vtkNew< vtkDelimitedTextWriter > writer;
   writer->SetFileName( outputCSVFile.c_str() );
-#if (VTK_MAJOR_VERSION < 6)
-  writer->SetInput( table.GetPointer() );
-#else
   writer->SetInputData( table.GetPointer() );
-#endif
   writer->Write();
 
   timeCollector.Stop( "Writing tortuosity measures to CSV" );
@@ -425,16 +418,12 @@ int main( int argc, char * argv[] )
 
   switch( mScene->GetObjectList()->front()->NDims() )
     {
-    case 2:
-      return DoIt<2>( argc, argv );
-      break;
-
     case 3:
       return DoIt<3>( argc, argv );
       break;
 
     default:
-      tubeErrorMacro(<< "Error: Only 2D and 3D data is currently supported.");
+      tubeErrorMacro(<< "Error: Only 3D data is currently supported.");
       return EXIT_FAILURE;
     }
 }
