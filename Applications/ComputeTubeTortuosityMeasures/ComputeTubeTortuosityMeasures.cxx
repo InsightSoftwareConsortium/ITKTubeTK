@@ -110,15 +110,15 @@ int DoIt( int argc, char * argv[] )
     smoothingMethodEnum =
       tube::SMOOTH_TUBE_USING_INDEX_AVERAGE;
     }
-  else if(smoothingMethod == "SMOOTH_TUBE_USING_INDEX_GAUSSIAN")
-    {
-    smoothingMethodEnum =
-      tube::SMOOTH_TUBE_USING_INDEX_GAUSSIAN;
-    }
   else if(smoothingMethod == "SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN")
     {
     smoothingMethodEnum =
       tube::SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN;
+    }
+  else
+    {
+    smoothingMethodEnum =
+      tube::SMOOTH_TUBE_USING_INDEX_GAUSSIAN;
     }
 
   // Prepare tortuosity measure flag
