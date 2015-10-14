@@ -33,21 +33,21 @@
       <label>Basic Metrics</label>
       <description>AverageRadiusMetric, ChordLengthMetric, PathLengthMetric.</description>
       <longflag>basicMetrics</longflag>
-      <default>true</default>
+      <default>false</default>
     </boolean>
     <boolean>
       <name>oldMetrics</name>
       <label>Old Metrics</label>
       <description>InflectionCountMetric, InflectionPointsMetric, SumOfAnglesMetric.</description>
       <longflag>oldMetrics</longflag>
-      <default>true</default>
+      <default>false</default>
     </boolean>
     <boolean>
       <name>curvatureMetrics</name>
       <label>Curvature Metrics</label>
       <description>CurvatureScalarMetric, InflectionCount1Metric, InflectionCount2Metric, Percentile95Metric, Tau4Metric, TotalCurvatureMetric, TotalSquaredCurvatureMetric</description>
       <longflag>curvatureMetrics</longflag>
-      <default>true</default>
+      <default>false</default>
     </boolean>
     <boolean>
       <name>histogramMetrics</name>
@@ -56,7 +56,7 @@
         CurvatureHistogramMetrics
       </description>
       <longflag>histogramMetrics</longflag>
-      <default>true</default>
+      <default>false</default>
     </boolean>
   </parameters>
   <parameters advanced="true">

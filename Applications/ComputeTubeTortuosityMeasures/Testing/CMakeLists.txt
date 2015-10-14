@@ -34,3 +34,21 @@ set( PROJ_EXE
 
 set( TEXTCOMPARE_EXE
  ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
+
+ # Test1
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+COMMAND ${PROJ_EXE}
+  --basicMetrics --oldMetrics
+  --curvatureMetrics --histogramMetrics
+  MIDAS{vv_pp11_43_left_052015.tre.md5}
+  ${TEMP}/${MODULE_NAME}Test1.csv )
+
+# Test1 - Compare
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
+  COMMAND ${TEXTCOMPARE_EXE}
+    -t ${TEMP}/${MODULE_NAME}Test1.csv
+    -b MIDAS{vv_pp11_43_left_052015.csv.md5}
+    -d 0.01 )
+
+set_property( TEST ${MODULE_NAME}-Test1-Compare
+              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
