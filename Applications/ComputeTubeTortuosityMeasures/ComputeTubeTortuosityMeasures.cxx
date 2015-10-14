@@ -224,12 +224,15 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
-  vtkSmartPointer< vtkDoubleArray > tau4Array =
-    vtkSmartPointer< vtkDoubleArray >::New();
-  tau4Array->Initialize();
-  tau4Array->SetName( "Tau4Metric" );
-  tau4Array->SetNumberOfValues( tubeList->size() );
-  metricArrayVec.push_back( tau4Array );
+  if( curvatureMetrics )
+    {
+    vtkSmartPointer< vtkDoubleArray > tau4Array =
+      vtkSmartPointer< vtkDoubleArray >::New();
+    tau4Array->Initialize();
+    tau4Array->SetName( "Tau4Metric" );
+    tau4Array->SetNumberOfValues( tubeList->size() );
+    metricArrayVec.push_back( tau4Array );
+    }
 
   std::vector< vtkSmartPointer<vtkIntArray> > histogramArrays;
   if( (metricFlag & TortuosityFilterType::CURVATURE_HISTOGRAM_METRICS) > 0 )
