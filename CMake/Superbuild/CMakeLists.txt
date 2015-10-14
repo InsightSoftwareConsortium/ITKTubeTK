@@ -110,6 +110,8 @@ endif( UNIX )
 
 set( TubeTK_DEPENDENCIES "ITK" "JsonCpp" "SlicerExecutionModel" )
 
+set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "MinimalPathExtraction" )
+
 if( TubeTK_USE_VTK )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "VTK" )
 endif( TubeTK_USE_VTK )
