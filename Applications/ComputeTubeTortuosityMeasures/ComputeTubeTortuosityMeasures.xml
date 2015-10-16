@@ -8,6 +8,7 @@
   <license>Apache 2.0</license>
   <contributor>Deepak Roy Chittajallu (Kitware)</contributor>
   <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+
   <parameters>
     <label>IO</label>
     <description>Input/output parameters.</description>
@@ -26,6 +27,7 @@
       <description>Output TRE file containing the tortuosity measures</description>
     </file>
   </parameters>
+
   <parameters advanced="true">
     <label>Metrics</label>
     <boolean>
@@ -59,6 +61,7 @@
       <default>false</default>
     </boolean>
   </parameters>
+
   <parameters advanced="true">
     <label>Advanced</label>
     <string-enumeration>
@@ -100,4 +103,5 @@
       <default>1.0</default>
     </double>
   </parameters>
+
 </executable>
