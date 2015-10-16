@@ -51,7 +51,7 @@ set( LIBSVM_HASH_OR_TAG 9e2dd8a5fd032b429c07ce2778c8716117812bc5 )
 
 set( MinimalPathExtraction_URL
   https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction.git )
-set( MinimalPathExtraction_HASH_OR_TAG e6f882a1468e6a50444b81cd3c56c229257cb44c )
+set( MinimalPathExtraction_HASH_OR_TAG 6c23a2c17daa080fcd5c737b1140e808a71e3e17 )
 
 ###########################################################
 ###########################################################

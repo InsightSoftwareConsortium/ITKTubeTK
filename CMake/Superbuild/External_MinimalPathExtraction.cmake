@@ -20,66 +20,71 @@
 # limitations under the License.
 #
 ##############################################################################
-
-# Make sure this file is included only once.
-get_filename_component( CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE}
-  NAME_WE )
-if( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
-  return()
-endif( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
-set( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1 )
-
 set( proj MinimalPathExtraction )
 
-# Sanity checks.
-if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
-  message( FATAL_ERROR
-   "${proj}_DIR is defined, but corresponds to a nonexistent directory" )
-endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
+if(NOT ITK_VERSION VERSION_GREATER "4.8")
+  message(WARNING "Requires ITK 4.9 or later to work. Removing ${proj}.")
+  list(REMOVE_ITEM TubeTK_DEPENDENCIES ${proj})
+else()
+  # Make sure this file is included only once.
+  get_filename_component( CMAKE_CURRENT_LIST_FILENAME 
+    ${CMAKE_CURRENT_LIST_FILE} NAME_WE )
+  if( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
+    return()
+  endif( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
+  set( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1 )
 
-set( ${proj}_DEPENDENCIES "ITK")
+  # Sanity checks.
+  if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
+    message( FATAL_ERROR
+    "${proj}_DIR is defined, but corresponds to a nonexistent directory" )
+  endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
-# Include dependent projects, if any.
-TubeTKMacroCheckExternalProjectDependency( ${proj} )
+  set( ${proj}_DEPENDENCIES "ITK")
 
-if( NOT DEFINED ${proj}_DIR )
-  set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
-  set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
+  # Include dependent projects, if any.
+  TubeTKMacroCheckExternalProjectDependency( ${proj} )
 
-  ExternalProject_Add( ${proj}
-    GIT_REPOSITORY ${${proj}_URL}
-    GIT_TAG ${${proj}_HASH_OR_TAG}
-    DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
-    SOURCE_DIR ${${proj}_SOURCE_DIR}
-    BINARY_DIR ${${proj}_DIR}
-    INSTALL_DIR ${${proj}_DIR}
-    CMAKE_GENERATOR ${gen}
-    LOG_DOWNLOAD 1
-    LOG_UPDATE 0
-    LOG_CONFIGURE 0
-    LOG_BUILD 0
-    LOG_TEST 0
-    LOG_INSTALL 0
-    CMAKE_ARGS
-      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-      -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-      -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-      -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
-      -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
-      -DCMAKE_BUILD_TYPE:STRING=${build_type}
-      ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
-      -DBUILD_SHARED_LIBS:BOOL=${shared}
-      -DITK_DIR:PATH=${ITK_DIR}
-    INSTALL_COMMAND ""
-    DEPENDS
-      ${${proj}_DEPENDENCIES} )
+  if( NOT DEFINED ${proj}_DIR )
+    set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
+    set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
-else( NOT DEFINED ${proj}_DIR )
+    ExternalProject_Add( ${proj}
+      GIT_REPOSITORY ${${proj}_URL}
+      GIT_TAG ${${proj}_HASH_OR_TAG}
+      DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
+      SOURCE_DIR ${${proj}_SOURCE_DIR}
+      BINARY_DIR ${${proj}_DIR}
+      INSTALL_DIR ${${proj}_DIR}
+      CMAKE_GENERATOR ${gen}
+      LOG_DOWNLOAD 1
+      LOG_UPDATE 0
+      LOG_CONFIGURE 0
+      LOG_BUILD 0
+      LOG_TEST 0
+      LOG_INSTALL 0
+      CMAKE_ARGS
+        -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+        -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+        -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+        -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+        -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+        -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
+        -DCMAKE_BUILD_TYPE:STRING=${build_type}
+        ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
+        -DBUILD_SHARED_LIBS:BOOL=${shared}
+        -DITK_DIR:PATH=${ITK_DIR}
+      INSTALL_COMMAND ""
+      DEPENDS
+        ${${proj}_DEPENDENCIES} )
 
-  find_package( ${proj} REQUIRED )
+  else( NOT DEFINED ${proj}_DIR )
 
-  TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
+    find_package( ${proj} REQUIRED )
 
-endif( NOT DEFINED ${proj}_DIR )
-list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -D${proj}_DIR:PATH=${${proj}_DIR} )
+    TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
+
+  endif( NOT DEFINED ${proj}_DIR )
+  list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS 
+    -D${proj}_DIR:PATH=${${proj}_DIR} )
+endif()
