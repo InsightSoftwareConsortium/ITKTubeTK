@@ -388,11 +388,13 @@ int DoIt( int argc, char * argv[] )
 
   vtkNew< vtkDelimitedTextWriter > writer;
   writer->SetFileName( outputCSVFile.c_str() );
+
 #if VTK_MAJOR_VERSION <= 5
   writer->SetInput( table.GetPointer() );
 #else
   writer->SetInputData( table.GetPointer() );
 #endif
+
   writer->Write();
 
   timeCollector.Stop( "Writing tortuosity measures to CSV" );
