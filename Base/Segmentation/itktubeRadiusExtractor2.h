@@ -96,6 +96,11 @@ public:
    */
   typedef vnl_matrix< double >                               MatrixType;
 
+
+  typedef enum { RADIUS_CORRECTION_NONE, RADIUS_CORRECTION_SCALED,
+    RADIUS_CORRECTION_FOR_BINARY_IMAGE, RADIUS_CORRECTION_FOR_CTA,
+    RADIUS_CORRECTION_FOR_MRA }  RadiusCorrectionFunctionType;
+
   /**
    * Set the input image */
   void SetInputImage( typename ImageType::Pointer inputImage );
@@ -131,6 +136,14 @@ public:
   /** Set Radius tolerance when searching */
   itkSetMacro( RadiusTolerance, double );
   itkGetMacro( RadiusTolerance, double );
+
+  /** Set Radius Correction Scale - multiply optimal radius to get the
+   * modality-specific radius */
+  itkSetMacro( RadiusCorrectionScale, double );
+  itkGetMacro( RadiusCorrectionScale, double );
+
+  itkSetMacro( RadiusCorrectionFunction, RadiusCorrectionFunctionType );
+  itkGetMacro( RadiusCorrectionFunction, RadiusCorrectionFunctionType );
 
   /** Set ThreshMedialness */
   itkSetMacro( MinMedialness, double );
@@ -217,6 +230,9 @@ private:
   double                                  m_RadiusMax;
   double                                  m_RadiusStep;
   double                                  m_RadiusTolerance;
+
+  double                                  m_RadiusCorrectionScale;
+  RadiusCorrectionFunctionType            m_RadiusCorrectionFunction;
 
   double                                  m_MinMedialness;
   double                                  m_MinMedialnessStart;

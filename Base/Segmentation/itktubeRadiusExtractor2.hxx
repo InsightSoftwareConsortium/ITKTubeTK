@@ -85,10 +85,13 @@ RadiusExtractor2<TInputImage>
   m_DataMax = -1;
 
   m_RadiusStart = 1.5;
-  m_RadiusMin = 0.25;
-  m_RadiusMax = 6.0;
-  m_RadiusStep = 0.5;
-  m_RadiusTolerance = 0.25;
+  m_RadiusMin = 0.33;
+  m_RadiusMax = 15.0;
+  m_RadiusStep = 0.25;
+  m_RadiusTolerance = 0.125;
+
+  m_RadiusCorrectionScale = 1.0;
+  m_RadiusCorrectionFunction = RADIUS_CORRECTION_NONE;
 
   m_MinMedialness = 0.15;       // 0.015; larger = harder
   m_MinMedialnessStart = 0.1;
@@ -301,6 +304,14 @@ RadiusExtractor2<TInputImage>
       {
       m_KernelValues[ count ] = ( m_Image->GetPixel( x ) - m_DataMin )
         / ( m_DataMax - m_DataMin );
+      if( m_KernelValues[ count ] < 0 )
+        {
+        m_KernelValues[ count ] = 0;
+        }
+      else if( m_KernelValues[ count ] > 1 )
+        {
+        m_KernelValues[ count ] = 1;
+        }
       ITKPointType p;
       for( unsigned int i = 0; i < dimension; ++i )
         {
@@ -327,6 +338,7 @@ RadiusExtractor2<TInputImage>
           {
           minTangentDist = pntTangentDist;
           minTangentDistCount = pntCount;
+          d1 = 0;
           for( unsigned int i = 0; i < dimension; ++i )
             {
             d1 += pDiff[i] * pntIter->GetNormal1()[i];
@@ -418,8 +430,24 @@ RadiusExtractor2<TInputImage>
   std::vector< double >::iterator iterTanDist;
   std::vector< double >::iterator iterValue;
 
-  double distMax = r * this->GetKernelExtent();
+  double areaR = r * r * M_PI;
+  double distMax = ( r + 1.0 );
+  double areaMax = distMax * distMax * M_PI;
+  double areaNeg = areaMax - areaR;
+  double distMin2 = ( areaR - areaNeg ) / M_PI;
   double distMin = 0;
+  if( distMin2 > 0 )
+    {
+    distMin = vcl_sqrt( distMin2 );
+    }
+  double areaMin = distMin * distMin * M_PI;
+  double areaPos = areaR - areaMin;
+  if ( this->GetDebug() )
+    {
+    std::cout << "R = " << r << std::endl;
+    std::cout << "   Dist = " << distMin << " - " << distMax << std::endl;
+    std::cout << "   Area = " << areaPos << " - " << areaNeg << std::endl;
+    }
 
   const int histoBins = 500;
   unsigned int histoPos[histoBins];
@@ -437,7 +465,7 @@ RadiusExtractor2<TInputImage>
   iterValue = m_KernelValues.begin();
   while( iterDist != m_KernelDistances.end() )
     {
-    if( ( *iterTanDist ) < r
+    if( ( ( *iterTanDist ) < r || ( *iterTanDist ) < 1 )
       && ( *iterDist ) >= distMin && ( *iterDist ) <= distMax )
       {
       bin = ( *iterValue ) * histoBins;
@@ -467,30 +495,37 @@ RadiusExtractor2<TInputImage>
 
   int binCount = 0;
   pVal = 0;
-  if( histoPosCount > 1 )
+  if( histoPosCount > 2 )
     {
-    bin = 0;
-    while( binCount < 0.5 * histoPosCount && bin < histoBins )
+    bin = histoBins - 1;
+    while( binCount < 0.5 * histoPosCount && bin > 0 )
       {
       binCount += histoPos[bin];
-      ++bin;
+      --bin;
       }
     pVal = ( bin + 0.5 ) / histoBins;
     }
   nVal = 1;
-  if( histoNegCount > 1 )
+  if( histoNegCount > 2 )
     {
     binCount = 0;
-    bin = histoBins - 1;
-    while( binCount < 0.5 * histoNegCount && bin > 1 )
+    bin = 0;
+    while( binCount < 0.5 * histoNegCount && bin < histoBins )
       {
       binCount += histoNeg[bin];
-      --bin;
+      ++bin;
       }
     nVal = ( bin - 0.5 ) / histoBins;
     }
 
-  double medialness = ( pVal - nVal );
+  if ( this->GetDebug() )
+    {
+    std::cout << "   Count = " << histoPosCount << " - " << histoNegCount
+      << std::endl;
+    std::cout << "   Val = " << pVal << " - " << nVal << " = " << pVal-nVal
+      << std::endl;
+    }
+  double medialness = pVal - nVal;
 
   return medialness;
 }
@@ -614,20 +649,97 @@ RadiusExtractor2<TInputImage>
   opt->SetTolerance( 1 );
   opt->SetMaxIterations( 20 );
   opt->SetSearchForMin( false );
-  opt->SetXMin( (int)vnl_math_ceil( m_RadiusMin / m_RadiusTolerance ) );
-  opt->SetXMax( (int)vnl_math_floor( m_RadiusMax / m_RadiusTolerance ) );
+
+  int xMin = 0;
+  int xMax = 1;
+  double x = 0.5;
+  switch( m_RadiusCorrectionFunction )
+    {
+    default:
+    case RADIUS_CORRECTION_NONE:
+      {
+      xMin = (int)vnl_math_ceil( m_RadiusMin / m_RadiusTolerance );
+      xMax = (int)vnl_math_floor( m_RadiusMax / m_RadiusTolerance );
+      x = m_RadiusStart / m_RadiusTolerance;
+      break;
+      }
+    case RADIUS_CORRECTION_SCALED:
+      {
+      xMin = (int)vnl_math_ceil( ( m_RadiusMin * m_RadiusCorrectionScale )
+        / m_RadiusTolerance );
+      xMax = (int)vnl_math_floor( ( m_RadiusMax * m_RadiusCorrectionScale )
+        / m_RadiusTolerance );
+      x = ( m_RadiusStart * m_RadiusCorrectionScale ) / m_RadiusTolerance;
+      break;
+      }
+    case RADIUS_CORRECTION_FOR_BINARY_IMAGE:
+      {
+      xMin = (int)vnl_math_ceil( m_RadiusMin / m_RadiusTolerance );
+      xMax = (int)vnl_math_floor( m_RadiusMax / m_RadiusTolerance );
+      x = m_RadiusStart / m_RadiusTolerance;
+      break;
+      }
+    case RADIUS_CORRECTION_FOR_CTA:
+      {
+      xMin = (int)vnl_math_ceil( m_RadiusMin / m_RadiusTolerance );
+      xMax = (int)vnl_math_floor( m_RadiusMax / m_RadiusTolerance );
+      x = m_RadiusStart / m_RadiusTolerance;
+      break;
+      }
+    case RADIUS_CORRECTION_FOR_MRA:
+      {
+      xMin = (int)vnl_math_ceil( m_RadiusMin / m_RadiusTolerance );
+      xMax = (int)vnl_math_floor( m_RadiusMax / m_RadiusTolerance );
+      x = m_RadiusStart / m_RadiusTolerance;
+      break;
+      }
+    };
+
+  opt->SetXMin( xMin );
+  opt->SetXMax( xMax );
 
   ::tube::SplineApproximation1D * spline = new
-    ::tube::SplineApproximation1D( myFunc, opt );
+  ::tube::SplineApproximation1D( myFunc, opt );
 
   //spline->SetClip( true );
-  spline->SetXMin( (int)vnl_math_ceil( m_RadiusMin / m_RadiusTolerance ) );
-  spline->SetXMax( (int)vnl_math_floor( m_RadiusMax / m_RadiusTolerance ) );
+  spline->SetXMin( xMin );
+  spline->SetXMax( xMax );
 
-  double x = m_RadiusStart / m_RadiusTolerance;
   double xVal = myFunc->Value( x );
   bool result = spline->Extreme( &x, &xVal );
-  m_KernelOptimalRadius = x * m_RadiusTolerance;
+
+  switch( m_RadiusCorrectionFunction )
+    {
+    default:
+    case RADIUS_CORRECTION_NONE:
+      {
+      m_KernelOptimalRadius = x * m_RadiusTolerance;
+      break;
+      }
+    case RADIUS_CORRECTION_SCALED:
+      {
+      m_KernelOptimalRadius = x * m_RadiusTolerance
+        * m_RadiusCorrectionScale;
+      break;
+      }
+    case RADIUS_CORRECTION_FOR_BINARY_IMAGE:
+      {
+      m_KernelOptimalRadius = ( x * m_RadiusTolerance
+        * x * m_RadiusTolerance ) / 24 + 0.5;
+      break;
+      }
+    case RADIUS_CORRECTION_FOR_CTA:
+      {
+      m_KernelOptimalRadius = x * m_RadiusTolerance;
+      break;
+      }
+    case RADIUS_CORRECTION_FOR_MRA:
+      {
+      m_KernelOptimalRadius = x * m_RadiusTolerance;
+      break;
+      }
+    };
+
   m_KernelOptimalRadiusMedialness = xVal;
 
   delete spline;
@@ -751,7 +863,7 @@ RadiusExtractor2<TInputImage>
     if( p < 0 )
       {
       typename TubeType::PointType p1 =
-        tube->GetPoints()[ count ].GetPosition();
+        tube->GetPoints()[ 0 ].GetPosition();
       typename TubeType::PointType p2 =
         tube->GetPoints()[ m_NumKernelPoints / 2 *
         m_KernelPointStep ].GetPosition();
