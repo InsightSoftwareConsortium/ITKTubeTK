@@ -75,8 +75,8 @@ int itktubeRadiusExtractor2Test( int argc, char * argv[] )
     returnStatus = EXIT_FAILURE;
     }
 
-  radiusOp->SetRadiusMax( 5.0 );
-  if( radiusOp->GetRadiusMax() != 5.0 )
+  radiusOp->SetRadiusMax( 15.0 );
+  if( radiusOp->GetRadiusMax() != 15.0 )
     {
     tube::ErrorMessage( "Radius max != 5.0" );
     returnStatus = EXIT_FAILURE;
@@ -132,9 +132,10 @@ int itktubeRadiusExtractor2Test( int argc, char * argv[] )
 
   radiusOp->SetDebug( true );
 
+  radiusOp->SetRadiusCorrectionScale( 1.0 );
 
   int failures = 0;
-  unsigned int numMCRuns = 20;
+  unsigned int numMCRuns = 200;
   for( unsigned int mcRun=0; mcRun<numMCRuns; mcRun++ )
     {
     std::cout << std::endl;
@@ -188,17 +189,16 @@ int itktubeRadiusExtractor2Test( int argc, char * argv[] )
     std::cout << "  n1 = " << pntIter->GetNormal1() << std::endl;
     std::cout << "  n2 = " << pntIter->GetNormal2() << std::endl;
 
-    double rMin = 0.25;
-    double rMax = 5;
+    double rMin = 0.33;
+    double rMax = 15;
     double rStep = 0.25;
-    double rTol = 0.05;
+    double rTol = 0.125;
     if( !radiusOp->GetPointVectorOptimalRadius( tubePoints, r1, rMin, rMax,
       rStep, rTol ) )
       {
       std::cout << "OptimalRadius returned false." << std::endl;
-      std::cout << "   Target = " << pntIter->GetPosition()
-        << " at r = " << r0 << std::endl;
-      std::cout << "      Result r = " << r1 << std::endl;
+      std::cout << "   Target = " << r0;
+      std::cout << "   Result = " << r1 << std::endl;
       ++failures;
       continue;
       }
@@ -207,15 +207,15 @@ int itktubeRadiusExtractor2Test( int argc, char * argv[] )
     if( diff > 0.2 * r0 && diff > 0.75 )
       {
       std::cout << "Radius estimate inaccurate." << std::endl;
-      std::cout << "   Target = " << r0 << std::endl;
-      std::cout << "      Result = " << r1 << std::endl;
+      std::cout << "   Target = " << r0;
+      std::cout << "   Result = " << r1 << std::endl;
       ++failures;
       continue;
       }
 
     std::cout << "*** Radius estimate a success! ***" << std::endl;
-    std::cout << "   Target = " << r0 << std::endl;
-    std::cout << "      Result = " << r1 << std::endl;
+    std::cout << "   Target = " << r0;
+    std::cout << "   Result = " << r1 << std::endl;
     }
 
   delete tubeList;

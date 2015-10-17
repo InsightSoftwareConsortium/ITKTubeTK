@@ -201,10 +201,11 @@ int itktubeRadiusExtractor2Test2( int argc, char * argv[] )
       }
 
     radiusOp->SetRadiusStart( radiusStart );
-    radiusOp->SetRadiusMin( 0.25 );
-    radiusOp->SetRadiusMax( 6.0 );
-    radiusOp->SetRadiusStep( 0.5 );
-    radiusOp->SetRadiusTolerance( 0.25 );
+    radiusOp->SetRadiusMin( 0.33 );
+    radiusOp->SetRadiusMax( 15.0 );
+    radiusOp->SetRadiusStep( 0.25 );
+    radiusOp->SetRadiusTolerance( 0.125 );
+    radiusOp->SetRadiusCorrectionScale( 1.0 );
 
     radiusOp->SetDebug( false );
     radiusOp->ExtractRadii( tubep );
@@ -222,10 +223,9 @@ int itktubeRadiusExtractor2Test2( int argc, char * argv[] )
         }
       if( diff > 1 )
         {
-        std::cout << "Point: " << i
-          << ": estimatedR - idealR != 0." << std::endl;
-        std::cout << "  idealR = " << idealR[i] << std::endl;
-        std::cout << "  estimatedR = " << pntIter->GetRadius() << std::endl;
+        std::cout << "Point: " << i << "  idealR = " << idealR[i]
+          << "  estimatedR = " << pntIter->GetRadius() << " : FAIL "
+          << std::endl;
         ++failures;
         }
       else
