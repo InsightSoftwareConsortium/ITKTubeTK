@@ -34,6 +34,7 @@ set( TubeTK_${proj}_MODULES
   ComputeTubeGraphProbability
   ComputeTubeMeasures
   ComputeTubeProbability
+  ComputeTubeTortuosityMeasures
   ConvertImagesToCSV
   ConvertInnerOpticToPlus
   ConvertShrunkenSeedImageToList
