@@ -66,10 +66,11 @@ add_executable( JsonCompareCommand JsonCompareCommand.cxx )
 target_link_libraries( JsonCompareCommand
   ${ITK_LIBRARIES}
   ITKIOMeta
+  ITKMetaIO
   ${JsonCpp_LIBRARIES} )
 
 add_executable( TextCompareCommand TextCompareCommand.cxx )
-target_link_libraries( TextCompareCommand ${ITK_LIBRARIES} ITKIOMeta )
+target_link_libraries( TextCompareCommand ${ITK_LIBRARIES} ITKIOMeta ITKMetaIO)
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
