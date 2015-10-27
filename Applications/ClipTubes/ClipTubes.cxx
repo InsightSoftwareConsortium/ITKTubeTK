@@ -40,50 +40,59 @@
 
 template< unsigned int DimensionT >
 bool isInside( itk::Point< double, DimensionT > pointPos, double tubeRadius,
-  std::vector< double > boxPos, std::vector< double > boxSize )
+  itk::Vector< double, DimensionT > boxPos,
+  itk::Vector< double, DimensionT > boxSize,
+  std::vector<  typename itk::VesselTubeSpatialObjectPoint
+    < DimensionT >::CovariantVectorType > normalList )
 {
   // Return a boolean indicating if any slice of the tube
   // is included in the box.
   // A slice is considered as a point and an associated radius
-  bool hasXInside = false;
-  bool hasYInside = false;
-  bool hasZInside = false;
-
-  if( pointPos[0] + tubeRadius >= boxPos[0] &&
-    pointPos[0] - tubeRadius <= boxPos[0] + boxSize[0] )
+  for( int i = 0; i < normalList.size(); i++ )
     {
-    hasXInside = true;
-    }
-  if( pointPos[1] - tubeRadius <= boxPos[1] &&
-    pointPos[1] + tubeRadius >= boxPos[1] - boxSize[1] )
-    {
-    hasYInside = true;
-    }
-  switch( DimensionT )
-    {
-    case 2:
+    bool hasXInside = false;
+    bool hasYInside = false;
+    bool hasZInside = false;
+    if( pointPos[0] + tubeRadius * normalList[i][0] >= boxPos[0] &&
+      pointPos[0] - tubeRadius * normalList[i][0] <= boxPos[0] + boxSize[0] )
       {
-      hasZInside = true;
-      break;
+      hasXInside = true;
       }
-    case 3:
+    if( pointPos[1] - tubeRadius * normalList[i][1] <= boxPos[1] &&
+      pointPos[1] + tubeRadius * normalList[i][1] >= boxPos[1] - boxSize[1] )
       {
-      if( pointPos[2] + tubeRadius  >= boxPos[2] &&
-        pointPos[2] - tubeRadius <= boxPos[2] + boxSize[2] )
+      hasYInside = true;
+      }
+    switch( DimensionT )
+      {
+      case 2:
         {
         hasZInside = true;
+        break;
         }
-      break;
+      case 3:
+        {
+        if( pointPos[2] + tubeRadius  * normalList[i][2] >= boxPos[2] &&
+          pointPos[2] - tubeRadius * normalList[i][2] <=
+            boxPos[2] + boxSize[2] )
+          {
+          hasZInside = true;
+          }
+        break;
+        }
+      default:
+        {
+        tubeErrorMacro(
+          << "Error: Only 2D and 3D data is currently supported." );
+        return EXIT_FAILURE;
+        }
       }
-    default:
+    if( hasXInside && hasYInside && hasZInside )
       {
-      tubeErrorMacro(
-        << "Error: Only 2D and 3D data is currently supported." );
-      return EXIT_FAILURE;
+      return true;
       }
     }
-
-  return (hasXInside && hasYInside && hasZInside);
+  return false;
 }
 
 template< unsigned int DimensionT >
@@ -160,6 +169,15 @@ int DoIt (int argc, char * argv[])
     timeCollector.Report();
     return EXIT_FAILURE;
     }
+  //Cast XML vector parameters
+  typedef itk::Vector< double, DimensionT > VectorType;
+  VectorType boxPositionVector;
+  VectorType boxSizeVector;
+  for( int i = 0; i < DimensionT; i++ )
+    {
+    boxPositionVector[i] = boxCorner[i];
+    boxSizeVector[i] = boxSize[i];
+    }
 
   typename TubeGroupType::Pointer pSourceTubeGroup =
     tubeFileReader->GetGroup();
@@ -208,16 +226,39 @@ int DoIt (int argc, char * argv[])
     typename TubeType::PointListType pointList =
       pCurSourceTube->GetPoints();
 
+    //Get Index to World Transformation
+    typename TubeType::TransformType * pTubeIndexPhysTransform =
+      pCurSourceTube->GetIndexToWorldTransform();
+
     for( typename TubeType::PointListType::const_iterator
       pointList_it = pointList.begin();
       pointList_it != pointList.end(); ++pointList_it )
       {
       TubePointType curSourcePoint = *pointList_it;
+      //Transform parameters in physical space
       typename TubePointType::PointType curSourcePos =
-        curSourcePoint.GetPosition();
+        pTubeIndexPhysTransform->TransformPoint(
+          curSourcePoint.GetPosition() );
+      typename TubePointType::VectorType worldBoxposition =
+        pTubeIndexPhysTransform->TransformVector( boxPositionVector );
+      typename TubePointType::VectorType worldBoxSize =
+        pTubeIndexPhysTransform->TransformVector( boxSizeVector );
+      typename TubePointType::CovariantVectorType curTubeNormal1 =
+        pTubeIndexPhysTransform->TransformCovariantVector(
+          curSourcePoint.GetNormal1() );
+      typename TubePointType::CovariantVectorType curTubeNormal2 =
+        pTubeIndexPhysTransform->TransformCovariantVector(
+          curSourcePoint.GetNormal2() );
+      //Save Normals in a vector to pass it as an argument for IsIside()
+      std::vector<typename TubePointType::CovariantVectorType> normalList;
+      normalList.push_back(curTubeNormal1);
+      if( DimensionT == 3 )
+        {
+        normalList.push_back(curTubeNormal2);
+        }
       //Save point in target tube if it belongs to the box
       if( isInside( curSourcePos, curSourcePoint.GetRadius(),
-        boxCorner, boxSize ) )
+        worldBoxposition, worldBoxSize, normalList ) )
         {
         if( ClipTubes )
           {
