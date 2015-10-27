@@ -19,7 +19,7 @@ returns tubes that are contained in the box.
 Where:
 
    -p, --boxCorner <std::vector<double>>
-     (required) 3D vector corresponding to the position of the top
+     (required) 3D vector corresponding to the position of the bottom
      left-hand corner of the bounding box.
 
    -s, --boxSize <std::vector<double>>

@@ -58,8 +58,8 @@ bool isInside( itk::Point< double, DimensionT > pointPos, double tubeRadius,
       {
       hasXInside = true;
       }
-    if( pointPos[1] - tubeRadius * normalList[i][1] <= boxPos[1] &&
-      pointPos[1] + tubeRadius * normalList[i][1] >= boxPos[1] - boxSize[1] )
+    if( pointPos[1] + tubeRadius * normalList[i][1] >= boxPos[1] &&
+      pointPos[1] - tubeRadius * normalList[i][1] <= boxPos[1] + boxSize[1] )
       {
       hasYInside = true;
       }
@@ -105,7 +105,7 @@ void writeBox( std::vector< double > boxPos, std::vector< double > boxSize,
       vtkSmartPointer<vtkCubeSource>::New();
     cubeSource->SetBounds(
       -spacing[0] * (boxPos[0] + boxSize[0]), -spacing[0] * boxPos[0],
-      -spacing[1] * boxPos[1], -spacing[1] * (boxPos[1] - boxSize[1]),
+      -spacing[1] * (boxPos[1] + boxSize[1]), -spacing[1] * boxPos[1],
       spacing[2] * boxPos[2], spacing[2] * (boxPos[2] + boxSize[2]) );
     vtkNew<vtkPolyDataWriter> writer;
     writer->SetFileName( boxFileName.c_str() );
@@ -118,7 +118,7 @@ void writeBox( std::vector< double > boxPos, std::vector< double > boxSize,
       vtkSmartPointer< vtkCubeSource >::New();
     cubeSource->SetBounds(
       -spacing[0] * (boxPos[0] + boxSize[0]), -spacing[0] * boxPos[0],
-      -spacing[1] * boxPos[1], -spacing[1] * (boxPos[1] - boxSize[1]),
+      -spacing[1] * (boxPos[1] + boxSize[1]), -spacing[1] * boxPos[1],
       0, 0);
     vtkNew<vtkPolyDataWriter> writer;
     writer->SetFileName( boxFileName.c_str() );
@@ -194,7 +194,6 @@ int DoIt (int argc, char * argv[])
   typename TubeGroupType::Pointer pTargetTubeGroup = TubeGroupType::New();
 
   pTargetTubeGroup->CopyInformation( pSourceTubeGroup );
-
   // TODO: make CopyInformation of itk::SpatialObject do this
   pTargetTubeGroup->GetObjectToParentTransform()->SetScale(
     pSourceTubeGroup->GetObjectToParentTransform()->GetScale() );
@@ -220,6 +219,9 @@ int DoIt (int argc, char * argv[])
       {
       return EXIT_FAILURE;
       }
+    //Compute Tangent and Normals
+    pCurSourceTube->ComputeTangentAndNormals();
+    //pCurSourceTube->ComputeObjectToWorldTransform();//BUG
     //Point List for TargetTube
     typename TubeType::PointListType TargetPointList;
     //Get points in current source tube

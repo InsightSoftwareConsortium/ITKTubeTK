@@ -27,7 +27,7 @@
     </file>
     <double-vector>
       <name>boxCorner</name>
-      <label>Top Left Corner of Bounding Box</label>
+      <label>Bottom Left Corner of Bounding Box</label>
       <description>Required : 3D position from where to start bounding box</description>
       <longflag>boxCorner</longflag>
       <flag>p</flag>
