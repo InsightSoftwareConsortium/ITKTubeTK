@@ -97,9 +97,9 @@ public:
   typedef vnl_matrix< double >                               MatrixType;
 
 
-  typedef enum { RADIUS_CORRECTION_NONE, RADIUS_CORRECTION_SCALED,
-    RADIUS_CORRECTION_FOR_BINARY_IMAGE, RADIUS_CORRECTION_FOR_CTA,
-    RADIUS_CORRECTION_FOR_MRA }  RadiusCorrectionFunctionType;
+  typedef enum { RADIUS_CORRECTION_NONE, RADIUS_CORRECTION_FOR_BINARY_IMAGE,
+    RADIUS_CORRECTION_FOR_CTA, RADIUS_CORRECTION_FOR_MRA }
+    RadiusCorrectionFunctionType;
 
   /**
    * Set the input image */

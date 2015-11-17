@@ -90,7 +90,6 @@ RadiusExtractor2<TInputImage>
   m_RadiusStep = 0.25;
   m_RadiusTolerance = 0.125;
 
-  m_RadiusCorrectionScale = 1.0;
   m_RadiusCorrectionFunction = RADIUS_CORRECTION_NONE;
 
   m_MinMedialness = 0.15;       // 0.015; larger = harder
@@ -663,15 +662,6 @@ RadiusExtractor2<TInputImage>
       x = m_RadiusStart / m_RadiusTolerance;
       break;
       }
-    case RADIUS_CORRECTION_SCALED:
-      {
-      xMin = (int)vnl_math_ceil( ( m_RadiusMin * m_RadiusCorrectionScale )
-        / m_RadiusTolerance );
-      xMax = (int)vnl_math_floor( ( m_RadiusMax * m_RadiusCorrectionScale )
-        / m_RadiusTolerance );
-      x = ( m_RadiusStart * m_RadiusCorrectionScale ) / m_RadiusTolerance;
-      break;
-      }
     case RADIUS_CORRECTION_FOR_BINARY_IMAGE:
       {
       xMin = (int)vnl_math_ceil( m_RadiusMin / m_RadiusTolerance );
@@ -714,12 +704,6 @@ RadiusExtractor2<TInputImage>
     case RADIUS_CORRECTION_NONE:
       {
       m_KernelOptimalRadius = x * m_RadiusTolerance;
-      break;
-      }
-    case RADIUS_CORRECTION_SCALED:
-      {
-      m_KernelOptimalRadius = x * m_RadiusTolerance
-        * m_RadiusCorrectionScale;
       break;
       }
     case RADIUS_CORRECTION_FOR_BINARY_IMAGE:
