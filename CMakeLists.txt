@@ -229,6 +229,12 @@ endif( TubeTK_BUILD_USING_SLICER )
 include( TubeTKSlicer4Config )
 
 #
+# GPU ArrayFire setup
+#
+option( TubeTK_USE_GPU_ARRAYFIRE
+  "Use the ArrayFire library to speedup filtering opertions using the GPU." OFF)
+
+#
 # Boost libraries setup.
 #
 option( TubeTK_USE_BOOST
@@ -244,12 +250,6 @@ if( TubeTK_USE_BOOST )
     mark_as_advanced( CLEAR BOOST_ROOT )
   endif( NOT Boost_FOUND )
 endif( TubeTK_USE_BOOST )
-
-#
-# GPU ArrayFire setup
-#
-option( TubeTK_USE_GPU_ARRAYFIRE
-  "Use the ArrayFire library to speedup filtering opertions using the GPU." OFF)
 
 #
 #  Cppcheck setup.
@@ -369,29 +369,6 @@ if( TubeTK_USE_QT )
   if( NOT TubeTK_BUILD_USING_SLICER )
     mark_as_advanced( CLEAR USE_SYSTEM_CTK )
   endif( NOT TubeTK_BUILD_USING_SLICER )
-
-  find_package( Qt4 )
-  # 3D Slicer only tests against a specific Qt 4 version. To
-  # override the version check, set the TubeTK_REQUIRED_QT_VERSION CMake
-  # variable.
-  if( NOT DEFINED TubeTK_REQUIRED_QT_VERSION )
-    set( TubeTK_REQUIRED_QT_VERSION "4.7.4" CACHE STRING
-      "Exact Qt4 framework version required." FORCE )
-    mark_as_advanced( TubeTK_REQUIRED_QT_VERSION )
-  endif( NOT DEFINED TubeTK_REQUIRED_QT_VERSION )
-  if( QT4_FOUND )
-    if( "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
-        VERSION_LESS "${TubeTK_REQUIRED_QT_VERSION}" )
-      message( FATAL_ERROR
-        "error: TubeTK requires at least Qt ${TubeTK_REQUIRED_QT_VERSION} "
-        "- you have ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
-        " ${extra_error_message}" )
-    endif( "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
-      VERSION_LESS "${TubeTK_REQUIRED_QT_VERSION}" )
-    include( ${QT_USE_FILE} )
-  else( QT4_FOUND )
-    message( SEND_ERROR "Error: Qt4 framework not found." )
-  endif( QT4_FOUND )
 else( TubeTK_USE_QT )
   option( TubeTK_USE_CTK "Use CTK to enable additional functionality." OFF )
   mark_as_advanced( TubeTK_USE_CTK )
@@ -485,6 +462,69 @@ set( TubeTK_INSTALL_PLUGINS_INCLUDE_DIR "${TubeTK_INSTALL_INCLUDE_DIR}" )
 set( TubeTK_INSTALL_PLUGINS_LIB_DIR "${TubeTK_INSTALL_LIB_DIR}" )
 set( TubeTK_INSTALL_PLUGINS_SHARE_DIR "${TubeTK_INSTALL_SHARE_DIR}" )
 
+if( TubeTK_USE_QT )
+  find_package( Qt4 )
+  # 3D Slicer only tests against a specific Qt 4 version. To
+  # override the version check, set the TubeTK_REQUIRED_QT_VERSION CMake
+  # variable.
+  if( NOT DEFINED TubeTK_REQUIRED_QT_VERSION )
+    set( TubeTK_REQUIRED_QT_VERSION "4.7.4" CACHE STRING
+      "Exact Qt4 framework version required." FORCE )
+    mark_as_advanced( TubeTK_REQUIRED_QT_VERSION )
+  endif( NOT DEFINED TubeTK_REQUIRED_QT_VERSION )
+  if( QT4_FOUND )
+    if( "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
+        VERSION_LESS "${TubeTK_REQUIRED_QT_VERSION}" )
+      message( FATAL_ERROR
+        "error: TubeTK requires at least Qt ${TubeTK_REQUIRED_QT_VERSION} "
+        "- you have ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
+        " ${extra_error_message}" )
+    endif( "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
+      VERSION_LESS "${TubeTK_REQUIRED_QT_VERSION}" )
+    include( ${QT_USE_FILE} )
+  else( QT4_FOUND )
+    message( SEND_ERROR "Error: Qt4 framework not found." )
+  endif( QT4_FOUND )
+  if( TubeTK_USE_CTK )
+    find_package( CTK REQUIRED )
+    include( ${CTK_USE_FILE} )
+  endif( TubeTK_USE_CTK )
+endif( TubeTK_USE_QT )
+
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
+
+find_package( ITK REQUIRED )
+include( ${ITK_USE_FILE} )
+
+if( TubeTK_USE_VTK )
+  find_package( VTK REQUIRED )
+  include( ${VTK_USE_FILE} )
+endif( TubeTK_USE_VTK )
+
+find_package( JsonCpp REQUIRED )
+include_directories( ${JsonCpp_INCLUDE_DIRS} )
+
+if( TubeTK_USE_LIBSVM )
+  find_package( LIBSVM REQUIRED )
+endif( TubeTK_USE_LIBSVM )
+
+if( TubeTK_USE_GPU_ARRAYFIRE )
+  find_package( ArrayFire REQUIRED )
+  include_directories( ${ArrayFire_INCLUDE_DIRS} )
+endif( TubeTK_USE_GPU_ARRAYFIRE )
+
+if( TubeTK_USE_BOOST )
+  set( Boost_USE_STATIC_LIBS ON )
+  set( Boost_USE_MULTITHREADED ON )
+  set( Boost_USE_STATIC_RUNTIME OFF )
+  find_package( Boost REQUIRED )
+endif( TubeTK_USE_BOOST )
+
+if( TubeTK_USE_KWSTYLE )
+  include( TubeTKKWStyleConfig )
+endif( TubeTK_USE_KWSTYLE )
+
 if( TubeTK_USE_CPPCHECK )
   list( APPEND CMAKE_MODULE_PATH "${TubeTK_SOURCE_DIR}/CMake/Cppcheck" )
   find_package( Cppcheck REQUIRED )
@@ -499,34 +539,6 @@ if( TubeTK_USE_CPPCHECK )
   set_tests_properties( Cppcheck
     PROPERTIES FAIL_REGULAR_EXPRESSION "error file=" )
 endif( TubeTK_USE_CPPCHECK )
-
-if( TubeTK_USE_QT )
-  if( TubeTK_USE_CTK )
-    find_package( CTK REQUIRED )
-    include( ${CTK_USE_FILE} )
-  endif( TubeTK_USE_CTK )
-endif( TubeTK_USE_QT )
-
-find_package( ITK REQUIRED )
-include( ${ITK_USE_FILE} )
-
-find_package( JsonCpp REQUIRED )
-include_directories( ${JsonCpp_INCLUDE_DIRS} )
-
-if( TubeTK_USE_KWSTYLE )
-  include( TubeTKKWStyleConfig )
-endif( TubeTK_USE_KWSTYLE )
-
-if( TubeTK_USE_LIBSVM )
-  find_package( LIBSVM REQUIRED )
-endif( TubeTK_USE_LIBSVM )
-
-if( TubeTK_USE_BOOST )
-  set( Boost_USE_STATIC_LIBS ON )
-  set( Boost_USE_MULTITHREADED ON )
-  set( Boost_USE_STATIC_RUNTIME OFF )
-  find_package( Boost REQUIRED )
-endif( TubeTK_USE_BOOST )
 
 set( SlicerExecutionModel_CLI_RUNTIME_INSTALL_DIRECTORY
   ${TubeTK_INSTALL_BIN_DIR} )
@@ -549,19 +561,6 @@ set( SlicerExecutionModel_CLI_SHARE_OUTPUT_DIRECTORY
   "${CMAKE_BINARY_DIR}/share/TubeTK" )
 set( SlicerExecutionModel_CLI_ARCHIVE_OUTPUT_DIRECTORY
   "${CMAKE_BINARY_DIR}/lib" )
-
-find_package( SlicerExecutionModel REQUIRED )
-include( ${SlicerExecutionModel_USE_FILE} )
-
-if( TubeTK_USE_VTK )
-  find_package( VTK REQUIRED )
-  include( ${VTK_USE_FILE} )
-endif( TubeTK_USE_VTK )
-
-# ArrayFire
-if( TubeTK_USE_GPU_ARRAYFIRE )
-  find_package( ArrayFire REQUIRED )
-endif( TubeTK_USE_GPU_ARRAYFIRE )
 
 configure_file ( "${TubeTK_SOURCE_DIR}/CMake/tubetkConfigure.h.in"
   tubetkConfigure.h @ONLY )
