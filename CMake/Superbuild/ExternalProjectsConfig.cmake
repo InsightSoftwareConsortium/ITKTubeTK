@@ -45,8 +45,8 @@ set( KWStyle_HASH_OR_TAG d23ea3680dcdd375d6fdab50de9dae7090f73ed6 )
 
 # LIBSVM version 3.17 (minimum version 3.1)
 set( LIBSVM_URL
-  http://www.csie.ntu.edu.tw/~cjlin/libsvm/oldfiles/libsvm-3.17.tar.gz )
-set( LIBSVM_HASH_OR_TAG 67f8b597ce85c1f5288d7838e57ea28a )
+  ${git_protocol}://github.com/KitwareMedical/libsvm.git )
+set( LIBSVM_HASH_OR_TAG 55fbd26a0bb53efffe89eb65b3a046c3ecc9965f )
 
 
 ###########################################################

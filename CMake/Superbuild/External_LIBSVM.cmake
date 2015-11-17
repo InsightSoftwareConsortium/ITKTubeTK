@@ -46,8 +46,8 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
   ExternalProject_Add( ${proj}
-    URL ${${proj}_URL}
-    URL_MD5 ${${proj}_HASH_OR_TAG}
+    GIT_REPOSITORY ${${proj}_URL}
+    GIT_TAG ${${proj}_HASH_OR_TAG}
     DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
     SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}
@@ -58,11 +58,6 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
     LOG_BUILD 0
     LOG_TEST 0
     LOG_INSTALL 0
-    PATCH_COMMAND
-      ${CMAKE_COMMAND}
-      -E copy
-        ${TubeTK_SOURCE_DIR}/ThirdParty/${proj}/CMakeLists.txt
-        ${${proj}_SOURCE_DIR}/CMakeLists.txt
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
