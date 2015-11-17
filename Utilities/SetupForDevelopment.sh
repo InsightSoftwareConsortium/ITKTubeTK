@@ -34,3 +34,4 @@ git config rebase.stat true
 git config branch.master.rebase true
 git config hooks.KWStyle.conf "CMake/KWStyle/KWStyle.kws.xml"
 git config hooks.KWStyle.overwriteRulesConf "CMake/KWStyle/KWStyle.Overwrite.txt"
+git config hooks.uncrustify.conf "CMake/Uncrustify/TubeTK.cfg"
