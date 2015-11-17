@@ -132,8 +132,6 @@ int itktubeRadiusExtractor2Test( int argc, char * argv[] )
 
   radiusOp->SetDebug( true );
 
-  radiusOp->SetRadiusCorrectionScale( 1.0 );
-
   int failures = 0;
   unsigned int numMCRuns = 200;
   for( unsigned int mcRun=0; mcRun<numMCRuns; mcRun++ )
