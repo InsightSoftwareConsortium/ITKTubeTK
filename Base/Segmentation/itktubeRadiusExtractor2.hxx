@@ -38,6 +38,8 @@ limitations under the License.
 
 #include <itkMinimumMaximumImageFilter.h>
 
+#include <vnl/vnl_math.h>
+
 namespace itk
 {
 
@@ -429,17 +431,17 @@ RadiusExtractor2<TInputImage>
   std::vector< double >::iterator iterTanDist;
   std::vector< double >::iterator iterValue;
 
-  double areaR = r * r * M_PI;
+  double areaR = r * r * vnl_math::pi;
   double distMax = ( r + 1.0 );
-  double areaMax = distMax * distMax * M_PI;
+  double areaMax = distMax * distMax * vnl_math::pi;
   double areaNeg = areaMax - areaR;
-  double distMin2 = ( areaR - areaNeg ) / M_PI;
+  double distMin2 = ( areaR - areaNeg ) / vnl_math::pi;
   double distMin = 0;
   if( distMin2 > 0 )
     {
     distMin = vcl_sqrt( distMin2 );
     }
-  double areaMin = distMin * distMin * M_PI;
+  double areaMin = distMin * distMin * vnl_math::pi;
   double areaPos = areaR - areaMin;
   if ( this->GetDebug() )
     {
