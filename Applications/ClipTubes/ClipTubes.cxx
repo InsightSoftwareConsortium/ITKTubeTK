@@ -48,7 +48,7 @@ bool isInside( itk::Point< double, DimensionT > pointPos, double tubeRadius,
   // Return a boolean indicating if any slice of the tube
   // is included in the box.
   // A slice is considered as a point and an associated radius
-  for( int i = 0; i < normalList.size(); i++ )
+  for( unsigned int i = 0; i < normalList.size(); i++ )
     {
     bool hasXInside = false;
     bool hasYInside = false;
@@ -173,7 +173,7 @@ int DoIt (int argc, char * argv[])
   typedef itk::Vector< double, DimensionT > VectorType;
   VectorType boxPositionVector;
   VectorType boxSizeVector;
-  for( int i = 0; i < DimensionT; i++ )
+  for( unsigned int i = 0; i < DimensionT; i++ )
     {
     boxPositionVector[i] = boxCorner[i];
     boxSizeVector[i] = boxSize[i];

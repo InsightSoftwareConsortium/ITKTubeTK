@@ -213,12 +213,14 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 {
   if( this->m_CurvatureHistogramMetrics.size() == 0 )
     {
-    std::cerr<<"CurvatureHistogramMetric not computed"<<std::endl;
+    std::cerr << "CurvatureHistogramMetric not computed" << std::endl;
+    return 0;
     }
   else if( bin < 0 || bin >= this->m_CurvatureHistogramMetrics.size() )
     {
-    std::cerr<<"GetHistogramMetric(int): Index "<<bin<<" out of bounds"
-      <<std::endl;
+    std::cerr << "GetHistogramMetric(int): Index " << bin
+      << " out of bounds" << std::endl;
+    return 0;
     }
   else
     {

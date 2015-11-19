@@ -280,77 +280,78 @@ int DoIt( int argc, char * argv[] )
     tubeIdArray->SetValue( tubeIndex, tubeIndex );
     numPointsArray->SetValue( tubeIndex, curTube->GetNumberOfPoints() );
 
-    for(int i = 0; i < metricArrayVec.size(); i++)
+    for( unsigned int i = 0; i < metricArrayVec.size(); i++ )
       {
       std::string metricName = metricArrayVec[i]->GetName();
 
-      if(metricName == "AverageRadiusMetric")
+      if( metricName == "AverageRadiusMetric" )
         {
         metricArrayVec[i]->SetValue( tubeIndex,
           tortuosityFilter->GetAverageRadiusMetric() );
         }
-      if(metricName == "ChordLengthMetric")
+      if( metricName == "ChordLengthMetric" )
         {
         metricArrayVec[i]->SetValue( tubeIndex,
           tortuosityFilter->GetChordLengthMetric() );
         }
-      if(metricName == "DistanceMetric")
+      if( metricName == "DistanceMetric" )
         {
         metricArrayVec[i]->SetValue( tubeIndex,
           tortuosityFilter->GetDistanceMetric() );
         }
-      if(metricName == "InflectionCountMetric")
+      if( metricName == "InflectionCountMetric" )
         {
         metricArrayVec[i]->SetValue( tubeIndex,
           tortuosityFilter->GetInflectionCountMetric() );
         }
-      if(metricName == "InflectionCount1Metric")
+      if( metricName == "InflectionCount1Metric" )
         {
         metricArrayVec[i]->SetValue( tubeIndex,
           tortuosityFilter->GetInflectionCount1Metric() );
         }
-      if(metricName == "InflectionCount2Metric")
+      if( metricName == "InflectionCount2Metric" )
         {
         metricArrayVec[i]->SetValue( tubeIndex,
           tortuosityFilter->GetInflectionCount2Metric() );
         }
-      if(metricName == "PathLengthMetric")
+      if( metricName == "PathLengthMetric" )
         {
         metricArrayVec[i]->SetValue( tubeIndex,
           tortuosityFilter->GetPathLengthMetric() );
         }
-      if(metricName == "Percentile95Metric")
+      if( metricName == "Percentile95Metric" )
         {
         metricArrayVec[i]->SetValue( tubeIndex,
           tortuosityFilter->GetPercentile95Metric() );
         }
-      if(metricName == "SumOfAnglesMetric")
+      if( metricName == "SumOfAnglesMetric" )
         {
         metricArrayVec[i]->SetValue( tubeIndex,
           tortuosityFilter->GetSumOfAnglesMetric() );
         }
-      if(metricName == "Tau4Metric")
+      if( metricName == "Tau4Metric" )
         {
         metricArrayVec[i]->SetValue( tubeIndex,
           tortuosityFilter->GetTotalCurvatureMetric()
             / tortuosityFilter->GetPathLengthMetric() );
         }
-      if(metricName == "TotalCurvatureMetric")
+      if( metricName == "TotalCurvatureMetric" )
         {
         metricArrayVec[i]->SetValue( tubeIndex,
           tortuosityFilter->GetTotalCurvatureMetric() );
         }
-      if(metricName == "TotalSquaredCurvatureMetric")
+      if( metricName == "TotalSquaredCurvatureMetric" )
         {
         metricArrayVec[i]->SetValue( tubeIndex,
           tortuosityFilter->GetTotalSquaredCurvatureMetric() );
         }
       }
 
-    if( (metricFlag & TortuosityFilterType::CURVATURE_HISTOGRAM_METRICS) > 0 )
+    if( ( metricFlag & TortuosityFilterType::CURVATURE_HISTOGRAM_METRICS )
+      > 0 )
       {
       // Get the histogram features
-      for(int i = 0; i < numberOfHistogramBins; i++)
+      for( int i = 0; i < numberOfHistogramBins; i++ )
         {
         histogramArrays[i]->SetValue( tubeIndex,
           tortuosityFilter->GetCurvatureHistogramMetric(i) );
@@ -372,15 +373,16 @@ int DoIt( int argc, char * argv[] )
   table->AddColumn( tubeIdArray.GetPointer() );
   table->AddColumn( numPointsArray.GetPointer() );
 
-  for(int i = 0; i < metricArrayVec.size(); i++)
+  for( unsigned int i = 0; i < metricArrayVec.size(); i++ )
     {
     table->AddColumn( metricArrayVec[i].GetPointer() );
     }
 
-  if( (metricFlag & TortuosityFilterType::CURVATURE_HISTOGRAM_METRICS) > 0 )
+  if( ( metricFlag & TortuosityFilterType::CURVATURE_HISTOGRAM_METRICS )
+    > 0 )
     {
     // Get the histogram features
-    for(int i = 0; i < numberOfHistogramBins; i++)
+    for( int i = 0; i < numberOfHistogramBins; i++ )
       {
       table->AddColumn( histogramArrays[i].GetPointer() );
       }
