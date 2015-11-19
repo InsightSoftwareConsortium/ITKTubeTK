@@ -409,13 +409,11 @@ int main( int argc, char * argv[] )
     case 2:
       {
       return DoIt<2>( argc, argv );
-      break;
       }
 
     case 3:
       {
       return DoIt<3>( argc, argv );
-      break;
       }
 
     default:
