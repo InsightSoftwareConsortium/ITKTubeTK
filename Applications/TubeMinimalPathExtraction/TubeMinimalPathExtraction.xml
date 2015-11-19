@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>Minimal Path Extraction (TubeTK)</title>
+  <description>Extract the minimal path on an image</description>
+  <version>0.1.0.$Revision: 2015 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Lucas Gandel (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters.</description>
+    <image>
+      <name>inputImage</name>
+      <label>Input Image</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input image to compute minimal path</description>
+    </image>
+    <file>
+      <name>outputTREFile</name>
+      <label>output TRE File</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Output tubes centered along the path </description>
+    </file>
+  </parameters>
+  <parameters>
+    <label>Path</label>
+    <description>Path parameters.</description>
+    <point multiple="true">
+      <name>Path</name>
+      <label>Path Points</label>
+      <description>Path Points</description>
+      <longflag>pathPoints</longflag>
+    </point>
+    <boolean>
+      <name>ExtractRadius</name>
+      <label>Extract Radius</label>
+      <description>Extract tube radius along the path</description>
+      <default>false</default>
+      <longflag>extractRadius</longflag>
+    </boolean>
+  </parameters>
+  <parameters advanced="true">
+    <label>Algorithm Parameters</label>
+    <string-enumeration>
+      <name>Optimizer</name>
+      <label>Optimizer</label>
+      <description>Optimizer to extract path</description>
+      <longflag>optimizer</longflag>
+      <default>Regular Step Gradient Descent</default>
+      <element>Gradient Descent</element>
+      <element>Iterate Neighborhood</element>
+      <element>Regular Step Gradient Descent</element>
+    </string-enumeration>
+    <double>
+      <name>TerminationValue</name>
+      <label>Termination Value</label>
+      <description>Minimum value to reach before Optimizer is terminated</description>
+      <longflag>terminationValue</longflag>
+      <default>2.0</default>
+    </double>
+    <integer>
+      <name>NumberOfIterations</name>
+      <label>Number of Iterations</label>
+      <description>Maximum number of optimizer iterations. Only used with Gradient Descent and Regular Step Gradient Descent optimizers</description>
+      <longflag>numberOfIterations</longflag>
+      <default>1000</default>
+    </integer>
+    <double>
+      <name>StepLengthFactor</name>
+      <label>Step Length Factor</label>
+      <description>Optimizer Step Size factor. Only used with Iterate Neighborhood and Regular Step Gradient Descent optimizers</description>
+      <longflag>stepLengthFactor</longflag>
+      <default>1.0</default>
+    </double>
+    <double>
+      <name>StepLengthRelax</name>
+      <label>Step Length Relax</label>
+      <description>Set Relaxation Factor. Only used with Regular Step Gradient Descent optimizer</description>
+      <longflag>stepLengthRelax</longflag>
+      <default>0.999</default>
+    </double>
+  </parameters>
+</executable>
