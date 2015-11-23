@@ -47,8 +47,8 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_JSONCPP} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
   ExternalProject_Add( ${proj}
-    URL ${${proj}_URL}
-    URL_MD5 ${${proj}_HASH_OR_TAG}
+    GIT_REPOSITORY ${${proj}_URL}
+    GIT_TAG ${${proj}_HASH_OR_TAG}
     DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
     SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}
@@ -69,7 +69,8 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_JSONCPP} )
       -DBUILD_SHARED_LIBS:BOOL=OFF
       -DJSONCPP_LIB_BUILD_SHARED:BOOL=OFF
       -DJSONCPP_WITH_TESTS:BOOL=OFF
-    INSTALL_COMMAND "" )
+      -DCMAKE_INSTALL_PREFIX:PATH=${${proj}_DIR}
+    INSTALL_COMMAND make install )
 
 else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_JSONCPP} )
   if( ${USE_SYSTEM_JSONCPP} )
