@@ -209,7 +209,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 //----------------------------------------------------------------------------
 template< class TPointBasedSpatialObject > int
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
-::GetCurvatureHistogramMetric( int bin ) const
+::GetCurvatureHistogramMetric( unsigned int bin ) const
 {
   if( this->m_CurvatureHistogramMetrics.size() == 0 )
     {
