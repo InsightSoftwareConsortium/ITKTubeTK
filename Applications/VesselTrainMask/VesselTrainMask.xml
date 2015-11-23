@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>Vessel Train Mask</title>
+  <description>Return expert vessel and not vessel mask.</description>
+  <version>1.0</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Sumedha Singla (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters.</description>
+    <file>
+      <name>inputExpertMask</name>
+      <label>Input Expert Mask</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input Volume Expert Mask</description>
+    </file>
+    <file>
+      <name>vesselMask</name>
+      <label>Output Vessel Mask</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Output Vessel Mask</description>
+    </file>
+    <file>
+      <name>notVesselMask</name>
+      <label>Output Not-Vessel Mask</label>
+      <channel>output</channel>
+      <index>2</index>
+      <description>Output Not-Vessel Mask</description>
+    </file>
+    <double>
+      <name>threshold</name>
+      <label>Threshold</label>
+      <description>Required : Threshold</description>
+      <longflag>threshold</longflag>
+      <flag>t</flag>
+    </double>
+    <double>
+      <name>notVesselWidth</name>
+      <label>Not Vessel Width</label>
+      <description>Required : Not Vessel Width</description>
+      <longflag>notVesselWidth</longflag>
+      <flag>n</flag>
+    </double>
+  </parameters>
+</executable>
