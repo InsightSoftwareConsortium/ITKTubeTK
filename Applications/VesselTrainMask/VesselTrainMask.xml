@@ -12,14 +12,14 @@
     <label>IO</label>
     <description>Input/output parameters.</description>
     <file>
-      <name>inputExpertMask</name>
+      <name>inputVolume</name>
       <label>Input Expert Mask</label>
       <channel>input</channel>
       <index>0</index>
       <description>Input Volume Expert Mask</description>
     </file>
     <file>
-      <name>vesselMask</name>
+      <name>outputVolume</name>
       <label>Output Vessel Mask</label>
       <channel>output</channel>
       <index>1</index>
@@ -29,22 +29,20 @@
       <name>notVesselMask</name>
       <label>Output Not-Vessel Mask</label>
       <channel>output</channel>
-      <index>2</index>
+      <longflag>notVesselMask</longflag>
       <description>Output Not-Vessel Mask</description>
     </file>
     <double>
-      <name>threshold</name>
-      <label>Threshold</label>
-      <description>Required : Threshold</description>
-      <longflag>threshold</longflag>
-      <flag>t</flag>
+      <name>gap</name>
+      <label>Gap</label>
+      <description>Required : Gap</description>
+      <longflag>gap</longflag>
     </double>
     <double>
       <name>notVesselWidth</name>
       <label>Not Vessel Width</label>
       <description>Required : Not Vessel Width</description>
       <longflag>notVesselWidth</longflag>
-      <flag>n</flag>
     </double>
   </parameters>
 </executable>
