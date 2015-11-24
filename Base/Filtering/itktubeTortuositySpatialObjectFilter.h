@@ -218,7 +218,7 @@ public:
   double GetInflectionPointValue( int i ) const;
 
   /** Getters for other-wise metrics */
-  int GetCurvatureHistogramMetric( int bin ) const;
+  int GetCurvatureHistogramMetric( unsigned int bin ) const;
 
   /** Set/Get the sensibility of the filter. Spacing values are usually
   * around 0.1. On some vessels, it can be lower, and it causes the

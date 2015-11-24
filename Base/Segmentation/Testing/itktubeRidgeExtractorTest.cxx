@@ -167,7 +167,7 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
               {
               indx[i] = contIndx[i];
               }
-            imOut->SetPixel( indx, 1 );
+            imOut->SetPixel( indx, imOut->GetPixel( indx ) + 1 );
             std::cout << "      ridgeness = " <<
               ridgeOp->GetCurrentRidgeness() << std::endl;
             std::cout << "      roundness = " <<

@@ -33,7 +33,8 @@ set( proj KWStyle )
 
 # Sanity checks.
 if( KWSTYLE_EXECUTABLE AND NOT EXISTS ${KWSTYLE_EXECUTABLE} )
-  message( FATAL_ERROR "The KWSTYLE_EXECUTABLE variable is defined, but corresponds to a nonexistent file" )
+  message( FATAL_ERROR
+    "KWSTYLE_EXECUTABLE is defined, but corresponds to a nonexistent file" )
 endif( KWSTYLE_EXECUTABLE AND NOT EXISTS ${KWSTYLE_EXECUTABLE} )
 
 set( ${proj}_DEPENDENCIES "" )

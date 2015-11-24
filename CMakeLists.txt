@@ -366,9 +366,6 @@ if( TubeTK_USE_QT )
   endif( NOT TubeTK_BUILD_USING_SLICER )
   option( USE_SYSTEM_CTK
     "Exclude CTK from superbuild and use an existing build." OFF )
-  if( NOT TubeTK_BUILD_USING_SLICER )
-    mark_as_advanced( CLEAR USE_SYSTEM_CTK )
-  endif( NOT TubeTK_BUILD_USING_SLICER )
 
   find_package( Qt4 )
   # 3D Slicer only tests against a specific Qt 4 version. To
