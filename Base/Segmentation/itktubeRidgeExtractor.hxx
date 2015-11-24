@@ -124,12 +124,12 @@ RidgeExtractor<TInputImage>
   m_MaxXChange = 3.0;
   m_MinRidgeness = 0.80;    // near 1 = harder
   m_MinRidgenessStart = 0.79;
-  m_MinRoundness = 0.001;    // near 1 = harder
-  m_MinRoundnessStart = 0.0005;
-  m_MinCurvature = 0.01;
-  m_MinCurvatureStart = 0.005;
-  m_MinLevelness = 0.025;
-  m_MinLevelnessStart = 0.01;
+  m_MinRoundness = 0.5;    // near 1 = harder
+  m_MinRoundnessStart = 0.45;
+  m_MinCurvature = 0.5;
+  m_MinCurvatureStart = 0.45;
+  m_MinLevelness = 0.5;
+  m_MinLevelnessStart = 0.45;
   m_MaxRecoveryAttempts = 4;
 
   m_SplineValueFunc = new RidgeExtractorSplineValue<TInputImage>( this );
