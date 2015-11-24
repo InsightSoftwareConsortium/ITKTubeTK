@@ -40,10 +40,8 @@ endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 # Set dependency list
 set( ${proj}_DEPENDENCIES "ITK" )
 set( ${proj}_DEPENDENCIES_ARGS "" )
-if( ${SlicerExecutionModel_USE_SERIALIZER} )
-  set( ${proj}_DEPENDENCIES_ARGS "-DJsonCpp_DIR:PATH=${JsonCpp_DIR}" )
-  set( ${proj}_DEPENDENCIES "JsonCpp" )
-endif( ${SlicerExecutionModel_USE_SERIALIZER} )
+set( ${proj}_DEPENDENCIES_ARGS "-DJsonCpp_DIR:PATH=${JsonCpp_DIR}" )
+set( ${proj}_DEPENDENCIES "JsonCpp" )
 
 # Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
