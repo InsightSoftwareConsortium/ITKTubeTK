@@ -36,7 +36,8 @@ if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
   message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to a nonexistent directory" )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
-set( ${proj}_DEPENDENCIES "" )
+set( ${proj}_DEPENDENCIES "JsonCpp" )
+set( ${proj}_DEPENDENCIES_ARGS "-DJsonCpp_DIR:PATH=${JsonCpp_DIR}" )
 
 # Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
@@ -103,7 +104,9 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
       -DVTK_LEGACY_REMOVE:BOOL=ON
       ${${proj}_QT_ARGS}
       ${TubeTK_VTKHDF5_VALGRIND_ARGS}
-    INSTALL_COMMAND "" )
+    INSTALL_COMMAND ""
+    DEPENDS
+      ${${proj}_DEPENDENCIES} )
 
 else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
   if( ${USE_SYSTEM_${proj}} )
