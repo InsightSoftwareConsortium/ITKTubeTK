@@ -17,5 +17,5 @@ lower_case_tag="`echo $1 | tr "[:upper:]" "[:lower:]" `"
 docker run \
   --rm \
   -v $script_dir/../../..:/usr/src/TubeTK \
-    lucasgandel/tubetk:$lower_case_tag \
-      /usr/src/TubeTK/CMake/CircleCI/CircleCI_TubeTK_Experimental.sh
+    kitwaremedical/tubetk:$lower_case_tag \
+      /usr/src/TubeTK/CMake/CircleCI/CircleCI_TubeTK_Experimental.sh $lower_case_tag

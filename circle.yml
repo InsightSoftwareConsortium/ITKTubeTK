@@ -1,0 +1,15 @@
+machine:
+  services:
+    - docker
+  environment:
+    DOCKER_TAG_1: slicer
+
+dependencies:
+  override:
+    - docker info
+    - docker pull kitwaremedical/tubetk:$DOCKER_TAG_1
+
+test:
+  override:
+    - docker run -v ~/TubeTK:/usr/src/TubeTK -v ~/TubeTK-build:/usr/src/TubeTK-build kitwaremedical/tubetk:$DOCKER_TAG_1 /usr/src/TubeTK/CMake/CircleCI/CircleCI_TubeTK_Experimental.sh $DOCKER_TAG_1 :
+        timeout: 6000

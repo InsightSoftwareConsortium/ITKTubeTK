@@ -10,10 +10,6 @@ then
   die "Empty Image Tag "
 fi
 
-if [ ! $2 ];
-then
-  die "Empty Path to Dockerfile "
-fi
-
 lower_case_tag="`echo $1 | tr "[:upper:]" "[:lower:]" `"
-docker build -t lucasgandel/tubetk:$lower_case_tag $2
+
+docker push kitwaremedical/tubetk:$lower_case_tag

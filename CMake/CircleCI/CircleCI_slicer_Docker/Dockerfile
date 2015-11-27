@@ -11,7 +11,10 @@ RUN apt-get update && apt-get install -y \
   subversion \
   qt4-dev-tools \
   libxt-dev \
+  libboost-all-dev \
+  valgrind \
   python2.7-dev
+
 
 WORKDIR /usr/src
 
