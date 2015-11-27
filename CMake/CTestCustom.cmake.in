@@ -68,7 +68,6 @@ set( CTEST_CUSTOM_MEMCHECK_IGNORE
     PrintSelf-BaseIO
     PrintSelf-BaseNumerics
     PrintSelf-BaseObjectDocuments
-    PrintSelf-BaseParameterSerializer
     PrintSelf-BaseRegistration
     PrintSelf-BaseSegmentation
     PrintSelf-BaseUSTK )
@@ -144,6 +143,8 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "include.QtGui.(qtextformat|qtablewidget).*warning"
   # Snowleopard / 4.6.2 warning
   "QtGui.framework.Headers.(qtextformat|qtablewidget).*warning"
+  # Mac OS X is unuspported
+  "This version of Mac OS X is unsupported"
 
   # Suppress warning caused when QT 'foreach' loops are combined
   ".*warning: declaration of '_container_' shadows a previous local"

@@ -44,12 +44,6 @@ int DoIt( int argc, char * argv[] );
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-#ifdef SlicerExecutionModel_USE_SERIALIZER
-  #include <itkJsonCppArchiver.h>
-  #include <json/writer.h>
-  #include <itkGradientDescentOptimizerSerializer.h>
-#endif
-
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
@@ -65,54 +59,34 @@ int DoIt( int argc, char * argv[] )
     CLPProcessInformation );
   progressReporter.Start();
 
-#ifdef SlicerExecutionModel_USE_SERIALIZER
-  // If SlicerExecutionModel was built with Serializer support, there is
-  // automatically a parametersDeSerialize argument.  This argument is a JSON
-  // file that has values for the CLI parameters, but it can also hold other
-  // entries without causing any issues.
-  Json::Value parametersRoot;
-  if( !parametersDeSerialize.empty() )
-    {
-    // Parse the Json.
-    std::ifstream stream( parametersDeSerialize.c_str() );
-    Json::Reader reader;
-    reader.parse( stream, parametersRoot );
-    stream.close();
-    }
-#endif
-
   const unsigned int Dimension = 3;
   typedef double     FloatType;
 
   typedef itk::VesselTubeSpatialObject< Dimension >      TubeType;
   typedef itk::GroupSpatialObject< Dimension >           TubeNetType;
   typedef itk::Image< FloatType, Dimension >             ImageType;
-  typedef itk::tube::ImageToTubeRigidRegistration< ImageType, TubeNetType, TubeType >
-                                                         RegistrationMethodType;
+
+  typedef itk::tube::ImageToTubeRigidRegistration< ImageType, TubeNetType,
+   TubeType >           RegistrationMethodType;
+
   typedef typename RegistrationMethodType::TransformType TransformType;
+
   typedef itk::tube::TubeToTubeTransformFilter< TransformType, Dimension >
-                                                         TubeTransformFilterType;
+   TubeTransformFilterType;
+
   typedef RegistrationMethodType::FeatureWeightsType     PointWeightsType;
 
   typename ImageType::Pointer currentImage;
   typename TubeNetType::Pointer tubeNet;
   PointWeightsType pointWeights;
 
-  if( PreProcessRegistrationInputs< Dimension,
-        FloatType,
-        TubeType,
-        TubeNetType,
-        ImageType,
-        RegistrationMethodType >( argc,
-          argv,
-          timeCollector,
-          progressReporter,
-          currentImage,
-          tubeNet,
-          pointWeights ) == EXIT_FAILURE )
+  if( PreProcessRegistrationInputs< Dimension, FloatType, TubeType,
+    TubeNetType, ImageType, RegistrationMethodType >( argc, argv,
+    timeCollector, progressReporter, currentImage, tubeNet, pointWeights )
+    == EXIT_FAILURE )
     {
     return EXIT_FAILURE;
-    };
+    }
 
 
   timeCollector.Start("Register image to tube");
@@ -127,42 +101,25 @@ int DoIt( int argc, char * argv[] )
   // Set Optimizer parameters.
   typename RegistrationMethodType::OptimizerType::Pointer optimizer =
     registrationMethod->GetOptimizer();
-  itk::GradientDescentOptimizer * gradientDescentOptimizer =
-    dynamic_cast< itk::GradientDescentOptimizer * >( optimizer.GetPointer() );
+  itk::GradientDescentOptimizer * gradientDescentOptimizer = dynamic_cast<
+    itk::GradientDescentOptimizer * >( optimizer.GetPointer() );
   if( gradientDescentOptimizer )
     {
     gradientDescentOptimizer->SetLearningRate( 0.1 );
     gradientDescentOptimizer->SetNumberOfIterations( 1000 );
     }
-#ifdef SlicerExecutionModel_USE_SERIALIZER
-  if( !parametersDeSerialize.empty() )
-    {
-    // If the Json file has entries that describe the parameters for an
-    // itk::GradientDescentOptimizer, read them in, and set them on our
-    // gradientDescentOptimizer instance.
-    if( parametersRoot.isMember( "GradientDescentOptimizer" ) )
-      {
-      Json::Value & gradientDescentOptimizerValue =
-        parametersRoot["GradientDescentOptimizer"];
-      typedef itk::GradientDescentOptimizerSerializer SerializerType;
-      SerializerType::Pointer serializer = SerializerType::New();
-      serializer->SetTargetObject( gradientDescentOptimizer );
-      itk::JsonCppArchiver::Pointer archiver =
-        dynamic_cast< itk::JsonCppArchiver * >( serializer->GetArchiver() );
-      archiver->SetJsonValue( &gradientDescentOptimizerValue );
-      serializer->DeSerialize();
-      }
-    }
-#endif
 
   // TODO: This is hard-coded now, which is sufficient since
-  // ImageToTubeRigidMetric only uses a Euler3DTransform.  Will need to adjust
+  // ImageToTubeRigidMetric only uses a Euler3DTransform.  Will need to
+  // adjust
   // to the transform parameters in the future at compile time.
   const unsigned int NumberOfParameters = 6;
-  typedef itk::tube::RecordOptimizationParameterProgressionCommand< NumberOfParameters >
-    RecordParameterProgressionCommandType;
+
+  typedef itk::tube::RecordOptimizationParameterProgressionCommand<
+    NumberOfParameters > RecordParameterProgressionCommandType;
   RecordParameterProgressionCommandType::Pointer
-    recordParameterProgressionCommand = RecordParameterProgressionCommandType::New();
+    recordParameterProgressionCommand =
+    RecordParameterProgressionCommandType::New();
   if( !parameterProgression.empty() )
     {
     // Record the optimization parameter progression and write to a file.
@@ -190,15 +147,14 @@ int DoIt( int argc, char * argv[] )
   registrationTransform->SetParameters(
     registrationMethod->GetLastTransformParameters() );
   std::ostringstream parametersMessage;
-  parametersMessage << "Transform Parameters: "
-                    << registrationMethod->GetLastTransformParameters();
+  parametersMessage << "Transform Parameters: " <<
+    registrationMethod->GetLastTransformParameters();
   tube::InformationMessage( parametersMessage.str() );
   parametersMessage.str( "" );
-  parametersMessage << "Transform Center Of Rotation: "
-                    << registrationTransform->GetFixedParameters();
+  parametersMessage << "Transform Center Of Rotation: " <<
+    registrationTransform->GetFixedParameters();
   tube::InformationMessage( parametersMessage.str() );
   timeCollector.Stop("Register image to tube");
-
 
   timeCollector.Start("Save data");
 
@@ -209,7 +165,8 @@ int DoIt( int argc, char * argv[] )
     recordParameterProgressionCommand->WriteParameterProgressionToFile();
     }
 
-  itk::TransformFileWriter::Pointer writer = itk::TransformFileWriter::New();
+  itk::TransformFileWriter::Pointer writer =
+    itk::TransformFileWriter::New();
   writer->SetFileName( outputTransform.c_str() );
   writer->SetInput( registrationTransform );
   try

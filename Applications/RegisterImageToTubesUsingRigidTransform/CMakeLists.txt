@@ -44,10 +44,6 @@ include( ${ITK_USE_FILE} )
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 
-if( SlicerExecutionModel_USE_SERIALIZER )
-  add_definitions( -DSlicerExecutionModel_USE_SERIALIZER )
-endif()
-
 set( ${MODULE_NAME}_INCLUDE_DIRS
   ${TubeTK_SOURCE_DIR}/Base/CLI
   ${TubeTK_SOURCE_DIR}/Base/Common

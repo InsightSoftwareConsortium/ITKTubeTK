@@ -64,25 +64,6 @@ int DoIt( int argc, char * argv[] )
     CLPProcessInformation );
   progressReporter.Start();
 
-#ifdef SlicerExecutionModel_USE_SERIALIZER
-
-  #include <itkJsonCppArchiver.h>
-
-  // If SlicerExecutionModel was built with Serializer support, there is
-  // automatically a parametersDeSerialize argument.  This argument is a JSON
-  // file that has values for the CLI parameters, but it can also hold other
-  // entries without causing any issues.
-  Json::Value parametersRoot;
-  if( !parametersDeSerialize.empty() )
-    {
-    // Parse the Json.
-    std::ifstream stream( parametersDeSerialize.c_str() );
-    Json::Reader reader;
-    reader.parse( stream, parametersRoot );
-    stream.close();
-    }
-#endif
-
   const unsigned int Dimension = 3;
   typedef double     FloatType;
 
@@ -114,7 +95,7 @@ int DoIt( int argc, char * argv[] )
           pointWeights ) == EXIT_FAILURE )
     {
     return EXIT_FAILURE;
-    };
+    }
 
 
   timeCollector.Start("Sample parameter space");
@@ -162,33 +143,6 @@ int DoIt( int argc, char * argv[] )
   parametersStep[3] = 5.0;
   parametersStep[4] = 5.0;
   parametersStep[5] = 5.0;
-
-#ifdef SlicerExecutionModel_USE_SERIALIZER
-  // Load parameter space to examine from file.
-  if( !parametersDeSerialize.empty() )
-    {
-    if( parametersRoot.isMember( "MetricSampler" ) )
-      {
-      const Json::Value & metricSampler = parametersRoot["MetricSampler"];
-      const Json::Value & lowerBound = metricSampler["LowerBound"];
-      for( int ii = 0; ii < static_cast< int >( NumberOfParameters) ; ++ii )
-        {
-        parametersLowerBound[ii] = lowerBound[ii].asDouble();
-        }
-      const Json::Value & upperBound = metricSampler["UpperBound"];
-      for( int ii = 0; ii < static_cast< int >( NumberOfParameters) ; ++ii )
-        {
-        parametersUpperBound[ii] = upperBound[ii].asDouble();
-        }
-      const Json::Value & size = metricSampler["Size"];
-      for( int ii = 0; ii < static_cast< int >( NumberOfParameters) ; ++ii )
-        {
-        parametersStep[ii] = ( parametersUpperBound[ii] - parametersLowerBound[ii] ) /
-          ( size[ii].asUInt() - 1 );
-        }
-      }
-    }
-#endif
 
   costFunctionImageSource->SetParametersLowerBound( parametersLowerBound );
   costFunctionImageSource->SetParametersUpperBound( parametersUpperBound );
