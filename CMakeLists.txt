@@ -366,6 +366,7 @@ if( TubeTK_USE_QT )
   endif( NOT TubeTK_BUILD_USING_SLICER )
   option( USE_SYSTEM_CTK
     "Exclude CTK from superbuild and use an existing build." OFF )
+  mark_as_advanced( USE_SYSTEM_CTK )
 
   find_package( Qt4 )
   # 3D Slicer only tests against a specific Qt 4 version. To
@@ -404,11 +405,6 @@ option( USE_SYSTEM_SLICER_EXECUTION_MODEL
   "Exclude SlicerExecutionModel from superbuild and use an existing build."
   OFF )
 mark_as_advanced( USE_SYSTEM_SLICER_EXECUTION_MODEL )
-
-option( SlicerExecutionModel_USE_SERIALIZER
-  "Enable the ParameterSerializer use within SlicerExecutionModel"
-  OFF )
-mark_as_advanced( SlicerExecutionModel_USE_SERIALIZER )
 
 #
 # Provide option for Valgrind

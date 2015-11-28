@@ -33,7 +33,8 @@ set( proj LIBSVM )
 
 # Sanity checks.
 if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
-  message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to a nonexistent directory" )
+  message( FATAL_ERROR
+    "${proj}_DIR defined but corresponds to a nonexistent directory" )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 set( ${proj}_DEPENDENCIES "" )
@@ -42,6 +43,7 @@ set( ${proj}_DEPENDENCIES "" )
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
 
 if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
+
   set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
@@ -68,12 +70,15 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
       -DBUILD_SHARED_LIBS:BOOL=${shared} )
+
 else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
+
   if( ${USE_SYSTEM_${proj}} )
     find_package( ${proj} REQUIRED )
   endif( ${USE_SYSTEM_${proj}} )
 
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
+
 endif( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
 
 list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -D${proj}_DIR:PATH=${${proj}_DIR} )

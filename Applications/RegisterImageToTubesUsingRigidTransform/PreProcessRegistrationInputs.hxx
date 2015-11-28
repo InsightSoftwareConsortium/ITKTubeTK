@@ -65,25 +65,6 @@ PreProcessRegistrationInputs( int argc,
 
   PARSE_ARGS;
 
-#ifdef SlicerExecutionModel_USE_SERIALIZER
-  #include "itkUltrasoundProbeGeometryCalculatorSerializer.h"
-  #include "itktubeSubSampleTubeTreeSpatialObjectFilterSerializer.h"
-  #include "itktubeTubeAngleOfIncidenceWeightFunctionSerializer.h"
-  // If SlicerExecutionModel was built with Serializer support, there is
-  // automatically a parametersDeSerialize argument.  This argument is a JSON
-  // file that has values for the CLI parameters, but it can also hold other
-  // entries without causing any issues.
-  Json::Value parametersRoot;
-  if( !parametersDeSerialize.empty() )
-    {
-    // Parse the Json.
-    std::ifstream stream( parametersDeSerialize.c_str() );
-    Json::Reader reader;
-    reader.parse( stream, parametersRoot );
-    stream.close();
-    }
-#endif
-
   timeCollector.Start("Load data");
   typedef itk::ImageFileReader< ImageType > ImageReaderType;
   typename ImageReaderType::Pointer reader = ImageReaderType::New();
@@ -125,26 +106,6 @@ PreProcessRegistrationInputs( int argc,
     SubSampleTubeTreeFilterType::New();
   subSampleTubeTreeFilter->SetInput( vesselReader->GetGroup() );
   subSampleTubeTreeFilter->SetSampling( 100 );
-#ifdef SlicerExecutionModel_USE_SERIALIZER
-  if( !parametersDeSerialize.empty() )
-    {
-    // If the Json file has entries that describe the parameters for an
-    // itk::tube::SubSampleTubeTreeSpatialObjectFilter, read them in, and set them on our
-    // instance.
-    if( parametersRoot.isMember( "SubSampleTubeTree" ) )
-      {
-      Json::Value & subSampleTubeTreeFilterValue = parametersRoot["SubSampleTubeTree"];
-      typedef itk::tube::SubSampleTubeTreeSpatialObjectFilterSerializer<
-        SubSampleTubeTreeFilterType > SerializerType;
-      typename SerializerType::Pointer serializer = SerializerType::New();
-      serializer->SetTargetObject( subSampleTubeTreeFilter );
-      itk::JsonCppArchiver::Pointer archiver =
-        dynamic_cast< itk::JsonCppArchiver * >( serializer->GetArchiver() );
-      archiver->SetJsonValue( &subSampleTubeTreeFilterValue );
-      serializer->DeSerialize();
-      }
-    }
-#endif
   try
     {
     subSampleTubeTreeFilter->Update();
@@ -198,167 +159,28 @@ PreProcessRegistrationInputs( int argc,
     }
 
   timeCollector.Start("Compute Model Feature Weights");
+
   typedef itk::tube::Function::TubeExponentialResolutionWeightFunction<
-    typename TubeType::TubePointType, FloatType >    WeightFunctionType;
+    typename TubeType::TubePointType, FloatType >
+    WeightFunctionType;
   typedef typename RegistrationMethodType::FeatureWeightsType
     PointWeightsType;
+  typedef itk::tube::TubePointWeightsCalculator< Dimension,
+    TubeType, WeightFunctionType, PointWeightsType >
+    PointWeightsCalculatorType;
+
   typename WeightFunctionType::Pointer weightFunction =
     WeightFunctionType::New();
-  typedef itk::tube::TubePointWeightsCalculator< Dimension,
-    TubeType, WeightFunctionType,
-    PointWeightsType > PointWeightsCalculatorType;
-  typename PointWeightsCalculatorType::Pointer resolutionWeightsCalculator
-    = PointWeightsCalculatorType::New();
+  typename PointWeightsCalculatorType::Pointer resolutionWeightsCalculator =
+    PointWeightsCalculatorType::New();
+
   resolutionWeightsCalculator->SetTubeTreeSpatialObject(
     subSampleTubeTreeFilter->GetOutput() );
   resolutionWeightsCalculator->SetPointWeightFunction( weightFunction );
   resolutionWeightsCalculator->Compute();
+
   pointWeights = resolutionWeightsCalculator->GetPointWeights();
 
-#ifdef SlicerExecutionModel_USE_SERIALIZER
-  // Compute ultrasound probe geometry.
-  if( !parametersDeSerialize.empty() )
-    {
-    // If the Json file has entries that describe the parameters for an
-    // itk::tube::SubSampleTubeTreeSpatialObjectFilter, read them in, and set them on our
-    // instance.
-    if( parametersRoot.isMember( "UltrasoundProbeGeometryCalculator" ) )
-      {
-      timeCollector.Start("Compute probe geometry");
-      Json::Value & probeGeometryCalculatorValue
-        = parametersRoot["UltrasoundProbeGeometryCalculator"];
-
-      typedef itk::tube::UltrasoundProbeGeometryCalculator< ImageType >
-        GeometryCalculatorType;
-      typename GeometryCalculatorType::Pointer geometryCalculator
-        = GeometryCalculatorType::New();
-      geometryCalculator->SetInput( reader->GetOutput() );
-
-      typedef itk::tube::UltrasoundProbeGeometryCalculatorSerializer<
-        GeometryCalculatorType > SerializerType;
-      typename SerializerType::Pointer serializer =
-        SerializerType::New();
-      serializer->SetTargetObject( geometryCalculator );
-      itk::JsonCppArchiver::Pointer archiver =
-        dynamic_cast< itk::JsonCppArchiver * >( serializer->GetArchiver() );
-      archiver->SetJsonValue( &probeGeometryCalculatorValue );
-      serializer->DeSerialize();
-
-      try
-        {
-        geometryCalculator->Update();
-        }
-      catch( itk::ExceptionObject & err )
-        {
-        tube::ErrorMessage( "Computing probe geometry: Exception caught: "
-                            + std::string(err.GetDescription()) );
-        timeCollector.Report();
-        return EXIT_FAILURE;
-        }
-
-      if( parametersRoot.isMember( "UltrasoundProbeGeometryFile" ) )
-        {
-        const char * outputFile
-          = parametersRoot["UltrasoundProbeGeometryFile"].asCString();
-        std::ofstream geometryOutput( outputFile );
-        if( !geometryOutput.is_open() )
-          {
-          tube::ErrorMessage( "Could not open geometry output file: "
-                              + std::string( outputFile ) );
-          timeCollector.Report();
-          return EXIT_FAILURE;
-          }
-
-        const typename GeometryCalculatorType::OriginType ultrasoundProbeOrigin =
-          geometryCalculator->GetUltrasoundProbeOrigin();
-        geometryOutput << "UltrasoundProbeOrigin:";
-        for( unsigned int ii = 0; ii < Dimension; ++ii )
-          {
-          geometryOutput << " " << ultrasoundProbeOrigin[ii];
-          }
-        geometryOutput << std::endl;
-
-        const typename GeometryCalculatorType::RadiusType startOfAcquisitionRadius =
-          geometryCalculator->GetStartOfAcquisitionRadius();
-        geometryOutput << "GetStartOfAcquisitionRadius: "
-                       << startOfAcquisitionRadius
-                       << std::endl;
-        }
-
-      if( parametersRoot.isMember( "AngleOfIncidenceWeightFunction" ) )
-        {
-        Json::Value & angleOfIncidenceWeightFunctionValue =
-          parametersRoot["AngleOfIncidenceWeightFunction"];
-
-        typedef itk::tube::Function::TubeAngleOfIncidenceWeightFunction<
-          typename TubeType::TubePointType, FloatType > AngleOfIncidenceWeightFunctionType;
-        typename AngleOfIncidenceWeightFunctionType::Pointer angleOfIncidenceWeightFunction =
-          AngleOfIncidenceWeightFunctionType::New();
-
-        typedef itk::tube::TubeAngleOfIncidenceWeightFunctionSerializer<
-          AngleOfIncidenceWeightFunctionType >
-            AngleOfIncidenceSerializerType;
-        typename AngleOfIncidenceSerializerType::Pointer angleOfIncidenceSerializer =
-          AngleOfIncidenceSerializerType::New();
-        angleOfIncidenceSerializer->SetTargetObject( angleOfIncidenceWeightFunction );
-        itk::JsonCppArchiver::Pointer angleOfIncidenceArchiver =
-          dynamic_cast< itk::JsonCppArchiver * >(
-            angleOfIncidenceSerializer->GetArchiver() );
-        angleOfIncidenceArchiver->SetJsonValue( &angleOfIncidenceWeightFunctionValue );
-        angleOfIncidenceSerializer->DeSerialize();
-
-        angleOfIncidenceWeightFunction->SetUltrasoundProbeOrigin(
-          geometryCalculator->GetUltrasoundProbeOrigin() );
-
-        typedef itk::tube::TubePointWeightsCalculator< Dimension,
-          TubeType, AngleOfIncidenceWeightFunctionType, PointWeightsType >
-            AngleOfIncidenceWeightsCalculatorType;
-        typename AngleOfIncidenceWeightsCalculatorType::Pointer angleOfIncidenceWeightsCalculator =
-          AngleOfIncidenceWeightsCalculatorType::New();
-        angleOfIncidenceWeightsCalculator->SetPointWeightFunction(
-          angleOfIncidenceWeightFunction );
-        angleOfIncidenceWeightsCalculator->SetTubeTreeSpatialObject(
-          subSampleTubeTreeFilter->GetOutput() );
-        angleOfIncidenceWeightsCalculator->Compute();
-        const PointWeightsType & angleOfIncidenceWeights =
-          angleOfIncidenceWeightsCalculator->GetPointWeights();
-        for( itk::SizeValueType ii = 0; ii < pointWeights.GetSize(); ++ii )
-          {
-          pointWeights[ii] *= angleOfIncidenceWeights[ii];
-          }
-        }
-
-      timeCollector.Stop("Compute probe geometry");
-      }
-    }
-
-  if( parametersRoot.isMember( "TubePointWeightsFile" ) )
-    {
-    Json::Value weightsJSONRoot;
-    weightsJSONRoot["TubePointWeights"] = Json::Value( Json::arrayValue );
-    Json::Value & weightsJSON = weightsJSONRoot["TubePointWeights"];
-    weightsJSON.resize( pointWeights.GetSize() );
-    for( itk::SizeValueType ii = 0; ii < pointWeights.GetSize(); ++ii )
-      {
-      weightsJSON[static_cast<Json::ArrayIndex>(ii)] = pointWeights[ii];
-      }
-
-    Json::FastWriter writer;
-    const std::string weightsString = writer.write( weightsJSONRoot );
-
-    Json::Value & tubePointWeightsFileValue =
-      parametersRoot["TubePointWeightsFile"];
-    std::ofstream tubePointWeightsFile( tubePointWeightsFileValue.asCString() );
-    if( !tubePointWeightsFile.is_open() )
-      {
-      tube::ErrorMessage( "Could not open tube point weights file: "
-                          + tubePointWeightsFileValue.asString() );
-      timeCollector.Report();
-      return EXIT_FAILURE;
-      }
-    tubePointWeightsFile << weightsString;
-    }
-#endif
   timeCollector.Stop("Compute Model Feature Weights");
 
   return EXIT_SUCCESS;

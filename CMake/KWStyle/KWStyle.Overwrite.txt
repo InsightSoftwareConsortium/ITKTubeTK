@@ -19,3 +19,4 @@ tubeOptionList.h Header Disable
 itktubeRidgeSeedFilter.h Indent Disable
 ComputeSegmentTubesParameters.cxx VariablePerLine Disable
 itktubeRadiusExtractor2.h MemberFunctions Disable
+PreProcessRegistrationInputs.hxx Indent Disable
