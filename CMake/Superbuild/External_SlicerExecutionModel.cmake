@@ -39,7 +39,9 @@ endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 # Set dependency list
 set( ${proj}_DEPENDENCIES "ITK" "JsonCpp" )
-set( ${proj}_DEPENDENCIES_ARGS "-DJsonCpp_DIR:PATH=${JsonCpp_DIR}" )
+set( ${proj}_DEPENDENCIES_ARGS "-DJsonCpp_DIR:PATH=${JsonCpp_DIR}"
+  "-DJsonCpp_LIBRARIES:PATH=${JsonCpp_LIBRARIES}"
+  "-DJsonCpp_INCLUDE_DIRS:PATH=${JsonCpp_INCLUDE_DIRS}" )
 
 # Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
