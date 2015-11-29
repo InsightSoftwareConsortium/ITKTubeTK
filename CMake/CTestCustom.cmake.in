@@ -114,6 +114,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "NUMPY.*Warning"
   # Mac
   "numpy.core.src.multiarray.descriptor.*was declared here"
+  "numpy*deprecated"
 
   # Tcl
   "tcl.tcl.unix.*warning: cast"
@@ -129,6 +130,18 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   # incrTcl
   "generic.itk_(option|archetype).*warning"
   "generic.itcl_.*warning"
+
+  # gdcm
+  "gdcm*warning*does not define any previously undefined*"
+
+  # HDF5
+  "H5*warning*does not define any previously undefined*"
+
+  # svm
+  "LIBSVM*shadows*"
+
+  # GenerateCLP
+  "GenerateCLP.cxx*unused function*"
 
   # qt suppressions from vtk...
   # Some Slicer dashboards include building bits of Qt which produce lots of
@@ -172,6 +185,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "[Uu]tilities.vxl"
   "[Uu]tilities.itktiff"
   "[Cc]ore.[Cc]ommon.[Ii]nclude.itkImageRegionConstIteratorWithIndex.hxx*assuming signed overflow does not occur"
+  "SetRotationMatrix*deprecated"
 
   # VTK suppressions
   "vtkfreetype"
@@ -195,6 +209,10 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "/usr/bin/ranlib: .*lib(dcmtls|oflog).a.*has no symbols"
   "ld.*has different visibility.*(libdcmdata|libdcmnet|libdcmimgle|liboflog|libofstd).a"
   "DCMTK.(ofstd|dcmdata|dcmjpls|dcmnet|dcmimage|dcmimgle|dcmpstat|dcmqrdb).(lib|include|apps).*conversion from '(size_t|SOCKET)' to '.*', possible loss of data"
+
+  # CTK
+  "CTK*ErrorLogFDMessageHandler*ignoring return value"
+  "CTK*TransferFunctionBars*use of old-style cast"
 
   # Libs/OpenIGTLink
   "(OpenIGTLink|openigtlink).[Ss]ource.igtl"
