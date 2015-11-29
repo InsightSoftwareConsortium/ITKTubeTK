@@ -140,8 +140,9 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   # svm
   "LIBSVM*shadows*"
 
-  # GenerateCLP
+  # SlicerExecutionModel
   "GenerateCLP.cxx*unused function*"
+  "Module*basic_string*dll-interface"
 
   # qt suppressions from vtk...
   # Some Slicer dashboards include building bits of Qt which produce lots of
@@ -186,6 +187,12 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "[Uu]tilities.itktiff"
   "[Cc]ore.[Cc]ommon.[Ii]nclude.itkImageRegionConstIteratorWithIndex.hxx*assuming signed overflow does not occur"
   "SetRotationMatrix*deprecated"
+  "KWSys*SharedForward*_snprintf"
+  "KWSys*SharedForward*strcpy"
+  "KWSys*SharedForward*strncpy"
+  "KWSys*SharedForward*strcat"
+  "KWSys*SharedForward*putenv"
+  "KWSys*SharedForward*getenv"
 
   # VTK suppressions
   "vtkfreetype"
