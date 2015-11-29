@@ -86,11 +86,12 @@ set( TubeTK_USE_VALGRIND @TubeTK_USE_VALGRIND@ CACHE BOOL "Init" FORCE )
 set( TubeTK_USE_VTK @TubeTK_USE_VTK@ CACHE BOOL "Init" FORCE )
 
 set( USE_SYSTEM_CPPCHECK @USE_SYSTEM_CPPCHECK@ CACHE BOOL "Init" FORCE )
-set( USE_SYSTEM_CTK @USE_SYSTEM_CTK@ CACHE BOOL "Init" FORCE )
-set( USE_SYSTEM_ITK @USE_SYSTEM_ITK@ CACHE BOOL "Init" FORCE )
 set( USE_SYSTEM_JSONCPP @USE_SYSTEM_JSONCPP@ CACHE BOOL "Init" FORCE )
 set( USE_SYSTEM_KWSTYLE @USE_SYSTEM_KWSTYLE@ CACHE BOOL "Init" FORCE )
 set( USE_SYSTEM_LIBSVM @USE_SYSTEM_LIBSVM@ CACHE BOOL "Init" FORCE )
+
+set( USE_SYSTEM_CTK @USE_SYSTEM_CTK@ CACHE BOOL "Init" FORCE )
+set( USE_SYSTEM_ITK @USE_SYSTEM_ITK@ CACHE BOOL "Init" FORCE )
 set( USE_SYSTEM_SLICER_EXECUTION_MODEL @USE_SYSTEM_SLICER_EXECUTION_MODEL@
   CACHE BOOL "Init" FORCE )
 set( USE_SYSTEM_VTK @USE_SYSTEM_VTK@ CACHE BOOL "Init" FORCE )
@@ -107,14 +108,10 @@ if( TubeTK_USE_GPU_ARRAYFIRE )
   set( ArrayFire_DIR "@ArrayFire_DIR@" CACHE PATH "Init" FORCE )
 endif( TubeTK_USE_GPU_ARRAYFIRE )
 
-if( EXISTS ${TubeTK_BINARY_DIR}/CTK-build/CMakeCache.txt )
-  # set( TubeTK_USE_CTK ON CACHE BOOL "Init" FORCE )
-  set( CTK_DIR "${TubeTK_BINARY_DIR}/CTK-build" CACHE PATH "Init" FORCE )
-endif( EXISTS ${TubeTK_BINARY_DIR}/CTK-build/CMakeCache.txt )
-
-if( EXISTS ${TubeTK_BINARY_DIR}/ITK-build/CMakeCache.txt )
-  set( ITK_DIR "${TubeTK_BINARY_DIR}/ITK-build" CACHE PATH "Init" FORCE )
-endif( EXISTS ${TubeTK_BINARY_DIR}/ITK-build/CMakeCache.txt )
+if( EXISTS ${TubeTK_BINARY_DIR}/Cppcheck-build/CMakeCache.txt )
+  set( Cppcheck_DIR "${TubeTK_BINARY_DIR}/Cppcheck-build"
+    CACHE PATH "Init" FORCE )
+endif( EXISTS ${TubeTK_BINARY_DIR}/Cppcheck-build/CMakeCache.txt )
 
 if( EXISTS ${TubeTK_BINARY_DIR}/JsonCpp-build/CMakeCache.txt )
   set( JsonCpp_DIR "${TubeTK_BINARY_DIR}/JsonCpp-build"
@@ -122,15 +119,21 @@ if( EXISTS ${TubeTK_BINARY_DIR}/JsonCpp-build/CMakeCache.txt )
 endif( EXISTS ${TubeTK_BINARY_DIR}/JsonCpp-build/CMakeCache.txt )
 
 if( EXISTS ${TubeTK_BINARY_DIR}/KWStyle-build/CMakeCache.txt )
-  # set( TubeTK_USE_KWSTYLE ON CACHE BOOL "Init" FORCE )
   set( KWSTYLE_EXECUTABLE "${TubeTK_BINARY_DIR}/KWStyle-build/bin/KWStyle"
     CACHE PATH "Init" FORCE )
 endif( EXISTS ${TubeTK_BINARY_DIR}/KWStyle-build/CMakeCache.txt )
 
 if( EXISTS ${TubeTK_BINARY_DIR}/LIBSVM-build/CMakeCache.txt )
-  # set( TubeTK_USE_LIBSVM ON CACHE BOOL "Init" FORCE )
   set( LIBSVM_DIR "${TubeTK_BINARY_DIR}/LIBSVM-build" CACHE PATH "Init" FORCE )
 endif( EXISTS ${TubeTK_BINARY_DIR}/LIBSVM-build/CMakeCache.txt )
+
+if( EXISTS ${TubeTK_BINARY_DIR}/CTK-build/CMakeCache.txt )
+  set( CTK_DIR "${TubeTK_BINARY_DIR}/CTK-build" CACHE PATH "Init" FORCE )
+endif( EXISTS ${TubeTK_BINARY_DIR}/CTK-build/CMakeCache.txt )
+
+if( EXISTS ${TubeTK_BINARY_DIR}/ITK-build/CMakeCache.txt )
+  set( ITK_DIR "${TubeTK_BINARY_DIR}/ITK-build" CACHE PATH "Init" FORCE )
+endif( EXISTS ${TubeTK_BINARY_DIR}/ITK-build/CMakeCache.txt )
 
 if( EXISTS ${TubeTK_BINARY_DIR}/SlicerExecutionModel-build/CMakeCache.txt )
   set( SlicerExecutionModel_DIR
