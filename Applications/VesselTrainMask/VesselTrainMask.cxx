@@ -21,15 +21,14 @@
 #include <iostream>
 #include <sstream>
 
-#include "itkTimeProbesCollectorBase.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
-
 #include "tubeMacro.h"
+#include "VesselTrainMaskCLP.h"
 
+#include <itkTimeProbesCollectorBase.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-
 #include <itkBinaryThinningImageFilter.h>
 #include <itkBinaryThresholdImageFilter.h>
 #include <itkBinaryBallStructuringElement.h>
@@ -37,8 +36,6 @@
 #include <itkErodeObjectMorphologyImageFilter.h>
 #include <itkAddImageFilter.h>
 #include <itkCastImageFilter.h>
-
-#include "VesselTrainMaskCLP.h"
 
 #include <vtkPolyDataWriter.h>
 #include <vtkSmartPointer.h>
@@ -52,14 +49,14 @@ int DoIt( int argc, char * argv[] );
 
 template< class TPixel, unsigned int VDimension >
 typename itk::Image< TPixel, VDimension >::Pointer
-findCenterLines( typename itk::Image< TPixel, VDimension >::Pointer input )
+FindCenterLines( typename itk::Image< TPixel, VDimension >::Pointer input )
 {
   typedef itk::Image< TPixel, VDimension >                        ImageType;
   typedef itk::BinaryThinningImageFilter< ImageType, ImageType >  FilterType;
 
   typename ImageType::Pointer output = input;
-
   typename FilterType::Pointer filter = FilterType::New();
+
   filter->SetInput( input );
   filter->Update();
   output = filter->GetOutput();
@@ -68,18 +65,18 @@ findCenterLines( typename itk::Image< TPixel, VDimension >::Pointer input )
 
 template< class TPixel, unsigned int VDimension >
 void
-thresholdVolume( typename itk::Image< TPixel, VDimension >::Pointer &input,
-float threshLow,
-float threshHigh,
-float valTrue,
-float valFalse )
+ThresholdVolume( typename itk::Image< TPixel, VDimension >::Pointer &input,
+  float threshLow,
+  float threshHigh,
+  float valTrue,
+  float valFalse )
 {
   typedef itk::Image< TPixel, VDimension >                        ImageType;
   typedef itk::BinaryThresholdImageFilter< ImageType, ImageType > ThresholdType;
 
   typename ImageType::Pointer output = input;
-
   typename ThresholdType::Pointer threshold = ThresholdType::New();
+
   threshold->SetInput( input );
   threshold->SetLowerThreshold( threshLow);
   threshold->SetUpperThreshold( threshHigh );
@@ -92,10 +89,10 @@ float valFalse )
 
 template< class TPixel, unsigned int VDimension >
 void
-morphologyVolume( typename itk::Image< TPixel, VDimension >::Pointer &input, int mode,
-float radius,
-float foregroundValue,
-float backgroundValue )
+MorphologyVolume( typename itk::Image< TPixel, VDimension >::Pointer &input, int mode,
+  float radius,
+  float foregroundValue,
+  float backgroundValue )
 {
   typedef itk::Image< TPixel, VDimension >                          ImageType;
   typedef itk::BinaryBallStructuringElement< TPixel, VDimension >   BallType;
@@ -115,31 +112,31 @@ float backgroundValue )
     case 0:
       {
       for ( int r = 0; r<radius; r++ )
-    {
-      typename ErodeFilterType::Pointer filter =
-        ErodeFilterType::New();
-      filter->SetBackgroundValue( backgroundValue );
-      filter->SetKernel( ball );
-      filter->SetObjectValue( foregroundValue );
-      filter->SetInput( input );
-      filter->Update();
-      input = filter->GetOutput();
-    }
-    break;
+        {
+        typename ErodeFilterType::Pointer filter =
+          ErodeFilterType::New();
+        filter->SetBackgroundValue( backgroundValue );
+        filter->SetKernel( ball );
+        filter->SetObjectValue( foregroundValue );
+        filter->SetInput( input );
+        filter->Update();
+        input = filter->GetOutput();
+        }
+      break;
       }
     case 1:
       {
       for ( int r = 0; r<radius; r++ )
-    {
-      typename DilateFilterType::Pointer filter =
-        DilateFilterType::New();
-      filter->SetKernel( ball );
-      filter->SetObjectValue( foregroundValue );
-      filter->SetInput( input );
-      filter->Update();
-      input = filter->GetOutput();
-    }
-    break;
+        {
+        typename DilateFilterType::Pointer filter =
+          DilateFilterType::New();
+        filter->SetKernel( ball );
+        filter->SetObjectValue( foregroundValue );
+        filter->SetInput( input );
+        filter->Update();
+        input = filter->GetOutput();
+        }
+      break;
       }
     }
   return;
@@ -147,10 +144,10 @@ float backgroundValue )
 
 template< class TPixel, unsigned int VDimension >
 void
-addVolume( typename itk::Image< TPixel, VDimension >::Pointer &input1,
+AddVolume( typename itk::Image< TPixel, VDimension >::Pointer &input1,
 typename itk::Image< TPixel, VDimension >::Pointer input2,
-float weight1,
-float weight2 )
+  float weight1,
+  float weight2 )
 {
   typedef itk::Image< TPixel, VDimension >   ImageType;
 
@@ -174,20 +171,21 @@ float weight2 )
 
 template< class TPixel, unsigned int VDimension >
 void
-saveVolumeAsShort(typename itk::Image< TPixel, VDimension >::Pointer input,
+SaveVolumeAsShort(typename itk::Image< TPixel, VDimension >::Pointer input,
 const char* fileName)
 {
   typedef itk::Image< short, VDimension >                      ImageTypeShort;
   typedef itk::Image< TPixel, VDimension >                     ImageType;
   typedef itk::CastImageFilter< ImageType, ImageTypeShort >    CastFilterType;
+  typedef itk::ImageFileWriter< ImageTypeShort >               VolumeWriterType;
+
   typename CastFilterType::Pointer castFilter =
     CastFilterType::New();
-
-  castFilter->SetInput( input );
-  typedef itk::ImageFileWriter< ImageTypeShort >
-    VolumeWriterType;
   typename VolumeWriterType::Pointer writer =
     VolumeWriterType::New();
+
+  castFilter->SetInput( input );
+
   writer->SetFileName( fileName );
   writer->SetInput( castFilter->GetOutput() );
   writer->SetUseCompression( true );
@@ -203,11 +201,11 @@ int DoIt( int argc, char * argv[] )
   PARSE_ARGS;
 
   if ( VDimension != 2 && VDimension != 3 )
-  {
+    {
     tube::ErrorMessage(
       "Error: Only 2D and 3D data is currently supported.");
     return EXIT_FAILURE;
-  }
+    }
 
   typedef itk::Image< TPixel, VDimension >            ImageType;
   typedef itk::ImageFileReader< ImageType >           ImageReaderType;
@@ -236,7 +234,7 @@ int DoIt( int argc, char * argv[] )
     tube::FmtErrorMessage( "Cannot read volume mask file: %s",
       err.what() );
     return EXIT_FAILURE;
-  }
+    }
   timeCollector.Stop( "Loading Input Volume Mask File" );
   progress = 0.35;
   progressReporter.Report( progress );
@@ -244,26 +242,26 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start( "Find Center Lines" );
   tube::InfoMessage( "Finding Center Lines..." );
   typename ImageType::Pointer centerLines;
-  centerLines = findCenterLines< TPixel, VDimension >( image );
+  centerLines = FindCenterLines< TPixel, VDimension >( image );
   timeCollector.Stop( "Find Center Lines" );
   progress = 0.65;
   progressReporter.Report( progress );
   timeCollector.Start( "Threshold and Mathematical Morphology" );
   tube::InfoMessage( "Thresholding..." );
-  thresholdVolume< TPixel, VDimension >( image, 0, gap, 0, 255 );
-  morphologyVolume< TPixel, VDimension >( image, 1, notVesselWidth, 255, 0 );
+  ThresholdVolume< TPixel, VDimension >( image, 0, gap, 0, 255 );
+  MorphologyVolume< TPixel, VDimension >( image, 1, notVesselWidth, 255, 0 );
   typename ImageType::Pointer dialatedImage;
   dialatedImage = image;
-  morphologyVolume< TPixel, VDimension >( image, 1, notVesselWidth, 255, 0 );
+  MorphologyVolume< TPixel, VDimension >( image, 1, notVesselWidth, 255, 0 );
   tube::InfoMessage( "Creating Not-Vessel Mask..." );
-  addVolume< TPixel, VDimension >( image, dialatedImage, 1, -1 );
+  AddVolume< TPixel, VDimension >( image, dialatedImage, 1, -1 );
   if ( !notVesselMask.empty() )
     {
-    saveVolumeAsShort< TPixel, VDimension >( image, notVesselMask.c_str() );
+    SaveVolumeAsShort< TPixel, VDimension >( image, notVesselMask.c_str() );
     }
   tube::InfoMessage( "Creating Vessel Mask..." );
-  addVolume< TPixel, VDimension >( image, centerLines, 0.5, 255 );
-  saveVolumeAsShort< TPixel, VDimension >( image, outputVolume.c_str() );
+  AddVolume< TPixel, VDimension >( image, centerLines, 0.5, 255 );
+  SaveVolumeAsShort< TPixel, VDimension >( image, outputVolume.c_str() );
   timeCollector.Stop( "Threshold and Mathematical Morphology" );
   progress = 1.0;
   progressReporter.Report( progress );
