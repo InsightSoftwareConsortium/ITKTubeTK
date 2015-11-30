@@ -66,10 +66,10 @@ FindCenterLines( typename itk::Image< TPixel, VDimension >::Pointer input )
 template< class TPixel, unsigned int VDimension >
 void
 ThresholdVolume( typename itk::Image< TPixel, VDimension >::Pointer &input,
-  float threshLow,
-  float threshHigh,
-  float valTrue,
-  float valFalse )
+                 float threshLow,
+                 float threshHigh,
+                 float valTrue,
+                 float valFalse )
 {
   typedef itk::Image< TPixel, VDimension >                        ImageType;
   typedef itk::BinaryThresholdImageFilter< ImageType, ImageType > ThresholdType;
@@ -90,9 +90,9 @@ ThresholdVolume( typename itk::Image< TPixel, VDimension >::Pointer &input,
 template< class TPixel, unsigned int VDimension >
 void
 MorphologyVolume( typename itk::Image< TPixel, VDimension >::Pointer &input, int mode,
-  float radius,
-  float foregroundValue,
-  float backgroundValue )
+                  float radius,
+                  float foregroundValue,
+                  float backgroundValue )
 {
   typedef itk::Image< TPixel, VDimension >                          ImageType;
   typedef itk::BinaryBallStructuringElement< TPixel, VDimension >   BallType;
@@ -145,9 +145,9 @@ MorphologyVolume( typename itk::Image< TPixel, VDimension >::Pointer &input, int
 template< class TPixel, unsigned int VDimension >
 void
 AddVolume( typename itk::Image< TPixel, VDimension >::Pointer &input1,
-typename itk::Image< TPixel, VDimension >::Pointer input2,
-  float weight1,
-  float weight2 )
+           typename itk::Image< TPixel, VDimension >::Pointer input2,
+           float weight1,
+           float weight2 )
 {
   typedef itk::Image< TPixel, VDimension >   ImageType;
 
@@ -171,8 +171,8 @@ typename itk::Image< TPixel, VDimension >::Pointer input2,
 
 template< class TPixel, unsigned int VDimension >
 void
-SaveVolumeAsShort(typename itk::Image< TPixel, VDimension >::Pointer input,
-const char* fileName)
+SaveVolumeAsShort( typename itk::Image< TPixel, VDimension >::Pointer input,
+                   const char* fileName )
 {
   typedef itk::Image< short, VDimension >                      ImageTypeShort;
   typedef itk::Image< TPixel, VDimension >                     ImageType;
