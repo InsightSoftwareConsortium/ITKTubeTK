@@ -24,9 +24,9 @@
 # See https://github.com/KitwareMedical/TubeTK/wiki/Dependencies
 
 
-# Cppcheck version 1.61
-set( Cppcheck_URL ${github_protocol}://github.com/danmar/cppcheck.git )
-set( Cppcheck_HASH_OR_TAG 1.61 )
+# Cppcheck
+set( Cppcheck_URL ${github_protocol}://github.com/KitwareMedical/cppcheck.git )
+set( Cppcheck_HASH_OR_TAG 7c98e7c52f42af61dbd83087f491a6107f1ce94c )
 
 # TubeTK Image Viewer
 set( ImageViewer_URL
