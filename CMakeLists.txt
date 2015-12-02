@@ -99,7 +99,7 @@ endif( BUILD_DOCUMENTATION )
 #
 # ImageViewer setup.
 #
-option( TubeTK_BUILD_IMAGE_VIEWER "Use ImageViewer." OFF )
+option( TubeTK_BUILD_IMAGE_VIEWER "Use ImageViewer." ON )
 
 #
 # Microsoft Visual Studio setup.
@@ -269,9 +269,9 @@ option( TubeTK_USE_EXAMPLES_AS_TESTS
 # Setup python
 #
 set( TubeTK_USE_PYTHON_DEFAULT ON )
-if( WIN32 OR TubeTK_BUILD_USING_SLICER )
+if( TubeTK_BUILD_USING_SLICER )
   set( TubeTK_USE_PYTHON_DEFAULT OFF )
-endif( WIN32 OR TubeTK_BUILD_USING_SLICER )
+endif( TubeTK_BUILD_USING_SLICER )
 option( TubeTK_USE_PYTHON "Use Python to enable additional functionality."
   ${TubeTK_USE_PYTHON_DEFAULT} )
 
@@ -335,11 +335,7 @@ mark_as_advanced( USE_SYSTEM_KWSTYLE )
 #
 # LIBSVM setup.
 #
-if( MSVC )
-  option( TubeTK_USE_LIBSVM "Use LIBSVM to enable additional functionality." OFF )
-else( MSVC )
-  option( TubeTK_USE_LIBSVM "Use LIBSVM to enable additional functionality." ON )
-endif( MSVC )
+option( TubeTK_USE_LIBSVM "Use LIBSVM to enable additional functionality." ON )
 option( USE_SYSTEM_LIBSVM
   "Exclude LIBSVM from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_LIBSVM )
