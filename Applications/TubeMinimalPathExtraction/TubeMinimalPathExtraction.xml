@@ -29,7 +29,7 @@
   <parameters>
     <label>Path</label>
     <description>Path parameters.</description>
-    <point multiple="true">
+    <point multiple="true" coordinateSystem="lps">
       <name>Path</name>
       <label>Path Points</label>
       <description>Path Points</description>

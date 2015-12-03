@@ -23,27 +23,24 @@
 
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
-
-#include "itkTimeProbesCollectorBase.h"
-
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-
-#include "itkLinearInterpolateImageFunction.h"
-#include "itkPolyLineParametricPath.h"
-#include "itkSpeedFunctionToPathFilter.h"
-#include "itkSpeedFunctionPathInformation.h"
-#include "itkSingleImageCostFunction.h"
-#include "itkIterateNeighborhoodOptimizer.h"
-#include "itkGradientDescentOptimizer.h"
-#include "itkPathIterator.h"
 #include "tubeMacro.h"
 #include "metaScene.h"
-#include "tubeMacro.h"
 
+#include "itkTimeProbesCollectorBase.h"
+#include "itkImageFileReader.h"
+#include "itkImageFileWriter.h"
+#include "itkLinearInterpolateImageFunction.h"
+#include "itkPolyLineParametricPath.h"
+#include "itkSingleImageCostFunction.h"
+#include "itkGradientDescentOptimizer.h"
+#include "itkPathIterator.h"
 #include "itkGroupSpatialObject.h"
 #include "itkSpatialObjectWriter.h"
 #include "itktubeRadiusExtractor2.h"
+
+#include "itkSpeedFunctionToPathFilter.h"
+#include "itkSpeedFunctionPathInformation.h"
+#include "itkIterateNeighborhoodOptimizer.h"
 
 #include <sstream>
 
@@ -70,10 +67,12 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   typedef TPixel                                    PixelType;
-  typedef unsigned char                             OutputPixelType;
   typedef itk::Image< PixelType, DimensionT >       ImageType;
-  typedef itk::Image< OutputPixelType, DimensionT > OutputImageType;
   typedef itk::ImageFileReader< ImageType >         ReaderType;
+
+  typedef itk::GroupSpatialObject< DimensionT >           TubeGroupType;
+  typedef itk::VesselTubeSpatialObject< DimensionT >      TubeType;
+  typedef itk::VesselTubeSpatialObjectPoint< DimensionT > TubePointType;
 
   timeCollector.Start( "Load data" );
   typename ReaderType::Pointer reader = ReaderType::New();
@@ -111,31 +110,33 @@ int DoIt( int argc, char * argv[] )
   typename CostFunctionType::Pointer costFunction = CostFunctionType::New();
   costFunction->SetInterpolator( interpolator );
 
-  //Check if CLI is running within Slicer
-  bool usingSlicer=false;
-  std::vector<itksys::String> parts;
-  parts = itksys::SystemTools::SplitString( argv[0], ':' );
-  if(parts[0] == "slicer")
-  {
-  usingSlicer=true;
-  }
+  //Get Input image information
+  typedef typename TubeType::TransformType TransformType;
+  typename TransformType::InputVectorType scaleVector;
+  typename TransformType::OffsetType offsetVector;
+  typename ImageType::SpacingType spacing = speed->GetSpacing();
+  typename ImageType::PointType origin = speed->GetOrigin();
+  double tubeSpacing[DimensionT];
+
+  for ( unsigned int k = 0; k < DimensionT; ++k )
+    {
+    scaleVector[k] = spacing[k];
+    offsetVector[k] = origin[k];
+    tubeSpacing[k] = spacing[k];
+    }
+
   // Create path information
   typedef itk::SpeedFunctionPathInformation< PointType > PathInformationType;
   typename PathInformationType::Pointer pathInfo = PathInformationType::New();
 
-  if(Path.size() >= 2 )
+  if( Path.size() >= 2 )
     {
-    for(int k=0; k<Path.size(); k++)
+    for( int k = 0; k<Path.size(); k++ )
       {
       PointType path;
-      for(int i=0; i<DimensionT; i++)
+      for( int i = 0; i<DimensionT; i++ )
         {
         path[i]=Path[k][i];
-        }
-      if(usingSlicer)
-        {
-        path[0] *= -1;
-        path[1] *= -1;
         }
       if( k == 0 )
         {
@@ -172,17 +173,17 @@ int DoIt( int argc, char * argv[] )
     // Create IterateNeighborhoodOptimizer
     typedef itk::IterateNeighborhoodOptimizer OptimizerType;
     typename OptimizerType::Pointer optimizer = OptimizerType::New();
-    optimizer->MinimizeOn( );
-    optimizer->FullyConnectedOn( );
+    optimizer->MinimizeOn();
+    optimizer->FullyConnectedOn();
     typename OptimizerType::NeighborhoodSizeType size( DimensionT );
-    for (unsigned int i=0; i<DimensionT; i++)
+    for( unsigned int i = 0; i < DimensionT; i++ )
       {
       size[i] = speed->GetSpacing()[i] * StepLengthFactor;
       }
     optimizer->SetNeighborhoodSize( size );
     pathFilter->SetOptimizer( optimizer );
     }
-  else if ( Optimizer == "Gradient Descent" )
+  else if( Optimizer == "Gradient Descent" )
     {
     // Create GradientDescentOptimizer
     typedef itk::GradientDescentOptimizer OptimizerType;
@@ -190,14 +191,13 @@ int DoIt( int argc, char * argv[] )
     optimizer->SetNumberOfIterations( NumberOfIterations );
     pathFilter->SetOptimizer( optimizer );
     }
-  else if ( Optimizer == "Regular Step Gradient Descent" )
+  else if( Optimizer == "Regular Step Gradient Descent" )
     {
     // Compute the minimum spacing
-    typename ImageType::SpacingType spacing = speed->GetSpacing();
     double minspacing = spacing[0];
-    for (unsigned int dim=0; dim<DimensionT; dim++)
+    for( unsigned int dim = 0; dim < DimensionT; dim++ )
       {
-      if (spacing[dim] < minspacing)
+      if ( spacing[dim] < minspacing )
         {
         minspacing = spacing[dim];
         }
@@ -206,8 +206,8 @@ int DoIt( int argc, char * argv[] )
     typedef itk::RegularStepGradientDescentOptimizer OptimizerType;
     typename OptimizerType::Pointer optimizer = OptimizerType::New();
     optimizer->SetNumberOfIterations( NumberOfIterations );
-    optimizer->SetMaximumStepLength( 1.0*StepLengthFactor*minspacing );
-    optimizer->SetMinimumStepLength( 0.5*StepLengthFactor*minspacing );
+    optimizer->SetMaximumStepLength( 1.0 * StepLengthFactor*minspacing );
+    optimizer->SetMinimumStepLength( 0.5 * StepLengthFactor*minspacing );
     optimizer->SetRelaxationFactor( StepLengthRelax );
     pathFilter->SetOptimizer( optimizer );
     }
@@ -226,7 +226,7 @@ int DoIt( int argc, char * argv[] )
 
   try
     {
-    pathFilter->Update( );
+    pathFilter->Update();
     }
   catch( itk::ExceptionObject & err )
     {
@@ -240,47 +240,46 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Stop( "Extract minimal path" );
   progressReporter.Report( 0.4 );
 
-  // Allocate output image
-  typename OutputImageType::Pointer output = OutputImageType::New();
-  output->SetRegions( speed->GetLargestPossibleRegion() );
-  output->SetSpacing( speed->GetSpacing() );
-  output->SetOrigin( speed->GetOrigin() );
-  output->Allocate( );
-  output->FillBuffer( itk::NumericTraits<OutputPixelType>::Zero );
-
-  typedef itk::GroupSpatialObject< DimensionT >           TubeGroupType;
-  typedef itk::VesselTubeSpatialObject< DimensionT >      TubeType;
-  typedef itk::VesselTubeSpatialObjectPoint< DimensionT > TubePointType;
-
+  // Create output TRE file
   typename TubeType::PointListType tubePointList;
   typename TubeGroupType::Pointer pTubeGroup = TubeGroupType::New();
 
+  // Update tubes transform
+  pTubeGroup->GetObjectToParentTransform()->SetScale(
+    scaleVector );
+  pTubeGroup->GetObjectToParentTransform()->SetOffset(
+    offsetVector );
+  pTubeGroup->GetObjectToParentTransform()->SetMatrix(
+    speed->GetDirection() );
+  pTubeGroup->ComputeObjectToWorldTransform();
+
   timeCollector.Start( "Rasterizing path" );
 
-  for (unsigned int i=0; i<pathFilter->GetNumberOfOutputs(); i++)
+  for ( unsigned int i = 0; i<pathFilter->GetNumberOfOutputs(); i++ )
     {
     // Get the path
     typename PathType::Pointer path = pathFilter->GetOutput( i );
     // Check path is valid
     if ( path->GetVertexList()->Size() == 0 )
       {
-      std::cout << "WARNING: Path " << (i+1)
+      std::cout << "WARNING: Path " << ( i + 1 )
         << " contains no points!" << std::endl;
       continue;
       }
 
     //Output centerline in TRE file
-    typedef itk::GroupSpatialObject< DimensionT >           TubeGroupType;
-    typedef itk::VesselTubeSpatialObject< DimensionT >      TubeType;
-    typedef itk::VesselTubeSpatialObjectPoint< DimensionT > TubePointType;
     typename TubeType::PointListType tubePointList;
     typename PathType::VertexListType * vertexList = path->GetVertexList();
 
-    for (unsigned int k=0; k<vertexList->Size(); k++)
+    for( unsigned int k = 0; k < vertexList->Size(); k++ )
       {
       PointType pathPoint;
       speed->TransformContinuousIndexToPhysicalPoint(
         vertexList->GetElement(k), pathPoint );
+      for( int i = 0; i<DimensionT; i++ )
+        {
+        pathPoint[i]=(pathPoint[i]-origin[i])/spacing[i];
+        }
       TubePointType tubePoint;
       tubePoint.SetPosition( pathPoint );
       tubePoint.SetID( k );
@@ -288,8 +287,8 @@ int DoIt( int argc, char * argv[] )
       }
     typename TubeType::Pointer pTube = TubeType::New();
     pTube->SetPoints( tubePointList );
-    pTube->ComputeObjectToWorldTransform();
     pTube->ComputeTangentAndNormals();
+    pTube->SetSpacing( tubeSpacing );
     pTube->SetId( i );
 
     //Extract Radius
@@ -299,9 +298,9 @@ int DoIt( int argc, char * argv[] )
       typename RadiusExtractorType::Pointer radiusExtractor
         = RadiusExtractorType::New();
       radiusExtractor->SetInputImage( speed );
-      radiusExtractor->SetRadiusStart( 1.0 );
-      radiusExtractor->SetRadiusMin( 0.5 );
-      radiusExtractor->SetRadiusMax( 8.0 );
+      radiusExtractor->SetRadiusStart( 0.1 );
+      radiusExtractor->SetRadiusMin( 0.1 );
+      radiusExtractor->SetRadiusMax( 5.0 );
       radiusExtractor->SetRadiusStep( 0.5 );
       radiusExtractor->SetRadiusTolerance( 0.25 );
       radiusExtractor->SetDebug( false );
@@ -309,6 +308,7 @@ int DoIt( int argc, char * argv[] )
       }
 
     pTubeGroup->AddSpatialObject( pTube );
+    pTubeGroup->ComputeObjectToWorldTransform();
     }
 
   timeCollector.Stop( "Rasterizing path" );
@@ -322,7 +322,7 @@ int DoIt( int argc, char * argv[] )
   try
     {
     tubeWriter->SetFileName( outputTREFile.c_str() );
-    tubeWriter->SetInput(pTubeGroup);
+    tubeWriter->SetInput( pTubeGroup );
     tubeWriter->Update();
     }
   catch( itk::ExceptionObject & err )

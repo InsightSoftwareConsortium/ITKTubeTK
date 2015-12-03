@@ -22,12 +22,25 @@
 ##############################################################################
 set( proj MinimalPathExtraction )
 
-if(NOT ITK_VERSION VERSION_GREATER "4.8")
-  message(WARNING "Requires ITK 4.9 or later to work. Removing ${proj}.")
-  list(REMOVE_ITEM TubeTK_DEPENDENCIES ${proj})
+if( NOT ITK_VERSION VERSION_GREATER "4.8" )
+
+  list( REMOVE_ITEM TubeTK_DEPENDENCIES ${proj} )
+
+  if( NOT DEFINED ${proj}_SOURCE_DIR )
+    set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
+  endif( NOT DEFINED ${proj}_SOURCE_DIR )
+
+  if( NOT EXISTS ${${proj}_SOURCE_DIR} )
+    list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS
+      -D${proj}_URL:STRING=${${proj}_URL} )
+  endif( NOT EXISTS ${${proj}_SOURCE_DIR} )
+
+  list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS
+    -D${proj}_SOURCE_DIR:PATH=${${proj}_SOURCE_DIR} )
+
 else()
   # Make sure this file is included only once.
-  get_filename_component( CMAKE_CURRENT_LIST_FILENAME 
+  get_filename_component( CMAKE_CURRENT_LIST_FILENAME
     ${CMAKE_CURRENT_LIST_FILE} NAME_WE )
   if( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
     return()
@@ -46,6 +59,7 @@ else()
   TubeTKMacroCheckExternalProjectDependency( ${proj} )
 
   if( NOT DEFINED ${proj}_DIR )
+
     set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
     set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
@@ -81,10 +95,11 @@ else()
   else( NOT DEFINED ${proj}_DIR )
 
     find_package( ${proj} REQUIRED )
-
     TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
 
   endif( NOT DEFINED ${proj}_DIR )
-  list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS 
+
+  list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS
     -D${proj}_DIR:PATH=${${proj}_DIR} )
+
 endif()
