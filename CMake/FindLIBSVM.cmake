@@ -22,18 +22,28 @@
 ##############################################################################
 
 if( LIBSVM_DIR )
-  set( LIBSVM_INCLUDEDIR ${LIBSVM_DIR}/include )
-  set( LIBSVM_LIBDIR ${LIBSVM_DIR}/lib )
+  if( EXISTS ${LIBSVM_DIR}/CMakeCache.txt )
+    file( STRINGS ${LIBSVM_DIR}/CMakeCache.txt _source_dir_def REGEX
+      "SVM_SOURCE_DIR" )
+    string( REGEX REPLACE "[^=]+[=]" "" _source_dir "${_source_dir_def}" )
+    set( _LIBSVM_include_dir "${_source_dir}/include" )
+  endif()
+  set( _LIBSVM_library ${LIBSVM_DIR}/lib
+    ${LIBSVM_DIR}/lib/Release
+    ${LIBSVM_DIR}/lib/MinSizeRel
+    ${LIBSVM_DIR}/lib/RelWithDebInfo
+    ${LIBSVM_DIR}/lib/Debug )
 endif( LIBSVM_DIR )
 
 find_package( PkgConfig QUIET )
 pkg_check_modules( PC_LIBSVM QUIET svm )
 
 find_path( LIBSVM_INCLUDE_DIR NAMES svm.h
-  HINTS ${LIBSVM_INCLUDEDIR} ${PC_LIBSVM_INCLUDEDIR} ${PC_LIBSVM_INCLUDE_DIRS} )
+  HINTS ${_LIBSVM_include_dir} ${PC_LIBSVM_INCLUDEDIR}
+  ${PC_LIBSVM_INCLUDE_DIRS} )
 
 find_library( LIBSVM_LIBRARY NAMES svm libsvm
-  HINTS ${LIBSVM_LIBDIR} ${PC_LIBSVM_LIBDIR} ${PC_LIBSVM_LIBRARY_DIRS} )
+  HINTS ${_LIBSVM_library} ${PC_LIBSVM_LIBDIR} ${PC_LIBSVM_LIBRARY_DIRS} )
 
 set( LIBSVM_INCLUDE_DIRS ${LIBSVM_INCLUDE_DIR} )
 set( LIBSVM_LIBRARIES ${LIBSVM_LIBRARY} )

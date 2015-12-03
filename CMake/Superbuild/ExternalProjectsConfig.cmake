@@ -26,7 +26,7 @@
 
 # Cppcheck
 set( Cppcheck_URL ${github_protocol}://github.com/KitwareMedical/cppcheck.git )
-set( Cppcheck_HASH_OR_TAG 7c98e7c52f42af61dbd83087f491a6107f1ce94c )
+set( Cppcheck_HASH_OR_TAG 555b36aa520b7d64b8486abca840d652374c4850 )
 
 # TubeTK Image Viewer
 set( ImageViewer_URL
@@ -44,10 +44,10 @@ set( KWStyle_URL
   ${git_protocol}://github.com/Kitware/KWStyle.git )
 set( KWStyle_HASH_OR_TAG 22f2e0bd4ec4c94ca85af0ce24747e67a17b4c52 )
 
-# LIBSVM version 3.2 (minimum version 3.1)
+# LIBSVM
 set( LIBSVM_URL
   ${git_protocol}://github.com/KitwareMedical/libsvm.git )
-set( LIBSVM_HASH_OR_TAG 55fbd26a0bb53efffe89eb65b3a046c3ecc9965f )
+set( LIBSVM_HASH_OR_TAG 9e2dd8a5fd032b429c07ce2778c8716117812bc5 )
 
 
 ###########################################################
