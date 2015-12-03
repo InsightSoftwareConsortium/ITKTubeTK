@@ -23,7 +23,8 @@
 
 if( JsonCpp_DIR )
   if( EXISTS ${JsonCpp_DIR}/CMakeCache.txt )
-    file( STRINGS ${JsonCpp_DIR}/CMakeCache.txt _source_dir_def REGEX "jsoncpp_SOURCE_DIR" )
+    file( STRINGS ${JsonCpp_DIR}/CMakeCache.txt _source_dir_def REGEX
+      "jsoncpp_SOURCE_DIR" )
     string( REGEX REPLACE "[^=]+[=]" "" _source_dir "${_source_dir_def}" )
     set( _jsoncpp_include_dir "${_source_dir}/include" )
   endif()
