@@ -45,7 +45,6 @@ TubeTKMacroCheckExternalProjectDependency( ${proj} )
 if( NOT KWSTYLE_EXECUTABLE AND NOT ${USE_SYSTEM_KWSTYLE} )
   set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
-  set( KWSTYLE_EXECUTABLE ${${proj}_DIR}/bin/KWStyle )
 
   ExternalProject_Add( ${proj}
     GIT_REPOSITORY ${${proj}_URL}
@@ -80,4 +79,4 @@ else( NOT KWSTYLE_EXECUTABLE AND NOT ${USE_SYSTEM_KWSTYLE} )
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
 endif( NOT KWSTYLE_EXECUTABLE AND NOT ${USE_SYSTEM_KWSTYLE} )
 
-list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DKWSTYLE_EXECUTABLE:FILEPATH=${KWSTYLE_EXECUTABLE} )
+list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DKWSTYLE_DIR:FILEPATH=${KWSTYLE_DIR} )
