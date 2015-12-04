@@ -514,8 +514,8 @@ if( TubeTK_USE_CPPCHECK )
     "${TubeTK_SOURCE_DIR}/Base" )
   set( CPPCHECK_SUPPRESSIONS_FILE
     "${TubeTK_SOURCE_DIR}/CMake/Cppcheck/TubeTKCppcheckSuppressions.txt" )
-  set( CPPCHECK_COMMAND_PREFIX "${CPPCHECK_EXECUTABLE}" -q --xml --suppressions
-    "${CPPCHECK_SUPPRESSIONS_FILE}" )
+  set( CPPCHECK_COMMAND_PREFIX "${CPPCHECK_EXECUTABLE}" -q --xml
+    --suppressions-list=${CPPCHECK_SUPPRESSIONS_FILE} )
   add_test( Cppcheck
     ${CPPCHECK_COMMAND_PREFIX} --enable=all ${CPPCHECK_PATHS_TO_CHECK} )
   set_tests_properties( Cppcheck
