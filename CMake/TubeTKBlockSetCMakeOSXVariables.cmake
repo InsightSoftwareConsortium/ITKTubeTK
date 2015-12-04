@@ -107,10 +107,10 @@ if( APPLE )
         OUTPUT_VARIABLE QMAKE_USE_STDC
         OUTPUT_STRIP_TRAILING_WHITESPACE )
       if( "x${QMAKE_USE_STDC}x" STREQUAL "xx" )
-        set( CMAKE_OSX_DEPLOYMENT_TARGET "10.8" CACHE PATH
+        set( CMAKE_OSX_DEPLOYMENT_TARGET "${SDK_VERSION}" CACHE PATH
           "Deployment target needs to be explicitly set." FORCE )
       else()
-        set( CMAKE_OSX_DEPLOYMENT_TARGET "${SDK_VERSION}" CACHE PATH
+        set( CMAKE_OSX_DEPLOYMENT_TARGET "10.8" CACHE PATH
           "Deployment target needs to be explicitly set." FORCE )
       endif()
     endif()
