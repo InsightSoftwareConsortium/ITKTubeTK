@@ -119,7 +119,7 @@ if( EXISTS ${TubeTK_BINARY_DIR}/JsonCpp-build/CMakeCache.txt )
 endif( EXISTS ${TubeTK_BINARY_DIR}/JsonCpp-build/CMakeCache.txt )
 
 if( EXISTS ${TubeTK_BINARY_DIR}/KWStyle-build/CMakeCache.txt )
-  set( KWSTYLE_EXECUTABLE "${TubeTK_BINARY_DIR}/KWStyle-build/bin/KWStyle"
+  set( KWStyle_DIR "${TubeTK_BINARY_DIR}/KWStyle-build"
     CACHE PATH "Init" FORCE )
 endif( EXISTS ${TubeTK_BINARY_DIR}/KWStyle-build/CMakeCache.txt )
 
@@ -141,6 +141,5 @@ if( EXISTS ${TubeTK_BINARY_DIR}/SlicerExecutionModel-build/CMakeCache.txt )
 endif( EXISTS ${TubeTK_BINARY_DIR}/SlicerExecutionModel-build/CMakeCache.txt )
 
 if( EXISTS ${TubeTK_BINARY_DIR}/VTK-build/CMakeCache.txt )
-  # set( TubeTK_USE_VTK ON CACHE BOOL "Init" FORCE )
   set( VTK_DIR "${TubeTK_BINARY_DIR}/VTK-build" CACHE PATH "Init" FORCE )
 endif( EXISTS ${TubeTK_BINARY_DIR}/VTK-build/CMakeCache.txt )

@@ -32,20 +32,19 @@ set( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1 )
 set( proj KWStyle )
 
 # Sanity checks.
-if( KWSTYLE_EXECUTABLE AND NOT EXISTS ${KWSTYLE_EXECUTABLE} )
+if( KWStyle_DIR AND NOT EXISTS ${KWSTYLE_Dir} )
   message( FATAL_ERROR
-    "KWSTYLE_EXECUTABLE is defined, but corresponds to a nonexistent file" )
-endif( KWSTYLE_EXECUTABLE AND NOT EXISTS ${KWSTYLE_EXECUTABLE} )
+    "KWStyle_DIR is defined, but corresponds to a nonexistent file" )
+endif( KWStyle_DIR AND NOT EXISTS ${KWStyle_DIR} )
 
 set( ${proj}_DEPENDENCIES "" )
 
 # Include dependent projects, if any.
 TubeTKMacroCheckExternalProjectDependency( ${proj} )
 
-if( NOT KWSTYLE_EXECUTABLE AND NOT ${USE_SYSTEM_KWSTYLE} )
+if( NOT KWStyle_DIR AND NOT ${USE_SYSTEM_KWSTYLE} )
   set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
-  set( KWSTYLE_EXECUTABLE ${${proj}_DIR}/bin/KWStyle )
 
   ExternalProject_Add( ${proj}
     GIT_REPOSITORY ${${proj}_URL}
@@ -72,12 +71,12 @@ if( NOT KWSTYLE_EXECUTABLE AND NOT ${USE_SYSTEM_KWSTYLE} )
     DEPENDS
       ${${proj}_DEPENDENCIES} )
 
-else( NOT KWSTYLE_EXECUTABLE AND NOT ${USE_SYSTEM_KWSTYLE} )
+  else( NOT KWStyle_DIR AND NOT ${USE_SYSTEM_KWSTYLE} )
   if( ${USE_SYSTEM_KWSTYLE} )
     find_package( ${proj} REQUIRED )
   endif( ${USE_SYSTEM_KWSTYLE} )
 
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
-endif( NOT KWSTYLE_EXECUTABLE AND NOT ${USE_SYSTEM_KWSTYLE} )
+endif( NOT KWStyle_DIR AND NOT ${USE_SYSTEM_KWSTYLE} )
 
-list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DKWSTYLE_EXECUTABLE:FILEPATH=${KWSTYLE_EXECUTABLE} )
+list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DKWStyle_DIR:FILEPATH=${KWSTYLE_DIR} )

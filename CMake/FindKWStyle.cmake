@@ -21,7 +21,14 @@
 #
 ##############################################################################
 
-find_program( KWSTYLE_EXECUTABLE NAMES KWStyle PATHS /usr/local/bin
+find_program( KWSTYLE_EXECUTABLE NAMES KWStyle
+  PATHS /usr/local/bin
+  /usr/bin
+  ${KWStyle_DIR}/bin
+  ${KWStyle_DIR}/bin/Release
+  ${KWStyle_DIR}/bin/MinSizeRel
+  ${KWStyle_DIR}/bin/RelWithDebInfo
+  ${KWStyle_DIR}/bin/Debug
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Kitware Inc.\\KWStyle 1.0.0]/bin" )
 
 include( FindPackageHandleStandardArgs )
