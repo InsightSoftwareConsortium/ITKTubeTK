@@ -32,7 +32,7 @@ set( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1 )
 set( proj KWStyle )
 
 # Sanity checks.
-if( KWStyle_DIR AND NOT EXISTS ${KWSTYLE_Dir} )
+if( KWStyle_DIR AND NOT EXISTS ${KWStyle_DIR} )
   message( FATAL_ERROR
     "KWStyle_DIR is defined, but corresponds to a nonexistent file" )
 endif( KWStyle_DIR AND NOT EXISTS ${KWStyle_DIR} )
