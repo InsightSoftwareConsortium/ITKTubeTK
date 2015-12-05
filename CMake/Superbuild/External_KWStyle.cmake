@@ -71,7 +71,7 @@ if( NOT KWStyle_DIR AND NOT ${USE_SYSTEM_KWSTYLE} )
     DEPENDS
       ${${proj}_DEPENDENCIES} )
 
-  else( NOT KWStyle_DIR AND NOT ${USE_SYSTEM_KWSTYLE} )
+else( NOT KWStyle_DIR AND NOT ${USE_SYSTEM_KWSTYLE} )
   if( ${USE_SYSTEM_KWSTYLE} )
     find_package( ${proj} REQUIRED )
   endif( ${USE_SYSTEM_KWSTYLE} )
@@ -79,4 +79,4 @@ if( NOT KWStyle_DIR AND NOT ${USE_SYSTEM_KWSTYLE} )
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
 endif( NOT KWStyle_DIR AND NOT ${USE_SYSTEM_KWSTYLE} )
 
-list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DKWStyle_DIR:FILEPATH=${KWSTYLE_DIR} )
+list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DKWStyle_DIR:FILEPATH=${KWStyle_DIR} )
