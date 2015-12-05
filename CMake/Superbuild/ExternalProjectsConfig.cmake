@@ -26,7 +26,7 @@
 
 # Cppcheck
 set( Cppcheck_URL ${github_protocol}://github.com/KitwareMedical/cppcheck.git )
-set( Cppcheck_HASH_OR_TAG 3795c5d567db7381f42bb90078a7daae3197713a )
+set( Cppcheck_HASH_OR_TAG 683ba53fbe87e67fe1cca8ebecb8c2f73d55a4c9 )
 
 # TubeTK Image Viewer
 set( ImageViewer_URL
