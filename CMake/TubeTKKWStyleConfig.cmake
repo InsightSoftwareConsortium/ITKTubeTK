@@ -20,7 +20,17 @@
 # limitations under the License.
 #
 ##############################################################################
-find_package( KWStyle REQUIRED )
+
+find_program( KWSTYLE_EXECUTABLE NAMES KWStyle
+  PATHS /usr/local/bin
+  /usr/bin
+  ${KWStyle_DIR}/bin
+  ${KWStyle_DIR}/bin/Release
+  ${KWStyle_DIR}/bin/MinSizeRel
+  ${KWStyle_DIR}/bin/RelWithDebInfo
+  ${KWStyle_DIR}/bin/Debug )
+mark_as_advanced( KWSTYLE_EXECUTABLE )
+
 find_package( Git )
 if( GIT_FOUND )
   execute_process( COMMAND ${GIT_EXECUTABLE} config hooks.KWStyle.path

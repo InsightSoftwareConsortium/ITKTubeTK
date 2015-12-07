@@ -72,9 +72,16 @@ if( NOT KWStyle_DIR AND NOT ${USE_SYSTEM_KWSTYLE} )
       ${${proj}_DEPENDENCIES} )
 
 else( NOT KWStyle_DIR AND NOT ${USE_SYSTEM_KWSTYLE} )
-  if( ${USE_SYSTEM_KWSTYLE} )
-    find_package( ${proj} REQUIRED )
-  endif( ${USE_SYSTEM_KWSTYLE} )
+
+  find_program( KWSTYLE_EXECUTABLE NAMES KWStyle
+    PATHS /usr/local/bin
+    /usr/bin
+    ${KWStyle_DIR}/bin
+    ${KWStyle_DIR}/bin/Release
+    ${KWStyle_DIR}/bin/MinSizeRel
+    ${KWStyle_DIR}/bin/RelWithDebInfo
+    ${KWStyle_DIR}/bin/Debug )
+  mark_as_advanced( KWSTYLE_EXECUTABLE )
 
   TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
 endif( NOT KWStyle_DIR AND NOT ${USE_SYSTEM_KWSTYLE} )
