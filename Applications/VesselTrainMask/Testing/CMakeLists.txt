@@ -40,7 +40,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-VesselMask
     MIDAS{VesselTrainMask-Test1.mha.md5}
     ${TEMP}/${MODULE_NAME}Test1.mha
     --gap 0.5
-    --notVesselWidth 20)
+    --notVesselWidth 2)
 
 # Test1 - Compare - VesselMask
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-VesselMask-Compare
@@ -58,7 +58,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-NotVesselMask
     MIDAS{VesselTrainMask-Test2.mha.md5}
     ${TEMP}/${MODULE_NAME}Test2.mha
     --gap 0.5
-    --notVesselWidth 20
+    --notVesselWidth 2
     --notVesselMask ${TEMP}/${MODULE_NAME}Test2_NotVesselMask.mha)
 
 # Test2 - Compare - NotVesselMask
@@ -67,7 +67,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-NotVesselMask-Compare
     -t ${TEMP}/${MODULE_NAME}Test2.mha
     -b MIDAS{VesselTrainMask-Test2_NotVesselMask.mha.md5}
     -d 0.01 )
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-NotVesselMask-Compare
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-NotVesselMask1-Compare
   COMMAND ${TEXTCOMPARE_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2_NotVesselMask.mha
     -b MIDAS{VesselTrainMask-Test2_NotVesselMask1.mha.md5}
