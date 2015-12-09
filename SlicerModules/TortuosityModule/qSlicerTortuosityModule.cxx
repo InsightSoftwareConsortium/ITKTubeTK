@@ -38,7 +38,7 @@ limitations under the License.
 #include "qSlicerTortuosityModuleWidget.h"
 
 //------------------------------------------------------------------------------
-Q_EXPORT_PLUGIN2(qSlicerTortuosityModule, qSlicerTortuosityModule);
+Q_EXPORT_PLUGIN2( qSlicerTortuosityModule, qSlicerTortuosityModule );
 
 //------------------------------------------------------------------------------
 /// \ingroup Slicer_QtModules_Tortuosity
@@ -46,9 +46,9 @@ class qSlicerTortuosityModulePrivate
 {};
 
 //------------------------------------------------------------------------------
-qSlicerTortuosityModule::qSlicerTortuosityModule(QObject* _parent)
-  : Superclass(_parent)
-  , d_ptr(new qSlicerTortuosityModulePrivate)
+qSlicerTortuosityModule::qSlicerTortuosityModule( QObject* _parent )
+  : Superclass( _parent )
+  , d_ptr( new qSlicerTortuosityModulePrivate )
 {}
 
 //------------------------------------------------------------------------------
@@ -58,16 +58,16 @@ qSlicerTortuosityModule::~qSlicerTortuosityModule()
 //------------------------------------------------------------------------------
 QString qSlicerTortuosityModule::helpText() const
 {
-  QString help = QString("Run tortuosity metrics on spatial objects.\n Documentation"
+  QString help = QString( "Run tortuosity metrics on spatial objects.\n Documentation"
                          " about these metrics can be found in the TubeTK source code,"
-                         " in Base/Filtering/itkTubeTortuositySpatialObjectFilter.h");
+                         " in Base/Filtering/itkTubeTortuositySpatialObjectFilter.h" );
   return help;
 }
 
 //------------------------------------------------------------------------------
 QString qSlicerTortuosityModule::acknowledgementText() const
 {
-  QString acknowledgement = QString("");
+  QString acknowledgement = QString( "" );
 
   return acknowledgement;
 }
@@ -76,7 +76,7 @@ QString qSlicerTortuosityModule::acknowledgementText() const
 QStringList qSlicerTortuosityModule::contributors() const
 {
   QStringList moduleContributors;
-  moduleContributors << QString("Johan Andruejol (Kitware)");
+  moduleContributors << QString( "Johan Andruejol (Kitware)" );
 
   return moduleContributors;
 }
@@ -84,7 +84,7 @@ QStringList qSlicerTortuosityModule::contributors() const
 //------------------------------------------------------------------------------
 QIcon qSlicerTortuosityModule::icon()const
 {
-  return QIcon(":/Icons/Tortuosity.png");
+  return QIcon( ":/Icons/Tortuosity.png" );
 }
 
 //------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ void qSlicerTortuosityModule::setup()
   this->Superclass::setup();
 
   vtkSlicerTortuosityLogic* tortuosityLogic =
-    vtkSlicerTortuosityLogic::SafeDownCast(this->logic());
+    vtkSlicerTortuosityLogic::SafeDownCast( this->logic() );
 }
 
 //------------------------------------------------------------------------------

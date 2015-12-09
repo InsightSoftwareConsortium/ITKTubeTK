@@ -45,28 +45,28 @@ qSlicerTortuosityModuleWidget : public qSlicerAbstractModuleWidget
 
 public:
   typedef qSlicerAbstractModuleWidget Superclass;
-  qSlicerTortuosityModuleWidget(QWidget *parent=0);
+  qSlicerTortuosityModuleWidget( QWidget *parent=0 );
   virtual ~qSlicerTortuosityModuleWidget();
 
 public slots:
-  void runMetrics(int flag);
-  void setCurrentSpatialObjectsNode(vtkMRMLNode* node);
-  void setCurrentSpatialObjectsNode(vtkMRMLSpatialObjectsNode* node);
+  void runMetrics( int flag );
+  void setCurrentSpatialObjectsNode( vtkMRMLNode* node );
+  void setCurrentSpatialObjectsNode( vtkMRMLSpatialObjectsNode* node );
 
 protected slots:
   void loadColorsFromCSV();
-  void runSelectedMetrics(bool run);
-  void saveCurrentSpatialObjectAsCSV(bool save);
-  void smoothingMethodChanged(int index);
+  void runSelectedMetrics( bool run );
+  void saveCurrentSpatialObjectAsCSV( bool save );
+  void smoothingMethodChanged( int index );
 
 protected:
   virtual void setup();
 
-  QScopedPointer<qSlicerTortuosityModuleWidgetPrivate> d_ptr;
+  QScopedPointer< qSlicerTortuosityModuleWidgetPrivate > d_ptr;
 
 private:
-  Q_DECLARE_PRIVATE(qSlicerTortuosityModuleWidget);
-  Q_DISABLE_COPY(qSlicerTortuosityModuleWidget);
+  Q_DECLARE_PRIVATE( qSlicerTortuosityModuleWidget );
+  Q_DISABLE_COPY( qSlicerTortuosityModuleWidget );
 };
 
 #endif

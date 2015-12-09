@@ -40,56 +40,56 @@ limitations under the License.
 
 #include <math.h>
 
-vtkStandardNewMacro(vtkSlicerTortuosityLogic);
+vtkStandardNewMacro( vtkSlicerTortuosityLogic );
 
 //------------------------------------------------------------------------------
 vtkSlicerTortuosityLogic::vtkSlicerTortuosityLogic( void )
 {
   // Vessel-wise metrics
   this->m_MetricFlagToArrayNames
-      [FilterType::AVERAGE_RADIUS_METRIC] = "AverageRadiusMetric";
+      [ FilterType::AVERAGE_RADIUS_METRIC ] = "AverageRadiusMetric";
   this->m_MetricFlagToArrayNames
-      [FilterType::CHORD_LENGTH_METRIC] = "ChordLengthMetric";
+      [ FilterType::CHORD_LENGTH_METRIC ] = "ChordLengthMetric";
   this->m_MetricFlagToArrayNames
-      [FilterType::DISTANCE_METRIC] = "DistanceMetric";
+      [ FilterType::DISTANCE_METRIC ] = "DistanceMetric";
   this->m_MetricFlagToArrayNames
-      [FilterType::INFLECTION_COUNT_METRIC] = "InflectionCountMetric";
+      [ FilterType::INFLECTION_COUNT_METRIC ] = "InflectionCountMetric";
   this->m_MetricFlagToArrayNames
-      [FilterType::INFLECTION_COUNT_1_METRIC] = "InflectionCount1Metric";
+      [ FilterType::INFLECTION_COUNT_1_METRIC ] = "InflectionCount1Metric";
   this->m_MetricFlagToArrayNames
-      [FilterType::INFLECTION_COUNT_2_METRIC] = "InflectionCount2Metric";
+      [ FilterType::INFLECTION_COUNT_2_METRIC ] = "InflectionCount2Metric";
   this->m_MetricFlagToArrayNames
-      [FilterType::PATH_LENGTH_METRIC] = "PathLengthMetric";
+      [ FilterType::PATH_LENGTH_METRIC ] = "PathLengthMetric";
   this->m_MetricFlagToArrayNames
-      [FilterType::PERCENTILE_95_METRIC] = "Percentile95Metric";
+      [ FilterType::PERCENTILE_95_METRIC ] = "Percentile95Metric";
   this->m_MetricFlagToArrayNames
-      [FilterType::SUM_OF_ANGLES_METRIC] = "SumOfAnglesMetric";
+      [ FilterType::SUM_OF_ANGLES_METRIC ] = "SumOfAnglesMetric";
   this->m_MetricFlagToArrayNames
-      [FilterType::TOTAL_CURVATURE_METRIC] = "TotalCurvatureMetric";
+      [ FilterType::TOTAL_CURVATURE_METRIC ] = "TotalCurvatureMetric";
   this->m_MetricFlagToArrayNames
-      [FilterType::TOTAL_SQUARED_CURVATURE_METRIC] = "TotalSquaredCurvatureMetric";
+      [ FilterType::TOTAL_SQUARED_CURVATURE_METRIC ] = "TotalSquaredCurvatureMetric";
 
   // Point-wise metrics
   this->m_MetricFlagToArrayNames
-      [FilterType::CURVATURE_SCALAR_METRIC] = "CurvatureScalarMetric";
+      [ FilterType::CURVATURE_SCALAR_METRIC ] = "CurvatureScalarMetric";
 //  this->m_MetricFlagToArrayNames
-//      [FilterType::CURVATURE_VECTOR_METRIC] = "CurvatureVectorMetric";
+//      [ FilterType::CURVATURE_VECTOR_METRIC ] = "CurvatureVectorMetric";
   this->m_MetricFlagToArrayNames
-      [FilterType::INFLECTION_POINTS_METRIC] = "InflectionPointsMetric";
+      [ FilterType::INFLECTION_POINTS_METRIC ] = "InflectionPointsMetric";
 
   // Fill map of GroupFlag to metricFlag (TubeTK flag)
-  this->m_GroupFlagToMetricFlag[BasicMetricsGroup] =
+  this->m_GroupFlagToMetricFlag[ BasicMetricsGroup ] =
                                     FilterType::AVERAGE_RADIUS_METRIC
                                   | FilterType::CHORD_LENGTH_METRIC
                                   | FilterType::PATH_LENGTH_METRIC;
 
-  this->m_GroupFlagToMetricFlag[OldMetricsGroup] =
+  this->m_GroupFlagToMetricFlag[ OldMetricsGroup ] =
                                     FilterType::DISTANCE_METRIC
                                   | FilterType::INFLECTION_COUNT_METRIC
                                   | FilterType::INFLECTION_POINTS_METRIC
                                   | FilterType::SUM_OF_ANGLES_METRIC;
 
-  this->m_GroupFlagToMetricFlag[CurvatureMetricsGroup] =
+  this->m_GroupFlagToMetricFlag[ CurvatureMetricsGroup ] =
                                     FilterType::INFLECTION_COUNT_1_METRIC
                                   | FilterType::INFLECTION_COUNT_2_METRIC
                                   | FilterType::PERCENTILE_95_METRIC
@@ -98,7 +98,7 @@ vtkSlicerTortuosityLogic::vtkSlicerTortuosityLogic( void )
                                   | FilterType::CURVATURE_SCALAR_METRIC
                                   | FilterType::CURVATURE_VECTOR_METRIC;
 
-  this->m_GroupFlagToMetricFlag[HistogramMetricsGroup] =
+  this->m_GroupFlagToMetricFlag[ HistogramMetricsGroup ] =
                                     FilterType::CURVATURE_HISTOGRAM_METRICS;
 
 }
@@ -109,33 +109,33 @@ vtkSlicerTortuosityLogic::~vtkSlicerTortuosityLogic( void )
 }
 
 //------------------------------------------------------------------------------
-void vtkSlicerTortuosityLogic::PrintSelf(ostream& os, vtkIndent indent)
+void vtkSlicerTortuosityLogic::PrintSelf( ostream& os, vtkIndent indent )
 {
 }
 
 //------------------------------------------------------------------------------
-std::vector<vtkDoubleArray*> vtkSlicerTortuosityLogic
-::GetMetricArraysToCompute(vtkMRMLSpatialObjectsNode* node, int metricFlag)
+std::vector< vtkDoubleArray* > vtkSlicerTortuosityLogic
+::GetMetricArraysToCompute( vtkMRMLSpatialObjectsNode* node, int metricFlag )
 {
-  std::vector<vtkDoubleArray*> metricArraysVector;
+  std::vector< vtkDoubleArray* > metricArraysVector;
 
   // Iterate through all the metric flags
-  for (long int compareFlag = 0x01;
+  for ( long int compareFlag = 0x01;
     compareFlag <= FilterType::BITMASK_VESSEL_WISE_METRICS;
-    compareFlag = compareFlag << 1)
+    compareFlag = compareFlag << 1 )
     {
 
     // If single metric flag is on, create array and add it to the vector
-    if( (metricFlag & compareFlag) > 0 )
+    if( ( metricFlag & compareFlag ) > 0 )
       {
-      std::string metricName = m_MetricFlagToArrayNames[compareFlag];
-      if( metricName != "")
+      std::string metricName = m_MetricFlagToArrayNames[ compareFlag ];
+      if( metricName != "" )
         {
         vtkDoubleArray* metricArray =
-          this->GetOrCreateDoubleArray(node, metricName.c_str());
-        if(metricArray)
+          this->GetOrCreateDoubleArray( node, metricName.c_str() );
+        if( metricArray )
           {
-          metricArraysVector.push_back(metricArray);
+          metricArraysVector.push_back( metricArray );
           }
         }
       }
@@ -146,43 +146,43 @@ std::vector<vtkDoubleArray*> vtkSlicerTortuosityLogic
 
 //------------------------------------------------------------------------------
 template<typename T> T* vtkSlicerTortuosityLogic
-::GetArray(vtkMRMLSpatialObjectsNode* node, const char* name)
+::GetArray( vtkMRMLSpatialObjectsNode* node, const char* name )
 {
   vtkPolyData* polydata = node->GetPolyData();
-  if (!polydata)
+  if ( !polydata )
     {
     return NULL;
     }
   vtkPointData* pointData = polydata->GetPointData();
-  if (!pointData)
+  if ( !pointData )
     {
     return NULL;
     }
 
-  return T::SafeDownCast(pointData->GetArray(name));
+  return T::SafeDownCast( pointData->GetArray( name ) );
 }
 
 //------------------------------------------------------------------------------
 template<typename T> T* vtkSlicerTortuosityLogic
-::GetOrCreateArray(vtkMRMLSpatialObjectsNode* node, const char* name)
+::GetOrCreateArray( vtkMRMLSpatialObjectsNode* node, const char* name )
 {
-  T* metricArray = this->GetArray<T>(node, name);
-  if (!metricArray)
+  T* metricArray = this->GetArray<T>( node, name );
+  if ( !metricArray )
     {
     vtkPolyData* polydata = node->GetPolyData();
-    if (!polydata)
+    if ( !polydata )
       {
       return NULL;
       }
     vtkPointData* pointData = polydata->GetPointData();
-    if (!pointData)
+    if ( !pointData )
       {
       return NULL;
       }
 
     vtkNew<T> newMetricArray;
-    newMetricArray->SetName(name);
-    pointData->AddArray(newMetricArray.GetPointer());
+    newMetricArray->SetName( name );
+    pointData->AddArray( newMetricArray.GetPointer() );
     return newMetricArray.GetPointer();
     }
   return metricArray;
@@ -190,11 +190,11 @@ template<typename T> T* vtkSlicerTortuosityLogic
 
 //------------------------------------------------------------------------------
 vtkDoubleArray* vtkSlicerTortuosityLogic
-::GetOrCreateDoubleArray(vtkMRMLSpatialObjectsNode* node, const char* name)
+::GetOrCreateDoubleArray( vtkMRMLSpatialObjectsNode* node, const char* name )
 {
   vtkDoubleArray* metricArray =
-    this->GetOrCreateArray<vtkDoubleArray>(node, name);
-  if (!metricArray)
+    this->GetOrCreateArray< vtkDoubleArray >( node, name );
+  if ( !metricArray )
     {
     std::cerr<<"The array "<<name<<" couldn't be created or fetched"
              <<std::endl;
@@ -202,30 +202,30 @@ vtkDoubleArray* vtkSlicerTortuosityLogic
     }
 
   // If it's new, make it the correct size
-  vtkDoubleArray* ids = this->GetArray<vtkDoubleArray>(node, "TubeIDs");
-  assert(ids);
-  if (metricArray->GetSize() != ids->GetSize());
+  vtkDoubleArray* ids = this->GetArray< vtkDoubleArray >( node, "TubeIDs" );
+  assert( ids );
+  if ( metricArray->GetSize() != ids->GetSize() );
     {
     metricArray->Initialize();
-    metricArray->SetNumberOfValues(ids->GetSize());
+    metricArray->SetNumberOfValues( ids->GetSize() );
     }
   return metricArray;
 }
 
 //------------------------------------------------------------------------------
 int vtkSlicerTortuosityLogic
-::GetMetricFlagFromGroupFlag(int groupFlag)
+::GetMetricFlagFromGroupFlag( int groupFlag )
 {
   // Iterate through all the group flags
   int metricFlag = 0x00;
-  for (long int compareFlag = 0x01;
+  for ( long int compareFlag = 0x01;
     compareFlag <= AllMetricsGroup;
-    compareFlag = compareFlag << 1)
+    compareFlag = compareFlag << 1 )
     {
     // If group metric is on, add the corresponding metric flags
-    if( (groupFlag & compareFlag) > 0 )
+    if( ( groupFlag & compareFlag ) > 0 )
       {
-      metricFlag |= m_GroupFlagToMetricFlag[compareFlag];
+      metricFlag |= m_GroupFlagToMetricFlag[ compareFlag ];
       }
     }
   return metricFlag;
@@ -233,60 +233,59 @@ int vtkSlicerTortuosityLogic
 
 //------------------------------------------------------------------------------
 bool vtkSlicerTortuosityLogic
-::RunMetrics(vtkMRMLSpatialObjectsNode* node, int groupFlag,
+::RunMetrics( vtkMRMLSpatialObjectsNode* node, int groupFlag,
              tube::SmoothTubeFunctionEnum smoothingMethod, double smoothingScale,
-             int subsampling)
+             int subsampling )
 {
-  if (!node)
+  if ( !node )
     {
     return false;
     }
 
-  if(groupFlag == 0)
+  if( groupFlag == 0 )
     {
     std::cout<<"No metrics to compute"<<std::endl;
     return true;
     }
 
   // Convert group flag to metric flag
-  int metricFlag = GetMetricFlagFromGroupFlag(groupFlag);
+  int metricFlag = GetMetricFlagFromGroupFlag( groupFlag );
   TubeNetType* spatialObject = node->GetSpatialObject();
 
   char childName[] = "Tube";
   TubeNetType::ChildrenListType* tubeList =
-    spatialObject->GetChildren(spatialObject->GetMaximumDepth(), childName);
+    spatialObject->GetChildren( spatialObject->GetMaximumDepth(), childName );
 
   // 1 - Get the metric arrays vector
-  std::vector<vtkDoubleArray*> metricsVector;
-  metricsVector = this->GetMetricArraysToCompute(node, metricFlag);
+  std::vector< vtkDoubleArray* > metricsVector;
+  metricsVector = this->GetMetricArraysToCompute( node, metricFlag );
 
   // Additionnal metrics that don't use the tortuosity filter
   // Tau4 Metric is part of the CurvatureMetrics group
-  if( (groupFlag & CurvatureMetricsGroup) > 0 )
+  if( ( groupFlag & CurvatureMetricsGroup ) > 0 )
     {
     // Tau4 need the path length metric, so we add it manually
     // it will be computed in the filter, but won't be added as an array
     // or printed in the CSV file.
     metricFlag |= FilterType::PATH_LENGTH_METRIC;
-    vtkDoubleArray * tau4Array = this->GetOrCreateDoubleArray(node, "Tau4Metric");
-    if(tau4Array)
+    vtkDoubleArray * tau4Array = this->GetOrCreateDoubleArray( node, "Tau4Metric" );
+    if( tau4Array )
       {
-      metricsVector.push_back(tau4Array);
+      metricsVector.push_back( tau4Array );
       }
     }
-
 
   // Histogram Metric
   int numberOfBins = 20;
   double histMin = 0.0;
   double histMax = 1.0;
-  double histStep = (histMax - histMin)/numberOfBins;
-  if( (metricFlag & FilterType::CURVATURE_HISTOGRAM_METRICS) > 0 )
+  double histStep = ( histMax - histMin ) / numberOfBins;
+  if( ( metricFlag & FilterType::CURVATURE_HISTOGRAM_METRICS ) > 0 )
     {
     // Create the data arrays for the histogram
-    for(int i = 0; i < numberOfBins; i++)
+    for( int i = 0; i < numberOfBins; i++ )
       {
-      vtkSmartPointer<vtkIntArray> histArray;
+      vtkSmartPointer< vtkIntArray > histArray;
       std::ostringstream oss;
       oss << "Hist-Bin#"
           << i << ": "
@@ -294,41 +293,41 @@ bool vtkSlicerTortuosityLogic
           << (i+1)*histStep;
       std::string binArrayName =oss.str();
 
-      if(m_HistogramArrays.size() < numberOfBins)
+      if( m_HistogramArrays.size() < numberOfBins )
         {
-        histArray = vtkSmartPointer<vtkIntArray>::New();
-        histArray->SetName(binArrayName.c_str());
-        histArray->SetNumberOfValues(tubeList->size());
-        m_HistogramArrays.push_back(histArray);
+        histArray = vtkSmartPointer< vtkIntArray >::New();
+        histArray->SetName( binArrayName.c_str() );
+        histArray->SetNumberOfValues( tubeList->size() );
+        m_HistogramArrays.push_back( histArray );
         }
       else
         {
         histArray = m_HistogramArrays[i];
         histArray->Initialize();
-        histArray->SetName(binArrayName.c_str());
-        histArray->SetNumberOfValues(tubeList->size());
+        histArray->SetName( binArrayName.c_str() );
+        histArray->SetNumberOfValues( tubeList->size() );
         }
       }
     }
 
   // Rewrite number of points array everytime
-  vtkIntArray* nop = this->GetOrCreateArray<vtkIntArray>(node, "NumberOfPoints");
+  vtkIntArray* nop = this->GetOrCreateArray< vtkIntArray >( node, "NumberOfPoints" );
   nop->Initialize();
 
   // 2 - Fill the metric arrays
   int tubeNumber = 0;
   int totalNumberOfPointsAdded = 0;
-  for(TubeNetType::ChildrenListType::iterator tubeIt = tubeList->begin();
-        tubeIt != tubeList->end(); ++tubeIt)
+  for( TubeNetType::ChildrenListType::iterator tubeIt = tubeList->begin();
+        tubeIt != tubeList->end(); ++tubeIt )
     {
     VesselTubeType* currTube =
-      dynamic_cast<VesselTubeType*>((*tubeIt).GetPointer());
-    if (!currTube)
+      dynamic_cast< VesselTubeType* >( ( *tubeIt ).GetPointer() );
+    if ( !currTube )
       {
       continue;
       }
 
-    if (currTube->GetNumberOfPoints() < 2)
+    if ( currTube->GetNumberOfPoints() < 2 )
       {
       std::cerr<<"Error, vessel #"<<currTube->GetId()
         <<" has less than 2 points !"<<std::endl
@@ -336,7 +335,7 @@ bool vtkSlicerTortuosityLogic
       continue;
       }
 
-    if(subsampling != 1)
+    if( subsampling != 1 )
       {
       std::cerr<<"WARNING: the subsampling has not been implemented yet."
                <<"The entered subsampling value will have no effect "
@@ -345,16 +344,16 @@ bool vtkSlicerTortuosityLogic
 
     // Set filter parameters and update it
     FilterType::Pointer filter = FilterType::New();
-    filter->SetMeasureFlag(metricFlag);
-    filter->SetSmoothingMethod(smoothingMethod);
-    filter->SetSmoothingScale(smoothingScale);
-    filter->SetNumberOfBins(numberOfBins);
-    filter->SetHistogramMin(histMin);
-    filter->SetHistogramMax(histMax);
-    filter->SetInput(currTube);
+    filter->SetMeasureFlag( metricFlag );
+    filter->SetSmoothingMethod( smoothingMethod );
+    filter->SetSmoothingScale( smoothingScale );
+    filter->SetNumberOfBins( numberOfBins );
+    filter->SetHistogramMin( histMin );
+    filter->SetHistogramMax( histMax );
+    filter->SetInput( currTube );
     filter->Update();
 
-    if (filter->GetOutput()->GetId() != currTube->GetId())
+    if ( filter->GetOutput()->GetId() != currTube->GetId() )
       {
       std::cerr<<"Error while running filter on tube."<<std::endl;
       return false;
@@ -365,91 +364,91 @@ bool vtkSlicerTortuosityLogic
     // tubeIndex: index of points in the whole tube data set (same across all tubes)
     // filterIndex: index of points in a specific tube (reset to 0 when changing tube)
     int numberOfPoints = currTube->GetPoints().size();
-    for(int filterIndex = 0, tubeIndex = totalNumberOfPointsAdded;
-      filterIndex < numberOfPoints; ++filterIndex, ++tubeIndex)
+    for( int filterIndex = 0, tubeIndex = totalNumberOfPointsAdded;
+      filterIndex < numberOfPoints; ++filterIndex, ++tubeIndex )
       {
-      for(int i = 0; i < metricsVector.size(); i++)
+      for( int i = 0; i < metricsVector.size(); i++ )
         {
-        if(metricsVector[i] != NULL)
+        if( metricsVector[i] != NULL )
           {
           std::string arrayName = metricsVector[i]->GetName();
 
           // Printable metrics
-          if(arrayName == "AverageRadiusMetric")
+          if( arrayName == "AverageRadiusMetric" )
             {
-            metricsVector[i]->SetValue(tubeIndex, filter->GetAverageRadiusMetric());
+            metricsVector[i]->SetValue( tubeIndex, filter->GetAverageRadiusMetric() );
             }
-          if(arrayName == "ChordLengthMetric")
+          if( arrayName == "ChordLengthMetric" )
             {
-            metricsVector[i]->SetValue(tubeIndex, filter->GetChordLengthMetric());
+            metricsVector[i]->SetValue( tubeIndex, filter->GetChordLengthMetric());
             }
-          if(arrayName == "DistanceMetric")
+          if( arrayName == "DistanceMetric" )
             {
-            metricsVector[i]->SetValue(tubeIndex, filter->GetDistanceMetric());
+            metricsVector[i]->SetValue( tubeIndex, filter->GetDistanceMetric() );
             }
-          if(arrayName == "InflectionCountMetric")
+          if( arrayName == "InflectionCountMetric" )
             {
-            metricsVector[i]->SetValue(tubeIndex, filter->GetInflectionCountMetric());
+            metricsVector[i]->SetValue( tubeIndex, filter->GetInflectionCountMetric() );
             }
-          if(arrayName == "InflectionCount1Metric")
+          if( arrayName == "InflectionCount1Metric" )
             {
-            metricsVector[i]->SetValue(tubeIndex, filter->GetInflectionCount1Metric());
+            metricsVector[i]->SetValue( tubeIndex, filter->GetInflectionCount1Metric() );
             }
-          if(arrayName == "InflectionCount2Metric")
+          if( arrayName == "InflectionCount2Metric" )
             {
-            metricsVector[i]->SetValue(tubeIndex, filter->GetInflectionCount2Metric());
+            metricsVector[i]->SetValue( tubeIndex, filter->GetInflectionCount2Metric() );
             }
-          if(arrayName == "PathLengthMetric")
+          if( arrayName == "PathLengthMetric" )
             {
-            metricsVector[i]->SetValue(tubeIndex, filter->GetPathLengthMetric());
+            metricsVector[i]->SetValue( tubeIndex, filter->GetPathLengthMetric() );
             }
-          if(arrayName == "Percentile95Metric")
+          if( arrayName == "Percentile95Metric" )
             {
-            metricsVector[i]->SetValue(tubeIndex, filter->GetPercentile95Metric());
+            metricsVector[i]->SetValue( tubeIndex, filter->GetPercentile95Metric() );
             }
-          if(arrayName == "SumOfAnglesMetric")
+          if( arrayName == "SumOfAnglesMetric" )
             {
-            metricsVector[i]->SetValue(tubeIndex, filter->GetSumOfAnglesMetric());
+            metricsVector[i]->SetValue( tubeIndex, filter->GetSumOfAnglesMetric() );
             }
-          if(arrayName == "Tau4Metric")
+          if( arrayName == "Tau4Metric" )
             {
-            metricsVector[i]->SetValue(tubeIndex,
-              filter->GetTotalCurvatureMetric() / filter->GetPathLengthMetric());
+            metricsVector[i]->SetValue( tubeIndex,
+              filter->GetTotalCurvatureMetric() / filter->GetPathLengthMetric() );
             }
-          if(arrayName == "TotalCurvatureMetric")
+          if( arrayName == "TotalCurvatureMetric" )
             {
-            metricsVector[i]->SetValue(tubeIndex, filter->GetTotalCurvatureMetric());
+            metricsVector[i]->SetValue( tubeIndex, filter->GetTotalCurvatureMetric() );
             }
-          if(arrayName == "TotalSquaredCurvatureMetric")
+          if( arrayName == "TotalSquaredCurvatureMetric" )
             {
-            metricsVector[i]->SetValue(tubeIndex,
-              filter->GetTotalSquaredCurvatureMetric());
+            metricsVector[i]->SetValue( tubeIndex,
+              filter->GetTotalSquaredCurvatureMetric() );
             }
 
           // Not printable metrics
-          if(arrayName == "CurvatureScalarMetric")
+          if( arrayName == "CurvatureScalarMetric" )
             {
-            metricsVector[i]->SetValue(tubeIndex,
-              filter->GetCurvatureScalarMetric(filterIndex));
+            metricsVector[i]->SetValue( tubeIndex,
+              filter->GetCurvatureScalarMetric( filterIndex ) );
             }
-          if(arrayName == "InflectionPointsMetric")
+          if( arrayName == "InflectionPointsMetric" )
             {
-            metricsVector[i]->SetValue(tubeIndex,
-              filter->GetInflectionPointValue(filterIndex));
+            metricsVector[i]->SetValue( tubeIndex,
+              filter->GetInflectionPointValue( filterIndex ) );
             }
           }
         }
-      nop->InsertNextValue(numberOfPoints);
+      nop->InsertNextValue( numberOfPoints );
       }
 
     // Set Histogram metrics values
-    if( (metricFlag & FilterType::CURVATURE_HISTOGRAM_METRICS) > 0 )
+    if( ( metricFlag & FilterType::CURVATURE_HISTOGRAM_METRICS ) > 0 )
       {
       // Get the histogram features
-      for(int i = 0; i < numberOfBins; i++)
+      for( int i = 0; i < numberOfBins; i++ )
         {
-        m_HistogramArrays[i]->SetValue(tubeNumber,
-          filter->GetCurvatureHistogramMetric(i));
+        m_HistogramArrays[i]->SetValue( tubeNumber,
+          filter->GetCurvatureHistogramMetric( i ) );
         }
       }
 
@@ -459,13 +458,13 @@ bool vtkSlicerTortuosityLogic
 
   // Update the arrays to recompute the range
 
-  for(int i = 0; i < metricsVector.size(); i++)
+  for( int i = 0; i < metricsVector.size(); i++ )
     {
     metricsVector[i]->Modified();
     }
-  if ((metricFlag & FilterType::CURVATURE_HISTOGRAM_METRICS) > 0)
+  if ( ( metricFlag & FilterType::CURVATURE_HISTOGRAM_METRICS ) > 0 )
     {
-    for (int i = 0; i < numberOfBins; i++)
+    for ( int i = 0; i < numberOfBins; i++ )
       {
       m_HistogramArrays[i]->Modified();
       }
@@ -476,22 +475,22 @@ bool vtkSlicerTortuosityLogic
 
 //------------------------------------------------------------------------------
 std::vector<std::string>
-vtkSlicerTortuosityLogic::GetPrintableNamesFromMetricFlag(int metricFlag)
+vtkSlicerTortuosityLogic::GetPrintableNamesFromMetricFlag( int metricFlag )
 {
-  std::vector<std::string> names;
-  names.push_back("TubeIDs");
-  names.push_back("NumberOfPoints");
-  for (long int compareFlag = 0x01;
+  std::vector< std::string > names;
+  names.push_back( "TubeIDs" );
+  names.push_back( "NumberOfPoints" );
+  for ( long int compareFlag = 0x01;
     compareFlag <= FilterType::BITMASK_VESSEL_WISE_METRICS;
-    compareFlag = compareFlag << 1)
+    compareFlag = compareFlag << 1 )
     {
 
     // If metric is asked to print and is printable
-    if( (metricFlag &
+    if( ( metricFlag &
         compareFlag &
-        FilterType::BITMASK_VESSEL_WISE_METRICS) > 0 )
+        FilterType::BITMASK_VESSEL_WISE_METRICS ) > 0 )
       {
-      names.push_back(this->m_MetricFlagToArrayNames[compareFlag]);
+      names.push_back( this->m_MetricFlagToArrayNames[ compareFlag ] );
       }
     }
   return names;
@@ -499,45 +498,45 @@ vtkSlicerTortuosityLogic::GetPrintableNamesFromMetricFlag(int metricFlag)
 
 //------------------------------------------------------------------------------
 bool vtkSlicerTortuosityLogic
-::SaveAsCSV(vtkMRMLSpatialObjectsNode* node, const char* filename, int groupFlag)
+::SaveAsCSV( vtkMRMLSpatialObjectsNode* node, const char* filename, int groupFlag )
 {
-  if (!node || !filename)
+  if ( !node || !filename )
     {
     return false;
     }
 
   // Convert group flag to metric flag
-  int metricFlag = GetMetricFlagFromGroupFlag(groupFlag);
+  int metricFlag = GetMetricFlagFromGroupFlag( groupFlag );
 
   // Get the metric arrays
-  std::vector<vtkDataArray*> metricArrays;
-  std::vector<std::string> names = this->GetPrintableNamesFromMetricFlag(metricFlag);
+  std::vector< vtkDataArray* > metricArrays;
+  std::vector< std::string > names = this->GetPrintableNamesFromMetricFlag( metricFlag );
   // Additionnal metrics that don't use the tortuosity filter
-  if( (groupFlag & CurvatureMetricsGroup) > 0 )
+  if( ( groupFlag & CurvatureMetricsGroup ) > 0 )
     {
-    names.push_back("Tau4Metric");
+    names.push_back( "Tau4Metric" );
     }
-  for (std::vector<std::string>::iterator it = names.begin();
-    it != names.end(); ++it)
+  for ( std::vector<std::string>::iterator it = names.begin();
+    it != names.end(); ++it )
     {
     vtkDataArray* metricArray =
-      this->GetArray<vtkDataArray>(node, it->c_str());
-    if (metricArray)
+      this->GetArray< vtkDataArray >( node, it->c_str() );
+    if ( metricArray )
       {
-      metricArrays.push_back(metricArray);
+      metricArrays.push_back( metricArray );
       }
     }
 
   // Make sure we have everything we need for export
-  if (metricArrays.size() <= 0)
+  if ( metricArrays.size() <= 0 )
     {
     std::cout<<"No array found for given flag: "<<metricFlag<<std::endl;
     return false;
     }
 
   vtkIntArray* numberOfPointsArray =
-    this->GetArray<vtkIntArray>(node, "NumberOfPoints");
-  if (!numberOfPointsArray)
+    this->GetArray< vtkIntArray >( node, "NumberOfPoints" );
+  if ( !numberOfPointsArray )
     {
     std::cerr<<"Expected ''NumberOfPoints'' array on the node point data."
       <<std::endl<<"Cannot proceed."<<std::endl;
@@ -546,42 +545,42 @@ bool vtkSlicerTortuosityLogic
 
   // Create  the table. Each column has only one value per vessel
   // instead of one value per each point of the vessel.
-  vtkNew<vtkTable> table;
-  for(std::vector<vtkDataArray*>::iterator it = metricArrays.begin();
-    it != metricArrays.end(); ++it)
+  vtkNew< vtkTable > table;
+  for( std::vector< vtkDataArray* >::iterator it = metricArrays.begin();
+    it != metricArrays.end(); ++it )
     {
-    vtkNew<vtkDoubleArray> newArray;
-    newArray->SetName((*it)->GetName());
+    vtkNew< vtkDoubleArray > newArray;
+    newArray->SetName( ( *it )->GetName() );
 
-    for (int j = 0; j < numberOfPointsArray->GetNumberOfTuples();
-      j += numberOfPointsArray->GetValue(j))
+    for ( int j = 0; j < numberOfPointsArray->GetNumberOfTuples();
+      j += numberOfPointsArray->GetValue( j ) )
       {
-      newArray->InsertNextTuple((*it)->GetTuple(j));
+      newArray->InsertNextTuple( ( *it )->GetTuple( j ) );
       }
 
-    table->AddColumn(newArray.GetPointer());
+    table->AddColumn( newArray.GetPointer() );
     }
 
 
   // Add the histogram features to the table
-  if( (metricFlag & FilterType::CURVATURE_HISTOGRAM_METRICS) > 0 )
+  if( ( metricFlag & FilterType::CURVATURE_HISTOGRAM_METRICS ) > 0 )
     {
-    for(std::vector< vtkSmartPointer<vtkIntArray> >::iterator it =
+    for( std::vector< vtkSmartPointer< vtkIntArray > >::iterator it =
       m_HistogramArrays.begin();
-      it != m_HistogramArrays.end(); ++it)
+      it != m_HistogramArrays.end(); ++it )
       {
-      table->AddColumn((*it));
+      table->AddColumn( ( *it ) );
       }
     }
 
   // Write out the table to file
-  vtkNew<vtkDelimitedTextWriter> writer;
-  writer->SetFileName(filename);
+  vtkNew< vtkDelimitedTextWriter > writer;
+  writer->SetFileName( filename );
 
-#if (VTK_MAJOR_VERSION < 6)
-  writer->SetInput(table.GetPointer());
+#if ( VTK_MAJOR_VERSION < 6 )
+  writer->SetInput( table.GetPointer() );
 #else
-  writer->SetInputData(table.GetPointer());
+  writer->SetInputData( table.GetPointer() );
 #endif
 
   return writer->Write();
@@ -589,9 +588,9 @@ bool vtkSlicerTortuosityLogic
 
 //------------------------------------------------------------------------------
 bool vtkSlicerTortuosityLogic::LoadColorsFromCSV(
-  vtkMRMLSpatialObjectsNode *node, const char* filename)
+  vtkMRMLSpatialObjectsNode *node, const char* filename )
 {
-  if (!node || !filename)
+  if ( !node || !filename )
     {
     return false;
     }
@@ -600,21 +599,21 @@ bool vtkSlicerTortuosityLogic::LoadColorsFromCSV(
   typedef itk::VesselTubeSpatialObject<3>         VesselTubeType;
 
   // Load the table from file
-  vtkNew<vtkDelimitedTextReader> reader;
-  reader->SetFileName(filename);
-  reader->SetFieldDelimiterCharacters(",");
-  reader->SetHaveHeaders(true);
-  reader->SetDetectNumericColumns(true);
+  vtkNew< vtkDelimitedTextReader > reader;
+  reader->SetFileName( filename );
+  reader->SetFieldDelimiterCharacters( "," );
+  reader->SetHaveHeaders( true );
+  reader->SetDetectNumericColumns( true );
   reader->Update();
   vtkTable* colorTable = reader->GetOutput();
-  if (!colorTable)
+  if ( !colorTable )
     {
     std::cerr<<"Error in reading CSV file"<<std::endl;
     return false;
     }
 
   // Check if table is valid
-  if (colorTable->GetNumberOfColumns() != 2)
+  if ( colorTable->GetNumberOfColumns() != 2 )
     {
     std::cerr<<"Expected 2 columns in CSV file."
       <<std::endl<<"Cannot proceed."<<std::endl;
@@ -625,36 +624,36 @@ bool vtkSlicerTortuosityLogic::LoadColorsFromCSV(
   TubeNetType* spatialObject = node->GetSpatialObject();
   char childName[] = "Tube";
   TubeNetType::ChildrenListType* tubeList =
-    spatialObject->GetChildren(spatialObject->GetMaximumDepth(), childName);
+    spatialObject->GetChildren( spatialObject->GetMaximumDepth(), childName );
 
   // Create a new data array in the node
   double defaultValue = 0.0;
   vtkDoubleArray* customColorScaleArray =
-    this->GetOrCreateArray<vtkDoubleArray>(node, "CustomColorScale");
+    this->GetOrCreateArray< vtkDoubleArray >( node, "CustomColorScale" );
 
   // Set the size of the array
-  vtkDoubleArray* ids = this->GetArray<vtkDoubleArray>(node, "TubeIDs");
-  assert(ids);
-  if (customColorScaleArray->GetNumberOfTuples() != ids->GetNumberOfTuples())
+  vtkDoubleArray* ids = this->GetArray< vtkDoubleArray >( node, "TubeIDs" );
+  assert( ids );
+  if ( customColorScaleArray->GetNumberOfTuples() != ids->GetNumberOfTuples() )
     {
-    customColorScaleArray->SetNumberOfTuples(ids->GetNumberOfTuples());
+    customColorScaleArray->SetNumberOfTuples( ids->GetNumberOfTuples() );
     }
 
   // Initialize the array with the default value
-  customColorScaleArray->FillComponent(0, defaultValue);
+  customColorScaleArray->FillComponent( 0, defaultValue );
 
   // Iterate through tubeList
   size_t totalNumberOfPoints = 0;
   TubeNetType::ChildrenListType::iterator tubeIt;
-  for (tubeIt = tubeList->begin(); tubeIt != tubeList->end(); ++tubeIt)
+  for ( tubeIt = tubeList->begin(); tubeIt != tubeList->end(); ++tubeIt )
     {
     VesselTubeType* currTube =
-      dynamic_cast<VesselTubeType*>((*tubeIt).GetPointer());
-    if (!currTube)
+      dynamic_cast< VesselTubeType* >( ( *tubeIt ).GetPointer() );
+    if ( !currTube )
       {
       continue;
       }
-    if (currTube->GetNumberOfPoints() < 2)
+    if ( currTube->GetNumberOfPoints() < 2 )
       {
       std::cerr<<"Error, vessel #"<<currTube->GetId()
         <<" has less than 2 points !"<<std::endl
@@ -664,33 +663,33 @@ bool vtkSlicerTortuosityLogic::LoadColorsFromCSV(
 
     // Get the current tube ID
     int tubeId = currTube->GetId();
-    vtkDebugMacro(<<"Tube ID "<<tubeId);
+    vtkDebugMacro( <<"Tube ID "<<tubeId );
 
     // Look for the ID in the table and get the corresponding value
     double valueToAssign = 0.0; //Default value for not specified tubes
     int tubeIndex = -1;
-    for (size_t i = 0; i < colorTable->GetNumberOfRows(); i++)
+    for ( size_t i = 0; i < colorTable->GetNumberOfRows(); i++ )
       {
-      if (colorTable->GetValue(i, 0).ToInt() == tubeId)
+      if ( colorTable->GetValue( i, 0 ).ToInt() == tubeId )
         {
         tubeIndex = i;
-        valueToAssign = colorTable->GetValue(tubeIndex, 1).ToDouble();
-        vtkDebugMacro(<<" found in CSV : value = "<<valueToAssign);
+        valueToAssign = colorTable->GetValue( tubeIndex, 1 ).ToDouble();
+        vtkDebugMacro( <<" found in CSV : value = "<<valueToAssign );
         break;
         }
       }
     if (tubeIndex == -1)
       {
-      vtkDebugMacro(<<" not found in the CSV file");
+      vtkDebugMacro( <<" not found in the CSV file" );
       totalNumberOfPoints += currTube->GetPoints().size();
       continue;
       }
 
     // Fill the array of that tube
     size_t numberOfPoints = currTube->GetPoints().size();
-    for (size_t j = totalNumberOfPoints; j < totalNumberOfPoints + numberOfPoints; j++)
+    for ( size_t j = totalNumberOfPoints; j < totalNumberOfPoints + numberOfPoints; j++ )
       {
-      customColorScaleArray->SetValue(j, valueToAssign);
+      customColorScaleArray->SetValue( j, valueToAssign );
       }
     totalNumberOfPoints += numberOfPoints;
     }

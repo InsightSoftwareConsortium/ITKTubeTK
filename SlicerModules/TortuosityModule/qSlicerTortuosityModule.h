@@ -37,11 +37,11 @@ class Q_SLICER_QTMODULES_TORTUOSITY_EXPORT qSlicerTortuosityModule
   : public qSlicerLoadableModule
 {
   Q_OBJECT
-  Q_INTERFACES(qSlicerLoadableModule);
+  Q_INTERFACES( qSlicerLoadableModule );
 
 public:
   typedef qSlicerLoadableModule Superclass;
-  qSlicerTortuosityModule(QObject *parent=0);
+  qSlicerTortuosityModule( QObject *parent=0 );
   virtual ~qSlicerTortuosityModule();
 
   virtual QString helpText() const;
@@ -50,7 +50,7 @@ public:
   virtual QIcon icon() const;
   virtual QStringList categories() const;
   virtual QStringList dependencies() const;
-  qSlicerGetTitleMacro(QTMODULE_TITLE);
+  qSlicerGetTitleMacro( QTMODULE_TITLE );
 
 protected:
   /// Initialize the module.
@@ -67,8 +67,8 @@ protected:
   QScopedPointer<qSlicerTortuosityModulePrivate> d_ptr;
 
 private:
-  Q_DECLARE_PRIVATE(qSlicerTortuosityModule);
-  Q_DISABLE_COPY(qSlicerTortuosityModule);
+  Q_DECLARE_PRIVATE( qSlicerTortuosityModule );
+  Q_DISABLE_COPY( qSlicerTortuosityModule );
 };
 
 #endif
