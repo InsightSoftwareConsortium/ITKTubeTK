@@ -132,16 +132,27 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "generic.itcl_.*warning"
 
   # gdcm
-  "gdcm*warning*does not define any previously undefined*"
+  "gdcm.*warning.*undefined"
 
   # HDF5
-  "H5*warning*does not define any previously undefined*"
+  "H5.*warning.*undefined"
 
   # svm
-  "LIBSVM*shadows*"
+  "LIBSVM.*shadows"
+  "LIBSVM.*strtok.*unsafe"
+  "LIBSVM.*strdup.*unsafe"
+  "LIBSVM.*fscanf.*unsafe"
+  "LIBSVM.*fopen.*unsafe"
+  "LIBSVM.*sprintf.*unsafe"
+  "LIBSVM.*vsprintf.*unsafe"
+  "LIBSVM.*min.*redefinition"
+  "LIBSVM.*max.*redefinition"
+
+  # cppcheck
+  "Cppcheck.lib.*"
 
   # SlicerExecutionModel
-  "GenerateCLP.cxx*unused function*"
+  "GenerateCLP.cxx*unused"
   "Module*basic_string*dll-interface"
 
   # qt suppressions from vtk...
@@ -186,7 +197,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "[Uu]tilities.vxl"
   "[Uu]tilities.itktiff"
   "[Cc]ore.[Cc]ommon.[Ii]nclude.itkImageRegionConstIteratorWithIndex.hxx*assuming signed overflow does not occur"
-  "SetRotationMatrix*deprecated"
+  "SetRotationMatrix.*deprecated"
   "KWSys*SharedForward*_snprintf"
   "KWSys*SharedForward*strcpy"
   "KWSys*SharedForward*strncpy"
