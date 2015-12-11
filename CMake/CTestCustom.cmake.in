@@ -139,21 +139,21 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
 
   # svm
   "LIBSVM.*shadows"
-  "LIBSVM.*strtok.*unsafe"
-  "LIBSVM.*strdup.*unsafe"
-  "LIBSVM.*fscanf.*unsafe"
-  "LIBSVM.*fopen.*unsafe"
-  "LIBSVM.*sprintf.*unsafe"
-  "LIBSVM.*vsprintf.*unsafe"
+  "LIBSVM.*strtok"
+  "LIBSVM.*strdup"
+  "LIBSVM.*fscanf"
+  "LIBSVM.*fopen."
+  "LIBSVM.*sprintf"
+  "LIBSVM.*vsprintf"
   "LIBSVM.*min.*redefinition"
   "LIBSVM.*max.*redefinition"
 
   # cppcheck
-  "Cppcheck.lib.*"
+  "[Cc]ppcheck.[Ll]ib.*"
 
   # SlicerExecutionModel
-  "GenerateCLP.cxx*unused"
-  "Module*basic_string*dll-interface"
+  "GenerateCLP.cxx.*unused"
+  "Module.*basic_string.*dll-interface"
 
   # qt suppressions from vtk...
   # Some Slicer dashboards include building bits of Qt which produce lots of
