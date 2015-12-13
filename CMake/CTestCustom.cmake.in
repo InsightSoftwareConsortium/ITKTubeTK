@@ -93,7 +93,6 @@ set( CTEST_CUSTOM_ERROR_EXCEPTION
 
 set( CTEST_CUSTOM_WARNING_EXCEPTION
   ${CTEST_CUSTOM_WARNING_EXCEPTION}
-  #"vtkparse.tab.c"
   "Microsoft SDKs."
   "VC.include."
 
@@ -150,7 +149,12 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "LIBSVM.*max.*redefinition"
 
   # cppcheck
-  "[Cc]ppcheck.[Ll]ib.*"
+  "[Cc]ppcheck.[Ll]ib"
+  "[Cc]ppcheck.[Tt]inyxml2"
+  "[Cc]ppcheck.[Cc]li"
+
+  # KWStyle
+  "KWStyle.[Uu]tilities.[Bb]oost.[Xx]pressive"
 
   # SlicerExecutionModel
   "GenerateCLP.cxx.*unused"
@@ -233,8 +237,9 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "DCMTK.(ofstd|dcmdata|dcmjpls|dcmnet|dcmimage|dcmimgle|dcmpstat|dcmqrdb).(lib|include|apps).*conversion from '(size_t|SOCKET)' to '.*', possible loss of data"
 
   # CTK
-  "CTK*ErrorLogFDMessageHandler*ignoring return value"
-  "CTK*TransferFunctionBars*use of old-style cast"
+  "CTK.*ErrorLogFDMessageHandler.*ignoring return value"
+  "CTK.*TransferFunctionBars.*use of old-style cast"
+  "CTK.*unused variable"
 
   # Libs/OpenIGTLink
   "(OpenIGTLink|openigtlink).[Ss]ource.igtl"
@@ -307,4 +312,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
 
   # Git
   "HEAD is now"
+
+  # Gcc
+  "unrecognized command line option.*no-unused-local-typedefs"
   )
