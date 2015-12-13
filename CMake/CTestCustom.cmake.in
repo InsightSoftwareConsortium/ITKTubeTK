@@ -161,6 +161,9 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "GenerateCLP.cxx.*unused"
   "[Ss]licer[Ee]xecution[Mm]odel.*Module.*std.*dll-interface"
 
+  # Slicer
+  "Slicer.CMake.SlicerMacroConfigureGenericCxxModuleTests.*(if)"
+
   # ImageViewer
   "[Ii]mage[Vv]iewer.*sprintf.*unsafe"
 
