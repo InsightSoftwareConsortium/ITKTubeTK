@@ -147,6 +147,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "LIBSVM.*vsprintf"
   "LIBSVM.*min.*redefinition"
   "LIBSVM.*max.*redefinition"
+  "LIBSVM.*previous declaration is here"
 
   # cppcheck
   "[Cc]ppcheck.[Ll]ib"
