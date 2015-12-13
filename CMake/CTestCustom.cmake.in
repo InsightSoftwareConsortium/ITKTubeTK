@@ -205,7 +205,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "[Uu]tilities.gdcm"
   "[Uu]tilities.vxl"
   "[Uu]tilities.itktiff"
-  "[Cc]ore.[Cc]ommon.[Ii]nclude.itkImageRegionConstIteratorWithIndex.hxx*assuming signed overflow does not occur"
+  "[Cc]ore.[Cc]ommon.[Ii]nclude.itkImageRegionConstIteratorWithIndex.hxx.*assuming signed overflow does not occur"
   "SetRotationMatrix.*deprecated"
   "KWSys.*SharedForward.*_snprintf"
   "KWSys.*SharedForward.*strcpy"
