@@ -144,6 +144,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "LIBSVM.*fscanf"
   "LIBSVM.*fopen."
   "LIBSVM.*sprintf"
+  "LIBSVM.*sscanf"
   "LIBSVM.*vsprintf"
   "LIBSVM.*min.*redefinition"
   "LIBSVM.*max.*redefinition"
@@ -153,7 +154,10 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
 
   # SlicerExecutionModel
   "GenerateCLP.cxx.*unused"
-  "Module.*basic_string.*dll-interface"
+  "[Ss]licer[Ee]xecution[Mm]odel.*Module.*std.*dll-interface"
+
+  # ImageViewer
+  "[Ii]mage[Vv]iewer.*sprintf.*unsafe"
 
   # qt suppressions from vtk...
   # Some Slicer dashboards include building bits of Qt which produce lots of
@@ -198,12 +202,12 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "[Uu]tilities.itktiff"
   "[Cc]ore.[Cc]ommon.[Ii]nclude.itkImageRegionConstIteratorWithIndex.hxx*assuming signed overflow does not occur"
   "SetRotationMatrix.*deprecated"
-  "KWSys*SharedForward*_snprintf"
-  "KWSys*SharedForward*strcpy"
-  "KWSys*SharedForward*strncpy"
-  "KWSys*SharedForward*strcat"
-  "KWSys*SharedForward*putenv"
-  "KWSys*SharedForward*getenv"
+  "KWSys.*SharedForward.*_snprintf"
+  "KWSys.*SharedForward.*strcpy"
+  "KWSys.*SharedForward.*strncpy"
+  "KWSys.*SharedForward.*strcat"
+  "KWSys.*SharedForward.*putenv"
+  "KWSys.*SharedForward.*getenv"
 
   # VTK suppressions
   "vtkfreetype"
