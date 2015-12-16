@@ -141,7 +141,8 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "LIBSVM.*strtok"
   "LIBSVM.*strdup"
   "LIBSVM.*fscanf"
-  "LIBSVM.*fopen."
+  "LIBSVM.*fopen"
+  "LIBSVM.*strcpy"
   "LIBSVM.*sprintf"
   "LIBSVM.*sscanf"
   "LIBSVM.*vsprintf"
@@ -151,15 +152,18 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
 
   # cppcheck
   "[Cc]ppcheck.[Ll]ib"
-  "[Cc]ppcheck.[Tt]inyxml2"
+  "[Cc]ppcheck.[Ee]xternals"
   "[Cc]ppcheck.[Cc]li"
 
   # KWStyle
   "KWStyle.[Uu]tilities.[Bb]oost.[Xx]pressive"
+  "KWStyle.kwStyle.cxx.*not used"
 
   # SlicerExecutionModel
   "GenerateCLP.cxx.*unused"
-  "[Ss]licer[Ee]xecution[Mm]odel.*Module.*std.*dll-interface"
+  "[Ss]licer[Ee]xecution[Mm]odel.*Module.*dll-interface"
+  "[Ss]licer[Ee]xecution[Mm]odel.*Module.*conversion"
+  "[Ss]licer[Ee]xecution[Mm]odel.*GenerateCLP.*conversion"
 
   # Slicer
   "Slicer.CMake.SlicerMacroConfigureGenericCxxModuleTests.*(if)"
