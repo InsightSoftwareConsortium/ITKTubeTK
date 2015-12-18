@@ -42,6 +42,15 @@
       <default>false</default>
       <longflag>extractRadius</longflag>
     </boolean>
+    <image>
+      <name>radiusImage</name>
+      <label>Radius Image</label>
+      <longflag>radiusImage</longflag>
+      <flag>R</flag>
+      <description>Original Image to extract radius</description>
+      <channel>input</channel>
+      <default></default>
+    </image>
   </parameters>
   <parameters advanced="true">
     <label>Algorithm Parameters</label>
@@ -67,14 +76,14 @@
       <label>Number of Iterations</label>
       <description>Maximum number of optimizer iterations. Only used with Gradient Descent and Regular Step Gradient Descent optimizers</description>
       <longflag>numberOfIterations</longflag>
-      <default>1000</default>
+      <default>2000</default>
     </integer>
     <double>
       <name>StepLengthFactor</name>
       <label>Step Length Factor</label>
       <description>Optimizer Step Size factor. Only used with Iterate Neighborhood and Regular Step Gradient Descent optimizers</description>
       <longflag>stepLengthFactor</longflag>
-      <default>1.0</default>
+      <default>0.1</default>
     </double>
     <double>
       <name>StepLengthRelax</name>

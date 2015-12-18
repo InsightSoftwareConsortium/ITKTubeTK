@@ -37,6 +37,7 @@
 #include "itkGroupSpatialObject.h"
 #include "itkSpatialObjectWriter.h"
 #include "itktubeRadiusExtractor2.h"
+#include "itkBinaryThresholdImageFilter.h"
 
 #include "itkSpeedFunctionToPathFilter.h"
 #include "itkSpeedFunctionPathInformation.h"
@@ -75,6 +76,8 @@ int DoIt( int argc, char * argv[] )
   typedef itk::VesselTubeSpatialObjectPoint< DimensionT > TubePointType;
 
   timeCollector.Start( "Load data" );
+
+  //Read input Image
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputImage.c_str() );
   try
@@ -93,6 +96,24 @@ int DoIt( int argc, char * argv[] )
 
   typename ImageType::Pointer speed = reader->GetOutput();
   speed->DisconnectPipeline();
+
+  //Read radius extraction Image
+  reader->SetFileName( radiusImage.c_str() );
+  try
+    {
+    reader->Update();
+    }
+  catch( itk::ExceptionObject & err )
+    {
+    std::stringstream out;
+    out << "ExceptionObject caught !" << std::endl;
+    out << err << std::endl;
+    tube::ErrorMessage( out.str() );
+    timeCollector.Stop( "Load data" );
+    return EXIT_FAILURE;
+    }
+
+  typename ImageType::Pointer radiusExtractorInput = reader->GetOutput();
 
   timeCollector.Stop( "Load data" );
   progressReporter.Report( 0.1 );
@@ -167,7 +188,7 @@ int DoIt( int argc, char * argv[] )
   pathFilter->SetTerminationValue( TerminationValue );
   pathFilter->AddPathInformation( pathInfo );
 
-  //Set Optimizer
+  // Set Optimizer
   if( Optimizer == "Iterate Neighborhood" )
     {
     // Create IterateNeighborhoodOptimizer
@@ -267,7 +288,7 @@ int DoIt( int argc, char * argv[] )
       continue;
       }
 
-    //Output centerline in TRE file
+    // Output centerline in TRE file
     typename TubeType::PointListType tubePointList;
     typename PathType::VertexListType * vertexList = path->GetVertexList();
 
@@ -291,18 +312,18 @@ int DoIt( int argc, char * argv[] )
     pTube->SetSpacing( tubeSpacing );
     pTube->SetId( i );
 
-    //Extract Radius
+    // Extract Radius
     if( ExtractRadius )
       {
       typedef itk::tube::RadiusExtractor2<ImageType> RadiusExtractorType;
       typename RadiusExtractorType::Pointer radiusExtractor
         = RadiusExtractorType::New();
-      radiusExtractor->SetInputImage( speed );
-      radiusExtractor->SetRadiusStart( 0.1 );
-      radiusExtractor->SetRadiusMin( 0.1 );
-      radiusExtractor->SetRadiusMax( 5.0 );
-      radiusExtractor->SetRadiusStep( 0.5 );
-      radiusExtractor->SetRadiusTolerance( 0.25 );
+      radiusExtractor->SetInputImage( radiusExtractorInput );
+      radiusExtractor->SetRadiusStart( 1.0 );
+      radiusExtractor->SetRadiusMin( 0.2 );
+      radiusExtractor->SetRadiusMax( 6.0 );
+      radiusExtractor->SetRadiusStep( 0.05 );
+      radiusExtractor->SetRadiusTolerance( 0.025 );
       radiusExtractor->SetDebug( false );
       radiusExtractor->ExtractRadii( pTube );
       }
