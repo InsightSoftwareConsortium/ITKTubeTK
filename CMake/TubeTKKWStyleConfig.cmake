@@ -48,8 +48,7 @@ option( KWSTYLE_USE_MSVC_FORMAT
 mark_as_advanced( KWSTYLE_USE_MSVC_FORMAT )
 
 set( KWSTYLE_DASHBOARD_ARGUMENTS
-  -gcc -v -qv
-  -dart ${TubeTK_BINARY_DIR} -1 0
+  -dart ${TubeTK_BINARY_DIR} -1 1
   -xml ${TubeTK_BINARY_DIR}/KWStyle.kws.xml
   -o ${TubeTK_BINARY_DIR}/KWStyle.Overwrite.txt
   -R -D ${TubeTK_BINARY_DIR}/KWStyle.Files.txt )
