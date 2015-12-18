@@ -23,27 +23,25 @@
 
 set( CTEST_BUILD_NAME "${SITE_BUILD_NAME}-BuildTest-Experimental" )
 
-if( BUILD_DOCUMENTATION )
+if( SITE_EXPERIMENTAL_BUILD_DOCUMENTATION )
+  set( BUILD_DOCUMENTATION ON )
   set( TubeTK_USE_DOXYGEN ON )
-else( BUILD_DOCUMENTATION )
+else( SITE_EXPERIMENTAL_BUILD_DOCUMENTATION )
+  set( BUILD_DOCUMENTATION OFF )
   set( TubeTK_USE_DOXYGEN OFF )
-endif( BUILD_DOCUMENTATION )
+endif( SITE_EXPERIMENTAL_BUILD_DOCUMENTATION )
 
-#if( SITE_EXPERIMENTAL_CPPCHECK )
-#  set( TubeTK_USE_CPPCHECK ON )
-#  set( USE_SYSTEM_CPPCHECK ON )
-#else( SITE_EXPERIMENTAL_CPPCHECK )
-#  set( TubeTK_USE_CPPCHECK OFF )
-#  set( USE_SYSTEM_CPPCHECK OFF )
-#endif( SITE_EXPERIMENTAL_CPPCHECK )
+if( SITE_EXPERIMENTAL_CPPCHECK )
+  set( TubeTK_USE_CPPCHECK ON )
+else( SITE_EXPERIMENTAL_CPPCHECK )
+  set( TubeTK_USE_CPPCHECK OFF )
+endif( SITE_EXPERIMENTAL_CPPCHECK )
 
-#if( SITE_EXPERIMENTAL_KWSTYLE )
-#  set( TubeTK_USE_KWSTYLE ON )
-#  set( USE_SYSTEM_KWSTYLE ON )
-#else( SITE_EXPERIMENTAL_KWSTYLE )
-#  set( TubeTK_USE_KWSTYLE OFF )
-#  set( USE_SYSTEM_KWSTYLE OFF )
-#endif( SITE_EXPERIMENTAL_KWSTYLE )
+if( SITE_EXPERIMENTAL_KWSTYLE )
+  set( TubeTK_USE_KWSTYLE ON )
+else( SITE_EXPERIMENTAL_KWSTYLE )
+  set( TubeTK_USE_KWSTYLE OFF )
+endif( SITE_EXPERIMENTAL_KWSTYLE )
 
 if( SITE_EXPERIMENTAL_MEMORY )
   set( TubeTK_USE_VALGRIND ON )
@@ -52,11 +50,13 @@ else( SITE_EXPERIMENTAL_MEMORY )
 endif( SITE_EXPERIMENTAL_MEMORY )
 
 set( BUILD_TESTING ON )
+
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/InitCMakeCache.cmake.in
   ${TubeTK_BINARY_DIR}/InitCMakeCache.cmake IMMEDIATE @ONLY )
 set( CTEST_NOTES_FILES "${TubeTK_BINARY_DIR}/InitCMakeCache.cmake" )
 
 ctest_start( "Experimental" )
+
 if( SITE_EXPERIMENTAL_BUILD )
   ctest_configure( BUILD "${TubeTK_BINARY_DIR}"
     SOURCE "${TubeTK_SOURCE_DIR}"
@@ -88,7 +88,6 @@ if( SITE_EXPERIMENTAL_PACKAGE )
   execute_process( COMMAND ${CMAKE_COMMAND}
       --build ${TubeTK_BINARY_DIR}/TubeTK-build
       --target package
-      --config ${CTEST_CONFIGURATION_TYPE}
     WORKING_DIRECTORY ${TubeTK_BINARY_DIR}/TubeTK-build
     OUTPUT_STRIP_TRAILING_WHITESPACE
     OUTPUT_FILE CPackOutputFiles.txt )
@@ -117,11 +116,10 @@ if( SITE_EXPERIMENTAL_KWSTYLE )
     SOURCE "${TubeTK_SOURCE_DIR}"
     OPTIONS "-C${TubeTK_BINARY_DIR}/InitCMakeCache.cmake" )
   ctest_read_custom_files( "${TubeTK_BINARY_DIR}" )
+  set( CTEST_BUILD_TARGET "StyleCheck" )
   execute_process( COMMAND ${CMAKE_COMMAND}
-      --build ${TubeTK_BINARY_DIR}/TubeTK-build
-      --target StyleCheck
-      --config ${CTEST_CONFIGURATION_TYPE}
-    WORKING_DIRECTORY ${TubeTK_BINARY_DIR}/TubeTK-build )
+    --build ${TubeTK_BINARY_DIR}/TubeTK-build
+    --target StyleCheck )
   ctest_submit()
 endif( SITE_EXPERIMENTAL_KWSTYLE )
 

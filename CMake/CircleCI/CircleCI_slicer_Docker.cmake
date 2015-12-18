@@ -50,7 +50,7 @@ set( TubeTK_BINARY_DIR
 # Boost
 set( TubeTK_USE_BOOST OFF )
 #if TubeTK_USE_BOOST is ON, you need to fix the following line
-set( BOOST_ROOT "/usr/include/boost" )
+# set( BOOST_ROOT "/usr/include/boost" )
 
 # Slicer
 set( TubeTK_BUILD_USING_SLICER ON )
@@ -60,7 +60,7 @@ set( Slicer_DIR "/usr/src/Slicer-Release/Slicer-build" )
 # ArrayFire
 set( TubeTK_USE_GPU_ARRAYFIRE OFF )
 #if TubeTK_USE_GPU_ARRAYFIRE is ON, you need to fix the following line
-set( ArrayFire_DIR "/usr/local" )
+# set( ArrayFire_DIR "/usr/local" )
 
 set( TubeTK_BUILD_APPLICATIONS ON )
 
