@@ -1,21 +1,22 @@
 /*=========================================================================
-
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itkRegionFromReferenceImageFilter.h,v $
-  Language:  C++
-  Date:      $Date: 2009-04-25 12:27:20 $
-  Version:   $Revision: 1.10 $
-
-  Copyright (c) Insight Software Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-     PURPOSE.  See the above copyright notices for more information.
-
-=========================================================================*/
-#ifndef __itkRegionFromReferenceImageFilter_h
-#define __itkRegionFromReferenceImageFilter_h
+ *
+ *  Copyright Insight Software Consortium
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0.txt
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+*=========================================================================*/
+#ifndef __itktubeRegionFromReferenceImageFilter_h
+#define __itktubeRegionFromReferenceImageFilter_h
 
 #include "itkExtractImageFilter.h"
 
@@ -27,12 +28,12 @@ namespace tube {
  * \brief Decrease the image size by cropping the image by an itk::Size at
  * both the upper and lower bounds of the largest possible region.
  *
- * RegionFromReferenceImageFilter changes the image boundary of an image by removing 
- * pixels outside the target region.  The target region is not specified in
- * advance, but calculated in BeforeThreadedGenerateData().
+ * RegionFromReferenceImageFilter changes the image boundary of an image by
+ * removing pixels outside the target region.   The target region is not
+ * specified in advance, but calculated in BeforeThreadedGenerateData().
  *
  * This filter uses ExtractImageFilter to perform the cropping.
- * 
+ *
  * \ingroup GeometricTransforms
  */
 template <class TInputImage, class TOutputImage=TInputImage>
@@ -47,7 +48,7 @@ public:
   typedef SmartPointer<const Self>                      ConstPointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);  
+  itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(RegionFromReferenceImageFilter, ExtractImageFilter);

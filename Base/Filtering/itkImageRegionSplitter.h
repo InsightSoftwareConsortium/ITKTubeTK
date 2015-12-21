@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
- *=========================================================================*/
+*=========================================================================*/
 #ifndef __itkImageRegionSplitter_h
 #define __itkImageRegionSplitter_h
 
@@ -85,7 +85,7 @@ public:
 
   /** Dimension of the image available at run time. */
   static unsigned int GetImageDimension()
-  { return VImageDimension; }
+    { return VImageDimension; }
 
   /** Index typedef support. An index is used to access pixel values. */
   typedef Index< VImageDimension >           IndexType;
@@ -121,7 +121,7 @@ protected:
                                          const IndexValueType regionIndex[],
                                          const SizeValueType regionSize[],
                                          unsigned int requestedNumber) const ITK_OVERRIDE
-  {
+    {
     // this function adapts the legecy method, defined in this class
     // be used by the ImageRegionSplitterBase.
     IndexType idx;
@@ -132,15 +132,14 @@ protected:
 
     Self *nonconst_this = const_cast<Self*>(this);
     return nonconst_this->GetNumberOfSplits(region, requestedNumber);
-
-  }
+    }
 
   virtual unsigned int GetSplitInternal(unsigned int dim,
                                 unsigned int i,
                                 unsigned int numberOfPieces,
                                 IndexValueType regionIndex[],
                                 SizeValueType regionSize[]) const ITK_OVERRIDE
-  {
+    {
     // this function adapts the legecy method, defined in this class
     // be used by the ImageRegionSplitterBase.
     IndexType idx;
@@ -158,7 +157,7 @@ protected:
       regionSize[d] = region.GetSize(d);
       }
     return numberOfPieces;
-  }
+    }
 
   virtual void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
 

@@ -1,19 +1,20 @@
 /*=========================================================================
-
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itktubePadImageFilter.h,v $
-  Language:  C++
-  Date:      $Date: 2009-01-28 18:14:36 $
-  Version:   $Revision: 1.7 $
-
-  Copyright (c) Insight Software Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-     PURPOSE.  See the above copyright notices for more information.
-
-=========================================================================*/
+ *
+ *  Copyright Insight Software Consortium
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0.txt
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+*=========================================================================*/
 #ifndef __itktubePadImageFilter_h
 #define __itktubePadImageFilter_h
 
@@ -25,28 +26,30 @@ namespace itk {
 namespace tube {
 
 /** \class PadImageFilter
- * \brief Pad two images with zeros to make them suitable for a convolution in the
- * frequency domain.
+ * \brief Pad two images with zeros to make them suitable for a convolution
+ * in the frequency domain.
  *
- * The requires two input images. The first one is supposed to be the image to convolve
- * and the second one the kernel.
+ * The requires two input images. The first one is supposed to be the image
+ * to convolve and the second one the kernel.
  *
- * The filter pad with zeros the first image by the size of the second image. The second image
- * is centered and padded with zeros to have the same size than the first output image.
+ * The filter pad with zeros the first image by the size of the second image.
+ * The second image is centered and padded with zeros to have the same size
+ * than the first output image.
  * After the transform, both images have the same LargestPossibleRegion.
  *
  * The option PadToPowerOfTwo can be set to true to force the size of the
- * images be a power of two - if the size of the padded image is 274 without this option, it
- * would be increased to 512 when PadToPowerOfTwo is true.
+ * images be a power of two - if the size of the padded image is 274 without
+ * this option, it would be increased to 512 when PadToPowerOfTwo is true.
  * This option is makes the images usable with vnl's implementation of FFT.
  * PadToPowerOfTwo is false by default.
- * 
+ *
  * \author Gaetan Lehmann
  *
- * \sa FFTShiftImageFilter NormalizeToConstantImageFilter FFTRealToComplexConjugateImageFilter
+ * \sa FFTShiftImageFilter NormalizeToConstantImageFilter
+ *   FFTRealToComplexConjugateImageFilter
  */
 template<class TInputImage, class TOutputImage=TInputImage>
-class ITK_EXPORT PadImageFilter : 
+class ITK_EXPORT PadImageFilter :
     public ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
@@ -80,7 +83,7 @@ public:
                       TOutputImage::ImageDimension);
 
   /** Standard New method. */
-  itkNewMacro(Self);  
+  itkNewMacro(Self);
 
   /** Runtime information support. */
   itkTypeMacro( PadImageFilter, ImageToImageFilter );
@@ -94,7 +97,7 @@ public:
     {
     if( v )
       {
-      this->SetGreatestPrimeFactor( 2 );   
+      this->SetGreatestPrimeFactor( 2 );
       }
     else
       {
