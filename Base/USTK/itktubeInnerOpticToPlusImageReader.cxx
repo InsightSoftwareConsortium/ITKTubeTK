@@ -89,7 +89,7 @@ InnerOpticToPlusImageReader
   SizeValueType yMin = NumericTraits< SizeValueType >::max();
   SizeValueType xMax = NumericTraits< SizeValueType >::min();
   SizeValueType yMax = NumericTraits< SizeValueType >::min();
-  for( int ii = 0 ; ii < MAX_US_SCAN_CROP_POLYGON_PTS; ++ii )
+  for( int ii = 0; ii < MAX_US_SCAN_CROP_POLYGON_PTS; ++ii )
     {
     double xReal;
     double yReal;
@@ -137,11 +137,11 @@ InnerOpticToPlusImageReader
         }
       }
     EncapsulateMetaData< std::string >( metaDataDict,
-                                        keyPrefix.str() + "_ProbeToTrackerTransform",
-                                        value.str() );
+      keyPrefix.str() + "_ProbeToTrackerTransform",
+      value.str() );
     EncapsulateMetaData< std::string >( metaDataDict,
-                                        keyPrefix.str() + "_ProbeToTrackerTransformStatus",
-                                        "OK" );
+      keyPrefix.str() + "_ProbeToTrackerTransformStatus",
+      "OK" );
     value.str( "" );
     value << syncRecord->getTimestamp();
     EncapsulateMetaData< std::string >( metaDataDict,
