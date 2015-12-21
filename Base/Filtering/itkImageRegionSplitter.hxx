@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
- *=========================================================================*/
+*=========================================================================*/
 #ifndef __itkImageRegionSplitter_hxx
 #define __itkImageRegionSplitter_hxx
 
@@ -47,8 +47,10 @@ ImageRegionSplitter< VImageDimension >
 
   // determine the actual number of pieces that will be generated
   const SizeValueType range = regionSize[splitAxis];
-  const unsigned int valuesPerPiece = Math::Ceil< unsigned int >(range / (double)requestedNumber);
-  const unsigned int maxPieceUsed = Math::Ceil< unsigned int >(range / (double)valuesPerPiece) - 1;
+  const unsigned int valuesPerPiece =
+    Math::Ceil< unsigned int >(range / (double)requestedNumber);
+  const unsigned int maxPieceUsed =
+    Math::Ceil< unsigned int >(range / (double)valuesPerPiece) - 1;
 
   return maxPieceUsed + 1;
 }
