@@ -54,13 +54,11 @@ FindCenterLines( typename itk::Image< TPixel, VDimension >::Pointer input )
   typedef itk::Image< TPixel, VDimension >                        ImageType;
   typedef itk::BinaryThinningImageFilter< ImageType, ImageType >  FilterType;
 
-  typename ImageType::Pointer output = input;
   typename FilterType::Pointer filter = FilterType::New();
 
   filter->SetInput( input );
   filter->Update();
-  output = filter->GetOutput();
-  return output;
+  return filter->GetOutput();
 }
 
 template< class TPixel, unsigned int VDimension >
@@ -74,7 +72,6 @@ ThresholdVolume( typename itk::Image< TPixel, VDimension >::Pointer &input,
   typedef itk::Image< TPixel, VDimension >                        ImageType;
   typedef itk::BinaryThresholdImageFilter< ImageType, ImageType > ThresholdType;
 
-  typename ImageType::Pointer output = input;
   typename ThresholdType::Pointer threshold = ThresholdType::New();
 
   threshold->SetInput( input );
@@ -89,7 +86,7 @@ ThresholdVolume( typename itk::Image< TPixel, VDimension >::Pointer &input,
 
 template< class TPixel, unsigned int VDimension >
 void
-MorphologyVolume( typename itk::Image< TPixel, VDimension >::Pointer &input, int mode,
+ApplyDilateMorphologyFilter( typename itk::Image< TPixel, VDimension >::Pointer &input,
                   float radius,
                   float foregroundValue,
                   float backgroundValue )
@@ -100,44 +97,20 @@ MorphologyVolume( typename itk::Image< TPixel, VDimension >::Pointer &input, int
   ball.SetRadius( 1 );
   ball.CreateStructuringElement();
 
-  typename ImageType::Pointer output = input;
-
   typedef itk::ErodeObjectMorphologyImageFilter
     < ImageType, ImageType, BallType >       ErodeFilterType;
   typedef itk::DilateObjectMorphologyImageFilter
     < ImageType, ImageType, BallType >       DilateFilterType;
 
-  switch ( mode )
+  for ( int r = 0; r<radius; r++ )
     {
-    case 0:
-      {
-      for ( int r = 0; r<radius; r++ )
-        {
-        typename ErodeFilterType::Pointer filter =
-          ErodeFilterType::New();
-        filter->SetBackgroundValue( backgroundValue );
-        filter->SetKernel( ball );
-        filter->SetObjectValue( foregroundValue );
-        filter->SetInput( input );
-        filter->Update();
-        input = filter->GetOutput();
-        }
-      break;
-      }
-    case 1:
-      {
-      for ( int r = 0; r<radius; r++ )
-        {
-        typename DilateFilterType::Pointer filter =
-          DilateFilterType::New();
-        filter->SetKernel( ball );
-        filter->SetObjectValue( foregroundValue );
-        filter->SetInput( input );
-        filter->Update();
-        input = filter->GetOutput();
-        }
-      break;
-      }
+    typename DilateFilterType::Pointer filter =
+      DilateFilterType::New();
+    filter->SetKernel( ball );
+    filter->SetObjectValue( foregroundValue );
+    filter->SetInput( input );
+    filter->Update();
+    input = filter->GetOutput();
     }
   return;
 }
@@ -193,8 +166,6 @@ SaveVolumeAsShort( typename itk::Image< TPixel, VDimension >::Pointer input,
   writer->Write();
 }
 
-//Do it
-
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
@@ -241,18 +212,17 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start( "Find Center Lines" );
   tube::InfoMessage( "Finding Center Lines..." );
-  typename ImageType::Pointer centerLines;
-  centerLines = FindCenterLines< TPixel, VDimension >( image );
+  typename ImageType::Pointer centerLines =
+    FindCenterLines< TPixel, VDimension >( image );
   timeCollector.Stop( "Find Center Lines" );
   progress = 0.65;
   progressReporter.Report( progress );
   timeCollector.Start( "Threshold and Mathematical Morphology" );
   tube::InfoMessage( "Thresholding..." );
   ThresholdVolume< TPixel, VDimension >( image, 0, gap, 0, 255 );
-  MorphologyVolume< TPixel, VDimension >( image, 1, notVesselWidth, 255, 0 );
-  typename ImageType::Pointer dialatedImage;
-  dialatedImage = image;
-  MorphologyVolume< TPixel, VDimension >( image, 1, notVesselWidth, 255, 0 );
+  ApplyDilateMorphologyFilter< TPixel, VDimension >( image, notVesselWidth, 255, 0 );
+  typename ImageType::Pointer dialatedImage = image;
+  ApplyDilateMorphologyFilter< TPixel, VDimension >( image, notVesselWidth, 255, 0 );
   tube::InfoMessage( "Creating Not-Vessel Mask..." );
   AddVolume< TPixel, VDimension >( image, dialatedImage, 1, -1 );
   if ( !notVesselMask.empty() )
@@ -271,7 +241,6 @@ int DoIt( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-// Main
 int main( int argc, char * argv[] )
 {
   try
