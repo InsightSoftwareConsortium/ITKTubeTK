@@ -77,7 +77,6 @@ private:
 };
 
 
-
 /** \class MarkDuplicateFramesInvalidImageFilter
  *
  * \brief Detect duplicate frames and mark invalid in the Plus metadata.
@@ -165,8 +164,7 @@ private:
   const MetaDataDictionary * m_InputMetaDataDictionary;
 
   friend class MarkDuplicateFramesInvalidImageFilterThreader< Self >;
-  typedef MarkDuplicateFramesInvalidImageFilterThreader< Self >
-    ThreaderType;
+  typedef MarkDuplicateFramesInvalidImageFilterThreader< Self > ThreaderType;
   typename ThreaderType::Pointer m_Threader;
 
 }; // End class MarkDuplicateFramesInvalidImageFilter
