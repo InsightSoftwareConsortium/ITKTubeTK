@@ -47,7 +47,6 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
   this->m_ParametersStep.Fill( 1.0 );
 }
 
-
 template< class TCostFunction, unsigned int VNumberOfParameters >
 void
 SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
@@ -73,7 +72,8 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
 
 
 template< class TCostFunction, unsigned int VNumberOfParameters >
-typename SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >::ParametersType
+typename SingleValuedCostFunctionImageSource< TCostFunction,
+  VNumberOfParameters >::ParametersType
 SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
 ::GetParametersLowerBound() const
 {
@@ -106,7 +106,8 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
 
 
 template< class TCostFunction, unsigned int VNumberOfParameters >
-typename SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >::ParametersType
+typename SingleValuedCostFunctionImageSource< TCostFunction,
+  VNumberOfParameters >::ParametersType
 SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
 ::GetParametersUpperBound() const
 {
@@ -139,7 +140,8 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
 
 
 template< class TCostFunction, unsigned int VNumberOfParameters >
-typename SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >::ParametersType
+typename SingleValuedCostFunctionImageSource< TCostFunction,
+  VNumberOfParameters >::ParametersType
 SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
 ::GetParametersStep() const
 {
@@ -165,8 +167,8 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
     {
     origin[ii] = this->m_ParametersLowerBound[ii];
     spacing[ii] = this->m_ParametersStep[ii];
-    size[ii] = static_cast< SizeValueType >( (this->m_ParametersUpperBound[ii] - this->m_ParametersLowerBound[ii]) /
-      this->m_ParametersStep[ii] ) + 1;
+    size[ii] = static_cast< SizeValueType >( (this->m_ParametersUpperBound[ii] -
+      this->m_ParametersLowerBound[ii]) / this->m_ParametersStep[ii] ) + 1;
     }
   typename OutputImageType::RegionType region;
   region.SetIndex( index );
@@ -196,7 +198,8 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
 template< class TCostFunction, unsigned int VNumberOfParameters >
 void
 SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
-::ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId )
+::ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread,
+  ThreadIdType threadId )
 {
   OutputImageType * outputImage = this->GetOutput(0);
 

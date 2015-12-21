@@ -83,12 +83,12 @@ public:
     const LDAMatrixType & _ldaMatrix, const ValueListType & _whitenMeans,
     const ValueListType & _whitenStdDevs );
 
-  void SetNumberOfPCABasisToUseAsFeatures( unsigned int 
+  void SetNumberOfPCABasisToUseAsFeatures( unsigned int
     numberOfPCABasisToUseAsFeatures );
 
   unsigned int GetNumberOfPCABasisToUseAsFeatures( void ) const;
 
-  void SetNumberOfLDABasisToUseAsFeatures( unsigned int 
+  void SetNumberOfLDABasisToUseAsFeatures( unsigned int
     numberOfLDABasisToUseAsFeatures );
 
   unsigned int GetNumberOfLDABasisToUseAsFeatures( void ) const;

@@ -27,7 +27,6 @@ limitations under the License.
 #include "itktubeMetaClassPDF.h"
 #include "metaUtils.h"
 
-
 namespace itk
 {
 

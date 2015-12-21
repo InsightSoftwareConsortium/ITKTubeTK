@@ -44,8 +44,10 @@ class SingleValuedCostFunctionImageSource
 : public ImageSource< Image< typename TCostFunction::MeasureType, VNumberOfParameters > >
 {
 public:
+  typedef Image< typename TCostFunction::MeasureType, VNumberOfParameters >
+    CostFunctionImageType;
+
   typedef SingleValuedCostFunctionImageSource                               Self;
-  typedef Image< typename TCostFunction::MeasureType, VNumberOfParameters > CostFunctionImageType;
   typedef ImageSource< CostFunctionImageType >                              Superclass;
   typedef SmartPointer< Self >                                              Pointer;
   typedef SmartPointer< const Self >                                        ConstPointer;
@@ -96,11 +98,14 @@ protected:
 
   virtual void BeforeThreadedGenerateData();
 
-  virtual void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId );
+  virtual void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread,
+    ThreadIdType threadId );
 
 private:
-  SingleValuedCostFunctionImageSource( const SingleValuedCostFunctionImageSource & ); // purposely not implemented
-  void operator=( const SingleValuedCostFunctionImageSource & ); // purposely not implemented
+  SingleValuedCostFunctionImageSource(
+    const SingleValuedCostFunctionImageSource & ); // purposely not implemented
+  void operator=(
+    const SingleValuedCostFunctionImageSource & ); // purposely not implemented
 
   typename CostFunctionType::Pointer m_CostFunction;
 

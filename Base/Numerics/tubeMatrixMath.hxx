@@ -131,7 +131,9 @@ template< class T >
 void
 ComputeRidgeness( const vnl_matrix<T> & H,
   const vnl_vector<T> & D,
-  double & ridgeness, double & roundness, double & curvature,
+  double & ridgeness,
+  double & roundness,
+  double & curvature,
   double & levelness,
   vnl_matrix<T> & HEVect, vnl_vector<T> & HEVal )
 {
@@ -212,7 +214,7 @@ ComputeRidgeness( const vnl_matrix<T> & H,
     {
     levelness = sumv / denom;
     }
-} 
+}
 
 /**
  * Compute eigenvalues and vectors  */

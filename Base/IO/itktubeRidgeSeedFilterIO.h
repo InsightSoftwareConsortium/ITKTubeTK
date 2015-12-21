@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeRidgeSeedFilterIO_H
-#define __itktubeRidgeSeedFilterIO_H
+#ifndef __itktubeRidgeSeedFilterIO_h
+#define __itktubeRidgeSeedFilterIO_h
 
 #include "itktubeMetaRidgeSeed.h"
 
@@ -95,4 +95,4 @@ protected:
 #include "itktubeRidgeSeedFilterIO.hxx"
 #endif
 
-#endif // End !defined(__itktubeRidgeSeedFilterIO_H)
+#endif // End !defined(__itktubeRidgeSeedFilterIO_h)
