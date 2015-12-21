@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubePDFSegmenterIO_H
-#define __itktubePDFSegmenterIO_H
+#ifndef __itktubePDFSegmenterIO_h
+#define __itktubePDFSegmenterIO_h
 
 #include "itktubeMetaClassPDF.h"
 
@@ -95,4 +95,4 @@ protected:
 #include "itktubePDFSegmenterIO.hxx"
 #endif
 
-#endif // End !defined(__itktubePDFSegmenterIO_H)
+#endif // End !defined(__itktubePDFSegmenterIO_h)

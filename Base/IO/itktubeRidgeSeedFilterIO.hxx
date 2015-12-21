@@ -20,9 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+#ifndef __itktubeRidgeSeedFilterIO_hxx
+#define __itktubeRidgeSeedFilterIO_hxx
 
 #include "itktubeRidgeSeedFilterIO.h"
-
 #include "itktubePDFSegmenterIO.h"
 
 namespace itk
@@ -64,7 +65,8 @@ RidgeSeedFilterIO< TImage, TLabelMap >::
 }
 
 template< class TImage, class TLabelMap >
-void RidgeSeedFilterIO< TImage, TLabelMap >::
+void RidgeSeedFilterIO< TImage,
+  TLabelMap >::
 PrintInfo() const
 {
   if( m_RidgeSeedFilter.IsNotNull() )
@@ -78,7 +80,8 @@ PrintInfo() const
 }
 
 template< class TImage, class TLabelMap >
-void RidgeSeedFilterIO< TImage, TLabelMap >::
+void RidgeSeedFilterIO< TImage,
+  TLabelMap >::
 CopyInfo( const RidgeSeedFilterIOType & _filterIO )
 {
   Clear();
@@ -87,7 +90,8 @@ CopyInfo( const RidgeSeedFilterIOType & _filterIO )
 }
 
 template< class TImage, class TLabelMap >
-void RidgeSeedFilterIO< TImage, TLabelMap >::
+void RidgeSeedFilterIO< TImage,
+  TLabelMap >::
 Clear( void )
 {
   m_RidgeSeedFilter = NULL;
@@ -105,7 +109,8 @@ InitializeEssential( const typename
 }
 
 template< class TImage, class TLabelMap >
-void RidgeSeedFilterIO< TImage, TLabelMap >::
+void RidgeSeedFilterIO< TImage,
+  TLabelMap >::
 SetRidgeSeedFilter( const typename
   RidgeSeedFilterType::Pointer & _filter )
 {
@@ -171,9 +176,9 @@ Read( const char * _headerName )
   m_RidgeSeedFilter->SetSeedTolerance( seedReader.GetSeedTolerance() );
   m_RidgeSeedFilter->SetSkeletonize( seedReader.GetSkeletonize() );
 
-  m_RidgeSeedFilter->SetNumberOfPCABasisToUseAsFeatures( 
+  m_RidgeSeedFilter->SetNumberOfPCABasisToUseAsFeatures(
     seedReader.GetNumberOfPCABasisToUseAsFeatures() );
-  m_RidgeSeedFilter->SetNumberOfLDABasisToUseAsFeatures( 
+  m_RidgeSeedFilter->SetNumberOfLDABasisToUseAsFeatures(
     seedReader.GetNumberOfLDABasisToUseAsFeatures() );
 
   m_RidgeSeedFilter->SetBasisValues( seedReader.GetLDAValues() );
@@ -215,9 +220,9 @@ Write( const char * _headerName )
   seedWriter.SetSeedTolerance( m_RidgeSeedFilter->GetSeedTolerance() );
   seedWriter.SetSkeletonize( m_RidgeSeedFilter->GetSkeletonize() );
 
-  seedWriter.SetNumberOfPCABasisToUseAsFeatures( 
+  seedWriter.SetNumberOfPCABasisToUseAsFeatures(
     m_RidgeSeedFilter->GetNumberOfPCABasisToUseAsFeatures() );
-  seedWriter.SetNumberOfLDABasisToUseAsFeatures( 
+  seedWriter.SetNumberOfLDABasisToUseAsFeatures(
     m_RidgeSeedFilter->GetNumberOfLDABasisToUseAsFeatures() );
 
   seedWriter.SetLDAValues( m_RidgeSeedFilter->GetBasisValues() );
@@ -253,3 +258,5 @@ Write( const char * _headerName )
 } // End namespace tube
 
 } // End namespace itk
+
+#endif // __itktubeRidgeSeedFilterIO_hxx

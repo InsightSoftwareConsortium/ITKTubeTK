@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeMetaClassPDF_H
-#define __itktubeMetaClassPDF_H
+#ifndef __itktubeMetaClassPDF_h
+#define __itktubeMetaClassPDF_h
 
 #include "metaImage.h"
 
@@ -63,14 +63,23 @@ public:
     const VectorDoubleType & _binSize,
     float * _elementData = NULL );
 
-  MetaClassPDF( unsigned int _x, unsigned int _y,
-    double _binMinX, double _binMinY,
-    double _binSizeX, double _binSizeY,
+  MetaClassPDF( unsigned int _x,
+    unsigned int _y,
+    double _binMinX,
+    double _binMinY,
+    double _binSizeX,
+    double _binSizeY,
     float * _elementData = NULL );
 
-  MetaClassPDF( unsigned int _x, unsigned int _y, unsigned int _z,
-    double _binMinX, double _binMinY, double _binMinZ,
-    double _binSizeX, double _binSizeY, double _binSizeZ,
+  MetaClassPDF( unsigned int _x,
+    unsigned int _y,
+    unsigned int _z,
+    double _binMinX,
+    double _binMinY,
+    double _binMinZ,
+    double _binSizeX,
+    double _binSizeY,
+    double _binSizeZ,
     float * _elementData = NULL );
 
   ~MetaClassPDF( void );
@@ -178,4 +187,4 @@ protected:
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeMetaClassPDF_H)
+#endif // End !defined(__itktubeMetaClassPDF_h)

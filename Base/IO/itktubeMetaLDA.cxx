@@ -69,8 +69,8 @@ MetaLDA
 }
 
 MetaLDA
-::MetaLDA( unsigned int numberOfPCAToUseAsFeatures, 
-  unsigned int numberOfLDAToUseAsFeatures, 
+::MetaLDA( unsigned int numberOfPCAToUseAsFeatures,
+  unsigned int numberOfLDAToUseAsFeatures,
   const LDAValuesType & ldaValues,
   const LDAMatrixType & ldaMatrix,
   const ValueListType & whitenMeans,
@@ -98,9 +98,9 @@ void MetaLDA
 {
   MetaForm::PrintInfo();
 
-  METAIO_STREAM::cout << "NumberOfPCABasisToUseAsFeatures = " 
+  METAIO_STREAM::cout << "NumberOfPCABasisToUseAsFeatures = "
     << m_NumberOfPCABasisToUseAsFeatures << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "NumberOfLDABasisToUseAsFeatures = " 
+  METAIO_STREAM::cout << "NumberOfLDABasisToUseAsFeatures = "
     << m_NumberOfLDABasisToUseAsFeatures << METAIO_STREAM::endl;
   METAIO_STREAM::cout << "LDAValues = " << m_LDAValues << METAIO_STREAM::endl;
   METAIO_STREAM::cout << "LDAMatrix = " << m_LDAMatrix << METAIO_STREAM::endl;
@@ -124,9 +124,9 @@ void MetaLDA
 ::CopyInfo( const MetaLDA & lda )
 {
   MetaForm::CopyInfo( dynamic_cast< const MetaForm * >( &lda ) );
-  this->SetNumberOfPCABasisToUseAsFeatures( 
+  this->SetNumberOfPCABasisToUseAsFeatures(
     lda.GetNumberOfPCABasisToUseAsFeatures() );
-  this->SetNumberOfLDABasisToUseAsFeatures( 
+  this->SetNumberOfLDABasisToUseAsFeatures(
     lda.GetNumberOfLDABasisToUseAsFeatures() );
   this->SetLDAValues( lda.GetLDAValues() );
   this->SetLDAMatrix( lda.GetLDAMatrix() );
@@ -178,12 +178,12 @@ bool MetaLDA
 }
 
 void MetaLDA
-::SetNumberOfPCABasisToUseAsFeatures( unsigned int 
+::SetNumberOfPCABasisToUseAsFeatures( unsigned int
   numberOfPCABasisToUseAsFeatures )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: SetNumberOfPCABasisToUseAsFeatures" 
+    METAIO_STREAM::cout << "MetaLDA: SetNumberOfPCABasisToUseAsFeatures"
       << METAIO_STREAM::endl;
     }
 
@@ -195,7 +195,7 @@ unsigned int MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: GetNumberOfPCABasisToUseAsFeatures" 
+    METAIO_STREAM::cout << "MetaLDA: GetNumberOfPCABasisToUseAsFeatures"
       << METAIO_STREAM::endl;
     }
 
@@ -203,12 +203,12 @@ unsigned int MetaLDA
 }
 
 void MetaLDA
-::SetNumberOfLDABasisToUseAsFeatures( unsigned int 
+::SetNumberOfLDABasisToUseAsFeatures( unsigned int
   numberOfLDABasisToUseAsFeatures )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: SetNumberOfLDABasisToUseAsFeatures" 
+    METAIO_STREAM::cout << "MetaLDA: SetNumberOfLDABasisToUseAsFeatures"
       << METAIO_STREAM::endl;
     }
 
@@ -220,7 +220,7 @@ unsigned int MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: GetNumberOfLDABasisToUseAsFeatures" 
+    METAIO_STREAM::cout << "MetaLDA: GetNumberOfLDABasisToUseAsFeatures"
       << METAIO_STREAM::endl;
     }
 
@@ -437,7 +437,7 @@ bool MetaLDA
 
   m_ReadStream = NULL;
 
-  this->InitializeEssential( m_NumberOfPCABasisToUseAsFeatures, 
+  this->InitializeEssential( m_NumberOfPCABasisToUseAsFeatures,
     m_NumberOfLDABasisToUseAsFeatures, m_LDAValues, m_LDAMatrix,
     m_WhitenMeans, m_WhitenStdDevs );
 
@@ -564,12 +564,12 @@ void MetaLDA
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType();
-  MET_InitWriteField_Temp( mF, "Values", MET_FLOAT_ARRAY, nDims,
+  ::tube::MET_InitWriteField_Temp( mF, "Values", MET_FLOAT_ARRAY, nDims,
                       m_LDAValues.data_block() );
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType();
-  MET_InitWriteField_Temp( mF, "Matrix", MET_FLOAT_MATRIX, nDims,
+  ::tube::MET_InitWriteField_Temp( mF, "Matrix", MET_FLOAT_MATRIX, nDims,
                       m_LDAMatrix.data_block() );
   m_Fields.push_back( mF );
 
