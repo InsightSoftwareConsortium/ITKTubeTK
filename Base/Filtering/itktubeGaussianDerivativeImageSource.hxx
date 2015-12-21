@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
- *=========================================================================*/
+*=========================================================================*/
 #ifndef __itktubeGaussianDerivativeImageSource_hxx
 #define __itktubeGaussianDerivativeImageSource_hxx
 
@@ -168,14 +168,14 @@ GaussianDerivativeImageSource< TOutputImage >
       if( m_Orders[i] != 0 )
         {
         prefixDenom *= vcl_pow( m_Sigmas[i], 2*m_Orders[i] )
-          / (vcl_pow( ( -(evalPoint[i] - m_Mean[i]) ), m_Orders[i] ) 
+          / (vcl_pow( ( -(evalPoint[i] - m_Mean[i]) ), m_Orders[i] )
              - ( m_Orders[i] == 2 ? vcl_pow(m_Sigmas[1], m_Orders[i]) : 0));
         }
       }
     double suffixExp = 0;
     for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
       {
-      suffixExp += ( evalPoint[i] - m_Mean[i] ) 
+      suffixExp += ( evalPoint[i] - m_Mean[i] )
                    * ( evalPoint[i] - m_Mean[i] )
                    / ( 2 * m_Sigmas[i] * m_Sigmas[i] );
       }

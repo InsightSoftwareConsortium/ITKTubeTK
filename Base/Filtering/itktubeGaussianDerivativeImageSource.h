@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
- *=========================================================================*/
+*=========================================================================*/
 #ifndef __itktubeGaussianDerivativeImageSource_h
 #define __itktubeGaussianDerivativeImageSource_h
 
@@ -81,7 +81,7 @@ public:
     TOutputImage::ImageDimension );
 
   typedef Vector< double, TOutputImage::ImageDimension > SigmasType;
-  typedef Vector< int, TOutputImage::ImageDimension > OrdersType;
+  typedef Vector< int, TOutputImage::ImageDimension >    OrdersType;
 
   /** Size type matches that used for images */
   typedef typename TOutputImage::IndexType     IndexType;
