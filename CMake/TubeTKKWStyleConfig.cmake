@@ -72,8 +72,14 @@ configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/KWStyle.Files.txt.in
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/KWStyle/KWStyle.Overwrite.txt
   ${TubeTK_BINARY_DIR}/KWStyle.Overwrite.txt )
 
-add_custom_command( OUTPUT KWStyle_Log.txt
+add_custom_command( OUTPUT KWStyle_Dashboard_Log.txt
   COMMAND ${KWSTYLE_EXECUTABLE}
   ARGS ${KWSTYLE_DASHBOARD_ARGUMENTS} )
+add_custom_target( StyleCheckDashboard
+  DEPENDS KWStyle_Dashboard_Log.txt )
+
+add_custom_command( OUTPUT KWStyle_Log.txt
+  COMMAND ${KWSTYLE_EXECUTABLE}
+  ARGS ${KWSTYLE_ARGUMENTS} )
 add_custom_target( StyleCheck
   DEPENDS KWStyle_Log.txt )
