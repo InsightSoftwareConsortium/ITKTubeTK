@@ -21,34 +21,34 @@ limitations under the License.
 
 =========================================================================*/
 /*=========================================================================
- *
- *  Copyright Insight Software Consortium
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0.txt
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- *=========================================================================*/
+*
+*  Copyright Insight Software Consortium
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0.txt
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*
+*=========================================================================*/
 /*=========================================================================
- *
- *  Portions of this file are subject to the VTK Toolkit Version 3 copyright.
- *
- *  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
- *
- *  For complete copyright, license and disclaimer of warranty information
- *  please refer to the NOTICE file at the top of the ITK source tree.
- *
- *=========================================================================*/
-#ifndef __itkShrinkUsingMaxImageFilter_h
-#define __itkShrinkUsingMaxImageFilter_h
+*
+*  Portions of this file are subject to the VTK Toolkit Version 3 copyright.
+*
+*  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+*
+*  For complete copyright, license and disclaimer of warranty information
+*  please refer to the NOTICE file at the top of the ITK source tree.
+*
+*=========================================================================*/
+#ifndef __itktubeShrinkWithBlendingImageFilter_h
+#define __itktubeShrinkWithBlendingImageFilter_h
 
 #include "itkShrinkImageFilter.h"
 
@@ -56,11 +56,11 @@ namespace itk {
 
 namespace tube {
 
-/** \class ShrinkUsingMaxImageFilter
+/** \class ShrinkWithBlendingImageFilter
  * \brief Reduce the size of an image by an integer factor in each
  * dimension.
  *
- * ShrinkUsingMaxImageFilter reduces the size of an image by an integer
+ * ShrinkWithBlendingImageFilter reduces the size of an image by an integer
  * factor in each dimension. The algorithm implemented is a max over the
  * subsample. The output image size in each dimension is given by:
  *
@@ -85,12 +85,12 @@ namespace tube {
  *
  */
 template< class TInputImage, class TOutputImage >
-class ITK_EXPORT ShrinkUsingMaxImageFilter:
+class ITK_EXPORT ShrinkWithBlendingImageFilter:
   public ShrinkImageFilter< TInputImage, TOutputImage >
 {
 public:
   /** Standard class typedefs. */
-  typedef ShrinkUsingMaxImageFilter                       Self;
+  typedef ShrinkWithBlendingImageFilter                   Self;
   typedef ShrinkImageFilter< TInputImage, TOutputImage >  Superclass;
   typedef SmartPointer< Self >                            Pointer;
   typedef SmartPointer< const Self >                      ConstPointer;
@@ -99,7 +99,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( ShrinkUsingMaxImageFilter, ShrinkImageFilter );
+  itkTypeMacro( ShrinkWithBlendingImageFilter, ShrinkImageFilter );
 
   /** Typedef to images */
   typedef TOutputImage                          OutputImageType;
@@ -122,16 +122,28 @@ public:
 
   typedef Vector< float, ImageDimension >       PointImagePixelType;
   typedef Image< PointImagePixelType, OutputImageDimension >
-    PointImageType;
+                                                PointImageType;
 
   itkSetMacro( Overlap, InputIndexType );
   itkGetMacro( Overlap, InputIndexType );
 
+  itkSetMacro( BlendWithMean, bool );
+  itkGetMacro( BlendWithMean, bool );
+
+  itkSetMacro( BlendWithMax, bool );
+  itkGetMacro( BlendWithMax, bool );
+
+  itkSetMacro( BlendWithGaussianWeighting, bool );
+  itkGetMacro( BlendWithGaussianWeighting, bool );
+
+  itkSetMacro( UseLog, bool );
+  itkGetMacro( UseLog, bool );
+
   itkGetObjectMacro( PointImage, PointImageType );
 
 protected:
-  ShrinkUsingMaxImageFilter( void );
-  ~ShrinkUsingMaxImageFilter( void ) {}
+  ShrinkWithBlendingImageFilter( void );
+  ~ShrinkWithBlendingImageFilter( void ) {}
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
   void ThreadedGenerateData( const OutputImageRegionType &
@@ -141,12 +153,18 @@ protected:
   void GenerateOutputInformation( void );
 
 private:
-  ShrinkUsingMaxImageFilter( const Self & ); //purposely not implemented
+  ShrinkWithBlendingImageFilter( const Self & ); //purposely not implemented
   void operator=( const Self & );            //purposely not implemented
 
   typename PointImageType::Pointer  m_PointImage;
 
   typename TInputImage::IndexType   m_Overlap;
+
+  bool m_UseLog;
+
+  bool m_BlendWithMean;
+  bool m_BlendWithMax;
+  bool m_BlendWithGaussianWeighting;
 };
 
 } // end namespace tube
@@ -154,7 +172,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeShrinkUsingMaxImageFilter.hxx"
+#include "itktubeShrinkWithBlendingImageFilter.hxx"
 #endif
 
 #endif

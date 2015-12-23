@@ -21,14 +21,14 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeShrinkUsingMaxImageFilter.h"
+#include "itktubeShrinkWithBlendingImageFilter.h"
 
 #include <itkFilterWatcher.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>
 
-int itktubeShrinkUsingMaxImageFilterTest( int argc, char * argv[] )
+int itktubeShrinkWithBlendingImageFilterTest( int argc, char * argv[] )
 {
   if( argc != 4 )
     {
@@ -57,7 +57,7 @@ int itktubeShrinkUsingMaxImageFilterTest( int argc, char * argv[] )
   typedef itk::ImageFileWriter< PointImageType >   PointImageWriterType;
 
   // Declare the type for the Filter
-  typedef itk::tube::ShrinkUsingMaxImageFilter< ImageType, ImageType >
+  typedef itk::tube::ShrinkWithBlendingImageFilter< ImageType, ImageType >
     FilterType;
 
   // Create the reader and writer
