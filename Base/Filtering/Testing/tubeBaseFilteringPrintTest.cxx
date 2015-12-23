@@ -30,7 +30,7 @@ limitations under the License.
 #include "itktubeFFTGaussianDerivativeIFFTFilter.h"
 #include "itktubeRidgeFFTFilter.h"
 #include "itktubeSheetnessMeasureImageFilter.h"
-#include "itktubeShrinkUsingMaxImageFilter.h"
+#include "itktubeShrinkWithBlendingImageFilter.h"
 #include "itktubeStructureTensorRecursiveGaussianImageFilter.h"
 #include "itktubeSymmetricEigenVectorAnalysisImageFilter.h"
 #include "itktubeTubeEnhancingDiffusion2DImageFilter.h"
@@ -119,10 +119,10 @@ int tubeBaseFilteringPrintTest( int itkNotUsed( argc ), char * itkNotUsed(
   std::cout << "-------------SheetnessMeasureImageFilter"
     << sheetnessMeasureImageFilterObj << std::endl;
 
-  itk::tube::ShrinkUsingMaxImageFilter< ImageType, ImageType >::Pointer
+  itk::tube::ShrinkWithBlendingImageFilter< ImageType, ImageType >::Pointer
     shrinkUsingMaxImageFilterObj =
-    itk::tube::ShrinkUsingMaxImageFilter< ImageType, ImageType >::New();
-  std::cout << "-------------ShrinkUsingMaxImageFilter"
+    itk::tube::ShrinkWithBlendingImageFilter< ImageType, ImageType >::New();
+  std::cout << "-------------ShrinkWithBlendingImageFilter"
     << shrinkUsingMaxImageFilterObj << std::endl;
 
   return EXIT_SUCCESS;

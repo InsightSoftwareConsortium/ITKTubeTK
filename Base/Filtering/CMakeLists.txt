@@ -40,6 +40,7 @@ set( TubeTK_Base_Filtering_H_Files
   itktubePadImageFilter.h
   itktubeRegionFromReferenceImageFilter.h
   itktubeSheetnessMeasureImageFilter.h
+  itktubeShrinkWithBlendingImageFilter.h
   itktubeSpatialObjectSource.h
   itktubeSpatialObjectToSpatialObjectFilter.h
   itktubeStructureTensorRecursiveGaussianImageFilter.h
@@ -62,6 +63,7 @@ set( TubeTK_Base_Filtering_HXX_Files
   itktubePadImageFilter.hxx
   itktubeRegionFromReferenceImageFilter.hxx
   itktubeSheetnessMeasureImageFilter.hxx
+  itktubeShrinkWithBlendingImageFilter.hxx
   itktubeSpatialObjectSource.hxx
   itktubeSpatialObjectToSpatialObjectFilter.hxx
   itktubeStructureTensorRecursiveGaussianImageFilter.hxx
