@@ -29,7 +29,7 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 #include <itkImageFileReader.h>
 
-#include <itktubeShrinkUsingMaxImageFilter.h>
+#include <itktubeShrinkWithBlendingImageFilter.h>
 
 // Must include CLP before including tubeCLIHelperFunctions
 #include "ShrinkImageCLP.h"
@@ -68,7 +68,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< PointPixelType, VDimension > PointImageType;
   typedef itk::ImageFileWriter< PointImageType >   PointImageWriterType;
 
-  typedef itk::tube::ShrinkUsingMaxImageFilter< InputImageType,
+  typedef itk::tube::ShrinkWithBlendingImageFilter< InputImageType,
     OutputImageType > FilterType;
 
   timeCollector.Start("Load data");
@@ -135,6 +135,22 @@ int DoIt( int argc, char * argv[] )
       overlapVoxels[ i ] = overlap[ i ];
       }
     filter->SetOverlap( overlapVoxels );
+    }
+
+  if( log )
+    {
+    filter->SetUseLog( true );
+    }
+
+  if( mean )
+    {
+    filter->SetBlendWithMax( false );
+    filter->SetBlendWithMean( true );
+    }
+  else if( gaussian )
+    {
+    filter->SetBlendWithMax( false );
+    filter->SetBlendWithGaussianWeighting( true );
     }
 
   if( divideBy.size() > 0 )
@@ -214,16 +230,16 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  if( !pointImageFileName.empty() )
+  if( !mipPointImageFileName.empty() )
     {
-    typename PointImageWriterType::Pointer pointImageWriter =
+    typename PointImageWriterType::Pointer mipPointImageWriter =
       PointImageWriterType::New();
-    pointImageWriter->SetFileName( pointImageFileName );
-    pointImageWriter->SetUseCompression( true );
-    pointImageWriter->SetInput( filter->GetPointImage() );
+    mipPointImageWriter->SetFileName( mipPointImageFileName );
+    mipPointImageWriter->SetUseCompression( true );
+    mipPointImageWriter->SetInput( filter->GetPointImage() );
     try
       {
-      pointImageWriter->Update();
+      mipPointImageWriter->Update();
       }
     catch( itk::ExceptionObject & e )
       {

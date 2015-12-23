@@ -55,11 +55,35 @@
   </parameters>
   <parameters>
     <label>Shrink options</label>
+    <boolean>
+      <name>gaussian</name>
+      <label>Gaussian</label>
+      <description>Generate new voxel using a centered Gaussian weight (instead of max)</description>
+      <longflag>gaussian</longflag>
+      <flag>g</flag>
+      <default>false</default>
+    </boolean>
+    <boolean>
+      <name>log</name>
+      <label>Log</label>
+      <description>Compute the values in the log domain</description>
+      <longflag>log</longflag>
+      <flag>l</flag>
+      <default>false</default>
+    </boolean>
+    <boolean>
+      <name>mean</name>
+      <label>Mean</label>
+      <description>Generate new voxel using mean (instead of max)</description>
+      <longflag>mean</longflag>
+      <flag>m</flag>
+      <default>false</default>
+    </boolean>
     <image>
-      <name>pointImageFileName</name>
-      <label>Point image file name</label>
-      <description>Save a vector image containing physical point of chosen pixel's original location</description>
-      <longflag>pointImage</longflag>
+      <name>mipPointImageFileName</name>
+      <label>MIP point image file name</label>
+      <description>Save a vector image containing physical point of max pixel's original location</description>
+      <longflag>mipPointImage</longflag>
       <flag>p</flag>
       <default></default>
       <channel>output</channel>

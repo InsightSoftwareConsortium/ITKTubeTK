@@ -47,10 +47,11 @@ limitations under the License.
 *  please refer to the NOTICE file at the top of the ITK source tree.
 *
 *=========================================================================*/
-#ifndef __itktubeShrinkUsingMaxImageFilter_hxx
-#define __itktubeShrinkUsingMaxImageFilter_hxx
+#ifndef __itktubeShrinkWithBlendingImageFilter_hxx
+#define __itktubeShrinkWithBlendingImageFilter_hxx
 
-#include "itktubeShrinkUsingMaxImageFilter.h"
+#include "itktubeShrinkWithBlendingImageFilter.h"
+
 #include "itkConstNeighborhoodIterator.h"
 
 namespace itk {
@@ -61,12 +62,18 @@ namespace tube {
  *
  */
 template< class TInputImage, class TOutputImage >
-ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
-::ShrinkUsingMaxImageFilter( void )
+ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
+::ShrinkWithBlendingImageFilter( void )
 {
   m_PointImage = NULL;
 
   m_Overlap.Fill( 0 );
+
+  m_UseLog = false;
+
+  m_BlendWithMax = true;
+  m_BlendWithMean = false;
+  m_BlendWithGaussianWeighting = false;
 }
 
 /**
@@ -74,7 +81,7 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
  */
 template< class TInputImage, class TOutputImage >
 void
-ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
+ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
@@ -97,7 +104,7 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
  */
 template< class TInputImage, class TOutputImage >
 void
-ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
+ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 ::ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread,
   ThreadIdType threadId )
 {
@@ -147,10 +154,8 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
   typedef ImageRegionIteratorWithIndex< TOutputImage > OutputIteratorType;
   OutputIteratorType outIt( outputPtr, outputRegionForThread );
 
-  typedef ImageRegionIteratorWithIndex< PointImageType > PointIteratorType;
-  PointIteratorType pointIt( m_PointImage, outputRegionForThread );
-
-  typedef ImageRegionConstIteratorWithIndex< TInputImage > InputIteratorType;
+  typedef ImageRegionConstIteratorWithIndex< TInputImage >
+    InputIteratorType;
   typename TInputImage::RegionType inputRegion;
 
   while( !outIt.IsAtEnd() )
@@ -176,35 +181,124 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
     InputIteratorType it( this->GetInput(), inputRegion );
 
     // Walk the neighborhood
-    typename TInputImage::PixelType maxValue = it.Get();
-    typename TInputImage::IndexType maxValueIndex = it.GetIndex();
     typename TInputImage::PixelType value;
-    ++it;
-    while( !it.IsAtEnd() )
+    //++it;
+    if( m_BlendWithMax )
       {
-      value = it.Get();
-      if( value > maxValue )
+      typedef ImageRegionIteratorWithIndex< PointImageType >
+        PointIteratorType;
+      PointIteratorType pointIt( m_PointImage, outputRegionForThread );
+
+      typename TInputImage::PixelType maxValue = it.Get();
+      typename TInputImage::IndexType maxValueIndex = it.GetIndex();
+      while( !it.IsAtEnd() )
         {
-        maxValue = value;
-        maxValueIndex = it.GetIndex();
+        value = it.Get();
+        if( value > maxValue )
+          {
+          maxValue = value;
+          maxValueIndex = it.GetIndex();
+          }
+        ++it;
         }
-      ++it;
+
+      // Copy the input pixel to the output
+      outIt.Set( maxValue );
+      ++outIt;
+
+      typename TInputImage::PointType point;
+      this->GetInput()->TransformIndexToPhysicalPoint( maxValueIndex,
+        point );
+
+      typename PointImageType::PixelType pointVector;
+      for( unsigned int i = 0; i < ImageDimension; ++i )
+        {
+        pointVector[i] = point[i];
+        }
+      pointIt.Set( pointVector );
+      ++pointIt;
       }
-
-    // Copy the input pixel to the output
-    outIt.Set( maxValue );
-    ++outIt;
-
-    typename TInputImage::PointType point;
-    this->GetInput()->TransformIndexToPhysicalPoint( maxValueIndex, point );
-
-    typename PointImageType::PixelType pointVector;
-    for( unsigned int i = 0; i < ImageDimension; ++i )
+    else if( m_BlendWithMean )
       {
-      pointVector[i] = point[i];
+      double averageValue = 0;
+      unsigned long int count = 0;
+      if( m_UseLog )
+        {
+        while( !it.IsAtEnd() )
+          {
+          value = it.Get();
+          averageValue += value * value;
+          ++count;
+          ++it;
+          }
+        if( count > 0 )
+          {
+          averageValue = vcl_sqrt( averageValue / count );
+          }
+        }
+      else
+        {
+        while( !it.IsAtEnd() )
+          {
+          value = it.Get();
+          averageValue += value;
+          ++count;
+          ++it;
+          }
+        if( count > 0 )
+          {
+          averageValue = averageValue / count;
+          }
+        }
+      outIt.Set( averageValue );
+      ++outIt;
       }
-    pointIt.Set( pointVector );
-    ++pointIt;
+    else if( m_BlendWithGaussianWeighting )
+      {
+      typename TInputImage::IndexType valueIndex;
+      double weight = 0;
+      double averageValue = 0;
+      double weightSum = 0;
+      while( !it.IsAtEnd() )
+        {
+        value = it.Get();
+        valueIndex = it.GetIndex();
+        weight = 0;
+        for( unsigned int i = 0; i < ImageDimension; ++i )
+          {
+          double dist = (valueIndex[i] - inputIndex[i] ) / factorSize[i];
+          weight += (1.0 / (factorSize[i] * vcl_sqrt( 2 * vnl_math::pi )))
+            * vcl_exp( -0.5 * dist * dist );
+          }
+        if( m_UseLog )
+          {
+          averageValue += weight * value * value;
+          }
+        else
+          {
+          averageValue += weight * value;
+          }
+        weightSum += weight;
+        ++it;
+        }
+
+      if( weightSum > 0 )
+        {
+        if( m_UseLog )
+          {
+          outIt.Set( vcl_sqrt( averageValue / weightSum ) );
+          }
+        else
+          {
+          outIt.Set( averageValue / weightSum );
+          }
+        }
+      else
+        {
+        outIt.Set( 0 );
+        }
+      ++outIt;
+      }
 
     progress.CompletedPixel();
     }
@@ -215,7 +309,7 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
  */
 template< class TInputImage, class TOutputImage >
 void
-ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
+ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 ::GenerateInputRequestedRegion()
 {
   // Call the superclass' implementation of this method
@@ -298,7 +392,7 @@ ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
  */
 template< class TInputImage, class TOutputImage >
 void
-ShrinkUsingMaxImageFilter< TInputImage, TOutputImage >
+ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 ::GenerateOutputInformation( void )
 {
   Superclass::GenerateOutputInformation();

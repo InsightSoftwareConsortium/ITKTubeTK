@@ -31,7 +31,7 @@ limitations under the License.
 #include "itktubeFFTGaussianDerivativeIFFTFilter.h"
 #include "itktubeRidgeFFTFilter.h"
 #include "itktubeSheetnessMeasureImageFilter.h"
-#include "itktubeShrinkUsingMaxImageFilter.h"
+#include "itktubeShrinkWithBlendingImageFilter.h"
 #include "itktubeSpatialObjectToSpatialObjectFilter.h"
 #include "itktubeStructureTensorRecursiveGaussianImageFilter.h"
 #include "itktubeSymmetricEigenVectorAnalysisImageFilter.h"
