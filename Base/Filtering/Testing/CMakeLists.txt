@@ -58,7 +58,7 @@ set( tubeBaseFilteringTests_SRCS
   itktubeRidgeFFTFilterTest.cxx
   itktubeSheetnessMeasureImageFilterTest.cxx
   itktubeSheetnessMeasureImageFilterTest2.cxx
-  itktubeShrinkUsingMaxImageFilterTest.cxx
+  itktubeShrinkWithBlendingImageFilterTest.cxx
   itktubeStructureTensorRecursiveGaussianImageFilterTest.cxx
   itktubeStructureTensorRecursiveGaussianImageFilterTestNew.cxx
   itktubeSubSampleTubeSpatialObjectFilterTest.cxx
@@ -215,14 +215,14 @@ Midas3FunctionAddTest( NAME itktubeSheetnessMeasureImageFilterTest3
       ${TEMP}/UltrasoundCroppedResampledSheetnessMeasure.mha
       ${TEMP}/UltrasoundCroppedResampledPrimaryEigenVector.mha 2.0 )
 
-Midas3FunctionAddTest( NAME itktubeShrinkUsingMaxImageFilterTest
+    Midas3FunctionAddTest( NAME itktubeShrinkWithBlendingImageFilterTest
   COMMAND ${BASE_FILTERING_TESTS}
-    --compare MIDAS{itktubeShrinkUsingMaxImageFilterTest.mha.md5}
-      ${TEMP}/itktubeShrinkUsingMaxImageFilterTest.mha
-    itktubeShrinkUsingMaxImageFilterTest
+  --compare MIDAS{itktubeShrinkWithBlendingImageFilterTest.mha.md5}
+  ${TEMP}/itktubeShrinkWithBlendingImageFilterTest.mha
+  itktubeShrinkWithBlendingImageFilterTest
       MIDAS{im0001.crop.contrast.mha.md5}
-      ${TEMP}/itktubeShrinkUsingMaxImageFilterTest.mha
-      ${TEMP}/itktubeShrinkUsingMaxImageFilterTest-IndexImage.mha )
+      ${TEMP}/itktubeShrinkWithBlendingImageFilterTest.mha
+      ${TEMP}/itktubeShrinkWithBlendingImageFilterTest-IndexImage.mha )
 
 Midas3FunctionAddTest( NAME itktubeStructureTensorRecursiveGaussianImageFilterTest
   COMMAND ${BASE_FILTERING_TESTS}

@@ -47,8 +47,8 @@ limitations under the License.
 *  please refer to the NOTICE file at the top of the ITK source tree.
 *
 *=========================================================================*/
-#ifndef __itktubeShrinkUsingMaxImageFilter_h
-#define __itktubeShrinkUsingMaxImageFilter_h
+#ifndef __itktubeShrinkWithBlendingImageFilter_h
+#define __itktubeShrinkWithBlendingImageFilter_h
 
 #include "itkShrinkImageFilter.h"
 
@@ -56,41 +56,41 @@ namespace itk {
 
 namespace tube {
 
-/** \class ShrinkUsingMaxImageFilter
- * \brief Reduce the size of an image by an integer factor in each
- * dimension.
- *
- * ShrinkUsingMaxImageFilter reduces the size of an image by an integer
- * factor in each dimension. The algorithm implemented is a max over the
- * subsample. The output image size in each dimension is given by:
- *
- * outputSize[j] = max( vcl_floor(inputSize[j]/shrinkFactor[j]), 1 );
- *
- * NOTE: The physical centers of the input and output will be the
- * same. Because of this, the Origin of the output may not be the same
- * as the Origin of the input.
- * Since this filter produces an image which is a different
- * resolution, origin and with different pixel spacing than its input
- * image, it needs to override several of the methods defined
- * in ProcessObject in order to properly manage the pipeline execution
- * model. In particular, this filter overrides
- * ProcessObject::GenerateInputRequestedRegion() and
- * ProcessObject::GenerateOutputInformation().
- *
- * This filter is implemented as a multithreaded filter.  It provides a
- * ThreadedGenerateData() method for its implementation.
- *
- * \ingroup GeometricTransform Streamed
- * \ingroup ITKImageGrid
- *
- */
+/** \class ShrinkWithBlendingImageFilter
+* \brief Reduce the size of an image by an integer factor in each
+* dimension.
+*
+* ShrinkWithBlendingImageFilter reduces the size of an image by an integer
+* factor in each dimension. The algorithm implemented is a max over the
+* subsample. The output image size in each dimension is given by:
+*
+* outputSize[j] = max( vcl_floor(inputSize[j]/shrinkFactor[j]), 1 );
+*
+* NOTE: The physical centers of the input and output will be the
+* same. Because of this, the Origin of the output may not be the same
+* as the Origin of the input.
+* Since this filter produces an image which is a different
+* resolution, origin and with different pixel spacing than its input
+* image, it needs to override several of the methods defined
+* in ProcessObject in order to properly manage the pipeline execution
+* model. In particular, this filter overrides
+* ProcessObject::GenerateInputRequestedRegion() and
+* ProcessObject::GenerateOutputInformation().
+*
+* This filter is implemented as a multithreaded filter.  It provides a
+* ThreadedGenerateData() method for its implementation.
+*
+* \ingroup GeometricTransform Streamed
+* \ingroup ITKImageGrid
+*
+*/
 template< class TInputImage, class TOutputImage >
-class ITK_EXPORT ShrinkUsingMaxImageFilter:
+class ITK_EXPORT ShrinkWithBlendingImageFilter:
   public ShrinkImageFilter< TInputImage, TOutputImage >
 {
 public:
   /** Standard class typedefs. */
-  typedef ShrinkUsingMaxImageFilter                       Self;
+  typedef ShrinkWithBlendingImageFilter                   Self;
   typedef ShrinkImageFilter< TInputImage, TOutputImage >  Superclass;
   typedef SmartPointer< Self >                            Pointer;
   typedef SmartPointer< const Self >                      ConstPointer;
@@ -99,7 +99,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( ShrinkUsingMaxImageFilter, ShrinkImageFilter );
+  itkTypeMacro( ShrinkWithBlendingImageFilter, ShrinkImageFilter );
 
   /** Typedef to images */
   typedef TOutputImage                          OutputImageType;
@@ -120,18 +120,30 @@ public:
   itkStaticConstMacro( OutputImageDimension, unsigned int,
                        TOutputImage::ImageDimension );
 
-  typedef Vector< float, ImageDimension > PointImagePixelType;
+  typedef Vector< float, ImageDimension >       PointImagePixelType;
   typedef Image< PointImagePixelType, OutputImageDimension >
-                                          PointImageType;
+                                                PointImageType;
 
   itkSetMacro( Overlap, InputIndexType );
   itkGetMacro( Overlap, InputIndexType );
 
+  itkSetMacro( BlendWithMean, bool );
+  itkGetMacro( BlendWithMean, bool );
+
+  itkSetMacro( BlendWithMax, bool );
+  itkGetMacro( BlendWithMax, bool );
+
+  itkSetMacro( BlendWithGaussianWeighting, bool );
+  itkGetMacro( BlendWithGaussianWeighting, bool );
+
+  itkSetMacro( UseLog, bool );
+  itkGetMacro( UseLog, bool );
+
   itkGetObjectMacro( PointImage, PointImageType );
 
 protected:
-  ShrinkUsingMaxImageFilter( void );
-  ~ShrinkUsingMaxImageFilter( void ) {}
+  ShrinkWithBlendingImageFilter( void );
+  ~ShrinkWithBlendingImageFilter( void ) {}
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
   void ThreadedGenerateData( const OutputImageRegionType &
@@ -141,12 +153,18 @@ protected:
   void GenerateOutputInformation( void );
 
 private:
-  ShrinkUsingMaxImageFilter( const Self & ); //purposely not implemented
+  ShrinkWithBlendingImageFilter( const Self & ); //purposely not implemented
   void operator=( const Self & );            //purposely not implemented
 
   typename PointImageType::Pointer  m_PointImage;
 
   typename TInputImage::IndexType   m_Overlap;
+
+  bool m_UseLog;
+
+  bool m_BlendWithMean;
+  bool m_BlendWithMax;
+  bool m_BlendWithGaussianWeighting;
 };
 
 } // end namespace tube
@@ -154,7 +172,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeShrinkUsingMaxImageFilter.hxx"
+#include "itktubeShrinkWithBlendingImageFilter.hxx"
 #endif
 
 #endif
