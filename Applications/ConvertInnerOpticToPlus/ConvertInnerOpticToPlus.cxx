@@ -57,10 +57,10 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef itk::tube::InnerOpticToPlusImageReader ReaderType;
-  typedef ReaderType::OutputImageType RGBImageType;
-  typedef itk::Image< ReaderType::PixelComponentType, ReaderType::ImageDimension >
-    OutputImageType;
+  typedef itk::tube::InnerOpticToPlusImageReader      ReaderType;
+  typedef ReaderType::OutputImageType                 RGBImageType;
+  typedef itk::Image< ReaderType::PixelComponentType,
+                      ReaderType::ImageDimension >    OutputImageType;
 
   timeCollector.Start("Load data");
   ReaderType::Pointer reader = ReaderType::New();

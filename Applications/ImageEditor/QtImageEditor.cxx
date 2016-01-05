@@ -61,33 +61,42 @@ namespace tube
 /**
  * Helper function for forceUpdate(). Not self-sufficient!
  */
-void invalidateLayout(QLayout *layout) {
-    // Recompute the given layout and all its child layouts.
-    for (int i = 0; i < layout->count(); i++) {
-        QLayoutItem *item = layout->itemAt(i);
-        if (item->layout()) {
-            invalidateLayout(item->layout());
-        } else {
-            item->invalidate();
-        }
+void invalidateLayout(QLayout *layout)
+{
+  // Recompute the given layout and all its child layouts.
+  for (int i = 0; i < layout->count(); i++)
+    {
+    QLayoutItem *item = layout->itemAt(i);
+    if (item->layout())
+      {
+      invalidateLayout(item->layout());
+      }
+    else
+      {
+      item->invalidate();
+      }
     }
-    layout->invalidate();
-    layout->update();
-    layout->activate();
+  layout->invalidate();
+  layout->update();
+  layout->activate();
 }
 
-void forceUpdate(QWidget *widget) {
-    // Update all child widgets.
-    for (int i = 0; i < widget->children().size(); i++) {
-        QObject *child = widget->children()[i];
-        if (child->isWidgetType()) {
-            forceUpdate((QWidget *)child);
-        }
+void forceUpdate(QWidget *widget)
+{
+  // Update all child widgets.
+  for (int i = 0; i < widget->children().size(); i++)
+    {
+    QObject *child = widget->children()[i];
+    if (child->isWidgetType())
+      {
+      forceUpdate((QWidget *)child);
+      }
     }
 
-    // Invalidate the layout of the widget.
-    if (widget->layout()) {
-        invalidateLayout(widget->layout());
+  // Invalidate the layout of the widget.
+  if (widget->layout())
+    {
+    invalidateLayout(widget->layout());
     }
 }
 
@@ -294,13 +303,26 @@ QtImageEditor::QtImageEditor(QWidget* _parent, Qt::WindowFlags fl )
   this->layout()->invalidate();
   this->layout()->update();
   this->layout()->activate();
-  //qDebug() << "1" << sizeHint() << this->geometry().size() << this->layout()->minimumSize() << this->minimumSizeHint();
+
+  /*
+  qDebug() << "1" << sizeHint() << this->geometry().size()
+           << this->layout()->minimumSize() << this->minimumSizeHint();
+  */
+
   forceUpdate(this);
-  //qDebug() << "2" << sizeHint() << this->geometry().size() << d->m_TabWidget->sizeHint();
+
+  /*
+  qDebug() << "2" << sizeHint() << this->geometry().size()
+           << d->m_TabWidget->sizeHint();
+  */
+
   this->resize(this->sizeHint());
   //d->m_TabWidget->layout()->invalidate();
   //d->m_TabWidget->layout()->activate();
-  //qDebug() << "3" << sizeHint() << this->geometry().size() << d->m_TabWidget->sizeHint();
+  /*
+  qDebug() << "3" << sizeHint() << this->geometry().size()
+           << d->m_TabWidget->sizeHint();
+  */
   this->resize(this->sizeHint());
   //this->adjustSize();
   //qDebug() << "4" << sizeHint() << this->geometry().size();

@@ -67,7 +67,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileWriter< OutputImageType  >  WriterType;
 
   typedef itk::RescaleIntensityImageFilter< InputImageType, OutputImageType >
-                                                      RescaleFilterType;
+                                                       RescaleFilterType;
   typedef itk::tube::RidgeFFTFilter< OutputImageType > RidgeFilterType;
 
   timeCollector.Start("Load data");

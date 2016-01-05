@@ -42,7 +42,7 @@ class InverseIntensityImageFilter
 {
 public:
 
-  /** Standard class typedefs. **/
+  /** Standard class typedefs. */
   typedef InverseIntensityImageFilter                     Self;
   typedef ImageToImageFilter< TInputImage, TInputImage>   SuperClass;
 
@@ -60,13 +60,13 @@ public:
 
   typedef typename InputImageType::RegionType             RegionType;
 
-  /** Method for creation through the object factory. **/
+  /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
   itkSetMacro( InverseMaximumIntensity, InputPixelType );
   itkGetMacro( InverseMaximumIntensity, InputPixelType );
 
-  /** Run-time type information (and related methods). **/
+  /** Run-time type information (and related methods). */
   itkTypeMacro( TubeNetworkSpatialObjectToImageFilter, ImageToImageFilter );
 
 protected:
@@ -74,7 +74,7 @@ protected:
   InverseIntensityImageFilter( void );
   ~InverseIntensityImageFilter( void ) {}
 
-  /* GenerateData produce the main work */
+  /** GenerateData produce the main work */
   void GenerateData( void );
 
 private:
