@@ -293,7 +293,7 @@ QtImageEditorPrivate::createGaussianDerivative(
 
 QtImageEditor::QtImageEditor(QWidget* _parent, Qt::WindowFlags fl )
   : Superclass( _parent, fl )
-  , d_ptr(new QtImageEditorPrivate(*this))
+  , m_Dptr(new QtImageEditorPrivate(*this))
 {
   Q_D(QtImageEditor);
   this->setAttribute(Qt::WA_WState_ExplicitShowHide, true);

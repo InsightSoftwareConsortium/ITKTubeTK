@@ -138,19 +138,19 @@ int DoIt( int argc, char * argv[] )
       unsigned int c = iter.Get();
       if( c > 0 && c < numObjects )
         {
-	  cPixelCount[c]++;
+        cPixelCount[c]++;
         }
       ++iter;
       }
 
-    // compute voxelVolume  
-    double voxelVolume = 1;  
+    // compute voxelVolume
+    double voxelVolume = 1;
     for(unsigned int i = 0; i < VDimension; i++)
     {
       voxelVolume *= curMask->GetSpacing()[i];
     }
       
-    // drop connected components of size (physp) below a user-specified cutoff  
+    // drop connected components of size (physp) below a user-specified cutoff
     iter.GoToBegin();
     while( !iter.IsAtEnd() )
       {

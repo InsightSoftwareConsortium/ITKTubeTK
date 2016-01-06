@@ -1,3 +1,26 @@
+/*=========================================================================
+
+   Library:   TubeTK
+
+   Copyright 2010 Kitware Inc. 28 Corporate Drive,
+   Clifton Park, NY, 12065, USA.
+
+   All rights reserved.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+=========================================================================*/
+
 #ifndef __itkGeneralizedDistanceTransformImageFilter_txx
 #define __itkGeneralizedDistanceTransformImageFilter_txx
 
@@ -10,19 +33,19 @@
 
 namespace
 {
-  // The intersection method needs to divide by a value i*s^2 for an integer i
-  // with 0 < i < maximal image extent, and a spacing s.  We calculate a table
-  // of reciprocal values and multiply by those instead to improve speed.
-  //
-  // It is a little less precise, but in the context of parabola intersection it
-  // makes hardly a difference.
-  template <class TSpacingType>
-  void updateDivisionTable(
-    std::vector< TSpacingType > & table, TSpacingType spacing, size_t size)
-  {
-    for (size_t i = 1; i < size; ++i)
-      table[i] = TSpacingType(1)/(spacing*spacing*i);
-  }
+// The intersection method needs to divide by a value i*s^2 for an integer i
+// with 0 < i < maximal image extent, and a spacing s.  We calculate a table
+// of reciprocal values and multiply by those instead to improve speed.
+//
+// It is a little less precise, but in the context of parabola intersection it
+// makes hardly a difference.
+template <class TSpacingType>
+void updateDivisionTable(
+  std::vector< TSpacingType > & table, TSpacingType spacing, size_t size)
+{
+  for (size_t i = 1; i < size; ++i)
+    table[i] = TSpacingType(1)/(spacing*spacing*i);
+}
 }
 
 namespace itk
@@ -36,15 +59,15 @@ GeneralizedDistanceTransformImageFilter<
 {
   m_CreateVoronoiMap = b;
   if (m_CreateVoronoiMap)
-  {
+    {
     this->SetNumberOfRequiredInputs(2);
     this->SetNumberOfRequiredOutputs(2);
-  }
+    }
   else
-  {
+    {
     this->SetNumberOfRequiredInputs(1);
     this->SetNumberOfRequiredOutputs(1);
-  }
+    }
   this->Modified();
 }
 
@@ -72,7 +95,7 @@ GeneralizedDistanceTransformImageFilter<
   TFunctionImage, TDistanceImage, TLabelImage >
 ::GetMaximalSquaredDistance() const
 {
-  return MaximalSquaredDistance;
+  return m_MaximalSquaredDistance;
 }
 
 template < class TFunctionImage,class TDistanceImage, class TLabelImage >
@@ -123,7 +146,9 @@ template < class TFunctionImage,class TDistanceImage, class TLabelImage >
 GeneralizedDistanceTransformImageFilter<
   TFunctionImage, TDistanceImage, TLabelImage >
 ::GeneralizedDistanceTransformImageFilter()
-  : MaximalSquaredDistance(std::numeric_limits<typename TDistanceImage::PixelType>::max()/2), CacheLineSize(128)
+  : m_MaximalSquaredDistance(
+      std::numeric_limits<typename TDistanceImage::PixelType>::max()/2),
+    m_CacheLineSize(128)
 {
   // First check the constraints on the types
   // All numeric types have to be signed. It can be argued that
@@ -167,7 +192,7 @@ GeneralizedDistanceTransformImageFilter<
   Superclass::PrintSelf(os,indent);
   os << indent << "Generalized Distance Transform: " << std::endl;
   os << indent << "MaximalSquaredDistance: "
-    << MaximalSquaredDistance << std::endl;
+    << m_MaximalSquaredDistance << std::endl;
   os << indent << "UseSpacing: " << this->m_UseImageSpacing << std::endl;
   os << indent << "CreateVoronoiMap: " << this->m_CreateVoronoiMap << std::endl;
 }
@@ -178,9 +203,13 @@ GeneralizedDistanceTransformImageFilter<
   TFunctionImage, TDistanceImage, TLabelImage >
 ::EnlargeOutputRequestedRegion(DataObject *)
 {
-  this->GetDistance()->SetRequestedRegion(this->GetDistance()->GetLargestPossibleRegion());
+  this->GetDistance()->SetRequestedRegion(
+    this->GetDistance()->GetLargestPossibleRegion());
   if (this->m_CreateVoronoiMap)
-    this->GetVoronoiMap()->SetRequestedRegion(this->GetVoronoiMap()->GetLargestPossibleRegion());
+    {
+    this->GetVoronoiMap()->SetRequestedRegion(
+      this->GetVoronoiMap()->GetLargestPossibleRegion());
+    }
 }
 
 /**
@@ -298,7 +327,7 @@ GeneralizedDistanceTransformImageFilter<
   for (unsigned int d = 0; d < FunctionImageType::ImageDimension; ++d)
     maxSize = std::max(maxSize, size[d]);
   maxSize = (DistSizeValueType)(
-    std::ceil((double)maxSize / CacheLineSize) * CacheLineSize);
+    std::ceil((double)maxSize / m_CacheLineSize) * m_CacheLineSize);
 
   // With the division table, we reduce the cost of the code that needs to
   // take image spacing into account.
@@ -428,7 +457,7 @@ GeneralizedDistanceTransformImageFilter<
   // cache (when the memory is properly aligned).
   const DistSizeValueType pixelsInCacheLine =
     std::max((DistSizeValueType)1,
-             (DistSizeValueType)(CacheLineSize/
+             (DistSizeValueType)(m_CacheLineSize/
              sizeof(typename DistanceImageType::PixelType)));
 
   // We are using a buffer for each thread for intermediate output.
@@ -459,7 +488,7 @@ GeneralizedDistanceTransformImageFilter<
   for (int d = FunctionImageType::ImageDimension-1; d > 0; --d)
   // Curious how it works for you the other way round? Then try this instead:
   //for (int d = 1; d < FunctionImageType::ImageDimension; ++d)
-  {
+    {
     // Set up spacing and division info
     const SpacingType sqrs = spacing[d]*spacing[d];
     if (this->m_UseImageSpacing)
@@ -468,10 +497,10 @@ GeneralizedDistanceTransformImageFilter<
     distanceIt.GoToBegin();
 
     if (this->m_CreateVoronoiMap)
-    {
+      {
       voronoiMapIt.SetDirection(d);
       voronoiMapIt.GoToBegin();
-    }
+      }
 
     std::vector< Parabolas > envelope( pixelsInCacheLine );
     for (size_t i = 0; i < pixelsInCacheLine; ++i)
@@ -487,7 +516,7 @@ GeneralizedDistanceTransformImageFilter<
     for (int i = 0; i < d; ++i)
       stride *= size[i];
     while (!distanceIt.IsAtEnd())
-    {
+      {
       // Inside the for loop, we are working with lean and mean pointers into
       // the image buffer and offsets therein.
       // This makes parallelization with openmp easier as we do not need to
@@ -515,7 +544,7 @@ GeneralizedDistanceTransformImageFilter<
       // Each thread will handle a single strip and therefore have everything in
       // L1 cache of its CPU.
       for (int i = 0; i < strips; ++i)
-      {
+        {
         const IndexValueType currentStripOffset = i * pixelsInCacheLine;
 
         // We can work on at most linesInCache lines in parallel to be cache
@@ -533,9 +562,9 @@ GeneralizedDistanceTransformImageFilter<
         for (size_t j = 0, offset = currentStripOffset;
               j < size[d];
               ++j, offset += stride - parallelLines)
-        {
-          if (this->m_UseImageSpacing)
           {
+          if (this->m_UseImageSpacing)
+            {
             // This is the inner loop where it matters to utilize L1 cache
             for (size_t line = 0; line < parallelLines; ++line, ++offset)
               addParabola(
@@ -546,9 +575,9 @@ GeneralizedDistanceTransformImageFilter<
                 *(rawLabel + offset) :
                 typename LabelImageType::PixelType(),
                 divisionTable);
-          }
+            }
           else
-          {
+            {
             // No wait, this one! ;-)
             for (size_t line = 0; line < parallelLines; ++line, ++offset)
               addParabola(
@@ -558,8 +587,8 @@ GeneralizedDistanceTransformImageFilter<
                 this->m_CreateVoronoiMap ?
                 *(rawLabel + offset) :
                 typename LabelImageType::PixelType());
+            }
           }
-        }
 
         // And now evaluate the lower envelope
         //
@@ -581,22 +610,22 @@ GeneralizedDistanceTransformImageFilter<
           for (size_t line = 0, offset = 0;
                 line < parallelLines;
                 ++line, offset += maxSize)
-          {
+            {
             lineNeedsCopy[line] =
               sampleValues(
                 envelope[line], 0, size[d], &valuesBuffer[offset], sqrs);
             stripNeedsCopy &= lineNeedsCopy[line];
-          }
+            }
         else
           for (size_t line = 0, offset = 0;
                 line < parallelLines;
                 ++line, offset += maxSize)
-          {
+            {
             lineNeedsCopy[line] =
               sampleValues(
                 envelope[line], 0, size[d], &valuesBuffer[offset]);
             stripNeedsCopy &= lineNeedsCopy[line];
-          }
+            }
 
         // Now we write the buffer to the output image. This is done in parallel
         // for all scanlines in the strip. Therefore, we utilize the cache lines
@@ -610,24 +639,24 @@ GeneralizedDistanceTransformImageFilter<
               outoffset = currentStripOffset;
               j < size[d];
               ++j, outoffset += stride - parallelLines)
-        {
+          {
           for (size_t line = 0, inoffset = j;
                 line < parallelLines;
                 ++line,
                 inoffset += maxSize, // ...scanlines are maxSize elements apart
                 ++outoffset)
-          {
+            {
             // outoffset advances by 1, so rawDistance is written sequentially.
             // inoffset advances by a larger amount, but after parallelLines
             // iterations, the cache line read first can be reused again.
             if (lineNeedsCopy[line])
               *(rawDistance + outoffset) =
                 valuesBuffer[inoffset];
+            }
           }
-        }
 
         if (this->m_CreateVoronoiMap)
-        {
+          {
           // More of the same
           for (size_t line = 0, offset = 0;
                 line < parallelLines;
@@ -645,18 +674,20 @@ GeneralizedDistanceTransformImageFilter<
               if (lineNeedsCopy[line])
                 *(rawLabel + outoffset) =
                   voronoiBuffer[inoffset];
+          }
         }
-      }
 
       // Ok, all strips are done
       for (size_t i = 0; i < size[0]; ++i)
-      {
+        {
         distanceIt.NextLine();
         if (this->m_CreateVoronoiMap)
+          {
           voronoiMapIt.NextLine();
+          }
+        }
       }
     }
-  }
 } // end GenerateData()
 
 template < class TFunctionImage, class TDistanceImage, class TLabelImage >
@@ -744,15 +775,15 @@ GeneralizedDistanceTransformImageFilter<
 
   const AbscissaIndexType di = q.i - p.i;
   if (di != 1)
-  {
+    {
     const AbscissaIndexType i = ((q.i + p.i) + (q.y - p.y) / di) / 2 + 1;
     return i < from ? from : (i > to ? to : i);
-  }
+    }
   else
-  {
+    {
     const AbscissaIndexType i = ((q.i + p.i) + (q.y - p.y)) / 2 + 1;
     return i < from ? from : (i > to ? to : i);
-  }
+    }
 }
 
 template < class TFunctionImage,class TDistanceImage, class TLabelImage >
@@ -767,7 +798,7 @@ GeneralizedDistanceTransformImageFilter<
   const std::vector< SpacingType > & divisionTable )
 {
   // We do not care for background values
-  if (py >= MaximalSquaredDistance)
+  if (py >= m_MaximalSquaredDistance)
     return;
 
   Parabola p = {pi, py, pl, 0};
@@ -817,7 +848,7 @@ GeneralizedDistanceTransformImageFilter<
   const LabelPixelType& pl)
 {
   // More of the same, without spacing.
-  if (py >= MaximalSquaredDistance)
+  if (py >= m_MaximalSquaredDistance)
     return;
 
   Parabola p = {pi, py, pl, 0};
@@ -853,7 +884,9 @@ GeneralizedDistanceTransformImageFilter<
   // An empty envelope signifies that only background values are present in
   // the scanline. Nothing needs to be sampled at all
   if (envelope.empty())
+    {
     return false;
+    }
 
   // Search for the correct parabola
   typename Parabolas::size_type parabolaIndex = 0;
@@ -878,7 +911,7 @@ GeneralizedDistanceTransformImageFilter<
   for (AbscissaIndexType i = from;
        i != from + steps;
        ++parabolaIndex) // i is increased within the loop
-  {
+    {
     // Compute the interval for which the current parabola needs to be sampled.
     // This goes from i either to the start of the dominance interval of the
     // next parabola or to the end of the scanline.
@@ -903,24 +936,24 @@ GeneralizedDistanceTransformImageFilter<
     //
     // This happens often enough to justify the shortcut.
     if (delta == 0 && stepsInRegion == 1)
-    {
+      {
       *buffer++ = p.y;
       ++i;
       continue;
-    }
+      }
 
     // Otherwise we sample correctly
     const SpacingType py(p.y);
     i += stepsInRegion; // We don't need i any more, increase here.
     for (; stepsInRegion; --stepsInRegion, ++buffer, ++delta)
-    {
+      {
       DistancePixelType value(py + delta * delta * sqrs);
       *buffer =
-        value < MaximalSquaredDistance ?
+        value < m_MaximalSquaredDistance ?
         value :
-        MaximalSquaredDistance;
+        m_MaximalSquaredDistance;
+      }
     }
-  }
   return true;
 }
 
@@ -935,7 +968,9 @@ GeneralizedDistanceTransformImageFilter<
 {
   // More of the same, but see below for sampling in the integer domain
   if (envelope.empty())
+    {
     return false;
+    }
 
   typename Parabolas::size_type parabolaIndex = 0;
   while (parabolaIndex != envelope.size() - 1 &&
@@ -966,9 +1001,9 @@ GeneralizedDistanceTransformImageFilter<
     for (; stepsInRegion; --stepsInRegion, ++buffer)
     {
       // p.y is preadded, spacing is 1
-      *buffer = value < MaximalSquaredDistance ?
+      *buffer = value < m_MaximalSquaredDistance ?
         value :
-        MaximalSquaredDistance;
+        m_MaximalSquaredDistance;
 
       // Advance the sample position, update value to current height
       // (x+1)^2 + b = (x^2+2x+1) + b.
@@ -991,7 +1026,9 @@ GeneralizedDistanceTransformImageFilter<
   LabelPixelType *buffer)
 {
   if (envelope.empty())
+    {
     return false;
+    }
 
   typename Parabolas::size_type parabolaIndex = 0;
   // Search for the correct parabola
@@ -1004,7 +1041,7 @@ GeneralizedDistanceTransformImageFilter<
     ++parabolaIndex;
   AbscissaIndexType i = from;
   while (i != from + steps)
-  {
+    {
     const Parabola &p = envelope[parabolaIndex];
     AbscissaIndexType stepsInRegion =
       parabolaIndex < envelope.size() - 1 &&
@@ -1019,10 +1056,9 @@ GeneralizedDistanceTransformImageFilter<
     // Increase the parabola index to the next parabola of a different label
     ++parabolaIndex;
     while (parabolaIndex < envelope.size() - 1 &&
-           envelope[parabolaIndex+1].l ==
-           envelope[parabolaIndex].l)
+           envelope[parabolaIndex+1].l == envelope[parabolaIndex].l)
       ++parabolaIndex;
-  }
+    }
   return true;
 }
 } // end namespace itk
