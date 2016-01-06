@@ -1,12 +1,12 @@
 /*=========================================================================
 
   Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: MomentRegistrator.txx,v $
+  Module:    $RCSfile: ITKHeader.h,v $
   Language:  C++
-  Date:      $Date: 2007/03/29 17:52:55 $
-  Version:   $Revision: 1.6 $
+  Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
+  Version:   $Revision: 0 $
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
+  Copyright (c) 2002 Insight Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
@@ -15,8 +15,8 @@
 
 =========================================================================*/
 
-#ifndef __AffineImageToImageRegistrationMethod_txx
-#define __AffineImageToImageRegistrationMethod_txx
+#ifndef __itkAffineImageToImageRegistrationMethod_txx
+#define __itkAffineImageToImageRegistrationMethod_txx
 
 #include "itkAffineImageToImageRegistrationMethod.h"
 
@@ -92,17 +92,17 @@ template <class TImage>
 typename AffineImageToImageRegistrationMethod<TImage>::TransformType
 * AffineImageToImageRegistrationMethod<TImage>
 ::GetTypedTransform( void )
-  {
+{
   return static_cast<TransformType  *>( Superclass::GetTransform() );
-  }
+}
 
 template <class TImage>
 const typename AffineImageToImageRegistrationMethod<TImage>::TransformType
 * AffineImageToImageRegistrationMethod<TImage>
 ::GetTypedTransform( void ) const
-  {
+{
   return static_cast<const TransformType  *>( Superclass::GetTransform() );
-  }
+}
 
 template <class TImage>
 typename AffineImageToImageRegistrationMethod<TImage>::AffineTransformPointer
@@ -138,6 +138,6 @@ AffineImageToImageRegistrationMethod<TImage>
   Superclass::PrintSelf(os, indent);
 }
 
-};
+}
 
 #endif

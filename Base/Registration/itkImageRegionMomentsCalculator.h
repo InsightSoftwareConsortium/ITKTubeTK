@@ -1,12 +1,12 @@
 /*=========================================================================
 
   Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itkImageRegionMomentsCalculator.h,v $
+  Module:    $RCSfile: ITKHeader.h,v $
   Language:  C++
-  Date:      $Date: 2008-10-06 08:54:43 $
-  Version:   $Revision: 1.39 $
+  Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
+  Version:   $Revision: 0 $
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
+  Copyright (c) 2002 Insight Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
@@ -104,37 +104,40 @@ public:
   typedef typename ImageType::ConstPointer ImageConstPointer;
 
   /** Affine transform for mapping to and from principal axis */
-  typedef AffineTransform<double, itkGetStaticConstMacro(ImageDimension)> AffineTransformType;
-  typedef typename AffineTransformType::Pointer                           AffineTransformPointer;
+  typedef AffineTransform<double,
+    itkGetStaticConstMacro(ImageDimension)>             AffineTransformType;
+  typedef typename AffineTransformType::Pointer         AffineTransformPointer;
 
   /** Set the input image. */
   virtual void SetImage( const ImageType * image )
-  {
+    {
     if( m_Image != image )
       {
       m_Image = image;
       this->Modified();
       m_Valid = false;
       }
-  }
+    }
 
   /** Set the spatial object mask. */
-  virtual void SetSpatialObjectMask( const SpatialObject<itkGetStaticConstMacro( ImageDimension )> * so )
-  {
+  virtual void SetSpatialObjectMask(
+    const SpatialObject<itkGetStaticConstMacro( ImageDimension )> * so )
+    {
     if( m_SpatialObjectMask != so )
       {
       m_SpatialObjectMask = so;
       this->Modified();
       m_Valid = false;
       }
-  }
+    }
 
   /** Method for controlling the region of interest that optionally limits the
    *   spatial extent of the computations */
   itkSetMacro(UseRegionOfInterest, bool);
   itkGetMacro(UseRegionOfInterest, bool);
-  virtual void SetRegionOfInterest( const PointType & point1, const PointType & point2 )
-  {
+  virtual void SetRegionOfInterest( const PointType & point1,
+                                    const PointType & point2 )
+    {
     if( m_RegionOfInterestPoint1 != point1 || m_RegionOfInterestPoint2 != point2 )
       {
       m_RegionOfInterestPoint1 = point1;
@@ -142,7 +145,7 @@ public:
       this->Modified();
       m_Valid = false;
       }
-  }
+    }
 
   itkGetMacro(RegionOfInterestPoint1, PointType);
   itkGetMacro(RegionOfInterestPoint2, PointType);

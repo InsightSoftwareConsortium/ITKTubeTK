@@ -1,12 +1,12 @@
 /*=========================================================================
 
   Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: BSplineRegistrator.h,v $
+  Module:    $RCSfile: ITKHeader.h,v $
   Language:  C++
-  Date:      $Date: 2006/11/06 14:39:34 $
-  Version:   $Revision: 1.15 $
+  Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
+  Version:   $Revision: 0 $
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
+  Copyright (c) 2002 Insight Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
@@ -15,8 +15,8 @@
 
 =========================================================================*/
 
-#ifndef __BSplineImageToImageRegistrationMethod_h
-#define __BSplineImageToImageRegistrationMethod_h
+#ifndef __itkBSplineImageToImageRegistrationMethod_h
+#define __itkBSplineImageToImageRegistrationMethod_h
 
 #include "itkImage.h"
 #include "itkBSplineDeformableTransform.h"
@@ -74,10 +74,9 @@ public:
 
   /**
    * The function performs the casting.  This function should only appear
-   *   once in the class hierarchy.  It is provided so that member
-   *   functions that exist only in specific transforms (e.g., SetIdentity)
-   *   can be called without the caller having to do the casting.
-   **/
+   * once in the class hierarchy.  It is provided so that member
+   * functions that exist only in specific transforms (e.g., SetIdentity)
+   * can be called without the caller having to do the casting. */
   virtual TransformType * GetTypedTransform( void );
 
   virtual const TransformType * GetTypedTransform( void ) const;
@@ -94,12 +93,13 @@ public:
   BSplineTransformPointer GetBSplineTransform( void ) const;
 
   void ComputeGridRegion( int numberOfControlPoints,
-                          typename TransformType::RegionType::SizeType & regionSize,
-                          typename TransformType::SpacingType & regionSpacing,
-                          typename TransformType::OriginType & regionOrigin,
-                          typename TransformType::DirectionType & regionDirection);
+                    typename TransformType::RegionType::SizeType & regionSize,
+                    typename TransformType::SpacingType & regionSpacing,
+                    typename TransformType::OriginType & regionOrigin,
+                    typename TransformType::DirectionType & regionDirection);
 
-  void ResampleControlGrid( int newNumberOfControlPoints, ParametersType & newParameters );
+  void ResampleControlGrid( int newNumberOfControlPoints,
+                            ParametersType & newParameters );
 
   itkSetMacro( GradientOptimizeOnly, bool );
   itkGetMacro( GradientOptimizeOnly, bool );
@@ -113,9 +113,11 @@ protected:
 
   virtual void Optimize( MetricType * metric, InterpolatorType * interpolator );
 
-  virtual void GradientOptimize( MetricType * metric, InterpolatorType * interpolator );
+  virtual void GradientOptimize( MetricType * metric,
+                                 InterpolatorType * interpolator );
 
-  virtual void MultiResolutionOptimize( MetricType * metric, InterpolatorType * interpolator );
+  virtual void MultiResolutionOptimize( MetricType * metric,
+                                        InterpolatorType * interpolator );
 
   virtual void PrintSelf( std::ostream & os, Indent indent ) const;
 

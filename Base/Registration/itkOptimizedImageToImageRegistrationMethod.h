@@ -1,12 +1,12 @@
 /*=========================================================================
 
   Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: RigidRegistrator.h,v $
+  Module:    $RCSfile: ITKHeader.h,v $
   Language:  C++
-  Date:      $Date: 2006/11/06 14:39:34 $
-  Version:   $Revision: 1.15 $
+  Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
+  Version:   $Revision: 0 $
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
+  Copyright (c) 2002 Insight Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
@@ -15,8 +15,8 @@
 
 =========================================================================*/
 
-#ifndef __OptimizedImageToImageRegistrationMethod_h
-#define __OptimizedImageToImageRegistrationMethod_h
+#ifndef __itkOptimizedImageToImageRegistrationMethod_h
+#define __itkOptimizedImageToImageRegistrationMethod_h
 
 #include "itkImage.h"
 
