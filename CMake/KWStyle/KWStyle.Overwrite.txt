@@ -22,3 +22,4 @@ itktubeRadiusExtractor2.h MemberFunctions Disable
 PreProcessRegistrationInputs.hxx Indent Disable
 SyncRecord.h MemberFunctions Disable
 SyncRecordManager.h MemberFunctions Disable
+vtkSlicerTortuosityLogic.h Namespace Disable
