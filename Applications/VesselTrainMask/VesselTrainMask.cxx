@@ -191,7 +191,8 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
   float progress = 0;
 
-  ImageReaderType::Pointer imReader = ImageReaderType::New();
+  typnename ImageReaderType::Pointer imReader;
+  imReader = ImageReaderType::New();
   typename ImageType::Pointer image;
   tube::InfoMessage( "Reading volume mask..." );
   imReader->SetFileName(inputVolume.c_str());
