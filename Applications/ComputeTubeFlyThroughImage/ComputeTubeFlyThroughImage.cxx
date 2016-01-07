@@ -336,11 +336,11 @@ int DoIt( int argc, char * argv[] )
       pTubeIndexPhysTransform->TransformPoint( itPts->GetPosition() );
 
     TubeNormalType curTubeNormal1 =
-    pTubeIndexPhysTransform->TransformCovariantVector( itPts->GetNormal1() );
+      pTubeIndexPhysTransform->TransformCovariantVector( itPts->GetNormal1() );
     curTubeNormal1.Normalize();
 
     TubeNormalType curTubeNormal2 =
-    pTubeIndexPhysTransform->TransformCovariantVector( itPts->GetNormal2() );
+      pTubeIndexPhysTransform->TransformCovariantVector( itPts->GetNormal2() );
     curTubeNormal2.Normalize();
 
     double curTubeRadius = (*itPts).GetRadius();
@@ -351,13 +351,13 @@ int DoIt( int argc, char * argv[] )
     // Define slice region in the output image
     typename ImageType::RegionType sliceRegion;
 
-      typename ImageType::IndexType sliceStartIndex;
-      sliceStartIndex.Fill(0);
-      sliceStartIndex[VDimension-1] = ptInd;
+    typename ImageType::IndexType sliceStartIndex;
+    sliceStartIndex.Fill(0);
+    sliceStartIndex[VDimension-1] = ptInd;
 
-      typename ImageType::SizeType sliceSize;
-      sliceSize = pFlyThroughImage->GetLargestPossibleRegion().GetSize();
-      sliceSize[VDimension-1] = 1;
+    typename ImageType::SizeType sliceSize;
+    sliceSize = pFlyThroughImage->GetLargestPossibleRegion().GetSize();
+    sliceSize[VDimension-1] = 1;
 
     sliceRegion.SetIndex( sliceStartIndex );
     sliceRegion.SetSize( sliceSize );
