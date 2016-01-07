@@ -89,7 +89,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Error loading input image: "
-                        + std::string(err.GetDescription()) );
+      + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -116,7 +116,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Error loading TRE File: "
-                        + std::string( err.GetDescription()) );
+      + std::string( err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -272,7 +272,7 @@ int DoIt( int argc, char * argv[] )
     {
 
     size[i] = 2 * (typename ImageType::SizeValueType)
-             (0.5 + (maxTubeRadius / outputSpacing[i])) + 1;
+      (0.5 + (maxTubeRadius / outputSpacing[i])) + 1;
     }
   size[VDimension-1] = tubePointList.size();
 
@@ -328,9 +328,7 @@ int DoIt( int argc, char * argv[] )
   unsigned long tubePixelCount = 0;
 
   for(  itPts = tubePointList.begin();
-        itPts != tubePointList.end();
-        itPts++, ptInd++
-     )
+    itPts != tubePointList.end(); itPts++, ptInd++ )
     {
     // Get position, radius and frenet-serret basis of current tube point
     // in the world coordinate system
@@ -369,9 +367,7 @@ int DoIt( int argc, char * argv[] )
     MaskIteratorType itMask( pTubeMaskFlyThroughImage, sliceRegion );
 
     for( itOutSlice.GoToBegin(), itMask.GoToBegin();
-         !itOutSlice.IsAtEnd();
-         ++itOutSlice, ++itMask
-       )
+      !itOutSlice.IsAtEnd(); ++itOutSlice, ++itMask )
       {
       // get index of the current output pixel
       typename ImageType::IndexType curOutIndex = itOutSlice.GetIndex();
@@ -390,7 +386,7 @@ int DoIt( int argc, char * argv[] )
       if(VDimension == 2)
         {
         double stepN1 = ( curOutIndex[0] - 0.5 * sliceSize[0] )
-                            * outputSpacing[0];
+          * outputSpacing[0];
 
         for(unsigned int i = 0; i < VDimension; i++)
           {
@@ -402,10 +398,10 @@ int DoIt( int argc, char * argv[] )
       else if (VDimension == 3)
         {
         double stepN1 = ( curOutIndex[0] - 0.5 * sliceSize[0] )
-                            * outputSpacing[0];
+          * outputSpacing[0];
 
         double stepN2 = ( curOutIndex[1] - 0.5 * sliceSize[1] )
-                            * outputSpacing[1];
+          * outputSpacing[1];
 
         for(unsigned int i = 0; i < VDimension; i++)
           {
@@ -458,7 +454,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Error writing fly through image: "
-                        + std::string(err.GetDescription()) );
+      + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
