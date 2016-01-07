@@ -73,7 +73,7 @@ signals:
   void opacityChanged(double opacity);
 
 protected:
-  QScopedPointer<tube::QtOverlayControlsWidgetPrivate> d_ptr;
+  QScopedPointer<tube::QtOverlayControlsWidgetPrivate> m_Dptr;
 
 private:
   Q_DECLARE_PRIVATE(QtOverlayControlsWidget);

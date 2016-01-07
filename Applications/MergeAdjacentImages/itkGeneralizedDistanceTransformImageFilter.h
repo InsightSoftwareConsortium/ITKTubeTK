@@ -1,3 +1,26 @@
+/*=========================================================================
+
+   Library:   TubeTK
+
+   Copyright 2010 Kitware Inc. 28 Corporate Drive,
+   Clifton Park, NY, 12065, USA.
+
+   All rights reserved.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+=========================================================================*/
+
 #ifndef __itkGeneralizedDistanceTransformImageFilter_h
 #define __itkGeneralizedDistanceTransformImageFilter_h
 
@@ -86,27 +109,23 @@ namespace itk
 *
 * The first implementation for ITK was published in:
 * A Generalized Squared Euclidean Distance Transform with Voronoi Maps
-* King B., Döker R., Meier S., Shin H., Galanski M.
+* King B., Doker R., Meier S., Shin H., Galanski M.
 * Department of Diagnostic Radiology, Hannover, Medical School, Germany
 * http://hdl.handle.net/1926/196
 *
 * \ingroup ImageFeatureExtraction
-*
 */
-
-template <
-  class TFunctionImage,
-  class TDistanceImage=TFunctionImage,
-  class TLabelImage=TFunctionImage >
-class GeneralizedDistanceTransformImageFilter :
-    public ImageToImageFilter<TFunctionImage,TDistanceImage>
+ template< class TFunctionImage, class TDistanceImage=TFunctionImage,
+           class TLabelImage=TFunctionImage >
+class GeneralizedDistanceTransformImageFilter
+  : public ImageToImageFilter<TFunctionImage, TDistanceImage>
 {
 public:
   /** Standard class typedefs. */
-  typedef GeneralizedDistanceTransformImageFilter Self;
+  typedef GeneralizedDistanceTransformImageFilter           Self;
   typedef ImageToImageFilter<TFunctionImage,TDistanceImage> Superclass;
-  typedef SmartPointer<Self> Pointer;
-  typedef SmartPointer<const Self> ConstPointer;
+  typedef SmartPointer<Self>                                Pointer;
+  typedef SmartPointer<const Self>                          ConstPointer;
 
   /** Method for creation through the object factory */
   itkNewMacro(Self);
@@ -115,16 +134,17 @@ public:
   itkTypeMacro(GeneralizedDistanceTransformImageFilter, ImageToImageFilter);
 
   /** Types and pointer types for the images and their content. */
-  typedef TFunctionImage FunctionImageType;
-  typedef TDistanceImage DistanceImageType;
-  typedef TLabelImage LabelImageType;
+  typedef TFunctionImage                                  FunctionImageType;
+  typedef TDistanceImage                                  DistanceImageType;
+  typedef TLabelImage                                     LabelImageType;
   typedef typename TFunctionImage::SpacingType::ValueType SpacingType;
-  typedef typename FunctionImageType::ConstPointer FunctionImageConstPointer;
-  typedef typename DistanceImageType::Pointer DistanceImagePointer;
-  typedef typename LabelImageType::Pointer LabelImagePointer;
+
+  typedef typename FunctionImageType::ConstPointer   FunctionImageConstPointer;
+  typedef typename DistanceImageType::Pointer        DistanceImagePointer;
+  typedef typename LabelImageType::Pointer           LabelImagePointer;
   typedef typename FunctionImageType::IndexValueType IndexValueType;
-  typedef typename LabelImageType::PixelType LabelPixelType;
-  typedef typename DistanceImageType::PixelType DistancePixelType;
+  typedef typename LabelImageType::PixelType         LabelPixelType;
+  typedef typename DistanceImageType::PixelType      DistancePixelType;
 
   /** Set if a voronoi map should be created. */
   void SetCreateVoronoiMap(bool);
@@ -192,8 +212,8 @@ private:
   bool                  m_CreateVoronoiMap;
   bool                  m_UseImageSpacing;
 
-  const double MaximalSquaredDistance;
-  const int CacheLineSize;
+  const double          m_MaximalSquaredDistance;
+  const int             m_CacheLineSize;
 
   //
   // DETAILS
@@ -210,12 +230,12 @@ private:
    * voronoi map and dominantFrom is used to track which parabola controls which
    * part of the lower envelope. */
   struct Parabola
-  {
+    {
     AbscissaIndexType i;
     DistancePixelType y;
     LabelPixelType l;
     AbscissaIndexType dominantFrom;
-  };
+    };
 
   /** The envelope is a vector of parabolas, ordered from left to right by their
    * abscissa ordinate. */
@@ -230,14 +250,16 @@ private:
    * \param to Largest possible output value
    * \return The smallest index for which the parabola q is below p */
   AbscissaIndexType
-  intersection(const Parabola &p, const Parabola &q,
+  intersection(const Parabola &p,
+    const Parabola &q,
     const std::vector< SpacingType > & divisionTable,
     const AbscissaIndexType &from,
     const AbscissaIndexType &to);
 
   /** \overload Does not use spacing */
   inline AbscissaIndexType
-  intersection(const Parabola &p, const Parabola &q,
+  intersection(const Parabola &p,
+    const Parabola &q,
     const AbscissaIndexType &from,
     const AbscissaIndexType &to);
 
