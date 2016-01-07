@@ -137,8 +137,8 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
   m_TubeIdToObjectMap.clear();
 
   for( typename TubeGroupType::ChildrenListType::iterator
-       itTubes = pTubeList->begin();
-       itTubes != pTubeList->end(); ++itTubes )
+    itTubes = pTubeList->begin();
+    itTubes != pTubeList->end(); ++itTubes )
     {
     m_TubeIdToObjectMap[( *itTubes )->GetId()]
       = dynamic_cast< TubeType * >( itTubes->GetPointer() );
@@ -155,8 +155,8 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
   m_TubeGraph.clear();
 
   for( typename TubeGroupType::ChildrenListType::iterator
-       itSourceTubes = pTubeList->begin();
-       itSourceTubes != pTubeList->end(); ++itSourceTubes )
+    itSourceTubes = pTubeList->begin();
+    itSourceTubes != pTubeList->end(); ++itSourceTubes )
     {
     TubePointerType pCurSourceTube
       = dynamic_cast< TubeType * >( itSourceTubes->GetPointer() );
@@ -167,16 +167,16 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
     int curSourceTubePointId = 0;
     for( typename TubePointListType::const_iterator
-         itSourcePoints = sourcePointList.begin();
-         itSourcePoints != sourcePointList.end(); ++itSourcePoints )
+      itSourcePoints = sourcePointList.begin();
+      itSourcePoints != sourcePointList.end(); ++itSourcePoints )
       {
       TubePointType ptSource = *itSourcePoints;
       PositionVectorType ptSourcePos
         = ptSource.GetPosition().GetVectorFromOrigin();
 
       for( typename TubeGroupType::ChildrenListType::iterator
-           itTargetTubes = pTubeList->begin();
-           itTargetTubes != pTubeList->end(); ++itTargetTubes )
+        itTargetTubes = pTubeList->begin();
+        itTargetTubes != pTubeList->end(); ++itTargetTubes )
         {
         TubePointerType curTargetTube
           = dynamic_cast< TubeType * >( itTargetTubes->GetPointer() );
@@ -197,8 +197,8 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
         int ptCandidateIdList[] = {0, (int) targetPointList.size() - 1};
 
         std::priority_queue< ConnectionPointType,
-                             std::vector< ConnectionPointType >,
-                             std::greater< ConnectionPointType > >
+          std::vector< ConnectionPointType >,
+          std::greater< ConnectionPointType > >
         minpqConnPoint;
         ConnectionPointType ePtConn;
 
@@ -226,12 +226,12 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
           if( curPtId == 0 )
             {
             ptNextPos = targetPointList[ curPtId + 1 ].GetPosition()
-                                                      .GetVectorFromOrigin();
+              .GetVectorFromOrigin();
             }
             else
             {
             ptNextPos = targetPointList[ curPtId - 1 ].GetPosition()
-                                                      .GetVectorFromOrigin();
+              .GetVectorFromOrigin();
             }
 
           PositionVectorType curVecToNextPt = ptNextPos - ptCurPos;
@@ -281,7 +281,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
         // if edge to current target is present then update it, else add it
         if( m_TubeGraph[curSourceTubeId].find( curTargetTubeId )
-            != m_TubeGraph[curSourceTubeId].end() )
+          != m_TubeGraph[curSourceTubeId].end() )
           {
           GraphEdgeType eOld = m_TubeGraph[curSourceTubeId][curTargetTubeId];
 
@@ -306,7 +306,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     << m_TubeIdToObjectMap.size() );
 
   for( typename TubeAdjacencyListGraphType::const_iterator
-       itV = m_TubeGraph.begin(); itV != m_TubeGraph.end(); ++itV )
+    itV = m_TubeGraph.begin(); itV != m_TubeGraph.end(); ++itV )
     {
     tubeDebugMacro( << "Id = " << itV->first
       << ", numPoints = "
@@ -315,7 +315,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       <<  m_TubeGraph[itV->first].size() );
 
     for( typename GraphEdgeListType::const_iterator
-         itE = itV->second.begin(); itE != itV->second.end(); ++itE )
+      itE = itV->second.begin(); itE != itV->second.end(); ++itE )
       {
       GraphEdgeType e = itE->second;
       tubeDebugMacro( << "  Id = " << e.targetTubeId
@@ -341,8 +341,8 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
   // add neighbors to priority queue
   for( typename GraphEdgeListType::iterator
-       itRootNeighbors = m_TubeGraph[tubeId].begin();
-       itRootNeighbors != m_TubeGraph[tubeId].end(); ++itRootNeighbors )
+    itRootNeighbors = m_TubeGraph[tubeId].begin();
+    itRootNeighbors != m_TubeGraph[tubeId].end(); ++itRootNeighbors )
     {
     TubeIdType curTargetTubId = itRootNeighbors->second.targetTubeId;
 
@@ -441,7 +441,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
     // correct parent point id if parent tube points were reversed
     if( m_SetTubesReversed.find( eTop.sourceTubeId )
-        != m_SetTubesReversed.end() )
+      != m_SetTubesReversed.end() )
       {
       int numParentTubePoints = (int) eTop.sourceTube->GetNumberOfPoints();
       eTop.sourceTubePointId = numParentTubePoints - eTop.sourceTubePointId - 1;
@@ -516,12 +516,12 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     {
     // push given root tubes into a priority queue with outDegree as priority
     for( typename TubeIdListType::const_iterator
-         itRootTubeId = m_RootTubeIdList.begin();
-         itRootTubeId != m_RootTubeIdList.end(); ++itRootTubeId )
+      itRootTubeId = m_RootTubeIdList.begin();
+      itRootTubeId != m_RootTubeIdList.end(); ++itRootTubeId )
       {
       // throw exception if current root tube id is not present
       if( m_TubeIdToObjectMap.find( *itRootTubeId )
-          == m_TubeIdToObjectMap.end() )
+        == m_TubeIdToObjectMap.end() )
         {
         itkExceptionMacro( << "Could not find root tube id: " << *itRootTubeId );
         }
@@ -546,7 +546,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     {
     // push all tubes into a priority queue with outDegree as priotiry
     for( typename TubeAdjacencyListGraphType::const_iterator
-         itV = m_TubeGraph.begin(); itV != m_TubeGraph.end(); ++itV )
+      itV = m_TubeGraph.begin(); itV != m_TubeGraph.end(); ++itV )
       {
       TubePQElementType epTube;
       epTube.tubeId = itV->first;
