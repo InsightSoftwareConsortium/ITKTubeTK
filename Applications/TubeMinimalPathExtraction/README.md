@@ -16,8 +16,9 @@ generates an arrival function from which we extract the minimal path.
                               [--numberOfIterations <int>] [--]
                               [--stepLengthFactor <double>]
                               [--stepLengthRelax <double>]
-                              [--extractRadius <boolean>][--version]
-                              [-h] <std::string> <std::string> <std::string>
+                              [--extractRadius]
+                              [--radiusImage <std::string>][--version]
+                              [-h] <std::string> <std::string>
 
 
 Where:
@@ -42,15 +43,18 @@ Where:
    --extractRadius <boolean>
      Indicates if the tubes radius should be estimated along the path.
 
+   --radiusImage <std::string>
+     Original mhd image from where to estimate the tube radius
+
    --terminationValue <double>
      Minimum difference value to reach before optimizer is terminated.
      (default: 2.0)
 
    --numberOfIterations <int>
-     Maximum number of optimizer iterations (default: 1000)
+     Maximum number of optimizer iterations (default: 2000)
 
    --stepLengthFactor <double>
-     Optimizer Step Size factor (default: 1.0)
+     Optimizer Step Size factor (default: 0.1)
 
    --stepLengthRelax <double>
      Relaxation factor for the regular step gradient optimizer
@@ -68,9 +72,6 @@ Where:
    <std::string>
      (required)  Input speed function (mhd file of a real-valued in the
      range [0,1])
-
-   <std::string>
-     (required)  Output mhd file of the path.
 
    <std::string>
      (required)  Output TRE file of tubes centered along the path.

@@ -20,15 +20,74 @@
 # limitations under the License.
 #
 ##############################################################################
+set( MODULE_NAME TubeMinimalPathExtraction )
+project( ${MODULE_NAME} )
+
+#Check if MinimalPathExtraction is built in ITK as a remote module
 list( FIND ITK_MODULES_ENABLED MinimalPathExtraction
   MinimalPathExtraction_ITK )
-if( NOT ( MinimalPathExtraction_DIR OR
+
+if( NOT( MinimalPathExtraction_DIR OR
   ( ${MinimalPathExtraction_ITK} GREATER "-1" ) ) )
-  message(WARNING "Couldn't find package MinimalPathExtraction.
-    Removing CLI module ...")
+
+  if( NOT MinimalPathExtraction_SOURCE_DIR )
+
+    message( FATAL_ERROR "MinimalPathExtraction_SOURCE_DIR not found" )
+
+  endif()
+
+#   if( NOT EXISTS ${MinimalPathExtraction_SOURCE_DIR} )
+#     set( GIT_COMMAND "git" )
+#     set( GIT_CLONE_ARGS "clone" "${MinimalPathExtraction_URL}"
+#       "${MinimalPathExtraction_SOURCE_DIR}" )
+#     add_custom_target( ITKMinimalPathExtractionDownload
+#       COMMAND ${GIT_COMMAND} ${GIT_CLONE_ARGS}
+#       WORKING_DIRECTORY ${TubeTK_BINARY_DIR}
+#       COMMENT "Download ITKMinimalPathExtraction Remote Module" VERBATIM )
+#   endif( NOT EXISTS ${MinimalPathExtraction_SOURCE_DIR} )
+
+  #Download MinimalPathExtraction sources
+  if( NOT EXISTS ${MinimalPathExtraction_SOURCE_DIR} )
+
+    set( GIT_COMMAND "git" )
+    set( GIT_CLONE_ARGS "clone" "${MinimalPathExtraction_URL}"
+      "${MinimalPathExtraction_SOURCE_DIR}" )
+    execute_process( COMMAND  ${GIT_COMMAND} ${GIT_CLONE_ARGS} )
+
+  endif( NOT EXISTS ${MinimalPathExtraction_SOURCE_DIR} )
+
+  # Find ITK
+  find_package( ITK REQUIRED )
+  if( TubeTK_BUILD_WITHIN_SLICER )
+    set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 ) # See Libs/ITKFactoryRegistration/CMakeLists.txt
+  endif( TubeTK_BUILD_WITHIN_SLICER )
+  include( ${ITK_USE_FILE} )
+
+  #Find MinimalPathExtraction additional sources
+  file( GLOB SRCS
+    "${MinimalPathExtraction_SOURCE_DIR}/src/*.cxx" )
+
+  SEMMacroBuildCLI(
+    NAME ${MODULE_NAME}
+    LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
+    TARGET_LIBRARIES
+      ${ITK_LIBRARIES} TubeTKIO ITKIOMeta ITKIOSpatialObjects ITKIOImageBase
+        TubeTKNumerics TubeTKCommon
+    INCLUDE_DIRECTORIES
+      ${TubeTK_SOURCE_DIR}/Base/CLI
+      ${TubeTK_SOURCE_DIR}/Base/Common
+      ${TubeTK_SOURCE_DIR}/Base/IO
+      ${TubeTK_SOURCE_DIR}/Base/Segmentation
+      ${TubeTK_SOURCE_DIR}/Base/Numerics
+      ${MinimalPathExtraction_SOURCE_DIR}/include
+    ADDITIONAL_SRCS
+      ${SRCS} )
+
+#   if( NOT EXISTS ${${proj}_SOURCE_DIR} )
+#     add_dependencies( ${MODULE_NAME} ITKMinimalPathExtractionDownload )
+#   endif( NOT EXISTS ${${proj}_SOURCE_DIR} )
+
 else()
-  set( MODULE_NAME TubeMinimalPathExtraction )
-  project( ${MODULE_NAME} )
 
   if( NOT TubeTK_SOURCE_DIR )
     find_package( TubeTK REQUIRED )
@@ -63,7 +122,8 @@ else()
       ${TubeTK_SOURCE_DIR}/Base/Segmentation
       ${TubeTK_SOURCE_DIR}/Base/Numerics)
 
-  if( BUILD_TESTING )
-    add_subdirectory( Testing )
-  endif( BUILD_TESTING )
 endif()
+
+if( BUILD_TESTING )
+  add_subdirectory( Testing )
+endif( BUILD_TESTING )

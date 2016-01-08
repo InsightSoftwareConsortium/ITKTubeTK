@@ -134,6 +134,8 @@ if( TubeTK_USE_CTK )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "CTK" )
 endif( TubeTK_USE_CTK )
 
+set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "MinimalPathExtraction" )
+
 set( TubeTK_EXTERNAL_PROJECTS_ARGS )
 
 if( TubeTK_USE_BOOST )
