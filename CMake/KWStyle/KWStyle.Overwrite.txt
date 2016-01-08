@@ -24,3 +24,4 @@ PreProcessRegistrationInputs.hxx Indent Disable
 SyncRecord.h MemberFunctions Disable
 SyncRecordManager.h MemberFunctions Disable
 itkGeneralizedDistanceTransformImageFilter.h MemberFunctions Disable
+vtkSlicerTortuosityLogic.h Namespace Disable

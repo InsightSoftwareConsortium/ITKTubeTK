@@ -1,7 +1,7 @@
 TubeTK: Tubular Object Extraction, Registration, and Analysis
 =============================================================
 
-[![Build Status](https://travis-ci.org/TubeTK/TubeTK.png?branch=master)](https://travis-ci.org/TubeTK/TubeTK)
+[![Circle CI](https://circleci.com/gh/KitwareMedical/TubeTK.svg?style=svg)](https://open.cdash.org/index.php?project=TubeTK)
 
 [TubeTK](http://www.tubetk.org) is an open-source toolkit for the segmentation, registration, and analysis of tubes and surfaces in images, developed by [Kitware, Inc.](http://www.kitware.com)
 
