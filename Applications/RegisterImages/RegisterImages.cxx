@@ -600,28 +600,28 @@ int DoIt( int argc, char * argv[] )
     catch( ... )
       {
       std::cerr << "Uncaught exception during helper class saving."
-        << std::endl;
+                << std::endl;
       return EXIT_FAILURE;
       }
     }
 
-    if( saveDisplacementField.size() > 1 )
+  if( saveDisplacementField.size() > 1 )
     {
-      try
+    try
       {
-        reger->SaveDisplacementField( saveDisplacementField );
+      reger->SaveDisplacementField( saveDisplacementField );
       }
-      catch( itk::ExceptionObject & exception )
+    catch( itk::ExceptionObject & exception )
       {
-        std::cerr << "Exception caught during helper class transform saving."
-        << exception << std::endl;
-        return EXIT_FAILURE;
+      std::cerr << "Exception caught during helper class transform saving."
+                << exception << std::endl;
+      return EXIT_FAILURE;
       }
-      catch( ... )
+    catch( ... )
       {
-        std::cerr << "Uncaught exception during helper class saving."
-        << std::endl;
-        return EXIT_FAILURE;
+      std::cerr << "Uncaught exception during helper class saving."
+                << std::endl;
+      return EXIT_FAILURE;
       }
     }
   return EXIT_SUCCESS;

@@ -1,12 +1,12 @@
 /*=========================================================================
 
   Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itkAnisotropicSimilarityLandmarkBasedTransformInitializer.h,v $
+  Module:    $RCSfile: ITKHeader.h,v $
   Language:  C++
-  Date:      $Date: 2008-06-26 13:50:49 $
-  Version:   $Revision: 1.7 $
+  Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
+  Version:   $Revision: 0 $
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
+  Copyright (c) 2002 Insight Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
@@ -14,7 +14,6 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-
 #ifndef __itkAnisotropicSimilarityLandmarkBasedTransformInitializer_h
 #define __itkAnisotropicSimilarityLandmarkBasedTransformInitializer_h
 
@@ -28,7 +27,7 @@
 namespace itk
 {
 
-/** \brief AnisotropicSimilarityLandmarkBasedTransformInitializer is a helper class intended to
+/** \brief AnisotropicSimilarityLandmarkBasedTransformInitializer
  * The class computes the transform that aligns the fixed and moving images
  * given a set of landmarks. The class is templated over the Transform type.
  *    The transform computed gives the best fit transform that maps the fixed
@@ -77,8 +76,10 @@ public:
   typedef typename TransformType::Pointer TransformPointer;
 
   /** Dimension of parameters. */
-  itkStaticConstMacro(InputSpaceDimension, unsigned int, TransformType::InputSpaceDimension);
-  itkStaticConstMacro(OutputSpaceDimension, unsigned int, TransformType::OutputSpaceDimension);
+  itkStaticConstMacro(InputSpaceDimension, unsigned int,
+                      TransformType::InputSpaceDimension);
+  itkStaticConstMacro(OutputSpaceDimension, unsigned int,
+                      TransformType::OutputSpaceDimension);
 
   /** Set the transform to be initialized */
   itkSetObjectMacro( Transform,   TransformType   );
@@ -97,10 +98,10 @@ public:
    * and moving image grid, given a set of landmarks. Nothing is done with the
    * images themselves. The method will therefore be deprecated and removed */
   void SetFixedImage( const FixedImageType * image )
-  {
+    {
     this->m_FixedImage = image;
     itkLegacyBodyMacro( SetFixedImage, 2.2 );
-  }
+    }
 
   /** \deprecated
    * Set the moving image.
@@ -109,35 +110,36 @@ public:
    * and moving image grid, given a set of landmarks. Nothing is done with the
    * images themselves. The method will therefore be deprecated and removed. */
   void SetMovingImage( const MovingImageType * image )
-  {
+    {
     this->m_MovingImage = image;
     itkLegacyBodyMacro( SetMovingImage, 2.2 );
-  }
+    }
 
   /** Determine the image dimension. */
   itkStaticConstMacro(ImageDimension, unsigned int, FixedImageType::ImageDimension );
 
   /** Convenience typedefs */
-  typedef typename TransformType::InputPointType                InputPointType;
-  typedef typename TransformType::OutputVectorType              OutputVectorType;
-  typedef Point<double, itkGetStaticConstMacro(ImageDimension)> LandmarkPointType;
-  typedef std::vector<LandmarkPointType>                        LandmarkPointContainer;
-  typedef typename
-  LandmarkPointContainer::const_iterator        PointsContainerConstIterator;
-  typedef typename TransformType::ParametersType ParametersType;
-  typedef typename ParametersType::ValueType     ParameterValueType;
+  typedef typename TransformType::InputPointType   InputPointType;
+  typedef typename TransformType::OutputVectorType OutputVectorType;
+  typedef Point<double,
+          itkGetStaticConstMacro(ImageDimension)>  LandmarkPointType;
+  typedef std::vector<LandmarkPointType>           LandmarkPointContainer;
+  typedef typename  LandmarkPointContainer::const_iterator
+                                                   PointsContainerConstIterator;
+  typedef typename TransformType::ParametersType   ParametersType;
+  typedef typename ParametersType::ValueType       ParameterValueType;
 
   /** Set the Fixed landmark point containers */
   void SetFixedLandmarks(const LandmarkPointContainer & fixedLandmarks)
-  {
+    {
     this->m_FixedLandmarks = fixedLandmarks;
-  }
+    }
 
   /** Set the Moving landmark point containers */
   void SetMovingLandmarks(const LandmarkPointContainer & movingLandmarks)
-  {
+    {
     this->m_MovingLandmarks = movingLandmarks;
-  }
+    }
 
   /**  Supported Transform typedefs */
   typedef AnisotropicSimilarity3DTransform<ParameterValueType>
@@ -150,8 +152,8 @@ public:
 protected:
   AnisotropicSimilarityLandmarkBasedTransformInitializer();
   ~AnisotropicSimilarityLandmarkBasedTransformInitializer()
-  {
-  };
+    {
+    }
 
   void PrintSelf(std::ostream & os, Indent indent) const;
 
@@ -163,8 +165,11 @@ protected:
     Else
     } InputTransformType;
 private:
-  AnisotropicSimilarityLandmarkBasedTransformInitializer(const Self &); // purposely not implemented
-  void operator=(const Self &);                                         // purposely not implemented
+  // purposely not implemented
+  AnisotropicSimilarityLandmarkBasedTransformInitializer(const Self &);
+
+  // purposely not implemented
+  void operator=(const Self &);
 
   FixedImagePointer  m_FixedImage;
   MovingImagePointer m_MovingImage;

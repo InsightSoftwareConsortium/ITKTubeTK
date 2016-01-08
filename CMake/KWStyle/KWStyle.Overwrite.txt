@@ -5,6 +5,7 @@ qSlicer.* MemberFunctions Disable
 qSlicer.* InternalVariables Disable
 QtOverlayControlsWidget.cxx InternalVariables Disable
 QtOverlayControlsWidget.cxx Encapsulation Disable
+QtOverlayControlsWidget.h MemberFunctions Disable
 .*UI\.h Namespace Disable
 ImageCompareCommand.cxx Header Disable
 itktubeMeta.*\.h InternalVariables Disable
@@ -22,4 +23,5 @@ itktubeRadiusExtractor2.h MemberFunctions Disable
 PreProcessRegistrationInputs.hxx Indent Disable
 SyncRecord.h MemberFunctions Disable
 SyncRecordManager.h MemberFunctions Disable
+itkGeneralizedDistanceTransformImageFilter.h MemberFunctions Disable
 vtkSlicerTortuosityLogic.h Namespace Disable

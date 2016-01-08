@@ -71,7 +71,7 @@ void QtOverlayControlsWidgetPrivate::setupUi(QWidget* widgetToSetup)
 
 QtOverlayControlsWidget::QtOverlayControlsWidget(QWidget* _parent)
   : QWidget(_parent)
-  , d_ptr(new QtOverlayControlsWidgetPrivate(*this))
+  , m_Dptr(new QtOverlayControlsWidgetPrivate(*this))
 {
   Q_D(QtOverlayControlsWidget);
   d->setupUi(this);

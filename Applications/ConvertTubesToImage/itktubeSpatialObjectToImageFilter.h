@@ -58,7 +58,7 @@ public:
   typedef SmartPointer< Self >                           Pointer;
   typedef SmartPointer< const Self >                     ConstPointer;
 
-  /**Tube class typedef **/
+  /** Tube class typedef */
   typedef TOutputImage                                   OutputImageType;
   typedef SpatialObject<ObjectDimension>                 SpatialObjectType;
   typedef typename SpatialObjectType::ChildrenListType   ChildrenListType;

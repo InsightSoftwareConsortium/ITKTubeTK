@@ -53,7 +53,7 @@ public slots:
   void useNewFilter();
 
 protected:
-  QScopedPointer<QtImageEditorPrivate> d_ptr;
+  QScopedPointer<QtImageEditorPrivate> m_Dptr;
   virtual void setControlsVisible(bool visible);
 
 private:
