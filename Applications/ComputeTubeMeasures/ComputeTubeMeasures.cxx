@@ -58,13 +58,13 @@ int DoIt( int argc, char * argv[] )
     CLPProcessInformation );
   progressReporter.Start();
 
-  typedef TPixel                                    InputPixelType;
-  typedef itk::Image< InputPixelType, VDimension >  InputImageType;
-  typedef itk::ImageFileReader< InputImageType >    ReaderType;
+  typedef TPixel                                       InputPixelType;
+  typedef itk::Image< InputPixelType, VDimension >     InputImageType;
+  typedef itk::ImageFileReader< InputImageType >       ReaderType;
 
-  typedef float                                     OutputPixelType;
-  typedef itk::Image< OutputPixelType, VDimension > OutputImageType;
-  typedef itk::ImageFileWriter< OutputImageType  >  WriterType;
+  typedef float                                        OutputPixelType;
+  typedef itk::Image< OutputPixelType, VDimension >    OutputImageType;
+  typedef itk::ImageFileWriter< OutputImageType  >     WriterType;
 
   typedef itk::RescaleIntensityImageFilter< InputImageType, OutputImageType >
                                                        RescaleFilterType;

@@ -138,7 +138,7 @@ int DoIt( int argc, char * argv[] )
 
   char tubeName[] = "Tube";
   TubeListType * pTubeList =
-      pTubeGroup->GetChildren( pTubeGroup->GetMaximumDepth(), tubeName);
+    pTubeGroup->GetChildren( pTubeGroup->GetMaximumDepth(), tubeName);
 
   typename TubeListType::const_iterator itTubes = pTubeList->begin();
 
@@ -270,7 +270,6 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::SizeType size;
   for(unsigned int i = 0; i < VDimension-1; i++)
     {
-
     size[i] = 2 * (typename ImageType::SizeValueType)
       (0.5 + (maxTubeRadius / outputSpacing[i])) + 1;
     }
@@ -306,7 +305,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageRegionIterator< MaskImageType >      MaskIteratorType;
 
   typedef itk::LinearInterpolateImageFunction< ImageType, double >
-  InterpolatorType;
+    InterpolatorType;
 
   typedef itk::MinimumMaximumImageFilter< ImageType > MinMaxImageFilterType;
 
@@ -327,7 +326,7 @@ int DoIt( int argc, char * argv[] )
   unsigned int ptInd = 0;
   unsigned long tubePixelCount = 0;
 
-  for(  itPts = tubePointList.begin();
+  for( itPts = tubePointList.begin();
     itPts != tubePointList.end(); itPts++, ptInd++ )
     {
     // Get position, radius and frenet-serret basis of current tube point
@@ -477,7 +476,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Error writing tube mask fly through image: "
-                        + std::string(err.GetDescription()) );
+      + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
