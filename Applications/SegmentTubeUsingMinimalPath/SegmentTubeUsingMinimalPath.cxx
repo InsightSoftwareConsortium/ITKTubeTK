@@ -98,19 +98,22 @@ int DoIt( int argc, char * argv[] )
   speed->DisconnectPipeline();
 
   //Read radius extraction Image
-  reader->SetFileName( radiusImage.c_str() );
-  try
+  if( ExtractRadius )
     {
-    reader->Update();
-    }
-  catch( itk::ExceptionObject & err )
-    {
-    std::stringstream out;
-    out << "ExceptionObject caught !" << std::endl;
-    out << err << std::endl;
-    tube::ErrorMessage( out.str() );
-    timeCollector.Stop( "Load data" );
-    return EXIT_FAILURE;
+    reader->SetFileName( radiusImage.c_str() );
+    try
+      {
+      reader->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      std::stringstream out;
+      out << "ExceptionObject caught !" << std::endl;
+      out << err << std::endl;
+      tube::ErrorMessage( out.str() );
+      timeCollector.Stop( "Load data" );
+      return EXIT_FAILURE;
+      }
     }
 
   typename ImageType::Pointer radiusExtractorInput = reader->GetOutput();
@@ -189,7 +192,7 @@ int DoIt( int argc, char * argv[] )
   pathFilter->AddPathInformation( pathInfo );
 
   // Set Optimizer
-  if( Optimizer == "Iterate Neighborhood" )
+  if( Optimizer == "Iterate_Neighborhood" )
     {
     // Create IterateNeighborhoodOptimizer
     typedef itk::IterateNeighborhoodOptimizer OptimizerType;
@@ -204,7 +207,7 @@ int DoIt( int argc, char * argv[] )
     optimizer->SetNeighborhoodSize( size );
     pathFilter->SetOptimizer( optimizer );
     }
-  else if( Optimizer == "Gradient Descent" )
+  else if( Optimizer == "Gradient_Descent" )
     {
     // Create GradientDescentOptimizer
     typedef itk::GradientDescentOptimizer OptimizerType;
@@ -212,7 +215,7 @@ int DoIt( int argc, char * argv[] )
     optimizer->SetNumberOfIterations( NumberOfIterations );
     pathFilter->SetOptimizer( optimizer );
     }
-  else if( Optimizer == "Regular Step Gradient Descent" )
+  else if( Optimizer == "Regular_Step_Gradient_Descent" )
     {
     // Compute the minimum spacing
     double minspacing = spacing[0];

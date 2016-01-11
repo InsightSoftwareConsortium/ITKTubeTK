@@ -43,7 +43,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-RegularStepGradientDescent
     ${TEMP}/${MODULE_NAME}-RegularStepGradientDescent.tre
     --pathPoints 113.962,58.9872,115
     --pathPoints 66.3718,113.141,76
-    --optimizer "Regular Step Gradient Descent"
+    --optimizer Regular_Step_Gradient_Descent
     --terminationValue 2
     --numberOfIterations 1000
     --stepLengthFactor 1
@@ -66,7 +66,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-GradientDescent
     ${TEMP}/${MODULE_NAME}-GradientDescent.tre
     --pathPoints 113.962,58.9872,115
     --pathPoints 66.3718,113.141,76
-    --optimizer "Gradient Descent"
+    --optimizer Gradient_Descent
     --terminationValue 2
     --numberOfIterations 1000
 )
@@ -87,7 +87,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-IterateNeighborhood
     ${TEMP}/${MODULE_NAME}-IterateNeighborhood.tre
     --pathPoints 113.962,58.9872,115
     --pathPoints 66.3718,113.141,76
-    --optimizer "Iterate Neighborhood"
+    --optimizer Iterate_Neighborhood
     --terminationValue 2
     --stepLengthFactor 1
 )

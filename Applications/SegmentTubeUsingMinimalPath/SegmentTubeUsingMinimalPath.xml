@@ -59,10 +59,10 @@
       <label>Optimizer</label>
       <description>Optimizer to extract path</description>
       <longflag>optimizer</longflag>
-      <default>Regular Step Gradient Descent</default>
-      <element>Gradient Descent</element>
-      <element>Iterate Neighborhood</element>
-      <element>Regular Step Gradient Descent</element>
+      <default>Regular_Step_Gradient_Descent</default>
+      <element>Gradient_Descent</element>
+      <element>Iterate_Neighborhood</element>
+      <element>Regular_Step_Gradient_Descent</element>
     </string-enumeration>
     <double>
       <name>TerminationValue</name>
