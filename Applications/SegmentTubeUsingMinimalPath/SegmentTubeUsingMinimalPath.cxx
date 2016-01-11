@@ -262,7 +262,6 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( 0.4 );
 
   // Create output TRE file
-  typename TubeType::PointListType tubePointList;
   typename TubeGroupType::Pointer pTubeGroup = TubeGroupType::New();
 
   // Update tubes transform
@@ -297,9 +296,9 @@ int DoIt( int argc, char * argv[] )
       PointType pathPoint;
       speed->TransformContinuousIndexToPhysicalPoint(
         vertexList->GetElement(k), pathPoint );
-      for( int i = 0; i<DimensionT; i++ )
+      for( int d = 0; d<DimensionT; d++ )
         {
-        pathPoint[i]=(pathPoint[i]-origin[i])/spacing[i];
+        pathPoint[d]=(pathPoint[d]-origin[d])/spacing[d];
         }
       TubePointType tubePoint;
       tubePoint.SetPosition( pathPoint );
