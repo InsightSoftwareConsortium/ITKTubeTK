@@ -152,10 +152,10 @@ int DoIt( int argc, char * argv[] )
 
   if( Path.size() >= 2 )
     {
-    for( int k = 0; k<Path.size(); k++ )
+    for( unsigned int k = 0; k<Path.size(); k++ )
       {
       PointType path;
-      for( int i = 0; i<DimensionT; i++ )
+      for( unsigned int i = 0; i<DimensionT; i++ )
         {
         path[i]=Path[k][i];
         }
@@ -163,7 +163,7 @@ int DoIt( int argc, char * argv[] )
         {
         pathInfo->SetStartPoint( path );
         }
-      else if( k == Path.size() - 1 )
+      else if( k >= Path.size() - 1 )
         {
         pathInfo->SetEndPoint( path );
         }
@@ -296,7 +296,7 @@ int DoIt( int argc, char * argv[] )
       PointType pathPoint;
       speed->TransformContinuousIndexToPhysicalPoint(
         vertexList->GetElement(k), pathPoint );
-      for( int d = 0; d<DimensionT; d++ )
+      for( unsigned int d = 0; d < DimensionT; d++ )
         {
         pathPoint[d]=(pathPoint[d]-origin[d])/spacing[d];
         }
