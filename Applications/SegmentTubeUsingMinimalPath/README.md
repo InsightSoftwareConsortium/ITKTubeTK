@@ -35,7 +35,7 @@ Where:
 
    --optimizer <std::string>
      Minimize arrival function at each point of the path.
-     (default: Iterate Neighborhood)
+     (default: Regular_Step_Gradient_Descent)
 
    --pathPoints <point multiple="true">
      List of path points from strart to end point.
