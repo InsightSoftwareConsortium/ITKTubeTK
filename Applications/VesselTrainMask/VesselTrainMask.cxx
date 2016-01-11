@@ -88,8 +88,7 @@ template< class TPixel, unsigned int VDimension >
 void
 ApplyDilateMorphologyFilter( typename itk::Image< TPixel, VDimension >::Pointer &input,
                   float radius,
-                  float foregroundValue,
-                  float backgroundValue )
+                  float foregroundValue )
 {
   typedef itk::Image< TPixel, VDimension >                          ImageType;
   typedef itk::BinaryBallStructuringElement< TPixel, VDimension >   BallType;
@@ -221,9 +220,9 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start( "Threshold and Mathematical Morphology" );
   tube::InfoMessage( "Thresholding..." );
   ThresholdVolume< TPixel, VDimension >( image, 0, gap, 0, 255 );
-  ApplyDilateMorphologyFilter< TPixel, VDimension >( image, notVesselWidth, 255, 0 );
+  ApplyDilateMorphologyFilter< TPixel, VDimension >( image, notVesselWidth, 255 );
   typename ImageType::Pointer dialatedImage = image;
-  ApplyDilateMorphologyFilter< TPixel, VDimension >( image, notVesselWidth, 255, 0 );
+  ApplyDilateMorphologyFilter< TPixel, VDimension >( image, notVesselWidth, 255 );
   tube::InfoMessage( "Creating Not-Vessel Mask..." );
   AddVolume< TPixel, VDimension >( image, dialatedImage, 1, -1 );
   if ( !notVesselMask.empty() )

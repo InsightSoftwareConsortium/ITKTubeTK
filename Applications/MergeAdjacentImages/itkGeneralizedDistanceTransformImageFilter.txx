@@ -505,7 +505,7 @@ GeneralizedDistanceTransformImageFilter<
   //for (int d = 1; d < FunctionImageType::ImageDimension; ++d)
     {
     // Set up spacing and division info
-    const SpacingType sqrs = spacing[d]*spacing[d];
+    const SpacingType sqrsD = spacing[d]*spacing[d];
 
     if (this->m_UseImageSpacing)
       {
@@ -521,10 +521,10 @@ GeneralizedDistanceTransformImageFilter<
       voronoiMapIt.GoToBegin();
       }
 
-    std::vector< Parabolas > envelope( pixelsInCacheLine );
+    std::vector< Parabolas > envelopeD( pixelsInCacheLine );
     for (size_t i = 0; i < pixelsInCacheLine; ++i)
       {
-      envelope[i].reserve( maxSize );
+      envelopeD[i].reserve( maxSize );
       }
 
     // We call the group of scanlines that is sampled in parallel a strip. How
@@ -533,10 +533,10 @@ GeneralizedDistanceTransformImageFilter<
       static_cast< int >(std::ceil(double(size[0]) / pixelsInCacheLine));
 
     // Compute stride from one scanline in direction d to the next
-    size_t stride = 1;
+    size_t strideD = 1;
     for (int i = 0; i < d; ++i)
       {
-      stride *= size[i];
+      strideD *= size[i];
       }
 
     while (!distanceIt.IsAtEnd())
@@ -581,13 +581,13 @@ GeneralizedDistanceTransformImageFilter<
         // Now compute the lower envelope of parabolas for each scanline
         for (size_t line = 0; line < parallelLines; ++line)
           {
-          envelope[line].clear();
+          envelopeD[line].clear();
           }
 
         // Read a strip of parallelLines scanlines along direction d
         for (size_t j = 0, offset = currentStripOffset;
               j < size[d];
-              ++j, offset += stride - parallelLines)
+              ++j, offset += strideD - parallelLines)
           {
           if (this->m_UseImageSpacing)
             {
@@ -595,7 +595,7 @@ GeneralizedDistanceTransformImageFilter<
             for (size_t line = 0; line < parallelLines; ++line, ++offset)
               {
               addParabola(
-                envelope[line], size[d],
+                envelopeD[line], size[d],
                 j,
                 *(rawDistance + offset),
                 this->m_CreateVoronoiMap ?
@@ -610,7 +610,7 @@ GeneralizedDistanceTransformImageFilter<
             for (size_t line = 0; line < parallelLines; ++line, ++offset)
               {
               addParabola(
-                envelope[line], size[d],
+                envelopeD[line], size[d],
                 j,
                 *(rawDistance + offset),
                 this->m_CreateVoronoiMap ?
@@ -644,7 +644,7 @@ GeneralizedDistanceTransformImageFilter<
             {
             lineNeedsCopy[line] =
               sampleValues(
-                envelope[line], 0, size[d], &valuesBuffer[offset], sqrs);
+                envelopeD[line], 0, size[d], &valuesBuffer[offset], sqrsD);
             stripNeedsCopy &= lineNeedsCopy[line];
             }
           }
@@ -655,7 +655,7 @@ GeneralizedDistanceTransformImageFilter<
             {
             lineNeedsCopy[line] =
               sampleValues(
-                envelope[line], 0, size[d], &valuesBuffer[offset]);
+                envelopeD[line], 0, size[d], &valuesBuffer[offset]);
             stripNeedsCopy &= lineNeedsCopy[line];
             }
           }
@@ -669,7 +669,7 @@ GeneralizedDistanceTransformImageFilter<
         // a single strip, we utilize L1 cache quite well again.
         if (!stripNeedsCopy) continue;
         for (size_t j = 0, outoffset = currentStripOffset;
-          j < size[d]; ++j, outoffset += stride - parallelLines)
+          j < size[d]; ++j, outoffset += strideD - parallelLines)
           {
           for (size_t line = 0, inoffset = j;
             line < parallelLines;
@@ -695,14 +695,14 @@ GeneralizedDistanceTransformImageFilter<
                {
                if( lineNeedsCopy[line] )
                  {
-                 sampleVoronoi(envelope[line], 0, size[d],
+                 sampleVoronoi(envelopeD[line], 0, size[d],
                    &voronoiBuffer[offset]);
                  }
                }
 
           for( size_t j = 0, outoffset = currentStripOffset;
             j < size[d];
-            ++j, outoffset += stride - parallelLines)
+            ++j, outoffset += strideD - parallelLines)
             {
             for( size_t line = 0, inoffset = j;
               line < parallelLines;
