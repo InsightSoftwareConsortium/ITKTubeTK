@@ -20,7 +20,7 @@
 # limitations under the License.
 #
 ##############################################################################
-set( MODULE_NAME TubeMinimalPathExtraction )
+set( MODULE_NAME SegmentTubeUsingMinimalPath )
 project( ${MODULE_NAME} )
 
 #Check if MinimalPathExtraction is built in ITK as a remote module
@@ -59,7 +59,7 @@ if( NOT( MinimalPathExtraction_DIR OR
   # Find ITK
   find_package( ITK REQUIRED )
   if( TubeTK_BUILD_WITHIN_SLICER )
-    set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 ) # See Libs/ITKFactoryRegistration/CMakeLists.txt
+    set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 )
   endif( TubeTK_BUILD_WITHIN_SLICER )
   include( ${ITK_USE_FILE} )
 
@@ -103,7 +103,8 @@ else()
 
   find_package( ITK REQUIRED )
   if( TubeTK_BUILD_WITHIN_SLICER )
-    set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 ) # See Libs/ITKFactoryRegistration/CMakeLists.txt
+    set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 )
+    # See Libs/ITKFactoryRegistration/CMakeLists.txt
   endif( TubeTK_BUILD_WITHIN_SLICER )
   include( ${ITK_USE_FILE} )
   set( ITK_LIBRARIES ${MinimalPathExtraction_REQUIRED_LIB} ${ITK_LIBRARIES} )
@@ -120,7 +121,7 @@ else()
       ${TubeTK_SOURCE_DIR}/Base/Common
       ${TubeTK_SOURCE_DIR}/Base/IO
       ${TubeTK_SOURCE_DIR}/Base/Segmentation
-      ${TubeTK_SOURCE_DIR}/Base/Numerics)
+      ${TubeTK_SOURCE_DIR}/Base/Numerics )
 
 endif()
 

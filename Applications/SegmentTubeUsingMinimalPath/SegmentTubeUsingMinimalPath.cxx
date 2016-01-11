@@ -45,7 +45,7 @@
 
 #include <sstream>
 
-#include "TubeMinimalPathExtractionCLP.h"
+#include "SegmentTubeUsingMinimalPathCLP.h"
 
 template< class TPixel, unsigned int DimensionT >
 int DoIt( int argc, char * argv[] );

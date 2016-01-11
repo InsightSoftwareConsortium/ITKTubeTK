@@ -68,12 +68,12 @@ set( TubeTK_${proj}_MODULES
   SegmentConnectedComponents
   SegmentConnectedComponentsUsingParzenPDFs
   SegmentTubes
+  SegmentTubeUsingMinimalPath
   SegmentUsingOtsuThreshold
   ShrinkImage
   SimulateAcquisitionArtifactsUsingPrior
   TubeMath
-  VesselTrainMask
-  TubeMinimalPathExtraction )
+  VesselTrainMask )
 
 set( TubeTK_${proj}_ImageViewer_MODULES "" )
 if( TubeTK_BUILD_IMAGE_VIEWER )
