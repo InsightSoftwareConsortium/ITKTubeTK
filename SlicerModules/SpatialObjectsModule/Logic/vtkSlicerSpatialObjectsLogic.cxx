@@ -140,8 +140,8 @@ void vtkSlicerSpatialObjectsLogic
 
     if(storageNode->ReadData(spatialObjectNode) != 0)
       {
-      const itksys_stl::string fname(filename);
-      itksys_stl::string name =
+      const std::string fname(filename);
+      std::string name =
         itksys::SystemTools::GetFilenameWithoutExtension(fname);
       std::string uname(
         this->GetMRMLScene()->GetUniqueNameByString(name.c_str()));
