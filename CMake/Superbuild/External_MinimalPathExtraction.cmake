@@ -32,7 +32,8 @@ if( NOT ITK_VERSION VERSION_GREATER "4.8" )
 
   if( NOT EXISTS ${${proj}_SOURCE_DIR} )
     list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS
-      -D${proj}_URL:STRING=${${proj}_URL} )
+      -D${proj}_URL:STRING=${${proj}_URL}
+      -D${proj}_OLD_ITK_SUPPORT:STRING=${${proj}_OLD_ITK_SUPPORT} )
   endif( NOT EXISTS ${${proj}_SOURCE_DIR} )
 
   list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS
