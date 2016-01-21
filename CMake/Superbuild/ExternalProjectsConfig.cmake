@@ -51,7 +51,9 @@ set( LIBSVM_HASH_OR_TAG 9e2dd8a5fd032b429c07ce2778c8716117812bc5 )
 
 set( MinimalPathExtraction_URL
   ${git_protocol}://github.com/KitwareMedical/ITKMinimalPathExtraction.git )
-set( MinimalPathExtraction_HASH_OR_TAG 51b1c2c97e9f12fb38039e8546612c452b512695 )
+set( MinimalPathExtraction_HASH_OR_TAG a1791f055fa8d5d105b666da092ceeb80c2424bc )
+set( MinimalPathExtraction_OLD_ITK_SUPPORT
+  support-itk-older-v4.9rc01-2015-10-25-611676c )
 
 ###########################################################
 ###########################################################

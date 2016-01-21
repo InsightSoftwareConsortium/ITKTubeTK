@@ -36,25 +36,19 @@ if( NOT( MinimalPathExtraction_DIR OR
 
   endif()
 
-#   if( NOT EXISTS ${MinimalPathExtraction_SOURCE_DIR} )
-#     set( GIT_COMMAND "git" )
-#     set( GIT_CLONE_ARGS "clone" "${MinimalPathExtraction_URL}"
-#       "${MinimalPathExtraction_SOURCE_DIR}" )
-#     add_custom_target( ITKMinimalPathExtractionDownload
-#       COMMAND ${GIT_COMMAND} ${GIT_CLONE_ARGS}
-#       WORKING_DIRECTORY ${TubeTK_BINARY_DIR}
-#       COMMENT "Download ITKMinimalPathExtraction Remote Module" VERBATIM )
-#   endif( NOT EXISTS ${MinimalPathExtraction_SOURCE_DIR} )
-
   #Download MinimalPathExtraction sources
   if( NOT EXISTS ${MinimalPathExtraction_SOURCE_DIR} )
 
     set( GIT_COMMAND "git" )
-    set( GIT_CLONE_ARGS "clone" "${MinimalPathExtraction_URL}"
+    set( GIT_CLONE_ARGS "clone"
+      "${MinimalPathExtraction_URL}"
+      "-b${MinimalPathExtraction_OLD_ITK_SUPPORT}"
+      "--single-branch"
       "${MinimalPathExtraction_SOURCE_DIR}" )
     execute_process( COMMAND  ${GIT_COMMAND} ${GIT_CLONE_ARGS} )
 
   endif( NOT EXISTS ${MinimalPathExtraction_SOURCE_DIR} )
+
 
   # Find ITK
   find_package( ITK REQUIRED )
@@ -82,10 +76,6 @@ if( NOT( MinimalPathExtraction_DIR OR
       ${MinimalPathExtraction_SOURCE_DIR}/include
     ADDITIONAL_SRCS
       ${SRCS} )
-
-#   if( NOT EXISTS ${${proj}_SOURCE_DIR} )
-#     add_dependencies( ${MODULE_NAME} ITKMinimalPathExtractionDownload )
-#   endif( NOT EXISTS ${${proj}_SOURCE_DIR} )
 
 else()
 
