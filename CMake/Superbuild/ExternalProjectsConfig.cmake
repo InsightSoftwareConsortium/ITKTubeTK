@@ -49,11 +49,17 @@ set( LIBSVM_URL
   ${git_protocol}://github.com/KitwareMedical/libsvm.git )
 set( LIBSVM_HASH_OR_TAG 9e2dd8a5fd032b429c07ce2778c8716117812bc5 )
 
-set( MinimalPathExtraction_URL
+# MinimalPathExtraction - ITK Module
+set( MinimalPathExtraction_ITK_MODULE_URL
+  ${git_protocol}://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction.git )
+set( MinimalPathExtraction_ITK_MODULE_HASH_OR_TAG
+  aed93f4ac350ee8d0c3411e885fff86095443b7a )
+
+# MinimalPathExtraction - Local Build
+set( MinimalPathExtraction_LOCAL_BUILD_URL
   ${git_protocol}://github.com/KitwareMedical/ITKMinimalPathExtraction.git )
-set( MinimalPathExtraction_HASH_OR_TAG a1791f055fa8d5d105b666da092ceeb80c2424bc )
-set( MinimalPathExtraction_OLD_ITK_SUPPORT
-  support-itk-older-v4.9rc01-2015-10-25-611676c )
+set( MinimalPathExtraction_LOCAL_BUILD_HASH_OR_TAG
+  4f526802b0056258ca1036fbe7e94d53b1458716 )
 
 ###########################################################
 ###########################################################

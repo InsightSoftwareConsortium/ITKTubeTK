@@ -22,7 +22,7 @@
 ##############################################################################
 set( proj MinimalPathExtraction )
 
-if( NOT ITK_VERSION VERSION_GREATER "4.8" )
+if( NOT ITK_VERSION VERSION_GREATER "4.8.1" )
 
   list( REMOVE_ITEM TubeTK_DEPENDENCIES ${proj} )
 
@@ -32,14 +32,15 @@ if( NOT ITK_VERSION VERSION_GREATER "4.8" )
 
   if( NOT EXISTS ${${proj}_SOURCE_DIR} )
     list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS
-      -D${proj}_URL:STRING=${${proj}_URL}
-      -D${proj}_OLD_ITK_SUPPORT:STRING=${${proj}_OLD_ITK_SUPPORT} )
+      -D${proj}_LOCAL_BUILD_URL:STRING=${${proj}_LOCAL_BUILD_URL}
+      -D${proj}_LOCAL_BUILD_HASH_OR_TAG:STRING=${${proj}_LOCAL_BUILD_HASH_OR_TAG} )
   endif( NOT EXISTS ${${proj}_SOURCE_DIR} )
 
   list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS
     -D${proj}_SOURCE_DIR:PATH=${${proj}_SOURCE_DIR} )
 
 else()
+
   # Make sure this file is included only once.
   get_filename_component( CMAKE_CURRENT_LIST_FILENAME
     ${CMAKE_CURRENT_LIST_FILE} NAME_WE )
@@ -65,8 +66,8 @@ else()
     set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
     ExternalProject_Add( ${proj}
-      GIT_REPOSITORY ${${proj}_URL}
-      GIT_TAG ${${proj}_HASH_OR_TAG}
+      GIT_REPOSITORY ${${proj}_ITK_MODULE_URL}
+      GIT_TAG ${${proj}_ITK_MODULE_HASH_OR_TAG}
       DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
       SOURCE_DIR ${${proj}_SOURCE_DIR}
       BINARY_DIR ${${proj}_DIR}
