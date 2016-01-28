@@ -27,8 +27,8 @@ project( ${MODULE_NAME} )
 list( FIND ITK_MODULES_ENABLED MinimalPathExtraction
   MinimalPathExtraction_ITK )
 
-if( NOT( MinimalPathExtraction_DIR OR
-  ( ${MinimalPathExtraction_ITK} GREATER "-1" ) ) )
+if( NOT( MinimalPathExtraction_DIR ) AND
+  ( ${MinimalPathExtraction_ITK} EQUAL "-1" ) )
 
   if( NOT MinimalPathExtraction_SOURCE_DIR )
 
@@ -36,19 +36,26 @@ if( NOT( MinimalPathExtraction_DIR OR
 
   endif()
 
-  #Download MinimalPathExtraction sources
+  set( ${MODULE_NAME}_DEPENDS "" )
   if( NOT EXISTS ${MinimalPathExtraction_SOURCE_DIR} )
 
     set( GIT_COMMAND "git" )
-    set( GIT_CLONE_ARGS "clone"
-      "${MinimalPathExtraction_URL}"
-      "-b${MinimalPathExtraction_OLD_ITK_SUPPORT}"
-      "--single-branch"
+    set( GIT_CLONE_ARGS "clone" "${MinimalPathExtraction_LOCAL_BUILD_URL}"
       "${MinimalPathExtraction_SOURCE_DIR}" )
-    execute_process( COMMAND  ${GIT_COMMAND} ${GIT_CLONE_ARGS} )
+    add_custom_target( ITKMinimalPathExtractionDownload
+      COMMAND ${GIT_COMMAND} ${GIT_CLONE_ARGS}
+      WORKING_DIRECTORY ${TubeTK_BINARY_DIR}
+      COMMENT "Download ITKMinimalPathExtraction Remote Module" VERBATIM )
+    set( GIT_HASH_ARGS "checkout"
+      "${MinimalPathExtraction_LOCAL_BUILD_HASH_OR_TAG}" )
+    add_custom_target( ITKMinimalPathExtractionHash
+      COMMAND ${GIT_COMMAND} ${GIT_HASH_ARGS}
+      WORKING_DIRECTORY ${MinimalPathExtraction_SOURCE_DIR}
+      DEPENDS ITKMinimalPathExtractionDownload
+      COMMENT "Swith to ITKMinimalPathExtraction Local Hash" VERBATIM )
+    set( ${MODULE_NAME}_DEPENDS "ITKMinimalPathExtractionHash" )
 
   endif( NOT EXISTS ${MinimalPathExtraction_SOURCE_DIR} )
-
 
   # Find ITK
   find_package( ITK REQUIRED )
@@ -58,8 +65,8 @@ if( NOT( MinimalPathExtraction_DIR OR
   include( ${ITK_USE_FILE} )
 
   #Find MinimalPathExtraction additional sources
-  file( GLOB SRCS
-    "${MinimalPathExtraction_SOURCE_DIR}/src/*.cxx" )
+  set( ITKMinimalPathExtraction_SRCS
+    "${MinimalPathExtraction_SOURCE_DIR}/src/itkIterateNeighborhoodOptimizer.cxx" )
 
   SEMMacroBuildCLI(
     NAME ${MODULE_NAME}
@@ -75,7 +82,11 @@ if( NOT( MinimalPathExtraction_DIR OR
       ${TubeTK_SOURCE_DIR}/Base/Numerics
       ${MinimalPathExtraction_SOURCE_DIR}/include
     ADDITIONAL_SRCS
-      ${SRCS} )
+      ${ITKMinimalPathExtraction_SRCS} )
+
+  if( NOT ${${MODULE_NAME}_DEPENDS} EQUAL "" )
+    add_dependencies( ${MODULE_NAME} ${${MODULE_NAME}_DEPENDS} )
+  endif( NOT ${${MODULE_NAME}_DEPENDS} EQUAL "" )
 
 else()
 
