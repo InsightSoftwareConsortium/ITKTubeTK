@@ -741,3 +741,46 @@ void vtkMRMLSpatialObjectsNode::BuildDefaultColorMap( void )
       }
     }
 }
+
+//------------------------------------------------------------------------------
+bool vtkMRMLSpatialObjectsNode::GetColorFromDefaultColorMap
+  ( int TubeId, std::vector<double> &color )
+{
+  vtkDebugMacro("vtkMRMLSpatialObjectsNode::GetColorFromDefaultColorMap");
+
+  std::map<int, std::vector<double>>::iterator itDefaultColorMap;
+  itDefaultColorMap = this->m_DefaultColorMap.find( TubeId );
+  if ( itDefaultColorMap != this->m_DefaultColorMap.end() )
+    {
+    color = this->m_DefaultColorMap.find( TubeId )->second;
+    return true;
+    }
+  return false;
+}
+
+//------------------------------------------------------------------------------
+void vtkMRMLSpatialObjectsNode::InsertSelectedTube( int TubeId )
+{
+  vtkDebugMacro("vtkMRMLSpatialObjectsNode::InsertSelectedTube");
+
+  this->m_SelectedTubeIds.insert( TubeId );
+}
+
+//------------------------------------------------------------------------------
+void vtkMRMLSpatialObjectsNode::ClearSelectedTubes()
+{
+  vtkDebugMacro("vtkMRMLSpatialObjectsNode::ClearSelectedTubes");
+
+  this->m_SelectedTubeIds.clear();
+}
+
+//------------------------------------------------------------------------------
+void vtkMRMLSpatialObjectsNode::EraseSelectedTube( int TubeId )
+{
+  vtkDebugMacro("vtkMRMLSpatialObjectsNode::EraseSelectedTube");
+  std::set<int>::iterator it = this->m_SelectedTubeIds.find( TubeId );
+  if ( it != this->m_SelectedTubeIds.end() )
+    {
+    this->m_SelectedTubeIds.erase( it );
+    }
+}

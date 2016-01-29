@@ -149,6 +149,19 @@ public:
   //Description
   //Build the colormap for the default color of the tubes of the spatial object
   void BuildDefaultColorMap( void );
+  //Get color
+  bool GetColorFromDefaultColorMap( int TubeId, std::vector<double> &color );
+
+  //Get SelectedTubeIds
+  std::set<int> const & GetSelectedTubeIds() const
+    { return m_SelectedTubeIds; }
+
+  //Set SelectedTubeIds
+  void InsertSelectedTube( int TubeId );
+  //Clear Selected tubeIds
+  void ClearSelectedTubes();
+  //Erase a tube from selectetubeIds
+  void EraseSelectedTube( int TubeId );
 
 protected:
   vtkMRMLSpatialObjectsNode( void );
