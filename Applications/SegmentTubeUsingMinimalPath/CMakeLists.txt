@@ -36,24 +36,16 @@ if( NOT( MinimalPathExtraction_DIR ) AND
 
   endif()
 
-  set( ${MODULE_NAME}_DEPENDS "" )
   if( NOT EXISTS ${MinimalPathExtraction_SOURCE_DIR} )
 
-    set( GIT_COMMAND "git" )
     set( GIT_CLONE_ARGS "clone" "${MinimalPathExtraction_LOCAL_BUILD_URL}"
       "${MinimalPathExtraction_SOURCE_DIR}" )
-    add_custom_target( ITKMinimalPathExtractionDownload
-      COMMAND ${GIT_COMMAND} ${GIT_CLONE_ARGS}
-      WORKING_DIRECTORY ${TubeTK_BINARY_DIR}
-      COMMENT "Download ITKMinimalPathExtraction Remote Module" VERBATIM )
+    execute_process( COMMAND ${GITCOMMAND} ${GIT_CLONE_ARGS}
+      WORKING_DIRECTORY ${TubeTK_BINARY_DIR} )
     set( GIT_HASH_ARGS "checkout"
       "${MinimalPathExtraction_LOCAL_BUILD_HASH_OR_TAG}" )
-    add_custom_target( ITKMinimalPathExtractionHash
-      COMMAND ${GIT_COMMAND} ${GIT_HASH_ARGS}
-      WORKING_DIRECTORY ${MinimalPathExtraction_SOURCE_DIR}
-      DEPENDS ITKMinimalPathExtractionDownload
-      COMMENT "Swith to ITKMinimalPathExtraction Local Hash" VERBATIM )
-    set( ${MODULE_NAME}_DEPENDS "ITKMinimalPathExtractionHash" )
+    execute_process( COMMAND ${GITCOMMAND} ${GIT_HASH_ARGS}
+      WORKING_DIRECTORY ${MinimalPathExtraction_SOURCE_DIR} )
 
   endif( NOT EXISTS ${MinimalPathExtraction_SOURCE_DIR} )
 
@@ -83,10 +75,6 @@ if( NOT( MinimalPathExtraction_DIR ) AND
       ${MinimalPathExtraction_SOURCE_DIR}/include
     ADDITIONAL_SRCS
       ${ITKMinimalPathExtraction_SRCS} )
-
-  if( NOT ${${MODULE_NAME}_DEPENDS} EQUAL "" )
-    add_dependencies( ${MODULE_NAME} ${${MODULE_NAME}_DEPENDS} )
-  endif( NOT ${${MODULE_NAME}_DEPENDS} EQUAL "" )
 
 else()
 
