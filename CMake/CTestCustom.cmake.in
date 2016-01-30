@@ -154,10 +154,14 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "[Cc]ppcheck.[Ll]ib"
   "[Cc]ppcheck.[Ee]xternals"
   "[Cc]ppcheck.[Cc]li"
+  "[Ll]ib.[Bb]uild.mc_.*cpp.*not used"
+  "[Ll]ib.[Bb]uild.mc_.*cpp.*Winline"
 
   # KWStyle
   "KWStyle.[Uu]tilities.[Bb]oost.[Xx]pressive"
   "KWStyle.kwStyle.cxx.*not used"
+  "KWStyle.kwsStyle.cxx.*not used"
+  "KWStyle.[Tt]esting"
 
   # SlicerExecutionModel
   "GenerateCLP.cxx.*unused"
