@@ -25,3 +25,5 @@ SyncRecord.h MemberFunctions Disable
 SyncRecordManager.h MemberFunctions Disable
 itkGeneralizedDistanceTransformImageFilter.h MemberFunctions Disable
 vtkSlicerTortuosityLogic.h Namespace Disable
+vtkMRMLSpatialObjectsNode.h Namespace Disable
+vtkMRMLSpatialObjectsNode.h Encapsulation Disable

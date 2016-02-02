@@ -55,8 +55,8 @@ class VTK_SLICER_SPATIALOBJECTS_MODULE_MRML_EXPORT vtkMRMLSpatialObjectsNode
   : public vtkMRMLModelNode
 {
 public:
-  typedef itk::GroupSpatialObject<3> TubeNetType;
-  typedef TubeNetType::Pointer TubeNetPointerType;
+  typedef itk::GroupSpatialObject<3>  TubeNetType;
+  typedef TubeNetType::Pointer        TubeNetPointerType;
 
   static vtkMRMLSpatialObjectsNode* New( void );
   vtkTypeMacro(vtkMRMLSpatialObjectsNode, vtkMRMLModelNode);
@@ -92,7 +92,7 @@ public:
   ///
   /// Get node XML tag name (like Volume, Model)
   virtual const char* GetNodeTagName( void )
-  {return "SpatialObjects";}
+    {return "SpatialObjects";}
 
   ///
   /// Get the subsampled PolyData converted from the real data in the node.
@@ -146,6 +146,23 @@ public:
   // Reset and recompute the polydata from the spatial object.
   virtual void UpdatePolyDataFromSpatialObject( void );
 
+  //Description
+  //Build the colormap for the default color of the tubes of the spatial object
+  void BuildDefaultColorMap( void );
+  //Get color
+  bool GetColorFromDefaultColorMap( int TubeId, std::vector<double> &color );
+
+  //Get SelectedTubeIds
+  std::set<int> const & GetSelectedTubeIds() const
+    { return m_SelectedTubeIds; }
+
+  //Set SelectedTubeIds
+  void InsertSelectedTube( int TubeId );
+  //Clear Selected tubeIds
+  void ClearSelectedTubes();
+  //Erase a tube from selectetubeIds
+  void EraseSelectedTube( int TubeId );
+
 protected:
   vtkMRMLSpatialObjectsNode( void );
   ~vtkMRMLSpatialObjectsNode( void );
@@ -156,16 +173,18 @@ protected:
   // Contains the SpatialObject structure used to generate the differents
   // PolyData for visualization and allow keeping further informations
   // for object processing and editions.
-  TubeNetPointerType SpatialObject;
+  TubeNetPointerType m_SpatialObject;
 
-  vtkIdTypeArray* ShuffledIds;
+  vtkIdTypeArray* m_ShuffledIds;
 
   virtual void PrepareCleaning( void );
   virtual void UpdateCleaning( void );
   virtual void RemoveCleaning( void );
 
-  vtkCleanPolyData* CleanPolyData;
+  vtkCleanPolyData* m_CleanPolyData;
 
+  std::set<int>                           m_SelectedTubeIds;
+  std::map< int, std::vector<double> >    m_DefaultColorMap;
 }; // End class vtkMRMLSpatialObjectsNode
 
 #endif // End !defined(__vtkMRMLSpatialObjectsNode_h)

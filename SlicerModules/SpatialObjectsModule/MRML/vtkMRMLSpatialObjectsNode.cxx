@@ -118,28 +118,30 @@ void vtkMRMLSpatialObjectsNode::Copy(vtkMRMLNode *anode)
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsNode::Reset()
 {
-  this->SpatialObject = TubeNetType::New();
-  this->SpatialObject->Initialize();
+  this->m_SpatialObject = TubeNetType::New();
+  this->m_SpatialObject->Initialize();
   this->UpdatePolyDataFromSpatialObject();
+  this->BuildDefaultColorMap();
 }
 
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsNode::TubeNetPointerType
 vtkMRMLSpatialObjectsNode::GetSpatialObject()
 {
-  return this->SpatialObject;
+  return this->m_SpatialObject;
 }
 
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsNode::SetSpatialObject(TubeNetPointerType object)
 {
-  if (this->SpatialObject == object)
+  if (this->m_SpatialObject == object)
     {
     return;
     }
 
-  this->SpatialObject = object;
+  this->m_SpatialObject = object;
   this->UpdatePolyDataFromSpatialObject();
+  this->BuildDefaultColorMap();
 }
 
 //------------------------------------------------------------------------------
@@ -172,15 +174,15 @@ void vtkMRMLSpatialObjectsNode::UpdateReferences( void )
 //------------------------------------------------------------------------------
 vtkPolyData* vtkMRMLSpatialObjectsNode::GetFilteredPolyData( void )
 {
-  this->CleanPolyData->Update();
-  return this->CleanPolyData->GetOutput();
+  this->m_CleanPolyData->Update();
+  return this->m_CleanPolyData->GetOutput();
 }
 #else
 //------------------------------------------------------------------------------
 vtkAlgorithmOutput* vtkMRMLSpatialObjectsNode::
 GetFilteredPolyDataConnection( void )
 {
-  return this->CleanPolyData->GetOutputPort();
+  return this->m_CleanPolyData->GetOutputPort();
 }
 #endif
 
@@ -307,11 +309,11 @@ void vtkMRMLSpatialObjectsNode::SetAndObservePolyData(vtkPolyData* polyData)
 
   random_shuffle(idVector.begin(), idVector.end());
 
-  this->ShuffledIds->Initialize();
-  this->ShuffledIds->SetNumberOfTuples(numberOfPairs);
+  this->m_ShuffledIds->Initialize();
+  this->m_ShuffledIds->SetNumberOfTuples(numberOfPairs);
   for(vtkIdType i = 0;  i < numberOfPairs; ++i)
     {
-    this->ShuffledIds->SetValue(i, idVector[i]);
+    this->m_ShuffledIds->SetValue(i, idVector[i]);
     }
 
   this->UpdateCleaning();
@@ -320,12 +322,12 @@ void vtkMRMLSpatialObjectsNode::SetAndObservePolyData(vtkPolyData* polyData)
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsNode::PrepareCleaning( void )
 {
-  this->ShuffledIds = vtkIdTypeArray::New();
-  this->CleanPolyData = vtkCleanPolyData::New();
-  this->CleanPolyData->ConvertLinesToPointsOff();
-  this->CleanPolyData->ConvertPolysToLinesOff();
-  this->CleanPolyData->ConvertStripsToPolysOff();
-  this->CleanPolyData->PointMergingOff();
+  this->m_ShuffledIds = vtkIdTypeArray::New();
+  this->m_CleanPolyData = vtkCleanPolyData::New();
+  this->m_CleanPolyData->ConvertLinesToPointsOff();
+  this->m_CleanPolyData->ConvertPolysToLinesOff();
+  this->m_CleanPolyData->ConvertStripsToPolysOff();
+  this->m_CleanPolyData->PointMergingOff();
 }
 
 //------------------------------------------------------------------------------
@@ -337,9 +339,9 @@ void vtkMRMLSpatialObjectsNode::UpdateCleaning( void )
     }
 
 #if VTK_MAJOR_VERSION <= 5
-  this->CleanPolyData->SetInput(this->GetPolyData());
+  this->m_CleanPolyData->SetInput(this->GetPolyData());
 #else
-  this->CleanPolyData->SetInputConnection(this->GetPolyDataConnection());
+  this->m_CleanPolyData->SetInputConnection(this->GetPolyDataConnection());
 #endif
 
   vtkDebugMacro(<< this->GetClassName() << "Updating the subsampling");
@@ -380,8 +382,8 @@ void vtkMRMLSpatialObjectsNode::UpdateCleaning( void )
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsNode::RemoveCleaning( void )
 {
-  this->CleanPolyData->Delete();
-  this->ShuffledIds->Delete();
+  this->m_CleanPolyData->Delete();
+  this->m_ShuffledIds->Delete();
 }
 
 //------------------------------------------------------------------------------
@@ -393,8 +395,8 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
 
   char childName[] = "Tube";
   TubeNetType::ChildrenListType* tubeList =
-    this->SpatialObject->GetChildren(
-      this->SpatialObject->GetMaximumDepth(), childName);
+    this->m_SpatialObject->GetChildren(
+      this->m_SpatialObject->GetMaximumDepth(), childName);
 
   // -----------------------------------------------------------------------
   // Copy skeleton points from vessels into polydata structure
@@ -702,4 +704,83 @@ void vtkMRMLSpatialObjectsNode::CreateDefaultDisplayNodes( void )
   sodn->GetSpatialObjectsDisplayPropertiesNode()->SetGlyphGeometry(
     vtkMRMLSpatialObjectsDisplayPropertiesNode::Lines);
   sodn->SetVisibility(0);
+}
+
+//------------------------------------------------------------------------------
+void vtkMRMLSpatialObjectsNode::BuildDefaultColorMap( void )
+{
+  vtkDebugMacro("vtkMRMLSpatialObjectsNode::BuildDefaultColorMap");
+
+  typedef itk::Point<double, 3>                PointType;
+  typedef itk::VesselTubeSpatialObject<3>      VesselTubeType;
+  typedef VesselTubeType::TubePointType        VesselTubePointType;
+
+  char childName[] = "Tube";
+  TubeNetType::ChildrenListType* tubeList =
+    this->m_SpatialObject->GetChildren(
+      this->m_SpatialObject->GetMaximumDepth(), childName);
+
+  for (TubeNetType::ChildrenListType::iterator tubeIt = tubeList->begin();
+      tubeIt != tubeList->end(); ++tubeIt)
+    {
+    VesselTubeType* currTube =
+      dynamic_cast<VesselTubeType*>((*tubeIt).GetPointer());
+    if (!currTube || currTube->GetNumberOfPoints() < 1)
+      {
+      continue;
+      }
+    std::map< int, std::vector<double> >::iterator it;
+    it = this->m_DefaultColorMap.find(currTube->GetId());
+    if (it == this->m_DefaultColorMap.end())
+      {
+      std::vector<double> color;
+      color.push_back(currTube->GetProperty()->GetColor().GetRed());
+      color.push_back(currTube->GetProperty()->GetColor().GetGreen());
+      color.push_back(currTube->GetProperty()->GetColor().GetBlue());
+      this->m_DefaultColorMap[currTube->GetId()] = color;
+      }
+    }
+}
+
+//------------------------------------------------------------------------------
+bool vtkMRMLSpatialObjectsNode::GetColorFromDefaultColorMap
+  ( int TubeId, std::vector<double> &color )
+{
+  vtkDebugMacro("vtkMRMLSpatialObjectsNode::GetColorFromDefaultColorMap");
+
+  std::map< int, std::vector<double> >::iterator itDefaultColorMap;
+  itDefaultColorMap = this->m_DefaultColorMap.find( TubeId );
+  if ( itDefaultColorMap != this->m_DefaultColorMap.end() )
+    {
+    color = this->m_DefaultColorMap.find( TubeId )->second;
+    return true;
+    }
+  return false;
+}
+
+//------------------------------------------------------------------------------
+void vtkMRMLSpatialObjectsNode::InsertSelectedTube( int TubeId )
+{
+  vtkDebugMacro("vtkMRMLSpatialObjectsNode::InsertSelectedTube");
+
+  this->m_SelectedTubeIds.insert( TubeId );
+}
+
+//------------------------------------------------------------------------------
+void vtkMRMLSpatialObjectsNode::ClearSelectedTubes()
+{
+  vtkDebugMacro("vtkMRMLSpatialObjectsNode::ClearSelectedTubes");
+
+  this->m_SelectedTubeIds.clear();
+}
+
+//------------------------------------------------------------------------------
+void vtkMRMLSpatialObjectsNode::EraseSelectedTube( int TubeId )
+{
+  vtkDebugMacro("vtkMRMLSpatialObjectsNode::EraseSelectedTube");
+  std::set<int>::iterator it = this->m_SelectedTubeIds.find( TubeId );
+  if ( it != this->m_SelectedTubeIds.end() )
+    {
+    this->m_SelectedTubeIds.erase( it );
+    }
 }
