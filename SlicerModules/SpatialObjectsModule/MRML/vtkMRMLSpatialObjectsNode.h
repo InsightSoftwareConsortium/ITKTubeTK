@@ -183,8 +183,8 @@ protected:
 
   vtkCleanPolyData* m_CleanPolyData;
 
-  std::set<int>                       m_SelectedTubeIds;
-  std::map<int, std::vector<double>>  m_DefaultColorMap;
+  std::set<int>                           m_SelectedTubeIds;
+  std::map< int, std::vector<double> >    m_DefaultColorMap;
 }; // End class vtkMRMLSpatialObjectsNode
 
 #endif // End !defined(__vtkMRMLSpatialObjectsNode_h)

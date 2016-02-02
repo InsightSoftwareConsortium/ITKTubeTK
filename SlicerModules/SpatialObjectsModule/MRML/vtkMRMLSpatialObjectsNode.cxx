@@ -729,7 +729,7 @@ void vtkMRMLSpatialObjectsNode::BuildDefaultColorMap( void )
       {
       continue;
       }
-    std::map<int, std::vector<double>>::iterator it;
+    std::map< int, std::vector<double> >::iterator it;
     it = this->m_DefaultColorMap.find(currTube->GetId());
     if (it == this->m_DefaultColorMap.end())
       {
@@ -748,7 +748,7 @@ bool vtkMRMLSpatialObjectsNode::GetColorFromDefaultColorMap
 {
   vtkDebugMacro("vtkMRMLSpatialObjectsNode::GetColorFromDefaultColorMap");
 
-  std::map<int, std::vector<double>>::iterator itDefaultColorMap;
+  std::map< int, std::vector<double> >::iterator itDefaultColorMap;
   itDefaultColorMap = this->m_DefaultColorMap.find( TubeId );
   if ( itDefaultColorMap != this->m_DefaultColorMap.end() )
     {
