@@ -24,9 +24,7 @@
 project( TubeTKRegistration )
 
 set( TubeTK_Base_Registration_H_Files
-  itktubeAnisotropicDiffusiveRegistrationFilter.h
   itktubeAnisotropicDiffusiveRegistrationFunction.h
-  itktubeAnisotropicDiffusiveSparseRegistrationFilter.h
   itktubeDiffusiveRegistrationFilter.h
   itktubeDiffusiveRegistrationFilterUtils.h
   itktubeImageToTubeRigidMetric.h
@@ -37,16 +35,26 @@ set( TubeTK_Base_Registration_H_Files
   itktubeTubeParametricExponentialWithBoundsResolutionWeightFunction.h
   itktubeTubeToTubeTransformFilter.h )
 
+if( TubeTK_USE_VTK )
+  list( APPEND TubeTK_Base_Registration_H_Files
+    itktubeAnisotropicDiffusiveSparseRegistrationFilter.h
+    itktubeAnisotropicDiffusiveRegistrationFilter.h )
+endif( TubeTK_USE_VTK )
+
 set( TubeTK_Base_Registration_HXX_Files
-  itktubeAnisotropicDiffusiveRegistrationFilter.hxx
   itktubeAnisotropicDiffusiveRegistrationFunction.hxx
-  itktubeAnisotropicDiffusiveSparseRegistrationFilter.hxx
   itktubeDiffusiveRegistrationFilter.hxx
   itktubeDiffusiveRegistrationFilterUtils.hxx
   itktubeImageToTubeRigidMetric.hxx
   itktubeImageToTubeRigidRegistration.hxx
   itktubeMeanSquareRegistrationFunction.hxx
   itktubeTubeToTubeTransformFilter.hxx )
+
+if( TubeTK_USE_VTK )
+  list( APPEND TubeTK_Base_Registration_HXX_Files
+    itktubeAnisotropicDiffusiveSparseRegistrationFilter.hxx
+    itktubeAnisotropicDiffusiveRegistrationFilter.hxx )
+endif( TubeTK_USE_VTK )
 
 add_library( TubeTKRegistration INTERFACE )
 
