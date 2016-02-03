@@ -148,3 +148,17 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare
     -b MIDAS{${MODULE_NAME}Test1.mnda.md5} )
 set_property( TEST ${MODULE_NAME}-Test4-Compare
   APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
+
+# Test5 - Test EnhanceUsingNJetDiscriminantAnalysis does not crash when saving features
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSavingFeatures
+  COMMAND ${PROJ_EXE}
+    --useNumberOfLDABasis 1
+    --useNumberOfPCABasis 0
+    --objectId 0,255
+    --zeroScales 1,2
+    --ridgeScales 2,1
+    --saveBasisInfo ${TEMP}/${MODULE_NAME}TestSavingFeatures.mnda
+    --saveFeatureImages ${TEMP}/${MODULE_NAME}TestSavingFeatures
+    MIDAS{ES0015_Large_Subs.mha.md5}
+    --labelmap MIDAS{GDS0015_Large_Subs2.mha.md5}
+    ${TEMP}/${MODULE_NAME}Test1 )

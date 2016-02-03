@@ -167,7 +167,7 @@ NJetFeatureVectorGenerator< TImage >
         }
       }
     else if( fNum < m_ZeroScales.size()
-      + (m_FirstScales.size() * ImageDimension) + 1 )
+      + m_FirstScales.size() * (ImageDimension + 1) )
       {
       featureCount = m_ZeroScales.size();
       for( unsigned int s = 0; s < m_FirstScales.size(); s++ )
@@ -191,11 +191,11 @@ NJetFeatureVectorGenerator< TImage >
         }
       }
     else if( fNum < m_ZeroScales.size()
-      + (m_FirstScales.size() * ImageDimension) + 1
-      + (m_SecondScales.size() * ImageDimension) + 1 )
+      + m_FirstScales.size() * (ImageDimension + 1)
+      + m_SecondScales.size() * (ImageDimension + 1) )
       {
       featureCount = m_ZeroScales.size()
-        + (m_FirstScales.size() * ImageDimension) + 1;
+        + m_FirstScales.size() * (ImageDimension + 1);
       for( unsigned int s = 0; s < m_SecondScales.size(); s++ )
         {
         val = 0.0;
@@ -219,8 +219,8 @@ NJetFeatureVectorGenerator< TImage >
     else
       {
       featureCount = m_ZeroScales.size()
-        + (m_FirstScales.size() * ImageDimension) + 1
-        + (m_SecondScales.size() * ImageDimension) + 1;
+        + m_FirstScales.size() * (ImageDimension + 1)
+        + m_SecondScales.size() * (ImageDimension + 1);
       for( unsigned int s = 0; s < m_RidgeScales.size(); s++ )
         {
         if( featureCount == fNum )
