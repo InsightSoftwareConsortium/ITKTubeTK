@@ -1,4 +1,4 @@
-TubeTK VesselTrainMask Application
+TubeTK ComputeTrainingMask Application
 =============================================
 
 #### Overview:
@@ -8,7 +8,7 @@ Given an expert vessel mask volume this application defines the vessel and not-v
 #### Usage:
 
 ```
-   VesselTrainMask  [--notVesselWidth <double>]
+   ComputeTrainingMask  [--notVesselWidth <double>]
               [--gap <double>
               [--notVesselMask]
               [--xml] [--echo]

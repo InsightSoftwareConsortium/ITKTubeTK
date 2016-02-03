@@ -30,6 +30,7 @@ set( TubeTK_${proj}_MODULES
   ComputeImageSimilarityMetrics
   ComputeImageStatistics
   ComputeSegmentTubesParameters
+  ComputeTrainingMask
   ComputeTubeFlyThroughImage
   ComputeTubeGraphProbability
   ComputeTubeMeasures
@@ -72,8 +73,7 @@ set( TubeTK_${proj}_MODULES
   SegmentUsingOtsuThreshold
   ShrinkImage
   SimulateAcquisitionArtifactsUsingPrior
-  TubeMath
-  VesselTrainMask )
+  TubeMath )
 
 set( TubeTK_${proj}_ImageViewer_MODULES "" )
 if( TubeTK_BUILD_IMAGE_VIEWER )
