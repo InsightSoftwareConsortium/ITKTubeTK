@@ -110,6 +110,7 @@ private:
   void ComputeTubeConnectivity( void );
   void VisitTube( TubePointerType pTube );
   void RunMinimumSpanningTree( TubeIdType rootTubeId );
+  void AddRemainingTubes();
 
   struct GraphEdgeType
     {

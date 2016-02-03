@@ -461,7 +461,6 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
     // add tube to output
     eTop.sourceTube->AddSpatialObject( curTube );
-
     // print some info
     tubeDebugMacro(
       << "  sourceTubeId = "    << eTop.sourceTubeId
@@ -585,10 +584,58 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 template< unsigned int VDimension >
 void
 MinimumSpanningTreeVesselConnectivityFilter< VDimension >
+::AddRemainingTubes( void )
+{
+  const TubeGroupType * inputTubeGroup = this->GetInput();
+  TubeGroupType * outputTubeGroup = this->GetOutput();
+
+  tubeDebugMacro( << "Adding remaining tubes to the output spatial group" );
+
+  typedef typename TubeGroupType::ChildrenListPointer TubeListPointerType;
+
+  char tubeName[] = "Tube";
+  TubeListPointerType pTubeList
+    = inputTubeGroup->GetChildren(
+    inputTubeGroup->GetMaximumDepth(), tubeName );
+
+  for( typename TubeGroupType::ChildrenListType::iterator
+       itSourceTubes = pTubeList->begin();
+       itSourceTubes != pTubeList->end(); ++itSourceTubes )
+    {
+    TubePointerType pCurSourceTube
+      = dynamic_cast< TubeType * >( itSourceTubes->GetPointer() );
+    TubeIdType curSourceTubeId = pCurSourceTube->GetId();
+
+    if( m_SetTubesVisited.find( curSourceTubeId ) == m_SetTubesVisited.end() )
+      {
+      TubePointerType curTube = TubeType::New();
+
+      curTube->CopyInformation( pCurSourceTube );
+      // TODO: make CopyInformation of itk::SpatialObject do this
+      curTube->GetObjectToParentTransform()->SetScale(
+        pCurSourceTube->GetObjectToParentTransform()->GetScale() );
+      curTube->GetObjectToParentTransform()->SetOffset(
+        pCurSourceTube->GetObjectToParentTransform()->GetOffset() );
+      curTube->GetObjectToParentTransform()->SetMatrix(
+        pCurSourceTube->GetObjectToParentTransform()->GetMatrix() );
+      curTube->SetSpacing( pCurSourceTube->GetSpacing() );
+      curTube->ComputeObjectToWorldTransform();
+      curTube->ComputeTangentAndNormals();
+      curTube->SetRoot( false );
+
+      outputTubeGroup->AddSpatialObject( curTube );
+      }
+    }
+}
+
+template< unsigned int VDimension >
+void
+MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 ::GenerateData( void )
 {
   BuildTubeGraph();
   ComputeTubeConnectivity();
+  AddRemainingTubes();
 }
 
 template< unsigned int VDimension >
