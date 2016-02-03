@@ -25,7 +25,6 @@ set( proj Applications )
 
 set( TubeTK_${proj}_MODULES
   AtlasBuilderUsingIntensity
-  ClipTubes
   ComputeBinaryImageSimilarityMetrics
   ComputeImageSimilarityMetrics
   ComputeImageStatistics
@@ -34,7 +33,6 @@ set( TubeTK_${proj}_MODULES
   ComputeTubeGraphProbability
   ComputeTubeMeasures
   ComputeTubeProbability
-  ComputeTubeTortuosityMeasures
   ConvertImagesToCSV
   ConvertInnerOpticToPlus
   ConvertShrunkenSeedImageToList
@@ -72,8 +70,7 @@ set( TubeTK_${proj}_MODULES
   SegmentUsingOtsuThreshold
   ShrinkImage
   SimulateAcquisitionArtifactsUsingPrior
-  TubeMath
-  VesselTrainMask )
+  TubeMath )
 
 set( TubeTK_${proj}_ImageViewer_MODULES "" )
 if( TubeTK_BUILD_IMAGE_VIEWER )
@@ -97,8 +94,11 @@ endif( TubeTK_USE_BOOST )
 set( TubeTK_${proj}_VTK_MODULES )
 if( TubeTK_USE_VTK )
   set( TubeTK_${proj}_VTK_MODULES
+    ClipTubes
     ConvertTubesToSurface
-    RegisterUsingSlidingGeometries )
+    ComputeTubeTortuosityMeasures
+    RegisterUsingSlidingGeometries
+    VesselTrainMask )
   list( APPEND TubeTK_${proj}_MODULES
     ${TubeTK_${proj}_VTK_MODULES} )
 endif( TubeTK_USE_VTK )
