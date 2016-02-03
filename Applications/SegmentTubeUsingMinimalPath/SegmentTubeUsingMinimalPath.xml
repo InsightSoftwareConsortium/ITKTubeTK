@@ -21,8 +21,7 @@
     <file>
       <name>outputTREFile</name>
       <label>output TRE File</label>
-      <channel>output</channel>
-      <index>1</index>
+      <channel>input</channel>
       <description>Output tubes centered along the path </description>
     </file>
   </parameters>
@@ -51,6 +50,27 @@
       <channel>input</channel>
       <default></default>
     </image>
+    <boolean>
+      <name>ExtractFromCenterline</name>
+      <label>Extract From Centerline</label>
+      <description>Extract from a given centerline</description>
+      <default>false</default>
+      <longflag>extractFromCenterline</longflag>
+    </boolean>
+    <file>
+      <name>inputTREFile</name>
+      <label>Input TRE File </label>
+      <longflag>inputTRE</longflag>
+      <channel>input</channel>
+      <description>Input tubes centered along some path </description>
+    </file>
+    <boolean>
+      <name>ClipTubes</name>
+      <label>Clip Tubes</label>
+      <description>Clip the tube based on the input </description>
+      <default>false</default>
+      <longflag>clip</longflag>
+    </boolean>
   </parameters>
   <parameters advanced="true">
     <label>Algorithm Parameters</label>
@@ -92,5 +112,26 @@
       <longflag>stepLengthRelax</longflag>
       <default>0.999</default>
     </double>
+    <double>
+      <name>StartRadius</name>
+      <label>Start Radius</label>
+      <description>Start Radius for radius estimation.</description>
+      <longflag>startRadius</longflag>
+      <default>1</default>
+    </double>
+    <double>
+        <name>MaxRadius</name>
+        <label>Radius Maximum Limit</label>
+        <description>Maximum Radius for radius estimation.</description>
+        <longflag>maxRadius</longflag>
+        <default>6</default>
+      </double>
+    <double>
+        <name>StepRadius</name>
+        <label>Step size for radius estimation</label>
+        <description>Maximum Radius for radius estimation.</description>
+        <longflag>stepRadius</longflag>
+        <default>0.05</default>
+      </double>
   </parameters>
 </executable>
