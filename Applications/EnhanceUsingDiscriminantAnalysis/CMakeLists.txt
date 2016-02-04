@@ -38,19 +38,12 @@ if( TubeTK_BUILD_WITHIN_SLICER )
 endif( TubeTK_BUILD_WITHIN_SLICER )
 include( ${ITK_USE_FILE} )
 
-find_package( JsonCpp REQUIRED )
-
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} ${VTK_LIBRARIES} TubeTKIO ITKMetaIO
-  INCLUDE_DIRECTORIES
-    ${TubeTK_SOURCE_DIR}/Base/CLI
-    ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Numerics
-    ${TubeTK_SOURCE_DIR}/Base/Filtering
-    ${TubeTK_SOURCE_DIR}/Base/IO
-    ${JsonCpp_INCLUDE_DIRS}
+  TARGET_LIBRARIES
+    ${ITK_LIBRARIES} ${VTK_LIBRARIES} ITKMetaIO
+    TubeTKCommon TubeCLI TubeTKIO TubeTKNumerics
   INSTALL_RUNTIME_DESTINATION bin )
 
 if( BUILD_TESTING )

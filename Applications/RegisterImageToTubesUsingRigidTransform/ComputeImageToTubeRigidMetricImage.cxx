@@ -35,8 +35,6 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 #include <itkTimeProbesCollectorBase.h>
 
-#include <json/writer.h>
-
 #include "ComputeImageToTubeRigidMetricImageCLP.h"
 #include "PreProcessRegistrationInputs.h"
 

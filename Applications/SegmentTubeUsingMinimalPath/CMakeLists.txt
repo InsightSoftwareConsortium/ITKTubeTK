@@ -81,13 +81,8 @@ if( NOT( MinimalPathExtraction_DIR ) AND
     LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
     TARGET_LIBRARIES
       ${ITK_LIBRARIES} TubeTKIO ITKIOMeta ITKIOSpatialObjects ITKIOImageBase
-        TubeTKNumerics TubeTKCommon
+        TubeCLI TubeTKNumerics TubeTKCommon
     INCLUDE_DIRECTORIES
-      ${TubeTK_SOURCE_DIR}/Base/CLI
-      ${TubeTK_SOURCE_DIR}/Base/Common
-      ${TubeTK_SOURCE_DIR}/Base/IO
-      ${TubeTK_SOURCE_DIR}/Base/Segmentation
-      ${TubeTK_SOURCE_DIR}/Base/Numerics
       ${MinimalPathExtraction_SOURCE_DIR}/include
     ADDITIONAL_SRCS
       ${ITKMinimalPathExtraction_SRCS} )
@@ -119,14 +114,8 @@ else()
     NAME ${MODULE_NAME}
     LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
     TARGET_LIBRARIES
-      ${ITK_LIBRARIES} TubeTKIO ITKIOMeta ITKIOSpatialObjects ITKIOImageBase
-        TubeTKNumerics TubeTKCommon
-    INCLUDE_DIRECTORIES
-      ${TubeTK_SOURCE_DIR}/Base/CLI
-      ${TubeTK_SOURCE_DIR}/Base/Common
-      ${TubeTK_SOURCE_DIR}/Base/IO
-      ${TubeTK_SOURCE_DIR}/Base/Segmentation
-      ${TubeTK_SOURCE_DIR}/Base/Numerics )
+      ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects ITKIOImageBase
+      TubeCLI TubeTKCommon TubeTKSegmentation )
 
 endif()
 

@@ -91,12 +91,8 @@ SEMMacroBuildCLI(
     ${tubeBaseFilteringTests_SRCS}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
-    TubeTKFiltering
+    TubeCLI TubeTKFiltering
     ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects
-  INCLUDE_DIRECTORIES
-    ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Filtering
-    ${TubeTK_SOURCE_DIR}/Base/Numerics
   INSTALL_RUNTIME_DESTINATION bin
   EXECUTABLE_ONLY
   )

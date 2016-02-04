@@ -67,15 +67,10 @@ set( tubeBaseIOTests_SRCS
   itktubeTubeExtractorIOTest.cxx
   itktubeTubeXIOTest.cxx )
 
-include_directories(
-  ${TubeTK_SOURCE_DIR}/Base/Common
-  ${TubeTK_SOURCE_DIR}/Base/Numerics
-  ${TubeTK_SOURCE_DIR}/Base/IO )
-
 add_executable( tubeBaseIOHeaderTest
   tubeBaseIOHeaderTest.cxx )
 target_link_libraries( tubeBaseIOHeaderTest
-  TubeTKCommon TubeTKNumerics TubeTKIO ${ITK_LIBRARIES} )
+  TubeTKIO ${ITK_LIBRARIES} )
 
 set( tubeBaseIO_External_Libraries )
 if( TubeTK_USE_GPU_ARRAYFIRE )
@@ -89,15 +84,12 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${tubeBaseIO_External_Libraries}
+    TubeCLI
     TubeTKCommon
     TubeTKNumerics
     TubeTKIO
     ${ITK_LIBRARIES}
     ITKIOMeta
-  INCLUDE_DIRECTORIES
-    ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Numerics
-    ${TubeTK_SOURCE_DIR}/Base/IO
   INSTALL_RUNTIME_DESTINATION bin
   EXECUTABLE_ONLY
   )

@@ -43,6 +43,13 @@ set( TubeTK_Base_Segmentation_HXX_Files
 
 add_library( TubeTKSegmentation INTERFACE )
 
+target_include_directories( TubeTKSegmentation INTERFACE
+  ${CMAKE_CURRENT_SOURCE_DIR} )
+
+target_link_libraries( TubeTKSegmentation INTERFACE
+   TubeTKFiltering # Required because of itktubePDFSegmenter.hxx including itktubeSmoothingRecursiveGaussianImageFilter.h
+   TubeTKNumerics )
+
 if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )

@@ -40,9 +40,6 @@ set( MODULE_INCLUDE_DIRECTORIES
   ${CMAKE_CURRENT_BINARY_DIR}/Logic
   ${CMAKE_CURRENT_SOURCE_DIR}/Widgets
   ${CMAKE_CURRENT_BINARY_DIR}/Widgets
-  ${TubeTK_SOURCE_DIR}/Base/Filtering
-  ${TubeTK_SOURCE_DIR}/Base/Numerics
-  ${TubeTK_SOURCE_DIR}/Base/Common
   )
 
 set( MODULE_SRCS
@@ -57,7 +54,10 @@ set( MODULE_UI_SRCS )
 set( MODULE_TARGET_LIBRARIES
   vtkSlicer${MODULE_NAME}ModuleLogic
   qSlicer${MODULE_NAME}ModuleWidgets
-  ${MRML_LIBRARIES} )
+  ${MRML_LIBRARIES}
+  TubeTKCommon
+  TubeTKFiltering
+  TubeTKNumerics )
 
 set( MODULE_RESOURCES
   Resources/qSlicer${MODULE_NAME}Module.qrc )

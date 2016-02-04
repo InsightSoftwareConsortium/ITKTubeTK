@@ -58,6 +58,14 @@ endif( TubeTK_USE_VTK )
 
 add_library( TubeTKRegistration INTERFACE )
 
+target_include_directories( TubeTKRegistration INTERFACE
+  ${CMAKE_CURRENT_SOURCE_DIR} )
+
+target_link_libraries( TubeTKRegistration INTERFACE
+  TubeTKFiltering
+  TubeTKNumerics # Required by AnisotropicDiffusiveSparseRegistrationFilter including itkTubeMath.h
+  )
+
 if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )

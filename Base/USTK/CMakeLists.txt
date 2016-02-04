@@ -54,6 +54,11 @@ add_library( TubeTKUSTK STATIC
   ${TubeTK_Base_USTK_HXX_Files}
   ${TubeTK_Base_USTK_SRCS} )
 
+target_link_libraries( TubeTKUSTK PUBLIC TubeTKSegmentation )
+
+target_include_directories( TubeTKUSTK PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR} )
+
 set( TARGETS TubeTKUSTK )
 TubeTKMacroInstallPlugins( ${TARGETS} )
 

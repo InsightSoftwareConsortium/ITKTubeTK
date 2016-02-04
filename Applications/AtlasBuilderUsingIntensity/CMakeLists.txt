@@ -59,13 +59,9 @@ SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   ADDITIONAL_SRCS tubeAtlasSummation.cxx
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} TubeTKObjectDocuments
-  INCLUDE_DIRECTORIES
-    ${TubeTK_SOURCE_DIR}/Base/CLI
-    ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Filtering
-    ${TubeTK_SOURCE_DIR}/Base/Registration
-    ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments
+  TARGET_LIBRARIES
+    ${ITK_LIBRARIES}
+    TubeTKCommon TubeTKObjectDocuments
   INSTALL_RUNTIME_DESTINATION bin )
 
 if( BUILD_TESTING )

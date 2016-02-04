@@ -83,6 +83,10 @@ if( TubeTK_USE_GPU_ARRAYFIRE )
 endif( TubeTK_USE_GPU_ARRAYFIRE )
 
 add_library( TubeTKFiltering INTERFACE )
+target_include_directories( TubeTKFiltering INTERFACE
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  )
+target_link_libraries( TubeTKFiltering INTERFACE TubeTKNumerics )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

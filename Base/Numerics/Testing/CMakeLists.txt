@@ -71,14 +71,10 @@ set( tubeBaseNumerics_SRCS
   tubeTubeMathTest.cxx
   tubeUserFunctionTest.cxx )
 
-include_directories(
-  ${TubeTK_SOURCE_DIR}/Base/Common
-  ${TubeTK_SOURCE_DIR}/Base/Numerics )
-
 add_executable( tubeBaseNumericsHeaderTest
   tubeBaseNumericsHeaderTest.cxx )
 target_link_libraries( tubeBaseNumericsHeaderTest
-  TubeTKNumerics ${ITK_LIBRARIES} )
+  TubeTKCommon TubeTKFiltering TubeTKNumerics ${ITK_LIBRARIES} )
 if( TubeTK_USE_GPU_ARRAYFIRE )
   target_link_libraries( tubeBaseNumericsHeaderTest ${ArrayFire_LIBRARIES} )
 endif( TubeTK_USE_GPU_ARRAYFIRE )
@@ -95,11 +91,8 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${tubeBaseNumerics_External_Libraries}
-    TubeTKNumerics TubeTKCommon ${ITK_LIBRARIES}
+    TubeCLI TubeTKCommon TubeTKFiltering TubeTKNumerics ${ITK_LIBRARIES}
     ITKIOMeta ITKIOHDF5 ITKOptimizers
-  INCLUDE_DIRECTORIES
-    ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Numerics
   INSTALL_RUNTIME_DESTINATION bin
   EXECUTABLE_ONLY
   )

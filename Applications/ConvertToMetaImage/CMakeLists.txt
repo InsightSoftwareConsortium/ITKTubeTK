@@ -82,6 +82,7 @@ if( TubeTK_USE_QT )
 endif( TubeTK_USE_QT )
 
 add_executable( ConvertToMetaImageCLI ConvertToMetaImageCLI.cxx )
+target_link_libraries(  ConvertToMetaImageCLI TubeTKCommon )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

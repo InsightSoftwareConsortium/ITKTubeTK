@@ -51,6 +51,8 @@ add_library( TubeTKCommon STATIC
   ${TubeTK_Base_Common_CXX_Files} )
 target_link_libraries( TubeTKCommon
   ${ITK_LIBRARIES} )
+target_include_directories( TubeTKCommon PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR} )
 
 TubeTKMacroInstallPlugins( TubeTKCommon )
 
