@@ -24,7 +24,7 @@
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 #include "tubeMacro.h"
-#include "VesselTrainMaskCLP.h"
+#include "ComputeTrainingMaskCLP.h"
 
 #include <itkTimeProbesCollectorBase.h>
 #include <itkImageFileReader.h>
@@ -185,7 +185,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start( "Loading Input Volume Mask File" );
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter progressReporter( "VesselTrainMask",
+  tube::CLIProgressReporter progressReporter( "ComputeTrainingMask",
     CLPProcessInformation );
   progressReporter.Start();
   float progress = 0;

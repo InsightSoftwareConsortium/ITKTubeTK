@@ -29,6 +29,7 @@ set( TubeTK_${proj}_MODULES
   ComputeImageSimilarityMetrics
   ComputeImageStatistics
   ComputeSegmentTubesParameters
+  ComputeTrainingMask
   ComputeTubeFlyThroughImage
   ComputeTubeGraphProbability
   ComputeTubeMeasures

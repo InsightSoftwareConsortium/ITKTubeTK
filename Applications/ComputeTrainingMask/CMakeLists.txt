@@ -20,7 +20,7 @@
 # limitations under the License.
 #
 ############################################################################
-set( MODULE_NAME VesselTrainMask )
+set( MODULE_NAME ComputeTrainingMask )
 project( ${MODULE_NAME} )
 
 if( NOT TubeTK_SOURCE_DIR )
