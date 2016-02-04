@@ -29,7 +29,6 @@ set( TubeTK_${proj}_MODULES
   ComputeImageSimilarityMetrics
   ComputeImageStatistics
   ComputeSegmentTubesParameters
-  ComputeTrainingMask
   ComputeTubeFlyThroughImage
   ComputeTubeGraphProbability
   ComputeTubeMeasures
@@ -97,9 +96,9 @@ if( TubeTK_USE_VTK )
   set( TubeTK_${proj}_VTK_MODULES
     ClipTubes
     ConvertTubesToSurface
+    ComputeTrainingMask
     ComputeTubeTortuosityMeasures
-    RegisterUsingSlidingGeometries
-    VesselTrainMask )
+    RegisterUsingSlidingGeometries )
   list( APPEND TubeTK_${proj}_MODULES
     ${TubeTK_${proj}_VTK_MODULES} )
 endif( TubeTK_USE_VTK )
