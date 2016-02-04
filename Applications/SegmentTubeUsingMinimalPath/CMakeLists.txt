@@ -36,16 +36,32 @@ if( NOT( MinimalPathExtraction_DIR ) AND
 
   endif()
 
+  # XXX Only clean build will ensure expected version is fetched.
   if( NOT EXISTS ${MinimalPathExtraction_SOURCE_DIR} )
 
     set( GIT_CLONE_ARGS "clone" "${MinimalPathExtraction_LOCAL_BUILD_URL}"
       "${MinimalPathExtraction_SOURCE_DIR}" )
-    execute_process( COMMAND ${GITCOMMAND} ${GIT_CLONE_ARGS}
-      WORKING_DIRECTORY ${TubeTK_BINARY_DIR} )
+    message(STATUS "Cloning MinimalPathExtraction into '${MinimalPathExtraction_SOURCE_DIR}'")
+    execute_process( COMMAND ${GIT_EXECUTABLE} ${GIT_CLONE_ARGS}
+      WORKING_DIRECTORY ${TubeTK_BINARY_DIR}
+      OUTPUT_QUIET
+      ERROR_VARIABLE _error
+      RESULT_VARIABLE _result )
+    if( NOT _result EQUAL 0 )
+      message(FATAL_ERROR "Failed to clone '${MinimalPathExtraction_LOCAL_BUILD_URL}': ${_error}")
+    endif()
+
     set( GIT_HASH_ARGS "checkout"
       "${MinimalPathExtraction_LOCAL_BUILD_HASH_OR_TAG}" )
-    execute_process( COMMAND ${GITCOMMAND} ${GIT_HASH_ARGS}
-      WORKING_DIRECTORY ${MinimalPathExtraction_SOURCE_DIR} )
+    message(STATUS "Checking out MinimalPathExtraction '${MinimalPathExtraction_LOCAL_BUILD_HASH_OR_TAG}'")
+    execute_process( COMMAND ${GIT_EXECUTABLE} ${GIT_HASH_ARGS}
+      WORKING_DIRECTORY ${MinimalPathExtraction_SOURCE_DIR}
+      OUTPUT_QUIET
+      ERROR_VARIABLE _error
+      RESULT_VARIABLE _result )
+    if( NOT _result EQUAL 0 )
+      message(FATAL_ERROR "Failed to checkout MinimalPathExtraction '${MinimalPathExtraction_LOCAL_BUILD_HASH_OR_TAG}': ${_error}")
+    endif()
 
   endif( NOT EXISTS ${MinimalPathExtraction_SOURCE_DIR} )
 
