@@ -151,91 +151,91 @@ int itktubeNJetImageFunctionTest( int argc, char * argv[] )
       case 6:
         {
         func->Derivative( pnt, scale, d );
-        outIter.Set( d[0]+d[1] );
+        outIter.Set( d[0] );
         break;
         }
       case 7:
         {
         func->Derivative( pnt, v1, scale, d );
-        outIter.Set( d[0]+d[1] );
+        outIter.Set( d[0] );
         break;
         }
       case 8:
         {
         func->Derivative( pnt, v1, v2, scale, d );
-        outIter.Set( d[0]+d[1] );
+        outIter.Set( d[0] );
         break;
         }
       case 9:
         {
         func->DerivativeAtIndex( outIter.GetIndex(), scale, d );
-        outIter.Set( d[0]+d[1] );
+        outIter.Set( d[1] );
         break;
         }
       case 10:
         {
         func->DerivativeAtIndex( outIter.GetIndex(), v1, scale, d );
-        outIter.Set( d[0]+d[1] );
+        outIter.Set( d[1] );
         break;
         }
       case 11:
         {
         func->DerivativeAtIndex( outIter.GetIndex(), v1, v2, scale, d );
-        outIter.Set( d[0]+d[1] );
+        outIter.Set( d[1] );
         break;
         }
       case 12:
         {
         func->Derivative( pnt, scale, d );
         val = func->GetMostRecentIntensity();
-        outIter.Set( val+(d[0]+d[1]) );
+        outIter.Set( val+(d[0]) );
         break;
         }
       case 13:
         {
         func->Derivative(pnt, v1, scale, d );
         val = func->GetMostRecentIntensity();
-        outIter.Set( val+(d[0]+d[1]) );
+        outIter.Set( val+(d[0]) );
         break;
         }
       case 14:
         {
         func->Derivative(pnt, v1, v2, scale, d );
         val = func->GetMostRecentIntensity();
-        outIter.Set( val+(d[0]+d[1]) );
+        outIter.Set( val+(d[0]) );
         break;
         }
       case 15:
         {
         func->DerivativeAtIndex( outIter.GetIndex(), scale, d );
         val = func->GetMostRecentIntensity();
-        outIter.Set( val+(d[0]+d[1]) );
+        outIter.Set( val+(d[1]) );
         break;
         }
       case 16:
         {
         func->DerivativeAtIndex( outIter.GetIndex(), v1, scale, d );
         val = func->GetMostRecentIntensity();
-        outIter.Set( val+(d[0]+d[1]) );
+        outIter.Set( val+(d[1]) );
         break;
         }
       case 17:
         {
         func->DerivativeAtIndex( outIter.GetIndex(), v1, v2, scale, d );
         val = func->GetMostRecentIntensity();
-        outIter.Set( val+(d[0]+d[1]) );
+        outIter.Set( val+(d[1]) );
         break;
         }
       case 18:
         {
         val = func->Jet( pnt, d, h, scale );
-        outIter.Set( val+d[0]+d[1]+(h[0][0]+h[1][1]) );
+        outIter.Set( val+d[0]+h[0][0] );
         break;
         }
       case 19:
         {
         val = func->JetAtIndex( outIter.GetIndex(), d, h, scale );
-        outIter.Set( val+d[0]+d[1]+(h[0][0]+h[1][1]) );
+        outIter.Set( val+d[1]+h[1][1] );
         break;
         }
       case 20:

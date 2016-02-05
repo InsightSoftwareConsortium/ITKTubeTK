@@ -589,21 +589,42 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
   MatrixType H;
   H = vnl_matrix_inverse<double>( meanCovariance ) * covarianceOfMeans;
 
-  MatrixType ldaBasisMatrix;
   VectorType ldaBasisValues;
+  MatrixType ldaBasisMatrix;
+  ldaBasisValues.set_size( numInputFeatures );
+  ldaBasisValues.fill( 0 );
+  ldaBasisMatrix.set_size( numInputFeatures, numInputFeatures );
+  ldaBasisMatrix.fill( 0 );
   ::tube::ComputeEigen<double>( H, ldaBasisMatrix, ldaBasisValues,
     true, false );
 
   int basisNum = 0;
-  for( unsigned int f = 0; f < m_NumberOfLDABasisToUseAsFeatures; ++f )
+  if( m_NumberOfLDABasisToUseAsFeatures > 0 )
     {
-    m_BasisValues[ basisNum ] = ldaBasisValues[ f ];
-    m_BasisMatrix.set_column( basisNum, ldaBasisMatrix.get_column( f ) );
-    ++basisNum;
+    VectorType biasVector;
+    MatrixType biasMatrix;
+    biasVector.set_size( numInputFeatures );
+    biasVector.fill( 0 );
+    biasMatrix.set_size( numInputFeatures, numInputFeatures);
+    biasMatrix.fill( 0 );
+    for( unsigned int f = 0; f < m_NumberOfLDABasisToUseAsFeatures; ++f )
+      {
+      m_BasisValues[ basisNum ] = ldaBasisValues[ f ];
+      m_BasisMatrix.set_column( basisNum, ldaBasisMatrix.get_column( f ) );
+      ++basisNum;
+      biasVector = ldaBasisMatrix.get_column( f );
+      biasMatrix += outer_product( biasVector, biasVector );
+      }
+    m_GlobalCovariance = vnl_matrix_inverse<double>( biasMatrix )
+      * m_GlobalCovariance;
     }
 
-  MatrixType pcaBasisMatrix;
   VectorType pcaBasisValues;
+  MatrixType pcaBasisMatrix;
+  pcaBasisValues.set_size( numInputFeatures );
+  pcaBasisValues.fill( 0 );
+  pcaBasisMatrix.set_size( numInputFeatures, numInputFeatures );
+  pcaBasisMatrix.fill( 0 );
   ::tube::ComputeEigen<double>( m_GlobalCovariance,
     pcaBasisMatrix, pcaBasisValues, true, false );
   for( unsigned int f = 0;

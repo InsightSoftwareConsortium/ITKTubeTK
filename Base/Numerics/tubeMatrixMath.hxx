@@ -139,12 +139,7 @@ ComputeRidgeness( const vnl_matrix<T> & H,
 {
   unsigned int ImageDimension = D.size();
 
-  ::tube::ComputeEigen( H, HEVect, HEVal, false, true );
-
-  // Ensure ordering of eigenvalues; According to VNL documentation,
-  // eigenvalues are in increasing order (with smallest eigenvalues
-  // first)
-  assert( HEVal[0] <= HEVal[1] );
+  ::tube::ComputeEigen( H, HEVect, HEVal, true, false );
 
   vnl_vector<T> Dv = D;
   if( Dv.magnitude() != 0 )
@@ -156,29 +151,21 @@ ComputeRidgeness( const vnl_matrix<T> & H,
     Dv = HEVect.get_column( ImageDimension-1 );
     }
 
-  vnl_vector<T> P( ImageDimension );
-  for( unsigned int i=0; i<ImageDimension; i++ )
-    {
-    P[i] = dot_product( HEVect.get_column( i ), Dv );
-    }
+  double P = dot_product( HEVect.get_column( ImageDimension-1 ), Dv );
 
-  double sums = 0;
   double sumv = 0;
   int ridge = 1;
   for( unsigned int i=0; i<ImageDimension-1; i++ )
     {
-    sums += P[i]*P[i];
     sumv += HEVal[i]*HEVal[i];
     if( HEVal[i] >= 0 )
       {
       ridge = -1;
       }
     }
-  sums /= ( ImageDimension - 1 );
   double avgv = sumv / ( ImageDimension - 1 );
 
-  // ridgeness is 1 - sums = 1 - ( P^2 + Q^2 )
-  ridgeness = (1.0 - sums) * ridge;
+  ridgeness = ridge * P;
 
   // roundness is 1 - || 1 - v2^2 / v1^2  ||
   // However, since v1^2 can be extremely small, we use the average
@@ -203,7 +190,7 @@ ComputeRidgeness( const vnl_matrix<T> & H,
   if( avgv != 0 )
     {
     if( ImageDimension > 2 )
-      { 
+      {
       // Multiplied by 50 assuming the image is from 0 to 1;
       curvature = ridge * vcl_sqrt( avgv ) * 50;
       }
