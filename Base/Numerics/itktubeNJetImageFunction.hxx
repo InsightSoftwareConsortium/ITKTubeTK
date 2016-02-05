@@ -1372,12 +1372,12 @@ NJetImageFunction<TInputImage>
   double vTotal = 0;
 
   itk::Vector<double, TInputImage::ImageDimension> dTotal;
-  d.Fill( 0);
-  dTotal.Fill( 0);
+  d.Fill( 0 );
+  dTotal.Fill( 0 );
 
   MatrixType hTotal;
-  h.Fill( 0);
-  hTotal.Fill( 0);
+  h.Fill( 0 );
+  hTotal.Fill( 0 );
 
   Index<ImageDimension> xMin;
   Index<ImageDimension> xMax;
@@ -1425,7 +1425,7 @@ NJetImageFunction<TInputImage>
         v += pixelValue*expValue;
         vTotal += vnl_math_abs( expValue);
 
-        for( unsigned int i = 0; i <  ImageDimension; i++)
+        for( unsigned int i = 0; i < ImageDimension; i++)
           {
           expValueD = 2 * ( cIndex[i]-xShift[i]) * m_InputImageSpacing[i]
                         * physGaussFactor
@@ -1662,8 +1662,8 @@ NJetImageFunction<TInputImage>
   double roundness = 0;
   double curvature = 0;
   double levelness = 0;
-  vnl_matrix<double> eVect;
-  vnl_vector<double> eVal;
+  vnl_matrix<double> eVect( ImageDimension, ImageDimension );
+  vnl_vector<double> eVal( ImageDimension );
   ::tube::ComputeRidgeness<double>( h.GetVnlMatrix(), d.GetVnlVector(),
     ridgeness, roundness, curvature, levelness,
     eVect, eVal );
