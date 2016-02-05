@@ -169,7 +169,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 //----------------------------------------------------------------------------
 template< class TPointBasedSpatialObject > double
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
-::GetCurvatureScalarMetric( int i ) const
+::GetCurvatureScalarMetric( unsigned int i ) const
 {
   if( this->m_CurvatureScalar.size() == 0 )
     {
@@ -184,12 +184,13 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     {
     return this->m_CurvatureScalar.at(i);
     }
+  return -1;
 }
 
 //----------------------------------------------------------------------------
 template< class TPointBasedSpatialObject > double
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
-::GetInflectionPointValue( int i ) const
+::GetInflectionPointValue( unsigned int i ) const
 {
   if( this->m_InflectionPoints.Size() == 0 )
     {
@@ -204,6 +205,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     {
     return this->m_InflectionPoints.GetElement(i);
     }
+  return -1;
 }
 
 //----------------------------------------------------------------------------
