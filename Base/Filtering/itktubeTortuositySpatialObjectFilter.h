@@ -210,12 +210,12 @@ public:
   double GetTotalSquaredCurvatureMetric() const;
 
   /** Getters for point-wise metrics */
-  double GetCurvatureScalarMetric( int i ) const;
+  double GetCurvatureScalarMetric( unsigned int i ) const;
 
   /** Same than GetMetric for the Inflection Point metric. Since there are
   * values for each point of the object, an index must be given.
   */
-  double GetInflectionPointValue( int i ) const;
+  double GetInflectionPointValue( unsigned int i ) const;
 
   /** Getters for other-wise metrics */
   int GetCurvatureHistogramMetric( unsigned int bin ) const;
