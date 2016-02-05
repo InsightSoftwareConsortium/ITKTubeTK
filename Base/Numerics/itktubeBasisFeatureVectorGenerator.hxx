@@ -226,7 +226,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
     }
   else
     {
-    std::cerr << "Basis does not exist." << std::endl;
+    std::cerr << "Basis " << basisNum << " does not exist." << std::endl;
     return m_BasisMatrix.get_column( 0 );
     }
 }
@@ -242,8 +242,8 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
     }
   else
     {
-    std::cerr << "Basis does not exist." << std::endl;
-    return m_BasisValues[basisNum];
+    std::cerr << "Basis " << basisNum << " does not exist." << std::endl;
+    return m_BasisValues[0];
     }
 }
 
@@ -598,7 +598,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
   for( unsigned int f = 0; f < m_NumberOfLDABasisToUseAsFeatures; ++f )
     {
     m_BasisValues[ basisNum ] = ldaBasisValues[ f ];
-    m_BasisMatrix.set_column( basisNum, ldaBasisMatrix.get_column( f  ) );
+    m_BasisMatrix.set_column( basisNum, ldaBasisMatrix.get_column( f ) );
     ++basisNum;
     }
 
@@ -610,7 +610,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
     f < numInputFeatures - m_NumberOfLDABasisToUseAsFeatures; ++f )
     {
     m_BasisValues[ basisNum ] = pcaBasisValues[ f ];
-    m_BasisMatrix.set_column( basisNum, pcaBasisMatrix.get_column( f  ) );
+    m_BasisMatrix.set_column( basisNum, pcaBasisMatrix.get_column( f ) );
     ++basisNum;
     }
 
@@ -665,42 +665,27 @@ typename BasisFeatureVectorGenerator< TImage, TLabelMap >::FeatureVectorType
 BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::GetFeatureVector( const IndexType & indx ) const
 {
-  const unsigned int numClasses = this->GetNumberOfObjectIds();
-
   const unsigned int numInputFeatures =
     m_InputFeatureVectorGenerator->GetNumberOfFeatures();
 
+  const unsigned int numFeatures = this->GetNumberOfFeatures();
+
   FeatureVectorType featureVector;
-  featureVector.set_size( this->GetNumberOfFeatures() );
+  featureVector.set_size( numFeatures );
 
   VectorType vBasis;
   FeatureVectorType vInput;
 
-  int basisNum = 0;
-  for( unsigned int i = 0; i < m_NumberOfLDABasisToUseAsFeatures; ++i )
+  for( unsigned int i = 0; i < numFeatures; ++i )
     {
-    vBasis = this->GetBasisVector( basisNum );
+    vBasis = this->GetBasisVector( i );
     vInput = m_InputFeatureVectorGenerator->GetFeatureVector( indx );
     featureVector[i] = 0;
     for( unsigned int j = 0; j < numInputFeatures; j++ )
       {
       featureVector[i] += vBasis[j] * vInput[j];
       }
-    ++basisNum;
     }
-  basisNum = numClasses - 1;
-  for( unsigned int i = 0; i < m_NumberOfPCABasisToUseAsFeatures; ++i )
-    {
-    vBasis = this->GetBasisVector( basisNum );
-    vInput = m_InputFeatureVectorGenerator->GetFeatureVector( indx );
-    featureVector[i] = 0;
-    for( unsigned int j = 0; j < numInputFeatures; j++ )
-      {
-      featureVector[i] += vBasis[j] * vInput[j];
-      }
-    ++basisNum;
-    }
-
   return featureVector;
 }
 
@@ -710,28 +695,31 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::GetFeatureVectorValue( const IndexType & indx,
   unsigned int featureNum ) const
 {
-  const unsigned int numClasses = this->GetNumberOfObjectIds();
-
   const unsigned int numInputFeatures =
     m_InputFeatureVectorGenerator->GetNumberOfFeatures();
 
   VectorType vBasis;
   FeatureVectorType vInput;
 
-  if( featureNum >= m_NumberOfLDABasisToUseAsFeatures )
+  if( featureNum < this->GetNumberOfFeatures() )
     {
-    featureNum = ( featureNum - m_NumberOfLDABasisToUseAsFeatures )
-      + numClasses - 1;
-    }
-  vBasis = this->GetBasisVector( featureNum );
-  vInput = m_InputFeatureVectorGenerator->GetFeatureVector( indx );
+    vBasis = this->GetBasisVector( featureNum );
+    vInput = m_InputFeatureVectorGenerator->GetFeatureVector( indx );
 
-  FeatureValueType featureVector = 0;
-  for( unsigned int j = 0; j < numInputFeatures; j++ )
-    {
-    featureVector += vBasis[j] * vInput[j];
+    FeatureValueType featureVector = 0;
+    for( unsigned int j = 0; j < numInputFeatures; j++ )
+      {
+      featureVector += vBasis[j] * vInput[j];
+      }
+    return featureVector;
     }
-  return featureVector;
+  else
+    {
+    std::cerr << "Basis feature " << featureNum << " does not exist."
+      << std::endl;
+    FeatureValueType featureVector = 0;
+    return featureVector;
+    }
 }
 
 template< class TImage, class TLabelMap >

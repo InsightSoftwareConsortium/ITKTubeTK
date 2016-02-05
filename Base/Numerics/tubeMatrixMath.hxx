@@ -193,17 +193,28 @@ ComputeRidgeness( const vnl_matrix<T> & H,
       }
     else
       {
-      roundness =
-        ridgeness * vcl_sqrt( avgv ) * 50;
+      roundness = 1 - ( ( HEVal[0] * HEVal[0] ) - ( HEVal[1] * HEVal[1] ) )
+        / ( ( HEVal[0] * HEVal[0] ) + ( HEVal[1] * HEVal[1] ) );
       }
     }
 
   // curvature is (v1^2 + v2^2) / 2.0
   curvature = 0;
-  if( avgv > 0 )
+  if( avgv != 0 )
     {
-    // Multiplied by 50 assuming the image is from 0 to 1;
-    curvature = ridge * vcl_sqrt( avgv ) * 50;
+    if( ImageDimension > 2 )
+      { 
+      // Multiplied by 50 assuming the image is from 0 to 1;
+      curvature = ridge * vcl_sqrt( avgv ) * 50;
+      }
+    else
+      {
+      double denom = sumv + ( HEVal[1] * HEVal[1] );
+      if( denom != 0 )
+        {
+        curvature = ( HEVal[1] * HEVal[1] ) / denom;
+        }
+      }
     }
 
   // levelness is (v1^2 + v2^2) / (v1^2 + v2^2 + v3^2) = 1 for a flat ridge
@@ -270,12 +281,10 @@ ComputeEigen( vnl_matrix<T> const & mat,
           T tf = eVals(j);
           eVals(j) = eVals(i);
           eVals(i) = tf;
-          for(int k=0; k<n; k++)
-            {
-            tf = eVects(k,j);
-            eVects(k,j) = eVects(k,i);
-            eVects(k,i) = tf;
-            }
+          vnl_vector<T> tv;
+          tv = eVects.get_column( j );
+          eVects.get_column( j ) = eVects.get_column( i );
+          eVects.get_column( i ) = tv;
           }
         }
       }
@@ -292,12 +301,10 @@ ComputeEigen( vnl_matrix<T> const & mat,
           T tf = eVals(j);
           eVals(j) = eVals(i);
           eVals(i) = tf;
-          for(int k=0; k<n; k++)
-            {
-            tf = eVects(k,j);
-            eVects(k,j) = eVects(k,i);
-            eVects(k,i) = tf;
-            }
+          vnl_vector<T> tv;
+          tv = eVects.get_column( j );
+          eVects.get_column( j ) = eVects.get_column( i );
+          eVects.get_column( i ) = tv;
           }
         }
       }

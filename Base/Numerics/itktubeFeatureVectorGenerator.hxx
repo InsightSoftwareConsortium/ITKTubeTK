@@ -330,6 +330,7 @@ FeatureVectorGenerator< TImage >
     }
   else
     {
+    throw;
     return NULL;
     }
 }

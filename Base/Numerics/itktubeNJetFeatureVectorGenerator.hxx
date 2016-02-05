@@ -161,19 +161,19 @@ NJetFeatureVectorGenerator< TImage >
         {
         if( featureCount == fNum )
           {
-          return njet->EvaluateAtIndex( indx, this->m_ZeroScales[s] );
+          return njet->EvaluateAtIndex( indx, m_ZeroScales[s] );
           }
         featureCount++;
         }
       }
-    else if( fNum < m_ZeroScales.size()
-      + m_FirstScales.size() * (ImageDimension + 1) )
+    else if( fNum < ( m_ZeroScales.size()
+      + m_FirstScales.size() * (ImageDimension + 1) ) )
       {
       featureCount = m_ZeroScales.size();
       for( unsigned int s = 0; s < m_FirstScales.size(); s++ )
         {
         val = 0.0;
-        njet->DerivativeAtIndex( indx, 4, v );
+        njet->DerivativeAtIndex( indx, m_FirstScales[s], v );
         for( unsigned int d = 0; d < ImageDimension; d++ )
           {
           if( featureCount == fNum )
@@ -225,21 +225,25 @@ NJetFeatureVectorGenerator< TImage >
         {
         if( featureCount == fNum )
           {
-          return njet->RidgenessAtIndex( indx, m_RidgeScales[s] );
+          njet->RidgenessAtIndex( indx, m_RidgeScales[s] );
+          return njet->GetMostRecentRidgeness();
           }
         featureCount++;
         if( featureCount == fNum )
           {
+          njet->RidgenessAtIndex( indx, m_RidgeScales[s] );
           return njet->GetMostRecentRidgeRoundness();
           }
         featureCount++;
         if( featureCount == fNum )
           {
+          njet->RidgenessAtIndex( indx, m_RidgeScales[s] );
           return njet->GetMostRecentRidgeCurvature();
           }
         featureCount++;
         if( featureCount == fNum )
           {
+          njet->RidgenessAtIndex( indx, m_RidgeScales[s] );
           return njet->GetMostRecentRidgeLevelness();
           }
         featureCount++;

@@ -49,7 +49,7 @@
       <name>zeroScales</name>
       <description>Scales at which 0th-order features are computed.</description>
       <label>Zero-order scales</label>
-      <default>1</default>
+      <default></default>
       <longflag>zeroScales</longflag>
     </double-vector>
     <double-vector>

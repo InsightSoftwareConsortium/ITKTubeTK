@@ -122,7 +122,7 @@ public:
   void         SetBasisMatrix( const MatrixType & mat );
   void         SetBasisValues( const VectorType & values );
 
-  typename FeatureImageType::Pointer GetFeatureImage(
+  virtual typename FeatureImageType::Pointer GetFeatureImage(
                                        unsigned int fNum ) const;
 
   virtual void GenerateBasis( void );
