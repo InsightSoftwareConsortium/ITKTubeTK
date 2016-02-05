@@ -68,10 +68,7 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES}
-    TubeTKObjectDocuments
-  INCLUDE_DIRECTORIES
-    ${TubeTK_SOURCE_DIR}/Base/CLI
-    ${TubeTK_SOURCE_DIR}/Base/Common
+    TubeCLI TubeTKObjectDocuments
   INSTALL_RUNTIME_DESTINATION bin
   EXECUTABLE_ONLY
   )

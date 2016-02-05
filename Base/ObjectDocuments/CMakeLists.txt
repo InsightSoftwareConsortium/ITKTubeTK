@@ -52,6 +52,9 @@ add_library( TubeTKObjectDocuments STATIC
 target_link_libraries( TubeTKObjectDocuments
   TubeTKCommon ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects )
 
+target_include_directories( TubeTKObjectDocuments PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR} )
+
 if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )

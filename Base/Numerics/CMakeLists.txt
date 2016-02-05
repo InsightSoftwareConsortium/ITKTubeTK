@@ -79,6 +79,9 @@ add_library( TubeTKNumerics STATIC
 if( TubeTK_USE_GPU_ARRAYFIRE )
   target_link_libraries( TubeTKNumerics ${ArrayFire_LIBRARIES} )
 endif( TubeTK_USE_GPU_ARRAYFIRE )
+target_link_libraries( TubeTKNumerics PUBLIC TubeTKCommon )
+target_include_directories( TubeTKNumerics PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

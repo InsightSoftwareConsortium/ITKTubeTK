@@ -21,15 +21,6 @@
 #
 ##############################################################################
 
-include_directories( CLI
-  Common
-  IO
-  ObjectDocuments
-  Numerics
-  Filtering
-  Registration
-  Segmentation
-  )
 add_subdirectory( CLI )
 add_subdirectory( Common )
 add_subdirectory( Numerics )

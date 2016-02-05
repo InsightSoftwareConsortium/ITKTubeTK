@@ -42,8 +42,6 @@ include( ${ImageViewer_USE_FILE} )
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 
-find_package( JsonCpp REQUIRED )
-
 set( ${MODULE_NAME}_SRCS
   QtImageEditor.cxx
   QtOverlayControlsWidget.cxx
@@ -107,12 +105,8 @@ SEMMacroBuildCLI(
     ${ITK_LIBRARIES}
     ${QT_LIBRARIES}
     ${OPENGL_LIBRARIES}
+    TubeTKFiltering
   INCLUDE_DIRECTORIES
-    ${TubeTK_SOURCE_DIR}/Base/CLI
-    ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Numerics
-    ${TubeTK_SOURCE_DIR}/Base/Filtering
-    ${TubeTK_SOURCE_DIR}/Base/IO
     ${${MODULE_NAME}_INCLUDE_DIRS}
   INSTALL_RUNTIME_DESTINATION bin )
 

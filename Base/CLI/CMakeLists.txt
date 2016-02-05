@@ -32,8 +32,10 @@ set( TubeTK_Base_CLI_H_Files
   tubeCLIProgressReporter.h
   TubeTKLogo.h )
 
-add_custom_target( TubeCLI SOURCES
-  ${TubeTK_Base_CLI_H_Files} )
+add_library(TubeCLI INTERFACE)
+target_include_directories( TubeCLI INTERFACE
+  ${CMAKE_CURRENT_SOURCE_DIR} )
+target_link_libraries( TubeCLI INTERFACE TubeTKCommon )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

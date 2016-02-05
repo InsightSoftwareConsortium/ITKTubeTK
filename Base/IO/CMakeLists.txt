@@ -40,12 +40,6 @@ set( TubeTK_Base_IO_HXX_Files
   itktubeTubeExtractorIO.hxx 
   itktubeTubeXIO.hxx )
 
-include_directories(
-  ${TubeTK_SOURCE_DIR}/Base/Segmentation
-  ${TubeTK_SOURCE_DIR}/Base/Filtering
-  ${TubeTK_SOURCE_DIR}/Base/Numerics
-  ${TubeTK_SOURCE_DIR}/Base/Common )
-
 set( TubeTK_Base_IO_SRCS
   itktubeMetaClassPDF.cxx
   itktubeMetaLDA.cxx
@@ -57,6 +51,11 @@ add_library( TubeTKIO STATIC
   ${TubeTK_Base_IO_H_Files}
   ${TubeTK_Base_IO_HXX_Files}
   ${TubeTK_Base_IO_SRCS} )
+
+target_link_libraries( TubeTKIO PUBLIC TubeTKCommon TubeTKNumerics TubeTKSegmentation )
+
+target_include_directories( TubeTKIO PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

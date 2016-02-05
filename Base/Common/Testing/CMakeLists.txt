@@ -74,10 +74,7 @@ SEMMacroBuildCLI(
   TARGET_LIBRARIES
     ${ITK_LIBRARIES}
     ${JsonCpp_LIBRARIES}
-    TubeTKCommon
-  INCLUDE_DIRECTORIES
-    ${TubeTK_SOURCE_DIR}/Base/CLI
-    ${TubeTK_SOURCE_DIR}/Base/Common
+    TubeCLI TubeTKCommon
   INSTALL_RUNTIME_DESTINATION bin
   EXECUTABLE_ONLY
   )

@@ -56,10 +56,7 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY}
+    TubeCLI TubeTKCommon
   INCLUDE_DIRECTORIES
     ${Boost_INCLUDE_DIRS}
-    ${TubeTK_SOURCE_DIR}/Utilities
-    ${TubeTK_SOURCE_DIR}/Base/CLI
-    ${TubeTK_SOURCE_DIR}/Base/Common
-    ${TubeTK_SOURCE_DIR}/Base/Filtering
   INSTALL_RUNTIME_DESTINATION bin )
