@@ -92,8 +92,6 @@ ApplyDilateMorphologyFilter( typename itk::Image< TPixel, VDimension >::Pointer 
   ball.SetRadius( 1 );
   ball.CreateStructuringElement();
 
-  typedef itk::ErodeObjectMorphologyImageFilter
-    < ImageType, ImageType, BallType >       ErodeFilterType;
   typedef itk::DilateObjectMorphologyImageFilter
     < ImageType, ImageType, BallType >       DilateFilterType;
 
