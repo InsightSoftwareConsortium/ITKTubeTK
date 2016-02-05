@@ -390,11 +390,15 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
   // visit root tube
   VisitTube( rootTube );
-
   // add root to output
   if( m_RemoveOrphanTubes && m_minpqGraphEdge.empty() )
     {
-    return;
+    bool isActualRoot = std::find(m_RootTubeIdList.begin(),
+      m_RootTubeIdList.end(), rootTubeId) != m_RootTubeIdList.end();
+    if( !isActualRoot )
+      {
+      return;
+      }
     }
   outputTubeGroup->AddSpatialObject( rootTube );
 
@@ -531,13 +535,6 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       epTube.tubeLength =
         ::tube::ComputeTubeLength< TubeType >(
           m_TubeIdToObjectMap[epTube.tubeId] );
-
-      // check if orphan and drop if requested
-      if( m_RemoveOrphanTubes && epTube.outDegree == 0 )
-        {
-        continue;
-        }
-
       maxpqVOutDegree.push( epTube );
       }
     }
@@ -553,12 +550,10 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       epTube.tubeLength =
         ::tube::ComputeTubeLength< TubeType >(
           m_TubeIdToObjectMap[epTube.tubeId] );
-
       if( m_RemoveOrphanTubes && epTube.outDegree == 0 )
         {
         continue;
         }
-
       maxpqVOutDegree.push( epTube );
       }
     }
@@ -635,7 +630,10 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 {
   BuildTubeGraph();
   ComputeTubeConnectivity();
-  AddRemainingTubes();
+  if( !m_RemoveOrphanTubes )
+    {
+    AddRemainingTubes();
+    }
 }
 
 template< unsigned int VDimension >
