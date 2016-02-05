@@ -37,10 +37,6 @@
 #include <itkAddImageFilter.h>
 #include <itkCastImageFilter.h>
 
-#include <vtkPolyDataWriter.h>
-#include <vtkSmartPointer.h>
-#include <vtkNew.h>
-
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
