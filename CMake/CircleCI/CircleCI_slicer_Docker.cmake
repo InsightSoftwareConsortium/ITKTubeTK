@@ -33,9 +33,6 @@ endif( NOT SITE_BUILD_TYPE )
 
 string( SUBSTRING $ENV{CIRCLE_SHA1} 0 7 commit )
 set( what "$ENV{CIRCLE_BRANCH}" )
-if( NOT "$ENV{CIRCLE_PR_NUMBER}" STREQUAL "" )
-  set( what "${what}_PR#$ENV{CIRCLE_PR_NUMBER}" )
-endif()
 set( SITE_BUILD_NAME_SUFFIX _${commit}_${what} )
 
 if( NOT SITE_CTEST_MODE )
