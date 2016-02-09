@@ -93,7 +93,7 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   scales[1] = 8;
 
   FilterType::NJetScalesType scales2( 1 );
-  scales2[0] = 6;
+  scales2[0] = 8;
 
   FilterType::Pointer filter = FilterType::New();
   filter->SetInput( inputImage );
@@ -101,6 +101,7 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   filter->SetFirstScales( scales );
   filter->SetSecondScales( scales2 );
   filter->SetRidgeScales( scales2 );
+  filter->UpdateWhitenStatistics();
 
   std::cout << filter << std::endl;
 
@@ -120,32 +121,42 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
 
   basisFilter->SetLabelMap( NULL );
 
-  WriterType::Pointer featureImage0Writer = WriterType::New();
-  featureImage0Writer->SetFileName( argv[5] );
-  featureImage0Writer->SetUseCompression( true );
-  featureImage0Writer->SetInput( basisFilter->GetFeatureImage( 0 ) );
-  try
+  for( unsigned int i=0; i<basisFilter->GetNumberOfFeatures(); ++i )
     {
-    featureImage0Writer->Update();
-    }
-  catch (itk::ExceptionObject& e)
-    {
-    std::cerr << "Exception caught during write:" << std::endl << e;
-    return EXIT_FAILURE;
+    WriterType::Pointer featureImage0Writer = WriterType::New();
+    char fname[80];
+    sprintf( fname, "%s.%d.mha", argv[5], i );
+    featureImage0Writer->SetFileName( fname );
+    featureImage0Writer->SetUseCompression( true );
+    featureImage0Writer->SetInput( basisFilter->GetFeatureImage( i ) );
+    try
+      {
+      featureImage0Writer->Update();
+      }
+    catch (itk::ExceptionObject& e)
+      {
+      std::cerr << "Exception caught during write:" << std::endl << e;
+      return EXIT_FAILURE;
+      }
     }
 
-  WriterType::Pointer featureImage1Writer = WriterType::New();
-  featureImage1Writer->SetFileName( argv[6] );
-  featureImage1Writer->SetUseCompression( true );
-  featureImage1Writer->SetInput( basisFilter->GetFeatureImage( 1 ) );
-  try
+  for( unsigned int i=0; i<filter->GetNumberOfFeatures(); ++i )
     {
-    featureImage1Writer->Update();
-    }
-  catch (itk::ExceptionObject& e)
-    {
-    std::cerr << "Exception caught during write:" << std::endl << e;
-    return EXIT_FAILURE;
+    WriterType::Pointer featureImage1Writer = WriterType::New();
+    char fname[80];
+    sprintf( fname, "%s.%d.mha", argv[6], i );
+    featureImage1Writer->SetFileName( fname );
+    featureImage1Writer->SetUseCompression( true );
+    featureImage1Writer->SetInput( filter->GetFeatureImage( i ) );
+    try
+      {
+      featureImage1Writer->Update();
+      }
+    catch (itk::ExceptionObject& e)
+      {
+      std::cerr << "Exception caught during write:" << std::endl << e;
+      return EXIT_FAILURE;
+      }
     }
 
   return EXIT_SUCCESS;

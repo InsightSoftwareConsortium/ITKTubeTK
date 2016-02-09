@@ -72,7 +72,7 @@ public:
 
   unsigned int GetNumberOfInputImages() const;
 
-  void UpdateWhitenFeatureImageStats( void );
+  void UpdateWhitenStatistics( void );
 
   void   SetWhitenMeans( const ValueListType & means );
   const  ValueListType & GetWhitenMeans( void ) const;
@@ -80,11 +80,11 @@ public:
   void   SetWhitenStdDevs( const ValueListType & stdDevs );
   const  ValueListType & GetWhitenStdDevs( void ) const;
 
-  void   SetWhitenFeatureImageMean( unsigned int num, double mean );
-  double GetWhitenFeatureImageMean( unsigned int num ) const;
+  void   SetWhitenMean( unsigned int num, double mean );
+  double GetWhitenMean( unsigned int num ) const;
 
-  void   SetWhitenFeatureImageStdDev( unsigned int num, double stdDev );
-  double GetWhitenFeatureImageStdDev( unsigned int num ) const;
+  void   SetWhitenStdDev( unsigned int num, double stdDev );
+  double GetWhitenStdDev( unsigned int num ) const;
 
   virtual unsigned int GetNumberOfFeatures( void ) const;
 
@@ -113,8 +113,8 @@ private:
   void operator = ( const Self & );      // Purposely not implemented
 
   //  Data
-  ValueListType                   m_WhitenFeatureImageMean;
-  ValueListType                   m_WhitenFeatureImageStdDev;
+  ValueListType                   m_WhitenMean;
+  ValueListType                   m_WhitenStdDev;
 
 }; // End class FeatureVectorGenerator
 

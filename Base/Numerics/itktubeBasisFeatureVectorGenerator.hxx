@@ -37,6 +37,8 @@ limitations under the License.
 #include <iostream>
 #include <limits>
 
+#include <vnl/algo/vnl_cholesky.h>
+
 namespace itk
 {
 
@@ -53,8 +55,8 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
   m_ObjectMeanList.clear();
   m_ObjectCovarianceList.clear();
 
-  m_GlobalMean = 0;
-  m_GlobalCovariance = 0;
+  m_GlobalMean.fill( 0 );
+  m_GlobalCovariance.fill( 0 );
 
   m_NumberOfPCABasisToUseAsFeatures = 1;
   m_NumberOfLDABasisToUseAsFeatures = 1;
@@ -448,8 +450,17 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 
   unsigned int globalCount = 0;
 
-  double delta = 0;
-  double deltaJ = 0;
+  VectorType delta;
+  delta.set_size( numInputFeatures );
+  delta.fill( 0 );
+  VectorListType objectDelta;
+  objectDelta.resize( numClasses );
+  for( unsigned int i=0; i<numClasses; ++i )
+    {
+    objectDelta[i].set_size( numInputFeatures );
+    objectDelta[i].fill( 0 );
+    }
+
   unsigned int valC = 0;
   bool found = false;
   itInMask.GoToBegin();
@@ -478,47 +489,54 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
       FeatureVectorType v = m_InputFeatureVectorGenerator->
         GetFeatureVector( indx );
 
-      ++globalCount;
-      ++countList[valC];
+      // Using method from:
+      // https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
       for( unsigned int i = 0; i < numInputFeatures; i++ )
         {
-        delta = v[i] - m_GlobalMean[i];
-        m_GlobalMean[i] += delta / globalCount;
+        delta[i] = ( v[i] - m_GlobalMean[i] ) / ( globalCount + 1 );
+        m_GlobalMean[i] += delta[i];
 
-        delta = v[i] - m_ObjectMeanList[valC][i];
-        m_ObjectMeanList[valC][i] += delta / countList[valC];
+        objectDelta[valC][i] = ( v[i] - m_ObjectMeanList[valC][i] ) /
+          ( countList[valC] + 1 );
+        m_ObjectMeanList[valC][i] += objectDelta[valC][i];
         }
       for( unsigned int i = 0; i < numInputFeatures; i++ )
         {
-        for( unsigned int j = 0; j < numInputFeatures; j++ )
+        for( unsigned int j = i; j < numInputFeatures; j++ )
           {
-          delta = v[i] - m_GlobalMean[i];
-          deltaJ = v[j] - m_GlobalMean[j];
-          m_GlobalCovariance[i][j] += delta * deltaJ;
+          m_GlobalCovariance[i][j] += globalCount * delta[i] * delta[j]
+            - m_GlobalCovariance[i][j] / ( globalCount + 1 );
 
-          delta = v[i] - m_ObjectMeanList[valC][i];
-          deltaJ = v[j] - m_ObjectMeanList[valC][j];
-          m_ObjectCovarianceList[valC][i][j] += delta * deltaJ;
+          m_ObjectCovarianceList[valC][i][j] += countList[valC]
+            * objectDelta[valC][i] * objectDelta[valC][j]
+            - m_ObjectCovarianceList[valC][i][j] / ( countList[valC] + 1 );
           }
         }
+      ++globalCount;
+      ++countList[valC];
       }
     ++itInMask;
     }
 
   for( unsigned int i = 0; i < numInputFeatures; i++ )
     {
-    for( unsigned int j = 0; j < numInputFeatures; j++ )
+    for( unsigned int j = i; j < numInputFeatures; j++ )
       {
-      m_GlobalCovariance[i][j] /= globalCount - 1;
+      m_GlobalCovariance[i][j] = ( globalCount / ( globalCount - 1 ) )
+        * m_GlobalCovariance[i][j];
+      m_GlobalCovariance[j][i] = m_GlobalCovariance[i][j];
       for( unsigned int c = 0; c < numClasses; c++ )
         {
         if( countList[c] > 1 )
           {
-          m_ObjectCovarianceList[c][i][j] /= countList[c] - 1;
+          m_ObjectCovarianceList[c][i][j] = ( countList[c]
+            / ( countList[c] - 1 ) ) * m_ObjectCovarianceList[c][i][j];
+          m_ObjectCovarianceList[c][j][i] = m_ObjectCovarianceList[c][i][j];
           }
         else
           {
           m_ObjectCovarianceList[c][i][j] = 0;
+          m_ObjectCovarianceList[c][j][i] = 0;
           }
         }
       }
@@ -556,6 +574,10 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
   m_BasisValues.set_size( numInputFeatures );
   m_BasisMatrix.set_size( numInputFeatures, numInputFeatures );
 
+  VectorType meanOfMeans;
+  meanOfMeans.set_size( numInputFeatures );
+  meanOfMeans.fill( 0 );
+
   MatrixType covarianceOfMeans;
   covarianceOfMeans.set_size( numInputFeatures, numInputFeatures );
   covarianceOfMeans.fill( 0 );
@@ -564,30 +586,28 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
   meanCovariance.fill( 0 );
   for( unsigned int c = 0; c < numClasses; c++ )
     {
+    meanOfMeans += m_ObjectMeanList[c];
+    }
+  meanOfMeans *= 1.0 / numClasses;
+  for( unsigned int c = 0; c < numClasses; c++ )
+    {
     for( unsigned int i = 0; i < numInputFeatures; i++ )
       {
-      for( unsigned int j = 0; j < numInputFeatures; j++ )
+      for( unsigned int j = i; j < numInputFeatures; j++ )
         {
+        meanCovariance[i][j] += m_ObjectCovarianceList[c][i][j];
+        meanCovariance[j][i] += meanCovariance[i][j];
+
         covarianceOfMeans[i][j] +=
-          ( m_ObjectMeanList[c][i] - m_GlobalMean[i] )
-          * ( m_ObjectMeanList[c][j] - m_GlobalMean[j] );
-        meanCovariance[i][j] += ( m_ObjectCovarianceList[c][i][j]
-          * m_ObjectCovarianceList[c][i][j] );
+          ( m_ObjectMeanList[c][i] - meanOfMeans[i] )
+          * ( m_ObjectMeanList[c][j] - meanOfMeans[j] );
+        covarianceOfMeans[j][i] = covarianceOfMeans[i][j];
         }
       }
     }
 
-  for( unsigned int i = 0; i < numInputFeatures; i++ )
-    {
-    for( unsigned int j = 0; j < numInputFeatures; j++ )
-      {
-      covarianceOfMeans[i][j] /= numClasses;
-      meanCovariance[i][j] = vcl_sqrt( meanCovariance[i][j] / numClasses );
-      }
-    }
-
-  MatrixType H;
-  H = vnl_matrix_inverse<double>( meanCovariance ) * covarianceOfMeans;
+  meanCovariance *= 1.0 / numClasses;
+  covarianceOfMeans *= 1.0 / numClasses;
 
   VectorType ldaBasisValues;
   MatrixType ldaBasisMatrix;
@@ -595,8 +615,16 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
   ldaBasisValues.fill( 0 );
   ldaBasisMatrix.set_size( numInputFeatures, numInputFeatures );
   ldaBasisMatrix.fill( 0 );
-  ::tube::ComputeEigen<double>( H, ldaBasisMatrix, ldaBasisValues,
-    true, false );
+
+  ::tube::ComputeEigenOfMatrixInvertedTimesMatrix( meanCovariance,
+    covarianceOfMeans, ldaBasisMatrix, ldaBasisValues, false, false );
+
+  VectorType pcaBasisValues;
+  MatrixType pcaBasisMatrix;
+  pcaBasisValues.set_size( numInputFeatures );
+  pcaBasisValues.fill( 0 );
+  pcaBasisMatrix.set_size( numInputFeatures, numInputFeatures );
+  pcaBasisMatrix.fill( 0 );
 
   int basisNum = 0;
   if( m_NumberOfLDABasisToUseAsFeatures > 0 )
@@ -612,21 +640,21 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
       m_BasisValues[ basisNum ] = ldaBasisValues[ f ];
       m_BasisMatrix.set_column( basisNum, ldaBasisMatrix.get_column( f ) );
       ++basisNum;
-      biasVector = ldaBasisMatrix.get_column( f );
+      biasVector = m_BasisMatrix.get_column( f );
       biasMatrix += outer_product( biasVector, biasVector );
       }
-    m_GlobalCovariance = vnl_matrix_inverse<double>( biasMatrix )
-      * m_GlobalCovariance;
+    biasMatrix *= 1.0 / m_NumberOfLDABasisToUseAsFeatures;
+    ::tube::FixMatrixSymmetry( biasMatrix );
+
+    ::tube::ComputeEigenOfMatrixInvertedTimesMatrix( biasMatrix,
+      m_GlobalCovariance, pcaBasisMatrix, pcaBasisValues, false, false );
+    }
+  else
+    {
+    ::tube::ComputeEigen<double>( m_GlobalCovariance, pcaBasisMatrix,
+      pcaBasisValues, false, false, false );
     }
 
-  VectorType pcaBasisValues;
-  MatrixType pcaBasisMatrix;
-  pcaBasisValues.set_size( numInputFeatures );
-  pcaBasisValues.fill( 0 );
-  pcaBasisMatrix.set_size( numInputFeatures, numInputFeatures );
-  pcaBasisMatrix.fill( 0 );
-  ::tube::ComputeEigen<double>( m_GlobalCovariance,
-    pcaBasisMatrix, pcaBasisValues, true, false );
   for( unsigned int f = 0;
     f < numInputFeatures - m_NumberOfLDABasisToUseAsFeatures; ++f )
     {

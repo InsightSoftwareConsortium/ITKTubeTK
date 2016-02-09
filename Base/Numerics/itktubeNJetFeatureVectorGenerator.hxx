@@ -133,6 +133,19 @@ NJetFeatureVectorGenerator< TImage >
       featureVector[featureCount++] = njet->GetMostRecentRidgeLevelness();
       }
     }
+
+  if( numFeatures != featureCount )
+    {
+    std::cerr << "BUG: featureCount != Expected number of features"
+      << std::endl;
+    }
+
+  for( unsigned int i=0; i<numFeatures; ++i )
+    {
+    featureVector[i] = ( featureVector[i] - this->GetWhitenMean(i) )
+      / this->GetWhitenStdDev( i );
+    }
+
   return featureVector;
 }
 
@@ -161,7 +174,8 @@ NJetFeatureVectorGenerator< TImage >
         {
         if( featureCount == fNum )
           {
-          return njet->EvaluateAtIndex( indx, m_ZeroScales[s] );
+          return ( njet->EvaluateAtIndex( indx, m_ZeroScales[s] )
+            - this->GetWhitenMean( fNum ) ) / this->GetWhitenStdDev( fNum );
           }
         featureCount++;
         }
@@ -178,14 +192,16 @@ NJetFeatureVectorGenerator< TImage >
           {
           if( featureCount == fNum )
             {
-            return v[d];
+            return ( v[d] - this->GetWhitenMean( fNum ) )
+              / this->GetWhitenStdDev( fNum );
             }
           featureCount++;
           val += v[d]*v[d];
           }
         if( featureCount == fNum )
           {
-          return vcl_sqrt( val );
+          return ( vcl_sqrt( val ) - this->GetWhitenMean( fNum ) )
+              / this->GetWhitenStdDev( fNum );
           }
         featureCount++;
         }
@@ -204,14 +220,16 @@ NJetFeatureVectorGenerator< TImage >
           {
           if( featureCount == fNum )
             {
-            return m[d][d];
+            return ( m[d][d] - this->GetWhitenMean( fNum ) )
+              / this->GetWhitenStdDev( fNum );
             }
           featureCount++;
           val += m[d][d]*m[d][d];
           }
         if( featureCount == fNum )
           {
-          return vcl_sqrt( val );
+          return ( vcl_sqrt( val ) - this->GetWhitenMean( fNum ) )
+            / this->GetWhitenStdDev( fNum );
           }
         featureCount++;
         }
@@ -226,25 +244,29 @@ NJetFeatureVectorGenerator< TImage >
         if( featureCount == fNum )
           {
           njet->RidgenessAtIndex( indx, m_RidgeScales[s] );
-          return njet->GetMostRecentRidgeness();
+          return ( njet->GetMostRecentRidgeness()
+            - this->GetWhitenMean( fNum ) ) / this->GetWhitenStdDev( fNum );
           }
         featureCount++;
         if( featureCount == fNum )
           {
           njet->RidgenessAtIndex( indx, m_RidgeScales[s] );
-          return njet->GetMostRecentRidgeRoundness();
+          return ( njet->GetMostRecentRidgeRoundness()
+            - this->GetWhitenMean( fNum ) ) / this->GetWhitenStdDev( fNum );
           }
         featureCount++;
         if( featureCount == fNum )
           {
           njet->RidgenessAtIndex( indx, m_RidgeScales[s] );
-          return njet->GetMostRecentRidgeCurvature();
+          return ( njet->GetMostRecentRidgeCurvature()
+            - this->GetWhitenMean( fNum ) ) / this->GetWhitenStdDev( fNum );
           }
         featureCount++;
         if( featureCount == fNum )
           {
           njet->RidgenessAtIndex( indx, m_RidgeScales[s] );
-          return njet->GetMostRecentRidgeLevelness();
+          return ( njet->GetMostRecentRidgeLevelness()
+            - this->GetWhitenMean( fNum ) ) / this->GetWhitenStdDev( fNum );
           }
         featureCount++;
         }
