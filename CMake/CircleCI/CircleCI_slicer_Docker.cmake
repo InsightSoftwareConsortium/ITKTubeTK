@@ -31,6 +31,10 @@ if( NOT SITE_BUILD_TYPE )
   set( SITE_BUILD_TYPE "Release" ) # Release, Debug
 endif( NOT SITE_BUILD_TYPE )
 
+string( SUBSTRING $ENV{CIRCLE_SHA1} 0 7 commit )
+set( what "$ENV{CIRCLE_BRANCH}" )
+set( SITE_BUILD_NAME_SUFFIX _${commit}_${what} )
+
 if( NOT SITE_CTEST_MODE )
   set( SITE_CTEST_MODE "Experimental" ) # Experimental, Continuous, or Nightly
 endif( NOT SITE_CTEST_MODE )
@@ -149,7 +153,7 @@ set( SITE_NIGHTLY_UPLOAD ON )
 
 set( TubeTK_SCRIPT_DIR "${CTEST_SCRIPT_DIRECTORY}" )
 
-set( SITE_BUILD_NAME "${SITE_PLATFORM}-${SITE_BUILD_TYPE}" )
+set( SITE_BUILD_NAME "${SITE_PLATFORM}-${SITE_BUILD_TYPE}${SITE_BUILD_NAME_SUFFIX}" )
 
 set( SITE_UPDATE_COMMAND "${SITE_GIT_COMMAND}" )
 
