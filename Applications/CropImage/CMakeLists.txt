@@ -24,16 +24,6 @@
 set( MODULE_NAME CropImage )
 project( ${MODULE_NAME} )
 
-set( CropImage_H_Files
-  tubeCropROI.h )
-
-set( CropImage_HXX_Files
-  tubeCropROI.hxx )
-
-add_custom_target( CropImageInclude SOURCES
-  ${CropImage_H_Files}
-  ${CropImage_HXX_Files} )
-
 if( NOT TubeTK_SOURCE_DIR )
   find_package( TubeTK REQUIRED )
   include( ${TubeTK_USE_FILE} )
@@ -53,7 +43,7 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES}
-    TubeCLI TubeTKCommon
+    ITKTubeTK TubeCLI TubeTKCommon
   INSTALL_RUNTIME_DESTINATION bin )
 
 if( BUILD_TESTING )

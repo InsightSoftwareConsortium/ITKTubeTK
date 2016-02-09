@@ -134,8 +134,6 @@ if( TubeTK_USE_CTK )
   set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "CTK" )
 endif( TubeTK_USE_CTK )
 
-set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "MinimalPathExtraction" )
-
 set( TubeTK_EXTERNAL_PROJECTS_ARGS )
 
 if( TubeTK_USE_BOOST )
@@ -188,6 +186,9 @@ ExternalProject_Add( ${proj}
     -DBUILD_TESTING:BOOL=${BUILD_TESTING}
     -DMAKECOMMAND:STRING=${MAKECOMMAND}
     -DGIT_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
+    # XXX Change to upper case variables
+    -Dgit_protocol:STRING=${git_protocol}
+    -Dgithub_protocol:STRING=${github_protocol}
     -DSITE:STRING=${SITE}
     -DTubeTK_CONFIG_BINARY_DIR:PATH=${TubeTK_CONFIG_BINARY_DIR}
     -DTubeTK_EXECUTABLE_DIRS:STRING=${TubeTK_EXECUTABLE_DIRS}

@@ -23,6 +23,13 @@
 
 # See https://github.com/KitwareMedical/TubeTK/wiki/Dependencies
 
+# Sanity checks
+set(expected_nonempty_vars github_protocol git_protocol)
+foreach(varname ${expected_nonempty_vars})
+  if("${${varname}}" STREQUAL "")
+    message(FATAL_ERROR "Variable '${varname}' is empty")
+  endif()
+endforeach()
 
 # Cppcheck
 set( Cppcheck_URL ${github_protocol}://github.com/KitwareMedical/cppcheck.git )
@@ -49,17 +56,24 @@ set( LIBSVM_URL
   ${git_protocol}://github.com/KitwareMedical/libsvm.git )
 set( LIBSVM_HASH_OR_TAG 9e2dd8a5fd032b429c07ce2778c8716117812bc5 )
 
-# MinimalPathExtraction - ITK Module
-set( MinimalPathExtraction_ITK_MODULE_URL
+###########################################################
+# ITK Modules
+###########################################################
+
+# ITKTubeTK: Source already available in TubeTK project
+set( ITKTubeTK_URL ${CMAKE_SOURCE_DIR}/ITKModules/ITKTubeTK )
+set( ITKTubeTK_HASH_OR_TAG "")
+
+# MinimalPathExtraction
+set( MinimalPathExtraction_URL
   ${git_protocol}://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction.git )
-set( MinimalPathExtraction_ITK_MODULE_HASH_OR_TAG
+set( MinimalPathExtraction_HASH_OR_TAG
   aed93f4ac350ee8d0c3411e885fff86095443b7a )
 
-# MinimalPathExtraction - Local Build
-set( MinimalPathExtraction_LOCAL_BUILD_URL
-  ${git_protocol}://github.com/KitwareMedical/ITKMinimalPathExtraction.git )
-set( MinimalPathExtraction_LOCAL_BUILD_HASH_OR_TAG
-  4f526802b0056258ca1036fbe7e94d53b1458716 )
+set( TubeTK_ITK_MODULES
+  ITKTubeTK
+  MinimalPathExtraction
+  )
 
 ###########################################################
 ###########################################################
