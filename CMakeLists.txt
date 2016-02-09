@@ -478,7 +478,6 @@ include( ${SlicerExecutionModel_USE_FILE} )
 
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
-
 if( TubeTK_USE_VTK )
   find_package( VTK REQUIRED )
   include( ${VTK_USE_FILE} )
@@ -639,6 +638,8 @@ endif( TubeTK_USE_EXAMPLES_AS_TESTS )
 
 add_subdirectory( Utilities )
 add_subdirectory( Base )
+add_subdirectory( ITKModules )
+
 if( TubeTK_BUILD_APPLICATIONS )
   add_subdirectory( Applications )
 endif( TubeTK_BUILD_APPLICATIONS )
