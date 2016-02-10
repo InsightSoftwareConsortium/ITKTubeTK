@@ -77,7 +77,7 @@ add_library( TubeTKNumerics STATIC
   ${TubeTK_Base_Numerics_HXX_Files}
   ${TubeTK_Base_Numerics_SRCS} )
 if( TubeTK_USE_GPU_ARRAYFIRE )
-  target_link_libraries( TubeTKNumerics ${ArrayFire_LIBRARIES} )
+  target_link_libraries( TubeTKNumerics PUBLIC ${ArrayFire_LIBRARIES} )
 endif( TubeTK_USE_GPU_ARRAYFIRE )
 target_link_libraries( TubeTKNumerics PUBLIC TubeTKCommon )
 target_include_directories( TubeTKNumerics PUBLIC
