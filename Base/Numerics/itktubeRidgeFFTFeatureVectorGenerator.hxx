@@ -238,9 +238,13 @@ RidgeFFTFeatureVectorGenerator< TImage >
       {
       for( unsigned int f=0; f<numFeaturesPerScale; ++f )
         {
-        iterF[ foFeat + f ].Set( iterF[ f ].Get() );
+        iterF[ foFeat + f ].Set( ( iterF[ f ].Get()
+          - this->GetWhitenMean( foFeat + f) )
+          / this->GetWhitenStdDev( foFeat + f ) );
         }
-      iterF[ foScale ].Set( m_Scales[ 0 ] );
+      iterF[ foScale ].Set( ( m_Scales[ 0 ]
+          - this->GetWhitenMean( foScale ) )
+          / this->GetWhitenStdDev( foScale ) );
       for( unsigned int s=1; s<m_Scales.size(); ++s )
         {
         feat = s * numFeaturesPerScale;
@@ -248,10 +252,14 @@ RidgeFFTFeatureVectorGenerator< TImage >
           {
           if( iterF[ feat + f ].Get() > iterF[ foFeat + f ].Get() )
             {
-            iterF[ foFeat + f ].Set( iterF[ feat + f ].Get() );
+            iterF[ foFeat + f ].Set( ( iterF[ feat + f ].Get()
+              - this->GetWhitenMean( foFeat + f ) )
+              / this->GetWhitenStdDev( foFeat + f ) );
             if( f == featureForOptimalScale )
               {
-              iterF[ foScale ].Set( m_Scales[ s ] );
+              iterF[ foScale ].Set( ( m_Scales[ s ]
+                - this->GetWhitenMean( foScale ) )
+                / this->GetWhitenStdDev( foScale ) );
               }
             }
           }
