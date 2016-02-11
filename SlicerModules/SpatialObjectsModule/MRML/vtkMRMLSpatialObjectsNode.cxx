@@ -711,9 +711,7 @@ void vtkMRMLSpatialObjectsNode::BuildDefaultColorMap( void )
 {
   vtkDebugMacro("vtkMRMLSpatialObjectsNode::BuildDefaultColorMap");
 
-  typedef itk::Point<double, 3>                PointType;
   typedef itk::VesselTubeSpatialObject<3>      VesselTubeType;
-  typedef VesselTubeType::TubePointType        VesselTubePointType;
 
   char childName[] = "Tube";
   TubeNetType::ChildrenListType* tubeList =

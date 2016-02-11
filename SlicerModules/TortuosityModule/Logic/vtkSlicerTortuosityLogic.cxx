@@ -111,6 +111,7 @@ vtkSlicerTortuosityLogic::~vtkSlicerTortuosityLogic( void )
 //------------------------------------------------------------------------------
 void vtkSlicerTortuosityLogic::PrintSelf( ostream& os, vtkIndent indent )
 {
+  Superclass::PrintSelf(os,indent);
 }
 
 //------------------------------------------------------------------------------
@@ -204,7 +205,7 @@ vtkDoubleArray* vtkSlicerTortuosityLogic
   // If it's new, make it the correct size
   vtkDoubleArray* ids = this->GetArray< vtkDoubleArray >( node, "TubeIDs" );
   assert( ids );
-  if ( metricArray->GetSize() != ids->GetSize() );
+  if ( metricArray->GetSize() != ids->GetSize() )
     {
     metricArray->Initialize();
     metricArray->SetNumberOfValues( ids->GetSize() );
@@ -276,7 +277,7 @@ bool vtkSlicerTortuosityLogic
     }
 
   // Histogram Metric
-  int numberOfBins = 20;
+  unsigned int numberOfBins = 20;
   double histMin = 0.0;
   double histMax = 1.0;
   double histStep = ( histMax - histMin ) / numberOfBins;
@@ -367,7 +368,7 @@ bool vtkSlicerTortuosityLogic
     for( int filterIndex = 0, tubeIndex = totalNumberOfPointsAdded;
       filterIndex < numberOfPoints; ++filterIndex, ++tubeIndex )
       {
-      for( int i = 0; i < metricsVector.size(); i++ )
+      for( unsigned int i = 0; i < metricsVector.size(); i++ )
         {
         if( metricsVector[i] != NULL )
           {
@@ -458,7 +459,7 @@ bool vtkSlicerTortuosityLogic
 
   // Update the arrays to recompute the range
 
-  for( int i = 0; i < metricsVector.size(); i++ )
+  for( unsigned int i = 0; i < metricsVector.size(); i++ )
     {
     metricsVector[i]->Modified();
     }
@@ -668,7 +669,7 @@ bool vtkSlicerTortuosityLogic::LoadColorsFromCSV(
     // Look for the ID in the table and get the corresponding value
     double valueToAssign = 0.0; //Default value for not specified tubes
     int tubeIndex = -1;
-    for ( size_t i = 0; i < colorTable->GetNumberOfRows(); i++ )
+    for ( int i = 0; i < colorTable->GetNumberOfRows(); i++ )
       {
       if ( colorTable->GetValue( i, 0 ).ToInt() == tubeId )
         {

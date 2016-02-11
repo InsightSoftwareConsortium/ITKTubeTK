@@ -106,9 +106,6 @@ QStringList qSlicerTortuosityModule::dependencies() const
 void qSlicerTortuosityModule::setup()
 {
   this->Superclass::setup();
-
-  vtkSlicerTortuosityLogic* tortuosityLogic =
-    vtkSlicerTortuosityLogic::SafeDownCast( this->logic() );
 }
 
 //------------------------------------------------------------------------------
