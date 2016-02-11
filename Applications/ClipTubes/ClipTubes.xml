@@ -25,6 +25,13 @@
       <index>1</index>
       <description>Output TRE file containing tubes going through the Box</description>
     </file>
+    <image>
+      <name>volumeMask</name>
+      <label>Volume Mask</label>
+      <channel>input</channel>
+      <description>Volume Mask Image.</description>
+      <longflag>mask</longflag>
+    </image>
     <double-vector>
       <name>boxCorner</name>
       <label>Bottom Left Corner of Bounding Box</label>

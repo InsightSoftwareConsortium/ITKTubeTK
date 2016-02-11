@@ -23,20 +23,21 @@
 
 #include "itkTimeProbesCollectorBase.h"
 #include "tubeMessage.h"
-
 #include "tubeMacro.h"
 #include "metaScene.h"
 
+#include "itkGroupSpatialObject.h"
+#include "itkImageFileReader.h"
 #include "itkSpatialObjectReader.h"
 #include "itkSpatialObjectWriter.h"
-#include "itkGroupSpatialObject.h"
+#include "itkTimeProbesCollectorBase.h"
 
 #include "ClipTubesCLP.h"
 
 #include <vtkCubeSource.h>
+#include <vtkNew.h>
 #include <vtkPolyDataWriter.h>
 #include <vtkSmartPointer.h>
-#include <vtkNew.h>
 
 template< unsigned int DimensionT >
 bool IsInside( itk::Point< double, DimensionT > pointPos, double tubeRadius,
@@ -152,6 +153,11 @@ int DoIt (int argc, char * argv[])
   typedef itk::GroupSpatialObject< DimensionT >           TubeGroupType;
   typedef itk::VesselTubeSpatialObject< DimensionT >      TubeType;
   typedef itk::VesselTubeSpatialObjectPoint< DimensionT > TubePointType;
+  typedef double                                          PixelType;
+  typedef itk::Image< PixelType, DimensionT >             ImageType;
+  typedef itk::ImageFileReader< ImageType >               ImageReaderType;
+  typedef itk::Vector< double, DimensionT >               VectorType;
+  typedef itk::Point< double, DimensionT >                PointType;
 
   timeCollector.Start( "Loading Input TRE File" );
 
@@ -170,13 +176,23 @@ int DoIt (int argc, char * argv[])
     return EXIT_FAILURE;
     }
   //Cast XML vector parameters
-  typedef itk::Vector< double, DimensionT > VectorType;
   VectorType boxPositionVector;
   VectorType boxSizeVector;
-  for( unsigned int i = 0; i < DimensionT; i++ )
+  if ( !boxCorner.empty() )
     {
-    boxPositionVector[i] = boxCorner[i];
-    boxSizeVector[i] = boxSize[i];
+    for ( unsigned int i = 0; i < DimensionT; i++ )
+      {
+      boxPositionVector[i] = boxCorner[i];
+      boxSizeVector[i] = boxSize[i];
+      }
+    }
+  else
+    {
+    for ( unsigned int i = 0; i < DimensionT; i++ )
+      {
+      boxPositionVector[i] = -1;
+      boxSizeVector[i] = -1;
+      }
     }
 
   typename TubeGroupType::Pointer pSourceTubeGroup =
@@ -185,6 +201,28 @@ int DoIt (int argc, char * argv[])
     pSourceTubeGroup->GetChildren();
 
   timeCollector.Stop( "Loading Input TRE File" );
+
+  //loading Volume mask if its there
+  ImageReaderType::Pointer imReader = ImageReaderType::New();
+  ImageType::Pointer image;
+  if ( !volumeMask.empty() )
+    {
+    tube::InfoMessage( "Reading volume mask..." );
+    timeCollector.Start( "Load Volume Mask" );
+    imReader->SetFileName( volumeMask.c_str() );
+    try
+      {
+      imReader->Update();
+      image = imReader->GetOutput();
+      }
+    catch ( itk::ExceptionObject & err )
+      {
+      tube::FmtErrorMessage( "Cannot read volume mask file: %s",
+        err.what() );
+      return EXIT_FAILURE;
+      }
+    timeCollector.Stop( "Load Volume Mask" );
+    }
 
   // Compute clipping
   tubeStandardOutputMacro( << "\n>> Finding Tubes for Clipping" );
@@ -258,8 +296,23 @@ int DoIt (int argc, char * argv[])
         {
         normalList.push_back( curTubeNormal2 );
         }
+
+      bool volumeMaskFlag = false;
+      if ( !volumeMask.empty() )
+        {
+        typename ImageType::IndexType imageIndex;
+        if ( image->TransformPhysicalPointToIndex( curSourcePos, imageIndex ) )
+          {
+          double val = 0;
+          val = image->GetPixel( imageIndex );
+          if ( val != 0 )
+            {
+            volumeMaskFlag = true;
+            }
+          }
+        }
       //Save point in target tube if it belongs to the box
-      if( IsInside( curSourcePos, curSourcePoint.GetRadius(),
+        if ( volumeMaskFlag || IsInside( curSourcePos, curSourcePoint.GetRadius(),
         worldBoxposition, worldBoxSize, normalList ) )
         {
         if( ClipTubes )
@@ -337,7 +390,7 @@ int DoIt (int argc, char * argv[])
       spacing[d] = pCurSourceTube->GetSpacing()[d];
       }
     }
-  if( !outputBoxFile.empty() )
+  if( !boxCorner.empty() && !outputBoxFile.empty() )
     {
     WriteBox<DimensionT>( boxCorner, boxSize, spacing, outputBoxFile );
     }
@@ -388,10 +441,11 @@ int main( int argc, char * argv[] )
     }
   PARSE_ARGS;
 
-  if( boxCorner.empty() || boxSize.empty() )
+  if( (boxCorner.empty() || boxSize.empty()) && volumeMask.empty() )
     {
     tube::ErrorMessage(
-      "Error: longflags --boxCorner and --boxSize are both required" );
+      "Error: Either both longflags --boxCorner and --boxSize "
+      "or the flag --volumeMask is required." );
     return EXIT_FAILURE;
     }
 
