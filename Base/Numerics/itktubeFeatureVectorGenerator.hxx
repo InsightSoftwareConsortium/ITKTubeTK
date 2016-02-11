@@ -51,8 +51,8 @@ FeatureVectorGenerator< TImage >
 {
   m_InputImageList.clear();
 
-  m_WhitenFeatureImageMean.clear();
-  m_WhitenFeatureImageStdDev.clear();
+  m_WhitenMean.clear();
+  m_WhitenStdDev.clear();
 }
 
 template< class TImage >
@@ -67,8 +67,8 @@ FeatureVectorGenerator< TImage >
 ::SetInput( typename ImageType::Pointer img )
 {
   m_InputImageList.clear();
-  m_WhitenFeatureImageMean.clear();
-  m_WhitenFeatureImageStdDev.clear();
+  m_WhitenMean.clear();
+  m_WhitenStdDev.clear();
   m_InputImageList.push_back( img );
 }
 
@@ -91,12 +91,12 @@ FeatureVectorGenerator< TImage >
 template< class TImage >
 void
 FeatureVectorGenerator< TImage >
-::UpdateWhitenFeatureImageStats( void )
+::UpdateWhitenStatistics( void )
 {
-  const unsigned int numFeatures = m_InputImageList.size();
+  const unsigned int numFeatures = this->GetNumberOfFeatures();
 
-  m_WhitenFeatureImageMean.resize( numFeatures );
-  m_WhitenFeatureImageStdDev.resize( numFeatures );
+  m_WhitenMean.resize( numFeatures );
+  m_WhitenStdDev.resize( numFeatures );
   ValueListType delta;
   delta.resize( numFeatures );
   ValueListType imMean;
@@ -105,8 +105,8 @@ FeatureVectorGenerator< TImage >
   imStdDev.resize( numFeatures );
   for( unsigned int i = 0; i < numFeatures; i++ )
     {
-    m_WhitenFeatureImageMean[i] = 0;
-    m_WhitenFeatureImageStdDev[i] = 1;
+    m_WhitenMean[i] = 0;
+    m_WhitenStdDev[i] = 1;
     delta[i] = 0;
     imMean[i] = 0;
     imStdDev[i] = 0;
@@ -120,13 +120,15 @@ FeatureVectorGenerator< TImage >
 
   IndexType indx;
   double imVal;
+  FeatureVectorType fv;
   while( !itIm.IsAtEnd() )
     {
     indx = itIm.GetIndex();
     ++imCount;
+    fv = this->GetFeatureVector( indx );
     for( unsigned int i = 0; i < numFeatures; i++ )
       {
-      imVal = m_InputImageList[i]->GetPixel( indx );
+      imVal = fv[i];
       delta[i] = imVal - imMean[i];
       imMean[i] += delta[i] / imCount;
       imStdDev[i] += delta[i] * ( imVal - imMean[i] );
@@ -148,11 +150,21 @@ FeatureVectorGenerator< TImage >
       }
     }
 
+  std::cout << "Whiten mean = ";
   for( unsigned int i = 0; i < numFeatures; i++ )
     {
-    m_WhitenFeatureImageMean[i] = imMean[i];
-    m_WhitenFeatureImageStdDev[i] = imStdDev[i];
+    m_WhitenMean[i] = imMean[i];
+    m_WhitenStdDev[i] = imStdDev[i];
+    std::cout << " " << m_WhitenMean[i];
     }
+  std::cout << std::endl;
+
+  std::cout << "Whiten std dev = ";
+  for( unsigned int i = 0; i < numFeatures; i++ )
+    {
+    std::cout << " " << m_WhitenStdDev[i];
+    }
+  std::cout << std::endl;
 }
 
 
@@ -161,7 +173,7 @@ void
 FeatureVectorGenerator< TImage >
 ::SetWhitenMeans( const ValueListType & means )
 {
-  m_WhitenFeatureImageMean = means;
+  m_WhitenMean = means;
 }
 
 template< class TImage >
@@ -169,7 +181,7 @@ const typename FeatureVectorGenerator< TImage >::ValueListType &
 FeatureVectorGenerator< TImage >
 ::GetWhitenMeans( void ) const
 {
-  return m_WhitenFeatureImageMean;
+  return m_WhitenMean;
 }
 
 template< class TImage >
@@ -177,7 +189,7 @@ void
 FeatureVectorGenerator< TImage >
 ::SetWhitenStdDevs( const ValueListType & stdDevs )
 {
-  m_WhitenFeatureImageStdDev = stdDevs;
+  m_WhitenStdDev = stdDevs;
 }
 
 template< class TImage >
@@ -185,28 +197,28 @@ const typename FeatureVectorGenerator< TImage >::ValueListType &
 FeatureVectorGenerator< TImage >
 ::GetWhitenStdDevs( void ) const
 {
-  return m_WhitenFeatureImageStdDev;
+  return m_WhitenStdDev;
 }
 
 template< class TImage >
 void
 FeatureVectorGenerator< TImage >
-::SetWhitenFeatureImageMean( unsigned int num, double mean )
+::SetWhitenMean( unsigned int num, double mean )
 {
-  if( num < m_WhitenFeatureImageMean.size() )
+  if( num < m_WhitenMean.size() )
     {
-    m_WhitenFeatureImageMean[num] = mean;
+    m_WhitenMean[num] = mean;
     }
 }
 
 template< class TImage >
 double
 FeatureVectorGenerator< TImage >
-::GetWhitenFeatureImageMean( unsigned int num ) const
+::GetWhitenMean( unsigned int num ) const
 {
-  if( num < m_WhitenFeatureImageMean.size() )
+  if( num < m_WhitenMean.size() )
     {
-    return m_WhitenFeatureImageMean[num];
+    return m_WhitenMean[num];
     }
   else
     {
@@ -217,22 +229,22 @@ FeatureVectorGenerator< TImage >
 template< class TImage >
 void
 FeatureVectorGenerator< TImage >
-::SetWhitenFeatureImageStdDev( unsigned int num, double stdDev )
+::SetWhitenStdDev( unsigned int num, double stdDev )
 {
-  if( num < m_WhitenFeatureImageStdDev.size() )
+  if( num < m_WhitenStdDev.size() )
     {
-    m_WhitenFeatureImageStdDev[num] = stdDev;
+    m_WhitenStdDev[num] = stdDev;
     }
 }
 
 template< class TImage >
 double
 FeatureVectorGenerator< TImage >
-::GetWhitenFeatureImageStdDev( unsigned int num ) const
+::GetWhitenStdDev( unsigned int num ) const
 {
-  if( num < m_WhitenFeatureImageStdDev.size() )
+  if( num < m_WhitenStdDev.size() )
     {
-    return m_WhitenFeatureImageStdDev[num];
+    return m_WhitenStdDev[num];
     }
 
   return 1;
@@ -269,13 +281,13 @@ typename FeatureVectorGenerator< TImage >::FeatureValueType
 FeatureVectorGenerator< TImage >
 ::GetFeatureVectorValue( const IndexType & indx, unsigned int fNum ) const
 {
-  if( m_WhitenFeatureImageStdDev.size() > 0 &&
-    m_WhitenFeatureImageStdDev[fNum] > 0 )
+  if( m_WhitenStdDev.size() > 0 &&
+    m_WhitenStdDev[fNum] > 0 )
     {
     return static_cast< FeatureValueType >(
         ( m_InputImageList[fNum]->GetPixel( indx )
-          - m_WhitenFeatureImageMean[fNum] )
-        / m_WhitenFeatureImageStdDev[fNum] );
+          - m_WhitenMean[fNum] )
+        / m_WhitenStdDev[fNum] );
     }
   else
     {

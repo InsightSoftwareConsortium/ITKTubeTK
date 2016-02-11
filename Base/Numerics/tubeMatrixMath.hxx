@@ -27,6 +27,9 @@ limitations under the License.
 #include "tubeMatrixMath.h"
 
 #include <vnl/algo/vnl_symmetric_eigensystem.h>
+#include <vnl/algo/vnl_real_eigensystem.h>
+#include <vnl/algo/vnl_svd.h>
+#include <vnl/algo/vnl_cholesky.h>
 
 namespace tube
 {
@@ -139,10 +142,10 @@ ComputeRidgeness( const vnl_matrix<T> & H,
 {
   unsigned int ImageDimension = D.size();
 
-  ::tube::ComputeEigen( H, HEVect, HEVal, true, false );
+  ::tube::ComputeEigen( H, HEVect, HEVal, false, true );
 
   vnl_vector<T> Dv = D;
-  if( Dv.magnitude() != 0 )
+  if( Dv.magnitude() > 0 )
     {
     Dv.normalize();
     }
@@ -152,6 +155,7 @@ ComputeRidgeness( const vnl_matrix<T> & H,
     }
 
   double P = dot_product( HEVect.get_column( ImageDimension-1 ), Dv );
+  P = P * P;
 
   double sumv = 0;
   int ridge = 1;
@@ -215,12 +219,46 @@ ComputeRidgeness( const vnl_matrix<T> & H,
 }
 
 /**
+ * Compute eigenvalues and vectors from ( W.inv() * B ) */
+template< class T >
+void
+ComputeEigenOfMatrixInvertedTimesMatrix(
+  vnl_matrix<T> const & matToInvert, vnl_matrix<T> const & mat,
+  vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
+  bool orderByAbs, bool minToMax )
+{
+  vnl_matrix<T> l, u, a;
+  l = vnl_cholesky( matToInvert ).lower_triangle();
+  u = l.transpose();
+  a = vnl_matrix_inverse<double>( l ) * mat
+    * vnl_matrix_inverse<double>( u );
+  ::tube::ComputeEigen( a, eVects, eVals, orderByAbs, minToMax, true );
+  eVects = vnl_matrix_inverse<double>( u ) * eVects;
+}
+
+/**
+ * Ensure the matrix is symmetric  */
+template< class T >
+void
+FixMatrixSymmetry( vnl_matrix<T> & mat )
+{
+  for( unsigned int r=0; r<mat.rows(); ++r )
+    {
+    for( unsigned int c=r+1; c<mat.columns(); ++c )
+      {
+      mat( r, c ) = ( mat( r, c ) + mat( c, r ) ) / 2;
+      mat( c, r ) = mat( r, c );
+      }
+    }
+}
+
+/**
  * Compute eigenvalues and vectors  */
 template< class T >
 void
 ComputeEigen( vnl_matrix<T> const & mat,
   vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
-  bool orderByAbs, bool minToMax )
+  bool orderByAbs, bool minToMax, bool useSVD )
 {
 
   int n = mat.rows();
@@ -229,32 +267,84 @@ ComputeEigen( vnl_matrix<T> const & mat,
 
   eVects = mat;
   eVals.set_size( n );
-  switch(n)
+  if( !useSVD )
     {
-    case 1:
-      eVects.set_size(1,1);
-      eVects.fill( 1 );
-      eVals.set_size(1);
-      eVals.fill( mat[0][0] );
-      break;
-    case 2:
-      ComputeTriDiag2D(eVects, eVals, subD);
-      ComputeTqli(eVals, subD, eVects);
-      break;
-    case 3:
-      ComputeTriDiag3D(eVects, eVals, subD);
-      ComputeTqli(eVals, subD, eVects);
-      break;
-    default:
-      vnl_symmetric_eigensystem< T > eigen( mat );
-      eVects = eigen.V;
-      eVals.set_size( eVects.columns() );
-      for( unsigned int d=0; d<eVects.columns(); d++ )
+    bool symmetric = true;
+    for( unsigned int i=0; i<n; ++i )
+      {
+      for( unsigned int j=i+1; j<n; ++j )
         {
-        eVals[d] = eigen.get_eigenvalue( d );
+        if( mat( i, j ) != mat( j, i ) )
+          {
+          i = n;
+          std::cout
+            << "Calling ComputeEigen with non-symmetric matrix is unstable."
+            << std::endl;
+          symmetric = false;
+          break;
+          }
         }
-      break;
+      }
+    if( symmetric )
+      {
+      switch(n)
+        {
+        case 1:
+          eVects.set_size(1,1);
+          eVects.fill( 1 );
+          eVals.set_size(1);
+          eVals.fill( mat[0][0] );
+          break;
+        case 2:
+          ComputeTriDiag2D(eVects, eVals, subD);
+          ComputeTqli(eVals, subD, eVects);
+          break;
+        case 3:
+          ComputeTriDiag3D(eVects, eVals, subD);
+          ComputeTqli(eVals, subD, eVects);
+          break;
+        default:
+          vnl_symmetric_eigensystem< T > eigen( mat );
+          eVects = eigen.V;
+          for( unsigned int d=0; d<eVects.columns(); d++ )
+            {
+            eVals[d] = eigen.get_eigenvalue( d );
+            }
+          break;
+        }
+      }
+    else
+      {
+      vnl_matrix< double > matD( mat.rows(), mat.columns() );
+      for( unsigned int c=0; c<mat.columns(); c++ )
+        {
+        for( unsigned int r=0; r<mat.rows(); r++ )
+          {
+          matD( r, c ) = mat( r, c );
+          }
+        }
+      vnl_real_eigensystem eigen( matD );
+      for( unsigned int c=0; c<mat.columns(); c++ )
+        {
+        eVals( c ) = eigen.D( c ).real();
+        for( unsigned int r=0; r<mat.rows(); r++ )
+          {
+          eVects( r, c ) = eigen.Vreal(r, c);
+          }
+        }
+      }
     }
+  else
+    {
+    vnl_svd< T > svd( mat );
+    eVects = svd.U();
+    eVals.set_size( eVects.columns() );
+    for( unsigned int d=0; d<eVects.columns(); d++ )
+      {
+      eVals[d] = svd.W( d );
+      }
+    }
+
 
   if(orderByAbs)
     {

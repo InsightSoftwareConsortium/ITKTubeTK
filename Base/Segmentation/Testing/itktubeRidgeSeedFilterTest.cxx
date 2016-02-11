@@ -89,9 +89,9 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   LabelMapType::Pointer labelmapImage = mReader->GetOutput();
 
   FilterType::RidgeScalesType scales(3);
-  scales[0] = 0.3;
-  scales[1] = 0.9;
-  scales[2] = 2.1;
+  scales[0] = 0.15;
+  scales[1] = 0.3;
+  scales[2] = 0.6;
 
   FilterType::Pointer filter = FilterType::New();
   filter->SetInput( inputImage );
@@ -103,6 +103,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   filter->SetBackgroundId( bkgId );
   filter->SetUnknownId( 0 );
   filter->SetTrainClassifier( true );
+  filter->SetNumberOfLDABasisToUseAsFeatures( 1 );
   filter->SetNumberOfPCABasisToUseAsFeatures( 2 );
   filter->Update();
   std::cout << "Update done." << std::endl;
@@ -114,8 +115,9 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     FeatureImageWriterType::New();
   feature2ImageWriter->SetFileName( argv[5] );
   feature2ImageWriter->SetUseCompression( true );
-  feature2ImageWriter->SetInput( filter->GetRidgeFeatureGenerator()->
-    GetFeatureImage( 0 ) );
+  feature2ImageWriter->SetInput( filter->GetClassProbabilityDifferenceForInput( 0 ) );
+    //GetRidgeFeatureGenerator()->
+    //GetFeatureImage( 0 ) );
   try
     {
     feature2ImageWriter->Update();

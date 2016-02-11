@@ -393,7 +393,7 @@ RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 
   if( m_TrainClassifier )
     {
-    m_SeedFeatureGenerator->UpdateWhitenFeatureImageStats();
+    m_SeedFeatureGenerator->UpdateWhitenStatistics();
 
     m_SeedFeatureGenerator->GenerateBasis();
 

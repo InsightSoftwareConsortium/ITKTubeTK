@@ -77,8 +77,22 @@ ComputeRidgeness( const vnl_matrix<T> & H,
 /** Compute eigenvalues and vectors  */
 template< class T >
 void
+FixMatrixSymmetry( vnl_matrix<T> & mat );
+
+/** Compute eigenvalues and vectors  */
+template< class T >
+void
+ComputeEigenOfMatrixInvertedTimesMatrix(
+  vnl_matrix<T> const & matToInvert, vnl_matrix<T> const & mat,
+  vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
+  bool orderByAbs, bool minToMax = true );
+
+/** Compute eigenvalues and vectors  */
+template< class T >
+void
 ComputeEigen(vnl_matrix<T> const & mat, vnl_matrix<T> &eVects,
-  vnl_vector<T> &eVals, bool orderByAbs, bool minToMax = true);
+  vnl_vector<T> &eVals, bool orderByAbs, bool minToMax = true,
+  bool useSVD = false);
 
 /** Perform trilinear diagonalization */
 template< class T >

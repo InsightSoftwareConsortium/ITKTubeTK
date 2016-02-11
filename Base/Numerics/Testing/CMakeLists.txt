@@ -280,13 +280,13 @@ Midas3FunctionAddTest( NAME itktubeNJetFeatureVectorGeneratorTest
 Midas3FunctionAddTest( NAME itktubeNJetBasisFeatureVectorGeneratorTest
   COMMAND ${BASE_NUMERICS_TESTS}
     --compare MIDAS{itktubeNJetBasisFeatureVectorGeneratorTest_lda0.mha.md5}
-      ${TEMP}/itktubeNJetBasisFeatureVectorGeneratorTest_lda0.mha
+      ${TEMP}/itktubeNJetBasisFeatureVectorGeneratorTest_basis.0.mha
     itktubeNJetBasisFeatureVectorGeneratorTest
       MIDAS{ES0015_Large_Subs.mha.md5}
       MIDAS{GDS0015_Large-TrainingMask_Subs.mha.md5}
       255 0
-      ${TEMP}/itktubeNJetBasisFeatureVectorGeneratorTest_lda0.mha
-      ${TEMP}/itktubeNJetBasisFeatureVectorGeneratorTest_lda1.mha )
+      ${TEMP}/itktubeNJetBasisFeatureVectorGeneratorTest_basis
+      ${TEMP}/itktubeNJetBasisFeatureVectorGeneratorTest_feature )
 
 Midas3FunctionAddTest( NAME itktubeSingleValuedCostFunctionImageSourceTest
   COMMAND ${BASE_NUMERICS_TESTS}

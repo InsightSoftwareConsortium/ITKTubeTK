@@ -157,10 +157,13 @@ int DoIt( int argc, char * argv[] )
 
   tubeFilter->SetSkeletonize( false );
 
+  std::cout << "** Computing probability images." << std::endl;
   timeCollector.Start( "Update" );
   tubeFilter->Update();
+  std::cout << "** Here." << std::endl;
   timeCollector.Stop( "Update" );
 
+  std::cout << "** Performing classification." << std::endl;
   timeCollector.Start( "Classify" );
   tubeFilter->ClassifyImages();
   timeCollector.Stop( "Classify" );
