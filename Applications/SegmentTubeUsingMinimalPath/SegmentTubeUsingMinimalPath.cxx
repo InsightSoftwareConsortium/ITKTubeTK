@@ -417,6 +417,10 @@ int DoIt( int argc, char * argv[] )
           {
           continue;
           }
+        else
+          {
+          ClipTubes = false;
+          }
         }
       for( unsigned int d = 0; d < DimensionT; d++ )
         {
@@ -451,7 +455,8 @@ int DoIt( int argc, char * argv[] )
 
     pTubeGroup->AddSpatialObject( pTube );
     pTubeGroup->ComputeObjectToWorldTransform();
-    tube::Message("\n The cost of the path is: " + std::to_string(cost) + "\n");
+    std::cout << "Cost associated with centerline: " << cost
+        << std::endl;
     }
 
   timeCollector.Stop( "Rasterizing path" );
