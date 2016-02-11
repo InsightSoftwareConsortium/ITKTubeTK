@@ -35,6 +35,7 @@
 #include "itkGradientDescentOptimizer.h"
 #include "itkPathIterator.h"
 #include "itkGroupSpatialObject.h"
+#include "itkSpatialObjectReader.h"
 #include "itkSpatialObjectWriter.h"
 #include "itktubeRadiusExtractor2.h"
 #include "itkBinaryThresholdImageFilter.h"
@@ -55,6 +56,72 @@ int DoIt( int argc, char * argv[] );
 #include "tubeCLIHelperFunctions.h"
 
 template< class TPixel, unsigned int DimensionT >
+bool
+IsPointToNear( typename itk::GroupSpatialObject< DimensionT >::Pointer &sourceTubeGroup,
+              itk::Point< double, DimensionT > outsidePoint,
+              itk::Point< double, DimensionT > &nearestPoint )
+{
+  typedef itk::GroupSpatialObject< DimensionT >           TubeGroupType;
+  typedef itk::VesselTubeSpatialObject< DimensionT >      TubeType;
+  typedef itk::VesselTubeSpatialObjectPoint< DimensionT > TubePointType;
+
+  double minDistance = INT32_MAX;
+  double nearestPointRadius = 0.0;
+
+  typename TubeGroupType::ChildrenListPointer sourceTubeList =
+    sourceTubeGroup->GetChildren();
+  for( typename TubeGroupType::ChildrenListType::iterator
+    tubeList_it = sourceTubeList->begin();
+    tubeList_it != sourceTubeList->end(); ++tubeList_it)
+    {
+    //**** Source Tube **** :
+    typename TubeType::Pointer pCurSourceTube =
+      dynamic_cast< TubeType* >( tubeList_it->GetPointer() );
+    //dynamic_cast verification
+    if(!pCurSourceTube)
+      {
+      return EXIT_FAILURE;
+      }
+    pCurSourceTube->ComputeObjectToWorldTransform();
+    //Get points in current source tube
+    typename TubeType::PointListType pointList =
+      pCurSourceTube->GetPoints();
+    //Get Index to World Transformation
+    typename TubeType::TransformType * pTubeIndexPhysTransform =
+      pCurSourceTube->GetIndexToWorldTransform();
+    for( typename TubeType::PointListType::const_iterator
+      pointList_it = pointList.begin();
+      pointList_it != pointList.end(); ++pointList_it )
+      {
+      TubePointType curSourcePoint = *pointList_it;
+      //Transform parameters in physical space
+      typename TubePointType::PointType curSourcePos =
+        pTubeIndexPhysTransform->TransformPoint(
+          curSourcePoint.GetPosition() );
+      double distance = curSourcePos.SquaredEuclideanDistanceTo( outsidePoint );
+      if( minDistance > distance )
+        {
+        minDistance = distance;
+        for( unsigned int i = 0; i<DimensionT; i++ )
+          {
+          nearestPoint[i] = curSourcePos[i];
+          }
+        nearestPointRadius = curSourcePoint.GetRadius();
+        }
+      }
+    }
+  if( minDistance < nearestPointRadius*nearestPointRadius)
+    {
+    return true;
+    }
+  else
+    {
+    return false;
+    }
+}
+
+
+template< class TPixel, unsigned int DimensionT >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -71,6 +138,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< PixelType, DimensionT >       ImageType;
   typedef itk::ImageFileReader< ImageType >         ReaderType;
 
+  typedef itk::SpatialObjectReader< DimensionT >          TubesReaderType;
   typedef itk::GroupSpatialObject< DimensionT >           TubeGroupType;
   typedef itk::VesselTubeSpatialObject< DimensionT >      TubeType;
   typedef itk::VesselTubeSpatialObjectPoint< DimensionT > TubePointType;
@@ -115,8 +183,25 @@ int DoIt( int argc, char * argv[] )
       return EXIT_FAILURE;
       }
     }
-
   typename ImageType::Pointer radiusExtractorInput = reader->GetOutput();
+
+  //Read input centerline
+  typename TubesReaderType::Pointer tubeFileReader = TubesReaderType::New();
+  if( ExtractFromCenterline )
+    {
+    try
+      {
+      tubeFileReader->SetFileName( inputTREFile.c_str() );
+      tubeFileReader->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Error loading TRE File: "
+        + std::string( err.GetDescription() ) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+    }
 
   timeCollector.Stop( "Load data" );
   progressReporter.Report( 0.1 );
@@ -175,6 +260,23 @@ int DoIt( int argc, char * argv[] )
         pathInfo->AddWayPoint( path );
         }
       }
+    }
+  else if ( Path.size() == 1)
+    {
+    PointType startPositionPoint;
+    PointType path;
+    for( unsigned int i = 0; i<DimensionT; i++ )
+      {
+      path[i] = Path[0][i];
+      startPositionPoint[i] = Path[0][i];
+      }
+    pathInfo->SetStartPoint( path );
+    typename TubeGroupType::Pointer sourceTubeGroup =
+      tubeFileReader->GetGroup();
+    PointType pointPath;
+    bool isNear = IsPointToNear< TPixel, DimensionT >
+      ( sourceTubeGroup, startPositionPoint, pointPath );
+    pathInfo->SetEndPoint( pointPath );
     }
   else
     {
@@ -293,12 +395,29 @@ int DoIt( int argc, char * argv[] )
     // Output centerline in TRE file
     typename TubeType::PointListType tubePointList;
     typename PathType::VertexListType * vertexList = path->GetVertexList();
-
+    double cost = 0;
     for( unsigned int k = 0; k < vertexList->Size(); k++ )
       {
       PointType pathPoint;
       speed->TransformContinuousIndexToPhysicalPoint(
         vertexList->GetElement(k), pathPoint );
+      typename ImageType::IndexType imageIndex;
+      if ( speed->TransformPhysicalPointToIndex( pathPoint, imageIndex ) )
+        {
+        cost = cost + speed->GetPixel( imageIndex );
+        }
+      if( ExtractFromCenterline && ClipTubes )
+        {
+        typename TubeGroupType::Pointer sourceTubeGroup =
+        tubeFileReader->GetGroup();
+        PointType nearPoint;
+        bool isNear = IsPointToNear< TPixel, DimensionT >
+          ( sourceTubeGroup, pathPoint, nearPoint );
+        if( isNear )
+          {
+          continue;
+          }
+        }
       for( unsigned int d = 0; d < DimensionT; d++ )
         {
         pathPoint[d]=(pathPoint[d]-origin[d])/spacing[d];
@@ -321,10 +440,10 @@ int DoIt( int argc, char * argv[] )
       typename RadiusExtractorType::Pointer radiusExtractor
         = RadiusExtractorType::New();
       radiusExtractor->SetInputImage( radiusExtractorInput );
-      radiusExtractor->SetRadiusStart( 1.0 );
+      radiusExtractor->SetRadiusStart( StartRadius );
       radiusExtractor->SetRadiusMin( 0.2 );
-      radiusExtractor->SetRadiusMax( 6.0 );
-      radiusExtractor->SetRadiusStep( 0.05 );
+      radiusExtractor->SetRadiusMax( MaxRadius );
+      radiusExtractor->SetRadiusStep( StepRadius );
       radiusExtractor->SetRadiusTolerance( 0.025 );
       radiusExtractor->SetDebug( false );
       radiusExtractor->ExtractRadii( pTube );
@@ -332,6 +451,7 @@ int DoIt( int argc, char * argv[] )
 
     pTubeGroup->AddSpatialObject( pTube );
     pTubeGroup->ComputeObjectToWorldTransform();
+    tube::Message("\n The cost of the path is: " + std::to_string(cost) + "\n");
     }
 
   timeCollector.Stop( "Rasterizing path" );
