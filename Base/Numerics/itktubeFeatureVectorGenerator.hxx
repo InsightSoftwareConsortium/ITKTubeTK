@@ -150,21 +150,11 @@ FeatureVectorGenerator< TImage >
       }
     }
 
-  std::cout << "Whiten mean = ";
   for( unsigned int i = 0; i < numFeatures; i++ )
     {
     m_WhitenMean[i] = imMean[i];
     m_WhitenStdDev[i] = imStdDev[i];
-    std::cout << " " << m_WhitenMean[i];
     }
-  std::cout << std::endl;
-
-  std::cout << "Whiten std dev = ";
-  for( unsigned int i = 0; i < numFeatures; i++ )
-    {
-    std::cout << " " << m_WhitenStdDev[i];
-    }
-  std::cout << std::endl;
 }
 
 

@@ -393,7 +393,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
     }
   else
     {
-    throw;
+    throw itk::ExceptionObject( "GetFeatureImage: Feature does not exist" );
     }
 }
 
@@ -506,10 +506,13 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
           {
           m_GlobalCovariance[i][j] += globalCount * delta[i] * delta[j]
             - m_GlobalCovariance[i][j] / ( globalCount + 1 );
+          m_GlobalCovariance[j][i] = m_GlobalCovariance[i][j];
 
           m_ObjectCovarianceList[valC][i][j] += countList[valC]
             * objectDelta[valC][i] * objectDelta[valC][j]
             - m_ObjectCovarianceList[valC][i][j] / ( countList[valC] + 1 );
+          m_ObjectCovarianceList[valC][j][i] =
+            m_ObjectCovarianceList[valC][i][j];
           }
         }
       ++globalCount;
@@ -596,7 +599,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
       for( unsigned int j = i; j < numInputFeatures; j++ )
         {
         meanCovariance[i][j] += m_ObjectCovarianceList[c][i][j];
-        meanCovariance[j][i] += meanCovariance[i][j];
+        meanCovariance[j][i] = meanCovariance[i][j];
 
         covarianceOfMeans[i][j] +=
           ( m_ObjectMeanList[c][i] - meanOfMeans[i] )

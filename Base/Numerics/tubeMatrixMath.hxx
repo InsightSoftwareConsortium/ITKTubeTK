@@ -30,6 +30,7 @@ limitations under the License.
 #include <vnl/algo/vnl_real_eigensystem.h>
 #include <vnl/algo/vnl_svd.h>
 #include <vnl/algo/vnl_cholesky.h>
+#include <vnl/algo/vnl_matrix_inverse.h>
 
 namespace tube
 {
@@ -228,7 +229,7 @@ ComputeEigenOfMatrixInvertedTimesMatrix(
   bool orderByAbs, bool minToMax )
 {
   vnl_matrix<T> l, u, a;
-  l = vnl_cholesky( matToInvert ).lower_triangle();
+  l = vnl_cholesky( matToInvert, vnl_cholesky::quiet ).lower_triangle();
   u = l.transpose();
   a = vnl_matrix_inverse<double>( l ) * mat
     * vnl_matrix_inverse<double>( u );
@@ -315,6 +316,8 @@ ComputeEigen( vnl_matrix<T> const & mat,
       }
     else
       {
+      std::cout << "Non-symmetric matrix passed to eign-solver."
+        << std::endl;
       vnl_matrix< double > matD( mat.rows(), mat.columns() );
       for( unsigned int c=0; c<mat.columns(); c++ )
         {
