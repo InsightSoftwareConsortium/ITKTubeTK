@@ -277,6 +277,11 @@ public:
   itkBooleanMacro( EnableBSplineRegistration );
 
   // **************
+  // Specify the optimizer
+  // **************
+  itkSetMacro( UseEvolutionaryOptimization, bool );
+  itkGetMacro( UseEvolutionaryOptimization, bool );
+  // **************
   // Specify the expected magnitudes within the transform.  Used to
   //   guide the operating space of the optimizers
   // **************
@@ -504,7 +509,8 @@ private:
   bool m_ReportProgress;
 
   bool m_MinimizeMemory;
-
+  //  Optimizer
+  bool m_UseEvolutionaryOptimization ;
   //  Loaded Tansform
   typename MatrixTransformType::Pointer   m_LoadedMatrixTransform;
   typename BSplineTransformType::Pointer  m_LoadedBSplineTransform;
