@@ -794,16 +794,18 @@ DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
       xMin[i]=m_InputImageMinX[i];
       }
     xShift[i] = xMin[i];
-    int xRadius = static_cast< int >( vnl_math_floor(
-      cIndex[i] - xMin[i] ) );
+    //int xRadius = static_cast< int >( vnl_math_floor(
+      //cIndex[i] - xMin[i] ) );
 
-    xMax[i] = ( int ) vnl_math_ceil( cIndex[i] + xRadius );
+    //xMax[i] = ( int ) vnl_math_ceil( cIndex[i] + xRadius );
+    xMax[i] = ( int ) vnl_math_ceil( cIndex[i] + ( scale * m_Extent
+      / m_InputImageSpacing[i] ) );
     if( xMax[i] > ( int ) m_InputImageMaxX[i] )
       {
       xMax[i]= m_InputImageMaxX[i];
-      xRadius = ( int ) vnl_math_floor( xMax[i] - cIndex[i] );
-      xMin[i] = ( int ) vnl_math_floor( cIndex[i] - xRadius );
-      xShift[i] = xMin[i];
+      //xRadius = ( int ) vnl_math_floor( xMax[i] - cIndex[i] );
+      //xMin[i] = ( int ) vnl_math_floor( cIndex[i] - xRadius );
+      //xShift[i] = xMin[i];
       }
     }
 
@@ -1038,7 +1040,8 @@ Hessian( const PointType& point, double scale,
     }
 
   ContinuousIndexType cIndex;
-  if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point, cIndex ) )
+  if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point,
+    cIndex ) )
     {
     itkWarningMacro( << "Cannot convert point to continuous index." );
     h.Fill( 0 );
@@ -1062,7 +1065,8 @@ NJetImageFunction<TInputImage>::Hessian(
     }
 
   ContinuousIndexType cIndex;
-  if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point, cIndex ) )
+  if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point,
+    cIndex ) )
     {
     itkWarningMacro( << "Cannot convert point to continuous index." );
     h.Fill( 0 );
@@ -1087,7 +1091,8 @@ Hessian( const PointType& point, const VectorType & v1,
     }
 
   ContinuousIndexType cIndex;
-  if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point, cIndex ) )
+  if( !m_InputImage->TransformPhysicalPointToContinuousIndex( point,
+    cIndex ) )
     {
     itkWarningMacro( << "Cannot convert point to continuous index." );
     h.Fill( 0 );
@@ -1355,7 +1360,7 @@ JetAtContinuousIndex( const ContinuousIndexType & cIndex, VectorType & d,
   MatrixType & h, double scale ) const
 {
   // JET
-  double physGaussFactor = -0.5/( scale*scale );
+  double physGaussFactor = -0.5 / ( scale * scale );
   double physKernelRadiusSquared = scale*m_Extent * scale*m_Extent;
 
   double physDist = 0;
@@ -1387,16 +1392,18 @@ JetAtContinuousIndex( const ContinuousIndexType & cIndex, VectorType & d,
       xMin[i] = m_InputImageMinX[i];
       }
     xShift[i] = xMin[i];
-    int xRadius = static_cast<int>( vnl_math_floor( cIndex[i]
-      - xMin[i] ) );
+    //int xRadius = static_cast<int>( vnl_math_floor( cIndex[i]
+      //- xMin[i] ) );
 
-    xMax[i] = ( int ) vnl_math_ceil( cIndex[i] + xRadius );
+    //xMax[i] = ( int ) vnl_math_ceil( cIndex[i] + xRadius );
+    xMax[i] = ( int ) vnl_math_ceil( cIndex[i] + ( scale * m_Extent
+      / m_InputImageSpacing[i] ) );
     if( xMax[i] > m_InputImageMaxX[i] )
       {
       xMax[i] = m_InputImageMaxX[i];
-      xRadius = ( int ) vnl_math_floor( xMax[i] - cIndex[i] );
-      xMin[i] = ( int ) vnl_math_floor( cIndex[i] - xRadius );
-      xShift[i] = xMin[i];
+      //xRadius = ( int ) vnl_math_floor( xMax[i] - cIndex[i] );
+      //xMin[i] = ( int ) vnl_math_floor( cIndex[i] - xRadius );
+      //xShift[i] = xMin[i];
       }
     }
 

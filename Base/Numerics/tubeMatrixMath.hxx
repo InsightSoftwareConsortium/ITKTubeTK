@@ -142,7 +142,7 @@ ComputeRidgeness( const vnl_matrix<T> & H,
 {
   unsigned int ImageDimension = D.size();
 
-  ::tube::ComputeEigen( H, HEVect, HEVal, false, false );
+  ::tube::ComputeEigen( H, HEVect, HEVal, false, true );
 
   vnl_vector<T> Dv = D;
   if( Dv.magnitude() > 0 )

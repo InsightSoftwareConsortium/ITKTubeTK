@@ -181,10 +181,12 @@ RidgeFFTFilter< TInputImage >
       }
     timeCollector.Stop( "ComputeRidgenessMeasures" );
 
-    this->SetNthOutput( 0, m_Intensity );
-
     timeCollector.Report();
     }
+
+  std::cout << "Setting output" << std::endl;
+  this->SetNthOutput( 0, m_Intensity );
+  std::cout << "Done setting output" << std::endl;
 }
 
 template< typename TInputImage >
