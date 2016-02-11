@@ -25,6 +25,8 @@ limitations under the License.
 
 #include "itkImageToImageRegistrationHelper.h"
 
+#define SUPPORT_2D_IMAGES
+
 // Description:
 // Get the PixelType and ComponentType from fileName
 void GetImageType( const std::string & fileName,

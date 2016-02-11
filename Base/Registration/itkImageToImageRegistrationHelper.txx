@@ -1228,8 +1228,8 @@ void
 ImageToImageRegistrationHelper<TImage>
 ::SaveDisplacementField( const std::string &filename )
 {
-  typedef itk::Vector<PixelType,3>  VectorType;
-  typedef itk::Image<VectorType,3>  DisplacementFieldType;
+  typedef itk::Vector<PixelType,TImage::ImageDimension>  VectorType;
+  typedef itk::Image<VectorType,TImage::ImageDimension>  DisplacementFieldType;
   typedef itk::ImageRegionIterator< DisplacementFieldType > FieldIterator;
 
   typename TImage::RegionType fixedImageRegion =
