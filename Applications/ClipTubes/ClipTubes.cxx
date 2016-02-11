@@ -39,7 +39,7 @@
 #include <vtkNew.h>
 
 template< unsigned int DimensionT >
-bool isInside( itk::Point< double, DimensionT > pointPos, double tubeRadius,
+bool IsInside( itk::Point< double, DimensionT > pointPos, double tubeRadius,
   itk::Vector< double, DimensionT > boxPos,
   itk::Vector< double, DimensionT > boxSize,
   std::vector<  typename itk::VesselTubeSpatialObjectPoint
@@ -96,7 +96,7 @@ bool isInside( itk::Point< double, DimensionT > pointPos, double tubeRadius,
 }
 
 template< unsigned int DimensionT >
-void writeBox( std::vector< double > boxPos, std::vector< double > boxSize,
+void WriteBox( std::vector< double > boxPos, std::vector< double > boxSize,
   std::vector< double > spacing, std::string boxFileName )
 {
   if( DimensionT == 3 )
@@ -104,9 +104,9 @@ void writeBox( std::vector< double > boxPos, std::vector< double > boxSize,
     vtkSmartPointer<vtkCubeSource> cubeSource =
       vtkSmartPointer<vtkCubeSource>::New();
     cubeSource->SetBounds(
-      -spacing[0] * (boxPos[0] + boxSize[0]), -spacing[0] * boxPos[0],
-      -spacing[1] * (boxPos[1] + boxSize[1]), -spacing[1] * boxPos[1],
-      spacing[2] * boxPos[2], spacing[2] * (boxPos[2] + boxSize[2]) );
+      -spacing[0] * ( boxPos[0] + boxSize[0] ), -spacing[0] * boxPos[0],
+      -spacing[1] * ( boxPos[1] + boxSize[1] ), -spacing[1] * boxPos[1],
+      spacing[2] * boxPos[2], spacing[2] * ( boxPos[2] + boxSize[2] ) );
     vtkNew<vtkPolyDataWriter> writer;
     writer->SetFileName( boxFileName.c_str() );
     writer->SetInputConnection( cubeSource->GetOutputPort() );
@@ -117,9 +117,9 @@ void writeBox( std::vector< double > boxPos, std::vector< double > boxSize,
     vtkSmartPointer< vtkCubeSource > cubeSource =
       vtkSmartPointer< vtkCubeSource >::New();
     cubeSource->SetBounds(
-      -spacing[0] * (boxPos[0] + boxSize[0]), -spacing[0] * boxPos[0],
-      -spacing[1] * (boxPos[1] + boxSize[1]), -spacing[1] * boxPos[1],
-      0, 0);
+      -spacing[0] * ( boxPos[0] + boxSize[0] ), -spacing[0] * boxPos[0],
+      -spacing[1] * ( boxPos[1] + boxSize[1] ), -spacing[1] * boxPos[1],
+      0, 0 );
     vtkNew<vtkPolyDataWriter> writer;
     writer->SetFileName( boxFileName.c_str() );
     writer->SetInputConnection( cubeSource->GetOutputPort() );
@@ -209,13 +209,13 @@ int DoIt (int argc, char * argv[])
 
   for( typename TubeGroupType::ChildrenListType::iterator
     tubeList_it = pSourceTubeList->begin();
-    tubeList_it != pSourceTubeList->end(); ++tubeList_it)
+    tubeList_it != pSourceTubeList->end(); ++tubeList_it )
     {
     //**** Source Tube **** :
     typename TubeType::Pointer pCurSourceTube =
       dynamic_cast< TubeType* >( tubeList_it->GetPointer() );
     //dynamic_cast verification
-    if(!pCurSourceTube)
+    if( !pCurSourceTube )
       {
       return EXIT_FAILURE;
       }
@@ -253,13 +253,13 @@ int DoIt (int argc, char * argv[])
           curSourcePoint.GetNormal2() );
       //Save Normals in a vector to pass it as an argument for IsIside()
       std::vector<typename TubePointType::CovariantVectorType> normalList;
-      normalList.push_back(curTubeNormal1);
+      normalList.push_back( curTubeNormal1 );
       if( DimensionT == 3 )
         {
-        normalList.push_back(curTubeNormal2);
+        normalList.push_back( curTubeNormal2 );
         }
       //Save point in target tube if it belongs to the box
-      if( isInside( curSourcePos, curSourcePoint.GetRadius(),
+      if( IsInside( curSourcePos, curSourcePoint.GetRadius(),
         worldBoxposition, worldBoxSize, normalList ) )
         {
         if( ClipTubes )
@@ -339,7 +339,7 @@ int DoIt (int argc, char * argv[])
     }
   if( !outputBoxFile.empty() )
     {
-    writeBox<DimensionT>( boxCorner, boxSize, spacing, outputBoxFile );
+    WriteBox<DimensionT>( boxCorner, boxSize, spacing, outputBoxFile );
     }
 
 
@@ -357,7 +357,7 @@ int DoIt (int argc, char * argv[])
   try
     {
     tubeWriter->SetFileName( outputTREFile.c_str() );
-    tubeWriter->SetInput(pTargetTubeGroup);
+    tubeWriter->SetInput( pTargetTubeGroup );
     tubeWriter->Update();
     }
   catch( itk::ExceptionObject & err )
@@ -391,7 +391,7 @@ int main( int argc, char * argv[] )
   if( boxCorner.empty() || boxSize.empty() )
     {
     tube::ErrorMessage(
-      "Error: longflags --boxCorner and --boxSize are both required");
+      "Error: longflags --boxCorner and --boxSize are both required" );
     return EXIT_FAILURE;
     }
 
@@ -419,7 +419,7 @@ int main( int argc, char * argv[] )
     default:
       {
       tubeErrorMacro(
-        << "Error: Only 2D and 3D data is currently supported.");
+        << "Error: Only 2D and 3D data is currently supported." );
       return EXIT_FAILURE;
       }
     }
