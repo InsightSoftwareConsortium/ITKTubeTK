@@ -49,12 +49,4 @@ else()
     --supports2DImages dummy.mha dummy.mha)
   set_tests_properties(${MODULE_NAME}-DoesNotSupport2DImages PROPERTIES PASS_REGULAR_EXPRESSION "false")
 endif()
-# Test1-Compare
-#Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
-#  COMMAND ${IMAGECOMPARE_EXE}
-#    -t ${TEMP}/${MODULE_NAME}Test1.mha
-#    -b MIDAS{${MODULE_NAME}Test1.mha.md5},MIDAS{${MODULE_NAME}Test1_2.mha.md5} )
-#set_property( TEST ${MODULE_NAME}-Test1-Compare
-#  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
-
 
