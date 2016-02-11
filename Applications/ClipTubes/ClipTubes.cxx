@@ -290,6 +290,13 @@ int DoIt (int argc, char * argv[])
       typename TubePointType::CovariantVectorType curTubeNormal2 =
         pTubeIndexPhysTransform->TransformCovariantVector(
           curSourcePoint.GetNormal2() );
+      VectorType curRadius;
+      for ( unsigned int i = 0; i < DimensionT; i++ )
+        {
+        curRadius[i] = curSourcePoint.GetRadius();
+        }
+      typename TubePointType::VectorType curRadiusVector =
+        pTubeIndexPhysTransform->TransformVector( curRadius );
       //Save Normals in a vector to pass it as an argument for IsIside()
       std::vector<typename TubePointType::CovariantVectorType> normalList;
       normalList.push_back( curTubeNormal1 );
@@ -313,7 +320,7 @@ int DoIt (int argc, char * argv[])
           }
         }
       //Save point in target tube if it belongs to the box
-        if ( volumeMaskFlag || IsInside( curSourcePos, curSourcePoint.GetRadius(),
+      if ( volumeMaskFlag || IsInside( curSourcePos, curRadiusVector[0],
         worldBoxposition, worldBoxSize, normalList ) )
         {
         if( ClipTubes )
