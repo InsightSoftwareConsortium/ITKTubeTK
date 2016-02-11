@@ -41,7 +41,7 @@
 
 template< unsigned int DimensionT >
 bool IsInside( itk::Point< double, DimensionT > pointPos, double tubeRadius,
-  itk::Vector< double, DimensionT > boxPos,
+  itk::Point< double, DimensionT > boxPos,
   itk::Vector< double, DimensionT > boxSize,
   std::vector<  typename itk::VesselTubeSpatialObjectPoint
     < DimensionT >::CovariantVectorType > normalList )
@@ -176,7 +176,7 @@ int DoIt (int argc, char * argv[])
     return EXIT_FAILURE;
     }
   //Cast XML vector parameters
-  VectorType boxPositionVector;
+  PointType boxPositionVector;
   VectorType boxSizeVector;
   if ( !boxCorner.empty() )
     {
@@ -241,7 +241,8 @@ int DoIt (int argc, char * argv[])
     pSourceTubeGroup->GetObjectToParentTransform()->GetMatrix() );
   pTargetTubeGroup->SetSpacing( pSourceTubeGroup->GetSpacing() );
   pTargetTubeGroup->ComputeObjectToWorldTransform();
-
+  typename TubePointType::PointType curSourceOffset =
+    pSourceTubeGroup->GetObjectToParentTransform()->GetOffset();
   int targetTubeId=0;
   std::vector< double > spacing( DimensionT, 0 );
 
@@ -279,8 +280,8 @@ int DoIt (int argc, char * argv[])
       typename TubePointType::PointType curSourcePos =
         pTubeIndexPhysTransform->TransformPoint(
           curSourcePoint.GetPosition() );
-      typename TubePointType::VectorType worldBoxposition =
-        pTubeIndexPhysTransform->TransformVector( boxPositionVector );
+      typename TubePointType::PointType worldBoxposition =
+        pTubeIndexPhysTransform->TransformPoint( boxPositionVector );
       typename TubePointType::VectorType worldBoxSize =
         pTubeIndexPhysTransform->TransformVector( boxSizeVector );
       typename TubePointType::CovariantVectorType curTubeNormal1 =
@@ -392,6 +393,10 @@ int DoIt (int argc, char * argv[])
     }
   if( !boxCorner.empty() && !outputBoxFile.empty() )
     {
+    for ( unsigned int i = 0; i < DimensionT; i++ )
+      {
+      boxCorner[i] = boxCorner[i] + curSourceOffset[i];
+      }
     WriteBox<DimensionT>( boxCorner, boxSize, spacing, outputBoxFile );
     }
 
