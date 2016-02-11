@@ -39,6 +39,7 @@
 #include "itkSpatialObjectWriter.h"
 #include "itktubeRadiusExtractor2.h"
 #include "itkBinaryThresholdImageFilter.h"
+#include "itkNumericTraits.h"
 
 #include "itkSpeedFunctionToPathFilter.h"
 #include "itkSpeedFunctionPathInformation.h"
@@ -65,7 +66,7 @@ IsPointToNear( typename itk::GroupSpatialObject< DimensionT >::Pointer &sourceTu
   typedef itk::VesselTubeSpatialObject< DimensionT >      TubeType;
   typedef itk::VesselTubeSpatialObjectPoint< DimensionT > TubePointType;
 
-  double minDistance = INT32_MAX;
+  double minDistance = itk::NumericTraits<double>::max();
   double nearestPointRadius = 0.0;
 
   typename TubeGroupType::ChildrenListPointer sourceTubeList =
