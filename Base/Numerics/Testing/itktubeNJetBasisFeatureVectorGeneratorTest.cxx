@@ -103,8 +103,6 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   filter->SetRidgeScales( scales2 );
   filter->UpdateWhitenStatistics();
 
-  std::cout << filter << std::endl;
-
   BasisFilterType::Pointer basisFilter = BasisFilterType::New();
   basisFilter->SetInputFeatureVectorGenerator( filter.GetPointer() );
   basisFilter->SetInput( inputImage );
@@ -116,8 +114,6 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   basisFilter->SetNumberOfLDABasisToUseAsFeatures( 1 );
   basisFilter->SetNumberOfPCABasisToUseAsFeatures( 3 );
   basisFilter->GenerateBasis();
-
-  std::cout << basisFilter << std::endl;
 
   basisFilter->SetLabelMap( NULL );
 
@@ -152,9 +148,14 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
       {
       featureImage1Writer->Update();
       }
-    catch (itk::ExceptionObject& e)
+    catch ( itk::ExceptionObject& e )
       {
-      std::cerr << "Exception caught during write:" << std::endl << e;
+      std::cerr << "ITK exception caught during write:" << std::endl << e;
+      return EXIT_FAILURE;
+      }
+    catch ( ... )
+      {
+      std::cerr << "Unhandled exception caught during write:" << std::endl;
       return EXIT_FAILURE;
       }
     }
