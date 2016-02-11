@@ -25,7 +25,6 @@ limitations under the License.
 
 #include "itkImageToImageRegistrationHelper.h"
 
-#define SUPPORT_2D_IMAGES
 
 // Description:
 // Get the PixelType and ComponentType from fileName
@@ -632,7 +631,15 @@ int DoIt( int argc, char * argv[] )
 int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
-
+  if( supports2DImages == true )
+    {
+#ifdef SUPPORT_2D_IMAGES
+    std::cout<<"true"<<std::endl;
+#else
+    std::cout<<"false"<<std::endl;
+#endif
+    return EXIT_SUCCESS ;
+    }
   enum VerboseLevelEnum { SILENT, STANDARD, VERBOSE };
   VerboseLevelEnum verbosity = SILENT;
   if( verbosityLevel == "Standard" )
@@ -685,7 +692,12 @@ int main( int argc, char * argv[] )
                 << std::endl;
       return EXIT_FAILURE;
       }
-
+#ifndef SUPPORT_2D_IMAGES
+    if( dimensions == 2 )
+      {
+      std::cerr << "WARNING: RegisterImages built without support for 2D images." << std::endl ;
+      }
+#endif
     switch( componentType )
       {
       case itk::ImageIOBase::UCHAR:
