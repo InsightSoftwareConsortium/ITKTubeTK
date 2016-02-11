@@ -262,7 +262,7 @@ ComputeEigen( vnl_matrix<T> const & mat,
   bool orderByAbs, bool minToMax, bool useSVD )
 {
 
-  int n = mat.rows();
+  unsigned int n = mat.rows();
 
   vnl_vector<T> subD(n);
 
@@ -351,9 +351,9 @@ ComputeEigen( vnl_matrix<T> const & mat,
 
   if(orderByAbs)
     {
-    for(int i=0; i<n-1; i++)
+    for(unsigned int i=0; i<n-1; i++)
       {
-      for(int j=i+1; j<n; j++)
+      for(unsigned int j=i+1; j<n; j++)
         {
         if( ( vnl_math_abs(eVals(j))>vnl_math_abs(eVals(i)) && !minToMax )
           || ( vnl_math_abs(eVals(j))<vnl_math_abs(eVals(i)) && minToMax ) )
@@ -371,9 +371,9 @@ ComputeEigen( vnl_matrix<T> const & mat,
     }
   else
     {
-    for(int i=0; i<n-1; i++)
+    for(unsigned int i=0; i<n-1; i++)
       {
-      for(int j=i+1; j<n; j++)
+      for(unsigned int j=i+1; j<n; j++)
         {
         if( ( eVals(j)>eVals(i) && !minToMax )
           || ( eVals(j)<eVals(i) && minToMax ) )
