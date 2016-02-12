@@ -97,17 +97,18 @@ bool IsInside( itk::Point< double, DimensionT > pointPos, double tubeRadius,
 }
 
 template< unsigned int DimensionT >
-void WriteBox( std::vector< double > boxPos, std::vector< double > boxSize,
-  std::vector< double > spacing, std::string boxFileName )
+void WriteBox( itk::Point< double, DimensionT > boxPos,
+  itk::Vector< double, DimensionT > boxSize,
+  std::string boxFileName )
 {
   if( DimensionT == 3 )
     {
     vtkSmartPointer<vtkCubeSource> cubeSource =
       vtkSmartPointer<vtkCubeSource>::New();
     cubeSource->SetBounds(
-      -spacing[0] * ( boxPos[0] + boxSize[0] ), -spacing[0] * boxPos[0],
-      -spacing[1] * ( boxPos[1] + boxSize[1] ), -spacing[1] * boxPos[1],
-      spacing[2] * boxPos[2], spacing[2] * ( boxPos[2] + boxSize[2] ) );
+      -1 * ( boxPos[0] + boxSize[0] ), -1 * boxPos[0],
+      -1 * ( boxPos[1] + boxSize[1] ), -1 * boxPos[1],
+      boxPos[2], ( boxPos[2] + boxSize[2] ) );
     vtkNew<vtkPolyDataWriter> writer;
     writer->SetFileName( boxFileName.c_str() );
     writer->SetInputConnection( cubeSource->GetOutputPort() );
@@ -118,8 +119,8 @@ void WriteBox( std::vector< double > boxPos, std::vector< double > boxSize,
     vtkSmartPointer< vtkCubeSource > cubeSource =
       vtkSmartPointer< vtkCubeSource >::New();
     cubeSource->SetBounds(
-      -spacing[0] * ( boxPos[0] + boxSize[0] ), -spacing[0] * boxPos[0],
-      -spacing[1] * ( boxPos[1] + boxSize[1] ), -spacing[1] * boxPos[1],
+      -1 * ( boxPos[0] + boxSize[0] ), -1 * boxPos[0],
+      -1 * ( boxPos[1] + boxSize[1] ), -1 * boxPos[1],
       0, 0 );
     vtkNew<vtkPolyDataWriter> writer;
     writer->SetFileName( boxFileName.c_str() );
@@ -194,6 +195,10 @@ int DoIt (int argc, char * argv[])
       boxSizeVector[i] = -1;
       }
     }
+  typename TubePointType::PointType worldBoxposition;
+  typename TubePointType::VectorType worldBoxSize;
+  typename TubePointType::PointType indexBoxposition;
+  typename TubePointType::VectorType indexBoxSize;
 
   typename TubeGroupType::Pointer pSourceTubeGroup =
     tubeFileReader->GetGroup();
@@ -244,7 +249,6 @@ int DoIt (int argc, char * argv[])
   typename TubePointType::PointType curSourceOffset =
     pSourceTubeGroup->GetObjectToParentTransform()->GetOffset();
   int targetTubeId=0;
-  std::vector< double > spacing( DimensionT, 0 );
 
   for( typename TubeGroupType::ChildrenListType::iterator
     tubeList_it = pSourceTubeList->begin();
@@ -273,6 +277,15 @@ int DoIt (int argc, char * argv[])
     typename TubeType::TransformType * pTubeIndexPhysTransform =
       pCurSourceTube->GetIndexToWorldTransform();
 
+    worldBoxposition =
+        pTubeObjectPhysTransform->TransformPoint( boxPositionVector );
+    worldBoxSize =
+        pTubeObjectPhysTransform->TransformVector( boxSizeVector );
+    indexBoxposition =
+        pTubeIndexPhysTransform->TransformPoint( boxPositionVector );
+    indexBoxSize =
+        pTubeIndexPhysTransform->TransformVector( boxSizeVector );
+
     for( typename TubeType::PointListType::const_iterator
       pointList_it = pointList.begin();
       pointList_it != pointList.end(); ++pointList_it )
@@ -282,10 +295,6 @@ int DoIt (int argc, char * argv[])
       typename TubePointType::PointType curSourcePos =
         pTubeObjectPhysTransform->TransformPoint(
           curSourcePoint.GetPosition() );
-      typename TubePointType::PointType worldBoxposition =
-        pTubeObjectPhysTransform->TransformPoint( boxPositionVector );
-      typename TubePointType::VectorType worldBoxSize =
-        pTubeObjectPhysTransform->TransformVector( boxSizeVector );
       typename TubePointType::CovariantVectorType curTubeNormal1 =
         pTubeObjectPhysTransform->TransformCovariantVector(
           curSourcePoint.GetNormal1() );
@@ -306,7 +315,6 @@ int DoIt (int argc, char * argv[])
         {
         normalList.push_back( curTubeNormal2 );
         }
-
       bool volumeMaskFlag = false;
       if ( !volumeMask.empty() )
         {
@@ -398,18 +406,10 @@ int DoIt (int argc, char * argv[])
 
       TargetPointList.clear();
       }
-    for( unsigned int d=0; d<DimensionT; ++d )
-      {
-      spacing[d] = pCurSourceTube->GetSpacing()[d];
-      }
     }
   if( !boxCorner.empty() && !outputBoxFile.empty() )
     {
-    for ( unsigned int i = 0; i < DimensionT; i++ )
-      {
-      boxCorner[i] = boxCorner[i] + curSourceOffset[i];
-      }
-    WriteBox<DimensionT>( boxCorner, boxSize, spacing, outputBoxFile );
+    WriteBox<DimensionT>( indexBoxposition, indexBoxSize, outputBoxFile );
     }
 
 
