@@ -2,7 +2,7 @@
 # CHECK_SEMMacroBuildCLI_DISABLE_DEFAULT_CXX_FILE()
 #
 # SlicerExecutionModel_DIR: SlicerExecutionModel directory, required to run "SEMMacroBuildCLI"
-# RESULT: Macro will set the given variable to TRUE if macro has "DISABLE_DEFAULT_CXX" option, to FALSE otherwise.
+# RESULT_VAR: Macro will set the given variable to TRUE if macro has "DISABLE_DEFAULT_CXX" option, to FALSE otherwise.
 #
 # The following variables may be set before calling this macro to
 # modify the way the check is run:
@@ -11,8 +11,16 @@
 # For details see http://www.apache.org/licenses/LICENSE-2.0
 
 
-macro(CHECK_SEMMacroBuildCLI_DISABLE_DEFAULT_CXX_FILE _SlicerExecutionModel_DIR _RESULT)
+function(CHECK_SEMMacroBuildCLI_DISABLE_DEFAULT_CXX_FILE SlicerExecutionModel_DIR RESULT_VAR)
 set(MODULE_NAME my_project)
+
+# Sanity checks
+set(expected_existing_vars SlicerExecutionModel_DIR)
+foreach(var ${expected_existing_vars})
+  if(NOT EXISTS "${${var}}")
+    message(FATAL_ERROR "Variable ${var} is set to an inexistent directory or file ! [${${var}}]")
+  endif()
+endforeach()
 
 set(output_directory ${CMAKE_BINARY_DIR}/CHECK_SEMMacroBuildCLI_DISABLE_DEFAULT_CXX_FILE)
 set(output_build_directory ${CMAKE_BINARY_DIR}/CHECK_SEMMacroBuildCLI_DISABLE_DEFAULT_CXX_FILE/build)
@@ -53,12 +61,18 @@ set(CMake_test_file_name ${output_directory}/CMakeLists.txt)
 
 file(WRITE ${CMake_test_file_name} ${test_output_file})
 
-execute_process(COMMAND ${CMAKE_COMMAND} -DSlicerExecutionModel_DIR:PATH=${_SlicerExecutionModel_DIR} .. WORKING_DIRECTORY ${output_build_directory} ERROR_VARIABLE macro_error)
+execute_process(
+  COMMAND ${CMAKE_COMMAND}
+    -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
+    ..
+  WORKING_DIRECTORY ${output_build_directory}
+  ERROR_VARIABLE macro_error
+  )
 
 if(${macro_error} MATCHES ".*Cannot find source file.*my_project.*cxx.*")
-  set(${_RESULT} FALSE)
+  set(${RESULT_VAR} FALSE PARENT_SCOPE)
 else()
-  set(${_RESULT} TRUE)
+  set(${RESULT_VAR} TRUE PARENT_SCOPE)
 endif()
 
-endmacro()
+endfunction()
