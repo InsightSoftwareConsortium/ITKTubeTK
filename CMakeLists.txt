@@ -558,7 +558,7 @@ test_big_endian( CMAKE_WORDS_BIGENDIAN )
 
 # Set TubeTK_EXECUTABLE_DIRS useful to configure launcher scripts
 # and set TubeTK_LIBRARY_DIRS
-if( MSVC )
+if( WIN32 )
   set(TubeTK_EXECUTABLE_DIRS CACHE INTERNAL "Bin and Lib dirs for running apps." FORCE )
   foreach(_build_type "" Debug Release)
     list( APPEND TubeTK_EXECUTABLE_DIRS
@@ -576,7 +576,7 @@ if( MSVC )
         ${Slicer_DIR}/bin/${_build_type} )
     endif( TubeTK_BUILD_USING_SLICER )
   endforeach()
-else( MSVC )
+else( WIN32 )
   set( TubeTK_EXECUTABLE_DIRS
     ${GenerateCLP_DIR}
     ${Boost_LIBRARY_DIR}
@@ -587,7 +587,7 @@ else( MSVC )
   if( TubeTK_USE_VTK )
     list( APPEND ${VTK_DIR}/bin )
   endif( TubeTK_USE_VTK )
-endif( MSVC )
+endif( WIN32 )
 
 #
 # Configure a launcher for running TubeTK methods from the command line
