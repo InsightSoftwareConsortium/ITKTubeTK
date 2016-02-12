@@ -208,8 +208,8 @@ int DoIt (int argc, char * argv[])
   timeCollector.Stop( "Loading Input TRE File" );
 
   //loading Volume mask if its there
-  ImageReaderType::Pointer imReader = ImageReaderType::New();
-  ImageType::Pointer image;
+  typename ImageReaderType::Pointer imReader = ImageReaderType::New();
+  typename ImageType::Pointer image;
   if ( !volumeMask.empty() )
     {
     tube::InfoMessage( "Reading volume mask..." );
