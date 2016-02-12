@@ -274,7 +274,7 @@ int DoIt( int argc, char * argv[] )
     typename TubeGroupType::Pointer sourceTubeGroup =
       tubeFileReader->GetGroup();
     PointType pointPath;
-    bool isNear = IsPointToNear< TPixel, DimensionT >
+    IsPointToNear< TPixel, DimensionT >
       ( sourceTubeGroup, startPositionPoint, pointPath );
     pathInfo->SetEndPoint( pointPath );
     }
