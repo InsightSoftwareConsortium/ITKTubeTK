@@ -246,8 +246,6 @@ int DoIt (int argc, char * argv[])
     pSourceTubeGroup->GetObjectToParentTransform()->GetMatrix() );
   pTargetTubeGroup->SetSpacing( pSourceTubeGroup->GetSpacing() );
   pTargetTubeGroup->ComputeObjectToWorldTransform();
-  typename TubePointType::PointType curSourceOffset =
-    pSourceTubeGroup->GetObjectToParentTransform()->GetOffset();
   int targetTubeId=0;
 
   for( typename TubeGroupType::ChildrenListType::iterator
