@@ -21,32 +21,4 @@
 #
 ##############################################################################
 
-include_regular_expression( "^.*$" )
-
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
-set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
-
-set( PROJ_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
-
-set( IMAGECOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
-
-# Test1
-# Inputs and outputs are not used as program exists returning if it
-# has support for 2D images or not. We just pass dummy file names.
-if(Support_2D_Images)
-  add_test( NAME ${MODULE_NAME}-Supports2DImages
-  COMMAND ${PROJ_EXE}
-    --supports2DImages dummy.mha dummy.mha)
-  set_tests_properties(${MODULE_NAME}-Supports2DImages PROPERTIES PASS_REGULAR_EXPRESSION "true")
-else()
-  add_test( NAME ${MODULE_NAME}-DoesNotSupport2DImages
-  COMMAND ${PROJ_EXE}
-    --supports2DImages dummy.mha dummy.mha)
-  set_tests_properties(${MODULE_NAME}-DoesNotSupport2DImages PROPERTIES PASS_REGULAR_EXPRESSION "false")
-endif()
 

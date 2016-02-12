@@ -63,6 +63,7 @@ include_directories(
 add_executable( tubeBaseCLIHeaderTest tubeBaseCLIHeaderTest.cxx )
 target_link_libraries( tubeBaseCLIHeaderTest ${ITK_LIBRARIES} )
 
+set(EXECUTABLE_NAME tubeBaseCLITests)
 SEMMacroBuildCLI(
   NAME tubeBaseCLITests
   ADDITIONAL_SRCS

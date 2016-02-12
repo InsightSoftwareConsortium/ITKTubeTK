@@ -44,8 +44,12 @@ include( ${ITK_USE_FILE} )
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 
+set(EXECUTABLE_NAME ${MODULE_NAME}${EXECUTABLE_SUFFIX})
 SEMMacroBuildCLI(
-  NAME ${MODULE_NAME}
+  NAME ${MODULE_NAME}${EXECUTABLE_SUFFIX}
+  DISABLE_DEFAULT_CXX_FILE
+  CLI_XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xml
+  ADDITIONAL_SRCS ${MODULE_NAME}.cxx
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ITKIOSpatialObjects ITKIOMeta
@@ -53,8 +57,12 @@ SEMMacroBuildCLI(
     TubeUSTK
   INSTALL_RUNTIME_DESTINATION bin )
 
+
 SEMMacroBuildCLI(
-  NAME ComputeImageToTubeRigidMetricImage
+  NAME ComputeImageToTubeRigidMetricImage${EXECUTABLE_SUFFIX}
+  DISABLE_DEFAULT_CXX_FILE
+  CLI_XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/ComputeImageToTubeRigidMetricImage.xml
+  ADDITIONAL_SRCS ComputeImageToTubeRigidMetricImage.cxx
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ITKIOSpatialObjects ITKIOMeta
@@ -62,7 +70,10 @@ SEMMacroBuildCLI(
   INSTALL_RUNTIME_DESTINATION bin )
 
 SEMMacroBuildCLI(
-  NAME ExtractMetricImageSlice
+  NAME ExtractMetricImageSlice${EXECUTABLE_SUFFIX}
+  DISABLE_DEFAULT_CXX_FILE
+  CLI_XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/ExtractMetricImageSlice.xml
+  ADDITIONAL_SRCS ExtractMetricImageSlice.cxx
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ITKIOSpatialObjects ITKIOMeta

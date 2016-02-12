@@ -68,15 +68,6 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
 
   IOComponentType componentType = ImageIOType::UNKNOWNCOMPONENTTYPE;
   unsigned int dimension = 0;
-  if( std::find(argv, argv+argc-1, "--supports2DImages" ) )
-    {
-#ifdef SUPPORT_2D_IMAGES
-    std::cout<<"true"<<std::endl;
-#else
-    std::cout<<"false"<<std::endl;
-#endif
-    return EXIT_SUCCESS ;
-    }
   try
     {
     GetImageInformation( inputImage, componentType, dimension );
@@ -145,7 +136,7 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
 
 #endif // End !defined(PARSE_ARGS_FLOAT_ONLY)
 
-    tubeErrorMacro( << "Unknown dimension." );
+    tubeErrorMacro( << "Dimension size of " << dimension << " not supported" );
     return EXIT_FAILURE;
     }
   catch( itk::ExceptionObject & ex )

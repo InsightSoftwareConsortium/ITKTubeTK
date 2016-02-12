@@ -185,13 +185,6 @@
       <element>BSpline</element>
       <default>Linear</default>
     </string-enumeration>
-    <boolean>
-      <name>supports2DImages</name>
-      <description>Returns true or false depending if RegisterImages was compiled with support for 2D images</description>
-      <label>Supports 2D Images</label>
-      <longflag>supports2DImages</longflag>
-      <default>0</default>
-    </boolean>
   </parameters>
   <parameters advanced="true">
     <label>Advanced Initial Registration Parameters</label>
