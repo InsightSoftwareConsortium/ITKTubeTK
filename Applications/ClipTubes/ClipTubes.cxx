@@ -260,7 +260,7 @@ int DoIt (int argc, char * argv[])
       }
     //Compute Tangent and Normals
     pCurSourceTube->ComputeTangentAndNormals();
-    //pCurSourceTube->ComputeObjectToWorldTransform();//BUG
+    pCurSourceTube->ComputeObjectToWorldTransform();
     //Point List for TargetTube
     typename TubeType::PointListType TargetPointList;
     //Get points in current source tube
@@ -268,6 +268,8 @@ int DoIt (int argc, char * argv[])
       pCurSourceTube->GetPoints();
 
     //Get Index to World Transformation
+    typename TubeType::TransformType * pTubeObjectPhysTransform =
+      pCurSourceTube->GetObjectToWorldTransform();
     typename TubeType::TransformType * pTubeIndexPhysTransform =
       pCurSourceTube->GetIndexToWorldTransform();
 
@@ -278,17 +280,17 @@ int DoIt (int argc, char * argv[])
       TubePointType curSourcePoint = *pointList_it;
       //Transform parameters in physical space
       typename TubePointType::PointType curSourcePos =
-        pTubeIndexPhysTransform->TransformPoint(
+        pTubeObjectPhysTransform->TransformPoint(
           curSourcePoint.GetPosition() );
       typename TubePointType::PointType worldBoxposition =
-        pTubeIndexPhysTransform->TransformPoint( boxPositionVector );
+        pTubeObjectPhysTransform->TransformPoint( boxPositionVector );
       typename TubePointType::VectorType worldBoxSize =
-        pTubeIndexPhysTransform->TransformVector( boxSizeVector );
+        pTubeObjectPhysTransform->TransformVector( boxSizeVector );
       typename TubePointType::CovariantVectorType curTubeNormal1 =
-        pTubeIndexPhysTransform->TransformCovariantVector(
+        pTubeObjectPhysTransform->TransformCovariantVector(
           curSourcePoint.GetNormal1() );
       typename TubePointType::CovariantVectorType curTubeNormal2 =
-        pTubeIndexPhysTransform->TransformCovariantVector(
+        pTubeObjectPhysTransform->TransformCovariantVector(
           curSourcePoint.GetNormal2() );
       VectorType curRadius;
       for ( unsigned int i = 0; i < DimensionT; i++ )
@@ -296,7 +298,7 @@ int DoIt (int argc, char * argv[])
         curRadius[i] = curSourcePoint.GetRadius();
         }
       typename TubePointType::VectorType curRadiusVector =
-        pTubeIndexPhysTransform->TransformVector( curRadius );
+        pTubeObjectPhysTransform->TransformVector( curRadius );
       //Save Normals in a vector to pass it as an argument for IsIside()
       std::vector<typename TubePointType::CovariantVectorType> normalList;
       normalList.push_back( curTubeNormal1 );
@@ -308,8 +310,11 @@ int DoIt (int argc, char * argv[])
       bool volumeMaskFlag = false;
       if ( !volumeMask.empty() )
         {
+        typename TubePointType::PointType curSourcePosIndexSpace =
+          pTubeIndexPhysTransform->TransformPoint(
+          curSourcePoint.GetPosition() );
         typename ImageType::IndexType imageIndex;
-        if ( image->TransformPhysicalPointToIndex( curSourcePos, imageIndex ) )
+        if ( image->TransformPhysicalPointToIndex( curSourcePosIndexSpace, imageIndex ) )
           {
           double val = 0;
           val = image->GetPixel( imageIndex );
