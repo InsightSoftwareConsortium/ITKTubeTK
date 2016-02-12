@@ -25,26 +25,14 @@ limitations under the License.
 
 #include "itkImageToImageRegistrationHelper.h"
 
+template< class TPixel, unsigned int VDimension >
+int DoIt( int argc, char * argv[] );
 
-// Description:
-// Get the PixelType and ComponentType from fileName
-void GetImageType( const std::string & fileName,
-                  itk::ImageIOBase::IOPixelType & pixelType,
-                  itk::ImageIOBase::IOComponentType & componentType,
-                  unsigned int & dimensions )
-{
-  typedef itk::Image< short, 3 > ImageType;
-  itk::ImageFileReader< ImageType >::Pointer imageReader =
-    itk::ImageFileReader< ImageType >::New();
-  imageReader->SetFileName( fileName.c_str() );
-  imageReader->UpdateOutputInformation();
+// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
+#include "tubeCLIHelperFunctions.h"
 
-  pixelType = imageReader->GetImageIO()->GetPixelType();
-  componentType = imageReader->GetImageIO()->GetComponentType();
-  dimensions = imageReader->GetImageIO()->GetNumberOfDimensions();
-}
 
-template < unsigned int TDimension, class TPixelType >
+template < class TPixelType, unsigned int TDimension >
 int DoIt( int argc, char * argv[] )
 {
 
@@ -631,15 +619,7 @@ int DoIt( int argc, char * argv[] )
 int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
-  if( supports2DImages == true )
-    {
-#ifdef SUPPORT_2D_IMAGES
-    std::cout<<"true"<<std::endl;
-#else
-    std::cout<<"false"<<std::endl;
-#endif
-    return EXIT_SUCCESS ;
-    }
+
   enum VerboseLevelEnum { SILENT, STANDARD, VERBOSE };
   VerboseLevelEnum verbosity = SILENT;
   if( verbosityLevel == "Standard" )
@@ -660,102 +640,7 @@ int main( int argc, char * argv[] )
     itk::MultiThreader::SetGlobalDefaultNumberOfThreads( numberOfThreads );
     }
 
-  try
-    {
-    itk::ImageIOBase::IOPixelType fixedPixelType;
-    itk::ImageIOBase::IOComponentType fixedComponentType;
-    itk::ImageIOBase::IOPixelType movingPixelType;
-    itk::ImageIOBase::IOComponentType movingComponentType;
-    itk::ImageIOBase::IOComponentType componentType;
+  tube::ParseArgsAndCallDoIt( movingImage, argc, argv );
 
-    unsigned int dimensions = 0;
-    unsigned int fixedDimensions = 0;
-    unsigned int movingDimensions = 0;
-
-    GetImageType( fixedImage, fixedPixelType, fixedComponentType,
-      fixedDimensions );
-    GetImageType( movingImage, movingPixelType, movingComponentType,
-      movingDimensions );
-    dimensions = fixedDimensions;
-    if( movingDimensions > dimensions )
-      {
-      dimensions = movingDimensions;
-      }
-    componentType = fixedComponentType;
-    if( movingComponentType > componentType )
-      {
-      componentType = movingComponentType;
-      }
-    if( dimensions < 2 || dimensions > 3 )
-      {
-      std::cerr << "ERROR: Only 2 and 3 dimensional images supported."
-                << std::endl;
-      return EXIT_FAILURE;
-      }
-#ifndef SUPPORT_2D_IMAGES
-    if( dimensions == 2 )
-      {
-      std::cerr << "WARNING: RegisterImages built without support for 2D images." << std::endl ;
-      }
-#endif
-    switch( componentType )
-      {
-      case itk::ImageIOBase::UCHAR:
-#ifdef SUPPORT_2D_IMAGES
-        if( dimensions == 2 )
-          {
-          return DoIt< 2, unsigned char >( argc, argv );
-          }
-#endif
-        return DoIt< 3, unsigned char >( argc, argv );
-      case itk::ImageIOBase::CHAR:
-#ifdef SUPPORT_2D_IMAGES
-        if( dimensions == 2 )
-          {
-          return DoIt< 2, char >( argc, argv );
-          }
-#endif
-        return DoIt< 3, char >( argc, argv );
-      case itk::ImageIOBase::SHORT:
-#ifdef SUPPORT_2D_IMAGES
-        if( dimensions == 2 )
-          {
-          return DoIt< 2, short >( argc, argv );
-          }
-#endif
-        return DoIt< 3, short >( argc, argv );
-      case itk::ImageIOBase::USHORT:
-#ifdef SUPPORT_2D_IMAGES
-        if( dimensions == 2 )
-          {
-          return DoIt< 2, unsigned short >( argc, argv );
-          }
-#endif
-        return DoIt< 3, unsigned short >( argc, argv );
-      case itk::ImageIOBase::UINT:
-      case itk::ImageIOBase::INT:
-      case itk::ImageIOBase::ULONG:
-      case itk::ImageIOBase::LONG:
-      case itk::ImageIOBase::FLOAT:
-      case itk::ImageIOBase::DOUBLE:
-#ifdef SUPPORT_2D_IMAGES
-        if( dimensions == 2 )
-          {
-          return DoIt< 2, float >( argc, argv );
-          }
-#endif
-        return DoIt< 3, float >( argc, argv );
-      case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
-      default:
-        std::cerr << "ERROR: unknown component type" << std::endl;
-        return EXIT_FAILURE;
-      }
-    }
-  catch( itk::ExceptionObject & exception )
-    {
-    std::cerr << argv[0] << ": exception caught !" << std::endl;
-    std::cerr << exception << std::endl;
-    return EXIT_FAILURE;
-    }
   return EXIT_SUCCESS;
 }

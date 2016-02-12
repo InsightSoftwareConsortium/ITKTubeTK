@@ -316,6 +316,14 @@ option( USE_SYSTEM_ITK "Exclude ITK from superbuild and use an existing build."
 mark_as_advanced( USE_SYSTEM_ITK )
 
 #
+# 2D image support.
+#
+option(TubeTK_Support_2D_Images "Support of 2D Images in TubeTK CLI tools" OFF)
+if(TubeTK_Support_2D_Images)
+  add_definitions(-DSUPPORT_2D_IMAGES)
+endif()
+
+#
 # JsonCpp library setup.
 #
 option( USE_SYSTEM_JSONCPP

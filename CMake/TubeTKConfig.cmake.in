@@ -78,6 +78,7 @@ set( TubeTK_USE_QT @TubeTK_USE_QT@ )
 set( TubeTK_BUILD_USING_SLICER @TubeTK_BUILD_USING_SLICER@ )
 set( TubeTK_USE_VALGRIND @TubeTK_USE_VALGRIND@ )
 set( TubeTK_USE_VTK @TubeTK_USE_VTK@ )
+set( TubeTK_Support_2D_Images @TubeTK_Support_2D_Images@ )
 
 set( USE_SYSTEM_CPPCHECK @USE_SYSTEM_CPPCHECK@ )
 set( USE_SYSTEM_CTK @USE_SYSTEM_CTK@ )

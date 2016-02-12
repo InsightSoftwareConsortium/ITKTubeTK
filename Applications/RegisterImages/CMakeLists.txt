@@ -24,10 +24,13 @@
 set( MODULE_NAME RegisterImages )
 project( ${MODULE_NAME} )
 
+if( NOT TubeTK_SOURCE_DIR )
+  find_package( TubeTK REQUIRED )
+  include( ${TubeTK_USE_FILE} )
+endif( NOT TubeTK_SOURCE_DIR )
+
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
-
-option(RegisterImages_Support_2D_Images "Support of 2D Images in RegisterImages" OFF)
 
 find_package( ITK REQUIRED )
 if( TubeTK_BUILD_WITHIN_SLICER )
@@ -40,12 +43,8 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ITKOptimizers ITKIOTransformBase
-    TubeTKRegistration
+    TubeCLI TubeTKRegistration
   INSTALL_RUNTIME_DESTINATION bin )
-
-if(RegisterImages_Support_2D_Images)
-  target_compile_definitions(${MODULE_NAME}Lib PUBLIC SUPPORT_2D_IMAGES=1 )
-endif()
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

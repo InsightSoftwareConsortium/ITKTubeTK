@@ -38,7 +38,7 @@ set( IMAGECOMPARE_EXE
 # Test1
 # Inputs and outputs are not used as program exists returning if it
 # has support for 2D images or not. We just pass dummy file names.
-if(RegisterImages_Support_2D_Images)
+if(Support_2D_Images)
   add_test( NAME ${MODULE_NAME}-Supports2DImages
   COMMAND ${PROJ_EXE}
     --supports2DImages dummy.mha dummy.mha)
