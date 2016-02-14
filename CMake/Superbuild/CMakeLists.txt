@@ -24,7 +24,7 @@
 set( CMAKE_MODULE_PATH ${TubeTK_SOURCE_DIR}/CMake/Superbuild ${CMAKE_MODULE_PATH} )
 
 include( ExternalProject )
-include( TubeTKMacroCheckExternalProjectDependency )
+include( TubeTKExternalProjectDependency )
 
 set( base "${CMAKE_BINARY_DIR}" )
 set_property( DIRECTORY PROPERTY EP_BASE ${base} )
@@ -158,12 +158,16 @@ endif( TubeTK_USE_PYTHON )
 
 # Check dependencies.
 set( EXTERNAL_PROJECT_DIR ${TubeTK_SOURCE_DIR}/CMake/Superbuild )
-TubeTKMacroCheckExternalProjectDependency( TubeTK )
+
+ExternalProject_Include_Dependencies(TubeTK
+  DEPENDS_VAR TubeTK_DEPENDENCIES
+  SUPERBUILD_VAR TubeTK_USE_SUPERBUILD )
 
 # Normal build.
 set( proj TubeTK )
 
 ExternalProject_Add( ${proj}
+  ${${proj}_EP_ARGS}
   DEPENDS ${TubeTK_DEPENDENCIES}
   DOWNLOAD_COMMAND ""
   DOWNLOAD_DIR ${TubeTK_SOURCE_DIR}
