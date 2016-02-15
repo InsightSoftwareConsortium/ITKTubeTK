@@ -61,7 +61,7 @@ void GetImageInformation( const std::string & fileName,
 }
 
 int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
-                          char * argv[] )
+                          char * argv[], const std::string & inputVolume2 = "" )
 {
   typedef itk::ImageIOBase              ImageIOType;
   typedef ImageIOType::IOComponentType  IOComponentType;
@@ -71,6 +71,20 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
   try
     {
     GetImageInformation( inputImage, componentType, dimension );
+    if( !inputVolume2.empty() )
+    {
+        IOComponentType volume2ComponentType = ImageIOType::UNKNOWNCOMPONENTTYPE;
+        unsigned int volume2Dimension = 0;
+        GetImageInformation( inputVolume2, volume2ComponentType, volume2Dimension );
+        if( volume2Dimension > dimension )
+          {
+          dimension = volume2Dimension ;
+          }
+        if( volume2ComponentType > componentType )
+          {
+          componentType = volume2ComponentType ;
+          }
+    }
 
 #ifndef PARSE_ARGS_FLOAT_ONLY
 

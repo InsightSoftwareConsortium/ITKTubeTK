@@ -640,7 +640,7 @@ int main( int argc, char * argv[] )
     itk::MultiThreader::SetGlobalDefaultNumberOfThreads( numberOfThreads );
     }
 
-  tube::ParseArgsAndCallDoIt( movingImage, argc, argv );
+  tube::ParseArgsAndCallDoIt( fixedImage , argc, argv, movingImage );
 
   return EXIT_SUCCESS;
 }
