@@ -61,7 +61,7 @@ set( LIBSVM_HASH_OR_TAG 9e2dd8a5fd032b429c07ce2778c8716117812bc5 )
 ###########################################################
 
 # ITKTubeTK: Source already available in TubeTK project
-set( ITKTubeTK_URL ${CMAKE_SOURCE_DIR}/ITKModules/ITKTubeTK )
+set( ITKTubeTK_URL ${TubeTK_SOURCE_DIR}/ITKModules/ITKTubeTK )
 set( ITKTubeTK_HASH_OR_TAG "")
 
 # MinimalPathExtraction
