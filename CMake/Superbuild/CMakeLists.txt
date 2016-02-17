@@ -108,53 +108,45 @@ if( UNIX )
 endif( UNIX )
 
 
+macro(list_conditional_append cond list)
+  if(${cond})
+    list(APPEND ${list} ${ARGN})
+  endif()
+endmacro()
+
 set( TubeTK_DEPENDENCIES "ITK" "JsonCpp" "SlicerExecutionModel" )
 
-if( TubeTK_USE_VTK )
-  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "VTK" )
-endif( TubeTK_USE_VTK )
+list_conditional_append( TubeTK_USE_VTK TubeTK_DEPENDENCIES "VTK" )
 
-if( TubeTK_USE_CPPCHECK )
-  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "Cppcheck" )
-endif( TubeTK_USE_CPPCHECK )
+list_conditional_append( TubeTK_USE_CPPCHECK TubeTK_DEPENDENCIES "Cppcheck" )
 
-if( TubeTK_BUILD_IMAGE_VIEWER )
-  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "ImageViewer" )
-endif( TubeTK_BUILD_IMAGE_VIEWER )
+list_conditional_append( TubeTK_BUILD_IMAGE_VIEWER TubeTK_DEPENDENCIES "ImageViewer" )
 
-if( TubeTK_USE_KWSTYLE )
-  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "KWStyle" )
-endif( TubeTK_USE_KWSTYLE )
+list_conditional_append( TubeTK_USE_KWSTYLE TubeTK_DEPENDENCIES "KWStyle" )
 
-if( TubeTK_USE_LIBSVM )
-  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "LIBSVM" )
-endif( TubeTK_USE_LIBSVM )
+list_conditional_append( TubeTK_USE_LIBSVM TubeTK_DEPENDENCIES "LIBSVM" )
 
-if( TubeTK_USE_CTK )
-  set( TubeTK_DEPENDENCIES ${TubeTK_DEPENDENCIES} "CTK" )
-endif( TubeTK_USE_CTK )
+list_conditional_append( TubeTK_USE_CTK TubeTK_DEPENDENCIES "CTK" )
 
 set( TubeTK_EXTERNAL_PROJECTS_ARGS )
 
-if( TubeTK_USE_BOOST )
-  list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DBOOST_ROOT=${BOOST_ROOT} )
-endif( TubeTK_USE_BOOST )
+list_conditional_append( TubeTK_USE_BOOST
+  TubeTK_EXTERNAL_PROJECTS_ARGS
+    -DBOOST_ROOT=${BOOST_ROOT} )
 
-if( TubeTK_BUILD_USING_SLICER )
-  list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DSlicer_DIR=${Slicer_DIR} )
-endif( TubeTK_BUILD_USING_SLICER )
+list_conditional_append( TubeTK_BUILD_USING_SLICER
+  TubeTK_EXTERNAL_PROJECTS_ARGS
+    -DSlicer_DIR=${Slicer_DIR} )
 
-if( TubeTK_USE_QT )
-  list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS
+list_conditional_append( TubeTK_USE_QT
+  TubeTK_EXTERNAL_PROJECTS_ARGS
     -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
     -DTubeTK_REQUIRED_QT_VERSION=${TubeTK_REQUIRED_QT_VERSION} )
-endif( TubeTK_USE_QT )
 
-if( TubeTK_USE_PYTHON )
-  list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS
+list_conditional_append( TubeTK_USE_PYTHON
+  TubeTK_EXTERNAL_PROJECTS_ARGS
     -DTubeTK_USE_NUMPY:BOOL=${TubeTK_USE_NUMPY}
     -DTubeTK_USE_PYQTGRAPH:BOOL=${TubeTK_USE_PYQTGRAPH} )
-endif( TubeTK_USE_PYTHON )
 
 # Check dependencies.
 set( EXTERNAL_PROJECT_DIR ${TubeTK_SOURCE_DIR}/CMake/Superbuild )
