@@ -114,7 +114,7 @@ macro(list_conditional_append cond list)
   endif()
 endmacro()
 
-set( TubeTK_DEPENDENCIES "ITK" "JsonCpp" "SlicerExecutionModel" )
+set( TubeTK_DEPENDENCIES "ITK" "SlicerExecutionModel" )
 
 list_conditional_append( TubeTK_USE_VTK TubeTK_DEPENDENCIES "VTK" )
 
@@ -123,6 +123,8 @@ list_conditional_append( TubeTK_USE_CPPCHECK TubeTK_DEPENDENCIES "Cppcheck" )
 list_conditional_append( TubeTK_BUILD_IMAGE_VIEWER TubeTK_DEPENDENCIES "ImageViewer" )
 
 list_conditional_append( TubeTK_USE_KWSTYLE TubeTK_DEPENDENCIES "KWStyle" )
+
+list_conditional_append( TubeTK_USE_JsonCpp TubeTK_DEPENDENCIES "JsonCpp" )
 
 list_conditional_append( TubeTK_USE_LIBSVM TubeTK_DEPENDENCIES "LIBSVM" )
 

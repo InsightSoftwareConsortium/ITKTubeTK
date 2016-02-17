@@ -63,15 +63,21 @@ include_directories(
 add_executable( tubeBaseCLIHeaderTest tubeBaseCLIHeaderTest.cxx )
 target_link_libraries( tubeBaseCLIHeaderTest ${ITK_LIBRARIES} )
 
+set(tubeBaseCLITests_TARGET_LIBRARIES
+  ${ITK_LIBRARIES}
+  TubeCLI )
+if( TubeTK_USE_JsonCpp )
+  list(APPEND tubeBaseCLITests_TARGET_LIBRARIES
+    ${JsonCpp_LIBRARIES} )
+endif( TubeTK_USE_JsonCpp )
+
 SEMMacroBuildCLI(
   NAME tubeBaseCLITests
   ADDITIONAL_SRCS
     ${tubeBaseCLITests_SRCS}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
-    ${ITK_LIBRARIES}
-    ${JsonCpp_LIBRARIES}
-    TubeCLI
+    ${tubeBaseCLITests_TARGET_LIBRARIES}
   INSTALL_RUNTIME_DESTINATION bin
   EXECUTABLE_ONLY
   )

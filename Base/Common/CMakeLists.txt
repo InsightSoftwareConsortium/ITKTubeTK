@@ -64,12 +64,14 @@ SEMMacroBuildCLI(
     ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration
     ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration/ITKRegistrationHelper )
 
-add_executable( JsonCompareCommand JsonCompareCommand.cxx )
-target_link_libraries( JsonCompareCommand
-  ${ITK_LIBRARIES}
-  ITKIOMeta
-  ITKMetaIO
-  ${JsonCpp_LIBRARIES} )
+if( TubeTK_USE_JsonCpp )
+  add_executable( JsonCompareCommand JsonCompareCommand.cxx )
+  target_link_libraries( JsonCompareCommand
+    ${ITK_LIBRARIES}
+    ITKIOMeta
+    ITKMetaIO
+    ${JsonCpp_LIBRARIES} )
+endif( TubeTK_USE_JsonCpp )
 
 add_executable( TextCompareCommand TextCompareCommand.cxx )
 target_link_libraries( TextCompareCommand ${ITK_LIBRARIES} ITKIOMeta ITKMetaIO)
@@ -83,10 +85,16 @@ install( FILES
   ${TubeTK_Base_Common_HXX_Files}
   DESTINATION include )
 
-install( TARGETS
+set(_compare_command_targets
   ImageCompareCommand
-  JsonCompareCommand
-  TextCompareCommand
+  TextCompareCommand )
+if( TubeTK_USE_JsonCpp )
+  list(APPEND _compare_command_targets
+    JsonCompareCommand )
+endif( TubeTK_USE_JsonCpp )
+
+install( TARGETS
+  ${_compare_command_targets}
   DESTINATION bin
   COMPONENT RUNTIME )
 
