@@ -32,7 +32,7 @@
 #include "itkSpatialObjectWriter.h"
 #include "itkTimeProbesCollectorBase.h"
 
-#include "ClipTubesCLP.h"
+#include "CropTubesCLP.h"
 
 #include <vtkCubeSource.h>
 #include <vtkNew.h>
@@ -229,8 +229,8 @@ int DoIt (int argc, char * argv[])
     timeCollector.Stop( "Load Volume Mask" );
     }
 
-  // Compute clipping
-  tubeStandardOutputMacro( << "\n>> Finding Tubes for Clipping" );
+  // Compute cropping
+  tubeStandardOutputMacro( << "\n>> Finding Tubes for Cropping" );
 
   timeCollector.Start( "Selecting Tubes" );
   //Target Group to save desired tubes
@@ -334,7 +334,7 @@ int DoIt (int argc, char * argv[])
       if ( volumeMaskFlag || IsInside( curSourcePos, curRadiusVector[0],
         worldBoxposition, worldBoxSize, normalList ) )
         {
-        if( ClipTubes )
+        if( CropTubes )
           {
           TargetPointList.push_back( curSourcePoint );
           }
@@ -369,7 +369,7 @@ int DoIt (int argc, char * argv[])
 
           pTargetTube->SetId( targetTubeId );
           ++targetTubeId;
-          //Save clipped tube
+          //Save cropped tube
           pTargetTube->SetPoints( TargetPointList );
           pTargetTubeGroup->AddSpatialObject( pTargetTube );
 
@@ -398,7 +398,7 @@ int DoIt (int argc, char * argv[])
 
       pTargetTube->SetId( targetTubeId );
       ++targetTubeId;
-      //Save clipped tube
+      //Save cropped tube
       pTargetTube->SetPoints( TargetPointList );
       pTargetTubeGroup->AddSpatialObject( pTargetTube );
 

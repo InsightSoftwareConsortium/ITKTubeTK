@@ -95,7 +95,7 @@ endif( TubeTK_USE_BOOST )
 set( TubeTK_${proj}_VTK_MODULES )
 if( TubeTK_USE_VTK )
   set( TubeTK_${proj}_VTK_MODULES
-    ClipTubes
+    CropTubes
     ConvertTubesToSurface
     ComputeTubeTortuosityMeasures
     RegisterUsingSlidingGeometries )

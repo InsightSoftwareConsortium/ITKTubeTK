@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <executable>
   <category>TubeTK</category>
-  <title>ClipTubes</title>
+  <title>CropTubes</title>
   <description>Return a set of tubes contained in a bounding box</description>
   <version>1.0</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
@@ -51,14 +51,14 @@
       <label>Output VTK Box File</label>
       <channel>output</channel>
       <longflag>boxFile</longflag>
-      <description>Output vtk file that renders the box used in clipping.</description>
+      <description>Output vtk file that renders the box used in cropping.</description>
       <default></default>
     </file>
     <boolean>
-      <name>ClipTubes</name>
-      <label>Clip Tubes</label>
-      <description>Specify if tubes should be clipped</description>
-      <longflag>ClipTubes</longflag>
+      <name>CropTubes</name>
+      <label>Crop Tubes</label>
+      <description>Specify if tubes should be cropped</description>
+      <longflag>CropTubes</longflag>
       <flag>c</flag>
       <default>false</default>
     </boolean>

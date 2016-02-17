@@ -20,7 +20,7 @@
 # limitations under the License.
 #
 ############################################################################
-set( MODULE_NAME ClipTubes )
+set( MODULE_NAME CropTubes )
 project( ${MODULE_NAME} )
 
 if( NOT TubeTK_SOURCE_DIR )
