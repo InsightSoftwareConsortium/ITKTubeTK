@@ -54,8 +54,9 @@ set( Boost_USE_STATIC_RUNTIME ON )
 find_package( Boost 1.49 COMPONENTS system filesystem REQUIRED )
 
 if( CMAKE_COMPILER_IS_GNUCXX )
-  set( CMAKE_CXX_FLAGS_RELEASE
-    "${CMAKE_CXX_FLAGS_RELEASE} -O3 -ffast-math -msse3" )
+  tubetk_append_if_absent(CMAKE_FLAGS_RELEASE "-03")
+  tubetk_append_if_absent(CMAKE_FLAGS_RELEASE "-ffast-math")
+  tubetk_append_if_absent(CMAKE_FLAGS_RELEASE "-msse3")
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
 SEMMacroBuildCLI(

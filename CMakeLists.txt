@@ -99,15 +99,27 @@ endif( BUILD_DOCUMENTATION )
 #
 option( TubeTK_BUILD_IMAGE_VIEWER "Use ImageViewer." ON )
 
+# Append an item to a string if it does not already contain it.  Any additional
+# arguments are treated as extra "set" arguments
+macro( tubetk_append_if_absent VARNAME VALUE )
+  if( NOT ${VARNAME} MATCHES "(^| )${VALUE}($| )" )
+    if( ${VARNAME} )
+      set( ${VARNAME} "${${VARNAME}} ${VALUE}" ${ARGN} )
+    else()
+      set( ${VARNAME} "${VALUE}" ${ARGN} )
+    endif()
+  endif()
+endmacro()
+
 #
 # Microsoft Visual Studio setup.
 #
 if( MSVC )
   add_definitions( -D_SCL_SECURE_NO_WARNINGS )
-  if( NOT CMAKE_FIRST_PASS_COMPLETED AND "${CMAKE_CXX_COMPILER}" MATCHES "cl" )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj /MP"
-         CACHE STRING "Flags used by all build types." FORCE )
-  endif( NOT CMAKE_FIRST_PASS_COMPLETED AND "${CMAKE_CXX_COMPILER}" MATCHES "cl" )
+  if( "${CMAKE_CXX_COMPILER}" MATCHES "cl" )
+    tubetk_append_if_absent( CMAKE_CXX_FLAGS "/bigobj" )
+    tubetk_append_if_absent( CMAKE_CXX_FLAGS "/MP" )
+  endif( "${CMAKE_CXX_COMPILER}" MATCHES "cl" )
   option( DISABLE_MSVC8_DEPRECATED_WARNINGS
     "Disable Microsoft Visual Studio 8 deprecated warnings." ON )
   mark_as_advanced( FORCE DISABLE_MSVC8_DEPRECATED_WARNINGS )
@@ -124,31 +136,34 @@ if( APPLE )
   if( NOT ${CMAKE_VERSION} VERSION_LESS 3.1 )
     cmake_policy( SET CMP0042 OLD )
   endif( NOT ${CMAKE_VERSION} VERSION_LESS 3.1 )
-  if( NOT CMAKE_FIRST_PASS_COMPLETED )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-common"
-      CACHE STRING "Flags used by all build types." FORCE )
-    set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-common"
-      CACHE STRING "Flags used by all build types." FORCE )
-  endif( NOT CMAKE_FIRST_PASS_COMPLETED )
+  tubetk_append_if_absent( CMAKE_CXX_FLAGS "-fno-common" )
+  tubetk_append_if_absent( CMAKE_C_FLAGS "-fno-common" )
 endif( APPLE )
 
 #
 # Linux or UNIX setup.
 #
 if( UNIX )
-  if( NOT CMAKE_FIRST_PASS_COMPLETED )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing"
-      CACHE STRING "Flags used by all build types." FORCE )
-    set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing"
-      CACHE STRING "Flags used by all build types." FORCE )
-    if( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
-      set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC"
-           CACHE STRING "Flags used by all build types." FORCE )
-      set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC"
-           CACHE STRING "Flags used by all build types." FORCE )
-    endif( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
-  endif( NOT CMAKE_FIRST_PASS_COMPLETED )
+  tubetk_append_if_absent( CMAKE_CXX_FLAGS "-fno-strict-aliasing" )
+  tubetk_append_if_absent( CMAKE_C_FLAGS "-fno-strict-aliasing" )
+  if( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
+    tubetk_append_if_absent( CMAKE_CXX_FLAGS "-fPIC" )
+    tubetk_append_if_absent( CMAKE_C_FLAGS "-fPIC" )
+  endif( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
 endif( UNIX )
+
+#
+# Gcc setup.
+#
+if( CMAKE_COMPILER_IS_GNUCXX )
+  include( CheckCCompilerFlag )
+  check_c_compiler_flag(-Wno-unused-local-typedefs
+    HAS_NO_UNUSED_LOCAL_TYPEDEFS)
+  if( HAS_NO_UNUSED_LOCAL_TYPEDEFS )
+    tubetk_append_if_absent( CMAKE_CXX_FLAGS "-Wno-unused-local-typedefs" )
+    tubetk_append_if_absent( CMAKE_C_FLAGS "-Wno-unused-local-typedefs" )
+  endif( HAS_NO_UNUSED_LOCAL_TYPEDEFS )
+endif( CMAKE_COMPILER_IS_GNUCXX )
 
 #
 # Implementation agnostic fPIC
@@ -413,15 +428,6 @@ mark_as_advanced( USE_SYSTEM_VTK )
 option( TubeTK_BUILD_APPLICATIONS
   "Build applications. If not, only TubeTK library is built" ON )
 mark_as_advanced( TubeTK_BUILD_APPLICATIONS )
-
-#
-# Indicate that this CMakeLists.txt file has already been parsed once. Keeps
-# append commands from having an effect every time CMake is run.
-#
-set( CMAKE_FIRST_PASS_COMPLETED ON CACHE BOOL
-  "Modify the cache variables only on the first pass through the CMake file."
-  FORCE )
-mark_as_advanced( CMAKE_FIRST_PASS_COMPLETED )
 
 # If TubeTK_CONFIG_BINARY_DIR isn't defined, it means TubeTK is *NOT* build
 # using Superbuild. In that specific case, TubeTK_CONFIG_BINARY_DIR should

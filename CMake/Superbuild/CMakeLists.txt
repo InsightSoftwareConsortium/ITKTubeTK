@@ -83,31 +83,6 @@ if( APPLE )
     -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET} )
 endif( APPLE )
 
-if( UNIX )
-  if( CMAKE_COMPILER_IS_GNUCXX )
-    include(CheckCCompilerFlag)
-    check_c_compiler_flag(-Wno-unused-local-typedefs
-      HAS_NO_UNUSED_LOCAL_TYPEDEFS)
-    if (HAS_NO_UNUSED_LOCAL_TYPEDEFS)
-      set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-local-typedefs"
-        CACHE STRING "Flags used by all build types." FORCE )
-      set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-local-typedefs"
-        CACHE STRING "Flags used by all build types." FORCE )
-    endif(HAS_NO_UNUSED_LOCAL_TYPEDEFS)
-  endif( CMAKE_COMPILER_IS_GNUCXX )
-  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing"
-    CACHE STRING "Flags used by all build types." FORCE )
-  set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing"
-    CACHE STRING "Flags used by all build types." FORCE )
-  if( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC"
-         CACHE STRING "Flags used by all build types." FORCE )
-    set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC"
-         CACHE STRING "Flags used by all build types." FORCE )
-  endif( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
-endif( UNIX )
-
-
 macro(list_conditional_append cond list)
   if(${cond})
     list(APPEND ${list} ${ARGN})
