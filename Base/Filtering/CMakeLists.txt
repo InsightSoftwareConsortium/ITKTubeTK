@@ -37,6 +37,7 @@ set( TubeTK_Base_Filtering_H_Files
   itktubeFFTGaussianDerivativeIFFTFilter.h
   itktubeGaussianDerivativeFilter.h
   itktubeGaussianDerivativeImageSource.h
+  itktubeMinimumSpanningTreeVesselConnectivityFilter.h
   itktubePadImageFilter.h
   itktubeRegionFromReferenceImageFilter.h
   itktubeSheetnessMeasureImageFilter.h
@@ -60,6 +61,7 @@ set( TubeTK_Base_Filtering_HXX_Files
   itktubeFFTGaussianDerivativeIFFTFilter.hxx
   itktubeGaussianDerivativeFilter.hxx
   itktubeGaussianDerivativeImageSource.hxx
+  itktubeMinimumSpanningTreeVesselConnectivityFilter.hxx
   itktubePadImageFilter.hxx
   itktubeRegionFromReferenceImageFilter.hxx
   itktubeSheetnessMeasureImageFilter.hxx
