@@ -40,7 +40,21 @@ template< unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
 template< unsigned int VDimension >
-int FillGap( typename itk::GroupSpatialObject< VDimension >::Pointer &pTubeGroup,
+void InterpolatePath(
+  typename itk::VesselTubeSpatialObject< VDimension >::TubePointType *parentNearestPoint,
+  typename itk::VesselTubeSpatialObject< VDimension >::TubePointType *childEndPoint,
+  typename itk::VesselTubeSpatialObject< VDimension >::PointListType &newTubePoints,
+  std::string InterpolationMethod )
+{
+  if( InterpolationMethod == "Straight_Line" )
+    {
+    newTubePoints.push_back( *parentNearestPoint );
+    }
+  return;
+}
+
+template< unsigned int VDimension >
+void FillGap( typename itk::GroupSpatialObject< VDimension >::Pointer &pTubeGroup,
              std::string InterpolationMethod )
 {
   //typedefs
@@ -103,21 +117,34 @@ int FillGap( typename itk::GroupSpatialObject< VDimension >::Pointer &pTubeGroup
               }
             }
 
-          if( InterpolationMethod == "Straight_Line" )
+          TubePointListType newTubePoints;
+          if( flag == 1 )
             {
-            if( flag == 1 )//add as the starting point
+            TubePointType* childTubeStartPoint =
+              dynamic_cast< TubePointType* >( pCurTube->GetPoint( 0 ) );
+            InterpolatePath< VDimension >(parentNearestPoint,
+              childTubeStartPoint, newTubePoints, InterpolationMethod );
+            TubePointListType targetTubePoints = pCurTube->GetPoints();
+            pCurTube->Clear();
+            for( int index = 0; index < newTubePoints.size(); index++ )
               {
-              TubePointListType targetTubePoints = pCurTube->GetPoints();
-              pCurTube->Clear();
-              pCurTube->GetPoints().push_back(*parentNearestPoint);
-              for( int i=0; i < targetTubePoints.size(); i++ )
-                {
-                pCurTube->GetPoints().push_back( targetTubePoints[i] );
-                }
+              pCurTube->GetPoints().push_back( newTubePoints[ index ] );
               }
-            if( flag == 2 )// add as an end point
+            for( int i = 0; i < targetTubePoints.size(); i++ )
               {
-              pCurTube->GetPoints().push_back( *parentNearestPoint );
+              pCurTube->GetPoints().push_back( targetTubePoints[ i ] );
+              }
+            }
+          if( flag == 2 )
+            {
+            TubePointType* childTubeEndPoint =
+              dynamic_cast< TubePointType* >
+              ( pCurTube->GetPoint( pCurTube->GetNumberOfPoints() - 1 ) );
+            InterpolatePath< VDimension >(
+              parentNearestPoint, childTubeEndPoint, newTubePoints, InterpolationMethod );
+            for( int index = newTubePoints.size() - 1; index >= 0; index-- )
+              {
+              pCurTube->GetPoints().push_back( newTubePoints[ index ] );
               }
             }
           break;
@@ -125,7 +152,6 @@ int FillGap( typename itk::GroupSpatialObject< VDimension >::Pointer &pTubeGroup
         }
       }
     }
-  return EXIT_SUCCESS;
 }
 
 template< unsigned int VDimension >
