@@ -73,6 +73,12 @@ if(NOT ITK_WITH_EXTERNAL_MODULE_SUPPORT)
   message( STATUS "ITKModules: 'ITK External Module' not supported: ${_reason}" )
 endif()
 
+# XXX Ensure CMake modules provided by ITK are included first
+#     when building using Slicer. This was motivated by the fact
+#     ITK modules uses a modified version of GenerateExportHeader
+#     not available in VTK.
+set(CMAKE_MODULE_PATH ${ITK_CMAKE_DIR} ${CMAKE_MODULE_PATH})
+
 foreach( itk-module ${TubeTK_ITK_MODULES} )
 
   set( ${itk-module}_SOURCE_DIR ${${itk-module}_URL} )
