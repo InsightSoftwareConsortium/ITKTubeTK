@@ -177,7 +177,9 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start( "Filling gaps in input tree" );
   tubeStandardOutputMacro( << "\n>> Filling gaps in input tree" );
 
-  FillGap< VDimension >( tubeFileReader->GetGroup(), InterpolationMethod );
+  typename itk::GroupSpatialObject< VDimension >::Pointer inputTubes;
+  inputTubes = tubeFileReader->GetGroup();
+  FillGap< VDimension >( inputTubes, InterpolationMethod );
 
   timeCollector.Stop( "Filling gaps in input tree" );
   progress = 0.75;
