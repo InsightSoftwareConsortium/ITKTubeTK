@@ -187,12 +187,12 @@ CVTImageFilter< TInputImage, TOutputImage >
     indx.Fill(0);
     for(int j=0; j<(int)m_NumberOfCentroids; j++)
       {
-      for(int i=0; i<ImageDimension; i++)
+      for(unsigned int i=0; i<ImageDimension; i++)
         {
         indx[i] = indx[i] + m_Centroids[j][i];
         }
       }
-    for(int i=0; i<ImageDimension; i++)
+    for(unsigned int i=0; i<ImageDimension; i++)
       {
       indx[i] = indx[i] / m_NumberOfCentroids;
       }
@@ -206,7 +206,7 @@ CVTImageFilter< TInputImage, TOutputImage >
   IndexType iIndx;
   for(int j=0; j<(int)m_NumberOfCentroids; j++)
     {
-    for(int i=0; i<ImageDimension; i++)
+    for(unsigned int i=0; i<ImageDimension; i++)
       {
       iIndx[i] = (int)(m_Centroids[j][i]);
       if(iIndx[i] < 0)
@@ -253,7 +253,7 @@ double
 CVTImageFilter< TInputImage, TOutputImage >
 ::ComputeIteration( double & energyDiff)
 {
-  int i;
+  unsigned int i;
   int j;
   int j2;
 
@@ -361,7 +361,7 @@ CVTImageFilter< TInputImage, TOutputImage >
 ::ComputeSample( PointArrayType * sample, unsigned int sampleSize,
                  SamplingMethodEnum samplingMethod )
 {
-  int i;
+  unsigned int i;
   int j;
 
   if( sampleSize < 1 )
@@ -472,7 +472,7 @@ CVTImageFilter< TInputImage, TOutputImage >
                   unsigned int * nearest )
 {
   double dist;
-  int i;
+  unsigned int i;
   int jc;
   int js;
 

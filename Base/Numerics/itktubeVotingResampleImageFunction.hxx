@@ -90,7 +90,7 @@ VotingResampleImageFunction< TInputImage, TCoordRep >
     this->GetInputImage()->GetRequestedRegion() );
 
   IndexType newIndex;
-  for(int i = 0; i < ImageDimension; i++)
+  for(unsigned int i = 0; i < ImageDimension; i++)
     {
     newIndex[i] = (int)index[i];
     }

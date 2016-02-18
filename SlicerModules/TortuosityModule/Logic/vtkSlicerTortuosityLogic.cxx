@@ -284,7 +284,7 @@ bool vtkSlicerTortuosityLogic
   if( ( metricFlag & FilterType::CURVATURE_HISTOGRAM_METRICS ) > 0 )
     {
     // Create the data arrays for the histogram
-    for( int i = 0; i < numberOfBins; i++ )
+    for( unsigned int i = 0; i < numberOfBins; i++ )
       {
       vtkSmartPointer< vtkIntArray > histArray;
       std::ostringstream oss;
@@ -446,7 +446,7 @@ bool vtkSlicerTortuosityLogic
     if( ( metricFlag & FilterType::CURVATURE_HISTOGRAM_METRICS ) > 0 )
       {
       // Get the histogram features
-      for( int i = 0; i < numberOfBins; i++ )
+      for( unsigned int i = 0; i < numberOfBins; i++ )
         {
         m_HistogramArrays[i]->SetValue( tubeNumber,
           filter->GetCurvatureHistogramMetric( i ) );
@@ -465,7 +465,7 @@ bool vtkSlicerTortuosityLogic
     }
   if ( ( metricFlag & FilterType::CURVATURE_HISTOGRAM_METRICS ) > 0 )
     {
-    for ( int i = 0; i < numberOfBins; i++ )
+    for ( unsigned int i = 0; i < numberOfBins; i++ )
       {
       m_HistogramArrays[i]->Modified();
       }

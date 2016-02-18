@@ -137,7 +137,7 @@ AnisotropicDiffusiveRegistrationFilter
   TensorDerivativeImagePointer secondOrder;
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
-    for( int j = 0; j < ImageDimension; j++ )
+    for( unsigned int j = 0; j < ImageDimension; j++ )
       {
       firstOrder = ScalarDerivativeImageType::New();
       DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( firstOrder, output );
@@ -712,7 +712,7 @@ AnisotropicDiffusiveRegistrationFilter
 
   NormalVectorType normalVector;
   normalVector.Fill( 0.0 );
-  for( int i = 0; i < ImageDimension; i++ )
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     // Create the multiplication vector image
     DeformationFieldPointer normalMultsImage = DeformationFieldType::New();

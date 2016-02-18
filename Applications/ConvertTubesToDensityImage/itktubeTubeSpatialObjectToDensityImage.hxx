@@ -33,7 +33,7 @@ TubeSpatialObjectToDensityImage< TDensityImageType, TRadiusImageType,
                                  TTangentImageType >
 ::TubeSpatialObjectToDensityImage( void )
 {
-  for(short i = 0; i < ImageDimension; i++ )
+  for(unsigned int i = 0; i < ImageDimension; i++ )
     {
     m_Size[i] = 0;
     m_Spacing[i] = 1;
@@ -142,7 +142,7 @@ TubeSpatialObjectToDensityImage< TDensityImageType, TRadiusImageType,
       {
       VectorPixelType v = it_vector.Value();
       typename DensityImageType::IndexType index = it_vector.GetIndex();
-      for( int i = 0; i < ImageDimension; i++ )
+      for( unsigned int i = 0; i < ImageDimension; i++ )
         {
         index[i] += v[i];
         }
@@ -167,7 +167,7 @@ TubeSpatialObjectToDensityImage< TDensityImageType, TRadiusImageType,
       {
       VectorPixelType v = it_vector.Value();
       typename DensityImageType::IndexType index = it_vector.GetIndex();
-      for( int i = 0; i < ImageDimension; i++ )
+      for( unsigned int i = 0; i < ImageDimension; i++ )
         {
         index[i] += v[i];
         }

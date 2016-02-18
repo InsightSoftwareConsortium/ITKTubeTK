@@ -50,7 +50,7 @@ SmoothingRecursiveGaussianImageFilter< TInputImage, TOutputImage >
   // InPlace will be set conditionally in the GenerateData method.
 
   m_SmoothingFilters.resize( ImageDimension - 1 );
-  for ( int i = 0; i < static_cast< int >( ImageDimension ) - 1; i++ )
+  for ( unsigned int i = 0; i < ImageDimension - 1; i++ )
     {
     m_SmoothingFilters[i] = InternalGaussianFilterType::New();
     m_SmoothingFilters[i]->SetOrder(InternalGaussianFilterType::ZeroOrder);
@@ -64,7 +64,7 @@ SmoothingRecursiveGaussianImageFilter< TInputImage, TOutputImage >
     {
     m_SmoothingFilters[0]->SetInput( m_FirstSmoothingFilter->GetOutput() );
     }
-  for ( int i = 1; i < static_cast< int >( ImageDimension ) - 1; i++ )
+  for ( unsigned int i = 1; i < ImageDimension - 1; i++ )
     {
     m_SmoothingFilters[i]->SetInput(
       m_SmoothingFilters[i - 1]->GetOutput() );
@@ -98,7 +98,7 @@ SmoothingRecursiveGaussianImageFilter< TInputImage, TOutputImage >
 ::SetNumberOfThreads(ThreadIdType nb)
 {
   Superclass::SetNumberOfThreads(nb);
-  for ( int i = 0; i < static_cast< int >( ImageDimension ) - 1; i++ )
+  for ( unsigned int i = 0; i < ImageDimension - 1; i++ )
     {
     m_SmoothingFilters[i]->SetNumberOfThreads(nb);
     }
@@ -148,7 +148,7 @@ SmoothingRecursiveGaussianImageFilter< TInputImage, TOutputImage >
   if ( this->m_Sigma != sigma )
     {
     this->m_Sigma = sigma;
-    for ( int i = 0; i < static_cast< int >( ImageDimension ) - 1; i++ )
+    for ( unsigned int i = 0; i < ImageDimension - 1; i++ )
       {
       m_SmoothingFilters[i]->SetSigma(m_Sigma[i]);
       }
@@ -289,7 +289,7 @@ SmoothingRecursiveGaussianImageFilter< TInputImage, TOutputImage >
 
   // Register the filter with the with progress accumulator using
   // equal weight proportion.
-  for ( int i = 0; i < static_cast< int >( ImageDimension ) - 1; i++ )
+  for ( unsigned int i = 0; i < ImageDimension - 1; i++ )
     {
     progress->RegisterInternalFilter( m_SmoothingFilters[i], 1.0 /
       ( ImageDimension ) );

@@ -281,7 +281,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
     unsigned int count = 0;
     for( unsigned int j = 0; j < ImageDimension; ++j)
       {
-      for(int k = j; k < ImageDimension; ++k)
+      for(unsigned int k = j; k < ImageDimension; ++k)
         {
         tmp[count++] = itgradient.Get()[j]*itgradient.Get()[k];
         }

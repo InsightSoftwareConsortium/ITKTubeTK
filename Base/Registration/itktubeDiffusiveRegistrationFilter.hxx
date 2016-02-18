@@ -370,7 +370,7 @@ DiffusiveRegistrationFilter
     ScalarDerivativeImageArrayType deformationComponentFirstArray;
     TensorDerivativeImageArrayType deformationComponentSecondArray;
     DeformationVectorImageArrayType multiplicationVectorArray;
-    for( int j = 0; j < ImageDimension; j++ )
+    for( unsigned int j = 0; j < ImageDimension; j++ )
       {
       deformationComponentFirstArray[j] = 0;
       deformationComponentSecondArray[j] = 0;
@@ -430,7 +430,7 @@ DiffusiveRegistrationFilter
   m_DeformationComponentImages[GAUSSIAN] = output;
 
   // Setup the first and second order deformation component images
-  for( int i = 0; i < ImageDimension; i++ )
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     m_DeformationComponentFirstOrderDerivativeArrays[GAUSSIAN][i]
         = ScalarDerivativeImageType::New();
@@ -589,7 +589,7 @@ DiffusiveRegistrationFilter
     DiffusiveRegistrationFilterUtils::ExtractXYZComponentsFromDeformationField(
           this->GetDeformationComponentImage(i), deformationComponentImageArray );
 
-    for( int j = 0; j < ImageDimension; j++ )
+    for( unsigned int j = 0; j < ImageDimension; j++ )
       {
       this->ComputeDeformationComponentDerivativeImageHelper(
           deformationComponentImageArray[j], i, j, spacing, radius );
