@@ -139,18 +139,20 @@ Midas3FunctionAddTest( NAME ImageCompareCommand-Test7
     -t MIDAS{ResampleImageTest2.mha.md5}
     -b MIDAS{ResampleImageTest2SpacingOff.mha.md5} )
 
-add_test( NAME JsonCompareCommand-Test1
-  COMMAND ${JSONCOMPARE_EXE}
-    -t ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestTest1.json
-    -b ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestBaseline1.json )
+if( TubeTK_USE_JsonCpp )
+  add_test( NAME JsonCompareCommand-Test1
+    COMMAND ${JSONCOMPARE_EXE}
+      -t ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestTest1.json
+      -b ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestBaseline1.json )
 
-add_test( NAME JsonCompareCommand-Test2
-  COMMAND ${JSONCOMPARE_EXE}
-    -t ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestTest2.json
-    -b ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestBaseline1.json )
-set_tests_properties( JsonCompareCommand-Test2 PROPERTIES WILL_FAIL true )
+  add_test( NAME JsonCompareCommand-Test2
+    COMMAND ${JSONCOMPARE_EXE}
+      -t ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestTest2.json
+      -b ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestBaseline1.json )
+  set_tests_properties( JsonCompareCommand-Test2 PROPERTIES WILL_FAIL true )
 
-add_test( NAME JsonCompareCommand-Test3
-  COMMAND ${JSONCOMPARE_EXE}
-    -t ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestTest2.json
-    -b ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestBaseline2.json )
+  add_test( NAME JsonCompareCommand-Test3
+    COMMAND ${JSONCOMPARE_EXE}
+      -t ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestTest2.json
+      -b ${CMAKE_CURRENT_SOURCE_DIR}/JsonCompareCommandTestBaseline2.json )
+endif( TubeTK_USE_JsonCpp )

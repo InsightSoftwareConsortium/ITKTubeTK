@@ -53,8 +53,6 @@ set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin" )
 set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/TubeTK" )
 set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/TubeTK" )
 
-include( TubeTKMacroEmptyExternalProject )
-
 #
 # CDash dashboard setup.
 #
@@ -101,15 +99,27 @@ endif( BUILD_DOCUMENTATION )
 #
 option( TubeTK_BUILD_IMAGE_VIEWER "Use ImageViewer." ON )
 
+# Append an item to a string if it does not already contain it.  Any additional
+# arguments are treated as extra "set" arguments
+macro( tubetk_append_if_absent VARNAME VALUE )
+  if( NOT ${VARNAME} MATCHES "(^| )${VALUE}($| )" )
+    if( ${VARNAME} )
+      set( ${VARNAME} "${${VARNAME}} ${VALUE}" ${ARGN} )
+    else()
+      set( ${VARNAME} "${VALUE}" ${ARGN} )
+    endif()
+  endif()
+endmacro()
+
 #
 # Microsoft Visual Studio setup.
 #
 if( MSVC )
   add_definitions( -D_SCL_SECURE_NO_WARNINGS )
-  if( NOT CMAKE_FIRST_PASS_COMPLETED AND "${CMAKE_CXX_COMPILER}" MATCHES "cl" )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj /MP"
-         CACHE STRING "Flags used by all build types." FORCE )
-  endif( NOT CMAKE_FIRST_PASS_COMPLETED AND "${CMAKE_CXX_COMPILER}" MATCHES "cl" )
+  if( "${CMAKE_CXX_COMPILER}" MATCHES "cl" )
+    tubetk_append_if_absent( CMAKE_CXX_FLAGS "/bigobj" )
+    tubetk_append_if_absent( CMAKE_CXX_FLAGS "/MP" )
+  endif( "${CMAKE_CXX_COMPILER}" MATCHES "cl" )
   option( DISABLE_MSVC8_DEPRECATED_WARNINGS
     "Disable Microsoft Visual Studio 8 deprecated warnings." ON )
   mark_as_advanced( FORCE DISABLE_MSVC8_DEPRECATED_WARNINGS )
@@ -126,31 +136,34 @@ if( APPLE )
   if( NOT ${CMAKE_VERSION} VERSION_LESS 3.1 )
     cmake_policy( SET CMP0042 OLD )
   endif( NOT ${CMAKE_VERSION} VERSION_LESS 3.1 )
-  if( NOT CMAKE_FIRST_PASS_COMPLETED )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-common"
-      CACHE STRING "Flags used by all build types." FORCE )
-    set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-common"
-      CACHE STRING "Flags used by all build types." FORCE )
-  endif( NOT CMAKE_FIRST_PASS_COMPLETED )
+  tubetk_append_if_absent( CMAKE_CXX_FLAGS "-fno-common" )
+  tubetk_append_if_absent( CMAKE_C_FLAGS "-fno-common" )
 endif( APPLE )
 
 #
 # Linux or UNIX setup.
 #
 if( UNIX )
-  if( NOT CMAKE_FIRST_PASS_COMPLETED )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing"
-      CACHE STRING "Flags used by all build types." FORCE )
-    set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing"
-      CACHE STRING "Flags used by all build types." FORCE )
-    if( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
-      set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC"
-           CACHE STRING "Flags used by all build types." FORCE )
-      set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC"
-           CACHE STRING "Flags used by all build types." FORCE )
-    endif( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
-  endif( NOT CMAKE_FIRST_PASS_COMPLETED )
+  tubetk_append_if_absent( CMAKE_CXX_FLAGS "-fno-strict-aliasing" )
+  tubetk_append_if_absent( CMAKE_C_FLAGS "-fno-strict-aliasing" )
+  if( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
+    tubetk_append_if_absent( CMAKE_CXX_FLAGS "-fPIC" )
+    tubetk_append_if_absent( CMAKE_C_FLAGS "-fPIC" )
+  endif( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
 endif( UNIX )
+
+#
+# Gcc setup.
+#
+if( CMAKE_COMPILER_IS_GNUCXX )
+  include( CheckCCompilerFlag )
+  check_c_compiler_flag(-Wno-unused-local-typedefs
+    HAS_NO_UNUSED_LOCAL_TYPEDEFS)
+  if( HAS_NO_UNUSED_LOCAL_TYPEDEFS )
+    tubetk_append_if_absent( CMAKE_CXX_FLAGS "-Wno-unused-local-typedefs" )
+    tubetk_append_if_absent( CMAKE_C_FLAGS "-Wno-unused-local-typedefs" )
+  endif( HAS_NO_UNUSED_LOCAL_TYPEDEFS )
+endif( CMAKE_COMPILER_IS_GNUCXX )
 
 #
 # Implementation agnostic fPIC
@@ -318,6 +331,7 @@ mark_as_advanced( USE_SYSTEM_ITK )
 #
 # JsonCpp library setup.
 #
+option( TubeTK_USE_JsonCpp "Use JsonCpp to enable additional functionality." ON )
 option( USE_SYSTEM_JSONCPP
   "Exclude JsonCpp from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_JSONCPP )
@@ -415,15 +429,6 @@ option( TubeTK_BUILD_APPLICATIONS
   "Build applications. If not, only TubeTK library is built" ON )
 mark_as_advanced( TubeTK_BUILD_APPLICATIONS )
 
-#
-# Indicate that this CMakeLists.txt file has already been parsed once. Keeps
-# append commands from having an effect every time CMake is run.
-#
-set( CMAKE_FIRST_PASS_COMPLETED ON CACHE BOOL
-  "Modify the cache variables only on the first pass through the CMake file."
-  FORCE )
-mark_as_advanced( CMAKE_FIRST_PASS_COMPLETED )
-
 # If TubeTK_CONFIG_BINARY_DIR isn't defined, it means TubeTK is *NOT* build
 # using Superbuild. In that specific case, TubeTK_CONFIG_BINARY_DIR should
 # default to TubeTK_BINARY_DIR
@@ -483,8 +488,10 @@ if( TubeTK_USE_VTK )
   include( ${VTK_USE_FILE} )
 endif( TubeTK_USE_VTK )
 
-find_package( JsonCpp REQUIRED )
-include_directories( ${JsonCpp_INCLUDE_DIRS} )
+if( TubeTK_USE_JsonCpp )
+  find_package( JsonCpp REQUIRED )
+  include_directories( ${JsonCpp_INCLUDE_DIRS} )
+endif( TubeTK_USE_JsonCpp )
 
 if( TubeTK_USE_LIBSVM )
   find_package( LIBSVM REQUIRED )
@@ -558,7 +565,7 @@ test_big_endian( CMAKE_WORDS_BIGENDIAN )
 
 # Set TubeTK_EXECUTABLE_DIRS useful to configure launcher scripts
 # and set TubeTK_LIBRARY_DIRS
-if( MSVC )
+if( WIN32 )
   set(TubeTK_EXECUTABLE_DIRS CACHE INTERNAL "Bin and Lib dirs for running apps." FORCE )
   foreach(_build_type "" Debug Release)
     list( APPEND TubeTK_EXECUTABLE_DIRS
@@ -576,7 +583,7 @@ if( MSVC )
         ${Slicer_DIR}/bin/${_build_type} )
     endif( TubeTK_BUILD_USING_SLICER )
   endforeach()
-else( MSVC )
+else( WIN32 )
   set( TubeTK_EXECUTABLE_DIRS
     ${GenerateCLP_DIR}
     ${Boost_LIBRARY_DIR}
@@ -587,7 +594,7 @@ else( MSVC )
   if( TubeTK_USE_VTK )
     list( APPEND ${VTK_DIR}/bin )
   endif( TubeTK_USE_VTK )
-endif( MSVC )
+endif( WIN32 )
 
 #
 # Configure a launcher for running TubeTK methods from the command line

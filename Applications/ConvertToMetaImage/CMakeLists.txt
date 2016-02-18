@@ -57,7 +57,7 @@ if( TubeTK_USE_QT )
 
   option( HIDE_CONSOLE "Hide the console" OFF )
   if( HIDE_CONSOLE )
-    set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /subsystem:windows" )
+    tubetk_append_if_absent(CMAKE_EXE_LINKER_FLAGS "/subsystem:windows")
     link_libraries( ${QT_QTMAIN_LIBRARY} )
   endif( HIDE_CONSOLE )
 

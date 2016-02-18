@@ -21,14 +21,6 @@
 #
 ##############################################################################
 
-# Make sure this file is included only once.
-get_filename_component( CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE}
-  NAME_WE )
-if( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
-  return()
-endif( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
-set( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1 )
-
 set( proj Cppcheck )
 
 # Sanity checks.
@@ -39,7 +31,11 @@ endif( CPPCHECK_EXECUTABLE AND NOT EXISTS ${CPPCHECK_EXECUTABLE} )
 set( ${proj}_DEPENDENCIES "" )
 
 # Include dependent projects, if any.
-TubeTKMacroCheckExternalProjectDependency( ${proj} )
+ExternalProject_Include_Dependencies( ${proj}
+  PROJECT_VAR proj
+  DEPENDS_VAR ${proj}_DEPENDENCIES
+  USE_SYSTEM_VAR USE_SYSTEM_${proj}
+  SUPERBUILD_VAR TubeTK_USE_SUPERBUILD )
 
 if( NOT CPPCHECK_EXECUTABLE AND NOT ${USE_SYSTEM_CPPCHECK} )
   set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
@@ -47,6 +43,7 @@ if( NOT CPPCHECK_EXECUTABLE AND NOT ${USE_SYSTEM_CPPCHECK} )
   set( CPPCHECK_EXECUTABLE ${${proj}_DIR}/bin/cppcheck )
 
   ExternalProject_Add( ${proj}
+    ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_URL}
     GIT_TAG ${${proj}_HASH_OR_TAG}
     DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
@@ -75,7 +72,7 @@ else( NOT CPPCHECK_EXECUTABLE AND NOT ${USE_SYSTEM_CPPCHECK} )
     find_program( CPPCHECK_EXECUTABLE NAMES cppcheck PATHS /usr/local/bin )
   endif( ${USE_SYSTEM_CPPCHECK} )
 
-  TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
+  ExternalProject_Add_Empty( ${proj} DEPENDS ${${proj}_DEPENDENCIES})
 endif( NOT CPPCHECK_EXECUTABLE AND NOT ${USE_SYSTEM_CPPCHECK} )
 
 list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DCPPCHECK_EXECUTABLE:FILEPATH=${CPPCHECK_EXECUTABLE} )

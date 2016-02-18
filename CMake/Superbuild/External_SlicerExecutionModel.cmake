@@ -21,14 +21,6 @@
 #
 ##############################################################################
 
-# Make sure this file is included only once.
-get_filename_component( CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE}
-  NAME_WE )
-if( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
-  return()
-endif( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
-set( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1 )
-
 set( proj SlicerExecutionModel )
 
 # Sanity checks.
@@ -38,19 +30,27 @@ if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 # Set dependency list
-set( ${proj}_DEPENDENCIES "ITK" "JsonCpp" )
-set( ${proj}_DEPENDENCIES_ARGS "-DJsonCpp_DIR:PATH=${JsonCpp_DIR}"
-  "-DJsonCpp_LIBRARIES:PATH=${JsonCpp_LIBRARIES}"
-  "-DJsonCpp_INCLUDE_DIRS:PATH=${JsonCpp_INCLUDE_DIRS}" )
+set( ${proj}_DEPENDENCIES "ITK" )
+if( TubeTK_USE_JsonCpp )
+  list( APPEND ${proj}_DEPENDENCIES "JsonCpp" )
+  set( ${proj}_DEPENDENCIES_ARGS "-DJsonCpp_DIR:PATH=${JsonCpp_DIR}"
+    "-DJsonCpp_LIBRARIES:PATH=${JsonCpp_LIBRARIES}"
+    "-DJsonCpp_INCLUDE_DIRS:PATH=${JsonCpp_INCLUDE_DIRS}" )
+endif( TubeTK_USE_JsonCpp )
 
 # Include dependent projects, if any.
-TubeTKMacroCheckExternalProjectDependency( ${proj} )
+ExternalProject_Include_Dependencies( ${proj}
+  PROJECT_VAR proj
+  DEPENDS_VAR ${proj}_DEPENDENCIES
+  USE_SYSTEM_VAR USE_SYSTEM_${proj}
+  SUPERBUILD_VAR TubeTK_USE_SUPERBUILD )
 
 if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_SLICER_EXECUTION_MODEL} )
   set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
   ExternalProject_Add( ${proj}
+    ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_URL}
     GIT_TAG ${${proj}_HASH_OR_TAG}
     DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
@@ -87,7 +87,7 @@ else( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_SLICER_EXECUTION_MODEL} )
     find_package( ${proj} REQUIRED )
   endif( ${USE_SYSTEM_SLICER_EXECUTION_MODEL} )
 
-  TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
+  ExternalProject_Add_Empty( ${proj} DEPENDS ${${proj}_DEPENDENCIES} )
 endif( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_SLICER_EXECUTION_MODEL} )
 
 list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -D${proj}_DIR:PATH=${${proj}_DIR} )

@@ -39,7 +39,9 @@ endif( TubeTK_BUILD_WITHIN_SLICER )
 include( ${ITK_USE_FILE} )
 
 if( CMAKE_COMPILER_IS_GNUCXX )
-  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -ffast-math -msse3" )
+  tubetk_append_if_absent(CMAKE_FLAGS_RELEASE "-03")
+  tubetk_append_if_absent(CMAKE_FLAGS_RELEASE "-ffast-math")
+  tubetk_append_if_absent(CMAKE_FLAGS_RELEASE "-msse3")
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
 SEMMacroBuildCLI(

@@ -21,14 +21,6 @@
 #
 ##############################################################################
 
-# Make sure this file is included only once.
-get_filename_component( CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE}
-  NAME_WE )
-if( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
-  return()
-endif( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED )
-set( ${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1 )
-
 set( proj KWStyle )
 
 # Sanity checks.
@@ -40,13 +32,18 @@ endif( KWStyle_DIR AND NOT EXISTS ${KWStyle_DIR} )
 set( ${proj}_DEPENDENCIES "" )
 
 # Include dependent projects, if any.
-TubeTKMacroCheckExternalProjectDependency( ${proj} )
+ExternalProject_Include_Dependencies( ${proj}
+  PROJECT_VAR proj
+  DEPENDS_VAR ${proj}_DEPENDENCIES
+  USE_SYSTEM_VAR USE_SYSTEM_${proj}
+  SUPERBUILD_VAR TubeTK_USE_SUPERBUILD )
 
 if( NOT KWStyle_DIR AND NOT ${USE_SYSTEM_KWSTYLE} )
   set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
   ExternalProject_Add( ${proj}
+    ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_URL}
     GIT_TAG ${${proj}_HASH_OR_TAG}
     DOWNLOAD_DIR ${${proj}_SOURCE_DIR}
@@ -83,7 +80,7 @@ else( NOT KWStyle_DIR AND NOT ${USE_SYSTEM_KWSTYLE} )
     ${KWStyle_DIR}/bin/Debug )
   mark_as_advanced( KWSTYLE_EXECUTABLE )
 
-  TubeTKMacroEmptyExternalProject( ${proj} "${${proj}_DEPENDENCIES}" )
+  ExternalProject_Add_Empty( ${proj} DEPENDS ${${proj}_DEPENDENCIES} )
 endif( NOT KWStyle_DIR AND NOT ${USE_SYSTEM_KWSTYLE} )
 
 list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS -DKWStyle_DIR:FILEPATH=${KWStyle_DIR} )

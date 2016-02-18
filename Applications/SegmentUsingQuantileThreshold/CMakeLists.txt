@@ -46,15 +46,10 @@ set( Boost_USE_STATIC_RUNTIME OFF )
 find_package( Boost 1.49 COMPONENTS system filesystem REQUIRED )
 
 # Fiddle with template-depth (for Boost's accumulators)
-set( USER_CMAKE_CXX_FLAGS "-ftemplate-depth-100" )
-set( CMAKE_CXX_FLAGS
-   "${CMAKE_CXX_FLAGS} ${USER_CMAKE_CXX_FLAGS}" )
-set( CMAKE_CXX_FLAGS_RELEASE
-  "${CMAKE_CXX_FLAGS_RELEASE} ${USER_CMAKE_CXX_FLAGS}" )
-set( CMAKE_CXX_FLAGS_DEBUG
-  "${CMAKE_CXX_FLAGS_DEBUG} ${USER_CMAKE_CXX_FLAGS}" )
-set( CMAKE_CXX_FLAGS_RELWITHDEBINFO
-  "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} ${USER_CMAKE_CXX_FLAGS}" )
+tubetk_append_if_absent(CMAKE_CXX_FLAGS "-ftemplate-depth-100")
+tubetk_append_if_absent(CMAKE_CXX_FLAGS_RELEASE "-ftemplate-depth-100")
+tubetk_append_if_absent(CMAKE_CXX_FLAGS_DEBUG "-ftemplate-depth-100")
+tubetk_append_if_absent(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-ftemplate-depth-100")
 
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}

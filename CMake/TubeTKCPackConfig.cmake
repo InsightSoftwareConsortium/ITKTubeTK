@@ -32,8 +32,10 @@ endif( TubeTK_USE_CTK )
 file( GLOB_RECURSE SEM_BINARIES "${GenerateCLP_DIR}/bin/lib*" )
 file( GLOB_RECURSE JsonCpp_BINARIES "${JsonCpp_DIR}/lib/lib*" )
 list( APPEND TubeTK_SUPPORT_BINARIES
-  ${SEM_BINARIES} ${CTK_BINARIES} ${VTK_BINARIES} ${ITK_BINARIES}
-  ${JsonCpp_BINARIES} )
+  ${SEM_BINARIES} ${CTK_BINARIES} ${VTK_BINARIES} ${ITK_BINARIES} )
+if( TubeTK_USE_JsonCpp )
+  list( APPEND TubeTK_SUPPORT_BINARIES ${JsonCpp_BINARIES} )
+endif( TubeTK_USE_JsonCpp )
 install( FILES ${TubeTK_SUPPORT_BINARIES}
   DESTINATION lib )
 
