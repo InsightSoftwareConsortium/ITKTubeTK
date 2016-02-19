@@ -90,6 +90,7 @@ if( TubeTK_BUILD_APPLICATIONS )
   # Expose the TubeTK_BUILD_* variables to Superbuild
   file( GLOB_RECURSE TubeTK_modules_files "${TubeTK_SOURCE_DIR}/TubeTKModules.cmake" )
   foreach( f ${TubeTK_modules_files} )
+    ExternalProject_Message( ${PROJECT_NAME} "Including ${f}" )
     include( ${f} )
   endforeach( f ${TubeTK_modules_files} )
 endif( TubeTK_BUILD_APPLICATIONS )
