@@ -54,6 +54,7 @@ macro( TubeTKMacroAddModules )
   # Add Build all modules option
   option( TubeTK_BUILD_ALL_MODULES "Build all TubeTK modules or not" ON )
   mark_as_advanced( TubeTK_BUILD_ALL_MODULES )
+  mark_as_superbuild( TubeTK_BUILD_ALL_MODULES )
 
   # Add option for each module
   if( MY_TubeTK_MODULES )
@@ -65,6 +66,7 @@ macro( TubeTKMacroAddModules )
         TubeTK_BUILD_${module} "Build ${module} or not. This does not take module dependencies into account." OFF
          "NOT TubeTK_BUILD_ALL_MODULES" ON )
       mark_as_advanced( TubeTK_BUILD_${module} )
+      mark_as_superbuild( TubeTK_BUILD_${module} )
 
       if( TubeTK_BUILD_${module} )
         list( APPEND tubetk_modules ${CMAKE_CURRENT_SOURCE_DIR}/${module} )
