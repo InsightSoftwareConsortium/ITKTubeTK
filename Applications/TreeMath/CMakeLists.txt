@@ -20,7 +20,7 @@
 # limitations under the License.
 #
 ############################################################################
-set( MODULE_NAME FillGapsInTubeTree )
+set( MODULE_NAME TreeMath )
 project( ${MODULE_NAME} )
 
 if( NOT TubeTK_SOURCE_DIR )

@@ -23,10 +23,9 @@
 
 #include "metaScene.h"
 
-#include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 #include "tubeMacro.h"
-#include "FillGapsInTubeTreeCLP.h"
+#include "TreeMathCLP.h"
 
 #include "itkGroupSpatialObject.h"
 #include "itkSpatialObjectReader.h"
@@ -34,7 +33,8 @@
 #include "itkVesselTubeSpatialObject.h"
 #include "itkNumericTraits.h"
 
-#include <itkTimeProbesCollectorBase.h>
+#include <metaCommand.h>
+
 
 template< unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
@@ -44,9 +44,9 @@ void InterpolatePath(
   typename itk::VesselTubeSpatialObject< VDimension >::TubePointType *parentNearestPoint,
   typename itk::VesselTubeSpatialObject< VDimension >::TubePointType *childEndPoint,
   typename itk::VesselTubeSpatialObject< VDimension >::PointListType &newTubePoints,
-  std::string InterpolationMethod )
+  char InterpolationMethod )
 {
-  if( InterpolationMethod == "Straight_Line" )
+  if( InterpolationMethod == 'S' )
     {
     newTubePoints.push_back( *parentNearestPoint );
     }
@@ -55,7 +55,7 @@ void InterpolatePath(
 
 template< unsigned int VDimension >
 void FillGap( typename itk::GroupSpatialObject< VDimension >::Pointer &pTubeGroup,
-             std::string InterpolationMethod )
+             char InterpolationMethod )
 {
   //typedefs
   typedef itk::GroupSpatialObject< VDimension >         TubeGroupType;
@@ -155,123 +155,104 @@ void FillGap( typename itk::GroupSpatialObject< VDimension >::Pointer &pTubeGrou
 }
 
 template< unsigned int VDimension >
-int DoIt( int argc, char * argv[] )
+int DoIt( MetaCommand & command )
 {
-  PARSE_ARGS;
-
-  // Ensure that the input image dimension is valid
-  // We only support 2D and 3D Images due to the
-  // limitation of itkTubeSpatialObject
   if ( VDimension != 2 && VDimension != 3 )
     {
     tube::ErrorMessage(
       "Error: Only 2D and 3D data is currently supported.");
     return EXIT_FAILURE;
     }
-  // The timeCollector to perform basic profiling of algorithmic components
-  itk::TimeProbesCollectorBase timeCollector;
 
-  // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter progressReporter( "FillGapsInTubeTree",
-    CLPProcessInformation );
-  progressReporter.Start();
-  float progress = 0;
+  typename itk::GroupSpatialObject< VDimension >::Pointer inputTubes;
 
-  timeCollector.Start( "Loading Input TRE File" );
+  MetaCommand::OptionVector parsed = command.GetParsedOptions();
+
   // Load TRE File
   tubeStandardOutputMacro( << "\n>> Loading TRE File" );
 
   typedef itk::SpatialObjectReader< VDimension > TubesReaderType;
   typename TubesReaderType::Pointer tubeFileReader = TubesReaderType::New();
-
   try
     {
-    tubeFileReader->SetFileName( inputTree.c_str() );
+    tubeFileReader->SetFileName( command.GetValueAsString(
+    "infile" ).c_str() );
     tubeFileReader->Update();
     }
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Error loading TRE File: "
       + std::string( err.GetDescription() ) );
-    timeCollector.Report();
     return EXIT_FAILURE;
     }
 
-  timeCollector.Stop( "Loading Input TRE File" );
-  progress = 0.25;
-
-  timeCollector.Start( "Filling gaps in input tree" );
-  tubeStandardOutputMacro( << "\n>> Filling gaps in input tree" );
-
-  typename itk::GroupSpatialObject< VDimension >::Pointer inputTubes;
   inputTubes = tubeFileReader->GetGroup();
-  FillGap< VDimension >( inputTubes, InterpolationMethod );
+  inputTubes->ComputeObjectToWorldTransform();
 
-  timeCollector.Stop( "Filling gaps in input tree" );
-  progress = 0.75;
-
-  timeCollector.Start( "Writing the updates TRE file." );
-
-  typedef itk::SpatialObjectWriter< VDimension > TubeWriterType;
-  typename TubeWriterType::Pointer tubeWriter = TubeWriterType::New();
-
-  try
+  MetaCommand::OptionVector::const_iterator it = parsed.begin();
+  while( it != parsed.end() )
     {
-    tubeWriter->SetFileName( outputTree.c_str() );
-    tubeWriter->SetInput( tubeFileReader->GetGroup() );
-    tubeWriter->Update();
+    if( it->name == "Write" )
+      {
+      tubeStandardOutputMacro( << "\n>> Writing TRE File" );
+
+      typedef itk::SpatialObjectWriter< VDimension > TubeWriterType;
+      typename TubeWriterType::Pointer tubeWriter = TubeWriterType::New();
+      try
+        {
+        tubeWriter->SetFileName( command.GetValueAsString(
+        *it, "filename" ).c_str() );
+        tubeWriter->SetInput( inputTubes );
+        tubeWriter->Update();
+        }
+      catch( itk::ExceptionObject & err )
+        {
+        tube::ErrorMessage( "Error writing TRE file: "
+          + std::string( err.GetDescription() ) );
+        return EXIT_FAILURE;
+        }
+      }
+    else if( it->name == "FillGapsInTubeTree" )
+      {
+      tubeStandardOutputMacro( << "\n>> Filling gaps in input tree" );
+      FillGap< VDimension >( inputTubes, command.GetValueAsString
+        ( *it, "InterpolationMethod" ).c_str()[0] );
+      }
+    ++it;
     }
-  catch( itk::ExceptionObject & err )
-    {
-    tube::ErrorMessage( "Error writing TRE file: "
-      + std::string( err.GetDescription() ) );
-    timeCollector.Report();
-    return EXIT_FAILURE;
-    }
-
-  timeCollector.Stop( "Writing the updates TRE file." );
-
-  progress = 1.0;
-  progressReporter.Report( progress );
-  progressReporter.End();
-
-  timeCollector.Report();
   return EXIT_SUCCESS;
 }
 
 int main( int argc, char * argv[] )
 {
-  try
+  //PARSE_ARGS;
+  MetaCommand command;
+
+  command.SetName( "TreeMath" );
+  command.SetVersion( "1.0" );
+  command.SetAuthor( "Sumedha Singla" );
+  command.SetDescription( "Perform several filters on a tube tree." );
+
+  command.AddField( "infile", "infile filename",
+  MetaCommand::STRING, MetaCommand::DATA_IN );
+
+  command.SetOption( "Write", "w", false,
+    "Writes current tubes to the designated file." );
+  command.AddOptionField( "Write", "filename", MetaCommand::STRING, true,
+    "", "Output filename", MetaCommand::DATA_OUT );
+
+  command.SetOption( "FillGapsInTubeTree", "f", false,
+    "Connects the parent and child tube if they have a gap inbetween,"
+    " by interpolating the path inbetween." );
+  command.AddOptionField( "FillGapsInTubeTree", "InterpolationMethod",
+    MetaCommand::STRING, true, "",
+    "[S]traight Line, [L]Linear Interpolation, [C]urve Fitting, [M]inimal Path",
+    MetaCommand::DATA_IN );
+
+  if( !command.Parse( argc, argv ) )
     {
-    PARSE_ARGS;
-    }
-  catch ( const std::exception & err )
-    {
-    tube::ErrorMessage( err.what() );
     return EXIT_FAILURE;
     }
-  PARSE_ARGS;
 
-  MetaScene *mScene = new MetaScene;
-  mScene->Read( inputTree.c_str() );
-  if( mScene->GetObjectList()->empty() )
-    {
-    tubeWarningMacro( << "Input TRE file has no spatial objects" );
-    return EXIT_SUCCESS;
-    }
-
-  switch( mScene->GetObjectList()->front()->NDims() )
-    {
-    case 2:
-      return DoIt<2>( argc, argv );
-      break;
-
-    case 3:
-      return DoIt<3>( argc, argv );
-      break;
-
-    default:
-      tubeErrorMacro(<< "Error: Only 2D and 3D data is currently supported.");
-      return EXIT_FAILURE;
-    }
+  return DoIt< 3 >( command );
 }

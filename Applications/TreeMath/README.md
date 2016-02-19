@@ -1,45 +1,26 @@
-TubeTK FillGapsInTubeTree Application
+TubeTK TreeMath Application
 =============================================
 
 #### Overview:
 
-Given an input tree, this application will interpolate the gap between parent and children in the tree.
+Given an input tree, this application will will perform different functions on tree like
+interpolating the gap between parent and children in the tree.
 
 #### Usage:
 
 ```
-   FillGapsInTubeTree  [--method <std::string>]
-              [--xml] [--echo]
-              [--][--version] [-h]
-              <std::string> <std::string>
-
-
-Where:
-
-   -method <Std::string>
-     (required) The method use for interpolating the path to fill the gap in tube-tree.
-
-   --xml
-     Produce xml description of command line arguments (default: 0)
-
-   --echo
-     Echo the command line arguments (default: 0)
-
-   --,  --ignore_rest
-     Ignores the rest of the labeled arguments following this flag.
-
-   --version
-     Displays version information and exits.
-
-   -h,  --help
-     Displays usage information and exits.
-
-   <std::string>
-     (required)  Input tre file containg tube structure in the form of a tree.
-
-   <std::string>
-     (required)  Output tre file
-
+	 TreeMath
+   Option infile is required but not defined
+ Command tags:
+   [ -w < filename > ]
+      = Writes current tubes to the designated file.
+        With: filename = Output filename
+   [ -f < InterpolationMethod > ]
+      = Connects the parent and child tube if they have a gap inbetween, by interpolating the path inbetween.
+        With: InterpolationMethod = [S]traight Line, [L]Linear Interpolation, [C]urve Fitting, [M]inimal Path
+ Command fields:
+   < infile >
+      = infile filename
 
    Description: Return tube tree, where there is no gap between the parent and child.
 
@@ -49,7 +30,7 @@ Where:
 
 ```
 
-#### Algorithm:
+#### Algorithm for filling gap:
 
 1. **Get the input tube tree:**
  The first step is to read the input tube-tree. The input tube-tree is a tre file, usually the output of

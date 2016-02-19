@@ -54,7 +54,6 @@ set( TubeTK_${proj}_MODULES
   EnhanceTubesUsingDiscriminantAnalysis
   EnhanceUsingDiscriminantAnalysis
   EnhanceUsingNJetDiscriminantAnalysis
-  FillGapsInTubeTree
   ImageMath
   MergeAdjacentImages
   MergeTubeGraphs
@@ -72,7 +71,8 @@ set( TubeTK_${proj}_MODULES
   SegmentUsingOtsuThreshold
   ShrinkImage
   SimulateAcquisitionArtifactsUsingPrior
-  TubeMath )
+  TubeMath
+  TreeMath )
 
 set( TubeTK_${proj}_ImageViewer_MODULES "" )
 if( TubeTK_BUILD_IMAGE_VIEWER )
