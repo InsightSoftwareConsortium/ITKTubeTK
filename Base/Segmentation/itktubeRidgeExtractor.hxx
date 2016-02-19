@@ -1627,7 +1627,7 @@ RidgeExtractor<TInputImage>
 
     // Local 1D Ridge
     m_DataSpline->Extreme( pX, &val, ImageDimension-1, lN );
-    for( int i=0; i<ImageDimension; i++ )
+    for( unsigned int i=0; i<ImageDimension; i++ )
       {
       newX[i] = pX[i];
       }
@@ -1827,7 +1827,7 @@ RidgeExtractor<TInputImage>
     TubePointType tmpPoint;
     typename TubePointType::PointType tubeX;
     typename TubePointType::VectorType tubeV;
-    for( int i=0; i<ImageDimension; i++ )
+    for( unsigned int i=0; i<ImageDimension; i++ )
       {
       tubeX[i] = lX[i];
       lT[i] = m_XHEVect( i, ImageDimension-1 );
@@ -1863,7 +1863,7 @@ RidgeExtractor<TInputImage>
       {
       std::cout << "DynamicScale = " << GetScale() << std::endl;
       }
-    for( int i=0; i<ImageDimension; i++ )
+    for( unsigned int i=0; i<ImageDimension; i++ )
       {
       lX[i] = ( lX[i] + newX[i] ) / 2;
       }

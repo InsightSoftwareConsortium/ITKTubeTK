@@ -379,9 +379,9 @@ AnisotropicDiffusiveRegistrationFunction
       ScalarDerivativeType deformationComponentFirstOrderDerivative
           = deformationComponentFirstOrderDerivativeRegions[term][i].Get();
       itk::Vector< double, ImageDimension > multVector(0.0);
-      for( int row = 0; row < ImageDimension; row++ )
+      for( unsigned int row = 0; row < ImageDimension; row++ )
         {
-        for( int col = 0; col < ImageDimension; col++ )
+        for( unsigned int col = 0; col < ImageDimension; col++ )
           {
           multVector[row]
               += diffusionTensor(row,col) * deformationComponentFirstOrderDerivative[col];

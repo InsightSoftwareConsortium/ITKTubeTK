@@ -60,8 +60,10 @@ set_directory_properties(PROPERTIES COMPILE_DEFINITIONS "${_definitions}")
 # Check if ITK support building external module.
 set( ITK_WITH_EXTERNAL_MODULE_SUPPORT 1 )
 set( _reason )
-if( NOT ITK_VERSION VERSION_GREATER "4.8.1" )
-  set( _reason "ITK version >= 4.9 is needed and current version is ${ITK_VERSION}" )
+if( ITK_VERSION VERSION_LESS "4.10.0" )
+  # Version of ITK with at least commit InsightSoftwareConsortium/ITK@a766d34 is required
+  # to support building of TubeTK.
+  set( _reason "ITK version >= 4.10 is needed and current version is ${ITK_VERSION}" )
   set( ITK_WITH_EXTERNAL_MODULE_SUPPORT 0 )
 endif()
 if( NOT EXISTS ${ITK_CMAKE_DIR}/ITKModuleMacros.cmake )

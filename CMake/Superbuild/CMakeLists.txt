@@ -83,6 +83,19 @@ if( APPLE )
     -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET} )
 endif( APPLE )
 
+#
+# Add applications and modules build options
+#
+if( TubeTK_BUILD_APPLICATIONS )
+  # Expose the TubeTK_BUILD_* variables to Superbuild
+  file( GLOB_RECURSE TubeTK_modules_files "${TubeTK_SOURCE_DIR}/TubeTKModules.cmake" )
+  foreach( f ${TubeTK_modules_files} )
+    ExternalProject_Message( ${PROJECT_NAME} "Including ${f}" )
+    include( ${f} )
+  endforeach( f ${TubeTK_modules_files} )
+endif( TubeTK_BUILD_APPLICATIONS )
+
+
 macro(list_conditional_append cond list)
   if(${cond})
     list(APPEND ${list} ${ARGN})
@@ -124,6 +137,12 @@ list_conditional_append( TubeTK_USE_PYTHON
   TubeTK_EXTERNAL_PROJECTS_ARGS
     -DTubeTK_USE_NUMPY:BOOL=${TubeTK_USE_NUMPY}
     -DTubeTK_USE_PYQTGRAPH:BOOL=${TubeTK_USE_PYQTGRAPH} )
+
+# Append TubeTK_BUILD_MODULE_DEFAULT is has been specified by the user
+if( DEFINED TubeTK_BUILD_MODULE_DEFAULT )
+  list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS
+    -DTubeTK_BUILD_MODULE_DEFAULT:BOOL=${TubeTK_BUILD_MODULE_DEFAULT} )
+endif()
 
 # Check dependencies.
 set( EXTERNAL_PROJECT_DIR ${TubeTK_SOURCE_DIR}/CMake/Superbuild )

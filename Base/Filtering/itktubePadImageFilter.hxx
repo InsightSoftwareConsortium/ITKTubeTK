@@ -90,7 +90,7 @@ PadImageFilter<TInputImage, TOutputImage>
     // increase the size of the output by the size of the kernel
     SizeType size;
     IndexType idx;
-    for( int i=0; i<ImageDimension; i++ )
+    for( unsigned int i=0; i<ImageDimension; i++ )
       {
       long s1 = 0;
       if( m_GreatestPrimeFactor > 1 )
@@ -173,12 +173,12 @@ PadImageFilter<TInputImage, TOutputImage>
   pad0->SetNumberOfThreads( this->GetNumberOfThreads() );
   if( m_PadMethod != NO_PADDING )
     {
-    for( int i=0; i<ImageDimension; i++ )
+    for( unsigned int i=0; i<ImageDimension; i++ )
       {
       s[i] = ir0.GetIndex()[i] - or0.GetIndex()[i];
       }
     pad0->SetPadLowerBound( s );
-    for( int i=0; i<ImageDimension; i++ )
+    for( unsigned int i=0; i<ImageDimension; i++ )
       {
       s[i] = or0.GetSize()[i] -
         ( ir0.GetIndex()[i] - or0.GetIndex()[i] + ir0.GetSize()[i]);
