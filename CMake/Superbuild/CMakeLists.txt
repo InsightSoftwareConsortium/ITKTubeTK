@@ -138,6 +138,12 @@ list_conditional_append( TubeTK_USE_PYTHON
     -DTubeTK_USE_NUMPY:BOOL=${TubeTK_USE_NUMPY}
     -DTubeTK_USE_PYQTGRAPH:BOOL=${TubeTK_USE_PYQTGRAPH} )
 
+# Append TubeTK_BUILD_MODULE_DEFAULT is has been specified by the user
+if( DEFINED TubeTK_BUILD_MODULE_DEFAULT )
+  list( APPEND TubeTK_EXTERNAL_PROJECTS_ARGS
+    -DTubeTK_BUILD_MODULE_DEFAULT:BOOL=${TubeTK_BUILD_MODULE_DEFAULT} )
+endif()
+
 # Check dependencies.
 set( EXTERNAL_PROJECT_DIR ${TubeTK_SOURCE_DIR}/CMake/Superbuild )
 
