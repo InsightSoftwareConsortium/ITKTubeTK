@@ -112,7 +112,7 @@ int DoIt( int argc, char * argv[] )
       reger->SetInitialMethodEnum( RegistrationType::INIT_WITH_LANDMARKS );
       }
     }
-  if( skipEvolutionary )
+  if( skipInitialRandomSearch )
     {
     reger->SetUseEvolutionaryOptimization( false ) ;
     }
