@@ -83,6 +83,18 @@ if( APPLE )
     -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET} )
 endif( APPLE )
 
+#
+# Add applications and modules build options
+#
+if( TubeTK_BUILD_APPLICATIONS )
+  # Expose the TubeTK_BUILD_* variables to Superbuild
+  file( GLOB_RECURSE TubeTK_modules_files "${TubeTK_SOURCE_DIR}/TubeTKModules.cmake" )
+  foreach( f ${TubeTK_modules_files} )
+    include( ${f} )
+  endforeach( f ${TubeTK_modules_files} )
+endif( TubeTK_BUILD_APPLICATIONS )
+
+
 macro(list_conditional_append cond list)
   if(${cond})
     list(APPEND ${list} ${ARGN})

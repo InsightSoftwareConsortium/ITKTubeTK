@@ -445,14 +445,6 @@ option( TubeTK_USE_SUPERBUILD
 mark_as_advanced( TubeTK_USE_SUPERBUILD )
 
 if( TubeTK_USE_SUPERBUILD )
-  if( TubeTK_BUILD_APPLICATIONS )
-    # Expose the TubeTK_BUILD_* variables to Superbuild
-    file( GLOB_RECURSE TubeTK_modules_files "TubeTKModules.cmake" )
-    foreach( f ${TubeTK_modules_files} )
-      include( ${f} )
-    endforeach( f ${TubeTK_modules_files} )
-  endif( TubeTK_BUILD_APPLICATIONS )
-
   add_subdirectory( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/Superbuild" )
   return()
 endif( TubeTK_USE_SUPERBUILD )
