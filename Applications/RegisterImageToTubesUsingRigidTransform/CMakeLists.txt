@@ -44,12 +44,8 @@ include( ${ITK_USE_FILE} )
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 
-set(EXECUTABLE_NAME ${MODULE_NAME}${TubeTK_SEM_EXECUTABLE_NAME_SUFFIX})
 SEMMacroBuildCLI(
-  NAME ${EXECUTABLE_NAME}
-  ${TubeTK_SEM_${TubeTK_SEM_${TubeTK_SEM_DISABLE_DEFAULT_CXX_FILE}}}
-  CLI_XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xml
-  ADDITIONAL_SRCS ${MODULE_NAME}.cxx
+  NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ITKIOSpatialObjects ITKIOMeta
@@ -57,12 +53,8 @@ SEMMacroBuildCLI(
     TubeUSTK
   INSTALL_RUNTIME_DESTINATION bin )
 
-
 SEMMacroBuildCLI(
-  NAME ComputeImageToTubeRigidMetricImage${TubeTK_SEM_EXECUTABLE_NAME_SUFFIX}
-  ${TubeTK_SEM_${TubeTK_SEM_${TubeTK_SEM_DISABLE_DEFAULT_CXX_FILE}}}
-  CLI_XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/ComputeImageToTubeRigidMetricImage.xml
-  ADDITIONAL_SRCS ComputeImageToTubeRigidMetricImage.cxx
+  NAME ComputeImageToTubeRigidMetricImage
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ITKIOSpatialObjects ITKIOMeta
@@ -70,10 +62,7 @@ SEMMacroBuildCLI(
   INSTALL_RUNTIME_DESTINATION bin )
 
 SEMMacroBuildCLI(
-  NAME ExtractMetricImageSlice${TubeTK_SEM_EXECUTABLE_NAME_SUFFIX}
-  ${TubeTK_SEM_${TubeTK_SEM_${TubeTK_SEM_DISABLE_DEFAULT_CXX_FILE}}}
-  CLI_XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/ExtractMetricImageSlice.xml
-  ADDITIONAL_SRCS ExtractMetricImageSlice.cxx
+  NAME ExtractMetricImageSlice
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ITKIOSpatialObjects ITKIOMeta
