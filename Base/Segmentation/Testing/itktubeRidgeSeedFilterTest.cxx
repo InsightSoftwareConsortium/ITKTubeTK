@@ -105,7 +105,15 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   filter->SetTrainClassifier( true );
   filter->SetNumberOfLDABasisToUseAsFeatures( 1 );
   filter->SetNumberOfPCABasisToUseAsFeatures( 2 );
-  filter->Update();
+  std::cout << "Update started." << std::endl;
+  try
+    {
+    filter->Update();
+    }
+  catch( ... )
+    {
+    std::cout << "Error in RidgeSeedFilter update." << std::endl;
+    }
   std::cout << "Update done." << std::endl;
 
   filter->ClassifyImages();
@@ -115,9 +123,8 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     FeatureImageWriterType::New();
   feature2ImageWriter->SetFileName( argv[5] );
   feature2ImageWriter->SetUseCompression( true );
-  feature2ImageWriter->SetInput( filter->GetClassProbabilityDifferenceForInput( 0 ) );
-    //GetRidgeFeatureGenerator()->
-    //GetFeatureImage( 0 ) );
+  feature2ImageWriter->SetInput( filter->GetRidgeFeatureGenerator()
+    ->GetFeatureImage( 0 ) );
   try
     {
     feature2ImageWriter->Update();

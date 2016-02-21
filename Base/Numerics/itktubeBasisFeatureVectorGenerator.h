@@ -125,7 +125,7 @@ public:
   virtual typename FeatureImageType::Pointer GetFeatureImage(
                                        unsigned int fNum ) const;
 
-  virtual void GenerateBasis( void );
+  virtual void Update( void );
 
   virtual unsigned int      GetNumberOfFeatures( void ) const;
 

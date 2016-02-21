@@ -101,7 +101,8 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   filter->SetFirstScales( scales );
   filter->SetSecondScales( scales2 );
   filter->SetRidgeScales( scales2 );
-  filter->UpdateWhitenStatistics();
+  filter->SetUpdateWhitenStatisticsOnUpdate( true );
+  filter->Update();
 
   BasisFilterType::Pointer basisFilter = BasisFilterType::New();
   basisFilter->SetInputFeatureVectorGenerator( filter.GetPointer() );
@@ -113,7 +114,8 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   basisFilter->AddObjectId( bkgId );
   basisFilter->SetNumberOfLDABasisToUseAsFeatures( 1 );
   basisFilter->SetNumberOfPCABasisToUseAsFeatures( 3 );
-  basisFilter->GenerateBasis();
+  basisFilter->SetUpdateWhitenStatisticsOnUpdate( true );
+  basisFilter->Update();
 
   basisFilter->SetLabelMap( NULL );
 

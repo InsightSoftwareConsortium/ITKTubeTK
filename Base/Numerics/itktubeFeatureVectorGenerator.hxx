@@ -51,6 +51,7 @@ FeatureVectorGenerator< TImage >
 {
   m_InputImageList.clear();
 
+  m_UpdateWhitenStatisticsOnUpdate = false;
   m_WhitenMean.clear();
   m_WhitenStdDev.clear();
 }
@@ -91,70 +92,17 @@ FeatureVectorGenerator< TImage >
 template< class TImage >
 void
 FeatureVectorGenerator< TImage >
-::UpdateWhitenStatistics( void )
+::SetUpdateWhitenStatisticsOnUpdate( bool updateOnUpdate )
 {
-  const unsigned int numFeatures = this->GetNumberOfFeatures();
+  m_UpdateWhitenStatisticsOnUpdate = updateOnUpdate;
+}
 
-  m_WhitenMean.resize( numFeatures );
-  m_WhitenStdDev.resize( numFeatures );
-  ValueListType delta;
-  delta.resize( numFeatures );
-  ValueListType imMean;
-  imMean.resize( numFeatures );
-  ValueListType imStdDev;
-  imStdDev.resize( numFeatures );
-  for( unsigned int i = 0; i < numFeatures; i++ )
-    {
-    m_WhitenMean[i] = 0;
-    m_WhitenStdDev[i] = 1;
-    delta[i] = 0;
-    imMean[i] = 0;
-    imStdDev[i] = 0;
-    }
-  unsigned int imCount = 0;
-
-  typedef itk::ImageRegionIteratorWithIndex< TImage >
-    ImageIteratorType;
-  ImageIteratorType itIm( m_InputImageList[0],
-    m_InputImageList[0]->GetLargestPossibleRegion() );
-
-  IndexType indx;
-  double imVal;
-  FeatureVectorType fv;
-  while( !itIm.IsAtEnd() )
-    {
-    indx = itIm.GetIndex();
-    ++imCount;
-    fv = this->GetFeatureVector( indx );
-    for( unsigned int i = 0; i < numFeatures; i++ )
-      {
-      imVal = fv[i];
-      delta[i] = imVal - imMean[i];
-      imMean[i] += delta[i] / imCount;
-      imStdDev[i] += delta[i] * ( imVal - imMean[i] );
-      }
-    ++itIm;
-    }
-  if( imCount > 1 )
-    {
-    for( unsigned int i = 0; i < numFeatures; i++ )
-      {
-      imStdDev[i] = vcl_sqrt( imStdDev[i] / ( imCount - 1 ) );
-      }
-    }
-  else
-    {
-    for( unsigned int i = 0; i < numFeatures; i++ )
-      {
-      imStdDev[i] = 0;
-      }
-    }
-
-  for( unsigned int i = 0; i < numFeatures; i++ )
-    {
-    m_WhitenMean[i] = imMean[i];
-    m_WhitenStdDev[i] = imStdDev[i];
-    }
+template< class TImage >
+bool
+FeatureVectorGenerator< TImage >
+::GetUpdateWhitenStatisticsOnUpdate( void )
+{
+  return m_UpdateWhitenStatisticsOnUpdate;
 }
 
 
@@ -332,11 +280,90 @@ FeatureVectorGenerator< TImage >
     }
   else
     {
-    throw;
-    return NULL;
+    throw itk::ExceptionObject( "Feature does not exist." );
     }
 }
 
+
+template< class TImage >
+void
+FeatureVectorGenerator< TImage >::
+Update( void )
+{
+  if( m_UpdateWhitenStatisticsOnUpdate )
+    {
+    this->UpdateWhitenStatistics();
+    }
+}
+
+template< class TImage >
+void
+FeatureVectorGenerator< TImage >::
+UpdateWhitenStatistics( void )
+{
+  const unsigned int numFeatures = this->GetNumberOfFeatures();
+
+  m_WhitenMean.resize( numFeatures );
+  m_WhitenStdDev.resize( numFeatures );
+  ValueListType delta;
+  delta.resize( numFeatures );
+  ValueListType imMean;
+  imMean.resize( numFeatures );
+  ValueListType imStdDev;
+  imStdDev.resize( numFeatures );
+  for( unsigned int i = 0; i < numFeatures; i++ )
+    {
+    m_WhitenMean[i] = 0;
+    m_WhitenStdDev[i] = 1;
+    delta[i] = 0;
+    imMean[i] = 0;
+    imStdDev[i] = 0;
+    }
+  unsigned int imCount = 0;
+
+  typedef itk::ImageRegionIteratorWithIndex< TImage >
+    ImageIteratorType;
+  ImageIteratorType itIm( m_InputImageList[0],
+    m_InputImageList[0]->GetLargestPossibleRegion() );
+
+  IndexType indx;
+  double imVal;
+  FeatureVectorType fv;
+  while( !itIm.IsAtEnd() )
+    {
+    indx = itIm.GetIndex();
+    ++imCount;
+    fv = this->GetFeatureVector( indx );
+    for( unsigned int i = 0; i < numFeatures; i++ )
+      {
+      imVal = fv[i];
+      delta[i] = imVal - imMean[i];
+      imMean[i] += delta[i] / imCount;
+      imStdDev[i] += delta[i] * ( imVal - imMean[i] );
+      }
+    ++itIm;
+    }
+  if( imCount > 1 )
+    {
+    for( unsigned int i = 0; i < numFeatures; i++ )
+      {
+      imStdDev[i] = vcl_sqrt( imStdDev[i] / ( imCount - 1 ) );
+      }
+    }
+  else
+    {
+    for( unsigned int i = 0; i < numFeatures; i++ )
+      {
+      imStdDev[i] = 1;
+      }
+    }
+
+  for( unsigned int i = 0; i < numFeatures; i++ )
+    {
+    m_WhitenMean[i] = imMean[i];
+    m_WhitenStdDev[i] = imStdDev[i];
+    }
+}
 
 template< class TImage >
 void

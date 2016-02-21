@@ -89,7 +89,7 @@ public:
   virtual typename FeatureImageType::Pointer GetFeatureImage(
     unsigned int fNum ) const;
 
-  void GenerateData( void );
+  virtual void Update( void );
 
   itkSetMacro( UseIntensityOnly, bool );
   itkGetMacro( UseIntensityOnly, bool );
@@ -98,6 +98,8 @@ protected:
 
   RidgeFFTFeatureVectorGenerator( void );
   virtual ~RidgeFFTFeatureVectorGenerator( void );
+
+  virtual void UpdateWhitenStatistics( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 

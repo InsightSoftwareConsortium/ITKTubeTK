@@ -74,7 +74,52 @@ RidgeFFTFeatureVectorGenerator< TImage >
 template< class TImage >
 void
 RidgeFFTFeatureVectorGenerator< TImage >
-::GenerateData( void )
+::UpdateWhitenStatistics( void )
+{
+  int numFeatureImages = m_FeatureImageList.size();
+
+  ValueListType mean;
+  mean.resize( numFeatureImages );
+  ValueListType stdDev;
+  stdDev.resize( numFeatureImages );
+
+  typedef ImageRegionIterator< FeatureImageType >  IterType;
+  for( unsigned int i=0; i<numFeatureImages; ++i )
+    {
+    IterType iter( m_FeatureImageList[i],
+      m_FeatureImageList[i]->GetLargestPossibleRegion() );
+    unsigned int count = 0;
+    mean[i] = 0;
+    stdDev[i] = 0;
+    while( ! iter.IsAtEnd() )
+      {
+      double imVal = iter.Get();
+      double delta = imVal - mean[i];
+
+      mean[i] += delta / count;
+      stdDev[i] += delta * ( imVal - mean[i] );
+      ++count;
+      ++iter;
+      }
+
+    if( count > 1 )
+      {
+      stdDev[i] = vcl_sqrt( stdDev[i] / ( count - 1 ) );
+      }
+    else
+      {
+      stdDev[i] = 1;
+      }
+    }
+
+  this->SetWhitenMeans( mean );
+  this->SetWhitenStdDevs( stdDev );
+}
+
+template< class TImage >
+void
+RidgeFFTFeatureVectorGenerator< TImage >
+::Update( void )
 {
   typedef RidgeFFTFilter< TImage > RidgeFilterType;
   typename RidgeFilterType::Pointer ridgeF = RidgeFilterType::New();
@@ -111,6 +156,12 @@ RidgeFFTFeatureVectorGenerator< TImage >
       m_FeatureImageList[feat++] = ridgeF->GetLevelness();
       }
 
+    if( this->GetUpdateWhitenStatisticsOnUpdate() )
+      {
+      this->UpdateWhitenStatistics();
+      }
+
+    std::cout << "Here" << std::endl;
     typename FeatureImageType::RegionType region =
       this->m_InputImageList[0]->GetLargestPossibleRegion();
     while( feat < numFeatures )
@@ -122,6 +173,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
       ++feat;
       }
 
+    std::cout << "Here" << std::endl;
     typedef ImageRegionIterator< FeatureImageType >  IterType;
     std::vector< IterType > iterF( numFeatures );
     for( unsigned int f=0; f<numFeatures; ++f )
@@ -134,9 +186,13 @@ RidgeFFTFeatureVectorGenerator< TImage >
       {
       for( unsigned int f=0; f<numFeaturesPerScale; ++f )
         {
-        iterF[ foFeat + f ].Set( iterF[ f ].Get() );
+        iterF[ foFeat + f ].Set( ( iterF[ f ].Get()
+          - this->GetWhitenMean( foFeat + f) )
+          / this->GetWhitenStdDev( foFeat + f ) );
         }
-      iterF[ foScale ].Set( m_Scales[ 0 ] );
+      iterF[ foScale ].Set( ( m_Scales[ 0 ]
+        - this->GetWhitenMean( foScale) )
+        / this->GetWhitenStdDev( foScale ) );
       for( unsigned int s=1; s<m_Scales.size(); ++s )
         {
         feat = s * numFeaturesPerScale;
@@ -144,10 +200,14 @@ RidgeFFTFeatureVectorGenerator< TImage >
           {
           if( iterF[ feat + f ].Get() > iterF[ foFeat + f ].Get() )
             {
-            iterF[ foFeat + f ].Set( iterF[ feat + f ].Get() );
+            iterF[ foFeat + f ].Set( ( iterF[ feat + f ].Get()
+              - this->GetWhitenMean( foFeat + f) )
+              / this->GetWhitenStdDev( foFeat + f ) );
             if( f == featureForOptimalScale )
               {
-              iterF[ foScale ].Set( m_Scales[ s ] );
+              iterF[ foScale ].Set( ( m_Scales[ s ]
+                - this->GetWhitenMean( foScale) )
+                / this->GetWhitenStdDev( foScale ) );
               }
             }
           }
@@ -180,7 +240,8 @@ RidgeFFTFeatureVectorGenerator< TImage >
       if( s > 0 )
         {
         m_FeatureImageList[feat-1] = FeatureImageType::New();
-        m_FeatureImageList[feat-1]->CopyInformation( this->m_InputImageList[0] );
+        m_FeatureImageList[feat-1]->CopyInformation(
+          this->m_InputImageList[0] );
         m_FeatureImageList[feat-1]->SetRegions( region );
         m_FeatureImageList[feat-1]->Allocate();
 
@@ -199,7 +260,8 @@ RidgeFFTFeatureVectorGenerator< TImage >
       if( s == m_Scales.size() - 1 )
         {
         m_FeatureImageList[feat+1] = FeatureImageType::New();
-        m_FeatureImageList[feat+1]->CopyInformation( this->m_InputImageList[0] );
+        m_FeatureImageList[feat+1]->CopyInformation(
+          this->m_InputImageList[0] );
         m_FeatureImageList[feat+1]->SetRegions( region );
         m_FeatureImageList[feat+1]->Allocate();
 
@@ -225,6 +287,11 @@ RidgeFFTFeatureVectorGenerator< TImage >
       m_FeatureImageList[feat]->SetRegions( region );
       m_FeatureImageList[feat]->Allocate();
       ++feat;
+      }
+
+    if( this->GetUpdateWhitenStatisticsOnUpdate() )
+      {
+      this->UpdateWhitenStatistics();
       }
 
     std::vector< IterType > iterF( numFeatures );

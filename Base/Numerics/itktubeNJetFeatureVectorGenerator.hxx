@@ -142,8 +142,11 @@ NJetFeatureVectorGenerator< TImage >
 
   for( unsigned int i=0; i<numFeatures; ++i )
     {
-    featureVector[i] = ( featureVector[i] - this->GetWhitenMean(i) )
-      / this->GetWhitenStdDev( i );
+    if( this->GetWhitenStdDev( i ) > 0 )
+      {
+      featureVector[i] = ( featureVector[i] - this->GetWhitenMean(i) )
+        / this->GetWhitenStdDev( i );
+      }
     }
 
   return featureVector;
@@ -161,6 +164,13 @@ NJetFeatureVectorGenerator< TImage >
   typename NJetFunctionType::VectorType v;
   typename NJetFunctionType::MatrixType m;
 
+  double fNumMean = this->GetWhitenMean( fNum );
+  double fNumStdDev = this->GetWhitenStdDev( fNum );
+  if( fNumStdDev <= 0 )
+    {
+    fNumMean = 0;
+    fNumStdDev = 1;
+    }
   double val = 0.0;
   unsigned int featureCount = 0;
   for( unsigned int inputImageNum = 0; inputImageNum < numInputImages;
@@ -175,7 +185,7 @@ NJetFeatureVectorGenerator< TImage >
         if( featureCount == fNum )
           {
           return ( njet->EvaluateAtIndex( indx, m_ZeroScales[s] )
-            - this->GetWhitenMean( fNum ) ) / this->GetWhitenStdDev( fNum );
+            - fNumMean ) / fNumStdDev;
           }
         featureCount++;
         }
@@ -192,16 +202,14 @@ NJetFeatureVectorGenerator< TImage >
           {
           if( featureCount == fNum )
             {
-            return ( v[d] - this->GetWhitenMean( fNum ) )
-              / this->GetWhitenStdDev( fNum );
+            return ( v[d] - fNumMean ) / fNumStdDev;
             }
           featureCount++;
           val += v[d]*v[d];
           }
         if( featureCount == fNum )
           {
-          return ( vcl_sqrt( val ) - this->GetWhitenMean( fNum ) )
-              / this->GetWhitenStdDev( fNum );
+          return ( vcl_sqrt( val ) - fNumMean ) / fNumStdDev;
           }
         featureCount++;
         }
@@ -220,16 +228,14 @@ NJetFeatureVectorGenerator< TImage >
           {
           if( featureCount == fNum )
             {
-            return ( m[d][d] - this->GetWhitenMean( fNum ) )
-              / this->GetWhitenStdDev( fNum );
+            return ( m[d][d] - fNumMean ) / fNumStdDev;
             }
           featureCount++;
           val += m[d][d]*m[d][d];
           }
         if( featureCount == fNum )
           {
-          return ( vcl_sqrt( val ) - this->GetWhitenMean( fNum ) )
-            / this->GetWhitenStdDev( fNum );
+          return ( vcl_sqrt( val ) - fNumMean ) / fNumStdDev;
           }
         featureCount++;
         }
@@ -245,28 +251,28 @@ NJetFeatureVectorGenerator< TImage >
           {
           njet->RidgenessAtIndex( indx, m_RidgeScales[s] );
           return ( njet->GetMostRecentRidgeness()
-            - this->GetWhitenMean( fNum ) ) / this->GetWhitenStdDev( fNum );
+            - fNumMean ) / fNumStdDev;
           }
         featureCount++;
         if( featureCount == fNum )
           {
           njet->RidgenessAtIndex( indx, m_RidgeScales[s] );
           return ( njet->GetMostRecentRidgeRoundness()
-            - this->GetWhitenMean( fNum ) ) / this->GetWhitenStdDev( fNum );
+            - fNumMean ) / fNumStdDev;
           }
         featureCount++;
         if( featureCount == fNum )
           {
           njet->RidgenessAtIndex( indx, m_RidgeScales[s] );
           return ( njet->GetMostRecentRidgeCurvature()
-            - this->GetWhitenMean( fNum ) ) / this->GetWhitenStdDev( fNum );
+            - fNumMean ) / fNumStdDev;
           }
         featureCount++;
         if( featureCount == fNum )
           {
           njet->RidgenessAtIndex( indx, m_RidgeScales[s] );
           return ( njet->GetMostRecentRidgeLevelness()
-            - this->GetWhitenMean( fNum ) ) / this->GetWhitenStdDev( fNum );
+            - fNumMean ) / fNumStdDev;
           }
         featureCount++;
         }

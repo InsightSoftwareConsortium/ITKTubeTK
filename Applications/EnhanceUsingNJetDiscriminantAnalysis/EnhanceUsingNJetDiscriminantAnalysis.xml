@@ -73,20 +73,6 @@
       <default></default>
       <longflag>ridgeScales</longflag>
     </double-vector>
-    <double-vector>
-      <name>whitenMeans</name>
-      <label>Whiten Means</label>
-      <description>Whiten means.</description>
-      <default/>
-      <longflag>whitenMeans</longflag>
-    </double-vector>
-    <double-vector>
-      <name>whitenStdDevs</name>
-      <label>Whiten Standard Deviations</label>
-      <description>Whiten standard deviationss.</description>
-      <default/>
-      <longflag>whitenStdDevs</longflag>
-    </double-vector>
     <integer>
       <name>useNumberOfPCABasis</name>
       <description>Maximum number of PCA basis to compute.</description>

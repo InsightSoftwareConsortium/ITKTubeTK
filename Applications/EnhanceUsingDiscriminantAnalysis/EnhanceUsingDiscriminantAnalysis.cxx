@@ -153,7 +153,8 @@ int DoIt( int argc, char * argv[] )
         useNumberOfLDABasis );
       }
 
-    basisGenerator->GenerateBasis();
+    basisGenerator->SetUpdateWhitenStatisticsOnUpdate( true );
+    basisGenerator->Update();
 
     timeCollector.Stop( "Update" );
     }
