@@ -34,11 +34,6 @@
 
 #include "CropTubesCLP.h"
 
-#include <vtkCubeSource.h>
-#include <vtkNew.h>
-#include <vtkPolyDataWriter.h>
-#include <vtkSmartPointer.h>
-
 template< unsigned int DimensionT >
 bool IsInside( itk::Point< double, DimensionT > pointPos, double tubeRadius,
   itk::Point< double, DimensionT > boxPos,
@@ -94,39 +89,6 @@ bool IsInside( itk::Point< double, DimensionT > pointPos, double tubeRadius,
       }
     }
   return false;
-}
-
-template< unsigned int DimensionT >
-void WriteBox( itk::Point< double, DimensionT > boxPos,
-  itk::Vector< double, DimensionT > boxSize,
-  std::string boxFileName )
-{
-  if( DimensionT == 3 )
-    {
-    vtkSmartPointer<vtkCubeSource> cubeSource =
-      vtkSmartPointer<vtkCubeSource>::New();
-    cubeSource->SetBounds(
-      -1 * ( boxPos[0] + boxSize[0] ), -1 * boxPos[0],
-      -1 * ( boxPos[1] + boxSize[1] ), -1 * boxPos[1],
-      boxPos[2], ( boxPos[2] + boxSize[2] ) );
-    vtkNew<vtkPolyDataWriter> writer;
-    writer->SetFileName( boxFileName.c_str() );
-    writer->SetInputConnection( cubeSource->GetOutputPort() );
-    writer->Write();
-    }
-  else
-    {
-    vtkSmartPointer< vtkCubeSource > cubeSource =
-      vtkSmartPointer< vtkCubeSource >::New();
-    cubeSource->SetBounds(
-      -1 * ( boxPos[0] + boxSize[0] ), -1 * boxPos[0],
-      -1 * ( boxPos[1] + boxSize[1] ), -1 * boxPos[1],
-      0, 0 );
-    vtkNew<vtkPolyDataWriter> writer;
-    writer->SetFileName( boxFileName.c_str() );
-    writer->SetInputConnection( cubeSource->GetOutputPort() );
-    writer->Write();
-    }
 }
 
 template< unsigned int DimensionT >
@@ -197,8 +159,6 @@ int DoIt (int argc, char * argv[])
     }
   typename TubePointType::PointType worldBoxposition;
   typename TubePointType::VectorType worldBoxSize;
-  typename TubePointType::PointType indexBoxposition;
-  typename TubePointType::VectorType indexBoxSize;
 
   typename TubeGroupType::Pointer pSourceTubeGroup =
     tubeFileReader->GetGroup();
@@ -279,10 +239,6 @@ int DoIt (int argc, char * argv[])
         pTubeObjectPhysTransform->TransformPoint( boxPositionVector );
     worldBoxSize =
         pTubeObjectPhysTransform->TransformVector( boxSizeVector );
-    indexBoxposition =
-        pTubeIndexPhysTransform->TransformPoint( boxPositionVector );
-    indexBoxSize =
-        pTubeIndexPhysTransform->TransformVector( boxSizeVector );
 
     for( typename TubeType::PointListType::const_iterator
       pointList_it = pointList.begin();
@@ -405,12 +361,6 @@ int DoIt (int argc, char * argv[])
       TargetPointList.clear();
       }
     }
-  if( !boxCorner.empty() && !outputBoxFile.empty() )
-    {
-    WriteBox<DimensionT>( indexBoxposition, indexBoxSize, outputBoxFile );
-    }
-
-
   timeCollector.Stop( "Selecting Tubes" );
 
   // Write output TRE file

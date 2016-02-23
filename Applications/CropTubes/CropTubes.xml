@@ -46,14 +46,6 @@
       <longflag>boxSize</longflag>
       <flag>s</flag>
     </double-vector>
-    <file>
-      <name>outputBoxFile</name>
-      <label>Output VTK Box File</label>
-      <channel>output</channel>
-      <longflag>boxFile</longflag>
-      <description>Output vtk file that renders the box used in cropping.</description>
-      <default></default>
-    </file>
     <boolean>
       <name>CropTubes</name>
       <label>Crop Tubes</label>
