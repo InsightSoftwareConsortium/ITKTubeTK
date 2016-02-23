@@ -45,6 +45,7 @@ set( TubeTK_${proj}_MODULES
   ConvertTubesToTubeTree
   ConvertTubeToTubeGraph
   CropImage
+  CropTubes
   DeblendTomosynthesisSlicesUsingPrior
   EnhanceCoherenceAndEdgesUsingDiffusion
   EnhanceCoherenceUsingDiffusion
@@ -99,7 +100,6 @@ endif( TubeTK_USE_BOOST )
 set( TubeTK_${proj}_VTK_MODULES )
 if( TubeTK_USE_VTK )
   set( TubeTK_${proj}_VTK_MODULES
-    CropTubes
     ConvertTubesToSurface
     ComputeTubeTortuosityMeasures
     RegisterUsingSlidingGeometries )
