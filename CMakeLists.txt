@@ -29,6 +29,9 @@ cmake_minimum_required( VERSION 3.0.0 )
 set( TubeTK_CMAKE_EXTENSIONS_DIR ${TubeTK_SOURCE_DIR}/CMake )
 set( CMAKE_MODULE_PATH ${TubeTK_CMAKE_EXTENSIONS_DIR} ${CMAKE_MODULE_PATH} )
 
+include( ExternalProject )
+include( TubeTKExternalProjectDependency )
+
 #
 # Set TubeTK version and output directories.
 #
@@ -49,13 +52,49 @@ TubeTKFunctionToday( TubeTK_VERSION_BUILD )
 set( TubeTK_VERSION
   "${TubeTK_VERSION_MAJOR}.${TubeTK_VERSION_MINOR}.${TubeTK_VERSION_PATCH}.${TubeTK_VERSION_BUILD}" )
 
+# Set a variable if not already defined
+macro(tubetk_set_if_not_defined var defaultvalue)
+  if(NOT DEFINED ${var})
+    set(${var} "${defaultvalue}")
+  endif()
+endmacro()
+
 #
 # TubeTK install directories
 #
-set( TubeTK_INSTALL_BIN_DIR "bin" )
-set( TubeTK_INSTALL_LIB_DIR "lib" )
-set( TubeTK_INSTALL_INCLUDE_DIR "include" )
-set( TubeTK_INSTALL_SHARE_DIR "share/TubeTK" )
+tubetk_set_if_not_defined( TubeTK_INSTALL_BIN_DIR "bin" )
+tubetk_set_if_not_defined( TubeTK_INSTALL_LIB_DIR "lib" )
+tubetk_set_if_not_defined( TubeTK_INSTALL_INCLUDE_DIR "include" )
+tubetk_set_if_not_defined( TubeTK_INSTALL_SHARE_DIR "share/TubeTK" )
+
+# Pass value to TubeTK inner build
+mark_as_superbuild( VARS
+  TubeTK_INSTALL_BIN_DIR
+  TubeTK_INSTALL_LIB_DIR
+  TubeTK_INSTALL_INCLUDE_DIR
+  TubeTK_INSTALL_SHARE_DIR )
+
+#
+# TubeTK applications install directories
+#
+tubetk_set_if_not_defined( SlicerExecutionModel_CLI_RUNTIME_INSTALL_DIRECTORY
+  ${TubeTK_INSTALL_BIN_DIR} )
+tubetk_set_if_not_defined( SlicerExecutionModel_CLI_LIBRARY_INSTALL_DIRECTORY
+  ${TubeTK_INSTALL_LIB_DIR} )
+tubetk_set_if_not_defined( SlicerExecutionModel_CLI_INCLUDE_INSTALL_DIRECTORY
+  ${TubeTK_INSTALL_INCLUDE_DIR} )
+tubetk_set_if_not_defined( SlicerExecutionModel_CLI_SHARE_INSTALL_DIRECTORY
+  ${TubeTK_INSTALL_SHARE_DIR} )
+tubetk_set_if_not_defined( SlicerExecutionModel_CLI_ARCHIVE_INSTALL_DIRECTORY
+  ${TubeTK_INSTALL_LIB_DIR} )
+
+# Pass value to TubeTK inner build
+mark_as_superbuild( VARS
+  SlicerExecutionModel_CLI_RUNTIME_INSTALL_DIRECTORY
+  SlicerExecutionModel_CLI_LIBRARY_INSTALL_DIRECTORY
+  SlicerExecutionModel_CLI_INCLUDE_INSTALL_DIRECTORY
+  SlicerExecutionModel_CLI_SHARE_INSTALL_DIRECTORY
+  SlicerExecutionModel_CLI_ARCHIVE_INSTALL_DIRECTORY )
 
 #
 # Default output directories
@@ -526,17 +565,6 @@ if( TubeTK_USE_CPPCHECK )
   set_tests_properties( Cppcheck
     PROPERTIES FAIL_REGULAR_EXPRESSION "error file=" )
 endif( TubeTK_USE_CPPCHECK )
-
-set( SlicerExecutionModel_CLI_RUNTIME_INSTALL_DIRECTORY
-  ${TubeTK_INSTALL_BIN_DIR} )
-set( SlicerExecutionModel_CLI_LIBRARY_INSTALL_DIRECTORY
-  ${TubeTK_INSTALL_LIB_DIR} )
-set( SlicerExecutionModel_CLI_INCLUDE_INSTALL_DIRECTORY
-  ${TubeTK_INSTALL_INCLUDE_DIR} )
-set( SlicerExecutionModel_CLI_SHARE_INSTALL_DIRECTORY
-  ${TubeTK_INSTALL_SHARE_DIR} )
-set( SlicerExecutionModel_CLI_ARCHIVE_INSTALL_DIRECTORY
-  ${TubeTK_INSTALL_LIB_DIR} )
 
 # Set SlicerExecutionModel output directories absolute path using install directory relative path.
 foreach(type RUNTIME LIBRARY INCLUDE SHARE ARCHIVE)
