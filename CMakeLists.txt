@@ -49,9 +49,20 @@ TubeTKFunctionToday( TubeTK_VERSION_BUILD )
 set( TubeTK_VERSION
   "${TubeTK_VERSION_MAJOR}.${TubeTK_VERSION_MINOR}.${TubeTK_VERSION_PATCH}.${TubeTK_VERSION_BUILD}" )
 
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin" )
-set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/TubeTK" )
-set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/TubeTK" )
+#
+# TubeTK install directories
+#
+set( TubeTK_INSTALL_BIN_DIR "bin" )
+set( TubeTK_INSTALL_LIB_DIR "lib" )
+set( TubeTK_INSTALL_INCLUDE_DIR "include" )
+set( TubeTK_INSTALL_SHARE_DIR "share/TubeTK" )
+
+#
+# Default output directories
+#
+set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${TubeTK_INSTALL_BIN_DIR}" )
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${TubeTK_INSTALL_LIB_DIR}" )
+set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${TubeTK_INSTALL_LIB_DIR}" )
 
 #
 # CDash dashboard setup.
@@ -452,10 +463,6 @@ endif( TubeTK_USE_SUPERBUILD )
 #
 # Once superbuild is done, build TubeTK
 #
-set( TubeTK_INSTALL_BIN_DIR "bin" )
-set( TubeTK_INSTALL_LIB_DIR "lib" )
-set( TubeTK_INSTALL_INCLUDE_DIR "include" )
-set( TubeTK_INSTALL_SHARE_DIR "share/TubeTK" )
 
 set( TubeTK_INSTALL_PLUGINS_BIN_DIR "${TubeTK_INSTALL_BIN_DIR}" )
 set( TubeTK_INSTALL_PLUGINS_CACHE_DIR "${TubeTK_INSTALL_LIB_DIR}/CACHE" )
