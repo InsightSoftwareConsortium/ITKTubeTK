@@ -57,9 +57,9 @@ target_link_libraries( TubeTKIO PUBLIC TubeTKCommon TubeTKNumerics TubeTKSegment
 target_include_directories( TubeTKIO PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR} )
 
-if( BUILD_TESTING )
+if( TubeTK_BUILD_TESTING )
   add_subdirectory( Testing )
-endif( BUILD_TESTING )
+endif( TubeTK_BUILD_TESTING )
 
 if( TubeTK_INSTALL_DEVELOPMENT )
   install( FILES

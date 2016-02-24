@@ -50,9 +50,9 @@ target_link_libraries( TubeTKSegmentation INTERFACE
    TubeTKFiltering # Required because of itktubePDFSegmenter.hxx including itktubeSmoothingRecursiveGaussianImageFilter.h
    TubeTKNumerics )
 
-if( BUILD_TESTING )
+if( TubeTK_BUILD_TESTING )
   add_subdirectory( Testing )
-endif( BUILD_TESTING )
+endif( TubeTK_BUILD_TESTING )
 
 if( TubeTK_INSTALL_DEVELOPMENT )
   install( FILES

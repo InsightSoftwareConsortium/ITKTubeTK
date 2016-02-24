@@ -74,9 +74,9 @@ endif( TubeTK_USE_JsonCpp )
 add_executable( TextCompareCommand TextCompareCommand.cxx )
 target_link_libraries( TextCompareCommand ${ITK_LIBRARIES} ITKIOMeta ITKMetaIO)
 
-if( BUILD_TESTING )
+if( TubeTK_BUILD_TESTING )
   add_subdirectory( Testing )
-endif( BUILD_TESTING )
+endif( TubeTK_BUILD_TESTING )
 
 if( TubeTK_INSTALL_DEVELOPMENT )
   install( FILES
