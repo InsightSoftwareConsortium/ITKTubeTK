@@ -50,7 +50,7 @@ SEMMacroBuildCLI(
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ITKIOSpatialObjects ITKIOMeta
     TubeCLI TubeTKCommon TubeTKFiltering TubeTKNumerics TubeTKRegistration
-    TubeUSTK )
+    TubeTKUSTK )
 
 SEMMacroBuildCLI(
   NAME ComputeImageToTubeRigidMetricImage

@@ -47,14 +47,14 @@ set( TubeTK_Base_IO_SRCS
   itktubeMetaRidgeSeed.cxx
   itktubeMetaTubeExtractor.cxx )
 
-add_library( TubeTKIO STATIC
+add_library( ${PROJECT_NAME} STATIC
   ${TubeTK_Base_IO_H_Files}
   ${TubeTK_Base_IO_HXX_Files}
   ${TubeTK_Base_IO_SRCS} )
 
-target_link_libraries( TubeTKIO PUBLIC TubeTKCommon TubeTKNumerics TubeTKSegmentation )
+target_link_libraries( ${PROJECT_NAME} PUBLIC TubeTKCommon TubeTKNumerics TubeTKSegmentation )
 
-target_include_directories( TubeTKIO PUBLIC
+target_include_directories( ${PROJECT_NAME} PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR} )
 
 if( TubeTK_BUILD_TESTING )
@@ -68,7 +68,7 @@ if( TubeTK_INSTALL_DEVELOPMENT )
     DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
     COMPONENT Development )
 
-  TubeTKMacroInstallPlugins( TubeTKIO )
+  TubeTKMacroInstallPlugins( ${PROJECT_NAME} )
 endif()
 
-set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKIO )
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS ${PROJECT_NAME} )

@@ -45,13 +45,13 @@ set( TubeTK_Base_Common_CXX_Files
   tubeIndent.cxx
   tubeObject.cxx )
 
-add_library( TubeTKCommon STATIC
+add_library( ${PROJECT_NAME} STATIC
   ${TubeTK_Base_Common_H_Files}
   ${TubeTK_Base_Common_HXX_Files}
   ${TubeTK_Base_Common_CXX_Files} )
-target_link_libraries( TubeTKCommon
+target_link_libraries( ${PROJECT_NAME}
   ${ITK_LIBRARIES} )
-target_include_directories( TubeTKCommon PUBLIC
+target_include_directories( ${PROJECT_NAME} PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR} )
 
 SEMMacroBuildCLI(
@@ -85,7 +85,7 @@ if( TubeTK_INSTALL_DEVELOPMENT )
     DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
     COMPONENT Development )
 
-  TubeTKMacroInstallPlugins( TubeTKCommon )
+  TubeTKMacroInstallPlugins( ${PROJECT_NAME} )
 endif()
 
 set(_compare_command_targets
@@ -101,4 +101,4 @@ install( TARGETS
   DESTINATION ${TubeTK_INSTALL_BIN_DIR}
   COMPONENT Runtime )
 
-set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKCommon )
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS ${PROJECT_NAME} )

@@ -41,12 +41,12 @@ set( TubeTK_Base_Segmentation_HXX_Files
   itktubeRidgeSeedFilter.hxx
   itktubeTubeExtractor.hxx )
 
-add_library( TubeTKSegmentation INTERFACE )
+add_library( ${PROJECT_NAME} INTERFACE )
 
-target_include_directories( TubeTKSegmentation INTERFACE
+target_include_directories( ${PROJECT_NAME} INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR} )
 
-target_link_libraries( TubeTKSegmentation INTERFACE
+target_link_libraries( ${PROJECT_NAME} INTERFACE
    TubeTKFiltering # Required because of itktubePDFSegmenter.hxx including itktubeSmoothingRecursiveGaussianImageFilter.h
    TubeTKNumerics )
 
@@ -61,7 +61,7 @@ if( TubeTK_INSTALL_DEVELOPMENT )
     DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
     COMPONENT Development )
 
-  TubeTKMacroInstallPlugins( TubeTKSegmentation )
+  TubeTKMacroInstallPlugins( ${PROJECT_NAME} )
 endif()
 
-set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKSegmentation )
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS ${PROJECT_NAME} )

@@ -72,15 +72,15 @@ set( TubeTK_Base_Numerics_SRCS
   tubeSplineApproximation1D.cxx
   tubeSplineND.cxx )
 
-add_library( TubeTKNumerics STATIC
+add_library( ${PROJECT_NAME} STATIC
   ${TubeTK_Base_Numerics_H_Files}
   ${TubeTK_Base_Numerics_HXX_Files}
   ${TubeTK_Base_Numerics_SRCS} )
 if( TubeTK_USE_GPU_ARRAYFIRE )
-  target_link_libraries( TubeTKNumerics PUBLIC ${ArrayFire_LIBRARIES} )
+  target_link_libraries( ${PROJECT_NAME} PUBLIC ${ArrayFire_LIBRARIES} )
 endif( TubeTK_USE_GPU_ARRAYFIRE )
-target_link_libraries( TubeTKNumerics PUBLIC TubeTKCommon )
-target_include_directories( TubeTKNumerics PUBLIC
+target_link_libraries( ${PROJECT_NAME} PUBLIC TubeTKCommon )
+target_include_directories( ${PROJECT_NAME} PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR} )
 
 if( TubeTK_BUILD_TESTING )
@@ -94,7 +94,7 @@ if( TubeTK_INSTALL_DEVELOPMENT )
     DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
     COMPONENT Development )
 
-  TubeTKMacroInstallPlugins( TubeTKNumerics )
+  TubeTKMacroInstallPlugins( ${PROJECT_NAME} )
 endif()
 
-set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKNumerics )
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS ${PROJECT_NAME} )
