@@ -531,16 +531,10 @@ set( SlicerExecutionModel_CLI_SHARE_INSTALL_DIRECTORY
 set( SlicerExecutionModel_CLI_ARCHIVE_INSTALL_DIRECTORY
   ${TubeTK_INSTALL_LIB_DIR} )
 
-set( SlicerExecutionModel_CLI_RUNTIME_OUTPUT_DIRECTORY
-  "${CMAKE_BINARY_DIR}/bin" )
-set( SlicerExecutionModel_CLI_LIBRARY_OUTPUT_DIRECTORY
-  "${CMAKE_BINARY_DIR}/lib" )
-set( SlicerExecutionModel_CLI_INCLUDE_OUTPUT_DIRECTORY
-  "${CMAKE_BINARY_DIR}/include" )
-set( SlicerExecutionModel_CLI_SHARE_OUTPUT_DIRECTORY
-  "${CMAKE_BINARY_DIR}/share/TubeTK" )
-set( SlicerExecutionModel_CLI_ARCHIVE_OUTPUT_DIRECTORY
-  "${CMAKE_BINARY_DIR}/lib" )
+# Set SlicerExecutionModel output directories absolute path using install directory relative path.
+foreach(type RUNTIME LIBRARY INCLUDE SHARE ARCHIVE)
+  set(SlicerExecutionModel_CLI_${type}_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${SlicerExecutionModel_CLI_${type}_INSTALL_DIRECTORY})
+endforeach()
 
 configure_file ( "${TubeTK_SOURCE_DIR}/CMake/tubetkConfigure.h.in"
   tubetkConfigure.h @ONLY )
