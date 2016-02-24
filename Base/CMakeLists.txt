@@ -36,6 +36,7 @@ endmacro()
 
 _subdirectory_conditional_add( CLI )
 _subdirectory_conditional_add( Common )
+_subdirectory_conditional_add( CompareTools )
 _subdirectory_conditional_add( Numerics )
 _subdirectory_conditional_add( IO )
 _subdirectory_conditional_add( ObjectDocuments )

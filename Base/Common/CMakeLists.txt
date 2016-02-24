@@ -54,26 +54,6 @@ target_link_libraries( ${PROJECT_NAME}
 target_include_directories( ${PROJECT_NAME} PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR} )
 
-SEMMacroBuildCLI(
-  NAME "ImageCompareCommand"
-  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES}
-  INCLUDE_DIRECTORIES
-    ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration
-    ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration/ITKRegistrationHelper )
-
-if( TubeTK_USE_JsonCpp )
-  add_executable( JsonCompareCommand JsonCompareCommand.cxx )
-  target_link_libraries( JsonCompareCommand
-    ${ITK_LIBRARIES}
-    ITKIOMeta
-    ITKMetaIO
-    ${JsonCpp_LIBRARIES} )
-endif( TubeTK_USE_JsonCpp )
-
-add_executable( TextCompareCommand TextCompareCommand.cxx )
-target_link_libraries( TextCompareCommand ${ITK_LIBRARIES} ITKIOMeta ITKMetaIO)
-
 if( TubeTK_BUILD_TESTING )
   add_subdirectory( Testing )
 endif( TubeTK_BUILD_TESTING )
@@ -88,17 +68,5 @@ if( TubeTK_INSTALL_DEVELOPMENT )
   TubeTKMacroInstallPlugins( ${PROJECT_NAME} )
 endif()
 
-set(_compare_command_targets
-  ImageCompareCommand
-  TextCompareCommand )
-if( TubeTK_USE_JsonCpp )
-  list(APPEND _compare_command_targets
-    JsonCompareCommand )
-endif( TubeTK_USE_JsonCpp )
-
-install( TARGETS
-  ${_compare_command_targets}
-  DESTINATION ${TubeTK_INSTALL_BIN_DIR}
-  COMPONENT Runtime )
 
 set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS ${PROJECT_NAME} )
