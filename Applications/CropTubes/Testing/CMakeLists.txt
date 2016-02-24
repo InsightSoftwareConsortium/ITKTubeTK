@@ -34,39 +34,39 @@ set( PROJ_EXE
 set( TEXTCOMPARE_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
 
-# Test1 - Unclipped
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Unclipped
+# Test1 - NotCropped
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-NotCropped
   COMMAND ${PROJ_EXE}
-    MIDAS{ClipTubes-Test1.tre.md5}
-    ${TEMP}/${MODULE_NAME}Test1.tre 
+    MIDAS{CropTubes-Test1.tre.md5}
+    ${TEMP}/${MODULE_NAME}Test1.tre
     --boxCorner 350,280,145
     --boxSize 100,100,100)
 
-# Test1 - Compare - Unclipped
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Unclipped-Compare
+# Test1 - Compare - NotCropped
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-NotCropped-Compare
   COMMAND ${TEXTCOMPARE_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.tre
-    -b MIDAS{ClipTubes-Test1_Unclipped.tre.md5}
+    -b MIDAS{CropTubes-Test1_NotCropped.tre.md5}
     -d 0.01 )
 
-set_property( TEST ${MODULE_NAME}-Test1-Unclipped-Compare
-  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1-Unclipped )
+set_property( TEST ${MODULE_NAME}-Test1-NotCropped-Compare
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1-NotCropped )
 
-# Test2 - Clipped
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Clipped
+# Test2 - Cropped
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Cropped
 COMMAND ${PROJ_EXE}
-  MIDAS{ClipTubes-Test1.tre.md5}
-  ${TEMP}/${MODULE_NAME}Test2.tre 
+  MIDAS{CropTubes-Test1.tre.md5}
+  ${TEMP}/${MODULE_NAME}Test2.tre
   --boxCorner 350,280,145
   --boxSize 100,100,100
-  --ClipTubes)
+  --CropTubes)
 
-# Test2 - Compare - Clipped
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Clipped-Compare
+# Test2 - Compare - Cropped
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Cropped-Compare
   COMMAND ${TEXTCOMPARE_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2.tre
-    -b MIDAS{ClipTubes-Test1_Clipped.tre.md5}
+    -b MIDAS{CropTubes-Test1_Cropped.tre.md5}
     -d 0.01 )
 
-set_property( TEST ${MODULE_NAME}-Test2-Clipped-Compare
-  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2-Clipped )
+set_property( TEST ${MODULE_NAME}-Test2-Cropped-Compare
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2-Cropped )

@@ -23,24 +23,20 @@
 
 #include "itkTimeProbesCollectorBase.h"
 #include "tubeMessage.h"
-
 #include "tubeMacro.h"
 #include "metaScene.h"
 
+#include "itkGroupSpatialObject.h"
+#include "itkImageFileReader.h"
 #include "itkSpatialObjectReader.h"
 #include "itkSpatialObjectWriter.h"
-#include "itkGroupSpatialObject.h"
+#include "itkTimeProbesCollectorBase.h"
 
-#include "ClipTubesCLP.h"
-
-#include <vtkCubeSource.h>
-#include <vtkPolyDataWriter.h>
-#include <vtkSmartPointer.h>
-#include <vtkNew.h>
+#include "CropTubesCLP.h"
 
 template< unsigned int DimensionT >
-bool isInside( itk::Point< double, DimensionT > pointPos, double tubeRadius,
-  itk::Vector< double, DimensionT > boxPos,
+bool IsInside( itk::Point< double, DimensionT > pointPos, double tubeRadius,
+  itk::Point< double, DimensionT > boxPos,
   itk::Vector< double, DimensionT > boxSize,
   std::vector<  typename itk::VesselTubeSpatialObjectPoint
     < DimensionT >::CovariantVectorType > normalList )
@@ -96,38 +92,6 @@ bool isInside( itk::Point< double, DimensionT > pointPos, double tubeRadius,
 }
 
 template< unsigned int DimensionT >
-void writeBox( std::vector< double > boxPos, std::vector< double > boxSize,
-  std::vector< double > spacing, std::string boxFileName )
-{
-  if( DimensionT == 3 )
-    {
-    vtkSmartPointer<vtkCubeSource> cubeSource =
-      vtkSmartPointer<vtkCubeSource>::New();
-    cubeSource->SetBounds(
-      -spacing[0] * (boxPos[0] + boxSize[0]), -spacing[0] * boxPos[0],
-      -spacing[1] * (boxPos[1] + boxSize[1]), -spacing[1] * boxPos[1],
-      spacing[2] * boxPos[2], spacing[2] * (boxPos[2] + boxSize[2]) );
-    vtkNew<vtkPolyDataWriter> writer;
-    writer->SetFileName( boxFileName.c_str() );
-    writer->SetInputConnection( cubeSource->GetOutputPort() );
-    writer->Write();
-    }
-  else
-    {
-    vtkSmartPointer< vtkCubeSource > cubeSource =
-      vtkSmartPointer< vtkCubeSource >::New();
-    cubeSource->SetBounds(
-      -spacing[0] * (boxPos[0] + boxSize[0]), -spacing[0] * boxPos[0],
-      -spacing[1] * (boxPos[1] + boxSize[1]), -spacing[1] * boxPos[1],
-      0, 0);
-    vtkNew<vtkPolyDataWriter> writer;
-    writer->SetFileName( boxFileName.c_str() );
-    writer->SetInputConnection( cubeSource->GetOutputPort() );
-    writer->Write();
-    }
-}
-
-template< unsigned int DimensionT >
 int DoIt (int argc, char * argv[])
 {
   PARSE_ARGS;
@@ -152,6 +116,11 @@ int DoIt (int argc, char * argv[])
   typedef itk::GroupSpatialObject< DimensionT >           TubeGroupType;
   typedef itk::VesselTubeSpatialObject< DimensionT >      TubeType;
   typedef itk::VesselTubeSpatialObjectPoint< DimensionT > TubePointType;
+  typedef double                                          PixelType;
+  typedef itk::Image< PixelType, DimensionT >             ImageType;
+  typedef itk::ImageFileReader< ImageType >               ImageReaderType;
+  typedef itk::Vector< double, DimensionT >               VectorType;
+  typedef itk::Point< double, DimensionT >                PointType;
 
   timeCollector.Start( "Loading Input TRE File" );
 
@@ -170,14 +139,26 @@ int DoIt (int argc, char * argv[])
     return EXIT_FAILURE;
     }
   //Cast XML vector parameters
-  typedef itk::Vector< double, DimensionT > VectorType;
-  VectorType boxPositionVector;
+  PointType boxPositionVector;
   VectorType boxSizeVector;
-  for( unsigned int i = 0; i < DimensionT; i++ )
+  if ( !boxCorner.empty() )
     {
-    boxPositionVector[i] = boxCorner[i];
-    boxSizeVector[i] = boxSize[i];
+    for ( unsigned int i = 0; i < DimensionT; i++ )
+      {
+      boxPositionVector[i] = boxCorner[i];
+      boxSizeVector[i] = boxSize[i];
+      }
     }
+  else
+    {
+    for ( unsigned int i = 0; i < DimensionT; i++ )
+      {
+      boxPositionVector[i] = -1;
+      boxSizeVector[i] = -1;
+      }
+    }
+  typename TubePointType::PointType worldBoxposition;
+  typename TubePointType::VectorType worldBoxSize;
 
   typename TubeGroupType::Pointer pSourceTubeGroup =
     tubeFileReader->GetGroup();
@@ -186,8 +167,30 @@ int DoIt (int argc, char * argv[])
 
   timeCollector.Stop( "Loading Input TRE File" );
 
-  // Compute clipping
-  tubeStandardOutputMacro( << "\n>> Finding Tubes for Clipping" );
+  //loading Volume mask if its there
+  typename ImageReaderType::Pointer imReader = ImageReaderType::New();
+  typename ImageType::Pointer image;
+  if ( !volumeMask.empty() )
+    {
+    tube::InfoMessage( "Reading volume mask..." );
+    timeCollector.Start( "Load Volume Mask" );
+    imReader->SetFileName( volumeMask.c_str() );
+    try
+      {
+      imReader->Update();
+      image = imReader->GetOutput();
+      }
+    catch ( itk::ExceptionObject & err )
+      {
+      tube::FmtErrorMessage( "Cannot read volume mask file: %s",
+        err.what() );
+      return EXIT_FAILURE;
+      }
+    timeCollector.Stop( "Load Volume Mask" );
+    }
+
+  // Compute cropping
+  tubeStandardOutputMacro( << "\n>> Finding Tubes for Cropping" );
 
   timeCollector.Start( "Selecting Tubes" );
   //Target Group to save desired tubes
@@ -203,25 +206,23 @@ int DoIt (int argc, char * argv[])
     pSourceTubeGroup->GetObjectToParentTransform()->GetMatrix() );
   pTargetTubeGroup->SetSpacing( pSourceTubeGroup->GetSpacing() );
   pTargetTubeGroup->ComputeObjectToWorldTransform();
-
   int targetTubeId=0;
-  std::vector< double > spacing( DimensionT, 0 );
 
   for( typename TubeGroupType::ChildrenListType::iterator
     tubeList_it = pSourceTubeList->begin();
-    tubeList_it != pSourceTubeList->end(); ++tubeList_it)
+    tubeList_it != pSourceTubeList->end(); ++tubeList_it )
     {
     //**** Source Tube **** :
     typename TubeType::Pointer pCurSourceTube =
       dynamic_cast< TubeType* >( tubeList_it->GetPointer() );
     //dynamic_cast verification
-    if(!pCurSourceTube)
+    if( !pCurSourceTube )
       {
       return EXIT_FAILURE;
       }
     //Compute Tangent and Normals
     pCurSourceTube->ComputeTangentAndNormals();
-    //pCurSourceTube->ComputeObjectToWorldTransform();//BUG
+    pCurSourceTube->ComputeObjectToWorldTransform();
     //Point List for TargetTube
     typename TubeType::PointListType TargetPointList;
     //Get points in current source tube
@@ -229,8 +230,15 @@ int DoIt (int argc, char * argv[])
       pCurSourceTube->GetPoints();
 
     //Get Index to World Transformation
+    typename TubeType::TransformType * pTubeObjectPhysTransform =
+      pCurSourceTube->GetObjectToWorldTransform();
     typename TubeType::TransformType * pTubeIndexPhysTransform =
       pCurSourceTube->GetIndexToWorldTransform();
+
+    worldBoxposition =
+        pTubeObjectPhysTransform->TransformPoint( boxPositionVector );
+    worldBoxSize =
+        pTubeObjectPhysTransform->TransformVector( boxSizeVector );
 
     for( typename TubeType::PointListType::const_iterator
       pointList_it = pointList.begin();
@@ -239,30 +247,50 @@ int DoIt (int argc, char * argv[])
       TubePointType curSourcePoint = *pointList_it;
       //Transform parameters in physical space
       typename TubePointType::PointType curSourcePos =
-        pTubeIndexPhysTransform->TransformPoint(
+        pTubeObjectPhysTransform->TransformPoint(
           curSourcePoint.GetPosition() );
-      typename TubePointType::VectorType worldBoxposition =
-        pTubeIndexPhysTransform->TransformVector( boxPositionVector );
-      typename TubePointType::VectorType worldBoxSize =
-        pTubeIndexPhysTransform->TransformVector( boxSizeVector );
       typename TubePointType::CovariantVectorType curTubeNormal1 =
-        pTubeIndexPhysTransform->TransformCovariantVector(
+        pTubeObjectPhysTransform->TransformCovariantVector(
           curSourcePoint.GetNormal1() );
       typename TubePointType::CovariantVectorType curTubeNormal2 =
-        pTubeIndexPhysTransform->TransformCovariantVector(
+        pTubeObjectPhysTransform->TransformCovariantVector(
           curSourcePoint.GetNormal2() );
+      VectorType curRadius;
+      for ( unsigned int i = 0; i < DimensionT; i++ )
+        {
+        curRadius[i] = curSourcePoint.GetRadius();
+        }
+      typename TubePointType::VectorType curRadiusVector =
+        pTubeObjectPhysTransform->TransformVector( curRadius );
       //Save Normals in a vector to pass it as an argument for IsIside()
       std::vector<typename TubePointType::CovariantVectorType> normalList;
-      normalList.push_back(curTubeNormal1);
+      normalList.push_back( curTubeNormal1 );
       if( DimensionT == 3 )
         {
-        normalList.push_back(curTubeNormal2);
+        normalList.push_back( curTubeNormal2 );
+        }
+      bool volumeMaskFlag = false;
+      if ( !volumeMask.empty() )
+        {
+        typename TubePointType::PointType curSourcePosIndexSpace =
+          pTubeIndexPhysTransform->TransformPoint(
+          curSourcePoint.GetPosition() );
+        typename ImageType::IndexType imageIndex;
+        if ( image->TransformPhysicalPointToIndex( curSourcePosIndexSpace, imageIndex ) )
+          {
+          double val = 0;
+          val = image->GetPixel( imageIndex );
+          if ( val != 0 )
+            {
+            volumeMaskFlag = true;
+            }
+          }
         }
       //Save point in target tube if it belongs to the box
-      if( isInside( curSourcePos, curSourcePoint.GetRadius(),
+      if ( volumeMaskFlag || IsInside( curSourcePos, curRadiusVector[0],
         worldBoxposition, worldBoxSize, normalList ) )
         {
-        if( ClipTubes )
+        if( CropTubes )
           {
           TargetPointList.push_back( curSourcePoint );
           }
@@ -297,7 +325,7 @@ int DoIt (int argc, char * argv[])
 
           pTargetTube->SetId( targetTubeId );
           ++targetTubeId;
-          //Save clipped tube
+          //Save cropped tube
           pTargetTube->SetPoints( TargetPointList );
           pTargetTubeGroup->AddSpatialObject( pTargetTube );
 
@@ -326,23 +354,13 @@ int DoIt (int argc, char * argv[])
 
       pTargetTube->SetId( targetTubeId );
       ++targetTubeId;
-      //Save clipped tube
+      //Save cropped tube
       pTargetTube->SetPoints( TargetPointList );
       pTargetTubeGroup->AddSpatialObject( pTargetTube );
 
       TargetPointList.clear();
       }
-    for( unsigned int d=0; d<DimensionT; ++d )
-      {
-      spacing[d] = pCurSourceTube->GetSpacing()[d];
-      }
     }
-  if( !outputBoxFile.empty() )
-    {
-    writeBox<DimensionT>( boxCorner, boxSize, spacing, outputBoxFile );
-    }
-
-
   timeCollector.Stop( "Selecting Tubes" );
 
   // Write output TRE file
@@ -357,7 +375,7 @@ int DoIt (int argc, char * argv[])
   try
     {
     tubeWriter->SetFileName( outputTREFile.c_str() );
-    tubeWriter->SetInput(pTargetTubeGroup);
+    tubeWriter->SetInput( pTargetTubeGroup );
     tubeWriter->Update();
     }
   catch( itk::ExceptionObject & err )
@@ -388,10 +406,11 @@ int main( int argc, char * argv[] )
     }
   PARSE_ARGS;
 
-  if( boxCorner.empty() || boxSize.empty() )
+  if( (boxCorner.empty() || boxSize.empty()) && volumeMask.empty() )
     {
     tube::ErrorMessage(
-      "Error: longflags --boxCorner and --boxSize are both required");
+      "Error: Either both longflags --boxCorner and --boxSize "
+      "or the flag --volumeMask is required." );
     return EXIT_FAILURE;
     }
 
@@ -419,7 +438,7 @@ int main( int argc, char * argv[] )
     default:
       {
       tubeErrorMacro(
-        << "Error: Only 2D and 3D data is currently supported.");
+        << "Error: Only 2D and 3D data is currently supported." );
       return EXIT_FAILURE;
       }
     }

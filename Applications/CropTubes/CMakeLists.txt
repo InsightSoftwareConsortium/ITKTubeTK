@@ -20,7 +20,7 @@
 # limitations under the License.
 #
 ############################################################################
-set( MODULE_NAME ClipTubes )
+set( MODULE_NAME CropTubes )
 project( ${MODULE_NAME} )
 
 if( NOT TubeTK_SOURCE_DIR )
@@ -30,9 +30,6 @@ endif( NOT TubeTK_SOURCE_DIR )
 
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
-
-find_package( VTK REQUIRED )
-include( ${VTK_USE_FILE} )
 
 find_package( ITK REQUIRED )
 if( TubeTK_BUILD_WITHIN_SLICER )

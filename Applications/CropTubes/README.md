@@ -1,4 +1,4 @@
-TubeTK ClipTubes Application
+TubeTK CropTubes Application
 =============================================
 
 #### Overview:
@@ -9,9 +9,9 @@ returns tubes that are contained in the box.
 #### Usage:
 
 ```
-   ClipTubes  [--boxCorner <std::vector<double>>]
+   CropTubes  [--boxCorner <std::vector<double>>]
               [--boxSize <std::vector<double>>]
-              [--xml] [--echo] [--ClipTubes]
+              [--xml] [--echo] [--CropTubes]
               [--][--version] [-h]
               <std::string> <std::string>
 
@@ -32,8 +32,8 @@ Where:
    --echo
      Echo the command line arguments (default: 0)
 
-   -c, --ClipTubes
-     Specify if tubes should be clipped according to the box (default: 0)
+   -c, --CropTubes
+     Specify if tubes should be cropped according to the box (default: 0)
 
    --,  --ignore_rest
      Ignores the rest of the labeled arguments following this flag.
@@ -70,16 +70,16 @@ Where:
  For each position of the current tube, we check if the current point is
  located in the bounding box:
 
- * **If tubes should NOT be clipped** : We save the entire tube in a
+ * **If tubes should NOT be cropped** : We save the entire tube in a
  target group of tubes as long as one point is contained in the 3D box.
 
- * **If tubes should be clipped** : We read through all positions of
+ * **If tubes should be cropped** : We read through all positions of
  the current tube. When a point that belongs to the box is found,
  its position is saved in the point list of a new target tube.
  If the next point still belongs to the box, it is saved in the same
  current target tube as the first one. On the contrary, if it does not
  belong to the box, the curent target tube is saved in the target group
- and we keep on checking the other positions. This enables to clip tubes
+ and we keep on checking the other positions. This enables to crop tubes
  that go in and out of the box.
 
 3. **Write Output TRE file:**
