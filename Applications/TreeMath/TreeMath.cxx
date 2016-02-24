@@ -41,9 +41,12 @@ int DoIt( int argc, char * argv[] );
 
 template< unsigned int VDimension >
 void InterpolatePath(
-  typename itk::VesselTubeSpatialObject< VDimension >::TubePointType *parentNearestPoint,
-  typename itk::VesselTubeSpatialObject< VDimension >::TubePointType *childEndPoint,
-  typename itk::VesselTubeSpatialObject< VDimension >::PointListType &newTubePoints,
+  typename itk::VesselTubeSpatialObject< VDimension >::TubePointType *
+  parentNearestPoint,
+  typename itk::VesselTubeSpatialObject< VDimension >::TubePointType *
+  itkNotUsed( childEndPoint ),
+  typename itk::VesselTubeSpatialObject< VDimension >::PointListType &
+  newTubePoints,
   char InterpolationMethod )
 {
   if( InterpolationMethod == 'S' )
@@ -80,7 +83,7 @@ void FillGap( typename itk::GroupSpatialObject< VDimension >::Pointer &pTubeGrou
       = dynamic_cast< TubeType * >( itSourceTubes->GetPointer() );
     TubeIdType curTubeId = pCurTube->GetId();
     TubeIdType curParentTubeId = pCurTube->GetParentId();
-    TubePointType* parentNearestPoint;
+    TubePointType* parentNearestPoint = NULL;
     if( pCurTube->GetRoot() == false &&  curParentTubeId != pTubeGroup->GetId() )
       {
       //find parent target tube
@@ -107,8 +110,9 @@ void FillGap( typename itk::GroupSpatialObject< VDimension >::Pointer &pTubeGrou
               parentNearestPoint = tubePoint;
               flag = 1;
               }
-            distance = tubePointPosition.SquaredEuclideanDistanceTo
-              ( pCurTube->GetPoint( pCurTube->GetNumberOfPoints() - 1 )->GetPosition() );
+            distance = tubePointPosition.SquaredEuclideanDistanceTo(
+              pCurTube->GetPoint( pCurTube->GetNumberOfPoints() - 1 )
+              ->GetPosition() );
             if ( minDistance > distance )
               {
               minDistance = distance;
@@ -140,8 +144,8 @@ void FillGap( typename itk::GroupSpatialObject< VDimension >::Pointer &pTubeGrou
             TubePointType* childTubeEndPoint =
               dynamic_cast< TubePointType* >
               ( pCurTube->GetPoint( pCurTube->GetNumberOfPoints() - 1 ) );
-            InterpolatePath< VDimension >(
-              parentNearestPoint, childTubeEndPoint, newTubePoints, InterpolationMethod );
+            InterpolatePath< VDimension >( parentNearestPoint,
+              childTubeEndPoint, newTubePoints, InterpolationMethod );
             for( int index = newTubePoints.size() - 1; index >= 0; index-- )
               {
               pCurTube->GetPoints().push_back( newTubePoints[ index ] );

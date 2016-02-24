@@ -78,10 +78,10 @@ RidgeFFTFeatureVectorGenerator< TImage >
 {
   int numFeatureImages = m_FeatureImageList.size();
 
-  ValueListType mean;
-  mean.resize( numFeatureImages );
-  ValueListType stdDev;
-  stdDev.resize( numFeatureImages );
+  ValueListType featureMean;
+  featureMean.resize( numFeatureImages );
+  ValueListType featureStdDev;
+  featureStdDev.resize( numFeatureImages );
 
   typedef ImageRegionIterator< FeatureImageType >  IterType;
   for( unsigned int i=0; i<numFeatureImages; ++i )
@@ -89,31 +89,31 @@ RidgeFFTFeatureVectorGenerator< TImage >
     IterType iter( m_FeatureImageList[i],
       m_FeatureImageList[i]->GetLargestPossibleRegion() );
     unsigned int count = 0;
-    mean[i] = 0;
-    stdDev[i] = 0;
+    featureMean[i] = 0;
+    featureStdDev[i] = 0;
     while( ! iter.IsAtEnd() )
       {
       double imVal = iter.Get();
-      double delta = imVal - mean[i];
+      double delta = imVal - featureMean[i];
 
-      mean[i] += delta / count;
-      stdDev[i] += delta * ( imVal - mean[i] );
+      featureMean[i] += delta / count;
+      featureStdDev[i] += delta * ( imVal - featureMean[i] );
       ++count;
       ++iter;
       }
 
     if( count > 1 )
       {
-      stdDev[i] = vcl_sqrt( stdDev[i] / ( count - 1 ) );
+      featureStdDev[i] = vcl_sqrt( featureStdDev[i] / ( count - 1 ) );
       }
     else
       {
-      stdDev[i] = 1;
+      featureStdDev[i] = 1;
       }
     }
 
-  this->SetWhitenMeans( mean );
-  this->SetWhitenStdDevs( stdDev );
+  this->SetWhitenMeans( featureMean );
+  this->SetWhitenStdDevs( featureStdDev );
 }
 
 template< class TImage >
