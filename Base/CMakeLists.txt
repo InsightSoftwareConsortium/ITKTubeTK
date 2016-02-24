@@ -34,6 +34,10 @@ macro( _subdirectory_conditional_add name )
   endif()
 endmacro()
 
+if( ITK_SOURCE_DIR )
+  include("../CMake/TubeTKMacroInstallPlugins.cmake")
+endif()
+
 _subdirectory_conditional_add( CLI )
 _subdirectory_conditional_add( Common )
 _subdirectory_conditional_add( CompareTools )

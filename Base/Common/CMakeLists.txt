@@ -23,11 +23,10 @@
 
 project( TubeTKCommon )
 
-find_package( SlicerExecutionModel REQUIRED )
-include( ${SlicerExecutionModel_USE_FILE} )
-
-find_package( ITK REQUIRED )
-include( ${ITK_USE_FILE} )
+if(NOT ITK_SOURCE_DIR)
+  find_package( ITK REQUIRED )
+  include( ${ITK_USE_FILE} )
+endif()
 
 set( TubeTK_Base_Common_H_Files
   itktubeDifferenceImageFilter.h
@@ -52,7 +51,7 @@ add_library( ${PROJECT_NAME} STATIC
 target_link_libraries( ${PROJECT_NAME}
   ${ITK_LIBRARIES} )
 target_include_directories( ${PROJECT_NAME} PUBLIC
-  ${CMAKE_CURRENT_SOURCE_DIR} )
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )
 
 if( TubeTK_BUILD_TESTING )
   add_subdirectory( Testing )
@@ -67,6 +66,5 @@ if( TubeTK_INSTALL_DEVELOPMENT )
 
   TubeTKMacroInstallPlugins( ${PROJECT_NAME} )
 endif()
-
 
 set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS ${PROJECT_NAME} )

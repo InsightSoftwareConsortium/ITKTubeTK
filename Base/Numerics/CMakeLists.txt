@@ -23,6 +23,27 @@
 
 project( TubeTKNumerics )
 
+set( ${PROJECT_NAME}_ITK_COMPONENTS
+  ITKCommon
+  ITKHDF5
+  ITKIOImageBase
+  ITKImageFunction
+  ITKImageIntensity
+  ITKOptimizers
+  ITKSmoothing
+  ITKSpatialObjects
+  ITKStatistics
+  ITKTransform )
+
+if(NOT ITK_SOURCE_DIR)
+  find_package(ITK COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
+  include(${ITK_USE_FILE})
+else()
+  set(itk-module ${PROJECT_NAME})
+  itk_module_use(${${PROJECT_NAME}_ITK_COMPONENTS})
+  itk_module_link_dependencies()
+endif()
+
 set( TubeTK_Base_Numerics_H_Files
   itktubeBasisFeatureVectorGenerator.h
   itktubeBlurImageFunction.h
@@ -81,7 +102,7 @@ if( TubeTK_USE_GPU_ARRAYFIRE )
 endif( TubeTK_USE_GPU_ARRAYFIRE )
 target_link_libraries( ${PROJECT_NAME} PUBLIC TubeTKCommon )
 target_include_directories( ${PROJECT_NAME} PUBLIC
-  ${CMAKE_CURRENT_SOURCE_DIR} )
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )
 
 if( TubeTK_BUILD_TESTING )
   add_subdirectory( Testing )

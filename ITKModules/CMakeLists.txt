@@ -127,8 +127,7 @@ foreach( itk-module ${TubeTK_ITK_MODULES} )
 
   set( ${itk-module}_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/${itk-module}-build )
 
-  if( ITK_WITH_EXTERNAL_MODULE_SUPPORT )
-
+  if( ITK_WITH_EXTERNAL_MODULE_SUPPORT AND NOT TARGET ${itk-module} )
     message( STATUS "ITKModules: Adding '${itk-module}' directory" )
 
     # Note that adding the ITK module source directory will create
@@ -212,9 +211,11 @@ foreach( itk-module ${TubeTK_ITK_MODULES} )
 
   endif()
 
-  target_include_directories( ${itk-module} ${_target_type}
-    ${${itk-module}_SOURCE_DIR}/include
-    ${${itk-module}_BINARY_DIR}/include )
+  get_target_property( _imported ${itk-module} IMPORTED )
+  if( NOT _imported )
+    target_include_directories( ${itk-module} ${_target_type}
+      ${${itk-module}_SOURCE_DIR}/include
+      ${${itk-module}_BINARY_DIR}/include )
+  endif()
 
 endforeach()
-
