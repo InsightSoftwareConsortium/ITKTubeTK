@@ -124,10 +124,10 @@ RidgeExtractor<TInputImage>
   m_MaxXChange = 3.0;
   m_MinRidgeness = 0.80;    // near 1 = harder
   m_MinRidgenessStart = 0.79;
-  m_MinRoundness = 0.5;    // near 1 = harder
-  m_MinRoundnessStart = 0.45;
-  m_MinCurvature = 0.5;
-  m_MinCurvatureStart = 0.45;
+  m_MinRoundness = 0.25;    // near 1 = harder
+  m_MinRoundnessStart = 0.2;
+  m_MinCurvature = 0.1;
+  m_MinCurvatureStart = 0.05;
   m_MinLevelness = 0.5;
   m_MinLevelnessStart = 0.45;
   m_MaxRecoveryAttempts = 4;
@@ -447,7 +447,7 @@ RidgeExtractor<TInputImage>
     return m_XRidgeness;
     }
 
-  if( this->GetDebug() )
+  //if( this->GetDebug() )
     {
     std::cout << "  Scale = " << m_DataFunc->GetScale() << std::endl;
     std::cout << "  X = " << m_X << std::endl;
@@ -457,6 +457,8 @@ RidgeExtractor<TInputImage>
 
   ::tube::ComputeRidgeness<double>( m_XH, m_XD, m_XRidgeness, m_XRoundness,
     m_XCurvature, m_XLevelness, m_XHEVect, m_XHEVal );
+
+  std::cout << "ridgness = " << m_XRidgeness << std::endl;
 
   intensity = m_XVal;
   roundness = m_XRoundness;
@@ -1012,6 +1014,7 @@ RidgeExtractor<TInputImage>
         m_XHEVect( i, closestV ) = m_XHEVect( i, ImageDimension-1 );
         m_XHEVect( i, ImageDimension-1 ) = tf;
         }
+      ridgeness = 1 - ridgeness;
       }
 
     for( unsigned int i=0; i<ImageDimension-1; i++ )
@@ -1460,7 +1463,7 @@ typename RidgeExtractor<TInputImage>::FailureCodeEnum
 RidgeExtractor<TInputImage>
 ::LocalRidge( ContinuousIndexType & newX, bool verbose )
 {
-  if( this->GetDebug() )
+  //if( this->GetDebug() )
     {
     std::cout << "Ridge::LocalRidge" << std::endl;
     std::cout << "  x = " << newX << std::endl;
@@ -1501,117 +1504,9 @@ RidgeExtractor<TInputImage>
   double     val;
   MatrixType lN( ImageDimension, ImageDimension-1 );
   VectorType pX( ImageDimension );
-
-  // Gradient Ascent
-  for( unsigned int loop=0; loop<ImageDimension; loop++ )
+  for( unsigned int i=0; i<ImageDimension; i++ )
     {
-    for( unsigned int i=0; i<ImageDimension; i++ )
-      {
-      lN( i, 0 ) = m_XD[i];
-      }
-
-    for( unsigned int i=0; i<ImageDimension; i++ )
-      {
-      pX[i] = newX[i];
-      }
-    m_DataSpline->Extreme( pX, &val, 1, lN );
-
-    // We don't want to wander too far since the gradient might not be
-    // ideally oriented towards the ridge, so limit the step towards the
-    // max to a specific radius.
-    double norm = 0;
-    for( unsigned int i=0; i<ImageDimension; i++ )
-      {
-      norm += (newX[i] - pX[i]) * (newX[i] - pX[i]);
-      }
-    norm = vcl_sqrt( norm );
-    double maxMove = m_MaxXChange * this->GetScale();
-    if( norm > maxMove )
-      {
-      if( this->GetDebug() )
-        {
-        std::cout << "Limiting local ridge search radius." << std::endl;
-        }
-      for( unsigned int i=0; i<ImageDimension; i++ )
-        {
-        newX[i] = pX[i] + maxMove * ( (newX[i]-pX[i]) / norm );
-        }
-      }
-    else
-      {
-      for( unsigned int i=0; i<ImageDimension; i++ )
-        {
-        newX[i] = pX[i];
-        }
-      }
-
-    for( unsigned int i=0; i<ImageDimension; i++ )
-      {
-      indx[i] = ( int )( newX[i] + 0.5 ); // rounding
-      if( newX[i] < (double)m_ExtractBoundMin[i]
-        || newX[i] + 0.5 > (double)m_ExtractBoundMax[i] )
-        {
-        if( m_StatusCallBack )
-          {
-          m_StatusCallBack( NULL, "Exited Image", 0 );
-          }
-        if( verbose || this->GetDebug() )
-          {
-          std::cout << "RidgeExtractor::LocalRidge() : Exited Image 3"
-            << std::endl;
-          }
-        return EXITED_IMAGE;
-        }
-      }
-
-    if( m_TubeMaskImage->GetPixel( indx ) != 0 )
-      {
-      if( m_StatusCallBack )
-        {
-        m_StatusCallBack( NULL, "Revisited voxel", 0 );
-        }
-      if( verbose || this->GetDebug() )
-        {
-        std::cout << "RidgeExtractor::LocalRidge() : Revisited voxel 1 : "
-          << m_TubeMaskImage->GetPixel( indx ) << std::endl;
-        }
-      return REVISITED_VOXEL;
-      }
-
-    ridgeness = Ridgeness( newX, intensity, roundness, curvature,
-      levelness );
-    if( ridgeness >= m_MinRidgenessStart &&
-      roundness >= m_MinRoundnessStart &&
-      curvature >= m_MinCurvatureStart &&
-      levelness >= m_MinLevelnessStart )
-      {
-      if( this->GetDebug() )
-        {
-        std::cout << " Success: Local grad: " << newX << std::endl;
-        std::cout << "  Ridgeness: " << ridgeness << " >= "
-          << m_MinRidgenessStart << std::endl;
-        std::cout << "  Roundness: " << roundness << " >= "
-          << m_MinRoundnessStart << std::endl;
-        std::cout << "  Curvature: " << curvature << " >= "
-          << m_MinCurvatureStart << std::endl;
-        std::cout << "  Levelness: " << levelness << " >= "
-          << m_MinLevelnessStart << std::endl;
-        }
-      return SUCCESS;
-      }
-
-    if( this->GetDebug() )
-      {
-      std::cout << " Local grad: " << newX << std::endl;
-      std::cout << "  Ridgeness: " << ridgeness << " >= "
-        << m_MinRidgenessStart << std::endl;
-      std::cout << "  Roundness: " << roundness << " >= "
-        << m_MinRoundnessStart << std::endl;
-      std::cout << "  Curvature: " << curvature << " >= "
-        << m_MinCurvatureStart << std::endl;
-      std::cout << "  Levelness: " << levelness << " >= "
-        << m_MinLevelnessStart << std::endl;
-      }
+    pX[ i ] = newX[ i ];
     }
 
   // Switch to searching within the normal plane
@@ -1626,7 +1521,12 @@ RidgeExtractor<TInputImage>
       }
 
     // Local 1D Ridge
+    std::cout << "LocalRidge: Start px = " << pX << std::endl;
+    std::cout << "  lN = " << lN << std::endl;
+    std::cout << "  val = " << m_DataSpline->Value( pX ) << std::endl;
     m_DataSpline->Extreme( pX, &val, ImageDimension-1, lN );
+    std::cout << "End px = " << pX << std::endl;
+    std::cout << "  val = " << val << std::endl;
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
       newX[i] = pX[i];
@@ -1665,6 +1565,7 @@ RidgeExtractor<TInputImage>
       return REVISITED_VOXEL;
       }
 
+    std::cout << "newX = " << newX << std::endl;
     ridgeness = Ridgeness( newX, intensity, roundness, curvature,
       levelness );
     if( ridgeness >= m_MinRidgenessStart &&
@@ -1862,6 +1763,8 @@ RidgeExtractor<TInputImage>
     if( verbose || this->GetDebug() )
       {
       std::cout << "DynamicScale = " << GetScale() << std::endl;
+      std::cout << "  x =  " << lX << std::endl;
+      std::cout << "  newX =  " << newX << std::endl;
       }
     for( unsigned int i=0; i<ImageDimension; i++ )
       {

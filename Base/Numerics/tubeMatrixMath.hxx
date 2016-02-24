@@ -155,22 +155,24 @@ ComputeRidgeness( const vnl_matrix<T> & H,
     Dv = HEVect.get_column( ImageDimension-1 );
     }
 
-  double P = dot_product( HEVect.get_column( ImageDimension-1 ), Dv );
-  P = P * P;
-
+  double P = 0;
   double sumv = 0;
   int ridge = 1;
   for( unsigned int i=0; i<ImageDimension-1; i++ )
     {
-    sumv += HEVal[i]*HEVal[i];
-    if( HEVal[i] >= 0 )
+    double tf = dot_product( HEVect.get_column( i ), Dv );
+    P += tf * tf;
+
+    tf = HEVal[i];
+    sumv += tf * tf;
+    if( tf >= 0 )
       {
       ridge = -1;
       }
     }
   double avgv = sumv / ( ImageDimension - 1 );
 
-  ridgeness = ridge * P;
+  ridgeness = ridge * ( 1 - P );
 
   // roundness is 1 - || 1 - v2^2 / v1^2  ||
   // However, since v1^2 can be extremely small, we use the average

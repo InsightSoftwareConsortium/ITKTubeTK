@@ -175,7 +175,7 @@ int itktubeNJetImageFunctionTest( int argc, char * argv[] )
       case 10:
         {
         func->DerivativeAtIndex( outIter.GetIndex(), v1, scale, d );
-        outIter.Set( d[1] );
+        outIter.Set( d[0] );
         break;
         }
       case 11:
