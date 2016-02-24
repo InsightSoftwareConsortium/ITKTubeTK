@@ -77,6 +77,11 @@ if( TubeTK_USE_GPU_ARRAYFIRE )
   set( tubeBaseIO_External_Libraries ${ArrayFire_LIBRARIES} )
 endif( TubeTK_USE_GPU_ARRAYFIRE )
 
+set( no_install_option )
+if( NOT TubeTK_INSTALL_DEVELOPMENT )
+  set( no_install_option NO_INSTALL )
+endif()
+
 SEMMacroBuildCLI(
   NAME tubeBaseIOTests
   ADDITIONAL_SRCS
@@ -91,6 +96,7 @@ SEMMacroBuildCLI(
     ${ITK_LIBRARIES}
     ITKIOMeta
   EXECUTABLE_ONLY
+  ${no_install_option}
   )
 
 add_test( NAME tubeBaseIOHeaderTest

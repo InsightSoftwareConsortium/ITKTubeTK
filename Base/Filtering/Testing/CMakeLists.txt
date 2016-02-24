@@ -85,6 +85,11 @@ if( TubeTK_USE_GPU_ARRAYFIRE )
   target_link_libraries( tubeBaseFilteringHeaderTest ${ArrayFire_LIBRARIES} )
 endif( TubeTK_USE_GPU_ARRAYFIRE )
 
+set( no_install_option )
+if( NOT TubeTK_INSTALL_DEVELOPMENT )
+  set( no_install_option NO_INSTALL )
+endif()
+
 SEMMacroBuildCLI(
   NAME tubeBaseFilteringTests
   ADDITIONAL_SRCS
@@ -94,6 +99,7 @@ SEMMacroBuildCLI(
     TubeCLI TubeTKFiltering
     ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects
   EXECUTABLE_ONLY
+  ${no_install_option}
   )
 if( TubeTK_USE_GPU_ARRAYFIRE )
   target_link_libraries( tubeBaseFilteringTests ${ArrayFire_LIBRARIES} )

@@ -71,6 +71,11 @@ target_link_libraries( tubeBaseSegmentationHeaderTest
   TubeTKSegmentation TubeTKFiltering TubeTKNumerics TubeTKIO TubeTKCommon
   ${ITK_LIBRARIES} )
 
+set( no_install_option )
+if( NOT TubeTK_INSTALL_DEVELOPMENT )
+  set( no_install_option NO_INSTALL )
+endif()
+
 SEMMacroBuildCLI(
   NAME tubeBaseSegmentationTests
   ADDITIONAL_SRCS
@@ -80,6 +85,7 @@ SEMMacroBuildCLI(
     TubeCLI TubeTKSegmentation TubeTKFiltering TubeTKNumerics TubeTKIO TubeTKCommon
     ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects
   EXECUTABLE_ONLY
+  ${no_install_option}
   )
 
 add_test( NAME tubeBaseSegmentationHeaderTest

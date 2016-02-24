@@ -61,6 +61,11 @@ add_executable( tubeBaseObjectDocumentsHeaderTest
 target_link_libraries( tubeBaseObjectDocumentsHeaderTest
   ${ITK_LIBRARIES} )
 
+set( no_install_option )
+if( NOT TubeTK_INSTALL_DEVELOPMENT )
+  set( no_install_option NO_INSTALL )
+endif()
+
 SEMMacroBuildCLI(
   NAME tubeBaseObjectDocumentsTests
   ADDITIONAL_SRCS
@@ -70,6 +75,7 @@ SEMMacroBuildCLI(
     ${ITK_LIBRARIES}
     TubeCLI TubeTKObjectDocuments
   EXECUTABLE_ONLY
+  ${no_install_option}
   )
 
 add_test( NAME tubeBaseObjectDocumentsHeaderTest
