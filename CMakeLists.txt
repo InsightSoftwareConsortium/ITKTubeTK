@@ -39,6 +39,10 @@ set( TubeTK_VERSION_MAJOR "0" )
 set( TubeTK_VERSION_MINOR "9" )
 set( TubeTK_VERSION_PATCH "0" )
 
+option( TubeTK_INSTALL_DEVELOPMENT
+  "Add install rules for TubeTK SDK dependencies (headers, static libraries, CMake module, ...)" ON )
+mark_as_advanced( TubeTK_INSTALL_DEVELOPMENT )
+
 mark_as_advanced( CMAKE_BACKWARDS_COMPATIBILITY )
 mark_as_advanced( EXECUTABLE_OUTPUT_PATH )
 mark_as_advanced( LIBRARY_OUTPUT_PATH )

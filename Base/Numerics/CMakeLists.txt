@@ -87,10 +87,12 @@ if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )
 
-install( FILES
-  ${TubeTK_Base_Numerics_H_Files}
-  ${TubeTK_Base_Numerics_HXX_Files}
-  DESTINATION include )
+if( TubeTK_INSTALL_DEVELOPMENT )
+  install( FILES
+    ${TubeTK_Base_Numerics_H_Files}
+    ${TubeTK_Base_Numerics_HXX_Files}
+    DESTINATION include )
+endif()
 
 TubeTKMacroInstallPlugins( TubeTKNumerics )
 
