@@ -44,5 +44,6 @@ endif( BUILD_TESTING )
 if( TubeTK_INSTALL_DEVELOPMENT )
   install( FILES
     ${TubeTK_Base_CLI_H_Files}
-    DESTINATION include )
+    DESTINATION include
+    COMPONENT Development )
 endif()

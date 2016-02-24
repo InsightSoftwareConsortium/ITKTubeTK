@@ -84,7 +84,8 @@ if( TubeTK_INSTALL_DEVELOPMENT )
   install( FILES
     ${TubeTK_Base_Common_H_Files}
     ${TubeTK_Base_Common_HXX_Files}
-    DESTINATION include )
+    DESTINATION include
+    COMPONENT Development )
 endif()
 
 set(_compare_command_targets

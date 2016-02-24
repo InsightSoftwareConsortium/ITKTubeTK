@@ -58,7 +58,8 @@ if( TubeTK_INSTALL_DEVELOPMENT )
   install( FILES
     ${TubeTK_Base_Segmentation_H_Files}
     ${TubeTK_Base_Segmentation_HXX_Files}
-    DESTINATION include )
+    DESTINATION include
+    COMPONENT Development )
 endif()
 
 TubeTKMacroInstallPlugins( TubeTKSegmentation )

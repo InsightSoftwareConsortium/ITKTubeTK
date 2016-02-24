@@ -63,7 +63,8 @@ if( TubeTK_INSTALL_DEVELOPMENT )
   install( FILES
     ${TubeTK_Base_ObjectDocuments_H_Files}
     ${TubeTK_Base_ObjectDocuments_HXX_Files}
-    DESTINATION include )
+    DESTINATION include
+    COMPONENT Development )
 endif()
 
 TubeTKMacroInstallPlugins( TubeTKObjectDocuments )
