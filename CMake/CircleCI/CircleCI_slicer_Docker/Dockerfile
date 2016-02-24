@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /usr/src
 
-ENV Slicer_GIT_TAG 30636dce872c3f51c8f70d0af2b311a5eaf601e9
+ENV Slicer_GIT_TAG 68786fd2574926c7e79915e092ccc8c03abb450c
 RUN git clone https://github.com/Slicer/Slicer.git && \
   cd Slicer && \
   git checkout ${Slicer_GIT_TAG} && \
