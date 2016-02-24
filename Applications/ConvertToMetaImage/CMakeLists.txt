@@ -77,7 +77,7 @@ if( TubeTK_USE_QT )
   install( TARGETS
     ConvertToMetaImage
     DESTINATION bin
-    COMPONENT RUNTIME )
+    COMPONENT Runtime )
 
 endif( TubeTK_USE_QT )
 

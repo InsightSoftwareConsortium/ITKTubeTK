@@ -38,6 +38,7 @@ if( TubeTK_USE_JsonCpp )
 endif( TubeTK_USE_JsonCpp )
 install( FILES ${TubeTK_SUPPORT_BINARIES}
   DESTINATION lib )
+  COMPONENT Runtime)
 
 # Record the environment setup files for packaging.
 set( TubeTK_LINUX_SETUP

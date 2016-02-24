@@ -99,7 +99,7 @@ endif( TubeTK_USE_JsonCpp )
 install( TARGETS
   ${_compare_command_targets}
   DESTINATION ${TubeTK_INSTALL_BIN_DIR}
-  COMPONENT RUNTIME )
+  COMPONENT Runtime )
 
 TubeTKMacroInstallPlugins( TubeTKCommon )
 
