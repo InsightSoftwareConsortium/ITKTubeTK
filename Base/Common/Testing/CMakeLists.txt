@@ -66,6 +66,11 @@ include_directories(
 add_executable( tubeBaseCommonHeaderTest tubeBaseCommonHeaderTest.cxx )
 target_link_libraries( tubeBaseCommonHeaderTest ${ITK_LIBRARIES} )
 
+set( no_install_option )
+if( NOT TubeTK_INSTALL_DEVELOPMENT )
+  set( no_install_option NO_INSTALL )
+endif()
+
 SEMMacroBuildCLI(
   NAME tubeBaseCommonTests
   ADDITIONAL_SRCS
@@ -75,8 +80,8 @@ SEMMacroBuildCLI(
     ${ITK_LIBRARIES}
     ${JsonCpp_LIBRARIES}
     TubeCLI TubeTKCommon
-  INSTALL_RUNTIME_DESTINATION bin
   EXECUTABLE_ONLY
+  ${no_install_option}
   )
 
 add_test( NAME tubeBaseCommonHeaderTest COMMAND ${BASE_COMMON_HEADER_TEST} )
@@ -109,7 +114,7 @@ Midas3FunctionAddTest( NAME ImageCompareCommand-Test2
     -i 50
     -t MIDAS{im0001.crop.mha.md5}
     -b MIDAS{im0001_n10.crop.mha.md5} )
-  
+
 Midas3FunctionAddTest( NAME ImageCompareCommand-Test3
   COMMAND ${IMAGECOMPARE_EXE}
     -t MIDAS{im0001.mha.md5}

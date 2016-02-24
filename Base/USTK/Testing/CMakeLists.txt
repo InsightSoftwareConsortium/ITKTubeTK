@@ -47,6 +47,11 @@ set( tubeBaseUSTK_SRCS
   itktubeInnerOpticToPlusImageReaderTest.cxx
   itktubeMarkDuplicateFramesInvalidImageFilterTest.cxx )
 
+set( no_install_option )
+if( NOT TubeTK_INSTALL_DEVELOPMENT )
+  set( no_install_option NO_INSTALL )
+endif()
+
 SEMMacroBuildCLI(
   NAME tubeBaseUSTKTests
   ADDITIONAL_SRCS
@@ -55,8 +60,8 @@ SEMMacroBuildCLI(
   TARGET_LIBRARIES
     TubeCLI TubeTKUSTK
     ${ITK_LIBRARIES} ITKIOMeta
-  INSTALL_RUNTIME_DESTINATION bin
   EXECUTABLE_ONLY
+  ${no_install_option}
   )
 
 Midas3FunctionAddTest( NAME itkLabelMapToAcousticImpedanceImageFilterTest

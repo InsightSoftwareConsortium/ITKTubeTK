@@ -92,11 +92,14 @@ if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )
 
-install( FILES
-  ${TubeTK_Base_Filtering_H_Files}
-  ${TubeTK_Base_Filtering_HXX_Files}
-  DESTINATION include )
+if( TubeTK_INSTALL_DEVELOPMENT )
+  install( FILES
+    ${TubeTK_Base_Filtering_H_Files}
+    ${TubeTK_Base_Filtering_HXX_Files}
+    DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
+    COMPONENT Development )
 
-TubeTKMacroInstallPlugins( TubeTKFiltering )
+  TubeTKMacroInstallPlugins( TubeTKFiltering )
+endif()
 
 set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKFiltering )

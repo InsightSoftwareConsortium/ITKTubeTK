@@ -53,8 +53,7 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ITKStatistics ITKOptimizers ITKIOTransformBase
-    TubeCLI TubeTKCommon TubeTKNumerics TubeTKRegistration
-  INSTALL_RUNTIME_DESTINATION bin )
+    TubeCLI TubeTKCommon TubeTKNumerics TubeTKRegistration )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

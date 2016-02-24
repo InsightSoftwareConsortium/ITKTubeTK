@@ -57,8 +57,7 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects
-    TubeCLI
-  INSTALL_RUNTIME_DESTINATION bin )
+    TubeCLI )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

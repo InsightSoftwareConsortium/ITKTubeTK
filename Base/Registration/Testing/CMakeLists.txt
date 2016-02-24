@@ -72,6 +72,11 @@ if( TubeTK_USE_VTK )
     ${VTK_LIBRARIES} )
 endif( TubeTK_USE_VTK )
 
+set( no_install_option )
+if( NOT TubeTK_INSTALL_DEVELOPMENT )
+  set( no_install_option NO_INSTALL )
+endif()
+
 SEMMacroBuildCLI(
   NAME tubeBaseRegistrationTests
   ADDITIONAL_SRCS
@@ -81,8 +86,8 @@ SEMMacroBuildCLI(
     TubeCLI TubeTKFiltering TubeTKRegistration
     ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects ITKOptimizers
     ${tubeBaseRegistration_ADDITIONAL_LIBRARIES}
-  INSTALL_RUNTIME_DESTINATION bin
   EXECUTABLE_ONLY
+  ${no_install_option}
   )
 
 if( TubeTK_USE_VTK )

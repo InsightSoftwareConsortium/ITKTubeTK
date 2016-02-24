@@ -54,8 +54,6 @@ target_link_libraries( TubeTKCommon
 target_include_directories( TubeTKCommon PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR} )
 
-TubeTKMacroInstallPlugins( TubeTKCommon )
-
 SEMMacroBuildCLI(
   NAME "ImageCompareCommand"
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
@@ -80,10 +78,15 @@ if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )
 
-install( FILES
-  ${TubeTK_Base_Common_H_Files}
-  ${TubeTK_Base_Common_HXX_Files}
-  DESTINATION include )
+if( TubeTK_INSTALL_DEVELOPMENT )
+  install( FILES
+    ${TubeTK_Base_Common_H_Files}
+    ${TubeTK_Base_Common_HXX_Files}
+    DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
+    COMPONENT Development )
+
+  TubeTKMacroInstallPlugins( TubeTKCommon )
+endif()
 
 set(_compare_command_targets
   ImageCompareCommand
@@ -95,9 +98,7 @@ endif( TubeTK_USE_JsonCpp )
 
 install( TARGETS
   ${_compare_command_targets}
-  DESTINATION bin
-  COMPONENT RUNTIME )
-
-TubeTKMacroInstallPlugins( TubeTKCommon )
+  DESTINATION ${TubeTK_INSTALL_BIN_DIR}
+  COMPONENT Runtime )
 
 set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKCommon )

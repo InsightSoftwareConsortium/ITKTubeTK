@@ -23,9 +23,6 @@
 
 set( CMAKE_MODULE_PATH ${TubeTK_SOURCE_DIR}/CMake/Superbuild ${CMAKE_MODULE_PATH} )
 
-include( ExternalProject )
-include( TubeTKExternalProjectDependency )
-
 set( base "${CMAKE_BINARY_DIR}" )
 set_property( DIRECTORY PROPERTY EP_BASE ${base} )
 

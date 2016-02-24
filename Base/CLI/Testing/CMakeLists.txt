@@ -71,6 +71,11 @@ if( TubeTK_USE_JsonCpp )
     ${JsonCpp_LIBRARIES} )
 endif( TubeTK_USE_JsonCpp )
 
+set(no_install_option )
+if(NOT TubeTK_INSTALL_DEVELOPMENT)
+  set(no_install_option NO_INSTALL)
+endif()
+
 SEMMacroBuildCLI(
   NAME tubeBaseCLITests
   ADDITIONAL_SRCS
@@ -78,8 +83,8 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${tubeBaseCLITests_TARGET_LIBRARIES}
-  INSTALL_RUNTIME_DESTINATION bin
   EXECUTABLE_ONLY
+  ${no_install_option}
   )
 
 add_test( NAME tubeBaseCLIHeaderTest COMMAND ${BASE_CLI_HEADER_TEST})

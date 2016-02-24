@@ -58,8 +58,7 @@ SEMMacroBuildCLI(
     ${ITK_LIBRARIES}
     TubeCLI TubeTKCommon
   INCLUDE_DIRECTORIES
-    ${Boost_INCLUDE_DIRS}
-  INSTALL_RUNTIME_DESTINATION bin )
+    ${Boost_INCLUDE_DIRS} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

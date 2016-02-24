@@ -41,6 +41,9 @@ if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )
 
-install( FILES
-  ${TubeTK_Base_CLI_H_Files}
-  DESTINATION include )
+if( TubeTK_INSTALL_DEVELOPMENT )
+  install( FILES
+    ${TubeTK_Base_CLI_H_Files}
+    DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
+    COMPONENT Development )
+endif()
