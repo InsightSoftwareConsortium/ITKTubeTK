@@ -77,24 +77,24 @@ mark_as_superbuild( VARS
 #
 # TubeTK applications install directories
 #
-tubetk_set_if_not_defined( SlicerExecutionModel_CLI_RUNTIME_INSTALL_DIRECTORY
+tubetk_set_if_not_defined( SlicerExecutionModel_CLI_INSTALL_RUNTIME_DESTINATION
   ${TubeTK_INSTALL_BIN_DIR} )
-tubetk_set_if_not_defined( SlicerExecutionModel_CLI_LIBRARY_INSTALL_DIRECTORY
+tubetk_set_if_not_defined( SlicerExecutionModel_CLI_INSTALL_LIBRARY_DESTINATION
   ${TubeTK_INSTALL_LIB_DIR} )
-tubetk_set_if_not_defined( SlicerExecutionModel_CLI_INCLUDE_INSTALL_DIRECTORY
+tubetk_set_if_not_defined( SlicerExecutionModel_CLI_INSTALL_INCLUDE_DESTINATION
   ${TubeTK_INSTALL_INCLUDE_DIR} )
-tubetk_set_if_not_defined( SlicerExecutionModel_CLI_SHARE_INSTALL_DIRECTORY
+tubetk_set_if_not_defined( SlicerExecutionModel_CLI_INSTALL_SHARE_DESTINATION
   ${TubeTK_INSTALL_SHARE_DIR} )
-tubetk_set_if_not_defined( SlicerExecutionModel_CLI_ARCHIVE_INSTALL_DIRECTORY
+tubetk_set_if_not_defined( SlicerExecutionModel_CLI_INSTALL_ARCHIVE_DESTINATION
   ${TubeTK_INSTALL_LIB_DIR} )
 
 # Pass value to TubeTK inner build
 mark_as_superbuild( VARS
-  SlicerExecutionModel_CLI_RUNTIME_INSTALL_DIRECTORY
-  SlicerExecutionModel_CLI_LIBRARY_INSTALL_DIRECTORY
-  SlicerExecutionModel_CLI_INCLUDE_INSTALL_DIRECTORY
-  SlicerExecutionModel_CLI_SHARE_INSTALL_DIRECTORY
-  SlicerExecutionModel_CLI_ARCHIVE_INSTALL_DIRECTORY )
+  SlicerExecutionModel_CLI_INSTALL_RUNTIME_DESTINATION
+  SlicerExecutionModel_CLI_INSTALL_LIBRARY_DESTINATION
+  SlicerExecutionModel_CLI_INSTALL_INCLUDE_DESTINATION
+  SlicerExecutionModel_CLI_INSTALL_SHARE_DESTINATION
+  SlicerExecutionModel_CLI_INSTALL_ARCHIVE_DESTINATION )
 
 #
 # Default output directories
@@ -568,7 +568,7 @@ endif( TubeTK_USE_CPPCHECK )
 
 # Set SlicerExecutionModel output directories absolute path using install directory relative path.
 foreach(type RUNTIME LIBRARY INCLUDE SHARE ARCHIVE)
-  set(SlicerExecutionModel_CLI_${type}_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${SlicerExecutionModel_CLI_${type}_INSTALL_DIRECTORY})
+  set(SlicerExecutionModel_CLI_${type}_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${SlicerExecutionModel_CLI_INSTALL_${type}_DESTINATION})
 endforeach()
 
 configure_file ( "${TubeTK_SOURCE_DIR}/CMake/tubetkConfigure.h.in"
