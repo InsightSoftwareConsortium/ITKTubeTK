@@ -70,7 +70,7 @@ if( TubeTK_INSTALL_DEVELOPMENT )
   install( FILES
     ${TubeTK_Base_USTK_H_Files}
     ${TubeTK_Base_USTK_HXX_Files}
-    DESTINATION include
+    DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
     COMPONENT Development )
 endif()
 

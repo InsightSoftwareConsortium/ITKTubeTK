@@ -84,7 +84,7 @@ if( TubeTK_INSTALL_DEVELOPMENT )
   install( FILES
     ${TubeTK_Base_Common_H_Files}
     ${TubeTK_Base_Common_HXX_Files}
-    DESTINATION include
+    DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
     COMPONENT Development )
 endif()
 
@@ -98,7 +98,7 @@ endif( TubeTK_USE_JsonCpp )
 
 install( TARGETS
   ${_compare_command_targets}
-  DESTINATION bin
+  DESTINATION ${TubeTK_INSTALL_BIN_DIR}
   COMPONENT RUNTIME )
 
 TubeTKMacroInstallPlugins( TubeTKCommon )
