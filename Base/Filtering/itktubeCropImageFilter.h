@@ -21,6 +21,13 @@
 #include "itkImage.h"
 #include "itkExtractImageFilter.h"
 
+// Forward declare itkTubeTK class to allow friendship
+namespace tube
+{
+  template< typename TInputImage, typename TOutputImage >
+  class CropImage;
+}
+
 namespace itk
 {
 namespace tube
@@ -118,6 +125,7 @@ public:
 protected:
   CropImageFilter( void );
   ~CropImageFilter() {}
+
   void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
 
   void GenerateOutputInformation() ITK_OVERRIDE;
@@ -143,6 +151,10 @@ private:
   bool                           m_UseROIBoundary;
   float                          m_ProgressStart;
   float                          m_ProgressRange;
+
+  /** friendship facilitating itkTukeTK integration */
+  template< TInputImage, TOutputImage >
+  friend class ::tube::CropImage;
 };
 } // End namespace tube
 } // End namespace itk
