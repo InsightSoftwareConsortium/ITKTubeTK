@@ -59,9 +59,6 @@ target_link_libraries( TubeTKUSTK PUBLIC TubeTKSegmentation )
 target_include_directories( TubeTKUSTK PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR} )
 
-set( TARGETS TubeTKUSTK )
-TubeTKMacroInstallPlugins( ${TARGETS} )
-
 if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )
@@ -72,6 +69,8 @@ if( TubeTK_INSTALL_DEVELOPMENT )
     ${TubeTK_Base_USTK_HXX_Files}
     DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
     COMPONENT Development )
+
+  TubeTKMacroInstallPlugins( TubeTKUSTK )
 endif()
 
 set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKUSTK )

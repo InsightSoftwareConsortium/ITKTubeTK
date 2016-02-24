@@ -60,8 +60,8 @@ if( TubeTK_INSTALL_DEVELOPMENT )
     ${TubeTK_Base_Segmentation_HXX_Files}
     DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
     COMPONENT Development )
-endif()
 
-TubeTKMacroInstallPlugins( TubeTKSegmentation )
+  TubeTKMacroInstallPlugins( TubeTKSegmentation )
+endif()
 
 set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKSegmentation )

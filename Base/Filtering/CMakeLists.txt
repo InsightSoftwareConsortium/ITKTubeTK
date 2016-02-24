@@ -98,8 +98,8 @@ if( TubeTK_INSTALL_DEVELOPMENT )
     ${TubeTK_Base_Filtering_HXX_Files}
     DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
     COMPONENT Development )
-endif()
 
-TubeTKMacroInstallPlugins( TubeTKFiltering )
+  TubeTKMacroInstallPlugins( TubeTKFiltering )
+endif()
 
 set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKFiltering )

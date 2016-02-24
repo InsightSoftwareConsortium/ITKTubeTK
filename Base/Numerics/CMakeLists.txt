@@ -93,8 +93,8 @@ if( TubeTK_INSTALL_DEVELOPMENT )
     ${TubeTK_Base_Numerics_HXX_Files}
     DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
     COMPONENT Development )
-endif()
 
-TubeTKMacroInstallPlugins( TubeTKNumerics )
+  TubeTKMacroInstallPlugins( TubeTKNumerics )
+endif()
 
 set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKNumerics )
