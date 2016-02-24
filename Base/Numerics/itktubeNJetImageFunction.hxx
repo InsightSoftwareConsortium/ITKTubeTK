@@ -458,29 +458,76 @@ EvaluateAtContinuousIndex( const ContinuousIndexType & cIndex,
   Index<ImageDimension> xMax;
   Index<ImageDimension> xShift;
 
+  bool boundary = false;
+  Index<ImageDimension> xShiftBoundary;
+
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    xMin[i] = ( int )vnl_math_floor( cIndex[i] - ( scale * m_Extent
+    xMin[i] = ( int ) vnl_math_floor( cIndex[i] - ( scale * m_Extent
       / m_InputImageSpacing[i] ) );
-    if( xMin[i]<m_InputImageMinX[i] )
+    if( xMin[i] < m_InputImageMinX[i] )
       {
-      xMin[i]=m_InputImageMinX[i];
+      boundary = true;
       }
     xShift[i] = xMin[i];
 
-    xMax[i] = ( int )vnl_math_ceil( cIndex[i] + ( scale * m_Extent
+    xMax[i] = ( int ) vnl_math_ceil( cIndex[i] + ( scale * m_Extent
       / m_InputImageSpacing[i] ) );
-    if( xMax[i] > ( int ) m_InputImageMaxX[i] )
+    if( xMax[i] > m_InputImageMaxX[i] )
       {
-      xMax[i]= m_InputImageMaxX[i];
+      boundary = true;
       }
     }
 
   bool done = false;
+  bool maskIsSet = true;
   while( !done )
     {
-    if( !m_UseInputImageMask ||
-      ( m_UseInputImageMask && m_InputImageMask->GetPixel( xShift ) > 0 ) )
+    if( boundary )
+      {
+      for( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        if( xShift[i] < m_InputImageMinX[i] )
+          {
+          xShiftBoundary[i] = m_InputImageMinX[i];
+          }
+        else if( xShift[i] > m_InputImageMaxX[i] )
+          {
+          xShiftBoundary[i] = m_InputImageMaxX[i];
+          }
+        else
+          {
+          xShiftBoundary[i] = xShift[i];
+          }
+        }
+      if( m_UseInputImageMask )
+        {
+        if( m_InputImageMask->GetPixel( xShiftBoundary ) > 0 )
+          {
+          maskIsSet = true;
+          }
+        else
+          {
+          maskIsSet = false;
+          }
+        }
+      }
+    else
+      {
+      if( m_UseInputImageMask )
+        {
+        if( m_InputImageMask->GetPixel( xShift ) > 0 )
+          {
+          maskIsSet = true;
+          }
+        else
+          {
+          maskIsSet = false;
+          }
+        }
+      }
+
+    if( maskIsSet )
       {
       physDist = 0;
       for( unsigned int i = 0; i <  ImageDimension; i++ )
@@ -491,7 +538,14 @@ EvaluateAtContinuousIndex( const ContinuousIndexType & cIndex,
 
       if( physDist <= physKernelRadiusSquared )
         {
-        pixelValue = m_InputImage->GetPixel( xShift );
+        if( boundary )
+          {
+          pixelValue = m_InputImage->GetPixel( xShiftBoundary );
+          }
+        else
+          {
+          pixelValue = m_InputImage->GetPixel( xShift );
+          }
         expValue = vcl_exp( physGaussFactor * physDist );
 
         v += pixelValue * expValue;
@@ -785,35 +839,76 @@ DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
   Index<ImageDimension> xMax;
   Index<ImageDimension> xShift;
 
+  bool boundary = false;
+  Index<ImageDimension> xShiftBoundary;
+
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     xMin[i] = ( int ) vnl_math_floor( cIndex[i] - ( scale * m_Extent
       / m_InputImageSpacing[i] ) );
     if( xMin[i]<m_InputImageMinX[i] )
       {
-      xMin[i]=m_InputImageMinX[i];
+      boundary = true;
       }
     xShift[i] = xMin[i];
-    //int xRadius = static_cast< int >( vnl_math_floor(
-      //cIndex[i] - xMin[i] ) );
 
-    //xMax[i] = ( int ) vnl_math_ceil( cIndex[i] + xRadius );
     xMax[i] = ( int ) vnl_math_ceil( cIndex[i] + ( scale * m_Extent
       / m_InputImageSpacing[i] ) );
     if( xMax[i] > ( int ) m_InputImageMaxX[i] )
       {
-      xMax[i]= m_InputImageMaxX[i];
-      //xRadius = ( int ) vnl_math_floor( xMax[i] - cIndex[i] );
-      //xMin[i] = ( int ) vnl_math_floor( cIndex[i] - xRadius );
-      //xShift[i] = xMin[i];
+      boundary = true;
       }
     }
 
   bool done = false;
+  bool maskIsSet = true;
   while( !done )
     {
-    if( !m_UseInputImageMask ||
-      ( m_UseInputImageMask && m_InputImageMask->GetPixel( xShift ) > 0 ) )
+    if( boundary )
+      {
+      for( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        if( xShift[i] < m_InputImageMinX[i] )
+          {
+          xShiftBoundary[i] = m_InputImageMinX[i];
+          }
+        else if( xShift[i] > m_InputImageMaxX[i] )
+          {
+          xShiftBoundary[i] = m_InputImageMaxX[i];
+          }
+        else
+          {
+          xShiftBoundary[i] = xShift[i];
+          }
+        }
+      if( m_UseInputImageMask )
+        {
+        if( m_InputImageMask->GetPixel( xShiftBoundary ) > 0 )
+          {
+          maskIsSet = true;
+          }
+        else
+          {
+          maskIsSet = false;
+          }
+        }
+      }
+    else
+      {
+      if( m_UseInputImageMask )
+        {
+        if( m_InputImageMask->GetPixel( xShift ) > 0 )
+          {
+          maskIsSet = true;
+          }
+        else
+          {
+          maskIsSet = false;
+          }
+        }
+      }
+
+    if( maskIsSet )
       {
       physDist = 0;
       for( unsigned int i = 0; i <  ImageDimension; i++ )
@@ -824,7 +919,14 @@ DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
 
       if( physDist <= physKernelRadiusSquared )
         {
-        pixelValue = m_InputImage->GetPixel( xShift );
+        if( boundary )
+          {
+          pixelValue = m_InputImage->GetPixel( xShiftBoundary );
+          }
+        else
+          {
+          pixelValue = m_InputImage->GetPixel( xShift );
+          }
         expValue = vcl_exp( physGaussFactor * physDist );
 
         v += pixelValue * expValue;
@@ -1383,35 +1485,76 @@ JetAtContinuousIndex( const ContinuousIndexType & cIndex, VectorType & d,
   Index<ImageDimension> xMax;
   Index<ImageDimension> xShift;
 
+  bool boundary = false;
+  Index<ImageDimension> xShiftBoundary;
+
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     xMin[i] = ( int ) vnl_math_floor( cIndex[i] - ( scale * m_Extent
       / m_InputImageSpacing[i] ) );
     if( xMin[i] < m_InputImageMinX[i] )
       {
-      xMin[i] = m_InputImageMinX[i];
+      boundary = true;
       }
     xShift[i] = xMin[i];
-    //int xRadius = static_cast<int>( vnl_math_floor( cIndex[i]
-      //- xMin[i] ) );
 
-    //xMax[i] = ( int ) vnl_math_ceil( cIndex[i] + xRadius );
     xMax[i] = ( int ) vnl_math_ceil( cIndex[i] + ( scale * m_Extent
       / m_InputImageSpacing[i] ) );
     if( xMax[i] > m_InputImageMaxX[i] )
       {
-      xMax[i] = m_InputImageMaxX[i];
-      //xRadius = ( int ) vnl_math_floor( xMax[i] - cIndex[i] );
-      //xMin[i] = ( int ) vnl_math_floor( cIndex[i] - xRadius );
-      //xShift[i] = xMin[i];
+      boundary = true;
       }
     }
 
   bool done = false;
+  bool maskIsSet = true;
   while( !done )
     {
-    if( !m_UseInputImageMask ||
-      ( m_UseInputImageMask && m_InputImageMask->GetPixel( xShift ) > 0 ) )
+    if( boundary )
+      {
+      for( unsigned int i = 0; i < ImageDimension; i++ )
+        {
+        if( xShift[i] < m_InputImageMinX[i] )
+          {
+          xShiftBoundary[i] = m_InputImageMinX[i];
+          }
+        else if( xShift[i] > m_InputImageMaxX[i] )
+          {
+          xShiftBoundary[i] = m_InputImageMaxX[i];
+          }
+        else
+          {
+          xShiftBoundary[i] = xShift[i];
+          }
+        }
+      if( m_UseInputImageMask )
+        {
+        if( m_InputImageMask->GetPixel( xShiftBoundary ) > 0 )
+          {
+          maskIsSet = true;
+          }
+        else
+          {
+          maskIsSet = false;
+          }
+        }
+      }
+    else
+      {
+      if( m_UseInputImageMask )
+        {
+        if( m_InputImageMask->GetPixel( xShift ) > 0 )
+          {
+          maskIsSet = true;
+          }
+        else
+          {
+          maskIsSet = false;
+          }
+        }
+      }
+
+    if( maskIsSet )
       {
       physDist = 0;
       for( unsigned int i = 0; i <  ImageDimension; i++ )
@@ -1422,7 +1565,14 @@ JetAtContinuousIndex( const ContinuousIndexType & cIndex, VectorType & d,
 
       if( physDist <= physKernelRadiusSquared )
         {
-        pixelValue = m_InputImage->GetPixel( xShift );
+        if( boundary )
+          {
+          pixelValue = m_InputImage->GetPixel( xShiftBoundary );
+          }
+        else
+          {
+          pixelValue = m_InputImage->GetPixel( xShift );
+          }
 
         expValue = vcl_exp( physGaussFactor * physDist );
         v += pixelValue * expValue;

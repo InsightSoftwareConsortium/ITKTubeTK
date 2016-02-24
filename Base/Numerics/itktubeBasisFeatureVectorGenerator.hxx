@@ -400,7 +400,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 template< class TImage, class TLabelMap >
 void
 BasisFeatureVectorGenerator< TImage, TLabelMap >
-::GenerateBasis( void )
+::Update( void )
 {
   itk::TimeProbesCollectorBase timeCollector;
 
@@ -460,6 +460,8 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
     objectDelta[i].set_size( numInputFeatures );
     objectDelta[i].fill( 0 );
     }
+
+  m_InputFeatureVectorGenerator->Update();
 
   unsigned int valC = 0;
   bool found = false;
@@ -668,6 +670,13 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 
   timeCollector.Stop( "GenerateBasis" );
 
+  timeCollector.Start( "Whiten" );
+  if( this->GetUpdateWhitenStatisticsOnUpdate() )
+    {
+    this->UpdateWhitenStatistics();
+    }
+  timeCollector.Stop( "Whiten" );
+
   timeCollector.Report();
 }
 
@@ -737,6 +746,11 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
       {
       featureVector[i] += vBasis[j] * vInput[j];
       }
+    if( this->GetWhitenStdDev( i ) > 0 )
+      {
+      featureVector[i] = ( featureVector[i] - this->GetWhitenMean( i ) )
+        / this->GetWhitenStdDev( i );
+      }
     }
   return featureVector;
 }
@@ -758,19 +772,24 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
     vBasis = this->GetBasisVector( featureNum );
     vInput = m_InputFeatureVectorGenerator->GetFeatureVector( indx );
 
-    FeatureValueType featureVector = 0;
+    FeatureValueType featureValue = 0;
     for( unsigned int j = 0; j < numInputFeatures; j++ )
       {
-      featureVector += vBasis[j] * vInput[j];
+      featureValue += vBasis[j] * vInput[j];
       }
-    return featureVector;
+    if( this->GetWhitenStdDev( featureNum ) > 0 )
+      {
+      featureValue = ( featureValue - this->GetWhitenMean( featureNum ) )
+        / this->GetWhitenStdDev( featureNum );
+      }
+    return featureValue;
     }
   else
     {
     std::cerr << "Basis feature " << featureNum << " does not exist."
       << std::endl;
-    FeatureValueType featureVector = 0;
-    return featureVector;
+    FeatureValueType featureValue = 0;
+    return featureValue;
     }
 }
 

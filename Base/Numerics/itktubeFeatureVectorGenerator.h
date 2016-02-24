@@ -60,19 +60,22 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     TImage::ImageDimension );
 
-  typedef float                                             FeatureValueType;
-  typedef vnl_vector< FeatureValueType >                    FeatureVectorType;
+  typedef float                                         FeatureValueType;
+  typedef vnl_vector< FeatureValueType >                FeatureVectorType;
+
   typedef Image< FeatureValueType, TImage::ImageDimension > FeatureImageType;
 
-  typedef double                   ValueType;
-  typedef std::vector< ValueType > ValueListType;
+  typedef double                                        ValueType;
+  typedef std::vector< ValueType >                      ValueListType;
 
   void SetInput( typename ImageType::Pointer img );
   void AddInput( typename ImageType::Pointer img );
 
   unsigned int GetNumberOfInputImages() const;
 
-  void UpdateWhitenStatistics( void );
+  void SetUpdateWhitenStatisticsOnUpdate( bool
+    updateWhitenStatisticsOnUpdate );
+  bool GetUpdateWhitenStatisticsOnUpdate( void );
 
   void   SetWhitenMeans( const ValueListType & means );
   const  ValueListType & GetWhitenMeans( void ) const;
@@ -97,12 +100,16 @@ public:
   virtual typename FeatureImageType::Pointer GetFeatureImage(
     unsigned int num ) const;
 
+  virtual void Update( void );
+
 protected:
 
   FeatureVectorGenerator( void );
   virtual ~FeatureVectorGenerator( void );
 
   ImageListType                   m_InputImageList;
+
+  void UpdateWhitenStatistics( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
@@ -113,6 +120,7 @@ private:
   void operator = ( const Self & );      // Purposely not implemented
 
   //  Data
+  bool                            m_UpdateWhitenStatisticsOnUpdate;
   ValueListType                   m_WhitenMean;
   ValueListType                   m_WhitenStdDev;
 

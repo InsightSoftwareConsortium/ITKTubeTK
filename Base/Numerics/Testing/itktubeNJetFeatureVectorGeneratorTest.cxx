@@ -110,7 +110,7 @@ int itktubeNJetFeatureVectorGeneratorTest( int argc, char * argv[] )
   WriterType::Pointer writer2 = WriterType::New();
   writer2->SetFileName( argv[4] );
   writer2->SetUseCompression( true );
-  writer2->SetInput( filter->GetFeatureImage( 3 ) );
+  writer2->SetInput( filter->GetFeatureImage( 1 ) );
   try
     {
     writer2->Update();

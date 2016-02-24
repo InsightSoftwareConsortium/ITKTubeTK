@@ -75,7 +75,8 @@ int itktubeRidgeFFTFeatureVectorGeneratorTest( int argc, char * argv[] )
   filter->SetScales( scales );
   std::cout << filter << std::endl;
 
-  filter->GenerateData();
+  filter->SetUpdateWhitenStatisticsOnUpdate( true );
+  filter->Update();
 
   WriterType::Pointer imageFeature0Writer = WriterType::New();
   imageFeature0Writer->SetFileName( argv[2] );

@@ -381,7 +381,7 @@ RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::Update( void )
 {
   m_RidgeFeatureGenerator->SetUseIntensityOnly( m_UseIntensityOnly );
-  m_RidgeFeatureGenerator->GenerateData();
+  m_RidgeFeatureGenerator->Update();
 
   m_SeedFeatureGenerator->SetObjectId( m_RidgeId );
   m_SeedFeatureGenerator->AddObjectId( m_BackgroundId );
@@ -393,9 +393,11 @@ RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 
   if( m_TrainClassifier )
     {
-    m_SeedFeatureGenerator->UpdateWhitenStatistics();
+    m_RidgeFeatureGenerator->SetUpdateWhitenStatisticsOnUpdate( true );
+    m_RidgeFeatureGenerator->Update();
 
-    m_SeedFeatureGenerator->GenerateBasis();
+    m_SeedFeatureGenerator->SetUpdateWhitenStatisticsOnUpdate( true );
+    m_SeedFeatureGenerator->Update();
 
     for( unsigned int i=0; i<m_SeedFeatureGenerator->GetNumberOfFeatures();
       ++i )
