@@ -68,8 +68,7 @@ SEMMacroBuildCLI(
   ADDITIONAL_SRCS
     GraphKernel.cxx tubeShortestPathKernel.cxx tubeWLSubtreeKernel.cxx
   INCLUDE_DIRECTORIES
-    ${Boost_INCLUDE_DIRS}
-  INSTALL_RUNTIME_DESTINATION bin )
+    ${Boost_INCLUDE_DIRS} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

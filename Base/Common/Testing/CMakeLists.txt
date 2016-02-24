@@ -75,8 +75,8 @@ SEMMacroBuildCLI(
     ${ITK_LIBRARIES}
     ${JsonCpp_LIBRARIES}
     TubeCLI TubeTKCommon
-  INSTALL_RUNTIME_DESTINATION bin
   EXECUTABLE_ONLY
+  NO_INSTALL
   )
 
 add_test( NAME tubeBaseCommonHeaderTest COMMAND ${BASE_COMMON_HEADER_TEST} )

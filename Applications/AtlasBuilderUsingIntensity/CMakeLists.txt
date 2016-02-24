@@ -61,8 +61,7 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES}
-    TubeTKCommon TubeTKObjectDocuments
-  INSTALL_RUNTIME_DESTINATION bin )
+    TubeTKCommon TubeTKObjectDocuments )
 
 if( BUILD_TESTING )
   find_package( PythonInterp )

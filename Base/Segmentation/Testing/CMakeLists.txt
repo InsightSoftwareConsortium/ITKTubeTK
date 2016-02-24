@@ -79,7 +79,6 @@ SEMMacroBuildCLI(
   TARGET_LIBRARIES
     TubeCLI TubeTKSegmentation TubeTKFiltering TubeTKNumerics TubeTKIO TubeTKCommon
     ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects
-  INSTALL_RUNTIME_DESTINATION bin
   EXECUTABLE_ONLY
   )
 

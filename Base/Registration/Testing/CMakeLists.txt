@@ -81,7 +81,6 @@ SEMMacroBuildCLI(
     TubeCLI TubeTKFiltering TubeTKRegistration
     ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects ITKOptimizers
     ${tubeBaseRegistration_ADDITIONAL_LIBRARIES}
-  INSTALL_RUNTIME_DESTINATION bin
   EXECUTABLE_ONLY
   )
 

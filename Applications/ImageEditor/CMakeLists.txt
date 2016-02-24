@@ -107,8 +107,7 @@ SEMMacroBuildCLI(
     ${OPENGL_LIBRARIES}
     TubeTKFiltering
   INCLUDE_DIRECTORIES
-    ${${MODULE_NAME}_INCLUDE_DIRS}
-  INSTALL_RUNTIME_DESTINATION bin )
+    ${${MODULE_NAME}_INCLUDE_DIRS} )
 
 # Configure ImageEditorConfigure.h.
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/ImageEditorConfigure.h.in

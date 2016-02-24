@@ -93,7 +93,6 @@ SEMMacroBuildCLI(
     ${tubeBaseNumerics_External_Libraries}
     TubeCLI TubeTKCommon TubeTKFiltering TubeTKNumerics ${ITK_LIBRARIES}
     ITKIOMeta ITKIOHDF5 ITKOptimizers
-  INSTALL_RUNTIME_DESTINATION bin
   EXECUTABLE_ONLY
   )
 
