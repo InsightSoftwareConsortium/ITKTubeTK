@@ -65,6 +65,8 @@ public:
 
   typedef typename Superclass::FeatureImageType      FeatureImageType;
 
+  typedef typename Superclass::ValueListType         ValueListType;
+
   typedef typename Superclass::ImageType             ImageType;
 
   typedef typename Superclass::IndexType             IndexType;
