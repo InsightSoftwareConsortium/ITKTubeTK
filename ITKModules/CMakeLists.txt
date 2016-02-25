@@ -175,9 +175,11 @@ foreach( itk-module ${TubeTK_ITK_MODULES} )
         ${_module_HXX_Files}
         ${_module_CXX_Files} )
       target_link_libraries( ${itk-module} ${ITK_LIBRARIES} )
-      # XXX Ensure ITKTubeTK link agaist the required base libraries
-      if(itk-module STREQUAL "ITKTubeTK")
-        target_link_libraries( ${itk-module} TubeTKFiltering )
+      # Ensure ITKTubeTK link against the required base libraries
+      if( itk-module STREQUAL "ITKTubeTK" )
+        # Include depends file to set ITKTubeTK_LIBRARIES in current scope
+        include( ${itk-module}/tubetk-depends.cmake )
+        target_link_libraries( ${itk-module} ${ITKTubeTK_LIBRARIES} )
       endif()
 
       # Generate the export macro header for symbol visibility/Windows DLL declspec

@@ -24,7 +24,7 @@
 // Forward declare itkTubeTK class to allow friendship
 namespace tube
 {
-  template< typename TInputImage, typename TOutputImage >
+  template< typename tube_TInputImage, typename tube_TOutputImage >
   class CropImage;
 }
 
@@ -153,7 +153,7 @@ private:
   float                          m_ProgressRange;
 
   /** friendship facilitating itkTukeTK integration */
-  template< TInputImage, TOutputImage >
+  template< typename tube_TInputImage, typename tube_TOutputImage >
   friend class ::tube::CropImage;
 };
 } // End namespace tube
