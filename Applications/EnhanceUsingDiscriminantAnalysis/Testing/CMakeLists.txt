@@ -31,9 +31,9 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-set( IMAGECOMPARE_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
+set( IMAGECOMPARE_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompare> )
 
-set( TEXTCOMPARE_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
+set( TEXTCOMPARE_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompare> )
 
 # Test1
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1

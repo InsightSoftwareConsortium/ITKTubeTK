@@ -33,7 +33,7 @@ set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 set( IMAGECOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompare> )
 
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}

@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: TextCompareCommand.cxx, v $
+  Module:    $RCSfile: TextCompare.cxx, v $
   Language:  C++
   Date:      $Date: 2008-11-09 18:18:52 $
   Version:   $Revision: 1.12 $
