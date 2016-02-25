@@ -33,33 +33,41 @@ if(NOT ITK_SOURCE_DIR)
   include( ${ITK_USE_FILE} )
 endif()
 
-set(_compare_command_targets
-  ImageCompareCommand
-  TextCompareCommand )
-
+#-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
-  NAME "ImageCompareCommand"
+  NAME ImageCompareCommand
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES ${ITK_LIBRARIES} TubeTKCommon
   INCLUDE_DIRECTORIES
     ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration
     ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration/ITKRegistrationHelper )
 
+#-----------------------------------------------------------------------------
 if( TubeTK_USE_JsonCpp )
-  list(APPEND _compare_command_targets
-    JsonCompareCommand )
-  add_executable( JsonCompareCommand JsonCompareCommand.cxx )
-  target_link_libraries( JsonCompareCommand
+
+  set( _toolname JsonCompareCommand )
+
+  message(STATUS "Configuring executable: ${_toolname}")
+  add_executable( ${_toolname} ${_toolname}.cxx )
+  target_link_libraries( ${_toolname}
     ${ITK_LIBRARIES}
     ITKIOMeta
     ITKMetaIO
     ${JsonCpp_LIBRARIES} )
+  install( TARGETS
+    ${_toolname}
+    DESTINATION ${TubeTK_INSTALL_BIN_DIR}
+    COMPONENT Runtime )
+
 endif( TubeTK_USE_JsonCpp )
 
-add_executable( TextCompareCommand TextCompareCommand.cxx )
-target_link_libraries( TextCompareCommand ${ITK_LIBRARIES} ITKIOMeta ITKMetaIO)
+#-----------------------------------------------------------------------------
+set( _toolname TextCompareCommand )
+message(STATUS "Configuring executable: ${_toolname}")
 
+add_executable( ${_toolname} ${_toolname}.cxx )
+target_link_libraries( ${_toolname} ${ITK_LIBRARIES} ITKIOMeta ITKMetaIO)
 install( TARGETS
-  ${_compare_command_targets}
+  ${_toolname}
   DESTINATION ${TubeTK_INSTALL_BIN_DIR}
   COMPONENT Runtime )
