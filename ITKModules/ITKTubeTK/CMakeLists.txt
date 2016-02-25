@@ -14,8 +14,11 @@ else()
   set( TubeTK_INSTALL_INCLUDE_DIR ${ITK_INSTALL_INCLUDE_DIR} )
   set( TubeTK_BUILD_TESTING 0 )
 
+  # Include depends file to set ITKTubeTK_DEPENDS in current scope
+  include( tubetk-depends.cmake )
+
   # Explicitly enable TubeTKBase libraries needed by ITKTubeTK
-  foreach( name Common Numerics Filtering )
+  foreach( name ${${PROJECT_NAME}_DEPENDS} )
     set( TubeTK_BUILD_BASE_${name} 1 )
   endforeach()
 
