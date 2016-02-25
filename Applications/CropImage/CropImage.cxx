@@ -20,11 +20,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
+// TubeTK includes
 #include "tubeMessage.h"
 #include "tubeCLIProgressReporter.h"
 
-#include "itktubeCropImageFilter.h"
+// ITKTubeTK includes
+#include "tubeCropImage.h"
 
+// ITK includes
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionConstIterator.h>
@@ -96,7 +100,7 @@ int DoIt( int argc, char * argv[] )
 
     timeCollector.Start( "CropFilter" );
 
-    typedef itk::tube::CropImageFilter< ImageType, ImageType > CropFilterType;
+    typedef tube::CropImage< ImageType, ImageType > CropFilterType;
     typename CropFilterType::Pointer cropFilter = CropFilterType::New();
 
     cropFilter->SetInput( reader->GetOutput() );
@@ -242,7 +246,7 @@ int DoIt( int argc, char * argv[] )
       {
       //Create new instance of cropFilter each time we extract a portion of
       // the image to reset parameters
-      typedef itk::tube::CropImageFilter<ImageType, ImageType> CropFilterType;
+      typedef tube::CropImage<ImageType, ImageType> CropFilterType;
       typename CropFilterType::Pointer cropFilter = CropFilterType::New();
       cropFilter->SetInput( inputImage );
 

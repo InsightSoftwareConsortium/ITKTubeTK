@@ -23,11 +23,10 @@
 
 project( TubeTKCommon )
 
-find_package( SlicerExecutionModel REQUIRED )
-include( ${SlicerExecutionModel_USE_FILE} )
-
-find_package( ITK REQUIRED )
-include( ${ITK_USE_FILE} )
+if(NOT ITK_SOURCE_DIR)
+  find_package( ITK REQUIRED )
+  include( ${ITK_USE_FILE} )
+endif()
 
 set( TubeTK_Base_Common_H_Files
   itktubeDifferenceImageFilter.h
@@ -45,38 +44,18 @@ set( TubeTK_Base_Common_CXX_Files
   tubeIndent.cxx
   tubeObject.cxx )
 
-add_library( TubeTKCommon STATIC
+add_library( ${PROJECT_NAME} STATIC
   ${TubeTK_Base_Common_H_Files}
   ${TubeTK_Base_Common_HXX_Files}
   ${TubeTK_Base_Common_CXX_Files} )
-target_link_libraries( TubeTKCommon
+target_link_libraries( ${PROJECT_NAME}
   ${ITK_LIBRARIES} )
-target_include_directories( TubeTKCommon PUBLIC
-  ${CMAKE_CURRENT_SOURCE_DIR} )
+target_include_directories( ${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )
 
-SEMMacroBuildCLI(
-  NAME "ImageCompareCommand"
-  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES}
-  INCLUDE_DIRECTORIES
-    ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration
-    ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration/ITKRegistrationHelper )
-
-if( TubeTK_USE_JsonCpp )
-  add_executable( JsonCompareCommand JsonCompareCommand.cxx )
-  target_link_libraries( JsonCompareCommand
-    ${ITK_LIBRARIES}
-    ITKIOMeta
-    ITKMetaIO
-    ${JsonCpp_LIBRARIES} )
-endif( TubeTK_USE_JsonCpp )
-
-add_executable( TextCompareCommand TextCompareCommand.cxx )
-target_link_libraries( TextCompareCommand ${ITK_LIBRARIES} ITKIOMeta ITKMetaIO)
-
-if( BUILD_TESTING )
+if( TubeTK_BUILD_TESTING )
   add_subdirectory( Testing )
-endif( BUILD_TESTING )
+endif( TubeTK_BUILD_TESTING )
 
 if( TubeTK_INSTALL_DEVELOPMENT )
   install( FILES
@@ -85,20 +64,7 @@ if( TubeTK_INSTALL_DEVELOPMENT )
     DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
     COMPONENT Development )
 
-  TubeTKMacroInstallPlugins( TubeTKCommon )
+  TubeTKMacroInstallPlugins( ${PROJECT_NAME} )
 endif()
 
-set(_compare_command_targets
-  ImageCompareCommand
-  TextCompareCommand )
-if( TubeTK_USE_JsonCpp )
-  list(APPEND _compare_command_targets
-    JsonCompareCommand )
-endif( TubeTK_USE_JsonCpp )
-
-install( TARGETS
-  ${_compare_command_targets}
-  DESTINATION ${TubeTK_INSTALL_BIN_DIR}
-  COMPONENT Runtime )
-
-set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKCommon )
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS ${PROJECT_NAME} )

@@ -23,6 +23,27 @@
 
 project( TubeTKNumerics )
 
+set( ${PROJECT_NAME}_ITK_COMPONENTS
+  ITKCommon
+  ITKHDF5
+  ITKIOImageBase
+  ITKImageFunction
+  ITKImageIntensity
+  ITKOptimizers
+  ITKSmoothing
+  ITKSpatialObjects
+  ITKStatistics
+  ITKTransform )
+
+if(NOT ITK_SOURCE_DIR)
+  find_package(ITK COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
+  include(${ITK_USE_FILE})
+else()
+  set(itk-module ${PROJECT_NAME})
+  itk_module_use(${${PROJECT_NAME}_ITK_COMPONENTS})
+  itk_module_link_dependencies()
+endif()
+
 set( TubeTK_Base_Numerics_H_Files
   itktubeBasisFeatureVectorGenerator.h
   itktubeBlurImageFunction.h
@@ -72,20 +93,20 @@ set( TubeTK_Base_Numerics_SRCS
   tubeSplineApproximation1D.cxx
   tubeSplineND.cxx )
 
-add_library( TubeTKNumerics STATIC
+add_library( ${PROJECT_NAME} STATIC
   ${TubeTK_Base_Numerics_H_Files}
   ${TubeTK_Base_Numerics_HXX_Files}
   ${TubeTK_Base_Numerics_SRCS} )
 if( TubeTK_USE_GPU_ARRAYFIRE )
-  target_link_libraries( TubeTKNumerics PUBLIC ${ArrayFire_LIBRARIES} )
+  target_link_libraries( ${PROJECT_NAME} PUBLIC ${ArrayFire_LIBRARIES} )
 endif( TubeTK_USE_GPU_ARRAYFIRE )
-target_link_libraries( TubeTKNumerics PUBLIC TubeTKCommon )
-target_include_directories( TubeTKNumerics PUBLIC
-  ${CMAKE_CURRENT_SOURCE_DIR} )
+target_link_libraries( ${PROJECT_NAME} PUBLIC TubeTKCommon )
+target_include_directories( ${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )
 
-if( BUILD_TESTING )
+if( TubeTK_BUILD_TESTING )
   add_subdirectory( Testing )
-endif( BUILD_TESTING )
+endif( TubeTK_BUILD_TESTING )
 
 if( TubeTK_INSTALL_DEVELOPMENT )
   install( FILES
@@ -94,7 +115,7 @@ if( TubeTK_INSTALL_DEVELOPMENT )
     DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
     COMPONENT Development )
 
-  TubeTKMacroInstallPlugins( TubeTKNumerics )
+  TubeTKMacroInstallPlugins( ${PROJECT_NAME} )
 endif()
 
-set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKNumerics )
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS ${PROJECT_NAME} )

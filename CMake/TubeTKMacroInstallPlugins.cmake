@@ -23,7 +23,14 @@
 
 # Install one or more plugins to the default plugin location.
 macro( TubeTKMacroInstallPlugins )
+  set( _extra )
+  if( ITK_SOURCE_DIR )
+    set( _extra EXPORT ITKTargets )
+    set( TubeTK_INSTALL_PLUGINS_BIN_DIR ${ITK_INSTALL_RUNTIME_DIR} )
+    set( TubeTK_INSTALL_PLUGINS_LIB_DIR ${ITK_INSTALL_LIBRARY_DIR} )
+  endif()
   install( TARGETS ${ARGN}
+    ${_extra}
     RUNTIME DESTINATION ${TubeTK_INSTALL_PLUGINS_BIN_DIR} COMPONENT RuntimeLibraries
     LIBRARY DESTINATION ${TubeTK_INSTALL_PLUGINS_LIB_DIR} COMPONENT RuntimeLibraries
     ARCHIVE DESTINATION ${TubeTK_INSTALL_PLUGINS_LIB_DIR} COMPONENT Development  )

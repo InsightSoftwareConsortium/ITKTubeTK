@@ -50,21 +50,22 @@ SEMMacroBuildCLI(
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ITKIOSpatialObjects ITKIOMeta
     TubeCLI TubeTKCommon TubeTKFiltering TubeTKNumerics TubeTKRegistration
-    TubeUSTK )
+    TubeTKUSTK )
 
 SEMMacroBuildCLI(
   NAME ComputeImageToTubeRigidMetricImage
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ITKIOSpatialObjects ITKIOMeta
-    TubeCLI TubeTKCommon TubeTKNumerics TubeTKRegistration )
+    TubeCLI TubeTKCommon TubeTKNumerics TubeTKRegistration
+    TubeTKUSTK )
 
 SEMMacroBuildCLI(
   NAME ExtractMetricImageSlice
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ITKIOSpatialObjects ITKIOMeta
-    TubeCLI TubeTKcommon )
+    TubeCLI TubeTKCommon )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

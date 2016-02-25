@@ -61,7 +61,7 @@ set( TubeTK_${proj}_MODULES
   ResampleImage
   ResampleTubes
   RegisterImages
-  # RegisterImageToTubesUsingRigidTransform
+  RegisterImageToTubesUsingRigidTransform
   RegisterUsingImageCenters
   SampleCLIApplication
   SegmentBinaryImageSkeleton

@@ -44,20 +44,20 @@ set( TubeTk_Base_ObjectDocuments_SRCS
   tubeMetaObjectDocument.cxx
   tubeOptionList.cxx )
 
-add_library( TubeTKObjectDocuments STATIC
+add_library( ${PROJECT_NAME} STATIC
   ${TubeTK_Base_ObjectDocuments_H_Files}
   ${TubeTk_Base_ObjectDocuments_HXX_Files}
   ${TubeTk_Base_ObjectDocuments_SRCS} )
 
-target_link_libraries( TubeTKObjectDocuments
+target_link_libraries( ${PROJECT_NAME}
   TubeTKCommon ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects )
 
-target_include_directories( TubeTKObjectDocuments PUBLIC
+target_include_directories( ${PROJECT_NAME} PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR} )
 
-if( BUILD_TESTING )
+if( TubeTK_BUILD_TESTING )
   add_subdirectory( Testing )
-endif( BUILD_TESTING )
+endif( TubeTK_BUILD_TESTING )
 
 if( TubeTK_INSTALL_DEVELOPMENT )
   install( FILES
@@ -66,9 +66,9 @@ if( TubeTK_INSTALL_DEVELOPMENT )
     DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
     COMPONENT Development )
 
-  TubeTKMacroInstallPlugins( TubeTKObjectDocuments )
+  TubeTKMacroInstallPlugins( ${PROJECT_NAME} )
 endif()
 
 
 
-set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKObjectDocuments )
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS ${PROJECT_NAME} )

@@ -125,6 +125,8 @@ include( CTestConfig.cmake )
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/CTestCustom.cmake.in
   ${TubeTK_BINARY_DIR}/CTestCustom.cmake )
 
+set(TubeTK_BUILD_TESTING ${BUILD_TESTING})
+
 #
 # Configure for the download of CTest unit testing data from Midas
 #

@@ -33,6 +33,7 @@ set( TubeTK_Base_Filtering_H_Files
   itktubeAnisotropicDiffusionTensorImageFilter.h
   itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h
   itktubeAnisotropicHybridDiffusionImageFilter.h
+  itktubeCropImageFilter.h
   itktubeExtractTubePointsSpatialObjectFilter.h
   itktubeFFTGaussianDerivativeIFFTFilter.h
   itktubeGaussianDerivativeFilter.h
@@ -57,6 +58,7 @@ set( TubeTK_Base_Filtering_HXX_Files
   itktubeAnisotropicDiffusionTensorImageFilter.hxx
   itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.hxx
   itktubeAnisotropicHybridDiffusionImageFilter.hxx
+  itktubeCropImageFilter.hxx
   itktubeExtractTubePointsSpatialObjectFilter.hxx
   itktubeFFTGaussianDerivativeIFFTFilter.hxx
   itktubeGaussianDerivativeFilter.hxx
@@ -84,15 +86,15 @@ if( TubeTK_USE_GPU_ARRAYFIRE )
     itktubeGPUArrayFireGaussianDerivativeFilter.hxx )
 endif( TubeTK_USE_GPU_ARRAYFIRE )
 
-add_library( TubeTKFiltering INTERFACE )
-target_include_directories( TubeTKFiltering INTERFACE
-  ${CMAKE_CURRENT_SOURCE_DIR}
+add_library( ${PROJECT_NAME} INTERFACE )
+target_include_directories( ${PROJECT_NAME} INTERFACE
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
   )
-target_link_libraries( TubeTKFiltering INTERFACE TubeTKNumerics )
+target_link_libraries( ${PROJECT_NAME} INTERFACE TubeTKNumerics )
 
-if( BUILD_TESTING )
+if( TubeTK_BUILD_TESTING )
   add_subdirectory( Testing )
-endif( BUILD_TESTING )
+endif( TubeTK_BUILD_TESTING )
 
 if( TubeTK_INSTALL_DEVELOPMENT )
   install( FILES
@@ -101,7 +103,7 @@ if( TubeTK_INSTALL_DEVELOPMENT )
     DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
     COMPONENT Development )
 
-  TubeTKMacroInstallPlugins( TubeTKFiltering )
+  TubeTKMacroInstallPlugins( ${PROJECT_NAME} )
 endif()
 
-set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKFiltering )
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS ${PROJECT_NAME} )

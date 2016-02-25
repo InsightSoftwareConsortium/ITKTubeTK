@@ -56,19 +56,19 @@ if( TubeTK_USE_VTK )
     itktubeAnisotropicDiffusiveRegistrationFilter.hxx )
 endif( TubeTK_USE_VTK )
 
-add_library( TubeTKRegistration INTERFACE )
+add_library( ${PROJECT_NAME} INTERFACE )
 
-target_include_directories( TubeTKRegistration INTERFACE
+target_include_directories( ${PROJECT_NAME} INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR} )
 
-target_link_libraries( TubeTKRegistration INTERFACE
+target_link_libraries( ${PROJECT_NAME} INTERFACE
   TubeTKFiltering
   TubeTKNumerics # Required by AnisotropicDiffusiveSparseRegistrationFilter including itkTubeMath.h
   )
 
-if( BUILD_TESTING )
+if( TubeTK_BUILD_TESTING )
   add_subdirectory( Testing )
-endif( BUILD_TESTING )
+endif( TubeTK_BUILD_TESTING )
 
 if( TubeTK_INSTALL_DEVELOPMENT )
   install( FILES
@@ -78,6 +78,6 @@ if( TubeTK_INSTALL_DEVELOPMENT )
     COMPONENT Development )
 endif()
 
-TubeTKMacroInstallPlugins( TubeTKRegistration )
+TubeTKMacroInstallPlugins( ${PROJECT_NAME} )
 
-set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS TubeTKRegistration )
+set_property( GLOBAL APPEND PROPERTY TubeTK_TARGETS ${PROJECT_NAME} )
