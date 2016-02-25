@@ -35,7 +35,7 @@ endif()
 
 #-----------------------------------------------------------------------------
 SEMMacroBuildCLI(
-  NAME ImageCompare
+  NAME CompareImages
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES ${ITK_LIBRARIES} TubeTKCommon
   INCLUDE_DIRECTORIES
@@ -45,7 +45,7 @@ SEMMacroBuildCLI(
 #-----------------------------------------------------------------------------
 if( TubeTK_USE_JsonCpp )
 
-  set( _toolname JsonCompare )
+  set( _toolname CompareJsonFiles )
 
   message(STATUS "Configuring executable: ${_toolname}")
   add_executable( ${_toolname} ${_toolname}.cxx )
@@ -62,7 +62,7 @@ if( TubeTK_USE_JsonCpp )
 endif( TubeTK_USE_JsonCpp )
 
 #-----------------------------------------------------------------------------
-set( _toolname TextCompare )
+set( _toolname CompareTextFiles )
 message(STATUS "Configuring executable: ${_toolname}")
 
 add_executable( ${_toolname} ${_toolname}.cxx )

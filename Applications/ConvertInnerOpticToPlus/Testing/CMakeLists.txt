@@ -32,8 +32,8 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-set( IMAGECOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompare> )
+set( CompareImages_EXE
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
@@ -47,7 +47,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
     MIDAS_FETCH_ONLY{ultrasound_0002394.ppm.md5} )
 
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
-  COMMAND ${IMAGECOMPARE_EXE}
+  COMMAND ${CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}TestOutput.mha
     -b MIDAS{${MODULE_NAME}TestOutput.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare

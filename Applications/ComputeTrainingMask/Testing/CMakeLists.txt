@@ -31,8 +31,8 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-set( TEXTCOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompare> )
+set( CompareTextFiles_EXE
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
 
 # Test1 - VesselMask
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-VesselMask
@@ -44,7 +44,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-VesselMask
 
 # Test1 - Compare - VesselMask
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-VesselMask-Compare
-  COMMAND ${TEXTCOMPARE_EXE}
+  COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.mha
     -b MIDAS{ComputeTrainingMask-Test1_VesselMask.mha.md5}
     -d 0.01 )
@@ -63,12 +63,12 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-NotVesselMask
 
 # Test2 - Compare - NotVesselMask
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-NotVesselMask-Compare
-  COMMAND ${TEXTCOMPARE_EXE}
+  COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2.mha
     -b MIDAS{ComputeTrainingMask-Test2_NotVesselMask.mha.md5}
     -d 0.01 )
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-NotVesselMask1-Compare
-  COMMAND ${TEXTCOMPARE_EXE}
+  COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2_NotVesselMask.mha
     -b MIDAS{ComputeTrainingMask-Test2_NotVesselMask1.mha.md5}
     -d 0.01 )

@@ -41,11 +41,11 @@ if( PYTHON_EXECUTABLE )
     ${TubeTK_SOURCE_DIR}/Base/IO )
 endif( PYTHON_EXECUTABLE )
 
-set( IMAGECOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompare> )
+set( CompareImages_EXE
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
-set( TEXTCOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompare> )
+set( CompareTextFiles_EXE
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
 
 set( BASE_IO_TESTS
   ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseIOTests> )
@@ -163,14 +163,14 @@ Midas3FunctionAddTest( NAME itktubeTubeExtractorIOTest
       ${TEMP}/itktubeTubeExtractorIOTest2.mtp )
 
 Midas3FunctionAddTest( NAME itktubeTubeExtractorIOTest-Compare
-  COMMAND ${TEXTCOMPARE_EXE}
+  COMMAND ${CompareTextFiles_EXE}
     -b MIDAS{TubeExtractorIOTest.mtp.md5}
     -t ${TEMP}/itktubeTubeExtractorIOTest.mtp )
 set_property( TEST itktubeTubeExtractorIOTest-Compare APPEND PROPERTY DEPENDS
   itktubeTubeExtractorIOTest )
 
 Midas3FunctionAddTest( NAME itktubeTubeExtractorIOTest-Compare2
-  COMMAND ${TEXTCOMPARE_EXE}
+  COMMAND ${CompareTextFiles_EXE}
     -b MIDAS{TubeExtractorIOTest.mtp.md5}
     -t ${TEMP}/itktubeTubeExtractorIOTest2.mtp )
 set_property( TEST itktubeTubeExtractorIOTest-Compare2 APPEND PROPERTY DEPENDS
@@ -185,7 +185,7 @@ Midas3FunctionAddTest( NAME itktubeTubeXIOTest
       )
 
 Midas3FunctionAddTest( NAME itktubeTubeXIOTest-Compare
-  COMMAND ${TEXTCOMPARE_EXE}
+  COMMAND ${CompareTextFiles_EXE}
     -b MIDAS{TubeXIOTest.tre.md5}
     -t ${TEMP}/itktubeTubeXIOTest.tre )
 set_property( TEST itktubeTubeXIOTest-Compare APPEND PROPERTY DEPENDS

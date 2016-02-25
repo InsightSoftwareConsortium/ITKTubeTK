@@ -32,10 +32,10 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-set( IMAGECOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompare> )
+set( CompareImages_EXE
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
-set( imageCompareTolerance 0.00001 )
+set( CompareImagesTolerance 0.00001 )
 
 # Test1
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereNoReg
@@ -56,10 +56,10 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereNoReg
 
 # Test1-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereNoReg-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_noReg_motionField.mha
                -b MIDAS{${MODULE_NAME}-Sphere_noReg_motionField.mha.md5}
-               -i ${imageCompareTolerance} )
+               -i ${CompareImagesTolerance} )
 set_property( TEST ${MODULE_NAME}-TestSphereNoReg-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestSphereNoReg )
 
@@ -81,10 +81,10 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereAnisotropic
 
 # Test2-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereAnisotropic-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_anisotropic_motionField.mha
                -b MIDAS{${MODULE_NAME}-Sphere_anisotropic_motionField.mha.md5}
-               -i ${imageCompareTolerance} )
+               -i ${CompareImagesTolerance} )
 set_property( TEST ${MODULE_NAME}-TestSphereAnisotropic-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestSphereAnisotropic )
 
@@ -103,10 +103,10 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereAnisotropicSurfaceRAS
 
 # Test3-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereAnisotropicSurfaceRAS-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_anisotropicSurfaceRAS_motionField.mha
                -b MIDAS{${MODULE_NAME}-Sphere_anisotropicSurface_motionField.mha.md5}
-               -i ${imageCompareTolerance} )
+               -i ${CompareImagesTolerance} )
 
 set_property( TEST ${MODULE_NAME}-TestSphereAnisotropicSurfaceRAS-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestSphereAnisotropicSurfaceRAS )
@@ -127,10 +127,10 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereAnisotropicSurfaceLPS
 
 # Test4-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereAnisotropicSurfaceLPS-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_anisotropicSurfaceLPS_motionField.mha
                -b MIDAS{${MODULE_NAME}-Sphere_anisotropicSurface_motionField.mha.md5}
-               -i ${imageCompareTolerance} )
+               -i ${CompareImagesTolerance} )
 set_property( TEST ${MODULE_NAME}-TestSphereAnisotropicSurfaceLPS-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestSphereAnisotropicSurfaceLPS )
 
@@ -147,10 +147,10 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASDownsa
 
 # Test5-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASDownsampled-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_anisotropicSurfaceRASDownsampled_motionField.mha
                -b MIDAS{${MODULE_NAME}-Sphere_anisotropicSurfaceRASDownsampled_motionField.mha.md5}
-               -i ${imageCompareTolerance} )
+               -i ${CompareImagesTolerance} )
 set_property( TEST ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASDownsampled-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASDownsampled )
 
@@ -173,10 +173,10 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereGaussian
 
 # Test6-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereGaussian-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_gaussian_motionField.mha
                -b MIDAS{${MODULE_NAME}-Sphere_gaussian_motionField.mha.md5}
-               -i ${imageCompareTolerance} )
+               -i ${CompareImagesTolerance} )
 set_property( TEST ${MODULE_NAME}-TestSphereGaussian-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestSphereGaussian )
 
@@ -194,10 +194,10 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestBoxesNoReg
 
 # Test7-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestBoxesNoReg-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Boxes_noReg_motionField.mha
                -b MIDAS{${MODULE_NAME}-Boxes_noReg_motionField.mha.md5}
-               -i ${imageCompareTolerance} )
+               -i ${CompareImagesTolerance} )
 set_property( TEST ${MODULE_NAME}-TestBoxesNoReg-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestBoxesNoReg )
 
@@ -218,10 +218,10 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestBoxesAnisotropic
 
 # Test8-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestBoxesAnisotropic-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Boxes_anisotropic_motionField.mha
                -b MIDAS{${MODULE_NAME}-Boxes_anisotropic_motionField.mha.md5}
-               -i ${imageCompareTolerance} )
+               -i ${CompareImagesTolerance} )
 set_property( TEST ${MODULE_NAME}-TestBoxesAnisotropic-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestBoxesAnisotropic )
 
@@ -243,10 +243,10 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestBoxesGaussian
 
 # Test9-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestBoxesGaussian-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Boxes_gaussian_motionField.mha
                -b MIDAS{${MODULE_NAME}-Boxes_gaussian_motionField.mha.md5}
-               -i ${imageCompareTolerance} )
+               -i ${CompareImagesTolerance} )
 set_property( TEST ${MODULE_NAME}-TestBoxesGaussian-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestBoxesGaussian )
 
@@ -266,10 +266,10 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereSparseAnisotropicSurfaceRAS
 
 # Test10-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereSparseAnisotropicSurfaceRAS-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_sparseAnisotropicSurfaceRAS_motionField.mha
                -b MIDAS{${MODULE_NAME}-Sphere_sparseAnisotropicSurface_motionField.mha.md5}
-               -i ${imageCompareTolerance} )
+               -i ${CompareImagesTolerance} )
 set_property( TEST ${MODULE_NAME}-TestSphereSparseAnisotropicSurfaceRAS-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestSphereSparseAnisotropicSurfaceRAS )
 
@@ -291,10 +291,10 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereAnisotropicMultiresolution
 
 # Test11-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereAnisotropicMultiresolution-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_anisotropicMultiresolution_motionField.mha
                -b MIDAS{${MODULE_NAME}-Sphere_anisotropicMultiresolution_motionField.mha.md5}
-               -i ${imageCompareTolerance} )
+               -i ${CompareImagesTolerance} )
 set_property( TEST ${MODULE_NAME}-TestSphereAnisotropicMultiresolution-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestSphereAnisotropicMultiresolution )
 
@@ -313,10 +313,10 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASMultir
 
 # Test12-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASMultiresolution-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_anisotropicSurfaceRASMultiresolution_motionField.mha
                -b MIDAS{${MODULE_NAME}-Sphere_anisotropicSurfaceMultiresolution_motionField.mha.md5}
-               -i ${imageCompareTolerance} )
+               -i ${CompareImagesTolerance} )
 set_property( TEST ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASMultiresolution-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASMultiresolution )
 
@@ -336,9 +336,9 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestTubesSparseAnisotropic
 
 # Test13-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-TestTubesSparseAnisotropic-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Tubes_anisotropic_motionField.mha
                -b MIDAS{${MODULE_NAME}-Tubes_anisotropic_motionField.mha.md5}
-               -i ${imageCompareTolerance} )
+               -i ${CompareImagesTolerance} )
 set_property( TEST ${MODULE_NAME}-TestTubesSparseAnisotropic-Compare
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-TestTubesSparseAnisotropic )
