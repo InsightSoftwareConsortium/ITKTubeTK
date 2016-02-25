@@ -175,6 +175,10 @@ foreach( itk-module ${TubeTK_ITK_MODULES} )
         ${_module_HXX_Files}
         ${_module_CXX_Files} )
       target_link_libraries( ${itk-module} ${ITK_LIBRARIES} )
+      # XXX Ensure ITKTubeTK link agaist the required base libraries
+      if(itk-module STREQUAL "ITKTubeTK")
+        target_link_libraries( ${itk-module} TubeTKFiltering )
+      endif()
 
       # Generate the export macro header for symbol visibility/Windows DLL declspec
       include( GenerateExportHeader )
