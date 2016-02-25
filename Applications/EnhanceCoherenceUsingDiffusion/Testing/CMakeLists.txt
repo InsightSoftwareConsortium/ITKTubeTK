@@ -33,7 +33,7 @@ set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 set( IMAGECOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompare> )
 
 # expect image comparison perfection on 64-bit linux machines
 if( UNIX AND NOT APPLE AND NOT CYGWIN AND CMAKE_SIZEOF_VOID_P EQUAL 8 )

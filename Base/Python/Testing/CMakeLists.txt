@@ -42,7 +42,7 @@ if( ${TubeTK_USE_PYQTGRAPH} )
         MIDAS{tube.tre.md5}
         ${TEMP}/PyQtGraphTubesAsCirclesTest.png )
   Midas3FunctionAddTest( NAME PyQtGraphTubesAsCirclesTest-Compare
-    COMMAND $<TARGET_FILE:ImageCompareCommand>
+    COMMAND $<TARGET_FILE:ImageCompare>
       -t ${TEMP}/PyQtGraphTubesAsCirclesTest.png
       -b MIDAS{PyQtGraphTubesAsCirclesTest.png.md5},MIDAS{PyQtGraphTubesAsCirclesTest.1.png.md5}
       MIDAS_FETCH_ONLY{PyQtGraphTubesAsCirclesTest.png.md5}

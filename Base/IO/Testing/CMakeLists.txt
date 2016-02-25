@@ -42,10 +42,10 @@ if( PYTHON_EXECUTABLE )
 endif( PYTHON_EXECUTABLE )
 
 set( IMAGECOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompare> )
 
 set( TEXTCOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompare> )
 
 set( BASE_IO_TESTS
   ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseIOTests> )

@@ -32,4 +32,4 @@ set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 set( TEXTCOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompare> )

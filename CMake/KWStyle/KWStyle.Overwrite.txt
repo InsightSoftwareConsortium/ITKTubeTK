@@ -7,14 +7,14 @@ QtOverlayControlsWidget.cxx InternalVariables Disable
 QtOverlayControlsWidget.cxx Encapsulation Disable
 QtOverlayControlsWidget.h MemberFunctions Disable
 .*UI\.h Namespace Disable
-ImageCompareCommand.cxx Header Disable
+ImageCompare.cxx Header Disable
 itktubeMeta.*\.h InternalVariables Disable
 itktubeRadiusExtractor.h MemberFunctions Disable
 itktubeRidgeExtractor.h MemberFunctions Disable
 itktubeTubeExtractor.h MemberFunctions Disable
 itktubeSpatialObjectToSpatialObjectFilter.h Header Disable
 itktubeSpatialObjectToSpatialObjectFilter.hxx Header Disable
-TextCompareCommand.cxx Header Disable
+TextCompare.cxx Header Disable
 tubeOptionList.cxx Header Disable
 tubeOptionList.h Header Disable
 itktubeRidgeSeedFilter.h Indent Disable

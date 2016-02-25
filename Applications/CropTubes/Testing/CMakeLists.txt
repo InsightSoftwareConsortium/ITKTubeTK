@@ -32,7 +32,7 @@ set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 set( TEXTCOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompareCommand> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompare> )
 
 # Test1 - NotCropped
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-NotCropped

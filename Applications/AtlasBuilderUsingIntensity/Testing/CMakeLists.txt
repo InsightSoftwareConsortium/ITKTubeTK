@@ -33,7 +33,7 @@ set( PROJ_EXE
  ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 set( IMAGECOMPARE_EXE
- ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
+ ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompare> )
 
 configure_file( ${TubeTK_SOURCE_DIR}/Applications/${MODULE_NAME}/Testing/ListTemplate.txt.in
                 ${TEMP}/${MODULE_NAME}-List.txt IMMEDIATE @ONLY )

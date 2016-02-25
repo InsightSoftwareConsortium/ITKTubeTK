@@ -33,7 +33,7 @@ set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
 set( IMAGECOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompare> )
 
 set( imageCompareTolerance 0.00001 )
 

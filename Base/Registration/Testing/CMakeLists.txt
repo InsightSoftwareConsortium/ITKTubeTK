@@ -37,7 +37,7 @@ set( BASE_REGISTRATION_TESTS
   ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseRegistrationTests> )
 
 set( IMAGECOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompareCommand> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompare> )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
