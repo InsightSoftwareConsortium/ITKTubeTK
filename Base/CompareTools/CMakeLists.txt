@@ -71,3 +71,8 @@ install( TARGETS
   ${_toolname}
   DESTINATION ${TubeTK_INSTALL_BIN_DIR}
   COMPONENT Runtime )
+
+#-----------------------------------------------------------------------------
+if( TubeTK_BUILD_TESTING )
+  add_subdirectory( Testing )
+endif( TubeTK_BUILD_TESTING )
