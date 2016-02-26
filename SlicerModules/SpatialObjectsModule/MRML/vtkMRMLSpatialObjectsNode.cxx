@@ -405,6 +405,7 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
   // Initialize the SpatialObject
   // Count number of points && remove dupplicate
   int totalNumberOfPoints = 0;
+  unsigned int maxTubeId = 0;
   for(TubeNetType::ChildrenListType::iterator tubeIT = tubeList->begin();
         tubeIT != tubeList->end();
         ++tubeIT )
@@ -424,8 +425,38 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
       }
 
     totalNumberOfPoints += numberOfPoints;
+    if( maxTubeId < currTube->GetId() )
+      {
+      maxTubeId = currTube->GetId();
+      }
     }
 
+  //Making sure tubeId is unique to a tube
+  std::set< unsigned int > tubeIds;
+  std::set< unsigned int >::iterator it;
+  for(TubeNetType::ChildrenListType::iterator tubeIT = tubeList->begin();
+        tubeIT != tubeList->end();
+        ++tubeIT )
+    {
+    VesselTubeType* currTube =
+      dynamic_cast<VesselTubeType*>((*tubeIT).GetPointer());
+    if (!currTube)
+      {
+      continue;
+      }
+
+    unsigned int currTubeId = currTube->GetId();
+    it = tubeIds.find( currTubeId );
+    if( it ==  tubeIds.end() )
+      {
+      tubeIds.insert( currTubeId );
+      }
+    else
+      {
+      currTube->SetId( maxTubeId + 1 );
+      maxTubeId++;
+      }
+    }
   // Create the points
   vtkNew<vtkPoints> vesselsPoints;
   vesselsPoints->SetNumberOfPoints(totalNumberOfPoints);
