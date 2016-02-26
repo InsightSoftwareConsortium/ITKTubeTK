@@ -43,5 +43,5 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ITKOptimizers ITKIOTransformBase
-    TubeTKRegistration )
+    TubeTKRegistration TubeCLI)
 
