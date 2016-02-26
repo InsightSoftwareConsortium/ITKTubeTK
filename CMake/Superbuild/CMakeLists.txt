@@ -198,5 +198,6 @@ ExternalProject_Add( ${proj}
     -DTubeTK_USE_SUPERBUILD:BOOL=OFF
     -DTubeTK_USE_VTK:BOOL=${TubeTK_USE_VTK}
     -DTubeTK_BUILD_WITHIN_SLICER:BOOL=${TubeTK_BUILD_WITHIN_SLICER}
+    -DTubeTK_Support_2D_Images:BOOL=${TubeTK_Support_2D_Images}
     ${TubeTK_EXTERNAL_PROJECTS_ARGS}
   INSTALL_COMMAND "" )

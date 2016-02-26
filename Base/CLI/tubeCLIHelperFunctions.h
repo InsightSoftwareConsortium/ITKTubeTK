@@ -28,6 +28,7 @@ limitations under the License.
 
 #include <itkImage.h>
 #include <itkImageIOFactory.h>
+#include <algorithm> 
 
 namespace tube
 {
@@ -67,13 +68,13 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
 
   IOComponentType componentType = ImageIOType::UNKNOWNCOMPONENTTYPE;
   unsigned int dimension = 0;
-
   try
     {
     GetImageInformation( inputImage, componentType, dimension );
 
 #ifndef PARSE_ARGS_FLOAT_ONLY
 
+#ifdef SUPPORT_2D_IMAGES
     if( dimension == 2 )
       {
       switch( componentType )
@@ -96,6 +97,7 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
           return EXIT_FAILURE;
         }
       }
+#endif
 
     if( dimension == 3 )
       {
@@ -121,12 +123,12 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
       }
 
 #else
-
+#ifdef SUPPORT_2D_IMAGES
     if( dimension == 2 )
       {
       return DoIt< float, 2 >( argc, argv );
       }
-
+#endif
     if( dimension == 3 )
       {
       return DoIt< float, 3 >( argc, argv );
@@ -134,7 +136,7 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
 
 #endif // End !defined(PARSE_ARGS_FLOAT_ONLY)
 
-    tubeErrorMacro( << "Unknown dimension." );
+    tubeErrorMacro( << "Dimension size of " << dimension << " not supported" );
     return EXIT_FAILURE;
     }
   catch( itk::ExceptionObject & ex )
