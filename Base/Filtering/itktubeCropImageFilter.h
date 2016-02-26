@@ -24,8 +24,8 @@
 // Forward declare itkTubeTK class to allow friendship
 namespace tube
 {
-  template< typename tube_TInputImage, typename tube_TOutputImage >
-  class CropImage;
+template< typename tube_TInputImage, typename tube_TOutputImage >
+class CropImage;
 }
 
 namespace itk
@@ -131,14 +131,14 @@ protected:
   void GenerateOutputInformation() ITK_OVERRIDE;
 
 private:
-  /** itkCropImageFilter parameters **/
+  /** itkCropImageFilter parameters */
   CropImageFilter(const Self &);
   void operator=(const Self &);
 
   SizeType m_UpperBoundaryCropSize;
   SizeType m_LowerBoundaryCropSize;
 
-  /** tubeCropROI parameters **/
+  /** tubeCropROI parameters */
   typename ImageType::IndexType  m_ROIMin;
   bool                           m_UseROIMin;
   typename ImageType::IndexType  m_ROIMax;
