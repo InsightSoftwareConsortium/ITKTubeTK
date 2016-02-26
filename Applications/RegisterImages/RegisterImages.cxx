@@ -112,6 +112,14 @@ int DoIt( int argc, char * argv[] )
       reger->SetInitialMethodEnum( RegistrationType::INIT_WITH_LANDMARKS );
       }
     }
+  if( skipInitialRandomSearch )
+    {
+    reger->SetUseEvolutionaryOptimization( false ) ;
+    }
+  else
+    {
+    reger->SetUseEvolutionaryOptimization( true ) ;
+    }
 
   if( initialization == "Landmarks" )
     {

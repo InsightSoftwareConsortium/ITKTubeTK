@@ -61,6 +61,12 @@
       <description>Save displacement field result from registration</description>
       <default/>
     </image>
+    <boolean>
+      <name>skipInitialRandomSearch</name>
+      <description>Skips initial random search (skips the evolutionary optimizer) during the registration process and uses only the gradient optimizer</description>
+      <label>Skip Initial Random Search</label>
+      <longflag>skipInitialRandomSearch</longflag>
+    </boolean>
     <string-enumeration>
       <name>initialization</name>
       <description>Method to prime the registration process</description>

@@ -104,7 +104,8 @@ ImageToImageRegistrationHelper<TImage>
   m_ReportProgress = false;
 
   m_MinimizeMemory = false;
-
+  // Optimizer
+  m_UseEvolutionaryOptimization = true ;
   // Loaded
   m_LoadedMatrixTransform = NULL;
   m_LoadedBSplineTransform = NULL;
@@ -437,6 +438,10 @@ ImageToImageRegistrationHelper<TImage>
     typename RigidRegistrationMethodType::Pointer regRigid;
     regRigid = RigidRegistrationMethodType::New();
     regRigid->SetRandomNumberSeed( m_RandomNumberSeed );
+    if( m_EnableInitialRegistration || !m_UseEvolutionaryOptimization )
+      {
+      regRigid->SetUseEvolutionaryOptimization( false );
+      }
     regRigid->SetReportProgress( m_ReportProgress );
     regRigid->SetMovingImage( m_CurrentMovingImage );
     regRigid->SetFixedImage( m_FixedImage );
@@ -586,7 +591,7 @@ ImageToImageRegistrationHelper<TImage>
     regAff->SetMinimizeMemory( m_MinimizeMemory );
     regAff->SetMaxIterations( m_AffineMaxIterations );
     regAff->SetTargetError( m_AffineTargetError );
-    if( m_EnableRigidRegistration )
+    if( m_EnableRigidRegistration || !m_UseEvolutionaryOptimization )
       {
       regAff->SetUseEvolutionaryOptimization( false );
       }
@@ -706,6 +711,10 @@ ImageToImageRegistrationHelper<TImage>
 
     typename BSplineRegistrationMethodType::Pointer regBspline =
       BSplineRegistrationMethodType::New();
+    if( m_EnableAffineRegistration || !m_UseEvolutionaryOptimization )
+      {
+      regBspline->SetUseEvolutionaryOptimization( false );
+      }
     regBspline->SetRandomNumberSeed( m_RandomNumberSeed );
     regBspline->SetReportProgress( m_ReportProgress );
     regBspline->SetFixedImage( m_FixedImage );

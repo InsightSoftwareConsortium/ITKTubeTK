@@ -436,9 +436,10 @@ OptimizedImageToImageRegistrationMethod<TImage>
     {
     this->Optimize(metric, interpolator);
     }
-  catch( ... )
+  catch( itk::ExceptionObject& exception )
     {
     std::cerr << "Optimization threw an exception." << std::endl;
+    std::cerr << exception << std::endl ;
     }
 
   if( this->GetReportProgress() )
