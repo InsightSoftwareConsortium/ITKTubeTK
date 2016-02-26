@@ -32,8 +32,8 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-set( TEXTCOMPARE_EXE
- ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompare> )
+set( CompareTextFiles_EXE
+ ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
 
 # Test1 - I-Junction
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
@@ -43,7 +43,7 @@ COMMAND ${PROJ_EXE}
 
 # Test1 - Compare - I-Junction
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
-  COMMAND ${TEXTCOMPARE_EXE}
+  COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.tre
     -b MIDAS{I_Junction_3D_tree.tre.md5}
     -d 0.01 )
@@ -59,7 +59,7 @@ COMMAND ${PROJ_EXE}
 
 # Test2 - Compare - Y-Junction
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare
-  COMMAND ${TEXTCOMPARE_EXE}
+  COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2.tre
     -b MIDAS{Y_Junction_3D_tree.tre.md5}
     -d 0.01 )

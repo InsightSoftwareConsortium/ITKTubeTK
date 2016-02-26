@@ -32,8 +32,8 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-set( IMAGECOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompare> )
+set( CompareImages_EXE
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
 # Test1
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
@@ -45,14 +45,14 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
                -g 3 -f 0 -b 255 -B 10,10 -S 7 )
 
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare1
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}_ESTest1.mha
                -b MIDAS{${MODULE_NAME}_ESTest1.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare1
                       APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
 
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare2
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -i 0.005
                -t ${TEMP}/${MODULE_NAME}_GDSTest1.mha
                -b MIDAS{${MODULE_NAME}_GDSTest1.mha.md5} )

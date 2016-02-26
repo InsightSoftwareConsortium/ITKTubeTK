@@ -32,8 +32,8 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-set( IMAGECOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompare> )
+set( CompareImages_EXE
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
 # Test1
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
@@ -45,7 +45,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
 
 # Test1-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
-  COMMAND ${IMAGECOMPARE_EXE}
+  COMMAND ${CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.mha
     -b MIDAS{${MODULE_NAME}Test1.mha.md5},MIDAS{${MODULE_NAME}Test1_2.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare
@@ -62,7 +62,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
 
 # Test2-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare
-  COMMAND ${IMAGECOMPARE_EXE}
+  COMMAND ${CompareImages_EXE}
     --toleranceCoordinates 1.0e-4
     -t ${TEMP}/${MODULE_NAME}Test2.mha
     -b MIDAS{${MODULE_NAME}Test2.mha.md5}
@@ -81,7 +81,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3
 
 # Test3-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3-Compare
-  COMMAND ${IMAGECOMPARE_EXE}
+  COMMAND ${CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test3.mha
     -b MIDAS{${MODULE_NAME}Test3.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test3-Compare
@@ -96,7 +96,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4
 
 # Test4-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare
-  COMMAND ${IMAGECOMPARE_EXE}
+  COMMAND ${CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test4.mha
     -b MIDAS{${MODULE_NAME}Test4.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test4-Compare
@@ -113,7 +113,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test5
 
 # Test5-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test5-Compare
-  COMMAND ${IMAGECOMPARE_EXE}
+  COMMAND ${CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test5.mha
     -b MIDAS{${MODULE_NAME}Test5.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test5-Compare

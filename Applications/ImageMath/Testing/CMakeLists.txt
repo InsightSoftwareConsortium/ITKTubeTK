@@ -32,11 +32,11 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${PROJECT_NAME}> )
 
-set( IMAGECOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompare> )
+set( CompareImages_EXE
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
-set( TEXTCOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompare> )
+set( CompareTextFiles_EXE
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
 
 # Test1
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test1
@@ -47,7 +47,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test1
 
 # Test1-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test1-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test1.mha
                -b MIDAS{${PROJECT_NAME}Test1.mha.md5}
                -i 0.001 )
@@ -66,7 +66,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test2
 
 # Test2-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test2-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test2.mha
                -b MIDAS{${PROJECT_NAME}Test2.mha.md5}
                -i 0.001 )
@@ -83,7 +83,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test3
 
 # Test3-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test3-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test3.mha
                -b MIDAS{${PROJECT_NAME}Test3.mha.md5}
                -i 0.001 )
@@ -100,7 +100,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test4
 
 # Test4-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test4-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test4.mha
                -b MIDAS{${PROJECT_NAME}Test4.mha.md5}
                -i 0.01 )
@@ -117,7 +117,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test5
 
 # Test5-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test5-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test5.mha
                -b MIDAS{${PROJECT_NAME}Test5.mha.md5}
                -i 0.001 )
@@ -133,7 +133,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test6
 
 # Test6-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test6-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test6.mha
                -b MIDAS{${PROJECT_NAME}Test6.mha.md5}
                -i 0.001 )
@@ -149,7 +149,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test7
 
 # Test7-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test7-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test7.mha
                -b MIDAS{${PROJECT_NAME}Test7.mha.md5}
                -i 0.001 )
@@ -165,7 +165,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test8
 
 # Test8-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test8-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test8.mha
                -b MIDAS{${PROJECT_NAME}Test8.mha.md5}
                -i 0.001 )
@@ -181,7 +181,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test9
 
 # Test9-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test9-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test9.mha
                -b MIDAS{${PROJECT_NAME}Test9.mha.md5}
                -i 0.001 )
@@ -197,7 +197,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test10
 
 # Test10-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test10-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test10.mha
                -b MIDAS{${PROJECT_NAME}Test10.mha.md5}
                -i 0.001 )
@@ -213,7 +213,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test11
 
 # Test11-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test11-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test11.mha
                -b MIDAS{${PROJECT_NAME}Test11.mha.md5}
                -i 0.001 )
@@ -229,7 +229,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test12
 
 # Test12-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test12-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test12.mha
                -b MIDAS{${PROJECT_NAME}Test12.mha.md5}
                -i 0.001 )
@@ -245,7 +245,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test13
 
 # Test13-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test13-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test13.mha
                -b MIDAS{${PROJECT_NAME}Test13.mha.md5}
                -i 0.001 )
@@ -260,7 +260,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test14
 
 # Test14-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test14-Compare
-            COMMAND ${TEXTCOMPARE_EXE}
+            COMMAND ${CompareTextFiles_EXE}
             -t ${TEMP}/${PROJECT_NAME}Test14.txt
             -b MIDAS{${PROJECT_NAME}Test14.txt.md5} )
 set_property( TEST ${PROJECT_NAME}-Test14-Compare
@@ -274,7 +274,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test15
 
 # Test15-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test15-Compare
-            COMMAND ${TEXTCOMPARE_EXE}
+            COMMAND ${CompareTextFiles_EXE}
             -t ${TEMP}/${PROJECT_NAME}Test15.txt
             -b MIDAS{${PROJECT_NAME}Test15.txt.md5} )
 set_property( TEST ${PROJECT_NAME}-Test15-Compare
@@ -290,7 +290,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test16
 
 # Test16-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test16-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test16.mha
                -b MIDAS{${PROJECT_NAME}Test16.mha.md5}
                -i 0.5
@@ -307,7 +307,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test17
 
 # Test17-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test17-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test17.mha
                -b MIDAS{${PROJECT_NAME}Test17.mha.md5}
                -i 0.001 )
@@ -323,7 +323,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test18
 
 # Test18-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test18-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test18.mha
                -b MIDAS{${PROJECT_NAME}Test18.mha.md5}
                -i 0.001 )
@@ -339,7 +339,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test19
 
 # Test19-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test19-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test19.mha
                -b MIDAS{${PROJECT_NAME}Test19.mha.md5}
                -i 0.001 )
@@ -355,7 +355,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test20
 
 # Test20-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test20-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test20.mha
                -b MIDAS{${PROJECT_NAME}Test20.mha.md5}
                -i 0.001 )
@@ -371,7 +371,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test21
 
 # Test21-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test21-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test21.mha
                -b MIDAS{${PROJECT_NAME}Test21.mha.md5}
                -i 0.001 )
@@ -387,7 +387,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test23
 
 # Test23-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test23-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test23.mha
                -b MIDAS{${PROJECT_NAME}Test23.mha.md5}
                -i 0.001 )
@@ -403,7 +403,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test24
 
 # Test24-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test24-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test24.mha
                -b MIDAS{${PROJECT_NAME}Test24.mha.md5}
                -i 0.001 )
@@ -419,7 +419,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test25
 
 # Test25-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test25-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test25.mha
                -b MIDAS{${PROJECT_NAME}Test25.mha.md5}
                -i 0.001 )
@@ -435,7 +435,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test26
 
 # Test26-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test26-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test26.mha
                -b MIDAS{${PROJECT_NAME}Test26.mha.md5}
                -i 0.001 )
@@ -451,7 +451,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test27
 
 # Test27-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test27-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test27.mha
                -b MIDAS{${PROJECT_NAME}Test27.mha.md5}
                -i 0.001 )
@@ -467,7 +467,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test28
 
 # Test28-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test28-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test28.mha
                -b MIDAS{${PROJECT_NAME}Test28.mha.md5}
                -i 0.001 )
@@ -483,7 +483,7 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test29
 
 # Test29-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test29-Compare
-            COMMAND ${IMAGECOMPARE_EXE}
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test29.mha
                -b MIDAS{${PROJECT_NAME}Test29.mha.md5}
                -i 0.001 )

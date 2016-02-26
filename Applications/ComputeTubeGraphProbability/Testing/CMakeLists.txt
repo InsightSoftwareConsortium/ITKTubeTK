@@ -32,8 +32,8 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-set( TEXTCOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:TextCompare> )
+set( CompareTextFiles_EXE
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
 
 # Test1
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
@@ -47,7 +47,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
 
 # Test1-Compare-00
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-00
-  COMMAND ${TEXTCOMPARE_EXE}
+  COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.matProb.txt
     -b MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.matProb.txt.md5} )
 
@@ -56,7 +56,7 @@ set_property( TEST ${MODULE_NAME}-Test1-Compare-00
 
 # Test1-Compare-01
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-01
-  COMMAND ${TEXTCOMPARE_EXE}
+  COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.cntProb.txt
     -b MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.cntProb.txt.md5} )
 
@@ -65,7 +65,7 @@ set_property( TEST ${MODULE_NAME}-Test1-Compare-01
 
 # Test1-Compare-02
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-02
-  COMMAND ${TEXTCOMPARE_EXE}
+  COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.brcProb.txt
     -b MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.brcProb.txt.md5} )
 

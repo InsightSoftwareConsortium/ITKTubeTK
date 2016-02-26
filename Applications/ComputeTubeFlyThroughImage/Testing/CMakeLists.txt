@@ -32,8 +32,8 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( PROJ_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-set( IMAGECOMPARE_EXE
- ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompare> )
+set( CompareImages_EXE
+ ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
 #  
 # Test with 2D Cylinder
@@ -49,7 +49,7 @@ set( IMAGECOMPARE_EXE
 
   # compare outputs with groundtruth		       
   Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-flyThrough
-    COMMAND ${IMAGECOMPARE_EXE}
+    COMMAND ${CompareImages_EXE}
       -t ${TEMP}/${MODULE_NAME}Test1.flyThrough.mha 
       -b MIDAS{${MODULE_NAME}Test1.flyThrough.mha.md5} 
       -i 0.001 )
@@ -58,7 +58,7 @@ set( IMAGECOMPARE_EXE
 		APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
   
   Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-flyThrough-TubeMask
-    COMMAND ${IMAGECOMPARE_EXE}
+    COMMAND ${CompareImages_EXE}
       -t ${TEMP}/${MODULE_NAME}Test1.flyThrough.tubeMask.mha
       -b MIDAS{${MODULE_NAME}Test1.flyThrough.tubeMask.mha.md5} 
       -i 0.001 )
@@ -80,7 +80,7 @@ set( IMAGECOMPARE_EXE
 
   # compare outputs with groundtruth		       
   Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare-flyThrough
-    COMMAND ${IMAGECOMPARE_EXE}
+    COMMAND ${CompareImages_EXE}
       -t ${TEMP}/${MODULE_NAME}Test2.flyThrough.mha 
       -b MIDAS{${MODULE_NAME}Test2.flyThrough.mha.md5} 
       -i 0.001 )
@@ -89,7 +89,7 @@ set( IMAGECOMPARE_EXE
 		APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
   
   Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare-flyThrough-TubeMask
-    COMMAND ${IMAGECOMPARE_EXE}
+    COMMAND ${CompareImages_EXE}
       -t ${TEMP}/${MODULE_NAME}Test2.flyThrough.tubeMask.mha
       -b MIDAS{${MODULE_NAME}Test2.flyThrough.tubeMask.mha.md5} 
       -i 0.001 )

@@ -36,8 +36,8 @@ include( ${ITK_USE_FILE} )
 set( BASE_REGISTRATION_TESTS
   ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseRegistrationTests> )
 
-set( IMAGECOMPARE_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:ImageCompare> )
+set( CompareImages_EXE
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
@@ -56,7 +56,7 @@ set( tubeBaseRegistration_SRCS
   itktubeTubeToTubeTransformFilterTest.cxx )
 
 # give a bit of tolerance
-set( imageCompareTolerance 0.000001 )
+set( CompareImagesTolerance 0.000001 )
 
 set( tubeBaseRegistration_ADDITIONAL_LIBRARIES )
 if( TubeTK_USE_VTK )
@@ -132,10 +132,10 @@ if( TubeTK_USE_VTK )
         5 0.125 1 )
   Midas3FunctionAddTest( NAME
     itkAnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise-Compare
-    COMMAND ${IMAGECOMPARE_EXE}
+    COMMAND ${CompareImages_EXE}
       -t ${TEMP}/Regularization_straight_noNoise_smoothedMotionField.mhd
       -b MIDAS{Regularization_straight_noNoise_smoothedMotionField.mhd.md5}
-      -i ${imageCompareTolerance}
+      -i ${CompareImagesTolerance}
       MIDAS_FETCH_ONLY{Regularization_straight_noNoise_smoothedMotionField.zraw.md5} )
   set_property( TEST
     itkAnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise-Compare
@@ -151,10 +151,10 @@ if( TubeTK_USE_VTK )
         5 0.125 1 )
   Midas3FunctionAddTest(
     NAME itkAnisotropicDiffusiveRegistrationRegularizationTestStraight-Compare
-    COMMAND ${IMAGECOMPARE_EXE}
+    COMMAND ${CompareImages_EXE}
       -t ${TEMP}/Regularization_straight_smoothedMotionField.mhd
       -b MIDAS{Regularization_straight_smoothedMotionField.mhd.md5}
-      -i ${imageCompareTolerance}
+      -i ${CompareImagesTolerance}
       MIDAS_FETCH_ONLY{Regularization_straight_smoothedMotionField.zraw.md5} )
   set_property( TEST
     itkAnisotropicDiffusiveRegistrationRegularizationTestStraight-Compare
@@ -170,10 +170,10 @@ if( TubeTK_USE_VTK )
         5 0.125 1 )
   Midas3FunctionAddTest( NAME
     itkAnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise-Compare
-    COMMAND ${IMAGECOMPARE_EXE}
+    COMMAND ${CompareImages_EXE}
       -t ${TEMP}/Regularization_angled_noNoise_smoothedMotionField.mhd
       -b MIDAS{Regularization_angled_noNoise_smoothedMotionField.mhd.md5}
-      -i ${imageCompareTolerance}
+      -i ${CompareImagesTolerance}
       MIDAS_FETCH_ONLY{Regularization_angled_noNoise_smoothedMotionField.zraw.md5} )
   set_property( TEST
     itkAnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise-Compare
@@ -189,10 +189,10 @@ if( TubeTK_USE_VTK )
         5 0.125 1 )
   Midas3FunctionAddTest(
     NAME itkAnisotropicDiffusiveRegistrationRegularizationTestAngled-Compare
-    COMMAND ${IMAGECOMPARE_EXE}
+    COMMAND ${CompareImages_EXE}
       -t ${TEMP}/Regularization_angled_smoothedMotionField.mhd
       -b MIDAS{Regularization_angled_smoothedMotionField.mhd.md5}
-      -i ${imageCompareTolerance}
+      -i ${CompareImagesTolerance}
       MIDAS_FETCH_ONLY{Regularization_angled_smoothedMotionField.zraw.md5} )
   set_property( TEST
     itkAnisotropicDiffusiveRegistrationRegularizationTestAngled-Compare
@@ -208,10 +208,10 @@ if( TubeTK_USE_VTK )
         5 0.125 0 )
   Midas3FunctionAddTest( NAME
     itkAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian-Compare
-    COMMAND ${IMAGECOMPARE_EXE}
+    COMMAND ${CompareImages_EXE}
       -t ${TEMP}/Regularization_angled_gaussian_smoothedMotionField.mhd
       -b MIDAS{Regularization_angled_gaussian_smoothedMotionField.mhd.md5}
-      -i ${imageCompareTolerance}
+      -i ${CompareImagesTolerance}
       MIDAS_FETCH_ONLY{Regularization_angled_gaussian_smoothedMotionField.zraw.md5} )
   set_property( TEST
     itkAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian-Compare
