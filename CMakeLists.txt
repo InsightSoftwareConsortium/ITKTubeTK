@@ -298,6 +298,20 @@ endif( TubeTK_BUILD_USING_SLICER )
 include( TubeTKSlicer4Config )
 
 #
+# 2D image support.
+#
+option( TubeTK_Support_2D_Images "Support of 2D Images in TubeTK CLI tools" ON )
+if( TubeTK_Support_2D_Images )
+  add_definitions( -DSUPPORT_2D_IMAGES )
+endif()
+
+#
+# Setup examples as tests
+#
+option( TubeTK_USE_EXAMPLES_AS_TESTS
+  "Test TubeTK examples as (long running) tests." OFF )
+
+#
 # GPU ArrayFire setup
 #
 option( TubeTK_USE_GPU_ARRAYFIRE
@@ -327,12 +341,6 @@ option( TubeTK_USE_CPPCHECK "Use Cppcheck to enable additional tests." ON )
 option( USE_SYSTEM_CPPCHECK
   "Exclude Cppcheck from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_CPPCHECK )
-
-#
-# Setup examples as tests
-#
-option( TubeTK_USE_EXAMPLES_AS_TESTS
-  "Test TubeTK examples as (long running) tests." OFF )
 
 #
 # Setup python
@@ -385,17 +393,10 @@ option( USE_SYSTEM_ITK "Exclude ITK from superbuild and use an existing build."
 mark_as_advanced( USE_SYSTEM_ITK )
 
 #
-# 2D image support.
-#
-option(TubeTK_Support_2D_Images "Support of 2D Images in TubeTK CLI tools" OFF)
-if(TubeTK_Support_2D_Images)
-  add_definitions(-DSUPPORT_2D_IMAGES)
-endif()
-
-#
 # JsonCpp library setup.
 #
-option( TubeTK_USE_JsonCpp "Use JsonCpp to enable additional functionality." ON )
+option( TubeTK_USE_JsonCpp "Use JsonCpp to enable additional functionality."
+  ON )
 option( USE_SYSTEM_JSONCPP
   "Exclude JsonCpp from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_JSONCPP )
@@ -580,9 +581,11 @@ if( TubeTK_USE_CPPCHECK )
     PROPERTIES FAIL_REGULAR_EXPRESSION "error file=" )
 endif( TubeTK_USE_CPPCHECK )
 
-# Set SlicerExecutionModel output directories absolute path using install directory relative path.
-foreach(type RUNTIME LIBRARY INCLUDE SHARE ARCHIVE)
-  set(SlicerExecutionModel_CLI_${type}_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${SlicerExecutionModel_CLI_INSTALL_${type}_DESTINATION})
+# Set SlicerExecutionModel output directories absolute path using install
+#   directory relative path.
+foreach( type RUNTIME LIBRARY INCLUDE SHARE ARCHIVE )
+  set( SlicerExecutionModel_CLI_${type}_OUTPUT_DIRECTORY
+    ${CMAKE_BINARY_DIR}/${SlicerExecutionModel_CLI_INSTALL_${type}_DESTINATION} )
 endforeach()
 
 configure_file ( "${TubeTK_SOURCE_DIR}/CMake/tubetkConfigure.h.in"
@@ -601,8 +604,9 @@ test_big_endian( CMAKE_WORDS_BIGENDIAN )
 # Set TubeTK_EXECUTABLE_DIRS useful to configure launcher scripts
 # and set TubeTK_LIBRARY_DIRS
 if( WIN32 )
-  set(TubeTK_EXECUTABLE_DIRS CACHE INTERNAL "Bin and Lib dirs for running apps." FORCE )
-  foreach(_build_type "" Debug Release)
+  set(TubeTK_EXECUTABLE_DIRS CACHE INTERNAL "Bin and Lib dirs for running apps."
+    FORCE )
+  foreach( _build_type "" Debug Release )
     list( APPEND TubeTK_EXECUTABLE_DIRS
       ${GenerateCLP_DIR}/${_build_type}
       ${Boost_LIBRARY_DIR}
@@ -635,36 +639,37 @@ endif( WIN32 )
 # Configure a launcher for running TubeTK methods from the command line
 #
 message(STATUS "Configuring Launcher script")
-set(TubeTK_LAUNCHER )
+set( TubeTK_LAUNCHER )
 if( WIN32 )
   # Microsoft Windows.
-  set(_launcher_platform "windows")
+  set( _launcher_platform "windows" )
   configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKLauncher.bat.in
     ${TubeTK_BINARY_DIR}/TubeTKLauncher.bat @ONLY )
 
-  find_program(CMD_EXECUTABLE "cmd")
+  find_program( CMD_EXECUTABLE "cmd" )
   if( NOT CMD_EXECUTABLE )
     message(FATAL_ERROR
       "Could not find 'cmd' executable required to run test using the launcher")
   endif()
 
-  set(TubeTK_LAUNCHER ${TubeTK_BINARY_DIR}/TubeTKLauncher.bat)
+  set( TubeTK_LAUNCHER ${TubeTK_BINARY_DIR}/TubeTKLauncher.bat )
 elseif( UNIX AND TubeTK_BUILD_USING_SLICER )
   # Apple OS X, Linux, or UNIX.
-  set(_launcher_platform "unix")
+  set( _launcher_platform "unix" )
   configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKLauncher.sh.in
     ${TubeTK_BINARY_DIR}/TubeTKLauncher.sh @ONLY )
 
-  find_program(SH_EXECUTABLE "sh")
+  find_program( SH_EXECUTABLE "sh" )
   if( NOT SH_EXECUTABLE )
     message(FATAL_ERROR
       "Could not find 'sh' executable required to run test using the launcher")
   endif()
-  set(TubeTK_LAUNCHER ${SH_EXECUTABLE} ${TubeTK_BINARY_DIR}/TubeTKLauncher.sh)
+  set( TubeTK_LAUNCHER ${SH_EXECUTABLE} ${TubeTK_BINARY_DIR}/TubeTKLauncher.sh )
 elseif( NOT UNIX )
-  message(FATAL_ERROR "Configuring Launcher script - failed [unknown platform]")
+  message( FATAL_ERROR
+    "Configuring Launcher script - failed [unknown platform]" )
 endif()
-message(STATUS "Configuring Launcher script - ok [${_launcher_platform}]")
+message( STATUS "Configuring Launcher script - ok [${_launcher_platform}]" )
 
 include( TubeTKMacroInstallPlugins )
 
