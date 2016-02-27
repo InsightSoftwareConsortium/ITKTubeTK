@@ -28,7 +28,6 @@ limitations under the License.
 
 #include <itkImage.h>
 #include <itkImageIOFactory.h>
-#include <algorithm> 
 
 namespace tube
 {
