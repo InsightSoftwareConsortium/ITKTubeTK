@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -37,8 +37,8 @@ namespace tube
 
 /** Constructor */
 template< class TInputImage, class TOutputImage >
-CVTImageFilter< TInputImage, TOutputImage >
-::CVTImageFilter( void )
+CVTImageFilter< TInputImage, TOutputImage >::
+CVTImageFilter( void )
 {
   m_Seed = -1;
   m_RandomGenerator =
@@ -66,13 +66,13 @@ CVTImageFilter< TInputImage, TOutputImage >
 /** SetCentroids */
 template< class TInputImage, class TOutputImage >
 void
-CVTImageFilter< TInputImage, TOutputImage >
-::SetCentroids(const PointArrayType * centroids)
+CVTImageFilter< TInputImage, TOutputImage >::
+SetCentroids( const PointArrayType * centroids )
 {
   m_InitialSamplingMethod = CVT_USER;
   m_NumberOfCentroids = centroids->size();
-  m_Centroids.reserve(m_NumberOfCentroids);
-  for(int i = 0; i<m_NumberOfCentroids; i++)
+  m_Centroids.reserve( m_NumberOfCentroids );
+  for( int i = 0; i < m_NumberOfCentroids; ++i )
     {
     m_Centroids[i] = centroids[i];
     }
@@ -82,14 +82,14 @@ CVTImageFilter< TInputImage, TOutputImage >
 /** GenerateInputRequestedRegion */
 template< class TInputImage, class TOutputImage >
 void
-CVTImageFilter< TInputImage, TOutputImage >
-::GenerateInputRequestedRegion( void )
+CVTImageFilter< TInputImage, TOutputImage >::
+GenerateInputRequestedRegion( void )
 {
   Superclass::GenerateInputRequestedRegion();
   if( this->GetInput() )
     {
-    typename InputImageType::Pointer inpt =
-          const_cast< TInputImage * >( this->GetInput() );
+    typename InputImageType::Pointer inpt = const_cast< TInputImage * >(
+      this->GetInput() );
     inpt->SetRequestedRegionToLargestPossibleRegion();
     }
 }
@@ -98,18 +98,18 @@ CVTImageFilter< TInputImage, TOutputImage >
 /** EnlargeOutputRequestedRegion */
 template< class TInputImage, class TOutputImage >
 void
-CVTImageFilter< TInputImage, TOutputImage >
-::EnlargeOutputRequestedRegion(DataObject * output)
+CVTImageFilter< TInputImage, TOutputImage >::
+EnlargeOutputRequestedRegion( DataObject * output )
 {
-  Superclass::EnlargeOutputRequestedRegion(output);
+  Superclass::EnlargeOutputRequestedRegion( output );
   output->SetRequestedRegionToLargestPossibleRegion();
 }
 
 /** GenerateData */
 template< class TInputImage, class TOutputImage >
 void
-CVTImageFilter< TInputImage, TOutputImage >
-::GenerateData( void )
+CVTImageFilter< TInputImage, TOutputImage >::
+GenerateData( void )
 {
   m_InputImage = this->GetInput();
 
@@ -118,11 +118,12 @@ CVTImageFilter< TInputImage, TOutputImage >
 
   m_InputImageSize = region.GetSize();
 
-  ImageRegionConstIterator< InputImageType >  inputIt(m_InputImage, region);
+  ImageRegionConstIterator< InputImageType > inputIt( m_InputImage,
+    region );
   inputIt.GoToBegin();
   m_InputImageMax = inputIt.Get();
   ++inputIt;
-  while(!inputIt.IsAtEnd())
+  while( !inputIt.IsAtEnd() )
     {
     double tf = inputIt.Get();
     if( tf > m_InputImageMax )
@@ -131,7 +132,7 @@ CVTImageFilter< TInputImage, TOutputImage >
       }
     ++inputIt;
     }
-  if(m_InputImageMax == 0)
+  if( m_InputImageMax == 0 )
     {
     m_InputImageMax = 1;
     }
@@ -148,26 +149,26 @@ CVTImageFilter< TInputImage, TOutputImage >
     m_RandomGenerator->Initialize();
     }
 
-  if(m_InitialSamplingMethod != CVT_USER)
+  if( m_InitialSamplingMethod != CVT_USER )
     {
     this->ComputeSample( &m_Centroids, m_NumberOfCentroids,
-                         m_InitialSamplingMethod );
+      m_InitialSamplingMethod );
     }
 
-  m_OutputImage = this->GetOutput(0);
+  m_OutputImage = this->GetOutput( 0 );
 
-  m_OutputImage->SetRegions(region);
-  m_OutputImage->SetOrigin(m_InputImage->GetOrigin());
-  m_OutputImage->SetSpacing(m_InputImage->GetSpacing());
+  m_OutputImage->SetRegions( region );
+  m_OutputImage->SetOrigin( m_InputImage->GetOrigin() );
+  m_OutputImage->SetSpacing( m_InputImage->GetSpacing() );
   m_OutputImage->Allocate();
   m_OutputImage->FillBuffer( 0 );
 
   if( this->GetDebug() )
     {
-    for(int j=0; j<(int)m_NumberOfCentroids; j++)
+    for( int j = 0; j < (int)m_NumberOfCentroids; j++ )
       {
       std::cout << "Initial Centroid [" << j << "] = " << m_Centroids[j]
-                << std::endl;
+        << std::endl;
       }
     }
 
@@ -175,24 +176,25 @@ CVTImageFilter< TInputImage, TOutputImage >
     {
     iteration = iteration + 1;
 
-    double iterationEnergy = this->ComputeIteration(iterationEnergyDifference);
+    double iterationEnergy = this->ComputeIteration(
+      iterationEnergyDifference );
 
     if( this->GetDebug() )
       {
-      std::cout << "Iteration = " << iteration
-                << " : E = " << iterationEnergy
-                << " : EDiff = " << iterationEnergyDifference << std::endl;
+      std::cout << "Iteration = " << iteration << " : E = "
+        << iterationEnergy << " : EDiff = " << iterationEnergyDifference
+        << std::endl;
       }
     ContinuousIndexType indx;
-    indx.Fill(0);
-    for(int j=0; j<(int)m_NumberOfCentroids; j++)
+    indx.Fill( 0 );
+    for( int j = 0; j < (int)m_NumberOfCentroids; j++ )
       {
-      for(unsigned int i=0; i<ImageDimension; i++)
+      for( unsigned int i=0; i<ImageDimension; i++ )
         {
         indx[i] = indx[i] + m_Centroids[j][i];
         }
       }
-    for(unsigned int i=0; i<ImageDimension; i++)
+    for( unsigned int i=0; i<ImageDimension; i++ )
       {
       indx[i] = indx[i] / m_NumberOfCentroids;
       }
@@ -204,43 +206,45 @@ CVTImageFilter< TInputImage, TOutputImage >
 
   // Generate output image
   IndexType iIndx;
-  for(int j=0; j<(int)m_NumberOfCentroids; j++)
+  for( int j = 0; j < (int)m_NumberOfCentroids; j++ )
     {
-    for(unsigned int i=0; i<ImageDimension; i++)
+    for( unsigned int i=0; i<ImageDimension; i++ )
       {
-      iIndx[i] = (int)(m_Centroids[j][i]);
-      if(iIndx[i] < 0)
+      iIndx[i] = (int)( m_Centroids[j][i] );
+      if( iIndx[i] < 0 )
         {
         iIndx[i] = 0;
         }
-      if(iIndx[i] > (int)m_InputImageSize[i]-1)
+      if( iIndx[i] > (int)m_InputImageSize[i]-1 )
         {
         iIndx[i] = m_InputImageSize[i]-1;
         }
       }
-    m_OutputImage->SetPixel(iIndx, j+1);
+    m_OutputImage->SetPixel( iIndx, j+1 );
     if( this->GetDebug() )
       {
       std::cout << " Final Centroid [" << j << "] = " << m_Centroids[j]
-                << std::endl;
+        << std::endl;
       }
     }
 
   typedef DanielssonDistanceMapImageFilter<OutputImageType, OutputImageType>
-          DDFilterType;
+    DDFilterType;
   typename DDFilterType::Pointer ddFilter = DDFilterType::New();
-  ddFilter->SetInput(m_OutputImage);
-  ddFilter->SetInputIsBinary(false);
+  ddFilter->SetInput( m_OutputImage );
+  ddFilter->SetInputIsBinary( false );
   ddFilter->Update();
   typename OutputImageType::Pointer tmpImage = ddFilter->GetVoronoiMap();
 
-  ImageRegionConstIterator< OutputImageType > tmpImageIt( tmpImage, region );
-  ImageRegionIterator< OutputImageType > outputImageIt( m_OutputImage, region );
+  ImageRegionConstIterator< OutputImageType > tmpImageIt( tmpImage,
+    region );
+  ImageRegionIterator< OutputImageType > outputImageIt( m_OutputImage,
+    region );
   tmpImageIt.GoToBegin();
   outputImageIt.GoToBegin();
-  while(!tmpImageIt.IsAtEnd())
+  while( !tmpImageIt.IsAtEnd() )
     {
-    outputImageIt.Set(tmpImageIt.Get());
+    outputImageIt.Set( tmpImageIt.Get() );
     ++outputImageIt;
     ++tmpImageIt;
     }
@@ -250,10 +254,10 @@ CVTImageFilter< TInputImage, TOutputImage >
 /** ComputeIteration */
 template< class TInputImage, class TOutputImage >
 double
-CVTImageFilter< TInputImage, TOutputImage >
-::ComputeIteration( double & energyDiff)
+CVTImageFilter< TInputImage, TOutputImage >::
+ComputeIteration( double & energyDiff )
 {
-  unsigned int i;
+  int i;
   int j;
   int j2;
 
@@ -263,10 +267,10 @@ CVTImageFilter< TInputImage, TOutputImage >
   //  by the sampling.
   double energy = 0.0;
 
-  PointArrayType centroids2(m_NumberOfCentroids);
+  PointArrayType centroids2( m_NumberOfCentroids );
   double * count = new double[m_NumberOfCentroids];
   unsigned int * nearest = new unsigned int[m_NumberOfSamplesPerBatch];
-  PointArrayType batch(m_NumberOfSamplesPerBatch);
+  PointArrayType batch( m_NumberOfSamplesPerBatch );
 
   for( j = 0; j < (int)m_NumberOfCentroids; j++ )
     {
@@ -313,20 +317,20 @@ CVTImageFilter< TInputImage, TOutputImage >
       j2 = nearest[j];
 
       dist = 0;
-      for( i = 0; i < ImageDimension; i++ )
+      for( i = 0; i < (int)ImageDimension; i++ )
         {
         centroids2[j2][i] = centroids2[j2][i] + batch[j][i];
         dist = ( m_Centroids[j2][i] - batch[j][i] )
-               * ( m_Centroids[j2][i] - batch[j][i] );
+          * ( m_Centroids[j2][i] - batch[j][i] );
         }
-      energy = energy + vcl_sqrt(dist);
+      energy = energy + vcl_sqrt( dist );
       count[j2] = count[j2] + 1;
       }
     }
 
   for( j = 0; j < (int)m_NumberOfCentroids; j++ )
     {
-    for( i = 0; i < ImageDimension; i++ )
+    for( i = 0; i < (int)ImageDimension; i++ )
       {
       centroids2[j][i] = centroids2[j][i] / count[j];
       }
@@ -336,10 +340,10 @@ CVTImageFilter< TInputImage, TOutputImage >
   for( j = 0; j < (int)m_NumberOfCentroids; j++ )
     {
     double term = 0.0;
-    for( i = 0; i < ImageDimension; i++ )
+    for( i = 0; i < (int)ImageDimension; i++ )
       {
       term += ( centroids2[j][i] - m_Centroids[j][i] )
-              * ( centroids2[j][i] - m_Centroids[j][i] );
+        * ( centroids2[j][i] - m_Centroids[j][i] );
       m_Centroids[j][i] = centroids2[j][i];
       }
     energyDiff += sqrt ( term );
@@ -357,13 +361,10 @@ CVTImageFilter< TInputImage, TOutputImage >
 /** ComputeSample */
 template< class TInputImage, class TOutputImage >
 void
-CVTImageFilter< TInputImage, TOutputImage >
-::ComputeSample( PointArrayType * sample, unsigned int sampleSize,
-                 SamplingMethodEnum samplingMethod )
+CVTImageFilter< TInputImage, TOutputImage >::
+ComputeSample( PointArrayType * sample, unsigned int sampleSize,
+  SamplingMethodEnum samplingMethod )
 {
-  unsigned int i;
-  int j;
-
   if( sampleSize < 1 )
     {
     if( this->GetDebug() )
@@ -374,8 +375,8 @@ CVTImageFilter< TInputImage, TOutputImage >
     throw( "Sample size less than 1.  Cannot compute CVT" );
     }
 
-  (*sample).clear();
-  (*sample).reserve(sampleSize);
+  sample->clear();
+  sample->reserve( sampleSize );
 
   if( this->GetDebug() )
     {
@@ -385,67 +386,67 @@ CVTImageFilter< TInputImage, TOutputImage >
   IndexType iIndx;
   iIndx.Fill( 0 );
   ContinuousIndexType indx;
-  switch(samplingMethod)
+  switch( samplingMethod )
     {
     case CVT_GRID:
       {
-      int len = 1;
-      for(i=0; i<ImageDimension; i++)
+      unsigned int len = 1;
+      for( unsigned int i = 0; i < ImageDimension; i++ )
         {
         len = len * m_InputImageSize[i];
         }
-      double factor = len / (double)sampleSize;
-      factor = vcl_pow(factor, 1.0 / ImageDimension);
+      double factor = len / ( double )sampleSize;
+      factor = vcl_pow( factor, 1.0 / ImageDimension );
       int * gridSize = new int[ImageDimension];
       len = 1;
-      for(i=0; i<ImageDimension; i++)
+      for( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        gridSize[i] = (int)(m_InputImageSize[i] / factor);
+        gridSize[i] = (int)( m_InputImageSize[i] / factor );
         len = len * gridSize[i];
         }
-      for( j = 0; j < len; j++ )
+      for( unsigned int j = 0; j < len; j++ )
         {
         double tmpJ = j;
         double tmpLen = len;
-        for(i=ImageDimension-1; i>=0; i--)
+        for( int i = (int)( ImageDimension )-1; i >= 0; --i )
           {
           tmpLen = tmpLen / gridSize[i];
-          iIndx[i] = (int)(tmpJ / tmpLen);
-          tmpJ = tmpJ - (iIndx[i] * tmpLen);
-          iIndx[i] = (int)(iIndx[i] * factor + factor/2);
+          iIndx[i] = (int)( tmpJ / tmpLen );
+          tmpJ = tmpJ - ( iIndx[i] * tmpLen );
+          iIndx[i] = (int)( iIndx[i] * factor + factor/2 );
           }
-        (*sample).push_back(iIndx);
+        sample->push_back( iIndx );
         }
       delete [] gridSize;
-      for( j = len; j < (int)sampleSize; j++ )
+      for( unsigned int j = len; j < sampleSize; j++ )
         {
-        for( i = 0; i < ImageDimension; i++ )
+        for( unsigned int i = 0; i < ImageDimension; i++ )
           {
           iIndx[i] = (int)( m_RandomGenerator->GetUniformVariate( 0, 1 )
-                           * m_InputImageSize[i]-1 );
+            * m_InputImageSize[i]-1 );
           }
-        (*sample).push_back(iIndx);
+        ( *sample ).push_back( iIndx );
         }
       break;
       }
     case CVT_RANDOM:
       {
-      for( j = 0; j < (int)sampleSize; j++ )
+      for( unsigned int j = 0; j < sampleSize; j++ )
         {
         double u = 1;
         double p1 = 0;
-        while(u >= p1)
+        while( u >= p1 )
           {
-          for( i = 0; i < ImageDimension; i++ )
+          for( unsigned int i = 0; i < ImageDimension; i++ )
             {
             indx[i] = (int)( m_RandomGenerator->GetUniformVariate( 0, 1 )
-                             * m_InputImageSize[i]-1 );
-            iIndx[i] = (int)(indx[i]);
+              * m_InputImageSize[i]-1 );
+            iIndx[i] = (int)( indx[i] );
             }
-          p1 = m_InputImage->GetPixel(iIndx) / m_InputImageMax;
-          u = (double)m_RandomGenerator->GetUniformVariate( 0, 1 );
+          p1 = m_InputImage->GetPixel( iIndx ) / m_InputImageMax;
+          u = ( double )m_RandomGenerator->GetUniformVariate( 0, 1 );
           }
-        (*sample).push_back(indx);
+        sample->push_back( indx );
         }
       break;
       }
@@ -466,37 +467,31 @@ CVTImageFilter< TInputImage, TOutputImage >
 /** ComputeClosest */
 template< class TInputImage, class TOutputImage >
 void
-CVTImageFilter< TInputImage, TOutputImage >
-::ComputeClosest( const PointArrayType & sample,
-                  const PointArrayType & centroids,
-                  unsigned int * nearest )
+CVTImageFilter< TInputImage, TOutputImage >::
+ComputeClosest( const PointArrayType & sample,
+  const PointArrayType & centroids, unsigned int * nearest )
 {
-  double dist;
-  unsigned int i;
-  int jc;
-  int js;
-
   if( this->GetDebug() )
     {
     std::cout << "    computing closest" << std::endl;
     }
 
-  int numberOfSamples = sample.size();
+  unsigned int numberOfSamples = sample.size();
 
-  int numberOfCentroids = centroids.size();
+  unsigned int numberOfCentroids = centroids.size();
 
-  for( js = 0; js < numberOfSamples; js++ )
+  for( unsigned int js = 0; js < numberOfSamples; js++ )
     {
     double distMin = 1e20;
     nearest[js] = 0;
 
-    for( jc = 0; jc < numberOfCentroids; jc++ )
+    for( unsigned int jc = 0; jc < numberOfCentroids; jc++ )
       {
-      dist = 0.0;
-      for( i = 0; i < ImageDimension; i++ )
+      double dist = 0.0;
+      for( unsigned int i = 0; i < ImageDimension; i++ )
         {
         dist += ( sample[js][i] - centroids[jc][i] )
-                 * ( sample[js][i] - centroids[jc][i] );
+          * ( sample[js][i] - centroids[jc][i] );
         }
 
       if( jc == 0 || dist < distMin )
@@ -515,10 +510,10 @@ CVTImageFilter< TInputImage, TOutputImage >
 /** PrintSelf */
 template< class TInputImage, class TOutputImage >
 void
-CVTImageFilter< TInputImage, TOutputImage >
-::PrintSelf(std::ostream & os, Indent indent) const
+CVTImageFilter< TInputImage, TOutputImage >::
+PrintSelf( std::ostream & os, Indent indent ) const
 {
-  Superclass::PrintSelf(os, indent);
+  Superclass::PrintSelf( os, indent );
 
   if( m_InputImage.IsNotNull() )
     {
@@ -552,20 +547,19 @@ CVTImageFilter< TInputImage, TOutputImage >
 
   std::cout << "Seed = " << m_Seed << std::endl;
   std::cout << "InitialSamplingMethod = " << m_InitialSamplingMethod
-            << std::endl;
+    << std::endl;
   std::cout << "NumberOfSamples = " << m_NumberOfSamples << std::endl;
   std::cout << "NumberOfIterations = " << m_NumberOfIterations << std::endl;
   std::cout << "BatchSamplingMethod = " << m_BatchSamplingMethod
-            << std::endl;
+    << std::endl;
   std::cout << "NumberOfIterationsPerBatch = "
-            << m_NumberOfIterationsPerBatch
-            << std::endl;
+    << m_NumberOfIterationsPerBatch << std::endl;
   std::cout << "NumberOfSamplesPerBatch = " << m_NumberOfSamplesPerBatch
-            << std::endl;
+    << std::endl;
 }
 
 } // End namespace tube
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeCVTImageFilter_hxx)
+#endif // End !defined( __itktubeCVTImageFilter_hxx )

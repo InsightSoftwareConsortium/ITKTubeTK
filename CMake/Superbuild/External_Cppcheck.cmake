@@ -25,7 +25,8 @@ set( proj Cppcheck )
 
 # Sanity checks.
 if( CPPCHECK_EXECUTABLE AND NOT EXISTS ${CPPCHECK_EXECUTABLE} )
-  message( FATAL_ERROR "The CPPCHECK_EXECUTABLE variable is defined, but corresponds to a nonexistent file" )
+  message( FATAL_ERROR
+    "CPPCHECK_EXECUTABLE is defined, but corresponds to a nonexistent file" )
 endif( CPPCHECK_EXECUTABLE AND NOT EXISTS ${CPPCHECK_EXECUTABLE} )
 
 set( ${proj}_DEPENDENCIES "" )
