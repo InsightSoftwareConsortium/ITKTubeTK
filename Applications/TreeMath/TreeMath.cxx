@@ -35,7 +35,6 @@
 
 #include <metaCommand.h>
 
-
 template< unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
@@ -57,8 +56,8 @@ void InterpolatePath(
 }
 
 template< unsigned int VDimension >
-void FillGap( typename itk::GroupSpatialObject< VDimension >::Pointer &pTubeGroup,
-             char InterpolationMethod )
+void FillGap( typename itk::GroupSpatialObject< VDimension >::Pointer &
+  pTubeGroup, char InterpolationMethod )
 {
   //typedefs
   typedef itk::GroupSpatialObject< VDimension >         TubeGroupType;
@@ -71,40 +70,39 @@ void FillGap( typename itk::GroupSpatialObject< VDimension >::Pointer &pTubeGrou
   typedef typename TubeType::PointListType              TubePointListType;
 
   char tubeName[] = "Tube";
-  TubeListPointerType pTubeList
-    = pTubeGroup->GetChildren(
+  TubeListPointerType pTubeList = pTubeGroup->GetChildren(
     pTubeGroup->GetMaximumDepth(), tubeName );
 
-  for( typename TubeGroupType::ChildrenListType::iterator
-    itSourceTubes = pTubeList->begin();
-    itSourceTubes != pTubeList->end(); ++itSourceTubes )
+  for( typename TubeGroupType::ChildrenListType::iterator itSourceTubes =
+    pTubeList->begin(); itSourceTubes != pTubeList->end(); ++itSourceTubes )
     {
-    TubePointerType pCurTube
-      = dynamic_cast< TubeType * >( itSourceTubes->GetPointer() );
-    TubeIdType curTubeId = pCurTube->GetId();
+    TubePointerType pCurTube = dynamic_cast< TubeType * >(
+      itSourceTubes->GetPointer() );
     TubeIdType curParentTubeId = pCurTube->GetParentId();
     TubePointType* parentNearestPoint = NULL;
-    if( pCurTube->GetRoot() == false &&  curParentTubeId != pTubeGroup->GetId() )
+
+    if( pCurTube->GetRoot() == false && curParentTubeId !=
+      pTubeGroup->GetId() )
       {
       //find parent target tube
-      for( typename TubeGroupType::ChildrenListType::iterator
-        itTubes = pTubeList->begin();
-        itTubes != pTubeList->end(); ++itTubes )
+      for( typename TubeGroupType::ChildrenListType::iterator itTubes =
+        pTubeList->begin(); itTubes != pTubeList->end(); ++itTubes )
         {
-        TubePointerType pTube
-          = dynamic_cast< TubeType * >( itTubes->GetPointer() );
+        TubePointerType pTube = dynamic_cast< TubeType * >(
+          itTubes->GetPointer() );
         if( pTube->GetId() == curParentTubeId )
           {
           double minDistance = itk::NumericTraits<double>::max();
           int flag =-1;
-          for ( int index = 0; index < pTube->GetNumberOfPoints(); index++ )
+          for ( unsigned int index = 0; index < pTube->GetNumberOfPoints();
+            ++index )
             {
-            TubePointType* tubePoint =
-            dynamic_cast< TubePointType* >( pTube->GetPoint( index ) );
+            TubePointType* tubePoint = dynamic_cast< TubePointType* >(
+              pTube->GetPoint( index ) );
             PositionType tubePointPosition = tubePoint->GetPosition();
-            double distance = tubePointPosition.SquaredEuclideanDistanceTo
-              ( pCurTube->GetPoint( 0 )->GetPosition() );
-            if ( minDistance > distance )
+            double distance = tubePointPosition.SquaredEuclideanDistanceTo(
+              pCurTube->GetPoint( 0 )->GetPosition() );
+            if( minDistance > distance )
               {
               minDistance = distance;
               parentNearestPoint = tubePoint;
@@ -113,7 +111,7 @@ void FillGap( typename itk::GroupSpatialObject< VDimension >::Pointer &pTubeGrou
             distance = tubePointPosition.SquaredEuclideanDistanceTo(
               pCurTube->GetPoint( pCurTube->GetNumberOfPoints() - 1 )
               ->GetPosition() );
-            if ( minDistance > distance )
+            if( minDistance > distance )
               {
               minDistance = distance;
               parentNearestPoint = tubePoint;
@@ -124,17 +122,18 @@ void FillGap( typename itk::GroupSpatialObject< VDimension >::Pointer &pTubeGrou
           TubePointListType newTubePoints;
           if( flag == 1 )
             {
-            TubePointType* childTubeStartPoint =
-              dynamic_cast< TubePointType* >( pCurTube->GetPoint( 0 ) );
+            TubePointType* childTubeStartPoint = dynamic_cast<
+              TubePointType* >( pCurTube->GetPoint( 0 ) );
             InterpolatePath< VDimension >(parentNearestPoint,
               childTubeStartPoint, newTubePoints, InterpolationMethod );
             TubePointListType targetTubePoints = pCurTube->GetPoints();
             pCurTube->Clear();
-            for( int index = 0; index < newTubePoints.size(); index++ )
+            for( unsigned int index = 0; index < newTubePoints.size();
+              ++index )
               {
               pCurTube->GetPoints().push_back( newTubePoints[ index ] );
               }
-            for( int i = 0; i < targetTubePoints.size(); i++ )
+            for( unsigned int i = 0; i < targetTubePoints.size(); ++i )
               {
               pCurTube->GetPoints().push_back( targetTubePoints[ i ] );
               }
@@ -161,7 +160,7 @@ void FillGap( typename itk::GroupSpatialObject< VDimension >::Pointer &pTubeGrou
 template< unsigned int VDimension >
 int DoIt( MetaCommand & command )
 {
-  if ( VDimension != 2 && VDimension != 3 )
+  if( VDimension != 2 && VDimension != 3 )
     {
     tube::ErrorMessage(
       "Error: Only 2D and 3D data is currently supported.");
@@ -179,14 +178,14 @@ int DoIt( MetaCommand & command )
   typename TubesReaderType::Pointer tubeFileReader = TubesReaderType::New();
   try
     {
-    tubeFileReader->SetFileName( command.GetValueAsString(
-    "infile" ).c_str() );
+    tubeFileReader->SetFileName( command.GetValueAsString( "infile" ).
+      c_str() );
     tubeFileReader->Update();
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( "Error loading TRE File: "
-      + std::string( err.GetDescription() ) );
+    tube::ErrorMessage( "Error loading TRE File: " + std::string(
+      err.GetDescription() ) );
     return EXIT_FAILURE;
     }
 
@@ -204,23 +203,23 @@ int DoIt( MetaCommand & command )
       typename TubeWriterType::Pointer tubeWriter = TubeWriterType::New();
       try
         {
-        tubeWriter->SetFileName( command.GetValueAsString(
-        *it, "filename" ).c_str() );
+        tubeWriter->SetFileName( command.GetValueAsString( *it,
+          "filename" ).c_str() );
         tubeWriter->SetInput( inputTubes );
         tubeWriter->Update();
         }
       catch( itk::ExceptionObject & err )
         {
-        tube::ErrorMessage( "Error writing TRE file: "
-          + std::string( err.GetDescription() ) );
+        tube::ErrorMessage( "Error writing TRE file: " + std::string(
+          err.GetDescription() ) );
         return EXIT_FAILURE;
         }
       }
     else if( it->name == "FillGapsInTubeTree" )
       {
       tubeStandardOutputMacro( << "\n>> Filling gaps in input tree" );
-      FillGap< VDimension >( inputTubes, command.GetValueAsString
-        ( *it, "InterpolationMethod" ).c_str()[0] );
+      FillGap< VDimension >( inputTubes, command.GetValueAsString( *it,
+        "InterpolationMethod" ).c_str()[0] );
       }
     ++it;
     }
@@ -229,7 +228,6 @@ int DoIt( MetaCommand & command )
 
 int main( int argc, char * argv[] )
 {
-  //PARSE_ARGS;
   MetaCommand command;
 
   command.SetName( "TreeMath" );
@@ -250,7 +248,7 @@ int main( int argc, char * argv[] )
     " by interpolating the path inbetween." );
   command.AddOptionField( "FillGapsInTubeTree", "InterpolationMethod",
     MetaCommand::STRING, true, "",
-    "[S]traight Line, [L]Linear Interpolation, [C]urve Fitting, [M]inimal Path",
+    "[S]traight Line, [L]Linear Interp., [C]urve Fitting, [M]inimal Path",
     MetaCommand::DATA_IN );
 
   if( !command.Parse( argc, argv ) )

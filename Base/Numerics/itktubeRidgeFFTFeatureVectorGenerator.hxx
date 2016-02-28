@@ -76,7 +76,7 @@ void
 RidgeFFTFeatureVectorGenerator< TImage >
 ::UpdateWhitenStatistics( void )
 {
-  int numFeatureImages = m_FeatureImageList.size();
+  unsigned int numFeatureImages = m_FeatureImageList.size();
 
   ValueListType featureMean;
   featureMean.resize( numFeatureImages );
@@ -91,7 +91,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
     unsigned int count = 0;
     featureMean[i] = 0;
     featureStdDev[i] = 0;
-    while( ! iter.IsAtEnd() )
+    while( !iter.IsAtEnd() )
       {
       double imVal = iter.Get();
       double delta = imVal - featureMean[i];

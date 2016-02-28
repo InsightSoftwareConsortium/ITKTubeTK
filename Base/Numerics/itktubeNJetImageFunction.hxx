@@ -101,7 +101,7 @@ SetInputImage( const InputImageType * ptr )
     for( unsigned int i = 0; i < ImageDimension; i++ )
       {
       m_InputImageSpacingSquared[i] = m_InputImageSpacing[i]
-                                      * m_InputImageSpacing[i];
+        * m_InputImageSpacing[i];
       }
     }
 
@@ -470,6 +470,7 @@ EvaluateAtContinuousIndex( const ContinuousIndexType & cIndex,
       boundary = true;
       }
     xShift[i] = xMin[i];
+    xShiftBoundary[i] = xShift[i];
 
     xMax[i] = ( int ) vnl_math_ceil( cIndex[i] + ( scale * m_Extent
       / m_InputImageSpacing[i] ) );
@@ -530,7 +531,7 @@ EvaluateAtContinuousIndex( const ContinuousIndexType & cIndex,
     if( maskIsSet )
       {
       physDist = 0;
-      for( unsigned int i = 0; i <  ImageDimension; i++ )
+      for( unsigned int i = 0; i < ImageDimension; i++ )
         {
         physDist += ( xShift[i] - cIndex[i] ) * ( xShift[i] - cIndex[i] )
           * m_InputImageSpacingSquared[i];
@@ -851,6 +852,7 @@ DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
       boundary = true;
       }
     xShift[i] = xMin[i];
+    xShiftBoundary[i] = xShift[i];
 
     xMax[i] = ( int ) vnl_math_ceil( cIndex[i] + ( scale * m_Extent
       / m_InputImageSpacing[i] ) );
@@ -1497,6 +1499,7 @@ JetAtContinuousIndex( const ContinuousIndexType & cIndex, VectorType & d,
       boundary = true;
       }
     xShift[i] = xMin[i];
+    xShiftBoundary[i] = xShift[i];
 
     xMax[i] = ( int ) vnl_math_ceil( cIndex[i] + ( scale * m_Extent
       / m_InputImageSpacing[i] ) );
