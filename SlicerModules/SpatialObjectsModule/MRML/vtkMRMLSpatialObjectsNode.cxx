@@ -392,6 +392,7 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
   typedef itk::Point<double, 3>                PointType;
   typedef itk::VesselTubeSpatialObject<3>      VesselTubeType;
   typedef VesselTubeType::TubePointType        VesselTubePointType;
+  typedef itk::IndexValueType                  TubeIdType;
 
   char childName[] = "Tube";
   TubeNetType::ChildrenListType* tubeList =
@@ -405,7 +406,7 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
   // Initialize the SpatialObject
   // Count number of points && remove dupplicate
   int totalNumberOfPoints = 0;
-  unsigned int maxTubeId = 0;
+  TubeIdType maxTubeId = 0;
   for(TubeNetType::ChildrenListType::iterator tubeIT = tubeList->begin();
         tubeIT != tubeList->end();
         ++tubeIT )
@@ -432,8 +433,8 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
     }
 
   //Making sure tubeId is unique to a tube
-  std::set< unsigned int > tubeIds;
-  std::set< unsigned int >::iterator it;
+  std::set< TubeIdType > tubeIds;
+  std::set< TubeIdType >::iterator it;
   for(TubeNetType::ChildrenListType::iterator tubeIT = tubeList->begin();
         tubeIT != tubeList->end();
         ++tubeIT )
@@ -445,7 +446,7 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
       continue;
       }
 
-    unsigned int currTubeId = currTube->GetId();
+    TubeIdType currTubeId = currTube->GetId();
     it = tubeIds.find( currTubeId );
     if( it ==  tubeIds.end() )
       {
