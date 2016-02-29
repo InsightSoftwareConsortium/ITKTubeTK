@@ -118,7 +118,7 @@ void WriteFCSVFile( std::string filename,
 
   typedef itk::Point< double, DimensionT >                PointType;
 
-  for( std::vector< PointType >::iterator it = pointList.begin();
+  for( typename std::vector< PointType >::iterator it = pointList.begin();
     it != pointList.end(); ++it )
     {
     PointType curPoint = *it;
