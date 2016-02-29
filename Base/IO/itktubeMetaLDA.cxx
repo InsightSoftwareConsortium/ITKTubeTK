@@ -73,8 +73,10 @@ MetaLDA
   unsigned int numberOfLDAToUseAsFeatures,
   const LDAValuesType & ldaValues,
   const LDAMatrixType & ldaMatrix,
-  const ValueListType & whitenMeans,
-  const ValueListType & whitenStdDevs )
+  const ValueListType & inputWhitenMeans,
+  const ValueListType & inputWhitenStdDevs,
+  const ValueListType & outputWhitenMeans,
+  const ValueListType & outputWhitenStdDevs )
 {
   if( META_DEBUG )
     {
@@ -83,8 +85,8 @@ MetaLDA
 
   this->Clear();
   this->InitializeEssential( numberOfPCAToUseAsFeatures,
-    numberOfLDAToUseAsFeatures, ldaValues, ldaMatrix, whitenMeans,
-    whitenStdDevs );
+    numberOfLDAToUseAsFeatures, ldaValues, ldaMatrix, inputWhitenMeans,
+    inputWhitenStdDevs, outputWhitenMeans, outputWhitenStdDevs );
 }
 
 MetaLDA
@@ -102,19 +104,32 @@ void MetaLDA
     << m_NumberOfPCABasisToUseAsFeatures << METAIO_STREAM::endl;
   METAIO_STREAM::cout << "NumberOfLDABasisToUseAsFeatures = "
     << m_NumberOfLDABasisToUseAsFeatures << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "LDAValues = " << m_LDAValues << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "LDAMatrix = " << m_LDAMatrix << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "WhitenMeans = " << METAIO_STREAM::endl;
-  for( unsigned int i = 0; i < m_WhitenMeans.size(); i++ )
+  METAIO_STREAM::cout << "LDAValues = " << m_LDAValues
+    << METAIO_STREAM::endl;
+  METAIO_STREAM::cout << "LDAMatrix = " << m_LDAMatrix
+    << METAIO_STREAM::endl;
+  METAIO_STREAM::cout << "InputWhitenMeans = " << METAIO_STREAM::endl;
+  for( unsigned int i = 0; i < m_InputWhitenMeans.size(); i++ )
     {
-    METAIO_STREAM::cout << m_WhitenMeans[i] << " ";
+    METAIO_STREAM::cout << m_InputWhitenMeans[i] << " ";
+    }
+  METAIO_STREAM::cout << METAIO_STREAM::endl;
+  METAIO_STREAM::cout << "InputWhitenStdDevs = " << METAIO_STREAM::endl;
+  for( unsigned int i = 0; i < m_InputWhitenStdDevs.size(); i++ )
+    {
+    METAIO_STREAM::cout << m_InputWhitenStdDevs[i] << " ";
     }
 
-  METAIO_STREAM::cout << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "WhitenStdDevs = " << METAIO_STREAM::endl;
-  for( unsigned int i = 0; i < m_WhitenStdDevs.size(); i++ )
+  METAIO_STREAM::cout << "OutputWhitenMeans = " << METAIO_STREAM::endl;
+  for( unsigned int i = 0; i < m_OutputWhitenMeans.size(); i++ )
     {
-    METAIO_STREAM::cout << m_WhitenStdDevs[i] << " ";
+    METAIO_STREAM::cout << m_OutputWhitenMeans[i] << " ";
+    }
+  METAIO_STREAM::cout << METAIO_STREAM::endl;
+  METAIO_STREAM::cout << "OutputWhitenStdDevs = " << METAIO_STREAM::endl;
+  for( unsigned int i = 0; i < m_OutputWhitenStdDevs.size(); i++ )
+    {
+    METAIO_STREAM::cout << m_OutputWhitenStdDevs[i] << " ";
     }
 
   METAIO_STREAM::cout << METAIO_STREAM::endl;
@@ -130,8 +145,10 @@ void MetaLDA
     lda.GetNumberOfLDABasisToUseAsFeatures() );
   this->SetLDAValues( lda.GetLDAValues() );
   this->SetLDAMatrix( lda.GetLDAMatrix() );
-  this->SetWhitenMeans( lda.GetWhitenMeans() );
-  this->SetWhitenStdDevs( lda.GetWhitenStdDevs() );
+  this->SetInputWhitenMeans( lda.GetInputWhitenMeans() );
+  this->SetInputWhitenStdDevs( lda.GetInputWhitenStdDevs() );
+  this->SetOutputWhitenMeans( lda.GetOutputWhitenMeans() );
+  this->SetOutputWhitenStdDevs( lda.GetOutputWhitenStdDevs() );
 }
 
 void MetaLDA
@@ -150,8 +167,10 @@ void MetaLDA
   m_NumberOfLDABasisToUseAsFeatures = 0;
   m_LDAValues.set_size( 0 );
   m_LDAMatrix.set_size( 0, 0 );
-  m_WhitenMeans.clear();
-  m_WhitenStdDevs.clear();
+  m_InputWhitenMeans.clear();
+  m_InputWhitenStdDevs.clear();
+  m_OutputWhitenMeans.clear();
+  m_OutputWhitenStdDevs.clear();
 }
 
 bool MetaLDA
@@ -159,8 +178,10 @@ bool MetaLDA
   unsigned int numberOfLDAToUseAsFeatures,
   const LDAValuesType & ldaValues,
   const LDAMatrixType & ldaMatrix,
-  const ValueListType & whitenMeans,
-  const ValueListType & whitenStdDevs )
+  const ValueListType & inputWhitenMeans,
+  const ValueListType & inputWhitenStdDevs,
+  const ValueListType & outputWhitenMeans,
+  const ValueListType & outputWhitenStdDevs )
 {
   if( META_DEBUG )
     {
@@ -172,8 +193,10 @@ bool MetaLDA
   this->SetNumberOfLDABasisToUseAsFeatures( numberOfLDAToUseAsFeatures );
   this->SetLDAValues( ldaValues );
   this->SetLDAMatrix( ldaMatrix );
-  this->SetWhitenMeans( whitenMeans );
-  this->SetWhitenStdDevs( whitenStdDevs );
+  this->SetInputWhitenMeans( inputWhitenMeans );
+  this->SetInputWhitenStdDevs( inputWhitenStdDevs );
+  this->SetOutputWhitenMeans( outputWhitenMeans );
+  this->SetOutputWhitenStdDevs( outputWhitenStdDevs );
   return true;
 }
 
@@ -272,47 +295,99 @@ const MetaLDA::LDAMatrixType & MetaLDA
 }
 
 void MetaLDA
-::SetWhitenMeans( const ValueListType & whitenMeans )
+::SetInputWhitenMeans( const ValueListType & whitenMeans )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: SetWhitenMeans" << METAIO_STREAM::endl;
+    METAIO_STREAM::cout << "MetaLDA: SetInputWhitenMeans"
+      << METAIO_STREAM::endl;
     }
 
-  m_WhitenMeans = whitenMeans;
+  m_InputWhitenMeans = whitenMeans;
 }
 
 const MetaLDA::ValueListType & MetaLDA
-::GetWhitenMeans( void ) const
+::GetInputWhitenMeans( void ) const
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: GetWhitenMeans" << METAIO_STREAM::endl;
+    METAIO_STREAM::cout << "MetaLDA: GetInputWhitenMeans"
+      << METAIO_STREAM::endl;
     }
 
-  return m_WhitenMeans;
+  return m_InputWhitenMeans;
 }
 
 void MetaLDA
-::SetWhitenStdDevs( const ValueListType & whitenStdDevs )
+::SetInputWhitenStdDevs( const ValueListType & whitenStdDevs )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: SetWhitenStdDevs" << METAIO_STREAM::endl;
+    METAIO_STREAM::cout << "MetaLDA: SetInputWhitenStdDevs"
+      << METAIO_STREAM::endl;
     }
 
-  m_WhitenStdDevs = whitenStdDevs;
+  m_InputWhitenStdDevs = whitenStdDevs;
 }
 
 const MetaLDA::ValueListType & MetaLDA
-::GetWhitenStdDevs( void ) const
+::GetInputWhitenStdDevs( void ) const
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: GetWhitenStdDevs" << METAIO_STREAM::endl;
+    METAIO_STREAM::cout << "MetaLDA: GetInputWhitenStdDevs"
+      << METAIO_STREAM::endl;
     }
 
-  return m_WhitenStdDevs;
+  return m_InputWhitenStdDevs;
+}
+
+void MetaLDA
+::SetOutputWhitenMeans( const ValueListType & whitenMeans )
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaLDA: SetOutputWhitenMeans"
+      << METAIO_STREAM::endl;
+    }
+
+  m_OutputWhitenMeans = whitenMeans;
+}
+
+const MetaLDA::ValueListType & MetaLDA
+::GetOutputWhitenMeans( void ) const
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaLDA: GetOutputWhitenMeans"
+      << METAIO_STREAM::endl;
+    }
+
+  return m_OutputWhitenMeans;
+}
+
+void MetaLDA
+::SetOutputWhitenStdDevs( const ValueListType & whitenStdDevs )
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaLDA: SetOutputWhitenStdDevs"
+      << METAIO_STREAM::endl;
+    }
+
+  m_OutputWhitenStdDevs = whitenStdDevs;
+}
+
+const MetaLDA::ValueListType & MetaLDA
+::GetOutputWhitenStdDevs( void ) const
+{
+  if( META_DEBUG )
+    {
+    METAIO_STREAM::cout << "MetaLDA: GetOutputWhitenStdDevs"
+      << METAIO_STREAM::endl;
+    }
+
+  return m_OutputWhitenStdDevs;
 }
 
 bool MetaLDA
@@ -439,7 +514,8 @@ bool MetaLDA
 
   this->InitializeEssential( m_NumberOfPCABasisToUseAsFeatures,
     m_NumberOfLDABasisToUseAsFeatures, m_LDAValues, m_LDAMatrix,
-    m_WhitenMeans, m_WhitenStdDevs );
+    m_InputWhitenMeans, m_InputWhitenStdDevs,
+    m_OutputWhitenMeans, m_OutputWhitenStdDevs );
 
   return true;
 }
@@ -454,10 +530,11 @@ bool MetaLDA
 
   MET_SetFileSuffix( m_FileName, "mlda" );
 
-  METAIO_STREAM::ofstream * const tmpWriteStream = new METAIO_STREAM::ofstream();
+  METAIO_STREAM::ofstream * const tmpWriteStream = new
+    METAIO_STREAM::ofstream();
 
-  tmpWriteStream->open( m_FileName,
-                        METAIO_STREAM::ios::binary | METAIO_STREAM::ios::out );
+  tmpWriteStream->open( m_FileName, METAIO_STREAM::ios::binary
+    | METAIO_STREAM::ios::out );
 
   if( !tmpWriteStream->rdbuf()->is_open() )
     {
@@ -533,11 +610,23 @@ void MetaLDA
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType();
-  MET_InitReadField( mF, "WhitenMeans", MET_FLOAT_ARRAY, false, nDimsRecNum );
+  MET_InitReadField( mF, "InputWhitenMeans", MET_FLOAT_ARRAY, false,
+    nDimsRecNum );
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType();
-  MET_InitReadField( mF, "WhitenStdDevs", MET_FLOAT_ARRAY, false, nDimsRecNum );
+  MET_InitReadField( mF, "InputWhitenStdDevs", MET_FLOAT_ARRAY, false,
+    nDimsRecNum );
+  m_Fields.push_back( mF );
+
+  mF = new MET_FieldRecordType();
+  MET_InitReadField( mF, "OutputWhitenMeans", MET_FLOAT_ARRAY, false,
+    nDimsRecNum );
+  m_Fields.push_back( mF );
+
+  mF = new MET_FieldRecordType();
+  MET_InitReadField( mF, "OutputWhitenStdDevs", MET_FLOAT_ARRAY, false,
+    nDimsRecNum );
   m_Fields.push_back( mF );
 }
 
@@ -573,7 +662,7 @@ void MetaLDA
                       m_LDAMatrix.data_block() );
   m_Fields.push_back( mF );
 
-  const int tfCount = m_WhitenMeans.size();
+  int tfCount = m_InputWhitenMeans.size();
 
   if( tfCount > 0 )
     {
@@ -581,19 +670,47 @@ void MetaLDA
     mF = new MET_FieldRecordType();
     for( int i = 0; i < tfCount; i++ )
       {
-      tf[i] = m_WhitenMeans[i];
+      tf[i] = m_InputWhitenMeans[i];
       }
 
-    MET_InitWriteField( mF, "WhitenMeans", MET_FLOAT_ARRAY, tfCount, tf );
+    MET_InitWriteField( mF, "InputWhitenMeans", MET_FLOAT_ARRAY, tfCount,
+      tf );
     m_Fields.push_back( mF );
 
     mF = new MET_FieldRecordType();
     for( int i = 0; i < tfCount; i++ )
       {
-      tf[i] = m_WhitenStdDevs[i];
+      tf[i] = m_InputWhitenStdDevs[i];
       }
 
-    MET_InitWriteField( mF, "WhitenStdDevs", MET_FLOAT_ARRAY, tfCount, tf );
+    MET_InitWriteField( mF, "InputWhitenStdDevs", MET_FLOAT_ARRAY, tfCount,
+      tf );
+    m_Fields.push_back( mF );
+    }
+
+  tfCount = m_OutputWhitenMeans.size();
+
+  if( tfCount > 0 )
+    {
+    double tf[4096];
+    mF = new MET_FieldRecordType();
+    for( int i = 0; i < tfCount; i++ )
+      {
+      tf[i] = m_OutputWhitenMeans[i];
+      }
+
+    MET_InitWriteField( mF, "OutputWhitenMeans", MET_FLOAT_ARRAY, tfCount,
+      tf );
+    m_Fields.push_back( mF );
+
+    mF = new MET_FieldRecordType();
+    for( int i = 0; i < tfCount; i++ )
+      {
+      tf[i] = m_OutputWhitenStdDevs[i];
+      }
+
+    MET_InitWriteField( mF, "OutputWhitenStdDevs", MET_FLOAT_ARRAY, tfCount,
+      tf );
     m_Fields.push_back( mF );
     }
 }
@@ -629,8 +746,10 @@ bool MetaLDA
     m_LDAValues.fill( 0 );
     m_LDAMatrix.set_size( nDims, nDims );
     m_LDAMatrix.fill( 0 );
-    m_WhitenMeans.resize( nDims );
-    m_WhitenStdDevs.resize( nDims );
+    m_InputWhitenMeans.resize( nDims );
+    m_InputWhitenStdDevs.resize( nDims );
+    m_OutputWhitenMeans.resize( nDims );
+    m_OutputWhitenStdDevs.resize( nDims );
     }
   else
     {
@@ -684,30 +803,56 @@ bool MetaLDA
     return false;
     }
 
-  mF = MET_GetFieldRecord( "WhitenMeans", &m_Fields );
+  mF = MET_GetFieldRecord( "InputWhitenMeans", &m_Fields );
   if( mF && mF->defined )
     {
     for( unsigned int i = 0; i < nDims; i++ )
       {
-      m_WhitenMeans[i] = (double)mF->value[i];
+      m_InputWhitenMeans[i] = (double)mF->value[i];
       }
     }
   else
     {
-    m_WhitenMeans.clear();
+    m_InputWhitenMeans.clear();
     }
 
-  mF = MET_GetFieldRecord( "WhitenStdDevs", &m_Fields );
+  mF = MET_GetFieldRecord( "InputWhitenStdDevs", &m_Fields );
   if( mF && mF->defined )
     {
     for( unsigned int i = 0; i < nDims; i++ )
       {
-      m_WhitenStdDevs[i] = (double)mF->value[i];
+      m_InputWhitenStdDevs[i] = (double)mF->value[i];
       }
     }
   else
     {
-    m_WhitenStdDevs.clear();
+    m_InputWhitenStdDevs.clear();
+    }
+
+  mF = MET_GetFieldRecord( "OutputWhitenMeans", &m_Fields );
+  if( mF && mF->defined )
+    {
+    for( unsigned int i = 0; i < nDims; i++ )
+      {
+      m_OutputWhitenMeans[i] = (double)mF->value[i];
+      }
+    }
+  else
+    {
+    m_OutputWhitenMeans.clear();
+    }
+
+  mF = MET_GetFieldRecord( "OutputWhitenStdDevs", &m_Fields );
+  if( mF && mF->defined )
+    {
+    for( unsigned int i = 0; i < nDims; i++ )
+      {
+      m_OutputWhitenStdDevs[i] = (double)mF->value[i];
+      }
+    }
+  else
+    {
+    m_OutputWhitenStdDevs.clear();
     }
 
   return true;

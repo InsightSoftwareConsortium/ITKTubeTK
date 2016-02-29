@@ -65,8 +65,10 @@ public:
     unsigned int _numberOfLDABasisToUseAsFeatures,
     const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix,
-    const ValueListType & _whitenMeans,
-    const ValueListType & _whitenStdDevs );
+    const ValueListType & _inputWhitenMeans,
+    const ValueListType & _inputWhitenStdDevs,
+    const ValueListType & _outputWhitenMeans,
+    const ValueListType & _outputWhitenStdDevs );
 
   ~MetaLDA( void );
 
@@ -80,34 +82,37 @@ public:
   bool  InitializeEssential( unsigned int _numberOfPCABasisToUseAsFeatures,
     unsigned int _numberOfLDABasisToUseAsFeatures,
     const LDAValuesType & _ldaValues,
-    const LDAMatrixType & _ldaMatrix, const ValueListType & _whitenMeans,
-    const ValueListType & _whitenStdDevs );
+    const LDAMatrixType & _ldaMatrix,
+    const ValueListType & _inputWhitenMeans,
+    const ValueListType & _inputWhitenStdDevs,
+    const ValueListType & _outputWhitenMeans,
+    const ValueListType & _outputWhitenStdDevs );
 
   void SetNumberOfPCABasisToUseAsFeatures( unsigned int
     numberOfPCABasisToUseAsFeatures );
-
   unsigned int GetNumberOfPCABasisToUseAsFeatures( void ) const;
 
   void SetNumberOfLDABasisToUseAsFeatures( unsigned int
     numberOfLDABasisToUseAsFeatures );
-
   unsigned int GetNumberOfLDABasisToUseAsFeatures( void ) const;
 
   void SetLDAValues( const LDAValuesType & ldaValues );
-
   const LDAValuesType & GetLDAValues( void ) const;
 
   void SetLDAMatrix( const LDAMatrixType & ldaMatrix );
-
   const LDAMatrixType & GetLDAMatrix( void ) const;
 
-  void SetWhitenMeans( const ValueListType & whitenMeans );
+  void SetInputWhitenMeans( const ValueListType & whitenMeans );
+  const ValueListType & GetInputWhitenMeans( void ) const;
 
-  const ValueListType & GetWhitenMeans( void ) const;
+  void SetInputWhitenStdDevs( const ValueListType & whitenStdDevs );
+  const ValueListType & GetInputWhitenStdDevs( void ) const;
 
-  void SetWhitenStdDevs( const ValueListType & whitenStdDevs );
+  void SetOutputWhitenMeans( const ValueListType & whitenMeans );
+  const ValueListType & GetOutputWhitenMeans( void ) const;
 
-  const ValueListType & GetWhitenStdDevs( void ) const;
+  void SetOutputWhitenStdDevs( const ValueListType & whitenStdDevs );
+  const ValueListType & GetOutputWhitenStdDevs( void ) const;
 
   virtual bool CanRead( const char * headerName = NULL ) const;
 
@@ -137,8 +142,11 @@ protected:
 
   LDAValuesType  m_LDAValues;
 
-  ValueListType  m_WhitenMeans;
-  ValueListType  m_WhitenStdDevs;
+  ValueListType  m_InputWhitenMeans;
+  ValueListType  m_InputWhitenStdDevs;
+
+  ValueListType  m_OutputWhitenMeans;
+  ValueListType  m_OutputWhitenStdDevs;
 
   LDAMatrixType  m_LDAMatrix;
 

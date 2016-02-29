@@ -118,10 +118,14 @@ public:
   unsigned int GetNumberOfPCABasisToUseAsFeatures( void ) const;
   void         SetNumberOfLDABasisToUseAsFeatures( unsigned int num );
   unsigned int GetNumberOfLDABasisToUseAsFeatures( void ) const;
-  void         SetWhitenMeans( const WhitenMeansType & means );
-  void         SetWhitenStdDevs( const WhitenStdDevsType & stdDevs );
-  const WhitenMeansType &   GetWhitenMeans( void ) const;
-  const WhitenStdDevsType & GetWhitenStdDevs( void ) const;
+  void         SetInputWhitenMeans( const WhitenMeansType & means );
+  void         SetInputWhitenStdDevs( const WhitenStdDevsType & stdDevs );
+  const WhitenMeansType &   GetInputWhitenMeans( void ) const;
+  const WhitenStdDevsType & GetInputWhitenStdDevs( void ) const;
+  void         SetOutputWhitenMeans( const WhitenMeansType & means );
+  void         SetOutputWhitenStdDevs( const WhitenStdDevsType & stdDevs );
+  const WhitenMeansType &   GetOutputWhitenMeans( void ) const;
+  const WhitenStdDevsType & GetOutputWhitenStdDevs( void ) const;
 
   unsigned int GetNumberOfBasis( void ) const;
 

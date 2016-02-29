@@ -183,8 +183,14 @@ Read( const char * _headerName )
 
   m_RidgeSeedFilter->SetBasisValues( seedReader.GetLDAValues() );
   m_RidgeSeedFilter->SetBasisMatrix( seedReader.GetLDAMatrix() );
-  m_RidgeSeedFilter->SetWhitenMeans( seedReader.GetWhitenMeans() );
-  m_RidgeSeedFilter->SetWhitenStdDevs( seedReader.GetWhitenStdDevs() );
+  m_RidgeSeedFilter->SetInputWhitenMeans( seedReader.
+    GetInputWhitenMeans() );
+  m_RidgeSeedFilter->SetInputWhitenStdDevs( seedReader.
+    GetInputWhitenStdDevs() );
+  m_RidgeSeedFilter->SetOutputWhitenMeans( seedReader.
+    GetOutputWhitenMeans() );
+  m_RidgeSeedFilter->SetOutputWhitenStdDevs( seedReader.
+    GetOutputWhitenStdDevs() );
 
   PDFSegmenterIO< Image< float, TImage::ImageDimension >, 4, TLabelMap >
     pdfReader( m_RidgeSeedFilter->GetPDFSegmenter() );
@@ -227,8 +233,14 @@ Write( const char * _headerName )
 
   seedWriter.SetLDAValues( m_RidgeSeedFilter->GetBasisValues() );
   seedWriter.SetLDAMatrix( m_RidgeSeedFilter->GetBasisMatrix() );
-  seedWriter.SetWhitenMeans( m_RidgeSeedFilter->GetWhitenMeans() );
-  seedWriter.SetWhitenStdDevs( m_RidgeSeedFilter->GetWhitenStdDevs() );
+  seedWriter.SetInputWhitenMeans( m_RidgeSeedFilter->
+    GetInputWhitenMeans() );
+  seedWriter.SetInputWhitenStdDevs( m_RidgeSeedFilter->
+    GetInputWhitenStdDevs() );
+  seedWriter.SetOutputWhitenMeans( m_RidgeSeedFilter->
+    GetOutputWhitenMeans() );
+  seedWriter.SetOutputWhitenStdDevs( m_RidgeSeedFilter->
+    GetOutputWhitenStdDevs() );
 
   char fileName[255];
   MET_GetFilePath( _headerName, fileName );

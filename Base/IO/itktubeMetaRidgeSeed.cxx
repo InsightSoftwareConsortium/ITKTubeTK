@@ -75,8 +75,10 @@ MetaRidgeSeed(
   unsigned int _numberOfLDABasis,
   const LDAValuesType & _ldaValues,
   const LDAMatrixType & _ldaMatrix,
-  const ValueListType & _whitenMeans,
-  const ValueListType & _whitenStdDevs,
+  const ValueListType & _inputWhitenMeans,
+  const ValueListType & _inputWhitenStdDevs,
+  const ValueListType & _outputWhitenMeans,
+  const ValueListType & _outputWhitenStdDevs,
   const std::string & _pdfFileName)
 {
   if( META_DEBUG )
@@ -87,7 +89,8 @@ MetaRidgeSeed(
   Clear();
 
   InitializeEssential( _ridgeSeedScales, _useIntensityOnly, _numberOfPCABasis,
-    _numberOfLDABasis, _ldaValues, _ldaMatrix, _whitenMeans, _whitenStdDevs,
+    _numberOfLDABasis, _ldaValues, _ldaMatrix, _inputWhitenMeans,
+    _inputWhitenStdDevs, _outputWhitenMeans, _outputWhitenStdDevs,
     _pdfFileName );
 }
 
@@ -174,8 +177,10 @@ InitializeEssential(
   unsigned int _numberOfLDABasis,
   const LDAValuesType & _ldaValues,
   const LDAMatrixType & _ldaMatrix,
-  const ValueListType & _whitenMeans,
-  const ValueListType & _whitenStdDevs,
+  const ValueListType & _inputWhitenMeans,
+  const ValueListType & _inputWhitenStdDevs,
+  const ValueListType & _outputWhitenMeans,
+  const ValueListType & _outputWhitenStdDevs,
   const std::string & _pdfFileName )
 {
   if( META_DEBUG )
@@ -185,7 +190,8 @@ InitializeEssential(
     }
 
   MetaLDA::InitializeEssential( _numberOfPCABasis, _numberOfLDABasis,
-    _ldaValues, _ldaMatrix, _whitenMeans, _whitenStdDevs );
+    _ldaValues, _ldaMatrix, _inputWhitenMeans, _inputWhitenStdDevs,
+    _outputWhitenMeans, _outputWhitenStdDevs );
 
   SetRidgeSeedScales( _ridgeSeedScales );
 
@@ -509,8 +515,8 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
 
   InitializeEssential( m_RidgeSeedScales, m_UseIntensityOnly,
     m_NumberOfPCABasisToUseAsFeatures, m_NumberOfLDABasisToUseAsFeatures,
-    m_LDAValues, m_LDAMatrix, m_WhitenMeans, m_WhitenStdDevs,
-    m_PDFFileName );
+    m_LDAValues, m_LDAMatrix, m_InputWhitenMeans, m_InputWhitenStdDevs,
+    m_OutputWhitenMeans, m_OutputWhitenStdDevs, m_PDFFileName );
 
   return true;
 }

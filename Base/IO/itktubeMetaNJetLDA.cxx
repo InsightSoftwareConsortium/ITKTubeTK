@@ -74,8 +74,10 @@ MetaNJetLDA
                unsigned int numberOfLDABasis,
                const LDAValuesType & ldaValues,
                const LDAMatrixType & ldaMatrix,
-               const ValueListType & whitenMeans,
-               const ValueListType & whitenStdDevs )
+               const ValueListType & inputWhitenMeans,
+               const ValueListType & inputWhitenStdDevs,
+               const ValueListType & outputWhitenMeans,
+               const ValueListType & outputWhitenStdDevs )
 {
   if( META_DEBUG )
     {
@@ -85,7 +87,8 @@ MetaNJetLDA
   this->Clear();
   this->InitializeEssential( zeroScales, firstScales, secondScales,
     ridgeScales, numberOfPCABasis, numberOfLDABasis, ldaValues, ldaMatrix,
-    whitenMeans, whitenStdDevs );
+    inputWhitenMeans, inputWhitenStdDevs, outputWhitenMeans,
+    outputWhitenStdDevs );
 }
 
 MetaNJetLDA
@@ -157,8 +160,10 @@ bool MetaNJetLDA
                        unsigned int numberOfLDABasis,
                        const LDAValuesType & ldaValues,
                        const LDAMatrixType & ldaMatrix,
-                       const ValueListType & whitenMeans,
-                       const ValueListType & whitenStdDevs )
+                       const ValueListType & inputWhitenMeans,
+                       const ValueListType & inputWhitenStdDevs,
+                       const ValueListType & outputWhitenMeans,
+                       const ValueListType & outputWhitenStdDevs )
 {
   if( META_DEBUG )
     {
@@ -166,7 +171,8 @@ bool MetaNJetLDA
     }
 
   MetaLDA::InitializeEssential( numberOfPCABasis, numberOfLDABasis,
-    ldaValues, ldaMatrix, whitenMeans, whitenStdDevs );
+    ldaValues, ldaMatrix, inputWhitenMeans, inputWhitenStdDevs,
+    outputWhitenMeans, outputWhitenStdDevs );
 
   this->SetZeroScales( zeroScales );
   this->SetFirstScales( firstScales );
@@ -391,7 +397,8 @@ bool MetaNJetLDA
   this->InitializeEssential( m_ZeroScales, m_FirstScales, m_SecondScales,
     m_RidgeScales, m_NumberOfPCABasisToUseAsFeatures,
     m_NumberOfLDABasisToUseAsFeatures, m_LDAValues, m_LDAMatrix,
-    m_WhitenMeans, m_WhitenStdDevs );
+    m_InputWhitenMeans, m_InputWhitenStdDevs, m_OutputWhitenMeans,
+    m_OutputWhitenStdDevs );
 
   return true;
 }

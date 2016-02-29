@@ -125,6 +125,16 @@ public:
   virtual typename FeatureImageType::Pointer GetFeatureImage(
                                        unsigned int fNum ) const;
 
+  void   SetInputWhitenMeans( const ValueListType & means );
+  const  ValueListType & GetInputWhitenMeans( void ) const;
+  void   SetInputWhitenStdDevs( const ValueListType & stdDevs );
+  const  ValueListType & GetInputWhitenStdDevs( void ) const;
+
+  void   SetOutputWhitenMeans( const ValueListType & means );
+  const  ValueListType & GetOutputWhitenMeans( void ) const;
+  void   SetOutputWhitenStdDevs( const ValueListType & stdDevs );
+  const  ValueListType & GetOutputWhitenStdDevs( void ) const;
+
   virtual void Update( void );
 
   virtual unsigned int      GetNumberOfFeatures( void ) const;

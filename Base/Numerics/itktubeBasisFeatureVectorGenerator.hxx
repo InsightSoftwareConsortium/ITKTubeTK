@@ -400,6 +400,70 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 template< class TImage, class TLabelMap >
 void
 BasisFeatureVectorGenerator< TImage, TLabelMap >
+::SetInputWhitenMeans( const ValueListType & means )
+{
+  this->m_InputFeatureVectorGenerator->SetWhitenMeans( means );
+}
+
+template< class TImage, class TLabelMap >
+typename const BasisFeatureVectorGenerator< TImage, TLabelMap >::ValueListType &
+BasisFeatureVectorGenerator< TImage, TLabelMap >
+::GetInputWhitenMeans( void ) const
+{
+  return this->m_InputFeatureVectorGenerator->GetWhitenMeans();
+}
+
+template< class TImage, class TLabelMap >
+void
+BasisFeatureVectorGenerator< TImage, TLabelMap >
+::SetInputWhitenStdDevs( const ValueListType & stdDevs )
+{
+  this->m_InputFeatureVectorGenerator->SetWhitenStdDevs( stdDevs );
+}
+
+template< class TImage, class TLabelMap >
+typename const BasisFeatureVectorGenerator< TImage, TLabelMap >::ValueListType &
+BasisFeatureVectorGenerator< TImage, TLabelMap >
+::GetInputWhitenStdDevs( void ) const
+{
+  return this->m_InputFeatureVectorGenerator->GetWhitenStdDevs();
+}
+
+template< class TImage, class TLabelMap >
+void
+BasisFeatureVectorGenerator< TImage, TLabelMap >
+::SetOutputWhitenMeans( const ValueListType & means )
+{
+  this->SetWhitenMeans( means );
+}
+
+template< class TImage, class TLabelMap >
+typename const BasisFeatureVectorGenerator< TImage, TLabelMap >::ValueListType &
+BasisFeatureVectorGenerator< TImage, TLabelMap >
+::GetOutputWhitenMeans( void ) const
+{
+  return this->GetWhitenMeans();
+}
+
+template< class TImage, class TLabelMap >
+void
+BasisFeatureVectorGenerator< TImage, TLabelMap >
+::SetOutputWhitenStdDevs( const ValueListType & stdDevs )
+{
+  this->SetWhitenStdDevs( stdDevs );
+}
+
+template< class TImage, class TLabelMap >
+typename const BasisFeatureVectorGenerator< TImage, TLabelMap >::ValueListType &
+BasisFeatureVectorGenerator< TImage, TLabelMap >
+::GetOutputWhitenStdDevs( void ) const
+{
+  return this->GetWhitenStdDevs();
+}
+
+template< class TImage, class TLabelMap >
+void
+BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::Update( void )
 {
   itk::TimeProbesCollectorBase timeCollector;
