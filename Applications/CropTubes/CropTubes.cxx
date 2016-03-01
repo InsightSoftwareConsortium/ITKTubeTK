@@ -341,7 +341,7 @@ int DoIt (int argc, char * argv[])
         if( CropTubes )
           {
           TargetPointList.push_back( curSourcePoint );
-          if( !OuputEndPointsFile.empty() && !flagEndPoint )
+          if( !OutputEndPointsFile.empty() && !flagEndPoint )
             {
             PointType endPoint;
             for( unsigned int i = 0; i < DimensionT; i++ )
@@ -389,7 +389,7 @@ int DoIt (int argc, char * argv[])
 
           TargetPointList.clear();
           }
-        if( !OuputEndPointsFile.empty() && flagEndPoint )
+        if( !OutputEndPointsFile.empty() && flagEndPoint )
           {
           PointType endPoint;
           for( unsigned int i = 0; i < DimensionT; i++ )
@@ -457,9 +457,9 @@ int DoIt (int argc, char * argv[])
   timeCollector.Stop( "Writing output TRE file" );
 
   timeCollector.Start( "Writing End Points File" );
-  if( !OuputEndPointsFile.empty() && endPointList.size() != 0 )
+  if( !OutputEndPointsFile.empty() && endPointList.size() != 0 )
     {
-    WriteFCSVFile( OuputEndPointsFile, endPointList );
+    WriteFCSVFile( OutputEndPointsFile, endPointList );
     }
   timeCollector.Stop( "Writing End Points File" );
 
