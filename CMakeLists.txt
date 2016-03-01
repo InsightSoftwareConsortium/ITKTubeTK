@@ -40,7 +40,7 @@ set( TubeTK_VERSION_MINOR "9" )
 set( TubeTK_VERSION_PATCH "0" )
 
 option( TubeTK_INSTALL_DEVELOPMENT
-  "Add install rules for TubeTK SDK dependencies (headers, static libraries, CMake module, ...)" ON )
+  "Add install rules for TubeTK SDK dependencies (headers, libraries, ...)" ON )
 mark_as_advanced( TubeTK_INSTALL_DEVELOPMENT )
 
 mark_as_advanced( CMAKE_BACKWARDS_COMPATIBILITY )
@@ -103,15 +103,20 @@ mark_as_superbuild( VARS
 #
 # Default output directories
 #
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${TubeTK_INSTALL_BIN_DIR}" )
-set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${TubeTK_INSTALL_LIB_DIR}" )
-set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${TubeTK_INSTALL_LIB_DIR}" )
+set( CMAKE_RUNTIME_OUTPUT_DIRECTORY
+  "${CMAKE_BINARY_DIR}/${TubeTK_INSTALL_BIN_DIR}" )
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY
+  "${CMAKE_BINARY_DIR}/${TubeTK_INSTALL_LIB_DIR}" )
+set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+  "${CMAKE_BINARY_DIR}/${TubeTK_INSTALL_LIB_DIR}" )
 
 #
 # CDash dashboard setup.
 #
 include( CTest )
 if( BUILD_TESTING )
+  set( TubeTK_Support_2D_Images ON CACHE BOOL
+    "Compile CLI with support for 2D images" FORCE )
   set( BUILDNAME "${BUILDNAME}" CACHE STRING
     "Name of the build on the CDash dashboard." )
   mark_as_advanced( BUILDNAME )
@@ -300,7 +305,8 @@ include( TubeTKSlicer4Config )
 #
 # 2D image support.
 #
-option( TubeTK_Support_2D_Images "Support of 2D Images in TubeTK CLI tools" ON )
+option( TubeTK_Support_2D_Images "Compile CLI with support for 2D images" ON )
+mark_as_advanced( TubeTK_Support_2D_Images )
 if( TubeTK_Support_2D_Images )
   add_definitions( -DSUPPORT_2D_IMAGES )
 endif()
