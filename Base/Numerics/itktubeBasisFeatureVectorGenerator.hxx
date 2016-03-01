@@ -406,7 +406,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 }
 
 template< class TImage, class TLabelMap >
-typename const BasisFeatureVectorGenerator< TImage, TLabelMap >::ValueListType &
+const typename BasisFeatureVectorGenerator< TImage, TLabelMap >::ValueListType &
 BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::GetInputWhitenMeans( void ) const
 {
@@ -422,7 +422,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 }
 
 template< class TImage, class TLabelMap >
-typename const BasisFeatureVectorGenerator< TImage, TLabelMap >::ValueListType &
+const typename BasisFeatureVectorGenerator< TImage, TLabelMap >::ValueListType &
 BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::GetInputWhitenStdDevs( void ) const
 {
@@ -438,7 +438,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 }
 
 template< class TImage, class TLabelMap >
-typename const BasisFeatureVectorGenerator< TImage, TLabelMap >::ValueListType &
+const typename BasisFeatureVectorGenerator< TImage, TLabelMap >::ValueListType &
 BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::GetOutputWhitenMeans( void ) const
 {
@@ -454,7 +454,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 }
 
 template< class TImage, class TLabelMap >
-typename const BasisFeatureVectorGenerator< TImage, TLabelMap >::ValueListType &
+const typename BasisFeatureVectorGenerator< TImage, TLabelMap >::ValueListType &
 BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::GetOutputWhitenStdDevs( void ) const
 {

@@ -104,7 +104,7 @@ public:
    *
    * \sa MatrixOffsetTransformBase::SetMatrix() */
   virtual void SetMatrix( const MatrixType & matrix );
-  virtual void SetMatrix( const MatrixType & matrix, double tolerance );
+  virtual void SetMatrix( const MatrixType & matrix, const double tolerance );
 
   /** Set the transformation from a container of parameters This is typically
    * used by optimizers.  There are 7 parameters. The first three represent the
