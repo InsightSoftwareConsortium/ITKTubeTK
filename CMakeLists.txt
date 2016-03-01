@@ -115,8 +115,11 @@ set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY
 #
 include( CTest )
 if( BUILD_TESTING )
-  set( TubeTK_Support_2D_Images ON CACHE BOOL
-    "Compile CLI with support for 2D images" FORCE )
+  if( NOT TubeTK_Support_2D_Images )
+    message(STATUS "Forcing TubeTK_Support_2D_Images to ON because BUILD_TESTING is ON")
+    set( TubeTK_Support_2D_Images ON CACHE BOOL
+      "Compile CLI with support for 2D images" FORCE )
+  endif(  NOT TubeTK_Support_2D_Images  )
   set( BUILDNAME "${BUILDNAME}" CACHE STRING
     "Name of the build on the CDash dashboard." )
   mark_as_advanced( BUILDNAME )
