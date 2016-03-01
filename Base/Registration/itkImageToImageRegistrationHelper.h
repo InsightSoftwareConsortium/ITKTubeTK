@@ -509,8 +509,10 @@ private:
   bool m_ReportProgress;
 
   bool m_MinimizeMemory;
+
   //  Optimizer
-  bool m_UseEvolutionaryOptimization ;
+  bool m_UseEvolutionaryOptimization;
+
   //  Loaded Tansform
   typename MatrixTransformType::Pointer   m_LoadedMatrixTransform;
   typename BSplineTransformType::Pointer  m_LoadedBSplineTransform;
