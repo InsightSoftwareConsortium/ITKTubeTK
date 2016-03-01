@@ -90,7 +90,7 @@ AnisotropicSimilarity3DTransform<TScalarType>
 template <class TScalarType>
 void
 AnisotropicSimilarity3DTransform<TScalarType>
-::SetMatrix( const MatrixType & matrix, double tolerance )
+::SetMatrix( const MatrixType & matrix, const double tolerance )
 {
   //
   // Since the matrix should be an orthogonal matrix
