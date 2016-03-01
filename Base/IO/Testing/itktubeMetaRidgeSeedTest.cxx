@@ -54,8 +54,10 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
   itk::tube::MetaRidgeSeed mrs1;
   mrs1.SetLDAValues( v );
   mrs1.SetLDAMatrix( m );
-  mrs1.SetWhitenMeans( wm );
-  mrs1.SetWhitenStdDevs( ws );
+  mrs1.SetInputWhitenMeans( wm );
+  mrs1.SetInputWhitenStdDevs( ws );
+  mrs1.SetOutputWhitenMeans( ws );
+  mrs1.SetOutputWhitenStdDevs( wm );
   mrs1.SetRidgeSeedScales( scales );
   mrs1.SetPDFFileName( "test.pdf" );
   if( mrs1.GetLDAValues() != v || mrs1.GetLDAMatrix() != m
@@ -74,8 +76,10 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
   itk::tube::MetaRidgeSeed mrs2( mrs1 );
   if( mrs2.GetLDAValues() != mrs1.GetLDAValues()
     || mrs2.GetLDAMatrix() != mrs1.GetLDAMatrix()
-    || mrs2.GetWhitenMeans() != mrs1.GetWhitenMeans()
-    || mrs2.GetWhitenStdDevs() != mrs1.GetWhitenStdDevs()
+    || mrs2.GetInputWhitenMeans() != mrs1.GetInputWhitenMeans()
+    || mrs2.GetInputWhitenStdDevs() != mrs1.GetInputWhitenStdDevs()
+    || mrs2.GetOutputWhitenMeans() != mrs1.GetOutputWhitenMeans()
+    || mrs2.GetOutputWhitenStdDevs() != mrs1.GetOutputWhitenStdDevs()
     || mrs2.GetRidgeSeedScales() != mrs1.GetRidgeSeedScales()
     || mrs2.GetPDFFileName() != mrs1.GetPDFFileName() )
     {
@@ -117,12 +121,14 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  itk::tube::MetaRidgeSeed mrs3( scales, true, 4, 6, v, m, wm, ws,
+  itk::tube::MetaRidgeSeed mrs3( scales, true, 4, 6, v, m, wm, ws, ws, wm,
     "test.pdf" );
   if( mrs3.GetLDAValues() != mrs1.GetLDAValues()
     || mrs3.GetLDAMatrix() != mrs1.GetLDAMatrix()
-    || mrs3.GetWhitenMeans() != mrs1.GetWhitenMeans()
-    || mrs3.GetWhitenStdDevs() != mrs1.GetWhitenStdDevs()
+    || mrs3.GetInputWhitenMeans() != mrs1.GetInputWhitenMeans()
+    || mrs3.GetInputWhitenStdDevs() != mrs1.GetInputWhitenStdDevs()
+    || mrs3.GetOutputWhitenMeans() != mrs1.GetOutputWhitenMeans()
+    || mrs3.GetOutputWhitenStdDevs() != mrs1.GetOutputWhitenStdDevs()
     || mrs3.GetRidgeSeedScales() != scales
     || strcmp( mrs3.GetPDFFileName().c_str(), "test.pdf" ) )
     {
@@ -136,8 +142,10 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
   itk::tube::MetaRidgeSeed mrs4( argv[1] );
   if( mrs4.GetLDAValues() != mrs1.GetLDAValues()
     || mrs4.GetLDAMatrix() != mrs1.GetLDAMatrix()
-    || mrs4.GetWhitenMeans() != mrs1.GetWhitenMeans()
-    || mrs4.GetWhitenStdDevs() != mrs1.GetWhitenStdDevs()
+    || mrs4.GetInputWhitenMeans() != mrs1.GetInputWhitenMeans()
+    || mrs4.GetInputWhitenStdDevs() != mrs1.GetInputWhitenStdDevs()
+    || mrs4.GetOutputWhitenMeans() != mrs1.GetOutputWhitenMeans()
+    || mrs4.GetOutputWhitenStdDevs() != mrs1.GetOutputWhitenStdDevs()
     || mrs4.GetRidgeSeedScales() != scales
     || mrs4.GetPDFFileName() != mrs1.GetPDFFileName() )
     {
@@ -147,11 +155,14 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
     }
 
   itk::tube::MetaRidgeSeed mrs5;
-  mrs5.InitializeEssential( scales, true, 4, 6, v, m, wm, ws, "test.pdf" );
+  mrs5.InitializeEssential( scales, true, 4, 6, v, m, wm, ws, ws, wm,
+    "test.pdf" );
   if( mrs5.GetLDAValues() != mrs1.GetLDAValues()
     || mrs5.GetLDAMatrix() != mrs1.GetLDAMatrix()
-    || mrs5.GetWhitenMeans() != mrs1.GetWhitenMeans()
-    || mrs5.GetWhitenStdDevs() != mrs1.GetWhitenStdDevs()
+    || mrs5.GetInputWhitenMeans() != mrs1.GetInputWhitenMeans()
+    || mrs5.GetInputWhitenStdDevs() != mrs1.GetInputWhitenStdDevs()
+    || mrs5.GetOutputWhitenMeans() != mrs1.GetOutputWhitenMeans()
+    || mrs5.GetOutputWhitenStdDevs() != mrs1.GetOutputWhitenStdDevs()
     || mrs5.GetRidgeSeedScales() != scales
     || strcmp( mrs5.GetPDFFileName().c_str(), "test.pdf" ) )
     {
@@ -170,8 +181,10 @@ int itktubeMetaRidgeSeedTest( int argc, char * argv[] )
   mrs5.Read( argv[1] );
   if( mrs5.GetLDAValues() != mrs1.GetLDAValues()
     || mrs5.GetLDAMatrix() != mrs1.GetLDAMatrix()
-    || mrs5.GetWhitenMeans() != mrs1.GetWhitenMeans()
-    || mrs5.GetWhitenStdDevs() != mrs1.GetWhitenStdDevs()
+    || mrs5.GetInputWhitenMeans() != mrs1.GetInputWhitenMeans()
+    || mrs5.GetInputWhitenStdDevs() != mrs1.GetInputWhitenStdDevs()
+    || mrs5.GetOutputWhitenMeans() != mrs1.GetOutputWhitenMeans()
+    || mrs5.GetOutputWhitenStdDevs() != mrs1.GetOutputWhitenStdDevs()
     || mrs5.GetRidgeSeedScales() != scales
     || strcmp( mrs5.GetPDFFileName().c_str(), "test.pdf" ) )
     {

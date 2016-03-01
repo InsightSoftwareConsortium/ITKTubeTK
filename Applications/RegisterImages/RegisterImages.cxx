@@ -103,11 +103,11 @@ int DoIt( int argc, char * argv[] )
     }
   if( skipInitialRandomSearch )
     {
-    reger->SetUseEvolutionaryOptimization( false ) ;
+    reger->SetUseEvolutionaryOptimization( false );
     }
   else
     {
-    reger->SetUseEvolutionaryOptimization( true ) ;
+    reger->SetUseEvolutionaryOptimization( true );
     }
 
   if( initialization == "Landmarks" )

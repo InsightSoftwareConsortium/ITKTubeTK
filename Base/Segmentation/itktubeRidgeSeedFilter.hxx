@@ -195,35 +195,69 @@ RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 void
 RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
-::SetWhitenMeans( const WhitenMeansType & means )
+::SetInputWhitenMeans( const WhitenMeansType & means )
 {
   m_RidgeFeatureGenerator->SetWhitenMeans( means );
-}
-
-template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
-void
-RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
-::SetWhitenStdDevs( const WhitenStdDevsType & stdDevs )
-{
-  m_RidgeFeatureGenerator->SetWhitenStdDevs( stdDevs );
 }
 
 template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 const typename RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures
   >::WhitenMeansType &
 RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
-::GetWhitenMeans( void ) const
+::GetInputWhitenMeans( void ) const
 {
   return m_RidgeFeatureGenerator->GetWhitenMeans();
+}
+
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+void
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
+::SetInputWhitenStdDevs( const WhitenStdDevsType & stdDevs )
+{
+  m_RidgeFeatureGenerator->SetWhitenStdDevs( stdDevs );
 }
 
 template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 const typename RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures
   >::WhitenStdDevsType &
 RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
-::GetWhitenStdDevs( void ) const
+::GetInputWhitenStdDevs( void ) const
 {
   return m_RidgeFeatureGenerator->GetWhitenStdDevs();
+}
+
+template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+void
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
+::SetOutputWhitenMeans( const WhitenMeansType & means )
+{
+  m_SeedFeatureGenerator->SetWhitenMeans( means );
+}
+
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+const typename RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures
+  >::WhitenMeansType &
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
+::GetOutputWhitenMeans( void ) const
+{
+  return m_SeedFeatureGenerator->GetWhitenMeans();
+}
+
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+void
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
+::SetOutputWhitenStdDevs( const WhitenStdDevsType & stdDevs )
+{
+  m_SeedFeatureGenerator->SetWhitenStdDevs( stdDevs );
+}
+
+template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
+const typename RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures
+  >::WhitenStdDevsType &
+RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
+::GetOutputWhitenStdDevs( void ) const
+{
+  return m_SeedFeatureGenerator->GetWhitenStdDevs();
 }
 
 template < class TImage, class TLabelMap, unsigned int TNumberOfFeatures >

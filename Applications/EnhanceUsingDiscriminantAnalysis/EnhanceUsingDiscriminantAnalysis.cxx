@@ -132,8 +132,14 @@ int DoIt( int argc, char * argv[] )
 
     basisGenerator->SetBasisValues( basisReader.GetLDAValues() );
     basisGenerator->SetBasisMatrix( basisReader.GetLDAMatrix() );
-    basisGenerator->SetWhitenMeans( basisReader.GetWhitenMeans() );
-    basisGenerator->SetWhitenStdDevs( basisReader.GetWhitenStdDevs() );
+    basisGenerator->SetInputWhitenMeans( basisReader.
+      GetInputWhitenMeans() );
+    basisGenerator->SetInputWhitenStdDevs( basisReader.
+      GetInputWhitenStdDevs() );
+    basisGenerator->SetOutputWhitenMeans( basisReader.
+      GetOutputWhitenMeans() );
+    basisGenerator->SetOutputWhitenStdDevs( basisReader.
+      GetOutputWhitenStdDevs() );
 
     timeCollector.Stop( "LoadBasis" );
     }
@@ -188,8 +194,10 @@ int DoIt( int argc, char * argv[] )
       basisGenerator->GetNumberOfLDABasisToUseAsFeatures(),
       basisGenerator->GetBasisValues(),
       basisGenerator->GetBasisMatrix(),
-      basisGenerator->GetWhitenMeans(),
-      basisGenerator->GetWhitenStdDevs() );
+      basisGenerator->GetInputWhitenMeans(),
+      basisGenerator->GetInputWhitenStdDevs(),
+      basisGenerator->GetOutputWhitenMeans(),
+      basisGenerator->GetOutputWhitenStdDevs() );
     basisWriter.Write( saveBasisInfo.c_str() );
     timeCollector.Stop( "SaveBasis" );
     }

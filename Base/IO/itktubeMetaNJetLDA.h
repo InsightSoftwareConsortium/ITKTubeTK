@@ -68,8 +68,10 @@ public:
     unsigned int _numberOfLDABasis,
     const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix,
-    const ValueListType & _whitenMeans,
-    const ValueListType & _whitenStdDevs);
+    const ValueListType & _inputWhitenMeans,
+    const ValueListType & _inputWhitenStdDevs,
+    const ValueListType & _outputWhitenMeans,
+    const ValueListType & _outputWhitenStdDevs);
 
   ~MetaNJetLDA( void );
 
@@ -89,8 +91,10 @@ public:
     unsigned int _numberOfLDABasis,
     const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix,
-    const ValueListType & _whitenMeans,
-    const ValueListType & _whitenStdDevs);
+    const ValueListType & _inputWhitenMeans,
+    const ValueListType & _inputWhitenStdDevs,
+    const ValueListType & _outputWhitenMeans,
+    const ValueListType & _outputWhitenStdDevs);
 
   //
   void  SetZeroScales( const NJetScalesType & _zeroScales );

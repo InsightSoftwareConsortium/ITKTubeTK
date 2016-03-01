@@ -175,7 +175,7 @@ int itktubeNJetImageFunctionTest( int argc, char * argv[] )
       case 10:
         {
         func->DerivativeAtIndex( outIter.GetIndex(), v1, scale, d );
-        outIter.Set( d[0] );
+        outIter.Set( d[1] );
         break;
         }
       case 11:
@@ -267,25 +267,23 @@ int itktubeNJetImageFunctionTest( int argc, char * argv[] )
         }
       case 24:
         {
-        val = func->Ridgeness( pnt, scale );
-        val *= val;
-        val *= func->GetMostRecentRidgeLevelness();
-        val *= func->GetMostRecentRidgeRoundness();
-        val *= func->GetMostRecentRidgeCurvature();
+        val = func->RidgenessAtIndex( outIter.GetIndex(), v1, v2, scale );
         outIter.Set( val );
         break;
         }
       case 25:
         {
         val = func->RidgenessAtIndex( outIter.GetIndex(), v1, v2, scale );
-        outIter.Set( val );
+        d = func->GetMostRecentDerivative();
+        outIter.Set( val+d[1] );
         break;
         }
       case 26:
         {
         val = func->RidgenessAtIndex( outIter.GetIndex(), v1, v2, scale );
+        d = func->GetMostRecentDerivative();
         h = func->GetMostRecentHessian();
-        outIter.Set( h[0][0] * h[1][1] + h[0][1] * h[1][0] );
+        outIter.Set( val+d[1]+h[1][1] );
         break;
         }
       case 27:
@@ -339,7 +337,7 @@ int itktubeNJetImageFunctionTest( int argc, char * argv[] )
           {
           d.Fill( 0 );
           }
-        outIter.Set( val+d[0]+d[1] );
+        outIter.Set( val+d[0] );
         break;
         }
       case 30:
@@ -354,7 +352,7 @@ int itktubeNJetImageFunctionTest( int argc, char * argv[] )
           {
           d.Fill( 0 );
           }
-        outIter.Set( val+d[0]+d[1] );
+        outIter.Set( val+d[0] );
         break;
         }
       case 31:
@@ -369,7 +367,7 @@ int itktubeNJetImageFunctionTest( int argc, char * argv[] )
           {
           d.Fill( 0 );
           }
-        outIter.Set( val+d[0]+d[1] );
+        outIter.Set( val+d[1] );
         break;
         }
       case 32:

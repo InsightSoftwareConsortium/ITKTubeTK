@@ -68,8 +68,10 @@ public:
     unsigned int _numberOfLDABasis,
     const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix,
-    const ValueListType & _whitenMeans,
-    const ValueListType & _whitenStdDevs,
+    const ValueListType & _inputWhitenMeans,
+    const ValueListType & _inputWhitenStdDevs,
+    const ValueListType & _outputWhitenMeans,
+    const ValueListType & _outputWhitenStdDevs,
     const std::string & _pdfFileName);
 
   ~MetaRidgeSeed( void );
@@ -88,8 +90,10 @@ public:
     unsigned int _numberOfLDABasis,
     const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix,
-    const ValueListType & _whitenMeans,
-    const ValueListType & _whitenStdDevs,
+    const ValueListType & _inputWhitenMeans,
+    const ValueListType & _inputWhitenStdDevs,
+    const ValueListType & _outputWhitenMeans,
+    const ValueListType & _outputWhitenStdDevs,
     const std::string & _pdfFileName);
 
   void  SetRidgeSeedScales( const RidgeSeedScalesType & _ridgeScales );

@@ -33,7 +33,7 @@ endforeach()
 
 # Cppcheck
 set( Cppcheck_URL ${github_protocol}://github.com/KitwareMedical/cppcheck.git )
-set( Cppcheck_HASH_OR_TAG 683ba53fbe87e67fe1cca8ebecb8c2f73d55a4c9 )
+set( Cppcheck_HASH_OR_TAG d54f112aa1381184a177be05a8172c68bcd861c6 )
 
 # TubeTK Image Viewer
 set( ImageViewer_URL
@@ -77,17 +77,17 @@ set( TubeTK_ITK_MODULES
 
 ###########################################################
 ###########################################################
-# The following were copied from Slicer on 11/22/2015
+# The following were copied from Slicer on 2/29/2016
 ###########################################################
 ###########################################################
 
 # Common Toolkit
 set( CTK_URL ${github_protocol}://github.com/commontk/CTK.git )
-set( CTK_HASH_OR_TAG 5f581323b6526caf5ff293d9a810a3c9f68343d9 )
+set( CTK_HASH_OR_TAG caaf2c8cdee08e95bc823ab92865e1e9153dcc04 )
 
 # Insight Segmentation and Registration Toolkit
 set( ITK_URL ${github_protocol}://github.com/Slicer/ITK.git )
-set( ITK_HASH_OR_TAG 03055046e2693349937339975df4e16b598609c1 )
+set( ITK_HASH_OR_TAG 84ba36bbbdfc9bdf489479453a4a85b4a4ed22d5 )
 
 # Slicer Execution Model
 set( SlicerExecutionModel_URL
