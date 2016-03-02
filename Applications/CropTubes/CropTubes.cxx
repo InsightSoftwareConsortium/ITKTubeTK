@@ -97,12 +97,12 @@ void WriteFCSVFile( std::string filename,
 {
    std::fstream of;
    of.open(filename.c_str(), std::fstream::out);
-   if (!of.is_open())
+   if( !of.is_open() )
     {
-    std::cout << "WriteData: unable to open file " << filename.c_str() << " for writing";
+    std::cout << "WriteData: unable to open file " << filename.c_str()
+      << " for writing";
     return;
     }
-  int numPoints = pointList.size();
   // put down a header
   of << "# Markups fiducial file version = " << "4.5 \n";
   of << "# CoordinateSystem = " << 0 << "\n";
@@ -320,11 +320,13 @@ int DoIt (int argc, char * argv[])
         }
       bool volumeMaskFlag = false;
       typename TubePointType::PointType curSourcePosIndexSpace =
-        pTubeIndexPhysTransform->TransformPoint( curSourcePoint.GetPosition() );
-      if ( !volumeMask.empty() )
+        pTubeIndexPhysTransform->TransformPoint(
+        curSourcePoint.GetPosition() );
+      if( !volumeMask.empty() )
         {
         typename ImageType::IndexType imageIndex;
-        if ( image->TransformPhysicalPointToIndex( curSourcePosIndexSpace, imageIndex ) )
+        if( image->TransformPhysicalPointToIndex( curSourcePosIndexSpace,
+          imageIndex ) )
           {
           double val = 0;
           val = image->GetPixel( imageIndex );
@@ -335,7 +337,7 @@ int DoIt (int argc, char * argv[])
           }
         }
       //Save point in target tube if it belongs to the box
-      if ( volumeMaskFlag || IsInside( curSourcePos, curRadiusVector[0],
+      if( volumeMaskFlag || IsInside( curSourcePos, curRadiusVector[0],
         worldBoxposition, worldBoxSize, normalList ) )
         {
         if( CropTubes )
