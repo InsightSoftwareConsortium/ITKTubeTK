@@ -21,7 +21,7 @@
     <file>
       <name>outputTREFile</name>
       <label>Output TRE File</label>
-      <channel>output</channel>
+      <channel>input</channel>
       <index>1</index>
       <description>Output TRE file containing tubes going through the Box</description>
     </file>
@@ -54,5 +54,12 @@
       <flag>c</flag>
       <default>false</default>
     </boolean>
+    <file fileExtensions=".fcsv">
+      <name>OutputEndPointsFile</name>
+      <label>Output End Points File</label>
+      <channel>input</channel>
+      <description>Save the point on the tube where the tube is being cropped.</description>
+      <longflag>outputEndPointsFile</longflag>
+    </file>
   </parameters>
 </executable>

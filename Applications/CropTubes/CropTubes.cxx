@@ -92,6 +92,53 @@ bool IsInside( itk::Point< double, DimensionT > pointPos, double tubeRadius,
 }
 
 template< unsigned int DimensionT >
+void WriteFCSVFile( std::string filename,
+  std::vector< itk::Point< double, DimensionT > > &pointList )
+{
+   std::fstream of;
+   of.open(filename.c_str(), std::fstream::out);
+   if (!of.is_open())
+    {
+    std::cout << "WriteData: unable to open file " << filename.c_str() << " for writing";
+    return;
+    }
+  int numPoints = pointList.size();
+  // put down a header
+  of << "# Markups fiducial file version = " << "4.5 \n";
+  of << "# CoordinateSystem = " << 0 << "\n";
+  // label the columns
+  // id,x,y,z,ow,ox,oy,oz,vis,sel,lock,label,desc,associatedNodeID
+  // orientation is a quaternion, angle and axis
+  // associatedNodeID and description and label can be empty strings
+  // id,x,y,z,ow,ox,oy,oz,vis,sel,lock,,,
+  // label can have spaces, everything up to next comma is used, no quotes
+  // necessary, same with the description
+  of << "# columns = id,x,y,z,ow,ox,oy,oz,vis,sel,lock,label,desc,"
+    "associatedNodeID" << "\n";
+
+  typedef itk::Point< double, DimensionT >                PointType;
+
+  for( typename std::vector< PointType >::iterator it = pointList.begin();
+    it != pointList.end(); ++it )
+    {
+    PointType curPoint = *it;
+    of << ","; //As we don't know the id.
+    of << -1 * curPoint[0]  << "," << -1 * curPoint[1] << ",";
+    if( DimensionT == 3 )
+      {
+      of << curPoint[2] << ",";
+      }
+    of << "0,0,0,0,"; // As we don't know the orientation
+    of << "1,"; //visibility is true
+    of << "1,"; //selection is true
+    of << ",";
+    of << ",,";
+    of << "\n";
+    }
+  of.close();
+}
+
+template< unsigned int DimensionT >
 int DoIt (int argc, char * argv[])
 {
   PARSE_ARGS;
@@ -189,6 +236,7 @@ int DoIt (int argc, char * argv[])
     timeCollector.Stop( "Load Volume Mask" );
     }
 
+  std::vector< PointType > endPointList;
   // Compute cropping
   tubeStandardOutputMacro( << "\n>> Finding Tubes for Cropping" );
 
@@ -240,6 +288,7 @@ int DoIt (int argc, char * argv[])
     worldBoxSize =
         pTubeObjectPhysTransform->TransformVector( boxSizeVector );
 
+    bool flagEndPoint = false;
     for( typename TubeType::PointListType::const_iterator
       pointList_it = pointList.begin();
       pointList_it != pointList.end(); ++pointList_it )
@@ -270,11 +319,10 @@ int DoIt (int argc, char * argv[])
         normalList.push_back( curTubeNormal2 );
         }
       bool volumeMaskFlag = false;
+      typename TubePointType::PointType curSourcePosIndexSpace =
+        pTubeIndexPhysTransform->TransformPoint( curSourcePoint.GetPosition() );
       if ( !volumeMask.empty() )
         {
-        typename TubePointType::PointType curSourcePosIndexSpace =
-          pTubeIndexPhysTransform->TransformPoint(
-          curSourcePoint.GetPosition() );
         typename ImageType::IndexType imageIndex;
         if ( image->TransformPhysicalPointToIndex( curSourcePosIndexSpace, imageIndex ) )
           {
@@ -293,6 +341,16 @@ int DoIt (int argc, char * argv[])
         if( CropTubes )
           {
           TargetPointList.push_back( curSourcePoint );
+          if( !OutputEndPointsFile.empty() && !flagEndPoint )
+            {
+            PointType endPoint;
+            for( unsigned int i = 0; i < DimensionT; i++ )
+              {
+              endPoint[i] = curSourcePosIndexSpace[i];
+              }
+            endPointList.push_back( endPoint );
+            flagEndPoint = !flagEndPoint;
+            }
           }
         else
           {
@@ -330,6 +388,16 @@ int DoIt (int argc, char * argv[])
           pTargetTubeGroup->AddSpatialObject( pTargetTube );
 
           TargetPointList.clear();
+          }
+        if( !OutputEndPointsFile.empty() && flagEndPoint )
+          {
+          PointType endPoint;
+          for( unsigned int i = 0; i < DimensionT; i++ )
+            {
+            endPoint[i] = curSourcePosIndexSpace[i];
+            }
+          endPointList.push_back( endPoint );
+          flagEndPoint = !flagEndPoint;
           }
         }
       }
@@ -387,6 +455,14 @@ int DoIt (int argc, char * argv[])
     }
 
   timeCollector.Stop( "Writing output TRE file" );
+
+  timeCollector.Start( "Writing End Points File" );
+  if( !OutputEndPointsFile.empty() && endPointList.size() != 0 )
+    {
+    WriteFCSVFile( OutputEndPointsFile, endPointList );
+    }
+  timeCollector.Stop( "Writing End Points File" );
+
   timeCollector.Report();
   return EXIT_SUCCESS;
 }
