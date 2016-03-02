@@ -22,6 +22,7 @@
       <name>outputTREFile</name>
       <label>output TRE File</label>
       <channel>input</channel>
+      <index>1</index>
       <description>Output tubes centered along the path </description>
     </file>
   </parameters>
@@ -59,7 +60,7 @@
     </boolean>
     <file>
       <name>inputTREFile</name>
-      <label>Input TRE File </label>
+      <label>Input Centerline File </label>
       <longflag>inputTRE</longflag>
       <channel>input</channel>
       <description>Input tubes centered along some path </description>
