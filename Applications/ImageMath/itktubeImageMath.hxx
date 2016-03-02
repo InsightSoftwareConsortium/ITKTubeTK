@@ -312,12 +312,9 @@ ImageMath<VDimension>
         imIn2->GetLargestPossibleRegion() );
   it1.GoToBegin();
   it2.GoToBegin();
-  while( !it1.IsAtEnd() )
+  while( !it1.IsAtEnd() && !it2.IsAtEnd() )
     {
-    double tf1 = it1.Get();
-    double tf2 = it2.Get();
-    double tf = tf1*tf2;
-    it1.Set( ( PixelType )tf );
+    it1.Set( it1.Get() * it2.Get() );
     ++it1;
     ++it2;
     }
