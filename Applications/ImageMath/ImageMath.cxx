@@ -40,6 +40,8 @@ limitations under the License.
 #include <itkRecursiveGaussianImageFilter.h>
 #include <itkResampleImageFilter.h>
 
+#include "itktubeImageMath.h"
+
 #include <metaCommand.h>
 #include "ImageMathCLP.h"
 
@@ -97,12 +99,8 @@ int DoIt( MetaCommand & command )
 
   MetaCommand::OptionVector parsed = command.GetParsedOptions();
 
-  typedef itk::Statistics::NormalVariateGenerator GaussGenType;
-  typename GaussGenType::Pointer gaussGen = GaussGenType::New();
 
-  typedef itk::Statistics::MersenneTwisterRandomVariateGenerator
-                                                  UniformGenType;
-  typename UniformGenType::Pointer uniformGen = UniformGenType::New();
+  int CurrentSeed = 42;
 
   typedef itk::ImageFileReader< ImageType >       VolumeReaderType;
 
@@ -282,83 +280,26 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Intensity" )
       {
       std::cout << "Intensity windowing" << std::endl;
-      float valMin = command.GetValueAsFloat( *it, "inValMin" );
-      float valMax = command.GetValueAsFloat( *it, "inValMax" );
-      float outMin = command.GetValueAsFloat( *it, "outMin" );
-      float outMax = command.GetValueAsFloat( *it, "outMax" );
-      itk::ImageRegionIterator< ImageType > it2( imIn,
-            imIn->GetLargestPossibleRegion() );
-      it2.GoToBegin();
-      while( !it2.IsAtEnd() )
-        {
-        double tf = it2.Get();
-        tf = ( tf-valMin )/( valMax-valMin );
-        if( tf<0 )
-          {
-          tf = 0;
-          }
-        if( tf>1 )
-          {
-          tf = 1;
-          }
-        tf = ( tf * ( outMax-outMin ) ) + outMin;
-        it2.Set( ( PixelType )tf );
-        ++it2;
-        }
+      itk::tube::ImageMath< VDimension >::ApplyIntensityWindowing(
+            imIn,
+            command.GetValueAsFloat( *it, "inValMin" ),
+            command.GetValueAsFloat( *it, "inValMax" ),
+            command.GetValueAsFloat( *it, "outMin" ),
+            command.GetValueAsFloat( *it, "outMax" ));
       }
 
     // IntensityMult
     else if( ( *it ).name == "IntensityMult" )
       {
       std::cout << "Intensity multiplicative bias correct" << std::endl;
-      typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
-      reader2->SetFileName(
-        command.GetValueAsString( *it, "inMeanField" ).c_str() );
-      typename ImageType::Pointer imIn2;
-      imIn2 = reader2->GetOutput();
-      try
+      bool success =
+          itk::tube::ImageMath< VDimension >::ApplyIntensityMultiplicativeWithBiasCorrection(
+            imIn,
+            command.GetValueAsString( *it, "inMeanField" )
+            );
+      if ( !success )
         {
-        reader2->Update();
-        }
-      catch( ... )
-        {
-        std::cout << "Problems reading file format of inFile2."
-                  << std::endl;
         return EXIT_FAILURE;
-        }
-      imIn2 = ResampleImage< PixelType, VDimension >( imIn2, imIn );
-      itk::ImageRegionIterator< ImageType > it2( imIn2,
-                     imIn2->GetLargestPossibleRegion() );
-      int count = 0;
-      double mean = 0;
-      it2.GoToBegin();
-      while( !it2.IsAtEnd() )
-        {
-        double tf = it2.Get();
-        mean += tf;
-        if( tf != 0 )
-          {
-          ++count;
-          }
-        ++it2;
-        }
-      mean /= count;
-      itk::ImageRegionIterator< ImageType > it3( imIn,
-            imIn->GetLargestPossibleRegion() );
-      it3.GoToBegin();
-      it2.GoToBegin();
-      while( !it3.IsAtEnd() )
-        {
-        double tf = it3.Get();
-        double tf2 = it2.Get();
-        if( tf2 != 0 )
-          {
-          double alpha = mean / tf2;
-          tf = tf * alpha;
-          it3.Set( ( PixelType )tf );
-          }
-        ++it3;
-        ++it2;
         }
       } // end -I
 
@@ -366,133 +307,65 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "UniformNoise" )
       {
       std::cout << "Adding noise" << std::endl;
-      float valMin = command.GetValueAsFloat( *it, "inValMin" );
-      float valMax = command.GetValueAsFloat( *it, "inValMax" );
-      float noiseMean = command.GetValueAsFloat( *it, "noiseMean" );
-      float noiseRange = command.GetValueAsFloat( *it, "noiseRange" );
-      itk::ImageRegionIterator< ImageType > it2( imIn,
-            imIn->GetLargestPossibleRegion() );
-      it2.GoToBegin();
-      while( !it2.IsAtEnd() )
-        {
-        double tf = it2.Get();
-        if( tf >= valMin && tf <= valMax )
-          {
-          tf += ( ( 2.0 * uniformGen->GetVariate() ) - 1 ) * noiseRange
-            + noiseMean;
-          it2.Set( ( PixelType )tf );
-          }
-        ++it2;
-        }
+      itk::tube::ImageMath< VDimension >::AddUniformNoise(
+            imIn,
+            command.GetValueAsFloat( *it, "inValMin" ),
+            command.GetValueAsFloat( *it, "inValMax" ),
+            command.GetValueAsFloat( *it, "noiseMean" ),
+            command.GetValueAsFloat( *it, "noiseRange" ),
+            CurrentSeed
+            );
       } // -N
 
     // GaussianNoise
     else if( ( *it ).name == "GaussianNoise" )
       {
       std::cout << "Adding noise" << std::endl;
-      float valMin = command.GetValueAsFloat( *it, "inValMin" );
-      float valMax = command.GetValueAsFloat( *it, "inValMax" );
-      float noiseMean = command.GetValueAsFloat( *it, "noiseMean" );
-      float noiseStdDev = command.GetValueAsFloat( *it, "noiseStdDev" );
-      itk::ImageRegionIterator< ImageType > it2( imIn,
-            imIn->GetLargestPossibleRegion() );
-      it2.GoToBegin();
-      while( !it2.IsAtEnd() )
-        {
-        double tf = it2.Get();
-        if( tf >= valMin && tf <= valMax )
-          {
-          tf += gaussGen->GetVariate()*noiseStdDev+noiseMean;
-          it2.Set( ( PixelType )tf );
-          }
-        ++it2;
-        }
+      itk::tube::ImageMath< VDimension >::AddGaussianNoise(
+            imIn,
+            command.GetValueAsFloat( *it, "inValMin" ),
+            command.GetValueAsFloat( *it, "inValMax" ),
+            command.GetValueAsFloat( *it, "noiseMean" ),
+            command.GetValueAsFloat( *it, "noiseStdDev" ),
+            CurrentSeed
+            );
       } // end -n
 
     // I( x )
     else if( ( *it ).name == "Add" )
       {
       std::cout << "Adding" << std::endl;
-      float weight1 = command.GetValueAsFloat( *it, "weight1" );
-      float weight2 = command.GetValueAsFloat( *it, "weight2" );
-      typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
-      reader2->SetFileName( command.GetValueAsString( *it,
-          "Infile" ).c_str() );
-      typename ImageType::Pointer imIn2;
-      imIn2 = reader2->GetOutput();
-      try
+      bool success =
+          itk::tube::ImageMath< VDimension >::AddImages(
+            imIn,
+            command.GetValueAsString( *it, "Infile" ),
+            command.GetValueAsFloat( *it, "weight1" ),
+            command.GetValueAsFloat( *it, "weight2" ) );
+      if ( !success )
         {
-        reader2->Update();
-        }
-      catch( ... )
-        {
-        std::cout << "Problems reading file format of inFile2."
-                  << std::endl;
         return EXIT_FAILURE;
-        }
-      itk::ImageRegionIterator< ImageType > it1( imIn,
-            imIn->GetLargestPossibleRegion() );
-      itk::ImageRegionIterator< ImageType > it2( imIn2,
-            imIn2->GetLargestPossibleRegion() );
-      it1.GoToBegin();
-      it2.GoToBegin();
-      while( !it1.IsAtEnd() )
-        {
-        double tf1 = it1.Get();
-        double tf2 = it2.Get();
-        double tf = weight1*tf1 + weight2*tf2;
-        it1.Set( ( PixelType )tf );
-        ++it1;
-        ++it2;
         }
       }
 
     else if( ( *it ).name == "Multiply" )
       {
       std::cout << "Multiplying" << std::endl;
-      typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
-      reader2->SetFileName( command.GetValueAsString( *it,
-          "Infile" ).c_str() );
-      typename ImageType::Pointer imIn2;
-      imIn2 = reader2->GetOutput();
-      try
+      bool success =
+          itk::tube::ImageMath< VDimension >::MultiplyImages(
+            imIn,
+            command.GetValueAsString( *it, "Infile" ) );
+      if ( !success )
         {
-        reader2->Update();
-        }
-      catch( ... )
-        {
-        std::cout << "Problems reading file format of inFile2."
-                  << std::endl;
         return EXIT_FAILURE;
-        }
-      itk::ImageRegionIterator< ImageType > it1( imIn,
-            imIn->GetLargestPossibleRegion() );
-      itk::ImageRegionIterator< ImageType > it2( imIn2,
-            imIn2->GetLargestPossibleRegion() );
-      it1.GoToBegin();
-      it2.GoToBegin();
-      while( !it1.IsAtEnd() )
-        {
-        double tf1 = it1.Get();
-        double tf2 = it2.Get();
-        double tf = tf1*tf2;
-        it1.Set( ( PixelType )tf );
-        ++it1;
-        ++it2;
         }
       }
 
     // Mirror pad
     else if( ( *it ).name == "MirrorPad" )
       {
-      typedef itk::MirrorPadImageFilter< ImageType, ImageType > PadFilterType;
-      typename PadFilterType::Pointer padFilter = PadFilterType::New();
-      padFilter->SetInput( imIn );
-      typename PadFilterType::InputImageSizeType bounds;
-      bounds.Fill( command.GetValueAsInt( *it, "numPadVoxels" ) );
-      padFilter->SetPadBound( bounds );
-      padFilter->Update();
-      imIn = padFilter->GetOutput();
+      itk::tube::ImageMath< VDimension >::MirrorAndPadImage(
+            imIn,
+            command.GetValueAsInt( *it, "numPadVoxels" ) );
       }
 
     // Normalize
@@ -502,289 +375,56 @@ int DoIt( MetaCommand & command )
       std::cout << "NOTE: since this filter normalizes the data to lie "
                 << "within -1 to 1, integral types will produce an image that "
                 << "DOES NOT HAVE a unit variance" << std::endl;
-      int normType = command.GetValueAsInt( *it, "type" );
-      if( normType == 0 )
-        {
-        typedef itk::NormalizeImageFilter< ImageType, ImageType >
-                                                      NormFilterType;
-        typename NormFilterType::Pointer normFilter = NormFilterType::New();
-        normFilter->SetInput( imIn );
-        normFilter->Update();
-        imIn = normFilter->GetOutput();
-        }
-      else
-        {
-        unsigned int nBins = 50;
 
-        itk::ImageRegionIteratorWithIndex< ImageType > it1( imIn,
-              imIn->GetLargestPossibleRegion() );
-        it1.GoToBegin();
-        double binMin = it1.Get();
-        double binMax = it1.Get();
-        while( !it1.IsAtEnd() )
-          {
-          double tf = it1.Get();
-          if( tf < binMin )
-            {
-            binMin = tf;
-            }
-          else
-            {
-            if( tf > binMax )
-              {
-              binMax = tf;
-              }
-            }
-          ++it1;
-          }
-
-        int loop = 0;
-        double meanV = 0;
-        double stdDevV = 1;
-        itk::Array<double> bin;
-        bin.set_size( nBins );
-        while( loop++ < 4 )
-          {
-          std::cout << "binMin = " << binMin << " : binMax = " << binMax
-            << std::endl;
-          std::cout << "  Mean = " << meanV << " : StdDev = " << stdDevV
-            << std::endl;
-
-          if( (binMax - binMin) < nBins
-            && 1 == static_cast< TPixel >( 1.1 ) )
-            {
-            std::cout << "Stretching represent int values" << std::endl;
-            int binMid = (binMax + binMin ) / 2.0;
-            int binStep = ( nBins - 1 ) / 2;
-            binMin = binMid - binStep;
-            binMax = binMin + nBins;
-            }
-
-          it1.GoToBegin();
-          bin.Fill( 0 );
-          while( !it1.IsAtEnd() )
-            {
-            double tf = it1.Get();
-            tf = ( tf-binMin )/( binMax-binMin ) * (nBins-1);
-            if( tf>=0 && tf<nBins )
-              {
-              bin[( int )tf]++;
-              if( tf > 0 )
-                {
-                bin[( int )( tf - 1 )] += 0.5;
-                }
-              if( tf < nBins-1 )
-                {
-                bin[( int )( tf + 1 )] += 0.5;
-                }
-              }
-            ++it1;
-            }
-
-          int maxBin = 0;
-          double maxBinV = bin[0];
-          for( unsigned int i=1; i<nBins; i++ )
-            {
-            if( bin[i] >= maxBinV )
-              {
-              maxBinV = bin[i];
-              maxBin = i;
-              }
-            }
-          double fwhm = maxBinV / 2;
-          double binFWHMMin = maxBin;
-          while( binFWHMMin>0 && bin[(int)binFWHMMin]>=fwhm )
-            {
-            --binFWHMMin;
-            }
-          std::cout << "  binfwhmmin = " << binFWHMMin
-            << std::endl;
-          binFWHMMin += ( fwhm - bin[(int)binFWHMMin] )
-            / ( bin[(int)binFWHMMin+1] - bin[(int)binFWHMMin] );
-          std::cout << "  tweak: binfwhmmin = " << binFWHMMin
-            << std::endl;
-
-          double binFWHMMax = maxBin;
-          while( binFWHMMax<(int)nBins-1 && bin[(int)binFWHMMax]>=fwhm )
-            {
-            ++binFWHMMax;
-            }
-          std::cout << "  binfwhmmax = " << binFWHMMax
-            << std::endl;
-          binFWHMMax -= ( fwhm - bin[(int)binFWHMMax] )
-            / ( bin[(int)binFWHMMax-1] - bin[(int)binFWHMMax] );
-          std::cout << "  tweak: binfwhmmax = " << binFWHMMax
-            << std::endl;
-          if( binFWHMMax <= binFWHMMin )
-            {
-            binFWHMMin = maxBin-1;
-            binFWHMMax = maxBin+1;
-            }
-
-          double minV = ( ( binFWHMMin + 0.5 ) / ( nBins - 1.0 ) )
-            * ( binMax-binMin ) + binMin;
-          double maxV = ( ( binFWHMMax + 0.5 ) / ( nBins - 1.0 ) )
-            * ( binMax-binMin ) + binMin;
-
-          meanV = ( maxV + minV ) / 2.0;
-
-          // FWHM to StdDev relationship from
-          //   http://mathworld.wolfram.com/GaussianFunction.html
-          stdDevV = ( maxV - minV ) / 2.3548;
-
-          binMin = meanV - 1.5 * stdDevV;
-          binMax = meanV + 1.5 * stdDevV;
-          }
-
-        std::cout << "FINAL: binMin = " << binMin << " : binMax = "
-          << binMax << std::endl;
-        std::cout << "  Mean = " << meanV << " : StdDev = " << stdDevV
-          << std::endl;
-
-        it1.GoToBegin();
-        if( normType == 1 )
-          {
-          while( !it1.IsAtEnd() )
-            {
-            double tf = it1.Get();
-            it1.Set( ( tf - meanV ) / stdDevV );
-            ++it1;
-            }
-          }
-        else
-          {
-          while( !it1.IsAtEnd() )
-            {
-            double tf = it1.Get();
-            it1.Set( tf - meanV );
-            ++it1;
-            }
-          }
-        }
+      itk::tube::ImageMath< VDimension >::template NormalizeImage< TPixel >(
+            imIn,
+            command.GetValueAsInt( *it, "type" ) );
       }
 
     // I( x )
     else if( ( *it ).name == "Fuse" )
       {
       std::cout << "Fusing" << std::endl;
-      float offset2 = command.GetValueAsFloat( *it, "Offset2" );
-      typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
-      reader2->SetFileName( command.GetValueAsString( *it,
-          "Infile2" ).c_str() );
-      typename ImageType::Pointer imIn2;
-      imIn2 = reader2->GetOutput();
-      try
+      bool success =
+          itk::tube::ImageMath< VDimension >::FuseImages(
+            imIn,
+            command.GetValueAsString( *it, "Infile2" ),
+            command.GetValueAsFloat( *it, "Offset2" ) );
+      if ( !success )
         {
-        reader2->Update();
-        }
-      catch( ... )
-        {
-        std::cout << "Problems reading file format of inFile2."
-                  << std::endl;
         return EXIT_FAILURE;
         }
-      itk::ImageRegionIterator< ImageType > it1( imIn,
-            imIn->GetLargestPossibleRegion() );
-      itk::ImageRegionIterator< ImageType > it2( imIn2,
-            imIn2->GetLargestPossibleRegion() );
-      it1.GoToBegin();
-      it2.GoToBegin();
-      while( !it1.IsAtEnd() )
-        {
-        double tf1 = it1.Get();
-        double tf2 = it2.Get();
-        if( tf2>tf1 )
-          {
-          double tf = offset2 + tf2;
-          it1.Set( ( PixelType )tf );
-          }
-        ++it1;
-        ++it2; }
       } // end -a
 
     // Threshold
     else if( ( *it ).name == "Threshold" )
       {
       std::cout << "Thresholding" << std::endl;
-
-      float threshLow = command.GetValueAsFloat( *it, "threshLow" );
-      float threshHigh = command.GetValueAsFloat( *it, "threshHigh" );
-
-      float valTrue = command.GetValueAsFloat( *it, "valTrue" );
-      float valFalse = command.GetValueAsFloat( *it, "valFalse" );
-
-      itk::ImageRegionIterator< ImageType > it1( imIn,
-            imIn->GetLargestPossibleRegion() );
-      it1.GoToBegin();
-      while( !it1.IsAtEnd() )
-        {
-        double tf1 = it1.Get();
-        if( tf1 >= threshLow && tf1 <= threshHigh )
-          {
-          it1.Set( ( PixelType )valTrue );
-          }
-        else
-          {
-          it1.Set( ( PixelType )valFalse );
-          }
-        ++it1;
-        }
+      itk::tube::ImageMath< VDimension >::ThresholdImage(
+            imIn,
+            command.GetValueAsFloat( *it, "threshLow" ),
+            command.GetValueAsFloat( *it, "threshHigh" ),
+            command.GetValueAsFloat( *it, "valTrue" ),
+            command.GetValueAsFloat( *it, "valFalse" ) );
       }
     else if( ( *it ).name == "Algorithm" )
       {
       std::cout << "Algorithm" << std::endl;
-
-      float threshLow = command.GetValueAsFloat( *it, "threshLow" );
-      float threshHigh = command.GetValueAsFloat( *it, "threshHigh" );
-
-      typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
-      reader2->SetFileName( command.GetValueAsString( *it,
-          "maskFile" ).c_str() );
-      typename ImageType::Pointer imIn2 = reader2->GetOutput();
-      try
+      bool success = false;
+      int mode = command.GetValueAsInt( *it, "mode" );
+      double value =
+          itk::tube::ImageMath< VDimension >::ComputeImageStdDevOrMeanWithinRangeUsingMask(
+            imIn,
+            command.GetValueAsString( *it, "maskFile" ),
+            command.GetValueAsFloat( *it, "threshLow" ),
+            command.GetValueAsFloat( *it, "threshHigh" ),
+            mode,
+            success );
+      if ( !success )
         {
-        reader2->Update();
-        }
-      catch( ... )
-        {
-        std::cout << "Problems reading file format of inFile2."
-                  << std::endl;
         return EXIT_FAILURE;
         }
-
-      int mode = command.GetValueAsInt( *it, "mode" );
-
-      itk::ImageRegionIterator< ImageType > it1( imIn,
-            imIn->GetLargestPossibleRegion() );
-      itk::ImageRegionIterator< ImageType > it2( imIn2,
-            imIn2->GetLargestPossibleRegion() );
-      it1.GoToBegin();
-      it2.GoToBegin();
-      double sum = 0;
-      double sumS = 0;
-      unsigned int count = 0;
-      while( !it1.IsAtEnd() && !it2.IsAtEnd() )
-        {
-        double maskV = it2.Get();
-        if( maskV >= threshLow && maskV <= threshHigh )
-          {
-          sum += it1.Get();
-          sumS += it1.Get() * it1.Get();
-          ++count;
-          }
-        ++it1;
-        ++it2;
-        }
-      double mean = sum/count;
-      if( mode == 0 )
-        {
-        std::cout << "Mean " << mean << std::endl;
-        }
-      else
-        {
-        double stdDev = (sumS - (sum*mean))/(count-1);
-        std::cout << "StdDev " << stdDev << std::endl;
-        }
+      std::cout << ( mode == 0 ? "Mean " : "StdDev " ) << value << std::endl;
       }
     else if( ( *it ).name == "Process" )
       {
@@ -1498,11 +1138,8 @@ int DoIt( MetaCommand & command )
     // SetRandom
     else if( ( *it ).name == "SetRandom" )
       {
-      unsigned int seed = ( unsigned int )command.GetValueAsInt( *it,
+      CurrentSeed = ( unsigned int )command.GetValueAsInt( *it,
         "seedValue" );
-      std::srand( seed );
-      gaussGen->Initialize( ( int )seed );
-      uniformGen->Initialize( ( int )seed );
       } // end -S
 
     // Voronoi
