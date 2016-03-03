@@ -47,6 +47,8 @@ SEMMacroBuildCLI(
   ADDITIONAL_SOURCES
     itktubeImageMath.h
     itktubeImageMath.hxx
+    itktubeImageSegmentationMath.h
+    itktubeImageSegmentationMath.hxx
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ITKIOMeta ITKStatistics
     TubeTKSegmentation )

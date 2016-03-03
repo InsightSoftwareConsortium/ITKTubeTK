@@ -26,13 +26,13 @@ limitations under the License.
 
 #include <itkBinaryBallStructuringElement.h>
 #include <itkCastImageFilter.h>
-#include <itkConnectedThresholdImageFilter.h>
 #include <itkDilateObjectMorphologyImageFilter.h>
 #include <itkErodeObjectMorphologyImageFilter.h>
 #include <itkExtractImageFilter.h>
 #include <itkHistogramMatchingImageFilter.h>
 #include <itkImageFileWriter.h>
 #include <itkMetaImageIO.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
 #include <itkMirrorPadImageFilter.h>
 #include <itkNormalizeImageFilter.h>
 #include <itkNormalVariateGenerator.h>
@@ -633,6 +633,579 @@ ImageMath<VDimension>
     double stdDev = (sumS - (sum*mean))/(count-1);
     return stdDev;
     }
+}
+
+//----------------------------------------------------------------------------
+template< unsigned int VDimension >
+void
+ImageMath<VDimension>
+::AbsoluteImage( typename ImageType::Pointer imIn )
+{
+  itk::ImageRegionIterator< ImageType > it1( imIn,
+        imIn->GetLargestPossibleRegion() );
+  it1.GoToBegin();
+  while( !it1.IsAtEnd() )
+    {
+    it1.Set( vnl_math_abs( it1.Get() ) );
+    ++it1;
+    }
+}
+
+//----------------------------------------------------------------------------
+template< unsigned int VDimension >
+bool
+ImageMath<VDimension>
+::MaskImageWithValueIfNotWithinSecondImageRange(
+    typename ImageType::Pointer imIn,
+    const std::string & imIn2FilePath,
+    float threshLow, float threshHigh, bool valFalse )
+{
+
+  typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
+  reader2->SetFileName( imIn2FilePath.c_str() );
+
+  typename ImageType::Pointer imIn2 = reader2->GetOutput();
+  try
+    {
+    reader2->Update();
+    }
+  catch( ... )
+    {
+    std::cout << "Problems reading file format of inFile2."
+              << std::endl;
+    return false;
+    }
+  imIn2 = ResampleImage( imIn2, imIn );
+  itk::ImageRegionIterator< ImageType > it1( imIn,
+        imIn->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it2( imIn2,
+        imIn2->GetLargestPossibleRegion() );
+  it1.GoToBegin();
+  it2.GoToBegin();
+  while( !it1.IsAtEnd() )
+    {
+    double tf2 = it2.Get();
+    if( tf2 >= threshLow && tf2 <= threshHigh )
+      {
+      //double tf1 = it1.Get();
+      //it1.Set( ( PixelType )tf1 );
+      }
+    else
+      {
+      it1.Set( ( PixelType )valFalse );
+      }
+    ++it1;
+    ++it2;
+    }
+  return true;
+}
+
+//----------------------------------------------------------------------------
+template< unsigned int VDimension >
+void
+ImageMath<VDimension>
+::MorphImage(
+    typename ImageType::Pointer & imIn,
+    int mode, float radius, float foregroundValue, float backgroundValue )
+{
+  typedef itk::BinaryBallStructuringElement<PixelType, VDimension>
+    BallType;
+  BallType ball;
+  ball.SetRadius( 1 );
+  ball.CreateStructuringElement();
+
+  typedef itk::ErodeObjectMorphologyImageFilter
+               <ImageType, ImageType, BallType>       ErodeFilterType;
+  typedef itk::DilateObjectMorphologyImageFilter
+               <ImageType, ImageType, BallType>       DilateFilterType;
+  switch( mode )
+    {
+    case 0:
+      {
+      for( int r=0; r<radius; r++ )
+        {
+        typename ErodeFilterType::Pointer filter =
+          ErodeFilterType::New();
+        filter->SetBackgroundValue( backgroundValue );
+        filter->SetKernel( ball );
+        filter->SetObjectValue( foregroundValue );
+        filter->SetInput( imIn );
+        filter->Update();
+        imIn = filter->GetOutput();
+        }
+      break;
+      }
+    case 1:
+      {
+      for( int r=0; r<radius; r++ )
+        {
+        typename DilateFilterType::Pointer filter =
+          DilateFilterType::New();
+        filter->SetKernel( ball );
+        filter->SetObjectValue( foregroundValue );
+        filter->SetInput( imIn );
+        filter->Update();
+        imIn = filter->GetOutput();
+        }
+      break;
+      }
+    }
+}
+
+//----------------------------------------------------------------------------
+template< unsigned int VDimension >
+void
+ImageMath<VDimension>
+::OverwriteImage(
+    typename ImageType::Pointer imIn,
+    const std::string & maskFilePath,
+    float maskKeyVal, float imageKeyVal, float newImageVal )
+{
+  typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
+  reader2->SetFileName( maskFilePath.c_str() );
+  reader2->Update();
+  typename ImageType::Pointer maskIm = reader2->GetOutput();
+
+  itk::ImageRegionIterator< ImageType > itIm( imIn,
+        imIn->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > itMask( maskIm,
+        maskIm->GetLargestPossibleRegion() );
+  while( !itIm.IsAtEnd() )
+    {
+    if( itMask.Get() == maskKeyVal )
+      {
+      if( itIm.Get() == imageKeyVal )
+        {
+        itIm.Set( newImageVal );
+        }
+      }
+    ++itIm;
+    ++itMask;
+    }
+}
+
+//----------------------------------------------------------------------------
+template< unsigned int VDimension >
+void
+ImageMath<VDimension>
+::BlurImage(
+    typename ImageType::Pointer & imIn,
+    float sigma )
+{
+  typename itk::RecursiveGaussianImageFilter< ImageType >::Pointer
+    filter;
+  typename ImageType::Pointer imTemp;
+  for( unsigned int i=0; i<VDimension; i++ )
+    {
+    filter = itk::RecursiveGaussianImageFilter< ImageType >::New();
+    filter->SetInput( imIn );
+    //filter->SetNormalizeAcrossScale( true );
+    filter->SetSigma( sigma );
+
+    filter->SetOrder(
+             itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
+    filter->SetDirection( i );
+
+    imTemp = filter->GetOutput();
+    filter->Update();
+    imIn = imTemp;
+    }
+}
+
+//----------------------------------------------------------------------------
+template< unsigned int VDimension >
+void
+ImageMath<VDimension>
+::BlurOrderImage(
+    typename ImageType::Pointer & imIn,
+    float sigma, int order, int direction )
+{
+  typename itk::RecursiveGaussianImageFilter< ImageType >::Pointer
+    filter;
+  filter = itk::RecursiveGaussianImageFilter< ImageType >::New();
+  filter->SetInput( imIn );
+  //filter->SetNormalizeAcrossScale( true );
+  filter->SetSigma( sigma );
+  filter->SetDirection( direction );
+  switch( order )
+    {
+    case 0:
+      filter->SetOrder(
+        itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
+      break;
+    case 1:
+      filter->SetOrder(
+        itk::RecursiveGaussianImageFilter<ImageType>::FirstOrder );
+      break;
+    case 2:
+      filter->SetOrder(
+        itk::RecursiveGaussianImageFilter<ImageType>::SecondOrder );
+      break;
+    }
+  typename ImageType::Pointer imTemp = filter->GetOutput();
+  filter->Update();
+  imIn = imTemp;
+}
+
+//----------------------------------------------------------------------------
+template< unsigned int VDimension >
+bool
+ImageMath<VDimension>
+::ComputeImageHistogram(
+    typename ImageType::Pointer imIn,
+    unsigned int nBins, const std::string & histOutputFilePath )
+{
+  itk::ImageRegionIteratorWithIndex< ImageType > it1( imIn,
+        imIn->GetLargestPossibleRegion() );
+  it1.GoToBegin();
+  double binMin = it1.Get();
+  double binMax = it1.Get();
+  while( !it1.IsAtEnd() )
+    {
+    double tf = it1.Get();
+    if( tf < binMin )
+      {
+      binMin = tf;
+      }
+    else
+      {
+      if( tf > binMax )
+        {
+        binMax = tf;
+        }
+      }
+    ++it1;
+    }
+  std::cout << "  binMin = " << binMin << std::endl;
+  std::cout << "  binMax = " << binMax << std::endl;
+  it1.GoToBegin();
+  itk::Array<double> bin;
+  bin.set_size( nBins );
+  bin.Fill( 0 );
+  while( !it1.IsAtEnd() )
+    {
+    double tf = it1.Get();
+    tf = ( tf-binMin )/( binMax-binMin ) * nBins;
+    if( tf>nBins-1 )
+      {
+      tf = nBins-1;
+      }
+    else
+      {
+      if( tf<0 )
+        {
+        tf = 0;
+        }
+      }
+    bin[( int )tf]++;
+    ++it1;
+    }
+  std::ofstream writeStream;
+  writeStream.open( histOutputFilePath.c_str(), std::ios::binary | std::ios::out );
+  if( !writeStream.rdbuf()->is_open() )
+    {
+    std::cerr << "Cannot write to file : " << histOutputFilePath << std::endl;
+    return false;
+    }
+  for( unsigned int i=0; i<nBins; i++ )
+    {
+    writeStream << ( i/( double )nBins )*( binMax-binMin )+binMin
+                << " " << bin[i] << std::endl;
+    }
+  writeStream.close();
+  return true;
+}
+
+//----------------------------------------------------------------------------
+template< unsigned int VDimension >
+bool
+ImageMath<VDimension>
+::ComputeImageHistogram2(
+    typename ImageType::Pointer imIn,
+    unsigned int nBins, double binMin, double binSize,
+    const std::string & histOutputFilePath )
+{
+  double binMax = binMin + binSize*nBins;
+  itk::ImageRegionIteratorWithIndex< ImageType > it1( imIn,
+        imIn->GetLargestPossibleRegion() );
+  it1.GoToBegin();
+  itk::Array<double> bin;
+  bin.set_size( nBins );
+  bin.Fill( 0 );
+  while( !it1.IsAtEnd() )
+    {
+    double tf = it1.Get();
+    tf = ( tf-binMin )/( binMax-binMin ) * nBins;
+    if( tf<nBins && tf>0 )
+      {
+      bin[( int )tf]++;
+      }
+    ++it1;
+    }
+  std::ofstream writeStream;
+  writeStream.open( histOutputFilePath.c_str(), std::ios::binary | std::ios::out );
+  if( !writeStream.rdbuf()->is_open() )
+    {
+    std::cerr << "Cannot write to file : " << histOutputFilePath << std::endl;
+    return false;
+    }
+  for( unsigned int i=0; i<nBins; i++ )
+    {
+    writeStream << ( i/( double )nBins )*( binMax-binMin )+binMin
+                << " " << bin[i] << std::endl;
+    }
+  writeStream.close();
+  return true;
+}
+
+//----------------------------------------------------------------------------
+template< unsigned int VDimension >
+void
+ImageMath<VDimension>
+::CorrectIntensitySliceBySliceUsingHistogramMatching(
+    typename ImageType::Pointer imIn,
+    unsigned int numberOfBins, unsigned int numberOfMatchPoints )
+{
+  typedef itk::Image<PixelType, 2> ImageType2D;
+  typedef itk::HistogramMatchingImageFilter< ImageType2D, ImageType2D >
+      HistogramMatchFilterType;
+  typename HistogramMatchFilterType::Pointer matchFilter;
+  typename ImageType2D::Pointer im2DRef = ImageType2D::New();
+  typename ImageType2D::Pointer im2DIn = ImageType2D::New();
+  typename ImageType2D::SizeType size2D;
+  size2D[0] = imIn->GetLargestPossibleRegion().GetSize()[0];
+  size2D[1] = imIn->GetLargestPossibleRegion().GetSize()[1];
+  im2DRef->SetRegions( size2D );
+  im2DRef->Allocate();
+  im2DIn->SetRegions( size2D );
+  im2DIn->Allocate();
+  itk::ImageRegionIterator< ImageType > it3D( imIn,
+        imIn->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType > it3DSliceStart( imIn,
+        imIn->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType2D > it2DRef( im2DRef,
+        im2DRef->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< ImageType2D > it2DIn( im2DIn,
+        im2DIn->GetLargestPossibleRegion() );
+  unsigned int x;
+  unsigned int y;
+  unsigned int z;
+  it3D.GoToBegin();
+  unsigned int zMax = 1;
+  if( VDimension == 3 )
+    {
+    zMax = imIn->GetLargestPossibleRegion().GetSize()[VDimension-1];
+    }
+  for( z=0; z<VDimension && z<zMax; z++ )
+    {
+    it2DRef.GoToBegin();
+    for( y=0; y<imIn->GetLargestPossibleRegion().GetSize()[1]; y++ )
+      {
+      for( x=0; x<imIn->GetLargestPossibleRegion().GetSize()[0]; x++ )
+        {
+        it2DRef.Set( it3D.Get() );
+        ++it2DRef;
+        ++it3D;
+        }
+      }
+    }
+  for(; z<zMax; z++ )
+    {
+    it2DIn.GoToBegin();
+    it3DSliceStart = it3D;
+    for( y=0; y<imIn->GetLargestPossibleRegion().GetSize()[1]; y++ )
+      {
+      for( x=0; x<imIn->GetLargestPossibleRegion().GetSize()[0]; x++ )
+        {
+        it2DIn.Set( it3D.Get() );
+        ++it2DIn;
+        ++it3D;
+        }
+      }
+    matchFilter = HistogramMatchFilterType::New();
+    matchFilter->SetReferenceImage( im2DRef );
+    matchFilter->SetInput( im2DIn );
+    matchFilter->SetNumberOfHistogramLevels( numberOfBins );
+    matchFilter->SetNumberOfMatchPoints( numberOfMatchPoints );
+    matchFilter->Update();
+    itk::ImageRegionIterator< ImageType2D > it2DOut(
+          matchFilter->GetOutput(),
+          im2DIn->GetLargestPossibleRegion() );
+    it2DRef.GoToBegin();
+    it2DOut.GoToBegin();
+    it3D = it3DSliceStart;
+    for( y=0; y<imIn->GetLargestPossibleRegion().GetSize()[1]; y++ )
+      {
+      for( x=0; x<imIn->GetLargestPossibleRegion().GetSize()[0]; x++ )
+        {
+        it2DRef.Set( it2DOut.Get() );
+        it3D.Set( it2DOut.Get() );
+        ++it2DRef;
+        ++it2DOut;
+        ++it3D;
+        }
+      }
+    }
+}
+
+//----------------------------------------------------------------------------
+template< unsigned int VDimension >
+bool
+ImageMath<VDimension>
+::CorrectIntensityUsingHistogramMatching(
+    typename ImageType::Pointer & imIn,
+    unsigned int numberOfBins, unsigned int numberOfMatchPoints,
+    const std::string & referenceVolumeFilePath)
+{
+  typedef itk::HistogramMatchingImageFilter< ImageType, ImageType >
+      HistogramMatchFilterType;
+  typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
+  reader2->SetFileName( referenceVolumeFilePath.c_str() );
+  typename ImageType::Pointer imIn2;
+  imIn2 = reader2->GetOutput();
+  try
+    {
+    reader2->Update();
+    }
+  catch( ... )
+    {
+    std::cout << "Problems reading file format of inFile2."
+              << std::endl;
+    return false;
+    }
+  typename HistogramMatchFilterType::Pointer matchFilter;
+  matchFilter = HistogramMatchFilterType::New();
+  matchFilter->SetReferenceImage( imIn2 );
+  matchFilter->SetInput( imIn );
+  matchFilter->SetNumberOfHistogramLevels( numberOfBins );
+  matchFilter->SetNumberOfMatchPoints( numberOfMatchPoints );
+  matchFilter->Update();
+  imIn = matchFilter->GetOutput();
+  return true;
+}
+
+//----------------------------------------------------------------------------
+template< unsigned int VDimension >
+void
+ImageMath<VDimension>
+::Resize(
+    typename ImageType::Pointer & imIn,
+    double factor )
+{
+  typename ImageType::Pointer imSub2 = ImageType::New();
+  imSub2->CopyInformation( imIn );
+  typename ImageType::SizeType size;
+  typename ImageType::SpacingType spacing;
+  if( factor != 0 )
+    {
+    for( unsigned int i=0; i<VDimension; i++ )
+      {
+      size[i] = ( long unsigned int )
+                ( imIn->GetLargestPossibleRegion().GetSize()[i]
+                  / factor );
+      spacing[i] = imIn->GetSpacing()[i]*factor;
+      }
+    }
+  else
+    {
+    for( unsigned int i=0; i<VDimension; i++ )
+      {
+      spacing[i] = imIn->GetSpacing()[i];
+      }
+
+    double meanSpacing = ( spacing[0] + spacing[1] ) / 2;
+    if( VDimension == 3 )
+      {
+      meanSpacing = ( meanSpacing + spacing[VDimension-1] ) / 2;
+      }
+    factor = meanSpacing/spacing[0];
+    size[0] = ( long unsigned int )
+              ( imIn->GetLargestPossibleRegion().GetSize()[0]/factor );
+    factor = meanSpacing/spacing[1];
+    size[1] = ( long unsigned int )
+              ( imIn->GetLargestPossibleRegion().GetSize()[1]/factor );
+    spacing[0] = meanSpacing;
+    spacing[1] = meanSpacing;
+    if( VDimension == 3 )
+      {
+      factor = meanSpacing/spacing[VDimension-1];
+      size[VDimension-1] = ( long unsigned int )
+                ( imIn->GetLargestPossibleRegion().GetSize()[VDimension-1]
+                  / factor );
+      spacing[VDimension-1] = meanSpacing;
+      }
+    }
+  imSub2->SetRegions( size );
+  imSub2->SetSpacing( spacing );
+  imSub2->Allocate();
+
+  imIn = ResampleImage( imIn, imSub2 );
+}
+
+//----------------------------------------------------------------------------
+template< unsigned int VDimension >
+bool
+ImageMath<VDimension>
+::Resize(
+    typename ImageType::Pointer & imIn,
+    const std::string & imIn2FilePath )
+{
+  typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
+  reader2->SetFileName( imIn2FilePath.c_str() );
+  typename ImageType::Pointer imIn2;
+  imIn2 = reader2->GetOutput();
+  try
+    {
+    reader2->Update();
+    }
+  catch( ... )
+    {
+    std::cout << "Problems reading file format of inFile2."
+              << std::endl;
+    return false;
+    }
+  imIn = ResampleImage( imIn, imIn2 );
+  return true;
+}
+
+//----------------------------------------------------------------------------
+template< unsigned int VDimension >
+void
+ImageMath<VDimension>
+::ExtractSlice(
+    typename ImageType::Pointer & imIn,
+    unsigned int dimension,
+    unsigned int slice )
+{
+  typedef itk::ExtractImageFilter<ImageType, ImageType>
+    ExtractSliceFilterType;
+
+  typename ExtractSliceFilterType::Pointer filter =
+    ExtractSliceFilterType::New();
+
+  typename ImageType::SizeType size =
+    imIn->GetLargestPossibleRegion().GetSize();
+
+  typename ImageType::IndexType  extractIndex;
+  typename ImageType::SizeType   extractSize;
+  for( unsigned int d=0; d<ImageType::ImageDimension; ++d )
+    {
+    extractIndex[d] = 0;
+    extractSize[d] = size[d];
+    }
+
+  extractIndex[dimension] = slice;
+  extractSize[dimension] = 1;
+
+  typename ImageType::RegionType desiredRegion( extractIndex,
+    extractSize );
+
+  filter->SetInput( imIn );
+  filter->SetExtractionRegion( desiredRegion );
+  filter->UpdateLargestPossibleRegion();
+  filter->Update();
+
+  imIn = filter->GetOutput();
 }
 
 } // End namespace tube

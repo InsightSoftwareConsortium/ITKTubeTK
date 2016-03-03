@@ -99,6 +99,75 @@ public:
       const std::string & maskFilePath,
       float threshLow, float threshHigh, int mode, bool & success );
 
+  /** Update image applying 'abs' unary operation. */
+  static void AbsoluteImage( typename ImageType::Pointer imIn );
+
+  /** If inFile(x) in [tLow, tHigh] then I(x)=I(x) else I(x)=vFalse */
+  static bool MaskImageWithValueIfNotWithinSecondImageRange(
+      typename ImageType::Pointer imIn,
+      const std::string & imIn2FilePath,
+      float threshLow, float threshHigh, bool valFalse );
+
+  /** Mathematical morphology using a sphere. Mode: 0=erode, 1=dilate. */
+  static void MorphImage(
+      typename ImageType::Pointer & imIn,
+      int mode, float radius, float foregroundValue, float backgroundValue );
+
+  /** Replace values within the image, with a mask. */
+  static void OverwriteImage(
+      typename ImageType::Pointer imIn,
+      const std::string & maskFilePath,
+      float maskKeyVal, float imageKeyVal, float newImageVal );
+
+  /** Gaussian blur the image using the given sigma */
+  static void BlurImage(
+      typename ImageType::Pointer & imIn,
+      float sigma );
+
+  /** Gaussian blur the image using the given sigma, order and direction. */
+  static void BlurOrderImage(
+      typename ImageType::Pointer & imIn,
+      float sigma, int order, int direction );
+
+  /** Write the image's histogram to the designated file. */
+  static bool ComputeImageHistogram(
+      typename ImageType::Pointer imIn,
+      unsigned int nBins,
+      const std::string & histOutputFilePath );
+
+  /** Write the image's histogram to the designated file. */
+  static bool ComputeImageHistogram2(
+      typename ImageType::Pointer imIn,
+      unsigned int nBins, double binMin, double binSize,
+      const std::string & histOutputFilePath );
+
+  /** Correct intensity slice-by-slice using HistogramMatchingFilter. */
+  static void CorrectIntensitySliceBySliceUsingHistogramMatching(
+      typename ImageType::Pointer imIn,
+      unsigned int numberOfBins, unsigned int numberOfMatchPoints );
+
+  /** Match intensity to another volume using HistogramMatchingFilter. */
+  static bool CorrectIntensityUsingHistogramMatching(
+      typename ImageType::Pointer & imIn,
+      unsigned int numberOfBins, unsigned int numberOfMatchPoints,
+      const std::string & referenceVolumeFilePath );
+
+  /** Resample to reduce by a factor (factor==0 means make isotropic) */
+  static void Resize(
+      typename ImageType::Pointer & imIn,
+      double factor );
+
+  /** Resample to match inFile2. */
+  static bool Resize(
+      typename ImageType::Pointer & imIn,
+      const std::string & imIn2FilePath );
+
+  /** Extract a single slice from the image. */
+  static void ExtractSlice(
+      typename ImageType::Pointer & imIn,
+      unsigned int dimension,
+      unsigned int slice );
+
 private:
   ImageMath();
   ~ImageMath();
