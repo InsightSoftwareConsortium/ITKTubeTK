@@ -25,6 +25,7 @@ project( TubeTKSegmentation )
 
 set( TubeTK_Base_Segmentation_H_Files
   itktubeCVTImageFilter.h
+  itktubeImageSegmentationMath.h
   itktubeLabelOverlapMeasuresImageFilter.h
   itktubePDFSegmenter.h
   itktubeRadiusExtractor2.h
@@ -34,6 +35,7 @@ set( TubeTK_Base_Segmentation_H_Files
 
 set( TubeTK_Base_Segmentation_HXX_Files
   itktubeCVTImageFilter.hxx
+  itktubeImageSegmentationMath.hxx
   itktubeLabelOverlapMeasuresImageFilter.hxx
   itktubePDFSegmenter.hxx
   itktubeRadiusExtractor2.hxx
