@@ -60,9 +60,9 @@ set( LIBSVM_HASH_OR_TAG 9e2dd8a5fd032b429c07ce2778c8716117812bc5 )
 # ITK Modules
 ###########################################################
 
-# ITKTubeTK: Source already available in TubeTK project
-set( ITKTubeTK_URL ${TubeTK_SOURCE_DIR}/ITKModules/ITKTubeTK )
-set( ITKTubeTK_HASH_OR_TAG "")
+# TubeTKITK: Source already available in TubeTK project
+set( TubeTKITK_URL ${TubeTK_SOURCE_DIR}/ITKModules/TubeTKITK )
+set( TubeTKITK_HASH_OR_TAG "")
 
 # MinimalPathExtraction
 set( MinimalPathExtraction_URL
@@ -71,7 +71,7 @@ set( MinimalPathExtraction_HASH_OR_TAG
   c9cdc87db021ff84417518979dd5924565ff5043 )
 
 set( TubeTK_ITK_MODULES
-  ITKTubeTK
+  TubeTKITK
   MinimalPathExtraction
   )
 

@@ -29,9 +29,9 @@ endmacro()
 # Note: This will NOT be needed when the ITK wrapping infrasctuture will
 #       be updated to work with "Modern CMake" targets.
 #
-_get_all_target_include_directories( ITKTubeTK _include_dirs )
+_get_all_target_include_directories( TubeTKITK _include_dirs )
 include_directories( ${_include_dirs} )
 
-itk_wrap_module( ITKTubeTK )
+itk_wrap_module( TubeTKITK )
 itk_auto_load_submodules()
 itk_end_wrap_module()

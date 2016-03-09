@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 2.8.9 )
-project( ITKTubeTK )
-set(ITKTubeTK_LIBRARIES ITKTubeTK)
+project( TubeTKITK )
+set(TubeTKITK_LIBRARIES TubeTKITK)
 
 if( NOT ITK_SOURCE_DIR )
 
@@ -14,10 +14,10 @@ else()
   set( TubeTK_INSTALL_INCLUDE_DIR ${ITK_INSTALL_INCLUDE_DIR} )
   set( TubeTK_BUILD_TESTING 0 )
 
-  # Include depends file to set ITKTubeTK_DEPENDS in current scope
+  # Include depends file to set TubeTKITK_DEPENDS in current scope
   include( tubetk-depends.cmake )
 
-  # Explicitly enable TubeTKBase libraries needed by ITKTubeTK
+  # Explicitly enable TubeTKBase libraries needed by TubeTKITK
   foreach( name ${${PROJECT_NAME}_DEPENDS} )
     set( TubeTK_BUILD_BASE_${name} 1 )
   endforeach()
