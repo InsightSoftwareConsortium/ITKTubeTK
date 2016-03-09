@@ -25,7 +25,7 @@ limitations under the License.
 #include "tubeMessage.h"
 #include "tubeCLIProgressReporter.h"
 
-// ITKTubeTK includes
+// TubeTKITK includes
 #include "tubeCropImage.h"
 
 // ITK includes

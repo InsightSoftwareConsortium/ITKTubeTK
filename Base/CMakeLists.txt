@@ -24,7 +24,7 @@ macro( _subdirectory_conditional_add name )
   if( NOT DEFINED TubeTK_BUILD_BASE_${name} )
     set( TubeTK_BUILD_BASE_${name} 1 )
     if( ITK_SOURCE_DIR )
-      # TubeTK base libraries required by ITKTubeTK module will have
+      # TubeTK base libraries required by TubeTKITK module will have
       # to be explicitly enabled.
       set( TubeTK_BUILD_BASE_${name} 0 )
     endif()
