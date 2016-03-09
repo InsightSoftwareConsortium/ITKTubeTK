@@ -50,7 +50,6 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseSegmentation_SRCS
   tubeBaseSegmentationPrintTest.cxx
-  itktubeCVTImageFilterTest.cxx
   itktubePDFSegmenterTest.cxx
   itktubeRadiusExtractor2Test.cxx
   itktubeRadiusExtractor2Test2.cxx
@@ -95,11 +94,6 @@ add_test( NAME tubeBaseSegmentationPrintTest
   COMMAND ${BASE_SEGMENTATION_TESTS}
   tubeBaseSegmentationPrintTest )
 
-Midas3FunctionAddTest( NAME itktubeCVTImageFilterTest
-  COMMAND ${BASE_SEGMENTATION_TESTS}
-    itktubeCVTImageFilterTest
-      MIDAS{GDS0015_1.mha.md5}
-      ${TEMP}/itktubeCVTImageFilterTest.mha )
 
 Midas3FunctionAddTest( NAME itktubePDFSegmenterTest
   COMMAND ${BASE_SEGMENTATION_TESTS}

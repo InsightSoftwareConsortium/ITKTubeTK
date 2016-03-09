@@ -29,7 +29,6 @@ limitations under the License.
 void RegisterTests( void )
 {
   REGISTER_TEST( tubeBaseSegmentationPrintTest );
-  REGISTER_TEST( itktubeCVTImageFilterTest );
   REGISTER_TEST( itktubePDFSegmenterTest );
   REGISTER_TEST( itktubeRidgeExtractorTest );
   REGISTER_TEST( itktubeRidgeExtractorTest2 );

@@ -24,9 +24,6 @@
 project( TubeTKSegmentation )
 
 set( TubeTK_Base_Segmentation_H_Files
-  itktubeCVTImageFilter.h
-  itktubeImageSegmentationMath.h
-  itktubeLabelOverlapMeasuresImageFilter.h
   itktubePDFSegmenter.h
   itktubeRadiusExtractor2.h
   itktubeRidgeExtractor.h
@@ -34,9 +31,6 @@ set( TubeTK_Base_Segmentation_H_Files
   itktubeTubeExtractor.h )
 
 set( TubeTK_Base_Segmentation_HXX_Files
-  itktubeCVTImageFilter.hxx
-  itktubeImageSegmentationMath.hxx
-  itktubeLabelOverlapMeasuresImageFilter.hxx
   itktubePDFSegmenter.hxx
   itktubeRadiusExtractor2.hxx
   itktubeRidgeExtractor.hxx
@@ -49,7 +43,7 @@ target_include_directories( ${PROJECT_NAME} INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR} )
 
 target_link_libraries( ${PROJECT_NAME} INTERFACE
-   TubeTKFiltering # Required because of itktubePDFSegmenter.hxx including itktubeSmoothingRecursiveGaussianImageFilter.h
+   TubeTKFiltering
    TubeTKNumerics )
 
 if( TubeTK_BUILD_TESTING )

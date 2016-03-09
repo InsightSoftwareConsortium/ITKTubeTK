@@ -26,6 +26,8 @@ limitations under the License.
 #include "itktubeAnisotropicDiffusionTensorImageFilter.h"
 #include "itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h"
 #include "itktubeAnisotropicHybridDiffusionImageFilter.h"
+#include "itktubeCropImageFilter.h"
+#include "itktubeCVTImageFilter.h"
 #include "itktubeExtractTubePointsSpatialObjectFilter.h"
 #include "itktubeGaussianDerivativeFilter.h"
 #include "itktubeFFTGaussianDerivativeIFFTFilter.h"
@@ -37,6 +39,7 @@ limitations under the License.
 #include "itktubeStructureTensorRecursiveGaussianImageFilter.h"
 #include "itktubeSymmetricEigenVectorAnalysisImageFilter.h"
 #include "itktubeTubeEnhancingDiffusion2DImageFilter.h"
+#include "tubeImageFilters.h"
 
 #if defined( TubeTK_USE_GPU_ARRAYFIRE )
 

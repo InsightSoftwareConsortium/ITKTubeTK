@@ -29,8 +29,6 @@ if(NOT ITK_SOURCE_DIR)
 endif()
 
 set( TubeTK_Base_Common_H_Files
-  itktubeDifferenceImageFilter.h
-  itktubeImageMath.h
   tubeIndent.h
   tubeMacro.h
   tubeMessage.h
@@ -38,9 +36,7 @@ set( TubeTK_Base_Common_H_Files
   tubeStringUtilities.h
   tubeTestMain.h )
 
-set( TubeTK_Base_Common_HXX_Files
-  itktubeDifferenceImageFilter.hxx
-  itktubeImageMath.hxx )
+set( TubeTK_Base_Common_HXX_Files )
 
 set( TubeTK_Base_Common_CXX_Files
   tubeIndent.cxx

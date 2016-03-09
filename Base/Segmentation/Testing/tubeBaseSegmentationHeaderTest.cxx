@@ -21,8 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeCVTImageFilter.h"
-#include "itktubeLabelOverlapMeasuresImageFilter.h"
 #include "itktubePDFSegmenter.h"
 #include "itktubeRadiusExtractor2.h"
 #include "itktubeRidgeExtractor.h"
@@ -31,7 +29,7 @@ limitations under the License.
 
 #include <iostream>
 
-int main ( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
+int main( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {
   return EXIT_SUCCESS;
 }

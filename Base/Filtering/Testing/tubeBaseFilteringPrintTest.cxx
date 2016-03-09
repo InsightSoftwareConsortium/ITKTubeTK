@@ -26,6 +26,8 @@ limitations under the License.
 #include "itktubeAnisotropicDiffusionTensorImageFilter.h"
 #include "itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h"
 #include "itktubeAnisotropicHybridDiffusionImageFilter.h"
+#include "itktubeCropImageFilter.h"
+#include "itktubeCVTImageFilter.h"
 #include "itktubeExtractTubePointsSpatialObjectFilter.h"
 #include "itktubeFFTGaussianDerivativeIFFTFilter.h"
 #include "itktubeMinimumSpanningTreeVesselConnectivityFilter.h"
@@ -70,6 +72,15 @@ int tubeBaseFilteringPrintTest( int itkNotUsed( argc ), char * itkNotUsed(
     ::New();
   std::cout << "-------------ahdif" << ahdif << std::endl;
 
+  typedef itk::tube::CropImageFilter< ImageType,
+    ImageType > CropImageFilter;
+  CropImageFilter::Pointer cropImage = CropImageFilter::New();
+  std::cout << "-------------cropImage" << cropImage << std::endl;
+
+  typedef itk::tube::CVTImageFilter< ImageType > CVTImageFilter;
+  CVTImageFilter::Pointer cvtImage = CVTImageFilter::New();
+  std::cout << "-------------cvtImage" << cvtImage << std::endl;
+
   typedef itk::tube::ExtractTubePointsSpatialObjectFilter<
     TubeSpatialObjectType > ExtractTubePointsSpatialObjectFilterType;
   ExtractTubePointsSpatialObjectFilterType::Pointer etpsof =
@@ -82,8 +93,8 @@ int tubeBaseFilteringPrintTest( int itkNotUsed( argc ), char * itkNotUsed(
     FFTGaussianDerivativeIFFTFilter::New();
   std::cout << "-------------fgdif " << fgdif << std::endl;
 
-  typedef itk::tube::MinimumSpanningTreeVesselConnectivityFilter< Dimension >
-    VesselConnectivityFilterType;
+  typedef itk::tube::MinimumSpanningTreeVesselConnectivityFilter<
+    Dimension > VesselConnectivityFilterType;
   VesselConnectivityFilterType::Pointer mstvcf =
     VesselConnectivityFilterType::New();
   std::cout << "-------------mstvcf " << mstvcf << std::endl;

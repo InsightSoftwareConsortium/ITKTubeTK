@@ -54,6 +54,7 @@ set( tubeBaseObjectDocumentsTests_SRCS
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
+  ${TubeTK_SOURCE_DIR}/Base/Filtering
   ${TubeTK_SOURCE_DIR}/Base/ObjectDocuments )
 
 add_executable( tubeBaseObjectDocumentsHeaderTest

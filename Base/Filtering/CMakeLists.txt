@@ -34,6 +34,7 @@ set( TubeTK_Base_Filtering_H_Files
   itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h
   itktubeAnisotropicHybridDiffusionImageFilter.h
   itktubeCropImageFilter.h
+  itktubeCVTImageFilter.h
   itktubeExtractTubePointsSpatialObjectFilter.h
   itktubeFFTGaussianDerivativeIFFTFilter.h
   itktubeGaussianDerivativeFilter.h
@@ -50,7 +51,8 @@ set( TubeTK_Base_Filtering_H_Files
   itktubeSubSampleTubeTreeSpatialObjectFilter.h
   itktubeSymmetricEigenVectorAnalysisImageFilter.h
   itktubeTortuositySpatialObjectFilter.h
-  itktubeTubeEnhancingDiffusion2DImageFilter.h )
+  itktubeTubeEnhancingDiffusion2DImageFilter.h
+  tubeImageFilters.h )
 
 set( TubeTK_Base_Filtering_HXX_Files
   itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter.hxx
@@ -59,6 +61,7 @@ set( TubeTK_Base_Filtering_HXX_Files
   itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.hxx
   itktubeAnisotropicHybridDiffusionImageFilter.hxx
   itktubeCropImageFilter.hxx
+  itktubeCVTImageFilter.hxx
   itktubeExtractTubePointsSpatialObjectFilter.hxx
   itktubeFFTGaussianDerivativeIFFTFilter.hxx
   itktubeGaussianDerivativeFilter.hxx
@@ -74,7 +77,8 @@ set( TubeTK_Base_Filtering_HXX_Files
   itktubeSubSampleTubeSpatialObjectFilter.hxx
   itktubeSubSampleTubeTreeSpatialObjectFilter.hxx
   itktubeTortuositySpatialObjectFilter.h
-  itktubeTubeEnhancingDiffusion2DImageFilter.hxx )
+  itktubeTubeEnhancingDiffusion2DImageFilter.hxx
+  tubeImageFilters.hxx )
 
 # Add GPU Array Fire based filter source files here
 if( TubeTK_USE_GPU_ARRAYFIRE )
