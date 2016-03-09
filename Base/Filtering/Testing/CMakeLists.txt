@@ -53,6 +53,7 @@ set( tubeBaseFilteringTests_SRCS
   itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest.cxx
   itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest.cxx
   itktubeAnisotropicHybridDiffusionImageFilterTest.cxx
+  itktubeCVTImageFilterTest.cxx
   itktubeExtractTubePointsSpatialObjectFilterTest.cxx
   itktubeFFTGaussianDerivativeIFFTFilterTest.cxx
   itktubeRidgeFFTFilterTest.cxx
@@ -112,9 +113,11 @@ add_test( NAME tubeBaseFilteringPrintTest
   COMMAND ${BASE_FILTERING_TESTS}
     tubeBaseFilteringPrintTest )
 
-add_test( NAME itktubeTortuositySpatialObjectFilterTest
+Midas3FunctionAddTest( NAME itktubeCVTImageFilterTest
   COMMAND ${BASE_FILTERING_TESTS}
-    itktubeTortuositySpatialObjectFilterTest )
+    itktubeCVTImageFilterTest
+      MIDAS{GDS0015_1.mha.md5}
+      ${TEMP}/itktubeCVTImageFilterTest.mha )
 
 Midas3FunctionAddTest( NAME itktubeExtractTubePointsSpatialObjectFilterTest
   COMMAND ${BASE_FILTERING_TESTS}
@@ -274,7 +277,8 @@ Midas3FunctionAddTest( NAME itktubeTubeEnhancingDiffusion2DImageFilterRetinaTest
       ${TEMP}/itktubeEnhancingDiffusion2DImageFilterRetinaTest.mha
       true )
 
-Midas3FunctionAddTest( NAME itktubeTubeEnhancingDiffusion2DImageFilterRetina10Test
+Midas3FunctionAddTest( NAME
+  itktubeTubeEnhancingDiffusion2DImageFilterRetina10Test
   COMMAND ${BASE_FILTERING_TESTS}
     --compareIntensityTolerance 0.001
     --compare MIDAS{itktubeEnhancingDiffusion2DImageFilterRetina10Test.mha.md5}
@@ -304,3 +308,7 @@ Midas3FunctionAddTest( NAME itktubeAnisotropicEdgeEnhancementDiffusionImageFilte
      MIDAS{CroppedWholeLungCTScan.mhd.md5}
      ${TEMP}/CroppedWholeLungCTEdgeEnhanced.mha
      MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5} )
+
+add_test( NAME itktubeTortuositySpatialObjectFilterTest
+  COMMAND ${BASE_FILTERING_TESTS}
+    itktubeTortuositySpatialObjectFilterTest )

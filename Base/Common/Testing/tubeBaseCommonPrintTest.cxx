@@ -21,8 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeDifferenceImageFilter.h"
-
 #include <itkImage.h>
 
 #include <cstdlib>
@@ -30,14 +28,5 @@ limitations under the License.
 
 int tubeBaseCommonPrintTest( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
 {
-  typedef itk::Image< float, 2 > ImageType;
-
-  itk::tube::DifferenceImageFilter< ImageType, ImageType >::Pointer
-    differenceImageFilter2
-    = itk::tube::DifferenceImageFilter< ImageType, ImageType >::New();
-
-  std::cout << "-------------itktubeDifferenceImageFilter"
-            << differenceImageFilter2 << std::endl;
-
   return EXIT_SUCCESS;
 }

@@ -58,6 +58,7 @@ set( tubeBaseCLITests_SRCS
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/CLI
+  ${TubeTK_SOURCE_DIR}/Base/Filtering
   ${TubeTK_SOURCE_DIR}/Base/Common )
 
 add_executable( tubeBaseCLIHeaderTest tubeBaseCLIHeaderTest.cxx )

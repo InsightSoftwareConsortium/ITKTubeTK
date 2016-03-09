@@ -21,8 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeImageMath.h"
-#include "itktubeImageSegmentationMath.h"
+#include "tubeImageFilters.h"
 
 #include <itkImageFileWriter.h>
 
@@ -195,7 +194,7 @@ int DoIt( MetaCommand & command )
             }
 
           metaImage->AddUserField( "ElementByteOrderMSB",
-                                  MET_STRING, std::strlen( "False" ), "False" );
+            MET_STRING, std::strlen( "False" ), "False" );
 
           writer->Write();
           break;
@@ -203,7 +202,8 @@ int DoIt( MetaCommand & command )
         case 7:
           {
           typedef itk::ImageFileWriter< ImageType > VolumeWriterType;
-          typename VolumeWriterType::Pointer writer = VolumeWriterType::New();
+          typename VolumeWriterType::Pointer writer =
+            VolumeWriterType::New();
           writer->SetFileName( outFilename.c_str() );
           writer->SetInput( imIn );
           try
@@ -222,23 +222,21 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Intensity" )
       {
       std::cout << "Intensity windowing" << std::endl;
-      itk::tube::ImageMath< VDimension >::ApplyIntensityWindowing(
-            imIn,
-            command.GetValueAsFloat( *it, "inValMin" ),
-            command.GetValueAsFloat( *it, "inValMax" ),
-            command.GetValueAsFloat( *it, "outMin" ),
-            command.GetValueAsFloat( *it, "outMax" ));
+      tube::ImageFilters< VDimension >::ApplyIntensityWindowing(
+        imIn,
+        command.GetValueAsFloat( *it, "inValMin" ),
+        command.GetValueAsFloat( *it, "inValMax" ),
+        command.GetValueAsFloat( *it, "outMin" ),
+        command.GetValueAsFloat( *it, "outMax" ));
       }
 
     // IntensityMult
     else if( ( *it ).name == "IntensityMult" )
       {
       std::cout << "Intensity multiplicative bias correct" << std::endl;
-      bool success =
-          itk::tube::ImageMath< VDimension >::ApplyIntensityMultiplicativeWithBiasCorrection(
-            imIn,
-            command.GetValueAsString( *it, "inMeanField" )
-            );
+      bool success = tube::ImageFilters< VDimension >::
+        ApplyIntensityMultiplicativeWithBiasCorrection( imIn,
+        command.GetValueAsString( *it, "inMeanField" ) );
       if ( !success )
         {
         return EXIT_FAILURE;
@@ -249,40 +247,32 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "UniformNoise" )
       {
       std::cout << "Adding noise" << std::endl;
-      itk::tube::ImageMath< VDimension >::AddUniformNoise(
-            imIn,
-            command.GetValueAsFloat( *it, "inValMin" ),
-            command.GetValueAsFloat( *it, "inValMax" ),
-            command.GetValueAsFloat( *it, "noiseMean" ),
-            command.GetValueAsFloat( *it, "noiseRange" ),
-            CurrentSeed
-            );
+      tube::ImageFilters< VDimension >::AddUniformNoise( imIn,
+        command.GetValueAsFloat( *it, "inValMin" ),
+        command.GetValueAsFloat( *it, "inValMax" ),
+        command.GetValueAsFloat( *it, "noiseMean" ),
+        command.GetValueAsFloat( *it, "noiseRange" ), CurrentSeed );
       } // -N
 
     // GaussianNoise
     else if( ( *it ).name == "GaussianNoise" )
       {
       std::cout << "Adding noise" << std::endl;
-      itk::tube::ImageMath< VDimension >::AddGaussianNoise(
-            imIn,
-            command.GetValueAsFloat( *it, "inValMin" ),
-            command.GetValueAsFloat( *it, "inValMax" ),
-            command.GetValueAsFloat( *it, "noiseMean" ),
-            command.GetValueAsFloat( *it, "noiseStdDev" ),
-            CurrentSeed
-            );
+      tube::ImageFilters< VDimension >::AddGaussianNoise( imIn,
+        command.GetValueAsFloat( *it, "inValMin" ),
+        command.GetValueAsFloat( *it, "inValMax" ),
+        command.GetValueAsFloat( *it, "noiseMean" ),
+        command.GetValueAsFloat( *it, "noiseStdDev" ), CurrentSeed );
       } // end -n
 
     // I( x )
     else if( ( *it ).name == "Add" )
       {
       std::cout << "Adding" << std::endl;
-      bool success =
-          itk::tube::ImageMath< VDimension >::AddImages(
-            imIn,
-            command.GetValueAsString( *it, "Infile" ),
-            command.GetValueAsFloat( *it, "weight1" ),
-            command.GetValueAsFloat( *it, "weight2" ) );
+      bool success = tube::ImageFilters< VDimension >::AddImages( imIn,
+        command.GetValueAsString( *it, "Infile" ),
+        command.GetValueAsFloat( *it, "weight1" ),
+        command.GetValueAsFloat( *it, "weight2" ) );
       if ( !success )
         {
         return EXIT_FAILURE;
@@ -292,10 +282,8 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Multiply" )
       {
       std::cout << "Multiplying" << std::endl;
-      bool success =
-          itk::tube::ImageMath< VDimension >::MultiplyImages(
-            imIn,
-            command.GetValueAsString( *it, "Infile" ) );
+      bool success = tube::ImageFilters< VDimension >::MultiplyImages(
+        imIn, command.GetValueAsString( *it, "Infile" ) );
       if ( !success )
         {
         return EXIT_FAILURE;
@@ -305,9 +293,8 @@ int DoIt( MetaCommand & command )
     // Mirror pad
     else if( ( *it ).name == "MirrorPad" )
       {
-      itk::tube::ImageMath< VDimension >::MirrorAndPadImage(
-            imIn,
-            command.GetValueAsInt( *it, "numPadVoxels" ) );
+      tube::ImageFilters< VDimension >::MirrorAndPadImage( imIn,
+        command.GetValueAsInt( *it, "numPadVoxels" ) );
       }
 
     // Normalize
@@ -315,24 +302,21 @@ int DoIt( MetaCommand & command )
       {
       std::cout << "Normalize" << std::endl;
       std::cout << "NOTE: since this filter normalizes the data to lie "
-                << "within -1 to 1, integral types will produce an image that "
-                << "DOES NOT HAVE a unit variance" << std::endl;
+        << "within -1 to 1, integral types will produce an image that "
+        << "DOES NOT HAVE a unit variance" << std::endl;
 
-      itk::tube::ImageMath< VDimension >::template NormalizeImage< TPixel >(
-            imIn,
-            command.GetValueAsInt( *it, "type" ) );
+      tube::ImageFilters< VDimension >::template NormalizeImage<
+        TPixel >( imIn, command.GetValueAsInt( *it, "type" ) );
       }
 
     // I( x )
     else if( ( *it ).name == "Fuse" )
       {
       std::cout << "Fusing" << std::endl;
-      bool success =
-          itk::tube::ImageMath< VDimension >::FuseImages(
-            imIn,
-            command.GetValueAsString( *it, "Infile2" ),
-            command.GetValueAsFloat( *it, "Offset2" ) );
-      if ( !success )
+      bool success = tube::ImageFilters< VDimension >::FuseImages(
+        imIn, command.GetValueAsString( *it, "Infile2" ),
+        command.GetValueAsFloat( *it, "Offset2" ) );
+      if( !success )
         {
         return EXIT_FAILURE;
         }
@@ -342,31 +326,29 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Threshold" )
       {
       std::cout << "Thresholding" << std::endl;
-      itk::tube::ImageMath< VDimension >::ThresholdImage(
-            imIn,
-            command.GetValueAsFloat( *it, "threshLow" ),
-            command.GetValueAsFloat( *it, "threshHigh" ),
-            command.GetValueAsFloat( *it, "valTrue" ),
-            command.GetValueAsFloat( *it, "valFalse" ) );
+      tube::ImageFilters< VDimension >::ThresholdImage( imIn,
+        command.GetValueAsFloat( *it, "threshLow" ),
+        command.GetValueAsFloat( *it, "threshHigh" ),
+        command.GetValueAsFloat( *it, "valTrue" ),
+        command.GetValueAsFloat( *it, "valFalse" ) );
       }
     else if( ( *it ).name == "Algorithm" )
       {
       std::cout << "Algorithm" << std::endl;
       bool success = false;
       int mode = command.GetValueAsInt( *it, "mode" );
-      double value =
-          itk::tube::ImageMath< VDimension >::ComputeImageStdDevOrMeanWithinRangeUsingMask(
-            imIn,
-            command.GetValueAsString( *it, "maskFile" ),
-            command.GetValueAsFloat( *it, "threshLow" ),
-            command.GetValueAsFloat( *it, "threshHigh" ),
-            mode,
-            success );
-      if ( !success )
+      double value = tube::ImageFilters< VDimension >::
+        ComputeImageStdDevOrMeanWithinRangeUsingMask( imIn,
+        command.GetValueAsString( *it, "maskFile" ),
+        command.GetValueAsFloat( *it, "threshLow" ),
+        command.GetValueAsFloat( *it, "threshHigh" ),
+        mode, success );
+      if( !success )
         {
         return EXIT_FAILURE;
         }
-      std::cout << ( mode == 0 ? "Mean " : "StdDev " ) << value << std::endl;
+      std::cout << ( mode == 0 ? "Mean " : "StdDev " ) << value
+        << std::endl;
       }
     else if( ( *it ).name == "Process" )
       {
@@ -375,10 +357,9 @@ int DoIt( MetaCommand & command )
       if ( mode == 0 )
         {
         bool success =
-            itk::tube::ImageMath< VDimension >::MultiplyImages(
-              imIn,
-              command.GetValueAsString( *it, "file2" ) );
-        if ( !success )
+          tube::ImageFilters< VDimension >::MultiplyImages( imIn,
+          command.GetValueAsString( *it, "file2" ) );
+        if( !success )
           {
           return EXIT_FAILURE;
           }
@@ -388,24 +369,22 @@ int DoIt( MetaCommand & command )
       {
       std::cout << "Unary process" << std::endl;
       int mode = command.GetValueAsInt( *it, "mode" );
-      if ( mode == 0 )
+      if( mode == 0 )
         {
-        itk::tube::ImageMath< VDimension >::AbsoluteImage( imIn );
+        tube::ImageFilters< VDimension >::AbsoluteImage( imIn );
         }
       }
     // Masking
     else if( ( *it ).name == "Masking" )
       {
       std::cout << "Masking" << std::endl;
-      bool success =
-          itk::tube::ImageMath< VDimension >::MaskImageWithValueIfNotWithinSecondImageRange(
-            imIn,
-            command.GetValueAsString( *it, "inFile2" ),
-            command.GetValueAsFloat( *it, "threshLow" ),
-            command.GetValueAsFloat( *it, "threshHigh" ),
-            command.GetValueAsFloat( *it, "valFalse" )
-            );
-      if ( !success )
+      bool success = tube::ImageFilters< VDimension >::
+        MaskImageWithValueIfNotWithinSecondImageRange( imIn,
+        command.GetValueAsString( *it, "inFile2" ),
+        command.GetValueAsFloat( *it, "threshLow" ),
+        command.GetValueAsFloat( *it, "threshHigh" ),
+        command.GetValueAsFloat( *it, "valFalse" ) );
+      if( !success )
         {
         return EXIT_FAILURE;
         }
@@ -416,22 +395,20 @@ int DoIt( MetaCommand & command )
       {
       std::cout << "Morphology" << std::endl;
 
-      itk::tube::ImageMath< VDimension >::MorphImage(
-            imIn,
-            command.GetValueAsInt( *it, "mode" ),
-            command.GetValueAsFloat( *it, "radius" ),
-            command.GetValueAsFloat( *it, "forgroundValue" ),
-            command.GetValueAsFloat( *it, "backgroundValue" ) );
+      tube::ImageFilters< VDimension >::MorphImage( imIn,
+        command.GetValueAsInt( *it, "mode" ),
+        command.GetValueAsFloat( *it, "radius" ),
+        command.GetValueAsFloat( *it, "forgroundValue" ),
+        command.GetValueAsFloat( *it, "backgroundValue" ) );
       }
 
     else if( ( *it ).name == "overwrite" )
       {
-      itk::tube::ImageMath< VDimension >::OverwriteImage(
-            imIn,
-            command.GetValueAsString( *it, "mask" ),
-            command.GetValueAsFloat( *it, "maskKeyVal" ),
-            command.GetValueAsFloat( *it, "imageKeyVal" ),
-            command.GetValueAsFloat( *it, "newImageVal" ) );
+      tube::ImageFilters< VDimension >::OverwriteImage( imIn,
+        command.GetValueAsString( *it, "mask" ),
+        command.GetValueAsFloat( *it, "maskKeyVal" ),
+        command.GetValueAsFloat( *it, "imageKeyVal" ),
+        command.GetValueAsFloat( *it, "newImageVal" ) );
       std::cout << "Overwrite" << std::endl;
       }
 
@@ -439,32 +416,29 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "blur" )
       {
       std::cout << "Blurring." << std::endl;
-      itk::tube::ImageMath< VDimension >::BlurImage(
-            imIn,
-            command.GetValueAsFloat( *it, "sigma" ) );
+      tube::ImageFilters< VDimension >::BlurImage( imIn,
+        command.GetValueAsFloat( *it, "sigma" ) );
       }
 
     // blurOrder
     else if( ( *it ).name == "blurOrder" )
       {
       std::cout << "Blurring." << std::endl;
-      itk::tube::ImageMath< VDimension >::BlurOrderImage(
-            imIn,
-            command.GetValueAsFloat( *it, "sigma" ),
-            command.GetValueAsInt( *it, "order" ),
-            command.GetValueAsInt( *it, "direction" ) );
+      tube::ImageFilters< VDimension >::BlurOrderImage( imIn,
+        command.GetValueAsFloat( *it, "sigma" ),
+        command.GetValueAsInt( *it, "order" ),
+        command.GetValueAsInt( *it, "direction" ) );
       } // end -B
 
     // histogram
     else if( ( *it ).name == "histogram" )
       {
       std::cout << "Histogram" << std::endl;
-      bool success =
-          itk::tube::ImageMath< VDimension >::ComputeImageHistogram(
-            imIn,
-            static_cast<unsigned int>( command.GetValueAsInt( *it, "nBins" ) ),
-            command.GetValueAsString( *it, "histOutputFile" ) );
-      if ( !success )
+      bool success = tube::ImageFilters< VDimension >::
+        ComputeImageHistogram( imIn,
+        static_cast<unsigned int>( command.GetValueAsInt( *it, "nBins" ) ),
+        command.GetValueAsString( *it, "histOutputFile" ) );
+      if( !success )
         {
         return EXIT_FAILURE;
         }
@@ -474,14 +448,13 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "histogram2" )
       {
       std::cout << "Histogram" << std::endl;
-      bool success =
-          itk::tube::ImageMath< VDimension >::ComputeImageHistogram2(
-            imIn,
-            static_cast<unsigned int>( command.GetValueAsInt( *it, "nBins" ) ),
-            command.GetValueAsFloat( *it, "binMin" ),
-            command.GetValueAsFloat( *it, "binSIZE" ),
-            command.GetValueAsString( *it, "histOutputFile" ) );
-      if ( !success )
+      bool success = tube::ImageFilters< VDimension >::
+        ComputeImageHistogram2( imIn,
+        static_cast<unsigned int>( command.GetValueAsInt( *it, "nBins" ) ),
+        command.GetValueAsFloat( *it, "binMin" ),
+        command.GetValueAsFloat( *it, "binSIZE" ),
+        command.GetValueAsString( *it, "histOutputFile" ) );
+      if( !success )
         {
         return EXIT_FAILURE;
         }
@@ -491,8 +464,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "vessels" )
       {
       std::cout << "Vessel Enhancement" << std::endl;
-      itk::tube::ImageSegmentationMath< VDimension >::EnhanceVessels(
-        imIn,
+      tube::ImageFilters< VDimension >::EnhanceVessels( imIn,
         command.GetValueAsFloat( *it, "scaleMin" ),
         command.GetValueAsFloat( *it, "scaleMax" ),
         command.GetValueAsFloat( *it, "numScales" ) );
@@ -502,24 +474,24 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "CorrectionSlice" )
       {
       std::cout << "Correct intensity slice-by-slice" << std::endl;
-      itk::tube::ImageMath< VDimension >::CorrectIntensitySliceBySliceUsingHistogramMatching(
-            imIn,
-            static_cast<unsigned int>( command.GetValueAsInt( *it, "nBins" ) ),
-            static_cast<unsigned int>( command.GetValueAsInt( *it, "nMatchPoints" ) )
-            );
+      tube::ImageFilters< VDimension >::
+        CorrectIntensitySliceBySliceUsingHistogramMatching( imIn,
+        static_cast<unsigned int>( command.GetValueAsInt( *it, "nBins" ) ),
+        static_cast<unsigned int>( command.GetValueAsInt( *it,
+        "nMatchPoints" ) ) );
       }
 
     // Correction
     else if( ( *it ).name == "Correction" )
       {
       std::cout << "Correct intensity in the volume" << std::endl;
-      bool success =
-          itk::tube::ImageMath< VDimension >::CorrectIntensityUsingHistogramMatching(
-            imIn,
-            static_cast<unsigned int>( command.GetValueAsInt( *it, "nBins" ) ),
-            static_cast<unsigned int>( command.GetValueAsInt( *it, "nMatchPoints" ) ),
-            command.GetValueAsString( *it, "referenceVolume" ) );
-      if ( !success )
+      bool success = tube::ImageFilters< VDimension >::
+        CorrectIntensityUsingHistogramMatching( imIn,
+        static_cast<unsigned int>( command.GetValueAsInt( *it, "nBins" ) ),
+        static_cast<unsigned int>( command.GetValueAsInt( *it,
+        "nMatchPoints" ) ), command.GetValueAsString( *it,
+        "referenceVolume" ) );
+      if( !success )
         {
         return EXIT_FAILURE;
         }
@@ -529,19 +501,17 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "resize" )
       {
       std::cout << "Resampling." << std::endl;
-      itk::tube::ImageMath< VDimension >::Resize(
-            imIn,
-            command.GetValueAsFloat( *it, "factor" ) );
+      tube::ImageFilters< VDimension >::Resize( imIn,
+        command.GetValueAsFloat( *it, "factor" ) );
       }
 
     // resize2
     else if( ( *it ).name == "resize2" )
       {
       std::cout << "Resampling" << std::endl;
-      bool success = itk::tube::ImageMath< VDimension >::Resize(
-            imIn,
-            command.GetValueAsString( *it, "inFile2" ) );
-      if ( !success )
+      bool success = tube::ImageFilters< VDimension >::Resize( imIn,
+        command.GetValueAsString( *it, "inFile2" ) );
+      if( !success )
         {
         return EXIT_FAILURE;
         }
@@ -551,14 +521,14 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "segment" )
       {
       std::cout << "Segmenting" << std::endl;
-      itk::tube::ImageSegmentationMath< VDimension >::SegmentUsingConnectedThreshold(
-            imIn,
-            command.GetValueAsFloat( *it, "threshLow" ),
-            command.GetValueAsFloat( *it, "threshHigh" ),
-            command.GetValueAsFloat( *it, "labelValue" ),
-            command.GetValueAsFloat( *it, "x" ),
-            command.GetValueAsFloat( *it, "y" ),
-            VDimension == 3 ? command.GetValueAsFloat( *it, "z" ) : 0.0 );
+      tube::ImageFilters< VDimension >::
+        SegmentUsingConnectedThreshold( imIn,
+        command.GetValueAsFloat( *it, "threshLow" ),
+        command.GetValueAsFloat( *it, "threshHigh" ),
+        command.GetValueAsFloat( *it, "labelValue" ),
+        command.GetValueAsFloat( *it, "x" ),
+        command.GetValueAsFloat( *it, "y" ),
+        VDimension == 3 ? command.GetValueAsFloat( *it, "z" ) : 0.0 );
       }
 
     // offset
@@ -584,13 +554,17 @@ int DoIt( MetaCommand & command )
     // Voronoi
     else if( ( *it ).name == "Voronoi" )
       {
-      itk::tube::ImageSegmentationMath< VDimension >::ComputeVoronoiTessellation(
-            imIn,
-            static_cast<unsigned int>( command.GetValueAsInt( *it, "numCentroids" ) ),
-            static_cast<unsigned int>( command.GetValueAsInt( *it, "numIters" ) ),
-            static_cast<unsigned int>( command.GetValueAsInt( *it, "numSamples" ) ),
-            command.GetValueAsString( *it, "centroidOutFile" ) );
-      if ( !imIn )
+      tube::ImageFilters< VDimension >::
+        ComputeVoronoiTessellation( imIn,
+        static_cast<unsigned int>( command.GetValueAsInt( *it,
+        "numCentroids" ) ),
+        static_cast<unsigned int>( command.GetValueAsInt( *it,
+        "numIters" ) ),
+        static_cast<unsigned int>( command.GetValueAsInt( *it,
+        "numSamples" ) ),
+        command.GetValueAsString( *it,
+        "centroidOutFile" ) );
+      if( !imIn )
         {
         return EXIT_FAILURE;
         }
@@ -599,10 +573,11 @@ int DoIt( MetaCommand & command )
     // ExtractSlice
     else if( ( *it ).name == "ExtractSlice" )
       {
-      itk::tube::ImageMath< VDimension >::ExtractSlice(
-            imIn,
-            static_cast<unsigned int>( command.GetValueAsInt( *it, "dimension" ) ),
-            static_cast<unsigned int>( command.GetValueAsInt( *it, "slice" ) ) );
+      tube::ImageFilters< VDimension >::ExtractSlice( imIn,
+        static_cast<unsigned int>( command.GetValueAsInt( *it,
+          "dimension" ) ),
+        static_cast<unsigned int>( command.GetValueAsInt( *it,
+          "slice" ) ) );
       } // end -e
 
     ++it;
@@ -614,8 +589,8 @@ int DoIt( MetaCommand & command )
 // Description:
 // Get the ComponentType and dimension of the image
 void GetImageInformation( std::string fileName,
-                          itk::ImageIOBase::IOComponentType &componentType,
-                          unsigned int & dimension )
+  itk::ImageIOBase::IOComponentType &componentType,
+  unsigned int & dimension )
 {
   itk::ImageIOBase::Pointer imageIO =
     itk::ImageIOFactory::CreateImageIO( fileName.c_str(),
@@ -739,7 +714,7 @@ int main( int argc, char * argv[] )
     "Correction", "referenceVolume", MetaCommand::STRING, true );
 
   command.SetOption( "Normalize", "d", false,
-    "Normalize: type0 = data's mean/std; 1 = FWHM estimate; 2 = FWHM mean (shift) only" );
+    "Normalize: 0 = mean/std; 1 = FWHM ; 2 = FWHM mean (shift) only" );
   command.AddOptionField( "Normalize", "type", MetaCommand::INT, true );
 
   command.SetOption( "Fuse", "f", false,
@@ -851,8 +826,10 @@ int main( int argc, char * argv[] )
   command.AddOptionField( "Multiply", "Infile", MetaCommand::STRING,
     true );
 
-  command.SetOption( "MirrorPad", "x", false, "Use mirroring to pad an image" );
-  command.AddOptionField( "MirrorPad", "numPadVoxels", MetaCommand::INT, true );
+  command.SetOption( "MirrorPad", "x", false,
+    "Use mirroring to pad an image" );
+  command.AddOptionField( "MirrorPad", "numPadVoxels", MetaCommand::INT,
+    true );
 
   command.SetOption( "vessels", "z", false,
     "Compute ridgness/vesselness for specified scales" );

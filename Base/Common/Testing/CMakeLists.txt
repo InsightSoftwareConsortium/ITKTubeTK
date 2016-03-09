@@ -49,7 +49,8 @@ set( tubeBaseCommonTests_SRCS
   tubeObjectTest.cxx )
 
 include_directories(
-  ${TubeTK_SOURCE_DIR}/Base/Common )
+  ${TubeTK_SOURCE_DIR}/Base/Common
+  ${TubeTK_SOURCE_DIR}/Base/Filtering )
 
 add_executable( tubeBaseCommonHeaderTest tubeBaseCommonHeaderTest.cxx )
 target_link_libraries( tubeBaseCommonHeaderTest ${ITK_LIBRARIES} )

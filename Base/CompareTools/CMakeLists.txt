@@ -39,8 +39,7 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES ${ITK_LIBRARIES} TubeTKCommon
   INCLUDE_DIRECTORIES
-    ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration
-    ${TubeTK_SLICER_SOURCE_DIR}/Modules/CLI/ExpertAutomatedRegistration/ITKRegistrationHelper )
+    ${TubeTK_SOURCE_DIR}/Base/Filtering )
 
 #-----------------------------------------------------------------------------
 if( TubeTK_USE_JsonCpp )
