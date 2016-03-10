@@ -25,6 +25,8 @@
 namespace tube
 {
 /** \class CropImage
+ *
+ *  \ingroup TubeTKITK
  */
 
 template< typename TInputImage, typename TOutputImage >
