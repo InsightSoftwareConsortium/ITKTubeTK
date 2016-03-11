@@ -58,7 +58,7 @@ int DoIt( int argc, char * argv[] );
 
 template< class TPixel, unsigned int DimensionT >
 bool
-IsPointToNear( typename itk::GroupSpatialObject< DimensionT >::Pointer &sourceTubeGroup,
+IsPointTooNear( typename itk::GroupSpatialObject< DimensionT >::Pointer &sourceTubeGroup,
               itk::Point< double, DimensionT > outsidePoint,
               itk::Point< double, DimensionT > &nearestPoint )
 {
@@ -148,7 +148,7 @@ int DoIt( int argc, char * argv[] )
 
   //Read input Image
   typename ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( inputImage.c_str() );
+  reader->SetFileName( InputImage.c_str() );
   try
     {
     reader->Update();
@@ -167,9 +167,9 @@ int DoIt( int argc, char * argv[] )
   speed->DisconnectPipeline();
 
   //Read radius extraction Image
-  if( ExtractRadius )
+  if( !RadiusImage.empty() )
     {
-    reader->SetFileName( radiusImage.c_str() );
+    reader->SetFileName( RadiusImage.c_str() );
     try
       {
       reader->Update();
@@ -188,11 +188,11 @@ int DoIt( int argc, char * argv[] )
 
   //Read input centerline
   typename TubesReaderType::Pointer tubeFileReader = TubesReaderType::New();
-  if( ExtractFromCenterline )
+  if( !InputPathFile.empty() )
     {
     try
       {
-      tubeFileReader->SetFileName( inputTREFile.c_str() );
+      tubeFileReader->SetFileName( InputPathFile.c_str() );
       tubeFileReader->Update();
       }
     catch( itk::ExceptionObject & err )
@@ -275,7 +275,7 @@ int DoIt( int argc, char * argv[] )
     typename TubeGroupType::Pointer sourceTubeGroup =
       tubeFileReader->GetGroup();
     PointType pointPath;
-    IsPointToNear< TPixel, DimensionT >
+    IsPointTooNear< TPixel, DimensionT >
       ( sourceTubeGroup, startPositionPoint, pointPath );
     pathInfo->SetEndPoint( pointPath );
     }
@@ -407,12 +407,12 @@ int DoIt( int argc, char * argv[] )
         {
         cost = cost + speed->GetPixel( imageIndex );
         }
-      if( ExtractFromCenterline && ClipTubes )
+      if( !InputPathFile.empty() && DisjoinPath )
         {
         typename TubeGroupType::Pointer sourceTubeGroup =
         tubeFileReader->GetGroup();
         PointType nearPoint;
-        bool isNear = IsPointToNear< TPixel, DimensionT >
+        bool isNear = IsPointTooNear< TPixel, DimensionT >
           ( sourceTubeGroup, pathPoint, nearPoint );
         if( isNear )
           {
@@ -420,7 +420,7 @@ int DoIt( int argc, char * argv[] )
           }
         else
           {
-          ClipTubes = false;
+          DisjoinPath = false;
           }
         }
       for( unsigned int d = 0; d < DimensionT; d++ )
@@ -439,7 +439,7 @@ int DoIt( int argc, char * argv[] )
     pTube->SetId( i );
 
     // Extract Radius
-    if( ExtractRadius )
+    if( !RadiusImage.empty() )
       {
       typedef itk::tube::RadiusExtractor2<ImageType> RadiusExtractorType;
       typename RadiusExtractorType::Pointer radiusExtractor
@@ -470,7 +470,7 @@ int DoIt( int argc, char * argv[] )
   typename TubeWriterType::Pointer tubeWriter = TubeWriterType::New();
   try
     {
-    tubeWriter->SetFileName( outputTREFile.c_str() );
+    tubeWriter->SetFileName( OutputTREFile.c_str() );
     tubeWriter->SetInput( pTubeGroup );
     tubeWriter->Update();
     }
@@ -496,6 +496,6 @@ int main( int argc, char * argv[] )
   PARSE_ARGS;
   // You may need to update this line if, in the project's .xml CLI file,
   //   you change the variable name for the inputImage.
-  return tube::ParseArgsAndCallDoIt( inputImage, argc, argv );
+  return tube::ParseArgsAndCallDoIt( InputImage, argc, argv );
 
 }
