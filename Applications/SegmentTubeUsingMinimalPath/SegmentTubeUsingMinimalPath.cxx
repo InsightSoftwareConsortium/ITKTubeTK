@@ -430,6 +430,10 @@ int DoIt( int argc, char * argv[] )
       TubePointType tubePoint;
       tubePoint.SetPosition( pathPoint );
       tubePoint.SetID( k );
+      if( ExtractRadiusUsingInputImage )
+        {
+        tubePoint.SetRadius( speed->GetPixel( imageIndex ) );
+        }
       tubePointList.push_back( tubePoint );
       }
     typename TubeType::Pointer pTube = TubeType::New();
@@ -439,7 +443,7 @@ int DoIt( int argc, char * argv[] )
     pTube->SetId( i );
 
     // Extract Radius
-    if( !RadiusImage.empty() )
+    if( !ExtractRadiusUsingInputImage && !RadiusImage.empty() )
       {
       typedef itk::tube::RadiusExtractor2<ImageType> RadiusExtractorType;
       typename RadiusExtractorType::Pointer radiusExtractor

@@ -52,6 +52,13 @@
   </parameters>
   <parameters>
     <label>Radius Extraction</label>
+    <boolean>
+      <name>ExtractRadiusUsingInputImage</name>
+      <label>Extract Radius Using Input Image</label>
+      <description>Extract tube radius along the path using input image. To be used when input image is a distance map.</description>
+      <default>false</default>
+      <longflag>extractRadiusFromDistanceMap</longflag>
+    </boolean>
     <image>
       <name>RadiusImage</name>
       <label>Radius Image</label>
