@@ -365,8 +365,8 @@ ComputeEigen( vnl_matrix<T> const & mat,
           eVals(i) = tf;
           vnl_vector<T> tv;
           tv = eVects.get_column( j );
-          eVects.get_column( j ) = eVects.get_column( i );
-          eVects.get_column( i ) = tv;
+          eVects.set_column( j, eVects.get_column( i ) );
+          eVects.set_column( i, tv );
           }
         }
       }
