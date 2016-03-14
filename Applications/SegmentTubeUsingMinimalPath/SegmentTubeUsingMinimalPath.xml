@@ -37,22 +37,22 @@
     </point>
     <file>
       <name>InputPathFile</name>
-      <label>Input Path File </label>
-      <longflag>inputPath</longflag>
+      <label>Target Path </label>
+      <longflag>targetPath</longflag>
       <channel>input</channel>
-      <description>Extract path to meet the given path in Input Path File. </description>
+      <description>Starting from the path points, a new path is extracted to grow and meet the target path. </description>
     </file>
     <boolean>
-      <name>DisjoinPath</name>
-      <label>Disjoin Path</label>
-      <description>Stop extracting new path as it approach with in the boundary of the input path. </description>
+      <name>HardBoundary</name>
+      <label>Hard boundary</label>
+      <description>Indicates wether to stop extracting new path as it approach with in the boundary of the target path. </description>
       <default>false</default>
-      <longflag>disjoin</longflag>
+      <longflag>strictBoundary</longflag>
     </boolean>
     <double>
       <name>Distance</name>
-      <label>Disjoin Distance</label>
-      <description>Distance between new path and input path</description>
+      <label>Boundary Distance</label>
+      <description>Distance between the new path and the target path</description>
       <longflag>distance</longflag>
       <default>-1</default>
       <constraints>
@@ -104,7 +104,7 @@
     <double>
       <name>StepRadius</name>
       <label>Step size for radius estimation</label>
-      <description>Maximum Radius for radius estimation.</description>
+      <description>Step size for radius estimation.</description>
       <longflag>stepRadius</longflag>
       <default>0.05</default>
     </double>

@@ -465,7 +465,7 @@ int DoIt( int argc, char * argv[] )
         {
         cost = cost + speed->GetPixel( imageIndex );
         }
-      if( !InputPathFile.empty() && DisjoinPath )
+      if( !InputPathFile.empty() && HardBoundary )
         {
         typename TubeGroupType::Pointer sourceTubeGroup =
         tubeFileReader->GetGroup();
@@ -478,7 +478,7 @@ int DoIt( int argc, char * argv[] )
           }
         else
           {
-          DisjoinPath = false;
+          HardBoundary = false;
           }
         }
       for( unsigned int d = 0; d < DimensionT; d++ )
