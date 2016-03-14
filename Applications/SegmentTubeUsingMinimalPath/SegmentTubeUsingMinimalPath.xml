@@ -49,6 +49,25 @@
       <default>false</default>
       <longflag>disjoin</longflag>
     </boolean>
+    <double>
+      <name>Distance</name>
+      <label>Disjoin Distance</label>
+      <description>Distance between new path and input path</description>
+      <longflag>distance</longflag>
+      <default>-1</default>
+      <constraints>
+        <minimum>-1</minimum>
+        <maximum>50</maximum>
+        <step>1</step>
+      </constraints>
+    </double>
+    <file fileExtensions=".fcsv">
+      <name>PathEndPoints</name>
+      <label>Path End Points File</label>
+      <channel>input</channel>
+      <description>Save the end points of the extracted path.</description>
+      <longflag>endPointsFile</longflag>
+    </file>
   </parameters>
   <parameters>
     <label>Radius Extraction</label>

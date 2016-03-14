@@ -60,7 +60,8 @@ template< class TPixel, unsigned int DimensionT >
 bool
 IsPointTooNear( typename itk::GroupSpatialObject< DimensionT >::Pointer &sourceTubeGroup,
               itk::Point< double, DimensionT > outsidePoint,
-              itk::Point< double, DimensionT > &nearestPoint )
+              itk::Point< double, DimensionT > &nearestPoint,
+              double thresholdDistance)
 {
   typedef itk::GroupSpatialObject< DimensionT >           TubeGroupType;
   typedef itk::VesselTubeSpatialObject< DimensionT >      TubeType;
@@ -111,6 +112,17 @@ IsPointTooNear( typename itk::GroupSpatialObject< DimensionT >::Pointer &sourceT
         }
       }
     }
+  if( thresholdDistance > 0 )
+    {
+    if( minDistance < thresholdDistance*thresholdDistance)
+      {
+      return true;
+      }
+    else
+      {
+      return false;
+      }
+    }
   if( minDistance < nearestPointRadius*nearestPointRadius)
     {
     return true;
@@ -121,6 +133,52 @@ IsPointTooNear( typename itk::GroupSpatialObject< DimensionT >::Pointer &sourceT
     }
 }
 
+template< unsigned int DimensionT >
+void WriteFCSVFile( std::string filename,
+  std::vector< itk::Point< double, DimensionT > > &pointList )
+{
+  std::fstream of;
+  of.open(filename.c_str(), std::fstream::out);
+  if( !of.is_open() )
+    {
+    std::cout << "WriteData: unable to open file " << filename.c_str()
+      << " for writing";
+    return;
+    }
+  // put down a header
+  of << "# Markups fiducial file version = " << "4.5 \n";
+  of << "# CoordinateSystem = " << 0 << "\n";
+  // label the columns
+  // id,x,y,z,ow,ox,oy,oz,vis,sel,lock,label,desc,associatedNodeID
+  // orientation is a quaternion, angle and axis
+  // associatedNodeID and description and label can be empty strings
+  // id,x,y,z,ow,ox,oy,oz,vis,sel,lock,,,
+  // label can have spaces, everything up to next comma is used, no quotes
+  // necessary, same with the description
+  of << "# columns = id,x,y,z,ow,ox,oy,oz,vis,sel,lock,label,desc,"
+    "associatedNodeID" << "\n";
+
+  typedef itk::Point< double, DimensionT >                PointType;
+
+  for( typename std::vector< PointType >::iterator it = pointList.begin();
+    it != pointList.end(); ++it )
+    {
+    PointType curPoint = *it;
+    of << ","; //As we don't know the id.
+    of << -1 * curPoint[0]  << "," << -1 * curPoint[1] << ",";
+    if( DimensionT == 3 )
+      {
+      of << curPoint[2] << ",";
+      }
+    of << "0,0,0,0,"; // As we don't know the orientation
+    of << "1,"; //visibility is true
+    of << "1,"; //selection is true
+    of << ",";
+    of << ",,";
+    of << "\n";
+    }
+  of.close();
+}
 
 template< class TPixel, unsigned int DimensionT >
 int DoIt( int argc, char * argv[] )
@@ -276,7 +334,7 @@ int DoIt( int argc, char * argv[] )
       tubeFileReader->GetGroup();
     PointType pointPath;
     IsPointTooNear< TPixel, DimensionT >
-      ( sourceTubeGroup, startPositionPoint, pointPath );
+      ( sourceTubeGroup, startPositionPoint, pointPath, -1 );
     pathInfo->SetEndPoint( pointPath );
     }
   else
@@ -413,7 +471,7 @@ int DoIt( int argc, char * argv[] )
         tubeFileReader->GetGroup();
         PointType nearPoint;
         bool isNear = IsPointTooNear< TPixel, DimensionT >
-          ( sourceTubeGroup, pathPoint, nearPoint );
+          ( sourceTubeGroup, pathPoint, nearPoint, Distance );
         if( isNear )
           {
           continue;
@@ -485,6 +543,50 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Write output data" );
     timeCollector.Report();
     return EXIT_FAILURE;
+    }
+
+  if( !PathEndPoints.empty() )
+    {
+    std::vector< PointType > endPointList;
+    typename TubeGroupType::ChildrenListPointer pChildrenList =
+      pTubeGroup->GetChildren();
+    for( typename TubeGroupType::ChildrenListType::iterator
+    tubeList_it = pChildrenList->begin();
+    tubeList_it != pChildrenList->end(); ++tubeList_it )
+      {
+      //**** Source Tube **** :
+      typename TubeType::Pointer pCurSourceTube =
+        dynamic_cast< TubeType* >( tubeList_it->GetPointer() );
+      //dynamic_cast verification
+      if( !pCurSourceTube )
+        {
+        return EXIT_FAILURE;
+        }
+      pCurSourceTube->ComputeObjectToWorldTransform();
+      typename TubeType::PointListType pointList =
+        pCurSourceTube->GetPoints();
+      TubePointType startSourcePoint = pointList.front();
+      TubePointType endSourcePoint = pointList.back();
+      typename TubePointType::PointType startSourcePosIndexSpace =
+        pCurSourceTube->GetIndexToWorldTransform()->TransformPoint(
+        startSourcePoint.GetPosition() );
+      typename TubePointType::PointType endSourcePosIndexSpace =
+        pCurSourceTube->GetIndexToWorldTransform()->TransformPoint(
+        endSourcePoint.GetPosition() );
+      PointType startPoint;
+      for( unsigned int i = 0; i < DimensionT; i++ )
+        {
+        startPoint[i] = startSourcePosIndexSpace[i];
+        }
+      PointType endPoint;
+      for( unsigned int i = 0; i < DimensionT; i++ )
+        {
+        endPoint[i] = endSourcePosIndexSpace[i];
+        }
+      endPointList.push_back( startPoint );
+      endPointList.push_back( endPoint );
+      }
+    WriteFCSVFile( PathEndPoints, endPointList );
     }
 
   timeCollector.Stop( "Write output data" );
