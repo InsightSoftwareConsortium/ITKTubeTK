@@ -32,7 +32,7 @@ else( DEFINED BUILD_SHARED_LIBS )
   set( shared ON ) # use for BUILD_SHARED_LIBS on all subsequent projects
 endif( DEFINED BUILD_SHARED_LIBS )
 set( testing OFF ) # use for BUILD_TESTING on all subsequent projects
-set( build_type "Debug" )
+set( build_type "Release" )
 if( CMAKE_BUILD_TYPE )
   set( build_type "${CMAKE_BUILD_TYPE}" )
 endif( CMAKE_BUILD_TYPE )

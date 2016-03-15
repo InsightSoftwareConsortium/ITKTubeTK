@@ -46,7 +46,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
     --tubeId 255
     --backgroundId 127
     --unknownId 0
-    --tubeScales 0.15,0.3
+    --tubeScales 0.18,0.36,0.72
     --saveDiscriminantInfo ${TEMP}/${MODULE_NAME}Test1.mrs
     --labelmap MIDAS{im0001.vk.mask.crop.mha.md5}
     MIDAS{im0001.crop.contrast.mha.md5}

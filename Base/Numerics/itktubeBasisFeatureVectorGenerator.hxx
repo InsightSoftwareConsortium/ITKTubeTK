@@ -32,7 +32,6 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 #include <itkImageRegionConstIteratorWithIndex.h>
 #include <itkImageRegionIteratorWithIndex.h>
-#include <itkTimeProbesCollectorBase.h>
 
 #include <iostream>
 #include <limits>
@@ -318,10 +317,6 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 {
   if( featureNum < this->GetNumberOfFeatures() )
     {
-    itk::TimeProbesCollectorBase timeCollector;
-
-    timeCollector.Start( "GenerateBasisImage" );
-
     typedef itk::ImageRegionIteratorWithIndex< FeatureImageType >
       ImageIteratorType;
 
@@ -385,9 +380,6 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
         ++itBasisIm;
         }
       }
-
-    timeCollector.Stop( "GenerateBasisImage" );
-    timeCollector.Report();
 
     return featureImage;
     }
@@ -466,10 +458,6 @@ void
 BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::Update( void )
 {
-  itk::TimeProbesCollectorBase timeCollector;
-
-  timeCollector.Start( "GenerateStatistics" );
-
   typedef itk::ImageRegionConstIteratorWithIndex< LabelMapType >
     ConstLabelMapIteratorType;
   ConstLabelMapIteratorType itInMask( m_LabelMap,
@@ -481,7 +469,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 
   if( numClasses == 0 )
     {
-    std::cerr << "Number of classes (object ids) = 0.  Cannot compute basis."
+    std::cerr << "# of classes (object ids) = 0.  Cannot compute basis."
       << std::endl;
     return;
     }
@@ -611,10 +599,6 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
       }
     }
 
-  timeCollector.Stop( "GenerateStatistics" );
-
-  timeCollector.Start( "GenerateBasis" );
-
   if( numInputFeatures < this->GetNumberOfFeatures() )
     {
     std::cerr << "ERROR: Number of input features < number of basis."
@@ -721,7 +705,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
   else
     {
     ::tube::ComputeEigen<double>( m_GlobalCovariance, pcaBasisMatrix,
-      pcaBasisValues, false, false, false );
+      pcaBasisValues, false, false );
     }
 
   for( unsigned int f = 0;
@@ -732,16 +716,10 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
     ++basisNum;
     }
 
-  timeCollector.Stop( "GenerateBasis" );
-
-  timeCollector.Start( "Whiten" );
   if( this->GetUpdateWhitenStatisticsOnUpdate() )
     {
     this->UpdateWhitenStatistics();
     }
-  timeCollector.Stop( "Whiten" );
-
-  timeCollector.Report();
 }
 
 template< class TImage, class TLabelMap >

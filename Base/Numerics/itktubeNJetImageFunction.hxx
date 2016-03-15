@@ -50,7 +50,7 @@ NJetImageFunction( void )
 
   m_UseInputImageMask = false;
 
-  m_Extent = 3;
+  m_Extent = 5;
 
   m_ValidStats = false;
   m_StatsMin = 0;
@@ -1464,7 +1464,7 @@ JetAtContinuousIndex( const ContinuousIndexType & cIndex, VectorType & d,
   MatrixType & h, double scale ) const
 {
   // JET
-  double physGaussFactor = -0.5 / ( scale * scale );
+  double physGaussFactor = -1.0 / ( 2 * scale * scale );
   double physKernelRadiusSquared = scale*m_Extent * scale*m_Extent;
 
   double physDist = 0;
@@ -1586,11 +1586,11 @@ JetAtContinuousIndex( const ContinuousIndexType & cIndex, VectorType & d,
           double distI = ( xShift[i] - cIndex[i] )
             * m_InputImageSpacing[i];
 
-          expValueD = - distI * expValue;
+          expValueD = -distI * expValue;
           d[i] += pixelValue * expValueD;
           dTotal[i] += vnl_math_abs( expValueD );
 
-          expValueD = ( -1 + ( distI * distI ) / ( scale * scale ) )
+          expValueD = ( ( distI * distI ) / ( scale * scale ) - 1.0 )
             * expValue;
           h[i][i] += pixelValue * expValueD;
           hTotal[i][i] += vnl_math_abs( expValueD );

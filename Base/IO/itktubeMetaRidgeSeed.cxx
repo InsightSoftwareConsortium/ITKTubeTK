@@ -542,6 +542,8 @@ Write( const char * _headName )
     return false;
     }
 
+  tmpWriteStream->precision( 10 );
+
   const bool result = WriteStream( tmpWriteStream );
 
   tmpWriteStream->close();

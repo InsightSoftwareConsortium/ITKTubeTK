@@ -337,10 +337,6 @@ PDFSegmenter< TImage, N, TLabelMap >
     }
   m_OutClassList  = ListSampleType::New();
 
-  itk::TimeProbesCollectorBase timeCollector;
-
-  timeCollector.Start( "GenerateSample" );
-
   typedef itk::ImageRegionConstIteratorWithIndex< LabelMapType >
     ConstLabelMapIteratorType;
   typedef itk::ImageRegionConstIteratorWithIndex< ImageType >
@@ -427,10 +423,6 @@ PDFSegmenter< TImage, N, TLabelMap >
     {
     delete itInIm[i];
     }
-
-  timeCollector.Stop( "GenerateSample" );
-
-  timeCollector.Report();
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
@@ -444,8 +436,6 @@ PDFSegmenter< TImage, N, TLabelMap >
     }
   m_PDFsUpToDate = true;
 
-  itk::TimeProbesCollectorBase timeCollector;
-
   unsigned int numClasses = m_ObjectIdList.size();
 
   //
@@ -453,7 +443,6 @@ PDFSegmenter< TImage, N, TLabelMap >
   //   defined above )
   //
 
-  timeCollector.Start( "ListsToHistograms" );
   // Inside
 
   VectorDoubleType histogramBinMax;
@@ -668,13 +657,10 @@ PDFSegmenter< TImage, N, TLabelMap >
         }
       }
     }
-  timeCollector.Stop( "ListsToHistograms" );
 
   //
   //  Create joint histograms
   //
-  timeCollector.Start( "JointClassHistogram" );
-
   typename HistogramImageType::SizeType size;
   typename HistogramImageType::SpacingType spacing;
   typename HistogramImageType::PointType origin;
@@ -724,13 +710,11 @@ PDFSegmenter< TImage, N, TLabelMap >
       ++inClassListIt;
       }
     }
-  timeCollector.Stop( "JointClassHistogram" );
 
   //
   //  Convert histograms to images so that we can perform blurring to
   //    generate parzen window density estimates
   //
-  timeCollector.Start( "HistogramToPDF" );
   if( true )
     {
     typedef itk::tube::SmoothingRecursiveGaussianImageFilter<
@@ -772,9 +756,6 @@ PDFSegmenter< TImage, N, TLabelMap >
       m_InClassHistogram[c] = normFilter->GetOutput();
       }
     }
-  timeCollector.Stop( "HistogramToPDF" );
-
-  timeCollector.Report();
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
@@ -889,9 +870,6 @@ PDFSegmenter< TImage, N, TLabelMap >
   //
   m_ProbabilityImageVector.resize( numClasses );
 
-  itk::TimeProbesCollectorBase timeCollector;
-
-  timeCollector.Start( "ProbabilityImage" );
   for( unsigned int c = 0; c < numClasses; c++ )
     {
     m_ProbabilityImageVector[c] = ProbabilityImageType::New();
@@ -953,7 +931,6 @@ PDFSegmenter< TImage, N, TLabelMap >
       delete itInIm[i];
       }
     }
-  timeCollector.Stop( "ProbabilityImage" );
 
   typedef itk::tube::SmoothingRecursiveGaussianImageFilter<
     ProbabilityImageType, ProbabilityImageType > ProbImageFilterType;
@@ -964,7 +941,6 @@ PDFSegmenter< TImage, N, TLabelMap >
   typename ThresholdProbImageFilterType::Pointer
     thresholdProbImageFilter = ThresholdProbImageFilterType::New();
 
-  timeCollector.Start( "ProbabilityImageDiffusion" );
   for( unsigned int c = 0; c < numClasses; c++ )
     {
     probImageFilter = ProbImageFilterType::New();
@@ -981,7 +957,6 @@ PDFSegmenter< TImage, N, TLabelMap >
     thresholdProbImageFilter->Update();
     m_ProbabilityImageVector[c] = thresholdProbImageFilter->GetOutput();
     }
-  timeCollector.Stop( "ProbabilityImageDiffusion" );
 
   //
   //  Create label image
@@ -1006,8 +981,6 @@ PDFSegmenter< TImage, N, TLabelMap >
     {
     for( unsigned int c = 0; c < numClasses; c++ )
       {
-      timeCollector.Start( "Connectivity" );
-
       // For this class, label all pixels for which it is the most
       // likely class.
       itk::ImageRegionIteratorWithIndex<LabelMapType> labelIt(
@@ -1132,8 +1105,6 @@ PDFSegmenter< TImage, N, TLabelMap >
       insideConnecter->Update();
       tmpLabelImage = insideConnecter->GetOutput();
 
-      timeCollector.Stop( "Connectivity" );
-
       //
       // Fill holes
       //
@@ -1141,8 +1112,6 @@ PDFSegmenter< TImage, N, TLabelMap >
         {
         typedef itk::VotingBinaryIterativeHoleFillingImageFilter<
           LabelMapType > HoleFillingFilterType;
-
-        timeCollector.Start( "HoleFiller" );
 
         typename HoleFillingFilterType::Pointer holeFiller =
           HoleFillingFilterType::New();
@@ -1156,8 +1125,6 @@ PDFSegmenter< TImage, N, TLabelMap >
         holeFiller->SetMaximumNumberOfIterations( holeFillIterations );
         holeFiller->Update();
         tmpLabelImage = holeFiller->GetOutput();
-
-        timeCollector.Stop( "HoleFiller" );
         }
 
       //
@@ -1178,8 +1145,6 @@ PDFSegmenter< TImage, N, TLabelMap >
 
         if( m_DilateFirst )
           {
-          timeCollector.Start( "Dilate" );
-
           typename DilateFilterType::Pointer insideLabelMapDilateFilter =
             DilateFilterType::New();
           insideLabelMapDilateFilter->SetKernel( sphereOp );
@@ -1187,13 +1152,9 @@ PDFSegmenter< TImage, N, TLabelMap >
           insideLabelMapDilateFilter->SetInput( tmpLabelImage );
           insideLabelMapDilateFilter->Update();
           tmpLabelImage = insideLabelMapDilateFilter->GetOutput();
-
-          timeCollector.Stop( "Dilate" );
           }
         else
           {
-          timeCollector.Start( "Erode" );
-
           typename ErodeFilterType::Pointer insideLabelMapErodeFilter =
             ErodeFilterType::New();
           insideLabelMapErodeFilter->SetKernel( sphereOp );
@@ -1201,8 +1162,6 @@ PDFSegmenter< TImage, N, TLabelMap >
           insideLabelMapErodeFilter->SetInput( tmpLabelImage );
           insideLabelMapErodeFilter->Update();
           tmpLabelImage = insideLabelMapErodeFilter->GetOutput();
-
-          timeCollector.Stop( "Erode" );
           }
         }
 
@@ -1213,8 +1172,6 @@ PDFSegmenter< TImage, N, TLabelMap >
         {
         typedef itk::ConnectedThresholdImageFilter<LabelMapType,
           LabelMapType> ConnectedLabelMapFilterType;
-
-        timeCollector.Start( "Connectivity2" );
 
         typename ConnectedLabelMapFilterType::Pointer
           insideConnectedLabelMapFilter = ConnectedLabelMapFilterType::New();
@@ -1242,8 +1199,6 @@ PDFSegmenter< TImage, N, TLabelMap >
 
         insideConnectedLabelMapFilter->Update();
         tmpLabelImage = insideConnectedLabelMapFilter->GetOutput();
-
-        timeCollector.Stop( "Connectivity2" );
         }
 
       //
@@ -1253,8 +1208,6 @@ PDFSegmenter< TImage, N, TLabelMap >
         {
         if( m_DilateFirst )
           {
-          timeCollector.Start( "Erode" );
-
           typename ErodeFilterType::Pointer insideLabelMapErodeFilter =
             ErodeFilterType::New();
           insideLabelMapErodeFilter->SetKernel( sphereOp );
@@ -1262,13 +1215,9 @@ PDFSegmenter< TImage, N, TLabelMap >
           insideLabelMapErodeFilter->SetInput( tmpLabelImage );
           insideLabelMapErodeFilter->Update();
           tmpLabelImage = insideLabelMapErodeFilter->GetOutput();
-
-          timeCollector.Stop( "Erode" );
           }
         else
           {
-          timeCollector.Start( "Dilate" );
-
           typename DilateFilterType::Pointer insideLabelMapDilateFilter =
             DilateFilterType::New();
           insideLabelMapDilateFilter->SetKernel( sphereOp );
@@ -1276,8 +1225,6 @@ PDFSegmenter< TImage, N, TLabelMap >
           insideLabelMapDilateFilter->SetInput( tmpLabelImage );
           insideLabelMapDilateFilter->Update();
           tmpLabelImage = insideLabelMapDilateFilter->GetOutput();
-
-          timeCollector.Stop( "Dilate" );
           }
         }
 
@@ -1339,8 +1286,6 @@ PDFSegmenter< TImage, N, TLabelMap >
     }
   else
     {
-    timeCollector.Start( "ForceClassification" );
-
     // Merge with input mask
     typedef itk::ImageRegionIteratorWithIndex< LabelMapType >
       LabelMapIteratorType;
@@ -1391,11 +1336,8 @@ PDFSegmenter< TImage, N, TLabelMap >
         }
       ++itInLabelMap;
       }
-
-    timeCollector.Stop( "ForceClassification" );
     }
 
-  timeCollector.Report();
   m_ImagesUpToDate = true;
 }
 

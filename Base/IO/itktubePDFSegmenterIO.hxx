@@ -674,7 +674,7 @@ Write( const char * _headerName )
   writeStream.open( fullFileName.c_str(), METAIO_STREAM::ios::binary |
     METAIO_STREAM::ios::out );
 
-  writeStream.precision( 6 );
+  writeStream.precision( 10 );
 
   if(!MET_Write(writeStream, & metaFields))
     {

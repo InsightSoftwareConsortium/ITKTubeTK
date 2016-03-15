@@ -32,7 +32,6 @@ limitations under the License.
 #include <itkImageRegionConstIteratorWithIndex.h>
 #include <itkImageRegionIteratorWithIndex.h>
 #include <itkProgressReporter.h>
-#include <itkTimeProbesCollectorBase.h>
 #include <itkBinaryThinningImageFilter.h>
 
 #include <limits>
@@ -47,8 +46,9 @@ template< class TImage, class TLabelMap, unsigned int TNumberOfFeatures >
 RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
 ::RidgeSeedFilter( void )
 {
-  m_SeedFeatureGenerator = SeedFeatureGeneratorType::New();
   m_RidgeFeatureGenerator = RidgeFeatureGeneratorType::New();
+
+  m_SeedFeatureGenerator = SeedFeatureGeneratorType::New();
   m_SeedFeatureGenerator->SetInputFeatureVectorGenerator(
     m_RidgeFeatureGenerator );
 
