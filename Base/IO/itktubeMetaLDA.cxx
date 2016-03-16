@@ -542,6 +542,8 @@ bool MetaLDA
     return false;
     }
 
+  tmpWriteStream->precision( 10 );
+
   const bool result = this->WriteStream( tmpWriteStream );
 
   tmpWriteStream->close();
@@ -672,8 +674,12 @@ void MetaLDA
       {
       tf[i] = m_InputWhitenMeans[i];
       }
+    for( int i = tfCount; i < nDims; i++ )
+      {
+      tf[i] = 0;
+      }
 
-    MET_InitWriteField( mF, "InputWhitenMeans", MET_FLOAT_ARRAY, tfCount,
+    MET_InitWriteField( mF, "InputWhitenMeans", MET_FLOAT_ARRAY, nDims,
       tf );
     m_Fields.push_back( mF );
 
@@ -698,8 +704,12 @@ void MetaLDA
       {
       tf[i] = m_OutputWhitenMeans[i];
       }
+    for( int i = tfCount; i < nDims; i++ )
+      {
+      tf[i] = 0;
+      }
 
-    MET_InitWriteField( mF, "OutputWhitenMeans", MET_FLOAT_ARRAY, tfCount,
+    MET_InitWriteField( mF, "OutputWhitenMeans", MET_FLOAT_ARRAY, nDims,
       tf );
     m_Fields.push_back( mF );
 
@@ -709,7 +719,7 @@ void MetaLDA
       tf[i] = m_OutputWhitenStdDevs[i];
       }
 
-    MET_InitWriteField( mF, "OutputWhitenStdDevs", MET_FLOAT_ARRAY, tfCount,
+    MET_InitWriteField( mF, "OutputWhitenStdDevs", MET_FLOAT_ARRAY, nDims,
       tf );
     m_Fields.push_back( mF );
     }

@@ -141,8 +141,6 @@ RidgeFFTFilter< TInputImage >
         }
       }
 
-    itk::TimeProbesCollectorBase timeCollector;
-
     double ridgeness = 0;
     double roundness = 0;
     double curvature = 0;
@@ -151,7 +149,6 @@ RidgeFFTFilter< TInputImage >
     vnl_vector<double> D( ImageDimension );
     vnl_matrix<double> HEVect( ImageDimension, ImageDimension);
     vnl_vector<double> HEVal( ImageDimension );
-    timeCollector.Start( "ComputeRidgenessMeasures" );
     while( !iterRidge.IsAtEnd() )
       {
       count = 0;
@@ -179,9 +176,6 @@ RidgeFFTFilter< TInputImage >
       ++iterCurve;
       ++iterLevel;
       }
-    timeCollector.Stop( "ComputeRidgenessMeasures" );
-
-    timeCollector.Report();
     }
 
   std::cout << "Setting output" << std::endl;

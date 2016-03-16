@@ -158,29 +158,17 @@ void
 FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
 ::GenerateData()
 {
-  itk::TimeProbesCollectorBase timeCollector;
-
   if( m_LastInputImage != this->GetInput() )
     {
-    timeCollector.Start( "ComputeInputImageFFT" );
     m_LastInputImage = this->GetInput();
     ComputeInputImageFFT();
-    timeCollector.Stop( "ComputeInputImageFFT" );
     }
 
-  timeCollector.Start( "ComputeKernelImageFFT" );
   ComputeKernelImageFFT();
-  timeCollector.Stop( "ComputeKernelImageFFT" );
-  timeCollector.Start( "ComputeConvolvedImageFFT" );
   ComputeConvolvedImageFFT();
-  timeCollector.Stop( "ComputeConvolvedImageFFT" );
-  timeCollector.Start( "ComputeConvolvedImage" );
   ComputeConvolvedImage();
-  timeCollector.Stop( "ComputeConvolvedImage" );
 
   this->SetNthOutput( 0, m_ConvolvedImage );
-
-  timeCollector.Report();
 }
 
 template< typename TInputImage, typename TOutputImage >
@@ -190,14 +178,11 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   std::vector< typename TOutputImage::Pointer > & dX,
   std::vector< typename TOutputImage::Pointer > & dXX )
 {
-  itk::TimeProbesCollectorBase timeCollector;
 
   if( m_LastInputImage != this->GetInput() )
     {
     m_LastInputImage = this->GetInput();
-    timeCollector.Start( "NJet-ComputeInputImageFFT" );
     ComputeInputImageFFT();
-    timeCollector.Stop( "NJet-ComputeInputImageFFT" );
     }
 
   if( dX.size() != ImageDimension )
@@ -218,30 +203,18 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
     }
 
   this->m_Orders.Fill( 0 );
-  timeCollector.Start( "NJet-ComputeKernelImageFFT" );
   this->ComputeKernelImageFFT();
-  timeCollector.Stop( "NJet-ComputeKernelImageFFT" );
-  timeCollector.Start( "NJet-ComputeConvolvedImageFFT" );
   this->ComputeConvolvedImageFFT();
-  timeCollector.Stop( "NJet-ComputeConvolvedImageFFT" );
-  timeCollector.Start( "NJet-ComputeConvolvedImage" );
   this->ComputeConvolvedImage();
-  timeCollector.Stop( "NJet-ComputeConvolvedImage" );
   D = m_ConvolvedImage;
 
   for( unsigned int i = 0; i<ImageDimension; ++i )
     {
     this->m_Orders[i] = 1;
-    timeCollector.Start( "NJet-ComputeKernelImageFFT" );
     this->ComputeKernelImageFFT();
-    timeCollector.Stop( "NJet-ComputeKernelImageFFT" );
     dXKernelImageFFT[i] = m_KernelImageFFT;
-    timeCollector.Start( "NJet-ComputeConvolvedImageFFT" );
     this->ComputeConvolvedImageFFT();
-    timeCollector.Stop( "NJet-ComputeConvolvedImageFFT" );
-    timeCollector.Start( "NJet-ComputeConvolvedImage" );
     this->ComputeConvolvedImage();
-    timeCollector.Stop( "NJet-ComputeConvolvedImage" );
     dX[i] = m_ConvolvedImage;
     this->m_Orders[i] = 0;
     }
@@ -253,21 +226,15 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
     {
     m_InputImageFFT = tmpInputImageFFT;
     m_KernelImageFFT = dXKernelImageFFT[i];
-    timeCollector.Start( "NJet-ComputeConvolvedImageFFT" );
     this->ComputeConvolvedImageFFT();
-    timeCollector.Stop( "NJet-ComputeConvolvedImageFFT" );
     tmpFirstConvolutionFFT = m_ConvolvedImageFFT;
 
     for( unsigned int j = i; j<ImageDimension; ++j )
       {
       m_InputImageFFT = tmpFirstConvolutionFFT;
       m_KernelImageFFT = dXKernelImageFFT[j];
-      timeCollector.Start( "NJet-ComputeConvolvedImageFFT" );
       this->ComputeConvolvedImageFFT();
-      timeCollector.Stop( "NJet-ComputeConvolvedImageFFT" );
-      timeCollector.Start( "NJet-ComputeConvolvedImage" );
       this->ComputeConvolvedImage();
-      timeCollector.Stop( "NJet-ComputeConvolvedImage" );
       dXX[ count++ ] = m_ConvolvedImage;
       this->m_Orders[i] = 0;
       this->m_Orders[j] = 0;

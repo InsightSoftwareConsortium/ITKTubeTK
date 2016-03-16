@@ -34,7 +34,6 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 #include <itkImageRegionConstIteratorWithIndex.h>
 #include <itkImageRegionIteratorWithIndex.h>
-#include <itkTimeProbesCollectorBase.h>
 
 #include <limits>
 #include <iostream>
@@ -49,17 +48,19 @@ template< class TImage >
 FeatureVectorGenerator< TImage >
 ::FeatureVectorGenerator( void )
 {
-  m_InputImageList.clear();
+  m_InputImageList.resize(0);
 
   m_UpdateWhitenStatisticsOnUpdate = false;
-  m_WhitenMean.clear();
-  m_WhitenStdDev.clear();
+  m_WhitenMean.resize(0);
+  m_WhitenStdDev.resize(0);
 }
 
 template< class TImage >
 FeatureVectorGenerator< TImage >
 ::~FeatureVectorGenerator( void )
 {
+  m_InputImageList.clear();
+  m_InputImageList.resize( 0 );
 }
 
 template< class TImage >
@@ -67,9 +68,12 @@ void
 FeatureVectorGenerator< TImage >
 ::SetInput( typename ImageType::Pointer img )
 {
+  m_WhitenMean.resize(1);
+  m_WhitenMean[0] = 0;
+  m_WhitenStdDev.resize(1);
+  m_WhitenStdDev[0] = 1;
   m_InputImageList.clear();
-  m_WhitenMean.clear();
-  m_WhitenStdDev.clear();
+  m_InputImageList.resize(0);
   m_InputImageList.push_back( img );
 }
 
@@ -79,6 +83,8 @@ FeatureVectorGenerator< TImage >
 ::AddInput( typename ImageType::Pointer img )
 {
   m_InputImageList.push_back( img );
+  m_WhitenMean.push_back(0);
+  m_WhitenStdDev.push_back(1);
 }
 
 template< class TImage >
@@ -242,10 +248,6 @@ FeatureVectorGenerator< TImage >
   const unsigned int numFeatures = this->GetNumberOfFeatures();
   if( featureNum < numFeatures )
     {
-    itk::TimeProbesCollectorBase timeCollector;
-
-    timeCollector.Start( "GenerateFeatureImage" );
-
     typedef itk::ImageRegionIteratorWithIndex< FeatureImageType >
       ImageIteratorType;
 
@@ -272,9 +274,6 @@ FeatureVectorGenerator< TImage >
 
       ++itFeatureIm;
       }
-
-    timeCollector.Stop( "GenerateFeatureImage" );
-    timeCollector.Report();
 
     return fi;
     }
@@ -332,8 +331,8 @@ UpdateWhitenStatistics( void )
   while( !itIm.IsAtEnd() )
     {
     indx = itIm.GetIndex();
-    ++imCount;
     fv = this->GetFeatureVector( indx );
+    ++imCount;
     for( unsigned int i = 0; i < numFeatures; i++ )
       {
       imVal = fv[i];

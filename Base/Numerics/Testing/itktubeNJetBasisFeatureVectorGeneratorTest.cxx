@@ -105,7 +105,7 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   filter->Update();
 
   BasisFilterType::Pointer basisFilter = BasisFilterType::New();
-  basisFilter->SetInputFeatureVectorGenerator( filter.GetPointer() );
+  basisFilter->SetInputFeatureVectorGenerator( filter );
   basisFilter->SetInput( inputImage );
   basisFilter->SetLabelMap( maskImage );
   int objId = std::atoi( argv[3] );
@@ -124,6 +124,7 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
     WriterType::Pointer featureImage0Writer = WriterType::New();
     char fname[80];
     sprintf( fname, "%s.%d.mha", argv[5], i );
+    std::cout << "Saving basis feature image: " << fname << std::endl;
     featureImage0Writer->SetFileName( fname );
     featureImage0Writer->SetUseCompression( true );
     featureImage0Writer->SetInput( basisFilter->GetFeatureImage( i ) );
@@ -136,31 +137,35 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
       std::cerr << "Exception caught during write:" << std::endl << e;
       return EXIT_FAILURE;
       }
+    catch ( ... )
+      {
+      std::cerr << "Unhandled exception caught during basis write:"
+        << fname << std::endl;
+      return EXIT_FAILURE;
+      }
     }
 
   for( unsigned int i=0; i<filter->GetNumberOfFeatures(); ++i )
     {
     WriterType::Pointer featureImage1Writer = WriterType::New();
-    char fname[80];
+    char fname[255];
     sprintf( fname, "%s.%d.mha", argv[6], i );
+    std::cout << "Saving feature image: " << fname << std::endl;
     featureImage1Writer->SetFileName( fname );
     featureImage1Writer->SetUseCompression( true );
-    featureImage1Writer->SetInput( filter->GetFeatureImage( i ) );
     try
       {
+      featureImage1Writer->SetInput( filter->GetFeatureImage( i ) );
       featureImage1Writer->Update();
       }
-    catch ( itk::ExceptionObject& e )
+    catch( ... )
       {
-      std::cerr << "ITK exception caught during write:" << std::endl << e;
-      return EXIT_FAILURE;
-      }
-    catch ( ... )
-      {
-      std::cerr << "Unhandled exception caught during write:" << std::endl;
+      std::cerr << "Unhandled exception caught during write:"
+        << fname << std::endl;
       return EXIT_FAILURE;
       }
     }
+  std::cout << "DONE." << std::endl;
 
   return EXIT_SUCCESS;
 }

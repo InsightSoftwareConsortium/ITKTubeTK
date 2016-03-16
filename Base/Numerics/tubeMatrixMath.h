@@ -91,29 +91,7 @@ ComputeEigenOfMatrixInvertedTimesMatrix(
 template< class T >
 void
 ComputeEigen(vnl_matrix<T> const & mat, vnl_matrix<T> &eVects,
-  vnl_vector<T> &eVals, bool orderByAbs, bool minToMax = true,
-  bool useSVD = false);
-
-/** Perform trilinear diagonalization */
-template< class T >
-void
-ComputeTriDiag(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
-
-/** Perform trilinear diagonalization in 2D */
-template< class T >
-void
-ComputeTriDiag2D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
-
-/** Perform trilinear diagonalization in 3D */
-template< class T >
-void
-ComputeTriDiag3D(vnl_matrix<T> &mat, vnl_vector<T> &diag, vnl_vector<T> &subD);
-
-/**                                          */
-template< class T >
-void
-ComputeTqli(vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat);
-
+  vnl_vector<T> &eVals, bool orderByAbs = false, bool minToMax = true );
 
 } // End namespace tube
 

@@ -207,7 +207,7 @@ Midas3FunctionAddTest( NAME itktubeImageRegionMomentsCalculatorTest
     itktubeImageRegionMomentsCalculatorTest
       MIDAS{scoring-test.png.md5} )
 
-foreach( testNum RANGE 0 37 )
+foreach( testNum RANGE 0 38 )
   Midas3FunctionAddTest( NAME itktubeNJetImageFunctionTest${testNum}
     COMMAND ${BASE_NUMERICS_TESTS}
       --compare MIDAS{itktubeNJetImageFunctionTest${testNum}.mha.md5}
@@ -284,7 +284,7 @@ Midas3FunctionAddTest( NAME itktubeNJetFeatureVectorGeneratorTest
 
 Midas3FunctionAddTest( NAME itktubeNJetBasisFeatureVectorGeneratorTest
   COMMAND ${BASE_NUMERICS_TESTS}
-    --compare MIDAS{itktubeNJetBasisFeatureVectorGeneratorTest_lda0.mha.md5}
+    --compare MIDAS{itktubeNJetBasisFeatureVectorGeneratorTest_basis.0.mha.md5}
       ${TEMP}/itktubeNJetBasisFeatureVectorGeneratorTest_basis.0.mha
     itktubeNJetBasisFeatureVectorGeneratorTest
       MIDAS{ES0015_Large_Subs.mha.md5}

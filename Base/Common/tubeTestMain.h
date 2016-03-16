@@ -38,6 +38,8 @@ limitations under the License.
 #include <itkImageRegionConstIterator.h>
 #include <itkRescaleIntensityImageFilter.h>
 #include <itkSubtractImageFilter.h>
+#include <itkTextOutput.h>
+
 
 #define ITK_TEST_DIMENSION_MAX 6
 
@@ -80,6 +82,8 @@ int main( int argc, char * argv[] )
 
   typedef std::pair< char *, char * > ComparePairType;
   std::vector< ComparePairType > compareList;
+
+  itk::OutputWindow::SetInstance(itk::TextOutput::New());
 
   RegisterTests();
   std::string testToRun;

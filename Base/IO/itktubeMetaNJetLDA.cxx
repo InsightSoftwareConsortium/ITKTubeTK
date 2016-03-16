@@ -413,16 +413,19 @@ bool MetaNJetLDA
 
   MET_SetFileSuffix( m_FileName, "mnda" );
 
-  METAIO_STREAM::ofstream * const tmpWriteStream = new METAIO_STREAM::ofstream();
+  METAIO_STREAM::ofstream * const tmpWriteStream = new
+    METAIO_STREAM::ofstream();
 
   tmpWriteStream->open( m_FileName,
-                        METAIO_STREAM::ios::binary | METAIO_STREAM::ios::out );
+    METAIO_STREAM::ios::binary | METAIO_STREAM::ios::out );
 
   if( !tmpWriteStream->rdbuf()->is_open() )
     {
     delete tmpWriteStream;
     return false;
     }
+
+  tmpWriteStream->precision( 10 );
 
   const bool result = this->WriteStream( tmpWriteStream );
 

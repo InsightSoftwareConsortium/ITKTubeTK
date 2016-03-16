@@ -32,7 +32,6 @@ set( CMAKE_MODULE_PATH ${TubeTK_CMAKE_EXTENSIONS_DIR} ${CMAKE_MODULE_PATH} )
 include( ExternalProject )
 include( TubeTKExternalProjectDependency )
 
-#
 # Set TubeTK version and output directories.
 #
 set( TubeTK_VERSION_MAJOR "0" )
@@ -57,7 +56,7 @@ set( TubeTK_VERSION
   "${TubeTK_VERSION_MAJOR}.${TubeTK_VERSION_MINOR}.${TubeTK_VERSION_PATCH}.${TubeTK_VERSION_BUILD}" )
 
 # Set a variable if not already defined
-macro(tubetk_set_if_not_defined var defaultvalue)
+macro( tubetk_set_if_not_defined var defaultvalue )
   if(NOT DEFINED ${var})
     set(${var} "${defaultvalue}")
   endif()
@@ -66,6 +65,7 @@ endmacro()
 #
 # TubeTK install directories
 #
+tubetk_set_if_not_defined( CMAKE_BUILD_TYPE "Release" )
 tubetk_set_if_not_defined( TubeTK_INSTALL_BIN_DIR "bin" )
 tubetk_set_if_not_defined( TubeTK_INSTALL_LIB_DIR "lib" )
 tubetk_set_if_not_defined( TubeTK_INSTALL_INCLUDE_DIR "include" )

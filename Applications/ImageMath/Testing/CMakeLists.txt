@@ -176,7 +176,7 @@ set_property( TEST ${PROJECT_NAME}-Test8-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test9
             COMMAND ${PROJ_EXE}
                MIDAS{GDS0015_1.mha.md5}
-               -M 0 5 255 0
+               -M 0 10 255 0
                -W 2 ${TEMP}/${PROJECT_NAME}Test9.mha )
 
 # Test9-Compare
@@ -240,7 +240,7 @@ set_property( TEST ${PROJECT_NAME}-Test12-Compare
 Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test13
             COMMAND ${PROJ_EXE}
                MIDAS{im0001.crop2.mha.md5}
-               -z 1 2 3
+               -z 0.7 1.4 3
                -w ${TEMP}/${PROJECT_NAME}Test13.mha )
 
 # Test13-Compare

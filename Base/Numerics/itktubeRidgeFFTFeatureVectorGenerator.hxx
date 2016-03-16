@@ -30,7 +30,6 @@ limitations under the License.
 
 #include <itkImage.h>
 #include <itkProgressReporter.h>
-#include <itkTimeProbesCollectorBase.h>
 
 #include <limits>
 
@@ -95,10 +94,10 @@ RidgeFFTFeatureVectorGenerator< TImage >
       {
       double imVal = iter.Get();
       double delta = imVal - featureMean[i];
+      ++count;
 
       featureMean[i] += delta / count;
       featureStdDev[i] += delta * ( imVal - featureMean[i] );
-      ++count;
       ++iter;
       }
 
@@ -111,7 +110,6 @@ RidgeFFTFeatureVectorGenerator< TImage >
       featureStdDev[i] = 1;
       }
     }
-
   this->SetWhitenMeans( featureMean );
   this->SetWhitenStdDevs( featureStdDev );
 }
@@ -156,7 +154,6 @@ RidgeFFTFeatureVectorGenerator< TImage >
       m_FeatureImageList[feat++] = ridgeF->GetLevelness();
       }
 
-    std::cout << "Here" << std::endl;
     typename FeatureImageType::RegionType region =
       this->m_InputImageList[0]->GetLargestPossibleRegion();
     while( feat < numFeatures )
@@ -168,7 +165,6 @@ RidgeFFTFeatureVectorGenerator< TImage >
       ++feat;
       }
 
-    std::cout << "Here" << std::endl;
     typedef ImageRegionIterator< FeatureImageType >  IterType;
     std::vector< IterType > iterF( numFeatures );
     for( unsigned int f=0; f<numFeatures; ++f )
