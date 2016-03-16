@@ -58,9 +58,10 @@ int DoIt( int argc, char * argv[] );
 
 template< class TPixel, unsigned int DimensionT >
 bool
-IsPointToNear( typename itk::GroupSpatialObject< DimensionT >::Pointer &sourceTubeGroup,
+IsPointTooNear( typename itk::GroupSpatialObject< DimensionT >::Pointer &sourceTubeGroup,
               itk::Point< double, DimensionT > outsidePoint,
-              itk::Point< double, DimensionT > &nearestPoint )
+              itk::Point< double, DimensionT > &nearestPoint,
+              double thresholdDistance)
 {
   typedef itk::GroupSpatialObject< DimensionT >           TubeGroupType;
   typedef itk::VesselTubeSpatialObject< DimensionT >      TubeType;
@@ -111,6 +112,17 @@ IsPointToNear( typename itk::GroupSpatialObject< DimensionT >::Pointer &sourceTu
         }
       }
     }
+  if( thresholdDistance > 0 )
+    {
+    if( minDistance < thresholdDistance*thresholdDistance)
+      {
+      return true;
+      }
+    else
+      {
+      return false;
+      }
+    }
   if( minDistance < nearestPointRadius*nearestPointRadius)
     {
     return true;
@@ -121,6 +133,52 @@ IsPointToNear( typename itk::GroupSpatialObject< DimensionT >::Pointer &sourceTu
     }
 }
 
+template< unsigned int DimensionT >
+void WriteFCSVFile( std::string filename,
+  std::vector< itk::Point< double, DimensionT > > &pointList )
+{
+  std::fstream of;
+  of.open(filename.c_str(), std::fstream::out);
+  if( !of.is_open() )
+    {
+    std::cout << "WriteData: unable to open file " << filename.c_str()
+      << " for writing";
+    return;
+    }
+  // put down a header
+  of << "# Markups fiducial file version = " << "4.5 \n";
+  of << "# CoordinateSystem = " << 0 << "\n";
+  // label the columns
+  // id,x,y,z,ow,ox,oy,oz,vis,sel,lock,label,desc,associatedNodeID
+  // orientation is a quaternion, angle and axis
+  // associatedNodeID and description and label can be empty strings
+  // id,x,y,z,ow,ox,oy,oz,vis,sel,lock,,,
+  // label can have spaces, everything up to next comma is used, no quotes
+  // necessary, same with the description
+  of << "# columns = id,x,y,z,ow,ox,oy,oz,vis,sel,lock,label,desc,"
+    "associatedNodeID" << "\n";
+
+  typedef itk::Point< double, DimensionT >                PointType;
+
+  for( typename std::vector< PointType >::iterator it = pointList.begin();
+    it != pointList.end(); ++it )
+    {
+    PointType curPoint = *it;
+    of << ","; //As we don't know the id.
+    of << -1 * curPoint[0]  << "," << -1 * curPoint[1] << ",";
+    if( DimensionT == 3 )
+      {
+      of << curPoint[2] << ",";
+      }
+    of << "0,0,0,0,"; // As we don't know the orientation
+    of << "1,"; //visibility is true
+    of << "1,"; //selection is true
+    of << ",";
+    of << ",,";
+    of << "\n";
+    }
+  of.close();
+}
 
 template< class TPixel, unsigned int DimensionT >
 int DoIt( int argc, char * argv[] )
@@ -148,7 +206,7 @@ int DoIt( int argc, char * argv[] )
 
   //Read input Image
   typename ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( inputImage.c_str() );
+  reader->SetFileName( InputImage.c_str() );
   try
     {
     reader->Update();
@@ -167,9 +225,9 @@ int DoIt( int argc, char * argv[] )
   speed->DisconnectPipeline();
 
   //Read radius extraction Image
-  if( ExtractRadius )
+  if( !RadiusImage.empty() )
     {
-    reader->SetFileName( radiusImage.c_str() );
+    reader->SetFileName( RadiusImage.c_str() );
     try
       {
       reader->Update();
@@ -188,11 +246,11 @@ int DoIt( int argc, char * argv[] )
 
   //Read input centerline
   typename TubesReaderType::Pointer tubeFileReader = TubesReaderType::New();
-  if( ExtractFromCenterline )
+  if( !InputPathFile.empty() )
     {
     try
       {
-      tubeFileReader->SetFileName( inputTREFile.c_str() );
+      tubeFileReader->SetFileName( InputPathFile.c_str() );
       tubeFileReader->Update();
       }
     catch( itk::ExceptionObject & err )
@@ -275,8 +333,8 @@ int DoIt( int argc, char * argv[] )
     typename TubeGroupType::Pointer sourceTubeGroup =
       tubeFileReader->GetGroup();
     PointType pointPath;
-    IsPointToNear< TPixel, DimensionT >
-      ( sourceTubeGroup, startPositionPoint, pointPath );
+    IsPointTooNear< TPixel, DimensionT >
+      ( sourceTubeGroup, startPositionPoint, pointPath, -1 );
     pathInfo->SetEndPoint( pointPath );
     }
   else
@@ -407,20 +465,20 @@ int DoIt( int argc, char * argv[] )
         {
         cost = cost + speed->GetPixel( imageIndex );
         }
-      if( ExtractFromCenterline && ClipTubes )
+      if( !InputPathFile.empty() && HardBoundary )
         {
         typename TubeGroupType::Pointer sourceTubeGroup =
         tubeFileReader->GetGroup();
         PointType nearPoint;
-        bool isNear = IsPointToNear< TPixel, DimensionT >
-          ( sourceTubeGroup, pathPoint, nearPoint );
+        bool isNear = IsPointTooNear< TPixel, DimensionT >
+          ( sourceTubeGroup, pathPoint, nearPoint, Distance );
         if( isNear )
           {
           continue;
           }
         else
           {
-          ClipTubes = false;
+          HardBoundary = false;
           }
         }
       for( unsigned int d = 0; d < DimensionT; d++ )
@@ -430,6 +488,10 @@ int DoIt( int argc, char * argv[] )
       TubePointType tubePoint;
       tubePoint.SetPosition( pathPoint );
       tubePoint.SetID( k );
+      if( ExtractRadiusUsingInputImage )
+        {
+        tubePoint.SetRadius( speed->GetPixel( imageIndex ) );
+        }
       tubePointList.push_back( tubePoint );
       }
     typename TubeType::Pointer pTube = TubeType::New();
@@ -439,7 +501,7 @@ int DoIt( int argc, char * argv[] )
     pTube->SetId( i );
 
     // Extract Radius
-    if( ExtractRadius )
+    if( !ExtractRadiusUsingInputImage && !RadiusImage.empty() )
       {
       typedef itk::tube::RadiusExtractor2<ImageType> RadiusExtractorType;
       typename RadiusExtractorType::Pointer radiusExtractor
@@ -470,7 +532,7 @@ int DoIt( int argc, char * argv[] )
   typename TubeWriterType::Pointer tubeWriter = TubeWriterType::New();
   try
     {
-    tubeWriter->SetFileName( outputTREFile.c_str() );
+    tubeWriter->SetFileName( OutputTREFile.c_str() );
     tubeWriter->SetInput( pTubeGroup );
     tubeWriter->Update();
     }
@@ -481,6 +543,50 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Write output data" );
     timeCollector.Report();
     return EXIT_FAILURE;
+    }
+
+  if( !PathEndPoints.empty() )
+    {
+    std::vector< PointType > endPointList;
+    typename TubeGroupType::ChildrenListPointer pChildrenList =
+      pTubeGroup->GetChildren();
+    for( typename TubeGroupType::ChildrenListType::iterator
+    tubeList_it = pChildrenList->begin();
+    tubeList_it != pChildrenList->end(); ++tubeList_it )
+      {
+      //**** Source Tube **** :
+      typename TubeType::Pointer pCurSourceTube =
+        dynamic_cast< TubeType* >( tubeList_it->GetPointer() );
+      //dynamic_cast verification
+      if( !pCurSourceTube )
+        {
+        return EXIT_FAILURE;
+        }
+      pCurSourceTube->ComputeObjectToWorldTransform();
+      typename TubeType::PointListType pointList =
+        pCurSourceTube->GetPoints();
+      TubePointType startSourcePoint = pointList.front();
+      TubePointType endSourcePoint = pointList.back();
+      typename TubePointType::PointType startSourcePosIndexSpace =
+        pCurSourceTube->GetIndexToWorldTransform()->TransformPoint(
+        startSourcePoint.GetPosition() );
+      typename TubePointType::PointType endSourcePosIndexSpace =
+        pCurSourceTube->GetIndexToWorldTransform()->TransformPoint(
+        endSourcePoint.GetPosition() );
+      PointType startPoint;
+      for( unsigned int i = 0; i < DimensionT; i++ )
+        {
+        startPoint[i] = startSourcePosIndexSpace[i];
+        }
+      PointType endPoint;
+      for( unsigned int i = 0; i < DimensionT; i++ )
+        {
+        endPoint[i] = endSourcePosIndexSpace[i];
+        }
+      endPointList.push_back( startPoint );
+      endPointList.push_back( endPoint );
+      }
+    WriteFCSVFile( PathEndPoints, endPointList );
     }
 
   timeCollector.Stop( "Write output data" );
@@ -496,6 +602,6 @@ int main( int argc, char * argv[] )
   PARSE_ARGS;
   // You may need to update this line if, in the project's .xml CLI file,
   //   you change the variable name for the inputImage.
-  return tube::ParseArgsAndCallDoIt( inputImage, argc, argv );
+  return tube::ParseArgsAndCallDoIt( InputImage, argc, argv );
 
 }

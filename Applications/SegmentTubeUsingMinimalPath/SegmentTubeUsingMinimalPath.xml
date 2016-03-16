@@ -12,15 +12,15 @@
     <label>IO</label>
     <description>Input/output parameters.</description>
     <image>
-      <name>inputImage</name>
+      <name>InputImage</name>
       <label>Input Image</label>
       <channel>input</channel>
       <index>0</index>
       <description>Input image to compute minimal path</description>
     </image>
     <file>
-      <name>outputTREFile</name>
-      <label>output TRE File</label>
+      <name>OutputTREFile</name>
+      <label>Output TRE File</label>
       <channel>input</channel>
       <index>1</index>
       <description>Output tubes centered along the path </description>
@@ -35,15 +35,51 @@
       <description>Path Points</description>
       <longflag>pathPoints</longflag>
     </point>
+    <file>
+      <name>InputPathFile</name>
+      <label>Target Path </label>
+      <longflag>targetPath</longflag>
+      <channel>input</channel>
+      <description>Starting from the path points, a new path is extracted to grow and meet the target path. </description>
+    </file>
     <boolean>
-      <name>ExtractRadius</name>
-      <label>Extract Radius</label>
-      <description>Extract tube radius along the path</description>
+      <name>HardBoundary</name>
+      <label>Hard boundary</label>
+      <description>Indicates wether to stop extracting new path as it approach with in the boundary of the target path. </description>
       <default>false</default>
-      <longflag>extractRadius</longflag>
+      <longflag>strictBoundary</longflag>
+    </boolean>
+    <double>
+      <name>Distance</name>
+      <label>Boundary Distance</label>
+      <description>Distance between the new path and the target path</description>
+      <longflag>distance</longflag>
+      <default>-1</default>
+      <constraints>
+        <minimum>-1</minimum>
+        <maximum>50</maximum>
+        <step>1</step>
+      </constraints>
+    </double>
+    <file fileExtensions=".fcsv">
+      <name>PathEndPoints</name>
+      <label>Path End Points File</label>
+      <channel>input</channel>
+      <description>Save the end points of the extracted path.</description>
+      <longflag>endPointsFile</longflag>
+    </file>
+  </parameters>
+  <parameters>
+    <label>Radius Extraction</label>
+    <boolean>
+      <name>ExtractRadiusUsingInputImage</name>
+      <label>Extract Radius Using Input Image</label>
+      <description>Extract tube radius along the path using input image. To be used when input image is a distance map.</description>
+      <default>false</default>
+      <longflag>extractRadiusFromDistanceMap</longflag>
     </boolean>
     <image>
-      <name>radiusImage</name>
+      <name>RadiusImage</name>
       <label>Radius Image</label>
       <longflag>radiusImage</longflag>
       <flag>R</flag>
@@ -51,27 +87,27 @@
       <channel>input</channel>
       <default></default>
     </image>
-    <boolean>
-      <name>ExtractFromCenterline</name>
-      <label>Extract From Centerline</label>
-      <description>Extract from a given centerline</description>
-      <default>false</default>
-      <longflag>extractFromCenterline</longflag>
-    </boolean>
-    <file>
-      <name>inputTREFile</name>
-      <label>Input Centerline File </label>
-      <longflag>inputTRE</longflag>
-      <channel>input</channel>
-      <description>Input tubes centered along some path </description>
-    </file>
-    <boolean>
-      <name>ClipTubes</name>
-      <label>Clip Tubes</label>
-      <description>Clip the tube based on the input </description>
-      <default>false</default>
-      <longflag>clip</longflag>
-    </boolean>
+    <double>
+      <name>StartRadius</name>
+      <label>Start Radius</label>
+      <description>Start Radius for radius estimation.</description>
+      <longflag>startRadius</longflag>
+      <default>1</default>
+    </double>
+    <double>
+      <name>MaxRadius</name>
+      <label>Radius Maximum Limit</label>
+      <description>Maximum Radius for radius estimation.</description>
+      <longflag>maxRadius</longflag>
+      <default>6</default>
+    </double>
+    <double>
+      <name>StepRadius</name>
+      <label>Step size for radius estimation</label>
+      <description>Step size for radius estimation.</description>
+      <longflag>stepRadius</longflag>
+      <default>0.05</default>
+    </double>
   </parameters>
   <parameters advanced="true">
     <label>Algorithm Parameters</label>
@@ -113,26 +149,5 @@
       <longflag>stepLengthRelax</longflag>
       <default>0.999</default>
     </double>
-    <double>
-      <name>StartRadius</name>
-      <label>Start Radius</label>
-      <description>Start Radius for radius estimation.</description>
-      <longflag>startRadius</longflag>
-      <default>1</default>
-    </double>
-    <double>
-        <name>MaxRadius</name>
-        <label>Radius Maximum Limit</label>
-        <description>Maximum Radius for radius estimation.</description>
-        <longflag>maxRadius</longflag>
-        <default>6</default>
-      </double>
-    <double>
-        <name>StepRadius</name>
-        <label>Step size for radius estimation</label>
-        <description>Maximum Radius for radius estimation.</description>
-        <longflag>stepRadius</longflag>
-        <default>0.05</default>
-      </double>
   </parameters>
 </executable>
