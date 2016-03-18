@@ -142,16 +142,9 @@ ComputeRidgeness( const vnl_matrix<T> & H,
 {
   unsigned int ImageDimension = D.size();
 
-  ::tube::ComputeEigen( H, HEVect, HEVal, true, false );
-  for( unsigned int i=0; i<ImageDimension; i++ )
-    {
-    for( unsigned int j=0; j<ImageDimension; j++ )
-      {
-      std::cout << H(i, j) << " ";
-      }
-    std::cout << std::endl;
-    }
-  std::cout << std::endl;
+  vnl_matrix<T> HSym( H );
+  ::tube::FixMatrixSymmetry( HSym );
+  ::tube::ComputeEigen( HSym, HEVect, HEVal, true, false );
 
   vnl_vector<T> Dv = D;
   if( Dv.magnitude() > 0 )
@@ -166,11 +159,6 @@ ComputeRidgeness( const vnl_matrix<T> & H,
   double sump = 0;
   double sumv = 0;
   int ridge = 1;
-  for( unsigned int i=0; i<ImageDimension; i++ )
-    {
-    std::cout << HEVal[i] << " ";
-    }
-  std::cout << std::endl;
   for( unsigned int i=0; i<ImageDimension-1; i++ )
     {
     double tf = 0;
@@ -254,6 +242,7 @@ ComputeEigenOfMatrixInvertedTimesMatrix(
   u = l.transpose();
   a = vnl_matrix_inverse<double>( l ) * mat
     * vnl_matrix_inverse<double>( u );
+  ::tube::FixMatrixSymmetry( a );
   ::tube::ComputeEigen( a, eVects, eVals, orderByAbs, minToMax );
   eVects = vnl_matrix_inverse<double>( u ) * eVects;
 }
@@ -290,17 +279,18 @@ ComputeEigen( vnl_matrix<T> const & mat,
   eVects = mat;
   eVals.set_size( n );
   bool symmetric = true;
-  for( unsigned int i=0; i<n; ++i )
+  for( unsigned int i=0; i<n-1; ++i )
     {
     for( unsigned int j=i+1; j<n; ++j )
       {
       if( mat( i, j ) != mat( j, i ) )
         {
-        i = n;
-        std::cout
-          << "Calling ComputeEigen with non-symmetric matrix is unstable."
+        std::cout << "Non-symmetric matrix passed to eign-solver."
+          << std::endl;
+        std::cout << "   " << mat( i, j ) << " != " << mat( j, i )
           << std::endl;
         symmetric = false;
+        i = n - 1;
         break;
         }
       }
@@ -316,15 +306,15 @@ ComputeEigen( vnl_matrix<T> const & mat,
     }
   else
     {
-    std::cout << "Non-symmetric matrix passed to eign-solver."
-      << std::endl;
     vnl_matrix< double > matD( mat.rows(), mat.columns() );
     for( unsigned int c=0; c<mat.columns(); c++ )
       {
       for( unsigned int r=0; r<mat.rows(); r++ )
         {
         matD( r, c ) = mat( r, c );
+        std::cout << mat( r, c ) << " ";
         }
+      std::cout << std::endl;
       }
     vnl_real_eigensystem eigen( matD );
     for( unsigned int c=0; c<mat.columns(); c++ )
