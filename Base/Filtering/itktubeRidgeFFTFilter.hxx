@@ -145,9 +145,9 @@ RidgeFFTFilter< TInputImage >
     double roundness = 0;
     double curvature = 0;
     double levelness = 0;
-    vnl_matrix<double> H( ImageDimension, ImageDimension);
+    vnl_matrix<double> H( ImageDimension, ImageDimension );
     vnl_vector<double> D( ImageDimension );
-    vnl_matrix<double> HEVect( ImageDimension, ImageDimension);
+    vnl_matrix<double> HEVect( ImageDimension, ImageDimension );
     vnl_vector<double> HEVal( ImageDimension );
     while( !iterRidge.IsAtEnd() )
       {
