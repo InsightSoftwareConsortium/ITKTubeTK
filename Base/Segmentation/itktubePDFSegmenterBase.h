@@ -1,0 +1,215 @@
+/*=========================================================================
+
+Library:   TubeTK
+
+Copyright 2010 Kitware Inc. 28 Corporate Drive,
+Clifton Park, NY, 12065, USA.
+
+All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+=========================================================================*/
+
+#ifndef __itktubePDFSegmenterBase_h
+#define __itktubePDFSegmenterBase_h
+
+#include <itkImage.h>
+#include <itkListSample.h>
+
+#include <vector>
+
+namespace itk
+{
+
+namespace tube
+{
+
+#define MAX_NUMBER_OF_FEATURES 5
+
+template< class TImage, unsigned int N, class TLabelMap >
+class PDFSegmenterBase : public Object
+{
+public:
+
+  typedef PDFSegmenterBase                     Self;
+  typedef Object                               Superclass;
+  typedef SmartPointer< Self >                 Pointer;
+  typedef SmartPointer< const Self >           ConstPointer;
+
+  itkTypeMacro( PDFSegmenterBase, Object );
+
+  itkNewMacro( Self );
+
+  //
+  // Custom Typedefs
+  //
+  typedef TImage                               ImageType;
+  typedef typename ImageType::PixelType        PixelType;
+
+  itkStaticConstMacro( ImageDimension, unsigned int,
+    TImage::ImageDimension );
+
+  typedef FeatureVectorGenerator< ImageType >  FeatureVectorGeneratorType;
+  typedef typename FeatureVectorGeneratorType::FeatureValueType
+                                               FeatureValueType;
+  typedef typename FeatureVectorGeneratorType::FeatureVectorType
+                                               FeatureVectorType;
+
+  typedef TLabelMap                            LabelMapType;
+  typedef typename LabelMapType::PixelType     LabelMapPixelType;
+
+  typedef int                                  ObjectIdType;
+  typedef std::vector< ObjectIdType >          ObjectIdListType;
+
+  typedef float                                ProbabilityPixelType;
+  typedef Image< ProbabilityPixelType, TImage::ImageDimension >
+                                               ProbabilityImageType;
+
+  typedef std::vector< double >                VectorDoubleType;
+  typedef std::vector< int >                   VectorIntType;
+  typedef std::vector< unsigned int >          VectorUIntType;
+
+  //
+  // Methods
+  //
+  void SetFeatureVectorGenerator( typename
+    FeatureVectorGeneratorType::Pointer fvg );
+
+  void ClearObjectIds( void );
+  void SetObjectId( ObjectIdType objectId );
+  void AddObjectId( ObjectIdType objectId );
+  void SetObjectId( const ObjectIdListType _objectId );
+  const VectorIntType & GetObjectId( void ) const;
+
+  unsigned int GetNumberOfClasses( void ) const;
+  unsigned int GetNumberOfObjectIds( void ) const;
+
+  unsigned int GetNumberOfFeatures( void ) const;
+
+  unsigned int GetObjectNumberFromId( ObjectIdType id ) const;
+
+  void   SetObjectPDFWeight( unsigned int num, double weight );
+  void   SetObjectPDFWeight( const VectorDoubleType & weight );
+  const VectorDoubleType & GetObjectPDFWeight( void ) const;
+
+  itkSetMacro( VoidId, ObjectIdType );
+  itkGetMacro( VoidId, ObjectIdType );
+
+  itkSetObjectMacro( LabelMap, LabelMapType );
+  itkGetObjectMacro( LabelMap, LabelMapType );
+
+  itkSetMacro( ErodeRadius, int );
+  itkGetMacro( ErodeRadius, int );
+  itkSetMacro( DilateFirst, bool );
+  itkGetMacro( DilateFirst, bool );
+  itkSetMacro( HoleFillIterations, int );
+  itkGetMacro( HoleFillIterations, int );
+  itkSetMacro( ProbabilityImageSmoothingStandardDeviation, double );
+  itkGetMacro( ProbabilityImageSmoothingStandardDeviation, double );
+
+  typename ProbabilityImageType::Pointer GetClassProbabilityImage(
+    unsigned int classNum ) const;
+
+  ProbabilityImagePixelType GetClassProbability( unsigned int classNum,
+    FeatureVectorType & fv ) const;
+
+  /** Copy the input object mask to the output mask, overwritting the
+   *   classification assigned to those voxels. Default is false. */
+  itkSetMacro( ReclassifyObjectLabels, bool );
+  itkGetMacro( ReclassifyObjectLabels, bool );
+
+  /** Copy the input not-object mask to the output mask, overwritting the
+   *   classification assigned to those voxels. Default is false. */
+  itkSetMacro( ReclassifyNotObjectLabels, bool );
+  itkGetMacro( ReclassifyNotObjectLabels, bool );
+
+  /** All object, void, and notObject pixels are force to being classified
+   * as object or notObject. Default is false. */
+  itkSetMacro( ForceClassification, bool );
+  itkGetMacro( ForceClassification, bool );
+
+  void SetProgressProcessInformation( void * processInfo, double fraction,
+    double start );
+
+  virtual void Update( void );
+
+  virtual void ClassifyImages( void );
+
+protected:
+
+  PDFSegmenterBase( void );
+  virtual ~PDFSegmenterBase( void );
+
+  virtual void GenerateSample( void );
+  virtual void GeneratePDFs( void );
+  virtual void ApplyPDFs( void );
+
+  void PrintSelf( std::ostream & os, Indent indent ) const;
+
+private:
+
+  PDFSegmenterBase( const Self & );      // Purposely not implemented
+  void operator = ( const Self & );      // Purposely not implemented
+
+  typedef std::vector< typename ProbabilityImageType::Pointer >
+    ProbabilityImageVectorType;
+  typedef itk::Vector< ProbabilityPixelType, N+ImageDimension >
+    ListVectorType;
+  typedef itk::Statistics::ListSample< ListVectorType >
+    ListSampleType;
+  typedef std::vector< typename ListSampleType::Pointer >
+    ClassListSampleType;
+
+  bool                                    m_SampleUpToDate;
+  bool                                    m_PDFsUpToDate;
+  bool                                    m_ClassProbabilityImagesUpToDate;
+
+  ClassListSampleType                     m_InClassList;
+  typename ListSampleType::Pointer        m_OutClassList;
+
+  //  Data
+  typename FeatureVectorGeneratorType::Pointer  m_FeatureVectorGenerator;
+
+  typename LabelMapType::Pointer          m_LabelMap;
+
+  ProbabilityImageVectorType              m_ProbabilityImageVector;
+
+  ObjectIdListType    m_ObjectIdList;
+  ObjectIdType        m_VoidId;
+
+  VectorDoubleType    m_PDFWeightList;
+
+  int                 m_ErodeRadius;
+  bool                m_DilateFirst;
+  int                 m_HoleFillIterations;
+  double              m_ProbabilityImageSmoothingStandardDeviation;
+  bool                m_ReclassifyObjectLabels;
+  bool                m_ReclassifyNotObjectLabels;
+  bool                m_ForceClassification;
+
+  void              * m_ProgressProcessInfo;
+  double              m_ProgressFraction;
+  double              m_ProgressStart;
+
+}; // End class PDFSegmenterBase
+
+} // End namespace tube
+
+} // End namespace itk
+
+#ifndef ITK_MANUAL_INSTANTIATION
+#include "itktubePDFSegmenterBase.hxx"
+#endif
+
+#endif // End !defined(__itktubePDFSegmenterBase_h)
