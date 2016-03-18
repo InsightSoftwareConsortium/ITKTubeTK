@@ -174,9 +174,9 @@ ComputeRidgeness( const vnl_matrix<T> & H,
   for( unsigned int i=0; i<ImageDimension-1; i++ )
     {
     double tf = 0;
-    for( unsigned int j=0; j<ImageDimension-1; ++j )
+    for( unsigned int j=0; j<ImageDimension; ++j )
       {
-      tf += HEVect.get_column( i )[j] * Dv[i];
+      tf += HEVect.get_column( i )[j] * Dv[j];
       }
     sump += tf * tf;
 
