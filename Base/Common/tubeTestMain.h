@@ -64,7 +64,8 @@ void RegisterTests( void );
 void PrintAvailableTests( void )
 {
   std::cout << "Available tests:\n";
-  std::map<std::string, MainFuncPointer>::iterator j = StringToTestFunctionMap.begin();
+  std::map<std::string, MainFuncPointer>::iterator j =
+    StringToTestFunctionMap.begin();
   int i = 0;
   while(j != StringToTestFunctionMap.end())
     {
@@ -83,7 +84,7 @@ int main( int argc, char * argv[] )
   typedef std::pair< char *, char * > ComparePairType;
   std::vector< ComparePairType > compareList;
 
-  itk::OutputWindow::SetInstance(itk::TextOutput::New());
+  itk::OutputWindow::SetInstance( itk::TextOutput::New() );
 
   RegisterTests();
   std::string testToRun;

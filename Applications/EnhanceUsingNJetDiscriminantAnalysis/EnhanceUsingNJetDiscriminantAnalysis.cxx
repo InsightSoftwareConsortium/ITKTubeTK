@@ -152,7 +152,6 @@ int DoIt( int argc, char * argv[] )
     fvGenerator->SetFirstScales( basisReader.GetFirstScales() );
     fvGenerator->SetSecondScales( basisReader.GetSecondScales() );
     fvGenerator->SetRidgeScales( basisReader.GetRidgeScales() );
-    // BUG: Must also read/write/set fvGenerator whitening statistics
     basisGenerator->SetNumberOfPCABasisToUseAsFeatures(
       basisReader.GetNumberOfPCABasisToUseAsFeatures() );
     basisGenerator->SetNumberOfLDABasisToUseAsFeatures(
@@ -167,6 +166,9 @@ int DoIt( int argc, char * argv[] )
       GetOutputWhitenStdDevs() );
     basisGenerator->SetBasisValues( basisReader.GetLDAValues() );
     basisGenerator->SetBasisMatrix( basisReader.GetLDAMatrix() );
+
+    fvGenerator->SetUpdateWhitenStatisticsOnUpdate( false );
+    basisGenerator->SetUpdateWhitenStatisticsOnUpdate( false );
 
     timeCollector.Stop( "LoadBasis" );
     }

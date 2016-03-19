@@ -71,6 +71,8 @@ public:
   void SetInput( typename ImageType::Pointer img );
   void AddInput( typename ImageType::Pointer img );
 
+  typename ImageType::Pointer GetInput( unsigned int imageNum );
+
   unsigned int GetNumberOfInputImages() const;
 
   void SetUpdateWhitenStatisticsOnUpdate( bool

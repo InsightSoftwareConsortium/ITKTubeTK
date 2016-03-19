@@ -24,6 +24,8 @@ limitations under the License.
 #ifndef __itktubePDFSegmenterBase_h
 #define __itktubePDFSegmenterBase_h
 
+#include "itktubeFeatureVectorGenerator.h"
+
 #include <itkImage.h>
 #include <itkListSample.h>
 
@@ -118,12 +120,6 @@ public:
   itkSetMacro( ProbabilityImageSmoothingStandardDeviation, double );
   itkGetMacro( ProbabilityImageSmoothingStandardDeviation, double );
 
-  typename ProbabilityImageType::Pointer GetClassProbabilityImage(
-    unsigned int classNum ) const;
-
-  ProbabilityImagePixelType GetClassProbability( unsigned int classNum,
-    FeatureVectorType & fv ) const;
-
   /** Copy the input object mask to the output mask, overwritting the
    *   classification assigned to those voxels. Default is false. */
   itkSetMacro( ReclassifyObjectLabels, bool );
@@ -146,21 +142,32 @@ public:
 
   virtual void ClassifyImages( void );
 
+  // Overwrite for speedup
+  virtual typename ProbabilityImageType::Pointer GetClassProbabilityImage(
+    unsigned int classNum ) const;
+
+  //
+  // Must overwrite
+  //
+  virtual ProbabilityPixelType GetClassProbability( unsigned int
+    classNum, const FeatureVectorType & fv ) const;
+
+
 protected:
 
   PDFSegmenterBase( void );
   virtual ~PDFSegmenterBase( void );
 
   virtual void GenerateSample( void );
+
+  //
+  // Must overwrite
+  //
   virtual void GeneratePDFs( void );
+
   virtual void ApplyPDFs( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
-
-private:
-
-  PDFSegmenterBase( const Self & );      // Purposely not implemented
-  void operator = ( const Self & );      // Purposely not implemented
 
   typedef std::vector< typename ProbabilityImageType::Pointer >
     ProbabilityImageVectorType;
@@ -171,22 +178,30 @@ private:
   typedef std::vector< typename ListSampleType::Pointer >
     ClassListSampleType;
 
-  bool                                    m_SampleUpToDate;
-  bool                                    m_PDFsUpToDate;
-  bool                                    m_ClassProbabilityImagesUpToDate;
+  ClassListSampleType                           m_InClassList;
+  typename ListSampleType::Pointer              m_OutClassList;
 
-  ClassListSampleType                     m_InClassList;
-  typename ListSampleType::Pointer        m_OutClassList;
-
-  //  Data
   typename FeatureVectorGeneratorType::Pointer  m_FeatureVectorGenerator;
 
-  typename LabelMapType::Pointer          m_LabelMap;
+  typename LabelMapType::Pointer                m_LabelMap;
 
-  ProbabilityImageVectorType              m_ProbabilityImageVector;
+  ProbabilityImageVectorType                    m_ProbabilityImageVector;
+
+  bool                m_SampleUpToDate;
+  bool                m_PDFsUpToDate;
+  bool                m_ClassProbabilityImagesUpToDate;
 
   ObjectIdListType    m_ObjectIdList;
   ObjectIdType        m_VoidId;
+
+  void              * m_ProgressProcessInfo;
+  double              m_ProgressFraction;
+  double              m_ProgressStart;
+
+private:
+
+  PDFSegmenterBase( const Self & );      // Purposely not implemented
+  void operator = ( const Self & );      // Purposely not implemented
 
   VectorDoubleType    m_PDFWeightList;
 
@@ -197,10 +212,6 @@ private:
   bool                m_ReclassifyObjectLabels;
   bool                m_ReclassifyNotObjectLabels;
   bool                m_ForceClassification;
-
-  void              * m_ProgressProcessInfo;
-  double              m_ProgressFraction;
-  double              m_ProgressStart;
 
 }; // End class PDFSegmenterBase
 

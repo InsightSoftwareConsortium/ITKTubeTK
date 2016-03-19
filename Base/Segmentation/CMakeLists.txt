@@ -25,6 +25,8 @@ project( TubeTKSegmentation )
 
 set( TubeTK_Base_Segmentation_H_Files
   itktubePDFSegmenter.h
+  itktubePDFSegmenterBase.h
+  itktubeParzenPDFSegmenter.h
   itktubeRadiusExtractor2.h
   itktubeRidgeExtractor.h
   itktubeRidgeSeedFilter.h
@@ -32,6 +34,8 @@ set( TubeTK_Base_Segmentation_H_Files
 
 set( TubeTK_Base_Segmentation_HXX_Files
   itktubePDFSegmenter.hxx
+  itktubePDFSegmenterBase.hxx
+  itktubeParzenPDFSegmenter.hxx
   itktubeRadiusExtractor2.hxx
   itktubeRidgeExtractor.hxx
   itktubeRidgeSeedFilter.hxx

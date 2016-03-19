@@ -51,6 +51,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( tubeBaseSegmentation_SRCS
   tubeBaseSegmentationPrintTest.cxx
   itktubePDFSegmenterTest.cxx
+  itktubePDFSegmenterParzenTest.cxx
   itktubeRadiusExtractor2Test.cxx
   itktubeRadiusExtractor2Test2.cxx
   itktubeRidgeExtractorTest.cxx
@@ -94,6 +95,22 @@ add_test( NAME tubeBaseSegmentationPrintTest
   COMMAND ${BASE_SEGMENTATION_TESTS}
   tubeBaseSegmentationPrintTest )
 
+Midas3FunctionAddTest( NAME itktubePDFSegmenterParzenTest
+  COMMAND ${BASE_SEGMENTATION_TESTS}
+    --compare MIDAS{itktubePDFSegmenterTest_mask.mha.md5}
+      ${TEMP}/itktubePDFSegmenterParzenTest_mask.mha
+    itktubePDFSegmenterParzenTest
+      MIDAS{ES0015_Large.mha.md5}
+      MIDAS{ES0015_Large.mha.md5}
+      true
+      5.0
+      MIDAS{GDS0015_Large-TrainingMask.mha.md5}
+      ${TEMP}/itktubePDFSegmenterParzenTest_prob0.mha
+      ${TEMP}/itktubePDFSegmenterParzenTest_pdf0.mha
+      ${TEMP}/itktubePDFSegmenterParzenTest_prob1.mha
+      ${TEMP}/itktubePDFSegmenterParzenTest_pdf1.mha
+      ${TEMP}/itktubePDFSegmenterParzenTest_mask.mha
+      ${TEMP}/itktubePDFSegmenterParzenTest_labeledFeatureSpace.mha )
 
 Midas3FunctionAddTest( NAME itktubePDFSegmenterTest
   COMMAND ${BASE_SEGMENTATION_TESTS}

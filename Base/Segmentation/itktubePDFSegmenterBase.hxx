@@ -80,8 +80,6 @@ PDFSegmenterBase< TImage, N, TLabelMap >
 
   m_ProbabilityImageVector.resize( 0 );
 
-  m_LabeledFeatureSpace = NULL;
-
   m_ProgressProcessInfo = NULL;
   m_ProgressFraction = 1.0;
   m_ProgressStart = 0;
@@ -229,9 +227,17 @@ PDFSegmenterBase< TImage, N, TLabelMap >
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
+typename PDFSegmenterBase< TImage, N, TLabelMap >::ProbabilityPixelType
+PDFSegmenterBase< TImage, N, TLabelMap >
+::GetClassProbability( unsigned int classNum, const FeatureVectorType & fv )
+  const
+{
+  return 0;
+}
+template< class TImage, unsigned int N, class TLabelMap >
 void
 PDFSegmenterBase< TImage, N, TLabelMap >
-::SetFeatureVectorGenerator( typename GeatureVectorGeneratorTyep::Pointer
+::SetFeatureVectorGenerator( typename FeatureVectorGeneratorType::Pointer
   fvg )
 {
   m_FeatureVectorGenerator = fvg;
@@ -308,13 +314,6 @@ PDFSegmenterBase< TImage, N, TLabelMap >
       m_OutClassList->PushBack( v );
       }
     ++itInLabelMap;
-    if( m_Draft )
-      {
-      for( unsigned int count = 1; count < 4; count++ )
-        {
-        ++itInLabelMap;
-        }
-      }
     }
 }
 
@@ -347,11 +346,6 @@ PDFSegmenterBase< TImage, N, TLabelMap >
 
   int erodeRadius = m_ErodeRadius;
   int holeFillIterations = m_HoleFillIterations;
-  if( m_Draft )
-    {
-    erodeRadius /= 2;
-    holeFillIterations /= 2;
-    }
 
   unsigned int numClasses = m_ObjectIdList.size();
 
@@ -363,7 +357,6 @@ PDFSegmenterBase< TImage, N, TLabelMap >
   typedef itk::ImageRegionIterator<ProbabilityImageType>
     ProbabilityImageIteratorType;
   std::vector< ProbabilityImageIteratorType * > probIt( numClasses );
-    }
 
   for( unsigned int c = 0; c < numClasses; c++ )
     {
@@ -385,6 +378,7 @@ PDFSegmenterBase< TImage, N, TLabelMap >
     m_LabelMap->GetLargestPossibleRegion() );
   itInLabelMap.GoToBegin();
 
+  typename LabelMapType::IndexType indx;
   FeatureVectorType fv;
   while( !itInLabelMap.IsAtEnd() )
     {
@@ -441,9 +435,9 @@ PDFSegmenterBase< TImage, N, TLabelMap >
   typename LabelMapType::IndexType labelImageIndex;
 
   typename LabelMapType::Pointer tmpLabelImage = LabelMapType::New();
-  tmpLabelImage->SetRegions( m_InputImageList[0]
+  tmpLabelImage->SetRegions( m_FeatureVectorGenerator->GetInput( 0 )
     ->GetLargestPossibleRegion() );
-  tmpLabelImage->CopyInformation( m_InputImageList[0] );
+  tmpLabelImage->CopyInformation( m_FeatureVectorGenerator->GetInput( 0 ) );
   tmpLabelImage->Allocate();
 
   if( m_LabelMap.IsNull() )
@@ -824,7 +818,6 @@ PDFSegmenterBase< TImage, N, TLabelMap >
 {
   this->GenerateSample();
   this->GeneratePDFs();
-  this->GenerateLabeledFeatureSpace();
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
@@ -887,7 +880,6 @@ PDFSegmenterBase< TImage, N, TLabelMap >
     << std::endl;
   os << indent << "Probability Smoothing Standard Deviation = "
     << m_ProbabilityImageSmoothingStandardDeviation << std::endl;
-  os << indent << "Draft = " << m_Draft << std::endl;
   os << indent << "ReclassifyObjectLabels = " << m_ReclassifyObjectLabels
     << std::endl;
   os << indent << "ReclassifyNotObjectLabels = "

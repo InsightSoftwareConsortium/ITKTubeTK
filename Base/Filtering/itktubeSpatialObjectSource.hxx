@@ -26,6 +26,8 @@ limitations under the License.
 
 #include "itktubeSpatialObjectSource.h"
 
+#include <itkTextOutput.h>
+
 namespace itk
 {
 
@@ -43,6 +45,8 @@ SpatialObjectSource< TOutputSpatialObject >
     this->MakeOutput(0).GetPointer() );
   this->ProcessObject::SetNumberOfRequiredOutputs(1);
   this->ProcessObject::SetNthOutput( 0, output.GetPointer() );
+
+  itk::OutputWindow::SetInstance( itk::TextOutput::New() );
 }
 
 
