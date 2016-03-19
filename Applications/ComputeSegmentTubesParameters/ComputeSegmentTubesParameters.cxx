@@ -420,7 +420,7 @@ int DoIt( int argc, char * argv[] )
   double ridgeScale = scaleMin + 0.25 * scaleRange;
   double ridgeScaleKernelExtent = 2.5;
 
-  bool   ridgeDynamicScale = false;
+  bool   ridgeDynamicScale = true;
 
   bool   ridgeDynamicStepSize = false;
 

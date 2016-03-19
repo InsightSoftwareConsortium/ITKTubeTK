@@ -26,6 +26,8 @@ limitations under the License.
 
 #include "itktubeSpatialObjectToSpatialObjectFilter.h"
 
+#include <itkTextOutput.h>
+
 namespace itk
 {
 
@@ -38,6 +40,8 @@ TOutputSpatialObject >
 ::SpatialObjectToSpatialObjectFilter( void )
 {
   this->SetNumberOfRequiredInputs( 1 );
+
+  itk::OutputWindow::SetInstance( itk::TextOutput::New() );
 }
 
 

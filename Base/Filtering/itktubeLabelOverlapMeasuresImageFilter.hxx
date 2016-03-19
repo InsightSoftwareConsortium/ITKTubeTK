@@ -28,6 +28,7 @@ limitations under the License.
 
 #include <itkImageRegionConstIterator.h>
 #include <itkProgressReporter.h>
+#include <itkTextOutput.h>
 
 namespace itk
 {
@@ -51,6 +52,8 @@ LabelOverlapMeasuresImageFilter< TLabelImage >
 {
   // this filter requires two input images
   this->SetNumberOfRequiredInputs( 2 );
+
+  itk::OutputWindow::SetInstance( itk::TextOutput::New() );
 }
 
 template< class TLabelImage >

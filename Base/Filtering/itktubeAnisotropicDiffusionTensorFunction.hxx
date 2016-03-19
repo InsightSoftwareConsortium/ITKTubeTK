@@ -26,6 +26,8 @@ limitations under the License.
 
 #include "itktubeAnisotropicDiffusionTensorFunction.h"
 
+#include <itkTextOutput.h>
+
 namespace itk
 {
 
@@ -39,6 +41,8 @@ AnisotropicDiffusionTensorFunction< TImageType>
   typename Superclass::RadiusType r;
   r.Fill( 1 );
   this->SetRadius( r );
+
+  itk::OutputWindow::SetInstance( itk::TextOutput::New() );
 
   // Dummy neighborhood.
   NeighborhoodType it;

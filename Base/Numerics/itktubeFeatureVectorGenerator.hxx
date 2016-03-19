@@ -88,6 +88,14 @@ FeatureVectorGenerator< TImage >
 }
 
 template< class TImage >
+typename FeatureVectorGenerator< TImage >::ImageType::Pointer
+FeatureVectorGenerator< TImage >
+::GetInput( unsigned int imageNum )
+{
+  return m_InputImageList[ imageNum ];
+}
+
+template< class TImage >
 unsigned int
 FeatureVectorGenerator< TImage >
 ::GetNumberOfInputImages( void ) const
