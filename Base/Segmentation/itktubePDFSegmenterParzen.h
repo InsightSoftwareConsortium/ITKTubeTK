@@ -44,10 +44,10 @@ class PDFSegmenterParzen : public PDFSegmenterBase< TImage, N, TLabelMap >
 {
 public:
 
-  typedef PDFSegmenterParzen                   Self;
-  typedef PDFSegmenterBase                     Superclass;
-  typedef SmartPointer< Self >                 Pointer;
-  typedef SmartPointer< const Self >           ConstPointer;
+  typedef PDFSegmenterParzen                         Self;
+  typedef PDFSegmenterBase< TImage, N, TLabelMap >   Superclass;
+  typedef SmartPointer< Self >                       Pointer;
+  typedef SmartPointer< const Self >                 ConstPointer;
 
   itkTypeMacro( PDFSegmenterParzen, PDFSegmenterBase );
 

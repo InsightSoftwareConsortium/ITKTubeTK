@@ -93,14 +93,14 @@ PDFSegmenterParzen< TImage, N, TLabelMap >
 ::SetClassPDFImage( unsigned int classNum,
   typename PDFImageType::Pointer classPDF )
 {
-  if( m_ObjectIdList.size() != m_InClassHistogram.size() )
+  if( this->m_ObjectIdList.size() != m_InClassHistogram.size() )
     {
     m_InClassHistogram.resize( m_ObjectIdList.size() );
     }
   m_InClassHistogram[classNum] = classPDF;
-  m_SampleUpToDate = false;
-  m_PDFsUpToDate = true;
-  m_ImagesUpToDate = false;
+  this->m_SampleUpToDate = false;
+  this->m_PDFsUpToDate = true;
+  this->m_ImagesUpToDate = false;
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
@@ -156,13 +156,13 @@ void
 PDFSegmenterParzen< TImage, N, TLabelMap >
 ::GeneratePDFs( void )
 {
-  if( !m_SampleUpToDate )
+  if( !this->m_SampleUpToDate )
     {
     this->GenerateSample();
     }
-  m_PDFsUpToDate = true;
+  this->m_PDFsUpToDate = true;
 
-  unsigned int numClasses = m_ObjectIdList.size();
+  unsigned int numClasses = this->m_ObjectIdList.size();
 
   //
   // Convert lists to histograms that have the same span ( using range
@@ -182,9 +182,9 @@ PDFSegmenterParzen< TImage, N, TLabelMap >
   for( unsigned int c = 0; c < numClasses; c++ )
     {
     typename ListSampleType::ConstIterator
-      inClassListIt( m_InClassList[c]->Begin() );
+      inClassListIt( this->m_InClassList[c]->Begin() );
     typename ListSampleType::ConstIterator
-      inClassListItEnd( m_InClassList[c]->End() );
+      inClassListItEnd( this->m_InClassList[c]->End() );
     while( inClassListIt != inClassListItEnd )
       {
       for( unsigned int i = 0; i < N; i++ )
@@ -243,9 +243,9 @@ PDFSegmenterParzen< TImage, N, TLabelMap >
     for( unsigned int c = 0; c < numClasses; c++ )
       {
       typename ListSampleType::ConstIterator
-        inClassListIt( m_InClassList[c]->Begin() );
+        inClassListIt( this->m_InClassList[c]->Begin() );
       typename ListSampleType::ConstIterator
-        inClassListItEnd( m_InClassList[c]->End() );
+        inClassListItEnd( this->m_InClassList[c]->End() );
       while( inClassListIt != inClassListItEnd )
         {
         for( unsigned int i = 0; i < N; i++ )
@@ -373,9 +373,9 @@ PDFSegmenterParzen< TImage, N, TLabelMap >
     for( unsigned int c = 0; c < numClasses; c++ )
       {
       typename ListSampleType::ConstIterator
-        inClassListIt( m_InClassList[c]->Begin() );
+        inClassListIt( this->m_InClassList[c]->Begin() );
       typename ListSampleType::ConstIterator
-        inClassListItEnd( m_InClassList[c]->End() );
+        inClassListItEnd( this->m_InClassList[c]->End() );
       while( inClassListIt != inClassListItEnd )
         {
         for( unsigned int i = 0; i < N; i++ )
@@ -427,9 +427,9 @@ PDFSegmenterParzen< TImage, N, TLabelMap >
     m_InClassHistogram[c]->FillBuffer( 0 );
 
     typename ListSampleType::ConstIterator
-      inClassListIt( m_InClassList[c]->Begin() );
+      inClassListIt( this->m_InClassList[c]->Begin() );
     typename ListSampleType::ConstIterator
-      inClassListItEnd( m_InClassList[c]->End() );
+      inClassListItEnd( this->m_InClassList[c]->End() );
     typename HistogramImageType::IndexType indxHistogram;
     while( inClassListIt != inClassListItEnd )
       {
@@ -527,7 +527,7 @@ PDFSegmenterParzen< TImage, N, TLabelMap >
   itk::ImageRegionIterator< LabeledFeatureSpaceType > fsIter(
     m_LabeledFeatureSpace, region );
 
-  unsigned int numClasses = m_ObjectIdList.size();
+  unsigned int numClasses = this->m_ObjectIdList.size();
 
   typedef itk::ImageRegionIterator< HistogramImageType >
     PDFIteratorType;
@@ -542,7 +542,7 @@ PDFSegmenterParzen< TImage, N, TLabelMap >
   while( !fsIter.IsAtEnd() )
     {
     double maxP = 0;
-    ObjectIdType maxPC = m_VoidId;
+    ObjectIdType maxPC = this->m_VoidId;
     for( unsigned int c = 0; c < numClasses; c++ )
       {
       if( pdfIter[c]->Get() > maxP )
@@ -580,7 +580,7 @@ PDFSegmenterParzen< TImage, N, TLabelMap >
 ::GetClassProbability( unsigned int classNum, const FeatureVectorType & fv)
   const
 {
-  HistogramImageType::IndexType binIndex;
+  typename HistogramImageType::IndexType binIndex;
   for( unsigned int i = 0; i < N; i++ )
     {
     int binN = static_cast< int >( ( fv[i] - m_HistogramBinMin[i] )
