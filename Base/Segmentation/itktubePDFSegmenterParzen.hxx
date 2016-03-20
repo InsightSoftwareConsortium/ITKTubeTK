@@ -95,7 +95,7 @@ PDFSegmenterParzen< TImage, N, TLabelMap >
 {
   if( this->m_ObjectIdList.size() != m_InClassHistogram.size() )
     {
-    m_InClassHistogram.resize( m_ObjectIdList.size() );
+    m_InClassHistogram.resize( this->m_ObjectIdList.size() );
     }
   m_InClassHistogram[classNum] = classPDF;
   this->m_SampleUpToDate = false;
@@ -548,7 +548,7 @@ PDFSegmenterParzen< TImage, N, TLabelMap >
       if( pdfIter[c]->Get() > maxP )
         {
         maxP = pdfIter[c]->Get();
-        maxPC = m_ObjectIdList[ c ];
+        maxPC = this->m_ObjectIdList[ c ];
         }
       }
     fsIter.Set( maxPC );
