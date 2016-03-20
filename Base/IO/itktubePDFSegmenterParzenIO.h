@@ -21,12 +21,12 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubePDFSegmenterIO_h
-#define __itktubePDFSegmenterIO_h
+#ifndef __itktubePDFSegmenterParzenIO_h
+#define __itktubePDFSegmenterParzenIO_h
 
 #include "itktubeMetaClassPDF.h"
 
-#include "itktubePDFSegmenter.h"
+#include "itktubePDFSegmenterParzen.h"
 
 namespace itk
 {
@@ -36,7 +36,8 @@ namespace tube
 
 /**
 *
-* Reads and Writes PDFSegmenterIO Files, typically designated .mnda files
+* Reads and Writes PDFSegmenterParzenIO Files, typically designated .mnda
+* files
 *
 * \author Stephen R. Aylward
 *
@@ -44,22 +45,22 @@ namespace tube
 *
 */
 template< class TImage, unsigned int N, class TLabelMap >
-class PDFSegmenterIO
+class PDFSegmenterParzenIO
 {
 public:
 
-  typedef PDFSegmenterIO< TImage, N, TLabelMap >  PDFSegmenterIOType;
+  typedef PDFSegmenterParzenIO< TImage, N, TLabelMap >  PDFSegmenterIOType;
 
-  typedef PDFSegmenter< TImage, N, TLabelMap >    PDFSegmenterType;
+  typedef PDFSegmenterParzen< TImage, N, TLabelMap >    PDFSegmenterType;
 
-  PDFSegmenterIO( void );
+  PDFSegmenterParzenIO( void );
 
-  PDFSegmenterIO( const char * _headerName );
+  PDFSegmenterParzenIO( const char * _headerName );
 
-  PDFSegmenterIO( const typename
+  PDFSegmenterParzenIO( const typename
     PDFSegmenterType::Pointer & _filter );
 
-  ~PDFSegmenterIO( void );
+  ~PDFSegmenterParzenIO( void );
 
   virtual void PrintInfo( void ) const;
 
@@ -85,14 +86,14 @@ protected:
 
   typename PDFSegmenterType::Pointer  m_PDFSegmenter;
 
-}; // End class PDFSegmenterIO
+}; // End class PDFSegmenterParzenIO
 
 } // End namespace tube
 
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubePDFSegmenterIO.hxx"
+#include "itktubePDFSegmenterParzenIO.hxx"
 #endif
 
-#endif // End !defined(__itktubePDFSegmenterIO_h)
+#endif // End !defined(__itktubePDFSegmenterParzenIO_h)

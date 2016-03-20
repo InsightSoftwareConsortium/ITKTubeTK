@@ -62,7 +62,7 @@ set( tubeBaseIOTests_SRCS
   itktubeMetaClassPDFTest.cxx
   itktubeMetaRidgeSeedTest.cxx
   itktubeMetaTubeExtractorTest.cxx
-  itktubePDFSegmenterIOTest.cxx
+  itktubePDFSegmenterParzenIOTest.cxx
   itktubeRidgeSeedFilterIOTest.cxx
   itktubeTubeExtractorIOTest.cxx
   itktubeTubeXIOTest.cxx )
@@ -131,18 +131,18 @@ add_test( NAME itktubeMetaTubeExtractorTest
     itktubeMetaTubeExtractorTest
       ${TEMP}/itktubeMetaTubeExtractorTest.mtp )
 
-Midas3FunctionAddTest( NAME itktubePDFSegmenterIOTest
+Midas3FunctionAddTest( NAME itktubePDFSegmenterParzenIOTest
   COMMAND ${BASE_IO_TESTS}
-    --compare ${TEMP}/itktubePDFSegmenterIOTest.mha
-      ${TEMP}/itktubePDFSegmenterIOTest2.mha
-    itktubePDFSegmenterIOTest
+    --compare ${TEMP}/itktubePDFSegmenterParzenIOTest.mha
+      ${TEMP}/itktubePDFSegmenterParzenIOTest2.mha
+    itktubePDFSegmenterParzenIOTest
       MIDAS{ES0015_Large.mha.md5}
       MIDAS{ES0015_Large.mha.md5}
       MIDAS{GDS0015_Large-TrainingMask.mha.md5}
-      ${TEMP}/itktubePDFSegmenterIOTest.mha
-      ${TEMP}/itktubePDFSegmenterIOTest.mpd
-      ${TEMP}/itktubePDFSegmenterIOTest2.mha
-      ${TEMP}/itktubePDFSegmenterIOTest2.mpd )
+      ${TEMP}/itktubePDFSegmenterParzenIOTest.mha
+      ${TEMP}/itktubePDFSegmenterParzenIOTest.mpd
+      ${TEMP}/itktubePDFSegmenterParzenIOTest2.mha
+      ${TEMP}/itktubePDFSegmenterParzenIOTest2.mpd )
 
 Midas3FunctionAddTest( NAME itktubeRidgeSeedFilterIOTest
   COMMAND ${BASE_IO_TESTS}

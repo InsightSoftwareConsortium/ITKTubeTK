@@ -600,7 +600,7 @@ PDFSegmenterBase< TImage, N, TLabelMap >
       // Erode
       //
       typedef BinaryBallStructuringElement< LabelMapPixelType,
-        ImageType::ImageDimension >                  StructuringElementType;
+        InputImageType::ImageDimension >             StructuringElementType;
       typedef BinaryErodeImageFilter< LabelMapType, LabelMapType,
         StructuringElementType >                     ErodeFilterType;
       typedef itk::BinaryDilateImageFilter< LabelMapType,

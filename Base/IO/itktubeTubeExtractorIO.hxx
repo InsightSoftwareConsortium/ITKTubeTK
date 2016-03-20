@@ -25,8 +25,6 @@ limitations under the License.
 
 #include "itktubeTubeExtractorIO.h"
 
-#include "itktubePDFSegmenterIO.h"
-
 namespace itk
 {
 

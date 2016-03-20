@@ -24,7 +24,7 @@ limitations under the License.
 #define __itktubeRidgeSeedFilterIO_hxx
 
 #include "itktubeRidgeSeedFilterIO.h"
-#include "itktubePDFSegmenterIO.h"
+#include "itktubePDFSegmenterParzenIO.h"
 
 namespace itk
 {
@@ -192,8 +192,8 @@ Read( const char * _headerName )
   m_RidgeSeedFilter->SetOutputWhitenStdDevs( seedReader.
     GetOutputWhitenStdDevs() );
 
-  PDFSegmenterIO< Image< float, TImage::ImageDimension >, 4, TLabelMap >
-    pdfReader( m_RidgeSeedFilter->GetPDFSegmenter() );
+  PDFSegmenterParzenIO< TImage, 4, TLabelMap > pdfReader(
+    m_RidgeSeedFilter->GetPDFSegmenter().GetPointer() );
   std::string pdfFileName = seedReader.GetPDFFileName();
   char pdfPath[255];
   MET_GetFilePath( _headerName, pdfPath );
@@ -255,8 +255,8 @@ Write( const char * _headerName )
   MET_GetFilePath( _headerName, pdfPath );
   std::string pdfWriteName = pdfPath + pdfName;
 
-  PDFSegmenterIO< Image< float, TImage::ImageDimension >, 4, TLabelMap >
-    pdfWriter( m_RidgeSeedFilter->GetPDFSegmenter() );
+  PDFSegmenterParzenIO< TImage, 4, TLabelMap > pdfWriter(
+    m_RidgeSeedFilter->GetPDFSegmenter().GetPointer() );
 
   bool result = seedWriter.Write( _headerName );
   if( !pdfWriter.Write( pdfWriteName.c_str() ) )

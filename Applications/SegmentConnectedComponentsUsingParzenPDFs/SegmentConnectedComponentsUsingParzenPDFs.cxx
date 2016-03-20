@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubePDFSegmenter.h"
+#include "itktubePDFSegmenterParzen.h"
 #include "tubeMacro.h"
 
 #include "SegmentConnectedComponentsUsingParzenPDFsCLP.h"
@@ -93,9 +93,16 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileWriter< PDFImageType >     PDFImageWriterType;
   typedef itk::ImageFileReader< PDFImageType >     PDFImageReaderType;
 
-  typedef itk::tube::PDFSegmenter< InputImageType, N, LabelMapType >
+  typedef itk::tube::PDFSegmenterParzen< InputImageType, N, LabelMapType >
     PDFSegmenterType;
-  typename PDFSegmenterType::Pointer pdfSegmenter = PDFSegmenterType::New();
+  typename PDFSegmenterType::Pointer pdfSegmenter =
+    PDFSegmenterType::New();
+
+  typedef itk::tube::FeatureVectorGenerator< InputImageType >
+    FeatureVectorGeneratorType;
+  typename FeatureVectorGeneratorType::Pointer fvGenerator =
+    FeatureVectorGeneratorType::New();
+
 
   timeCollector.Start( "LoadData" );
 
@@ -140,8 +147,17 @@ int DoIt( int argc, char * argv[] )
         << "origin." << std::endl;
       return EXIT_FAILURE;
       }
-    pdfSegmenter->SetInput( i, reader->GetOutput() );
+    if( i == 1 )
+      {
+      fvGenerator->SetInput( reader->GetOutput() );
+      }
+    else
+      {
+      fvGenerator->AddInput( reader->GetOutput() );
+      }
     }
+
+  pdfSegmenter->SetFeatureVectorGenerator( fvGenerator );
 
   timeCollector.Stop( "LoadData" );
 
@@ -165,7 +181,6 @@ int DoIt( int argc, char * argv[] )
     probImageSmoothingStdDev );
   pdfSegmenter->SetHistogramSmoothingStandardDeviation(
     histogramSmoothingStdDev );
-  pdfSegmenter->SetDraft( draft );
   pdfSegmenter->SetReclassifyNotObjectLabels( reclassifyNotObjectLabels );
   pdfSegmenter->SetReclassifyObjectLabels( reclassifyObjectLabels );
   if( forceClassification )
@@ -229,7 +244,7 @@ int DoIt( int argc, char * argv[] )
         ProbImageWriterType::New();
       probImageWriter->SetFileName( fname.c_str() );
       probImageWriter->SetInput( pdfSegmenter->
-        GetClassProbabilityForInput( i ) );
+        GetClassProbabilityImage( i ) );
       probImageWriter->Update();
       }
     }

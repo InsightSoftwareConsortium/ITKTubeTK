@@ -26,7 +26,7 @@ limitations under the License.
 #include "itktubeMetaNJetLDA.h"
 #include "itktubeMetaRidgeSeed.h"
 #include "itktubeMetaTubeExtractor.h"
-#include "itktubePDFSegmenterIO.h"
+#include "itktubePDFSegmenterParzenIO.h"
 #include "itktubeRidgeSeedFilterIO.h"
 #include "itktubeTubeExtractorIO.h"
 #include "itktubeTubeXIO.h"

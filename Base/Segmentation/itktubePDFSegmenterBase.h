@@ -56,17 +56,19 @@ public:
   //
   // Custom Typedefs
   //
-  typedef TImage                               ImageType;
-  typedef typename ImageType::PixelType        PixelType;
+  typedef TImage                               InputImageType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     TImage::ImageDimension );
 
-  typedef FeatureVectorGenerator< ImageType >  FeatureVectorGeneratorType;
+  typedef FeatureVectorGenerator< InputImageType >
+                                               FeatureVectorGeneratorType;
   typedef typename FeatureVectorGeneratorType::FeatureValueType
                                                FeatureValueType;
   typedef typename FeatureVectorGeneratorType::FeatureVectorType
                                                FeatureVectorType;
+  typedef typename FeatureVectorGeneratorType::FeatureImageType
+                                               FeatureImageType;
 
   typedef TLabelMap                            LabelMapType;
   typedef typename LabelMapType::PixelType     LabelMapPixelType;

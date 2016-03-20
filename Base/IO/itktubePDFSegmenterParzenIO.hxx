@@ -20,10 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itktubePDFSegmenterIO_hxx
-#define __itktubePDFSegmenterIO_hxx
+#ifndef __itktubePDFSegmenterParzenIO_hxx
+#define __itktubePDFSegmenterParzenIO_hxx
 
-#include "itktubePDFSegmenterIO.h"
+#include "itktubePDFSegmenterParzenIO.h"
 #include "itktubeMetaClassPDF.h"
 #include "metaUtils.h"
 
@@ -34,24 +34,24 @@ namespace tube
 {
 
 template< class TImage, unsigned int N, class TLabelMap >
-PDFSegmenterIO< TImage, N, TLabelMap >::
-PDFSegmenterIO( void )
+PDFSegmenterParzenIO< TImage, N, TLabelMap >::
+PDFSegmenterParzenIO( void )
 {
   Clear();
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-PDFSegmenterIO< TImage, N, TLabelMap >::
-PDFSegmenterIO( const char * _headerName )
+PDFSegmenterParzenIO< TImage, N, TLabelMap >::
+PDFSegmenterParzenIO( const char * _headerName )
 {
   Clear();
 
-  PDFSegmenterIO::Read( _headerName );
+  PDFSegmenterParzenIO::Read( _headerName );
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-PDFSegmenterIO< TImage, N, TLabelMap >::
-PDFSegmenterIO( const typename
+PDFSegmenterParzenIO< TImage, N, TLabelMap >::
+PDFSegmenterParzenIO( const typename
   PDFSegmenterType::Pointer & _filter )
 {
   Clear();
@@ -60,14 +60,14 @@ PDFSegmenterIO( const typename
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-PDFSegmenterIO< TImage, N, TLabelMap >::
-~PDFSegmenterIO()
+PDFSegmenterParzenIO< TImage, N, TLabelMap >::
+~PDFSegmenterParzenIO()
 {
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
 void
-PDFSegmenterIO< TImage, N, TLabelMap >::
+PDFSegmenterParzenIO< TImage, N, TLabelMap >::
 PrintInfo() const
 {
   if( m_PDFSegmenter.IsNotNull() )
@@ -82,7 +82,7 @@ PrintInfo() const
 
 template< class TImage, unsigned int N, class TLabelMap >
 void
-PDFSegmenterIO< TImage, N, TLabelMap >::
+PDFSegmenterParzenIO< TImage, N, TLabelMap >::
 CopyInfo( const PDFSegmenterIOType & _filterIO )
 {
   Clear();
@@ -92,7 +92,7 @@ CopyInfo( const PDFSegmenterIOType & _filterIO )
 
 template< class TImage, unsigned int N, class TLabelMap >
 void
-PDFSegmenterIO< TImage, N, TLabelMap >::
+PDFSegmenterParzenIO< TImage, N, TLabelMap >::
 Clear( void )
 {
   m_PDFSegmenter = NULL;
@@ -100,7 +100,7 @@ Clear( void )
 
 
 template< class TImage, unsigned int N, class TLabelMap >
-bool PDFSegmenterIO< TImage, N, TLabelMap >::
+bool PDFSegmenterParzenIO< TImage, N, TLabelMap >::
 InitializeEssential( const typename
   PDFSegmenterType::Pointer & _filter )
 {
@@ -111,7 +111,7 @@ InitializeEssential( const typename
 
 template< class TImage, unsigned int N, class TLabelMap >
 void
-PDFSegmenterIO< TImage, N, TLabelMap >::
+PDFSegmenterParzenIO< TImage, N, TLabelMap >::
 SetPDFSegmenter( const typename
   PDFSegmenterType::Pointer & _filter )
 {
@@ -119,15 +119,15 @@ SetPDFSegmenter( const typename
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-const typename PDFSegmenter< TImage, N, TLabelMap >::Pointer
-PDFSegmenterIO< TImage, N, TLabelMap >::
+const typename PDFSegmenterParzen< TImage, N, TLabelMap >::Pointer
+PDFSegmenterParzenIO< TImage, N, TLabelMap >::
 GetPDFSegmenter( void ) const
 {
   return m_PDFSegmenter;
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-bool PDFSegmenterIO< TImage, N, TLabelMap >::
+bool PDFSegmenterParzenIO< TImage, N, TLabelMap >::
 CanRead( const char * _headerName ) const
 {
   // First check the extension
@@ -187,7 +187,7 @@ CanRead( const char * _headerName ) const
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-bool PDFSegmenterIO< TImage, N, TLabelMap >::
+bool PDFSegmenterParzenIO< TImage, N, TLabelMap >::
 Read( const char * _headerName )
 {
   if( m_PDFSegmenter.IsNull() )
@@ -266,10 +266,6 @@ Read( const char * _headerName )
   metaFields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "Draft", MET_STRING, true );
-  metaFields.push_back( mF );
-
-  mF = new MET_FieldRecordType;
   MET_InitReadField( mF, "ReclassifyObjectLabels", MET_STRING, true );
   metaFields.push_back( mF );
 
@@ -299,7 +295,7 @@ Read( const char * _headerName )
 
   if(!MET_Read( tmpReadStream, &metaFields ) )
     {
-    METAIO_STREAM::cerr << "PDFSegmenterIO: Read: MET_Read Failed"
+    METAIO_STREAM::cerr << "PDFSegmenterParzenIO: Read: MET_Read Failed"
       << METAIO_STREAM::endl;
     return false;
     }
@@ -383,16 +379,6 @@ Read( const char * _headerName )
   mF = MET_GetFieldRecord( "OutlierRejectPortion", &metaFields );
   m_PDFSegmenter->SetOutlierRejectPortion( static_cast< double >(
     mF->value[0] ) );
-
-  mF = MET_GetFieldRecord( "Draft", &metaFields );
-  if( ((char *)( mF->value))[0] == 'T' || ((char *)( mF->value))[0] == 't' )
-    {
-    m_PDFSegmenter->SetDraft( true );
-    }
-  else
-    {
-    m_PDFSegmenter->SetDraft( false );
-    }
 
   mF = MET_GetFieldRecord( "ReclassifyObjectLabels", &metaFields );
   if( ((char *)( mF->value))[0] == 'T' || ((char *)( mF->value))[0] == 't' )
@@ -498,7 +484,7 @@ Read( const char * _headerName )
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
-bool PDFSegmenterIO< TImage, N, TLabelMap >::
+bool PDFSegmenterParzenIO< TImage, N, TLabelMap >::
 Write( const char * _headerName )
 {
   if( m_PDFSegmenter.IsNull() )
@@ -592,18 +578,6 @@ Write( const char * _headerName )
   metaFields.push_back( mF );
 
   char tmpC[4096];
-  if( m_PDFSegmenter->GetDraft() )
-    {
-    strcpy( tmpC, "True" );
-    }
-  else
-    {
-    strcpy( tmpC, "False" );
-    }
-  mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "Draft", MET_STRING, strlen(tmpC), tmpC );
-  metaFields.push_back( mF );
-
   if( m_PDFSegmenter->GetReclassifyObjectLabels() )
     {
     strcpy( tmpC, "True" );
@@ -711,7 +685,6 @@ Write( const char * _headerName )
       m_PDFSegmenter->GetReclassifyNotObjectLabels() );
     pdfClassWriter.SetForceClassification(
       m_PDFSegmenter->GetForceClassification() );
-    pdfClassWriter.SetDraft( m_PDFSegmenter->GetDraft() );
 
     char objectFileName[4096];
     sprintf( objectFileName, "%s.%02d.mha", fullFileName.c_str(), i );
@@ -726,4 +699,4 @@ Write( const char * _headerName )
 
 } // End namespace itk
 
-#endif // __itktubePDFSegmenterIO_hxx
+#endif // __itktubePDFSegmenterParzenIO_hxx

@@ -100,7 +100,7 @@ PDFSegmenterParzen< TImage, N, TLabelMap >
   m_InClassHistogram[classNum] = classPDF;
   this->m_SampleUpToDate = false;
   this->m_PDFsUpToDate = true;
-  this->m_ImagesUpToDate = false;
+  this->m_ClassProbabilityImagesUpToDate = false;
 }
 
 template< class TImage, unsigned int N, class TLabelMap >
