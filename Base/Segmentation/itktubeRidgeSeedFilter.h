@@ -25,7 +25,7 @@ limitations under the License.
 #define __itktubeRidgeSeedFilter_h
 
 #include "itktubeBasisFeatureVectorGenerator.h"
-#include "itktubePDFSegmenter.h"
+#include "itktubePDFSegmenterParzen.h"
 #include "itktubeRidgeFFTFeatureVectorGenerator.h"
 
 #include <itkImage.h>
@@ -51,11 +51,10 @@ public:
   typedef SmartPointer< Self >                       Pointer;
   typedef SmartPointer< const Self >                 ConstPointer;
 
-  itkTypeMacro( RidgeSeedFilter, ImageToImageFilter );
+  itkTypeMacro( RidgeSeedFilter, Object );
 
   itkNewMacro( Self );
 
-  typedef TImage                                  ImageType;
   typedef TImage                                  InputImageType;
   typedef Image< float, TImage::ImageDimension >  OutputImageType;
 
@@ -65,13 +64,15 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     TImage::ImageDimension );
 
-  typedef RidgeFFTFeatureVectorGenerator< TImage >
+  typedef RidgeFFTFeatureVectorGenerator< InputImageType >
     RidgeFeatureGeneratorType;
 
   typedef typename RidgeFeatureGeneratorType::FeatureValueType
     FeatureValueType;
   typedef typename RidgeFeatureGeneratorType::FeatureVectorType
     FeatureVectorType;
+  typedef typename RidgeFeatureGeneratorType::FeatureImageType
+    FeatureImageType;
 
   typedef typename RidgeFeatureGeneratorType::IndexType
     IndexType;
@@ -82,24 +83,22 @@ public:
   typedef typename RidgeFeatureGeneratorType::ValueListType
     WhitenStdDevsType;
 
-  typedef BasisFeatureVectorGenerator< TImage, LabelMapType >
+  typedef BasisFeatureVectorGenerator< InputImageType, LabelMapType >
     SeedFeatureGeneratorType;
 
   typedef typename SeedFeatureGeneratorType::ObjectIdType ObjectIdType;
   typedef typename SeedFeatureGeneratorType::VectorType   VectorType;
   typedef typename SeedFeatureGeneratorType::MatrixType   MatrixType;
-  typedef typename SeedFeatureGeneratorType::FeatureImageType
-    BasisImageType;
 
-  typedef PDFSegmenter< OutputImageType, TNumberOfFeatures, LabelMapType >
-    PDFSegmenterType;
+  typedef PDFSegmenterParzen< InputImageType, TNumberOfFeatures,
+    LabelMapType > PDFSegmenterType;
   typedef typename  PDFSegmenterType::ProbabilityPixelType
     ProbabilityPixelType;
   typedef typename  PDFSegmenterType::ProbabilityImageType
     ProbabilityImageType;
 
-  void SetInput( typename ImageType::Pointer img );
-  void AddInput( typename ImageType::Pointer img );
+  void SetInput( typename InputImageType::Pointer img );
+  void AddInput( typename InputImageType::Pointer img );
 
   void SetLabelMap( typename LabelMapType::Pointer img );
 
@@ -134,7 +133,7 @@ public:
   MatrixType   GetBasisMatrix( void ) const;
   VectorType   GetBasisValues( void ) const;
 
-  typename BasisImageType::Pointer GetBasisImage( unsigned int num = 0 )
+  typename FeatureImageType::Pointer GetBasisImage( unsigned int num = 0 )
     const;
 
   void   SetBasisValue( unsigned int basisNum, double value );
@@ -144,10 +143,10 @@ public:
 
   // PDFSegmenter
   typename ProbabilityImageType::Pointer
-    GetClassProbabilityForInput( unsigned int objectNum ) const;
+    GetClassProbabilityImage( unsigned int objectNum ) const;
 
   typename ProbabilityImageType::Pointer
-    GetClassProbabilityDifferenceForInput( unsigned int objectNum ) const;
+    GetClassLikelihoodRatioImage( unsigned int objectNum ) const;
 
   // Ridge, Basis, and PDFSegmenter
   itkSetMacro( RidgeId, ObjectIdType );

@@ -29,13 +29,13 @@ set( TubeTK_Base_IO_H_Files
   itktubeMetaClassPDF.h
   itktubeMetaRidgeSeed.h
   itktubeMetaTubeExtractor.h
-  itktubePDFSegmenterIO.h
+  itktubePDFSegmenterParzenIO.h
   itktubeRidgeSeedFilterIO.h
   itktubeTubeExtractorIO.h 
   itktubeTubeXIO.h )
 
 set( TubeTK_Base_IO_HXX_Files
-  itktubePDFSegmenterIO.hxx
+  itktubePDFSegmenterParzenIO.hxx
   itktubeRidgeSeedFilterIO.hxx
   itktubeTubeExtractorIO.hxx 
   itktubeTubeXIO.hxx )

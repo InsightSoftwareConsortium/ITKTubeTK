@@ -125,13 +125,6 @@
       <longflag>histogramSmoothingStdDev</longflag>
     </double>
     <boolean>
-      <name>draft</name>
-      <label>Draft Mode</label>
-      <description>Generate draft results.</description>
-      <longflag>draft</longflag>
-      <default>false</default>
-    </boolean>
-    <boolean>
       <name>reclassifyObjectLabels</name>
       <label>Reclassify Object Labels</label>
       <description>Perform classification on voxels within the object mask.</description>
