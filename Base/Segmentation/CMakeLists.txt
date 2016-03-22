@@ -23,9 +23,13 @@
 
 project( TubeTKSegmentation )
 
+find_package( LIBSVM )
+include_directories( ${LIBSVM_INCLUDE_DIRS} )
+
 set( TubeTK_Base_Segmentation_H_Files
   itktubePDFSegmenterBase.h
   itktubePDFSegmenterParzen.h
+  itktubePDFSegmenterSVM.h
   itktubeRadiusExtractor2.h
   itktubeRidgeExtractor.h
   itktubeRidgeSeedFilter.h
@@ -34,6 +38,7 @@ set( TubeTK_Base_Segmentation_H_Files
 set( TubeTK_Base_Segmentation_HXX_Files
   itktubePDFSegmenterBase.hxx
   itktubePDFSegmenterParzen.hxx
+  itktubePDFSegmenterSVM.hxx
   itktubeRadiusExtractor2.hxx
   itktubeRidgeExtractor.hxx
   itktubeRidgeSeedFilter.hxx

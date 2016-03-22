@@ -27,6 +27,8 @@ limitations under the License.
 #include "itktubeRidgeSeedFilter.h"
 
 #include "tubeMatrixMath.h"
+#include "itktubePDFSegmenterParzen.h"
+#include "itktubePDFSegmenterSVM.h"
 
 #include <itkImage.h>
 #include <itkImageRegionConstIteratorWithIndex.h>
@@ -56,20 +58,20 @@ RidgeSeedFilter< TImage, TLabelMap, TNumberOfFeatures >
   m_SeedFeatureGenerator->SetNumberOfPCABasisToUseAsFeatures(
     TNumberOfFeatures-1 );
 
-  m_PDFSegmenter = PDFSegmenterType::New();
+  typedef PDFSegmenterParzen< InputImageType, TNumberOfFeatures,
+    LabelMapType > PDFSegmenterParzenType;
+  typedef PDFSegmenterSVM< InputImageType, TNumberOfFeatures,
+    LabelMapType > PDFSegmenterSVMType;
+
+  m_PDFSegmenter = PDFSegmenterSVMType::New().GetPointer();
   m_PDFSegmenter->SetReclassifyObjectLabels( true );
   m_PDFSegmenter->SetReclassifyNotObjectLabels( true );
   m_PDFSegmenter->SetForceClassification( true );
   m_PDFSegmenter->SetErodeRadius( 0 );
   m_PDFSegmenter->SetHoleFillIterations( 0 );
-  m_PDFSegmenter->SetOutlierRejectPortion( 0.01 );
   m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation( 0.3 );
-  m_PDFSegmenter->SetHistogramSmoothingStandardDeviation( 4 );
-  /*
-  typename PDFSegmenterType::FeatureVectorGeneratorType::Pointer fvGen =
-    PDFSegmenterType::FeatureVectorGeneratorType::New();
-  fvGen = m_SeedFeatureGenerator.GetPointer();
-  */
+  //m_PDFSegmenter->SetHistogramSmoothingStandardDeviation( 4 );
+  //m_PDFSegmenter->SetOutlierRejectPortion( 0.01 );
   m_PDFSegmenter->SetFeatureVectorGenerator(
     m_SeedFeatureGenerator.GetPointer() );
 

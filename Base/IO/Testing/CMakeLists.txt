@@ -33,6 +33,8 @@ include( ${SlicerExecutionModel_USE_FILE} )
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
+find_package( LIBSVM REQUIRED )
+include_directories( ${LIBSVM_INCLUDE_DIRS} )
 
 find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
@@ -70,7 +72,7 @@ set( tubeBaseIOTests_SRCS
 add_executable( tubeBaseIOHeaderTest
   tubeBaseIOHeaderTest.cxx )
 target_link_libraries( tubeBaseIOHeaderTest
-  TubeTKIO ${ITK_LIBRARIES} )
+  TubeTKIO ${ITK_LIBRARIES} ${LIBSVM_LIBRARIES} )
 
 set( tubeBaseIO_External_Libraries )
 if( TubeTK_USE_GPU_ARRAYFIRE )
@@ -95,6 +97,7 @@ SEMMacroBuildCLI(
     TubeTKIO
     ${ITK_LIBRARIES}
     ITKIOMeta
+    ${LIBSVM_LIBRARIES}
   EXECUTABLE_ONLY
   ${no_install_option}
   )

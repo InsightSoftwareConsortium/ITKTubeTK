@@ -22,6 +22,7 @@ limitations under the License.
 =========================================================================*/
 
 #include "itktubePDFSegmenterParzen.h"
+#include "itktubePDFSegmenterSVM.h"
 #include "itktubeRadiusExtractor2.h"
 #include "itktubeRidgeExtractor.h"
 #include "itktubeRidgeSeedFilter.h"
@@ -39,6 +40,12 @@ int tubeBaseSegmentationPrintTest( int itkNotUsed( argc ),
     pdfSegmenterParzen = itk::tube::PDFSegmenterParzen< ImageType, 3,
       ImageType >::New();
   std::cout << "-------------itktubePDFSegmenterParzen" << pdfSegmenterParzen
+    << std::endl;
+
+  itk::tube::PDFSegmenterSVM< ImageType, 3, ImageType >::Pointer
+    pdfSegmenterSVM = itk::tube::PDFSegmenterSVM< ImageType, 3,
+      ImageType >::New();
+  std::cout << "-------------itktubePDFSegmenterSVM" << pdfSegmenterSVM
     << std::endl;
 
   itk::tube::RadiusExtractor2< ImageType >::Pointer

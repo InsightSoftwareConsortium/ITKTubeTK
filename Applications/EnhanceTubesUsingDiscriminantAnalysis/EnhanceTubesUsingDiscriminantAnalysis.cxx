@@ -146,9 +146,6 @@ int DoIt( int argc, char * argv[] )
     tubeFilter->GetPDFSegmenter()
       ->SetProbabilityImageSmoothingStandardDeviation( tubeScales[0] );
 
-    tubeFilter->GetPDFSegmenter()->SetHistogramSmoothingStandardDeviation(
-      2 );
-
     tubeFilter->SetTrainClassifier( true );
 
     tubeFilter->SetUseIntensityOnly( useIntensityOnly );

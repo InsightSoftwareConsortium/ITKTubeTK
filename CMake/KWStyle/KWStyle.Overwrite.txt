@@ -30,3 +30,4 @@ vtkMRMLSpatialObjectsNode.h Namespace Disable
 tubeImageFilters.h VariablePerLine Disable
 itktubePDFSegmenterBase.h Indent Disable
 itktubePDFSegmenterParzen.h Indent Disable
+itktubePDFSegmenterSVM.h Indent Disable

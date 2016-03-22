@@ -51,6 +51,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( tubeBaseSegmentation_SRCS
   tubeBaseSegmentationPrintTest.cxx
   itktubePDFSegmenterParzenTest.cxx
+  itktubePDFSegmenterSVMTest.cxx
   itktubeRadiusExtractor2Test.cxx
   itktubeRadiusExtractor2Test2.cxx
   itktubeRidgeExtractorTest.cxx
@@ -58,17 +59,20 @@ set( tubeBaseSegmentation_SRCS
   itktubeRidgeSeedFilterTest.cxx
   itktubeTubeExtractorTest.cxx )
 
+find_package( LIBSVM )
+
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
   ${TubeTK_SOURCE_DIR}/Base/Numerics
   ${TubeTK_SOURCE_DIR}/Base/Filtering
-  ${TubeTK_SOURCE_DIR}/Base/Segmentation )
+  ${TubeTK_SOURCE_DIR}/Base/Segmentation
+  ${LIBSVM_INCLUDE_DIRS} )
 
 add_executable( tubeBaseSegmentationHeaderTest
   tubeBaseSegmentationHeaderTest.cxx )
 target_link_libraries( tubeBaseSegmentationHeaderTest
   TubeTKSegmentation TubeTKFiltering TubeTKNumerics TubeTKIO TubeTKCommon
-  ${ITK_LIBRARIES} )
+  ${ITK_LIBRARIES} ${LIBSVM_LIBRARIES} )
 
 set( no_install_option )
 if( NOT TubeTK_INSTALL_DEVELOPMENT )
@@ -81,8 +85,9 @@ SEMMacroBuildCLI(
     ${tubeBaseSegmentation_SRCS}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
-    TubeCLI TubeTKSegmentation TubeTKFiltering TubeTKNumerics TubeTKIO TubeTKCommon
-    ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects
+    TubeCLI TubeTKSegmentation TubeTKFiltering TubeTKNumerics TubeTKIO
+    TubeTKCommon ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects
+    ${LIBSVM_LIBRARIES}
   EXECUTABLE_ONLY
   ${no_install_option}
   )
@@ -127,6 +132,34 @@ Midas3FunctionAddTest( NAME itktubePDFSegmenterParzenTest2
       ${TEMP}/itktubePDFSegmenterParzenTest2_pdf1.mha
       ${TEMP}/itktubePDFSegmenterParzenTest2_mask.mha
       ${TEMP}/itktubePDFSegmenterParzenTest2_labeledFeatureSpace.mha )
+
+Midas3FunctionAddTest( NAME itktubePDFSegmenterSVMTest
+  COMMAND ${BASE_SEGMENTATION_TESTS}
+    --compare MIDAS{itktubePDFSegmenterTest_mask.mha.md5}
+      ${TEMP}/itktubePDFSegmenterSVMTest_mask.mha
+    itktubePDFSegmenterSVMTest
+      MIDAS{ES0015_Large.mha.md5}
+      MIDAS{ES0015_Large.mha.md5}
+      true
+      5.0
+      MIDAS{GDS0015_Large-TrainingMask.mha.md5}
+      ${TEMP}/itktubePDFSegmenterSVMTest_prob0.mha
+      ${TEMP}/itktubePDFSegmenterSVMTest_prob1.mha
+      ${TEMP}/itktubePDFSegmenterSVMTest_mask.mha )
+
+Midas3FunctionAddTest( NAME itktubePDFSegmenterSVMTest2
+  COMMAND ${BASE_SEGMENTATION_TESTS}
+    --compare MIDAS{itktubePDFSegmenterTest2_mask.mha.md5}
+      ${TEMP}/itktubePDFSegmenterSVMTest2_mask.mha
+    itktubePDFSegmenterSVMTest
+      MIDAS{im0001.crop.mha.md5}
+      MIDAS{im0001.crop.contrast.mha.md5}
+      false
+      0.4
+      MIDAS{im0001.vk.mask.crop.mha.md5}
+      ${TEMP}/itktubePDFSegmenterSVMTest2_prob0.mha
+      ${TEMP}/itktubePDFSegmenterSVMTest2_prob1.mha
+      ${TEMP}/itktubePDFSegmenterSVMTest2_mask.mha )
 
 Midas3FunctionAddTest( NAME itktubeRidgeExtractorTest
   COMMAND ${BASE_SEGMENTATION_TESTS}

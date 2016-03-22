@@ -25,7 +25,7 @@ limitations under the License.
 #define __itktubeRidgeSeedFilter_h
 
 #include "itktubeBasisFeatureVectorGenerator.h"
-#include "itktubePDFSegmenterParzen.h"
+#include "itktubePDFSegmenterBase.h"
 #include "itktubeRidgeFFTFeatureVectorGenerator.h"
 
 #include <itkImage.h>
@@ -90,7 +90,7 @@ public:
   typedef typename SeedFeatureGeneratorType::VectorType   VectorType;
   typedef typename SeedFeatureGeneratorType::MatrixType   MatrixType;
 
-  typedef PDFSegmenterParzen< InputImageType, TNumberOfFeatures,
+  typedef PDFSegmenterBase< InputImageType, TNumberOfFeatures,
     LabelMapType > PDFSegmenterType;
   typedef typename  PDFSegmenterType::ProbabilityPixelType
     ProbabilityPixelType;

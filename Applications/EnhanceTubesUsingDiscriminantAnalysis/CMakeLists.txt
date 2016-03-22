@@ -39,11 +39,14 @@ if( TubeTK_BUILD_WITHIN_SLICER )
 endif( TubeTK_BUILD_WITHIN_SLICER )
 include( ${ITK_USE_FILE} )
 
+find_package( LIBSVM REQUIRED )
+include_directories( ${LIBSVM_INCLUDE_DIRS} )
+
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES ${ITK_LIBRARIES} ITKIOMeta ITKOptimizers
-    TubeTKCommon TubeCLI TubeTKIO TubeTKSegmentation )
+    TubeTKCommon TubeCLI TubeTKIO TubeTKSegmentation ${LIBSVM_LIBRARIES} )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

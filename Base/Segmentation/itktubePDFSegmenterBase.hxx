@@ -396,6 +396,7 @@ PDFSegmenterBase< TImage, N, TLabelMap >
 
     ++itInLabelMap;
     }
+  std::cout << "Prob estimates done" << std::endl;
 
   for( unsigned int c = 0; c < numClasses; ++c )
     {
