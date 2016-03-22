@@ -52,7 +52,7 @@ int itktubePDFSegmenterSVMTest( int argc, char * argv[] )
 
 
   // Declare the type for the Filter
-  typedef itk::tube::PDFSegmenterSVM< ImageType, 2,
+  typedef itk::tube::PDFSegmenterSVM< ImageType,
     ImageType > FilterType;
 
   typedef itk::tube::FeatureVectorGenerator< ImageType >

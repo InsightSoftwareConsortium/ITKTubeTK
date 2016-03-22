@@ -41,13 +41,13 @@ namespace tube
 
 #define MAX_NUMBER_OF_FEATURES 5
 
-template< class TImage, unsigned int N, class TLabelMap >
-class PDFSegmenterSVM : public PDFSegmenterBase< TImage, N, TLabelMap >
+template< class TImage, class TLabelMap >
+class PDFSegmenterSVM : public PDFSegmenterBase< TImage, TLabelMap >
 {
 public:
 
   typedef PDFSegmenterSVM                            Self;
-  typedef PDFSegmenterBase< TImage, N, TLabelMap >   Superclass;
+  typedef PDFSegmenterBase< TImage, TLabelMap >      Superclass;
   typedef SmartPointer< Self >                       Pointer;
   typedef SmartPointer< const Self >                 ConstPointer;
 
@@ -122,13 +122,10 @@ private:
 
   // Superclass typedefs
   typedef std::vector< typename ProbabilityImageType::Pointer >
-    ProbabilityImageVectorType;
-  typedef itk::Vector< ProbabilityPixelType, N+ImageDimension >
-    ListVectorType;
-  typedef itk::Statistics::ListSample< ListVectorType >
-    ListSampleType;
-  typedef std::vector< typename ListSampleType::Pointer >
-    ClassListSampleType;
+                                              ProbabilityImageVectorType;
+  typedef std::vector< ProbabilityPixelType > ListVectorType;
+  typedef std::vector< ListVectorType >       ListSampleType;
+  typedef std::vector< ListSampleType >       ClassListSampleType;
 
   // Custom typedefs
   svm_model          * m_Model;

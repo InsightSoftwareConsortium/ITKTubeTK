@@ -37,15 +37,15 @@ namespace itk
 namespace tube
 {
 
-#define MAX_NUMBER_OF_FEATURES 5
+#define PARZEN_MAX_NUMBER_OF_FEATURES 4
 
-template< class TImage, unsigned int N, class TLabelMap >
-class PDFSegmenterParzen : public PDFSegmenterBase< TImage, N, TLabelMap >
+template< class TImage, class TLabelMap >
+class PDFSegmenterParzen : public PDFSegmenterBase< TImage, TLabelMap >
 {
 public:
 
   typedef PDFSegmenterParzen                         Self;
-  typedef PDFSegmenterBase< TImage, N, TLabelMap >   Superclass;
+  typedef PDFSegmenterBase< TImage, TLabelMap >      Superclass;
   typedef SmartPointer< Self >                       Pointer;
   typedef SmartPointer< const Self >                 ConstPointer;
 
@@ -88,12 +88,15 @@ public:
   // Custom Typedefs
   //
   typedef float                                HistogramPixelType;
-  typedef Image< HistogramPixelType, N >       HistogramImageType;
+
+  typedef Image< HistogramPixelType, PARZEN_MAX_NUMBER_OF_FEATURES >
+    HistogramImageType;
 
   typedef HistogramPixelType                   PDFPixelType;
   typedef HistogramImageType                   PDFImageType;
 
-  typedef Image< LabelMapPixelType, N >        LabeledFeatureSpaceType;
+  typedef Image< LabelMapPixelType, PARZEN_MAX_NUMBER_OF_FEATURES >
+    LabeledFeatureSpaceType;
 
   //
   // Methods
@@ -150,12 +153,10 @@ private:
   // Superclass typedefs
   typedef std::vector< typename ProbabilityImageType::Pointer >
     ProbabilityImageVectorType;
-  typedef itk::Vector< ProbabilityPixelType, N+ImageDimension >
-    ListVectorType;
-  typedef itk::Statistics::ListSample< ListVectorType >
-    ListSampleType;
-  typedef std::vector< typename ListSampleType::Pointer >
-    ClassListSampleType;
+
+  typedef std::vector< ProbabilityPixelType > ListVectorType;
+  typedef std::vector< ListVectorType >       ListSampleType;
+  typedef std::vector< ListSampleType >       ClassListSampleType;
 
   // Custom typedefs
   typedef std::vector< typename HistogramImageType::Pointer >

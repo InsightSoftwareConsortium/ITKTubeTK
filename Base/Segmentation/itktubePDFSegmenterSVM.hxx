@@ -34,8 +34,8 @@ namespace itk
 namespace tube
 {
 
-template< class TImage, unsigned int N, class TLabelMap >
-PDFSegmenterSVM< TImage, N, TLabelMap >
+template< class TImage, class TLabelMap >
+PDFSegmenterSVM< TImage, TLabelMap >
 ::PDFSegmenterSVM( void )
 {
   m_Model = NULL;
@@ -43,22 +43,22 @@ PDFSegmenterSVM< TImage, N, TLabelMap >
   m_Parameter.svm_type = C_SVC;
   m_Parameter.kernel_type = RBF;
   m_Parameter.degree = 3;
-  m_Parameter.gamma = 1.0 / N;  // 1/num_features
+  m_Parameter.gamma = 0; // 1/num_features
   m_Parameter.coef0 = 0;
   m_Parameter.nu = 0.5;
   m_Parameter.cache_size = 100;
   m_Parameter.C = 1;
   m_Parameter.eps = 1e-3;
   m_Parameter.p = 0.1;
-  m_Parameter.shrinking = 0;
+  m_Parameter.shrinking = 1;
   m_Parameter.probability = 1;
   m_Parameter.nr_weight = 0;
   m_Parameter.weight_label = NULL;
   m_Parameter.weight = NULL;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
-PDFSegmenterSVM< TImage, N, TLabelMap >
+template< class TImage, class TLabelMap >
+PDFSegmenterSVM< TImage, TLabelMap >
 ::~PDFSegmenterSVM( void )
 {
   if( m_Model != NULL )
@@ -68,25 +68,25 @@ PDFSegmenterSVM< TImage, N, TLabelMap >
   svm_destroy_param( & m_Parameter );
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 svm_model *
-PDFSegmenterSVM< TImage, N, TLabelMap >
+PDFSegmenterSVM< TImage, TLabelMap >
 ::GetModel( void )
 {
   return m_Model;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 svm_parameter *
-PDFSegmenterSVM< TImage, N, TLabelMap >
+PDFSegmenterSVM< TImage, TLabelMap >
 ::GetParameter( void )
 {
   return & m_Parameter;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterSVM< TImage, N, TLabelMap >
+PDFSegmenterSVM< TImage, TLabelMap >
 ::GeneratePDFs( void )
 {
   if( !this->m_SampleUpToDate )
@@ -96,12 +96,15 @@ PDFSegmenterSVM< TImage, N, TLabelMap >
   this->m_PDFsUpToDate = true;
 
   unsigned int numClasses = this->m_ObjectIdList.size();
-  unsigned int numFeatures = N;
+  unsigned int numFeatures = this->m_FeatureVectorGenerator->
+    GetNumberOfFeatures();
+
+  m_Parameter.gamma = 1.0 / numFeatures;
 
   unsigned int sampleSize = 0;
   for( unsigned int c=0; c<numClasses; ++c )
     {
-    sampleSize += this->m_InClassList[c]->Size();
+    sampleSize += this->m_InClassList[c].size();
     }
 
   m_Parameter.nr_weight = numClasses;
@@ -110,7 +113,7 @@ PDFSegmenterSVM< TImage, N, TLabelMap >
   for( unsigned int c=0; c<numClasses; ++c )
     {
     m_Parameter.weight_label[c] = c;
-    m_Parameter.weight[c] = 1.0 - ( this->m_InClassList[c]->Size() /
+    m_Parameter.weight[c] = 1.0 - ( this->m_InClassList[c].size() /
       (double)( sampleSize ) );
     }
 
@@ -129,10 +132,10 @@ PDFSegmenterSVM< TImage, N, TLabelMap >
   unsigned int sampleNum = 0;
   for( unsigned int c=0; c<numClasses; ++c )
     {
-    typename ListSampleType::ConstIterator
-      inClassListIt( this->m_InClassList[c]->Begin() );
-    typename ListSampleType::ConstIterator
-      inClassListItEnd( this->m_InClassList[c]->End() );
+    typename ListSampleType::const_iterator
+      inClassListIt( this->m_InClassList[c].begin() );
+    typename ListSampleType::const_iterator
+      inClassListItEnd( this->m_InClassList[c].end() );
     while( inClassListIt != inClassListItEnd )
       {
       prob.x[ sampleNum ] = & x_space[ elementNum ];
@@ -140,8 +143,7 @@ PDFSegmenterSVM< TImage, N, TLabelMap >
       for( unsigned int f=0; f<numFeatures; ++f )
         {
         x_space[ elementNum ].index = f;
-        x_space[ elementNum ].value = inClassListIt.
-          GetMeasurementVector()[ f ];
+        x_space[ elementNum ].value = (*inClassListIt)[ f ];
         ++elementNum;
         }
       x_space[ elementNum ].index = -1;
@@ -166,14 +168,14 @@ PDFSegmenterSVM< TImage, N, TLabelMap >
   //free( x_space );
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
-typename PDFSegmenterSVM< TImage, N, TLabelMap >::ProbabilityPixelType
-PDFSegmenterSVM< TImage, N, TLabelMap >
+template< class TImage, class TLabelMap >
+typename PDFSegmenterSVM< TImage, TLabelMap >::ProbabilityPixelType
+PDFSegmenterSVM< TImage, TLabelMap >
 ::GetClassProbability( unsigned int classNum, const FeatureVectorType & fv)
   const
 {
   unsigned int numClasses = this->m_ObjectIdList.size();
-  unsigned int numFeatures = N;
+  unsigned int numFeatures = this->GetNumberOfFeatures();
 
   svm_node * x = (struct svm_node *)malloc( ( numFeatures+1 ) *
     sizeof( struct svm_node ) );
@@ -199,9 +201,9 @@ PDFSegmenterSVM< TImage, N, TLabelMap >
   return classProb;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterSVM< TImage, N, TLabelMap >
+PDFSegmenterSVM< TImage, TLabelMap >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );

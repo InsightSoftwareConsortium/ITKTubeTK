@@ -52,10 +52,15 @@ int itktubePDFSegmenterParzenTest( int argc, char * argv[] )
   typedef itk::ImageFileReader< ImageType > ReaderType;
   typedef itk::ImageFileWriter< ImageType > WriterType;
 
+  typedef float                                  HistoPixelType;
+  typedef itk::Image<HistoPixelType, 4 >         HistoImageType;
+  typedef itk::ImageFileReader< HistoImageType > HistoReaderType;
+  typedef itk::ImageFileWriter< HistoImageType > HistoWriterType;
+
 
   // Declare the type for the Filter
-  typedef itk::tube::PDFSegmenterParzen< ImageType, 2,
-    ImageType > FilterType;
+  typedef itk::tube::PDFSegmenterParzen< ImageType, ImageType >
+    FilterType;
 
   typedef itk::tube::FeatureVectorGenerator< ImageType >
     FeatureVectorGeneratorType;
@@ -153,7 +158,7 @@ int itktubePDFSegmenterParzenTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  WriterType::Pointer pdfWriter0 = WriterType::New();
+  HistoWriterType::Pointer pdfWriter0 = HistoWriterType::New();
   pdfWriter0->SetFileName( argv[7] );
   pdfWriter0->SetUseCompression( true );
   pdfWriter0->SetInput( filter->GetClassPDFImage( 0 ) );
@@ -183,7 +188,7 @@ int itktubePDFSegmenterParzenTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  WriterType::Pointer pdfWriter1 = WriterType::New();
+  HistoWriterType::Pointer pdfWriter1 = HistoWriterType::New();
   pdfWriter1->SetFileName( argv[9] );
   pdfWriter1->SetUseCompression( true );
   pdfWriter1->SetInput( filter->GetClassPDFImage( 1 ) );
@@ -215,7 +220,8 @@ int itktubePDFSegmenterParzenTest( int argc, char * argv[] )
 
   filter->GenerateLabeledFeatureSpace();
 
-  WriterType::Pointer labeledFeatureSpaceWriter = WriterType::New();
+  HistoWriterType::Pointer labeledFeatureSpaceWriter =
+    HistoWriterType::New();
   labeledFeatureSpaceWriter->SetFileName( argv[11] );
   labeledFeatureSpaceWriter->SetUseCompression( true );
   labeledFeatureSpaceWriter->SetInput( filter->GetLabeledFeatureSpace() );

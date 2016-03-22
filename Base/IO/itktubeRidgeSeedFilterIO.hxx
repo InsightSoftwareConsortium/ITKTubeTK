@@ -198,13 +198,14 @@ Read( const char * _headerName )
   MET_GetFilePath( _headerName, pdfPath );
   pdfFileName = pdfPath + pdfFileName;
 
-  typedef PDFSegmenterParzen< TImage, 4, TLabelMap > PDFSegmenterParzenType;
+  typedef PDFSegmenterParzen< TImage, TLabelMap > PDFSegmenterParzenType;
   typename PDFSegmenterParzenType::Pointer pdfParzen =
-    dynamic_cast< PDFSegmenterParzenType * >( m_RidgeSeedFilter->
+    PDFSegmenterParzenType::New();
+  pdfParzen = dynamic_cast< PDFSegmenterParzenType * >( m_RidgeSeedFilter->
       GetPDFSegmenter().GetPointer() );
   if( pdfParzen.IsNotNull() )
     {
-    PDFSegmenterParzenIO< TImage, 4, TLabelMap > pdfReader(
+    PDFSegmenterParzenIO< TImage, TLabelMap > pdfReader(
       pdfParzen.GetPointer() );
     if( !pdfReader.Read( pdfFileName.c_str() ) )
       {
@@ -214,9 +215,10 @@ Read( const char * _headerName )
     }
   else
     {
-    typedef PDFSegmenterSVM< TImage, 4, TLabelMap >    PDFSegmenterSVMType;
+    typedef PDFSegmenterSVM< TImage, TLabelMap >    PDFSegmenterSVMType;
     typename PDFSegmenterSVMType::Pointer pdfSVM =
-      dynamic_cast< PDFSegmenterSVMType * >( m_RidgeSeedFilter->
+      PDFSegmenterSVMType::New();
+    pdfSVM = dynamic_cast< PDFSegmenterSVMType * >( m_RidgeSeedFilter->
         GetPDFSegmenter().GetPointer() );
     if( pdfSVM.IsNotNull() )
       {
@@ -277,13 +279,14 @@ Write( const char * _headerName )
 
   bool result = true;
 
-  typedef PDFSegmenterParzen< TImage, 4, TLabelMap > PDFSegmenterParzenType;
+  typedef PDFSegmenterParzen< TImage, TLabelMap > PDFSegmenterParzenType;
   typename PDFSegmenterParzenType::Pointer pdfParzen =
-    dynamic_cast< PDFSegmenterParzenType * >( m_RidgeSeedFilter->
+    PDFSegmenterParzenType::New();
+  pdfParzen = dynamic_cast< PDFSegmenterParzenType * >( m_RidgeSeedFilter->
       GetPDFSegmenter().GetPointer() );
   if( pdfParzen.IsNotNull() )
     {
-    PDFSegmenterParzenIO< TImage, 4, TLabelMap > pdfWriter(
+    PDFSegmenterParzenIO< TImage, TLabelMap > pdfWriter(
       pdfParzen.GetPointer() );
     if( !pdfWriter.Write( pdfWriteName.c_str() ) )
       {
@@ -292,9 +295,10 @@ Write( const char * _headerName )
     }
   else
     {
-    typedef PDFSegmenterSVM< TImage, 4, TLabelMap >    PDFSegmenterSVMType;
+    typedef PDFSegmenterSVM< TImage, TLabelMap >    PDFSegmenterSVMType;
     typename PDFSegmenterSVMType::Pointer pdfSVM =
-      dynamic_cast< PDFSegmenterSVMType * >( m_RidgeSeedFilter->
+      PDFSegmenterSVMType::New();
+    pdfSVM = dynamic_cast< PDFSegmenterSVMType * >( m_RidgeSeedFilter->
         GetPDFSegmenter().GetPointer() );
     if( pdfSVM.IsNotNull() )
       {

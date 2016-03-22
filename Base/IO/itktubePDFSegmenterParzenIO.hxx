@@ -33,15 +33,15 @@ namespace itk
 namespace tube
 {
 
-template< class TImage, unsigned int N, class TLabelMap >
-PDFSegmenterParzenIO< TImage, N, TLabelMap >::
+template< class TImage, class TLabelMap >
+PDFSegmenterParzenIO< TImage, TLabelMap >::
 PDFSegmenterParzenIO( void )
 {
   Clear();
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
-PDFSegmenterParzenIO< TImage, N, TLabelMap >::
+template< class TImage, class TLabelMap >
+PDFSegmenterParzenIO< TImage, TLabelMap >::
 PDFSegmenterParzenIO( const char * _headerName )
 {
   Clear();
@@ -49,8 +49,8 @@ PDFSegmenterParzenIO( const char * _headerName )
   PDFSegmenterParzenIO::Read( _headerName );
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
-PDFSegmenterParzenIO< TImage, N, TLabelMap >::
+template< class TImage, class TLabelMap >
+PDFSegmenterParzenIO< TImage, TLabelMap >::
 PDFSegmenterParzenIO( const typename
   PDFSegmenterType::Pointer & _filter )
 {
@@ -59,15 +59,15 @@ PDFSegmenterParzenIO( const typename
   InitializeEssential( _filter );
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
-PDFSegmenterParzenIO< TImage, N, TLabelMap >::
+template< class TImage, class TLabelMap >
+PDFSegmenterParzenIO< TImage, TLabelMap >::
 ~PDFSegmenterParzenIO()
 {
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterParzenIO< TImage, N, TLabelMap >::
+PDFSegmenterParzenIO< TImage, TLabelMap >::
 PrintInfo() const
 {
   if( m_PDFSegmenter.IsNotNull() )
@@ -80,9 +80,9 @@ PrintInfo() const
     }
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterParzenIO< TImage, N, TLabelMap >::
+PDFSegmenterParzenIO< TImage, TLabelMap >::
 CopyInfo( const PDFSegmenterIOType & _filterIO )
 {
   Clear();
@@ -90,17 +90,17 @@ CopyInfo( const PDFSegmenterIOType & _filterIO )
   InitializeEssential( _filterIO.GetPDFSegmenter() );
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterParzenIO< TImage, N, TLabelMap >::
+PDFSegmenterParzenIO< TImage, TLabelMap >::
 Clear( void )
 {
   m_PDFSegmenter = NULL;
 }
 
 
-template< class TImage, unsigned int N, class TLabelMap >
-bool PDFSegmenterParzenIO< TImage, N, TLabelMap >::
+template< class TImage, class TLabelMap >
+bool PDFSegmenterParzenIO< TImage, TLabelMap >::
 InitializeEssential( const typename
   PDFSegmenterType::Pointer & _filter )
 {
@@ -109,25 +109,25 @@ InitializeEssential( const typename
   return true;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterParzenIO< TImage, N, TLabelMap >::
+PDFSegmenterParzenIO< TImage, TLabelMap >::
 SetPDFSegmenter( const typename
   PDFSegmenterType::Pointer & _filter )
 {
   m_PDFSegmenter = _filter;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
-const typename PDFSegmenterParzen< TImage, N, TLabelMap >::Pointer
-PDFSegmenterParzenIO< TImage, N, TLabelMap >::
+template< class TImage, class TLabelMap >
+const typename PDFSegmenterParzen< TImage, TLabelMap >::Pointer
+PDFSegmenterParzenIO< TImage, TLabelMap >::
 GetPDFSegmenter( void ) const
 {
   return m_PDFSegmenter;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
-bool PDFSegmenterParzenIO< TImage, N, TLabelMap >::
+template< class TImage, class TLabelMap >
+bool PDFSegmenterParzenIO< TImage, TLabelMap >::
 CanRead( const char * _headerName ) const
 {
   // First check the extension
@@ -186,8 +186,8 @@ CanRead( const char * _headerName ) const
   return true;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
-bool PDFSegmenterParzenIO< TImage, N, TLabelMap >::
+template< class TImage, class TLabelMap >
+bool PDFSegmenterParzenIO< TImage, TLabelMap >::
 Read( const char * _headerName )
 {
   if( m_PDFSegmenter.IsNull() )
@@ -313,25 +313,27 @@ Read( const char * _headerName )
   std::vector< int > tmpVectorInt;
   std::vector< double > tmpVectorDouble;
 
+  unsigned int numFeatures = m_PDFSegmenter->GetNumberOfFeatures();
+
   mF = MET_GetFieldRecord( "BinsPerFeature", &metaFields );
-  tmpVectorUInt.resize( N );
-  for( unsigned int i = 0; i < N; ++i )
+  tmpVectorUInt.resize( numFeatures );
+  for( unsigned int i = 0; i < numFeatures; ++i )
     {
     tmpVectorUInt[i] = static_cast< int >( mF->value[i] );
     }
   m_PDFSegmenter->SetNumberOfBinsPerFeature( tmpVectorUInt );
 
   mF = MET_GetFieldRecord( "BinMin", &metaFields );
-  tmpVectorDouble.resize( N );
-  for( unsigned int i = 0; i < N; ++i )
+  tmpVectorDouble.resize( numFeatures );
+  for( unsigned int i = 0; i < numFeatures; ++i )
     {
     tmpVectorDouble[i] = static_cast< double >( mF->value[i] );
     }
   m_PDFSegmenter->SetBinMin( tmpVectorDouble );
 
   mF = MET_GetFieldRecord( "BinSize", &metaFields );
-  tmpVectorDouble.resize( N );
-  for( unsigned int i = 0; i < N; ++i )
+  tmpVectorDouble.resize( numFeatures );
+  for( unsigned int i = 0; i < numFeatures; ++i )
     {
     tmpVectorDouble[i] = static_cast< double >( mF->value[i] );
     }
@@ -423,7 +425,7 @@ Read( const char * _headerName )
 
   for( unsigned int i = 0; i < nObjects; ++i )
     {
-    typedef Image< float, N >  pdfImageType;
+    typedef Image< float, PARZEN_MAX_NUMBER_OF_FEATURES >  pdfImageType;
 
     char filePath[255];
     MET_GetFilePath( _headerName, filePath );
@@ -436,7 +438,7 @@ Read( const char * _headerName )
     typename pdfImageType::SizeType size;
     typename pdfImageType::PointType origin;
     typename pdfImageType::SpacingType spacing;
-    for( unsigned int j = 0; j < N; ++j )
+    for( unsigned int j = 0; j < numFeatures; ++j )
       {
       size[j] = pdfClassReader.GetNumberOfBinsPerFeature()[j];
       if( size[j] != m_PDFSegmenter->GetNumberOfBinsPerFeature()[j] )
@@ -464,13 +466,20 @@ Read( const char * _headerName )
         return false;
         }
       }
+    for( unsigned int j = numFeatures; j < PARZEN_MAX_NUMBER_OF_FEATURES;
+      ++j )
+      {
+      spacing[j] = 1;
+      origin[j] = 0;
+      size[j] = 1;
+      }
     region.SetSize( size );
     img->SetRegions( region );
     img->SetOrigin( origin );
     img->SetSpacing( spacing );
 
     int nPixels = size[0];
-    for( unsigned int j = 1; j < N; ++j )
+    for( unsigned int j = 1; j < numFeatures; ++j )
       {
       nPixels *= size[j];
       }
@@ -483,8 +492,8 @@ Read( const char * _headerName )
   return true;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
-bool PDFSegmenterParzenIO< TImage, N, TLabelMap >::
+template< class TImage, class TLabelMap >
+bool PDFSegmenterParzenIO< TImage, TLabelMap >::
 Write( const char * _headerName )
 {
   if( m_PDFSegmenter.IsNull() )
@@ -494,34 +503,39 @@ Write( const char * _headerName )
 
   std::vector< MET_FieldRecordType * > metaFields;
 
+  unsigned int numFeatures = m_PDFSegmenter->GetNumberOfFeatures();
+
   MET_FieldRecordType * mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "NFeatures", MET_INT, N );
+  MET_InitWriteField( mF, "NFeatures", MET_INT, numFeatures );
   metaFields.push_back( mF );
 
   int tmpI[4096];
-  for( unsigned int i = 0; i < N; ++i )
+  for( unsigned int i = 0; i < numFeatures; ++i )
     {
     tmpI[i] = m_PDFSegmenter->GetNumberOfBinsPerFeature()[i];
     }
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "BinsPerFeature", MET_INT_ARRAY, N, tmpI );
+  MET_InitWriteField< int >( mF, "BinsPerFeature", MET_INT_ARRAY,
+    numFeatures, tmpI );
   metaFields.push_back( mF );
 
   float tmpF[4096];
-  for( unsigned int i = 0; i < N; ++i )
+  for( unsigned int i = 0; i < numFeatures; ++i )
     {
     tmpF[i] = m_PDFSegmenter->GetBinMin()[i];
     }
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "BinMin", MET_FLOAT_ARRAY, N, tmpF );
+  MET_InitWriteField< float >( mF, "BinMin", MET_FLOAT_ARRAY, numFeatures,
+    tmpF );
   metaFields.push_back( mF );
 
-  for( unsigned int i = 0; i < N; ++i )
+  for( unsigned int i = 0; i < numFeatures; ++i )
     {
     tmpF[i] = m_PDFSegmenter->GetBinSize()[i];
     }
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "BinSize", MET_FLOAT_ARRAY, N, tmpF );
+  MET_InitWriteField< float >( mF, "BinSize", MET_FLOAT_ARRAY, numFeatures,
+    tmpF );
   metaFields.push_back( mF );
 
   unsigned int nObjects = m_PDFSegmenter->GetNumberOfObjectIds();
@@ -535,7 +549,7 @@ Write( const char * _headerName )
     tmpI[i] = m_PDFSegmenter->GetObjectId()[i];
     }
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "ObjectId", MET_INT_ARRAY, nObjects, tmpI );
+  MET_InitWriteField< int >( mF, "ObjectId", MET_INT_ARRAY, nObjects, tmpI );
   metaFields.push_back( mF );
 
   for( unsigned int i = 0; i < nObjects; ++i )
@@ -543,7 +557,7 @@ Write( const char * _headerName )
     tmpF[i] = m_PDFSegmenter->GetObjectPDFWeight()[i];
     }
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "ObjectPDFWeight", MET_FLOAT_ARRAY,
+  MET_InitWriteField< float >( mF, "ObjectPDFWeight", MET_FLOAT_ARRAY,
     nObjects, tmpF );
   metaFields.push_back( mF );
 
@@ -587,8 +601,8 @@ Write( const char * _headerName )
     strcpy( tmpC, "False" );
     }
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "ReclassifyObjectLabels", MET_STRING,
-    strlen(tmpC), tmpC );
+  MET_InitWriteField< const char >( mF, "ReclassifyObjectLabels",
+    MET_STRING, strlen(tmpC), tmpC );
   metaFields.push_back( mF );
 
   if( m_PDFSegmenter->GetReclassifyNotObjectLabels() )
@@ -600,8 +614,8 @@ Write( const char * _headerName )
     strcpy( tmpC, "False" );
     }
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "ReclassifyNotObjectLabels", MET_STRING,
-    strlen(tmpC), tmpC );
+  MET_InitWriteField< const char >( mF, "ReclassifyNotObjectLabels",
+    MET_STRING, strlen(tmpC), tmpC );
   metaFields.push_back( mF );
 
   if( m_PDFSegmenter->GetForceClassification() )
@@ -613,7 +627,7 @@ Write( const char * _headerName )
     strcpy( tmpC, "False" );
     }
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "ForceClassification", MET_STRING,
+  MET_InitWriteField< const char >( mF, "ForceClassification", MET_STRING,
     strlen(tmpC), tmpC );
   metaFields.push_back( mF );
 
@@ -639,7 +653,7 @@ Write( const char * _headerName )
     }
 
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "ObjectPDFFile", MET_STRING,
+  MET_InitWriteField< const char >( mF, "ObjectPDFFile", MET_STRING,
     tmpString.size(), tmpString.c_str() );
   metaFields.push_back( mF );
 
@@ -659,7 +673,7 @@ Write( const char * _headerName )
 
   for( unsigned int i = 0; i < nObjects; ++i )
     {
-    MetaClassPDF pdfClassWriter( N,
+    MetaClassPDF pdfClassWriter( m_PDFSegmenter->GetNumberOfFeatures(),
       m_PDFSegmenter->GetNumberOfBinsPerFeature(),
       m_PDFSegmenter->GetBinMin(),
       m_PDFSegmenter->GetBinSize(),

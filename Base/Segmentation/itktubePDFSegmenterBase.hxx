@@ -32,7 +32,7 @@ limitations under the License.
 #include <itkBinaryErodeImageFilter.h>
 #include <itkConnectedThresholdImageFilter.h>
 #include <itkCurvatureAnisotropicDiffusionImageFilter.h>
-#include <itktubeSmoothingRecursiveGaussianImageFilter.h>
+#include <itkDiscreteGaussianImageFilter.h>
 #include <itkThresholdImageFilter.h>
 #include <itkNormalizeToConstantImageFilter.h>
 #include <itkImage.h>
@@ -52,8 +52,8 @@ namespace itk
 namespace tube
 {
 
-template< class TImage, unsigned int N, class TLabelMap >
-PDFSegmenterBase< TImage, N, TLabelMap >
+template< class TImage, class TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::PDFSegmenterBase( void )
 {
   m_SampleUpToDate = false;
@@ -61,7 +61,7 @@ PDFSegmenterBase< TImage, N, TLabelMap >
   m_ClassProbabilityImagesUpToDate = false;
 
   m_InClassList.clear();
-  m_OutClassList = NULL;
+  m_OutClassList.clear();
 
   m_FeatureVectorGenerator = NULL;
 
@@ -85,15 +85,15 @@ PDFSegmenterBase< TImage, N, TLabelMap >
   m_ProgressStart = 0;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
-PDFSegmenterBase< TImage, N, TLabelMap >
+template< class TImage, class TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::~PDFSegmenterBase( void )
 {
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::SetProgressProcessInformation( void * processInfo, double fraction,
   double start )
 {
@@ -102,18 +102,18 @@ PDFSegmenterBase< TImage, N, TLabelMap >
   m_ProgressStart = start;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::ClearObjectIds( void )
 {
   m_ObjectIdList.clear();
   m_PDFWeightList.clear();
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::SetObjectId( ObjectIdType objectId )
 {
   m_ObjectIdList.clear();
@@ -122,18 +122,18 @@ PDFSegmenterBase< TImage, N, TLabelMap >
   m_PDFWeightList.push_back( 1.0 );
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::AddObjectId( ObjectIdType objectId )
 {
   m_ObjectIdList.push_back( objectId );
   m_PDFWeightList.push_back( 1.0 );
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::SetObjectId( const ObjectIdListType objectId )
 {
   m_ObjectIdList = objectId;
@@ -143,33 +143,33 @@ PDFSegmenterBase< TImage, N, TLabelMap >
     }
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
-const typename PDFSegmenterBase< TImage, N, TLabelMap >::VectorIntType &
-PDFSegmenterBase< TImage, N, TLabelMap >
+template< class TImage, class TLabelMap >
+const typename PDFSegmenterBase< TImage, TLabelMap >::VectorIntType &
+PDFSegmenterBase< TImage, TLabelMap >
 ::GetObjectId( void ) const
 {
   return m_ObjectIdList;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 unsigned int
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::GetNumberOfObjectIds( void ) const
 {
   return m_ObjectIdList.size();
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 unsigned int
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::GetNumberOfClasses( void ) const
 {
   return m_ObjectIdList.size();
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 unsigned int
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::GetObjectNumberFromId( ObjectIdType id ) const
 {
   for( unsigned int i = 0; i < m_ObjectIdList.size(); i++ )
@@ -182,41 +182,41 @@ PDFSegmenterBase< TImage, N, TLabelMap >
   throw;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 unsigned int
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::GetNumberOfFeatures( void ) const
 {
-  return N;
+  return this->m_FeatureVectorGenerator->GetNumberOfFeatures();
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::SetObjectPDFWeight( unsigned int num, double weight )
 {
   m_PDFWeightList[num] = weight;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::SetObjectPDFWeight( const VectorDoubleType & weight )
 {
   m_PDFWeightList = weight;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
-const typename PDFSegmenterBase< TImage, N, TLabelMap >::VectorDoubleType &
-PDFSegmenterBase< TImage, N, TLabelMap >
+template< class TImage, class TLabelMap >
+const typename PDFSegmenterBase< TImage, TLabelMap >::VectorDoubleType &
+PDFSegmenterBase< TImage, TLabelMap >
 ::GetObjectPDFWeight( void ) const
 {
   return m_PDFWeightList;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 typename Image< float, TImage::ImageDimension >::Pointer
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::GetClassProbabilityImage( unsigned int classNum ) const
 {
   if( classNum < m_ProbabilityImageVector.size() )
@@ -226,18 +226,18 @@ PDFSegmenterBase< TImage, N, TLabelMap >
   return NULL;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
-typename PDFSegmenterBase< TImage, N, TLabelMap >::ProbabilityPixelType
-PDFSegmenterBase< TImage, N, TLabelMap >
+template< class TImage, class TLabelMap >
+typename PDFSegmenterBase< TImage, TLabelMap >::ProbabilityPixelType
+PDFSegmenterBase< TImage, TLabelMap >
 ::GetClassProbability( unsigned int itkNotUsed( classNum ),
   const FeatureVectorType & itkNotUsed( fv ) )
   const
 {
   return 0;
 }
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::SetFeatureVectorGenerator( typename FeatureVectorGeneratorType::Pointer
   fvg )
 {
@@ -247,14 +247,17 @@ PDFSegmenterBase< TImage, N, TLabelMap >
   m_ClassProbabilityImagesUpToDate = false;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::GenerateSample( void )
 {
   m_SampleUpToDate = true;
 
   unsigned int numClasses = m_ObjectIdList.size();
+
+  unsigned int numFeatures = this->m_FeatureVectorGenerator->
+    GetNumberOfFeatures();
 
   //
   //  Convert in/out images to statistical list using masks
@@ -262,9 +265,9 @@ PDFSegmenterBase< TImage, N, TLabelMap >
   m_InClassList.resize( numClasses );
   for( unsigned int c = 0; c < numClasses; c++ )
     {
-    m_InClassList[c] = ListSampleType::New();
+    m_InClassList[c].clear();
     }
-  m_OutClassList  = ListSampleType::New();
+  m_OutClassList.clear();
 
   typedef itk::ImageRegionConstIteratorWithIndex< LabelMapType >
     ConstLabelMapIteratorType;
@@ -273,6 +276,7 @@ PDFSegmenterBase< TImage, N, TLabelMap >
   itInLabelMap.GoToBegin();
 
   ListVectorType v;
+  v.resize( numFeatures + ImageDimension );
   FeatureVectorType fv;
   typename LabelMapType::IndexType indx;
   bool found = false;
@@ -282,18 +286,19 @@ PDFSegmenterBase< TImage, N, TLabelMap >
     {
     int val = itInLabelMap.Get();
     indx = itInLabelMap.GetIndex();
-    fv = m_FeatureVectorGenerator->GetFeatureVector( indx );
-    for( unsigned int i = 0; i < N; i++ )
+    fv = this->m_FeatureVectorGenerator->GetFeatureVector( indx );
+    for( unsigned int i = 0; i < numFeatures; i++ )
       {
       v[i] = fv[i];
       }
     for( unsigned int i = 0; i < ImageDimension; i++ )
       {
-      v[N+i] = indx[i];
+      v[numFeatures+i] = indx[i];
       }
     if( val != prevVal )
       {
       found = false;
+      prevVal = val;
       for( unsigned int c = 0; c < numClasses; c++ )
         {
         if( val == m_ObjectIdList[c] )
@@ -307,19 +312,19 @@ PDFSegmenterBase< TImage, N, TLabelMap >
       }
     if( found )
       {
-      m_InClassList[prevC]->PushBack( v );
+      m_InClassList[prevC].push_back( v );
       }
     else if( !found && val != m_VoidId )
       {
-      m_OutClassList->PushBack( v );
+      m_OutClassList.push_back( v );
       }
     ++itInLabelMap;
     }
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::GeneratePDFs( void )
 {
   if( !m_SampleUpToDate )
@@ -329,9 +334,9 @@ PDFSegmenterBase< TImage, N, TLabelMap >
   m_PDFsUpToDate = true;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::ApplyPDFs( void )
 {
   if( m_LabelMap.IsNotNull() && !m_SampleUpToDate )
@@ -348,6 +353,9 @@ PDFSegmenterBase< TImage, N, TLabelMap >
   int holeFillIterations = m_HoleFillIterations;
 
   unsigned int numClasses = m_ObjectIdList.size();
+
+  unsigned int numFeatures = this->m_FeatureVectorGenerator->
+    GetNumberOfFeatures();
 
   //
   //  Compute the probability at each pixel for input images
@@ -403,7 +411,7 @@ PDFSegmenterBase< TImage, N, TLabelMap >
     delete probIt[c];
     }
 
-  typedef itk::tube::SmoothingRecursiveGaussianImageFilter<
+  typedef itk::DiscreteGaussianImageFilter<
     ProbabilityImageType, ProbabilityImageType > ProbImageFilterType;
   typename ProbImageFilterType::Pointer probImageFilter;
 
@@ -416,7 +424,8 @@ PDFSegmenterBase< TImage, N, TLabelMap >
     {
     probImageFilter = ProbImageFilterType::New();
     probImageFilter->SetInput( m_ProbabilityImageVector[c] );
-    probImageFilter->SetSigma(
+    probImageFilter->SetVariance(
+      m_ProbabilityImageSmoothingStandardDeviation *
       m_ProbabilityImageSmoothingStandardDeviation );
     probImageFilter->Update();
     m_ProbabilityImageVector[c] = probImageFilter->GetOutput();
@@ -489,16 +498,15 @@ PDFSegmenterBase< TImage, N, TLabelMap >
       typename ConnectedFilterType::Pointer insideConnecter =
         ConnectedFilterType::New();
 
-      typename ListSampleType::ConstIterator
-        inClassListIt( m_InClassList[c]->Begin() );
-      typename ListSampleType::ConstIterator
-        inClassListItEnd( m_InClassList[c]->End() );
+      ListSampleType::const_iterator inClassListIt =
+        m_InClassList[c].begin();
+      ListSampleType::const_iterator inClassListItEnd =
+        m_InClassList[c].end();
       while( inClassListIt != inClassListItEnd )
         {
         for( unsigned int i = 0; i < ImageDimension; i++ )
           {
-          indx[i] = static_cast<int>(
-            inClassListIt.GetMeasurementVector()[N+i] );
+          indx[i] = static_cast<int>( (*inClassListIt)[numFeatures+i] );
           }
         insideConnecter->AddSeed( indx );
         ++inClassListIt;
@@ -515,14 +523,13 @@ PDFSegmenterBase< TImage, N, TLabelMap >
         // the update
         // of the ConnectedThresholdFilter will cause the filter to
         // return only the values at 255 (the input label map).
-        inClassListIt = m_InClassList[c]->Begin();
-        inClassListItEnd = m_InClassList[c]->End();
+        inClassListIt = m_InClassList[c].begin();
+        inClassListItEnd = m_InClassList[c].end();
         while( inClassListIt != inClassListItEnd )
           {
           for( unsigned int i = 0; i < ImageDimension; i++ )
             {
-            indx[i] = static_cast<int>(
-              inClassListIt.GetMeasurementVector()[N+i] );
+            indx[i] = static_cast<int>( (*inClassListIt)[numFeatures+i] );
             }
           tmpLabelImage->SetPixel( indx, 128 );
           ++inClassListIt;
@@ -536,14 +543,14 @@ PDFSegmenterBase< TImage, N, TLabelMap >
             // label image to ensure those points are considered object
             // points.
             // Erase other mask from label image
-            inClassListIt = m_InClassList[oc]->Begin();
-            inClassListItEnd = m_InClassList[oc]->End();
+            inClassListIt = m_InClassList[oc].begin();
+            inClassListItEnd = m_InClassList[oc].end();
             while( inClassListIt != inClassListItEnd )
               {
               for( unsigned int i = 0; i < ImageDimension; i++ )
                 {
                 indx[i] = static_cast<int>(
-                  inClassListIt.GetMeasurementVector()[N+i] );
+                  (*inClassListIt)[numFeatures+i] );
                 }
               tmpLabelImage->SetPixel( indx, 0 );
               ++inClassListIt;
@@ -552,16 +559,16 @@ PDFSegmenterBase< TImage, N, TLabelMap >
           }
 
         // Erase outside mask from label image
-        typename ListSampleType::ConstIterator
-          outListIt( m_OutClassList->Begin() );
-        typename ListSampleType::ConstIterator
-          outListItEnd( m_OutClassList->End() );
+        typename ListSampleType::const_iterator
+          outListIt( m_OutClassList.begin() );
+        typename ListSampleType::const_iterator
+          outListItEnd( m_OutClassList.end() );
         while( outListIt != outListItEnd )
           {
           for( unsigned int i = 0; i < ImageDimension; i++ )
             {
             indx[i] = static_cast<int>(
-              outListIt.GetMeasurementVector()[N+i] );
+              ( *outListIt )[numFeatures+i] );
             }
           tmpLabelImage->SetPixel( indx, 0 );
           ++outListIt;
@@ -652,14 +659,13 @@ PDFSegmenterBase< TImage, N, TLabelMap >
 
         // Use inside mask to set seed points.  Also draw inside mask in
         // label image to ensure those points are considered object points
-        inClassListIt = m_InClassList[c]->Begin();
-        inClassListItEnd = m_InClassList[c]->End();
+        inClassListIt = m_InClassList[c].begin();
+        inClassListItEnd = m_InClassList[c].end();
         while( inClassListIt != inClassListItEnd )
           {
           for( unsigned int i = 0; i < ImageDimension; i++ )
             {
-            indx[i] = static_cast<int>(
-              inClassListIt.GetMeasurementVector()[N+i] );
+            indx[i] = static_cast<int>( (*inClassListIt)[numFeatures+i] );
             }
 
           insideConnectedLabelMapFilter->AddSeed( indx );
@@ -811,26 +817,26 @@ PDFSegmenterBase< TImage, N, TLabelMap >
   m_ClassProbabilityImagesUpToDate = true;
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::Update( void )
 {
   this->GenerateSample();
   this->GeneratePDFs();
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::ClassifyImages( void )
 {
   this->ApplyPDFs();
 }
 
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 void
-PDFSegmenterBase< TImage, N, TLabelMap >
+PDFSegmenterBase< TImage, TLabelMap >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
@@ -886,16 +892,10 @@ PDFSegmenterBase< TImage, N, TLabelMap >
     << m_ReclassifyNotObjectLabels << std::endl;
   os << indent << "Number of probability images = "
     << m_ProbabilityImageVector.size() << std::endl;
-  os << indent << "InClassList size = "
-    << m_InClassList.size() << std::endl;
-  if( m_OutClassList.IsNotNull() )
-    {
-    os << indent << "OutClassList = " << m_OutClassList << std::endl;
-    }
-  else
-    {
-    os << indent << "OutClassList = NULL" << std::endl;
-    }
+  os << indent << "InClassList size = " << m_InClassList.size()
+    << std::endl;
+  os << indent << "OutClassList size = " << m_OutClassList.size()
+    << std::endl;
 }
 
 } // End namespace tube

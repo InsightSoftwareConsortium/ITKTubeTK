@@ -56,7 +56,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   typedef itk::ImageFileWriter< FeatureImageType >  FeatureImageWriterType;
 
   // Declare the type for the Filter
-  typedef itk::tube::RidgeSeedFilter< ImageType, LabelMapType, 3 >
+  typedef itk::tube::RidgeSeedFilter< ImageType, LabelMapType >
     FilterType;
 
   // Create the reader
@@ -89,9 +89,9 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   LabelMapType::Pointer labelmapImage = mReader->GetOutput();
 
   FilterType::RidgeScalesType scales(3);
-  scales[0] = 0.15;
-  scales[1] = 0.3;
-  scales[2] = 0.6;
+  scales[0] = 0.35;
+  scales[1] = 0.7;
+  scales[2] = 1.05;
 
   FilterType::Pointer filter = FilterType::New();
   filter->SetInput( inputImage );

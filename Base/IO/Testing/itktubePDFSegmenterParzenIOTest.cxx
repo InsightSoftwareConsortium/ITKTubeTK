@@ -49,9 +49,13 @@ int itktubePDFSegmenterParzenIOTest( int argc, char * argv[] )
   typedef itk::ImageFileReader< ImageType > ReaderType;
   typedef itk::ImageFileWriter< ImageType > WriterType;
 
+  typedef float                                  HistoPixelType;
+  typedef itk::Image<PixelType, 4>               HistoImageType;
+  typedef itk::ImageFileReader< HistoImageType > HistoReaderType;
+  typedef itk::ImageFileWriter< HistoImageType > HistoWriterType;
 
   // Declare the type for the Filter
-  typedef itk::tube::PDFSegmenterParzen< ImageType, 2, ImageType >
+  typedef itk::tube::PDFSegmenterParzen< ImageType, ImageType >
     FilterType;
 
   // Create the reader and writer
@@ -142,7 +146,7 @@ int itktubePDFSegmenterParzenIOTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  itk::tube::PDFSegmenterParzenIO< ImageType, 2, ImageType > PDFIO( filter );
+  itk::tube::PDFSegmenterParzenIO< ImageType, ImageType > PDFIO( filter );
   std::cout << "*** Writing Filter 1 ***" << std::endl;
   std::cout << "filename = " << argv[5] << std::endl;
   std::cout << "*** PDFIO ***" << std::endl;
@@ -160,7 +164,7 @@ int itktubePDFSegmenterParzenIOTest( int argc, char * argv[] )
   FilterType::Pointer filter2 = FilterType::New();
   filter2->SetFeatureVectorGenerator( fvGen );
 
-  itk::tube::PDFSegmenterParzenIO< ImageType, 2, ImageType > PDFIO2( filter2 );
+  itk::tube::PDFSegmenterParzenIO< ImageType, ImageType > PDFIO2( filter2 );
   std::cout << "*** Reading Filter 2 ***" << std::endl;
   std::cout << "filename = " << argv[5] << std::endl;
   try
@@ -203,7 +207,7 @@ int itktubePDFSegmenterParzenIOTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  itk::tube::PDFSegmenterParzenIO< ImageType, 2, ImageType > PDFIO3( filter2 );
+  itk::tube::PDFSegmenterParzenIO< ImageType, ImageType > PDFIO3( filter2 );
   PDFIO.Write( argv[7] );
 
   // All objects should be automatically destroyed at this point
