@@ -9,7 +9,7 @@ file( READ ${installed_packages_file} installed_packages )
 string( FIND "${installed_packages}" SimpleITK SimpleITK_installed )
 if( ${SimpleITK_installed} EQUAL -1 )
   message( STATUS "Installing SimpleITK into virtualenv" )
-  execute_process( COMMAND "@PythonVirtualenvHome@/bin/easy_install" SimpleITK
+  execute_process( COMMAND "@PythonVirtualenvHome@/Scripts/easy_install" SimpleITK
     RESULT_VARIABLE failed
     ERROR_VARIABLE error )
   if( failed )
@@ -23,7 +23,7 @@ foreach( package @PYTHON_TESTING_MODULES@ )
   string( FIND "${installed_packages}" ${package} package_installed )
   if( ${package_installed} EQUAL -1 )
     message( STATUS "Installing ${package} into virtualenv" )
-    execute_process( COMMAND "@PythonVirtualenvHome@/bin/pip"
+    execute_process( COMMAND "@PythonVirtualenvHome@/Scripts/pip"
         install ${package}
       RESULT_VARIABLE failed
       ERROR_VARIABLE error )

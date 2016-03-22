@@ -44,14 +44,14 @@ namespace tube
 * \date August 29, 2013
 *
 */
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 class PDFSegmenterParzenIO
 {
 public:
 
-  typedef PDFSegmenterParzenIO< TImage, N, TLabelMap >  PDFSegmenterIOType;
+  typedef PDFSegmenterParzenIO< TImage, TLabelMap >  PDFSegmenterIOType;
 
-  typedef PDFSegmenterParzen< TImage, N, TLabelMap >    PDFSegmenterType;
+  typedef PDFSegmenterParzen< TImage, TLabelMap >    PDFSegmenterType;
 
   PDFSegmenterParzenIO( void );
 

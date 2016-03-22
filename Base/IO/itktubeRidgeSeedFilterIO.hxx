@@ -25,6 +25,7 @@ limitations under the License.
 
 #include "itktubeRidgeSeedFilterIO.h"
 #include "itktubePDFSegmenterParzenIO.h"
+//#include "itktubePDFSegmenterSVMIO.h"
 
 namespace itk
 {
@@ -192,16 +193,37 @@ Read( const char * _headerName )
   m_RidgeSeedFilter->SetOutputWhitenStdDevs( seedReader.
     GetOutputWhitenStdDevs() );
 
-  PDFSegmenterParzenIO< TImage, 4, TLabelMap > pdfReader(
-    m_RidgeSeedFilter->GetPDFSegmenter().GetPointer() );
   std::string pdfFileName = seedReader.GetPDFFileName();
   char pdfPath[255];
   MET_GetFilePath( _headerName, pdfPath );
   pdfFileName = pdfPath + pdfFileName;
-  if( !pdfReader.Read( pdfFileName.c_str() ) )
+
+  typedef PDFSegmenterParzen< TImage, TLabelMap > PDFSegmenterParzenType;
+  typename PDFSegmenterParzenType::Pointer pdfParzen =
+    PDFSegmenterParzenType::New();
+  pdfParzen = dynamic_cast< PDFSegmenterParzenType * >( m_RidgeSeedFilter->
+      GetPDFSegmenter().GetPointer() );
+  if( pdfParzen.IsNotNull() )
     {
-    m_RidgeSeedFilter = NULL;
-    return false;
+    PDFSegmenterParzenIO< TImage, TLabelMap > pdfReader(
+      pdfParzen.GetPointer() );
+    if( !pdfReader.Read( pdfFileName.c_str() ) )
+      {
+      m_RidgeSeedFilter = NULL;
+      return false;
+      }
+    }
+  else
+    {
+    typedef PDFSegmenterSVM< TImage, TLabelMap >    PDFSegmenterSVMType;
+    typename PDFSegmenterSVMType::Pointer pdfSVM =
+      PDFSegmenterSVMType::New();
+    pdfSVM = dynamic_cast< PDFSegmenterSVMType * >( m_RidgeSeedFilter->
+        GetPDFSegmenter().GetPointer() );
+    if( pdfSVM.IsNotNull() )
+      {
+      std::cout << "Save PDFSegmenterSVMIO now..." << std::endl;
+      }
     }
 
   return true;
@@ -255,14 +277,36 @@ Write( const char * _headerName )
   MET_GetFilePath( _headerName, pdfPath );
   std::string pdfWriteName = pdfPath + pdfName;
 
-  PDFSegmenterParzenIO< TImage, 4, TLabelMap > pdfWriter(
-    m_RidgeSeedFilter->GetPDFSegmenter().GetPointer() );
+  bool result = true;
 
-  bool result = seedWriter.Write( _headerName );
-  if( !pdfWriter.Write( pdfWriteName.c_str() ) )
+  typedef PDFSegmenterParzen< TImage, TLabelMap > PDFSegmenterParzenType;
+  typename PDFSegmenterParzenType::Pointer pdfParzen =
+    PDFSegmenterParzenType::New();
+  pdfParzen = dynamic_cast< PDFSegmenterParzenType * >( m_RidgeSeedFilter->
+      GetPDFSegmenter().GetPointer() );
+  if( pdfParzen.IsNotNull() )
     {
-    result = false;
+    PDFSegmenterParzenIO< TImage, TLabelMap > pdfWriter(
+      pdfParzen.GetPointer() );
+    if( !pdfWriter.Write( pdfWriteName.c_str() ) )
+      {
+      result = false;
+      }
     }
+  else
+    {
+    typedef PDFSegmenterSVM< TImage, TLabelMap >    PDFSegmenterSVMType;
+    typename PDFSegmenterSVMType::Pointer pdfSVM =
+      PDFSegmenterSVMType::New();
+    pdfSVM = dynamic_cast< PDFSegmenterSVMType * >( m_RidgeSeedFilter->
+        GetPDFSegmenter().GetPointer() );
+    if( pdfSVM.IsNotNull() )
+      {
+      std::cout << "Save PDFSegmenterSVMIO now..." << std::endl;
+      }
+    }
+
+  result = seedWriter.Write( _headerName );
 
   return result;
 }

@@ -1211,11 +1211,8 @@ ImageFilters<VDimension>
   itk::ImageRegionIterator< ImageType > it2( imIn2,
         imIn2->GetLargestPossibleRegion() );
 
-  double intensity = 0;
   double ridgeness = 0;
-  double roundness = 0;
-  double curvature = 0;
-  double linearity = 0;
+  double intensity = 0;
   double scale = scaleMin;
   std::cout << "   Processing scale " << scale << std::endl;
   it1.GoToBegin();
@@ -1228,7 +1225,9 @@ ImageFilters<VDimension>
       cIndx[d] = it1.GetIndex()[d];
       }
     ridgeness = imFunc->RidgenessAtContinuousIndex( cIndx, scale );
-    it2.Set( ( PixelType )ridgeness );
+    intensity = imFunc->GetMostRecentIntensity();
+    double val = ridgeness * intensity;
+    it2.Set( ( PixelType )val );
     ++it1;
     ++it2;
     }
@@ -1245,9 +1244,11 @@ ImageFilters<VDimension>
         cIndx[d] = it1.GetIndex()[d];
         }
       ridgeness = imFunc->RidgenessAtContinuousIndex( cIndx, scale );
-      if( ridgeness > it2.Get() )
+      intensity = imFunc->GetMostRecentIntensity();
+      double val = ridgeness * intensity;
+      if( val > it2.Get() )
         {
-        it2.Set( ( PixelType )ridgeness );
+        it2.Set( ( PixelType )val );
         }
       ++it1;
       ++it2;

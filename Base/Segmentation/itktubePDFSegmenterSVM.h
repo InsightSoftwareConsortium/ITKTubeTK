@@ -21,10 +21,12 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubePDFSegmenterParzen_h
-#define __itktubePDFSegmenterParzen_h
+#ifndef __itktubePDFSegmenterSVM_h
+#define __itktubePDFSegmenterSVM_h
 
 #include "itktubePDFSegmenterBase.h"
+
+#include "svm.h"
 
 #include <itkImage.h>
 #include <itkListSample.h>
@@ -37,19 +39,19 @@ namespace itk
 namespace tube
 {
 
-#define PARZEN_MAX_NUMBER_OF_FEATURES 4
+#define MAX_NUMBER_OF_FEATURES 5
 
 template< class TImage, class TLabelMap >
-class PDFSegmenterParzen : public PDFSegmenterBase< TImage, TLabelMap >
+class PDFSegmenterSVM : public PDFSegmenterBase< TImage, TLabelMap >
 {
 public:
 
-  typedef PDFSegmenterParzen                         Self;
+  typedef PDFSegmenterSVM                            Self;
   typedef PDFSegmenterBase< TImage, TLabelMap >      Superclass;
   typedef SmartPointer< Self >                       Pointer;
   typedef SmartPointer< const Self >                 ConstPointer;
 
-  itkTypeMacro( PDFSegmenterParzen, PDFSegmenterBase );
+  itkTypeMacro( PDFSegmenterSVM, PDFSegmenterBase );
 
   itkNewMacro( Self );
 
@@ -87,48 +89,13 @@ public:
   //
   // Custom Typedefs
   //
-  typedef float                                HistogramPixelType;
-
-  typedef Image< HistogramPixelType, PARZEN_MAX_NUMBER_OF_FEATURES >
-    HistogramImageType;
-
-  typedef HistogramPixelType                   PDFPixelType;
-  typedef HistogramImageType                   PDFImageType;
-
-  typedef Image< LabelMapPixelType, PARZEN_MAX_NUMBER_OF_FEATURES >
-    LabeledFeatureSpaceType;
 
   //
   // Methods
   //
-  itkSetMacro( HistogramSmoothingStandardDeviation, double );
-  itkGetMacro( HistogramSmoothingStandardDeviation, double );
-  itkSetMacro( OutlierRejectPortion, double );
-  itkGetMacro( OutlierRejectPortion, double );
+  svm_model * GetModel( void );
 
-  typename PDFImageType::Pointer GetClassPDFImage(
-    unsigned int classNum ) const;
-
-  void SetClassPDFImage( unsigned int classNum,
-    typename PDFImageType::Pointer classPDF );
-
-  const VectorUIntType & GetNumberOfBinsPerFeature( void ) const;
-  void             SetNumberOfBinsPerFeature( const VectorUIntType & nBin );
-  const VectorDoubleType & GetBinMin( void ) const;
-  void             SetBinMin( const VectorDoubleType & binMin );
-  const VectorDoubleType & GetBinSize( void ) const;
-  void             SetBinSize( const VectorDoubleType & binMin );
-
-  /** Given one PDF per class, generate a labelmap of feature space */
-  void GenerateLabeledFeatureSpace( void );
-
-  void SetLabeledFeatureSpace( typename LabeledFeatureSpaceType::Pointer
-    labeledFeatureSpace );
-
-  typename LabeledFeatureSpaceType::Pointer GetLabeledFeatureSpace( void )
-    const;
-
-  virtual void Update( void );
+  svm_parameter * GetParameter( void );
 
   //
   // Must overwrite
@@ -138,49 +105,40 @@ public:
 
 protected:
 
-  PDFSegmenterParzen( void );
-  virtual ~PDFSegmenterParzen( void );
+  PDFSegmenterSVM( void );
+  virtual ~PDFSegmenterSVM( void );
 
+  //
+  // Must overwrite
+  //
   virtual void GeneratePDFs( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
 private:
 
-  PDFSegmenterParzen( const Self & );          // Purposely not implemented
+  PDFSegmenterSVM( const Self & );       // Purposely not implemented
   void operator = ( const Self & );      // Purposely not implemented
 
   // Superclass typedefs
   typedef std::vector< typename ProbabilityImageType::Pointer >
-    ProbabilityImageVectorType;
-
+                                              ProbabilityImageVectorType;
   typedef std::vector< ProbabilityPixelType > ListVectorType;
   typedef std::vector< ListVectorType >       ListSampleType;
   typedef std::vector< ListSampleType >       ClassListSampleType;
 
   // Custom typedefs
-  typedef std::vector< typename HistogramImageType::Pointer >
-    ClassHistogramImageType;
+  svm_model          * m_Model;
+  svm_parameter        m_Parameter;
 
-  ClassHistogramImageType         m_InClassHistogram;
-  VectorDoubleType                m_HistogramBinMin;
-  VectorDoubleType                m_HistogramBinSize;
-  VectorUIntType                  m_HistogramNumberOfBin;
-
-  double                          m_OutlierRejectPortion;
-
-  double                          m_HistogramSmoothingStandardDeviation;
-
-  typename LabeledFeatureSpaceType::Pointer m_LabeledFeatureSpace;
-
-}; // End class PDFSegmenterParzen
+}; // End class PDFSegmenterSVM
 
 } // End namespace tube
 
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubePDFSegmenterParzen.hxx"
+#include "itktubePDFSegmenterSVM.hxx"
 #endif
 
-#endif // End !defined(__itktubePDFSegmenterParzen_h)
+#endif // End !defined(__itktubePDFSegmenterSVM_h)

@@ -54,8 +54,8 @@ int tubeBaseIOPrintTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
   metaTubeExtractor.PrintInfo();
 
   typedef itk::Image< float, 3 > ImageType;
-  itk::tube::PDFSegmenterParzenIO< ImageType, 3, ImageType >
-    pdfSegmenterParzenIO;
+  itk::tube::PDFSegmenterParzenIO< ImageType,
+    ImageType > pdfSegmenterParzenIO;
   std::cout << "-------------pdfSegmenterParzenIO" << std::endl;
   pdfSegmenterParzenIO.PrintInfo();
 

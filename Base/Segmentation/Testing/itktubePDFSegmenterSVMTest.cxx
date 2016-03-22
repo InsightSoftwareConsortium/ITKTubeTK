@@ -21,18 +21,19 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubePDFSegmenterParzenIO.h"
+#include "itktubePDFSegmenterSVM.h"
 
-int itktubePDFSegmenterParzenIOTest( int argc, char * argv[] )
+#include "itktubeFeatureVectorGenerator.h"
+
+int itktubePDFSegmenterSVMTest( int argc, char * argv[] )
 {
-  if( argc != 8 )
+  if( argc != 9 )
     {
     std::cout << "Missing arguments." << std::endl;
     std::cout << "Usage: " << std::endl;
     std::cout << argv[0]
-      << " inputImage1 inputImage2 inputLabelMap outputLabelMap"
-      << " pdfFile outputLabelMap2 pdfFile2"
-      << std::endl;
+      << " inputImage1 inputImage2 inputLabelMap force blur outputProbImg0"
+      << " outputProbImg1 outputLabelMap" << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -49,14 +50,13 @@ int itktubePDFSegmenterParzenIOTest( int argc, char * argv[] )
   typedef itk::ImageFileReader< ImageType > ReaderType;
   typedef itk::ImageFileWriter< ImageType > WriterType;
 
-  typedef float                                  HistoPixelType;
-  typedef itk::Image<PixelType, 4>               HistoImageType;
-  typedef itk::ImageFileReader< HistoImageType > HistoReaderType;
-  typedef itk::ImageFileWriter< HistoImageType > HistoWriterType;
 
   // Declare the type for the Filter
-  typedef itk::tube::PDFSegmenterParzen< ImageType, ImageType >
-    FilterType;
+  typedef itk::tube::PDFSegmenterSVM< ImageType,
+    ImageType > FilterType;
+
+  typedef itk::tube::FeatureVectorGenerator< ImageType >
+    FeatureVectorGeneratorType;
 
   // Create the reader and writer
   ReaderType::Pointer reader = ReaderType::New();
@@ -89,7 +89,7 @@ int itktubePDFSegmenterParzenIOTest( int argc, char * argv[] )
 
   // Create the reader and writer
   ReaderType::Pointer labelmapReader = ReaderType::New();
-  labelmapReader->SetFileName( argv[3] );
+  labelmapReader->SetFileName( argv[5] );
   try
     {
     labelmapReader->Update();
@@ -102,8 +102,8 @@ int itktubePDFSegmenterParzenIOTest( int argc, char * argv[] )
     }
   ImageType::Pointer labelmapImage = labelmapReader->GetOutput();
 
-  FilterType::FeatureVectorGeneratorType::Pointer fvGen =
-    FilterType::FeatureVectorGeneratorType::New();
+  FeatureVectorGeneratorType::Pointer fvGen =
+    FeatureVectorGeneratorType::New();
   fvGen->SetInput( inputImage );
   fvGen->AddInput( inputImage2 );
 
@@ -115,19 +115,58 @@ int itktubePDFSegmenterParzenIOTest( int argc, char * argv[] )
   filter->SetVoidId( 0 );
   filter->SetErodeRadius( 0 );
   filter->SetHoleFillIterations( 5 );
-  filter->SetProbabilityImageSmoothingStandardDeviation( 1 );
-  filter->SetHistogramSmoothingStandardDeviation( 2 );
-  filter->SetOutlierRejectPortion( 0.1 );
-  filter->SetObjectPDFWeight( 0, 1.5 );
-  filter->SetReclassifyObjectLabels( true );
-  filter->SetReclassifyNotObjectLabels( true );
-  filter->SetForceClassification( true );
+  float blur = atof( argv[4] );
+  filter->SetProbabilityImageSmoothingStandardDeviation( blur );
+  if( argv[3][0] == 't' || argv[3][0] == 'T' || argv[3][0] == '1' )
+    {
+    filter->SetReclassifyObjectLabels( true );
+    filter->SetReclassifyNotObjectLabels( true );
+    filter->SetForceClassification( true );
+    }
+  else
+    {
+    filter->SetReclassifyObjectLabels( false );
+    filter->SetReclassifyNotObjectLabels( false );
+    filter->SetForceClassification( false );
+    }
+  std::cout << "Update" << std::endl;
   filter->Update();
-  std::cout << "*** Filter 1 ***" << std::endl << filter << std::endl;
+  std::cout << "Classify" << std::endl;
   filter->ClassifyImages();
 
+  std::cout << "Write" << std::endl;
+  WriterType::Pointer probWriter0 = WriterType::New();
+  probWriter0->SetFileName( argv[6] );
+  probWriter0->SetUseCompression( true );
+  probWriter0->SetInput( filter->GetClassProbabilityImage( 0 ) );
+  try
+    {
+    probWriter0->Update();
+    }
+  catch( itk::ExceptionObject & e )
+    {
+    std::cout << "Exception caught during write:" << std::endl << e
+      << std::endl;
+    return EXIT_FAILURE;
+    }
+
+  WriterType::Pointer probWriter1 = WriterType::New();
+  probWriter1->SetFileName( argv[7] );
+  probWriter1->SetUseCompression( true );
+  probWriter1->SetInput( filter->GetClassProbabilityImage( 1 ) );
+  try
+    {
+    probWriter1->Update();
+    }
+  catch( itk::ExceptionObject & e )
+    {
+    std::cout << "Exception caught during write:" << std::endl << e
+      << std::endl;
+    return EXIT_FAILURE;
+    }
+
   WriterType::Pointer labelmapWriter = WriterType::New();
-  labelmapWriter->SetFileName( argv[4] );
+  labelmapWriter->SetFileName( argv[8] );
   labelmapWriter->SetUseCompression( true );
   labelmapWriter->SetInput( filter->GetLabelMap() );
   try
@@ -140,75 +179,6 @@ int itktubePDFSegmenterParzenIOTest( int argc, char * argv[] )
       << std::endl;
     return EXIT_FAILURE;
     }
-  catch( ... )
-    {
-    std::cout << "Exception caught during label write." << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  itk::tube::PDFSegmenterParzenIO< ImageType, ImageType > PDFIO( filter );
-  std::cout << "*** Writing Filter 1 ***" << std::endl;
-  std::cout << "filename = " << argv[5] << std::endl;
-  std::cout << "*** PDFIO ***" << std::endl;
-  PDFIO.PrintInfo();
-  try
-    {
-    PDFIO.Write( argv[5] );
-    }
-  catch( ... )
-    {
-    std::cout << "Exception caught during pdf write." << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  FilterType::Pointer filter2 = FilterType::New();
-  filter2->SetFeatureVectorGenerator( fvGen );
-
-  itk::tube::PDFSegmenterParzenIO< ImageType, ImageType > PDFIO2( filter2 );
-  std::cout << "*** Reading Filter 2 ***" << std::endl;
-  std::cout << "filename = " << argv[5] << std::endl;
-  try
-    {
-    if( !PDFIO2.Read( argv[5] ) )
-      {
-      std::cout << "Error in reading PDF file." << std::endl;
-      return EXIT_FAILURE;
-      }
-    }
-  catch( ... )
-    {
-    std::cout << "Exception caught during pdf write." << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  std::cout << "*** PDFIO2 ***" << std::endl;
-  PDFIO2.PrintInfo();
-
-  std::cout << "*** Filter 2 ***" << std::endl << filter2 << std::endl;
-  filter2->ClassifyImages();
-
-  WriterType::Pointer labelmapWriter2 = WriterType::New();
-  labelmapWriter2->SetFileName( argv[6] );
-  labelmapWriter2->SetUseCompression( true );
-  labelmapWriter2->SetInput( filter2->GetLabelMap() );
-  try
-    {
-    labelmapWriter2->Update();
-    }
-  catch( itk::ExceptionObject & e )
-    {
-    std::cout << "Exception caught during label2 write:" << std::endl << e
-      << std::endl;
-    return EXIT_FAILURE;
-    }
-  catch( ... )
-    {
-    std::cout << "Exception caught during label2 write." << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  itk::tube::PDFSegmenterParzenIO< ImageType, ImageType > PDFIO3( filter2 );
-  PDFIO.Write( argv[7] );
 
   // All objects should be automatically destroyed at this point
   return EXIT_SUCCESS;

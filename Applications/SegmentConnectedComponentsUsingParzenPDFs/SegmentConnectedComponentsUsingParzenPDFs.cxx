@@ -72,7 +72,7 @@ CheckImageAttributes( const TInputImage * input,
     && inputRegion.GetSize() == maskRegion.GetSize() );
 }
 
-template< class T, unsigned int N, unsigned int dimension >
+template< class T, unsigned int dimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
@@ -84,7 +84,11 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< float, dimension >           ProbImageType;
   typedef itk::Image< unsigned short, dimension >  LabelMapType;
 
-  typedef itk::Image< float, N >                   PDFImageType;
+  typedef itk::tube::PDFSegmenterParzen< InputImageType, LabelMapType >
+    PDFSegmenterType;
+
+  typedef itk::Image< float, PARZEN_MAX_NUMBER_OF_FEATURES >
+    PDFImageType;
 
   typedef itk::ImageFileReader< InputImageType >   ImageReaderType;
   typedef itk::ImageFileReader< LabelMapType >     LabelMapReaderType;
@@ -93,8 +97,6 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileWriter< PDFImageType >     PDFImageWriterType;
   typedef itk::ImageFileReader< PDFImageType >     PDFImageReaderType;
 
-  typedef itk::tube::PDFSegmenterParzen< InputImageType, N, LabelMapType >
-    PDFSegmenterType;
   typename PDFSegmenterType::Pointer pdfSegmenter =
     PDFSegmenterType::New();
 
@@ -112,8 +114,21 @@ int DoIt( int argc, char * argv[] )
   inLabelMapReader->Update();
   pdfSegmenter->SetLabelMap( inLabelMapReader->GetOutput() );
 
+  unsigned int numFeatures = 1;
+  if( inputVolume1.size() > 1 )
+    {
+    ++numFeatures;
+    if( inputVolume2.size() > 1 )
+      {
+      ++numFeatures;
+      if( inputVolume3.size() > 1 )
+        {
+        ++numFeatures;
+        }
+      }
+    }
   typename ImageReaderType::Pointer reader;
-  for( unsigned int i = 0; i < N; i++ )
+  for( unsigned int i = 0; i < numFeatures; i++ )
     {
     reader = ImageReaderType::New();
     if( i == 0 )
@@ -211,7 +226,7 @@ int DoIt( int argc, char * argv[] )
         tmpSpacing.resize( dimension );
         typename PDFImageType::PointType origin = img->GetOrigin();
         typename PDFImageType::SpacingType spacing = img->GetSpacing();
-        for( unsigned int d=0; d<N; ++d )
+        for( unsigned int d=0; d<numFeatures; ++d )
           {
           tmpOrigin[d] = origin[d];
           tmpSpacing[d] = spacing[d];
@@ -296,78 +311,19 @@ int main( int argc, char * argv[] )
 
     GetImageInformation( inputVolume1, imageType, imageDimension );
 
-    int N = 1;
-    if( !inputVolume2.empty() )
-      {
-      ++N;
-      if( !inputVolume3.empty() )
-        {
-        ++N;
-        if( !inputVolume4.empty() )
-          {
-          ++N;
-          }
-        }
-      }
-
     if( imageDimension == 2 )
       {
       switch( imageType )
         {
         case itk::ImageIOBase::UCHAR:
-          if( N == 1 )
-            {
-            return DoIt<unsigned char, 1, 2>( argc, argv );
-            }
-          else if( N == 2 )
-            {
-            return DoIt<unsigned char, 2, 2>( argc, argv );
-            }
-          else if( N == 3 )
-            {
-            return DoIt<unsigned char, 3, 2>( argc, argv );
-            }
-          else
-            {
-            return DoIt<unsigned char, 4, 2>( argc, argv );
-            }
+          return DoIt<unsigned char, 2>( argc, argv );
           break;
         case itk::ImageIOBase::USHORT:
-          if( N == 1 )
-            {
-            return DoIt<unsigned short, 1, 2>( argc, argv );
-            }
-          else if( N == 2 )
-            {
-            return DoIt<unsigned short, 2, 2>( argc, argv );
-            }
-          else if( N == 3 )
-            {
-            return DoIt<unsigned short, 3, 2>( argc, argv );
-            }
-          else
-            {
-            return DoIt<unsigned short, 4, 2>( argc, argv );
-            }
+          return DoIt<unsigned short, 2>( argc, argv );
           break;
         case itk::ImageIOBase::CHAR:
         case itk::ImageIOBase::SHORT:
-          if( N == 1 )
-            {
-            return DoIt<short, 1, 2>( argc, argv );
-            }
-          else if( N == 2 )
-            {
-            return DoIt<short, 2, 2>( argc, argv );
-            }
-          else if( N == 3 )
-            {
-            return DoIt<short, 3, 2>( argc, argv );
-            }
-          else
-            {
-            return DoIt<short, 4, 2>( argc, argv );
-            }
+          return DoIt<short, 2>( argc, argv );
           break;
         case itk::ImageIOBase::UINT:
         case itk::ImageIOBase::INT:
@@ -375,22 +331,7 @@ int main( int argc, char * argv[] )
         case itk::ImageIOBase::LONG:
         case itk::ImageIOBase::FLOAT:
         case itk::ImageIOBase::DOUBLE:
-          if( N == 1 )
-            {
-            return DoIt<float, 1, 2>( argc, argv );
-            }
-          else if( N == 2 )
-            {
-            return DoIt<float, 2, 2>( argc, argv );
-            }
-          else if( N == 3 )
-            {
-            return DoIt<float, 3, 2>( argc, argv );
-            }
-          else
-            {
-            return DoIt<float, 4, 2>( argc, argv );
-            }
+          return DoIt<float, 2>( argc, argv );
           break;
         case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
         default:
@@ -403,59 +344,14 @@ int main( int argc, char * argv[] )
       switch( imageType )
         {
         case itk::ImageIOBase::UCHAR:
-          if( N == 1 )
-            {
-            return DoIt<unsigned char, 1, 3>( argc, argv );
-            }
-          else if( N == 2 )
-            {
-            return DoIt<unsigned char, 2, 3>( argc, argv );
-            }
-          else if( N == 3 )
-            {
-            return DoIt<unsigned char, 3, 3>( argc, argv );
-            }
-          else
-            {
-            return DoIt<unsigned char, 4, 3>( argc, argv );
-            }
+          return DoIt<unsigned char, 3>( argc, argv );
           break;
         case itk::ImageIOBase::USHORT:
-          if( N == 1 )
-            {
-            return DoIt<unsigned short, 1, 3>( argc, argv );
-            }
-          else if( N == 2 )
-            {
-            return DoIt<unsigned short, 2, 3>( argc, argv );
-            }
-          else if( N == 3 )
-            {
-            return DoIt<unsigned short, 3, 3>( argc, argv );
-            }
-          else
-            {
-            return DoIt<unsigned short, 4, 3>( argc, argv );
-            }
+          return DoIt<unsigned short, 3>( argc, argv );
           break;
         case itk::ImageIOBase::CHAR:
         case itk::ImageIOBase::SHORT:
-          if( N == 1 )
-            {
-            return DoIt<short, 1, 3>( argc, argv );
-            }
-          else if( N == 2 )
-            {
-            return DoIt<short, 2, 3>( argc, argv );
-            }
-          else if( N == 3 )
-            {
-            return DoIt<short, 3, 3>( argc, argv );
-            }
-          else
-            {
-            return DoIt<short, 4, 3>( argc, argv );
-            }
+          return DoIt<short, 3>( argc, argv );
           break;
         case itk::ImageIOBase::UINT:
         case itk::ImageIOBase::INT:
@@ -463,22 +359,7 @@ int main( int argc, char * argv[] )
         case itk::ImageIOBase::LONG:
         case itk::ImageIOBase::FLOAT:
         case itk::ImageIOBase::DOUBLE:
-          if( N == 1 )
-            {
-            return DoIt<float, 1, 3>( argc, argv );
-            }
-          else if( N == 2 )
-            {
-            return DoIt<float, 2, 3>( argc, argv );
-            }
-          else if( N == 3 )
-            {
-            return DoIt<float, 3, 3>( argc, argv );
-            }
-          else
-            {
-            return DoIt<float, 4, 3>( argc, argv );
-            }
+          return DoIt<float, 3>( argc, argv );
           break;
         case itk::ImageIOBase::UNKNOWNCOMPONENTTYPE:
         default:

@@ -37,9 +37,7 @@ namespace itk
 namespace tube
 {
 
-#define MAX_NUMBER_OF_FEATURES 5
-
-template< class TImage, unsigned int N, class TLabelMap >
+template< class TImage, class TLabelMap >
 class PDFSegmenterBase : public Object
 {
 public:
@@ -172,16 +170,13 @@ protected:
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
   typedef std::vector< typename ProbabilityImageType::Pointer >
-    ProbabilityImageVectorType;
-  typedef itk::Vector< ProbabilityPixelType, N+ImageDimension >
-    ListVectorType;
-  typedef itk::Statistics::ListSample< ListVectorType >
-    ListSampleType;
-  typedef std::vector< typename ListSampleType::Pointer >
-    ClassListSampleType;
+                                              ProbabilityImageVectorType;
+  typedef std::vector< ProbabilityPixelType > ListVectorType;
+  typedef std::vector< ListVectorType >       ListSampleType;
+  typedef std::vector< ListSampleType >       ClassListSampleType;
 
   ClassListSampleType                           m_InClassList;
-  typename ListSampleType::Pointer              m_OutClassList;
+  ListSampleType                                m_OutClassList;
 
   typename FeatureVectorGeneratorType::Pointer  m_FeatureVectorGenerator;
 
