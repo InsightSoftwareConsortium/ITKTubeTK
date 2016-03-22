@@ -322,7 +322,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
       const ScalarType distanceSquared = distance * distance;
       //! \todo cache this value, so it can be used in the next loop
       kernelSum += ( -1.0 + ( distanceSquared / scaleSquared ) )
-        * vcl_exp( -0.5 * distanceSquared / scaleSquared );
+        * std::exp( -0.5 * distanceSquared / scaleSquared );
       ++numberOfKernelPoints;
       }
     }
@@ -339,7 +339,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
     const ScalarType distanceSquared = distance * distance;
     const ScalarType kernelValue =
       ( -1.0 + ( distanceSquared / scaleSquared ) )
-      * vcl_exp( -0.5 * distanceSquared / scaleSquared ) - error;
+      * std::exp( -0.5 * distanceSquared / scaleSquared ) - error;
 
     typename FixedImageType::PointType point;
     for( unsigned int ii = 0; ii < ImageDimension; ++ii )
@@ -607,7 +607,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
     {
     const ScalarType distanceSquared = distance * distance;
     const ScalarType kernelValue =
-      2.0 * distance * vcl_exp( -0.5 * distanceSquared / scaleSquared );
+      2.0 * distance * std::exp( -0.5 * distanceSquared / scaleSquared );
 
     kernelSum += vnl_math_abs( kernelValue );
 

@@ -223,13 +223,13 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
       }
     else
       {
-      double kappa = vcl_pow( ((float) (eigenValue[middleEigenValueIndex]) /
+      double kappa = std::pow( ((float) (eigenValue[middleEigenValueIndex]) /
         ( m_Alpha + eigenValue[smallestEigenValueIndex])), 4.0);
 
       double contrastParameterLambdaCSquare = m_ContrastParameterLambdaC
         * m_ContrastParameterLambdaC;
 
-      double expVal = vcl_exp((-1.0 * (vcl_log( 2.0)
+      double expVal = std::exp((-1.0 * (std::log( 2.0)
         * contrastParameterLambdaCSquare )/kappa ));
       Lambda3 = m_Alpha + (1.0 - m_Alpha)*expVal;
 

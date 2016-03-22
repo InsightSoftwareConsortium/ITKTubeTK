@@ -721,9 +721,9 @@ AnisotropicDiffusiveSparseRegistrationFilter
       surfaceDistance = 0.0;
       for( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        surfaceDistance += vcl_pow( imageCoord[i] - borderCoord[i], 2 );
+        surfaceDistance += std::pow( imageCoord[i] - borderCoord[i], 2 );
         }
-      surfaceDistance = vcl_sqrt( surfaceDistance );
+      surfaceDistance = std::sqrt( surfaceDistance );
       }
     if( tubePointLocator )
       {
@@ -825,11 +825,11 @@ AnisotropicDiffusiveSparseRegistrationFilter
   double projection2 = 0.0;
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    projection1 += vcl_pow(relativePoint[i] * tangentVector1[i], 2);
-    projection2 += vcl_pow(relativePoint[i] * tangentVector2[i], 2);
+    projection1 += std::pow(relativePoint[i] * tangentVector1[i], 2);
+    projection2 += std::pow(relativePoint[i] * tangentVector2[i], 2);
     }
-  projection1 = vcl_sqrt( projection1 );
-  projection2 = vcl_sqrt( projection2 );
+  projection1 = std::sqrt( projection1 );
+  projection2 = std::sqrt( projection2 );
 
   double pointOnPlane[ImageDimension];
   for( unsigned int i = 0; i < ImageDimension; i++ )
@@ -841,9 +841,9 @@ AnisotropicDiffusiveSparseRegistrationFilter
   double distance = 0.0;
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    distance += vcl_pow( pointOnPlane[i], 2 );
+    distance += std::pow( pointOnPlane[i], 2 );
     }
-  distance = vcl_sqrt( distance );
+  distance = std::sqrt( distance );
   return distance;
 }
 
@@ -951,7 +951,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeWeightFromDistanceExponential( const WeightComponentType distance ) const
 {
-  return vcl_exp( -1.0 * m_Lambda * distance );
+  return std::exp( -1.0 * m_Lambda * distance );
 }
 
 /**
@@ -968,7 +968,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
 ::ComputeWeightFromDistanceDirac( const WeightComponentType distance ) const
 {
   return 1.0 - ( 1.0 / ( 1.0 + m_Lambda * m_Gamma
-                         * vcl_exp( -1.0 * m_Lambda * distance * distance ) ) );
+                         * std::exp( -1.0 * m_Lambda * distance * distance ) ) );
 }
 
 /**

@@ -547,7 +547,7 @@ EvaluateAtContinuousIndex( const ContinuousIndexType & cIndex,
           {
           pixelValue = m_InputImage->GetPixel( xShift );
           }
-        expValue = vcl_exp( physGaussFactor * physDist );
+        expValue = std::exp( physGaussFactor * physDist );
 
         v += pixelValue * expValue;
         vTotal += vnl_math_abs( expValue );
@@ -929,7 +929,7 @@ DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
           {
           pixelValue = m_InputImage->GetPixel( xShift );
           }
-        expValue = vcl_exp( physGaussFactor * physDist );
+        expValue = std::exp( physGaussFactor * physDist );
 
         v += pixelValue * expValue;
         vTotal += vnl_math_abs( expValue );
@@ -977,7 +977,7 @@ DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
     }
   if( dMag != 0 )
     {
-    dMag = vcl_sqrt( dMag );
+    dMag = std::sqrt( dMag );
     }
 
   double val = 0;
@@ -1124,7 +1124,7 @@ DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
   double dMag = ( d[0]*d[0] + d[1]*d[1] );
   if( dMag != 0 )
     {
-    dMag = vcl_sqrt( dMag );
+    dMag = std::sqrt( dMag );
     }
 
   return dMag;
@@ -1289,7 +1289,7 @@ HessianAtContinuousIndex( const ContinuousIndexType & cIndex,
     mag += h[i][i] * h[i][i];
     }
   // Should return the determinant
-  return vcl_sqrt( mag );
+  return std::sqrt( mag );
 }
 
 
@@ -1404,7 +1404,7 @@ HessianAtContinuousIndex( const ContinuousIndexType & cIndex,
   m_MostRecentHessian.Fill( 0 );
   m_MostRecentHessian[0][0] = m[0][0];
   m_MostRecentHessian[1][1] = m[1][1];
-  return vcl_sqrt( m[0][0]*m[0][0] + m[1][1]*m[1][1] );
+  return std::sqrt( m[0][0]*m[0][0] + m[1][1]*m[1][1] );
 }
 
 template< class TInputImage >
@@ -1577,7 +1577,7 @@ JetAtContinuousIndex( const ContinuousIndexType & cIndex, VectorType & d,
           pixelValue = m_InputImage->GetPixel( xShift );
           }
 
-        expValue = vcl_exp( physGaussFactor * physDist );
+        expValue = std::exp( physGaussFactor * physDist );
         v += pixelValue * expValue;
         vTotal += vnl_math_abs( expValue );
 

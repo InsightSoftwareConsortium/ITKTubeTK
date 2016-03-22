@@ -73,7 +73,7 @@ public:
     {
     const WeightType radius = tubePoint.GetRadius();
     return static_cast< WeightType >( 2.0 /
-      (1.0 + vcl_exp( -2.0 * radius ) ));
+      (1.0 + std::exp( -2.0 * radius ) ));
     }
 
 protected:

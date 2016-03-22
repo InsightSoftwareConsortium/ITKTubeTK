@@ -517,7 +517,7 @@ SplineND
 
   for( int i=( int )m_Dimension-1; i>=0; i-- )
     {
-    unsigned int k = ( unsigned int )vcl_pow( ( float )4, ( int )i );
+    unsigned int k = ( unsigned int )std::pow( ( float )4, ( int )i );
     itDataWSColumn.GoToBegin();
     itDataWSDest.GoToBegin();
     for( unsigned int j=0; j<k; j++ )
@@ -569,7 +569,7 @@ SplineND
     {
     itDataWSColumn.GoToBegin();
     itDataWSDest.GoToBegin();
-    unsigned int k = ( unsigned int )vcl_pow( ( float )4, ( int )i );
+    unsigned int k = ( unsigned int )std::pow( ( float )4, ( int )i );
     switch( dx( ( int )m_Dimension-i-1 ) )
       {
       default:
@@ -766,7 +766,7 @@ SplineND
 
   for( int i=( int )m_Dimension-1; i>=0; i-- )
     {
-    unsigned int k = ( unsigned int )vcl_pow( ( float )4, ( int )i );
+    unsigned int k = ( unsigned int )std::pow( ( float )4, ( int )i );
 
     itk::ImageRegionIterator<ImageType> itImageWSX( itWSX->Value(),
       itWSX->Value()->GetLargestPossibleRegion() );

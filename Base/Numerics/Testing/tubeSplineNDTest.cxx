@@ -41,8 +41,8 @@ public:
     }
   const double & Value( const vnl_vector<int> & x )
     {
-    cVal = vcl_sin((double)x[0]/2);
-    cVal += vcl_cos((double)x[1]/2);
+    cVal = std::sin((double)x[0]/2);
+    cVal += std::cos((double)x[1]/2);
     return cVal;
     }
 
@@ -60,8 +60,8 @@ public:
     }
   const double & Value( const vnl_vector<double> & x )
     {
-    cVal = vcl_sin((double)x[0]/2);
-    cVal += vcl_cos((double)x[1]/2);
+    cVal = std::sin((double)x[0]/2);
+    cVal += std::cos((double)x[1]/2);
     return cVal;
     }
 
@@ -81,8 +81,8 @@ public:
     }
   const vnl_vector<double> & Value( const vnl_vector<double> & x )
     {
-    cDeriv[0] = vcl_cos((double)x[0]/2);
-    cDeriv[1] = -vcl_sin((double)x[1]/2);
+    cDeriv[0] = std::cos((double)x[0]/2);
+    cDeriv[1] = -std::sin((double)x[1]/2);
     return cDeriv;
     }
 

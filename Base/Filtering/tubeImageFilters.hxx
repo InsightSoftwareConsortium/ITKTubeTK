@@ -1192,7 +1192,7 @@ ImageFilters<VDimension>
 ::EnhanceVessels( typename ImageType::Pointer imIn,
   double scaleMin, double scaleMax, double numScales )
 {
-  double logScaleStep = (vcl_log(scaleMax) - vcl_log(scaleMin))
+  double logScaleStep = (std::log(scaleMax) - std::log(scaleMin))
     / (numScales-1);
 
   typedef itk::tube::NJetImageFunction< ImageType > ImageFunctionType;
@@ -1233,7 +1233,7 @@ ImageFilters<VDimension>
     }
   for( unsigned int i=1; i<numScales; i++ )
     {
-    scale = vcl_exp(vcl_log(scaleMin) + i * logScaleStep);
+    scale = std::exp(std::log(scaleMin) + i * logScaleStep);
     std::cout << "   Processing scale " << scale << std::endl;
     it1.GoToBegin();
     it2.GoToBegin();

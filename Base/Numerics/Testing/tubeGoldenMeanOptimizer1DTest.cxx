@@ -38,7 +38,7 @@ public:
 
   const double & Value( const double & x )
     {
-    cVal = vcl_sin(x);
+    cVal = std::sin(x);
     return cVal;
     }
 
@@ -57,7 +57,7 @@ public:
 
   const double & Value( const double & x )
     {
-    cVal = vcl_cos( x/100 );
+    cVal = std::cos( x/100 );
     std::cout << x << " : " << cVal << std::endl;
     return cVal;
     }

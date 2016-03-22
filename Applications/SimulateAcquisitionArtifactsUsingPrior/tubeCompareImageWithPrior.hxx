@@ -798,7 +798,7 @@ CompareImageWithPrior< TPixel, TDimension>
 
   if( m_GoF>0 && count>0 )
     {
-    m_GoF = -vcl_sqrt( m_GoF/count );
+    m_GoF = -std::sqrt( m_GoF/count );
     }
 
   if( m_TimeCollector )

@@ -148,7 +148,7 @@ GaussianDerivativeImageSource< TOutputImage >
                              outputPtr->GetRequestedRegion()
                              .GetNumberOfPixels() );
   double prefixDenom = 1.0;
-  const double squareRootOfTwoPi = vcl_sqrt(2.0 * vnl_math::pi);
+  const double squareRootOfTwoPi = std::sqrt(2.0 * vnl_math::pi);
   for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
     {
     prefixDenom *= m_Sigmas[i] * squareRootOfTwoPi;
@@ -167,9 +167,9 @@ GaussianDerivativeImageSource< TOutputImage >
       {
       if( m_Orders[i] != 0 )
         {
-        prefixDenom *= vcl_pow( m_Sigmas[i], 2*m_Orders[i] )
-          / (vcl_pow( ( -(evalPoint[i] - m_Mean[i]) ), m_Orders[i] )
-             - ( m_Orders[i] == 2 ? vcl_pow(m_Sigmas[1], m_Orders[i]) : 0));
+        prefixDenom *= std::pow( m_Sigmas[i], 2*m_Orders[i] )
+          / (std::pow( ( -(evalPoint[i] - m_Mean[i]) ), m_Orders[i] )
+             - ( m_Orders[i] == 2 ? std::pow(m_Sigmas[1], m_Orders[i]) : 0));
         }
       }
     double suffixExp = 0;
@@ -180,8 +180,8 @@ GaussianDerivativeImageSource< TOutputImage >
                    / ( 2 * m_Sigmas[i] * m_Sigmas[i] );
       }
 
-    double value = ( 1 / prefixDenom ) * vcl_exp( -suffixExp );
-    total += vcl_abs( value );
+    double value = ( 1 / prefixDenom ) * std::exp( -suffixExp );
+    total += std::abs( value );
 
     // Set the pixel value to the function value
     outIt.Set( ( typename TOutputImage::PixelType )value );

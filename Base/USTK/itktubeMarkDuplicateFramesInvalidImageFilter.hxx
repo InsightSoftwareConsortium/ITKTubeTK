@@ -109,7 +109,7 @@ MarkDuplicateFramesInvalidImageFilterThreader< TAssociate >
       while( !currentSliceIt.IsAtEndOfLine() )
         {
         const float absDifference =
-          vcl_abs( static_cast< float >( currentSliceIt.Get() ) -
+          std::abs( static_cast< float >( currentSliceIt.Get() ) -
             static_cast< float >( nextSliceIt.Get() ) );
         if( absDifference <= tolerance )
           {

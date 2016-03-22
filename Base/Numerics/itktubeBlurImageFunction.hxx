@@ -205,7 +205,7 @@ BlurImageFunction<TInputImage>
           {
           double dist = index[0] * m_Spacing[0];
           dist = dist * dist + distY;
-          double w = vcl_exp( gfact*( dist ) );
+          double w = std::exp( gfact*( dist ) );
           m_KernelWeights.push_back( w );
           m_KernelX.push_back( index );
           m_KernelTotal += w;
@@ -223,7 +223,7 @@ BlurImageFunction<TInputImage>
         {
         double dist = index[0] * m_Spacing[0];
         dist = dist * dist + distY;
-        double w = vcl_exp( gfact*( dist ) );
+        double w = std::exp( gfact*( dist ) );
         m_KernelWeights.push_back( w );
         m_KernelX.push_back( index );
         m_KernelTotal += w;
@@ -460,7 +460,7 @@ BlurImageFunction<TInputImage>
             double dist = distX * distX + distY;
             if( dist <= kernrad )
               {
-              w = vcl_exp( gfact*dist );
+              w = std::exp( gfact*dist );
               wTotal += w;
               res += this->m_Image->GetPixel( kernelX ) * w;
               }
@@ -482,7 +482,7 @@ BlurImageFunction<TInputImage>
           double dist = distX * distX + distY;
           if( dist <= kernrad )
             {
-            w = vcl_exp( gfact*dist );
+            w = std::exp( gfact*dist );
             wTotal += w;
             res += this->m_Image->GetPixel( kernelX ) * w;
             }
@@ -522,7 +522,7 @@ BlurImageFunction<TInputImage>
             double dist = distX * distX + distY;
             if( dist <= kernrad )
               {
-              w = vcl_exp( gfact*( dist ) );
+              w = std::exp( gfact*( dist ) );
               wTotal += w;
               res += this->m_Image->GetPixel( kernelX ) * w;
               }
@@ -542,7 +542,7 @@ BlurImageFunction<TInputImage>
           double dist = distX * distX + distY;
           if( dist <= kernrad )
             {
-            w = vcl_exp( gfact*( dist ) );
+            w = std::exp( gfact*( dist ) );
             wTotal += w;
             res += this->m_Image->GetPixel( kernelX ) * w;
             }

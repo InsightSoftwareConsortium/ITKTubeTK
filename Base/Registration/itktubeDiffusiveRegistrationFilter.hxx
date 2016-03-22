@@ -1176,11 +1176,11 @@ DiffusiveRegistrationFilter
         localUpdateMetricsIntermediate.SumOfSquaredRegularizationUpdateMagnitude
             += squaredRegularizationUpdateMagnitude;
         localUpdateMetricsIntermediate.SumOfTotalUpdateMagnitude
-            += vcl_sqrt( squaredTotalUpdateMagnitude );
+            += std::sqrt( squaredTotalUpdateMagnitude );
         localUpdateMetricsIntermediate.SumOfIntensityDistanceUpdateMagnitude
-            += vcl_sqrt( squaredIntensityDistanceUpdateMagnitude );
+            += std::sqrt( squaredIntensityDistanceUpdateMagnitude );
         localUpdateMetricsIntermediate.SumOfRegularizationUpdateMagnitude
-            += vcl_sqrt( squaredRegularizationUpdateMagnitude );
+            += std::sqrt( squaredRegularizationUpdateMagnitude );
         }
 
       // Go to the next neighborhood
@@ -1548,13 +1548,13 @@ DiffusiveRegistrationFilter
     }
   else
     {
-    m_UpdateMetrics.RMSTotalUpdateMagnitude = vcl_sqrt(
+    m_UpdateMetrics.RMSTotalUpdateMagnitude = std::sqrt(
           m_UpdateMetrics.IntermediateStruct.SumOfSquaredTotalUpdateMagnitude
           / numPixels );
-    m_UpdateMetrics.RMSIntensityDistanceUpdateMagnitude = vcl_sqrt(
+    m_UpdateMetrics.RMSIntensityDistanceUpdateMagnitude = std::sqrt(
           m_UpdateMetrics.IntermediateStruct.SumOfSquaredIntensityDistanceUpdateMagnitude
           / numPixels );
-    m_UpdateMetrics.RMSRegularizationUpdateMagnitude = vcl_sqrt(
+    m_UpdateMetrics.RMSRegularizationUpdateMagnitude = std::sqrt(
           m_UpdateMetrics.IntermediateStruct.SumOfSquaredRegularizationUpdateMagnitude
           / numPixels );
     m_UpdateMetrics.MeanTotalUpdateMagnitude

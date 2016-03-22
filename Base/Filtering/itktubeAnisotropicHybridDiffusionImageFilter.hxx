@@ -256,7 +256,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
         * gradientMagnitude;
       double ratio = (gradientMagnitudeSquare) /
                (m_ContrastParameterLambdaEED*m_ContrastParameterLambdaEED);
-      double expVal = vcl_exp( (-1.0 * m_ThresholdParameterC)/(vcl_pow( ratio,
+      double expVal = std::exp( (-1.0 * m_ThresholdParameterC)/(std::pow( ratio,
         4.0 )));
       LambdaEED1 = 1.0 - expVal;
       }
@@ -284,14 +284,14 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     else
       {
       double kappa =
-       vcl_pow( ((float) (eigenValue[middleEigenValueIndex]) /
+       std::pow( ((float) (eigenValue[middleEigenValueIndex]) /
                 ( m_Alpha + eigenValue[smallestEigenValueIndex])),
                4.0);
 
       double contrastParameterLambdaCEDSquare
         = m_ContrastParameterLambdaCED * m_ContrastParameterLambdaCED;
 
-      double expVal = vcl_exp((-1.0 * (vcl_log( 2.0)
+      double expVal = std::exp((-1.0 * (std::log( 2.0)
         * contrastParameterLambdaCEDSquare )/kappa ));
       LambdaCED3 = m_Alpha + (1.0 - m_Alpha)*expVal;
       }
@@ -311,10 +311,10 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
       * (xi - vnl_math_abs(xi)) - 2.0 * eigenValue[smallestEigenValueIndex] );
 
 
-    double denominator = 2.0 * vcl_pow( m_ContrastParameterLambdaHybrid,
+    double denominator = 2.0 * std::pow( m_ContrastParameterLambdaHybrid,
       4.0 );
 
-    double epsilon = vcl_exp(numerator/denominator);
+    double epsilon = std::exp(numerator/denominator);
 
     Lambda1 = (1 - epsilon ) * LambdaCED1 + epsilon*LambdaEED1;
     Lambda2 = (1 - epsilon ) * LambdaCED2 + epsilon*LambdaEED2;

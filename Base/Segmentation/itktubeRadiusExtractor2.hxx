@@ -358,8 +358,8 @@ RadiusExtractor2<TInputImage>
         ++pntIter;
         ++pntCount;
         }
-      m_KernelDistances[ count ] = vcl_sqrt( minNormalDist );
-      m_KernelTangentDistances[ count ] = vcl_sqrt( minTangentDist );
+      m_KernelDistances[ count ] = std::sqrt( minNormalDist );
+      m_KernelTangentDistances[ count ] = std::sqrt( minTangentDist );
       }
     else
       {
@@ -439,7 +439,7 @@ RadiusExtractor2<TInputImage>
   double distMin = 0;
   if( distMin2 > 0 )
     {
-    distMin = vcl_sqrt( distMin2 );
+    distMin = std::sqrt( distMin2 );
     }
   double areaMin = distMin * distMin * vnl_math::pi;
   double areaPos = areaR - areaMin;

@@ -218,12 +218,12 @@ public:
     if( countObj > 0 )
       {
       meanObj = sumObj/countObj;
-      stdDevObj = vcl_sqrt( sumsObj/countObj - meanObj*meanObj );
+      stdDevObj = std::sqrt( sumsObj/countObj - meanObj*meanObj );
       }
     if( countBkg > 0 )
       {
       meanBkg = sumBkg/countBkg;
-      stdDevBkg = vcl_sqrt( sumsBkg/countBkg - stdDevBkg*stdDevBkg );
+      stdDevBkg = std::sqrt( sumsBkg/countBkg - stdDevBkg*stdDevBkg );
       }
 
     double dp = vnl_math_abs(meanObj - meanBkg) / (stdDevObj * stdDevBkg);

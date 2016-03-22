@@ -233,7 +233,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
           }
         if( count > 0 )
           {
-          averageValue = vcl_sqrt( averageValue / count );
+          averageValue = std::sqrt( averageValue / count );
           }
         }
       else
@@ -267,8 +267,8 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
         for( unsigned int i = 0; i < ImageDimension; ++i )
           {
           double dist = (valueIndex[i] - inputIndex[i] ) / factorSize[i];
-          weight += (1.0 / (factorSize[i] * vcl_sqrt( 2 * vnl_math::pi )))
-            * vcl_exp( -0.5 * dist * dist );
+          weight += (1.0 / (factorSize[i] * std::sqrt( 2 * vnl_math::pi )))
+            * std::exp( -0.5 * dist * dist );
           }
         if( m_UseLog )
           {
@@ -286,7 +286,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
         {
         if( m_UseLog )
           {
-          outIt.Set( vcl_sqrt( averageValue / weightSum ) );
+          outIt.Set( std::sqrt( averageValue / weightSum ) );
           }
         else
           {

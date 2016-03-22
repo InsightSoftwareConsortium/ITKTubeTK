@@ -73,7 +73,7 @@ public:
       return NumericTraits< OperatorValueType >::Zero;
       }
     return static_cast< OperatorValueType >( 1.0 /
-      (1.0 + this->GetDelta() * (vcl_exp( -this->GetAlpha() * radius ) - 1.0)));
+      (1.0 + this->GetDelta() * (std::exp( -this->GetAlpha() * radius ) - 1.0)));
     }
 
   void SetLowerBound( const OperatorValueType lowerBound )

@@ -407,9 +407,9 @@ TubeEnhancingDiffusion2DImageFilter<TPixel,TDimension>
 
   const Precision   Rb2 = (l1 * l1) / (l2 * l2); // btwn 0 and 1
   const Precision   S2 =  (l1 * l1) + (l2 *l2);
-  //const Precision   T = vcl_exp(-(2*smoothC*smoothC)/(vnl_math_abs(l1)*l2*l2));
+  //const Precision   T = std::exp(-(2*smoothC*smoothC)/(vnl_math_abs(l1)*l2*l2));
 
-  vesselness = vcl_exp( -Rb2/vb2 ) * (1.0 - vcl_exp( -S2/vc2 ) );
+  vesselness = std::exp( -Rb2/vb2 ) * (1.0 - std::exp( -S2/vc2 ) );
 
   return vesselness;
 }
@@ -457,9 +457,9 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
     // adjusting eigenvalues
     // static_cast required to prevent error with gcc 4.1.2
     evn[0]   = 1.0 + (m_Epsilon - 1.0) *
-      vcl_pow(V,static_cast<Precision>(1.0/m_Sensitivity));
+      std::pow(V,static_cast<Precision>(1.0/m_Sensitivity));
     evn[1]   = 1.0 + (m_Epsilon - 1.0) *
-      vcl_pow(V,static_cast<Precision>(1.0/m_Sensitivity));
+      std::pow(V,static_cast<Precision>(1.0/m_Sensitivity));
 
     vnl_matrix<Precision> LAM(2,2);
     LAM.fill(0);

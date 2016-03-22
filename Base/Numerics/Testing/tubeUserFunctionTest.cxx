@@ -61,7 +61,7 @@ public:
   const vnl_vector<double> & Value( const vnl_vector<double> & x )
     {
     std::cout << "func:x = " << x[0] << ", " << x[1] << std::endl;
-    cVal[0] = vcl_sin(x[0]) + vcl_cos(x[1]/2);
+    cVal[0] = std::sin(x[0]) + std::cos(x[1]/2);
     std::cout << "  val = " << cVal << std::endl;
     return cVal;
     }
