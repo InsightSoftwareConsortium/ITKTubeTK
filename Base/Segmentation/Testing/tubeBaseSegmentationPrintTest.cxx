@@ -21,11 +21,17 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "tubetkConfigure.h"
+
 #include "itktubePDFSegmenterParzen.h"
-#include "itktubePDFSegmenterSVM.h"
+#ifdef TubeTK_USE_LIBSVM
+#  include "itktubePDFSegmenterSVM.h"
+#endif
 #include "itktubeRadiusExtractor2.h"
 #include "itktubeRidgeExtractor.h"
-#include "itktubeRidgeSeedFilter.h"
+#ifdef TubeTK_USE_LIBSVM
+#  include "itktubeRidgeSeedFilter.h"
+#endif
 #include "itktubeTubeExtractor.h"
 
 #include <itkImage.h>
@@ -42,11 +48,13 @@ int tubeBaseSegmentationPrintTest( int itkNotUsed( argc ),
   std::cout << "-------------itktubePDFSegmenterParzen" << pdfSegmenterParzen
     << std::endl;
 
+#ifdef TubeTK_USE_LIBSVM
   itk::tube::PDFSegmenterSVM< ImageType, ImageType >::Pointer
     pdfSegmenterSVM = itk::tube::PDFSegmenterSVM< ImageType,
       ImageType >::New();
   std::cout << "-------------itktubePDFSegmenterSVM" << pdfSegmenterSVM
     << std::endl;
+#endif
 
   itk::tube::RadiusExtractor2< ImageType >::Pointer
     radius2Object = itk::tube::RadiusExtractor2< ImageType >::New();
@@ -58,11 +66,13 @@ int tubeBaseSegmentationPrintTest( int itkNotUsed( argc ),
   std::cout << "-------------itktubeRidgeExtractor" << ridgeObject
     << std::endl;
 
+#ifdef TubeTK_USE_LIBSVM
   itk::tube::RidgeSeedFilter< ImageType, CharImageType >::Pointer
     seedObject = itk::tube::RidgeSeedFilter< ImageType,
     CharImageType >::New();
   std::cout << "-------------itktubeRidgeSeedFilter" << seedObject
     << std::endl;
+#endif
 
   itk::tube::TubeExtractor< ImageType >::Pointer tubeObject =
     itk::tube::TubeExtractor< ImageType >::New();
