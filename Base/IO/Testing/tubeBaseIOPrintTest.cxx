@@ -21,13 +21,17 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "tubetkConfigure.h"
+
 #include "itktubeMetaLDA.h"
 #include "itktubeMetaNJetLDA.h"
 #include "itktubeMetaClassPDF.h"
 #include "itktubeMetaRidgeSeed.h"
 #include "itktubeMetaTubeExtractor.h"
 #include "itktubePDFSegmenterParzenIO.h"
-#include "itktubeRidgeSeedFilterIO.h"
+#ifdef TubeTK_USE_LIBSVM
+#  include "itktubeRidgeSeedFilterIO.h"
+#endif
 #include "itktubeTubeExtractorIO.h"
 #include "itktubeTubeXIO.h"
 
@@ -59,9 +63,11 @@ int tubeBaseIOPrintTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
   std::cout << "-------------pdfSegmenterParzenIO" << std::endl;
   pdfSegmenterParzenIO.PrintInfo();
 
+#ifdef TubeTK_USE_LIBSVM
   itk::tube::RidgeSeedFilterIO< ImageType, ImageType > ridgeSeedFilterIO;
   std::cout << "-------------ridgeSeedFilterIO" << std::endl;
   ridgeSeedFilterIO.PrintInfo();
+#endif
 
   itk::tube::TubeExtractorIO< ImageType > tubeExtractorIO;
   std::cout << "-------------tubeExtractorIO" << std::endl;

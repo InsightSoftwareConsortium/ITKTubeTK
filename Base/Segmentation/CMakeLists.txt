@@ -23,26 +23,34 @@
 
 project( TubeTKSegmentation )
 
-find_package( LIBSVM )
-include_directories( ${LIBSVM_INCLUDE_DIRS} )
+if( TubeTK_USE_LIBSVM )
+  find_package( LIBSVM )
+  include_directories( ${LIBSVM_INCLUDE_DIRS} )
+endif( TubeTK_USE_LIBSVM )
 
 set( TubeTK_Base_Segmentation_H_Files
   itktubePDFSegmenterBase.h
   itktubePDFSegmenterParzen.h
-  itktubePDFSegmenterSVM.h
   itktubeRadiusExtractor2.h
   itktubeRidgeExtractor.h
-  itktubeRidgeSeedFilter.h
   itktubeTubeExtractor.h )
+if( TubeTK_USE_LIBSVM )
+  list( APPEND TubeTK_Base_Segmentation_H_Files
+    itktubePDFSegmenterSVM.h
+    itktubeRidgeSeedFilter.h )
+endif( TubeTK_USE_LIBSVM )
 
 set( TubeTK_Base_Segmentation_HXX_Files
   itktubePDFSegmenterBase.hxx
   itktubePDFSegmenterParzen.hxx
-  itktubePDFSegmenterSVM.hxx
   itktubeRadiusExtractor2.hxx
   itktubeRidgeExtractor.hxx
-  itktubeRidgeSeedFilter.hxx
   itktubeTubeExtractor.hxx )
+if( TubeTK_USE_LIBSVM )
+  list( APPEND TubeTK_Base_Segmentation_HXX_Files
+    itktubePDFSegmenterSVM.hxx
+    itktubeRidgeSeedFilter.hxx )
+endif( TubeTK_USE_LIBSVM )
 
 add_library( ${PROJECT_NAME} INTERFACE )
 

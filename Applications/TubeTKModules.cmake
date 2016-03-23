@@ -52,7 +52,6 @@ set( TubeTK_${proj}_MODULES
   EnhanceContrastUsingPrior
   EnhanceEdgesUsingDiffusion
   EnhanceTubesUsingDiffusion
-  EnhanceTubesUsingDiscriminantAnalysis
   EnhanceUsingDiscriminantAnalysis
   EnhanceUsingNJetDiscriminantAnalysis
   ImageMath
@@ -96,6 +95,14 @@ if( TubeTK_USE_BOOST )
   list( APPEND TubeTK_${proj}_MODULES
     ${TubeTK_${proj}_Boost_MODULES} )
 endif( TubeTK_USE_BOOST )
+
+set( TubeTK_${proj}_LIBSVM_MODULES )
+if( TubeTK_USE_LIBSVM )
+  set( TubeTK_${proj}_LIBSVM_MODULES
+    EnhanceTubesUsingDiscriminantAnalysis )
+  list( APPEND TubeTK_${proj}_MODULES
+    ${TubeTK_${proj}_LIBSVM_MODULES} )
+endif( TubeTK_USE_LIBSVM )
 
 set( TubeTK_${proj}_VTK_MODULES )
 if( TubeTK_USE_VTK )

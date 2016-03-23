@@ -27,5 +27,7 @@ limitations under the License.
 // this gets defined if use set TUBETK_USE_GPU_ARRAYFIRE to ON
 #cmakedefine TubeTK_USE_GPU_ARRAYFIRE
 
+// this gets defined if use set TubeTK_USE_LIBSVM to ON
+#cmakedefine TubeTK_USE_LIBSVM
 
 #endif // __tubetkConfigure_h

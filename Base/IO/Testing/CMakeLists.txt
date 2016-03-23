@@ -33,8 +33,10 @@ include( ${SlicerExecutionModel_USE_FILE} )
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
 
-find_package( LIBSVM REQUIRED )
-include_directories( ${LIBSVM_INCLUDE_DIRS} )
+if( TubeTK_USE_LIBSVM )
+  find_package( LIBSVM REQUIRED )
+  include_directories( ${LIBSVM_INCLUDE_DIRS} )
+endif( TubeTK_USE_LIBSVM )
 
 find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
@@ -65,19 +67,28 @@ set( tubeBaseIOTests_SRCS
   itktubeMetaRidgeSeedTest.cxx
   itktubeMetaTubeExtractorTest.cxx
   itktubePDFSegmenterParzenIOTest.cxx
-  itktubeRidgeSeedFilterIOTest.cxx
   itktubeTubeExtractorIOTest.cxx
   itktubeTubeXIOTest.cxx )
+if( TubeTK_USE_LIBSVM )
+  list( APPEND tubeBaseIOTests_SRCS itktubeRidgeSeedFilterIOTest.cxx )
+endif( TubeTK_USE_LIBSVM )
+
 
 add_executable( tubeBaseIOHeaderTest
   tubeBaseIOHeaderTest.cxx )
 target_link_libraries( tubeBaseIOHeaderTest
   TubeTKIO ${ITK_LIBRARIES} ${LIBSVM_LIBRARIES} )
+if( TubeTK_USE_LIBSVM )
+  target_link_libraries( tubeBaseIOHeaderTest ${LIBSVM_LIBRARIES} )
+endif( TubeTK_USE_LIBSVM )
 
 set( tubeBaseIO_External_Libraries )
 if( TubeTK_USE_GPU_ARRAYFIRE )
   set( tubeBaseIO_External_Libraries ${ArrayFire_LIBRARIES} )
 endif( TubeTK_USE_GPU_ARRAYFIRE )
+if( TubeTK_USE_LIBSVM )
+  set( tubeBaseIO_External_Libraries ${LIBSVM_LIBRARIES} )
+endif( TubeTK_USE_LIBSVM )
 
 set( no_install_option )
 if( NOT TubeTK_INSTALL_DEVELOPMENT )
@@ -97,7 +108,6 @@ SEMMacroBuildCLI(
     TubeTKIO
     ${ITK_LIBRARIES}
     ITKIOMeta
-    ${LIBSVM_LIBRARIES}
   EXECUTABLE_ONLY
   ${no_install_option}
   )
