@@ -465,9 +465,9 @@ AnisotropicDiffusiveRegistrationFilter
       distance = 0.0;
       for( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        distance += vcl_pow( imageCoord[i] - borderCoord[i], 2 );
+        distance += std::pow( imageCoord[i] - borderCoord[i], 2 );
         }
-      distance = vcl_sqrt( distance );
+      distance = std::sqrt( distance );
       // The weight image will temporarily store distances
       weightIt.Set( distance );
       }
@@ -565,7 +565,7 @@ AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeWeightFromDistanceExponential( const WeightType distance ) const
 {
-  return vcl_exp( -1.0 * m_Lambda * distance );
+  return std::exp( -1.0 * m_Lambda * distance );
 }
 
 /**
@@ -582,7 +582,7 @@ AnisotropicDiffusiveRegistrationFilter
 ::ComputeWeightFromDistanceDirac( const WeightType distance ) const
 {
   return 1.0 - ( 1.0 / ( 1.0 + m_Lambda * m_Gamma
-                         * vcl_exp( -1.0 * m_Lambda * distance * distance ) ) );
+                         * std::exp( -1.0 * m_Lambda * distance * distance ) ) );
 }
 
 /**

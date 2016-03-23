@@ -85,7 +85,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTestNew( int argc, char * 
     ImageType::IndexType index = it.GetIndex();
     ImageType::PointType point;
     inImage->TransformIndexToPhysicalPoint(index, point);
-    it.Set(static_cast<ImageType::PixelType>(vcl_sin(point[0]))); //sinx
+    it.Set(static_cast<ImageType::PixelType>(std::sin(point[0]))); //sinx
     }
 
   typedef itk::ImageFileWriter<ImageType>        WriterType;
@@ -111,7 +111,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTestNew( int argc, char * 
     ImageType::IndexType index = pt.GetIndex();
     ImageType::PointType point;
     prodImage->TransformIndexToPhysicalPoint(index, point);
-    double cosValue = vcl_cos(point[0]);
+    double cosValue = std::cos(point[0]);
     pt.Set(static_cast<ImageType::PixelType>(cosValue*cosValue)); //cosx*cosx
     }
 

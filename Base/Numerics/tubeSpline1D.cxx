@@ -342,7 +342,7 @@ Spline1D
 
   double xpp = ValueD2(x);
 
-  return xpp/vcl_pow(1.0+xp*xp, 1.5);
+  return xpp/std::pow(1.0+xp*xp, 1.5);
 }
 
 

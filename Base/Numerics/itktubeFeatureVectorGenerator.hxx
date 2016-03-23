@@ -354,7 +354,7 @@ UpdateWhitenStatistics( void )
     {
     for( unsigned int i = 0; i < numFeatures; i++ )
       {
-      imStdDev[i] = vcl_sqrt( imStdDev[i] / ( imCount - 1 ) );
+      imStdDev[i] = std::sqrt( imStdDev[i] / ( imCount - 1 ) );
       }
     }
   else

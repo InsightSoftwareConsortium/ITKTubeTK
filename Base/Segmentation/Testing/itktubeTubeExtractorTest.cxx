@@ -191,7 +191,7 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
       double tf = x0[i]-x1[i];
       diff += tf * tf;
       }
-    diff = vcl_sqrt( diff );
+    diff = std::sqrt( diff );
     if( diff > 2 )
       {
       std::cout << "Local tube test failed.  Local tube too far."

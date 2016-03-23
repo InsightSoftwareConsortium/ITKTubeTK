@@ -40,7 +40,7 @@ public:
     }
   const double & Value( const int & x )
     {
-    cVal = vcl_sin((double)x);
+    cVal = std::sin((double)x);
     return cVal;
     }
 
@@ -58,7 +58,7 @@ public:
     }
   const double & Value( const double & x )
     {
-    cVal = vcl_sin((double)x);
+    cVal = std::sin((double)x);
     return cVal;
     }
 
@@ -76,7 +76,7 @@ public:
     }
   const double & Value( const double & x )
     {
-    cDeriv = vcl_cos((double)x);
+    cDeriv = std::cos((double)x);
     return cDeriv;
     }
 

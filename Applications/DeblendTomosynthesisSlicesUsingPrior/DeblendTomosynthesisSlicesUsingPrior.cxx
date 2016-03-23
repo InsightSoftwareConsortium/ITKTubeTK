@@ -204,11 +204,11 @@ public:
       double mean255 = sum255/count255;
       double meanNot = sumNot/countNot;
 
-      double stdDev255 = vcl_sqrt( sums255/count255 - mean255*mean255 );
-      double stdDevNot = vcl_sqrt( sumsNot/countNot - meanNot*meanNot );
+      double stdDev255 = std::sqrt( sums255/count255 - mean255*mean255 );
+      double stdDevNot = std::sqrt( sumsNot/countNot - meanNot*meanNot );
 
       result = - vnl_math_abs(mean255 - meanNot)
-        / vcl_sqrt( stdDev255 * stdDevNot );
+        / std::sqrt( stdDev255 * stdDevNot );
       }
 
     std::cout << ++m_CallsToGetValue << " : "
@@ -431,11 +431,11 @@ public:
       double mean255 = sum255/count255;
       double meanNot = sumNot/countNot;
 
-      double stdDev255 = vcl_sqrt( sums255/count255 - mean255*mean255 );
-      double stdDevNot = vcl_sqrt( sumsNot/countNot - meanNot*meanNot );
+      double stdDev255 = std::sqrt( sums255/count255 - mean255*mean255 );
+      double stdDevNot = std::sqrt( sumsNot/countNot - meanNot*meanNot );
 
       result = - vnl_math_abs(mean255 - meanNot)
-        / vcl_sqrt( stdDev255 * stdDevNot );
+        / std::sqrt( stdDev255 * stdDevNot );
       }
 
     std::cout << ++m_CallsToGetValue << " : "

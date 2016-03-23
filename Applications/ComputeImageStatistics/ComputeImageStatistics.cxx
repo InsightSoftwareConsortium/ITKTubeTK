@@ -310,7 +310,7 @@ int DoIt( int argc, char * argv[] )
       }
     if( compCount[ i ] > 0 )
       {
-      compStdDev[ i ] = vcl_sqrt( ( compStdDev[ i ]
+      compStdDev[ i ] = std::sqrt( ( compStdDev[ i ]
         - ( ( compMean[ i ] * compMean[ i ] ) / compCount[ i ] ) )
         / ( compCount[ i ] - 1 ) );
       compMean[ i ] /= compCount[ i ];

@@ -184,7 +184,7 @@ ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
       l = l + t[i]*t[i];
       }
 
-    l = vcl_sqrt(l);
+    l = std::sqrt(l);
     if(l < 0.0001)
       {
       std::cerr << "tubeTubeMath::ComputeVectorTangentsAndNormals() : ";

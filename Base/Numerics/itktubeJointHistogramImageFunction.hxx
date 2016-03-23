@@ -236,7 +236,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     while( !meanItr.IsAtEnd() )
       {
       meanItr.Set( sumItr.Get() / m_NumberOfSamples );
-      stdItr.Set( vcl_sqrt( vnl_math_abs(
+      stdItr.Set( std::sqrt( vnl_math_abs(
         sumOfSquaresItr.Get() / m_NumberOfSamples -
         meanItr.Get() * meanItr.Get() ) ) );
       ++sumItr;

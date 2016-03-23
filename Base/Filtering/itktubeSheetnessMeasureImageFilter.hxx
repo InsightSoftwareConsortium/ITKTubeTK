@@ -172,13 +172,13 @@ SheetnessMeasureImageFilter< TPixel >
       Rb = vnl_math_abs( l3 + l3 - l2 - l1 ) / l3;
       }
 
-    Rn = vcl_sqrt( l3*l3 + l2*l2 + l1*l1 );
+    Rn = std::sqrt( l3*l3 + l2*l2 + l1*l1 );
 
-    sheetness  =         vcl_exp( - ( Rs * Rs ) /
+    sheetness  =         std::exp( - ( Rs * Rs ) /
         ( 2.0 * m_Alpha * m_Alpha ) );
-    sheetness *= ( 1.0 - vcl_exp( - ( Rb * Rb ) /
+    sheetness *= ( 1.0 - std::exp( - ( Rb * Rb ) /
         ( 2.0 * m_Beta * m_Beta ) ) );
-    sheetness *= ( 1.0 - vcl_exp( - ( Rn * Rn ) /
+    sheetness *= ( 1.0 - std::exp( - ( Rn * Rn ) /
         ( 2.0 * m_Cfactor * m_Cfactor     ) ) );
     oit.Set(static_cast< OutputPixelType >( sheetness));
 

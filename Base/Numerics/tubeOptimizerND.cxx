@@ -169,7 +169,7 @@ OptimizerND
   m_X0.set_size( m_Dimension );
   m_X0.fill( 0.0 );
   m_X0Dir.set_size( m_Dimension );
-  m_X0Dir.fill( 1.0/vcl_sqrt((float)m_Dimension) );
+  m_X0Dir.fill( 1.0/std::sqrt((float)m_Dimension) );
   m_X0Temp.set_size( m_Dimension );
   m_X0Temp.fill( 0.0 );
 

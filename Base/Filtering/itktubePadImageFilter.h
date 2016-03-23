@@ -162,7 +162,7 @@ private:
 
   bool isPrime( int n )
     {
-    int last = (int)vcl_sqrt( static_cast<float>( n ) );
+    int last = (int)std::sqrt( static_cast<float>( n ) );
     for( int x=2; x<=last; x++ )
       {
       if( n%x == 0 )

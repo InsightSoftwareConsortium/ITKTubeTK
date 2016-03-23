@@ -190,7 +190,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       double tf = x0[i]-x1[i];
       diff += tf * tf;
       }
-    diff = vcl_sqrt( diff );
+    diff = std::sqrt( diff );
     if( diff > 2*pnt->GetRadius() && diff > 4 )
       {
       std::cout << "Local ridge test failed.  Local ridge too far."

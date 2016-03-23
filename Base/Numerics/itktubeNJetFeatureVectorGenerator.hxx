@@ -109,7 +109,7 @@ NJetFeatureVectorGenerator< TImage >
         featureVector[featureCount++] = v[d];
         val += v[d] * v[d];
         }
-      featureVector[featureCount++] = vcl_sqrt( val );
+      featureVector[featureCount++] = std::sqrt( val );
       }
 
     for( unsigned int s = 0; s < m_SecondScales.size(); s++ )
@@ -121,7 +121,7 @@ NJetFeatureVectorGenerator< TImage >
         featureVector[featureCount++] = m[d][d];
         val += m[d][d]*m[d][d];
         }
-      featureVector[featureCount++] = vcl_sqrt( val );
+      featureVector[featureCount++] = std::sqrt( val );
       }
 
     for( unsigned int s = 0; s < m_RidgeScales.size(); s++ )
@@ -209,7 +209,7 @@ NJetFeatureVectorGenerator< TImage >
           }
         if( featureCount == fNum )
           {
-          return ( vcl_sqrt( val ) - fNumMean ) / fNumStdDev;
+          return ( std::sqrt( val ) - fNumMean ) / fNumStdDev;
           }
         featureCount++;
         }
@@ -235,7 +235,7 @@ NJetFeatureVectorGenerator< TImage >
           }
         if( featureCount == fNum )
           {
-          return ( vcl_sqrt( val ) - fNumMean ) / fNumStdDev;
+          return ( std::sqrt( val ) - fNumMean ) / fNumStdDev;
           }
         featureCount++;
         }

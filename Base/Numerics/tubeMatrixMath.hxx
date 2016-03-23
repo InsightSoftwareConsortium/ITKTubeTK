@@ -113,7 +113,7 @@ ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y)
     {
     s += (x(i)-y(i))*(x(i)-y(i));
     }
-  return vcl_sqrt(s);
+  return std::sqrt(s);
 }
 
 /**
@@ -127,7 +127,7 @@ ComputeEuclideanDistance( TPoint x, TPoint y )
     {
     s += (x[i]-y[i])*(x[i]-y[i]);
     }
-  return vcl_sqrt(s);
+  return std::sqrt(s);
 }
 
 template< class T >
@@ -210,11 +210,11 @@ ComputeRidgeness( const vnl_matrix<T> & H,
     if( ImageDimension > 2 )
       {
       // Multiplied by 50 assuming the image is from 0 to 1;
-      curvature = ridge * vcl_sqrt( avgv ) * 50;
+      curvature = ridge * std::sqrt( avgv ) * 50;
       }
     else
       {
-      curvature = ridge * vcl_sqrt( avgv ) / 4;
+      curvature = ridge * std::sqrt( avgv ) / 4;
       }
     }
 

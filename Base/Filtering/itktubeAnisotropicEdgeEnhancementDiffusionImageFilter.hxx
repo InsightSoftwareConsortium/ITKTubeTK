@@ -252,7 +252,7 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
         * gradientMagnitude;
       double ratio = (gradientMagnitudeSquare) /
         (m_ContrastParameterLambdaE*m_ContrastParameterLambdaE);
-      double expVal = vcl_exp( (-1.0 * m_ThresholdParameterC)/(vcl_pow( ratio,
+      double expVal = std::exp( (-1.0 * m_ThresholdParameterC)/(std::pow( ratio,
         4.0 )));
       Lambda1 = 1.0 - expVal;
       }

@@ -323,7 +323,7 @@ ComputeIteration( double & energyDiff )
         dist = ( m_Centroids[j2][i] - batch[j][i] )
           * ( m_Centroids[j2][i] - batch[j][i] );
         }
-      energy = energy + vcl_sqrt( dist );
+      energy = energy + std::sqrt( dist );
       count[j2] = count[j2] + 1;
       }
     }
@@ -396,7 +396,7 @@ ComputeSample( PointArrayType * sample, unsigned int sampleSize,
         len = len * m_InputImageSize[i];
         }
       double factor = len / ( double )sampleSize;
-      factor = vcl_pow( factor, 1.0 / ImageDimension );
+      factor = std::pow( factor, 1.0 / ImageDimension );
       int * gridSize = new int[ImageDimension];
       len = 1;
       for( unsigned int i = 0; i < ImageDimension; i++ )

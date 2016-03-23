@@ -1066,7 +1066,7 @@ RidgeExtractor<TInputImage>
       continue;
       }
 
-    double diffX = vcl_sqrt(
+    double diffX = std::sqrt(
       ::tube::ComputeEuclideanDistanceVector( lX, pX ) );
     if( diffX > m_MaxXChange * GetScale() * stepFactor )
       {

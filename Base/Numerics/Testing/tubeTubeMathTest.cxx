@@ -49,7 +49,7 @@ double tubeLength( itk::TubeSpatialObject<3> * tube )
       dist += ( pointItr->GetPosition()[d] - lastX[d] ) *
         ( pointItr->GetPosition()[d] - lastX[d] );
       }
-    length += vcl_sqrt( dist );
+    length += std::sqrt( dist );
     ++pointItr;
     }
 

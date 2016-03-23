@@ -107,10 +107,10 @@ public:
     tangent.Normalize();
     const double dotProduct = beam * tangent;
     double cos_term =
-      vnl_math_abs( vcl_sqrt( 1.0 - dotProduct * dotProduct ) );
+      vnl_math_abs( std::sqrt( 1.0 - dotProduct * dotProduct ) );
     if( m_AngleDependence != 1.0 )
       {
-      cos_term = vcl_pow( cos_term, m_AngleDependence );
+      cos_term = std::pow( cos_term, m_AngleDependence );
       }
     return static_cast< WeightType >( 1.0 -
       m_FractionalImportance * ( 1.0 - cos_term ) );

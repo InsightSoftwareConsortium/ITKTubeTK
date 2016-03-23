@@ -33,7 +33,7 @@ public:
     }
   const double & Value( const vnl_vector<double> & x )
     {
-    cVal = vcl_sin(x(0)) + vcl_sin(x(1));
+    cVal = std::sin(x(0)) + std::sin(x(1));
     return cVal;
     }
 
@@ -52,8 +52,8 @@ public:
     }
   const vnl_vector<double> & Value( const vnl_vector<double> & x )
     {
-    cDx[0] = vcl_cos(x(0));
-    cDx[1] = vcl_cos(x(1));
+    cDx[0] = std::cos(x(0));
+    cDx[1] = std::cos(x(1));
     std::cout << "deriv = " << cDx[0] << ", " << cDx[1] << std::endl;
     return cDx;
     }

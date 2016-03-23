@@ -103,7 +103,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
 
     if( count > 1 )
       {
-      featureStdDev[i] = vcl_sqrt( featureStdDev[i] / ( count - 1 ) );
+      featureStdDev[i] = std::sqrt( featureStdDev[i] / ( count - 1 ) );
       }
     else
       {
