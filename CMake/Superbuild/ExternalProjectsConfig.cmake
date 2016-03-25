@@ -48,13 +48,13 @@ set( JsonCpp_HASH_OR_TAG 110d054227e9eb63faad48a1fb6a828ad0670e61 )
 
 # KWStyle
 set( KWStyle_URL
-  ${git_protocol}://github.com/aylward/KWStyle.git )
-set( KWStyle_HASH_OR_TAG 362a2f54fdce892b401920919d4c8afdf71ba24c )
+  ${git_protocol}://github.com/Kitware/KWStyle.git )
+set( KWStyle_HASH_OR_TAG f9e849c91e0613cbb16e102b7da805f4acd018cf )
 
 # LIBSVM
 set( LIBSVM_URL
   ${git_protocol}://github.com/KitwareMedical/libsvm.git )
-set( LIBSVM_HASH_OR_TAG 9e2dd8a5fd032b429c07ce2778c8716117812bc5 )
+set( LIBSVM_HASH_OR_TAG 9bc3630f0f15fed7a5119c228c4d260574b4b6b2 )
 
 ###########################################################
 # ITK Modules
