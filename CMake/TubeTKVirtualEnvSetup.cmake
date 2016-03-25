@@ -3,8 +3,14 @@ find_package( PythonInterp REQUIRED )
 # This sets the virtual environment directory
 set( PythonVirtualenvHome ${TubeTK_BINARY_DIR}/Temporary/PythonVirtualenv )
 
-get_filename_component( activate_full "${PythonVirtualenvHome}/Scripts/activate"
-  ABSOLUTE )
+if( WIN32 )
+  get_filename_component( activate_full
+    "${PythonVirtualenvHome}/Scripts/activate" ABSOLUTE )
+else( WIN32 )
+  get_filename_component( activate_full
+    "${PythonVirtualenvHome}/bin/activate" ABSOLUTE )
+endif( WIN32 )
+
 if( NOT EXISTS "${activate_full}" )
   find_program( VIRTUALENV NAMES virtualenv virtualenv.py )
   if( VIRTUALENV )
@@ -33,7 +39,7 @@ if( WIN32 )
   set( PYTHON_TESTING_EXECUTABLE ${PythonVirtualenvHome}/Scripts/python
     CACHE INTERNAL "Python to the python executable to use in tests." FORCE )
 else( )
-  set( PYTHON_TESTING_EXECUTABLE ${PythonVirtualenvHome}/Scripts/python
+  set( PYTHON_TESTING_EXECUTABLE ${PythonVirtualenvHome}/bin/python
     CACHE INTERNAL "Python to the python executable to use in tests." FORCE )
 endif()
 
