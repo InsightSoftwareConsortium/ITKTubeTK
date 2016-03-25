@@ -20,12 +20,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itktubePDFSegmenterParzenIO_hxx
-#define __itktubePDFSegmenterParzenIO_hxx
+#ifndef __itktubePDFSegmenterSVMIO_hxx
+#define __itktubePDFSegmenterSVMIO_hxx
 
-#include "itktubePDFSegmenterParzenIO.h"
-#include "itktubeMetaClassPDF.h"
+#include "itktubePDFSegmenterSVMIO.h"
 #include "metaUtils.h"
+
+#include <svm.h>
 
 namespace itk
 {
@@ -34,24 +35,24 @@ namespace tube
 {
 
 template< class TImage, class TLabelMap >
-PDFSegmenterParzenIO< TImage, TLabelMap >::
-PDFSegmenterParzenIO( void )
+PDFSegmenterSVMIO< TImage, TLabelMap >::
+PDFSegmenterSVMIO( void )
 {
   Clear();
 }
 
 template< class TImage, class TLabelMap >
-PDFSegmenterParzenIO< TImage, TLabelMap >::
-PDFSegmenterParzenIO( const char * _headerName )
+PDFSegmenterSVMIO< TImage, TLabelMap >::
+PDFSegmenterSVMIO( const char * _headerName )
 {
   Clear();
 
-  PDFSegmenterParzenIO::Read( _headerName );
+  PDFSegmenterSVMIO::Read( _headerName );
 }
 
 template< class TImage, class TLabelMap >
-PDFSegmenterParzenIO< TImage, TLabelMap >::
-PDFSegmenterParzenIO( const typename
+PDFSegmenterSVMIO< TImage, TLabelMap >::
+PDFSegmenterSVMIO( const typename
   PDFSegmenterType::Pointer & _filter )
 {
   Clear();
@@ -60,14 +61,14 @@ PDFSegmenterParzenIO( const typename
 }
 
 template< class TImage, class TLabelMap >
-PDFSegmenterParzenIO< TImage, TLabelMap >::
-~PDFSegmenterParzenIO()
+PDFSegmenterSVMIO< TImage, TLabelMap >::
+~PDFSegmenterSVMIO()
 {
 }
 
 template< class TImage, class TLabelMap >
 void
-PDFSegmenterParzenIO< TImage, TLabelMap >::
+PDFSegmenterSVMIO< TImage, TLabelMap >::
 PrintInfo() const
 {
   if( m_PDFSegmenter.IsNotNull() )
@@ -82,7 +83,7 @@ PrintInfo() const
 
 template< class TImage, class TLabelMap >
 void
-PDFSegmenterParzenIO< TImage, TLabelMap >::
+PDFSegmenterSVMIO< TImage, TLabelMap >::
 CopyInfo( const PDFSegmenterIOType & _filterIO )
 {
   Clear();
@@ -92,7 +93,7 @@ CopyInfo( const PDFSegmenterIOType & _filterIO )
 
 template< class TImage, class TLabelMap >
 void
-PDFSegmenterParzenIO< TImage, TLabelMap >::
+PDFSegmenterSVMIO< TImage, TLabelMap >::
 Clear( void )
 {
   m_PDFSegmenter = NULL;
@@ -100,7 +101,7 @@ Clear( void )
 
 
 template< class TImage, class TLabelMap >
-bool PDFSegmenterParzenIO< TImage, TLabelMap >::
+bool PDFSegmenterSVMIO< TImage, TLabelMap >::
 InitializeEssential( const typename
   PDFSegmenterType::Pointer & _filter )
 {
@@ -111,7 +112,7 @@ InitializeEssential( const typename
 
 template< class TImage, class TLabelMap >
 void
-PDFSegmenterParzenIO< TImage, TLabelMap >::
+PDFSegmenterSVMIO< TImage, TLabelMap >::
 SetPDFSegmenter( const typename
   PDFSegmenterType::Pointer & _filter )
 {
@@ -119,15 +120,15 @@ SetPDFSegmenter( const typename
 }
 
 template< class TImage, class TLabelMap >
-const typename PDFSegmenterParzen< TImage, TLabelMap >::Pointer
-PDFSegmenterParzenIO< TImage, TLabelMap >::
+const typename PDFSegmenterSVM< TImage, TLabelMap >::Pointer
+PDFSegmenterSVMIO< TImage, TLabelMap >::
 GetPDFSegmenter( void ) const
 {
   return m_PDFSegmenter;
 }
 
 template< class TImage, class TLabelMap >
-bool PDFSegmenterParzenIO< TImage, TLabelMap >::
+bool PDFSegmenterSVMIO< TImage, TLabelMap >::
 CanRead( const char * _headerName ) const
 {
   // First check the extension
@@ -187,7 +188,7 @@ CanRead( const char * _headerName ) const
 }
 
 template< class TImage, class TLabelMap >
-bool PDFSegmenterParzenIO< TImage, TLabelMap >::
+bool PDFSegmenterSVMIO< TImage, TLabelMap >::
 Read( const char * _headerName )
 {
   if( m_PDFSegmenter.IsNull() )
@@ -201,8 +202,6 @@ Read( const char * _headerName )
                         << METAIO_STREAM::endl;
     }
 
-  MetaClassPDF classPDFReader;
-
   std::vector< MET_FieldRecordType * > metaFields;
 
   MET_FieldRecordType * mF;
@@ -211,19 +210,6 @@ Read( const char * _headerName )
   MET_InitReadField( mF, "NFeatures", MET_INT, true );
   metaFields.push_back( mF );
   int nFeaturesRec = MET_GetFieldRecordNumber( "NFeatures", &metaFields );
-
-  mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "BinsPerFeature", MET_INT_ARRAY, true,
-    nFeaturesRec );
-  metaFields.push_back( mF );
-
-  mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "BinMin", MET_FLOAT_ARRAY, true, nFeaturesRec );
-  metaFields.push_back( mF );
-
-  mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "BinSize", MET_FLOAT_ARRAY, true, nFeaturesRec );
-  metaFields.push_back( mF );
 
   mF = new MET_FieldRecordType;
   MET_InitReadField( mF, "NObjects", MET_INT, true );
@@ -257,15 +243,6 @@ Read( const char * _headerName )
   metaFields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "HistogramSmoothingStandardDeviation",
-    MET_FLOAT, true );
-  metaFields.push_back( mF );
-
-  mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "OutlierRejectPortion", MET_FLOAT, true );
-  metaFields.push_back( mF );
-
-  mF = new MET_FieldRecordType;
   MET_InitReadField( mF, "ReclassifyObjectLabels", MET_STRING, true );
   metaFields.push_back( mF );
 
@@ -295,7 +272,7 @@ Read( const char * _headerName )
 
   if(!MET_Read( tmpReadStream, &metaFields ) )
     {
-    METAIO_STREAM::cerr << "PDFSegmenterParzenIO: Read: MET_Read Failed"
+    METAIO_STREAM::cerr << "PDFSegmenterSVMIO: Read: MET_Read Failed"
       << METAIO_STREAM::endl;
     return false;
     }
@@ -314,30 +291,6 @@ Read( const char * _headerName )
   std::vector< double > tmpVectorDouble;
 
   unsigned int numFeatures = m_PDFSegmenter->GetNumberOfFeatures();
-
-  mF = MET_GetFieldRecord( "BinsPerFeature", &metaFields );
-  tmpVectorUInt.resize( numFeatures );
-  for( unsigned int i = 0; i < numFeatures; ++i )
-    {
-    tmpVectorUInt[i] = static_cast< int >( mF->value[i] );
-    }
-  m_PDFSegmenter->SetNumberOfBinsPerFeature( tmpVectorUInt );
-
-  mF = MET_GetFieldRecord( "BinMin", &metaFields );
-  tmpVectorDouble.resize( numFeatures );
-  for( unsigned int i = 0; i < numFeatures; ++i )
-    {
-    tmpVectorDouble[i] = static_cast< double >( mF->value[i] );
-    }
-  m_PDFSegmenter->SetBinMin( tmpVectorDouble );
-
-  mF = MET_GetFieldRecord( "BinSize", &metaFields );
-  tmpVectorDouble.resize( numFeatures );
-  for( unsigned int i = 0; i < numFeatures; ++i )
-    {
-    tmpVectorDouble[i] = static_cast< double >( mF->value[i] );
-    }
-  m_PDFSegmenter->SetBinSize( tmpVectorDouble );
 
   mF = MET_GetFieldRecord( "NObjects", &metaFields );
   unsigned int nObjects = static_cast< unsigned int >( mF->value[0] );
@@ -373,15 +326,6 @@ Read( const char * _headerName )
   m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation(
     static_cast< double >( mF->value[0] ) );
 
-  mF = MET_GetFieldRecord( "HistogramSmoothingStandardDeviation",
-    &metaFields );
-  m_PDFSegmenter->SetHistogramSmoothingStandardDeviation(
-    static_cast< double >( mF->value[0] ) );
-
-  mF = MET_GetFieldRecord( "OutlierRejectPortion", &metaFields );
-  m_PDFSegmenter->SetOutlierRejectPortion( static_cast< double >(
-    mF->value[0] ) );
-
   mF = MET_GetFieldRecord( "ReclassifyObjectLabels", &metaFields );
   if( ((char *)( mF->value))[0] == 'T' || ((char *)( mF->value))[0] == 't' )
     {
@@ -413,89 +357,13 @@ Read( const char * _headerName )
     }
 
   mF = MET_GetFieldRecord( "ObjectPDFFile", &metaFields );
-  std::string str = (char *)(mF->value);
-  std::vector< std::string > fileName;
-  MET_StringToVector( str, fileName );
-  if( fileName.size() != nObjects )
-    {
-    std::cerr << "Number of PDFFiles != number of objects" << std::endl;
-    m_PDFSegmenter = NULL;
-    return false;
-    }
-
-  for( unsigned int i = 0; i < nObjects; ++i )
-    {
-    typedef Image< float, PARZEN_MAX_NUMBER_OF_FEATURES >  pdfImageType;
-
-    char filePath[255];
-    MET_GetFilePath( _headerName, filePath );
-    std::string fullFileName = filePath + fileName[i];
-
-    std::cout << "Reading PDF " << fullFileName.c_str() << std::endl;
-    MetaClassPDF pdfClassReader( fullFileName.c_str() );
-
-    typename pdfImageType::Pointer img = pdfImageType::New();
-    typename pdfImageType::RegionType region;
-    typename pdfImageType::SizeType size;
-    typename pdfImageType::PointType origin;
-    typename pdfImageType::SpacingType spacing;
-    for( unsigned int j = 0; j < numFeatures; ++j )
-      {
-      size[j] = pdfClassReader.GetNumberOfBinsPerFeature()[j];
-      if( size[j] != m_PDFSegmenter->GetNumberOfBinsPerFeature()[j] )
-        {
-        std::cout << "ERROR: N mismatch" << std::endl;
-        return false;
-        }
-      spacing[j] = pdfClassReader.GetBinSize()[j];
-      if( vnl_math_abs( spacing[j] - m_PDFSegmenter->GetBinSize()[j] ) >
-        0.005 * spacing[j] )
-        {
-        std::cout << "ERROR: Spacing mismatch" << std::endl;
-        return false;
-        }
-      origin[j] = pdfClassReader.GetBinMin()[j];
-      if( vnl_math_abs( origin[j] - m_PDFSegmenter->GetBinMin()[j] ) >
-        0.005 * spacing[j] )
-        {
-        std::cout << "ERROR: Min mismatch" << std::endl;
-        std::cout << "   Origin[" << j << "] = " << origin[j] << std::endl;
-        std::cout << "   PDFMin[" << j << "] = "
-          << m_PDFSegmenter->GetBinMin()[j] << std::endl;
-        std::cout << "      spacing[" << j << "] = "
-          << spacing[j] << std::endl;
-        return false;
-        }
-      }
-    for( unsigned int j = numFeatures; j < PARZEN_MAX_NUMBER_OF_FEATURES;
-      ++j )
-      {
-      spacing[j] = 1;
-      origin[j] = 0;
-      size[j] = 1;
-      }
-    region.SetSize( size );
-    img->SetRegions( region );
-    img->SetOrigin( origin );
-    img->SetSpacing( spacing );
-
-    int nPixels = size[0];
-    for( unsigned int j = 1; j < numFeatures; ++j )
-      {
-      nPixels *= size[j];
-      }
-    img->GetPixelContainer()->SetImportPointer( pdfClassReader.ExportPDF(),
-      nPixels, true );
-
-    std::cout << "  Registering image " << i << img << std::endl;
-    m_PDFSegmenter->SetClassPDFImage( i, img );
-    }
+  m_PDFSegmenter->SetModel( svm_load_model( (char *)(mF->value) ) );
 
   return true;
 }
 
 template< class TImage, class TLabelMap >
-bool PDFSegmenterParzenIO< TImage, TLabelMap >::
+bool PDFSegmenterSVMIO< TImage, TLabelMap >::
 Write( const char * _headerName )
 {
   if( m_PDFSegmenter.IsNull() )
@@ -512,33 +380,7 @@ Write( const char * _headerName )
   metaFields.push_back( mF );
 
   int tmpI[4096];
-  for( unsigned int i = 0; i < numFeatures; ++i )
-    {
-    tmpI[i] = m_PDFSegmenter->GetNumberOfBinsPerFeature()[i];
-    }
-  mF = new MET_FieldRecordType;
-  MET_InitWriteField< int >( mF, "BinsPerFeature", MET_INT_ARRAY,
-    numFeatures, tmpI );
-  metaFields.push_back( mF );
-
   float tmpF[4096];
-  for( unsigned int i = 0; i < numFeatures; ++i )
-    {
-    tmpF[i] = m_PDFSegmenter->GetBinMin()[i];
-    }
-  mF = new MET_FieldRecordType;
-  MET_InitWriteField< float >( mF, "BinMin", MET_FLOAT_ARRAY, numFeatures,
-    tmpF );
-  metaFields.push_back( mF );
-
-  for( unsigned int i = 0; i < numFeatures; ++i )
-    {
-    tmpF[i] = m_PDFSegmenter->GetBinSize()[i];
-    }
-  mF = new MET_FieldRecordType;
-  MET_InitWriteField< float >( mF, "BinSize", MET_FLOAT_ARRAY, numFeatures,
-    tmpF );
-  metaFields.push_back( mF );
 
   unsigned int nObjects = m_PDFSegmenter->GetNumberOfObjectIds();
 
@@ -581,16 +423,6 @@ Write( const char * _headerName )
   MET_InitWriteField( mF, "ProbabilityImageSmoothingStandardDeviation",
     MET_FLOAT, m_PDFSegmenter->
     GetProbabilityImageSmoothingStandardDeviation() );
-  metaFields.push_back( mF );
-
-  mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "HistogramSmoothingStandardDeviation",
-    MET_FLOAT, m_PDFSegmenter->GetHistogramSmoothingStandardDeviation() );
-  metaFields.push_back( mF );
-
-  mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "OutlierRejectPortion", MET_FLOAT,
-    m_PDFSegmenter->GetOutlierRejectPortion() );
   metaFields.push_back( mF );
 
   char tmpC[4096];
@@ -638,25 +470,14 @@ Write( const char * _headerName )
   int skip = strlen( filePath );
   char shortFileName[255];
   sprintf( shortFileName, "%s", &(_headerName[skip]) );
-  MET_SetFileSuffix( shortFileName, "mpd" );
+  MET_SetFileSuffix( shortFileName, "msvm" );
   std::string fullFileName = filePath;
   fullFileName = fullFileName + shortFileName;
 
-  std::string tmpString;
-  for( unsigned int i = 0; i < nObjects; ++i )
-    {
-    char objectFileName[4096];
-    sprintf( objectFileName, "%s.%02d.mha", shortFileName, i );
-    tmpString = tmpString + objectFileName;
-    if( i < nObjects-1 )
-      {
-      tmpString = tmpString + ",";
-      }
-    }
-
+  std::string modelFileName = fullFileName + ".svm";
   mF = new MET_FieldRecordType;
-  MET_InitWriteField< const char >( mF, "ObjectPDFFile", MET_STRING,
-    tmpString.size(), tmpString.c_str() );
+  MET_InitWriteField( mF, "ObjectPDFFile", MET_STRING,
+    modelFileName.size(), modelFileName.c_str() );
   metaFields.push_back( mF );
 
   METAIO_STREAM::ofstream writeStream;
@@ -673,40 +494,7 @@ Write( const char * _headerName )
     return false;
     }
 
-  for( unsigned int i = 0; i < nObjects; ++i )
-    {
-    MetaClassPDF pdfClassWriter( m_PDFSegmenter->GetNumberOfFeatures(),
-      m_PDFSegmenter->GetNumberOfBinsPerFeature(),
-      m_PDFSegmenter->GetBinMin(),
-      m_PDFSegmenter->GetBinSize(),
-      m_PDFSegmenter->GetClassPDFImage( i )->GetPixelContainer()
-        ->GetBufferPointer() );
-
-    pdfClassWriter.SetObjectId( m_PDFSegmenter->GetObjectId() );
-    pdfClassWriter.SetObjectPDFWeight(
-      m_PDFSegmenter->GetObjectPDFWeight() );
-    pdfClassWriter.SetVoidId( m_PDFSegmenter->GetVoidId() );
-    pdfClassWriter.SetErodeRadius( m_PDFSegmenter->GetErodeRadius() );
-    pdfClassWriter.SetHoleFillIterations(
-      m_PDFSegmenter->GetHoleFillIterations() );
-    pdfClassWriter.SetHistogramSmoothingStandardDeviation(
-      m_PDFSegmenter->GetHistogramSmoothingStandardDeviation() );
-    pdfClassWriter.SetProbabilityImageSmoothingStandardDeviation(
-      m_PDFSegmenter->GetProbabilityImageSmoothingStandardDeviation() );
-    pdfClassWriter.SetOutlierRejectPortion(
-      m_PDFSegmenter->GetOutlierRejectPortion() );
-    pdfClassWriter.SetReclassifyObjectLabels(
-      m_PDFSegmenter->GetReclassifyObjectLabels() );
-    pdfClassWriter.SetReclassifyNotObjectLabels(
-      m_PDFSegmenter->GetReclassifyNotObjectLabels() );
-    pdfClassWriter.SetForceClassification(
-      m_PDFSegmenter->GetForceClassification() );
-
-    char objectFileName[4096];
-    sprintf( objectFileName, "%s.%02d.mha", fullFileName.c_str(), i );
-
-    pdfClassWriter.Write( objectFileName );
-    }
+  svm_save_model( modelFileName.c_str(), m_PDFSegmenter->GetModel() );
 
   return true;
 }
@@ -715,4 +503,4 @@ Write( const char * _headerName )
 
 } // End namespace itk
 
-#endif // __itktubePDFSegmenterParzenIO_hxx
+#endif // __itktubePDFSegmenterSVMIO_hxx

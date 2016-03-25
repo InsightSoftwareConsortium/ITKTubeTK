@@ -30,18 +30,22 @@ set( TubeTK_Base_IO_H_Files
   itktubeMetaRidgeSeed.h
   itktubeMetaTubeExtractor.h
   itktubePDFSegmenterParzenIO.h
-  itktubeTubeExtractorIO.h 
+  itktubeTubeExtractorIO.h
   itktubeTubeXIO.h )
 if( TubeTK_USE_LIBSVM )
-  list( APPEND TubeTK_Base_IO_H_Files itktubeRidgeSeedFilterIO.h )
+  list( APPEND TubeTK_Base_IO_H_Files
+    itktubeRidgeSeedFilterIO.h
+    itktubePDFSegmenterSVMIO.h )
 endif( TubeTK_USE_LIBSVM )
 
 set( TubeTK_Base_IO_HXX_Files
   itktubePDFSegmenterParzenIO.hxx
-  itktubeTubeExtractorIO.hxx 
+  itktubeTubeExtractorIO.hxx
   itktubeTubeXIO.hxx )
 if( TubeTK_USE_LIBSVM )
-  list( APPEND TubeTK_Base_IO_HXX_Files itktubeRidgeSeedFilterIO.hxx )
+  list( APPEND TubeTK_Base_IO_HXX_Files
+    itktubeRidgeSeedFilterIO.hxx
+    itktubePDFSegmenterSVMIO.hxx )
 endif( TubeTK_USE_LIBSVM )
 
 set( TubeTK_Base_IO_SRCS

@@ -31,6 +31,7 @@ limitations under the License.
 #include "itktubePDFSegmenterParzenIO.h"
 #ifdef TubeTK_USE_LIBSVM
 #  include "itktubeRidgeSeedFilterIO.h"
+#  include "itktubePDFSegmenterSVMIO.h"
 #endif
 #include "itktubeTubeExtractorIO.h"
 #include "itktubeTubeXIO.h"
@@ -62,6 +63,11 @@ int tubeBaseIOPrintTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
     ImageType > pdfSegmenterParzenIO;
   std::cout << "-------------pdfSegmenterParzenIO" << std::endl;
   pdfSegmenterParzenIO.PrintInfo();
+
+  itk::tube::PDFSegmenterSVMIO< ImageType,
+    ImageType > pdfSegmenterSVMIO;
+  std::cout << "-------------pdfSegmenterSVMIO" << std::endl;
+  pdfSegmenterSVMIO.PrintInfo();
 
 #ifdef TubeTK_USE_LIBSVM
   itk::tube::RidgeSeedFilterIO< ImageType, ImageType > ridgeSeedFilterIO;

@@ -46,7 +46,7 @@ namespace tube
 
 template< class TImage, class TLabelMap >
 RidgeSeedFilter< TImage, TLabelMap >
-::RidgeSeedFilter( void )
+::RidgeSeedFilter( )
 {
   m_RidgeFeatureGenerator = RidgeFeatureGeneratorType::New();
 
@@ -57,23 +57,9 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_SeedFeatureGenerator->SetNumberOfLDABasisToUseAsFeatures( 1 );
   m_SeedFeatureGenerator->SetNumberOfPCABasisToUseAsFeatures( 3 );
 
-  //typedef PDFSegmenterParzen< InputImageType, //LabelMapType >
-  //  PDFSegmenterParzenType;
-  typedef PDFSegmenterSVM< InputImageType, LabelMapType >
-    PDFSegmenterSVMType;
+  m_PDFSegmenter = NULL;
 
-  m_PDFSegmenter = PDFSegmenterSVMType::New().GetPointer();
-  m_PDFSegmenter->SetReclassifyObjectLabels( true );
-  m_PDFSegmenter->SetReclassifyNotObjectLabels( true );
-  m_PDFSegmenter->SetForceClassification( true );
-  m_PDFSegmenter->SetErodeRadius( 0 );
-  m_PDFSegmenter->SetHoleFillIterations( 0 );
-  m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation( 0.6 );
-  //m_PDFSegmenter->SetHistogramSmoothingStandardDeviation( 4 );
-  //m_PDFSegmenter->SetOutlierRejectPortion( 0.01 );
-  m_PDFSegmenter->SetFeatureVectorGenerator(
-    m_RidgeFeatureGenerator.GetPointer() );
-    //m_SeedFeatureGenerator.GetPointer() );
+  m_UseSVM = false;
 
   m_RidgeId = 255;
   m_BackgroundId = 127;
@@ -120,7 +106,6 @@ RidgeSeedFilter< TImage, TLabelMap >
 ::SetLabelMap( typename LabelMapType::Pointer img )
 {
   m_SeedFeatureGenerator->SetLabelMap( img );
-  m_PDFSegmenter->SetLabelMap( img );
 }
 
 template< class TImage, class TLabelMap >
@@ -163,38 +148,6 @@ RidgeSeedFilter< TImage, TLabelMap >
 ::GetScales( void ) const
 {
   return m_RidgeFeatureGenerator->GetScales();
-}
-
-template< class TImage, class TLabelMap >
-void
-RidgeSeedFilter< TImage, TLabelMap >
-::SetNumberOfPCABasisToUseAsFeatures( unsigned int num )
-{
-  m_SeedFeatureGenerator->SetNumberOfPCABasisToUseAsFeatures( num );
-}
-
-template< class TImage, class TLabelMap >
-unsigned int
-RidgeSeedFilter< TImage, TLabelMap >
-::GetNumberOfPCABasisToUseAsFeatures( void ) const
-{
-  return m_SeedFeatureGenerator->GetNumberOfPCABasisToUseAsFeatures();
-}
-
-template< class TImage, class TLabelMap >
-void
-RidgeSeedFilter< TImage, TLabelMap >
-::SetNumberOfLDABasisToUseAsFeatures( unsigned int num )
-{
-  m_SeedFeatureGenerator->SetNumberOfLDABasisToUseAsFeatures( num );
-}
-
-template< class TImage, class TLabelMap >
-unsigned int
-RidgeSeedFilter< TImage, TLabelMap >
-::GetNumberOfLDABasisToUseAsFeatures( void ) const
-{
-  return m_SeedFeatureGenerator->GetNumberOfLDABasisToUseAsFeatures();
 }
 
 template< class TImage, class TLabelMap >
@@ -346,7 +299,7 @@ typename RidgeSeedFilter< TImage, TLabelMap >::ProbabilityImageType::Pointer
 RidgeSeedFilter< TImage, TLabelMap >
 ::GetClassProbabilityImage( unsigned int objectNum ) const
 {
-  return m_PDFSegmenter->GetClassProbability( objectNum );
+  return m_PDFSegmenter->GetClassProbabilityImage( objectNum );
 }
 
 template < class TImage, class TLabelMap >
@@ -416,6 +369,38 @@ void
 RidgeSeedFilter< TImage, TLabelMap >
 ::Update( void )
 {
+  if( m_UseSVM )
+    {
+    typedef PDFSegmenterSVM< InputImageType, LabelMapType >
+      PDFSegmenterSVMType;
+    m_PDFSegmenter = PDFSegmenterSVMType::New().GetPointer();
+
+    m_PDFSegmenter->SetFeatureVectorGenerator(
+      m_RidgeFeatureGenerator.GetPointer() );
+    }
+  else
+    {
+    typedef PDFSegmenterParzen< InputImageType, LabelMapType >
+      PDFSegmenterParzenType;
+    typename PDFSegmenterParzenType::Pointer tmpPDFSegmenter =
+      PDFSegmenterParzenType::New();
+    m_PDFSegmenter = tmpPDFSegmenter.GetPointer();
+
+    tmpPDFSegmenter->SetHistogramSmoothingStandardDeviation( 4 );
+    tmpPDFSegmenter->SetOutlierRejectPortion( 0.01 );
+
+    m_PDFSegmenter->SetFeatureVectorGenerator(
+      m_SeedFeatureGenerator.GetPointer() );
+    }
+
+  m_PDFSegmenter->SetReclassifyObjectLabels( true );
+  m_PDFSegmenter->SetReclassifyNotObjectLabels( true );
+  m_PDFSegmenter->SetForceClassification( true );
+  m_PDFSegmenter->SetErodeRadius( 0 );
+  m_PDFSegmenter->SetHoleFillIterations( 0 );
+  m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation( 0.6 );
+  m_PDFSegmenter->SetLabelMap( m_SeedFeatureGenerator->GetLabelMap() );
+
   m_RidgeFeatureGenerator->SetUseIntensityOnly( m_UseIntensityOnly );
   m_RidgeFeatureGenerator->Update();
 

@@ -112,10 +112,6 @@ public:
   RidgeScalesType GetScales( void ) const;
 
   // Basis
-  void         SetNumberOfPCABasisToUseAsFeatures( unsigned int num );
-  unsigned int GetNumberOfPCABasisToUseAsFeatures( void ) const;
-  void         SetNumberOfLDABasisToUseAsFeatures( unsigned int num );
-  unsigned int GetNumberOfLDABasisToUseAsFeatures( void ) const;
   void         SetInputWhitenMeans( const WhitenMeansType & means );
   void         SetInputWhitenStdDevs( const WhitenStdDevsType & stdDevs );
   const WhitenMeansType &   GetInputWhitenMeans( void ) const;
@@ -146,6 +142,9 @@ public:
 
   typename ProbabilityImageType::Pointer
     GetClassLikelihoodRatioImage( unsigned int objectNum ) const;
+
+  itkSetMacro( UseSVM, bool );
+  itkGetMacro( UseSVM, bool );
 
   // Ridge, Basis, and PDFSegmenter
   itkSetMacro( RidgeId, ObjectIdType );
@@ -190,6 +189,8 @@ private:
   typename RidgeFeatureGeneratorType::Pointer     m_RidgeFeatureGenerator;
   typename SeedFeatureGeneratorType::Pointer      m_SeedFeatureGenerator;
   typename PDFSegmenterType::Pointer              m_PDFSegmenter;
+
+  bool           m_UseSVM;
 
   ObjectIdType   m_RidgeId;
   ObjectIdType   m_BackgroundId;

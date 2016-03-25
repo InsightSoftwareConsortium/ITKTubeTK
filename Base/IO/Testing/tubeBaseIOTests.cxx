@@ -37,6 +37,7 @@ void RegisterTests( void )
   REGISTER_TEST( itktubePDFSegmenterParzenIOTest );
 #ifdef TubeTK_USE_LIBSVM
   REGISTER_TEST( itktubeRidgeSeedFilterIOTest );
+  REGISTER_TEST( itktubePDFSegmenterSVMIOTest );
 #endif
   REGISTER_TEST( itktubeTubeExtractorIOTest );
   REGISTER_TEST( itktubeTubeXIOTest );

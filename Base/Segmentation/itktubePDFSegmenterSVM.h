@@ -94,8 +94,10 @@ public:
   // Methods
   //
   svm_model * GetModel( void );
+  void SetModel( svm_model * model );
 
   svm_parameter * GetParameter( void );
+  void SetParameter( svm_parameter * parameter );
 
   //
   // Must overwrite

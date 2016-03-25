@@ -235,6 +235,7 @@ PDFSegmenterBase< TImage, TLabelMap >
 {
   return 0;
 }
+
 template< class TImage, class TLabelMap >
 void
 PDFSegmenterBase< TImage, TLabelMap >
@@ -370,14 +371,26 @@ PDFSegmenterBase< TImage, TLabelMap >
     {
     m_ProbabilityImageVector[c] = ProbabilityImageType::New();
     m_ProbabilityImageVector[c]->SetRegions(
-      m_LabelMap->GetLargestPossibleRegion() );
-    m_ProbabilityImageVector[c]->CopyInformation( m_LabelMap );
+      m_FeatureVectorGenerator->GetInput( 0 )->GetLargestPossibleRegion() );
+    m_ProbabilityImageVector[c]->CopyInformation( m_FeatureVectorGenerator->
+      GetInput( 0 ) );
     m_ProbabilityImageVector[c]->Allocate();
 
     probIt[c] = new ProbabilityImageIteratorType(
       m_ProbabilityImageVector[c],
       m_ProbabilityImageVector[c]->GetLargestPossibleRegion() );
     probIt[c]->GoToBegin();
+    }
+
+  if( m_LabelMap.IsNull() )
+    {
+    m_LabelMap = LabelMapType::New();
+    m_LabelMap->SetRegions( m_FeatureVectorGenerator->GetInput( 0 )
+      ->GetLargestPossibleRegion() );
+    m_LabelMap->CopyInformation( m_FeatureVectorGenerator->GetInput( 0 ) );
+    m_LabelMap->Allocate();
+    m_LabelMap->FillBuffer( m_VoidId );
+    m_ForceClassification = true;
     }
 
   typedef itk::ImageRegionConstIteratorWithIndex< LabelMapType >
@@ -404,7 +417,6 @@ PDFSegmenterBase< TImage, TLabelMap >
 
     ++itInLabelMap;
     }
-  std::cout << "Prob estimates done" << std::endl;
 
   for( unsigned int c = 0; c < numClasses; ++c )
     {
@@ -445,17 +457,10 @@ PDFSegmenterBase< TImage, TLabelMap >
   typename LabelMapType::IndexType labelImageIndex;
 
   typename LabelMapType::Pointer tmpLabelImage = LabelMapType::New();
-  tmpLabelImage->SetRegions( m_FeatureVectorGenerator->GetInput( 0 )
-    ->GetLargestPossibleRegion() );
-  tmpLabelImage->CopyInformation( m_FeatureVectorGenerator->GetInput( 0 ) );
+  tmpLabelImage->SetRegions( m_LabelMap->GetLargestPossibleRegion() );
+  tmpLabelImage->CopyInformation( m_LabelMap );
   tmpLabelImage->Allocate();
-
-  if( m_LabelMap.IsNull() )
-    {
-    m_LabelMap = tmpLabelImage;
-    m_LabelMap->FillBuffer( m_VoidId );
-    m_ForceClassification = true;
-    }
+  tmpLabelImage->FillBuffer( m_VoidId );
 
   if( !m_ForceClassification )
     {
