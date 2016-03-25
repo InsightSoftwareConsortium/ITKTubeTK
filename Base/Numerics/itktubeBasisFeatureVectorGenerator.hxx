@@ -558,7 +558,8 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
         {
         for( unsigned int j = i; j < numInputFeatures; j++ )
           {
-          m_GlobalCovariance[i][j] += globalCount * delta[i] * delta[j]
+          m_GlobalCovariance[i][j] +=
+            globalCount * delta[i] * delta[j]
             - m_GlobalCovariance[i][j] / ( globalCount + 1 );
           m_GlobalCovariance[j][i] = m_GlobalCovariance[i][j];
 
@@ -627,51 +628,6 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
   m_BasisValues.set_size( numInputFeatures );
   m_BasisMatrix.set_size( numInputFeatures, numInputFeatures );
 
-  VectorType meanOfMeans;
-  meanOfMeans.set_size( numInputFeatures );
-  meanOfMeans.fill( 0 );
-
-  MatrixType covarianceOfMeans;
-  covarianceOfMeans.set_size( numInputFeatures, numInputFeatures );
-  covarianceOfMeans.fill( 0 );
-  MatrixType meanCovariance;
-  meanCovariance.set_size( numInputFeatures, numInputFeatures );
-  meanCovariance.fill( 0 );
-  for( unsigned int c = 0; c < numClasses; c++ )
-    {
-    meanOfMeans += m_ObjectMeanList[c];
-    }
-  meanOfMeans *= 1.0 / numClasses;
-  for( unsigned int c = 0; c < numClasses; c++ )
-    {
-    for( unsigned int i = 0; i < numInputFeatures; i++ )
-      {
-      for( unsigned int j = i; j < numInputFeatures; j++ )
-        {
-        meanCovariance[i][j] += m_ObjectCovarianceList[c][i][j];
-        meanCovariance[j][i] = meanCovariance[i][j];
-
-        covarianceOfMeans[i][j] +=
-          ( m_ObjectMeanList[c][i] - meanOfMeans[i] )
-          * ( m_ObjectMeanList[c][j] - meanOfMeans[j] );
-        covarianceOfMeans[j][i] = covarianceOfMeans[i][j];
-        }
-      }
-    }
-
-  meanCovariance *= 1.0 / numClasses;
-  covarianceOfMeans *= 1.0 / numClasses;
-
-  VectorType ldaBasisValues;
-  MatrixType ldaBasisMatrix;
-  ldaBasisValues.set_size( numInputFeatures );
-  ldaBasisValues.fill( 0 );
-  ldaBasisMatrix.set_size( numInputFeatures, numInputFeatures );
-  ldaBasisMatrix.fill( 0 );
-
-  ::tube::ComputeEigenOfMatrixInvertedTimesMatrix( meanCovariance,
-    covarianceOfMeans, ldaBasisMatrix, ldaBasisValues, false, false );
-
   VectorType pcaBasisValues;
   MatrixType pcaBasisMatrix;
   pcaBasisValues.set_size( numInputFeatures );
@@ -682,6 +638,51 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
   int basisNum = 0;
   if( m_NumberOfLDABasisToUseAsFeatures > 0 )
     {
+    VectorType meanOfMeans;
+    meanOfMeans.set_size( numInputFeatures );
+    meanOfMeans.fill( 0 );
+
+    MatrixType covarianceOfMeans;
+    covarianceOfMeans.set_size( numInputFeatures, numInputFeatures );
+    covarianceOfMeans.fill( 0 );
+    MatrixType meanCovariance;
+    meanCovariance.set_size( numInputFeatures, numInputFeatures );
+    meanCovariance.fill( 0 );
+    for( unsigned int c = 0; c < numClasses; c++ )
+      {
+      meanOfMeans += m_ObjectMeanList[c];
+      }
+    meanOfMeans /= numClasses;
+    for( unsigned int c = 0; c < numClasses; c++ )
+      {
+      for( unsigned int i = 0; i < numInputFeatures; i++ )
+        {
+        for( unsigned int j = i; j < numInputFeatures; j++ )
+          {
+          meanCovariance[i][j] += m_ObjectCovarianceList[c][i][j];
+          meanCovariance[j][i] = meanCovariance[i][j];
+
+          covarianceOfMeans[i][j] +=
+            ( m_ObjectMeanList[c][i] - meanOfMeans[i] )
+            * ( m_ObjectMeanList[c][j] - meanOfMeans[j] );
+          covarianceOfMeans[j][i] = covarianceOfMeans[i][j];
+          }
+        }
+      }
+
+    meanCovariance /= numClasses;
+    covarianceOfMeans /= numClasses;
+
+    VectorType ldaBasisValues;
+    MatrixType ldaBasisMatrix;
+    ldaBasisValues.set_size( numInputFeatures );
+    ldaBasisValues.fill( 0 );
+    ldaBasisMatrix.set_size( numInputFeatures, numInputFeatures );
+    ldaBasisMatrix.fill( 0 );
+
+    ::tube::ComputeEigenOfMatrixInvertedTimesMatrix( meanCovariance,
+      covarianceOfMeans, ldaBasisMatrix, ldaBasisValues, false, false );
+
     VectorType biasVector;
     MatrixType biasMatrix;
     biasVector.set_size( numInputFeatures );
@@ -696,8 +697,11 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
       biasVector = m_BasisMatrix.get_column( f );
       biasMatrix += outer_product( biasVector, biasVector );
       }
-    biasMatrix *= 1.0 / m_NumberOfLDABasisToUseAsFeatures;
-    ::tube::FixMatrixSymmetry( biasMatrix );
+    // Preserve the following line to document a fix that may be
+    //   needed in practice, but initial results indicate it is not
+    //   needed.   Further evaluations are needed on a diversity of
+    //   data.
+    //::tube::FixMatrixSymmetry( biasMatrix );
 
     ::tube::ComputeEigenOfMatrixInvertedTimesMatrix( biasMatrix,
       m_GlobalCovariance, pcaBasisMatrix, pcaBasisValues, false, false );

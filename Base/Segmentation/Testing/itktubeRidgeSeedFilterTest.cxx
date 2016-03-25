@@ -25,12 +25,12 @@ limitations under the License.
 
 int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
 {
-  if( argc != 8 )
+  if( argc != 9 )
     {
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
-      << " inputImage labelmapImage objId bkgId outputFeature0Image"
+      << " inputImage labelmapImage objId bkgId useSVM outputFeature0Image"
       << " outputImage maxScaleImage"
       << std::endl;
     return EXIT_FAILURE;
@@ -99,12 +99,14 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   filter->SetScales( scales );
   int objId = atoi( argv[3] );
   int bkgId = atoi( argv[4] );
+  if( argv[5][0] == 't' || argv[5][0] == 'T' )
+    {
+    filter->SetUseSVM( true );
+    }
   filter->SetRidgeId( objId );
   filter->SetBackgroundId( bkgId );
   filter->SetUnknownId( 0 );
   filter->SetTrainClassifier( true );
-  filter->SetNumberOfLDABasisToUseAsFeatures( 1 );
-  filter->SetNumberOfPCABasisToUseAsFeatures( 2 );
   std::cout << "Update started." << std::endl;
   try
     {
@@ -121,7 +123,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
 
   FeatureImageWriterType::Pointer feature2ImageWriter =
     FeatureImageWriterType::New();
-  feature2ImageWriter->SetFileName( argv[5] );
+  feature2ImageWriter->SetFileName( argv[6] );
   feature2ImageWriter->SetUseCompression( true );
   feature2ImageWriter->SetInput( filter->GetRidgeFeatureGenerator()
     ->GetFeatureImage( 0 ) );
@@ -136,7 +138,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     }
 
   LabelMapWriterType::Pointer labelmapWriter = LabelMapWriterType::New();
-  labelmapWriter->SetFileName( argv[6] );
+  labelmapWriter->SetFileName( argv[7] );
   labelmapWriter->SetUseCompression( true );
   labelmapWriter->SetInput( filter->GetOutput() );
   try
@@ -151,7 +153,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
 
   FeatureImageWriterType::Pointer scaleImageWriter =
     FeatureImageWriterType::New();
-  scaleImageWriter->SetFileName( argv[7] );
+  scaleImageWriter->SetFileName( argv[8] );
   scaleImageWriter->SetUseCompression( true );
   scaleImageWriter->SetInput( filter->GetOutputSeedScales() );
   try

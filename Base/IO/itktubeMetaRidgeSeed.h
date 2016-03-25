@@ -64,8 +64,7 @@ public:
   MetaRidgeSeed(
     const RidgeSeedScalesType & _ridgeScales,
     const bool _useIntensityOnly,
-    unsigned int _numberOfPCABasis,
-    unsigned int _numberOfLDABasis,
+    const bool _useSVM,
     const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix,
     const ValueListType & _inputWhitenMeans,
@@ -86,8 +85,7 @@ public:
   bool InitializeEssential(
     const RidgeSeedScalesType & _ridgeScales,
     const bool _useIntensityOnly,
-    unsigned int _numberOfPCABasis,
-    unsigned int _numberOfLDABasis,
+    const bool _useSVM,
     const LDAValuesType & _ldaValues,
     const LDAMatrixType & _ldaMatrix,
     const ValueListType & _inputWhitenMeans,
@@ -98,6 +96,12 @@ public:
 
   void  SetRidgeSeedScales( const RidgeSeedScalesType & _ridgeScales );
   const RidgeSeedScalesType & GetRidgeSeedScales( void ) const;
+
+  void SetUseIntensityOnly( bool _useIntensityOnly );
+  bool GetUseIntensityOnly( void ) const;
+
+  void SetUseSVM( bool _useSVM );
+  bool GetUseSVM( void ) const;
 
   void  SetPDFFileName( const std::string & _pdfFileName );
   const std::string & GetPDFFileName( void ) const;
@@ -116,9 +120,6 @@ public:
 
   void SetSkeletonize( bool _skeletonize );
   bool GetSkeletonize( void ) const;
-
-  void SetUseIntensityOnly( bool _useIntensityOnly );
-  bool GetUseIntensityOnly( void ) const;
 
   virtual bool CanRead( const char * _headerName = NULL ) const;
 
@@ -141,12 +142,15 @@ protected:
 
   bool  M_Read( void );
 
+  bool   m_UseIntensityOnly;
+
+  bool   m_UseSVM;
+
   int    m_RidgeId;
   int    m_BackgroundId;
   int    m_UnknownId;
   double m_SeedTolerance;
   bool   m_Skeletonize;
-  bool   m_UseIntensityOnly;
 
   RidgeSeedScalesType  m_RidgeSeedScales;
 

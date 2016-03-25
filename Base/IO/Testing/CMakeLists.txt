@@ -70,7 +70,9 @@ set( tubeBaseIOTests_SRCS
   itktubeTubeExtractorIOTest.cxx
   itktubeTubeXIOTest.cxx )
 if( TubeTK_USE_LIBSVM )
-  list( APPEND tubeBaseIOTests_SRCS itktubeRidgeSeedFilterIOTest.cxx )
+  list( APPEND tubeBaseIOTests_SRCS
+    itktubePDFSegmenterSVMIOTest.cxx
+    itktubeRidgeSeedFilterIOTest.cxx )
 endif( TubeTK_USE_LIBSVM )
 
 
@@ -157,16 +159,31 @@ Midas3FunctionAddTest( NAME itktubePDFSegmenterParzenIOTest
       ${TEMP}/itktubePDFSegmenterParzenIOTest2.mha
       ${TEMP}/itktubePDFSegmenterParzenIOTest2.mpd )
 
-Midas3FunctionAddTest( NAME itktubeRidgeSeedFilterIOTest
-  COMMAND ${BASE_IO_TESTS}
-    --compare ${TEMP}/itktubeRidgeSeedFilterIOTest_Output.mha
-      ${TEMP}/itktubeRidgeSeedFilterIOTest_Output2.mha
-    itktubeRidgeSeedFilterIOTest
-      MIDAS{im0001.crop.contrast.mha.md5}
-      MIDAS{im0001.vk.maskRidge.crop.mha.md5}
-      ${TEMP}/itktubeRidgeSeedFilterIOTest_Output.mha
-      ${TEMP}/itktubeRidgeSeedFilterIOTest.mrs
-      ${TEMP}/itktubeRidgeSeedFilterIOTest_Output2.mha )
+if( TubeTK_USE_LIBSVM )
+  Midas3FunctionAddTest( NAME itktubePDFSegmenterSVMIOTest
+    COMMAND ${BASE_IO_TESTS}
+      --compare ${TEMP}/itktubePDFSegmenterSVMIOTest.mha
+        ${TEMP}/itktubePDFSegmenterSVMIOTest2.mha
+      itktubePDFSegmenterSVMIOTest
+        MIDAS{ES0015_Large.mha.md5}
+        MIDAS{ES0015_Large.mha.md5}
+        MIDAS{GDS0015_Large-TrainingMask.mha.md5}
+        ${TEMP}/itktubePDFSegmenterSVMIOTest.mha
+        ${TEMP}/itktubePDFSegmenterSVMIOTest.msvm
+        ${TEMP}/itktubePDFSegmenterSVMIOTest2.mha
+        ${TEMP}/itktubePDFSegmenterSVMIOTest2.msvm )
+
+  Midas3FunctionAddTest( NAME itktubeRidgeSeedFilterIOTest
+    COMMAND ${BASE_IO_TESTS}
+      --compare ${TEMP}/itktubeRidgeSeedFilterIOTest_Output.mha
+        ${TEMP}/itktubeRidgeSeedFilterIOTest_Output2.mha
+      itktubeRidgeSeedFilterIOTest
+        MIDAS{im0001.crop.contrast.mha.md5}
+        MIDAS{im0001.vk.maskRidge.crop.mha.md5}
+        ${TEMP}/itktubeRidgeSeedFilterIOTest_Output.mha
+        ${TEMP}/itktubeRidgeSeedFilterIOTest.mrs
+        ${TEMP}/itktubeRidgeSeedFilterIOTest_Output2.mha )
+endif( TubeTK_USE_LIBSVM )
 
 Midas3FunctionAddTest( NAME itktubeTubeExtractorIOTest
   COMMAND ${BASE_IO_TESTS}

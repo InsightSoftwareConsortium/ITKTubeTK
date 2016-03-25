@@ -41,16 +41,16 @@ PDFSegmenterSVM< TImage, TLabelMap >
   m_Model = NULL;
 
   m_Parameter.svm_type = C_SVC;
-  m_Parameter.kernel_type = RBF;
+  m_Parameter.kernel_type = LINEAR; // default: RBF;
   m_Parameter.degree = 3;
-  m_Parameter.gamma = 0; // 1/num_features
+  m_Parameter.gamma = 0; // Set to 1.0/num_features in GeneratePDFs
   m_Parameter.coef0 = 0;
   m_Parameter.nu = 0.5;
   m_Parameter.cache_size = 100;
   m_Parameter.C = 1;
-  m_Parameter.eps = 1e-3;
+  m_Parameter.eps = 0.1; // default: 1e-3;
   m_Parameter.p = 0.1;
-  m_Parameter.shrinking = 1;
+  m_Parameter.shrinking = 0;
   m_Parameter.probability = 1;
   m_Parameter.nr_weight = 0;
   m_Parameter.weight_label = NULL;
@@ -77,11 +77,27 @@ PDFSegmenterSVM< TImage, TLabelMap >
 }
 
 template< class TImage, class TLabelMap >
+void
+PDFSegmenterSVM< TImage, TLabelMap >
+::SetModel( svm_model * model )
+{
+  m_Model = model;
+}
+
+template< class TImage, class TLabelMap >
 svm_parameter *
 PDFSegmenterSVM< TImage, TLabelMap >
 ::GetParameter( void )
 {
   return & m_Parameter;
+}
+
+template< class TImage, class TLabelMap >
+void
+PDFSegmenterSVM< TImage, TLabelMap >
+::SetParameter( svm_parameter * parameter )
+{
+  m_Parameter = ( * parameter );
 }
 
 template< class TImage, class TLabelMap >

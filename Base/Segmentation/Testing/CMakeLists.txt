@@ -222,9 +222,22 @@ if( TubeTK_USE_LIBSVM )
       itktubeRidgeSeedFilterTest
         MIDAS{im0001.crop.contrast.mha.md5}
         MIDAS{im0001.vk.maskRidge.crop.mha.md5}
-        255 127
+        255 127 False
         ${TEMP}/itktubeRidgeSeedFilterTest_Feature0Image.mha
         ${TEMP}/itktubeRidgeSeedFilterTest_Output.mha
         ${TEMP}/itktubeRidgeSeedFilterTest_MaxScale.mha )
+
+  Midas3FunctionAddTest( NAME itktubeRidgeSeedFilterSVMTest
+    COMMAND ${BASE_SEGMENTATION_TESTS}
+      --compareNumberOfPixelsTolerance 100
+      --compare MIDAS{itktubeRidgeSeedFilterTest_Output.mha.md5}
+        ${TEMP}/itktubeRidgeSeedFilterSVMTest_Output.mha
+      itktubeRidgeSeedFilterTest
+        MIDAS{im0001.crop.contrast.mha.md5}
+        MIDAS{im0001.vk.maskRidge.crop.mha.md5}
+        255 127 True
+        ${TEMP}/itktubeRidgeSeedFilterSVMTest_Feature0Image.mha
+        ${TEMP}/itktubeRidgeSeedFilterSVMTest_Output.mha
+        ${TEMP}/itktubeRidgeSeedFilterSVMTest_MaxScale.mha )
 
 endif( TubeTK_USE_LIBSVM )

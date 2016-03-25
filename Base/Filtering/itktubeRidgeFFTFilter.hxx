@@ -47,11 +47,9 @@ RidgeFFTFilter< TInputImage >
   m_UseIntensityOnly = false;
 
   #if defined( TubeTK_USE_GPU_ARRAYFIRE )
-  // std::cout << "Using GPU Derivative" << std::endl;
   m_DerivativeFilter = GPUArrayFireGaussianDerivativeFilter< InputImageType,
     OutputImageType >::New();
   #else
-  // std::cout << "Using CPU Derivative" << std::endl;
   m_DerivativeFilter = FFTGaussianDerivativeIFFTFilter< InputImageType,
     OutputImageType >::New();
   #endif
@@ -63,9 +61,6 @@ void
 RidgeFFTFilter< TInputImage >
 ::GenerateData()
 {
-  std::cout << "Ridge FFT Filter: GenerateData (Scale = " << m_Scale << ")"
-    << std::endl;
-
   m_DerivativeFilter->SetInput( this->GetInput() );
 
   typename DerivativeFilterType::OrdersType orders;
@@ -178,9 +173,7 @@ RidgeFFTFilter< TInputImage >
       }
     }
 
-  std::cout << "Setting output" << std::endl;
   this->SetNthOutput( 0, m_Intensity );
-  std::cout << "Done setting output" << std::endl;
 }
 
 template< typename TInputImage >

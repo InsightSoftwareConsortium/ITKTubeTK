@@ -31,6 +31,7 @@ limitations under the License.
 #include "itktubePDFSegmenterParzenIO.h"
 #ifdef TubeTK_USE_LIBSVM
 #  include "itktubeRidgeSeedFilterIO.h"
+#  include "itktubePDFSegmenterSVMIO.h"
 #endif
 #include "itktubeTubeExtractorIO.h"
 #include "itktubeTubeXIO.h"
