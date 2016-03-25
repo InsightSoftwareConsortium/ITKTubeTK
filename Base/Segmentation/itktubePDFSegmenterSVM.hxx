@@ -207,8 +207,7 @@ PDFSegmenterSVM< TImage, TLabelMap >
   double * probEstimates = (double *)malloc( numClasses *
     sizeof( double ) );
 
-  double classEstimate = svm_predict_probability( m_Model, x,
-    probEstimates );
+  svm_predict_probability( m_Model, x, probEstimates );
   double classProb = probEstimates[ classNum ];
 
   free( probEstimates );

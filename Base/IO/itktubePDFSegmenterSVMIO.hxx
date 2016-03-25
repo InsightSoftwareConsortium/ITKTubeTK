@@ -209,7 +209,7 @@ Read( const char * _headerName )
   mF = new MET_FieldRecordType;
   MET_InitReadField( mF, "NFeatures", MET_INT, true );
   metaFields.push_back( mF );
-  int nFeaturesRec = MET_GetFieldRecordNumber( "NFeatures", &metaFields );
+  MET_GetFieldRecordNumber( "NFeatures", &metaFields );
 
   mF = new MET_FieldRecordType;
   MET_InitReadField( mF, "NObjects", MET_INT, true );
@@ -289,8 +289,6 @@ Read( const char * _headerName )
   std::vector< unsigned int > tmpVectorUInt;
   std::vector< int > tmpVectorInt;
   std::vector< double > tmpVectorDouble;
-
-  unsigned int numFeatures = m_PDFSegmenter->GetNumberOfFeatures();
 
   mF = MET_GetFieldRecord( "NObjects", &metaFields );
   unsigned int nObjects = static_cast< unsigned int >( mF->value[0] );
