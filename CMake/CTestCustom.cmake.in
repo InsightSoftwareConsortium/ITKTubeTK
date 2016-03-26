@@ -113,7 +113,9 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "NUMPY.*Warning"
   # Mac
   "numpy.core.src.multiarray.descriptor.*was declared here"
-  "numpy.core.*deprecated*"
+  "numpy.core.*deprecated"
+
+  "itkTubeTK_fake_library_src.*empty"
 
   # Tcl
   "tcl.tcl.unix.*warning: cast"
