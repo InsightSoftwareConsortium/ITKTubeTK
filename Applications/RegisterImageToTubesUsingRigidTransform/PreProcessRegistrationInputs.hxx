@@ -56,12 +56,11 @@ PreProcessRegistrationInputs( int argc,
   typename TRegistrationMethod::FeatureWeightsType & pointWeights )
 {
   const unsigned int Dimension = VDimension;
-  typedef TFloat                                         FloatType;
-  typedef TTube                                          TubeType;
-  typedef TTubeNet                                       TubeNetType;
-  typedef TImage                                         ImageType;
-  typedef TRegistrationMethod                            RegistrationMethodType;
-  typedef typename RegistrationMethodType::TransformType TransformType;
+  typedef TFloat                                     FloatType;
+  typedef TTube                                      TubeType;
+  typedef TTubeNet                                   TubeNetType;
+  typedef TImage                                     ImageType;
+  typedef TRegistrationMethod                        RegistrationMethodType;
 
   PARSE_ARGS;
 

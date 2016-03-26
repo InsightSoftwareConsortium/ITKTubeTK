@@ -58,21 +58,19 @@ int DoIt( int argc, char * argv[] )
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
   tube::CLIProgressReporter progressReporter(
-    "RegisterImageToTubesUsingRigidTransform",
-    CLPProcessInformation );
+    "RegisterImageToTubesUsingRigidTransform", CLPProcessInformation );
   progressReporter.Start();
 
   const unsigned int Dimension = 3;
   typedef double     FloatType;
 
-  typedef itk::VesselTubeSpatialObject< Dimension >      TubeType;
-  typedef itk::GroupSpatialObject< Dimension >           TubeNetType;
-  typedef itk::Image< FloatType, Dimension >             ImageType;
-  typedef itk::tube::ImageToTubeRigidRegistration< ImageType, TubeNetType, TubeType >
-                                                         RegistrationMethodType;
+  typedef itk::VesselTubeSpatialObject< Dimension >  TubeType;
+  typedef itk::GroupSpatialObject< Dimension >       TubeNetType;
+  typedef itk::Image< FloatType, Dimension >         ImageType;
+  typedef itk::tube::ImageToTubeRigidRegistration< ImageType, TubeNetType,
+    TubeType >                                       RegistrationMethodType;
+
   typedef typename RegistrationMethodType::TransformType TransformType;
-  typedef itk::tube::TubeToTubeTransformFilter< TransformType, Dimension >
-                                                         TubeTransformFilterType;
   typedef RegistrationMethodType::FeatureWeightsType     PointWeightsType;
 
   typename ImageType::Pointer currentImage;
