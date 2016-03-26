@@ -49,11 +49,6 @@ int itktubePDFSegmenterParzenIOTest( int argc, char * argv[] )
   typedef itk::ImageFileReader< ImageType > ReaderType;
   typedef itk::ImageFileWriter< ImageType > WriterType;
 
-  typedef float                                  HistoPixelType;
-  typedef itk::Image<PixelType, 4>               HistoImageType;
-  typedef itk::ImageFileReader< HistoImageType > HistoReaderType;
-  typedef itk::ImageFileWriter< HistoImageType > HistoWriterType;
-
   // Declare the type for the Filter
   typedef itk::tube::PDFSegmenterParzen< ImageType, ImageType >
     FilterType;
