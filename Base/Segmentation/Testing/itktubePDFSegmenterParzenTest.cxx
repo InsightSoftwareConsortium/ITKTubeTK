@@ -54,7 +54,6 @@ int itktubePDFSegmenterParzenTest( int argc, char * argv[] )
 
   typedef float                                  HistoPixelType;
   typedef itk::Image<HistoPixelType, 4 >         HistoImageType;
-  typedef itk::ImageFileReader< HistoImageType > HistoReaderType;
   typedef itk::ImageFileWriter< HistoImageType > HistoWriterType;
 
 
