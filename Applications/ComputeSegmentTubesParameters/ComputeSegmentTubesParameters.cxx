@@ -430,7 +430,7 @@ int DoIt( int argc, char * argv[] )
 
   double ridgeMaxXChange = 3.0;
 
-  double portion = 1.0 / 250.0;
+  double portion = 1.0 / 1000.0;
   int clippedMax = (int)(tube.size() * portion);
   portion = 1.0 / 500.0;
   int clippedMaxStart = (int)(tube.size() * portion);
