@@ -71,9 +71,6 @@ int DoIt( int argc, char * argv[] )
 
   typedef typename RegistrationMethodType::TransformType TransformType;
 
-  typedef itk::tube::TubeToTubeTransformFilter< TransformType, Dimension >
-   TubeTransformFilterType;
-
   typedef RegistrationMethodType::FeatureWeightsType     PointWeightsType;
 
   typename ImageType::Pointer currentImage;

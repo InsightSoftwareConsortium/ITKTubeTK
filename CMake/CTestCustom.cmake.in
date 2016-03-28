@@ -115,7 +115,10 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "numpy.core.src.multiarray.descriptor.*was declared here"
   "numpy.core.*deprecated"
 
+  # Fake library is empty
   "itkTubeTK_fake_library_src.*empty"
+  "itkTubeTK_fake_library_src.*no symbols"
+  "libitkTubeTKITK-.*empty"
 
   # Tcl
   "tcl.tcl.unix.*warning: cast"
