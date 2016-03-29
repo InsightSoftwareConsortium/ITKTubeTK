@@ -175,7 +175,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     {
     std::cerr<<"CurvatureScalarMetric not computed"<<std::endl;
     }
-  else if( i < 0 || i >= this->m_CurvatureScalar.size() )
+  else if( i >= this->m_CurvatureScalar.size() )
     {
     std::cerr<<"GetCurvatureScalarMetric(int): Index "<<i<<" out of bounds"
       <<std::endl;
@@ -196,7 +196,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     {
     std::cerr<<"InflectionPointMetric not computed"<<std::endl;
     }
-  else if( i < 0 || i >= this->m_InflectionPoints.Size() )
+  else if( i >= this->m_InflectionPoints.Size() )
     {
     std::cerr<<"GetInflectionPointValue(int): Index "<<i<<" out of bounds"
       <<std::endl;

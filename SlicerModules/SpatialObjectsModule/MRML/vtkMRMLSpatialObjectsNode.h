@@ -185,6 +185,9 @@ protected:
 
   std::set<int>                           m_SelectedTubeIds;
   std::map< int, std::vector<double> >    m_DefaultColorMap;
+
+private:
+  void Reset( vtkMRMLNode* defaultNode ) {};
 }; // End class vtkMRMLSpatialObjectsNode
 
 #endif // End !defined(__vtkMRMLSpatialObjectsNode_h)
