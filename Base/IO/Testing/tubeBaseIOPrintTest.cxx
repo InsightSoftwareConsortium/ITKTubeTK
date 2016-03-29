@@ -64,12 +64,12 @@ int tubeBaseIOPrintTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
   std::cout << "-------------pdfSegmenterParzenIO" << std::endl;
   pdfSegmenterParzenIO.PrintInfo();
 
+#ifdef TubeTK_USE_LIBSVM
   itk::tube::PDFSegmenterSVMIO< ImageType,
     ImageType > pdfSegmenterSVMIO;
   std::cout << "-------------pdfSegmenterSVMIO" << std::endl;
   pdfSegmenterSVMIO.PrintInfo();
 
-#ifdef TubeTK_USE_LIBSVM
   itk::tube::RidgeSeedFilterIO< ImageType, ImageType > ridgeSeedFilterIO;
   std::cout << "-------------ridgeSeedFilterIO" << std::endl;
   ridgeSeedFilterIO.PrintInfo();

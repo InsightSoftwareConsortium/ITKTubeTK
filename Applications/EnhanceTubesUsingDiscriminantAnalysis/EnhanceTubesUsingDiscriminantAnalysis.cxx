@@ -143,9 +143,6 @@ int DoIt( int argc, char * argv[] )
     {
     tubeFilter->SetScales( tubeScales );
 
-    tubeFilter->GetPDFSegmenter()
-      ->SetProbabilityImageSmoothingStandardDeviation( tubeScales[0] );
-
     tubeFilter->SetTrainClassifier( true );
 
     tubeFilter->SetUseIntensityOnly( useIntensityOnly );
@@ -159,6 +156,12 @@ int DoIt( int argc, char * argv[] )
   tubeFilter->Update();
   std::cout << "** Here." << std::endl;
   timeCollector.Stop( "Update" );
+
+  if( loadDiscriminantInfo.empty() )
+    {
+    tubeFilter->GetPDFSegmenter()
+      ->SetProbabilityImageSmoothingStandardDeviation( tubeScales[0] );
+    }
 
   std::cout << "** Performing classification." << std::endl;
   timeCollector.Start( "Classify" );
