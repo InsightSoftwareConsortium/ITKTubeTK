@@ -68,7 +68,6 @@ qSlicerTortuosityModuleWidgetPrivate
 //------------------------------------------------------------------------------
 int qSlicerTortuosityModuleWidgetPrivate::getFlagFromCheckBoxes()
 {
-  Q_Q( qSlicerTortuosityModuleWidget );
   int flag = this->BasicMetricsCheckBox->isChecked() ?
     vtkSlicerTortuosityLogic::BasicMetricsGroup : 0;
 
