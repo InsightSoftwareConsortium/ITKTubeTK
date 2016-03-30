@@ -85,7 +85,8 @@ endif( APPLE )
 #
 if( TubeTK_BUILD_APPLICATIONS )
   # Expose the TubeTK_BUILD_* variables to Superbuild
-  file( GLOB_RECURSE TubeTK_modules_files "${TubeTK_SOURCE_DIR}/TubeTKModules.cmake" )
+  file( GLOB_RECURSE TubeTK_modules_files
+    "${TubeTK_SOURCE_DIR}/TubeTKModules.cmake" )
   foreach( f ${TubeTK_modules_files} )
     ExternalProject_Message( ${PROJECT_NAME} "Including ${f}" )
     include( ${f} )
@@ -175,15 +176,16 @@ ExternalProject_Add( ${proj}
     -DBUILD_TESTING:BOOL=${BUILD_TESTING}
     -DMAKECOMMAND:STRING=${MAKECOMMAND}
     -DGIT_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
-    # XXX Change to upper case variables
     -Dgit_protocol:STRING=${git_protocol}
     -Dgithub_protocol:STRING=${github_protocol}
     -DSITE:STRING=${SITE}
-    -DTubeTK_CONFIG_BINARY_DIR:PATH=${TubeTK_CONFIG_BINARY_DIR}
-    -DTubeTK_EXECUTABLE_DIRS:STRING=${TubeTK_EXECUTABLE_DIRS}
     -DTubeTK_BUILD_APPLICATIONS=${TubeTK_BUILD_APPLICATIONS}
     -DTubeTK_BUILD_IMAGE_VIEWER:BOOL=${TubeTK_BUILD_IMAGE_VIEWER}
     -DTubeTK_BUILD_USING_SLICER:BOOL=${TubeTK_BUILD_USING_SLICER}
+    -DTubeTK_BUILD_WITHIN_SLICER:BOOL=${TubeTK_BUILD_WITHIN_SLICER}
+    -DTubeTK_CONFIG_BINARY_DIR:PATH=${TubeTK_CONFIG_BINARY_DIR}
+    -DTubeTK_EXECUTABLE_DIRS:STRING=${TubeTK_EXECUTABLE_DIRS}
+    -DTubeTK_SUPPORT_2D_IMAGES:BOOL=${TubeTK_SUPPORT_2D_IMAGES}
     -DTubeTK_USE_GPU_ARRAYFIRE:BOOL=${TubeTK_USE_GPU_ARRAYFIRE}
     -DTubeTK_USE_BOOST:BOOL=${TubeTK_USE_BOOST}
     -DTubeTK_USE_CPPCHECK:BOOL=${TubeTK_USE_CPPCHECK}
@@ -197,7 +199,5 @@ ExternalProject_Add( ${proj}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
     -DTubeTK_USE_SUPERBUILD:BOOL=OFF
     -DTubeTK_USE_VTK:BOOL=${TubeTK_USE_VTK}
-    -DTubeTK_BUILD_WITHIN_SLICER:BOOL=${TubeTK_BUILD_WITHIN_SLICER}
-    -DTubeTK_SUPPORT_2D_IMAGES:BOOL=${TubeTK_SUPPORT_2D_IMAGES}
     ${TubeTK_EXTERNAL_PROJECTS_ARGS}
   INSTALL_COMMAND "" )
