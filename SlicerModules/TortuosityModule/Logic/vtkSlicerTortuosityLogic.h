@@ -59,9 +59,10 @@ public:
   void PrintSelf( ostream& os, vtkIndent indent );
 
   // typdefs
-  typedef vtkMRMLSpatialObjectsNode::TubeNetType                        TubeNetType;
-  typedef itk::VesselTubeSpatialObject< 3 >                             VesselTubeType;
-  typedef itk::tube::TortuositySpatialObjectFilter< VesselTubeType >    FilterType;
+  typedef vtkMRMLSpatialObjectsNode::TubeNetType                      TubeNetType;
+  typedef itk::VesselTubeSpatialObject< 3 >                           VesselTubeType;
+  typedef itk::tube::TortuositySpatialObjectFilter< VesselTubeType >  FilterType;
+  typedef VesselTubeType::TubePointType                               VesselTubePointType;
 
   // Different groups of metrics that can be run on a spatial object node.
   // See FilterType::MeasureType for more info on the metrics.
