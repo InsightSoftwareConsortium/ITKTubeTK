@@ -95,7 +95,7 @@ public:
   /** If inFile(x) in [tLow, tHigh] then I(x)=I(x) else I(x)=vFalse */
   static bool MaskImageWithValueIfNotWithinSecondImageRange(
     typename ImageType::Pointer imIn, const std::string & imIn2FilePath,
-    float threshLow, float threshHigh, bool valFalse );
+    float threshLow, float threshHigh, float valFalse );
 
   /** Mathematical morphology using a sphere. Mode: 0=erode, 1=dilate. */
   static void MorphImage( typename ImageType::Pointer & imIn, int mode,
