@@ -248,12 +248,12 @@ int DoIt( int argc, char * argv[] )
 
   ridgeExtractor->SetMinRidgeness( 0.6 );
   ridgeExtractor->SetMinRidgenessStart( 0.6 );
-  ridgeExtractor->SetMinRoundness( 0 );
-  ridgeExtractor->SetMinRoundnessStart( 0 );
-  ridgeExtractor->SetMinCurvature( 0 );
-  ridgeExtractor->SetMinCurvatureStart( 0 );
-  ridgeExtractor->SetMinLevelness( 0 );
-  ridgeExtractor->SetMinLevelnessStart( 0 );
+  ridgeExtractor->SetMinRoundness( -1 );
+  ridgeExtractor->SetMinRoundnessStart( -1 );
+  ridgeExtractor->SetMinCurvature( -1 );
+  ridgeExtractor->SetMinCurvatureStart( -1 );
+  ridgeExtractor->SetMinLevelness( -1 );
+  ridgeExtractor->SetMinLevelnessStart( -1 );
   while( !itM.IsAtEnd() )
     {
     if( itM.Get() == maskBackgroundId
