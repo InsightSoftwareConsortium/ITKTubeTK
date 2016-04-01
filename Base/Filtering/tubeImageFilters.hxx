@@ -642,7 +642,7 @@ ImageFilters<VDimension>
 ::MaskImageWithValueIfNotWithinSecondImageRange(
     typename ImageType::Pointer imIn,
     const std::string & imIn2FilePath,
-    float threshLow, float threshHigh, bool valFalse )
+    float threshLow, float threshHigh, float valFalse )
 {
 
   typename VolumeReaderType::Pointer reader2 = VolumeReaderType::New();
