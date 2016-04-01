@@ -503,9 +503,9 @@ option( TubeTK_BUILD_APPLICATIONS
   "Build applications. If not, only TubeTK library is built" ON )
 mark_as_advanced( TubeTK_BUILD_APPLICATIONS )
 
-# If TubeTK_CONFIG_BINARY_DIR isn't defined, it means TubeTK is *NOT* build
-# using Superbuild. In that specific case, TubeTK_CONFIG_BINARY_DIR should
-# default to TubeTK_BINARY_DIR
+# If TubeTK_CONFIG_BINARY_DIR isn't defined, it means TubeTK is *NOT* being
+# built using Superbuild. In that specific case, TubeTK_CONFIG_BINARY_DIR
+# should default to TubeTK_BINARY_DIR
 if( NOT DEFINED TubeTK_CONFIG_BINARY_DIR )
   set( TubeTK_CONFIG_BINARY_DIR ${CMAKE_BINARY_DIR} )
 endif( NOT DEFINED TubeTK_CONFIG_BINARY_DIR )
