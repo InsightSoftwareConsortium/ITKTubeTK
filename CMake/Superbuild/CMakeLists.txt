@@ -106,7 +106,8 @@ list_conditional_append( TubeTK_USE_VTK TubeTK_DEPENDENCIES "VTK" )
 
 list_conditional_append( TubeTK_USE_CPPCHECK TubeTK_DEPENDENCIES "Cppcheck" )
 
-list_conditional_append( TubeTK_BUILD_IMAGE_VIEWER TubeTK_DEPENDENCIES "ImageViewer" )
+list_conditional_append( TubeTK_BUILD_IMAGE_VIEWER TubeTK_DEPENDENCIES
+ "ImageViewer" )
 
 list_conditional_append( TubeTK_USE_KWSTYLE TubeTK_DEPENDENCIES "KWStyle" )
 
@@ -161,6 +162,7 @@ ExternalProject_Add( ${proj}
   BINARY_DIR ${CMAKE_BINARY_DIR}/${proj}-build
   INSTALL_DIR ${CMAKE_BINARY_DIR}/${proj}-build
   CMAKE_GENERATOR ${gen}
+  BUILD_AWAYS 1
   CMAKE_ARGS
     -DCMAKE_BUILD_TYPE:STRING=${build_type}
     -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
@@ -179,7 +181,7 @@ ExternalProject_Add( ${proj}
     -Dgit_protocol:STRING=${git_protocol}
     -Dgithub_protocol:STRING=${github_protocol}
     -DSITE:STRING=${SITE}
-    -DTubeTK_BUILD_APPLICATIONS=${TubeTK_BUILD_APPLICATIONS}
+    -DTubeTK_BUILD_APPLICATIONS:BOOL=${TubeTK_BUILD_APPLICATIONS}
     -DTubeTK_BUILD_IMAGE_VIEWER:BOOL=${TubeTK_BUILD_IMAGE_VIEWER}
     -DTubeTK_BUILD_USING_SLICER:BOOL=${TubeTK_BUILD_USING_SLICER}
     -DTubeTK_BUILD_WITHIN_SLICER:BOOL=${TubeTK_BUILD_WITHIN_SLICER}
