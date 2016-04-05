@@ -382,8 +382,6 @@ RidgeSeedFilter< TImage, TLabelMap >
 
     m_PDFSegmenter->SetFeatureVectorGenerator(
       m_RidgeFeatureGenerator.GetPointer() );
-
-    m_PDFSegmenter->SetObjectPDFWeight( 0, 20 * m_SeedTolerance );
     }
   else
     {
@@ -398,8 +396,6 @@ RidgeSeedFilter< TImage, TLabelMap >
 
     m_PDFSegmenter->SetFeatureVectorGenerator(
       m_SeedFeatureGenerator.GetPointer() );
-
-    m_PDFSegmenter->SetObjectPDFWeight( 0, m_SeedTolerance );
     }
 
   m_PDFSegmenter->SetReclassifyObjectLabels( true );
@@ -418,6 +414,8 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_PDFSegmenter->SetObjectId( m_RidgeId );
   m_PDFSegmenter->AddObjectId( m_BackgroundId );
   m_PDFSegmenter->SetVoidId( m_UnknownId );
+
+  m_PDFSegmenter->SetObjectPDFWeight( 0, m_SeedTolerance );
 
   if( m_TrainClassifier )
     {
