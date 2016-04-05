@@ -102,6 +102,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   if( argv[5][0] == 't' || argv[5][0] == 'T' )
     {
     filter->SetUseSVM( true );
+    filter->SetSVMTrainingDataStride( 100 );
     }
   filter->SetRidgeId( objId );
   filter->SetBackgroundId( bkgId );

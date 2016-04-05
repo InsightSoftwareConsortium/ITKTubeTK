@@ -49,7 +49,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
   typedef itk::tube::RidgeExtractor<ImageType> RidgeOpType;
   RidgeOpType::Pointer ridgeOp = RidgeOpType::New();
 
-  ridgeOp->SetDebug( true );
+  //ridgeOp->SetDebug( true );
 
   ridgeOp->SetInputImage( im );
   ridgeOp->SetStepX( 0.5 );

@@ -658,12 +658,21 @@ PDFSegmenterParzen< TImage, TLabelMap >
     << m_HistogramSmoothingStandardDeviation << std::endl;
   os << indent << "InClassHistogram size = "
     << m_InClassHistogram.size() << std::endl;
-  os << indent << "HistogramBinMin = " << m_HistogramBinMin[0]
-    << std::endl;
-  os << indent << "HistogramBinSize = " << m_HistogramBinSize[0]
-    << std::endl;
-  os << indent << "HistogramNumberOfBin[0] = "
-    << m_HistogramNumberOfBin[0] << std::endl;
+  if( m_HistogramBinMin.size() > 0 )
+    {
+    os << indent << "HistogramBinMin = " << m_HistogramBinMin[0]
+      << std::endl;
+    os << indent << "HistogramBinSize = " << m_HistogramBinSize[0]
+      << std::endl;
+    os << indent << "HistogramNumberOfBin[0] = "
+      << m_HistogramNumberOfBin[0] << std::endl;
+    }
+  else
+    {
+    os << indent << "HistogramBinMin = NULL" << std::endl;
+    os << indent << "HistogramBinSize = NULL" << std::endl;
+    os << indent << "HistogramNumberOfBin[0] = NULL" << std::endl;
+    }
 
   os << indent << "Outlier reject portion = "
     << m_OutlierRejectPortion << std::endl;

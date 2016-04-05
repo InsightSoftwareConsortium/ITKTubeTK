@@ -60,6 +60,7 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_PDFSegmenter = NULL;
 
   m_UseSVM = false;
+  m_SVMTrainingDataStride = 1;
 
   m_RidgeId = 255;
   m_BackgroundId = 127;
@@ -373,10 +374,16 @@ RidgeSeedFilter< TImage, TLabelMap >
     {
     typedef PDFSegmenterSVM< InputImageType, LabelMapType >
       PDFSegmenterSVMType;
-    m_PDFSegmenter = PDFSegmenterSVMType::New().GetPointer();
+    PDFSegmenterSVMType::Pointer tmpPDFSegmenter =
+      PDFSegmenterSVMType::New();
+    m_PDFSegmenter = tmpPDFSegmenter.GetPointer();
+
+    tmpPDFSegmenter->SetTrainingDataStride( m_SVMTrainingDataStride );
 
     m_PDFSegmenter->SetFeatureVectorGenerator(
       m_RidgeFeatureGenerator.GetPointer() );
+
+    m_PDFSegmenter->SetObjectPDFWeight( 0, 20 * m_SeedTolerance );
     }
   else
     {
@@ -391,13 +398,15 @@ RidgeSeedFilter< TImage, TLabelMap >
 
     m_PDFSegmenter->SetFeatureVectorGenerator(
       m_SeedFeatureGenerator.GetPointer() );
+
+    m_PDFSegmenter->SetObjectPDFWeight( 0, m_SeedTolerance );
     }
 
   m_PDFSegmenter->SetReclassifyObjectLabels( true );
   m_PDFSegmenter->SetReclassifyNotObjectLabels( true );
   m_PDFSegmenter->SetForceClassification( true );
   m_PDFSegmenter->SetErodeRadius( 0 );
-  m_PDFSegmenter->SetHoleFillIterations( 0 );
+  m_PDFSegmenter->SetHoleFillIterations( 5 );
   m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation( 0.6 );
   m_PDFSegmenter->SetLabelMap( m_SeedFeatureGenerator->GetLabelMap() );
 
@@ -409,8 +418,6 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_PDFSegmenter->SetObjectId( m_RidgeId );
   m_PDFSegmenter->AddObjectId( m_BackgroundId );
   m_PDFSegmenter->SetVoidId( m_UnknownId );
-
-  m_PDFSegmenter->SetObjectPDFWeight( 0, m_SeedTolerance );
 
   if( m_TrainClassifier )
     {

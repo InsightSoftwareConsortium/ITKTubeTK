@@ -38,6 +38,8 @@ template< class TImage, class TLabelMap >
 PDFSegmenterSVM< TImage, TLabelMap >
 ::PDFSegmenterSVM( void )
 {
+  m_TrainingDataStride = 1.0;
+
   m_Model = NULL;
 
   m_Parameter.svm_type = C_SVC;
@@ -122,15 +124,28 @@ PDFSegmenterSVM< TImage, TLabelMap >
     {
     sampleSize += this->m_InClassList[c].size();
     }
+  sampleSize /= m_TrainingDataStride;
+  std::cout << "Training sample size = " << sampleSize << std::endl;
 
   m_Parameter.nr_weight = numClasses;
   m_Parameter.weight_label = (int *)malloc( numClasses * sizeof( int ) );
   m_Parameter.weight = (double *)malloc( numClasses * sizeof( double ) );
+  unsigned int minSize = sampleSize;
+  for( unsigned int c=0; c<numClasses; ++c )
+    {
+    if( this->m_InClassList[c].size() < minSize )
+      {
+      minSize = this->m_InClassList[c].size();
+      }
+    }
+  double minWeight = 1.0 - ( minSize / (double) sampleSize );
+  std::cout << "Min weight = " << minWeight << std::endl;
   for( unsigned int c=0; c<numClasses; ++c )
     {
     m_Parameter.weight_label[c] = c;
-    m_Parameter.weight[c] = 1.0 - ( this->m_InClassList[c].size() /
-      (double)( sampleSize ) );
+    m_Parameter.weight[c] = ( 1.0 - (
+      ( this->m_InClassList[c].size() / m_TrainingDataStride) /
+      (double)( sampleSize ) ) ) / minWeight;
     }
 
   svm_problem prob;
@@ -152,7 +167,7 @@ PDFSegmenterSVM< TImage, TLabelMap >
       inClassListIt( this->m_InClassList[c].begin() );
     typename ListSampleType::const_iterator
       inClassListItEnd( this->m_InClassList[c].end() );
-    while( inClassListIt != inClassListItEnd )
+    while( sampleNum < sampleSize && inClassListIt != inClassListItEnd )
       {
       prob.x[ sampleNum ] = & x_space[ elementNum ];
       prob.y[ sampleNum ] = c;
@@ -166,9 +181,15 @@ PDFSegmenterSVM< TImage, TLabelMap >
       x_space[ elementNum ].value = 0;
       ++elementNum;
       ++sampleNum;
-      ++inClassListIt;
+      for( unsigned int s = 0; inClassListIt != inClassListItEnd
+        && s < m_TrainingDataStride; ++s )
+        {
+        ++inClassListIt;
+        }
       }
     }
+  std::cout << "   Final sample num = " << sampleNum << std::endl;
+
   const char * errorMessage;
   errorMessage = svm_check_parameter( &prob, &m_Parameter );
   if( errorMessage )
@@ -223,8 +244,18 @@ PDFSegmenterSVM< TImage, TLabelMap >
 {
   Superclass::PrintSelf( os, indent );
 
-  //os << indent << "Model = " << m_Model << std::endl;
-  //os << indent << "Parameter = " << m_Parameter << std::endl;
+  os << indent << "Training data stride = "
+    << m_TrainingDataStride << std::endl;
+
+  if( m_Model == NULL )
+    {
+    os << indent << "Model = NULL" << std::endl;
+    }
+  else
+    {
+    os << indent << "Model = Set" << std::endl;
+    }
+  os << indent << "Parameter = " << m_Parameter.svm_type << std::endl;
 }
 
 } // End namespace tube
