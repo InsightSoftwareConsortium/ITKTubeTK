@@ -146,6 +146,9 @@ public:
   itkSetMacro( UseSVM, bool );
   itkGetMacro( UseSVM, bool );
 
+  itkSetMacro( SVMTrainingDataStride, unsigned int );
+  itkGetMacro( SVMTrainingDataStride, unsigned int );
+
   // Ridge, Basis, and PDFSegmenter
   itkSetMacro( RidgeId, ObjectIdType );
   itkGetMacro( RidgeId, ObjectIdType );
@@ -191,6 +194,7 @@ private:
   typename PDFSegmenterType::Pointer              m_PDFSegmenter;
 
   bool           m_UseSVM;
+  unsigned int   m_SVMTrainingDataStride;
 
   ObjectIdType   m_RidgeId;
   ObjectIdType   m_BackgroundId;

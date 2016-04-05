@@ -115,8 +115,7 @@ int itktubePDFSegmenterSVMTest( int argc, char * argv[] )
   filter->SetVoidId( 0 );
   filter->SetErodeRadius( 0 );
   filter->SetHoleFillIterations( 5 );
-  float blur = atof( argv[4] );
-  filter->SetProbabilityImageSmoothingStandardDeviation( blur );
+  filter->SetTrainingDataStride( 10 );
   if( argv[3][0] == 't' || argv[3][0] == 'T' || argv[3][0] == '1' )
     {
     filter->SetReclassifyObjectLabels( true );
@@ -131,6 +130,9 @@ int itktubePDFSegmenterSVMTest( int argc, char * argv[] )
     }
   std::cout << "Update" << std::endl;
   filter->Update();
+
+  float blur = atof( argv[4] );
+  filter->SetProbabilityImageSmoothingStandardDeviation( blur );
   std::cout << "Classify" << std::endl;
   filter->ClassifyImages();
 

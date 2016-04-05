@@ -447,7 +447,7 @@ RidgeExtractor<TInputImage>
     return m_XRidgeness;
     }
 
-  //if( this->GetDebug() )
+  if( this->GetDebug() )
     {
     std::cout << "  Scale = " << m_DataFunc->GetScale() << std::endl;
     std::cout << "  X = " << m_X << std::endl;
@@ -457,8 +457,6 @@ RidgeExtractor<TInputImage>
 
   ::tube::ComputeRidgeness<double>( m_XH, m_XD, m_XRidgeness, m_XRoundness,
     m_XCurvature, m_XLevelness, m_XHEVect, m_XHEVal );
-
-  std::cout << "ridgness = " << m_XRidgeness << std::endl;
 
   intensity = m_XVal;
   roundness = m_XRoundness;

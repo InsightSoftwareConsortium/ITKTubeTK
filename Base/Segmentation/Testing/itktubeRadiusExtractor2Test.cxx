@@ -130,7 +130,7 @@ int itktubeRadiusExtractor2Test( int argc, char * argv[] )
   RandGenType::Pointer rndGen = RandGenType::New();
   rndGen->Initialize(); // set seed here
 
-  radiusOp->SetDebug( true );
+  //radiusOp->SetDebug( true );
 
   int failures = 0;
   unsigned int numMCRuns = 200;

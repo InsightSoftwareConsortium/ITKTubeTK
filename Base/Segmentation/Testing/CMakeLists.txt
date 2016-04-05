@@ -116,7 +116,7 @@ add_test( NAME tubeBaseSegmentationPrintTest
 
 Midas3FunctionAddTest( NAME itktubePDFSegmenterParzenTest
   COMMAND ${BASE_SEGMENTATION_TESTS}
-    --compare MIDAS{itktubePDFSegmenterTest_mask.mha.md5}
+    --compare MIDAS{itktubePDFSegmenterParzenTest_mask.mha.md5}
       ${TEMP}/itktubePDFSegmenterParzenTest_mask.mha
     itktubePDFSegmenterParzenTest
       MIDAS{ES0015_Large.mha.md5}
@@ -133,7 +133,7 @@ Midas3FunctionAddTest( NAME itktubePDFSegmenterParzenTest
 
 Midas3FunctionAddTest( NAME itktubePDFSegmenterParzenTest2
   COMMAND ${BASE_SEGMENTATION_TESTS}
-    --compare MIDAS{itktubePDFSegmenterTest2_mask.mha.md5}
+    --compare MIDAS{itktubePDFSegmenterParzenTest2_mask.mha.md5}
       ${TEMP}/itktubePDFSegmenterParzenTest2_mask.mha
     itktubePDFSegmenterParzenTest
       MIDAS{im0001.crop.mha.md5}
@@ -152,7 +152,7 @@ if( TubeTK_USE_LIBSVM )
 
   Midas3FunctionAddTest( NAME itktubePDFSegmenterSVMTest
     COMMAND ${BASE_SEGMENTATION_TESTS}
-      --compare MIDAS{itktubePDFSegmenterTest_mask.mha.md5}
+      --compare MIDAS{itktubePDFSegmenterSVMTest_mask.mha.md5}
         ${TEMP}/itktubePDFSegmenterSVMTest_mask.mha
       itktubePDFSegmenterSVMTest
         MIDAS{ES0015_Large.mha.md5}
@@ -166,7 +166,7 @@ if( TubeTK_USE_LIBSVM )
 
   Midas3FunctionAddTest( NAME itktubePDFSegmenterSVMTest2
     COMMAND ${BASE_SEGMENTATION_TESTS}
-      --compare MIDAS{itktubePDFSegmenterTest2_mask.mha.md5}
+      --compare MIDAS{itktubePDFSegmenterSVMTest2_mask.mha.md5}
         ${TEMP}/itktubePDFSegmenterSVMTest2_mask.mha
       itktubePDFSegmenterSVMTest
         MIDAS{im0001.crop.mha.md5}

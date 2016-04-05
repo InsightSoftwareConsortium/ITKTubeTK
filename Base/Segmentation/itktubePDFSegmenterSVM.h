@@ -93,6 +93,9 @@ public:
   //
   // Methods
   //
+  itkGetMacro( TrainingDataStride, unsigned int );
+  itkSetMacro( TrainingDataStride, unsigned int );
+
   svm_model * GetModel( void );
   void SetModel( svm_model * model );
 
@@ -132,6 +135,8 @@ private:
   // Custom typedefs
   svm_model          * m_Model;
   svm_parameter        m_Parameter;
+
+  unsigned int         m_TrainingDataStride;
 
 }; // End class PDFSegmenterSVM
 

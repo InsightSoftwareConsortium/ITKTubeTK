@@ -115,6 +115,7 @@ int itktubePDFSegmenterSVMIOTest( int argc, char * argv[] )
   filter->SetReclassifyObjectLabels( true );
   filter->SetReclassifyNotObjectLabels( true );
   filter->SetForceClassification( true );
+  filter->SetTrainingDataStride( 1000 );
   filter->Update();
   std::cout << "*** Filter 1 ***" << std::endl << filter << std::endl;
   filter->ClassifyImages();
