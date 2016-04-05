@@ -374,7 +374,7 @@ RidgeSeedFilter< TImage, TLabelMap >
     {
     typedef PDFSegmenterSVM< InputImageType, LabelMapType >
       PDFSegmenterSVMType;
-    PDFSegmenterSVMType::Pointer tmpPDFSegmenter =
+    typename PDFSegmenterSVMType::Pointer tmpPDFSegmenter =
       PDFSegmenterSVMType::New();
     m_PDFSegmenter = tmpPDFSegmenter.GetPointer();
 
