@@ -125,7 +125,6 @@ PDFSegmenterSVM< TImage, TLabelMap >
     sampleSize += this->m_InClassList[c].size();
     }
   sampleSize /= m_TrainingDataStride;
-  std::cout << "Training sample size = " << sampleSize << std::endl;
 
   m_Parameter.nr_weight = numClasses;
   m_Parameter.weight_label = (int *)malloc( numClasses * sizeof( int ) );
@@ -133,13 +132,12 @@ PDFSegmenterSVM< TImage, TLabelMap >
   unsigned int minSize = sampleSize;
   for( unsigned int c=0; c<numClasses; ++c )
     {
-    if( this->m_InClassList[c].size() < minSize )
+    if( this->m_InClassList[c].size() / m_TrainingDataStride < minSize )
       {
-      minSize = this->m_InClassList[c].size();
+      minSize = this->m_InClassList[c].size() / m_TrainingDataStride;
       }
     }
-  double minWeight = 1.0 - ( minSize / (double) sampleSize );
-  std::cout << "Min weight = " << minWeight << std::endl;
+  double minWeight = 1.0 - ( minSize / (double)(sampleSize) );
   for( unsigned int c=0; c<numClasses; ++c )
     {
     m_Parameter.weight_label[c] = c;
@@ -188,7 +186,6 @@ PDFSegmenterSVM< TImage, TLabelMap >
         }
       }
     }
-  std::cout << "   Final sample num = " << sampleNum << std::endl;
 
   const char * errorMessage;
   errorMessage = svm_check_parameter( &prob, &m_Parameter );
@@ -229,7 +226,8 @@ PDFSegmenterSVM< TImage, TLabelMap >
     sizeof( double ) );
 
   svm_predict_probability( m_Model, x, probEstimates );
-  double classProb = probEstimates[ classNum ];
+  double classProb = probEstimates[ classNum ]
+    * m_Parameter.weight[ classNum ];
 
   free( probEstimates );
   free( x );
