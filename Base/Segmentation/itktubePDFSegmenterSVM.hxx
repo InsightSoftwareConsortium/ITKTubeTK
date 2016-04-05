@@ -129,21 +129,12 @@ PDFSegmenterSVM< TImage, TLabelMap >
   m_Parameter.nr_weight = numClasses;
   m_Parameter.weight_label = (int *)malloc( numClasses * sizeof( int ) );
   m_Parameter.weight = (double *)malloc( numClasses * sizeof( double ) );
-  unsigned int minSize = sampleSize;
-  for( unsigned int c=0; c<numClasses; ++c )
-    {
-    if( this->m_InClassList[c].size() / m_TrainingDataStride < minSize )
-      {
-      minSize = this->m_InClassList[c].size() / m_TrainingDataStride;
-      }
-    }
-  double minWeight = 1.0 - ( minSize / (double)(sampleSize) );
   for( unsigned int c=0; c<numClasses; ++c )
     {
     m_Parameter.weight_label[c] = c;
-    m_Parameter.weight[c] = ( 1.0 - (
-      ( this->m_InClassList[c].size() / m_TrainingDataStride) /
-      (double)( sampleSize ) ) ) / minWeight;
+    m_Parameter.weight[c] = 1.0 - (
+      ( this->m_InClassList[c].size() / m_TrainingDataStride)
+      / (double)( sampleSize ) );
     }
 
   svm_problem prob;
