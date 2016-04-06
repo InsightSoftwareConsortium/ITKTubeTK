@@ -42,6 +42,8 @@ PDFSegmenterSVM< TImage, TLabelMap >
 
   m_Model = NULL;
 
+  m_SVMClassWeight.clear();
+
   m_Parameter.svm_type = C_SVC;
   m_Parameter.kernel_type = LINEAR; // default: RBF;
   m_Parameter.degree = 3;
@@ -68,6 +70,76 @@ PDFSegmenterSVM< TImage, TLabelMap >
     svm_free_and_destroy_model( & m_Model );
     }
   svm_destroy_param( & m_Parameter );
+}
+
+template< class TImage, class TLabelMap >
+void
+PDFSegmenterSVM< TImage, TLabelMap >
+::SetSVMClassWeight( unsigned int c, double w )
+{
+  unsigned int numClasses = this->m_ObjectIdList.size();
+
+  if( m_SVMClassWeight.size() != numClasses )
+    {
+    m_SVMClassWeight.resize( numClasses );
+    for( unsigned int i=0; i<numClasses; ++i )
+      {
+      m_SVMClassWeight[i] = 1;
+      }
+    }
+  m_SVMClassWeight[c] = w;
+}
+
+template< class TImage, class TLabelMap >
+void
+PDFSegmenterSVM< TImage, TLabelMap >
+::SetSVMClassWeights( VectorDoubleType & w )
+{
+  unsigned int numClasses = this->m_ObjectIdList.size();
+
+  if( w.size() == numClasses )
+    {
+    if( m_SVMClassWeight.size() != numClasses )
+      {
+      m_SVMClassWeight.resize( numClasses );
+      }
+    for( unsigned int i=0; i<numClasses; ++i )
+      {
+      m_SVMClassWeight[i] = w[i];
+      }
+    }
+}
+
+
+template< class TImage, class TLabelMap >
+double
+PDFSegmenterSVM< TImage, TLabelMap >
+::GetSVMClassWeight( unsigned int c ) const
+{
+  if( c < m_SVMClassWeight.size() )
+    {
+    return m_SVMClassWeight[ c ];
+    }
+  return 1;
+}
+
+template< class TImage, class TLabelMap >
+std::vector< double > &
+PDFSegmenterSVM< TImage, TLabelMap >
+::GetSVMClassWeights( void )
+{
+  unsigned int numClasses = this->m_ObjectIdList.size();
+
+  if( m_SVMClassWeight.size() != numClasses )
+    {
+    m_SVMClassWeight.resize( numClasses );
+    for( unsigned int i=0; i<numClasses; ++i )
+      {
+      m_SVMClassWeight[i] = 1;
+      }
+    }
+
+  return m_SVMClassWeight;
 }
 
 template< class TImage, class TLabelMap >
@@ -129,12 +201,17 @@ PDFSegmenterSVM< TImage, TLabelMap >
   m_Parameter.nr_weight = numClasses;
   m_Parameter.weight_label = (int *)malloc( numClasses * sizeof( int ) );
   m_Parameter.weight = (double *)malloc( numClasses * sizeof( double ) );
+  if( m_SVMClassWeight.size() != numClasses )
+    {
+    m_SVMClassWeight.resize( numClasses );
+    }
   for( unsigned int c=0; c<numClasses; ++c )
     {
     m_Parameter.weight_label[c] = c;
     m_Parameter.weight[c] = 1.0 - (
-      ( this->m_InClassList[c].size() / m_TrainingDataStride)
+      ( this->m_InClassList[c].size() / m_TrainingDataStride )
       / (double)( sampleSize ) );
+    m_SVMClassWeight[c] = m_Parameter.weight[c];
     }
 
   svm_problem prob;
@@ -218,7 +295,7 @@ PDFSegmenterSVM< TImage, TLabelMap >
 
   svm_predict_probability( m_Model, x, probEstimates );
   double classProb = probEstimates[ classNum ]
-    * m_Parameter.weight[ classNum ];
+    * this->GetSVMClassWeight( classNum );
 
   free( probEstimates );
   free( x );
