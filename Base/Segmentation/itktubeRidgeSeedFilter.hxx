@@ -370,34 +370,36 @@ void
 RidgeSeedFilter< TImage, TLabelMap >
 ::Update( void )
 {
-  if( m_UseSVM )
+  if( !m_PDFSegmenter.IsNotNull() )
     {
-    typedef PDFSegmenterSVM< InputImageType, LabelMapType >
-      PDFSegmenterSVMType;
-    typename PDFSegmenterSVMType::Pointer tmpPDFSegmenter =
-      PDFSegmenterSVMType::New();
-    m_PDFSegmenter = tmpPDFSegmenter.GetPointer();
+    if( m_UseSVM )
+      {
+      typedef PDFSegmenterSVM< InputImageType, LabelMapType >
+        PDFSegmenterSVMType;
+      typename PDFSegmenterSVMType::Pointer tmpPDFSegmenter =
+        PDFSegmenterSVMType::New();
+      m_PDFSegmenter = tmpPDFSegmenter.GetPointer();
 
-    tmpPDFSegmenter->SetTrainingDataStride( m_SVMTrainingDataStride );
+      tmpPDFSegmenter->SetTrainingDataStride( m_SVMTrainingDataStride );
 
-    m_PDFSegmenter->SetFeatureVectorGenerator(
-      m_RidgeFeatureGenerator.GetPointer() );
+      m_PDFSegmenter->SetFeatureVectorGenerator(
+        m_RidgeFeatureGenerator.GetPointer() );
+      }
+    else
+      {
+      typedef PDFSegmenterParzen< InputImageType, LabelMapType >
+        PDFSegmenterParzenType;
+      typename PDFSegmenterParzenType::Pointer tmpPDFSegmenter =
+        PDFSegmenterParzenType::New();
+      m_PDFSegmenter = tmpPDFSegmenter.GetPointer();
+
+      tmpPDFSegmenter->SetHistogramSmoothingStandardDeviation( 4 );
+      tmpPDFSegmenter->SetOutlierRejectPortion( 0.01 );
+
+      m_PDFSegmenter->SetFeatureVectorGenerator(
+        m_SeedFeatureGenerator.GetPointer() );
+      }
     }
-  else
-    {
-    typedef PDFSegmenterParzen< InputImageType, LabelMapType >
-      PDFSegmenterParzenType;
-    typename PDFSegmenterParzenType::Pointer tmpPDFSegmenter =
-      PDFSegmenterParzenType::New();
-    m_PDFSegmenter = tmpPDFSegmenter.GetPointer();
-
-    tmpPDFSegmenter->SetHistogramSmoothingStandardDeviation( 4 );
-    tmpPDFSegmenter->SetOutlierRejectPortion( 0.01 );
-
-    m_PDFSegmenter->SetFeatureVectorGenerator(
-      m_SeedFeatureGenerator.GetPointer() );
-    }
-
   m_PDFSegmenter->SetReclassifyObjectLabels( true );
   m_PDFSegmenter->SetReclassifyNotObjectLabels( true );
   m_PDFSegmenter->SetForceClassification( true );
