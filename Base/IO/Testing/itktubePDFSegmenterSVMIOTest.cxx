@@ -111,13 +111,13 @@ int itktubePDFSegmenterSVMIOTest( int argc, char * argv[] )
   filter->SetErodeRadius( 0 );
   filter->SetHoleFillIterations( 5 );
   filter->SetProbabilityImageSmoothingStandardDeviation( 1 );
-  filter->SetObjectPDFWeight( 0, 1.5 );
+  filter->SetObjectPDFWeight( 0, 1 );
   filter->SetReclassifyObjectLabels( true );
   filter->SetReclassifyNotObjectLabels( true );
   filter->SetForceClassification( true );
   filter->SetTrainingDataStride( 1000 );
   filter->Update();
-  std::cout << "*** Filter 1 ***" << std::endl << filter << std::endl;
+  std::cout << "*** Filter 1 ***" << std::endl;
   filter->ClassifyImages();
 
   WriterType::Pointer labelmapWriter = WriterType::New();

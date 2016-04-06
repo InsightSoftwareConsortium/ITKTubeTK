@@ -255,6 +255,11 @@ Read( const char * _headerName )
   metaFields.push_back( mF );
 
   mF = new MET_FieldRecordType;
+  MET_InitReadField( mF, "ObjectSVMWeight", MET_FLOAT_ARRAY, true,
+    nObjectsRec );
+  metaFields.push_back( mF );
+
+  mF = new MET_FieldRecordType;
   MET_InitReadField( mF, "ObjectPDFFile", MET_STRING, true );
   metaFields.push_back( mF );
 
@@ -353,6 +358,15 @@ Read( const char * _headerName )
     {
     m_PDFSegmenter->SetForceClassification( false );
     }
+
+  mF = MET_GetFieldRecord( "ObjectSVMWeight", &metaFields );
+  tmpVectorDouble.resize( nObjects );
+  for( unsigned int i = 0; i < nObjects; ++i )
+    {
+    tmpVectorDouble[i] = static_cast< double >( mF->value[i] );
+    }
+  m_PDFSegmenter->SetSVMClassWeights( tmpVectorDouble );
+
 
   mF = MET_GetFieldRecord( "ObjectPDFFile", &metaFields );
   m_PDFSegmenter->SetModel( svm_load_model( (char *)(mF->value) ) );
@@ -463,6 +477,15 @@ Write( const char * _headerName )
     strlen(tmpC), tmpC );
   metaFields.push_back( mF );
 
+  for( unsigned int i = 0; i < nObjects; ++i )
+    {
+    tmpF[i] = m_PDFSegmenter->GetSVMClassWeight( i );
+    }
+  mF = new MET_FieldRecordType;
+  MET_InitWriteField< float >( mF, "ObjectSVMWeight", MET_FLOAT_ARRAY,
+    nObjects, tmpF );
+  metaFields.push_back( mF );
+
   char filePath[255];
   MET_GetFilePath( _headerName, filePath );
   int skip = strlen( filePath );
@@ -472,7 +495,8 @@ Write( const char * _headerName )
   std::string fullFileName = filePath;
   fullFileName = fullFileName + shortFileName;
 
-  std::string modelFileName = fullFileName + ".svm";
+  std::string modelFileName = shortFileName;
+  modelFileName = modelFileName + ".svm";
   mF = new MET_FieldRecordType;
   MET_InitWriteField( mF, "ObjectPDFFile", MET_STRING,
     modelFileName.size(), modelFileName.c_str() );
