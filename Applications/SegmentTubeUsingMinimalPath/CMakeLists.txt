@@ -44,7 +44,6 @@ SEMMacroBuildCLI(
     ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects ITKIOImageBase
     MinimalPathExtraction TubeCLI TubeTKCommon TubeTKSegmentation )
 
-
 if( BUILD_TESTING )
   add_subdirectory( Testing )
 endif( BUILD_TESTING )

@@ -47,15 +47,14 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-RegularStepGradientDescent
     --terminationValue 2
     --numberOfIterations 1000
     --stepLengthFactor 1
-    --stepLengthRelax 0.999
-)
+    --stepLengthRelax 0.999 )
+
 # Test1 - Compare - RegularStepGradientDescent
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-RegularStepGradientDescent-Compare
   COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-RegularStepGradientDescent.tre
     -b MIDAS{MPE-RegularStepGradientDescent.tre.md5}
     -d 0.01 )
-
 set_property( TEST ${MODULE_NAME}-RegularStepGradientDescent-Compare
   APPEND PROPERTY DEPENDS ${MODULE_NAME}-RegularStepGradientDescent)
 
@@ -68,15 +67,14 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-GradientDescent
     --pathPoints 66.3718,113.141,76
     --optimizer Gradient_Descent
     --terminationValue 2
-    --numberOfIterations 1000
-)
+    --numberOfIterations 1000 )
+
 # Test2 - Compare - GradientDescent
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-GradientDescent-Compare
   COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-GradientDescent.tre
     -b MIDAS{MPE-GradientDescent.tre.md5}
     -d 0.01 )
-
 set_property( TEST ${MODULE_NAME}-GradientDescent-Compare
   APPEND PROPERTY DEPENDS ${MODULE_NAME}-GradientDescent)
 
@@ -89,14 +87,13 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-IterateNeighborhood
     --pathPoints 66.3718,113.141,76
     --optimizer Iterate_Neighborhood
     --terminationValue 2
-    --stepLengthFactor 1
-)
+    --stepLengthFactor 1 )
+
 # Test3 - Compare - IterateNeighborhood
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-IterateNeighborhood-Compare
   COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-IterateNeighborhood.tre
     -b MIDAS{MPE-IterateNeighborhood.tre.md5}
     -d 0.01 )
-
 set_property( TEST ${MODULE_NAME}-IterateNeighborhood-Compare
   APPEND PROPERTY DEPENDS ${MODULE_NAME}-IterateNeighborhood)
