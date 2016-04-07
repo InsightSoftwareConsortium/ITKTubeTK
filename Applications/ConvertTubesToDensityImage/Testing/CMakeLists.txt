@@ -59,6 +59,8 @@ set_property( TEST ${MODULE_NAME}-Test1-Compare-Den
 
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-Rad
   COMMAND ${CompareImages_EXE}
+    -i 0.001
+    -n 50
     -t ${TEMP}/${MODULE_NAME}Test1-Rad.mha
     -b MIDAS{${MODULE_NAME}Test1-Rad.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare-Rad
@@ -67,6 +69,7 @@ set_property( TEST ${MODULE_NAME}-Test1-Compare-Rad
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-Tan
   COMMAND ${CompareImages_EXE}
     -i 0.00001
+    -n 50
     -t ${TEMP}/${MODULE_NAME}Test1-Tan.mha
     -b MIDAS{${MODULE_NAME}Test1-Tan.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare-Tan
