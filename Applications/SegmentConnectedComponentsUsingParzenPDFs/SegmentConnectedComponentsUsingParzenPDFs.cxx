@@ -114,7 +114,7 @@ int DoIt( int argc, char * argv[] )
   inLabelMapReader->Update();
   pdfSegmenter->SetLabelMap( inLabelMapReader->GetOutput() );
 
-  unsigned int numFeatures = 1;
+  unsigned int numFeatures = 0;
   if( inputVolume1.size() > 1 )
     {
     ++numFeatures;
@@ -151,8 +151,9 @@ int DoIt( int argc, char * argv[] )
       {
       std::cout << "ERROR: current command line xml file limits"
                 << " this filter to 4 input images" << std::endl;
-      return 1;
+      return EXIT_FAILURE;
       }
+    std::cout << "Here2" << std::endl;
     reader->Update();
     if( !CheckImageAttributes( reader->GetOutput(),
         inLabelMapReader->GetOutput() ) )
@@ -216,7 +217,9 @@ int DoIt( int argc, char * argv[] )
       typename PDFImageReaderType::Pointer pdfImageReader =
         PDFImageReaderType::New();
       pdfImageReader->SetFileName( fname.c_str() );
+      std::cout << "Here3" << std::endl;
       pdfImageReader->Update();
+      std::cout << "Here4" << std::endl;
       typename PDFImageType::Pointer img = pdfImageReader->GetOutput();
       if( i == 0 )
         {
