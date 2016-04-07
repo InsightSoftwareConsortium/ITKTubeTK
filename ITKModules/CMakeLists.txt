@@ -42,37 +42,39 @@ find_package( ITK REQUIRED )
 # Disable "Factory Registration Manager".
 #
 # * Ensure TestDriver associated with ITKModules do NOT attempt to include
-# 'itk(Image|Transform)IOFactoryRegisterManager.h'.
+#     'itk(Image|Transform)IOFactoryRegisterManager.h'.
 #
 # * The driver does not rely on these files to register its IO factories.
 #
 # * Keeping the manager enabled is NOT supported by ITK build system and
-# causes link errors.
+#     causes link errors.
 #
 # * Simply setting ITK_NO_IO_FACTORY_REGISTER_MANAGER to 1 is not sufficient
-# because the compilation was possibly added in a parent directory.
+#     because the compilation was possibly added in a parent directory.
 #
 get_property( _definitions DIRECTORY PROPERTY COMPILE_DEFINITIONS)
 list(REMOVE_ITEM _definitions ITK_IO_FACTORY_REGISTER_MANAGER)
 set_directory_properties(PROPERTIES COMPILE_DEFINITIONS "${_definitions}")
 
-
 # Check if ITK support building external module.
 set( ITK_WITH_EXTERNAL_MODULE_SUPPORT 1 )
 set( _reason )
 if( ITK_VERSION VERSION_LESS "4.10.0" )
-  # Version of ITK with at least commit InsightSoftwareConsortium/ITK@a766d34 is required
-  # to support building of TubeTK.
-  set( _reason "ITK version >= 4.10 is needed and current version is ${ITK_VERSION}" )
+  # Version of ITK with at least commit InsightSoftwareConsortium/ITK@a766d34
+  # is required to support building of TubeTK.
+  set( _reason
+    "ITK version >= 4.10 is needed and current version is ${ITK_VERSION}" )
   set( ITK_WITH_EXTERNAL_MODULE_SUPPORT 0 )
 endif()
 if( NOT EXISTS ${ITK_CMAKE_DIR}/ITKModuleMacros.cmake )
-  set( _reason "'ITKModuleMacros' module not found in [ITK_CMAKE_DIR:${ITK_CMAKE_DIR}]" )
+  set( _reason
+    "'ITKModuleMacros' module not found in [ITK_CMAKE_DIR:${ITK_CMAKE_DIR}]" )
   set( ITK_WITH_EXTERNAL_MODULE_SUPPORT 0 )
 endif()
 
 if(NOT ITK_WITH_EXTERNAL_MODULE_SUPPORT)
-  message( STATUS "ITKModules: 'ITK External Module' not supported: ${_reason}" )
+  message( STATUS
+    "ITKModules: 'ITK External Module' not supported: ${_reason}" )
 endif()
 
 # XXX Ensure CMake modules provided by ITK are included first
@@ -92,7 +94,8 @@ foreach( itk-module ${TubeTK_ITK_MODULES} )
     set( ${itk-module}_SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/${itk-module} )
 
     # Create build directory
-    set( _download_project_dir ${CMAKE_CURRENT_BINARY_DIR}/${itk-module}-download-project )
+    set( _download_project_dir
+      ${CMAKE_CURRENT_BINARY_DIR}/${itk-module}-download-project )
     file( MAKE_DIRECTORY ${_download_project_dir} )
 
     # Configure
@@ -108,7 +111,8 @@ foreach( itk-module ${TubeTK_ITK_MODULES} )
       OUTPUT_QUIET
       RESULT_VARIABLE _result )
     if( NOT _result EQUAL 0 )
-      message( FATAL_ERROR "Failed to configure '${itk-module}DownloadSource' project" )
+      message( FATAL_ERROR
+        "Failed to configure '${itk-module}DownloadSource' project" )
     endif()
 
     # Build
@@ -120,12 +124,14 @@ foreach( itk-module ${TubeTK_ITK_MODULES} )
       OUTPUT_QUIET
       RESULT_VARIABLE _result )
     if( NOT _result EQUAL 0 )
-      message( FATAL_ERROR "Failed to build '${itk-module}DownloadSource' project" )
+      message( FATAL_ERROR
+        "Failed to build '${itk-module}DownloadSource' project" )
     endif()
 
   endif()
 
-  set( ${itk-module}_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/${itk-module}-build )
+  set( ${itk-module}_BINARY_DIR
+    ${CMAKE_CURRENT_BINARY_DIR}/${itk-module}-build )
 
   if( ITK_WITH_EXTERNAL_MODULE_SUPPORT AND NOT TARGET ${itk-module} )
     message( STATUS "ITKModules: Adding '${itk-module}' directory" )
@@ -143,7 +149,8 @@ foreach( itk-module ${TubeTK_ITK_MODULES} )
   #
   # (1) The ITK module directory has been added above but it
   #     does NOT have a src folder.
-  #     XXX Revisit this when ITK will use 'Modern CMake'. In that case an interface library will already be available.
+  #     XXX Revisit this when ITK will use 'Modern CMake'. In that case an
+  #       interface library will already be available.
   #
   # (2) ITK_DIR used to build TubeTK doesn't support External Module.
   #
@@ -182,23 +189,26 @@ foreach( itk-module ${TubeTK_ITK_MODULES} )
         target_link_libraries( ${itk-module} ${TubeTKITK_LIBRARIES} )
       endif()
 
-      # Generate the export macro header for symbol visibility/Windows DLL declspec
+      # Generate the export macro header for symbol visibility/Windows DLL
+      #   declspec
       include( GenerateExportHeader )
-      set( _export_header_file "${${itk-module}_BINARY_DIR}/include/${itk-module}Export.h" )
-      # Note: The generate_export_header macro needs a relative path to generate the export header
-      #       file. This path is created using the difference between the desired full path and
-      #       the CMAKE_CURRENT_BINARY_DIR.
-      file( RELATIVE_PATH _export_header_relative_path ${CMAKE_CURRENT_BINARY_DIR}
-        ${_export_header_file} )
+      set( _export_header_file
+        "${${itk-module}_BINARY_DIR}/include/${itk-module}Export.h" )
+      # Note: The generate_export_header macro needs a relative path to
+      #   generate the export header file. This path is created using the
+      #   difference between the desired full path and the
+      #   CMAKE_CURRENT_BINARY_DIR.
+      file( RELATIVE_PATH _export_header_relative_path
+        ${CMAKE_CURRENT_BINARY_DIR} ${_export_header_file} )
       generate_export_header( ${itk-module}
         EXPORT_FILE_NAME ${_export_header_relative_path}
         EXPORT_MACRO_NAME ${itk-module}_EXPORT
-        # XXX Revisit this when `TEMPLATE_EXPORT_MACRO_NAME` feature will either:
-        #
+        # XXX Revisit this when `TEMPLATE_EXPORT_MACRO_NAME` feature will
+        #   either:
         #     * be provided by 'GenerateExportHeader' module available in the
         #       minimum required CMake version.
-        #
-        #     * or be available in an install tree of ITK and older versio of ITK are not supported.
+        #     * or be available in an install tree of ITK and older version of
+        #       ITK are not supported.
         #
         #TEMPLATE_EXPORT_MACRO_NAME ${itk-module}_TEMPLATE_EXPORT
         NO_EXPORT_MACRO_NAME ${itk-module}_HIDDEN

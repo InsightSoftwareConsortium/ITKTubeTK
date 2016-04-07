@@ -146,11 +146,19 @@ int DoIt( int argc, char * argv[] )
     {
     filter->SetBlendWithMax( false );
     filter->SetBlendWithMean( true );
+    filter->SetBlendWithGaussianWeighting( false );
     }
   else if( gaussian )
     {
     filter->SetBlendWithMax( false );
+    filter->SetBlendWithMean( false );
     filter->SetBlendWithGaussianWeighting( true );
+    }
+  else
+    {
+    filter->SetBlendWithMax( true );
+    filter->SetBlendWithMean( false );
+    filter->SetBlendWithGaussianWeighting( false );
     }
 
   if( divideBy.size() > 0 )
@@ -230,7 +238,7 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  if( !mipPointImageFileName.empty() )
+  if( !mipPointImageFileName.empty() && !mean && !gaussian )
     {
     typename PointImageWriterType::Pointer mipPointImageWriter =
       PointImageWriterType::New();

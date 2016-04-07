@@ -74,6 +74,11 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
   m_BlendWithMax = true;
   m_BlendWithMean = false;
   m_BlendWithGaussianWeighting = false;
+
+  for( unsigned int j = 0; j < ImageDimension; j++ )
+    {
+    m_ShrinkFactors[j] = 1;
+    }
 }
 
 /**
@@ -96,7 +101,20 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
     {
     os << indent << "Index Image: NULL" << std::endl;
     }
+}
 
+template< typename TInputImage, typename TOutputImage >
+void
+ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
+::SetShrinkFactor(unsigned int i, unsigned int factor)
+{
+  if( m_ShrinkFactors[i] == factor )
+    {
+    return;
+    }
+
+  this->Modified();
+  m_ShrinkFactors[i] = factor;
 }
 
 /**
@@ -124,7 +142,6 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
   InputIndexType   inputIndex;
   InputIndexType                   inputWindowStartIndex;
   typename TInputImage::SizeType   inputWindowSize;
-  OutputOffsetType offsetIndex;
 
   typename TOutputImage::PointType tempPoint;
 
@@ -136,15 +153,6 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
   outputPtr->TransformIndexToPhysicalPoint( outputIndex, tempPoint );
   inputPtr->TransformPhysicalPointToIndex( tempPoint, inputIndex );
 
-  // Given that the size is scaled by a constant factor eq:
-  // inputIndex = outputIndex * factorSize
-  // is equivalent up to a fixed offset which we now compute
-  for( unsigned int i = 0; i < TInputImage::ImageDimension; i++ )
-    {
-    offsetIndex[ i ] = inputIndex[ i ] - outputIndex[ i ] *
-      this->GetShrinkFactors()[ i ];
-    }
-
   // Support progress methods/callbacks
   ProgressReporter progress( this, threadId,
     outputRegionForThread.GetNumberOfPixels() );
@@ -153,6 +161,10 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
   // thread.
   typedef ImageRegionIteratorWithIndex< TOutputImage > OutputIteratorType;
   OutputIteratorType outIt( outputPtr, outputRegionForThread );
+
+  typedef ImageRegionIteratorWithIndex< PointImageType >
+    PointIteratorType;
+  PointIteratorType pointIt( m_PointImage, outputRegionForThread );
 
   typedef ImageRegionConstIteratorWithIndex< TInputImage >
     InputIteratorType;
@@ -163,11 +175,8 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
     // Determine the index and physical location of the output pixel
     outputIndex = outIt.GetIndex();
 
-    // An optimized version of
-    // outputPtr->TransformIndexToPhysicalPoint( outputIndex, tempPoint );
-    // inputPtr->TransformPhysicalPointToIndex( tempPoint, inputIndex );
-    // but without the rounding and precision issues
-    inputIndex = outputIndex * factorSize + offsetIndex;
+    outputPtr->TransformIndexToPhysicalPoint( outputIndex, tempPoint );
+    inputPtr->TransformPhysicalPointToIndex( tempPoint, inputIndex );
 
     for( unsigned int i = 0; i < ImageDimension; ++i )
       {
@@ -182,15 +191,11 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 
     // Walk the neighborhood
     typename TInputImage::PixelType value;
-    //++it;
     if( m_BlendWithMax )
       {
-      typedef ImageRegionIteratorWithIndex< PointImageType >
-        PointIteratorType;
-      PointIteratorType pointIt( m_PointImage, outputRegionForThread );
-
       typename TInputImage::PixelType maxValue = it.Get();
       typename TInputImage::IndexType maxValueIndex = it.GetIndex();
+      ++it;
       while( !it.IsAtEnd() )
         {
         value = it.Get();
@@ -340,35 +345,19 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
     factorSize[ i ] = this->GetShrinkFactors()[ i ];
     }
 
-  OutputIndexType  outputIndex;
-  InputIndexType   inputIndex, inputRequestedRegionIndex;
-  OutputOffsetType offsetIndex;
-
-  typename TInputImage::SizeType inputRequestedRegionSize;
+  InputIndexType                   inputRequestedRegionStartIndex;
+  typename TInputImage::SizeType   inputRequestedRegionSize;
   typename TOutputImage::PointType tempPoint;
 
-  // Use this index to compute the offset everywhere in this class
-  outputIndex = outputPtr->GetLargestPossibleRegion().GetIndex();
-
-  // We wish to perform the following mapping of outputIndex to
-  // inputIndex on all points in our region
-  outputPtr->TransformIndexToPhysicalPoint(outputIndex, tempPoint);
-  inputPtr->TransformPhysicalPointToIndex(tempPoint, inputIndex);
-
-  // Given that the size is scaled by a constant factor eq:
-  // inputIndex = outputIndex * factorSize
-  // is equivalent up to a fixed offset which we now compute
+  outputPtr->TransformIndexToPhysicalPoint( outputRequestedRegionStartIndex,
+    tempPoint);
+  inputPtr->TransformPhysicalPointToIndex( tempPoint,
+    inputRequestedRegionStartIndex );
   for( unsigned int i = 0; i < TInputImage::ImageDimension; i++ )
     {
-    // Modified from base class to request an expanded input region
-    offsetIndex[ i ] = inputIndex[ i ] - outputIndex[ i ] *
-      this->GetShrinkFactors()[ i ];
-    }
-
-  for( unsigned int i = 0; i < TInputImage::ImageDimension; i++ )
-    {
-    inputRequestedRegionIndex[ i ] = ( outputRequestedRegionStartIndex[ i ]
-      - 1 ) * factorSize[ i ] + offsetIndex[ i ] - m_Overlap[ i ];
+    inputRequestedRegionStartIndex[ i ] =
+      inputRequestedRegionStartIndex[ i ] - factorSize[i]
+      - m_Overlap[ i ];
     }
 
   // Modified from base claas to request an expanded input region
@@ -379,7 +368,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
     }
 
   typename TInputImage::RegionType inputRequestedRegion;
-  inputRequestedRegion.SetIndex( inputRequestedRegionIndex );
+  inputRequestedRegion.SetIndex( inputRequestedRegionStartIndex );
   inputRequestedRegion.SetSize( inputRequestedRegionSize );
   inputRequestedRegion.Crop( inputPtr->GetLargestPossibleRegion() );
 
@@ -397,17 +386,83 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 {
   Superclass::GenerateOutputInformation();
 
+  InputImageConstPointer inputPtr = this->GetInput();
   OutputImagePointer     outputPtr = this->GetOutput();
-  if ( !outputPtr )
+  if ( !inputPtr || !outputPtr )
     {
     return;
     }
+
+  const typename TInputImage::SpacingType & inputSpacing =
+    inputPtr->GetSpacing();
+  const typename TInputImage::SizeType & inputSize =
+    inputPtr->GetLargestPossibleRegion().GetSize();
+  const typename TInputImage::IndexType & inputStartIndex =
+    inputPtr->GetLargestPossibleRegion().GetIndex();
+
+  typename TOutputImage::SpacingType outputSpacing;
+  typename TOutputImage::SizeType outputSize;
+  typename TOutputImage::IndexType outputStartIndex;
+
+  for( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
+    {
+    outputSpacing[i] = inputSpacing[i]
+      * (double)this->GetShrinkFactors()[i];
+
+    // Round down so that all output pixels fit input input region
+    outputSize[i] = static_cast<SizeValueType>( std::floor(
+      (double)inputSize[i] / (double)this->GetShrinkFactors()[i] ) );
+
+    if( outputSize[i] < 1 )
+      {
+      outputSize[i] = 1;
+      }
+
+    outputStartIndex[i] = inputStartIndex[i];
+    }
+
+  outputPtr->SetSpacing( outputSpacing );
+  outputPtr->SetDirection( inputPtr->GetDirection() );
+
+  // Compute origin offset
+  // The physical center's of the input and output should be the same
+  ContinuousIndex< SpacePrecisionType, TOutputImage::ImageDimension >
+    inputCenterIndex;
+  ContinuousIndex< SpacePrecisionType, TOutputImage::ImageDimension >
+    outputCenterIndex;
+  for( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
+    {
+    inputCenterIndex[i] = inputStartIndex[i] + ( inputSize[i] - 1 ) / 2.0;
+    outputCenterIndex[i] = outputStartIndex[i] + ( outputSize[i] - 1 )
+      / 2.0;
+    }
+
+  typename TOutputImage::PointType inputCenterPoint;
+  typename TOutputImage::PointType outputCenterPoint;
+  inputPtr->TransformContinuousIndexToPhysicalPoint(inputCenterIndex,
+    inputCenterPoint);
+  outputPtr->TransformContinuousIndexToPhysicalPoint(outputCenterIndex,
+    outputCenterPoint);
+
+  const typename TOutputImage::PointType & inputOrigin =
+    inputPtr->GetOrigin();
+  typename TOutputImage::PointType outputOrigin;
+  outputOrigin = inputOrigin + (inputCenterPoint - outputCenterPoint);
+  outputPtr->SetOrigin(outputOrigin);
+
+  // Set region
+  typename TOutputImage::RegionType outputLargestPossibleRegion;
+  outputLargestPossibleRegion.SetSize(outputSize);
+  outputLargestPossibleRegion.SetIndex(outputStartIndex);
+
+  outputPtr->SetLargestPossibleRegion(outputLargestPossibleRegion);
 
   m_PointImage = PointImageType::New();
   m_PointImage->SetRegions(
     outputPtr->GetLargestPossibleRegion() );
   m_PointImage->CopyInformation( outputPtr );
   m_PointImage->Allocate();
+
 }
 
 } // end namespace tube

@@ -86,12 +86,12 @@ namespace tube {
 */
 template< class TInputImage, class TOutputImage >
 class ITK_EXPORT ShrinkWithBlendingImageFilter:
-  public ShrinkImageFilter< TInputImage, TOutputImage >
+  public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
   /** Standard class typedefs. */
   typedef ShrinkWithBlendingImageFilter                   Self;
-  typedef ShrinkImageFilter< TInputImage, TOutputImage >  Superclass;
+  typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
   typedef SmartPointer< Self >                            Pointer;
   typedef SmartPointer< const Self >                      ConstPointer;
 
@@ -124,6 +124,16 @@ public:
   typedef Image< PointImagePixelType, OutputImageDimension >
                                                 PointImageType;
 
+  typedef FixedArray< unsigned int, ImageDimension > ShrinkFactorsType;
+
+  /** Set the shrink factors. Values are clamped to
+   * a minimum value of 1. Default is 1 for all dimensions. */
+  itkSetMacro( ShrinkFactors, ShrinkFactorsType );
+  void SetShrinkFactor(unsigned int i, unsigned int factor);
+
+  /** Get the shrink factors. */
+  itkGetConstReferenceMacro(ShrinkFactors, ShrinkFactorsType);
+
   itkSetMacro( Overlap, InputIndexType );
   itkGetMacro( Overlap, InputIndexType );
 
@@ -141,6 +151,10 @@ public:
 
   itkGetObjectMacro( PointImage, PointImageType );
 
+  void GenerateOutputInformation( void );
+
+  void GenerateInputRequestedRegion( void );
+
 protected:
   ShrinkWithBlendingImageFilter( void );
   ~ShrinkWithBlendingImageFilter( void ) {}
@@ -148,9 +162,6 @@ protected:
 
   void ThreadedGenerateData( const OutputImageRegionType &
     outputRegionForThread, ThreadIdType threadId );
-
-  void GenerateInputRequestedRegion( void );
-  void GenerateOutputInformation( void );
 
 private:
   ShrinkWithBlendingImageFilter( const Self & ); //purposely not implemented
@@ -165,6 +176,9 @@ private:
   bool m_BlendWithMean;
   bool m_BlendWithMax;
   bool m_BlendWithGaussianWeighting;
+
+  ShrinkFactorsType m_ShrinkFactors;
+
 };
 
 } // end namespace tube
