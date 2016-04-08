@@ -66,6 +66,8 @@ PDFSegmenterParzen< TImage, TLabelMap >
 
   m_HistogramSmoothingStandardDeviation = 2;
 
+  m_OutlierRejectPortion = 0.05;
+
   m_LabeledFeatureSpace = NULL;
 }
 

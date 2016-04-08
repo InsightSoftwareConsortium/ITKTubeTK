@@ -290,6 +290,13 @@ Read( const char * _headerName )
   if(!tmpReadStream.rdbuf()->is_open())
     {
     std::cout << "PDF::Read Could not open file." << std::endl;
+
+    for( unsigned int i=0; i<metaFields.size(); ++i )
+      {
+      delete metaFields[i];
+      }
+    metaFields.clear();
+
     return false;
     }
 
@@ -297,6 +304,13 @@ Read( const char * _headerName )
     {
     METAIO_STREAM::cerr << "PDFSegmenterParzenIO: Read: MET_Read Failed"
       << METAIO_STREAM::endl;
+
+    for( unsigned int i=0; i<metaFields.size(); ++i )
+      {
+      delete metaFields[i];
+      }
+    metaFields.clear();
+
     return false;
     }
 
@@ -306,6 +320,13 @@ Read( const char * _headerName )
     {
     std::cout << "NDims don't match: " << static_cast< int >( mF->value[0] )
       << " != " << m_PDFSegmenter->GetNumberOfFeatures() << std::endl;
+
+    for( unsigned int i=0; i<metaFields.size(); ++i )
+      {
+      delete metaFields[i];
+      }
+    metaFields.clear();
+
     throw( "Expected features and features in PDF file do not match" );
     }
 
@@ -420,6 +441,13 @@ Read( const char * _headerName )
     {
     std::cerr << "Number of PDFFiles != number of objects" << std::endl;
     m_PDFSegmenter = NULL;
+
+    for( unsigned int i=0; i<metaFields.size(); ++i )
+      {
+      delete metaFields[i];
+      }
+    metaFields.clear();
+
     return false;
     }
 
@@ -444,6 +472,11 @@ Read( const char * _headerName )
       if( size[j] != m_PDFSegmenter->GetNumberOfBinsPerFeature()[j] )
         {
         std::cout << "ERROR: N mismatch" << std::endl;
+        for( unsigned int i=0; i<metaFields.size(); ++i )
+          {
+          delete metaFields[i];
+          }
+        metaFields.clear();
         return false;
         }
       spacing[j] = pdfClassReader.GetBinSize()[j];
@@ -451,6 +484,11 @@ Read( const char * _headerName )
         0.005 * spacing[j] )
         {
         std::cout << "ERROR: Spacing mismatch" << std::endl;
+        for( unsigned int i=0; i<metaFields.size(); ++i )
+          {
+          delete metaFields[i];
+          }
+        metaFields.clear();
         return false;
         }
       origin[j] = pdfClassReader.GetBinMin()[j];
@@ -463,6 +501,11 @@ Read( const char * _headerName )
           << m_PDFSegmenter->GetBinMin()[j] << std::endl;
         std::cout << "      spacing[" << j << "] = "
           << spacing[j] << std::endl;
+        for( unsigned int i=0; i<metaFields.size(); ++i )
+          {
+          delete metaFields[i];
+          }
+        metaFields.clear();
         return false;
         }
       }
@@ -488,6 +531,12 @@ Read( const char * _headerName )
 
     m_PDFSegmenter->SetClassPDFImage( i, img );
     }
+
+  for( unsigned int i=0; i<metaFields.size(); ++i )
+    {
+    delete metaFields[i];
+    }
+  metaFields.clear();
 
   return true;
 }
@@ -668,6 +717,12 @@ Write( const char * _headerName )
     {
     METAIO_STREAM::cerr << "MetaObject: Write: MET_Write Failed"
                         << METAIO_STREAM::endl;
+    for( unsigned int i=0; i<metaFields.size(); ++i )
+      {
+      delete metaFields[i];
+      }
+    metaFields.clear();
+
     return false;
     }
 
@@ -705,6 +760,12 @@ Write( const char * _headerName )
 
     pdfClassWriter.Write( objectFileName );
     }
+
+  for( unsigned int i=0; i<metaFields.size(); ++i )
+    {
+    delete metaFields[i];
+    }
+  metaFields.clear();
 
   return true;
 }
