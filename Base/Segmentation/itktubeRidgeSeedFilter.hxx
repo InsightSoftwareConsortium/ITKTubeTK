@@ -58,6 +58,8 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_SeedFeatureGenerator->SetNumberOfPCABasisToUseAsFeatures( 3 );
 
   m_PDFSegmenter = NULL;
+  m_PDFSegmenterSVM = NULL;
+  m_PDFSegmenterParzen = NULL;
 
   m_UseSVM = false;
   m_SVMTrainingDataStride = 1;
@@ -370,33 +372,33 @@ void
 RidgeSeedFilter< TImage, TLabelMap >
 ::Update( void )
 {
+  itk::TimeProbesCollectorBase timeCollector;
+
+  timeCollector.Start("RidgeSeedFilter Update");
+
   if( !m_PDFSegmenter.IsNotNull() )
     {
     if( m_UseSVM )
       {
-      typedef PDFSegmenterSVM< InputImageType, LabelMapType >
-        PDFSegmenterSVMType;
-      typename PDFSegmenterSVMType::Pointer tmpPDFSegmenter =
-        PDFSegmenterSVMType::New();
-      m_PDFSegmenter = tmpPDFSegmenter.GetPointer();
+      m_PDFSegmenterParzen = NULL;
+      m_PDFSegmenterSVM = PDFSegmenterSVMType::New();
+      m_PDFSegmenter = m_PDFSegmenterSVM.GetPointer();
 
-      tmpPDFSegmenter->SetTrainingDataStride( m_SVMTrainingDataStride );
+      m_PDFSegmenterSVM->SetTrainingDataStride( m_SVMTrainingDataStride );
 
-      m_PDFSegmenter->SetFeatureVectorGenerator(
+      m_PDFSegmenterSVM->SetFeatureVectorGenerator(
         m_RidgeFeatureGenerator.GetPointer() );
       }
     else
       {
-      typedef PDFSegmenterParzen< InputImageType, LabelMapType >
-        PDFSegmenterParzenType;
-      typename PDFSegmenterParzenType::Pointer tmpPDFSegmenter =
-        PDFSegmenterParzenType::New();
-      m_PDFSegmenter = tmpPDFSegmenter.GetPointer();
+      m_PDFSegmenterSVM = NULL;
+      m_PDFSegmenterParzen = PDFSegmenterParzenType::New();
+      m_PDFSegmenter = m_PDFSegmenterParzen.GetPointer();
 
-      tmpPDFSegmenter->SetHistogramSmoothingStandardDeviation( 4 );
-      tmpPDFSegmenter->SetOutlierRejectPortion( 0.01 );
+      m_PDFSegmenterParzen->SetHistogramSmoothingStandardDeviation( 4 );
+      m_PDFSegmenterParzen->SetOutlierRejectPortion( 0.01 );
 
-      m_PDFSegmenter->SetFeatureVectorGenerator(
+      m_PDFSegmenterParzen->SetFeatureVectorGenerator(
         m_SeedFeatureGenerator.GetPointer() );
       }
     }
@@ -409,7 +411,10 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_PDFSegmenter->SetLabelMap( m_SeedFeatureGenerator->GetLabelMap() );
 
   m_RidgeFeatureGenerator->SetUseIntensityOnly( m_UseIntensityOnly );
+
+  timeCollector.Start("RidgeSeedFilter FeatureGenerator");
   m_RidgeFeatureGenerator->Update();
+  timeCollector.Stop("RidgeSeedFilter FeatureGenerator");
 
   m_SeedFeatureGenerator->SetObjectId( m_RidgeId );
   m_SeedFeatureGenerator->AddObjectId( m_BackgroundId );
@@ -421,14 +426,23 @@ RidgeSeedFilter< TImage, TLabelMap >
 
   if( m_TrainClassifier )
     {
+    timeCollector.Start("RidgeSeedFilter RidgeFeatureGenerator Update");
     m_RidgeFeatureGenerator->SetUpdateWhitenStatisticsOnUpdate( true );
     m_RidgeFeatureGenerator->Update();
+    timeCollector.Stop("RidgeSeedFilter RidgeFeatureGenerator Update");
 
+    timeCollector.Start("RidgeSeedFilter SeedFeatureGenerator Update");
     m_SeedFeatureGenerator->SetUpdateWhitenStatisticsOnUpdate( true );
     m_SeedFeatureGenerator->Update();
+    timeCollector.Stop("RidgeSeedFilter SeedFeatureGenerator Update");
 
+    timeCollector.Start("RidgeSeedFilter PDFSegmenter Update");
     m_PDFSegmenter->Update();
+    timeCollector.Start("RidgeSeedFilter PDFSegmenter Update");
     }
+
+  timeCollector.Stop("RidgeSeedFilter Update");
+  timeCollector.Report();
 }
 
 template< class TImage, class TLabelMap >

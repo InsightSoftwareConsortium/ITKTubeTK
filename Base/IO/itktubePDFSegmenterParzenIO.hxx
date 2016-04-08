@@ -431,7 +431,6 @@ Read( const char * _headerName )
     MET_GetFilePath( _headerName, filePath );
     std::string fullFileName = filePath + fileName[i];
 
-    std::cout << "Reading PDF " << fullFileName.c_str() << std::endl;
     MetaClassPDF pdfClassReader( fullFileName.c_str() );
 
     typename pdfImageType::Pointer img = pdfImageType::New();
@@ -487,7 +486,6 @@ Read( const char * _headerName )
     img->GetPixelContainer()->SetImportPointer( pdfClassReader.ExportPDF(),
       nPixels, true );
 
-    std::cout << "  Registering image " << i << img << std::endl;
     m_PDFSegmenter->SetClassPDFImage( i, img );
     }
 

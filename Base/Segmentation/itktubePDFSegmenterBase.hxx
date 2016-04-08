@@ -827,8 +827,15 @@ void
 PDFSegmenterBase< TImage, TLabelMap >
 ::Update( void )
 {
+  itk::TimeProbesCollectorBase timeCollector;
+
+  timeCollector.Start( "PDFSegmenterBase Generate Sample" );
   this->GenerateSample();
+  timeCollector.Stop( "PDFSegmenterBase Generate Sample" );
+  timeCollector.Start( "PDFSegmenterBase Generate PDFs" );
   this->GeneratePDFs();
+  timeCollector.Stop( "PDFSegmenterBase Generate PDFs" );
+  timeCollector.Report();
 }
 
 template< class TImage, class TLabelMap >

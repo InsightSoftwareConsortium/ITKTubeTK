@@ -146,7 +146,6 @@ int itktubeRidgeSeedFilterIOTest( int argc, char * argv[] )
     filter2 );
   filterIO2.Read( argv[4] );
   std::cout << "FilterIO2 Read." << std::endl;
-  std::cout << filter2 << std::endl;
   filter2->ClassifyImages();
   timeCollector.Stop("Filter read and process 2");
   std::cout << "Filter2 ClassifyImages." << std::endl;
