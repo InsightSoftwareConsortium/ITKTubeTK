@@ -106,6 +106,11 @@ TubeXIO< TDimension >
 
   if( !tmpReadStream.rdbuf()->is_open() )
     {
+    for( unsigned int i=0; i<fields.size(); ++i )
+      {
+      delete fields[i];
+      }
+    fields.clear();
     return false;
     }
 
@@ -113,6 +118,11 @@ TubeXIO< TDimension >
   if( !MET_Read( tmpReadStream, &fields, ':', false, true, &extraFields ) )
     {
     std::cerr << "Tube: Read failed" << std::endl;
+    for( unsigned int i=0; i<fields.size(); ++i )
+      {
+      delete fields[i];
+      }
+    fields.clear();
     return false;
     }
 
@@ -126,6 +136,11 @@ TubeXIO< TDimension >
       std::cerr << "Tube: Read failed: object is " << nDims
         << " dimensional and was expecting " << TDimension << " dimensional."
         << std::endl;
+      for( unsigned int i=0; i<fields.size(); ++i )
+        {
+        delete fields[i];
+        }
+      fields.clear();
       return false;
       }
     }
@@ -156,6 +171,10 @@ TubeXIO< TDimension >
     nObjects = (int)mF->value[0];
     }
 
+  for( unsigned int i=0; i<fields.size(); ++i )
+    {
+    delete fields[i];
+    }
   fields.clear();
 
   mF = new MET_FieldRecordType;
@@ -204,6 +223,11 @@ TubeXIO< TDimension >
     if( !MET_Read( tmpReadStream, &fields, ':', false, true, &extraFields ) )
       {
       std::cerr << "Tube: Read failed" << std::endl;
+      for( unsigned int i=0; i<fields.size(); ++i )
+        {
+        delete fields[i];
+        }
+      fields.clear();
       return false;
       }
 
@@ -349,6 +373,12 @@ TubeXIO< TDimension >
     }
 
   tmpReadStream.close();
+
+  for( unsigned int i=0; i<fields.size(); ++i )
+    {
+    delete fields[i];
+    }
+  fields.clear();
 
   return true;
 }

@@ -116,6 +116,7 @@ add_test( NAME tubeBaseSegmentationPrintTest
 
 Midas3FunctionAddTest( NAME itktubePDFSegmenterParzenTest
   COMMAND ${BASE_SEGMENTATION_TESTS}
+    --compareNumberOfPixelsTolerance 50
     --compare MIDAS{itktubePDFSegmenterParzenTest_mask.mha.md5}
       ${TEMP}/itktubePDFSegmenterParzenTest_mask.mha
     itktubePDFSegmenterParzenTest
@@ -133,6 +134,7 @@ Midas3FunctionAddTest( NAME itktubePDFSegmenterParzenTest
 
 Midas3FunctionAddTest( NAME itktubePDFSegmenterParzenTest2
   COMMAND ${BASE_SEGMENTATION_TESTS}
+    --compareNumberOfPixelsTolerance 50
     --compare MIDAS{itktubePDFSegmenterParzenTest2_mask.mha.md5}
       ${TEMP}/itktubePDFSegmenterParzenTest2_mask.mha
     itktubePDFSegmenterParzenTest

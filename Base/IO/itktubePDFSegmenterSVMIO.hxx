@@ -272,6 +272,11 @@ Read( const char * _headerName )
   if(!tmpReadStream.rdbuf()->is_open())
     {
     std::cout << "PDF::Read Could not open file." << std::endl;
+    for( unsigned int i=0; i<metaFields.size(); ++i )
+      {
+      delete metaFields[i];
+      }
+    metaFields.clear();
     return false;
     }
 
@@ -279,6 +284,11 @@ Read( const char * _headerName )
     {
     METAIO_STREAM::cerr << "PDFSegmenterSVMIO: Read: MET_Read Failed"
       << METAIO_STREAM::endl;
+    for( unsigned int i=0; i<metaFields.size(); ++i )
+      {
+      delete metaFields[i];
+      }
+    metaFields.clear();
     return false;
     }
 
@@ -288,6 +298,11 @@ Read( const char * _headerName )
     {
     std::cout << "NDims don't match: " << static_cast< int >( mF->value[0] )
       << " != " << m_PDFSegmenter->GetNumberOfFeatures() << std::endl;
+    for( unsigned int i=0; i<metaFields.size(); ++i )
+      {
+      delete metaFields[i];
+      }
+    metaFields.clear();
     throw( "Expected features and features in PDF file do not match" );
     }
 
@@ -371,6 +386,12 @@ Read( const char * _headerName )
   mF = MET_GetFieldRecord( "ObjectPDFFile", &metaFields );
   m_PDFSegmenter->SetModel( svm_load_model( (char *)(mF->value) ) );
 
+
+  for( unsigned int i=0; i<metaFields.size(); ++i )
+    {
+    delete metaFields[i];
+    }
+  metaFields.clear();
   return true;
 }
 
@@ -513,11 +534,21 @@ Write( const char * _headerName )
     {
     METAIO_STREAM::cerr << "MetaObject: Write: MET_Write Failed"
                         << METAIO_STREAM::endl;
+    for( unsigned int i=0; i<metaFields.size(); ++i )
+      {
+      delete metaFields[i];
+      }
+    metaFields.clear();
     return false;
     }
 
   svm_save_model( modelFileName.c_str(), m_PDFSegmenter->GetModel() );
 
+  for( unsigned int i=0; i<metaFields.size(); ++i )
+    {
+    delete metaFields[i];
+    }
+  metaFields.clear();
   return true;
 }
 
