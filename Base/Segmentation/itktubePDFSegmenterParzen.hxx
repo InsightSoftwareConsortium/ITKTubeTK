@@ -480,8 +480,6 @@ PDFSegmenterParzen< TImage, TLabelMap >
     typedef itk::RecursiveGaussianImageFilter<
       HistogramImageType, HistogramImageType > HistogramBlurGenType;
 
-    std::cout << "Histo blur std dev = "
-      << m_HistogramSmoothingStandardDeviation << std::endl;
     for( unsigned int c = 0; c < numClasses; c++ )
       {
       if( m_HistogramSmoothingStandardDeviation > 0 )

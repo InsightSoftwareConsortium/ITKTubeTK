@@ -372,9 +372,9 @@ void
 RidgeSeedFilter< TImage, TLabelMap >
 ::Update( void )
 {
-  itk::TimeProbesCollectorBase timeCollector;
+  //itk::TimeProbesCollectorBase timeCollector;
 
-  timeCollector.Start("RidgeSeedFilter Update");
+  //timeCollector.Start("RidgeSeedFilter Update");
 
   if( !m_PDFSegmenter.IsNotNull() )
     {
@@ -412,9 +412,9 @@ RidgeSeedFilter< TImage, TLabelMap >
 
   m_RidgeFeatureGenerator->SetUseIntensityOnly( m_UseIntensityOnly );
 
-  timeCollector.Start("RidgeSeedFilter FeatureGenerator");
+  //timeCollector.Start("RidgeSeedFilter FeatureGenerator");
   m_RidgeFeatureGenerator->Update();
-  timeCollector.Stop("RidgeSeedFilter FeatureGenerator");
+  //timeCollector.Stop("RidgeSeedFilter FeatureGenerator");
 
   m_SeedFeatureGenerator->SetObjectId( m_RidgeId );
   m_SeedFeatureGenerator->AddObjectId( m_BackgroundId );
@@ -426,23 +426,23 @@ RidgeSeedFilter< TImage, TLabelMap >
 
   if( m_TrainClassifier )
     {
-    timeCollector.Start("RidgeSeedFilter RidgeFeatureGenerator Update");
+    //timeCollector.Start("RidgeSeedFilter RidgeFeatureGenerator Update");
     m_RidgeFeatureGenerator->SetUpdateWhitenStatisticsOnUpdate( true );
     m_RidgeFeatureGenerator->Update();
-    timeCollector.Stop("RidgeSeedFilter RidgeFeatureGenerator Update");
+    //timeCollector.Stop("RidgeSeedFilter RidgeFeatureGenerator Update");
 
-    timeCollector.Start("RidgeSeedFilter SeedFeatureGenerator Update");
+    //timeCollector.Start("RidgeSeedFilter SeedFeatureGenerator Update");
     m_SeedFeatureGenerator->SetUpdateWhitenStatisticsOnUpdate( true );
     m_SeedFeatureGenerator->Update();
-    timeCollector.Stop("RidgeSeedFilter SeedFeatureGenerator Update");
+    //timeCollector.Stop("RidgeSeedFilter SeedFeatureGenerator Update");
 
-    timeCollector.Start("RidgeSeedFilter PDFSegmenter Update");
+    //timeCollector.Start("RidgeSeedFilter PDFSegmenter Update");
     m_PDFSegmenter->Update();
-    timeCollector.Start("RidgeSeedFilter PDFSegmenter Update");
+    //timeCollector.Start("RidgeSeedFilter PDFSegmenter Update");
     }
 
-  timeCollector.Stop("RidgeSeedFilter Update");
-  timeCollector.Report();
+  //timeCollector.Stop("RidgeSeedFilter Update");
+  //timeCollector.Report();
 }
 
 template< class TImage, class TLabelMap >
