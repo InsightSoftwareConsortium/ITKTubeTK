@@ -17,17 +17,18 @@
 #ifndef __itktubeRidgeFFTFilter_hxx
 #define __itktubeRidgeFFTFilter_hxx
 
+#include <itkTimeProbesCollectorBase.h>
+
 #include "tubetkConfigure.h"
 
 #include "itktubeRidgeFFTFilter.h"
-
-#include "tubeMatrixMath.h"
-
 #include "itktubeFFTGaussianDerivativeIFFTFilter.h"
-
 #if defined( TubeTK_USE_GPU_ARRAYFIRE )
   #include "itktubeGPUArrayFireGaussianDerivativeFilter.h"
 #endif
+
+#include "tubeMatrixMath.h"
+
 
 namespace itk {
 
@@ -61,6 +62,9 @@ void
 RidgeFFTFilter< TInputImage >
 ::GenerateData()
 {
+  //itk::TimeProbesCollectorBase timeCollector;
+
+  //timeCollector.Start( "RidgeFFT GenerateData" );
   m_DerivativeFilter->SetInput( this->GetInput() );
 
   typename DerivativeFilterType::OrdersType orders;
@@ -70,10 +74,12 @@ RidgeFFTFilter< TInputImage >
   m_DerivativeFilter->SetSigmas( sigmas );
 
   // Intensity
+  //timeCollector.Start( "RidgeFFT Intensity" );
   orders.Fill( 0 );
   m_DerivativeFilter->SetOrders( orders );
   m_DerivativeFilter->Update();
   m_Intensity = m_DerivativeFilter->GetOutput();
+  //timeCollector.Stop( "RidgeFFT Intensity" );
 
   if( !m_UseIntensityOnly )
     {
@@ -106,7 +112,9 @@ RidgeFFTFilter< TInputImage >
       }
     std::vector< typename OutputImageType::Pointer > ddx( ddxSize );
 
+    //timeCollector.Start( "RidgeFFT GenereateNJet" );
     m_DerivativeFilter->GenerateNJet( m_Intensity, dx, ddx );
+    //timeCollector.Stop( "RidgeFFT GenereateNJet" );
 
     ImageRegionIterator< OutputImageType > iterRidge( m_Ridgeness,
       m_Ridgeness->GetLargestPossibleRegion() );
@@ -144,6 +152,7 @@ RidgeFFTFilter< TInputImage >
     vnl_vector<double> D( ImageDimension );
     vnl_matrix<double> HEVect( ImageDimension, ImageDimension );
     vnl_vector<double> HEVal( ImageDimension );
+    //timeCollector.Start( "RidgeFFT Compute" );
     while( !iterRidge.IsAtEnd() )
       {
       count = 0;
@@ -171,9 +180,12 @@ RidgeFFTFilter< TInputImage >
       ++iterCurve;
       ++iterLevel;
       }
+    //timeCollector.Stop( "RidgeFFT Compute" );
     }
 
   this->SetNthOutput( 0, m_Intensity );
+  //timeCollector.Stop( "RidgeFFT GenerateData" );
+  //timeCollector.Report();
 }
 
 template< typename TInputImage >

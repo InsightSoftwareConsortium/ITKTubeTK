@@ -32,7 +32,7 @@ limitations under the License.
 #include <itkBinaryErodeImageFilter.h>
 #include <itkConnectedThresholdImageFilter.h>
 #include <itkCurvatureAnisotropicDiffusionImageFilter.h>
-#include <itkDiscreteGaussianImageFilter.h>
+#include <itkRecursiveGaussianImageFilter.h>
 #include <itkThresholdImageFilter.h>
 #include <itkHistogram.h>
 #include <itkHistogramToProbabilityImageFilter.h>
@@ -477,7 +477,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
   //
   if( true )
     {
-    typedef itk::DiscreteGaussianImageFilter<
+    typedef itk::RecursiveGaussianImageFilter<
       HistogramImageType, HistogramImageType > HistogramBlurGenType;
 
     for( unsigned int c = 0; c < numClasses; c++ )
@@ -487,12 +487,9 @@ PDFSegmenterParzen< TImage, TLabelMap >
         typename HistogramBlurGenType::Pointer blurFilter =
           HistogramBlurGenType::New();
         blurFilter->SetInput( m_InClassHistogram[c] );
-        blurFilter->SetMaximumKernelWidth(
-          (int)( m_HistogramSmoothingStandardDeviation * 5 ) );
-        blurFilter->SetVariance( m_HistogramSmoothingStandardDeviation *
-          m_HistogramSmoothingStandardDeviation );
-        blurFilter->SetUseImageSpacing( false );
-        blurFilter->SetFilterDimensionality( numFeatures );
+        blurFilter->SetSigma( m_HistogramSmoothingStandardDeviation );
+        blurFilter->SetZeroOrder();
+        blurFilter->SetNormalizeAcrossScale( false );
         blurFilter->Update();
         m_InClassHistogram[c] = blurFilter->GetOutput();
 

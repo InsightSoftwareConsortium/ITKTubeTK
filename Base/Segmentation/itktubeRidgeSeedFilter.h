@@ -26,6 +26,8 @@ limitations under the License.
 
 #include "itktubeBasisFeatureVectorGenerator.h"
 #include "itktubePDFSegmenterBase.h"
+#include "itktubePDFSegmenterParzen.h"
+#include "itktubePDFSegmenterSVM.h"
 #include "itktubeRidgeFFTFeatureVectorGenerator.h"
 
 #include <itkImage.h>
@@ -90,7 +92,12 @@ public:
   typedef typename SeedFeatureGeneratorType::VectorType   VectorType;
   typedef typename SeedFeatureGeneratorType::MatrixType   MatrixType;
 
-  typedef PDFSegmenterBase< InputImageType, LabelMapType > PDFSegmenterType;
+  typedef PDFSegmenterBase< InputImageType, LabelMapType >
+    PDFSegmenterType;
+  typedef PDFSegmenterParzen< InputImageType, LabelMapType >
+    PDFSegmenterParzenType;
+  typedef PDFSegmenterSVM< InputImageType, LabelMapType >
+    PDFSegmenterSVMType;
   typedef typename  PDFSegmenterType::ProbabilityPixelType
     ProbabilityPixelType;
   typedef typename  PDFSegmenterType::ProbabilityImageType
@@ -192,6 +199,8 @@ private:
   typename RidgeFeatureGeneratorType::Pointer     m_RidgeFeatureGenerator;
   typename SeedFeatureGeneratorType::Pointer      m_SeedFeatureGenerator;
   typename PDFSegmenterType::Pointer              m_PDFSegmenter;
+  typename PDFSegmenterParzenType::Pointer        m_PDFSegmenterParzen;
+  typename PDFSegmenterSVMType::Pointer           m_PDFSegmenterSVM;
 
   bool           m_UseSVM;
   unsigned int   m_SVMTrainingDataStride;

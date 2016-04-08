@@ -162,6 +162,7 @@ Midas3FunctionAddTest( NAME itktubePDFSegmenterParzenIOTest
 if( TubeTK_USE_LIBSVM )
   Midas3FunctionAddTest( NAME itktubePDFSegmenterSVMIOTest
     COMMAND ${BASE_IO_TESTS}
+      --compareNumberPfPixelsTolerance 20
       --compare ${TEMP}/itktubePDFSegmenterSVMIOTest.mha
         ${TEMP}/itktubePDFSegmenterSVMIOTest2.mha
       itktubePDFSegmenterSVMIOTest
@@ -177,6 +178,7 @@ if( TubeTK_USE_LIBSVM )
     COMMAND ${BASE_IO_TESTS}
       --compare ${TEMP}/itktubeRidgeSeedFilterIOTest_Output.mha
         ${TEMP}/itktubeRidgeSeedFilterIOTest_Output2.mha
+      --compareNumberOfPixelsTolerance 50
       itktubeRidgeSeedFilterIOTest
         MIDAS{im0001.crop.contrast.mha.md5}
         MIDAS{im0001.vk.maskRidge.crop.mha.md5}

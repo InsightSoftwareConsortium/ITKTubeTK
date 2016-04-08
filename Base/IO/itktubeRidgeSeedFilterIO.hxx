@@ -334,7 +334,12 @@ Write( const char * _headerName )
         GetPDFSegmenter().GetPointer() );
     if( pdfSVM.IsNotNull() )
       {
-      std::cout << "Save PDFSegmenterSVMIO now..." << std::endl;
+      PDFSegmenterSVMIO< TImage, TLabelMap > pdfWriter(
+        pdfSVM.GetPointer() );
+      if( !pdfWriter.Write( pdfWriteName.c_str() ) )
+        {
+        result = false;
+        }
       }
     }
 
