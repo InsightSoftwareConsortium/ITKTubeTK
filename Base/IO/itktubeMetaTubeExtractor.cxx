@@ -397,7 +397,8 @@ Clear( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaTubeExtractor: Clear" << METAIO_STREAM::endl;
+    METAIO_STREAM::cout << "MetaTubeExtractor: Clear"
+      << METAIO_STREAM::endl;
     }
 
   m_DataMin = 0;
@@ -488,7 +489,8 @@ CanRead( const char *_headerName ) const
     return false;
     }
 
-  bool result = !std::strncmp( MET_ReadForm( inputStream ).c_str(), "TubeExtractor", 13 );
+  bool result = !std::strncmp( MET_ReadForm( inputStream ).c_str(),
+    "TubeExtractor", 13 );
 
   inputStream.close();
 
@@ -530,7 +532,8 @@ Read( const char *_headerName )
 bool MetaTubeExtractor::
 CanReadStream( METAIO_STREAM::ifstream * _stream ) const
 {
-  if( !std::strncmp( MET_ReadForm( *_stream ).c_str(), "TubeExtractor", 10 ) )
+  if( !std::strncmp( MET_ReadForm( *_stream ).c_str(),
+    "TubeExtractor", 10 ) )
     {
     return true;
     }
@@ -772,13 +775,11 @@ M_SetupWriteFields( void )
   MET_FieldRecordType * mF;
 
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "DataMin", MET_FLOAT,
-    m_DataMin );
+  MET_InitWriteField( mF, "DataMin", MET_FLOAT, m_DataMin );
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "DataMax", MET_FLOAT,
-    m_DataMax );
+  MET_InitWriteField( mF, "DataMax", MET_FLOAT, m_DataMax );
   m_Fields.push_back( mF );
 
   char colorString[80];

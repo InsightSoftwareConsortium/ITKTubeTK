@@ -189,7 +189,7 @@ RidgeExtractor<TInputImage>
 
   m_InputImage = inputImage;
 
-  if( m_InputImage )
+  if( m_InputImage.IsNotNull() )
     {
     m_DataFunc->SetUseRelativeSpacing( true );
     m_DataFunc->SetInputImage( inputImage );

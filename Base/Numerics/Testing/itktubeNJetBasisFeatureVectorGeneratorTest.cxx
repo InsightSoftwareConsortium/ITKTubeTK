@@ -88,12 +88,14 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
     }
   LabelMapType::Pointer maskImage = maskReader->GetOutput();
 
-  FilterType::NJetScalesType scales( 2 );
-  scales[0] = 4;
-  scales[1] = 8;
+  FilterType::NJetScalesType scales;
+  scales.clear();
+  scales.push_back( 4 );
+  scales.push_back( 8 );
 
-  FilterType::NJetScalesType scales2( 1 );
-  scales2[0] = 8;
+  FilterType::NJetScalesType scales2;
+  scales2.clear();
+  scales2.push_back( 8 );
 
   FilterType::Pointer filter = FilterType::New();
   filter->SetInput( inputImage );

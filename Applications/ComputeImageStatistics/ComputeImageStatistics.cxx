@@ -238,13 +238,13 @@ int DoIt( int argc, char * argv[] )
     int bin = static_cast< int >( ( ( volumeIter.Get() -
       compMin[id] ) /
       ( compMax[id] - compMin[id] ) ) * maxNumBins + 0.5 );
-    if( bin >= maxNumBins )
-      {
-      bin = maxNumBins - 1;
-      }
-    else if( bin < 0 )
+    if( bin < 0 )
       {
       bin = 0;
+      }
+    else if( bin >= static_cast< int >( maxNumBins ) )
+      {
+      bin = maxNumBins - 1;
       }
     ++compHisto[id][bin];
     ++maskIter;

@@ -476,13 +476,13 @@ protected:
     DeformationFieldType * mult )
     {
     assert( index < this->GetNumberOfTerms() );
-    assert( dimension < ImageDimension );
+    assert( dimension < static_cast< int >( ImageDimension ) );
     this->m_MultiplicationVectorImageArrays[index][dimension] = mult;
     }
   DeformationFieldType * GetMultiplicationVectorImage( int index, int dimension )
     {
     assert( index < this->GetNumberOfTerms() );
-    assert( dimension < ImageDimension );
+    assert( dimension < static_cast< int >( ImageDimension ) );
     return this->m_MultiplicationVectorImageArrays[index][dimension];
     }
 
@@ -493,7 +493,7 @@ protected:
       ScalarDerivativeImageType * deriv )
     {
     assert( index < this->GetNumberOfTerms() );
-    assert( dimension < ImageDimension );
+    assert( dimension < static_cast< int >( ImageDimension ) );
     this->m_DeformationComponentFirstOrderDerivativeArrays[index][dimension]
         = deriv;
     }
@@ -502,7 +502,7 @@ protected:
       int dimension )
     {
     assert( index < this->GetNumberOfTerms() );
-    assert( dimension < ImageDimension );
+    assert( dimension < static_cast< int >( ImageDimension ) );
     return this->m_DeformationComponentFirstOrderDerivativeArrays
         [index][dimension];
     }
@@ -514,7 +514,7 @@ protected:
       TensorDerivativeImageType * deriv )
     {
     assert( index < this->GetNumberOfTerms() );
-    assert( dimension < ImageDimension );
+    assert( dimension < static_cast< int >( ImageDimension ) );
     this->m_DeformationComponentSecondOrderDerivativeArrays[index][dimension]
         = deriv;
     }
@@ -523,7 +523,7 @@ protected:
       int dimension )
     {
     assert( index < this->GetNumberOfTerms() );
-    assert( dimension < ImageDimension );
+    assert( dimension < static_cast< int >( ImageDimension ) );
     return this->m_DeformationComponentSecondOrderDerivativeArrays
         [index][dimension];
     }

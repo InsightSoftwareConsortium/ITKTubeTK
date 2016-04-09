@@ -29,14 +29,11 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
-set( PROJ_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
+set( PROJ_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-set( CompareImages_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
+set( CompareImages_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
-set( CompareTextFiles_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
+set( CompareTextFiles_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
 
 #######
 # Test1
@@ -92,6 +89,7 @@ set_property(TEST ${MODULE_NAME}-Test2
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Output-Compare
   COMMAND ${CompareImages_EXE}
     -i 0.05
+    -n 100
     -t ${TEMP}/${MODULE_NAME}Test2_Output.mha
     -b MIDAS{${MODULE_NAME}Test1_Output.mha.md5} )
 set_property(TEST ${MODULE_NAME}-Test2-Output-Compare
