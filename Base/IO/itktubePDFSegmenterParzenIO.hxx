@@ -472,9 +472,9 @@ Read( const char * _headerName )
       if( size[j] != m_PDFSegmenter->GetNumberOfBinsPerFeature()[j] )
         {
         std::cout << "ERROR: N mismatch" << std::endl;
-        for( unsigned int i=0; i<metaFields.size(); ++i )
+        for( unsigned int f=0; f<metaFields.size(); ++f )
           {
-          delete metaFields[i];
+          delete metaFields[f];
           }
         metaFields.clear();
         return false;
@@ -484,9 +484,9 @@ Read( const char * _headerName )
         0.005 * spacing[j] )
         {
         std::cout << "ERROR: Spacing mismatch" << std::endl;
-        for( unsigned int i=0; i<metaFields.size(); ++i )
+        for( unsigned int f=0; f<metaFields.size(); ++f )
           {
-          delete metaFields[i];
+          delete metaFields[f];
           }
         metaFields.clear();
         return false;
@@ -501,9 +501,9 @@ Read( const char * _headerName )
           << m_PDFSegmenter->GetBinMin()[j] << std::endl;
         std::cout << "      spacing[" << j << "] = "
           << spacing[j] << std::endl;
-        for( unsigned int i=0; i<metaFields.size(); ++i )
+        for( unsigned int f=0; f<metaFields.size(); ++f )
           {
-          delete metaFields[i];
+          delete metaFields[f];
           }
         metaFields.clear();
         return false;

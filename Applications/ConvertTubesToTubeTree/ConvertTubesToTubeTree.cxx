@@ -177,15 +177,23 @@ int main( int argc, char * argv[] )
   switch( mScene->GetObjectList()->front()->NDims() )
     {
     case 2:
-      return DoIt<2>( argc, argv );
-      break;
-
+      {
+      bool result = DoIt<2>( argc, argv );
+      delete mScene;
+      return result;
+      }
     case 3:
-      return DoIt<3>( argc, argv );
-      break;
-
+      {
+      bool result = DoIt<3>( argc, argv );
+      delete mScene;
+      return result;
+      }
     default:
-      tubeErrorMacro(<< "Error: Only 2D and 3D data is currently supported.");
+      {
+      tubeErrorMacro(
+        << "Error: Only 2D and 3D data is currently supported." );
+      delete mScene;
       return EXIT_FAILURE;
+      }
     }
 }

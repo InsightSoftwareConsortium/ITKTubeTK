@@ -43,16 +43,20 @@ template< class TImage >
 NJetFeatureVectorGenerator< TImage >
 ::NJetFeatureVectorGenerator( void )
 {
-  m_ZeroScales.resize( 0 );
-  m_FirstScales.resize( 0 );
-  m_SecondScales.resize( 0 );
-  m_RidgeScales.resize( 0 );
+  m_ZeroScales.clear();
+  m_FirstScales.clear();
+  m_SecondScales.clear();
+  m_RidgeScales.clear();
 }
 
 template< class TImage >
 NJetFeatureVectorGenerator< TImage >
 ::~NJetFeatureVectorGenerator()
 {
+  m_ZeroScales.clear();
+  m_FirstScales.clear();
+  m_SecondScales.clear();
+  m_RidgeScales.clear();
 }
 
 template< class TImage >

@@ -162,7 +162,7 @@ Midas3FunctionAddTest( NAME itktubePDFSegmenterParzenIOTest
 if( TubeTK_USE_LIBSVM )
   Midas3FunctionAddTest( NAME itktubePDFSegmenterSVMIOTest
     COMMAND ${BASE_IO_TESTS}
-      --compareNumberPfPixelsTolerance 20
+      --compareNumberOfPixelsTolerance 20
       --compare ${TEMP}/itktubePDFSegmenterSVMIOTest.mha
         ${TEMP}/itktubePDFSegmenterSVMIOTest2.mha
       itktubePDFSegmenterSVMIOTest

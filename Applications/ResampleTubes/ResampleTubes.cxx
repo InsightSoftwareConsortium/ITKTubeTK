@@ -252,6 +252,7 @@ int DoIt( int argc, char * argv[] )
   progress = 0.3;
   progressReporter.Report( progress );
 
+  std::cout << "Here" << std::endl;
   typename GroupSpatialObjectType::Pointer outputTubes;
   typename GroupSpatialObjectType::TransformType::Pointer
     outputTransform;
@@ -269,6 +270,8 @@ int DoIt( int argc, char * argv[] )
       tubesGroup->GetChildren( tubesGroup->GetMaximumDepth(), soTypeName );
     (*(tubeList->begin()))->ComputeObjectToWorldTransform();
     outputTransform = (*(tubeList->begin()))->GetIndexToWorldTransform();
+    tubeList->clear();
+    delete tubeList;
     }
   try
     {
@@ -317,6 +320,7 @@ int DoIt( int argc, char * argv[] )
     tube::ErrorMessage( e.what() );
     return EXIT_FAILURE;
     }
+  std::cout << "Here" << std::endl;
 
   if( samplingFactor != 1 )
     {

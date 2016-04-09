@@ -32,7 +32,7 @@ limitations under the License.
 #include <itkBinaryErodeImageFilter.h>
 #include <itkConnectedThresholdImageFilter.h>
 #include <itkCurvatureAnisotropicDiffusionImageFilter.h>
-#include <itkDiscreteGaussianImageFilter.h>
+#include <itkRecursiveGaussianImageFilter.h>
 #include <itkThresholdImageFilter.h>
 #include <itkNormalizeToConstantImageFilter.h>
 #include <itkImage.h>
@@ -71,6 +71,7 @@ PDFSegmenterBase< TImage, TLabelMap >
   m_VoidId = std::numeric_limits< LabelMapPixelType >::max();
   m_PDFWeightList.clear();
 
+  m_DilateFirst = false;
   m_ErodeRadius = 1;
   m_HoleFillIterations = 1;
   m_ProbabilityImageSmoothingStandardDeviation = 0;
@@ -423,7 +424,7 @@ PDFSegmenterBase< TImage, TLabelMap >
     delete probIt[c];
     }
 
-  typedef itk::DiscreteGaussianImageFilter<
+  typedef itk::RecursiveGaussianImageFilter<
     ProbabilityImageType, ProbabilityImageType > ProbImageFilterType;
   typename ProbImageFilterType::Pointer probImageFilter;
 
@@ -436,9 +437,9 @@ PDFSegmenterBase< TImage, TLabelMap >
     {
     probImageFilter = ProbImageFilterType::New();
     probImageFilter->SetInput( m_ProbabilityImageVector[c] );
-    probImageFilter->SetVariance(
-      m_ProbabilityImageSmoothingStandardDeviation *
+    probImageFilter->SetSigma(
       m_ProbabilityImageSmoothingStandardDeviation );
+    probImageFilter->SetZeroOrder();
     probImageFilter->Update();
     m_ProbabilityImageVector[c] = probImageFilter->GetOutput();
 
@@ -827,15 +828,15 @@ void
 PDFSegmenterBase< TImage, TLabelMap >
 ::Update( void )
 {
-  itk::TimeProbesCollectorBase timeCollector;
+  //itk::TimeProbesCollectorBase timeCollector;
 
-  timeCollector.Start( "PDFSegmenterBase Generate Sample" );
+  //timeCollector.Start( "PDFSegmenterBase Generate Sample" );
   this->GenerateSample();
-  timeCollector.Stop( "PDFSegmenterBase Generate Sample" );
-  timeCollector.Start( "PDFSegmenterBase Generate PDFs" );
+  //timeCollector.Stop( "PDFSegmenterBase Generate Sample" );
+  //timeCollector.Start( "PDFSegmenterBase Generate PDFs" );
   this->GeneratePDFs();
-  timeCollector.Stop( "PDFSegmenterBase Generate PDFs" );
-  timeCollector.Report();
+  //timeCollector.Stop( "PDFSegmenterBase Generate PDFs" );
+  //timeCollector.Report();
 }
 
 template< class TImage, class TLabelMap >

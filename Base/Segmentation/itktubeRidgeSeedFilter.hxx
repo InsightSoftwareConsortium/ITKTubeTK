@@ -376,7 +376,7 @@ RidgeSeedFilter< TImage, TLabelMap >
 
   //timeCollector.Start("RidgeSeedFilter Update");
 
-  if( !m_PDFSegmenter.IsNotNull() )
+  if( m_PDFSegmenter.IsNull() )
     {
     if( m_UseSVM )
       {
@@ -401,13 +401,15 @@ RidgeSeedFilter< TImage, TLabelMap >
       m_PDFSegmenterParzen->SetFeatureVectorGenerator(
         m_SeedFeatureGenerator.GetPointer() );
       }
+
+    m_PDFSegmenter->SetReclassifyObjectLabels( true );
+    m_PDFSegmenter->SetReclassifyNotObjectLabels( true );
+    m_PDFSegmenter->SetForceClassification( true );
+    m_PDFSegmenter->SetErodeRadius( 0 );
+    m_PDFSegmenter->SetHoleFillIterations( 5 );
+    m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation( 0.6 );
     }
-  m_PDFSegmenter->SetReclassifyObjectLabels( true );
-  m_PDFSegmenter->SetReclassifyNotObjectLabels( true );
-  m_PDFSegmenter->SetForceClassification( true );
-  m_PDFSegmenter->SetErodeRadius( 0 );
-  m_PDFSegmenter->SetHoleFillIterations( 5 );
-  m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation( 0.6 );
+
   m_PDFSegmenter->SetLabelMap( m_SeedFeatureGenerator->GetLabelMap() );
 
   m_RidgeFeatureGenerator->SetUseIntensityOnly( m_UseIntensityOnly );

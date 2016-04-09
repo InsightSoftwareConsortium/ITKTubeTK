@@ -272,7 +272,7 @@ int DoIt (int argc, char * argv[])
     pCurSourceTube->ComputeTangentAndNormals();
     pCurSourceTube->ComputeObjectToWorldTransform();
     //Point List for TargetTube
-    typename TubeType::PointListType TargetPointList;
+    typename TubeType::PointListType targetPointList;
     //Get points in current source tube
     typename TubeType::PointListType pointList =
       pCurSourceTube->GetPoints();
@@ -342,7 +342,7 @@ int DoIt (int argc, char * argv[])
         {
         if( CropTubes )
           {
-          TargetPointList.push_back( curSourcePoint );
+          targetPointList.push_back( curSourcePoint );
           if( !OutputEndPointsFile.empty() && !flagEndPoint )
             {
             PointType endPoint;
@@ -364,7 +364,7 @@ int DoIt (int argc, char * argv[])
         }
       else
         {
-        if( TargetPointList.size() > 0 )
+        if( targetPointList.size() > 0 )
           {
           //**** Target Tube **** :
           typename TubeType::Pointer pTargetTube = TubeType::New();
@@ -386,10 +386,10 @@ int DoIt (int argc, char * argv[])
           pTargetTube->SetId( targetTubeId );
           ++targetTubeId;
           //Save cropped tube
-          pTargetTube->SetPoints( TargetPointList );
+          pTargetTube->SetPoints( targetPointList );
           pTargetTubeGroup->AddSpatialObject( pTargetTube );
 
-          TargetPointList.clear();
+          targetPointList.clear();
           }
         if( !OutputEndPointsFile.empty() && flagEndPoint )
           {
@@ -403,7 +403,7 @@ int DoIt (int argc, char * argv[])
           }
         }
       }
-    if( TargetPointList.size() > 0 )
+    if( targetPointList.size() > 0 )
       {
       //**** Target Tube **** :
       typename TubeType::Pointer pTargetTube = TubeType::New();
@@ -425,10 +425,10 @@ int DoIt (int argc, char * argv[])
       pTargetTube->SetId( targetTubeId );
       ++targetTubeId;
       //Save cropped tube
-      pTargetTube->SetPoints( TargetPointList );
+      pTargetTube->SetPoints( targetPointList );
       pTargetTubeGroup->AddSpatialObject( pTargetTube );
 
-      TargetPointList.clear();
+      targetPointList.clear();
       }
     }
   timeCollector.Stop( "Selecting Tubes" );
@@ -465,6 +465,9 @@ int DoIt (int argc, char * argv[])
     }
   timeCollector.Stop( "Writing End Points File" );
 
+  pSourceTubeList->clear();
+  delete pSourceTubeList;
+
   timeCollector.Report();
   return EXIT_SUCCESS;
 }
@@ -498,6 +501,7 @@ int main( int argc, char * argv[] )
   if( mScene->GetObjectList()->empty() )
     {
     tubeWarningMacro( << "Input TRE file has no spatial objects" );
+    delete mScene;
     return EXIT_SUCCESS;
     }
 
@@ -505,19 +509,25 @@ int main( int argc, char * argv[] )
     {
     case 2:
       {
-      return DoIt<2>( argc, argv );
+      bool result = DoIt<2>( argc, argv );
+      delete mScene;
+      return result;
+      break;
       }
-
     case 3:
       {
-      return DoIt<3>( argc, argv );
+      bool result = DoIt<3>( argc, argv );
+      delete mScene;
+      return result;
+      break;
       }
-
     default:
       {
       tubeErrorMacro(
         << "Error: Only 2D and 3D data is currently supported." );
+      delete mScene;
       return EXIT_FAILURE;
+      break;
       }
     }
 }

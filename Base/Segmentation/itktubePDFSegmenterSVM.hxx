@@ -59,12 +59,33 @@ PDFSegmenterSVM< TImage, TLabelMap >
   m_Parameter.nr_weight = 0;
   m_Parameter.weight_label = NULL;
   m_Parameter.weight = NULL;
+
+  m_Problem.l = 0;
+  m_Problem.y = NULL;
+  m_Problem.x = NULL;
+
+  m_Space = NULL;
 }
 
 template< class TImage, class TLabelMap >
 PDFSegmenterSVM< TImage, TLabelMap >
 ::~PDFSegmenterSVM( void )
 {
+  if( m_Problem.y != NULL )
+    {
+    free( m_Problem.y );
+    m_Problem.y = NULL;
+    }
+  if( m_Problem.x != NULL )
+    {
+    free( m_Problem.x );
+    m_Problem.x = NULL;
+    }
+  if( m_Space != NULL )
+    {
+    free( m_Space );
+    m_Space = NULL;
+    }
   if( m_Model != NULL )
     {
     svm_free_and_destroy_model( & m_Model );
@@ -214,15 +235,31 @@ PDFSegmenterSVM< TImage, TLabelMap >
     m_SVMClassWeight[c] = m_Parameter.weight[c];
     }
 
-  svm_problem prob;
-  prob.l = sampleSize;
-  prob.y = (double *)malloc( sampleSize * sizeof( double ) );
-  prob.x = (struct svm_node **)malloc( sampleSize *
+  if( m_Problem.l != 0 )
+    {
+    m_Problem.l = 0;
+    if( m_Problem.y != NULL )
+      {
+      free( m_Problem.y );
+      m_Problem.y = NULL;
+      }
+    if( m_Problem.y != NULL )
+      {
+      free( m_Problem.y );
+      m_Problem.x = NULL;
+      }
+    }
+  m_Problem.l = sampleSize;
+  m_Problem.y = (double *)malloc( sampleSize * sizeof( double ) );
+  m_Problem.x = (struct svm_node **)malloc( sampleSize *
     sizeof( struct svm_node *) );
 
   unsigned int numElements = sampleSize * ( numFeatures + 1 );
-  svm_node *x_space;
-  x_space = (struct svm_node *)malloc( numElements *
+  if( m_Space != NULL )
+    {
+    free( m_Space );
+    }
+  m_Space = (struct svm_node *)malloc( numElements *
     sizeof( struct svm_node ) );
 
   unsigned int elementNum = 0;
@@ -235,16 +272,16 @@ PDFSegmenterSVM< TImage, TLabelMap >
       inClassListItEnd( this->m_InClassList[c].end() );
     while( sampleNum < sampleSize && inClassListIt != inClassListItEnd )
       {
-      prob.x[ sampleNum ] = & x_space[ elementNum ];
-      prob.y[ sampleNum ] = c;
+      m_Problem.x[ sampleNum ] = & m_Space[ elementNum ];
+      m_Problem.y[ sampleNum ] = c;
       for( unsigned int f=0; f<numFeatures; ++f )
         {
-        x_space[ elementNum ].index = f;
-        x_space[ elementNum ].value = (*inClassListIt)[ f ];
+        m_Space[ elementNum ].index = f;
+        m_Space[ elementNum ].value = (*inClassListIt)[ f ];
         ++elementNum;
         }
-      x_space[ elementNum ].index = -1;
-      x_space[ elementNum ].value = 0;
+      m_Space[ elementNum ].index = -1;
+      m_Space[ elementNum ].value = 0;
       ++elementNum;
       ++sampleNum;
       for( unsigned int s = 0; inClassListIt != inClassListItEnd
@@ -256,18 +293,14 @@ PDFSegmenterSVM< TImage, TLabelMap >
     }
 
   const char * errorMessage;
-  errorMessage = svm_check_parameter( &prob, &m_Parameter );
+  errorMessage = svm_check_parameter( &m_Problem, &m_Parameter );
   if( errorMessage )
     {
     std::cout << "ERROR: LIBSVM = " << errorMessage << std::endl;
     throw;
     }
 
-  m_Model = svm_train( &prob, &m_Parameter );
-
-  //free( prob.y );
-  //free( prob.x );
-  //free( x_space );
+  m_Model = svm_train( &m_Problem, &m_Parameter );
 }
 
 template< class TImage, class TLabelMap >

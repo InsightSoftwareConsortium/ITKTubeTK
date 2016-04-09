@@ -89,9 +89,9 @@ RidgeExtractor<TInputImage>
   m_DataFunc = BlurImageFunction<ImageType>::New();
   m_DataFunc->SetScale( 3 ); // 1.5
   m_DataFunc->SetExtent( 3.1 ); // 3
-  m_DataMin = NumericTraits< double >::max();
-  m_DataMax = NumericTraits< double >::min();
-  m_DataRange = NumericTraits< double >::max();
+  m_DataMin = 0;
+  m_DataMax = 1;
+  m_DataRange = 1;
 
   m_StepX = 0.1;
   m_X.set_size( ImageDimension );

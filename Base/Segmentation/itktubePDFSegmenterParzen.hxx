@@ -64,9 +64,9 @@ PDFSegmenterParzen< TImage, TLabelMap >
   m_HistogramBinSize.clear();
   m_HistogramNumberOfBin.clear();
 
-  m_HistogramSmoothingStandardDeviation = 2;
+  m_HistogramSmoothingStandardDeviation = 4;
 
-  m_OutlierRejectPortion = 0.05;
+  m_OutlierRejectPortion = 0.01;
 
   m_LabeledFeatureSpace = NULL;
 }
@@ -670,7 +670,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
     {
     os << indent << "HistogramBinMin = NULL" << std::endl;
     os << indent << "HistogramBinSize = NULL" << std::endl;
-    os << indent << "HistogramNumberOfBin[0] = NULL" << std::endl;
+    os << indent << "HistogramNumberOfBin = NULL" << std::endl;
     }
 
   os << indent << "Outlier reject portion = "

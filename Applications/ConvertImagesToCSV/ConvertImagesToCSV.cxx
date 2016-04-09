@@ -131,6 +131,12 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
+  for( unsigned int i=0; i<iterList.size(); ++i )
+    {
+    delete iterList[i];
+    }
+  iterList.clear();
+
   outFile.close();
 
   return EXIT_SUCCESS;

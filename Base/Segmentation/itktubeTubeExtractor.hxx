@@ -79,16 +79,14 @@ TubeExtractor<TInputImage>
 ::SetInputImage( typename ImageType::Pointer inputImage )
 {
   this->m_InputImage = inputImage;
-
   this->m_RidgeOp = RidgeExtractor<ImageType>::New();
   this->m_RidgeOp->SetInputImage( this->m_InputImage );
 
-  if( ! m_RadiusOp.IsNotNull() )
-    {
-    this->m_RadiusOp = RadiusExtractor2<ImageType>::New();
-    this->m_RadiusOp->SetInputImage( this->m_InputImage );
-    this->m_RidgeOp->SetRadiusExtractor( this->m_RadiusOp );
-    }
+  this->m_RadiusInputImage = inputImage;
+  this->m_RadiusOp = RadiusExtractor2<ImageType>::New();
+  this->m_RadiusOp->SetInputImage( this->m_InputImage );
+
+  this->m_RidgeOp->SetRadiusExtractor( this->m_RadiusOp );
 }
 
 /**
@@ -98,10 +96,13 @@ void
 TubeExtractor<TInputImage>
 ::SetRadiusInputImage( typename ImageType::Pointer inputImage )
 {
+  if( m_RadiusOp.IsNull() )
+    {
+    throw( "Input data must be set first in TubeExtractor" );
+    }
   this->m_RadiusInputImage = inputImage;
+  this->m_RadiusOp->SetInputImage( this->m_RadiusInputImage );
 
-  this->m_RadiusOp = RadiusExtractor2<ImageType>::New();
-  this->m_RadiusOp->SetInputImage( this->m_InputImage );
   this->m_RidgeOp->SetRadiusExtractor( this->m_RadiusOp );
 }
 
@@ -138,7 +139,7 @@ void
 TubeExtractor<TInputImage>
 ::SetDataMin( double dataMin )
 {
-  if( this->m_RidgeOp.IsNull() )
+  if( this->m_RidgeOp.IsNull() || this->m_RadiusOp.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
@@ -169,7 +170,7 @@ void
 TubeExtractor<TInputImage>
 ::SetDataMax( double dataMax )
 {
-  if( this->m_RidgeOp.IsNull() )
+  if( this->m_RidgeOp.IsNull() || this->m_RadiusOp.IsNull() )
     {
     throw( "Input data must be set first in TubeExtractor" );
     }
