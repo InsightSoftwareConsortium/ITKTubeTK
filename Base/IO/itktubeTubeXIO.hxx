@@ -473,6 +473,9 @@ TubeXIO< TDimension >
     }
   tmpWriteStream.close();
 
+  tubeList->clear();
+  delete tubeList;
+
   return true;
 }
 

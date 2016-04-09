@@ -182,12 +182,16 @@ Read( const char * _headerName )
   ridgeOp->SetMinLevelness( teReader.GetRidgeMinLevelness() );
   ridgeOp->SetMinLevelnessStart( teReader.GetRidgeMinLevelnessStart() );
   ridgeOp->SetMaxRecoveryAttempts( teReader.GetRidgeMaxRecoveryAttempts() );
+  ridgeOp->SetDataMin( teReader.GetDataMin() );
+  ridgeOp->SetDataMax( teReader.GetDataMax() );
 
   radiusOp->SetRadiusStart( teReader.GetRadiusStart() );
   radiusOp->SetRadiusMin( teReader.GetRadiusMin() );
   radiusOp->SetRadiusMax( teReader.GetRadiusMax() );
   radiusOp->SetMinMedialness( teReader.GetRadiusMinMedialness() );
   radiusOp->SetMinMedialnessStart( teReader.GetRadiusMinMedialnessStart() );
+  radiusOp->SetDataMin( teReader.GetDataMin() );
+  radiusOp->SetDataMax( teReader.GetDataMax() );
 
   return true;
 }

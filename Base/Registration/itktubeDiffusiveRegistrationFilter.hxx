@@ -108,7 +108,7 @@ DiffusiveRegistrationFilter
   os << indent << "Multiplication vector images:" << std::endl;
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
-    if( m_MultiplicationVectorImageArrays[i].Length != 0 )
+    if( m_MultiplicationVectorImageArrays[i].Size() != 0 )
       {
       for( unsigned int j = 0; j < ImageDimension; j++ )
         {

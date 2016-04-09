@@ -286,11 +286,10 @@ RegressionTestImage( const char *testImageFilename,
 
     typename RescaleType::Pointer rescale = RescaleType::New();
 
-    rescale->SetOutputMinimum(
-      itk::NumericTraits<unsigned char>::NonpositiveMin() );
-    rescale->SetOutputMaximum( itk::NumericTraits<unsigned char>::max() );
+    rescale->SetOutputMinimum( 0 );
+    rescale->SetOutputMaximum( 255 );
     rescale->SetInput( diff->GetOutput() );
-    rescale->UpdateLargestPossibleRegion();
+    rescale->Update();
 
     RegionType region;
     region.SetIndex( index );
@@ -327,6 +326,8 @@ RegressionTestImage( const char *testImageFilename,
       diffName << testImageFilename << ".diff.png";
       try
         {
+        rescale->SetOutputMinimum( 0 );
+        rescale->SetOutputMaximum( 255 );
         rescale->SetInput( diff->GetOutput() );
         rescale->Update();
         }
@@ -367,6 +368,8 @@ RegressionTestImage( const char *testImageFilename,
     baseName << testImageFilename << ".base.png";
     try
       {
+      rescale->SetOutputMinimum( 0 );
+      rescale->SetOutputMaximum( 255 );
       rescale->SetInput( baselineReader->GetOutput() );
       rescale->Update();
       }
@@ -405,6 +408,8 @@ RegressionTestImage( const char *testImageFilename,
     testName << testImageFilename << ".test.png";
     try
       {
+      rescale->SetOutputMinimum( 0 );
+      rescale->SetOutputMaximum( 255 );
       rescale->SetInput( testReader->GetOutput() );
       rescale->Update();
       }

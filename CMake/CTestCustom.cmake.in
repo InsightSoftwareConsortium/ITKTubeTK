@@ -187,6 +187,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "KWStyle.kwStyle.cxx.*not used"
   "KWStyle.kwsStyle.cxx.*not used"
   "KWStyle.[Tt]esting"
+  "detail.dynamic.sequence.hpp.*xpr.*shadows"
 
   # SlicerExecutionModel
   "GenerateCLP.cxx.*unused"
@@ -277,6 +278,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "CTK.*ErrorLogFDMessageHandler.*ignoring return value"
   "CTK.*TransferFunctionBars.*use of old-style cast"
   "CTK.*unused variable"
+  "CTK.*conversion from.*size_t.*ULONG.*possible loss of data"
 
   # Libs/OpenIGTLink
   "(OpenIGTLink|openigtlink).[Ss]ource.igtl"
@@ -352,4 +354,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
 
   # Gcc
   "unrecognized command line option.*no-unused-local-typedefs"
+
+  # USTK
+  "fileno.*deprecated.*ISO"
   )

@@ -330,6 +330,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     }
 
   pTubeList->clear();
+  delete pTubeList;
 }
 
 template< unsigned int VDimension >

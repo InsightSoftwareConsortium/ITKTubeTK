@@ -429,11 +429,20 @@ int main( int argc, char * argv[] )
   switch( mScene->GetObjectList()->front()->NDims() )
     {
     case 3:
-      return DoIt<3>( argc, argv );
+      {
+      bool result = DoIt<3>( argc, argv );
+      delete mScene;
+      return result;
       break;
-
+      }
     default:
+      {
       tubeErrorMacro(<< "Error: Only 3D data is currently supported.");
+      delete mScene;
       return EXIT_FAILURE;
+      }
     }
+
+  delete mScene;
+  return EXIT_FAILURE;
 }

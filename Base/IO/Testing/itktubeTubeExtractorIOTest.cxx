@@ -57,6 +57,7 @@ int itktubeTubeExtractorIOTest( int argc, char * argv[] )
   image->SetRegions( region );
   image->SetSpacing( spacing );
   image->Allocate();
+  image->FillBuffer( 0 );
 
   IOMethodType::TubeExtractorType::Pointer tubeExtractor =
     IOMethodType::TubeExtractorType::New();

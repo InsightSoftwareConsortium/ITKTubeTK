@@ -54,8 +54,8 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
   m_ObjectMeanList.clear();
   m_ObjectCovarianceList.clear();
 
-  m_GlobalMean.fill( 0 );
-  m_GlobalCovariance.fill( 0 );
+  m_GlobalMean.set_size( 0 );
+  m_GlobalCovariance.set_size( 0, 0 );
 
   m_NumberOfPCABasisToUseAsFeatures = 1;
   m_NumberOfLDABasisToUseAsFeatures = 1;
@@ -221,7 +221,7 @@ typename BasisFeatureVectorGenerator< TImage, TLabelMap >::VectorType
 BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::GetBasisVector( unsigned int basisNum ) const
 {
-  if( basisNum < this->GetNumberOfFeatures() )
+  if( basisNum < m_InputFeatureVectorGenerator->GetNumberOfFeatures() )
     {
     return m_BasisMatrix.get_column( basisNum );
     }
@@ -237,7 +237,7 @@ double
 BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::GetBasisValue( unsigned int basisNum ) const
 {
-  if( basisNum < this->GetNumberOfFeatures() )
+  if( basisNum < m_InputFeatureVectorGenerator->GetNumberOfFeatures() )
     {
     return m_BasisValues[basisNum];
     }
@@ -269,7 +269,7 @@ void
 BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::SetBasisValue( unsigned int basisNum, double value )
 {
-  if( basisNum < this->GetNumberOfFeatures() )
+  if( basisNum < m_InputFeatureVectorGenerator->GetNumberOfFeatures() )
     {
     m_BasisValues[basisNum] = value;
     }
@@ -292,7 +292,7 @@ void
 BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::SetBasisVector( unsigned int basisNum, const VectorType & vec )
 {
-  if( basisNum < this->GetNumberOfFeatures() )
+  if( basisNum < m_InputFeatureVectorGenerator->GetNumberOfFeatures() )
     {
     m_BasisMatrix.set_column( basisNum, vec );
     }
@@ -315,7 +315,7 @@ typename BasisFeatureVectorGenerator< TImage, TLabelMap >::FeatureImageType::Poi
 BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::GetFeatureImage( unsigned int featureNum ) const
 {
-  if( featureNum < this->GetNumberOfFeatures() )
+  if( featureNum < m_InputFeatureVectorGenerator->GetNumberOfFeatures() )
     {
     typedef itk::ImageRegionIteratorWithIndex< FeatureImageType >
       ImageIteratorType;
@@ -694,7 +694,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
       m_BasisValues[ basisNum ] = ldaBasisValues[ f ];
       m_BasisMatrix.set_column( basisNum, ldaBasisMatrix.get_column( f ) );
       ++basisNum;
-      biasVector = m_BasisMatrix.get_column( f );
+      biasVector = ldaBasisMatrix.get_column( f );
       biasMatrix += outer_product( biasVector, biasVector );
       }
     // Preserve the following line to document a fix that may be
