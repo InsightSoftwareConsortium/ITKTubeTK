@@ -328,6 +328,8 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
         << std::setprecision( 3 ) << e.continuityAngleError );
       }
     }
+
+  pTubeList->clear();
 }
 
 template< unsigned int VDimension >

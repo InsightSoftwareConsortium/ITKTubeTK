@@ -141,6 +141,10 @@ private:
   svm_model          * m_Model;
   svm_parameter        m_Parameter;
 
+  svm_problem          m_Problem;
+
+  svm_node           * m_Space;
+
   VectorDoubleType     m_SVMClassWeight;
 
   unsigned int         m_TrainingDataStride;

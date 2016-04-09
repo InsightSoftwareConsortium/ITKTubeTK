@@ -84,7 +84,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
     MIDAS{im0001.crop.contrast.mha.md5}
     ${TEMP}/${MODULE_NAME}Test2_Output.mha )
 set_property(TEST ${MODULE_NAME}-Test2
-  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1-Output-Compare )
 
 #######
 # Test2-Compare Output

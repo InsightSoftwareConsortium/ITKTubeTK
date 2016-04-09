@@ -235,9 +235,17 @@ int DoIt( int argc, char * argv[] )
     maskV = maskIter.Get();
     mapIter = maskMap.find( maskV );
     id = mapIter->second;
-    unsigned int bin = static_cast< unsigned int >( ( ( volumeIter.Get() -
+    int bin = static_cast< int >( ( ( volumeIter.Get() -
       compMin[id] ) /
       ( compMax[id] - compMin[id] ) ) * maxNumBins + 0.5 );
+    if( bin >= maxNumBins )
+      {
+      bin = maxNumBins - 1;
+      }
+    else if( bin < 0 )
+      {
+      bin = 0;
+      }
     ++compHisto[id][bin];
     ++maskIter;
     ++volumeIter;

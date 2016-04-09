@@ -152,6 +152,8 @@ SetPropertyFromImage( typename itk::GroupSpatialObject< DimensionT >::
         }
       }
     }
+  inputTubeList->clear();
+  delete inputTubeList;
 }
 
 template< class PixelT, unsigned int DimensionT >
@@ -234,6 +236,8 @@ SetPropertyFromImageMean( typename itk::GroupSpatialObject< DimensionT >::
         }
       }
     }
+  inputTubeList->clear();
+  delete inputTubeList;
 }
 
 template< unsigned int DimensionT >
@@ -316,6 +320,8 @@ int DoIt( MetaCommand & command )
           ::tube::ComputeTubeTangentsAndNormals< TubeType >( inputTube );
           }
         }
+      inputTubeList->clear();
+      delete inputTubeList;
       }
     else if( it->name == "SplitAtPoint" )
       {
@@ -345,6 +351,8 @@ int DoIt( MetaCommand & command )
           inputTube->SetArtery( true );
           }
         }
+      inputTubeList->clear();
+      delete inputTubeList;
       }
     else if( it->name == "MarkAsRoot" )
       {
@@ -370,6 +378,8 @@ int DoIt( MetaCommand & command )
           inputTube->SetRoot( true );
           }
         }
+      inputTubeList->clear();
+      delete inputTubeList;
       }
     else if( it->name == "UniqueIDs" )
       {
@@ -392,6 +402,9 @@ int DoIt( MetaCommand & command )
 
         inputTube->SetId( count++ );
         }
+
+      inputTubeList->clear();
+      delete inputTubeList;
       }
     else if( it->name == "MergeWithTube" )
       {

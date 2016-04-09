@@ -39,17 +39,26 @@ int itktubeTubeExtractorIOTest( int argc, char * argv[] )
   // Declare the type for the Filter
   typedef itk::tube::TubeExtractorIO< ImageType >    IOMethodType;
 
-  // TubeExtractor must have been assigned an input image prior to 
+  // TubeExtractor must have been assigned an input image prior to
   //   reading parameters into it.
   ImageType::Pointer image = ImageType::New();
   ImageType::RegionType region;
+  ImageType::IndexType indx;
+  indx.Fill( 0 );
   ImageType::RegionType::SizeType size;
   size.Fill( 100 );
+  ImageType::PointType origin;
+  origin.Fill( 0 );
+  ImageType::SpacingType spacing;
+  spacing.Fill( 1 );
+  region.SetIndex( indx );
   region.SetSize( size );
+  image->SetOrigin( origin );
   image->SetRegions( region );
+  image->SetSpacing( spacing );
   image->Allocate();
 
-  IOMethodType::TubeExtractorType::Pointer tubeExtractor = 
+  IOMethodType::TubeExtractorType::Pointer tubeExtractor =
     IOMethodType::TubeExtractorType::New();
   tubeExtractor->SetInputImage( image );
 

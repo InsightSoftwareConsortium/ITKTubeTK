@@ -29,26 +29,23 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
-set( PROJ_EXE
-  ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
+set( PROJ_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-set( CompareTextFiles_EXE
- ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
+set( CompareTextFiles_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
 
  # Test1
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
 COMMAND ${PROJ_EXE}
   --basicMetrics --oldMetrics
   --curvatureMetrics --histogramMetrics
-  MIDAS{vv_pp11_43_left_052015.tre.md5}
-  ${TEMP}/${MODULE_NAME}Test1.csv )
+  MIDAS{TortuousTube.tre.md5}
+  ${TEMP}/${MODULE_NAME}-Test1.csv )
 
 # Test1 - Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
   COMMAND ${CompareTextFiles_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test1.csv
-    -b MIDAS{vv_pp11_43_left_052015.csv.md5}
+    -t ${TEMP}/${MODULE_NAME}-Test1.csv
+    -b MIDAS{${MODULE_NAME}-Test1.csv.md5}
     -d 0.01 )
-
 set_property( TEST ${MODULE_NAME}-Test1-Compare
               APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
