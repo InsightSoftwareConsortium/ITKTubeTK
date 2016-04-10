@@ -123,7 +123,7 @@ int DoIt( int argc, char * argv[] )
     }
 
   // Prepare tortuosity measure flag
-  size_t metricFlag = 0;
+  int metricFlag = 0;
 
   if( basicMetrics )
     {
@@ -159,7 +159,7 @@ int DoIt( int argc, char * argv[] )
     metricFlag |= TortuosityFilterType::CURVATURE_HISTOGRAM_METRICS;
     }
 
-  std::map<size_t, std::string> MetricFlagToNameMap;
+  std::map<int, std::string> MetricFlagToNameMap;
   MetricFlagToNameMap
     [TortuosityFilterType::AVERAGE_RADIUS_METRIC] = "AverageRadiusMetric";
   MetricFlagToNameMap
@@ -208,7 +208,7 @@ int DoIt( int argc, char * argv[] )
   numPointsArray->SetNumberOfValues( tubeList->size() );
 
   std::vector< vtkSmartPointer< vtkDoubleArray >  > metricArrayVec;
-  for (size_t compareFlag = 0x01;
+  for (int compareFlag = 0x01;
     compareFlag <= TortuosityFilterType::BITMASK_ALL_METRICS;
     compareFlag = compareFlag << 1)
     {
@@ -279,6 +279,8 @@ int DoIt( int argc, char * argv[] )
 
     tubeIdArray->SetValue( tubeIndex, tubeIndex );
     numPointsArray->SetValue( tubeIndex, curTube->GetNumberOfPoints() );
+
+    std::cout << "vess = " << curTube->GetId() << std::endl;
 
     for( unsigned int i = 0; i < metricArrayVec.size(); i++ )
       {
