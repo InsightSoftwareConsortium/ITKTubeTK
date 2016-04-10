@@ -928,7 +928,14 @@ SplineND
 
   VectorType eVals( m_Dimension, 0.0 );
   MatrixType eVects( m_Dimension, m_Dimension );
-  ComputeEigen( m_H, eVects, eVals, false );
+  if( m_OptimizerND->GetSearchForMin() )
+    {
+    ComputeEigen( m_H, eVects, eVals, false, true );
+    }
+  else
+    {
+    ComputeEigen( m_H, eVects, eVals, false, false );
+    }
 
   return m_OptimizerND->Extreme( extX, extVal, m_Dimension, eVects );
 }

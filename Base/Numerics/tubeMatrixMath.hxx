@@ -298,9 +298,9 @@ ComputeEigen( vnl_matrix<T> const & mat,
   if( symmetric )
     {
     vnl_symmetric_eigensystem< T > eigen( mat );
-    eVects = eigen.V;
-    for( unsigned int d=0; d<eVects.columns(); d++ )
+    for( unsigned int d=0; d<n; d++ )
       {
+      eVects.set_column( d, eigen.get_eigenvector( d ) );
       eVals[d] = eigen.get_eigenvalue( d );
       }
     }
