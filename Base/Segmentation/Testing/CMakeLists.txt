@@ -154,7 +154,7 @@ if( TubeTK_USE_LIBSVM )
 
   Midas3FunctionAddTest( NAME itktubePDFSegmenterSVMTest
     COMMAND ${BASE_SEGMENTATION_TESTS}
-      --compareNumberOfPixelsTolerance 100
+      --compareNumberOfPixelsTolerance 200
       --compare MIDAS{itktubePDFSegmenterSVMTest_mask.mha.md5}
         ${TEMP}/itktubePDFSegmenterSVMTest_mask.mha
       itktubePDFSegmenterSVMTest
@@ -233,7 +233,7 @@ if( TubeTK_USE_LIBSVM )
 
   Midas3FunctionAddTest( NAME itktubeRidgeSeedFilterSVMTest
     COMMAND ${BASE_SEGMENTATION_TESTS}
-      --compareNumberOfPixelsTolerance 150
+      --compareNumberOfPixelsTolerance 700
       --compare MIDAS{itktubeRidgeSeedFilterSVMTest_Output.mha.md5}
         ${TEMP}/itktubeRidgeSeedFilterSVMTest_Output.mha
       itktubeRidgeSeedFilterTest

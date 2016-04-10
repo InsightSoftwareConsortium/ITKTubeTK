@@ -31,60 +31,62 @@ limitations under the License.
 
 class MySANDFunc : public tube::UserFunction< vnl_vector< int >, double >
 {
-private:
-  double cVal;
-
 public:
   MySANDFunc( void )
     {
-    cVal = 0;
+    m_Val = 0;
     }
   const double & Value( const vnl_vector<int> & x )
     {
-    cVal = std::sin((double)x[0]/2);
-    cVal += std::cos((double)x[1]/2);
-    return cVal;
+    m_Val = std::sin((double)x[0]/2);
+    m_Val += std::cos((double)x[1]/2);
+    return m_Val;
     }
 
+private:
+
+  double m_Val;
 }; // End class MySANDFunc
 
 class MySANDFuncV : public tube::UserFunction< vnl_vector< double >, double >
 {
-private:
-  double cVal;
-
 public:
   MySANDFuncV( void )
     {
-    cVal = 0;
+    m_Val = 0;
     }
   const double & Value( const vnl_vector<double> & x )
     {
-    cVal = std::sin((double)x[0]/2);
-    cVal += std::cos((double)x[1]/2);
-    return cVal;
+    m_Val = std::sin((double)x[0]/2);
+    m_Val += std::cos((double)x[1]/2);
+    return m_Val;
     }
+
+private:
+
+  double m_Val;
+
 
 }; // End class MySANDFuncV
 
 class MySANDFuncD : public tube::UserFunction< vnl_vector< double >,
                                                vnl_vector< double > >
 {
-private:
-  vnl_vector<double> cDeriv;
-
 public:
   MySANDFuncD( void )
     {
-    cDeriv.set_size(2);
-    cDeriv.fill( 0 );
+    m_Deriv.set_size(2);
+    m_Deriv.fill( 0 );
     }
   const vnl_vector<double> & Value( const vnl_vector<double> & x )
     {
-    cDeriv[0] = std::cos((double)x[0]/2);
-    cDeriv[1] = -std::sin((double)x[1]/2);
-    return cDeriv;
+    m_Deriv[0] = std::cos((double)x[0]/2);
+    m_Deriv[1] = -std::sin((double)x[1]/2);
+    return m_Deriv;
     }
+
+private:
+  vnl_vector<double> m_Deriv;
 
 }; // End class MySANDFuncD
 
@@ -256,8 +258,8 @@ int tubeSplineNDTest( int argc, char * argv[] )
   int failed = 0;
   for(unsigned int c=0; c<100; c++)
     {
-    x[0] = rndGen->GetNormalVariate( 3.14, 0.5 );
-    x[1] = rndGen->GetNormalVariate( 0.0, 0.5 );
+    x[0] = rndGen->GetNormalVariate( 3.14, 0.4 );
+    x[1] = rndGen->GetNormalVariate( 0.0, 0.4 );
     std::cout << "Optimizing from " << x[0] << ", " << x[1] << std::endl;
     double xVal = 0;
     if( !spline.Extreme( x, &xVal ) )
