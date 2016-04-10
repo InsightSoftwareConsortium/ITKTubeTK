@@ -33,7 +33,7 @@ endforeach()
 
 # Cppcheck
 set( Cppcheck_URL ${github_protocol}://github.com/KitwareMedical/cppcheck.git )
-set( Cppcheck_HASH_OR_TAG 08e242fc2a4c1105b836668c786592dcbd7b065b )
+set( Cppcheck_HASH_OR_TAG 04abdc98b089aee5d23795f78a9e335ac176e017 )
 
 # TubeTK Image Viewer
 set( ImageViewer_URL
