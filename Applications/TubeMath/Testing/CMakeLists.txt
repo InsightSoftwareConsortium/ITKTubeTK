@@ -70,7 +70,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare
   COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2.tre
-    -b MIDAS{${MODULE_NAME}Test2.tre.md5}
+    -B 2 MIDAS{${MODULE_NAME}Test2.tre.md5} MIDAS{${MODULE_NAME}Test2-2.tre.md5}
     -d 0.01 )
 set_property( TEST ${MODULE_NAME}-Test2-Compare
   APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
