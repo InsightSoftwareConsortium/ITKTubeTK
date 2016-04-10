@@ -43,8 +43,10 @@ else( )
     CACHE INTERNAL "Python to the python executable to use in tests." FORCE )
 endif()
 
-set( PYTHON_TESTING_MODULES
-  numpy )
+set( PYTHON_TESTING_MODULES )
+if( ${TubeTK_USE_NUMPY} )
+  set( PYTHON_TESTING_MODULES numpy )
+endif( ${TubeTK_USE_NUMPY} )
 
 if( TubeTK_USE_IPYTHON_NOTEBOOKS )
   list( APPEND PYTHON_TESTING_MODULES
