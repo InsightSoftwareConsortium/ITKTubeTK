@@ -105,6 +105,7 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   filter->SetRidgeScales( scales2 );
   filter->SetUpdateWhitenStatisticsOnUpdate( true );
   filter->Update();
+  filter->SetUpdateWhitenStatisticsOnUpdate( false );
 
   BasisFilterType::Pointer basisFilter = BasisFilterType::New();
   basisFilter->SetInputFeatureVectorGenerator( filter );
@@ -118,6 +119,7 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   basisFilter->SetNumberOfPCABasisToUseAsFeatures( 3 );
   basisFilter->SetUpdateWhitenStatisticsOnUpdate( true );
   basisFilter->Update();
+  basisFilter->SetUpdateWhitenStatisticsOnUpdate( false );
 
   basisFilter->SetLabelMap( NULL );
 
@@ -159,6 +161,11 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
       {
       featureImage1Writer->SetInput( filter->GetFeatureImage( i ) );
       featureImage1Writer->Update();
+      }
+    catch (itk::ExceptionObject& e)
+      {
+      std::cerr << "Exception caught during write:" << std::endl << e;
+      return EXIT_FAILURE;
       }
     catch( ... )
       {
