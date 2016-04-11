@@ -126,7 +126,7 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
   for( unsigned int i=0; i<basisFilter->GetNumberOfFeatures(); ++i )
     {
     WriterType::Pointer featureImage0Writer = WriterType::New();
-    char fname[80];
+    char fname[255];
     sprintf( fname, "%s.%d.mha", argv[5], i );
     std::cout << "Saving basis feature image: " << fname << std::endl;
     featureImage0Writer->SetFileName( fname );
