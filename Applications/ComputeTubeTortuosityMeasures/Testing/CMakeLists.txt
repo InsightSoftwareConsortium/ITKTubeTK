@@ -38,7 +38,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
 COMMAND ${PROJ_EXE}
   --basicMetrics --oldMetrics
   --curvatureMetrics --histogramMetrics
-  MIDAS{Tube.tre.md5}
+  MIDAS{tube.tre.md5}
   ${TEMP}/${MODULE_NAME}-Test1.csv )
 
 # Test1 - Compare

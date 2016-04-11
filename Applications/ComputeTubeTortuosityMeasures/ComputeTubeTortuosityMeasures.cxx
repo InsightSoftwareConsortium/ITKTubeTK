@@ -76,8 +76,9 @@ int DoIt( int argc, char * argv[] )
   typedef itk::SpatialObjectReader< VDimension >      TubesReaderType;
   typedef itk::GroupSpatialObject< VDimension >       TubeGroupType;
   typedef typename TubeGroupType::ChildrenListPointer TubeListPointerType;
+
   typedef itk::tube::TortuositySpatialObjectFilter< TubeType >
-  TortuosityFilterType;
+    TortuosityFilterType;
 
   // Load TRE File
   tubeStandardOutputMacro( << "\n>> Loading TRE File" );
@@ -208,8 +209,8 @@ int DoIt( int argc, char * argv[] )
   numPointsArray->SetNumberOfValues( tubeList->size() );
 
   std::vector< vtkSmartPointer< vtkDoubleArray >  > metricArrayVec;
-  for (int compareFlag = 0x01;
-    compareFlag <= TortuosityFilterType::BITMASK_ALL_METRICS;
+  for( int compareFlag = 0x01; compareFlag <=
+    static_cast< int >( TortuosityFilterType::BITMASK_ALL_METRICS );
     compareFlag = compareFlag << 1)
     {
     // If metric is asked to print and is printable
@@ -243,7 +244,8 @@ int DoIt( int argc, char * argv[] )
     for(int i = 0; i < numberOfHistogramBins; i++)
       {
       std::ostringstream oss;
-      oss << "Hist-Bin#" << i << ": " << i*histStep <<" - " << (i+1)*histStep;
+      oss << "Hist-Bin#" << i << ": " << i*histStep <<" - "
+        << (i+1) * histStep;
       std::string binArrayName = oss.str();
 
       vtkSmartPointer< vtkIntArray > histArray =
@@ -257,8 +259,7 @@ int DoIt( int argc, char * argv[] )
 
   int tubeIndex = 0;
   for( typename TubeGroupType::ChildrenListType::iterator
-       itTubes = tubeList->begin();
-       itTubes != tubeList->end(); ++itTubes )
+    itTubes = tubeList->begin(); itTubes != tubeList->end(); ++itTubes )
     {
     TubeType* curTube = dynamic_cast<TubeType*>((*itTubes).GetPointer());
     if (!curTube)
