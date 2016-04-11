@@ -258,8 +258,8 @@ int tubeSplineNDTest( int argc, char * argv[] )
   int failed = 0;
   for(unsigned int c=0; c<100; c++)
     {
-    x[0] = rndGen->GetNormalVariate( 3.14, 0.4 );
-    x[1] = rndGen->GetNormalVariate( 0.0, 0.4 );
+    x[0] = rndGen->GetNormalVariate( 3.14, 0.3 );
+    x[1] = rndGen->GetNormalVariate( 0.0, 0.3 );
     std::cout << "Optimizing from " << x[0] << ", " << x[1] << std::endl;
     double xVal = 0;
     if( !spline.Extreme( x, &xVal ) )
@@ -302,8 +302,8 @@ int tubeSplineNDTest( int argc, char * argv[] )
     }
   for(unsigned int c=0; c<100; c++)
     {
-    x[0] = rndGen->GetNormalVariate( 3.14, 0.5 );
-    x[1] = rndGen->GetNormalVariate( 0.0, 0.5 );
+    x[0] = rndGen->GetNormalVariate( 3.14, 0.3 );
+    x[1] = rndGen->GetNormalVariate( 0.0, 0.3 );
     std::cout << "Optimizing from " << x[0] << ", " << x[1] << std::endl;
     double xVal = 0;
     if( !spline.ExtremeConjGrad( x, &xVal ) )
