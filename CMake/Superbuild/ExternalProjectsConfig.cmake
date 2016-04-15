@@ -92,7 +92,7 @@ set( ITK_HASH_OR_TAG 84ba36bbbdfc9bdf489479453a4a85b4a4ed22d5 )
 # Slicer Execution Model
 set( SlicerExecutionModel_URL
   ${github_protocol}://github.com/Slicer/SlicerExecutionModel.git )
-set( SlicerExecutionModel_HASH_OR_TAG 311eff9038be165c1341dab90196fbd7466e715a )
+set( SlicerExecutionModel_HASH_OR_TAG 112076be4f7ee59cc67099f12f2c4c16719070da )
 
 # Visualization Toolkit (3D Slicer fork)
 set( VTK_URL ${github_protocol}://github.com/Slicer/VTK.git )
