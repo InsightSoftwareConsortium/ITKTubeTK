@@ -579,7 +579,8 @@ if( TubeTK_USE_CPPCHECK )
   list( APPEND CMAKE_MODULE_PATH "${TubeTK_SOURCE_DIR}/CMake/Cppcheck" )
   find_package( Cppcheck REQUIRED )
   set( CPPCHECK_PATHS_TO_CHECK "${TubeTK_SOURCE_DIR}/Applications"
-    "${TubeTK_SOURCE_DIR}/Base" )
+    "${TubeTK_SOURCE_DIR}/Base"
+    "${TubeTK_SOURCE_DIR}/ITKModules" )
   set( CPPCHECK_SUPPRESSIONS_FILE
     "${TubeTK_SOURCE_DIR}/CMake/Cppcheck/TubeTKCppcheckSuppressions.txt" )
   set( CPPCHECK_COMMAND_PREFIX "${CPPCHECK_EXECUTABLE}" -q --xml
