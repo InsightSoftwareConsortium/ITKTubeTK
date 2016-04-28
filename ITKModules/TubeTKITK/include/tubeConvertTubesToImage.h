@@ -19,8 +19,6 @@
 #define __tubeConvertTubesToImage_h
 
 #include <itkObject.h>
-#include <itkSpatialObjectReader.h>
-
 #include "itktubeSpatialObjectToImageFilter.h"
 
 namespace tube
@@ -30,7 +28,7 @@ namespace tube
  *  \ingroup TubeTKITK
  */
 
-template< class TPixel, unsigned int Dimension >
+template< unsigned int Dimension, class TOutputPixel >
 class ConvertTubesToImage:
   public itk::Object
 {
@@ -40,13 +38,9 @@ public:
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 
-  typedef TPixel                                     TemplatePixelType;
-  typedef unsigned char                              OutputPixelType;
-
   typedef itk::GroupSpatialObject< Dimension >       TubesType;
-  typedef itk::Image< TemplatePixelType >            TemplateImageType;
-  typedef itk::Image< OutputPixelType >              OutputImageType;
-
+  typedef TOutputPixel                               OutputPixelType;
+  typedef TOutputImage                               OutputImageType;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -60,7 +54,7 @@ public:
   itkBooleanMacro( UseRadius );
 
   /* Set template image */
-  void SetTemplateImage( TemplateImageType::Pointer pTemplateImage );
+  void SetTemplateImage( OutputImageType::Pointer pTemplateImage );
 
   /* Set input tubes */
   void SetInput( TubesType::Pointer pTubes );

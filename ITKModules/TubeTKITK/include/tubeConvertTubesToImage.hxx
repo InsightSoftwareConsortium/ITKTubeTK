@@ -23,17 +23,17 @@
 namespace tube
 {
 
-template< class TPixel, unsigned int Dimension >
-ConvertTubesToImage< TPixel, Dimension >
+template< unsigned int Dimension, class TOutputPixel >
+ConvertTubesToImage<Dimension, TOutputPixel>
 ::ConvertTubesToImage( void )
 {
   m_TubesToImageFilter = TubesToImageFilterType::New();
 }
 
-template< class TPixel, unsigned int Dimension >
+template< unsigned int Dimension, class TOutputPixel >
 void
-ConvertTubesToImage< TPixel, Dimension >
-::SetTemplateImage( TemplateImageType::Pointer pTemplateImage )
+ConvertTubesToImage<Dimension, TOutputPixel>
+::SetTemplateImage( OutputImageType::Pointer pTemplateImage )
 {
   TubetoImageFilterType::SizeType size;
 
@@ -48,33 +48,33 @@ ConvertTubesToImage< TPixel, Dimension >
   m_TubesToImageFilter->SetSpacing( spacing );
 }
 
-template< class TPixel, unsigned int Dimension >
+template< unsigned int Dimension, class TOutputPixel >
 void
-ConvertTubesToImage< TPixel, Dimension >
+ConvertTubesToImage<Dimension, TOutputPixel>
 ::SetInput( TubesType::Pointer pTubes )
 {
   m_TubesToImageFilter->SetInput( pTubes );
 }
 
-template< class TPixel, unsigned int Dimension >
+template< unsigned int Dimension, class TOutputPixel >
 void
-ConvertTubesToImage< TPixel, Dimension >
+ConvertTubesToImage<Dimension, TOutputPixel>
 ::Update()
 {
   m_TubesToImageFilter->Update();
 }
 
-template< class TPixel, unsigned int Dimension >
-ConvertTubesToImage< TPixel, Dimension >::OutputImageType::Pointer
-ConvertTubesToImage< TPixel, Dimension >
+template< unsigned int Dimension, class TOutputPixel >
+ConvertTubesToImage<Dimension, TOutputPixel>::OutputImageType::Pointer
+ConvertTubesToImage<Dimension, TOutputPixel>
 ::GetOutput()
 {
   return m_TubesToImageFilter->GetOutput();
 }
 
-template< class TPixel, unsigned int Dimension >
+template< unsigned int Dimension, class TOutputPixel >
 void
-ConvertTubesToImage< TPixel, Dimension >
+ConvertTubesToImage<Dimension, TOutputPixel>
 ::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
   m_TubesToImageFilter->PrintSelf( os, indent );
