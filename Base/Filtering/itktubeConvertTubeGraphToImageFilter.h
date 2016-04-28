@@ -60,15 +60,15 @@ public:
   typedef typename InputImageType::PixelType            InputPixelType;
   typedef TOutputImage                                  OutputImageType;
 
-  /** In Graph File Name*/
-  itkGetMacro( InGraphFileName, std::string );
-  itkSetMacro( InGraphFileName, std::string );
-
   itkGetMacro( AdjacencyMatrixImage, typename OutputImageType::Pointer);
   itkGetMacro( BranchnessImage, typename OutputImageType::Pointer);
   itkGetMacro( RadiusImage, typename OutputImageType::Pointer);
   itkGetMacro( CentralityImage, typename OutputImageType::Pointer);
 
+  void SetAdjacencyMatrix( vnl_matrix< double > );
+  void SetBranchnessVector( vnl_vector< double > );
+  void SetRadiusVector( vnl_vector< double > );
+  void SetCentralityVector( vnl_vector< double > );
 protected:
   ConvertTubeGraphToImageFilter( void );
   ~ConvertTubeGraphToImageFilter( void ) {}
@@ -79,7 +79,6 @@ protected:
 private:
   ConvertTubeGraphToImageFilter(const Self&);
   void operator=(const Self&);
-  std::string           m_InGraphFileName;
 
   typename OutputImageType::Pointer            m_AdjacencyMatrixImage;
   typename OutputImageType::Pointer            m_BranchnessImage;
@@ -87,6 +86,10 @@ private:
   typename OutputImageType::Pointer            m_CentralityImage;
   typename InputImageType::ConstPointer        m_InputImage;
 
+  vnl_matrix< double > m_AdjacencyMatrix;
+  vnl_vector< double > m_BranchnessVector;
+  vnl_vector< double > m_RadiusVector;
+  vnl_vector< double > m_CentralityVector;
 }; // End class CVTImageFilter
 
 } // End namespace tube

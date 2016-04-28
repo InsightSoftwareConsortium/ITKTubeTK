@@ -60,12 +60,123 @@ int DoIt( int argc, char * argv[] )
   imageReader->Update();
   typename CVTImageType::Pointer cvtImage = imageReader->GetOutput();
 
+  double temp;
+  int numberOfCentroids_AdjMat;
+  int numberOfCentroids;
+  std::ifstream readStream;
+
+  // Read full connectivity information (Adjacency Matrix)
+  std::string matrixFilename = inGraphFile + ".mat";
+
+  logMsg.str( "" );
+  logMsg << "Reading file: " << matrixFilename;
+  tube::InfoMessage( logMsg.str() );
+
+  readStream.open( matrixFilename.c_str(), std::ios::in );
+  readStream >> numberOfCentroids_AdjMat;
+  readStream.get();
+
+  logMsg.str( "" );
+  logMsg << "Number of centroids: " << numberOfCentroids_AdjMat;
+  tube::InfoMessage( logMsg.str() );
+
+  vnl_matrix< double > adjacencyMatrix( numberOfCentroids_AdjMat,
+    numberOfCentroids_AdjMat );
+  adjacencyMatrix.fill( 0 );
+  vnl_vector< double > branchnessVector( numberOfCentroids_AdjMat );
+  branchnessVector.fill( 0 );
+  vnl_vector< double > radiusVector( numberOfCentroids_AdjMat );
+  radiusVector.fill( 0 );
+  vnl_vector< double > centralityVector( numberOfCentroids_AdjMat );
+  centralityVector.fill( 0 );
+  for( int i = 0; i < numberOfCentroids_AdjMat; i++ )
+    {
+    for( int j = 0; j < numberOfCentroids_AdjMat; j++ )
+      {
+      readStream >> temp;
+      readStream.get();
+      adjacencyMatrix[i][j] = temp;
+      }
+    }
+  readStream.close();
+
+  // Read in BRANCH file
+  std::string branchFilename = inGraphFile + ".brc";
+
+  logMsg.str( "" );
+  logMsg << "Reading (branch) file: " << branchFilename;
+  tube::InfoMessage( logMsg.str() );
+
+  readStream.open( branchFilename.c_str(), std::ios::in );
+  readStream >> numberOfCentroids;
+  readStream.get();
+  if( numberOfCentroids != numberOfCentroids_AdjMat )
+    {
+    tube::ErrorMessage( "Error: fileList's #Centroids != branch #Centroids" );
+    return EXIT_FAILURE;
+    }
+  for( int i = 0; i < numberOfCentroids; i++ )
+    {
+    readStream >> temp;
+    readStream.get();
+    branchnessVector[i] = temp;
+    }
+  readStream.close();
+
+  // Read in ROOT file
+  std::string rootFilename = inGraphFile + ".rot";
+
+  logMsg.str( "" );
+  logMsg << "Reading (root) file: " << rootFilename;
+  tube::InfoMessage( logMsg.str() );
+
+  readStream.open( rootFilename.c_str(), std::ios::in );
+  readStream >> numberOfCentroids;
+  readStream.get();
+  if( numberOfCentroids != numberOfCentroids_AdjMat )
+    {
+    tube::ErrorMessage( "Error: fileList's #Centroids != root #Centroids" );
+    return EXIT_FAILURE;
+    }
+  for( int i = 0; i < numberOfCentroids; i++ )
+    {
+    readStream >> temp;
+    readStream.get();
+    radiusVector[i] = temp;
+    }
+  // readStream.close();
+  // Read in CENTRALITY file
+  // std::string centralityFilename = inGraphFile + ".cnt";
+
+  // logMsg.str( "" );
+  // logMsg << "Reading (centrality) file: " << centralityFilename;
+  // tube::InfoMessage( logMsg.str() );
+
+  // readStream.open( centralityFilename.c_str(), std::ios::in );
+  // readStream >> numberOfCentroids;
+  // readStream.get();
+  // if(numberOfCentroids != numberOfCentroids_AdjMat)
+  //   {
+  //   tube::ErrorMessage( "Error: fileList's #Centroids != centrality #Centroids" );
+  //   return EXIT_FAILURE;
+  //   }
+  for( int i = 0; i < numberOfCentroids; i++ )
+    {
+    readStream >> temp;
+    readStream.get();
+    centralityVector[i] = temp;
+    }
+  readStream.close();
+
   typedef itk::tube::ConvertTubeGraphToImageFilter< CVTImageType, ImageType >
     ConvertTubeGraphToImageFilterType;
   typename ConvertTubeGraphToImageFilterType::Pointer filter =
     ConvertTubeGraphToImageFilterType::New();
   filter->SetInput( cvtImage );
-  filter->SetInGraphFileName( inGraphFile );
+  filter->SetAdjacencyMatrix( adjacencyMatrix );
+  filter->SetBranchnessVector( branchnessVector );
+  filter->SetRadiusVector( radiusVector );
+  filter->SetCentralityVector( centralityVector );
   filter->Update();
 
   typedef itk::ImageFileWriter< ImageType > ImageWriterType;

@@ -52,81 +52,7 @@ ConvertTubeGraphToImageFilter< TInputImage, TOutputImage >::
 GenerateData( void )
 {
   m_InputImage = this->GetInput();
-
-  double tf;
-  int numberOfCentroids;
-  int numberOfCentroids2;
-  std::ifstream readStream;
-
-  // Read full connectivity information
-  std::string matrixFilename = m_InGraphFileName + ".mat";
-  readStream.open(matrixFilename.c_str(), std::ios::in);
-  readStream >> numberOfCentroids;
-  readStream.get();
-
-  vnl_matrix<double> aMat(numberOfCentroids, numberOfCentroids);
-  aMat.fill(0);
-  vnl_vector<double> bVect(numberOfCentroids);
-  bVect.fill(0);
-  vnl_vector<double> rVect(numberOfCentroids);
-  rVect.fill(0);
-  vnl_vector<double> cVect(numberOfCentroids);
-  cVect.fill(0);
-
-  for(int i=0; i<numberOfCentroids; i++)
-    {
-    for(int j=0; j<numberOfCentroids; j++)
-      {
-      readStream >> tf;
-      readStream.get();
-      aMat[i][j] = tf;
-      }
-    }
-  readStream.close();
-
-  // Read in BRANCH file
-  std::string branchFilename = m_InGraphFileName + ".brc";
-  readStream.open(branchFilename.c_str(), std::ios::in);
-  readStream >> numberOfCentroids2;
-  readStream.get();
-
-  if(numberOfCentroids != numberOfCentroids2)
-    {
-    return;
-    }
-  for(int i = 0; i < numberOfCentroids; i++)
-    {
-    readStream >> tf;
-    readStream.get();
-    bVect[i] = tf;
-    }
-  readStream.close();
-
-  // Read in ROOT file
-  std::string rootFilename = m_InGraphFileName + ".rot";
-  readStream.open(rootFilename.c_str(), std::ios::in);
-  readStream >> numberOfCentroids2;
-  readStream.get();
-
-  if(numberOfCentroids != numberOfCentroids2)
-    {
-    return;
-    }
-  for(int i=0; i<numberOfCentroids; i++)
-    {
-    readStream >> tf;
-    readStream.get();
-    rVect[i] = tf;
-    }
-
-  // Read in CENTRALITY file
-  for(int i=0; i<numberOfCentroids; i++)
-    {
-    readStream >> tf;
-    readStream.get();
-    cVect[i] = tf;
-    }
-  readStream.close();
+  int numberOfCentroids = m_AdjacencyMatrix.rows();
 
   m_AdjacencyMatrixImage = this->GetOutput( 0 );
   m_AdjacencyMatrixImage->SetRegions
@@ -175,15 +101,15 @@ GenerateData( void )
   while( !itCVT.IsAtEnd() )
     {
     c = itCVT.Get()-1;
-    itB.Set( bVect[c] );
-    itR.Set( rVect[c] );
-    itC.Set( cVect[c] );
+    itB.Set( m_BranchnessVector[c] );
+    itR.Set( m_RadiusVector[c] );
+    itC.Set( m_CentralityVector[c] );
     double maxT = 0;
-    for( int i=0; i<numberOfCentroids; i++ )
+    for( int i = 0; i < numberOfCentroids; i++ )
       {
-      if( aMat[c][i] > maxT )
+      if( m_AdjacencyMatrix[c][i] > maxT )
         {
-        maxT = aMat[c][i];
+        maxT = m_AdjacencyMatrix[c][i];
         }
       }
     itA.Set( maxT );
@@ -193,6 +119,38 @@ GenerateData( void )
     ++itR;
     ++itC;
     }
+}
+
+template< class TInputImage, class TOutputImage >
+void
+ConvertTubeGraphToImageFilter< TInputImage, TOutputImage >::
+SetAdjacencyMatrix( vnl_matrix< double > a)
+{
+  m_AdjacencyMatrix = a;
+}
+
+template< class TInputImage, class TOutputImage >
+void
+ConvertTubeGraphToImageFilter< TInputImage, TOutputImage >::
+SetBranchnessVector( vnl_vector< double > b)
+{
+  m_BranchnessVector = b;
+}
+
+template< class TInputImage, class TOutputImage >
+void
+ConvertTubeGraphToImageFilter< TInputImage, TOutputImage >::
+SetRadiusVector( vnl_vector< double > r)
+{
+  m_RadiusVector = r;
+}
+
+template< class TInputImage, class TOutputImage >
+void
+ConvertTubeGraphToImageFilter< TInputImage, TOutputImage >::
+SetCentralityVector( vnl_vector< double > c)
+{
+  m_CentralityVector = c;
 }
 
 /** PrintSelf */
@@ -207,5 +165,4 @@ PrintSelf( std::ostream & os, Indent indent ) const
 } // End namespace tube
 
 } // End namespace itk
-
 #endif // End !defined( __itktubeConvertTubeGraphToImageFilter_hxx )
