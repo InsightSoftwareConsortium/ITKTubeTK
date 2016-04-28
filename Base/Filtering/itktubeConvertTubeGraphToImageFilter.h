@@ -64,10 +64,10 @@ public:
   itkGetMacro( InGraphFileName, std::string );
   itkSetMacro( InGraphFileName, std::string );
 
-  itkGetMacro( AImage, typename OutputImageType::Pointer);
-  itkGetMacro( BImage, typename OutputImageType::Pointer);
-  itkGetMacro( RImage, typename OutputImageType::Pointer);
-  itkGetMacro( CImage, typename OutputImageType::Pointer);
+  itkGetMacro( AdjacencyMatrixImage, typename OutputImageType::Pointer);
+  itkGetMacro( BranchnessImage, typename OutputImageType::Pointer);
+  itkGetMacro( RadiusImage, typename OutputImageType::Pointer);
+  itkGetMacro( CentralityImage, typename OutputImageType::Pointer);
 
 protected:
   ConvertTubeGraphToImageFilter( void );
@@ -81,10 +81,10 @@ private:
   void operator=(const Self&);
   std::string           m_InGraphFileName;
 
-  typename OutputImageType::Pointer            m_AImage;
-  typename OutputImageType::Pointer            m_BImage;
-  typename OutputImageType::Pointer            m_RImage;
-  typename OutputImageType::Pointer            m_CImage;
+  typename OutputImageType::Pointer            m_AdjacencyMatrixImage;
+  typename OutputImageType::Pointer            m_BranchnessImage;
+  typename OutputImageType::Pointer            m_RadiusImage;
+  typename OutputImageType::Pointer            m_CentralityImage;
   typename InputImageType::ConstPointer        m_InputImage;
 
 }; // End class CVTImageFilter

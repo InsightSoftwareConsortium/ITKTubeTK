@@ -75,25 +75,25 @@ int DoIt( int argc, char * argv[] )
   filename = outImageFile + ".mat.mha";
   imageWriter = ImageWriterType::New();
   imageWriter->SetFileName( filename.c_str() );
-  imageWriter->SetInput( filter->GetAImage() );
+  imageWriter->SetInput( filter->GetAdjacencyMatrixImage() );
   imageWriter->Write();
 
   filename = outImageFile + ".brc.mha";
   imageWriter = ImageWriterType::New();
   imageWriter->SetFileName( filename.c_str() );
-  imageWriter->SetInput( filter->GetBImage() );
+  imageWriter->SetInput( filter->GetBranchnessImage() );
   imageWriter->Write();
 
   filename = outImageFile + ".rot.mha";
   imageWriter = ImageWriterType::New();
   imageWriter->SetFileName( filename.c_str() );
-  imageWriter->SetInput( filter->GetRImage() );
+  imageWriter->SetInput( filter->GetRadiusImage() );
   imageWriter->Write();
 
   filename = outImageFile + ".cnt.mha";
   imageWriter = ImageWriterType::New();
   imageWriter->SetFileName( filename.c_str() );
-  imageWriter->SetInput( filter->GetCImage() );
+  imageWriter->SetInput( filter->GetCentralityImage() );
   imageWriter->Write();
 
   return EXIT_SUCCESS;

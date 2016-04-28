@@ -39,10 +39,10 @@ ConvertTubeGraphToImageFilter< TInputImage, TOutputImage >::
 ConvertTubeGraphToImageFilter( void )
 {
   m_InputImage = NULL;
-  m_AImage = NULL;
-  m_BImage = NULL;
-  m_RImage = NULL;
-  m_CImage = NULL;
+  m_AdjacencyMatrixImage = NULL;
+  m_BranchnessImage = NULL;
+  m_RadiusImage = NULL;
+  m_CentralityImage = NULL;
 }
 
 /** GenerateData */
@@ -128,41 +128,43 @@ GenerateData( void )
     }
   readStream.close();
 
-  m_AImage = this->GetOutput( 0 );
-  m_AImage->SetRegions( m_InputImage->GetLargestPossibleRegion().GetSize() );
-  m_AImage->SetSpacing( m_InputImage->GetSpacing() );
-  m_AImage->SetOrigin( m_InputImage->GetOrigin() );
-  m_AImage->Allocate();
-  m_AImage->FillBuffer( 0 );
+  m_AdjacencyMatrixImage = this->GetOutput( 0 );
+  m_AdjacencyMatrixImage->SetRegions
+    ( m_InputImage->GetLargestPossibleRegion().GetSize() );
+  m_AdjacencyMatrixImage->SetSpacing( m_InputImage->GetSpacing() );
+  m_AdjacencyMatrixImage->SetOrigin( m_InputImage->GetOrigin() );
+  m_AdjacencyMatrixImage->Allocate();
+  m_AdjacencyMatrixImage->FillBuffer( 0 );
 
-  m_BImage = OutputImageType::New();
-  m_BImage->SetRegions( m_InputImage->GetLargestPossibleRegion().GetSize() );
-  m_BImage->SetSpacing( m_InputImage->GetSpacing() );
-  m_BImage->SetOrigin( m_InputImage->GetOrigin() );
-  m_BImage->Allocate();
+  m_BranchnessImage = OutputImageType::New();
+  m_BranchnessImage->SetRegions( m_InputImage->GetLargestPossibleRegion().GetSize() );
+  m_BranchnessImage->SetSpacing( m_InputImage->GetSpacing() );
+  m_BranchnessImage->SetOrigin( m_InputImage->GetOrigin() );
+  m_BranchnessImage->Allocate();
 
-  m_RImage = OutputImageType::New();
-  m_RImage->SetRegions( m_InputImage->GetLargestPossibleRegion().GetSize() );
-  m_RImage->SetSpacing( m_InputImage->GetSpacing() );
-  m_RImage->SetOrigin( m_InputImage->GetOrigin() );
-  m_RImage->Allocate();
+  m_RadiusImage = OutputImageType::New();
+  m_RadiusImage->SetRegions( m_InputImage->GetLargestPossibleRegion().GetSize() );
+  m_RadiusImage->SetSpacing( m_InputImage->GetSpacing() );
+  m_RadiusImage->SetOrigin( m_InputImage->GetOrigin() );
+  m_RadiusImage->Allocate();
 
-  m_CImage = OutputImageType::New();
-  m_CImage->SetRegions( m_InputImage->GetLargestPossibleRegion().GetSize() );
-  m_CImage->SetSpacing( m_InputImage->GetSpacing() );
-  m_CImage->SetOrigin( m_InputImage->GetOrigin() );
-  m_CImage->Allocate();
+  m_CentralityImage = OutputImageType::New();
+  m_CentralityImage->SetRegions( m_InputImage->GetLargestPossibleRegion().GetSize() );
+  m_CentralityImage->SetSpacing( m_InputImage->GetSpacing() );
+  m_CentralityImage->SetOrigin( m_InputImage->GetOrigin() );
+  m_CentralityImage->Allocate();
 
   itk::ImageRegionConstIterator< InputImageType >
                  itCVT( m_InputImage, m_InputImage->GetLargestPossibleRegion() );
   itk::ImageRegionIterator< OutputImageType >
-                 itA( m_AImage, m_AImage->GetLargestPossibleRegion() );
+                 itA( m_AdjacencyMatrixImage,
+                      m_AdjacencyMatrixImage->GetLargestPossibleRegion() );
   itk::ImageRegionIterator< OutputImageType >
-                 itB( m_BImage, m_BImage->GetLargestPossibleRegion() );
+                 itB( m_BranchnessImage, m_BranchnessImage->GetLargestPossibleRegion() );
   itk::ImageRegionIterator< OutputImageType >
-                 itR( m_RImage, m_RImage->GetLargestPossibleRegion() );
+                 itR( m_RadiusImage, m_RadiusImage->GetLargestPossibleRegion() );
   itk::ImageRegionIterator< OutputImageType >
-                 itC( m_CImage, m_CImage->GetLargestPossibleRegion() );
+                 itC( m_CentralityImage, m_CentralityImage->GetLargestPossibleRegion() );
   itCVT.GoToBegin();
   itA.GoToBegin();
   itB.GoToBegin();
