@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeConvertTubeGraphToImageFilter_h
-#define __itktubeConvertTubeGraphToImageFilter_h
+#ifndef __itktubeConvertSpatialGraphToImageFilter_h
+#define __itktubeConvertSpatialGraphToImageFilter_h
 
 #include <itkImage.h>
 #include <itkImageRegionIterator.h>
@@ -37,13 +37,13 @@ namespace tube
 {
 
 template< class TInputImage, class TOutputImage >
-class ConvertTubeGraphToImageFilter
+class ConvertSpatialGraphToImageFilter
   : public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
 
   /** Standard class typedefs. */
-  typedef ConvertTubeGraphToImageFilter                   Self;
+  typedef ConvertSpatialGraphToImageFilter                Self;
   typedef ImageToImageFilter< TInputImage, TOutputImage>  Superclass;
   typedef SmartPointer< Self >                            Pointer;
   typedef SmartPointer< const Self >                      ConstPointer;
@@ -51,7 +51,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  itkTypeMacro( ConvertTubeGraphToImageFilter, ImageToImageFilter );
+  itkTypeMacro( ConvertSpatialGraphToImageFilter, ImageToImageFilter );
 
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TInputImage::ImageDimension );
@@ -70,14 +70,14 @@ public:
   void SetRadiusVector( vnl_vector< double > );
   void SetCentralityVector( vnl_vector< double > );
 protected:
-  ConvertTubeGraphToImageFilter( void );
-  ~ConvertTubeGraphToImageFilter( void ) {}
+  ConvertSpatialGraphToImageFilter( void );
+  ~ConvertSpatialGraphToImageFilter( void ) {}
 
   void PrintSelf(std::ostream& os, Indent indent) const;
   virtual void GenerateData( void );
 
 private:
-  ConvertTubeGraphToImageFilter(const Self&);
+  ConvertSpatialGraphToImageFilter(const Self&);
   void operator=(const Self&);
 
   typename OutputImageType::Pointer            m_AdjacencyMatrixImage;
@@ -97,7 +97,7 @@ private:
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeConvertTubeGraphToImageFilter.hxx"
+#include "itktubeConvertSpatialGraphToImageFilter.hxx"
 #endif
 
-#endif // End !defined(_itktubeConvertTubeGraphToImageFilter_h)
+#endif // End !defined(_itktubeConvertSpatialGraphToImageFilter_h)

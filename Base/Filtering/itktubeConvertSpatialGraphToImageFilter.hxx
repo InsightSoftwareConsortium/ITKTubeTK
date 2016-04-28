@@ -21,10 +21,10 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeConvertTubeGraphToImageFilter_hxx
-#define __itktubeConvertTubeGraphToImageFilter_hxx
+#ifndef __itktubeConvertSpatialGraphToImageFilter_hxx
+#define __itktubeConvertSpatialGraphToImageFilter_hxx
 
-#include "itktubeConvertTubeGraphToImageFilter.h"
+#include "itktubeConvertSpatialGraphToImageFilter.h"
 
 
 namespace itk
@@ -35,8 +35,8 @@ namespace tube
 
 /** Constructor */
 template< class TInputImage, class TOutputImage >
-ConvertTubeGraphToImageFilter< TInputImage, TOutputImage >::
-ConvertTubeGraphToImageFilter( void )
+ConvertSpatialGraphToImageFilter< TInputImage, TOutputImage >::
+ConvertSpatialGraphToImageFilter( void )
 {
   m_InputImage = NULL;
   m_AdjacencyMatrixImage = NULL;
@@ -48,7 +48,7 @@ ConvertTubeGraphToImageFilter( void )
 /** GenerateData */
 template< class TInputImage, class TOutputImage >
 void
-ConvertTubeGraphToImageFilter< TInputImage, TOutputImage >::
+ConvertSpatialGraphToImageFilter< TInputImage, TOutputImage >::
 GenerateData( void )
 {
   m_InputImage = this->GetInput();
@@ -123,7 +123,7 @@ GenerateData( void )
 
 template< class TInputImage, class TOutputImage >
 void
-ConvertTubeGraphToImageFilter< TInputImage, TOutputImage >::
+ConvertSpatialGraphToImageFilter< TInputImage, TOutputImage >::
 SetAdjacencyMatrix( vnl_matrix< double > a)
 {
   m_AdjacencyMatrix = a;
@@ -131,7 +131,7 @@ SetAdjacencyMatrix( vnl_matrix< double > a)
 
 template< class TInputImage, class TOutputImage >
 void
-ConvertTubeGraphToImageFilter< TInputImage, TOutputImage >::
+ConvertSpatialGraphToImageFilter< TInputImage, TOutputImage >::
 SetBranchnessVector( vnl_vector< double > b)
 {
   m_BranchnessVector = b;
@@ -139,7 +139,7 @@ SetBranchnessVector( vnl_vector< double > b)
 
 template< class TInputImage, class TOutputImage >
 void
-ConvertTubeGraphToImageFilter< TInputImage, TOutputImage >::
+ConvertSpatialGraphToImageFilter< TInputImage, TOutputImage >::
 SetRadiusVector( vnl_vector< double > r)
 {
   m_RadiusVector = r;
@@ -147,7 +147,7 @@ SetRadiusVector( vnl_vector< double > r)
 
 template< class TInputImage, class TOutputImage >
 void
-ConvertTubeGraphToImageFilter< TInputImage, TOutputImage >::
+ConvertSpatialGraphToImageFilter< TInputImage, TOutputImage >::
 SetCentralityVector( vnl_vector< double > c)
 {
   m_CentralityVector = c;
@@ -156,7 +156,7 @@ SetCentralityVector( vnl_vector< double > c)
 /** PrintSelf */
 template< class TInputImage, class TOutputImage >
 void
-ConvertTubeGraphToImageFilter< TInputImage, TOutputImage >::
+ConvertSpatialGraphToImageFilter< TInputImage, TOutputImage >::
 PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
@@ -165,4 +165,4 @@ PrintSelf( std::ostream & os, Indent indent ) const
 } // End namespace tube
 
 } // End namespace itk
-#endif // End !defined( __itktubeConvertTubeGraphToImageFilter_hxx )
+#endif // End !defined( __itktubeConvertSpatialGraphToImageFilter_hxx )

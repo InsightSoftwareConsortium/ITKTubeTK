@@ -25,9 +25,9 @@ limitations under the License.
 
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include "itktubeConvertTubeGraphToImageFilter.h"
+#include "itktubeConvertSpatialGraphToImageFilter.h"
 
-#include "ConvertTubeGraphToImageCLP.h"
+#include "ConvertSpatialGraphToImageCLP.h"
 
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
@@ -168,10 +168,10 @@ int DoIt( int argc, char * argv[] )
     }
   readStream.close();
 
-  typedef itk::tube::ConvertTubeGraphToImageFilter< CVTImageType, ImageType >
-    ConvertTubeGraphToImageFilterType;
-  typename ConvertTubeGraphToImageFilterType::Pointer filter =
-    ConvertTubeGraphToImageFilterType::New();
+  typedef itk::tube::ConvertSpatialGraphToImageFilter< CVTImageType, ImageType >
+    ConvertSpatialGraphToImageFilterType;
+  typename ConvertSpatialGraphToImageFilterType::Pointer filter =
+    ConvertSpatialGraphToImageFilterType::New();
   filter->SetInput( cvtImage );
   filter->SetAdjacencyMatrix( adjacencyMatrix );
   filter->SetBranchnessVector( branchnessVector );

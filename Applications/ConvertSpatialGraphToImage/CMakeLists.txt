@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-set( MODULE_NAME ConvertTubeGraphToImage )
+set( MODULE_NAME ConvertSpatialGraphToImage )
 project( ${MODULE_NAME} )
 
 if( NOT TubeTK_SOURCE_DIR )
