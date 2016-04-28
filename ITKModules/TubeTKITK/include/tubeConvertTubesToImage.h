@@ -18,7 +18,11 @@
 #ifndef __tubeConvertTubesToImage_h
 #define __tubeConvertTubesToImage_h
 
-#include <itkObject.h>
+// ITK includes
+#include <itkProcessObject.h>
+#include <itkGroupSpatialObject.h>
+
+// TubeTK includes
 #include "itktubeSpatialObjectToImageFilter.h"
 
 namespace tube
@@ -40,7 +44,7 @@ public:
 
   typedef itk::GroupSpatialObject< Dimension >       TubesType;
   typedef TOutputPixel                               OutputPixelType;
-  typedef TOutputImage                               OutputImageType;
+  typedef itk::Image< OutputPixelType >              OutputImageType;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -49,32 +53,32 @@ public:
   itkTypeMacro(ConvertTubesToImage, Object);
 
   /** Set if the tube should be full inside */
-  itkSetMacro( UseRadius, bool );
-  itkGetMacro( UseRadius, bool );
-  itkBooleanMacro( UseRadius );
+  void SetUseRadius( bool useRadius );
 
   /* Set template image */
-  void SetTemplateImage( OutputImageType::Pointer pTemplateImage );
+  void SetTemplateImage( typename OutputImageType::Pointer pTemplateImage );
 
   /* Set input tubes */
-  void SetInput( TubesType::Pointer pTubes );
+  void SetInput( typename TubesType::Pointer pTubes );
 
+  /* Runs tubes to image conversion */
   void Update();
 
+  /* Get the generated binary tubes image */
   typename OutputImageType::Pointer GetOutput();
 
 protected:
   ConvertTubesToImage( void );
   ~ConvertTubesToImage() {}
-  void PrintSelf(std::ostream & os, itk::Indent indent) const;
+  void PrintSelf( std::ostream & os, itk::Indent indent ) const;
 
 private:
   /** itkConvertTubesToImageFilter parameters **/
   ConvertTubesToImage(const Self &);
   void operator=(const Self &);
 
-  typedef itk::tube::SpatialObjectToImageFilter< Dimension, OutputImageType >
-    TubesToImageFilterType;
+  typedef itk::tube::TubeSpatialObjectToImageFilter< Dimension,
+    OutputImageType > TubesToImageFilterType;
 
   typename TubesToImageFilterType::Pointer m_TubesToImageFilter;
 

@@ -59,12 +59,12 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   // read tubes
+  typedef itk::SpatialObjectReader< Dimension > TubesReaderType;
+
   timeCollector.Start( "Reading tubes file" );
 
-  typedef itk::GroupSpatialObject< Dimension >       TubesType;
-  typedef itk::SpatialObjectReader< Dimension >      TubesReaderType;
+  typename TubesReaderType::Pointer tubeFileReader = TubesReaderType::New();
 
-  TubesReaderType::Pointer tubeFileReader = TubesReaderType::New();
   try
     {
     tubeFileReader->SetFileName( inputTubeFile.c_str() );
@@ -75,8 +75,6 @@ int DoIt( int argc, char * argv[] )
     tube::ErrorMessage( "No readable tubes found!" );
     return NULL;
     }
-
-  TubesType::Pointer tubes = tubeFileReader->GetGroup();
 
   timeCollector.Stop( "Reading tubes file" );
   progress = 0.1; // At about 10% done
@@ -104,7 +102,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start( "Converting Tubes To Image" );
 
-  TubestoImageFilterType::Pointer tubesToImageFilter =
+  typename TubestoImageFilterType::Pointer tubesToImageFilter =
     TubesToImageFilterType::New();
 
   tubesToImageFilter->SetUseRadius( useRadii );
@@ -119,8 +117,9 @@ int DoIt( int argc, char * argv[] )
   // write tube image to file
   timeCollector.Start( "Writing tube image to file" );
 
-  typedef itk::ImageFileWriter< OutputImageType > TubeImageWriterType;
-  TubeImageWriterType::Pointer tubeImageWriter = TubeImageWriterType::New();
+  typedef itk::ImageFileWriter< TemplateImageType > TubeImageWriterType;
+  typename TubeImageWriterType::Pointer tubeImageWriter =
+    TubeImageWriterType::New();
 
   tubeImageWriter->SetFileName( outputImageFile.c_str() );
   tubeImageWriter->SetInput( tubesToImageFilter->GetOutput() );

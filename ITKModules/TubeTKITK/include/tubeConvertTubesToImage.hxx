@@ -24,18 +24,21 @@ namespace tube
 {
 
 template< unsigned int Dimension, class TOutputPixel >
-ConvertTubesToImage<Dimension, TOutputPixel>
+ConvertTubesToImage< Dimension, TOutputPixel >
 ::ConvertTubesToImage( void )
 {
   m_TubesToImageFilter = TubesToImageFilterType::New();
+  m_TubesToImageFilter->SetBuildRadiusImage( false );
+  m_TubesToImageFilter->SetBuildTangentImage( false );
 }
 
 template< unsigned int Dimension, class TOutputPixel >
 void
-ConvertTubesToImage<Dimension, TOutputPixel>
-::SetTemplateImage( OutputImageType::Pointer pTemplateImage )
+ConvertTubesToImage< Dimension, TOutputPixel >
+::SetTemplateImage( typename ConvertTubesToImage< Dimension,
+  TOutputPixel >::OutputImageType::Pointer pTemplateImage )
 {
-  TubetoImageFilterType::SizeType size;
+  typename TubesToImageFilterType::SizeType size;
 
   double spacing[Dimension];
   for(int i = 0; i < Dimension; i++ )
@@ -50,23 +53,33 @@ ConvertTubesToImage<Dimension, TOutputPixel>
 
 template< unsigned int Dimension, class TOutputPixel >
 void
-ConvertTubesToImage<Dimension, TOutputPixel>
-::SetInput( TubesType::Pointer pTubes )
+ConvertTubesToImage< Dimension, TOutputPixel >
+::SetUseRadius( bool useRadius )
+{
+  m_TubesToImageFilter->SetUseRadius( useRadius );
+}
+
+template< unsigned int Dimension, class TOutputPixel >
+void
+ConvertTubesToImage< Dimension, TOutputPixel >
+::SetInput( typename ConvertTubesToImage< Dimension,
+  TOutputPixel >::TubesType::Pointer pTubes )
 {
   m_TubesToImageFilter->SetInput( pTubes );
 }
 
 template< unsigned int Dimension, class TOutputPixel >
 void
-ConvertTubesToImage<Dimension, TOutputPixel>
+ConvertTubesToImage< Dimension, TOutputPixel >
 ::Update()
 {
   m_TubesToImageFilter->Update();
 }
 
 template< unsigned int Dimension, class TOutputPixel >
-ConvertTubesToImage<Dimension, TOutputPixel>::OutputImageType::Pointer
-ConvertTubesToImage<Dimension, TOutputPixel>
+typename ConvertTubesToImage< Dimension,
+  TOutputPixel >::OutputImageType::Pointer
+ConvertTubesToImage< Dimension, TOutputPixel >
 ::GetOutput()
 {
   return m_TubesToImageFilter->GetOutput();
@@ -74,7 +87,7 @@ ConvertTubesToImage<Dimension, TOutputPixel>
 
 template< unsigned int Dimension, class TOutputPixel >
 void
-ConvertTubesToImage<Dimension, TOutputPixel>
+ConvertTubesToImage< Dimension, TOutputPixel >
 ::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
   m_TubesToImageFilter->PrintSelf( os, indent );
