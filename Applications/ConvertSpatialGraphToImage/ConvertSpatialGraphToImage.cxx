@@ -25,7 +25,9 @@ limitations under the License.
 
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include "itktubeConvertSpatialGraphToImageFilter.h"
+
+// TubeTKITK includes
+#include "tubeConvertSpatialGraphToImage.h"
 
 #include "ConvertSpatialGraphToImageCLP.h"
 
@@ -168,7 +170,7 @@ int DoIt( int argc, char * argv[] )
     }
   readStream.close();
 
-  typedef itk::tube::ConvertSpatialGraphToImageFilter< CVTImageType, ImageType >
+  typedef tube::ConvertSpatialGraphToImage< CVTImageType, ImageType >
     ConvertSpatialGraphToImageFilterType;
   typename ConvertSpatialGraphToImageFilterType::Pointer filter =
     ConvertSpatialGraphToImageFilterType::New();
