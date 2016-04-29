@@ -73,7 +73,7 @@ int DoIt( int argc, char * argv[] )
   catch( ... )
     {
     tube::ErrorMessage( "No readable tubes found!" );
-    return NULL;
+    return EXIT_FAILURE;
     }
 
   timeCollector.Stop( "Reading tubes file" );
@@ -89,8 +89,16 @@ int DoIt( int argc, char * argv[] )
   typename TemplateImageReaderType::Pointer templateImageReader =
     TemplateImageReaderType::New();
 
-  templateImageReader->SetFileName( inputTemplateImage.c_str() );
-  templateImageReader->Update();
+  try
+    {
+    templateImageReader->SetFileName( inputTemplateImage.c_str() );
+    templateImageReader->Update();
+    }
+  catch( ... )
+    {
+    tube::ErrorMessage( "Could not read template image!" );
+    return EXIT_FAILURE;
+    }
 
   timeCollector.Stop( "Reading template image" );
   progress = 0.2; // At about 20% done
@@ -98,11 +106,11 @@ int DoIt( int argc, char * argv[] )
 
   // call TubesToImageFilter
   typedef tube::ConvertTubesToImage< Dimension, TPixel >
-    TubestoImageFilterType;
+    TubesToImageFilterType;
 
   timeCollector.Start( "Converting Tubes To Image" );
 
-  typename TubestoImageFilterType::Pointer tubesToImageFilter =
+  typename TubesToImageFilterType::Pointer tubesToImageFilter =
     TubesToImageFilterType::New();
 
   tubesToImageFilter->SetUseRadius( useRadii );
@@ -149,6 +157,8 @@ int main( int argc, char * argv[] )
     tube::ErrorMessage( err.what() );
     return EXIT_FAILURE;
     }
+
+  PARSE_ARGS;
 
   return tube::ParseArgsAndCallDoIt( inputTemplateImage, argc, argv );
 }
