@@ -9,7 +9,7 @@ binary image highlighting the pixels that:
 * are anywhere inside a tube when the `-r` flag is specified , or
 * are on the centerline of a tube if the `-r` flag is not specified
 
-#### Commandline Usage:
+#### Command line usage:
 
 ```
 USAGE:
