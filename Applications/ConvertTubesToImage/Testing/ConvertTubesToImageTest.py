@@ -15,6 +15,9 @@ from itk import TubeTKITK as itktube
 
 def main(args):
 
+  PixelType = itk.UC
+  Dimension = 3
+
   # Read tre file
   TubeFileReaderType = itk.SpatialObjectReader[Dimension]
 
