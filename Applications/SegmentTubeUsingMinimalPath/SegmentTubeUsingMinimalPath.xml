@@ -30,54 +30,42 @@
     <label>Path</label>
     <description>Path parameters.</description>
     <point multiple="true" coordinateSystem="lps">
-      <name>Path</name>
-      <label>Path Points</label>
-      <description>Path Points</description>
-      <longflag>pathPoints</longflag>
+      <name>StartPoint</name>
+      <label>Start Point</label>
+      <description>Start/Source Point</description>
+      <longflag>startPoint</longflag>
+    </point>
+    <point multiple="true" coordinateSystem="lps">
+      <name>IntermediatePoints</name>
+      <label>Intermediate Points (Optional)</label>
+      <description>Intermediate Points</description>
+      <longflag>intermediatePoints</longflag>
+    </point>
+    <point multiple="true" coordinateSystem="lps">
+      <name>EndPoint</name>
+      <label>Target Point</label>
+      <description>End/Target Point</description>
+      <longflag>targetPoint</longflag>
     </point>
     <file>
-      <name>InputPathFile</name>
-      <label>Target Path </label>
-      <longflag>targetPath</longflag>
+      <name>TargetTubeFileName</name>
+      <label>Target Tube </label>
+      <longflag>targetTube</longflag>
       <channel>input</channel>
-      <description>Starting from the path points, a new path is extracted to grow and meet the target path. </description>
+      <description>Starting from the source point, a new tube is extracted to grow and meet the target tube. </description>
     </file>
-    <boolean>
-      <name>HardBoundary</name>
-      <label>Hard boundary</label>
-      <description>Indicates wether to stop extracting new path as it approach with in the boundary of the target path. </description>
-      <default>false</default>
-      <longflag>strictBoundary</longflag>
-    </boolean>
-    <double>
-      <name>Distance</name>
-      <label>Boundary Distance</label>
-      <description>Distance between the new path and the target path</description>
-      <longflag>distance</longflag>
-      <default>-1</default>
-      <constraints>
-        <minimum>-1</minimum>
-        <maximum>50</maximum>
-        <step>1</step>
-      </constraints>
-    </double>
-    <file fileExtensions=".fcsv">
-      <name>PathEndPoints</name>
-      <label>Path End Points File</label>
-      <channel>input</channel>
-      <description>Save the end points of the extracted path.</description>
-      <longflag>endPointsFile</longflag>
-    </file>
+    <string-enumeration>
+      <name>ConnectionOption</name>
+      <label>Connection Option</label>
+      <description>Connection Option</description>
+      <longflag>connectionOption</longflag>
+      <default>Connect To Target Tube Surface</default>
+      <element>Connect To Target Tube Centerline</element>
+      <element>Connect To Target Tube Surface</element>
+    </string-enumeration>
   </parameters>
   <parameters>
     <label>Radius Extraction</label>
-    <boolean>
-      <name>ExtractRadiusUsingInputImage</name>
-      <label>Extract Radius Using Input Image</label>
-      <description>Extract tube radius along the path using input image. To be used when input image is a distance map.</description>
-      <default>false</default>
-      <longflag>extractRadiusFromDistanceMap</longflag>
-    </boolean>
     <image>
       <name>RadiusImage</name>
       <label>Radius Image</label>
@@ -103,7 +91,7 @@
     </double>
     <double>
       <name>StepRadius</name>
-      <label>Step size for radius estimation</label>
+      <label>Step Size</label>
       <description>Step size for radius estimation.</description>
       <longflag>stepRadius</longflag>
       <default>0.05</default>
