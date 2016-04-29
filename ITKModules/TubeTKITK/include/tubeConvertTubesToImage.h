@@ -34,7 +34,7 @@ namespace tube
 
 template< unsigned int Dimension, class TOutputPixel >
 class ConvertTubesToImage:
-  public itk::Object
+  public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
@@ -44,7 +44,7 @@ public:
 
   typedef itk::GroupSpatialObject< Dimension >       TubesType;
   typedef TOutputPixel                               OutputPixelType;
-  typedef itk::Image< OutputPixelType >              OutputImageType;
+  typedef itk::Image< OutputPixelType, Dimension >   OutputImageType;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
