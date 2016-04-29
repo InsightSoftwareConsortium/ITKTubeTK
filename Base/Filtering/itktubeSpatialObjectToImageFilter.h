@@ -29,21 +29,28 @@ limitations under the License.
 #include <itkTubeSpatialObject.h>
 #include <itkTubeSpatialObjectPoint.h>
 
+// Forward declare TubeTKITK class to allow friendship
+namespace tube
+{
+template< unsigned int Dimension, typename TOutputPixel >
+class ConvertTubesToImage;
+}
+
 namespace itk
 {
 
 namespace tube
 {
 
-/** \class SpatialObjectToImageFilter
+/** \class TubeSpatialObjectToImageFilter
  * \brief This filter creates a binary image with 1 representing the
  * vessel existence in that voxels and 0 not.
  * Also, forms the same image, but with the radius value in place of the 1.
  */
 
 template< unsigned int ObjectDimension, class TOutputImage,
-          class TRadiusImage = Image< float, TOutputImage::ImageDimension >,
-          class TTangentImage = Image< Vector< float, TOutputImage::ImageDimension >,
+  class TRadiusImage = Image< float, TOutputImage::ImageDimension >,
+  class TTangentImage = Image< Vector< float, TOutputImage::ImageDimension >,
                                        TOutputImage::ImageDimension > >
 class TubeSpatialObjectToImageFilter
   : public SpatialObjectToImageFilter< SpatialObject< ObjectDimension >,
@@ -134,6 +141,10 @@ private:
 
   typename RadiusImage::Pointer     m_RadiusImage;
   typename TangentImage::Pointer    m_TangentImage;
+
+  /** friendship facilitating TubeTKITK integration */
+  friend class ::tube::ConvertTubesToImage< ObjectDimension,
+    typename TOutputImage::PixelType >;
 
 }; // End class TubeSpatialObjectToImageFilter
 
