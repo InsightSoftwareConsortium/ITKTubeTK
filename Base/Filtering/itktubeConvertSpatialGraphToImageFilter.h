@@ -30,6 +30,13 @@ limitations under the License.
 #include <itkProcessObject.h>
 #include <vector>
 
+// Forward declare itkTubeTK class to allow friendship
+namespace tube
+{
+template< typename tube_TInputImage, typename tube_TOutputImage >
+class ConvertSpatialGraphToImage;
+}
+
 namespace itk
 {
 
@@ -60,10 +67,10 @@ public:
   typedef typename InputImageType::PixelType            InputPixelType;
   typedef TOutputImage                                  OutputImageType;
 
-  itkGetMacro( AdjacencyMatrixImage, typename OutputImageType::Pointer);
-  itkGetMacro( BranchnessImage, typename OutputImageType::Pointer);
-  itkGetMacro( RadiusImage, typename OutputImageType::Pointer);
-  itkGetMacro( CentralityImage, typename OutputImageType::Pointer);
+  itkGetMacro( AdjacencyMatrixImage, typename OutputImageType::Pointer );
+  itkGetMacro( BranchnessImage, typename OutputImageType::Pointer );
+  itkGetMacro( RadiusImage, typename OutputImageType::Pointer );
+  itkGetMacro( CentralityImage, typename OutputImageType::Pointer );
 
   void SetAdjacencyMatrix( vnl_matrix< double > );
   void SetBranchnessVector( vnl_vector< double > );
@@ -90,6 +97,10 @@ private:
   vnl_vector< double > m_BranchnessVector;
   vnl_vector< double > m_RadiusVector;
   vnl_vector< double > m_CentralityVector;
+
+  /** friendship facilitating itkTukeTK integration */
+  template< typename tube_TInputImage, typename tube_TOutputImage >
+  friend class ::tube::ConvertSpatialGraphToImage;
 }; // End class CVTImageFilter
 
 } // End namespace tube
