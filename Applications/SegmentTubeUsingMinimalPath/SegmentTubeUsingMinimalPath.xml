@@ -59,9 +59,9 @@
       <label>Connection Option</label>
       <description>Connection Option</description>
       <longflag>connectionOption</longflag>
-      <default>Connect To Target Tube Surface</default>
-      <element>Connect To Target Tube Centerline</element>
-      <element>Connect To Target Tube Surface</element>
+      <default>Connect_To_Target_Tube_Surface</default>
+      <element>Connect_To_Target_Tube_Centerline</element>
+      <element>Connect_To_Target_Tube_Surface</element>
     </string-enumeration>
   </parameters>
   <parameters>
