@@ -213,7 +213,7 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
     typename OutputImageType::PointType point;
     outputImage->TransformIndexToPhysicalPoint( index, point );
     ParametersType parameters( NumberOfParameters );
-    parameters.SetData( point.GetDataPointer() );
+    parameters.SetDataSameSize( point.GetDataPointer() );
     const MeasureType measure = this->m_CostFunction->GetValue( parameters );
     imageIt.Set( static_cast< typename OutputImageType::PixelType >( measure ) );
     progress.CompletedPixel();
