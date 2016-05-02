@@ -13,7 +13,7 @@ sys.path.append(os.environ['TUBETK_BUILD_DIR'], 'TubeTK-build/lib/TubeTK')
 import itk
 from itk import TubeTKITK as itktube
 
-def main(args):
+def run(args):
 
   PixelType = itk.UC
   Dimension = 3
@@ -49,4 +49,4 @@ def main(args):
   tubeImageWriter.Update()
 
 if __name__ == "__main__":
-    main(CLIArgumentParser().parse_args())
+    run(CLIArgumentParser().parse_args())
