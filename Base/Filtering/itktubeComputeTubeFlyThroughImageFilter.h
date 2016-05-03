@@ -46,19 +46,19 @@ class ComputeTubeFlyThroughImageFilter
 {
 public:
 
-  /** Standard class typedefs. */
-  typedef ComputeTubeFlyThroughImageFilter               Self;
-  typedef SpatialObjectToImageFilter< SpatialObject<ObjectDimension>,
-                                      TOutputImage>      SuperClass;
-  typedef SmartPointer< Self >                           Pointer;
-  typedef SmartPointer< const Self >                     ConstPointer;
-
   /** Tube class typedef */
   typedef GroupSpatialObject< Dimension >          TubeGroupType;
   typedef TubeSpatialObject< Dimension >           TubeType;
   typedef Image< TPixel, Dimension >               InputImageType;
   typedef InputImageType                           OutputImageType;
   typedef Image< unsigned char, Dimension >        OutputMaskType;
+
+  /** Standard class typedefs. */
+  typedef ComputeTubeFlyThroughImageFilter               Self;
+  typedef SpatialObjectToImageFilter< TubeGroupType,
+    InputImageType >                                     SuperClass;
+  typedef SmartPointer< Self >                           Pointer;
+  typedef SmartPointer< const Self >                     ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
