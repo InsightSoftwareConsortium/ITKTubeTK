@@ -363,11 +363,11 @@ option( TubeTK_USE_PYTHON "Use Python to enable additional functionality."
 
 if( TubeTK_USE_PYTHON )
 
-  include(CheckPythonLibrary)
+  include(TubeTKCheckPythonLibrary)
   # NumPy conversion support.
   option( TubeTK_USE_NUMPY "Use NumPy to enable additional functionality." ON )
   mark_as_advanced( CLEAR TubeTK_USE_NUMPY )
-  CheckPythonLibrary(numpy)
+  TubeTKCheckPythonLibrary(numpy)
   if( TubeTK_USE_NUMPY AND NOT numpy_FOUND )
     message(FATAL_ERROR "numpy was not found. Set TubeTK_USE_NUMPY to OFF")
   endif()
