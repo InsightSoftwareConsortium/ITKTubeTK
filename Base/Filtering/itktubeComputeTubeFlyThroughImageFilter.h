@@ -76,7 +76,7 @@ public:
   itkGetConstObjectMacro( InputImage, InputImageType )
 
   /** Get output tube mask image */
-  typename OutputMaskType::Pointer GetOutputTubeMask( void );
+  typename OutputMaskType::Pointer GetOutputMask( void );
 
 protected:
 

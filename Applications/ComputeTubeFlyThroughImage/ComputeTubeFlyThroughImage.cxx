@@ -29,10 +29,10 @@ limitations under the License.
 #include "tubeComputeTubeFlyThroughImage.h"
 
 // ITK includes
-#include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkSpatialObjectReader.h"
-#include "itkTimeProbesCollectorBase.h"
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkSpatialObjectReader.h>
+#include <itkTimeProbesCollectorBase.h>
 
 #include "ComputeTubeFlyThroughImageCLP.h"
 
@@ -84,8 +84,6 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  typename ImageType::Pointer pInputImage = pImageReader->GetOutput();
-
   timeCollector.Stop( "Loading input image" );
 
   // Load TRE File
@@ -110,8 +108,6 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-
-  typename TubeGroupType::Pointer pTubeGroup = pTubeFileReader->GetGroup();
 
   timeCollector.Stop( "Loading input TRE file" );
 
