@@ -28,13 +28,6 @@ limitations under the License.
 #include <itkSpatialObjectToImageFilter.h>
 #include <itkTubeSpatialObject.h>
 
-// Forward declare TubeTKITK class to allow friendship
-namespace tube
-{
-template< class TPixel, unsigned int Dimension >
-class ComputeTubeFlyThroughImage;
-}
-
 namespace itk
 {
 
@@ -100,9 +93,6 @@ private:
   unsigned long                               m_TubeId;
   typename InputImageType::Pointer            m_InputImage;
   typename OutputMaskType::Pointer            m_OutputMask;
-
-  /** friendship facilitating TubeTKITK integration */
-  friend class ::tube::ComputeTubeFlyThroughImage< TPixel, Dimension >;
 
 }; // End class ComputeTubeFlyThroughImageFilter
 
