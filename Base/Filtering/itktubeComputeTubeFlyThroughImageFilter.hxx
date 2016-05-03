@@ -26,20 +26,23 @@ limitations under the License.
 
 #include "itktubeComputeTubeFlyThroughImageFilter.h"
 
-#include "itkResampleImageFilter.h"
-#include "itkLinearInterpolateImageFunction.h"
-#include "itkMinimumMaximumImageFilter.h"
+#include <itkImageRegionIterator.h>
+#include <itkImageRegionIteratorWithIndex.h>
+#include <itkLinearInterpolateImageFunction.h>
+#include <itkMinimumMaximumImageFilter.h>
+#include <itkResampleImageFilter.h>
 
 template< class TPixel, unsigned int Dimension >
 ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
 ::ComputeTubeFlyThroughImageFilter( void )
 {
   this->SetNumberOfRequiredOutputs( 2 );
-  m_OutputMask = OutputTubeMaskType::New();
+  m_OutputMask = OutputMaskType::New();
   this->SetNthOutput( 1, m_OutputMask );
 }
 
 template< class TPixel, unsigned int Dimension >
+void
 ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
@@ -49,22 +52,23 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
 
 template< class TPixel, unsigned int Dimension >
 typename ComputeTubeFlyThroughImageFilter< TPixel,
-  Dimension >::OutputTubeMaskType::Pointer
+  Dimension >::OutputMaskType::Pointer
 ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
-::GetOutputTubeMask( void )
+::GetOutputMask( void )
 {
-  return dynamic_cast< OutputTubeMaskType * >(
+  return dynamic_cast< OutputMaskType * >(
     this->ProcessObject::GetOutput(1) );
 }
 
 template< class TPixel, unsigned int Dimension >
+void
 ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
 ::GenerateData( void )
 {
   itkDebugMacro( << "ComputeTubeFlyThroughImageFilter::Update() called." );
 
   // get input tubes
-  TubeGroupType::Pointer inputTubeGroup = this->GetInput();
+  typename TubeGroupType::Pointer inputTubeGroup = this->GetInput();
 
   // Find the user specified tybe
   itkDebugMacro( << "Finding user specified tube" );
@@ -162,7 +166,8 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
   itkDebugMacro( << "Mean Tube Point Distance = " << meanTubePointDist );
 
   // Determine minimum spacing of the input image
-  typename ImageType::SpacingType inputSpacing = m_InputImage->GetSpacing();
+  typename InputImageType::SpacingType inputSpacing =
+    m_InputImage->GetSpacing();
   double minInputSpacing = inputSpacing[0];
 
   for(unsigned int i = 1; i < Dimension; i++)
@@ -193,20 +198,20 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
     outputImage->SetSpacing( outputSpacing );
 
     // set start index1
-    typename ImageType::IndexType startIndex;
+    typename OutputImageType::IndexType startIndex;
     startIndex.Fill(0);
 
     // set size
-    typename ImageType::SizeType size;
+    typename OutputImageType::SizeType size;
     for(unsigned int i = 0; i < Dimension-1; i++)
       {
-      size[i] = 2 * (typename ImageType::SizeValueType)
+      size[i] = 2 * (typename OutputImageType::SizeValueType)
         (0.5 + (maxTubeRadius / outputSpacing[i])) + 1;
       }
     size[Dimension-1] = tubePointList.size();
 
     // set regions
-    typename ImageType::RegionType region;
+    typename OutputImageType::RegionType region;
     region.SetIndex( startIndex );
     region.SetSize( size );
     outputImage->SetRegions( region );
@@ -225,16 +230,17 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
   // and fill into corresponding slice in the output image
   itkDebugMacro( "Generating fly through image" );
 
-  typedef typename TubeType::TubePointType               TubePointType;
-  typedef typename TubePointType::CovariantVectorType    TubeNormalType;
-  typedef itk::ImageRegionIteratorWithIndex<
-    OutputImageType >                                    ImageIteratorType;
-  typedef itk::ImageRegionIterator< OutputMaskType >     MaskIteratorType;
+  typedef typename TubeType::TubePointType             TubePointType;
+  typedef typename TubePointType::CovariantVectorType  TubeNormalType;
+  typedef ImageRegionIteratorWithIndex<
+    OutputImageType >                                  OutputImageIteratorType;
+  typedef itk::ImageRegionIterator< OutputMaskType >   OutputMaskIteratorType;
 
-  typedef itk::LinearInterpolateImageFunction< ImageType, double >
+  typedef itk::LinearInterpolateImageFunction< InputImageType, double >
     InterpolatorType;
 
-  typedef itk::MinimumMaximumImageFilter< ImageType > MinMaxImageFilterType;
+  typedef itk::MinimumMaximumImageFilter< InputImageType >
+    MinMaxImageFilterType;
 
   typename TubeType::TransformType * pTubeIndexPhysTransform =
     inputTube->GetIndexToWorldTransform();
@@ -273,13 +279,13 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
     //std::cout << curTubeNormal2.GetNorm() << std::endl;
 
     // Define slice region in the output image
-    typename ImageType::RegionType sliceRegion;
+    typename OutputImageType::RegionType sliceRegion;
 
-    typename ImageType::IndexType sliceStartIndex;
+    typename OutputImageType::IndexType sliceStartIndex;
     sliceStartIndex.Fill(0);
     sliceStartIndex[Dimension-1] = ptInd;
 
-    typename ImageType::SizeType sliceSize;
+    typename OutputImageType::SizeType sliceSize;
     sliceSize = outputImage->GetLargestPossibleRegion().GetSize();
     sliceSize[Dimension-1] = 1;
 
@@ -287,18 +293,18 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
     sliceRegion.SetSize( sliceSize );
 
     // Iterate through corresponding slice of output image and fill each pixel
-    ImageIteratorType itOutSlice( outputImage, sliceRegion );
-    MaskIteratorType itMask( m_OutputMask, sliceRegion );
+    OutputImageIteratorType itOutSlice( outputImage, sliceRegion );
+    OutputMaskIteratorType itMask( m_OutputMask, sliceRegion );
 
     for( itOutSlice.GoToBegin(), itMask.GoToBegin();
       !itOutSlice.IsAtEnd(); ++itOutSlice, ++itMask )
       {
       // get index of the current output pixel
-      typename ImageType::IndexType curOutIndex = itOutSlice.GetIndex();
+      typename OutputImageType::IndexType curOutIndex = itOutSlice.GetIndex();
 
       // compute corresponding position in the input image
       //typename InterpolatorType::ContinuousIndexType curInputPoint;
-      typename ImageType::PointType curInputPoint;
+      typename OutputImageType::PointType curInputPoint;
 
       double distToCenter = 0;
 

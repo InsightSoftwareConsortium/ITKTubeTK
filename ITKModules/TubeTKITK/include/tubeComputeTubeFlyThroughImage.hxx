@@ -27,14 +27,15 @@ template< class TPixel, unsigned int Dimension >
 ComputeTubeFlyThroughImage< TPixel, Dimension >
 ::ComputeTubeFlyThroughImage( void )
 {
-  m_Filter = FilterType::New()
+  m_Filter = FilterType::New();
 }
 
 template< class TPixel, unsigned int Dimension >
+void
 ComputeTubeFlyThroughImage< TPixel, Dimension >
 ::Update( void )
 {
-  m_Filter->Update()
+  m_Filter->Update();
 }
 
 template< class TPixel, unsigned int Dimension >

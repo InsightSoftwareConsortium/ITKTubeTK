@@ -19,6 +19,7 @@
 #define __tubeComputeTubeFlyThroughImage_h
 
 // ITK includes
+#include <itkObject.h>
 #include <itkProcessObject.h>
 #include <itkGroupSpatialObject.h>
 
@@ -35,7 +36,7 @@ namespace tube
 
 template< class TPixel, unsigned int Dimension >
 class ComputeTubeFlyThroughImage:
-  public itk::ProcessObject
+  public itk::Object
 {
 public:
   /** Standard class typedefs. */
