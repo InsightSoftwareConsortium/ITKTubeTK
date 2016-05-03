@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>ConvertCSVToImages (TubeTK)</title>
+  <description>Generate an image for each column in the CSV file, storing their values in sequence in each of the non-zero pixels in the mask.</description>
+  <version>1.0</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Stephen@Aylward.org</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters.</description>
+    <image>
+      <name>inputImageFileName</name>
+      <label>Mask Image</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Mask image that defines</description>
+    </image>
+    <file>
+      <name>inputCSVFileName</name>
+      <label>Output CSV File</label>
+      <channel>input</channel>
+      <description>Output csv file to be created.</description>
+      <channel>input</channel>
+      <index>1</index>
+    </file>
+    <string>
+      <name>outputImageBaseFileName</name>
+      <label>Output Image Base</label>
+      <index>2</index>
+      <description>Base name for the output images</description>
+    </string>
+  </parameters>
+    <parameters>
+    <label>Options</label>
+    <integer>
+      <name>stride</name>
+      <label>Stride</label>
+      <description>If the CSV file was generated from the mask using a stride, specify that same stride here to ensure proper reconstruction.</description>
+      <longflag>stride</longflag>
+      <flag>s</flag>
+      <default>3</default>
+    </integer>
+  </parameters>
+</executable>
