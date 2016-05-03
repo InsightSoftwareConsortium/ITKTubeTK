@@ -250,8 +250,8 @@ if( TubeTK_BUILD_USING_SLICER )
     TubeTK_USE_CTK )
 
   #set(TubeTK_BUILD_WITHIN_SLICER ${TubeTK_BUILD_USING_SLICER})
-  unset( QT_QMAKE_EXECUTABLE )
-  unset( PYTHON_EXECUTABLE )
+  unset( QT_QMAKE_EXECUTABLE CACHE)
+  unset( PYTHON_EXECUTABLE CACHE)
 
   # Find Slicer to set the [ITK|VTK|CTK|...]_DIR variables
   find_package( Slicer REQUIRED )
