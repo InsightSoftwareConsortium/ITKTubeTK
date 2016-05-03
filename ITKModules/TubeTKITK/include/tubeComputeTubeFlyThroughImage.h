@@ -24,6 +24,7 @@
 
 // TubeTK includes
 #include "itktubeComputeTubeFlyThroughImageFilter.h"
+#include "tubeWrappingMacros.h"
 
 namespace tube
 {
@@ -42,10 +43,14 @@ public:
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 
-  typedef TubeSpatialObject< Dimension >             TubesType;
-  typedef Image< TPixel, Dimension >                 InputImageType;
-  typedef InputImageType                             OutputImageType;
-  typedef Image< unsigned char, Dimension >          OutputMaskType;
+  typedef itk::tube::ComputeTubeFlyThroughImageFilter< TPixel,
+    Dimension >                                     FilterType;
+
+  typedef typename FilterType::TubeGroupType        TubeGroupType;
+  typedef typename FilterType::TubeType             TubeType;
+  typedef typename FilterType::InputImageType       InputImageType;
+  typedef typename FilterType::OutputImageTyp       OutputImageType;
+  typedef typename FilterType::OutputMaskType       OutputMaskType;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -53,24 +58,26 @@ public:
   /** Run-time type information (and related methods). */
   itkTypeMacro(ComputeTubeFlyThroughImage, Object);
 
-  /** Set tube id for which the fly through image is to be generated */
-  void SetTubeId( unsigned long tubeId );
-  unsigned long GetTubeId();
+  /** Set/Get tube id for which the fly through image is to be generated */
+  tubeWrapSetMacro(TubeId, unsigned long, Filter)
+  tubeWrapGetMacro(TubeId, unsigned long, Filter)
 
-  /* Set input image from which the tubes were extracted/segmented */
-  void SetInputImage( typename InputImageType::Pointer inputImage );
+  /* Set/Get input image from which the tubes were extracted/segmented */
+  tubeWrapSetConstObjectMacro(InputImage, InputImageType, Filter)
+  tubeWrapGetConstObjectMacro(InputImage, InputImageType, Filter)
 
-  /* Set tubes */
-  void SetInput( typename TubesType::Pointer pTubes );
+  /* Set/Get input tubes */
+  tubeWrapSetConstObjectMacro(Input, TubeGroupType, Filter)
+  tubeWrapGetConstObjectMacro(Input, TubeGroupType, Filter)
 
   /* Generates tube fly through image and mask */
   void Update();
 
   /* Get the generated tube fly through image */
-  typename OutputImageType::Pointer GetOutput();
+  tubeWrapGetObjectMacro(Output, OutputImageType, Filter )
 
   /* Get the generated tube fly through image */
-  typename OutputMaskType::Pointer GetOutputMask();
+  tubeWrapGetObjectMacro(OutputMask, OutputMaskType, Filter )
 
 protected:
   ComputeTubeFlyThroughImage( void );
@@ -82,10 +89,7 @@ private:
   ComputeTubeFlyThroughImage(const Self &);
   void operator=(const Self &);
 
-  typedef itk::tube::TubeSpatialObjectToImageFilter< Dimension,
-    OutputImageType > TubesToImageFilterType;
-
-  typename TubesToImageFilterType::Pointer m_TubesToImageFilter;
+  typename FilterType::Pointer m_Filter;
 
 };
 

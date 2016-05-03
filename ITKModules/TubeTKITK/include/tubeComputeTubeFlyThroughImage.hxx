@@ -23,6 +23,29 @@
 namespace tube
 {
 
+template< class TPixel, unsigned int Dimension >
+ComputeTubeFlyThroughImage< TPixel, Dimension >
+::ComputeTubeFlyThroughImage( void )
+{
+  m_Filter = FilterType::New()
+}
+
+template< class TPixel, unsigned int Dimension >
+ComputeTubeFlyThroughImage< TPixel, Dimension >
+::Update( void )
+{
+  m_Filter->Update()
+}
+
+template< class TPixel, unsigned int Dimension >
+void
+ComputeTubeFlyThroughImage< TPixel, Dimension >
+::PrintSelf( std::ostream & os, itk::Indent indent ) const
+{
+  Superclass::PrintSelf( os, indent );
+  os << "TubeId: " << this->GetTubeId() << std::endl;
+}
+
 }
 
 #endif
