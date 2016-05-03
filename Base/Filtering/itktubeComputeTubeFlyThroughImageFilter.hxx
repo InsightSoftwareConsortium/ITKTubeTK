@@ -40,6 +40,14 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
 }
 
 template< class TPixel, unsigned int Dimension >
+ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
+::PrintSelf( std::ostream& os, Indent indent ) const
+{
+  SuperClass::PrintSelf(os, indent);
+  os << "TubeId: " << m_TubeId << std::endl;
+}
+
+template< class TPixel, unsigned int Dimension >
 typename ComputeTubeFlyThroughImageFilter< TPixel,
   Dimension >::OutputTubeMaskType::Pointer
 ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
