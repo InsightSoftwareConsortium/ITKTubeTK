@@ -49,7 +49,7 @@ public:
   typedef typename FilterType::TubeGroupType        TubeGroupType;
   typedef typename FilterType::TubeType             TubeType;
   typedef typename FilterType::InputImageType       InputImageType;
-  typedef typename FilterType::OutputImageTyp       OutputImageType;
+  typedef typename FilterType::OutputImageType      OutputImageType;
   typedef typename FilterType::OutputMaskType       OutputMaskType;
 
   /** Method for creation through the object factory. */

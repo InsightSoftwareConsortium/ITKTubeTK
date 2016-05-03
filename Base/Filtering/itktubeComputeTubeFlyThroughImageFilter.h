@@ -47,11 +47,11 @@ class ComputeTubeFlyThroughImageFilter
 public:
 
   /** Tube class typedef */
-  typedef GroupSpatialObject< Dimension >          TubeGroupType;
-  typedef TubeSpatialObject< Dimension >           TubeType;
-  typedef Image< TPixel, Dimension >               InputImageType;
-  typedef InputImageType                           OutputImageType;
-  typedef Image< unsigned char, Dimension >        OutputMaskType;
+  typedef GroupSpatialObject< Dimension >                TubeGroupType;
+  typedef TubeSpatialObject< Dimension >                 TubeType;
+  typedef Image< TPixel, Dimension >                     InputImageType;
+  typedef InputImageType                                 OutputImageType;
+  typedef Image< unsigned char, Dimension >              OutputMaskType;
 
   /** Standard class typedefs. */
   typedef ComputeTubeFlyThroughImageFilter               Self;
@@ -76,7 +76,7 @@ public:
   itkGetConstObjectMacro( InputImage, InputImageType )
 
   /** Get output tube mask image */
-  OutputMaskType::Pointer GetOutputTubeMask( void );
+  typename OutputMaskType::Pointer GetOutputTubeMask( void );
 
 protected:
 
