@@ -1,0 +1,9 @@
+itk_wrap_include( tubeComputeTubeFlyThroughImage.h )
+
+itk_wrap_named_class("tube::ComputeTubeFlyThroughImage" tubeComputeTubeFlyThroughImage POINTER)
+ foreach(t ${WRAP_ITK_SCALAR})
+    foreach(d 2 3)
+      itk_wrap_template("${ITKM_${t}}${d}"  "${ITKT_${t}}, ${d}")
+    endforeach()
+ endforeach()
+itk_end_wrap_class()
