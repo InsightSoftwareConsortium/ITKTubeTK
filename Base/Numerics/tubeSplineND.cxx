@@ -901,7 +901,8 @@ SplineND
 
 bool
 SplineND
-::Extreme( VectorType & extX, double * extVal, unsigned int n, MatrixType & dirs )
+::Extreme( VectorType & extX, double * extVal, unsigned int n,
+  MatrixType & dirs )
 {
   return m_OptimizerND->Extreme( extX, extVal, n, dirs );
 }
