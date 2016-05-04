@@ -93,7 +93,7 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
 
   while( itTubes != tubeList->end() )
     {
-    //std::cout << (*itTubes)->GetId() << std::endl;
+    // std::cout m_TubeId << " == " << (*itTubes)->GetId() << std::endl;
 
     if( (*itTubes)->GetId() == m_TubeId )
       {
@@ -190,42 +190,42 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
   // allocate space for output fly through image
   typename OutputImageType::Pointer outputImage = this->GetOutput();
 
-    // set spacing
-    // For last dimension its set to mean consecutive point distance
-    // For other dimensions its set to the minimum input spacing
-    typename OutputImageType::SpacingType outputSpacing;
+  // set spacing
+  // For last dimension its set to mean consecutive point distance
+  // For other dimensions its set to the minimum input spacing
+  typename OutputImageType::SpacingType outputSpacing;
 
-    for(unsigned int i = 0; i < Dimension-1; i++)
-      {
-      outputSpacing[i] = minInputSpacing;
-      }
+  for(unsigned int i = 0; i < Dimension-1; i++)
+    {
+    outputSpacing[i] = minInputSpacing;
+    }
 
-    outputSpacing[Dimension-1] = meanTubePointDist;
+  outputSpacing[Dimension-1] = meanTubePointDist;
 
-    outputImage->SetSpacing( outputSpacing );
+  outputImage->SetSpacing( outputSpacing );
 
-    // set start index1
-    typename OutputImageType::IndexType startIndex;
-    startIndex.Fill(0);
+  // set start index1
+  typename OutputImageType::IndexType startIndex;
+  startIndex.Fill(0);
 
-    // set size
-    typename OutputImageType::SizeType size;
-    for(unsigned int i = 0; i < Dimension-1; i++)
-      {
-      size[i] = 2 * (typename OutputImageType::SizeValueType)
-        (0.5 + (maxTubeRadius / outputSpacing[i])) + 1;
-      }
-    size[Dimension-1] = tubePointList.size();
+  // set size
+  typename OutputImageType::SizeType size;
+  for(unsigned int i = 0; i < Dimension-1; i++)
+    {
+    size[i] = 2 * (typename OutputImageType::SizeValueType)
+      (0.5 + (maxTubeRadius / outputSpacing[i])) + 1;
+    }
+  size[Dimension-1] = tubePointList.size();
 
-    // set regions
-    typename OutputImageType::RegionType region;
-    region.SetIndex( startIndex );
-    region.SetSize( size );
-    outputImage->SetRegions( region );
+  // set regions
+  typename OutputImageType::RegionType region;
+  region.SetIndex( startIndex );
+  region.SetSize( size );
+  outputImage->SetRegions( region );
 
-    // Allocate and initialize
-    outputImage->Allocate();
-    outputImage->FillBuffer( 0 );
+  // Allocate and initialize
+  outputImage->Allocate();
+  outputImage->FillBuffer( 0 );
 
   // allocate space for output fly through mask
   m_OutputMask = OutputMaskType::New();

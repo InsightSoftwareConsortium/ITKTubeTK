@@ -26,7 +26,7 @@ limitations under the License.
 
 #include <itkGroupSpatialObject.h>
 #include <itkSpatialObjectToImageFilter.h>
-#include <itkTubeSpatialObject.h>
+#include <itkVesselTubeSpatialObject.h>
 
 namespace itk
 {
@@ -48,7 +48,7 @@ public:
 
   /** Tube class typedef */
   typedef GroupSpatialObject< Dimension >                TubeGroupType;
-  typedef TubeSpatialObject< Dimension >                 TubeType;
+  typedef VesselTubeSpatialObject< Dimension >           TubeType;
   typedef Image< TPixel, Dimension >                     InputImageType;
   typedef InputImageType                                 OutputImageType;
   typedef Image< unsigned char, Dimension >              OutputMaskType;
@@ -68,8 +68,8 @@ public:
                 SpatialObjectToImageFilter );
 
   /** Set/Get tube id for which the fly through image is to be generated */
-  itkSetMacro( TubeId, unsigned long );
-  itkGetMacro( TubeId, unsigned long );
+  itkSetMacro( TubeId, int );
+  itkGetMacro( TubeId, int );
 
   /** Set/Get input image from which the tubes were extracted/segmented */
   itkSetConstObjectMacro( InputImage, InputImageType )
