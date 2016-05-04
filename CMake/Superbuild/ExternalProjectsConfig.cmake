@@ -68,7 +68,7 @@ set( TubeTKITK_HASH_OR_TAG "")
 set( MinimalPathExtraction_URL
   ${git_protocol}://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction.git )
 set( MinimalPathExtraction_HASH_OR_TAG
-  c9cdc87db021ff84417518979dd5924565ff5043 )
+  aed93f4ac350ee8d0c3411e885fff86095443b7a )
 
 set( TubeTK_ITK_MODULES
   TubeTKITK
@@ -87,7 +87,7 @@ set( CTK_HASH_OR_TAG caaf2c8cdee08e95bc823ab92865e1e9153dcc04 )
 
 # Insight Segmentation and Registration Toolkit
 set( ITK_URL ${github_protocol}://github.com/Slicer/ITK.git )
-set( ITK_HASH_OR_TAG 84ba36bbbdfc9bdf489479453a4a85b4a4ed22d5 )
+set( ITK_HASH_OR_TAG 9fa8f6333a4d66f31f26527b2eb23e170a0e6e16 )
 
 # Slicer Execution Model
 set( SlicerExecutionModel_URL
