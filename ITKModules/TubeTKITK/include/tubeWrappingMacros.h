@@ -55,24 +55,33 @@ limitations under the License.
 #define tubeWrapSetMacro( name, type, wrap_filter_object_name )   \
   void Set##name( const type value )                              \
     {                                                             \
-    this->m_##wrap_filter_object_name->Set##name( value );        \
-    this->Modified();                                             \
+    if( this->m_##wrap_filter_object_name->Get##name() != value ) \
+      {                                                           \
+      this->m_##wrap_filter_object_name->Set##name( value );      \
+      this->Modified();                                           \
+      }                                                           \
     }
 
 /** Set input of fundamental type */
 #define tubeWrapSetObjectMacro( name, type, wrap_filter_object_name )   \
   void Set##name( type * value )                                        \
     {                                                                   \
-    this->m_##wrap_filter_object_name->Set##name( value );              \
-    this->Modified();                                                   \
+    if( this->m_##wrap_filter_object_name->Get##name() != value )       \
+      {                                                                 \
+      this->m_##wrap_filter_object_name->Set##name( value );            \
+      this->Modified();                                                 \
+      }                                                                 \
     }
 
 /** Set input of fundamental type */
 #define tubeWrapSetConstObjectMacro( name, type, wrap_filter_object_name )   \
   void Set##name( const type * value )                                       \
     {                                                                        \
-    this->m_##wrap_filter_object_name->Set##name( value );                   \
-    this->Modified();                                                        \
+    if( this->m_##wrap_filter_object_name->Get##name() != value )            \
+      {                                                                      \
+      this->m_##wrap_filter_object_name->Set##name( value );                 \
+      this->Modified();                                                      \
+      }                                                                      \
     }
 
 /** Proxy GetMTime of wrapped filter where all the logic resides */
@@ -80,7 +89,6 @@ limitations under the License.
   void Update()                                                       \
     {                                                                 \
     this->m_##wrap_filter_object_name->Update();                      \
-    this->Modified();                                                 \
     }                                                                 \
 
 #endif
