@@ -56,6 +56,7 @@ limitations under the License.
   void Set##name( const type value )                              \
     {                                                             \
     this->m_##wrap_filter_object_name->Set##name( value );        \
+    this->Modified();                                             \
     }
 
 /** Set input of fundamental type */
@@ -63,6 +64,7 @@ limitations under the License.
   void Set##name( type * value )                                        \
     {                                                                   \
     this->m_##wrap_filter_object_name->Set##name( value );              \
+    this->Modified();                                                   \
     }
 
 /** Set input of fundamental type */
@@ -70,13 +72,15 @@ limitations under the License.
   void Set##name( const type * value )                                       \
     {                                                                        \
     this->m_##wrap_filter_object_name->Set##name( value );                   \
+    this->Modified();                                                        \
     }
 
 /** Proxy GetMTime of wrapped filter where all the logic resides */
-#define tubeWrapGetMTime( wrap_filter_object_name )                   \
-  void GetMTime()                                                     \
+#define tubeWrapUpdate( wrap_filter_object_name )                     \
+  void Update()                                                       \
     {                                                                 \
-    return this->m_##wrap_filter_object_name->GetMTime();             \
+    this->m_##wrap_filter_object_name->Update();                      \
+    this->Modified();                                                 \
     }                                                                 \
 
 #endif
