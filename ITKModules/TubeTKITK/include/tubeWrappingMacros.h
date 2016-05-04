@@ -31,45 +31,52 @@ limitations under the License.
 #define __tubeWrappingMacros_h
 
 /** Get input of fundamental type */
-#define tubeWrapGetMacro( name, type, wrapfiltername )   \
-  type Get##name( void ) const                           \
-    {                                                    \
-    return this->m_##wrapfiltername->Get##name();        \
+#define tubeWrapGetMacro( name, type, wrap_filter_object_name )   \
+  type Get##name( void ) const                                    \
+    {                                                             \
+    return this->m_##wrap_filter_object_name->Get##name();        \
     }
 
 /** Get pointer to input of object type. */
-#define tubeWrapGetObjectMacro( name, type, wrapfiltername )    \
-  type * Get##name( void )                                      \
-    {                                                           \
-    return this->m_##wrapfiltername->Get##name();               \
+#define tubeWrapGetObjectMacro( name, type, wrap_filter_object_name )    \
+  type * Get##name( void )                                               \
+    {                                                                    \
+    return this->m_##wrap_filter_object_name->Get##name();               \
     }
 
 /** Get a const pointer to input of object type. */
-#define tubeWrapGetConstObjectMacro( name, type, wrapfiltername )    \
-  const type * Get##name( void ) const                               \
-    {                                                                \
-    return this->m_##wrapfiltername->Get##name();                    \
+#define tubeWrapGetConstObjectMacro( name, type, wrap_filter_object_name )   \
+  const type * Get##name( void ) const                                       \
+    {                                                                        \
+    return this->m_##wrap_filter_object_name->Get##name();                   \
     }
 
 /** Set input of fundamental type */
-#define tubeWrapSetMacro( name, type, wrapfiltername )   \
-  void Set##name( const type value )                     \
-    {                                                    \
-    this->m_##wrapfiltername->Set##name( value );        \
+#define tubeWrapSetMacro( name, type, wrap_filter_object_name )   \
+  void Set##name( const type value )                              \
+    {                                                             \
+    this->m_##wrap_filter_object_name->Set##name( value );        \
     }
 
 /** Set input of fundamental type */
-#define tubeWrapSetObjectMacro( name, type, wrapfiltername )   \
-  void Set##name( type * value )                               \
-    {                                                          \
-    this->m_##wrapfiltername->Set##name( value );              \
+#define tubeWrapSetObjectMacro( name, type, wrap_filter_object_name )   \
+  void Set##name( type * value )                                        \
+    {                                                                   \
+    this->m_##wrap_filter_object_name->Set##name( value );              \
     }
 
 /** Set input of fundamental type */
-#define tubeWrapSetConstObjectMacro( name, type, wrapfiltername )   \
-  void Set##name( const type * value )                              \
-    {                                                               \
-    this->m_##wrapfiltername->Set##name( value );                   \
+#define tubeWrapSetConstObjectMacro( name, type, wrap_filter_object_name )   \
+  void Set##name( const type * value )                                       \
+    {                                                                        \
+    this->m_##wrap_filter_object_name->Set##name( value );                   \
     }
+
+/** Proxy GetMTime of wrapped filter where all the logic resides */
+#define tubeWrapGetMTime( wrap_filter_object_name )                   \
+  void GetMTime()                                                     \
+    {                                                                 \
+    return this->m_##wrap_filter_object_name->GetMTime();             \
+    }                                                                 \
 
 #endif
