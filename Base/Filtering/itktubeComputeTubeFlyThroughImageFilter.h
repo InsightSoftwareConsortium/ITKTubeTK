@@ -72,11 +72,11 @@ public:
   itkGetMacro( TubeId, unsigned long );
 
   /** Set/Get input image from which the tubes were extracted/segmented */
-  itkSetObjectMacro( InputImage, InputImageType )
+  itkSetConstObjectMacro( InputImage, InputImageType )
   itkGetConstObjectMacro( InputImage, InputImageType )
 
   /** Get output tube mask image */
-  typename OutputMaskType::Pointer GetOutputMask( void );
+  OutputMaskType * GetOutputMask( void );
 
 protected:
 
@@ -91,17 +91,17 @@ protected:
 private:
 
   unsigned long                               m_TubeId;
-  typename InputImageType::Pointer            m_InputImage;
+  typename InputImageType::ConstPointer       m_InputImage;
   typename OutputMaskType::Pointer            m_OutputMask;
 
 }; // End class ComputeTubeFlyThroughImageFilter
 
-#ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeComputeTubeFlyThroughImageFilter.hxx"
-#endif
-
 } // End namespace tube
 
 } // End namespace itk
+
+#ifndef ITK_MANUAL_INSTANTIATION
+#include "itktubeComputeTubeFlyThroughImageFilter.hxx"
+#endif
 
 #endif // End !defined(__itktubeComputeTubeFlyThroughImageFilter_h)

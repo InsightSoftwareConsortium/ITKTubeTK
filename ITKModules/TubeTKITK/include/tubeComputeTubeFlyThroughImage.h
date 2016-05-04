@@ -19,7 +19,6 @@
 #define __tubeComputeTubeFlyThroughImage_h
 
 // ITK includes
-#include <itkObject.h>
 #include <itkProcessObject.h>
 #include <itkGroupSpatialObject.h>
 
@@ -36,7 +35,7 @@ namespace tube
 
 template< class TPixel, unsigned int Dimension >
 class ComputeTubeFlyThroughImage:
-  public itk::Object
+  public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
@@ -72,7 +71,7 @@ public:
   tubeWrapGetConstObjectMacro(Input, TubeGroupType, Filter)
 
   /* Generates tube fly through image and mask */
-  void Update();
+  tubeWrapUpdate( Filter );
 
   /* Get the generated tube fly through image */
   tubeWrapGetObjectMacro(Output, OutputImageType, Filter )

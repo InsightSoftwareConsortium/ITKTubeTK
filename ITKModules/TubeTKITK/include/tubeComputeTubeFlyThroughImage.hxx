@@ -33,14 +33,6 @@ ComputeTubeFlyThroughImage< TPixel, Dimension >
 template< class TPixel, unsigned int Dimension >
 void
 ComputeTubeFlyThroughImage< TPixel, Dimension >
-::Update( void )
-{
-  m_Filter->Update();
-}
-
-template< class TPixel, unsigned int Dimension >
-void
-ComputeTubeFlyThroughImage< TPixel, Dimension >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
