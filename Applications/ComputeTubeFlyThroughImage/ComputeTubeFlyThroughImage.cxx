@@ -22,8 +22,8 @@ limitations under the License.
 =========================================================================*/
 
 // TubeTK includes
-#include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
+#include "tubeCLIProgressReporter.h"
 
 // TubeTKITK includes
 #include "tubeComputeTubeFlyThroughImage.h"
@@ -57,14 +57,21 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
+  // setup progress reporting
+  double progress = 0.0;
+
+  tube::CLIProgressReporter progressReporter(
+    "ComputeTubeFlyThroughImage", CLPProcessInformation );
+  progressReporter.Start();
+  progressReporter.Report( progress );
+
   // The timeCollector to perform basic profiling of algorithmic components
   itk::TimeProbesCollectorBase timeCollector;
 
   // Load Input Image
   //std::cout << "Loading Input Image" << std::endl;
 
-  typedef TPixel                                        PixelType;
-  typedef itk::Image< PixelType, VDimension >           ImageType;
+  typedef itk::Image< TPixel, VDimension >              ImageType;
   typedef itk::ImageFileReader< ImageType >             ImageReaderType;
 
   timeCollector.Start( "Loading input image" );
@@ -85,6 +92,8 @@ int DoIt( int argc, char * argv[] )
     }
 
   timeCollector.Stop( "Loading input image" );
+  progress = 0.1; // At about 10% done
+  progressReporter.Report( progress );
 
   // Load TRE File
   //std::cout << "Loading TRE File" << std::endl;
@@ -110,9 +119,11 @@ int DoIt( int argc, char * argv[] )
     }
 
   timeCollector.Stop( "Loading input TRE file" );
+  progress = 0.2; // At about 20% done
+  progressReporter.Report( progress );
 
   // call ComputeTubeFlyThroughImage
-  typedef tube::ComputeTubeFlyThroughImage< TPixel, Dimension >
+  typedef tube::ComputeTubeFlyThroughImage< TPixel, VDimension >
     ComputeFlyThroughImageFilterType;
 
   timeCollector.Start( "Computing tube fly through images" );
@@ -126,6 +137,8 @@ int DoIt( int argc, char * argv[] )
   pFlyThroughImageFilter->Update();
 
   timeCollector.Stop( "Computing tube fly through images" );
+  progress = 0.8; // At about 80% done
+  progressReporter.Report( progress );
 
   // Write fly through image
   typedef itk::ImageFileWriter< ImageType > ImageWriterType;
@@ -149,6 +162,8 @@ int DoIt( int argc, char * argv[] )
     }
 
   timeCollector.Stop( "Writing tube fly through image" );
+  progress = 0.9;
+  progressReporter.Report( progress );
 
   // Write tube mask fly through image
   typedef typename ComputeFlyThroughImageFilterType::OutputMaskType MaskType;
@@ -173,6 +188,8 @@ int DoIt( int argc, char * argv[] )
     }
 
   timeCollector.Stop( "Writing tube mask fly through image" );
+  progress = 1.0;
+  progressReporter.Report( progress );
 
   // All done
   timeCollector.Report();

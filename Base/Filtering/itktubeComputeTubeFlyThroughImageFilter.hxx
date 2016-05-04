@@ -32,13 +32,20 @@ limitations under the License.
 #include <itkMinimumMaximumImageFilter.h>
 #include <itkResampleImageFilter.h>
 
+namespace itk
+{
+
+namespace tube
+{
+
+/**
+ * Constructor
+ */
 template< class TPixel, unsigned int Dimension >
 ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
 ::ComputeTubeFlyThroughImageFilter( void )
 {
-  this->SetNumberOfRequiredOutputs( 2 );
-  m_OutputMask = OutputMaskType::New();
-  this->SetNthOutput( 1, m_OutputMask );
+  m_OutputMask = NULL;
 }
 
 template< class TPixel, unsigned int Dimension >
@@ -52,12 +59,12 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
 
 template< class TPixel, unsigned int Dimension >
 typename ComputeTubeFlyThroughImageFilter< TPixel,
-  Dimension >::OutputMaskType::Pointer
+  Dimension >::OutputMaskType *
 ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
 ::GetOutputMask( void )
 {
-  return dynamic_cast< OutputMaskType * >(
-    this->ProcessObject::GetOutput(1) );
+  // return dynamic_cast< OutputMaskType * >(this->ProcessObject::GetOutput(1));
+  return m_OutputMask;
 }
 
 template< class TPixel, unsigned int Dimension >
@@ -68,7 +75,7 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
   itkDebugMacro( << "ComputeTubeFlyThroughImageFilter::Update() called." );
 
   // get input tubes
-  typename TubeGroupType::Pointer inputTubeGroup = this->GetInput();
+  typename TubeGroupType::ConstPointer inputTubeGroup = this->GetInput();
 
   // Find the user specified tybe
   itkDebugMacro( << "Finding user specified tube" );
@@ -221,6 +228,7 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
     outputImage->FillBuffer( 0 );
 
   // allocate space for output fly through mask
+  m_OutputMask = OutputMaskType::New();
   m_OutputMask->SetRegions( region );
   m_OutputMask->CopyInformation( outputImage );
   m_OutputMask->Allocate();
@@ -234,12 +242,12 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
   typedef typename TubePointType::CovariantVectorType  TubeNormalType;
   typedef ImageRegionIteratorWithIndex<
     OutputImageType >                                  OutputImageIteratorType;
-  typedef itk::ImageRegionIterator< OutputMaskType >   OutputMaskIteratorType;
+  typedef ImageRegionIterator< OutputMaskType >        OutputMaskIteratorType;
 
-  typedef itk::LinearInterpolateImageFunction< InputImageType, double >
+  typedef LinearInterpolateImageFunction< InputImageType, double >
     InterpolatorType;
 
-  typedef itk::MinimumMaximumImageFilter< InputImageType >
+  typedef MinimumMaximumImageFilter< InputImageType >
     MinMaxImageFilterType;
 
   typename TubeType::TransformType * pTubeIndexPhysTransform =
@@ -366,5 +374,9 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
 
   itkDebugMacro( << "ComputeTubeFlyThroughImageFilter::Update() finished." );
 }
+
+} // End namespace tube
+
+} // End namespace itk
 
 #endif
