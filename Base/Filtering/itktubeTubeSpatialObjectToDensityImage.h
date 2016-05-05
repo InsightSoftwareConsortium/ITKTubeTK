@@ -25,7 +25,7 @@ limitations under the License.
 #define __itktubeTubeSpatialObjectToDensityImage_h
 
 #include "itktubeInverseIntensityImageFilter.h"
-#include "itktubeSpatialObjectToImageFilter.h"
+#include "itktubeTubeSpatialObjectToImageFilter.h"
 
 #include <itkDanielssonDistanceMapImageFilter.h>
 #include <itkGroupSpatialObject.h>
