@@ -323,9 +323,12 @@ RidgeSeedFilter< TImage, TLabelMap >
   resultImage->Allocate();
   resultImage->FillBuffer( 0 );
 
+  unsigned int numClasses = m_PDFSegmenter->GetNumberOfClasses();
+
   itk::ImageRegionIterator< ProbabilityImageType > resultIter(
     resultImage, region );
-  for( unsigned int c = 0; c < 2; c++ )
+  double backgroundMax = 0;
+  for( unsigned int c = 0; c < numClasses; c++ )
     {
     if( c != objectNum )
       {
@@ -335,21 +338,31 @@ RidgeSeedFilter< TImage, TLabelMap >
       resultIter.GoToBegin();
       while( ! resultIter.IsAtEnd() )
         {
-        if( classIter.Get() > resultIter.Get() )
+        double tf = classIter.Get();
+        if( tf > resultIter.Get() )
           {
-          resultIter.Set( classIter.Get() );
+          resultIter.Set( tf );
+          if( tf > backgroundMax )
+            {
+            backgroundMax = tf;
+            }
           }
         ++resultIter;
         ++classIter;
         }
       }
     }
+  double tubeMax = 0;
   itk::ImageRegionConstIterator< ProbabilityImageType > classIter(
     m_PDFSegmenter->GetClassProbabilityImage( objectNum ), region );
   resultIter.GoToBegin();
   while( ! resultIter.IsAtEnd() )
     {
     double tf = classIter.Get();
+    if( tf > tubeMax )
+      {
+      tubeMax = tf;
+      }
     double denum = tf + resultIter.Get();
     if( denum == denum && denum > 0 )
       {
@@ -362,6 +375,8 @@ RidgeSeedFilter< TImage, TLabelMap >
     ++resultIter;
     ++classIter;
     }
+  std::cout << "Background max = " << backgroundMax << std::endl;
+  std::cout << "Tube max = " << tubeMax << std::endl;
 
   return resultImage;
 }
@@ -395,8 +410,8 @@ RidgeSeedFilter< TImage, TLabelMap >
       m_PDFSegmenterParzen = PDFSegmenterParzenType::New();
       m_PDFSegmenter = m_PDFSegmenterParzen.GetPointer();
 
-      m_PDFSegmenterParzen->SetHistogramSmoothingStandardDeviation( 4 );
-      m_PDFSegmenterParzen->SetOutlierRejectPortion( 0.01 );
+      m_PDFSegmenterParzen->SetHistogramSmoothingStandardDeviation( 2 );
+      m_PDFSegmenterParzen->SetOutlierRejectPortion( 0.001 );
 
       m_PDFSegmenterParzen->SetFeatureVectorGenerator(
         m_SeedFeatureGenerator.GetPointer() );
@@ -407,7 +422,7 @@ RidgeSeedFilter< TImage, TLabelMap >
     m_PDFSegmenter->SetForceClassification( true );
     m_PDFSegmenter->SetErodeRadius( 0 );
     m_PDFSegmenter->SetHoleFillIterations( 5 );
-    m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation( 0.6 );
+    //m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation( 0.6 );
     }
 
   m_PDFSegmenter->SetLabelMap( m_SeedFeatureGenerator->GetLabelMap() );
