@@ -58,16 +58,6 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
 }
 
 template< class TPixel, unsigned int Dimension >
-typename ComputeTubeFlyThroughImageFilter< TPixel,
-  Dimension >::OutputMaskType *
-ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
-::GetOutputMask( void )
-{
-  // return dynamic_cast< OutputMaskType * >(this->ProcessObject::GetOutput(1));
-  return m_OutputMask;
-}
-
-template< class TPixel, unsigned int Dimension >
 void
 ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
 ::GenerateData( void )

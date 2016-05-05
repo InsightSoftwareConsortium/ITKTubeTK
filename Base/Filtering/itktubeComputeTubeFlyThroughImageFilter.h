@@ -72,11 +72,11 @@ public:
   itkGetMacro( TubeId, int );
 
   /** Set/Get input image from which the tubes were extracted/segmented */
-  itkSetConstObjectMacro( InputImage, InputImageType )
-  itkGetConstObjectMacro( InputImage, InputImageType )
+  itkSetConstObjectMacro( InputImage, InputImageType );
+  itkGetConstObjectMacro( InputImage, InputImageType );
 
   /** Get output tube mask image */
-  OutputMaskType * GetOutputMask( void );
+  itkGetObjectMacro(OutputMask, OutputMaskType);
 
 protected:
 
