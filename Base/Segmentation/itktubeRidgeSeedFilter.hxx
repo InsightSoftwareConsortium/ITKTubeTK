@@ -375,8 +375,6 @@ RidgeSeedFilter< TImage, TLabelMap >
     ++resultIter;
     ++classIter;
     }
-  std::cout << "Background max = " << backgroundMax << std::endl;
-  std::cout << "Tube max = " << tubeMax << std::endl;
 
   return resultImage;
 }
@@ -422,7 +420,6 @@ RidgeSeedFilter< TImage, TLabelMap >
     m_PDFSegmenter->SetForceClassification( true );
     m_PDFSegmenter->SetErodeRadius( 0 );
     m_PDFSegmenter->SetHoleFillIterations( 5 );
-    //m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation( 0.6 );
     }
 
   m_PDFSegmenter->SetLabelMap( m_SeedFeatureGenerator->GetLabelMap() );
