@@ -114,7 +114,6 @@ public:
   itkSetMacro( Cumulative, bool );
   itkGetMacro( Cumulative, bool );
 
-
 protected:
 
   TubeSpatialObjectToImageFilter( void );
