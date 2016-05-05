@@ -29,13 +29,6 @@ limitations under the License.
 #include <itkTubeSpatialObject.h>
 #include <itkTubeSpatialObjectPoint.h>
 
-// Forward declare TubeTKITK class to allow friendship
-namespace tube
-{
-template< unsigned int Dimension, typename TOutputPixel >
-class ConvertTubesToImage;
-}
-
 namespace itk
 {
 
@@ -140,10 +133,6 @@ private:
 
   typename RadiusImage::Pointer     m_RadiusImage;
   typename TangentImage::Pointer    m_TangentImage;
-
-  /** friendship facilitating TubeTKITK integration */
-  friend class ::tube::ConvertTubesToImage< ObjectDimension,
-    typename TOutputImage::PixelType >;
 
 }; // End class TubeSpatialObjectToImageFilter
 

@@ -61,7 +61,10 @@ void
 ConvertTubesToImage< Dimension, TOutputPixel >
 ::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  m_Filter->PrintSelf( os, indent );
+  Superclass::PrintSelf( os, indent );
+  os << indent << "m_UseRadius: " << m_Filter->GetUseRadius() << std::endl;
+  os << indent << "m_FallOff: " << m_Filter->GetFallOff() << std::endl;
+  os << indent << "m_Cumulative: " << m_Filter->GetCumulative() << std::endl;
 }
 
 }
