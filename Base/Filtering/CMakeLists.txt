@@ -54,7 +54,7 @@ set( TubeTK_Base_Filtering_H_Files
   itktubeSymmetricEigenVectorAnalysisImageFilter.h
   itktubeTortuositySpatialObjectFilter.h
   itktubeTubeEnhancingDiffusion2DImageFilter.h
-  itktubeTubeSpatialObjectToDensityImage.h
+  itktubeTubeSpatialObjectToDensityImageFilter.h
   itktubeTubeSpatialObjectToImageFilter.h
   tubeImageFilters.h )
 
@@ -84,7 +84,7 @@ set( TubeTK_Base_Filtering_HXX_Files
   itktubeSubSampleTubeTreeSpatialObjectFilter.hxx
   itktubeTortuositySpatialObjectFilter.h
   itktubeTubeEnhancingDiffusion2DImageFilter.hxx
-  itktubeTubeSpatialObjectToDensityImage
+  itktubeTubeSpatialObjectToDensityImageFilter.hxx
   itktubeTubeSpatialObjectToImageFilter.hxx
   tubeImageFilters.hxx )
 

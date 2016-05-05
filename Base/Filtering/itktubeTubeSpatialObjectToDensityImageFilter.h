@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeTubeSpatialObjectToDensityImage_h
-#define __itktubeTubeSpatialObjectToDensityImage_h
+#ifndef __itktubeTubeSpatialObjectToDensityImageFilter_h
+#define __itktubeTubeSpatialObjectToDensityImageFilter_h
 
 #include "itktubeInverseIntensityImageFilter.h"
 #include "itktubeTubeSpatialObjectToImageFilter.h"
@@ -41,16 +41,16 @@ namespace tube
 
 template< class TDensityImageType, class TRadiusImageType = Image< float, 3 >,
           class TTangentImageType = Image< Vector< float, 3 >, 3 > >
-class TubeSpatialObjectToDensityImage : public Object
+class TubeSpatialObjectToDensityImageFilter : public Object
 {
 public:
 
-  typedef TubeSpatialObjectToDensityImage         Self;
+  typedef TubeSpatialObjectToDensityImageFilter   Self;
   typedef Object                                  Superclass;
   typedef SmartPointer< Self >                    Pointer;
 
   itkNewMacro( Self );
-  itkTypeMacro( TubeSpatialObjectToDensityImage, Object );
+  itkTypeMacro( TubeSpatialObjectToDensityImageFilter, Object );
 
   /** Typdefs */
   typedef TDensityImageType                              DensityImageType;
@@ -124,8 +124,8 @@ protected:
   void SetTangentMap( TangentImagePointer tangent )
     { m_TangentImage = tangent; }
 
-  TubeSpatialObjectToDensityImage( void );
-  ~TubeSpatialObjectToDensityImage( void );
+  TubeSpatialObjectToDensityImageFilter( void );
+  ~TubeSpatialObjectToDensityImageFilter( void );
 
 private:
 
@@ -140,14 +140,14 @@ private:
   DensityPixelType                  m_Max;
   bool                              m_UseSquareDistance;
 
-}; // End class TubeSpatialObjectToDensityImage
+}; // End class TubeSpatialObjectToDensityImageFilter
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeTubeSpatialObjectToDensityImage.hxx"
+#include "itktubeTubeSpatialObjectToDensityImageFilter.hxx"
 #endif
 
 } // End namespace tube
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeTubeSpatialObjectToDensityImage_h)
+#endif // End !defined(__itktubeTubeSpatialObjectToDensityImageFilter_h)

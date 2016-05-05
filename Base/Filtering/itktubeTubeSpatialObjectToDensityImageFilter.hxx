@@ -21,17 +21,17 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeTubeSpatialObjectToDensityImage_hxx
-#define __itktubeTubeSpatialObjectToDensityImage_hxx
+#ifndef __itktubeTubeSpatialObjectToDensityImageFilter_hxx
+#define __itktubeTubeSpatialObjectToDensityImageFilter_hxx
 
-#include "itktubeTubeSpatialObjectToDensityImage.h"
+#include "itktubeTubeSpatialObjectToDensityImageFilter.h"
 
 /** Constructor */
 template< class TDensityImageType, class TRadiusImageType,
           class TTangentImageType >
-TubeSpatialObjectToDensityImage< TDensityImageType, TRadiusImageType,
+TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
                                  TTangentImageType >
-::TubeSpatialObjectToDensityImage( void )
+::TubeSpatialObjectToDensityImageFilter( void )
 {
   for(unsigned int i = 0; i < ImageDimension; i++ )
     {
@@ -45,16 +45,16 @@ TubeSpatialObjectToDensityImage< TDensityImageType, TRadiusImageType,
 /** Destructor */
 template< class TDensityImageType, class TRadiusImageType,
           class TTangentImageType >
-TubeSpatialObjectToDensityImage< TDensityImageType, TRadiusImageType,
+TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
                                  TTangentImageType>
-::~TubeSpatialObjectToDensityImage( void )
+::~TubeSpatialObjectToDensityImageFilter( void )
 {
 }
 
 template< class TDensityImageType, class TRadiusImageType,
           class TTangentImageType >
 void
-TubeSpatialObjectToDensityImage< TDensityImageType, TRadiusImageType,
+TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
                                  TTangentImageType>
 ::SetSpacing( SpacingType s )
 {
@@ -68,7 +68,7 @@ TubeSpatialObjectToDensityImage< TDensityImageType, TRadiusImageType,
 template< class TDensityImageType, class TRadiusImageType,
           class TTangentImageType >
 void
-TubeSpatialObjectToDensityImage< TDensityImageType, TRadiusImageType,
+TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
                                  TTangentImageType >
 ::Update( void )
 {
@@ -192,10 +192,10 @@ TubeSpatialObjectToDensityImage< TDensityImageType, TRadiusImageType,
     }
   catch( itk::ExceptionObject &e )
     {
-    std::cerr << "\n Error caught in TubeSpatialObjectToDensityImage Class"
+    std::cerr << "\n Error caught in TubeSpatialObjectToDensityImageFilter Class"
               << std::endl;
     std::cerr << e.GetDescription() <<std::endl;
     }
 }
 
-#endif // End !defined(__itktubeTubeSpatialObjectToDensityImage_hxx)
+#endif // End !defined(__itktubeTubeSpatialObjectToDensityImageFilter_hxx)
