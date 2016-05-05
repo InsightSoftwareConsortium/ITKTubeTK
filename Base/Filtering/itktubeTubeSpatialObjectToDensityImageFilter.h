@@ -70,16 +70,16 @@ public:
                        DensityImageType::ImageDimension );
 
   typedef GroupSpatialObject<
-    itkGetStaticConstMacro( ImageDimension ) > TubeGroupType;
-  typedef typename TubeGroupType::Pointer TubeGroupPointer;
+    itkGetStaticConstMacro( ImageDimension ) >  TubeGroupType;
+  typedef typename TubeGroupType::Pointer       TubeGroupPointer;
 
   typedef VesselTubeSpatialObject<
-    itkGetStaticConstMacro( ImageDimension ) > TubeType;
+    itkGetStaticConstMacro( ImageDimension ) >  TubeType;
 
   typedef typename DensityImageType::OffsetType VectorPixelType;
   typedef Image<
     VectorPixelType,
-    itkGetStaticConstMacro( ImageDimension ) >        VectorImageType;
+    itkGetStaticConstMacro( ImageDimension ) >  VectorImageType;
   typedef typename VectorImageType::Pointer     VectorImagePointer;
 
   typedef typename DensityImageType::SizeType     SizeType;
@@ -93,51 +93,44 @@ public:
     DensityImageType, DensityImageType > DanielssonFilterType;
 
   /** Retrieve Density map created by inverted Danielsson Distance Map */
-  DensityImagePointer GetDensityMap( void ) const { return m_DensityImage; }
-  RadiusImagePointer  GetRadiusMap( void )  const { return m_RadiusImage;  }
-  TangentImagePointer GetTangentMap( void ) const { return m_TangentImage; }
+  itkSetMacro( DensityMapImage, DensityImagePointer );
+  itkGetMacro( DensityMapImage, DensityImagePointer );
+  itkSetMacro( RadiusMapImage, RadiusImagePointer );
+  itkGetMacro( RadiusMapImage, RadiusImagePointer );
+  itkSetMacro( TangentMapImage, TangentImagePointer );
+  itkGetMacro( TangentMapImage, TangentImagePointer );
 
   /** Use square distance instead of linear distance */
-  inline void UseSquareDistance( bool v ) { m_UseSquareDistance = v; }
-
+  itkSetMacro( UseSquareDistance, bool );
+  itkGetMacro( UseSquareDistance, bool );
+  itkSetMacro( MaxDensityIntensity, DensityPixelType);
+  itkGetMacro( MaxDensityIntensity, DensityPixelType);
+  itkSetMacro( Size, SizeType );
+  itkGetMacro( Size, SizeType );
   /** Sets the input tubes */
-  inline void SetTubes( TubeGroupPointer t ) { m_TubeGroup = t; }
-
-  /** Sets the output size */
-  void SetSize( SizeType s ) { m_Size = s; }
+  itkSetMacro( InputTubeGroup, TubeGroupPointer );
+  itkGetMacro( InputTubeGroup, TubeGroupPointer );
 
   /** Sets the element spacing */
   void SetSpacing( SpacingType );
-
-  void SetMaxDensityIntensity( DensityPixelType max ) { m_Max = max; }
-
   void Update( void );
 
 protected:
-
-  TubeGroupPointer GetTubes( void ) const
-    { return m_TubeGroup; }
-  void SetDensityMap( DensityImagePointer density )
-    { m_DensityImage = density; }
-  void SetRadiusMap( RadiusImagePointer radius )
-    { m_RadiusImage = radius; }
-  void SetTangentMap( TangentImagePointer tangent )
-    { m_TangentImage = tangent; }
 
   TubeSpatialObjectToDensityImageFilter( void );
   ~TubeSpatialObjectToDensityImageFilter( void );
 
 private:
 
-  TubeGroupPointer                  m_TubeGroup;
-  DensityImagePointer               m_DensityImage;
-  RadiusImagePointer                m_RadiusImage;
-  TangentImagePointer               m_TangentImage;
+  TubeGroupPointer                  m_InputTubeGroup;
+  DensityImagePointer               m_DensityMapImage;
+  RadiusImagePointer                m_RadiusMapImage;
+  TangentImagePointer               m_TangentMapImage;
   SizeType                          m_Size;
   SpacingType                       m_Spacing;
 
   /** Max value allowed for inverse intensity filter */
-  DensityPixelType                  m_Max;
+  DensityPixelType                  m_MaxDensityIntensity;
   bool                              m_UseSquareDistance;
 
 }; // End class TubeSpatialObjectToDensityImageFilter

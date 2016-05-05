@@ -38,7 +38,7 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
     m_Size[i] = 0;
     m_Spacing[i] = 1;
     }
-  m_Max = 255;                   //NumericTraits<DensityPixelType>::max();
+  m_MaxDensityIntensity = 255;   //NumericTraits<DensityPixelType>::max();
   m_UseSquareDistance = false;
 }
 
@@ -79,7 +79,7 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
     }
   try
     {
-    TubeGroupPointer tubes = this->GetTubes();
+    TubeGroupPointer tubes = this->GetInputTubeGroup();
 
     tubes->SetBoundingBoxChildrenDepth( tubes->GetMaximumDepth() );
     tubes->ComputeBoundingBox();
@@ -105,17 +105,17 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
     danFilter->Update();
 
     VectorImagePointer  vectorImage = danFilter->GetVectorDistanceMap();
-    m_RadiusImage   = tubefilter->GetRadiusImage();
-    m_TangentImage  = tubefilter->GetTangentImage();
-    m_DensityImage  = danFilter->GetDistanceMap();
+    m_RadiusMapImage   = tubefilter->GetRadiusImage();
+    m_TangentMapImage  = tubefilter->GetTangentImage();
+    m_DensityMapImage  = danFilter->GetDistanceMap();
 
     // ** If Requested: Square the Dan.Dis. image values to get the
     //      Squared distance image ** //
     if( m_UseSquareDistance )
       {
       typedef ImageRegionIterator<DensityImageType>   DistanceIteratorType;
-      DistanceIteratorType  it_dis( m_DensityImage,
-                                    m_DensityImage->GetLargestPossibleRegion());
+      DistanceIteratorType  it_dis( m_DensityMapImage,
+                                    m_DensityMapImage->GetLargestPossibleRegion());
       it_dis.GoToBegin();
       while( !it_dis.IsAtEnd() )
         {
@@ -131,8 +131,8 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
 
     VectorIteratorType it_vector( vectorImage,
                                   vectorImage->GetLargestPossibleRegion() );
-    RadiusIteratorType it_radius( m_RadiusImage,
-                                  m_RadiusImage->GetLargestPossibleRegion() );
+    RadiusIteratorType it_radius( m_RadiusMapImage,
+                                  m_RadiusMapImage->GetLargestPossibleRegion() );
 
     it_vector.GoToBegin();
     it_radius.GoToBegin();
@@ -146,7 +146,7 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
         {
         index[i] += v[i];
         }
-      RadiusPixelType radius = m_RadiusImage->GetPixel( index );
+      RadiusPixelType radius = m_RadiusMapImage->GetPixel( index );
 
       it_radius.Set( radius );
 
@@ -156,8 +156,8 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
 
     // Use Vector Image to find the closest vessel and add the tangent direction
     typedef ImageRegionIterator<TangentImageType>   TangentIteratorType;
-    TangentIteratorType it_tangent( m_TangentImage,
-                                    m_TangentImage->GetLargestPossibleRegion());
+    TangentIteratorType it_tangent( m_TangentMapImage,
+                                    m_TangentMapImage->GetLargestPossibleRegion());
 
     it_vector.GoToBegin();
     it_tangent.GoToBegin();
@@ -171,7 +171,7 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
         {
         index[i] += v[i];
         }
-      TangentPixelType tangent = m_TangentImage->GetPixel( index );
+      TangentPixelType tangent = m_TangentMapImage->GetPixel( index );
 
       it_tangent.Set( tangent );
 
@@ -184,11 +184,11 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
              InverseFilter;
     InverseFilter = InverseIntensityImageFilter<DensityImageType>::New();
 
-    InverseFilter->SetInput( m_DensityImage );  //  inverse intensity
-    InverseFilter->SetInverseMaximumIntensity( m_Max );
+    InverseFilter->SetInput( m_DensityMapImage );  //  inverse intensity
+    InverseFilter->SetInverseMaximumIntensity( m_MaxDensityIntensity );
     InverseFilter->Update();
 
-    m_DensityImage = InverseFilter->GetOutput();
+    m_DensityMapImage = InverseFilter->GetOutput();
     }
   catch( itk::ExceptionObject &e )
     {

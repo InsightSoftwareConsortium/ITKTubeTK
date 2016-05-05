@@ -141,8 +141,8 @@ int DoIt( int argc, char * argv[] )
     builder->SetSpacing( sp );
     }
 
-  builder->UseSquareDistance( useSquareDistance );
-  builder->SetTubes( ReadTubes( inputTubeFile.c_str() ) );
+  builder->SetUseSquareDistance( useSquareDistance );
+  builder->SetInputTubeGroup( ReadTubes( inputTubeFile.c_str() ) );
 
   progress = 0.1; // At about 10% done
   progressReporter.Report( progress );
@@ -155,9 +155,9 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   timeCollector.Start( "Save data" );
-  WriteImage( outputDensityImage.c_str(), builder->GetDensityMap() );
-  WriteImage( outputRadiusImage.c_str(), builder->GetRadiusMap() );
-  WriteImage( outputTangentImage.c_str(), builder->GetTangentMap() );
+  WriteImage( outputDensityImage.c_str(), builder->GetDensityMapImage() );
+  WriteImage( outputRadiusImage.c_str(), builder->GetRadiusMapImage() );
+  WriteImage( outputTangentImage.c_str(), builder->GetTangentMapImage() );
   timeCollector.Stop( "Save data" );
 
   progress = 1.0;
