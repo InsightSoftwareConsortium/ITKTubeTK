@@ -252,6 +252,8 @@ if( TubeTK_BUILD_USING_SLICER )
   #set(TubeTK_BUILD_WITHIN_SLICER ${TubeTK_BUILD_USING_SLICER})
   unset( QT_QMAKE_EXECUTABLE CACHE)
   unset( PYTHON_EXECUTABLE CACHE)
+  unset( PYTHON_INCLUDE_DIR CACHE)
+  unset( PYTHON_LIBRARY CACHE)
 
   # Find Slicer to set the [ITK|VTK|CTK|...]_DIR variables
   find_package( Slicer REQUIRED )
@@ -362,7 +364,8 @@ option( TubeTK_USE_PYTHON "Use Python to enable additional functionality."
   ${TubeTK_USE_PYTHON_DEFAULT} )
 
 if( TubeTK_USE_PYTHON )
-
+  find_package( PythonInterp REQUIRED )
+  find_package( PythonLibs REQUIRED )
   include(TubeTKCheckPythonLibrary)
   # NumPy conversion support.
   option( TubeTK_USE_NUMPY "Use NumPy to enable additional functionality." ON )
@@ -515,6 +518,11 @@ if( NOT DEFINED TubeTK_CONFIG_BINARY_DIR )
   set( TubeTK_CONFIG_BINARY_DIR ${CMAKE_BINARY_DIR} )
 endif( NOT DEFINED TubeTK_CONFIG_BINARY_DIR )
 mark_as_advanced( TubeTK_CONFIG_BINARY_DIR )
+
+# Setup Python VirtualEnv for testing.
+if( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_USING_SLICER )
+  include( TubeTKVirtualEnvSetup )
+endif( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_USING_SLICER )
 
 #
 # Setup Superbuild
@@ -687,11 +695,6 @@ endif()
 message( STATUS "Configuring Launcher script - ok [${_launcher_platform}]" )
 
 include( TubeTKMacroInstallPlugins )
-
-# Setup Python VirtualEnv for testing.
-if( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_USING_SLICER )
-  include( TubeTKVirtualEnvSetup )
-endif( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_USING_SLICER )
 
 # Test TubeTK IPython examples.
 if( TubeTK_USE_EXAMPLES_AS_TESTS )

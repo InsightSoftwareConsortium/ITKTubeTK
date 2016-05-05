@@ -9,28 +9,28 @@ file( READ ${installed_packages_file} installed_packages )
 string( FIND "${installed_packages}" SimpleITK SimpleITK_installed )
 if( ${SimpleITK_installed} EQUAL -1 )
   message( STATUS "Installing SimpleITK into virtualenv" )
-  execute_process( COMMAND "@PythonVirtualenvHome@/Scripts/easy_install" SimpleITK
-    RESULT_VARIABLE failed
-    ERROR_VARIABLE error )
-  if( failed )
-    message( ERROR ${error} )
-  else( failed )
+  execute_process( COMMAND @PythonVirtualEnvDir@/@PythonVirtualEnvScriptsDir@/easy_install -f http://www.simpleitk.org/SimpleITK/resources/software.html SimpleITK
+    RESULT_VARIABLE PythonVirtualEnvInstall_Failed
+    ERROR_VARIABLE PythonVirtualEnvInstall_Error )
+  if( PythonVirtualEnvInstall_Failed )
+    message( FATAL_ERROR ${PythonVirtualEnvInstall_Error} )
+  else( PythonVirtualEnvInstall_Failed )
     file( APPEND ${installed_packages_file} "SimpleITK\n" )
-  endif( failed )
+  endif( PythonVirtualEnvInstall_Failed )
 endif( ${SimpleITK_installed} EQUAL -1 )
 
 foreach( package @PYTHON_TESTING_MODULES@ )
   string( FIND "${installed_packages}" ${package} package_installed )
   if( ${package_installed} EQUAL -1 )
     message( STATUS "Installing ${package} into virtualenv" )
-    execute_process( COMMAND "@PythonVirtualenvHome@/Scripts/pip"
+    execute_process( COMMAND "@PythonVirtualEnvDir@/@PythonVirtualEnvScriptsDir@/pip"
         install ${package}
-      RESULT_VARIABLE failed
-      ERROR_VARIABLE error )
-    if( failed )
-      message( ERROR ${error} )
-    else( failed )
+      RESULT_VARIABLE PythonVirtualEnvInstall_Failed
+      ERROR_VARIABLE PythonVirtualEnvInstall_Error )
+    if( PythonVirtualEnvInstall_Failed )
+      message( FATAL_ERROR ${PythonVirtualEnvInstall_Error} )
+    else( PythonVirtualEnvInstall_Failed )
       file( APPEND ${installed_packages_file} "${package}\n" )
-    endif( failed )
+    endif( PythonVirtualEnvInstall_Failed )
   endif( ${package_installed} EQUAL -1 )
 endforeach()
