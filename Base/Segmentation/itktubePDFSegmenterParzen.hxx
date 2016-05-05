@@ -219,12 +219,12 @@ PDFSegmenterParzen< TImage, TLabelMap >
     histogramBinMax[i] += buffer;
     m_HistogramBinSize[i] = ( histogramBinMax[i] - m_HistogramBinMin[i] ) /
       ( double )( m_HistogramNumberOfBin[i] );
-    std::cout << "BinMin[" << i << "] = " << m_HistogramBinMin[i]
-      << std::endl;
-    std::cout << "  BinMax[" << i << "] = " << histogramBinMax[i]
-      << std::endl;
-    std::cout << "  BinSize[" << i << "] = " << m_HistogramBinSize[i]
-      << std::endl;
+    //std::cout << "BinMin[" << i << "] = " << m_HistogramBinMin[i]
+      //<< std::endl;
+    //std::cout << "  BinMax[" << i << "] = " << histogramBinMax[i]
+      //<< std::endl;
+    //std::cout << "  BinSize[" << i << "] = " << m_HistogramBinSize[i]
+      //<< std::endl;
     }
 
   std::vector< VectorDoubleType > clipMin;
@@ -302,7 +302,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
         {
         double tailReject = totalInClass[c] * ( m_OutlierRejectPortion /
           2.0 );
-        std::cout << "Class tail = " << tailReject << std::endl;
+        //std::cout << "Class tail = " << tailReject << std::endl;
         for( unsigned int i = 0; i < numFeatures; i++ )
           {
           count = 0;
@@ -319,13 +319,13 @@ PDFSegmenterParzen< TImage, TLabelMap >
                 }
               if( count - prevCount != 0 )
                 {
-                std::cout << "   binMin = " << b << std::endl;
-                std::cout << "   count = " << count << std::endl;
-                std::cout << "   prevcount = " << prevCount << std::endl;
-                std::cout << "   clipMin = " << clipMin[c][i] << std::endl;
+                //std::cout << "   binMin = " << b << std::endl;
+                //std::cout << "   count = " << count << std::endl;
+                //std::cout << "   prevcount = " << prevCount << std::endl;
+                //std::cout << "   clipMin = " << clipMin[c][i] << std::endl;
                 clipMin[c][i] += m_HistogramBinSize[i]
                   * ((tailReject-prevCount) / (count-prevCount));
-                std::cout << "   clipMin = " << clipMin[c][i] << std::endl;
+                //std::cout << "   clipMin = " << clipMin[c][i] << std::endl;
                 }
               break;
               }
@@ -347,10 +347,10 @@ PDFSegmenterParzen< TImage, TLabelMap >
               break;
               }
             }
-          std::cout << "Class " << c << " : Feature " << i << " : using "
-            << clipMin[c][i] << "(" << m_HistogramBinMin[i] << ") - "
-            << clipMax[c][i] << "(" << histogramBinMax[i] << ")"
-            << std::endl;
+          //std::cout << "Class " << c << " : Feature " << i << " : using "
+            //<< clipMin[c][i] << "(" << m_HistogramBinMin[i] << ") - "
+            //<< clipMax[c][i] << "(" << histogramBinMax[i] << ")"
+            //<< std::endl;
           }
         }
       }
@@ -384,10 +384,10 @@ PDFSegmenterParzen< TImage, TLabelMap >
       histogramBinMax[i] += buffer;
       m_HistogramBinSize[i] = ( histogramBinMax[i] - m_HistogramBinMin[i] )
         / ( double )( m_HistogramNumberOfBin[i] );
-      std::cout << "Feature " << i << " : buffered : "
-        << m_HistogramBinMin[i] << " - " << histogramBinMax[i]
-        << " = " << m_HistogramBinSize[i] << " * "
-        << m_HistogramNumberOfBin[i] << std::endl;
+      //std::cout << "Feature " << i << " : buffered : "
+        //<< m_HistogramBinMin[i] << " - " << histogramBinMax[i]
+        //<< " = " << m_HistogramBinSize[i] << " * "
+        //<< m_HistogramNumberOfBin[i] << std::endl;
       }
 
     for( unsigned int c = 0; c < numClasses; c++ )
@@ -405,7 +405,6 @@ PDFSegmenterParzen< TImage, TLabelMap >
             / m_HistogramBinSize[i] );
           if( binN < 0 )
             {
-            std::cout << "1D: Less than 0" << std::endl;
             binN = 0;
             }
           else if( static_cast< unsigned int >( binN )
@@ -470,7 +469,6 @@ PDFSegmenterParzen< TImage, TLabelMap >
           / m_HistogramBinSize[i] );
         if( binN < 0 )
           {
-          std::cout << "ND: Less than 0" << std::endl;
           binN = 0;
           }
         else if( static_cast< unsigned int >( binN )
@@ -501,10 +499,6 @@ PDFSegmenterParzen< TImage, TLabelMap >
         {
         for( unsigned int dir=0; dir<numFeatures; ++dir )
           {
-          std::cout << "Smoothing class " << c << " with s = "
-            << m_HistogramSmoothingStandardDeviation << std::endl;
-          std::cout << "  spacing = " << m_InClassHistogram[c]->GetSpacing()
-            << std::endl;
           typename HistogramBlurGenType::Pointer blurFilter =
             HistogramBlurGenType::New();
           blurFilter->SetInput( m_InClassHistogram[c] );
