@@ -21,8 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeSpatialObjectToImageFilter_h
-#define __itktubeSpatialObjectToImageFilter_h
+#ifndef __itktubeTubeSpatialObjectToImageFilter_h
+#define __itktubeTubeSpatialObjectToImageFilter_h
 
 #include <itkSpatialObject.h>
 #include <itkSpatialObjectToImageFilter.h>
@@ -137,11 +137,11 @@ private:
 }; // End class TubeSpatialObjectToImageFilter
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeSpatialObjectToImageFilter.hxx"
+#include "itktubeTubeSpatialObjectToImageFilter.hxx"
 #endif
 
 } // End namespace tube
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeSpatialObjectToImageFilter_h)
+#endif // End !defined(__itktubeTubeSpatialObjectToImageFilter_h)
