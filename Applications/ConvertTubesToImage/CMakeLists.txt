@@ -24,16 +24,6 @@
 set( MODULE_NAME ConvertTubesToImage )
 project( ${MODULE_NAME} )
 
-set( TubesToImage_H_Files
-  itktubeSpatialObjectToImageFilter.h )
-
-set( TubesToImage_HXX_Files
-  itktubeSpatialObjectToImageFilter.hxx )
-
-add_custom_target( TubesToImageInclude SOURCES
-  ${TubesToImage_H_Files}
-  ${TubesToImage_HXX_Files} )
-
 if( NOT TubeTK_SOURCE_DIR )
   find_package( TubeTK REQUIRED )
   include( ${TubeTK_USE_FILE} )
@@ -53,7 +43,7 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects
-    TubeCLI TubeTKCommon )
+    TubeTKITK TubeCLI TubeTKCommon )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
