@@ -30,8 +30,6 @@ limitations under the License.
 
 #include "ConvertTubesToDensityImageCLP.h"
 
-using namespace tube;
-
 enum { Dimension = 3 };
 
 typedef unsigned int                                  DensityPixelType;
@@ -78,7 +76,7 @@ int DoIt( int argc, char * argv[] )
   double progress = 0.0;
   itk::TimeProbesCollectorBase timeCollector;
 
-  CLIProgressReporter progressReporter(
+  tube::CLIProgressReporter progressReporter(
     "tubeDensityImageRadiusBuilder",
     CLPProcessInformation );
 
