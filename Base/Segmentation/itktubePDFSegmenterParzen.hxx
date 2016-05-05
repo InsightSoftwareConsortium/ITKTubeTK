@@ -66,7 +66,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
 
   m_HistogramSmoothingStandardDeviation = 4;
 
-  m_OutlierRejectPortion = 0.01;
+  m_OutlierRejectPortion = 0.001;
 
   m_LabeledFeatureSpace = NULL;
 }
@@ -214,11 +214,17 @@ PDFSegmenterParzen< TImage, TLabelMap >
 
   for( unsigned int i = 0; i < numFeatures; i++ )
     {
-    double buffer = 0.025 * ( histogramBinMax[i] - m_HistogramBinMin[i] );
+    double buffer = 0.1 * ( histogramBinMax[i] - m_HistogramBinMin[i] );
     m_HistogramBinMin[i] -= buffer;
     histogramBinMax[i] += buffer;
     m_HistogramBinSize[i] = ( histogramBinMax[i] - m_HistogramBinMin[i] ) /
       ( double )( m_HistogramNumberOfBin[i] );
+    //std::cout << "BinMin[" << i << "] = " << m_HistogramBinMin[i]
+      //<< std::endl;
+    //std::cout << "  BinMax[" << i << "] = " << histogramBinMax[i]
+      //<< std::endl;
+    //std::cout << "  BinSize[" << i << "] = " << m_HistogramBinSize[i]
+      //<< std::endl;
     }
 
   std::vector< VectorDoubleType > clipMin;
@@ -296,6 +302,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
         {
         double tailReject = totalInClass[c] * ( m_OutlierRejectPortion /
           2.0 );
+        //std::cout << "Class tail = " << tailReject << std::endl;
         for( unsigned int i = 0; i < numFeatures; i++ )
           {
           count = 0;
@@ -312,8 +319,13 @@ PDFSegmenterParzen< TImage, TLabelMap >
                 }
               if( count - prevCount != 0 )
                 {
+                //std::cout << "   binMin = " << b << std::endl;
+                //std::cout << "   count = " << count << std::endl;
+                //std::cout << "   prevcount = " << prevCount << std::endl;
+                //std::cout << "   clipMin = " << clipMin[c][i] << std::endl;
                 clipMin[c][i] += m_HistogramBinSize[i]
                   * ((tailReject-prevCount) / (count-prevCount));
+                //std::cout << "   clipMin = " << clipMin[c][i] << std::endl;
                 }
               break;
               }
@@ -367,8 +379,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
 
     for( unsigned int i = 0; i < numFeatures; i++ )
       {
-      double buffer = 0.025 * ( histogramBinMax[i] -
-        m_HistogramBinMin[i] );
+      double buffer = 0.1 * ( histogramBinMax[i] - m_HistogramBinMin[i] );
       m_HistogramBinMin[i] -= buffer;
       histogramBinMax[i] += buffer;
       m_HistogramBinSize[i] = ( histogramBinMax[i] - m_HistogramBinMin[i] )
@@ -486,14 +497,19 @@ PDFSegmenterParzen< TImage, TLabelMap >
       {
       if( m_HistogramSmoothingStandardDeviation > 0 )
         {
-        typename HistogramBlurGenType::Pointer blurFilter =
-          HistogramBlurGenType::New();
-        blurFilter->SetInput( m_InClassHistogram[c] );
-        blurFilter->SetSigma( m_HistogramSmoothingStandardDeviation );
-        blurFilter->SetZeroOrder();
-        blurFilter->SetNormalizeAcrossScale( false );
-        blurFilter->Update();
-        m_InClassHistogram[c] = blurFilter->GetOutput();
+        for( unsigned int dir=0; dir<numFeatures; ++dir )
+          {
+          typename HistogramBlurGenType::Pointer blurFilter =
+            HistogramBlurGenType::New();
+          blurFilter->SetInput( m_InClassHistogram[c] );
+          blurFilter->SetSigma( m_HistogramSmoothingStandardDeviation *
+            m_InClassHistogram[c]->GetSpacing()[dir] );
+          blurFilter->SetDirection( dir );
+          blurFilter->SetZeroOrder();
+          blurFilter->SetNormalizeAcrossScale( false );
+          blurFilter->Update();
+          m_InClassHistogram[c] = blurFilter->GetOutput();
+          }
 
         typedef itk::ThresholdImageFilter< HistogramImageType >
           ThresholdFilterType;
