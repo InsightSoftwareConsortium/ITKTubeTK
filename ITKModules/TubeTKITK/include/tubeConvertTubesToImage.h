@@ -19,11 +19,14 @@
 #define __tubeConvertTubesToImage_h
 
 // ITK includes
-#include <itkProcessObject.h>
 #include <itkGroupSpatialObject.h>
+#include <itkMacro.h>
+#include <itkProcessObject.h>
+
 
 // TubeTK includes
 #include "itktubeSpatialObjectToImageFilter.h"
+#include "tubeWrappingMacros.h"
 
 namespace tube
 {
@@ -42,9 +45,10 @@ public:
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 
-  typedef itk::GroupSpatialObject< Dimension >       TubesType;
-  typedef TOutputPixel                               OutputPixelType;
-  typedef itk::Image< OutputPixelType, Dimension >   OutputImageType;
+  typedef itk::Image< TOutputPixel, Dimension >      OutputImageType;
+  typedef itk::tube::TubeSpatialObjectToImageFilter< Dimension,
+    OutputImageType >                                FilterType;
+  typedef typename FilterType::SpatialObjectType     TubesType;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -53,19 +57,22 @@ public:
   itkTypeMacro(ConvertTubesToImage, Object);
 
   /** Set if the tube should be full inside */
-  void SetUseRadius( bool useRadius );
+  tubeWrapSetMacro(UseRadius, bool, Filter);
+  tubeWrapGetMacro(UseRadius, bool, Filter);
 
   /* Set template image */
-  void SetTemplateImage( typename OutputImageType::Pointer pTemplateImage );
+  void SetTemplateImage(const OutputImageType * pTemplateImage);
+  itkGetConstObjectMacro(TemplateImage, OutputImageType);
 
   /* Set input tubes */
-  void SetInput( typename TubesType::Pointer pTubes );
+  tubeWrapSetConstObjectMacro(Input, TubesType, Filter);
+  tubeWrapGetConstObjectMacro(Input, TubesType, Filter);
 
   /* Runs tubes to image conversion */
-  void Update();
+  tubeWrapUpdateMacro(Filter);
 
   /* Get the generated binary tubes image */
-  typename OutputImageType::Pointer GetOutput();
+  tubeWrapGetObjectMacro(Output, OutputImageType, Filter);
 
 protected:
   ConvertTubesToImage( void );
@@ -77,10 +84,9 @@ private:
   ConvertTubesToImage(const Self &);
   void operator=(const Self &);
 
-  typedef itk::tube::TubeSpatialObjectToImageFilter< Dimension,
-    OutputImageType > TubesToImageFilterType;
+  typename FilterType::Pointer m_Filter;
 
-  typename TubesToImageFilterType::Pointer m_TubesToImageFilter;
+  typename OutputImageType::ConstPointer m_TemplateImage;
 
 };
 
