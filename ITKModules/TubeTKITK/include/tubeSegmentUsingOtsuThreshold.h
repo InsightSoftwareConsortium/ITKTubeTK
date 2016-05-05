@@ -1,0 +1,98 @@
+/*=========================================================================
+ *
+ *  Copyright Insight Software Consortium
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0.txt
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+*=========================================================================*/
+#ifndef __tubeSegmentUsingOtsuThreshold_h
+#define __tubeSegmentUsingOtsuThreshold_h
+
+// ITK includes
+#include <itkProcessObject.h>
+#include <itkOtsuThresholdImageFilter.h>
+
+// TubeTK includes
+#include "tubeWrappingMacros.h"
+
+namespace tube
+{
+/** \class SegmentUsingOtsuThreshold
+ *
+ *  \ingroup TubeTKITK
+ */
+
+template< class TInputPixel,
+  unsigned int Dimension,
+  class TMaskPixel = unsigned char >
+class SegmentUsingOtsuThreshold:
+  public itk::ProcessObject
+{
+public:
+  /** Standard class typedefs. */
+  typedef SegmentUsingOtsuThreshold                 Self;
+  typedef itk::SmartPointer< Self >                 Pointer;
+  typedef itk::SmartPointer< const Self >           ConstPointer;
+
+  typedef itk::Image< TInputPixel, Dimension >      InputImageType;
+  typedef itk::Image< TMaskPixel, Dimension >       MaskImageType;
+  typedef MaskImageType                             OutputImageType;
+
+  typedef itk::OtsuThresholdImageFilter< InputImageType,
+    OutputImageType >                               FilterType;
+
+  /** Method for creation through the object factory. */
+  itkNewMacro(Self);
+
+  /** Run-time type information (and related methods). */
+  itkTypeMacro(SegmentUsingOtsuThreshold, Object);
+
+  /* Set/Get mask image */
+  tubeWrapSetConstObjectMacro(MaskImage, MaskImageType, Filter);
+  tubeWrapGetConstObjectMacro(MaskImage, MaskImageType, Filter);
+
+  /* Set/Get input image */
+  tubeWrapSetConstObjectMacro(Input, InputImageType, Filter);
+  tubeWrapGetConstObjectMacro(Input, InputImageType, Filter);
+
+  /* Runs the thresholding algorithm */
+  tubeWrapUpdateMacro(Filter);
+
+  /* Get output segmentation mask */
+  tubeWrapGetObjectMacro(Output, OutputImageType, Filter);
+
+  /* Get output threshold */
+  tubeWrapGetMacro(Threshold, TInputPixel, Filter);
+
+protected:
+  SegmentUsingOtsuThreshold( void );
+  ~SegmentUsingOtsuThreshold() {}
+  void PrintSelf( std::ostream & os, itk::Indent indent ) const;
+
+private:
+  /** itkSegmentUsingOtsuThresholdFilter parameters **/
+  SegmentUsingOtsuThreshold(const Self &);
+  void operator=(const Self &);
+
+  typename FilterType::Pointer m_Filter;
+
+};
+
+} // End namespace tube
+
+
+#ifndef ITK_MANUAL_INSTANTIATION
+#include "tubeSegmentUsingOtsuThreshold.hxx"
+#endif
+
+#endif // End !defined( __tubeSegmentUsingOtsuThreshold_h )
