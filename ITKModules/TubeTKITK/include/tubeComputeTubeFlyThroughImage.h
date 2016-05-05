@@ -59,25 +59,25 @@ public:
   itkTypeMacro(ComputeTubeFlyThroughImage, Object);
 
   /** Set/Get tube id for which the fly through image is to be generated */
-  tubeWrapSetMacro(TubeId, int, Filter)
-  tubeWrapGetMacro(TubeId, int, Filter)
+  tubeWrapSetMacro(TubeId, int, Filter);
+  tubeWrapGetMacro(TubeId, int, Filter);
 
   /* Set/Get input image from which the tubes were extracted/segmented */
-  tubeWrapSetConstObjectMacro(InputImage, InputImageType, Filter)
-  tubeWrapGetConstObjectMacro(InputImage, InputImageType, Filter)
+  tubeWrapSetConstObjectMacro(InputImage, InputImageType, Filter);
+  tubeWrapGetConstObjectMacro(InputImage, InputImageType, Filter);
 
   /* Set/Get input tubes */
-  tubeWrapSetConstObjectMacro(Input, TubeGroupType, Filter)
-  tubeWrapGetConstObjectMacro(Input, TubeGroupType, Filter)
+  tubeWrapSetConstObjectMacro(Input, TubeGroupType, Filter);
+  tubeWrapGetConstObjectMacro(Input, TubeGroupType, Filter);
 
   /* Generates tube fly through image and mask */
-  tubeWrapUpdate( Filter );
+  tubeWrapUpdateMacro(Filter);
 
   /* Get the generated tube fly through image */
-  tubeWrapGetObjectMacro(Output, OutputImageType, Filter )
+  tubeWrapGetObjectMacro(Output, OutputImageType, Filter);
 
   /* Get the generated tube fly through image */
-  tubeWrapGetObjectMacro(OutputMask, OutputMaskType, Filter )
+  tubeWrapGetObjectMacro(OutputMask, OutputMaskType, Filter);
 
 protected:
   ComputeTubeFlyThroughImage( void );
