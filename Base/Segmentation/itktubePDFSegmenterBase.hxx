@@ -32,7 +32,7 @@ limitations under the License.
 #include <itkBinaryErodeImageFilter.h>
 #include <itkConnectedThresholdImageFilter.h>
 #include <itkCurvatureAnisotropicDiffusionImageFilter.h>
-#include <itkRecursiveGaussianImageFilter.h>
+#include <itkSmoothingRecursiveGaussianImageFilter.h>
 #include <itkThresholdImageFilter.h>
 #include <itkNormalizeToConstantImageFilter.h>
 #include <itkImage.h>
@@ -424,7 +424,7 @@ PDFSegmenterBase< TImage, TLabelMap >
     delete probIt[c];
     }
 
-  typedef itk::RecursiveGaussianImageFilter<
+  typedef itk::SmoothingRecursiveGaussianImageFilter<
     ProbabilityImageType, ProbabilityImageType > ProbImageFilterType;
   typename ProbImageFilterType::Pointer probImageFilter;
 
@@ -439,7 +439,6 @@ PDFSegmenterBase< TImage, TLabelMap >
     probImageFilter->SetInput( m_ProbabilityImageVector[c] );
     probImageFilter->SetSigma(
       m_ProbabilityImageSmoothingStandardDeviation );
-    probImageFilter->SetZeroOrder();
     probImageFilter->Update();
     m_ProbabilityImageVector[c] = probImageFilter->GetOutput();
 
