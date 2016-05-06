@@ -113,6 +113,7 @@ public:
 
   /** Sets the element spacing */
   void SetSpacing( SpacingType );
+  itkGetMacro( Spacing, SpacingType );
   void Update( void );
 
 protected:

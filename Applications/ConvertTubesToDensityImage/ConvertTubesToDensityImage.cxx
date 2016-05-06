@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeTubeSpatialObjectToDensityImageFilter.h"
+#include "tubeConvertTubesToDensityImage.h"
 #include "tubeCLIProgressReporter.h"
 
 #include <itkImageFileReader.h>
@@ -43,8 +43,8 @@ typedef itk::Image< TangentPixelType, Dimension >     TangentImageType;
 
 typedef itk::ImageFileReader< TemplateImageType >     TemplateImageReaderType;
 
-typedef itk::tube::TubeSpatialObjectToDensityImageFilter<
-  DensityImageType, RadiusImageType > TubeToDensityImageBuilderType;
+typedef tube::ConvertTubesToDensityImage<
+  DensityImageType, RadiusImageType, TangentImageType > TubeToDensityImageBuilderType;
 
 typedef TubeToDensityImageBuilderType::TubeGroupType  TubesType;
 typedef itk::SpatialObjectReader< Dimension >         TubesReaderType;
