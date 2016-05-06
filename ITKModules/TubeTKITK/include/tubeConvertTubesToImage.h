@@ -42,6 +42,7 @@ class ConvertTubesToImage:
 public:
   /** Standard class typedefs. */
   typedef ConvertTubesToImage                        Self;
+  typedef itk::ProcessObject                         SuperClass;
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 

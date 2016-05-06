@@ -40,6 +40,7 @@ class ComputeTubeFlyThroughImage:
 public:
   /** Standard class typedefs. */
   typedef ComputeTubeFlyThroughImage                 Self;
+  typedef itk::ProcessObject                         SuperClass;
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 
