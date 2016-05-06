@@ -36,8 +36,6 @@ limitations under the License.
 
 #include "ConvertTubesToImageCLP.h"
 
-using namespace tube;
-
 template< class TPixel, unsigned int TDimension >
 int DoIt( int argc, char * argv[] );
 
@@ -54,7 +52,10 @@ int DoIt( int argc, char * argv[] )
   double progress = 0.0;
   itk::TimeProbesCollectorBase timeCollector;
 
-  CLIProgressReporter progressReporter( "TubesToImage", CLPProcessInformation );
+  tube::CLIProgressReporter progressReporter(
+    "ConvertTubesToImage",
+    CLPProcessInformation );
+
   progressReporter.Start();
   progressReporter.Report( progress );
 

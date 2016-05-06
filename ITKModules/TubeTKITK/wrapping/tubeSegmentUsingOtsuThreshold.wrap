@@ -1,0 +1,11 @@
+itk_wrap_include( tubeSegmentUsingOtsuThreshold.h )
+
+itk_wrap_named_class("tube::SegmentUsingOtsuThreshold" tubeSegmentUsingOtsuThreshold POINTER)
+ foreach(tI ${WRAP_ITK_SCALAR})
+    foreach(d ${ITK_WRAP_IMAGE_DIMS})
+      foreach(tM ${WRAP_ITK_SCALAR})
+        itk_wrap_template("${ITKM_${tI}}${d}${ITKM_${tM}}"  "${ITKT_${tI}}, ${d}, ${ITKT_${tM}}")
+      endforeach()
+    endforeach()
+ endforeach()
+itk_end_wrap_class()

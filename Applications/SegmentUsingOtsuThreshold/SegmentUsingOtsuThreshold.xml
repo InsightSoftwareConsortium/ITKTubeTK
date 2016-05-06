@@ -33,4 +33,15 @@
       <description>Output volume.</description>
     </image>
   </parameters>
+  <parameters>
+    <label>Parameters</label>
+    <description>Algorithm parameters</description>
+    <double>
+      <name>maskValue</name>
+      <label>Mask Value</label>
+      <description>Only pixels with this mask value will be used to compute the otsu threshold</description>
+      <longflag>maskValue</longflag>
+      <default>0.0</default>
+    </double>
+  </parameters>
 </executable>
