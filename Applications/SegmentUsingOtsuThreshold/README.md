@@ -16,8 +16,9 @@ USAGE:
 
    SegmentUsingOtsuThreshold  [--returnparameterfile <std::string>]
                               [--processinformationaddress <std::string>]
-                              [--xml] [--echo] [--mask <std::string>] [--]
-                              [--version] [-h] <std::string> <std::string>
+                              [--xml] [--echo] [--maskValue <double>]
+                              [--mask <std::string>] [--] [--version] [-h]
+                              <std::string> <std::string>
 
 
 Where:
@@ -36,6 +37,10 @@ Where:
 
    --echo
      Echo the command line arguments (default: 0)
+
+   --maskValue <double>
+     Only pixels with this mask value will be used to compute the otsu
+     threshold (default: 0)
 
    --mask <std::string>
      Mask volume.
