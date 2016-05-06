@@ -90,6 +90,10 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
           return DoIt< float, 2 >( argc, argv );
         case ImageIOType::DOUBLE:
           return DoIt< double, 2 >( argc, argv );
+        case ImageIOType::INT:
+          return DoIt< int, 2 >( argc, argv );
+        case ImageIOType::UINT:
+          return DoIt< unsigned int, 2 >( argc, argv );
         case ImageIOType::UNKNOWNCOMPONENTTYPE:
         default:
           tubeErrorMacro( << "Unknown component type." );
@@ -114,6 +118,10 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
           return DoIt < float, 3 >( argc, argv );
         case ImageIOType::DOUBLE:
           return DoIt < double, 3 >( argc, argv );
+        case ImageIOType::INT:
+          return DoIt< int, 3 >( argc, argv );
+        case ImageIOType::UINT:
+          return DoIt< unsigned int, 3 >( argc, argv );
         case ImageIOType::UNKNOWNCOMPONENTTYPE:
         default:
           tubeErrorMacro( << "Unknown component type." );
