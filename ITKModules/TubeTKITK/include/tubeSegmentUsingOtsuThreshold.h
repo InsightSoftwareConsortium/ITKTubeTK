@@ -57,21 +57,25 @@ public:
   /** Run-time type information (and related methods). */
   itkTypeMacro(SegmentUsingOtsuThreshold, Object);
 
-  /* Set/Get mask image */
+  /** Set/Get mask image */
   tubeWrapSetConstObjectMacro(MaskImage, MaskImageType, Filter);
   tubeWrapGetConstObjectMacro(MaskImage, MaskImageType, Filter);
 
-  /* Set/Get input image */
+  /** Set/Get mask value */
+  tubeWrapSetMacro(MaskValue, TInputPixel, Filter);
+  tubeWrapGetMacro(MaskValue, TInputPixel, Filter);
+
+  /** Set/Get input image */
   tubeWrapSetConstObjectMacro(Input, InputImageType, Filter);
   tubeWrapGetConstObjectMacro(Input, InputImageType, Filter);
 
-  /* Runs the thresholding algorithm */
+  /** Runs the thresholding algorithm */
   tubeWrapUpdateMacro(Filter);
 
-  /* Get output segmentation mask */
+  /** Get output segmentation mask */
   tubeWrapGetObjectMacro(Output, OutputImageType, Filter);
 
-  /* Get output threshold */
+  /** Get output threshold */
   tubeWrapGetMacro(Threshold, TInputPixel, Filter);
 
 protected:

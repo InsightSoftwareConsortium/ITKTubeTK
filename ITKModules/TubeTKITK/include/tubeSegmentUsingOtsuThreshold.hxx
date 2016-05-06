@@ -29,7 +29,6 @@ SegmentUsingOtsuThreshold< TInputPixel, Dimension, TMaskPixel >
 {
   m_Filter = FilterType::New();
   m_Filter->SetMaskOutput( false );
-  m_Filter->SetMaskValue( 0 );
   m_Filter->SetOutsideValue( 0 );
   m_Filter->SetInsideValue( 1 );
 }
