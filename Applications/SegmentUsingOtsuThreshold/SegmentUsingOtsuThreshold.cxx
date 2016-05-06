@@ -117,6 +117,7 @@ int DoIt( int argc, char * argv[] )
 
   if( maskVolume.size() > 0 )
     {
+    filter->SetMaskValue( maskValue );
     filter->SetMaskImage( maskReader->GetOutput() );
     }
 
