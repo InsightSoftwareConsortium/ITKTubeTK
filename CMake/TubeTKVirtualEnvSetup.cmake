@@ -19,10 +19,10 @@ if( NOT EXISTS "${activate_full}" )
   # Check if we are in a virtal environment
   execute_process( COMMAND "${PYTHON_EXECUTABLE}"
                    "-c"
-                   "exec(\"import sys\\nif hasattr(sys,'real_prefix'):\\n  sys.exit(1)\")"
-                   RESULT_VARIABLE TubeTKVirtualEnvSetup_InVirtualenv
-                   ERROR_VARIABLE TubeTKVirtualEnvSetup_Error )
-  if( TubeTKVirtualEnvSetup_InVirtualenv )
+                   "import sys; sys.exit(1) if hasattr(sys,'real_prefix') else sys.exit(0)"
+                   RESULT_VARIABLE _inVirtualenv
+                   ERROR_VARIABLE _error )
+  if( _inVirtualenv )
     message( WARNING "Configuring a virtual environment from a virtual environment\
  does not copy the packages from the original environment.")
   endif()
@@ -30,17 +30,17 @@ if( NOT EXISTS "${activate_full}" )
   # a virtualenv from a different environment could lead to errors
   # (e.g. python2 vs python3)
   execute_process( COMMAND "${PYTHON_EXECUTABLE}" -c
-                   "import virtualenv;print virtualenv.__file__"
-                   RESULT_VARIABLE TubeTKVirtualEnvSetup_Failed
-                   OUTPUT_VARIABLE TubeTKVirtualEnvSetup_Output
-                   ERROR_VARIABLE TubeTKVirtualEnvSetup_Error )
-  if( TubeTKVirtualEnvSetup_Failed )
+                   "import virtualenv;print(virtualenv.__file__)"
+                   RESULT_VARIABLE _failed
+                   OUTPUT_VARIABLE _output
+                   ERROR_VARIABLE _error )
+  if( _failed )
     message(FATAL_ERROR "virtualenv is required. Please install manually (e.g. \
 pip install virtualenv")
   endif()
-  get_filename_component( virtualenv_filename ${TubeTKVirtualEnvSetup_Output} NAME_WE)
-  get_filename_component( virtualenv_extension ${TubeTKVirtualEnvSetup_Output} EXT)
-  get_filename_component( virtualenv_directory ${TubeTKVirtualEnvSetup_Output} DIRECTORY)
+  get_filename_component( virtualenv_filename ${_output} NAME_WE)
+  get_filename_component( virtualenv_extension ${_output} EXT)
+  get_filename_component( virtualenv_directory ${_output} DIRECTORY)
   set( virtualenv_script ${virtualenv_directory}/${virtualenv_filename})
   if( virtualenv_extension )
     set( virtualenv_script ${virtualenv_script}.py )
@@ -55,10 +55,10 @@ pip install virtualenv")
       "--python=${PYTHON_EXECUTABLE}"
       "--system-site-packages"
       "${PythonVirtualEnvDir}"
-    RESULT_VARIABLE TubeTKVirtualEnvSetup_Failed
-    ERROR_VARIABLE TubeTKVirtualEnvSetup_Error )
-  if( TubeTKVirtualEnvSetup_Failed )
-    message( FATAL_ERROR ${TubeTKVirtualEnvSetup_Error} )
+    RESULT_VARIABLE _failed
+    ERROR_VARIABLE _error )
+  if( _failed )
+    message( FATAL_ERROR ${_error} )
   endif()
 else( NOT EXISTS "${activate_full}" )
   message( STATUS "Testing virtualenv found at ${PythonVirtualEnvDir}" )

@@ -46,7 +46,7 @@ macro(TubeTKCheckPythonLibrary library)
     find_package(PythonInterp REQUIRED)
 
     execute_process(COMMAND "${PYTHON_EXECUTABLE}" "-c"
-      "exec(\"import sys\\ntry:\\n  import ${library}\\nexcept Exception as e:\\n  print e\\n  sys.exit(0)\\nsys.exit(1)\")"
+      "exec(\"import sys\\ntry:\\n  import ${library}\\nexcept Exception as e:\\n  print(e)\\n  sys.exit(0)\\nsys.exit(1)\")"
       RESULT_VARIABLE ${library}_FOUND
       OUTPUT_VARIABLE _PYTHON_VALUES
       ERROR_VARIABLE _PYTHON_ERROR_VALUE

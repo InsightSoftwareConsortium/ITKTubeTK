@@ -2,7 +2,7 @@ set( installed_packages_file
   "@TubeTK_BINARY_DIR@/CMakeFiles/CMakeTmp/InstalledVirtualEnvPackages.txt" )
 if( NOT EXISTS ${installed_packages_file} )
   file( WRITE ${installed_packages_file} "" )
-endif( NOT EXISTS ${installed_packages_file} )
+endif()
 file( READ ${installed_packages_file} installed_packages )
 
 # We need SimpleITK (almost surely) in all examples
@@ -10,14 +10,14 @@ string( FIND "${installed_packages}" SimpleITK SimpleITK_installed )
 if( ${SimpleITK_installed} EQUAL -1 )
   message( STATUS "Installing SimpleITK into virtualenv" )
   execute_process( COMMAND @PythonVirtualEnvDir@/@PythonVirtualEnvScriptsDir@/easy_install -f http://www.simpleitk.org/SimpleITK/resources/software.html SimpleITK
-    RESULT_VARIABLE PythonVirtualEnvInstall_Failed
-    ERROR_VARIABLE PythonVirtualEnvInstall_Error )
-  if( PythonVirtualEnvInstall_Failed )
-    message( FATAL_ERROR ${PythonVirtualEnvInstall_Error} )
-  else( PythonVirtualEnvInstall_Failed )
+    RESULT_VARIABLE _failed
+    ERROR_VARIABLE _error )
+  if( _failed )
+    message( FATAL_ERROR ${_error} )
+  else( _failed )
     file( APPEND ${installed_packages_file} "SimpleITK\n" )
-  endif( PythonVirtualEnvInstall_Failed )
-endif( ${SimpleITK_installed} EQUAL -1 )
+  endif()
+endif()
 
 foreach( package @PYTHON_TESTING_MODULES@ )
   string( FIND "${installed_packages}" ${package} package_installed )
@@ -25,12 +25,12 @@ foreach( package @PYTHON_TESTING_MODULES@ )
     message( STATUS "Installing ${package} into virtualenv" )
     execute_process( COMMAND "@PythonVirtualEnvDir@/@PythonVirtualEnvScriptsDir@/pip"
         install ${package}
-      RESULT_VARIABLE PythonVirtualEnvInstall_Failed
-      ERROR_VARIABLE PythonVirtualEnvInstall_Error )
-    if( PythonVirtualEnvInstall_Failed )
-      message( FATAL_ERROR ${PythonVirtualEnvInstall_Error} )
-    else( PythonVirtualEnvInstall_Failed )
+      RESULT_VARIABLE _failed
+      ERROR_VARIABLE _error )
+    if( _failed )
+      message( FATAL_ERROR ${_error} )
+    else( _failed )
       file( APPEND ${installed_packages_file} "${package}\n" )
-    endif( PythonVirtualEnvInstall_Failed )
-  endif( ${package_installed} EQUAL -1 )
+    endif()
+  endif()
 endforeach()
