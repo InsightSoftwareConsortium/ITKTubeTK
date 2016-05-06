@@ -90,7 +90,7 @@ if( TubeTK_USE_PYQTGRAPH )
   TubeTKCheckPythonLibrary(PyQt4)
   TubeTKCheckPythonLibrary(PySide)
   TubeTKCheckPythonLibrary(python-opengl)
-  if( NOT PyQt4_FOUND OR NOT PySize_FOUND OR NOT python-opengl_FOUND )
+  if( NOT PyQt4_FOUND OR NOT PySide_FOUND OR NOT python-opengl_FOUND )
     message(WARNING "With TubeTK_USE_PYQTGRAPH=ON and BUILD_TESTING=ON, PyQt4 or PySide\
  are required as is python-opengl, but these are not pip installable.")
   endif()
