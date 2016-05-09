@@ -9,7 +9,17 @@ Tubes and surfaces, as generalized 1D and 2D manifolds in N-dimensional images, 
 
 A guiding premise of TubeTK is that by focusing on 1D and 2D manifolds we can devise methods that are insensitive to the modality, noise, contrast, and scale of the images being analyzed and to the arrangement and deformations of the objects in them. In particular, we propose that TubeTK's manifold methods offer improved performance for many applications, compared to methods involving the analysis of independent geometric measures (e.g., edges and corners) or requiring complete shape models.
 
-TubeTK makes extensive use of the [Insight Segmentation and Registration Toolkit](http://www.itk.org) (ITK) and the [Visualization Toolkit](http://www.vtk.org) (VTK). Select methods of TubeTK are provided as command-line applications and as extensions in [3D Slicer](http://www.slicer.org), an open-source medical imaging application.
+TubeTK offers various interface layers:
+
+* "TubeTK/Base:" This is the algorithms library.   It is the lowest level of access to the methods of TubeTK.  It is only available via C++, and it requires considerable expertise to effectively combine and call its methods to do anything useful.   Iterfacing directly with these algorithms is not recommended and is not well supported.   Unit-level testing is performed continuously on these methods.
+
+* "TubeTK/ITKModules:" This is the ITK interface to select methods in TubeTK/Base.  This level of interface is intended for ITK users and Python scripts writers.  The methods exposed represent a level of modularization that invites experimentation, integration with other toolkits (e.g., Scikit-Learn), and development of processing pipelines that accomplish significant image analysis goals.  The interface is available as an ITK Extension and thereby available via Python using Wrapped ITK.
+
+* "TubeTK/Applications:" These are the command-line interface (CLI) equivalents to the methods available via TubeTK/ITKModules.  This is intended for bash, bat, and other system-call scripts.  The level of modularization and intended users are similar to those of TubeTK/ITKModules.  C++ and python-based CLIs are provided.  Continuous, unit-level testing of TubeTK/ITKModules is provided via these applications.
+
+* "TubeTK/Experiments:" These are Python Jupyter notebooks that combine many TubeTK/ITKModules into Python scripts that show how to accomplish high-level image analysis goals with TubeTK.  They are intended to be an interactive basis for exploring TubeTK.  Python and Jypter notebooks packages must be installed on your computer to run these. These can also be (and are) run as tests to check performance (these test performance, whereas the unit-level tests focus on regression).
+
+* "TubeTK/SlicerModules:"  These are Slicer modules that combine many of the TubeTK/ITKMoudles into Slicer elements that accomplish select high-level image analysis tasks using TubeTK.
 
 License
 -------
