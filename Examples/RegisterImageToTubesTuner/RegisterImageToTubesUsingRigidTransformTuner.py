@@ -20,7 +20,7 @@ import pyqtgraph.opengl as gl
 from pyqtgraph.widgets.HistogramLUTWidget import HistogramLUTWidget
 from pyqtgraph.graphicsItems.ImageItem import ImageItem
 from pyqtgraph.Qt import QtCore, QtGui
-import SimpleITK as sitk
+import itk
 import tables
 import matplotlib.cm
 
@@ -512,7 +512,7 @@ class ImageTubesWidget(gl.GLViewWidget):
 
         io_params = self.config['ParameterGroups'][0]['Parameters']
         input_volume = io_params[0]['Value']
-        self.input_image = sitk.ReadImage(str(input_volume))
+        self.input_image = itk.ImageFileReader(FileName=str(input_volume))
 
         if 'Visualization' in config:
             visualization = config['Visualization']
@@ -576,8 +576,8 @@ class ImageTubesWidget(gl.GLViewWidget):
         sigma = self.config['ParameterGroups'][1]['Parameters'][0]['Value']
         if sigma > 0.0:
             for ii in range(3):
-                image = sitk.RecursiveGaussian(image, sigma, direction=ii)
-        image_content = sitk.GetArrayFromImage(image)
+                image = itk.RecursiveGaussianImageFilter(image, sigma, direction=ii)
+        image_content = itk.PyBuffer[image.__class__].GetArrayFromImage(image)
         self.image_display_logic.set_number_of_planes(0,
                                                       image_content.shape[2])
         self.image_display_logic.set_number_of_planes(1,
@@ -598,7 +598,7 @@ class ImageTubesWidget(gl.GLViewWidget):
 
     def _image_plane(self, direction, index=None):
         """Create an image plane Item from the center plane in the given
-        direction for the given SimpleITK Image."""
+        direction for the given ITK Image."""
         if index is None:
             shape = self.image_content.shape
             if direction == 0:
@@ -1282,10 +1282,10 @@ class MetricSpaceDock(pyqtgraph.dockarea.Dock):
                               '--indices', indices,
                               metric_image, slice_filename])
 
-        slice_image = sitk.ReadImage(slice_filename)
+        slice_image = itk.ImageFileReader(FileName=slice_filename)
         os.remove(slice_filename)
 
-        z = sitk.GetArrayFromImage(slice_image)
+        z = itk.PyBuffer[slicer_image.__class__].GetArrayFromImage(slice_image)
         z = z.transpose()
         if lower_direction == v_direction:
             # correct?
