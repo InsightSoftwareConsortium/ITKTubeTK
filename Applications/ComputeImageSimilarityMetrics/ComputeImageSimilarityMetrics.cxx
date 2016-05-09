@@ -24,8 +24,10 @@ limitations under the License.
 // ITK includes
 #include <itkImageFileReader.h>
 
-// TubeTK includes
+// TubeTKITK includes
 #include "tubeComputeImageSimilarityMetrics.h"
+
+// TubeTK includes
 #include "tubeMessage.h"
 
 #include "ComputeImageSimilarityMetricsCLP.h"

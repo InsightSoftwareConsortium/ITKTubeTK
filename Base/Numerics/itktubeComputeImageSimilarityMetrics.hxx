@@ -57,12 +57,12 @@ ComputeImageSimilarityMetrics< TInputImage >
 ::Update( void )
 {
   // check if both input images are set
-  if( m_Input1 == NULL)
+  if( m_Input1.IsNull() )
     {
     itkExceptionMacro("Input Image 1 is not set");
     }
 
-  if( m_Input1 == NULL)
+  if( m_Input1.IsNull() )
     {
     itkExceptionMacro("Input Image 2 is not set");
     }
