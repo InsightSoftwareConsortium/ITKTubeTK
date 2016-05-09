@@ -62,21 +62,37 @@ public:
   typedef itk::VesselTubeSpatialObject< ImageDimension >      TubeType;
 
   itkSetMacro( SpeedImage, typename InputImageType::Pointer );
+  itkGetMacro( SpeedImage, typename InputImageType::Pointer );
   itkSetMacro( RadiusImage, typename InputImageType::Pointer );
+  itkGetMacro( RadiusImage, typename InputImageType::Pointer );
   itkSetMacro( StartPoint, PointType );
+  itkGetMacro( StartPoint, PointType );
   itkSetMacro( EndPoint, PointType );
+  itkGetMacro( EndPoint, PointType );
   itkSetMacro( ExtractEndPointFromTargetTube, bool );
+  itkGetMacro( ExtractEndPointFromTargetTube, bool );
   itkSetMacro( ConnectToTargetTubeSurface, bool );
+  itkGetMacro( ConnectToTargetTubeSurface, bool );
   itkSetMacro( ExtractRadius, bool );
+  itkGetMacro( ExtractRadius, bool );
   itkSetMacro( OptimizationMethod, std::string );
+  itkGetMacro( OptimizationMethod, std::string );
   itkSetMacro( OptimizerTerminationValue, double );
+  itkGetMacro( OptimizerTerminationValue, double );
   itkSetMacro( OptimizerNumberOfIterations, int );
+  itkGetMacro( OptimizerNumberOfIterations, int );
   itkSetMacro( OptimizerStepLengthFactor, double );
+  itkGetMacro( OptimizerStepLengthFactor, double );
   itkSetMacro( OptimizerStepLengthRelax, double );
+  itkGetMacro( OptimizerStepLengthRelax, double );
   itkSetMacro( StartRadius, double );
+  itkGetMacro( StartRadius, double );
   itkSetMacro( MaxRadius, double );
+  itkGetMacro( MaxRadius, double );
   itkSetMacro( StepSizeForRadiusEstimation, double );
+  itkGetMacro( StepSizeForRadiusEstimation, double );
   itkGetMacro( CostAssociatedWithExtractedTube, double );
+  itkSetMacro( CostAssociatedWithExtractedTube, double );
 
   void SetIntermediatePoints( std::vector< PointType > );
 protected:

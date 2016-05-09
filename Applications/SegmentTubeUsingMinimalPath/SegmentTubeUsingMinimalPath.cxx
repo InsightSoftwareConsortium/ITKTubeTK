@@ -44,7 +44,7 @@
 #include "itkSpeedFunctionToPathFilter.h"
 #include "itkSpeedFunctionPathInformation.h"
 #include "itkIterateNeighborhoodOptimizer.h"
-#include "itktubeSegmentTubesUsingMinimalPathFilter.h"
+#include "tubeSegmentTubesUsingMinimalPath.h"
 #include <sstream>
 
 #include "SegmentTubeUsingMinimalPathCLP.h"
@@ -79,7 +79,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start( "Load data" );
 
-  typedef itk::tube::SegmentTubesUsingMinimalPathFilter< TubeGroupType, ImageType >
+  typedef tube::SegmentTubesUsingMinimalPath< DimensionT, PixelType >
                                                          FilterType;
   typename FilterType::Pointer filter = FilterType::New();
 
