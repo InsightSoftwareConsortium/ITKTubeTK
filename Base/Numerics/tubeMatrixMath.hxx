@@ -264,6 +264,181 @@ FixMatrixSymmetry( vnl_matrix<T> & mat )
 }
 
 /**
+ * Perform trilinear diagonalization in 2D */
+template< class T >
+void
+ComputeTriDiag2D(vnl_matrix<T> &mat,
+  vnl_vector<T> &diag, vnl_vector<T> &subD)
+{
+  diag(0) = mat(0,0);
+  diag(1) = mat(1,1);
+  subD(0) = mat(0,1);
+  subD(1) = 0;
+
+  mat(0,0) = 1;
+  mat(0,1) = 0;
+
+  mat(1,0) = 0;
+  mat(1,1) = 1;
+}
+
+/**
+ * Perform trilinear diagonalization in 3D */
+template< class T >
+void
+ComputeTriDiag3D(vnl_matrix<T> &mat,
+  vnl_vector<T> &diag, vnl_vector<T> &subD)
+{
+  double  a = mat(0,0), b = mat(0,1), c = mat(0,2),
+          d = mat(1,1), e = mat(1,2), f = mat(2,2);
+
+  diag(0) = static_cast< T >( a );
+  subD(2) = 0;
+  if(c != 0)
+    {
+    const double s = vcl_sqrt(b*b+c*c);
+    b /= s;
+    c /= s;
+    const double q = 2*b*e+c*(f-d);
+    diag(1) = static_cast< T >( d+c*q );
+    diag(2) = static_cast< T >( f-c*q );
+    subD(0) = static_cast< T >( s );
+    subD(1) = static_cast< T >( e-b*q );
+
+    mat(0,0) = 1;
+    mat(0,1) = 0;
+    mat(0,2) = 0;
+
+    mat(1,0) = 0;
+    mat(1,1) = static_cast< T >( b );
+    mat(1,2) = static_cast< T >( c );
+
+    mat(2,0) = 0;
+    mat(2,1) = static_cast< T >( c );
+    mat(2,2) = static_cast< T >( -b );
+    }
+  else
+    {
+    diag(1) = static_cast< T >( d );
+    diag(2) = static_cast< T >( f );
+    subD(0) = static_cast< T >( b );
+    subD(1) = static_cast< T >( e );
+
+    mat(0,0) = 1;
+    mat(0,1) = 0;
+    mat(0,2) = 0;
+
+    mat(1,0) = 0;
+    mat(1,1) = 1;
+    mat(1,2) = 0;
+
+    mat(2,0) = 0;
+    mat(2,1) = 0;
+    mat(2,2) = 1;
+    }
+}
+
+template< class T >
+void
+ComputeTqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
+{
+  int iter;
+  int i;
+  int k;
+  int l;
+  int m;
+
+  double dd;
+  double g;
+  double r;
+  double f;
+  double s;
+  double c;
+  double p;
+  double b;
+
+  int n = mat.rows();
+
+  for(l=0; l<n; l++)
+    {
+    for(iter = 0; iter < EIGEN_MAX_ITERATIONS; iter++)
+      {
+      for(m=l; m<n; m++)
+        {
+        if(m!=(n-1))
+          {
+          dd = vnl_math_abs(diag(m))+vnl_math_abs(diag(m+1));
+          }
+        else
+          {
+          dd = vnl_math_abs(diag(m));
+          }
+
+        if(vnl_math_abs(subD(m))+dd == dd)
+          {
+          break;
+          }
+        }
+      if(m == l)
+        {
+        break;
+        }
+      g = (diag(l+1)-diag(l))/(2*subD(l));
+      r = vcl_sqrt(g*g+1);
+      if(g<0)
+        {
+        g = diag(m)-diag(l)+subD(l)/(g-r);
+        }
+      else
+        {
+        g = diag(m)-diag(l)+subD(l)/(g+r);
+        }
+      s = 1;
+      c = 1;
+      p = 0;
+      for(i=m-1; i>=l; i--)
+        {
+        f = s*subD(i);
+        b = c*subD(i);
+        if(vnl_math_abs(f)>=vnl_math_abs(g))
+          {
+          c = g/f;
+          r = vcl_sqrt(c*c+1);
+          subD(i+1) = static_cast< T >( f*r );
+          c *= (s = 1/r);
+          }
+        else
+          {
+          s = f/g;
+          r = vcl_sqrt(s*s+1);
+          subD(i+1) = static_cast< T >( g*r );
+          s *= (c = 1/r);
+          }
+        g = diag(i+1)-p;
+        r = (diag(i)-g)*s+2*b*c;
+        p = s*r;
+        diag(i+1) = static_cast< T >( g+p );
+        g = c*r-b;
+
+        for(k=0; k<n; k++)
+          {
+          f = mat(k,i+1);
+          mat(k,i+1) = static_cast< T >( s*mat(k,i)+c*f );
+          mat(k,i) = static_cast< T >( c*mat(k,i)-s*f );
+          }
+        }
+      diag(l) -= static_cast< T >( p );
+      subD(l) = static_cast< T >( g );
+      subD(m) = 0;
+      }
+    if(iter == EIGEN_MAX_ITERATIONS)
+      {
+      throw("NR_tqli - exceeded maximum iterations\n");
+      }
+    }
+}
+
+/**
  * Compute eigenvalues and vectors  */
 template< class T >
 void
@@ -297,11 +472,31 @@ ComputeEigen( vnl_matrix<T> const & mat,
     }
   if( symmetric )
     {
-    vnl_symmetric_eigensystem< T > eigen( mat );
-    for( unsigned int d=0; d<n; d++ )
+    switch(n)
       {
-      eVects.set_column( d, eigen.get_eigenvector( d ) );
-      eVals[d] = eigen.get_eigenvalue( d );
+      case 1:
+        eVects.set_size(1,1);
+        eVects.fill( 1 );
+        eVals.set_size(1);
+        eVals.fill( mat[0][0] );
+        break;
+      case 2:
+        ComputeTriDiag2D(eVects, eVals, subD);
+        ComputeTqli(eVals, subD, eVects);
+        break;
+      case 3:
+        ComputeTriDiag3D(eVects, eVals, subD);
+        ComputeTqli(eVals, subD, eVects);
+        break;
+      default:
+        vnl_symmetric_eigensystem< T > eigen( mat );
+        eVects = eigen.V;
+        eVals.set_size( eVects.columns() );
+        for( unsigned int d=0; d<eVects.columns(); d++ )
+          {
+          eVals[d] = eigen.get_eigenvalue( d );
+          }
+        break;
       }
     }
   else

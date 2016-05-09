@@ -21,16 +21,18 @@ limitations under the License.
 
 =========================================================================*/
 
-// ITK includes
-#include <itkImageFileReader.h>
-#include <itkImageFileWriter.h>
-#include "itkOtsuThresholdImageFilter.h"
-#include <itkTimeProbesCollectorBase.h>
-
 // TubeTK includes
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
+
+// TubeTKITK includes
+#include "tubeSegmentUsingOtsuThreshold.h"
+
+// ITK includes
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
+#include <itkTimeProbesCollectorBase.h>
 
 #include "SegmentUsingOtsuThresholdCLP.h"
 
@@ -45,129 +47,117 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  // The timeCollector is used to perform basic profiling of the components
-  //   of your algorithm.
+  // setup progress reporting
+  double progress = 0.0;
+
+  tube::CLIProgressReporter progressReporter(
+    "SegmentUsingOtsuThreshold", CLPProcessInformation );
+  progressReporter.Start();
+  progressReporter.Report( progress );
+
+  // The timeCollector to perform basic profiling of algorithmic components
   itk::TimeProbesCollectorBase timeCollector;
 
-  // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter progressReporter(
-    "OtsuThreshold",
-    CLPProcessInformation );
-  progressReporter.Start();
+  // typedefs
+  typedef tube::SegmentUsingOtsuThreshold< TPixel, VDimension > FilterType;
 
-  typedef float                                           PixelType;
-  typedef unsigned char                                   OutPixType;
-  typedef itk::Image< PixelType, VDimension >             ImageType;
-  typedef itk::Image< OutPixType, VDimension >            OutputType;
-  typedef itk::ImageFileReader< ImageType >               ReaderType;
-  typedef itk::ImageFileWriter< OutputType  >             WriterType;
-  typedef itk::OtsuThresholdImageFilter< ImageType, OutputType, ImageType >
-                                                          FilterType;
-
+  // Load input image
   timeCollector.Start("Load data");
-  typename ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileName( inputVolume.c_str() );
+
+  typedef typename FilterType::InputImageType     InputImageType;
+  typedef itk::ImageFileReader< InputImageType >  ImageReaderType;
+
+  typename ImageReaderType::Pointer inputReader = ImageReaderType::New();
+
   try
     {
-    reader->Update();
+    inputReader->SetFileName( inputVolume.c_str() );
+    inputReader->Update();
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( "Reading volume: Exception caught: "
+    tube::ErrorMessage( "Error loading input image: "
                         + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  typename ImageType::Pointer inputImage = reader->GetOutput();
 
-  typename ImageType::Pointer maskImage = NULL;
+  // Load mask image if provided
+  typedef typename FilterType::MaskImageType     MaskImageType;
+  typedef itk::ImageFileReader< MaskImageType >  MaskReaderType;
+
+  typename MaskReaderType::Pointer maskReader = MaskReaderType::New();
+
   if( maskVolume.size() > 0 )
     {
-    typename ReaderType::Pointer maskReader = ReaderType::New();
-    maskReader->SetFileName( maskVolume.c_str() );
     try
       {
+      maskReader->SetFileName( maskVolume.c_str() );
       maskReader->Update();
       }
     catch( itk::ExceptionObject & err )
       {
-      tube::ErrorMessage( "Reading volume: Exception caught: "
+      tube::ErrorMessage( "Error reading input mask: "
                           + std::string(err.GetDescription()) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    maskImage = maskReader->GetOutput();
     }
 
   timeCollector.Stop("Load data");
-  double progress = 0.1;
+  progress = 0.1;
   progressReporter.Report( progress );
 
-  timeCollector.Start("Gaussian Blur");
+  // run otsu thresholding
+  timeCollector.Start("Otsu thresholding");
 
-  typename OutputType::Pointer outImage;
-  typename FilterType::Pointer filter;
+  typename FilterType::Pointer filter = FilterType::New();
 
-  // Progress per iteration
-  double progressFraction = 0.8/VDimension;
+  filter->SetInput( inputReader->GetOutput() );
 
-  filter = FilterType::New();
-  filter->SetInput( inputImage );
-  if( maskImage.IsNotNull() )
+  if( maskVolume.size() > 0 )
     {
-    filter->SetMaskImage( maskImage );
-
-    // Note: Output masking only keeps values at positions p, where mask(p) is
-    // NOT equal to zero. We do not want that here.
-    filter->SetMaskOutput( false );
-
-    // Note: only pixels at positions p where mask(p) == 0 are taken into
-    // account for thresholding. So, a mask is interpreted in an inclusion
-    // sense, rather than an exclusion sense. Hence, for a binary, i.e., 0/1
-    // mask to be used in the intuitive (i.e., we do not care about the mask
-    // region), we need to set the mask value to zero.
-    filter->SetMaskValue( 0 );
+    filter->SetMaskValue( maskValue );
+    filter->SetMaskImage( maskReader->GetOutput() );
     }
 
-  tube::CLIFilterWatcher watcher( filter,
-                                  "OtsuThreshold",
-                                  CLPProcessInformation,
-                                  progressFraction,
-                                  progress,
-                                  true );
-  filter->SetOutsideValue( 0 );
-  filter->SetInsideValue( 1 );
   filter->Update();
-  std::cout << filter->GetThreshold() << std::endl;
-  outImage = filter->GetOutput();
 
-  std::cout << "Chosen threshold = " << filter->GetThreshold()
-    << std::endl;
+  std::cout << "Chosen threshold = " << filter->GetThreshold() << std::endl;
 
-  timeCollector.Stop("Gaussian Blur");
+  timeCollector.Stop("Otsu thresholding");
+  progress = 0.8; // At about 80% done
+  progressReporter.Report( progress );
 
-  timeCollector.Start("Save data");
-  typename WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( outImage );
-  writer->SetUseCompression( true );
+  // write output
+  typedef typename FilterType::OutputImageType      OutputImageType;
+  typedef itk::ImageFileWriter< OutputImageType >   OutputWriterType;
+
+  timeCollector.Start("Write segmentation mask");
+
+  typename OutputWriterType::Pointer writer = OutputWriterType::New();
+
   try
     {
+    writer->SetFileName( outputVolume.c_str() );
+    writer->SetInput( filter->GetOutput() );
+    writer->SetUseCompression( true );
     writer->Update();
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( "Writing volume: Exception caught: "
+    tube::ErrorMessage( "Error writing segmentation mask: "
                         + std::string(err.GetDescription()) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Save data");
+
+  timeCollector.Stop("Write segmentation mask");
   progress = 1.0;
   progressReporter.Report( progress );
   progressReporter.End();
-
   timeCollector.Report();
+
   return EXIT_SUCCESS;
 }
 
