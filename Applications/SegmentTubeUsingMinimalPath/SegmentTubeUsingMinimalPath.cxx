@@ -28,22 +28,18 @@
 
 #include "itkTimeProbesCollectorBase.h"
 #include "itkImageFileReader.h"
-#include "itkImageFileWriter.h"
-#include "itkLinearInterpolateImageFunction.h"
-#include "itkPolyLineParametricPath.h"
-#include "itkSingleImageCostFunction.h"
-#include "itkGradientDescentOptimizer.h"
-#include "itkPathIterator.h"
 #include "itkGroupSpatialObject.h"
 #include "itkSpatialObjectReader.h"
 #include "itkSpatialObjectWriter.h"
-#include "itktubeRadiusExtractor2.h"
-#include "itkBinaryThresholdImageFilter.h"
-#include "itkNumericTraits.h"
 
 #include "itkSpeedFunctionToPathFilter.h"
 #include "itkSpeedFunctionPathInformation.h"
 #include "itkIterateNeighborhoodOptimizer.h"
+#include "itkSingleImageCostFunction.h"
+#include "itkPathIterator.h"
+
+#include "itktubeRadiusExtractor2.h"
+
 #include "tubeSegmentTubesUsingMinimalPath.h"
 #include <sstream>
 

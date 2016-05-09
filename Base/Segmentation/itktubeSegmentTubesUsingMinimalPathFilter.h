@@ -19,6 +19,11 @@
 #define __itktubeSegmentTubesUsingMinimalPathFilter_h
 
 #include "itkImage.h"
+#include "itkLinearInterpolateImageFunction.h"
+#include "itkPolyLineParametricPath.h"
+#include "itkGradientDescentOptimizer.h"
+#include "itkNumericTraits.h"
+
 #include "itktubeSpatialObjectToSpatialObjectFilter.h"
 
 namespace itk
