@@ -412,7 +412,8 @@ RidgeExtractor<TInputImage>
   double & intensity,
   double & roundness,
   double & curvature,
-  double & levelness )
+  double & levelness,
+  const vnl_vector<double> & prevTangent)
 {
   if( this->GetDebug() )
     {
@@ -455,7 +456,7 @@ RidgeExtractor<TInputImage>
     std::cout << "  XH = " << m_XH << std::endl;
     }
 
-  ::tube::ComputeRidgeness<double>( m_XH, m_XD, m_XRidgeness, m_XRoundness,
+  ::tube::ComputeRidgeness<double>( m_XH, m_XD, prevTangent, m_XRidgeness, m_XRoundness,
     m_XCurvature, m_XLevelness, m_XHEVect, m_XHEVal );
 
   intensity = m_XVal;
@@ -974,46 +975,9 @@ RidgeExtractor<TInputImage>
       {
       indxX[i] = lX[i];
       }
+
     ridgeness = Ridgeness( indxX, intensity, roundness, curvature,
-      levelness );
-
-    for( unsigned int i=0; i<ImageDimension; i++ )
-      {
-      for( unsigned int j=0; j<ImageDimension; j++ )
-        {
-        tV[j] = m_XHEVect( j, i );
-        }
-      prod[i] = vnl_math_abs( dot_product( lStepDir, tV ) );
-      }
-
-    unsigned int closestV = 0;
-    double closestVProd = prod[0];
-    for( unsigned int i=1; i<ImageDimension; i++ )
-      {
-      if( prod[i]>closestVProd )
-        {
-        closestV = i;
-        closestVProd = prod[i];
-        }
-      }
-    if( closestV != ImageDimension-1 )
-      {
-      if( verbose || this->GetDebug() )
-        {
-        std::cout << "Mixing things up: Chosen t=evect#" << closestV
-          << " dotProd = " << closestVProd << std::endl;
-        }
-      double tf = m_XHEVal[closestV];
-      m_XHEVal[closestV] = m_XHEVal[ImageDimension-1];
-      m_XHEVal[ImageDimension-1] = tf;
-      for( unsigned int i=0; i<ImageDimension; i++ )
-        {
-        tf = m_XHEVect( i, closestV );
-        m_XHEVect( i, closestV ) = m_XHEVect( i, ImageDimension-1 );
-        m_XHEVect( i, ImageDimension-1 ) = tf;
-        }
-      ridgeness = 1 - ridgeness;
-      }
+      levelness, lStepDir );
 
     for( unsigned int i=0; i<ImageDimension-1; i++ )
       {
@@ -1029,7 +993,7 @@ RidgeExtractor<TInputImage>
       {
       lT[i] = m_XHEVect( i, ImageDimension-1 );
       }
-    lNTEVal[ImageDimension-1] = m_XHEVal[closestV];
+    lNTEVal[ImageDimension-1] = m_XHEVal[ImageDimension-1];
 
     double dProd = dot_product( pT, lT );
     if( dProd<0 )

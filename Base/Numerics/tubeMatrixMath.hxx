@@ -134,6 +134,7 @@ template< class T >
 void
 ComputeRidgeness( const vnl_matrix<T> & H,
   const vnl_vector<T> & D,
+  const vnl_vector<double> & prevTangent,
   double & ridgeness,
   double & roundness,
   double & curvature,
@@ -154,6 +155,43 @@ ComputeRidgeness( const vnl_matrix<T> & H,
   else
     {
     Dv = HEVect.get_column( ImageDimension-1 );
+    }
+
+  if( !prevTangent.empty() )
+    {
+    // Check dot product between the previous tangent and every eigenvector
+    // to determine which one corresponds to the tangent direction.
+    // Then reorder the matrix if needed to always have the tangent in the
+    // last column.
+    unsigned int closestV = 0;
+    double closestVProd = 0;
+    for( unsigned int i=0; i<ImageDimension; i++ )
+      {
+      double prod = 0;
+      for( unsigned int j=0; j<ImageDimension; j++ )
+        {
+        prod += vnl_math_abs( prevTangent[j] * HEVect( j, i ) );
+        }
+      if( prod>closestVProd )
+        {
+        closestV = i;
+        closestVProd = prod;
+        }
+      }
+    if( closestV != ImageDimension-1 )
+      {
+      std::cout << "***********Mixing things up: Chosen t=evect#" << closestV
+        << " dotProd = " << closestVProd << std::endl;
+      double tf = HEVal[closestV];
+      HEVal[closestV] = HEVal[ImageDimension-1];
+      HEVal[ImageDimension-1] = tf;
+      for( unsigned int i=0; i<ImageDimension; i++ )
+        {
+        tf = HEVect( i, closestV );
+        HEVect( i, closestV ) = HEVect( i, ImageDimension-1 );
+        HEVect( i, ImageDimension-1 ) = tf;
+        }
+      }
     }
 
   double sump = 0;
@@ -491,8 +529,8 @@ ComputeEigen( vnl_matrix<T> const & mat,
       default:
         vnl_symmetric_eigensystem< T > eigen( mat );
         eVects = eigen.V;
-        eVals.set_size( eVects.columns() );
-        for( unsigned int d=0; d<eVects.columns(); d++ )
+        eVals.set_size( n );
+        for( unsigned int d=0; d<n; d++ )
           {
           eVals[d] = eigen.get_eigenvalue( d );
           }
