@@ -2,7 +2,7 @@
 
 if [ "$#" -eq 0 ]; then
   echo "TubeTKLiverRegistration-CTA3Phase <inputImage_Phase1> <inputImage_Phase2> <inputImage_Phase3>"
-  echo "  <inputImage_PhaseX> : Liver CT scan with 3 contract uptake phases"
+  echo "  <inputImage_PhaseX> : Liver CT scan with 3 contrast uptake phases"
   exit
 fi
 
