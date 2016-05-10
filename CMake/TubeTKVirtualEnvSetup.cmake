@@ -1,47 +1,72 @@
 find_package( PythonInterp REQUIRED )
+find_package( PythonLibs REQUIRED )
 
 # This sets the virtual environment directory
-set( PythonVirtualenvHome ${TubeTK_BINARY_DIR}/Temporary/PythonVirtualenv )
+if( NOT PythonVirtualEnvDir )
+  set( PythonVirtualEnvDir ${TubeTK_BINARY_DIR}/Temporary/PythonVirtualenv )
+endif()
 
 if( WIN32 )
-  get_filename_component( activate_full
-    "${PythonVirtualenvHome}/Scripts/activate" ABSOLUTE )
+  set( PythonVirtualEnvScriptsDir Scripts)
 else( WIN32 )
-  get_filename_component( activate_full
-    "${PythonVirtualenvHome}/bin/activate" ABSOLUTE )
+  set( PythonVirtualEnvScriptsDir bin)
 endif( WIN32 )
+get_filename_component( activate_full
+    "${PythonVirtualEnvDir}/${PythonVirtualEnvScriptsDir}/activate" ABSOLUTE )
 
 if( NOT EXISTS "${activate_full}" )
-  find_program( VIRTUALENV NAMES virtualenv virtualenv.py )
-  if( VIRTUALENV )
-    set( virtualenv_script "${VIRTUALENV}" )
-  else( VIRTUALENV )
-    set( virtualenv_script
-      "${TubeTK_SOURCE_DIR}/Utilities/Python/virtualenv/virtualenv.py" )
-  endif( VIRTUALENV )
+
+  # Check if we are in a virtal environment
+  execute_process( COMMAND "${PYTHON_EXECUTABLE}"
+                   "-c"
+                   "import sys; sys.exit(1) if hasattr(sys,'real_prefix') else sys.exit(0)"
+                   RESULT_VARIABLE _inVirtualenv
+                   ERROR_VARIABLE _error )
+  if( _inVirtualenv )
+    message( WARNING "Configuring a virtual environment from a virtual environment\
+ does not copy the packages from the original environment.")
+  endif()
+  # Check if virtualenv is available in the current environment (using
+  # a virtualenv from a different environment could lead to errors
+  # (e.g. python2 vs python3)
+  execute_process( COMMAND "${PYTHON_EXECUTABLE}" -c
+                   "import virtualenv;print(virtualenv.__file__)"
+                   RESULT_VARIABLE _failed
+                   OUTPUT_VARIABLE _output
+                   ERROR_VARIABLE _error )
+  if( _failed )
+    message(FATAL_ERROR "virtualenv is required. Please install manually (e.g. \
+pip install virtualenv")
+  endif()
+  get_filename_component( virtualenv_filename ${_output} NAME_WE)
+  get_filename_component( virtualenv_extension ${_output} EXT)
+  get_filename_component( virtualenv_directory ${_output} DIRECTORY)
+  set( virtualenv_script ${virtualenv_directory}/${virtualenv_filename})
+  if( virtualenv_extension )
+    set( virtualenv_script ${virtualenv_script}.py )
+    if (NOT EXISTS ${virtualenv_script} )
+      message(FATAL_ERROR "${virtualenv_script} not found")
+    endif()
+  endif()
+  message(STATUS "Virtualenv path - ${virtualenv_script}")
   # Create the virtual environment.
   execute_process( COMMAND "${PYTHON_EXECUTABLE}"
     "${virtualenv_script}"
       "--python=${PYTHON_EXECUTABLE}"
       "--system-site-packages"
-      "${PythonVirtualenvHome}"
-    RESULT_VARIABLE failed
-    ERROR_VARIABLE error )
-  if( failed )
-    message( ERROR ${error} )
+      "${PythonVirtualEnvDir}"
+    RESULT_VARIABLE _failed
+    ERROR_VARIABLE _error )
+  if( _failed )
+    message( FATAL_ERROR ${_error} )
   endif()
 else( NOT EXISTS "${activate_full}" )
-  message( STATUS "Testing virtualenv found at ${PythonVirtualenvHome}" )
+  message( STATUS "Testing virtualenv found at ${PythonVirtualEnvDir}" )
 endif( NOT EXISTS "${activate_full}" )
 
 # Temporarily change the Python executable to the virtual environment one
-if( WIN32 )
-  set( PYTHON_TESTING_EXECUTABLE ${PythonVirtualenvHome}/Scripts/python
+set( PYTHON_TESTING_EXECUTABLE ${PythonVirtualEnvDir}/${PythonVirtualEnvScriptsDir}/python
     CACHE INTERNAL "Python to the python executable to use in tests." FORCE )
-else( )
-  set( PYTHON_TESTING_EXECUTABLE ${PythonVirtualenvHome}/bin/python
-    CACHE INTERNAL "Python to the python executable to use in tests." FORCE )
-endif()
 
 set( PYTHON_TESTING_MODULES )
 if( ${TubeTK_USE_NUMPY} )
@@ -61,6 +86,15 @@ endif( TubeTK_USE_IPYTHON_NOTEBOOKS )
 if( TubeTK_USE_PYQTGRAPH )
   # Note: PyQt4 or PySide are required as is python-opengl, but these are not
   # pip installable.
+  include(TubeTKCheckPythonLibrary)
+  TubeTKCheckPythonLibrary(PyQt4)
+  TubeTKCheckPythonLibrary(PySide)
+  TubeTKCheckPythonLibrary(python-opengl)
+  if( NOT PyQt4_FOUND OR NOT PySide_FOUND OR NOT python-opengl_FOUND )
+    message(WARNING "With TubeTK_USE_PYQTGRAPH=ON and BUILD_TESTING=ON, PyQt4 or PySide\
+ are required as is python-opengl, but these are not pip installable.")
+  endif()
+
   list( APPEND PYTHON_TESTING_MODULES
     pyside
     pyqtgraph

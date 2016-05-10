@@ -35,14 +35,15 @@ limitations under the License.
 #include <metaUtils.h>
 
 // Must include CLP before including tubeCLIHelperFunctions
-#include "ConvertImagesToCSVCLP.h"
+#include "ConvertCSVToImagesCLP.h"
 
 // Must do a forward declaration of DoIt before including
 // tubeCLIHelperFunctions
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
-// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
+// Must follow include of "...CLP.h" and forward declaration of
+// int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
 // Your code should be within the DoIt function...
@@ -69,80 +70,86 @@ int DoIt( int argc, char * argv[] )
     }
   typename InputImageType::Pointer maskImage = reader->GetOutput();
 
-  unsigned int numImages = 0;
-  std::vector< typename InputImageType::Pointer > imageList;
+  std::ifstream inCSVFile( inputCSVFileName.c_str() );
+  std::string header;
+  std::getline( inCSVFile, header );
+
   std::vector< std::string > imageFileNameList;
-  tube::StringToVector< std::string >( inputImageFileNameList,
-    imageFileNameList );
-  std::ofstream outFile( outputCSVFileName.c_str() );
-  for( unsigned int i = 0; i < imageFileNameList.size(); ++i )
-    {
-    reader = ReaderType::New();
-    reader->SetFileName( imageFileNameList[i] );
-    char filePath[4096];
-    std::string fileName = imageFileNameList[i];
-    if( MET_GetFilePath( imageFileNameList[i].c_str(), filePath ) )
-      {
-      fileName = &( imageFileNameList[i][ strlen( filePath ) ] );
-      }
-    outFile << fileName << ", ";
-    try
-      {
-      reader->Update();
-      }
-    catch( itk::ExceptionObject & err )
-      {
-      tube::ErrorMessage( "Reading volume: Exception caught: "
-                          + std::string(err.GetDescription()) );
-      return EXIT_FAILURE;
-      }
-    imageList.push_back( reader->GetOutput() );
-    ++numImages;
-    }
-  outFile << "Class" << std::endl;
+  tube::StringToVector< std::string >( header, imageFileNameList );
 
-  typedef itk::ImageRegionIterator< InputImageType > IteratorType;
+  unsigned int numImages = imageFileNameList.size();
 
-  std::vector< IteratorType * > iterList;
+  std::vector< typename InputImageType::Pointer > imageList;
+  imageList.resize( numImages );
   for( unsigned int i = 0; i < numImages; ++i )
     {
-    iterList.push_back( new IteratorType( imageList[i],
-        imageList[i]->GetLargestPossibleRegion() ) );
+    imageList[i] = InputImageType::New();
+    imageList[i]->CopyInformation( maskImage );
+    imageList[i]->SetRegions( maskImage->GetLargestPossibleRegion() );
+    imageList[i]->Allocate();
+    imageList[i]->FillBuffer( 0 );
     }
+
+  typedef typename itk::ImageRegionIterator< InputImageType > ImageIterType;
+  std::vector< typename ImageIterType * > imageIter;
+  imageIter.resize( numImages );
+  for( unsigned int i = 0; i < numImages; ++i )
+    {
+    imageIter[i] = new ImageIterType( imageList[i],
+      maskImage->GetLargestPossibleRegion() );
+    }
+
+  ImageIterType maskIter( maskImage,
+    maskImage->GetLargestPossibleRegion() );
 
   if( stride < 1 )
     {
     stride = 1;
     }
 
-  IteratorType maskIter( maskImage, maskImage->GetLargestPossibleRegion() );
   while( !maskIter.IsAtEnd() )
     {
     if( maskIter.Get() != 0 )
       {
+      std::string valueString;
+      std::getline( inCSVFile, valueString );
+
+      std::vector< float > valueList;
+      tube::StringToVector< float >( valueString, valueList );
+
       for( unsigned int i=0; i<numImages; ++i )
         {
-        outFile << iterList[i]->Get() << ", ";
+        imageIter[i]->Set( valueList[i] );
         }
-      outFile << maskIter.Get() << std::endl;
       }
     for( int s=0; s<stride && !maskIter.IsAtEnd(); ++s )
       {
       for( unsigned int i=0; i<numImages; ++i )
         {
-        ++(*iterList[i]);
+        ++(*imageIter[i]);
         }
       ++maskIter;
       }
     }
 
-  for( unsigned int i=0; i<iterList.size(); ++i )
+  typedef itk::ImageFileWriter< InputImageType > WriterType;
+  WriterType::Pointer writer = WriterType::New();
+  for( unsigned int i=0; i<imageIter.size(); ++i )
     {
-    delete iterList[i];
+    char outName[4096];
+    sprintf( outName, "%s.%s.%03d.mha", outputImageBaseFileName,
+     imageFileNameList[i], i );
+    writer->SetFileName( outName );
+    writer->SetInput( imageList[i] );
+    writer->Update();
     }
-  iterList.clear();
+  for( unsigned int i=0; i<imageIter.size(); ++i )
+    {
+    delete imageIter[i];
+    }
+  imageIter.clear();
 
-  outFile.close();
+  inCSVFile.close();
 
   return EXIT_SUCCESS;
 }
