@@ -30,13 +30,6 @@ limitations under the License.
 #include <itkProcessObject.h>
 #include <vector>
 
-// Forward declare itkTubeTK class to allow friendship
-namespace tube
-{
-template< typename tube_TInputImage, typename tube_TOutputImage >
-class ConvertSpatialGraphToImage;
-}
-
 namespace itk
 {
 
@@ -66,11 +59,13 @@ public:
   typedef TInputImage                                   InputImageType;
   typedef typename InputImageType::PixelType            InputPixelType;
   typedef TOutputImage                                  OutputImageType;
+  typedef typename InputImageType::Pointer              InputImagePointer;
+  typedef typename OutputImageType::Pointer             OutputImagePointer;
 
-  itkGetMacro( AdjacencyMatrixImage, typename OutputImageType::Pointer );
-  itkGetMacro( BranchnessImage, typename OutputImageType::Pointer );
-  itkGetMacro( RadiusImage, typename OutputImageType::Pointer );
-  itkGetMacro( CentralityImage, typename OutputImageType::Pointer );
+  itkGetMacro( AdjacencyMatrixImage, OutputImagePointer );
+  itkGetMacro( BranchnessImage, OutputImagePointer );
+  itkGetMacro( RadiusImage, OutputImagePointer );
+  itkGetMacro( CentralityImage, OutputImagePointer );
 
   void SetAdjacencyMatrix( vnl_matrix< double > );
   void SetBranchnessVector( vnl_vector< double > );
@@ -80,12 +75,12 @@ protected:
   ConvertSpatialGraphToImageFilter( void );
   ~ConvertSpatialGraphToImageFilter( void ) {}
 
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
   virtual void GenerateData( void );
 
 private:
-  ConvertSpatialGraphToImageFilter(const Self&);
-  void operator=(const Self&);
+  ConvertSpatialGraphToImageFilter( const Self& );
+  void operator=( const Self& );
 
   typename OutputImageType::Pointer            m_AdjacencyMatrixImage;
   typename OutputImageType::Pointer            m_BranchnessImage;
@@ -98,9 +93,6 @@ private:
   vnl_vector< double > m_RadiusVector;
   vnl_vector< double > m_CentralityVector;
 
-  /** friendship facilitating itkTukeTK integration */
-  template< typename tube_TInputImage, typename tube_TOutputImage >
-  friend class ::tube::ConvertSpatialGraphToImage;
 }; // End class CVTImageFilter
 
 } // End namespace tube

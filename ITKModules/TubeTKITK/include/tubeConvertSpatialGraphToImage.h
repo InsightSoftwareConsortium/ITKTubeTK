@@ -19,6 +19,7 @@
 #define __tubeConvertSpatialGraphToImage_h
 
 #include "itktubeConvertSpatialGraphToImageFilter.h"
+#include "tubeWrappingMacros.h"
 #include "itkObject.h"
 
 
@@ -39,19 +40,33 @@ public:
   typedef itk::SmartPointer< Self >       Pointer;
   typedef itk::SmartPointer< const Self > ConstPointer;
 
+  typedef itk::tube::ConvertSpatialGraphToImageFilter
+    < TInputImage, TOutputImage >         FilterType;
+
+  typedef typename FilterType::InputImageType      InputImageType;
+  typedef typename FilterType::InputImagePointer   InputImagePointer;
+  typedef typename FilterType::OutputImagePointer  OutputImagePointer;
+
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(ConvertSpatialGraphToImage, Object);
+  itkTypeMacro( ConvertSpatialGraphToImage, Object );
 
-  typename TOutputImage::Pointer GetAdjacencyMatrixImage();
+  /** Get Adjacency Matrix Image */
+  tubeWrapGetMacro( AdjacencyMatrixImage, OutputImagePointer, Filter );
+  tubeWrapGetMacro( BranchnessImage, OutputImagePointer, Filter );
+  tubeWrapGetMacro( RadiusImage, OutputImagePointer, Filter );
+  tubeWrapGetMacro( CentralityImage, OutputImagePointer, Filter );
 
-  typename TOutputImage::Pointer GetBranchnessImage();
+  /* Set input tubes */
+  tubeWrapSetConstObjectMacro( Input, InputImageType, Filter );
 
-  typename TOutputImage::Pointer GetRadiusImage();
+  /* Runs tubes to image conversion */
+  tubeWrapUpdateMacro( Filter );
 
-  typename TOutputImage::Pointer GetCentralityImage();
+  /* Get the generated binary tubes image */
+  tubeWrapGetObjectMacro( Output, OutputImagePointer, Filter );
 
   void SetAdjacencyMatrix( vnl_matrix< double > );
 
@@ -61,27 +76,17 @@ public:
 
   void SetCentralityVector( vnl_vector< double > );
 
-  void SetInput( const TInputImage *inputImage );
-
-  void Update();
-
-  typename TOutputImage::Pointer GetOutput();
-
 protected:
   ConvertSpatialGraphToImage( void );
   ~ConvertSpatialGraphToImage() {}
-  void PrintSelf(std::ostream & os, itk::Indent indent) const;
+  void PrintSelf( std::ostream & os, itk::Indent indent ) const;
 
 private:
   /** itkConvertSpatialGraphToImageFilter parameters **/
-  ConvertSpatialGraphToImage(const Self &);
-  void operator=(const Self &);
+  ConvertSpatialGraphToImage( const Self & );
+  void operator=( const Self & );
 
-  typedef itk::tube::ConvertSpatialGraphToImageFilter
-    < TInputImage, TOutputImage > ConvertSpatialGraphToImageFilterType;
-  typename ConvertSpatialGraphToImageFilterType::Pointer
-    m_ConvertSpatialGraphToImageFilter;
-
+  typename FilterType::Pointer  m_Filter;
 };
 } // End namespace tube
 
