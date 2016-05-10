@@ -88,7 +88,7 @@ RidgeExtractor<TInputImage>
 {
   m_DataFunc = BlurImageFunction<ImageType>::New();
   m_DataFunc->SetScale( 3 ); // 1.5
-  m_DataFunc->SetExtent( 3.1 ); // 3
+  m_DataFunc->SetExtent( 1.5 ); // 3
   m_DataMin = 0;
   m_DataMax = 1;
   m_DataRange = 1;
@@ -430,7 +430,7 @@ RidgeExtractor<TInputImage>
   m_XVal = m_DataSpline->ValueJet( m_X, m_XD, m_XH );
 
   // test for nan
-  if( m_XVal != m_XVal || m_XD[0] != m_XD[0] || m_XH[0][0] != m_XH[0][0] )
+  if( m_XVal != m_XVal || m_XD[0] != m_XD[0] || m_XH(0, 0) != m_XH(0, 0) )
     {
     std::cerr << "NAN at " << m_X << std::endl;
 
@@ -674,8 +674,8 @@ RidgeExtractor<TInputImage>
     lT[i] = newT[i];
     for( unsigned int j=0; j<ImageDimension-1; j++ )
       {
-      lN[i][j] = newN[i][j];
-      lSearchDir[i][j] = newN[i][j];
+      lN(i, j) = newN(i, j);
+      lSearchDir(i, j) = newN(i, j);
       }
     lStepDir[i] = newT[i];
     }
@@ -865,7 +865,7 @@ RidgeExtractor<TInputImage>
         }
 
       if( vnl_math_abs( dot_product( lStepDir, pStepDir ) ) <
-        1-0.5*( 1-m_MaxTangentChange ) )
+        (1+m_MaxTangentChange)/2.0 )
         {
         if( verbose || this->GetDebug() )
           {
@@ -1019,7 +1019,7 @@ RidgeExtractor<TInputImage>
       {
       for( unsigned int j=0; j<ImageDimension; j++ )
         {
-        lN[j][i] = m_XHEVect( j, i );
+        lN(j, i) = m_XHEVect( j, i );
         }
       lNTEVal[i] = m_XHEVal[i];
       }
@@ -1044,6 +1044,7 @@ RidgeExtractor<TInputImage>
       {
       lStepDir[i] = ( pStepDir[i] * 0.25 ) + ( lT[i] * 0.75 );
       }
+    lStepDir.normalize();
 
     dProd = dot_product( lStepDir, pStepDir );
     if( vnl_math_abs( dProd ) < m_MaxTangentChange )
@@ -1807,7 +1808,7 @@ RidgeExtractor<TInputImage>
     lT[i] = m_XHEVect( i, ImageDimension-1 );
     for( unsigned int j=0; j<ImageDimension-1; j++ )
       {
-      lN[i][j] = m_XHEVect( i, j );
+      lN(i, j) = m_XHEVect( i, j );
       }
     }
   if( verbose || this->GetDebug() )
