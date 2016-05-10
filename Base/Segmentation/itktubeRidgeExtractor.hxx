@@ -1215,7 +1215,7 @@ RidgeExtractor<TInputImage>
         m_StatusCallBack( NULL, st, 0 );
         }
       }
-    if( verbose || this->GetDebug() )
+    if( this->GetDebug() )
       {
       std::cout << "Ridge: TraverseOW: Adding point " << tubePointCount
         << " = " << lX << std::endl;
@@ -1519,12 +1519,18 @@ RidgeExtractor<TInputImage>
       }
 
     // Local 1D Ridge
-    std::cout << "LocalRidge: Start px = " << pX << std::endl;
-    std::cout << "  lN = " << lN << std::endl;
-    std::cout << "  val = " << m_DataSpline->Value( pX ) << std::endl;
+    if( this->GetDebug() )
+      {
+      std::cout << "LocalRidge: Start px = " << pX << std::endl;
+      std::cout << "  lN = " << lN << std::endl;
+      std::cout << "  val = " << m_DataSpline->Value( pX ) << std::endl;
+      }
     m_DataSpline->Extreme( pX, &val, ImageDimension-1, lN );
-    std::cout << "End px = " << pX << std::endl;
-    std::cout << "  val = " << val << std::endl;
+    if( this->GetDebug() )
+      {
+      std::cout << "End px = " << pX << std::endl;
+      std::cout << "  val = " << val << std::endl;
+      }
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
       newX[i] = pX[i];
@@ -1562,8 +1568,10 @@ RidgeExtractor<TInputImage>
         }
       return REVISITED_VOXEL;
       }
-
-    std::cout << "newX = " << newX << std::endl;
+    if( this->GetDebug() )
+      {
+      std::cout << "newX = " << newX << std::endl;
+      }
     ridgeness = Ridgeness( newX, intensity, roundness, curvature,
       levelness );
     if( ridgeness >= m_MinRidgenessStart &&
@@ -1600,7 +1608,7 @@ RidgeExtractor<TInputImage>
       }
     }
 
-  if( verbose || this->GetDebug() )
+  if( this->GetDebug() )
     {
     std::cout << " FAIL: Local norm max: " << newX << std::endl;
     std::cout << "  Ridgeness: " << ridgeness << " >= "
