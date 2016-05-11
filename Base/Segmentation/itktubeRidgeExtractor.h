@@ -292,7 +292,8 @@ public:
     double & intensity,
     double & roundness,
     double & curvature,
-    double & levelness );
+    double & levelness,
+    const vnl_vector<double> & prevTangent=vnl_vector<double>());
 
   /** Get current location
    *  This is location at which the Ridgness function was last called

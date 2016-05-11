@@ -168,7 +168,8 @@ RidgeFFTFilter< TInputImage >
           ++count;
           }
         }
-      ::tube::ComputeRidgeness( H, D, ridgeness, roundness, curvature,
+      vnl_vector<double> prevTangent;
+      ::tube::ComputeRidgeness( H, D, prevTangent, ridgeness, roundness, curvature,
         levelness, HEVect, HEVal );
       iterRidge.Set( ridgeness );
       iterRound.Set( roundness );

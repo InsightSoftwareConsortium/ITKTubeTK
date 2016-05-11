@@ -39,6 +39,7 @@ limitations under the License.
 #include <itkRecursiveGaussianImageFilter.h>
 #include <itkResampleImageFilter.h>
 #include <itkConnectedThresholdImageFilter.h>
+#include <itkMedianImageFilter.h>
 
 #include "itktubeCVTImageFilter.h"
 #include "itktubeNJetImageFunction.h"
@@ -559,6 +560,26 @@ ImageFilters<VDimension>
       }
     ++it1;
     }
+}
+
+//----------------------------------------------------------------------------
+template< unsigned int VDimension >
+bool
+ImageFilters<VDimension>
+::MedianImage( typename ImageType::Pointer & imIn, int filterSize )
+{
+  typedef itk::MedianImageFilter< ImageType, ImageType >
+    FilterType;
+  typename ImageType::Pointer imTemp;
+  typename FilterType::Pointer filter = FilterType::New();
+  filter->SetInput( imIn );
+  typename ImageType::SizeType radius;
+  radius.Fill( filterSize );
+  filter->SetRadius( radius );
+  imTemp = filter->GetOutput();
+  filter->Update();
+  imIn = imTemp;
+  return true;
 }
 
 //----------------------------------------------------------------------------

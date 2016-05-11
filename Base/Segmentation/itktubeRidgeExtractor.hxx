@@ -88,7 +88,7 @@ RidgeExtractor<TInputImage>
 {
   m_DataFunc = BlurImageFunction<ImageType>::New();
   m_DataFunc->SetScale( 3 ); // 1.5
-  m_DataFunc->SetExtent( 3.1 ); // 3
+  m_DataFunc->SetExtent( 1.5 ); // 3
   m_DataMin = 0;
   m_DataMax = 1;
   m_DataRange = 1;
@@ -412,7 +412,8 @@ RidgeExtractor<TInputImage>
   double & intensity,
   double & roundness,
   double & curvature,
-  double & levelness )
+  double & levelness,
+  const vnl_vector<double> & prevTangent)
 {
   if( this->GetDebug() )
     {
@@ -430,7 +431,7 @@ RidgeExtractor<TInputImage>
   m_XVal = m_DataSpline->ValueJet( m_X, m_XD, m_XH );
 
   // test for nan
-  if( m_XVal != m_XVal || m_XD[0] != m_XD[0] || m_XH[0][0] != m_XH[0][0] )
+  if( m_XVal != m_XVal || m_XD[0] != m_XD[0] || m_XH(0, 0) != m_XH(0, 0) )
     {
     std::cerr << "NAN at " << m_X << std::endl;
 
@@ -455,7 +456,7 @@ RidgeExtractor<TInputImage>
     std::cout << "  XH = " << m_XH << std::endl;
     }
 
-  ::tube::ComputeRidgeness<double>( m_XH, m_XD, m_XRidgeness, m_XRoundness,
+  ::tube::ComputeRidgeness<double>( m_XH, m_XD, prevTangent, m_XRidgeness, m_XRoundness,
     m_XCurvature, m_XLevelness, m_XHEVect, m_XHEVal );
 
   intensity = m_XVal;
@@ -674,8 +675,8 @@ RidgeExtractor<TInputImage>
     lT[i] = newT[i];
     for( unsigned int j=0; j<ImageDimension-1; j++ )
       {
-      lN[i][j] = newN[i][j];
-      lSearchDir[i][j] = newN[i][j];
+      lN(i, j) = newN(i, j);
+      lSearchDir(i, j) = newN(i, j);
       }
     lStepDir[i] = newT[i];
     }
@@ -865,7 +866,7 @@ RidgeExtractor<TInputImage>
         }
 
       if( vnl_math_abs( dot_product( lStepDir, pStepDir ) ) <
-        1-0.5*( 1-m_MaxTangentChange ) )
+        (1+m_MaxTangentChange)/2.0 )
         {
         if( verbose || this->GetDebug() )
           {
@@ -974,52 +975,15 @@ RidgeExtractor<TInputImage>
       {
       indxX[i] = lX[i];
       }
+
     ridgeness = Ridgeness( indxX, intensity, roundness, curvature,
-      levelness );
-
-    for( unsigned int i=0; i<ImageDimension; i++ )
-      {
-      for( unsigned int j=0; j<ImageDimension; j++ )
-        {
-        tV[j] = m_XHEVect( j, i );
-        }
-      prod[i] = vnl_math_abs( dot_product( lStepDir, tV ) );
-      }
-
-    unsigned int closestV = 0;
-    double closestVProd = prod[0];
-    for( unsigned int i=1; i<ImageDimension; i++ )
-      {
-      if( prod[i]>closestVProd )
-        {
-        closestV = i;
-        closestVProd = prod[i];
-        }
-      }
-    if( closestV != ImageDimension-1 )
-      {
-      if( verbose || this->GetDebug() )
-        {
-        std::cout << "Mixing things up: Chosen t=evect#" << closestV
-          << " dotProd = " << closestVProd << std::endl;
-        }
-      double tf = m_XHEVal[closestV];
-      m_XHEVal[closestV] = m_XHEVal[ImageDimension-1];
-      m_XHEVal[ImageDimension-1] = tf;
-      for( unsigned int i=0; i<ImageDimension; i++ )
-        {
-        tf = m_XHEVect( i, closestV );
-        m_XHEVect( i, closestV ) = m_XHEVect( i, ImageDimension-1 );
-        m_XHEVect( i, ImageDimension-1 ) = tf;
-        }
-      ridgeness = 1 - ridgeness;
-      }
+      levelness, lStepDir );
 
     for( unsigned int i=0; i<ImageDimension-1; i++ )
       {
       for( unsigned int j=0; j<ImageDimension; j++ )
         {
-        lN[j][i] = m_XHEVect( j, i );
+        lN(j, i) = m_XHEVect( j, i );
         }
       lNTEVal[i] = m_XHEVal[i];
       }
@@ -1029,7 +993,7 @@ RidgeExtractor<TInputImage>
       {
       lT[i] = m_XHEVect( i, ImageDimension-1 );
       }
-    lNTEVal[ImageDimension-1] = m_XHEVal[closestV];
+    lNTEVal[ImageDimension-1] = m_XHEVal[ImageDimension-1];
 
     double dProd = dot_product( pT, lT );
     if( dProd<0 )
@@ -1044,6 +1008,7 @@ RidgeExtractor<TInputImage>
       {
       lStepDir[i] = ( pStepDir[i] * 0.25 ) + ( lT[i] * 0.75 );
       }
+    lStepDir.normalize();
 
     dProd = dot_product( lStepDir, pStepDir );
     if( vnl_math_abs( dProd ) < m_MaxTangentChange )
@@ -1215,7 +1180,7 @@ RidgeExtractor<TInputImage>
         m_StatusCallBack( NULL, st, 0 );
         }
       }
-    if( verbose || this->GetDebug() )
+    if( this->GetDebug() )
       {
       std::cout << "Ridge: TraverseOW: Adding point " << tubePointCount
         << " = " << lX << std::endl;
@@ -1519,12 +1484,18 @@ RidgeExtractor<TInputImage>
       }
 
     // Local 1D Ridge
-    std::cout << "LocalRidge: Start px = " << pX << std::endl;
-    std::cout << "  lN = " << lN << std::endl;
-    std::cout << "  val = " << m_DataSpline->Value( pX ) << std::endl;
+    if( this->GetDebug() )
+      {
+      std::cout << "LocalRidge: Start px = " << pX << std::endl;
+      std::cout << "  lN = " << lN << std::endl;
+      std::cout << "  val = " << m_DataSpline->Value( pX ) << std::endl;
+      }
     m_DataSpline->Extreme( pX, &val, ImageDimension-1, lN );
-    std::cout << "End px = " << pX << std::endl;
-    std::cout << "  val = " << val << std::endl;
+    if( this->GetDebug() )
+      {
+      std::cout << "End px = " << pX << std::endl;
+      std::cout << "  val = " << val << std::endl;
+      }
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
       newX[i] = pX[i];
@@ -1562,8 +1533,10 @@ RidgeExtractor<TInputImage>
         }
       return REVISITED_VOXEL;
       }
-
-    std::cout << "newX = " << newX << std::endl;
+    if( this->GetDebug() )
+      {
+      std::cout << "newX = " << newX << std::endl;
+      }
     ridgeness = Ridgeness( newX, intensity, roundness, curvature,
       levelness );
     if( ridgeness >= m_MinRidgenessStart &&
@@ -1600,7 +1573,7 @@ RidgeExtractor<TInputImage>
       }
     }
 
-  if( verbose || this->GetDebug() )
+  if( this->GetDebug() )
     {
     std::cout << " FAIL: Local norm max: " << newX << std::endl;
     std::cout << "  Ridgeness: " << ridgeness << " >= "
@@ -1799,7 +1772,7 @@ RidgeExtractor<TInputImage>
     lT[i] = m_XHEVect( i, ImageDimension-1 );
     for( unsigned int j=0; j<ImageDimension-1; j++ )
       {
-      lN[i][j] = m_XHEVect( i, j );
+      lN(i, j) = m_XHEVect( i, j );
       }
     }
   if( verbose || this->GetDebug() )
