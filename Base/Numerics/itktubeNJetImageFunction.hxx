@@ -1824,7 +1824,8 @@ RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
   double levelness = 0;
   vnl_matrix<double> eVect( ImageDimension, ImageDimension );
   vnl_vector<double> eVal( ImageDimension );
-  ::tube::ComputeRidgeness<double>( h.GetVnlMatrix(), d.GetVnlVector(),
+  vnl_vector<double> prevTangent;
+  ::tube::ComputeRidgeness<double>( h.GetVnlMatrix(), d.GetVnlVector(), prevTangent,
     ridgeness, roundness, curvature, levelness,
     eVect, eVal );
 
