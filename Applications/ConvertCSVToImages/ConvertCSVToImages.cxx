@@ -133,7 +133,7 @@ int DoIt( int argc, char * argv[] )
     }
 
   typedef itk::ImageFileWriter< InputImageType > WriterType;
-  WriterType::Pointer writer = WriterType::New();
+  typename WriterType::Pointer writer = WriterType::New();
   for( unsigned int i=0; i<imageIter.size(); ++i )
     {
     char outName[4096];
