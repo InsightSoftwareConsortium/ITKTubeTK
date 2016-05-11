@@ -322,6 +322,18 @@ int DoIt( MetaCommand & command )
         }
       } // end -a
 
+    // Median
+    else if( ( *it ).name == "Median" )
+      {
+      std::cout << "Median filtering" << std::endl;
+      bool success = tube::ImageFilters< VDimension >::MedianImage(
+        imIn, command.GetValueAsInt( *it, "Size" ) );
+      if( !success )
+        {
+        return EXIT_FAILURE;
+        }
+      } // end -g
+
     // Threshold
     else if( ( *it ).name == "Threshold" )
       {
@@ -721,6 +733,10 @@ int main( int argc, char * argv[] )
     "fuse two images by max, applying offset to second image" );
   command.AddOptionField( "Fuse", "Offset2", MetaCommand::FLOAT, true );
   command.AddOptionField( "Fuse", "Infile2", MetaCommand::STRING, true );
+
+  command.SetOption( "Median", "g", false,
+    "Apply a median filter to the image" );
+  command.AddOptionField( "Median", "Size", MetaCommand::INT, true );
 
   command.SetOption( "histogram", "l", false,
     "writes the image's histogram to the designated file" );
