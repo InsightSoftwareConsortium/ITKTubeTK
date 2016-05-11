@@ -91,7 +91,7 @@ int DoIt( int argc, char * argv[] )
     }
 
   typedef typename itk::ImageRegionIterator< InputImageType > ImageIterType;
-  std::vector< typename ImageIterType * > imageIter;
+  std::vector< ImageIterType * > imageIter;
   imageIter.resize( numImages );
   for( unsigned int i = 0; i < numImages; ++i )
     {
