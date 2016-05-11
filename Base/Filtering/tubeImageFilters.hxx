@@ -573,7 +573,7 @@ ImageFilters<VDimension>
   typename ImageType::Pointer imTemp;
   typename FilterType::Pointer filter = FilterType::New();
   filter->SetInput( imIn );
-  ImageType::SizeType radius;
+  typename ImageType::SizeType radius;
   radius.Fill( filterSize );
   filter->SetRadius( radius );
   imTemp = filter->GetOutput();
