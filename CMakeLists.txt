@@ -390,7 +390,9 @@ if( TubeTK_USE_PYTHON )
     # (except if it is installed in the system-site-packages
     # but not in the current virtual environment)
     # So we need to make sure that it can be compiled!
-    find_package(HDF5 REQUIRED)
+    if( NOT WIN32 )
+      find_package(HDF5 REQUIRED)
+    endif()
   endif()
 else( TubeTK_USE_PYTHON )
 
