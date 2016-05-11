@@ -272,8 +272,8 @@ OptimizerND
       }
     else
       {
-      xmin = 0;
-      xmax = 0;
+      xmin = -9999999999;
+      xmax = 9999999999;
       }
     if( xmin > xmax )
       {
@@ -335,6 +335,8 @@ OptimizerND
     {
     std::cout << "Scanned " << count
       << " directions without convergence - aborting" << std::endl;
+    std::cout << "  Last step size = " << a << std::endl;
+    std::cout << "  Tolerance = " << m_Tolerance << std::endl;
     return false;
     }
 
@@ -366,8 +368,8 @@ OptimizerND
       }
     else
       {
-      xmin = 0;
-      xmax = 0;
+      xmin = -9999999999;
+      xmax = 9999999999;
       }
     if( xmin > xmax )
       {
@@ -379,7 +381,7 @@ OptimizerND
       {
       double tmin = xmin;
       double tmax = xmax;
-      if( m_X0Dir(0) != 0 )
+      if( m_X0Dir(k) != 0 )
         {
         tmin = (m_XMin(k) - m_X0(k))/m_X0Dir(k);
         tmax = (m_XMax(k) - m_X0(k))/m_X0Dir(k);
