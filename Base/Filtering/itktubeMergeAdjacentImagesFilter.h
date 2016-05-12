@@ -24,7 +24,11 @@ limitations under the License.
 #ifndef __itktubeMergeAdjacentImagesFilter_h
 #define __itktubeMergeAdjacentImagesFilter_h
 
-#include "itkImageToImageFilter.h"
+// standard includes
+#include <vector>
+
+// ITK includes
+#include <itkImageToImageFilter.h>
 
 namespace itk
 {
@@ -44,6 +48,7 @@ public:
   typedef SmartPointer< const Self >                         ConstPointer;
 
   typedef TImage                                             ImageType;
+  typedef std::vector< int >                                 PaddingType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -75,6 +80,48 @@ public:
   /** Get number of registration iterations */
   itkGetMacro( MaxIterations, unsigned int );
 
+  /** Set padding for second image */
+  void SetPadding( const PaddingType & padding );
+
+  /** Get padding for second image */
+  void itkGetConstReferenceMacro( padding, PaddingType );
+
+  /** Set expected initial misalignment offset */
+  itkSetMacro( ExpectedOffset, double );
+
+  /** Get expected initial misalignment offset */
+  itkGetMacro( ExpectedOffset, double );
+
+  /** Set expected initial misalignment rotation */
+  itkSetMacro( ExpectedRotation, double );
+
+  /** Get expected initial misalignment rotation */
+  itkGetMacro( ExpectedRotation, double );
+
+  /** Set portion of pixels to use to compute similarity in registration */
+  itkSetMacro( SamplingRatio, double );
+
+  /** Get portion of pixels to use to compute similarity in registration */
+  itkGetMacro( SamplingRatio, double );
+
+  /** Set if overlapping pixels should be averaged insted of blending */
+  itkSetMacro( BlendUsingAverage, bool );
+
+  /** Get if overlapping pixels should be averaged instead of blending */
+  itkGetMacro( BlendUsingAverage, bool );
+
+  /** Set use of experimental method for fast blending */
+  itkSetMacro( UseFastBlending, bool );
+
+  /** Get use of experimental method for fast blending */
+  itkGetMacro( UseFastBlending, bool );
+
+  /** Set filename to load the transform from */
+  void LoadTransform( const std::string & filename );
+
+  /** Set filename to save the transform to */
+  void SaveTransform( const std::string & filename );
+
 protected:
   MergeAdjacentImagesFilter( void );
   virtual ~MergeAdjacentImagesFilter( void ) {}
@@ -91,6 +138,12 @@ private:
   typename TImage::PixelType             m_Background;
   bool                                   m_MaskZero;
   unsigned int                           m_MaxIterations;
+  PaddingType                            m_Padding;
+  double                                 m_ExpectedOffset;
+  double                                 m_ExpectedRotation;
+  double                                 m_SamplingRatio;
+  bool                                   m_BlendUsingAverage;
+  bool                                   m_UseFastBlending;
 
 };  // End class MergeAdjacentImagesFilter
 
