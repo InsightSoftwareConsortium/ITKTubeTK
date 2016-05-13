@@ -72,7 +72,6 @@ int DoIt( int argc, char * argv[] )
   typedef itk::GroupSpatialObject< DimensionT >                 TubeGroupType;
   typedef itk::Point< double, DimensionT >                      PointType;
 
-
   timeCollector.Start( "Load data" );
 
   typedef tube::SegmentTubesUsingMinimalPath< DimensionT, PixelType >
