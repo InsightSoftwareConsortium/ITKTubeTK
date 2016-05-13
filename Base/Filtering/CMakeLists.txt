@@ -41,6 +41,7 @@ set( TubeTK_Base_Filtering_H_Files
   itktubeFFTGaussianDerivativeIFFTFilter.h
   itktubeGaussianDerivativeFilter.h
   itktubeGaussianDerivativeImageSource.h
+  itktubeMergeAdjacentImagesFilter.h
   itktubeMinimumSpanningTreeVesselConnectivityFilter.h
   itktubePadImageFilter.h
   itktubeRegionFromReferenceImageFilter.h
@@ -71,6 +72,7 @@ set( TubeTK_Base_Filtering_HXX_Files
   itktubeFFTGaussianDerivativeIFFTFilter.hxx
   itktubeGaussianDerivativeFilter.hxx
   itktubeGaussianDerivativeImageSource.hxx
+  itktubeMergeAdjacentImagesFilter.hxx
   itktubeMinimumSpanningTreeVesselConnectivityFilter.hxx
   itktubePadImageFilter.hxx
   itktubeRegionFromReferenceImageFilter.hxx
@@ -100,7 +102,8 @@ add_library( ${PROJECT_NAME} INTERFACE )
 target_include_directories( ${PROJECT_NAME} INTERFACE
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
   )
-target_link_libraries( ${PROJECT_NAME} INTERFACE TubeTKNumerics )
+target_link_libraries( ${PROJECT_NAME} INTERFACE
+  TubeTKNumerics TubeTKRegistration)
 
 if( TubeTK_BUILD_TESTING )
   add_subdirectory( Testing )
