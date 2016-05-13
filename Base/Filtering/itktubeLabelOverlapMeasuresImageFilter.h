@@ -29,13 +29,6 @@ limitations under the License.
 #include <itkNumericTraits.h>
 #include <itksys/hash_map.hxx>
 
-// Forward declare itkTubeTK class to allow friendship
-namespace tube
-{
-template< typename tube_TInputImage >
-class ComputeBinaryImageSimilarityMetrics;
-}
-
 namespace itk
 {
 
@@ -50,7 +43,7 @@ namespace tube
  *
  * \ingroup MultiThreaded
  */
-template< typename TLabelImage >
+template< class TLabelImage >
 class LabelOverlapMeasuresImageFilter
   : public InPlaceImageFilter< TLabelImage >
 {
@@ -208,9 +201,6 @@ private:
 
   SimpleFastMutexLock                           m_Mutex;
 
-  /** friendship facilitating itkTukeTK integration */
-  template< typename tube_TInputImage >
-  friend class ::tube::ComputeBinaryImageSimilarityMetrics;
 }; // End class LabelOverlapMeasuresImageFilter
 
 } // End namespace tube

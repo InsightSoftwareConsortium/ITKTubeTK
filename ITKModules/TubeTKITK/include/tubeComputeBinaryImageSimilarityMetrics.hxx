@@ -23,91 +23,25 @@
 
 namespace tube
 {
-template< typename TInputImage >
+template< class TInputImage >
 ComputeBinaryImageSimilarityMetrics< TInputImage >
 ::ComputeBinaryImageSimilarityMetrics( void )
 {
-  m_MetricFilter = MetricFilterType::New();
+  m_Filter = FilterType::New();
 }
 
-template< typename TInputImage >
-void
-ComputeBinaryImageSimilarityMetrics< TInputImage >
-::SetSourceImage( const TInputImage *image )
-{
-  m_MetricFilter->SetSourceImage( image );
-}
-
-template< typename TInputImage >
-void
-ComputeBinaryImageSimilarityMetrics< TInputImage >
-::SetTargetImage( const TInputImage *image )
-{
-  m_MetricFilter->SetTargetImage( image );
-}
-
-template< typename TInputImage >
-float
-ComputeBinaryImageSimilarityMetrics< TInputImage >
-::GetTotalOverlap( void ) const
-{
-  return m_MetricFilter->GetTotalOverlap();
-}
-
-template< typename TInputImage >
-float
-ComputeBinaryImageSimilarityMetrics< TInputImage >
-::GetUnionOverlap( void ) const
-{
-  return m_MetricFilter->GetUnionOverlap();
-}
-
-template< typename TInputImage >
-float
-ComputeBinaryImageSimilarityMetrics< TInputImage >
-::GetMeanOverlap( void ) const
-{
-  return m_MetricFilter->GetMeanOverlap();
-}
-
-template< typename TInputImage >
-float
-ComputeBinaryImageSimilarityMetrics< TInputImage >
-::GetSimilarity( void ) const
-{
-  return m_MetricFilter->GetSimilarity();
-}
-
-template< typename TInputImage >
-float
-ComputeBinaryImageSimilarityMetrics< TInputImage >
-::GetFalseNegativeError( void ) const
-{
-  return m_MetricFilter->GetFalseNegativeError();
-}
-
-template< typename TInputImage >
-float
-ComputeBinaryImageSimilarityMetrics< TInputImage >
-::GetFalsePositiveError( void ) const
-{
-  return m_MetricFilter->GetFalsePositiveError();
-}
-
-template< typename TInputImage >
-void
-ComputeBinaryImageSimilarityMetrics< TInputImage >
-::Update()
-{
-  m_MetricFilter->Update();
-}
-
-template< typename TInputImage >
+template< class TInputImage >
 void
 ComputeBinaryImageSimilarityMetrics< TInputImage >
 ::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  m_MetricFilter->PrintSelf( os, indent);
+  Superclass::PrintSelf( os, indent );
+  os << "TotalOverlap: " << this->GetTotalOverlap() << std::endl;
+  os << "UnionOverlap: " << this->GetUnionOverlap() << std::endl;
+  os << "MeanOverlap: " << this->GetMeanOverlap() << std::endl;
+  os << "Similarity: " << this->GetSimilarity() << std::endl;
+  os << "FalseNegativeError: " << this->GetFalseNegativeError() << std::endl;
+  os << "FalsePositiveError: " << this->GetFalsePositiveError() << std::endl;
 }
 
 } // end namespace tube

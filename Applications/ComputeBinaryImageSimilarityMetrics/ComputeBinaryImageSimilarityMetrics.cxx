@@ -22,7 +22,6 @@ limitations under the License.
 =========================================================================*/
 
 #include "tubeComputeBinaryImageSimilarityMetrics.h"
-
 #include <itkImageFileReader.h>
 
 #include "ComputeBinaryImageSimilarityMetricsCLP.h"
