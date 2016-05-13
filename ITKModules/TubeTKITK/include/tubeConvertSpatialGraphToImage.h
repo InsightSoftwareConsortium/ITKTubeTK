@@ -45,6 +45,7 @@ public:
 
   typedef typename FilterType::InputImageType      InputImageType;
   typedef typename FilterType::InputImagePointer   InputImagePointer;
+  typedef typename FilterType::OutputImageType     OutputImageType;
   typedef typename FilterType::OutputImagePointer  OutputImagePointer;
 
   /** Method for creation through the object factory. */
@@ -66,7 +67,7 @@ public:
   tubeWrapUpdateMacro( Filter );
 
   /* Get the generated binary tubes image */
-  tubeWrapGetObjectMacro( Output, OutputImagePointer, Filter );
+  tubeWrapGetObjectMacro( Output, OutputImageType, Filter );
 
   void SetAdjacencyMatrix( vnl_matrix< double > );
 
