@@ -47,6 +47,7 @@ endif()
 set( TubeTK_Base_Numerics_H_Files
   itktubeBasisFeatureVectorGenerator.h
   itktubeBlurImageFunction.h
+  itktubeComputeImageSimilarityMetrics.h
   itktubeFeatureVectorGenerator.h
   itktubeImageRegionMomentsCalculator.h
   itktubeJointHistogramImageFunction.h
@@ -71,6 +72,7 @@ set( TubeTK_Base_Numerics_H_Files
 set( TubeTK_Base_Numerics_HXX_Files
   itktubeBasisFeatureVectorGenerator.hxx
   itktubeBlurImageFunction.hxx
+  itktubeComputeImageSimilarityMetrics.hxx
   itktubeFeatureVectorGenerator.hxx
   itktubeImageRegionMomentsCalculator.hxx
   itktubeJointHistogramImageFunction.hxx

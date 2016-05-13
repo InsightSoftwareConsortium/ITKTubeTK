@@ -384,16 +384,6 @@ if( TubeTK_USE_PYTHON )
     "Use PyQtGraph to enable additional functionality." ON )
   mark_as_advanced( CLEAR TubeTK_USE_PYQTGRAPH )
 
-  TubeTKCheckPythonLibrary(PySide)
-  if(TubeTK_USE_PYQTGRAPH AND NOT PySide_FOUND)
-    # In this case, PySide is likely to be downloaded and installed
-    # (except if it is installed in the system-site-packages
-    # but not in the current virtual environment)
-    # So we need to make sure that it can be compiled!
-    if( NOT WIN32 )
-      find_package(HDF5 REQUIRED)
-    endif()
-  endif()
 else( TubeTK_USE_PYTHON )
 
   # NumPy conversion support.
