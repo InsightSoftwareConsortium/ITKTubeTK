@@ -65,9 +65,9 @@ public:
   tubeWrapSetMacro( UseCorrelation, bool, Filter );
   tubeWrapGetMacro( UseCorrelation, bool, Filter );
 
-  /** Set/Get use of correlation or mutual information to compute similarity */
-  tubeWrapSetMacro( SamplingRate, bool, Filter );
-  tubeWrapGetMacro( SamplingRate, bool, Filter );
+  /** Set/Get portion of voxels used to compute image similarity */
+  tubeWrapSetMacro( SamplingRate, double, Filter );
+  tubeWrapGetMacro( SamplingRate, double, Filter );
 
   /** Set/Get input image 1 */
   tubeWrapSetConstObjectMacro( Input1, ImageType, Filter );
