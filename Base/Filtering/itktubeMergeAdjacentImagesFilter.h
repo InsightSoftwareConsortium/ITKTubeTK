@@ -43,7 +43,7 @@ class MergeAdjacentImagesFilter :
 public:
 
   typedef MergeAdjacentImagesFilter                          Self;
-  typedef ImageToImageFilter< TInputImage, OutputImageType > Superclass;
+  typedef ImageToImageFilter< TImage, TImage >               Superclass;
   typedef SmartPointer< Self >                               Pointer;
   typedef SmartPointer< const Self >                         ConstPointer;
 
@@ -65,7 +65,7 @@ public:
   /** Set value used for output pixels that dont intersect with input image */
   itkSetMacro( Background, typename TImage::PixelType );
 
-  /** Set value used for output pixels that dont intersect with input image */
+  /** Get value used for output pixels that dont intersect with input image */
   itkGetMacro( Background, typename TImage::PixelType );
 
   /** Set if zero-valued input pixels should be ignored */
@@ -84,7 +84,7 @@ public:
   void SetPadding( const PaddingType & padding );
 
   /** Get padding for second image */
-  void itkGetConstReferenceMacro( padding, PaddingType );
+  itkGetConstReferenceMacro( padding, PaddingType );
 
   /** Set expected initial misalignment offset */
   itkSetMacro( ExpectedOffset, double );
@@ -144,6 +144,8 @@ private:
   double                                 m_SamplingRatio;
   bool                                   m_BlendUsingAverage;
   bool                                   m_UseFastBlending;
+  std::string                            m_InitialTransformFile;
+  std::string                            m_OutputTransformFile;
 
 };  // End class MergeAdjacentImagesFilter
 
