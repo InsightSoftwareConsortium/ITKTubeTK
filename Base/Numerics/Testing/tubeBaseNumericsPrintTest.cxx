@@ -23,6 +23,7 @@ limitations under the License.
 
 #include "itktubeBasisFeatureVectorGenerator.h"
 #include "itktubeBlurImageFunction.h"
+#include "itktubeComputeImageSimilarityMetrics.h"
 #include "itktubeImageRegionMomentsCalculator.h"
 #include "itktubeJointHistogramImageFunction.h"
 #include "itktubeNJetFeatureVectorGenerator.h"
@@ -93,6 +94,13 @@ int tubeBaseNumericsPrintTest( int itkNotUsed( argc ), char * itkNotUsed( argv )
     itk::tube::VotingResampleImageFunction< ImageType >::New();
   std::cout << "-------------itktubeVotingResampleImageFunction"
     << votingResampleObject
+    << std::endl;
+
+  itk::tube::ComputeImageSimilarityMetrics< ImageType >::Pointer
+    computeImageSimilarityObject =
+    itk::tube::ComputeImageSimilarityMetrics< ImageType >::New();
+  std::cout << "-------------itktubeComputeImageSimilarityMetrics"
+    << computeImageSimilarityObject
     << std::endl;
 
   return EXIT_SUCCESS;

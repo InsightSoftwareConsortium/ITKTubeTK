@@ -21,11 +21,14 @@ limitations under the License.
 
 =========================================================================*/
 
-#include <itkIdentityTransform.h>
+// ITK includes
 #include <itkImageFileReader.h>
-#include <itkMutualInformationImageToImageMetric.h>
-#include <itkNormalizedCorrelationImageToImageMetric.h>
-#include <itkNormalizeImageFilter.h>
+
+// TubeTKITK includes
+#include "tubeComputeImageSimilarityMetrics.h"
+
+// TubeTK includes
+#include "tubeMessage.h"
 
 #include "ComputeImageSimilarityMetricsCLP.h"
 
@@ -40,103 +43,51 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
+  // typedefs
   typedef TPixel                                              PixelType;
   typedef itk::Image< PixelType, VDimension >                 ImageType;
   typedef itk::ImageFileReader< ImageType >                   ReaderType;
+  typedef tube::ComputeImageSimilarityMetrics< ImageType >    FilterType;
 
+  // read input image 1
   typename ReaderType::Pointer reader1 = ReaderType::New();
-  typename ReaderType::Pointer reader2 = ReaderType::New();
-
-  //read input image
-  reader1->SetFileName( inputVolume1.c_str() );
-  reader2->SetFileName( inputVolume2.c_str() );
 
   try
     {
+    reader1->SetFileName( inputVolume1.c_str() );
     reader1->Update();
     }
   catch( itk::ExceptionObject & err )
     {
-    std::cerr << "ExceptionObject caught, image reader 1 !" << std::endl;
-    std::cerr << err << std::endl;
+    tube::ErrorMessage( "Error reading input image 1: "
+                        + std::string(err.GetDescription()) );
     return EXIT_FAILURE;
     }
 
+  // read input image 2
+  typename ReaderType::Pointer reader2 = ReaderType::New();
+
   try
     {
+    reader2->SetFileName( inputVolume2.c_str() );
     reader2->Update();
     }
   catch( itk::ExceptionObject & err )
     {
-    std::cerr << "ExceptionObject caught, image reader2 !" << std::endl;
-    std::cerr << err << std::endl;
+    tube::ErrorMessage( "Error reading input image 2: "
+                        + std::string(err.GetDescription()) );
     return EXIT_FAILURE;
     }
 
-  typename ImageType::Pointer image1 = reader1->GetOutput();
-  typename ImageType::Pointer image2 = reader2->GetOutput();
+  // compute image similarity
+  typename FilterType::Pointer similarityCalculator = FilterType::New();
 
-  typedef itk::NormalizeImageFilter< ImageType, ImageType > NormFilterType;
+  similarityCalculator->SetInput1( reader1->GetOutput() );
+  similarityCalculator->SetInput2( reader2->GetOutput() );
+  similarityCalculator->SetSamplingRate( samplingRate );
+  similarityCalculator->SetUseCorrelation( correlation );
 
-  typename NormFilterType::Pointer norm1 = NormFilterType::New();
-  norm1->SetInput( image1 );
-  norm1->Update();
-  image1 = norm1->GetOutput();
-
-  typename NormFilterType::Pointer norm2 = NormFilterType::New();
-  norm2->SetInput( image2 );
-  norm2->Update();
-  image2 = norm2->GetOutput();
-
-  typedef itk::IdentityTransform< double, VDimension >
-    TransformType;
-  typename TransformType::Pointer transform = TransformType::New();
-
-  typedef itk::LinearInterpolateImageFunction< ImageType, double >
-    InterpolatorType;
-  typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
-  interpolator->SetInputImage( image2 );
-
-  typedef itk::ImageToImageMetric< ImageType, ImageType >
-    MetricType;
-  typename MetricType::Pointer metric;
-
-  if( !correlation )
-    {
-    typedef itk::MutualInformationImageToImageMetric< ImageType, ImageType >
-                                                           MIMetricType;
-    metric = MIMetricType::New();
-    }
-  else
-    {
-    typedef itk::NormalizedCorrelationImageToImageMetric< ImageType,
-                                                           ImageType >
-                                                           CorMetricType;
-    metric = CorMetricType::New();
-    }
-
-  typename ImageType::SizeType size = image1->GetLargestPossibleRegion().
-                                              GetSize();
-
-  metric->SetFixedImage( image1 );
-  metric->SetMovingImage( image2 );
-  metric->SetFixedImageRegion( image1->GetLargestPossibleRegion() );
-  metric->SetTransform( transform );
-  metric->SetInterpolator( interpolator );
-  metric->SetNumberOfSpatialSamples( size[0]*size[1]*samplingRate );
-  metric->Initialize();
-  metric->MultiThreadingInitialize();
-
-  if( !correlation )
-    {
-    std::cout << metric->GetValue( transform->GetParameters() )
-              << std::endl;
-    }
-  else
-    {
-    std::cout << -metric->GetValue( transform->GetParameters() )
-              << std::endl;
-    }
+  std::cout << similarityCalculator->GetOutput() << std::endl;
 
   return EXIT_SUCCESS;
 }

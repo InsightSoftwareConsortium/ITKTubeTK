@@ -20,30 +20,32 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __tubeComputeTubeFlyThroughImage_hxx
-#define __tubeComputeTubeFlyThroughImage_hxx
+#ifndef __tubeComputeImageSimilarityMetrics_hxx
+#define __tubeComputeImageSimilarityMetrics_hxx
 
-#include "tubeComputeTubeFlyThroughImage.h"
+#include "tubeComputeImageSimilarityMetrics.h"
 
 namespace tube
 {
 
-template< class TPixel, unsigned int Dimension >
-ComputeTubeFlyThroughImage< TPixel, Dimension >
-::ComputeTubeFlyThroughImage( void )
+template< class TInputImage >
+ComputeImageSimilarityMetrics< TInputImage >
+::ComputeImageSimilarityMetrics( void )
 {
   m_Filter = FilterType::New();
 }
 
-template< class TPixel, unsigned int Dimension >
+
+template< class TInputImage >
 void
-ComputeTubeFlyThroughImage< TPixel, Dimension >
+ComputeImageSimilarityMetrics< TInputImage >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
-  os << "TubeId: " << this->GetTubeId() << std::endl;
+  os << "Use Correlation: " << this->GetUseCorrelation() << std::endl;
+  os << "Sampling Rate: " << this->GetSamplingRate() << std::endl;
 }
 
-}
+} // End namespace tubetk
 
 #endif
