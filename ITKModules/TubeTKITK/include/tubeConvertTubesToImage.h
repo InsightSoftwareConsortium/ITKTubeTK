@@ -26,7 +26,7 @@ limitations under the License.
 // ITK includes
 #include <itkGroupSpatialObject.h>
 #include <itkMacro.h>
-#include <itkProcessObject.h>
+#include <itkObject.h>
 
 
 // TubeTK includes
@@ -42,12 +42,12 @@ namespace tube
 
 template< unsigned int Dimension, class TOutputPixel >
 class ConvertTubesToImage:
-  public itk::ProcessObject
+  public itk::Object
 {
 public:
   /** Standard class typedefs. */
   typedef ConvertTubesToImage                        Self;
-  typedef itk::ProcessObject                         SuperClass;
+  typedef itk::Object                                SuperClass;
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 

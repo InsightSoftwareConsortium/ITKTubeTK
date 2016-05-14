@@ -99,7 +99,6 @@ int DoIt( int argc, char * argv[] )
   //std::cout << "Loading TRE File" << std::endl;
 
   typedef itk::SpatialObjectReader< VDimension >        TubesReaderType;
-  typedef itk::GroupSpatialObject< VDimension >         TubeGroupType;
 
   timeCollector.Start( "Loading input TRE file" );
 
