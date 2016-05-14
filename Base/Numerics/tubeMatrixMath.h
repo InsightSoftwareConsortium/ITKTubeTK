@@ -68,7 +68,7 @@ template< class T >
 void
 ComputeRidgeness( const vnl_matrix<T> & H,
   const vnl_vector<T> & D,
-  const vnl_vector<double> & prevTangent,
+  const vnl_vector<T> & prevTangent,
   double & ridgeness,
   double & roundness,
   double & curvature,
