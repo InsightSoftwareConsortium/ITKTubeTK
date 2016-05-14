@@ -120,10 +120,10 @@ RidgeExtractor<TInputImage>
   m_ExtractBoundMin.Fill( 0 );
   m_ExtractBoundMax.Fill( 0 );
 
-  m_MaxTangentChange = 0.75;
+  m_MaxTangentChange = 0.5;
   m_MaxXChange = 3.0;
-  m_MinRidgeness = 0.80;    // near 1 = harder
-  m_MinRidgenessStart = 0.79;
+  m_MinRidgeness = 0.70;    // near 1 = harder
+  m_MinRidgenessStart = 0.69;
   m_MinRoundness = 0.25;    // near 1 = harder
   m_MinRoundnessStart = 0.2;
   m_MinCurvature = 0.1;
@@ -456,8 +456,9 @@ RidgeExtractor<TInputImage>
     std::cout << "  XH = " << m_XH << std::endl;
     }
 
-  ::tube::ComputeRidgeness<double>( m_XH, m_XD, prevTangent, m_XRidgeness, m_XRoundness,
-    m_XCurvature, m_XLevelness, m_XHEVect, m_XHEVal );
+  ::tube::ComputeRidgeness<double>( m_XH, m_XD, prevTangent,
+    m_XRidgeness, m_XRoundness, m_XCurvature, m_XLevelness, m_XHEVect,
+    m_XHEVal );
 
   intensity = m_XVal;
   roundness = m_XRoundness;
@@ -673,12 +674,12 @@ RidgeExtractor<TInputImage>
     {
     lX[i] = newX[i];
     lT[i] = newT[i];
-    for( unsigned int j=0; j<ImageDimension-1; j++ )
-      {
-      lN(i, j) = newN(i, j);
-      lSearchDir(i, j) = newN(i, j);
-      }
     lStepDir[i] = newT[i];
+    }
+  for( unsigned int j=0; j<ImageDimension-1; j++ )
+    {
+    lN.set_column(j, newN.get_column(j) );
+    lSearchDir.set_column( j, newN.get_column(j) );
     }
 
   pX = lX;
@@ -865,8 +866,8 @@ RidgeExtractor<TInputImage>
         SetScale( iScale0 + 0.5 * ( GetScale() - iScale0 ) );
         }
 
-      if( vnl_math_abs( dot_product( lStepDir, pStepDir ) ) <
-        (1+m_MaxTangentChange)/2.0 )
+      if( dot_product( lStepDir, pStepDir ) <
+        m_MaxTangentChange )
         {
         if( verbose || this->GetDebug() )
           {
@@ -981,18 +982,12 @@ RidgeExtractor<TInputImage>
 
     for( unsigned int i=0; i<ImageDimension-1; i++ )
       {
-      for( unsigned int j=0; j<ImageDimension; j++ )
-        {
-        lN(j, i) = m_XHEVect( j, i );
-        }
+      lN.set_column(i, m_XHEVect.get_column( i ) );
       lNTEVal[i] = m_XHEVal[i];
       }
     lSearchDir = lN;
 
-    for( unsigned int i=0; i<ImageDimension; i++ )
-      {
-      lT[i] = m_XHEVect( i, ImageDimension-1 );
-      }
+    lT = m_XHEVect.get_column( ImageDimension-1 );
     lNTEVal[ImageDimension-1] = m_XHEVal[ImageDimension-1];
 
     double dProd = dot_product( pT, lT );
@@ -1011,12 +1006,15 @@ RidgeExtractor<TInputImage>
     lStepDir.normalize();
 
     dProd = dot_product( lStepDir, pStepDir );
-    if( vnl_math_abs( dProd ) < m_MaxTangentChange )
+    if( dProd < m_MaxTangentChange )
       {
       if( verbose || this->GetDebug() )
         {
         std::cout << "*** Ridge term: Rapid change in step direction "
-          << "( " << vnl_math_abs( dProd ) << " )" << std::endl;
+          << "( " << dProd << " )" << std::endl;
+        std::cout << "       pStepDir = " << pStepDir << std::endl;
+        std::cout << "       StepDir = " << lStepDir << std::endl;
+        std::cout << "       Tangent = " << lT << std::endl;
         std::cout << "       Intensity = " << intensity << std::endl;
         std::cout << "       Ridgeness = " << ridgeness << std::endl;
         std::cout << "       Roundness = " << roundness << std::endl;
@@ -1147,8 +1145,8 @@ RidgeExtractor<TInputImage>
       {
       int oldPoint = ( maskVal - (int)maskVal ) * 10000;
       if( ( int )maskVal != tubeId ||
-         ( ( tubePointCount - oldPoint ) > ( 20 / m_StepX )
-           && ( tubePointCount - tubePointCountStart ) > ( 20 / m_StepX ) ) )
+        ( ( tubePointCount - oldPoint ) > ( 20 / m_StepX )
+        && ( tubePointCount - tubePointCountStart ) > ( 20 / m_StepX ) ) )
         {
         m_CurrentFailureCode = REVISITED_VOXEL;
         ++m_FailureCodeCount[ m_CurrentFailureCode ];
