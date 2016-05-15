@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-set( MODULE_NAME RegisterImageToTubesUsingRigidTransform )
+set( MODULE_NAME ExtractMetricImageSlice )
 project( ${MODULE_NAME} )
 
 if( NOT ${CMAKE_VERSION} VERSION_LESS 3.0 )
@@ -47,8 +47,7 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ITKIOSpatialObjects ITKIOMeta
-    TubeCLI TubeTKCommon TubeTKFiltering TubeTKNumerics TubeTKRegistration
-    TubeTKUSTK )
+    TubeCLI TubeTKCommon )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
