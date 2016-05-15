@@ -45,7 +45,7 @@ PreProcessRegistrationInputs( int argc,
 } // namespace
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "PreProcessRegistrationInputs.hxx"
+#include "tubePreProcessRegistrationInputs.hxx"
 #endif
 
 #endif // End !defined(__tubePreProcessRegistrationInputs_h)

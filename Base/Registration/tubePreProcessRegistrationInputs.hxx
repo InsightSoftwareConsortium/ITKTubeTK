@@ -24,7 +24,7 @@ limitations under the License.
 #ifndef __tubePreProcessRegistrationInputs_hxx
 #define __tubePreProcessRegistrationInputs_hxx
 
-#include "PreProcessRegistrationInputs.h"
+#include "tubePreProcessRegistrationInputs.h"
 
 #include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
 #include "itktubeTubeAngleOfIncidenceWeightFunction.h"
