@@ -36,7 +36,7 @@ limitations under the License.
 #include <itkTimeProbesCollectorBase.h>
 
 #include "ComputeImageToTubeRigidMetricImageCLP.h"
-#include "PreProcessRegistrationInputs.h"
+#include "tubePreProcessRegistrationInputs.h"
 
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
@@ -77,7 +77,7 @@ int DoIt( int argc, char * argv[] )
   typename TubeNetType::Pointer tubeNet;
   PointWeightsType pointWeights;
 
-  if( PreProcessRegistrationInputs< Dimension,
+  if( tube::PreProcessRegistrationInputs< Dimension,
         FloatType,
         TubeType,
         TubeNetType,
