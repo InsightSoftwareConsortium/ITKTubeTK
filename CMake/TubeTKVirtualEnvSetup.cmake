@@ -1,4 +1,5 @@
 find_package( PythonInterp REQUIRED )
+
 find_package( PythonLibs REQUIRED )
 
 # This sets the virtual environment directory
@@ -12,35 +13,33 @@ else( WIN32 )
   set( PythonVirtualEnvScriptsDir bin)
 endif( WIN32 )
 get_filename_component( activate_full
-    "${PythonVirtualEnvDir}/${PythonVirtualEnvScriptsDir}/activate" ABSOLUTE )
+  "${PythonVirtualEnvDir}/${PythonVirtualEnvScriptsDir}/activate" ABSOLUTE )
 
 if( NOT EXISTS "${activate_full}" )
 
   # Check if we are in a virtal environment
-  execute_process( COMMAND "${PYTHON_EXECUTABLE}"
-                   "-c"
-                   "import sys; sys.exit(1) if hasattr(sys,'real_prefix') else sys.exit(0)"
-                   RESULT_VARIABLE _inVirtualenv
-                   ERROR_VARIABLE _error )
-  if( _inVirtualenv )
-    message( WARNING "Configuring a virtual environment from a virtual environment\
- does not copy the packages from the original environment.")
+  execute_process( COMMAND "${PYTHON_EXECUTABLE}" "-c"
+    "import sys; sys.exit(1) if hasattr(sys,'real_prefix') else sys.exit(0)"
+    RESULT_VARIABLE inVirtualEnv
+    ERROR_VARIABLE inVirtualEnv_error )
+  if( inVirtualEnv )
+    message( WARNING "Configuring a virtual environment from a virtual\
+      environment does not copy the packages from the original environment.")
   endif()
   # Check if virtualenv is available in the current environment (using
   # a virtualenv from a different environment could lead to errors
   # (e.g. python2 vs python3)
-  execute_process( COMMAND "${PYTHON_EXECUTABLE}" -c
-                   "import virtualenv;print(virtualenv.__file__)"
-                   RESULT_VARIABLE _failed
-                   OUTPUT_VARIABLE _output
-                   ERROR_VARIABLE _error )
-  if( _failed )
-    message(FATAL_ERROR "virtualenv is required. Please install manually (e.g. \
-pip install virtualenv")
+  execute_process( COMMAND "${PYTHON_EXECUTABLE}" "-c"
+    "import virtualenv;print(virtualenv.__file__)"
+    RESULT_VARIABLE virtualEnv_failed
+    OUTPUT_VARIABLE virtualEnv_output
+    ERROR_VARIABLE virtualEnv_error )
+  if( virtualEnv_failed )
+    message(FATAL_ERROR "virtualenv is required, e.g., pip install virtualenv")
   endif()
-  get_filename_component( virtualenv_filename ${_output} NAME_WE)
-  get_filename_component( virtualenv_extension ${_output} EXT)
-  get_filename_component( virtualenv_directory ${_output} DIRECTORY)
+  get_filename_component( virtualenv_filename ${virtualEnv_output} NAME_WE)
+  get_filename_component( virtualenv_extension ${virtualEnv_output} EXT)
+  get_filename_component( virtualenv_directory ${virtualEnv_output} DIRECTORY)
   set( virtualenv_script ${virtualenv_directory}/${virtualenv_filename})
   if( virtualenv_extension )
     set( virtualenv_script ${virtualenv_script}.py )
@@ -55,52 +54,51 @@ pip install virtualenv")
       "--python=${PYTHON_EXECUTABLE}"
       "--system-site-packages"
       "${PythonVirtualEnvDir}"
-    RESULT_VARIABLE _failed
-    ERROR_VARIABLE _error )
-  if( _failed )
-    message( FATAL_ERROR ${_error} )
+    RESULT_VARIABLE createVirtualEnv_failed
+    ERROR_VARIABLE createVirtualEnv_error )
+  if( createVirtualEnv_failed )
+    message( FATAL_ERROR ${createVirtualEnv_error} )
   endif()
 else( NOT EXISTS "${activate_full}" )
   message( STATUS "Testing virtualenv found at ${PythonVirtualEnvDir}" )
 endif( NOT EXISTS "${activate_full}" )
 
 # Temporarily change the Python executable to the virtual environment one
-set( PYTHON_TESTING_EXECUTABLE ${PythonVirtualEnvDir}/${PythonVirtualEnvScriptsDir}/python
-    CACHE INTERNAL "Python to the python executable to use in tests." FORCE )
+set( PYTHON_TESTING_EXECUTABLE
+  ${PythonVirtualEnvDir}/${PythonVirtualEnvScriptsDir}/python
+  CACHE INTERNAL "Python to the python executable to use in tests." FORCE )
 
 set( PYTHON_TESTING_MODULES )
+
+# numpy
 if( ${TubeTK_USE_NUMPY} )
-  set( PYTHON_TESTING_MODULES numpy )
+
+  list( APPEND PYTHON_TESTING_MODULES
+    scipy
+    numpy )
+
 endif( ${TubeTK_USE_NUMPY} )
 
-if( TubeTK_USE_IPYTHON_NOTEBOOKS )
+# pyqtgraph
+if( TubeTK_USE_PYQTGRAPH )
+
   list( APPEND PYTHON_TESTING_MODULES
+    pyqtgraph )
+
+endif( TubeTK_USE_PYQTGRAPH )
+
+# ipython and other things used by examples
+if( ${TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS} )
+
+  list( APPEND PYTHON_TESTING_MODULES
+    ipython
     tornado
     pyzmq
-    ipython
     jinja2
+    tables
     matplotlib )
-    # ipython[zmq]
-endif( TubeTK_USE_IPYTHON_NOTEBOOKS )
 
-if( TubeTK_USE_PYQTGRAPH )
-  # Note: PyQt4 or PySide are required as is python-opengl, but these are not
-  # pip installable.
-  include(TubeTKCheckPythonLibrary)
-  TubeTKCheckPythonLibrary(PyQt4)
-  TubeTKCheckPythonLibrary(PySide)
-  TubeTKCheckPythonLibrary(python-opengl)
-  if( NOT PyQt4_FOUND OR NOT PySide_FOUND OR NOT python-opengl_FOUND )
-    message(WARNING "With TubeTK_USE_PYQTGRAPH=ON and BUILD_TESTING=ON, PyQt4 or PySide\
- are required as is python-opengl, but these are not pip installable.")
-  endif()
-
-  list( APPEND PYTHON_TESTING_MODULES
-    pyside
-    pyqtgraph
-    scipy
-    tables )
-endif( TubeTK_USE_PYQTGRAPH )
+endif( ${TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS} )
 
 configure_file(
   "${TubeTK_SOURCE_DIR}/CMake/PythonVirtualEnvInstall.cmake.in"
@@ -114,5 +112,5 @@ add_custom_target( PythonVirtualenvInstall ALL
 
 # Setup IPython notebook driver
 set( NOTEBOOK_TEST_DRIVER
-    ${TubeTK_SOURCE_DIR}/Utilities/Python/EvaluateIPythonNotebook.py
+  ${TubeTK_SOURCE_DIR}/Utilities/Python/EvaluateIPythonNotebook.py
   CACHE INTERNAL "Test driver command for IPython Notebooks." FORCE )
