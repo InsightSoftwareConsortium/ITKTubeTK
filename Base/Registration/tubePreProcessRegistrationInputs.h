@@ -21,8 +21,10 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __PreProcessRegistrationInputs_h
-#define __PreProcessRegistrationInputs_h
+#ifndef __tubePreProcessRegistrationInputs_h
+#define __tubePreProcessRegistrationInputs_h
+
+namespace tube {
 
 template<
   unsigned int VDimension,
@@ -40,8 +42,10 @@ PreProcessRegistrationInputs( int argc,
   typename TTubeNet::Pointer & tubeNet,
   typename TRegistrationMethod::FeatureWeightsType & pointWeights );
 
+} // namespace
+
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "PreProcessRegistrationInputs.hxx"
 #endif
 
-#endif // End !defined(__PreProcessRegistrationInputs_h)
+#endif // End !defined(__tubePreProcessRegistrationInputs_h)
