@@ -373,7 +373,7 @@ if( TubeTK_USE_PYTHON )
   endif()
   TubeTKCheckPythonLibrary( scipy )
   if( TubeTK_USE_NUMPY AND NOT scipy_FOUND )
-    message( FATAL_ERROR "numpy was not found. Set TubeTK_USE_NUMPY to OFF" )
+    message( FATAL_ERROR "scipy was not found. Set TubeTK_USE_NUMPY to OFF" )
   endif()
 
   # PyQtGraph bridge support.
