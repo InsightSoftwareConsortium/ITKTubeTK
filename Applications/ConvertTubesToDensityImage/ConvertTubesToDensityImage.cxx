@@ -51,7 +51,7 @@ int DoIt( int argc, char * argv[] )
   TPixel   max_densityIntensity = 2048;
 
   typedef tube::ConvertTubesToDensityImage<
-  DensityImageType, RadiusImageType, TangentImageType > TubeToDensityImageBuilderType;
+  TPixel, Dimension > TubeToDensityImageBuilderType;
 
   typedef TubeToDensityImageBuilderType::TubeGroupType  TubesType;
   typedef itk::SpatialObjectReader< Dimension >         TubesReaderType;

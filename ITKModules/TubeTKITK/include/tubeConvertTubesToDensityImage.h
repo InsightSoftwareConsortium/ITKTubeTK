@@ -35,8 +35,7 @@ namespace tube
  *  \ingroup TubeTKITK
  */
 
-template< class TDensityImageType, class TRadiusImageType,
-          class TTangentImageType >
+template< class TOutputPixel, unsigned int Dimension >
 class ConvertTubesToDensityImage:
   public itk::ProcessObject
 {
@@ -47,7 +46,7 @@ public:
   typedef itk::SmartPointer< const Self >            ConstPointer;
 
   /** Typdefs */
-  typedef TDensityImageType                              DensityImageType;
+  typedef itk::Image< TOutputPixel, Dimension >          DensityImageType;
   typedef typename DensityImageType::PixelType           DensityPixelType;
   typedef typename DensityImageType::Pointer             DensityImagePointer;
   typedef typename DensityImageType::SizeType            SizeType;
@@ -59,25 +58,17 @@ public:
   /** Run-time type information (and related methods). */
   itkTypeMacro(ConvertTubesToDensityImage, Object);
 
-  /** Define the Dimension variable */
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       DensityImageType::ImageDimension );
-
-  typedef TRadiusImageType                               RadiusImageType;
+  typedef itk::Image< TOutputPixel, Dimension >          RadiusImageType;
   typedef typename RadiusImageType::Pointer              RadiusImagePointer;
-
-  typedef TTangentImageType                              TangentImageType;
+  typedef itk::Vector< TOutputPixel, Dimension >         TangentPixelType;
+  typedef itk::Image< TangentPixelType, Dimension >      TangentImageType;
   typedef typename TangentImageType::Pointer             TangentImagePointer;
 
-  typedef itk::GroupSpatialObject< ImageDimension >      TubeGroupType;
+  typedef itk::GroupSpatialObject< Dimension >           TubeGroupType;
   typedef typename TubeGroupType::Pointer                TubeGroupPointer;
 
   typedef itk::tube::TubeSpatialObjectToDensityImageFilter<
   DensityImageType, RadiusImageType, TangentImageType >  FilterType;
-
- // typedef typename FilterType::TubeGroupType              TubeGroupType;
- // typedef typename FilterType::TangentImageType           TangentImageType;
- // typedef typename FilterType::
 
   /** Set maximum density intensity value. Its a constant */
   tubeWrapSetMacro( MaxDensityIntensity, DensityPixelType, Filter );
@@ -96,7 +87,7 @@ public:
   tubeWrapGetMacro( InputTubeGroup, TubeGroupPointer, Filter );
 
   /* Runs tubes to density image conversion */
-  tubeWrapUpdateMacro(Filter);
+  tubeWrapUpdateMacro( Filter );
 
   /* Get the generated density image */
   tubeWrapGetMacro( DensityMapImage, DensityImagePointer, Filter );
@@ -118,8 +109,8 @@ protected:
 
 private:
   /** itkConvertTubesToImageFilter parameters **/
-  ConvertTubesToDensityImage(const Self &);
-  void operator=(const Self &);
+  ConvertTubesToDensityImage( const Self & );
+  void operator=( const Self & );
 
   typename FilterType::Pointer m_Filter;
 };

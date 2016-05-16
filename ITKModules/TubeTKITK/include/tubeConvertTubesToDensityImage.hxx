@@ -23,21 +23,17 @@
 namespace tube
 {
 
-template< class TDensityImageType, class TRadiusImageType,
-          class TTangentImageType >
-ConvertTubesToDensityImage< TDensityImageType, TRadiusImageType,
-          TTangentImageType >
+template< class TOutputPixel, unsigned int Dimension >
+ConvertTubesToDensityImage< TOutputPixel, Dimension >
 ::ConvertTubesToDensityImage( void )
 {
   m_Filter = FilterType::New();
 }
 
-template< class TDensityImageType, class TRadiusImageType,
-          class TTangentImageType >
+template< class TOutputPixel, unsigned int Dimension >
 void
-ConvertTubesToDensityImage< TDensityImageType, TRadiusImageType,
-          TTangentImageType >
-::PrintSelf(std::ostream & os, itk::Indent indent) const
+ConvertTubesToDensityImage< TOutputPixel, Dimension >
+::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
   os << indent << "m_Spacing: " << m_Filter->GetSpacing() << std::endl;
