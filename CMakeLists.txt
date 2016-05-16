@@ -365,15 +365,15 @@ if( TubeTK_USE_PYTHON )
   include( TubeTKCheckPythonLibrary )
 
   # NumPy conversion support.
-  option( TubeTK_USE_NUMPY "Use NumPy to enable additional functionality." ON )
-  mark_as_advanced( CLEAR TubeTK_USE_NUMPY )
+  option( TubeTK_USE_NUMPY_STACK "Use NumPy to enable additional functionality." ON )
+  mark_as_advanced( CLEAR TubeTK_USE_NUMPY_STACK )
   TubeTKCheckPythonLibrary( numpy )
-  if( TubeTK_USE_NUMPY AND NOT numpy_FOUND )
-    message( FATAL_ERROR "numpy was not found. Set TubeTK_USE_NUMPY to OFF" )
+  if( TubeTK_USE_NUMPY_STACK AND NOT numpy_FOUND )
+    message( FATAL_ERROR "numpy was not found. Set TubeTK_USE_NUMPY_STACK to OFF" )
   endif()
   TubeTKCheckPythonLibrary( scipy )
-  if( TubeTK_USE_NUMPY AND NOT scipy_FOUND )
-    message( FATAL_ERROR "scipy was not found. Set TubeTK_USE_NUMPY to OFF" )
+  if( TubeTK_USE_NUMPY_STACK AND NOT scipy_FOUND )
+    message( FATAL_ERROR "scipy was not found. Set TubeTK_USE_NUMPY_STACK to OFF" )
   endif()
 
   # PyQtGraph bridge support.
@@ -429,9 +429,9 @@ if( TubeTK_USE_PYTHON )
 else( TubeTK_USE_PYTHON )
 
   # NumPy conversion support.
-  set( TubeTK_USE_NUMPY OFF CACHE BOOL
+  set( TubeTK_USE_NUMPY_STACK OFF CACHE BOOL
     "Use NumPy to enable additional functionality." FORCE )
-  mark_as_advanced( TubeTK_USE_NUMPY )
+  mark_as_advanced( TubeTK_USE_NUMPY_STACK )
 
   # PyQtGraph bridge support.
   set( TubeTK_USE_PYQTGRAPH OFF CACHE BOOL

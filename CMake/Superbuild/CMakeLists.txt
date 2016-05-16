@@ -134,7 +134,7 @@ list_conditional_append( TubeTK_USE_QT
 
 list_conditional_append( TubeTK_USE_PYTHON
   TubeTK_EXTERNAL_PROJECTS_ARGS
-    -DTubeTK_USE_NUMPY:BOOL=${TubeTK_USE_NUMPY}
+    -DTubeTK_USE_NUMPY_STACK:BOOL=${TubeTK_USE_NUMPY_STACK}
     -DTubeTK_USE_PYQTGRAPH:BOOL=${TubeTK_USE_PYQTGRAPH}
     -DPythonVirtualEnvDir:PATH=${PythonVirtualEnvDir}
     -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE}
