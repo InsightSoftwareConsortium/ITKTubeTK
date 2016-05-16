@@ -394,18 +394,18 @@ if( TubeTK_USE_PYTHON )
   mark_as_advanced( CLEAR TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS )
 
   if( TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS )
-    TubeTKCheckPythonLibrary( ipython )
-    if( NOT ipython_FOUND )
+    TubeTKCheckPythonLibrary( IPython )
+    if( NOT IPython_FOUND )
       message(FATAL_ERROR
-        "ipython was not found. Set TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS to OFF")
+        "IPython was not found. Set TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS to OFF")
     endif()
     TubeTKCheckPythonLibrary( tornado )
     if( NOT tornado_FOUND )
       message(FATAL_ERROR
         "tornado was not found. Set TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS to OFF")
     endif()
-    TubeTKCheckPythonLibrary( pyzmq )
-    if( NOT pyzmq_FOUND )
+    TubeTKCheckPythonLibrary( zmq )
+    if( NOT zmq_FOUND )
       message(FATAL_ERROR
         "pyzmq was not found. Set TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS to OFF")
     endif()
