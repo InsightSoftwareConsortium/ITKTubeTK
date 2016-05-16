@@ -75,6 +75,14 @@ MergeAdjacentImagesFilter< TImage >
 template< class TImage >
 void
 MergeAdjacentImagesFilter< TImage >
+::SetPadding( const PaddingType & padding )
+{
+  m_Padding = padding;
+}
+
+template< class TImage >
+void
+MergeAdjacentImagesFilter< TImage >
 ::LoadTransform( const std::string & filename )
 {
   m_InitialTransformFile = filename;

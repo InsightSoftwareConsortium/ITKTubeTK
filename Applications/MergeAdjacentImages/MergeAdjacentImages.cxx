@@ -67,7 +67,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileWriter< ImageType  >            WriterType;
 
   // Load input image 1
-  timeCollector.Start("Loading input image 1");
+  timeCollector.Start( "Loading input image 1" );
 
   typename ReaderType::Pointer reader1 = ReaderType::New();
 
@@ -84,12 +84,12 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  timeCollector.Stop("Loading input image 1");
+  timeCollector.Stop( "Loading input image 1" );
   progress = 0.05;
   progressReporter.Report( progress );
 
   // Load input image 2
-  timeCollector.Start("Loading input image 2");
+  timeCollector.Start( "Loading input image 2" );
 
   typename ReaderType::Pointer reader2 = ReaderType::New();
 
@@ -106,7 +106,7 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  timeCollector.Stop("Loading input image 2");
+  timeCollector.Stop( "Loading input image 2" );
   progress = 0.1;
   progressReporter.Report( progress );
 
@@ -140,12 +140,12 @@ int DoIt( int argc, char * argv[] )
 
   filter->Update();
 
-  timeCollector.Stop("Merging images");
+  timeCollector.Stop( "Merging images" );
   progress = 0.9;
   progressReporter.Report( progress );
 
   // Write output image
-  timeCollector.Start("Writing output image");
+  timeCollector.Start( "Writing output image" );
 
   typename WriterType::Pointer writer = WriterType::New();
 
@@ -164,7 +164,7 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  timeCollector.Stop("Writing output image");
+  timeCollector.Stop( "Writing output image" );
   progress = 1.0;
   progressReporter.Report( progress );
   progressReporter.End();

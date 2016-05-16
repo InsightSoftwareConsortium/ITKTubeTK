@@ -24,7 +24,7 @@ limitations under the License.
 #define __tubeMergeAdjacentImages_h
 
 // ITK includes
-#include <itkProcessObject.h>
+#include <itkObject.h>
 
 // TubeTK includes
 #include "itktubeMergeAdjacentImagesFilter.h"
@@ -38,18 +38,19 @@ namespace tube
  *  \ingroup TubeTKITK
  */
 
-template< class TPixel, unsigned int Dimension >
+template< TImage >
 class MergeAdjacentImages:
-  public itk::ProcessObject
+  public itk::Object
 {
 public:
   /** Standard class typedefs. */
   typedef MergeAdjacentImages                                  Self;
-  typedef itk::ProcessObject                                   Superclass;
+  typedef itk::Object                                          Superclass;
   typedef itk::SmartPointer< Self >                            Pointer;
   typedef itk::SmartPointer< const Self >                      ConstPointer;
 
-  typedef itk::Image< TPixel, Dimension >                      ImageType;
+  typedef TImage                                               ImageType;
+  typedef typename TImage::PixelType                           PixelType;
 
   typedef itk::tube::MergeAdjacentImagesFilter< ImageType >    FilterType;
   typedef typename FilterType::PaddingType                     PaddingType;
@@ -61,22 +62,22 @@ public:
   itkTypeMacro(MergeAdjacentImages, Object);
 
   /** Set input image 1 */
-  tubeWrapSetConstObjectMacro(Input1, ImageType, Filter);
+  tubeWrapSetConstObjectMacro( Input1, ImageType, Filter );
 
   /** Get input image 1 */
-  tubeWrapGetConstObjectMacro(Input1, ImageType, Filter);
+  tubeWrapGetConstObjectMacro( Input1, ImageType, Filter );
 
   /** Set input image 2 */
-  tubeWrapSetConstObjectMacro(Input2, ImageType, Filter);
+  tubeWrapSetConstObjectMacro( Input2, ImageType, Filter );
 
   /** Get input image 2 */
-  tubeWrapGetConstObjectMacro(Input2, ImageType, Filter);
+  tubeWrapGetConstObjectMacro( Input2, ImageType, Filter );
 
   /** Set value used for output pixels that dont intersect with input image */
-  tubeWrapSetMacro( Background, TPixel, Filter );
+  tubeWrapSetMacro( Background, PixelType, Filter );
 
   /** Get value used for output pixels that dont intersect with input image */
-  tubeWrapGetMacro( Background, TPixel, Filter );
+  tubeWrapGetMacro( Background, PixelType, Filter );
 
   /** Set if zero-valued input pixels should be ignored */
   tubeWrapSetMacro( MaskZero, bool, Filter );
@@ -94,7 +95,7 @@ public:
   tubeWrapSetConstReferenceMacro( Padding, PaddingType, Filter );
 
   /** Get padding for second image */
-  tubeWrapGetConstReferenceMacro( padding, PaddingType, Filter );
+  tubeWrapGetConstReferenceMacro( Padding, PaddingType, Filter );
 
   /** Set expected initial misalignment offset */
   tubeWrapSetMacro( ExpectedOffset, double, Filter );

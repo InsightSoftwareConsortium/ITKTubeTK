@@ -48,6 +48,7 @@ public:
   typedef SmartPointer< const Self >                         ConstPointer;
 
   typedef TImage                                             ImageType;
+  typedef typename TImage::PixelType                         PixelType;
   typedef std::vector< int >                                 PaddingType;
 
   /** Method for creation through the object factory. */
@@ -57,16 +58,16 @@ public:
   itkTypeMacro( MergeAdjacentImagesFilter, ImageToImageFilter );
 
   /** Set input image 1 */
-  void SetInput1(const ImageType * image);
+  void SetInput1( const ImageType * image );
 
   /** Set input image 2 */
-  void SetInput2(const ImageType * image);
+  void SetInput2( const ImageType * image );
 
   /** Set value used for output pixels that dont intersect with input image */
-  itkSetMacro( Background, typename TImage::PixelType );
+  itkSetMacro( Background, PixelType );
 
   /** Get value used for output pixels that dont intersect with input image */
-  itkGetMacro( Background, typename TImage::PixelType );
+  itkGetMacro( Background, PixelType );
 
   /** Set if zero-valued input pixels should be ignored */
   itkSetMacro( MaskZero, bool );
@@ -84,7 +85,7 @@ public:
   void SetPadding( const PaddingType & padding );
 
   /** Get padding for second image */
-  itkGetConstReferenceMacro( padding, PaddingType );
+  itkGetConstReferenceMacro( Padding, PaddingType );
 
   /** Set expected initial misalignment offset */
   itkSetMacro( ExpectedOffset, double );

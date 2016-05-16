@@ -71,3 +71,5 @@ MergeAdjacentImages< TPixel, Dimension >
 }
 
 } // End namespace tube
+
+#endif
