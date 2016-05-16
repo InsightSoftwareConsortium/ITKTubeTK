@@ -21,8 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeLabelOverlapMeasuresImageFilter.h"
-
+#include "tubeComputeBinaryImageSimilarityMetrics.h"
 #include <itkImageFileReader.h>
 
 #include "ComputeBinaryImageSimilarityMetricsCLP.h"
@@ -74,7 +73,7 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::Pointer image1 = reader1->GetOutput();
   typename ImageType::Pointer image2 = reader2->GetOutput();
 
-  typedef itk::tube::LabelOverlapMeasuresImageFilter< ImageType >
+  typedef tube::ComputeBinaryImageSimilarityMetrics< ImageType >
     MetricFilterType;
 
   typename MetricFilterType::Pointer metric = MetricFilterType::New();

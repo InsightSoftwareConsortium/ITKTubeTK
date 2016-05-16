@@ -250,6 +250,8 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "KWSys.*SharedForward.*strcat"
   "KWSys.*SharedForward.*putenv"
   "KWSys.*SharedForward.*getenv"
+  "ITK.Modules.Filtering.FastMarching"
+  "ITK.Modules.Remote.MinimalPathExtraction"
 
   # VTK suppressions
   "vtkfreetype"

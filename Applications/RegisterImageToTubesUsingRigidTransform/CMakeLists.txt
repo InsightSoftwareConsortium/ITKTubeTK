@@ -24,8 +24,6 @@
 set( MODULE_NAME RegisterImageToTubesUsingRigidTransform )
 project( ${MODULE_NAME} )
 
-# To silence the warning about getting LOCATION (Tuner only targets non-VS for
-# now)
 if( NOT ${CMAKE_VERSION} VERSION_LESS 3.0 )
   cmake_policy(SET CMP0026 OLD)
 endif( NOT ${CMAKE_VERSION} VERSION_LESS 3.0 )
@@ -51,21 +49,6 @@ SEMMacroBuildCLI(
     ${ITK_LIBRARIES} ITKIOSpatialObjects ITKIOMeta
     TubeCLI TubeTKCommon TubeTKFiltering TubeTKNumerics TubeTKRegistration
     TubeTKUSTK )
-
-SEMMacroBuildCLI(
-  NAME ComputeImageToTubeRigidMetricImage
-  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES
-    ${ITK_LIBRARIES} ITKIOSpatialObjects ITKIOMeta
-    TubeCLI TubeTKCommon TubeTKNumerics TubeTKRegistration
-    TubeTKUSTK )
-
-SEMMacroBuildCLI(
-  NAME ExtractMetricImageSlice
-  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES
-    ${ITK_LIBRARIES} ITKIOSpatialObjects ITKIOMeta
-    TubeCLI TubeTKCommon )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

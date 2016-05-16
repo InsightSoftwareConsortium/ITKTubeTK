@@ -35,20 +35,21 @@ configure_file( tubetk.pth.in tubetk.pth )
 if( TubeTK_BUILD_TESTING AND NOT TubeTK_BUILD_USING_SLICER )
   # Install into the testing virtualenv.
   execute_process(
-    COMMAND ${PYTHON_TESTING_EXECUTABLE} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
-    RESULT_VARIABLE _result_variable
-    ERROR_VARIABLE _error_variable
+    COMMAND ${PYTHON_TESTING_EXECUTABLE} -c
+      "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
+    RESULT_VARIABLE pythonLib_result
+    ERROR_VARIABLE pythonLib_error
     OUTPUT_VARIABLE site_packages )
-  if( ${_result_variable} )
+  if( ${pythonLib_result} )
     message( SEND_ERROR "Could not get virtual packages directory:
-      ${_result_variable}
-      ${_error_variable}" )
-  else( ${_result_variable} )
+      ${pythonLib_result}
+      ${pythonLib_error}" )
+  else( ${pythonLib_result} )
     string( STRIP "${site_packages}" site_packages )
     message( STATUS
       "Detected testing virtualenv packages directory: ${site_packages}" )
     configure_file( tubetk.pth.in "${site_packages}/tubetk.pth" )
-  endif( ${_result_variable} )
+  endif( ${pythonLib_result} )
 endif( TubeTK_BUILD_TESTING AND NOT TubeTK_BUILD_USING_SLICER )
 
 add_subdirectory( tubetk )

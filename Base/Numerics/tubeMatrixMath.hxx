@@ -134,7 +134,7 @@ template< class T >
 void
 ComputeRidgeness( const vnl_matrix<T> & H,
   const vnl_vector<T> & D,
-  const vnl_vector<double> & prevTangent,
+  const vnl_vector<T> & prevTangent,
   double & ridgeness,
   double & roundness,
   double & curvature,
@@ -164,32 +164,36 @@ ComputeRidgeness( const vnl_matrix<T> & H,
     // Then reorder the matrix if needed to always have the tangent in the
     // last column.
     unsigned int closestV = 0;
-    double closestVProd = 0;
+    double closestVDProd = 0;
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
-      double prod = 0;
-      for( unsigned int j=0; j<ImageDimension; j++ )
-        {
-        prod += vnl_math_abs( prevTangent[j] * HEVect( j, i ) );
-        }
-      if( prod>closestVProd )
+      double dProd = vnl_math_abs( dot_product( prevTangent,
+        HEVect.get_column(i) ) );
+      if( dProd > closestVDProd )
         {
         closestV = i;
-        closestVProd = prod;
+        closestVDProd = dProd;
         }
       }
     if( closestV != ImageDimension-1 )
       {
-      std::cout << "***********Mixing things up: Chosen t=evect#" << closestV
-        << " dotProd = " << closestVProd << std::endl;
+      std::cout << "***********Mixing things up: Chosen t=evect#"
+        << closestV << " dotProd = " << closestVDProd << std::endl;
       double tf = HEVal[closestV];
       HEVal[closestV] = HEVal[ImageDimension-1];
       HEVal[ImageDimension-1] = tf;
-      for( unsigned int i=0; i<ImageDimension; i++ )
+      vnl_vector< double > tv;
+      tv = HEVect.get_column( closestV );
+      HEVect.set_column( closestV, HEVect.get_column( ImageDimension-1 ) );
+      HEVect.set_column( ImageDimension-1, tv );
+      }
+    if( dot_product( prevTangent, HEVect.get_column( ImageDimension-1 ) )
+      < 0 )
+      {
+      for( unsigned int i=0; i<ImageDimension-1; ++i )
         {
-        tf = HEVect( i, closestV );
-        HEVect( i, closestV ) = HEVect( i, ImageDimension-1 );
-        HEVect( i, ImageDimension-1 ) = tf;
+        HEVect.get_column( ImageDimension-1 )[i] = -1 * HEVect.get_column(
+          ImageDimension-1 )[i];
         }
       }
     }
@@ -199,14 +203,10 @@ ComputeRidgeness( const vnl_matrix<T> & H,
   int ridge = 1;
   for( unsigned int i=0; i<ImageDimension-1; i++ )
     {
-    double tf = 0;
-    for( unsigned int j=0; j<ImageDimension; ++j )
-      {
-      tf += HEVect.get_column( i )[j] * Dv[j];
-      }
-    sump += tf * tf;
+    double dProd = dot_product( Dv, HEVect.get_column( i ) );
+    sump += dProd * dProd;
 
-    tf = HEVal[i];
+    double tf = HEVal[i];
     sumv += tf * tf;
     if( tf >= 0 )
       {

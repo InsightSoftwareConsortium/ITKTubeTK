@@ -21,32 +21,17 @@
 #
 ##############################################################################
 
-set( MODULE_NAME ComputeBinaryImageSimilarityMetrics )
-project( ${MODULE_NAME} )
+include_regular_expression( "^.*$" )
 
-if( NOT TubeTK_SOURCE_DIR )
-  find_package( TubeTK REQUIRED )
-  include( ${TubeTK_USE_FILE} )
-endif( NOT TubeTK_SOURCE_DIR )
+include( Midas3FunctionAddTest )
+set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
+set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
-find_package( SlicerExecutionModel REQUIRED )
-include( ${SlicerExecutionModel_USE_FILE} )
+set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
-find_package( ITK REQUIRED )
-if( TubeTK_BUILD_WITHIN_SLICER )
-  set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 ) # See Libs/ITKFactoryRegistration/CMakeLists.txt
-endif( TubeTK_BUILD_WITHIN_SLICER )
-include( ${ITK_USE_FILE} )
+set( PROJ_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-SEMMacroBuildCLI(
-  NAME
-    ${MODULE_NAME}
-  LOGO_HEADER
-    ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES
-    ${ITK_LIBRARIES} ${VTK_LIBRARIES}
-    TubeCLI TubeTKSegmentation TubeTKITK )
-
-if( BUILD_TESTING )
-  add_subdirectory( Testing )
-endif( BUILD_TESTING )
+#Midas3FunctionAddTest( NAME ${METRIC_EXTRACTOR}-Test1
+  #COMMAND ${PROJ_EXE}
+    #MIDAS{${MODULE_NAME}-Sampler.nrrd}
+    #${TEMP}/${MODULE_NAME}Test1.mha )

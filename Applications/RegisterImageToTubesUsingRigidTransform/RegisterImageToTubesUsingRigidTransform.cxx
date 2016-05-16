@@ -33,7 +33,7 @@ limitations under the License.
 
 
 #include "RegisterImageToTubesUsingRigidTransformCLP.h"
-#include "PreProcessRegistrationInputs.h"
+#include "tubePreProcessRegistrationInputs.h"
 
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
@@ -77,7 +77,7 @@ int DoIt( int argc, char * argv[] )
   typename TubeNetType::Pointer tubeNet;
   PointWeightsType pointWeights;
 
-  if( PreProcessRegistrationInputs< Dimension, FloatType, TubeType,
+  if( tube::PreProcessRegistrationInputs< Dimension, FloatType, TubeType,
     TubeNetType, ImageType, RegistrationMethodType >( argc, argv,
     timeCollector, progressReporter, currentImage, tubeNet, pointWeights )
     == EXIT_FAILURE )

@@ -24,7 +24,7 @@ limitations under the License.
 #define __tubeSegmentUsingOtsuThreshold_h
 
 // ITK includes
-#include <itkProcessObject.h>
+#include <itkObject.h>
 #include <itkOtsuThresholdImageFilter.h>
 
 // TubeTK includes
@@ -37,11 +37,10 @@ namespace tube
  *  \ingroup TubeTKITK
  */
 
-template< class TInputPixel,
-  unsigned int Dimension,
+template< class TInputPixel, unsigned int Dimension,
   class TMaskPixel = unsigned char >
 class SegmentUsingOtsuThreshold:
-  public itk::ProcessObject
+  public itk::Object
 {
 public:
   /** Standard class typedefs. */
@@ -57,31 +56,31 @@ public:
     OutputImageType >                               FilterType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(SegmentUsingOtsuThreshold, Object);
+  itkTypeMacro( SegmentUsingOtsuThreshold, Object );
 
   /** Set/Get mask image */
-  tubeWrapSetConstObjectMacro(MaskImage, MaskImageType, Filter);
-  tubeWrapGetConstObjectMacro(MaskImage, MaskImageType, Filter);
+  tubeWrapSetConstObjectMacro( MaskImage, MaskImageType, Filter );
+  tubeWrapGetConstObjectMacro( MaskImage, MaskImageType, Filter );
 
   /** Set/Get mask value */
-  tubeWrapSetMacro(MaskValue, TInputPixel, Filter);
-  tubeWrapGetMacro(MaskValue, TInputPixel, Filter);
+  tubeWrapSetMacro( MaskValue, TInputPixel, Filter );
+  tubeWrapGetMacro( MaskValue, TInputPixel, Filter );
 
   /** Set/Get input image */
-  tubeWrapSetConstObjectMacro(Input, InputImageType, Filter);
-  tubeWrapGetConstObjectMacro(Input, InputImageType, Filter);
+  tubeWrapSetConstObjectMacro( Input, InputImageType, Filter );
+  tubeWrapGetConstObjectMacro( Input, InputImageType, Filter );
 
   /** Runs the thresholding algorithm */
-  tubeWrapUpdateMacro(Filter);
+  tubeWrapUpdateMacro( Filter );
 
   /** Get output segmentation mask */
-  tubeWrapGetObjectMacro(Output, OutputImageType, Filter);
+  tubeWrapGetObjectMacro( Output, OutputImageType, Filter );
 
   /** Get output threshold */
-  tubeWrapGetMacro(Threshold, TInputPixel, Filter);
+  tubeWrapGetMacro( Threshold, TInputPixel, Filter );
 
 protected:
   SegmentUsingOtsuThreshold( void );
@@ -90,8 +89,8 @@ protected:
 
 private:
   /** itkSegmentUsingOtsuThresholdFilter parameters **/
-  SegmentUsingOtsuThreshold(const Self &);
-  void operator=(const Self &);
+  SegmentUsingOtsuThreshold( const Self & );
+  void operator=( const Self & );
 
   typename FilterType::Pointer m_Filter;
 

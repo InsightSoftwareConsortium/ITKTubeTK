@@ -21,31 +21,33 @@
 #
 ##############################################################################
 
-set( MODULE_NAME ComputeBinaryImageSimilarityMetrics )
+set( MODULE_NAME ExtractMetricImageSlice )
 project( ${MODULE_NAME} )
+
+if( NOT ${CMAKE_VERSION} VERSION_LESS 3.0 )
+  cmake_policy(SET CMP0026 OLD)
+endif( NOT ${CMAKE_VERSION} VERSION_LESS 3.0 )
 
 if( NOT TubeTK_SOURCE_DIR )
   find_package( TubeTK REQUIRED )
   include( ${TubeTK_USE_FILE} )
 endif( NOT TubeTK_SOURCE_DIR )
 
-find_package( SlicerExecutionModel REQUIRED )
-include( ${SlicerExecutionModel_USE_FILE} )
-
 find_package( ITK REQUIRED )
 if( TubeTK_BUILD_WITHIN_SLICER )
-  set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 ) # See Libs/ITKFactoryRegistration/CMakeLists.txt
+  set( ITK_NO_IO_FACTORY_REGISTER_MANAGER 1 )
 endif( TubeTK_BUILD_WITHIN_SLICER )
 include( ${ITK_USE_FILE} )
 
+find_package( SlicerExecutionModel REQUIRED )
+include( ${SlicerExecutionModel_USE_FILE} )
+
 SEMMacroBuildCLI(
-  NAME
-    ${MODULE_NAME}
-  LOGO_HEADER
-    ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
+  NAME ${MODULE_NAME}
+  LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
-    ${ITK_LIBRARIES} ${VTK_LIBRARIES}
-    TubeCLI TubeTKSegmentation TubeTKITK )
+    ${ITK_LIBRARIES} ITKIOSpatialObjects ITKIOMeta
+    TubeCLI TubeTKCommon )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

@@ -68,8 +68,8 @@ public:
                 SpatialObjectToImageFilter );
 
   /** Set/Get tube id for which the fly through image is to be generated */
-  itkSetMacro( TubeId, int );
-  itkGetMacro( TubeId, int );
+  itkSetMacro( TubeId, unsigned long );
+  itkGetMacro( TubeId, unsigned long );
 
   /** Set/Get input image from which the tubes were extracted/segmented */
   itkSetConstObjectMacro( InputImage, InputImageType );
