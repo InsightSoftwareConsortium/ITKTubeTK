@@ -21,6 +21,32 @@ TubeTK offers various interface layers:
 
 * "TubeTK/SlicerModules:"  These are Slicer modules that combine many of the TubeTK/ITKMoudles into Slicer elements that accomplish select high-level image analysis tasks using TubeTK.
 
+Python requirements
+-------------------
+
+To be able to run all the python tests and examples, the following packages are required:
+* numpy
+* scipy
+* jupyter
+* IPython
+* tornado
+* pyzmq
+* jinja2
+* tables
+* matplotlib
+* pyqtgraph
+* PyOpengl
+* PySide
+* ITK
+
+Installing most required packages can be done with the following command line:
+
+```
+pip install requirements.txt
+```
+
+To install ITK, please refer to the [ITK documentation](https://blog.kitware.com/itk-python-wrapping-now-available-for-the-latest-msvc-clang-and-gcc/) or define the environment variables `ITK_BUILD_DIR` and `TubeTK_BUILD_DIR` to point respectivally to the folder in which ITK and TubeTK are built.
+
 License
 -------
 

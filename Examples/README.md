@@ -48,6 +48,7 @@ mkdir ~/TubeTK-virtualenv
 sudo pip install virtualenv
 virtualenv ~/TubeTK-virtualenv --system-site-packages
 ~/TubeTK-virtualenv/bin/pip install jupyter
+~/TubeTK-virtualenv/bin/pip install IPython
 ~/TubeTK-virtualenv/bin/pip install tornado
 ~/TubeTK-virtualenv/bin/pip install numpy
 ~/TubeTK-virtualenv/bin/pip install scipy
