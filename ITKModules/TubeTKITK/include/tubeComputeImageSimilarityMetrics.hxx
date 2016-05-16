@@ -20,28 +20,32 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+#ifndef __tubeComputeImageSimilarityMetrics_hxx
+#define __tubeComputeImageSimilarityMetrics_hxx
 
-#ifndef __PreProcessRegistrationInputs_h
-#define __PreProcessRegistrationInputs_h
+#include "tubeComputeImageSimilarityMetrics.h"
 
-template<
-  unsigned int VDimension,
-  typename TFloat,
-  typename TTube,
-  typename TTubeNet,
-  typename TImage,
-  typename TRegistrationMethod >
-int
-PreProcessRegistrationInputs( int argc,
-  char * argv[],
-  itk::TimeProbesCollectorBase & timeCollector,
-  tube::CLIProgressReporter & progressReporter,
-  typename TImage::Pointer & currentImage,
-  typename TTubeNet::Pointer & tubeNet,
-  typename TRegistrationMethod::FeatureWeightsType & pointWeights );
+namespace tube
+{
 
-#ifndef ITK_MANUAL_INSTANTIATION
-#include "PreProcessRegistrationInputs.hxx"
+template< class TInputImage >
+ComputeImageSimilarityMetrics< TInputImage >
+::ComputeImageSimilarityMetrics( void )
+{
+  m_Filter = FilterType::New();
+}
+
+
+template< class TInputImage >
+void
+ComputeImageSimilarityMetrics< TInputImage >
+::PrintSelf( std::ostream & os, itk::Indent indent ) const
+{
+  Superclass::PrintSelf( os, indent );
+  os << "Use Correlation: " << this->GetUseCorrelation() << std::endl;
+  os << "Sampling Rate: " << this->GetSamplingRate() << std::endl;
+}
+
+} // End namespace tubetk
+
 #endif
-
-#endif // End !defined(__PreProcessRegistrationInputs_h)

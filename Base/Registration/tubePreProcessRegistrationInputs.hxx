@@ -21,10 +21,10 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __PreProcessRegistrationInputs_hxx
-#define __PreProcessRegistrationInputs_hxx
+#ifndef __tubePreProcessRegistrationInputs_hxx
+#define __tubePreProcessRegistrationInputs_hxx
 
-#include "PreProcessRegistrationInputs.h"
+#include "tubePreProcessRegistrationInputs.h"
 
 #include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
 #include "itktubeTubeAngleOfIncidenceWeightFunction.h"
@@ -38,6 +38,8 @@ limitations under the License.
 #include <itkTimeProbesCollectorBase.h>
 
 #include "tubeCLIProgressReporter.h"
+
+namespace tube {
 
 template<
   unsigned int VDimension,
@@ -185,4 +187,6 @@ PreProcessRegistrationInputs( int argc,
   return EXIT_SUCCESS;
 }
 
-#endif // End !defined(__PreProcessRegistrationInputs_hxx)
+} //namespace
+
+#endif // End !defined(__tubePreProcessRegistrationInputs_hxx)

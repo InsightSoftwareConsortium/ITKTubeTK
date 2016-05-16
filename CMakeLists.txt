@@ -250,8 +250,10 @@ if( TubeTK_BUILD_USING_SLICER )
     TubeTK_USE_CTK )
 
   #set(TubeTK_BUILD_WITHIN_SLICER ${TubeTK_BUILD_USING_SLICER})
-  unset( QT_QMAKE_EXECUTABLE )
-  unset( PYTHON_EXECUTABLE )
+  unset( QT_QMAKE_EXECUTABLE CACHE)
+  unset( PYTHON_EXECUTABLE CACHE)
+  unset( PYTHON_INCLUDE_DIR CACHE)
+  unset( PYTHON_LIBRARY CACHE)
 
   # Find Slicer to set the [ITK|VTK|CTK|...]_DIR variables
   find_package( Slicer REQUIRED )
@@ -315,12 +317,6 @@ if( TubeTK_SUPPORT_2D_IMAGES )
 endif()
 
 #
-# Setup examples as tests
-#
-option( TubeTK_USE_EXAMPLES_AS_TESTS
-  "Test TubeTK examples as (long running) tests." OFF )
-
-#
 # GPU ArrayFire setup
 #
 option( TubeTK_USE_GPU_ARRAYFIRE
@@ -363,23 +359,72 @@ option( TubeTK_USE_PYTHON "Use Python to enable additional functionality."
 
 if( TubeTK_USE_PYTHON )
 
-  include(CheckPythonLibrary)
+  find_package( PythonInterp REQUIRED )
+  find_package( PythonLibs REQUIRED )
+
+  include( TubeTKCheckPythonLibrary )
+
   # NumPy conversion support.
   option( TubeTK_USE_NUMPY "Use NumPy to enable additional functionality." ON )
   mark_as_advanced( CLEAR TubeTK_USE_NUMPY )
-  CheckPythonLibrary(numpy)
+  TubeTKCheckPythonLibrary( numpy )
   if( TubeTK_USE_NUMPY AND NOT numpy_FOUND )
-    message(FATAL_ERROR "numpy was not found. Set TubeTK_USE_NUMPY to OFF")
+    message( FATAL_ERROR "numpy was not found. Set TubeTK_USE_NUMPY to OFF" )
   endif()
-
-  # Test TubeTK examples via Python virtualenv.
-  option( TubeTK_USE_IPYTHON_NOTEBOOKS "Use IPython notebooks in TubeTK." ON )
-  mark_as_advanced( CLEAR TubeTK_USE_IPYTHON_NOTEBOOKS )
+  TubeTKCheckPythonLibrary( scipy )
+  if( TubeTK_USE_NUMPY AND NOT scipy_FOUND )
+    message( FATAL_ERROR "numpy was not found. Set TubeTK_USE_NUMPY to OFF" )
+  endif()
 
   # PyQtGraph bridge support.
   option( TubeTK_USE_PYQTGRAPH
     "Use PyQtGraph to enable additional functionality." ON )
   mark_as_advanced( CLEAR TubeTK_USE_PYQTGRAPH )
+  TubeTKCheckPythonLibrary( pyqtgraph )
+  if( TubeTK_USE_PYQTGRAPH AND NOT pyqtgraph_FOUND )
+    message( FATAL_ERROR
+      "pyqtgraph was not found. Set TubeTK_USE_PYQTGRAPH to OFF" )
+  endif()
+
+  #
+  # Setup examples as tests
+  #
+  option( TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS
+    "Test TubeTK python examples as (long running) tests." OFF )
+  mark_as_advanced( CLEAR TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS )
+
+  if( TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS )
+    TubeTKCheckPythonLibrary( ipython )
+    if( NOT ipython_FOUND )
+      message(FATAL_ERROR
+        "ipython was not found. Set TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS to OFF")
+    endif()
+    TubeTKCheckPythonLibrary( tornado )
+    if( NOT tornado_FOUND )
+      message(FATAL_ERROR
+        "tornado was not found. Set TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS to OFF")
+    endif()
+    TubeTKCheckPythonLibrary( pyzmq )
+    if( NOT pyzmq_FOUND )
+      message(FATAL_ERROR
+        "pyzmq was not found. Set TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS to OFF")
+    endif()
+    TubeTKCheckPythonLibrary( jinja2 )
+    if( NOT jinja2_FOUND )
+      message(FATAL_ERROR
+        "jinja2 was not found. Set TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS to OFF")
+    endif()
+    TubeTKCheckPythonLibrary( tables )
+    if( NOT tables_FOUND )
+      message(FATAL_ERROR
+        "tables was not found. Set TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS to OFF")
+    endif()
+    TubeTKCheckPythonLibrary( matplotlib )
+    if( NOT matplotlib_FOUND )
+      message(FATAL_ERROR
+        "matplotlib was not found. Set TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS to OFF")
+    endif()
+  endif()
 
 else( TubeTK_USE_PYTHON )
 
@@ -388,15 +433,16 @@ else( TubeTK_USE_PYTHON )
     "Use NumPy to enable additional functionality." FORCE )
   mark_as_advanced( TubeTK_USE_NUMPY )
 
-  # Test TubeTK examples via Python virtualenv.
-  set( TubeTK_USE_IPYTHON_NOTEBOOKS OFF CACHE BOOL
-    "Use IPython notebooks in TubeTK." FORCE )
-  mark_as_advanced( TubeTK_USE_IPYTHON_NOTEBOOKS )
-
   # PyQtGraph bridge support.
   set( TubeTK_USE_PYQTGRAPH OFF CACHE BOOL
     "Use PyQtGraph to enable additional functionality." FORCE )
   mark_as_advanced( TubeTK_USE_PYQTGRAPH )
+
+  # PyQtGraph bridge support.
+  set( TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS OFF CACHE BOOL
+    "Test TubeTK python examples as (long running) tests." FORCE )
+  mark_as_advanced( TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS )
+
 endif( TubeTK_USE_PYTHON )
 
 #
@@ -515,6 +561,11 @@ if( NOT DEFINED TubeTK_CONFIG_BINARY_DIR )
   set( TubeTK_CONFIG_BINARY_DIR ${CMAKE_BINARY_DIR} )
 endif( NOT DEFINED TubeTK_CONFIG_BINARY_DIR )
 mark_as_advanced( TubeTK_CONFIG_BINARY_DIR )
+
+# Setup Python VirtualEnv for testing.
+if( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_USING_SLICER )
+  include( TubeTKVirtualEnvSetup )
+endif( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_USING_SLICER )
 
 #
 # Setup Superbuild
@@ -688,15 +739,10 @@ message( STATUS "Configuring Launcher script - ok [${_launcher_platform}]" )
 
 include( TubeTKMacroInstallPlugins )
 
-# Setup Python VirtualEnv for testing.
-if( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_USING_SLICER )
-  include( TubeTKVirtualEnvSetup )
-endif( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_USING_SLICER )
-
 # Test TubeTK IPython examples.
-if( TubeTK_USE_EXAMPLES_AS_TESTS )
+if( TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS )
   add_subdirectory( Examples )
-endif( TubeTK_USE_EXAMPLES_AS_TESTS )
+endif( TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS )
 
 add_subdirectory( Utilities )
 add_subdirectory( Base )

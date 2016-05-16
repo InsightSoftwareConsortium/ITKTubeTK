@@ -28,12 +28,14 @@ set( TubeTK_${proj}_MODULES
   ComputeBinaryImageSimilarityMetrics
   ComputeImageSimilarityMetrics
   ComputeImageStatistics
+  ComputeImageToTubeRigidMetricImage
   ComputeSegmentTubesParameters
   ComputeTrainingMask
   ComputeTubeFlyThroughImage
   ComputeTubeGraphProbability
   ComputeTubeMeasures
   ComputeTubeProbability
+  ConvertCSVToImages
   ConvertImagesToCSV
   ConvertInnerOpticToPlus
   ConvertShrunkenSeedImageToList
@@ -54,6 +56,7 @@ set( TubeTK_${proj}_MODULES
   EnhanceTubesUsingDiffusion
   EnhanceUsingDiscriminantAnalysis
   EnhanceUsingNJetDiscriminantAnalysis
+  ExtractMetricImageSlice
   ImageMath
   MergeAdjacentImages
   MergeTubeGraphs

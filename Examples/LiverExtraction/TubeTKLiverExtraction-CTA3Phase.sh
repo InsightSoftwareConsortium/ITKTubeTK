@@ -12,7 +12,7 @@ if [ "$#" -eq 0 ]; then
   echo "  <inputImage_PhaseX> : Liver CT scan with 3 contract uptake phases"
   echo "  <inputLiverTrainMask> : Voxel value 1 = outside of liver, 2 = inside of liver"
   echo "     - this image is usually created by painting a few voxels in the image"
-  echo "  <outputLiverMask> : will have 1 insight liver and 0 elsewhere"
+  echo "  <outputLiverMask> : will have 1 inside liver and 0 elsewhere"
   echo "  Note that other parameters are set within this script file:"
   echo "        boundarySmoothness = $boundarySmoothness"
   echo "          - e.g., 12 for 0.8mm isotropic CT"

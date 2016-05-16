@@ -901,7 +901,8 @@ SplineND
 
 bool
 SplineND
-::Extreme( VectorType & extX, double * extVal, unsigned int n, MatrixType & dirs )
+::Extreme( VectorType & extX, double * extVal, unsigned int n,
+  MatrixType & dirs )
 {
   return m_OptimizerND->Extreme( extX, extVal, n, dirs );
 }
@@ -930,11 +931,13 @@ SplineND
   MatrixType eVects( m_Dimension, m_Dimension );
   if( m_OptimizerND->GetSearchForMin() )
     {
-    ComputeEigen( m_H, eVects, eVals, false, true );
+    ComputeEigen( m_H, eVects, eVals, /* orderByAbs= */false,
+      /* minToMax= */false );
     }
   else
     {
-    ComputeEigen( m_H, eVects, eVals, false, false );
+    ComputeEigen( m_H, eVects, eVals, /* orderByAbs= */false,
+      /* minToMax= */true );
     }
 
   return m_OptimizerND->Extreme( extX, extVal, m_Dimension, eVects );

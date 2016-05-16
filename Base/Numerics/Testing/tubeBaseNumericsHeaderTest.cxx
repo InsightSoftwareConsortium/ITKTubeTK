@@ -23,6 +23,7 @@ limitations under the License.
 
 #include "itktubeBasisFeatureVectorGenerator.h"
 #include "itktubeBlurImageFunction.h"
+#include "itktubeComputeImageSimilarityMetrics.h"
 #include "itktubeFeatureVectorGenerator.h"
 #include "itktubeImageRegionMomentsCalculator.h"
 #include "itktubeJointHistogramImageFunction.h"

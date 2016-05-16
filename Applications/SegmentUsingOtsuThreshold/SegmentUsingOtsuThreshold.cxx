@@ -21,18 +21,18 @@ limitations under the License.
 
 =========================================================================*/
 
-// TubeTK includes
-#include "tubeCLIFilterWatcher.h"
-#include "tubeCLIProgressReporter.h"
-#include "tubeMessage.h"
-
-// TubeTKITK includes
-#include "tubeSegmentUsingOtsuThreshold.h"
-
 // ITK includes
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkTimeProbesCollectorBase.h>
+
+// TubeTKITK includes
+#include "tubeSegmentUsingOtsuThreshold.h"
+
+// TubeTK includes
+#include "tubeCLIFilterWatcher.h"
+#include "tubeCLIProgressReporter.h"
+#include "tubeMessage.h"
 
 #include "SegmentUsingOtsuThresholdCLP.h"
 

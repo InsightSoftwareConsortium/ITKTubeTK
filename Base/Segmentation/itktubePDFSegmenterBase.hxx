@@ -424,30 +424,33 @@ PDFSegmenterBase< TImage, TLabelMap >
     delete probIt[c];
     }
 
-  typedef itk::SmoothingRecursiveGaussianImageFilter<
-    ProbabilityImageType, ProbabilityImageType > ProbImageFilterType;
-  typename ProbImageFilterType::Pointer probImageFilter;
-
-  typedef itk::ThresholdImageFilter< ProbabilityImageType >
-    ThresholdProbImageFilterType;
-  typename ThresholdProbImageFilterType::Pointer
-    thresholdProbImageFilter = ThresholdProbImageFilterType::New();
-
-  for( unsigned int c = 0; c < numClasses; c++ )
+  if( m_ProbabilityImageSmoothingStandardDeviation > 0 )
     {
-    probImageFilter = ProbImageFilterType::New();
-    probImageFilter->SetInput( m_ProbabilityImageVector[c] );
-    probImageFilter->SetSigma(
-      m_ProbabilityImageSmoothingStandardDeviation );
-    probImageFilter->Update();
-    m_ProbabilityImageVector[c] = probImageFilter->GetOutput();
+    typedef itk::SmoothingRecursiveGaussianImageFilter<
+      ProbabilityImageType, ProbabilityImageType > ProbImageFilterType;
+    typename ProbImageFilterType::Pointer probImageFilter;
 
-    thresholdProbImageFilter = ThresholdProbImageFilterType::New();
-    thresholdProbImageFilter->SetInput( m_ProbabilityImageVector[c] );
-    thresholdProbImageFilter->SetOutsideValue( 0 );
-    thresholdProbImageFilter->ThresholdBelow( 0 );
-    thresholdProbImageFilter->Update();
-    m_ProbabilityImageVector[c] = thresholdProbImageFilter->GetOutput();
+    typedef itk::ThresholdImageFilter< ProbabilityImageType >
+      ThresholdProbImageFilterType;
+    typename ThresholdProbImageFilterType::Pointer
+      thresholdProbImageFilter = ThresholdProbImageFilterType::New();
+
+    for( unsigned int c = 0; c < numClasses; c++ )
+      {
+      probImageFilter = ProbImageFilterType::New();
+      probImageFilter->SetInput( m_ProbabilityImageVector[c] );
+      probImageFilter->SetSigma(
+        m_ProbabilityImageSmoothingStandardDeviation );
+      probImageFilter->Update();
+      m_ProbabilityImageVector[c] = probImageFilter->GetOutput();
+
+      thresholdProbImageFilter = ThresholdProbImageFilterType::New();
+      thresholdProbImageFilter->SetInput( m_ProbabilityImageVector[c] );
+      thresholdProbImageFilter->SetOutsideValue( 0 );
+      thresholdProbImageFilter->ThresholdBelow( 0 );
+      thresholdProbImageFilter->Update();
+      m_ProbabilityImageVector[c] = thresholdProbImageFilter->GetOutput();
+      }
     }
 
   //

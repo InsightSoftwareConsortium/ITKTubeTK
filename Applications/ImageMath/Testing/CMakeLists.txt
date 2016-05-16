@@ -489,3 +489,19 @@ Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test29-Compare
                -i 0.001 )
 set_property( TEST ${PROJECT_NAME}-Test29-Compare
                       APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test29 )
+
+# Test30
+Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test30
+            COMMAND ${PROJ_EXE}
+               MIDAS{ES0015_Large_Subs.mha.md5}
+               -g 5
+               -w ${TEMP}/${PROJECT_NAME}Test30.mha )
+
+# Test30-Compare
+Midas3FunctionAddTest( NAME ${PROJECT_NAME}-Test30-Compare
+            COMMAND ${CompareImages_EXE}
+               -t ${TEMP}/${PROJECT_NAME}Test30.mha
+               -b MIDAS{${PROJECT_NAME}Test30.mha.md5}
+               -i 0.001 )
+set_property( TEST ${PROJECT_NAME}-Test30-Compare
+                      APPEND PROPERTY DEPENDS ${PROJECT_NAME}-Test30 )

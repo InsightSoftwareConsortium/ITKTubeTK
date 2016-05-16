@@ -88,7 +88,7 @@ RidgeExtractor<TInputImage>
 {
   m_DataFunc = BlurImageFunction<ImageType>::New();
   m_DataFunc->SetScale( 3 ); // 1.5
-  m_DataFunc->SetExtent( 3.1 ); // 3
+  m_DataFunc->SetExtent( 1.5 ); // 3
   m_DataMin = 0;
   m_DataMax = 1;
   m_DataRange = 1;
@@ -120,10 +120,10 @@ RidgeExtractor<TInputImage>
   m_ExtractBoundMin.Fill( 0 );
   m_ExtractBoundMax.Fill( 0 );
 
-  m_MaxTangentChange = 0.75;
+  m_MaxTangentChange = 0.5;
   m_MaxXChange = 3.0;
-  m_MinRidgeness = 0.80;    // near 1 = harder
-  m_MinRidgenessStart = 0.79;
+  m_MinRidgeness = 0.70;    // near 1 = harder
+  m_MinRidgenessStart = 0.69;
   m_MinRoundness = 0.25;    // near 1 = harder
   m_MinRoundnessStart = 0.2;
   m_MinCurvature = 0.1;
@@ -412,7 +412,8 @@ RidgeExtractor<TInputImage>
   double & intensity,
   double & roundness,
   double & curvature,
-  double & levelness )
+  double & levelness,
+  const vnl_vector<double> & prevTangent)
 {
   if( this->GetDebug() )
     {
@@ -430,7 +431,7 @@ RidgeExtractor<TInputImage>
   m_XVal = m_DataSpline->ValueJet( m_X, m_XD, m_XH );
 
   // test for nan
-  if( m_XVal != m_XVal || m_XD[0] != m_XD[0] || m_XH[0][0] != m_XH[0][0] )
+  if( m_XVal != m_XVal || m_XD[0] != m_XD[0] || m_XH(0, 0) != m_XH(0, 0) )
     {
     std::cerr << "NAN at " << m_X << std::endl;
 
@@ -455,8 +456,9 @@ RidgeExtractor<TInputImage>
     std::cout << "  XH = " << m_XH << std::endl;
     }
 
-  ::tube::ComputeRidgeness<double>( m_XH, m_XD, m_XRidgeness, m_XRoundness,
-    m_XCurvature, m_XLevelness, m_XHEVect, m_XHEVal );
+  ::tube::ComputeRidgeness<double>( m_XH, m_XD, prevTangent,
+    m_XRidgeness, m_XRoundness, m_XCurvature, m_XLevelness, m_XHEVect,
+    m_XHEVal );
 
   intensity = m_XVal;
   roundness = m_XRoundness;
@@ -672,12 +674,12 @@ RidgeExtractor<TInputImage>
     {
     lX[i] = newX[i];
     lT[i] = newT[i];
-    for( unsigned int j=0; j<ImageDimension-1; j++ )
-      {
-      lN[i][j] = newN[i][j];
-      lSearchDir[i][j] = newN[i][j];
-      }
     lStepDir[i] = newT[i];
+    }
+  for( unsigned int j=0; j<ImageDimension-1; j++ )
+    {
+    lN.set_column(j, newN.get_column(j) );
+    lSearchDir.set_column( j, newN.get_column(j) );
     }
 
   pX = lX;
@@ -864,8 +866,8 @@ RidgeExtractor<TInputImage>
         SetScale( iScale0 + 0.5 * ( GetScale() - iScale0 ) );
         }
 
-      if( vnl_math_abs( dot_product( lStepDir, pStepDir ) ) <
-        1-0.5*( 1-m_MaxTangentChange ) )
+      if( dot_product( lStepDir, pStepDir ) <
+        m_MaxTangentChange )
         {
         if( verbose || this->GetDebug() )
           {
@@ -974,62 +976,19 @@ RidgeExtractor<TInputImage>
       {
       indxX[i] = lX[i];
       }
+
     ridgeness = Ridgeness( indxX, intensity, roundness, curvature,
-      levelness );
-
-    for( unsigned int i=0; i<ImageDimension; i++ )
-      {
-      for( unsigned int j=0; j<ImageDimension; j++ )
-        {
-        tV[j] = m_XHEVect( j, i );
-        }
-      prod[i] = vnl_math_abs( dot_product( lStepDir, tV ) );
-      }
-
-    unsigned int closestV = 0;
-    double closestVProd = prod[0];
-    for( unsigned int i=1; i<ImageDimension; i++ )
-      {
-      if( prod[i]>closestVProd )
-        {
-        closestV = i;
-        closestVProd = prod[i];
-        }
-      }
-    if( closestV != ImageDimension-1 )
-      {
-      if( verbose || this->GetDebug() )
-        {
-        std::cout << "Mixing things up: Chosen t=evect#" << closestV
-          << " dotProd = " << closestVProd << std::endl;
-        }
-      double tf = m_XHEVal[closestV];
-      m_XHEVal[closestV] = m_XHEVal[ImageDimension-1];
-      m_XHEVal[ImageDimension-1] = tf;
-      for( unsigned int i=0; i<ImageDimension; i++ )
-        {
-        tf = m_XHEVect( i, closestV );
-        m_XHEVect( i, closestV ) = m_XHEVect( i, ImageDimension-1 );
-        m_XHEVect( i, ImageDimension-1 ) = tf;
-        }
-      ridgeness = 1 - ridgeness;
-      }
+      levelness, lStepDir );
 
     for( unsigned int i=0; i<ImageDimension-1; i++ )
       {
-      for( unsigned int j=0; j<ImageDimension; j++ )
-        {
-        lN[j][i] = m_XHEVect( j, i );
-        }
+      lN.set_column(i, m_XHEVect.get_column( i ) );
       lNTEVal[i] = m_XHEVal[i];
       }
     lSearchDir = lN;
 
-    for( unsigned int i=0; i<ImageDimension; i++ )
-      {
-      lT[i] = m_XHEVect( i, ImageDimension-1 );
-      }
-    lNTEVal[ImageDimension-1] = m_XHEVal[closestV];
+    lT = m_XHEVect.get_column( ImageDimension-1 );
+    lNTEVal[ImageDimension-1] = m_XHEVal[ImageDimension-1];
 
     double dProd = dot_product( pT, lT );
     if( dProd<0 )
@@ -1044,14 +1003,18 @@ RidgeExtractor<TInputImage>
       {
       lStepDir[i] = ( pStepDir[i] * 0.25 ) + ( lT[i] * 0.75 );
       }
+    lStepDir.normalize();
 
     dProd = dot_product( lStepDir, pStepDir );
-    if( vnl_math_abs( dProd ) < m_MaxTangentChange )
+    if( dProd < m_MaxTangentChange )
       {
       if( verbose || this->GetDebug() )
         {
         std::cout << "*** Ridge term: Rapid change in step direction "
-          << "( " << vnl_math_abs( dProd ) << " )" << std::endl;
+          << "( " << dProd << " )" << std::endl;
+        std::cout << "       pStepDir = " << pStepDir << std::endl;
+        std::cout << "       StepDir = " << lStepDir << std::endl;
+        std::cout << "       Tangent = " << lT << std::endl;
         std::cout << "       Intensity = " << intensity << std::endl;
         std::cout << "       Ridgeness = " << ridgeness << std::endl;
         std::cout << "       Roundness = " << roundness << std::endl;
@@ -1182,8 +1145,8 @@ RidgeExtractor<TInputImage>
       {
       int oldPoint = ( maskVal - (int)maskVal ) * 10000;
       if( ( int )maskVal != tubeId ||
-         ( ( tubePointCount - oldPoint ) > ( 20 / m_StepX )
-           && ( tubePointCount - tubePointCountStart ) > ( 20 / m_StepX ) ) )
+        ( ( tubePointCount - oldPoint ) > ( 20 / m_StepX )
+        && ( tubePointCount - tubePointCountStart ) > ( 20 / m_StepX ) ) )
         {
         m_CurrentFailureCode = REVISITED_VOXEL;
         ++m_FailureCodeCount[ m_CurrentFailureCode ];
@@ -1215,7 +1178,7 @@ RidgeExtractor<TInputImage>
         m_StatusCallBack( NULL, st, 0 );
         }
       }
-    if( verbose || this->GetDebug() )
+    if( this->GetDebug() )
       {
       std::cout << "Ridge: TraverseOW: Adding point " << tubePointCount
         << " = " << lX << std::endl;
@@ -1519,12 +1482,18 @@ RidgeExtractor<TInputImage>
       }
 
     // Local 1D Ridge
-    std::cout << "LocalRidge: Start px = " << pX << std::endl;
-    std::cout << "  lN = " << lN << std::endl;
-    std::cout << "  val = " << m_DataSpline->Value( pX ) << std::endl;
+    if( this->GetDebug() )
+      {
+      std::cout << "LocalRidge: Start px = " << pX << std::endl;
+      std::cout << "  lN = " << lN << std::endl;
+      std::cout << "  val = " << m_DataSpline->Value( pX ) << std::endl;
+      }
     m_DataSpline->Extreme( pX, &val, ImageDimension-1, lN );
-    std::cout << "End px = " << pX << std::endl;
-    std::cout << "  val = " << val << std::endl;
+    if( this->GetDebug() )
+      {
+      std::cout << "End px = " << pX << std::endl;
+      std::cout << "  val = " << val << std::endl;
+      }
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
       newX[i] = pX[i];
@@ -1562,8 +1531,10 @@ RidgeExtractor<TInputImage>
         }
       return REVISITED_VOXEL;
       }
-
-    std::cout << "newX = " << newX << std::endl;
+    if( this->GetDebug() )
+      {
+      std::cout << "newX = " << newX << std::endl;
+      }
     ridgeness = Ridgeness( newX, intensity, roundness, curvature,
       levelness );
     if( ridgeness >= m_MinRidgenessStart &&
@@ -1600,7 +1571,7 @@ RidgeExtractor<TInputImage>
       }
     }
 
-  if( verbose || this->GetDebug() )
+  if( this->GetDebug() )
     {
     std::cout << " FAIL: Local norm max: " << newX << std::endl;
     std::cout << "  Ridgeness: " << ridgeness << " >= "
@@ -1799,7 +1770,7 @@ RidgeExtractor<TInputImage>
     lT[i] = m_XHEVect( i, ImageDimension-1 );
     for( unsigned int j=0; j<ImageDimension-1; j++ )
       {
-      lN[i][j] = m_XHEVect( i, j );
+      lN(i, j) = m_XHEVect( i, j );
       }
     }
   if( verbose || this->GetDebug() )

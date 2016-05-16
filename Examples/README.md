@@ -21,7 +21,7 @@ environment for interactive processing.
 ## Quickstart
 
 The easiest way to get started with TubeTK examples is to enable
-`TubeTK_USE_PYTHON` and `TubeTK_USE_IPYTHON_NOTEBOOKS` when configuring TubeTK.
+`TubeTK_USE_PYTHON` and `TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS` when configuring TubeTK.
 Only then, a Python virtual environment `PythonVirtualenv` will be automatically
 set up in the `Temporary` folder of the TubeTK build directory (`TubeTK-build`).
 This virtual environment **already** has all the required

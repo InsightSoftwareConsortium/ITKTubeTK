@@ -14,11 +14,11 @@ import time
 from Queue import Empty
 
 try:
-    from IPython.kernel import KernelManager
+    from jupyter_client import KernelManager
 except ImportError:
     from IPython.zmq.blockingkernelmanager import BlockingKernelManager as KernelManager
 
-from IPython.nbformat.current import reads, NotebookNode
+from nbformat import reads, NotebookNode
 
 
 def run_notebook(nb):
@@ -45,7 +45,11 @@ def run_notebook(nb):
     kc.start_channels()
     shell = kc.shell_channel
     # simple ping:
-    shell.execute("pass")
+    try:
+        send = kc.execute
+    except AttributeError:
+        send = kc.shell_channel.execute
+    send("pass")
     reply = shell.get_msg()
 
     cells = 0
@@ -54,7 +58,7 @@ def run_notebook(nb):
         for cell in ws.cells:
             if cell.cell_type != 'code':
                 continue
-            shell.execute(cell.input)
+            send(cell.input)
             # wait for finish, maximum 20s
             reply = shell.get_msg(timeout=20)['content']
             if reply['status'] == 'error':
@@ -84,7 +88,7 @@ def run_notebook(nb):
 if __name__ == '__main__':
     # opens the IPython notebook
     with open(sys.argv[1]) as f:
-        nb = reads(f.read(), 'json')
+        nb = reads(f.read(), 3 ) #, 'json')
 
     # since this code is typically used for testing IPython notebooks, the
     # TubeTK path is passed along from cmake

@@ -110,6 +110,11 @@ int DoIt( int argc, char * argv[] )
         imageList[i]->GetLargestPossibleRegion() ) );
     }
 
+  if( stride < 1 )
+    {
+    stride = 1;
+    }
+
   IteratorType maskIter( maskImage, maskImage->GetLargestPossibleRegion() );
   while( !maskIter.IsAtEnd() )
     {

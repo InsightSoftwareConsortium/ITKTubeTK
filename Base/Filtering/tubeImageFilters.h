@@ -80,6 +80,10 @@ public:
   static bool FuseImages( typename ImageType::Pointer imIn,
     const std::string & imIn2FilePath, float offset2 );
 
+  /** Apply median filter to the image. */
+  static bool MedianImage( typename ImageType::Pointer & imIn,
+    int size );
+
   /** If I(x) in [tLow,tHigh] then I(x)=vTrue else I(x)=vFalse. */
   static void ThresholdImage( typename ImageType::Pointer imIn,
     float threshLow, float threshHigh, float valTrue, float valFalse );

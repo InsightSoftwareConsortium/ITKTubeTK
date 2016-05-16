@@ -2,35 +2,22 @@ set( installed_packages_file
   "@TubeTK_BINARY_DIR@/CMakeFiles/CMakeTmp/InstalledVirtualEnvPackages.txt" )
 if( NOT EXISTS ${installed_packages_file} )
   file( WRITE ${installed_packages_file} "" )
-endif( NOT EXISTS ${installed_packages_file} )
+endif()
 file( READ ${installed_packages_file} installed_packages )
-
-# We need SimpleITK (almost surely) in all examples
-string( FIND "${installed_packages}" SimpleITK SimpleITK_installed )
-if( ${SimpleITK_installed} EQUAL -1 )
-  message( STATUS "Installing SimpleITK into virtualenv" )
-  execute_process( COMMAND "@PythonVirtualenvHome@/Scripts/easy_install" SimpleITK
-    RESULT_VARIABLE failed
-    ERROR_VARIABLE error )
-  if( failed )
-    message( ERROR ${error} )
-  else( failed )
-    file( APPEND ${installed_packages_file} "SimpleITK\n" )
-  endif( failed )
-endif( ${SimpleITK_installed} EQUAL -1 )
 
 foreach( package @PYTHON_TESTING_MODULES@ )
   string( FIND "${installed_packages}" ${package} package_installed )
   if( ${package_installed} EQUAL -1 )
     message( STATUS "Installing ${package} into virtualenv" )
-    execute_process( COMMAND "@PythonVirtualenvHome@/Scripts/pip"
-        install ${package}
-      RESULT_VARIABLE failed
-      ERROR_VARIABLE error )
-    if( failed )
-      message( ERROR ${error} )
-    else( failed )
+    execute_process( COMMAND
+      "@PythonVirtualEnvDir@/@PythonVirtualEnvScriptsDir@/pip"
+      install ${package}
+      RESULT_VARIABLE install_failed
+      ERROR_VARIABLE install_error )
+    if( install_failed )
+      message( FATAL_ERROR ${install_error} )
+    else( install_failed )
       file( APPEND ${installed_packages_file} "${package}\n" )
-    endif( failed )
-  endif( ${package_installed} EQUAL -1 )
+    endif()
+  endif()
 endforeach()

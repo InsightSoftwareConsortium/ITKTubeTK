@@ -47,6 +47,7 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
       -DHDF5_ENABLE_USING_MEMCHECKER:BOOL=ON )
   endif( TubeTK_USE_VALGRIND )
 
+
   ExternalProject_Add( ${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_URL}
@@ -78,6 +79,10 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
       -DITK_BUILD_DEFAULT_MODULES:BOOL=ON
       -DITK_INSTALL_NO_DEVELOPMENT:BOOL=ON
       -DITK_LEGACY_REMOVE:BOOL=OFF
+      -DITK_LEGACY_SILENT:BOOL=${TubeTK_USE_PYTHON}
+      -DITK_WRAP_PYTHON:BOOL=${TubeTK_USE_PYTHON}
+      -DModule_BridgeNumPy:BOOL=${TubeTK_USE_NUMPY}
+      -DModule_MinimalPathExtraction:BOOL=ON
       -DKWSYS_USE_MD5:BOOL=ON
       -DModule_ITKReview:BOOL=ON
       ${TubeTK_ITKHDF5_VALGRIND_ARGS}
