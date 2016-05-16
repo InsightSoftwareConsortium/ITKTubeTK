@@ -33,7 +33,7 @@ limitations under the License.
 namespace tube
 {
 /** \class MergeAdjacentImages
- * \brief Merge the second image into the space of the first
+ *  \brief Merge the second image into the space of the first
  *
  *  \ingroup TubeTKITK
  */

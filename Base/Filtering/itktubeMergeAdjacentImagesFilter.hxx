@@ -109,7 +109,7 @@ void
 MergeAdjacentImagesFilter< TImage >
 ::SaveTransform( const std::string & filename )
 {
-  m_OutputTransfromFile = filename;
+  m_OutputTransformFile = filename;
 }
 
 template< class TImage >
@@ -120,7 +120,7 @@ MergeAdjacentImagesFilter< TImage >
   // The timeCollector is used to perform basic profiling algorithm components
   // itk::TimeProbesCollectorBase timeCollector;
 
-  unsigned int VDimension = typename TImage::ImageDimension;
+  unsigned int VDimension = typename TImage::GetImageDimension();
 
   typename TImage::ConstPointer input1 = this->GetInput( 0 );
   typename TImage::ConstPointer input2 = this->GetInput( 1 );

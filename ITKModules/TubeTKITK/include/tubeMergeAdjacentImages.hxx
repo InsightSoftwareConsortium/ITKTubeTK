@@ -29,32 +29,32 @@ limitations under the License.
 namespace tube
 {
 
-template< class TPixel, unsigned int Dimension >
-MergeAdjacentImages< TPixel, Dimension >
+template< class TImage >
+MergeAdjacentImages< TImage >
 ::MergeAdjacent( void )
 {
   m_Filter = FilterType::New();
 }
 
-template< class TPixel, unsigned int Dimension >
+template< class TImage >
 void
-MergeAdjacentImages< TPixel, Dimension >
+MergeAdjacentImages< TImage >
 ::LoadTransform( const std::string & filename )
 {
   m_Filter->LoadTransform( filename );
 }
 
-template< class TPixel, unsigned int Dimension >
+template< class TImage >
 void
-MergeAdjacentImages< TPixel, Dimension >
+MergeAdjacentImages< TImage >
 ::SaveTransform( const std::string & filename )
 {
   m_Filter->SaveTransform( filename );
 }
 
-template< class TPixel, unsigned int Dimension >
+template< class TImage >
 void
-MergeAdjacentImages< TPixel, Dimension >
+MergeAdjacentImages< TImage >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
