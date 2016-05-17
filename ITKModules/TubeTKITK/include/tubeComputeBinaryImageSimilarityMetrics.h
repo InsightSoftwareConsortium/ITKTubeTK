@@ -74,7 +74,7 @@ protected:
   void PrintSelf( std::ostream & os, itk::Indent indent ) const;
 
 private:
-  /** itktubeLabelOverlapMeasuresImageFilter parameters **/
+  /** itkLabelOverlapMeasuresImageFilter parameters **/
   ComputeBinaryImageSimilarityMetrics( const Self & );
   void operator=( const Self & );
 
