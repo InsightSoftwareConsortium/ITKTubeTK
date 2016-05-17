@@ -258,7 +258,7 @@ if( TubeTK_BUILD_USING_SLICER )
   # Find Slicer to set the [ITK|VTK|CTK|...]_DIR variables
   find_package( Slicer REQUIRED )
   if( NOT Slicer_USE_FILE )
-    message( FATAL "Slicer_USE_FILE not defined. Find Slicer silently failed." )
+    message( FATAL_ERROR "Slicer_USE_FILE not defined. Find Slicer silently failed." )
   endif( NOT Slicer_USE_FILE )
   include( ${Slicer_USE_FILE} )
 
