@@ -115,7 +115,6 @@ int DoIt( int argc, char * argv[] )
     outFile.close();
     }
 
-
   return EXIT_SUCCESS;
 }
 

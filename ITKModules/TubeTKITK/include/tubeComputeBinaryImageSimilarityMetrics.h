@@ -81,6 +81,7 @@ private:
   typename FilterType::Pointer m_Filter;
 
 };
+
 } // End namespace tube
 
 #ifndef ITK_MANUAL_INSTANTIATION
