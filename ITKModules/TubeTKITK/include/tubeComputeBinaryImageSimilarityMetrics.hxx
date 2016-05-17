@@ -20,7 +20,6 @@
 
 #include "tubeComputeBinaryImageSimilarityMetrics.h"
 
-
 namespace tube
 {
 template< class TInputImage >
@@ -33,18 +32,17 @@ ComputeBinaryImageSimilarityMetrics< TInputImage >
 template< class TInputImage >
 void
 ComputeBinaryImageSimilarityMetrics< TInputImage >
-::PrintSelf(std::ostream & os, itk::Indent indent) const
+::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
   os << "TotalOverlap: " << this->GetTotalOverlap() << std::endl;
   os << "UnionOverlap: " << this->GetUnionOverlap() << std::endl;
   os << "MeanOverlap: " << this->GetMeanOverlap() << std::endl;
-  os << "Similarity: " << this->GetSimilarity() << std::endl;
+  os << "Similarity: " << this->GetVolumeSimilarity() << std::endl;
   os << "FalseNegativeError: " << this->GetFalseNegativeError() << std::endl;
   os << "FalsePositiveError: " << this->GetFalsePositiveError() << std::endl;
 }
 
 } // end namespace tube
-
 
 #endif

@@ -89,7 +89,7 @@ int DoIt( int argc, char * argv[] )
       << metric->GetUnionOverlap() << std::endl;
     std::cout << "Mean Overlap (Dice Coefficient) = "
       << metric->GetMeanOverlap() << std::endl;
-    std::cout << "Similarity = " << metric->GetSimilarity()
+    std::cout << "Similarity = " << metric->GetVolumeSimilarity()
       << std::endl;
     std::cout << "False Negative Error = " << metric->GetFalseNegativeError()
       << std::endl;
@@ -106,7 +106,7 @@ int DoIt( int argc, char * argv[] )
       << metric->GetUnionOverlap() << std::endl;
     outFile << "Mean Overlap (Dice Coefficient) = "
       << metric->GetMeanOverlap() << std::endl;
-    outFile << "Similarity = " << metric->GetSimilarity()
+    outFile << "Similarity = " << metric->GetVolumeSimilarity()
       << std::endl;
     outFile << "False Negative Error = " << metric->GetFalseNegativeError()
       << std::endl;
@@ -114,7 +114,6 @@ int DoIt( int argc, char * argv[] )
       << std::endl;
     outFile.close();
     }
-
 
   return EXIT_SUCCESS;
 }

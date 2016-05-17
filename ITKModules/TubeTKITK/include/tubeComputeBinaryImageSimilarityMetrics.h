@@ -18,7 +18,7 @@
 #ifndef __tubeComputeBinaryImageSimilarityMetrics_h
 #define __tubeComputeBinaryImageSimilarityMetrics_h
 
-#include "itktubeLabelOverlapMeasuresImageFilter.h"
+#include "itkLabelOverlapMeasuresImageFilter.h"
 #include "itkObject.h"
 //#include "itkNumericTraits.h"
 #include "tubeWrappingMacros.h"
@@ -42,7 +42,7 @@ public:
   typedef TInputImage                             InputImageType;
   typedef typename TInputImage::PixelType         LabelType;
 
-  typedef itk::tube::LabelOverlapMeasuresImageFilter< InputImageType >
+  typedef itk::LabelOverlapMeasuresImageFilter< InputImageType >
     FilterType;
 
   /** Method for creation through the object factory. */
@@ -61,7 +61,7 @@ public:
   tubeWrapGetMacro( TotalOverlap, float, Filter );
   tubeWrapGetMacro( UnionOverlap, float, Filter );
   tubeWrapGetMacro( MeanOverlap, float, Filter );
-  tubeWrapGetMacro( Similarity, float, Filter );
+  tubeWrapGetMacro( VolumeSimilarity, float, Filter );
   tubeWrapGetMacro( FalseNegativeError, float, Filter );
   tubeWrapGetMacro( FalsePositiveError, float, Filter );
 
@@ -74,13 +74,14 @@ protected:
   void PrintSelf( std::ostream & os, itk::Indent indent ) const;
 
 private:
-  /** itktubeLabelOverlapMeasuresImageFilter parameters **/
+  /** itkLabelOverlapMeasuresImageFilter parameters **/
   ComputeBinaryImageSimilarityMetrics( const Self & );
   void operator=( const Self & );
 
   typename FilterType::Pointer m_Filter;
 
 };
+
 } // End namespace tube
 
 #ifndef ITK_MANUAL_INSTANTIATION
