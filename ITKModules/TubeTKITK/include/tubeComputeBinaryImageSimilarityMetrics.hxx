@@ -39,7 +39,7 @@ ComputeBinaryImageSimilarityMetrics< TInputImage >
   os << "TotalOverlap: " << this->GetTotalOverlap() << std::endl;
   os << "UnionOverlap: " << this->GetUnionOverlap() << std::endl;
   os << "MeanOverlap: " << this->GetMeanOverlap() << std::endl;
-  os << "Similarity: " << this->GetSimilarity() << std::endl;
+  os << "Similarity: " << this->GetVolumeSimilarity() << std::endl;
   os << "FalseNegativeError: " << this->GetFalseNegativeError() << std::endl;
   os << "FalsePositiveError: " << this->GetFalsePositiveError() << std::endl;
 }
