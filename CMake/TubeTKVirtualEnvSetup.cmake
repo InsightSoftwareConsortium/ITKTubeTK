@@ -71,13 +71,13 @@ set( PYTHON_TESTING_EXECUTABLE
 set( PYTHON_TESTING_MODULES )
 
 # numpy
-if( ${TubeTK_USE_NUMPY} )
+if( ${TubeTK_USE_NUMPY_STACK} )
 
   list( APPEND PYTHON_TESTING_MODULES
     scipy
     numpy )
 
-endif( ${TubeTK_USE_NUMPY} )
+endif( ${TubeTK_USE_NUMPY_STACK} )
 
 # pyqtgraph
 if( TubeTK_USE_PYQTGRAPH )
