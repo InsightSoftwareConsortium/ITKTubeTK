@@ -20,7 +20,6 @@
 
 #include "tubeConvertSpatialGraphToImage.h"
 
-
 namespace tube
 {
 template< typename TInputImage, typename TOutputImage >

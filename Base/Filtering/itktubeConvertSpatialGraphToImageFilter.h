@@ -71,6 +71,7 @@ public:
   void SetBranchnessVector( vnl_vector< double > );
   void SetRadiusVector( vnl_vector< double > );
   void SetCentralityVector( vnl_vector< double > );
+
 protected:
   ConvertSpatialGraphToImageFilter( void );
   ~ConvertSpatialGraphToImageFilter( void ) {}

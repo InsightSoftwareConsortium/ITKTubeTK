@@ -91,7 +91,6 @@ private:
 };
 } // End namespace tube
 
-
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "tubeConvertSpatialGraphToImage.hxx"
 #endif

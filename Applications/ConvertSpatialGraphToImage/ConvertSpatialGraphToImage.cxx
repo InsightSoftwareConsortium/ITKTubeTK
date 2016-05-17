@@ -43,7 +43,6 @@ int main( int argc, char * argv[] )
   return tube::ParseArgsAndCallDoIt( inCentroidsFile, argc, argv );
 }
 
-
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
