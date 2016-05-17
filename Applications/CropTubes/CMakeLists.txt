@@ -43,7 +43,7 @@ SEMMacroBuildCLI(
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ${VTK_LIBRARIES}
     ITKIOMeta ITKIOSpatialObjects
-    TubeTKCommon )
+    TubeTKCommon TubeTKFiltering )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
