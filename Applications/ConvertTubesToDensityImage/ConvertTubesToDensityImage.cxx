@@ -53,7 +53,7 @@ int DoIt( int argc, char * argv[] )
   typedef tube::ConvertTubesToDensityImage<
   TPixel, Dimension > TubeToDensityImageBuilderType;
 
-  typedef TubeToDensityImageBuilderType::TubeGroupType  TubesType;
+  typedef typename TubeToDensityImageBuilderType::TubeGroupType  TubesType;
   typedef itk::SpatialObjectReader< Dimension >         TubesReaderType;
 
 
@@ -67,7 +67,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
   progressReporter.Report( progress );
 
-  TubeToDensityImageBuilderType::Pointer
+  typename TubeToDensityImageBuilderType::Pointer
     builder = TubeToDensityImageBuilderType::New();
 
   builder->SetMaxDensityIntensity( max_densityIntensity ); // Const
@@ -78,13 +78,13 @@ int DoIt( int argc, char * argv[] )
 
     timeCollector.Start( "Loading template image" );
 
-    TemplateImageReaderType::Pointer imTemplateReader;
+    typename TemplateImageReaderType::Pointer imTemplateReader;
     imTemplateReader = TemplateImageReaderType::New();
     imTemplateReader->SetFileName( inputTemplateImage.c_str() );
     imTemplateReader->Update();
 
-    TemplateImageType::Pointer imT = imTemplateReader->GetOutput();
-    TubeToDensityImageBuilderType::SizeType size;
+    typename TemplateImageType::Pointer imT = imTemplateReader->GetOutput();
+    typename TubeToDensityImageBuilderType::SizeType size;
     double spacing[Dimension];
     for( int i = 0; i < Dimension; i++ )
       {
@@ -105,7 +105,7 @@ int DoIt( int argc, char * argv[] )
       std::cerr << "Output size is missing!" << std::endl;
       return -1;
       }
-    TubeToDensityImageBuilderType::SizeType sizeValue;
+    typename TubeToDensityImageBuilderType::SizeType sizeValue;
     for( int i = 0; i < Dimension; i++ )
       {
       sizeValue[i] = outputSize[i];
@@ -126,7 +126,7 @@ int DoIt( int argc, char * argv[] )
     }
 
   builder->SetUseSquareDistance( useSquareDistance );
-  TubesReaderType::Pointer    reader = TubesReaderType::New();
+  typename TubesReaderType::Pointer reader = TubesReaderType::New();
   try
     {
     reader->SetFileName( inputTubeFile.c_str() );
@@ -154,7 +154,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start( "Save data" );
   std::cout << "Writing image: " << outputDensityImage.c_str() << std::endl;
   typedef itk::ImageFileWriter< DensityImageType > WriterType_d;
-  WriterType_d::Pointer  writer_d = WriterType_d::New();
+  typename WriterType_d::Pointer  writer_d = WriterType_d::New();
 
   writer_d->SetFileName( outputDensityImage.c_str() );
   writer_d->SetInput( builder->GetDensityMapImage() );
@@ -163,7 +163,7 @@ int DoIt( int argc, char * argv[] )
 
   std::cout << "Writing image: " << outputRadiusImage.c_str() << std::endl;
   typedef itk::ImageFileWriter< RadiusImageType > WriterType_r;
-  WriterType_r::Pointer  writer_r = WriterType_r::New();
+  typename WriterType_r::Pointer  writer_r = WriterType_r::New();
 
   writer_r->SetFileName( outputRadiusImage.c_str() );
   writer_r->SetInput( builder->GetRadiusMapImage() );
@@ -172,7 +172,7 @@ int DoIt( int argc, char * argv[] )
 
   std::cout << "Writing image: " << outputTangentImage.c_str() << std::endl;
   typedef itk::ImageFileWriter< TangentImageType > WriterType_t;
-  WriterType_t::Pointer  writer_t = WriterType_t::New();
+  typename WriterType_t::Pointer  writer_t = WriterType_t::New();
 
   writer_t->SetFileName( outputTangentImage.c_str() );
   writer_t->SetInput( builder->GetTangentMapImage() );
