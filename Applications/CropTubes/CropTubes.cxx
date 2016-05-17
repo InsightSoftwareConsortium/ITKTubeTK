@@ -31,7 +31,7 @@
 #include "itkSpatialObjectReader.h"
 #include "itkSpatialObjectWriter.h"
 #include "itkTimeProbesCollectorBase.h"
-#include "itktubeCropTubesFilter.h"
+#include "tubeCropTubes.h"
 #include "CropTubesCLP.h"
 
 template< unsigned int DimensionT >
@@ -64,7 +64,7 @@ int DoIt (int argc, char * argv[])
 
   timeCollector.Start( "Loading Input TRE File" );
 
-  typedef itk::tube::CropTubesFilter< DimensionT > FilterType;
+  typedef tube::CropTubes< DimensionT > FilterType;
   typename FilterType::Pointer filter = FilterType::New();
 
 

@@ -59,24 +59,24 @@ public:
   tubeWrapGetMacro( Input, TubeGroupPointer, Filter );
 
   /** Set/Get bounding box corner */
-  tubeWrapSetMacro( BoxPosition, PointType );
-  tubeWrapGetMacro( BoxPosition, PointType );
+  tubeWrapSetMacro( BoxPosition, PointType, Filter );
+  tubeWrapGetMacro( BoxPosition, PointType, Filter );
 
   /** Set/Get bounding box size */
-  tubeWrapSetMacro( BoxSize, VectorType );
-  tubeWrapGetMacro( BoxSize, VectorType );
+  tubeWrapSetMacro( BoxSize, VectorType, Filter );
+  tubeWrapGetMacro( BoxSize, VectorType, Filter );
 
   /** Set/Get mask image */
-  tubeWrapSetObjectMacro( MaskImage, ImageType );
-  tubeWrapSetObjectMacro( MaskImage, ImageType );
+  tubeWrapSetObjectMacro( MaskImage, ImageType, Filter );
+  tubeWrapGetObjectMacro( MaskImage, ImageType, Filter );
 
   /** Set/Get Use mask image to crop tubes */
-  tubeWrapSetMacro( UseMaskImage, bool );
-  tubeWrapGetMacro( UseMaskImage, bool );
+  tubeWrapSetMacro( UseMaskImage, bool, Filter );
+  tubeWrapGetMacro( UseMaskImage, bool, Filter );
 
   /** Set/Get bool to crop tubes or not */
-  tubeWrapSetMacro( CropTubes, bool );
-  tubeWrapGetMacro( CropTubes, bool );
+  tubeWrapSetMacro( CropTubes, bool, Filter );
+  tubeWrapGetMacro( CropTubes, bool, Filter );
 
   /** Run Crop Tubes application */
   tubeWrapUpdateMacro( Filter );
