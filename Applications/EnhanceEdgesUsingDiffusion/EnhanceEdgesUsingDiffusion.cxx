@@ -20,8 +20,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+// TubeTKITK includes
+#include "tubeEnhanceEdgesUsingDiffusion.h"
 
-#include "itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
@@ -90,6 +91,7 @@ int DoIt( int argc, char * argv[] )
   typename CastInputImageFilterType::Pointer castInputImageFilter =
     CastInputImageFilterType::New();
   castInputImageFilter->SetInput( reader->GetOutput() );
+  castInputImageFilter->Update();
 
   // Reorient to axial because the anisotropic diffusion tensor function does
   // not handle direction
@@ -100,12 +102,13 @@ int DoIt( int argc, char * argv[] )
   orientInputFilter->UseImageDirectionOn();
   orientInputFilter->SetDesiredCoordinateOrientationToAxial();
   orientInputFilter->SetInput( castInputImageFilter->GetOutput() );
+  orientInputFilter->Update();
 
   // Perform the edge enhancing anisotropic diffusion
   timeCollector.Start("Edge enhancing anisotropic diffusion");
 
   // Declare the anisotropic diffusion edge enhancement filter
-  typedef itk::tube::AnisotropicEdgeEnhancementDiffusionImageFilter<
+  typedef tube::EnhanceEdgesUsingDiffusion<
     FilterInputImageType, FilterOutputImageType>  EdgeEnhancementFilterType;
 
   // Create a edge enhancement Filter
@@ -148,6 +151,7 @@ int DoIt( int argc, char * argv[] )
   typename CastOutputImageFilterType::Pointer castOutputImageFilter =
     CastOutputImageFilterType::New();
   castOutputImageFilter->SetInput( EdgeEnhancementFilter->GetOutput() );
+  castOutputImageFilter->Update();
 
   // Reorient back from axial to whatever direction we had before
   typedef itk::OrientImageFilter< OutputImageType, OutputImageType >
@@ -158,6 +162,7 @@ int DoIt( int argc, char * argv[] )
   orientOutputFilter->SetDesiredCoordinateDirection(
       reader->GetOutput()->GetDirection() );
   orientOutputFilter->SetInput( castOutputImageFilter->GetOutput() );
+  orientOutputFilter->Update();
 
   // Save output data
   timeCollector.Start("Save data");
