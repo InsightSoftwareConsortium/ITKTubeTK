@@ -21,71 +21,53 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeTubeSpatialObjectToDensityImage.h"
+#include "tubeConvertTubesToDensityImage.h"
 #include "tubeCLIProgressReporter.h"
-
+#include "tubeMessage.h"
 #include <itkImageFileReader.h>
 #include <itkSpatialObjectReader.h>
 #include <itkTimeProbesCollectorBase.h>
 
 #include "ConvertTubesToDensityImageCLP.h"
 
-using namespace tube;
-
-enum { Dimension = 3 };
-
-typedef unsigned int                                  DensityPixelType;
-typedef float                                         RadiusPixelType;
-typedef itk::Vector< float, Dimension >               TangentPixelType;
-
-typedef itk::Image< unsigned char, Dimension >        TemplateImageType;
-typedef itk::Image< DensityPixelType, Dimension >     DensityImageType;
-typedef itk::Image< RadiusPixelType, Dimension >      RadiusImageType;
-typedef itk::Image< TangentPixelType, Dimension >     TangentImageType;
-
-typedef itk::ImageFileReader< TemplateImageType >     TemplateImageReaderType;
-
-typedef itk::tube::TubeSpatialObjectToDensityImage<
-  DensityImageType, RadiusImageType > TubeToDensityImageBuilderType;
-
-typedef TubeToDensityImageBuilderType::TubeGroupType  TubesType;
-typedef itk::SpatialObjectReader< Dimension >         TubesReaderType;
-
-/** Max Intensity value */
-DensityPixelType   max_densityIntensity = 2048;
-
-/** Forward declarations */
-TubesType::Pointer ReadTubes( const char * file );
-void WriteImage( const char * file, DensityImageType::Pointer image );
-void WriteImage( const char * file, RadiusImageType::Pointer image );
-void WriteImage( const char * file, TangentImageType::Pointer image );
 int DoIt( int argc, char * argv[] );
 
-
-int main( int argc, char * argv[] )
-{
-  PARSE_ARGS;
-
-  return DoIt( argc, argv );
-}
-
-
 /** Main work happens here */
+template< unsigned int Dimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
+  /*Typedefs..*/
+  typedef float                                         TPixel;
+  typedef itk::Vector< TPixel, Dimension >              TangentPixelType;
+  typedef itk::Image< TPixel, Dimension >               DensityImageType;
+  typedef itk::Image< TPixel, Dimension >               RadiusImageType;
+  typedef itk::Image< TangentPixelType, Dimension >     TangentImageType;
+  typedef itk::Image< unsigned char, Dimension >        TemplateImageType;
+  typedef itk::ImageFileReader< TemplateImageType >     TemplateImageReaderType;
+
+  /** Max Intensity value */
+  TPixel   max_densityIntensity = 2048;
+
+  typedef tube::ConvertTubesToDensityImage<
+  TPixel, Dimension > TubeToDensityImageBuilderType;
+
+  typedef typename TubeToDensityImageBuilderType::TubeGroupType  TubesType;
+  typedef itk::SpatialObjectReader< Dimension >         TubesReaderType;
+
+
   double progress = 0.0;
   itk::TimeProbesCollectorBase timeCollector;
 
-  CLIProgressReporter progressReporter(
+  tube::CLIProgressReporter progressReporter(
     "tubeDensityImageRadiusBuilder",
     CLPProcessInformation );
 
   progressReporter.Start();
   progressReporter.Report( progress );
 
-  TubeToDensityImageBuilderType::Pointer
+  typename TubeToDensityImageBuilderType::Pointer
     builder = TubeToDensityImageBuilderType::New();
 
   builder->SetMaxDensityIntensity( max_densityIntensity ); // Const
@@ -96,15 +78,15 @@ int DoIt( int argc, char * argv[] )
 
     timeCollector.Start( "Loading template image" );
 
-    TemplateImageReaderType::Pointer imTemplateReader;
+    typename TemplateImageReaderType::Pointer imTemplateReader;
     imTemplateReader = TemplateImageReaderType::New();
-    imTemplateReader->SetFileName(inputTemplateImage.c_str());
+    imTemplateReader->SetFileName( inputTemplateImage.c_str() );
     imTemplateReader->Update();
 
-    TemplateImageType::Pointer imT = imTemplateReader->GetOutput();
-    TubeToDensityImageBuilderType::SizeType size;
+    typename TemplateImageType::Pointer imT = imTemplateReader->GetOutput();
+    typename TubeToDensityImageBuilderType::SizeType size;
     double spacing[Dimension];
-    for(int i = 0; i < Dimension; i++ )
+    for( int i = 0; i < Dimension; i++ )
       {
       size[i] = imT->GetLargestPossibleRegion().GetSize()[i];
       spacing[i] = imT->GetSpacing()[i];
@@ -123,8 +105,8 @@ int DoIt( int argc, char * argv[] )
       std::cerr << "Output size is missing!" << std::endl;
       return -1;
       }
-    TubeToDensityImageBuilderType::SizeType sizeValue;
-    for(int i = 0; i < Dimension; i++ )
+    typename TubeToDensityImageBuilderType::SizeType sizeValue;
+    for( int i = 0; i < Dimension; i++ )
       {
       sizeValue[i] = outputSize[i];
       }
@@ -136,15 +118,28 @@ int DoIt( int argc, char * argv[] )
       return -1;
       }
     double sp[Dimension];
-    for(int i = 0; i < Dimension; i++ )
+    for( int i = 0; i < Dimension; i++ )
       {
       sp[i] = outputSpacing[i];
       }
     builder->SetSpacing( sp );
     }
 
-  builder->UseSquareDistance( useSquareDistance );
-  builder->SetTubes( ReadTubes( inputTubeFile.c_str() ) );
+  builder->SetUseSquareDistance( useSquareDistance );
+  typename TubesReaderType::Pointer reader = TubesReaderType::New();
+  try
+    {
+    reader->SetFileName( inputTubeFile.c_str() );
+    std::cout << "Reading Tube group... ";
+    reader->Update();
+    std::cout << "Done." << std::endl;
+    }
+  catch( ... )
+    {
+    std::cerr << "Error:: No readable Tubes found " << std::endl;
+    return NULL;
+    }
+  builder->SetInputTubeGroup( reader->GetGroup() );
 
   progress = 0.1; // At about 10% done
   progressReporter.Report( progress );
@@ -157,9 +152,33 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   timeCollector.Start( "Save data" );
-  WriteImage( outputDensityImage.c_str(), builder->GetDensityMap() );
-  WriteImage( outputRadiusImage.c_str(), builder->GetRadiusMap() );
-  WriteImage( outputTangentImage.c_str(), builder->GetTangentMap() );
+  std::cout << "Writing image: " << outputDensityImage.c_str() << std::endl;
+  typedef itk::ImageFileWriter< DensityImageType > WriterType_d;
+  typename WriterType_d::Pointer  writer_d = WriterType_d::New();
+
+  writer_d->SetFileName( outputDensityImage.c_str() );
+  writer_d->SetInput( builder->GetDensityMapImage() );
+  writer_d->SetUseCompression(true);
+  writer_d->Update();
+
+  std::cout << "Writing image: " << outputRadiusImage.c_str() << std::endl;
+  typedef itk::ImageFileWriter< RadiusImageType > WriterType_r;
+  typename WriterType_r::Pointer  writer_r = WriterType_r::New();
+
+  writer_r->SetFileName( outputRadiusImage.c_str() );
+  writer_r->SetInput( builder->GetRadiusMapImage() );
+  writer_r->SetUseCompression( true );
+  writer_r->Update();
+
+  std::cout << "Writing image: " << outputTangentImage.c_str() << std::endl;
+  typedef itk::ImageFileWriter< TangentImageType > WriterType_t;
+  typename WriterType_t::Pointer  writer_t = WriterType_t::New();
+
+  writer_t->SetFileName( outputTangentImage.c_str() );
+  writer_t->SetInput( builder->GetTangentMapImage() );
+  writer_t->SetUseCompression( true );
+  writer_t->Update();
+
   timeCollector.Stop( "Save data" );
 
   progress = 1.0;
@@ -170,62 +189,54 @@ int DoIt( int argc, char * argv[] )
   return EXIT_SUCCESS;
 }
 
-
-TubesType::Pointer ReadTubes( const char * file )
+// Main
+int main( int argc, char * argv[] )
 {
-  TubesReaderType::Pointer    reader = TubesReaderType::New();
-
   try
     {
-    reader->SetFileName( file );
-    std::cout << "Reading Tube group... ";
-    reader->Update();
-    std::cout << "Done." << std::endl;
+    PARSE_ARGS;
     }
-  catch( ... )
+  catch( const std::exception & err )
     {
-    std::cerr << "Error:: No readable Tubes found " << std::endl;
-    return NULL;
+    tube::ErrorMessage( err.what() );
+    return EXIT_FAILURE;
+    }
+  PARSE_ARGS;
+
+  MetaScene *mScene = new MetaScene;
+  mScene->Read( inputTubeFile.c_str() );
+
+  if( mScene->GetObjectList()->empty() )
+    {
+    tubeWarningMacro( << "Input Tube file has no spatial objects" );
+    delete mScene;
+    return EXIT_SUCCESS;
     }
 
-  return reader->GetGroup();
-}
-
-
-void WriteImage( const char * file, DensityImageType::Pointer image )
-{
-  std::cout << "Writing image: " << file << std::endl;
-  typedef itk::ImageFileWriter<DensityImageType>    WriterType;
-  WriterType::Pointer  writer = WriterType::New();
-
-  writer->SetFileName( file );
-  writer->SetInput( image );
-  writer->SetUseCompression(true);
-  writer->Update();
-}
-
-
-void WriteImage( const char * file, RadiusImageType::Pointer image )
-{
-  std::cout << "Writing image: " << file << std::endl;
-  typedef itk::ImageFileWriter<RadiusImageType>    WriterType;
-  WriterType::Pointer  writer = WriterType::New();
-
-  writer->SetFileName( file );
-  writer->SetInput( image );
-  writer->SetUseCompression(true);
-  writer->Update();
-}
-
-
-void WriteImage( const char * file, TangentImageType::Pointer image )
-{
-  std::cout << "Writing image: " << file <<std::endl;
-  typedef itk::ImageFileWriter<TangentImageType>    WriterType;
-  WriterType::Pointer  writer = WriterType::New();
-
-  writer->SetFileName( file );
-  writer->SetInput( image );
-  writer->SetUseCompression(true);
-  writer->Update();
+  switch( mScene->GetObjectList()->front()->NDims() )
+    {
+    case 2:
+      {
+      bool result = DoIt<2>( argc, argv );
+      delete mScene;
+      return result;
+      break;
+      }
+    case 3:
+      {
+      bool result = DoIt<3>( argc, argv );
+      delete mScene;
+      return result;
+      break;
+      }
+    default:
+      {
+      tubeErrorMacro(
+        << "Error: Only 2D and 3D data is currently supported." );
+      delete mScene;
+      return EXIT_FAILURE;
+      break;
+      }
+    }
+  return EXIT_FAILURE;
 }
