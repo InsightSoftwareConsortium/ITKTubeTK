@@ -137,7 +137,7 @@ int DoIt( int argc, char * argv[] )
   catch( ... )
     {
     std::cerr << "Error:: No readable Tubes found " << std::endl;
-    return NULL;
+    return EXIT_FAILURE;
     }
   builder->SetInputTubeGroup( reader->GetGroup() );
 
