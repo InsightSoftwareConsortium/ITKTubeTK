@@ -54,12 +54,5 @@
       <flag>c</flag>
       <default>false</default>
     </boolean>
-    <file fileExtensions=".fcsv">
-      <name>OutputEndPointsFile</name>
-      <label>Output End Points File</label>
-      <channel>input</channel>
-      <description>Save the point on the tube where the tube is being cropped.</description>
-      <longflag>outputEndPointsFile</longflag>
-    </file>
   </parameters>
 </executable>
