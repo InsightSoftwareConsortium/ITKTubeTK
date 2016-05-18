@@ -29,6 +29,8 @@ limitations under the License.
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
+#define PARSE_ARGS_INT_ONLY 1
+
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
@@ -37,7 +39,7 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef short                                               PixelType;
+  typedef TPixel                                              PixelType;
   typedef itk::Image< PixelType, VDimension >                 ImageType;
   typedef itk::ImageFileReader< ImageType >                   ReaderType;
 
