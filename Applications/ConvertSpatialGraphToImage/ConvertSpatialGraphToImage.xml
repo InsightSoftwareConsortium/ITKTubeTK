@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <executable>
   <category>TubeTK</category>
-  <title>Tube Graph to Image (TubeTK)</title>
+  <title>Convert Spatial Graph to Image (TubeTK)</title>
   <description>Computes an image from a graph representation and the CVT centroids.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
@@ -11,21 +11,22 @@
   <parameters>
     <label>IO</label>
     <description>Input/output parameters.</description>
-    <string>
+    <file>
       <name>inCentroidsFile</name>
       <label>Input Centroids File</label>
+      <channel>input</channel>
       <index>0</index>
       <description>File with CVT centroids.</description>
-    </string>
+    </file>
     <string>
       <name>inGraphFile</name>
-      <label>Input Graph File</label>
+      <label>Input Graph File Name</label>
       <index>1</index>
       <description>Input graph.</description>
     </string>
     <string>
       <name>outImageFile</name>
-      <label>Output Image File</label>
+      <label>Output Image File Name</label>
       <description>Output image filename (will be used as base name for more image output).</description>
     </string>
   </parameters>

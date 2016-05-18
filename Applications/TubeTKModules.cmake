@@ -41,7 +41,7 @@ set( TubeTK_${proj}_MODULES
   ConvertShrunkenSeedImageToList
   ConvertToMetaImage
   ConvertTRE
-  ConvertTubeGraphToImage
+  ConvertSpatialGraphToImage
   ConvertTubesToDensityImage
   ConvertTubesToImage
   ConvertTubesToTubeTree
