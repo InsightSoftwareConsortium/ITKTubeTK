@@ -45,8 +45,6 @@ public:
   typedef typename FilterType::ImageType           ImageType;
   typedef typename FilterType::PointType           PointType;
   typedef typename FilterType::VectorType          VectorType;
-  typedef typename FilterType::ImageType           ImageType;
-  typedef typename FilterType::ImageType           ImageType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
