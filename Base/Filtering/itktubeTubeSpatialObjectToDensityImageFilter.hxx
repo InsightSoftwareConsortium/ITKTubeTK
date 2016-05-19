@@ -84,7 +84,8 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
     tubes->SetBoundingBoxChildrenDepth( tubes->GetMaximumDepth() );
     tubes->ComputeBoundingBox();
 
-    typedef TubeSpatialObjectToImageFilter<ImageDimension,DensityImageType>
+    typedef TubeSpatialObjectToImageFilter<ImageDimension,DensityImageType,
+                                           RadiusImageType,TangentImageType>
                  FilterType;
     typename FilterType::Pointer tubefilter = FilterType::New();
 

@@ -54,7 +54,7 @@ public:
 
  /* Set input tubes */
   tubeWrapSetMacro( Input, TubeGroupPointer, Filter );
-  tubeWrapGetMacro( Input, TubeGroupPointer, Filter );
+  tubeWrapGetConstObjectMacro( Input, TubeGroupType, Filter );
 
   /** Set/Get bounding box corner */
   tubeWrapSetMacro( BoxPosition, PointType, Filter );
