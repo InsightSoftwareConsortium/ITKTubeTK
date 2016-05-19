@@ -88,7 +88,7 @@ public:
   tubeWrapGetConstObjectMacro( Input, VolumeType, Filter );
 
   /** Get output image */
-  tubeWrapGetMacro(Output, VolumeType, Filter);
+  tubeWrapGetObjectMacro(Output, VolumeType, Filter);
 
 protected:
   ComputeImageStatistics( void );

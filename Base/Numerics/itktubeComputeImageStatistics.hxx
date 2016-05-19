@@ -23,8 +23,13 @@ limitations under the License.
 #ifndef __itktubeComputeImageStatistics_hxx
 #define __itktubeComputeImageStatistics_hxx
 
+//ITK includes
+#include "itkImageRegionIterator.h"
+
 // TubeTK includes
 #include "itktubeComputeImageStatistics.h"
+
+#include <fstream>
 
 namespace itk
 {

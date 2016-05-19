@@ -44,12 +44,11 @@ ComputeImageStatistics< TPixel, VDimension >
   Superclass::PrintSelf( os, indent );
   os << "Nbr of components: " << this->GetNumberOfComponents() << std::endl;
   os << "Mean: " << this->GetCompMean() << std::endl;
-  os << "Min: " << this->GetCompMean() << std::endl;
-  os << "Max: " << this->GetCompMean() << std::endl;
-  os << "Std dev: " << this->GetCompMean() << std::endl;
-  os << "Count: " << this->GetCompMean() << std::endl;
-  os << "Value: " << this->GetCompMean() << std::endl;
-  os << "Quantiles: " << this->GetCompMean() << std::endl;
+  os << "Min: " << this->GetCompMin() << std::endl;
+  os << "Max: " << this->GetCompMax() << std::endl;
+  os << "Std dev: " << this->GetCompStdDev() << std::endl;
+  os << "Count: " << this->GetCompCount() << std::endl;
+  os << "Value: " << this->GetCompValue() << std::endl;
 }
 
 } // End namespace tubetk
