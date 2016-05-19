@@ -48,7 +48,7 @@ public:
   /** Standard class typedefs. */
   typedef ComputeImageStatistics                   Self;
   typedef itk::ImageToImageFilter< itk::Image< float,  VDimension >,
-      itk::Image< float,  VDimension > > Superclass;
+      itk::Image< float,  VDimension > >           Superclass;
   typedef SmartPointer< Self >                     Pointer;
   typedef SmartPointer< const Self >               ConstPointer;
 
@@ -78,6 +78,7 @@ public:
   itkGetMacro( CompStdDev, itk::Array< double > );
   itkGetMacro( CompCount, itk::Array< double > );
   itkGetMacro( CompValue, itk::Array< TPixel > );
+  itkGetMacro( NumberOfComponents, unsigned int );
 
   /** Write statistics to a CSV formatted file */
   void WriteCSVStatistics( std::string csvStatisticsFile ) const;

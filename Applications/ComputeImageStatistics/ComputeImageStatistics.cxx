@@ -32,7 +32,7 @@ limitations under the License.
 #include <itkTimeProbesCollectorBase.h>
 
 // TubeTKITK includes
-#include "itktubeComputeImageStatistics.h"
+#include "tubeComputeImageStatistics.h"
 
 #include "ComputeImageStatisticsCLP.h"
 
