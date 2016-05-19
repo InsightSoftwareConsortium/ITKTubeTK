@@ -43,7 +43,7 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ${VTK_LIBRARIES}
-    TubeCLI )
+    TubeTKNumerics TubeCLI )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
