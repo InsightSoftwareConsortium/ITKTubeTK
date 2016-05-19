@@ -320,7 +320,6 @@ int DoIt( int argc, char * argv[] )
     tube::ErrorMessage( e.what() );
     return EXIT_FAILURE;
     }
-  std::cout << "Here" << std::endl;
 
   if( samplingFactor != 1 )
     {
@@ -362,6 +361,44 @@ int DoIt( int argc, char * argv[] )
 
 int main( int argc, char * argv[] )
 {
-  // To-Do: Detect spatial object dimensionality
-  return DoIt< 3 >( argc, argv );
+  try
+    {
+    PARSE_ARGS;
+    }
+  catch( const std::exception & err )
+    {
+    tube::ErrorMessage( err.what() );
+    return EXIT_FAILURE;
+    }
+  PARSE_ARGS;
+
+  MetaScene *mScene = new MetaScene;
+  mScene->Read( inputTubeFile.c_str() );
+
+  if( mScene->GetObjectList()->empty() )
+    {
+    tubeWarningMacro( << "Input TRE file has no spatial objects" );
+    delete mScene;
+    return EXIT_SUCCESS;
+    }
+
+  switch( mScene->GetObjectList()->front()->NDims() )
+    {
+    case 3:
+      {
+      bool result = DoIt<3>( argc, argv );
+      delete mScene;
+      return result;
+      break;
+      }
+    default:
+      {
+      tubeErrorMacro(
+        << "Error: Only 3D data is currently supported." );
+      delete mScene;
+      return EXIT_FAILURE;
+      break;
+      }
+    }
+  return EXIT_FAILURE;
 }
