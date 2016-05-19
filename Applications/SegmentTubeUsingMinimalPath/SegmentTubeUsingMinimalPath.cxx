@@ -25,13 +25,11 @@
 #include "tubeMessage.h"
 #include "tubeMacro.h"
 #include "metaScene.h"
-
 #include "itkTimeProbesCollectorBase.h"
 #include "itkImageFileReader.h"
 #include "itkGroupSpatialObject.h"
 #include "itkSpatialObjectReader.h"
 #include "itkSpatialObjectWriter.h"
-
 #include "tubeSegmentTubesUsingMinimalPath.h"
 #include <sstream>
 
@@ -57,12 +55,12 @@ int DoIt( int argc, char * argv[] )
     CLPProcessInformation );
   progressReporter.Start();
 
-  typedef TPixel                                                PixelType;
-  typedef itk::Image< PixelType, DimensionT >                   ImageType;
-  typedef itk::ImageFileReader< ImageType >                     ReaderType;
-  typedef itk::SpatialObjectReader< DimensionT >                TubesReaderType;
-  typedef itk::GroupSpatialObject< DimensionT >                 TubeGroupType;
-  typedef itk::Point< double, DimensionT >                      PointType;
+  typedef TPixel                                           PixelType;
+  typedef itk::Image< PixelType, DimensionT >              ImageType;
+  typedef itk::ImageFileReader< ImageType >                ReaderType;
+  typedef itk::SpatialObjectReader< DimensionT >           TubesReaderType;
+  typedef itk::GroupSpatialObject< DimensionT >            TubeGroupType;
+  typedef itk::Point< double, DimensionT >                 PointType;
 
   timeCollector.Start( "Load data" );
 
@@ -193,7 +191,8 @@ int DoIt( int argc, char * argv[] )
   else if ( TargetTubeFileName.empty() && EndPoint.size() == 0 )
     {
     tubeErrorMacro(
-      << "Error: Atmost one End/Target Point or Target Tube should be provided. " );
+      << "Error: Atmost one End/Target Point or Target"
+      "Tube should be provided. " );
     timeCollector.Stop( "Set parameters" );
     return EXIT_FAILURE;
     }

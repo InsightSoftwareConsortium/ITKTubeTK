@@ -53,7 +53,8 @@ namespace tube
 
 template< class TInputSpatialObject, class TInputImage >
 class SegmentTubesUsingMinimalPathFilter:
-  public SpatialObjectToSpatialObjectFilter< TInputSpatialObject, TInputSpatialObject >
+  public SpatialObjectToSpatialObjectFilter
+  < TInputSpatialObject, TInputSpatialObject >
 {
 public:
   /** Standard class typedefs. */
@@ -70,7 +71,8 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(SegmentTubesUsingMinimalPathFilter, SpatialObjectToSpatialObjectFilter);
+  itkTypeMacro
+    (SegmentTubesUsingMinimalPathFilter, SpatialObjectToSpatialObjectFilter);
 
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TInputImage::ImageDimension );

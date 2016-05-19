@@ -149,8 +149,10 @@ SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
     typedef itk::RegularStepGradientDescentOptimizer OptimizerType;
     typename OptimizerType::Pointer optimizer = OptimizerType::New();
     optimizer->SetNumberOfIterations( m_OptimizerNumberOfIterations );
-    optimizer->SetMaximumStepLength( 1.0 * m_OptimizerStepLengthFactor * minspacing );
-    optimizer->SetMinimumStepLength( 0.5 * m_OptimizerStepLengthFactor * minspacing );
+    optimizer->SetMaximumStepLength
+      ( 1.0 * m_OptimizerStepLengthFactor * minspacing );
+    optimizer->SetMinimumStepLength
+      ( 0.5 * m_OptimizerStepLengthFactor * minspacing );
     optimizer->SetRelaxationFactor( m_OptimizerStepLengthRelax );
     pathFilter->SetOptimizer( optimizer );
     }
@@ -204,14 +206,17 @@ SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
       m_SpeedImage->TransformContinuousIndexToPhysicalPoint(
         vertexList->GetElement( k ), pathPoint );
       typename InputImageType::IndexType imageIndex;
-      if ( m_SpeedImage->TransformPhysicalPointToIndex( pathPoint, imageIndex ) )
+      if ( m_SpeedImage->TransformPhysicalPointToIndex
+        ( pathPoint, imageIndex ) )
         {
-        m_CostAssociatedWithExtractedTube += m_SpeedImage->GetPixel( imageIndex );
+        m_CostAssociatedWithExtractedTube +=
+          m_SpeedImage->GetPixel( imageIndex );
         }
       if( m_ConnectToTargetTubeSurface )
         {
         PointType nearPoint;
-        bool isNear = this->IsPointTooNear( targetSpatialObject, pathPoint, nearPoint );
+        bool isNear = this->IsPointTooNear
+          ( targetSpatialObject, pathPoint, nearPoint );
         if( isNear )
           {
           continue;
@@ -235,7 +240,8 @@ SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
     // Extract Radius
     if( m_ExtractRadius )
       {
-      typedef itk::tube::RadiusExtractor2< InputImageType > RadiusExtractorType;
+      typedef itk::tube::RadiusExtractor2< InputImageType >
+        RadiusExtractorType;
       typename RadiusExtractorType::Pointer radiusExtractor
         = RadiusExtractorType::New();
       radiusExtractor->SetInputImage( m_RadiusImage );
@@ -294,7 +300,8 @@ SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
       typename TubePointType::PointType curSourcePos =
         pTubeIndexPhysTransform->TransformPoint(
           curSourcePoint.GetPosition() );
-      double distance = curSourcePos.SquaredEuclideanDistanceTo( outsidePoint );
+      double distance =
+        curSourcePos.SquaredEuclideanDistanceTo( outsidePoint );
       if( minDistance > distance )
         {
         minDistance = distance;

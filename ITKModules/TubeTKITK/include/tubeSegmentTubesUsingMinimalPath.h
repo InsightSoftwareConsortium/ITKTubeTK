@@ -78,7 +78,8 @@ public:
   /* Set end point for the path */
   tubeWrapSetMacro( EndPoint, PointType, Filter );
 
-  /* Set whether to extract the traget/end point of the path from a target tube */
+  /* Set whether to extract the traget/end point
+  of the path from a target tube */
   tubeWrapSetMacro( ExtractEndPointFromTargetTube, bool, Filter );
 
   /* Set if the extract path connects to the surface of the target tube */
