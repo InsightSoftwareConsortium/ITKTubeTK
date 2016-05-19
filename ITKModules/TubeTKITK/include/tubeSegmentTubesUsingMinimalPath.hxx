@@ -41,7 +41,7 @@ SegmentTubesUsingMinimalPath< Dimension, TInputPixel >
 template< unsigned int Dimension, class TInputPixel >
 void
 SegmentTubesUsingMinimalPath< Dimension, TInputPixel >
-::PrintSelf(std::ostream & os, itk::Indent indent) const
+::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
 }

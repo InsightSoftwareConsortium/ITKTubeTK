@@ -62,7 +62,7 @@ public:
 
   /* Set input tubes */
   tubeWrapSetMacro(Input, TubeGroupPointer, Filter );
-  tubeWrapGetMacro(Input, TubeGroupPointer, Filter );
+  tubeWrapGetConstObjectMacro(Input, TubeGroupType, Filter );
 
   /** Set speed Image */
   tubeWrapSetMacro( SpeedImage, InputImagePointer, Filter );

@@ -32,14 +32,6 @@
 #include "itkSpatialObjectReader.h"
 #include "itkSpatialObjectWriter.h"
 
-#include "itkSpeedFunctionToPathFilter.h"
-#include "itkSpeedFunctionPathInformation.h"
-#include "itkIterateNeighborhoodOptimizer.h"
-#include "itkSingleImageCostFunction.h"
-#include "itkPathIterator.h"
-
-#include "itktubeRadiusExtractor2.h"
-
 #include "tubeSegmentTubesUsingMinimalPath.h"
 #include <sstream>
 

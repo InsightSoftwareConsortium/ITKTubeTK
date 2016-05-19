@@ -319,9 +319,9 @@ SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
 template< class TInputSpatialObject, class TInputImage >
 void
 SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
-::PrintSelf(std::ostream & os, Indent indent) const
+::PrintSelf( std::ostream & os, Indent indent ) const
 {
-  Superclass::PrintSelf(os, indent);
+  Superclass::PrintSelf( os, indent );
 
 }
 

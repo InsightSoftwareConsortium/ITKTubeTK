@@ -19,11 +19,24 @@
 #define __itktubeSegmentTubesUsingMinimalPathFilter_h
 
 #include "itkImage.h"
+
+//ITK imports
+#include "itkGroupSpatialObject.h"
+#include "itkVesselTubeSpatialObjectPoint.h"
+#include "itkVesselTubeSpatialObject.h"
+#include "itkPathIterator.h"
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkPolyLineParametricPath.h"
 #include "itkGradientDescentOptimizer.h"
 #include "itkNumericTraits.h"
 
+// MinimalPathExtraction Imports
+#include "itkSpeedFunctionToPathFilter.h"
+#include "itkIterateNeighborhoodOptimizer.h"
+#include "itkSingleImageCostFunction.h"
+
+//TubeTK imports
+#include "itktubeRadiusExtractor2.h"
 #include "itktubeSpatialObjectToSpatialObjectFilter.h"
 
 namespace itk
