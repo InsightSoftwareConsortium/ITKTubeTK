@@ -30,7 +30,7 @@
 #include "itktubeSpatialObjectToSpatialObjectFilter.h"
 #include "itkVesselTubeSpatialObject.h"
 #include "itktubeTubeToTubeTransformFilter.h"
-
+#include "itkTransformBase.h"
 namespace itk
 {
 namespace tube
@@ -55,9 +55,6 @@ public:
                                                 Superclass;
   typedef SmartPointer< Self >                  Pointer;
   typedef SmartPointer< const Self >            ConstPointer;
-  typedef VesselTubeSpatialObject< VDimension > TubeType;
-  typedef typename TubeType::Pointer            TubePointerType;
-  typedef typename TubeType::ConstPointer       TubeConstPointerType;
 
   typedef char                                  PixelType;
   typedef itk::Image< PixelType, VDimension >   ImageType;
@@ -67,27 +64,10 @@ public:
     DisplacementFieldTransformType;
   typedef typename DisplacementFieldTransformType::DisplacementFieldType
     DisplacementFieldType;
-  typedef itk::tube::TubeToTubeTransformFilter< DisplacementFieldTransformType,
-    VDimension > DisplacementFieldTransformFilterType;
-
-  /** Typedefs for Affine Transform */
-  typedef itk::AffineTransform< double, VDimension >
-  AffineTransformType;
-  typedef itk::tube::TubeToTubeTransformFilter
-    < AffineTransformType, VDimension> AffineTransformFilterType;
 
   /** Typedefs for transform read from a file    */
   typedef itk::TransformBaseTemplate< double >        BaseTransformType;
   typedef std::list< BaseTransformType::Pointer >     BaseTransformListType;
-  typedef itk::MatrixOffsetTransformBase< double, VDimension, VDimension >
-    MatrixOffsetTransformType;
-  typedef itk::tube::TubeToTubeTransformFilter
-    < MatrixOffsetTransformType, VDimension > MatrixOffsetTransformFilterType;
-
-  /** Typedefs for Sub samppling filter     */
-  typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter
-    < TubeGroupType, TubeSpatialObjectType > SubSampleTubeTreeFilterType;
-
 
   /** Run-time type information (and related methods).   */
   itkTypeMacro( ResampleTubesFilter,
@@ -133,6 +113,14 @@ private:
   typename DisplacementFieldType::Pointer m_DisplacementField;
   typename TubeGroupType::Pointer         m_InputSpatialObject;
 
+  void ReadImageTransform
+    ( typename TubeGroupType::TransformType::Pointer &outputTransform );
+  typename TubeGroupType::Pointer ApplyDisplacementFieldTransform
+    ( typename TubeGroupType::TransformType::Pointer outputTransform );
+  typename TubeGroupType::Pointer ApplyInputTransform
+    ( typename TubeGroupType::TransformType::Pointer outputTransform );
+  typename TubeGroupType::Pointer ApplyIdentityAffineTransform
+    ( typename TubeGroupType::TransformType::Pointer outputTransform );
 }; // End class ResampleTubesFilter
 
 } // End namespace tube

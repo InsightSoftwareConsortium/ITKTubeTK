@@ -59,7 +59,7 @@ int DoIt( int argc, char * argv[] )
 
   typedef itk::tube::ResampleTubesFilter< Dimension > FilterType;
   typename FilterType::Pointer filter = FilterType::New();
-  typedef FilterType::TubeGroupType   GroupSpatialObjectType;
+  typedef typename FilterType::TubeGroupType   GroupSpatialObjectType;
 
   double progress = 0.0;
   itk::TimeProbesCollectorBase timeCollector;
@@ -124,15 +124,14 @@ int DoIt( int argc, char * argv[] )
       dfReader->Update();
       filter->SetDisplacementField( dfReader->GetOutput() );
       }
-
+  itk::TransformFileReader::Pointer transformReader =
+      itk::TransformFileReader::New();
   if( !loadTransform.empty() )
     {
      // Read transform from file
-    itk::TransformFileReader::Pointer reader =
-      itk::TransformFileReader::New();
-    reader->SetFileName( loadTransform.c_str() );
-    reader->Update();
-    filter->SetReadTransformList( reader->GetTransformList() );
+    transformReader->SetFileName( loadTransform.c_str() );
+    transformReader->Update();
+    filter->SetReadTransformList( transformReader->GetTransformList() );
     filter->SetUseInverseTransform( useInverseTransform );
     }
   filter->SetSamplingFactor( samplingFactor );
