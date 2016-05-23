@@ -104,7 +104,6 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::Pointer inputImage = reader->GetOutput();
   tubeOp->SetInputImage( inputImage );
 
-  typename ImageType::Pointer radiusInputImage = NULL;
   if( !radiusInputVolume.empty() )
     {
     typename ReaderType::Pointer radiusReader = ReaderType::New();
@@ -327,10 +326,10 @@ int DoIt( int argc, char * argv[] )
     }
 
   if( !parametersFile.empty() )
-    {/*
+    {
     itk::tube::TubeExtractorIO< ImageType > teReader;
-    teReader.SetTubeExtractor( tubeOp );
-    teReader.Read( parametersFile.c_str() );*/
+    teReader.SetTubeExtractor( tubeOp->GetTubeOp() );
+    teReader.Read( parametersFile.c_str() );
     }
 
   tubeOp->SetDebug( false );
@@ -425,7 +424,7 @@ int DoIt( int argc, char * argv[] )
     {
     typename MaskWriterType::Pointer writer = MaskWriterType::New();
     writer->SetFileName( outputTubeImage );
-//    writer->SetInput( tubeOp->GetTubeMaskImage() );
+    writer->SetInput( tubeOp->GetTubeMaskImage() );
     writer->SetUseCompression( true );
     writer->Update();
     }
@@ -434,11 +433,11 @@ int DoIt( int argc, char * argv[] )
   for( unsigned int code = 0; code < tubeOp->GetRidgeOp()
     ->GetNumberOfFailureCodes(); ++code )
     {
- //   std::cout << "   " << tubeOp->GetRidgeOp()->GetFailureCodeName(
- //     typename TubeOpType::RidgeOpType::FailureCodeEnum( code ) ) << " : "
- //     << tubeOp->GetRidgeOp()->GetFailureCodeCount(
-//      typename TubeOpType::RidgeOpType::FailureCodeEnum(
-//      code ) ) << std::endl;
+    std::cout << "   " << tubeOp->GetRidgeOp()->GetFailureCodeName(
+      typename TubeOpType::RidgeExtractorFilterType::FailureCodeEnum( code ) ) << " : "
+      << tubeOp->GetRidgeOp()->GetFailureCodeCount(
+      typename TubeOpType::RidgeExtractorFilterType::FailureCodeEnum(
+      code ) ) << std::endl;
     }
 
 

@@ -40,6 +40,14 @@ SegmentTubes< TInputImage >
 }
 
 template< class TInputImage >
+typename itk::tube::TubeExtractor< TInputImage >::TubeMaskImageType::Pointer
+SegmentTubes< TInputImage >
+::GetTubeMaskImage( void )
+{
+  return m_TubeExtractorFilter->GetTubeMaskImage();
+}
+
+template< class TInputImage >
 bool
 SegmentTubes< TInputImage >
 ::AddTube( TubeType * tube )
@@ -95,6 +103,14 @@ SegmentTubes< TInputImage >
 ::GetRadiusOp( void )
 {
   return m_TubeExtractorFilter->GetRadiusOp();
+}
+
+template< class TInputImage >
+typename itk::tube::TubeExtractor< TInputImage >::Pointer
+SegmentTubes< TInputImage >
+::GetTubeOp( void )
+{
+  return m_TubeExtractorFilter;
 }
 
 template< class TInputImage >

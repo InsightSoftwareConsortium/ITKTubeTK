@@ -73,6 +73,8 @@ public:
 
   /** Set the tube mask image. */
   void SetTubeMaskImage( typename TubeMaskImageType::Pointer & mask );
+  typename itk::tube::TubeExtractor< TInputImage >::TubeMaskImageType::Pointer
+    GetTubeMaskImage( void );
 
   /** Add a tube */
   bool AddTube( TubeType * tube );
@@ -103,6 +105,9 @@ public:
 
     /*Get the radius extractor */
   typename itk::tube::RadiusExtractor2< ImageType >::Pointer GetRadiusOp( void );
+
+    /*Get the tube extractor */
+  typename itk::tube::TubeExtractor< ImageType >::Pointer GetTubeOp( void );
 
 protected:
   SegmentTubes( void );
