@@ -21,7 +21,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeTubeExtractor.h"
+#include "tubeSegmentTubes.h"
 #include "itktubeTubeExtractorIO.h"
 
 #include "tubeCLIFilterWatcher.h"
@@ -64,7 +64,8 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< PixelType, VDimension >        ImageType;
   typedef itk::ImageFileReader< ImageType >          ReaderType;
 
-  typedef itk::tube::TubeExtractor< ImageType >      TubeOpType;
+  typedef tube::SegmentTubes< ImageType >           TubeOpType;
+  typename TubeOpType::Pointer tubeOp = TubeOpType::New();
 
   typedef typename TubeOpType::TubeMaskImageType     MaskImageType;
   typedef itk::ImageFileReader< MaskImageType >      MaskReaderType;
@@ -86,7 +87,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::SpatialObjectWriter< VDimension >     TubesWriterType;
   typedef itk::SpatialObjectReader< VDimension >     TubesReaderType;
 
-  timeCollector.Start("Load data");
+  timeCollector.Start( "Load data" );
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
   try
@@ -96,14 +97,15 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
   typename ImageType::Pointer inputImage = reader->GetOutput();
+  tubeOp->SetInputImage( inputImage );
 
   typename ImageType::Pointer radiusInputImage = NULL;
-  if( ! radiusInputVolume.empty() )
+  if( !radiusInputVolume.empty() )
     {
     typename ReaderType::Pointer radiusReader = ReaderType::New();
     radiusReader->SetFileName( radiusInputVolume.c_str() );
@@ -114,33 +116,23 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Reading radius volume: Exception caught: "
-                          + std::string(err.GetDescription()) );
+                          + std::string( err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    radiusInputImage = radiusReader->GetOutput();
+    tubeOp->SetRadiusInputImage( radiusReader->GetOutput() );
     }
   timeCollector.Stop("Load data");
   double progress = 0.1;
   progressReporter.Report( progress );
 
   double scaleNorm = inputImage->GetSpacing()[0];
-
   if( scale / scaleNorm < 0.3 )
     {
     tube::ErrorMessage(
       "Error: Scale < 0.3 * voxel spacing is unsupported." );
     return EXIT_FAILURE;
     }
-
-  typename TubeOpType::Pointer tubeOp = TubeOpType::New();
-
-  tubeOp->SetInputImage( inputImage );
-  if( radiusInputImage.IsNotNull() )
-    {
-    tubeOp->SetRadiusInputImage( radiusInputImage );
-    }
-
   tubeOp->SetRadius( scale / scaleNorm );
 
   IndexType seedIndex;
@@ -152,9 +144,9 @@ int DoIt( int argc, char * argv[] )
 
   if( !seedI.empty() )
     {
-    for( unsigned int seedINum=0; seedINum<seedI.size(); ++seedINum )
+    for( unsigned int seedINum = 0; seedINum < seedI.size(); ++seedINum )
       {
-      for( unsigned int i=0; i<VDimension; i++ )
+      for( unsigned int i = 0; i < VDimension; i++ )
         {
         seedIndex[i] = seedI[seedINum][i];
         }
@@ -165,20 +157,20 @@ int DoIt( int argc, char * argv[] )
 
   if( !seedP.empty() )
     {
-    for(size_t seedNum=0; seedNum<seedP.size(); ++seedNum)
+    for( size_t seedNum = 0; seedNum < seedP.size(); ++seedNum )
       {
       typename ImageType::PointType point;
-      for( unsigned int i=0; i<VDimension; i++ )
+      for( unsigned int i = 0; i < VDimension; i++ )
         {
         point[i] = seedP[seedNum][i];
         }
 
       bool transformSuccess =
-        inputImage->TransformPhysicalPointToContinuousIndex(point, seedIndex);
-      if (!transformSuccess)
+        inputImage->TransformPhysicalPointToContinuousIndex( point, seedIndex );
+      if ( !transformSuccess )
         {
         std::cerr<<"Could not transform point #"
-          <<seedNum<<" to seed index."<<std::endl;
+          << seedNum <<" to seed index." << std::endl;
         continue;
         }
 
@@ -196,7 +188,7 @@ int DoIt( int argc, char * argv[] )
     double seedScale;
     while( std::getline( readStream, line ) )
       {
-      std::istringstream iss(line);
+      std::istringstream iss( line );
       for( unsigned int i = 0; i < VDimension; ++i )
         {
         iss >> seedIndex[i];
@@ -218,7 +210,7 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Reading mask: Exception caught: "
-                          + std::string(err.GetDescription()) );
+                          + std::string(err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
@@ -294,7 +286,7 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Reading vessels mask: Exception caught: "
-                          + std::string(err.GetDescription()) );
+                          + std::string(err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
@@ -335,16 +327,11 @@ int DoIt( int argc, char * argv[] )
     }
 
   if( !parametersFile.empty() )
-    {
+    {/*
     itk::tube::TubeExtractorIO< ImageType > teReader;
     teReader.SetTubeExtractor( tubeOp );
-    teReader.Read( parametersFile.c_str() );
+    teReader.Read( parametersFile.c_str() );*/
     }
-
-  typename IndexListType::iterator seedIndexIter =
-    seedIndexList.begin();
-  ScaleListType::iterator seedRadiusIter =
-    seedRadiusList.begin();
 
   tubeOp->SetDebug( false );
   tubeOp->GetRidgeOp()->SetDebug( false );
@@ -357,7 +344,7 @@ int DoIt( int argc, char * argv[] )
     typename ImageType::SizeType size = inputImage->
       GetLargestPossibleRegion().GetSize();
     typename ImageType::IndexType maxIndx = minIndx + size;
-    for( unsigned int i=0; i<VDimension; ++i )
+    for( unsigned int i = 0; i < VDimension; ++i )
       {
       minIndx[i] += border;
       maxIndx[i] -= border;
@@ -366,7 +353,11 @@ int DoIt( int argc, char * argv[] )
     tubeOp->SetExtractBoundMax( maxIndx );
     }
 
-  timeCollector.Start("Ridge Extractor");
+  timeCollector.Start( "Ridge Extractor" );
+  typename IndexListType::iterator seedIndexIter =
+    seedIndexList.begin();
+  ScaleListType::iterator seedRadiusIter =
+    seedRadiusList.begin();
   unsigned int count = 1;
   bool foundOneTube = false;
   while( seedIndexIter != seedIndexList.end() )
@@ -388,7 +379,7 @@ int DoIt( int argc, char * argv[] )
       {
       std::stringstream ss;
       ss << "Error: Ridge not found for seed #" << count;
-      tube::Message(ss.str());
+      tube::Message( ss.str() );
       }
 
     ++seedIndexIter;
@@ -396,7 +387,7 @@ int DoIt( int argc, char * argv[] )
     ++count;
     }
 
-  if (!foundOneTube)
+  if ( !foundOneTube )
     {
     tube::ErrorMessage("No Ridge found at all");
     return EXIT_FAILURE;
@@ -443,11 +434,11 @@ int DoIt( int argc, char * argv[] )
   for( unsigned int code = 0; code < tubeOp->GetRidgeOp()
     ->GetNumberOfFailureCodes(); ++code )
     {
-    std::cout << "   " << tubeOp->GetRidgeOp()->GetFailureCodeName(
-      typename TubeOpType::RidgeOpType::FailureCodeEnum( code ) ) << " : "
-      << tubeOp->GetRidgeOp()->GetFailureCodeCount(
-      typename TubeOpType::RidgeOpType::FailureCodeEnum(
-      code ) ) << std::endl;
+ //   std::cout << "   " << tubeOp->GetRidgeOp()->GetFailureCodeName(
+ //     typename TubeOpType::RidgeOpType::FailureCodeEnum( code ) ) << " : "
+ //     << tubeOp->GetRidgeOp()->GetFailureCodeCount(
+//      typename TubeOpType::RidgeOpType::FailureCodeEnum(
+//      code ) ) << std::endl;
     }
 
 

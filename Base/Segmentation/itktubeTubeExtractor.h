@@ -114,7 +114,7 @@ public:
   /**
    * Get the input image */
   itkGetConstObjectMacro( InputImage, ImageType );
-
+  itkGetConstObjectMacro( RadiusInputImage, ImageType );
   /**
    * Set the tube mask image */
   void SetTubeMaskImage( typename TubeMaskImageType::Pointer & mask );
@@ -180,7 +180,7 @@ public:
    * and the tube ID */
   typename TubeType::Pointer ExtractTube( const ContinuousIndexType & x,
     unsigned int tubeID,
-    bool verbose=false );
+    bool verbose = false );
 
   /**
    * Get the list of tubes that have been extracted */
@@ -191,11 +191,11 @@ public:
   void SetTubeGroup( TubeGroupType * tubes );
 
   /**
-   * Delete a tube */
+   * Smooth a tube */
   void SmoothTube( TubeType * tube, int h=5 );
 
   /**
-   * Delete a tube */
+   * Add a tube */
   bool AddTube( TubeType * tube );
 
   /**
