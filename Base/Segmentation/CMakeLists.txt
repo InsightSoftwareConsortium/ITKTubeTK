@@ -33,6 +33,7 @@ set( TubeTK_Base_Segmentation_H_Files
   itktubePDFSegmenterParzen.h
   itktubeRadiusExtractor2.h
   itktubeRidgeExtractor.h
+  itktubeSegmentTubesUsingMinimalPathFilter.h
   itktubeTubeExtractor.h )
 if( TubeTK_USE_LIBSVM )
   list( APPEND TubeTK_Base_Segmentation_H_Files
@@ -45,6 +46,7 @@ set( TubeTK_Base_Segmentation_HXX_Files
   itktubePDFSegmenterParzen.hxx
   itktubeRadiusExtractor2.hxx
   itktubeRidgeExtractor.hxx
+  itktubeSegmentTubesUsingMinimalPathFilter.hxx
   itktubeTubeExtractor.hxx )
 if( TubeTK_USE_LIBSVM )
   list( APPEND TubeTK_Base_Segmentation_HXX_Files
@@ -59,7 +61,8 @@ target_include_directories( ${PROJECT_NAME} INTERFACE
 
 target_link_libraries( ${PROJECT_NAME} INTERFACE
    TubeTKFiltering
-   TubeTKNumerics )
+   TubeTKNumerics
+   MinimalPathExtraction )
 
 if( TubeTK_BUILD_TESTING )
   add_subdirectory( Testing )
