@@ -31,6 +31,15 @@ SegmentTubes< TInputImage >
 }
 
 template< class TInputImage >
+void
+SegmentTubes< TInputImage >
+::SetTubeMaskImage( typename
+  TubeMaskImageType::Pointer & mask )
+{
+  return m_TubeExtractorFilter->SetTubeMaskImage( mask );
+}
+
+template< class TInputImage >
 bool
 SegmentTubes< TInputImage >
 ::AddTube( TubeType * tube )
@@ -95,7 +104,7 @@ SegmentTubes< TInputImage >
 {
   Superclass::PrintSelf( os, indent );
 
-  if( m_TubeExtractorFilter->GetInputImage().IsNotNull() )
+  if( m_TubeExtractorFilter->GetInputImage() )
     {
     os << indent << "Input Image = " <<
       m_TubeExtractorFilter->GetInputImage() << std::endl;
@@ -105,7 +114,7 @@ SegmentTubes< TInputImage >
     os << indent << "Input Image = NULL" << std::endl;
     }
 
-  if( m_TubeExtractorFilter->GetRadiusInputImage().IsNotNull() )
+  if( m_TubeExtractorFilter->GetRadiusInputImage() )
     {
     os << indent << "Radius Input Image = " <<
       m_TubeExtractorFilter->GetRadiusInputImage()

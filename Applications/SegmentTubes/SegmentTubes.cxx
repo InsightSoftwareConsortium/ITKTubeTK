@@ -425,7 +425,7 @@ int DoIt( int argc, char * argv[] )
     {
     typename MaskWriterType::Pointer writer = MaskWriterType::New();
     writer->SetFileName( outputTubeImage );
-    writer->SetInput( tubeOp->GetTubeMaskImage() );
+//    writer->SetInput( tubeOp->GetTubeMaskImage() );
     writer->SetUseCompression( true );
     writer->Update();
     }

@@ -62,18 +62,17 @@ public:
   itkTypeMacro( SegmentTubes, Object );
 
   /** Set the source image. */
-  tubeWrapSetConstObjectMacro( InputImage, TInputImage, TubeExtractorFilter );
+  tubeWrapSetObjectMacro( InputImage, ImageType, TubeExtractorFilter );
 
   /** Set the radius image. */
-  tubeWrapSetConstObjectMacro( RadiusInputImage, TInputImage, TubeExtractorFilter );
+  tubeWrapSetObjectMacro( RadiusInputImage, ImageType, TubeExtractorFilter );
 
   /** Set/Get radius value */
   tubeWrapSetMacro( Radius, double, TubeExtractorFilter );
   tubeWrapGetMacro( Radius, double, TubeExtractorFilter );
 
   /** Set the tube mask image. */
-  tubeWrapSetObjectMacro( TubeMaskImage, TubeMaskImageType, TubeExtractorFilter );
-  tubeWrapGetObjectMacro( TubeMaskImage, TubeMaskImageType, TubeExtractorFilter );
+  void SetTubeMaskImage( typename TubeMaskImageType::Pointer & mask );
 
   /** Add a tube */
   bool AddTube( TubeType * tube );
