@@ -20,6 +20,11 @@
 
 #include "itktubeSegmentTubesUsingMinimalPathFilter.h"
 
+// MinimalPathExtraction Imports
+#include "itkSpeedFunctionToPathFilter.h"
+#include "itkIterateNeighborhoodOptimizer.h"
+#include "itkSingleImageCostFunction.h"
+
 namespace itk
 {
 namespace tube

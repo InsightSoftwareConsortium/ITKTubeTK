@@ -30,11 +30,6 @@
 #include "itkGradientDescentOptimizer.h"
 #include "itkNumericTraits.h"
 
-// MinimalPathExtraction Imports
-#include "itkSpeedFunctionToPathFilter.h"
-#include "itkIterateNeighborhoodOptimizer.h"
-#include "itkSingleImageCostFunction.h"
-
 //TubeTK imports
 #include "itktubeRadiusExtractor2.h"
 #include "itktubeSpatialObjectToSpatialObjectFilter.h"
