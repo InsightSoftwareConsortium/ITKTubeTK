@@ -15,34 +15,30 @@
  *  limitations under the License.
  *
 *=========================================================================*/
-#ifndef __tubeComputeBinaryImageSimilarityMetrics_hxx
-#define __tubeComputeBinaryImageSimilarityMetrics_hxx
+#ifndef __tubeCropTubes_hxx
+#define __tubeCropTubes_hxx
 
-#include "tubeComputeBinaryImageSimilarityMetrics.h"
+#include "tubeCropTubes.h"
+
 
 namespace tube
 {
-template< class TInputImage >
-ComputeBinaryImageSimilarityMetrics< TInputImage >
-::ComputeBinaryImageSimilarityMetrics( void )
+template< unsigned int VDimension >
+CropTubes< VDimension >
+::CropTubes( void )
 {
   m_Filter = FilterType::New();
 }
 
-template< class TInputImage >
+template< unsigned int VDimension >
 void
-ComputeBinaryImageSimilarityMetrics< TInputImage >
-::PrintSelf( std::ostream & os, itk::Indent indent ) const
+CropTubes< VDimension >
+::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
   Superclass::PrintSelf( os, indent );
-  os << "TotalOverlap: " << this->GetTotalOverlap() << std::endl;
-  os << "UnionOverlap: " << this->GetUnionOverlap() << std::endl;
-  os << "MeanOverlap: " << this->GetMeanOverlap() << std::endl;
-  os << "Similarity: " << this->GetVolumeSimilarity() << std::endl;
-  os << "FalseNegativeError: " << this->GetFalseNegativeError() << std::endl;
-  os << "FalsePositiveError: " << this->GetFalsePositiveError() << std::endl;
 }
 
 } // end namespace tube
+
 
 #endif

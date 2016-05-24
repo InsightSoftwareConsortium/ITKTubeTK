@@ -15,34 +15,35 @@
  *  limitations under the License.
  *
 *=========================================================================*/
-#ifndef __tubeComputeBinaryImageSimilarityMetrics_hxx
-#define __tubeComputeBinaryImageSimilarityMetrics_hxx
+#ifndef __tubeConvertTubesToDensityImage_hxx
+#define __tubeConvertTubesToDensityImage_hxx
 
-#include "tubeComputeBinaryImageSimilarityMetrics.h"
+#include "tubeConvertTubesToDensityImage.h"
 
 namespace tube
 {
-template< class TInputImage >
-ComputeBinaryImageSimilarityMetrics< TInputImage >
-::ComputeBinaryImageSimilarityMetrics( void )
+
+template< class TOutputPixel, unsigned int Dimension >
+ConvertTubesToDensityImage< TOutputPixel, Dimension >
+::ConvertTubesToDensityImage( void )
 {
   m_Filter = FilterType::New();
 }
 
-template< class TInputImage >
+template< class TOutputPixel, unsigned int Dimension >
 void
-ComputeBinaryImageSimilarityMetrics< TInputImage >
+ConvertTubesToDensityImage< TOutputPixel, Dimension >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
-  os << "TotalOverlap: " << this->GetTotalOverlap() << std::endl;
-  os << "UnionOverlap: " << this->GetUnionOverlap() << std::endl;
-  os << "MeanOverlap: " << this->GetMeanOverlap() << std::endl;
-  os << "Similarity: " << this->GetVolumeSimilarity() << std::endl;
-  os << "FalseNegativeError: " << this->GetFalseNegativeError() << std::endl;
-  os << "FalsePositiveError: " << this->GetFalsePositiveError() << std::endl;
+  os << indent << "m_Spacing: " << m_Filter->GetSpacing() << std::endl;
+  os << indent << "m_Size: " << m_Filter->GetSize() << std::endl;
+  os << indent << "m_MaxDensityIntensity: " <<
+    m_Filter->GetMaxDensityIntensity() << std::endl;
+  os << indent << "m_UseSquareDistance: " <<
+    m_Filter->GetUseSquareDistance() << std::endl;
 }
 
-} // end namespace tube
+}
 
 #endif

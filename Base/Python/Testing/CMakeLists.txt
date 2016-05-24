@@ -27,7 +27,7 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
-if( ${TubeTK_USE_NUMPY} )
+if( ${TubeTK_USE_NUMPY_STACK} )
   Midas3FunctionAddTest( NAME VesselTubeToNumPyTest
     COMMAND ${PYTHON_TESTING_EXECUTABLE}
       ${CMAKE_CURRENT_SOURCE_DIR}/test_tubetk.py
@@ -52,4 +52,4 @@ if( ${TubeTK_USE_NUMPY} )
       APPEND PROPERTY DEPENDS
       PyQtGraphTubesAsCirclesTest )
   endif( ${TubeTK_USE_PYQTGRAPH} )
-endif( ${TubeTK_USE_NUMPY} )
+endif( ${TubeTK_USE_NUMPY_STACK} )

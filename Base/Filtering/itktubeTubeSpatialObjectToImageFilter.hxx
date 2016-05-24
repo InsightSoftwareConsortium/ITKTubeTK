@@ -21,10 +21,10 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeSpatialObjectToImageFilter_hxx
-#define __itktubeSpatialObjectToImageFilter_hxx
+#ifndef __itktubeTubeSpatialObjectToImageFilter_hxx
+#define __itktubeTubeSpatialObjectToImageFilter_hxx
 
-#include "itktubeSpatialObjectToImageFilter.h"
+#include "itktubeTubeSpatialObjectToImageFilter.h"
 
 #include <itkImageRegionIteratorWithIndex.h>
 
@@ -373,4 +373,4 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
 
 } // End update function
 
-#endif // End !defined(__itktubeSpatialObjectToImageFilter_hxx)
+#endif // End !defined(__itktubeTubeSpatialObjectToImageFilter_hxx)

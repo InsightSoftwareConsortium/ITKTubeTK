@@ -35,12 +35,15 @@ set( TubeTK_Base_Filtering_H_Files
   itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h
   itktubeAnisotropicHybridDiffusionImageFilter.h
   itktubeComputeTubeFlyThroughImageFilter.h
+  itktubeConvertSpatialGraphToImageFilter.h
   itktubeCropImageFilter.h
+  itktubeCropTubesFilter.h
   itktubeCVTImageFilter.h
   itktubeExtractTubePointsSpatialObjectFilter.h
   itktubeFFTGaussianDerivativeIFFTFilter.h
   itktubeGaussianDerivativeFilter.h
   itktubeGaussianDerivativeImageSource.h
+  itktubeInverseIntensityImageFilter.h
   itktubeMergeAdjacentImagesFilter.h
   itktubeMinimumSpanningTreeVesselConnectivityFilter.h
   itktubePadImageFilter.h
@@ -48,7 +51,6 @@ set( TubeTK_Base_Filtering_H_Files
   itktubeSheetnessMeasureImageFilter.h
   itktubeShrinkWithBlendingImageFilter.h
   itktubeSpatialObjectSource.h
-  itktubeSpatialObjectToImageFilter.h
   itktubeSpatialObjectToSpatialObjectFilter.h
   itktubeStructureTensorRecursiveGaussianImageFilter.h
   itktubeSubSampleTubeSpatialObjectFilter.h
@@ -56,6 +58,8 @@ set( TubeTK_Base_Filtering_H_Files
   itktubeSymmetricEigenVectorAnalysisImageFilter.h
   itktubeTortuositySpatialObjectFilter.h
   itktubeTubeEnhancingDiffusion2DImageFilter.h
+  itktubeTubeSpatialObjectToDensityImageFilter.h
+  itktubeTubeSpatialObjectToImageFilter.h
   tubeImageFilters.h )
 
 set( TubeTK_Base_Filtering_HXX_Files
@@ -66,12 +70,15 @@ set( TubeTK_Base_Filtering_HXX_Files
   itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.hxx
   itktubeAnisotropicHybridDiffusionImageFilter.hxx
   itktubeComputeTubeFlyThroughImageFilter.hxx
+  itktubeConvertSpatialGraphToImageFilter.hxx
   itktubeCropImageFilter.hxx
+  itktubeCropTubesFilter.hxx
   itktubeCVTImageFilter.hxx
   itktubeExtractTubePointsSpatialObjectFilter.hxx
   itktubeFFTGaussianDerivativeIFFTFilter.hxx
   itktubeGaussianDerivativeFilter.hxx
   itktubeGaussianDerivativeImageSource.hxx
+  itktubeInverseIntensityImageFilter.hxx
   itktubeMergeAdjacentImagesFilter.hxx
   itktubeMinimumSpanningTreeVesselConnectivityFilter.hxx
   itktubePadImageFilter.hxx
@@ -79,13 +86,14 @@ set( TubeTK_Base_Filtering_HXX_Files
   itktubeSheetnessMeasureImageFilter.hxx
   itktubeShrinkWithBlendingImageFilter.hxx
   itktubeSpatialObjectSource.hxx
-  itktubeSpatialObjectToImageFilter.hxx
   itktubeSpatialObjectToSpatialObjectFilter.hxx
   itktubeStructureTensorRecursiveGaussianImageFilter.hxx
   itktubeSubSampleTubeSpatialObjectFilter.hxx
   itktubeSubSampleTubeTreeSpatialObjectFilter.hxx
   itktubeTortuositySpatialObjectFilter.h
   itktubeTubeEnhancingDiffusion2DImageFilter.hxx
+  itktubeTubeSpatialObjectToDensityImageFilter.hxx
+  itktubeTubeSpatialObjectToImageFilter.hxx
   tubeImageFilters.hxx )
 
 # Add GPU Array Fire based filter source files here

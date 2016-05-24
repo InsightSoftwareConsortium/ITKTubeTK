@@ -41,8 +41,8 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-RegularStepGradientDescent
   COMMAND ${PROJ_EXE}
     MIDAS{Synthetic-04-Speed.mha.md5}
     ${TEMP}/${MODULE_NAME}-RegularStepGradientDescent.tre
-    --pathPoints 113.962,58.9872,115
-    --pathPoints 66.3718,113.141,76
+    --startPoint 113.962,58.9872,115
+    --targetPoint 66.3718,113.141,76
     --optimizer Regular_Step_Gradient_Descent
     --terminationValue 2
     --numberOfIterations 1000
@@ -63,8 +63,8 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-GradientDescent
   COMMAND ${PROJ_EXE}
     MIDAS{Synthetic-04-Speed.mha.md5}
     ${TEMP}/${MODULE_NAME}-GradientDescent.tre
-    --pathPoints 113.962,58.9872,115
-    --pathPoints 66.3718,113.141,76
+    --startPoint 113.962,58.9872,115
+    --targetPoint 66.3718,113.141,76
     --optimizer Gradient_Descent
     --terminationValue 2
     --numberOfIterations 1000 )
@@ -83,8 +83,8 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-IterateNeighborhood
   COMMAND ${PROJ_EXE}
     MIDAS{Synthetic-04-Speed.mha.md5}
     ${TEMP}/${MODULE_NAME}-IterateNeighborhood.tre
-    --pathPoints 113.962,58.9872,115
-    --pathPoints 66.3718,113.141,76
+    --startPoint 113.962,58.9872,115
+    --targetPoint 66.3718,113.141,76
     --optimizer Iterate_Neighborhood
     --terminationValue 2
     --stepLengthFactor 1 )

@@ -29,6 +29,8 @@ limitations under the License.
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
+#define PARSE_ARGS_INT_ONLY 1
+
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
@@ -37,7 +39,7 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef short                                               PixelType;
+  typedef TPixel                                              PixelType;
   typedef itk::Image< PixelType, VDimension >                 ImageType;
   typedef itk::ImageFileReader< ImageType >                   ReaderType;
 
@@ -89,7 +91,7 @@ int DoIt( int argc, char * argv[] )
       << metric->GetUnionOverlap() << std::endl;
     std::cout << "Mean Overlap (Dice Coefficient) = "
       << metric->GetMeanOverlap() << std::endl;
-    std::cout << "Similarity = " << metric->GetSimilarity()
+    std::cout << "Similarity = " << metric->GetVolumeSimilarity()
       << std::endl;
     std::cout << "False Negative Error = " << metric->GetFalseNegativeError()
       << std::endl;
@@ -106,7 +108,7 @@ int DoIt( int argc, char * argv[] )
       << metric->GetUnionOverlap() << std::endl;
     outFile << "Mean Overlap (Dice Coefficient) = "
       << metric->GetMeanOverlap() << std::endl;
-    outFile << "Similarity = " << metric->GetSimilarity()
+    outFile << "Similarity = " << metric->GetVolumeSimilarity()
       << std::endl;
     outFile << "False Negative Error = " << metric->GetFalseNegativeError()
       << std::endl;
@@ -114,7 +116,6 @@ int DoIt( int argc, char * argv[] )
       << std::endl;
     outFile.close();
     }
-
 
   return EXIT_SUCCESS;
 }

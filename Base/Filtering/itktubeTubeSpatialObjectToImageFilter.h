@@ -21,20 +21,13 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubeSpatialObjectToImageFilter_h
-#define __itktubeSpatialObjectToImageFilter_h
+#ifndef __itktubeTubeSpatialObjectToImageFilter_h
+#define __itktubeTubeSpatialObjectToImageFilter_h
 
 #include <itkSpatialObject.h>
 #include <itkSpatialObjectToImageFilter.h>
 #include <itkTubeSpatialObject.h>
 #include <itkTubeSpatialObjectPoint.h>
-
-// Forward declare TubeTKITK class to allow friendship
-namespace tube
-{
-template< unsigned int Dimension, typename TOutputPixel >
-class ConvertTubesToImage;
-}
 
 namespace itk
 {
@@ -141,18 +134,14 @@ private:
   typename RadiusImage::Pointer     m_RadiusImage;
   typename TangentImage::Pointer    m_TangentImage;
 
-  /** friendship facilitating TubeTKITK integration */
-  friend class ::tube::ConvertTubesToImage< ObjectDimension,
-    typename TOutputImage::PixelType >;
-
 }; // End class TubeSpatialObjectToImageFilter
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeSpatialObjectToImageFilter.hxx"
+#include "itktubeTubeSpatialObjectToImageFilter.hxx"
 #endif
 
 } // End namespace tube
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeSpatialObjectToImageFilter_h)
+#endif // End !defined(__itktubeTubeSpatialObjectToImageFilter_h)

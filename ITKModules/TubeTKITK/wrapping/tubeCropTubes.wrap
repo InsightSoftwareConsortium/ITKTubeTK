@@ -1,0 +1,8 @@
+itk_wrap_include( tubeCropTubes.h )
+
+itk_wrap_named_class("tube::CropTubes" tubeCropTubes POINTER)
+ foreach(d ${ITK_WRAP_IMAGE_DIMS})
+      itk_wrap_template("${d}"  "${d}")
+ endforeach()
+
+itk_end_wrap_class()

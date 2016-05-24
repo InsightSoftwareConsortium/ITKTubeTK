@@ -51,7 +51,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
 # Test1-Compare
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-Den
   COMMAND ${CompareImages_EXE}
-    -i 0.00001
+    -i 0.001
     -t ${TEMP}/${MODULE_NAME}Test1-Den.mha
     -b MIDAS{${MODULE_NAME}Test1-Den.mha.md5} )
 set_property( TEST ${MODULE_NAME}-Test1-Compare-Den

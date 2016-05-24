@@ -15,34 +15,37 @@
  *  limitations under the License.
  *
 *=========================================================================*/
-#ifndef __tubeComputeBinaryImageSimilarityMetrics_hxx
-#define __tubeComputeBinaryImageSimilarityMetrics_hxx
+#ifndef __tubeSegmentTubesUsingMinimalPath_hxx
+#define __tubeSegmentTubesUsingMinimalPath_hxx
 
-#include "tubeComputeBinaryImageSimilarityMetrics.h"
+#include "tubeSegmentTubesUsingMinimalPath.h"
 
 namespace tube
 {
-template< class TInputImage >
-ComputeBinaryImageSimilarityMetrics< TInputImage >
-::ComputeBinaryImageSimilarityMetrics( void )
+
+template< unsigned int Dimension, class TInputPixel >
+SegmentTubesUsingMinimalPath< Dimension, TInputPixel >
+::SegmentTubesUsingMinimalPath( void )
 {
   m_Filter = FilterType::New();
 }
 
-template< class TInputImage >
+template< unsigned int Dimension, class TInputPixel >
 void
-ComputeBinaryImageSimilarityMetrics< TInputImage >
+SegmentTubesUsingMinimalPath< Dimension, TInputPixel >
+::SetIntermediatePoints( std::vector< PointType > v )
+{
+  m_Filter->SetIntermediatePoints( v );
+}
+
+template< unsigned int Dimension, class TInputPixel >
+void
+SegmentTubesUsingMinimalPath< Dimension, TInputPixel >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
-  os << "TotalOverlap: " << this->GetTotalOverlap() << std::endl;
-  os << "UnionOverlap: " << this->GetUnionOverlap() << std::endl;
-  os << "MeanOverlap: " << this->GetMeanOverlap() << std::endl;
-  os << "Similarity: " << this->GetVolumeSimilarity() << std::endl;
-  os << "FalseNegativeError: " << this->GetFalseNegativeError() << std::endl;
-  os << "FalsePositiveError: " << this->GetFalsePositiveError() << std::endl;
 }
 
-} // end namespace tube
+}
 
 #endif
