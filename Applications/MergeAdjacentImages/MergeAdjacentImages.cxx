@@ -113,7 +113,7 @@ int DoIt( int argc, char * argv[] )
   // Perform merging
   timeCollector.Start( "Merging images" );
 
-  typedef tube::MergeAdjacentImages< TPixel, VDimension >
+  typedef tube::MergeAdjacentImages< ImageType >
     MergeAdjacentImagesFilterType;
 
   typename MergeAdjacentImagesFilterType::Pointer filter =
@@ -152,7 +152,7 @@ int DoIt( int argc, char * argv[] )
   try
     {
     writer->SetFileName( outputVolume.c_str() );
-    writer->SetInput( outImage );
+    writer->SetInput( filter->GetOutput() );
     writer->SetUseCompression( true );
     writer->Update();
     }
