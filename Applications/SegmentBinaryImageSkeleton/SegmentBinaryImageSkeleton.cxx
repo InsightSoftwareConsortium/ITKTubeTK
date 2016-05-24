@@ -25,9 +25,8 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 
-#include <itkBinaryBallStructuringElement.h>
-#include <itkBinaryDilateImageFilter.h>
-#include <itkBinaryThinningImageFilter.h>
+#include "itktubeSegmentBinaryImageSkeleton.h"
+
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkTimeProbesCollectorBase.h>
@@ -76,23 +75,16 @@ int DoIt( int argc, char * argv[] )
   double progress = 0.1;
   progressReporter.Report( progress );
 
-  typename ImageType::Pointer curImage = reader->GetOutput();
-
   timeCollector.Start("Binary Thinning");
-
-  typedef itk::BinaryThinningImageFilter< ImageType, ImageType >
-    FilterType;
-  typedef itk::BinaryBallStructuringElement< PixelType, VDimension>
-    SEType;
-  typedef itk::BinaryDilateImageFilter< ImageType, ImageType, SEType >
-    DilateType;
-
 
   // Progress per iteration
   double progressFraction = 0.8/VDimension;
 
+  typedef itk::tube::SegmentBinaryImageSkeleton<PixelType,VDimension>
+    FilterType;
   typename FilterType::Pointer filter = FilterType::New();
-  filter->SetInput( curImage );
+  filter->SetInput( reader->GetOutput() );
+  filter->SetRadius( radius );
   tube::CLIFilterWatcher watcher( filter,
                                   "Binary Thinning",
                                   CLPProcessInformation,
@@ -100,30 +92,15 @@ int DoIt( int argc, char * argv[] )
                                   progress,
                                   true );
   filter->Update();
-  curImage = filter->GetOutput();
   timeCollector.Stop("Binary Thinning");
 
-  if( radius > 0 )
-    {
-    typename DilateType::Pointer dilator;
 
-    SEType binaryBall;
-    binaryBall.SetRadius( radius );
-    binaryBall.CreateStructuringElement();
-    dilator = DilateType::New();
-    dilator->SetInput( curImage );
-    dilator->SetForegroundValue( 1 );
-    dilator->SetKernel( binaryBall );
-    dilator->Update();
-    curImage = dilator->GetOutput();
-    }
-  
   typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
 
   timeCollector.Start("Save data");
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput( curImage );
+  writer->SetInput( filter->GetOutput() );
   writer->SetUseCompression( true );
   try
     {
