@@ -25,7 +25,7 @@ limitations under the License.
 
 // ITK includes
 #include <itkBinaryThresholdImageFilter.h>
-#include <itkImageRegionIteratorWithIndex.h>
+#include <itkImageRegionConstIteratorWithIndex.h>
 #include <itkImageToImageRegistrationHelper.h>
 #include <itkSignedDanielssonDistanceMapImageFilter.h>
 #include <itkTimeProbesCollectorBase.h>
@@ -65,11 +65,27 @@ MergeAdjacentImagesFilter< TImage >
 }
 
 template< class TImage >
+const TImage *
+MergeAdjacentImagesFilter< TImage >
+::GetInput1( void )
+{
+  this->GetInput(0);
+}
+
+template< class TImage >
 void
 MergeAdjacentImagesFilter< TImage >
 ::SetInput2(const TImage* image)
 {
   this->SetInput(1, image);
+}
+
+template< class TImage >
+const TImage *
+MergeAdjacentImagesFilter< TImage >
+::GetInput2( void )
+{
+  this->GetInput(1);
 }
 
 template< class TImage >
@@ -93,7 +109,8 @@ void
 MergeAdjacentImagesFilter< TImage >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
-  SuperClass::PrintSelf(os, indent);
+  Superclass::PrintSelf(os, indent);
+
   os << "Background: " << m_Background << std::endl;
   os << "MaskZero: " << m_MaskZero << std::endl;
   os << "MaxIterations: " << m_MaxIterations << std::endl;
@@ -120,8 +137,6 @@ MergeAdjacentImagesFilter< TImage >
   // The timeCollector is used to perform basic profiling algorithm components
   // itk::TimeProbesCollectorBase timeCollector;
 
-  unsigned int VDimension = typename TImage::GetImageDimension();
-
   typename TImage::ConstPointer input1 = this->GetInput( 0 );
   typename TImage::ConstPointer input2 = this->GetInput( 1 );
 
@@ -130,9 +145,9 @@ MergeAdjacentImagesFilter< TImage >
 
   minX1Org = input1->GetLargestPossibleRegion().GetIndex();
 
-  if( m_Padding.size() == VDimension )
+  if( m_Padding.size() == ImageDimension )
     {
-    for( unsigned int i = 0; i < VDimension; i++ )
+    for( unsigned int i = 0; i < ImageDimension; i++ )
       {
       minX1Org[i] -= m_Padding[i];
       }
@@ -141,21 +156,34 @@ MergeAdjacentImagesFilter< TImage >
     input1->GetLargestPossibleRegion().GetSize();
 
   typename ImageType::IndexType maxX1Org;
-  for( unsigned int i = 0; i < VDimension; i++ )
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     maxX1Org[i] = minX1Org[i] + size1[i] - 1;
     }
-  if( m_Padding.size() == VDimension )
+  if( m_Padding.size() == ImageDimension )
     {
-    for( unsigned int i = 0; i < VDimension; i++ )
+    for( unsigned int i = 0; i < ImageDimension; i++ )
       {
       maxX1Org[i] += 2 * m_Padding[i];
       }
     }
 
+  typename ImageType::IndexType minXOut;
+  typename ImageType::IndexType maxXOut;
+  typename ImageType::SizeType  sizeOut;
+
+  minXOut = minX1Org;
+  maxXOut = maxX1Org;
+
+  for( unsigned int i = 0; i < ImageDimension; i++ )
+    {
+    sizeOut[i] = maxXOut[i] - minXOut[i] + 1;
+    }
+
   // read initial transform from file if specified
   bool useInitialTransform = false;
-  typedef itk::AffineTransform<double, VDimension >   AffineTransformType;
+  typedef itk::AffineTransform< double, ImageDimension >
+    AffineTransformType;
   typename AffineTransformType::ConstPointer initialTransform;
 
   if( ! m_InitialTransformFile.empty() )
@@ -188,9 +216,9 @@ MergeAdjacentImagesFilter< TImage >
   typename ImageType::IndexType minX2Org;
 
   minX2Org = input2->GetLargestPossibleRegion().GetIndex();
-  if( m_Padding.size() == VDimension )
+  if( m_Padding.size() == ImageDimension )
     {
-    for( unsigned int i = 0; i < VDimension; i++ )
+    for( unsigned int i = 0; i < ImageDimension; i++ )
       {
       minX2Org[i] -= m_Padding[i];
       }
@@ -211,13 +239,13 @@ MergeAdjacentImagesFilter< TImage >
 
   typename ImageType::IndexType maxX2;
   typename ImageType::IndexType maxX2Org;
-  for( unsigned int i = 0; i < VDimension; i++ )
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     maxX2Org[i] = minX2Org[i] + size2[i] - 1;
     }
-  if( m_Padding.size() == VDimension )
+  if( m_Padding.size() == ImageDimension )
     {
-    for( unsigned int i = 0; i < VDimension; i++ )
+    for( unsigned int i = 0; i < ImageDimension; i++ )
       {
       maxX2Org[i] += 2*m_Padding[i];
       }
@@ -230,19 +258,7 @@ MergeAdjacentImagesFilter< TImage >
   input1->TransformPhysicalPointToIndex( pointX, maxX2 );
 
   // compute min-max coord and size of output
-  typename ImageType::IndexType minXOut;
-  typename ImageType::IndexType maxXOut;
-  typename ImageType::SizeType  sizeOut;
-
-  minXOut = minX1Org;
-  maxXOut = maxX1Org;
-
-  for( unsigned int i = 0; i < VDimension; i++ )
-    {
-    sizeOut[i] = maxXOut[i] - minXOut[i] + 1;
-    }
-
-  for( unsigned int i = 0; i < VDimension; i++ )
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     if( minX2[i] < minXOut[i] )
       {
@@ -254,7 +270,7 @@ MergeAdjacentImagesFilter< TImage >
       }
     }
 
-  for( unsigned int i = 0; i < VDimension; i++ )
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     if( minX2[i] > maxXOut[i] )
       {
@@ -266,7 +282,7 @@ MergeAdjacentImagesFilter< TImage >
       }
     }
 
-  for( unsigned int i = 0; i < VDimension; i++ )
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     sizeOut[i] = maxXOut[i] - minXOut[i] + 1;
     }
@@ -285,7 +301,7 @@ MergeAdjacentImagesFilter< TImage >
   output->Allocate();
   output->FillBuffer( m_Background );
 
-  itk::ImageRegionIteratorWithIndex< ImageType > iter( input1,
+  itk::ImageRegionConstIteratorWithIndex< ImageType > iter( input1,
     input1->GetLargestPossibleRegion() );
   while( !iter.IsAtEnd() )
     {

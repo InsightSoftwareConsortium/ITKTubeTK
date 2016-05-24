@@ -57,11 +57,19 @@ public:
   /** Run-time type information (and related methods). */
   itkTypeMacro( MergeAdjacentImagesFilter, ImageToImageFilter );
 
+  itkStaticConstMacro( ImageDimension, unsigned int, TImage::ImageDimension );
+
   /** Set input image 1 */
-  void SetInput1( const ImageType * image );
+  virtual void SetInput1( const ImageType * image );
+
+  /** Get input image 1 */
+  virtual const ImageType * GetInput1( void );
 
   /** Set input image 2 */
-  void SetInput2( const ImageType * image );
+  virtual void SetInput2( const ImageType * image );
+
+  /** Get input image 2 */
+  virtual const ImageType * GetInput2( void );
 
   /** Set value used for output pixels that dont intersect with input image */
   itkSetMacro( Background, PixelType );
