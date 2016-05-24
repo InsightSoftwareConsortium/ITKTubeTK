@@ -31,7 +31,7 @@ namespace tube
 
 template< class TImage >
 MergeAdjacentImages< TImage >
-::MergeAdjacent( void )
+::MergeAdjacentImages()
 {
   m_Filter = FilterType::New();
 }

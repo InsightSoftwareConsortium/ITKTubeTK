@@ -38,7 +38,7 @@ namespace tube
  *  \ingroup TubeTKITK
  */
 
-template< TImage >
+template< class TImage >
 class MergeAdjacentImages:
   public itk::Object
 {
