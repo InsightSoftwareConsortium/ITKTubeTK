@@ -17,7 +17,8 @@ set( TubeTKITK_DEPENDS
   Common
   Numerics
   Filtering
-  Segmentation  )
+  Segmentation
+  Registration )
 
 set( TubeTKITK_LIBRARIES )
 foreach( component ${TubeTKITK_DEPENDS} )
