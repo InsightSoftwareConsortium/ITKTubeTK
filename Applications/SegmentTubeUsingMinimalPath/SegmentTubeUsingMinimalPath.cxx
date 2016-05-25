@@ -97,7 +97,6 @@ int DoIt( int argc, char * argv[] )
       {
       reader->Update();
       filter->SetRadiusImage( reader->GetOutput() );
-      filter->SetExtractRadius( true );
       filter->SetStartRadius( StartRadius );
       filter->SetMaxRadius( MaxRadius );
       filter->SetStepSizeForRadiusEstimation( StepRadius );
@@ -121,8 +120,7 @@ int DoIt( int argc, char * argv[] )
       {
       tubeFileReader->SetFileName( TargetTubeFileName.c_str() );
       tubeFileReader->Update();
-      filter->SetInput( tubeFileReader->GetGroup() );
-      filter->SetExtractEndPointFromTargetTube( true );
+      filter->SetTargetTubeGroup( tubeFileReader->GetGroup() );
       if( ConnectionOption == "Connect_To_Target_Tube_Surface" )
         {
         filter->SetConnectToTargetTubeSurface( true );
@@ -135,11 +133,6 @@ int DoIt( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    }
-  else
-    {
-    typename TubeGroupType::Pointer inputTubeGroup =TubeGroupType::New();
-    filter->SetInput( inputTubeGroup );
     }
 
   timeCollector.Stop( "Load data" );
@@ -165,19 +158,19 @@ int DoIt( int argc, char * argv[] )
     }
 
   if( IntermediatePoints.size() >= 1 )
-  {
-  std::vector< PointType > intermediatePathPoints;
-  for( unsigned int k = 0; k < IntermediatePoints.size(); k++ )
     {
-    PointType pathPoint;
-    for( unsigned int i = 0; i < DimensionT; i++ )
+    std::vector< PointType > intermediatePathPoints;
+    for( unsigned int k = 0; k < IntermediatePoints.size(); k++ )
       {
-       pathPoint[i]=IntermediatePoints[k][i];
+      PointType pathPoint;
+      for( unsigned int i = 0; i < DimensionT; i++ )
+        {
+         pathPoint[i]=IntermediatePoints[k][i];
+        }
+      intermediatePathPoints.push_back( pathPoint );
       }
-    intermediatePathPoints.push_back( pathPoint );
+    filter->SetIntermediatePoints( intermediatePathPoints );
     }
-  filter->SetIntermediatePoints( intermediatePathPoints );
-  }
 
   if( EndPoint.size() == 1 )
     {

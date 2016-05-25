@@ -29,15 +29,14 @@ namespace itk
 {
 namespace tube
 {
-template< class TInputSpatialObject, class TInputImage >
-SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
+template< unsigned int Dimension, class TInputPixel >
+SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
 ::SegmentTubesUsingMinimalPathFilter( void )
 {
   m_SpeedImage = NULL;
   m_RadiusImage = NULL;
-  m_ExtractEndPointFromTargetTube = false;
+  m_TargetTubeGroup = NULL;
   m_ConnectToTargetTubeSurface = false;
-  m_ExtractRadius = false;
   m_OptimizationMethod = "Regular_Step_Gradient_Descent";
   m_OptimizerTerminationValue = 2.0;
   m_OptimizerNumberOfIterations = 2000;
@@ -47,24 +46,23 @@ SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
   m_MaxRadius = 6;
   m_StepSizeForRadiusEstimation = 0.5;
   m_CostAssociatedWithExtractedTube = 0.0;
+  m_Output = NULL;
 }
 
-template< class TInputSpatialObject, class TInputImage >
+template< unsigned int Dimension, class TInputPixel >
 void
-SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
+SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
 ::SetIntermediatePoints( std::vector< PointType > pathPoints )
 {
   m_IntermediatePoints = pathPoints;
 }
 
-template< class TInputSpatialObject, class TInputImage >
+template< unsigned int Dimension, class TInputPixel >
 void
-SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
-::GenerateData( void )
+SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
+::Update( void )
 {
-  const InputSpatialObjectType * targetSpatialObject = this->GetInput();
-
-  typedef itk::PolyLineParametricPath< ImageDimension > PathType;
+  typedef itk::PolyLineParametricPath< Dimension > PathType;
   typedef itk::SpeedFunctionToPathFilter
     < InputImageType, PathType > PathFilterType;
   typedef itk::LinearInterpolateImageFunction< InputImageType, double >
@@ -81,9 +79,9 @@ SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
   typename TransformType::OffsetType offsetVector;
   typename InputImageType::SpacingType spacing = m_SpeedImage->GetSpacing();
   typename InputImageType::PointType origin = m_SpeedImage->GetOrigin();
-  double tubeSpacing[ImageDimension];
+  double tubeSpacing[Dimension];
 
-  for ( unsigned int k = 0; k < ImageDimension; ++k )
+  for ( unsigned int k = 0; k < Dimension; ++k )
     {
     scaleVector[k] = spacing[k];
     offsetVector[k] = origin[k];
@@ -97,10 +95,10 @@ SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
     {
     pathInfo->AddWayPoint( m_IntermediatePoints[i] );
     }
-  if( m_ExtractEndPointFromTargetTube )
+  if( m_TargetTubeGroup )
     {
     PointType pointPath;
-    this->IsPointTooNear( targetSpatialObject, m_StartPoint, pointPath );
+    this->IsPointTooNear( m_TargetTubeGroup, m_StartPoint, pointPath );
     pathInfo->SetEndPoint( pointPath );
     }
   else
@@ -123,8 +121,8 @@ SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
     typename OptimizerType::Pointer optimizer = OptimizerType::New();
     optimizer->MinimizeOn();
     optimizer->FullyConnectedOn();
-    typename OptimizerType::NeighborhoodSizeType size( ImageDimension );
-    for( unsigned int i = 0; i < ImageDimension; i++ )
+    typename OptimizerType::NeighborhoodSizeType size( Dimension );
+    for( unsigned int i = 0; i < Dimension; i++ )
       {
       size[i] = m_SpeedImage->GetSpacing()[i] * m_OptimizerStepLengthFactor;
       }
@@ -143,7 +141,7 @@ SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
     {
     // Compute the minimum spacing
     double minspacing = spacing[0];
-    for( unsigned int dim = 0; dim < ImageDimension; dim++ )
+    for( unsigned int dim = 0; dim < Dimension; dim++ )
       {
       if ( spacing[dim] < minspacing )
         {
@@ -179,16 +177,16 @@ SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
     }
 
   // Create output TRE file
-  typename InputSpatialObjectType::Pointer outputTubeGroup = this->GetOutput();
+  m_Output =InputSpatialObjectType::New();
 
   // Update tubes transform
-  outputTubeGroup->GetObjectToParentTransform()->SetScale(
+  m_Output->GetObjectToParentTransform()->SetScale(
     scaleVector );
-  outputTubeGroup->GetObjectToParentTransform()->SetOffset(
+  m_Output->GetObjectToParentTransform()->SetOffset(
     offsetVector );
-  outputTubeGroup->GetObjectToParentTransform()->SetMatrix(
+  m_Output->GetObjectToParentTransform()->SetMatrix(
     m_SpeedImage->GetDirection() );
-  outputTubeGroup->ComputeObjectToWorldTransform();
+  m_Output->ComputeObjectToWorldTransform();
   m_CostAssociatedWithExtractedTube = 0.0;
   for ( unsigned int i = 0; i < pathFilter->GetNumberOfOutputs(); i++ )
     {
@@ -221,13 +219,13 @@ SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
         {
         PointType nearPoint;
         bool isNear = this->IsPointTooNear
-          ( targetSpatialObject, pathPoint, nearPoint );
+          ( m_TargetTubeGroup, pathPoint, nearPoint );
         if( isNear )
           {
           continue;
           }
         }
-      for( unsigned int d = 0; d < ImageDimension; d++ )
+      for( unsigned int d = 0; d < Dimension; d++ )
         {
         pathPoint[d]=( pathPoint[d] - origin[d] ) / spacing[d];
         }
@@ -243,7 +241,7 @@ SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
     pTube->SetId( i );
 
     // Extract Radius
-    if( m_ExtractRadius )
+    if( m_RadiusImage )
       {
       typedef itk::tube::RadiusExtractor2< InputImageType >
         RadiusExtractorType;
@@ -259,14 +257,14 @@ SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
       radiusExtractor->ExtractRadii( pTube );
       }
 
-    outputTubeGroup->AddSpatialObject( pTube );
-    outputTubeGroup->ComputeObjectToWorldTransform();
+    m_Output->AddSpatialObject( pTube );
+    m_Output->ComputeObjectToWorldTransform();
     }
 }
 
-template< class  TInputSpatialObject, class TInputImage  >
+template< unsigned int Dimension, class TInputPixel >
 bool
-SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
+SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
 ::IsPointTooNear( const InputSpatialObjectType * sourceTubeGroup,
               PointType outsidePoint,
               PointType &nearestPoint )
@@ -310,7 +308,7 @@ SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
       if( minDistance > distance )
         {
         minDistance = distance;
-        for( unsigned int i = 0; i < ImageDimension; i++ )
+        for( unsigned int i = 0; i < Dimension; i++ )
           {
           nearestPoint[i] = curSourcePos[i];
           }
@@ -328,9 +326,9 @@ SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
     }
 }
 
-template< class TInputSpatialObject, class TInputImage >
+template< unsigned int Dimension, class TInputPixel >
 void
-SegmentTubesUsingMinimalPathFilter< TInputSpatialObject, TInputImage >
+SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
