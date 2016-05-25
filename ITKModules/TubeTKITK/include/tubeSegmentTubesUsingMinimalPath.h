@@ -45,13 +45,14 @@ public:
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 
-  typedef itk::Image< TInputPixel, Dimension >       InputImageType;
-  typedef typename InputImageType::Pointer           InputImagePointer;
-  typedef itk::GroupSpatialObject< Dimension >       TubeGroupType;
-  typedef typename TubeGroupType::Pointer            TubeGroupPointer;
   typedef itk::tube::SegmentTubesUsingMinimalPathFilter
-    < TubeGroupType, InputImageType >                FilterType;
-  typedef typename FilterType::PointType             PointType;
+    < Dimension, TInputPixel >                       FilterType;
+
+  typedef typename FilterType::InputImageType         InputImageType;
+  typedef typename InputImageType::Pointer            InputImagePointer;
+  typedef typename FilterType::InputSpatialObjectType TubeGroupType;
+  typedef typename TubeGroupType::Pointer             TubeGroupPointer;
+  typedef typename FilterType::PointType              PointType;
 
 
   /** Method for creation through the object factory. */
@@ -60,9 +61,8 @@ public:
   /** Run-time type information (and related methods). */
   itkTypeMacro( SegmentTubesUsingMinimalPath, Object );
 
-  /* Set input tubes */
-  tubeWrapSetMacro(Input, TubeGroupPointer, Filter );
-  tubeWrapGetConstObjectMacro(Input, TubeGroupType, Filter );
+  /* Set target tubes */
+  tubeWrapSetMacro( TargetTubeGroup, TubeGroupPointer, Filter );
 
   /** Set speed Image */
   tubeWrapSetMacro( SpeedImage, InputImagePointer, Filter );
@@ -78,15 +78,8 @@ public:
   /* Set end point for the path */
   tubeWrapSetMacro( EndPoint, PointType, Filter );
 
-  /* Set whether to extract the traget/end point
-  of the path from a target tube */
-  tubeWrapSetMacro( ExtractEndPointFromTargetTube, bool, Filter );
-
   /* Set if the extract path connects to the surface of the target tube */
   tubeWrapSetMacro( ConnectToTargetTubeSurface, bool, Filter );
-
-  /* Set whtheer to extract radius of the new tube. */
-  tubeWrapSetMacro( ExtractRadius, bool, Filter );
 
   /* Set Optimization method parameters. */
   tubeWrapSetMacro( OptimizationMethod, std::string, Filter );

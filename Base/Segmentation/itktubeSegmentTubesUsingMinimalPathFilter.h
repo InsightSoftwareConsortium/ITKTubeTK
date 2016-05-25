@@ -29,10 +29,9 @@
 #include "itkPolyLineParametricPath.h"
 #include "itkGradientDescentOptimizer.h"
 #include "itkNumericTraits.h"
-
+#include "itkObject.h"
 //TubeTK imports
 #include "itktubeRadiusExtractor2.h"
-#include "itktubeSpatialObjectToSpatialObjectFilter.h"
 
 namespace itk
 {
@@ -46,35 +45,28 @@ namespace tube
  *
  */
 
-template< class TInputSpatialObject, class TInputImage >
-class SegmentTubesUsingMinimalPathFilter:
-  public SpatialObjectToSpatialObjectFilter
-  < TInputSpatialObject, TInputSpatialObject >
+template< unsigned int Dimension, class TInputPixel >
+class SegmentTubesUsingMinimalPathFilter: public Object
 {
 public:
   /** Standard class typedefs. */
   typedef SegmentTubesUsingMinimalPathFilter              Self;
-  typedef SpatialObjectToSpatialObjectFilter
-    < TInputSpatialObject, TInputSpatialObject >          Superclass;
+  typedef Object                                          Superclass;
   typedef SmartPointer< Self >                            Pointer;
   typedef SmartPointer< const Self >                      ConstPointer;
-
-  typedef TInputSpatialObject                      InputSpatialObjectType;
-  typedef TInputImage                              InputImageType;
+  typedef itk::Image< TInputPixel, Dimension >            InputImageType;
+  typedef itk::GroupSpatialObject< Dimension >            InputSpatialObjectType;
+  typedef typename InputSpatialObjectType::Pointer        TubeGroupPointer;
+  typedef itk::Point< double, Dimension >                 PointType;
+  typedef itk::VesselTubeSpatialObjectPoint< Dimension >  TubePointType;
+  typedef itk::VesselTubeSpatialObject< Dimension >       TubeType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
   itkTypeMacro
-    (SegmentTubesUsingMinimalPathFilter, SpatialObjectToSpatialObjectFilter);
-
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       TInputImage::ImageDimension );
-
-  typedef itk::Point< double, ImageDimension >                PointType;
-  typedef itk::VesselTubeSpatialObjectPoint< ImageDimension > TubePointType;
-  typedef itk::VesselTubeSpatialObject< ImageDimension >      TubeType;
+    ( SegmentTubesUsingMinimalPathFilter, Object );
 
   itkSetMacro( SpeedImage, typename InputImageType::Pointer );
   itkGetMacro( SpeedImage, typename InputImageType::Pointer );
@@ -84,12 +76,8 @@ public:
   itkGetMacro( StartPoint, PointType );
   itkSetMacro( EndPoint, PointType );
   itkGetMacro( EndPoint, PointType );
-  itkSetMacro( ExtractEndPointFromTargetTube, bool );
-  itkGetMacro( ExtractEndPointFromTargetTube, bool );
   itkSetMacro( ConnectToTargetTubeSurface, bool );
   itkGetMacro( ConnectToTargetTubeSurface, bool );
-  itkSetMacro( ExtractRadius, bool );
-  itkGetMacro( ExtractRadius, bool );
   itkSetMacro( OptimizationMethod, std::string );
   itkGetMacro( OptimizationMethod, std::string );
   itkSetMacro( OptimizerTerminationValue, double );
@@ -108,31 +96,32 @@ public:
   itkGetMacro( StepSizeForRadiusEstimation, double );
   itkGetMacro( CostAssociatedWithExtractedTube, double );
   itkSetMacro( CostAssociatedWithExtractedTube, double );
+  /** Sets the input tubes */
+  itkSetMacro( TargetTubeGroup, TubeGroupPointer );
+  itkGetMacro( TargetTubeGroup, TubeGroupPointer );
+  itkGetMacro( Output, TubeGroupPointer );
 
   void SetIntermediatePoints( std::vector< PointType > );
+  void Update( void );
 protected:
   SegmentTubesUsingMinimalPathFilter( void );
   ~SegmentTubesUsingMinimalPathFilter() {}
 
-  void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
-
-  virtual void GenerateData( void );
+  void PrintSelf(std::ostream & os, Indent indent) const;
   bool IsPointTooNear( const InputSpatialObjectType * sourceTubeGroup,
               PointType outsidePoint,
               PointType &nearestPoint );
 private:
-
-  SegmentTubesUsingMinimalPathFilter(const Self &);
-  void operator=(const Self &);
+  SegmentTubesUsingMinimalPathFilter( const Self & );
+  void operator=( const Self & );
 
   typename InputImageType::Pointer  m_SpeedImage;
   typename InputImageType::Pointer  m_RadiusImage;
   PointType                         m_StartPoint;
   PointType                         m_EndPoint;
   std::vector< PointType >          m_IntermediatePoints;
-  bool                              m_ExtractEndPointFromTargetTube;
+  TubeGroupPointer                  m_TargetTubeGroup;
   bool                              m_ConnectToTargetTubeSurface;
-  bool                              m_ExtractRadius;
   std::string                       m_OptimizationMethod;
   double                            m_OptimizerTerminationValue;
   int                               m_OptimizerNumberOfIterations;
@@ -142,6 +131,7 @@ private:
   double                            m_MaxRadius;
   double                            m_StepSizeForRadiusEstimation;
   double                            m_CostAssociatedWithExtractedTube;
+  TubeGroupPointer                  m_Output;
 
 }; //End class SegmentTubesUsingMinimalPathFilter
 } // End namespace tube
