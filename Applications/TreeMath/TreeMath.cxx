@@ -20,142 +20,15 @@
 =========================================================================*/
 #include <iostream>
 #include <sstream>
-
-#include "metaScene.h"
-
 #include "tubeMessage.h"
 #include "tubeMacro.h"
 #include "TreeMathCLP.h"
-
-#include "itkGroupSpatialObject.h"
-#include "itkSpatialObjectReader.h"
-#include "itkSpatialObjectWriter.h"
-#include "itkVesselTubeSpatialObject.h"
-#include "itkNumericTraits.h"
-
 #include <metaCommand.h>
 
-template< unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
-
-template< unsigned int VDimension >
-void InterpolatePath(
-  typename itk::VesselTubeSpatialObject< VDimension >::TubePointType *
-  parentNearestPoint,
-  typename itk::VesselTubeSpatialObject< VDimension >::TubePointType *
-  itkNotUsed( childEndPoint ),
-  typename itk::VesselTubeSpatialObject< VDimension >::PointListType &
-  newTubePoints,
-  char InterpolationMethod )
-{
-  if( InterpolationMethod == 'S' )
-    {
-    newTubePoints.push_back( *parentNearestPoint );
-    }
-  return;
-}
-
-template< unsigned int VDimension >
-void FillGap( typename itk::GroupSpatialObject< VDimension >::Pointer &
-  pTubeGroup, char InterpolationMethod )
-{
-  //typedefs
-  typedef itk::GroupSpatialObject< VDimension >         TubeGroupType;
-  typedef typename TubeGroupType::ChildrenListPointer   TubeListPointerType;
-  typedef itk::VesselTubeSpatialObject< VDimension >    TubeType;
-  typedef typename TubeType::Pointer                    TubePointerType;
-  typedef typename TubeType::TubePointType              TubePointType;
-  typedef typename TubeType::PointType                  PositionType;
-  typedef itk::IndexValueType                           TubeIdType;
-  typedef typename TubeType::PointListType              TubePointListType;
-
-  char tubeName[] = "Tube";
-  TubeListPointerType pTubeList = pTubeGroup->GetChildren(
-    pTubeGroup->GetMaximumDepth(), tubeName );
-
-  for( typename TubeGroupType::ChildrenListType::iterator itSourceTubes =
-    pTubeList->begin(); itSourceTubes != pTubeList->end(); ++itSourceTubes )
-    {
-    TubePointerType pCurTube = dynamic_cast< TubeType * >(
-      itSourceTubes->GetPointer() );
-    TubeIdType curParentTubeId = pCurTube->GetParentId();
-    TubePointType* parentNearestPoint = NULL;
-
-    if( pCurTube->GetRoot() == false && curParentTubeId !=
-      pTubeGroup->GetId() )
-      {
-      //find parent target tube
-      for( typename TubeGroupType::ChildrenListType::iterator itTubes =
-        pTubeList->begin(); itTubes != pTubeList->end(); ++itTubes )
-        {
-        TubePointerType pTube = dynamic_cast< TubeType * >(
-          itTubes->GetPointer() );
-        if( pTube->GetId() == curParentTubeId )
-          {
-          double minDistance = itk::NumericTraits<double>::max();
-          int flag =-1;
-          for ( unsigned int index = 0; index < pTube->GetNumberOfPoints();
-            ++index )
-            {
-            TubePointType* tubePoint = dynamic_cast< TubePointType* >(
-              pTube->GetPoint( index ) );
-            PositionType tubePointPosition = tubePoint->GetPosition();
-            double distance = tubePointPosition.SquaredEuclideanDistanceTo(
-              pCurTube->GetPoint( 0 )->GetPosition() );
-            if( minDistance > distance )
-              {
-              minDistance = distance;
-              parentNearestPoint = tubePoint;
-              flag = 1;
-              }
-            distance = tubePointPosition.SquaredEuclideanDistanceTo(
-              pCurTube->GetPoint( pCurTube->GetNumberOfPoints() - 1 )
-              ->GetPosition() );
-            if( minDistance > distance )
-              {
-              minDistance = distance;
-              parentNearestPoint = tubePoint;
-              flag = 2;
-              }
-            }
-
-          TubePointListType newTubePoints;
-          if( flag == 1 )
-            {
-            TubePointType* childTubeStartPoint = dynamic_cast<
-              TubePointType* >( pCurTube->GetPoint( 0 ) );
-            InterpolatePath< VDimension >(parentNearestPoint,
-              childTubeStartPoint, newTubePoints, InterpolationMethod );
-            TubePointListType targetTubePoints = pCurTube->GetPoints();
-            pCurTube->Clear();
-            for( unsigned int index = 0; index < newTubePoints.size();
-              ++index )
-              {
-              pCurTube->GetPoints().push_back( newTubePoints[ index ] );
-              }
-            for( unsigned int i = 0; i < targetTubePoints.size(); ++i )
-              {
-              pCurTube->GetPoints().push_back( targetTubePoints[ i ] );
-              }
-            }
-          if( flag == 2 )
-            {
-            TubePointType* childTubeEndPoint =
-              dynamic_cast< TubePointType* >
-              ( pCurTube->GetPoint( pCurTube->GetNumberOfPoints() - 1 ) );
-            InterpolatePath< VDimension >( parentNearestPoint,
-              childTubeEndPoint, newTubePoints, InterpolationMethod );
-            for( int index = newTubePoints.size() - 1; index >= 0; index-- )
-              {
-              pCurTube->GetPoints().push_back( newTubePoints[ index ] );
-              }
-            }
-          break;
-          }
-        }
-      }
-    }
-}
+//TubeTK imports
+#include "itkSpatialObjectReader.h"
+#include "itkSpatialObjectWriter.h"
+#include "tubeTreeFilters.h"
 
 template< unsigned int VDimension >
 int DoIt( MetaCommand & command )
@@ -218,7 +91,7 @@ int DoIt( MetaCommand & command )
     else if( it->name == "FillGapsInTubeTree" )
       {
       tubeStandardOutputMacro( << "\n>> Filling gaps in input tree" );
-      FillGap< VDimension >( inputTubes, command.GetValueAsString( *it,
+      tube::TreeFilters< VDimension >::FillGap( inputTubes, command.GetValueAsString( *it,
         "InterpolationMethod" ).c_str()[0] );
       }
     ++it;
