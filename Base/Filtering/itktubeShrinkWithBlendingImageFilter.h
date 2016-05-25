@@ -113,6 +113,7 @@ public:
   typedef typename TOutputImage::OffsetType     OutputOffsetType;
 
   typedef typename TOutputImage::RegionType     OutputImageRegionType;
+  typedef typename TInputImage::SizeType        InputSizeType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
                        TInputImage::ImageDimension );
@@ -128,8 +129,10 @@ public:
 
   /** Set the shrink factors. Values are clamped to
    * a minimum value of 1. Default is 1 for all dimensions. */
-  itkSetMacro( ShrinkFactors, ShrinkFactorsType );
+  itkSetMacro(ShrinkFactors, ShrinkFactorsType);
   void SetShrinkFactor(unsigned int i, unsigned int factor);
+  itkGetMacro(NewSize, InputSizeType);
+  itkSetMacro(NewSize, InputSizeType);
 
   /** Get the shrink factors. */
   itkGetConstReferenceMacro(ShrinkFactors, ShrinkFactorsType);
@@ -162,7 +165,10 @@ protected:
 
   void ThreadedGenerateData( const OutputImageRegionType &
     outputRegionForThread, ThreadIdType threadId );
-
+  void UpdateInternalShrinkFactors();
+  void VerifyInputInformation();
+  template<class ArrayType>
+  bool NotValue(ArrayType array, double val, double tolerance=0.00001);
 private:
   ShrinkWithBlendingImageFilter( const Self & ); //purposely not implemented
   void operator=( const Self & );            //purposely not implemented
@@ -177,7 +183,11 @@ private:
   bool m_BlendWithMax;
   bool m_BlendWithGaussianWeighting;
 
-  ShrinkFactorsType m_ShrinkFactors;
+  ShrinkFactorsType                  m_ShrinkFactors;
+  ShrinkFactorsType                  m_InternalShrinkFactors;
+  double                             m_DefaultShrinkFactor;
+  double                             m_DefaultNewSize;
+  InputSizeType                      m_NewSize;
 
 };
 
