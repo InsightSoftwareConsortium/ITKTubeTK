@@ -69,6 +69,7 @@ public:
      * a minimum value of 1. Default is 1 for all dimensions. */
     tubeWrapSetMacro(ShrinkFactors,ShrinkFactorsType,ShrinkWithBlendingFilter)
     void SetShrinkFactor(unsigned int i, unsigned int factor);
+    unsigned int GetShrinkFactor(unsigned int i);
 
     tubeWrapSetMacro(NewSize,InputSizeType,ShrinkWithBlendingFilter);
     tubeWrapGetMacro(NewSize,InputSizeType,ShrinkWithBlendingFilter);

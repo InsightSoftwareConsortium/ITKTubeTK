@@ -131,6 +131,7 @@ public:
    * a minimum value of 1. Default is 1 for all dimensions. */
   itkSetMacro(ShrinkFactors, ShrinkFactorsType);
   void SetShrinkFactor(unsigned int i, unsigned int factor);
+  unsigned int GetShrinkFactor(unsigned int i);
   itkGetMacro(NewSize, InputSizeType);
   itkSetMacro(NewSize, InputSizeType);
 

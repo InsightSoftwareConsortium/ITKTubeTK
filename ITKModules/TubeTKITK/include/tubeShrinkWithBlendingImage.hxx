@@ -37,6 +37,29 @@ ShrinkWithBlendingImage< TInputImage, TOutputImage >
   m_ShrinkWithBlendingFilter = FilterType::New();
 }
 
+template< class TInputImage, class TOutputImage >
+void
+ShrinkWithBlendingImage< TInputImage, TOutputImage >
+::SetShrinkFactor(unsigned int i, unsigned int factor)
+{
+  if( m_ShrinkWithBlendingFilter->GetShrinkFactor(i) != factor )
+    {
+    m_ShrinkWithBlendingFilter->SetShrinkFactor(i,factor);
+    this->Modified();
+    }
+}
+
+/**
+ *
+ */
+template< class TInputImage, class TOutputImage >
+unsigned int
+ShrinkWithBlendingImage< TInputImage, TOutputImage >
+::GetShrinkFactor(unsigned int i)
+{
+  return m_ShrinkWithBlendingFilter->GetShrinkFactor(i);
+}
+
 /**
  *
  */

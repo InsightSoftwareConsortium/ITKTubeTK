@@ -129,6 +129,14 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
   m_ShrinkFactors[i] = factor;
 }
 
+template< typename TInputImage, typename TOutputImage >
+unsigned int
+ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
+::GetShrinkFactor(unsigned int i)
+{
+  return m_ShrinkFactors[i];
+}
+
 
 /**
  *
