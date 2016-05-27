@@ -31,6 +31,8 @@ set( CMAKE_MODULE_PATH ${TubeTK_CMAKE_EXTENSIONS_DIR} ${CMAKE_MODULE_PATH} )
 
 include( ExternalProject )
 include( TubeTKExternalProjectDependency )
+include( CMakeDependentOption )
+include( TubeTKCheckPythonLibrary )
 
 # Set TubeTK version and output directories.
 #
@@ -361,92 +363,43 @@ endif( TubeTK_BUILD_USING_SLICER )
 option( TubeTK_USE_PYTHON "Use Python to enable additional functionality."
   ${TubeTK_USE_PYTHON_DEFAULT} )
 
+TubeTKCheckPythonLibraries(FOUND_OUTPUT TubeTK_USE_NUMPY_STACK_DEPENDENCIES_FOUND
+                           LIBRARIES numpy scipy)
+CMAKE_DEPENDENT_OPTION(TubeTK_USE_NUMPY_STACK "Use NumPy to enable additional functionality."
+                       ${TubeTK_USE_NUMPY_STACK_DEPENDENCIES_FOUND}
+                       "TubeTK_USE_PYTHON" OFF)
+TubeTKCheckPythonLibraries(FOUND_OUTPUT TubeTK_USE_PYQTGRAPH_DEPENDENCIES_FOUND
+                           LIBRARIES pyqtgraph)
+CMAKE_DEPENDENT_OPTION(TubeTK_USE_PYQTGRAPH "Use PyQtGraph to enable additional functionality."
+                       ${TubeTK_USE_PYQTGRAPH_DEPENDENCIES_FOUND}
+                       "TubeTK_USE_PYTHON" OFF)
+TubeTKCheckPythonLibraries(FOUND_OUTPUT TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS_DEPENDENCIES_FOUND
+                           LIBRARIES IPython tornado zmq jinja2 tables matplotlib)
+CMAKE_DEPENDENT_OPTION(TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS "Test TubeTK python examples as (long running) tests."
+                       ${TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS_DEPENDENCIES_FOUND}
+                       "TubeTK_USE_PYTHON" OFF)
 if( TubeTK_USE_PYTHON )
 
   find_package( PythonInterp REQUIRED )
   find_package( PythonLibs REQUIRED )
 
-  include( TubeTKCheckPythonLibrary )
-
   # NumPy conversion support.
-  option( TubeTK_USE_NUMPY_STACK "Use NumPy to enable additional functionality." ON )
-  mark_as_advanced( CLEAR TubeTK_USE_NUMPY_STACK )
-  TubeTKCheckPythonLibrary( numpy )
-  if( TubeTK_USE_NUMPY_STACK AND NOT numpy_FOUND )
-    message( FATAL_ERROR "numpy was not found. Set TubeTK_USE_NUMPY_STACK to OFF" )
+  if( TubeTK_USE_NUMPY_STACK )
+    TubeTKCheckPythonLibraries(REQUIRED LIBRARIES numpy scipy
+                               ERROR_MESSAGE "Set TubeTK_USE_NUMPY_STACK to OFF")
   endif()
-  TubeTKCheckPythonLibrary( scipy )
-  if( TubeTK_USE_NUMPY_STACK AND NOT scipy_FOUND )
-    message( FATAL_ERROR "scipy was not found. Set TubeTK_USE_NUMPY_STACK to OFF" )
-  endif()
-
   # PyQtGraph bridge support.
-  option( TubeTK_USE_PYQTGRAPH
-    "Use PyQtGraph to enable additional functionality." ON )
-  mark_as_advanced( CLEAR TubeTK_USE_PYQTGRAPH )
-  TubeTKCheckPythonLibrary( pyqtgraph )
-  if( TubeTK_USE_PYQTGRAPH AND NOT pyqtgraph_FOUND )
-    message( FATAL_ERROR
-      "pyqtgraph was not found. Set TubeTK_USE_PYQTGRAPH to OFF" )
+  if( TubeTK_USE_PYQTGRAPH )
+    TubeTKCheckPythonLibraries(REQUIRED LIBRARIES pyqtgraph
+                               ERROR_MESSAGE "Set TubeTK_USE_PYQTGRAPH to OFF")
   endif()
-
   #
   # Setup examples as tests
   #
-  option( TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS
-    "Test TubeTK python examples as (long running) tests." OFF )
-  mark_as_advanced( CLEAR TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS )
-
   if( TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS )
-    TubeTKCheckPythonLibrary( IPython )
-    if( NOT IPython_FOUND )
-      message(FATAL_ERROR
-        "IPython was not found. Set TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS to OFF")
-    endif()
-    TubeTKCheckPythonLibrary( tornado )
-    if( NOT tornado_FOUND )
-      message(FATAL_ERROR
-        "tornado was not found. Set TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS to OFF")
-    endif()
-    TubeTKCheckPythonLibrary( zmq )
-    if( NOT zmq_FOUND )
-      message(FATAL_ERROR
-        "pyzmq was not found. Set TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS to OFF")
-    endif()
-    TubeTKCheckPythonLibrary( jinja2 )
-    if( NOT jinja2_FOUND )
-      message(FATAL_ERROR
-        "jinja2 was not found. Set TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS to OFF")
-    endif()
-    TubeTKCheckPythonLibrary( tables )
-    if( NOT tables_FOUND )
-      message(FATAL_ERROR
-        "tables was not found. Set TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS to OFF")
-    endif()
-    TubeTKCheckPythonLibrary( matplotlib )
-    if( NOT matplotlib_FOUND )
-      message(FATAL_ERROR
-        "matplotlib was not found. Set TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS to OFF")
-    endif()
+    TubeTKCheckPythonLibraries(REQUIRED LIBRARIES IPython tornado zmq jinja2 tables matplotlib
+                               ERROR_MESSAGE "Set TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS to OFF")
   endif()
-
-else( TubeTK_USE_PYTHON )
-
-  # NumPy conversion support.
-  set( TubeTK_USE_NUMPY_STACK OFF CACHE BOOL
-    "Use NumPy to enable additional functionality." FORCE )
-  mark_as_advanced( TubeTK_USE_NUMPY_STACK )
-
-  # PyQtGraph bridge support.
-  set( TubeTK_USE_PYQTGRAPH OFF CACHE BOOL
-    "Use PyQtGraph to enable additional functionality." FORCE )
-  mark_as_advanced( TubeTK_USE_PYQTGRAPH )
-
-  # PyQtGraph bridge support.
-  set( TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS OFF CACHE BOOL
-    "Test TubeTK python examples as (long running) tests." FORCE )
-  mark_as_advanced( TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS )
-
 endif( TubeTK_USE_PYTHON )
 
 #
