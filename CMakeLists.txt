@@ -363,21 +363,12 @@ endif( TubeTK_BUILD_USING_SLICER )
 option( TubeTK_USE_PYTHON "Use Python to enable additional functionality."
   ${TubeTK_USE_PYTHON_DEFAULT} )
 
-TubeTKCheckPythonLibraries(FOUND_OUTPUT TubeTK_USE_NUMPY_STACK_DEPENDENCIES_FOUND
-                           LIBRARIES numpy scipy)
-CMAKE_DEPENDENT_OPTION(TubeTK_USE_NUMPY_STACK "Use NumPy to enable additional functionality."
-                       ${TubeTK_USE_NUMPY_STACK_DEPENDENCIES_FOUND}
+CMAKE_DEPENDENT_OPTION(TubeTK_USE_NUMPY_STACK "Use NumPy to enable additional functionality." ON
+                                              "TubeTK_USE_PYTHON" OFF)
+CMAKE_DEPENDENT_OPTION(TubeTK_USE_PYQTGRAPH "Use PyQtGraph to enable additional functionality." ON
                        "TubeTK_USE_PYTHON" OFF)
-TubeTKCheckPythonLibraries(FOUND_OUTPUT TubeTK_USE_PYQTGRAPH_DEPENDENCIES_FOUND
-                           LIBRARIES pyqtgraph)
-CMAKE_DEPENDENT_OPTION(TubeTK_USE_PYQTGRAPH "Use PyQtGraph to enable additional functionality."
-                       ${TubeTK_USE_PYQTGRAPH_DEPENDENCIES_FOUND}
-                       "TubeTK_USE_PYTHON" OFF)
-TubeTKCheckPythonLibraries(FOUND_OUTPUT TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS_DEPENDENCIES_FOUND
-                           LIBRARIES IPython tornado zmq jinja2 tables matplotlib)
 CMAKE_DEPENDENT_OPTION(TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS "Test TubeTK python examples as (long running) tests."
-                       ${TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS_DEPENDENCIES_FOUND}
-                       "TubeTK_USE_PYTHON" OFF)
+                       ON "TubeTK_USE_PYTHON" OFF)
 if( TubeTK_USE_PYTHON )
 
   find_package( PythonInterp REQUIRED )
