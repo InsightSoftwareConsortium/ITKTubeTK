@@ -109,7 +109,7 @@ private:
   typename ImageType::Pointer             m_MatchImage;
   int                                     m_SamplingFactor;
   bool                                    m_UseInverseTransform;
-  typename BaseTransformListType*         m_ReadTransformList;
+  BaseTransformListType*                  m_ReadTransformList;
   typename DisplacementFieldType::Pointer m_DisplacementField;
   typename TubeGroupType::Pointer         m_InputSpatialObject;
 
