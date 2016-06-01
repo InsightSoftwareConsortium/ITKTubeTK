@@ -36,6 +36,16 @@ ComputeImageStatistics< TPixel, VDimension >
 }
 
 
+/** Write statistics to a CSV formatted file */
+template< class TPixel, unsigned int VDimension >
+void
+ComputeImageStatistics< TPixel, VDimension >
+::WriteCSVStatistics( std::string csvStatisticsFile ) const
+{
+  m_Filter->WriteCSVStatistics( csvStatisticsFile );
+}
+
+
 template< class TPixel, unsigned int VDimension >
 void
 ComputeImageStatistics< TPixel, VDimension >

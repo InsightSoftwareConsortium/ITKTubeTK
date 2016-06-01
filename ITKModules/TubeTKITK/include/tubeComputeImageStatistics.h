@@ -82,8 +82,10 @@ public:
   /** Compute image statistics */
   tubeWrapUpdateMacro(Filter);
 
+  /** Write statistics to a CSV formatted file */
+  void WriteCSVStatistics( std::string csvStatisticsFile ) const;
 
-  /** Set/Get input image 2 */
+  /** Set/Get input image */
   tubeWrapSetConstObjectMacro( Input, VolumeType, Filter );
   tubeWrapGetConstObjectMacro( Input, VolumeType, Filter );
 
