@@ -34,7 +34,8 @@ set( TubeTK_Base_Segmentation_H_Files
   itktubeRadiusExtractor2.h
   itktubeRidgeExtractor.h
   itktubeSegmentTubesUsingMinimalPathFilter.h
-  itktubeTubeExtractor.h )
+  itktubeTubeExtractor.h
+  itktubeComputeTrainingMask.h)
 if( TubeTK_USE_LIBSVM )
   list( APPEND TubeTK_Base_Segmentation_H_Files
     itktubePDFSegmenterSVM.h
@@ -47,7 +48,8 @@ set( TubeTK_Base_Segmentation_HXX_Files
   itktubeRadiusExtractor2.hxx
   itktubeRidgeExtractor.hxx
   itktubeSegmentTubesUsingMinimalPathFilter.hxx
-  itktubeTubeExtractor.hxx )
+  itktubeTubeExtractor.hxx
+  itktubeComputeTrainingMask.hxx)
 if( TubeTK_USE_LIBSVM )
   list( APPEND TubeTK_Base_Segmentation_HXX_Files
     itktubePDFSegmenterSVM.hxx

@@ -11,27 +11,27 @@
   <parameters>
     <label>IO</label>
     <description>Input/output parameters.</description>
-    <file>
+    <image>
       <name>inputVolume</name>
       <label>Input Expert Mask</label>
       <channel>input</channel>
       <index>0</index>
       <description>Input Volume Expert Mask</description>
-    </file>
-    <file>
+    </image>
+    <image>
       <name>outputVolume</name>
       <label>Output Vessel Mask</label>
       <channel>output</channel>
       <index>1</index>
       <description>Output Vessel Mask</description>
-    </file>
-    <file>
+    </image>
+    <image>
       <name>notVesselMask</name>
       <label>Output Not-Vessel Mask</label>
       <channel>output</channel>
       <longflag>notVesselMask</longflag>
       <description>Output Not-Vessel Mask</description>
-    </file>
+    </image>
     <double>
       <name>gap</name>
       <label>Gap</label>
