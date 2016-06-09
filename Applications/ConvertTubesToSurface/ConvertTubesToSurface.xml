@@ -22,9 +22,16 @@
       <name>outputSurfaceFile</name>
       <label>Output Surface File</label>
       <index>1</index>
-      <channel>output</channel>
+      <channel>input</channel>
       <description>File to place the rendered tube wall.</description>
     </file>
+    <geometry>
+      <name>outputCenterline</name>
+      <label>Centerline</label>
+      <channel>output</channel>
+      <index>2</index>
+      <description><![CDATA[Output centerline]]></description>
+    </geometry>
   </parameters>
   <parameters>
     <label>Rendering Options</label>
