@@ -16,32 +16,32 @@
       <label>Input Expert Mask</label>
       <channel>input</channel>
       <index>0</index>
-      <description>Input Volume Expert Mask</description>
+      <description>Input image file containing the expert marked vessel.</description>
     </image>
     <image>
       <name>outputVolume</name>
       <label>Output Vessel Mask</label>
       <channel>output</channel>
       <index>1</index>
-      <description>Output Vessel Mask</description>
+      <description>Output image file containing vessel mask.</description>
     </image>
     <image>
       <name>notVesselMask</name>
       <label>Output Not-Vessel Mask</label>
       <channel>output</channel>
       <longflag>notVesselMask</longflag>
-      <description>Output Not-Vessel Mask</description>
+      <description>The not-vessel expert mask is saved as an image in the location specified by the string "notVesselMask".</description>
     </image>
     <double>
       <name>gap</name>
       <label>Gap</label>
-      <description>Required : Gap</description>
+      <description>A double value specifying the gap between the vessel region marked by an expert and the not-vessel region.</description>
       <longflag>gap</longflag>
     </double>
     <double>
       <name>notVesselWidth</name>
       <label>Not Vessel Width</label>
-      <description>Required : Not Vessel Width</description>
+      <description>A double value specifying the width around the region marked as vessel by an expert, that would be regarded as not-vessel expert mask.</description>
       <longflag>notVesselWidth</longflag>
     </double>
   </parameters>
