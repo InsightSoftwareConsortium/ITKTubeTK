@@ -19,8 +19,8 @@
    limitations under the License.
 =========================================================================*/
 
-#ifndef __itktubeComputeTrainingMask_h
-#define __itktubeComputeTrainingMask_h
+#ifndef __itktubeComputeTrainingMaskFilter_h
+#define __itktubeComputeTrainingMaskFilter_h
 
 #include <itkImageToImageFilter.h>
 
@@ -44,16 +44,16 @@ namespace tube
 /**
  * This class returns expert vessel and not vessel mask.
  *
- * \sa ComputeTrainingMask
+ * \sa ComputeTrainingMaskFilter
  */
 
 template< class TInputImage >
-class ComputeTrainingMask:
+class ComputeTrainingMaskFilter:
         public ImageToImageFilter< TInputImage,
                                    itk::Image<short,TInputImage::ImageDimension> >
 {
 public:
-  typedef ComputeTrainingMask                             Self;
+  typedef ComputeTrainingMaskFilter                       Self;
   typedef ImageToImageFilter<TInputImage,TInputImage>     Superclass;
   typedef SmartPointer<Self>                              Pointer;
   typedef SmartPointer<const Self>                        ConstPointer;
@@ -67,10 +67,12 @@ public:
   const ImageTypeShort* GetNotVesselMask();
   itkSetMacro(Gap,double);
   itkSetMacro(NotVesselWidth,double);
+  itkGetMacro(Gap,double);
+  itkGetMacro(NotVesselWidth,double);
 
 protected:
-  ComputeTrainingMask();
-  virtual ~ComputeTrainingMask();
+  ComputeTrainingMaskFilter();
+  virtual ~ComputeTrainingMaskFilter();
   virtual void GenerateData();
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
@@ -94,7 +96,7 @@ private:
   typedef itk::CastImageFilter< ImageType, ImageTypeShort >
   CastFilterType;
 
-  ComputeTrainingMask( const Self& );
+  ComputeTrainingMaskFilter( const Self& );
   void operator=( const Self& );
   void ApplyDilateMorphologyFilter( typename ImageType::Pointer &input );
 
@@ -117,7 +119,7 @@ private:
 }//end of itk namespace
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubeComputeTrainingMask.hxx"
+#include "itktubeComputeTrainingMaskFilter.hxx"
 #endif
 
 #endif

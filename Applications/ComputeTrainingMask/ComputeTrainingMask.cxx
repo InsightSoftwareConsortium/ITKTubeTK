@@ -26,7 +26,7 @@
 #include "tubeMacro.h"
 #include "ComputeTrainingMaskCLP.h"
 
-#include <itktubeComputeTrainingMask.h>
+#include <tubeComputeTrainingMask.h>
 #include <itkTimeProbesCollectorBase.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -90,7 +90,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
   timeCollector.Start( "Compute training mask" );
   tube::InfoMessage( "Compute training mask..." );
-  typedef itk::tube::ComputeTrainingMask<ImageType> ComputeTrainingMaskType;
+  typedef tube::ComputeTrainingMask<ImageType> ComputeTrainingMaskType;
   typename ComputeTrainingMaskType::Pointer filter = ComputeTrainingMaskType::New();
   filter->SetInput(imReader->GetOutput());
   filter->SetGap(gap);

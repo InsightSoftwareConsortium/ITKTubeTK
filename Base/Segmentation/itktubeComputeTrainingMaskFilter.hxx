@@ -20,10 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __itktubeComputeTrainingMask_hxx
-#define __itktubeComputeTrainingMask_hxx
+#ifndef __itktubeComputeTrainingMaskFilter_hxx
+#define __itktubeComputeTrainingMaskFilter_hxx
 
-#include "itktubeComputeTrainingMask.h"
+#include "itktubeComputeTrainingMaskFilter.h"
 
 namespace itk
 {
@@ -31,8 +31,8 @@ namespace tube
 {
 
 template< class TInputImage >
-ComputeTrainingMask< TInputImage >
-::ComputeTrainingMask()
+ComputeTrainingMaskFilter< TInputImage >
+::ComputeTrainingMaskFilter()
 {
   m_Gap = 0;
   m_NotVesselWidth = 1.0;
@@ -73,7 +73,7 @@ ComputeTrainingMask< TInputImage >
 
 template< class TInputImage >
 void
-ComputeTrainingMask< TInputImage >
+ComputeTrainingMaskFilter< TInputImage >
 ::ApplyDilateMorphologyFilter( typename ImageType::Pointer &input )
 {
   for ( int r = 0; r<m_NotVesselWidth; r++ )
@@ -88,7 +88,7 @@ ComputeTrainingMask< TInputImage >
 
 template< class TInputImage >
 void
-ComputeTrainingMask< TInputImage >
+ComputeTrainingMaskFilter< TInputImage >
 ::GenerateData()
 {
   typename ImageType::Pointer input = ImageType::New();
@@ -122,22 +122,22 @@ ComputeTrainingMask< TInputImage >
 }
 
 template< class TInputImage >
-const typename ComputeTrainingMask< TInputImage >::ImageTypeShort*
-ComputeTrainingMask< TInputImage >
+const typename ComputeTrainingMaskFilter< TInputImage >::ImageTypeShort*
+ComputeTrainingMaskFilter< TInputImage >
 ::GetNotVesselMask()
 {
   return itkDynamicCastInDebugMode< ImageTypeShort * >( this->GetOutput(1) );
 }
 
 template< class TInputImage >
-ComputeTrainingMask< TInputImage >
-::~ComputeTrainingMask()
+ComputeTrainingMaskFilter< TInputImage >
+::~ComputeTrainingMaskFilter()
 {
 }
 
 template< class TInputImage >
 void
-ComputeTrainingMask< TInputImage >
+ComputeTrainingMaskFilter< TInputImage >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   os << indent << "Gap = " << m_Gap << std::endl;
