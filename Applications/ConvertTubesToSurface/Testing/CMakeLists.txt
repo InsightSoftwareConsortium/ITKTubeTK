@@ -52,7 +52,7 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
     ${TEMP}/${MODULE_NAME}-Test2.stl
     )
 
-# Test2
+# Test3
 Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3
   COMMAND ${PROJ_EXE}
     MIDAS{Branch-truth-new.tre.md5}
@@ -60,3 +60,20 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3
     )
 set_tests_properties( ${MODULE_NAME}-Test3
   PROPERTIES WILL_FAIL true )
+
+# Test4
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4
+  COMMAND ${PROJ_EXE}
+    MIDAS{ConvertTubesToSurfaceTestFile.tre.md5}
+    ${TEMP}/${MODULE_NAME}-Test4_Surface.vtk
+    --centerline ${TEMP}/${MODULE_NAME}-Test4_Centerline.vtp)
+
+# Test5 - Compare - Surface
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare-Surface
+  COMMAND ${CompareTextFiles_EXE}
+    -t ${TEMP}/${MODULE_NAME}-Test4_Surface.vtk
+    -b MIDAS{ConvertTubesToSurfaceTestFile_Surface.vtk.md5}
+    -d 0.01 )
+
+set_property( TEST ${MODULE_NAME}-Test4-Compare-Surface
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )

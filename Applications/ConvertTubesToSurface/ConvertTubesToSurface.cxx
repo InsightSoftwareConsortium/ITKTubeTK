@@ -289,13 +289,14 @@ int DoIt( int argc, char * argv[] )
 #endif
   tubeSurfaceFilter->Update();
 
-
-  vtkSmartPointer<vtkXMLPolyDataWriter> centerlineVTKwriter =
-    vtkSmartPointer<vtkXMLPolyDataWriter>::New();
-  centerlineVTKwriter->SetInputData( tubesPolyData.GetPointer() );
-  centerlineVTKwriter->SetFileName( outputCenterline.c_str() );
-  centerlineVTKwriter->Write();
-
+  if( !outputCenterline.empty() )
+    {
+    vtkSmartPointer<vtkXMLPolyDataWriter> centerlineVTKwriter =
+      vtkSmartPointer<vtkXMLPolyDataWriter>::New();
+    centerlineVTKwriter->SetInputData( tubesPolyData.GetPointer() );
+    centerlineVTKwriter->SetFileName( outputCenterline.c_str() );
+    centerlineVTKwriter->Write();
+    }
   timeCollector.Stop( "Convert to surface" );
 
   progress = 0.6;

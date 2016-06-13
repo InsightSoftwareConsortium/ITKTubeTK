@@ -28,9 +28,9 @@
     <geometry>
       <name>outputCenterline</name>
       <label>Centerline</label>
-      <channel>output</channel>
-      <index>2</index>
       <description><![CDATA[Output centerline]]></description>
+      <channel>output</channel>
+      <longflag>centerline</longflag>
     </geometry>
   </parameters>
   <parameters>
