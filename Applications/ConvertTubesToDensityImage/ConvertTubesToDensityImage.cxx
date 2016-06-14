@@ -53,7 +53,6 @@ int DoIt( int argc, char * argv[] )
   typedef tube::ConvertTubesToDensityImage<
   TPixel, Dimension > TubeToDensityImageBuilderType;
 
-  typedef typename TubeToDensityImageBuilderType::TubeGroupType  TubesType;
   typedef itk::SpatialObjectReader< Dimension >         TubesReaderType;
 
 
