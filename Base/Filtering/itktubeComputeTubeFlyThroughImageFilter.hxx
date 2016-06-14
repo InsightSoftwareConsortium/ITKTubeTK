@@ -85,7 +85,7 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
     {
     // std::cout m_TubeId << " == " << (*itTubes)->GetId() << std::endl;
 
-    if( (*itTubes)->GetId() == m_TubeId )
+    if( static_cast< unsigned long >( ( *itTubes )->GetId() ) == m_TubeId )
       {
       inputTube = dynamic_cast< TubeType * >( itTubes->GetPointer() );
 

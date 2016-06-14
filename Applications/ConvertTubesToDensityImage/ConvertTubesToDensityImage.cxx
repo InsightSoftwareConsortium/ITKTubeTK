@@ -86,7 +86,7 @@ int DoIt( int argc, char * argv[] )
     typename TemplateImageType::Pointer imT = imTemplateReader->GetOutput();
     typename TubeToDensityImageBuilderType::SizeType size;
     double spacing[Dimension];
-    for( int i = 0; i < Dimension; i++ )
+    for( unsigned int i = 0; i < Dimension; i++ )
       {
       size[i] = imT->GetLargestPossibleRegion().GetSize()[i];
       spacing[i] = imT->GetSpacing()[i];
@@ -106,7 +106,7 @@ int DoIt( int argc, char * argv[] )
       return -1;
       }
     typename TubeToDensityImageBuilderType::SizeType sizeValue;
-    for( int i = 0; i < Dimension; i++ )
+    for( unsigned int i = 0; i < Dimension; i++ )
       {
       sizeValue[i] = outputSize[i];
       }
@@ -118,7 +118,7 @@ int DoIt( int argc, char * argv[] )
       return -1;
       }
     double sp[Dimension];
-    for( int i = 0; i < Dimension; i++ )
+    for( unsigned int i = 0; i < Dimension; i++ )
       {
       sp[i] = outputSpacing[i];
       }
