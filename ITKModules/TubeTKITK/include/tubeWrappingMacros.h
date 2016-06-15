@@ -111,13 +111,16 @@ limitations under the License.
       this->m_##wrap_filter_object_name->Set##name( value );                  \
       this->Modified();                                                       \
       }                                                                       \
+
+/** Redirect call to a function of the same named in the wrapped filter */
+#define tubeWrapCallMacro( name, wrap_filter_object_name )   \
+  void name()                                                \
+    {                                                        \
+    this->m_##wrap_filter_object_name->name();               \
     }
 
-/** call update of filter in which the logic resides */
-#define tubeWrapUpdateMacro( wrap_filter_object_name )                \
-  virtual void Update()                                               \
-    {                                                                 \
-    this->m_##wrap_filter_object_name->Update();                      \
-    }                                                                 \
+/** Redirect call to Update() wrapped filter's Update() */
+#define tubeWrapUpdateMacro( wrap_filter_object_name )                        \
+  tubeWrapCallMacro(Update,wrap_filter_object_name)                           \
 
 #endif

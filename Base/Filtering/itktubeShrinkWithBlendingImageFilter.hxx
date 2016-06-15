@@ -75,11 +75,16 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
   m_BlendWithMean = false;
   m_BlendWithGaussianWeighting = false;
 
+  m_DefaultShrinkFactor = 1.0;
+  m_DefaultNewSize = 0.0;
   for( unsigned int j = 0; j < ImageDimension; j++ )
     {
     m_ShrinkFactors[j] = 1;
+    m_NewSize[j] = 0;
+    m_InternalShrinkFactors = 1;
     }
 }
+
 
 /**
  *
@@ -91,7 +96,14 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 {
   Superclass::PrintSelf( os, indent );
 
-  os << indent << "Overlap" << m_Overlap << std::endl;
+  os << indent << "Overlap:" << m_Overlap << std::endl;
+  os << indent << "ShrinkFactors:" << m_ShrinkFactors << std::endl;
+  os << indent << "NewSize:" << m_NewSize << std::endl;
+  os << indent << "BlendWithMean:" << m_BlendWithMean << std::endl;
+  os << indent << "BlendWithMax:"<< m_BlendWithMax << std::endl;
+  os << indent << "BlendWithGaussianWeighting:"
+     << m_BlendWithGaussianWeighting << std::endl;
+  os << indent << "UseLog:"<< m_UseLog << std::endl;
 
   if( m_PointImage.IsNotNull() )
     {
@@ -117,6 +129,15 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
   m_ShrinkFactors[i] = factor;
 }
 
+template< typename TInputImage, typename TOutputImage >
+unsigned int
+ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
+::GetShrinkFactor(unsigned int i)
+{
+  return m_ShrinkFactors[i];
+}
+
+
 /**
  *
  */
@@ -133,7 +154,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
   typename TOutputImage::SizeType factorSize;
   for( unsigned int i = 0; i < TInputImage::ImageDimension; i++ )
     {
-    factorSize[ i ] = this->GetShrinkFactors()[ i ];
+    factorSize[ i ] = m_InternalShrinkFactors[ i ];
     }
 
   // Define a few indices that will be used to transform from an input pixel
@@ -309,6 +330,83 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
     }
 }
 
+template< class TInputImage, class TOutputImage >
+template <typename ArrayType>
+bool
+ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
+::NotValue(ArrayType array, double val, double tolerance)
+{
+  for( unsigned int i = 0; i < ImageDimension; i++)
+    {
+    if( abs(array[i]-val) > tolerance )
+      {
+      return true;
+      }
+    }
+  return false;
+}
+
+template< class TInputImage, class TOutputImage >
+void
+ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
+::VerifyInputInformation()
+{
+  bool useNewSize;
+  bool useShrinkFactors;
+  useNewSize = this->NotValue(m_NewSize,m_DefaultNewSize);
+  useShrinkFactors = this->NotValue(m_ShrinkFactors,m_DefaultShrinkFactor);
+  if( useNewSize && useShrinkFactors)
+    {
+    itkExceptionMacro(<< "Only set a new size or shrink factors. Reset either to 0.");
+    }
+  if( !useNewSize && !useShrinkFactors)
+    {
+    itkExceptionMacro(<< "Set either a new size or shrink factors.");
+    }
+  Superclass::VerifyInputInformation();
+}
+
+
+/**
+ *
+ */
+template< class TInputImage, class TOutputImage >
+void
+ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
+::UpdateInternalShrinkFactors()
+{
+  if( this->NotValue(m_ShrinkFactors,m_DefaultShrinkFactor))
+    {
+    m_InternalShrinkFactors = m_ShrinkFactors;
+    return;
+    }
+  bool warnSize = false;
+  InputImagePointer  inputPtr = const_cast< TInputImage * >(
+    this->GetInput() );
+  const typename TOutputImage::SizeType & inputSize =
+    inputPtr->GetLargestPossibleRegion().GetSize();
+  for( unsigned int i = 0; i < ImageDimension; ++i )
+    {
+    m_InternalShrinkFactors[ i ] = static_cast< int >( inputSize[ i ] / m_NewSize[ i ] );
+    if( static_cast< int >( inputSize[ i ] / m_InternalShrinkFactors[ i ] )
+        != m_NewSize[ i ] )
+      {
+      warnSize = true;
+      }
+    }
+  if( warnSize )
+    {
+    itkWarningMacro(<< "Warning: Need for integer resampling factor causes "
+                        "output size to not match target m_NewSize given.");
+    for( unsigned int i = 0; i < ImageDimension; ++i )
+      {
+      itkWarningMacro(<< "   m_NewSize [" << i << "] = " << m_NewSize[ i ]);
+      itkWarningMacro(<< "   outSize [" << i << "] = " << static_cast< int >(
+      inputSize[ i ] / m_InternalShrinkFactors[ i ] ));
+      }
+    }
+}
+
 /**
  *
  */
@@ -342,7 +440,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
   typename TOutputImage::SizeType factorSize;
   for( unsigned int i = 0; i < TInputImage::ImageDimension; i++ )
     {
-    factorSize[ i ] = this->GetShrinkFactors()[ i ];
+    factorSize[ i ] = m_InternalShrinkFactors[ i ];
     }
 
   InputIndexType                   inputRequestedRegionStartIndex;
@@ -404,14 +502,20 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
   typename TOutputImage::SizeType outputSize;
   typename TOutputImage::IndexType outputStartIndex;
 
+  // Check that only one of the two parameter to compute the
+  // new size is given (ShrinkFactors,NewSize)
+
+  // Update shrink factors if new size given
+  this->UpdateInternalShrinkFactors();
+
   for( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
     {
     outputSpacing[i] = inputSpacing[i]
-      * (double)this->GetShrinkFactors()[i];
+      * (double)m_InternalShrinkFactors[i];
 
     // Round down so that all output pixels fit input input region
     outputSize[i] = static_cast<SizeValueType>( std::floor(
-      (double)inputSize[i] / (double)this->GetShrinkFactors()[i] ) );
+      (double)inputSize[i] / (double)m_InternalShrinkFactors[i] ) );
 
     if( outputSize[i] < 1 )
       {
