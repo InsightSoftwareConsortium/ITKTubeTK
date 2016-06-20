@@ -387,8 +387,10 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
     inputPtr->GetLargestPossibleRegion().GetSize();
   for( unsigned int i = 0; i < ImageDimension; ++i )
     {
-    m_InternalShrinkFactors[ i ] = static_cast< int >( inputSize[ i ] / m_NewSize[ i ] );
-    if( static_cast< int >( inputSize[ i ] / m_InternalShrinkFactors[ i ] )
+    m_InternalShrinkFactors[ i ] =
+      static_cast< unsigned int >( inputSize[ i ] / m_NewSize[ i ] );
+    if( static_cast< unsigned int >
+      ( inputSize[ i ] / m_InternalShrinkFactors[ i ] )
         != m_NewSize[ i ] )
       {
       warnSize = true;

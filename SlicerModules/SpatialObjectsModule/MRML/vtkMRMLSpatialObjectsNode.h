@@ -187,7 +187,7 @@ protected:
   std::map< int, std::vector<double> >    m_DefaultColorMap;
 
 private:
-  void Reset( vtkMRMLNode* defaultNode ) {};
+  void Reset( vtkMRMLNode* ) {};
 }; // End class vtkMRMLSpatialObjectsNode
 
 #endif // End !defined(__vtkMRMLSpatialObjectsNode_h)
