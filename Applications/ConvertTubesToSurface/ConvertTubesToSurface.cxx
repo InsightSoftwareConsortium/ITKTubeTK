@@ -41,6 +41,8 @@ limitations under the License.
 #include <vtkTubeFilter.h>
 #include <vtkTriangleFilter.h>
 #include <vtkVersion.h>
+#include <vtkSmartPointer.h>
+#include <vtkXMLPolyDataWriter.h>
 
 #include "ConvertTubesToSurfaceCLP.h"
 
@@ -88,6 +90,7 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
   GroupSpatialObjectType::Pointer groupSpatialObject = reader->GetGroup();
+  groupSpatialObject->ComputeObjectToWorldTransform();
   std::ostringstream ostrm;
   ostrm << "Number of children = "
     << groupSpatialObject->GetNumberOfChildren();
@@ -198,14 +201,16 @@ int DoIt( int argc, char * argv[] )
          ++pointIt, ++pointId, ++index )
       {
       TubeSpatialObjectType::PointType point = pointIt->GetPosition();
+      TubeSpatialObjectType::PointType curSourcePosIndexSpace =
+        tube->GetIndexToWorldTransform()->TransformPoint(
+        point );
       pointIds[index] = pointId;
 
       // Insert points using the element spacing information.
       tubeSpatialPoints->SetPoint( pointId,
-                              point[0],
-                              point[1] * axesRatio[1] / axesRatio[0],
-                              point[2] * axesRatio[2] / axesRatio[0] );
-
+                             -1 * curSourcePosIndexSpace[0],
+                             -1 * curSourcePosIndexSpace[1],
+                              curSourcePosIndexSpace[2] );
       // TubeId
       tubeIds->SetTuple1( pointId, tube->GetId() );
 
@@ -284,6 +289,14 @@ int DoIt( int argc, char * argv[] )
 #endif
   tubeSurfaceFilter->Update();
 
+  if( !outputCenterline.empty() )
+    {
+    vtkSmartPointer<vtkXMLPolyDataWriter> centerlineVTKwriter =
+      vtkSmartPointer<vtkXMLPolyDataWriter>::New();
+    centerlineVTKwriter->SetInputData( tubesPolyData.GetPointer() );
+    centerlineVTKwriter->SetFileName( outputCenterline.c_str() );
+    centerlineVTKwriter->Write();
+    }
   timeCollector.Stop( "Convert to surface" );
 
   progress = 0.6;

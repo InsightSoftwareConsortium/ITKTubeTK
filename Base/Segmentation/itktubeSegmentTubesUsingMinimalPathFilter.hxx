@@ -91,7 +91,7 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
   typedef itk::SpeedFunctionPathInformation< PointType > PathInformationType;
   typename PathInformationType::Pointer pathInfo = PathInformationType::New();
   pathInfo->SetStartPoint( m_StartPoint );
-  for( int i = 0; i < m_IntermediatePoints.size(); i++ )
+  for( unsigned int i = 0; i < m_IntermediatePoints.size(); i++ )
     {
     pathInfo->AddWayPoint( m_IntermediatePoints[i] );
     }
