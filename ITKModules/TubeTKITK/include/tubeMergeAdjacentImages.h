@@ -24,11 +24,15 @@ limitations under the License.
 #define __tubeMergeAdjacentImages_h
 
 // ITK includes
+#include <itkMacro.h>
 #include <itkObject.h>
 
 // TubeTK includes
 #include "itktubeMergeAdjacentImagesFilter.h"
 #include "tubeWrappingMacros.h"
+
+// standard includes
+#include <string>
 
 namespace tube
 {
@@ -40,7 +44,7 @@ namespace tube
 
 template< class TImage >
 class MergeAdjacentImages:
-  public itk::Object
+  public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */

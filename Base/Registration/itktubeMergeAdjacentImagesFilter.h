@@ -28,7 +28,8 @@ limitations under the License.
 #include <vector>
 
 // ITK includes
-#include <itkImageToImageFilter.h>
+#include <itkMacro.h>
+#include <itkImageSource.h>
 
 namespace itk
 {
@@ -38,12 +39,12 @@ namespace tube
 
 template< typename TImage >
 class MergeAdjacentImagesFilter :
-  public ImageToImageFilter< TImage, TImage >
+  public ImageSource< TImage >
 {
 public:
 
   typedef MergeAdjacentImagesFilter                          Self;
-  typedef ImageToImageFilter< TImage, TImage >               Superclass;
+  typedef ImageSource< TImage >                              Superclass;
   typedef SmartPointer< Self >                               Pointer;
   typedef SmartPointer< const Self >                         ConstPointer;
 
@@ -55,7 +56,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( MergeAdjacentImagesFilter, ImageToImageFilter );
+  itkTypeMacro( MergeAdjacentImagesFilter, ImageSource );
 
   itkStaticConstMacro( ImageDimension, unsigned int, TImage::ImageDimension );
 
@@ -63,13 +64,13 @@ public:
   virtual void SetInput1( const ImageType * image );
 
   /** Get input image 1 */
-  virtual const ImageType * GetInput1( void );
+  itkGetConstObjectMacro( Input1, ImageType );
 
   /** Set input image 2 */
   virtual void SetInput2( const ImageType * image );
 
   /** Get input image 2 */
-  virtual const ImageType * GetInput2( void );
+  itkGetConstObjectMacro( Input2, ImageType );
 
   /** Set value used for output pixels that dont intersect with input image */
   itkSetMacro( Background, PixelType );
@@ -155,6 +156,9 @@ private:
   bool                                   m_UseFastBlending;
   std::string                            m_InitialTransformFile;
   std::string                            m_OutputTransformFile;
+
+  typename ImageType::ConstPointer       m_Input1;
+  typename ImageType::ConstPointer       m_Input2;
 
 };  // End class MergeAdjacentImagesFilter
 

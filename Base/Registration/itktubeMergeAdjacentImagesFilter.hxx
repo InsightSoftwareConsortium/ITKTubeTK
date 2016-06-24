@@ -44,7 +44,7 @@ template< class TImage >
 MergeAdjacentImagesFilter< TImage >
 ::MergeAdjacentImagesFilter( void )
 {
-  this->SetNumberOfRequiredInputs(2);
+  this->SetNumberOfRequiredInputs( 2 );
 
   m_Background = 0;
   m_MaskZero = false;
@@ -61,15 +61,12 @@ void
 MergeAdjacentImagesFilter< TImage >
 ::SetInput1(const TImage* image)
 {
-  this->SetInput(0, image);
-}
-
-template< class TImage >
-const TImage *
-MergeAdjacentImagesFilter< TImage >
-::GetInput1( void )
-{
-  this->GetInput(0);
+  if( this->m_Input1.GetPointer() != image )
+    {
+    this->m_Input1 = image;
+    this->ProcessObject::SetNthInput( 0, const_cast<ImageType *>( image ) );
+    this->Modified();
+    }
 }
 
 template< class TImage >
@@ -77,15 +74,12 @@ void
 MergeAdjacentImagesFilter< TImage >
 ::SetInput2(const TImage* image)
 {
-  this->SetInput(1, image);
-}
-
-template< class TImage >
-const TImage *
-MergeAdjacentImagesFilter< TImage >
-::GetInput2( void )
-{
-  this->GetInput(1);
+  if( this->m_Input2.GetPointer() != image )
+    {
+    this->m_Input2 = image;
+    this->ProcessObject::SetNthInput( 1, const_cast<ImageType *>( image ) );
+    this->Modified();
+    }
 }
 
 template< class TImage >
@@ -137,13 +131,12 @@ MergeAdjacentImagesFilter< TImage >
   // The timeCollector is used to perform basic profiling algorithm components
   // itk::TimeProbesCollectorBase timeCollector;
 
-  typename TImage::ConstPointer input1 = this->GetInput( 0 );
-  typename TImage::ConstPointer input2 = this->GetInput( 1 );
+  std::cout << "Eurekaaaaaaaaaaaaaaaa" << std::endl;
 
   // compute min and max coord of input1 with padding
   typename ImageType::IndexType minX1Org;
 
-  minX1Org = input1->GetLargestPossibleRegion().GetIndex();
+  minX1Org = m_Input1->GetLargestPossibleRegion().GetIndex();
 
   if( m_Padding.size() == ImageDimension )
     {
@@ -153,7 +146,7 @@ MergeAdjacentImagesFilter< TImage >
       }
     }
   typename ImageType::SizeType size1 =
-    input1->GetLargestPossibleRegion().GetSize();
+    m_Input1->GetLargestPossibleRegion().GetSize();
 
   typename ImageType::IndexType maxX1Org;
   for( unsigned int i = 0; i < ImageDimension; i++ )
@@ -215,7 +208,7 @@ MergeAdjacentImagesFilter< TImage >
   typename ImageType::IndexType minX2;
   typename ImageType::IndexType minX2Org;
 
-  minX2Org = input2->GetLargestPossibleRegion().GetIndex();
+  minX2Org = m_Input2->GetLargestPossibleRegion().GetIndex();
   if( m_Padding.size() == ImageDimension )
     {
     for( unsigned int i = 0; i < ImageDimension; i++ )
@@ -225,17 +218,17 @@ MergeAdjacentImagesFilter< TImage >
     }
 
   typename ImageType::PointType pointX;
-  input2->TransformIndexToPhysicalPoint( minX2Org, pointX );
+  m_Input2->TransformIndexToPhysicalPoint( minX2Org, pointX );
 
   if( useInitialTransform )
     {
     pointX = initialTransform->GetInverseTransform()->TransformPoint( pointX );
     }
 
-  input1->TransformPhysicalPointToIndex( pointX, minX2 );
+  m_Input1->TransformPhysicalPointToIndex( pointX, minX2 );
 
   typename ImageType::SizeType size2 =
-    input2->GetLargestPossibleRegion().GetSize();
+    m_Input2->GetLargestPossibleRegion().GetSize();
 
   typename ImageType::IndexType maxX2;
   typename ImageType::IndexType maxX2Org;
@@ -250,12 +243,12 @@ MergeAdjacentImagesFilter< TImage >
       maxX2Org[i] += 2*m_Padding[i];
       }
     }
-  input2->TransformIndexToPhysicalPoint( maxX2Org, pointX );
+  m_Input2->TransformIndexToPhysicalPoint( maxX2Org, pointX );
   if( useInitialTransform )
     {
     pointX = initialTransform->GetInverseTransform()->TransformPoint( pointX );
     }
-  input1->TransformPhysicalPointToIndex( pointX, maxX2 );
+  m_Input1->TransformPhysicalPointToIndex( pointX, maxX2 );
 
   // compute min-max coord and size of output
   for( unsigned int i = 0; i < ImageDimension; i++ )
@@ -296,13 +289,13 @@ MergeAdjacentImagesFilter< TImage >
   regionOut.SetSize( sizeOut );
   regionOut.SetIndex( minXOut );
 
-  output->CopyInformation( input1 );
+  output->CopyInformation( m_Input1 );
   output->SetRegions( regionOut );
   output->Allocate();
   output->FillBuffer( m_Background );
 
-  itk::ImageRegionConstIteratorWithIndex< ImageType > iter( input1,
-    input1->GetLargestPossibleRegion() );
+  itk::ImageRegionConstIteratorWithIndex< ImageType > iter( m_Input1,
+    m_Input1->GetLargestPossibleRegion() );
   while( !iter.IsAtEnd() )
     {
     typename ImageType::IndexType indexX = iter.GetIndex();
@@ -320,8 +313,8 @@ MergeAdjacentImagesFilter< TImage >
   typedef typename itk::ImageToImageRegistrationHelper< ImageType >
     RegFilterType;
   typename RegFilterType::Pointer regOp = RegFilterType::New();
-  regOp->SetFixedImage( input1 );
-  regOp->SetMovingImage( input2 );
+  regOp->SetFixedImage( m_Input1 );
+  regOp->SetMovingImage( m_Input2 );
   regOp->SetSampleFromOverlap( true );
   regOp->SetEnableLoadedRegistration( false );
   regOp->SetEnableInitialRegistration( false );
@@ -364,7 +357,7 @@ MergeAdjacentImagesFilter< TImage >
 
   tmpImage = regOp->ResampleImage(
     RegFilterType::OptimizedRegistrationMethodType::LINEAR_INTERPOLATION,
-    input2, NULL, NULL, m_Background );
+    m_Input2, NULL, NULL, m_Background );
 
   // timeCollector.Stop("Resample Image");
 
