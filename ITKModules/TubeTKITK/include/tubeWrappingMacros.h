@@ -32,35 +32,35 @@ limitations under the License.
 
 /** Get input of fundamental type */
 #define tubeWrapGetMacro( name, type, wrap_filter_object_name )   \
-  virtual type Get##name( void ) const                            \
+  type Get##name( void ) const                            \
     {                                                             \
     return this->m_##wrap_filter_object_name->Get##name();        \
     }
 
 /** Get pointer to input of object type. */
 #define tubeWrapGetObjectMacro( name, type, wrap_filter_object_name )    \
-  virtual type * Get##name( void )                                       \
+  type * Get##name( void )                                       \
     {                                                                    \
     return this->m_##wrap_filter_object_name->Get##name();               \
     }
 
 /** Get a const pointer to input of object type. */
 #define tubeWrapGetConstObjectMacro( name, type, wrap_filter_object_name )   \
-  virtual const type * Get##name( void ) const                               \
+  const type * Get##name( void ) const                               \
     {                                                                        \
     return this->m_##wrap_filter_object_name->Get##name();                   \
     }
 
 /** Get a const reference to input of object type. */
 #define tubeWrapGetConstReferenceMacro( name, type, wrap_filter_object_name ) \
-  virtual const type & Get##name( void ) const                                \
+  const type & Get##name( void ) const                                        \
     {                                                                         \
     return this->m_##wrap_filter_object_name->Get##name();                    \
     }
 
 /** Set input of fundamental type */
 #define tubeWrapSetMacro( name, type, wrap_filter_object_name )   \
-  virtual void Set##name( const type value )                      \
+  void Set##name( const type value )                              \
     {                                                             \
     if( this->m_##wrap_filter_object_name->Get##name() != value ) \
       {                                                           \
@@ -71,7 +71,7 @@ limitations under the License.
 
 /** Set input using pointer to object type */
 #define tubeWrapSetObjectMacro( name, type, wrap_filter_object_name )   \
-  virtual void Set##name( type * value )                                \
+  void Set##name( type * value )                                \
     {                                                                   \
     if( this->m_##wrap_filter_object_name->Get##name() != value )       \
       {                                                                 \
@@ -82,7 +82,7 @@ limitations under the License.
 
 /** Set input using reference to object type */
 #define tubeWrapSetReferenceMacro( name, type, wrap_filter_object_name )      \
-  virtual void Set##name( type & value )                                      \
+  void Set##name( type & value )                                              \
     {                                                                         \
     if( this->m_##wrap_filter_object_name->Get##name() != value )             \
       {                                                                       \
@@ -93,7 +93,7 @@ limitations under the License.
 
 /** Set input using const pointer to object type */
 #define tubeWrapSetConstObjectMacro( name, type, wrap_filter_object_name )   \
-  virtual void Set##name( const type * value )                               \
+  void Set##name( const type * value )                                       \
     {                                                                        \
     if( this->m_##wrap_filter_object_name->Get##name() != value )            \
       {                                                                      \
@@ -104,13 +104,14 @@ limitations under the License.
 
 /** Set input using const reference to object type */
 #define tubeWrapSetConstReferenceMacro( name, type, wrap_filter_object_name ) \
-  virtual void Set##name( const type & value )                                \
+  void Set##name( const type & value )                                \
     {                                                                         \
     if( this->m_##wrap_filter_object_name->Get##name() != value )             \
       {                                                                       \
       this->m_##wrap_filter_object_name->Set##name( value );                  \
       this->Modified();                                                       \
       }                                                                       \
+    }
 
 /** Redirect call to a function of the same named in the wrapped filter */
 #define tubeWrapCallMacro( name, wrap_filter_object_name )   \
