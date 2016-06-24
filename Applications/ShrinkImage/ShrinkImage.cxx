@@ -29,7 +29,7 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 #include <itkImageFileReader.h>
 
-#include <itktubeShrinkWithBlendingImageFilter.h>
+#include <tubeShrinkWithBlendingImage.h>
 
 // Must include CLP before including tubeCLIHelperFunctions
 #include "ShrinkImageCLP.h"
@@ -68,7 +68,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< PointPixelType, VDimension > PointImageType;
   typedef itk::ImageFileWriter< PointImageType >   PointImageWriterType;
 
-  typedef itk::tube::ShrinkWithBlendingImageFilter< InputImageType,
+  typedef tube::ShrinkWithBlendingImage< InputImageType,
     OutputImageType > FilterType;
 
   timeCollector.Start("Load data");
@@ -119,6 +119,8 @@ int DoIt( int argc, char * argv[] )
 
   typename FilterType::ShrinkFactorsType shrinkFactors;
   shrinkFactors.Fill( 1 );
+  typename FilterType::InputSizeType newInputSize;
+  newInputSize.Fill( 1 );
 
   typename FilterType::InputIndexType overlapVoxels;
 
@@ -173,6 +175,7 @@ int DoIt( int argc, char * argv[] )
       {
       shrinkFactors[ i ] = divideBy[ i ];
       }
+      filter->SetShrinkFactors( shrinkFactors );
     }
 
   if( newSize.size() > 0 )
@@ -189,32 +192,12 @@ int DoIt( int argc, char * argv[] )
       std::cout << "match the dimensionality of the image." << std::endl;
       return EXIT_FAILURE;
       }
-    bool warnSize = false;
     for( unsigned int i = 0; i < VDimension; ++i )
       {
-      shrinkFactors[ i ] = static_cast< int >( inSize[ i ] / newSize[ i ] );
-      if( static_cast< int >( inSize[ i ] / shrinkFactors[ i ] )
-        != newSize[ i ] )
-        {
-        warnSize = true;
-        }
+      newInputSize[ i ] = newSize[ i ];
       }
-    if( warnSize )
-      {
-      std::cout << "Warning: Need for integer resampling factor causes ";
-      std::cout << "output size to not match target newSize given."
-        << std::endl;
-      for( unsigned int i = 0; i < VDimension; ++i )
-        {
-        std::cout << "   newSize [" << i << "] = " << newSize[ i ]
-          << std::endl;
-        std::cout << "   outSize [" << i << "] = " << static_cast< int >(
-          inSize[ i ] / shrinkFactors[ i ] ) << std::endl;
-        }
-      }
+    filter->SetNewSize(newInputSize);
     }
-
-  filter->SetShrinkFactors( shrinkFactors );
 
   tube::CLIFilterWatcher watcher( filter, "Shrink Filter",
     CLPProcessInformation, progress, 0.8, true );

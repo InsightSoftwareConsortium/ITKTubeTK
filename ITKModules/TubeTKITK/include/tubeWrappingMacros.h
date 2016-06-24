@@ -85,10 +85,13 @@ limitations under the License.
     }
 
 /** Proxy GetMTime of wrapped filter where all the logic resides */
-#define tubeWrapUpdateMacro( wrap_filter_object_name )                \
-  void Update()                                                       \
-    {                                                                 \
-    this->m_##wrap_filter_object_name->Update();                      \
-    }                                                                 \
+#define tubeWrapCallMacro( name, wrap_filter_object_name )   \
+  void name()                                                \
+    {                                                        \
+    this->m_##wrap_filter_object_name->name();               \
+    }
+
+#define tubeWrapUpdateMacro( wrap_filter_object_name )                        \
+  tubeWrapCallMacro(Update,wrap_filter_object_name)                           \
 
 #endif

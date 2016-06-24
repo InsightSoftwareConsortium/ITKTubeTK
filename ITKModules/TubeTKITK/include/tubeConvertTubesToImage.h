@@ -30,7 +30,7 @@ limitations under the License.
 
 
 // TubeTK includes
-#include "itktubeSpatialObjectToImageFilter.h"
+#include "itktubeTubeSpatialObjectToImageFilter.h"
 #include "tubeWrappingMacros.h"
 
 namespace tube

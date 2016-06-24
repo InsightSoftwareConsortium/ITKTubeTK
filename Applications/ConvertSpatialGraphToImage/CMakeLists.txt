@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-set( MODULE_NAME ConvertTubeGraphToImage )
+set( MODULE_NAME ConvertSpatialGraphToImage )
 project( ${MODULE_NAME} )
 
 if( NOT TubeTK_SOURCE_DIR )
@@ -43,7 +43,7 @@ SEMMacroBuildCLI(
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES}
-    TubeCLI TubeTKCommon )
+    TubeTKITK TubeCLI TubeTKCommon TubeTKFiltering TubeTKNumerics )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

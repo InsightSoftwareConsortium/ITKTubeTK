@@ -21,7 +21,7 @@
 ##############################################################################
 find_package( ConsistentPython REQUIRED )
 
-if( ${TubeTK_USE_NUMPY} )
+if( ${TubeTK_USE_NUMPY_STACK} )
   if( NOT NUMPY_INCLUDE_DIR )
     find_package( PythonInterp )
     execute_process(
@@ -44,4 +44,4 @@ if( ${TubeTK_USE_NUMPY} )
 
   file( COPY ./ DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
     FILES_MATCHING PATTERN "*.py" )
-endif( ${TubeTK_USE_NUMPY} )
+endif( ${TubeTK_USE_NUMPY_STACK} )

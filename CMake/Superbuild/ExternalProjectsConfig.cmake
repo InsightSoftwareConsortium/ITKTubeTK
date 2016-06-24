@@ -68,7 +68,7 @@ set( TubeTKITK_HASH_OR_TAG "")
 set( MinimalPathExtraction_URL
   ${git_protocol}://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction.git )
 set( MinimalPathExtraction_HASH_OR_TAG
-  aed93f4ac350ee8d0c3411e885fff86095443b7a )
+  c9cdc87db021ff84417518979dd5924565ff5043 )
 
 set( TubeTK_ITK_MODULES
   TubeTKITK

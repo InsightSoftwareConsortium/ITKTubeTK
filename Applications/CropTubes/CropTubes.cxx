@@ -31,112 +31,8 @@
 #include "itkSpatialObjectReader.h"
 #include "itkSpatialObjectWriter.h"
 #include "itkTimeProbesCollectorBase.h"
-
+#include "tubeCropTubes.h"
 #include "CropTubesCLP.h"
-
-template< unsigned int DimensionT >
-bool IsInside( itk::Point< double, DimensionT > pointPos, double tubeRadius,
-  itk::Point< double, DimensionT > boxPos,
-  itk::Vector< double, DimensionT > boxSize,
-  std::vector<  typename itk::VesselTubeSpatialObjectPoint
-    < DimensionT >::CovariantVectorType > normalList )
-{
-  // Return a boolean indicating if any slice of the tube
-  // is included in the box.
-  // A slice is considered as a point and an associated radius
-  for( unsigned int i = 0; i < normalList.size(); i++ )
-    {
-    bool hasXInside = false;
-    bool hasYInside = false;
-    bool hasZInside = false;
-    if( pointPos[0] + tubeRadius * normalList[i][0] >= boxPos[0] &&
-      pointPos[0] - tubeRadius * normalList[i][0] <= boxPos[0] + boxSize[0] )
-      {
-      hasXInside = true;
-      }
-    if( pointPos[1] + tubeRadius * normalList[i][1] >= boxPos[1] &&
-      pointPos[1] - tubeRadius * normalList[i][1] <= boxPos[1] + boxSize[1] )
-      {
-      hasYInside = true;
-      }
-    switch( DimensionT )
-      {
-      case 2:
-        {
-        hasZInside = true;
-        break;
-        }
-      case 3:
-        {
-        if( pointPos[2] + tubeRadius  * normalList[i][2] >= boxPos[2] &&
-          pointPos[2] - tubeRadius * normalList[i][2] <=
-            boxPos[2] + boxSize[2] )
-          {
-          hasZInside = true;
-          }
-        break;
-        }
-      default:
-        {
-        tubeErrorMacro(
-          << "Error: Only 2D and 3D data is currently supported." );
-        return EXIT_FAILURE;
-        }
-      }
-    if( hasXInside && hasYInside && hasZInside )
-      {
-      return true;
-      }
-    }
-  return false;
-}
-
-template< unsigned int DimensionT >
-void WriteFCSVFile( std::string filename,
-  std::vector< itk::Point< double, DimensionT > > &pointList )
-{
-   std::fstream of;
-   of.open(filename.c_str(), std::fstream::out);
-   if( !of.is_open() )
-    {
-    std::cout << "WriteData: unable to open file " << filename.c_str()
-      << " for writing";
-    return;
-    }
-  // put down a header
-  of << "# Markups fiducial file version = " << "4.5 \n";
-  of << "# CoordinateSystem = " << 0 << "\n";
-  // label the columns
-  // id,x,y,z,ow,ox,oy,oz,vis,sel,lock,label,desc,associatedNodeID
-  // orientation is a quaternion, angle and axis
-  // associatedNodeID and description and label can be empty strings
-  // id,x,y,z,ow,ox,oy,oz,vis,sel,lock,,,
-  // label can have spaces, everything up to next comma is used, no quotes
-  // necessary, same with the description
-  of << "# columns = id,x,y,z,ow,ox,oy,oz,vis,sel,lock,label,desc,"
-    "associatedNodeID" << "\n";
-
-  typedef itk::Point< double, DimensionT >                PointType;
-
-  for( typename std::vector< PointType >::iterator it = pointList.begin();
-    it != pointList.end(); ++it )
-    {
-    PointType curPoint = *it;
-    of << ","; //As we don't know the id.
-    of << -1 * curPoint[0]  << "," << -1 * curPoint[1] << ",";
-    if( DimensionT == 3 )
-      {
-      of << curPoint[2] << ",";
-      }
-    of << "0,0,0,0,"; // As we don't know the orientation
-    of << "1,"; //visibility is true
-    of << "1,"; //selection is true
-    of << ",";
-    of << ",,";
-    of << "\n";
-    }
-  of.close();
-}
 
 template< unsigned int DimensionT >
 int DoIt (int argc, char * argv[])
@@ -160,9 +56,6 @@ int DoIt (int argc, char * argv[])
   tubeStandardOutputMacro( << "\n>> Loading TRE File" );
 
   typedef itk::SpatialObjectReader< DimensionT >          TubesReaderType;
-  typedef itk::GroupSpatialObject< DimensionT >           TubeGroupType;
-  typedef itk::VesselTubeSpatialObject< DimensionT >      TubeType;
-  typedef itk::VesselTubeSpatialObjectPoint< DimensionT > TubePointType;
   typedef double                                          PixelType;
   typedef itk::Image< PixelType, DimensionT >             ImageType;
   typedef itk::ImageFileReader< ImageType >               ImageReaderType;
@@ -170,6 +63,10 @@ int DoIt (int argc, char * argv[])
   typedef itk::Point< double, DimensionT >                PointType;
 
   timeCollector.Start( "Loading Input TRE File" );
+
+  typedef tube::CropTubes< DimensionT > FilterType;
+  typename FilterType::Pointer filter = FilterType::New();
+
 
   typename TubesReaderType::Pointer tubeFileReader = TubesReaderType::New();
 
@@ -185,6 +82,13 @@ int DoIt (int argc, char * argv[])
     timeCollector.Report();
     return EXIT_FAILURE;
     }
+
+  filter->SetInput( tubeFileReader->GetGroup() );
+
+  timeCollector.Stop( "Loading Input TRE File" );
+
+  timeCollector.Start( "Loading Input Parameters" );
+
   //Cast XML vector parameters
   PointType boxPositionVector;
   VectorType boxSizeVector;
@@ -204,28 +108,22 @@ int DoIt (int argc, char * argv[])
       boxSizeVector[i] = -1;
       }
     }
-  typename TubePointType::PointType worldBoxposition;
-  typename TubePointType::VectorType worldBoxSize;
 
-  typename TubeGroupType::Pointer pSourceTubeGroup =
-    tubeFileReader->GetGroup();
-  typename TubeGroupType::ChildrenListPointer pSourceTubeList =
-    pSourceTubeGroup->GetChildren();
-
-  timeCollector.Stop( "Loading Input TRE File" );
-
+  filter->SetBoxPosition( boxPositionVector );
+  filter->SetBoxSize( boxSizeVector );
+  filter->SetCropTubes( CropTubes );
   //loading Volume mask if its there
   typename ImageReaderType::Pointer imReader = ImageReaderType::New();
   typename ImageType::Pointer image;
   if ( !volumeMask.empty() )
     {
     tube::InfoMessage( "Reading volume mask..." );
-    timeCollector.Start( "Load Volume Mask" );
     imReader->SetFileName( volumeMask.c_str() );
     try
       {
       imReader->Update();
-      image = imReader->GetOutput();
+      filter->SetMaskImage( imReader->GetOutput() );
+      filter->SetUseMaskImage( true );
       }
     catch ( itk::ExceptionObject & err )
       {
@@ -233,205 +131,13 @@ int DoIt (int argc, char * argv[])
         err.what() );
       return EXIT_FAILURE;
       }
-    timeCollector.Stop( "Load Volume Mask" );
     }
 
-  std::vector< PointType > endPointList;
-  // Compute cropping
-  tubeStandardOutputMacro( << "\n>> Finding Tubes for Cropping" );
+  timeCollector.Stop( "Loading Input Parameters" );
 
-  timeCollector.Start( "Selecting Tubes" );
-  //Target Group to save desired tubes
-  typename TubeGroupType::Pointer pTargetTubeGroup = TubeGroupType::New();
-
-  pTargetTubeGroup->CopyInformation( pSourceTubeGroup );
-  // TODO: make CopyInformation of itk::SpatialObject do this
-  pTargetTubeGroup->GetObjectToParentTransform()->SetScale(
-    pSourceTubeGroup->GetObjectToParentTransform()->GetScale() );
-  pTargetTubeGroup->GetObjectToParentTransform()->SetOffset(
-    pSourceTubeGroup->GetObjectToParentTransform()->GetOffset() );
-  pTargetTubeGroup->GetObjectToParentTransform()->SetMatrix(
-    pSourceTubeGroup->GetObjectToParentTransform()->GetMatrix() );
-  pTargetTubeGroup->SetSpacing( pSourceTubeGroup->GetSpacing() );
-  pTargetTubeGroup->ComputeObjectToWorldTransform();
-  int targetTubeId=0;
-
-  for( typename TubeGroupType::ChildrenListType::iterator
-    tubeList_it = pSourceTubeList->begin();
-    tubeList_it != pSourceTubeList->end(); ++tubeList_it )
-    {
-    //**** Source Tube **** :
-    typename TubeType::Pointer pCurSourceTube =
-      dynamic_cast< TubeType* >( tubeList_it->GetPointer() );
-    //dynamic_cast verification
-    if( !pCurSourceTube )
-      {
-      return EXIT_FAILURE;
-      }
-    //Compute Tangent and Normals
-    pCurSourceTube->ComputeTangentAndNormals();
-    pCurSourceTube->ComputeObjectToWorldTransform();
-    //Point List for TargetTube
-    typename TubeType::PointListType targetPointList;
-    //Get points in current source tube
-    typename TubeType::PointListType pointList =
-      pCurSourceTube->GetPoints();
-
-    //Get Index to World Transformation
-    typename TubeType::TransformType * pTubeObjectPhysTransform =
-      pCurSourceTube->GetObjectToWorldTransform();
-    typename TubeType::TransformType * pTubeIndexPhysTransform =
-      pCurSourceTube->GetIndexToWorldTransform();
-
-    worldBoxposition =
-        pTubeObjectPhysTransform->TransformPoint( boxPositionVector );
-    worldBoxSize =
-        pTubeObjectPhysTransform->TransformVector( boxSizeVector );
-
-    bool flagEndPoint = false;
-    for( typename TubeType::PointListType::const_iterator
-      pointList_it = pointList.begin();
-      pointList_it != pointList.end(); ++pointList_it )
-      {
-      TubePointType curSourcePoint = *pointList_it;
-      //Transform parameters in physical space
-      typename TubePointType::PointType curSourcePos =
-        pTubeObjectPhysTransform->TransformPoint(
-          curSourcePoint.GetPosition() );
-      typename TubePointType::CovariantVectorType curTubeNormal1 =
-        pTubeObjectPhysTransform->TransformCovariantVector(
-          curSourcePoint.GetNormal1() );
-      typename TubePointType::CovariantVectorType curTubeNormal2 =
-        pTubeObjectPhysTransform->TransformCovariantVector(
-          curSourcePoint.GetNormal2() );
-      VectorType curRadius;
-      for ( unsigned int i = 0; i < DimensionT; i++ )
-        {
-        curRadius[i] = curSourcePoint.GetRadius();
-        }
-      typename TubePointType::VectorType curRadiusVector =
-        pTubeObjectPhysTransform->TransformVector( curRadius );
-      //Save Normals in a vector to pass it as an argument for IsIside()
-      std::vector<typename TubePointType::CovariantVectorType> normalList;
-      normalList.push_back( curTubeNormal1 );
-      if( DimensionT == 3 )
-        {
-        normalList.push_back( curTubeNormal2 );
-        }
-      bool volumeMaskFlag = false;
-      typename TubePointType::PointType curSourcePosIndexSpace =
-        pTubeIndexPhysTransform->TransformPoint(
-        curSourcePoint.GetPosition() );
-      if( !volumeMask.empty() )
-        {
-        typename ImageType::IndexType imageIndex;
-        if( image->TransformPhysicalPointToIndex( curSourcePosIndexSpace,
-          imageIndex ) )
-          {
-          double val = 0;
-          val = image->GetPixel( imageIndex );
-          if ( val != 0 )
-            {
-            volumeMaskFlag = true;
-            }
-          }
-        }
-      //Save point in target tube if it belongs to the box
-      if( volumeMaskFlag || IsInside( curSourcePos, curRadiusVector[0],
-        worldBoxposition, worldBoxSize, normalList ) )
-        {
-        if( CropTubes )
-          {
-          targetPointList.push_back( curSourcePoint );
-          if( !OutputEndPointsFile.empty() && !flagEndPoint )
-            {
-            PointType endPoint;
-            for( unsigned int i = 0; i < DimensionT; i++ )
-              {
-              endPoint[i] = curSourcePosIndexSpace[i];
-              }
-            endPointList.push_back( endPoint );
-            flagEndPoint = !flagEndPoint;
-            }
-          }
-        else
-          {
-          pCurSourceTube->SetId( targetTubeId );
-          ++targetTubeId;
-          pTargetTubeGroup->AddSpatialObject( pCurSourceTube );
-          break;
-          }
-        }
-      else
-        {
-        if( targetPointList.size() > 0 )
-          {
-          //**** Target Tube **** :
-          typename TubeType::Pointer pTargetTube = TubeType::New();
-
-          pTargetTube->CopyInformation( pCurSourceTube );
-
-          // TODO: make CopyInformation of itk::SpatialObject do this
-          pTargetTube->GetObjectToParentTransform()->SetScale(
-            pCurSourceTube->GetObjectToParentTransform()->GetScale() );
-          pTargetTube->GetObjectToParentTransform()->SetOffset(
-            pCurSourceTube->GetObjectToParentTransform()->GetOffset() );
-          pTargetTube->GetObjectToParentTransform()->SetMatrix(
-            pCurSourceTube->GetObjectToParentTransform()->GetMatrix() );
-          pTargetTube->SetSpacing( pCurSourceTube->GetSpacing() );
-          pTargetTube->ComputeObjectToWorldTransform();
-
-          pTargetTube->ComputeTangentAndNormals();
-
-          pTargetTube->SetId( targetTubeId );
-          ++targetTubeId;
-          //Save cropped tube
-          pTargetTube->SetPoints( targetPointList );
-          pTargetTubeGroup->AddSpatialObject( pTargetTube );
-
-          targetPointList.clear();
-          }
-        if( !OutputEndPointsFile.empty() && flagEndPoint )
-          {
-          PointType endPoint;
-          for( unsigned int i = 0; i < DimensionT; i++ )
-            {
-            endPoint[i] = curSourcePosIndexSpace[i];
-            }
-          endPointList.push_back( endPoint );
-          flagEndPoint = !flagEndPoint;
-          }
-        }
-      }
-    if( targetPointList.size() > 0 )
-      {
-      //**** Target Tube **** :
-      typename TubeType::Pointer pTargetTube = TubeType::New();
-
-      pTargetTube->CopyInformation( pCurSourceTube );
-
-      // TODO: make CopyInformation of itk::SpatialObject do this
-      pTargetTube->GetObjectToParentTransform()->SetScale(
-        pCurSourceTube->GetObjectToParentTransform()->GetScale() );
-      pTargetTube->GetObjectToParentTransform()->SetOffset(
-        pCurSourceTube->GetObjectToParentTransform()->GetOffset() );
-      pTargetTube->GetObjectToParentTransform()->SetMatrix(
-        pCurSourceTube->GetObjectToParentTransform()->GetMatrix() );
-      pTargetTube->SetSpacing( pCurSourceTube->GetSpacing() );
-      pTargetTube->ComputeObjectToWorldTransform();
-
-      pTargetTube->ComputeTangentAndNormals();
-
-      pTargetTube->SetId( targetTubeId );
-      ++targetTubeId;
-      //Save cropped tube
-      pTargetTube->SetPoints( targetPointList );
-      pTargetTubeGroup->AddSpatialObject( pTargetTube );
-
-      targetPointList.clear();
-      }
-    }
-  timeCollector.Stop( "Selecting Tubes" );
+  timeCollector.Start( "Cropping Tubes" );
+  filter->Update();
+  timeCollector.Stop( "Cropping Tubes" );
 
   // Write output TRE file
   tubeStandardOutputMacro(
@@ -445,7 +151,7 @@ int DoIt (int argc, char * argv[])
   try
     {
     tubeWriter->SetFileName( outputTREFile.c_str() );
-    tubeWriter->SetInput( pTargetTubeGroup );
+    tubeWriter->SetInput( filter->GetOutput() );
     tubeWriter->Update();
     }
   catch( itk::ExceptionObject & err )
@@ -457,16 +163,6 @@ int DoIt (int argc, char * argv[])
     }
 
   timeCollector.Stop( "Writing output TRE file" );
-
-  timeCollector.Start( "Writing End Points File" );
-  if( !OutputEndPointsFile.empty() && endPointList.size() != 0 )
-    {
-    WriteFCSVFile( OutputEndPointsFile, endPointList );
-    }
-  timeCollector.Stop( "Writing End Points File" );
-
-  pSourceTubeList->clear();
-  delete pSourceTubeList;
 
   timeCollector.Report();
   return EXIT_SUCCESS;
