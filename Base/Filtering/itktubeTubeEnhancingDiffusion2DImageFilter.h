@@ -143,9 +143,9 @@ public:
   // used in the paper
   void SetDefaultPars( void )
     {
-    m_TimeStep                  = 0.25;
-    m_Iterations                = 200;
-    m_RecalculateTubeness     = 100;
+    m_TimeStep                  = 0.05;
+    m_Iterations                = 50;
+    m_RecalculateTubeness       = 11;
     m_Beta                      = 0.5;
     m_Gamma                     = 5.0;
     m_Epsilon                   = 0.01;
