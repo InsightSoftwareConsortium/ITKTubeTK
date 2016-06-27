@@ -131,8 +131,6 @@ MergeAdjacentImagesFilter< TImage >
   // The timeCollector is used to perform basic profiling algorithm components
   // itk::TimeProbesCollectorBase timeCollector;
 
-  std::cout << "Eurekaaaaaaaaaaaaaaaa" << std::endl;
-
   // compute min and max coord of input1 with padding
   typename ImageType::IndexType minX1Org;
 
