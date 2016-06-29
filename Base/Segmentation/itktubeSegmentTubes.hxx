@@ -30,6 +30,7 @@ limitations under the License.
 #define __itktubeSegmentTubes_hxx
 
 #include "itktubeSegmentTubes.h"
+#include "itkImageRegionConstIteratorWithIndex.h"
 
 namespace itk
 {
