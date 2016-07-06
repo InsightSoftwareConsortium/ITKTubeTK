@@ -30,6 +30,7 @@ set( TubeTK_Base_Registration_H_Files
   itktubeImageToTubeRigidMetric.h
   itktubeImageToTubeRigidRegistration.h
   itktubeMeanSquareRegistrationFunction.h
+  itktubeMergeAdjacentImagesFilter.h
   itktubeTubeExponentialResolutionWeightFunction.h
   itktubeTubeParametricExponentialResolutionWeightFunction.h
   itktubeTubeParametricExponentialWithBoundsResolutionWeightFunction.h
@@ -48,6 +49,7 @@ set( TubeTK_Base_Registration_HXX_Files
   itktubeImageToTubeRigidMetric.hxx
   itktubeImageToTubeRigidRegistration.hxx
   itktubeMeanSquareRegistrationFunction.hxx
+  itktubeMergeAdjacentImagesFilter.hxx
   itktubeTubeToTubeTransformFilter.hxx )
 
 if( TubeTK_USE_VTK )

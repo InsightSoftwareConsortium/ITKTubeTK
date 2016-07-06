@@ -28,6 +28,7 @@ if( TubeTK_USE_GPU_ARRAYFIRE )
 endif( TubeTK_USE_GPU_ARRAYFIRE )
 
 set( TubeTK_Base_Filtering_H_Files
+  itkGeneralizedDistanceTransformImageFilter.h
   itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter.h
   itktubeAnisotropicDiffusionTensorFunction.h
   itktubeAnisotropicDiffusionTensorImageFilter.h
@@ -61,6 +62,7 @@ set( TubeTK_Base_Filtering_H_Files
   tubeImageFilters.h )
 
 set( TubeTK_Base_Filtering_HXX_Files
+  itkGeneralizedDistanceTransformImageFilter.hxx
   itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter.hxx
   itktubeAnisotropicDiffusionTensorFunction.hxx
   itktubeAnisotropicDiffusionTensorImageFilter.hxx
