@@ -59,7 +59,8 @@ set( TubeTK_Base_Filtering_H_Files
   itktubeTubeEnhancingDiffusion2DImageFilter.h
   itktubeTubeSpatialObjectToDensityImageFilter.h
   itktubeTubeSpatialObjectToImageFilter.h
-  tubeImageFilters.h )
+  tubeImageFilters.h
+  tubeTreeFilters.h )
 
 set( TubeTK_Base_Filtering_HXX_Files
   itkGeneralizedDistanceTransformImageFilter.hxx
@@ -92,7 +93,8 @@ set( TubeTK_Base_Filtering_HXX_Files
   itktubeTubeEnhancingDiffusion2DImageFilter.hxx
   itktubeTubeSpatialObjectToDensityImageFilter.hxx
   itktubeTubeSpatialObjectToImageFilter.hxx
-  tubeImageFilters.hxx )
+  tubeImageFilters.hxx
+  tubeTreeFilters.hxx )
 
 # Add GPU Array Fire based filter source files here
 if( TubeTK_USE_GPU_ARRAYFIRE )
