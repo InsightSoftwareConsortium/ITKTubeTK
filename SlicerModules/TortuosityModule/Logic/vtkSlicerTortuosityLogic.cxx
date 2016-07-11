@@ -65,6 +65,8 @@ vtkSlicerTortuosityLogic::vtkSlicerTortuosityLogic( void )
   this->m_MetricFlagToArrayNames
       [ FilterType::SUM_OF_ANGLES_METRIC ] = "SumOfAnglesMetric";
   this->m_MetricFlagToArrayNames
+      [ FilterType::SUM_OF_TORSION_METRIC ] = "SumOfTorsionMetric";
+  this->m_MetricFlagToArrayNames
       [ FilterType::TOTAL_CURVATURE_METRIC ] = "TotalCurvatureMetric";
   this->m_MetricFlagToArrayNames
       [ FilterType::TOTAL_SQUARED_CURVATURE_METRIC ] = "TotalSquaredCurvatureMetric";
@@ -87,7 +89,8 @@ vtkSlicerTortuosityLogic::vtkSlicerTortuosityLogic( void )
                                     FilterType::DISTANCE_METRIC
                                   | FilterType::INFLECTION_COUNT_METRIC
                                   | FilterType::INFLECTION_POINTS_METRIC
-                                  | FilterType::SUM_OF_ANGLES_METRIC;
+                                  | FilterType::SUM_OF_ANGLES_METRIC
+                                  | FilterType::SUM_OF_TORSION_METRIC;
 
   this->m_GroupFlagToMetricFlag[ CurvatureMetricsGroup ] =
                                     FilterType::INFLECTION_COUNT_1_METRIC
@@ -420,6 +423,10 @@ bool vtkSlicerTortuosityLogic
           if( arrayName == "SumOfAnglesMetric" )
             {
             metricsVector[i]->SetValue( tubeIndex, filter->GetSumOfAnglesMetric() );
+            }
+          if( arrayName == "SumOfTorsionMetric" )
+            {
+            metricsVector[i]->SetValue( tubeIndex, filter->GetSumOfTorsionMetric() );
             }
           if( arrayName == "Tau4Metric" )
             {

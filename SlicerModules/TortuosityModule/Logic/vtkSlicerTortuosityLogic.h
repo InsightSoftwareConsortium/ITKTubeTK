@@ -72,6 +72,7 @@ public:
   //                InflectionCountMetric
   //                InflectionPointsMetric
   //                SumOfAnglesMetric
+  //                SumOfTorsionMetric
   // - Basic Metrics
   //                AverageRadiusMetric
   //                ChordLengthMetric

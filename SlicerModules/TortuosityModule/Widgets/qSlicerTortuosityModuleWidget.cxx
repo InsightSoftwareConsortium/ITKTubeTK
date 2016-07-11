@@ -127,7 +127,8 @@ void qSlicerTortuosityModuleWidgetPrivate::init()
   this->OldMetricsLabel->setToolTip( "DistanceMetric, "
                                        "InflectionCountMetric, "
                                        "InflectionPointsMetric, "
-                                       "SumOfAnglesMetric" );
+                                       "SumOfAnglesMetric,"
+                                       "SumOfTorsionMetric");
   this->CurvatureMetricsLabel->setToolTip( "CurvatureScalarMetric, "
                                              "InflectionCount1Metric, "
                                              "InflectionCount2Metric, "
