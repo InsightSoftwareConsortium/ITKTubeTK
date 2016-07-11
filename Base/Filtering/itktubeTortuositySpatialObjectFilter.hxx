@@ -52,6 +52,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   this->m_NumberOfBins = 20;
   this->m_SmoothingMethod = ::tube::SMOOTH_TUBE_USING_INDEX_GAUSSIAN;
   this->m_SmoothingScale = 5.0;
+  this->m_SubsamplingScale = 1;
 
   // Setting vessel-wise metrics to -1.0
   this->m_AverageRadiusMetric = -1.0;
@@ -335,12 +336,13 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 
   // Preprocessing
   PointBasedSpatialObjectPointer smoothedTube = PointBasedSpatialObject::New();
+  PointBasedSpatialObjectPointer resampledTube = PointBasedSpatialObject::New();
 
   // Smooth the vessel
-  smoothedTube = ::tube::SmoothTube<PointBasedSpatialObject>(originalInput,
-                                                             this->m_SmoothingScale,
-                                                             this->m_SmoothingMethod);
-  if(!smoothedTube)
+  smoothedTube = ::tube::SmoothTube<PointBasedSpatialObject>( originalInput,
+    this->m_SmoothingScale, this->m_SmoothingMethod );
+
+  if( !smoothedTube )
     {
     itkExceptionMacro( << "Cannot run Tortuosity on input. "
                        << "Input cannot be smoothed");
@@ -348,10 +350,17 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     }
 
   // Subsample the vessel
-  // This is not implemented yet.
+  resampledTube = ::tube::SubsampleTube<PointBasedSpatialObject>(
+    smoothedTube, this->m_SubsamplingScale );
 
+  if( !resampledTube )
+    {
+    itkExceptionMacro( << "Cannot run Tortuosity on input. "
+                       << "Input cannot be subsampled");
+    return;
+    }
   // Make the measurements on the pre-processed tube.
-  PointBasedSpatialObjectPointer processedInput = smoothedTube;
+  PointBasedSpatialObjectPointer processedInput = resampledTube;
 
   if ( processedInput->GetNumberOfPoints() < 2 )
     {

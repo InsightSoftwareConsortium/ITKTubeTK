@@ -328,13 +328,16 @@ bool vtkSlicerTortuosityLogic
   vtkIntArray* nop = this->GetOrCreateArray< vtkIntArray >( node, "NumberOfPoints" );
   nop->Initialize();
 
+  vtkIntArray* ids = this->GetOrCreateArray< vtkIntArray >( node, "TubeID" );
+  ids->Initialize();
+
   // 2 - Fill the metric arrays
   int tubeNumber = 0;
   int totalNumberOfPointsAdded = 0;
   for( TubeNetType::ChildrenListType::iterator tubeIt = tubeList->begin();
         tubeIt != tubeList->end(); ++tubeIt )
     {
-    VesselTubeType* currTube =
+    VesselTubeType::Pointer currTube =
       dynamic_cast< VesselTubeType* >( ( *tubeIt ).GetPointer() );
     if ( !currTube )
       {
@@ -349,18 +352,12 @@ bool vtkSlicerTortuosityLogic
       continue;
       }
 
-    if( subsampling != 1 )
-      {
-      std::cerr<<"WARNING: the subsampling has not been implemented yet."
-               <<"The entered subsampling value will have no effect "
-               <<"on the computation."<<std::endl;
-      }
-
     // Set filter parameters and update it
     FilterType::Pointer filter = FilterType::New();
     filter->SetMeasureFlag( metricFlag );
     filter->SetSmoothingMethod( smoothingMethod );
     filter->SetSmoothingScale( smoothingScale );
+    filter->SetSubsamplingScale( subsampling );
     filter->SetNumberOfBins( numberOfBins );
     filter->SetHistogramMin( histMin );
     filter->SetHistogramMax( histMax );
@@ -372,6 +369,9 @@ bool vtkSlicerTortuosityLogic
       std::cerr<<"Error while running filter on tube."<<std::endl;
       return false;
       }
+
+    //Update tube to get the preprocessed tube.
+    currTube = filter->GetOutput();
 
     // Fill the arrays
 
@@ -478,6 +478,7 @@ bool vtkSlicerTortuosityLogic
           }
         }
       nop->InsertNextValue( numberOfPoints );
+      ids->InsertNextValue( currTube->GetId() );
       }
 
     // Set Histogram metrics values
@@ -517,7 +518,7 @@ std::vector<std::string>
 vtkSlicerTortuosityLogic::GetPrintableNamesFromMetricFlag( int metricFlag )
 {
   std::vector< std::string > names;
-  names.push_back( "TubeIDs" );
+  names.push_back( "TubeID" );
   names.push_back( "NumberOfPoints" );
   for ( long int compareFlag = 0x01;
     compareFlag <= FilterType::BITMASK_VESSEL_WISE_METRICS;

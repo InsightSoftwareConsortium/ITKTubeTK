@@ -288,6 +288,13 @@ public:
     std::numeric_limits<double>::max())
   itkGetConstMacro( SmoothingScale, double )
 
+  /** Set/Get the subsampling scale to be applied to the vessel before
+  * computing the metrics.
+  */
+  itkSetClampMacro( SubsamplingScale, int, 0,
+    std::numeric_limits<int>::max())
+  itkGetConstMacro( SubsamplingScale, int )
+
 protected:
   TortuositySpatialObjectFilter( void );
   virtual ~TortuositySpatialObjectFilter( void );
@@ -308,6 +315,7 @@ private:
   size_t                         m_NumberOfBins;
   ::tube::SmoothTubeFunctionEnum m_SmoothingMethod;
   double                         m_SmoothingScale;
+  int                            m_SubsamplingScale;
 
   /** Vessel parameters */
   size_t                         m_NumberOfPoints;
