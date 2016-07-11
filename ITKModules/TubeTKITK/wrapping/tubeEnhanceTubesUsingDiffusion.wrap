@@ -1,0 +1,9 @@
+itk_wrap_include( tubeEnhanceTubesUsingDiffusion.h )
+
+itk_wrap_named_class("tube::EnhanceTubesUsingDiffusion" tubeEnhanceTubesUsingDiffusion POINTER)
+ foreach(t ${WRAP_ITK_SCALAR})
+    foreach(d 2)
+      itk_wrap_template("${ITKM_${t}}${d}"  "${ITKT_${t}}, ${d}")
+    endforeach()
+ endforeach()
+itk_end_wrap_class()

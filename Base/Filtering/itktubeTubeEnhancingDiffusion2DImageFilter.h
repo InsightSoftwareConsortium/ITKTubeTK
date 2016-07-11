@@ -94,16 +94,37 @@ public:
   itkNewMacro( Self );
   itkTypeMacro( TubeEnhancingDiffusion2DImageFilter, ImageToImageFilter );
 
+  /** Set/Get time step */
   itkSetMacro( TimeStep, Precision );
+  itkGetMacro( TimeStep, Precision );
+
+  /** Set/Get iterations */
   itkSetMacro( Iterations, unsigned int );
+  itkGetMacro( Iterations, unsigned int );
+
+  /** Set/Get for how many iterations do we recalculate tubeness */
   itkSetMacro( RecalculateTubeness, unsigned int );
+  itkGetMacro( RecalculateTubeness, unsigned int );
 
+  /** Set/Get sensitive of the filter to blobness */
   itkSetMacro( Beta, Precision );
-  itkSetMacro( Gamma, Precision );
+  itkGetMacro( Beta, Precision );
 
+  /** Set/Get sensitive of the filter to second order structureness */
+  itkSetMacro( Gamma, Precision );
+  itkGetMacro( Gamma, Precision );
+
+  /** Set/Get epsilon */
   itkSetMacro( Epsilon, Precision );
+  itkGetMacro( Epsilon, Precision );
+
+  /** Set/Get Omega */
   itkSetMacro( Omega, Precision );
+  itkGetMacro( Omega, Precision );
+
+  /** Set/Get Sensitivity */
   itkSetMacro( Sensitivity, Precision );
+  itkGetMacro( Sensitivity, Precision );
 
   void SetScales(const std::vector<Precision> &scales)
     {
@@ -112,16 +133,19 @@ public:
 
   itkBooleanMacro( DarkObjectLightBackground );
   itkSetMacro( DarkObjectLightBackground, bool );
+  itkGetMacro( DarkObjectLightBackground, bool );
+
   itkBooleanMacro( Verbose );
   itkSetMacro( Verbose, bool );
+  itkGetMacro( Verbose, bool );
 
   // some defaults for lowdose example
   // used in the paper
   void SetDefaultPars( void )
     {
-    m_TimeStep                  = 0.25;
-    m_Iterations                = 200;
-    m_RecalculateTubeness     = 100;
+    m_TimeStep                  = 0.05;
+    m_Iterations                = 50;
+    m_RecalculateTubeness       = 11;
     m_Beta                      = 0.5;
     m_Gamma                     = 5.0;
     m_Epsilon                   = 0.01;

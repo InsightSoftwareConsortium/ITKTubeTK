@@ -21,11 +21,15 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeTubeEnhancingDiffusion2DImageFilter.h"
-
+// ITK includes
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
+// TubeTKITK includes
+#include "tubeEnhanceTubesUsingDiffusion.h"
+#include "tubeMessage.h"
+
+// TubeTK includes
 #include "EnhanceTubesUsingDiffusionCLP.h"
 
 template< class TPixel, unsigned int VDimension >
@@ -42,70 +46,57 @@ int DoIt( int argc, char * argv[] )
   typedef TPixel                                           PixelType;
   typedef itk::Image< PixelType,  VDimension  >            ImageType;
   typedef itk::ImageFileReader< ImageType >                ReaderType;
-  typedef itk::tube::TubeEnhancingDiffusion2DImageFilter< PixelType,
-                                                    VDimension  >
-                                                           FilterType;
+  typedef tube::EnhanceTubesUsingDiffusion< PixelType,
+    VDimension >                                           FilterType;
 
+  // read input image
   typename ReaderType::Pointer reader = ReaderType::New();
-
-  //read input image
-  reader->SetFileName( inputVolume.c_str() );
 
   try
     {
+    reader->SetFileName( inputVolume.c_str() );
     reader->Update();
     }
   catch( itk::ExceptionObject & err )
     {
-    std::cerr << "ExceptionObject caught !" << std::endl;
-    std::cerr << err << std::endl;
+    tube::ErrorMessage( "Error reading input image: "
+                        + std::string(err.GetDescription()) );
     return EXIT_FAILURE;
     }
 
-  typename FilterType::Pointer filter = NULL;
-  filter = FilterType::New();
+  // compute vesselness
+  typename FilterType::Pointer filter = FilterType::New();
 
-  // set input image
   filter->SetInput( reader->GetOutput() );
-  filter->SetDefaultPars();
 
-  // set parameters
-  filter->SetTimeStep( timeStep );
-  filter->SetIterations( numIterations );
+  filter->SetMinSigma( minSigma );
+  filter->SetMaxSigma( maxSigma );
+  filter->SetNumSigmaSteps( numSigmaSteps );
   filter->SetRecalculateTubeness( recalculateTubeness );
-
   filter->SetBeta( beta );
   filter->SetGamma( gamma );
-
   filter->SetEpsilon( epsilon );
   filter->SetOmega( omega );
   filter->SetSensitivity( sensitivity );
+  filter->SetTimeStep( timeStep );
+  filter->SetIterations( numIterations );
 
-  // Compute scales and then set them
-  std::vector< float > scales( numSigmaSteps );
-  double deltaSigma = maxSigma - minSigma;
-  for( int i = 0; i < numSigmaSteps; i++ )
-    {
-    scales[i] = minSigma + i * ( deltaSigma / numSigmaSteps );
-    }
-  filter->SetScales( scales );
-
-  // compute vesselness image
   filter->Update();
 
+  // write output image
   typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
 
-  writer->SetFileName( outputVolume.c_str() );
-  writer->SetInput ( filter->GetOutput() );
-
   try
     {
+    writer->SetFileName( outputVolume.c_str() );
+    writer->SetInput( filter->GetOutput() );
     writer->Update();
     }
   catch( itk::ExceptionObject & err )
     {
-    std::cerr << "Exception caught: " << err << std::endl;
+    tube::ErrorMessage( "Error writing output vesselness image: "
+      + std::string(err.GetDescription()) );
     return EXIT_FAILURE;
     }
 
