@@ -512,7 +512,11 @@ mark_as_advanced( TubeTK_CONFIG_BINARY_DIR )
 
 # Setup Python VirtualEnv for testing.
 if( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_USING_SLICER )
-  include( TubeTKVirtualEnvSetup )
+  option( BUILD_TESTING_VIRTUALENV
+  "Build a Python virtual environment to run tests." OFF )
+  if(BUILD_TESTING_VIRTUALENV)
+    include( TubeTKVirtualEnvSetup )
+  endif()
 endif( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_USING_SLICER )
 
 #
