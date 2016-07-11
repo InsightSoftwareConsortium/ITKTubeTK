@@ -36,7 +36,8 @@ set( TubeTK_Base_Segmentation_H_Files
   itktubeSegmentTubes.h
   itktubeSegmentBinaryImageSkeleton.h
   itktubeSegmentTubesUsingMinimalPathFilter.h
-  itktubeTubeExtractor.h )
+  itktubeTubeExtractor.h
+  itktubeComputeTrainingMask.h)
 if( TubeTK_USE_LIBSVM )
   list( APPEND TubeTK_Base_Segmentation_H_Files
     itktubePDFSegmenterSVM.h
@@ -51,7 +52,8 @@ set( TubeTK_Base_Segmentation_HXX_Files
   itktubeSegmentTubes.hxx
   itktubeSegmentBinaryImageSkeleton.hxx
   itktubeSegmentTubesUsingMinimalPathFilter.hxx
-  itktubeTubeExtractor.hxx )
+  itktubeTubeExtractor.hxx
+  itktubeComputeTrainingMask.hxx)
 if( TubeTK_USE_LIBSVM )
   list( APPEND TubeTK_Base_Segmentation_HXX_Files
     itktubePDFSegmenterSVM.hxx

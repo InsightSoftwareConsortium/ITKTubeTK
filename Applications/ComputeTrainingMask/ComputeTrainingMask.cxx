@@ -26,6 +26,7 @@
 #include "tubeMacro.h"
 #include "ComputeTrainingMaskCLP.h"
 
+#include <tubeComputeTrainingMask.h>
 #include <itkTimeProbesCollectorBase.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -42,122 +43,6 @@ int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
-
-template< class TPixel, unsigned int VDimension >
-typename itk::Image< TPixel, VDimension >::Pointer
-FindCenterLines( typename itk::Image< TPixel, VDimension >::Pointer input )
-{
-  typedef itk::Image< TPixel, VDimension >                        ImageType;
-  typedef itk::BinaryThinningImageFilter< ImageType, ImageType >  FilterType;
-
-  typename FilterType::Pointer filter = FilterType::New();
-
-  filter->SetInput( input );
-  filter->Update();
-  return filter->GetOutput();
-}
-
-template< class TPixel, unsigned int VDimension >
-void
-ThresholdVolume( typename itk::Image< TPixel, VDimension >::Pointer &input,
-                 float threshLow,
-                 float threshHigh,
-                 float valTrue,
-                 float valFalse )
-{
-  typedef itk::Image< TPixel, VDimension >                        ImageType;
-  typedef itk::BinaryThresholdImageFilter< ImageType, ImageType > ThresholdType;
-
-  typename ThresholdType::Pointer threshold = ThresholdType::New();
-
-  threshold->SetInput( input );
-  threshold->SetLowerThreshold( threshLow);
-  threshold->SetUpperThreshold( threshHigh );
-  threshold->SetInsideValue( valTrue );
-  threshold->SetOutsideValue( valFalse );
-  threshold->Update();
-  input = threshold->GetOutput();
-  return;
-}
-
-template< class TPixel, unsigned int VDimension >
-void
-ApplyDilateMorphologyFilter( typename itk::Image< TPixel, VDimension >::Pointer &input,
-                  float radius,
-                  float foregroundValue )
-{
-  typedef itk::Image< TPixel, VDimension >                          ImageType;
-  typedef itk::BinaryBallStructuringElement< TPixel, VDimension >   BallType;
-  BallType ball;
-  ball.SetRadius( 1 );
-  ball.CreateStructuringElement();
-
-  typedef itk::DilateObjectMorphologyImageFilter
-    < ImageType, ImageType, BallType >       DilateFilterType;
-
-  for ( int r = 0; r<radius; r++ )
-    {
-    typename DilateFilterType::Pointer filter =
-      DilateFilterType::New();
-    filter->SetKernel( ball );
-    filter->SetObjectValue( foregroundValue );
-    filter->SetInput( input );
-    filter->Update();
-    input = filter->GetOutput();
-    }
-  return;
-}
-
-template< class TPixel, unsigned int VDimension >
-void
-AddVolume( typename itk::Image< TPixel, VDimension >::Pointer &input1,
-           typename itk::Image< TPixel, VDimension >::Pointer input2,
-           float weight1,
-           float weight2 )
-{
-  typedef itk::Image< TPixel, VDimension >   ImageType;
-
-  itk::ImageRegionIterator< ImageType > it1(input1,
-    input1->GetLargestPossibleRegion());
-  itk::ImageRegionIterator< ImageType > it2(input2,
-    input2->GetLargestPossibleRegion());
-  it1.GoToBegin();
-  it2.GoToBegin();
-  while ( !it1.IsAtEnd() )
-    {
-    double tf1 = it1.Get();
-    double tf2 = it2.Get();
-    double tf = weight1*tf1 + weight2*tf2;
-    it1.Set( ( TPixel )tf );
-    ++it1;
-    ++it2;
-    }
-  return;
-}
-
-template< class TPixel, unsigned int VDimension >
-void
-SaveVolumeAsShort( typename itk::Image< TPixel, VDimension >::Pointer input,
-                   const char* fileName )
-{
-  typedef itk::Image< short, VDimension >                      ImageTypeShort;
-  typedef itk::Image< TPixel, VDimension >                     ImageType;
-  typedef itk::CastImageFilter< ImageType, ImageTypeShort >    CastFilterType;
-  typedef itk::ImageFileWriter< ImageTypeShort >               VolumeWriterType;
-
-  typename CastFilterType::Pointer castFilter =
-    CastFilterType::New();
-  typename VolumeWriterType::Pointer writer =
-    VolumeWriterType::New();
-
-  castFilter->SetInput( input );
-
-  writer->SetFileName( fileName );
-  writer->SetInput( castFilter->GetOutput() );
-  writer->SetUseCompression( true );
-  writer->Update();
-  writer->Write();
-}
 
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
@@ -203,30 +88,36 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Stop( "Loading Input Volume Mask File" );
   progress = 0.35;
   progressReporter.Report( progress );
-
-  timeCollector.Start( "Find Center Lines" );
-  tube::InfoMessage( "Finding Center Lines..." );
-  typename ImageType::Pointer centerLines =
-    FindCenterLines< TPixel, VDimension >( image );
-  timeCollector.Stop( "Find Center Lines" );
+  timeCollector.Start( "Compute training mask" );
+  tube::InfoMessage( "Compute training mask..." );
+  typedef tube::ComputeTrainingMask<ImageType> ComputeTrainingMaskType;
+  typename ComputeTrainingMaskType::Pointer filter = ComputeTrainingMaskType::New();
+  filter->SetInput(imReader->GetOutput());
+  filter->SetGap(gap);
+  filter->SetNotVesselWidth(notVesselWidth);
+  filter->Update();
   progress = 0.65;
   progressReporter.Report( progress );
-  timeCollector.Start( "Threshold and Mathematical Morphology" );
-  tube::InfoMessage( "Thresholding..." );
-  ThresholdVolume< TPixel, VDimension >( image, 0, gap, 0, 255 );
-  ApplyDilateMorphologyFilter< TPixel, VDimension >( image, notVesselWidth, 255 );
-  typename ImageType::Pointer dialatedImage = image;
-  ApplyDilateMorphologyFilter< TPixel, VDimension >( image, notVesselWidth, 255 );
-  tube::InfoMessage( "Creating Not-Vessel Mask..." );
-  AddVolume< TPixel, VDimension >( image, dialatedImage, 1, -1 );
+  timeCollector.Stop( "Compute training mask" );
+  typedef typename ComputeTrainingMaskType::ImageTypeShort ImageTypeShort;
+  typedef itk::ImageFileWriter<ImageTypeShort>             VolumeWriterType;
+
+  typename VolumeWriterType::Pointer writer = VolumeWriterType::New();
   if ( !notVesselMask.empty() )
     {
-    SaveVolumeAsShort< TPixel, VDimension >( image, notVesselMask.c_str() );
+    timeCollector.Start( "Creating not-Vessel Mask" );
+    tube::InfoMessage( "Creating not-Vessel Mask..." );
+    writer->SetFileName(notVesselMask);
+    writer->SetInput(filter->GetNotVesselMask());
+    writer->Update();
+    timeCollector.Stop( "Creating not-Vessel Mask" );
     }
+  timeCollector.Start( "Creating Vessel Mask" );
   tube::InfoMessage( "Creating Vessel Mask..." );
-  AddVolume< TPixel, VDimension >( image, centerLines, 0.5, 255 );
-  SaveVolumeAsShort< TPixel, VDimension >( image, outputVolume.c_str() );
-  timeCollector.Stop( "Threshold and Mathematical Morphology" );
+  writer->SetFileName(outputVolume.c_str());
+  writer->SetInput(filter->GetOutput());
+  writer->Update();
+  timeCollector.Stop("Creating Vessel Mask" );
   progress = 1.0;
   progressReporter.Report( progress );
   progressReporter.End();
