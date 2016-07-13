@@ -52,6 +52,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   this->m_NumberOfBins = 20;
   this->m_SmoothingMethod = ::tube::SMOOTH_TUBE_USING_INDEX_GAUSSIAN;
   this->m_SmoothingScale = 5.0;
+  this->m_SubsamplingScale = 1;
 
   // Setting vessel-wise metrics to -1.0
   this->m_AverageRadiusMetric = -1.0;
@@ -63,6 +64,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   this->m_PathLengthMetric = -1.0;
   this->m_Percentile95Metric = -1.0;
   this->m_SumOfAnglesMetric = -1.0;
+  this->m_SumOfTorsionMetric = -1.0;
   this->m_TotalCurvatureMetric = -1.0;
   this->m_TotalSquaredCurvatureMetric = -1.0;
 
@@ -148,6 +150,14 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::GetSumOfAnglesMetric() const
 {
   return this->m_SumOfAnglesMetric;
+}
+
+//----------------------------------------------------------------------------
+template< class TPointBasedSpatialObject > double
+TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+::GetSumOfTorsionMetric() const
+{
+  return this->m_SumOfTorsionMetric;
 }
 
 //----------------------------------------------------------------------------
@@ -298,6 +308,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   bool plm = this->m_MeasureFlag & PATH_LENGTH_METRIC;
   bool p95m = this->m_MeasureFlag & PERCENTILE_95_METRIC;
   bool soam = this->m_MeasureFlag & SUM_OF_ANGLES_METRIC;
+  bool sot = this->m_MeasureFlag & SUM_OF_TORSION_METRIC;
   bool tcm = this->m_MeasureFlag & TOTAL_CURVATURE_METRIC;
   bool tscm = this->m_MeasureFlag & TOTAL_SQUARED_CURVATURE_METRIC;
   bool cvm = this->m_MeasureFlag & CURVATURE_VECTOR_METRIC;
@@ -316,6 +327,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 
   // SOAM variables
   double sumOfAngles = 0.0;
+  double sumOfTorsion = 0.0;
 
   // Other metrics variables
   double totalCurvature = 0.0;
@@ -324,12 +336,13 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 
   // Preprocessing
   PointBasedSpatialObjectPointer smoothedTube = PointBasedSpatialObject::New();
+  PointBasedSpatialObjectPointer resampledTube = PointBasedSpatialObject::New();
 
   // Smooth the vessel
-  smoothedTube = ::tube::SmoothTube<PointBasedSpatialObject>(originalInput,
-                                                             this->m_SmoothingScale,
-                                                             this->m_SmoothingMethod);
-  if(!smoothedTube)
+  smoothedTube = ::tube::SmoothTube<PointBasedSpatialObject>( originalInput,
+    this->m_SmoothingScale, this->m_SmoothingMethod );
+
+  if( !smoothedTube )
     {
     itkExceptionMacro( << "Cannot run Tortuosity on input. "
                        << "Input cannot be smoothed");
@@ -337,10 +350,17 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     }
 
   // Subsample the vessel
-  // This is not implemented yet.
+  resampledTube = ::tube::SubsampleTube<PointBasedSpatialObject>(
+    smoothedTube, this->m_SubsamplingScale );
 
+  if( !resampledTube )
+    {
+    itkExceptionMacro( << "Cannot run Tortuosity on input. "
+                       << "Input cannot be subsampled");
+    return;
+    }
   // Make the measurements on the pre-processed tube.
-  PointBasedSpatialObjectPointer processedInput = smoothedTube;
+  PointBasedSpatialObjectPointer processedInput = resampledTube;
 
   if ( processedInput->GetNumberOfPoints() < 2 )
     {
@@ -479,7 +499,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
       this->m_InflectionPoints.SetElement(index, inflectionValue);
       }
 
-    if ( soam &&
+    if ( ( soam || sot ) &&
        previousPointAvailable && nextPointAvailable && nPlus2PointAvailable )
       {
       // Compute in-plane angle
@@ -514,8 +534,8 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
         }
 
       // Finally add the angle to the sum
-      sumOfAngles +=
-        sqrt( inPlaneAngle*inPlaneAngle + torsionAngle*torsionAngle );
+      sumOfAngles += sqrt( inPlaneAngle*inPlaneAngle );
+      sumOfTorsion += sqrt( torsionAngle*torsionAngle );
       }
 
     if( arm )
@@ -605,15 +625,16 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   this->m_InflectionCountMetric = inflectionCount * this->m_DistanceMetric;
     }
 
-  if ( soam )
+  if ( soam || sot )
     {
     if( pathLength > 0.0 )
       {
       this->m_SumOfAnglesMetric = sumOfAngles / pathLength;
+      this->m_SumOfTorsionMetric = sumOfTorsion / pathLength;
       }
     else
       {
-      itkExceptionMacro( << "Cannot compute SOAM, total tube path (="
+      itkExceptionMacro( <<"Cannot compute angle metrics, path length (="
         <<pathLength<<") <= 0.0");
       }
     }
