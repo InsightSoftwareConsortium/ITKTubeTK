@@ -68,7 +68,7 @@ public:
   itkGetObjectMacro( InputMask, MaskType );
 
     /** Set/Get input mask */
-  itkSetMacro( Quantiles, std::vector<float> );
+  virtual void SetQuantiles( std::vector<float> _arg );
   itkGetMacro( Quantiles, std::vector<float> );
 
   /** Get Components */
