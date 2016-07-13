@@ -51,6 +51,18 @@ ComputeImageStatistics< TPixel, VDimension >
 template< class TPixel, unsigned int VDimension >
 void
 ComputeImageStatistics< TPixel, VDimension >
+::SetQuantiles (const std::vector<float> _arg)
+{
+  if( this->m_Quantiles != _arg )
+    {
+    this->m_Quantiles = _arg;
+    this->Modified();
+    }
+}
+
+template< class TPixel, unsigned int VDimension >
+void
+ComputeImageStatistics< TPixel, VDimension >
 ::GenerateData( void )
 {
   //Sanity checks
