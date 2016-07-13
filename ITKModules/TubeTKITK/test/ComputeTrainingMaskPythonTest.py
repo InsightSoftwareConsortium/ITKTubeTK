@@ -1,6 +1,41 @@
 #!/usr/bin/env python
 
-import itk
+import os
+import sys
+
+
+# Path for TubeTK libs
+TubeTK_BUILD_DIR=None
+if 'TubeTK_BUILD_DIR' in os.environ:
+    TubeTK_BUILD_DIR = os.environ['TubeTK_BUILD_DIR']
+if not os.path.exists(TubeTK_BUILD_DIR):
+    print('TubeTK_BUILD_DIR not found!')
+    print('  Set environment variable')
+    sys.exit(1)
+
+try:
+    import itk
+except:
+    ITK_BUILD_DIR = None
+    if 'ITK_BUILD_DIR' in os.environ:
+        ITK_BUILD_DIR = os.environ['ITK_BUILD_DIR']
+    else:
+        print('ITK_BUILD_DIR not found!')
+        print('  Set environment variable')
+        sys.exit( 1 )
+
+    if not os.path.exists(ITK_BUILD_DIR):
+        print('ITK_BUILD_DIR set by directory not found!')
+        print('  ITK_BUIDL_DIR = ' + ITK_BUILD_DIR )
+        sys.exit(1)
+    # Append ITK libs
+    sys.path.append(os.path.join(ITK_BUILD_DIR, 'Wrapping/Generators/Python'))
+    sys.path.append(os.path.join(ITK_BUILD_DIR, 'lib'))
+
+    # Append TubeTK libs
+    sys.path.append(os.path.join(TubeTK_BUILD_DIR, 'TubeTK-build/lib/TubeTK'))
+    import itk
+
 from itk import TubeTKITK
 import sys
 
