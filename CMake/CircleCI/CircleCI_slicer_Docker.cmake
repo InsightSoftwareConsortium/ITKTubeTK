@@ -27,6 +27,9 @@ set( SITE_NAME "CircleCI_Slicer_GitHub" )
 # Follow format for caps and components as given on TubeTK dashboard
 set( SITE_PLATFORM "Ubuntu-14.04-64" )
 
+# Use SITE_BUILD_TYPE specified by circle.yml
+set( SITE_BUILD_TYPE "$ENV{SITE_BUILD_TYPE}" )
+
 if( NOT SITE_BUILD_TYPE )
   set( SITE_BUILD_TYPE "Release" ) # Release, Debug
 endif( NOT SITE_BUILD_TYPE )
@@ -39,7 +42,7 @@ if( NOT SITE_CTEST_MODE )
   set( SITE_CTEST_MODE "Experimental" ) # Experimental, Continuous, or Nightly
 endif( NOT SITE_CTEST_MODE )
 
-set( SITE_CMAKE_GENERATOR "Ninja" ) # Ninja or Unix Makefiles
+set( SITE_CMAKE_GENERATOR "Unix Makefiles" ) # Ninja or Unix Makefiles
 
 set( TubeTK_GIT_REPOSITORY "https://github.com/KitwareMedical/TubeTK.git" )
 
@@ -102,10 +105,11 @@ set( BUILD_SHARED_LIBS ON )
 
 set( ENV{DISPLAY} ":0" )
 
-set( SITE_MAKE_COMMAND "ninja" )
+set( CTEST_BUILD_FLAGS "-j 3" )
 
 set( SITE_CMAKE_COMMAND "/usr/bin/cmake" )
-set( SITE_CTEST_COMMAND "/usr/bin/ctest -j3" )
+
+set( CTEST_PARALLEL_LEVEL 3 )
 
 set( SITE_QMAKE_COMMAND "/usr/bin/qmake" )
 

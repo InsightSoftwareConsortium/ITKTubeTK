@@ -3,6 +3,7 @@ machine:
     - docker
   environment:
     DOCKER_TAG_1: slicer
+    SITE_BUILD_TYPE: Release
 
 dependencies:
   override:
@@ -11,5 +12,5 @@ dependencies:
 
 test:
   override:
-    - docker run -e CIRCLE_SHA1=$CIRCLE_SHA1 -e CIRCLE_BRANCH=$CIRCLE_BRANCH -v ~/TubeTK:/usr/src/TubeTK -v ~/TubeTK-build:/usr/src/TubeTK-build kitwaremedical/tubetk:$DOCKER_TAG_1 /usr/src/TubeTK/CMake/CircleCI/CircleCI_TubeTK_Experimental.sh $DOCKER_TAG_1 :
+    - docker run -e CIRCLE_SHA1=$CIRCLE_SHA1 -e CIRCLE_BRANCH=$CIRCLE_BRANCH -e SITE_BUILD_TYPE=$SITE_BUILD_TYPE -v ~/TubeTK:/usr/src/TubeTK -v ~/TubeTK-$SITE_BUILD_TYPE:/usr/src/TubeTK-$SITE_BUILD_TYPE kitwaremedical/tubetk:$DOCKER_TAG_1 /usr/src/TubeTK/CMake/CircleCI/CircleCI_TubeTK_Experimental.sh $DOCKER_TAG_1 :
         timeout: 6000
