@@ -21,12 +21,19 @@
 #
 ##############################################################################
 
-Midas3FunctionAddTestWithEnv( NAME Python.MergeAdjacentImages
-  COMMAND ${PYTHON_TESTING_EXECUTABLE}
-    "${NOTEBOOK_TEST_DRIVER}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../MergeAdjacentImages.ipynb"
-    "${TubeTK_BINARY_DIR}"
-    MIDAS_FETCH_ONLY{ES0015_Large.mha.md5}
-    MIDAS_FETCH_ONLY{ES0015_Large_Wo_offset.mha.md5}
-  ENVIRONMENT ITK_BUILD_DIR=${ITK_DIR} TubeTK_BUILD_DIR=${PROJECT_BINARY_DIR}
-  )
+# This script expects ITK_BUILD_DIR and TubeTK_BUILD_DIR to be passed as cmake
+# variables.
+# It verifies that ITK_BUILD_DIR and TubeTK_BUILD_DIR are set as environment
+# variables and that their values match the values passed to the script.
+if( DEFINED $ENV{ITK_BUILD_DIR})
+  message(FATAL_ERROR "ITK_BUILD_DIR environment variable not set.")
+endif()
+if(NOT "$ENV{ITK_BUILD_DIR}" STREQUAL "${ITK_BUILD_DIR}")
+  message(FATAL_ERROR "ITK_BUILD_DIR environment variable does not match ITK_DIR set in this project.")
+endif()
+if( DEFINED $ENV{TubeTK_BUILD_DIR})
+  message(FATAL_ERROR "TubeTK_BUILD_DIR environment variable not set.")
+endif()
+if(NOT "$ENV{TubeTK_BUILD_DIR}" STREQUAL "${TubeTK_BUILD_DIR}")
+  message(FATAL_ERROR "TubeTK_BUILD_DIR environment variable does not match current directory path.")
+endif()

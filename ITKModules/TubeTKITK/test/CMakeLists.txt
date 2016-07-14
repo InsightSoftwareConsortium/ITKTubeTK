@@ -18,13 +18,14 @@ set( CompareImages_EXE
 if( ITK_WRAP_PYTHON )
   set( MODULE_NAME ComputeTrainingMaskPython )
   # Test1 - VesselMask
-  Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+  Midas3FunctionAddTestWithEnv( NAME ${MODULE_NAME}-Test1
     COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}Test.py
       MIDAS{ComputeTrainingMask-Test1.mha.md5}
       ${TEMP}/${MODULE_NAME}_VesselMaskTest1.mha
       ${TEMP}/${MODULE_NAME}_NotVesselMaskTest1.mha
       0.5
       2
+    ENVIRONMENT ITK_BUILD_DIR=${ITK_DIR} TubeTK_BUILD_DIR=${PROJECT_BINARY_DIR}
       )
 
   # Test1 - Compare - VesselMask
