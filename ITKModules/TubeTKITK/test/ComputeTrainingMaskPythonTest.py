@@ -8,8 +8,13 @@ import sys
 TubeTK_BUILD_DIR=None
 if 'TubeTK_BUILD_DIR' in os.environ:
     TubeTK_BUILD_DIR = os.environ['TubeTK_BUILD_DIR']
-if not os.path.exists(TubeTK_BUILD_DIR):
+else:
     print('TubeTK_BUILD_DIR not found!')
+    print('  Set environment variable')
+    sys.exit(1)
+
+if not os.path.exists(TubeTK_BUILD_DIR):
+    print('TubeTK_BUILD_DIR set by directory not found!')
     print('  Set environment variable')
     sys.exit(1)
 

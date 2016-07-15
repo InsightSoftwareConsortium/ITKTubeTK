@@ -708,6 +708,10 @@ if( TubeTK_BUILD_USING_SLICER )
   add_subdirectory( SlicerModules )
 endif( TubeTK_BUILD_USING_SLICER )
 
+if( BUILD_TESTING )
+  add_subdirectory( Testing )
+endif( BUILD_TESTING )
+
 # Create the directory where CTest unit tests store temporary results.
 make_directory( ${TubeTK_BINARY_DIR}/Temporary )
 

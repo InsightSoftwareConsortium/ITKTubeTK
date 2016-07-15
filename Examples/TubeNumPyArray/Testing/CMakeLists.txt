@@ -21,9 +21,11 @@
 #
 ##############################################################################
 
-Midas3FunctionAddTest( NAME Python.TubeNumPyArrayAndPropertyHistograms
+Midas3FunctionAddTestWithEnv( NAME Python.TubeNumPyArrayAndPropertyHistograms
   COMMAND ${PYTHON_TESTING_EXECUTABLE}
     "${NOTEBOOK_TEST_DRIVER}"
     "${CMAKE_CURRENT_SOURCE_DIR}/../TubeNumPyArrayAndPropertyHistograms.ipynb"
     "${TubeTK_BINARY_DIR}"
-    MIDAS{VascularNetwork.tre.md5} )
+    MIDAS{VascularNetwork.tre.md5}
+  ENVIRONMENT ITK_BUILD_DIR=${ITK_DIR} TubeTK_BUILD_DIR=${PROJECT_BINARY_DIR}
+  )

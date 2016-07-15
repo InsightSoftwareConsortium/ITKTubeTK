@@ -65,6 +65,7 @@
 #   The MIDAS*{} substitution methods can also be passed a relative path from
 #   the MIDAS_KEY_DIR to the key file, so that you can place key files in
 #   subdirectories under MIDAS_KEY_DIR. Ex: MIDAS{test1/input/foo.png.md5}
+include(CMakeParseArguments)
 
 function( Midas3FunctionAddTest )
   # Determine the test name.
@@ -157,6 +158,36 @@ set( midas_test_name \"${testName}\" )
   add_test( ${testArgs} )
   set_property( TEST ${testName} APPEND PROPERTY DEPENDS ${testName}_fetchData )
 endfunction( Midas3FunctionAddTest )
+
+
+# This function accepts 3 arguments:
+# - NAME
+# - ENVIRONMENT
+# - COMMAND
+#
+# It relies on Midas3FunctionAddTest (see documentation above) and adds
+# the possibility to set environment variables for a test. Environment
+# variables should be passed as different arguments
+# of the form "NAME=VALUE"
+#
+# Example:
+#
+# ENVIRONMENT ITK_BUILD_DIR=${ITK_DIR} TubeTK_BUILD_DIR=${PROJECT_BINARY_DIR}
+#
+# Unparsed arguments are passed to Midas3FunctionAddTest unchanged.
+#
+function( Midas3FunctionAddTestWithEnv )
+  set(options )
+  set(oneValueArgs NAME )
+  set(multiValueArgs ENVIRONMENT COMMAND)
+  cmake_parse_arguments(ENV_TEST "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+  Midas3FunctionAddTest( NAME ${ENV_TEST_NAME} COMMAND ${ENV_TEST_COMMAND} ${ENV_TEST_UNPARSED_ARGUMENTS} )
+  foreach(var ${ENV_TEST_ENVIRONMENT})
+    list(APPEND env_list ${var})
+  endforeach()
+  set_tests_properties(${ENV_TEST_NAME} PROPERTIES ENVIRONMENT "${env_list}")
+endfunction( Midas3FunctionAddTestWithEnv )
+
 
 # Helper macro to write the download scripts for MIDAS.*{} arguments
 macro( _process_keyfile keyFile testName extractTgz )
