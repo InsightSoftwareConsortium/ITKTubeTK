@@ -225,12 +225,8 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
           continue;
           }
         }
-      for( unsigned int d = 0; d < Dimension; d++ )
-        {
-        pathPoint[d]=( pathPoint[d] - origin[d] ) / spacing[d];
-        }
       TubePointType tubePoint;
-      tubePoint.SetPosition( pathPoint );
+      tubePoint.SetPosition( vertexList->GetElement( k ) );
       tubePoint.SetID( k );
       tubePointList.push_back( tubePoint );
       }
