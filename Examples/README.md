@@ -21,7 +21,7 @@ environment for interactive processing.
 ## Quickstart
 
 The easiest way to get started with TubeTK examples is to enable
-`TubeTK_USE_PYTHON` and `TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS` when configuring TubeTK.
+`TubeTK_USE_PYTHON` and `TubeTK_USE_EXAMPLES_AS_TESTS` when configuring TubeTK.
 To run the IPython (Jupyter) notebooks from the `Examples`
 directory, you need to set the `ITK_BUILD_DIR` and the`TubeTK_BUILD_DIR` variables.
 Run the notebook, e.g., for `MergeAdjacentImages` as
