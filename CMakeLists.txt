@@ -367,7 +367,7 @@ CMAKE_DEPENDENT_OPTION(TubeTK_USE_NUMPY_STACK "Use NumPy to enable additional fu
                                               "TubeTK_USE_PYTHON" OFF)
 CMAKE_DEPENDENT_OPTION(TubeTK_USE_PYQTGRAPH "Use PyQtGraph to enable additional functionality." ON
                        "TubeTK_USE_PYTHON" OFF)
-CMAKE_DEPENDENT_OPTION(TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS "Test TubeTK python examples as (long running) tests."
+CMAKE_DEPENDENT_OPTION(TubeTK_USE_EXAMPLES_AS_TESTS "Test TubeTK python examples as (long running) tests."
                        ON "TubeTK_USE_PYTHON" OFF)
 if( TubeTK_USE_PYTHON )
 
@@ -387,9 +387,9 @@ if( TubeTK_USE_PYTHON )
   #
   # Setup examples as tests
   #
-  if( TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS )
+  if( TubeTK_USE_EXAMPLES_AS_TESTS )
     TubeTKCheckPythonLibraries(REQUIRED LIBRARIES IPython tornado zmq jinja2 tables matplotlib
-                               ERROR_MESSAGE "Set TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS to OFF")
+                               ERROR_MESSAGE "Set TubeTK_USE_EXAMPLES_AS_TESTS to OFF")
   endif()
 endif( TubeTK_USE_PYTHON )
 
@@ -692,9 +692,9 @@ message( STATUS "Configuring Launcher script - ok [${_launcher_platform}]" )
 include( TubeTKMacroInstallPlugins )
 
 # Test TubeTK IPython examples.
-if( TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS )
+if( TubeTK_USE_EXAMPLES_AS_TESTS )
   add_subdirectory( Examples )
-endif( TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS )
+endif( TubeTK_USE_EXAMPLES_AS_TESTS )
 
 add_subdirectory( Utilities )
 add_subdirectory( Base )

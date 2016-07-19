@@ -88,7 +88,7 @@ if( TubeTK_USE_PYQTGRAPH )
 endif( TubeTK_USE_PYQTGRAPH )
 
 # ipython and other things used by examples
-if( ${TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS} )
+if( ${TubeTK_USE_EXAMPLES_AS_TESTS} )
 
   list( APPEND PYTHON_TESTING_MODULES
     ipython
@@ -98,7 +98,7 @@ if( ${TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS} )
     tables
     matplotlib )
 
-endif( ${TubeTK_USE_PYTHON_EXAMPLES_AS_TESTS} )
+endif( ${TubeTK_USE_EXAMPLES_AS_TESTS} )
 
 configure_file(
   "${TubeTK_SOURCE_DIR}/CMake/PythonVirtualEnvInstall.cmake.in"
