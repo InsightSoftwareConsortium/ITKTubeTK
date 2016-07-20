@@ -74,7 +74,8 @@ macro( TubeTKMacroAddModules )
   set( _build_module_default ON )
   if( DEFINED TubeTK_BUILD_MODULE_DEFAULT )
     if( TubeTK_BUILD_ALL_MODULES )
-      message( AUTHOR_WARNING "Specifying 'TubeTK_BUILD_MODULE_DEFAULT' is effective only if 'TubeTK_BUILD_ALL_MODULES' is disabled" )
+      message( AUTHOR_WARNING
+        "Specifying 'TubeTK_BUILD_MODULE_DEFAULT' is effective only if 'TubeTK_BUILD_ALL_MODULES' is disabled" )
     endif()
     set( _build_module_default ${TubeTK_BUILD_MODULE_DEFAULT} )
   endif()
@@ -94,8 +95,9 @@ macro( TubeTKMacroAddModules )
     foreach( module ${MY_TubeTK_MODULES} )
 
       CMAKE_DEPENDENT_OPTION(
-        TubeTK_BUILD_${module} "Build ${module} or not. This does not take module dependencies into account." OFF
-         "NOT TubeTK_BUILD_ALL_MODULES" ${_build_module_default} )
+        TubeTK_BUILD_${module}
+        "Build ${module}. Does not take module dependencies into account." OFF
+        "NOT TubeTK_BUILD_ALL_MODULES" ${_build_module_default} )
       mark_as_advanced( TubeTK_BUILD_${module} )
       if( TubeTK_USE_SUPERBUILD )
         mark_as_superbuild( TubeTK_BUILD_${module} )

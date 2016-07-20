@@ -59,8 +59,8 @@ set( TubeTK_VERSION
 
 # Set a variable if not already defined
 macro( tubetk_set_if_not_defined var defaultvalue )
-  if(NOT DEFINED ${var})
-    set(${var} "${defaultvalue}")
+  if( NOT DEFINED ${var} )
+    set( ${var} "${defaultvalue}" )
   endif()
 endmacro()
 
@@ -118,7 +118,8 @@ set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY
 include( CTest )
 if( BUILD_TESTING )
   if( NOT TubeTK_SUPPORT_2D_IMAGES )
-    message(STATUS "Forcing TubeTK_SUPPORT_2D_IMAGES to ON because BUILD_TESTING is ON")
+    message( STATUS
+     "Forcing TubeTK_SUPPORT_2D_IMAGES to ON because BUILD_TESTING is ON" )
     set( TubeTK_SUPPORT_2D_IMAGES ON CACHE BOOL
       "Compile CLI with support for 2D images" FORCE )
   endif(  NOT TubeTK_SUPPORT_2D_IMAGES  )
@@ -135,7 +136,7 @@ include( CTestConfig.cmake )
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/CTestCustom.cmake.in
   ${TubeTK_BINARY_DIR}/CTestCustom.cmake )
 
-set(TubeTK_BUILD_TESTING ${BUILD_TESTING})
+set( TubeTK_BUILD_TESTING ${BUILD_TESTING} )
 
 #
 # Configure for the download of CTest unit testing data from Midas
@@ -251,7 +252,7 @@ if( TubeTK_BUILD_USING_SLICER )
   mark_as_advanced( TubeTK_USE_ITK TubeTK_USE_VTK TubeTK_USE_QT
     TubeTK_USE_CTK )
 
-  #set(TubeTK_BUILD_WITHIN_SLICER ${TubeTK_BUILD_USING_SLICER})
+  #set( TubeTK_BUILD_WITHIN_SLICER ${TubeTK_BUILD_USING_SLICER} )
   # Do not unset these variables if project is built as
   # a Slicer extension within Slicer.
   if( NOT TubeTK_BUILD_WITHIN_SLICER)
@@ -264,7 +265,8 @@ if( TubeTK_BUILD_USING_SLICER )
   # Find Slicer to set the [ITK|VTK|CTK|...]_DIR variables
   find_package( Slicer REQUIRED )
   if( NOT Slicer_USE_FILE )
-    message( FATAL_ERROR "Slicer_USE_FILE not defined. Find Slicer silently failed." )
+    message( FATAL_ERROR
+      "Slicer_USE_FILE not defined. Find Slicer silently failed." )
   endif( NOT Slicer_USE_FILE )
   include( ${Slicer_USE_FILE} )
 
@@ -356,19 +358,18 @@ mark_as_advanced( USE_SYSTEM_CPPCHECK )
 #
 # Setup python
 #
-set( TubeTK_USE_PYTHON_DEFAULT ON )
-if( TubeTK_BUILD_USING_SLICER )
-  set( TubeTK_USE_PYTHON_DEFAULT OFF )
-endif( TubeTK_BUILD_USING_SLICER )
-option( TubeTK_USE_PYTHON "Use Python to enable additional functionality."
-  ${TubeTK_USE_PYTHON_DEFAULT} )
+CMAKE_DEPENDENT_OPTION( TubeTK_USE_PYTHON
+  "Use Python to enable additional functionality." ON
+  "NOT TubeTK_BUILD_USING_SLICER" OFF )
 
-CMAKE_DEPENDENT_OPTION(TubeTK_USE_NUMPY_STACK "Use NumPy to enable additional functionality." ON
-                                              "TubeTK_USE_PYTHON" OFF)
-CMAKE_DEPENDENT_OPTION(TubeTK_USE_PYQTGRAPH "Use PyQtGraph to enable additional functionality." ON
-                       "TubeTK_USE_PYTHON" OFF)
-CMAKE_DEPENDENT_OPTION(TubeTK_USE_EXAMPLES_AS_TESTS "Test TubeTK python examples as (long running) tests."
-                       ON "TubeTK_USE_PYTHON" OFF)
+CMAKE_DEPENDENT_OPTION( TubeTK_USE_NUMPY_STACK
+  "Use NumPy to enable additional functionality." ON
+  "TubeTK_USE_PYTHON" OFF )
+
+CMAKE_DEPENDENT_OPTION( TubeTK_USE_PYQTGRAPH
+  "Use PyQtGraph to enable additional functionality." ON
+  "TubeTK_USE_PYTHON" OFF )
+
 if( TubeTK_USE_PYTHON )
 
   find_package( PythonInterp REQUIRED )
@@ -376,20 +377,21 @@ if( TubeTK_USE_PYTHON )
 
   # NumPy conversion support.
   if( TubeTK_USE_NUMPY_STACK )
-    TubeTKCheckPythonLibraries(REQUIRED LIBRARIES numpy scipy
-                               ERROR_MESSAGE "Set TubeTK_USE_NUMPY_STACK to OFF")
+    TubeTKCheckPythonLibraries( REQUIRED LIBRARIES numpy scipy
+      ERROR_MESSAGE "Set TubeTK_USE_NUMPY_STACK to OFF" )
   endif()
   # PyQtGraph bridge support.
   if( TubeTK_USE_PYQTGRAPH )
-    TubeTKCheckPythonLibraries(REQUIRED LIBRARIES pyqtgraph
-                               ERROR_MESSAGE "Set TubeTK_USE_PYQTGRAPH to OFF")
+    TubeTKCheckPythonLibraries( REQUIRED LIBRARIES pyqtgraph
+      ERROR_MESSAGE "Set TubeTK_USE_PYQTGRAPH to OFF" )
   endif()
   #
   # Setup examples as tests
   #
   if( TubeTK_USE_EXAMPLES_AS_TESTS )
-    TubeTKCheckPythonLibraries(REQUIRED LIBRARIES IPython tornado zmq jinja2 tables matplotlib
-                               ERROR_MESSAGE "Set TubeTK_USE_EXAMPLES_AS_TESTS to OFF")
+    TubeTKCheckPythonLibraries( REQUIRED LIBRARIES IPython tornado zmq jinja2
+      tables matplotlib ERROR_MESSAGE
+      "Set TubeTK_USE_EXAMPLES_AS_TESTS to OFF" )
   endif()
 endif( TubeTK_USE_PYTHON )
 
@@ -513,11 +515,17 @@ mark_as_advanced( TubeTK_CONFIG_BINARY_DIR )
 # Setup Python VirtualEnv for testing.
 if( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_USING_SLICER )
   option( BUILD_TESTING_VIRTUALENV
-  "Build a Python virtual environment to run tests." OFF )
-  if(BUILD_TESTING_VIRTUALENV)
+    "Build a Python virtual environment to run tests." OFF )
+  if( BUILD_TESTING_VIRTUALENV )
     include( TubeTKVirtualEnvSetup )
   endif()
 endif( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_USING_SLICER )
+
+#
+# Testing using Examples
+#
+set( TubeTK_USE_EXAMPLES_AS_TESTS "Use TubeTK examples as (long running) tests."
+  OFF )
 
 #
 # Setup Superbuild
@@ -622,8 +630,8 @@ test_big_endian( CMAKE_WORDS_BIGENDIAN )
 # Set TubeTK_EXECUTABLE_DIRS useful to configure launcher scripts
 # and set TubeTK_LIBRARY_DIRS
 if( WIN32 )
-  set(TubeTK_EXECUTABLE_DIRS CACHE INTERNAL "Bin and Lib dirs for running apps."
-    FORCE )
+  set( TubeTK_EXECUTABLE_DIRS CACHE INTERNAL
+    "Bin and Lib dirs for running apps." FORCE )
   foreach( _build_type "" Debug Release )
     list( APPEND TubeTK_EXECUTABLE_DIRS
       ${GenerateCLP_DIR}/${_build_type}
@@ -656,7 +664,7 @@ endif( WIN32 )
 #
 # Configure a launcher for running TubeTK methods from the command line
 #
-message(STATUS "Configuring Launcher script")
+message( STATUS "Configuring Launcher script" )
 set( TubeTK_LAUNCHER )
 if( WIN32 )
   # Microsoft Windows.
@@ -666,8 +674,8 @@ if( WIN32 )
 
   find_program( CMD_EXECUTABLE "cmd" )
   if( NOT CMD_EXECUTABLE )
-    message(FATAL_ERROR
-      "Could not find 'cmd' executable required to run test using the launcher")
+    message( FATAL_ERROR
+      "Could not find 'cmd' executable required to run test with the launcher" )
   endif()
 
   set( TubeTK_LAUNCHER ${TubeTK_BINARY_DIR}/TubeTKLauncher.bat )
@@ -679,8 +687,8 @@ elseif( UNIX AND TubeTK_BUILD_USING_SLICER )
 
   find_program( SH_EXECUTABLE "sh" )
   if( NOT SH_EXECUTABLE )
-    message(FATAL_ERROR
-      "Could not find 'sh' executable required to run test using the launcher")
+    message( FATAL_ERROR
+      "Could not find 'sh' executable required to run test using the launcher" )
   endif()
   set( TubeTK_LAUNCHER ${SH_EXECUTABLE} ${TubeTK_BINARY_DIR}/TubeTKLauncher.sh )
 elseif( NOT UNIX )
