@@ -39,48 +39,52 @@
 
 include(CMakeParseArguments)
 
-macro(TubeTKCheckPythonLibrary library)
-  set(${library}_ERROR TRUE)
-  set(${library}_FOUND FALSE)
+macro( TubeTKCheckPythonLibrary library )
+  set( ${library}_ERROR TRUE )
+  set( ${library}_FOUND FALSE )
   #Sanity check: Make sure only one library name is given
-  if(${ARGC} EQUAL 1)
-    set(list_var "${ARGN}")
-    find_package(PythonInterp REQUIRED)
+  if( ${ARGC} EQUAL 1 )
+    set( list_var "${ARGN}" )
+    find_package( PythonInterp REQUIRED )
 
     execute_process(COMMAND "${PYTHON_EXECUTABLE}" "-c"
       "exec(\"import sys\\ntry:\\n  import ${library}\\nexcept Exception as e:\\n  print(e)\\n  sys.exit(0)\\nsys.exit(1)\")"
       RESULT_VARIABLE ${library}_FOUND
       OUTPUT_VARIABLE _PYTHON_VALUES
       ERROR_VARIABLE _PYTHON_ERROR_VALUE
-      OUTPUT_STRIP_TRAILING_WHITESPACE)
-    set(${library}_ERROR FALSE)
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+      )
+    set( ${library}_ERROR FALSE )
   endif()
 endmacro()
 
-macro(TubeTKCheckPythonLibraries)
-  set(options REQUIRED)
-  set(oneValueArgs ERROR_MESSAGE)
-  set(multiValueArgs LIBRARIES)
-  cmake_parse_arguments(CheckLibraries "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
-   if(CheckLibraries_UNPARSED_ARGUMENTS)
-    message(AUTHOR_WARNING "Unparsed arguments given [${CheckLibraries_UNPARSED_ARGUMENTS}]")
+macro( TubeTKCheckPythonLibraries )
+  set( options REQUIRED )
+  set( oneValueArgs ERROR_MESSAGE )
+  set( multiValueArgs LIBRARIES )
+  cmake_parse_arguments( CheckLibraries "${options}" "${oneValueArgs}"
+    "${multiValueArgs}" ${ARGN} )
+  if( CheckLibraries_UNPARSED_ARGUMENTS )
+    message( AUTHOR_WARNING
+      "Unparsed arguments given [${CheckLibraries_UNPARSED_ARGUMENTS}]" )
   endif()
-  if(NOT DEFINED CheckLibraries_LIBRARIES)
-    message(AUTHOR_WARNING "LIBRARIES are mandatory: [${CheckLibraries_LIBRARIES}]")
+  if( NOT DEFINED CheckLibraries_LIBRARIES )
+    message( AUTHOR_WARNING
+      "LIBRARIES are mandatory: [${CheckLibraries_LIBRARIES}]" )
   endif()
-  find_package(PythonInterp)
-  if(NOT PythonInterp_FOUND)
-    if(CheckLibraries_REQUIRED)
-      message(FATAL_ERROR
-        "Python interpreter was not found. ${CheckLibraries_ERROR_MESSAGE}")
+  find_package( PythonInterp )
+  if( NOT PythonInterp_FOUND AND NOT PYTHONINTERP_FOUND )
+    if( CheckLibraries_REQUIRED )
+      message( FATAL_ERROR
+        "Python interpreter was not found. ${CheckLibraries_ERROR_MESSAGE}" )
     endif()
   else()
-    foreach(var ${CheckLibraries_LIBRARIES})
-      TubeTKCheckPythonLibrary(${var})
+    foreach( var ${CheckLibraries_LIBRARIES} )
+      TubeTKCheckPythonLibrary( ${var} )
       if( NOT ${var}_FOUND )
-        if(CheckLibraries_REQUIRED)
-          message(FATAL_ERROR
-            "${var} was not found. ${CheckLibraries_ERROR_MESSAGE}")
+        if( CheckLibraries_REQUIRED )
+          message( FATAL_ERROR
+            "${var} was not found. ${CheckLibraries_ERROR_MESSAGE}" )
         endif()
       endif()
     endforeach()
