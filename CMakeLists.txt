@@ -371,7 +371,6 @@ CMAKE_DEPENDENT_OPTION( TubeTK_USE_PYQTGRAPH
   "TubeTK_USE_PYTHON" OFF )
 
 if( TubeTK_USE_PYTHON )
-
   find_package( PythonInterp REQUIRED )
   find_package( PythonLibs REQUIRED )
 
@@ -384,14 +383,6 @@ if( TubeTK_USE_PYTHON )
   if( TubeTK_USE_PYQTGRAPH )
     TubeTKCheckPythonLibraries( REQUIRED LIBRARIES pyqtgraph
       ERROR_MESSAGE "Set TubeTK_USE_PYQTGRAPH to OFF" )
-  endif()
-  #
-  # Setup examples as tests
-  #
-  if( TubeTK_USE_EXAMPLES_AS_TESTS )
-    TubeTKCheckPythonLibraries( REQUIRED LIBRARIES IPython tornado zmq jinja2
-      tables matplotlib ERROR_MESSAGE
-      "Set TubeTK_USE_EXAMPLES_AS_TESTS to OFF" )
   endif()
 endif( TubeTK_USE_PYTHON )
 
