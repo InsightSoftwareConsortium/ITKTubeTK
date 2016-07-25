@@ -34,7 +34,7 @@ if( ${TubeTK_USE_NUMPY_STACK} )
       VesselTubeToNumPyTest
         MIDAS{tube.tre.md5}
         MIDAS{tube.tre.npy.md5}
-    ENVIRONMENT ITK_BUILD_DIR=${ITK_DIR} TubeTK_BUILD_DIR=${TubeTK_BINARY_DIR}
+    ENVIRONMENT TubeTK_BUILD_DIR=${TubeTK_BINARY_DIR}
     )
   if( ${TubeTK_USE_PYQTGRAPH} )
     Midas3FunctionAddTestWithEnv( NAME PyQtGraphTubesAsCirclesTest
@@ -43,8 +43,7 @@ if( ${TubeTK_USE_NUMPY_STACK} )
         PyQtGraphTubesAsCirclesTest
           MIDAS{tube.tre.md5}
           ${TEMP}/PyQtGraphTubesAsCirclesTest.png
-      ENVIRONMENT ITK_BUILD_DIR=${ITK_DIR}
-        TubeTK_BUILD_DIR=${TubeTK_BINARY_DIR}
+      ENVIRONMENT TubeTK_BUILD_DIR=${TubeTK_BINARY_DIR}
       )
     Midas3FunctionAddTestWithEnv( NAME PyQtGraphTubesAsCirclesTest-Compare
       COMMAND $<TARGET_FILE:CompareImages>
@@ -52,8 +51,7 @@ if( ${TubeTK_USE_NUMPY_STACK} )
         -b MIDAS{PyQtGraphTubesAsCirclesTest.png.md5},MIDAS{PyQtGraphTubesAsCirclesTest.1.png.md5}
         MIDAS_FETCH_ONLY{PyQtGraphTubesAsCirclesTest.png.md5}
         MIDAS_FETCH_ONLY{PyQtGraphTubesAsCirclesTest.1.png.md5}
-      ENVIRONMENT ITK_BUILD_DIR=${ITK_DIR}
-        TubeTK_BUILD_DIR=${TubeTK_BINARY_DIR}
+      ENVIRONMENT TubeTK_BUILD_DIR=${TubeTK_BINARY_DIR}
       )
     set_property( TEST
       PyQtGraphTubesAsCirclesTest-Compare
