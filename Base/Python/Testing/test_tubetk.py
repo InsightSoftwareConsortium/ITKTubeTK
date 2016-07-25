@@ -23,7 +23,23 @@
 
 """Tests for the TubeTK tubetk Python package."""
 
+import os
 import sys
+
+TubeTK_BUILD_DIR=None
+if 'TubeTK_BUILD_DIR' in os.environ:
+    TubeTK_BUILD_DIR = os.environ['TubeTK_BUILD_DIR']
+else:
+    print( 'TubeTK_BUILD_DIR not found!' )
+    print( '  Set environment variable' )
+    sys.exit(1)
+if not os.path.exists(TubeTK_BUILD_DIR):
+    print( 'TubeTK_BUILD_DIR set but directory not found!' )
+    print( '  TubeTK_BUILD_DIR = ' + TubeTK_BUILD_DIR )
+    sys.exit(1)
+
+sys.path.append( os.path.join(TubeTK_BUILD_DIR, 'lib') )
+sys.path.append( os.path.join(TubeTK_BUILD_DIR, 'Base/Python/tubetk') )
 
 def VesselTubeToNumPyTest(tubes, baseline_array):
     import numpy as np
