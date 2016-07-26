@@ -32,25 +32,33 @@ set( TubeTK_C_PYTHON_EXTENSION_DIR ${CMAKE_CURRENT_BINARY_DIR} )
 
 configure_file( tubetk.pth.in tubetk.pth )
 
-if( TubeTK_BUILD_TESTING AND NOT TubeTK_BUILD_USING_SLICER )
+if( BUILD_TESTING_VIRTUALENV AND TubeTK_BUILD_TESTING AND
+  NOT TubeTK_BUILD_USING_SLICER )
   # Install into the testing virtualenv.
-  execute_process(
-    COMMAND ${PYTHON_TESTING_EXECUTABLE} -c
-      "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
-    RESULT_VARIABLE pythonLib_result
-    ERROR_VARIABLE pythonLib_error
-    OUTPUT_VARIABLE site_packages )
-  if( ${pythonLib_result} )
-    message( SEND_ERROR "Could not get virtual packages directory:
-      ${pythonLib_result}
-      ${pythonLib_error}" )
-  else( ${pythonLib_result} )
-    string( STRIP "${site_packages}" site_packages )
-    message( STATUS
-      "Detected testing virtualenv packages directory: ${site_packages}" )
-    configure_file( tubetk.pth.in "${site_packages}/tubetk.pth" )
-  endif( ${pythonLib_result} )
-endif( TubeTK_BUILD_TESTING AND NOT TubeTK_BUILD_USING_SLICER )
+  execute_process( COMMAND "${PYTHON_EXECUTABLE}" "-c"
+    "import virtualenv;print(virtualenv.__file__)"
+    RESULT_VARIABLE virtualEnv_failed
+    OUTPUT_VARIABLE virtualEnv_output
+    ERROR_VARIABLE virtualEnv_error )
+  if( virtualEnv_failed )
+    execute_process(
+      COMMAND ${PYTHON_TESTING_EXECUTABLE} -c
+        "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
+      RESULT_VARIABLE pythonLib_result
+      ERROR_VARIABLE pythonLib_error
+      OUTPUT_VARIABLE site_packages )
+    if( ${pythonLib_result} )
+      message( SEND_ERROR "Could not get virtual packages directory:
+        ${pythonLib_result}
+        ${pythonLib_error}" )
+    else()
+      string( STRIP "${site_packages}" site_packages )
+      message( STATUS
+        "Detected testing virtualenv packages directory: ${site_packages}" )
+      configure_file( tubetk.pth.in "${site_packages}/tubetk.pth" )
+    endif()
+  endif()
+endif()
 
 add_subdirectory( tubetk )
 
