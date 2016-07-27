@@ -41,7 +41,6 @@ set( ImageViewer_URL
 set( ImageViewer_HASH_OR_TAG 2f728d05fe159828e6221e1420b9c3a00295315b )
 
 # JsonCpp
-# ${svn_protocol}://svn.code.sf.net/p/jsoncpp/code/trunk/jsoncpp )
 # http://midas3.kitware.com/midas/download/bitstream/366544/JsonCpp_r276.tar.gz
 set( JsonCpp_URL ${git_protocol}://github.com/KitwareMedical/jsoncpp.git )
 set( JsonCpp_HASH_OR_TAG 110d054227e9eb63faad48a1fb6a828ad0670e61 )
