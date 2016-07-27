@@ -59,7 +59,6 @@ set( TubeTK_VERSION_BUILD "@TubeTK_VERSION_BUILD@" )
 set( TubeTK_VERSION "@TubeTK_VERSION@" )
 
 # Pass on TubeTK dependencies directories
-set( SVNCOMMAND "@SVNCOMMAND@" )
 set( GITCOMMAND "@GITCOMMAND@" )
 set( QT_QMAKE_EXECUTABLE "@QT_QMAKE_EXECUTABLE@" )
 

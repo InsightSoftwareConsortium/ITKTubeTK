@@ -56,19 +56,6 @@ if( GIT_PROTOCOL_HTTP )
   set( github_protocol "https" )
 endif( GIT_PROTOCOL_HTTP )
 
-if( NOT Subversion_SVN_EXECUTABLE )
-  find_package( Subversion REQUIRED )
-endif( NOT Subversion_SVN_EXECUTABLE )
-
-option( SVN_PROTOCOL_HTTP
-  "Use HTTP for svn access (useful if behind a firewall)" OFF )
-mark_as_advanced( SVN_PROTOCOL_HTTP )
-
-set( svn_protocol "svn" )
-if( SVN_PROTOCOL_HTTP )
-  set( svn_protocol "http" )
-endif( SVN_PROTOCOL_HTTP )
-
 include( ExternalProjectsConfig )
 
 # Use for CMAKE_OSX_* in external projects.
