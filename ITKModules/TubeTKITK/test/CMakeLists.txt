@@ -25,7 +25,7 @@ if( ITK_WRAP_PYTHON )
       ${TEMP}/${MODULE_NAME}_NotVesselMaskTest1.mha
       0.5
       2
-    ENVIRONMENT ITK_BUILD_DIR=${ITK_DIR} TubeTK_BUILD_DIR=${PROJECT_BINARY_DIR}
+    ENVIRONMENT ITK_BUILD_DIR=${ITK_DIR} TubeTK_BUILD_DIR=${TubeTK_BINARY_DIR}
       )
 
   # Test1 - Compare - VesselMask
