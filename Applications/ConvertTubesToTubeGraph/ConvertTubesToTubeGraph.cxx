@@ -27,7 +27,7 @@ limitations under the License.
 #include <itkMinimumMaximumImageFilter.h>
 #include <itkSpatialObjectReader.h>
 #include <itkTimeProbesCollectorBase.h>
-
+#include <itktubeTubeSpatialObjectToTubeGraphFilter.h>
 #include <metaTubeGraph.h>
 
 #include "ConvertTubesToTubeGraphCLP.h"
