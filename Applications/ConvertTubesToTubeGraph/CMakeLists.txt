@@ -21,7 +21,7 @@
 #
 ##############################################################################
 
-set( MODULE_NAME ConvertTubeToTubeGraph )
+set( MODULE_NAME ConvertTubesToTubeGraph )
 project( ${MODULE_NAME} )
 
 if( NOT TubeTK_SOURCE_DIR )

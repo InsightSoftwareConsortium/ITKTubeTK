@@ -1,4 +1,4 @@
-TubeTK Tube to Tube Graph Application
+TubeTK Tubes to Tube Graph Application
 =====================================
 
 ---
