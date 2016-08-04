@@ -26,7 +26,7 @@ limitations under the License.
 #include <itkImageFileReader.h>
 #include <itkSpatialObjectReader.h>
 #include <itkTimeProbesCollectorBase.h>
-#include <itktubeTubeSpatialObjectToTubeGraphFilter.h>
+#include <tubeConvertTubesToTubeGraph.h>
 
 #include "ConvertTubesToTubeGraphCLP.h"
 
@@ -48,8 +48,8 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileReader< ImageType >          ImageReaderType;
   typedef itk::SpatialObjectReader< >                SpatialObjectReaderType;
 
-  typedef itk::tube::TubeSpatialObjectToTubeGraphFilter
-    < PixelType, Dimension > FilterType;
+  typedef tube::ConvertTubesToTubeGraph< PixelType, Dimension >
+    FilterType;
   FilterType::Pointer filter = FilterType::New();
   PARSE_ARGS;
 

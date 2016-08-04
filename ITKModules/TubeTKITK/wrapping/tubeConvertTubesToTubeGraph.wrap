@@ -1,0 +1,9 @@
+itk_wrap_include( tubeConvertTubesToTubeGraph.h )
+
+itk_wrap_named_class("tube::ConvertTubesToTubeGraph" tubeConvertTubesToTubeGraph POINTER)
+ foreach(d 2 3)
+    foreach(t ${WRAP_ITK_SCALAR})
+      itk_wrap_template("${ITKM_${t}}${d}"  "${ITKT_${t}}, ${d}")
+    endforeach()
+ endforeach()
+itk_end_wrap_class()

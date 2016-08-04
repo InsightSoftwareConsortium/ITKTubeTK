@@ -64,7 +64,10 @@ void
 ConvertTubesToTubeGraph< TPixel, Dimension >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
-  m_filter->PrintSelf();
+  Superclass::PrintSelf( os, indent );
+
+  os << indent << "Number of Centroids: "  <<
+    m_Filter->GetNumberOfCenteroids() << std::endl;
 }
 
 }

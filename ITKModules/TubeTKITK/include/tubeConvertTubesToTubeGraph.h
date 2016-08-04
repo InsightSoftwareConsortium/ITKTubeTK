@@ -53,7 +53,7 @@ public:
     < TPixel, Dimension > FilterType;
 
   typedef typename FilterType::InputImageType     InputImageType;
-  typedef typename FilterType::TubeGroupPointer   TubeGroupPointer;
+  typedef typename FilterType::TubeGroupType      TubeGroupType;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -70,8 +70,8 @@ public:
   tubeWrapGetObjectMacro( CVTImage, InputImageType, Filter );
 
   /* Set input tubes */
-  tubeWrapSetConstObjectMacro( InputTubeGroup, TubeGroupPointer, Filter);
-  tubeWrapGetConstObjectMacro( InputTubeGroup, TubeGroupPointer, Filter);
+  tubeWrapSetObjectMacro( InputTubeGroup, TubeGroupType, Filter);
+  tubeWrapGetObjectMacro( InputTubeGroup, TubeGroupType, Filter);
 
   /* Runs tubes to image conversion */
   tubeWrapUpdateMacro( Filter );
