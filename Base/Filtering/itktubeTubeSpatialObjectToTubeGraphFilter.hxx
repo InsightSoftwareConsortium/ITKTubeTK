@@ -76,7 +76,7 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
 {
   itkDebugMacro( << "TubeSpatialObjectToTubeGraphFilter::Update() called." );
 
-  typedef itk::MinimumMaximumImageFilter<ImageType> MinMaxFilterType;
+  typedef itk::MinimumMaximumImageFilter< InputImageType > MinMaxFilterType;
   MinMaxFilterType::Pointer mmFilter = MinMaxFilterType::New();
   mmFilter->SetInput( m_CVTImage );
   mmFilter->Update();
@@ -236,7 +236,6 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
       delete graph;
       }
     ++tubeIt;
-    ++count;
     }
 
   delete tubeList;

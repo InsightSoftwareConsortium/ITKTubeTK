@@ -28,6 +28,7 @@ limitations under the License.
 #include <itkGroupSpatialObject.h>
 #include <itkVesselTubeSpatialObject.h>
 #include <itkImage.h>
+#include <metaTubeGraph.h>
 #include <vnl\vnl_vector.h>
 #include <vnl\vnl_matrix.h>
 
@@ -89,12 +90,11 @@ public:
   /** Get Branch Nodes Vector */
   vnl_vector< double > GetBranchNodes( void );
 
+  void Update( void );
 protected:
 
   TubeSpatialObjectToTubeGraphFilter( void );
   ~TubeSpatialObjectToTubeGraphFilter( void );
-
-  void Update( void );
 
   void PrintSelf( std::ostream& os, Indent indent ) const;
 

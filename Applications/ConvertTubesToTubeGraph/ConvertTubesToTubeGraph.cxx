@@ -24,11 +24,9 @@ limitations under the License.
 #include "tubeMessage.h"
 
 #include <itkImageFileReader.h>
-#include <itkMinimumMaximumImageFilter.h>
 #include <itkSpatialObjectReader.h>
 #include <itkTimeProbesCollectorBase.h>
 #include <itktubeTubeSpatialObjectToTubeGraphFilter.h>
-#include <metaTubeGraph.h>
 
 #include "ConvertTubesToTubeGraphCLP.h"
 
@@ -47,13 +45,12 @@ int DoIt( int argc, char * argv[] )
 
   typedef short                                      PixelType;
   typedef itk::Image< PixelType, Dimension >         ImageType;
-  typedef itk::GroupSpatialObject< Dimension >       GroupType;
   typedef itk::ImageFileReader< ImageType >          ImageReaderType;
   typedef itk::SpatialObjectReader< >                SpatialObjectReaderType;
-  typedef itk::VesselTubeSpatialObject< Dimension >  TubeSpatialObjectType;
-  typedef TubeSpatialObjectType::TubePointType       TubePointType;
-  typedef TubeSpatialObjectType::TransformType       TubeTransformType;
 
+  typedef itk::tube::TubeSpatialObjectToTubeGraphFilter
+    < PixelType, Dimension > FilterType;
+  FilterType::Pointer filter = FilterType::New();
   PARSE_ARGS;
 
   itk::TimeProbesCollectorBase timeCollector;
@@ -62,12 +59,11 @@ int DoIt( int argc, char * argv[] )
   tube::InfoMessage( "Reading spatial objects..." );
   timeCollector.Start( "Load tubes" );
   SpatialObjectReaderType::Pointer soReader = SpatialObjectReaderType::New();
-  soReader->SetFileName(tubeFile.c_str());
-  GroupType::Pointer group;
+  soReader->SetFileName( tubeFile.c_str() );
   try
     {
     soReader->Update();
-    group = soReader->GetGroup();
+    filter->SetInputTubeGroup( soReader->GetGroup() );
     }
   catch(...)
     {
@@ -79,12 +75,11 @@ int DoIt( int argc, char * argv[] )
   tube::InfoMessage( "Reading image..." );
   timeCollector.Start( "Load CVT" );
   ImageReaderType::Pointer imReader = ImageReaderType::New();
-  imReader->SetFileName(voronoiFile.c_str());
-  ImageType::Pointer image;
+  imReader->SetFileName( voronoiFile.c_str() );
   try
     {
     imReader->Update();
-    image = imReader->GetOutput();
+    filter->SetCVTImage( imReader->GetOutput() );
     }
   catch( itk::ExceptionObject & ex )
     {
@@ -95,190 +90,45 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Stop( "Load CVT" );
   timeCollector.Start( "Processing" );
 
-  typedef itk::MinimumMaximumImageFilter<ImageType> MinMaxFilterType;
-  MinMaxFilterType::Pointer mmFilter = MinMaxFilterType::New();
-  mmFilter->SetInput(image);
-  mmFilter->Update();
+  try
+    {
+    filter->Update();
+    }
+  catch( itk::ExceptionObject & ex )
+    {
+    tube::FmtErrorMessage( "TubeSpatialObjectToTubeGraphFilter Update error: %s",
+        ex.what());
+    return EXIT_FAILURE;
+    }
 
-  int numberOfCentroids = mmFilter->GetMaximum();
+  int numberOfCentroids = filter->GetNumberOfCenteroids();
 
   logMsg.str( "" );
   logMsg << "Number of Centroids = " << numberOfCentroids;
   tube::InfoMessage( logMsg.str() );
 
-  vnl_matrix<int> aMat(numberOfCentroids, numberOfCentroids);
-  aMat.fill(0);
+  vnl_matrix< double > aMat( numberOfCentroids, numberOfCentroids );
+  aMat = filter->GetAdjacencyMatrix();
 
-  vnl_matrix<double> cMat(3, 3);
-  vnl_vector<double> cVect(3);
-
-  vnl_vector<int> rootNodes(numberOfCentroids);
-  rootNodes.fill(0);
-  vnl_vector<double> branchNodes(numberOfCentroids);
-  branchNodes.fill(0);
-
-  int count = 0;
-  char tubeName[10];
-  std::sprintf( tubeName, "Tube" );
-  TubeSpatialObjectType::ChildrenListType *
-    tubeList = group->GetChildren( group->GetMaximumDepth(), tubeName );
-  TubeSpatialObjectType::ChildrenListType::const_iterator
-           tubeIt = tubeList->begin();
-  int numTubes = tubeList->size();
-  TubePointType tubePoint;
-  MetaScene scene(3);
-  MetaTubeGraph * graph;
-  TubeTransformType::Pointer tubeTransform;
-  while(tubeIt != tubeList->end())
-    {
-    TubeSpatialObjectType::Pointer tube =
-          dynamic_cast<TubeSpatialObjectType *>((*tubeIt).GetPointer());
-
-    tube->RemoveDuplicatePoints();
-    tube->ComputeTangentAndNormals();
-
-    int numberOfPoints = tube->GetNumberOfPoints();
-
-    graph = new MetaTubeGraph(3);
-
-    itk::Point<double, 3> pnt;
-    itk::Index< 3 > indx;
-    tubePoint = static_cast<TubePointType>(tube->GetPoints()[0]);
-    pnt = tubePoint.GetPosition();
-    tube->ComputeObjectToWorldTransform();
-    tubeTransform = tube->GetIndexToWorldTransform();
-    pnt = tubeTransform->TransformPoint(pnt);
-    image->TransformPhysicalPointToIndex(pnt, indx);
-    double cCount = 1;
-    int cNode = image->GetPixel(indx);
-    double cRadius = tubePoint.GetRadius();
-    for(int i=0; i<3; i++)
-      {
-      cVect[i] = tubePoint.GetTangent()[i];
-      }
-    cMat = outer_product(cVect, cVect);
-    if(tube->GetRoot())
-      {
-      rootNodes[cNode-1] = rootNodes[cNode-1]+1;
-      }
-    branchNodes[cNode-1] = branchNodes[cNode-1]+1.0/numTubes;
-    int numberOfNodesCrossed = 0;
-    for(int p=1; p<numberOfPoints; p++)
-      {
-      tubePoint = static_cast<TubePointType>(tube->GetPoints()[p]);
-      pnt = tubePoint.GetPosition();
-      pnt = tubeTransform->TransformPoint(pnt);
-      image->TransformPhysicalPointToIndex(pnt, indx);
-      int tNode = image->GetPixel(indx);
-      if(tNode == cNode)
-        {
-        cCount++;
-        cRadius += tubePoint.GetRadius();
-        for(int i=0; i<3; i++)
-          {
-          cVect[i] = tubePoint.GetTangent()[i];
-          }
-        cMat = cMat + outer_product(cVect, cVect);
-        }
-      else
-        {
-        int len = graph->GetPoints().size();
-        if(graph->GetPoints().size()>3
-          && graph->GetPoints().at(len-1)->m_GraphNode == tNode
-          && graph->GetPoints().at(len-2)->m_GraphNode == cNode)
-          {
-          logMsg.str( "" );
-          logMsg  << "Oscillation detected"
-                  << " : tube = " << cNode
-                  << " : seq = " << graph->GetPoints().at(len-3)->m_GraphNode
-                  << " " << graph->GetPoints().at(len-2)->m_GraphNode
-                  << " " << graph->GetPoints().at(len-1)->m_GraphNode
-                  << " " << cNode << " " << tNode;
-          tube::WarningMessage( logMsg.str() );
-
-          TubeGraphPnt * tgP = graph->GetPoints().back();
-          cNode = tNode;
-          cRadius = tgP->m_R;
-          for(int i=0; i<3; i++)
-            {
-            for(int j=0; j<3; j++)
-              {
-              cMat[i][j] = tgP->m_T[i*3+j];
-              }
-            }
-          cCount = tgP->m_P;
-          graph->GetPoints().pop_back();
-          /* Memory allocated for each element of list returned by
-          graph->GetPoints() usually released when destructor of graph called,
-          but since tgP is popped off back of list, memory would not be
-          released without explicit delete. */
-          delete tgP;
-          }
-        else
-          {
-          numberOfNodesCrossed++;
-          aMat[cNode-1][tNode-1] = aMat[cNode-1][tNode-1]+1;
-          TubeGraphPnt * tgP = new TubeGraphPnt(3);
-          tgP->m_GraphNode = cNode;
-          tgP->m_R = cRadius/cCount;
-          tgP->m_P = cCount;
-          for(int i=0; i<3; i++)
-            {
-            for(int j=0; j<3; j++)
-              {
-              tgP->m_T[i*3+j] = cMat[i][j] / cCount;
-              }
-            }
-          graph->GetPoints().push_back(tgP);
-          cNode = tNode;
-          cRadius = tubePoint.GetRadius();
-          for(int i=0; i<3; i++)
-            {
-            cVect[i] = tubePoint.GetTangent()[i];
-            }
-          cMat = outer_product(cVect, cVect);
-          cCount = 1;
-          }
-        }
-      }
-    if(numberOfNodesCrossed>0)
-      {
-      TubeGraphPnt * tgP = new TubeGraphPnt(3);
-      tgP->m_GraphNode = cNode;
-      tgP->m_R = cRadius/cCount;
-      for(int i=0; i<3; i++)
-        {
-        for(int j=0; j<3; j++)
-          {
-          tgP->m_T[i*3+j] = cMat[i][j] / cCount;
-          }
-        }
-      graph->GetPoints().push_back(tgP);
-      scene.AddObject(graph);
-      }
-    else
-      {
-      delete graph;
-      }
-    ++tubeIt;
-    ++count;
-    }
+  vnl_vector< int > rootNodes( numberOfCentroids );
+  rootNodes = filter->GetRootNodes();
+  vnl_vector< double > branchNodes( numberOfCentroids );
+  branchNodes = filter->GetBranchNodes();
 
   timeCollector.Stop( "Processing" );
 
   timeCollector.Start( "Save data" );
-  scene.Write(graphFile.c_str());
 
   std::string matrixFile = graphFile + ".mat";
   std::ofstream writeStream;
-  writeStream.open(matrixFile.c_str(), std::ios::binary | std::ios::out);
+  writeStream.open( matrixFile.c_str(), std::ios::binary | std::ios::out );
   writeStream << numberOfCentroids << std::endl;
-  for(int i=0; i<numberOfCentroids; i++)
+  for( int i = 0; i < numberOfCentroids; i++ )
     {
-    for(int j=0; j<numberOfCentroids; j++)
+    for( int j = 0; j < numberOfCentroids; j++ )
       {
       writeStream << aMat[i][j];
-      if(j<numberOfCentroids-1)
+      if( j < numberOfCentroids - 1 )
         {
         writeStream << " ";
         }
@@ -288,25 +138,24 @@ int DoIt( int argc, char * argv[] )
   writeStream.close();
 
   std::string branchFile = graphFile + ".brc";
-  writeStream.open(branchFile.c_str(), std::ios::binary | std::ios::out);
+  writeStream.open( branchFile.c_str(), std::ios::binary | std::ios::out );
   writeStream << numberOfCentroids << std::endl;
-  for(int i=0; i<numberOfCentroids; i++)
+  for( int i = 0; i < numberOfCentroids; i++ )
     {
     writeStream << branchNodes[i] << std::endl;
     }
   writeStream.close();
 
   std::string rootFile = graphFile + ".rot";
-  writeStream.open(rootFile.c_str(), std::ios::binary | std::ios::out);
+  writeStream.open( rootFile.c_str(), std::ios::binary | std::ios::out );
   writeStream << numberOfCentroids << std::endl;
-  for(int i=0; i<numberOfCentroids; i++)
+  for( int i = 0; i < numberOfCentroids; i++ )
     {
     writeStream << rootNodes[i] << std::endl;
     }
   writeStream.close();
   timeCollector.Stop( "Save data" );
 
-  delete tubeList;
   timeCollector.Report();
 
   return EXIT_SUCCESS;
