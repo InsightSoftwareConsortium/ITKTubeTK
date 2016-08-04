@@ -34,7 +34,7 @@ limitations under the License.
 #include <itktubeRidgeExtractor.h>
 
 #include <itktubeMetaTubeExtractor.h>
-
+#include <itktubeComputeSegmentTubesParameters.h>
 #include <algorithm>
 
 // Must include CLP before including tubeCLIHelperFunctions
