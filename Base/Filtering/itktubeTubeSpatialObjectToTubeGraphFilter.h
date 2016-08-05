@@ -28,9 +28,8 @@ limitations under the License.
 #include <itkGroupSpatialObject.h>
 #include <itkVesselTubeSpatialObject.h>
 #include <itkImage.h>
+#include <metaScene.h>
 #include <metaTubeGraph.h>
-#include <vnl\vnl_vector.h>
-#include <vnl\vnl_matrix.h>
 
 namespace itk
 {
