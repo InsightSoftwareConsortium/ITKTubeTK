@@ -31,6 +31,7 @@ limitations under the License.
 
 #include "itktubeComputeSegmentTubesParameters.h"
 
+int m_SortColumn = 0;
 namespace itk
 {
 
@@ -46,7 +47,6 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
   m_InputImage = NULL;
   m_MaskInputImage = NULL;
   m_ScaleInputImage = NULL;
-  m_SortColumn = 0;
 }
 
 /** Destructor */
@@ -222,7 +222,7 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
             m_TubeDataIndexList.push_back( cIndx );
             }
           }
-        else if( itM.Get() == maskBackgroundId )
+        else if( itM.Get() == m_MaskBackGroundId )
           {
           for( unsigned int i = 0; i < VDimension; ++i )
             {
@@ -259,8 +259,6 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
     ++itS;
     ++itM;
     }
-
-  int result = EXIT_SUCCESS;
 
   itk::tube::MetaTubeExtractor params;
 
@@ -307,9 +305,9 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
   double ridgeScale = scaleMin + 0.25 * scaleRange;
   double ridgeScaleKernelExtent = 2.5;
 
-  bool   ridgeDynamicScale = true;
+  bool ridgeDynamicScale = true;
 
-  bool   ridgeDynamicStepSize = false;
+  bool ridgeDynamicStepSize = false;
 
   double ridgeStepX = 0.1;
 
@@ -318,31 +316,54 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
   double ridgeMaxXChange = 3.0;
 
   double portion = 1.0 / 1000.0;
-  int clippedMax = ( int )( tube.size() * portion );
+  int clippedMax = ( int )( m_TubeData.size() * portion );
   portion = 1.0 / 500.0;
-  int clippedMaxStart = ( int )( tube.size() * portion );
+  int clippedMaxStart = ( int )( m_TubeData.size() * portion );
 
-  m_SortColumn = 1;
-  std::sort( tube.begin(), tube.end(), SortColumnCompare );
-  double ridgeMinRidgeness = tube[clippedMax][1];
-  double ridgeMinRidgenessStart = tube[clippedMaxStart][1];
+  double ridgeMinRidgeness;
+  double ridgeMinRidgenessStart;
+  double ridgeMinRoundness;
+  double ridgeMinRoundnessStart;
+  double ridgeMinCurvature;
+  double ridgeMinCurvatureStart;
+  double ridgeMinLevelness;
+  double ridgeMinLevelnessStart;
+  for ( int index = 1; index < 5; index++ )
+    {
+    m_SortColumn = index;
+    std::sort( m_TubeData.begin(), m_TubeData.end(),
+    []( const vnl_vector< double > & first, const vnl_vector< double > & second )
+      {
+      if( first[m_SortColumn] < second[m_SortColumn] )
+        {
+        return true;
+        }
+      return false;
+      }
+    );
+    if( index == 1 )
+      {
+      ridgeMinRidgeness = m_TubeData[clippedMax][index];
+      ridgeMinRidgenessStart = m_TubeData[clippedMaxStart][index];
+      }
+    else if( index == 2 )
+      {
+      ridgeMinRoundness = m_TubeData[clippedMax][index];
+      ridgeMinRoundnessStart = m_TubeData[clippedMaxStart][index];
+      }
+    else if( index == 3 )
+      {
+      ridgeMinCurvature = m_TubeData[clippedMax][index];
+      ridgeMinCurvatureStart = m_TubeData[clippedMaxStart][index];
+      }
+    else if( index == 4 )
+      {
+      ridgeMinLevelness = m_TubeData[clippedMax][index];
+      ridgeMinLevelnessStart = m_TubeData[clippedMaxStart][index];
+      }
+    }
 
-  m_SortColumn = 2;
-  std::sort( tube.begin(), tube.end(), SortColumnCompare );
-  double ridgeMinRoundness = tube[clippedMax][2];
-  double ridgeMinRoundnessStart = tube[clippedMaxStart][2];
-
-  m_SortColumn = 3;
-  std::sort( tube.begin(), tube.end(), SortColumnCompare );
-  double ridgeMinCurvature = tube[clippedMax][3];
-  double ridgeMinCurvatureStart = tube[clippedMaxStart][3];
-
-  m_SortColumn = 4;
-  std::sort( tube.begin(), tube.end(), SortColumnCompare );
-  double ridgeMinLevelness = tube[clippedMax][4];
-  double ridgeMinLevelnessStart = tube[clippedMaxStart][4];
-
-  int    ridgeMaxRecoveryAttempts = 3;
+  int ridgeMaxRecoveryAttempts = 3;
 
   params.SetRidgeProperties( ridgeScale, ridgeScaleKernelExtent,
     ridgeDynamicScale,
@@ -356,14 +377,14 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
     ridgeMinLevelness, ridgeMinLevelnessStart,
     ridgeMaxRecoveryAttempts );
 
-  double radiusStart = ridgeScale / inputImage->GetSpacing()[0];
-  double radiusMin = ( 0.2 * scaleMin ) / inputImage->GetSpacing()[0];
+  double radiusStart = ridgeScale / m_InputImage->GetSpacing()[0];
+  double radiusMin = ( 0.2 * scaleMin ) / m_InputImage->GetSpacing()[0];
   if( radiusMin < 0.3 )
     {
     radiusMin = 0.3;
     }
   double radiusMax = ( scaleMax + 0.5 * scaleRange ) /
-    inputImage->GetSpacing()[0];
+    m_InputImage->GetSpacing()[0];
 
   // Should be a function of curvature
   double radiusMinMedialness = ridgeMinCurvature / 100;

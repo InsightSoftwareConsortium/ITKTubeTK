@@ -32,6 +32,7 @@ limitations under the License.
 #include "itkImage.h"
 #include "itkObject.h"
 #include <algorithm>
+#include <vector>
 #include <itktubeRidgeExtractor.h>
 #include <itktubeMetaTubeExtractor.h>
 #include <itkImageRegionIteratorWithIndex.h>
@@ -156,17 +157,6 @@ private:
   int                  m_MaskBackGroundId;
   int                  m_MaskTubeId;
   std::string          m_ParameterFile;
-  static int           m_SortColumn;
-
-  bool SortColumnCompare( const MetricVectorType & first,
-  const MetricVectorType & second)
-    {
-    if( first[m_SortColumn] < second[m_SortColumn] )
-      {
-      return true;
-      }
-    return false;
-    }
 
 }; // End class SegmentTubes
 
