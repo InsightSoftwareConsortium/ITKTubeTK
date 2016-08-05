@@ -35,7 +35,7 @@ std::vector< vnl_vector< double > >
 ComputeSegmentTubesParameters< TPixel, VDimension >
 ::GetSeedData( void )
 {
-  return m_Filter->GetSeedData( void );
+  return m_Filter->GetSeedData();
 }
 
 template< class TPixel, unsigned int VDimension >
@@ -43,7 +43,7 @@ std::vector< vnl_vector< double > >
 ComputeSegmentTubesParameters< TPixel, VDimension >
 ::GetTubeData( void )
 {
-  return m_Filter->GetTubeData( void );
+  return m_Filter->GetTubeData();
 }
 
 template< class TPixel, unsigned int VDimension >
@@ -51,7 +51,7 @@ std::vector< vnl_vector< double > >
 ComputeSegmentTubesParameters< TPixel, VDimension >
 ::GetBkgData( void )
 {
-  return m_Filter->GetBkgData( void );
+  return m_Filter->GetBkgData();
 }
 
 template< class TPixel, unsigned int VDimension >
@@ -59,7 +59,7 @@ std::vector< itk::ContinuousIndex< double, VDimension > >
 ComputeSegmentTubesParameters< TPixel, VDimension >
 ::GetSeedDataIndexList( void )
 {
-  return m_Filter->GetSeedDataIndexList( void );
+  return m_Filter->GetSeedDataIndexList();
 }
 
 template< class TPixel, unsigned int VDimension >
@@ -67,7 +67,7 @@ std::vector< itk::ContinuousIndex< double, VDimension > >
 ComputeSegmentTubesParameters< TPixel, VDimension >
 ::GetTubeDataIndexList( void )
 {
-  return m_Filter->GetTubeDataIndexList( void );
+  return m_Filter->GetTubeDataIndexList();
 }
 
 template< class TPixel, unsigned int VDimension >
@@ -75,12 +75,20 @@ std::vector< itk::ContinuousIndex< double, VDimension > >
 ComputeSegmentTubesParameters< TPixel, VDimension >
 ::GetBkgDataIndexList( void )
 {
-  return m_Filter->GetBkgDataIndexList( void );
+  return m_Filter->GetBkgDataIndexList();
 }
 
 template< class TPixel, unsigned int VDimension >
 void
-std::vector< itk::ContinuousIndex< double, VDimension > >
+ComputeSegmentTubesParameters< TPixel, VDimension >
+::SetParameterFile( std::string s )
+{
+  return m_Filter->SetParameterFile( s );
+}
+
+template< class TPixel, unsigned int VDimension >
+void
+ComputeSegmentTubesParameters< TPixel, VDimension >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );

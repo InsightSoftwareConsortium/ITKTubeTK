@@ -39,7 +39,7 @@ public:
   typedef itk::SmartPointer< Self >                    Pointer;
   typedef itk::SmartPointer< const Self >              ConstPointer;
   typedef itk::tube::ComputeSegmentTubesParameters
-    < TPixel, Dimension > FilterType;
+    < TPixel, VDimension > FilterType;
 
   typedef typename FilterType::InputImageType     InputImageType;
   typedef typename FilterType::MaskImageType      MaskImageType;
@@ -72,7 +72,7 @@ public:
   tubeWrapGetMacro( MaskTubeId, int, Filter );
 
   /** Set Parameter File */
-  tubeWrapSetMacro( ParameterFile, std::string, Filter );
+  void SetParameterFile( std::string );
 
   /** Get Seed Data List */
   std::vector< vnl_vector< double > > GetSeedData( void );

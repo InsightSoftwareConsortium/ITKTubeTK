@@ -28,7 +28,7 @@ limitations under the License.
 
 #include <itkImageFileWriter.h>
 #include <itkImageFileReader.h>
-#include <itktubeComputeSegmentTubesParameters.h>
+#include <tubeComputeSegmentTubesParameters.h>
 
 // Must include CLP before including tubeCLIHelperFunctions
 #include "ComputeSegmentTubesParametersCLP.h"
@@ -73,7 +73,7 @@ int DoIt( int argc, char * argv[] )
   tube::CLIProgressReporter    progressReporter(
     "ComputeSegmentTubesParameters", CLPProcessInformation );
   progressReporter.Start();
-  typedef itk::tube::ComputeSegmentTubesParameters< TPixel, VDimension >
+  typedef tube::ComputeSegmentTubesParameters< TPixel, VDimension >
     FilterType;
   typename FilterType::Pointer filter = FilterType::New();
 
