@@ -75,7 +75,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
   typedef itk::tube::ComputeSegmentTubesParameters< TPixel, VDimension >
     FilterType;
-  FilterType::Pointer filter = FilterType::New();
+  typename FilterType::Pointer filter = FilterType::New();
 
   typedef typename FilterType::InputImageType       InputImageType;
   typedef itk::ImageFileReader< InputImageType >    ReaderType;
