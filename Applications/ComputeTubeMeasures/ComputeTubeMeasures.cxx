@@ -25,12 +25,10 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 
-#include <itktubeRidgeFFTFilter.h>
-
 #include <itkTimeProbesCollectorBase.h>
 #include <itkImageFileWriter.h>
 #include <itkImageFileReader.h>
-#include <itkRescaleIntensityImageFilter.h>
+#include <itktubeComputeTubeMeasuresFilter.h>
 
 // Must include CLP before including tubeCLIHelperFunctions
 #include "ComputeTubeMeasuresCLP.h"
@@ -59,16 +57,14 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   typedef TPixel                                       InputPixelType;
-  typedef itk::Image< InputPixelType, VDimension >     InputImageType;
-  typedef itk::ImageFileReader< InputImageType >       ReaderType;
+  typedef itk::tube::ComputeTubeMeasuresFilter
+  < InputPixelType, VDimension > FilterType;
+  FilterType::Pointer filter = FilterType::New();
 
-  typedef float                                        OutputPixelType;
-  typedef itk::Image< OutputPixelType, VDimension >    OutputImageType;
-  typedef itk::ImageFileWriter< OutputImageType  >     WriterType;
-
-  typedef itk::RescaleIntensityImageFilter< InputImageType, OutputImageType >
-                                                       RescaleFilterType;
-  typedef itk::tube::RidgeFFTFilter< OutputImageType > RidgeFilterType;
+  typedef typename FilterType::InputImageType       InputImageType;
+  typedef itk::ImageFileReader< InputImageType >    ReaderType;
+  typedef typename FilterType::OutputImageType      OutputImageType;
+  typedef itk::ImageFileWriter< OutputImageType  >  WriterType;
 
   timeCollector.Start("Load data");
   typename ReaderType::Pointer reader = ReaderType::New();
@@ -76,11 +72,12 @@ int DoIt( int argc, char * argv[] )
   try
     {
     reader->Update();
+    filter->SetInputImage(  reader->GetOutput() );
     }
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -91,23 +88,9 @@ int DoIt( int argc, char * argv[] )
 
   if( scale > 0 )
     {
-    timeCollector.Start("Gaussian Blur");
+    timeCollector.Start( "Gaussian Blur" );
 
-    
-    typename RescaleFilterType::Pointer rescaleFilter = RescaleFilterType::New();
-    rescaleFilter->SetInput( reader->GetOutput() );
-    rescaleFilter->SetOutputMinimum(0);
-    rescaleFilter->SetOutputMaximum(1);
-
-    typename RidgeFilterType::Pointer filter;
-    filter = RidgeFilterType::New();
-    filter->SetInput( rescaleFilter->GetOutput() );
     filter->SetScale( scale );
-
-    double progressFraction = 0.8;
-    tube::CLIFilterWatcher watcher( filter, "Ridge Filter",
-      CLPProcessInformation, progressFraction, progress, true );
-
     try
       {
       filter->Update();
@@ -115,7 +98,7 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Processing volume: Exception caught: "
-        + std::string(err.GetDescription()) );
+        + std::string( err.GetDescription()) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
@@ -143,7 +126,6 @@ int DoIt( int argc, char * argv[] )
     writer->SetInput( filter->GetLevelness() );
     writer->SetUseCompression( true );
     writer->Update();
-
 
     timeCollector.Stop("Save data");
 
