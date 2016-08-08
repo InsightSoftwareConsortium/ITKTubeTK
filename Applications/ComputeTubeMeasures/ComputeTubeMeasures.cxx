@@ -28,7 +28,7 @@ limitations under the License.
 #include <itkTimeProbesCollectorBase.h>
 #include <itkImageFileWriter.h>
 #include <itkImageFileReader.h>
-#include <itktubeComputeTubeMeasuresFilter.h>
+#include <tubeComputeTubeMeasures.h>
 
 // Must include CLP before including tubeCLIHelperFunctions
 #include "ComputeTubeMeasuresCLP.h"
@@ -57,7 +57,8 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   typedef TPixel                                       InputPixelType;
-  typedef itk::tube::ComputeTubeMeasuresFilter
+
+  typedef tube::ComputeTubeMeasures
   < InputPixelType, VDimension > FilterType;
   typename FilterType::Pointer filter = FilterType::New();
 
