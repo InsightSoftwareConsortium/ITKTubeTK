@@ -77,7 +77,7 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
   itkDebugMacro( << "TubeSpatialObjectToTubeGraphFilter::Update() called." );
 
   typedef itk::MinimumMaximumImageFilter< InputImageType > MinMaxFilterType;
-  MinMaxFilterType::Pointer mmFilter = MinMaxFilterType::New();
+  typename MinMaxFilterType::Pointer mmFilter = MinMaxFilterType::New();
   mmFilter->SetInput( m_CVTImage );
   mmFilter->Update();
 
@@ -94,19 +94,19 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
   vnl_vector<double> cVect( Dimension );
 
   char tubeName[] = "Tube";
-  TubeSpatialObjectType::ChildrenListType * tubeList =
+  typename TubeSpatialObjectType::ChildrenListType * tubeList =
     m_InputTubeGroup->GetChildren
       ( m_InputTubeGroup->GetMaximumDepth(), tubeName );
-  TubeSpatialObjectType::ChildrenListType::const_iterator
+  typename TubeSpatialObjectType::ChildrenListType::const_iterator
       tubeIt = tubeList->begin();
   int numTubes = tubeList->size();
   TubePointType tubePoint;
   MetaScene scene( Dimension );
   MetaTubeGraph * graph;
-  TubeTransformType::Pointer tubeTransform;
+  typename TubeTransformType::Pointer tubeTransform;
   while( tubeIt != tubeList->end() )
     {
-    TubeSpatialObjectType::Pointer tube =
+    typename TubeSpatialObjectType::Pointer tube =
         dynamic_cast< TubeSpatialObjectType * >(( *tubeIt ).GetPointer() );
 
     tube->RemoveDuplicatePoints();
