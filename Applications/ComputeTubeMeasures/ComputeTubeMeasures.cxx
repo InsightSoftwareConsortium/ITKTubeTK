@@ -59,7 +59,7 @@ int DoIt( int argc, char * argv[] )
   typedef TPixel                                       InputPixelType;
   typedef itk::tube::ComputeTubeMeasuresFilter
   < InputPixelType, VDimension > FilterType;
-  FilterType::Pointer filter = FilterType::New();
+  typename FilterType::Pointer filter = FilterType::New();
 
   typedef typename FilterType::InputImageType       InputImageType;
   typedef itk::ImageFileReader< InputImageType >    ReaderType;
