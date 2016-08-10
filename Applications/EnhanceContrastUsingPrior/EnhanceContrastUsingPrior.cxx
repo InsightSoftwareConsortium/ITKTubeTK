@@ -27,7 +27,7 @@ limitations under the License.
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkTimeProbesCollectorBase.h>
-#include <itktubeEnhanceContrastUsingPriorImageFilter.h>
+#include <tubeEnhanceContrastUsingPrior.h>
 
 #include "EnhanceContrastUsingPriorCLP.h"
 
@@ -54,7 +54,7 @@ int DoIt( int argc, char * argv[] )
 
   typedef float                                PixelType;
 
-  typedef itk::tube::EnhanceContrastUsingPriorImageFilter
+  typedef tube::EnhanceContrastUsingPrior
     < PixelType, VDimension >                  FilterType;
   FilterType::Pointer filter = FilterType::New();
 
