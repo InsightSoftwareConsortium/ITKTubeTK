@@ -60,8 +60,8 @@ public:
   typedef itk::SmoothingRecursiveGaussianImageFilter< ImageType, ImageType >
                                                   BlurFilterType;
   /** Set/Get input image */
-  itkSetObjectMacro( InputImage, ImageType );
-  itkGetObjectMacro( InputImage, ImageType );
+  itkSetConstObjectMacro( InputImage, ImageType );
+  itkGetConstObjectMacro( InputImage, ImageType );
 
   /** Set/Get input mask image */
   itkSetObjectMacro( InputMask, ImageType );
@@ -103,7 +103,7 @@ private:
   ContrastCostFunction( const Self & );
   void operator=( const Self & );
 
-  typename ImageType::Pointer         m_InputImage;
+  typename ImageType::ConstPointer    m_InputImage;
   typename ImageType::Pointer         m_InputMask;
   mutable typename ImageType::Pointer m_OutputImage;
 

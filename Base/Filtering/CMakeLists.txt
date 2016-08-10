@@ -40,6 +40,7 @@ set( TubeTK_Base_Filtering_H_Files
   itktubeCropImageFilter.h
   itktubeCropTubesFilter.h
   itktubeCVTImageFilter.h
+  itktubeEnhanceContrastUsingPriorImageFilter.h
   itktubeExtractTubePointsSpatialObjectFilter.h
   itktubeFFTGaussianDerivativeIFFTFilter.h
   itktubeGaussianDerivativeFilter.h
@@ -76,6 +77,7 @@ set( TubeTK_Base_Filtering_HXX_Files
   itktubeCropImageFilter.hxx
   itktubeCropTubesFilter.hxx
   itktubeCVTImageFilter.hxx
+  itktubeEnhanceContrastUsingPriorImageFilter.hxx
   itktubeExtractTubePointsSpatialObjectFilter.hxx
   itktubeFFTGaussianDerivativeIFFTFilter.hxx
   itktubeGaussianDerivativeFilter.hxx
