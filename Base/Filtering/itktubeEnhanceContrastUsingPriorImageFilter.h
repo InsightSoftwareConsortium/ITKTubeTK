@@ -106,7 +106,7 @@ private:
   EnhanceContrastUsingPriorImageFilter( const Self& ); //purposely not implemented
   void operator=( const Self& ); //purposely not implemented
 
-  typename InputImageType::Pointer       m_InputMaskImage;
+  typename ImageType::Pointer            m_InputMaskImage;
   float                                  m_ObjectScale;
   float                                  m_BackgroundScale;
   int                                    m_MaskObjectValue;

@@ -56,7 +56,7 @@ int DoIt( int argc, char * argv[] )
 
   typedef tube::EnhanceContrastUsingPrior
     < PixelType, VDimension >                  FilterType;
-  FilterType::Pointer filter = FilterType::New();
+  typename FilterType::Pointer filter = FilterType::New();
 
   typedef typename FilterType::ImageType       ImageType;
 
