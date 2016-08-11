@@ -24,17 +24,17 @@ limitations under the License.
 #ifndef __itktubeResampleImageFilter_h
 #define __itktubeResampleImageFilter_h
 
+#include <itkBSplineInterpolateImageFunction.h>
+#include <itkCompensatedSummation.h>
 #include <itkImage.h>
 #include <itkImageRegionIterator.h>
 #include <itkImageToImageFilter.h>
-#include <itkProcessObject.h>
-#include <itkWindowedSincInterpolateImageFunction.h>
-#include <itkBSplineInterpolateImageFunction.h>
-#include <itkNearestNeighborInterpolateImageFunction.h>
-#include <itkResampleImageFilter.h>
-#include <itkCompensatedSummation.h>
 #include <itkInterpolateImageFilter.h>
 #include <itkLinearInterpolateImageFunction.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkProcessObject.h>
+#include <itkResampleImageFilter.h>
+#include <itkWindowedSincInterpolateImageFunction.h>
 
 namespace itk
 {

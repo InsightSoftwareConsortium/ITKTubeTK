@@ -1,0 +1,10 @@
+itk_wrap_include( tubeResampleImage.h )
+itk_wrap_include( itkImage.h )
+
+itk_wrap_named_class("tube::ResampleImage" tubeResampleImage POINTER)
+  foreach(t ${WRAP_ITK_SCALAR})
+    foreach(d 2 3)
+      itk_wrap_template("${ITKM_${t}}${d}"  "${ITKT_${t}}, ${d}")
+    endforeach()
+ endforeach()
+itk_end_wrap_class()

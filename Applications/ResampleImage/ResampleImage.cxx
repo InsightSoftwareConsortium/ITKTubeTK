@@ -29,7 +29,7 @@ limitations under the License.
 #include <itkTimeProbesCollectorBase.h>
 #include <itkTransformFileReader.h>
 
-#include <itktubeResampleImageFilter.h>
+#include <tubeResampleImage.h>
 #include "ResampleImageCLP.h"
 
 template< class TPixel, unsigned int VDimension >
@@ -43,7 +43,7 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef typename itk::tube::ResampleImageFilter< TPixel,
+  typedef typename tube::ResampleImage< TPixel,
           DimensionI >                           FilterType;
   FilterType::Pointer filter = FilterType::New();
 
@@ -130,12 +130,6 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start( "Resample" );
   reporter.Report( 0.25 );
 
-  tube::CLIFilterWatcher  watcher( filter,
-                                   "Resample Filter",
-                                   CLPProcessInformation,
-                                   0.7,
-                                   0.25,
-                                   true );
   filter->Update();
   outIm = filter->GetOutput();
 
