@@ -45,7 +45,7 @@ int DoIt( int argc, char * argv[] )
 
   typedef typename tube::ResampleImage< TPixel,
           DimensionI >                           FilterType;
-  FilterType::Pointer filter = FilterType::New();
+  typename FilterType::Pointer filter = FilterType::New();
 
   typedef typename FilterType::ImageType         ImageType;
   typedef typename FilterType::TransformType     TransformType;
@@ -114,7 +114,7 @@ int DoIt( int argc, char * argv[] )
 
   if( loadTransform.size() > 0 )
     {
-    itk::TransformFileReader::Pointer treader =
+    typename itk::TransformFileReader::Pointer treader =
       itk::TransformFileReader::New();
     treader->SetFileName( loadTransform );
     treader->Update();

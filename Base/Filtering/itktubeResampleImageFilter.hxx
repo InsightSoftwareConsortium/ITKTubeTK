@@ -190,13 +190,13 @@ GenerateData( void )
   else if( m_Interpolator == "NearestNeighbor" )
     {
     typedef typename itk::NearestNeighborInterpolateImageFunction<
-      InputImageType, double >    NearestNeighborInterpType;
+      ImageType, double >    NearestNeighborInterpType;
     interp = NearestNeighborInterpType::New();
     }
   else // default = if( interpolator == "Linear" )
     {
     typedef typename itk::LinearInterpolateImageFunction<
-      InputImageType, double >    LinearInterpType;
+      ImageType, double >    LinearInterpType;
     interp = LinearInterpType::New();
     }
   filter->SetInterpolator( interp );
