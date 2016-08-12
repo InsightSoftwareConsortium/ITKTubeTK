@@ -41,7 +41,8 @@ include( ${ITK_USE_FILE} )
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
-  TARGET_LIBRARIES ${ITK_LIBRARIES} TubeCLI )
+  TARGET_LIBRARIES ${ITK_LIBRARIES} TubeCLI TubeTKFiltering
+  TubeTKITK )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )

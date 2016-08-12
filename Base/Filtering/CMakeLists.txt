@@ -50,6 +50,7 @@ set( TubeTK_Base_Filtering_H_Files
   itktubeMinimumSpanningTreeVesselConnectivityFilter.h
   itktubePadImageFilter.h
   itktubeRegionFromReferenceImageFilter.h
+  itktubeResampleImageFilter.h
   itktubeSheetnessMeasureImageFilter.h
   itktubeShrinkWithBlendingImageFilter.h
   itktubeSpatialObjectSource.h
@@ -89,6 +90,7 @@ set( TubeTK_Base_Filtering_HXX_Files
   itktubeMinimumSpanningTreeVesselConnectivityFilter.hxx
   itktubePadImageFilter.hxx
   itktubeRegionFromReferenceImageFilter.hxx
+  itktubeResampleImageFilter.hxx
   itktubeSheetnessMeasureImageFilter.hxx
   itktubeShrinkWithBlendingImageFilter.hxx
   itktubeSpatialObjectSource.hxx

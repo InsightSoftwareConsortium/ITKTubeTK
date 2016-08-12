@@ -23,17 +23,13 @@ limitations under the License.
 
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
-
-#include <itkWindowedSincInterpolateImageFunction.h>
-#include <itkBSplineInterpolateImageFunction.h>
-#include <itkCompensatedSummation.h>
+#include <tubeMessage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkNearestNeighborInterpolateImageFunction.h>
-#include <itkResampleImageFilter.h>
 #include <itkTimeProbesCollectorBase.h>
 #include <itkTransformFileReader.h>
 
+#include <tubeResampleImage.h>
 #include "ResampleImageCLP.h"
 
 template< class TPixel, unsigned int VDimension >
@@ -47,53 +43,40 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef TPixel                                      InputPixelType;
-  typedef itk::Image< InputPixelType, DimensionI >    InputImageType;
+  typedef typename tube::ResampleImage< TPixel,
+          DimensionI >                           FilterType;
+  typename FilterType::Pointer filter = FilterType::New();
 
-  typedef InputPixelType                              OutputPixelType;
-  typedef itk::Image< OutputPixelType, DimensionI >   OutputImageType;
+  typedef typename FilterType::ImageType         ImageType;
+  typedef typename FilterType::TransformType     TransformType;
 
-  typedef  itk::ImageFileReader< InputImageType >     InputReaderType;
-  typedef  itk::ImageFileWriter< OutputImageType >    OutputWriterType;
+  typedef  itk::ImageFileReader< ImageType >     InputReaderType;
+  typedef  itk::ImageFileWriter< ImageType >     OutputWriterType;
 
   itk::TimeProbesCollectorBase timeCollector;
 
   tube::CLIProgressReporter reporter( "Resample", CLPProcessInformation );
   reporter.Start();
 
-  typename InputImageType::Pointer inIm;
+  timeCollector.Start( "LoadData" );
+
+  typename InputReaderType::Pointer reader = InputReaderType::New();
+  reader->SetFileName( inputVolume.c_str() );
+  try
     {
-    timeCollector.Start( "LoadData" );
-    typename InputReaderType::Pointer reader = InputReaderType::New();
-    reader->SetFileName( inputVolume.c_str() );
     reader->Update();
-    inIm = reader->GetOutput();
-    timeCollector.Stop( "LoadData" );
+    filter->SetInput(reader->GetOutput() );
     }
-  reporter.Report( 0.1 );
-
-  typename InputImageType::SpacingType     inSpacing = inIm->GetSpacing();
-  typename InputImageType::PointType       inOrigin = inIm->GetOrigin();
-  typename InputImageType::SizeType        inSize =
-    inIm->GetLargestPossibleRegion().GetSize();
-  typename InputImageType::IndexType       inIndex =
-    inIm->GetLargestPossibleRegion().GetIndex();
-  typename InputImageType::DirectionType   inDirection =
-    inIm->GetDirection();
-
-  typename OutputImageType::SizeType       outSize;
-  typename OutputImageType::SpacingType    outSpacing;
-  typename OutputImageType::PointType      outOrigin;
-  typename OutputImageType::IndexType      outIndex;
-  typename OutputImageType::DirectionType  outDirection;
-  for( unsigned int i=0; i< DimensionI; i++ )
+  catch( itk::ExceptionObject & err )
     {
-    outSpacing[i] = inSpacing[i];
-    outOrigin[i] = inOrigin[i];
-    outIndex[i] = inIndex[i];
-    outSize[i] = inSize[i];
-    }
-  outDirection = inDirection;
+    tube::ErrorMessage( "Reading input image. Exception caught: "
+                        + std::string( err.GetDescription() ) );
+    timeCollector.Report();
+    return EXIT_FAILURE;
+      }
+
+  timeCollector.Stop( "LoadData" );
+  reporter.Report( 0.1 );
 
   if( matchImage.size() > 1 )
     {
@@ -101,172 +84,55 @@ int DoIt( int argc, char * argv[] )
       InputReaderType::New();
     matchImReader->SetFileName( matchImage );
     matchImReader->Update();
-    outSpacing = matchImReader->GetOutput()->GetSpacing();
-    outOrigin = matchImReader->GetOutput()->GetOrigin();
-    outDirection = matchImReader->GetOutput()->GetDirection();
-    outSize = matchImReader->GetOutput()->GetLargestPossibleRegion().GetSize();
-    outIndex = matchImReader->GetOutput()->GetLargestPossibleRegion().GetIndex();
-
+    filter->SetMatchImage( matchImReader->GetOutput() );
     reporter.Report( 0.2 );
     }
 
   if( spacing.size() > 0 )
     {
-    for( unsigned int i=0; i< DimensionI; i++ )
-      {
-      outSpacing[i] = spacing[i];
-      }
+    filter->SetSpacing( spacing );
     }
 
   if( origin.size() > 0 )
     {
-    for( unsigned int i=0; i< DimensionI; i++ )
-      {
-      outOrigin[i] = origin[i];
-      }
+    filter->SetOrigin( origin );
     }
 
   if( index.size() > 0 )
     {
-    for( unsigned int i=0; i< DimensionI; i++ )
-      {
-      outIndex[i] = index[i];
-      }
+    filter->SetIndex( index );
     }
 
   if( resampleFactor.size() > 0 )
     {
-    for( unsigned int i=0; i< DimensionI; i++ )
-      {
-      outSpacing[i] = outSpacing[i] / resampleFactor[i];
-      }
+    filter->SetResampleFactor( resampleFactor );
     }
 
-  if( makeIsotropic )
-    {
-    typedef itk::CompensatedSummation< double > CompensatedSummationType;
-    CompensatedSummationType iso;
-    for( unsigned int i=0; i<DimensionI-1; i++ )
-      {
-      iso += outSpacing[i];
-      }
-    iso /= ( DimensionI-1 );
-    iso += outSpacing[ DimensionI-1 ];
-    iso /= 2;
-    for( unsigned int i=0; i<DimensionI; i++ )
-      {
-      outSpacing[i] = iso.GetSum();
-      }
-    }
-
-  if( makeHighResIso )
-    {
-    double iso = outSpacing[0];
-    for( unsigned int i=1; i<DimensionI; i++ )
-      {
-      if( outSpacing[i] < iso )
-        {
-        iso = outSpacing[i];
-        }
-      }
-    for( unsigned int i=0; i<DimensionI; i++ )
-      {
-      outSpacing[i] = iso;
-      }
-    }
-
-  for( unsigned int i=0; i<DimensionI; i++ )
-    {
-    if( outSpacing[i]<=0 )
-      {
-      std::cerr << "ERROR: Illegal or missing output spacing specified."
-                << std::endl;
-      return 1;
-      }
-    }
-
-  if( matchImage.size() == 0 )
-    {
-    std::vector< double > outResampleFactor;
-    outResampleFactor.resize( DimensionI );
-    for( unsigned int i=0; i< DimensionI; i++ )
-      {
-      outResampleFactor[i] = inSpacing[i]/outSpacing[i];
-      outSize[i] = static_cast<unsigned long>( inSize[i]
-                                              * outResampleFactor[i] );
-      }
-    }
-
-  typename OutputImageType::Pointer outIm;
-  {
-  timeCollector.Start( "Resample" );
-  reporter.Report( 0.25 );
-  typedef typename itk::ResampleImageFilter< InputImageType,
-          OutputImageType >             ResampleFilterType;
-
-  typename ResampleFilterType::Pointer filter = ResampleFilterType::New();
-
-  filter->SetInput( inIm );
-
-  typedef typename itk::InterpolateImageFunction< InputImageType,
-          double >                      InterpType;
-  typename InterpType::Pointer interp;
-  if( interpolator == "Sinc" )
-    {
-    typedef typename itk::WindowedSincInterpolateImageFunction<
-      InputImageType, 3 >          MyInterpType;
-    interp = MyInterpType::New();
-    }
-  else if( interpolator == "BSpline" )
-    {
-    typedef typename itk::BSplineInterpolateImageFunction< InputImageType,
-            double >                    MyInterpType;
-    interp = MyInterpType::New();
-    }
-  else if( interpolator == "NearestNeighbor" )
-    {
-    typedef typename itk::NearestNeighborInterpolateImageFunction<
-            InputImageType, double >    MyInterpType;
-    interp = MyInterpType::New();
-    }
-  else // default = if( interpolator == "Linear" )
-    {
-    typedef typename itk::LinearInterpolateImageFunction<
-            InputImageType, double >    MyInterpType;
-    interp = MyInterpType::New();
-    }
-  filter->SetInterpolator( interp );
+  filter->SetMakeIsotropic( makeIsotropic );
+  filter->SetMakeHighResIso( makeHighResIso );
+  filter->SetInterpolator( interpolator );
 
   if( loadTransform.size() > 0 )
     {
-    itk::TransformFileReader::Pointer treader =
+    typename itk::TransformFileReader::Pointer treader =
       itk::TransformFileReader::New();
-    treader->SetFileName(loadTransform);
+    treader->SetFileName( loadTransform );
     treader->Update();
 
-    typedef itk::Transform<double, DimensionI, DimensionI> TransformType;
     typename TransformType::Pointer tfm = static_cast< TransformType * >(
       treader->GetTransformList()->front().GetPointer() );
 
     filter->SetTransform( tfm );
     }
 
-  filter->SetSize( outSize );
-  filter->SetOutputStartIndex( outIndex );
-  filter->SetOutputOrigin( outOrigin );
-  filter->SetOutputSpacing( outSpacing );
-  filter->SetOutputDirection( outDirection );
-  filter->SetDefaultPixelValue( 0 );
-  tube::CLIFilterWatcher  watcher( filter,
-                                   "Resample Filter",
-                                   CLPProcessInformation,
-                                   0.7,
-                                   0.25,
-                                   true );
-  filter->Update();
+  typename ImageType::Pointer outIm;
 
+  timeCollector.Start( "Resample" );
+  reporter.Report( 0.25 );
+
+  filter->Update();
   outIm = filter->GetOutput();
-  }
+
   reporter.Report( 0.95 );
   timeCollector.Stop( "Resample" );
 
@@ -278,16 +144,7 @@ int DoIt( int argc, char * argv[] )
   writer->Update();
   timeCollector.Stop( "Write" );
 
-  /*
-  itk::PluginFilterWatcher watcher1( smoothing, "Smoothing",
-                                    CLPProcessInformation, 0.5, 0.0 );
-
-  itk::PluginFilterWatcher watcher2( confidenceConnected, "Segmenting",
-                                    CLPProcessInformation, 0.5, 0.5 );
-  */
-
   timeCollector.Report();
-
   reporter.End();
 
   return 0;
