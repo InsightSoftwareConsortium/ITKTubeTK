@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <executable>
   <category>TubeTK</category>
-  <title>Tube to Tube Graph Mapping (TubeTK)</title>
+  <title>Tubes to Tube Graph Mapping (TubeTK)</title>
   <description>Maps tubes into a graph structure using an central Voronoi tessellation.</description>
   <version>0.1.0.$Revision: 2104 $(alpha)</version>
   <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>

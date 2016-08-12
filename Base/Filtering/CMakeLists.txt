@@ -59,6 +59,7 @@ set( TubeTK_Base_Filtering_H_Files
   itktubeTubeEnhancingDiffusion2DImageFilter.h
   itktubeTubeSpatialObjectToDensityImageFilter.h
   itktubeTubeSpatialObjectToImageFilter.h
+  itktubeTubeSpatialObjectToTubeGraphFilter.h
   tubeImageFilters.h
   tubeTreeFilters.h )
 
@@ -93,6 +94,7 @@ set( TubeTK_Base_Filtering_HXX_Files
   itktubeTubeEnhancingDiffusion2DImageFilter.hxx
   itktubeTubeSpatialObjectToDensityImageFilter.hxx
   itktubeTubeSpatialObjectToImageFilter.hxx
+  itktubeTubeSpatialObjectToTubeGraphFilter.hxx
   tubeImageFilters.hxx
   tubeTreeFilters.hxx )
 
