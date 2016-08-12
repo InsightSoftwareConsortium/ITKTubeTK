@@ -24,13 +24,10 @@ limitations under the License.
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
 
-#include <itkFRPROptimizer.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
-#include <itkNormalVariateGenerator.h>
-#include <itkOnePlusOneEvolutionaryOptimizer.h>
-#include <itkSmoothingRecursiveGaussianImageFilter.h>
 #include <itkTimeProbesCollectorBase.h>
+#include <tubeEnhanceContrastUsingPrior.h>
 
 #include "EnhanceContrastUsingPriorCLP.h"
 
@@ -40,240 +37,6 @@ int DoIt( int argc, char * argv[] );
 // Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
-namespace itk
-{
-
-namespace tube
-{
-
-template< class TPixel, unsigned int VDimension >
-class ContrastCostFunction : public SingleValuedCostFunction
-{
-public:
-
-  typedef ContrastCostFunction                    Self;
-  typedef SingleValuedCostFunction                Superclass;
-  typedef SmartPointer< Self >                    Pointer;
-  typedef SmartPointer< const Self >              ConstPointer;
-
-  itkTypeMacro( ContrastCostFunction, SingleValuedCostFunction );
-
-  itkNewMacro( Self );
-
-  typedef Superclass::MeasureType         MeasureType;
-  typedef Superclass::ParametersType      ParametersType;
-  typedef Superclass::DerivativeType      DerivativeType;
-  typedef itk::Image<TPixel, VDimension>  ImageType;
-
-  typedef itk::SmoothingRecursiveGaussianImageFilter< ImageType, ImageType >
-                                                  BlurFilterType;
-
-  unsigned int GetNumberOfParameters( void ) const
-    {
-    return 3;
-    }
-
-  void SetInputImage( typename ImageType::Pointer _inputImage )
-    {
-    m_InputImage = _inputImage;
-    }
-
-  void SetInputMask( typename ImageType::Pointer _maskImage )
-    {
-    m_InputMask = _maskImage;
-    }
-
-  void SetMaskObjectValue( int _maskObjectValue )
-    {
-    m_MaskObjectValue = _maskObjectValue;
-    }
-
-  void SetMaskBackgroundValue( int _maskBackgroundValue )
-    {
-    m_MaskBackgroundValue = _maskBackgroundValue;
-    }
-
-  void SetOutputImage( typename ImageType::Pointer _output )
-    {
-    m_OutputImage = _output;
-    }
-
-  void SetScales( ParametersType & _scales )
-    {
-    m_Scales = _scales;
-    }
-
-
-  void Initialize( void )
-    {
-    m_CallsToGetValue = 0;
-    }
-
-  void GetDerivative( const ParametersType & params,
-                      DerivativeType & deriv ) const
-    {
-    ParametersType tmpP = params;
-    deriv = params;
-
-    for( unsigned int i=0; i<this->GetNumberOfParameters(); i++ )
-      {
-      tmpP[i] = params[i] - 0.5 / m_Scales[i];
-      double tf = this->GetValue( tmpP );
-      tmpP[i] = params[i] + 0.5 / m_Scales[i];
-      deriv[i] = this->GetValue( tmpP ) - tf;
-      tmpP[i] = params[i];
-      }
-    }
-
-  MeasureType GetValue( const ParametersType & params ) const
-    {
-    typename BlurFilterType::Pointer filterInputObj = BlurFilterType::New();
-    filterInputObj->SetInput( m_InputImage );
-    double sigmaObj = params[0];
-    if( sigmaObj > 0.3 && sigmaObj < 100 )
-      {
-      filterInputObj->SetSigma( sigmaObj );
-      }
-    else
-      {
-      return 100;
-      }
-    filterInputObj->Update();
-    typename ImageType::Pointer imgObj = filterInputObj->GetOutput();
-
-    typename BlurFilterType::Pointer filterInputBkg =
-      BlurFilterType::New();
-    filterInputBkg->SetInput( m_InputImage );
-    double sigmaBkg = params[1];
-    if( sigmaBkg > sigmaObj && sigmaBkg < 100 )
-      {
-      filterInputBkg->SetSigma( sigmaBkg );
-      }
-    else
-      {
-      return 100;
-      }
-    filterInputBkg->Update();
-    typename ImageType::Pointer imgBkg = filterInputBkg->GetOutput();
-
-    double alpha = params[2];
-
-    double meanObj = 0;
-    double stdDevObj = 0;
-    double countObj = 0;
-    double meanBkg = 0;
-    double stdDevBkg = 0;
-    double countBkg = 0;
-
-    double sumObj = 0;
-    double sumsObj = 0;
-    double sumBkg = 0;
-    double sumsBkg = 0;
-
-    typedef ImageRegionIterator< ImageType >       ImageIteratorType;
-    typedef ImageRegionConstIterator< ImageType >  ConstImageIteratorType;
-
-    ConstImageIteratorType iterObj( imgObj,
-      imgObj->GetLargestPossibleRegion() );
-    ConstImageIteratorType iterBkg( imgBkg,
-      imgBkg->GetLargestPossibleRegion() );
-    ConstImageIteratorType iterMask( m_InputMask,
-      m_InputMask->GetLargestPossibleRegion() );
-    ImageIteratorType iterOut( m_OutputImage,
-      m_OutputImage->GetLargestPossibleRegion() );
-
-    double meanRawBkg = 0;
-    double countRawBkg = 0;
-    while( !iterBkg.IsAtEnd() )
-      {
-      meanRawBkg += iterBkg.Get();
-      ++countRawBkg;
-      ++iterBkg;
-      }
-    meanRawBkg /= countRawBkg;
-
-    iterBkg.GoToBegin();
-    while( !iterObj.IsAtEnd() )
-      {
-      double tf = iterObj.Get() * ( 1 + alpha * (iterBkg.Get()-meanRawBkg) );
-      if( iterMask.Get() == m_MaskObjectValue )
-        {
-        sumObj += tf;
-        sumsObj += tf * tf;
-        ++countObj;
-        }
-      else if( iterMask.Get() == m_MaskBackgroundValue )
-        {
-        sumBkg += tf;
-        sumsBkg += tf * tf;
-        ++countBkg;
-        }
-      iterOut.Set( tf );
-      ++iterObj;
-      ++iterBkg;
-      ++iterMask;
-      ++iterOut;
-      }
-
-    if( countObj > 0 )
-      {
-      meanObj = sumObj/countObj;
-      stdDevObj = std::sqrt( sumsObj/countObj - meanObj*meanObj );
-      }
-    if( countBkg > 0 )
-      {
-      meanBkg = sumBkg/countBkg;
-      stdDevBkg = std::sqrt( sumsBkg/countBkg - stdDevBkg*stdDevBkg );
-      }
-
-    double dp = vnl_math_abs(meanObj - meanBkg) / (stdDevObj * stdDevBkg);
-
-    std::cout << ++m_CallsToGetValue << " : "
-              << params[0] << ", " << params[1] << ", "
-              << params[2] << ": "
-              << meanObj << " (" << stdDevObj << ") "
-              << meanBkg << " (" << stdDevBkg << ") "
-              << " : " << dp << std::endl;
-
-    return dp;
-    }
-
-protected:
-
-  ContrastCostFunction() : m_InputMean(0.0),
-                           m_MaskObjectValue(0),
-                           m_MaskBackgroundValue(0),
-                           m_CallsToGetValue(0) {}
-  virtual ~ContrastCostFunction( void ) {}
-
-  void PrintSelf( std::ostream & os, Indent indent ) const
-    {
-    Superclass::PrintSelf( os, indent );
-    }
-
-private:
-
-  ContrastCostFunction( const Self & );
-  void operator=( const Self & );
-
-  typename ImageType::Pointer         m_InputImage;
-  typename ImageType::Pointer         m_InputMask;
-  mutable typename ImageType::Pointer m_OutputImage;
-
-  double                              m_InputMean;
-
-  unsigned int                        m_MaskObjectValue;
-  unsigned int                        m_MaskBackgroundValue;
-
-  ParametersType                      m_Scales;
-
-  mutable unsigned int                m_CallsToGetValue;
-
-}; // End class ContrastCostFunction
-
-} // End namespace tube
-
-} // End namespace itk
 
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
@@ -290,7 +53,12 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   typedef float                                PixelType;
-  typedef itk::Image< PixelType, VDimension >  ImageType;
+
+  typedef tube::EnhanceContrastUsingPrior
+    < PixelType, VDimension >                  FilterType;
+  typename FilterType::Pointer filter = FilterType::New();
+
+  typedef typename FilterType::ImageType       ImageType;
 
   /** Read input images */
   typename ImageType::Pointer inputImage;
@@ -310,6 +78,7 @@ int DoIt( int argc, char * argv[] )
     try
       {
       readerInputImage->Update();
+      filter->SetInput( readerInputImage->GetOutput() );
       }
     catch( itk::ExceptionObject & err )
       {
@@ -322,6 +91,7 @@ int DoIt( int argc, char * argv[] )
     try
       {
       readerInputMask->Update();
+      filter->SetInputMaskImage( readerInputMask->GetOutput() );
       }
     catch( itk::ExceptionObject & err )
       {
@@ -330,138 +100,29 @@ int DoIt( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-
-    inputImage = readerInputImage->GetOutput();
-    inputMask = readerInputMask->GetOutput();
     }
   progressReporter.Report( 0.1 );
   timeCollector.Stop("Read");
 
-  //
-  // Generate output image
-  //
-  typename ImageType::Pointer outputImage = ImageType::New();
-  outputImage->CopyInformation( inputImage );
-  outputImage->SetRegions( inputImage->GetLargestPossibleRegion() );
-  outputImage->Allocate();
-  progressReporter.Report( 0.2 );
+  filter->SetObjectScale( objectScale );
+  filter->SetBackgroundScale( backgroundScale );
+  filter->SetMaskObjectValue( maskObjectValue );
+  filter->SetMaskBackgroundValue( maskBackgroundValue );
+  filter->SetOptimizationIterations( iterations );
+  filter->SetOptimizationSeed( seed );
 
-  typedef itk::tube::ContrastCostFunction< PixelType, VDimension >
-                                                ContrastCostFunctionType;
-  typedef itk::OnePlusOneEvolutionaryOptimizer  InitialOptimizerType;
-  typedef itk::FRPROptimizer                    OptimizerType;
-  typedef itk::ImageRegionIterator< ImageType > ImageIteratorType;
+  timeCollector.Start("Run Filter");
 
-  ImageIteratorType iter( inputImage,
-    inputImage->GetLargestPossibleRegion() );
-  double inputMin = iter.Get();
-  double inputMax = inputMin;
-  while( !iter.IsAtEnd() )
-    {
-    double tf = iter.Get();
-    if( tf < inputMin )
-      {
-      inputMin = tf;
-      }
-    else if( tf > inputMax )
-      {
-      inputMax = tf;
-      }
-    ++iter;
-    }
+  filter->Update();
 
-  itk::Array<double> params(3);
-  params[0] = objectScale;
-  params[1] = backgroundScale;
-  params[2] = 20*(inputMax - inputMin);
-
-  typename ContrastCostFunctionType::Pointer costFunc =
-    ContrastCostFunctionType::New();
-  costFunc->SetInputImage( inputImage );
-  costFunc->SetInputMask( inputMask );
-  costFunc->SetOutputImage( outputImage );
-  costFunc->SetMaskObjectValue( maskObjectValue );
-  costFunc->SetMaskBackgroundValue( maskBackgroundValue );
-
-  InitialOptimizerType::Pointer initOptimizer =
-    InitialOptimizerType::New();
-  itk::Statistics::NormalVariateGenerator::Pointer normGen =
-    itk::Statistics::NormalVariateGenerator::New();
-  if( seed > 0 )
-    {
-    normGen->Initialize( seed );
-    }
-  initOptimizer->SetNormalVariateGenerator( normGen );
-  initOptimizer->Initialize( 1.0 );
-  initOptimizer->SetMetricWorstPossibleValue( 101 );
-  initOptimizer->SetMaximumIteration( iterations*0.5 );
-  initOptimizer->SetMaximize( true );
-
-  OptimizerType::Pointer optimizer = OptimizerType::New();
-  optimizer->SetUseUnitLengthGradient( true );
-  optimizer->SetMaximumIteration( iterations*0.4 );
-  optimizer->SetMaximumLineIteration( iterations*0.2 );
-  optimizer->SetStepLength( 0.1 );
-  optimizer->SetStepTolerance( 0.001 );
-  optimizer->SetValueTolerance( 0.01 );
-  optimizer->SetMaximize( true );
-
-  OptimizerType::ScalesType scales( 3 );
-  scales[0] = 1.0 / 0.1;
-  scales[1] = 1.0 / 2.0;
-  scales[2] = 1.0 / (params[2]/10);
-
-  typename ContrastCostFunctionType::ParametersType costFunctionScales( 3 );
-  costFunctionScales[0] = scales[0];
-  costFunctionScales[1] = scales[1];
-  costFunctionScales[2] = scales[2];
-
-  OptimizerType::ScalesType scales2( 3 );
-  scales2[0] = scales[0] * scales[0];
-  scales2[1] = scales[1] * scales[1];
-  scales2[2] = scales[2] * scales[2];
-
-  // OnePlusOne should be passed squared-scales
-  initOptimizer->SetScales( scales2 );
-  optimizer->SetScales( scales );
-  costFunc->SetScales( costFunctionScales );
-
-  initOptimizer->SetCostFunction( costFunc );
-  optimizer->SetCostFunction( costFunc );
-
-  progressReporter.Report( 0.25 );
-
-  costFunc->SetOutputImage( outputImage );
-  costFunc->Initialize();
-
-  initOptimizer->SetInitialPosition( params );
-
-  progressReporter.Report( 0.3 );
-
-  initOptimizer->StartOptimization();
-
-  progressReporter.Report( 0.5 );
-
-  params = initOptimizer->GetCurrentPosition();
-  double result = costFunc->GetValue( params );
-  std::cout << "Intermediate params = " << params
-            << " Result = " << result << std::endl;
-
-  optimizer->SetInitialPosition( params );
-  optimizer->StartOptimization();
-
+  timeCollector.Stop("Run Filter");
   progressReporter.Report( 0.8 );
-
-  params = optimizer->GetCurrentPosition();
-  result = costFunc->GetValue( params );
-  std::cout << "Winning params = " << params
-            << " Result = " << result << std::endl;
 
   typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
 
   writer->SetFileName( outputImageName.c_str() );
-  writer->SetInput( outputImage );
+  writer->SetInput( filter->GetOutput() );
   writer->SetUseCompression( true );
   try
     {
