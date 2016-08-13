@@ -460,6 +460,7 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
     }
   // Create the points
   vtkNew<vtkPoints> vesselsPoints;
+  vesselsPoints->SetDataTypeToDouble();
   vesselsPoints->SetNumberOfPoints(totalNumberOfPoints);
 
   // Create the Lines
