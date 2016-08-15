@@ -52,7 +52,7 @@ EnhanceTubesUsingDiffusion< TPixel, Dimension >
 
   double deltaSigma = m_MaxSigma - m_MinSigma;
 
-  for( int i = 0; i < m_NumSigmaSteps; i++ )
+  for( unsigned int i = 0; i < m_NumSigmaSteps; i++ )
     {
     scales[i] = m_MinSigma + i * ( deltaSigma / m_NumSigmaSteps );
     }
