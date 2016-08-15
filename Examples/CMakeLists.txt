@@ -37,6 +37,6 @@ if( TubeTK_USE_PYTHON )
   add_subdirectory( MergeAdjacentImages )
 
   if( TubeTK_USE_NUMPY_STACK )
-    add_subdirectory( TubeNumPyArray )
+    add_subdirectory( TubeNumPyArrayAndPropertyHistograms )
   endif()
 endif()
