@@ -170,7 +170,7 @@ solver = None  # ignore this workaround for lmdb data (can't instantiate two sol
 solver = caffe.get_solver(solver_config_path)
 
 ### solve
-niter = 1000  # EDIT HERE increase to train for longer
+niter = 5000  # EDIT HERE increase to train for longer
 test_interval = niter / 200
 
 # losses will also be stored in the log
