@@ -30,8 +30,8 @@ train_net_path = os.path.join(net_proto_path, 'custom_auto_train.prototxt')
 test_net_path = os.path.join(net_proto_path, 'custom_auto_test.prototxt')
 solver_config_path = os.path.join(net_proto_path, 'custom_auto_solver.prototxt')
 
-train_results_dir - os.path.join(net_proto_path, 'train_results')
-if not os.path.exists(train_results_root):
+train_results_dir = os.path.join(net_proto_path, 'train_results')
+if not os.path.exists(train_results_dir):
     os.makedirs(train_results_dir)
 
 # Features square plot :
@@ -189,7 +189,7 @@ for key in solver.net.params.keys():
 
 for it in range(niter):
 
-    ## Uncomment time lines to get the step time
+    # Uncomment time lines to get the step time
     t=time.time()
 
     solver.step(1)  # SGD by Caffe
@@ -198,25 +198,25 @@ for it in range(niter):
     cur_loss = solver.net.blobs['loss'].data
     print it, " : ", cur_loss, ". took ", (time.time()-t), " seconds"
 
-    ## store the mean loss
+    # store the mean loss
     loss += cur_loss
     train_loss[it] = loss/(it+1)
 
-    ## run a full test every so often
-    ## (Caffe can also do this for us and write to a log, but we show here
-    ## how to do it directly in Python, where more complicated things are easier.)
+    # run a full test every so often
+    # (Caffe can also do this for us and write to a log, but we show here
+    # how to do it directly in Python, where more complicated things are easier.)
     if it % test_interval == 0:
         print 'Iteration', it, 'testing...'
         correct = 0
         for test_it in range(100):
             solver.test_nets[0].forward()
-            correct += sum(solver.test_nets[0].blobs['score'].data.argmax(1)
-                           == solver.test_nets[0].blobs['label'].data)
+            correct += \
+                sum(solver.test_nets[0].blobs['score'].data.argmax(1) == solver.test_nets[0].blobs['label'].data)
         test_acc[it // test_interval] = correct / 1e4
         print "Test acc : ", test_acc[it // test_interval]
         print "Train Loss ", it, train_loss[it]
 
-        #Plot hidden layer features
+        # Plot hidden layer features
         for key in solver.net.params.keys():
 
             if key.startswith('conv'):
@@ -229,9 +229,11 @@ for it in range(niter):
                 plt.title('%s - %s' % (key, it))
                 plt.savefig(os.path.join(train_results_dir, 'filters_%s_%.9d.png' % (key, it)))
 
-## Show 10 first testing results
+# Show 10 first testing results
 plt.figure()
-plt.imshow(solver.test_nets[0].blobs['data'].data[:10, 0].transpose(1, 0, 2).reshape(65, 10*65), cmap='gray'); axis('off')
+plt.imshow(solver.test_nets[0].blobs['data'].data[:10, 0].transpose(1, 0, 2).reshape(65, 10*65), cmap='gray')
+axis('off')
+
 print 'test labels:', solver.test_nets[0].blobs['label'].data[:10]
 print 'score:', solver.test_nets[0].blobs['score'].data[:10]
 print 'Argmax : ', solver.test_nets[0].blobs['score'].data.argmax(1)
@@ -239,7 +241,7 @@ print 'Argmax : ', solver.test_nets[0].blobs['score'].data.argmax(1)
 plt.savefig(os.path.join(train_results_dir, 'test_10.png'))
 
 
-## Plot output loss and test accuracy
+# Plot output loss and test accuracy
 plt.figure()
 _, ax1 = plt.subplots()
 ax2 = ax1.twinx()
@@ -250,4 +252,4 @@ ax1.set_ylabel('train loss')
 ax2.set_ylabel('test accuracy')
 ax2.set_title('Custom Test Accuracy: {:.2f}'.format(test_acc[-1]))
 # plt.show()
-plt.savefig(os.path.join(train_results_dir + 'learning_curve.png'))
+plt.savefig(os.path.join(train_results_dir, 'learning_curve.png'))
