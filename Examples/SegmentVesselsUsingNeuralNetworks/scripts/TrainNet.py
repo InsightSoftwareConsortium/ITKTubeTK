@@ -5,14 +5,12 @@
 ###########################################################################
 
 import os
+import sys
 import json
-import subprocess
-import matplotlib.pyplot as plt
 import time
 
-from pylab import *
-
-import sys
+import numpy as np
+import matplotlib.pyplot as plt
 
 # Define paths
 script_params = json.load(open('params.json'))
@@ -24,6 +22,7 @@ sys.path.insert(0, os.path.join(caffe_root, 'python')) # Add pycaffe
 import caffe
 from caffe import layers as L, params as P
 
+# Define file paths
 net_proto_path = os.path.join(caffe_root, 'data/SegmentVesselsUsingNeuralNetworks/NetProto')
 
 train_net_path = os.path.join(net_proto_path, 'custom_auto_train.prototxt')
@@ -211,7 +210,7 @@ for it in range(niter):
         for test_it in range(100):
             solver.test_nets[0].forward()
             correct += \
-                sum(solver.test_nets[0].blobs['score'].data.argmax(1) == solver.test_nets[0].blobs['label'].data)
+                np.sum(solver.test_nets[0].blobs['score'].data.argmax(1) == solver.test_nets[0].blobs['label'].data)
         test_acc[it // test_interval] = correct / 1e4
         print "Test acc : ", test_acc[it // test_interval]
         print "Train Loss ", it, train_loss[it]
