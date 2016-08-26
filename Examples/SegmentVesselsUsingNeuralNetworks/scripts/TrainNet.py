@@ -170,13 +170,13 @@ solver = None  # ignore this workaround for lmdb data (can't instantiate two sol
 solver = caffe.get_solver(solver_config_path)
 
 ### solve
-niter = 1000000  # EDIT HERE increase to train for longer
+niter = 1000  # EDIT HERE increase to train for longer
 test_interval = niter / 200
 
 # losses will also be stored in the log
-train_loss = zeros(niter)
+train_loss = np.zeros(niter)
 loss = 0
-test_acc = zeros(int(np.ceil(niter / test_interval)))
+test_acc = np.zeros(int(np.ceil(niter / test_interval)))
 
 caffe.set_mode_gpu() # Use GPU
 
@@ -231,7 +231,7 @@ for it in range(niter):
 # Show 10 first testing results
 plt.figure()
 plt.imshow(solver.test_nets[0].blobs['data'].data[:10, 0].transpose(1, 0, 2).reshape(65, 10*65), cmap='gray')
-axis('off')
+plt.axis('off')
 
 print 'test labels:', solver.test_nets[0].blobs['label'].data[:10]
 print 'score:', solver.test_nets[0].blobs['score'].data[:10]
@@ -244,8 +244,8 @@ plt.savefig(os.path.join(train_results_dir, 'test_10.png'))
 plt.figure()
 _, ax1 = plt.subplots()
 ax2 = ax1.twinx()
-ax1.plot(arange(niter), train_loss)
-ax2.plot(test_interval * arange(len(test_acc)), test_acc, 'r')
+ax1.plot(np.arange(niter), train_loss)
+ax2.plot(test_interval * np.arange(len(test_acc)), test_acc, 'r')
 ax1.set_xlabel('iteration')
 ax1.set_ylabel('train loss')
 ax2.set_ylabel('test accuracy')
