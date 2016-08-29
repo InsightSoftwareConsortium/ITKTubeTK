@@ -519,7 +519,7 @@ endif( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_USING_SLICER )
 #
 # Testing using Examples
 #
-set( TubeTK_USE_EXAMPLES_AS_TESTS "Use TubeTK examples as (long running) tests."
+option( TubeTK_USE_EXAMPLES_AS_TESTS "Use TubeTK examples as (long running) tests."
   OFF )
 
 #
