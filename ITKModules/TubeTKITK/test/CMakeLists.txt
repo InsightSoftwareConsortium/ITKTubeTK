@@ -33,7 +33,6 @@ set( CompareImages_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
 ######################  PythonComputeTrainingMask  ##########################
 if( ITK_WRAP_PYTHON )
-
   # Test1 - PythonComputeTrainingMask
   set( MODULE_NAME PythonComputeTrainingMask )
   Midas3FunctionAddTestWithEnv( NAME TubeTKITK.Python.ComputeTrainingMask-Test1
@@ -44,7 +43,7 @@ if( ITK_WRAP_PYTHON )
         ${TEMP}/${MODULE_NAME}_NotVesselMaskTest1.mha
         0.5
         2
-    ENVIRONMENT ITK_BUILD_DIR=${ITK_DIR} TubeTK_BUILD_DIR=${TubeTK_BINARY_DIR}
+    ENVIRONMENT ITK_BUILD_DIR=${ITK_DIR} TubeTK_BUILD_DIR=${TubeTK_BINARY_DIR} BUILD_TYPE=$<$<BOOL:${WIN32}>:$<CONFIG>>
     )
   # Test1 - Compare - PythonComputeTrainingMask
   Midas3FunctionAddTest( NAME
