@@ -250,8 +250,9 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "KWSys.*SharedForward.*strcat"
   "KWSys.*SharedForward.*putenv"
   "KWSys.*SharedForward.*getenv"
-  "ITK.Modules.Filtering.FastMarching"
-  "ITK.Modules.Remote.MinimalPathExtraction"
+  "[Mm]odules.[Ff]iltering.[Ff]ast[Mm]arching"
+  "[Mm]odules.[Rr]emote.[Mm]inimal[Pp]ath[Ee]xtraction"
+  "[Mm]odules.*unary minus operator applied to unsigned"
 
   # VTK suppressions
   "vtkfreetype"
