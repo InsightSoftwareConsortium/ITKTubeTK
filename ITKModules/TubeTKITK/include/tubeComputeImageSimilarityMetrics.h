@@ -90,8 +90,8 @@ protected:
 
 private:
   /** itkComputeImageSimilarityMetricsFilter parameters **/
-  ComputeImageSimilarityMetrics(const Self &);
-  void operator=(const Self &);
+  ComputeImageSimilarityMetrics( const Self & );
+  void operator=( const Self & );
 
   typename FilterType::Pointer m_Filter;
 

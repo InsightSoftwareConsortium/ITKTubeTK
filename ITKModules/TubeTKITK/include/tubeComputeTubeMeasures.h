@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 (the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -57,7 +57,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information (and related methods ). */
   itkTypeMacro( ComputeTubeMeasures, Object );
 
   /** Set/Get scale */
@@ -72,16 +72,16 @@ public:
   tubeWrapUpdateMacro( Filter );
 
   /** Get output Ridge Image */
-  tubeWrapGetObjectMacro( Ridgeness, OutputImageType, Filter);
+  tubeWrapGetObjectMacro( Ridgeness, OutputImageType, Filter );
 
   /** Get output Round Image */
-  tubeWrapGetObjectMacro( Roundness, OutputImageType, Filter);
+  tubeWrapGetObjectMacro( Roundness, OutputImageType, Filter );
 
   /** Get output Curvature Image */
-  tubeWrapGetObjectMacro( Curvature, OutputImageType, Filter);
+  tubeWrapGetObjectMacro( Curvature, OutputImageType, Filter );
 
   /** Get output Levelness Image */
-  tubeWrapGetObjectMacro( Levelness, OutputImageType, Filter);
+  tubeWrapGetObjectMacro( Levelness, OutputImageType, Filter );
 
 protected:
   ComputeTubeMeasures( void );

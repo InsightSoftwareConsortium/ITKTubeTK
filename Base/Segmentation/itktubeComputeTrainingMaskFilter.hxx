@@ -44,7 +44,6 @@ ComputeTrainingMaskFilter< TInputImage >
   m_Threshold->SetInsideValue( 0 );
   m_Threshold->SetOutsideValue( 255 );
 
-  BallType m_Ball;
   m_Ball.SetRadius( 1 );
   m_Ball.CreateStructuringElement();
 
