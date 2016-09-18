@@ -7,7 +7,7 @@
 #
 ###########################################################################
 
-import os, glob, sys, subprocess
+import os, glob, sys, subprocess, json
 
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
@@ -15,8 +15,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 ## Append ITK libs
-sys.path.append('/home/lucas/Projects/ITK-Release/Wrapping/Generators/Python')
-sys.path.append('/home/lucas/Projects/ITK-Release/Modules/ThirdParty/VNL/src/vxl/lib')
+sys.path.append(os.path.join(os.environ['TubeTK_BUILD_DIR'], 'ITK-build',
+                             'Wrapping/Generators/Python'))
+sys.path.append(os.path.join(os.environ['TubeTK_BUILD_DIR'], 'ITK-build',
+                             'Modules/ThirdParty/VNL/src/vxl/lib'))
+
 import itk
 
 # Compute Training mask
@@ -42,39 +45,46 @@ def computeTrainingMask( expertInput, trainingMaskOutput ):
 
 # Save slab
 def saveSlabs( fileList ):
-  for file in fileList:
-    print file
-    reader.SetFileName(file)
+
+  PixelType = itk.F
+  Dimension = 3
+  ImageType=itk.Image[PixelType,Dimension]
+  ReaderType = itk.ImageFileReader[ImageType]
+
+  for fname in fileList:
+
+    print fname
+
+    reader = ReaderType.New()
+    reader.SetFileName(str(fname))
     reader.Update()
     img = reader.GetOutput()
     buf = itk.PyBuffer[ImageType].GetArrayFromImage(img)
+
     # filenames definition
-    filePrefix = os.path.basename(os.path.splitext(file)[0])
-    fileDirectory = os.path.dirname(os.path.abspath(file))
-    fileDirectory = fileDirectory + "/"
+    filePrefix = os.path.basename(os.path.splitext(fname)[0])
+    fileDirectory = os.path.dirname(os.path.abspath(fname))
+
     # Iterate through each slab
     for i in range(0,buf.shape[0]):
-      outputImage = fileDirectory + str(i) + "_" + filePrefix + ".png"
+
+      outputImage = os.path.join(fileDirectory, str(i) + "_" + filePrefix + ".png")
       plt.imsave( outputImage, buf[i,:,:],cmap='Greys_r' )
+
       # Compute the expert training mask
       if "expert" in outputImage:
         computeTrainingMask( outputImage, outputImage )
 
 # Path variables
-hardDrive_root = "/media/lucas/krs0014/"
+script_params = json.load(open('params.json'))
+caffe_root = script_params['CAFFE_SRC_ROOT']
+hardDrive_root = script_params['CNN_DATA_ROOT']
 
-trainOutputDir = hardDrive_root + "SegmentVesselsUsingNeuralNetworks/training/*"
-testOutputDir = hardDrive_root + "SegmentVesselsUsingNeuralNetworks/testing/*"
+trainOutputDir = os.path.join(hardDrive_root, "SegmentVesselsUsingNeuralNetworks/training/*")
+testOutputDir = os.path.join(hardDrive_root, "SegmentVesselsUsingNeuralNetworks/testing/*")
 
 trainFiles = glob.glob( os.path.join( trainOutputDir, "*.mha" ) )
 testFiles = glob.glob( os.path.join( testOutputDir, "*.mha" ) )
-
-PixelType = itk.F
-Dimension = 3
-ImageType=itk.Image[PixelType,Dimension]
-ReaderType = itk.ImageFileReader[ImageType]
-
-reader = ReaderType.New()
 
 saveSlabs(trainFiles)
 saveSlabs(testFiles)

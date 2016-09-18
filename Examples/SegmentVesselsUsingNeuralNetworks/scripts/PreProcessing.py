@@ -11,7 +11,7 @@
 #
 ###########################################################################
 
-import os, glob, sys
+import os, glob, sys, json
 
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
@@ -37,17 +37,22 @@ def createImgSet( expertImg, inputImg, filenamePrefix, fileOutputDir,
   # Iterate through the expert label map
   for i in range(0,expertImg.shape[0],resample):
     for j in range(0,expertImg.shape[1],resample):
+
       if j>w and j+w+1<inputImg.shape[1] :
         if i>w and i+w+1<inputImg.shape[0]:
-              # Centerline pixel (positive)
+
+	      # Centerline pixel (positive)
               if expertImg[i,j] > 0.5:
                 count = count + 1
                 filename = filenamePrefix + "_" + str(i) + "_" + str(j) +".png"
                 textFile.write(filename + " " + str(1) + "\n")
-                plt.imsave(fileOutputDir + filename, inputImg[i-w:i+w+1,j-w:j+w+1],cmap='Greys_r')
+                plt.imsave(os.path.join(fileOutputDir, filename),
+                           inputImg[i-w:i+w+1,j-w:j+w+1],cmap='Greys_r')
+
               # Vessel bound pixel (negative)
               elif expertImg[i,j] > 0:
                 negativeIndex.append([i,j])
+
               # Background pixel (negative)
               else :
                 negativeImageIndex.append([i,j])
@@ -57,13 +62,16 @@ def createImgSet( expertImg, inputImg, filenamePrefix, fileOutputDir,
   for [i,j] in rndmNegativeInd :
     filename = filenamePrefix + "_" + str(i) + "_" + str(j) + ".png"
     textFile.write(filename + " " + str(0) + "\n")
-    plt.imsave(fileOutputDir + filename, inputImg[i-w:i+w+1,j-w:j+w+1],cmap='Greys_r')
+    plt.imsave(os.path.join(fileOutputDir, filename),
+               inputImg[i-w:i+w+1,j-w:j+w+1],cmap='Greys_r')
+
   # Pick random negatives from the entire image
   rndmNegativeImageInd = random.sample(negativeImageIndex, int(math.ceil(0.2*count)))
   for [i,j] in rndmNegativeImageInd :
     filename = filenamePrefix + "_" + str(i) + "_" + str(j) + ".png"
     textFile.write(filename + " " + str(0) + "\n")
-    plt.imsave(fileOutputDir + filename, inputImg[i-w:i+w+1,j-w:j+w+1],cmap='Greys_r')
+    plt.imsave(os.path.join(fileOutputDir, filename),
+               inputImg[i-w:i+w+1,j-w:j+w+1],cmap='Greys_r')
 
   textFile.close()
   print count
@@ -72,30 +80,36 @@ def createImgSet( expertImg, inputImg, filenamePrefix, fileOutputDir,
 # Main #
 ########
 # Path variable
-hardDrive_root = "/media/lucas/krs0014/"
-caffe_root = "./"
+script_params = json.load(open('params.json'))
+caffe_root = script_params['CAFFE_SRC_ROOT']
+hardDrive_root = script_params['CNN_DATA_ROOT']
 
 # Text file
-trainFilename = caffe_root + "data/SegmentVesselsUsingNeuralNetworks/train.txt"
+trainFilename = os.path.join(caffe_root, "data/SegmentVesselsUsingNeuralNetworks/train.txt")
 trainFile = open(trainFilename, "w+")
 trainFile.truncate() # Erase file
 trainFile.close()
 
-valFilename = caffe_root + "data/SegmentVesselsUsingNeuralNetworks/val.txt"
+valFilename = os.path.join(caffe_root, "data/SegmentVesselsUsingNeuralNetworks/val.txt")
 valFile = open(valFilename, "w+")
 valFile.truncate() # Erase file
 valFile.close()
 
 # Output patches directories
-trainFileOutputDir= hardDrive_root + "SegmentVesselsUsingNeuralNetworks/training/out/"
-valFileOutputDir = hardDrive_root + "SegmentVesselsUsingNeuralNetworks/testing/out/"
+trainFileOutputDir= os.path.join(hardDrive_root, "SegmentVesselsUsingNeuralNetworks/training/out/")
+if not os.path.exists(trainFileOutputDir):
+  os.mkdir(trainFileOutputDir)
+
+valFileOutputDir = os.path.join(hardDrive_root, "SegmentVesselsUsingNeuralNetworks/testing/out/")
+if not os.path.exists(valFileOutputDir):
+  os.mkdir(valFileOutputDir)
 
 # Images directories
-trainExpertDir = hardDrive_root + "SegmentVesselsUsingNeuralNetworks/training/expert/"
-trainImgDir = hardDrive_root + "SegmentVesselsUsingNeuralNetworks/training/images/"
+trainExpertDir = os.path.join(hardDrive_root, "SegmentVesselsUsingNeuralNetworks/training/expert/")
+trainImgDir = os.path.join(hardDrive_root, "SegmentVesselsUsingNeuralNetworks/training/images/")
 
-valExpertDir = hardDrive_root + "SegmentVesselsUsingNeuralNetworks/testing/expert/"
-valImgDir = hardDrive_root + "SegmentVesselsUsingNeuralNetworks/testing/images/"
+valExpertDir = os.path.join(hardDrive_root, "SegmentVesselsUsingNeuralNetworks/testing/expert/")
+valImgDir = os.path.join(hardDrive_root, "SegmentVesselsUsingNeuralNetworks/testing/images/")
 
 # Create train set
 trainImages = glob.glob( os.path.join( trainImgDir, "*.png" ) )
@@ -104,8 +118,8 @@ for trainImage in trainImages:
   # Get image ID
   trainImagePrefix = os.path.basename(os.path.splitext(trainImage)[0])
   # Set filename
-  trainExpertFilename = trainExpertDir + trainImagePrefix + "_expert.png"
-  trainImgFilename = trainImgDir + trainImagePrefix + ".png"
+  trainExpertFilename = os.path.join(trainExpertDir, trainImagePrefix + "_expert.png")
+  trainImgFilename = os.path.join(trainImgDir, trainImagePrefix + ".png")
   # Load images
   trainExpert=mpimg.imread(trainExpertFilename)
   #print trainExpert.shape
@@ -119,14 +133,19 @@ for trainImage in trainImages:
 #Create validation set
 valImages = glob.glob( os.path.join( valImgDir, "*.png" ) )
 for valImage in valImages:
+
   print valImage
+
   # Get image ID
   valImagePrefix = os.path.basename(os.path.splitext(valImage)[0])
+
   # Set filename
-  valExpertFilename = valExpertDir + valImagePrefix + "_expert.png"
-  valImgFilename = valImgDir + valImagePrefix + ".png"
+  valExpertFilename = os.path.join(valExpertDir, valImagePrefix + "_expert.png")
+  valImgFilename = os.path.join(valImgDir, valImagePrefix + ".png")
+
   # Load images
   valExpert=mpimg.imread(valExpertFilename)
+
   #valExpert=valExpert[:,:,0]
   valImg=mpimg.imread(valImgFilename)
   #valImg=valImg[:,:,0]

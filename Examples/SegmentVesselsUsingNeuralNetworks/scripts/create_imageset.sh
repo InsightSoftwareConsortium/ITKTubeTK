@@ -2,12 +2,12 @@
 # Create the imagenet lmdb inputs
 # N.B. set the path to the imagenet train + val data dirs
 
-EXAMPLE=data/SegmentVesselsUsingNeuralNetworks
-DATA=data/SegmentVesselsUsingNeuralNetworks
-TOOLS=build/tools
+EXAMPLE=${CAFFE_SRC_ROOT}/data/SegmentVesselsUsingNeuralNetworks
+DATA=${CAFFE_SRC_ROOT}/data/SegmentVesselsUsingNeuralNetworks
+TOOLS=${CAFFE_SRC_ROOT}/build/tools
 
-TRAIN_DATA_ROOT=/media/lucas/krs0014/SegmentVesselsUsingNeuralNetworks/training/out/
-VAL_DATA_ROOT=/media/lucas/krs0014/SegmentVesselsUsingNeuralNetworks/testing/out/
+TRAIN_DATA_ROOT=${CNN_DATA_ROOT}/SegmentVesselsUsingNeuralNetworks/training/out/
+VAL_DATA_ROOT=${CNN_DATA_ROOT}/SegmentVesselsUsingNeuralNetworks/testing/out/
 
 # Set RESIZE=true to resize the images to 256x256. Leave as false if images have
 # already been resized using another tool.

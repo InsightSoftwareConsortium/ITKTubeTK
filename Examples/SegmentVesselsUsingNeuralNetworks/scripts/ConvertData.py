@@ -13,10 +13,13 @@ import sys
 import os
 import glob
 import subprocess
+import shutil
+import json
 
-# Relative path variables
-caffe_root = "./"  # this file should be run from {caffe_root} (otherwise change this line)
-hardDrive_root = "/media/lucas/krs0014/"
+# Define paths
+script_params = json.load(open('params.json'))
+caffe_root = script_params['CAFFE_SRC_ROOT']
+hardDrive_root = script_params['CNN_DATA_ROOT']
 
 # Shrink images
 def shrink( inputImage, expertImage, outputImagePrefix ):
@@ -38,27 +41,39 @@ def convert( templateFile, tubeFile, outputFile ):
 
 # Copy infile to outFile
 def copy( inFile, outFile ):
-  subprocess.call( ["cp", inFile, outFile] )
+
+  # create path if it doesnt exist
+  out_path = os.path.dirname( outFile )
+  if not os.path.exists( out_path ):
+    os.makedirs( out_path )
+
+  # copy file
+  shutil.copyfile(inFile, outFile)
 
 
 def main(argv):
+
   # Input data directories
-  controls = caffe_root + "data/SegmentVesselsUsingNeuralNetworks/Controls/*"
-  tumors = caffe_root + "data/SegmentVesselsUsingNeuralNetworks/LargeTumor/*"
+  controls = os.path.join(caffe_root, "data/SegmentVesselsUsingNeuralNetworks/Controls/*")
+  tumors = os.path.join(caffe_root, "data/SegmentVesselsUsingNeuralNetworks/LargeTumor/*")
+
   # Output data directories
-  expertDir = caffe_root + "data/SegmentVesselsUsingNeuralNetworks/expert/"
-  controlsOutputDir = hardDrive_root + "SegmentVesselsUsingNeuralNetworks/controls/"
-  tumorsOutputDir = hardDrive_root + "SegmentVesselsUsingNeuralNetworks/tumors/"
+  expertDir = os.path.join(caffe_root, "data/SegmentVesselsUsingNeuralNetworks/expert/")
+  controlsOutputDir = os.path.join(hardDrive_root, "SegmentVesselsUsingNeuralNetworks/controls/")
+  tumorsOutputDir = os.path.join(hardDrive_root, "SegmentVesselsUsingNeuralNetworks/tumors/")
 
   # Sanity checks
-  if not os.path.exists( hardDrive_root + "SegmentVesselsUsingNeuralNetworks/" ):
-    subprocess.call( ["mkdir" , hardDrive_root + "SegmentVesselsUsingNeuralNetworks/"] )
+  if not os.path.exists( os.path.join(hardDrive_root, "SegmentVesselsUsingNeuralNetworks/") ):
+    os.mkdir( os.path.join(hardDrive_root, "SegmentVesselsUsingNeuralNetworks/") )
+
   if not os.path.exists( expertDir ):
-    subprocess.call( ["mkdir" , expertDir] )
+    os.mkdir( expertDir )
+
   if not os.path.exists( controlsOutputDir ):
-    subprocess.call( ["mkdir" , controlsOutputDir] )
+    os.mkdir( controlsOutputDir )
+
   if not os.path.exists( tumorsOutputDir ):
-    subprocess.call( ["mkdir" , tumorsOutputDir] )
+    os.mkdir( tumorsOutputDir )
 
   # Files to process
   controlFiles = glob.glob( os.path.join( controls, "*.mhd" ) )
@@ -66,8 +81,9 @@ def main(argv):
 
   # Output directories where to copy the data for training and testing
   i=0
-  trainOutputDir = hardDrive_root + "SegmentVesselsUsingNeuralNetworks/training/"
-  testOutputDir = hardDrive_root + "SegmentVesselsUsingNeuralNetworks/testing/"
+
+  trainOutputDir = os.path.join(hardDrive_root, "SegmentVesselsUsingNeuralNetworks/training/")
+  testOutputDir = os.path.join(hardDrive_root, "SegmentVesselsUsingNeuralNetworks/testing/")
 
   # Process control files
   for file in controlFiles:
@@ -75,22 +91,22 @@ def main(argv):
       filePrefix = os.path.basename(os.path.splitext(file)[0])
       fileDirectory = os.path.dirname(os.path.abspath(file))
       templateFile = file
-      tubeFile = fileDirectory + "/TRE/" + filePrefix + ".tre"
-      expertFile = expertDir + filePrefix + "_expert.mha"
+      tubeFile = os.path.join(fileDirectory, "TRE", filePrefix + ".tre")
+      expertFile = os.path.join(expertDir, filePrefix + "_expert.mha")
 
       # Process
       convert( templateFile, tubeFile, expertFile )
-      shrink( templateFile, expertFile, controlsOutputDir + filePrefix )
+      shrink( templateFile, expertFile, os.path.join(controlsOutputDir, filePrefix) )
 
       # Mixing controls for testing and training.
       if i%2 == 0 :
-        copy( controlsOutputDir + filePrefix + ".mha", trainOutputDir+"images/" + filePrefix + ".mha")
-        copy( controlsOutputDir + filePrefix + "_points.mha", trainOutputDir+"points/" + filePrefix + "_points.mha")
-        copy( controlsOutputDir + filePrefix + "_expert.mha", trainOutputDir+"expert/" + filePrefix + "_expert.mha")
+        copy( os.path.join(controlsOutputDir, filePrefix + ".mha"), os.path.join(trainOutputDir, "images", filePrefix + ".mha") )
+        copy( os.path.join(controlsOutputDir, filePrefix + "_points.mha"), os.path.join(trainOutputDir, "points", filePrefix + "_points.mha") )
+        copy( os.path.join(controlsOutputDir, filePrefix + "_expert.mha"), os.path.join(trainOutputDir, "expert", filePrefix + "_expert.mha") )
       else :
-        copy( controlsOutputDir + filePrefix + ".mha", testOutputDir+"images/" + filePrefix + ".mha")
-        copy( controlsOutputDir + filePrefix + "_points.mha", testOutputDir+"points/" + filePrefix + "_points.mha")
-        copy( controlsOutputDir + filePrefix + "_expert.mha", testOutputDir+"expert/" + filePrefix + "_expert.mha")
+        copy( os.path.join(controlsOutputDir, filePrefix + ".mha"), os.path.join(testOutputDir, "images", filePrefix + ".mha") )
+        copy( os.path.join(controlsOutputDir, filePrefix + "_points.mha"), os.path.join(testOutputDir, "points", filePrefix + "_points.mha") )
+        copy( os.path.join(controlsOutputDir, filePrefix + "_expert.mha"), os.path.join(testOutputDir, "expert", filePrefix + "_expert.mha") )
       i = i+1
 
   i=0
@@ -100,8 +116,8 @@ def main(argv):
       filePrefix = os.path.basename(os.path.splitext(file)[0])
       fileDirectory = os.path.dirname(os.path.abspath(file))
       templateFile = file
-      tubeFile = fileDirectory + "/TRE/" + filePrefix + ".tre"
-      expertFile = expertDir + filePrefix + "_expert.mha"
+      tubeFile = os.path.join(fileDirectory, "TRE", filePrefix + ".tre")
+      expertFile = os.path.join(expertDir, filePrefix + "_expert.mha")
 
       # Process
       convert( templateFile, tubeFile, expertFile )
@@ -109,13 +125,13 @@ def main(argv):
 
       # Mixing tumors for testing and training.
       if i%2 == 0 :
-        copy( tumorsOutputDir + filePrefix + ".mha", trainOutputDir+"images/" + filePrefix + ".mha")
-        copy( tumorsOutputDir + filePrefix + "_points.mha", trainOutputDir+"points/" + filePrefix + "_points.mha")
-        copy( tumorsOutputDir + filePrefix + "_expert.mha", trainOutputDir+"expert/" + filePrefix + "_expert.mha")
+        copy( os.path.join(tumorsOutputDir, filePrefix + ".mha"), os.path.join(trainOutputDir, "images", filePrefix + ".mha") )
+        copy( os.path.join(tumorsOutputDir, filePrefix + "_points.mha"), os.path.join(trainOutputDir, "points", filePrefix + "_points.mha") )
+        copy( os.path.join(tumorsOutputDir, filePrefix + "_expert.mha"), os.path.join(trainOutputDir, "expert", filePrefix + "_expert.mha") )
       else :
-        copy( tumorsOutputDir + filePrefix + ".mha", testOutputDir+"images/" + filePrefix + ".mha")
-        copy( tumorsOutputDir + filePrefix + "_points.mha", testOutputDir+"points/" + filePrefix + "_points.mha")
-        copy( tumorsOutputDir + filePrefix + "_expert.mha", testOutputDir+"expert/" + filePrefix + "_expert.mha")
+        copy( os.path.join(tumorsOutputDir, filePrefix + ".mha"), os.path.join(testOutputDir, "images", filePrefix + ".mha") )
+        copy( os.path.join(tumorsOutputDir, filePrefix + "_points.mha"), os.path.join(testOutputDir, "points", filePrefix + "_points.mha") )
+        copy( os.path.join(tumorsOutputDir, filePrefix + "_expert.mha"), os.path.join(testOutputDir, "expert",  filePrefix + "_expert.mha") )
       i = i+1
 
 if __name__ == "__main__":
