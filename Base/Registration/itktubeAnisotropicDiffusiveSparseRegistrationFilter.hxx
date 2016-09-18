@@ -741,9 +741,14 @@ AnisotropicDiffusiveSparseRegistrationFilter
       // tube centerline point and its two normals, and consider the distance
       // to the surface via the radius.
       float normal1[ImageDimension];
-      tubeNormal1Data->GetTupleValue( tubeId, normal1 );
       float normal2[ImageDimension];
-      tubeNormal2Data->GetTupleValue( tubeId, normal2 );
+#if VTK_MAJOR_VERSION < 7
+      tubeNormal1Data->GetTupleValue(tubeId, normal1);
+      tubeNormal2Data->GetTupleValue(tubeId, normal2);
+#else
+      tubeNormal1Data->GetTypedTuple(tubeId, normal1);
+      tubeNormal2Data->GetTypedTuple(tubeId, normal2);
+#endif
 
       double distanceToCenterCoord = ComputeDistanceToPointOnPlane(
             centerlineCoord, normal1, normal2, imageCoord );

@@ -246,6 +246,12 @@ option( TubeTK_BUILD_WITHIN_SLICER
   "Whether TubeTK's CLIs modules are configured to be run from Slicer or alone."
   OFF )
 mark_as_advanced( TubeTK_BUILD_WITHIN_SLICER )
+# Slicer's extension build tool defines TubeTK_BUILD_SLICER_EXTENSION
+# to indicate that this project has to be compiled using Slicer, within Slicer.
+if( TubeTK_BUILD_SLICER_EXTENSION )
+  set(TubeTK_BUILD_USING_SLICER TRUE)
+  set(TubeTK_BUILD_WITHIN_SLICER TRUE)
+endif()
 if( TubeTK_BUILD_USING_SLICER )
   include( TubeTKSlicer4ExtensionConfig )
 
