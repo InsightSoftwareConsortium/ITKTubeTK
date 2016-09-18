@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -59,31 +59,31 @@ public:
   typedef typename FilterType::OutputMaskType       OutputMaskType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(ComputeTubeFlyThroughImage, Object);
+  /** Run-time type information ( and related methods ). */
+  itkTypeMacro( ComputeTubeFlyThroughImage, Object );
 
   /** Set/Get tube id for which the fly through image is to be generated */
-  tubeWrapSetMacro(TubeId, unsigned long, Filter);
-  tubeWrapGetMacro(TubeId, unsigned long, Filter);
+  tubeWrapSetMacro( TubeId, unsigned long, Filter );
+  tubeWrapGetMacro( TubeId, unsigned long, Filter );
 
   /* Set/Get input image from which the tubes were extracted/segmented */
-  tubeWrapSetConstObjectMacro(InputImage, InputImageType, Filter);
-  tubeWrapGetConstObjectMacro(InputImage, InputImageType, Filter);
+  tubeWrapSetConstObjectMacro( InputImage, InputImageType, Filter );
+  tubeWrapGetConstObjectMacro( InputImage, InputImageType, Filter );
 
   /* Set/Get input tubes */
-  tubeWrapSetConstObjectMacro(Input, TubeGroupType, Filter);
-  tubeWrapGetConstObjectMacro(Input, TubeGroupType, Filter);
+  tubeWrapSetConstObjectMacro( Input, TubeGroupType, Filter );
+  tubeWrapGetConstObjectMacro( Input, TubeGroupType, Filter );
 
   /* Generates tube fly through image and mask */
-  tubeWrapUpdateMacro(Filter);
+  tubeWrapUpdateMacro( Filter );
 
   /* Get the generated tube fly through image */
-  tubeWrapGetObjectMacro(Output, OutputImageType, Filter);
+  tubeWrapGetObjectMacro( Output, OutputImageType, Filter );
 
   /* Get the generated tube fly through image */
-  tubeWrapGetObjectMacro(OutputMask, OutputMaskType, Filter);
+  tubeWrapGetObjectMacro( OutputMask, OutputMaskType, Filter );
 
 protected:
   ComputeTubeFlyThroughImage( void );
@@ -92,8 +92,8 @@ protected:
 
 private:
   /** itkComputeTubeFlyThroughImageFilter parameters **/
-  ComputeTubeFlyThroughImage(const Self &);
-  void operator=(const Self &);
+  ComputeTubeFlyThroughImage( const Self & );
+  void operator=( const Self & );
 
   typename FilterType::Pointer m_Filter;
 

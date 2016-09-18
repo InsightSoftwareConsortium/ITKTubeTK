@@ -49,8 +49,8 @@ namespace tube
 
 template< class TInputImage >
 class ComputeTrainingMaskFilter:
-        public ImageToImageFilter< TInputImage,
-                                   itk::Image<short,TInputImage::ImageDimension> >
+  public ImageToImageFilter< TInputImage,
+    itk::Image<short,TInputImage::ImageDimension> >
 {
 public:
   typedef ComputeTrainingMaskFilter                       Self;
@@ -77,24 +77,24 @@ protected:
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
 private:
-  typedef itk::BinaryBallStructuringElement< short, ImageType::ImageDimension > BallType;
-
-  typedef itk::DilateObjectMorphologyImageFilter< ImageType, ImageType, BallType >
-  DilateFilterType;
+  typedef itk::BinaryBallStructuringElement< short,
+    ImageType::ImageDimension > BallType;
+  typedef itk::DilateObjectMorphologyImageFilter< ImageType, ImageType,
+    BallType >                  DilateFilterType;
   typedef itk::BinaryThinningImageFilter< ImageType, ImageType >
-  BinaryThinningFilterType;
+                                BinaryThinningFilterType;
   typedef itk::BinaryThresholdImageFilter< ImageType, ImageType >
-  ThresholdFilterType;
+                                ThresholdFilterType;
   typedef itk::SubtractImageFilter<ImageType,ImageType,ImageType>
-  SubstractFilterType;
+                                SubstractFilterType;
   typedef itk::MultiplyImageFilter<ImageType,ImageType,ImageType>
-  MultiplyFilterType;
+                                MultiplyFilterType;
   typedef itk::DivideImageFilter<ImageType,ImageType,ImageType>
-  DivideFilterType;
+                                DivideFilterType;
   typedef itk::AddImageFilter<ImageType,ImageType,ImageType>
-  AddFilterType;
+                                AddFilterType;
   typedef itk::CastImageFilter< ImageType, ImageTypeShort >
-  CastFilterType;
+                                CastFilterType;
 
   ComputeTrainingMaskFilter( const Self& );
   void operator=( const Self& );

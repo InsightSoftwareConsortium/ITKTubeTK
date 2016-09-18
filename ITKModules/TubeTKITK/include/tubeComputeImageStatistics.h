@@ -90,7 +90,7 @@ public:
   tubeWrapGetConstObjectMacro( Input, VolumeType, Filter );
 
   /** Get output image */
-  tubeWrapGetObjectMacro(Output, VolumeType, Filter);
+  tubeWrapGetObjectMacro( Output, VolumeType, Filter );
 
 protected:
   ComputeImageStatistics( void );
@@ -98,8 +98,8 @@ protected:
   void PrintSelf( std::ostream & os, itk::Indent indent ) const;
 
 private:
-  ComputeImageStatistics(const Self &);
-  void operator=(const Self &);
+  ComputeImageStatistics( const Self & );
+  void operator=( const Self & );
 
   typename FilterType::Pointer m_Filter;
 
