@@ -332,11 +332,8 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
   double ridgeMinCurvatureStart;
   double ridgeMinLevelness;
   double ridgeMinLevelnessStart;
-  for ( int index = 1; index < 5; index++ )
-    {
-    m_SortColumn = index;
-    std::sort( m_TubeData.begin(), m_TubeData.end(),
-    []( const vnl_vector< double > & first, const vnl_vector< double > & second )
+  struct {
+    bool operator()( MetricVectorType & first, MetricVectorType & second )
       {
       if( first[m_SortColumn] < second[m_SortColumn] )
         {
@@ -344,7 +341,12 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
         }
       return false;
       }
-    );
+    } VnlVectorSortColumnCompare;
+  for ( int index = 1; index < 5; index++ )
+    {
+    m_SortColumn = index;
+    std::sort( m_TubeData.begin(), m_TubeData.end(),
+      VnlVectorSortColumnCompare );
     if( index == 1 )
       {
       ridgeMinRidgeness = m_TubeData[clippedMax][index];
