@@ -29,6 +29,7 @@ if( TubeTK_USE_LIBSVM )
 endif( TubeTK_USE_LIBSVM )
 
 set( TubeTK_Base_Segmentation_H_Files
+  itktubeComputeSegmentTubesParameters.h
   itktubePDFSegmenterBase.h
   itktubePDFSegmenterParzen.h
   itktubeRadiusExtractor2.h
@@ -45,6 +46,7 @@ if( TubeTK_USE_LIBSVM )
 endif( TubeTK_USE_LIBSVM )
 
 set( TubeTK_Base_Segmentation_HXX_Files
+  itktubeComputeSegmentTubesParameters.hxx
   itktubePDFSegmenterBase.hxx
   itktubePDFSegmenterParzen.hxx
   itktubeRadiusExtractor2.hxx
