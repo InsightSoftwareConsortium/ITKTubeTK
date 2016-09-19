@@ -23,6 +23,8 @@ limitations under the License.
 
 #include "itktubeMetaLDA.h"
 
+#include <cstdlib>
+
 int itktubeMetaLDATest( int argc, char * argv[] )
 {
   if( argc != 2 )

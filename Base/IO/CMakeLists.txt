@@ -51,7 +51,7 @@ add_library( ${PROJECT_NAME} STATIC
   ${TubeTK_Base_IO_SRCS} )
 
 target_link_libraries( ${PROJECT_NAME} PUBLIC
-  TubeTKCommon TubeTKNumerics TubeTKSegmentation )
+  TubeTKMetaIO TubeTKCommon TubeTKNumerics TubeTKSegmentation )
 
 target_include_directories( ${PROJECT_NAME} PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR} )

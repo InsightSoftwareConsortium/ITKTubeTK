@@ -21,6 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
+#include <cstdlib>
+
 #include "itktubeMetaRidgeSeed.h"
 
 int itktubeMetaRidgeSeedTest( int argc, char * argv[] )

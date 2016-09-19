@@ -21,9 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeMetaClassPDF.h"
-
 #include <cstdlib>
+
+#include "itktubeMetaClassPDF.h"
 
 int itktubeMetaClassPDFTest( int argc, char * argv[] )
 {
