@@ -24,8 +24,6 @@ limitations under the License.
 #ifndef __itktubeMetaTubeExtractor_h
 #define __itktubeMetaTubeExtractor_h
 
-#include "tubeMacro.h"
-
 #include <metaForm.h>
 
 #include <vnl/vnl_matrix.h>

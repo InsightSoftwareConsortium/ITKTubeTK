@@ -41,8 +41,10 @@ endif()
 _subdirectory_conditional_add( CLI )
 _subdirectory_conditional_add( Common )
 _subdirectory_conditional_add( CompareTools )
+
+_subdirectory_conditional_add( MetaIO )
+
 _subdirectory_conditional_add( Numerics )
-_subdirectory_conditional_add( IO )
 _subdirectory_conditional_add( ObjectDocuments )
 
 if( TubeTK_USE_PYTHON )
@@ -52,4 +54,5 @@ endif( TubeTK_USE_PYTHON )
 _subdirectory_conditional_add( Filtering )
 _subdirectory_conditional_add( Registration )
 _subdirectory_conditional_add( Segmentation )
+_subdirectory_conditional_add( IO )
 _subdirectory_conditional_add( USTK )

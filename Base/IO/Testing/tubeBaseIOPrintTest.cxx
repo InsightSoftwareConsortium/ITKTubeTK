@@ -23,11 +23,6 @@ limitations under the License.
 
 #include "tubetkConfigure.h"
 
-#include "itktubeMetaLDA.h"
-#include "itktubeMetaNJetLDA.h"
-#include "itktubeMetaClassPDF.h"
-#include "itktubeMetaRidgeSeed.h"
-#include "itktubeMetaTubeExtractor.h"
 #include "itktubePDFSegmenterParzenIO.h"
 #ifdef TubeTK_USE_LIBSVM
 #  include "itktubeRidgeSeedFilterIO.h"
@@ -38,26 +33,6 @@ limitations under the License.
 
 int tubeBaseIOPrintTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
 {
-  itk::tube::MetaLDA metaLDA;
-  std::cout << "-------------metaLDA" << std::endl;
-  metaLDA.PrintInfo();
-
-  itk::tube::MetaNJetLDA metaNJetLDA;
-  std::cout << "-------------metaNJetLDA" << std::endl;
-  metaNJetLDA.PrintInfo();
-
-  itk::tube::MetaClassPDF metaClassPDF;
-  std::cout << "-------------metaClassPDF" << std::endl;
-  metaClassPDF.PrintInfo();
-
-  itk::tube::MetaRidgeSeed metaRidgeSeed;
-  std::cout << "-------------metaRidgeSeed" << std::endl;
-  metaRidgeSeed.PrintInfo();
-
-  itk::tube::MetaTubeExtractor metaTubeExtractor;
-  std::cout << "-------------metaTubeExtractor" << std::endl;
-  metaTubeExtractor.PrintInfo();
-
   typedef itk::Image< float, 3 > ImageType;
   itk::tube::PDFSegmenterParzenIO< ImageType,
     ImageType > pdfSegmenterParzenIO;

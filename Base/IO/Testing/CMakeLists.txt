@@ -61,11 +61,6 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseIOTests_SRCS
   tubeBaseIOPrintTest.cxx
-  itktubeMetaLDATest.cxx
-  itktubeMetaNJetLDATest.cxx
-  itktubeMetaClassPDFTest.cxx
-  itktubeMetaRidgeSeedTest.cxx
-  itktubeMetaTubeExtractorTest.cxx
   itktubePDFSegmenterParzenIOTest.cxx
   itktubeTubeExtractorIOTest.cxx
   itktubeTubeXIOTest.cxx )
@@ -105,6 +100,7 @@ SEMMacroBuildCLI(
   TARGET_LIBRARIES
     ${tubeBaseIO_External_Libraries}
     TubeCLI
+    TubeTKMetaIO
     TubeTKCommon
     TubeTKNumerics
     TubeTKIO
@@ -120,31 +116,6 @@ add_test( NAME tubeBaseIOHeaderTest
 add_test( NAME tubeBaseIOPrintTest
   COMMAND ${BASE_IO_TESTS}
     tubeBaseIOPrintTest )
-
-add_test( NAME itktubeMetaLDATest
-  COMMAND ${BASE_IO_TESTS}
-    itktubeMetaLDATest
-      ${TEMP}/itktubeMetaLDATest.mlda )
-
-add_test( NAME itktubeMetaNJetLDATest
-  COMMAND ${BASE_IO_TESTS}
-    itktubeMetaNJetLDATest
-      ${TEMP}/itktubeMetaNJetLDATest.mnda )
-
-add_test( NAME itktubeMetaClassPDFTest
-  COMMAND ${BASE_IO_TESTS}
-    itktubeMetaClassPDFTest
-      ${TEMP}/itktubeMetaClassPDFTest.mha )
-
-add_test( NAME itktubeMetaRidgeSeedTest
-  COMMAND ${BASE_IO_TESTS}
-    itktubeMetaRidgeSeedTest
-      ${TEMP}/itktubeMetaRidgeSeedTest.mrs )
-
-add_test( NAME itktubeMetaTubeExtractorTest
-  COMMAND ${BASE_IO_TESTS}
-    itktubeMetaTubeExtractorTest
-      ${TEMP}/itktubeMetaTubeExtractorTest.mtp )
 
 Midas3FunctionAddTest( NAME itktubePDFSegmenterParzenIOTest
   COMMAND ${BASE_IO_TESTS}

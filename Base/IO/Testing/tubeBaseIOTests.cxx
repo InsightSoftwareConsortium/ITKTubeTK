@@ -29,11 +29,6 @@ limitations under the License.
 void RegisterTests( void )
 {
   REGISTER_TEST( tubeBaseIOPrintTest );
-  REGISTER_TEST( itktubeMetaLDATest );
-  REGISTER_TEST( itktubeMetaNJetLDATest );
-  REGISTER_TEST( itktubeMetaClassPDFTest );
-  REGISTER_TEST( itktubeMetaRidgeSeedTest );
-  REGISTER_TEST( itktubeMetaTubeExtractorTest );
   REGISTER_TEST( itktubePDFSegmenterParzenIOTest );
 #ifdef TubeTK_USE_LIBSVM
   REGISTER_TEST( itktubeRidgeSeedFilterIOTest );

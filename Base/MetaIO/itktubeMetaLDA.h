@@ -24,8 +24,6 @@ limitations under the License.
 #ifndef __itktubeMetaLDA_h
 #define __itktubeMetaLDA_h
 
-#include "tubeMacro.h"
-
 #include <metaForm.h>
 
 #include <vnl/vnl_matrix.h>

@@ -23,15 +23,15 @@ limitations under the License.
 
 #include "tubetkConfigure.h"
 
-#include "itktubePDFSegmenterParzenIO.h"
-#ifdef TubeTK_USE_LIBSVM
-#  include "itktubeRidgeSeedFilterIO.h"
-#  include "itktubePDFSegmenterSVMIO.h"
-#endif
-#include "itktubeTubeExtractorIO.h"
-#include "itktubeTubeXIO.h"
+#include "tubeBaseMetaIOTestsCLP.h"
+#include "tubeTestMain.h"
 
-int main( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
+void RegisterTests( void )
 {
-  return EXIT_SUCCESS;
+  REGISTER_TEST( tubeBaseMetaIOPrintTest );
+  REGISTER_TEST( itktubeMetaLDATest );
+  REGISTER_TEST( itktubeMetaNJetLDATest );
+  REGISTER_TEST( itktubeMetaClassPDFTest );
+  REGISTER_TEST( itktubeMetaRidgeSeedTest );
+  REGISTER_TEST( itktubeMetaTubeExtractorTest );
 }

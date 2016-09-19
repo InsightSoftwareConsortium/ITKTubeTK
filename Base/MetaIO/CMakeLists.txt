@@ -21,37 +21,31 @@
 #
 ##############################################################################
 
-project( TubeTKIO )
+project( TubeTKMetaIO )
 
-set( TubeTK_Base_IO_H_Files
-  itktubePDFSegmenterParzenIO.h
-  itktubeTubeExtractorIO.h
-  itktubeTubeXIO.h )
-if( TubeTK_USE_LIBSVM )
-  list( APPEND TubeTK_Base_IO_H_Files
-    itktubeRidgeSeedFilterIO.h
-    itktubePDFSegmenterSVMIO.h )
-endif( TubeTK_USE_LIBSVM )
+set( TubeTK_Base_MetaIO_H_Files
+  itktubeMetaLDA.h
+  itktubeMetaNJetLDA.h
+  itktubeMetaClassPDF.h
+  itktubeMetaRidgeSeed.h
+  itktubeMetaTubeExtractor.h )
 
-set( TubeTK_Base_IO_HXX_Files
-  itktubePDFSegmenterParzenIO.hxx
-  itktubeTubeExtractorIO.hxx
-  itktubeTubeXIO.hxx )
-if( TubeTK_USE_LIBSVM )
-  list( APPEND TubeTK_Base_IO_HXX_Files
-    itktubeRidgeSeedFilterIO.hxx
-    itktubePDFSegmenterSVMIO.hxx )
-endif( TubeTK_USE_LIBSVM )
+set( TubeTK_Base_MetaIO_HXX_Files )
 
-set( TubeTK_Base_IO_SRCS )
+set( TubeTK_Base_MetaIO_SRCS
+  itktubeMetaClassPDF.cxx
+  itktubeMetaLDA.cxx
+  itktubeMetaNJetLDA.cxx
+  itktubeMetaRidgeSeed.cxx
+  itktubeMetaTubeExtractor.cxx )
 
 add_library( ${PROJECT_NAME} STATIC
-  ${TubeTK_Base_IO_H_Files}
-  ${TubeTK_Base_IO_HXX_Files}
-  ${TubeTK_Base_IO_SRCS} )
+  ${TubeTK_Base_MetaIO_H_Files}
+  ${TubeTK_Base_MetaIO_HXX_Files}
+  ${TubeTK_Base_MetaIO_SRCS} )
 
 target_link_libraries( ${PROJECT_NAME} PUBLIC
-  TubeTKCommon TubeTKNumerics TubeTKSegmentation )
+  TubeTKCommon )
 
 target_include_directories( ${PROJECT_NAME} PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR} )
@@ -62,8 +56,8 @@ endif( TubeTK_BUILD_TESTING )
 
 if( TubeTK_INSTALL_DEVELOPMENT )
   install( FILES
-    ${TubeTK_Base_IO_H_Files}
-    ${TubeTK_Base_IO_HXX_Files}
+    ${TubeTK_Base_Numerics_H_Files}
+    ${TubeTK_Base_Numerics_HXX_Files}
     DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
     COMPONENT Development )
 

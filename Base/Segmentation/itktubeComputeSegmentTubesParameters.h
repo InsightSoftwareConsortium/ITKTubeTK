@@ -34,7 +34,6 @@ limitations under the License.
 #include <algorithm>
 #include <vector>
 #include <itktubeRidgeExtractor.h>
-#include <itktubeMetaTubeExtractor.h>
 #include <itkImageRegionIteratorWithIndex.h>
 #include <itkContinuousIndex.h>
 
