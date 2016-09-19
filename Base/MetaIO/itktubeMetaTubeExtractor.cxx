@@ -21,6 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
+#include <cstring>
+
 #include "tubeStringUtilities.h"
 #include "itktubeMetaTubeExtractor.h"
 
@@ -586,7 +588,7 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
 bool MetaTubeExtractor::
 Write( const char *_headName )
 {
-  if( _headName != NULL && strlen( _headName ) > 1 )
+  if( _headName != NULL && std::strlen( _headName ) > 1 )
     {
     FileName( _headName );
     }
@@ -786,8 +788,8 @@ M_SetupWriteFields( void )
   sprintf( colorString, "%f %f %f %f", m_TubeColor[0], m_TubeColor[1],
     m_TubeColor[2], m_TubeColor[3] );
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "TubeColor", MET_STRING, strlen( colorString ),
-    colorString );
+  MET_InitWriteField( mF, "TubeColor", MET_STRING,
+    std::strlen( colorString ), colorString );
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
