@@ -21,6 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
+#include <cstring>
+
 #include "itktubeMetaLDA.h"
 
 #include "metaUtilsTemp.h"

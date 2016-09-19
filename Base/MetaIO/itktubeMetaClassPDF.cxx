@@ -21,9 +21,10 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeMetaClassPDF.h"
-
 #include <cstdlib>
+#include <cstring>
+
+#include "itktubeMetaClassPDF.h"
 
 namespace itk
 {
@@ -850,7 +851,7 @@ M_SetupWriteFields( void )
     strcpy( tmpC, "False" );
     }
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "Draft", MET_STRING, strlen(tmpC), tmpC );
+  MET_InitWriteField( mF, "Draft", MET_STRING, std::strlen(tmpC), tmpC );
   m_Fields.push_back( mF );
 
   if( m_ReclassifyObjectLabels )
@@ -863,7 +864,7 @@ M_SetupWriteFields( void )
     }
   mF = new MET_FieldRecordType;
   MET_InitWriteField( mF, "ReclassifyObjectLabels", MET_STRING,
-    strlen(tmpC), tmpC );
+    std::strlen(tmpC), tmpC );
   m_Fields.push_back( mF );
 
   if( m_ReclassifyNotObjectLabels )
@@ -876,7 +877,7 @@ M_SetupWriteFields( void )
     }
   mF = new MET_FieldRecordType;
   MET_InitWriteField( mF, "ReclassifyNotObjectLabels", MET_STRING,
-    strlen(tmpC), tmpC );
+    std::strlen(tmpC), tmpC );
   m_Fields.push_back( mF );
 
   if( m_ForceClassification )
@@ -889,7 +890,7 @@ M_SetupWriteFields( void )
     }
   mF = new MET_FieldRecordType;
   MET_InitWriteField( mF, "ForceClassification", MET_STRING,
-    strlen(tmpC), tmpC );
+    std::strlen(tmpC), tmpC );
   m_Fields.push_back( mF );
 
   m_Fields.push_back( mF_LastField );

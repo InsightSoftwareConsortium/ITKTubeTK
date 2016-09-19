@@ -21,6 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
+#include <cstring>
+
 #include "itktubeMetaRidgeSeed.h"
 
 namespace itk
