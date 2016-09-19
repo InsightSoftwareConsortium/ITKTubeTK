@@ -23,4 +23,7 @@
   <VariablePerLine>1</VariablePerLine>
   <BadCharacters>true</BadCharacters>
   <MemberFunctions>[A-Z]</MemberFunctions>
+  <IfWhileForUntil>0</IfWhileForUntil>
+  <Comma>0,1</Comma>
+  <Parenthesis>1</Parenthesis>
 </Description>
