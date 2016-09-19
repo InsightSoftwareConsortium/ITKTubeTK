@@ -21,6 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
+#include <cstdlib>
+
 #include "itktubeMetaNJetLDA.h"
 
 int itktubeMetaNJetLDATest( int argc, char * argv[] )

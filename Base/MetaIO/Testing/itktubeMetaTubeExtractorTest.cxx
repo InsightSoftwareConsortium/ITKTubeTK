@@ -21,6 +21,8 @@ limitations under the License.
 
 =========================================================================*/
 
+#include <cstdlib>
+
 #include "itktubeMetaTubeExtractor.h"
 
 int itktubeMetaTubeExtractorTest( int argc, char * argv[] )
