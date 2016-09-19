@@ -29,6 +29,8 @@ limitations under the License.
 #ifndef __itktubeComputeSegmentTubesParameters_hxx
 #define __itktubeComputeSegmentTubesParameters_hxx
 
+#include <algorithm>
+
 #include "itktubeMetaTubeExtractor.h"
 
 #include "itktubeComputeSegmentTubesParameters.h"
