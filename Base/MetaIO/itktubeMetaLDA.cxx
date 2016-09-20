@@ -430,8 +430,8 @@ bool MetaLDA
     return false;
     }
 
-  const bool result = !std::strncmp( MET_ReadForm(
-                                       inputStream ).c_str(), "LDA", 3 );
+  const bool result = !std::strncmp( MET_ReadForm( inputStream ).c_str(),
+    "LDA", 3 );
 
   if( !result )
     {
