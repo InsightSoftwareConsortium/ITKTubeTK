@@ -43,18 +43,13 @@ if( TubeTK_USE_LIBSVM )
     itktubePDFSegmenterSVMIO.hxx )
 endif( TubeTK_USE_LIBSVM )
 
-set( TubeTK_Base_IO_SRCS )
+add_library( ${PROJECT_NAME} INTERFACE )
 
-add_library( ${PROJECT_NAME} STATIC
-  ${TubeTK_Base_IO_H_Files}
-  ${TubeTK_Base_IO_HXX_Files}
-  ${TubeTK_Base_IO_SRCS} )
-
-target_link_libraries( ${PROJECT_NAME} PUBLIC
+target_link_libraries( ${PROJECT_NAME} INTERFACE
   TubeTKMetaIO TubeTKCommon TubeTKNumerics TubeTKSegmentation )
 
-target_include_directories( ${PROJECT_NAME} PUBLIC
-  ${CMAKE_CURRENT_SOURCE_DIR} )
+target_include_directories( ${PROJECT_NAME} INTERFACE
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>" )
 
 if( TubeTK_BUILD_TESTING )
   add_subdirectory( Testing )
