@@ -35,6 +35,9 @@ limitations under the License.
 
 #include "itktubeComputeSegmentTubesParameters.h"
 
+#include <vnl/vnl_vector.h>
+#include <vnl/vnl_c_vector.h>
+
 int m_SortColumn = 0;
 namespace itk
 {
@@ -333,7 +336,8 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
   double ridgeMinLevelness;
   double ridgeMinLevelnessStart;
   struct {
-    bool operator()( MetricVectorType & first, MetricVectorType & second )
+    bool operator()( const MetricVectorType & first,
+      const MetricVectorType & second )
       {
       if( first[m_SortColumn] < second[m_SortColumn] )
         {
@@ -345,8 +349,8 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
   for ( int index = 1; index < 5; index++ )
     {
     m_SortColumn = index;
-    std::sort( m_TubeData.begin(), m_TubeData.end(),
-      VnlVectorSortColumnCompare );
+    std::sort< std::vector< MetricVectorType >::iterator >(
+      m_TubeData.begin(), m_TubeData.end(), VnlVectorSortColumnCompare );
     if( index == 1 )
       {
       ridgeMinRidgeness = m_TubeData[clippedMax][index];
