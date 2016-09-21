@@ -39,6 +39,14 @@ limitations under the License.
 #include <vnl/vnl_c_vector.h>
 
 int m_SortColumn = 0;
+struct ComputeSegmentTubesParametersSortFunctionType {
+    bool operator()( const vnl_vector< double > & first,
+      const vnl_vector< double > & second ) const
+      {
+      return( first[m_SortColumn] < second[m_SortColumn] );
+      }
+    };
+
 namespace itk
 {
 
@@ -335,22 +343,11 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
   double ridgeMinCurvatureStart;
   double ridgeMinLevelness;
   double ridgeMinLevelnessStart;
-  struct {
-    bool operator()( const MetricVectorType & first,
-      const MetricVectorType & second )
-      {
-      if( first[m_SortColumn] < second[m_SortColumn] )
-        {
-        return true;
-        }
-      return false;
-      }
-    } VnlVectorSortColumnCompare;
   for ( int index = 1; index < 5; index++ )
     {
     m_SortColumn = index;
-    std::sort< std::vector< MetricVectorType >::iterator >(
-      m_TubeData.begin(), m_TubeData.end(), VnlVectorSortColumnCompare );
+    std::sort( m_TubeData.begin(), m_TubeData.end(),
+      ComputeSegmentTubesParametersSortFunctionType() );
     if( index == 1 )
       {
       ridgeMinRidgeness = m_TubeData[clippedMax][index];
