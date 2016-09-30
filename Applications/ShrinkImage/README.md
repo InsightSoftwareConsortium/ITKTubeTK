@@ -1,12 +1,9 @@
 TubeTK Shrink Image Application
-=============================
-
----
-*This file is part of [TubeTK](http://www.tubetk.org). TubeTK is developed by [Kitware, Inc.](http://www.kitware.com) and licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).*
+================================
 
 #### Overview:
 
-Project an image into fewer slices. Integration uses the 'max' function.
+Project an image into fewer slices. Integration uses the 'max' or `mean` function.
 
 Author(s): Stephen R. Aylward (Kitware)
 
@@ -16,10 +13,11 @@ Acknowledgements: This work is part of the TubeTK project at Kitware.
 
    ShrinkImage  [--returnparameterfile <std::string>]
                 [--processinformationaddress <std::string>] [--xml]
-                [--echo] [-p <std::string>] [-m] [-l] [-g] [-o
-                <std::vector<int>>] [-n <std::vector<int>>] [-d
+                [--echo] [-p <std::string>] [-i <std::string>] [-m] [-l]
+                [-g] [-o <std::vector<int>>] [-n <std::vector<int>>] [-d
                 <std::vector<int>>] [--] [--version] [-h] <std::string>
                 <std::string>
+
 
 Where:
 
@@ -38,9 +36,18 @@ Where:
    --echo
      Echo the command line arguments (default: 0)
 
-   -p <std::string>,  --mipPointImage <std::string>
-     Save a vector image containing physical point of max pixel's original
-     location
+   -p <std::string>,  --outputMipPointImage <std::string>
+     Save a vector image containing the location of the source MIP point
+     for each voxel in the shrinked image.
+
+   -i <std::string>,  --inputMipPointImage <std::string>
+     A vector image containing the location of the MIP point for each voxel
+     in the shrinked image. Used to shrink an image (e.g. mask) using the
+     MIP point map obtained from shrinking another image. The shrink option
+     parameters -- Gaussian, log, mean -- will have no effect when this
+     parameter is specified. Also shrink amount parameters divideBy,
+     newSize, and/or overlap must have the values that were used to
+     generate this MIP point image file.
 
    -m,  --mean
      Generate new voxel using mean (instead of max) (default: 0)
@@ -75,3 +82,6 @@ Where:
 
    <std::string>
      (required)  Output image.
+
+---
+*This file is part of [TubeTK](http://www.tubetk.org). TubeTK is developed by [Kitware, Inc.](http://www.kitware.com) and licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).*

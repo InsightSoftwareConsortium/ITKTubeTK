@@ -80,10 +80,18 @@
       <default>false</default>
     </boolean>
     <image>
-      <name>mipPointImageFileName</name>
-      <label>MIP point image file name</label>
-      <description>Save a vector image containing physical point of max pixel's original location</description>
-      <longflag>mipPointImage</longflag>
+      <name>inputMipPointImageFile</name>
+      <label>Input MIP point image file</label>
+      <description>A vector image containing the location of the MIP point for each voxel in the shrinked image. Used to shrink an image (e.g. mask) using the MIP point map obtained from shrinking another image. The shrink option parameters -- Gaussian, log, mean -- will have no effect when this parameter is specified. Also shrink amount parameters divideBy, newSize, and/or overlap must have the values that were used to generate this MIP point image file.</description>
+      <longflag>inputMipPointImage</longflag>
+      <flag>i</flag>
+      <default></default>
+    </image>
+    <image>
+      <name>outputMipPointImageFile</name>
+      <label>Output MIP point image file</label>
+      <description>Save a vector image containing the location of the source MIP point for each voxel in the shrinked image.</description>
+      <longflag>outputMipPointImage</longflag>
       <flag>p</flag>
       <default></default>
       <channel>output</channel>

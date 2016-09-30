@@ -104,7 +104,7 @@ int itktubeShrinkWithBlendingImageFilterTest( int argc, char * argv[] )
     PointImageWriterType::New();
   pointImageWriter->SetFileName( argv[3] );
   pointImageWriter->SetUseCompression( true );
-  pointImageWriter->SetInput( filter->GetPointImage() );
+  pointImageWriter->SetInput( filter->GetOutputMipPointImage() );
   try
     {
     pointImageWriter->Update();

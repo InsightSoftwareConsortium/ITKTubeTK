@@ -20,39 +20,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-/*=========================================================================
-*
-*  Copyright Insight Software Consortium
-*
-*  Licensed under the Apache License, Version 2.0 ( the "License" );
-*  you may not use this file except in compliance with the License.
-*  You may obtain a copy of the License at
-*
-*         http://www.apache.org/licenses/LICENSE-2.0.txt
-*
-*  Unless required by applicable law or agreed to in writing, software
-*  distributed under the License is distributed on an "AS IS" BASIS,
-*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*  See the License for the specific language governing permissions and
-*  limitations under the License.
-*
-*=========================================================================*/
-/*=========================================================================
-*
-*  Portions of this file are subject to the VTK Toolkit Version 3 copyright.
-*
-*  Copyright ( c ) Ken Martin, Will Schroeder, Bill Lorensen
-*
-*  For complete copyright, license and disclaimer of warranty information
-*  please refer to the NOTICE file at the top of the ITK source tree.
-*
-*=========================================================================*/
 #ifndef __itktubeShrinkWithBlendingImageFilter_hxx
 #define __itktubeShrinkWithBlendingImageFilter_hxx
 
 #include "itktubeShrinkWithBlendingImageFilter.h"
 
 #include "itkConstNeighborhoodIterator.h"
+#include "itkImageRegionConstIteratorWithIndex.h"
 
 namespace itk {
 
@@ -65,7 +39,8 @@ template< class TInputImage, class TOutputImage >
 ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 ::ShrinkWithBlendingImageFilter( void )
 {
-  m_PointImage = NULL;
+  m_InputMipPointImage = ITK_NULLPTR;
+  m_OutputMipPointImage = ITK_NULLPTR;
 
   m_Overlap.Fill( 0 );
 
@@ -105,14 +80,27 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
      << m_BlendWithGaussianWeighting << std::endl;
   os << indent << "UseLog:"<< m_UseLog << std::endl;
 
-  if( m_PointImage.IsNotNull() )
+  if( m_InputMipPointImage.IsNotNull() )
     {
-    os << indent << "Point Image: " << m_PointImage << std::endl;
+    os << indent << "Input MIP Point Image: "
+       << m_InputMipPointImage << std::endl;
     }
   else
     {
-    os << indent << "Index Image: NULL" << std::endl;
+    os << indent << "Input MIP Point Image: NULL" << std::endl;
     }
+
+
+  if( m_OutputMipPointImage.IsNotNull() )
+    {
+    os << indent << "Output MIP Point Image: "
+       << m_OutputMipPointImage << std::endl;
+    }
+  else
+    {
+    os << indent << "Output MIP Point Image: NULL" << std::endl;
+    }
+
 }
 
 template< typename TInputImage, typename TOutputImage >
@@ -183,16 +171,55 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
   typedef ImageRegionIteratorWithIndex< TOutputImage > OutputIteratorType;
   OutputIteratorType outIt( outputPtr, outputRegionForThread );
 
-  typedef ImageRegionIteratorWithIndex< PointImageType >
-    PointIteratorType;
-  PointIteratorType pointIt( m_PointImage, outputRegionForThread );
+  typedef ImageRegionConstIteratorWithIndex<
+    PointImageType > PointImageConstIteratorType;
 
-  typedef ImageRegionConstIteratorWithIndex< TInputImage >
-    InputIteratorType;
+  PointImageConstIteratorType * inputMipPointItPtr = NULL;
+
+  if( m_InputMipPointImage.IsNotNull() )
+    {
+    inputMipPointItPtr = new PointImageConstIteratorType(
+      m_InputMipPointImage, outputRegionForThread );
+    }
+
+  typedef ImageRegionIteratorWithIndex<
+    PointImageType > PointImageIteratorType;
+
+  PointImageIteratorType outMipPointIt( m_OutputMipPointImage,
+                                        outputRegionForThread );
+
+  typedef ImageRegionConstIteratorWithIndex< TInputImage > InputIteratorType;
+
   typename TInputImage::RegionType inputRegion;
 
   while( !outIt.IsAtEnd() )
     {
+    if( m_InputMipPointImage.IsNotNull() )
+      {
+      // get index of mip point from the input MIP point image
+      typename TInputImage::PointType curMipPoint;
+
+      for( unsigned int i = 0; i < TInputImage::ImageDimension; i++ )
+        {
+        curMipPoint[i] = inputMipPointItPtr->Get()[i];
+        }
+
+      inputPtr->TransformPhysicalPointToIndex( curMipPoint, inputIndex );
+
+      // set output pixel intensity as intensity of input pixel at mip point
+      outIt.Set( inputPtr->GetPixel( inputIndex ) );
+
+      // set output mip point to be same as input mi point
+      outMipPointIt.Set( inputMipPointItPtr->Get() );
+
+      // move to next output pixel
+      ++outIt;
+      ++outMipPointIt;
+      ++(*inputMipPointItPtr);
+
+      continue;
+      }
+
     // Determine the index and physical location of the output pixel
     outputIndex = outIt.GetIndex();
 
@@ -241,8 +268,8 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
         {
         pointVector[i] = point[i];
         }
-      pointIt.Set( pointVector );
-      ++pointIt;
+      outMipPointIt.Set( pointVector );
+      ++outMipPointIt;
       }
     else if( m_BlendWithMean )
       {
@@ -328,6 +355,11 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 
     progress.CompletedPixel();
     }
+
+  if( inputMipPointItPtr != ITK_NULLPTR )
+    {
+    delete inputMipPointItPtr;
+    }
 }
 
 template< class TInputImage, class TOutputImage >
@@ -353,11 +385,11 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 {
   bool useNewSize;
   bool useShrinkFactors;
-  useNewSize = this->NotValue(m_NewSize,m_DefaultNewSize);
-  useShrinkFactors = this->NotValue(m_ShrinkFactors,m_DefaultShrinkFactor);
+  useNewSize = this->NotValue(m_NewSize, m_DefaultNewSize);
+  useShrinkFactors = this->NotValue(m_ShrinkFactors, m_DefaultShrinkFactor);
   if( useNewSize && useShrinkFactors)
     {
-    itkExceptionMacro(<< "Only set a new size or shrink factors. Reset either to 0.");
+    itkExceptionMacro(<< "Only set one of new size or shrink factors.");
     }
   if( !useNewSize && !useShrinkFactors)
     {
@@ -375,7 +407,7 @@ void
 ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 ::UpdateInternalShrinkFactors()
 {
-  if( this->NotValue(m_ShrinkFactors,m_DefaultShrinkFactor))
+  if( this->NotValue(m_ShrinkFactors, m_DefaultShrinkFactor) )
     {
     m_InternalShrinkFactors = m_ShrinkFactors;
     return;
@@ -512,8 +544,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 
   for( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
     {
-    outputSpacing[i] = inputSpacing[i]
-      * (double)m_InternalShrinkFactors[i];
+    outputSpacing[i] = inputSpacing[i] * (double) m_InternalShrinkFactors[i];
 
     // Round down so that all output pixels fit input input region
     outputSize[i] = static_cast<SizeValueType>( std::floor(
@@ -556,6 +587,32 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
   outputOrigin = inputOrigin + (inputCenterPoint - outputCenterPoint);
   outputPtr->SetOrigin(outputOrigin);
 
+  // make sure size of output image is same as the Input MIP Point Image
+  if( m_InputMipPointImage )
+    {
+    bool sizeEqual = true;
+
+    typename PointImageType::SizeType inputMipPointImageSize =
+      m_InputMipPointImage->GetLargestPossibleRegion().GetSize();
+
+    for( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
+      {
+      if( inputMipPointImageSize[i] != outputSize[i] )
+        {
+        sizeEqual = false;
+        break;
+        }
+      }
+
+    if( !sizeEqual )
+      {
+      itkExceptionMacro(
+        << "Size of output and input MIP point image do not match. "
+           "Make sure you are using the same shrink amount parameters "
+           "that were used to generate the input MIP point image.")
+      }
+    }
+
   // Set region
   typename TOutputImage::RegionType outputLargestPossibleRegion;
   outputLargestPossibleRegion.SetSize(outputSize);
@@ -563,11 +620,11 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 
   outputPtr->SetLargestPossibleRegion(outputLargestPossibleRegion);
 
-  m_PointImage = PointImageType::New();
-  m_PointImage->SetRegions(
+  m_OutputMipPointImage = PointImageType::New();
+  m_OutputMipPointImage->SetRegions(
     outputPtr->GetLargestPossibleRegion() );
-  m_PointImage->CopyInformation( outputPtr );
-  m_PointImage->Allocate();
+  m_OutputMipPointImage->CopyInformation( outputPtr );
+  m_OutputMipPointImage->Allocate();
 
 }
 

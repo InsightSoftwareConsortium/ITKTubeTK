@@ -34,7 +34,7 @@ template< class TInputImage, class TOutputImage >
 ShrinkWithBlendingImage< TInputImage, TOutputImage >
 ::ShrinkWithBlendingImage( void )
 {
-  m_ShrinkWithBlendingFilter = FilterType::New();
+  m_Filter = FilterType::New();
 }
 
 template< class TInputImage, class TOutputImage >
@@ -42,9 +42,9 @@ void
 ShrinkWithBlendingImage< TInputImage, TOutputImage >
 ::SetShrinkFactor(unsigned int i, unsigned int factor)
 {
-  if( m_ShrinkWithBlendingFilter->GetShrinkFactor(i) != factor )
+  if( m_Filter->GetShrinkFactor(i) != factor )
     {
-    m_ShrinkWithBlendingFilter->SetShrinkFactor(i,factor);
+    m_Filter->SetShrinkFactor(i,factor);
     this->Modified();
     }
 }
@@ -57,7 +57,7 @@ unsigned int
 ShrinkWithBlendingImage< TInputImage, TOutputImage >
 ::GetShrinkFactor(unsigned int i)
 {
-  return m_ShrinkWithBlendingFilter->GetShrinkFactor(i);
+  return m_Filter->GetShrinkFactor(i);
 }
 
 /**
@@ -69,27 +69,43 @@ ShrinkWithBlendingImage< TInputImage, TOutputImage >
 ::PrintSelf( std::ostream & os, itk::Indent  indent ) const
 {
   os << indent << "ShrinkFactors:"
-     << m_ShrinkWithBlendingFilter->GetShrinkFactors() << std::endl;
+     << m_Filter->GetShrinkFactors() << std::endl;
+
   os << indent << "NewSize:"
-     << m_ShrinkWithBlendingFilter->GetNewSize() << std::endl;
-  os << indent << "Overlap:" << m_ShrinkWithBlendingFilter->GetOverlap() << std::endl;
+     << m_Filter->GetNewSize() << std::endl;
+
+  os << indent << "Overlap:" << m_Filter->GetOverlap() << std::endl;
+
   os << indent << "BlendWithMean:"
-     << m_ShrinkWithBlendingFilter->GetBlendWithMean() << std::endl;
+     << m_Filter->GetBlendWithMean() << std::endl;
+
   os << indent << "BlendWithMax:"
-     << m_ShrinkWithBlendingFilter->GetBlendWithMax() << std::endl;
+     << m_Filter->GetBlendWithMax() << std::endl;
+
   os << indent << "BlendWithGaussianWeighting:"
-     << m_ShrinkWithBlendingFilter->GetBlendWithGaussianWeighting() << std::endl;
+     << m_Filter->GetBlendWithGaussianWeighting() << std::endl;
+
   os << indent << "UseLog:"
-     << m_ShrinkWithBlendingFilter->GetUseLog() << std::endl;
-  typename PointImageType::Pointer pointImage = PointImageType::New();
-  pointImage = m_ShrinkWithBlendingFilter->GetPointImage();
-  if( pointImage.IsNotNull() )
+     << m_Filter->GetUseLog() << std::endl;
+
+  if( m_Filter->GetInputMipPointImage() != ITK_NULLPTR )
     {
-    os << indent << "Point Image: " << pointImage << std::endl;
+    os << indent << "Input MIP Point Image: "
+       << m_Filter->GetInputMipPointImage() << std::endl;
     }
   else
     {
-    os << indent << "Index Image: NULL" << std::endl;
+    os << indent << "Input MIP Point Image: NULL" << std::endl;
+    }
+
+  if( m_Filter->GetOutputMipPointImage() != ITK_NULLPTR )
+    {
+    os << indent << "Output MIP Point Image: "
+       << m_Filter->GetOutputMipPointImage() << std::endl;
+    }
+  else
+    {
+    os << indent << "Output MIP Point Image: NULL" << std::endl;
     }
 }
 

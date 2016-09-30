@@ -67,6 +67,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Vector< float, VDimension >         PointPixelType;
   typedef itk::Image< PointPixelType, VDimension > PointImageType;
   typedef itk::ImageFileWriter< PointImageType >   PointImageWriterType;
+  typedef itk::ImageFileReader< PointImageType >   PointImageReaderType;
 
   typedef tube::ShrinkWithBlendingImage< InputImageType,
     OutputImageType > FilterType;
@@ -163,6 +164,27 @@ int DoIt( int argc, char * argv[] )
     filter->SetBlendWithGaussianWeighting( false );
     }
 
+  if( !inputMipPointImageFile.empty() )
+    {
+    typename PointImageReaderType::Pointer inputMipPointImageReader =
+      PointImageReaderType::New();
+
+    try
+      {
+      inputMipPointImageReader->SetFileName( inputMipPointImageFile.c_str() );
+      inputMipPointImageReader->Update();
+      }
+    catch( itk::ExceptionObject & err )
+      {
+      tube::ErrorMessage( "Reading Mip Point Image: Exception caught: "
+                          + std::string(err.GetDescription()) );
+      timeCollector.Report();
+      return EXIT_FAILURE;
+      }
+
+    filter->SetInputMipPointImage( inputMipPointImageReader->GetOutput() );
+    }
+
   if( divideBy.size() > 0 )
     {
     if( divideBy.size() != VDimension )
@@ -221,16 +243,16 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  if( !mipPointImageFileName.empty() && !mean && !gaussian )
+  if( !outputMipPointImageFile.empty() && !mean && !gaussian )
     {
-    typename PointImageWriterType::Pointer mipPointImageWriter =
+    typename PointImageWriterType::Pointer outputMipPointImageWriter =
       PointImageWriterType::New();
-    mipPointImageWriter->SetFileName( mipPointImageFileName );
-    mipPointImageWriter->SetUseCompression( true );
-    mipPointImageWriter->SetInput( filter->GetPointImage() );
+    outputMipPointImageWriter->SetFileName( outputMipPointImageFile );
+    outputMipPointImageWriter->SetUseCompression( true );
+    outputMipPointImageWriter->SetInput( filter->GetOutputMipPointImage() );
     try
       {
-      mipPointImageWriter->Update();
+      outputMipPointImageWriter->Update();
       }
     catch( itk::ExceptionObject & e )
       {

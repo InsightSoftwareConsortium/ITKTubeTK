@@ -20,33 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-/*=========================================================================
-*
-*  Copyright Insight Software Consortium
-*
-*  Licensed under the Apache License, Version 2.0 (the "License");
-*  you may not use this file except in compliance with the License.
-*  You may obtain a copy of the License at
-*
-*         http://www.apache.org/licenses/LICENSE-2.0.txt
-*
-*  Unless required by applicable law or agreed to in writing, software
-*  distributed under the License is distributed on an "AS IS" BASIS,
-*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*  See the License for the specific language governing permissions and
-*  limitations under the License.
-*
-*=========================================================================*/
-/*=========================================================================
-*
-*  Portions of this file are subject to the VTK Toolkit Version 3 copyright.
-*
-*  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-*
-*  For complete copyright, license and disclaimer of warranty information
-*  please refer to the NOTICE file at the top of the ITK source tree.
-*
-*=========================================================================*/
+
 #ifndef __itktubeShrinkWithBlendingImageFilter_h
 #define __itktubeShrinkWithBlendingImageFilter_h
 
@@ -153,7 +127,10 @@ public:
   itkSetMacro( UseLog, bool );
   itkGetMacro( UseLog, bool );
 
-  itkGetObjectMacro( PointImage, PointImageType );
+  itkSetConstObjectMacro( InputMipPointImage, PointImageType );
+  itkGetConstObjectMacro( InputMipPointImage, PointImageType );
+
+  itkGetObjectMacro( OutputMipPointImage, PointImageType );
 
   void GenerateOutputInformation( void );
 
@@ -174,7 +151,9 @@ private:
   ShrinkWithBlendingImageFilter( const Self & ); //purposely not implemented
   void operator=( const Self & );            //purposely not implemented
 
-  typename PointImageType::Pointer  m_PointImage;
+  typename PointImageType::Pointer       m_OutputMipPointImage;
+
+  typename PointImageType::ConstPointer  m_InputMipPointImage;
 
   typename TInputImage::IndexType   m_Overlap;
 
