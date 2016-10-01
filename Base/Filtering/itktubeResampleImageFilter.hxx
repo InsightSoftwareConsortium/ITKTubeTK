@@ -159,13 +159,16 @@ GenerateData( void )
       }
     }
 
-  std::vector< double > outResampleFactor;
-  outResampleFactor.resize( VDimension );
-  for( unsigned int i = 0; i< VDimension; i++ )
+  if( !m_MatchImage )
     {
-    outResampleFactor[i] = inSpacing[i] / outSpacing[i];
-    outSize[i] = static_cast<unsigned long>( inSize[i]
-                                            * outResampleFactor[i] );
+    std::vector< double > outResampleFactor;
+    outResampleFactor.resize( VDimension );
+    for( unsigned int i = 0; i< VDimension; i++ )
+      {
+      outResampleFactor[i] = inSpacing[i] / outSpacing[i];
+      outSize[i] = static_cast<unsigned long>( inSize[i]
+                                              * outResampleFactor[i] );
+      }
     }
 
   typedef typename itk::ResampleImageFilter< ImageType, ImageType >
