@@ -67,6 +67,7 @@ ConvertSpatialGraphToImage< TInputImage, TOutputImage >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
+  os << indent << m_Filter << std::endl;
 }
 
 } // end namespace tube
