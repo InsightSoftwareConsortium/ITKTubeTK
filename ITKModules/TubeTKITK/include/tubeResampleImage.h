@@ -104,6 +104,7 @@ public:
 protected:
   ResampleImage( void );
   ~ResampleImage() {}
+
   void PrintSelf( std::ostream & os, itk::Indent indent ) const;
 
 private:

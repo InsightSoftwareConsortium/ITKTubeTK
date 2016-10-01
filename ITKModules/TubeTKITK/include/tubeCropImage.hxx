@@ -129,7 +129,9 @@ void
 CropImage< TInputImage, TOutputImage >
 ::PrintSelf(std::ostream & os, itk::Indent indent) const
 {
-  m_CropFilter->PrintSelf( os, indent);
+  Superclass::PrintSelf( os, indent );
+
+  os << indent << m_CropFilter << std::endl;
 }
 
 } // end namespace tube

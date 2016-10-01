@@ -44,6 +44,7 @@ SegmentTubesUsingMinimalPath< Dimension, TInputPixel >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
+  os << indent << m_Filter << std::endl;
 }
 
 }
