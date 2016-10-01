@@ -97,8 +97,8 @@ public:
     tubeWrapSetConstObjectMacro( Input, InputImageType, Filter );
     tubeWrapGetConstObjectMacro( Input, InputImageType, Filter );
 
-    tubeWrapSetObjectMacro( InputMipPointImage, PointImageType, Filter );
-    tubeWrapGetObjectMacro( InputMipPointImage, PointImageType, Filter );
+    tubeWrapSetConstObjectMacro( InputMipPointImage, PointImageType, Filter );
+    tubeWrapGetConstObjectMacro( InputMipPointImage, PointImageType, Filter );
 
     tubeWrapCallMacro( Update, Filter );
 
