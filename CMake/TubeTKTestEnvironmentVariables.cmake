@@ -25,15 +25,19 @@
 # variables.
 # It verifies that ITK_BUILD_DIR and TubeTK_BUILD_DIR are set as environment
 # variables and that their values match the values passed to the script.
-if( DEFINED $ENV{ITK_BUILD_DIR})
+if( NOT DEFINED ENV{ITK_BUILD_DIR})
   message(FATAL_ERROR "ITK_BUILD_DIR environment variable not set.")
 endif()
 if(NOT "$ENV{ITK_BUILD_DIR}" STREQUAL "${ITK_BUILD_DIR}")
-  message(FATAL_ERROR "ITK_BUILD_DIR environment variable does not match ITK_DIR set in this project.")
+  message(FATAL_ERROR "ITK_BUILD_DIR environment variable does "
+          "not match ITK_DIR set in this project. Expected:\n"
+          "${ITK_BUILD_DIR}\ngot:\n$ENV{ITK_BUILD_DIR}")
 endif()
-if( DEFINED $ENV{TubeTK_BUILD_DIR})
+if( NOT DEFINED ENV{TubeTK_BUILD_DIR})
   message(FATAL_ERROR "TubeTK_BUILD_DIR environment variable not set.")
 endif()
 if(NOT "$ENV{TubeTK_BUILD_DIR}" STREQUAL "${TubeTK_BUILD_DIR}")
-  message(FATAL_ERROR "TubeTK_BUILD_DIR environment variable does not match current directory path.")
+  message(FATAL_ERROR "TubeTK_BUILD_DIR environment variable does "
+          "not match current directory path. Expected:\n"
+          "${TubeTK_BUILD_DIR}\ngot:\n$ENV{TubeTK_BUILD_DIR}")
 endif()
