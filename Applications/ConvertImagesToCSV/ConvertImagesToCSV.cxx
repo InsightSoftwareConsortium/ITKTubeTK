@@ -85,7 +85,7 @@ int DoIt( int argc, char * argv[] )
       {
       fileName = &( imageFileNameList[i][ strlen( filePath ) ] );
       }
-    outFile << fileName << ", ";
+    outFile << fileName << ",";
     try
       {
       reader->Update();
@@ -122,7 +122,7 @@ int DoIt( int argc, char * argv[] )
       {
       for( unsigned int i=0; i<numImages; ++i )
         {
-        outFile << iterList[i]->Get() << ", ";
+        outFile << iterList[i]->Get() << ",";
         }
       outFile << maskIter.Get() << std::endl;
       }

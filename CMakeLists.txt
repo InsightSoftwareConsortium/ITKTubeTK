@@ -385,11 +385,16 @@ if( TubeTK_USE_PYTHON )
     TubeTKCheckPythonLibraries( REQUIRED LIBRARIES numpy scipy
       ERROR_MESSAGE "Set TubeTK_USE_NUMPY_STACK to OFF" )
   endif()
+
   # PyQtGraph bridge support.
   if( TubeTK_USE_PYQTGRAPH )
     TubeTKCheckPythonLibraries( REQUIRED LIBRARIES pyqtgraph
       ERROR_MESSAGE "Set TubeTK_USE_PYQTGRAPH to OFF" )
   endif()
+
+  set( NOTEBOOK_TEST_DRIVER
+    ${TubeTK_SOURCE_DIR}/Utilities/Python/EvaluateIPythonNotebook.py
+    CACHE INTERNAL "Test driver command for IPython Notebooks." FORCE )
 endif( TubeTK_USE_PYTHON )
 
 #
@@ -525,8 +530,8 @@ endif( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_USING_SLICER )
 #
 # Testing using Examples
 #
-option( TubeTK_USE_EXAMPLES_AS_TESTS "Use TubeTK examples as (long running) tests."
-  OFF )
+option( TubeTK_USE_EXAMPLES_AS_TESTS
+ "Use TubeTK examples as (long running) tests." OFF )
 
 #
 # Setup Superbuild

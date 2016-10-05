@@ -1,5 +1,26 @@
+##############################################################################
+#
+# Library:   TubeTK
+#
+# Copyright 2010 Kitware Inc. 28 Corporate Drive,
+# Clifton Park, NY, 12065, USA.
+#
+# All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+##############################################################################
 find_package( PythonInterp REQUIRED )
-
 find_package( PythonLibs REQUIRED )
 
 # This sets the virtual environment directory
@@ -69,27 +90,20 @@ set( PYTHON_TESTING_EXECUTABLE
   CACHE INTERNAL "Python to the python executable to use in tests." FORCE )
 
 set( PYTHON_TESTING_MODULES )
-
-# numpy
 if( ${TubeTK_USE_NUMPY_STACK} )
-
   list( APPEND PYTHON_TESTING_MODULES
     scipy
     numpy )
-
 endif( ${TubeTK_USE_NUMPY_STACK} )
 
 # pyqtgraph
 if( TubeTK_USE_PYQTGRAPH )
-
   list( APPEND PYTHON_TESTING_MODULES
     pyqtgraph )
-
 endif( TubeTK_USE_PYQTGRAPH )
 
 # ipython and other things used by examples
 if( ${TubeTK_USE_EXAMPLES_AS_TESTS} )
-
   list( APPEND PYTHON_TESTING_MODULES
     ipython
     tornado
@@ -97,7 +111,6 @@ if( ${TubeTK_USE_EXAMPLES_AS_TESTS} )
     jinja2
     tables
     matplotlib )
-
 endif( ${TubeTK_USE_EXAMPLES_AS_TESTS} )
 
 configure_file(
@@ -109,8 +122,3 @@ configure_file(
 add_custom_target( PythonVirtualenvInstall ALL
   COMMAND ${CMAKE_COMMAND} -P
   "${TubeTK_BINARY_DIR}/CMake/PythonVirtualEnvInstall.cmake" )
-
-# Setup IPython notebook driver
-set( NOTEBOOK_TEST_DRIVER
-  ${TubeTK_SOURCE_DIR}/Utilities/Python/EvaluateIPythonNotebook.py
-  CACHE INTERNAL "Test driver command for IPython Notebooks." FORCE )
