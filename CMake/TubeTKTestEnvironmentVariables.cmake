@@ -28,16 +28,20 @@
 if( NOT DEFINED ENV{ITK_BUILD_DIR})
   message(FATAL_ERROR "ITK_BUILD_DIR environment variable not set.")
 endif()
-if(NOT "$ENV{ITK_BUILD_DIR}" STREQUAL "${ITK_BUILD_DIR}")
+get_filename_component(ITK_BUILD_DIR_ENV_ABS "$ENV{ITK_BUILD_DIR}" ABSOLUTE)
+get_filename_component(ITK_BUILD_DIR_ABS "${ITK_BUILD_DIR}" ABSOLUTE)
+if(NOT "${ITK_BUILD_DIR_ENV_ABS}" STREQUAL "${ITK_BUILD_DIR_ABS}")
   message(FATAL_ERROR "ITK_BUILD_DIR environment variable does "
           "not match ITK_DIR set in this project. Expected:\n"
-          "${ITK_BUILD_DIR}\ngot:\n$ENV{ITK_BUILD_DIR}")
+          "${ITK_BUILD_DIR_ABS}\ngot:\n${ITK_BUILD_DIR_ENV_ABS}")
 endif()
 if( NOT DEFINED ENV{TubeTK_BUILD_DIR})
   message(FATAL_ERROR "TubeTK_BUILD_DIR environment variable not set.")
 endif()
-if(NOT "$ENV{TubeTK_BUILD_DIR}" STREQUAL "${TubeTK_BUILD_DIR}")
+get_filename_component(TubeTK_BUILD_DIR_ABS "${TubeTK_BUILD_DIR}" ABSOLUTE)
+get_filename_component(TubeTK_BUILD_DIR_ENV_ABS "$ENV{TubeTK_BUILD_DIR}" ABSOLUTE)
+if(NOT "${TubeTK_BUILD_DIR_ENV_ABS}" STREQUAL "${TubeTK_BUILD_DIR_ABS}")
   message(FATAL_ERROR "TubeTK_BUILD_DIR environment variable does "
           "not match current directory path. Expected:\n"
-          "${TubeTK_BUILD_DIR}\ngot:\n$ENV{TubeTK_BUILD_DIR}")
+          "${TubeTK_BUILD_DIR_ABS}\ngot:\n${TubeTK_BUILD_DIR_ENV_ABS}")
 endif()
