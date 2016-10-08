@@ -74,17 +74,17 @@ public:
   itkGetConstMacro( Sampling, SizeValueType );
 
 protected:
+  typedef SpatialObject< ObjectDimension > SpatialObjectBaseType;
+
   SubSampleTubeTreeSpatialObjectFilter( void );
   virtual ~SubSampleTubeTreeSpatialObjectFilter( void );
 
   virtual void GenerateData( void );
 
-  typedef SpatialObject< ObjectDimension > SpatialObjectBaseType;
-
   /** Sub-sample at the tubes at a given level, then sub-sample their
   * children. */
   virtual void SubSampleLevel( const SpatialObjectBaseType * input,
-    SpatialObjectBaseType * output );
+    SpatialObjectBaseType * output, bool graftOutput=false );
 
 private:
   // purposely not implemented

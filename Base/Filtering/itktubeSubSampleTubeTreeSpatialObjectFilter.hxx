@@ -57,29 +57,12 @@ template< class TSpatialObject, class TTubeSpatialObject >
 void
 SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
 ::SubSampleLevel( const SpatialObjectBaseType * input,
-  SpatialObjectBaseType * output )
+  SpatialObjectBaseType * output, bool graftOutput )
 {
-  const std::string spatialObjectType = input->
-    GetSpatialObjectTypeAsString();
-  LightObject::Pointer newSpatialObject =
-    ObjectFactoryBase::CreateInstance( spatialObjectType.c_str() );
-
-  typename SpatialObjectBaseType::Pointer newSpatialObjectBase =
-    dynamic_cast< SpatialObjectBaseType * >(
-    newSpatialObject.GetPointer() );
-  if( newSpatialObjectBase.IsNull() )
-    {
-    itkExceptionMacro( << "Could not create an instance of "
-      << spatialObjectType << ". The usual cause of this error is not"
-      << "registering the SpatialObject with SpatialFactory." );
-    }
-
-  // Correct for extra reference count from CreateInstance().
-  newSpatialObjectBase->UnRegister();
-
   // We make the copy and sub-sample if it is a tube.
   const TubeSpatialObjectType * inputAsTube =
     dynamic_cast< const TubeSpatialObjectType * >( input );
+  typename SpatialObjectBaseType::Pointer newParent;
   if( inputAsTube != NULL )
     {
     typedef SubSampleTubeSpatialObjectFilter< TubeSpatialObjectType >
@@ -90,20 +73,55 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
     subSampleTubeFilter->SetInput( const_cast< TubeSpatialObjectType * >(
         inputAsTube ) );
     subSampleTubeFilter->Update();
-    newSpatialObjectBase = subSampleTubeFilter->GetOutput();
+    if( graftOutput )
+      {
+      output->CopyInformation( subSampleTubeFilter->GetOutput() );
+      }
+    else
+      {
+      output->AddSpatialObject( subSampleTubeFilter->GetOutput() );
+      }
+    newParent = dynamic_cast< SpatialObjectBaseType * >( output );
     }
   else
     {
-    newSpatialObjectBase->CopyInformation( input );
+    if( graftOutput )
+      {
+      output->CopyInformation( input );
+      newParent = dynamic_cast< SpatialObjectBaseType * >( output );
+      }
+    else
+      {
+      const std::string spatialObjectType = input->
+        GetSpatialObjectTypeAsString();
+      LightObject::Pointer newSpatialObject =
+        ObjectFactoryBase::CreateInstance( spatialObjectType.c_str() );
+
+      typename SpatialObjectBaseType::Pointer newSpatialObjectBase =
+        dynamic_cast< SpatialObjectBaseType * >(
+        newSpatialObject.GetPointer() );
+      if( newSpatialObjectBase.IsNull() )
+        {
+        itkExceptionMacro( << "Could not create an instance of "
+          << spatialObjectType << ". The usual cause of this error is not"
+          << "registering the SpatialObject with SpatialFactory." );
+        }
+
+      // Correct for extra reference count from CreateInstance()
+      newSpatialObjectBase->UnRegister();
+
+      newSpatialObjectBase->CopyInformation( input );
+      output->AddSpatialObject( newSpatialObjectBase );
+      newParent = newSpatialObjectBase;
+      }
     }
-  output->AddSpatialObject( newSpatialObjectBase );
 
   typedef typename SpatialObjectType::ChildrenListType ChildrenListType;
-  ChildrenListType *children = input->GetChildren(0);
+  ChildrenListType *children = input->GetChildren();
   typename ChildrenListType::const_iterator it = children->begin();
   while( it != children->end() )
     {
-    this->SubSampleLevel( *it, newSpatialObjectBase );
+    this->SubSampleLevel( *it, newParent );
     ++it;
     }
   delete children;
@@ -115,36 +133,12 @@ void
 SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
 ::GenerateData( void )
 {
-  typename SpatialObjectBaseType::Pointer output = this->GetOutput();
   const SpatialObjectType * input = this->GetInput();
 
+  typename SpatialObjectBaseType::Pointer output = this->GetOutput();
   output->Clear();
 
-  // We sub-sample if the root is a tube.
-  const TubeSpatialObjectType * inputAsTube =
-    dynamic_cast< const TubeSpatialObjectType * >( input );
-  if( inputAsTube != NULL )
-    {
-    typedef SubSampleTubeSpatialObjectFilter< TubeSpatialObjectType >
-      SubSampleTubeFilterType;
-    typename SubSampleTubeFilterType::Pointer subSampleTubeFilter
-      = SubSampleTubeFilterType::New();
-    subSampleTubeFilter->SetSampling( this->GetSampling() );
-    subSampleTubeFilter->SetInput( const_cast< TubeSpatialObjectType * >(
-        inputAsTube ) );
-    subSampleTubeFilter->Update();
-    output = subSampleTubeFilter->GetOutput();
-    }
-
-  typedef typename SpatialObjectType::ChildrenListType ChildrenListType;
-  ChildrenListType *children = input->GetChildren(0);
-  typename ChildrenListType::const_iterator it = children->begin();
-  while( it != children->end() )
-    {
-    this->SubSampleLevel( *it, output );
-    ++it;
-    }
-  delete children;
+  this->SubSampleLevel( input, output, true );
 }
 
 } // End namespace tube
