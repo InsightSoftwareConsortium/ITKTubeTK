@@ -212,7 +212,7 @@ ResampleTubesFilter< VDimension >
 ::GenerateData( void )
 {
   const TubeGroupType * inputTubeGroup = this->GetInput();
-  TubeGroupType::Pointer tmpTubeGroup = NULL;
+  typename TubeGroupType::Pointer tmpTubeGroup = NULL;
 
   typename TubeGroupType::TransformType::Pointer outputTransform;
   if( m_MatchImage )

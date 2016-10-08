@@ -56,7 +56,7 @@ void
 TubeToTubeTransformFilter< TTransformType, TDimension >
 ::GenerateData( void )
 {
-  GroupType::Pointer output = this->GetOutput();
+  typename GroupType::Pointer output = this->GetOutput();
   output->CopyInformation( this->GetInput() );
 
   typedef typename SpatialObject< TDimension >::ChildrenListType
