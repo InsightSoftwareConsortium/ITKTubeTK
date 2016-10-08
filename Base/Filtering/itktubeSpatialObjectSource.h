@@ -50,10 +50,14 @@ public:
   typedef SmartPointer< Self >       Pointer;
   typedef SmartPointer< const Self > ConstPointer;
 
-  typedef TOutputSpatialObject OutputSpatialObjectType;
+  typedef TOutputSpatialObject       OutputSpatialObjectType;
 
-  typedef Superclass::DataObjectIdentifierType       DataObjectIdentifierType;
-  typedef Superclass::DataObjectPointerArraySizeType DataObjectPointerArraySizeType;
+  typedef SpatialObject< TOutputSpatialObject::ObjectDimension > 
+    SpatialObjectType;
+  typedef Superclass::DataObjectIdentifierType
+    DataObjectIdentifierType;
+  typedef Superclass::DataObjectPointerArraySizeType
+    DataObjectPointerArraySizeType;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro( SpatialObjectSource, ProcessObject );

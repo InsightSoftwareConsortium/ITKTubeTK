@@ -38,7 +38,6 @@ template< class TTransformType, unsigned int TDimension >
 TubeToTubeTransformFilter< TTransformType, TDimension >
 ::TubeToTubeTransformFilter( void )
 {
-  m_Output = 0;
   m_OutputIndexToObjectTransform = 0;
   m_Transform = 0;
 
@@ -55,18 +54,18 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
 template< class TTransformType, unsigned int TDimension >
 void
 TubeToTubeTransformFilter< TTransformType, TDimension >
-::Update( void )
+::GenerateData( void )
 {
-  m_Output = GroupType::New();
-  m_Output->CopyInformation( this->GetInput() );
+  GroupType::Pointer output = this->GetOutput();
+  output->CopyInformation( this->GetInput() );
 
   typedef typename SpatialObject< TDimension >::ChildrenListType
     ChildrenListType;
-  ChildrenListType * children = this->GetInput()->GetChildren(0);
+  ChildrenListType * children = this->GetInput()->GetChildren();
   typename ChildrenListType::const_iterator it = children->begin();
   while( it != children->end() )
     {
-    this->UpdateLevel( *it, m_Output );
+    this->UpdateLevel( *it, output );
     ++it;
     }
   delete children;
@@ -244,12 +243,11 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
     {
     outputSO->CopyInformation( inputSO );
     }
-  std::cout << "Adding object " << outputSO->GetId() << std::endl;
   parentSO->AddSpatialObject( outputSO );
 
   typedef typename SpatialObject< TDimension >::ChildrenListType
     ChildrenListType;
-  ChildrenListType * children = inputSO->GetChildren(0);
+  ChildrenListType * children = inputSO->GetChildren();
   typename ChildrenListType::const_iterator it = children->begin();
   while( it != children->end() )
     {

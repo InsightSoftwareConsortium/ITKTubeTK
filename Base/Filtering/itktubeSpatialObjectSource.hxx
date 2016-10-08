@@ -123,11 +123,35 @@ SpatialObjectSource< TOutputSpatialObject >
 
   // we use the process object method since all out output may not be
   // of the same type
-  DataObject *output = this->ProcessObject::GetOutput(key);
+  TOutputSpatialObject * outputObject =
+    static_cast< TOutputSpatialObject * >(
+      this->ProcessObject::GetOutput(key) );
+  if( !outputObject )
+    {
+    itkExceptionMacro( << "Cannot convert output to filter output type" );
+    }
 
-  // Call GraftImage to copy meta-information, regions, and the pixel
-  // container
-  output->Graft(graft);
+  TOutputSpatialObject * graftObject =
+    static_cast< TOutputSpatialObject * >( graft );
+  if( !graftObject )
+    {
+    itkExceptionMacro( << "Cannot convert graft to filter output type" );
+    }
+
+  // For SpatialObjects, Graft is not implemented, so use CopyInformation.
+  //    itkImageBase.hxx implementation of Graft passes the call to
+  //    CopyInformation, so implementations are equivalent.
+  outputObject->CopyInformation( graft );
+
+  typedef typename SpatialObjectType::ChildrenListType ChildrenListType;
+  ChildrenListType *children = graftObject->GetChildren();
+  typename ChildrenListType::const_iterator it = children->begin();
+  while( it != children->end() )
+    {
+    outputObject->AddSpatialObject( *it );
+    ++it;
+    }
+  delete children;
 }
 
 

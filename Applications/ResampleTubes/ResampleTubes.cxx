@@ -21,8 +21,6 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubeSubSampleTubeTreeSpatialObjectFilter.h"
-#include "itktubeTubeToTubeTransformFilter.h"
 #include "tubeCLIFilterWatcher.h"
 #include "tubeCLIProgressReporter.h"
 #include "tubeMessage.h"
@@ -35,6 +33,7 @@ limitations under the License.
 #include <itkImageFileReader.h>
 #include <itkDisplacementFieldTransform.h>
 #include <itkTransformFileReader.h>
+
 #include <itktubeResampleTubesFilter.h>
 
 #include "ResampleTubesCLP.h"
@@ -143,6 +142,9 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start( "Run Filter");
   filter->Update();
   timeCollector.Stop( "Run Filter" );
+
+  std::cout << "Output # of children = " 
+    << filter->GetOutput()->GetNumberOfChildren() << std::endl;
 
   progress = 0.9;
   progressReporter.Report( progress );

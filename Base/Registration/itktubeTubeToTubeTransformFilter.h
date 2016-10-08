@@ -85,23 +85,21 @@ public:
   itkTypeMacro( TubeToTubeTransformFilter,
     SpatialObjectToSpatialObjectFilter );
 
-  /** Apply the transformation to the tube */
-  void Update( void );
-
   /** Set the Transformation */
   itkSetObjectMacro( Transform, TransformType );
 
   /** Set the Object to Index transform for the output tubes */
   itkSetObjectMacro( OutputIndexToObjectTransform, TubeTransformType );
 
-  /** Get the output tubenet */
-  itkGetObjectMacro( Output, GroupType );
-
 protected:
 
   TubeToTubeTransformFilter( void );
   virtual ~TubeToTubeTransformFilter( void ) {}
   void PrintSelf(std::ostream& os, Indent indent) const;
+
+  /** Apply the transformation to the tube */
+  void GenerateData( void );
+
 
 private:
 
@@ -114,8 +112,6 @@ private:
   typename TransformType::Pointer            m_Transform;
 
   typename TubeTransformType::Pointer        m_OutputIndexToObjectTransform;
-
-  typename GroupType::Pointer                m_Output;
 
 }; // End class TubeToTubeTransformFilter
 
