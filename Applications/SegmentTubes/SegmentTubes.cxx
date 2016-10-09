@@ -242,6 +242,7 @@ int DoIt( int argc, char * argv[] )
     segmentTubesFilter->SetExistingTubesMask( maskReader->GetOutput() );
     }
 
+  unsigned int numberOfPriorChildren = 0;
   if( !existingVessels.empty() )
     {
     typename TubesReaderType::Pointer tubeReader = TubesReaderType::New();
@@ -256,6 +257,7 @@ int DoIt( int argc, char * argv[] )
       std::cerr << "Error:: No readable Tubes found " << std::endl;
       }
     segmentTubesFilter->SetTubeGroup( tubeReader->GetGroup() );
+    numberOfPriorChildren = tubeReader->GetGroup()->GetNumberOfChildren();
     }
 
   if( !parametersFile.empty() )
@@ -269,6 +271,20 @@ int DoIt( int argc, char * argv[] )
 
   segmentTubesFilter->Update();
 
+  timeCollector.Stop("Ridge Extractor");
+
+  if( segmentTubesFilter->GetTubeGroup()->GetNumberOfChildren() == 
+    numberOfPriorChildren )
+    {
+    std::cerr << "Failed to extract any tubes." << std::endl;
+    progressReporter.Report( 1.0 );
+    progressReporter.End();
+  
+    timeCollector.Report();
+    return EXIT_FAILURE;
+    }
+
+  timeCollector.Start("Save tubes and mask");
   // Save Tubes
   typename TubesWriterType::Pointer soWriter = TubesWriterType::New();
   soWriter->SetFileName( outputTubeFile );
@@ -284,8 +300,7 @@ int DoIt( int argc, char * argv[] )
     writer->SetUseCompression( true );
     writer->Update();
     }
-
-  timeCollector.Stop("Ridge Extractor");
+  timeCollector.Stop("Save tubes and mask");
 
   progressReporter.Report( 1.0 );
   progressReporter.End();
