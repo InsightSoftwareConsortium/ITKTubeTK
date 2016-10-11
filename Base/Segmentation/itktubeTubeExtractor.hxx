@@ -76,7 +76,7 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 void
 TubeExtractor<TInputImage>
-::SetInputImage( typename ImageType::Pointer inputImage )
+::SetInputImage( ImageType * inputImage )
 {
   this->m_InputImage = inputImage;
   this->m_RidgeOp = RidgeExtractor<ImageType>::New();
@@ -94,7 +94,7 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 void
 TubeExtractor<TInputImage>
-::SetRadiusInputImage( typename ImageType::Pointer inputImage )
+::SetRadiusInputImage( ImageType * inputImage )
 {
   if( m_RadiusOp.IsNull() )
     {
@@ -112,7 +112,7 @@ template< class TInputImage >
 void
 TubeExtractor<TInputImage>
 ::SetTubeMaskImage( typename
-  TubeExtractor<TInputImage>::TubeMaskImageType::Pointer & mask )
+  TubeExtractor<TInputImage>::TubeMaskImageType * mask )
 {
   m_RidgeOp->SetTubeMaskImage( mask );
 }
@@ -120,7 +120,7 @@ TubeExtractor<TInputImage>
 /**
  * Get the tube mask image */
 template< class TInputImage >
-typename TubeExtractor<TInputImage>::TubeMaskImageType::Pointer
+typename TubeExtractor<TInputImage>::TubeMaskImageType *
 TubeExtractor<TInputImage>
 ::GetTubeMaskImage( void )
 {
@@ -327,7 +327,7 @@ TubeExtractor<TInputImage>
  * Extract the tube given the position of the first point
  * and the tube ID */
 template< class TInputImage >
-typename TubeExtractor< TInputImage >::TubeType::Pointer
+typename TubeExtractor< TInputImage >::TubeType *
 TubeExtractor<TInputImage>
 ::ExtractTube( const ContinuousIndexType & x, unsigned int tubeID,
   bool verbose )
@@ -409,7 +409,7 @@ TubeExtractor<TInputImage>
 /**
  * Get list of extracted tubes */
 template< class TInputImage >
-typename TubeExtractor< TInputImage >::TubeGroupType::Pointer
+typename TubeExtractor< TInputImage >::TubeGroupType *
 TubeExtractor<TInputImage>
 ::GetTubeGroup( void )
 {

@@ -86,23 +86,34 @@ public:
   // itkCropImageFilter parameters
   itkSetMacro( UpperBoundaryCropSize, SizeType );
   itkGetConstMacro( UpperBoundaryCropSize, SizeType );
+
   itkSetMacro( LowerBoundaryCropSize, SizeType );
   itkGetConstMacro( LowerBoundaryCropSize, SizeType );
+
   // tubeCropROI parameters
   void SetMin( typename ImageType::IndexType roiMin );
+  typename ImageType::IndexType GetMin( void );
   itkSetMacro( UseROIMin, bool );
+
   void SetMax( typename ImageType::IndexType roiMax );
+  typename ImageType::IndexType GetMax( void );
   itkSetMacro( UseROIMax, bool );
+
   void SetSize( typename ImageType::SizeType roiSize );
+  typename ImageType::SizeType GetSize( void );
   itkSetMacro( UseROISize, bool );
+
   void SetCenter( typename ImageType::IndexType roiCenter );
+  typename ImageType::IndexType GetCenter( void );
   itkSetMacro( UseROICenter, bool );
+
   void SetBoundary( typename ImageType::IndexType roiBoundary );
+  typename ImageType::IndexType GetBoundary( void );
   itkSetMacro( UseROIBoundary, bool );
 
-  void SetMatchVolume( typename ImageType::ConstPointer matchVolume );
+  void SetMatchVolume( const ImageType * matchVolume );
 
-  void SetMatchMask( typename ImageType::Pointer maskImage );
+  void SetMatchMask( const ImageType * maskImage );
 
   void SetSplitInput( typename ImageType::IndexType splitIndex,
     typename ImageType::IndexType roiIndex );

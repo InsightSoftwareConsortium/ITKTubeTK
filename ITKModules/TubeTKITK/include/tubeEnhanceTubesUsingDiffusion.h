@@ -27,8 +27,9 @@ limitations under the License.
 #include <itkProcessObject.h>
 
 // TubeTK includes
-#include "itktubeTubeEnhancingDiffusion2DImageFilter.h"
 #include "tubeWrappingMacros.h"
+
+#include "itktubeTubeEnhancingDiffusion2DImageFilter.h"
 
 namespace tube
 {

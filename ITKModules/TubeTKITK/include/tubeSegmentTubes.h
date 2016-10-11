@@ -23,12 +23,13 @@ limitations under the License.
 #ifndef __tubeSegmentTubes_h
 #define __tubeSegmentTubes_h
 
-#include "itktubeTubeExtractor.h"
-#include "itktubeRidgeExtractor.h"
-#include "itktubeRadiusExtractor2.h"
-#include "itkObject.h"
+// ITK Includes
+#include "itkProcessObject.h"
 
+// TubeTK Includes
 #include "tubeWrappingMacros.h"
+
+#include "itktubeTubeExtractor.h"
 
 namespace tube
 {
@@ -39,80 +40,70 @@ namespace tube
 
 template< class TInputImage >
 class SegmentTubes:
-  public itk::Object
+  public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
   typedef SegmentTubes                                 Self;
+  typedef itk::ProcessObject                           Superclass;
   typedef itk::SmartPointer< Self >                    Pointer;
   typedef itk::SmartPointer< const Self >              ConstPointer;
+
   typedef TInputImage                                  ImageType;
   typedef typename ImageType::PixelType                PixelType;
   typedef typename ImageType::IndexType                IndexType;
-  typedef itk::tube::TubeExtractor< ImageType >        TubeExtractorFilterType;
-  typedef itk::tube::RidgeExtractor< ImageType >       RidgeExtractorFilterType;
-  typedef itk::tube::RadiusExtractor2< ImageType >     RidgeExtractor2FilterType;
-  typedef typename TubeExtractorFilterType::TubeMaskImageType
-    TubeMaskImageType;
-  typedef typename TubeExtractorFilterType::TubeType   TubeType;
-  typedef typename TubeType::Pointer                   TubePointerType;
 
-  typedef typename TubeExtractorFilterType::ContinuousIndexType
-    ContinuousIndexType;
+  typedef itk::tube::TubeExtractor< ImageType >        FilterType;
+  typedef typename FilterType::TubeMaskImageType       TubeMaskImageType;
+  typedef typename FilterType::TubeType                TubeType;
+  typedef typename FilterType::TubeGroupType           TubeGroupType;
+
+  typedef typename FilterType::ContinuousIndexType     ContinuousIndexType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( SegmentTubes, Object );
+  itkTypeMacro( SegmentTubes, ProcessObject );
 
   /** Set the source image. */
-  tubeWrapSetObjectMacro( InputImage, ImageType, TubeExtractorFilter );
+  tubeWrapSetObjectMacro( InputImage, ImageType, Filter );
 
   /** Set the radius image. */
-  tubeWrapSetObjectMacro( RadiusInputImage, ImageType, TubeExtractorFilter );
+  tubeWrapSetObjectMacro( RadiusInputImage, ImageType, Filter );
 
   /** Set/Get radius value */
-  tubeWrapSetMacro( Radius, double, TubeExtractorFilter );
-  tubeWrapGetMacro( Radius, double, TubeExtractorFilter );
+  tubeWrapSetMacro( Radius, double, Filter );
+  tubeWrapGetMacro( Radius, double, Filter );
 
   /** Set the tube mask image. */
-  void SetTubeMaskImage( typename TubeMaskImageType::Pointer & mask );
-  typename itk::tube::TubeExtractor< TInputImage >::TubeMaskImageType::Pointer
-    GetTubeMaskImage( void );
+  tubeWrapSetObjectMacro( TubeMaskImage, TubeMaskImageType, Filter );
+  tubeWrapGetObjectMacro( TubeMaskImage, TubeMaskImageType, Filter );
 
   /** Add a tube */
   bool AddTube( TubeType * tube );
 
   /** Set/Get debug status */
-  tubeWrapSetMacro( Debug, bool, TubeExtractorFilter );
-  tubeWrapGetMacro( Debug, bool, TubeExtractorFilter );
+  tubeWrapSetMacro( Debug, bool, Filter );
+  tubeWrapGetMacro( Debug, bool, Filter );
 
   /** Set ExtractBound Minimum */
-  void SetExtractBoundMin( const IndexType & dataMin );
+  tubeWrapSetConstReferenceMacro( ExtractBoundMin, IndexType, Filter);
+  tubeWrapGetConstReferenceMacro( ExtractBoundMin, IndexType, Filter);
 
   /** Set ExtractBound Maximum */
-  void SetExtractBoundMax( const IndexType & dataMax );
+  tubeWrapSetConstReferenceMacro( ExtractBoundMax, IndexType, Filter);
+  tubeWrapGetConstReferenceMacro( ExtractBoundMax, IndexType, Filter);
 
   /*** Extract the ND tube given the position of the first point
    * and the tube ID */
-  typename itk::tube::TubeExtractor< TInputImage >::TubeType::Pointer
+  typename itk::tube::TubeExtractor< TInputImage >::TubeType *
     ExtractTube( const ContinuousIndexType & x,
     unsigned int tubeID,
     bool verbose = false );
 
   /** Get the list of tubes that have been extracted */
-  typename itk::tube::TubeExtractor< TInputImage >::TubeGroupType::Pointer
-    GetTubeGroup( void );
-
-  /* Get the ridge extractor */
-  typename itk::tube::RidgeExtractor< ImageType >::Pointer GetRidgeOp( void );
-
-    /*Get the radius extractor */
-  typename itk::tube::RadiusExtractor2< ImageType >::Pointer GetRadiusOp( void );
-
-    /*Get the tube extractor */
-  typename itk::tube::TubeExtractor< ImageType >::Pointer GetTubeOp( void );
+  tubeWrapGetConstObjectMacro( TubeGroup, TubeGroupType, Filter);
 
 protected:
   SegmentTubes( void );
@@ -124,7 +115,7 @@ private:
   SegmentTubes( const Self & );
   void operator=( const Self & );
 
-  typename TubeExtractorFilterType::Pointer m_TubeExtractorFilter;
+  typename FilterType::Pointer m_Filter;
 
 };
 } // End namespace tube

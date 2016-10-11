@@ -24,11 +24,12 @@ limitations under the License.
 #define __tubeComputeTubeMeasures_h
 
 // ITK includes
-#include <itkObject.h>
+#include <itkProcessObject.h>
 
 // TubeTK includes
-#include <itktubeComputeTubeMeasuresFilter.h>
 #include "tubeWrappingMacros.h"
+
+#include "itktubeComputeTubeMeasuresFilter.h"
 
 namespace tube
 {
@@ -39,12 +40,12 @@ namespace tube
 
 template< class TPixel, unsigned int Dimension >
 class ComputeTubeMeasures:
-  public itk::Object
+  public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
   typedef ComputeTubeMeasures                        Self;
-  typedef itk::Object                                SuperClass;
+  typedef itk::ProcessObject                         Superclass;
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 
@@ -58,7 +59,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods ). */
-  itkTypeMacro( ComputeTubeMeasures, Object );
+  itkTypeMacro( ComputeTubeMeasures, ProcessObject );
 
   /** Set/Get scale */
   tubeWrapSetMacro( Scale, int, Filter );

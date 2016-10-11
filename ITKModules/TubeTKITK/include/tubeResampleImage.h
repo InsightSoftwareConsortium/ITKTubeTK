@@ -23,9 +23,13 @@ limitations under the License.
 #ifndef __tubeResampleImage_h
 #define __tubeResampleImage_h
 
-#include "itktubeResampleImageFilter.h"
+// ITK Includes
+#include "itkProcessObject.h"
+
+// TubeTK Includes
 #include "tubeWrappingMacros.h"
-#include "itkObject.h"
+
+#include "itktubeResampleImageFilter.h"
 
 namespace tube
 {
@@ -36,16 +40,17 @@ namespace tube
 
 template< class TPixel, unsigned int VDimension >
 class ResampleImage:
-  public itk::Object
+  public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
   typedef ResampleImage                   Self;
+  typedef itk::ProcessObject              Superclass;
   typedef itk::SmartPointer< Self >       Pointer;
   typedef itk::SmartPointer< const Self > ConstPointer;
 
-  typedef itk::tube::ResampleImageFilter
-    < TPixel, VDimension >           FilterType;
+  typedef itk::tube::ResampleImageFilter< TPixel, VDimension >
+    FilterType;
 
   typedef typename FilterType::ImageType      ImageType;
   typedef typename ImageType::ConstPointer    ConstImagePointer;
@@ -56,7 +61,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( ResampleImage, Object );
+  itkTypeMacro( ResampleImage, ProcessObject );
 
   /* Set input image */
   tubeWrapSetConstObjectMacro( Input, ImageType, Filter );

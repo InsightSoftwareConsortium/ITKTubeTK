@@ -24,11 +24,12 @@ limitations under the License.
 #define __tubeSegmentBinaryImageSkeleton_h
 
 // ITK includes
-#include <itkObject.h>
+#include "itkProcessObject.h"
 
 // TubeTK includes
-#include "itktubeSegmentBinaryImageSkeleton.h"
 #include "tubeWrappingMacros.h"
+
+#include "itktubeSegmentBinaryImageSkeleton.h"
 
 namespace tube
 {
@@ -42,12 +43,12 @@ namespace tube
 
 template< class TPixel, unsigned int VDimension >
 class SegmentBinaryImageSkeleton:
-  public itk::Object
+  public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
   typedef SegmentBinaryImageSkeleton                 Self;
-  typedef itk::Object                                Superclass;
+  typedef itk::ProcessObject                         Superclass;
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 
@@ -60,7 +61,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(SegmentBinaryImageSkeleton, Object);
+  itkTypeMacro(SegmentBinaryImageSkeleton, ProcessObject);
 
   /** Set/Get radius for post-dilatation */
   tubeWrapSetMacro( Radius, unsigned int, Filter );

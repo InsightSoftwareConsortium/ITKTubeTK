@@ -47,6 +47,7 @@ class SegmentTubesUsingMinimalPath:
 public:
   /** Standard class typedefs. */
   typedef SegmentTubesUsingMinimalPath               Self;
+  typedef itk::ProcessObject                         Superclass;
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 

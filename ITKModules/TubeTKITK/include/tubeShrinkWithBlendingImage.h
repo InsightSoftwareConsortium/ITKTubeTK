@@ -23,9 +23,11 @@ limitations under the License.
 #ifndef __tubeShrinkWithBlendingImage_h
 #define __tubeShrinkWithBlendingImage_h
 
-#include "itktubeShrinkWithBlendingImageFilter.h"
-#include "itkObject.h"
+#include "itkProcessObject.h"
+
 #include "tubeWrappingMacros.h"
+
+#include "itktubeShrinkWithBlendingImageFilter.h"
 
 namespace tube
 {
@@ -39,72 +41,73 @@ class ShrinkWithBlendingImage:
   public itk::ProcessObject
 {
 public:
-    /** Standard class typedefs. */
-    typedef ShrinkWithBlendingImage                         Self;
-    typedef itk::SmartPointer< Self >                       Pointer;
-    typedef itk::SmartPointer< const Self >                 ConstPointer;
+  /** Standard class typedefs. */
+  typedef ShrinkWithBlendingImage                         Self;
+  typedef itk::ProcessObject                              Superclass;
+  typedef itk::SmartPointer< Self >                       Pointer;
+  typedef itk::SmartPointer< const Self >                 ConstPointer;
 
-    /** Method for creation through the object factory. */
-    itkNewMacro( Self );
+  /** Method for creation through the object factory. */
+  itkNewMacro( Self );
 
-    /** Run-time type information (and related methods). */
-    itkTypeMacro( ShrinkWithBlendingImage, Object );
+  /** Run-time type information (and related methods). */
+  itkTypeMacro( ShrinkWithBlendingImage, ProcessObject );
 
 
-    /** Typedef to images */
-    typedef TInputImage                                InputImageType;
-    typedef TOutputImage                               OutputImageType;
-    typedef typename TInputImage::IndexType            InputIndexType;
-    typedef typename TInputImage::SizeType             InputSizeType;
+  /** Typedef to images */
+  typedef TInputImage                                InputImageType;
+  typedef TOutputImage                               OutputImageType;
+  typedef typename TInputImage::IndexType            InputIndexType;
+  typedef typename TInputImage::SizeType             InputSizeType;
 
-    typedef itk::tube::ShrinkWithBlendingImageFilter< InputImageType,
-                            OutputImageType >          FilterType;
+  typedef itk::tube::ShrinkWithBlendingImageFilter< InputImageType,
+    OutputImageType >                                FilterType;
 
-    typedef typename FilterType::PointImagePixelType   PointImagePixelType;
-    typedef typename FilterType::PointImageType        PointImageType;
-    typedef typename FilterType::ShrinkFactorsType     ShrinkFactorsType;
+  typedef typename FilterType::PointImagePixelType   PointImagePixelType;
+  typedef typename FilterType::PointImageType        PointImageType;
+  typedef typename FilterType::ShrinkFactorsType     ShrinkFactorsType;
 
-    /** Set the shrink factors. Values are clamped to
-     * a minimum value of 1. Default is 1 for all dimensions. */
-    tubeWrapSetMacro( ShrinkFactors, ShrinkFactorsType, Filter)
-    void SetShrinkFactor( unsigned int i, unsigned int factor );
-    unsigned int GetShrinkFactor( unsigned int i );
+  /** Set the shrink factors. Values are clamped to
+   * a minimum value of 1. Default is 1 for all dimensions. */
+  tubeWrapSetMacro( ShrinkFactors, ShrinkFactorsType, Filter)
+  void SetShrinkFactor( unsigned int i, unsigned int factor );
+  unsigned int GetShrinkFactor( unsigned int i );
 
-    tubeWrapSetMacro( NewSize, InputSizeType, Filter );
-    tubeWrapGetMacro( NewSize, InputSizeType, Filter );
+  tubeWrapSetMacro( NewSize, InputSizeType, Filter );
+  tubeWrapGetMacro( NewSize, InputSizeType, Filter );
 
-    /** Get/Set the shrink factors. */
-    tubeWrapGetMacro( ShrinkFactors, ShrinkFactorsType, Filter );
+  /** Get/Set the shrink factors. */
+  tubeWrapGetMacro( ShrinkFactors, ShrinkFactorsType, Filter );
 
-    tubeWrapSetMacro( Overlap, InputIndexType, Filter );
-    tubeWrapGetMacro( Overlap, InputIndexType, Filter );
+  tubeWrapSetMacro( Overlap, InputIndexType, Filter );
+  tubeWrapGetMacro( Overlap, InputIndexType, Filter );
 
-    tubeWrapSetMacro( BlendWithMean, bool, Filter );
-    tubeWrapGetMacro( BlendWithMean, bool, Filter );
+  tubeWrapSetMacro( BlendWithMean, bool, Filter );
+  tubeWrapGetMacro( BlendWithMean, bool, Filter );
 
-    tubeWrapSetMacro( BlendWithMax, bool, Filter );
-    tubeWrapGetMacro( BlendWithMax, bool, Filter );
+  tubeWrapSetMacro( BlendWithMax, bool, Filter );
+  tubeWrapGetMacro( BlendWithMax, bool, Filter );
 
-    tubeWrapSetMacro( BlendWithGaussianWeighting, bool, Filter );
-    tubeWrapGetMacro( BlendWithGaussianWeighting, bool, Filter );
+  tubeWrapSetMacro( BlendWithGaussianWeighting, bool, Filter );
+  tubeWrapGetMacro( BlendWithGaussianWeighting, bool, Filter );
 
-    tubeWrapSetMacro( UseLog, bool, Filter );
-    tubeWrapGetMacro( UseLog, bool, Filter );
+  tubeWrapSetMacro( UseLog, bool, Filter );
+  tubeWrapGetMacro( UseLog, bool, Filter );
 
-    tubeWrapCallMacro( GenerateOutputInformation, Filter );
-    tubeWrapCallMacro( GenerateInputRequestedRegion, Filter );
+  tubeWrapCallMacro( GenerateOutputInformation, Filter );
+  tubeWrapCallMacro( GenerateInputRequestedRegion, Filter );
 
-    tubeWrapSetConstObjectMacro( Input, InputImageType, Filter );
-    tubeWrapGetConstObjectMacro( Input, InputImageType, Filter );
+  tubeWrapSetConstObjectMacro( Input, InputImageType, Filter );
+  tubeWrapGetConstObjectMacro( Input, InputImageType, Filter );
 
-    tubeWrapSetConstObjectMacro( InputMipPointImage, PointImageType, Filter );
-    tubeWrapGetConstObjectMacro( InputMipPointImage, PointImageType, Filter );
+  tubeWrapSetConstObjectMacro( InputMipPointImage, PointImageType, Filter );
+  tubeWrapGetConstObjectMacro( InputMipPointImage, PointImageType, Filter );
 
-    tubeWrapCallMacro( Update, Filter );
+  tubeWrapCallMacro( Update, Filter );
 
-    tubeWrapGetObjectMacro( Output, OutputImageType, Filter );
+  tubeWrapGetObjectMacro( Output, OutputImageType, Filter );
 
-    tubeWrapGetObjectMacro( OutputMipPointImage, PointImageType, Filter );
+  tubeWrapGetObjectMacro( OutputMipPointImage, PointImageType, Filter );
 
 protected:
   ShrinkWithBlendingImage( void );

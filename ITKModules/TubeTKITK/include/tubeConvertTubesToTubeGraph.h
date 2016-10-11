@@ -24,12 +24,14 @@ limitations under the License.
 #define __tubeConvertTubesToTubeGraph_h
 
 // ITK includes
-#include <itkMacro.h>
-#include <itkObject.h>
+#include "itkMacro.h"
+
+#include "itkProcessObject.h"
 
 // TubeTK includes
-#include <itktubeTubeSpatialObjectToTubeGraphFilter.h>
 #include "tubeWrappingMacros.h"
+
+#include "itktubeTubeSpatialObjectToTubeGraphFilter.h"
 
 namespace tube
 {
@@ -40,12 +42,12 @@ namespace tube
 
 template< class TPixel, unsigned int Dimension >
 class ConvertTubesToTubeGraph:
-  public itk::Object
+  public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
   typedef ConvertTubesToTubeGraph                    Self;
-  typedef itk::Object                                SuperClass;
+  typedef itk::ProcessObject                         Superclass;
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 
@@ -59,7 +61,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( ConvertTubesToTubeGraph, Object );
+  itkTypeMacro( ConvertTubesToTubeGraph, ProcessObject );
 
   /** Set Number of Centroids */
   tubeWrapSetMacro( NumberOfCenteroids, int, Filter );

@@ -24,12 +24,14 @@ limitations under the License.
 #define __tubeComputeImageStatistics_h
 
 // ITK includes
+#include <itkProcessObject.h>
 #include <itkImage.h>
 #include <itkImageToImageFilter.h>
 
 // TubeTK includes
-#include "itktubeComputeImageStatistics.h"
 #include "tubeWrappingMacros.h"
+
+#include "itktubeComputeImageStatistics.h"
 
 namespace tube
 {
@@ -42,12 +44,12 @@ namespace tube
 
 template< class TPixel, unsigned int VDimension >
 class ComputeImageStatistics
-  : public itk::Object
+  : public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
   typedef ComputeImageStatistics           Self;
-  typedef itk::Object                      Superclass;
+  typedef itk::ProcessObject               Superclass;
   typedef itk::SmartPointer< Self >        Pointer;
   typedef itk::SmartPointer< const Self >  ConstPointer;
 
@@ -60,15 +62,15 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( ComputeImageStatistics, Object );
+  itkTypeMacro( ComputeImageStatistics, ProcessObject );
 
   /** Get statistics components */
-  tubeWrapGetMacro( CompMean, itk::Array< double >, Filter );
-  tubeWrapGetMacro( CompMin, itk::Array< double >, Filter );
-  tubeWrapGetMacro( CompMax, itk::Array< double >, Filter );
-  tubeWrapGetMacro( CompStdDev, itk::Array< double >, Filter );
-  tubeWrapGetMacro( CompCount, itk::Array< double >, Filter );
-  tubeWrapGetMacro( CompValue, itk::Array< TPixel >, Filter );
+  tubeWrapGetMacro( CompMean, std::vector< double >, Filter );
+  tubeWrapGetMacro( CompMin, std::vector< double >, Filter );
+  tubeWrapGetMacro( CompMax, std::vector< double >, Filter );
+  tubeWrapGetMacro( CompStdDev, std::vector< double >, Filter );
+  tubeWrapGetMacro( CompCount, std::vector< double >, Filter );
+  tubeWrapGetMacro( CompValue, std::vector< TPixel >, Filter );
   tubeWrapGetMacro( NumberOfComponents, unsigned int, Filter );
 
   /** Set/Get quantiles */

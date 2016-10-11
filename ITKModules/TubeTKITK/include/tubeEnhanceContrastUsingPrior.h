@@ -23,9 +23,13 @@ limitations under the License.
 #ifndef __tubeEnhanceContrastUsingPrior_h
 #define __tubeEnhanceContrastUsingPrior_h
 
-#include "itktubeEnhanceContrastUsingPriorImageFilter.h"
+// ITK Includes
+#include "itkProcessObject.h"
+
+// TubeTK Includes
 #include "tubeWrappingMacros.h"
-#include "itkObject.h"
+
+#include "itktubeEnhanceContrastUsingPriorImageFilter.h"
 
 
 namespace tube
@@ -37,11 +41,12 @@ namespace tube
 
 template< class TPixel, unsigned int VDimension >
 class EnhanceContrastUsingPrior:
-  public itk::Object
+  public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
   typedef EnhanceContrastUsingPrior       Self;
+  typedef itk::ProcessObject              Superclass;
   typedef itk::SmartPointer< Self >       Pointer;
   typedef itk::SmartPointer< const Self > ConstPointer;
 
@@ -56,7 +61,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( EnhanceContrastUsingPrior, Object );
+  itkTypeMacro( EnhanceContrastUsingPrior, ProcessObject );
 
   /* Set input image */
   tubeWrapSetConstObjectMacro( Input, ImageType, Filter );

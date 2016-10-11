@@ -24,7 +24,7 @@ limitations under the License.
 #define __tubeCropTubes_h
 
 #include "itktubeCropTubesFilter.h"
-#include "itkObject.h"
+#include "itkProcessObject.h"
 #include "tubeWrappingMacros.h"
 
 namespace tube
@@ -36,11 +36,12 @@ namespace tube
 
 template< unsigned int VDimension >
 class CropTubes:
-  public itk::Object
+  public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
   typedef CropTubes                                Self;
+  typedef itk::ProcessObject                       Superclass;
   typedef itk::SmartPointer< Self >                Pointer;
   typedef itk::SmartPointer< const Self >          ConstPointer;
   typedef itk::tube::CropTubesFilter< VDimension > FilterType;
@@ -55,7 +56,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( CropTubes, Object );
+  itkTypeMacro( CropTubes, ProcessObject );
 
  /* Set input tubes */
   tubeWrapSetMacro( Input, TubeGroupPointer, Filter );

@@ -32,96 +32,15 @@ template< typename TInputImage, typename TOutputImage >
 CropImage< TInputImage, TOutputImage >
 ::CropImage( void )
 {
-  m_CropFilter = CropFilterType::New();
+  m_Filter = FilterType::New();
 }
 
 template< typename TInputImage, typename TOutputImage >
 void
 CropImage< TInputImage, TOutputImage >
-::SetMin( typename ImageType::IndexType roiMin )
+::SetSplitInput( InputIndexType splitIndex, InputIndexType roiIndex )
 {
-  m_CropFilter->SetMin( roiMin );
-}
-
-template< typename TInputImage, typename TOutputImage >
-void
-CropImage< TInputImage, TOutputImage >
-::SetMax( typename ImageType::IndexType roiMax )
-{
-  m_CropFilter->SetMax( roiMax );
-}
-
-template< typename TInputImage, typename TOutputImage >
-void
-CropImage< TInputImage, TOutputImage >
-::SetSize( typename ImageType::SizeType roiSize )
-{
-  m_CropFilter->SetSize( roiSize );
-}
-
-template< typename TInputImage, typename TOutputImage >
-void
-CropImage< TInputImage, TOutputImage >
-::SetCenter( typename ImageType::IndexType roiCenter )
-{
-  m_CropFilter->SetCenter( roiCenter );
-}
-
-template< typename TInputImage, typename TOutputImage >
-void
-CropImage< TInputImage, TOutputImage >
-::SetBoundary( typename ImageType::IndexType roiBoundary )
-{
-  m_CropFilter->SetBoundary( roiBoundary );
-}
-
-template< typename TInputImage, typename TOutputImage >
-void
-CropImage< TInputImage, TOutputImage >
-::SetMatchVolume( typename ImageType::ConstPointer matchVolume )
-{
-  m_CropFilter->SetMatchVolume( matchVolume );
-}
-
-template< typename TInputImage, typename TOutputImage >
-void
-CropImage< TInputImage, TOutputImage >
-::SetMatchMask( typename ImageType::Pointer maskImage )
-{
-  m_CropFilter->SetMatchMask( maskImage );
-}
-
-template< typename TInputImage, typename TOutputImage >
-void
-CropImage< TInputImage, TOutputImage >
-::SetSplitInput( typename ImageType::IndexType splitIndex,
-  typename ImageType::IndexType roiIndex )
-{
-  m_CropFilter->SetSplitInput( splitIndex, roiIndex );
-}
-
-template< typename TInputImage, typename TOutputImage >
-void
-CropImage< TInputImage, TOutputImage >
-::SetInput( const TInputImage *inputImage )
-{
-  m_CropFilter->SetInput( inputImage );
-}
-
-template< typename TInputImage, typename TOutputImage >
-void
-CropImage< TInputImage, TOutputImage >
-::Update()
-{
-  m_CropFilter->Update();
-}
-
-template< typename TInputImage, typename TOutputImage >
-typename TOutputImage::Pointer
-CropImage< TInputImage, TOutputImage >
-::GetOutput()
-{
-  return m_CropFilter->GetOutput();
+  m_Filter->SetSplitInput( splitIndex, roiIndex );
 }
 
 template< typename TInputImage, typename TOutputImage >
@@ -131,7 +50,7 @@ CropImage< TInputImage, TOutputImage >
 {
   Superclass::PrintSelf( os, indent );
 
-  os << indent << m_CropFilter << std::endl;
+  os << indent << m_Filter << std::endl;
 }
 
 } // end namespace tube

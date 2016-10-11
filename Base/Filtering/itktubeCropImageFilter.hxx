@@ -57,12 +57,28 @@ CropImageFilter< TInputImage, TOutputImage >
 }
 
 template< typename TInputImage, typename TOutputImage >
+typename TInputImage::IndexType
+CropImageFilter< TInputImage, TOutputImage >
+::GetMin( void )
+{
+  return m_ROIMin;
+}
+
+template< typename TInputImage, typename TOutputImage >
 void
 CropImageFilter< TInputImage, TOutputImage >
 ::SetMax( typename ImageType::IndexType roiMax )
 {
   m_ROIMax = roiMax;
   m_UseROIMax = true;
+}
+
+template< typename TInputImage, typename TOutputImage >
+typename TInputImage::IndexType
+CropImageFilter< TInputImage, TOutputImage >
+::GetMax( void )
+{
+  return m_ROIMax;
 }
 
 template< typename TInputImage, typename TOutputImage >
@@ -75,12 +91,28 @@ CropImageFilter< TInputImage, TOutputImage >
 }
 
 template< typename TInputImage, typename TOutputImage >
+typename TInputImage::SizeType
+CropImageFilter< TInputImage, TOutputImage >
+::GetSize( void )
+{
+  return m_ROISize;
+}
+
+template< typename TInputImage, typename TOutputImage >
 void
 CropImageFilter< TInputImage, TOutputImage >
 ::SetCenter( typename ImageType::IndexType roiCenter )
 {
   m_ROICenter = roiCenter;
   m_UseROICenter = true;
+}
+
+template< typename TInputImage, typename TOutputImage >
+typename TInputImage::IndexType
+CropImageFilter< TInputImage, TOutputImage >
+::GetCenter( void )
+{
+  return m_ROICenter;
 }
 
 template< typename TInputImage, typename TOutputImage >
@@ -93,9 +125,17 @@ CropImageFilter< TInputImage, TOutputImage >
 }
 
 template< typename TInputImage, typename TOutputImage >
+typename TInputImage::IndexType
+CropImageFilter< TInputImage, TOutputImage >
+::GetBoundary( void )
+{
+  return m_ROIBoundary;
+}
+
+template< typename TInputImage, typename TOutputImage >
 void
 CropImageFilter< TInputImage, TOutputImage >
-::SetMatchVolume( typename ImageType::ConstPointer matchVolume )
+::SetMatchVolume( const ImageType * matchVolume )
 {
   const typename ImageType::RegionType matchRegion =
     matchVolume->GetLargestPossibleRegion();
@@ -148,7 +188,7 @@ CropImageFilter< TInputImage, TOutputImage >
 template< typename TInputImage, typename TOutputImage >
 void
 CropImageFilter< TInputImage, TOutputImage >
-::SetMatchMask( typename ImageType::Pointer maskImage )
+::SetMatchMask( const ImageType * maskImage )
 {
   typename ImageType::IndexType minI;
   typename ImageType::IndexType maxI;

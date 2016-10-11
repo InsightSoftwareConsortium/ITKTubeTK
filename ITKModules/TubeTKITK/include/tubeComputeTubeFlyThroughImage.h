@@ -24,12 +24,13 @@ limitations under the License.
 #define __tubeComputeTubeFlyThroughImage_h
 
 // ITK includes
-#include <itkObject.h>
+#include <itkProcessObject.h>
 #include <itkGroupSpatialObject.h>
 
 // TubeTK includes
-#include "itktubeComputeTubeFlyThroughImageFilter.h"
 #include "tubeWrappingMacros.h"
+
+#include "itktubeComputeTubeFlyThroughImageFilter.h"
 
 namespace tube
 {
@@ -40,12 +41,12 @@ namespace tube
 
 template< class TPixel, unsigned int Dimension >
 class ComputeTubeFlyThroughImage:
-  public itk::Object
+  public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
   typedef ComputeTubeFlyThroughImage                 Self;
-  typedef itk::Object                                SuperClass;
+  typedef itk::ProcessObject                         Superclass;
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 
@@ -62,7 +63,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( ComputeTubeFlyThroughImage, Object );
+  itkTypeMacro( ComputeTubeFlyThroughImage, ProcessObject );
 
   /** Set/Get tube id for which the fly through image is to be generated */
   tubeWrapSetMacro( TubeId, unsigned long, Filter );

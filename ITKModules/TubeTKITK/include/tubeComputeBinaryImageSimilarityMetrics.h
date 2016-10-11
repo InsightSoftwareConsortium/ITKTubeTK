@@ -23,10 +23,13 @@ limitations under the License.
 #ifndef __tubeComputeBinaryImageSimilarityMetrics_h
 #define __tubeComputeBinaryImageSimilarityMetrics_h
 
-#include "itkLabelOverlapMeasuresImageFilter.h"
-#include "itkObject.h"
-//#include "itkNumericTraits.h"
+// ITK Includes
+#include "itkProcessObject.h"
+
+// TubeTK Includes
 #include "tubeWrappingMacros.h"
+
+#include "itkLabelOverlapMeasuresImageFilter.h"
 
 namespace tube
 {
@@ -37,11 +40,12 @@ namespace tube
 
 template< class TInputImage >
 class ComputeBinaryImageSimilarityMetrics:
-  public itk::Object
+  public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
   typedef ComputeBinaryImageSimilarityMetrics     Self;
+  typedef itk::ProcessObject                      Superclass;
   typedef itk::SmartPointer< Self >               Pointer;
   typedef itk::SmartPointer< const Self >         ConstPointer;
   typedef TInputImage                             InputImageType;
@@ -54,7 +58,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(ComputeBinaryImageSimilarityMetrics, Object);
+  itkTypeMacro(ComputeBinaryImageSimilarityMetrics, ProcessObject);
 
   /** Set the source image. */
   tubeWrapSetConstObjectMacro( SourceImage, InputImageType, Filter );
