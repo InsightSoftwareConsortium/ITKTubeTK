@@ -26,12 +26,13 @@ limitations under the License.
 // ITK includes
 #include <itkGroupSpatialObject.h>
 #include <itkMacro.h>
-#include <itkObject.h>
+#include <itkProcessObject.h>
 
 
 // TubeTK includes
-#include "itktubeTubeSpatialObjectToImageFilter.h"
 #include "tubeWrappingMacros.h"
+
+#include "itktubeTubeSpatialObjectToImageFilter.h"
 
 namespace tube
 {
@@ -42,12 +43,12 @@ namespace tube
 
 template< unsigned int Dimension, class TOutputPixel >
 class ConvertTubesToImage:
-  public itk::Object
+  public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
   typedef ConvertTubesToImage                        Self;
-  typedef itk::Object                                SuperClass;
+  typedef itk::ProcessObject                         Superclass;
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 
@@ -60,7 +61,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(ConvertTubesToImage, Object);
+  itkTypeMacro(ConvertTubesToImage, ProcessObject);
 
   /** Set if the tube should be full inside */
   tubeWrapSetMacro(UseRadius, bool, Filter);

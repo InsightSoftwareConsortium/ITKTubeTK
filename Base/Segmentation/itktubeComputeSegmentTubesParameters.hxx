@@ -144,7 +144,8 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
   itk::ImageRegionIteratorWithIndex< ScaleImageType > itS(
     m_ScaleInputImage, region );
 
-  typename RidgeExtractorType::Pointer ridgeExtractor = RidgeExtractorType::New();
+  typename RidgeExtractorType::Pointer ridgeExtractor =
+    RidgeExtractorType::New();
   ridgeExtractor->SetInputImage( m_InputImage );
 
   const double BIGD = 9999999999;
@@ -206,8 +207,8 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
           double roundness = 0;
           double curvature = 0;
           double levelness = 0;
-          ridgeness = ridgeExtractor->Ridgeness( cIndx, intensity, roundness, curvature,
-            levelness );
+          ridgeness = ridgeExtractor->Ridgeness( cIndx, intensity,
+            roundness, curvature, levelness );
           instance[0] = intensity;
           instance[1] = ridgeness;
           instance[2] = roundness;
@@ -216,18 +217,19 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
           m_SeedData.push_back( instance );
           m_SeedDataIndexList.push_back( cIndx );
 
-          if ( ridgeExtractor->LocalRidge( cIndx ) == RidgeExtractorType::SUCCESS )
+          if( ridgeExtractor->LocalRidge( cIndx ) ==
+            RidgeExtractorType::SUCCESS )
             {
-            if ( scale < scaleMin )
+            if( scale < scaleMin )
               {
               scaleMin = scale;
               }
-            else if ( scale > scaleMax )
+            else if( scale > scaleMax )
               {
               scaleMax = scale;
               }
-            ridgeness = ridgeExtractor->Ridgeness( cIndx, intensity, roundness,
-              curvature, levelness );
+            ridgeness = ridgeExtractor->Ridgeness( cIndx, intensity,
+              roundness, curvature, levelness );
             instance[0] = intensity;
             instance[1] = ridgeness;
             instance[2] = roundness;
@@ -248,8 +250,8 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
           double roundness = 0;
           double curvature = 0;
           double levelness = 0;
-          ridgeness = ridgeExtractor->Ridgeness( cIndx, intensity, roundness, curvature,
-            levelness );
+          ridgeness = ridgeExtractor->Ridgeness( cIndx, intensity,
+            roundness, curvature, levelness );
           instance[0] = intensity;
           instance[1] = ridgeness;
           instance[2] = roundness;

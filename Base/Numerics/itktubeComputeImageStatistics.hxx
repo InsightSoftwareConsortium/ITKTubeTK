@@ -122,18 +122,12 @@ ComputeImageStatistics< TPixel, VDimension >
     }
 
   //Compute connected components statistics
-  m_CompMean.SetSize( m_NumberOfComponents );
-  m_CompMean.Fill( 0 );
-  m_CompMin.SetSize( m_NumberOfComponents );
-  m_CompMin.Fill( 0 );
-  m_CompMax.SetSize( m_NumberOfComponents );
-  m_CompMax.Fill( 0 );
-  m_CompStdDev.SetSize( m_NumberOfComponents );
-  m_CompStdDev.Fill( 0 );
-  m_CompCount.SetSize( m_NumberOfComponents );
-  m_CompCount.Fill( 0 );
-  m_CompValue.SetSize( m_NumberOfComponents );
-  m_CompValue.Fill( 0 );
+  m_CompMean.resize( m_NumberOfComponents, 0 );
+  m_CompMin.resize( m_NumberOfComponents, 0 );
+  m_CompMax.resize( m_NumberOfComponents, 0 );
+  m_CompStdDev.resize( m_NumberOfComponents, 0 );
+  m_CompCount.resize( m_NumberOfComponents, 0 );
+  m_CompValue.resize( m_NumberOfComponents, 0 );
 
   maskIter.GoToBegin();
   connCompIter.GoToBegin();

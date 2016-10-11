@@ -18,9 +18,13 @@
 #ifndef __tubeComputeSegmentTubesParameters_h
 #define __tubeComputeSegmentTubesParameters_h
 
-#include "itkObject.h"
-#include <itktubeComputeSegmentTubesParameters.h>
+// ITK Includes
+#include "itkProcessObject.h"
+
+// TubeTK Includes
 #include "tubeWrappingMacros.h"
+
+#include "itktubeComputeSegmentTubesParameters.h"
 
 namespace tube
 {
@@ -31,15 +35,16 @@ namespace tube
 
 template< class TPixel, unsigned int VDimension >
 class ComputeSegmentTubesParameters:
-  public itk::Object
+  public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
   typedef ComputeSegmentTubesParameters                Self;
+  typedef itk::ProcessObject                           Superclass;
   typedef itk::SmartPointer< Self >                    Pointer;
   typedef itk::SmartPointer< const Self >              ConstPointer;
-  typedef itk::tube::ComputeSegmentTubesParameters
-    < TPixel, VDimension > FilterType;
+  typedef itk::tube::ComputeSegmentTubesParameters< TPixel, VDimension >
+    FilterType;
 
   typedef typename FilterType::InputImageType     InputImageType;
   typedef typename FilterType::MaskImageType      MaskImageType;
@@ -49,7 +54,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( ComputeSegmentTubesParameters, Object );
+  itkTypeMacro( ComputeSegmentTubesParameters, ProcessObject );
 
   /** Set/Get the input image */
   tubeWrapSetObjectMacro( InputImage, InputImageType, Filter );

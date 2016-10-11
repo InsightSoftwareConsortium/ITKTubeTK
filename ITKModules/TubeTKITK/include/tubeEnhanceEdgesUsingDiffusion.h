@@ -24,11 +24,12 @@ limitations under the License.
 #define __tubeEnhanceEdgesUsingDiffusion_h
 
 // ITK includes
-#include <itkObject.h>
-#include <itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h>
+#include <itkProcessObject.h>
 
 // TubeTK includes
 #include "tubeWrappingMacros.h"
+
+#include "itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h"
 
 namespace tube
 {
@@ -44,6 +45,7 @@ class EnhanceEdgesUsingDiffusion:
 public:
   /** Standard class typedefs. */
   typedef EnhanceEdgesUsingDiffusion                Self;
+  typedef itk::ProcessObject                        Superclass;
   typedef itk::SmartPointer< Self >                 Pointer;
   typedef itk::SmartPointer< const Self >           ConstPointer;
 
@@ -57,7 +59,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( EnhanceEdgesUsingDiffusion, Object );
+  itkTypeMacro( EnhanceEdgesUsingDiffusion, ProcessObject );
 
   /** Set/Get input image */
   tubeWrapSetConstObjectMacro( Input, InputImageType, Filter );

@@ -23,10 +23,13 @@ limitations under the License.
 #ifndef __tubeConvertSpatialGraphToImage_h
 #define __tubeConvertSpatialGraphToImage_h
 
-#include "itktubeConvertSpatialGraphToImageFilter.h"
-#include "tubeWrappingMacros.h"
-#include "itkObject.h"
+// ITK Includes
+#include "itkProcessObject.h"
 
+// TubeTK Includes
+#include "tubeWrappingMacros.h"
+
+#include "itktubeConvertSpatialGraphToImageFilter.h"
 
 namespace tube
 {
@@ -37,11 +40,12 @@ namespace tube
 
 template< typename TInputImage, typename TOutputImage >
 class ConvertSpatialGraphToImage:
-  public itk::Object
+  public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
   typedef ConvertSpatialGraphToImage      Self;
+  typedef ProcessObject                   Superclass;
   typedef itk::SmartPointer< Self >       Pointer;
   typedef itk::SmartPointer< const Self > ConstPointer;
 
@@ -57,7 +61,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( ConvertSpatialGraphToImage, Object );
+  itkTypeMacro( ConvertSpatialGraphToImage, ProcessObject );
 
   /** Get Adjacency Matrix Image */
   tubeWrapGetMacro( AdjacencyMatrixImage, OutputImagePointer, Filter );

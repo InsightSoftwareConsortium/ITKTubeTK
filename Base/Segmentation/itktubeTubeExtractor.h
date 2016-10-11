@@ -105,11 +105,11 @@ public:
 
   /**
    * Set the input image */
-  void SetInputImage( typename ImageType::Pointer inputImage );
+  void SetInputImage( ImageType * inputImage );
 
   /**
    * Optionally set a different input image to use for radius estimation */
-  void SetRadiusInputImage( typename ImageType::Pointer radiusInputImage );
+  void SetRadiusInputImage( ImageType * radiusInputImage );
 
   /**
    * Get the input image */
@@ -117,11 +117,11 @@ public:
   itkGetConstObjectMacro( RadiusInputImage, ImageType );
   /**
    * Set the tube mask image */
-  void SetTubeMaskImage( typename TubeMaskImageType::Pointer & mask );
+  void SetTubeMaskImage( TubeMaskImageType * mask );
 
   /**
    * Get the tube mask image */
-  typename TubeMaskImageType::Pointer GetTubeMaskImage( void );
+  TubeMaskImageType * GetTubeMaskImage( void );
 
   /**
    * Set Data Minimum */
@@ -178,13 +178,12 @@ public:
   /**
    * Extract the ND tube given the position of the first point
    * and the tube ID */
-  typename TubeType::Pointer ExtractTube( const ContinuousIndexType & x,
-    unsigned int tubeID,
-    bool verbose = false );
+  TubeType * ExtractTube( const ContinuousIndexType & x,
+    unsigned int tubeID, bool verbose = false );
 
   /**
    * Get the list of tubes that have been extracted */
-  typename TubeGroupType::Pointer GetTubeGroup( void );
+  TubeGroupType * GetTubeGroup( void );
 
   /**
    * Set the list of tubes that have been extracted */

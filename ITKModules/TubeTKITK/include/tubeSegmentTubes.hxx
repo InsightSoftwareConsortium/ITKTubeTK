@@ -27,24 +27,7 @@ template< class TInputImage >
 SegmentTubes< TInputImage >
 ::SegmentTubes( void )
 {
-  m_TubeExtractorFilter = TubeExtractorFilterType::New();
-}
-
-template< class TInputImage >
-void
-SegmentTubes< TInputImage >
-::SetTubeMaskImage( typename
-  TubeMaskImageType::Pointer & mask )
-{
-  return m_TubeExtractorFilter->SetTubeMaskImage( mask );
-}
-
-template< class TInputImage >
-typename itk::tube::TubeExtractor< TInputImage >::TubeMaskImageType::Pointer
-SegmentTubes< TInputImage >
-::GetTubeMaskImage( void )
-{
-  return m_TubeExtractorFilter->GetTubeMaskImage();
+  m_Filter = FilterType::New();
 }
 
 template< class TInputImage >
@@ -52,65 +35,17 @@ bool
 SegmentTubes< TInputImage >
 ::AddTube( TubeType * tube )
 {
-  return m_TubeExtractorFilter->AddTube( tube );
+  return m_Filter->AddTube( tube );
 }
 
 template< class TInputImage >
-void
-SegmentTubes< TInputImage >
-::SetExtractBoundMin( const IndexType & dataMin )
-{
-  return m_TubeExtractorFilter->SetExtractBoundMin( dataMin );
-}
-
-template< class TInputImage >
-void
-SegmentTubes< TInputImage >
-::SetExtractBoundMax( const IndexType & dataMax )
-{
-  return m_TubeExtractorFilter->SetExtractBoundMax( dataMax );
-}
-
-template< class TInputImage >
-typename itk::tube::TubeExtractor< TInputImage >::TubeType::Pointer
+typename itk::tube::TubeExtractor< TInputImage >::TubeType *
 SegmentTubes< TInputImage >
 ::ExtractTube( const ContinuousIndexType & x,
     unsigned int tubeID,
     bool verbose )
 {
-  return m_TubeExtractorFilter->ExtractTube( x, tubeID, verbose );
-}
-
-template< class TInputImage >
-typename itk::tube::TubeExtractor< TInputImage >::TubeGroupType::Pointer
-SegmentTubes< TInputImage >
-::GetTubeGroup( void )
-{
-  return m_TubeExtractorFilter->GetTubeGroup();
-}
-
-template< class TInputImage >
-typename itk::tube::RidgeExtractor< TInputImage >::Pointer
-SegmentTubes< TInputImage >
-::GetRidgeOp( void )
-{
-  return m_TubeExtractorFilter->GetRidgeOp();
-}
-
-template< class TInputImage >
-typename itk::tube::RadiusExtractor2< TInputImage >::Pointer
-SegmentTubes< TInputImage >
-::GetRadiusOp( void )
-{
-  return m_TubeExtractorFilter->GetRadiusOp();
-}
-
-template< class TInputImage >
-typename itk::tube::TubeExtractor< TInputImage >::Pointer
-SegmentTubes< TInputImage >
-::GetTubeOp( void )
-{
-  return m_TubeExtractorFilter;
+  return m_Filter->ExtractTube( x, tubeID, verbose );
 }
 
 template< class TInputImage >
@@ -120,26 +55,7 @@ SegmentTubes< TInputImage >
 {
   Superclass::PrintSelf( os, indent );
 
-  if( m_TubeExtractorFilter->GetInputImage() )
-    {
-    os << indent << "Input Image = " <<
-      m_TubeExtractorFilter->GetInputImage() << std::endl;
-    }
-  else
-    {
-    os << indent << "Input Image = NULL" << std::endl;
-    }
-
-  if( m_TubeExtractorFilter->GetRadiusInputImage() )
-    {
-    os << indent << "Radius Input Image = " <<
-      m_TubeExtractorFilter->GetRadiusInputImage()
-      << std::endl;
-    }
-  else
-    {
-    os << indent << "Radius Input Image = NULL" << std::endl;
-    }
+  os << indent << m_Filter << std::endl;
 
 }
 

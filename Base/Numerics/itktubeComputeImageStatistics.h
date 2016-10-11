@@ -72,12 +72,12 @@ public:
   itkGetMacro( Quantiles, std::vector<float> );
 
   /** Get Components */
-  itkGetMacro( CompMean, itk::Array< double > );
-  itkGetMacro( CompMin, itk::Array< double > );
-  itkGetMacro( CompMax, itk::Array< double > );
-  itkGetMacro( CompStdDev, itk::Array< double > );
-  itkGetMacro( CompCount, itk::Array< double > );
-  itkGetMacro( CompValue, itk::Array< TPixel > );
+  itkGetMacro( CompMean, std::vector< double > );
+  itkGetMacro( CompMin, std::vector< double > );
+  itkGetMacro( CompMax, std::vector< double > );
+  itkGetMacro( CompStdDev, std::vector< double > );
+  itkGetMacro( CompCount, std::vector< double > );
+  itkGetMacro( CompValue, std::vector< TPixel > );
   itkGetMacro( NumberOfComponents, unsigned int );
 
   /** Write statistics to a CSV formatted file */
@@ -100,12 +100,12 @@ private:
 
   std::vector<float>           m_Quantiles;
 
-  itk::Array< double >         m_CompMean;
-  itk::Array< double >         m_CompMin;
-  itk::Array< double >         m_CompMax;
-  itk::Array< double >         m_CompStdDev;
-  itk::Array< double >         m_CompCount;
-  itk::Array< TPixel >         m_CompValue;
+  std::vector< double >         m_CompMean;
+  std::vector< double >         m_CompMin;
+  std::vector< double >         m_CompMax;
+  std::vector< double >         m_CompStdDev;
+  std::vector< double >         m_CompCount;
+  std::vector< TPixel >         m_CompValue;
 
   unsigned int                 m_NumberOfComponents;
 

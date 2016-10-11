@@ -23,16 +23,17 @@ limitations under the License.
 #ifndef __tubeMergeAdjacentImages_h
 #define __tubeMergeAdjacentImages_h
 
-// ITK includes
-#include <itkMacro.h>
-#include <itkObject.h>
-
-// TubeTK includes
-#include "itktubeMergeAdjacentImagesFilter.h"
-#include "tubeWrappingMacros.h"
-
 // standard includes
 #include <string>
+
+// ITK includes
+#include <itkMacro.h>
+#include <itkProcessObject.h>
+
+// TubeTK includes
+#include "tubeWrappingMacros.h"
+
+#include "itktubeMergeAdjacentImagesFilter.h"
 
 namespace tube
 {
@@ -49,7 +50,7 @@ class MergeAdjacentImages:
 public:
   /** Standard class typedefs. */
   typedef MergeAdjacentImages                                  Self;
-  typedef itk::Object                                          Superclass;
+  typedef itk::ProcessObject                                   Superclass;
   typedef itk::SmartPointer< Self >                            Pointer;
   typedef itk::SmartPointer< const Self >                      ConstPointer;
 
@@ -63,7 +64,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(MergeAdjacentImages, Object);
+  itkTypeMacro(MergeAdjacentImages, ProcessObject);
 
   /** Set input image 1 */
   tubeWrapSetConstObjectMacro( Input1, ImageType, Filter );

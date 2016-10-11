@@ -80,37 +80,69 @@ limitations under the License.
       }                                                                 \
     }
 
+/** Set input using pointer to object type, without testing if changed */
+#define tubeWrapForceSetObjectMacro( name, type, wrap_filter_object_name ) \
+  void Set##name( type * value )                                           \
+    {                                                                      \
+    this->m_##wrap_filter_object_name->Set##name( value );                 \
+    this->Modified();                                                      \
+    }
+
 /** Set input using reference to object type */
-#define tubeWrapSetReferenceMacro( name, type, wrap_filter_object_name )      \
-  void Set##name( type & value )                                              \
-    {                                                                         \
-    if( this->m_##wrap_filter_object_name->Get##name() != value )             \
-      {                                                                       \
-      this->m_##wrap_filter_object_name->Set##name( value );                  \
-      this->Modified();                                                       \
-      }                                                                       \
+#define tubeWrapSetReferenceMacro( name, type, wrap_filter_object_name )  \
+  void Set##name( type & value )                                          \
+    {                                                                     \
+    if( this->m_##wrap_filter_object_name->Get##name() != value )         \
+      {                                                                   \
+      this->m_##wrap_filter_object_name->Set##name( value );              \
+      this->Modified();                                                   \
+      }                                                                   \
+    }
+
+/** Set input using reference to object type */
+#define tubeWrapForceSetReferenceMacro( name, type, wrap_filter_object_name )  \
+  void Set##name( type & value )                                        \
+    {                                                                   \
+    this->m_##wrap_filter_object_name->Set##name( value );              \
+    this->Modified();                                                   \
     }
 
 /** Set input using const pointer to object type */
-#define tubeWrapSetConstObjectMacro( name, type, wrap_filter_object_name )   \
-  void Set##name( const type * value )                                       \
-    {                                                                        \
-    if( this->m_##wrap_filter_object_name->Get##name() != value )            \
-      {                                                                      \
-      this->m_##wrap_filter_object_name->Set##name( value );                 \
-      this->Modified();                                                      \
-      }                                                                      \
+#define tubeWrapSetConstObjectMacro( name, type, wrap_filter_object_name ) \
+  void Set##name( const type * value )                                     \
+    {                                                                      \
+    if( this->m_##wrap_filter_object_name->Get##name() != value )          \
+      {                                                                    \
+      this->m_##wrap_filter_object_name->Set##name( value );               \
+      this->Modified();                                                    \
+      }                                                                    \
+    }
+
+/** Set input using const pointer to object type */
+#define tubeWrapForceSetConstObjectMacro( name, type, wrap_filter_object_name ) \
+  void Set##name( const type * value )                                   \
+    {                                                                    \
+    this->m_##wrap_filter_object_name->Set##name( value );               \
+    this->Modified();                                                    \
     }
 
 /** Set input using const reference to object type */
 #define tubeWrapSetConstReferenceMacro( name, type, wrap_filter_object_name ) \
   void Set##name( const type & value )                                \
-    {                                                                         \
-    if( this->m_##wrap_filter_object_name->Get##name() != value )             \
-      {                                                                       \
-      this->m_##wrap_filter_object_name->Set##name( value );                  \
-      this->Modified();                                                       \
-      }                                                                       \
+    {                                                                 \
+    if( this->m_##wrap_filter_object_name->Get##name() != value )     \
+      {                                                               \
+      this->m_##wrap_filter_object_name->Set##name( value );          \
+      this->Modified();                                               \
+      }                                                               \
+    }
+
+/** Set input using const reference to object type */
+#define tubeWrapForceSetConstReferenceMacro( name, type, wrap_filter_object_name ) \
+  void Set##name( const type & value )                                \
+    {                                                                 \
+    this->m_##wrap_filter_object_name->Set##name( value );            \
+    this->Modified();                                                 \
     }
 
 /** Redirect call to a function of the same named in the wrapped filter */
@@ -121,7 +153,7 @@ limitations under the License.
     }
 
 /** Redirect call to Update() wrapped filter's Update() */
-#define tubeWrapUpdateMacro( wrap_filter_object_name )                        \
-  tubeWrapCallMacro(Update,wrap_filter_object_name)                           \
+#define tubeWrapUpdateMacro( wrap_filter_object_name )                   \
+  tubeWrapCallMacro(Update,wrap_filter_object_name)                      \
 
 #endif

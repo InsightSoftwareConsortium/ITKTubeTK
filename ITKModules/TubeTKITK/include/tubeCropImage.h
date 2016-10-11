@@ -23,8 +23,11 @@ limitations under the License.
 #ifndef __tubeCropImage_h
 #define __tubeCropImage_h
 
+#include "itkProcessObject.h"
+
+#include "tubeWrappingMacros.h"
+
 #include "itktubeCropImageFilter.h"
-#include "itkObject.h"
 
 
 namespace tube
@@ -36,11 +39,12 @@ namespace tube
 
 template< typename TInputImage, typename TOutputImage >
 class CropImage:
-  public itk::Object
+  public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
   typedef CropImage                       Self;
+  typedef itk::ProcessObject              Superclass;
   typedef itk::SmartPointer< Self >       Pointer;
   typedef itk::SmartPointer< const Self > ConstPointer;
 
@@ -48,43 +52,62 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(CropImage, Object);
+  itkTypeMacro(CropImage, ProcessObject);
 
-  typedef TInputImage ImageType;
 
-  void SetMin( typename ImageType::IndexType roiMin );
+  /** Typedef to images */
+  typedef TInputImage                          InputImageType;
+  typedef TOutputImage                         OutputImageType;
+  typedef typename InputImageType::IndexType   InputIndexType;
+  typedef typename InputImageType::SizeType    InputSizeType;
 
-  void SetMax( typename ImageType::IndexType roiMax );
+  typedef itk::tube::CropImageFilter< InputImageType,
+    OutputImageType >                          FilterType;
 
-  void SetSize( typename ImageType::SizeType roiSize );
+  tubeWrapSetMacro( Min, InputIndexType, Filter );
+  tubeWrapGetMacro( Min, InputIndexType, Filter );
 
-  void SetCenter( typename ImageType::IndexType roiCenter );
+  tubeWrapSetMacro( Max, InputIndexType, Filter );
+  tubeWrapGetMacro( Max, InputIndexType, Filter );
 
-  void SetBoundary( typename ImageType::IndexType roiBoundary );
+  tubeWrapSetMacro( Size, InputSizeType, Filter );
+  tubeWrapGetMacro( Size, InputSizeType, Filter );
 
-  void SetMatchVolume( typename ImageType::ConstPointer matchVolume );
+  tubeWrapSetMacro( Center, InputIndexType, Filter );
+  tubeWrapGetMacro( Center, InputIndexType, Filter );
 
-  void SetMatchMask( typename ImageType::Pointer maskImage );
+  tubeWrapSetMacro( Boundary, InputIndexType, Filter );
+  tubeWrapGetMacro( Boundary, InputIndexType, Filter );
 
-  void SetSplitInput( typename ImageType::IndexType splitIndex,
-    typename ImageType::IndexType roiIndex );
+  tubeWrapForceSetConstObjectMacro( MatchVolume, InputImageType, Filter );
 
-  void SetInput( const TInputImage *inputImage );
-  void Update();
-  typename TOutputImage::Pointer GetOutput();
+  tubeWrapForceSetConstObjectMacro( MatchMask, InputImageType, Filter );
+
+  void SetSplitInput( InputIndexType splitIndex, InputIndexType roiIndex );
+
+  tubeWrapSetConstObjectMacro( Input, InputImageType, Filter );
+  tubeWrapGetConstObjectMacro( Input, InputImageType, Filter );
+
+  tubeWrapCallMacro( Update, Filter );
+
+  tubeWrapGetObjectMacro( Output, OutputImageType, Filter );
 
 protected:
   CropImage( void );
   ~CropImage() {}
+
   void PrintSelf(std::ostream & os, itk::Indent indent) const;
 
 private:
   /** itkCropImageFilter parameters **/
-  CropImage(const Self &);
-  void operator=(const Self &);
+  CropImage( const Self & );
 
-  typedef itk::tube::CropImageFilter< ImageType, ImageType > CropFilterType;
-  typename CropFilterType::Pointer m_CropFilter;
+  void operator = ( const Self & );
+
+  // To remove warning "was hidden [-Woverloaded-virtual]"
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+
+  typename FilterType::Pointer     m_Filter;
 
 };
 } // End namespace tube

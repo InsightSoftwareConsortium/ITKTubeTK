@@ -24,11 +24,13 @@ limitations under the License.
 #define __tubeSegmentUsingOtsuThreshold_h
 
 // ITK includes
-#include <itkObject.h>
-#include <itkOtsuThresholdImageFilter.h>
+#include "itkProcessObject.h"
 
 // TubeTK includes
 #include "tubeWrappingMacros.h"
+
+#include "itkOtsuThresholdImageFilter.h"
+
 
 namespace tube
 {
@@ -40,11 +42,12 @@ namespace tube
 template< class TInputPixel, unsigned int Dimension,
   class TMaskPixel = unsigned char >
 class SegmentUsingOtsuThreshold:
-  public itk::Object
+  public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
   typedef SegmentUsingOtsuThreshold                 Self;
+  typedef itk::ProcessObject                        Superclass;
   typedef itk::SmartPointer< Self >                 Pointer;
   typedef itk::SmartPointer< const Self >           ConstPointer;
 
@@ -59,7 +62,7 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( SegmentUsingOtsuThreshold, Object );
+  itkTypeMacro( SegmentUsingOtsuThreshold, ProcessObject );
 
   /** Set/Get mask image */
   tubeWrapSetConstObjectMacro( MaskImage, MaskImageType, Filter );

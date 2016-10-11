@@ -63,7 +63,7 @@ public:
 
   typedef Image< TPixel, VDimension >         InputImageType;
   typedef typename InputImageType::Pointer    InputImagePointer;
-  typedef int                                 MaskPixelType;
+  typedef short                               MaskPixelType;
   typedef Image< MaskPixelType, VDimension >  MaskImageType;
   typedef typename MaskImageType::Pointer     MaskImagePointer;
   typedef float                               ScalePixelType;

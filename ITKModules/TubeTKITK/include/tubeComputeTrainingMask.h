@@ -23,9 +23,13 @@ limitations under the License.
 #ifndef __tubeComputeTrainingMask_h
 #define __tubeComputeTrainingMask_h
 
-#include "itktubeComputeTrainingMaskFilter.h"
-#include "itkObject.h"
+// ITK Includes
+#include "itkProcessObject.h"
+
+// TubeTK Includes
 #include "tubeWrappingMacros.h"
+
+#include "itktubeComputeTrainingMaskFilter.h"
 
 namespace tube
 {
@@ -41,6 +45,7 @@ class ComputeTrainingMask:
   public:
     /** Standard class typedefs. */
     typedef ComputeTrainingMask                             Self;
+    typedef itk::ProcessObject                              Superclass;
     typedef itk::SmartPointer< Self >                       Pointer;
     typedef itk::SmartPointer< const Self >                 ConstPointer;
 
@@ -48,7 +53,7 @@ class ComputeTrainingMask:
     itkNewMacro( Self );
 
     /** Run-time type information (and related methods). */
-    itkTypeMacro( ComputeTrainingMask, Object );
+    itkTypeMacro( ComputeTrainingMask, ProcessObject );
 
 
     /** Typedef to images */

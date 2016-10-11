@@ -24,11 +24,12 @@ limitations under the License.
 #define __tubeComputeImageSimilarityMetrics_h
 
 // ITK includes
-#include <itkObject.h>
+#include <itkProcessObject.h>
 
 // TubeTK includes
-#include "itktubeComputeImageSimilarityMetrics.h"
 #include "tubeWrappingMacros.h"
+
+#include "itktubeComputeImageSimilarityMetrics.h"
 
 namespace tube
 {
@@ -41,12 +42,12 @@ namespace tube
 
 template< class TInputImage >
 class ComputeImageSimilarityMetrics:
-  public itk::Object
+  public itk::ProcessObject
 {
 public:
   /** Standard class typedefs. */
   typedef ComputeImageSimilarityMetrics              Self;
-  typedef itk::Object                                SuperClass;
+  typedef itk::ProcessObject                         Superclass;
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 
