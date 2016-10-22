@@ -53,8 +53,10 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
   set( TubeTK_CTK_VTK_ARGS )
   if( TubeTK_USE_VTK )
     list( APPEND TubeTK_CTK_VTK_ARGS
+      -DVTK_DIR:PATH=${VTK_DIR}
+      -DCTK_USE_SYSTEM_VTK:BOOL=OFF
       -DCTK_LIB_Visualization/VTK/Widgets:BOOL=ON
-      -DVTK_DIR:PATH=${VTK_DIR} )
+      -DCTK_LIB_Visualization/VTK/Widgets_USE_TRANSFER_FUNCTION_CHARTS:BOOL=ON )
   endif( TubeTK_USE_VTK )
 
   ExternalProject_Add( ${proj}
