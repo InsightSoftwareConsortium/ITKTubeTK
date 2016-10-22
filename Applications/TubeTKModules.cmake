@@ -37,7 +37,6 @@ set( TubeTK_${proj}_MODULES
   ComputeTubeProbability
   ConvertCSVToImages
   ConvertImagesToCSV
-  ConvertInnerOpticToPlus
   ConvertShrunkenSeedImageToList
   ConvertToMetaImage
   ConvertTRE
@@ -76,14 +75,6 @@ set( TubeTK_${proj}_MODULES
   SimulateAcquisitionArtifactsUsingPrior
   TubeMath
   TreeMath )
-
-set( TubeTK_${proj}_ImageViewer_MODULES "" )
-if( TubeTK_BUILD_IMAGE_VIEWER )
-  set( TubeTK_${proj}_ImageViewer_MODULES
-     ImageEditor )
-  list( APPEND TubeTK_${proj}_MODULES
-    ${TubeTK_${proj}_ImageViewer_MODULES} )
-endif( TubeTK_BUILD_IMAGE_VIEWER)
 
 set( TubeTK_${proj}_Boost_MODULES )
 if( TubeTK_USE_BOOST )

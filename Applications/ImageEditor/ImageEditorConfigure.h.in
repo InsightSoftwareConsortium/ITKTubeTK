@@ -1,6 +1,0 @@
-/* Here is where the configuration variables get stored.
- * These values should only change when the target compile platform changes.
- */
-
-#cmakedefine USE_CLI
-#cmakedefine BUILD_SHARED_LIBS
