@@ -73,13 +73,13 @@ class ComputeTrainingMask:
     tubeWrapGetConstObjectMacro( NotVesselMask, ImageTypeShort,
       ComputeTrainingMaskFilter );
 
-    tubeWrapSetConstObjectMacro( Input, ImageType,
-      ComputeTrainingMaskFilter );
+    //tubeWrapSetObjectMacro( Input, ImageType,
+      //ComputeTrainingMaskFilter );
 
-    tubeWrapCallMacro( Update, ComputeTrainingMaskFilter );
+    //tubeWrapCallMacro( Update, ComputeTrainingMaskFilter );
 
-    tubeWrapGetObjectMacro( Output, ImageTypeShort,
-      ComputeTrainingMaskFilter);
+    //tubeWrapGetObjectMacro( Output, ImageTypeShort,
+      //ComputeTrainingMaskFilter);
 
   protected:
     ComputeTrainingMask( void );
