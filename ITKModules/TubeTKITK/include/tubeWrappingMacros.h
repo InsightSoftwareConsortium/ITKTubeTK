@@ -154,6 +154,6 @@ limitations under the License.
 
 /** Redirect call to Update() wrapped filter's Update() */
 #define tubeWrapUpdateMacro( wrap_filter_object_name )                   \
-  tubeWrapCallMacro(Update,wrap_filter_object_name)                      \
+  tubeWrapCallMacro( Update, wrap_filter_object_name )                   \
 
 #endif

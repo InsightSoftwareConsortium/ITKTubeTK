@@ -370,7 +370,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 {
   for( unsigned int i = 0; i < ImageDimension; i++)
     {
-    if( abs(array[i]-val) > tolerance )
+    if( fabs(array[i]-val) > tolerance )
       {
       return true;
       }

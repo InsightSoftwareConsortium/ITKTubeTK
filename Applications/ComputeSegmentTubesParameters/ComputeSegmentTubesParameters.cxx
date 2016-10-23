@@ -185,23 +185,23 @@ int DoIt( int argc, char * argv[] )
   std::vector< itk::ContinuousIndex< double, VDimension > > bkgIndex =
     filter->GetBkgDataIndexList();
 
-  for( int i = 0; i < seedData.size(); i++)
+  for( unsigned int i = 0; i < seedData.size(); i++)
     {
     vnl_vector< double > instance = seedData[i];
     WriteOutputData< VDimension >( outputDataStreamInit, seedIndex[i],
-            instance[0], instance[1], instance[2], instance[3], instance[4] );
+      instance[0], instance[1], instance[2], instance[3], instance[4] );
     }
-  for( int i = 0; i < tubeData.size(); i++)
+  for( unsigned int i = 0; i < tubeData.size(); i++)
     {
     vnl_vector< double > instance = tubeData[i];
     WriteOutputData< VDimension >( outputDataStreamTube, tubeIndex[i],
-            instance[0], instance[1], instance[2], instance[3], instance[4] );
+      instance[0], instance[1], instance[2], instance[3], instance[4] );
     }
-  for( int i = 0; i < bkgData.size(); i++)
+  for( unsigned int i = 0; i < bkgData.size(); i++)
     {
     vnl_vector< double > instance = bkgData[i];
     WriteOutputData< VDimension >( outputDataStreamBkg, bkgIndex[i],
-            instance[0], instance[1], instance[2], instance[3], instance[4] );
+      instance[0], instance[1], instance[2], instance[3], instance[4] );
     }
 
   outputDataStreamBkg.close();
