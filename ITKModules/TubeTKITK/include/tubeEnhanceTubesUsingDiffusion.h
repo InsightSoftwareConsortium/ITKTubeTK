@@ -127,6 +127,9 @@ private:
   EnhanceTubesUsingDiffusion(const Self &);
   void operator=(const Self &);
 
+  // To remove warning "was hidden [-Woverloaded-virtual]"
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+
   double                          m_MinSigma;
   double                          m_MaxSigma;
   unsigned int                    m_NumSigmaSteps;

@@ -73,24 +73,29 @@ class ComputeTrainingMask:
     tubeWrapGetConstObjectMacro( NotVesselMask, ImageTypeShort,
       ComputeTrainingMaskFilter );
 
-    //tubeWrapSetObjectMacro( Input, ImageType,
-      //ComputeTrainingMaskFilter );
+    tubeWrapSetObjectMacro( Input, ImageType,
+      ComputeTrainingMaskFilter );
 
-    //tubeWrapCallMacro( Update, ComputeTrainingMaskFilter );
+    tubeWrapCallMacro( Update, ComputeTrainingMaskFilter );
 
-    //tubeWrapGetObjectMacro( Output, ImageTypeShort,
-      //ComputeTrainingMaskFilter);
+    tubeWrapGetObjectMacro( Output, ImageTypeShort,
+      ComputeTrainingMaskFilter);
 
   protected:
     ComputeTrainingMask( void );
     ~ComputeTrainingMask() {}
+
     void PrintSelf( std::ostream & os, itk::Indent indent ) const;
   
   private:
     /** itkComputeTrainingMask parameters **/
     ComputeTrainingMask( const Self & );
+
     void operator=( const Self & );
-  
+
+    // To remove warning "was hidden [-Woverloaded-virtual]"
+    void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+
     typename FilterType::Pointer m_ComputeTrainingMaskFilter;
 
 };

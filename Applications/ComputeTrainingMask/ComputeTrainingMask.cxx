@@ -91,7 +91,8 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start( "Compute training mask" );
   tube::InfoMessage( "Compute training mask..." );
   typedef tube::ComputeTrainingMask<ImageType> ComputeTrainingMaskType;
-  typename ComputeTrainingMaskType::Pointer filter = ComputeTrainingMaskType::New();
+  typename ComputeTrainingMaskType::Pointer filter =
+    ComputeTrainingMaskType::New();
   filter->SetInput(imReader->GetOutput());
   filter->SetGap(gap);
   filter->SetNotVesselWidth(notVesselWidth);
@@ -115,7 +116,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start( "Creating Vessel Mask" );
   tube::InfoMessage( "Creating Vessel Mask..." );
   writer->SetFileName(outputVolume.c_str());
-  writer->SetInput(filter->GetOutput());
+  writer->SetInput( filter->GetOutput() );
   writer->Update();
   timeCollector.Stop("Creating Vessel Mask" );
   progress = 1.0;

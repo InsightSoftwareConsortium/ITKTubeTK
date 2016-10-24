@@ -103,6 +103,9 @@ private:
   EnhanceEdgesUsingDiffusion( const Self & );
   void operator=( const Self & );
 
+  // To remove warning "was hidden [-Woverloaded-virtual]"
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+
   typename FilterType::Pointer m_Filter;
 
 };
