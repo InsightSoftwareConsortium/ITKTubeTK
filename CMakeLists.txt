@@ -562,6 +562,9 @@ if( TubeTK_USE_QT )
   endif( TubeTK_USE_CTK )
 endif( TubeTK_USE_QT )
 
+find_package( JsonCpp REQUIRED )
+include_directories( ${JsonCpp_INCLUDE_DIRS} )
+
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 
@@ -571,11 +574,6 @@ if( TubeTK_USE_VTK )
   find_package( VTK REQUIRED )
   include( ${VTK_USE_FILE} )
 endif( TubeTK_USE_VTK )
-
-if( TubeTK_USE_JsonCpp )
-  find_package( JsonCpp REQUIRED )
-  include_directories( ${JsonCpp_INCLUDE_DIRS} )
-endif( TubeTK_USE_JsonCpp )
 
 if( TubeTK_USE_LIBSVM )
   find_package( LIBSVM REQUIRED )
