@@ -97,11 +97,16 @@ public:
 protected:
   ComputeImageStatistics( void );
   ~ComputeImageStatistics() {}
+
   void PrintSelf( std::ostream & os, itk::Indent indent ) const;
 
 private:
   ComputeImageStatistics( const Self & );
+
   void operator=( const Self & );
+
+  // To remove warning "was hidden [-Woverloaded-virtual]"
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
 
   typename FilterType::Pointer m_Filter;
 
