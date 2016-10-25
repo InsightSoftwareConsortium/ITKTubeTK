@@ -29,7 +29,7 @@ if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
    "${proj}_DIR is defined, but corresponds to a nonexistent directory" )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
-set( ${proj}_DEPENDENCIES "ITK" "SlicerExecutionModel")
+set( ${proj}_DEPENDENCIES "ITK" "SlicerExecutionModel" "JsonCpp" )
 
 # Include dependent projects, if any.
 ExternalProject_Include_Dependencies( ${proj}
@@ -63,6 +63,9 @@ if( NOT DEFINED ${proj}_DIR )
       -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
       -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
+      -DJsonCpp_DIR:PATH=${JsonCpp_DIR}
+      -DJsonCpp_LIBRARIES:PATH=${JsonCpp_LIBRARIES}
+      -DJsonCpp_INCLUDE_DIRS:PATH=${JsonCpp_INCLUDE_DIRS}
       ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
       -DITK_DIR:PATH=${ITK_DIR}
       -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
