@@ -81,8 +81,8 @@ set( TubeTK_ITK_MODULES
 ###########################################################
 
 # Common Toolkit
-set( CTK_URL ${github_protocol}://github.com/commontk/CTK.git )
-set( CTK_HASH_OR_TAG fefcea4e36c7e1a2bb509a0ea3dd0987a51c5327 )
+set( CTK_URL ${github_protocol}://github.com/aylward/CTK.git )
+set( CTK_HASH_OR_TAG 575dcc6040d4e8a5a87500f2f5e9a7e13b3cc928 )
 
 # Insight Segmentation and Registration Toolkit
 set( ITK_URL ${github_protocol}://github.com/Slicer/ITK.git )
