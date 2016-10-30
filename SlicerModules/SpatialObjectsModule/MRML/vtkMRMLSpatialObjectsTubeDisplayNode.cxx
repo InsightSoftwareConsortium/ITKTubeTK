@@ -31,14 +31,12 @@ limitations under the License.
 #include <vtkPointData.h>
 
 #include <vtkAssignAttribute.h>
-#include <vtkPolyDataTensorToColor.h>
 #include <vtkTubeFilter.h>
 
 #include <vtkMRMLScene.h>
 #include <vtkMRMLModelDisplayNode.h>
 #include "vtkMRMLSpatialObjectsDisplayPropertiesNode.h"
 #include "vtkMRMLSpatialObjectsTubeDisplayNode.h"
-#include <vtkPolyDataColorLinesByOrientation.h>
 
 //------------------------------------------------------------------------------
 vtkMRMLNodeNewMacro(vtkMRMLSpatialObjectsTubeDisplayNode);
