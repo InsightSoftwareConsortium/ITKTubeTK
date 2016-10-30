@@ -618,7 +618,8 @@ endif( TubeTK_USE_CPPCHECK )
 #   directory relative path.
 foreach( type RUNTIME LIBRARY INCLUDE SHARE ARCHIVE )
   set( SlicerExecutionModel_CLI_${type}_OUTPUT_DIRECTORY
-    ${CMAKE_BINARY_DIR}/${SlicerExecutionModel_CLI_INSTALL_${type}_DESTINATION} )
+    ${CMAKE_BINARY_DIR}/${SlicerExecutionModel_CLI_INSTALL_${type}_DESTINATION}
+    )
 endforeach()
 
 configure_file ( "${TubeTK_SOURCE_DIR}/CMake/tubetkConfigure.h.in"
@@ -642,31 +643,42 @@ if( WIN32 )
   foreach( _build_type "" Debug Release )
     list( APPEND TubeTK_EXECUTABLE_DIRS
       ${GenerateCLP_DIR}/${_build_type}
-      ${Boost_LIBRARY_DIR}
       ${ITK_DIR}/bin/${_build_type}
       ${TubeTK_BINARY_DIR}/bin/${_build_type}
       ${TubeTK_BINARY_DIR}/lib/TubeTK/${_build_type} )
     if( TubeTK_USE_VTK )
-      list( APPEND TubeTK_EXECUTABLE_DIRS
-        ${VTK_DIR}/bin/${_build_type} )
+      list( APPEND TubeTK_EXECUTABLE_DIRS ${VTK_DIR}/bin/${_build_type} )
     endif( TubeTK_USE_VTK )
     if( TubeTK_BUILD_USING_SLICER )
-      list( APPEND TubeTK_EXECUTABLE_DIRS
-        ${Slicer_DIR}/bin/${_build_type} )
+      list( APPEND TubeTK_EXECUTABLE_DIRS ${Slicer_DIR}/bin/${_build_type} )
     endif( TubeTK_BUILD_USING_SLICER )
   endforeach()
 else( WIN32 )
   set( TubeTK_EXECUTABLE_DIRS
     ${GenerateCLP_DIR}
-    ${Boost_LIBRARY_DIR}
     ${ITK_DIR}/bin
     ${TubeTK_BINARY_DIR}/bin
     ${TubeTK_BINARY_DIR}/lib/TubeTK
     CACHE INTERNAL "Bin and Lib dirs for running apps." FORCE )
   if( TubeTK_USE_VTK )
-    list( APPEND ${VTK_DIR}/bin )
+    list( APPEND TubeTK_EXECUTABLE_DIRS ${VTK_DIR}/bin )
   endif( TubeTK_USE_VTK )
+  if( TubeTK_BUILD_USING_SLICER )
+    list( APPEND TubeTK_EXECUTABLE_DIRS ${Slicer_DIR}/bin/${_build_type} )
+  endif( TubeTK_BUILD_USING_SLICER )
 endif( WIN32 )
+
+# Boost may be dynamically linked, so...
+if( TubeTK_USE_BOOST )
+  list( APPEND TubeTK_EXECUTABLE_DIRS ${Boost_LIBRARY_DIR} )
+endif( TubeTK_USE_BOOST )
+
+# TubeTK uses a static lib for JsonCpp, but others (e.g., Slicer) may use
+# a dynamic linked version, so we add it to our launcher path.
+if( USE_SYSTEM_SLICER_EXECUTION_MODEL )
+  get_filename_component( JsonCpp_LIBRARY_DIR ${JsonCpp_LIBRARY} DIRECTORY )
+  list( APPEND TubeTK_EXECUTABLE_DIRS ${JsonCpp_LIBRARY_DIR} )
+endif( USE_SYSTEM_SLICER_EXECUTION_MODEL )
 
 #
 # Configure a launcher for running TubeTK methods from the command line
