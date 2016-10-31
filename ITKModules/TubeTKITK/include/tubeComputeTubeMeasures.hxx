@@ -41,7 +41,7 @@ ComputeTubeMeasures< TPixel, Dimension >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
-  os << "Scale: " << this->GetScale() << std::endl;
+  os << "Filter: " << m_Filter << std::endl;
 }
 
 }

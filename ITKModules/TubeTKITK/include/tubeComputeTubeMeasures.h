@@ -49,8 +49,8 @@ public:
   typedef itk::SmartPointer< Self >                  Pointer;
   typedef itk::SmartPointer< const Self >            ConstPointer;
 
-  typedef itk::tube::ComputeTubeMeasuresFilter
-  < TPixel, Dimension > FilterType;
+  typedef itk::tube::ComputeTubeMeasuresFilter< TPixel, Dimension >
+    FilterType;
 
   typedef typename FilterType::InputImageType       InputImageType;
   typedef typename FilterType::OutputImageType      OutputImageType;
