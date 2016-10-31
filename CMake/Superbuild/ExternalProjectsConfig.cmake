@@ -38,7 +38,7 @@ set( Cppcheck_HASH_OR_TAG a9c9482d6e1b42457aedf8065e21523654f46124 )
 # TubeTK Image Viewer
 set( ImageViewer_URL
   ${github_protocol}://github.com/KitwareMedical/ImageViewer.git )
-set( ImageViewer_HASH_OR_TAG b1654489c2d22f4e16f637b7609d2a9ee8be3006 )
+set( ImageViewer_HASH_OR_TAG 2123736abe01a4cee91c231011086e3770058088 )
 
 # JsonCpp
 # http://midas3.kitware.com/midas/download/bitstream/366544/JsonCpp_r276.tar.gz
