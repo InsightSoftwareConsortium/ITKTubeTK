@@ -436,6 +436,16 @@ mark_as_advanced( USE_SYSTEM_LIBSVM )
 mark_as_advanced( LIBSVM_DIR )
 
 #
+# RandomForest setup.
+#
+option( TubeTK_USE_RandomForest
+ "Use RandomForest to enable additional functionality." ON )
+option( USE_SYSTEM_RandomForest
+  "Exclude RandomForest from superbuild and use an existing build." OFF )
+mark_as_advanced( USE_SYSTEM_RandomForest )
+mark_as_advanced( RandomForest_DIR )
+
+#
 # Qt framework setup.
 #
 option( TubeTK_USE_QT

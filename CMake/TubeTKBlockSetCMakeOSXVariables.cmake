@@ -57,6 +57,7 @@ if( APPLE )
   set( OSX_SDK_108_NAME "Mountain Lion" )
   set( OSX_SDK_109_NAME "Mavericks" )
   set( OSX_SDK_1010_NAME "Yosemite" )
+  set( OSX_SDK_1011_NAME "El Capitan" )
 
   set( OSX_SDK_ROOTS
     /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs
