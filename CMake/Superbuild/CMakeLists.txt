@@ -94,13 +94,16 @@ list_conditional_append( TubeTK_USE_VTK TubeTK_DEPENDENCIES "VTK" )
 list_conditional_append( TubeTK_USE_CPPCHECK TubeTK_DEPENDENCIES "Cppcheck" )
 
 list_conditional_append( TubeTK_BUILD_IMAGE_VIEWER TubeTK_DEPENDENCIES
- "ImageViewer" )
+  "ImageViewer" )
 
 list_conditional_append( TubeTK_USE_KWSTYLE TubeTK_DEPENDENCIES "KWStyle" )
 
 list_conditional_append( TubeTK_USE_JsonCpp TubeTK_DEPENDENCIES "JsonCpp" )
 
 list_conditional_append( TubeTK_USE_LIBSVM TubeTK_DEPENDENCIES "LIBSVM" )
+
+list_conditional_append( TubeTK_USE_RandomForest TubeTK_DEPENDENCIES
+  "RandomForest" )
 
 list_conditional_append( TubeTK_USE_CTK TubeTK_DEPENDENCIES "CTK" )
 
@@ -187,6 +190,7 @@ ExternalProject_Add( ${proj}
     -DTubeTK_USE_EXAMPLES_AS_TESTS:BOOL=${TubeTK_USE_EXAMPLES_AS_TESTS}
     -DTubeTK_USE_JsonCpp:BOOL=${TubeTK_USE_JsonCpp}
     -DTubeTK_USE_LIBSVM:BOOL=${TubeTK_USE_LIBSVM}
+    -DTubeTK_USE_RandomForest:BOOL=${TubeTK_USE_RandomForest}
     -DTubeTK_USE_PYTHON:BOOL=${TubeTK_USE_PYTHON}
     -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
     -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}

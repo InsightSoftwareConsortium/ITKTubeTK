@@ -46,14 +46,17 @@ set( JsonCpp_URL ${git_protocol}://github.com/KitwareMedical/jsoncpp.git )
 set( JsonCpp_HASH_OR_TAG 110d054227e9eb63faad48a1fb6a828ad0670e61 )
 
 # KWStyle
-set( KWStyle_URL
-  ${git_protocol}://github.com/Kitware/KWStyle.git )
+set( KWStyle_URL ${git_protocol}://github.com/Kitware/KWStyle.git )
 set( KWStyle_HASH_OR_TAG 0fc7fd8 )
 
 # LIBSVM
-set( LIBSVM_URL
-  ${git_protocol}://github.com/KitwareMedical/libsvm.git )
+set( LIBSVM_URL ${git_protocol}://github.com/KitwareMedical/libsvm.git )
 set( LIBSVM_HASH_OR_TAG 9bc3630f0f15fed7a5119c228c4d260574b4b6b2 )
+
+# RandomForest
+set( RandomForest_URL
+  ${git_protocol}://github.com/KitwareMedical/random-forest.git )
+set( RandomForest_HASH_OR_TAG a30f00dbf912a89f11123b0d104b81caef6b1684 )
 
 ###########################################################
 # ITK Modules
@@ -66,8 +69,7 @@ set( TubeTKITK_HASH_OR_TAG "")
 # MinimalPathExtraction
 set( MinimalPathExtraction_URL
   ${git_protocol}://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction.git )
-set( MinimalPathExtraction_HASH_OR_TAG
-  c9cdc87db021ff84417518979dd5924565ff5043 )
+set( MinimalPathExtraction_HASH_OR_TAG c9cdc87db021ff84417518979dd5924565ff5043 )
 
 set( TubeTK_ITK_MODULES
   TubeTKITK
