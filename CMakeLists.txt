@@ -253,6 +253,9 @@ if( TubeTK_BUILD_SLICER_EXTENSION )
   set(TubeTK_BUILD_WITHIN_SLICER TRUE)
 endif()
 if( TubeTK_BUILD_USING_SLICER )
+  # Slicer's extension manager requires use of SVN
+  find_package( Subversion REQUIRED )
+
   include( TubeTKSlicer4ExtensionConfig )
 
   mark_as_advanced( TubeTK_USE_ITK TubeTK_USE_VTK TubeTK_USE_QT
