@@ -30,6 +30,7 @@ set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( CompareImages_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
+set( CompareTextFiles_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
 
 ######################  PythonComputeTrainingMask  ##########################
 if( ITK_WRAP_PYTHON )
@@ -57,4 +58,26 @@ if( ITK_WRAP_PYTHON )
     TubeTKITK.Python.ComputeTrainingMask-Test1-VesselMask-Compare
     APPEND PROPERTY DEPENDS TubeTKITK.Python.ComputeTrainingMask-Test1 )
 
+######################  PythonConvertImagesToCSV  ########################
+  # Test1 - PythonConvertImagesToCSV
+  set( MODULE_NAME PythonConvertImagesToCSV )
+  Midas3FunctionAddTestWithEnv( NAME TubeTKITK.Python.ConvertImagesToCSV-Test1
+    COMMAND ${PYTHON_EXECUTABLE}
+      ${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}Test.py
+        MIDAS{GDS0015_Large-TrainingMask.mha.md5}
+        MIDAS{GDS0015_Large.mha.md5},MIDAS{ES0015_Large.mha.md5}
+        ${TEMP}/${MODULE_NAME}Test1.csv
+        3
+    ENVIRONMENT ITK_BUILD_DIR=${ITK_DIR} TubeTK_BUILD_DIR=${TubeTK_BINARY_DIR} BUILD_TYPE=$<$<BOOL:${WIN32}>:$<CONFIG>>
+    )
+
+  # Test1 - Compare - PythonConvertImagesToCSV
+  Midas3FunctionAddTest( NAME
+    TubeTKITK.Python.ConvertImagesToCSV-Test1-Compare
+    COMMAND ${CompareTextFiles_EXE}
+      -t ${TEMP}/${MODULE_NAME}Test1.csv
+      -b MIDAS{ConvertImagesToCSVTest1.csv.md5}
+    )
+  set_property( TEST TubeTKITK.Python.ConvertImagesToCSV-Test1-Compare
+    APPEND PROPERTY DEPENDS TubeTKITK.Python.ConvertImagesToCSV-Test1 )
 endif()
