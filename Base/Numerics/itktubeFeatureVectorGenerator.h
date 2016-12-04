@@ -68,8 +68,8 @@ public:
   typedef double                                        ValueType;
   typedef std::vector< ValueType >                      ValueListType;
 
-  void SetInput( typename ImageType::Pointer img );
-  void AddInput( typename ImageType::Pointer img );
+  virtual void SetInput( ImageType * img );
+  void AddInput( ImageType * img );
 
   typename ImageType::Pointer GetInput( unsigned int imageNum );
 

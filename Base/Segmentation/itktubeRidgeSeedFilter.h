@@ -100,10 +100,10 @@ public:
   typedef typename  PDFSegmenterType::ProbabilityImageType
     ProbabilityImageType;
 
-  void SetInput( typename InputImageType::Pointer img );
-  void AddInput( typename InputImageType::Pointer img );
+  virtual void SetInput( InputImageType * img );
+  virtual void AddInput( InputImageType * img );
 
-  void SetLabelMap( typename LabelMapType::Pointer img );
+  void SetLabelMap( LabelMapType * img );
 
   typename SeedFeatureGeneratorType::Pointer
     GetSeedFeatureGenerator( void );
