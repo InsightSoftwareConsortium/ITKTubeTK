@@ -262,8 +262,8 @@ Read( const char * _headerName )
 #endif
       else
         {
-        std::cerr << "PDFSegmenter type used by RidgeSeedFilter not known."
-          << std::endl;
+        std::cerr << "PDFSegmenter type not known." << std::endl;
+        std::cerr << "  May require LibSVM or RandomForest." << std::endl;
         }
 #ifdef TubeTK_USE_RandomForest
       }
@@ -337,6 +337,7 @@ Write( const char * _headerName )
       result = false;
       }
     }
+#ifdef TubeTK_USE_LIBSVM
   else
     {
     typedef PDFSegmenterSVM< TImage, TLabelMap >    PDFSegmenterSVMType;
@@ -352,6 +353,8 @@ Write( const char * _headerName )
         result = false;
         }
       }
+#endif
+#ifdef TubeTK_USE_RandomForest
     else
       {
       typedef PDFSegmenterRandomForest< TImage, TLabelMap >
@@ -368,7 +371,15 @@ Write( const char * _headerName )
           result = false;
           }
         }
+#endif
+      else
+        {
+        std::cerr << "PDFSegmenter type not known." << std::endl;
+        std::cerr << "  May require LibSVM or RandomForest." << std::endl;
+        }
+#ifdef TubeTK_USE_RandomForest
       }
+#endif
     }
 
   result = seedWriter.Write( _headerName );
