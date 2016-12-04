@@ -48,11 +48,11 @@ class RidgeSeedFilter : public ImageToImageFilter< TImage, TLabelMap >
 public:
 
   typedef RidgeSeedFilter                            Self;
-  typedef ImageToImageFilter                         Superclass;
+  typedef ImageToImageFilter< TImage, TLabelMap >    Superclass;
   typedef SmartPointer< Self >                       Pointer;
   typedef SmartPointer< const Self >                 ConstPointer;
 
-  itkTypeMacro( RidgeSeedFilter, Object );
+  itkTypeMacro( RidgeSeedFilter, ImageToImageFilter );
 
   itkNewMacro( Self );
 

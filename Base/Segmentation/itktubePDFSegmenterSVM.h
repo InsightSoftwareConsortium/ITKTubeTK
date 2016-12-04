@@ -133,7 +133,7 @@ private:
   void operator = ( const Self & );      // Purposely not implemented
 
   // Superclass typedefs
-  typedef Superclass::ListSampleType          ListSampleType;
+  typedef typename Superclass::ListSampleType          ListSampleType;
 
   // Custom typedefs
   svm_model          * m_Model;
