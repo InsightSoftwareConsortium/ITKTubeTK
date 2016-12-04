@@ -145,7 +145,7 @@ PDFSegmenterSVM< TImage, TLabelMap >
 }
 
 template< class TImage, class TLabelMap >
-std::vector< double > &
+typename PDFSegmenterSVM< TImage, TLabelMap >::VectorDoubleType &
 PDFSegmenterSVM< TImage, TLabelMap >
 ::GetSVMClassWeights( void )
 {

@@ -395,7 +395,8 @@ RidgeSeedFilter< TImage, TLabelMap >
 
   if( m_PDFSegmenter.IsNull() )
     {
-    PDFSegmenterParzenType::Pointer tmpPDF = PDFSegmenterParzenType::New();
+    typename PDFSegmenterParzenType::Pointer tmpPDF =
+      PDFSegmenterParzenType::New();
     //tmpPDF->SetReferenceCount( 2 );
     m_PDFSegmenter = tmpPDF.GetPointer();
 

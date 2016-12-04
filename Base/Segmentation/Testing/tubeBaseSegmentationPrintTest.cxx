@@ -49,11 +49,13 @@ int tubeBaseSegmentationPrintTest( int itkNotUsed( argc ),
   std::cout << "-------------itktubePDFSegmenterParzen" << pdfSegmenterParzen
     << std::endl;
 
+#ifdef TubeTK_USE_RandomForest
   itk::tube::PDFSegmenterRandomForest< ImageType, ImageType >::Pointer
-    pdfSegmenterRandomForest = itk::tube::PDFSegmenterRandomForest< ImageType,
-      ImageType >::New();
+    pdfSegmenterRandomForest = itk::tube::PDFSegmenterRandomForest<
+      ImageType, ImageType >::New();
   std::cout << "-------------itktubePDFSegmenterRandomForest"
     << pdfSegmenterRandomForest << std::endl;
+#endif
 
 #ifdef TubeTK_USE_LIBSVM
   itk::tube::PDFSegmenterSVM< ImageType, ImageType >::Pointer
