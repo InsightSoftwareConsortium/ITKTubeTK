@@ -25,7 +25,14 @@ limitations under the License.
 
 #include "itktubeRidgeSeedFilterIO.h"
 #include "itktubePDFSegmenterParzenIO.h"
-#include "itktubePDFSegmenterSVMIO.h"
+
+#ifdef TubeTK_USE_LIBSVM
+#  include "itktubePDFSegmenterSVMIO.h"
+#endif
+
+#ifdef TubeTK_USE_RandomForest
+#  include "itktubePDFSegmenterRandomForestIO.h"
+#endif
 
 namespace itk
 {
@@ -172,8 +179,6 @@ Read( const char * _headerName )
   m_RidgeSeedFilter->SetUseIntensityOnly(
     seedReader.GetUseIntensityOnly() );
 
-  m_RidgeSeedFilter->SetUseSVM( seedReader.GetUseSVM() );
-
   m_RidgeSeedFilter->SetRidgeId( seedReader.GetRidgeId() );
   m_RidgeSeedFilter->SetBackgroundId( seedReader.GetBackgroundId() );
   m_RidgeSeedFilter->SetUnknownId( seedReader.GetUnknownId() );
@@ -199,41 +204,29 @@ Read( const char * _headerName )
   MET_GetFilePath( _headerName, pdfPath );
   pdfFileName = pdfPath + pdfFileName;
 
-  if( !m_RidgeSeedFilter->GetUseSVM() )
+  typedef PDFSegmenterParzen< TImage, TLabelMap > PDFSegmenterParzenType;
+  typename PDFSegmenterParzenType::Pointer pdfParzen = dynamic_cast<
+    PDFSegmenterParzenType * >( m_RidgeSeedFilter->GetPDFSegmenter().
+      GetPointer() );
+  if( pdfParzen.IsNotNull() )
     {
-    typedef PDFSegmenterParzen< TImage, TLabelMap > PDFSegmenterParzenType;
-    typename PDFSegmenterParzenType::Pointer pdfParzen =
-      PDFSegmenterParzenType::New();
-    pdfParzen = dynamic_cast< PDFSegmenterParzenType * >(
-      m_RidgeSeedFilter->GetPDFSegmenter().GetPointer() );
-    if( pdfParzen.IsNotNull() )
+    PDFSegmenterParzenIO< TImage, TLabelMap > pdfReader(
+      pdfParzen.GetPointer() );
+    if( !pdfReader.Read( pdfFileName.c_str() ) )
       {
-      PDFSegmenterParzenIO< TImage, TLabelMap > pdfReader(
-        pdfParzen.GetPointer() );
-      if( !pdfReader.Read( pdfFileName.c_str() ) )
-        {
-        std::cerr << "Cannot read Parzen file: " << pdfFileName
-          << std::endl;
-        m_RidgeSeedFilter = NULL;
-        return false;
-        }
-      }
-    else
-      {
-      std::cerr << "File defines Parzen PDF, RidgeSeedFilter uses SVM PDF:"
-        << pdfFileName << std::endl;
-      std::cerr << m_RidgeSeedFilter->GetPDFSegmenter() << std::endl;
+      std::cerr << "Cannot read Parzen file: " << pdfFileName
+        << std::endl;
       m_RidgeSeedFilter = NULL;
       return false;
       }
     }
+#ifdef TubeTK_USE_LIBSVM
   else
     {
-    typedef PDFSegmenterSVM< TImage, TLabelMap >    PDFSegmenterSVMType;
-    typename PDFSegmenterSVMType::Pointer pdfSVM =
-      PDFSegmenterSVMType::New();
-    pdfSVM = dynamic_cast< PDFSegmenterSVMType * >( m_RidgeSeedFilter->
-        GetPDFSegmenter().GetPointer() );
+    typedef PDFSegmenterSVM< TImage, TLabelMap > PDFSegmenterSVMType;
+    typename PDFSegmenterSVMType::Pointer pdfSVM = dynamic_cast<
+      PDFSegmenterSVMType * >( m_RidgeSeedFilter->GetPDFSegmenter().
+        GetPointer() );
     if( pdfSVM.IsNotNull() )
       {
       PDFSegmenterSVMIO< TImage, TLabelMap > pdfReader(
@@ -245,15 +238,37 @@ Read( const char * _headerName )
         return false;
         }
       }
+#endif
+#ifdef TubeTK_USE_RandomForest
     else
       {
-      std::cerr << "File defines SVM PDF, RidgeSeedFilter uses Parzen PDF:"
-        << pdfFileName << std::endl;
-      std::cerr << m_RidgeSeedFilter->GetPDFSegmenter() << std::endl;
-      m_RidgeSeedFilter = NULL;
-      return false;
+      typedef PDFSegmenterRandomForest< TImage, TLabelMap >
+        PDFSegmenterRandomForestType;
+      typename PDFSegmenterRandomForestType::Pointer pdfRandomForest =
+        dynamic_cast< PDFSegmenterRandomForestType * >(
+          m_RidgeSeedFilter->GetPDFSegmenter().GetPointer() );
+      if( pdfRandomForest.IsNotNull() )
+        {
+        PDFSegmenterRandomForestIO< TImage, TLabelMap > pdfReader(
+          pdfRandomForest.GetPointer() );
+        if( !pdfReader.Read( pdfFileName.c_str() ) )
+          {
+          std::cerr << "Cannot read RandomForest file: " << pdfFileName
+            << std::endl;
+          m_RidgeSeedFilter = NULL;
+          return false;
+          }
+        }
+#endif
+      else
+        {
+        std::cerr << "PDFSegmenter type used by RidgeSeedFilter not known."
+          << std::endl;
+        }
+#ifdef TubeTK_USE_RandomForest
       }
-    }
+#endif
+  }
 
   return true;
 }
@@ -273,8 +288,6 @@ Write( const char * _headerName )
 
   seedWriter.SetUseIntensityOnly(
     m_RidgeSeedFilter->GetUseIntensityOnly() );
-
-  seedWriter.SetUseSVM( m_RidgeSeedFilter->GetUseSVM() );
 
   seedWriter.SetRidgeId( m_RidgeSeedFilter->GetRidgeId() );
   seedWriter.SetBackgroundId( m_RidgeSeedFilter->GetBackgroundId() );
@@ -312,9 +325,8 @@ Write( const char * _headerName )
   bool result = true;
 
   typedef PDFSegmenterParzen< TImage, TLabelMap > PDFSegmenterParzenType;
-  typename PDFSegmenterParzenType::Pointer pdfParzen =
-    PDFSegmenterParzenType::New();
-  pdfParzen = dynamic_cast< PDFSegmenterParzenType * >( m_RidgeSeedFilter->
+  typename PDFSegmenterParzenType::Pointer pdfParzen = dynamic_cast<
+    PDFSegmenterParzenType * >( m_RidgeSeedFilter->
       GetPDFSegmenter().GetPointer() );
   if( pdfParzen.IsNotNull() )
     {
@@ -328,9 +340,8 @@ Write( const char * _headerName )
   else
     {
     typedef PDFSegmenterSVM< TImage, TLabelMap >    PDFSegmenterSVMType;
-    typename PDFSegmenterSVMType::Pointer pdfSVM =
-      PDFSegmenterSVMType::New();
-    pdfSVM = dynamic_cast< PDFSegmenterSVMType * >( m_RidgeSeedFilter->
+    typename PDFSegmenterSVMType::Pointer pdfSVM = dynamic_cast<
+      PDFSegmenterSVMType * >( m_RidgeSeedFilter->
         GetPDFSegmenter().GetPointer() );
     if( pdfSVM.IsNotNull() )
       {
@@ -339,6 +350,23 @@ Write( const char * _headerName )
       if( !pdfWriter.Write( pdfWriteName.c_str() ) )
         {
         result = false;
+        }
+      }
+    else
+      {
+      typedef PDFSegmenterRandomForest< TImage, TLabelMap >
+        PDFSegmenterRandomForestType;
+      typename PDFSegmenterRandomForestType::Pointer pdfRandomForest =
+        dynamic_cast< PDFSegmenterRandomForestType * >( m_RidgeSeedFilter->
+          GetPDFSegmenter().GetPointer() );
+      if( pdfRandomForest.IsNotNull() )
+        {
+        PDFSegmenterRandomForestIO< TImage, TLabelMap > pdfWriter(
+          pdfRandomForest.GetPointer() );
+        if( !pdfWriter.Write( pdfWriteName.c_str() ) )
+          {
+          result = false;
+          }
         }
       }
     }

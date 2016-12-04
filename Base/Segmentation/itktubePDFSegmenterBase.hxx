@@ -78,6 +78,7 @@ PDFSegmenterBase< TImage, TLabelMap >
   m_ReclassifyObjectLabels = false;
   m_ReclassifyNotObjectLabels = false;
   m_ForceClassification = false;
+  m_BalanceClassSampleSize = true;
 
   m_ProbabilityImageVector.resize( 0 );
 
@@ -228,13 +229,12 @@ PDFSegmenterBase< TImage, TLabelMap >
 }
 
 template< class TImage, class TLabelMap >
-typename PDFSegmenterBase< TImage, TLabelMap >::ProbabilityPixelType
+typename PDFSegmenterBase< TImage, TLabelMap >::ProbabilityVectorType
 PDFSegmenterBase< TImage, TLabelMap >
-::GetClassProbability( unsigned int itkNotUsed( classNum ),
-  const FeatureVectorType & itkNotUsed( fv ) )
+::GetProbabilityVector( const FeatureVectorType & itkNotUsed( fv ) )
   const
 {
-  return 0;
+  return ProbabilityVectorType();
 }
 
 template< class TImage, class TLabelMap >
@@ -257,7 +257,6 @@ PDFSegmenterBase< TImage, TLabelMap >
   m_SampleUpToDate = true;
 
   unsigned int numClasses = m_ObjectIdList.size();
-
   unsigned int numFeatures = this->m_FeatureVectorGenerator->
     GetNumberOfFeatures();
 
@@ -327,11 +326,55 @@ PDFSegmenterBase< TImage, TLabelMap >
 template< class TImage, class TLabelMap >
 void
 PDFSegmenterBase< TImage, TLabelMap >
+::BalanceClassSampleSize( void )
+{
+  unsigned int numClasses = m_ObjectIdList.size();
+
+  int minClassSize = m_InClassList[0].size();
+  for( unsigned int c=1; c<numClasses; ++c )
+    {
+    if( m_InClassList[c].size() < minClassSize )
+      {
+      minClassSize = m_InClassList[c].size();
+      }
+    }
+  for( unsigned int c=0; c<numClasses; ++c )
+    {
+    if( m_InClassList[c].size() != minClassSize )
+      {
+      double stepSize = minClassSize / (double)( m_InClassList[c].size() );
+      int cut = m_InClassList[c].size()-1;
+      int s=0;
+      double step = 0;
+      while( s < cut )
+        {
+        ++s;
+        step += stepSize;
+        while( s < cut && (int)( step ) == (int)( step + stepSize ) )
+          {
+          m_InClassList[c][s] = m_InClassList[c].back();
+          m_InClassList[c].pop_back();
+          --cut;
+          step += stepSize;
+          }
+        }
+      }
+    }
+
+}
+
+template< class TImage, class TLabelMap >
+void
+PDFSegmenterBase< TImage, TLabelMap >
 ::GeneratePDFs( void )
 {
   if( !m_SampleUpToDate )
     {
     this->GenerateSample();
+    if( m_BalanceClassSampleSize )
+      {
+      BalanceClassSampleSize();
+      }
     }
   m_PDFsUpToDate = true;
 }
@@ -344,6 +387,10 @@ PDFSegmenterBase< TImage, TLabelMap >
   if( m_LabelMap.IsNotNull() && !m_SampleUpToDate )
     {
     this->GenerateSample();
+    if( m_BalanceClassSampleSize )
+      {
+      BalanceClassSampleSize();
+      }
     }
   if( m_LabelMap.IsNotNull() && !m_PDFsUpToDate )
     {
@@ -407,12 +454,11 @@ PDFSegmenterBase< TImage, TLabelMap >
     indx = itInLabelMap.GetIndex();
     fv = m_FeatureVectorGenerator->GetFeatureVector( indx );
 
+    ProbabilityVectorType probV = this->GetProbabilityVector( fv );
     for( unsigned int c=0; c<numClasses; ++c )
       {
-      double prob = this->GetClassProbability( c, fv );
-      prob *= m_PDFWeightList[c];
-      probIt[c]->Set( prob );
-
+      probIt[c]->Set( m_PDFWeightList[c] * probV[c] );
+ 
       ++( *( probIt[c] ) );
       }
 
@@ -834,6 +880,10 @@ PDFSegmenterBase< TImage, TLabelMap >
 
   //timeCollector.Start( "PDFSegmenterBase Generate Sample" );
   this->GenerateSample();
+  if( m_BalanceClassSampleSize )
+    {
+    BalanceClassSampleSize();
+    }
   //timeCollector.Stop( "PDFSegmenterBase Generate Sample" );
   //timeCollector.Start( "PDFSegmenterBase Generate PDFs" );
   this->GeneratePDFs();

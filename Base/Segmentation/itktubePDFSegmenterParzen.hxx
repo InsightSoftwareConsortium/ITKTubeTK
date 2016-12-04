@@ -616,10 +616,9 @@ PDFSegmenterParzen< TImage, TLabelMap >
 }
 
 template< class TImage, class TLabelMap >
-typename PDFSegmenterParzen< TImage, TLabelMap >::ProbabilityPixelType
+typename PDFSegmenterParzen< TImage, TLabelMap >::ProbabilityVectorType
 PDFSegmenterParzen< TImage, TLabelMap >
-::GetClassProbability( unsigned int classNum, const FeatureVectorType & fv)
-  const
+::GetProbabilityVector( const FeatureVectorType & fv) const
 {
   unsigned int numFeatures = this->m_FeatureVectorGenerator->
     GetNumberOfFeatures();
@@ -640,7 +639,14 @@ PDFSegmenterParzen< TImage, TLabelMap >
       }
     binIndex[i] = binN;
     }
-  return m_InClassHistogram[classNum]->GetPixel( binIndex );
+
+  unsigned int numClasses = this->m_ObjectIdList.size();
+  ProbabilityVectorType prob( numClasses );
+  for( unsigned int c=0; c<numClasses; ++c )
+    {
+    prob[c] = m_InClassHistogram[c]->GetPixel( binIndex );
+    }
+  return prob;
 }
 
 template< class TImage, class TLabelMap >

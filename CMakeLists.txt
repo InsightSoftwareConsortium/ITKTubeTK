@@ -595,6 +595,10 @@ if( TubeTK_USE_LIBSVM )
   find_package( LIBSVM REQUIRED )
 endif( TubeTK_USE_LIBSVM )
 
+if( TubeTK_USE_RandomForest )
+  find_package( RandomForest REQUIRED )
+endif( TubeTK_USE_RandomForest )
+
 if( TubeTK_USE_GPU_ARRAYFIRE )
   find_package( ArrayFire REQUIRED )
   include_directories( ${ArrayFire_INCLUDE_DIRS} )

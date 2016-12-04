@@ -25,23 +25,35 @@ project( TubeTKIO )
 
 set( TubeTK_Base_IO_H_Files
   itktubePDFSegmenterParzenIO.h
+  itktubeRidgeSeedFilterIO.h
   itktubeTubeExtractorIO.h
   itktubeTubeXIO.h )
 if( TubeTK_USE_LIBSVM )
+  find_package( LIBSVM REQUIRED )
+  include_directories( ${LIBSVM_INCLUDE_DIRS} )
   list( APPEND TubeTK_Base_IO_H_Files
-    itktubeRidgeSeedFilterIO.h
     itktubePDFSegmenterSVMIO.h )
 endif( TubeTK_USE_LIBSVM )
+if( TubeTK_USE_RandomForest )
+  find_package( RandomForest REQUIRED )
+  include_directories( ${RandomForest_INCLUDE_DIR} )
+  list( APPEND TubeTK_Base_IO_H_Files
+    itktubePDFSegmenterRandomForestIO.h )
+endif( TubeTK_USE_RandomForest )
 
 set( TubeTK_Base_IO_HXX_Files
   itktubePDFSegmenterParzenIO.hxx
+  itktubeRidgeSeedFilterIO.hxx
   itktubeTubeExtractorIO.hxx
   itktubeTubeXIO.hxx )
 if( TubeTK_USE_LIBSVM )
   list( APPEND TubeTK_Base_IO_HXX_Files
-    itktubeRidgeSeedFilterIO.hxx
     itktubePDFSegmenterSVMIO.hxx )
 endif( TubeTK_USE_LIBSVM )
+if( TubeTK_USE_RandomForest )
+  list( APPEND TubeTK_Base_IO_HXX_Files
+    itktubePDFSegmenterRandomForestIO.hxx )
+endif( TubeTK_USE_RandomForest )
 
 add_library( ${PROJECT_NAME} INTERFACE )
 

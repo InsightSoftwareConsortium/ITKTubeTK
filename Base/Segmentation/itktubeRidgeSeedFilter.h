@@ -27,7 +27,6 @@ limitations under the License.
 #include "itktubeBasisFeatureVectorGenerator.h"
 #include "itktubePDFSegmenterBase.h"
 #include "itktubePDFSegmenterParzen.h"
-#include "itktubePDFSegmenterSVM.h"
 #include "itktubeRidgeFFTFeatureVectorGenerator.h"
 
 #include <itkImage.h>
@@ -44,12 +43,12 @@ namespace tube
 {
 
 template< class TImage, class TLabelMap >
-class RidgeSeedFilter : public Object
+class RidgeSeedFilter : public ImageToImageFilter< TImage, TLabelMap >
 {
 public:
 
   typedef RidgeSeedFilter                            Self;
-  typedef Object                                     Superclass;
+  typedef ImageToImageFilter                         Superclass;
   typedef SmartPointer< Self >                       Pointer;
   typedef SmartPointer< const Self >                 ConstPointer;
 
@@ -96,8 +95,6 @@ public:
     PDFSegmenterType;
   typedef PDFSegmenterParzen< InputImageType, LabelMapType >
     PDFSegmenterParzenType;
-  typedef PDFSegmenterSVM< InputImageType, LabelMapType >
-    PDFSegmenterSVMType;
   typedef typename  PDFSegmenterType::ProbabilityPixelType
     ProbabilityPixelType;
   typedef typename  PDFSegmenterType::ProbabilityImageType
@@ -114,6 +111,7 @@ public:
     GetRidgeFeatureGenerator( void );
 
   typename PDFSegmenterType::Pointer GetPDFSegmenter( void );
+  void SetPDFSegmenter( PDFSegmenterType * pdfSegmenter );
 
   void            SetScales( const RidgeScalesType & Scales );
   RidgeScalesType GetScales( void ) const;
@@ -149,12 +147,6 @@ public:
 
   typename ProbabilityImageType::Pointer
     GetClassLikelihoodRatioImage( unsigned int objectNum ) const;
-
-  itkSetMacro( UseSVM, bool );
-  itkGetMacro( UseSVM, bool );
-
-  itkSetMacro( SVMTrainingDataStride, unsigned int );
-  itkGetMacro( SVMTrainingDataStride, unsigned int );
 
   // Ridge, Basis, and PDFSegmenter
   itkSetMacro( RidgeId, ObjectIdType );
@@ -199,11 +191,6 @@ private:
   typename RidgeFeatureGeneratorType::Pointer     m_RidgeFeatureGenerator;
   typename SeedFeatureGeneratorType::Pointer      m_SeedFeatureGenerator;
   typename PDFSegmenterType::Pointer              m_PDFSegmenter;
-  typename PDFSegmenterParzenType::Pointer        m_PDFSegmenterParzen;
-  typename PDFSegmenterSVMType::Pointer           m_PDFSegmenterSVM;
-
-  bool           m_UseSVM;
-  unsigned int   m_SVMTrainingDataStride;
 
   ObjectIdType   m_RidgeId;
   ObjectIdType   m_BackgroundId;

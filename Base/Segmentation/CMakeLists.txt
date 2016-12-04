@@ -28,6 +28,11 @@ if( TubeTK_USE_LIBSVM )
   include_directories( ${LIBSVM_INCLUDE_DIRS} )
 endif( TubeTK_USE_LIBSVM )
 
+if( TubeTK_USE_RandomForest )
+  find_package( RandomForest )
+  include_directories( ${RandomForest_INCLUDE_DIR} )
+endif( TubeTK_USE_RandomForest )
+
 set( TubeTK_Base_Segmentation_H_Files
   itktubeComputeSegmentTubesParameters.h
   itktubePDFSegmenterBase.h
@@ -38,29 +43,38 @@ set( TubeTK_Base_Segmentation_H_Files
   itktubeSegmentBinaryImageSkeleton.h
   itktubeSegmentTubesUsingMinimalPathFilter.h
   itktubeTubeExtractor.h
+  itktubeRidgeSeedFilter.h
   itktubeComputeTrainingMask.h)
 if( TubeTK_USE_LIBSVM )
   list( APPEND TubeTK_Base_Segmentation_H_Files
-    itktubePDFSegmenterSVM.h
-    itktubeRidgeSeedFilter.h )
+    itktubePDFSegmenterSVM.h )
 endif( TubeTK_USE_LIBSVM )
+if( TubeTK_USE_RandomForest )
+  list( APPEND TubeTK_Base_Segmentation_H_Files
+    itktubePDFSegmenterRandomForest.h )
+endif( TubeTK_USE_RandomForest )
 
 set( TubeTK_Base_Segmentation_HXX_Files
   itktubeComputeSegmentTubesParameters.hxx
   itktubePDFSegmenterBase.hxx
   itktubePDFSegmenterParzen.hxx
+  itktubePDFSegmenterRandomForest.hxx
   itktubeRadiusExtractor2.hxx
   itktubeRidgeExtractor.hxx
   itktubeSegmentTubes.hxx
   itktubeSegmentBinaryImageSkeleton.hxx
   itktubeSegmentTubesUsingMinimalPathFilter.hxx
   itktubeTubeExtractor.hxx
+  itktubeRidgeSeedFilter.hxx
   itktubeComputeTrainingMask.hxx)
 if( TubeTK_USE_LIBSVM )
   list( APPEND TubeTK_Base_Segmentation_HXX_Files
-    itktubePDFSegmenterSVM.hxx
-    itktubeRidgeSeedFilter.hxx )
+    itktubePDFSegmenterSVM.hxx )
 endif( TubeTK_USE_LIBSVM )
+if( TubeTK_USE_RandomForest )
+  list( APPEND TubeTK_Base_Segmentation_HXX_Files
+    itktubePDFSegmenterRandomForest.hxx )
+endif( TubeTK_USE_RandomForest )
 
 add_library( ${PROJECT_NAME} INTERFACE )
 
