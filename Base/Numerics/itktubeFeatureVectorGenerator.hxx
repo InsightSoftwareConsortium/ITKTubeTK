@@ -65,7 +65,7 @@ FeatureVectorGenerator< TImage >
 template< class TImage >
 void
 FeatureVectorGenerator< TImage >
-::SetInput( typename ImageType::Pointer img )
+::SetInput( ImageType * img )
 {
   m_WhitenMean.clear();
   m_WhitenMean.push_back( 0 );
@@ -78,7 +78,7 @@ FeatureVectorGenerator< TImage >
 template< class TImage >
 void
 FeatureVectorGenerator< TImage >
-::AddInput( typename ImageType::Pointer img )
+::AddInput( ImageType * img )
 {
   m_InputImageList.push_back( img );
   m_WhitenMean.push_back(0);

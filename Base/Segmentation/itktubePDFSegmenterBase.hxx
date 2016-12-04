@@ -330,7 +330,7 @@ PDFSegmenterBase< TImage, TLabelMap >
 {
   unsigned int numClasses = m_ObjectIdList.size();
 
-  int minClassSize = m_InClassList[0].size();
+  size_t minClassSize = m_InClassList[0].size();
   for( unsigned int c=1; c<numClasses; ++c )
     {
     if( m_InClassList[c].size() < minClassSize )
