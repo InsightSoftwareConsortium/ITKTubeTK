@@ -28,7 +28,6 @@ limitations under the License.
 
 #include "tubeMatrixMath.h"
 #include "itktubePDFSegmenterParzen.h"
-#include "itktubePDFSegmenterSVM.h"
 
 #include <itkImage.h>
 #include <itkImageRegionConstIteratorWithIndex.h>
@@ -58,11 +57,6 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_SeedFeatureGenerator->SetNumberOfPCABasisToUseAsFeatures( 3 );
 
   m_PDFSegmenter = NULL;
-  m_PDFSegmenterSVM = NULL;
-  m_PDFSegmenterParzen = NULL;
-
-  m_UseSVM = false;
-  m_SVMTrainingDataStride = 1;
 
   m_RidgeId = 255;
   m_BackgroundId = 127;
@@ -135,6 +129,15 @@ RidgeSeedFilter< TImage, TLabelMap >
 ::GetPDFSegmenter( void )
 {
   return m_PDFSegmenter;
+}
+
+template< class TImage, class TLabelMap >
+void
+RidgeSeedFilter< TImage, TLabelMap >
+::SetPDFSegmenter( typename RidgeSeedFilter< TImage, TLabelMap >
+  ::PDFSegmenterType * pdfSegmenter )
+{
+  m_PDFSegmenter = pdfSegmenter;
 }
 
 template< class TImage, class TLabelMap >
@@ -388,39 +391,25 @@ RidgeSeedFilter< TImage, TLabelMap >
   //itk::TimeProbesCollectorBase timeCollector;
 
   //timeCollector.Start("RidgeSeedFilter Update");
+  std::cout << "RidgeSeedFilter::GenerateData" << std::endl;
 
   if( m_PDFSegmenter.IsNull() )
     {
-    if( m_UseSVM )
-      {
-      m_PDFSegmenterParzen = NULL;
-      m_PDFSegmenterSVM = PDFSegmenterSVMType::New();
-      m_PDFSegmenter = m_PDFSegmenterSVM.GetPointer();
+    PDFSegmenterParzenType::Pointer tmpPDF = PDFSegmenterParzenType::New();
+    //tmpPDF->SetReferenceCount( 2 );
+    m_PDFSegmenter = tmpPDF.GetPointer();
 
-      m_PDFSegmenterSVM->SetTrainingDataStride( m_SVMTrainingDataStride );
-
-      m_PDFSegmenterSVM->SetFeatureVectorGenerator(
-        m_RidgeFeatureGenerator.GetPointer() );
-      }
-    else
-      {
-      m_PDFSegmenterSVM = NULL;
-      m_PDFSegmenterParzen = PDFSegmenterParzenType::New();
-      m_PDFSegmenter = m_PDFSegmenterParzen.GetPointer();
-
-      m_PDFSegmenterParzen->SetHistogramSmoothingStandardDeviation( 2 );
-      m_PDFSegmenterParzen->SetOutlierRejectPortion( 0.001 );
-
-      m_PDFSegmenterParzen->SetFeatureVectorGenerator(
-        m_SeedFeatureGenerator.GetPointer() );
-      }
-
-    m_PDFSegmenter->SetReclassifyObjectLabels( true );
-    m_PDFSegmenter->SetReclassifyNotObjectLabels( true );
-    m_PDFSegmenter->SetForceClassification( true );
-    m_PDFSegmenter->SetErodeRadius( 0 );
-    m_PDFSegmenter->SetHoleFillIterations( 5 );
+    tmpPDF->SetHistogramSmoothingStandardDeviation( 2 );
+    tmpPDF->SetOutlierRejectPortion( 0.001 );
     }
+
+  m_PDFSegmenter->SetFeatureVectorGenerator(
+    m_SeedFeatureGenerator.GetPointer() );
+  m_PDFSegmenter->SetReclassifyObjectLabels( true );
+  m_PDFSegmenter->SetReclassifyNotObjectLabels( true );
+  m_PDFSegmenter->SetForceClassification( true );
+  m_PDFSegmenter->SetErodeRadius( 0 );
+  m_PDFSegmenter->SetHoleFillIterations( 5 );
 
   m_PDFSegmenter->SetLabelMap( m_SeedFeatureGenerator->GetLabelMap() );
 

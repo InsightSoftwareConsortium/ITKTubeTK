@@ -21,10 +21,13 @@ limitations under the License.
 
 =========================================================================*/
 
-#ifndef __itktubePDFSegmenterParzen_h
-#define __itktubePDFSegmenterParzen_h
+#ifndef __itktubePDFSegmenterRandomForest_h
+#define __itktubePDFSegmenterRandomForest_h
 
 #include "itktubePDFSegmenterBase.h"
+
+#include "andres/marray.hxx"
+#include "andres/ml/decision-trees.hxx"
 
 #include <itkImage.h>
 #include <itkListSample.h>
@@ -37,24 +40,23 @@ namespace itk
 namespace tube
 {
 
-#define PARZEN_MAX_NUMBER_OF_FEATURES 4
-
 template< class TImage, class TLabelMap >
-class PDFSegmenterParzen : public PDFSegmenterBase< TImage, TLabelMap >
+class PDFSegmenterRandomForest
+: public PDFSegmenterBase< TImage, TLabelMap >
 {
 public:
 
-  typedef PDFSegmenterParzen                         Self;
+  typedef PDFSegmenterRandomForest                   Self;
   typedef PDFSegmenterBase< TImage, TLabelMap >      Superclass;
   typedef SmartPointer< Self >                       Pointer;
   typedef SmartPointer< const Self >                 ConstPointer;
 
-  itkTypeMacro( PDFSegmenterParzen, PDFSegmenterBase );
+  itkTypeMacro( PDFSegmenterRandomForest, PDFSegmenterBase );
 
   itkNewMacro( Self );
 
   //
-  // Template Args Typedefs
+  // Template Args Typesdefs
   //
   typedef TImage                               InputImageType;
   typedef TLabelMap                            LabelMapType;
@@ -86,48 +88,20 @@ public:
   //
   // Custom Typedefs
   //
-  typedef float                                HistogramPixelType;
-
-  typedef Image< HistogramPixelType, PARZEN_MAX_NUMBER_OF_FEATURES >
-    HistogramImageType;
-
-  typedef HistogramPixelType                   PDFPixelType;
-  typedef HistogramImageType                   PDFImageType;
-
-  typedef Image< LabelMapPixelType, PARZEN_MAX_NUMBER_OF_FEATURES >
-    LabeledFeatureSpaceType;
+  typedef andres::ml::DecisionForest< FeatureValueType, unsigned int,
+    ProbabilityPixelType >                       DecisionForestType;
 
   //
   // Methods
   //
-  itkSetMacro( HistogramSmoothingStandardDeviation, double );
-  itkGetMacro( HistogramSmoothingStandardDeviation, double );
-  itkSetMacro( OutlierRejectPortion, double );
-  itkGetMacro( OutlierRejectPortion, double );
+  itkGetMacro( TrainingDataStride, unsigned int );
+  itkSetMacro( TrainingDataStride, unsigned int );
 
-  typename PDFImageType::Pointer GetClassPDFImage(
-    unsigned int classNum ) const;
+  DecisionForestType & GetModel( void );
+  void SetModel( DecisionForestType & model );
 
-  void SetClassPDFImage( unsigned int classNum,
-    typename PDFImageType::Pointer classPDF );
-
-  const VectorUIntType & GetNumberOfBinsPerFeature( void ) const;
-  void             SetNumberOfBinsPerFeature( const VectorUIntType & nBin );
-  const VectorDoubleType & GetBinMin( void ) const;
-  void             SetBinMin( const VectorDoubleType & binMin );
-  const VectorDoubleType & GetBinSize( void ) const;
-  void             SetBinSize( const VectorDoubleType & binMin );
-
-  /** Given one PDF per class, generate a labelmap of feature space */
-  void GenerateLabeledFeatureSpace( void );
-
-  void SetLabeledFeatureSpace( typename LabeledFeatureSpaceType::Pointer
-    labeledFeatureSpace );
-
-  typename LabeledFeatureSpaceType::Pointer GetLabeledFeatureSpace( void )
-    const;
-
-  virtual void Update( void );
+  itkGetMacro( NumberOfDecisionTrees, unsigned int );
+  itkSetMacro( NumberOfDecisionTrees, unsigned int );
 
   //
   // Must overwrite
@@ -137,49 +111,41 @@ public:
 
 protected:
 
-  PDFSegmenterParzen( void );
-  virtual ~PDFSegmenterParzen( void );
+  PDFSegmenterRandomForest( void );
+  virtual ~PDFSegmenterRandomForest( void );
 
+  //
+  // Must overwrite
+  //
   virtual void GeneratePDFs( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
 private:
 
-  PDFSegmenterParzen( const Self & );          // Purposely not implemented
-  void operator = ( const Self & );      // Purposely not implemented
+  PDFSegmenterRandomForest( const Self & ); // Purposely not implemented
+  void operator = ( const Self & );         // Purposely not implemented
 
   // Superclass typedefs
-  typedef std::vector< typename ProbabilityImageType::Pointer >
-    ProbabilityImageVectorType;
-
   typedef std::vector< ProbabilityPixelType > ListVectorType;
   typedef std::vector< ListVectorType >       ListSampleType;
   typedef std::vector< ListSampleType >       ClassListSampleType;
 
   // Custom typedefs
-  typedef std::vector< typename HistogramImageType::Pointer >
-    ClassHistogramImageType;
+  DecisionForestType            m_Model;
 
-  ClassHistogramImageType         m_InClassHistogram;
-  VectorDoubleType                m_HistogramBinMin;
-  VectorDoubleType                m_HistogramBinSize;
-  VectorUIntType                  m_HistogramNumberOfBin;
+  unsigned int                  m_TrainingDataStride;
 
-  double                          m_OutlierRejectPortion;
+  unsigned int                  m_NumberOfDecisionTrees;
 
-  double                          m_HistogramSmoothingStandardDeviation;
-
-  typename LabeledFeatureSpaceType::Pointer m_LabeledFeatureSpace;
-
-}; // End class PDFSegmenterParzen
+}; // End class PDFSegmenterRandomForest
 
 } // End namespace tube
 
 } // End namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itktubePDFSegmenterParzen.hxx"
+#include "itktubePDFSegmenterRandomForest.hxx"
 #endif
 
-#endif // End !defined(__itktubePDFSegmenterParzen_h)
+#endif // End !defined(__itktubePDFSegmenterRandomForest_h)

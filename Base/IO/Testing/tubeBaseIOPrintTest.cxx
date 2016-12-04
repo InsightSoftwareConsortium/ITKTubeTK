@@ -25,9 +25,12 @@ limitations under the License.
 
 #include "itktubePDFSegmenterParzenIO.h"
 #ifdef TubeTK_USE_LIBSVM
-#  include "itktubeRidgeSeedFilterIO.h"
 #  include "itktubePDFSegmenterSVMIO.h"
 #endif
+#ifdef TubeTK_USE_RandomForest
+#  include "itktubePDFSegmenterRandomForestIO.h"
+#endif
+#include "itktubeRidgeSeedFilterIO.h"
 #include "itktubeTubeExtractorIO.h"
 #include "itktubeTubeXIO.h"
 
@@ -44,11 +47,18 @@ int tubeBaseIOPrintTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
     ImageType > pdfSegmenterSVMIO;
   std::cout << "-------------pdfSegmenterSVMIO" << std::endl;
   pdfSegmenterSVMIO.PrintInfo();
+#endif
+
+#ifdef TubeTK_USE_RandomForest
+  itk::tube::PDFSegmenterRandomForestIO< ImageType,
+    ImageType > pdfSegmenterRandomForestIO;
+  std::cout << "-------------pdfSegmenterRandomForestIO" << std::endl;
+  pdfSegmenterRandomForestIO.PrintInfo();
+#endif
 
   itk::tube::RidgeSeedFilterIO< ImageType, ImageType > ridgeSeedFilterIO;
   std::cout << "-------------ridgeSeedFilterIO" << std::endl;
   ridgeSeedFilterIO.PrintInfo();
-#endif
 
   itk::tube::TubeExtractorIO< ImageType > tubeExtractorIO;
   std::cout << "-------------tubeExtractorIO" << std::endl;

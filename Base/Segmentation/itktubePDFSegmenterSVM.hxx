@@ -304,10 +304,9 @@ PDFSegmenterSVM< TImage, TLabelMap >
 }
 
 template< class TImage, class TLabelMap >
-typename PDFSegmenterSVM< TImage, TLabelMap >::ProbabilityPixelType
+typename PDFSegmenterSVM< TImage, TLabelMap >::ProbabilityVectorType
 PDFSegmenterSVM< TImage, TLabelMap >
-::GetClassProbability( unsigned int classNum, const FeatureVectorType & fv)
-  const
+::GetProbabilityVector( const FeatureVectorType & fv) const
 {
   unsigned int numClasses = this->m_ObjectIdList.size();
   unsigned int numFeatures = this->GetNumberOfFeatures();
@@ -327,13 +326,17 @@ PDFSegmenterSVM< TImage, TLabelMap >
     sizeof( double ) );
 
   svm_predict_probability( m_Model, x, probEstimates );
-  double classProb = probEstimates[ classNum ]
-    * this->GetSVMClassWeight( classNum );
+
+  ProbabilityVectorType prob( numClasses );
+  for( unsigned int c=0; c<numClasses; ++c )
+    {
+    prob[c] = probEstimates[ c ] * this->GetSVMClassWeight( c );
+    }
 
   free( probEstimates );
   free( x );
 
-  return classProb;
+  return prob;
 }
 
 template< class TImage, class TLabelMap >

@@ -56,7 +56,7 @@ set( LIBSVM_HASH_OR_TAG 9bc3630f0f15fed7a5119c228c4d260574b4b6b2 )
 # RandomForest
 set( RandomForest_URL
   ${git_protocol}://github.com/KitwareMedical/random-forest.git )
-set( RandomForest_HASH_OR_TAG d09ef57ab9b2289638bf4b6ba4240f5313862c2d )
+set( RandomForest_HASH_OR_TAG 6e1d0e271fea967487655555b8f26915aa1004d4 )
 
 ###########################################################
 # ITK Modules

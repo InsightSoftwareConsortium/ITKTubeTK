@@ -154,7 +154,6 @@ int DoIt( int argc, char * argv[] )
   std::cout << "** Computing probability images." << std::endl;
   timeCollector.Start( "Update" );
   tubeFilter->Update();
-  std::cout << "** Here." << std::endl;
   timeCollector.Stop( "Update" );
 
   if( loadDiscriminantInfo.empty() )

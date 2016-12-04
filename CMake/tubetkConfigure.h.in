@@ -30,4 +30,7 @@ limitations under the License.
 // this gets defined if use set TubeTK_USE_LIBSVM to ON
 #cmakedefine TubeTK_USE_LIBSVM
 
+// this gets defined if use set TubeTK_USE_RandomForest to ON
+#cmakedefine TubeTK_USE_RandomForest
+
 #endif // __tubetkConfigure_h

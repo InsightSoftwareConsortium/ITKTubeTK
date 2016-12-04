@@ -21,7 +21,17 @@ limitations under the License.
 
 =========================================================================*/
 
+#include "tubetkConfigure.h"
+
 #include "itktubeRidgeSeedFilter.h"
+
+#ifdef TubeTK_USE_LIBSVM
+#include "itktubePDFSegmenterSVM.h"
+#endif
+
+#ifdef TubeTK_USE_RandomForest
+#include "itktubePDFSegmenterRandomForest.h"
+#endif
 
 int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
 {
@@ -30,8 +40,8 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     std::cerr << "Missing arguments." << std::endl;
     std::cerr << "Usage: " << std::endl;
     std::cerr << argv[0]
-      << " inputImage labelmapImage objId bkgId useSVM outputFeature0Image"
-      << " outputImage maxScaleImage"
+      << " inputImage labelmapImage objId bkgId pdfMethod"
+      << " outputFeature0Image outputImage maxScaleImage"
       << std::endl;
     return EXIT_FAILURE;
     }
@@ -99,10 +109,36 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   filter->SetScales( scales );
   int objId = atoi( argv[3] );
   int bkgId = atoi( argv[4] );
-  if( argv[5][0] == 't' || argv[5][0] == 'T' )
+  if( argv[5][0] == '1' )
     {
-    filter->SetUseSVM( true );
-    filter->SetSVMTrainingDataStride( 100 );
+#ifdef TubeTK_USE_LIBSVM
+    typedef itk::tube::PDFSegmenterSVM< ImageType, LabelMapType > PDFType;
+    PDFType::Pointer pdf = PDFType::New();
+    pdf->SetTrainingDataStride( 100 );
+    filter->SetPDFSegmenter( pdf.GetPointer() );
+    pdf->SetReferenceCount( 2 );
+#else
+    std::cerr << "LIBSVM not enabled." << std::endl;
+    return EXIT_FAILURE;
+#endif
+    }
+  else if( argv[5][0] == '2' )
+    {
+#ifdef TubeTK_USE_RandomForest
+    typedef itk::tube::PDFSegmenterRandomForest< ImageType, LabelMapType >
+      PDFType;
+    PDFType::Pointer pdf = PDFType::New();
+    pdf->SetTrainingDataStride( 100 );
+    pdf->SetNumberOfDecisionTrees( 10 );
+    filter->GetSeedFeatureGenerator()->SetNumberOfPCABasisToUseAsFeatures(
+      10 );
+    filter->SetPDFSegmenter( pdf.GetPointer() );
+    filter->SetSeedTolerance( 0.95 );
+    pdf->SetReferenceCount( 2 );
+#else
+    std::cerr << "LIBSVM not enabled." << std::endl;
+    return EXIT_FAILURE;
+#endif
     }
   filter->SetRidgeId( objId );
   filter->SetBackgroundId( bkgId );
@@ -112,15 +148,13 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   try
     {
     filter->Update();
+    filter->ClassifyImages();
     }
   catch( ... )
     {
     std::cout << "Error in RidgeSeedFilter update." << std::endl;
     }
-  std::cout << "Update done." << std::endl;
-
-  filter->ClassifyImages();
-  std::cout << "Classification done." << std::endl;
+  std::cout << "Update & Classification done." << std::endl;
 
   FeatureImageWriterType::Pointer feature2ImageWriter =
     FeatureImageWriterType::New();

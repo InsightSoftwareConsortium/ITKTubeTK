@@ -39,8 +39,6 @@ namespace itk
 namespace tube
 {
 
-#define MAX_NUMBER_OF_FEATURES 5
-
 template< class TImage, class TLabelMap >
 class PDFSegmenterSVM : public PDFSegmenterBase< TImage, TLabelMap >
 {
@@ -56,35 +54,32 @@ public:
   itkNewMacro( Self );
 
   //
-  // Superclass Typedefs
+  // Template Args Typesdefs
   //
   typedef TImage                               InputImageType;
+  typedef TLabelMap                            LabelMapType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     TImage::ImageDimension );
 
-  typedef FeatureVectorGenerator< InputImageType >
-                                               FeatureVectorGeneratorType;
-  typedef typename FeatureVectorGeneratorType::FeatureValueType
-                                               FeatureValueType;
-  typedef typename FeatureVectorGeneratorType::FeatureVectorType
-                                               FeatureVectorType;
-  typedef typename FeatureVectorGeneratorType::FeatureImageType
-                                               FeatureImageType;
+  //
+  // Superclass Typedefs
+  //
+  typedef Superclass::FeatureVectorGeneratorType FeatureVectorGeneratorType;
+  typedef typename Superclass::FeatureValueType  FeatureValueType;
+  typedef typename Superclass::FeatureVectorType FeatureVectorType;
+  typedef typename Superclass::FeatureImageType  FeatureImageType;
 
-  typedef TLabelMap                            LabelMapType;
-  typedef typename LabelMapType::PixelType     LabelMapPixelType;
+  typedef Superclass::ObjectIdType               ObjectIdType;
+  typedef Superclass::ObjectIdListType           ObjectIdListType;
 
-  typedef int                                  ObjectIdType;
-  typedef std::vector< ObjectIdType >          ObjectIdListType;
+  typedef Superclass::ProbabilityPixelType       ProbabilityPixelType;
+  typedef Superclass::ProbabilityVectorType      ProbabilityVectorType;
+  typedef Superclass::ProbabilityImageType       ProbabilityImageType;
 
-  typedef float                                ProbabilityPixelType;
-  typedef Image< ProbabilityPixelType, TImage::ImageDimension >
-                                               ProbabilityImageType;
-
-  typedef std::vector< double >                VectorDoubleType;
-  typedef std::vector< int >                   VectorIntType;
-  typedef std::vector< unsigned int >          VectorUIntType;
+  typedef Superclass::VectorDoubleType           VectorDoubleType;
+  typedef Superclass::VectorIntType              VectorIntType;
+  typedef Superclass::VectorUIntType             VectorUIntType;
 
   //
   // Custom Typedefs
@@ -110,8 +105,8 @@ public:
   //
   // Must overwrite
   //
-  virtual ProbabilityPixelType GetClassProbability( unsigned int
-    classNum, const FeatureVectorType & fv ) const;
+  virtual ProbabilityVectorType GetProbabilityVector( const
+    FeatureVectorType & fv ) const;
 
 protected:
 
@@ -131,11 +126,7 @@ private:
   void operator = ( const Self & );      // Purposely not implemented
 
   // Superclass typedefs
-  typedef std::vector< typename ProbabilityImageType::Pointer >
-                                              ProbabilityImageVectorType;
-  typedef std::vector< ProbabilityPixelType > ListVectorType;
-  typedef std::vector< ListVectorType >       ListSampleType;
-  typedef std::vector< ListSampleType >       ClassListSampleType;
+  typedef Superclass::ListSampleType          ListSampleType;
 
   // Custom typedefs
   svm_model          * m_Model;

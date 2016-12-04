@@ -38,6 +38,11 @@ if( TubeTK_USE_LIBSVM )
   include_directories( ${LIBSVM_INCLUDE_DIRS} )
 endif( TubeTK_USE_LIBSVM )
 
+if( TubeTK_USE_RandomForest )
+  find_package( RandomForest REQUIRED )
+  include_directories( ${RandomForest_INCLUDE_DIR} )
+endif( TubeTK_USE_RandomForest )
+
 find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseIO ${PYTHON_EXECUTABLE}
@@ -63,12 +68,16 @@ set( tubeBaseIOTests_SRCS
   tubeBaseIOPrintTest.cxx
   itktubePDFSegmenterParzenIOTest.cxx
   itktubeTubeExtractorIOTest.cxx
+  itktubeRidgeSeedFilterIOTest.cxx
   itktubeTubeXIOTest.cxx )
 if( TubeTK_USE_LIBSVM )
   list( APPEND tubeBaseIOTests_SRCS
-    itktubePDFSegmenterSVMIOTest.cxx
-    itktubeRidgeSeedFilterIOTest.cxx )
+    itktubePDFSegmenterSVMIOTest.cxx )
 endif( TubeTK_USE_LIBSVM )
+if( TubeTK_USE_RandomForest )
+  list( APPEND tubeBaseIOTests_SRCS
+    itktubePDFSegmenterRandomForestIOTest.cxx )
+endif( TubeTK_USE_RandomForest )
 
 
 add_executable( tubeBaseIOHeaderTest
@@ -144,19 +153,35 @@ if( TubeTK_USE_LIBSVM )
         ${TEMP}/itktubePDFSegmenterSVMIOTest.msvm
         ${TEMP}/itktubePDFSegmenterSVMIOTest2.mha
         ${TEMP}/itktubePDFSegmenterSVMIOTest2.msvm )
-
-  Midas3FunctionAddTest( NAME itktubeRidgeSeedFilterIOTest
-    COMMAND ${BASE_IO_TESTS}
-      --compare ${TEMP}/itktubeRidgeSeedFilterIOTest_Output.mha
-        ${TEMP}/itktubeRidgeSeedFilterIOTest_Output2.mha
-      --compareNumberOfPixelsTolerance 50
-      itktubeRidgeSeedFilterIOTest
-        MIDAS{im0001.crop.contrast.mha.md5}
-        MIDAS{im0001.vk.maskRidge.crop.mha.md5}
-        ${TEMP}/itktubeRidgeSeedFilterIOTest_Output.mha
-        ${TEMP}/itktubeRidgeSeedFilterIOTest.mrs
-        ${TEMP}/itktubeRidgeSeedFilterIOTest_Output2.mha )
 endif( TubeTK_USE_LIBSVM )
+
+if( TubeTK_USE_RandomForest )
+  Midas3FunctionAddTest( NAME itktubePDFSegmenterRandomForestIOTest
+    COMMAND ${BASE_IO_TESTS}
+      --compareNumberOfPixelsTolerance 20
+      --compare ${TEMP}/itktubePDFSegmenterRandomForestIOTest.mha
+        ${TEMP}/itktubePDFSegmenterRandomForestIOTest2.mha
+      itktubePDFSegmenterRandomForestIOTest
+        MIDAS{ES0015_Large.mha.md5}
+        MIDAS{ES0015_Large.mha.md5}
+        MIDAS{GDS0015_Large-TrainingMask.mha.md5}
+        ${TEMP}/itktubePDFSegmenterRandomForestIOTest.mha
+        ${TEMP}/itktubePDFSegmenterRandomForestIOTest.mrf
+        ${TEMP}/itktubePDFSegmenterRandomForestIOTest2.mha
+        ${TEMP}/itktubePDFSegmenterRandomForestIOTest2.mrf )
+endif( TubeTK_USE_RandomForest )
+
+Midas3FunctionAddTest( NAME itktubeRidgeSeedFilterIOTest
+  COMMAND ${BASE_IO_TESTS}
+    --compare ${TEMP}/itktubeRidgeSeedFilterIOTest_Output.mha
+      ${TEMP}/itktubeRidgeSeedFilterIOTest_Output2.mha
+    --compareNumberOfPixelsTolerance 50
+    itktubeRidgeSeedFilterIOTest
+      MIDAS{im0001.crop.contrast.mha.md5}
+      MIDAS{im0001.vk.maskRidge.crop.mha.md5}
+      ${TEMP}/itktubeRidgeSeedFilterIOTest_Output.mha
+      ${TEMP}/itktubeRidgeSeedFilterIOTest.mrs
+      ${TEMP}/itktubeRidgeSeedFilterIOTest_Output2.mha )
 
 Midas3FunctionAddTest( NAME itktubeTubeExtractorIOTest
   COMMAND ${BASE_IO_TESTS}

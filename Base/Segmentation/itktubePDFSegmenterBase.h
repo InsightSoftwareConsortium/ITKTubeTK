@@ -52,13 +52,18 @@ public:
   itkNewMacro( Self );
 
   //
-  // Custom Typedefs
+  // Template Args Typedefs
   //
   typedef TImage                               InputImageType;
+
+  typedef TLabelMap                            LabelMapType;
 
   itkStaticConstMacro( ImageDimension, unsigned int,
     TImage::ImageDimension );
 
+  //
+  // Base Typedefs
+  //
   typedef FeatureVectorGenerator< InputImageType >
                                                FeatureVectorGeneratorType;
   typedef typename FeatureVectorGeneratorType::FeatureValueType
@@ -68,13 +73,13 @@ public:
   typedef typename FeatureVectorGeneratorType::FeatureImageType
                                                FeatureImageType;
 
-  typedef TLabelMap                            LabelMapType;
   typedef typename LabelMapType::PixelType     LabelMapPixelType;
 
   typedef int                                  ObjectIdType;
   typedef std::vector< ObjectIdType >          ObjectIdListType;
 
   typedef float                                ProbabilityPixelType;
+  typedef std::vector< ProbabilityPixelType >  ProbabilityVectorType;
   typedef Image< ProbabilityPixelType, TImage::ImageDimension >
                                                ProbabilityImageType;
 
@@ -135,6 +140,11 @@ public:
   itkSetMacro( ForceClassification, bool );
   itkGetMacro( ForceClassification, bool );
 
+  /** Reduce sample size per class to match that of the class with the
+   * sample size. Default is true. */
+  itkSetMacro( BalanceClassSampleSize, bool );
+  itkGetMacro( BalanceClassSampleSize, bool );
+
   void SetProgressProcessInformation( void * processInfo, double fraction,
     double start );
 
@@ -149,14 +159,17 @@ public:
   //
   // Must overwrite
   //
-  virtual ProbabilityPixelType GetClassProbability( unsigned int
-    classNum, const FeatureVectorType & fv ) const;
+  virtual ProbabilityVectorType GetProbabilityVector( const
+    FeatureVectorType & fv ) const;
+
 
 
 protected:
 
   PDFSegmenterBase( void );
   virtual ~PDFSegmenterBase( void );
+
+  void BalanceClassSampleSize( void );
 
   virtual void GenerateSample( void );
 
@@ -209,6 +222,8 @@ private:
   bool                m_ReclassifyObjectLabels;
   bool                m_ReclassifyNotObjectLabels;
   bool                m_ForceClassification;
+
+  bool                m_BalanceClassSampleSize;
 
 }; // End class PDFSegmenterBase
 
