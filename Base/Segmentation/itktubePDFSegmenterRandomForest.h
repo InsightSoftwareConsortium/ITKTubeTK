@@ -67,23 +67,28 @@ public:
   //
   // Superclass Typedefs
   //
-  typedef Superclass::FeatureVectorGeneratorType FeatureVectorGeneratorType;
+  typedef typename Superclass::FeatureVectorGeneratorType
+                                                 FeatureVectorGeneratorType;
   typedef typename Superclass::FeatureValueType  FeatureValueType;
   typedef typename Superclass::FeatureVectorType FeatureVectorType;
   typedef typename Superclass::FeatureImageType  FeatureImageType;
 
   typedef typename Superclass::LabelMapPixelType LabelMapPixelType;
 
-  typedef Superclass::ObjectIdType               ObjectIdType;
-  typedef Superclass::ObjectIdListType           ObjectIdListType;
+  typedef typename Superclass::ObjectIdType      ObjectIdType;
+  typedef typename Superclass::ObjectIdListType  ObjectIdListType;
 
-  typedef Superclass::ProbabilityPixelType       ProbabilityPixelType;
-  typedef Superclass::ProbabilityVectorType      ProbabilityVectorType;
-  typedef Superclass::ProbabilityImageType       ProbabilityImageType;
+  typedef typename Superclass::ProbabilityPixelType
+                                                 ProbabilityPixelType;
 
-  typedef Superclass::VectorDoubleType           VectorDoubleType;
-  typedef Superclass::VectorIntType              VectorIntType;
-  typedef Superclass::VectorUIntType             VectorUIntType;
+  typedef typename Superclass::ProbabilityVectorType
+                                                 ProbabilityVectorType;
+  typedef typename Superclass::ProbabilityImageType
+                                                 ProbabilityImageType;
+
+  typedef typename Superclass::VectorDoubleType  VectorDoubleType;
+  typedef typename Superclass::VectorIntType     VectorIntType;
+  typedef typename Superclass::VectorUIntType    VectorUIntType;
 
   //
   // Custom Typedefs
