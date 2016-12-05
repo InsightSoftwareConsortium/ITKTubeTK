@@ -78,17 +78,32 @@ set( TubeTK_ITK_MODULES
 
 ###########################################################
 ###########################################################
-# The following were copied from Slicer on 2/29/2016
+# The following were copied from Slicer on 12/03/2016
 ###########################################################
 ###########################################################
 
 # Common Toolkit
+# Not updated because compilation error remains in CTK head:
+# Creating library bin\CTKVisualizationVTKCore.lib and object
+#  bin\CTKVisualizationVTKCore.exp
+# vtkLightBoxRendererManager.cpp.obj : error LNK2019: unresolved external
+#  symbol "void __cdecl vtkRenderingFreeType_AutoInit_Construct(void)"
+#  (?vtkRenderingFreeType_AutoInit_Construct@@YAXXZ) referenced in function
+#  "public: __cdecl vtkRenderingCore_AutoInit::vtkRenderingCore_AutoInit(void)"
+#  (??0vtkRenderingCore_AutoInit@@QEAA@XZ)
+# vtkLightBoxRendererManager.cpp.obj : error LNK2019: unresolved external
+#  symbol "void __cdecl vtkRenderingFreeType_AutoInit_Destruct(void)"
+#  (?vtkRenderingFreeType_AutoInit_Destruct@@YAXXZ) referenced in function
+#  "public: __cdecl vtkRenderingCore_AutoInit::~vtkRenderingCore_AutoInit(void)"
+#  (??1vtkRenderingCore_AutoInit@@QEAA@XZ)
+# bin\CTKVisualizationVTKCore.dll : fatal error LNK1120: 2 unresolved externals
+
 set( CTK_URL ${github_protocol}://github.com/aylward/CTK.git )
 set( CTK_HASH_OR_TAG 575dcc6040d4e8a5a87500f2f5e9a7e13b3cc928 )
 
 # Insight Segmentation and Registration Toolkit
 set( ITK_URL ${github_protocol}://github.com/Slicer/ITK.git )
-set( ITK_HASH_OR_TAG 16df9b689856cd4a8dd22a2cef92f5ee7222da0c )
+set( ITK_HASH_OR_TAG cb4946ddaac2d7c066c3a00c059bf9001a4b9c04 )
 
 # Slicer Execution Model
 set( SlicerExecutionModel_URL
