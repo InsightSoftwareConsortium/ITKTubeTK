@@ -32,13 +32,13 @@
       <index>2</index>
       <description>Input points file from shrinking the image</description>
     </image>
-    <image>
+    <file>
       <name>outputListFileName</name>
       <label>Output List</label>
       <channel>output</channel>
       <index>3</index>
       <description>Output list</description>
-    </image>
+    </file>
   </parameters>
   <parameters>
     <label>Optional parameters</label>
