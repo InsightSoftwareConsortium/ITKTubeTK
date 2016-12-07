@@ -1,0 +1,13 @@
+itk_wrap_include( tubeConvertShrunkenSeedImageToList.h )
+itk_wrap_include( itkImage.h )
+itk_wrap_include("vnl/vnl_matrix.h")
+
+itk_wrap_named_class("tube::ConvertShrunkenSeedImageToList" tubeConvertShrunkenSeedImageToList POINTER)
+ foreach(d ${ITK_WRAP_IMAGE_DIMS})
+    foreach(v ${WRAP_ITK_VECTOR_REAL})
+       foreach(s ${WRAP_ITK_SCALAR})
+         itk_wrap_template("I${ITKM_${s}}${d}I${ITKM_${v}${d}}${d}"  "itk::Image<${ITKT_${s}}, ${d}>, itk::Image<${ITKT_${v}${d}}, ${d}>")
+       endforeach()
+    endforeach()
+ endforeach()
+itk_end_wrap_class()
