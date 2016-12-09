@@ -70,7 +70,8 @@ public:
   tubeWrapGetMacro( NumberRows, unsigned int, ConvertImagesToCSVFilter );
   /** Set the input image and reinitialize the list of images */
   tubeWrapSetObjectMacro( Input, InputImageType, ConvertImagesToCSVFilter );
-  tubeWrapGetConstObjectMacro( Input, InputImageType, ConvertImagesToCSVFilter );
+  tubeWrapGetConstObjectMacro( Input, InputImageType,
+    ConvertImagesToCSVFilter );
   void AddImage( InputImageType* );
 
   tubeWrapCallMacro( Update, ConvertImagesToCSVFilter );

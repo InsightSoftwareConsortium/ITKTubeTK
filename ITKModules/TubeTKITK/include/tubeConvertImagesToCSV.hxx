@@ -47,7 +47,7 @@ ConvertImagesToCSV< TInputImage, TInputMask >
 template< class TInputImage, class TInputMask >
 void
 ConvertImagesToCSV< TInputImage, TInputMask >
-::AddImage(TInputImage* image)
+::AddImage( TInputImage* image )
 {
   m_ConvertImagesToCSVFilter->AddImage( image );
   this->Modified();
@@ -56,7 +56,7 @@ ConvertImagesToCSV< TInputImage, TInputMask >
 template< class TInputImage, class TInputMask >
 void
 ConvertImagesToCSV< TInputImage, TInputMask >
-::PrintSelf(std::ostream & os, itk::Indent indent) const
+::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
   os << "Filter = " << m_ConvertImagesToCSVFilter << std::endl;
