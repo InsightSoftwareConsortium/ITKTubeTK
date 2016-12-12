@@ -20,46 +20,38 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __tubeConvertImagesToCSV_hxx
-#define __tubeConvertImagesToCSV_hxx
+#ifndef __tubeConvertShrunkenSeedImageToList_hxx
+#define __tubeConvertShrunkenSeedImageToList_hxx
 
-#include "tubeConvertImagesToCSV.h"
+#include "tubeConvertShrunkenSeedImageToList.h"
 
 
 namespace tube
 {
-template< class TInputImage, class TInputMask >
-ConvertImagesToCSV< TInputImage, TInputMask >
-::ConvertImagesToCSV( void )
+template< class TImage, class TPointsImage >
+ConvertShrunkenSeedImageToList< TImage, TPointsImage >
+::ConvertShrunkenSeedImageToList( void )
 {
-  m_ConvertImagesToCSVFilter = ConvertImagesToCSVFilterType::New();
+  m_ConvertShrunkenSeedImageToListFilter =
+    ConvertShrunkenSeedImageToListFilterType::New();
 }
 
-template< class TInputImage, class TInputMask >
-typename itk::tube::ConvertImagesToCSVFilter< TInputImage, TInputMask >
+template< class TImage, class TPointsImage >
+typename itk::tube::ConvertShrunkenSeedImageToListFilter< TImage, TPointsImage >
 ::VnlMatrixType
-ConvertImagesToCSV< TInputImage, TInputMask >
+ConvertShrunkenSeedImageToList< TImage, TPointsImage >
 ::GetOutput()
 {
-  return m_ConvertImagesToCSVFilter->GetOutput()->Get();
+  return m_ConvertShrunkenSeedImageToListFilter->GetOutput()->Get();
 }
 
-template< class TInputImage, class TInputMask >
+template< class TImage, class TPointsImage >
 void
-ConvertImagesToCSV< TInputImage, TInputMask >
-::AddImage( TInputImage* image )
-{
-  m_ConvertImagesToCSVFilter->AddImage( image );
-  this->Modified();
-}
-
-template< class TInputImage, class TInputMask >
-void
-ConvertImagesToCSV< TInputImage, TInputMask >
+ConvertShrunkenSeedImageToList< TImage, TPointsImage >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
-  os << "Filter = " << m_ConvertImagesToCSVFilter << std::endl;
+  os << "Filter = " << m_ConvertShrunkenSeedImageToListFilter << std::endl;
 }
 
 } // end namespace tube

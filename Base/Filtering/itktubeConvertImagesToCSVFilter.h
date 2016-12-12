@@ -76,13 +76,14 @@ public:
   OutputType* GetOutput();
 
   itkGetMacro( Stride, unsigned int );
-  itkSetClampMacro( Stride, unsigned int, 1, std::numeric_limits<unsigned int>::max() );
+  itkSetClampMacro( Stride, unsigned int, 1,
+    std::numeric_limits<unsigned int>::max() );
   itkGetMacro( NumImages, unsigned int );
   itkSetMacro( NumImages, unsigned int );
   itkSetMacro( NumberRows, unsigned int );
   itkGetMacro( NumberRows, unsigned int );
   /** Set the input image and reinitialize the list of images */
-  void SetInput(InputImageType* image);
+  void SetInput( InputImageType* image );
   const InputImageType* GetInput();
   void AddImage( InputImageType* );
 

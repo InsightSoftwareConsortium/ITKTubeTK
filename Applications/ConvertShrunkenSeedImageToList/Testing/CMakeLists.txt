@@ -37,7 +37,7 @@ set( CompareTextFiles_EXE
 
 
 # Test1
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Valid
   COMMAND ${PROJ_EXE}
     MIDAS{LiverVess_Shrink_Seeds.mha.md5}
     MIDAS{LiverVess_Shrink_SeedScales.mha.md5}
@@ -45,9 +45,20 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
     ${TEMP}/${MODULE_NAME}Test1.sdlst )
 
 # Test1-Compare
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Valid-Compare
   COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.sdlst
     -b MIDAS{${MODULE_NAME}Test1.sdlst.md5} )
-set_property( TEST ${MODULE_NAME}-Test1-Compare
-  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+set_property( TEST ${MODULE_NAME}-Test1-Valid-Compare
+  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1-Valid )
+
+# Test2
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-DifferentSizeInputs
+  COMMAND ${PROJ_EXE}
+    MIDAS{ES0015_Large.mha.md5}
+    MIDAS{LiverVess_Shrink_SeedScales.mha.md5}
+    MIDAS{LiverVess_Shrink_Points.mha.md5}
+    ${TEMP}/${MODULE_NAME}Test2.sdlst )
+set_property( TEST ${MODULE_NAME}-Test2-DifferentSizeInputs
+  PROPERTY WILL_FAIL true
+  )
