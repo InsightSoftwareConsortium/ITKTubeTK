@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -60,7 +60,7 @@ public:
   typedef typename Superclass::ContinuousIndexType     ContinuousIndexType;
   typedef itk::Image<float,2>                          HistogramType;
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( JointHistogramImageFunction, ImageFunction );
 
   /** Standard New Macro. */
@@ -92,7 +92,7 @@ public:
     return m_InputMask;
     }
 
-  /** Get the size of the histogram (It will be a size x size image ). */
+  /** Get the size of the histogram ( It will be a size x size image ). */
   itkGetMacro( HistogramSize, unsigned int );
 
   /**
@@ -110,7 +110,7 @@ public:
     }
 
   /** Get the Z-score at a given continuous index. */
-  virtual double EvaluateAtContinuousIndex(
+  virtual double EvaluateAtContinuousIndex( 
     const ContinuousIndexType & index ) const
     {
     IndexType nindex;
@@ -123,7 +123,7 @@ public:
   virtual double EvaluateAtIndex( const IndexType & index ) const;
 
   /**
-   * Add histograms (based on a given point) to the internals used to
+   * Add histograms ( based on a given point ) to the internals used to
    * calculate the mean and standard deviation histograms when needed.
    */
   virtual void Precompute( const PointType & point )
@@ -134,11 +134,11 @@ public:
     }
 
   /**
-   * Add histograms (based on a given continuous index) to the internals
+   * Add histograms ( based on a given continuous index ) to the internals
    * used to calculate the mean and standard deviation histograms when
    * needed.
    */
-  virtual void PrecomputeAtContinuousIndex(
+  virtual void PrecomputeAtContinuousIndex( 
     const ContinuousIndexType & index )
     {
     IndexType nindex;
@@ -160,7 +160,7 @@ public:
   // setstandardeviationhistogram
 
   /**
-   * Add histograms (based on a given index) to the internals used to
+   * Add histograms ( based on a given index ) to the internals used to
    * calculate the mean and standard deviation histograms when needed.
    */
   virtual void PrecomputeAtIndex( const IndexType & index );
@@ -182,7 +182,7 @@ protected:
   /** PrintSelf function for introspection. */
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
-  typename HistogramType::Pointer & ComputeHistogramAtIndex(
+  typename HistogramType::Pointer & ComputeHistogramAtIndex( 
     const IndexType & index, bool blur=true ) const;
 
   /** Get the Z-score at a given index. */
@@ -223,4 +223,4 @@ private:
 #include "itktubeJointHistogramImageFunction.hxx"
 #endif
 
-#endif // End !defined(__itktubeJointHistogramImageFunction_h)
+#endif // End !defined( __itktubeJointHistogramImageFunction_h )

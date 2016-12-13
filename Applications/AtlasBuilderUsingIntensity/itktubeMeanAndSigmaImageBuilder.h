@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -87,8 +87,8 @@ public:
   typedef typename InputImageType::SpacingType          SpacingType;
   typedef typename InputImageType::PointType            PointType;
 
-  typedef Image<
-    float,itkGetStaticConstMacro( ImageDimension )>           ProcessImageType;
+  typedef Image< float, itkGetStaticConstMacro( ImageDimension ) >
+    ProcessImageType;
 
   /**
    * Add an image to the group being summed.
@@ -96,7 +96,7 @@ public:
    * NOTE: No check is made to insure the same image is not added twice
    *
    *  It is assumed that the input image has the same spacing,
-   *  origin & size (unless DynamicallyAdjustOutputSize() is set)
+   *  origin & size ( unless DynamicallyAdjustOutputSize() is set )
    */
   virtual void AddImage( InputImagePointer );
 
@@ -133,13 +133,13 @@ public:
 
   /**
    * Get the bool flag of whether the OutputSigmaImageType is
-   * variance (false) or standard deviation (true)
+   * variance ( false ) or standard deviation ( true )
    */
   itkGetConstMacro( UseStandardDeviation, bool );
 
   /**
    * Set the bool flag of whether the OutputSigmaImageType is
-   * variance (false) or standard deviation (true).  Default is true
+   * variance ( false ) or standard deviation ( true ).  Default is true
    */
   itkSetMacro( UseStandardDeviation, bool );
 
@@ -160,14 +160,14 @@ public:
     }
 
   /**
-   * Turn on and off the ThresholdInputImageBelow function (default is off).
+   * Turn on and off the ThresholdInputImageBelow function ( default is off ).
    * Will use last inputed value, or default otherwise
    * ( see ThresholdInputImageBelow )
    */
   itkGetConstMacro( ThresholdInputImageBelowOn, bool );
 
   /**
-   * Turn on and off the ThresholdInputImageBelow function (default is off).
+   * Turn on and off the ThresholdInputImageBelow function ( default is off ).
    * Will use last inputed value, or default otherwise
    * ( see ThresholdInputImageBelow )
    */
@@ -294,4 +294,4 @@ private:
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeMeanAndSigmaImageBuilder_h)
+#endif // End !defined( __itktubeMeanAndSigmaImageBuilder_h )

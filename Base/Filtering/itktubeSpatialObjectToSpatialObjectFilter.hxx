@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -73,7 +73,7 @@ void
 SpatialObjectToSpatialObjectFilter< TInputSpatialObject,
 TOutputSpatialObject >
 ::SetInput( const itk::ProcessObject::DataObjectIdentifierType & index,
-  itk::DataObject * input)
+  itk::DataObject * input )
 {
   // Process object is not const-correct so the const_cast is required here
   this->ProcessObject::SetInput( index, input );
@@ -87,7 +87,7 @@ SpatialObjectToSpatialObjectFilter< TInputSpatialObject,
 TOutputSpatialObject >
 ::GetInput( void ) const
 {
-  return itkDynamicCastInDebugMode< const TInputSpatialObject * >(
+  return itkDynamicCastInDebugMode< const TInputSpatialObject * >( 
     this->GetPrimaryInput() );
 }
 
@@ -116,4 +116,4 @@ TOutputSpatialObject >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeSpatialObjectToSpatialObjectFilter_hxx)
+#endif // End !defined( __itktubeSpatialObjectToSpatialObjectFilter_hxx )

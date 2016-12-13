@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -58,28 +58,28 @@ public:
   typedef typename FilterType::SpatialObjectType     TubesType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(ConvertTubesToImage, ProcessObject);
+  /** Run-time type information ( and related methods ). */
+  itkTypeMacro( ConvertTubesToImage, ProcessObject );
 
   /** Set if the tube should be full inside */
-  tubeWrapSetMacro(UseRadius, bool, Filter);
-  tubeWrapGetMacro(UseRadius, bool, Filter);
+  tubeWrapSetMacro( UseRadius, bool, Filter );
+  tubeWrapGetMacro( UseRadius, bool, Filter );
 
   /* Set template image */
-  void SetTemplateImage(const OutputImageType * pTemplateImage);
-  itkGetConstObjectMacro(TemplateImage, OutputImageType);
+  void SetTemplateImage( const OutputImageType * pTemplateImage );
+  itkGetConstObjectMacro( TemplateImage, OutputImageType );
 
   /* Set input tubes */
-  tubeWrapSetConstObjectMacro(Input, TubesType, Filter);
-  tubeWrapGetConstObjectMacro(Input, TubesType, Filter);
+  tubeWrapSetConstObjectMacro( Input, TubesType, Filter );
+  tubeWrapGetConstObjectMacro( Input, TubesType, Filter );
 
   /* Runs tubes to image conversion */
-  tubeWrapUpdateMacro(Filter);
+  tubeWrapUpdateMacro( Filter );
 
   /* Get the generated binary tubes image */
-  tubeWrapGetObjectMacro(Output, OutputImageType, Filter);
+  tubeWrapGetObjectMacro( Output, OutputImageType, Filter );
 
 protected:
   ConvertTubesToImage( void );
@@ -88,8 +88,8 @@ protected:
 
 private:
   /** itkConvertTubesToImageFilter parameters **/
-  ConvertTubesToImage(const Self &);
-  void operator=(const Self &);
+  ConvertTubesToImage( const Self & );
+  void operator=( const Self & );
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
   void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};

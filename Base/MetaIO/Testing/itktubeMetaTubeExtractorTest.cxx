@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -33,7 +33,7 @@ int itktubeMetaTubeExtractorTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  vnl_vector< double > scales(3);
+  vnl_vector< double > scales( 3 );
   scales[0] = 1;
   scales[1] = 2;
   scales[2] = 3;

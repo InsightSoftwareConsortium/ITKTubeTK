@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -126,10 +126,10 @@ public:
   unsigned int  GetErodeRadius( void ) const;
   void          SetHoleFillIterations( unsigned int _HoleFillIterations );
   unsigned int  GetHoleFillIterations( void ) const;
-  void          SetProbabilityImageSmoothingStandardDeviation(
+  void          SetProbabilityImageSmoothingStandardDeviation( 
                   double _ProbabilityImageSmoothingStandardDeviation );
   double         GetProbabilityImageSmoothingStandardDeviation( void ) const;
-  void          SetHistogramSmoothingStandardDeviation(
+  void          SetHistogramSmoothingStandardDeviation( 
                   double _HistogramSmoothingStandardDeviation );
   double         GetHistogramSmoothingStandardDeviation( void ) const;
   void          SetOutlierRejectPortion( double _OutlierRejectPortion );
@@ -138,7 +138,7 @@ public:
   bool          GetDraft( void ) const;
   void          SetReclassifyObjectLabels( bool _ReclassifyObjectLabels );
   bool          GetReclassifyObjectLabels( void ) const;
-  void          SetReclassifyNotObjectLabels(
+  void          SetReclassifyNotObjectLabels( 
                   bool _ReclassifyNotObjectLabels );
   bool          GetReclassifyNotObjectLabels( void ) const;
   void          SetForceClassification( bool _ForceClassification );
@@ -187,4 +187,4 @@ protected:
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeMetaClassPDF_h)
+#endif // End !defined( __itktubeMetaClassPDF_h )

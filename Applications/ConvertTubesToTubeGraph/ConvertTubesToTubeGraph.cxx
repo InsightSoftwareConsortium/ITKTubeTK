@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -65,7 +65,7 @@ int DoIt( int argc, char * argv[] )
     soReader->Update();
     filter->SetInputTubeGroup( soReader->GetGroup() );
     }
-  catch(...)
+  catch( ... )
     {
     tube::ErrorMessage( "ERROR: Cannot read spatial object file" );
     return EXIT_FAILURE;
@@ -84,7 +84,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & ex )
     {
     tube::FmtErrorMessage( "Cannot read image file: %s",
-        ex.what());
+        ex.what() );
     return EXIT_FAILURE;
     }
   timeCollector.Stop( "Load CVT" );
@@ -96,8 +96,8 @@ int DoIt( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & ex )
     {
-    tube::FmtErrorMessage( "TubeSpatialObjectToTubeGraphFilter Update error: %s",
-        ex.what());
+    tube::FmtErrorMessage(
+      "TubeSpatialObjectToTubeGraphFilter Update error: %s", ex.what() );
     return EXIT_FAILURE;
     }
 

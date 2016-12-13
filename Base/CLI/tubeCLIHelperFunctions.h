@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -145,7 +145,7 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
       return DoIt< float, 3 >( argc, argv );
       }
 
-#endif // End !defined(PARSE_ARGS_FLOAT_ONLY)
+#endif // End !defined( PARSE_ARGS_FLOAT_ONLY )
 
     tubeErrorMacro( << "Dimension size of " << dimension << " not supported" );
     return EXIT_FAILURE;
@@ -166,4 +166,4 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
 
 } // End namespace tube
 
-#endif // End !defined(__tubeCLIHelperFunctions_h)
+#endif // End !defined( __tubeCLIHelperFunctions_h )

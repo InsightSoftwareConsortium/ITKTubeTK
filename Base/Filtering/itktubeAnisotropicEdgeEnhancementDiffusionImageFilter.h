@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -43,10 +43,10 @@ namespace tube
  *  This class is an implementation of Edge-enhancing diffusion:
  *   Mendrik et al., Noise reduction in computed tomography scans using 3-D
  *   anisotropic hybrid diffusion with continuous switch. IEEE Transactions on
- *   Medical Imaging 28(10), pp. 1585-1594, 2009.
+ *   Medical Imaging 28( 10 ), pp. 1585-1594, 2009.
  *
  * \warning Does not handle image directions.  Re-orient images to axial
- * (direction cosines = identity matrix) before using this function.
+ * ( direction cosines = identity matrix ) before using this function.
  *
  * \sa AnisotropicDiffusionTensorImageFilter
  * \sa AnisotropicCoherenceEnhancingDiffusionImageFilter
@@ -75,7 +75,7 @@ public:
   /** Method for creation through the object factory */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods) */
+  /** Run-time type information ( and related methods ) */
   itkTypeMacro( AnisotropicEdgeEnhancementDiffusionImageFilter,
                 ImageToImageFilter );
 
@@ -112,20 +112,20 @@ public:
 
   // Declare the types of the output images
   typedef itk::Image< EigenValueArrayType, ImageDimension >
-                                                  EigenAnalysisOutputImageType;
+    EigenAnalysisOutputImageType;
 
   /** The container type for the update buffer. */
   typedef OutputImageType UpdateBufferType;
 
   /** Define diffusion image nbd type */
   typedef typename Superclass::DiffusionTensorNeighborhoodType
-                                               DiffusionTensorNeighborhoodType;
+    DiffusionTensorNeighborhoodType;
 
   /** Set the contrast parameter */
   itkSetMacro( ContrastParameterLambdaE, double );
 
   /** Set threshold parameter C */
-  itkSetMacro( ThresholdParameterC,  double );
+  itkSetMacro( ThresholdParameterC, double );
 
   /** Set the sigma and outer sigma value for structure tensor computation */
   itkSetMacro( Sigma, double );
@@ -141,15 +141,15 @@ public:
 protected:
   AnisotropicEdgeEnhancementDiffusionImageFilter( void );
  ~AnisotropicEdgeEnhancementDiffusionImageFilter( void ) {}
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
   /** Update diffusion tensor image */
   void virtual UpdateDiffusionTensorImage( void );
 
 private:
   //purposely not implemented
-  AnisotropicEdgeEnhancementDiffusionImageFilter(const Self&);
-  void operator=(const Self&); //purposely not implemented
+  AnisotropicEdgeEnhancementDiffusionImageFilter( const Self& );
+  void operator=( const Self& ); //purposely not implemented
 
   double    m_ContrastParameterLambdaE;
   double    m_ThresholdParameterC;
@@ -166,4 +166,5 @@ private:
 #include "itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeAnisotropicEdgeEnhancementDiffusionImageFilter_h)
+#endif
+// End !defined( __itktubeAnisotropicEdgeEnhancementDiffusionImageFilter_h )

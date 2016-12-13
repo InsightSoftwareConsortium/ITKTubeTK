@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -34,7 +34,8 @@ int DoIt( int argc, char * argv[] );
 
 // This needs to be declared for tubeCLIHelperFunctions.
 template< class TPixel, unsigned int VDimension >
-int DoIt( int itkNotUsed( argc ), char * itkNotUsed( argv )[] ) { return 0; }
+int DoIt( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
+  { return 0; }
 
 #include "tubeCLIHelperFunctions.h"
 
@@ -81,21 +82,20 @@ int DoIt( int argc, char * argv[] )
   typedef typename TubeType::TransformType            TubeTransformType;
 
 
-  tube::CLIProgressReporter progressReporter(
-    "tubeDensityProbability",
+  tube::CLIProgressReporter progressReporter( "tubeDensityProbability",
     CLPProcessInformation );
 
   progressReporter.Start();
 
   /*
-   * Read in spatial object file (tubes)
+   * Read in spatial object file ( tubes )
    */
   typename SOReaderType::Pointer soReader = SOReaderType::New();
   soReader->SetFileName( inTubeFile.c_str() );
   soReader->Update();
   typename GroupType::Pointer group = soReader->GetGroup();
 
-  progressReporter.Report(0.1);
+  progressReporter.Report( 0.1 );
 
   /*
    * Read in ATLAS EMD image
@@ -105,19 +105,21 @@ int DoIt( int argc, char * argv[] )
   imReader->Update();
   typename ImageType::Pointer meanImage = imReader->GetOutput();
 
-  progressReporter.Report(0.2);
+  progressReporter.Report( 0.2 );
 
   char childName[] = "Tube";
   typename TubeType::ChildrenListType * tubeList =
     group->GetChildren( group->GetMaximumDepth(), childName );
-  typename TubeType::ChildrenListType::const_iterator tubeIt = tubeList->begin();
+  typename TubeType::ChildrenListType::const_iterator tubeIt =
+    tubeList->begin();
   TubePointType tubePoint;
   typename TubeTransformType::Pointer tubeTransform;
   std::ofstream writeStream;
-  writeStream.open(outFile.c_str(), std::ios::binary | std::ios::out);
-  while(tubeIt != tubeList->end()) // Iterate over tubes
+  writeStream.open( outFile.c_str(), std::ios::binary | std::ios::out );
+  while( tubeIt != tubeList->end() ) // Iterate over tubes
     {
-    typename TubeType::Pointer tube = dynamic_cast<TubeType *>((*tubeIt).GetPointer());
+    typename TubeType::Pointer tube = dynamic_cast<TubeType *>( 
+      ( *tubeIt ).GetPointer() );
 
     tube->RemoveDuplicatePoints();
     tube->ComputeTangentAndNormals();
@@ -127,15 +129,22 @@ int DoIt( int argc, char * argv[] )
     tube->ComputeObjectToWorldTransform();
     tubeTransform = tube->GetIndexToWorldTransform();
     
-    for( unsigned int i=0; i<tube->GetNumberOfPoints(); i++)
+    for( unsigned int i=0; i<tube->GetNumberOfPoints(); i++ )
       {
-      tubePoint = static_cast<TubePointType>(tube->GetPoints()[i]); // Get point
-      pnt = tubePoint.GetPosition(); // Get point's position
-      pnt = tubeTransform->TransformPoint(pnt); // Point to physical coords
-      meanImage->TransformPhysicalPointToIndex(pnt, indx); // Get closest voxel
+      // Get point
+      tubePoint = static_cast<TubePointType>( tube->GetPoints()[i] );
+
+      // Get point's position
+      pnt = tubePoint.GetPosition();
+
+      // Point to physical coords
+      pnt = tubeTransform->TransformPoint( pnt );
+
+      // Get closest voxel
+      meanImage->TransformPhysicalPointToIndex( pnt, indx );
   
       // Write value of ATLAS EMD file at voxel
-      writeStream << meanImage->GetPixel(indx) << std::endl;
+      writeStream << meanImage->GetPixel( indx ) << std::endl;
       }
 
     ++tubeIt;
@@ -143,7 +152,7 @@ int DoIt( int argc, char * argv[] )
   writeStream.close();
   delete tubeList;
 
-  progressReporter.Report(1.0);
+  progressReporter.Report( 1.0 );
   progressReporter.End();
 
   return EXIT_SUCCESS;

@@ -3,10 +3,10 @@
   Program:   Insight Segmentation & Registration Toolkit
   Module:    $RCSfile: ITKHeader.h,v $
   Language:  C++
-  Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
+  Date:      $Date: 2007-07-10 11:35:36 -0400 ( Tue, 10 Jul 2007 ) $
   Version:   $Revision: 0 $
 
-  Copyright (c) 2002 Insight Consortium. All rights reserved.
+  Copyright ( c ) 2002 Insight Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
@@ -33,11 +33,11 @@ namespace itk
  * \brief Compute moments of an n-dimensional image.
  *
  * This class provides methods for computing the moments and related
- * properties of a single-echo image.  Computing the (non-central)
+ * properties of a single-echo image.  Computing the ( non-central )
  * moments of a large image can easily take a million times longer
  * than computing the various other values derived from them, so we
  * compute the moments only on explicit request, and save their values
- * (in an ImageRegionMomentsCalculator object) for later retrieval by the user.
+ * ( in an ImageRegionMomentsCalculator object ) for later retrieval by the user.
  *
  * The non-central moments computed by this class are not really
  * intended for general use and are therefore in index coordinates;
@@ -67,14 +67,14 @@ public:
   typedef SmartPointer<const Self>             ConstPointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(ImageRegionMomentsCalculator, Object);
+  /** Run-time type information ( and related methods ). */
+  itkTypeMacro( ImageRegionMomentsCalculator, Object );
 
   /** Extract the dimension of the image. */
-  itkStaticConstMacro(ImageDimension, unsigned int,
-                      TImage::ImageDimension);
+  itkStaticConstMacro( ImageDimension, unsigned int,
+                      TImage::ImageDimension );
 
   /** Standard scalar type within this class. */
   typedef double ScalarType;
@@ -82,10 +82,10 @@ public:
   typedef typename TImage::PointType PointType;
 
   /** Standard vector type within this class. */
-  typedef Vector<ScalarType, itkGetStaticConstMacro(ImageDimension)> VectorType;
+  typedef Vector<ScalarType, itkGetStaticConstMacro( ImageDimension )> VectorType;
 
   /** Spatial Object type within this class. */
-  typedef SpatialObject<itkGetStaticConstMacro(ImageDimension)> SpatialObjectType;
+  typedef SpatialObject<itkGetStaticConstMacro( ImageDimension )> SpatialObjectType;
 
   /** Spatial Object member types used within this class. */
   typedef typename SpatialObjectType::Pointer      SpatialObjectPointer;
@@ -93,8 +93,8 @@ public:
 
   /** Standard matrix type within this class. */
   typedef Matrix<ScalarType,
-                 itkGetStaticConstMacro(ImageDimension),
-                 itkGetStaticConstMacro(ImageDimension)>   MatrixType;
+                 itkGetStaticConstMacro( ImageDimension ),
+                 itkGetStaticConstMacro( ImageDimension )>   MatrixType;
 
   /** Standard image type within this class. */
   typedef TImage ImageType;
@@ -105,7 +105,7 @@ public:
 
   /** Affine transform for mapping to and from principal axis */
   typedef AffineTransform<double,
-    itkGetStaticConstMacro(ImageDimension)>             AffineTransformType;
+    itkGetStaticConstMacro( ImageDimension )>             AffineTransformType;
   typedef typename AffineTransformType::Pointer         AffineTransformPointer;
 
   /** Set the input image. */
@@ -120,7 +120,7 @@ public:
     }
 
   /** Set the spatial object mask. */
-  virtual void SetSpatialObjectMask(
+  virtual void SetSpatialObjectMask( 
     const SpatialObject<itkGetStaticConstMacro( ImageDimension )> * so )
     {
     if( m_SpatialObjectMask != so )
@@ -133,8 +133,8 @@ public:
 
   /** Method for controlling the region of interest that optionally limits the
    *   spatial extent of the computations */
-  itkSetMacro(UseRegionOfInterest, bool);
-  itkGetMacro(UseRegionOfInterest, bool);
+  itkSetMacro( UseRegionOfInterest, bool );
+  itkGetMacro( UseRegionOfInterest, bool );
   virtual void SetRegionOfInterest( const PointType & point1,
                                     const PointType & point2 )
     {
@@ -147,8 +147,8 @@ public:
       }
     }
 
-  itkGetMacro(RegionOfInterestPoint1, PointType);
-  itkGetMacro(RegionOfInterestPoint2, PointType);
+  itkGetMacro( RegionOfInterestPoint1, PointType );
+  itkGetMacro( RegionOfInterestPoint2, PointType );
 
   /** Compute moments of a new or modified image.
    * This method computes the moments of the image given as a
@@ -157,9 +157,9 @@ public:
    * other methods of this object. */
   void Compute( void );
 
-  /** Return the total mass (or zeroth moment) of an image.
-   * This method returns the sum of pixel intensities (also known as
-   * the zeroth moment or the total mass) of the image whose moments
+  /** Return the total mass ( or zeroth moment ) of an image.
+   * This method returns the sum of pixel intensities ( also known as
+   * the zeroth moment or the total mass ) of the image whose moments
    * were last computed by this object. */
   ScalarType GetTotalMass() const;
 
@@ -205,40 +205,40 @@ public:
    * corresponding to the smallest principal moment is the vector
    * m[0], where m is the value returned by this method.  The matrix
    * of principal axes is guaranteed to be a proper rotation; that
-   * is, to have determinant +1 and to preserve parity.  (Unless you
+   * is, to have determinant +1 and to preserve parity.  ( Unless you
    * have foolishly made one or more of the spacing values negative;
-   * in that case, _you_ get to figure out the consequences.)  The
+   * in that case, _you_ get to figure out the consequences. )  The
    * moments are computed in physical coordinates. */
   MatrixType GetPrincipalAxes() const;
 
   /** Get the affine transform from principal axes to physical axes
    * This method returns an affine transform which transforms from
    * the principal axes coordinate system to physical coordinates. */
-  AffineTransformPointer GetPrincipalAxesToPhysicalAxesTransform(void) const;
+  AffineTransformPointer GetPrincipalAxesToPhysicalAxesTransform( void ) const;
 
   /** Get the affine transform from physical axes to principal axes
    * This method returns an affine transform which transforms from
    * the physical coordinate system to the principal axes coordinate
    * system. */
-  AffineTransformPointer GetPhysicalAxesToPrincipalAxesTransform(void) const;
+  AffineTransformPointer GetPhysicalAxesToPrincipalAxesTransform( void ) const;
 
 protected:
   ImageRegionMomentsCalculator();
   virtual ~ImageRegionMomentsCalculator();
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
 private:
-  ImageRegionMomentsCalculator(const Self &); // purposely not implemented
-  void operator=(const Self &);               // purposely not implemented
+  ImageRegionMomentsCalculator( const Self & ); // purposely not implemented
+  void operator=( const Self & );               // purposely not implemented
 
   bool       m_Valid;                // Have moments been computed yet?
   ScalarType m_M0;                   // Zeroth moment
   VectorType m_M1;                   // First moments about origin
   MatrixType m_M2;                   // Second moments about origin
-  VectorType m_Cg;                   // Center of gravity (physical units)
-  MatrixType m_Cm;                   // Second central moments (physical)
-  VectorType m_Pm;                   // Principal moments (physical)
-  MatrixType m_Pa;                   // Principal axes (physical)
+  VectorType m_Cg;                   // Center of gravity ( physical units )
+  MatrixType m_Cm;                   // Second central moments ( physical )
+  VectorType m_Pm;                   // Principal moments ( physical )
+  MatrixType m_Pa;                   // Principal axes ( physical )
 
   bool      m_UseRegionOfInterest;
   PointType m_RegionOfInterestPoint1;

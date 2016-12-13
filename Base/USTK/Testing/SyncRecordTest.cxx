@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -32,7 +32,7 @@ int SyncRecordTest( int argc, char * argv [] )
     {
     std::cerr << "Usage: "
               << argv[0]
-              << " metadata.txt" // :-)
+              << " metadata.txt" // :- )
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -87,8 +87,8 @@ int SyncRecordTest( int argc, char * argv [] )
     {
     std::cout << "Record filepath: " << syncRecord->getRufImageFilePath() << std::endl;;
     const int time = syncRecord->getTimestamp();
-    (void) time;
-    // duration in msec since the start of InnerOptic's acquisition program (at acquisition time);
+    ( void ) time;
+    // duration in msec since the start of InnerOptic's acquisition program ( at acquisition time );
     // could be used to determine how much time had passed from one tracked image to the next.
 
     double xInRUF[MAX_US_SCAN_CROP_POLYGON_PTS];
@@ -98,13 +98,13 @@ int SyncRecordTest( int argc, char * argv [] )
       {
       syncRecord->getScanCropVertex_in_ruf( ii, xInRUF[ii], yInRUF[ii] ); // check whether return value is true
       }
-    // polygonal outline of actual ultrasound pixel scan data, in drift-corrected raw ultrasound frame pixels (x going right, y down)
+    // polygonal outline of actual ultrasound pixel scan data, in drift-corrected raw ultrasound frame pixels ( x going right, y down )
     // only the data within this polygon should be reconstructed and used for registration with pre-op imagery
     // currently this polygon is a trapeze whose parallel edges are aligned with the x axis of the ultrasound image
 
     syncRecord->getTrackerFromRufMatrix( transformationMatrix );
-    // OpenGL-style orthogonal transformation matrix (translations are in elements 12, 13, 14) which premultiplies a vector in drift-corrected
-    // raw ultrasound frame pixels (z_in_ruf set to 0, add homogeneous component 1) to a vector in tracker space (tabletop field generator)
+    // OpenGL-style orthogonal transformation matrix ( translations are in elements 12, 13, 14 ) which premultiplies a vector in drift-corrected
+    // raw ultrasound frame pixels ( z_in_ruf set to 0, add homogeneous component 1 ) to a vector in tracker space ( tabletop field generator )
 
     // InnerOptic has performed a manual, approximate, constant-time-offset synchronization of these tracking matrices with the ultrasound images
     //
@@ -112,12 +112,12 @@ int SyncRecordTest( int argc, char * argv [] )
     syncRecord->getTransducerFromRufMatrix( transformationMatrix );
 
     unsigned char *rgbRUFPixels = syncRecord->loadRawRgbPixels();
-    (void) rgbRUFPixels;
+    ( void ) rgbRUFPixels;
     // points to 24-bit raw ultrasound frame pixels as described above; check for non-NULL return value
     // for now all ultrasound scan files are at 960x768 resolution, so this pointer currently points to 3*960*768 Bytes
 
     syncRecord->unloadRawRgbPixels();
-    // in a 64-bit program you can keep thousands of images in memory, otherwise you should deallocate (which invalidates the pointer)
+    // in a 64-bit program you can keep thousands of images in memory, otherwise you should deallocate ( which invalidates the pointer )
     }
 
 
@@ -126,7 +126,7 @@ int SyncRecordTest( int argc, char * argv [] )
 
   syncRecordManager.printRecords();
 
-  // These are "INNEROPTIC_INTERNAL_ONLY" (?)
+  // These are "INNEROPTIC_INTERNAL_ONLY" ( ? )
   // Just exercise for now.
   syncRecordManager.setVolumeImagePath( "newVolumeImagePath" );
   syncRecordManager.setTrackerFromVolumeImageMatrix( transformationMatrix );

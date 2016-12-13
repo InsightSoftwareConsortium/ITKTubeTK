@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -37,20 +37,20 @@ GaussianDerivativeImageSource< TOutputImage >
 {
   // Gaussian parameters, defined so that the gaussian
   // is centered in the default image
-  m_Index.Fill(0);
+  m_Index.Fill( 0 );
 
-  m_Mean.Fill(0);
-  m_Sigmas.Fill(1);
-  m_Orders.Fill(0);
+  m_Mean.Fill( 0 );
+  m_Sigmas.Fill( 1 );
+  m_Orders.Fill( 0 );
 }
 
 //----------------------------------------------------------------------------
 template< typename TOutputImage >
 void
 GaussianDerivativeImageSource< TOutputImage >
-::PrintSelf(std::ostream & os, Indent indent) const
+::PrintSelf( std::ostream & os, Indent indent ) const
 {
-  Superclass::PrintSelf(os, indent);
+  Superclass::PrintSelf( os, indent );
 
   os << indent << "Index: " << m_Index << std::endl;
 
@@ -65,12 +65,12 @@ GaussianDerivativeImageSource< TOutputImage >
 template< typename TOutputImage >
 void
 GaussianDerivativeImageSource< TOutputImage >
-::SetParameters(const ParametersType & parameters)
+::SetParameters( const ParametersType & parameters )
 {
   OrdersType orders;
   SigmasType sigmas;
   PointType mean;
-  for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
+  for( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
     {
     orders[i] = parameters[i];
     sigmas[i]  = parameters[i + TOutputImage::ImageDimension];
@@ -88,7 +88,7 @@ GaussianDerivativeImageSource< TOutputImage >
 ::GetParameters() const
 {
   ParametersType parameters( 2*TOutputImage::ImageDimension );
-  for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
+  for( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
     {
     parameters[i] = m_Orders[i];
     parameters[i + TOutputImage::ImageDimension] = m_Sigmas[i];
@@ -113,7 +113,7 @@ void
 GaussianDerivativeImageSource< TOutputImage >
 ::GenerateOutputInformation()
 {
-  OutputImageType *output = this->GetOutput(0);
+  OutputImageType *output = this->GetOutput( 0 );
 
   typename OutputImageType::RegionType largestPossibleRegion;
   largestPossibleRegion.SetSize( this->GetSize() );
@@ -148,8 +148,8 @@ GaussianDerivativeImageSource< TOutputImage >
                              outputPtr->GetRequestedRegion()
                              .GetNumberOfPixels() );
   double prefixDenom = 1.0;
-  const double squareRootOfTwoPi = std::sqrt(2.0 * vnl_math::pi);
-  for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
+  const double squareRootOfTwoPi = std::sqrt( 2.0 * vnl_math::pi );
+  for( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
     {
     prefixDenom *= m_Sigmas[i] * squareRootOfTwoPi;
     }
@@ -159,21 +159,21 @@ GaussianDerivativeImageSource< TOutputImage >
   while( !outIt.IsAtEnd() )
     {
     typename TOutputImage::IndexType index = outIt.GetIndex();
-    outputPtr->TransformIndexToPhysicalPoint(index, evalPoint);
+    outputPtr->TransformIndexToPhysicalPoint( index, evalPoint );
 
     prefixDenom = initPrefixDenom;
 
-    for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
+    for( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
       {
       if( m_Orders[i] != 0 )
         {
         prefixDenom *= std::pow( m_Sigmas[i], 2*m_Orders[i] )
-          / (std::pow( ( -(evalPoint[i] - m_Mean[i]) ), m_Orders[i] )
-             - ( m_Orders[i] == 2 ? std::pow(m_Sigmas[1], m_Orders[i]) : 0));
+          / ( std::pow( ( -( evalPoint[i] - m_Mean[i] ) ), m_Orders[i] )
+             - ( m_Orders[i] == 2 ? std::pow( m_Sigmas[1], m_Orders[i] ) : 0 ) );
         }
       }
     double suffixExp = 0;
-    for ( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
+    for( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
       {
       suffixExp += ( evalPoint[i] - m_Mean[i] )
                    * ( evalPoint[i] - m_Mean[i] )

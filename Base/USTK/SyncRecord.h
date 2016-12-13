@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -29,7 +29,7 @@ limitations under the License.
     synchronous tracking + ultrasound data record.
     Shared between AIM and Spotlight, and with Kitware.
 
-    @note  Copyright (c) InnerOptic Technology, Inc.  All Rights Reserved.
+    @note  Copyright ( c ) InnerOptic Technology, Inc.  All Rights Reserved.
 
     @author  Andrei State
 
@@ -87,11 +87,11 @@ private:
   string m_Ruf_Image_Path;
   double scanCropPolygon_in_ruf_x[MAX_US_SCAN_CROP_POLYGON_PTS];
   double scanCropPolygon_in_ruf_y[MAX_US_SCAN_CROP_POLYGON_PTS];
-  // Orthogonal matrices (contain scaling), in column-major order to match
+  // Orthogonal matrices ( contain scaling ), in column-major order to match
   // OpenGL manpage insanity
   double tracker_f_ruf[16];
   double transducer_f_ruf[16];
-  // laparo image rectangle (0 is top left point, 1 is bottom right one)
+  // laparo image rectangle ( 0 is top left point, 1 is bottom right one )
   int m_Endo_x0_in_ruf;
   int m_Endo_y0_in_ruf;
   int m_Endo_x1_in_ruf;
@@ -100,7 +100,7 @@ private:
   /*int index;*/
 
   // additional fields for data retrieved from PPM image header
-  // (resolution, timestamps, frame numbers, etc.)
+  // ( resolution, timestamps, frame numbers, etc. )
 
   // points to 24-bit RGB pixels data from ultrasound PPM file
   unsigned char *m_AllRgbPixels;

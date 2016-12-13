@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -44,10 +44,10 @@ public:
   typedef typename TubeType::PointListType              TubePointListType;
 
   /** Run Fill Gap on the tube-tree. */
-  static void FillGap(
+  static void FillGap( 
     typename TubeGroupType::Pointer & pTubeGroup, char InterpolationMethod  );
 
-  static void InterpolatePath(
+  static void InterpolatePath( 
   typename TubeType::TubePointType * parentNearestPoint,
   typename TubeType::TubePointType * itkNotUsed( childEndPoint ),
   typename TubeType::PointListType & newTubePoints,
@@ -65,4 +65,4 @@ private:
 #include "tubeTreeFilters.hxx"
 #endif
 
-#endif // End !defined(__tubeTreeFilters_h)
+#endif // End !defined( __tubeTreeFilters_h )

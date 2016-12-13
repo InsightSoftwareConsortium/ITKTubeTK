@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -35,13 +35,13 @@ int itktubeMetaClassPDFTest( int argc, char * argv[] )
 
   itk::tube::MetaClassPDF pdf1;
 
-  std::vector< unsigned int > dimSize(2);
+  std::vector< unsigned int > dimSize( 2 );
   dimSize[0] = 10;
   dimSize[1] = 10;
-  std::vector< double > binMin(2);
+  std::vector< double > binMin( 2 );
   binMin[0] = -5;
   binMin[1] = 20;
-  std::vector< double > binSize(2);
+  std::vector< double > binSize( 2 );
   binSize[0] = 10;
   binSize[1] = 5;
   float data[100];

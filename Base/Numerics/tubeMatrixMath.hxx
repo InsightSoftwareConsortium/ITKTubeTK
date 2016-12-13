@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -39,22 +39,22 @@ namespace tube
  * Do not check for wrong dimension             */
 template< class T >
 vnl_vector<T>
-ComputeOrthogonalVector(vnl_vector<T>  v)
+ComputeOrthogonalVector( vnl_vector<T>  v )
 {
   // create the orthogonal vector
-  vnl_vector<T> n(v.size());
+  vnl_vector<T> n( v.size() );
 
   /** if the dimension is 2
    *  purely arbitrary sign */
-  if(v.size() == 2)
+  if( v.size() == 2 )
     {
-    n(0)=v(1);
-    n(1)=-v(0);
+    n( 0 )=v( 1 );
+    n( 1 )=-v( 0 );
     }
   /** if the dimension is 3 */
-  if(v.size() == 3)
+  if( v.size() == 3 )
     {
-    vnl_vector< T > tt(3);
+    vnl_vector< T > tt( 3 );
 
     tt[0] = -v[1];
     tt[1] = v[0];
@@ -74,12 +74,12 @@ ComputeOrthogonalVector(vnl_vector<T>  v)
  * could use vnl_cross3D instead        */
 template< class T >
 vnl_vector<T>
-ComputeCrossVector(vnl_vector<T> v1, vnl_vector<T> v2)
+ComputeCrossVector( vnl_vector<T> v1, vnl_vector<T> v2 )
 {
-  vnl_vector<T> dest(v1.size());
-  dest(0) = ((v1)(1) * (v2)(2)) - ((v1)(2) * (v2)(1));
-  dest(1) = ((v1)(2) * (v2)(0)) - ((v1)(0) * (v2)(2));
-  dest(2) = ((v1)(0) * (v2)(1)) - ((v1)(1) * (v2)(0));
+  vnl_vector<T> dest( v1.size() );
+  dest( 0 ) = ( ( v1 )( 1 ) * ( v2 )( 2 ) ) - ( ( v1 )( 2 ) * ( v2 )( 1 ) );
+  dest( 1 ) = ( ( v1 )( 2 ) * ( v2 )( 0 ) ) - ( ( v1 )( 0 ) * ( v2 )( 2 ) );
+  dest( 2 ) = ( ( v1 )( 0 ) * ( v2 )( 1 ) ) - ( ( v1 )( 1 ) * ( v2 )( 0 ) );
 
   return dest;
 }
@@ -89,13 +89,13 @@ ComputeCrossVector(vnl_vector<T> v1, vnl_vector<T> v2)
  *return the new position following the vector direction */
 template< class T >
 vnl_vector<T>
-ComputeLineStep(vnl_vector<T> x, double a, vnl_vector<T> dir)
+ComputeLineStep( vnl_vector<T> x, double a, vnl_vector<T> dir )
 {
   int n = x.size();
-  vnl_vector<T> destX(n);
-  for(int i=0; i<n; i++)
+  vnl_vector<T> destX( n );
+  for( int i=0; i<n; i++ )
     {
-    destX(i) = (T)(x(i) + a * dir(i));
+    destX( i ) = ( T )( x( i ) + a * dir( i ) );
     }
 
   return destX;
@@ -106,14 +106,14 @@ ComputeLineStep(vnl_vector<T> x, double a, vnl_vector<T> dir)
  * Compute the Euclidean distance  */
 template< class T >
 double
-ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y)
+ComputeEuclideanDistanceVector( vnl_vector<T> x, const vnl_vector<T> y )
 {
   double s = 0;
-  for(unsigned int i=0; i<x.size(); i++)
+  for( unsigned int i=0; i<x.size(); i++ )
     {
-    s += (x(i)-y(i))*(x(i)-y(i));
+    s += ( x( i )-y( i ) )*( x( i )-y( i ) );
     }
-  return std::sqrt(s);
+  return std::sqrt( s );
 }
 
 /**
@@ -123,11 +123,11 @@ double
 ComputeEuclideanDistance( TPoint x, TPoint y )
 {
   double s = 0;
-  for( unsigned int i = 0; i < TPoint::PointDimension; i++)
+  for( unsigned int i = 0; i < TPoint::PointDimension; i++ )
     {
-    s += (x[i]-y[i])*(x[i]-y[i]);
+    s += ( x[i]-y[i] )*( x[i]-y[i] );
     }
-  return std::sqrt(s);
+  return std::sqrt( s );
 }
 
 template< class T >
@@ -168,7 +168,7 @@ ComputeRidgeness( const vnl_matrix<T> & H,
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
       double dProd = vnl_math_abs( dot_product( prevTangent,
-        HEVect.get_column(i) ) );
+        HEVect.get_column( i ) ) );
       if( dProd > closestVDProd )
         {
         closestV = i;
@@ -192,7 +192,7 @@ ComputeRidgeness( const vnl_matrix<T> & H,
       {
       for( unsigned int i=0; i<ImageDimension-1; ++i )
         {
-        HEVect.get_column( ImageDimension-1 )[i] = -1 * HEVect.get_column(
+        HEVect.get_column( ImageDimension-1 )[i] = -1 * HEVect.get_column( 
           ImageDimension-1 )[i];
         }
       }
@@ -236,12 +236,12 @@ ComputeRidgeness( const vnl_matrix<T> & H,
       double denom = sumv + ( HEVal[1] * HEVal[1] );
       if( denom != 0 )
         {
-        roundness = ridge * (1 - ( HEVal[1] * HEVal[1] ) / denom );
+        roundness = ridge * ( 1 - ( HEVal[1] * HEVal[1] ) / denom );
         }
       }
     }
 
-  // curvature is (v1^2 + v2^2) / 2.0
+  // curvature is ( v1^2 + v2^2 ) / 2.0
   curvature = 0;
   if( avgv != 0 )
     {
@@ -256,7 +256,7 @@ ComputeRidgeness( const vnl_matrix<T> & H,
       }
     }
 
-  // levelness is (v1^2 + v2^2) / (v1^2 + v2^2 + v3^2) = 1 for a flat ridge
+  // levelness is ( v1^2 + v2^2 ) / ( v1^2 + v2^2 + v3^2 ) = 1 for a flat ridge
   levelness = 0;
   double denom =
      sumv + ( HEVal[ ImageDimension-1 ] * HEVal[ ImageDimension-1] );
@@ -270,7 +270,7 @@ ComputeRidgeness( const vnl_matrix<T> & H,
  * Compute eigenvalues and vectors from ( W.inv() * B ) */
 template< class T >
 void
-ComputeEigenOfMatrixInvertedTimesMatrix(
+ComputeEigenOfMatrixInvertedTimesMatrix( 
   vnl_matrix<T> const & matToInvert, vnl_matrix<T> const & mat,
   vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
   bool orderByAbs, bool minToMax )
@@ -305,80 +305,80 @@ FixMatrixSymmetry( vnl_matrix<T> & mat )
  * Perform trilinear diagonalization in 2D */
 template< class T >
 void
-ComputeTriDiag2D(vnl_matrix<T> &mat,
-  vnl_vector<T> &diag, vnl_vector<T> &subD)
+ComputeTriDiag2D( vnl_matrix<T> &mat,
+  vnl_vector<T> &diag, vnl_vector<T> &subD )
 {
-  diag(0) = mat(0,0);
-  diag(1) = mat(1,1);
-  subD(0) = mat(0,1);
-  subD(1) = 0;
+  diag( 0 ) = mat( 0,0 );
+  diag( 1 ) = mat( 1,1 );
+  subD( 0 ) = mat( 0,1 );
+  subD( 1 ) = 0;
 
-  mat(0,0) = 1;
-  mat(0,1) = 0;
+  mat( 0,0 ) = 1;
+  mat( 0,1 ) = 0;
 
-  mat(1,0) = 0;
-  mat(1,1) = 1;
+  mat( 1,0 ) = 0;
+  mat( 1,1 ) = 1;
 }
 
 /**
  * Perform trilinear diagonalization in 3D */
 template< class T >
 void
-ComputeTriDiag3D(vnl_matrix<T> &mat,
-  vnl_vector<T> &diag, vnl_vector<T> &subD)
+ComputeTriDiag3D( vnl_matrix<T> &mat,
+  vnl_vector<T> &diag, vnl_vector<T> &subD )
 {
-  double  a = mat(0,0), b = mat(0,1), c = mat(0,2),
-          d = mat(1,1), e = mat(1,2), f = mat(2,2);
+  double  a = mat( 0,0 ), b = mat( 0,1 ), c = mat( 0,2 ),
+          d = mat( 1,1 ), e = mat( 1,2 ), f = mat( 2,2 );
 
-  diag(0) = static_cast< T >( a );
-  subD(2) = 0;
-  if(c != 0)
+  diag( 0 ) = static_cast< T >( a );
+  subD( 2 ) = 0;
+  if( c != 0 )
     {
-    const double s = vcl_sqrt(b*b+c*c);
+    const double s = vcl_sqrt( b*b+c*c );
     b /= s;
     c /= s;
-    const double q = 2*b*e+c*(f-d);
-    diag(1) = static_cast< T >( d+c*q );
-    diag(2) = static_cast< T >( f-c*q );
-    subD(0) = static_cast< T >( s );
-    subD(1) = static_cast< T >( e-b*q );
+    const double q = 2*b*e+c*( f-d );
+    diag( 1 ) = static_cast< T >( d+c*q );
+    diag( 2 ) = static_cast< T >( f-c*q );
+    subD( 0 ) = static_cast< T >( s );
+    subD( 1 ) = static_cast< T >( e-b*q );
 
-    mat(0,0) = 1;
-    mat(0,1) = 0;
-    mat(0,2) = 0;
+    mat( 0,0 ) = 1;
+    mat( 0,1 ) = 0;
+    mat( 0,2 ) = 0;
 
-    mat(1,0) = 0;
-    mat(1,1) = static_cast< T >( b );
-    mat(1,2) = static_cast< T >( c );
+    mat( 1,0 ) = 0;
+    mat( 1,1 ) = static_cast< T >( b );
+    mat( 1,2 ) = static_cast< T >( c );
 
-    mat(2,0) = 0;
-    mat(2,1) = static_cast< T >( c );
-    mat(2,2) = static_cast< T >( -b );
+    mat( 2,0 ) = 0;
+    mat( 2,1 ) = static_cast< T >( c );
+    mat( 2,2 ) = static_cast< T >( -b );
     }
   else
     {
-    diag(1) = static_cast< T >( d );
-    diag(2) = static_cast< T >( f );
-    subD(0) = static_cast< T >( b );
-    subD(1) = static_cast< T >( e );
+    diag( 1 ) = static_cast< T >( d );
+    diag( 2 ) = static_cast< T >( f );
+    subD( 0 ) = static_cast< T >( b );
+    subD( 1 ) = static_cast< T >( e );
 
-    mat(0,0) = 1;
-    mat(0,1) = 0;
-    mat(0,2) = 0;
+    mat( 0,0 ) = 1;
+    mat( 0,1 ) = 0;
+    mat( 0,2 ) = 0;
 
-    mat(1,0) = 0;
-    mat(1,1) = 1;
-    mat(1,2) = 0;
+    mat( 1,0 ) = 0;
+    mat( 1,1 ) = 1;
+    mat( 1,2 ) = 0;
 
-    mat(2,0) = 0;
-    mat(2,1) = 0;
-    mat(2,2) = 1;
+    mat( 2,0 ) = 0;
+    mat( 2,1 ) = 0;
+    mat( 2,2 ) = 1;
     }
 }
 
 template< class T >
 void
-ComputeTqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
+ComputeTqli ( vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat )
 {
   int iter;
   int i;
@@ -397,81 +397,81 @@ ComputeTqli (vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat)
 
   int n = mat.rows();
 
-  for(l=0; l<n; l++)
+  for( l=0; l<n; l++ )
     {
-    for(iter = 0; iter < EIGEN_MAX_ITERATIONS; iter++)
+    for( iter = 0; iter < EIGEN_MAX_ITERATIONS; iter++ )
       {
-      for(m=l; m<n; m++)
+      for( m=l; m<n; m++ )
         {
-        if(m!=(n-1))
+        if( m!=( n-1 ) )
           {
-          dd = vnl_math_abs(diag(m))+vnl_math_abs(diag(m+1));
+          dd = vnl_math_abs( diag( m ) )+vnl_math_abs( diag( m+1 ) );
           }
         else
           {
-          dd = vnl_math_abs(diag(m));
+          dd = vnl_math_abs( diag( m ) );
           }
 
-        if(vnl_math_abs(subD(m))+dd == dd)
+        if( vnl_math_abs( subD( m ) )+dd == dd )
           {
           break;
           }
         }
-      if(m == l)
+      if( m == l )
         {
         break;
         }
-      g = (diag(l+1)-diag(l))/(2*subD(l));
-      r = vcl_sqrt(g*g+1);
-      if(g<0)
+      g = ( diag( l+1 )-diag( l ) )/( 2*subD( l ) );
+      r = vcl_sqrt( g*g+1 );
+      if( g<0 )
         {
-        g = diag(m)-diag(l)+subD(l)/(g-r);
+        g = diag( m )-diag( l )+subD( l )/( g-r );
         }
       else
         {
-        g = diag(m)-diag(l)+subD(l)/(g+r);
+        g = diag( m )-diag( l )+subD( l )/( g+r );
         }
       s = 1;
       c = 1;
       p = 0;
-      for(i=m-1; i>=l; i--)
+      for( i=m-1; i>=l; i-- )
         {
-        f = s*subD(i);
-        b = c*subD(i);
-        if(vnl_math_abs(f)>=vnl_math_abs(g))
+        f = s*subD( i );
+        b = c*subD( i );
+        if( vnl_math_abs( f )>=vnl_math_abs( g ) )
           {
           c = g/f;
-          r = vcl_sqrt(c*c+1);
-          subD(i+1) = static_cast< T >( f*r );
-          c *= (s = 1/r);
+          r = vcl_sqrt( c*c+1 );
+          subD( i+1 ) = static_cast< T >( f*r );
+          c *= ( s = 1/r );
           }
         else
           {
           s = f/g;
-          r = vcl_sqrt(s*s+1);
-          subD(i+1) = static_cast< T >( g*r );
-          s *= (c = 1/r);
+          r = vcl_sqrt( s*s+1 );
+          subD( i+1 ) = static_cast< T >( g*r );
+          s *= ( c = 1/r );
           }
-        g = diag(i+1)-p;
-        r = (diag(i)-g)*s+2*b*c;
+        g = diag( i+1 )-p;
+        r = ( diag( i )-g )*s+2*b*c;
         p = s*r;
-        diag(i+1) = static_cast< T >( g+p );
+        diag( i+1 ) = static_cast< T >( g+p );
         g = c*r-b;
 
-        for(k=0; k<n; k++)
+        for( k=0; k<n; k++ )
           {
-          f = mat(k,i+1);
-          mat(k,i+1) = static_cast< T >( s*mat(k,i)+c*f );
-          mat(k,i) = static_cast< T >( c*mat(k,i)-s*f );
+          f = mat( k,i+1 );
+          mat( k,i+1 ) = static_cast< T >( s*mat( k,i )+c*f );
+          mat( k,i ) = static_cast< T >( c*mat( k,i )-s*f );
           }
         }
-      diag(l) -= static_cast< T >( p );
-      subD(l) = static_cast< T >( g );
-      subD(m) = 0;
+      diag( l ) -= static_cast< T >( p );
+      subD( l ) = static_cast< T >( g );
+      subD( m ) = 0;
       }
-    if(iter == EIGEN_MAX_ITERATIONS)
+    if( iter == EIGEN_MAX_ITERATIONS )
       {
-      throw("NR_tqli - exceeded maximum iterations\n");
+      throw( "NR_tqli - exceeded maximum iterations\n" );
       }
     }
 }
@@ -487,7 +487,7 @@ ComputeEigen( vnl_matrix<T> const & mat,
 
   unsigned int n = mat.rows();
 
-  vnl_vector<T> subD(n);
+  vnl_vector<T> subD( n );
 
   eVects = mat;
   eVals.set_size( n );
@@ -510,21 +510,21 @@ ComputeEigen( vnl_matrix<T> const & mat,
     }
   if( symmetric )
     {
-    switch(n)
+    switch( n )
       {
       case 1:
-        eVects.set_size(1,1);
+        eVects.set_size( 1,1 );
         eVects.fill( 1 );
-        eVals.set_size(1);
+        eVals.set_size( 1 );
         eVals.fill( mat[0][0] );
         break;
       case 2:
-        ComputeTriDiag2D(eVects, eVals, subD);
-        ComputeTqli(eVals, subD, eVects);
+        ComputeTriDiag2D( eVects, eVals, subD );
+        ComputeTqli( eVals, subD, eVects );
         break;
       case 3:
-        ComputeTriDiag3D(eVects, eVals, subD);
-        ComputeTqli(eVals, subD, eVects);
+        ComputeTriDiag3D( eVects, eVals, subD );
+        ComputeTqli( eVals, subD, eVects );
         break;
       default:
         vnl_symmetric_eigensystem< T > eigen( mat );
@@ -555,23 +555,23 @@ ComputeEigen( vnl_matrix<T> const & mat,
       eVals( c ) = eigen.D( c ).real();
       for( unsigned int r=0; r<mat.rows(); r++ )
         {
-        eVects( r, c ) = eigen.Vreal(r, c);
+        eVects( r, c ) = eigen.Vreal( r, c );
         }
       }
     }
 
-  if(orderByAbs)
+  if( orderByAbs )
     {
-    for(unsigned int i=0; i<n-1; i++)
+    for( unsigned int i=0; i<n-1; i++ )
       {
-      for(unsigned int j=i+1; j<n; j++)
+      for( unsigned int j=i+1; j<n; j++ )
         {
-        if( ( vnl_math_abs(eVals(j))>vnl_math_abs(eVals(i)) && !minToMax )
-          || ( vnl_math_abs(eVals(j))<vnl_math_abs(eVals(i)) && minToMax ) )
+        if( ( vnl_math_abs( eVals( j ) )>vnl_math_abs( eVals( i ) ) && !minToMax )
+          || ( vnl_math_abs( eVals( j ) )<vnl_math_abs( eVals( i ) ) && minToMax ) )
           {
-          T tf = eVals(j);
-          eVals(j) = eVals(i);
-          eVals(i) = tf;
+          T tf = eVals( j );
+          eVals( j ) = eVals( i );
+          eVals( i ) = tf;
           vnl_vector<T> tv;
           tv = eVects.get_column( j );
           eVects.set_column( j, eVects.get_column( i ) );
@@ -582,16 +582,16 @@ ComputeEigen( vnl_matrix<T> const & mat,
     }
   else
     {
-    for(unsigned int i=0; i<n-1; i++)
+    for( unsigned int i=0; i<n-1; i++ )
       {
-      for(unsigned int j=i+1; j<n; j++)
+      for( unsigned int j=i+1; j<n; j++ )
         {
-        if( ( eVals(j)>eVals(i) && !minToMax )
-          || ( eVals(j)<eVals(i) && minToMax ) )
+        if( ( eVals( j )>eVals( i ) && !minToMax )
+          || ( eVals( j )<eVals( i ) && minToMax ) )
           {
-          T tf = eVals(j);
-          eVals(j) = eVals(i);
-          eVals(i) = tf;
+          T tf = eVals( j );
+          eVals( j ) = eVals( i );
+          eVals( i ) = tf;
           vnl_vector<T> tv;
           tv = eVects.get_column( j );
           eVects.set_column( j, eVects.get_column( i ) );
@@ -604,4 +604,4 @@ ComputeEigen( vnl_matrix<T> const & mat,
 
 } // End namespace tube
 
-#endif // End !defined(__tubeMatrixMath_hxx)
+#endif // End !defined( __tubeMatrixMath_hxx )

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -164,7 +164,7 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
   TOperatorValue >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
-  Superclass::PrintSelf(os, indent);
+  Superclass::PrintSelf( os, indent );
   os << indent << "GradientMagnitudeTolerance: "
      << this->m_GradientMagnitudeTolerance
      << indent << "UltrasoundProbeType: ";
@@ -191,4 +191,4 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
 
 } // End namespace itk
 
-#endif // End !defined(__itkGradientBasedAngleOfIncidenceImageFilter_hxx)
+#endif // End !defined( __itkGradientBasedAngleOfIncidenceImageFilter_hxx )

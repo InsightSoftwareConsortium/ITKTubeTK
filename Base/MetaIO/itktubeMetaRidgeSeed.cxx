@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -70,7 +70,7 @@ MetaRidgeSeed( const MetaRidgeSeed & _metaRidgeSeed )
 }
 
 MetaRidgeSeed::
-MetaRidgeSeed(
+MetaRidgeSeed( 
   const RidgeSeedScalesType & _ridgeSeedScales,
   bool _useIntensityOnly,
   bool _useSVM,
@@ -80,7 +80,7 @@ MetaRidgeSeed(
   const ValueListType & _inputWhitenStdDevs,
   const ValueListType & _outputWhitenMeans,
   const ValueListType & _outputWhitenStdDevs,
-  const std::string & _pdfFileName)
+  const std::string & _pdfFileName )
 {
   if( META_DEBUG )
    {
@@ -178,7 +178,7 @@ Clear( void )
 }
 
 bool MetaRidgeSeed::
-InitializeEssential(
+InitializeEssential( 
   const RidgeSeedScalesType & _ridgeSeedScales,
   bool _useIntensityOnly,
   bool _useSVM,
@@ -805,8 +805,8 @@ M_Read( void )
     }
 
   mF = MET_GetFieldRecord( "UseIntensityOnly", &m_Fields );
-  if( (( char * )( mF->value ))[0] == 'T'
-    || (( char * )( mF->value)) [0] == 't' )
+  if( ( ( char * )( mF->value ) )[0] == 'T'
+    || ( ( char * )( mF->value ) ) [0] == 't' )
     {
     m_UseIntensityOnly = true;
     }
@@ -816,8 +816,8 @@ M_Read( void )
     }
 
   mF = MET_GetFieldRecord( "UseSVM", &m_Fields );
-  if( (( char * )( mF->value ))[0] == 'T'
-    || (( char * )( mF->value)) [0] == 't' )
+  if( ( ( char * )( mF->value ) )[0] == 'T'
+    || ( ( char * )( mF->value ) ) [0] == 't' )
     {
     m_UseSVM = true;
     }
@@ -827,23 +827,23 @@ M_Read( void )
     }
 
   mF = MET_GetFieldRecord( "PDFFileName", &m_Fields );
-  m_PDFFileName = ( char * )( &(mF->value[0]) );
+  m_PDFFileName = ( char * )( &( mF->value[0] ) );
 
   mF = MET_GetFieldRecord( "RidgeId", &m_Fields );
-  m_RidgeId = (int)( mF->value[0] );
+  m_RidgeId = ( int )( mF->value[0] );
 
   mF = MET_GetFieldRecord( "BackgroundId", &m_Fields );
-  m_BackgroundId = (int)( mF->value[0] );
+  m_BackgroundId = ( int )( mF->value[0] );
 
   mF = MET_GetFieldRecord( "UnknownId", &m_Fields );
-  m_UnknownId = (int)( mF->value[0] );
+  m_UnknownId = ( int )( mF->value[0] );
 
   mF = MET_GetFieldRecord( "SeedTolerance", &m_Fields );
-  m_SeedTolerance = (double)( mF->value[0] );
+  m_SeedTolerance = ( double )( mF->value[0] );
 
   mF = MET_GetFieldRecord( "Skeletonize", &m_Fields );
-  if( (( char * )( mF->value ))[0] == 'T'
-    || (( char * )( mF->value)) [0] == 't' )
+  if( ( ( char * )( mF->value ) )[0] == 'T'
+    || ( ( char * )( mF->value ) ) [0] == 't' )
     {
     m_Skeletonize = true;
     }

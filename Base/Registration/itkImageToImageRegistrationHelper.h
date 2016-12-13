@@ -3,10 +3,10 @@
   Program:   Insight Segmentation & Registration Toolkit
   Module:    $RCSfile: ITKHeader.h,v $
   Language:  C++
-  Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
+  Date:      $Date: 2007-07-10 11:35:36 -0400 ( Tue, 10 Jul 2007 ) $
   Version:   $Revision: 0 $
 
-  Copyright (c) 2002 Insight Consortium. All rights reserved.
+  Copyright ( c ) 2002 Insight Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
@@ -170,12 +170,12 @@ public:
 
   itkGetConstObjectMacro( MovingImageMaskObject, MaskObjectType );
 
-  itkSetMacro(UseRegionOfInterest, bool);
-  itkGetMacro(UseRegionOfInterest, bool);
-  itkSetMacro(RegionOfInterestPoint1, PointType);
-  itkGetMacro(RegionOfInterestPoint1, PointType);
-  itkSetMacro(RegionOfInterestPoint2, PointType);
-  itkGetMacro(RegionOfInterestPoint2, PointType);
+  itkSetMacro( UseRegionOfInterest, bool );
+  itkGetMacro( UseRegionOfInterest, bool );
+  itkSetMacro( RegionOfInterestPoint1, PointType );
+  itkGetMacro( RegionOfInterestPoint1, PointType );
+  itkSetMacro( RegionOfInterestPoint2, PointType );
+  itkGetMacro( RegionOfInterestPoint2, PointType );
   void SetRegionOfInterest( const PointType & point1, const PointType & point2 );
 
   void SetRegionOfInterest( const std::vector<float> & points );
@@ -186,7 +186,7 @@ public:
   // **************
   itkSetMacro( SampleFromOverlap, bool );
   itkGetMacro( SampleFromOverlap, bool );
-  itkBooleanMacro( SampleFromOverlap);
+  itkBooleanMacro( SampleFromOverlap );
 
   itkSetMacro( SampleIntensityPortion, double );
   itkGetConstMacro( SampleIntensityPortion, double );
@@ -207,7 +207,7 @@ public:
   //  Resample
   // **************
   // **************
-  typename TImage::ConstPointer  ResampleImage(
+  typename TImage::ConstPointer  ResampleImage( 
     InterpolationMethodEnumType interp
       = OptimizedRegistrationMethodType
         ::LINEAR_INTERPOLATION, const TImage * movingImage = NULL,
@@ -216,7 +216,7 @@ public:
     PixelType defaultPixelValue = 0 );
 
   // Returns the moving image resampled into the space of the fixed image
-  typename TImage::ConstPointer  GetFinalMovingImage(InterpolationMethodEnumType interp
+  typename TImage::ConstPointer  GetFinalMovingImage( InterpolationMethodEnumType interp
                                                        = OptimizedRegistrationMethodType
                                                          ::LINEAR_INTERPOLATION );
 
@@ -315,7 +315,7 @@ public:
   itkGetConstObjectMacro( BSplineTransformResampledImage, TImage );
 
   // **************
-  //  Not implemented at this time :(
+  //  Not implemented at this time :( 
   // **************
   void LoadParameters( const std::string & filename );
 

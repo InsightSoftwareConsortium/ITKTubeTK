@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -84,7 +84,7 @@ public:
       if( m_ProcessInformation->ProgressCallbackFunction
           && m_ProcessInformation->ProgressCallbackClientData )
         {
-        ( *( m_ProcessInformation->ProgressCallbackFunction ) )(
+        ( *( m_ProcessInformation->ProgressCallbackFunction ) )( 
           m_ProcessInformation->ProgressCallbackClientData );
         }
       }
@@ -123,7 +123,7 @@ public:
       if( m_ProcessInformation->ProgressCallbackFunction
           && m_ProcessInformation->ProgressCallbackClientData )
         {
-        ( *( m_ProcessInformation->ProgressCallbackFunction ) )(
+        ( *( m_ProcessInformation->ProgressCallbackFunction ) )( 
           m_ProcessInformation->ProgressCallbackClientData );
         }
       }
@@ -161,7 +161,7 @@ public:
       if( m_ProcessInformation->ProgressCallbackFunction
           && m_ProcessInformation->ProgressCallbackClientData )
         {
-        ( *( m_ProcessInformation->ProgressCallbackFunction ) )(
+        ( *( m_ProcessInformation->ProgressCallbackFunction ) )( 
           m_ProcessInformation->ProgressCallbackClientData );
         }
       }
@@ -215,4 +215,4 @@ protected:
 
 } // End namespace itk
 
-#endif // End !defined(__tubeCLIProgressReporter_h)
+#endif // End !defined( __tubeCLIProgressReporter_h )

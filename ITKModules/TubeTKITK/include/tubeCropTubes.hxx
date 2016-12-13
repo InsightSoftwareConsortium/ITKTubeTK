@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -33,7 +33,7 @@ CropTubes< VDimension >
 template< unsigned int VDimension >
 void
 CropTubes< VDimension >
-::PrintSelf(std::ostream & os, itk::Indent indent) const
+::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
 

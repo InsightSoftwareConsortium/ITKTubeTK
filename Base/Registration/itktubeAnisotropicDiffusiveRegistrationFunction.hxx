@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -41,8 +41,8 @@ AnisotropicDiffusiveRegistrationFunction
 ::AnisotropicDiffusiveRegistrationFunction( void )
 {
   typename Superclass::RadiusType r;
-  r.Fill(1);
-  this->SetRadius(r);
+  r.Fill( 1 );
+  this->SetRadius( r );
 
   m_ComputeRegularizationTerm = true;
   m_ComputeIntensityDistanceTerm = true;
@@ -54,8 +54,8 @@ AnisotropicDiffusiveRegistrationFunction
   m_IntensityDistanceFunction->SetNormalizeGradient( false );
 
   this->SetTimeStep( 1.0 );
-  this->SetMovingImage(0);
-  this->SetFixedImage(0);
+  this->SetMovingImage( 0 );
+  this->SetFixedImage( 0 );
 
   m_RegularizationWeighting = 1.0;
   m_RegularizationEnergy = 0.0;
@@ -70,7 +70,7 @@ AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
-  Superclass::PrintSelf(os,indent);
+  Superclass::PrintSelf( os,indent );
 
   os << indent << "Time step: " << m_TimeStep << std::endl;
   os << indent << "Compute regularization term: "
@@ -124,19 +124,19 @@ template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
-::ReleaseGlobalDataPointer(void *GlobalData) const
+::ReleaseGlobalDataPointer( void *GlobalData ) const
 {
-  GlobalDataStruct * gd = static_cast<GlobalDataStruct *>(GlobalData);
+  GlobalDataStruct * gd = static_cast<GlobalDataStruct *>( GlobalData );
 
   // Release the component data structures
   if( this->GetComputeRegularizationTerm() )
     {
-    m_RegularizationFunction->ReleaseGlobalDataPointer(
+    m_RegularizationFunction->ReleaseGlobalDataPointer( 
         gd->m_RegularizationGlobalDataStruct );
     }
   if( this->GetComputeIntensityDistanceTerm() )
     {
-    m_IntensityDistanceFunction->ReleaseGlobalDataPointer(
+    m_IntensityDistanceFunction->ReleaseGlobalDataPointer( 
         gd->m_IntensityDistanceGlobalDataStruct );
     }
 
@@ -164,7 +164,7 @@ AnisotropicDiffusiveRegistrationFunction
     {
     m_IntensityDistanceFunction->SetMovingImage( this->GetMovingImage() );
     m_IntensityDistanceFunction->SetFixedImage( this->GetFixedImage() );
-    m_IntensityDistanceFunction->SetDisplacementField(
+    m_IntensityDistanceFunction->SetDisplacementField( 
         this->GetDisplacementField() );
     m_IntensityDistanceFunction->InitializeIteration();
     }
@@ -184,10 +184,10 @@ typename AnisotropicDiffusiveRegistrationFunction
 ::PixelType
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeUpdate(const NeighborhoodType &, void *, const FloatOffsetType & )
+::ComputeUpdate( const NeighborhoodType &, void *, const FloatOffsetType & )
 {
   // This function should never be called!
-  itkExceptionMacro( << "ComputeUpdate(neighborhood, gd, offset ) should never"
+  itkExceptionMacro( << "ComputeUpdate( neighborhood, gd, offset ) should never"
                      << "be called.  Use the other ComputeUpdate() defined in"
                      << "itktubeAnisotropicDiffusiveRegistrationFunction instead" );
 }
@@ -201,7 +201,7 @@ typename AnisotropicDiffusiveRegistrationFunction
 ::PixelType
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeUpdate(
+::ComputeUpdate( 
     const NeighborhoodType &neighborhood,
     const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
     const ScalarDerivativeImageRegionArrayVectorType
@@ -225,20 +225,20 @@ AnisotropicDiffusiveRegistrationFunction
   // deformation vector
 
   // Compute the intensity distance update update term
-  intensityDistanceTerm.Fill(0);
+  intensityDistanceTerm.Fill( 0 );
   if( this->GetComputeIntensityDistanceTerm() )
     {
-    intensityDistanceTerm = m_IntensityDistanceFunction->ComputeUpdate(
+    intensityDistanceTerm = m_IntensityDistanceFunction->ComputeUpdate( 
         neighborhood,
         gd->m_IntensityDistanceGlobalDataStruct,
         offset );
     }
 
-  // Compute the (weighted) motion field regularization update term
-  regularizationTerm.Fill(0);
+  // Compute the ( weighted ) motion field regularization update term
+  regularizationTerm.Fill( 0 );
   if( this->GetComputeRegularizationTerm() )
     {
-    regularizationTerm = this->ComputeRegularizationUpdate(
+    regularizationTerm = this->ComputeRegularizationUpdate( 
           tensorNeighborhoods,
           deformationComponentFirstOrderDerivativeRegions,
           deformationComponentSecondOrderDerivativeRegions,
@@ -251,7 +251,7 @@ AnisotropicDiffusiveRegistrationFunction
   // Compute the final update term - incorporates weighting between intensity
   // distance term and regularization term, but not global timestep scaling
   PixelType updateTerm;
-  updateTerm.Fill(0);
+  updateTerm.Fill( 0 );
   updateTerm = intensityDistanceTerm + regularizationTerm;
 
   return updateTerm;
@@ -266,7 +266,7 @@ typename AnisotropicDiffusiveRegistrationFunction
 ::PixelType
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeRegularizationUpdate(
+::ComputeRegularizationUpdate( 
     const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
     const ScalarDerivativeImageRegionArrayVectorType
         & deformationComponentFirstOrderDerivativeRegions,
@@ -279,16 +279,16 @@ AnisotropicDiffusiveRegistrationFunction
     const FloatOffsetType & offset )
 {
   PixelType regularizationTerm;
-  regularizationTerm.Fill(0);
+  regularizationTerm.Fill( 0 );
 
   DeformationVectorComponentType intermediateComponent = 0;
   PixelType intermediateVector;
-  intermediateVector.Fill(0);
+  intermediateVector.Fill( 0 );
 
   int numTerms = tensorNeighborhoods.size();
-  assert( (int) tensorDerivativeRegions.size() == numTerms );
+  assert( ( int ) tensorDerivativeRegions.size() == numTerms );
 
-  // Iterate over each div(T \grad(u))v term
+  // Iterate over each div( T \grad( u ) )v term
   for( int term = 0; term < numTerms; term++ )
     {
     assert( tensorNeighborhoods[term].GetImagePointer() );
@@ -303,8 +303,8 @@ AnisotropicDiffusiveRegistrationFunction
       assert( deformationComponentSecondOrderDerivativeRegions[term][i].
               GetImage() );
 
-      // Compute div(T \grad(u))
-      intermediateComponent = m_RegularizationFunction->ComputeUpdate(
+      // Compute div( T \grad( u ) )
+      intermediateComponent = m_RegularizationFunction->ComputeUpdate( 
           tensorNeighborhoods[term],
           deformationComponentFirstOrderDerivativeRegions[term][i],
           deformationComponentSecondOrderDerivativeRegions[term][i],
@@ -313,7 +313,7 @@ AnisotropicDiffusiveRegistrationFunction
           offset );
 
       // Multiply by the vector, if given
-      intermediateVector.Fill(0);
+      intermediateVector.Fill( 0 );
       if( multiplicationVectorRegionArrays[term][i].GetImage() )
         {
         intermediateVector = intermediateComponent *
@@ -341,11 +341,11 @@ template< class TFixedImage, class TMovingImage, class TDeformationField >
 double
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeIntensityDistanceEnergy(
+::ComputeIntensityDistanceEnergy( 
   const typename NeighborhoodType::IndexType index,
   const DeformationVectorType & update )
 {
-  return vnl_math_sqr( m_IntensityDistanceFunction->ComputeIntensityDifference(
+  return vnl_math_sqr( m_IntensityDistanceFunction->ComputeIntensityDifference( 
                          index, update ) );
 }
 
@@ -356,7 +356,7 @@ template< class TFixedImage, class TMovingImage, class TDeformationField >
 double
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeRegularizationEnergy(
+::ComputeRegularizationEnergy( 
     const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
     const ScalarDerivativeImageRegionArrayVectorType
         & deformationComponentFirstOrderDerivativeRegions )
@@ -366,7 +366,7 @@ AnisotropicDiffusiveRegistrationFunction
   std::vector< DeformationVectorType > termRegularizationEnergies;
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    termRegularizationEnergies.push_back( DeformationVectorType(0.0) );
+    termRegularizationEnergies.push_back( DeformationVectorType( 0.0 ) );
     }
 
   int numTerms = tensorNeighborhoods.size();
@@ -378,13 +378,13 @@ AnisotropicDiffusiveRegistrationFunction
           = tensorNeighborhoods[term].GetCenterPixel();
       ScalarDerivativeType deformationComponentFirstOrderDerivative
           = deformationComponentFirstOrderDerivativeRegions[term][i].Get();
-      itk::Vector< double, ImageDimension > multVector(0.0);
+      itk::Vector< double, ImageDimension > multVector( 0.0 );
       for( unsigned int row = 0; row < ImageDimension; row++ )
         {
         for( unsigned int col = 0; col < ImageDimension; col++ )
           {
           multVector[row]
-              += diffusionTensor(row,col) * deformationComponentFirstOrderDerivative[col];
+              += diffusionTensor( row,col ) * deformationComponentFirstOrderDerivative[col];
           }
         }
       termRegularizationEnergies[i] += multVector;
@@ -393,7 +393,7 @@ AnisotropicDiffusiveRegistrationFunction
 
   // Calculate and weight the regularization energy
   double regularizationEnergy = 0.0;
-  for( unsigned int i = 0; i < ImageDimension; i++)
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     regularizationEnergy +=
         0.5 * ( termRegularizationEnergies[i] * termRegularizationEnergies[i] );
@@ -407,4 +407,4 @@ AnisotropicDiffusiveRegistrationFunction
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeAnisotropicDiffusiveRegistrationFunction_hxx)
+#endif // End !defined( __itktubeAnisotropicDiffusiveRegistrationFunction_hxx )

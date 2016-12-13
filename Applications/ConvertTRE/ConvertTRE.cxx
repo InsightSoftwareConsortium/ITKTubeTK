@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -61,7 +61,7 @@ int main( int argc, char * argv[] )
 
   if( !reverse )
     {
-    timeCollector.Start("Load data");
+    timeCollector.Start( "Load data" );
     TubeXIOType::Pointer reader = TubeXIOType::New();
     try
       {
@@ -73,12 +73,12 @@ int main( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    timeCollector.Stop("Load data");
+    timeCollector.Stop( "Load data" );
 
     progress = 0.5;
     progressReporter.Report( progress );
 
-    timeCollector.Start("Save data");
+    timeCollector.Start( "Save data" );
     SOWriterType::Pointer writer = SOWriterType::New();
     writer->SetFileName( outputTREFileName.c_str() );
     writer->SetInput( reader->GetTubeGroup() );
@@ -92,7 +92,7 @@ int main( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    timeCollector.Stop("Save data");
+    timeCollector.Stop( "Save data" );
 
     progress = 1.0;
     progressReporter.Report( progress );
@@ -103,7 +103,7 @@ int main( int argc, char * argv[] )
     }
   else
     {
-    timeCollector.Start("Load data");
+    timeCollector.Start( "Load data" );
     SOReaderType::Pointer reader = SOReaderType::New();
     reader->SetFileName( inputTREFileName.c_str() );
     try
@@ -127,16 +127,16 @@ int main( int argc, char * argv[] )
       }
     catch( ... )
       {
-      tube::WarningMessage(
-        "No input image found. Defaulting to a (1, 1, 1) size." );
+      tube::WarningMessage( 
+        "No input image found. Defaulting to a ( 1, 1, 1 ) size." );
       timeCollector.Report();
       }
-    timeCollector.Stop("Load data");
+    timeCollector.Stop( "Load data" );
 
     progress = 0.5;
     progressReporter.Report( progress );
 
-    timeCollector.Start("Save data");
+    timeCollector.Start( "Save data" );
     TubeXIOType::Pointer writer = TubeXIOType::New();
     writer->SetTubeGroup( reader->GetGroup() );
 
@@ -159,7 +159,7 @@ int main( int argc, char * argv[] )
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    timeCollector.Stop("Save data");
+    timeCollector.Stop( "Save data" );
 
     progress = 1.0;
     progressReporter.Report( progress );

@@ -7,7 +7,7 @@
 
    All rights reserved.
 
-   Licensed under the Apache License, Version 2.0 (the "License");
+   Licensed under the Apache License, Version 2.0 ( the "License" );
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
@@ -110,7 +110,8 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 }
 
 template< unsigned int VDimension >
-const typename MinimumSpanningTreeVesselConnectivityFilter< VDimension >::TubeIdListType &
+const typename MinimumSpanningTreeVesselConnectivityFilter< VDimension >::
+TubeIdListType &
 MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 ::GetRootTubeIdList( void ) const
 {
@@ -131,7 +132,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
   char tubeName[] = "Tube";
   TubeListPointerType pTubeList
-    = inputTubeGroup->GetChildren(
+    = inputTubeGroup->GetChildren( 
     inputTubeGroup->GetMaximumDepth(), tubeName );
 
   m_TubeIdToObjectMap.clear();
@@ -194,7 +195,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
           continue;
           }
 
-        int ptCandidateIdList[] = {0, (int) targetPointList.size() - 1};
+        int ptCandidateIdList[] = {0, ( int ) targetPointList.size() - 1};
 
         std::priority_queue< ConnectionPointType,
           std::vector< ConnectionPointType >,
@@ -378,11 +379,11 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
   rootTube->CopyInformation( inputRootTube );
 
   // TODO: make CopyInformation of itk::SpatialObject do this
-  rootTube->GetObjectToParentTransform()->SetScale(
+  rootTube->GetObjectToParentTransform()->SetScale( 
     inputRootTube->GetObjectToParentTransform()->GetScale() );
-  rootTube->GetObjectToParentTransform()->SetOffset(
+  rootTube->GetObjectToParentTransform()->SetOffset( 
     inputRootTube->GetObjectToParentTransform()->GetOffset() );
-  rootTube->GetObjectToParentTransform()->SetMatrix(
+  rootTube->GetObjectToParentTransform()->SetMatrix( 
     inputRootTube->GetObjectToParentTransform()->GetMatrix() );
   rootTube->SetSpacing( inputRootTube->GetSpacing() );
   rootTube->SetSpacing( inputRootTube->GetSpacing() );
@@ -396,8 +397,8 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
   // add root to output
   if( m_RemoveOrphanTubes && m_minpqGraphEdge.empty() )
     {
-    bool isActualRoot = std::find(m_RootTubeIdList.begin(),
-      m_RootTubeIdList.end(), rootTubeId) != m_RootTubeIdList.end();
+    bool isActualRoot = std::find( m_RootTubeIdList.begin(),
+      m_RootTubeIdList.end(), rootTubeId ) != m_RootTubeIdList.end();
     if( !isActualRoot )
       {
       return;
@@ -432,11 +433,11 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     curTube->CopyInformation( eTop.targetTube );
 
     // TODO: make CopyInformation of itk::SpatialObject do this
-    curTube->GetObjectToParentTransform()->SetScale(
+    curTube->GetObjectToParentTransform()->SetScale( 
       eTop.targetTube->GetObjectToParentTransform()->GetScale() );
-    curTube->GetObjectToParentTransform()->SetOffset(
+    curTube->GetObjectToParentTransform()->SetOffset( 
       eTop.targetTube->GetObjectToParentTransform()->GetOffset() );
-    curTube->GetObjectToParentTransform()->SetMatrix(
+    curTube->GetObjectToParentTransform()->SetMatrix( 
       eTop.targetTube->GetObjectToParentTransform()->GetMatrix() );
     curTube->SetSpacing( eTop.targetTube->GetSpacing() );
     curTube->ComputeObjectToWorldTransform();
@@ -450,7 +451,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     if( m_SetTubesReversed.find( eTop.sourceTubeId )
       != m_SetTubesReversed.end() )
       {
-      int numParentTubePoints = (int) eTop.sourceTube->GetNumberOfPoints();
+      int numParentTubePoints = ( int ) eTop.sourceTube->GetNumberOfPoints();
       eTop.sourceTubePointId = numParentTubePoints - eTop.sourceTubePointId - 1;
       }
 
@@ -469,7 +470,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     // add tube to output
     eTop.sourceTube->AddSpatialObject( curTube );
     // print some info
-    tubeDebugMacro(
+    tubeDebugMacro( 
       << "  sourceTubeId = "    << eTop.sourceTubeId
       << ", targetTubeId = "    << eTop.targetTubeId
       << ", reversed points = " << ( eTop.targetTubePointId > 0 )
@@ -502,11 +503,11 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
   outputTubeGroup->CopyInformation( inputTubeGroup );
 
   // TODO: make CopyInformation of itk::SpatialObject do this
-  outputTubeGroup->GetObjectToParentTransform()->SetScale(
+  outputTubeGroup->GetObjectToParentTransform()->SetScale( 
     inputTubeGroup->GetObjectToParentTransform()->GetScale() );
-  outputTubeGroup->GetObjectToParentTransform()->SetOffset(
+  outputTubeGroup->GetObjectToParentTransform()->SetOffset( 
     inputTubeGroup->GetObjectToParentTransform()->GetOffset() );
-  outputTubeGroup->GetObjectToParentTransform()->SetMatrix(
+  outputTubeGroup->GetObjectToParentTransform()->SetMatrix( 
     inputTubeGroup->GetObjectToParentTransform()->GetMatrix() );
   outputTubeGroup->SetSpacing( inputTubeGroup->GetSpacing() );
   outputTubeGroup->ComputeObjectToWorldTransform();
@@ -529,15 +530,15 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       if( m_TubeIdToObjectMap.find( *itRootTubeId )
         == m_TubeIdToObjectMap.end() )
         {
-        itkExceptionMacro( << "Could not find root tube id: " << *itRootTubeId );
+        itkExceptionMacro( << "Could not find root tube id: "
+          << *itRootTubeId );
         }
 
       TubePQElementType epTube;
       epTube.tubeId = *itRootTubeId;
       epTube.outDegree = m_TubeGraph[epTube.tubeId].size();
-      epTube.tubeLength =
-        ::tube::ComputeTubeLength< TubeType >(
-          m_TubeIdToObjectMap[epTube.tubeId] );
+      epTube.tubeLength = ::tube::ComputeTubeLength< TubeType >( 
+        m_TubeIdToObjectMap[epTube.tubeId] );
       maxpqVOutDegree.push( epTube );
       }
     }
@@ -550,9 +551,8 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       TubePQElementType epTube;
       epTube.tubeId = itV->first;
       epTube.outDegree = itV->second.size();
-      epTube.tubeLength =
-        ::tube::ComputeTubeLength< TubeType >(
-          m_TubeIdToObjectMap[epTube.tubeId] );
+      epTube.tubeLength = ::tube::ComputeTubeLength< TubeType >( 
+        m_TubeIdToObjectMap[epTube.tubeId] );
       if( m_RemoveOrphanTubes && epTube.outDegree == 0 )
         {
         continue;
@@ -561,7 +561,8 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       }
     }
 
-  // Run Minimum spanning tree like algorith to find subtree rooted at each tube
+  // Run Minimum spanning tree like algorith to find subtree rooted at
+  // each tube
   // Note: the root tubes are explored in decreasing order of out-degree
   m_numOutputConnectedComponents = 0;
 
@@ -593,7 +594,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
   char tubeName[] = "Tube";
   TubeListPointerType pTubeList
-    = inputTubeGroup->GetChildren(
+    = inputTubeGroup->GetChildren( 
     inputTubeGroup->GetMaximumDepth(), tubeName );
 
   for( typename TubeGroupType::ChildrenListType::iterator
@@ -610,11 +611,11 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
       curTube->CopyInformation( pCurSourceTube );
       // TODO: make CopyInformation of itk::SpatialObject do this
-      curTube->GetObjectToParentTransform()->SetScale(
+      curTube->GetObjectToParentTransform()->SetScale( 
         pCurSourceTube->GetObjectToParentTransform()->GetScale() );
-      curTube->GetObjectToParentTransform()->SetOffset(
+      curTube->GetObjectToParentTransform()->SetOffset( 
         pCurSourceTube->GetObjectToParentTransform()->GetOffset() );
-      curTube->GetObjectToParentTransform()->SetMatrix(
+      curTube->GetObjectToParentTransform()->SetMatrix( 
         pCurSourceTube->GetObjectToParentTransform()->GetMatrix() );
       curTube->SetSpacing( pCurSourceTube->GetSpacing() );
       curTube->ComputeObjectToWorldTransform();
@@ -658,4 +659,4 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 } // End namespace tube
 } // End namespace itk
 
-#endif // End !defined(__itktubeMinimumSpanningTreeVesselConnectivityFilter_hxx)
+#endif // End !defined( __itktubeMinimumSpanningTreeVesselConnectivityFilter_hxx )

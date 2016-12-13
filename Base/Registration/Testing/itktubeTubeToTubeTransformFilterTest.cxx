@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -52,7 +52,7 @@ int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
 
   // read in vessel
   TubeNetReaderType::Pointer reader = TubeNetReaderType::New();
-  reader->SetFileName(argv[1]);
+  reader->SetFileName( argv[1] );
 
   try
     {
@@ -67,27 +67,27 @@ int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
   // generate transform
   TransformType::Pointer transform = TransformType::New();
   itk::Vector<double,3> rotation;
-  rotation[0] = std::atof(argv[5]);//-0.5/itk::Math::one_over_pi;
-  rotation[1] = std::atof(argv[6]);//-0.5/itk::Math::one_over_pi;
-  rotation[2] = std::atof(argv[7]);//0.0
+  rotation[0] = std::atof( argv[5] );//-0.5/itk::Math::one_over_pi;
+  rotation[1] = std::atof( argv[6] );//-0.5/itk::Math::one_over_pi;
+  rotation[2] = std::atof( argv[7] );//0.0
 
   std::cout << "input rotation: " << rotation[0] << " " << rotation[1]
     << " " << rotation[2] << std::endl;
 
   itk::Vector<double,3> translation;
-  translation[0] = std::atof(argv[8]);
-  translation[1] = std::atof(argv[9]);
-  translation[2] = std::atof(argv[10]);
+  translation[0] = std::atof( argv[8] );
+  translation[1] = std::atof( argv[9] );
+  translation[2] = std::atof( argv[10] );
 
   std::cout << "input translation: " << translation[0] << " "
     << translation[1] << " " << translation[2] << std::endl;
 
-  double ca=cos(rotation[0]);
-  double sa=sin(rotation[0]);
-  double cb=cos(rotation[1]);
-  double sb=sin(rotation[1]);
-  double cg=cos(rotation[2]);
-  double sg=sin(rotation[2]);
+  double ca=cos( rotation[0] );
+  double sa=sin( rotation[0] );
+  double cb=cos( rotation[1] );
+  double sb=sin( rotation[1] );
+  double cg=cos( rotation[2] );
+  double sg=sin( rotation[2] );
 
   itk::Matrix<double,3,3> rotationMatrix;
   rotationMatrix[0][0] = ca*cb;
@@ -100,18 +100,18 @@ int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
   rotationMatrix[2][1] = cb*sg;
   rotationMatrix[2][2] = cb*cg;
 
-  transform->SetMatrix(rotationMatrix);
+  transform->SetMatrix( rotationMatrix );
 
-  std::cout << rotationMatrix(0,0) << " " << rotationMatrix(0,1) << " "
-    << rotationMatrix(0,2) << std::endl;
-  std::cout << rotationMatrix(1,0) << " " << rotationMatrix(1,1) << " "
-    << rotationMatrix(1,2) << std::endl;
-  std::cout << rotationMatrix(2,0) << " " << rotationMatrix(2,1) << " "
-    << rotationMatrix(2,2) << std::endl;
+  std::cout << rotationMatrix( 0,0 ) << " " << rotationMatrix( 0,1 ) << " "
+    << rotationMatrix( 0,2 ) << std::endl;
+  std::cout << rotationMatrix( 1,0 ) << " " << rotationMatrix( 1,1 ) << " "
+    << rotationMatrix( 1,2 ) << std::endl;
+  std::cout << rotationMatrix( 2,0 ) << " " << rotationMatrix( 2,1 ) << " "
+    << rotationMatrix( 2,2 ) << std::endl;
 
-  //transform->SetRotation(rotation[0], rotation[1], rotation[2]);
+  //transform->SetRotation( rotation[0], rotation[1], rotation[2] );
 
-  transform->Translate(translation);
+  transform->Translate( translation );
 
   std::cout << translation[0] << " " << translation[1] << " " <<
     translation[2] << std::endl;
@@ -119,8 +119,8 @@ int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
   // create transform filter
   TubeTransformFilterType::Pointer transformFilter =
     TubeTransformFilterType::New();
-  transformFilter->SetInput(reader->GetGroup());
-  transformFilter->SetTransform(transform);
+  transformFilter->SetInput( reader->GetGroup() );
+  transformFilter->SetTransform( transform );
 
   try
     {
@@ -134,8 +134,8 @@ int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
 
   // write vessel
   TubeNetWriterType::Pointer writer = TubeNetWriterType::New();
-  writer->SetFileName(argv[2]);
-  writer->SetInput(transformFilter->GetOutput());
+  writer->SetFileName( argv[2] );
+  writer->SetInput( transformFilter->GetOutput() );
 
   try
     {
@@ -147,7 +147,7 @@ int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  if(std::atoi(argv[11]))
+  if( std::atoi( argv[11] ) )
     {
     // Write vessel as an image
     typedef itk::Image<double, 3>                           ImageType;
@@ -155,7 +155,7 @@ int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
     typedef itk::ImageFileWriter<ImageType>                 ImageWriterType;
 
     ImageReaderType::Pointer imageReader = ImageReaderType::New();
-    imageReader->SetFileName(argv[3]);
+    imageReader->SetFileName( argv[3] );
     imageReader->Update();
 
     typedef itk::SpatialObjectToImageFilter<TubeNetType, ImageType>
@@ -163,19 +163,19 @@ int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
     SpatialObjectToImageFilterType::Pointer vesselToImageFilter =
       SpatialObjectToImageFilterType::New();
 
-    vesselToImageFilter->SetInput(transformFilter->GetOutput());
-    vesselToImageFilter->SetSize(
-      imageReader->GetOutput()->GetLargestPossibleRegion().GetSize());
-    vesselToImageFilter->SetOrigin(imageReader->GetOutput()->GetOrigin());
-    vesselToImageFilter->SetSpacing(imageReader->GetOutput()->GetSpacing());
-    vesselToImageFilter->SetInsideValue(1.0);
-    vesselToImageFilter->SetOutsideValue(0.0);
+    vesselToImageFilter->SetInput( transformFilter->GetOutput() );
+    vesselToImageFilter->SetSize( 
+      imageReader->GetOutput()->GetLargestPossibleRegion().GetSize() );
+    vesselToImageFilter->SetOrigin( imageReader->GetOutput()->GetOrigin() );
+    vesselToImageFilter->SetSpacing( imageReader->GetOutput()->GetSpacing() );
+    vesselToImageFilter->SetInsideValue( 1.0 );
+    vesselToImageFilter->SetOutsideValue( 0.0 );
     vesselToImageFilter->Update();
 
     ImageWriterType::Pointer imageWriter = ImageWriterType::New();
-    imageWriter->SetFileName(argv[4]);
+    imageWriter->SetFileName( argv[4] );
     imageWriter->SetUseCompression( true );
-    imageWriter->SetInput(vesselToImageFilter->GetOutput());
+    imageWriter->SetInput( vesselToImageFilter->GetOutput() );
     imageWriter->Update();
     }
 

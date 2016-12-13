@@ -73,7 +73,7 @@ int main( int argc, char * argv[] )
       int currentStatus = 0;
       if( dims == 2 )
         {
-        currentStatus = RegressionTestImage<2>(
+        currentStatus = RegressionTestImage<2>( 
           testImageFilename.c_str(), baselineImageItr->c_str(),
           false, false, toleranceIntensity, toleranceRadius,
           toleranceNumberOfPixels, toleranceCoordinates,
@@ -81,7 +81,7 @@ int main( int argc, char * argv[] )
         }
       else
         {
-        currentStatus = RegressionTestImage<3>(
+        currentStatus = RegressionTestImage<3>( 
           testImageFilename.c_str(), baselineImageItr->c_str(),
           false, false, toleranceIntensity, toleranceRadius,
           toleranceNumberOfPixels, toleranceCoordinates,
@@ -105,7 +105,7 @@ int main( int argc, char * argv[] )
       {
       if( dims == 2 )
         {
-        RegressionTestImage<2>(
+        RegressionTestImage<2>( 
           testImageFilename.c_str(),
           bestBaselineFilename.c_str(), true, false,
           toleranceIntensity, toleranceRadius,
@@ -114,7 +114,7 @@ int main( int argc, char * argv[] )
         }
       else
         {
-        RegressionTestImage<3>(
+        RegressionTestImage<3>( 
           testImageFilename.c_str(),
           bestBaselineFilename.c_str(), true, false,
           toleranceIntensity, toleranceRadius,
@@ -126,7 +126,7 @@ int main( int argc, char * argv[] )
       {
       if( dims == 2 )
         {
-        RegressionTestImage<2>(
+        RegressionTestImage<2>( 
           testImageFilename.c_str(),
           bestBaselineFilename.c_str(), true, true,
           toleranceIntensity, toleranceRadius,
@@ -135,7 +135,7 @@ int main( int argc, char * argv[] )
         }
       else
         {
-        RegressionTestImage<3>(
+        RegressionTestImage<3>( 
           testImageFilename.c_str(),
           bestBaselineFilename.c_str(), true, true,
           toleranceIntensity, toleranceRadius,

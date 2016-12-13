@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -40,7 +40,7 @@ public:
   typedef SmartPointer< Self >                            Pointer;
   typedef SmartPointer< const Self >                      ConstPointer;
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( GaussianDerivativeFilter, ImageToImageFilter );
 
   itkStaticConstMacro( ImageDimension, unsigned int,
@@ -64,8 +64,8 @@ public:
   itkGetConstReferenceMacro( Sigmas, SigmasType );
 
   virtual void GenerateNJet( typename OutputImageType::Pointer & D,
-                             std::vector< typename TOutputImage::Pointer > & Dx,
-                             std::vector< typename TOutputImage::Pointer > & Dxx ) = 0;
+    std::vector< typename TOutputImage::Pointer > & Dx,
+    std::vector< typename TOutputImage::Pointer > & Dxx ) = 0;
 
 protected:
 

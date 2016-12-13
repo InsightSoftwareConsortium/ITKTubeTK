@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -66,7 +66,7 @@ CheckImageAttributes( const TInputImage * input,
     input->GetLargestPossibleRegion();
   const typename TLabelMap::RegionType maskRegion =
     mask->GetLargestPossibleRegion();
-  return (
+  return ( 
     inputOrigin.GetVnlVector().is_equal( maskOrigin.GetVnlVector(), 0.01 )
     && inputRegion.GetIndex() == maskRegion.GetIndex()
     && inputRegion.GetSize() == maskRegion.GetSize() );
@@ -193,9 +193,9 @@ int DoIt( int argc, char * argv[] )
       pdfSegmenter->SetObjectPDFWeight( i, objectPDFWeight[i] );
       }
     }
-  pdfSegmenter->SetProbabilityImageSmoothingStandardDeviation(
+  pdfSegmenter->SetProbabilityImageSmoothingStandardDeviation( 
     probImageSmoothingStdDev );
-  pdfSegmenter->SetHistogramSmoothingStandardDeviation(
+  pdfSegmenter->SetHistogramSmoothingStandardDeviation( 
     histogramSmoothingStdDev );
   pdfSegmenter->SetReclassifyNotObjectLabels( reclassifyNotObjectLabels );
   pdfSegmenter->SetReclassifyObjectLabels( reclassifyObjectLabels );
@@ -212,7 +212,7 @@ int DoIt( int argc, char * argv[] )
       {
       std::string fname = loadClassPDFBase;
       char c[80];
-      std::sprintf(c, ".c%u.mha", i );
+      std::sprintf( c, ".c%u.mha", i );
       fname += std::string( c );
       typename PDFImageReaderType::Pointer pdfImageReader =
         PDFImageReaderType::New();
@@ -256,7 +256,7 @@ int DoIt( int argc, char * argv[] )
       {
       std::string fname = saveClassProbabilityVolumeBase;
       char c[80];
-      std::sprintf(c, ".c%u.mha", i );
+      std::sprintf( c, ".c%u.mha", i );
       fname += std::string( c );
       typename ProbImageWriterType::Pointer probImageWriter =
         ProbImageWriterType::New();
@@ -279,7 +279,7 @@ int DoIt( int argc, char * argv[] )
       {
       std::string fname = saveClassPDFBase;
       char c[80];
-      std::sprintf(c, ".c%u.mha", i );
+      std::sprintf( c, ".c%u.mha", i );
       fname += std::string( c );
       typename PDFImageWriterType::Pointer pdfImageWriter =
         PDFImageWriterType::New();
@@ -300,7 +300,7 @@ int main( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  if( objectId.size() < 2)
+  if( objectId.size() < 2 )
     {
     std::cout << "Please specify a foreground and a background object."
       << std::endl;

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -48,17 +48,17 @@ qSlicerSpatialObjectsBasicWidget : public qSlicerWidget
 
 public:
   typedef qSlicerWidget Superclass;
-  qSlicerSpatialObjectsBasicWidget(QWidget *parent=0);
+  qSlicerSpatialObjectsBasicWidget( QWidget *parent=0 );
   virtual ~qSlicerSpatialObjectsBasicWidget();
 
   vtkMRMLSpatialObjectsNode* spatialObjectsNode() const;
 
 public slots:
-  void setSpatialObjectsNode(vtkMRMLNode*);
-  void setSpatialObjectsNode(vtkMRMLSpatialObjectsNode*);
-  void setLineVisibility(int);
-  void setTubeVisibility(int);
-  void setGlyphVisibility(int);
+  void setSpatialObjectsNode( vtkMRMLNode* );
+  void setSpatialObjectsNode( vtkMRMLSpatialObjectsNode* );
+  void setLineVisibility( int );
+  void setTubeVisibility( int );
+  void setGlyphVisibility( int );
 
 protected slots:
   void updateWidgetFromMRML();
@@ -67,8 +67,8 @@ protected:
   QScopedPointer<qSlicerSpatialObjectsBasicWidgetPrivate> d_ptr;
 
 private:
-  Q_DECLARE_PRIVATE(qSlicerSpatialObjectsBasicWidget);
-  Q_DISABLE_COPY(qSlicerSpatialObjectsBasicWidget);
+  Q_DECLARE_PRIVATE( qSlicerSpatialObjectsBasicWidget );
+  Q_DISABLE_COPY( qSlicerSpatialObjectsBasicWidget );
 
   int updating;
 };

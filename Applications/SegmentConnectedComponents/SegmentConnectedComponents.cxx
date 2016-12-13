@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -60,7 +60,7 @@ int DoIt( int argc, char * argv[] )
   //
   //
   //
-  timeCollector.Start("Load mask");
+  timeCollector.Start( "Load mask" );
   typename MaskReaderType::Pointer maskReader = MaskReaderType::New();
   maskReader->SetFileName( inputMask.c_str() );
   try
@@ -70,11 +70,11 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Reading mask: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Load mask");
+  timeCollector.Stop( "Load mask" );
   double progress = 0.1;
   progressReporter.Report( progress );
 
@@ -83,7 +83,7 @@ int DoIt( int argc, char * argv[] )
   //
   //
   //
-  timeCollector.Start("Connected Components");
+  timeCollector.Start( "Connected Components" );
 
   typedef itk::ConnectedComponentImageFilter< MaskType, ConnCompType >
     FilterType;
@@ -129,7 +129,7 @@ int DoIt( int argc, char * argv[] )
   if( minSize > 0 )
     {
      
-    // compute the size (number of pixels) of each connected component
+    // compute the size ( number of pixels ) of each connected component
     iter.GoToBegin();
     unsigned int numObjects = filter->GetObjectCount()+1;
     std::vector< unsigned int > cPixelCount( numObjects, 0 );
@@ -145,12 +145,12 @@ int DoIt( int argc, char * argv[] )
 
     // compute voxelVolume
     double voxelVolume = 1;
-    for(unsigned int i = 0; i < VDimension; i++)
+    for( unsigned int i = 0; i < VDimension; i++ )
     {
       voxelVolume *= curMask->GetSpacing()[i];
     }
       
-    // drop connected components of size (physp) below a user-specified cutoff
+    // drop connected components of size ( physp ) below a user-specified cutoff
     iter.GoToBegin();
     while( !iter.IsAtEnd() )
       {
@@ -169,7 +169,7 @@ int DoIt( int argc, char * argv[] )
   //
   if( seedMask.size() > 0 )
     {
-    timeCollector.Start("Load seed mask");
+    timeCollector.Start( "Load seed mask" );
     typename MaskReaderType::Pointer seedMaskReader = MaskReaderType::New();
     seedMaskReader->SetFileName( seedMask.c_str() );
     try
@@ -179,11 +179,11 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Reading seed mask: Exception caught: "
-                          + std::string(err.GetDescription()) );
+                          + std::string( err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    timeCollector.Stop("Load seed mask");
+    timeCollector.Stop( "Load seed mask" );
 
     typename MaskType::Pointer curSeedMask = seedMaskReader->GetOutput();
 
@@ -230,11 +230,11 @@ int DoIt( int argc, char * argv[] )
       }
     }
 
-  timeCollector.Stop("Connected Components");
+  timeCollector.Stop( "Connected Components" );
 
   typedef itk::ImageFileWriter< ConnCompType  >   ImageWriterType;
 
-  timeCollector.Start("Save data");
+  timeCollector.Start( "Save data" );
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputMask.c_str() );
   writer->SetInput( curConnComp );
@@ -246,11 +246,11 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Writing volume: Exception caught: "
-      + std::string(err.GetDescription()) );
+      + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Save data");
+  timeCollector.Stop( "Save data" );
   progress = 1.0;
   progressReporter.Report( progress );
   progressReporter.End();

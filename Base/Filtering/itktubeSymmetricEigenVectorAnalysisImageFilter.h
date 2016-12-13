@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -57,7 +57,7 @@ public:
     }
   bool operator==( const SymmetricEigenVectorAnalysisFunction & other ) const
     {
-    return !(*this != other);
+    return !( *this != other );
     }
 
   inline TMatrix operator()( const TInput & x )
@@ -71,7 +71,7 @@ public:
   /** Method to explicitly set the dimension of the matrix */
   void SetDimension( unsigned int n )
     {
-    m_Calculator.SetDimension(n);
+    m_Calculator.SetDimension( n );
     }
 
   /** Typedefs to order eigenvalues.
@@ -153,14 +153,14 @@ public:
   itkNewMacro( Self );
 
   /** Print internal ivars */
-  void PrintSelf(std::ostream& os, Indent indent) const
+  void PrintSelf( std::ostream& os, Indent indent ) const
     { this->Superclass::PrintSelf( os, indent ); }
 
-  /** Set the dimension of the tensor. (For example the SymmetricSecondRankTensor
-   * is a pxp matrix) */
+  /** Set the dimension of the tensor. ( For example the SymmetricSecondRankTensor
+   * is a pxp matrix ) */
   void SetDimension( unsigned int p )
     {
-    this->GetFunctor().SetDimension(p);
+    this->GetFunctor().SetDimension( p );
     }
 
 protected:
@@ -168,8 +168,8 @@ protected:
   virtual ~SymmetricEigenVectorAnalysisImageFilter( void ) {}
 
 private:
-  SymmetricEigenVectorAnalysisImageFilter(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  SymmetricEigenVectorAnalysisImageFilter( const Self& ); //purposely not implemented
+  void operator=( const Self& ); //purposely not implemented
 
 }; // End class SymmetricEigenVectorAnalysisImageFilter
 
@@ -177,4 +177,4 @@ private:
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeSymmetricEigenVectorAnalysisImageFilter_h)
+#endif // End !defined( __itktubeSymmetricEigenVectorAnalysisImageFilter_h )

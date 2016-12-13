@@ -82,7 +82,7 @@ int main( int argc, char * argv[] )
   // If a number of differences tolerance was given in the command line
   if( command.GetOptionWasSet( "toleranceNumberOfDifferences" ) )
     {
-    toleranceNumberOfDifferences = command.GetValueAsInt(
+    toleranceNumberOfDifferences = command.GetValueAsInt( 
       "toleranceNumberOfDifferences", "value" );
     }
 
@@ -129,7 +129,7 @@ int main( int argc, char * argv[] )
     if( singleBaselineFile )
       {
       bestBaselineStatus =
-        RegressionTestFile(
+        RegressionTestFile( 
             testFilename.c_str(), baselineFilename.c_str(),
             false, false, toleranceValue, toleranceNumberOfDifferences );
       bestBaselineFilename = baselineFilename;
@@ -141,7 +141,7 @@ int main( int argc, char * argv[] )
       while( baselineFileItr != baselineFilenames.end() )
         {
         const int currentStatus =
-          RegressionTestFile(
+          RegressionTestFile( 
               testFilename.c_str(), baselineFileItr->c_str(),
               false, false, toleranceValue, toleranceNumberOfDifferences );
         if( currentStatus < bestBaselineStatus )
@@ -159,13 +159,13 @@ int main( int argc, char * argv[] )
     // generate images of our closest match
     if( bestBaselineStatus == 0 )
       {
-      RegressionTestFile(
+      RegressionTestFile( 
         testFilename.c_str(), bestBaselineFilename.c_str(), true, false,
         toleranceValue, toleranceNumberOfDifferences );
       }
     else
       {
-      RegressionTestFile(
+      RegressionTestFile( 
         testFilename.c_str(),
         bestBaselineFilename.c_str(), true, true,
         toleranceValue, toleranceNumberOfDifferences );
@@ -272,7 +272,7 @@ int RegressionTestFile ( const char *testFilename,
     }
 
   if( numberOfDifferenceTolerance >= 0 &&
-    differences > (unsigned int)(numberOfDifferenceTolerance) )
+    differences > ( unsigned int )( numberOfDifferenceTolerance ) )
     {
     return EXIT_FAILURE;
     }

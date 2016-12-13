@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -67,7 +67,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::DiscreteGaussianImageFilter< InputImageType,
     OutputImageType > FilterType;
 
-  timeCollector.Start("Load data");
+  timeCollector.Start( "Load data" );
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputImageFileName.c_str() );
   try
@@ -77,18 +77,18 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Load data");
+  timeCollector.Stop( "Load data" );
 
   double progress = 0.1;
   progressReporter.Report( progress );
 
   if( gaussianBlurStdDev > 0 )
     {
-    timeCollector.Start("Gaussian Blur");
+    timeCollector.Start( "Gaussian Blur" );
 
     typename FilterType::Pointer filter;
     filter = FilterType::New();
@@ -106,13 +106,13 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Processing volume: Exception caught: "
-        + std::string(err.GetDescription()) );
+        + std::string( err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    timeCollector.Stop("Gaussian Blur");
+    timeCollector.Stop( "Gaussian Blur" );
 
-    timeCollector.Start("Save data");
+    timeCollector.Start( "Save data" );
     typename WriterType::Pointer writer = WriterType::New();
     writer->SetFileName( outputImageFileName.c_str() );
     writer->SetInput( filter->GetOutput() );
@@ -124,11 +124,11 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Writing volume: Exception caught: "
-        + std::string(err.GetDescription()) );
+        + std::string( err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    timeCollector.Stop("Save data");
+    timeCollector.Stop( "Save data" );
 
     progress = 1.0;
     progressReporter.Report( progress );

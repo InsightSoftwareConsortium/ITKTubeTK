@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -140,9 +140,9 @@ CanRead( const char * _headerName ) const
 
   bool extensionFound = false;
 
-  METAIO_STL::string::size_type stringPos = fname.rfind(".mpd");
-  if ((stringPos != METAIO_STL::string::npos)
-      && (stringPos == fname.length() - 4))
+  METAIO_STL::string::size_type stringPos = fname.rfind( ".mpd" );
+  if ( ( stringPos != METAIO_STL::string::npos )
+      && ( stringPos == fname.length() - 4 ) )
     {
     extensionFound = true;
     }
@@ -164,21 +164,21 @@ CanRead( const char * _headerName ) const
     }
 
   char* buf = new char[8001];
-  inputStream.read(buf,8000);
+  inputStream.read( buf,8000 );
   unsigned long fileSize = inputStream.gcount();
   buf[fileSize] = 0;
-  METAIO_STL::string header(buf);
-  header.resize(fileSize);
+  METAIO_STL::string header( buf );
+  header.resize( fileSize );
   delete [] buf;
   inputStream.close();
 
-  stringPos = header.find("NDims");
+  stringPos = header.find( "NDims" );
   if( stringPos == METAIO_STL::string::npos )
     {
     return false;
     }
 
-  stringPos = header.find("ObjectPDFFile");
+  stringPos = header.find( "ObjectPDFFile" );
   if( stringPos == METAIO_STL::string::npos )
     {
     return false;
@@ -266,10 +266,10 @@ Read( const char * _headerName )
   // READ
   METAIO_STREAM::ifstream tmpReadStream;
 
-  tmpReadStream.open(_headerName, METAIO_STREAM::ios::binary |
-    METAIO_STREAM::ios::in);
+  tmpReadStream.open( _headerName, METAIO_STREAM::ios::binary |
+    METAIO_STREAM::ios::in );
 
-  if(!tmpReadStream.rdbuf()->is_open())
+  if( !tmpReadStream.rdbuf()->is_open() )
     {
     std::cout << "PDF::Read Could not open file." << std::endl;
     for( unsigned int i=0; i<metaFields.size(); ++i )
@@ -280,7 +280,7 @@ Read( const char * _headerName )
     return false;
     }
 
-  if(!MET_Read( tmpReadStream, &metaFields ) )
+  if( !MET_Read( tmpReadStream, &metaFields ) )
     {
     METAIO_STREAM::cerr << "PDFSegmenterSVMIO: Read: MET_Read Failed"
       << METAIO_STREAM::endl;
@@ -336,16 +336,16 @@ Read( const char * _headerName )
   m_PDFSegmenter->SetErodeRadius( static_cast< int >( mF->value[0] ) );
 
   mF = MET_GetFieldRecord( "HoleFillIterations", &metaFields );
-  m_PDFSegmenter->SetHoleFillIterations( static_cast< int >(
+  m_PDFSegmenter->SetHoleFillIterations( static_cast< int >( 
     mF->value[0] ) );
 
   mF = MET_GetFieldRecord( "ProbabilityImageSmoothingStandardDeviation",
     &metaFields );
-  m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation(
+  m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation( 
     static_cast< double >( mF->value[0] ) );
 
   mF = MET_GetFieldRecord( "ReclassifyObjectLabels", &metaFields );
-  if( ((char *)( mF->value))[0] == 'T' || ((char *)( mF->value))[0] == 't' )
+  if( ( ( char * )( mF->value ) )[0] == 'T' || ( ( char * )( mF->value ) )[0] == 't' )
     {
     m_PDFSegmenter->SetReclassifyObjectLabels( true );
     }
@@ -355,7 +355,7 @@ Read( const char * _headerName )
     }
 
   mF = MET_GetFieldRecord( "ReclassifyNotObjectLabels", &metaFields );
-  if( ((char *)( mF->value))[0] == 'T' || ((char *)( mF->value))[0] == 't' )
+  if( ( ( char * )( mF->value ) )[0] == 'T' || ( ( char * )( mF->value ) )[0] == 't' )
     {
     m_PDFSegmenter->SetReclassifyNotObjectLabels( true );
     }
@@ -365,7 +365,7 @@ Read( const char * _headerName )
     }
 
   mF = MET_GetFieldRecord( "ForceClassification", &metaFields );
-  if( ((char *)( mF->value))[0] == 'T' || ((char *)( mF->value))[0] == 't' )
+  if( ( ( char * )( mF->value ) )[0] == 'T' || ( ( char * )( mF->value ) )[0] == 't' )
     {
     m_PDFSegmenter->SetForceClassification( true );
     }
@@ -384,7 +384,7 @@ Read( const char * _headerName )
 
 
   mF = MET_GetFieldRecord( "ObjectPDFFile", &metaFields );
-  m_PDFSegmenter->SetModel( svm_load_model( (char *)(mF->value) ) );
+  m_PDFSegmenter->SetModel( svm_load_model( ( char * )( mF->value ) ) );
 
 
   for( unsigned int i=0; i<metaFields.size(); ++i )
@@ -469,7 +469,7 @@ Write( const char * _headerName )
     }
   mF = new MET_FieldRecordType;
   MET_InitWriteField< const char >( mF, "ReclassifyObjectLabels",
-    MET_STRING, strlen(tmpC), tmpC );
+    MET_STRING, strlen( tmpC ), tmpC );
   metaFields.push_back( mF );
 
   if( m_PDFSegmenter->GetReclassifyNotObjectLabels() )
@@ -482,7 +482,7 @@ Write( const char * _headerName )
     }
   mF = new MET_FieldRecordType;
   MET_InitWriteField< const char >( mF, "ReclassifyNotObjectLabels",
-    MET_STRING, strlen(tmpC), tmpC );
+    MET_STRING, strlen( tmpC ), tmpC );
   metaFields.push_back( mF );
 
   if( m_PDFSegmenter->GetForceClassification() )
@@ -495,7 +495,7 @@ Write( const char * _headerName )
     }
   mF = new MET_FieldRecordType;
   MET_InitWriteField< const char >( mF, "ForceClassification", MET_STRING,
-    strlen(tmpC), tmpC );
+    strlen( tmpC ), tmpC );
   metaFields.push_back( mF );
 
   for( unsigned int i = 0; i < nObjects; ++i )
@@ -511,7 +511,7 @@ Write( const char * _headerName )
   MET_GetFilePath( _headerName, filePath );
   int skip = strlen( filePath );
   char shortFileName[255];
-  sprintf( shortFileName, "%s", &(_headerName[skip]) );
+  sprintf( shortFileName, "%s", &( _headerName[skip] ) );
   MET_SetFileSuffix( shortFileName, "msvm" );
   std::string fullFileName = filePath;
   fullFileName = fullFileName + shortFileName;
@@ -530,7 +530,7 @@ Write( const char * _headerName )
 
   writeStream.precision( 10 );
 
-  if(!MET_Write(writeStream, & metaFields))
+  if( !MET_Write( writeStream, & metaFields ) )
     {
     METAIO_STREAM::cerr << "MetaObject: Write: MET_Write Failed"
                         << METAIO_STREAM::endl;

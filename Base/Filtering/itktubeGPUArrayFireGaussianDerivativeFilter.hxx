@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -48,44 +48,45 @@ void
 GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
 ::ComputeInputImageFFT()
 {
-  // std::cout << "ArrayFireGPUGaussianDerivative: ComputeInputImageFFT" << std::endl;
+  // std::cout << "ArrayFireGPUGaussianDerivative: ComputeInputImageFFT"
+  // << std::endl;
 
   typedef PadImageFilter< InputImageType, RealImageType >
   PadFilterType;
   typename PadFilterType::Pointer padFilter = PadFilterType::New();
-  padFilter->SetInput ( this->GetInput() );
-  padFilter->SetGreatestPrimeFactor ( 5 );
-  padFilter->SetPadMethod ( PadFilterType::ZERO_FLUX_NEUMANN );
+  padFilter->SetInput( this->GetInput() );
+  padFilter->SetGreatestPrimeFactor( 5 );
+  padFilter->SetPadMethod( PadFilterType::ZERO_FLUX_NEUMANN );
   padFilter->Update();
 
   m_PaddedInputImage = padFilter->GetOutput();
 
   af::array imPaddedInputAfArr;
-  itk::convertITKImageToArrayFire< RealImageType > ( m_PaddedInputImage,
+  itk::convertITKImageToArrayFire< RealImageType >( m_PaddedInputImage,
       imPaddedInputAfArr );
 
-  switch ( imPaddedInputAfArr.numdims() )
+  switch( imPaddedInputAfArr.numdims() )
     {
     case 1:
 
-      m_InputImageFFTAfArr = af::fft ( imPaddedInputAfArr );
+      m_InputImageFFTAfArr = af::fft( imPaddedInputAfArr );
       break;
 
     case 2:
 
-      m_InputImageFFTAfArr = af::fft2 ( imPaddedInputAfArr );
+      m_InputImageFFTAfArr = af::fft2( imPaddedInputAfArr );
       break;
 
     case 3:
 
-      m_InputImageFFTAfArr = af::fft3 ( imPaddedInputAfArr );
+      m_InputImageFFTAfArr = af::fft3( imPaddedInputAfArr );
       break;
 
     default:
 
-      itk::InvalidArgumentError e ( __FILE__, __LINE__ );
-      e.SetDescription ( "Only Dimensions upto 3 is not supported" );
-      e.SetLocation ( "convertITKImageToArrayFire" );
+      itk::InvalidArgumentError e( __FILE__, __LINE__ );
+      e.SetDescription( "Only Dimensions upto 3 is not supported" );
+      e.SetLocation( "convertITKImageToArrayFire" );
       throw e;
     }
 
@@ -96,17 +97,18 @@ void
 GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
 ::ComputeKernelImageFFT()
 {
-  // std::cout << "ArrayFireGPUGaussianDerivative: ComputeKernelImageFFT" << std::endl;
+  // std::cout << "ArrayFireGPUGaussianDerivative: ComputeKernelImageFFT"
+  // << std::endl;
 
   typename GaussianDerivativeImageSourceType::Pointer gaussSource =
     GaussianDerivativeImageSourceType::New();
 
-  const typename RealImageType::RegionType inputRegion (
+  const typename RealImageType::RegionType inputRegion( 
     this->GetInput()->GetLargestPossibleRegion() );
   const typename RealImageType::SizeType inputSize
     = inputRegion.GetSize();
 
-  const typename RealImageType::RegionType fftRegion (
+  const typename RealImageType::RegionType fftRegion( 
     m_PaddedInputImage->GetLargestPossibleRegion() );
   const typename RealImageType::SizeType fftSize
     = fftRegion.GetSize();
@@ -117,57 +119,57 @@ GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
   const typename RealImageType::DirectionType fftDirection =
     m_PaddedInputImage->GetDirection();
 
-  gaussSource->SetIndex ( fftRegion.GetIndex() );
-  gaussSource->SetSize ( fftSize );
-  gaussSource->SetSpacing ( fftSpacing );
-  gaussSource->SetOrigin ( fftOrigin );
-  gaussSource->SetDirection ( fftDirection );
+  gaussSource->SetIndex( fftRegion.GetIndex() );
+  gaussSource->SetSize( fftSize );
+  gaussSource->SetSpacing( fftSpacing );
+  gaussSource->SetOrigin( fftOrigin );
+  gaussSource->SetDirection( fftDirection );
 
   typename GaussianDerivativeImageSourceType::PointType mean;
   typename GaussianDerivativeImageSourceType::IndexType meanIndex;
-  for ( unsigned int ii = 0; ii < ImageDimension; ++ii )
+  for( unsigned int ii = 0; ii < ImageDimension; ++ii )
     {
     const int halfLength = ( inputSize[ii]  / 2.0 );
     meanIndex[ii] = inputRegion.GetIndex() [ii] + halfLength;
     }
-  this->GetInput()->TransformIndexToPhysicalPoint ( meanIndex, mean );
+  this->GetInput()->TransformIndexToPhysicalPoint( meanIndex, mean );
 
-  gaussSource->SetSigmas ( this->m_Sigmas );
-  gaussSource->SetMean ( mean );
-  gaussSource->SetOrders ( this->m_Orders );
+  gaussSource->SetSigmas( this->m_Sigmas );
+  gaussSource->SetMean( mean );
+  gaussSource->SetOrders( this->m_Orders );
   gaussSource->Update();
 
   typename FFTShiftFilterType::Pointer fftShiftFilter =
     FFTShiftFilterType::New();
-  fftShiftFilter->SetInput ( gaussSource->GetOutput() );
+  fftShiftFilter->SetInput( gaussSource->GetOutput() );
   fftShiftFilter->Update();
 
   af::array imPaddedKernelAfArr;
-  itk::convertITKImageToArrayFire< RealImageType > ( fftShiftFilter->GetOutput(),
-      imPaddedKernelAfArr );
+  itk::convertITKImageToArrayFire< RealImageType >(
+    fftShiftFilter->GetOutput(), imPaddedKernelAfArr );
 
-  switch ( imPaddedKernelAfArr.numdims() )
+  switch( imPaddedKernelAfArr.numdims() )
     {
     case 1:
 
-      m_KernelImageFFTAfArr = af::fft ( imPaddedKernelAfArr );
+      m_KernelImageFFTAfArr = af::fft( imPaddedKernelAfArr );
       break;
 
     case 2:
 
-      m_KernelImageFFTAfArr = af::fft2 ( imPaddedKernelAfArr );
+      m_KernelImageFFTAfArr = af::fft2( imPaddedKernelAfArr );
       break;
 
     case 3:
 
-      m_KernelImageFFTAfArr = af::fft3 ( imPaddedKernelAfArr );
+      m_KernelImageFFTAfArr = af::fft3( imPaddedKernelAfArr );
       break;
 
     default:
 
-      itk::InvalidArgumentError e ( __FILE__, __LINE__ );
-      e.SetDescription ( "Only Dimensions upto 3 are supported" );
-      e.SetLocation ( "GPUArrayFireGaussianDerivativeFilter: "\
+      itk::InvalidArgumentError e( __FILE__, __LINE__ );
+      e.SetDescription( "Only Dimensions upto 3 are supported" );
+      e.SetLocation( "GPUArrayFireGaussianDerivativeFilter: "\
                       "ComputeKernelImageFFT" );
       throw e;
     }
@@ -179,7 +181,8 @@ void
 GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
 ::ComputeConvolvedImageFFT()
 {
-  // std::cout << "ArrayFireGPUGaussianDerivative: ComputeConvolvedImageFFT" << std::endl;
+  // std::cout << "ArrayFireGPUGaussianDerivative: ComputeConvolvedImageFFT"
+  //   << std::endl;
 
   m_ConvolvedImageFFTAfArr = m_InputImageFFTAfArr * m_KernelImageFFTAfArr;
 }
@@ -189,38 +192,42 @@ void
 GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
 ::ComputeConvolvedImage()
 {
-  // std::cout << "ArrayFireGPUGaussianDerivative: ComputeConvolvedImage" << std::endl;
+  // std::cout << "ArrayFireGPUGaussianDerivative: ComputeConvolvedImage"
+  //   << std::endl;
 
   af::array imConvolvedImageAfArr;
 
-  switch ( m_ConvolvedImageFFTAfArr.numdims() )
+  switch( m_ConvolvedImageFFTAfArr.numdims() )
     {
     case 1:
 
-      imConvolvedImageAfArr = af::real ( af::ifft ( m_ConvolvedImageFFTAfArr ) );
+      imConvolvedImageAfArr = af::real( af::ifft(
+        m_ConvolvedImageFFTAfArr ) );
       break;
 
     case 2:
 
-      imConvolvedImageAfArr = af::real ( af::ifft2 ( m_ConvolvedImageFFTAfArr ) );
+      imConvolvedImageAfArr = af::real( af::ifft2(
+        m_ConvolvedImageFFTAfArr ) );
       break;
 
     case 3:
 
-      imConvolvedImageAfArr = af::real ( af::ifft3 ( m_ConvolvedImageFFTAfArr ) );
+      imConvolvedImageAfArr = af::real( af::ifft3(
+        m_ConvolvedImageFFTAfArr ) );
       break;
 
     default:
 
-      itk::InvalidArgumentError e ( __FILE__, __LINE__ );
-      e.SetDescription ( "Only Dimensions upto 3 is not supported" );
-      e.SetLocation ( "GPUArrayFireGaussianDerivativeFilter: "\
+      itk::InvalidArgumentError e( __FILE__, __LINE__ );
+      e.SetDescription( "Only Dimensions upto 3 is not supported" );
+      e.SetLocation( "GPUArrayFireGaussianDerivativeFilter: "\
                       "ComputeConvolvedImage" );
       throw e;
     }
 
   RealImagePointerType pPaddedConvolvedImage;
-  itk::convertArrayFireImageToITK< RealImageType > ( imConvolvedImageAfArr,
+  itk::convertArrayFireImageToITK< RealImageType >( imConvolvedImageAfArr,
       pPaddedConvolvedImage,
       m_PaddedInputImage );
 
@@ -229,8 +236,8 @@ GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
   typename RegionFromFilterType::Pointer regionFrom =
     RegionFromFilterType::New();
 
-  regionFrom->SetInput1 ( pPaddedConvolvedImage );
-  regionFrom->SetInput2 ( this->GetInput() );
+  regionFrom->SetInput1( pPaddedConvolvedImage );
+  regionFrom->SetInput2( this->GetInput() );
   regionFrom->Update();
 
   m_ConvolvedImage = regionFrom->GetOutput();
@@ -241,7 +248,7 @@ void
 GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
 ::GenerateData()
 {
-  if ( m_LastInputImage != this->GetInput() )
+  if( m_LastInputImage != this->GetInput() )
     {
     m_LastInputImage = this->GetInput();
     ComputeInputImageFFT();
@@ -251,17 +258,17 @@ GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
   ComputeConvolvedImageFFT();
   ComputeConvolvedImage();
 
-  this->SetNthOutput ( 0, m_ConvolvedImage );
+  this->SetNthOutput( 0, m_ConvolvedImage );
 }
 
 template< typename TInputImage, typename TOutputImage >
 void
 GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
-::GenerateNJet ( typename TOutputImage::Pointer & D,
+::GenerateNJet( typename TOutputImage::Pointer & D,
                  std::vector< typename TOutputImage::Pointer > & dX,
                  std::vector< typename TOutputImage::Pointer > & dXX )
 {
-  if ( m_LastInputImage != this->GetInput() )
+  if( m_LastInputImage != this->GetInput() )
     {
     m_LastInputImage = this->GetInput();
     ComputeInputImageFFT();
@@ -270,23 +277,23 @@ GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
   typedef RegionFromReferenceImageFilter< RealImageType, TOutputImage >
   RegionFromFilterType;
 
-  if ( dX.size() != ImageDimension )
+  if( dX.size() != ImageDimension )
     {
-    dX.resize ( ImageDimension );
+    dX.resize( ImageDimension );
     }
 
   unsigned int ddxSize = 0;
-  for ( unsigned int i = 1; i<=ImageDimension; ++i )
+  for( unsigned int i = 1; i<=ImageDimension; ++i )
     {
     ddxSize += i;
     }
-  if ( dXX.size() != ddxSize )
+  if( dXX.size() != ddxSize )
     {
-    dXX.resize ( ddxSize );
+    dXX.resize( ddxSize );
     }
 
   // Compute G_0
-  this->m_Orders.Fill ( 0 );
+  this->m_Orders.Fill( 0 );
 
   this->ComputeKernelImageFFT();
   this->ComputeConvolvedImageFFT();
@@ -295,7 +302,7 @@ GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
 
   // Compute G_1
   af::array dXKernelImageFFT[ ImageDimension ];
-  for ( unsigned int i = 0; i<ImageDimension; ++i )
+  for( unsigned int i = 0; i<ImageDimension; ++i )
     {
     this->m_Orders[i] = 1;
     this->ComputeKernelImageFFT();
@@ -312,14 +319,14 @@ GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
   af::array tmpInputImageFFTAfArr = m_InputImageFFTAfArr;
   af::array tmpFirstConvolutionFFTAfArr;
 
-  for ( unsigned int i = 0; i<ImageDimension; ++i )
+  for( unsigned int i = 0; i<ImageDimension; ++i )
     {
     m_InputImageFFTAfArr = tmpInputImageFFTAfArr;
     m_KernelImageFFTAfArr = dXKernelImageFFT[i];
     this->ComputeConvolvedImageFFT();
     tmpFirstConvolutionFFTAfArr = m_ConvolvedImageFFTAfArr;
 
-    for ( unsigned int j = i; j<ImageDimension; ++j )
+    for( unsigned int j = i; j<ImageDimension; ++j )
       {
       m_InputImageFFTAfArr = tmpFirstConvolutionFFTAfArr;
       m_KernelImageFFTAfArr = dXKernelImageFFT[j];
@@ -332,17 +339,17 @@ GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
     }
   m_InputImageFFTAfArr = tmpInputImageFFTAfArr;
 
-  this->SetNthOutput ( 0, D );
+  this->SetNthOutput( 0, D );
 }
 
 template< typename TInputImage, typename TOutputImage >
 void
 GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
-::PrintSelf ( std::ostream & os, Indent indent ) const
+::PrintSelf( std::ostream & os, Indent indent ) const
 {
-  this->Superclass::PrintSelf ( os, indent );
+  this->Superclass::PrintSelf( os, indent );
 
-  if ( m_ConvolvedImage.IsNotNull() )
+  if( m_ConvolvedImage.IsNotNull() )
     {
     os << indent << "Convolved Image   : " << m_ConvolvedImage << std::endl;
     }

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -137,7 +137,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
     PointWeightsType > PointWeightsCalculatorType;
   PointWeightsCalculatorType::Pointer resolutionWeightsCalculator
     = PointWeightsCalculatorType::New();
-  resolutionWeightsCalculator->SetTubeTreeSpatialObject(
+  resolutionWeightsCalculator->SetTubeTreeSpatialObject( 
     subSampleTubeTreeFilter->GetOutput() );
   resolutionWeightsCalculator->SetPointWeightFunction( weightFunction );
   resolutionWeightsCalculator->Compute();
@@ -175,7 +175,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   // validate the registration result
   //! \todo validate against known real results.
   TransformType::Pointer outputTransform =
-    dynamic_cast<TransformType *>(registrationMethod->GetTransform());
+    dynamic_cast<TransformType *>( registrationMethod->GetTransform() );
   const TransformType::ParametersType lastParameters =
     registrationMethod->GetLastTransformParameters();
   outputTransform->SetParameters( lastParameters );
@@ -190,12 +190,12 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
 
   std::cout << "Rotation matrix: " << std::endl;
   std::string indent( "    " );
-  std::cout << indent << rotationMatrix(0,0) << " "
-    << rotationMatrix(0,1) << " " << rotationMatrix(0,2) << std::endl;
-  std::cout << indent << rotationMatrix(1,0) << " "
-    << rotationMatrix(1,1) << " " << rotationMatrix(1,2) << std::endl;
-  std::cout << indent << rotationMatrix(2,0) << " "
-    << rotationMatrix(2,1) << " " << rotationMatrix(2,2) << std::endl;
+  std::cout << indent << rotationMatrix( 0,0 ) << " "
+    << rotationMatrix( 0,1 ) << " " << rotationMatrix( 0,2 ) << std::endl;
+  std::cout << indent << rotationMatrix( 1,0 ) << " "
+    << rotationMatrix( 1,1 ) << " " << rotationMatrix( 1,2 ) << std::endl;
+  std::cout << indent << rotationMatrix( 2,0 ) << " "
+    << rotationMatrix( 2,1 ) << " " << rotationMatrix( 2,2 ) << std::endl;
 
   std::cout << "Translations: " << std::endl;
   std::cout << indent << translation[0] << " "
@@ -208,7 +208,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
     2.563,
     -6.09 };
   std::cout << "Parameters: " << std::endl;
-  for(unsigned int ii = 0; ii < 6; ++ii)
+  for( unsigned int ii = 0; ii < 6; ++ii )
     {
     std::cout << "Obtained: " << lastParameters[ii] << std::endl;
     std::cout << "Known:    " << knownResult[ii] << std::endl;
@@ -281,7 +281,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   std::cout << "Outputting tube sampled as an image ... ";
   ImageWriterType::Pointer imageWriter = ImageWriterType::New();
   imageWriter->SetFileName( outputImage );
-  imageWriter->SetInput(vesselToImageFilter->GetOutput());
+  imageWriter->SetInput( vesselToImageFilter->GetOutput() );
   imageWriter->Update();
   std::cout << "done." << std::endl;
 

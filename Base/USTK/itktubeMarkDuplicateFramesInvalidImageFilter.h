@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -82,8 +82,8 @@ private:
  * \brief Detect duplicate frames and mark invalid in the Plus metadata.
  *
  * The screengrabber's frame rate is often higher that the ultrasounds's frame
- * rate, so detect duplicate frames (or partial duplicates with an incomplete
- * refresh) by subtracting subsequent frames.
+ * rate, so detect duplicate frames ( or partial duplicates with an incomplete
+ * refresh ) by subtracting subsequent frames.
  *
  * The input to this filter should be a scalar image.  It runs in place on the
  * content of the image, and leaves it unchanged.  The output image, though,
@@ -109,7 +109,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( MarkDuplicateFramesInvalidImageFilter, ProcessObject );
 
   /** Some convenient typedefs. */
@@ -150,7 +150,7 @@ protected:
   virtual ~MarkDuplicateFramesInvalidImageFilter( void );
 
   using Superclass::MakeOutput;
-  virtual DataObject::Pointer MakeOutput(DataObjectPointerArraySizeType index);
+  virtual DataObject::Pointer MakeOutput( DataObjectPointerArraySizeType index );
 
   virtual void GenerateData( void );
 
@@ -177,4 +177,4 @@ private:
 #include "itktubeMarkDuplicateFramesInvalidImageFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeMarkDuplicateFramesInvalidImageFilter_h)
+#endif // End !defined( __itktubeMarkDuplicateFramesInvalidImageFilter_h )

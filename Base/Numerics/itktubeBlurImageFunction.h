@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -91,7 +91,7 @@ public:
 
   /**
    * Set the Scale */
-  void SetScale(double scale);
+  void SetScale( double scale );
 
   /**
    * Get the Scale */
@@ -99,7 +99,7 @@ public:
 
   /**
    * Set the Extent */
-  void SetExtent(double extent);
+  void SetExtent( double extent );
 
   /**
    * Get the Extent */
@@ -111,7 +111,7 @@ public:
 
   /**
    * Interpret the sigma value to be in terms of x-spacing */
-  void SetUseRelativeSpacing( bool useRelativeSpacing);
+  void SetUseRelativeSpacing( bool useRelativeSpacing );
 
   /**
    * Get the Spacing */
@@ -122,7 +122,7 @@ protected:
   BlurImageFunction( void );
   virtual ~BlurImageFunction( void ) {}
 
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
   void RecomputeKernel( void );
 
@@ -160,4 +160,4 @@ private:
 #include "itktubeBlurImageFunction.hxx"
 #endif
 
-#endif // End !defined(__itktubeBlurImageFunction_h)
+#endif // End !defined( __itktubeBlurImageFunction_h )

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -125,9 +125,9 @@ int DoIt( int argc, char * argv[] )
     itk::tube::MetaLDA basisReader( loadBasisInfo.c_str() );
     basisReader.Read();
 
-    basisGenerator->SetNumberOfPCABasisToUseAsFeatures(
+    basisGenerator->SetNumberOfPCABasisToUseAsFeatures( 
       basisReader.GetNumberOfPCABasisToUseAsFeatures() );
-    basisGenerator->SetNumberOfLDABasisToUseAsFeatures(
+    basisGenerator->SetNumberOfLDABasisToUseAsFeatures( 
       basisReader.GetNumberOfLDABasisToUseAsFeatures() );
 
     basisGenerator->SetBasisValues( basisReader.GetLDAValues() );
@@ -150,12 +150,12 @@ int DoIt( int argc, char * argv[] )
     basisGenerator->SetNumberOfPCABasisToUseAsFeatures( useNumberOfPCABasis );
     if( useNumberOfLDABasis == -1 )
       {
-      basisGenerator->SetNumberOfLDABasisToUseAsFeatures(
+      basisGenerator->SetNumberOfLDABasisToUseAsFeatures( 
         objectId.size() - 1 );
       }
     else
       {
-      basisGenerator->SetNumberOfLDABasisToUseAsFeatures(
+      basisGenerator->SetNumberOfLDABasisToUseAsFeatures( 
         useNumberOfLDABasis );
       }
 
@@ -189,7 +189,7 @@ int DoIt( int argc, char * argv[] )
   if( saveBasisInfo.size() > 0 )
     {
     timeCollector.Start( "SaveBasis" );
-    itk::tube::MetaLDA basisWriter(
+    itk::tube::MetaLDA basisWriter( 
       basisGenerator->GetNumberOfPCABasisToUseAsFeatures(),
       basisGenerator->GetNumberOfLDABasisToUseAsFeatures(),
       basisGenerator->GetBasisValues(),

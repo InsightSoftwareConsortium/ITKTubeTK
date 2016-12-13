@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -100,7 +100,7 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
   TParametersValue >
 ::Execute( Object *caller, const EventObject & event )
 {
-  this->Execute( (const itk::Object *)caller, event);
+  this->Execute( ( const itk::Object * )caller, event );
 }
 
 
@@ -207,10 +207,10 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
   hsize_t iterationDataspaceDimension[] = { this->m_ParameterProgression.size() };
   const int dataspaceRank = 1;
   H5::DataSpace iterationDataSpace( dataspaceRank, iterationDataspaceDimension );
-  H5::DataSet * iterationDataset = new H5::DataSet(
+  H5::DataSet * iterationDataset = new H5::DataSet( 
     file->createDataSet( "OptimizationParameterProgression",
     this->m_H5ParameterIterationType, iterationDataSpace ) );
-  iterationDataset->write( &(this->m_ParameterProgression[0]),
+  iterationDataset->write( &( this->m_ParameterProgression[0] ),
     this->m_H5ParameterIterationType );
 
   hsize_t fixedDataspaceDimension[] = { this->m_FixedParameters.Size() };
@@ -220,7 +220,7 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
       H5::PredType::NATIVE_DOUBLE, fixedDataSpace ) );
   if( fixedDataspaceDimension[0] > 0 )
     {
-    fixedDataset->write( &(this->m_FixedParameters.GetElement(0)),
+    fixedDataset->write( &( this->m_FixedParameters.GetElement( 0 ) ),
       H5::PredType::NATIVE_DOUBLE );
     }
 
@@ -245,4 +245,4 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeRecordOptimizationParameterProgressionCommand_hxx)
+#endif // End !defined( __itktubeRecordOptimizationParameterProgressionCommand_hxx )

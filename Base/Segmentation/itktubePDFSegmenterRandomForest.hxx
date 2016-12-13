@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -100,7 +100,7 @@ PDFSegmenterRandomForest< TImage, TLabelMap >
       {
       for( unsigned int f=0; f<numFeatures; ++f )
         {
-        features( sampleNum, f ) = (*inClassListIt)[ f ];
+        features( sampleNum, f ) = ( *inClassListIt )[ f ];
         }
       labels( sampleNum ) = c;
       ++sampleNum;
@@ -121,7 +121,7 @@ template< class TImage, class TLabelMap >
 typename PDFSegmenterRandomForest< TImage, TLabelMap >
 ::ProbabilityVectorType
 PDFSegmenterRandomForest< TImage, TLabelMap >
-::GetProbabilityVector( const FeatureVectorType & fv) const
+::GetProbabilityVector( const FeatureVectorType & fv ) const
 {
   unsigned int numClasses = this->m_ObjectIdList.size();
   unsigned int numFeatures = this->GetNumberOfFeatures();
@@ -167,4 +167,4 @@ PDFSegmenterRandomForest< TImage, TLabelMap >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubePDFSegmenterRandomForest_hxx)
+#endif // End !defined( __itktubePDFSegmenterRandomForest_hxx )

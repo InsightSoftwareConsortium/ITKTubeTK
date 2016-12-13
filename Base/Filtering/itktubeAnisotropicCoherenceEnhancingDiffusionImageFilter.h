@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -41,13 +41,13 @@ namespace tube
 {
 /** \class AnisotropicCoherenceEnhancingDiffusionImageFilter
  *
- * \brief This class is implementation of Coherence-enhancing diffusion (CED):
+ * \brief This class is implementation of Coherence-enhancing diffusion ( CED ):
  *   Mendrik et al., Noise reduction in computed tomography scans using 3-D
  *   anisotropic hybrid diffusion with continuous switch. IEEE Transactions on
- *   Medical Imaging 28(10), pp. 1585-1594, 2009.
+ *   Medical Imaging 28( 10 ), pp. 1585-1594, 2009.
  *
  * \warning Does not handle image directions.  Re-orient images to axial
- * (direction cosines = identity matrix) before using this function.
+ * ( direction cosines = identity matrix ) before using this function.
  *
  * \sa AnisotropicDiffusionTensorImageFilter
  * \sa AnisotropicEdgeEnhancementDiffusionImageFilter
@@ -75,7 +75,7 @@ public:
   /** Method for creation through the object factory */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods) */
+  /** Run-time type information ( and related methods ) */
   itkTypeMacro( AnisotropicCoherenceEnhancingDiffusionImageFilter,
                 ImageToImageFilter );
 
@@ -142,15 +142,15 @@ public:
 protected:
   AnisotropicCoherenceEnhancingDiffusionImageFilter( void );
  ~AnisotropicCoherenceEnhancingDiffusionImageFilter( void ) {}
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
   /** Update diffusion tensor image */
   void virtual UpdateDiffusionTensorImage( void );
 
 private:
   //purposely not implemented
-  AnisotropicCoherenceEnhancingDiffusionImageFilter(const Self&);
-  void operator=(const Self&); //purposely not implemented
+  AnisotropicCoherenceEnhancingDiffusionImageFilter( const Self& );
+  void operator=( const Self& ); //purposely not implemented
 
   double     m_ContrastParameterLambdaC;
   double     m_Alpha;
@@ -167,4 +167,6 @@ private:
 #include "itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter_h)
+#endif
+// End !defined(
+//   __itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter_h )

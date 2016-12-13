@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -101,7 +101,7 @@ private:
 
 Spline1D
 ::Spline1D( void )
-  : m_Data(4, 0.0)
+  : m_Data( 4, 0.0 )
 {
   m_Defined = false;
 
@@ -112,8 +112,8 @@ Spline1D
   m_XMin = 0;
   m_XMax = 1;
 
-  m_Optimizer1DVal = new Spline1DValueFunction(this);
-  m_Optimizer1DDeriv = new Spline1DDerivativeFunction(this);
+  m_Optimizer1DVal = new Spline1DValueFunction( this );
+  m_Optimizer1DDeriv = new Spline1DDerivativeFunction( this );
 
   m_Optimizer1D = NULL;
   m_FuncVal = NULL;
@@ -125,7 +125,7 @@ Spline1D
 Spline1D
 ::Spline1D( UserFunction< int, double >::Pointer funcVal,
   Optimizer1D::Pointer optimizer1D )
-  : m_Data(4, 0.0)
+  : m_Data( 4, 0.0 )
 {
   m_Defined = false;
 
@@ -136,8 +136,8 @@ Spline1D
   m_XMin = 0;
   m_XMax = 1;
 
-  m_Optimizer1DVal = new Spline1DValueFunction(this);
-  m_Optimizer1DDeriv = new Spline1DDerivativeFunction(this);
+  m_Optimizer1DVal = new Spline1DValueFunction( this );
+  m_Optimizer1DDeriv = new Spline1DDerivativeFunction( this );
 
   m_Optimizer1D = optimizer1D;
   m_FuncVal = funcVal;
@@ -149,7 +149,7 @@ Spline1D
 Spline1D
 ::~Spline1D( void )
 {
-  if(m_Defined)
+  if( m_Defined )
     {
     m_Defined = false;
 
@@ -168,9 +168,9 @@ Spline1D
   m_FuncVal = funcVal;
 
   m_Optimizer1D = optimizer1D;
-  if(m_Optimizer1D != NULL)
+  if( m_Optimizer1D != NULL )
     {
-    m_Optimizer1D->Use(m_Optimizer1DVal, m_Optimizer1DDeriv);
+    m_Optimizer1D->Use( m_Optimizer1DVal, m_Optimizer1DDeriv );
     }
 
   m_NewData = true;
@@ -207,21 +207,21 @@ void
 Spline1D
 ::m_GetData( double x )
 {
-  static int xi = (int)x;
+  static int xi = ( int )x;
 
-  if((int)x != xi || m_NewData)
+  if( ( int )x != xi || m_NewData )
     {
     int lx = xi;
-    xi = (int)x;
+    xi = ( int )x;
     int offset = xi-lx;
     if( m_NewData )
       {
       offset = 100;
       }
     m_NewData = false;
-    vnl_vector<double> tmpData(4);
+    vnl_vector<double> tmpData( 4 );
     int j=0;
-    for(int i=xi-1; i<=xi+2; i++)
+    for( int i=xi-1; i<=xi+2; i++ )
       {
       if( j+offset >= 0 && j+offset <= 3 )
         {
@@ -230,51 +230,51 @@ Spline1D
         }
       else
         {
-        if(i>=m_XMin && i<=m_XMax)
+        if( i>=m_XMin && i<=m_XMax )
           {
-          tmpData[j++] = m_FuncVal->Value(i);
+          tmpData[j++] = m_FuncVal->Value( i );
           }
         else
           {
-          if(i<m_XMin)
+          if( i<m_XMin )
             {
-            if(m_Clip)
+            if( m_Clip )
               {
-              tmpData[j++] = m_FuncVal->Value(m_XMin);
+              tmpData[j++] = m_FuncVal->Value( m_XMin );
               }
             else
               {
-              int tmpI = m_XMin + (m_XMin-i);
+              int tmpI = m_XMin + ( m_XMin-i );
               if( tmpI > m_XMax )
                 {
                 tmpI = m_XMax;
                 }
-              tmpData[j++] = m_FuncVal->Value(tmpI);
+              tmpData[j++] = m_FuncVal->Value( tmpI );
               }
             }
           else
             {
-            if(i>m_XMax)
+            if( i>m_XMax )
               {
-              if(m_Clip)
+              if( m_Clip )
                 {
-                tmpData[j++] = m_FuncVal->Value(m_XMax);
+                tmpData[j++] = m_FuncVal->Value( m_XMax );
                 }
               else
                 {
-                int tmpI = m_XMax - (i-m_XMax);
+                int tmpI = m_XMax - ( i-m_XMax );
                 if( tmpI < m_XMin )
                   {
                   tmpI = m_XMin;
                   }
-                tmpData[j++] = m_FuncVal->Value(tmpI);
+                tmpData[j++] = m_FuncVal->Value( tmpI );
                 }
               }
             }
           }
         }
       }
-    for(j=0; j<4; j++)
+    for( j=0; j<4; j++ )
       {
       m_Data[j] = tmpData[j];
       }
@@ -286,16 +286,16 @@ double
 Spline1D
 ::Value( double x )
 {
-  if(!m_Defined || (m_Clip && (x<(double)m_XMin || x>(double)m_XMax)))
+  if( !m_Defined || ( m_Clip && ( x<( double )m_XMin || x>( double )m_XMax ) ) )
     {
     std::cout << "clipping: " << m_XMin << " <= " << x << " <= " << m_XMax
       << std::endl;
     return 0;
     }
 
-  this->m_GetData(x);
+  this->m_GetData( x );
 
-  return this->DataValue(m_Data, x - (int)x);
+  return this->DataValue( m_Data, x - ( int )x );
 }
 
 
@@ -303,14 +303,14 @@ double
 Spline1D
 ::ValueD( double x )
 {
-  if(!m_Defined || (m_Clip && (x<(double)m_XMin || x>(double)m_XMax)))
+  if( !m_Defined || ( m_Clip && ( x<( double )m_XMin || x>( double )m_XMax ) ) )
     {
     return 0;
     }
 
-  this->m_GetData(x);
+  this->m_GetData( x );
 
-  return this->DataValueD(m_Data, x - (int)x);
+  return this->DataValueD( m_Data, x - ( int )x );
 }
 
 
@@ -318,14 +318,14 @@ double
 Spline1D
 ::ValueD2( double x )
 {
-  if(!m_Defined || (m_Clip && (x<(double)m_XMin || x>(double)m_XMax)))
+  if( !m_Defined || ( m_Clip && ( x<( double )m_XMin || x>( double )m_XMax ) ) )
     {
     return 0;
     }
 
-  this->m_GetData(x);
+  this->m_GetData( x );
 
-  return this->DataValueD2(m_Data, x - (int)x);
+  return this->DataValueD2( m_Data, x - ( int )x );
 }
 
 
@@ -333,16 +333,16 @@ double
 Spline1D
 ::Curv( double x )
 {
-  if(!m_Defined || (m_Clip && (x<(double)m_XMin || x>(double)m_XMax)))
+  if( !m_Defined || ( m_Clip && ( x<( double )m_XMin || x>( double )m_XMax ) ) )
     {
     return 0;
     }
 
-  double xp = ValueD(x);
+  double xp = ValueD( x );
 
-  double xpp = ValueD2(x);
+  double xpp = ValueD2( x );
 
-  return xpp/std::pow(1.0+xp*xp, 1.5);
+  return xpp/std::pow( 1.0+xp*xp, 1.5 );
 }
 
 
@@ -350,14 +350,14 @@ double
 Spline1D
 ::ValueJet( double x, double * d, double * d2 )
 {
-  if(!m_Defined || (m_Clip && (x<(double)m_XMin || x>(double)m_XMax)))
+  if( !m_Defined || ( m_Clip && ( x<( double )m_XMin || x>( double )m_XMax ) ) )
     {
     return 0;
     }
 
-  this->m_GetData(x);
+  this->m_GetData( x );
 
-  return this->DataValueJet(m_Data, x - (int)x, d, d2);
+  return this->DataValueJet( m_Data, x - ( int )x, d, d2 );
 }
 
 
@@ -365,7 +365,7 @@ bool
 Spline1D
 ::Extreme( double * extX, double * extVal )
 {
-  return m_Optimizer1D->Extreme(extX, extVal);
+  return m_Optimizer1D->Extreme( extX, extVal );
 }
 
 

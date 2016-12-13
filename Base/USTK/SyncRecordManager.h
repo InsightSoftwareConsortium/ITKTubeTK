@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -31,7 +31,7 @@ limitations under the License.
   Replay_Reexport_CMC branch.
   Shared between AIM and Spotlight, and with Kitware.
 
-  @note  Copyright (c) InnerOptic Technology, Inc.  All Rights Reserved.
+  @note  Copyright ( c ) InnerOptic Technology, Inc.  All Rights Reserved.
 
   @author  Andrei State
 

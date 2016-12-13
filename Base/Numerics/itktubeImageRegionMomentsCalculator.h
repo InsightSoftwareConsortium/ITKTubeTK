@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -42,11 +42,11 @@ namespace tube
  * \brief Compute moments of an n-dimensional image.
  *
  * This class provides methods for computing the moments and related
- * properties of a single-echo image.  Computing the (non-central)
+ * properties of a single-echo image.  Computing the ( non-central )
  * moments of a large image can easily take a million times longer
  * than computing the various other values derived from them, so we
  * compute the moments only on explicit request, and save their values
- * (in an ImageRegionMomentsCalculator object) for later retrieval by the user.
+ * ( in an ImageRegionMomentsCalculator object ) for later retrieval by the user.
  *
  * The non-central moments computed by this class are not really
  * intended for general use and are therefore in index coordinates;
@@ -78,7 +78,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( ImageRegionMomentsCalculator, Object );
 
   /** Extract the dimension of the image. */
@@ -134,7 +134,7 @@ public:
     }
 
   /** Set the spatial object mask. */
-  virtual void SetSpatialObjectMask(
+  virtual void SetSpatialObjectMask( 
      const SpatialObject< itkGetStaticConstMacro( ImageDimension ) > * so )
     {
     if( m_SpatialObjectMask != so )
@@ -171,9 +171,9 @@ public:
    * other methods of this object. */
   void Compute( void );
 
-  /** Return the total mass (or zeroth moment) of an image.
-   * This method returns the sum of pixel intensities (also known as
-   * the zeroth moment or the total mass) of the image whose moments
+  /** Return the total mass ( or zeroth moment ) of an image.
+   * This method returns the sum of pixel intensities ( also known as
+   * the zeroth moment or the total mass ) of the image whose moments
    * were last computed by this object. */
   ScalarType GetTotalMass( void ) const;
 
@@ -219,9 +219,9 @@ public:
    * corresponding to the smallest principal moment is the vector
    * m[0], where m is the value returned by this method.  The matrix
    * of principal axes is guaranteed to be a proper rotation; that
-   * is, to have determinant +1 and to preserve parity.  (Unless you
+   * is, to have determinant +1 and to preserve parity.  ( Unless you
    * have foolishly made one or more of the spacing values negative;
-   * in that case, _you_ get to figure out the consequences.)  The
+   * in that case, _you_ get to figure out the consequences. )  The
    * moments are computed in physical coordinates. */
   MatrixType GetPrincipalAxes( void ) const;
 
@@ -239,20 +239,20 @@ public:
 protected:
   ImageRegionMomentsCalculator( void );
   virtual ~ImageRegionMomentsCalculator( void );
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
 private:
-  ImageRegionMomentsCalculator(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  ImageRegionMomentsCalculator( const Self& ); //purposely not implemented
+  void operator=( const Self& ); //purposely not implemented
 
   bool       m_Valid;                      // Have moments been computed yet?
   ScalarType m_M0;                   // Zeroth moment
   VectorType m_M1;                   // First moments about origin
   MatrixType m_M2;                   // Second moments about origin
-  VectorType m_Cg;                   // Center of gravity (physical units)
-  MatrixType m_Cm;                   // Second central moments (physical)
-  VectorType m_Pm;                   // Principal moments (physical)
-  MatrixType m_Pa;                   // Principal axes (physical)
+  VectorType m_Cg;                   // Center of gravity ( physical units )
+  MatrixType m_Cm;                   // Second central moments ( physical )
+  VectorType m_Pm;                   // Principal moments ( physical )
+  MatrixType m_Pa;                   // Principal axes ( physical )
 
   bool       m_UseRegionOfInterest;
   PointType  m_RegionOfInterestPoint1;
@@ -271,4 +271,4 @@ private:
 #include "itktubeImageRegionMomentsCalculator.hxx"
 #endif
 
-#endif // End !defined(__itktubeImageRegionMomentsCalculator_h)
+#endif // End !defined( __itktubeImageRegionMomentsCalculator_h )

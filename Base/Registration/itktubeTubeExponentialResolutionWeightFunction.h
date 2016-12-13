@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -73,7 +73,7 @@ public:
     {
     const WeightType radius = tubePoint.GetRadius();
     return static_cast< WeightType >( 2.0 /
-      (1.0 + std::exp( -2.0 * radius ) ));
+      ( 1.0 + std::exp( -2.0 * radius ) ) );
     }
 
 protected:
@@ -93,4 +93,4 @@ private:
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeTubeExponentialResolutionWeightFunction_h)
+#endif // End !defined( __itktubeTubeExponentialResolutionWeightFunction_h )

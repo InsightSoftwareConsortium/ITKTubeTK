@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -61,7 +61,7 @@ public:
 
   MetaRidgeSeed( const MetaRidgeSeed & _metaRidgeSeed );
 
-  MetaRidgeSeed(
+  MetaRidgeSeed( 
     const RidgeSeedScalesType & _ridgeScales,
     const bool _useIntensityOnly,
     const bool _useSVM,
@@ -71,7 +71,7 @@ public:
     const ValueListType & _inputWhitenStdDevs,
     const ValueListType & _outputWhitenMeans,
     const ValueListType & _outputWhitenStdDevs,
-    const std::string & _pdfFileName);
+    const std::string & _pdfFileName );
 
   ~MetaRidgeSeed( void );
 
@@ -82,7 +82,7 @@ public:
 
   virtual void Clear( void );
 
-  bool InitializeEssential(
+  bool InitializeEssential( 
     const RidgeSeedScalesType & _ridgeScales,
     const bool _useIntensityOnly,
     const bool _useSVM,
@@ -92,7 +92,7 @@ public:
     const ValueListType & _inputWhitenStdDevs,
     const ValueListType & _outputWhitenMeans,
     const ValueListType & _outputWhitenStdDevs,
-    const std::string & _pdfFileName);
+    const std::string & _pdfFileName );
 
   void  SetRidgeSeedScales( const RidgeSeedScalesType & _ridgeScales );
   const RidgeSeedScalesType & GetRidgeSeedScales( void ) const;
@@ -162,4 +162,4 @@ protected:
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeMetaRidgeSeed_h)
+#endif // End !defined( __itktubeMetaRidgeSeed_h )

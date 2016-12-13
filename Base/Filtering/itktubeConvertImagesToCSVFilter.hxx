@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -49,8 +49,8 @@ ConvertImagesToCSVFilter< TInputImage, TInputMask >
   std::vector< IteratorType * > iterList;
   for( unsigned int i = 0; i < m_NumImages; ++i )
     {
-    iterList.push_back( new IteratorType(m_ImageList[i],
-    m_ImageList[i]->GetLargestPossibleRegion()) );
+    iterList.push_back( new IteratorType( m_ImageList[i],
+    m_ImageList[i]->GetLargestPossibleRegion() ) );
     }
   MaskIteratorType maskIter( m_InputMask,
     m_InputMask->GetLargestPossibleRegion() );

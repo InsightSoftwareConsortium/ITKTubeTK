@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -35,7 +35,7 @@ limitations under the License.
 #include <vtkMRMLDiffusionTensorDisplayPropertiesNode.h>
 
 //------------------------------------------------------------------------------
-vtkMRMLNodeNewMacro(vtkMRMLSpatialObjectsGlyphDisplayNode);
+vtkMRMLNodeNewMacro( vtkMRMLSpatialObjectsGlyphDisplayNode );
 
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsGlyphDisplayNode::vtkMRMLSpatialObjectsGlyphDisplayNode( void )
@@ -47,37 +47,37 @@ vtkMRMLSpatialObjectsGlyphDisplayNode::vtkMRMLSpatialObjectsGlyphDisplayNode( vo
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsGlyphDisplayNode::~vtkMRMLSpatialObjectsGlyphDisplayNode( void )
 {
-  this->RemoveObservers(vtkCommand::ModifiedEvent, this->MRMLCallbackCommand);
+  this->RemoveObservers( vtkCommand::ModifiedEvent, this->MRMLCallbackCommand );
   this->Glyph3DMapper->Delete();
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsGlyphDisplayNode::WriteXML(ostream& of, int nIndent)
+void vtkMRMLSpatialObjectsGlyphDisplayNode::WriteXML( ostream& of, int nIndent )
 {
-  Superclass::WriteXML(of, nIndent);
+  Superclass::WriteXML( of, nIndent );
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsGlyphDisplayNode::ReadXMLAttributes(const char** atts)
+void vtkMRMLSpatialObjectsGlyphDisplayNode::ReadXMLAttributes( const char** atts )
 {
   int disabledModify = this->StartModify();
-  Superclass::ReadXMLAttributes(atts);
-  this->EndModify(disabledModify);
+  Superclass::ReadXMLAttributes( atts );
+  this->EndModify( disabledModify );
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsGlyphDisplayNode::Copy(vtkMRMLNode *anode)
+void vtkMRMLSpatialObjectsGlyphDisplayNode::Copy( vtkMRMLNode *anode )
 {
   int disabledModify = this->StartModify();
-  Superclass::Copy(anode);
-  this->EndModify(disabledModify);
+  Superclass::Copy( anode );
+  this->EndModify( disabledModify );
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsGlyphDisplayNode::PrintSelf(ostream& os,
-                                                      vtkIndent indent)
+void vtkMRMLSpatialObjectsGlyphDisplayNode::PrintSelf( ostream& os,
+                                                      vtkIndent indent )
 {
-  Superclass::PrintSelf(os,indent);
+  Superclass::PrintSelf( os,indent );
 }
 
 //------------------------------------------------------------------------------
@@ -89,17 +89,17 @@ vtkAlgorithmOutput* vtkMRMLSpatialObjectsGlyphDisplayNode::GetOutputPort( void )
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsGlyphDisplayNode::UpdatePolyDataPipeline( void )
 {
-  if(!this->GetInputPolyData()|| !this->Visibility)
+  if( !this->GetInputPolyData()|| !this->Visibility )
     {
     return;
     }
 
   this->Superclass::UpdatePolyDataPipeline();
 
-  /*if(this->Glyph3DMapper)
+  /*if( this->Glyph3DMapper )
     {
-    this->Glyph3DMapper->SetInputConnection(
-      this->PolyData->GetSource()->GetOutputPort());
+    this->Glyph3DMapper->SetInputConnection( 
+      this->PolyData->GetSource()->GetOutputPort() );
     }*/
 
   // Set display properties according to the

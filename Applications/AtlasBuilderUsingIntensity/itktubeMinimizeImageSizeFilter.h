@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -38,22 +38,21 @@ namespace tube
  * \brief Cuts the edges off of an image ( either from the origin, end
  * extend or both for all dimensions ).
  *
- * Can clip the image to the first valid pixel (i.e., > threshold) and/or
+ * Can clip the image to the first valid pixel ( i.e., > threshold ) and/or
  * create a buffer around the image of the first valid pixel
- * (i.e., pixel + buffer).
+ * ( i.e., pixel + buffer ).
  *
  * Done for all dimensions...Good Filter to follow \sa
  * itkCompleteImageResampleFilter.h
  */
 template< class TInputImage >
-class MinimizeImageSizeFilter : public ImageToImageFilter< TInputImage,
-                                                           TInputImage >
+class MinimizeImageSizeFilter
+: public ImageToImageFilter< TInputImage, TInputImage >
 {
 public:
 
-  typedef MinimizeImageSizeFilter                 Self;
-  typedef ImageToImageFilter< TInputImage,
-                              TInputImage >       Superclass;
+  typedef MinimizeImageSizeFilter                          Self;
+  typedef ImageToImageFilter< TInputImage, TInputImage >   Superclass;
 
   typedef SmartPointer< Self >                    Pointer;
   typedef SmartPointer< const Self >              ConstPointer;
@@ -74,16 +73,17 @@ public:
   typedef typename InputImageType::PointType      PointType;
 
   /** Number of dimensions. */
-  itkStaticConstMacro( ImageDimension, unsigned int, TInputImage::ImageDimension );
+  itkStaticConstMacro( ImageDimension, unsigned int,
+    TInputImage::ImageDimension );
 
   /** Get/Set the input */
   itkGetConstObjectMacro( Input, InputImageType );
 
-  /** Set the image pixel buffer on each side of the image (can be negative
-   * to crop inside) */
+  /** Set the image pixel buffer on each side of the image ( can be negative
+   * to crop inside ) */
   itkGetConstReferenceMacro( NumberOfBufferPixels, SizeType );
 
-  /** Set the number of pixels (per end) that will be added before and past
+  /** Set the number of pixels ( per end ) that will be added before and past
    * the first and last valid pixels */
   void SetNumberOfBufferPixels( SizeType& size )
     {
@@ -92,23 +92,23 @@ public:
     }
 
   /** Get the threshold marker for considering a pixel to be kept in image
-   * (value non-inclusive -- threshold value to be removed ) */
+   * ( value non-inclusive -- threshold value to be removed ) */
   itkGetConstMacro( ThresholdValue, InputPixelType );
   /** Set the threshold marker for considering a pixel to be kept in image
-    * (value non-inclusive -- threshold value to be removed ) */
+    * ( value non-inclusive -- threshold value to be removed ) */
   itkSetMacro( ThresholdValue, InputPixelType );
   /** Get whether the threshold value is upper or lower boundry
-    * (default is false: i.e., all values below m_ThresholdValue will be
-    * excluded) */
+    * ( default is false: i.e., all values below m_ThresholdValue will be
+    * excluded ) */
   itkGetConstMacro( ThresholdAbove, bool );
   /** Set whether the threshold value is upper or lower boundry
-    *(default is false: i.e., all values below m_ThresholdValue will be
-    excluded) */
+    *( default is false: i.e., all values below m_ThresholdValue will be
+    excluded ) */
   itkSetMacro( ThresholdAbove, bool );
 
-  /** Get the default pixel value when resampling: (default is 0) */
+  /** Get the default pixel value when resampling: ( default is 0 ) */
   itkGetConstMacro( DefaultPixelValue, InputPixelType );
-  /** Set the default pixel value when resampling: (default is 0) */
+  /** Set the default pixel value when resampling: ( default is 0 ) */
   itkSetMacro( DefaultPixelValue, InputPixelType );
 
   /** Turn on and off the clip the end dimension size function.
@@ -140,9 +140,9 @@ protected:
   itkSetMacro( BufferImage, bool );
 
   void Get3DCroppedStartRegion( InputImageConstPointer input,
-                                RegionType& region );
+    RegionType& region );
   void Get3DCroppedEndRegion( InputImageConstPointer input,
-                              RegionType& region );
+    RegionType& region );
 
 private:
 
@@ -169,4 +169,4 @@ private:
 #include "itktubeMinimizeImageSizeFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeMinimizeImageSizeFilter_h)
+#endif // End !defined( __itktubeMinimizeImageSizeFilter_h )

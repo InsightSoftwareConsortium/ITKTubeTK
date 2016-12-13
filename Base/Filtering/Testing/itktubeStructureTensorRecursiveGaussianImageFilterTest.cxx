@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -90,7 +90,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
   EigenAnalysisFilterType::Pointer eigenAnalysisFilter =
     EigenAnalysisFilterType::New();
   eigenAnalysisFilter->SetDimension( Dimension );
-  eigenAnalysisFilter->OrderEigenValuesBy(
+  eigenAnalysisFilter->OrderEigenValuesBy( 
     EigenAnalysisFilterType::FunctorType::OrderByValue );
 
   eigenAnalysisFilter->SetInput( filter->GetOutput() );
@@ -109,7 +109,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
   EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter =
     EigenVectorAnalysisFilterType::New();
   eigenVectorAnalysisFilter->SetDimension( Dimension );
-  eigenVectorAnalysisFilter->OrderEigenValuesBy(
+  eigenVectorAnalysisFilter->OrderEigenValuesBy( 
     EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
 
   eigenVectorAnalysisFilter->SetInput( filter->GetOutput() );
@@ -127,11 +127,11 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
   primaryEigenVectorImage->SetVectorLength ( vectorLength );
 
   VectorImageType::RegionType region;
-  region.SetSize(eigenVectorImage->GetLargestPossibleRegion().GetSize());
-  region.SetIndex(eigenVectorImage->GetLargestPossibleRegion().GetIndex());
+  region.SetSize( eigenVectorImage->GetLargestPossibleRegion().GetSize() );
+  region.SetIndex( eigenVectorImage->GetLargestPossibleRegion().GetIndex() );
   primaryEigenVectorImage->SetRegions( region );
-  primaryEigenVectorImage->SetOrigin(eigenVectorImage->GetOrigin());
-  primaryEigenVectorImage->SetSpacing(eigenVectorImage->GetSpacing());
+  primaryEigenVectorImage->SetOrigin( eigenVectorImage->GetOrigin() );
+  primaryEigenVectorImage->SetSpacing( eigenVectorImage->GetSpacing() );
   primaryEigenVectorImage->Allocate();
 
   //Fill up the buffer with null vector
@@ -148,13 +148,13 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
     PrimaryEigenValueImageType::New();
 
   PrimaryEigenValueImageType::RegionType eigenValueImageRegion;
-  eigenValueImageRegion.SetSize(eigenVectorImage->
-    GetLargestPossibleRegion().GetSize());
-  eigenValueImageRegion.SetIndex(eigenVectorImage->
-    GetLargestPossibleRegion().GetIndex());
+  eigenValueImageRegion.SetSize( eigenVectorImage->
+    GetLargestPossibleRegion().GetSize() );
+  eigenValueImageRegion.SetIndex( eigenVectorImage->
+    GetLargestPossibleRegion().GetIndex() );
   primaryEigenValueImage->SetRegions( eigenValueImageRegion );
-  primaryEigenValueImage->SetOrigin(eigenVectorImage->GetOrigin());
-  primaryEigenValueImage->SetSpacing(eigenVectorImage->GetSpacing());
+  primaryEigenValueImage->SetOrigin( eigenVectorImage->GetOrigin() );
+  primaryEigenValueImage->SetSpacing( eigenVectorImage->GetSpacing() );
   primaryEigenValueImage->Allocate();
   primaryEigenValueImage->FillBuffer( 0.0 );
 
@@ -165,14 +165,14 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
     eigenVectorImageIterator;
   eigenVectorImageIterator = itk::ImageRegionConstIterator<
     EigenVectorImageType>( eigenVectorImage,
-    eigenVectorImage->GetRequestedRegion());
+    eigenVectorImage->GetRequestedRegion() );
   eigenVectorImageIterator.GoToBegin();
 
   //Iterator for the output image with the largest eigenvector
   itk::ImageRegionIterator<VectorImageType> primaryEigenVectorImageIterator;
   primaryEigenVectorImageIterator =
     itk::ImageRegionIterator<VectorImageType>( primaryEigenVectorImage,
-    primaryEigenVectorImage->GetRequestedRegion());
+    primaryEigenVectorImage->GetRequestedRegion() );
   primaryEigenVectorImageIterator.GoToBegin();
 
   //Iterator for the output image with the largest eigenvalue
@@ -180,7 +180,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
     primaryEigenValueImageIterator;
   primaryEigenValueImageIterator = itk::ImageRegionIterator<
     PrimaryEigenValueImageType>( primaryEigenValueImage,
-    primaryEigenValueImage->GetRequestedRegion());
+    primaryEigenValueImage->GetRequestedRegion() );
   primaryEigenValueImageIterator.GoToBegin();
 
   //Iterator for the eigenvalue image
@@ -189,21 +189,21 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
   itk::ImageRegionConstIterator<EigenValueImageType>
     eigenValueImageIterator;
   eigenValueImageIterator = itk::ImageRegionConstIterator<
-    EigenValueImageType>( eigenImage, eigenImage->GetRequestedRegion());
+    EigenValueImageType>( eigenImage, eigenImage->GetRequestedRegion() );
   eigenValueImageIterator.GoToBegin();
 
   //Iterator for the structure tensor
   typedef StructureTensorFilterType::OutputImageType TensorImageType;
   TensorImageType::ConstPointer tensorImage = filter->GetOutput();
   itk::ImageRegionConstIterator<TensorImageType> tensorImageIterator;
-  tensorImageIterator = itk::ImageRegionConstIterator<TensorImageType>(
-    tensorImage, tensorImage->GetRequestedRegion());
+  tensorImageIterator = itk::ImageRegionConstIterator<TensorImageType>( 
+    tensorImage, tensorImage->GetRequestedRegion() );
   tensorImageIterator.GoToBegin();
 
 
   double toleranceEigenValues = 1e-4;
 
-  while(!eigenValueImageIterator.IsAtEnd())
+  while( !eigenValueImageIterator.IsAtEnd() )
     {
     // Get the eigenvalue
     EigenValueArrayType eigenValue;
@@ -223,7 +223,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
       }
 
     // Write out the largest eigenvalue
-    primaryEigenValueImageIterator.Set( eigenValue[largestEigenValueIndex]);
+    primaryEigenValueImageIterator.Set( eigenValue[largestEigenValueIndex] );
 
 
     EigenValueImageType::IndexType pixelIndex;
@@ -246,16 +246,16 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
     std::cout <<"eigenvector" << std::endl;
     std::cout <<"\t" <<  matrixPixel << std::endl;
     std::cout <<"Tensor pixel" << std::endl;
-    std::cout << "\t" << tensorPixel(0,0) << "\t" << tensorPixel(0,1)
-    << "\t" << tensorPixel(0,2) << std::endl;
-    std::cout << "\t" << tensorPixel(1,0) << "\t" << tensorPixel(1,1)
-    << "\t" << tensorPixel(1,2) << std::endl;
-    std::cout << "\t" << tensorPixel(2,0) << "\t" << tensorPixel(2,1)
-    << "\t" << tensorPixel(2,2) << std::endl;
+    std::cout << "\t" << tensorPixel( 0,0 ) << "\t" << tensorPixel( 0,1 )
+    << "\t" << tensorPixel( 0,2 ) << std::endl;
+    std::cout << "\t" << tensorPixel( 1,0 ) << "\t" << tensorPixel( 1,1 )
+    << "\t" << tensorPixel( 1,2 ) << std::endl;
+    std::cout << "\t" << tensorPixel( 2,0 ) << "\t" << tensorPixel( 2,1 )
+    << "\t" << tensorPixel( 2,2 ) << std::endl;
     */
 
 
-    if( vnl_math_abs(largest) >  toleranceEigenValues  )
+    if( vnl_math_abs( largest ) >  toleranceEigenValues  )
       {
       //Assuming eigenvectors are rows
       itk::VariableLengthVector<double> primaryEigenVector( vectorLength );

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -71,7 +71,7 @@ public:
     const ValueListType & _inputWhitenMeans,
     const ValueListType & _inputWhitenStdDevs,
     const ValueListType & _outputWhitenMeans,
-    const ValueListType & _outputWhitenStdDevs);
+    const ValueListType & _outputWhitenStdDevs );
 
   ~MetaNJetLDA( void );
 
@@ -82,7 +82,7 @@ public:
 
   virtual void  Clear( void );
 
-  bool  InitializeEssential(
+  bool  InitializeEssential( 
     const NJetScalesType & _zeroScales,
     const NJetScalesType & _firstScales,
     const NJetScalesType & _secondScales,
@@ -94,7 +94,7 @@ public:
     const ValueListType & _inputWhitenMeans,
     const ValueListType & _inputWhitenStdDevs,
     const ValueListType & _outputWhitenMeans,
-    const ValueListType & _outputWhitenStdDevs);
+    const ValueListType & _outputWhitenStdDevs );
 
   //
   void  SetZeroScales( const NJetScalesType & _zeroScales );
@@ -151,4 +151,4 @@ protected:
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeMetaNJetLDA_h)
+#endif // End !defined( __itktubeMetaNJetLDA_h )

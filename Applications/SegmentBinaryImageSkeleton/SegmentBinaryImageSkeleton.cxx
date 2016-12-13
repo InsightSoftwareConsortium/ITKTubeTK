@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -68,15 +68,15 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Load data");
+  timeCollector.Stop( "Load data" );
   double progress = 0.1;
   progressReporter.Report( progress );
 
-  timeCollector.Start("Binary Thinning");
+  timeCollector.Start( "Binary Thinning" );
 
   // Progress per iteration
   double progressFraction = 0.8/VDimension;
@@ -93,12 +93,12 @@ int DoIt( int argc, char * argv[] )
                                   progress,
                                   true );
   filter->Update();
-  timeCollector.Stop("Binary Thinning");
+  timeCollector.Stop( "Binary Thinning" );
 
 
   typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
 
-  timeCollector.Start("Save data");
+  timeCollector.Start( "Save data" );
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
   writer->SetInput( filter->GetOutput() );
@@ -110,11 +110,11 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Writing volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Save data");
+  timeCollector.Stop( "Save data" );
   progress = 1.0;
   progressReporter.Report( progress );
   progressReporter.End();

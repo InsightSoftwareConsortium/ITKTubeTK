@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -48,7 +48,7 @@ namespace tube
  * \tparam TTubeSpatialObject Type of the tubes contained within the input
  * TMovingSpatialObject to use for the registration.
  *
- * \warning (Derivative)
+ * \warning ( Derivative )
  */
 
 template< class TFixedImage,
@@ -191,11 +191,11 @@ private:
     OutputPointType & outputPoint,
     const TransformType * transform ) const;
 
-  ScalarType ComputeLaplacianMagnitude(
+  ScalarType ComputeLaplacianMagnitude( 
     const typename TubePointType::CovariantVectorType & tubeNormal,
     const ScalarType scale,
     const OutputPointType & currentPoint ) const;
-  ScalarType ComputeThirdDerivatives(
+  ScalarType ComputeThirdDerivatives( 
     const VectorType & v,
     const ScalarType scale,
     const OutputPointType & currentPoint ) const;
@@ -217,4 +217,4 @@ private:
 #include "itktubeImageToTubeRigidMetric.hxx"
 #endif
 
-#endif // End !defined(__itktubeImageToTubeRigidMetric_h)
+#endif // End !defined( __itktubeImageToTubeRigidMetric_h )

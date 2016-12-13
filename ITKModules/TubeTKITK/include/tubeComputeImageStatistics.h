@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -61,7 +61,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( ComputeImageStatistics, ProcessObject );
 
   /** Get statistics components */
@@ -82,7 +82,7 @@ public:
   tubeWrapGetObjectMacro( InputMask, MaskType, Filter );
 
   /** Compute image statistics */
-  tubeWrapUpdateMacro(Filter);
+  tubeWrapUpdateMacro( Filter );
 
   /** Write statistics to a CSV formatted file */
   void WriteCSVStatistics( std::string csvStatisticsFile ) const;
@@ -119,4 +119,4 @@ private:
 #include "tubeComputeImageStatistics.hxx"
 #endif
 
-#endif // End !defined(__tubeComputeImageStatistics_h)
+#endif // End !defined( __tubeComputeImageStatistics_h )

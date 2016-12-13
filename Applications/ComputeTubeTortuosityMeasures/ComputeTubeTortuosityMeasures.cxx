@@ -7,7 +7,7 @@
 
    All rights reserved.
 
-   Licensed under the Apache License, Version 2.0 (the "License");
+   Licensed under the Apache License, Version 2.0 ( the "License" );
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
@@ -64,7 +64,7 @@ int DoIt( int argc, char * argv[] )
   // limitation of itkTubeSpatialObject
   if( VDimension != 2 && VDimension != 3 )
     {
-    tube::ErrorMessage("Error: Only 2D and 3D data is currently supported.");
+    tube::ErrorMessage( "Error: Only 2D and 3D data is currently supported." );
     return EXIT_FAILURE;
     }
 
@@ -107,12 +107,12 @@ int DoIt( int argc, char * argv[] )
   // Get specified smoothing method
   tube::SmoothTubeFunctionEnum smoothingMethodEnum;
 
-  if(smoothingMethod == "SMOOTH_TUBE_USING_INDEX_AVERAGE" )
+  if( smoothingMethod == "SMOOTH_TUBE_USING_INDEX_AVERAGE" )
     {
     smoothingMethodEnum =
       tube::SMOOTH_TUBE_USING_INDEX_AVERAGE;
     }
-  else if(smoothingMethod == "SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN")
+  else if( smoothingMethod == "SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN" )
     {
     smoothingMethodEnum =
       tube::SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN;
@@ -193,7 +193,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start( "Computing tortuosity measures" );
 
   char childName[] = "Tube";
-  TubeListPointerType tubeList = pTubeGroup->GetChildren(
+  TubeListPointerType tubeList = pTubeGroup->GetChildren( 
     pTubeGroup->GetMaximumDepth(), childName );
 
   vtkSmartPointer< vtkIntArray > tubeIdArray =
@@ -211,11 +211,11 @@ int DoIt( int argc, char * argv[] )
   std::vector< vtkSmartPointer< vtkDoubleArray >  > metricArrayVec;
   for( int compareFlag = 0x01; compareFlag <=
     static_cast< int >( TortuosityFilterType::BITMASK_ALL_METRICS );
-    compareFlag = compareFlag << 1)
+    compareFlag = compareFlag << 1 )
     {
     // If metric is asked to print and is printable
-    if( (metricFlag & compareFlag &
-        TortuosityFilterType::BITMASK_VESSEL_WISE_METRICS) > 0 )
+    if( ( metricFlag & compareFlag &
+        TortuosityFilterType::BITMASK_VESSEL_WISE_METRICS ) > 0 )
       {
       vtkSmartPointer< vtkDoubleArray > metricArray =
         vtkSmartPointer< vtkDoubleArray >::New();
@@ -237,15 +237,15 @@ int DoIt( int argc, char * argv[] )
     }
 
   std::vector< vtkSmartPointer<vtkIntArray> > histogramArrays;
-  if( (metricFlag & TortuosityFilterType::CURVATURE_HISTOGRAM_METRICS) > 0 )
+  if( ( metricFlag & TortuosityFilterType::CURVATURE_HISTOGRAM_METRICS ) > 0 )
     {
-    double histStep = (histogramMax - histogramMin) / numberOfHistogramBins;
+    double histStep = ( histogramMax - histogramMin ) / numberOfHistogramBins;
 
-    for(int i = 0; i < numberOfHistogramBins; i++)
+    for( int i = 0; i < numberOfHistogramBins; i++ )
       {
       std::ostringstream oss;
       oss << "Hist-Bin#" << i << ": " << i*histStep <<" - "
-        << (i+1) * histStep;
+        << ( i+1 ) * histStep;
       std::string binArrayName = oss.str();
 
       vtkSmartPointer< vtkIntArray > histArray =
@@ -253,7 +253,7 @@ int DoIt( int argc, char * argv[] )
       histArray->Initialize();
       histArray->SetName( binArrayName.c_str() );
       histArray->SetNumberOfValues( tubeList->size() );
-      histogramArrays.push_back(histArray);
+      histogramArrays.push_back( histArray );
       }
     }
 
@@ -261,8 +261,8 @@ int DoIt( int argc, char * argv[] )
   for( typename TubeGroupType::ChildrenListType::iterator
     itTubes = tubeList->begin(); itTubes != tubeList->end(); ++itTubes )
     {
-    TubeType* curTube = dynamic_cast<TubeType*>((*itTubes).GetPointer());
-    if (!curTube)
+    TubeType* curTube = dynamic_cast<TubeType*>( ( *itTubes ).GetPointer() );
+    if( !curTube )
       {
       continue;
       }
@@ -357,7 +357,7 @@ int DoIt( int argc, char * argv[] )
       for( int i = 0; i < numberOfHistogramBins; i++ )
         {
         histogramArrays[i]->SetValue( tubeIndex,
-          tortuosityFilter->GetCurvatureHistogramMetric(i) );
+          tortuosityFilter->GetCurvatureHistogramMetric( i ) );
         }
       }
 
@@ -440,7 +440,7 @@ int main( int argc, char * argv[] )
       }
     default:
       {
-      tubeErrorMacro(<< "Error: Only 3D data is currently supported.");
+      tubeErrorMacro( << "Error: Only 3D data is currently supported." );
       delete mScene;
       return EXIT_FAILURE;
       }

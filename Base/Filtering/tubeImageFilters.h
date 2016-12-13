@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -41,12 +41,12 @@ public:
     float inValMin, float inValMax, float outMin, float outMax );
 
   /** Intensity multiplicative correct using inMeanField. */
-  static bool ApplyIntensityMultiplicativeWithBiasCorrection(
+  static bool ApplyIntensityMultiplicativeWithBiasCorrection( 
     typename ImageType::Pointer imIn,
     const std::string & inMeanFieldFilePath );
 
   /** Resamples image a to b if they are different, returns resampled_a */
-  static typename ImageType::Pointer ResampleImage(
+  static typename ImageType::Pointer ResampleImage( 
     typename ImageType::Pointer a, typename ImageType::Pointer b );
 
   /** Adds uniform noise to all pixels within inVal range */
@@ -71,7 +71,7 @@ public:
   static void MirrorAndPadImage( typename ImageType::Pointer & imIn,
     int numPadVoxels );
 
-  /** Normalize: = mean/std; 1 = FWHM ; 2 = FWHM mean (shift) only */
+  /** Normalize: = mean/std; 1 = FWHM ; 2 = FWHM mean ( shift ) only */
   template< typename TPixel >
   static void NormalizeImage( typename ImageType::Pointer & imIn,
     int normType );
@@ -84,20 +84,20 @@ public:
   static bool MedianImage( typename ImageType::Pointer & imIn,
     int size );
 
-  /** If I(x) in [tLow,tHigh] then I(x)=vTrue else I(x)=vFalse. */
+  /** If I( x ) in [tLow,tHigh] then I( x )=vTrue else I( x )=vFalse. */
   static void ThresholdImage( typename ImageType::Pointer imIn,
     float threshLow, float threshHigh, float valTrue, float valFalse );
 
-  /** Return image value within masked region (mode: 0=mean, 1=stdDev) */
-  static double ComputeImageStdDevOrMeanWithinRangeUsingMask(
+  /** Return image value within masked region ( mode: 0=mean, 1=stdDev ) */
+  static double ComputeImageStdDevOrMeanWithinRangeUsingMask( 
     typename ImageType::Pointer imIn, const std::string & maskFilePath,
     float threshLow, float threshHigh, int mode, bool & success );
 
   /** Update image applying 'abs' unary operation. */
   static void AbsoluteImage( typename ImageType::Pointer imIn );
 
-  /** If inFile(x) in [tLow, tHigh] then I(x)=I(x) else I(x)=vFalse */
-  static bool MaskImageWithValueIfNotWithinSecondImageRange(
+  /** If inFile( x ) in [tLow, tHigh] then I( x )=I( x ) else I( x )=vFalse */
+  static bool MaskImageWithValueIfNotWithinSecondImageRange( 
     typename ImageType::Pointer imIn, const std::string & imIn2FilePath,
     float threshLow, float threshHigh, float valFalse );
 
@@ -127,17 +127,17 @@ public:
     const std::string & histOutputFilePath );
 
   /** Correct intensity slice-by-slice using HistogramMatchingFilter. */
-  static void CorrectIntensitySliceBySliceUsingHistogramMatching(
+  static void CorrectIntensitySliceBySliceUsingHistogramMatching( 
     typename ImageType::Pointer imIn, unsigned int numberOfBins,
     unsigned int numberOfMatchPoints );
 
   /** Match intensity to another volume using HistogramMatchingFilter. */
-  static bool CorrectIntensityUsingHistogramMatching(
+  static bool CorrectIntensityUsingHistogramMatching( 
     typename ImageType::Pointer & imIn, unsigned int numberOfBins,
     unsigned int numberOfMatchPoints,
     const std::string & referenceVolumeFilePath );
 
-  /** Resample to reduce by a factor (factor==0 means make isotropic) */
+  /** Resample to reduce by a factor ( factor==0 means make isotropic ) */
   static void Resize( typename ImageType::Pointer & imIn,
     double factor );
 
@@ -146,7 +146,7 @@ public:
     const std::string & imIn2FilePath );
 
   /** Extract a single slice from the image. */
-  static void ExtractSlice(
+  static void ExtractSlice( 
     typename ImageType::Pointer & imIn, unsigned int dimension,
     unsigned int slice );
 
@@ -154,14 +154,14 @@ public:
   static void EnhanceVessels( typename ImageType::Pointer imIn,
     double scaleMin, double scaleMax, double numScales );
 
-  /** Segment using (inclusive) threshold connected components. */
-  static void SegmentUsingConnectedThreshold(
+  /** Segment using ( inclusive ) threshold connected components. */
+  static void SegmentUsingConnectedThreshold( 
     typename ImageType::Pointer & imIn,
     float threshLow, float threshHigh, float labelValue,
     float x, float y, float z );
 
   /** Run centroid voronoi tessellation on the image. */
-  static bool ComputeVoronoiTessellation(
+  static bool ComputeVoronoiTessellation( 
     typename ImageType::Pointer & imIn, unsigned int numberOfCentroids,
     unsigned int numberOfIterations, unsigned int numberOfSamples,
     const std::string & centroidOutFilePath );
@@ -178,4 +178,4 @@ private:
 #include "tubeImageFilters.hxx"
 #endif
 
-#endif // End !defined(__tubeImageFilters_h)
+#endif // End !defined( __tubeImageFilters_h )

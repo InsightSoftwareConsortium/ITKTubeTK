@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -43,7 +43,7 @@ DifferenceImageFilter<TInputImage, TOutputImage>
 ::DifferenceImageFilter( void )
 {
   // We require two inputs to execute.
-  this->SetNumberOfRequiredInputs(2);
+  this->SetNumberOfRequiredInputs( 2 );
 
   // Set the default DifferenceThreshold.
   m_DifferenceThreshold = NumericTraits<OutputPixelType>::Zero;
@@ -62,9 +62,9 @@ DifferenceImageFilter<TInputImage, TOutputImage>
 template< class TInputImage, class TOutputImage >
 void
 DifferenceImageFilter<TInputImage, TOutputImage>
-::PrintSelf(std::ostream& os, Indent indent) const
+::PrintSelf( std::ostream& os, Indent indent ) const
 {
-  this->Superclass::PrintSelf(os, indent);
+  this->Superclass::PrintSelf( os, indent );
   os << indent << "ToleranceRadius: " << m_ToleranceRadius << "\n";
   os << indent << "DifferenceThreshold: " << m_DifferenceThreshold << "\n";
   os << indent << "MeanDifference: " << m_MeanDifference << "\n";
@@ -79,20 +79,20 @@ DifferenceImageFilter<TInputImage, TOutputImage>
 template< class TInputImage, class TOutputImage >
 void
 DifferenceImageFilter<TInputImage, TOutputImage>
-::SetValidInput(const InputImageType* validImage)
+::SetValidInput( const InputImageType* validImage )
 {
   // The valid image should be input 0.
-  this->SetInput(0, validImage);
+  this->SetInput( 0, validImage );
 }
 
 //----------------------------------------------------------------------------
 template< class TInputImage, class TOutputImage >
 void
 DifferenceImageFilter<TInputImage, TOutputImage>
-::SetTestInput(const InputImageType* testImage)
+::SetTestInput( const InputImageType* testImage )
 {
   // The test image should be input 1.
-  this->SetInput(1, testImage);
+  this->SetInput( 1, testImage );
 }
 
 //----------------------------------------------------------------------------
@@ -109,20 +109,20 @@ DifferenceImageFilter<TInputImage, TOutputImage>
   m_NumberOfPixelsWithDifferences = 0;
 
   // Resize the thread temporaries
-  m_ThreadDifferenceSum.SetSize(numberOfThreads);
-  m_ThreadNumberOfPixelsWithDifferences.SetSize(numberOfThreads);
+  m_ThreadDifferenceSum.SetSize( numberOfThreads );
+  m_ThreadNumberOfPixelsWithDifferences.SetSize( numberOfThreads );
 
   // Initialize the temporaries
-  m_ThreadDifferenceSum.Fill(NumericTraits<AccumulateType>::Zero);
-  m_ThreadNumberOfPixelsWithDifferences.Fill(0);
+  m_ThreadDifferenceSum.Fill( NumericTraits<AccumulateType>::Zero );
+  m_ThreadNumberOfPixelsWithDifferences.Fill( 0 );
 }
 
 //----------------------------------------------------------------------------
 template< class TInputImage, class TOutputImage >
 void
 DifferenceImageFilter<TInputImage, TOutputImage>
-::ThreadedGenerateData(const OutputImageRegionType &threadRegion,
-  ThreadIdType threadId)
+::ThreadedGenerateData( const OutputImageRegionType &threadRegion,
+  ThreadIdType threadId )
 {
   typedef ConstNeighborhoodIterator<InputImageType>   SmartIterator;
   typedef ImageRegionConstIterator<InputImageType>    InputIterator;
@@ -138,49 +138,49 @@ DifferenceImageFilter<TInputImage, TOutputImage>
   ZeroFluxNeumannBoundaryCondition<InputImageType> nbc;
 
   // Get a pointer to each image.
-  const InputImageType* validImage = this->GetInput(0);
-  const InputImageType* testImage = this->GetInput(1);
+  const InputImageType* validImage = this->GetInput( 0 );
+  const InputImageType* testImage = this->GetInput( 1 );
   OutputImageType* outputPtr = this->GetOutput();
 
   // Create a radius of pixels.
   RadiusType radius;
-  if(m_ToleranceRadius > 0)
+  if( m_ToleranceRadius > 0 )
     {
-    radius.Fill(m_ToleranceRadius);
+    radius.Fill( m_ToleranceRadius );
     }
   else
     {
-    radius.Fill(0);
+    radius.Fill( 0 );
     }
 
   // Find the data-set boundary faces.
   FacesCalculator boundaryCalculator;
-  FaceListType faceList = boundaryCalculator(testImage, threadRegion, radius);
+  FaceListType faceList = boundaryCalculator( testImage, threadRegion, radius );
 
   // Support progress methods/callbacks.
-  ProgressReporter progress(this, threadId, threadRegion.GetNumberOfPixels());
+  ProgressReporter progress( this, threadId, threadRegion.GetNumberOfPixels() );
 
   // Process the internal face and each of the boundary faces.
-  for(FaceListIterator face = faceList.begin(); face != faceList.end(); ++face)
+  for( FaceListIterator face = faceList.begin(); face != faceList.end(); ++face )
     {
-    SmartIterator test(radius, testImage, *face); // Iterate over test image.
-    InputIterator valid(validImage, *face);       // Iterate over valid image.
-    OutputIterator out(outputPtr, *face);         // Iterate over output image.
+    SmartIterator test( radius, testImage, *face ); // Iterate over test image.
+    InputIterator valid( validImage, *face );       // Iterate over valid image.
+    OutputIterator out( outputPtr, *face );         // Iterate over output image.
     if( !test.GetNeedToUseBoundaryCondition() || !m_IgnoreBoundaryPixels )
       {
-      test.OverrideBoundaryCondition(&nbc);
+      test.OverrideBoundaryCondition( &nbc );
 
-      for(valid.GoToBegin(), test.GoToBegin(), out.GoToBegin();
+      for( valid.GoToBegin(), test.GoToBegin(), out.GoToBegin();
           !valid.IsAtEnd();
-          ++valid, ++test, ++out)
+          ++valid, ++test, ++out )
         {
         // Get the current valid pixel.
         InputPixelType t = valid.Get();
 
         //  Assume a good match - so test center pixel first, for speed
-        RealType difference = static_cast<RealType>(t) - test.GetCenterPixel();
+        RealType difference = static_cast<RealType>( t ) - test.GetCenterPixel();
         RealType absDifference = difference;
-        if(NumericTraits<RealType>::IsNegative(difference))
+        if( NumericTraits<RealType>::IsNegative( difference ) )
           {
           absDifference = -absDifference;
           }
@@ -188,18 +188,18 @@ DifferenceImageFilter<TInputImage, TOutputImage>
         RealType minimumAbsDifference = absDifference;
 
         unsigned int neighborhoodSize = test.Size();
-        for(unsigned int i=0; i < neighborhoodSize; ++i)
+        for( unsigned int i=0; i < neighborhoodSize; ++i )
           {
           // Use the RealType for the difference to make sure we get the
           // sign.
-          difference = static_cast<RealType>(t) - test.GetPixel(i);
+          difference = static_cast<RealType>( t ) - test.GetPixel( i );
 
           absDifference = difference;
-          if(NumericTraits<RealType>::IsNegative(difference))
+          if( NumericTraits<RealType>::IsNegative( difference ) )
             {
             absDifference = -absDifference;
             }
-          if(absDifference < minimumAbsDifference)
+          if( absDifference < minimumAbsDifference )
             {
             minimumDifference = difference;
             minimumAbsDifference = absDifference;
@@ -207,10 +207,10 @@ DifferenceImageFilter<TInputImage, TOutputImage>
           }
 
         // Store the minimum difference value in the output image.
-        out.Set( static_cast<OutputPixelType>(minimumDifference) );
+        out.Set( static_cast<OutputPixelType>( minimumDifference ) );
 
         m_ThreadDifferenceSum[threadId] += minimumAbsDifference;
-        if(minimumAbsDifference > m_DifferenceThreshold)
+        if( minimumAbsDifference > m_DifferenceThreshold )
           {
           m_ThreadNumberOfPixelsWithDifferences[threadId]++;
           }
@@ -221,9 +221,9 @@ DifferenceImageFilter<TInputImage, TOutputImage>
       }
     else
       {
-      for(out.GoToBegin(); !out.IsAtEnd(); ++out)
+      for( out.GoToBegin(); !out.IsAtEnd(); ++out )
         {
-        out.Set(NumericTraits<OutputPixelType>::Zero);
+        out.Set( NumericTraits<OutputPixelType>::Zero );
         progress.CompletedPixel();
         }
       }
@@ -238,7 +238,7 @@ DifferenceImageFilter<TInputImage, TOutputImage>
 {
   // Set statistics about difference image.
   int numberOfThreads = this->GetNumberOfThreads();
-  for(int i=0; i < numberOfThreads; ++i)
+  for( int i=0; i < numberOfThreads; ++i )
     {
     m_TotalDifference += m_ThreadDifferenceSum[i];
     m_NumberOfPixelsWithDifferences +=
@@ -260,4 +260,4 @@ DifferenceImageFilter<TInputImage, TOutputImage>
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeDifferenceImageFilter_hxx)
+#endif // End !defined( __itktubeDifferenceImageFilter_hxx )

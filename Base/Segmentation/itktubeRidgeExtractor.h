@@ -12,7 +12,7 @@ Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -235,7 +235,7 @@ public:
   /** Get the extent */
   double GetScaleKernelExtent( void );
 
-  /** Set to re-estimate (based on local radius estimate) the scale to be
+  /** Set to re-estimate ( based on local radius estimate ) the scale to be
    * used for image measures made during ridge extraction */
   void SetDynamicScale( bool dynamicScale );
 
@@ -293,7 +293,7 @@ public:
     double & roundness,
     double & curvature,
     double & levelness,
-    const vnl_vector<double> & prevTangent=vnl_vector<double>());
+    const vnl_vector<double> & prevTangent=vnl_vector<double>() );
 
   /** Get current location
    *  This is location at which the Ridgness function was last called
@@ -449,4 +449,4 @@ private:
 #include "itktubeRidgeExtractor.hxx"
 #endif
 
-#endif // End !defined(__itktubeRidgeExtractor_h)
+#endif // End !defined( __itktubeRidgeExtractor_h )

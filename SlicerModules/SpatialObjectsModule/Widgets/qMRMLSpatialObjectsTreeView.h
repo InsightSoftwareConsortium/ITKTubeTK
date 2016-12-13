@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -49,34 +49,34 @@ Q_OBJECT
 
 public:
   typedef qMRMLTreeView Superclass;
-  qMRMLSpatialObjectsTreeView(QWidget *parent=0);
+  qMRMLSpatialObjectsTreeView( QWidget *parent=0 );
   virtual ~qMRMLSpatialObjectsTreeView();
 
-  virtual void setMRMLScene(vtkMRMLScene* scene);
+  virtual void setMRMLScene( vtkMRMLScene* scene );
 
   // Register the logic
-  void setLogic(vtkSlicerSpatialObjectsLogic* logic);
-  virtual bool clickDecoration(const QModelIndex& index);
+  void setLogic( vtkSlicerSpatialObjectsLogic* logic );
+  virtual bool clickDecoration( const QModelIndex& index );
 
 signals:
-  void onPropertyEditButtonClicked(QString id);
+  void onPropertyEditButtonClicked( QString id );
   // type 0-line 1-tube 2-glyph
-  void visibilityChanged(int type);
+  void visibilityChanged( int type );
 
 protected:
   QScopedPointer<qMRMLSpatialObjectsTreeViewPrivate> d_ptr;
   #ifndef QT_NO_CURSOR
-    bool viewportEvent(QEvent* e);
+    bool viewportEvent( QEvent* e );
   #endif
 
 private:
-  Q_DECLARE_PRIVATE(qMRMLSpatialObjectsTreeView);
-  Q_DISABLE_COPY(qMRMLSpatialObjectsTreeView);
+  Q_DECLARE_PRIVATE( qMRMLSpatialObjectsTreeView );
+  Q_DISABLE_COPY( qMRMLSpatialObjectsTreeView );
 
   vtkSlicerSpatialObjectsLogic* Logic;
 
   // Toggle the visibility of an SpatialObjects.
-  void onVisibilityColumnClicked(vtkMRMLNode* node);
+  void onVisibilityColumnClicked( vtkMRMLNode* node );
 };
 
 #endif

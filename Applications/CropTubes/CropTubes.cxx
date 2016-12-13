@@ -6,7 +6,7 @@
 
    All rights reserved.
 
-   Licensed under the Apache License, Version 2.0 (the "License");
+   Licensed under the Apache License, Version 2.0 ( the "License" );
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
@@ -35,7 +35,7 @@
 #include "CropTubesCLP.h"
 
 template< unsigned int DimensionT >
-int DoIt (int argc, char * argv[])
+int DoIt ( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
@@ -44,8 +44,8 @@ int DoIt (int argc, char * argv[])
   // limitation of itkTubeSpatialObject
   if( DimensionT != 2 && DimensionT != 3 )
     {
-    tube::ErrorMessage(
-      "Error: Only 2D and 3D data is currently supported.");
+    tube::ErrorMessage( 
+      "Error: Only 2D and 3D data is currently supported." );
     return EXIT_FAILURE;
     }
 
@@ -92,9 +92,9 @@ int DoIt (int argc, char * argv[])
   //Cast XML vector parameters
   PointType boxPositionVector;
   VectorType boxSizeVector;
-  if ( !boxCorner.empty() )
+  if( !boxCorner.empty() )
     {
-    for ( unsigned int i = 0; i < DimensionT; i++ )
+    for( unsigned int i = 0; i < DimensionT; i++ )
       {
       boxPositionVector[i] = boxCorner[i];
       boxSizeVector[i] = boxSize[i];
@@ -102,7 +102,7 @@ int DoIt (int argc, char * argv[])
     }
   else
     {
-    for ( unsigned int i = 0; i < DimensionT; i++ )
+    for( unsigned int i = 0; i < DimensionT; i++ )
       {
       boxPositionVector[i] = -1;
       boxSizeVector[i] = -1;
@@ -115,7 +115,7 @@ int DoIt (int argc, char * argv[])
   //loading Volume mask if its there
   typename ImageReaderType::Pointer imReader = ImageReaderType::New();
   typename ImageType::Pointer image;
-  if ( !volumeMask.empty() )
+  if( !volumeMask.empty() )
     {
     tube::InfoMessage( "Reading volume mask..." );
     imReader->SetFileName( volumeMask.c_str() );
@@ -140,7 +140,7 @@ int DoIt (int argc, char * argv[])
   timeCollector.Stop( "Cropping Tubes" );
 
   // Write output TRE file
-  tubeStandardOutputMacro(
+  tubeStandardOutputMacro( 
     << "\n>> Writing TRE file" );
 
   timeCollector.Start( "Writing output TRE file" );
@@ -183,9 +183,9 @@ int main( int argc, char * argv[] )
     }
   PARSE_ARGS;
 
-  if( (boxCorner.empty() || boxSize.empty()) && volumeMask.empty() )
+  if( ( boxCorner.empty() || boxSize.empty() ) && volumeMask.empty() )
     {
-    tube::ErrorMessage(
+    tube::ErrorMessage( 
       "Error: Either both longflags --boxCorner and --boxSize "
       "or the flag --volumeMask is required." );
     return EXIT_FAILURE;
@@ -219,7 +219,7 @@ int main( int argc, char * argv[] )
       }
     default:
       {
-      tubeErrorMacro(
+      tubeErrorMacro( 
         << "Error: Only 2D and 3D data is currently supported." );
       delete mScene;
       return EXIT_FAILURE;

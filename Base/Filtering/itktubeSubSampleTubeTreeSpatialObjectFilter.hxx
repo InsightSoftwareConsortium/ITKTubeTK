@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -39,7 +39,7 @@ namespace tube
 template< class TSpatialObject, class TTubeSpatialObject >
 SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
 ::SubSampleTubeTreeSpatialObjectFilter( void )
-  : m_Sampling(1)
+  : m_Sampling( 1 )
 {
   //! \todo fix this system.
   SpatialObjectFactoryBase::RegisterDefaultSpatialObjects();
@@ -70,7 +70,7 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
     typename SubSampleTubeFilterType::Pointer subSampleTubeFilter
       = SubSampleTubeFilterType::New();
     subSampleTubeFilter->SetSampling( this->GetSampling() );
-    subSampleTubeFilter->SetInput( const_cast< TubeSpatialObjectType * >(
+    subSampleTubeFilter->SetInput( const_cast< TubeSpatialObjectType * >( 
         inputAsTube ) );
     subSampleTubeFilter->Update();
     if( graftOutput )
@@ -98,7 +98,7 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
         ObjectFactoryBase::CreateInstance( spatialObjectType.c_str() );
 
       typename SpatialObjectBaseType::Pointer newSpatialObjectBase =
-        dynamic_cast< SpatialObjectBaseType * >(
+        dynamic_cast< SpatialObjectBaseType * >( 
         newSpatialObject.GetPointer() );
       if( newSpatialObjectBase.IsNull() )
         {
@@ -145,4 +145,4 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeSubSampleTubeTreeSpatialObjectFilter_hxx)
+#endif // End !defined( __itktubeSubSampleTubeTreeSpatialObjectFilter_hxx )

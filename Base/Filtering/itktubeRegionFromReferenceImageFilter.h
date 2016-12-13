@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -48,10 +48,10 @@ public:
   typedef SmartPointer<const Self>                      ConstPointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(RegionFromReferenceImageFilter, ExtractImageFilter);
+  /** Run-time type information ( and related methods ). */
+  itkTypeMacro( RegionFromReferenceImageFilter, ExtractImageFilter );
 
   /** Typedef to describe the output and input image region types. */
   typedef typename Superclass::OutputImageRegionType OutputImageRegionType;
@@ -69,12 +69,12 @@ public:
   typedef InputImageSizeType                        SizeType;
 
   /** ImageDimension constants */
-  itkStaticConstMacro(InputImageDimension, unsigned int,
-                      Superclass::InputImageDimension);
-  itkStaticConstMacro(OutputImageDimension, unsigned int,
-                      Superclass::OutputImageDimension);
-  itkStaticConstMacro(ImageDimension, unsigned int,
-                      Superclass::OutputImageDimension);
+  itkStaticConstMacro( InputImageDimension, unsigned int,
+                      Superclass::InputImageDimension );
+  itkStaticConstMacro( OutputImageDimension, unsigned int,
+                      Superclass::OutputImageDimension );
+  itkStaticConstMacro( ImageDimension, unsigned int,
+                      Superclass::OutputImageDimension );
 
   typedef ImageBase< itkGetStaticConstMacro( ImageDimension ) >    ReferenceImageType;
 
@@ -84,13 +84,13 @@ public:
   const ReferenceImageType * GetReferenceImage() const;
 
   /** Set the input image */
-  void SetInput1(const TInputImage *input)
+  void SetInput1( const TInputImage *input )
     {
     this->SetInput( input );
     }
 
   /** Set the reference image */
-  void SetInput2(const ReferenceImageType *input)
+  void SetInput2( const ReferenceImageType *input )
     {
     this->SetReferenceImage( input );
     }
@@ -98,25 +98,25 @@ public:
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
-  itkConceptMacro(InputConvertibleToOutputCheck,
-    (Concept::Convertible<InputImagePixelType, OutputImagePixelType>));
-  itkConceptMacro(SameDimensionCheck,
-    (Concept::SameDimension<InputImageDimension, OutputImageDimension>));
+  itkConceptMacro( InputConvertibleToOutputCheck,
+    ( Concept::Convertible<InputImagePixelType, OutputImagePixelType> ) );
+  itkConceptMacro( SameDimensionCheck,
+    ( Concept::SameDimension<InputImageDimension, OutputImageDimension> ) );
   /** End concept checking */
 #endif
 
 protected:
   RegionFromReferenceImageFilter()
     {
-    this->SetNumberOfRequiredInputs(2);
+    this->SetNumberOfRequiredInputs( 2 );
     }
   ~RegionFromReferenceImageFilter() {}
 
   void GenerateOutputInformation();
   
 private:
-  RegionFromReferenceImageFilter(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  RegionFromReferenceImageFilter( const Self& ); //purposely not implemented
+  void operator=( const Self& ); //purposely not implemented
 };
 
   

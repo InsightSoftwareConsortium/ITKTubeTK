@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -81,8 +81,8 @@ FeatureVectorGenerator< TImage >
 ::AddInput( ImageType * img )
 {
   m_InputImageList.push_back( img );
-  m_WhitenMean.push_back(0);
-  m_WhitenStdDev.push_back(1);
+  m_WhitenMean.push_back( 0 );
+  m_WhitenStdDev.push_back( 1 );
 }
 
 template< class TImage >
@@ -234,14 +234,14 @@ FeatureVectorGenerator< TImage >
   if( m_WhitenStdDev.size() > 0 &&
     m_WhitenStdDev[fNum] > 0 )
     {
-    return static_cast< FeatureValueType >(
+    return static_cast< FeatureValueType >( 
         ( m_InputImageList[fNum]->GetPixel( indx )
           - m_WhitenMean[fNum] )
         / m_WhitenStdDev[fNum] );
     }
   else
     {
-    return static_cast< FeatureValueType >(
+    return static_cast< FeatureValueType >( 
       m_InputImageList[fNum]->GetPixel( indx ) );
     }
 }
@@ -385,4 +385,4 @@ FeatureVectorGenerator< TImage >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeFeatureVectorGenerator_hxx)
+#endif // End !defined( __itktubeFeatureVectorGenerator_hxx )

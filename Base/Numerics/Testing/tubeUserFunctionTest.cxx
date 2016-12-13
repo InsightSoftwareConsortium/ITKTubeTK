@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -56,12 +56,12 @@ public:
 
   MyFunc2( void )
     {
-    cVal.set_size(1);
+    cVal.set_size( 1 );
     }
   const vnl_vector<double> & Value( const vnl_vector<double> & x )
     {
     std::cout << "func:x = " << x[0] << ", " << x[1] << std::endl;
-    cVal[0] = std::sin(x[0]) + std::cos(x[1]/2);
+    cVal[0] = std::sin( x[0] ) + std::cos( x[1]/2 );
     std::cout << "  val = " << cVal << std::endl;
     return cVal;
     }
@@ -74,15 +74,15 @@ int tubeUserFunctionTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] 
 {
   MyFunc2 myFunc;
 
-  vnl_vector<double> xTest(2);
+  vnl_vector<double> xTest( 2 );
   xTest[0] = 0.01;
   xTest[1] = 0.01;
 
   tube::UserFunction2 * op = &myFunc;
-  std::cout << "test:func(0.01,0.01) = " << op->Value( xTest )[0]
+  std::cout << "test:func( 0.01,0.01 ) = " << op->Value( xTest )[0]
     << std::endl;
 
-  std::cout << "test:func(0.01,0.01) = " << myFunc.Value( xTest )[0]
+  std::cout << "test:func( 0.01,0.01 ) = " << myFunc.Value( xTest )[0]
     << std::endl;
 
   return EXIT_SUCCESS;

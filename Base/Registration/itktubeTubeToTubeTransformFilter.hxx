@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -82,7 +82,7 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
 {
   const std::string spatialObjectTypeName = inputSO->
     GetSpatialObjectTypeAsString();
-  LightObject::Pointer outputLO = ObjectFactoryBase::CreateInstance(
+  LightObject::Pointer outputLO = ObjectFactoryBase::CreateInstance( 
     spatialObjectTypeName.c_str() );
 
   typename SpatialObject< TDimension >::Pointer outputSO =
@@ -98,11 +98,11 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
   outputSO->UnRegister();
 
   // We make the copy and sub-sample if it is a tube.
-  TubeType * inputSOAsTube = dynamic_cast< TubeType * >(
+  TubeType * inputSOAsTube = dynamic_cast< TubeType * >( 
     inputSO );
   if( inputSOAsTube != NULL )
     {
-    TubeType * outputSOAsTube = dynamic_cast< TubeType * >(
+    TubeType * outputSOAsTube = dynamic_cast< TubeType * >( 
       outputSO.GetPointer() );
 
     Point<double, TDimension> inputObjectPoint;
@@ -147,12 +147,12 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
 
     typename TubeType::TransformType::Pointer
       outputInverseIndexToWorldTransform = TubeType::TransformType::New();
-    outputSOAsTube->GetIndexToWorldTransform()->GetInverse(
+    outputSOAsTube->GetIndexToWorldTransform()->GetInverse( 
       outputInverseIndexToWorldTransform );
 
     typename TubeType::TransformType::Pointer
       outputInverseObjectToWorldTransform = TubeType::TransformType::New();
-    outputSOAsTube->GetObjectToWorldTransform()->GetInverse(
+    outputSOAsTube->GetObjectToWorldTransform()->GetInverse( 
       outputInverseObjectToWorldTransform );
 
     typedef typename TubeType::PointListType      TubePointListType;
@@ -162,10 +162,10 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
 
     while( tubePointIterator != tubePointList.end() )
       {
-      inputPoint = (*tubePointIterator).GetPosition();
+      inputPoint = ( *tubePointIterator ).GetPosition();
       inputObjectPoint = inputIndexToObjectTransform
         ->TransformPoint( inputPoint );
-      worldPoint = inputIndexToWorldTransform->TransformPoint(
+      worldPoint = inputIndexToWorldTransform->TransformPoint( 
         inputPoint );
 
       transformedWorldPoint = m_Transform->TransformPoint( worldPoint );
@@ -189,9 +189,9 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
       // only try transformation of normals if both are non-zero
       if( !n1.GetVnlVector().is_zero() && !n2.GetVnlVector().is_zero() )
         {
-        n1 = inputObjectToWorldTransform->TransformCovariantVector(
+        n1 = inputObjectToWorldTransform->TransformCovariantVector( 
           n1, inputObjectPoint );
-        n2 = inputObjectToWorldTransform->TransformCovariantVector(
+        n2 = inputObjectToWorldTransform->TransformCovariantVector( 
           n2, inputObjectPoint );
         n1 = m_Transform->TransformCovariantVector( n1, worldPoint );
         n2 = m_Transform->TransformCovariantVector( n2, worldPoint );
@@ -209,7 +209,7 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
         GetTangent();
       if( !tang.GetVnlVector().is_zero() )
         {
-        tang = inputObjectToWorldTransform->TransformVector(
+        tang = inputObjectToWorldTransform->TransformVector( 
           tang, inputObjectPoint );
         tang = m_Transform->TransformVector( tang, worldPoint );
         tang = outputInverseObjectToWorldTransform->
@@ -230,9 +230,9 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
         TransformVector( radi, worldPoint );
       pnt.SetRadius( radi[0] );
 
-      pnt.SetMedialness( (*tubePointIterator).GetMedialness() );
-      pnt.SetRidgeness( (*tubePointIterator).GetRidgeness() );
-      pnt.SetBranchness( (*tubePointIterator).GetBranchness() );
+      pnt.SetMedialness( ( *tubePointIterator ).GetMedialness() );
+      pnt.SetRidgeness( ( *tubePointIterator ).GetRidgeness() );
+      pnt.SetBranchness( ( *tubePointIterator ).GetBranchness() );
 
       outputSOAsTube->GetPoints().push_back( pnt );
 
@@ -262,7 +262,7 @@ void
 TubeToTubeTransformFilter< TTransformType,TDimension >
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
-  Superclass::PrintSelf(os,indent);
+  Superclass::PrintSelf( os,indent );
 
   os << indent << "Transformation: " << m_Transform << std::endl;
   os << indent << "OutputIndexToObject Transform: " <<
@@ -273,4 +273,4 @@ TubeToTubeTransformFilter< TTransformType,TDimension >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeTubeToTubeTransformFilter_hxx)
+#endif // End !defined( __itktubeTubeToTubeTransformFilter_hxx )

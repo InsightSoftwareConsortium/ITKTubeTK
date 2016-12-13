@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -66,7 +66,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( InnerOpticToPlusImageReader, ImageSource );
 
   /** Set the name of the InnerOptic metadata file for this series. */
@@ -74,16 +74,16 @@ public:
   itkGetStringMacro( FileName );
 
   /** Set the start index of the frames to extract. */
-  itkSetMacro(StartIndex, SizeValueType);
-  itkGetConstMacro(StartIndex, SizeValueType);
+  itkSetMacro( StartIndex, SizeValueType );
+  itkGetConstMacro( StartIndex, SizeValueType );
 
   /** Set the end index of the frames to extract. */
-  itkSetMacro(EndIndex, SizeValueType);
-  itkGetConstMacro(EndIndex, SizeValueType);
+  itkSetMacro( EndIndex, SizeValueType );
+  itkGetConstMacro( EndIndex, SizeValueType );
 
   /** Set in the increment of the frames to extract.  The default value is 1. */
-  itkSetMacro(IncrementIndex, SizeValueType);
-  itkGetConstMacro(IncrementIndex, SizeValueType);
+  itkSetMacro( IncrementIndex, SizeValueType );
+  itkGetConstMacro( IncrementIndex, SizeValueType );
 
 
 protected:
@@ -117,4 +117,4 @@ private:
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeInnerOpticToPlusImageReader_h)
+#endif // End !defined( __itktubeInnerOpticToPlusImageReader_h )

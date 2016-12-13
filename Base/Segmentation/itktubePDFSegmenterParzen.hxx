@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -198,7 +198,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
       {
       for( unsigned int i = 0; i < numFeatures; i++ )
         {
-        double binV = (*inClassListIt)[i];
+        double binV = ( *inClassListIt )[i];
         if( binV < m_HistogramBinMin[i] )
           {
           m_HistogramBinMin[i] = binV;
@@ -265,7 +265,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
         {
         for( unsigned int i = 0; i < numFeatures; i++ )
           {
-          double binV = (*inClassListIt)[i];
+          double binV = ( *inClassListIt )[i];
           int binN = static_cast< int >( ( binV - m_HistogramBinMin[i] )
             / m_HistogramBinSize[i] );
           if( binN < 0 )
@@ -314,7 +314,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
               {
               if( b > 0 )
                 {
-                clipMin[c][i] = (b-1) * m_HistogramBinSize[i]
+                clipMin[c][i] = ( b-1 ) * m_HistogramBinSize[i]
                   + m_HistogramBinMin[i];
                 }
               if( count - prevCount != 0 )
@@ -324,7 +324,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
                 //std::cout << "   prevcount = " << prevCount << std::endl;
                 //std::cout << "   clipMin = " << clipMin[c][i] << std::endl;
                 clipMin[c][i] += m_HistogramBinSize[i]
-                  * ((tailReject-prevCount) / (count-prevCount));
+                  * ( ( tailReject-prevCount ) / ( count-prevCount ) );
                 //std::cout << "   clipMin = " << clipMin[c][i] << std::endl;
                 }
               break;
@@ -337,19 +337,19 @@ PDFSegmenterParzen< TImage, TLabelMap >
             count += static_cast<unsigned int>( inImHistogram[c][i][b] );
             if( count >= tailReject )
               {
-              clipMax[c][i] = (b + 1) * m_HistogramBinSize[i]
+              clipMax[c][i] = ( b + 1 ) * m_HistogramBinSize[i]
                 + m_HistogramBinMin[i];
               if( count - prevCount != 0 )
                 {
                 clipMax[c][i] -= m_HistogramBinSize[i]
-                  * ((tailReject-prevCount) / (count-prevCount));
+                  * ( ( tailReject-prevCount ) / ( count-prevCount ) );
                 }
               break;
               }
             }
           //std::cout << "Class " << c << " : Feature " << i << " : using "
-            //<< clipMin[c][i] << "(" << m_HistogramBinMin[i] << ") - "
-            //<< clipMax[c][i] << "(" << histogramBinMax[i] << ")"
+            //<< clipMin[c][i] << "( " << m_HistogramBinMin[i] << " ) - "
+            //<< clipMax[c][i] << "( " << histogramBinMax[i] << " )"
             //<< std::endl;
           }
         }
@@ -400,7 +400,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
         {
         for( unsigned int i = 0; i < numFeatures; i++ )
           {
-          double binV = (*inClassListIt)[i];
+          double binV = ( *inClassListIt )[i];
           int binN = static_cast< int >( ( binV - m_HistogramBinMin[i] )
             / m_HistogramBinSize[i] );
           if( binN < 0 )
@@ -464,7 +464,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
       {
       for( unsigned int i = 0; i < numFeatures; i++ )
         {
-        double binV = (*inClassListIt)[i];
+        double binV = ( *inClassListIt )[i];
         int binN = static_cast< int >( ( binV - m_HistogramBinMin[i] )
           / m_HistogramBinSize[i] );
         if( binN < 0 )
@@ -565,7 +565,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
   m_LabeledFeatureSpace->SetSpacing( spacing );
   m_LabeledFeatureSpace->Allocate();
 
-  itk::ImageRegionIterator< LabeledFeatureSpaceType > fsIter(
+  itk::ImageRegionIterator< LabeledFeatureSpaceType > fsIter( 
     m_LabeledFeatureSpace, region );
 
   unsigned int numClasses = this->m_ObjectIdList.size();
@@ -597,7 +597,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
     ++fsIter;
     for( unsigned int c = 0; c < numClasses; c++ )
       {
-      ++(*(pdfIter[c]));
+      ++( *( pdfIter[c] ) );
       }
     }
 
@@ -618,7 +618,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
 template< class TImage, class TLabelMap >
 typename PDFSegmenterParzen< TImage, TLabelMap >::ProbabilityVectorType
 PDFSegmenterParzen< TImage, TLabelMap >
-::GetProbabilityVector( const FeatureVectorType & fv) const
+::GetProbabilityVector( const FeatureVectorType & fv ) const
 {
   unsigned int numFeatures = this->m_FeatureVectorGenerator->
     GetNumberOfFeatures();
@@ -713,4 +713,4 @@ PDFSegmenterParzen< TImage, TLabelMap >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubePDFSegmenterParzen_hxx)
+#endif // End !defined( __itktubePDFSegmenterParzen_hxx )

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -63,7 +63,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( SegmentTubes, ProcessObject );
 
   /** Set the source image. */
@@ -88,12 +88,12 @@ public:
   tubeWrapGetMacro( Debug, bool, Filter );
 
   /** Set ExtractBound Minimum */
-  tubeWrapSetConstReferenceMacro( ExtractBoundMin, IndexType, Filter);
-  tubeWrapGetConstReferenceMacro( ExtractBoundMin, IndexType, Filter);
+  tubeWrapSetConstReferenceMacro( ExtractBoundMin, IndexType, Filter );
+  tubeWrapGetConstReferenceMacro( ExtractBoundMin, IndexType, Filter );
 
   /** Set ExtractBound Maximum */
-  tubeWrapSetConstReferenceMacro( ExtractBoundMax, IndexType, Filter);
-  tubeWrapGetConstReferenceMacro( ExtractBoundMax, IndexType, Filter);
+  tubeWrapSetConstReferenceMacro( ExtractBoundMax, IndexType, Filter );
+  tubeWrapGetConstReferenceMacro( ExtractBoundMax, IndexType, Filter );
 
   /*** Extract the ND tube given the position of the first point
    * and the tube ID */
@@ -103,7 +103,7 @@ public:
     bool verbose = false );
 
   /** Get the list of tubes that have been extracted */
-  tubeWrapGetConstObjectMacro( TubeGroup, TubeGroupType, Filter);
+  tubeWrapGetConstObjectMacro( TubeGroup, TubeGroupType, Filter );
 
 protected:
   SegmentTubes( void );

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -64,7 +64,7 @@ int DoIt( int argc, char * argv[] )
   double progress = 0.0;
   itk::TimeProbesCollectorBase timeCollector;
 
-  tube::CLIProgressReporter progressReporter(
+  tube::CLIProgressReporter progressReporter( 
     "ConvertTubesToSurface",
     CLPProcessInformation );
 
@@ -108,7 +108,7 @@ int DoIt( int argc, char * argv[] )
                                      childName );
 
   itk::SizeValueType totalNumberOfPoints = 0;
-  for(ChildrenListType::iterator tubeIt = tubeList->begin();
+  for( ChildrenListType::iterator tubeIt = tubeList->begin();
       tubeIt != tubeList->end();
       ++tubeIt )
     {
@@ -147,13 +147,13 @@ int DoIt( int argc, char * argv[] )
   // Create scalar array that indicates both tangents at each
   // centerline point.
   vtkNew< vtkDoubleArray > tan1;
-  tan1->SetName("Tan1");
+  tan1->SetName( "Tan1" );
   tan1->SetNumberOfTuples( Dimension * totalNumberOfPoints );
   tan1->SetNumberOfComponents( Dimension );
 
   vtkNew< vtkDoubleArray > tan2;
   tan2->SetName( "Tan2" );
-  tan2->SetNumberOfTuples( Dimension * totalNumberOfPoints);
+  tan2->SetNumberOfTuples( Dimension * totalNumberOfPoints );
   tan2->SetNumberOfComponents( Dimension );
 
   // Create scalar array that indicates Ridgeness and medialness at each
@@ -169,7 +169,7 @@ int DoIt( int argc, char * argv[] )
   ridgeness->SetNumberOfTuples( totalNumberOfPoints );
 
   itk::SizeValueType pointId = 0;
-  for(ChildrenListType::iterator tubeIt = tubeList->begin();
+  for( ChildrenListType::iterator tubeIt = tubeList->begin();
       tubeIt != tubeList->end();
       ++tubeIt )
     {
@@ -193,24 +193,23 @@ int DoIt( int argc, char * argv[] )
 
     const TubeSpatialObjectType::PointListType & tubePoints =
       tube->GetPoints();
-    typedef TubeSpatialObjectType::PointListType::const_iterator TubePointIteratorType;
+    typedef TubeSpatialObjectType::PointListType::const_iterator
+      TubePointIteratorType;
     const TubePointIteratorType tubePointsEnd = tubePoints.end();
     itk::SizeValueType index = 0;
     for( TubePointIteratorType pointIt = tubePoints.begin();
-         pointIt != tubePointsEnd;
-         ++pointIt, ++pointId, ++index )
+      pointIt != tubePointsEnd;
+      ++pointIt, ++pointId, ++index )
       {
       TubeSpatialObjectType::PointType point = pointIt->GetPosition();
       TubeSpatialObjectType::PointType curSourcePosIndexSpace =
-        tube->GetIndexToWorldTransform()->TransformPoint(
+        tube->GetIndexToWorldTransform()->TransformPoint( 
         point );
       pointIds[index] = pointId;
 
       // Insert points using the element spacing information.
-      tubeSpatialPoints->SetPoint( pointId,
-                             -1 * curSourcePosIndexSpace[0],
-                             -1 * curSourcePosIndexSpace[1],
-                              curSourcePosIndexSpace[2] );
+      tubeSpatialPoints->SetPoint( pointId, -1 * curSourcePosIndexSpace[0],
+        -1 * curSourcePosIndexSpace[1], curSourcePosIndexSpace[2] );
       // TubeId
       tubeIds->SetTuple1( pointId, tube->GetId() );
 
@@ -218,15 +217,11 @@ int DoIt( int argc, char * argv[] )
       tubeRadius->SetTuple1( pointId, pointIt->GetRadius() );
 
       // Tangeantes
-      tan1->SetTuple3( pointId,
-                       pointIt->GetNormal1()[0],
-                       pointIt->GetNormal1()[1],
-                       pointIt->GetNormal1()[2] );
+      tan1->SetTuple3( pointId, pointIt->GetNormal1()[0],
+        pointIt->GetNormal1()[1], pointIt->GetNormal1()[2] );
 
-      tan2->SetTuple3( pointId,
-                       pointIt->GetNormal2()[0],
-                       pointIt->GetNormal2()[1],
-                       pointIt->GetNormal2()[2] );
+      tan2->SetTuple3( pointId, pointIt->GetNormal2()[0],
+        pointIt->GetNormal2()[1], pointIt->GetNormal2()[2] );
 
       // Medialness & Ridgness
       if( pointIt->GetMedialness() != 0.0 )

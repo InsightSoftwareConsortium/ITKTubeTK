@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -24,7 +24,7 @@ limitations under the License.
 #ifndef __TubeTKLogo_h
 #define __TubeTKLogo_h
 
-/* Resource generated for file TubeTKLogo.png (zlib, base64) (image file) */
+/* Resource generated for file TubeTKLogo.png ( zlib, base64 ) ( image file ) */
 static const unsigned int  image_TubeTKLogo_width          = 63;
 static const unsigned int  image_TubeTKLogo_height         = 40;
 static const unsigned int  image_TubeTKLogo_pixel_size     = 4;
@@ -105,4 +105,4 @@ static const unsigned char image_TubeTKLogo[] =
   "uFLNfILmnkBcVE6cpCEbVhEuFelRRXahovMqqjNU2dnZ1+lvCt37DYkH5aHG9K45hOkJAy"
   "b+Bgtjnij2/wEaaANC";
 
-#endif // End !defined(__TubeTKLogo_h)
+#endif // End !defined( __TubeTKLogo_h )

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -50,7 +50,7 @@ int DoIt( int argc, char * argv[] )
   // setup progress reporting
   double progress = 0.0;
 
-  tube::CLIProgressReporter progressReporter(
+  tube::CLIProgressReporter progressReporter( 
     "SegmentUsingOtsuThreshold", CLPProcessInformation );
   progressReporter.Start();
   progressReporter.Report( progress );
@@ -62,7 +62,7 @@ int DoIt( int argc, char * argv[] )
   typedef tube::SegmentUsingOtsuThreshold< TPixel, VDimension > FilterType;
 
   // Load input image
-  timeCollector.Start("Load data");
+  timeCollector.Start( "Load data" );
 
   typedef typename FilterType::InputImageType     InputImageType;
   typedef itk::ImageFileReader< InputImageType >  ImageReaderType;
@@ -77,7 +77,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Error loading input image: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -98,18 +98,18 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Error reading input mask: "
-                          + std::string(err.GetDescription()) );
+                          + std::string( err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
     }
 
-  timeCollector.Stop("Load data");
+  timeCollector.Stop( "Load data" );
   progress = 0.1;
   progressReporter.Report( progress );
 
   // run otsu thresholding
-  timeCollector.Start("Otsu thresholding");
+  timeCollector.Start( "Otsu thresholding" );
 
   typename FilterType::Pointer filter = FilterType::New();
 
@@ -125,7 +125,7 @@ int DoIt( int argc, char * argv[] )
 
   std::cout << "Chosen threshold = " << filter->GetThreshold() << std::endl;
 
-  timeCollector.Stop("Otsu thresholding");
+  timeCollector.Stop( "Otsu thresholding" );
   progress = 0.8; // At about 80% done
   progressReporter.Report( progress );
 
@@ -133,7 +133,7 @@ int DoIt( int argc, char * argv[] )
   typedef typename FilterType::OutputImageType      OutputImageType;
   typedef itk::ImageFileWriter< OutputImageType >   OutputWriterType;
 
-  timeCollector.Start("Write segmentation mask");
+  timeCollector.Start( "Write segmentation mask" );
 
   typename OutputWriterType::Pointer writer = OutputWriterType::New();
 
@@ -147,12 +147,12 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Error writing segmentation mask: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
 
-  timeCollector.Stop("Write segmentation mask");
+  timeCollector.Stop( "Write segmentation mask" );
   progress = 1.0;
   progressReporter.Report( progress );
   progressReporter.End();

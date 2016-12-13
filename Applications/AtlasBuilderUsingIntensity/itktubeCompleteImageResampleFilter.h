@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -46,7 +46,7 @@ namespace tube
  * Due to output region variability, this is not effect for pipelining
  *
  * Also expects transforms in the identical manner as ResampleImageFilter
- *  (i.e., Fixed->Moving )
+ *  ( i.e., Fixed->Moving )
  */
 template< class TInputImage, class TOutputImage, class TNonSingularTransform,
           class TInterpolatorPrecisionType = double >
@@ -70,7 +70,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( CompleteImageResampleFilter, ImageToImageFilter );
 
   /** Number of dimensions. */
@@ -135,9 +135,9 @@ public:
    * itk::LinearInterpolateImageFunction<InputImageType,
    * TInterpolatorPrecisionType>. Some other options are
    * itk::NearestNeighborInterpolateImageFunction
-   * (useful for binary masks and other images with a small number of
-   * possible pixel values), and itk::BSplineInterpolateImageFunction
-   * (which provides a higher order of interpolation).  */
+   * ( useful for binary masks and other images with a small number of
+   * possible pixel values ), and itk::BSplineInterpolateImageFunction
+   * ( which provides a higher order of interpolation ).  */
   itkSetObjectMacro( Interpolator, InterpolatorType );
 
   /** Get a pointer to the interpolator function. */
@@ -166,7 +166,7 @@ protected:
   virtual void GenerateData( void );
 
   /** Determine the output bounding box for the 3D case */
-  void FindOutput3DParameters(
+  void FindOutput3DParameters( 
     InputImageConstPointer image,
     TransformPointerType transform,
     SizeType &outputSize,
@@ -179,8 +179,8 @@ protected:
 
 private:
 
-  CompleteImageResampleFilter(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  CompleteImageResampleFilter( const Self & ); //purposely not implemented
+  void operator=( const Self & ); //purposely not implemented
 
   InputImageConstPointer      m_Input;
   OutputImagePointer          m_Output;
@@ -201,4 +201,4 @@ private:
 #include "itktubeCompleteImageResampleFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeCompleteImageResampleFilter_h)
+#endif // End !defined( __itktubeCompleteImageResampleFilter_h )

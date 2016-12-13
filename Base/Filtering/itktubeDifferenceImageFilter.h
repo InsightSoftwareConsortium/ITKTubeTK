@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -51,29 +51,30 @@ class DifferenceImageFilter
 public:
   /** Standard class typedefs. */
   typedef DifferenceImageFilter                           Self;
-  typedef ImageToImageFilter< TInputImage,TOutputImage >  Superclass;
+  typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
   typedef SmartPointer< Self >                            Pointer;
   typedef SmartPointer< const Self >                      ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( DifferenceImageFilter, ImageToImageFilter );
 
   /** Some convenient typedefs. */
-  typedef TInputImage                                         InputImageType;
-  typedef TOutputImage                                        OutputImageType;
-  typedef typename OutputImageType::PixelType                 OutputPixelType;
-  typedef typename OutputImageType::RegionType                OutputImageRegionType;
-  typedef typename NumericTraits<OutputPixelType>::RealType   RealType;
-  typedef typename NumericTraits<RealType>::AccumulateType    AccumulateType;
+  typedef TInputImage                               InputImageType;
+  typedef TOutputImage                              OutputImageType;
+  typedef typename OutputImageType::PixelType       OutputPixelType;
+  typedef typename OutputImageType::RegionType      OutputImageRegionType;
+
+  typedef typename NumericTraits<OutputPixelType>::RealType RealType;
+  typedef typename NumericTraits<RealType>::AccumulateType  AccumulateType;
 
   /** Set the valid image input.  This will be input 0.  */
-  virtual void SetValidInput(const InputImageType* validImage);
+  virtual void SetValidInput( const InputImageType* validImage );
 
   /** Set the test image input.  This will be input 1.  */
-  virtual void SetTestInput(const InputImageType* testImage);
+  virtual void SetTestInput( const InputImageType* testImage );
 
   /** Set/Get the maximum distance away to look for a matching pixel.
       Default is 0. */
@@ -100,7 +101,7 @@ protected:
   DifferenceImageFilter( void );
   virtual ~DifferenceImageFilter( void ) {}
 
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
   /** DifferenceImageFilter can be implemented as a multithreaded
    * filter.  Therefore, this implementation provides a
@@ -113,8 +114,8 @@ protected:
    *
    * \sa ImageToImageFilter::ThreadedGenerateData(),
    *     ImageToImageFilter::GenerateData()  */
-  void ThreadedGenerateData(const OutputImageRegionType& threadRegion,
-                              ThreadIdType threadId);
+  void ThreadedGenerateData( const OutputImageRegionType& threadRegion,
+                              ThreadIdType threadId );
 
   void BeforeThreadedGenerateData( void );
   void AfterThreadedGenerateData( void );
@@ -129,8 +130,8 @@ protected:
   Array<unsigned long>     m_ThreadNumberOfPixelsWithDifferences;
 
 private:
-  DifferenceImageFilter(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  DifferenceImageFilter( const Self& ); //purposely not implemented
+  void operator=( const Self& ); //purposely not implemented
 
   bool m_IgnoreBoundaryPixels;
 
@@ -144,4 +145,4 @@ private:
 #include "itktubeDifferenceImageFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeDifferenceImageFilter_h)
+#endif // End !defined( __itktubeDifferenceImageFilter_h )

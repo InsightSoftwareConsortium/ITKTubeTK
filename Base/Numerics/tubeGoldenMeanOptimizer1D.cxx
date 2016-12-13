@@ -12,7 +12,7 @@ Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -68,13 +68,13 @@ bool GoldenMeanOptimizer1D::m_Extreme( double * extX, double * extVal )
   double xstep = m_XStep;
   int dir = 1;
 
-  double v1 = v-vnl_math_abs(v*0.0001);
+  double v1 = v-vnl_math_abs( v*0.0001 );
   if( *extX+dir*xstep <= m_XMax && *extX+dir*xstep >= m_XMin )
     {
     v1 = maxSign * m_FuncVal->Value( *extX+dir*xstep );
     }
 
-  double v2 = v1-vnl_math_abs(v1*0.0001);
+  double v2 = v1-vnl_math_abs( v1*0.0001 );
   if( *extX-dir*xstep <= m_XMax && *extX-dir*xstep >= m_XMin )
     {
     v2 = maxSign * m_FuncVal->Value( *extX-dir*xstep );

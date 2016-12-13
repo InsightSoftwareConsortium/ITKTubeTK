@@ -62,34 +62,36 @@ GenerateData( void )
   m_AdjacencyMatrixImage->FillBuffer( 0 );
 
   m_BranchnessImage = OutputImageType::New();
-  m_BranchnessImage->SetRegions( m_InputImage->GetLargestPossibleRegion().GetSize() );
+  m_BranchnessImage->SetRegions(
+    m_InputImage->GetLargestPossibleRegion().GetSize() );
   m_BranchnessImage->SetSpacing( m_InputImage->GetSpacing() );
   m_BranchnessImage->SetOrigin( m_InputImage->GetOrigin() );
   m_BranchnessImage->Allocate();
 
   m_RadiusImage = OutputImageType::New();
-  m_RadiusImage->SetRegions( m_InputImage->GetLargestPossibleRegion().GetSize() );
+  m_RadiusImage->SetRegions(
+    m_InputImage->GetLargestPossibleRegion().GetSize() );
   m_RadiusImage->SetSpacing( m_InputImage->GetSpacing() );
   m_RadiusImage->SetOrigin( m_InputImage->GetOrigin() );
   m_RadiusImage->Allocate();
 
   m_CentralityImage = OutputImageType::New();
-  m_CentralityImage->SetRegions( m_InputImage->GetLargestPossibleRegion().GetSize() );
+  m_CentralityImage->SetRegions(
+    m_InputImage->GetLargestPossibleRegion().GetSize() );
   m_CentralityImage->SetSpacing( m_InputImage->GetSpacing() );
   m_CentralityImage->SetOrigin( m_InputImage->GetOrigin() );
   m_CentralityImage->Allocate();
 
-  itk::ImageRegionConstIterator< InputImageType >
-                 itCVT( m_InputImage, m_InputImage->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< OutputImageType >
-                 itA( m_AdjacencyMatrixImage,
-                      m_AdjacencyMatrixImage->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< OutputImageType >
-                 itB( m_BranchnessImage, m_BranchnessImage->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< OutputImageType >
-                 itR( m_RadiusImage, m_RadiusImage->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< OutputImageType >
-                 itC( m_CentralityImage, m_CentralityImage->GetLargestPossibleRegion() );
+  itk::ImageRegionConstIterator< InputImageType > itCVT( m_InputImage,
+    m_InputImage->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< OutputImageType > itA( m_AdjacencyMatrixImage,
+    m_AdjacencyMatrixImage->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< OutputImageType > itB( m_BranchnessImage,
+    m_BranchnessImage->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< OutputImageType > itR( m_RadiusImage,
+    m_RadiusImage->GetLargestPossibleRegion() );
+  itk::ImageRegionIterator< OutputImageType > itC( m_CentralityImage,
+    m_CentralityImage->GetLargestPossibleRegion() );
   itCVT.GoToBegin();
   itA.GoToBegin();
   itB.GoToBegin();
@@ -123,7 +125,7 @@ GenerateData( void )
 template< class TInputImage, class TOutputImage >
 void
 ConvertSpatialGraphToImageFilter< TInputImage, TOutputImage >::
-SetAdjacencyMatrix( vnl_matrix< double > a)
+SetAdjacencyMatrix( vnl_matrix< double > a )
 {
   m_AdjacencyMatrix = a;
 }
@@ -131,7 +133,7 @@ SetAdjacencyMatrix( vnl_matrix< double > a)
 template< class TInputImage, class TOutputImage >
 void
 ConvertSpatialGraphToImageFilter< TInputImage, TOutputImage >::
-SetBranchnessVector( vnl_vector< double > b)
+SetBranchnessVector( vnl_vector< double > b )
 {
   m_BranchnessVector = b;
 }
@@ -139,7 +141,7 @@ SetBranchnessVector( vnl_vector< double > b)
 template< class TInputImage, class TOutputImage >
 void
 ConvertSpatialGraphToImageFilter< TInputImage, TOutputImage >::
-SetRadiusVector( vnl_vector< double > r)
+SetRadiusVector( vnl_vector< double > r )
 {
   m_RadiusVector = r;
 }
@@ -147,7 +149,7 @@ SetRadiusVector( vnl_vector< double > r)
 template< class TInputImage, class TOutputImage >
 void
 ConvertSpatialGraphToImageFilter< TInputImage, TOutputImage >::
-SetCentralityVector( vnl_vector< double > c)
+SetCentralityVector( vnl_vector< double > c )
 {
   m_CentralityVector = c;
 }

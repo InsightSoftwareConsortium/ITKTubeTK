@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -130,7 +130,7 @@ InnerOpticToPlusImageReader
         {
         // TODO: Use Google DoubleConversion ?
         value << transformationMatrix[jj * 4 + ii];
-        if( !(ii == 3 && jj == 3) )
+        if( !( ii == 3 && jj == 3 ) )
           {
           value << ' ';
           }
@@ -202,7 +202,7 @@ InnerOpticToPlusImageReader
   //const SizeValueType rufYHeight = 768;
   const SizeValueType xPrePaddingBytes = pixelBytes * index[0];
   const SizeValueType xPostPaddingBytes =
-    pixelBytes * (rufXWidth - index[0] - size[0]);
+    pixelBytes * ( rufXWidth - index[0] - size[0] );
   SizeValueType frameIndex = 0;
   for( SizeValueType ii = 0; ii < m_StartIndex; ++ii )
     {

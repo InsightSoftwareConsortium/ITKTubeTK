@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -38,7 +38,7 @@ public:
 
   const double & Value( const double & x )
     {
-    cVal = std::sin(x);
+    cVal = std::sin( x );
     return cVal;
     }
 
@@ -102,7 +102,7 @@ int tubeGoldenMeanOptimizer1DTest( int argc, char * argv[] )
     returnStatus = EXIT_FAILURE;
     }
 
-  opt->SetXMax( xMax);
+  opt->SetXMax( xMax );
   if( opt->GetXMax() != xMax )
     {
     std::cout << "xMax should be " << xMax << " and not "

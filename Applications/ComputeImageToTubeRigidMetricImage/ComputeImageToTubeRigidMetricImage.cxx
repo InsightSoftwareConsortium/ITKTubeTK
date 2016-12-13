@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -57,7 +57,7 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter progressReporter(
+  tube::CLIProgressReporter progressReporter( 
     "RegisterImageToTubesUsingRigidTransform", CLPProcessInformation );
   progressReporter.Start();
 
@@ -94,7 +94,7 @@ int DoIt( int argc, char * argv[] )
     }
 
 
-  timeCollector.Start("Sample parameter space");
+  timeCollector.Start( "Sample parameter space" );
 
   typedef itk::tube::ImageToTubeRigidMetric< ImageType,
     TubeNetType,
@@ -151,17 +151,17 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Sampling parameter space: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
   double progress = 0.9;
   progressReporter.Report( progress );
 
-  timeCollector.Stop("Sample parameter space");
+  timeCollector.Stop( "Sample parameter space" );
 
 
-  timeCollector.Start("Save data");
+  timeCollector.Start( "Save data" );
 
   typedef itk::Image< float, NumberOfParameters > OutputImageType;
   typedef itk::CastImageFilter< CostFunctionImageSourceType::OutputImageType,
@@ -181,11 +181,11 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Writing output image: Exception caught: "
-      + std::string(err.GetDescription()) );
+      + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Save data");
+  timeCollector.Stop( "Save data" );
 
   progress = 1.0;
   progressReporter.Report( progress );

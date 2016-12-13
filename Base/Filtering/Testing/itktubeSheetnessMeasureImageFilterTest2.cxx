@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -94,8 +94,8 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
   std::cout << "Write out the sheetness image" << std::endl;
   typedef itk::ImageFileWriter<SheetnessImageType>     SheetnessImageWriterType;
   SheetnessImageWriterType::Pointer writer= SheetnessImageWriterType::New();
-  writer->SetFileName(argv[2]);
-  writer->SetInput(filterSheetness->GetOutput());
+  writer->SetFileName( argv[2] );
+  writer->SetInput( filterSheetness->GetOutput() );
   writer->Update();
 
   //Set sheetness threshold
@@ -122,7 +122,7 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
   EigenAnalysisFilterType::Pointer eigenAnalysisFilter =
     EigenAnalysisFilterType::New();
   eigenAnalysisFilter->SetDimension( Dimension );
-  eigenAnalysisFilter->OrderEigenValuesBy(
+  eigenAnalysisFilter->OrderEigenValuesBy( 
       EigenAnalysisFilterType::FunctorType::OrderByValue );
 
   eigenAnalysisFilter->SetInput( filterHessian->GetOutput() );
@@ -142,7 +142,7 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
   EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter =
     EigenVectorAnalysisFilterType::New();
   eigenVectorAnalysisFilter->SetDimension( Dimension );
-  eigenVectorAnalysisFilter->OrderEigenValuesBy(
+  eigenVectorAnalysisFilter->OrderEigenValuesBy( 
     EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
 
   eigenVectorAnalysisFilter->SetInput( filterHessian->GetOutput() );
@@ -160,11 +160,11 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
   primaryEigenVectorImage->SetVectorLength ( vectorLength );
 
   VectorImageType::RegionType region;
-  region.SetSize(eigenVectorImage->GetLargestPossibleRegion().GetSize());
-  region.SetIndex(eigenVectorImage->GetLargestPossibleRegion().GetIndex());
+  region.SetSize( eigenVectorImage->GetLargestPossibleRegion().GetSize() );
+  region.SetIndex( eigenVectorImage->GetLargestPossibleRegion().GetIndex() );
   primaryEigenVectorImage->SetRegions( region );
-  primaryEigenVectorImage->SetOrigin(eigenVectorImage->GetOrigin());
-  primaryEigenVectorImage->SetSpacing(eigenVectorImage->GetSpacing());
+  primaryEigenVectorImage->SetOrigin( eigenVectorImage->GetOrigin() );
+  primaryEigenVectorImage->SetSpacing( eigenVectorImage->GetSpacing() );
   primaryEigenVectorImage->Allocate();
 
   //Fill up the buffer with null vector
@@ -182,7 +182,7 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
     eigenVectorImageIterator;
   eigenVectorImageIterator =
     itk::ImageRegionConstIterator<EigenVectorImageType>( eigenVectorImage,
-    eigenVectorImage->GetRequestedRegion());
+    eigenVectorImage->GetRequestedRegion() );
   eigenVectorImageIterator.GoToBegin();
 
   //Iterator for the input eigenvalue image
@@ -191,7 +191,7 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
   itk::ImageRegionConstIterator<EigenValueImageType>
     eigenValueImageIterator;
   eigenValueImageIterator = itk::ImageRegionConstIterator<
-    EigenValueImageType>( eigenImage, eigenImage->GetRequestedRegion());
+    EigenValueImageType>( eigenImage, eigenImage->GetRequestedRegion() );
   eigenValueImageIterator.GoToBegin();
 
   //Iterator for the Sheetness input image
@@ -201,20 +201,20 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
     sheetnessValueImageIterator;
   sheetnessValueImageIterator = itk::ImageRegionConstIterator<
     SheetnessImageType>( sheetnessImage,
-    sheetnessImage->GetRequestedRegion());
+    sheetnessImage->GetRequestedRegion() );
   sheetnessValueImageIterator.GoToBegin();
 
   //Iterator for the output image with the largest eigenvector
   itk::ImageRegionIterator<VectorImageType> primaryEigenVectorImageIterator;
   primaryEigenVectorImageIterator = itk::ImageRegionIterator<
     VectorImageType>( primaryEigenVectorImage, primaryEigenVectorImage->
-    GetRequestedRegion());
+    GetRequestedRegion() );
   primaryEigenVectorImageIterator.GoToBegin();
 
 
   double toleranceEigenValues = 1e-4;
 
-  while(!eigenValueImageIterator.IsAtEnd())
+  while( !eigenValueImageIterator.IsAtEnd() )
     {
     // Get the eigenvalue
     EigenValueArrayType eigenValue;
@@ -245,8 +245,8 @@ int itktubeSheetnessMeasureImageFilterTest2( int argc, char * argv[] )
 
     SheetnessImageType::PixelType sheetnessValue;
     sheetnessValue = sheetnessValueImageIterator.Get();
-    if( (vnl_math_abs(largest) >  toleranceEigenValues)  &&
-        (sheetnessValue >  sheetnessThresholdValue) )
+    if( ( vnl_math_abs( largest ) >  toleranceEigenValues )  &&
+        ( sheetnessValue >  sheetnessThresholdValue ) )
       {
       //Assuming eigenvectors are rows
       itk::VariableLengthVector<double> primaryEigenVector( vectorLength );

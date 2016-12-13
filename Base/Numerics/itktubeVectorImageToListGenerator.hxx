@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -43,24 +43,24 @@ VectorImageToListGenerator< TImage, TMaskImage >
 {
   m_UseSingleMaskValue = false;
   m_MaskValue = 1;
-  this->SetNumberOfRequiredInputs(1);
-  this->SetNumberOfRequiredOutputs(1);
+  this->SetNumberOfRequiredInputs( 1 );
+  this->SetNumberOfRequiredOutputs( 1 );
   typename ListSampleOutputType::Pointer listSampleDecorator =
-    static_cast< ListSampleOutputType * >( this->MakeOutput(0).GetPointer() );
-  this->ProcessObject::SetNthOutput(0, listSampleDecorator.GetPointer());
+    static_cast< ListSampleOutputType * >( this->MakeOutput( 0 ).GetPointer() );
+  this->ProcessObject::SetNthOutput( 0, listSampleDecorator.GetPointer() );
 }
 
 template< class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
-::PrintSelf(std::ostream& os, Indent indent) const
+::PrintSelf( std::ostream& os, Indent indent ) const
 {
-  Superclass::PrintSelf(os,indent);
+  Superclass::PrintSelf( os,indent );
   os << indent << "MaskValue: "
-     << static_cast<typename NumericTraits<MaskPixelType>::PrintType>(
-       m_MaskValue)
+     << static_cast<typename NumericTraits<MaskPixelType>::PrintType>( 
+       m_MaskValue )
      << std::endl;
-  if(m_UseSingleMaskValue)
+  if( m_UseSingleMaskValue )
     {
     os << indent << "UseSingleMaskValue: True" << std::endl;
     }
@@ -73,27 +73,27 @@ VectorImageToListGenerator< TImage, TMaskImage >
 template< class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
-::SetInput(const ImageType* image)
+::SetInput( const ImageType* image )
 {
   // Process object is not const-correct so the const_cast is required here
-  this->ProcessObject::SetNthInput(0,
+  this->ProcessObject::SetNthInput( 0,
                                    const_cast< ImageType* >( image ) );
 }
 
 template< class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
-::SetMaskImage(const MaskImageType* image)
+::SetMaskImage( const MaskImageType* image )
 {
   // Process object is not const-correct so the const_cast is required here
-  this->ProcessObject::SetNthInput(1,
+  this->ProcessObject::SetNthInput( 1,
                                    const_cast< MaskImageType* >( image ) );
 }
 
 template< class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
-::SetMaskValue(const MaskPixelType maskValue)
+::SetMaskValue( const MaskPixelType maskValue )
 {
   m_MaskValue = maskValue;
   m_UseSingleMaskValue = true;
@@ -105,13 +105,13 @@ const TImage*
 VectorImageToListGenerator< TImage, TMaskImage >
 ::GetInput( void ) const
 {
-  if(this->GetNumberOfInputs() < 1)
+  if( this->GetNumberOfInputs() < 1 )
     {
     return 0;
     }
 
   return static_cast<const ImageType * >
-    (this->ProcessObject::GetInput(0) );
+    ( this->ProcessObject::GetInput( 0 ) );
 }
 
 template< class TImage, class TMaskImage >
@@ -119,13 +119,13 @@ const TMaskImage*
 VectorImageToListGenerator< TImage, TMaskImage >
 ::GetMaskImage( void ) const
 {
-  if(this->GetNumberOfInputs() < 2)
+  if( this->GetNumberOfInputs() < 2 )
     {
     return 0;
     }
 
   return static_cast<const MaskImageType * >
-    (this->ProcessObject::GetInput(1) );
+    ( this->ProcessObject::GetInput( 1 ) );
 }
 
 template< class TImage, class TMaskImage >
@@ -136,7 +136,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
   typename ListSampleOutputType::Pointer decoratedOutput =
     ListSampleOutputType::New();
   decoratedOutput->Set( ListSampleType::New() );
-  return static_cast< DataObject * >(decoratedOutput.GetPointer());
+  return static_cast< DataObject * >( decoratedOutput.GetPointer() );
 }
 
 template< class TImage, class TMaskImage >
@@ -145,8 +145,8 @@ VectorImageToListGenerator< TImage, TMaskImage >
 ::GenerateData( void )
 {
   ListSampleOutputType * decoratedOutput =
-    static_cast< ListSampleOutputType * >(
-      this->ProcessObject::GetOutput(0));
+    static_cast< ListSampleOutputType * >( 
+      this->ProcessObject::GetOutput( 0 ) );
 
   ListSampleType *output =
     const_cast< ListSampleType * >( decoratedOutput->Get() );
@@ -156,29 +156,29 @@ VectorImageToListGenerator< TImage, TMaskImage >
 
   output->Clear();
 
-  if(this->GetNumberOfInputs() > 1)
+  if( this->GetNumberOfInputs() > 1 )
     {
-    maskImage = const_cast< MaskImageType * >(this->GetMaskImage());
+    maskImage = const_cast< MaskImageType * >( this->GetMaskImage() );
     }
 
   typedef ImageRegionConstIterator< ImageType >     IteratorType;
   IteratorType it( input, input->GetBufferedRegion() );
   it.GoToBegin();
 
-  if(maskImage) // mask specified
+  if( maskImage ) // mask specified
     {
-    if(m_UseSingleMaskValue)
+    if( m_UseSingleMaskValue )
       {
       typedef ImageRegionConstIterator< MaskImageType > MaskIteratorType;
       MaskIteratorType mit( maskImage, maskImage->GetBufferedRegion() );
       mit.GoToBegin();
-      while(!it.IsAtEnd())
+      while( !it.IsAtEnd() )
         {
-        if(mit.Get() == this->m_MaskValue)
+        if( mit.Get() == this->m_MaskValue )
           {
           MeasurementVectorType m;
           m = it.Get();
-          output->PushBack(m);
+          output->PushBack( m );
           }
         ++mit;
         ++it;
@@ -189,13 +189,13 @@ VectorImageToListGenerator< TImage, TMaskImage >
       typedef ImageRegionConstIterator< MaskImageType > MaskIteratorType;
       MaskIteratorType mit( maskImage, maskImage->GetBufferedRegion() );
       mit.GoToBegin();
-      while(!it.IsAtEnd())
+      while( !it.IsAtEnd() )
         {
-        if(mit.Get() != 0)
+        if( mit.Get() != 0 )
           {
           MeasurementVectorType m;
           m = it.Get();
-          output->PushBack(m);
+          output->PushBack( m );
           }
         ++mit;
         ++it;
@@ -204,11 +204,11 @@ VectorImageToListGenerator< TImage, TMaskImage >
     }
   else // no mask specified
     {
-    while(!it.IsAtEnd())
+    while( !it.IsAtEnd() )
       {
       MeasurementVectorType m;
       m = it.Get();
-      output->PushBack(m);
+      output->PushBack( m );
       ++it;
       }
     }
@@ -222,18 +222,18 @@ VectorImageToListGenerator< TImage, TMaskImage >
   Superclass::GenerateOutputInformation();
 
   ListSampleOutputType * decoratedOutput =
-    static_cast< ListSampleOutputType * >(
-      this->ProcessObject::GetOutput(0));
+    static_cast< ListSampleOutputType * >( 
+      this->ProcessObject::GetOutput( 0 ) );
   ListSampleType *output =
    const_cast< ListSampleType *>( decoratedOutput->Get() );
-  output->SetMeasurementVectorSize(
+  output->SetMeasurementVectorSize( 
     itkGetStaticConstMacro( MeasurementVectorSize ) );
 }
 
 template< class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
-::GenerateInputRequestedRegion() throw(InvalidRequestedRegionError)
+::GenerateInputRequestedRegion() throw( InvalidRequestedRegionError )
 {
   // call the superclass' implementation of this method. this should
   // copy the output requested region to the input requested region
@@ -246,13 +246,13 @@ VectorImageToListGenerator< TImage, TMaskImage >
   // TODO: Why don't most other ITK filters that take multiple inputs check
   // for this ?
   //
-  if(this->GetNumberOfInputs() > 1)
+  if( this->GetNumberOfInputs() > 1 )
     {
     MaskImageType *maskImage =
-      const_cast< MaskImageType * >(this->GetMaskImage());
+      const_cast< MaskImageType * >( this->GetMaskImage() );
     ImageType     *image =
       const_cast< ImageType * >( this->GetInput() );
-    if(!image->GetBufferedRegion().IsInside( maskImage->GetBufferedRegion()) )
+    if( !image->GetBufferedRegion().IsInside( maskImage->GetBufferedRegion() ) )
       {
       maskImage->SetRequestedRegion( image->GetBufferedRegion() );
       }
@@ -265,8 +265,8 @@ VectorImageToListGenerator< TImage, TMaskImage >
 ::GetListSample( void ) const
 {
   const ListSampleOutputType * decoratedOutput =
-    static_cast< const ListSampleOutputType * >(
-      this->ProcessObject::GetOutput(0));
+    static_cast< const ListSampleOutputType * >( 
+      this->ProcessObject::GetOutput( 0 ) );
   return decoratedOutput->Get();
 }
 
@@ -276,4 +276,4 @@ VectorImageToListGenerator< TImage, TMaskImage >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeVectorImageToListGenerator_hxx)
+#endif // End !defined( __itktubeVectorImageToListGenerator_hxx )

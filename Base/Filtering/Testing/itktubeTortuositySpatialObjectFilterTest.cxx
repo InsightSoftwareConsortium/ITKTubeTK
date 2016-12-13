@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -35,7 +35,7 @@ limitations under the License.
 itk::VesselTubeSpatialObject<3>::Pointer
 GenerateStraightTube( itk::VesselTubeSpatialObject<3>::VectorType
   start, itk::VesselTubeSpatialObject<3>::VectorType increment,
-  int numberOfPoints)
+  int numberOfPoints )
 {
   typedef itk::VesselTubeSpatialObject<3>  VesselTubeType;
   typedef VesselTubeType::VectorType       VectorType;
@@ -44,27 +44,27 @@ GenerateStraightTube( itk::VesselTubeSpatialObject<3>::VectorType
   VesselTubeType::PointListType pointList;
 
   VectorType pos = start;
-  for (int i = 0; i < numberOfPoints; ++i)
+  for ( int i = 0; i < numberOfPoints; ++i )
     {
     VesselTubeType::TubePointType point;
-    point.SetPosition(pos[0], pos[1], pos[2]);
-    pointList.push_back(point);
+    point.SetPosition( pos[0], pos[1], pos[2] );
+    pointList.push_back( point );
 
     pos += increment;
     }
 
-  vessel->SetPoints(pointList);
+  vessel->SetPoints( pointList );
   std::cout<<"Straight vessel generated"<<std::endl;
   return vessel;
 }
 
-double Modulus(double v, double mod)
+double Modulus( double v, double mod )
 {
-  if (v < mod)
+  if ( v < mod )
     {
     return v;
     }
-  return Modulus(v-mod, mod);
+  return Modulus( v-mod, mod );
 }
 
 //--------------------------------------------------------------------------
@@ -78,29 +78,29 @@ GenerateCosTube( double length, double amplitude, double frequency,
   vessel = VesselTubeType::New();
   VesselTubeType::PointListType pointList;
 
-  VectorType pos(0.0);
+  VectorType pos( 0.0 );
 
   int numberOfSamples = 1e2;
-  for (double l = 0.0; l < length; l += length / numberOfSamples)
+  for ( double l = 0.0; l < length; l += length / numberOfSamples )
     {
-    double t = Modulus(l, itk::Math::pi * 2);
+    double t = Modulus( l, itk::Math::pi * 2 );
 
     VesselTubeType::TubePointType point;
-    point.SetPosition(pos[0], pos[1], pos[2]);
-    pointList.push_back(point);
+    point.SetPosition( pos[0], pos[1], pos[2] );
+    pointList.push_back( point );
 
     pos[0] = l;
-    pos[1] = amplitude * sin(frequency * t);
+    pos[1] = amplitude * sin( frequency * t );
     pos[2] = 0.0;
     }
 
-  vessel->SetPoints(pointList);
+  vessel->SetPoints( pointList );
   std::cout<<"Cosine vessel generated"<<std::endl;
 }
 
 //--------------------------------------------------------------------------
 bool TestVesselMetrics( itk::VesselTubeSpatialObject<3>::Pointer
-  vessel, double results[])
+  vessel, double results[] )
 {
   typedef itk::VesselTubeSpatialObject<3>
     VesselTubeType;
@@ -110,12 +110,12 @@ bool TestVesselMetrics( itk::VesselTubeSpatialObject<3>::Pointer
 
   // Run the metrics
   FilterType::Pointer filter = FilterType::New();
-  filter->SetMeasureFlag(FilterType::BITMASK_ALL_METRICS);
-  filter->SetSmoothingScale(0);
-  filter->SetEpsilonForSpacing(1e-2);
-  filter->SetInput(vessel);
+  filter->SetMeasureFlag( FilterType::BITMASK_ALL_METRICS );
+  filter->SetSmoothingScale( 0 );
+  filter->SetEpsilonForSpacing( 1e-2 );
+  filter->SetInput( vessel );
   filter->Update();
-  if (! filter->GetOutput() )
+  if ( ! filter->GetOutput() )
     {
     std::cerr<<"Error while running the metrics !"<<std::endl;
     return false;
@@ -135,7 +135,7 @@ bool TestVesselMetrics( itk::VesselTubeSpatialObject<3>::Pointer
   double tcm = filter->GetTotalCurvatureMetric();
   double tscm = filter->GetTotalSquaredCurvatureMetric();
 
-//  std::cout<<std::setprecision(8);
+//  std::cout<<std::setprecision( 8 );
 //  std::cout<<"  DM: expected "<<results[0]<<" got "<<dm<<std::endl;
 ////  std::cerr<<"  ICM: expected "<<results[1]<<" got "<<icm<<std::endl;
 //  std::cout<<"  SOAM: expected "<<results[2]<<" got "<<soam<<std::endl;
@@ -148,56 +148,56 @@ bool TestVesselMetrics( itk::VesselTubeSpatialObject<3>::Pointer
 //  std::cout<<"  TCM: expected "<<results[9]<<" got "<<tcm<<std::endl;
 //  std::cout<<"  TSCM: expected "<<results[10]<<" got "<<tscm<<std::endl;
 
-  if( ! itk::Math::FloatAlmostEqual(dm, results[0], 4, 1e-4) )
+  if( ! itk::Math::FloatAlmostEqual( dm, results[0], 4, 1e-4 ) )
     {
     std::cerr<<"DM: expected "<<results[0]<<" got "<<dm<<std::endl;
     return false;
     }
-//  if( ! itk::Math::FloatAlmostEqual(icm, results[1], 4, 1e-4) )
+//  if( ! itk::Math::FloatAlmostEqual( icm, results[1], 4, 1e-4 ) )
 //    {
 //    std::cerr<<"ICM: expected "<<results[1]<<" got "<<icm<<std::endl;
 //    }
-  if( ! itk::Math::FloatAlmostEqual(soam, results[2], 4, 1e-4) )
+  if( ! itk::Math::FloatAlmostEqual( soam, results[2], 4, 1e-4 ) )
     {
     std::cerr<<"SOAM: expected "<<results[2]<<" got "<<soam<<std::endl;
     return false;
     }
-  if( ! itk::Math::FloatAlmostEqual(plm, results[3], 4, 1e-4) )
+  if( ! itk::Math::FloatAlmostEqual( plm, results[3], 4, 1e-4 ) )
     {
     std::cerr<<"PLM: expected "<<results[3]<<" got "<<plm<<std::endl;
     return false;
     }
-  if( ! itk::Math::FloatAlmostEqual(clm, results[4], 4, 1e-4) )
+  if( ! itk::Math::FloatAlmostEqual( clm, results[4], 4, 1e-4 ) )
     {
     std::cerr<<"CLM: expected "<<results[4]<<" got "<<clm<<std::endl;
     return false;
     }
-  if( ! itk::Math::FloatAlmostEqual(arm, results[5], 4, 1e-4) )
+  if( ! itk::Math::FloatAlmostEqual( arm, results[5], 4, 1e-4 ) )
     {
     std::cerr<<"ARM: expected "<<results[5]<<" got "<<arm<<std::endl;
     return false;
     }
-  if( ! itk::Math::FloatAlmostEqual(ic1m, results[6], 4, 1e-4) )
+  if( ! itk::Math::FloatAlmostEqual( ic1m, results[6], 4, 1e-4 ) )
     {
     std::cerr<<"IC1M: expected "<<results[6]<<" got "<<ic1m<<std::endl;
     return false;
     }
-  if( ! itk::Math::FloatAlmostEqual(ic2m, results[7], 4, 1e-4) )
+  if( ! itk::Math::FloatAlmostEqual( ic2m, results[7], 4, 1e-4 ) )
     {
     std::cerr<<"IC2M: expected "<<results[7]<<" got "<<ic2m<<std::endl;
     return false;
     }
-  if( ! itk::Math::FloatAlmostEqual(p95m, results[8], 4, 1e-4) )
+  if( ! itk::Math::FloatAlmostEqual( p95m, results[8], 4, 1e-4 ) )
     {
     std::cerr<<"P95M: expected "<<results[8]<<" got "<<p95m<<std::endl;
     return false;
     }
-  if( ! itk::Math::FloatAlmostEqual(tcm, results[9], 4, 1e-4) )
+  if( ! itk::Math::FloatAlmostEqual( tcm, results[9], 4, 1e-4 ) )
     {
     std::cerr<<"TCM: expected "<<results[9]<<" got "<<tcm<<std::endl;
     return false;
     }
-  if( ! itk::Math::FloatAlmostEqual(tscm, results[10], 4, 1e-4) )
+  if( ! itk::Math::FloatAlmostEqual( tscm, results[10], 4, 1e-4 ) )
     {
     std::cerr<<"TSCM: expected "<<results[10]<<" got "<<tscm<<std::endl;
     return false;
@@ -243,13 +243,13 @@ int itktubeTortuositySpatialObjectFilterTest( int, char*[] )
     {1.0, 1.0, 0.0, 0.63, 0.63, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
     };
 
-  for (int i = 0; i < NUMBER_OF_STRAIGHT_OBJECT_TESTS; ++i)
+  for ( int i = 0; i < NUMBER_OF_STRAIGHT_OBJECT_TESTS; ++i )
     {
     std::cerr<<"Straight object test #"<<i<<std::endl;
     VesselTubeType::Pointer vessel =
-      GenerateStraightTube(start[i], increment[i], numberOfPoints[i]);
+      GenerateStraightTube( start[i], increment[i], numberOfPoints[i] );
 
-    if (!TestVesselMetrics(vessel, straightObjectResults[i]))
+    if ( !TestVesselMetrics( vessel, straightObjectResults[i] ) )
       {
       std::cerr<<"Error in straight object test for object #"<<i<<std::endl;
       return EXIT_FAILURE;
@@ -334,13 +334,13 @@ int itktubeTortuositySpatialObjectFilterTest( int, char*[] )
     },
     };
 
-  for (int i = 0; i < NUMBER_OF_COSINUS_OBJECT_TESTS; ++i)
+  for ( int i = 0; i < NUMBER_OF_COSINUS_OBJECT_TESTS; ++i )
     {
     std::cerr << "Cos object test #" << i << std::endl;
     VesselTubeType::Pointer vessel;
-    GenerateCosTube(length[i], amplitude[i], frequency[i], vessel);
+    GenerateCosTube( length[i], amplitude[i], frequency[i], vessel );
 
-    if (!TestVesselMetrics(vessel, cosResults[i]))
+    if ( !TestVesselMetrics( vessel, cosResults[i] ) )
       {
       std::cerr<<"Error in cos object test for object #"<<i<<std::endl;
       return EXIT_FAILURE;

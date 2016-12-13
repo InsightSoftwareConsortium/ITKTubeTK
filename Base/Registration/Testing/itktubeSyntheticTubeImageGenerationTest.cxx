@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -75,20 +75,20 @@ int itktubeSyntheticTubeImageGenerationTest( int argc, char * argv[] )
   //------------------------------------------------------------------
   std::cout << "Generate a tube blured image..." << std::endl;
   Image3DType::Pointer fixedImage = Image3DType::New();
-  fixedImage->SetRegions(imageSize);
+  fixedImage->SetRegions( imageSize );
   fixedImage->Allocate();
-  fixedImage->FillBuffer(0);
+  fixedImage->FillBuffer( 0 );
   fixedImage->Update();
 
-  std::cout << "Start Filling Images (Square Tube)..." << std::endl;
+  std::cout << "Start Filling Images ( Square Tube )..." << std::endl;
   Image3DIteratorType fixedIt( fixedImage, fixedImage->GetBufferedRegion() );
   int pixelIndex = 1;
   for( fixedIt.GoToBegin(); !fixedIt.IsAtEnd(); ++fixedIt, ++pixelIndex )
     {
     Image3DType::IndexType index = fixedIt.GetIndex();
-    if((index[0]>=15)&&(index[0]<=25)&&(index[1]>=15)&&(index[1]<=25))
+    if( ( index[0]>=15 )&&( index[0]<=25 )&&( index[1]>=15 )&&( index[1]<=25 ) )
       {
-        fixedIt.Set(255 - 20 * (pixelIndex % 5)); // Brighter center
+        fixedIt.Set( 255 - 20 * ( pixelIndex % 5 ) ); // Brighter center
       }
     }
 
@@ -98,16 +98,16 @@ int itktubeSyntheticTubeImageGenerationTest( int argc, char * argv[] )
   typedef itk::RecursiveGaussianImageFilter<Image3DType, Image3DType>
     GaussianBlurFilterType;
   GaussianBlurFilterType::Pointer blurFilters[3];
-  for(int i = 0; i < 3; i++)
+  for( int i = 0; i < 3; i++ )
     {
     blurFilters[i] = GaussianBlurFilterType::New();
-    blurFilters[i]->SetSigma(3.0);
+    blurFilters[i]->SetSigma( 3.0 );
     blurFilters[i]->SetZeroOrder();
-    blurFilters[i]->SetDirection(i);
+    blurFilters[i]->SetDirection( i );
     }
-  blurFilters[0]->SetInput(fixedImage);
-  blurFilters[1]->SetInput(blurFilters[0]->GetOutput());
-  blurFilters[2]->SetInput(blurFilters[1]->GetOutput());
+  blurFilters[0]->SetInput( fixedImage );
+  blurFilters[1]->SetInput( blurFilters[0]->GetOutput() );
+  blurFilters[2]->SetInput( blurFilters[1]->GetOutput() );
   try
     {
     blurFilters[0]->Update();
@@ -155,10 +155,10 @@ int itktubeSyntheticTubeImageGenerationTest( int argc, char * argv[] )
   TubePointType point;
   point.SetRadius( 2.0 );
 
-  for(int i = -550; i < 550; ++i)
+  for( int i = -550; i < 550; ++i )
     {
-    point.SetPosition( 15, 15, i / 10.);
-    tube->GetPoints().push_back(point);
+    point.SetPosition( 15, 15, i / 10. );
+    tube->GetPoints().push_back( point );
     }
 
   TubeNetType::Pointer group = TubeNetType::New();
@@ -214,7 +214,7 @@ int itktubeSyntheticTubeImageGenerationTest( int argc, char * argv[] )
   //------------------------------------------------------------------
   std::cout << "Transform and Convert the tube into an Image..." << std::endl;
 
-  // read tube (spatialObject)
+  // read tube ( spatialObject )
   typedef itk::SpatialObjectReader<3> TubeNetReaderType;
   TubeNetReaderType::Pointer tubeReader = TubeNetReaderType::New();
   std::cout << "Read VesselTube: " << argv[4] << std::endl;
@@ -250,12 +250,12 @@ int itktubeSyntheticTubeImageGenerationTest( int argc, char * argv[] )
   rotationMatrix = transformTube->GetMatrix();
   translation = transformTube->GetTranslation();
 
-  std::cout << rotationMatrix(0,0) << " " << rotationMatrix(0,1)
-            << " " << rotationMatrix(0,2) << std::endl;
-  std::cout << rotationMatrix(1,0) << " " << rotationMatrix(1,1)
-            << " " << rotationMatrix(1,2) << std::endl;
-  std::cout << rotationMatrix(2,0) << " " << rotationMatrix(2,1)
-            << " " << rotationMatrix(2,2) << std::endl;
+  std::cout << rotationMatrix( 0,0 ) << " " << rotationMatrix( 0,1 )
+            << " " << rotationMatrix( 0,2 ) << std::endl;
+  std::cout << rotationMatrix( 1,0 ) << " " << rotationMatrix( 1,1 )
+            << " " << rotationMatrix( 1,2 ) << std::endl;
+  std::cout << rotationMatrix( 2,0 ) << " " << rotationMatrix( 2,1 )
+            << " " << rotationMatrix( 2,2 ) << std::endl;
   std::cout << translation[0] << " " << translation[1]
             << " " << translation[2] << std::endl;
 

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -165,13 +165,13 @@ ContrastCostFunction< TPixel, Dimension >
     stdDevBkg = std::sqrt( sumsBkg/countBkg - stdDevBkg*stdDevBkg );
     }
 
-  double dp = vnl_math_abs(meanObj - meanBkg) / (stdDevObj * stdDevBkg);
+  double dp = vnl_math_abs( meanObj - meanBkg ) / ( stdDevObj * stdDevBkg );
 
   std::cout << ++m_CallsToGetValue << " : "
             << params[0] << ", " << params[1] << ", "
             << params[2] << ": "
-            << meanObj << " (" << stdDevObj << ") "
-            << meanBkg << " (" << stdDevBkg << ") "
+            << meanObj << " ( " << stdDevObj << " ) "
+            << meanBkg << " ( " << stdDevBkg << " ) "
             << " : " << dp << std::endl;
 
   return dp;

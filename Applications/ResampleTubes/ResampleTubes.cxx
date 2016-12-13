@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -139,7 +139,7 @@ int DoIt( int argc, char * argv[] )
   progress = 0.4;
   progressReporter.Report( progress );
 
-  timeCollector.Start( "Run Filter");
+  timeCollector.Start( "Run Filter" );
   filter->Update();
   timeCollector.Stop( "Run Filter" );
 
@@ -149,7 +149,7 @@ int DoIt( int argc, char * argv[] )
   progress = 0.9;
   progressReporter.Report( progress );
 
-  timeCollector.Start( "Write output");
+  timeCollector.Start( "Write output" );
   WriteOutput< Dimension >( filter->GetOutput(), outputTubeFile.c_str() );
   timeCollector.Stop( "Write output" );
 
@@ -195,7 +195,7 @@ int main( int argc, char * argv[] )
       }
     default:
       {
-      tubeErrorMacro(
+      tubeErrorMacro( 
         << "Error: Only 3D data is currently supported." );
       delete mScene;
       return EXIT_FAILURE;

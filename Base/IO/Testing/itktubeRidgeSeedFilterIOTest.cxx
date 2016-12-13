@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -57,7 +57,7 @@ int itktubeRidgeSeedFilterIOTest( int argc, char * argv[] )
   typedef itk::tube::RidgeSeedFilter< ImageType, LabelMapType >
     FilterType;
 
-  timeCollector.Start("Reader");
+  timeCollector.Start( "Reader" );
   // Create the reader
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( argv[1] );
@@ -86,14 +86,14 @@ int itktubeRidgeSeedFilterIOTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
   LabelMapType::Pointer labelmapImage = mReader->GetOutput();
-  timeCollector.Stop("Reader");
+  timeCollector.Stop( "Reader" );
 
-  FilterType::RidgeScalesType scales(3);
+  FilterType::RidgeScalesType scales( 3 );
   scales[0] = 0.35;
   scales[1] = 1.05;
   scales[2] = 1.4;
 
-  timeCollector.Start("Filter Setup");
+  timeCollector.Start( "Filter Setup" );
   FilterType::Pointer filter = FilterType::New();
   filter->SetInput( inputImage );
   filter->SetLabelMap( labelmapImage );
@@ -102,18 +102,18 @@ int itktubeRidgeSeedFilterIOTest( int argc, char * argv[] )
   filter->SetBackgroundId( 127 );
   filter->SetUnknownId( 0 );
   filter->SetTrainClassifier( true );
-  timeCollector.Stop("Filter Setup");
-  timeCollector.Start("Filter Update");
+  timeCollector.Stop( "Filter Setup" );
+  timeCollector.Start( "Filter Update" );
   filter->Update();
   std::cout << "Update done." << std::endl;
-  timeCollector.Stop("Filter Update");
+  timeCollector.Stop( "Filter Update" );
 
-  timeCollector.Start("Filter ClassifyImages");
+  timeCollector.Start( "Filter ClassifyImages" );
   filter->ClassifyImages();
   std::cout << "Classification done." << std::endl;
-  timeCollector.Stop("Filter ClassifyImages");
+  timeCollector.Stop( "Filter ClassifyImages" );
 
-  timeCollector.Start("Labelmap Writer");
+  timeCollector.Start( "Labelmap Writer" );
   LabelMapWriterType::Pointer labelmapWriter = LabelMapWriterType::New();
   labelmapWriter->SetFileName( argv[3] );
   labelmapWriter->SetUseCompression( true );
@@ -122,35 +122,35 @@ int itktubeRidgeSeedFilterIOTest( int argc, char * argv[] )
     {
     labelmapWriter->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch ( itk::ExceptionObject& e )
     {
     std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Labelmap Writer");
+  timeCollector.Stop( "Labelmap Writer" );
   std::cout << "Labelmap Written" << std::endl;
 
-  timeCollector.Start("Filter copy and write");
-  itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO(
+  timeCollector.Start( "Filter copy and write" );
+  itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO( 
     filter );
   filterIO.Write( argv[4] );
-  timeCollector.Stop("Filter copy and write");
+  timeCollector.Stop( "Filter copy and write" );
   std::cout << "Filter copy and write done." << std::endl;
 
-  timeCollector.Start("Filter read and process 2");
+  timeCollector.Start( "Filter read and process 2" );
   FilterType::Pointer filter2 = FilterType::New();
   filter2->SetInput( inputImage );
   std::cout << "Filter2 setinput." << std::endl;
 
-  itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO2(
+  itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO2( 
     filter2 );
   filterIO2.Read( argv[4] );
   std::cout << "FilterIO2 Read." << std::endl;
   filter2->ClassifyImages();
-  timeCollector.Stop("Filter read and process 2");
+  timeCollector.Stop( "Filter read and process 2" );
   std::cout << "Filter2 ClassifyImages." << std::endl;
 
-  timeCollector.Start("Labelmap Writer2");
+  timeCollector.Start( "Labelmap Writer2" );
   LabelMapWriterType::Pointer labelmapWriter2 = LabelMapWriterType::New();
   labelmapWriter2->SetFileName( argv[5] );
   labelmapWriter2->SetUseCompression( true );
@@ -159,21 +159,21 @@ int itktubeRidgeSeedFilterIOTest( int argc, char * argv[] )
     {
     labelmapWriter2->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch ( itk::ExceptionObject& e )
     {
     std::cerr << "Exception caught during write2:" << std::endl << e;
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Labelmap Writer2");
+  timeCollector.Stop( "Labelmap Writer2" );
   std::cout << "Labelmap2 Written" << std::endl;
 
-  timeCollector.Start("Filter Writer3");
+  timeCollector.Start( "Filter Writer3" );
   char out3[255];
   sprintf( out3, "%s.mrs", argv[5] );
-  itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO3(
+  itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO3( 
     filter2 );
   filterIO3.Write( out3 );
-  timeCollector.Stop("Filter Writer3");
+  timeCollector.Stop( "Filter Writer3" );
   std::cout << "Filter Writer3" << std::endl;
 
   timeCollector.Report();

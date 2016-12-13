@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -40,11 +40,11 @@ ShrinkWithBlendingImage< TInputImage, TOutputImage >
 template< class TInputImage, class TOutputImage >
 void
 ShrinkWithBlendingImage< TInputImage, TOutputImage >
-::SetShrinkFactor(unsigned int i, unsigned int factor)
+::SetShrinkFactor( unsigned int i, unsigned int factor )
 {
-  if( m_Filter->GetShrinkFactor(i) != factor )
+  if( m_Filter->GetShrinkFactor( i ) != factor )
     {
-    m_Filter->SetShrinkFactor(i,factor);
+    m_Filter->SetShrinkFactor( i,factor );
     this->Modified();
     }
 }
@@ -55,9 +55,9 @@ ShrinkWithBlendingImage< TInputImage, TOutputImage >
 template< class TInputImage, class TOutputImage >
 unsigned int
 ShrinkWithBlendingImage< TInputImage, TOutputImage >
-::GetShrinkFactor(unsigned int i)
+::GetShrinkFactor( unsigned int i )
 {
-  return m_Filter->GetShrinkFactor(i);
+  return m_Filter->GetShrinkFactor( i );
 }
 
 /**

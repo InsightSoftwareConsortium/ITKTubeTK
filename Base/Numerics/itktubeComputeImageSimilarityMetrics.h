@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -57,7 +57,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( ComputeImageSimilarityMetrics, Object );
 
   /** Set/Get use of correlation or mutual information to compute similarity */
@@ -80,14 +80,14 @@ public:
   void Update( void );
 
   /** Get image similarity */
-  itkGetMacro(Output, double);
+  itkGetMacro( Output, double );
 
 protected:
 
   ComputeImageSimilarityMetrics( void );
   ~ComputeImageSimilarityMetrics( void ) {};
 
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
 private:
 
@@ -107,4 +107,4 @@ private:
 #include "itktubeComputeImageSimilarityMetrics.hxx"
 #endif
 
-#endif // End !defined(__itktubeComputeImageSimilarityMetrics_h)
+#endif // End !defined( __itktubeComputeImageSimilarityMetrics_h )

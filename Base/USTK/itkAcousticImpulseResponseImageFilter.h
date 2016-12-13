@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -38,15 +38,15 @@ namespace itk
  * direction.
  *
  * \f[
- * T(\mathbf{x}) =
- *   \cos^n \theta \left( \frac{|\nabla Z(\mathbf{x})|}
- *     {2 * Z(\mathbf{x})} \right)
+ * T( \mathbf{x} ) =
+ *   \cos^n \theta \left( \frac{|\nabla Z( \mathbf{x} )|}
+ *     {2 * Z( \mathbf{x} )} \right )
  * \f]
  *
  * where:
  *
  * \f{eqnarray*}
- *   T(\mathbf{x}) &=& \mbox{acoustic pressure impulse response}
+ *   T( \mathbf{x} ) &=& \mbox{acoustic pressure impulse response}
  *   n             &=& \mbox{specifies angle dependence}
  *   Z             &=& \mbox{acoustic impedance}
  *   \cos \theta   &=& \mbox{angle of incidence}
@@ -75,7 +75,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( AcousticImpulseResponseImageFilter, ImageToImageFilter );
 
   /** Some convenient typedefs. */
@@ -106,7 +106,7 @@ protected:
   AcousticImpulseResponseImageFilter( void );
   virtual ~AcousticImpulseResponseImageFilter( void ) {}
 
-  virtual void PrintSelf(std::ostream & os, Indent indent) const;
+  virtual void PrintSelf( std::ostream & os, Indent indent ) const;
 
   virtual void BeforeThreadedGenerateData( void );
   virtual void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread,
@@ -131,4 +131,4 @@ private:
 #include "itkAcousticImpulseResponseImageFilter.hxx"
 #endif
 
-#endif // End !defined(__itkAcousticImpulseResponseImageFilter_h)
+#endif // End !defined( __itkAcousticImpulseResponseImageFilter_h )

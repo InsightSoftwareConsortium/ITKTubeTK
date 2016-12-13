@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0(the "License");
+Licensed under the Apache License, Version 2.0( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -29,9 +29,9 @@ limitations under the License.
 
 #include <fstream>
 
-MetaImageImporterUI::MetaImageImporterUI(QWidget *)
+MetaImageImporterUI::MetaImageImporterUI( QWidget * )
 {
-  setupUi(this); // this sets up
+  setupUi( this ); // this sets up
 
   bannerLabel->setPixmap( MetaImageImporterBanner_xpm );
   this->setStatusBar( NULL );
@@ -46,7 +46,7 @@ MetaImageImporterUI::MetaImageImporterUI(QWidget *)
   this->BuildPage6();
 
   stackedWidget->setCurrentIndex( 0 );
-  this->resize(this->width(),bannerLabel->pixmap()->height());
+  this->resize( this->width(), bannerLabel->pixmap()->height() );
 }
 
 /** Destructor */
@@ -110,17 +110,17 @@ void MetaImageImporterUI::BuildPreviousNextPushButtons( void )
 void MetaImageImporterUI::BuildPage1()
 {
   // setup first page
-  QCompleter *completer = new QCompleter(generatedMHDFileLineEdit);
-  completer->setModel(new QDirModel(QStringList(QString("*.mhd")),
+  QCompleter *completer = new QCompleter( generatedMHDFileLineEdit );
+  completer->setModel( new QDirModel( QStringList( QString( "*.mhd" ) ),
     QDir::AllDirs |QDir::Files |QDir::NoDotAndDotDot,
-    QDir::DirsFirst,completer));
-  generatedMHDFileLineEdit->setCompleter(completer);
-  QRegExp rx("^.+\\.mhd$",Qt::CaseInsensitive);
-  generatedMHDFileLineEdit->setValidator(new QRegExpValidator(rx, this));
+    QDir::DirsFirst, completer ) );
+  generatedMHDFileLineEdit->setCompleter( completer );
+  QRegExp rx( "^.+\\.mhd$", Qt::CaseInsensitive );
+  generatedMHDFileLineEdit->setValidator( new QRegExpValidator( rx, this ) );
 
   QIcon openDirectoryIcon =
-    QApplication::style()->standardIcon(QStyle::SP_DirOpenIcon);
-  generatedMHDFilePushButton->setIcon(openDirectoryIcon);
+    QApplication::style()->standardIcon( QStyle::SP_DirOpenIcon );
+  generatedMHDFilePushButton->setIcon( openDirectoryIcon );
 
   connect( generatedMHDFilePushButton, SIGNAL( clicked() ),
     this, SLOT( BrowseGenerateMHDFile() ) );
@@ -135,8 +135,8 @@ void MetaImageImporterUI::BuildPage1()
 void MetaImageImporterUI::BuildPage2( void )
 {
   // dimensions
-  connect( dimensionalitySpinBox, SIGNAL( valueChanged(int) ),
-    this, SLOT( DimensionalityChanged(int) ) );
+  connect( dimensionalitySpinBox, SIGNAL( valueChanged( int ) ),
+    this, SLOT( DimensionalityChanged( int ) ) );
   this->DimensionalityChanged( dimensionalitySpinBox->value() );
 }
 
@@ -150,14 +150,14 @@ void MetaImageImporterUI::BuildPage4()
   byteOrderingComboBox->addItem( "Little Endian" );
   byteOrderingComboBox->addItem( "Big Endian" );
 
-  elementTypeComboBox->addItem( "signed char(one byte)" );
+  elementTypeComboBox->addItem( "signed char( one byte )" );
   elementTypeComboBox->addItem( "unsigned char" );
-  elementTypeComboBox->addItem( "signed short(two byte)" );
+  elementTypeComboBox->addItem( "signed short( two byte )" );
   elementTypeComboBox->addItem( "unsigned short" );
-  elementTypeComboBox->addItem( "signed int(four byte)" );
+  elementTypeComboBox->addItem( "signed int( four byte )" );
   elementTypeComboBox->addItem( "unsigned int" );
-  elementTypeComboBox->addItem( "float(four byte)" );
-  elementTypeComboBox->addItem( "double(eight byte)" );
+  elementTypeComboBox->addItem( "float( four byte )" );
+  elementTypeComboBox->addItem( "double( eight byte )" );
 }
 
 void MetaImageImporterUI::BuildPage5()
@@ -171,21 +171,21 @@ void MetaImageImporterUI::BuildPage5()
 
 void MetaImageImporterUI::BuildPage6()
 {
-  QCompleter *completer = new QCompleter(importFileLineEdit);
-  completer->setModel(new QDirModel(QStringList(),
+  QCompleter *completer = new QCompleter( importFileLineEdit );
+  completer->setModel( new QDirModel( QStringList(),
     QDir::AllDirs |QDir::Files |QDir::NoDotAndDotDot,
-    QDir::DirsFirst,completer));
-  importFileLineEdit->setCompleter(completer);
+    QDir::DirsFirst, completer ) );
+  importFileLineEdit->setCompleter( completer );
   connect( importFileLineEdit, SIGNAL( textChanged( const QString & ) ),
     this, SLOT( FileNamesStyleChanged() ) );
 
 
   QIcon openDirectoryIcon =
-    QApplication::style()->standardIcon(QStyle::SP_DirOpenIcon);
+    QApplication::style()->standardIcon( QStyle::SP_DirOpenIcon );
 
-  importFilePushButton->setIcon(openDirectoryIcon);
-  importFileNamesPushButton->setIcon(openDirectoryIcon);
-  importFileNamesFPrintFPushButton->setIcon(openDirectoryIcon);
+  importFilePushButton->setIcon( openDirectoryIcon );
+  importFileNamesPushButton->setIcon( openDirectoryIcon );
+  importFileNamesFPrintFPushButton->setIcon( openDirectoryIcon );
 
   connect( importFilePushButton, SIGNAL( clicked() ),
     this, SLOT( BrowseImportFile() ) );
@@ -207,63 +207,63 @@ void MetaImageImporterUI::BuildPage6()
   listOfNamesGroupBox->setVisible( false );
   fprintfGroupBox->setVisible( false );
   page6NextPushButton->setEnabled( false );
-  page_6->resize(600,400);
+  page_6->resize( 600, 400 );
 }
 
 void MetaImageImporterUI::GeneratedMHDFileLineEditChanged()
 {
-  page1NextPushButton->setEnabled(
+  page1NextPushButton->setEnabled( 
     generatedMHDFileLineEdit->hasAcceptableInput() );
-  this->setWindowTitle(
-    QString("MetaImageImporter - ") + generatedMHDFileLineEdit->text() );
+  this->setWindowTitle( 
+    QString( "MetaImageImporter - " ) + generatedMHDFileLineEdit->text() );
 }
 
-void MetaImageImporterUI::DimensionalityChanged(int value)
+void MetaImageImporterUI::DimensionalityChanged( int value )
 {
   for( int i = 0;
         i < dimensionalitySpinBox->maximum();
-        ++i)
+        ++i )
     {
     bool visible = i < value;
       QLabel* _label = NULL;
       QSpinBox* spinBox = NULL;
       QDoubleSpinBox* doubleSpinBox = NULL;
       // Dimension
-      _label = this->findChild<QLabel *>(
-        QString("dimension%1Label").arg(i) );
+      _label = this->findChild<QLabel *>( 
+        QString( "dimension%1Label" ).arg( i ) );
     if( _label )
       {
       _label->setVisible( visible );
       }
     spinBox =
-        this->findChild<QSpinBox *>( QString("dimension%1SpinBox").arg(i) );
+        this->findChild<QSpinBox *>( QString( "dimension%1SpinBox" ).arg( i ) );
     if( spinBox )
       {
       spinBox->setVisible( visible );
       }
     // Spacing
-    _label = this->findChild<QLabel *>(
-      QString("spacing%1Label").arg(i) );
+    _label = this->findChild<QLabel *>( 
+      QString( "spacing%1Label" ).arg( i ) );
     if( _label )
       {
       _label->setVisible( visible );
       }
     doubleSpinBox =
-        this->findChild<QDoubleSpinBox *>(
-          QString("spacing%1DoubleSpinBox").arg(i) );
+        this->findChild<QDoubleSpinBox *>( 
+          QString( "spacing%1DoubleSpinBox" ).arg( i ) );
     if( doubleSpinBox )
       {
       doubleSpinBox->setVisible( visible );
       }
     // Origin
-      _label = this->findChild<QLabel *>( QString("origin%1Label").arg(i) );
+      _label = this->findChild<QLabel *>( QString( "origin%1Label" ).arg( i ) );
     if( _label )
       {
       _label->setVisible( visible );
       }
     doubleSpinBox =
-        this->findChild<QDoubleSpinBox *>(
-          QString("origin%1DoubleSpinBox").arg(i) );
+        this->findChild<QDoubleSpinBox *>( 
+          QString( "origin%1DoubleSpinBox" ).arg( i ) );
     if( doubleSpinBox )
       {
       doubleSpinBox->setVisible( visible );
@@ -276,9 +276,9 @@ void MetaImageImporterUI::DataStorageChanged()
   importFileNameLabel->setVisible( oneFileRadioButton->isChecked() );
   importFileLineEdit->setVisible( oneFileRadioButton->isChecked() );
   importFilePushButton->setVisible( oneFileRadioButton->isChecked() );
-  importFileNamesLabel->setVisible(
+  importFileNamesLabel->setVisible( 
     oneFilePerSliceRadioButton->isChecked() );
-  listOfNamesRadioButton->setVisible(
+  listOfNamesRadioButton->setVisible( 
     oneFilePerSliceRadioButton->isChecked() );
   fprintfRadioButton->setVisible( oneFilePerSliceRadioButton->isChecked() );
 
@@ -293,9 +293,9 @@ void MetaImageImporterUI::FileNamesStyleChanged()
     {
     fprintfGroupBox->setVisible( false );
     listOfNamesGroupBox->setVisible( true );
-    importFilesDimensionSpinBox->setMaximum(
-      dimensionalitySpinBox->value() - 1);
-    page6NextPushButton->setEnabled(
+    importFilesDimensionSpinBox->setMaximum( 
+      dimensionalitySpinBox->value() - 1 );
+    page6NextPushButton->setEnabled( 
       !importFilenamesTextEdit->toPlainText().isEmpty() );
     }
   else if( oneFilePerSliceRadioButton->isChecked() &&
@@ -304,29 +304,29 @@ void MetaImageImporterUI::FileNamesStyleChanged()
     listOfNamesGroupBox->setVisible( false );
     fprintfGroupBox->setVisible( true );
 
-    QSpinBox* spinBox = this->findChild<QSpinBox *>(
-      QString("dimension%1SpinBox").arg(
-        dimensionalitySpinBox->value() - 1) );
+    QSpinBox* spinBox = this->findChild<QSpinBox *>( 
+      QString( "dimension%1SpinBox" ).arg( 
+        dimensionalitySpinBox->value() - 1 ) );
     if( spinBox )
       {
       importFPrintFMaxSpinBox->setValue( spinBox->value() );
       }
-    page6NextPushButton->setEnabled(
+    page6NextPushButton->setEnabled( 
       !importFileNamesLineEdit->text().isEmpty() );
     }
   else if( oneFileRadioButton->isChecked() )
     {
     listOfNamesGroupBox->setVisible( false );
     fprintfGroupBox->setVisible( false );
-    page6NextPushButton->setEnabled(
+    page6NextPushButton->setEnabled( 
       !importFileLineEdit->text().isEmpty() );
     }
 }
 
 void MetaImageImporterUI::BrowseGenerateMHDFile()
 {
-  QString path = QFileDialog::getSaveFileName(this,
-        QString("MHD File to generate"),
+  QString path = QFileDialog::getSaveFileName( this,
+        QString( "MHD File to generate" ),
         m_CurrentDirectory, "*.mhd" );
   if( path.isEmpty() )
     {
@@ -334,13 +334,13 @@ void MetaImageImporterUI::BrowseGenerateMHDFile()
     }
 
   generatedMHDFileLineEdit->setText( path );
-  m_CurrentDirectory =  QFileInfo(path).absolutePath();
+  m_CurrentDirectory =  QFileInfo( path ).absolutePath();
 }
 
 void MetaImageImporterUI::BrowseImportFile()
 {
-  QString path = QFileDialog::getOpenFileName(this,
-        QString("File to Import"),
+  QString path = QFileDialog::getOpenFileName( this,
+        QString( "File to Import" ),
         m_CurrentDirectory );
   if( path.isEmpty() )
     {
@@ -348,13 +348,13 @@ void MetaImageImporterUI::BrowseImportFile()
     }
 
   importFileLineEdit->setText( path );
-  m_CurrentDirectory =  QFileInfo(path).absolutePath();
+  m_CurrentDirectory =  QFileInfo( path ).absolutePath();
 }
 
 void MetaImageImporterUI::BrowseImportFileNames()
 {
-  QString path = QFileDialog::getOpenFileName(this,
-        QString("File to Import"),
+  QString path = QFileDialog::getOpenFileName( this,
+        QString( "File to Import" ),
         m_CurrentDirectory );
   if( path.isEmpty() )
     {
@@ -362,13 +362,13 @@ void MetaImageImporterUI::BrowseImportFileNames()
     }
 
   importFilenamesTextEdit->append( path + ", " );
-  m_CurrentDirectory =  QFileInfo(path).absolutePath();
+  m_CurrentDirectory =  QFileInfo( path ).absolutePath();
 }
 
 void MetaImageImporterUI::BrowseImportFileNamesFPrintF()
 {
-  QString path = QFileDialog::getOpenFileName(this,
-    QString("File to Import"),
+  QString path = QFileDialog::getOpenFileName( this,
+    QString( "File to Import" ),
     m_CurrentDirectory );
   if( path.isEmpty() )
     {
@@ -376,7 +376,7 @@ void MetaImageImporterUI::BrowseImportFileNamesFPrintF()
     }
 
   importFileNamesLineEdit->setText( path );
-  m_CurrentDirectory =  QFileInfo(path).absolutePath();
+  m_CurrentDirectory =  QFileInfo( path ).absolutePath();
 }
 
 bool MetaImageImporterUI::Import()
@@ -384,15 +384,15 @@ bool MetaImageImporterUI::Import()
   int i;
   QDoubleSpinBox* doubleSpinBox = NULL;
   std::ofstream fp;
-  fp.open(generatedMHDFileLineEdit->text().toStdString().c_str());
+  fp.open( generatedMHDFileLineEdit->text().toStdString().c_str() );
   fp << "NDims = " << dimensionalitySpinBox->value() << std::endl;
 
   fp << "DimSize =";
-  for( i = 0; i < dimensionalitySpinBox->value(); i++)
+  for( i = 0; i < dimensionalitySpinBox->value(); i++ )
     {
     QSpinBox* spinBox = NULL;
     spinBox =
-      this->findChild<QSpinBox *>( QString("dimension%1SpinBox").arg(i) );
+      this->findChild<QSpinBox *>( QString( "dimension%1SpinBox" ).arg( i ) );
     if( spinBox )
       {
       fp << " " << spinBox->value();
@@ -407,11 +407,11 @@ bool MetaImageImporterUI::Import()
   fp << std::endl;
 
   fp << "ElementSpacing =";
-  for( i = 0; i < dimensionalitySpinBox->value(); i++)
+  for( i = 0; i < dimensionalitySpinBox->value(); i++ )
     {
     doubleSpinBox =
-      this->findChild<QDoubleSpinBox *>(
-        QString("spacing%1DoubleSpinBox").arg(i) );
+      this->findChild<QDoubleSpinBox *>( 
+        QString( "spacing%1DoubleSpinBox" ).arg( i ) );
     if( doubleSpinBox )
       {
       fp << " " << doubleSpinBox->value();
@@ -426,11 +426,11 @@ bool MetaImageImporterUI::Import()
   fp << std::endl;
 
   fp << "Position =";
-  for( i = 0; i < dimensionalitySpinBox->value(); i++)
+  for( i = 0; i < dimensionalitySpinBox->value(); i++ )
     {
     doubleSpinBox =
-      this->findChild<QDoubleSpinBox *>(
-        QString("origin%1DoubleSpinBox").arg(i) );
+      this->findChild<QDoubleSpinBox *>( 
+        QString( "origin%1DoubleSpinBox" ).arg( i ) );
     if( doubleSpinBox )
       {
       fp << " " << doubleSpinBox->value();
@@ -454,7 +454,7 @@ bool MetaImageImporterUI::Import()
     }
 
 
-  if(channelNumberSpinBox->value() != 1)
+  if( channelNumberSpinBox->value() != 1 )
     {
     fp << "ElementNumberOfChannels = " << channelNumberSpinBox->value()
        << std::endl;
@@ -488,15 +488,15 @@ bool MetaImageImporterUI::Import()
     fp << "HeaderSize = " << headerSizeSpinBox->value() << std::endl;
     }
 
-  QFileInfo path(generatedMHDFileLineEdit->text());
+  QFileInfo path( generatedMHDFileLineEdit->text() );
   QDir dir( path.absoluteDir() );
   if( oneFileRadioButton->isChecked() )
     {
     QString file = dir.relativeFilePath( importFileLineEdit->text() );
-    if( QFileInfo(file).isAbsolute() )
+    if( QFileInfo( file ).isAbsolute() )
       {
       QMessageBox::critical( this, "Import", "The file to import shall be "
-        "in the same directory(or subdirectory) than the generated MHD file" );
+        "in the same directory( or subdirectory ) than the generated MHD file" );
       return false;
       }
     fp << "ElementDataFile = " << file.toStdString() << std::endl;
@@ -509,15 +509,15 @@ bool MetaImageImporterUI::Import()
          << std::endl;
 
       QStringList filenames = importFilenamesTextEdit->toPlainText()
-        .split(",");
-      for( i=0; i<filenames.count(); i++)
+        .split( "," );
+      for( i=0; i<filenames.count(); i++ )
         {
         QString file = dir.relativeFilePath( filenames[i] );
-        if( QFileInfo(file).isAbsolute() )
+        if( QFileInfo( file ).isAbsolute() )
           {
           QMessageBox::critical( this, "Import",
-            "The file to import shall be in the same directory(or "
-            "subdirectory) than the generated MHD file" );
+            "The file to import shall be in the same directory( or "
+            "subdirectory ) than the generated MHD file" );
           return false;
           }
         fp << file.toStdString() << std::endl;
@@ -525,13 +525,13 @@ bool MetaImageImporterUI::Import()
       }
     else if( fprintfRadioButton->isChecked() )
       {
-      QString file = dir.relativeFilePath(
+      QString file = dir.relativeFilePath( 
         importFileNamesLineEdit->text() );
-      if( QFileInfo(file).isAbsolute() )
+      if( QFileInfo( file ).isAbsolute() )
         {
         QMessageBox::critical( this, "Import",
-          "The file to import shall be in the same directory(or "
-          "subdirectory) than the generated MHD file" );
+          "The file to import shall be in the same directory( or "
+          "subdirectory ) than the generated MHD file" );
         return false;
         }
       fp << "ElementDataFile = " << file.toStdString() << " "

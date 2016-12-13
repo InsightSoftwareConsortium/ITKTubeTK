@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -65,7 +65,7 @@ bool ReadAndOrientImageAxial( TImage & outputImage, std::string fileName )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     return false;
     }
 
@@ -111,7 +111,7 @@ bool ReorientAndWriteImage( TImage * inputImage,
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Writing volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     return false;
     }
   return true;
@@ -129,7 +129,7 @@ int DoIt( int argc, char * argv[] )
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
   bool reportProgress = false;
-  tube::CLIProgressReporter progressReporter(
+  tube::CLIProgressReporter progressReporter( 
       "AnisotropicDiffusiveDeformableRegistration", CLPProcessInformation );
   if( reportProgress )
     {
@@ -175,14 +175,14 @@ int DoIt( int argc, char * argv[] )
       {
       registrator = AnisotropicDiffusiveRegistrationFilterType::New();
       anisotropicRegistrator
-          = dynamic_cast< AnisotropicDiffusiveRegistrationFilterType * >(
+          = dynamic_cast< AnisotropicDiffusiveRegistrationFilterType * >( 
               registrator.GetPointer() );
       }
     else if( anisotropicRegistrationType == "SparseSlidingOrgan" )
       {
       registrator = AnisotropicDiffusiveSparseRegistrationFilterType::New();
       sparseAnisotropicRegistrator
-          = dynamic_cast< AnisotropicDiffusiveSparseRegistrationFilterType * >(
+          = dynamic_cast< AnisotropicDiffusiveSparseRegistrationFilterType * >( 
               registrator.GetPointer() );
       }
     else
@@ -207,7 +207,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -226,7 +226,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -270,7 +270,7 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Reading initial transform image: Exception caught: "
-                          + std::string(err.GetDescription()) );
+                          + std::string( err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
@@ -304,7 +304,7 @@ int DoIt( int argc, char * argv[] )
       catch( itk::ExceptionObject & err )
         {
         tube::ErrorMessage( "Reading initial transform: Exception caught: "
-                            + std::string(err.GetDescription()) );
+                            + std::string( err.GetDescription() ) );
         timeCollector.Report();
         return EXIT_FAILURE;
         }
@@ -320,12 +320,12 @@ int DoIt( int argc, char * argv[] )
             = dynamic_cast< TransformType* >( initial.GetPointer() );
 
         // For each voxel, find the displacement invoked by the given initial
-        // transform.  This should work for all types of transforms (linear,
-        // nonlinear, B-spline, etc) because itk::Transform is the base for each.
-        // Slicer saves transforms in LPS space (see Slicer's
-        // vtkMRMLTransformStorageNode::WriteData()), so we don't need to modify
+        // transform.  This should work for all types of transforms ( linear,
+        // nonlinear, B-spline, etc ) because itk::Transform is the base for each.
+        // Slicer saves transforms in LPS space ( see Slicer's
+        // vtkMRMLTransformStorageNode::WriteData() ), so we don't need to modify
         // the initial transform according to the worldCoordinateSystem
-        // variable (unlike the surface model).
+        // variable ( unlike the surface model ).
         if( transform )
           {
           typename TransformType::InputPointType physicalPoint;
@@ -337,7 +337,7 @@ int DoIt( int argc, char * argv[] )
           initVector.Fill( 0 );
           typedef itk::ImageRegionIterator< VectorImageType >
               VectorImageRegionType;
-          VectorImageRegionType initIt = VectorImageRegionType(
+          VectorImageRegionType initIt = VectorImageRegionType( 
               initField, initField->GetLargestPossibleRegion() );
           for( initIt.GoToBegin(); !initIt.IsAtEnd(); ++initIt )
             {
@@ -421,17 +421,17 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start( "Loading organ boundary" );
     // Do we have .vtk or .vtp models?
-    std::string::size_type loc = organBoundaryFileName.find_last_of(".");
+    std::string::size_type loc = organBoundaryFileName.find_last_of( "." );
     if( loc == std::string::npos )
       {
       tube::ErrorMessage( "Failed to find an extension for organ boundary" );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
-    std::string extension = organBoundaryFileName.substr(loc);
+    std::string extension = organBoundaryFileName.substr( loc );
     typename AnisotropicDiffusiveRegistrationFilterType::BorderSurfacePointer
         borderSurface = NULL;
-    if( extension == std::string(".vtk") )
+    if( extension == std::string( ".vtk" ) )
       {
       vtkSmartPointer< vtkPolyDataReader > polyDataReader
           = vtkSmartPointer< vtkPolyDataReader >::New();
@@ -439,7 +439,7 @@ int DoIt( int argc, char * argv[] )
       polyDataReader->Update();
       borderSurface = polyDataReader->GetOutput();
       }
-    else if( extension == std::string(".vtp") )
+    else if( extension == std::string( ".vtp" ) )
       {
       vtkSmartPointer< vtkXMLPolyDataReader > polyDataReader
           = vtkSmartPointer< vtkXMLPolyDataReader >::New();
@@ -454,13 +454,13 @@ int DoIt( int argc, char * argv[] )
       return EXIT_FAILURE;
       }
 
-    // If the world coordinate system is RAS (i.e. called from 3D Slicer)
+    // If the world coordinate system is RAS ( i.e. called from 3D Slicer )
     // then the model will be in RAS space while the images will be in LPS
     // space.  It's easiest to transform the model to LPS space.
     if( worldCoordinateSystem == "RAS" )
       {
       vtkSmartPointer< vtkTransform > RAStoLPS = vtkSmartPointer< vtkTransform >::New();
-      RAStoLPS->RotateZ(180); // flip in superior-inferior
+      RAStoLPS->RotateZ( 180 ); // flip in superior-inferior
       vtkSmartPointer< vtkTransformPolyDataFilter > transformPolyDataFilter
           = vtkSmartPointer< vtkTransformPolyDataFilter >::New();
 #if VTK_MAJOR_VERSION > 5
@@ -506,7 +506,7 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Reading tube list: Exception caught: "
-                          + std::string(err.GetDescription()) );
+                          + std::string( err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
@@ -586,7 +586,7 @@ int DoIt( int argc, char * argv[] )
       if( ReadAndOrientImageAxial( weightImage,
                                    inputWeightRegularizationsImageFileName ) )
         {
-        sparseAnisotropicRegistrator->SetWeightRegularizationsImage(
+        sparseAnisotropicRegistrator->SetWeightRegularizationsImage( 
             weightImage );
         }
       else
@@ -602,7 +602,7 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Loading weight regularizations image" );
     }
 
-  // Read the weight structures image (in the space of the fixed image) if we
+  // Read the weight structures image ( in the space of the fixed image ) if we
   // are using the sparse anisotropic regularization
   if( sparseAnisotropicRegistrator && inputWeightStructuresImageFileName != "" )
     {
@@ -695,15 +695,15 @@ int DoIt( int argc, char * argv[] )
     }
   if( sparseAnisotropicRegistrator )
     {
-    sparseAnisotropicRegistrator->SetLambda( lambda);
+    sparseAnisotropicRegistrator->SetLambda( lambda );
     sparseAnisotropicRegistrator->SetGamma( gamma );
     }
   registrator->SetMaximumRMSError( maximumRMSError );
   registrator->SetRegularizationWeightings( regularizationWeightings );
   registrator->SetBackgroundIntensity( backgroundIntensity );
-  registrator->SetStoppingCriterionEvaluationPeriod(
-        static_cast<unsigned int>(stoppingCriterionPeriod));
-  registrator->SetStoppingCriterionMaxTotalEnergyChange(maximumTotalEnergyChange);
+  registrator->SetStoppingCriterionEvaluationPeriod( 
+        static_cast<unsigned int>( stoppingCriterionPeriod ) );
+  registrator->SetStoppingCriterionMaxTotalEnergyChange( maximumTotalEnergyChange );
 
   // Setup the multiresolution PDE filter - we use the recursive pyramid because
   // we don't want the deformation field to undergo Gaussian smoothing on the
@@ -761,16 +761,16 @@ int DoIt( int argc, char * argv[] )
   // Watch the registration's progress
   if( reportProgress )
     {
-    tube::CLIFilterWatcher watchRegistration(
+    tube::CLIFilterWatcher watchRegistration( 
           registrator, "Anisotropic Diffusive Registration",
           CLPProcessInformation, 0.8, progress );
     }
 
   // Setup the warper: output parameters are derived from the fixed image
   // because the warped moving image should look like the fixed image
-  // (ex. consider when the fixed image is outside of the extent of the moving
+  // ( ex. consider when the fixed image is outside of the extent of the moving
   // image - the transformed moving image must be in the space of the fixed
-  // image)
+  // image )
   typedef itk::WarpImageFilter< MovingImageType,
                                 MovingImageType,
                                 VectorImageType > WarperType;
@@ -800,7 +800,7 @@ int DoIt( int argc, char * argv[] )
   typename VectorOrientFilterType::Pointer orientOutput
       = VectorOrientFilterType::New();
   orientOutput->UseImageDirectionOn();
-  orientOutput->SetDesiredCoordinateDirection(
+  orientOutput->SetDesiredCoordinateDirection( 
       fixedImageReader->GetOutput()->GetDirection() );
   orientOutput->SetInput( multires->GetOutput() );
 
@@ -820,7 +820,7 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Writing volume: Exception caught: "
-                          + std::string(err.GetDescription()) );
+                          + std::string( err.GetDescription() ) );
       timeCollector.Report();
       if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
         {
@@ -832,7 +832,7 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Write deformation field" );
     }
 
-  // Write the resampled moving image (in the space of the fixed image)
+  // Write the resampled moving image ( in the space of the fixed image )
   if( outputResampledImageFileName != "" )
     {
     timeCollector.Start( "Write resampled moving image" );
@@ -848,7 +848,7 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Writing volume: Exception caught: "
-                          + std::string(err.GetDescription()) );
+                          + std::string( err.GetDescription() ) );
       timeCollector.Report();
       if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
         {
@@ -860,7 +860,7 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Write resampled moving image" );
     }
 
-  // Write the normal vector image (in the space of the fixed image) if we are
+  // Write the normal vector image ( in the space of the fixed image ) if we are
   // using the anisotropic regularization
   if( haveAnisotropicRegistrator && outputNormalVectorImageFileName != "" )
     {
@@ -869,7 +869,7 @@ int DoIt( int argc, char * argv[] )
       {
       if( anisotropicRegistrator->GetHighResolutionNormalVectorImage() )
         {
-        if( !ReorientAndWriteImage(
+        if( !ReorientAndWriteImage( 
             anisotropicRegistrator->GetHighResolutionNormalVectorImage(),
             fixedImageReader->GetOutput()->GetDirection(),
             outputNormalVectorImageFileName ) )
@@ -881,7 +881,7 @@ int DoIt( int argc, char * argv[] )
         }
       else
         {
-        if( !ReorientAndWriteImage(
+        if( !ReorientAndWriteImage( 
             anisotropicRegistrator->GetNormalVectorImage(),
             fixedImageReader->GetOutput()->GetDirection(),
             outputNormalVectorImageFileName ) )
@@ -904,7 +904,7 @@ int DoIt( int argc, char * argv[] )
 
       // Get the extension for the normal matrix
       std::string::size_type loc
-          = outputNormalVectorImageFileName.find_last_of(".");
+          = outputNormalVectorImageFileName.find_last_of( "." );
       if( loc == std::string::npos )
         {
         tube::ErrorMessage( "Failed to find an extension for normal matrix" );
@@ -917,17 +917,17 @@ int DoIt( int argc, char * argv[] )
         return EXIT_FAILURE;
         }
 
-      std::string base = outputNormalVectorImageFileName.substr(0, loc);
-      std::string extension = outputNormalVectorImageFileName.substr(loc);
+      std::string base = outputNormalVectorImageFileName.substr( 0, loc );
+      std::string extension = outputNormalVectorImageFileName.substr( loc );
       std::string outputFileName;
       std::stringstream out;
 
       // Write out the normal matrix image
       out.clear();
-      out.str("");
+      out.str( "" );
       out << base << "Matrix" << extension;
       outputFileName = out.str();
-      if( !ReorientAndWriteImage(
+      if( !ReorientAndWriteImage( 
           sparseAnisotropicRegistrator->GetHighResolutionNormalMatrixImage(),
           fixedImageReader->GetOutput()->GetDirection(),
           outputFileName ) )
@@ -949,10 +949,10 @@ int DoIt( int argc, char * argv[] )
       NormalVectorImagePointer normalImage = NormalVectorImageType::New();
       for( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        sparseAnisotropicRegistrator->GetHighResolutionNormalVectorImage(
+        sparseAnisotropicRegistrator->GetHighResolutionNormalVectorImage( 
             normalImage, i, haveHighRes );
         out.clear();
-        out.str("");
+        out.str( "" );
         out << base << i << extension;
         if( i == 0 )
           {
@@ -962,7 +962,7 @@ int DoIt( int argc, char * argv[] )
           {
           outputFileName = out.str();
           }
-        if( !ReorientAndWriteImage(
+        if( !ReorientAndWriteImage( 
             normalImage.GetPointer(),
             fixedImageReader->GetOutput()->GetDirection(),
             outputFileName ) )
@@ -980,7 +980,7 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Write normal vector image" );
     }
 
-  // Write the weight regularizations image (in the space of the fixed image) if
+  // Write the weight regularizations image ( in the space of the fixed image ) if
   // we are using the anisotropic regularization
   if( haveAnisotropicRegistrator
       && outputWeightRegularizationsImageFileName != "" )
@@ -990,7 +990,7 @@ int DoIt( int argc, char * argv[] )
       {
       if( anisotropicRegistrator->GetHighResolutionWeightImage() )
         {
-        if( !ReorientAndWriteImage(
+        if( !ReorientAndWriteImage( 
             anisotropicRegistrator->GetHighResolutionWeightImage(),
             fixedImageReader->GetOutput()->GetDirection(),
             outputWeightRegularizationsImageFileName ) )
@@ -1002,7 +1002,7 @@ int DoIt( int argc, char * argv[] )
         }
       else
         {
-        if( !ReorientAndWriteImage(
+        if( !ReorientAndWriteImage( 
             anisotropicRegistrator->GetWeightImage(),
             fixedImageReader->GetOutput()->GetDirection(),
             outputWeightRegularizationsImageFileName ) )
@@ -1018,7 +1018,7 @@ int DoIt( int argc, char * argv[] )
       if( sparseAnisotropicRegistrator
             ->GetHighResolutionWeightRegularizationsImage() )
         {
-        if( !ReorientAndWriteImage(
+        if( !ReorientAndWriteImage( 
             sparseAnisotropicRegistrator
               ->GetHighResolutionWeightRegularizationsImage(),
             fixedImageReader->GetOutput()->GetDirection(),
@@ -1035,7 +1035,7 @@ int DoIt( int argc, char * argv[] )
         }
       else
         {
-        if( !ReorientAndWriteImage(
+        if( !ReorientAndWriteImage( 
             sparseAnisotropicRegistrator->GetWeightRegularizationsImage(),
             fixedImageReader->GetOutput()->GetDirection(),
             outputWeightRegularizationsImageFileName ) )
@@ -1053,7 +1053,7 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Write weight regularizations image" );
     }
 
-  // Write the weight matrix image (in the space of the fixed image) if we are
+  // Write the weight matrix image ( in the space of the fixed image ) if we are
   // using the sparse anisotropic regularization
   if( sparseAnisotropicRegistrator
       && outputWeightStructuresImageFileName != "" )
@@ -1061,7 +1061,7 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Start( "Write weight structures image" );
     if( sparseAnisotropicRegistrator->GetHighResolutionWeightStructuresImage() )
       {
-      if( !ReorientAndWriteImage(
+      if( !ReorientAndWriteImage( 
           sparseAnisotropicRegistrator
             ->GetHighResolutionWeightStructuresImage(),
           fixedImageReader->GetOutput()->GetDirection(),
@@ -1078,7 +1078,7 @@ int DoIt( int argc, char * argv[] )
       }
     else
       {
-      if( !ReorientAndWriteImage(
+      if( !ReorientAndWriteImage( 
           sparseAnisotropicRegistrator->GetWeightStructuresImage(),
           fixedImageReader->GetOutput()->GetDirection(),
           outputWeightStructuresImageFileName ) )

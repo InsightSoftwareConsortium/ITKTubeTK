@@ -12,7 +12,7 @@ Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -137,11 +137,11 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
   typename InputImageType::RegionType region =
     m_InputImage->GetLargestPossibleRegion();
 
-  itk::ImageRegionIteratorWithIndex< InputImageType > itI(
+  itk::ImageRegionIteratorWithIndex< InputImageType > itI( 
     m_InputImage, region );
-  itk::ImageRegionIteratorWithIndex< MaskImageType > itM(
+  itk::ImageRegionIteratorWithIndex< MaskImageType > itM( 
     m_MaskInputImage, region );
-  itk::ImageRegionIteratorWithIndex< ScaleImageType > itS(
+  itk::ImageRegionIteratorWithIndex< ScaleImageType > itS( 
     m_ScaleInputImage, region );
 
   typename RidgeExtractorType::Pointer ridgeExtractor =
@@ -421,4 +421,4 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeComputeSegmentTubesParameters_hxx)
+#endif // End !defined( __itktubeComputeSegmentTubesParameters_hxx )

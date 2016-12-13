@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -50,14 +50,14 @@ public:
   /** Standard class typedefs. */
   typedef Image< TPixel, VDimension >                     ImageType;
   typedef EnhanceContrastUsingPriorImageFilter            Self;
-  typedef ImageToImageFilter< ImageType,ImageType >       Superclass;
+  typedef ImageToImageFilter< ImageType, ImageType >      Superclass;
   typedef SmartPointer< Self >                            Pointer;
   typedef SmartPointer< const Self >                      ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( EnhanceContrastUsingPriorImageFilter, ImageToImageFilter );
 
   /** Some convenient typedefs. */
@@ -99,12 +99,14 @@ protected:
   EnhanceContrastUsingPriorImageFilter( void );
   virtual ~EnhanceContrastUsingPriorImageFilter( void ) {}
 
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
   virtual void GenerateData( void );
 
 private:
-  EnhanceContrastUsingPriorImageFilter( const Self& ); //purposely not implemented
-  void operator=( const Self& ); //purposely not implemented
+  //purposely not implemented
+  EnhanceContrastUsingPriorImageFilter( const Self& );
+  //purposely not implemented
+  void operator=( const Self& );
 
   typename ImageType::Pointer            m_InputMaskImage;
   float                                  m_ObjectScale;
@@ -124,4 +126,4 @@ private:
 #include "itktubeEnhanceContrastUsingPriorImageFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeEnhanceContrastUsingPriorImageFilter_h)
+#endif // End !defined( __itktubeEnhanceContrastUsingPriorImageFilter_h )

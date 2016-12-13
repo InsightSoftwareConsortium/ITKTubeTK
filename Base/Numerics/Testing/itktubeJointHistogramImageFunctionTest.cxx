@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -64,7 +64,7 @@ int itktubeJointHistogramImageFunctionTest( int argc, char * argv[] )
     {
     reader->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
     std::cerr << "Exception caught during input read:\n"  << e;
     return EXIT_FAILURE;
@@ -79,7 +79,7 @@ int itktubeJointHistogramImageFunctionTest( int argc, char * argv[] )
     {
     reader->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
     std::cerr << "Exception caught during mask read:\n"  << e;
     return EXIT_FAILURE;
@@ -93,7 +93,7 @@ int itktubeJointHistogramImageFunctionTest( int argc, char * argv[] )
     {
     reader->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
     std::cerr << "Exception caught during mask read:\n"  << e;
     return EXIT_FAILURE;
@@ -143,7 +143,7 @@ int itktubeJointHistogramImageFunctionTest( int argc, char * argv[] )
       {
       writerMean->Update();
       }
-    catch(itk::ExceptionObject& e)
+    catch( itk::ExceptionObject& e )
       {
       std::cerr << "Exception caught during mean write:\n"  << e;
       return EXIT_FAILURE;
@@ -160,7 +160,7 @@ int itktubeJointHistogramImageFunctionTest( int argc, char * argv[] )
       {
       writerStdDev->Update();
       }
-    catch(itk::ExceptionObject& e)
+    catch( itk::ExceptionObject& e )
       {
       std::cerr << "Exception caught during std. dev. write:\n"  << e;
       return EXIT_FAILURE;
@@ -198,7 +198,7 @@ int itktubeJointHistogramImageFunctionTest( int argc, char * argv[] )
     {
     writer->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
     std::cerr << "Exception caught during write:\n"  << e;
     return EXIT_FAILURE;

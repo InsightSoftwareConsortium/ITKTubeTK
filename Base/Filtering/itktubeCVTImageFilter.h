@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -108,7 +108,7 @@ public:
   /** */
   PointArrayType * GetCentroids( void )
     { return & m_Centroids; }
-  void SetCentroids(const PointArrayType * centroids);
+  void SetCentroids( const PointArrayType * centroids );
 
   /** */
   itkGetMacro( Seed, long int );
@@ -119,22 +119,22 @@ protected:
   CVTImageFilter( void );
   ~CVTImageFilter( void ) {}
 
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
   void GenerateInputRequestedRegion( void );
-  void EnlargeOutputRequestedRegion(DataObject * output);
+  void EnlargeOutputRequestedRegion( DataObject * output );
   void GenerateData( void );
 
-  double ComputeIteration(double & energyDiff);
-  void ComputeSample(PointArrayType * sample, unsigned int sampleSize,
-                     SamplingMethodEnum samplingMethod);
-  void ComputeClosest(const PointArrayType & sample,
+  double ComputeIteration( double & energyDiff );
+  void ComputeSample( PointArrayType * sample, unsigned int sampleSize,
+                     SamplingMethodEnum samplingMethod );
+  void ComputeClosest( const PointArrayType & sample,
                       const PointArrayType & centroids,
-                      unsigned int * nearest);
+                      unsigned int * nearest );
 
 private:
-  CVTImageFilter(const Self&);
-  void operator=(const Self&);
+  CVTImageFilter( const Self& );
+  void operator=( const Self& );
 
   typename OutputImageType::Pointer            m_OutputImage;
 
@@ -169,4 +169,4 @@ private:
 #include "itktubeCVTImageFilter.hxx"
 #endif
 
-#endif // End !defined(_itkCVTImageFilter_h)
+#endif // End !defined( _itkCVTImageFilter_h )

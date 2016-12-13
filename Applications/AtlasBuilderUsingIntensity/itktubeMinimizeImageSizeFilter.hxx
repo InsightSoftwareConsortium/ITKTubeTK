@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -35,14 +35,14 @@ namespace tube
 template< class TInputImage >
 MinimizeImageSizeFilter< TInputImage >
 ::MinimizeImageSizeFilter( void )
-: m_BufferImage(false),
-  m_ThresholdValue(0),
-  m_ThresholdAbove(false),
-  m_DefaultPixelValue(0),
-  m_ClipEndIndices(false),
-  m_ClipStartIndices(false)
+: m_BufferImage( false ),
+  m_ThresholdValue( 0 ),
+  m_ThresholdAbove( false ),
+  m_DefaultPixelValue( 0 ),
+  m_ClipEndIndices( false ),
+  m_ClipStartIndices( false )
 {
-  m_NumberOfBufferPixels.Fill(0);
+  m_NumberOfBufferPixels.Fill( 0 );
 }
 
 template< class TInputImage >
@@ -85,7 +85,7 @@ MinimizeImageSizeFilter<TInputImage>
   SizeType size;
   size = region.GetSize();
 
-  // Adjust for the buffer (if provided)
+  // Adjust for the buffer ( if provided )
   if( this->GetBufferImage() )
     {
     if( this->GetClipEndIndices() )
@@ -101,14 +101,17 @@ MinimizeImageSizeFilter<TInputImage>
         {
         size[j] += m_NumberOfBufferPixels[j];
         // Get the physical point for the new origin
-        newOrigin[j] -= ( m_NumberOfBufferPixels[j] * input->GetSpacing()[j] );
+        newOrigin[j] -= ( m_NumberOfBufferPixels[j] *
+          input->GetSpacing()[j] );
         }
       }
     }
 
   // resample image to given region parameters
-  typedef ResampleImageFilter< InputImageType, OutputImageType > ResampleFilterType;
-  typename ResampleFilterType::Pointer resampleFilter = ResampleFilterType::New();
+  typedef ResampleImageFilter< InputImageType, OutputImageType >
+    ResampleFilterType;
+  typename ResampleFilterType::Pointer resampleFilter =
+    ResampleFilterType::New();
 
   resampleFilter->SetInput( input );
   resampleFilter->SetOutputSpacing( input->GetSpacing() );
@@ -141,7 +144,7 @@ MinimizeImageSizeFilter< TInputImage >
     {
     ImageSliceConstIteratorType  it_input( input, region );
     it_input.SetFirstDirection( i );
-    it_input.SetSecondDirection( ( (i+1)%ImageDimension ) );
+    it_input.SetSecondDirection( ( ( i+1 )%ImageDimension ) );
 
     it_input.GoToReverseBegin();
 
@@ -182,7 +185,7 @@ MinimizeImageSizeFilter< TInputImage >
     // dimension i+2
     IndexType index = it_input.GetIndex();
 
-    unsigned int dim = (i+2)%ImageDimension;  //Dimension that is changed
+    unsigned int dim = ( i+2 )%ImageDimension;  //Dimension that is changed
     if( index[dim] < 0 )
       {
       std::cout << "Index below 0 = " << index[dim] << std::endl;
@@ -211,7 +214,7 @@ MinimizeImageSizeFilter< TInputImage >
     {
     ImageSliceConstIteratorType  it_input( input, region );
     it_input.SetFirstDirection( i );
-    it_input.SetSecondDirection( ( (i+1)%ImageDimension ) );
+    it_input.SetSecondDirection( ( ( i+1 )%ImageDimension ) );
 
     it_input.GoToBegin();
 
@@ -263,4 +266,4 @@ MinimizeImageSizeFilter< TInputImage >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeMinimizeImageSizeFilter_hxx)
+#endif // End !defined( __itktubeMinimizeImageSizeFilter_hxx )

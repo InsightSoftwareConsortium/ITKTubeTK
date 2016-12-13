@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -469,7 +469,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 
   if( numClasses == 0 )
     {
-    std::cerr << "# of classes (object ids) = 0.  Cannot compute basis."
+    std::cerr << "# of classes ( object ids ) = 0.  Cannot compute basis."
       << std::endl;
     return;
     }
@@ -687,7 +687,7 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
     MatrixType biasMatrix;
     biasVector.set_size( numInputFeatures );
     biasVector.fill( 0 );
-    biasMatrix.set_size( numInputFeatures, numInputFeatures);
+    biasMatrix.set_size( numInputFeatures, numInputFeatures );
     biasMatrix.fill( 0 );
     for( unsigned int f = 0; f < m_NumberOfLDABasisToUseAsFeatures; ++f )
       {
@@ -874,4 +874,4 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeBasisFeatureVectorGenerator_hxx)
+#endif // End !defined( __itktubeBasisFeatureVectorGenerator_hxx )

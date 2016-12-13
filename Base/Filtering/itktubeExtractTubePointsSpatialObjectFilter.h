@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -39,8 +39,8 @@ namespace tube
  * \brief Extract all points in a tree of TubeSpatialObject's into an Array.
  *
  * ExtractTubePointsSpatialObjectFilter iterates through a tree of
- * TubeSpatialObject's (or classes derived from
- * itk::TubeSpatialObject), and places all the TubeSpatialObjectPointType
+ * TubeSpatialObject's ( or classes derived from
+ * itk::TubeSpatialObject ), and places all the TubeSpatialObjectPointType
  * points
  * into an itk::VectorContainer< TubeSpatialObjectType::TubePointType >.
  * It is assumed that
@@ -74,7 +74,7 @@ public:
   typedef GroupSpatialObject< TubeSpatialObjectType::ObjectDimension >
                                                GroupSpatialObjectType;
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( ExtractTubePointsSpatialObjectFilter, ProcessObject );
 
   /** Standard New method. */
@@ -122,4 +122,4 @@ private:
 #include "itktubeExtractTubePointsSpatialObjectFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeExtractTubePointsSpatialObjectFilter_h)
+#endif // End !defined( __itktubeExtractTubePointsSpatialObjectFilter_h )

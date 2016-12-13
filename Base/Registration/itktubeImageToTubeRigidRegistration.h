@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -145,4 +145,4 @@ private:
 #include "itktubeImageToTubeRigidRegistration.hxx"
 #endif
 
-#endif // End !defined(__itktubeImageToTubeRigidRegistration_h)
+#endif // End !defined( __itktubeImageToTubeRigidRegistration_h )

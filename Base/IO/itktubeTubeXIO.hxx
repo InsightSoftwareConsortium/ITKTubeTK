@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -80,26 +80,26 @@ TubeXIO< TDimension >
   MET_FieldRecordType * mF;
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField(mF, "NDims", MET_INT, false);
-  fields.push_back(mF);
-  int nDimsRecNum = MET_GetFieldRecordNumber("NDims", &fields);
+  MET_InitReadField( mF, "NDims", MET_INT, false );
+  fields.push_back( mF );
+  int nDimsRecNum = MET_GetFieldRecordNumber( "NDims", &fields );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField(mF, "Dimensions", MET_FLOAT_ARRAY, false, nDimsRecNum);
-  fields.push_back(mF);
+  MET_InitReadField( mF, "Dimensions", MET_FLOAT_ARRAY, false, nDimsRecNum );
+  fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField(mF, "VoxelSize", MET_FLOAT_ARRAY, false, nDimsRecNum);
-  fields.push_back(mF);
+  MET_InitReadField( mF, "VoxelSize", MET_FLOAT_ARRAY, false, nDimsRecNum );
+  fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField(mF, "NObjects", MET_INT, false);
-  fields.push_back(mF);
+  MET_InitReadField( mF, "NObjects", MET_INT, false );
+  fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField(mF, "End Header", MET_NONE, false);
+  MET_InitReadField( mF, "End Header", MET_NONE, false );
   mF->terminateRead = true;
-  fields.push_back(mF);
+  fields.push_back( mF );
 
   std::ifstream tmpReadStream( _fileName.c_str(), std::ios::binary |
     std::ios::in );
@@ -129,9 +129,9 @@ TubeXIO< TDimension >
   mF = MET_GetFieldRecord( "NDims", &fields );
   if( mF->defined )
     {
-    int nDims = (int)mF->value[0];
+    int nDims = ( int )mF->value[0];
 
-    if( (int)mF->value[0] != TDimension )
+    if( ( int )mF->value[0] != TDimension )
       {
       std::cerr << "Tube: Read failed: object is " << nDims
         << " dimensional and was expecting " << TDimension << " dimensional."
@@ -146,29 +146,29 @@ TubeXIO< TDimension >
     }
 
   mF = MET_GetFieldRecord( "Dimensions", &fields );
-  if(mF->defined)
+  if( mF->defined )
     {
     for( unsigned int i=0; i<TDimension; ++i )
       {
-      this->m_Dimensions[i] = (int)( mF->value[i] );
+      this->m_Dimensions[i] = ( int )( mF->value[i] );
       }
     }
 
   double voxelSize[ TDimension ];
   mF = MET_GetFieldRecord( "VoxelSize", &fields );
-  if(mF->defined)
+  if( mF->defined )
     {
     for( unsigned int i=0; i<TDimension; ++i )
       {
-      voxelSize[i] = (float)( mF->value[i] );
+      voxelSize[i] = ( float )( mF->value[i] );
       }
     }
 
   int nObjects = 0;
   mF = MET_GetFieldRecord( "NObjects", &fields );
-  if(mF->defined)
+  if( mF->defined )
     {
-    nObjects = (int)mF->value[0];
+    nObjects = ( int )mF->value[0];
     }
 
   for( unsigned int i=0; i<fields.size(); ++i )
@@ -178,45 +178,45 @@ TubeXIO< TDimension >
   fields.clear();
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField(mF, "ID", MET_INT, false);
-  fields.push_back(mF);
+  MET_InitReadField( mF, "ID", MET_INT, false );
+  fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField(mF, "Type", MET_STRING, false);
-  fields.push_back(mF);
+  MET_InitReadField( mF, "Type", MET_STRING, false );
+  fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField(mF, "Anat", MET_STRING, false);
-  fields.push_back(mF);
+  MET_InitReadField( mF, "Anat", MET_STRING, false );
+  fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField(mF, "TreeType", MET_STRING, false);
-  fields.push_back(mF);
+  MET_InitReadField( mF, "TreeType", MET_STRING, false );
+  fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField(mF, "VParent", MET_INT, false);
-  fields.push_back(mF);
+  MET_InitReadField( mF, "VParent", MET_INT, false );
+  fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField(mF, "Attachpt", MET_INT, false);
-  fields.push_back(mF);
+  MET_InitReadField( mF, "Attachpt", MET_INT, false );
+  fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField(mF, "Color", MET_STRING, false);
-  fields.push_back(mF);
+  MET_InitReadField( mF, "Color", MET_STRING, false );
+  fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField(mF, "PointDim", MET_STRING, true);
-  fields.push_back(mF);
+  MET_InitReadField( mF, "PointDim", MET_STRING, true );
+  fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField(mF, "NPoints", MET_INT, true);
-  fields.push_back(mF);
+  MET_InitReadField( mF, "NPoints", MET_INT, true );
+  fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField(mF, "Points", MET_NONE, true);
+  MET_InitReadField( mF, "Points", MET_NONE, true );
   mF->terminateRead = true;
-  fields.push_back(mF);
+  fields.push_back( mF );
 
   for( int obj = 0; obj < nObjects; ++obj )
     {
@@ -233,47 +233,47 @@ TubeXIO< TDimension >
 
     int tubeId = 0;
     mF = MET_GetFieldRecord( "ID", &fields );
-    if(mF->defined)
+    if( mF->defined )
       {
-      tubeId = (int)( mF->value[0] );
+      tubeId = ( int )( mF->value[0] );
       }
 
     char tubeType[80];
     strcpy( tubeType, "" );
     mF = MET_GetFieldRecord( "Type", &fields );
-    if(mF->defined)
+    if( mF->defined )
       {
-      strcpy( tubeType, (char *)(mF->value) );
+      strcpy( tubeType, ( char * )( mF->value ) );
       }
 
     char tubeAnat[80];
     strcpy( tubeAnat, "" );
     mF = MET_GetFieldRecord( "Anat", &fields );
-    if(mF->defined)
+    if( mF->defined )
       {
-      strcpy( tubeAnat, (char *)(mF->value) );
+      strcpy( tubeAnat, ( char * )( mF->value ) );
       }
 
     char tubeTreeType[80];
     strcpy( tubeTreeType, "" );
     mF = MET_GetFieldRecord( "TreeType", &fields );
-    if(mF->defined)
+    if( mF->defined )
       {
-      strcpy( tubeTreeType, (char *)(mF->value) );
+      strcpy( tubeTreeType, ( char * )( mF->value ) );
       }
 
     int tubeParentId = -1;
     mF = MET_GetFieldRecord( "VParent", &fields );
-    if(mF->defined)
+    if( mF->defined )
       {
-      tubeParentId = ( int )(mF->value[0]);
+      tubeParentId = ( int )( mF->value[0] );
       }
 
     int tubeParentPoint = -1;
     mF = MET_GetFieldRecord( "Attachpt", &fields );
-    if(mF->defined)
+    if( mF->defined )
       {
-      tubeParentPoint = ( int )(mF->value[0]);
+      tubeParentPoint = ( int )( mF->value[0] );
       }
 
     float tubeColor[4];
@@ -282,7 +282,7 @@ TubeXIO< TDimension >
     tubeColor[1] = 0;
     tubeColor[2] = 0;
     tubeColor[3] = 1;
-    if(mF->defined)
+    if( mF->defined )
       {
       std::vector< float > colors;
       ::tube::StringToVector( ( char * )( mF->value ), colors, " " );
@@ -295,16 +295,16 @@ TubeXIO< TDimension >
     char tubePointDim[80];
     strcpy( tubePointDim, "" );
     mF = MET_GetFieldRecord( "PointDim", &fields );
-    if(mF->defined)
+    if( mF->defined )
       {
-      strcpy( tubePointDim, (char *)(mF->value) );
+      strcpy( tubePointDim, ( char * )( mF->value ) );
       }
 
     unsigned int nPoints = 0;
     mF = MET_GetFieldRecord( "NPoints", &fields );
-    if(mF->defined)
+    if( mF->defined )
       {
-      nPoints = (unsigned int)( mF->value[0] );
+      nPoints = ( unsigned int )( mF->value[0] );
       }
 
     typename TubeType::Pointer tube = TubeType::New();
@@ -389,7 +389,7 @@ TubeXIO< TDimension >
 ::Write( const std::string & _fileName )
 {
   std::ofstream tmpWriteStream( _fileName.c_str(), std::ios::binary |
-    std::ios::out);
+    std::ios::out );
 
   tmpWriteStream << "NDims: " << TDimension << std::endl;
   tmpWriteStream << "Dimensions: ";
@@ -410,7 +410,7 @@ TubeXIO< TDimension >
   tmpWriteStream << "VoxelSize:";
   for( unsigned int i=0; i<TDimension; ++i )
     {
-    tmpWriteStream << " " << ( *(tubeList->begin()) )->GetSpacing()[i];
+    tmpWriteStream << " " << ( *( tubeList->begin() ) )->GetSpacing()[i];
     }
   tmpWriteStream << std::endl;
 
@@ -423,7 +423,7 @@ TubeXIO< TDimension >
   typename TubeType::ChildrenListType::iterator tEnd = tubeList->end();
   while( tIt != tEnd )
     {
-    typename TubeType::Pointer tube = ((TubeType *)(tIt->GetPointer()));
+    typename TubeType::Pointer tube = ( ( TubeType * )( tIt->GetPointer() ) );
 
     tmpWriteStream << "ID: " << tube->GetId() << std::endl;
     tmpWriteStream << "Type: Tube" << std::endl;

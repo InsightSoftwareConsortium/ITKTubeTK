@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -68,7 +68,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( TubePointWeightsCalculator, Object );
 
   /** Compute the resolutions weights on the input TubeTreeSpatialObject using the
@@ -91,15 +91,15 @@ protected:
   TubePointWeightsCalculator( void );
   virtual ~TubePointWeightsCalculator( void ) {}
 
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
   typename PointWeightFunctionType::ConstPointer m_PointWeightFunction;
 
   PointWeightsType m_PointWeights;
 
 private:
-  TubePointWeightsCalculator(const Self&); //purposely not implemented
-  void operator=(const Self&);            //purposely not implemented
+  TubePointWeightsCalculator( const Self& ); //purposely not implemented
+  void operator=( const Self& );            //purposely not implemented
 
   typename TubeTreeSpatialObjectType::ConstPointer m_TubeTreeSpatialObject;
 
@@ -113,4 +113,4 @@ private:
 #include "itktubeTubePointWeightsCalculator.hxx"
 #endif
 
-#endif // End !defined(__itktubeTubePointWeightsCalculator_h)
+#endif // End !defined( __itktubeTubePointWeightsCalculator_h )

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -938,8 +938,8 @@ M_Read( void )
   m_DataMax = ( double )mF->value[0];
 
   mF = MET_GetFieldRecord( "TubeColor", &m_Fields );
-  std::string str = (char *)(mF->value);
-  std::vector< double > clr(4);
+  std::string str = ( char * )( mF->value );
+  std::vector< double > clr( 4 );
   ::tube::StringToVector( str, clr, " " );
   m_TubeColor[0] = clr[0];
   m_TubeColor[1] = clr[1];
@@ -953,7 +953,7 @@ M_Read( void )
   m_RidgeScaleKernelExtent = ( double )mF->value[0];
 
   mF = MET_GetFieldRecord( "RidgeDynamicScale", &m_Fields );
-  if( (char)(mF->value[0]) == 't' || (char)(mF->value[0]) == 'T' )
+  if( ( char )( mF->value[0] ) == 't' || ( char )( mF->value[0] ) == 'T' )
     {
     m_RidgeDynamicScale = true;
     }
@@ -963,7 +963,7 @@ M_Read( void )
     }
 
   mF = MET_GetFieldRecord( "RidgeDynamicStepSize", &m_Fields );
-  if( (char)(mF->value[0]) == 't' || (char)(mF->value[0]) == 'T' )
+  if( ( char )( mF->value[0] ) == 't' || ( char )( mF->value[0] ) == 'T' )
     {
     m_RidgeDynamicStepSize = true;
     }

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -334,10 +334,10 @@ BlurImageFunction<TInputImage>
     KernelWeightsListType::const_iterator it = m_KernelWeights.begin();
     KernelWeightsListType::const_iterator itEnd = m_KernelWeights.end();
     typename KernelXListType::const_iterator  itX = m_KernelX.begin();
-    int skipX = (*itX)[0];
+    int skipX = ( *itX )[0];
     while( it != itEnd )
       {
-      if( (*itX)[0] == skipX )
+      if( ( *itX )[0] == skipX )
         {
         for( unsigned int i=0; i<ImageDimension; i++ )
           {
@@ -566,4 +566,4 @@ BlurImageFunction<TInputImage>
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeBlurImageFunction_hxx)
+#endif // End !defined( __itktubeBlurImageFunction_hxx )

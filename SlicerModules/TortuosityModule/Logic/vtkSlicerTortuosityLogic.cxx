@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -79,7 +79,7 @@ vtkSlicerTortuosityLogic::vtkSlicerTortuosityLogic( void )
   this->m_MetricFlagToArrayNames
       [ FilterType::INFLECTION_POINTS_METRIC ] = "InflectionPointsMetric";
 
-  // Fill map of GroupFlag to metricFlag (TubeTK flag)
+  // Fill map of GroupFlag to metricFlag ( TubeTK flag )
   this->m_GroupFlagToMetricFlag[ BasicMetricsGroup ] =
                                     FilterType::AVERAGE_RADIUS_METRIC
                                   | FilterType::CHORD_LENGTH_METRIC
@@ -114,7 +114,7 @@ vtkSlicerTortuosityLogic::~vtkSlicerTortuosityLogic( void )
 //------------------------------------------------------------------------------
 void vtkSlicerTortuosityLogic::PrintSelf( ostream& os, vtkIndent indent )
 {
-  Superclass::PrintSelf(os,indent);
+  Superclass::PrintSelf( os,indent );
 }
 
 //------------------------------------------------------------------------------
@@ -304,7 +304,7 @@ bool vtkSlicerTortuosityLogic
       oss << "Hist-Bin#"
           << i << ": "
           << i*histStep <<" - "
-          << (i+1)*histStep;
+          << ( i+1 )*histStep;
       std::string binArrayName =oss.str();
 
       if( m_HistogramArrays.size() < numberOfBins )
@@ -375,8 +375,8 @@ bool vtkSlicerTortuosityLogic
 
     // Fill the arrays
 
-    // tubeIndex: index of points in the whole tube data set (same across all tubes)
-    // filterIndex: index of points in a specific tube (reset to 0 when changing tube)
+    // tubeIndex: index of points in the whole tube data set ( same across all tubes )
+    // filterIndex: index of points in a specific tube ( reset to 0 when changing tube )
     int numberOfPoints = currTube->GetPoints().size();
     for( int filterIndex = 0, tubeIndex = totalNumberOfPointsAdded;
       filterIndex < numberOfPoints; ++filterIndex, ++tubeIndex )
@@ -394,7 +394,7 @@ bool vtkSlicerTortuosityLogic
             }
           if( arrayName == "ChordLengthMetric" )
             {
-            metricsVector[i]->SetValue( tubeIndex, filter->GetChordLengthMetric());
+            metricsVector[i]->SetValue( tubeIndex, filter->GetChordLengthMetric() );
             }
           if( arrayName == "DistanceMetric" )
             {
@@ -464,7 +464,7 @@ bool vtkSlicerTortuosityLogic
             VesselTubePointType* tubePointCurrent = dynamic_cast< VesselTubePointType* >
               ( currTube->GetPoint( filterIndex ) );
             VesselTubePointType* tubePointBefore = dynamic_cast< VesselTubePointType* >
-              ( currTube->GetPoint( filterIndex - 1) );
+              ( currTube->GetPoint( filterIndex - 1 ) );
             double height = tubePointCurrent->GetPosition().EuclideanDistanceTo
               ( tubePointBefore->GetPosition() );
             double radius =
@@ -631,7 +631,7 @@ bool vtkSlicerTortuosityLogic
 }
 
 //------------------------------------------------------------------------------
-bool vtkSlicerTortuosityLogic::LoadColorsFromCSV(
+bool vtkSlicerTortuosityLogic::LoadColorsFromCSV( 
   vtkMRMLSpatialObjectsNode *node, const char* filename )
 {
   if ( !node || !filename )
@@ -722,7 +722,7 @@ bool vtkSlicerTortuosityLogic::LoadColorsFromCSV(
         break;
         }
       }
-    if (tubeIndex == -1)
+    if ( tubeIndex == -1 )
       {
       vtkDebugMacro( <<" not found in the CSV file" );
       totalNumberOfPoints += currTube->GetPoints().size();

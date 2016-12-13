@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -49,9 +49,9 @@ SheetnessMeasureImageFilter< TPixel >
 
   // Hessian( Image ) = Jacobian( Gradient ( Image ) )  is symmetric
   m_SymmetricEigenValueFilter = EigenAnalysisFilterType::New();
-  m_SymmetricEigenValueFilter->SetDimension(ImageDimension);
-  m_SymmetricEigenValueFilter->OrderEigenValuesBy(
-    EigenAnalysisFilterType::FunctorType::OrderByValue);
+  m_SymmetricEigenValueFilter->SetDimension( ImageDimension );
+  m_SymmetricEigenValueFilter->OrderEigenValuesBy( 
+    EigenAnalysisFilterType::FunctorType::OrderByValue );
 }
 
 template< class TPixel >
@@ -76,7 +76,7 @@ SheetnessMeasureImageFilter< TPixel >
   // walk the region of eigenvalues and get the vesselness measure
   EigenValueArrayType                                   eigenValue;
   ImageRegionConstIterator< EigenValueOutputImageType > it;
-  it = ImageRegionConstIterator< EigenValueOutputImageType >(
+  it = ImageRegionConstIterator< EigenValueOutputImageType >( 
     eigenImage, eigenImage->GetRequestedRegion() );
   ImageRegionIterator< OutputImageType > oit;
   this->AllocateOutputs();
@@ -139,7 +139,7 @@ SheetnessMeasureImageFilter< TPixel >
       {
       if( a3 > 0.0 )
         {
-        oit.Set(NumericTraits< OutputPixelType >::Zero);
+        oit.Set( NumericTraits< OutputPixelType >::Zero );
         ++it;
         ++oit;
         continue;
@@ -149,7 +149,7 @@ SheetnessMeasureImageFilter< TPixel >
       {
       if( a3 < 0.0 )
         {
-        oit.Set(NumericTraits< OutputPixelType >::Zero);
+        oit.Set( NumericTraits< OutputPixelType >::Zero );
         ++it;
         ++oit;
         continue;
@@ -180,7 +180,7 @@ SheetnessMeasureImageFilter< TPixel >
         ( 2.0 * m_Beta * m_Beta ) ) );
     sheetness *= ( 1.0 - std::exp( - ( Rn * Rn ) /
         ( 2.0 * m_Cfactor * m_Cfactor     ) ) );
-    oit.Set(static_cast< OutputPixelType >( sheetness));
+    oit.Set( static_cast< OutputPixelType >( sheetness ) );
 
     ++it;
     ++oit;
@@ -190,9 +190,9 @@ SheetnessMeasureImageFilter< TPixel >
 template< class TPixel >
 void
 SheetnessMeasureImageFilter< TPixel >
-::PrintSelf(std::ostream & os, Indent indent) const
+::PrintSelf( std::ostream & os, Indent indent ) const
 {
-  Superclass::PrintSelf(os, indent);
+  Superclass::PrintSelf( os, indent );
 
   os << indent << "Alpha1: " << m_Alpha << std::endl;
   os << indent << "Beta: " << m_Beta << std::endl;
@@ -211,4 +211,4 @@ SheetnessMeasureImageFilter< TPixel >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeSheetnessMeasureImageFilter_hxx)
+#endif // End !defined( __itktubeSheetnessMeasureImageFilter_hxx )

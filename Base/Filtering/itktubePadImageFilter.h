@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -75,21 +75,22 @@ public:
   typedef typename InputImageType::SizeType        SizeType;
   
   /** ImageDimension constants */
-  itkStaticConstMacro(InputImageDimension, unsigned int,
-                      TInputImage::ImageDimension);
-  itkStaticConstMacro(OutputImageDimension, unsigned int,
-                      TOutputImage::ImageDimension);
-  itkStaticConstMacro(ImageDimension, unsigned int,
-                      TOutputImage::ImageDimension);
+  itkStaticConstMacro( InputImageDimension, unsigned int,
+                      TInputImage::ImageDimension );
+  itkStaticConstMacro( OutputImageDimension, unsigned int,
+                      TOutputImage::ImageDimension );
+  itkStaticConstMacro( ImageDimension, unsigned int,
+                      TOutputImage::ImageDimension );
 
   /** Standard New method. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Runtime information support. */
   itkTypeMacro( PadImageFilter, ImageToImageFilter );
 
   /**
-   * Set/Get whether the images must be padded to a size equal to a power of two.
+   * Set/Get whether the images must be padded to a size equal to a
+   * power of two.
    * This is required for vnl implementation of FFT, but not for FFTW.
    * The default is false.
    */
@@ -108,34 +109,36 @@ public:
     {
     return m_GreatestPrimeFactor == 2;
     }
-  itkBooleanMacro(PadToPowerOfTwo);
+  itkBooleanMacro( PadToPowerOfTwo );
 
   /**
-   * Set/Get the greatest prime factor allowed on the size of the padded image.
-   * The filter increase the size of the image to reach a size with the greatest
-   * prime factor smaller or equal to the specified value. The default value is
-   * 13, which is the greatest prime number for which the FFT are precomputed
-   * in FFTW, and thus gives very good performance.
-   * A greatest prime factor of 2 produce a size which is a power of 2, and thus
-   * is suitable for vnl base fft filters.
-   * A greatest prime factor of 1 or less - typically 0 - disable the extra padding.
+   * Set/Get the greatest prime factor allowed on the size of the padded
+   * image. The filter increase the size of the image to reach a size with
+   * the greatest prime factor smaller or equal to the specified value.
+   * The default value is 13, which is the greatest prime number for which
+   * the FFT are precomputed in FFTW, and thus gives very good performance.
+   * A greatest prime factor of 2 produce a size which is a power of 2,
+   * and thus is suitable for vnl base fft filters.
+   * A greatest prime factor of 1 or less - typically 0 - disable the
+   * extra padding.
    */
-  itkGetConstMacro(GreatestPrimeFactor, int);
-  itkSetMacro(GreatestPrimeFactor, int);
+  itkGetConstMacro( GreatestPrimeFactor, int );
+  itkSetMacro( GreatestPrimeFactor, int );
   
   /**
    * Set/Get the padding method.
    */
-  typedef enum { NO_PADDING=0, ZERO_FLUX_NEUMANN=1, ZERO=2, MIRROR=3, WRAP=4 } PadMethod;
-  itkGetConstMacro(PadMethod, int);
-  itkSetMacro(PadMethod, int);
+  typedef enum { NO_PADDING=0, ZERO_FLUX_NEUMANN=1, ZERO=2, MIRROR=3,
+    WRAP=4 } PadMethod;
+  itkGetConstMacro( PadMethod, int );
+  itkSetMacro( PadMethod, int );
   
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
-  itkConceptMacro(InputHasPixelTraitsCheck,
-    (Concept::HasPixelTraits<InputImagePixelType>));
-  itkConceptMacro(InputHasNumericTraitsCheck,
-    (Concept::HasNumericTraits<InputImagePixelType>));
+  itkConceptMacro( InputHasPixelTraitsCheck,
+    ( Concept::HasPixelTraits<InputImagePixelType> ) );
+  itkConceptMacro( InputHasNumericTraitsCheck,
+    ( Concept::HasNumericTraits<InputImagePixelType> ) );
   /** End concept checking */
 #endif
 
@@ -143,7 +146,7 @@ public:
 protected:
   PadImageFilter();
   ~PadImageFilter() {};
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
   void GenerateInputRequestedRegion();
   void GenerateOutputInformation();
@@ -154,15 +157,15 @@ protected:
   
 
 private:
-  PadImageFilter(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  PadImageFilter( const Self& ); //purposely not implemented
+  void operator=( const Self& ); //purposely not implemented
 
   int m_GreatestPrimeFactor;
   int m_PadMethod;
 
   bool isPrime( int n )
     {
-    int last = (int)std::sqrt( static_cast<float>( n ) );
+    int last = ( int )std::sqrt( static_cast<float>( n ) );
     for( int x=2; x<=last; x++ )
       {
       if( n%x == 0 )

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -53,7 +53,7 @@ void
 ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
-  SuperClass::PrintSelf(os, indent);
+  SuperClass::PrintSelf( os, indent );
   os << "TubeId: " << m_TubeId << std::endl;
 }
 
@@ -76,14 +76,14 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
   bool blnTubeFound = false;
   char tubeName[] = "Tube";
 
-  TubeListType * tubeList = inputTubeGroup->GetChildren(
+  TubeListType * tubeList = inputTubeGroup->GetChildren( 
     inputTubeGroup->GetMaximumDepth(), tubeName );
 
   typename TubeListType::const_iterator itTubes = tubeList->begin();
 
   while( itTubes != tubeList->end() )
     {
-    // std::cout m_TubeId << " == " << (*itTubes)->GetId() << std::endl;
+    // std::cout m_TubeId << " == " << ( *itTubes )->GetId() << std::endl;
 
     if( static_cast< unsigned long >( ( *itTubes )->GetId() ) == m_TubeId )
       {
@@ -142,14 +142,14 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
   // Determine the mean distance between consecutive tube points
   double meanTubePointDist = 0;
 
-  for(unsigned int pid = 1; pid < tubePointList.size(); pid++)
+  for( unsigned int pid = 1; pid < tubePointList.size(); pid++ )
     {
     // compute distance between current and previous tube point
     double curDist = 0;
     typename TubeType::PointType p1 = tubePointList[pid-1].GetPosition();
     typename TubeType::PointType p2 = tubePointList[pid].GetPosition();
 
-    for(unsigned int i = 0; i < Dimension; i++)
+    for( unsigned int i = 0; i < Dimension; i++ )
       {
       curDist += ( p2[i] - p1[i] ) * ( p2[i] - p1[i] );
       }
@@ -167,7 +167,7 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
     m_InputImage->GetSpacing();
   double minInputSpacing = inputSpacing[0];
 
-  for(unsigned int i = 1; i < Dimension; i++)
+  for( unsigned int i = 1; i < Dimension; i++ )
     {
     if( inputSpacing[i] < minInputSpacing )
       {
@@ -185,7 +185,7 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
   // For other dimensions its set to the minimum input spacing
   typename OutputImageType::SpacingType outputSpacing;
 
-  for(unsigned int i = 0; i < Dimension-1; i++)
+  for( unsigned int i = 0; i < Dimension-1; i++ )
     {
     outputSpacing[i] = minInputSpacing;
     }
@@ -196,14 +196,14 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
 
   // set start index1
   typename OutputImageType::IndexType startIndex;
-  startIndex.Fill(0);
+  startIndex.Fill( 0 );
 
   // set size
   typename OutputImageType::SizeType size;
-  for(unsigned int i = 0; i < Dimension-1; i++)
+  for( unsigned int i = 0; i < Dimension-1; i++ )
     {
-    size[i] = 2 * (typename OutputImageType::SizeValueType)
-      (0.5 + (maxTubeRadius / outputSpacing[i])) + 1;
+    size[i] = 2 * ( typename OutputImageType::SizeValueType )
+      ( 0.5 + ( maxTubeRadius / outputSpacing[i] ) ) + 1;
     }
   size[Dimension-1] = tubePointList.size();
 
@@ -271,7 +271,7 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
       pTubeIndexPhysTransform->TransformCovariantVector( itPts->GetNormal2() );
     curTubeNormal2.Normalize();
 
-    double curTubeRadius = (*itPts).GetRadius();
+    double curTubeRadius = ( *itPts ).GetRadius();
 
     //std::cout << curTubeNormal1.GetNorm() << std::endl;
     //std::cout << curTubeNormal2.GetNorm() << std::endl;
@@ -280,7 +280,7 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
     typename OutputImageType::RegionType sliceRegion;
 
     typename OutputImageType::IndexType sliceStartIndex;
-    sliceStartIndex.Fill(0);
+    sliceStartIndex.Fill( 0 );
     sliceStartIndex[Dimension-1] = ptInd;
 
     typename OutputImageType::SizeType sliceSize;
@@ -306,7 +306,7 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
 
       double distToCenter = 0;
 
-      for(unsigned int i = 0; i < Dimension; i++)
+      for( unsigned int i = 0; i < Dimension; i++ )
         {
         curInputPoint[i] = curTubePosition[i];
         }
@@ -316,7 +316,7 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
         double stepN1 = ( curOutIndex[0] - 0.5 * sliceSize[0] )
           * outputSpacing[0];
 
-        for(unsigned int i = 0; i < Dimension; i++)
+        for( unsigned int i = 0; i < Dimension; i++ )
           {
           curInputPoint[i] += stepN1 * curTubeNormal1[i];
           }
@@ -331,7 +331,7 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
         double stepN2 = ( curOutIndex[1] - 0.5 * sliceSize[1] )
           * outputSpacing[1];
 
-        for(unsigned int i = 0; i < Dimension; i++)
+        for( unsigned int i = 0; i < Dimension; i++ )
           {
           curInputPoint[i] += stepN1 * curTubeNormal1[i];
           curInputPoint[i] += stepN2 * curTubeNormal2[i];

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -38,8 +38,8 @@ public:
     }
   const double & Value( const vnl_vector<int> & x )
     {
-    m_Val = std::sin((double)x[0]/2);
-    m_Val += std::cos((double)x[1]/2);
+    m_Val = std::sin( ( double )x[0]/2 );
+    m_Val += std::cos( ( double )x[1]/2 );
     return m_Val;
     }
 
@@ -57,8 +57,8 @@ public:
     }
   const double & Value( const vnl_vector<double> & x )
     {
-    m_Val = std::sin((double)x[0]/2);
-    m_Val += std::cos((double)x[1]/2);
+    m_Val = std::sin( ( double )x[0]/2 );
+    m_Val += std::cos( ( double )x[1]/2 );
     return m_Val;
     }
 
@@ -75,13 +75,13 @@ class MySANDFuncD : public tube::UserFunction< vnl_vector< double >,
 public:
   MySANDFuncD( void )
     {
-    m_Deriv.set_size(2);
+    m_Deriv.set_size( 2 );
     m_Deriv.fill( 0 );
     }
   const vnl_vector<double> & Value( const vnl_vector<double> & x )
     {
-    m_Deriv[0] = std::cos((double)x[0]/2);
-    m_Deriv[1] = -std::sin((double)x[1]/2);
+    m_Deriv[0] = std::cos( ( double )x[0]/2 );
+    m_Deriv[1] = -std::sin( ( double )x[1]/2 );
     return m_Deriv;
     }
 
@@ -113,7 +113,7 @@ int tubeSplineNDTest( int argc, char * argv[] )
 
   spline.SetClip( true );
 
-  vnl_vector<int> xMin(2, -6);
+  vnl_vector<int> xMin( 2, -6 );
   spline.SetXMin( xMin );
   if( spline.GetXMin()[0] != -6 )
     {
@@ -121,7 +121,7 @@ int tubeSplineNDTest( int argc, char * argv[] )
     returnStatus = EXIT_FAILURE;
     }
 
-  vnl_vector<int> xMax(2, 6);
+  vnl_vector<int> xMax( 2, 6 );
   spline.SetXMax( xMax );
   if( spline.GetXMax()[0] != 6 )
     {
@@ -155,67 +155,67 @@ int tubeSplineNDTest( int argc, char * argv[] )
     im->GetLargestPossibleRegion() );
   ImageType::PointType pnt;
   itIm.GoToBegin();
-  vnl_vector<double> x(2);
-  vnl_vector<double> d(2);
-  vnl_vector<int> di(2);
+  vnl_vector<double> x( 2 );
+  vnl_vector<double> d( 2 );
+  vnl_vector<int> di( 2 );
   di.fill( 0 );
   di[1] = 1;
-  vnl_matrix<double> m(2,2);
-  vnl_vector<double> d2(2);
+  vnl_matrix<double> m( 2,2 );
+  vnl_vector<double> d2( 2 );
   while( !itIm.IsAtEnd() )
     {
     im->TransformIndexToPhysicalPoint( itIm.GetIndex(), pnt );
     x[0] = pnt[0];
     x[1] = pnt[1];
-    switch( (itIm.GetIndex()[2] - index0[2]) % 9 )
+    switch( ( itIm.GetIndex()[2] - index0[2] ) % 9 )
       {
       default:
       case 0:
         {
-        itIm.Set( spline.Value(x) );
+        itIm.Set( spline.Value( x ) );
         break;
         }
       case 1:
         {
-        itIm.Set( myFuncV->Value(x) );
+        itIm.Set( myFuncV->Value( x ) );
         break;
         }
       case 2:
         {
-        itIm.Set( spline.ValueD(x, di) );
+        itIm.Set( spline.ValueD( x, di ) );
         break;
         }
       case 3:
         {
-        itIm.Set( myFuncD->Value(x)[1] );
+        itIm.Set( myFuncD->Value( x )[1] );
         break;
         }
       case 4:
         {
-        d = spline.ValueD(x);
+        d = spline.ValueD( x );
         itIm.Set( d[0] + d[1] );
         break;
         }
       case 5:
         {
-        d = myFuncD->Value(x);
+        d = myFuncD->Value( x );
         itIm.Set( d[0] + d[1] );
         break;
         }
       case 6:
         {
-        m = spline.Hessian(x);
+        m = spline.Hessian( x );
         itIm.Set( m[0][0]*m[0][0] + m[1][1]*m[1][1] );
         break;
         }
       case 7:
         {
-        itIm.Set( spline.ValueJet(x, d, m) );
+        itIm.Set( spline.ValueJet( x, d, m ) );
         break;
         }
       case 8:
         {
-        itIm.Set( spline.ValueVDD2(x, d, d2) );
+        itIm.Set( spline.ValueVDD2( x, d, d2 ) );
         break;
         }
       }
@@ -234,7 +234,7 @@ int tubeSplineNDTest( int argc, char * argv[] )
   rndGen->Initialize( 1 );
 
   spline.GetOptimizerND()->SetSearchForMin( false );
-  vnl_vector<double> xStep(2, 0.1);
+  vnl_vector<double> xStep( 2, 0.1 );
   spline.GetOptimizerND()->SetXStep( xStep );
   spline.GetOptimizerND()->SetTolerance( 0.0001 );
   spline.GetOptimizerND()->SetMaxIterations( 1000 );
@@ -256,7 +256,7 @@ int tubeSplineNDTest( int argc, char * argv[] )
     returnStatus = EXIT_FAILURE;
     }
   int failed = 0;
-  for(unsigned int c=0; c<100; c++)
+  for( unsigned int c=0; c<100; c++ )
     {
     x[0] = rndGen->GetNormalVariate( 3.14, 0.3 );
     x[1] = rndGen->GetNormalVariate( 0.0, 0.3 );
@@ -273,16 +273,16 @@ int tubeSplineNDTest( int argc, char * argv[] )
     else
       {
       bool err = false;
-      if( vnl_math_abs(x[0] - 3.139) > 0.001
-        || vnl_math_abs(x[1] - 0.0) > 0.001 )
+      if( vnl_math_abs( x[0] - 3.139 ) > 0.001
+        || vnl_math_abs( x[1] - 0.0 ) > 0.001 )
         {
         std::cout << "Spline.Extreme failed." << std::endl;
-        std::cout << "  x = (" << x[0] << ", " << x[1]
-          << ") != ideal = (3.1139, 0.0)" << std::endl;
+        std::cout << "  x = ( " << x[0] << ", " << x[1]
+          << " ) != ideal = ( 3.1139, 0.0 )" << std::endl;
         returnStatus = EXIT_FAILURE;
         err = true;
         }
-      if( vnl_math_abs( xVal - 1.918) > 0.001 )
+      if( vnl_math_abs( xVal - 1.918 ) > 0.001 )
         {
         std::cout << "Spline.Extreme failed." << std::endl;
         std::cout << "  xVal=" << xVal << " != 1.918" << std::endl;
@@ -300,7 +300,7 @@ int tubeSplineNDTest( int argc, char * argv[] )
         }
       }
     }
-  for(unsigned int c=0; c<100; c++)
+  for( unsigned int c=0; c<100; c++ )
     {
     x[0] = rndGen->GetNormalVariate( 3.14, 0.3 );
     x[1] = rndGen->GetNormalVariate( 0.0, 0.3 );
@@ -319,12 +319,12 @@ int tubeSplineNDTest( int argc, char * argv[] )
       bool err = false;
       // Note: ExtremeConjGrad is less reliable and has poorer precision than
       // Extreme in this case.
-      if( vnl_math_abs(x[0] - 3.139) > 0.1
-        || vnl_math_abs(x[1] - 0.0) > 1.1 )
+      if( vnl_math_abs( x[0] - 3.139 ) > 0.1
+        || vnl_math_abs( x[1] - 0.0 ) > 1.1 )
         {
         std::cout << "Spline.ExtremeConjGrad failed." << std::endl;
-        std::cout << "  x = (" << x[0] << ", " << x[1]
-          << ") != ideal = (3.1139, 0.0)" << std::endl;
+        std::cout << "  x = ( " << x[0] << ", " << x[1]
+          << " ) != ideal = ( 3.1139, 0.0 )" << std::endl;
         returnStatus = EXIT_FAILURE;
         err = true;
         }

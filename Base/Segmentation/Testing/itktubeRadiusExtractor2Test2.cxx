@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -117,9 +117,9 @@ int itktubeRadiusExtractor2Test2( int argc, char * argv[] )
 
     std::cout << "Test tube = " << rndTubeNum << std::endl;
 
-    TubeType * tubep = static_cast< TubeType * >(
+    TubeType * tubep = static_cast< TubeType * >( 
       tubeIter->GetPointer() );
-    TubeType::Pointer tube = static_cast< TubeType * >(
+    TubeType::Pointer tube = static_cast< TubeType * >( 
       tubeIter->GetPointer() );
 
     ::tube::ComputeTubeTangentsAndNormals< TubeType >( tube );
@@ -127,7 +127,7 @@ int itktubeRadiusExtractor2Test2( int argc, char * argv[] )
     unsigned int numPoints = tube->GetPoints().size();
 
     unsigned int startPoint = rndGen->GetUniformVariate( 0, 1 )
-      * (numPoints-10) + 5;
+      * ( numPoints-10 ) + 5;
     double radiusStart = rndGen->GetUniformVariate( 0, 1 ) * 2 + 1;
 
     double failures = 0;
@@ -139,7 +139,7 @@ int itktubeRadiusExtractor2Test2( int argc, char * argv[] )
       if( i == startPoint )
         {
         pntIter->SetID( 0 );
-        radiusStart = (radiusStart + pntIter->GetRadius() ) / 2;
+        radiusStart = ( radiusStart + pntIter->GetRadius() ) / 2;
         }
       else
         {
@@ -192,8 +192,8 @@ int itktubeRadiusExtractor2Test2( int argc, char * argv[] )
       idealR.push_back( pntIter->GetRadius() );
       if( pntIter->GetRadius() < 0 )
         {
-        std::cout << "Point: " << i << ": radius < 0. ("
-          << pntIter->GetRadius() << ")" << std::endl;
+        std::cout << "Point: " << i << ": radius < 0. ( "
+          << pntIter->GetRadius() << " )" << std::endl;
         ++failures;
         }
 

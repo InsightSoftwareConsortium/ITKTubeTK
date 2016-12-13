@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -71,7 +71,7 @@ MetaClassPDF( const MetaClassPDF & _metaPDF )
 }
 
 MetaClassPDF::
-MetaClassPDF(
+MetaClassPDF( 
   unsigned int _nFeatures,
   const VectorUIntType & _nBinsPerFeature,
   const VectorDoubleType & _binMin,
@@ -296,14 +296,14 @@ CopyInfo( const MetaObject * _obj )
     this->SetVoidId( tmpPDF->GetVoidId() );
     this->SetErodeRadius( tmpPDF->GetErodeRadius() );
     this->SetHoleFillIterations( tmpPDF->GetHoleFillIterations() );
-    this->SetProbabilityImageSmoothingStandardDeviation(
+    this->SetProbabilityImageSmoothingStandardDeviation( 
       tmpPDF->GetProbabilityImageSmoothingStandardDeviation() );
-    this->SetHistogramSmoothingStandardDeviation(
+    this->SetHistogramSmoothingStandardDeviation( 
       tmpPDF->GetHistogramSmoothingStandardDeviation() );
     this->SetOutlierRejectPortion( tmpPDF->GetOutlierRejectPortion() );
     this->SetDraft( tmpPDF->GetDraft() );
     this->SetReclassifyObjectLabels( tmpPDF->GetReclassifyObjectLabels() );
-    this->SetReclassifyNotObjectLabels(
+    this->SetReclassifyNotObjectLabels( 
       tmpPDF->GetReclassifyNotObjectLabels() );
     this->SetForceClassification( tmpPDF->GetForceClassification() );
     }
@@ -370,7 +370,7 @@ InitializeEssential( unsigned int _nFeatures,
     }
 
   MetaImage::InitializeEssential( _nFeatures, nBins, binSize,
-    MET_FLOAT, 1, (void *)_elementData, true );
+    MET_FLOAT, 1, ( void * )_elementData, true );
   MetaImage::Origin( minD );
 
   MetaImage::CompressedData( true );
@@ -396,7 +396,7 @@ SetNumberOfBinsPerFeature( const VectorUIntType & _nBinsPerFeature )
     }
   MetaImage::InitializeEssential( MetaImage::NDims(), nBins,
     MetaImage::ElementSpacing(), MET_FLOAT, 1,
-    (float *)( MetaImage::ElementData() ) );
+    ( float * )( MetaImage::ElementData() ) );
 }
 
 const MetaClassPDF::VectorUIntType & MetaClassPDF::
@@ -675,7 +675,7 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
   m_ReadStream = NULL;
 
   InitializeEssential( MetaImage::NDims(), m_NumberOfBinsPerFeature,
-    m_BinMin, m_BinSize, (float *)( m_ElementData ) );
+    m_BinMin, m_BinSize, ( float * )( m_ElementData ) );
 
   return true;
 }
@@ -851,7 +851,7 @@ M_SetupWriteFields( void )
     strcpy( tmpC, "False" );
     }
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "Draft", MET_STRING, std::strlen(tmpC), tmpC );
+  MET_InitWriteField( mF, "Draft", MET_STRING, std::strlen( tmpC ), tmpC );
   m_Fields.push_back( mF );
 
   if( m_ReclassifyObjectLabels )
@@ -864,7 +864,7 @@ M_SetupWriteFields( void )
     }
   mF = new MET_FieldRecordType;
   MET_InitWriteField( mF, "ReclassifyObjectLabels", MET_STRING,
-    std::strlen(tmpC), tmpC );
+    std::strlen( tmpC ), tmpC );
   m_Fields.push_back( mF );
 
   if( m_ReclassifyNotObjectLabels )
@@ -877,7 +877,7 @@ M_SetupWriteFields( void )
     }
   mF = new MET_FieldRecordType;
   MET_InitWriteField( mF, "ReclassifyNotObjectLabels", MET_STRING,
-    std::strlen(tmpC), tmpC );
+    std::strlen( tmpC ), tmpC );
   m_Fields.push_back( mF );
 
   if( m_ForceClassification )
@@ -890,7 +890,7 @@ M_SetupWriteFields( void )
     }
   mF = new MET_FieldRecordType;
   MET_InitWriteField( mF, "ForceClassification", MET_STRING,
-    std::strlen(tmpC), tmpC );
+    std::strlen( tmpC ), tmpC );
   m_Fields.push_back( mF );
 
   m_Fields.push_back( mF_LastField );
@@ -928,7 +928,7 @@ M_Read( void )
       }
     }
 
-  unsigned int nFeatures = static_cast< unsigned int >(
+  unsigned int nFeatures = static_cast< unsigned int >( 
     MetaImage::NDims() );
 
   m_BinMin.resize( nFeatures );
@@ -1004,8 +1004,8 @@ M_Read( void )
   if( mF && mF->defined )
     {
     m_Draft = false;
-    if( (( char * )(mF->value))[0] == 'T' ||
-      (( char * )(mF->value))[0] == 't' )
+    if( ( ( char * )( mF->value ) )[0] == 'T' ||
+      ( ( char * )( mF->value ) )[0] == 't' )
       {
       m_Draft = true;
       }
@@ -1015,8 +1015,8 @@ M_Read( void )
   if( mF && mF->defined )
     {
     m_ReclassifyObjectLabels = false;
-    if( (( char * )(mF->value))[0] == 'T' ||
-      (( char * )(mF->value))[0] == 't' )
+    if( ( ( char * )( mF->value ) )[0] == 'T' ||
+      ( ( char * )( mF->value ) )[0] == 't' )
       {
       m_ReclassifyObjectLabels = true;
       }
@@ -1026,8 +1026,8 @@ M_Read( void )
   if( mF && mF->defined )
     {
     m_ReclassifyNotObjectLabels = false;
-    if( (( char * )(mF->value))[0] == 'T' ||
-      (( char * )(mF->value))[0] == 't' )
+    if( ( ( char * )( mF->value ) )[0] == 'T' ||
+      ( ( char * )( mF->value ) )[0] == 't' )
       {
       m_ReclassifyNotObjectLabels = true;
       }
@@ -1037,8 +1037,8 @@ M_Read( void )
   if( mF && mF->defined )
     {
     m_ForceClassification = false;
-    if( (( char * )(mF->value))[0] == 'T' ||
-      (( char * )(mF->value))[0] == 't' )
+    if( ( ( char * )( mF->value ) )[0] == 'T' ||
+      ( ( char * )( mF->value ) )[0] == 't' )
       {
       m_ForceClassification = true;
       }

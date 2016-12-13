@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -137,7 +137,7 @@ ObjectDocumentToImageFilter< TObjectDocument, TImageType >
   SizeType size = image->GetLargestPossibleRegion().GetSize();
   PointType maximum;
 
-  // Fill origin (minimum value with large number).
+  // Fill origin ( minimum value with large number ).
   origin.Fill( 9999999 );
 
   // Transform all of the image corners and determine the minimum bounding box.
@@ -179,7 +179,7 @@ ObjectDocumentToImageFilter< TObjectDocument, TImageType >
 
   for( unsigned int i = 0; i < Dimension; ++i )
     {
-    outputSize[i] = (long int)( ( maximum[i] - origin[i] ) / spacing[i] );
+    outputSize[i] = ( long int )( ( maximum[i] - origin[i] ) / spacing[i] );
     }
 }
 
@@ -201,4 +201,4 @@ ObjectDocumentToImageFilter< TObjectDocument, TImageType >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeObjectDocumentToImageFilter_hxx)
+#endif // End !defined( __itktubeObjectDocumentToImageFilter_hxx )

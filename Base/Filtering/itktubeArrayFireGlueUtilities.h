@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -28,7 +28,8 @@ namespace itk
 {
 
 template <typename ImageType>
-void convertITKImageToArrayFire ( const ImageType * pItkImage, af::array &afArr )
+void convertITKImageToArrayFire ( const ImageType * pItkImage,
+  af::array &afArr )
 {
   typename ImageType::SizeType imageSize =
     pItkImage->GetLargestPossibleRegion().GetSize();
@@ -58,8 +59,8 @@ void convertITKImageToArrayFire ( const ImageType * pItkImage, af::array &afArr 
 
 template <typename ImageType>
 void convertArrayFireImageToITK ( af::array &afArr,
-                                  typename ImageType::Pointer &pItkImage,
-                                  const ImageType * pItkReferenceImage )
+  typename ImageType::Pointer &pItkImage,
+  const ImageType * pItkReferenceImage )
 {
   typedef typename ImageType::PixelType PixelType;
   const unsigned int Dimension = ImageType::ImageDimension;

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -50,7 +50,7 @@ namespace Statistics
  *  list sample.
  *
  *  The class optionally allows you to specify a mask image as an input. The
- *  list sample (if a mask is specified) is constructed from pixels that are
+ *  list sample ( if a mask is specified ) is constructed from pixels that are
  *  within the mask
  *
  * \todo
@@ -73,7 +73,7 @@ public:
   typedef SmartPointer< Self >              Pointer;
   typedef SmartPointer< const Self >        ConstPointer;
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( VectorImageToListGenerator, ProcessObject );
 
   /** Method for creation through the object factory. */
@@ -113,7 +113,7 @@ public:
 
   /** Standard itk::ProcessObject subclass method. */
   using Superclass::MakeOutput;
-  virtual DataObjectPointer MakeOutput(DataObjectPointerArraySizeType idx);
+  virtual DataObjectPointer MakeOutput( DataObjectPointerArraySizeType idx );
 
   virtual void SetMeasurementVectorSize( const MeasurementVectorSizeType s )
     {
@@ -122,7 +122,7 @@ public:
     // set the dimension to a different value.
     if( s != MeasurementVectorSize )
       {
-      itkExceptionMacro(
+      itkExceptionMacro( 
         << "Measurement vector size for the image adaptor obtained"
         << " from the pixel dimension is: "
         << MeasurementVectorSize << " but you "
@@ -165,18 +165,18 @@ public:
   /** This method ensures that a mask image if specified has requested regions
    * that at least contain the input image's buffered region. */
   virtual void GenerateInputRequestedRegion( void )
-    throw(InvalidRequestedRegionError);
+    throw( InvalidRequestedRegionError );
 
   virtual void GenerateOutputInformation( void );
 
 protected:
   VectorImageToListGenerator( void );
   virtual ~VectorImageToListGenerator( void ) {}
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
 private:
-  VectorImageToListGenerator(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  VectorImageToListGenerator( const Self& ); //purposely not implemented
+  void operator=( const Self& ); //purposely not implemented
 
   MaskPixelType       m_MaskValue;
   bool                m_UseSingleMaskValue;
@@ -193,4 +193,4 @@ private:
 #include "itktubeVectorImageToListGenerator.hxx"
 #endif
 
-#endif // End !defined(VectorImageToListGenerator)
+#endif // End !defined( VectorImageToListGenerator )

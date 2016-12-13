@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -222,12 +222,12 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Intensity" )
       {
       std::cout << "Intensity windowing" << std::endl;
-      tube::ImageFilters< VDimension >::ApplyIntensityWindowing(
+      tube::ImageFilters< VDimension >::ApplyIntensityWindowing( 
         imIn,
         command.GetValueAsFloat( *it, "inValMin" ),
         command.GetValueAsFloat( *it, "inValMax" ),
         command.GetValueAsFloat( *it, "outMin" ),
-        command.GetValueAsFloat( *it, "outMax" ));
+        command.GetValueAsFloat( *it, "outMax" ) );
       }
 
     // IntensityMult
@@ -237,7 +237,7 @@ int DoIt( MetaCommand & command )
       bool success = tube::ImageFilters< VDimension >::
         ApplyIntensityMultiplicativeWithBiasCorrection( imIn,
         command.GetValueAsString( *it, "inMeanField" ) );
-      if ( !success )
+      if( !success )
         {
         return EXIT_FAILURE;
         }
@@ -273,7 +273,7 @@ int DoIt( MetaCommand & command )
         command.GetValueAsString( *it, "Infile" ),
         command.GetValueAsFloat( *it, "weight1" ),
         command.GetValueAsFloat( *it, "weight2" ) );
-      if ( !success )
+      if( !success )
         {
         return EXIT_FAILURE;
         }
@@ -282,9 +282,9 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Multiply" )
       {
       std::cout << "Multiplying" << std::endl;
-      bool success = tube::ImageFilters< VDimension >::MultiplyImages(
+      bool success = tube::ImageFilters< VDimension >::MultiplyImages( 
         imIn, command.GetValueAsString( *it, "Infile" ) );
-      if ( !success )
+      if( !success )
         {
         return EXIT_FAILURE;
         }
@@ -313,7 +313,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Fuse" )
       {
       std::cout << "Fusing" << std::endl;
-      bool success = tube::ImageFilters< VDimension >::FuseImages(
+      bool success = tube::ImageFilters< VDimension >::FuseImages( 
         imIn, command.GetValueAsString( *it, "Infile2" ),
         command.GetValueAsFloat( *it, "Offset2" ) );
       if( !success )
@@ -326,7 +326,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Median" )
       {
       std::cout << "Median filtering" << std::endl;
-      bool success = tube::ImageFilters< VDimension >::MedianImage(
+      bool success = tube::ImageFilters< VDimension >::MedianImage( 
         imIn, command.GetValueAsInt( *it, "Size" ) );
       if( !success )
         {
@@ -366,7 +366,7 @@ int DoIt( MetaCommand & command )
       {
       std::cout << "Process binary operation" << std::endl;
       int mode = command.GetValueAsInt( *it, "mode" );
-      if ( mode == 0 )
+      if( mode == 0 )
         {
         bool success =
           tube::ImageFilters< VDimension >::MultiplyImages( imIn,
@@ -639,7 +639,7 @@ int main( int argc, char * argv[] )
     "", "output filename", MetaCommand::DATA_OUT );
 
   command.SetOption( "WriteType", "W", false,
-    "write UChar,UShort,Short,Old Meta,U-UChar,U-UShort,U-Short,U-Float)"
+    "write UChar,UShort,Short,Old Meta,U-UChar,U-UShort,U-Short,U-Float )"
     );
   command.AddOptionField( "WriteType", "Type", MetaCommand::INT, true );
   command.AddOptionField( "WriteType", "filename", MetaCommand::STRING,
@@ -690,7 +690,7 @@ int main( int argc, char * argv[] )
   command.AddOptionField( "Add", "Infile", MetaCommand::STRING, true );
 
   command.SetOption( "Algorithm", "A", false,
-    "Return image value within masked region (mode: 0=mean, 1=stdDev)" );
+    "Return image value within masked region ( mode: 0=mean, 1=stdDev )" );
   command.AddOptionField( "Algorithm", "mode", MetaCommand::INT, true );
   command.AddOptionField( "Algorithm", "threshLow", MetaCommand::FLOAT,
     true );
@@ -722,11 +722,11 @@ int main( int argc, char * argv[] )
   command.AddOptionField( "Correction", "nBins", MetaCommand::INT, true );
   command.AddOptionField( "Correction", "nMatchPoints", MetaCommand::INT,
     true );
-  command.AddOptionField(
+  command.AddOptionField( 
     "Correction", "referenceVolume", MetaCommand::STRING, true );
 
   command.SetOption( "Normalize", "d", false,
-    "Normalize: 0 = mean/std; 1 = FWHM ; 2 = FWHM mean (shift) only" );
+    "Normalize: 0 = mean/std; 1 = FWHM ; 2 = FWHM mean ( shift ) only" );
   command.AddOptionField( "Normalize", "type", MetaCommand::INT, true );
 
   command.SetOption( "Fuse", "f", false,
@@ -755,7 +755,7 @@ int main( int argc, char * argv[] )
     MetaCommand::STRING, true );
 
   command.SetOption( "Masking", "m", false,
-    "if inFile(x) in [tLow, tHigh] then I(x)=I(x) else I(x)=vFalse" );
+    "if inFile( x ) in [tLow, tHigh] then I( x )=I( x ) else I( x )=vFalse" );
   command.AddOptionField( "Masking", "threshLow", MetaCommand::FLOAT,
     true );
   command.AddOptionField( "Masking", "threshHigh", MetaCommand::FLOAT,
@@ -792,16 +792,16 @@ int main( int argc, char * argv[] )
   command.AddOptionField( "offset", "offsetZ", MetaCommand::FLOAT, true );
 
   command.SetOption( "process", "p", false,
-    "Process the image using a unary operation (0=abs)" );
+    "Process the image using a unary operation ( 0=abs )" );
   command.AddOptionField( "process", "mode", MetaCommand::INT, true );
 
   command.SetOption( "Process", "P", false,
-    "Process the image using a binary operation (0=multiply)" );
+    "Process the image using a binary operation ( 0=multiply )" );
   command.AddOptionField( "Process", "mode", MetaCommand::INT, true );
   command.AddOptionField( "Process", "file2", MetaCommand::STRING, true );
 
   command.SetOption( "resize", "r", false,
-    "Resample to reduce by a factor (factor==0 means make isotropic)" );
+    "Resample to reduce by a factor ( factor==0 means make isotropic )" );
   command.AddOptionField( "resize", "factor", MetaCommand::FLOAT, true );
 
   command.SetOption( "resize2", "R", false, "resample to match inFile2" );
@@ -809,7 +809,7 @@ int main( int argc, char * argv[] )
     true );
 
   command.SetOption( "segment", "s", false,
-    "Segment using (inclusive) threshold connected components" );
+    "Segment using ( inclusive ) threshold connected components" );
   command.AddOptionField( "segment", "mode", MetaCommand::INT, true );
   command.AddOptionField( "segment", "threshLow", MetaCommand::FLOAT,
     true );
@@ -827,7 +827,7 @@ int main( int argc, char * argv[] )
     true );
 
   command.SetOption( "Threshold", "t", false,
-    "if I(x) in [tLow,tHigh] then I(x)=vTrue else I(x)=vFalse" );
+    "if I( x ) in [tLow,tHigh] then I( x )=vTrue else I( x )=vFalse" );
   command.AddOptionField( "Threshold", "threshLow", MetaCommand::FLOAT,
     true );
   command.AddOptionField( "Threshold", "threshHigh", MetaCommand::FLOAT,
@@ -837,7 +837,7 @@ int main( int argc, char * argv[] )
   command.AddOptionField( "Threshold", "valFalse", MetaCommand::FLOAT,
     true );
 
-  command.SetOption( "Multiply","u",false,
+  command.SetOption( "Multiply", "u", false,
     "I( x ) = I( x ) * inFile2( x )" );
   command.AddOptionField( "Multiply", "Infile", MetaCommand::STRING,
     true );

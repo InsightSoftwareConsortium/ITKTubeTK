@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -72,7 +72,7 @@ int DoIt( int argc, char * argv[] )
   int numberOfCentroids;
   std::ifstream readStream;
 
-  // Read full connectivity information (Adjacency Matrix)
+  // Read full connectivity information ( Adjacency Matrix )
   std::string matrixFilename = inGraphFile + ".mat";
 
   logMsg.str( "" );
@@ -112,7 +112,7 @@ int DoIt( int argc, char * argv[] )
   std::string branchFilename = inGraphFile + ".brc";
 
   logMsg.str( "" );
-  logMsg << "Reading (branch) file: " << branchFilename;
+  logMsg << "Reading ( branch ) file: " << branchFilename;
   tube::InfoMessage( logMsg.str() );
 
   readStream.open( branchFilename.c_str(), std::ios::in );
@@ -136,7 +136,7 @@ int DoIt( int argc, char * argv[] )
   std::string rootFilename = inGraphFile + ".rot";
 
   logMsg.str( "" );
-  logMsg << "Reading (root) file: " << rootFilename;
+  logMsg << "Reading ( root ) file: " << rootFilename;
   tube::InfoMessage( logMsg.str() );
 
   readStream.open( rootFilename.c_str(), std::ios::in );
@@ -159,15 +159,16 @@ int DoIt( int argc, char * argv[] )
   // std::string centralityFilename = inGraphFile + ".cnt";
 
   // logMsg.str( "" );
-  // logMsg << "Reading (centrality) file: " << centralityFilename;
+  // logMsg << "Reading ( centrality ) file: " << centralityFilename;
   // tube::InfoMessage( logMsg.str() );
 
   // readStream.open( centralityFilename.c_str(), std::ios::in );
   // readStream >> numberOfCentroids;
   // readStream.get();
-  // if(numberOfCentroids != numberOfCentroids_AdjMat)
+  // if( numberOfCentroids != numberOfCentroids_AdjMat )
   //   {
-  //   tube::ErrorMessage( "Error: fileList's #Centroids != centrality #Centroids" );
+  //   tube::ErrorMessage( "Error: fileList's #Centroids != centrality
+  //     #Centroids" );
   //   return EXIT_FAILURE;
   //   }
   for( int i = 0; i < numberOfCentroids; i++ )

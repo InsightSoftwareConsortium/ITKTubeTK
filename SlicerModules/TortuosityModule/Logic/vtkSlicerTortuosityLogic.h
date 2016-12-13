@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -140,7 +140,7 @@ public:
 
   // Load a CSV file with two columns : ID and Value, and assign the values
   // to the passed node tubes with corresponding IDs, as a point data.
-  // If there is more (ID, value) pairs in the file than tubes in the passed
+  // If there is more ( ID, value ) pairs in the file than tubes in the passed
   // node, they will be ignored. If there is less, they will be all assigned,
   // and the tubes that are missing a value will be assigned a default value.
   bool LoadColorsFromCSV( vtkMRMLSpatialObjectsNode* node, const char *filename );
@@ -155,8 +155,8 @@ protected:
   // Get names from the given flag
   std::vector< std::string > GetPrintableNamesFromMetricFlag( int metricFlag );
 
-  // Convert the group flag (vtkSlicerTortuosityLogic::MetricGroupsFlag) into a
-  // metric flag (FilterType::MeasureType)
+  // Convert the group flag ( vtkSlicerTortuosityLogic::MetricGroupsFlag ) into a
+  // metric flag ( FilterType::MeasureType )
   int GetMetricFlagFromGroupFlag( int groupFlag );
 
   // Get the array of the type T with the given name on the node's polydata
@@ -176,4 +176,4 @@ private:
 
 }; // End class vtkSlicerTortuosityLogic
 
-#endif // End !defined(__vtkSlicerTortuosityLogic_h)
+#endif // End !defined( __vtkSlicerTortuosityLogic_h )

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -44,7 +44,7 @@ class qSlicerTortuosityModuleWidgetPrivate :
   Q_DECLARE_PUBLIC( qSlicerTortuosityModuleWidget );
 
 public:
-  qSlicerTortuosityModuleWidgetPrivate(
+  qSlicerTortuosityModuleWidgetPrivate( 
     qSlicerTortuosityModuleWidget& object );
   void init();
   vtkSlicerTortuosityLogic* logic() const;
@@ -58,7 +58,7 @@ protected:
 
 //------------------------------------------------------------------------------
 qSlicerTortuosityModuleWidgetPrivate
-::qSlicerTortuosityModuleWidgetPrivate(
+::qSlicerTortuosityModuleWidgetPrivate( 
   qSlicerTortuosityModuleWidget& object )
   : q_ptr( &object )
 {
@@ -87,27 +87,27 @@ int qSlicerTortuosityModuleWidgetPrivate::getFlagFromCheckBoxes()
 //------------------------------------------------------------------------------
 void qSlicerTortuosityModuleWidgetPrivate::init()
 {
-  Q_Q(qSlicerTortuosityModuleWidget);
+  Q_Q( qSlicerTortuosityModuleWidget );
 
   this->setupUi( q );
 
-  QObject::connect(
+  QObject::connect( 
     this->CurrentSpatialObjectComboBox, SIGNAL( currentNodeChanged( vtkMRMLNode* ) ),
     q, SLOT( setCurrentSpatialObjectsNode( vtkMRMLNode* ) ) );
 
-  QObject::connect(
+  QObject::connect( 
     this->RunPushButton, SIGNAL( toggled( bool ) ),
     q, SLOT( runSelectedMetrics( bool ) ) );
 
-  QObject::connect(
+  QObject::connect( 
     this->SaveCSVPushButton, SIGNAL( toggled( bool ) ),
     q, SLOT( saveCurrentSpatialObjectAsCSV( bool ) ) );
 
-  QObject::connect(
+  QObject::connect( 
     this->LoadColorsFromCSVPushButton, SIGNAL( clicked() ),
     q, SLOT( loadColorsFromCSV() ) );
 
-  QObject::connect(
+  QObject::connect( 
     this->SmoothingMethodComboBox, SIGNAL( currentIndexChanged( int ) ),
     q, SLOT( smoothingMethodChanged( int ) ) );
 
@@ -117,7 +117,7 @@ void qSlicerTortuosityModuleWidgetPrivate::init()
                                          tube::SMOOTH_TUBE_USING_INDEX_GAUSSIAN );
   this->SmoothingMethodComboBox->addItem( "Gaussian on Distance",
                                          tube::SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN );
-  this->SmoothingMethodComboBox->setCurrentIndex(
+  this->SmoothingMethodComboBox->setCurrentIndex( 
     this->SmoothingMethodComboBox->findData( tube::SMOOTH_TUBE_USING_INDEX_GAUSSIAN ) );
 
 
@@ -128,7 +128,7 @@ void qSlicerTortuosityModuleWidgetPrivate::init()
                                        "InflectionCountMetric, "
                                        "InflectionPointsMetric, "
                                        "SumOfAnglesMetric,"
-                                       "SumOfTorsionMetric");
+                                       "SumOfTorsionMetric" );
   this->CurvatureMetricsLabel->setToolTip( "CurvatureScalarMetric, "
                                              "InflectionCount1Metric, "
                                              "InflectionCount2Metric, "
@@ -171,7 +171,7 @@ void qSlicerTortuosityModuleWidget::setup()
 void qSlicerTortuosityModuleWidget
 ::setCurrentSpatialObjectsNode( vtkMRMLNode* node )
 {
-  this->setCurrentSpatialObjectsNode(
+  this->setCurrentSpatialObjectsNode( 
     vtkMRMLSpatialObjectsNode::SafeDownCast( node ) );
 }
 
@@ -202,7 +202,7 @@ void qSlicerTortuosityModuleWidget::runMetrics( int flag )
 
   // Smoothing Method
   tube::SmoothTubeFunctionEnum smoothMethod =
-    static_cast<tube::SmoothTubeFunctionEnum>( d->SmoothingMethodComboBox->itemData(
+    static_cast<tube::SmoothTubeFunctionEnum>( d->SmoothingMethodComboBox->itemData( 
     d->SmoothingMethodComboBox->currentIndex() ).toInt() );
 
   //Subsampling Factor
@@ -230,8 +230,8 @@ void qSlicerTortuosityModuleWidget::loadColorsFromCSV()
 
   d->LoadColorsFromCSVPushButton->setEnabled( false );
 
-  QString filename = QFileDialog::getOpenFileName(
-    this, "Load colors as csv...", "", "Comma Separated Value (*.csv)" );
+  QString filename = QFileDialog::getOpenFileName( 
+    this, "Load colors as csv...", "", "Comma Separated Value ( *.csv )" );
   if ( !d->logic()->LoadColorsFromCSV( d->currentSpatialObject, filename.toLatin1() ) )
     {
     qCritical( "Error while loading colors !" );
@@ -264,8 +264,8 @@ void qSlicerTortuosityModuleWidget::saveCurrentSpatialObjectAsCSV( bool save )
   d->SaveCSVPushButton->setEnabled( false );
 
   QString filename =
-    QFileDialog::getSaveFileName(
-      this, "Save tortuosity as csv...", "", "Comma Separated Value (*.csv)" );
+    QFileDialog::getSaveFileName( 
+      this, "Save tortuosity as csv...", "", "Comma Separated Value ( *.csv )" );
 
   int flag = d->getFlagFromCheckBoxes();
 

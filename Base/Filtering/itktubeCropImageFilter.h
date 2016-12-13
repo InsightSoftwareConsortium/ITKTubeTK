@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -55,10 +55,10 @@ public:
   typedef SmartPointer< const Self >                      ConstPointer;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(CropImageFilter, ExtractImageFilter);
+  /** Run-time type information ( and related methods ). */
+  itkTypeMacro( CropImageFilter, ExtractImageFilter );
 
   /** Typedef to describe the output and input image region types. */
   typedef typename Superclass::OutputImageRegionType OutputImageRegionType;
@@ -77,10 +77,10 @@ public:
   typedef TInputImage                               ImageType;
 
   /** ImageDimension constants */
-  itkStaticConstMacro(InputImageDimension, unsigned int,
-                      Superclass::InputImageDimension);
-  itkStaticConstMacro(OutputImageDimension, unsigned int,
-                      Superclass::OutputImageDimension);
+  itkStaticConstMacro( InputImageDimension, unsigned int,
+                      Superclass::InputImageDimension );
+  itkStaticConstMacro( OutputImageDimension, unsigned int,
+                      Superclass::OutputImageDimension );
 
   /** Set/Get the cropping sizes for the upper and lower boundaries. */
   // itkCropImageFilter parameters
@@ -118,10 +118,10 @@ public:
   void SetSplitInput( typename ImageType::IndexType splitIndex,
     typename ImageType::IndexType roiIndex );
 
-  void SetBoundaryCropSize(const SizeType & s)
+  void SetBoundaryCropSize( const SizeType & s )
     {
-    this->SetUpperBoundaryCropSize(s);
-    this->SetLowerBoundaryCropSize(s);
+    this->SetUpperBoundaryCropSize( s );
+    this->SetLowerBoundaryCropSize( s );
     }
 
 #ifdef ITK_USE_CONCEPT_CHECKING
@@ -137,14 +137,14 @@ protected:
   CropImageFilter( void );
   ~CropImageFilter() {}
 
-  void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
+  void PrintSelf( std::ostream & os, Indent indent ) const ITK_OVERRIDE;
 
   void GenerateOutputInformation() ITK_OVERRIDE;
 
 private:
   /** itkCropImageFilter parameters */
-  CropImageFilter(const Self &);
-  void operator=(const Self &);
+  CropImageFilter( const Self & );
+  void operator=( const Self & );
 
   SizeType m_UpperBoundaryCropSize;
   SizeType m_LowerBoundaryCropSize;

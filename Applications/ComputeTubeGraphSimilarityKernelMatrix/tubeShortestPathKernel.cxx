@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -31,7 +31,7 @@ namespace tube
 
 //-----------------------------------------------------------------------------
 ShortestPathKernel::GraphType
-ShortestPathKernel::FloydTransform(const GraphType &in)
+ShortestPathKernel::FloydTransform( const GraphType &in )
 {
   int nVertices = num_vertices( in );
 
@@ -48,16 +48,20 @@ ShortestPathKernel::FloydTransform(const GraphType &in)
 
   for( int i=0; i<nVertices; ++i )
     {
-    VertexType v0 = vertex( i,in );   // Vertex type of i-th node in input graph
-    VertexType v1 = vertex( i,out );  // Vertex type of i-th node in output graph
-    put(mapOut, v1, get( mapIn, v0 ) );
+    // Vertex type of i-th node in input graph
+    VertexType v0 = vertex( i, in );
+
+    // Vertex type of i-th node in output graph
+    VertexType v1 = vertex( i, out );
+
+    put( mapOut, v1, get( mapIn, v0 ) );
     }
 
   for( int i=0; i<nVertices; ++i )
     {
     for( int j=0; j<=i; ++j )
       {
-      // As long as we do not INF distance between (i,j), and ...
+      // As long as we do not INF distance between ( i,j ), and ...
       if( dm[i][j] != std::numeric_limits<double>::max() )
         {
         // the edge exists ...
@@ -69,8 +73,8 @@ ShortestPathKernel::FloydTransform(const GraphType &in)
         }
       else
         {
-        //tube::FmtWarningMessage( "Numeric limit found at (%d,%d)!",
-        //  i,j);
+        //tube::FmtWarningMessage( "Numeric limit found at ( %d,%d )!",
+        //  i,j );
         }
       }
     }
@@ -100,8 +104,8 @@ double ShortestPathKernel::Compute( void )
     {
     const EdgeDescriptorType &e0 = *aIt;
 
-    int srcLabel = m_FG0[source(e0, m_FG0)].type; // Type of start vertex
-    int dstLabel = m_FG0[target(e0, m_FG0)].type; // Type of end vertex
+    int srcLabel = m_FG0[source( e0, m_FG0 )].type; // Type of start vertex
+    int dstLabel = m_FG0[target( e0, m_FG0 )].type; // Type of end vertex
     ensureOrder( srcLabel, dstLabel );
 
     // Iterate over all the edges of Floyd-transformed graph fg1
@@ -116,13 +120,13 @@ double ShortestPathKernel::Compute( void )
       // of the shortest paths and makes it easy to check for equality.
       //
       // We could also use a Brownian bridge kernel to bound the max.
-      // shortest-path length, e.g., max(0,c - |len(e)-len(e')|)
+      // shortest-path length, e.g., max( 0,c - |len( e )-len( e' )| )
 
       double weightE0 = wmFG0[*aIt];
       double weightE1 = wmFG1[*bIt];
 
       // Skip edges, unless the weights are equal
-      if( !( vnl_math_abs(weightE0 - weightE1) <
+      if( !( vnl_math_abs( weightE0 - weightE1 ) <
           std::numeric_limits<double>::epsilon() ) )
         {
         continue;
@@ -132,8 +136,8 @@ double ShortestPathKernel::Compute( void )
       switch( m_EdgeKernelType )
         {
         case EDGE_KERNEL_DEL:
-          int cmpSrcLabel = m_FG1[source(e1, m_FG1)].type;
-          int cmpDstLabel = m_FG1[target(e1, m_FG1)].type;
+          int cmpSrcLabel = m_FG1[source( e1, m_FG1 )].type;
+          int cmpDstLabel = m_FG1[target( e1, m_FG1 )].type;
           ensureOrder( cmpSrcLabel, cmpDstLabel );
 
           bool vertexTypeCheck =
@@ -153,8 +157,8 @@ double ShortestPathKernel::Compute( void )
       }
     }
 
-  tube::FmtInfoMessage("Performed %ld edge evaluations",
-    cntEdgeEvaluations);
+  tube::FmtInfoMessage( "Performed %ld edge evaluations",
+    cntEdgeEvaluations );
   return kernelValue;
 }
 

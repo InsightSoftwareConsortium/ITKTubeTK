@@ -6,7 +6,7 @@
 
    All rights reserved.
 
-   Licensed under the Apache License, Version 2.0 (the "License");
+   Licensed under the Apache License, Version 2.0 ( the "License" );
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
@@ -35,8 +35,8 @@ int DoIt( MetaCommand & command )
 {
   if( VDimension != 2 && VDimension != 3 )
     {
-    tube::ErrorMessage(
-      "Error: Only 2D and 3D data is currently supported.");
+    tube::ErrorMessage( 
+      "Error: Only 2D and 3D data is currently supported." );
     return EXIT_FAILURE;
     }
 
@@ -57,7 +57,7 @@ int DoIt( MetaCommand & command )
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( "Error loading TRE File: " + std::string(
+    tube::ErrorMessage( "Error loading TRE File: " + std::string( 
       err.GetDescription() ) );
     return EXIT_FAILURE;
     }
@@ -83,7 +83,7 @@ int DoIt( MetaCommand & command )
         }
       catch( itk::ExceptionObject & err )
         {
-        tube::ErrorMessage( "Error writing TRE file: " + std::string(
+        tube::ErrorMessage( "Error writing TRE file: " + std::string( 
           err.GetDescription() ) );
         return EXIT_FAILURE;
         }

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -141,9 +141,9 @@ void MetaLDA
 ::CopyInfo( const MetaLDA & lda )
 {
   MetaForm::CopyInfo( dynamic_cast< const MetaForm * >( &lda ) );
-  this->SetNumberOfPCABasisToUseAsFeatures(
+  this->SetNumberOfPCABasisToUseAsFeatures( 
     lda.GetNumberOfPCABasisToUseAsFeatures() );
-  this->SetNumberOfLDABasisToUseAsFeatures(
+  this->SetNumberOfLDABasisToUseAsFeatures( 
     lda.GetNumberOfLDABasisToUseAsFeatures() );
   this->SetLDAValues( lda.GetLDAValues() );
   this->SetLDAMatrix( lda.GetLDAMatrix() );
@@ -787,7 +787,7 @@ bool MetaLDA
     {
     for( unsigned int i = 0; i < nDims; i++ )
       {
-      m_LDAValues[i] = (double)mF->value[i];
+      m_LDAValues[i] = ( double )mF->value[i];
       }
     }
   else
@@ -804,7 +804,7 @@ bool MetaLDA
       {
       for( unsigned int j = 0; j < nDims; j++ )
         {
-        m_LDAMatrix[i][j] = (double)mF->value[i * nDims + j];
+        m_LDAMatrix[i][j] = ( double )mF->value[i * nDims + j];
         }
       }
     }
@@ -820,7 +820,7 @@ bool MetaLDA
     {
     for( unsigned int i = 0; i < nDims; i++ )
       {
-      m_InputWhitenMeans[i] = (double)mF->value[i];
+      m_InputWhitenMeans[i] = ( double )mF->value[i];
       }
     }
   else
@@ -833,7 +833,7 @@ bool MetaLDA
     {
     for( unsigned int i = 0; i < nDims; i++ )
       {
-      m_InputWhitenStdDevs[i] = (double)mF->value[i];
+      m_InputWhitenStdDevs[i] = ( double )mF->value[i];
       }
     }
   else
@@ -846,7 +846,7 @@ bool MetaLDA
     {
     for( unsigned int i = 0; i < nDims; i++ )
       {
-      m_OutputWhitenMeans[i] = (double)mF->value[i];
+      m_OutputWhitenMeans[i] = ( double )mF->value[i];
       }
     }
   else
@@ -859,7 +859,7 @@ bool MetaLDA
     {
     for( unsigned int i = 0; i < nDims; i++ )
       {
-      m_OutputWhitenStdDevs[i] = (double)mF->value[i];
+      m_OutputWhitenStdDevs[i] = ( double )mF->value[i];
       }
     }
   else

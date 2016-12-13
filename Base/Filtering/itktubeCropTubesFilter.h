@@ -7,7 +7,7 @@
 
    All rights reserved.
 
-   Licensed under the Apache License, Version 2.0 (the "License");
+   Licensed under the Apache License, Version 2.0 ( the "License" );
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
@@ -60,7 +60,7 @@ public:
   typedef itk::Vector< PixelType, VDimension >       VectorType;
   typedef itk::Point< double, VDimension >           PointType;
 
-  /** Run-time type information (and related methods).   */
+  /** Run-time type information ( and related methods ).   */
   itkTypeMacro( CropTubesFilter,
                 SpatialObjectToSpatialObjectFilter );
 
@@ -124,4 +124,4 @@ private:
 #include "itktubeCropTubesFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeCropTubesFilter_h)
+#endif // End !defined( __itktubeCropTubesFilter_h )

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -64,7 +64,7 @@ int itktubeCVTImageFilterTest( int argc, char * argv[] )
     {
     reader->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
     std::cerr << "Exception caught during input read:\n"  << e;
     return EXIT_FAILURE;
@@ -85,7 +85,7 @@ int itktubeCVTImageFilterTest( int argc, char * argv[] )
   filter->Update();
 
   double val[numCentroids];
-  for(unsigned int i=0; i<numCentroids; i++)
+  for( unsigned int i=0; i<numCentroids; i++ )
     {
     val[i] = 0;
     }
@@ -98,13 +98,13 @@ int itktubeCVTImageFilterTest( int argc, char * argv[] )
     outImage->GetLargestPossibleRegion() );
   while( !inItr.IsAtEnd() )
     {
-    val[ (int)(outItr.Get())-1 ] += inItr.Get();
+    val[ ( int )( outItr.Get() )-1 ] += inItr.Get();
     ++inItr;
     ++outItr;
     }
 
   double mean = 0;
-  for(unsigned int i=0; i<numCentroids; i++)
+  for( unsigned int i=0; i<numCentroids; i++ )
     {
     mean += val[i];
     }
@@ -112,11 +112,11 @@ int itktubeCVTImageFilterTest( int argc, char * argv[] )
   std::cout << "Mean val = " << mean << std::endl;
 
   bool valid = true;
-  for(unsigned int i=0; i<numCentroids; i++)
+  for( unsigned int i=0; i<numCentroids; i++ )
     {
-    double tf = vnl_math_abs( (val[i]-mean)/mean );
-    std::cout << "val[" << i << "] = " << val[i] << " ("
-      << (int)(tf*100) << "% diff from mean)" << std::endl;
+    double tf = vnl_math_abs( ( val[i]-mean )/mean );
+    std::cout << "val[" << i << "] = " << val[i] << " ( "
+      << ( int )( tf*100 ) << "% diff from mean )" << std::endl;
     if( tf > 0.15 )
       {
       std::cout << "  Error: not within tolerance of mean." << std::endl;
@@ -132,7 +132,7 @@ int itktubeCVTImageFilterTest( int argc, char * argv[] )
     {
     writer->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
     std::cerr << "Exception caught during write:\n"  << e;
     return EXIT_FAILURE;

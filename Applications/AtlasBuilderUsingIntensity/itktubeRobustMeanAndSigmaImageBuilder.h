@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -49,17 +49,16 @@ namespace tube
  * This class derives from \sa MeanAndSigmaImageBuilder
  */
 template< class TInputImageType, class TOutputMeanImageType,
-          class TOutputSigmaImageType >
+  class TOutputSigmaImageType >
 class RobustMeanAndSigmaImageBuilder
-  : public MeanAndSigmaImageBuilder< TInputImageType, TOutputMeanImageType,
-                                     TOutputSigmaImageType >
+: public MeanAndSigmaImageBuilder< TInputImageType, TOutputMeanImageType,
+  TOutputSigmaImageType >
 {
 public:
 
   typedef RobustMeanAndSigmaImageBuilder                    Self;
-  typedef MeanAndSigmaImageBuilder< TInputImageType,
-                                    TOutputMeanImageType,
-                                    TOutputSigmaImageType>  Superclass;
+  typedef MeanAndSigmaImageBuilder< TInputImageType, TOutputMeanImageType,
+    TOutputSigmaImageType>                                  Superclass;
 
   typedef SmartPointer< Self >                              Pointer;
   typedef SmartPointer< const Self >                        ConstPointer;
@@ -67,29 +66,29 @@ public:
   itkNewMacro( Self );
   itkTypeMacro( RobustMeanAndSigmaImageBuilder, MeanAndSigmaImageBuilder );
 
-  typedef TInputImageType                                   InputImageType;
-  typedef TOutputMeanImageType                              OutputMeanImageType;
-  typedef TOutputSigmaImageType                             OutputSigmaImageType;
+  typedef TInputImageType                              InputImageType;
+  typedef TOutputMeanImageType                         OutputMeanImageType;
+  typedef TOutputSigmaImageType                        OutputSigmaImageType;
 
-  typedef typename Superclass::InputPixelType               InputPixelType;
-  typedef typename Superclass::OutputMeanPixelType          OutputMeanPixelType;
-  typedef typename Superclass::OutputSigmaPixelType         OutputSigmaPixelType;
+  typedef typename Superclass::InputPixelType          InputPixelType;
+  typedef typename Superclass::OutputMeanPixelType     OutputMeanPixelType;
+  typedef typename Superclass::OutputSigmaPixelType    OutputSigmaPixelType;
 
-  typedef typename Superclass::InputImagePointer            InputImagePointer;
-  typedef typename Superclass::OutputMeanImagePointer       OutputMeanImagePointer;
-  typedef typename Superclass::OutputSigmaImagePointer      OutputSigmaImagePointer;
+  typedef typename Superclass::InputImagePointer       InputImagePointer;
+  typedef typename Superclass::OutputMeanImagePointer  OutputMeanImagePointer;
+  typedef typename Superclass::OutputSigmaImagePointer OutputSigmaImagePointer;
 
-  typedef typename Superclass::RegionType                   RegionType;
-  typedef typename Superclass::SpacingType                  SpacingType;
-  typedef typename Superclass::PointType                    PointType;
-  typedef typename Superclass::SizeType                     SizeType;
+  typedef typename Superclass::RegionType              RegionType;
+  typedef typename Superclass::SpacingType             SpacingType;
+  typedef typename Superclass::PointType               PointType;
+  typedef typename Superclass::SizeType                SizeType;
 
   /**
    * Add an image to the group being summed. No check is made to insure
    * the same image is not added twice
    *
    * It is assumed that the input image has the same spacing, origin & size
-   * (unless DynamicallyAdjustOutputSize() is set)
+   * ( unless DynamicallyAdjustOutputSize() is set )
    */
   void AddImage( InputImagePointer );
 
@@ -114,9 +113,9 @@ public:
   itkSetMacro( NumberOfOutlierImagesToRemove, unsigned int );
 
   /**
-   * Function to define class to find the median image. Requires that the total
-   * number of images to be added to the form mean. Median will be returned using
-   * the GetOutputMeanImage() function.
+   * Function to define class to find the median image. Requires that the
+   * total number of images to be added to the form mean. Median will be
+   * returned using the GetOutputMeanImage() function.
    */
   void UseMedianImage( unsigned int totalNumberOfImages )
     { m_TotalNumberOfImages = totalNumberOfImages; }
@@ -127,8 +126,8 @@ public:
    * Update the output images to the inputed size. Can be called at any
    * point during the mean building process.
    *
-   * This does NOT test or warn if the current output image size is decreased
-   * in any axis
+   * This does NOT test or warn if the current output image size is
+   * decreased in any axis
    */
   void UpdateOutputImageSize( SizeType );
 
@@ -149,13 +148,21 @@ protected:
   typedef typename Superclass::CountImagePointer        CountImagePointer;
 
   typedef ImageRegionIterator<InputImageType>           InputIteratorType;
-  typedef typename Superclass::InputConstIteratorType   InputConstIteratorType;
-  typedef typename Superclass::ProcessConstIteratorType ProcessConstIteratorType;
-  typedef typename Superclass::ProcessIteratorType      ProcessIteratorType;
-  typedef typename Superclass::CountConstIteratorType   CountConstIteratorType;
-  typedef typename Superclass::CountIteratorType        CountIteratorType;
-  typedef typename Superclass::OutputMeanIteratorType   OutputMeanIteratorType;
-  typedef typename Superclass::OutputSigmaIteratorType  OutputSigmaIteratorType;
+
+  typedef typename Superclass::InputConstIteratorType
+    InputConstIteratorType;
+  typedef typename Superclass::ProcessConstIteratorType
+    ProcessConstIteratorType;
+  typedef typename Superclass::ProcessIteratorType
+    ProcessIteratorType;
+  typedef typename Superclass::CountConstIteratorType
+    CountConstIteratorType;
+  typedef typename Superclass::CountIteratorType
+    CountIteratorType;
+  typedef typename Superclass::OutputMeanIteratorType
+    OutputMeanIteratorType;
+  typedef typename Superclass::OutputSigmaIteratorType
+    OutputSigmaIteratorType;
 
   typedef typename std::vector<InputImagePointer>       InputImageListType;
 
@@ -181,18 +188,18 @@ protected:
 
   /**
    * Get the ordered image list representing the upper outlier values.
-   * Size is dependent on the number of outliers to remove for robust standard
-   * deviation calculation.  Used to determine sigma calculations. Order is
-   * descending starting from highest intensity
+   * Size is dependent on the number of outliers to remove for robust
+   * standard deviation calculation.  Used to determine sigma calculations.
+   * Order is descending starting from highest intensity
    */
   InputImageListType& GetUpperOutlierImages( void )
     { return m_UpperOutlierImages; }
 
   /**
    * Set the ordered image list representing the upper outlier values.
-   * Size is dependent on the number of outliers to remove for robust standard
-   * deviation calculation. Used to determine sigma calculations. Order is
-   * descending starting from highest intensity
+   * Size is dependent on the number of outliers to remove for robust
+   * standard deviation calculation. Used to determine sigma calculations.
+   * Order is descending starting from highest intensity
    */
   void SetUpperOutlierImages( InputImageListType& list )
     { m_UpperOutlierImages = list; }
@@ -203,18 +210,16 @@ protected:
 
   InputImagePointer GetImageCopy( InputImagePointer );
   InputImageListType& AddToUpdateImageList( InputImagePointer input,
-                                            InputImageListType& list,
-                                            bool ListIsAscending );
+    InputImageListType& list, bool ListIsAscending );
 
   bool UseMedian( void )
     { return ( m_TotalNumberOfImages > 0 ); }
 
   /**
    * Builds median image from the LowerOutlierImages. Can only
-   * be (reasonably) called after at least 1 image has been added
+   * be ( reasonably ) called after at least 1 image has been added
    */
   OutputMeanImagePointer  GetMedianImage();
-
 
 private:
 
@@ -234,4 +239,4 @@ private:
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeRobustMeanAndSigmaImageBuilder_h)
+#endif // End !defined( __itktubeRobustMeanAndSigmaImageBuilder_h )

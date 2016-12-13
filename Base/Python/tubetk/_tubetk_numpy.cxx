@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -38,7 +38,7 @@ extern "C"
 {
 #endif
 
-  static PyObject * tubetk_numpy_tubes_from_file(
+  static PyObject * tubetk_numpy_tubes_from_file( 
     PyObject * itkNotUsed( self ), PyObject * args )
     {
     const char * inputTubeTree;
@@ -105,14 +105,14 @@ extern "C"
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s)", "ID", "i" );
+    subDtype = Py_BuildValue( "( s,s )", "ID", "i" );
     retval = PyList_SetItem( recordList, 0, subDtype );
     if( retval == -1 )
       {
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s,i)", "Position", "d", Dimension );
+    subDtype = Py_BuildValue( "( s,s,i )", "Position", "d", Dimension );
     retval = PyList_SetItem( recordList, 1, subDtype );
     if( retval == -1 )
       {
@@ -120,84 +120,84 @@ extern "C"
       }
 
     // RGBAPixel< float >
-    subDtype = Py_BuildValue( "(s,s,i)", "Color", "f", 4 );
+    subDtype = Py_BuildValue( "( s,s,i )", "Color", "f", 4 );
     retval = PyList_SetItem( recordList, 2, subDtype );
     if( retval == -1 )
       {
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s,i)", "Tangent", "d", Dimension );
+    subDtype = Py_BuildValue( "( s,s,i )", "Tangent", "d", Dimension );
     retval = PyList_SetItem( recordList, 3, subDtype );
     if( retval == -1 )
       {
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s,i)", "Normal1", "d", Dimension );
+    subDtype = Py_BuildValue( "( s,s,i )", "Normal1", "d", Dimension );
     retval = PyList_SetItem( recordList, 4, subDtype );
     if( retval == -1 )
       {
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s,i)", "Normal2", "d", Dimension );
+    subDtype = Py_BuildValue( "( s,s,i )", "Normal2", "d", Dimension );
     retval = PyList_SetItem( recordList, 5, subDtype );
     if( retval == -1 )
       {
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s)", "Radius", "f4" );
+    subDtype = Py_BuildValue( "( s,s )", "Radius", "f4" );
     retval = PyList_SetItem( recordList, 6, subDtype );
     if( retval == -1 )
       {
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s)", "Alpha1", "f4" );
+    subDtype = Py_BuildValue( "( s,s )", "Alpha1", "f4" );
     retval = PyList_SetItem( recordList, 7, subDtype );
     if( retval == -1 )
       {
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s)", "Alpha2", "f4" );
+    subDtype = Py_BuildValue( "( s,s )", "Alpha2", "f4" );
     retval = PyList_SetItem( recordList, 8, subDtype );
     if( retval == -1 )
       {
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s)", "Alpha3", "f4" );
+    subDtype = Py_BuildValue( "( s,s )", "Alpha3", "f4" );
     retval = PyList_SetItem( recordList, 9, subDtype );
     if( retval == -1 )
       {
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s)", "Medialness", "f4" );
+    subDtype = Py_BuildValue( "( s,s )", "Medialness", "f4" );
     retval = PyList_SetItem( recordList, 10, subDtype );
     if( retval == -1 )
       {
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s)", "Ridgeness", "f4" );
+    subDtype = Py_BuildValue( "( s,s )", "Ridgeness", "f4" );
     retval = PyList_SetItem( recordList, 11, subDtype );
     if( retval == -1 )
       {
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s)", "Branchness", "f4" );
+    subDtype = Py_BuildValue( "( s,s )", "Branchness", "f4" );
     retval = PyList_SetItem( recordList, 12, subDtype );
     if( retval == -1 )
       {
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s)", "Mark", "bool_" );
+    subDtype = Py_BuildValue( "( s,s )", "Mark", "bool_" );
     retval = PyList_SetItem( recordList, 13, subDtype );
     if( retval == -1 )
       {
@@ -219,7 +219,7 @@ extern "C"
     for( PointsContainerType::ElementIdentifier elementId = 0;
          elementId < pointsContainer->Size(); ++elementId )
       {
-      const TubePointType & tubePoint = pointsContainer->ElementAt(
+      const TubePointType & tubePoint = pointsContainer->ElementAt( 
         elementId );
 
       const int id_ = tubePoint.GetID();
@@ -229,21 +229,21 @@ extern "C"
       const TubePointType::PointType & position = tubePoint.GetPosition();
       for( unsigned int j = 0; j < Dimension; ++j )
         {
-        std::memcpy( data, &(position[j]), sizeof( double ) );
+        std::memcpy( data, &( position[j] ), sizeof( double ) );
         data += sizeof( double );
         }
 
       const TubePointType::ColorType & color = tubePoint.GetColor();
       for( unsigned int j = 0; j < 4; ++j )
         {
-        std::memcpy( data, &(color[j]), sizeof( float ) );
+        std::memcpy( data, &( color[j] ), sizeof( float ) );
         data += sizeof( float );
         }
 
       const TubePointType::VectorType & tangent = tubePoint.GetTangent();
       for( unsigned int j = 0; j < Dimension; ++j )
         {
-        std::memcpy( data, &(tangent[j]), sizeof( double ) );
+        std::memcpy( data, &( tangent[j] ), sizeof( double ) );
         data += sizeof( double );
         }
 
@@ -251,7 +251,7 @@ extern "C"
         tubePoint.GetNormal1();
       for( unsigned int j = 0; j < Dimension; ++j )
         {
-        std::memcpy( data, &(normal1[j]), sizeof( double ) );
+        std::memcpy( data, &( normal1[j] ), sizeof( double ) );
         data += sizeof( double );
         }
 
@@ -259,7 +259,7 @@ extern "C"
         tubePoint.GetNormal2();
       for( unsigned int j = 0; j < Dimension; ++j )
         {
-        std::memcpy( data, &(normal2[j]), sizeof( double ) );
+        std::memcpy( data, &( normal2[j] ), sizeof( double ) );
         data += sizeof( double );
         }
 
@@ -321,7 +321,7 @@ extern "C"
   PyMODINIT_FUNC
   init_tubetk_numpy( void )
     {
-    (void)Py_InitModule( "_tubetk_numpy", _tubetk_numpyMethods );
+    ( void )Py_InitModule( "_tubetk_numpy", _tubetk_numpyMethods );
     import_array();
     }
 

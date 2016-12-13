@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -58,10 +58,10 @@ public:
   typedef typename FilterType::ImageType             ImageType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(SegmentBinaryImageSkeleton, ProcessObject);
+  /** Run-time type information ( and related methods ). */
+  itkTypeMacro( SegmentBinaryImageSkeleton, ProcessObject );
 
   /** Set/Get radius for post-dilatation */
   tubeWrapSetMacro( Radius, unsigned int, Filter );
@@ -72,10 +72,10 @@ public:
   tubeWrapGetConstObjectMacro( Input, ImageType, Filter );
 
   /** Compute image similarity */
-  tubeWrapUpdateMacro(Filter);
+  tubeWrapUpdateMacro( Filter );
 
   /** Get image similarity */
-  tubeWrapGetObjectMacro(Output, ImageType, Filter);
+  tubeWrapGetObjectMacro( Output, ImageType, Filter );
 
 protected:
   SegmentBinaryImageSkeleton( void );
@@ -84,8 +84,8 @@ protected:
 
 private:
   /** itktubeSegmentBinaryImageSkeletonFilter parameters **/
-  SegmentBinaryImageSkeleton(const Self &);
-  void operator=(const Self &);
+  SegmentBinaryImageSkeleton( const Self & );
+  void operator=( const Self & );
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
   void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};

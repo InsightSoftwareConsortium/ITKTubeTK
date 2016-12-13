@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -32,7 +32,7 @@ ConvertSpatialGraphToImage< TInputImage, TOutputImage >
 template< typename TInputImage, typename TOutputImage >
 void
 ConvertSpatialGraphToImage< TInputImage, TOutputImage >
-::SetAdjacencyMatrix( vnl_matrix< double > a)
+::SetAdjacencyMatrix( vnl_matrix< double > a )
 {
   m_Filter->SetAdjacencyMatrix( a );
 }

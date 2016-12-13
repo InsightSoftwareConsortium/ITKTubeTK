@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -65,9 +65,9 @@ VotingResampleImageFunction< TInputImage, TCoordRep >
 template< class TInputImage, class TCoordRep >
 void
 VotingResampleImageFunction< TInputImage, TCoordRep >
-::PrintSelf(std::ostream& os, Indent indent) const
+::PrintSelf( std::ostream& os, Indent indent ) const
 {
-  this->Superclass::PrintSelf(os,indent);
+  this->Superclass::PrintSelf( os,indent );
 }
 
 
@@ -78,42 +78,42 @@ template< class TInputImage, class TCoordRep >
 typename VotingResampleImageFunction< TInputImage, TCoordRep >
 ::OutputType
 VotingResampleImageFunction< TInputImage, TCoordRep >
-::EvaluateAtContinuousIndex(
-  const ContinuousIndexType& index) const
+::EvaluateAtContinuousIndex( 
+  const ContinuousIndexType& index ) const
 {
   typedef itk::ConstNeighborhoodIterator< TInputImage >
     NeighborhoodIteratorType;
 
   typename NeighborhoodIteratorType::RadiusType radius;
-  radius.Fill(1);
+  radius.Fill( 1 );
   NeighborhoodIteratorType it( radius, this->GetInputImage(),
     this->GetInputImage()->GetRequestedRegion() );
 
   IndexType newIndex;
-  for(unsigned int i = 0; i < ImageDimension; i++)
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    newIndex[i] = (int)index[i];
+    newIndex[i] = ( int )index[i];
     }
 
-  it.SetLocation(newIndex);
+  it.SetLocation( newIndex );
   itk::Neighborhood<typename TInputImage::PixelType, ImageDimension> n =
     it.GetNeighborhood();
   std::map<typename TInputImage::PixelType, int> tally;
   typename std::map<typename TInputImage::PixelType, int>::const_iterator itr;
-  for(unsigned int i = 0; i < n.Size(); i++)
+  for( unsigned int i = 0; i < n.Size(); i++ )
     {
     tally[n[i]] = 0;
     }
-  for(unsigned int i = 0; i < n.Size(); i++)
+  for( unsigned int i = 0; i < n.Size(); i++ )
     {
     tally[n[i]] += 1;
     }
   bool first = true;
   int max = 0;
   unsigned short ret = 0;
-  for(itr = tally.begin(); itr != tally.end(); ++itr)
+  for( itr = tally.begin(); itr != tally.end(); ++itr )
     {
-    if(first == true || itr->second > max)
+    if( first == true || itr->second > max )
       {
       first = false;
       max = itr->second;
@@ -127,4 +127,4 @@ VotingResampleImageFunction< TInputImage, TCoordRep >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeVotingResampleImageFunction_hxx)
+#endif // End !defined( __itktubeVotingResampleImageFunction_hxx )

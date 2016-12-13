@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -36,7 +36,7 @@ limitations under the License.
 // Template function to fill in an image with a sphere.
 template< class TImage >
 void
-FillWithSphere(
+FillWithSphere( 
 TImage * image,
 double * center,
 double radius,
@@ -56,7 +56,7 @@ typename TImage::PixelType backgnd )
     double distance = 0;
     for( unsigned int j = 0; j < TImage::ImageDimension; j++ )
       {
-      distance += vnl_math_sqr((double) index[j] - center[j]);
+      distance += vnl_math_sqr( ( double ) index[j] - center[j] );
       }
     if( distance <= r2 ) it.Set( foregnd );
     else it.Set( backgnd );
@@ -66,7 +66,7 @@ typename TImage::PixelType backgnd )
 // Template function to fill in an image with two boxes
 template< class TImage >
 void
-FillWithBox(
+FillWithBox( 
 TImage * image,
 double * bottomBox,
 double * topBox,
@@ -99,7 +99,7 @@ typename TImage::PixelType topEnd )
         && index[1] >= bottomBox[1] && index[1] < bottomBox[1] + size[1]
         && index[2] > bottomBox[2] && index[2] < bottomBox[2] + size[2] )
       {
-      intensity = ( (index[0] - bottomBox[0] ) / size[0] ) * bottomRange + bottomStart;
+      intensity = ( ( index[0] - bottomBox[0] ) / size[0] ) * bottomRange + bottomStart;
       it.Set( intensity ); // or bottomStart for solid blocks
       }
     else if( index[0] >= bottomBox[0] + size[0]
@@ -118,7 +118,7 @@ typename TImage::PixelType topEnd )
         && index[1] >= topBox[1] && index[1] < topBox[1] + size[1]
         && index[2] > topBox[2] && index[2] < topBox[2] + size[2] )
       {
-      intensity = ( (index[0] - topBox[0] ) / size[0] ) * topRange + topStart;
+      intensity = ( ( index[0] - topBox[0] ) / size[0] ) * topRange + topStart;
       it.Set( intensity ); // or topEnd for solid blocks
       }
     else if( index[0] >= topBox[0] + size[0]
@@ -136,7 +136,7 @@ typename TImage::PixelType topEnd )
 
 // Determines whether a point is in a tube
 template< class TIndex >
-bool PointInTube( TIndex index, double * tubeLeftPoint, double radius)
+bool PointInTube( TIndex index, double * tubeLeftPoint, double radius )
 {
   TIndex centerPoint;
   centerPoint[0] = index[0];
@@ -144,18 +144,18 @@ bool PointInTube( TIndex index, double * tubeLeftPoint, double radius)
   centerPoint[2] = tubeLeftPoint[2];
 
   double distance = 0;
-  for(int i = 0; i < 3; i++)
+  for( int i = 0; i < 3; i++ )
     {
-    distance += vnl_math_sqr(index[i] - centerPoint[i]);
+    distance += vnl_math_sqr( index[i] - centerPoint[i] );
     }
 
-  return std::sqrt(distance) <= radius;
+  return std::sqrt( distance ) <= radius;
 }
 
 // Template function to fill in an image with two tubes
 template< class TImage >
 void
-FillWithTubes(
+FillWithTubes( 
 TImage * image,
 double * bottomTubeLeftPoint,
 double * topTubeLeftPoint,
@@ -178,7 +178,7 @@ typename TImage::PixelType topIntensity )
 
     if( index[0] > bottomTubeLeftPoint[0] && index[0] < bottomTubeLeftPoint[0] + length )
       {
-      if( PointInTube(index, bottomTubeLeftPoint, radius) )
+      if( PointInTube( index, bottomTubeLeftPoint, radius ) )
         {
         it.Set( bottomIntensity );
         inTube = true;
@@ -187,7 +187,7 @@ typename TImage::PixelType topIntensity )
 
     if( index[0] > topTubeLeftPoint[0] && index[0] < topTubeLeftPoint[0] + length )
       {
-      if( PointInTube(index, topTubeLeftPoint, radius) )
+      if( PointInTube( index, topTubeLeftPoint, radius ) )
         {
         it.Set( topIntensity );
         inTube = true;
@@ -235,7 +235,7 @@ vtkPolyData* CreateCubePolydata( double * bottomBox, double * topBox,
   vtkCubeSource * topCube = vtkCubeSource::New();
   topCube->SetBounds( topBox[0], topBox[0] + size[0],
                       topBox[1] - 0.5, topBox[1] + size[1] - 0.5,
-                      topBox[2], topBox[2] + size[2]);
+                      topBox[2], topBox[2] + size[2] );
   topCube->Update();
 
   vtkCubeSource * bottomCube = vtkCubeSource::New();
@@ -269,7 +269,7 @@ vtkPolyData* CreateCubePolydata( double * bottomBox, double * topBox,
 
 // Intensity windowing from 0..255 to 0..1
 template< class TImage >
-void IntensityWindow(
+void IntensityWindow( 
 TImage * image )
 {
   float valMin = 0;
@@ -308,9 +308,9 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages( int argc, char * a
               << "output fixed image, "
               << "output moving image, "
               << "output surface border polydata or tube spatial objects, "
-              << "test type (0 for circles, 1 for boxes, 2 for tubes), "
-              << "intensity window to [0..1] (0 = no, 1 = yes), "
-              << "image size (creates square images)"
+              << "test type ( 0 for circles, 1 for boxes, 2 for tubes ), "
+              << "intensity window to [0..1] ( 0 = no, 1 = yes ), "
+              << "image size ( creates square images )"
               << std::endl;
     return EXIT_FAILURE;
     }
@@ -389,7 +389,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages( int argc, char * a
     FillWithSphere<ImageType>( moving, movingCenter, movingRadius, fgnd, bgnd );
 
     // fill fixed with sphere
-    fixedCenter[0] = (sizeValue / 2.0) - 2.0;
+    fixedCenter[0] = ( sizeValue / 2.0 ) - 2.0;
     for( unsigned int i = 1; i < ImageDimension; i++ )
       {
       fixedCenter[i] = sizeValue / 2.0;
@@ -407,7 +407,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages( int argc, char * a
     }
   else if( geometry == boxes )
     {
-    double boxSize[3] = { sizeValue / (8.0/3.0),
+    double boxSize[3] = { sizeValue / ( 8.0/3.0 ),
                           sizeValue / 5.0,
                           sizeValue / 5.0 };
     double center[3] = {sizeValue / 2.0, sizeValue / 2.0, sizeValue / 2.0 };
@@ -461,7 +461,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages( int argc, char * a
     }
   else if( geometry == tubes )
     {
-    double length = sizeValue / (8.0/3.0);
+    double length = sizeValue / ( 8.0/3.0 );
     double radius = sizeValue / 10.0;
     double center[3] = {sizeValue / 2.0, sizeValue / 2.0, sizeValue / 2.0 };
     double offset = sizeValue / 8.0;
@@ -497,7 +497,7 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages( int argc, char * a
     bool defineShortTube = false;
     if( defineShortTube )
       {
-      numPoints = static_cast<int>(length) + 1;
+      numPoints = static_cast<int>( length ) + 1;
       bottomX = vnl_math_ceil( fixedBottomTubeLeftPoint[0] );
       topX = vnl_math_ceil( fixedTopTubeLeftPoint[0] );
       }
@@ -509,26 +509,26 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages( int argc, char * a
       }
 
     VesselTubeType::PointListType bottomTubePoints;
-    bottomTubePoints.resize(numPoints);
+    bottomTubePoints.resize( numPoints );
     VesselTubeType::PointListType topTubePoints;
-    topTubePoints.resize(numPoints);
+    topTubePoints.resize( numPoints );
 
     for( int i = 0; i < numPoints; i++ )
       {
       VectorTubePointType bottomPoint;
-      bottomPoint.SetPosition(bottomX, fixedBottomTubeLeftPoint[1], fixedBottomTubeLeftPoint[2]);
-      bottomPoint.SetNormal1(0, 1, 0);
-      bottomPoint.SetNormal2(0, 0, 1);
-      bottomPoint.SetTangent(1, 0, 0);
-      bottomPoint.SetRadius(radius);
+      bottomPoint.SetPosition( bottomX, fixedBottomTubeLeftPoint[1], fixedBottomTubeLeftPoint[2] );
+      bottomPoint.SetNormal1( 0, 1, 0 );
+      bottomPoint.SetNormal2( 0, 0, 1 );
+      bottomPoint.SetTangent( 1, 0, 0 );
+      bottomPoint.SetRadius( radius );
       bottomTubePoints[i] = bottomPoint;
 
       VectorTubePointType topPoint;
-      topPoint.SetPosition(topX, fixedTopTubeLeftPoint[1], fixedTopTubeLeftPoint[2]);
-      topPoint.SetNormal1(0, 1, 0);
-      topPoint.SetNormal2(0, 0, 1);
-      topPoint.SetTangent(1, 0, 0);
-      topPoint.SetRadius(radius);
+      topPoint.SetPosition( topX, fixedTopTubeLeftPoint[1], fixedTopTubeLeftPoint[2] );
+      topPoint.SetNormal1( 0, 1, 0 );
+      topPoint.SetNormal2( 0, 0, 1 );
+      topPoint.SetTangent( 1, 0, 0 );
+      topPoint.SetRadius( radius );
       topTubePoints[i] = topPoint;
 
       bottomX += spacingValue;
@@ -536,18 +536,18 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages( int argc, char * a
       }
 
     VesselTubeType::Pointer bottomTube = VesselTubeType::New();
-    bottomTube->SetPoints(bottomTubePoints);
+    bottomTube->SetPoints( bottomTubePoints );
     VesselTubeType::Pointer topTube = VesselTubeType::New();
-    topTube->SetPoints(topTubePoints);
+    topTube->SetPoints( topTubePoints );
 
     group = GroupType::New();
-    group->AddSpatialObject(bottomTube);
-    group->AddSpatialObject(topTube);
+    group->AddSpatialObject( bottomTube );
+    group->AddSpatialObject( topTube );
     }
 
   // Scale the images to 0..1
   bool intensityWindow = std::atoi( argv[5] ) == 1;
-  if(intensityWindow)
+  if( intensityWindow )
     {
     IntensityWindow<ImageType>( fixed );
     IntensityWindow<ImageType>( moving );

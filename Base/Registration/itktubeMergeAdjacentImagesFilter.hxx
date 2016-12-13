@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -59,7 +59,7 @@ MergeAdjacentImagesFilter< TImage >
 template< class TImage >
 void
 MergeAdjacentImagesFilter< TImage >
-::SetInput1(const TImage* image)
+::SetInput1( const TImage* image )
 {
   if( this->m_Input1.GetPointer() != image )
     {
@@ -72,7 +72,7 @@ MergeAdjacentImagesFilter< TImage >
 template< class TImage >
 void
 MergeAdjacentImagesFilter< TImage >
-::SetInput2(const TImage* image)
+::SetInput2( const TImage* image )
 {
   if( this->m_Input2.GetPointer() != image )
     {
@@ -103,7 +103,7 @@ void
 MergeAdjacentImagesFilter< TImage >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
-  Superclass::PrintSelf(os, indent);
+  Superclass::PrintSelf( os, indent );
 
   os << "Background: " << m_Background << std::endl;
   os << "MaskZero: " << m_MaskZero << std::endl;
@@ -191,10 +191,10 @@ MergeAdjacentImagesFilter< TImage >
     TransformListType::const_iterator transformIt = transforms->begin();
     while( transformIt != transforms->end() )
       {
-      if( !strcmp( (*transformIt)->GetNameOfClass(), "AffineTransform") )
+      if( !strcmp( ( *transformIt )->GetNameOfClass(), "AffineTransform" ) )
         {
         typename AffineTransformType::Pointer affine_read =
-          static_cast<AffineTransformType *>( (*transformIt).GetPointer() );
+          static_cast<AffineTransformType *>( ( *transformIt ).GetPointer() );
         initialTransform = affine_read.GetPointer();
         break;
         }
@@ -279,7 +279,7 @@ MergeAdjacentImagesFilter< TImage >
     }
 
   // Allocate output image
-  // timeCollector.Start("Allocate output image");
+  // timeCollector.Start( "Allocate output image" );
 
   typename TImage::Pointer output = this->GetOutput();
 
@@ -305,7 +305,7 @@ MergeAdjacentImagesFilter< TImage >
     ++iter;
     }
 
-  // timeCollector.Stop("Allocate output image");
+  // timeCollector.Stop( "Allocate output image" );
 
   // perform registration
   typedef typename itk::ImageToImageRegistrationHelper< ImageType >
@@ -333,12 +333,12 @@ MergeAdjacentImagesFilter< TImage >
 
   if( m_MaxIterations > 0 )
     {
-    // timeCollector.Start("Register images");
+    // timeCollector.Start( "Register images" );
 
     regOp->SetReportProgress( true );
     regOp->Update();
 
-    // timeCollector.Stop("Register images");
+    // timeCollector.Stop( "Register images" );
     }
 
   if( ! m_OutputTransformFile.empty() )
@@ -349,15 +349,15 @@ MergeAdjacentImagesFilter< TImage >
   // Resample image
   typename ImageType::ConstPointer tmpImage;
 
-  // timeCollector.Start("Resample Image");
+  // timeCollector.Start( "Resample Image" );
 
   regOp->SetFixedImage( output );
 
-  tmpImage = regOp->ResampleImage(
+  tmpImage = regOp->ResampleImage( 
     RegFilterType::OptimizedRegistrationMethodType::LINEAR_INTERPOLATION,
     m_Input2, NULL, NULL, m_Background );
 
-  // timeCollector.Stop("Resample Image");
+  // timeCollector.Stop( "Resample Image" );
 
   if( m_BlendUsingAverage )
     {
@@ -371,13 +371,13 @@ MergeAdjacentImagesFilter< TImage >
       {
       double iVal = iter2.Get();
       bool image2Point = false;
-      if( iVal != m_Background && (!m_MaskZero || iVal != 0) )
+      if( iVal != m_Background && ( !m_MaskZero || iVal != 0 ) )
         {
         image2Point = true;
         }
       double oVal = iterOut.Get();
       bool imageOutPoint = false;
-      if( oVal != m_Background && (!m_MaskZero || oVal != 0) )
+      if( oVal != m_Background && ( !m_MaskZero || oVal != 0 ) )
         {
         imageOutPoint = true;
         }
@@ -402,7 +402,7 @@ MergeAdjacentImagesFilter< TImage >
     }
   else
     {
-    // timeCollector.Start("Resample Image2");
+    // timeCollector.Start( "Resample Image2" );
 
     typename ImageType::Pointer input2Reg = ImageType::New();
     input2Reg->CopyInformation( tmpImage );
@@ -433,13 +433,13 @@ MergeAdjacentImagesFilter< TImage >
       double iVal = iterTmp.Get();
       iter2.Set( iVal );
       bool image2Point = false;
-      if( iVal != m_Background && (!m_MaskZero || iVal != 0) )
+      if( iVal != m_Background && ( !m_MaskZero || iVal != 0 ) )
         {
         image2Point = true;
         }
       double oVal = iterOut.Get();
       bool imageOutPoint = false;
-      if( oVal != m_Background && (!m_MaskZero || oVal != 0) )
+      if( oVal != m_Background && ( !m_MaskZero || oVal != 0 ) )
         {
         imageOutPoint = true;
         }
@@ -461,9 +461,9 @@ MergeAdjacentImagesFilter< TImage >
       ++iterOutMap;
       }
 
-    // timeCollector.Stop("Resample Image2");
+    // timeCollector.Stop( "Resample Image2" );
 
-    // timeCollector.Start("Out Distance Map");
+    // timeCollector.Start( "Out Distance Map" );
     typename ImageType::Pointer outputDistMap = NULL;
     typename ImageType::Pointer outputVoronoiMap = NULL;
     if( m_UseFastBlending )
@@ -476,10 +476,10 @@ MergeAdjacentImagesFilter< TImage >
         Indicator;
       typename Indicator::Pointer indicator = Indicator::New();
 
-      indicator->SetLowerThreshold(0);
-      indicator->SetUpperThreshold(0);
-      indicator->SetOutsideValue(0);
-      indicator->SetInsideValue(
+      indicator->SetLowerThreshold( 0 );
+      indicator->SetUpperThreshold( 0 );
+      indicator->SetOutsideValue( 0 );
+      indicator->SetInsideValue( 
         mapDistFilter->GetMaximalSquaredDistance() );
       indicator->SetInput( outputMap );
       indicator->Update();
@@ -504,18 +504,18 @@ MergeAdjacentImagesFilter< TImage >
       outputDistMap = mapDistFilter->GetDistanceMap();
       outputVoronoiMap = mapDistFilter->GetVoronoiMap();
       }
-    // timeCollector.Stop("Out Distance Map");
+    // timeCollector.Stop( "Out Distance Map" );
 
-    // timeCollector.Start("Distance Map Selection");
+    // timeCollector.Start( "Distance Map Selection" );
 
     typename ImageType::Pointer vorImageMap = ImageType::New();
     vorImageMap->CopyInformation( output );
     vorImageMap->SetRegions( output->GetLargestPossibleRegion() );
     vorImageMap->Allocate();
     vorImageMap->FillBuffer( 1 );
-    itk::ImageRegionConstIteratorWithIndex< ImageType > iterOutVor(
+    itk::ImageRegionConstIteratorWithIndex< ImageType > iterOutVor( 
       outputVoronoiMap, outputVoronoiMap->GetLargestPossibleRegion() );
-    itk::ImageRegionIteratorWithIndex< ImageType > iterVorMap(
+    itk::ImageRegionIteratorWithIndex< ImageType > iterVorMap( 
       vorImageMap, vorImageMap->GetLargestPossibleRegion() );
     while( !iterOutVor.IsAtEnd() )
       {
@@ -528,7 +528,7 @@ MergeAdjacentImagesFilter< TImage >
       ++iterVorMap;
       }
 
-    // timeCollector.Stop("Distance Map Selection");
+    // timeCollector.Stop( "Distance Map Selection" );
 
     typename ImageType::Pointer vorImageDistMap = NULL;
     if( m_UseFastBlending )
@@ -537,16 +537,16 @@ MergeAdjacentImagesFilter< TImage >
         ImageType, ImageType >   MapFilterType;
       typename MapFilterType::Pointer mapVorFilter = MapFilterType::New();
 
-      // timeCollector.Start("Voronoi Distance Map");
+      // timeCollector.Start( "Voronoi Distance Map" );
 
       typedef itk::BinaryThresholdImageFilter<ImageType, ImageType>
         Indicator;
       typename Indicator::Pointer indicator2 = Indicator::New();
 
-      indicator2->SetLowerThreshold(0);
-      indicator2->SetUpperThreshold(0);
-      indicator2->SetOutsideValue(0);
-      indicator2->SetInsideValue(
+      indicator2->SetLowerThreshold( 0 );
+      indicator2->SetUpperThreshold( 0 );
+      indicator2->SetOutsideValue( 0 );
+      indicator2->SetInsideValue( 
         mapVorFilter->GetMaximalSquaredDistance() );
       indicator2->SetInput( vorImageMap );
       indicator2->Update();
@@ -558,11 +558,11 @@ MergeAdjacentImagesFilter< TImage >
       mapVorFilter->Update();
       vorImageDistMap = mapVorFilter->GetOutput();
 
-      // timeCollector.Stop("Voronoi Distance Map");
+      // timeCollector.Stop( "Voronoi Distance Map" );
       }
     else
       {
-      // timeCollector.Start("Voronoi Distance Map");
+      // timeCollector.Start( "Voronoi Distance Map" );
 
       typedef typename itk::SignedDanielssonDistanceMapImageFilter<
         ImageType, ImageType>  SignedMapFilterType;
@@ -574,30 +574,30 @@ MergeAdjacentImagesFilter< TImage >
       mapVorFilter->Update();
       vorImageDistMap = mapVorFilter->GetDistanceMap();
 
-      // timeCollector.Stop("Voronoi Distance Map");
+      // timeCollector.Stop( "Voronoi Distance Map" );
       }
 
-    // timeCollector.Start("Voronoi Distance Selection");
+    // timeCollector.Start( "Voronoi Distance Selection" );
 
     iter2.GoToBegin();
     iterOut.GoToBegin();
-    itk::ImageRegionIteratorWithIndex< ImageType > iterOutDistMap(
+    itk::ImageRegionIteratorWithIndex< ImageType > iterOutDistMap( 
       outputDistMap, outputDistMap->GetLargestPossibleRegion() );
 
-    itk::ImageRegionIteratorWithIndex< ImageType > iterVorDistMap(
+    itk::ImageRegionIteratorWithIndex< ImageType > iterVorDistMap( 
       vorImageDistMap, vorImageDistMap->GetLargestPossibleRegion() );
 
     while( !iter2.IsAtEnd() )
       {
       double iVal = iter2.Get();
       bool image2Point = false;
-      if( iVal != m_Background && (!m_MaskZero || iVal != 0) )
+      if( iVal != m_Background && ( !m_MaskZero || iVal != 0 ) )
         {
         image2Point = true;
         }
       double oVal = iterOut.Get();
       bool imageOutPoint = false;
-      if( oVal != m_Background && (!m_MaskZero || oVal != 0) )
+      if( oVal != m_Background && ( !m_MaskZero || oVal != 0 ) )
         {
         imageOutPoint = true;
         }
@@ -612,13 +612,13 @@ MergeAdjacentImagesFilter< TImage >
           if( vDist < 0 && !m_BlendUsingAverage )
             {
             vDist = -vDist;
-            double ratio = 0.5 * vDist / (oDist + vDist) + 0.5;
-            oVal = ratio * oVal + (1-ratio)*iVal;
+            double ratio = 0.5 * vDist / ( oDist + vDist ) + 0.5;
+            oVal = ratio * oVal + ( 1-ratio )*iVal;
             }
           else if( vDist > 0 && !m_BlendUsingAverage )
             {
-            double ratio = 0.5 * vDist / (oDist + vDist) + 0.5;
-            oVal = ratio * iVal + (1 - ratio) * oVal;
+            double ratio = 0.5 * vDist / ( oDist + vDist ) + 0.5;
+            oVal = ratio * iVal + ( 1 - ratio ) * oVal;
             }
           else
             {
@@ -638,7 +638,7 @@ MergeAdjacentImagesFilter< TImage >
       ++iterOutDistMap;
       ++iterVorDistMap;
       }
-    // timeCollector.Stop("Voronoi Distance Selection");
+    // timeCollector.Stop( "Voronoi Distance Selection" );
     }
 }
 

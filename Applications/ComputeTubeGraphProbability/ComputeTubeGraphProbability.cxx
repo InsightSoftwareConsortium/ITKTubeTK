@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -56,26 +56,26 @@ int DoIt( int argc, char * argv[] )
   logMsg << "Reading file: " << filename;
   tube::InfoMessage( logMsg.str() );
 
-  readStream.open(filename.c_str(), std::ios::binary | std::ios::in);
+  readStream.open( filename.c_str(), std::ios::binary | std::ios::in );
   readStream >> numberOfCentroids;
   readStream.get();
 
-  vnl_matrix<double> cMat(numberOfCentroids, numberOfCentroids);
-  cMat.fill(0);
-  vnl_vector<double> bVect(numberOfCentroids);
-  bVect.fill(0);
+  vnl_matrix<double> cMat( numberOfCentroids, numberOfCentroids );
+  cMat.fill( 0 );
+  vnl_vector<double> bVect( numberOfCentroids );
+  bVect.fill( 0 );
 
-  vnl_matrix<double> meanCMat(numberOfCentroids, numberOfCentroids);
-  meanCMat.fill(0);
-  vnl_vector<double> meanBVect(numberOfCentroids);
-  meanBVect.fill(0);
-  vnl_vector<double> meanCVect(numberOfCentroids);
-  meanCVect.fill(0);
+  vnl_matrix<double> meanCMat( numberOfCentroids, numberOfCentroids );
+  meanCMat.fill( 0 );
+  vnl_vector<double> meanBVect( numberOfCentroids );
+  meanBVect.fill( 0 );
+  vnl_vector<double> meanCVect( numberOfCentroids );
+  meanCVect.fill( 0 );
 
   // Fill-up connectivity matrix
-  for(unsigned int i=0; i<numberOfCentroids; i++)
+  for( unsigned int i=0; i<numberOfCentroids; i++ )
     {
-    for(unsigned int j=0; j<numberOfCentroids; j++)
+    for( unsigned int j=0; j<numberOfCentroids; j++ )
       {
       readStream >> tf;
       readStream.get();
@@ -93,15 +93,15 @@ int DoIt( int argc, char * argv[] )
   logMsg << "Reading file: " << filename;
   tube::InfoMessage( logMsg.str() );
 
-  readStream.open(filename.c_str(), std::ios::binary | std::ios::in);
+  readStream.open( filename.c_str(), std::ios::binary | std::ios::in );
   readStream >> numberOfCentroids2;
   readStream.get();
-  if(numberOfCentroids != numberOfCentroids2)
+  if( numberOfCentroids != numberOfCentroids2 )
     {
     tube::ErrorMessage( "Error: fileList's #Centroids != branch #Centroids" );
     return EXIT_FAILURE;
     }
-  for(unsigned int i=0; i<numberOfCentroids; i++)
+  for( unsigned int i=0; i<numberOfCentroids; i++ )
     {
     readStream >> tf;
     readStream.get();
@@ -116,17 +116,17 @@ int DoIt( int argc, char * argv[] )
   logMsg << "Reading file: " << filename;
   tube::InfoMessage( logMsg.str() );
 
-  readStream.open(filename.c_str(), std::ios::binary | std::ios::in);
+  readStream.open( filename.c_str(), std::ios::binary | std::ios::in );
   readStream >> numberOfCentroids2;
   readStream.get();
-  if(numberOfCentroids != numberOfCentroids2)
+  if( numberOfCentroids != numberOfCentroids2 )
     {
     tube::ErrorMessage( "Error: fileList's #Centroids != mean matrix #Centroids" );
     return EXIT_FAILURE;
     }
-  for(unsigned int i=0; i<numberOfCentroids; i++)
+  for( unsigned int i=0; i<numberOfCentroids; i++ )
     {
-    for(unsigned int j=0; j<numberOfCentroids; j++)
+    for( unsigned int j=0; j<numberOfCentroids; j++ )
       {
       readStream >> tf;
       readStream.get();
@@ -142,15 +142,15 @@ int DoIt( int argc, char * argv[] )
   logMsg << "Reading file: " << filename;
   tube::InfoMessage( logMsg.str() );
 
-  readStream.open(filename.c_str(), std::ios::binary | std::ios::in);
+  readStream.open( filename.c_str(), std::ios::binary | std::ios::in );
   readStream >> numberOfCentroids2;
   readStream.get();
-  if(numberOfCentroids != numberOfCentroids2)
+  if( numberOfCentroids != numberOfCentroids2 )
     {
     tube::ErrorMessage( "Error: fileList's #Centroids != mean branch #Centroids" );
     return EXIT_FAILURE;
     }
-  for(unsigned int i=0; i<numberOfCentroids; i++)
+  for( unsigned int i=0; i<numberOfCentroids; i++ )
     {
     readStream >> tf;
     readStream.get();
@@ -165,15 +165,15 @@ int DoIt( int argc, char * argv[] )
   logMsg << "Reading file: " << filename;
   tube::InfoMessage( logMsg.str() );
 
-  readStream.open(filename.c_str(), std::ios::binary | std::ios::in);
+  readStream.open( filename.c_str(), std::ios::binary | std::ios::in );
   readStream >> numberOfCentroids2;
   readStream.get();
-  if(numberOfCentroids != numberOfCentroids2)
+  if( numberOfCentroids != numberOfCentroids2 )
     {
     tube::ErrorMessage( "Error: fileList's #Centroids != mean centrality #Centroids" );
     return EXIT_FAILURE;
     }
-  for(unsigned int i=0; i<numberOfCentroids; i++)
+  for( unsigned int i=0; i<numberOfCentroids; i++ )
     {
     readStream >> tf;
     readStream.get();
@@ -185,18 +185,18 @@ int DoIt( int argc, char * argv[] )
   std::ofstream writeCntStream;
   std::ofstream writeBrcStream;
   filename = outGraphFile + ".matProb.txt";
-  writeMatStream.open(filename.c_str(), std::ios::binary | std::ios::out);
+  writeMatStream.open( filename.c_str(), std::ios::binary | std::ios::out );
   filename = outGraphFile + ".cntProb.txt";
-  writeCntStream.open(filename.c_str(), std::ios::binary | std::ios::out);
+  writeCntStream.open( filename.c_str(), std::ios::binary | std::ios::out );
   filename = outGraphFile + ".brcProb.txt";
-  writeBrcStream.open(filename.c_str(), std::ios::binary | std::ios::out);
+  writeBrcStream.open( filename.c_str(), std::ios::binary | std::ios::out );
 
   for( unsigned int i=0; i < numberOfCentroids; i++ )
     {
     bool used = false;
     for( unsigned int j = 0; j < numberOfCentroids; j++ )
       {
-      // (i,j) connected
+      // ( i,j ) connected
       if( cMat[i][j] > 0 )
         {
         writeMatStream << meanCMat[i][j] << std::endl;

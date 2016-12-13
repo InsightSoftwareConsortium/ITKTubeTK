@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -30,8 +30,8 @@ CropImageFilter< TInputImage, TOutputImage >
 {
   // itkCropImageFilter
   this->SetDirectionCollapseToSubmatrix();
-  m_UpperBoundaryCropSize.Fill(0);
-  m_LowerBoundaryCropSize.Fill(0);
+  m_UpperBoundaryCropSize.Fill( 0 );
+  m_LowerBoundaryCropSize.Fill( 0 );
 
   // tubecropROI
   m_ROIMin.Fill( 0 );
@@ -295,7 +295,7 @@ CropImageFilter< TInputImage, TOutputImage >
 ::GenerateOutputInformation()
 {
   const TInputImage *inputPtr = this->GetInput();
-  if ( !inputPtr )
+  if( !inputPtr )
     {
     return;
     }
@@ -333,7 +333,7 @@ CropImageFilter< TInputImage, TOutputImage >
         //Min is less than 0
         return;
         }
-      if( m_ROIMin[i] >= (int)(imageSize[i]) )
+      if( m_ROIMin[i] >= ( int )( imageSize[i] ) )
         {
         //Min is larger than image size
         return;
@@ -394,7 +394,7 @@ CropImageFilter< TInputImage, TOutputImage >
     for( unsigned int i=0; i<InputImageDimension; i++ )
       {
       lowerCropSize[i] = m_ROIMin[i];
-      upperCropSize[i] = imageSize[i] - (m_ROIMin[i] + outputSize[i]);
+      upperCropSize[i] = imageSize[i] - ( m_ROIMin[i] + outputSize[i] );
       }
 
     this->SetLowerBoundaryCropSize( lowerCropSize );
@@ -414,14 +414,15 @@ CropImageFilter< TInputImage, TOutputImage >
     for( unsigned int i = 0; i < InputImageDimension; ++i )
       {
       idx[i] = input_idx[i] + m_LowerBoundaryCropSize[i];
-      sz[i]  = input_sz[i]  - ( m_UpperBoundaryCropSize[i] + m_LowerBoundaryCropSize[i] );
+      sz[i]  = input_sz[i]  - ( m_UpperBoundaryCropSize[i] +
+        m_LowerBoundaryCropSize[i] );
       }
 
-      croppedRegion.SetSize(sz);
-      croppedRegion.SetIndex(idx);
+      croppedRegion.SetSize( sz );
+      croppedRegion.SetIndex( idx );
 
     // Set extraction region in the superclass.
-    this->SetExtractionRegion(croppedRegion);
+    this->SetExtractionRegion( croppedRegion );
 
     Superclass::GenerateOutputInformation();
 
@@ -435,10 +436,10 @@ CropImageFilter< TInputImage, TOutputImage >
 template< typename TInputImage, typename TOutputImage >
 void
 CropImageFilter< TInputImage, TOutputImage >
-::PrintSelf(std::ostream & os, Indent indent) const
+::PrintSelf( std::ostream & os, Indent indent ) const
 {
   // itktubeCropImageFilter
-  Superclass::PrintSelf(os, indent);
+  Superclass::PrintSelf( os, indent );
 
   os << indent << "UpperBoundaryCropSize: " << m_UpperBoundaryCropSize
      << std::endl;

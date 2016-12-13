@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -86,14 +86,14 @@ int DoIt( int argc, char * argv[] )
     {
     if( size.size() > 0 && max.size() > 0 )
       {
-      tube::ErrorMessage(
+      tube::ErrorMessage( 
         "You must specify either --size or --max options.  Not both." );
       return EXIT_FAILURE;
       }
 
     if( center.size() > 0 && min.size() > 0 )
       {
-      tube::ErrorMessage(
+      tube::ErrorMessage( 
         "You must specify either --center or --min options.  Not both." );
       return EXIT_FAILURE;
       }

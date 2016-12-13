@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -39,14 +39,14 @@ limitations under the License.
 class qSlicerSpatialObjectsModuleWidgetPrivate :
  public Ui_qSlicerSpatialObjectsModule
 {
-  Q_DECLARE_PUBLIC(qSlicerSpatialObjectsModuleWidget);
+  Q_DECLARE_PUBLIC( qSlicerSpatialObjectsModuleWidget );
 
 protected:
   qSlicerSpatialObjectsModuleWidget* const q_ptr;
 
 public:
-  qSlicerSpatialObjectsModuleWidgetPrivate(
-    qSlicerSpatialObjectsModuleWidget& object);
+  qSlicerSpatialObjectsModuleWidgetPrivate( 
+    qSlicerSpatialObjectsModuleWidget& object );
   void init();
 
   vtkMRMLSpatialObjectsNode* spatialObjectsNode;
@@ -54,9 +54,9 @@ public:
 
 //------------------------------------------------------------------------------
 qSlicerSpatialObjectsModuleWidgetPrivate
-::qSlicerSpatialObjectsModuleWidgetPrivate(
-  qSlicerSpatialObjectsModuleWidget& object)
-  : q_ptr(&object)
+::qSlicerSpatialObjectsModuleWidgetPrivate( 
+  qSlicerSpatialObjectsModuleWidget& object )
+  : q_ptr( &object )
 {
   this->spatialObjectsNode = NULL;
 }
@@ -64,27 +64,27 @@ qSlicerSpatialObjectsModuleWidgetPrivate
 //------------------------------------------------------------------------------
 void qSlicerSpatialObjectsModuleWidgetPrivate::init()
 {
-  Q_Q(qSlicerSpatialObjectsModuleWidget);
+  Q_Q( qSlicerSpatialObjectsModuleWidget );
 
-  this->setupUi(q);
+  this->setupUi( q );
 
-  QObject::connect(this->SpatialObjectsTreeView,
-                   SIGNAL(visibilityChanged(int)),
+  QObject::connect( this->SpatialObjectsTreeView,
+                   SIGNAL( visibilityChanged( int ) ),
                    this->TractDisplayModesTabWidget,
-                   SLOT(setCurrentIndex (int)));
+                   SLOT( setCurrentIndex ( int ) ) );
 
   // Hide the GlyphTab since, the glyph representations
   // are not build/implemented yet.
-  this->TractDisplayModesTabWidget->removeTab(2);
+  this->TractDisplayModesTabWidget->removeTab( 2 );
 }
 
 //------------------------------------------------------------------------------
 qSlicerSpatialObjectsModuleWidget::
-qSlicerSpatialObjectsModuleWidget(QWidget* _parent)
-  : Superclass(_parent)
-  , d_ptr(new qSlicerSpatialObjectsModuleWidgetPrivate(*this))
+qSlicerSpatialObjectsModuleWidget( QWidget* _parent )
+  : Superclass( _parent )
+  , d_ptr( new qSlicerSpatialObjectsModuleWidgetPrivate( *this ) )
 {
-  Q_D(qSlicerSpatialObjectsModuleWidget);
+  Q_D( qSlicerSpatialObjectsModuleWidget );
   d->init();
 }
 
@@ -98,47 +98,47 @@ void qSlicerSpatialObjectsModuleWidget::setup()
 
 //------------------------------------------------------------------------------
 void qSlicerSpatialObjectsModuleWidget::
-setSpatialObjectsNode(vtkMRMLNode* inputNode)
+setSpatialObjectsNode( vtkMRMLNode* inputNode )
 {
-  this->setSpatialObjectsNode(
-    vtkMRMLSpatialObjectsNode::SafeDownCast(inputNode));
+  this->setSpatialObjectsNode( 
+    vtkMRMLSpatialObjectsNode::SafeDownCast( inputNode ) );
 }
 
 //------------------------------------------------------------------------------
 void qSlicerSpatialObjectsModuleWidget::
-setSpatialObjectsNode(vtkMRMLSpatialObjectsNode* spatialObjectsNode)
+setSpatialObjectsNode( vtkMRMLSpatialObjectsNode* spatialObjectsNode )
 {
-  Q_D(qSlicerSpatialObjectsModuleWidget);
+  Q_D( qSlicerSpatialObjectsModuleWidget );
 
-  if(d->spatialObjectsNode == spatialObjectsNode)
+  if( d->spatialObjectsNode == spatialObjectsNode )
     return;
 
   d->spatialObjectsNode = spatialObjectsNode;
 
-  d->LineDisplayWidget->setSpatialObjectsNode(spatialObjectsNode, 0);
-  d->TubeDisplayWidget->setSpatialObjectsNode(spatialObjectsNode, 1);
+  d->LineDisplayWidget->setSpatialObjectsNode( spatialObjectsNode, 0 );
+  d->TubeDisplayWidget->setSpatialObjectsNode( spatialObjectsNode, 1 );
 
-  emit currentNodeChanged(d->spatialObjectsNode);
+  emit currentNodeChanged( d->spatialObjectsNode );
 }
 
 //------------------------------------------------------------------------------
-void qSlicerSpatialObjectsModuleWidget::setSolidTubeColor(bool solid)
+void qSlicerSpatialObjectsModuleWidget::setSolidTubeColor( bool solid )
 {
   std::vector<vtkMRMLNode *> nodes;
   this->mrmlScene()->
-    GetNodesByClass("vtkMRMLSpatialObjectsTubeDisplayNode", nodes);
+    GetNodesByClass( "vtkMRMLSpatialObjectsTubeDisplayNode", nodes );
 
   vtkMRMLSpatialObjectsTubeDisplayNode* node = 0;
-  for(unsigned int i = 0; i < nodes.size(); ++i)
+  for( unsigned int i = 0; i < nodes.size(); ++i )
     {
-    node = vtkMRMLSpatialObjectsTubeDisplayNode::SafeDownCast(nodes[i]);
-    if(solid)
+    node = vtkMRMLSpatialObjectsTubeDisplayNode::SafeDownCast( nodes[i] );
+    if( solid )
       {
-      node->SetColorMode(vtkMRMLSpatialObjectsDisplayNode::colorModeSolid);
+      node->SetColorMode( vtkMRMLSpatialObjectsDisplayNode::colorModeSolid );
       }
     else
       {
-      node->SetColorMode(vtkMRMLSpatialObjectsDisplayNode::colorModeScalar);
+      node->SetColorMode( vtkMRMLSpatialObjectsDisplayNode::colorModeScalar );
       }
     }
 }

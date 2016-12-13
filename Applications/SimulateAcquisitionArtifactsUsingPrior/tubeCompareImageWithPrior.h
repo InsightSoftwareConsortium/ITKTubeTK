@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -81,7 +81,7 @@ public:
   bool GetUseRegistrationTransform( void );
   void SetUseRegistrationOptimization( bool reg );
   bool GetUseRegistrationOptimization( void );
-  void SetRegistrationTransform(
+  void SetRegistrationTransform( 
     typename RegistrationMethodType::TransformType::Pointer tfm );
   typename RegistrationMethodType::TransformType::Pointer
     GetRegistrationTransform( void );
@@ -134,4 +134,4 @@ private:
 
 #include "tubeCompareImageWithPrior.hxx"
 
-#endif // End !defined(__tubeCompareImageWithPrior_h)
+#endif // End !defined( __tubeCompareImageWithPrior_h )

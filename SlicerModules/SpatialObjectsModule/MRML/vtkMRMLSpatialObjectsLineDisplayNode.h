@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -41,9 +41,9 @@ vtkMRMLSpatialObjectsLineDisplayNode : public vtkMRMLSpatialObjectsDisplayNode
 {
 public:
   static vtkMRMLSpatialObjectsLineDisplayNode* New( void );
-  vtkTypeMacro(vtkMRMLSpatialObjectsLineDisplayNode,
-               vtkMRMLSpatialObjectsDisplayNode);
-  void PrintSelf(ostream& os, vtkIndent indent);
+  vtkTypeMacro( vtkMRMLSpatialObjectsLineDisplayNode,
+               vtkMRMLSpatialObjectsDisplayNode );
+  void PrintSelf( ostream& os, vtkIndent indent );
 
   //----------------------------------------------------------------------------
   /// MRMLNode methods
@@ -51,20 +51,20 @@ public:
   virtual vtkMRMLNode* CreateNodeInstance( void );
 
   ///
-  /// Read node attributes from XML (MRML) file
-  virtual void ReadXMLAttributes(const char** atts);
+  /// Read node attributes from XML ( MRML ) file
+  virtual void ReadXMLAttributes( const char** atts );
 
   ///
   /// Write this node's information to a MRML file in XML format.
-  virtual void WriteXML(ostream& of, int indent);
+  virtual void WriteXML( ostream& of, int indent );
 
   ///
   /// Copy the node's attributes to this object
   /// Does NOT copy: ID, FilePrefix, Name, ID
-  virtual void Copy(vtkMRMLNode *node);
+  virtual void Copy( vtkMRMLNode *node );
 
   ///
-  /// Get node XML tag name (like Volume, UnstructuredGrid)
+  /// Get node XML tag name ( like Volume, UnstructuredGrid )
   virtual const char* GetNodeTagName( void )
   {return "SpatialObjectsLineDisplayNode";}
 
@@ -75,10 +75,10 @@ public:
 protected:
   vtkMRMLSpatialObjectsLineDisplayNode( void );
   ~vtkMRMLSpatialObjectsLineDisplayNode( void );
-  vtkMRMLSpatialObjectsLineDisplayNode(
-    const vtkMRMLSpatialObjectsLineDisplayNode&);
-  void operator= (const vtkMRMLSpatialObjectsLineDisplayNode&);
+  vtkMRMLSpatialObjectsLineDisplayNode( 
+    const vtkMRMLSpatialObjectsLineDisplayNode& );
+  void operator= ( const vtkMRMLSpatialObjectsLineDisplayNode& );
 
 }; // End class vtkMRMLSpatialObjectsLineDisplayNode
 
-#endif // End !defined(__vtkMRMLSpatialObjectsLineDisplayNode_h)
+#endif // End !defined( __vtkMRMLSpatialObjectsLineDisplayNode_h )

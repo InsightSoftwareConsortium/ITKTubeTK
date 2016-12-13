@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -27,7 +27,7 @@ limitations under the License.
 /// This node describes display properties at the single-skeleton point level.
 /// A spatial object can be displayed using various
 /// scalar invariants and glyphs.
-/// This class is used by classes (e.g. vtkMRMLSpatialObjectsDisplayNode)
+/// This class is used by classes ( e.g. vtkMRMLSpatialObjectsDisplayNode )
 /// that handle higher-level display concepts for many spatial objects,
 /// such as choosing between scalars/glyphs/etc.
 /// For specific display needs.
@@ -42,17 +42,17 @@ limitations under the License.
 #include <vtkMRMLColorTableNode.h>
 
 //
-// Set built-in type. Creates member Set"name"() (e.g., SetVisibility());
+// Set built-in type. Creates member Set"name"() ( e.g., SetVisibility() );
 //
-#define SpatialObjectsPropertySetMacro(name,type) \
-virtual void Set##name (type _arg) \
+#define SpatialObjectsPropertySetMacro( name,type ) \
+virtual void Set##name ( type _arg ) \
   { \
-  vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting " #name " to " << _arg); \
-  if(this->name != _arg) \
+  vtkDebugMacro( << this->GetClassName() << " ( " << this << " ): setting " #name " to " << _arg ); \
+  if( this->name != _arg ) \
     { \
     this->name = _arg; \
-    if(this->GlyphGeometry == this->Lines || \
-        this->GlyphGeometry == this->Tubes) \
+    if( this->GlyphGeometry == this->Lines || \
+        this->GlyphGeometry == this->Tubes ) \
       { \
       this->UpdateGlyphSource(); \
       } \
@@ -67,9 +67,9 @@ vtkMRMLSpatialObjectsDisplayPropertiesNode : public vtkMRMLColorTableNode
 {
 public:
   static vtkMRMLSpatialObjectsDisplayPropertiesNode* New( void );
-  vtkTypeMacro(vtkMRMLSpatialObjectsDisplayPropertiesNode,
-               vtkMRMLColorTableNode);
-  void PrintSelf(ostream& os, vtkIndent indent);
+  vtkTypeMacro( vtkMRMLSpatialObjectsDisplayPropertiesNode,
+               vtkMRMLColorTableNode );
+  void PrintSelf( ostream& os, vtkIndent indent );
 
   //----------------------------------------------------------------------------
   /// MRMLNode methods
@@ -78,19 +78,19 @@ public:
 
   ///
   /// Read node attributes from a MRML file in XML format.
-  virtual void ReadXMLAttributes(const char** atts);
+  virtual void ReadXMLAttributes( const char** atts );
 
   ///
   /// Write this node's information to a MRML file in XML format.
-  virtual void WriteXML(ostream& of, int indent);
+  virtual void WriteXML( ostream& of, int indent );
 
   ///
   /// Copy the node's attributes to this object.
   /// Does NOT copy: ID, FilePrefix, Name, ID
-  virtual void Copy(vtkMRMLNode *node);
+  virtual void Copy( vtkMRMLNode *node );
 
   ///
-  /// Get node XML tag name (like Volume, Model)
+  /// Get node XML tag name ( like Volume, Model )
   virtual const char* GetNodeTagName( void )
   {return "SpatialObjectsDisplayProperties";}
 
@@ -106,30 +106,30 @@ public:
     RelativeAnisotropy = 3
   };
 
-  static bool ScalarInvariantHasKnownScalarRange(int ScalarInvariant);
-  static void ScalarInvariantKnownScalarRange(int ScalarInvariant,
-                                              double range[2]);
+  static bool ScalarInvariantHasKnownScalarRange( int ScalarInvariant );
+  static void ScalarInvariantKnownScalarRange( int ScalarInvariant,
+                                              double range[2] );
 
   //----------------------------------------------------------------------------
   /// Display Information: Functions to choose scalar invariant
   //----------------------------------------------------------------------------
 
   ///
-  /// Get type of scalar invariant (tensor-derived scalar, invariant to tensor
-  /// rotation) selected for display.
-  vtkGetMacro(ScalarInvariant, int);
+  /// Get type of scalar invariant ( tensor-derived scalar, invariant to tensor
+  /// rotation ) selected for display.
+  vtkGetMacro( ScalarInvariant, int );
 
   ///
-  /// Get type of scalar invariant (tensor-derived scalar, invariant to tensor
-  /// rotation) selected for display.
-  vtkSetMacro(ScalarInvariant, int);
+  /// Get type of scalar invariant ( tensor-derived scalar, invariant to tensor
+  /// rotation ) selected for display.
+  vtkSetMacro( ScalarInvariant, int );
 
   // TODO add all scalar
 
   ///
   /// Set scalar invariant to relative anisotropy
   void SetScalarInvariantToRelativeAnisotropy( void )
-  {this->SetScalarInvariant(this->RelativeAnisotropy);}
+  {this->SetScalarInvariant( this->RelativeAnisotropy );}
 
   ///
   /// Return a text string describing the ScalarInvariant variable
@@ -144,25 +144,25 @@ public:
   /// Display Information: Functions to choose the type of glyph geometry
   //----------------------------------------------------------------------------
   ///
-  /// Get the type of glyph geometry (line, tubes, cones etc.)
-  vtkGetMacro(GlyphGeometry, int);
+  /// Get the type of glyph geometry ( line, tubes, cones etc. )
+  vtkGetMacro( GlyphGeometry, int );
 
   ///
-  /// Set the type of glyph geometry (line, ellipsoid, etc.)
+  /// Set the type of glyph geometry ( line, ellipsoid, etc. )
   /// Update the glyph polydata source
-  void SetGlyphGeometry(int geometry);
+  void SetGlyphGeometry( int geometry );
 
   void SetGlyphGeometryToLines( void )
-  {this->SetGlyphGeometry(this->Lines);}
+  {this->SetGlyphGeometry( this->Lines );}
 
   void SetGlyphGeometryToTubes( void )
-  {this->SetGlyphGeometry(this->Tubes);}
+  {this->SetGlyphGeometry( this->Tubes );}
 
   void SetGlyphGeometryToCones( void )
-  {this->SetGlyphGeometry(this->Cones);}
+  {this->SetGlyphGeometry( this->Cones );}
 
   void SetGlyphGeometryToDisks( void )
-  {this->SetGlyphGeometry(this->Disks);}
+  {this->SetGlyphGeometry( this->Disks );}
 
   ///
   /// Return the lowest and highest integers, for use in looping
@@ -172,7 +172,7 @@ public:
   ///
   /// Return a text string describing the GlyphGeometry variable
   virtual const char * GetGlyphGeometryAsString( void );
-  virtual const char * GetGlyphGeometryAsString(int);
+  virtual const char * GetGlyphGeometryAsString( int );
 
   //----------------------------------------------------------------------------
   /// Display Information: Parameters of the different geometries
@@ -180,23 +180,23 @@ public:
 
   ///
   /// Get/Set the scale factor applied to the glyphs.
-  vtkGetMacro(GlyphScaleFactor, double);
-  vtkSetMacro(GlyphScaleFactor, double);
+  vtkGetMacro( GlyphScaleFactor, double );
+  vtkSetMacro( GlyphScaleFactor, double );
 
   ///
   /// Get/Set the resolution of lines displayed
-  vtkGetMacro(LineGlyphResolution, int);
-  SpatialObjectsPropertySetMacro(LineGlyphResolution, int);
+  vtkGetMacro( LineGlyphResolution, int );
+  SpatialObjectsPropertySetMacro( LineGlyphResolution, int );
 
   ///
   /// Get/Set the radius of the tube
-  vtkGetMacro(TubeGlyphRadius, double);
-  SpatialObjectsPropertySetMacro(TubeGlyphRadius, double);
+  vtkGetMacro( TubeGlyphRadius, double );
+  SpatialObjectsPropertySetMacro( TubeGlyphRadius, double );
 
   ///
-  /// Get/Set Number of sides of tube glyph (3 gives a triangular tube, etc.)
-  vtkGetMacro(TubeGlyphNumberOfSides, int);
-  SpatialObjectsPropertySetMacro(TubeGlyphNumberOfSides, int);
+  /// Get/Set Number of sides of tube glyph ( 3 gives a triangular tube, etc. )
+  vtkGetMacro( TubeGlyphNumberOfSides, int );
+  SpatialObjectsPropertySetMacro( TubeGlyphNumberOfSides, int );
 
   // TODO other representation properties
 
@@ -206,8 +206,8 @@ public:
 
   ///
   /// Get/Set type of scalar invariant selected for display.
-  vtkGetMacro(ColorGlyphBy, int);
-  vtkSetMacro(ColorGlyphBy, int);
+  vtkGetMacro( ColorGlyphBy, int );
+  vtkSetMacro( ColorGlyphBy, int );
 
   ///
   /// Return the lowest and highest integers, for use in looping
@@ -221,22 +221,22 @@ public:
   ///
   /// Set scalar invariant to LinearMeasure.
   void ColorGlyphByLinearMeasure( void )
-  {this->SetColorGlyphBy(this->LinearMeasure);}
+  {this->SetColorGlyphBy( this->LinearMeasure );}
 
   ///
   /// Set scalar invariant to ColorOrientation.
   void ColorGlyphByColorOrientation( void )
-  {this->SetColorGlyphBy(this->ColorOrientation);}
+  {this->SetColorGlyphBy( this->ColorOrientation );}
 
   ///
   /// Set scalar invariant to ColorMode.
   void ColorGlyphByColorMode( void )
-  {this->SetColorGlyphBy(this->ColorMode);}
+  {this->SetColorGlyphBy( this->ColorMode );}
 
   ///
   /// Set scalar invariant to RelativeAnisotropy.
   void ColorGlyphByRelativeAnisotropy( void )
-  {this->SetColorGlyphBy(this->RelativeAnisotropy);}
+  {this->SetColorGlyphBy( this->RelativeAnisotropy );}
 
   //--------------------------------------------------------------------------
   /// Convenient functions to get an appropriate glyph source
@@ -244,12 +244,12 @@ public:
 
   ///
   /// Get a polydata object according to current glyph display settings
-  /// (so a line, sphere, or tube) to use as a source for a glyphing filter.
-  vtkGetObjectMacro(GlyphSource, vtkPolyData);
+  /// ( so a line, sphere, or tube ) to use as a source for a glyphing filter.
+  vtkGetObjectMacro( GlyphSource, vtkPolyData );
 
   ///
   /// Return a text string describing the GlyphScalar variable
-  static const char* GetScalarEnumAsString(int val);
+  static const char* GetScalarEnumAsString( int val );
 
   /// Return the lowest and highest integers, for use in looping
   static int GetFirstScalarInvariant( void );
@@ -258,11 +258,11 @@ public:
 protected:
   vtkMRMLSpatialObjectsDisplayPropertiesNode( void );
   ~vtkMRMLSpatialObjectsDisplayPropertiesNode( void );
-  vtkMRMLSpatialObjectsDisplayPropertiesNode(
-    const vtkMRMLSpatialObjectsDisplayPropertiesNode&);
-  void operator=(const vtkMRMLSpatialObjectsDisplayPropertiesNode&);
+  vtkMRMLSpatialObjectsDisplayPropertiesNode( 
+    const vtkMRMLSpatialObjectsDisplayPropertiesNode& );
+  void operator=( const vtkMRMLSpatialObjectsDisplayPropertiesNode& );
 
-  virtual void SetGlyphSource(vtkPolyData* glyphSource);
+  virtual void SetGlyphSource( vtkPolyData* glyphSource );
   virtual void UpdateGlyphSource( void );
 
   /// ---- Parameters that should be written to MRML --- //
@@ -287,4 +287,4 @@ protected:
 
 }; // End class vtkMRMLSpatialObjectsDisplayPropertiesNode
 
-#endif // End !defined(__vtkMRMLSpatialObjectsDisplayPropertiesNode_h)
+#endif // End !defined( __vtkMRMLSpatialObjectsDisplayPropertiesNode_h )

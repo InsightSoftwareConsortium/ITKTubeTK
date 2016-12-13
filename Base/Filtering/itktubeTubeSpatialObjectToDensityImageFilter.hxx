@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -33,7 +33,7 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
                                  TTangentImageType >
 ::TubeSpatialObjectToDensityImageFilter( void )
 {
-  for(unsigned int i = 0; i < ImageDimension; i++ )
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     m_Size[i] = 0;
     m_Spacing[i] = 1;
@@ -72,7 +72,7 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
                                  TTangentImageType >
 ::Update( void )
 {
-  if(m_Size[0] == 0)
+  if( m_Size[0] == 0 )
     {
     std::cerr << "Error, no size parameters given " << std::endl;
     return;
@@ -116,7 +116,7 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
       {
       typedef ImageRegionIterator<DensityImageType>   DistanceIteratorType;
       DistanceIteratorType  it_dis( m_DensityMapImage,
-                                    m_DensityMapImage->GetLargestPossibleRegion());
+                                    m_DensityMapImage->GetLargestPossibleRegion() );
       it_dis.GoToBegin();
       while( !it_dis.IsAtEnd() )
         {
@@ -158,7 +158,7 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
     // Use Vector Image to find the closest vessel and add the tangent direction
     typedef ImageRegionIterator<TangentImageType>   TangentIteratorType;
     TangentIteratorType it_tangent( m_TangentMapImage,
-                                    m_TangentMapImage->GetLargestPossibleRegion());
+                                    m_TangentMapImage->GetLargestPossibleRegion() );
 
     it_vector.GoToBegin();
     it_tangent.GoToBegin();
@@ -199,4 +199,4 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
     }
 }
 
-#endif // End !defined(__itktubeTubeSpatialObjectToDensityImageFilter_hxx)
+#endif // End !defined( __itktubeTubeSpatialObjectToDensityImageFilter_hxx )

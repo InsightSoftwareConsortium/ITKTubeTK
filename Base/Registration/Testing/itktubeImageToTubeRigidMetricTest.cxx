@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -30,7 +30,7 @@ limitations under the License.
 /**
  *  This test exercised the metric evaluation methods in the
  *  itktubeImageToTubeRigidMetric class. The distance between
- *  a 3D binary images (32x32x32) and a .tre image is computed and check with
+ *  a 3D binary images ( 32x32x32 ) and a .tre image is computed and check with
  *  the reference for the metric.
  */
 
@@ -62,7 +62,7 @@ int itktubeImageToTubeRigidMetricTest( int argc, char * argv[] )
     TubeType >                                            MetricType;
   typedef MetricType::TransformType                       TransformType;
 
-  // read image (fixedImage)
+  // read image ( fixedImage )
   ImageReaderType::Pointer imageReader = ImageReaderType::New();
   imageReader->SetFileName( argv[1] );
   try
@@ -75,7 +75,7 @@ int itktubeImageToTubeRigidMetricTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  // read tube (spatialObject)
+  // read tube ( spatialObject )
   TubeNetReaderType::Pointer tubeReader = TubeNetReaderType::New();
   tubeReader->SetFileName( argv[2] );
   try
@@ -130,8 +130,8 @@ int itktubeImageToTubeRigidMetricTest( int argc, char * argv[] )
 
   const double epsilonReg = 0.05; // Delta threshold on the measure checking.
   MetricType::MeasureType value = metric->GetValue( parameters );
-  if(value < ( std::atof(argv[3]) - epsilonReg ) ||
-      value > ( std::atof(argv[3]) + epsilonReg ) )
+  if( value < ( std::atof( argv[3] ) - epsilonReg ) ||
+      value > ( std::atof( argv[3] ) + epsilonReg ) )
     {
     std::cerr << "Distance value different than expected: "
               << value

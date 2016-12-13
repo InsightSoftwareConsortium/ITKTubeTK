@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -65,8 +65,8 @@ NJetFeatureVectorGenerator< TImage >
 ::GetNumberOfFeatures( void ) const
 {
   const unsigned int featuresPerImage = m_ZeroScales.size()
-    + (m_FirstScales.size()*(ImageDimension+1))
-    + (m_SecondScales.size()*(ImageDimension+1))
+    + ( m_FirstScales.size()*( ImageDimension+1 ) )
+    + ( m_SecondScales.size()*( ImageDimension+1 ) )
     + m_RidgeScales.size() * 4;
 
   const unsigned int numFeatures = this->GetNumberOfInputImages()
@@ -148,7 +148,7 @@ NJetFeatureVectorGenerator< TImage >
     {
     if( this->GetWhitenStdDev( i ) > 0 )
       {
-      featureVector[i] = ( featureVector[i] - this->GetWhitenMean(i) )
+      featureVector[i] = ( featureVector[i] - this->GetWhitenMean( i ) )
         / this->GetWhitenStdDev( i );
       }
     }
@@ -195,7 +195,7 @@ NJetFeatureVectorGenerator< TImage >
         }
       }
     else if( fNum < ( m_ZeroScales.size()
-      + m_FirstScales.size() * (ImageDimension + 1) ) )
+      + m_FirstScales.size() * ( ImageDimension + 1 ) ) )
       {
       featureCount = m_ZeroScales.size();
       for( unsigned int s = 0; s < m_FirstScales.size(); s++ )
@@ -219,11 +219,11 @@ NJetFeatureVectorGenerator< TImage >
         }
       }
     else if( fNum < m_ZeroScales.size()
-      + m_FirstScales.size() * (ImageDimension + 1)
-      + m_SecondScales.size() * (ImageDimension + 1) )
+      + m_FirstScales.size() * ( ImageDimension + 1 )
+      + m_SecondScales.size() * ( ImageDimension + 1 ) )
       {
       featureCount = m_ZeroScales.size()
-        + m_FirstScales.size() * (ImageDimension + 1);
+        + m_FirstScales.size() * ( ImageDimension + 1 );
       for( unsigned int s = 0; s < m_SecondScales.size(); s++ )
         {
         val = 0.0;
@@ -247,8 +247,8 @@ NJetFeatureVectorGenerator< TImage >
     else
       {
       featureCount = m_ZeroScales.size()
-        + m_FirstScales.size() * (ImageDimension + 1)
-        + m_SecondScales.size() * (ImageDimension + 1);
+        + m_FirstScales.size() * ( ImageDimension + 1 )
+        + m_SecondScales.size() * ( ImageDimension + 1 );
       for( unsigned int s = 0; s < m_RidgeScales.size(); s++ )
         {
         if( featureCount == fNum )
@@ -370,4 +370,4 @@ NJetFeatureVectorGenerator< TImage >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeNJetFeatureVectorGenerator_hxx)
+#endif // End !defined( __itktubeNJetFeatureVectorGenerator_hxx )

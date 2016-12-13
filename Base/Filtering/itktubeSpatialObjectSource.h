@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -59,7 +59,7 @@ public:
   typedef Superclass::DataObjectPointerArraySizeType
     DataObjectPointerArraySizeType;
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( SpatialObjectSource, ProcessObject );
 
   OutputSpatialObjectType * GetOutput( void );
@@ -70,8 +70,8 @@ public:
   /** Graft the specified DataObject onto this ProcessObject's output.
    * This method grabs a handle to the specified DataObject's bulk
    * data to used as its output's own bulk data. It also copies the
-   * region ivars (RequestedRegion, BufferedRegion,
-   * LargestPossibleRegion) and meta-data (Spacing, Origin) from the
+   * region ivars ( RequestedRegion, BufferedRegion,
+   * LargestPossibleRegion ) and meta-data ( Spacing, Origin ) from the
    * specified data object into this filter's output data object. Most
    * importantly, however, it leaves the Source ivar untouched so the
    * original pipeline routing is intact. This method is used when a
@@ -98,26 +98,26 @@ public:
    * must implement the GenerateInputRequestedRegion(),
    * GenerateOutputRequestedRegion(), GenerateOutputInformation() and
    * EnlargeOutputRequestedRegion() methods as necessary to reflect
-   * how the mini-pipeline will execute (in other words, the outer
+   * how the mini-pipeline will execute ( in other words, the outer
    * filter's pipeline mechanism must be consistent with what the
-   * mini-pipeline will do).
+   * mini-pipeline will do ).
    *  */
-  virtual void GraftOutput(DataObject *output);
+  virtual void GraftOutput( DataObject *output );
 
   /** Graft the specified data object onto this ProcessObject's named
    * output. This is similar to the GraftOutput method except it
    * allows you to specify which output is affected.
    * See the GraftOutput for general usage information.
    */
-  virtual void GraftOutput(const DataObjectIdentifierType & key, DataObject *output);
+  virtual void GraftOutput( const DataObjectIdentifierType & key, DataObject *output );
 
   /** Graft the specified data object onto this ProcessObject's idx'th
    * output. This is similar to the GraftOutput method except it
    * allows you to specify which output is affected. The specified index
-   * must be a valid output number (less than
-   * ProcessObject::GetNumberOfIndexedOutputs()). See the GraftOutput for
+   * must be a valid output number ( less than
+   * ProcessObject::GetNumberOfIndexedOutputs() ). See the GraftOutput for
    * general usage information. */
-  virtual void GraftNthOutput(unsigned int idx, DataObject *output);
+  virtual void GraftNthOutput( unsigned int idx, DataObject *output );
   using Superclass::MakeOutput;
   virtual ProcessObject::DataObjectPointer
     MakeOutput( ProcessObject::DataObjectPointerArraySizeType idx );
@@ -140,4 +140,4 @@ private:
 #include "itktubeSpatialObjectSource.hxx"
 #endif
 
-#endif // End !defined(__itktubeSpatialObjectSource_h)
+#endif // End !defined( __itktubeSpatialObjectSource_h )

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -44,7 +44,7 @@ int DoIt( int argc, char * argv[] )
   PARSE_ARGS;
 
   typedef TPixel                                           PixelType;
-  typedef itk::Image< PixelType,  VDimension  >            ImageType;
+  typedef itk::Image< PixelType, VDimension  >             ImageType;
   typedef itk::ImageFileReader< ImageType >                ReaderType;
   typedef tube::EnhanceTubesUsingDiffusion< PixelType,
     VDimension >                                           FilterType;
@@ -60,7 +60,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Error reading input image: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     return EXIT_FAILURE;
     }
 
@@ -96,7 +96,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Error writing output vesselness image: "
-      + std::string(err.GetDescription()) );
+      + std::string( err.GetDescription() ) );
     return EXIT_FAILURE;
     }
 
