@@ -109,7 +109,7 @@ ComputeImageSimilarityMetrics< TInputImage >
 
   metric->SetFixedImage( norm1->GetOutput() );
   metric->SetMovingImage( norm2->GetOutput() );
-  metric->SetFixedImageRegion( 
+  metric->SetFixedImageRegion(
     norm1->GetOutput()->GetLargestPossibleRegion() );
   metric->SetTransform( transform );
   metric->SetInterpolator( interpolator );

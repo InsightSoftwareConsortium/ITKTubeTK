@@ -59,7 +59,7 @@ int DoIt( int argc, char * argv[] )
   double progress = 0.0;
   itk::TimeProbesCollectorBase timeCollector;
 
-  tube::CLIProgressReporter progressReporter( 
+  tube::CLIProgressReporter progressReporter(
     "tubeDensityImageRadiusBuilder",
     CLPProcessInformation );
 
@@ -230,7 +230,7 @@ int main( int argc, char * argv[] )
       }
     default:
       {
-      tubeErrorMacro( 
+      tubeErrorMacro(
         << "Error: Only 2D and 3D data is currently supported." );
       delete mScene;
       return EXIT_FAILURE;

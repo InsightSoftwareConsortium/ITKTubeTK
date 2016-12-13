@@ -152,9 +152,9 @@ int DoIt( int argc, char * argv[] )
     fvGenerator->SetFirstScales( basisReader.GetFirstScales() );
     fvGenerator->SetSecondScales( basisReader.GetSecondScales() );
     fvGenerator->SetRidgeScales( basisReader.GetRidgeScales() );
-    basisGenerator->SetNumberOfPCABasisToUseAsFeatures( 
+    basisGenerator->SetNumberOfPCABasisToUseAsFeatures(
       basisReader.GetNumberOfPCABasisToUseAsFeatures() );
-    basisGenerator->SetNumberOfLDABasisToUseAsFeatures( 
+    basisGenerator->SetNumberOfLDABasisToUseAsFeatures(
       basisReader.GetNumberOfLDABasisToUseAsFeatures() );
     basisGenerator->SetInputWhitenMeans( basisReader.
       GetInputWhitenMeans() );
@@ -183,16 +183,16 @@ int DoIt( int argc, char * argv[] )
     fvGenerator->SetUpdateWhitenStatisticsOnUpdate( true );
     fvGenerator->Update();
 
-    basisGenerator->SetNumberOfPCABasisToUseAsFeatures( 
+    basisGenerator->SetNumberOfPCABasisToUseAsFeatures(
       useNumberOfPCABasis );
     if( useNumberOfLDABasis == -1 )
       {
-      basisGenerator->SetNumberOfLDABasisToUseAsFeatures( 
+      basisGenerator->SetNumberOfLDABasisToUseAsFeatures(
         objectIdList.size() - 1 );
       }
     else
       {
-      basisGenerator->SetNumberOfLDABasisToUseAsFeatures( 
+      basisGenerator->SetNumberOfLDABasisToUseAsFeatures(
         useNumberOfLDABasis );
       }
 
@@ -226,7 +226,7 @@ int DoIt( int argc, char * argv[] )
   if( !saveBasisInfo.empty() )
     {
     timeCollector.Start( "SaveBasis" );
-    itk::tube::MetaNJetLDA basisWriter( 
+    itk::tube::MetaNJetLDA basisWriter(
       fvGenerator->GetZeroScales(),
       fvGenerator->GetFirstScales(),
       fvGenerator->GetSecondScales(),

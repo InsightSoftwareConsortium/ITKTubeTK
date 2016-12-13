@@ -229,7 +229,7 @@ PDFSegmenterSVM< TImage, TLabelMap >
   for( unsigned int c=0; c<numClasses; ++c )
     {
     m_Parameter.weight_label[c] = c;
-    m_Parameter.weight[c] = 1.0 - ( 
+    m_Parameter.weight[c] = 1.0 - (
       ( this->m_InClassList[c].size() / m_TrainingDataStride )
       / ( double )( sampleSize ) );
     m_SVMClassWeight[c] = m_Parameter.weight[c];

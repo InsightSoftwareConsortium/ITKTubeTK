@@ -99,7 +99,7 @@ UltrasoundProbeGeometryCalculator< TInputImage >
 ::GetUltrasoundProbeOrigin( void ) const
 {
   typename DecoratedOriginType::ConstPointer decoratedOrigin =
-    static_cast< const DecoratedOriginType * >( 
+    static_cast< const DecoratedOriginType * >(
       this->ProcessObject::GetOutput( "UltrasoundProbeOrigin" ) );
   return decoratedOrigin->Get();
 }
@@ -111,7 +111,7 @@ UltrasoundProbeGeometryCalculator< TInputImage >
 ::GetStartOfAcquisitionRadius( void ) const
 {
   typename DecoratedRadiusType::ConstPointer decoratedRadius =
-    static_cast< const DecoratedRadiusType * >( 
+    static_cast< const DecoratedRadiusType * >(
       this->ProcessObject::GetOutput( "StartOfAcquisitionRadius" ) );
   return decoratedRadius->Get();
 }
@@ -291,10 +291,10 @@ UltrasoundProbeGeometryCalculator< TInputImage >
     Statistics::Algorithm::InsertSort< SubsampleType >( side2LineParametersSS,
       activeDimension, 0, side2LineParametersSS->Size() );
     const MeasurementVectorType side1MedianLineParameter =
-      side1LineParametersSS->GetMeasurementVectorByIndex( 
+      side1LineParametersSS->GetMeasurementVectorByIndex(
         side1LineParametersSS->Size() / 2 );
     const MeasurementVectorType side2MedianLineParameter =
-      side2LineParametersSS->GetMeasurementVectorByIndex( 
+      side2LineParametersSS->GetMeasurementVectorByIndex(
         side2LineParametersSS->Size() / 2 );
 
     // Get the intersection of the lines -- defines the ProbeOrigin
@@ -340,7 +340,7 @@ UltrasoundProbeGeometryCalculator< TInputImage >
     const float keepFraction = 1.0f - 2*ignoreFraction;
     const float keepStep = keepFraction / ( radiusPointsToExamine - 1 );
     const SizeValueType size = inputSize[orthogonalDirection];
-    const SizeValueType offset = static_cast< SizeValueType >( 
+    const SizeValueType offset = static_cast< SizeValueType >(
       size * ( ignoreFraction + keepStep * ii ) );
     orthogonalIndicesToExamine[ii] = inputIndex[m_GeneralBeamDirection] + offset;
     }
@@ -401,11 +401,11 @@ UltrasoundProbeGeometryCalculator< TInputImage >
 
   // Set the values to our ProcessObject outputs.
   typename DecoratedOriginType::Pointer decoratedProbeOrigin =
-    static_cast< DecoratedOriginType * >( 
+    static_cast< DecoratedOriginType * >(
       this->ProcessObject::GetOutput( "UltrasoundProbeOrigin" ) );
   decoratedProbeOrigin->Set( probeOrigin );
   typename DecoratedRadiusType::Pointer decoratedStartOfAcquisitionRadius =
-    static_cast< DecoratedRadiusType * >( 
+    static_cast< DecoratedRadiusType * >(
       this->ProcessObject::GetOutput( "StartOfAcquisitionRadius" ) );
   decoratedStartOfAcquisitionRadius->Set( startOfAcquisitionRadius );
 }

@@ -350,7 +350,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     }
 
   // Subsample the vessel
-  resampledTube = ::tube::SubsampleTube<PointBasedSpatialObject>( 
+  resampledTube = ::tube::SubsampleTube<PointBasedSpatialObject>(
     smoothedTube, this->m_SubsamplingScale );
 
   if( !resampledTube )
@@ -768,7 +768,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
         // Add bin values to the metric array
         for ( unsigned int i=0; i < this->m_NumberOfBins; ++i )
           {
-          this->m_CurvatureHistogramMetrics.push_back( 
+          this->m_CurvatureHistogramMetrics.push_back(
             histogramForFeatures->GetFrequency( i ) );
           }
         }

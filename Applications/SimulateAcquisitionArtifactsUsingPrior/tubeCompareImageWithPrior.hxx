@@ -267,7 +267,7 @@ CompareImageWithPrior< TPixel, TDimension>
 template< class TPixel, unsigned int TDimension >
 void
 CompareImageWithPrior< TPixel, TDimension>
-::SetRegistrationTransform( 
+::SetRegistrationTransform(
   typename itk::RigidImageToImageRegistrationMethod<
     itk::Image< float, TDimension > >::TransformType::Pointer tfm )
 {
@@ -432,7 +432,7 @@ CompareImageWithPrior< TPixel, TDimension>
       filter->SetInput( m_OutputMaskImage );
       filter->SetSigma( m_GaussianBlur );
 
-      filter->SetOrder( 
+      filter->SetOrder(
                itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
       filter->SetDirection( i );
 
@@ -491,7 +491,7 @@ CompareImageWithPrior< TPixel, TDimension>
       int numSamples = 1;
       if( m_UseRegistrationTransform )
         {
-        reg->SetInitialTransformParameters( 
+        reg->SetInitialTransformParameters(
           m_RegistrationTransform->GetParameters() );
         }
       typename ImageType::SizeType imageSize = m_OutputVolImage
@@ -523,7 +523,7 @@ CompareImageWithPrior< TPixel, TDimension>
         }
       catch( ... )
         {
-        tube::WarningMessage( 
+        tube::WarningMessage(
           "Exception thrown during registration. Compensating..." );
         m_RegistrationTransform =
           RegistrationMethodType::TransformType::New();
@@ -761,9 +761,9 @@ CompareImageWithPrior< TPixel, TDimension>
     m_TimeCollector->Start( "Match metric" );
     }
 
-  itk::ImageRegionIteratorWithIndex< ImageType > volIter( 
+  itk::ImageRegionIteratorWithIndex< ImageType > volIter(
     m_OutputVolImage, m_OutputVolImage->GetLargestPossibleRegion() );
-  itk::ImageRegionIteratorWithIndex< ImageType > maskIter( 
+  itk::ImageRegionIteratorWithIndex< ImageType > maskIter(
     m_OutputMaskImage, m_OutputMaskImage->GetLargestPossibleRegion() );
 
   m_GoF = 0;

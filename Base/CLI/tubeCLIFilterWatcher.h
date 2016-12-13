@@ -96,7 +96,7 @@ protected:
           if( m_ProcessInformation->ProgressCallbackFunction
               && m_ProcessInformation->ProgressCallbackClientData )
             {
-            ( *( m_ProcessInformation->ProgressCallbackFunction ) )( 
+            ( *( m_ProcessInformation->ProgressCallbackFunction ) )(
               m_ProcessInformation->ProgressCallbackClientData );
             }
           }
@@ -139,7 +139,7 @@ protected:
         if( m_ProcessInformation->ProgressCallbackFunction
             && m_ProcessInformation->ProgressCallbackClientData )
           {
-          ( *( m_ProcessInformation->ProgressCallbackFunction ) )( 
+          ( *( m_ProcessInformation->ProgressCallbackFunction ) )(
             m_ProcessInformation->ProgressCallbackClientData );
           }
         }
@@ -180,7 +180,7 @@ protected:
         if( m_ProcessInformation->ProgressCallbackFunction
             && m_ProcessInformation->ProgressCallbackClientData )
           {
-          ( *( m_ProcessInformation->ProgressCallbackFunction ) )( 
+          ( *( m_ProcessInformation->ProgressCallbackFunction ) )(
             m_ProcessInformation->ProgressCallbackClientData );
           }
         }

@@ -76,7 +76,7 @@ public:
  protected:
   vtkMRMLSpatialObjectsGlyphDisplayNode( void );
   ~vtkMRMLSpatialObjectsGlyphDisplayNode( void );
-  vtkMRMLSpatialObjectsGlyphDisplayNode( 
+  vtkMRMLSpatialObjectsGlyphDisplayNode(
     const vtkMRMLSpatialObjectsGlyphDisplayNode& );
   void operator=( const vtkMRMLSpatialObjectsGlyphDisplayNode& );
 

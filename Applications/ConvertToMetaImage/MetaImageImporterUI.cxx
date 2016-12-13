@@ -212,9 +212,9 @@ void MetaImageImporterUI::BuildPage6()
 
 void MetaImageImporterUI::GeneratedMHDFileLineEditChanged()
 {
-  page1NextPushButton->setEnabled( 
+  page1NextPushButton->setEnabled(
     generatedMHDFileLineEdit->hasAcceptableInput() );
-  this->setWindowTitle( 
+  this->setWindowTitle(
     QString( "MetaImageImporter - " ) + generatedMHDFileLineEdit->text() );
 }
 
@@ -229,7 +229,7 @@ void MetaImageImporterUI::DimensionalityChanged( int value )
       QSpinBox* spinBox = NULL;
       QDoubleSpinBox* doubleSpinBox = NULL;
       // Dimension
-      _label = this->findChild<QLabel *>( 
+      _label = this->findChild<QLabel *>(
         QString( "dimension%1Label" ).arg( i ) );
     if( _label )
       {
@@ -242,14 +242,14 @@ void MetaImageImporterUI::DimensionalityChanged( int value )
       spinBox->setVisible( visible );
       }
     // Spacing
-    _label = this->findChild<QLabel *>( 
+    _label = this->findChild<QLabel *>(
       QString( "spacing%1Label" ).arg( i ) );
     if( _label )
       {
       _label->setVisible( visible );
       }
     doubleSpinBox =
-        this->findChild<QDoubleSpinBox *>( 
+        this->findChild<QDoubleSpinBox *>(
           QString( "spacing%1DoubleSpinBox" ).arg( i ) );
     if( doubleSpinBox )
       {
@@ -262,7 +262,7 @@ void MetaImageImporterUI::DimensionalityChanged( int value )
       _label->setVisible( visible );
       }
     doubleSpinBox =
-        this->findChild<QDoubleSpinBox *>( 
+        this->findChild<QDoubleSpinBox *>(
           QString( "origin%1DoubleSpinBox" ).arg( i ) );
     if( doubleSpinBox )
       {
@@ -276,9 +276,9 @@ void MetaImageImporterUI::DataStorageChanged()
   importFileNameLabel->setVisible( oneFileRadioButton->isChecked() );
   importFileLineEdit->setVisible( oneFileRadioButton->isChecked() );
   importFilePushButton->setVisible( oneFileRadioButton->isChecked() );
-  importFileNamesLabel->setVisible( 
+  importFileNamesLabel->setVisible(
     oneFilePerSliceRadioButton->isChecked() );
-  listOfNamesRadioButton->setVisible( 
+  listOfNamesRadioButton->setVisible(
     oneFilePerSliceRadioButton->isChecked() );
   fprintfRadioButton->setVisible( oneFilePerSliceRadioButton->isChecked() );
 
@@ -293,9 +293,9 @@ void MetaImageImporterUI::FileNamesStyleChanged()
     {
     fprintfGroupBox->setVisible( false );
     listOfNamesGroupBox->setVisible( true );
-    importFilesDimensionSpinBox->setMaximum( 
+    importFilesDimensionSpinBox->setMaximum(
       dimensionalitySpinBox->value() - 1 );
-    page6NextPushButton->setEnabled( 
+    page6NextPushButton->setEnabled(
       !importFilenamesTextEdit->toPlainText().isEmpty() );
     }
   else if( oneFilePerSliceRadioButton->isChecked() &&
@@ -304,21 +304,21 @@ void MetaImageImporterUI::FileNamesStyleChanged()
     listOfNamesGroupBox->setVisible( false );
     fprintfGroupBox->setVisible( true );
 
-    QSpinBox* spinBox = this->findChild<QSpinBox *>( 
-      QString( "dimension%1SpinBox" ).arg( 
+    QSpinBox* spinBox = this->findChild<QSpinBox *>(
+      QString( "dimension%1SpinBox" ).arg(
         dimensionalitySpinBox->value() - 1 ) );
     if( spinBox )
       {
       importFPrintFMaxSpinBox->setValue( spinBox->value() );
       }
-    page6NextPushButton->setEnabled( 
+    page6NextPushButton->setEnabled(
       !importFileNamesLineEdit->text().isEmpty() );
     }
   else if( oneFileRadioButton->isChecked() )
     {
     listOfNamesGroupBox->setVisible( false );
     fprintfGroupBox->setVisible( false );
-    page6NextPushButton->setEnabled( 
+    page6NextPushButton->setEnabled(
       !importFileLineEdit->text().isEmpty() );
     }
 }
@@ -410,7 +410,7 @@ bool MetaImageImporterUI::Import()
   for( i = 0; i < dimensionalitySpinBox->value(); i++ )
     {
     doubleSpinBox =
-      this->findChild<QDoubleSpinBox *>( 
+      this->findChild<QDoubleSpinBox *>(
         QString( "spacing%1DoubleSpinBox" ).arg( i ) );
     if( doubleSpinBox )
       {
@@ -429,7 +429,7 @@ bool MetaImageImporterUI::Import()
   for( i = 0; i < dimensionalitySpinBox->value(); i++ )
     {
     doubleSpinBox =
-      this->findChild<QDoubleSpinBox *>( 
+      this->findChild<QDoubleSpinBox *>(
         QString( "origin%1DoubleSpinBox" ).arg( i ) );
     if( doubleSpinBox )
       {
@@ -525,7 +525,7 @@ bool MetaImageImporterUI::Import()
       }
     else if( fprintfRadioButton->isChecked() )
       {
-      QString file = dir.relativeFilePath( 
+      QString file = dir.relativeFilePath(
         importFileNamesLineEdit->text() );
       if( QFileInfo( file ).isAbsolute() )
         {

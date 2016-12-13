@@ -69,7 +69,7 @@ void readGraphList( const std::string &fileName,
         {
         // Build absolute filename from basePath and fileName
         boost::filesystem::path base( basePath.c_str() );
-        boost::filesystem::path file( 
+        boost::filesystem::path file(
           boost::lexical_cast<std::string>( v.second.data() ) );
         boost::filesystem::path fullPathToGraphFile = base / file;
         fullGraphFileName = fullPathToGraphFile.string();
@@ -261,7 +261,7 @@ tube::GraphKernel::GraphType loadGraph( std::string graphFile,
     labelFile = 0;
     }
   // Load graph and return
-  return tube::GraphKernel::GraphFromAdjFile( 
+  return tube::GraphKernel::GraphFromAdjFile(
     graphFile.c_str(),
     labelFile,
     defNodeLabel );

@@ -207,7 +207,7 @@ public:
   /** Utility function to check whether the timestep is stable, optionally based
     * on the spacing of the given image */
   template< class TPixel, unsigned int VImageDimension >
-  void CheckTimeStepStability( 
+  void CheckTimeStepStability(
       const itk::Image< TPixel, VImageDimension > * input,
       bool useImageSpacing )
     { m_RegularizationFunction->CheckTimeStepStability( input,
@@ -253,7 +253,7 @@ public:
    *  regularizationTerm are outputs.  Incorporates weighting between
    *  intensity distance term and regularization term, but does not yet
    *  incorporate the time step. */
-  virtual PixelType ComputeUpdate( 
+  virtual PixelType ComputeUpdate(
       const NeighborhoodType & neighborhood,
       const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
       const ScalarDerivativeImageRegionArrayVectorType
@@ -269,12 +269,12 @@ public:
       const FloatOffsetType& = FloatOffsetType( 0.0 ) );
 
   /** Updates the energy associated with the intensity distance term */
-  virtual double ComputeIntensityDistanceEnergy( 
+  virtual double ComputeIntensityDistanceEnergy(
     const typename NeighborhoodType::IndexType index,
     const DeformationVectorType & update );
 
   /** Updates the energy associated with the regularization */
-  virtual double ComputeRegularizationEnergy( 
+  virtual double ComputeRegularizationEnergy(
     const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
     const ScalarDerivativeImageRegionArrayVectorType
         & deformationComponentFirstOrderDerivativeRegions );
@@ -308,7 +308,7 @@ protected:
   void PrintSelf( std::ostream& os, Indent indent ) const;
 
   /** Returns the update from the regularization component */
-  virtual PixelType ComputeRegularizationUpdate( 
+  virtual PixelType ComputeRegularizationUpdate(
     const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
     const ScalarDerivativeImageRegionArrayVectorType
         & deformationComponentFirstOrderDerivativeRegions,
@@ -321,7 +321,7 @@ protected:
     const FloatOffsetType& = FloatOffsetType( 0.0 ) );
 
 //  /** Update the RMS and mean update change statistics */
-//  virtual void UpdateRMSAndMeanUpdateStatistics( 
+//  virtual void UpdateRMSAndMeanUpdateStatistics(
 //    const PixelType & updateTerm,
 //    const PixelType & intensityDistanceTerm,
 //    const PixelType & regularizationTerm,

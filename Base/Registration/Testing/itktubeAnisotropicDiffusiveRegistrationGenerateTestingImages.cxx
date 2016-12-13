@@ -36,7 +36,7 @@ limitations under the License.
 // Template function to fill in an image with a sphere.
 template< class TImage >
 void
-FillWithSphere( 
+FillWithSphere(
 TImage * image,
 double * center,
 double radius,
@@ -66,7 +66,7 @@ typename TImage::PixelType backgnd )
 // Template function to fill in an image with two boxes
 template< class TImage >
 void
-FillWithBox( 
+FillWithBox(
 TImage * image,
 double * bottomBox,
 double * topBox,
@@ -155,7 +155,7 @@ bool PointInTube( TIndex index, double * tubeLeftPoint, double radius )
 // Template function to fill in an image with two tubes
 template< class TImage >
 void
-FillWithTubes( 
+FillWithTubes(
 TImage * image,
 double * bottomTubeLeftPoint,
 double * topTubeLeftPoint,
@@ -269,7 +269,7 @@ vtkPolyData* CreateCubePolydata( double * bottomBox, double * topBox,
 
 // Intensity windowing from 0..255 to 0..1
 template< class TImage >
-void IntensityWindow( 
+void IntensityWindow(
 TImage * image )
 {
   float valMin = 0;

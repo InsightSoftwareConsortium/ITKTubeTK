@@ -62,7 +62,7 @@ qSlicerSpatialObjectsModule::~qSlicerSpatialObjectsModule()
 //------------------------------------------------------------------------------
 QString qSlicerSpatialObjectsModule::helpText() const
 {
-  QString help = QString( 
+  QString help = QString(
     "The SpatialObjects Module loads and adjusts display parameters of "
     "spatial object data.<br>"
     "<a href=\"%1/Documentation/%2.%3/Modules/SpatialObjects\">"
@@ -83,7 +83,7 @@ QString qSlicerSpatialObjectsModule::helpText() const
 //------------------------------------------------------------------------------
 QString qSlicerSpatialObjectsModule::acknowledgementText() const
 {
-  QString acknowledgement = QString( 
+  QString acknowledgement = QString(
     "<center><table border=\"0\"><tr>"
     "<td><img src=\":Logos/NAMIC.png\" alt\"NA-MIC\"></td>"
     "</tr></table></center>"
@@ -136,9 +136,9 @@ void qSlicerSpatialObjectsModule::setup()
 
   qSlicerCoreIOManager* coreIOManager =
     qSlicerCoreApplication::application()->coreIOManager();
-  coreIOManager->registerIO( 
+  coreIOManager->registerIO(
     new qSlicerSpatialObjectsReader( spatialObjectsLogic, this ) );
-  coreIOManager->registerIO( new qSlicerNodeWriter( 
+  coreIOManager->registerIO( new qSlicerNodeWriter(
     "SpatialObjects", QString( "SpatialObjectFile" ),
     QStringList() << "vtkMRMLSpatialObjectsNode", true, this ) );
 }

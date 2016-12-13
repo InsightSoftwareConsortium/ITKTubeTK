@@ -168,7 +168,7 @@ int itkAcousticImpulseResponseImageFilterTest( int argc, char * argv[] )
     gradientMagnitudeRecursiveGaussianFilter =
       GradientMagnitudeRecursiveGaussianFilterType::New();
   gradientMagnitudeRecursiveGaussianFilter->SetSigma( 1.0 );
-  acousticImpulseResponseFilter->SetGradientMagnitudeFilter( 
+  acousticImpulseResponseFilter->SetGradientMagnitudeFilter(
     gradientMagnitudeRecursiveGaussianFilter );
 
   try

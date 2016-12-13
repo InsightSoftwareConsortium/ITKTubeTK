@@ -66,7 +66,7 @@ SmoothingRecursiveGaussianImageFilter< TInputImage, TOutputImage >
     }
   for( int i = 1; i < static_cast< int >( ImageDimension ) - 1; i++ )
     {
-    m_SmoothingFilters[i]->SetInput( 
+    m_SmoothingFilters[i]->SetInput(
       m_SmoothingFilters[i - 1]->GetOutput() );
     }
 
@@ -213,7 +213,7 @@ SmoothingRecursiveGaussianImageFilter< TInputImage, TOutputImage >
     const_cast< InputImageType * >( this->GetInput() );
   if( image )
     {
-    image->SetRequestedRegion( 
+    image->SetRequestedRegion(
       this->GetInput()->GetLargestPossibleRegion() );
     }
 }
@@ -252,7 +252,7 @@ SmoothingRecursiveGaussianImageFilter< TInputImage, TOutputImage >
     {
     if( size[d] < 4 )
       {
-      itkExceptionMacro( 
+      itkExceptionMacro(
         "The number of pixels along dimension " << d
         << " is less than 4. This filter requires a minimum of four"
         << "pixels along the dimension to be processed." );

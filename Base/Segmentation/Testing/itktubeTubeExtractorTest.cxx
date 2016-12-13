@@ -100,7 +100,7 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
       {
       ++tubeIter;
       }
-    TubeType::Pointer tube = static_cast< TubeType * >( 
+    TubeType::Pointer tube = static_cast< TubeType * >(
       tubeIter->GetPointer() );
     std::cout << "Test tube = " << rndTubeNum << std::endl;
 

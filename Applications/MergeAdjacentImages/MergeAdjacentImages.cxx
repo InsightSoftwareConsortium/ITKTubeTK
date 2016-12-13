@@ -52,7 +52,7 @@ int DoIt( int argc, char * argv[] )
   // setup progress reporting
   double progress = 0.0;
 
-  tube::CLIProgressReporter progressReporter( 
+  tube::CLIProgressReporter progressReporter(
     "MergeAdjacentImages", CLPProcessInformation );
   progressReporter.Start();
   progressReporter.Report( progress );

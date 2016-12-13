@@ -51,7 +51,7 @@ int DoIt( int argc, char * argv[] )
 
   if( VDimension != 2 && VDimension != 3 )
     {
-    tube::ErrorMessage( 
+    tube::ErrorMessage(
       "Error: Only 2D and 3D data is currently supported." );
     return EXIT_FAILURE;
     }

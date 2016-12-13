@@ -57,7 +57,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
 {
   Superclass::PrintSelf( os,indent );
   os << indent << "MaskValue: "
-     << static_cast<typename NumericTraits<MaskPixelType>::PrintType>( 
+     << static_cast<typename NumericTraits<MaskPixelType>::PrintType>(
        m_MaskValue )
      << std::endl;
   if( m_UseSingleMaskValue )
@@ -145,7 +145,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
 ::GenerateData( void )
 {
   ListSampleOutputType * decoratedOutput =
-    static_cast< ListSampleOutputType * >( 
+    static_cast< ListSampleOutputType * >(
       this->ProcessObject::GetOutput( 0 ) );
 
   ListSampleType *output =
@@ -222,11 +222,11 @@ VectorImageToListGenerator< TImage, TMaskImage >
   Superclass::GenerateOutputInformation();
 
   ListSampleOutputType * decoratedOutput =
-    static_cast< ListSampleOutputType * >( 
+    static_cast< ListSampleOutputType * >(
       this->ProcessObject::GetOutput( 0 ) );
   ListSampleType *output =
    const_cast< ListSampleType *>( decoratedOutput->Get() );
-  output->SetMeasurementVectorSize( 
+  output->SetMeasurementVectorSize(
     itkGetStaticConstMacro( MeasurementVectorSize ) );
 }
 
@@ -265,7 +265,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
 ::GetListSample( void ) const
 {
   const ListSampleOutputType * decoratedOutput =
-    static_cast< const ListSampleOutputType * >( 
+    static_cast< const ListSampleOutputType * >(
       this->ProcessObject::GetOutput( 0 ) );
   return decoratedOutput->Get();
 }

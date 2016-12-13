@@ -126,10 +126,10 @@ public:
   unsigned int  GetErodeRadius( void ) const;
   void          SetHoleFillIterations( unsigned int _HoleFillIterations );
   unsigned int  GetHoleFillIterations( void ) const;
-  void          SetProbabilityImageSmoothingStandardDeviation( 
+  void          SetProbabilityImageSmoothingStandardDeviation(
                   double _ProbabilityImageSmoothingStandardDeviation );
   double         GetProbabilityImageSmoothingStandardDeviation( void ) const;
-  void          SetHistogramSmoothingStandardDeviation( 
+  void          SetHistogramSmoothingStandardDeviation(
                   double _HistogramSmoothingStandardDeviation );
   double         GetHistogramSmoothingStandardDeviation( void ) const;
   void          SetOutlierRejectPortion( double _OutlierRejectPortion );
@@ -138,7 +138,7 @@ public:
   bool          GetDraft( void ) const;
   void          SetReclassifyObjectLabels( bool _ReclassifyObjectLabels );
   bool          GetReclassifyObjectLabels( void ) const;
-  void          SetReclassifyNotObjectLabels( 
+  void          SetReclassifyNotObjectLabels(
                   bool _ReclassifyNotObjectLabels );
   bool          GetReclassifyNotObjectLabels( void ) const;
   void          SetForceClassification( bool _ForceClassification );

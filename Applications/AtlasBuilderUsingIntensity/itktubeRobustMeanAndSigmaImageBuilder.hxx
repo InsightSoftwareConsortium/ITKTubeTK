@@ -63,7 +63,7 @@ RobustMeanAndSigmaImageBuilder< TInputImageType, TOutputMeanImageType,
     upperImage->SetSpacing( image->GetSpacing() );
     upperImage->SetOrigin( image->GetOrigin() );
     upperImage->Allocate();
-    upperImage->FillBuffer( 
+    upperImage->FillBuffer(
       NumericTraits<InputPixelType>::NonpositiveMin() );
 
     lowerImages.push_back( lowerImage );

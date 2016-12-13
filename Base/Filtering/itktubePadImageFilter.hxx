@@ -47,15 +47,15 @@ PadImageFilter<TInputImage, TOutputImage>
 {
   // call the superclass' implementation of this method
   Superclass::GenerateInputRequestedRegion();
-  
+ 
   InputImageType * input0 = const_cast<InputImageType *>( this->GetInput( 0 ) );
   if ( !input0 )
     {
     return;
     }
-  
+ 
   OutputImageType * output = this->GetOutput();
-  
+ 
   RegionType region = output->GetRequestedRegion();
   region.Crop( input0->GetLargestPossibleRegion() );
   input0->SetRequestedRegion( region );
@@ -69,17 +69,17 @@ PadImageFilter<TInputImage, TOutputImage>
 {
   // call the superclass' implementation of this method
   Superclass::GenerateOutputInformation();
-  
+ 
   const InputImageType * input0 = this->GetInput();
   if ( !input0 )
     {
     return;
     }
-  
+ 
   OutputImageType * output0 = this->GetOutput();
-  
+ 
   RegionType region0 = input0->GetLargestPossibleRegion();
-  
+ 
   RegionType region;
   if( m_PadMethod == NO_PADDING )
     {
@@ -140,7 +140,7 @@ PadImageFilter<TInputImage, TOutputImage>
   typedef typename itk::WrapPadImageFilter
     < InputImageType, OutputImageType > WrapPadType;
   SizeType s;
-  
+ 
   typename PadType::Pointer pad0;
   switch( m_PadMethod )
     {
@@ -203,7 +203,7 @@ PadImageFilter<TInputImage, TOutputImage>
     << std::endl;
   os << indent << "PadMethod: "  << m_PadMethod << std::endl;
 }
-  
+ 
 }// end namespace tube
 
 }// end namespace itk

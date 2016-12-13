@@ -222,7 +222,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Intensity" )
       {
       std::cout << "Intensity windowing" << std::endl;
-      tube::ImageFilters< VDimension >::ApplyIntensityWindowing( 
+      tube::ImageFilters< VDimension >::ApplyIntensityWindowing(
         imIn,
         command.GetValueAsFloat( *it, "inValMin" ),
         command.GetValueAsFloat( *it, "inValMax" ),
@@ -282,7 +282,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Multiply" )
       {
       std::cout << "Multiplying" << std::endl;
-      bool success = tube::ImageFilters< VDimension >::MultiplyImages( 
+      bool success = tube::ImageFilters< VDimension >::MultiplyImages(
         imIn, command.GetValueAsString( *it, "Infile" ) );
       if( !success )
         {
@@ -313,7 +313,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Fuse" )
       {
       std::cout << "Fusing" << std::endl;
-      bool success = tube::ImageFilters< VDimension >::FuseImages( 
+      bool success = tube::ImageFilters< VDimension >::FuseImages(
         imIn, command.GetValueAsString( *it, "Infile2" ),
         command.GetValueAsFloat( *it, "Offset2" ) );
       if( !success )
@@ -326,7 +326,7 @@ int DoIt( MetaCommand & command )
     else if( ( *it ).name == "Median" )
       {
       std::cout << "Median filtering" << std::endl;
-      bool success = tube::ImageFilters< VDimension >::MedianImage( 
+      bool success = tube::ImageFilters< VDimension >::MedianImage(
         imIn, command.GetValueAsInt( *it, "Size" ) );
       if( !success )
         {
@@ -722,7 +722,7 @@ int main( int argc, char * argv[] )
   command.AddOptionField( "Correction", "nBins", MetaCommand::INT, true );
   command.AddOptionField( "Correction", "nMatchPoints", MetaCommand::INT,
     true );
-  command.AddOptionField( 
+  command.AddOptionField(
     "Correction", "referenceVolume", MetaCommand::STRING, true );
 
   command.SetOption( "Normalize", "d", false,

@@ -353,7 +353,7 @@ MergeAdjacentImagesFilter< TImage >
 
   regOp->SetFixedImage( output );
 
-  tmpImage = regOp->ResampleImage( 
+  tmpImage = regOp->ResampleImage(
     RegFilterType::OptimizedRegistrationMethodType::LINEAR_INTERPOLATION,
     m_Input2, NULL, NULL, m_Background );
 
@@ -479,7 +479,7 @@ MergeAdjacentImagesFilter< TImage >
       indicator->SetLowerThreshold( 0 );
       indicator->SetUpperThreshold( 0 );
       indicator->SetOutsideValue( 0 );
-      indicator->SetInsideValue( 
+      indicator->SetInsideValue(
         mapDistFilter->GetMaximalSquaredDistance() );
       indicator->SetInput( outputMap );
       indicator->Update();
@@ -513,9 +513,9 @@ MergeAdjacentImagesFilter< TImage >
     vorImageMap->SetRegions( output->GetLargestPossibleRegion() );
     vorImageMap->Allocate();
     vorImageMap->FillBuffer( 1 );
-    itk::ImageRegionConstIteratorWithIndex< ImageType > iterOutVor( 
+    itk::ImageRegionConstIteratorWithIndex< ImageType > iterOutVor(
       outputVoronoiMap, outputVoronoiMap->GetLargestPossibleRegion() );
-    itk::ImageRegionIteratorWithIndex< ImageType > iterVorMap( 
+    itk::ImageRegionIteratorWithIndex< ImageType > iterVorMap(
       vorImageMap, vorImageMap->GetLargestPossibleRegion() );
     while( !iterOutVor.IsAtEnd() )
       {
@@ -546,7 +546,7 @@ MergeAdjacentImagesFilter< TImage >
       indicator2->SetLowerThreshold( 0 );
       indicator2->SetUpperThreshold( 0 );
       indicator2->SetOutsideValue( 0 );
-      indicator2->SetInsideValue( 
+      indicator2->SetInsideValue(
         mapVorFilter->GetMaximalSquaredDistance() );
       indicator2->SetInput( vorImageMap );
       indicator2->Update();
@@ -581,10 +581,10 @@ MergeAdjacentImagesFilter< TImage >
 
     iter2.GoToBegin();
     iterOut.GoToBegin();
-    itk::ImageRegionIteratorWithIndex< ImageType > iterOutDistMap( 
+    itk::ImageRegionIteratorWithIndex< ImageType > iterOutDistMap(
       outputDistMap, outputDistMap->GetLargestPossibleRegion() );
 
-    itk::ImageRegionIteratorWithIndex< ImageType > iterVorDistMap( 
+    itk::ImageRegionIteratorWithIndex< ImageType > iterVorDistMap(
       vorImageDistMap, vorImageDistMap->GetLargestPossibleRegion() );
 
     while( !iter2.IsAtEnd() )

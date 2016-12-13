@@ -54,7 +54,7 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter progressReporter( 
+  tube::CLIProgressReporter progressReporter(
     "RegisterImageToTubesUsingRigidTransform",
     CLPProcessInformation );
   progressReporter.Start();
@@ -141,7 +141,7 @@ int DoIt( int argc, char * argv[] )
 
   TransformType* registrationTransform =
     dynamic_cast<TransformType *>( registrationMethod->GetTransform() );
-  registrationTransform->SetParameters( 
+  registrationTransform->SetParameters(
     registrationMethod->GetLastTransformParameters() );
   std::ostringstream parametersMessage;
   parametersMessage << "Transform Parameters: " <<
@@ -157,7 +157,7 @@ int DoIt( int argc, char * argv[] )
 
   if( !parameterProgression.empty() )
     {
-    recordParameterProgressionCommand->SetFixedParameters( 
+    recordParameterProgressionCommand->SetFixedParameters(
       registrationTransform->GetFixedParameters() );
     recordParameterProgressionCommand->WriteParameterProgressionToFile();
     }

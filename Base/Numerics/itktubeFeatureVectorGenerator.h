@@ -93,13 +93,13 @@ public:
 
   virtual unsigned int GetNumberOfFeatures( void ) const;
 
-  virtual FeatureVectorType GetFeatureVector( 
+  virtual FeatureVectorType GetFeatureVector(
     const IndexType & indx ) const;
 
-  virtual FeatureValueType GetFeatureVectorValue( 
+  virtual FeatureValueType GetFeatureVectorValue(
     const IndexType & indx, unsigned int fNum ) const;
 
-  virtual typename FeatureImageType::Pointer GetFeatureImage( 
+  virtual typename FeatureImageType::Pointer GetFeatureImage(
     unsigned int num ) const;
 
   virtual void Update( void );

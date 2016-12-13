@@ -84,7 +84,7 @@ public:
       if( m_ProcessInformation->ProgressCallbackFunction
           && m_ProcessInformation->ProgressCallbackClientData )
         {
-        ( *( m_ProcessInformation->ProgressCallbackFunction ) )( 
+        ( *( m_ProcessInformation->ProgressCallbackFunction ) )(
           m_ProcessInformation->ProgressCallbackClientData );
         }
       }
@@ -123,7 +123,7 @@ public:
       if( m_ProcessInformation->ProgressCallbackFunction
           && m_ProcessInformation->ProgressCallbackClientData )
         {
-        ( *( m_ProcessInformation->ProgressCallbackFunction ) )( 
+        ( *( m_ProcessInformation->ProgressCallbackFunction ) )(
           m_ProcessInformation->ProgressCallbackClientData );
         }
       }
@@ -161,7 +161,7 @@ public:
       if( m_ProcessInformation->ProgressCallbackFunction
           && m_ProcessInformation->ProgressCallbackClientData )
         {
-        ( *( m_ProcessInformation->ProgressCallbackFunction ) )( 
+        ( *( m_ProcessInformation->ProgressCallbackFunction ) )(
           m_ProcessInformation->ProgressCallbackClientData );
         }
       }

@@ -225,7 +225,7 @@ vtkMRMLSpatialObjectsDisplayNode*
     self->GetScene()->SaveStateForUndo();
 
     self->GetScene()->AddNode( properties.GetPointer() );
-    node->SetAndObserveSpatialObjectsDisplayPropertiesNodeID( 
+    node->SetAndObserveSpatialObjectsDisplayPropertiesNodeID(
       properties->GetID() );
 
     self->GetScene()->AddNode( node );
@@ -396,7 +396,7 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
 
   char childName[] = "Tube";
   TubeNetType::ChildrenListType* tubeList =
-    this->m_SpatialObject->GetChildren( 
+    this->m_SpatialObject->GetChildren(
       this->m_SpatialObject->GetMaximumDepth(), childName );
 
   // -----------------------------------------------------------------------
@@ -734,7 +734,7 @@ void vtkMRMLSpatialObjectsNode::CreateDefaultDisplayNodes( void )
   sodn = this->AddTubeDisplayNode();
   sodn->SetVisibility( 1 );
   sodn = this->AddGlyphDisplayNode();
-  sodn->GetSpatialObjectsDisplayPropertiesNode()->SetGlyphGeometry( 
+  sodn->GetSpatialObjectsDisplayPropertiesNode()->SetGlyphGeometry(
     vtkMRMLSpatialObjectsDisplayPropertiesNode::Lines );
   sodn->SetVisibility( 0 );
 }
@@ -748,7 +748,7 @@ void vtkMRMLSpatialObjectsNode::BuildDefaultColorMap( void )
 
   char childName[] = "Tube";
   TubeNetType::ChildrenListType* tubeList =
-    this->m_SpatialObject->GetChildren( 
+    this->m_SpatialObject->GetChildren(
       this->m_SpatialObject->GetMaximumDepth(), childName );
 
   for ( TubeNetType::ChildrenListType::iterator tubeIt = tubeList->begin();

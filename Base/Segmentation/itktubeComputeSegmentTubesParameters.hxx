@@ -137,11 +137,11 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
   typename InputImageType::RegionType region =
     m_InputImage->GetLargestPossibleRegion();
 
-  itk::ImageRegionIteratorWithIndex< InputImageType > itI( 
+  itk::ImageRegionIteratorWithIndex< InputImageType > itI(
     m_InputImage, region );
-  itk::ImageRegionIteratorWithIndex< MaskImageType > itM( 
+  itk::ImageRegionIteratorWithIndex< MaskImageType > itM(
     m_MaskInputImage, region );
-  itk::ImageRegionIteratorWithIndex< ScaleImageType > itS( 
+  itk::ImageRegionIteratorWithIndex< ScaleImageType > itS(
     m_ScaleInputImage, region );
 
   typename RidgeExtractorType::Pointer ridgeExtractor =

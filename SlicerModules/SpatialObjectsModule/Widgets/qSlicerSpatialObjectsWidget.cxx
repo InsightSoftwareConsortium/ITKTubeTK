@@ -74,7 +74,7 @@ void qSlicerSpatialObjectsWidgetPrivate::init()
   Q_Q( qSlicerSpatialObjectsWidget );
   this->setupUi( q );
 
-  this->ColorBySolidColorPicker->setDialogOptions( 
+  this->ColorBySolidColorPicker->setDialogOptions(
     ctkColorPickerButton::UseCTKColorDialog );
 
   QObject::connect( this->VisibilityCheckBox,
@@ -196,7 +196,7 @@ setSpatialObjectsNode( vtkMRMLSpatialObjectsNode* SpatialObjectsNode, int Displa
   vtkMRMLSpatialObjectsNode *oldNode = this->SpatialObjectsNode();
   d->SpatialObjectsNode = SpatialObjectsNode;
 
-  this->setSpatialObjectsDisplayNode( 
+  this->setSpatialObjectsDisplayNode(
     d->SpatialObjectsNode ? d->SpatialObjectsNode->GetNthDisplayNode( DisplayNodeIndex ) : NULL );
 
   qvtkReconnect( oldNode, this->SpatialObjectsNode(),
@@ -208,7 +208,7 @@ setSpatialObjectsNode( vtkMRMLSpatialObjectsNode* SpatialObjectsNode, int Displa
 void qSlicerSpatialObjectsWidget::
 setSpatialObjectsDisplayNode( vtkMRMLNode* node )
 {
-  this->setSpatialObjectsDisplayNode( 
+  this->setSpatialObjectsDisplayNode(
     vtkMRMLSpatialObjectsDisplayNode::SafeDownCast( node ) );
 }
 
@@ -618,7 +618,7 @@ void qSlicerSpatialObjectsWidget::updateWidgetFromMRML()
 
   this->inProcess = 1;
 
-  d->VisibilityCheckBox->setChecked( 
+  d->VisibilityCheckBox->setChecked(
     d->SpatialObjectsDisplayNode->GetVisibility() );
   d->OpacitySlider->setValue( d->SpatialObjectsDisplayNode->GetOpacity() );
 
@@ -643,7 +643,7 @@ void qSlicerSpatialObjectsWidget::updateWidgetFromMRML()
     bool wasBlocking = d->ColorByScalarComboBox->blockSignals( true );
 
     // This function has to be fixed in CTK, it shouldn't fire 2 signals ( see above )
-    d->ColorByScalarComboBox->setDataSet( 
+    d->ColorByScalarComboBox->setDataSet(
       vtkDataSet::SafeDownCast( d->SpatialObjectsNode->GetPolyData() ) );
     // Reset the current Array to blank, because setDataSet sets
     // the currentIndex to "TubeRadius" by default, and if we leave it like this,
@@ -654,14 +654,14 @@ void qSlicerSpatialObjectsWidget::updateWidgetFromMRML()
     d->ColorByScalarComboBox->blockSignals( wasBlocking );
     }
 
-  d->ColorByScalarComboBox->setCurrentArray( 
+  d->ColorByScalarComboBox->setCurrentArray(
     d->SpatialObjectsDisplayNode->GetActiveScalarName() );
 
 
   switch( d->SpatialObjectsDisplayNode->GetColorMode() )
     {
       case vtkMRMLSpatialObjectsDisplayNode::colorModeScalar:
-         d->SpatialObjectsDisplayNode->SetColorMode( 
+         d->SpatialObjectsDisplayNode->SetColorMode(
            vtkMRMLSpatialObjectsDisplayNode::colorModeSolid );
          break;
       case vtkMRMLSpatialObjectsDisplayNode::colorModeSolid:
@@ -669,7 +669,7 @@ void qSlicerSpatialObjectsWidget::updateWidgetFromMRML()
         double color[3];
 
         d->SpatialObjectsDisplayNode->GetColor( color );
-        d->ColorBySolidColorPicker->setColor( 
+        d->ColorBySolidColorPicker->setColor(
           QColor::fromRgbF( color[0],color[1],color[2] ) );
         d->ColorBySolidColorCheckBox->setChecked( 1 );
         }
@@ -682,7 +682,7 @@ void qSlicerSpatialObjectsWidget::updateWidgetFromMRML()
         break;
    }
 
-  d->MaterialPropertyWidget->setColor( 
+  d->MaterialPropertyWidget->setColor(
     QColor::fromRgbF( d->SpatialObjectsDisplayNode->GetColor()[0],
                      d->SpatialObjectsDisplayNode->GetColor()[1],
                      d->SpatialObjectsDisplayNode->GetColor()[2] ) );

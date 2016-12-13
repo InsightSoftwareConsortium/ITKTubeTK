@@ -47,7 +47,7 @@ int tubeCLIProgressReporterTest( int argc, char * itkNotUsed( argv )[] )
 
   ModuleProcessInformation CLPProcessInfo;
   CLPProcessInfo.Initialize();
-  CLPProcessInfo.SetProgressCallback( 
+  CLPProcessInfo.SetProgressCallback(
     cliProgressReporterTestCallbackFunction, NULL );
 
   std::string processName( "tubeCLIProgressReporterTest" );

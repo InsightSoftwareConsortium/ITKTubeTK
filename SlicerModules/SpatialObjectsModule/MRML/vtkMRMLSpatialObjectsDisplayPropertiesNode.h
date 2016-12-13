@@ -258,7 +258,7 @@ public:
 protected:
   vtkMRMLSpatialObjectsDisplayPropertiesNode( void );
   ~vtkMRMLSpatialObjectsDisplayPropertiesNode( void );
-  vtkMRMLSpatialObjectsDisplayPropertiesNode( 
+  vtkMRMLSpatialObjectsDisplayPropertiesNode(
     const vtkMRMLSpatialObjectsDisplayPropertiesNode& );
   void operator=( const vtkMRMLSpatialObjectsDisplayPropertiesNode& );
 

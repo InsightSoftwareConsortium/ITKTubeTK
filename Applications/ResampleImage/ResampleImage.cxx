@@ -120,7 +120,7 @@ int DoIt( int argc, char * argv[] )
     treader->SetFileName( loadTransform );
     treader->Update();
 
-    typename TransformType::Pointer tfm = static_cast< TransformType * >( 
+    typename TransformType::Pointer tfm = static_cast< TransformType * >(
       treader->GetTransformList()->front().GetPointer() );
 
     filter->SetTransform( tfm );

@@ -96,7 +96,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
     }
   if( this->m_FeatureWeights.GetSize() != tubePoints )
     {
-    itkExceptionMacro( 
+    itkExceptionMacro(
       << "The number of FeatureWeights "
       << "do not equal the number of tube points!" );
     }
@@ -121,7 +121,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
        tubeIterator != tubeList->end();
        ++tubeIterator )
     {
-    TubeType* currentTube = dynamic_cast<TubeType*>( 
+    TubeType* currentTube = dynamic_cast<TubeType*>(
       ( *tubeIterator ).GetPointer() );
 
     if( currentTube != NULL )
@@ -205,7 +205,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
     }
 
   char childName[] = "Tube";
-  return this->m_MovingSpatialObject->GetChildren( 
+  return this->m_MovingSpatialObject->GetChildren(
     this->m_MovingSpatialObject->GetMaximumDepth(), childName );
 }
 
@@ -257,7 +257,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
           const ScalarType scale = scalingRadius * m_Kappa;
 
-          matchMeasure += m_FeatureWeights[weightCount] * vnl_math_abs( 
+          matchMeasure += m_FeatureWeights[weightCount] * vnl_math_abs(
             this->ComputeLaplacianMagnitude( pointIterator->GetNormal1(),
               scale,
               currentPoint ) );
@@ -269,7 +269,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
   if( weightSum.GetSum() == NumericTraits< ScalarType >::Zero )
     {
-    itkWarningMacro( 
+    itkWarningMacro(
       << "GetValue: All the transformed tube points are outside the image." );
     matchMeasure = NumericTraits< ScalarType >::min();
     }
@@ -294,7 +294,7 @@ template< class TFixedImage, class TMovingSpatialObject,
 typename ImageToTubeRigidMetric< TFixedImage,
   TMovingSpatialObject, TTubeSpatialObject >::ScalarType
 ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
-::ComputeLaplacianMagnitude( 
+::ComputeLaplacianMagnitude(
   const typename TubePointType::CovariantVectorType & tubeNormal,
   const ScalarType scale,
   const OutputPointType & currentPoint ) const
@@ -350,7 +350,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
     if( this->m_Interpolator->IsInsideBuffer( point ) )
       {
       const ScalarType value =
-        static_cast< ScalarType >( 
+        static_cast< ScalarType >(
           this->m_Interpolator->Evaluate( point ) );
       result += value * kernelValue;
       }
@@ -428,7 +428,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
        tubeIterator != tubeList->end();
        ++tubeIterator )
     {
-    TubeType* currentTube = dynamic_cast<TubeType*>( 
+    TubeType* currentTube = dynamic_cast<TubeType*>(
       ( *tubeIterator ).GetPointer() );
 
     if( currentTube != NULL )
@@ -520,7 +520,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
        tubeIterator != tubeList->end();
        ++tubeIterator )
     {
-    TubeType* currentTube = dynamic_cast<TubeType*>( 
+    TubeType* currentTube = dynamic_cast<TubeType*>(
       ( *tubeIterator ).GetPointer() );
 
     if( currentTube != NULL )
@@ -587,7 +587,7 @@ template< class TFixedImage, class TMovingSpatialObject,
 typename ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
   TTubeSpatialObject >::ScalarType
 ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
-::ComputeThirdDerivatives( 
+::ComputeThirdDerivatives(
   const VectorType & tubeNormal,
   const ScalarType scale,
   const OutputPointType & currentPoint ) const
@@ -620,7 +620,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
     if( this->m_Interpolator->IsInsideBuffer( point ) )
       {
       const ScalarType value =
-        static_cast< ScalarType >( 
+        static_cast< ScalarType >(
           this->m_Interpolator->Evaluate( point ) );
       result += value * kernelValue;
       }

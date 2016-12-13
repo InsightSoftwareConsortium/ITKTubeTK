@@ -147,7 +147,7 @@ bool CheckCompatibility( typename ImageT::Pointer imageA,
     tube::ErrorMessage( "Size mismatch between input images" );
     return false;
     }
-  if( !CheckVNLMatrixEquality( 
+  if( !CheckVNLMatrixEquality(
     imageA->GetDirection().GetVnlMatrix().as_ref(),
     imageB->GetDirection().GetVnlMatrix().as_ref() ) )
     {
@@ -189,7 +189,7 @@ bool IsDiscrete( const std::string & fileName )
 {
   typedef itk::ImageIOBase::IOComponentType ScalarPixelType;
 
-  itk::ImageIOBase::Pointer imageIO = itk::ImageIOFactory::CreateImageIO( 
+  itk::ImageIOBase::Pointer imageIO = itk::ImageIOFactory::CreateImageIO(
     fileName.c_str(), itk::ImageIOFactory::ReadMode );
 
   imageIO->SetFileName( fileName.c_str() );
@@ -338,7 +338,7 @@ int DoIt( int argc, char **argv )
 
 
   // Determine the number of unqique segmentation regions
-  typename itk::ImageRegionIteratorWithIndex< InputImageType > segImageIt( 
+  typename itk::ImageRegionIteratorWithIndex< InputImageType > segImageIt(
     segImage, segImage->GetLargestPossibleRegion() );
 
   // Holds the IDs of the segmentation regions
@@ -497,7 +497,7 @@ int DoIt( int argc, char **argv )
     else
       // Otherwise, recompute distance maps ...
       {
-      tube::FmtInfoMessage( 
+      tube::FmtInfoMessage(
         "Recomputing distance map for ( original ) seg. %d",
         invSegMapper[id] );
 

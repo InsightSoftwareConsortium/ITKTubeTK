@@ -388,7 +388,7 @@ protected:
 
   /** Helper to compute the first-order partial derivatives of the diffusion
    *  tensor images */
-  virtual void ComputeDiffusionTensorDerivativeImageHelper( 
+  virtual void ComputeDiffusionTensorDerivativeImageHelper(
       const DiffusionTensorImagePointer & tensorImage,
       int term,
       const SpacingType & spacing,
@@ -417,7 +417,7 @@ protected:
    *  ThreadedComputeDeformationComponentDerivativeImageHelper() method and a
    *  multithreading mechanism.
    *  \sa ThreadedComputeDeformationComponentDerivativeImageHelper */
-  virtual void ComputeDeformationComponentDerivativeImageHelper( 
+  virtual void ComputeDeformationComponentDerivativeImageHelper(
       DeformationVectorComponentImagePointer & deformationComponentImage,
       int term,
       int dimension,
@@ -429,7 +429,7 @@ protected:
    *  by the multithreading mechanism.
    *  \sa ComputeDeformationComponentDerivativeImageHelper
    *  \sa ComputeDeformationComponentDerivativeImageHelperThreadedCallback */
-   virtual void ThreadedComputeDeformationComponentDerivativeImageHelper( 
+   virtual void ThreadedComputeDeformationComponentDerivativeImageHelper(
        const DeformationVectorComponentImagePointer & deformationComponentImage,
        const ThreadDeformationVectorComponentImageRegionType
          & deformationVectorComponenntRegionToProcess,
@@ -487,7 +487,7 @@ protected:
     }
 
   /** Set/Get a first-order deformation component derivative. */
-  void SetDeformationComponentFirstOrderDerivative( 
+  void SetDeformationComponentFirstOrderDerivative(
       int index,
       int dimension,
       ScalarDerivativeImageType * deriv )
@@ -497,7 +497,7 @@ protected:
     this->m_DeformationComponentFirstOrderDerivativeArrays[index][dimension]
         = deriv;
     }
-  ScalarDerivativeImageType * GetDeformationComponentFirstOrderDerivative( 
+  ScalarDerivativeImageType * GetDeformationComponentFirstOrderDerivative(
       int index,
       int dimension )
     {
@@ -508,7 +508,7 @@ protected:
     }
 
   /** Set/Get a second-order deformation component derivative. */
-  void SetDeformationComponentSecondOrderDerivative( 
+  void SetDeformationComponentSecondOrderDerivative(
       int index,
       int dimension,
       TensorDerivativeImageType * deriv )
@@ -518,7 +518,7 @@ protected:
     this->m_DeformationComponentSecondOrderDerivativeArrays[index][dimension]
         = deriv;
     }
-  TensorDerivativeImageType * GetDeformationComponentSecondOrderDerivative( 
+  TensorDerivativeImageType * GetDeformationComponentSecondOrderDerivative(
       int index,
       int dimension )
     {
@@ -654,7 +654,7 @@ protected:
   virtual TimeStepType CalculateChange( void );
 
   /** Inherited from superclass - do not call this function! */
-  TimeStepType ThreadedCalculateChange( 
+  TimeStepType ThreadedCalculateChange(
       const ThreadRegionType & regionToProcess, ThreadIdType threadId );
 
   /** This method populates an update buffer with changes for each pixel in the
@@ -668,7 +668,7 @@ protected:
    * over a region supplied by the multithreading mechanism.
    * \sa CalculateChangeGradient
    * \sa CalculateChangeGradientThreaderCallback */
-  virtual TimeStepType ThreadedCalculateChangeGradient( 
+  virtual TimeStepType ThreadedCalculateChangeGradient(
       const ThreadRegionType & regionToProcess,
       const ThreadDiffusionTensorImageRegionType & tensorRegionToProcess,
       const ThreadTensorDerivativeImageRegionType
@@ -698,7 +698,7 @@ protected:
    * mechanism.
    * \sa CalculateEnergies
    * \sa CalculateEnergiesThreaderCallback */
-  virtual void ThreadedCalculateEnergies( 
+  virtual void ThreadedCalculateEnergies(
     const OutputImagePointer & output,
     const ThreadRegionType & regionToProcess,
     const ThreadDiffusionTensorImageRegionType & tensorRegionToProcess,
@@ -806,14 +806,14 @@ private:
 
   /** This callback method uses SplitUpdateContainer to acquire a region
   * which it then passes to ThreadedCalculateChange for processing. */
-  static ITK_THREAD_RETURN_TYPE CalculateChangeGradientThreaderCallback( 
+  static ITK_THREAD_RETURN_TYPE CalculateChangeGradientThreaderCallback(
     void *arg );
 
   /** This callback method uses SplitUpdateContainer to acquire a region which
   * it then passes to ThreadedComputeDeformationComponentDerivativeImageHelper
   * for processing. */
   static ITK_THREAD_RETURN_TYPE
-      ComputeDeformationComponentDerivativeImageHelperThreaderCallback( 
+      ComputeDeformationComponentDerivativeImageHelperThreaderCallback(
           void *arg );
 
   /** This callback method uses SplitUpdateContainer to acquire a region which

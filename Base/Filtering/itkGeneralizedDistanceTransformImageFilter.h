@@ -168,7 +168,7 @@ public:
   /** Get the largest possible squared distance. Can be changed only at
    * compile time by giving a different template parameter. Using a smaller
    * value will save some runtime, but it is more costly to make it
-   * changeable at runtime.  
+   * changeable at runtime.
    * Use the value returned by GetMaximalSquaredDistance in order to define
    * background voxels in your input image. */
   double GetMaximalSquaredDistance() const;

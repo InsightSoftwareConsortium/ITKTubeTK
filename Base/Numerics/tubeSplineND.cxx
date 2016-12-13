@@ -817,7 +817,7 @@ SplineND
             }
           itk::ImageRegionIterator<ImageType> itImageWSX2( itWSX2->Value(),
             itWSX2->Value()->GetLargestPossibleRegion() );
-          itk::ImageRegionIterator<ImageType> itImageWSXX2( 
+          itk::ImageRegionIterator<ImageType> itImageWSXX2(
             itWSXX2->Value(),
             itWSXX2->Value()->GetLargestPossibleRegion() );
           itImageWSX2.GoToBegin();

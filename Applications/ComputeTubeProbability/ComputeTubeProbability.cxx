@@ -118,7 +118,7 @@ int DoIt( int argc, char * argv[] )
   writeStream.open( outFile.c_str(), std::ios::binary | std::ios::out );
   while( tubeIt != tubeList->end() ) // Iterate over tubes
     {
-    typename TubeType::Pointer tube = dynamic_cast<TubeType *>( 
+    typename TubeType::Pointer tube = dynamic_cast<TubeType *>(
       ( *tubeIt ).GetPointer() );
 
     tube->RemoveDuplicatePoints();
@@ -128,7 +128,7 @@ int DoIt( int argc, char * argv[] )
     itk::Index< VDimension > indx;
     tube->ComputeObjectToWorldTransform();
     tubeTransform = tube->GetIndexToWorldTransform();
-    
+   
     for( unsigned int i=0; i<tube->GetNumberOfPoints(); i++ )
       {
       // Get point
@@ -142,7 +142,7 @@ int DoIt( int argc, char * argv[] )
 
       // Get closest voxel
       meanImage->TransformPhysicalPointToIndex( pnt, indx );
-  
+ 
       // Write value of ATLAS EMD file at voxel
       writeStream << meanImage->GetPixel( indx ) << std::endl;
       }

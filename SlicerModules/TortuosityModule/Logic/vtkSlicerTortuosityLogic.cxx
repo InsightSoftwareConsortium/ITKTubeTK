@@ -631,7 +631,7 @@ bool vtkSlicerTortuosityLogic
 }
 
 //------------------------------------------------------------------------------
-bool vtkSlicerTortuosityLogic::LoadColorsFromCSV( 
+bool vtkSlicerTortuosityLogic::LoadColorsFromCSV(
   vtkMRMLSpatialObjectsNode *node, const char* filename )
 {
   if ( !node || !filename )

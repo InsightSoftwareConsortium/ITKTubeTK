@@ -73,7 +73,7 @@ public:
   typedef typename InputImageType::RegionType      RegionType;
   typedef typename InputImageType::IndexType       IndexType;
   typedef typename InputImageType::SizeType        SizeType;
-  
+
   /** ImageDimension constants */
   itkStaticConstMacro( InputImageDimension, unsigned int,
                       TInputImage::ImageDimension );
@@ -124,7 +124,7 @@ public:
    */
   itkGetConstMacro( GreatestPrimeFactor, int );
   itkSetMacro( GreatestPrimeFactor, int );
-  
+
   /**
    * Set/Get the padding method.
    */
@@ -132,7 +132,7 @@ public:
     WRAP=4 } PadMethod;
   itkGetConstMacro( PadMethod, int );
   itkSetMacro( PadMethod, int );
-  
+
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
   itkConceptMacro( InputHasPixelTraitsCheck,
@@ -150,11 +150,11 @@ protected:
 
   void GenerateInputRequestedRegion();
   void GenerateOutputInformation();
-  
+
   /** Single-threaded version of GenerateData.  This filter delegates
    * to other filters. */
   void GenerateData();
-  
+
 
 private:
   PadImageFilter( const Self& ); //purposely not implemented
@@ -175,7 +175,7 @@ private:
       }
     return true;
     }
-  
+
   int greatestPrimeFactor( int n )
     {
     int v = 2;
@@ -198,7 +198,7 @@ private:
 } // end namespace tube
 
 } // end namespace itk
-  
+
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itktubePadImageFilter.hxx"
 #endif

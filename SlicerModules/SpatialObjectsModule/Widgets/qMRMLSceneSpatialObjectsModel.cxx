@@ -89,15 +89,15 @@ qMRMLSceneSpatialObjectsModel::qMRMLSceneSpatialObjectsModel( QObject *vparent )
   //this->setColumnCount( 5 );
   this->setColumnCount( 4 );
 
-  this->setHorizontalHeaderLabels( 
+  this->setHorizontalHeaderLabels(
     QStringList() << "Name" << "Lines" << "Tubes" << "Tubes" );
   // TODO Reactivate Glyphs controls since the representations are availabe
-  //this->setHorizontalHeaderLabels( 
+  //this->setHorizontalHeaderLabels(
   //  QStringList() << "Name" << "Lines" << "Tubes" << "Glyphs" << "Tubes" );
 }
 
 //------------------------------------------------------------------------------
-qMRMLSceneSpatialObjectsModel::qMRMLSceneSpatialObjectsModel( 
+qMRMLSceneSpatialObjectsModel::qMRMLSceneSpatialObjectsModel(
   qMRMLSceneSpatialObjectsModelPrivate* pimpl, QObject *vparent )
   : Superclass( pimpl, vparent )
 {}

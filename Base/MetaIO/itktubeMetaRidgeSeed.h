@@ -61,7 +61,7 @@ public:
 
   MetaRidgeSeed( const MetaRidgeSeed & _metaRidgeSeed );
 
-  MetaRidgeSeed( 
+  MetaRidgeSeed(
     const RidgeSeedScalesType & _ridgeScales,
     const bool _useIntensityOnly,
     const bool _useSVM,
@@ -82,7 +82,7 @@ public:
 
   virtual void Clear( void );
 
-  bool InitializeEssential( 
+  bool InitializeEssential(
     const RidgeSeedScalesType & _ridgeScales,
     const bool _useIntensityOnly,
     const bool _useSVM,

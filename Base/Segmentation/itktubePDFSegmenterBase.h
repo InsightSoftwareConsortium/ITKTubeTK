@@ -153,7 +153,7 @@ public:
   virtual void ClassifyImages( void );
 
   // Overwrite for speedup
-  virtual typename ProbabilityImageType::Pointer GetClassProbabilityImage( 
+  virtual typename ProbabilityImageType::Pointer GetClassProbabilityImage(
     unsigned int classNum ) const;
 
   //

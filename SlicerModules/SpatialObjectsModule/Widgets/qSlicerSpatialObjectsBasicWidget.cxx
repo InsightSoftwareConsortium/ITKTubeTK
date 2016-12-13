@@ -48,7 +48,7 @@ protected:
   qSlicerSpatialObjectsBasicWidget* const q_ptr;
 
 public:
-  qSlicerSpatialObjectsBasicWidgetPrivate( 
+  qSlicerSpatialObjectsBasicWidgetPrivate(
     qSlicerSpatialObjectsBasicWidget& object );
   void init();
 
@@ -166,19 +166,19 @@ void qSlicerSpatialObjectsBasicWidget::updateWidgetFromMRML()
 
   if( d->SpatialObjectsNode->GetLineDisplayNode() )
     {
-    d->LineVisibility->setChecked( 
+    d->LineVisibility->setChecked(
       d->SpatialObjectsNode->GetLineDisplayNode()->GetVisibility() );
     }
 
   if( d->SpatialObjectsNode->GetTubeDisplayNode() )
     {
-    d->TubeVisibility->setChecked( 
+    d->TubeVisibility->setChecked(
       d->SpatialObjectsNode->GetTubeDisplayNode()->GetVisibility() );
     }
 
   if( d->SpatialObjectsNode->GetGlyphDisplayNode() )
     {
-    d->GlyphVisibility->setChecked( 
+    d->GlyphVisibility->setChecked(
       d->SpatialObjectsNode->GetGlyphDisplayNode()->GetVisibility() );
     }
 }

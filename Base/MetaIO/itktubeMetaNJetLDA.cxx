@@ -316,7 +316,7 @@ bool MetaNJetLDA
     return false;
     }
 
-  const bool result = !std::strncmp( MET_ReadForm( 
+  const bool result = !std::strncmp( MET_ReadForm(
                                        inputStream ).c_str(), "NJetLDA", 7 );
 
   inputStream.close();

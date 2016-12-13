@@ -207,7 +207,7 @@ public:
   //  Resample
   // **************
   // **************
-  typename TImage::ConstPointer  ResampleImage( 
+  typename TImage::ConstPointer  ResampleImage(
     InterpolationMethodEnumType interp
       = OptimizedRegistrationMethodType
         ::LINEAR_INTERPOLATION, const TImage * movingImage = NULL,
@@ -315,7 +315,7 @@ public:
   itkGetConstObjectMacro( BSplineTransformResampledImage, TImage );
 
   // **************
-  //  Not implemented at this time :( 
+  //  Not implemented at this time :(
   // **************
   void LoadParameters( const std::string & filename );
 

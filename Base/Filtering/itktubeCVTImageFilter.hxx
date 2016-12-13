@@ -88,7 +88,7 @@ GenerateInputRequestedRegion( void )
   Superclass::GenerateInputRequestedRegion();
   if( this->GetInput() )
     {
-    typename InputImageType::Pointer inpt = const_cast< TInputImage * >( 
+    typename InputImageType::Pointer inpt = const_cast< TInputImage * >(
       this->GetInput() );
     inpt->SetRequestedRegionToLargestPossibleRegion();
     }
@@ -176,7 +176,7 @@ GenerateData( void )
     {
     iteration = iteration + 1;
 
-    double iterationEnergy = this->ComputeIteration( 
+    double iterationEnergy = this->ComputeIteration(
       iterationEnergyDifference );
 
     if( this->GetDebug() )

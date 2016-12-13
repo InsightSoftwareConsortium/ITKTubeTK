@@ -130,7 +130,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     PDFType::Pointer pdf = PDFType::New();
     pdf->SetTrainingDataStride( 100 );
     pdf->SetNumberOfDecisionTrees( 10 );
-    filter->GetSeedFeatureGenerator()->SetNumberOfPCABasisToUseAsFeatures( 
+    filter->GetSeedFeatureGenerator()->SetNumberOfPCABasisToUseAsFeatures(
       10 );
     filter->SetPDFSegmenter( pdf.GetPointer() );
     filter->SetSeedTolerance( 0.95 );

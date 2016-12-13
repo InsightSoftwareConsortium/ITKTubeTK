@@ -39,7 +39,7 @@ protected:
   qSlicerSpatialObjectsGlyphWidget* const q_ptr;
 
 public:
-  qSlicerSpatialObjectsGlyphWidgetPrivate( 
+  qSlicerSpatialObjectsGlyphWidgetPrivate(
     qSlicerSpatialObjectsGlyphWidget& object );
 
   void init();
@@ -52,7 +52,7 @@ public:
 
 //------------------------------------------------------------------------------
 qSlicerSpatialObjectsGlyphWidgetPrivate::
-qSlicerSpatialObjectsGlyphWidgetPrivate( 
+qSlicerSpatialObjectsGlyphWidgetPrivate(
   qSlicerSpatialObjectsGlyphWidget& object )
   : q_ptr( &object )
 {
@@ -120,13 +120,13 @@ spatialObjectsDisplayPropertiesNode() const
 void qSlicerSpatialObjectsGlyphWidget::
 setSpatialObjectsDisplayNode( vtkMRMLNode* node )
 {
-  this->setSpatialObjectsDisplayNode( 
+  this->setSpatialObjectsDisplayNode(
     vtkMRMLSpatialObjectsDisplayNode::SafeDownCast( node ) );
 }
 
 //------------------------------------------------------------------------------
 void qSlicerSpatialObjectsGlyphWidget::
-setSpatialObjectsDisplayNode( 
+setSpatialObjectsDisplayNode(
   vtkMRMLSpatialObjectsDisplayNode* SpatialObjectsDisplayNode )
 {
   Q_D( qSlicerSpatialObjectsGlyphWidget );
@@ -155,7 +155,7 @@ setSpatialObjectsDisplayPropertiesNode( vtkMRMLNode* node )
 
 //------------------------------------------------------------------------------
 void qSlicerSpatialObjectsGlyphWidget::
-setSpatialObjectsDisplayPropertiesNode( 
+setSpatialObjectsDisplayPropertiesNode(
   vtkMRMLSpatialObjectsDisplayPropertiesNode* node )
 {
   Q_D( qSlicerSpatialObjectsGlyphWidget );
@@ -173,7 +173,7 @@ setSpatialObjectsDisplayPropertiesNode(
       std::cout << "Glyph" << i << ": "
                 << d->SpatialObjectsDisplayPropertiesNode->GetGlyphGeometryAsString( i )
                 << std::endl;
-    d->GlyphTypeSelector->addItem( 
+    d->GlyphTypeSelector->addItem(
       d->SpatialObjectsDisplayPropertiesNode->GetGlyphGeometryAsString( i ), i );
     }
 
@@ -190,7 +190,7 @@ void qSlicerSpatialObjectsGlyphWidget::setGlyphType( int type )
     }
 
   d->SpatialObjectsDisplayPropertiesNode->SetGlyphGeometry( type );
-  QWidget* widget = d->GlyphSubPropertiesWidget->findChild<QWidget*>( 
+  QWidget* widget = d->GlyphSubPropertiesWidget->findChild<QWidget*>(
     d->SpatialObjectsDisplayPropertiesNode->GetGlyphGeometryAsString() );
 
   if( widget )
@@ -227,7 +227,7 @@ void qSlicerSpatialObjectsGlyphWidget::setGlyphSpacing( double spacing )
     return;
     }
 
-  d->SpatialObjectsDisplayPropertiesNode->SetLineGlyphResolution( 
+  d->SpatialObjectsDisplayPropertiesNode->SetLineGlyphResolution(
     static_cast<int>( spacing ) );
 }
 
@@ -241,7 +241,7 @@ void qSlicerSpatialObjectsGlyphWidget::setTubeGlyphNumberOfSides( double sides )
     return;
     }
 
-  d->SpatialObjectsDisplayPropertiesNode->SetTubeGlyphNumberOfSides( 
+  d->SpatialObjectsDisplayPropertiesNode->SetTubeGlyphNumberOfSides(
     static_cast<int>( sides ) );
 }
 
@@ -271,7 +271,7 @@ void qSlicerSpatialObjectsGlyphWidget::updateWidgetFromMRMLDisplayNode()
   if( d->SpatialObjectsDisplayPropertiesNode !=
       d->SpatialObjectsDisplayNode->GetSpatialObjectsDisplayPropertiesNode() )
     {
-    this->setSpatialObjectsDisplayPropertiesNode( 
+    this->setSpatialObjectsDisplayPropertiesNode(
       d->SpatialObjectsDisplayNode->GetSpatialObjectsDisplayPropertiesNode() );
     }
 
@@ -290,15 +290,15 @@ updateWidgetFromMRMLDisplayPropertiesNode()
     return;
     }
 
-  d->GlyphTypeSelector->setCurrentIndex( 
+  d->GlyphTypeSelector->setCurrentIndex(
     d->SpatialObjectsDisplayPropertiesNode->GetGlyphGeometry() );
 
-  d->ScaleFactorSlider->setValue( 
+  d->ScaleFactorSlider->setValue(
     d->SpatialObjectsDisplayPropertiesNode->GetGlyphScaleFactor() );
-  d->SpacingSlider->setValue( 
+  d->SpacingSlider->setValue(
     d->SpatialObjectsDisplayPropertiesNode->GetLineGlyphResolution() );
-  d->GlyphSidesSlider->setValue( 
+  d->GlyphSidesSlider->setValue(
     d->SpatialObjectsDisplayPropertiesNode->GetTubeGlyphNumberOfSides() );
-  d->GlyphRadiusSlider->setValue( 
+  d->GlyphRadiusSlider->setValue(
     d->SpatialObjectsDisplayPropertiesNode->GetTubeGlyphRadius() );
 }

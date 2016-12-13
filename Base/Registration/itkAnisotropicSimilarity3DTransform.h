@@ -127,7 +127,7 @@ public:
    * transform is invertible at this point. */
   virtual const JacobianType & GetJacobian( const InputPointType  & point ) const;
 
-  virtual void ComputeJacobianWithRespectToParameters( 
+  virtual void ComputeJacobianWithRespectToParameters(
     const InputPointType & p, JacobianType & jacobian ) const;
 
 protected:

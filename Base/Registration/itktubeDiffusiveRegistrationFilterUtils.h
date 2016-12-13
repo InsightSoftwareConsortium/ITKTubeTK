@@ -49,14 +49,14 @@ public:
 
   /** Resamples an image to a template using nearest neighbor interpolation */
   template< class TResampleImagePointer, class TTemplateImagePointer >
-  static void ResampleImageNearestNeighbor( 
+  static void ResampleImageNearestNeighbor(
       const TResampleImagePointer & highResolutionImage,
       const TTemplateImagePointer & templateImage,
       TResampleImagePointer & resampledImage );
 
   /** Resamples an image to a template using linear interpolation */
   template< class TResampleImagePointer, class TTemplateImagePointer >
-  static void ResampleImageLinear( 
+  static void ResampleImageLinear(
       const TResampleImagePointer & highResolutionImage,
       const TTemplateImagePointer & templateImage,
       TResampleImagePointer & resampledImage );
@@ -65,7 +65,7 @@ public:
    *  normalize is true, the vectors will be scaled to length 1 after the
    *  resampling. */
   template< class TVectorResampleImagePointer, class TTemplateImagePointer >
-  static void VectorResampleImageLinear( 
+  static void VectorResampleImageLinear(
       const TVectorResampleImagePointer & highResolutionImage,
       const TTemplateImagePointer & templateImage,
       TVectorResampleImagePointer & resampledImage,
@@ -81,7 +81,7 @@ public:
 
   /** Extracts the x, y, z components of a deformation field. */
   template< class TDeformationField, class TDeformationComponentImageArray >
-  static void ExtractXYZComponentsFromDeformationField( 
+  static void ExtractXYZComponentsFromDeformationField(
       const TDeformationField * deformationField,
       TDeformationComponentImageArray & deformationComponentImages );
 
@@ -205,7 +205,7 @@ struct FaceStruct
     }
 
   template< class TIterator >
-  void SetIteratorToCurrentFace( 
+  void SetIteratorToCurrentFace(
       TIterator& iterator,
       const TImage& image,
       typename TImage::ObjectType::SizeType radius )
@@ -221,7 +221,7 @@ struct FaceStruct
     }
 
   template< class TIterator >
-  void SetIteratorToCurrentFace( 
+  void SetIteratorToCurrentFace(
       TIterator& iterator,
       const TImage& image )
     {
@@ -236,7 +236,7 @@ struct FaceStruct
     }
 
   template< class TIterator >
-  void SetIteratorToCurrentFace( 
+  void SetIteratorToCurrentFace(
       std::vector< TIterator >& iterators,
       const std::vector< TImage >& images,
       typename TImage::ObjectType::SizeType radius )
@@ -247,7 +247,7 @@ struct FaceStruct
         {
         if( images[i].GetPointer() )
           {
-          iterators.push_back( 
+          iterators.push_back(
               TIterator( radius, images[i], *faceListIts[i] ) );
           }
         else
@@ -273,7 +273,7 @@ struct FaceStruct
     }
 
   template< class TIterator >
-  void SetIteratorToCurrentFace( 
+  void SetIteratorToCurrentFace(
       std::vector< TIterator >& iterators,
       const std::vector< TImage >& images )
     {
@@ -308,7 +308,7 @@ struct FaceStruct
     }
 
     template< class TIterator, unsigned int VLength >
-    void SetIteratorToCurrentFace( 
+    void SetIteratorToCurrentFace(
         std::vector< itk::FixedArray< TIterator, VLength > > &iterators,
         const std::vector< itk::FixedArray< TImage, VLength > > & images )
     {

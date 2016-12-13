@@ -75,7 +75,7 @@ public:
 protected:
   vtkMRMLSpatialObjectsLineDisplayNode( void );
   ~vtkMRMLSpatialObjectsLineDisplayNode( void );
-  vtkMRMLSpatialObjectsLineDisplayNode( 
+  vtkMRMLSpatialObjectsLineDisplayNode(
     const vtkMRMLSpatialObjectsLineDisplayNode& );
   void operator= ( const vtkMRMLSpatialObjectsLineDisplayNode& );
 

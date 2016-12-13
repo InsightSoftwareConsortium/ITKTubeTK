@@ -82,7 +82,7 @@ public:
 
   virtual void  Clear( void );
 
-  bool  InitializeEssential( 
+  bool  InitializeEssential(
     const NJetScalesType & _zeroScales,
     const NJetScalesType & _firstScales,
     const NJetScalesType & _secondScales,

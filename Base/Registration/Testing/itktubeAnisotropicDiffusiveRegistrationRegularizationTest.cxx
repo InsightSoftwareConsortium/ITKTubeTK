@@ -206,7 +206,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest( int argc, char * argv
     {
     registrator = AnisotropicDiffusiveRegistrationFilterType::New();
     anisotropicRegistrator
-        = dynamic_cast < AnisotropicDiffusiveRegistrationFilterType * >( 
+        = dynamic_cast < AnisotropicDiffusiveRegistrationFilterType * >(
             registrator.GetPointer() );
     }
   else

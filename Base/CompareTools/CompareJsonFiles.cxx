@@ -125,7 +125,7 @@ int main( int argc, char * argv[] )
     if( singleBaselineFile )
       {
       bestBaselineStatus =
-        RegressionTestJson( 
+        RegressionTestJson(
             testFilename.c_str(), baselineFilename.c_str(),
             true, true, toleranceValue );
       }
@@ -136,7 +136,7 @@ int main( int argc, char * argv[] )
       while( baselineFileItr != baselineFilenames.end() )
         {
         const int currentStatus =
-          RegressionTestJson( 
+          RegressionTestJson(
               testFilename.c_str(), baselineFileItr->c_str(),
               true, true, toleranceValue );
         if( currentStatus < bestBaselineStatus )

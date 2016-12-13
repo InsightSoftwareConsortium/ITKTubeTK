@@ -45,13 +45,13 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   //eigenvector analysis filter
   m_EigenVectorAnalysisFilter = EigenVectorAnalysisFilterType::New();
   m_EigenVectorAnalysisFilter->SetDimension( ImageDimension );
-  m_EigenVectorAnalysisFilter->OrderEigenValuesBy( 
+  m_EigenVectorAnalysisFilter->OrderEigenValuesBy(
       EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
 
   //eigenvalue analysis filter
   m_EigenValueAnalysisFilter = EigenValueAnalysisFilterType::New();
   m_EigenValueAnalysisFilter->SetDimension( ImageDimension );
-  m_EigenValueAnalysisFilter->OrderEigenValuesBy( 
+  m_EigenValueAnalysisFilter->OrderEigenValuesBy(
         EigenValueAnalysisFilterType::FunctorType::OrderByValue );
 
   //Hessian filter
@@ -76,11 +76,11 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   typedef ImageRegionIterator< TOutputImage > OutputImageIteratorType;
 
 
-  typename TInputImage::ConstPointer inputImagePtr( 
-    dynamic_cast< const TInputImage  * >( 
+  typename TInputImage::ConstPointer inputImagePtr(
+    dynamic_cast< const TInputImage  * >(
       this->ProcessObject::GetInput( 0 ) ) );
-  typename TOutputImage::Pointer outputImagePtr( 
-    dynamic_cast< TOutputImage * >( 
+  typename TOutputImage::Pointer outputImagePtr(
+    dynamic_cast< TOutputImage * >(
       this->ProcessObject::GetOutput( 0 ) ) );
 
   Point< double> originInput;
@@ -108,7 +108,7 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 
   //Iterator for the primary eigenvector image with the largest eigenvector
   itk::ImageRegionIterator<EigenVectorImageType> primaryEigenVectorImageIterator;
-  primaryEigenVectorImageIterator = itk::ImageRegionIterator<EigenVectorImageType>( 
+  primaryEigenVectorImageIterator = itk::ImageRegionIterator<EigenVectorImageType>(
       m_PrimaryEigenVectorImage, m_PrimaryEigenVectorImage->GetRequestedRegion() );
   primaryEigenVectorImageIterator.GoToBegin();
 
@@ -211,13 +211,13 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   //
   //Iterator for the eigenvector matrix image
   itk::ImageRegionConstIterator<EigenVectorMatrixImageType> eigenVectorImageIterator;
-  eigenVectorImageIterator = itk::ImageRegionConstIterator<EigenVectorMatrixImageType>( 
+  eigenVectorImageIterator = itk::ImageRegionConstIterator<EigenVectorMatrixImageType>(
       eigenVectorImage, eigenVectorImage->GetRequestedRegion() );
   eigenVectorImageIterator.GoToBegin();
 
   //Iterator for the output image with the largest eigenvector
   itk::ImageRegionIterator<EigenVectorImageType> primaryEigenVectorImageIterator;
-  primaryEigenVectorImageIterator = itk::ImageRegionIterator<EigenVectorImageType>( 
+  primaryEigenVectorImageIterator = itk::ImageRegionIterator<EigenVectorImageType>(
       m_PrimaryEigenVectorImage, m_PrimaryEigenVectorImage->GetRequestedRegion() );
   primaryEigenVectorImageIterator.GoToBegin();
 
@@ -225,7 +225,7 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   typename EigenValueImageType::ConstPointer eigenImage
     = m_EigenValueAnalysisFilter->GetOutput();
   itk::ImageRegionConstIterator<EigenValueImageType> eigenValueImageIterator;
-  eigenValueImageIterator = itk::ImageRegionConstIterator<EigenValueImageType>( 
+  eigenValueImageIterator = itk::ImageRegionConstIterator<EigenValueImageType>(
       eigenImage, eigenImage->GetRequestedRegion() );
   eigenValueImageIterator.GoToBegin();
 

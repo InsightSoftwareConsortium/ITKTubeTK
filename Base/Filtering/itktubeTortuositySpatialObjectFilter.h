@@ -195,7 +195,7 @@ public:
     BITMASK_OTHER_WISE_METRICS =          0x2000,
     BITMASK_CURVATURE_METRICS =           0x3FC0
     };
-  
+
   /** Set/Get the measure flag. This flag governs what metric computed. */
   itkSetMacro( MeasureFlag, int );
   itkGetConstMacro( MeasureFlag, int );

@@ -35,7 +35,7 @@ int DoIt( MetaCommand & command )
 {
   if( VDimension != 2 && VDimension != 3 )
     {
-    tube::ErrorMessage( 
+    tube::ErrorMessage(
       "Error: Only 2D and 3D data is currently supported." );
     return EXIT_FAILURE;
     }
@@ -57,7 +57,7 @@ int DoIt( MetaCommand & command )
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( "Error loading TRE File: " + std::string( 
+    tube::ErrorMessage( "Error loading TRE File: " + std::string(
       err.GetDescription() ) );
     return EXIT_FAILURE;
     }
@@ -83,7 +83,7 @@ int DoIt( MetaCommand & command )
         }
       catch( itk::ExceptionObject & err )
         {
-        tube::ErrorMessage( "Error writing TRE file: " + std::string( 
+        tube::ErrorMessage( "Error writing TRE file: " + std::string(
           err.GetDescription() ) );
         return EXIT_FAILURE;
         }

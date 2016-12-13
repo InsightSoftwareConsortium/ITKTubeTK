@@ -125,10 +125,10 @@ RidgeFFTFilter< TInputImage >
     ImageRegionIterator< OutputImageType > iterLevel( m_Levelness,
       m_Levelness->GetLargestPossibleRegion() );
 
-    std::vector< ImageRegionIterator< OutputImageType > > iterDx( 
+    std::vector< ImageRegionIterator< OutputImageType > > iterDx(
       ImageDimension );
 
-    std::vector< ImageRegionIterator< OutputImageType > > iterDdx( 
+    std::vector< ImageRegionIterator< OutputImageType > > iterDdx(
       ddxSize );
 
     unsigned int count = 0;

@@ -76,7 +76,7 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
   bool blnTubeFound = false;
   char tubeName[] = "Tube";
 
-  TubeListType * tubeList = inputTubeGroup->GetChildren( 
+  TubeListType * tubeList = inputTubeGroup->GetChildren(
     inputTubeGroup->GetMaximumDepth(), tubeName );
 
   typename TubeListType::const_iterator itTubes = tubeList->begin();

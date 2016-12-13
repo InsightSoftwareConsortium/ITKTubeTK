@@ -142,7 +142,7 @@ PreProcessRegistrationInputs( int argc,
       gaussianFilter->SetInput( currentImage );
       gaussianFilter->SetSigma( gaussianBlurStdDev );
 
-      gaussianFilter->SetOrder( 
+      gaussianFilter->SetOrder(
                itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
       gaussianFilter->SetDirection( ii );
       tube::CLIFilterWatcher watcher( gaussianFilter,
@@ -175,7 +175,7 @@ PreProcessRegistrationInputs( int argc,
   typename PointWeightsCalculatorType::Pointer resolutionWeightsCalculator =
     PointWeightsCalculatorType::New();
 
-  resolutionWeightsCalculator->SetTubeTreeSpatialObject( 
+  resolutionWeightsCalculator->SetTubeTreeSpatialObject(
     subSampleTubeTreeFilter->GetOutput() );
   resolutionWeightsCalculator->SetPointWeightFunction( weightFunction );
   resolutionWeightsCalculator->Compute();

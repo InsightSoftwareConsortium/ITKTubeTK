@@ -128,7 +128,7 @@ int DoIt( int argc, char * argv[] )
 
   if( minSize > 0 )
     {
-     
+    
     // compute the size ( number of pixels ) of each connected component
     iter.GoToBegin();
     unsigned int numObjects = filter->GetObjectCount()+1;
@@ -149,7 +149,7 @@ int DoIt( int argc, char * argv[] )
     {
       voxelVolume *= curMask->GetSpacing()[i];
     }
-      
+     
     // drop connected components of size ( physp ) below a user-specified cutoff
     iter.GoToBegin();
     while( !iter.IsAtEnd() )

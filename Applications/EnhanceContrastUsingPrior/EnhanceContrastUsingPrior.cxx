@@ -48,7 +48,7 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with Slicer GUI
-  tube::CLIProgressReporter    progressReporter( 
+  tube::CLIProgressReporter    progressReporter(
     "ContrastImage", CLPProcessInformation );
   progressReporter.Start();
 

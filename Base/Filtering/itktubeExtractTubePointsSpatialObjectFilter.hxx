@@ -137,12 +137,12 @@ ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
     ++childrenIt )
     {
     typename TubeSpatialObjectType::Pointer tube;
-    tube = dynamic_cast< TubeSpatialObjectType * >( 
+    tube = dynamic_cast< TubeSpatialObjectType * >(
       childrenIt->GetPointer() );
     if( tube.IsNotNull() )
       {
       ::tube::RemoveDuplicateTubePoints< TubeSpatialObjectType >( tube );
-      ::tube::ComputeTubeTangentsAndNormals< TubeSpatialObjectType >( 
+      ::tube::ComputeTubeTangentsAndNormals< TubeSpatialObjectType >(
         tube );
       const typename TubeSpatialObjectType::PointListType
         pointsForThisTube = tube->GetPoints();

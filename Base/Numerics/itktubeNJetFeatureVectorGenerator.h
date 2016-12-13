@@ -80,7 +80,7 @@ public:
   const NJetScalesType & GetSecondScales( void ) const;
   const NJetScalesType & GetRidgeScales( void ) const;
 
-  virtual FeatureVectorType GetFeatureVector( 
+  virtual FeatureVectorType GetFeatureVector(
     const IndexType & indx ) const;
 
   virtual FeatureValueType  GetFeatureVectorValue( const IndexType & indx,

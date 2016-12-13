@@ -98,7 +98,7 @@ vtkMRMLSpatialObjectsTubeDisplayNode : public vtkMRMLSpatialObjectsDisplayNode
 protected:
   vtkMRMLSpatialObjectsTubeDisplayNode( void );
   ~vtkMRMLSpatialObjectsTubeDisplayNode( void );
-  vtkMRMLSpatialObjectsTubeDisplayNode( 
+  vtkMRMLSpatialObjectsTubeDisplayNode(
     const vtkMRMLSpatialObjectsTubeDisplayNode& );
   void operator=( const vtkMRMLSpatialObjectsTubeDisplayNode& );
 

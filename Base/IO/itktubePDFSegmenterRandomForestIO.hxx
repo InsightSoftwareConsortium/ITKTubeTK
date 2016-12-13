@@ -332,12 +332,12 @@ Read( const char * _headerName )
   m_PDFSegmenter->SetErodeRadius( static_cast< int >( mF->value[0] ) );
 
   mF = MET_GetFieldRecord( "HoleFillIterations", &metaFields );
-  m_PDFSegmenter->SetHoleFillIterations( static_cast< int >( 
+  m_PDFSegmenter->SetHoleFillIterations( static_cast< int >(
     mF->value[0] ) );
 
   mF = MET_GetFieldRecord( "ProbabilityImageSmoothingStandardDeviation",
     &metaFields );
-  m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation( 
+  m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation(
     static_cast< double >( mF->value[0] ) );
 
   mF = MET_GetFieldRecord( "ReclassifyObjectLabels", &metaFields );

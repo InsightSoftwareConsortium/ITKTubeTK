@@ -45,7 +45,7 @@ protected:
   qSlicerSpatialObjectsModuleWidget* const q_ptr;
 
 public:
-  qSlicerSpatialObjectsModuleWidgetPrivate( 
+  qSlicerSpatialObjectsModuleWidgetPrivate(
     qSlicerSpatialObjectsModuleWidget& object );
   void init();
 
@@ -54,7 +54,7 @@ public:
 
 //------------------------------------------------------------------------------
 qSlicerSpatialObjectsModuleWidgetPrivate
-::qSlicerSpatialObjectsModuleWidgetPrivate( 
+::qSlicerSpatialObjectsModuleWidgetPrivate(
   qSlicerSpatialObjectsModuleWidget& object )
   : q_ptr( &object )
 {
@@ -100,7 +100,7 @@ void qSlicerSpatialObjectsModuleWidget::setup()
 void qSlicerSpatialObjectsModuleWidget::
 setSpatialObjectsNode( vtkMRMLNode* inputNode )
 {
-  this->setSpatialObjectsNode( 
+  this->setSpatialObjectsNode(
     vtkMRMLSpatialObjectsNode::SafeDownCast( inputNode ) );
 }
 

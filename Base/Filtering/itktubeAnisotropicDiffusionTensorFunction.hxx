@@ -114,11 +114,11 @@ AnisotropicDiffusionTensorFunction< TImageType >
   gd->m_GradMagSqr = 1.0e-6;
 
   // Compute intensity first and second order partial derivatives
-  this->ComputeIntensityFirstAndSecondOrderPartialDerivatives( 
+  this->ComputeIntensityFirstAndSecondOrderPartialDerivatives(
       neighborhood, gd->m_dx, gd->m_dxy, spacing );
 
   // Compute diffusion tensor matrix first order partial derivatives
-  this->ComputeDiffusionTensorFirstOrderPartialDerivatives( 
+  this->ComputeDiffusionTensorFirstOrderPartialDerivatives(
       tensorNeighborhood, gd->m_DT_dxy, spacing );
 
   // Compute the update term
@@ -128,7 +128,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
 template< class TImageType >
 typename AnisotropicDiffusionTensorFunction< TImageType >::PixelType
 AnisotropicDiffusionTensorFunction< TImageType >
-::ComputeUpdate( 
+::ComputeUpdate(
     const DiffusionTensorNeighborhoodType &tensorNeighborhood,
     const ScalarDerivativeImageRegionType &intensityFirstDerivatives,
     const TensorDerivativeImageRegionType &intensitySecondDerivatives,
@@ -157,7 +157,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
 template< class TImageType >
 void
 AnisotropicDiffusionTensorFunction< TImageType >
-::ComputeDiffusionTensorFirstOrderPartialDerivatives( 
+::ComputeDiffusionTensorFirstOrderPartialDerivatives(
     const DiffusionTensorNeighborhoodType &tensorNeighborhood,
     TensorDerivativeType &firstOrderResult,
     const SpacingType &spacing ) const
@@ -186,19 +186,19 @@ AnisotropicDiffusionTensorFunction< TImageType >
 template< class TImageType >
 void
 AnisotropicDiffusionTensorFunction< TImageType >
-::ComputeDiffusionTensorFirstOrderPartialDerivatives( 
+::ComputeDiffusionTensorFirstOrderPartialDerivatives(
     const DiffusionTensorNeighborhoodType &tensorNeighborhood,
     TensorDerivativeImageRegionType &firstOrderResult,
     const SpacingType &spacing ) const
 {
-  this->ComputeDiffusionTensorFirstOrderPartialDerivatives( 
+  this->ComputeDiffusionTensorFirstOrderPartialDerivatives(
       tensorNeighborhood, firstOrderResult.Value(), spacing );
 }
 
 template< class TImageType >
 void
 AnisotropicDiffusionTensorFunction< TImageType >
-::ComputeIntensityFirstAndSecondOrderPartialDerivatives( 
+::ComputeIntensityFirstAndSecondOrderPartialDerivatives(
     const NeighborhoodType &neighborhood,
     ScalarDerivativeType &firstOrderResult,
     TensorDerivativeType &secondOrderResult,
@@ -248,13 +248,13 @@ AnisotropicDiffusionTensorFunction< TImageType >
 template< class TImageType >
 void
 AnisotropicDiffusionTensorFunction< TImageType >
-::ComputeIntensityFirstAndSecondOrderPartialDerivatives( 
+::ComputeIntensityFirstAndSecondOrderPartialDerivatives(
     const NeighborhoodType &neighborhood,
     ScalarDerivativeImageRegionType &firstOrderResult,
     TensorDerivativeImageRegionType &secondOrderResult,
     const SpacingType &spacing ) const
 {
- this->ComputeIntensityFirstAndSecondOrderPartialDerivatives( 
+ this->ComputeIntensityFirstAndSecondOrderPartialDerivatives(
      neighborhood,
      firstOrderResult.Value(),
      secondOrderResult.Value(),
@@ -264,7 +264,7 @@ AnisotropicDiffusionTensorFunction< TImageType >
 template< class TImageType >
 typename AnisotropicDiffusionTensorFunction< TImageType >::PixelType
 AnisotropicDiffusionTensorFunction< TImageType >
-::ComputeFinalUpdateTerm( 
+::ComputeFinalUpdateTerm(
     const DiffusionTensorNeighborhoodType &tensorNeighborhood,
     const GlobalDataStruct *gd ) const
 {
@@ -308,7 +308,7 @@ template< class TImageType >
 template< class TPixel, unsigned int VImageDimension >
 void
 AnisotropicDiffusionTensorFunction<TImageType>
-::CheckTimeStepStability( 
+::CheckTimeStepStability(
     const itk::Image< TPixel, VImageDimension > * input,
     bool useImageSpacing )
 {

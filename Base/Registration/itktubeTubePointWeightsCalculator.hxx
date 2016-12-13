@@ -58,7 +58,7 @@ TubePointWeightsCalculator< VDimension,
 {
   char childName[] = "Tube";
   typename TubeTreeSpatialObjectType::ChildrenListType * tubeList =
-    this->m_TubeTreeSpatialObject->GetChildren( 
+    this->m_TubeTreeSpatialObject->GetChildren(
       this->m_TubeTreeSpatialObject->GetMaximumDepth(), childName );
 
   // Count the tube points.

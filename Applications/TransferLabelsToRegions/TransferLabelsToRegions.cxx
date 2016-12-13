@@ -52,7 +52,7 @@ bool IsDiscrete( const std::string & fileName )
 {
   typedef itk::ImageIOBase::IOComponentType ScalarPixelType;
 
-  itk::ImageIOBase::Pointer imageIO = itk::ImageIOFactory::CreateImageIO( 
+  itk::ImageIOBase::Pointer imageIO = itk::ImageIOFactory::CreateImageIO(
     fileName.c_str(), itk::ImageIOFactory::ReadMode );
 
   imageIO->SetFileName( fileName.c_str() );
@@ -130,7 +130,7 @@ bool check_vnl_matrix_equality( const vnl_matrix<T> &V,
  *  \param targetSize Desired size of the image
  */
 template< class TImage >
-void CreateEmptyImage( 
+void CreateEmptyImage(
   typename TImage::Pointer &outImage,
   typename TImage::SizeType targetSize )
 {
@@ -153,21 +153,21 @@ void CreateEmptyImage(
  *  \returns true if image have equal spacing and size, false else
  */
 template< class TImage >
-bool CheckCompatibility( 
+bool CheckCompatibility(
   typename TImage::Pointer imageA,
   typename TImage::Pointer imageB )
 {
   // Spacing tolerance is imageA's 1st coord. spacing * 1e-6
   double spacingTol = imageA->GetSpacing()[0] * 1.0e-6;
 
-  if( !check_vnl_vector_equality( 
+  if( !check_vnl_vector_equality(
     imageA->GetOrigin().GetVnlVector(),
     imageB->GetOrigin().GetVnlVector() ) )
     {
     tube::ErrorMessage( "Origin mismatch between input images!" );
     return false;
     }
-  if( !check_vnl_vector_equality( 
+  if( !check_vnl_vector_equality(
     imageA->GetSpacing().GetVnlVector(),
     imageB->GetSpacing().GetVnlVector(), spacingTol ) )
     {
@@ -180,7 +180,7 @@ bool CheckCompatibility(
     tube::ErrorMessage( "Size mismatch between input images!" );
     return false;
     }
-  if( !check_vnl_matrix_equality( 
+  if( !check_vnl_matrix_equality(
     imageA->GetDirection().GetVnlMatrix().as_ref(),
     imageB->GetDirection().GetVnlMatrix().as_ref() ) )
     {
@@ -266,7 +266,7 @@ int DoIt( int argc, char * argv[] )
 
 
   // Determine the set of unique CVT cell IDs.
-  typename itk::ImageRegionIteratorWithIndex< InputImageType > inImageIt( 
+  typename itk::ImageRegionIteratorWithIndex< InputImageType > inImageIt(
     inImage, inImage->GetLargestPossibleRegion() );
 
   std::set< TPixel > cvtCellIdentifiers;
@@ -320,7 +320,7 @@ int DoIt( int argc, char * argv[] )
 
   // Determine the set of unique labels in the label map image.
   std::set< TPixel > labelSet;
-  typename itk::ImageRegionIteratorWithIndex< InputImageType > inLabelImageIt( 
+  typename itk::ImageRegionIteratorWithIndex< InputImageType > inLabelImageIt(
     inLabelImage, inLabelImage->GetLargestPossibleRegion() );
 
   inLabelImageIt.GoToBegin();
@@ -420,9 +420,9 @@ int DoIt( int argc, char * argv[] )
       }
 
     // Find the dominant label
-    unsigned int dominantLabel = distance( 
+    unsigned int dominantLabel = distance(
       cellHist.begin(),
-      std::max_element( 
+      std::max_element(
         cellHist.begin(),
         cellHist.end() ) );
 

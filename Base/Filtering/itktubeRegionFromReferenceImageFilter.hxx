@@ -38,7 +38,7 @@ RegionFromReferenceImageFilter<TInputImage, TOutputImage>
   this->SetExtractionRegion( this->GetReferenceImage()->GetLargestPossibleRegion() );
   Superclass::GenerateOutputInformation();
 }
-  
+ 
 /**
  *
  */
@@ -54,7 +54,7 @@ RegionFromReferenceImageFilter<TInputImage,TOutputImage>
     this->Modified();
     }
 }
-  
+ 
 /**
  *
  */
@@ -70,7 +70,7 @@ RegionFromReferenceImageFilter<TInputImage,TOutputImage>
 
   const ReferenceImageType * referenceImage =
     static_cast<const ReferenceImageType *>( input );
-  
+ 
   return referenceImage;
 }
 

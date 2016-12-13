@@ -64,7 +64,7 @@ int DoIt( int argc, char * argv[] )
   double progress = 0.0;
   itk::TimeProbesCollectorBase timeCollector;
 
-  tube::CLIProgressReporter progressReporter( 
+  tube::CLIProgressReporter progressReporter(
     "ConvertTubesToSurface",
     CLPProcessInformation );
 
@@ -203,7 +203,7 @@ int DoIt( int argc, char * argv[] )
       {
       TubeSpatialObjectType::PointType point = pointIt->GetPosition();
       TubeSpatialObjectType::PointType curSourcePosIndexSpace =
-        tube->GetIndexToWorldTransform()->TransformPoint( 
+        tube->GetIndexToWorldTransform()->TransformPoint(
         point );
       pointIds[index] = pointId;
 

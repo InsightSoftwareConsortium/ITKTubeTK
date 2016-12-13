@@ -48,7 +48,7 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter( 
+  tube::CLIProgressReporter    progressReporter(
     "CoherenceEnhancingAnisotropicDiffusion", CLPProcessInformation );
   progressReporter.Start();
 
@@ -118,7 +118,7 @@ int DoIt( int argc, char * argv[] )
   //Set/Get CED parameters
   CoherenceEnhancingFilter->SetSigma( scaleParameter );
   CoherenceEnhancingFilter->SetAlpha( alpha );
-  CoherenceEnhancingFilter->SetContrastParameterLambdaC( 
+  CoherenceEnhancingFilter->SetContrastParameterLambdaC(
     cedContrastParameter );
   CoherenceEnhancingFilter->SetTimeStep( timeStep );
   CoherenceEnhancingFilter->SetNumberOfIterations( numberOfIterations );
@@ -134,7 +134,7 @@ int DoIt( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( 
+    tube::ErrorMessage(
       "Coherence enhancing anisotropic diffusion: Exception caught: "
       + std::string( err.GetDescription() ) );
     timeCollector.Report();
@@ -158,7 +158,7 @@ int DoIt( int argc, char * argv[] )
   typename OrientOutputFilterType::Pointer orientOutputFilter
       = OrientOutputFilterType::New();
   orientOutputFilter->UseImageDirectionOn();
-  orientOutputFilter->SetDesiredCoordinateDirection( 
+  orientOutputFilter->SetDesiredCoordinateDirection(
       reader->GetOutput()->GetDirection() );
   orientOutputFilter->SetInput( castOutputImageFilter->GetOutput() );
 

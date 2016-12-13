@@ -137,7 +137,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
     PointWeightsType > PointWeightsCalculatorType;
   PointWeightsCalculatorType::Pointer resolutionWeightsCalculator
     = PointWeightsCalculatorType::New();
-  resolutionWeightsCalculator->SetTubeTreeSpatialObject( 
+  resolutionWeightsCalculator->SetTubeTreeSpatialObject(
     subSampleTubeTreeFilter->GetOutput() );
   resolutionWeightsCalculator->SetPointWeightFunction( weightFunction );
   resolutionWeightsCalculator->Compute();

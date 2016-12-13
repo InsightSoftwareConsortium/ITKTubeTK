@@ -141,9 +141,9 @@ void MetaLDA
 ::CopyInfo( const MetaLDA & lda )
 {
   MetaForm::CopyInfo( dynamic_cast< const MetaForm * >( &lda ) );
-  this->SetNumberOfPCABasisToUseAsFeatures( 
+  this->SetNumberOfPCABasisToUseAsFeatures(
     lda.GetNumberOfPCABasisToUseAsFeatures() );
-  this->SetNumberOfLDABasisToUseAsFeatures( 
+  this->SetNumberOfLDABasisToUseAsFeatures(
     lda.GetNumberOfLDABasisToUseAsFeatures() );
   this->SetLDAValues( lda.GetLDAValues() );
   this->SetLDAMatrix( lda.GetLDAMatrix() );

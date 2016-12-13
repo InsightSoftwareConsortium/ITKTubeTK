@@ -117,13 +117,13 @@ SetPropertyFromImage( typename itk::GroupSpatialObject< DimensionT >::
       unsigned int pointListSize = inputTube->GetNumberOfPoints();
       for( unsigned int pointNum = 0; pointNum < pointListSize; ++pointNum )
         {
-        TubePointType * currentPoint = static_cast< TubePointType * >( 
+        TubePointType * currentPoint = static_cast< TubePointType * >(
           inputTube->GetPoint( pointNum ) );
         typename TubeType::PointType pointIndex;
         pointIndex = currentPoint->GetPosition();
 
         typename TubeType::PointType pointWorld;
-        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint( 
+        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint(
           pointIndex );
 
         typename ImageType::IndexType imageIndex;
@@ -188,13 +188,13 @@ SetPropertyFromImageMean( typename itk::GroupSpatialObject< DimensionT >::
       unsigned int pointListSize = inputTube->GetNumberOfPoints();
       for( unsigned int pointNum = 0; pointNum < pointListSize; ++pointNum )
         {
-        TubePointType * currentPoint = static_cast< TubePointType * >( 
+        TubePointType * currentPoint = static_cast< TubePointType * >(
           inputTube->GetPoint( pointNum ) );
         typename TubeType::PointType pointIndex;
         pointIndex = currentPoint->GetPosition();
 
         typename TubeType::PointType pointWorld;
-        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint( 
+        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint(
           pointIndex );
 
         typename ImageType::IndexType imageIndex;
@@ -208,13 +208,13 @@ SetPropertyFromImageMean( typename itk::GroupSpatialObject< DimensionT >::
       valAvg /= valCount;
       for( unsigned int pointNum = 0; pointNum < pointListSize; ++pointNum )
         {
-        TubePointType * currentPoint = static_cast< TubePointType * >( 
+        TubePointType * currentPoint = static_cast< TubePointType * >(
           inputTube->GetPoint( pointNum ) );
         typename TubeType::PointType pointIndex;
         pointIndex = currentPoint->GetPosition();
 
         typename TubeType::PointType pointWorld;
-        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint( 
+        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint(
           pointIndex );
 
         switch( propertyId )
@@ -247,7 +247,7 @@ int DoIt( MetaCommand & command )
 
   MetaCommand::OptionVector parsed = command.GetParsedOptions();
 
-  inputTubes = ReadTubeFile< DimensionT >( command.GetValueAsString( 
+  inputTubes = ReadTubeFile< DimensionT >( command.GetValueAsString(
     "infile" ).c_str() );
 
   int currentTube = ALL_TUBES_CURRENT;
@@ -256,7 +256,7 @@ int DoIt( MetaCommand & command )
     {
     if( it->name == "Write" )
       {
-      WriteTubeFile< DimensionT >( inputTubes, command.GetValueAsString( 
+      WriteTubeFile< DimensionT >( inputTubes, command.GetValueAsString(
         *it, "filename" ).c_str() );
       }
     else if( it->name == "SelectTube" )

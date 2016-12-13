@@ -283,14 +283,14 @@ protected:
 
   /** Computes the normal vectors and distances to the closest point given
    *  an initialized vtkPointLocator and the surface border normals */
-  virtual void GetNormalsAndDistancesFromClosestSurfacePoint( 
+  virtual void GetNormalsAndDistancesFromClosestSurfacePoint(
       bool computeNormals, bool computeWeights );
 
   /** Does the actual work of updating the output over an output region supplied
    *  by the multithreading mechanism.
    *  \sa GetNormalsAndDistancesFromClosestSurfacePoint
    *  \sa GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback */
-  virtual void ThreadedGetNormalsAndDistancesFromClosestSurfacePoint( 
+  virtual void ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
       vtkPointLocator * pointLocator,
       vtkFloatArray * normalData,
       ThreadNormalVectorImageRegionType & normalRegionToProcess,
@@ -302,13 +302,13 @@ protected:
   /** Computes the weighting factor w from the distance to the border using
    *  exponential decay.  The weight should be 1 near the border and 0 away from
    *  the border. */
-  virtual WeightType ComputeWeightFromDistanceExponential( 
+  virtual WeightType ComputeWeightFromDistanceExponential(
       const WeightType distance ) const;
 
   /** Computes the weighting factor w from the distance to the border using
    *  a Dirac-shaped function.  The weight should be 1 near the border and 0
    *  away from the border. */
-  virtual WeightType ComputeWeightFromDistanceDirac( 
+  virtual WeightType ComputeWeightFromDistanceDirac(
       const WeightType distance ) const;
 
 private:
@@ -333,7 +333,7 @@ private:
    * output region that it passes to
    * ThreadedGetNormalsAndDistancesFromClosestSurfacePoint for processing. */
   static ITK_THREAD_RETURN_TYPE
-      GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback( 
+      GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback(
           void * arg );
 
   /** Organ boundary surface and surface of border normals */

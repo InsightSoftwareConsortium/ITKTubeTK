@@ -129,7 +129,7 @@ int DoIt( int argc, char * argv[] )
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
   bool reportProgress = false;
-  tube::CLIProgressReporter progressReporter( 
+  tube::CLIProgressReporter progressReporter(
       "AnisotropicDiffusiveDeformableRegistration", CLPProcessInformation );
   if( reportProgress )
     {
@@ -175,14 +175,14 @@ int DoIt( int argc, char * argv[] )
       {
       registrator = AnisotropicDiffusiveRegistrationFilterType::New();
       anisotropicRegistrator
-          = dynamic_cast< AnisotropicDiffusiveRegistrationFilterType * >( 
+          = dynamic_cast< AnisotropicDiffusiveRegistrationFilterType * >(
               registrator.GetPointer() );
       }
     else if( anisotropicRegistrationType == "SparseSlidingOrgan" )
       {
       registrator = AnisotropicDiffusiveSparseRegistrationFilterType::New();
       sparseAnisotropicRegistrator
-          = dynamic_cast< AnisotropicDiffusiveSparseRegistrationFilterType * >( 
+          = dynamic_cast< AnisotropicDiffusiveSparseRegistrationFilterType * >(
               registrator.GetPointer() );
       }
     else
@@ -337,7 +337,7 @@ int DoIt( int argc, char * argv[] )
           initVector.Fill( 0 );
           typedef itk::ImageRegionIterator< VectorImageType >
               VectorImageRegionType;
-          VectorImageRegionType initIt = VectorImageRegionType( 
+          VectorImageRegionType initIt = VectorImageRegionType(
               initField, initField->GetLargestPossibleRegion() );
           for( initIt.GoToBegin(); !initIt.IsAtEnd(); ++initIt )
             {
@@ -586,7 +586,7 @@ int DoIt( int argc, char * argv[] )
       if( ReadAndOrientImageAxial( weightImage,
                                    inputWeightRegularizationsImageFileName ) )
         {
-        sparseAnisotropicRegistrator->SetWeightRegularizationsImage( 
+        sparseAnisotropicRegistrator->SetWeightRegularizationsImage(
             weightImage );
         }
       else
@@ -701,7 +701,7 @@ int DoIt( int argc, char * argv[] )
   registrator->SetMaximumRMSError( maximumRMSError );
   registrator->SetRegularizationWeightings( regularizationWeightings );
   registrator->SetBackgroundIntensity( backgroundIntensity );
-  registrator->SetStoppingCriterionEvaluationPeriod( 
+  registrator->SetStoppingCriterionEvaluationPeriod(
         static_cast<unsigned int>( stoppingCriterionPeriod ) );
   registrator->SetStoppingCriterionMaxTotalEnergyChange( maximumTotalEnergyChange );
 
@@ -761,7 +761,7 @@ int DoIt( int argc, char * argv[] )
   // Watch the registration's progress
   if( reportProgress )
     {
-    tube::CLIFilterWatcher watchRegistration( 
+    tube::CLIFilterWatcher watchRegistration(
           registrator, "Anisotropic Diffusive Registration",
           CLPProcessInformation, 0.8, progress );
     }
@@ -800,7 +800,7 @@ int DoIt( int argc, char * argv[] )
   typename VectorOrientFilterType::Pointer orientOutput
       = VectorOrientFilterType::New();
   orientOutput->UseImageDirectionOn();
-  orientOutput->SetDesiredCoordinateDirection( 
+  orientOutput->SetDesiredCoordinateDirection(
       fixedImageReader->GetOutput()->GetDirection() );
   orientOutput->SetInput( multires->GetOutput() );
 
@@ -869,7 +869,7 @@ int DoIt( int argc, char * argv[] )
       {
       if( anisotropicRegistrator->GetHighResolutionNormalVectorImage() )
         {
-        if( !ReorientAndWriteImage( 
+        if( !ReorientAndWriteImage(
             anisotropicRegistrator->GetHighResolutionNormalVectorImage(),
             fixedImageReader->GetOutput()->GetDirection(),
             outputNormalVectorImageFileName ) )
@@ -881,7 +881,7 @@ int DoIt( int argc, char * argv[] )
         }
       else
         {
-        if( !ReorientAndWriteImage( 
+        if( !ReorientAndWriteImage(
             anisotropicRegistrator->GetNormalVectorImage(),
             fixedImageReader->GetOutput()->GetDirection(),
             outputNormalVectorImageFileName ) )
@@ -927,7 +927,7 @@ int DoIt( int argc, char * argv[] )
       out.str( "" );
       out << base << "Matrix" << extension;
       outputFileName = out.str();
-      if( !ReorientAndWriteImage( 
+      if( !ReorientAndWriteImage(
           sparseAnisotropicRegistrator->GetHighResolutionNormalMatrixImage(),
           fixedImageReader->GetOutput()->GetDirection(),
           outputFileName ) )
@@ -949,7 +949,7 @@ int DoIt( int argc, char * argv[] )
       NormalVectorImagePointer normalImage = NormalVectorImageType::New();
       for( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        sparseAnisotropicRegistrator->GetHighResolutionNormalVectorImage( 
+        sparseAnisotropicRegistrator->GetHighResolutionNormalVectorImage(
             normalImage, i, haveHighRes );
         out.clear();
         out.str( "" );
@@ -962,7 +962,7 @@ int DoIt( int argc, char * argv[] )
           {
           outputFileName = out.str();
           }
-        if( !ReorientAndWriteImage( 
+        if( !ReorientAndWriteImage(
             normalImage.GetPointer(),
             fixedImageReader->GetOutput()->GetDirection(),
             outputFileName ) )
@@ -990,7 +990,7 @@ int DoIt( int argc, char * argv[] )
       {
       if( anisotropicRegistrator->GetHighResolutionWeightImage() )
         {
-        if( !ReorientAndWriteImage( 
+        if( !ReorientAndWriteImage(
             anisotropicRegistrator->GetHighResolutionWeightImage(),
             fixedImageReader->GetOutput()->GetDirection(),
             outputWeightRegularizationsImageFileName ) )
@@ -1002,7 +1002,7 @@ int DoIt( int argc, char * argv[] )
         }
       else
         {
-        if( !ReorientAndWriteImage( 
+        if( !ReorientAndWriteImage(
             anisotropicRegistrator->GetWeightImage(),
             fixedImageReader->GetOutput()->GetDirection(),
             outputWeightRegularizationsImageFileName ) )
@@ -1018,7 +1018,7 @@ int DoIt( int argc, char * argv[] )
       if( sparseAnisotropicRegistrator
             ->GetHighResolutionWeightRegularizationsImage() )
         {
-        if( !ReorientAndWriteImage( 
+        if( !ReorientAndWriteImage(
             sparseAnisotropicRegistrator
               ->GetHighResolutionWeightRegularizationsImage(),
             fixedImageReader->GetOutput()->GetDirection(),
@@ -1035,7 +1035,7 @@ int DoIt( int argc, char * argv[] )
         }
       else
         {
-        if( !ReorientAndWriteImage( 
+        if( !ReorientAndWriteImage(
             sparseAnisotropicRegistrator->GetWeightRegularizationsImage(),
             fixedImageReader->GetOutput()->GetDirection(),
             outputWeightRegularizationsImageFileName ) )
@@ -1061,7 +1061,7 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Start( "Write weight structures image" );
     if( sparseAnisotropicRegistrator->GetHighResolutionWeightStructuresImage() )
       {
-      if( !ReorientAndWriteImage( 
+      if( !ReorientAndWriteImage(
           sparseAnisotropicRegistrator
             ->GetHighResolutionWeightStructuresImage(),
           fixedImageReader->GetOutput()->GetDirection(),
@@ -1078,7 +1078,7 @@ int DoIt( int argc, char * argv[] )
       }
     else
       {
-      if( !ReorientAndWriteImage( 
+      if( !ReorientAndWriteImage(
           sparseAnisotropicRegistrator->GetWeightStructuresImage(),
           fixedImageReader->GetOutput()->GetDirection(),
           outputWeightStructuresImageFileName ) )

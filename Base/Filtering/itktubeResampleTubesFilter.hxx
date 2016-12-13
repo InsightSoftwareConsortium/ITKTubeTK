@@ -123,7 +123,7 @@ ResampleTubesFilter< VDimension >
    DisplacementFieldTransformFilterType::New();
   filter->SetInput( inputTubeGroup );
   filter->SetTransform( transform );
-  filter->SetOutputIndexToObjectTransform( 
+  filter->SetOutputIndexToObjectTransform(
     outputTransform.GetPointer() );
   filter->GraftOutput( this->GetOutput() );
   filter->Update();

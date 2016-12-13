@@ -106,7 +106,7 @@ AcousticImpulseResponseImageFilter< TInputImage, TOutputImage, TOperatorValue >
          !outputIt.IsAtEnd();
          ++inputIt, ++angleOfIncidenceIt, ++gradientMagnitudeIt, ++outputIt )
       {
-      outputIt.Set( static_cast< typename OutputImageType::PixelType >( 
+      outputIt.Set( static_cast< typename OutputImageType::PixelType >(
         std::pow( static_cast< OperatorValueType >( angleOfIncidenceIt.Get() ),
         static_cast< OperatorValueType >( this->m_AngleDependence *
         gradientMagnitudeIt.Get() / ( 2.0 * inputIt.Get() ) ) ) ) );

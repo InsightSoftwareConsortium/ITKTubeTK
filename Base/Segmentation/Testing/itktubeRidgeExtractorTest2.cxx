@@ -103,7 +103,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       {
       ++tubeIter;
       }
-    TubeType::Pointer tube = static_cast< TubeType * >( 
+    TubeType::Pointer tube = static_cast< TubeType * >(
       tubeIter->GetPointer() );
     std::cout << "Test tube = " << rndTubeNum << std::endl;
 
@@ -287,9 +287,9 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
   for( unsigned int code = 0; code < ridgeOp->GetNumberOfFailureCodes();
     ++code )
     {
-    std::cout << "   " << ridgeOp->GetFailureCodeName( 
+    std::cout << "   " << ridgeOp->GetFailureCodeName(
       RidgeOpType::FailureCodeEnum( code ) ) << " : "
-      << ridgeOp->GetFailureCodeCount( RidgeOpType::FailureCodeEnum( 
+      << ridgeOp->GetFailureCodeCount( RidgeOpType::FailureCodeEnum(
       code ) ) << std::endl;
     }
 

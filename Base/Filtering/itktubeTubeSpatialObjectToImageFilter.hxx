@@ -209,7 +209,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
       {
       bool IsInside = true;
       typedef typename TubeType::TubePointType TubePointType;
-      const TubePointType* tubePoint = static_cast<const TubePointType*>( 
+      const TubePointType* tubePoint = static_cast<const TubePointType*>(
                                        ( ( TubeType * )
                                         ( TubeIterator->GetPointer() ) )
                                        ->GetPoint( k ) );
@@ -268,7 +268,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
           if( m_BuildRadiusImage )
             {
             m_RadiusImage->SetPixel( index,
-                                  static_cast<RadiusPixelType>( 
+                                  static_cast<RadiusPixelType>(
                                       phys_pt_radius ) );
             }
 

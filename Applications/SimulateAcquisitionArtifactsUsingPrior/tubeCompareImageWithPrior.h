@@ -81,7 +81,7 @@ public:
   bool GetUseRegistrationTransform( void );
   void SetUseRegistrationOptimization( bool reg );
   bool GetUseRegistrationOptimization( void );
-  void SetRegistrationTransform( 
+  void SetRegistrationTransform(
     typename RegistrationMethodType::TransformType::Pointer tfm );
   typename RegistrationMethodType::TransformType::Pointer
     GetRegistrationTransform( void );

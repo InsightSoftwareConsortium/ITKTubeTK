@@ -132,7 +132,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
   char tubeName[] = "Tube";
   TubeListPointerType pTubeList
-    = inputTubeGroup->GetChildren( 
+    = inputTubeGroup->GetChildren(
     inputTubeGroup->GetMaximumDepth(), tubeName );
 
   m_TubeIdToObjectMap.clear();
@@ -379,11 +379,11 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
   rootTube->CopyInformation( inputRootTube );
 
   // TODO: make CopyInformation of itk::SpatialObject do this
-  rootTube->GetObjectToParentTransform()->SetScale( 
+  rootTube->GetObjectToParentTransform()->SetScale(
     inputRootTube->GetObjectToParentTransform()->GetScale() );
-  rootTube->GetObjectToParentTransform()->SetOffset( 
+  rootTube->GetObjectToParentTransform()->SetOffset(
     inputRootTube->GetObjectToParentTransform()->GetOffset() );
-  rootTube->GetObjectToParentTransform()->SetMatrix( 
+  rootTube->GetObjectToParentTransform()->SetMatrix(
     inputRootTube->GetObjectToParentTransform()->GetMatrix() );
   rootTube->SetSpacing( inputRootTube->GetSpacing() );
   rootTube->SetSpacing( inputRootTube->GetSpacing() );
@@ -433,11 +433,11 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     curTube->CopyInformation( eTop.targetTube );
 
     // TODO: make CopyInformation of itk::SpatialObject do this
-    curTube->GetObjectToParentTransform()->SetScale( 
+    curTube->GetObjectToParentTransform()->SetScale(
       eTop.targetTube->GetObjectToParentTransform()->GetScale() );
-    curTube->GetObjectToParentTransform()->SetOffset( 
+    curTube->GetObjectToParentTransform()->SetOffset(
       eTop.targetTube->GetObjectToParentTransform()->GetOffset() );
-    curTube->GetObjectToParentTransform()->SetMatrix( 
+    curTube->GetObjectToParentTransform()->SetMatrix(
       eTop.targetTube->GetObjectToParentTransform()->GetMatrix() );
     curTube->SetSpacing( eTop.targetTube->GetSpacing() );
     curTube->ComputeObjectToWorldTransform();
@@ -470,7 +470,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     // add tube to output
     eTop.sourceTube->AddSpatialObject( curTube );
     // print some info
-    tubeDebugMacro( 
+    tubeDebugMacro(
       << "  sourceTubeId = "    << eTop.sourceTubeId
       << ", targetTubeId = "    << eTop.targetTubeId
       << ", reversed points = " << ( eTop.targetTubePointId > 0 )
@@ -503,11 +503,11 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
   outputTubeGroup->CopyInformation( inputTubeGroup );
 
   // TODO: make CopyInformation of itk::SpatialObject do this
-  outputTubeGroup->GetObjectToParentTransform()->SetScale( 
+  outputTubeGroup->GetObjectToParentTransform()->SetScale(
     inputTubeGroup->GetObjectToParentTransform()->GetScale() );
-  outputTubeGroup->GetObjectToParentTransform()->SetOffset( 
+  outputTubeGroup->GetObjectToParentTransform()->SetOffset(
     inputTubeGroup->GetObjectToParentTransform()->GetOffset() );
-  outputTubeGroup->GetObjectToParentTransform()->SetMatrix( 
+  outputTubeGroup->GetObjectToParentTransform()->SetMatrix(
     inputTubeGroup->GetObjectToParentTransform()->GetMatrix() );
   outputTubeGroup->SetSpacing( inputTubeGroup->GetSpacing() );
   outputTubeGroup->ComputeObjectToWorldTransform();
@@ -537,7 +537,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       TubePQElementType epTube;
       epTube.tubeId = *itRootTubeId;
       epTube.outDegree = m_TubeGraph[epTube.tubeId].size();
-      epTube.tubeLength = ::tube::ComputeTubeLength< TubeType >( 
+      epTube.tubeLength = ::tube::ComputeTubeLength< TubeType >(
         m_TubeIdToObjectMap[epTube.tubeId] );
       maxpqVOutDegree.push( epTube );
       }
@@ -551,7 +551,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       TubePQElementType epTube;
       epTube.tubeId = itV->first;
       epTube.outDegree = itV->second.size();
-      epTube.tubeLength = ::tube::ComputeTubeLength< TubeType >( 
+      epTube.tubeLength = ::tube::ComputeTubeLength< TubeType >(
         m_TubeIdToObjectMap[epTube.tubeId] );
       if( m_RemoveOrphanTubes && epTube.outDegree == 0 )
         {
@@ -594,7 +594,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
   char tubeName[] = "Tube";
   TubeListPointerType pTubeList
-    = inputTubeGroup->GetChildren( 
+    = inputTubeGroup->GetChildren(
     inputTubeGroup->GetMaximumDepth(), tubeName );
 
   for( typename TubeGroupType::ChildrenListType::iterator
@@ -611,11 +611,11 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
       curTube->CopyInformation( pCurSourceTube );
       // TODO: make CopyInformation of itk::SpatialObject do this
-      curTube->GetObjectToParentTransform()->SetScale( 
+      curTube->GetObjectToParentTransform()->SetScale(
         pCurSourceTube->GetObjectToParentTransform()->GetScale() );
-      curTube->GetObjectToParentTransform()->SetOffset( 
+      curTube->GetObjectToParentTransform()->SetOffset(
         pCurSourceTube->GetObjectToParentTransform()->GetOffset() );
-      curTube->GetObjectToParentTransform()->SetMatrix( 
+      curTube->GetObjectToParentTransform()->SetMatrix(
         pCurSourceTube->GetObjectToParentTransform()->GetMatrix() );
       curTube->SetSpacing( pCurSourceTube->GetSpacing() );
       curTube->ComputeObjectToWorldTransform();
