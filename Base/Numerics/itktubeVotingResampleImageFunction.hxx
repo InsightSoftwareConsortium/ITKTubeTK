@@ -78,7 +78,7 @@ template< class TInputImage, class TCoordRep >
 typename VotingResampleImageFunction< TInputImage, TCoordRep >
 ::OutputType
 VotingResampleImageFunction< TInputImage, TCoordRep >
-::EvaluateAtContinuousIndex( 
+::EvaluateAtContinuousIndex(
   const ContinuousIndexType& index ) const
 {
   typedef itk::ConstNeighborhoodIterator< TInputImage >

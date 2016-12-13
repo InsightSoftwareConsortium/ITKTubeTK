@@ -255,7 +255,7 @@ RadiusExtractor2<TInputImage>
   ITKIndexType buffer;
   for( unsigned int i = 0; i < dimension; ++i )
     {
-    buffer[i] = static_cast< unsigned int >( 
+    buffer[i] = static_cast< unsigned int >(
       this->GetKernelExtent() * this->GetRadiusMax() );
     }
 
@@ -746,7 +746,7 @@ RadiusExtractor2<TInputImage>
     }
 
   tube->RemoveDuplicatePoints();
-  ::tube::ComputeVectorTangentsAndNormals< TubePointType >( 
+  ::tube::ComputeVectorTangentsAndNormals< TubePointType >(
     tube->GetPoints() );
 
   typename std::vector< TubePointType >::iterator pntIter;

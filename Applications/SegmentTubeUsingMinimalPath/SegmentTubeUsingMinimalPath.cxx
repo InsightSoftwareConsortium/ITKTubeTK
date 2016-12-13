@@ -151,7 +151,7 @@ int DoIt( int argc, char * argv[] )
     }
   else
     {
-    tubeErrorMacro( 
+    tubeErrorMacro(
       << "Error: Path must contain at only one Start Point" );
     timeCollector.Stop( "Set parameters" );
     return EXIT_FAILURE;
@@ -183,7 +183,7 @@ int DoIt( int argc, char * argv[] )
     }
   else if ( TargetTubeFileName.empty() && EndPoint.size() == 0 )
     {
-    tubeErrorMacro( 
+    tubeErrorMacro(
       << "Error: Atmost one End/Target Point or Target"
       "Tube should be provided. " );
     timeCollector.Stop( "Set parameters" );

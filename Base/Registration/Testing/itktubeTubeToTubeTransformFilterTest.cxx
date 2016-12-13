@@ -164,7 +164,7 @@ int itktubeTubeToTubeTransformFilterTest( int argc, char * argv[] )
       SpatialObjectToImageFilterType::New();
 
     vesselToImageFilter->SetInput( transformFilter->GetOutput() );
-    vesselToImageFilter->SetSize( 
+    vesselToImageFilter->SetSize(
       imageReader->GetOutput()->GetLargestPossibleRegion().GetSize() );
     vesselToImageFilter->SetOrigin( imageReader->GetOutput()->GetOrigin() );
     vesselToImageFilter->SetSpacing( imageReader->GetOutput()->GetSpacing() );

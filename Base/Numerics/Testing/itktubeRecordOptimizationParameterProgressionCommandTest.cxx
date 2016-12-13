@@ -164,7 +164,7 @@ int itktubeRecordOptimizationParameterProgressionCommandTest( int argc, char * a
   RecordOptimizationParameterProgressionCommandType::Pointer
     recordOptimizationParameterProgressionCommand =
     RecordOptimizationParameterProgressionCommandType::New();
-  recordOptimizationParameterProgressionCommand->SetFileName( 
+  recordOptimizationParameterProgressionCommand->SetFileName(
     optimizationParameterProgressionFile );
   recordOptimizationParameterProgressionCommand->Observe( optimizer );
   // some fake fixed parameters

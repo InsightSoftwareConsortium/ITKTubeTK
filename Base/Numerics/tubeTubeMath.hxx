@@ -103,7 +103,7 @@ ComputeNormalsFromTangent( TTubePoint & tubePoint,
     tt[2] = prevT[2];
     tt.Normalize();
 
-    vnl_vector< double > vv = ::tube::ComputeCrossVector( 
+    vnl_vector< double > vv = ::tube::ComputeCrossVector(
       t.GetVnlVector(), tt.GetVnlVector() );
     if( t * prevT > 0.99999 )
       {

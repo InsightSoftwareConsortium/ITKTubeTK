@@ -70,7 +70,7 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
     typename SubSampleTubeFilterType::Pointer subSampleTubeFilter
       = SubSampleTubeFilterType::New();
     subSampleTubeFilter->SetSampling( this->GetSampling() );
-    subSampleTubeFilter->SetInput( const_cast< TubeSpatialObjectType * >( 
+    subSampleTubeFilter->SetInput( const_cast< TubeSpatialObjectType * >(
         inputAsTube ) );
     subSampleTubeFilter->Update();
     if( graftOutput )
@@ -98,7 +98,7 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
         ObjectFactoryBase::CreateInstance( spatialObjectType.c_str() );
 
       typename SpatialObjectBaseType::Pointer newSpatialObjectBase =
-        dynamic_cast< SpatialObjectBaseType * >( 
+        dynamic_cast< SpatialObjectBaseType * >(
         newSpatialObject.GetPointer() );
       if( newSpatialObjectBase.IsNull() )
         {

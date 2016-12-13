@@ -90,7 +90,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
   EigenAnalysisFilterType::Pointer eigenAnalysisFilter =
     EigenAnalysisFilterType::New();
   eigenAnalysisFilter->SetDimension( Dimension );
-  eigenAnalysisFilter->OrderEigenValuesBy( 
+  eigenAnalysisFilter->OrderEigenValuesBy(
     EigenAnalysisFilterType::FunctorType::OrderByValue );
 
   eigenAnalysisFilter->SetInput( filter->GetOutput() );
@@ -109,7 +109,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
   EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter =
     EigenVectorAnalysisFilterType::New();
   eigenVectorAnalysisFilter->SetDimension( Dimension );
-  eigenVectorAnalysisFilter->OrderEigenValuesBy( 
+  eigenVectorAnalysisFilter->OrderEigenValuesBy(
     EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
 
   eigenVectorAnalysisFilter->SetInput( filter->GetOutput() );
@@ -196,7 +196,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
   typedef StructureTensorFilterType::OutputImageType TensorImageType;
   TensorImageType::ConstPointer tensorImage = filter->GetOutput();
   itk::ImageRegionConstIterator<TensorImageType> tensorImageIterator;
-  tensorImageIterator = itk::ImageRegionConstIterator<TensorImageType>( 
+  tensorImageIterator = itk::ImageRegionConstIterator<TensorImageType>(
     tensorImage, tensorImage->GetRequestedRegion() );
   tensorImageIterator.GoToBegin();
 

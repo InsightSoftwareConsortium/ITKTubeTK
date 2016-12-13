@@ -161,7 +161,7 @@ SegmentTubes<TInputImage>
 
   if( this->m_SeedMask )
     {
-    itk::ImageRegionConstIteratorWithIndex< TubeMaskImageType > iter( 
+    itk::ImageRegionConstIteratorWithIndex< TubeMaskImageType > iter(
           this->m_SeedMask, this->m_SeedMask->GetLargestPossibleRegion() );
     itk::ImageRegionConstIterator< ScaleImageType > iterS;
     if( this->m_ScaleMask )
@@ -205,7 +205,7 @@ SegmentTubes<TInputImage>
     typename TubeGroupType::ChildrenListType::iterator iter = tubeList->begin();
     while( iter != tubeList->end() )
       {
-      this->m_TubeExtractorFilter->AddTube( static_cast< TubeType * >( 
+      this->m_TubeExtractorFilter->AddTube( static_cast< TubeType * >(
             iter->GetPointer() ) );
       ++iter;
       }
@@ -285,11 +285,11 @@ SegmentTubes<TInputImage>
     offsetVector[i] = origin[i];
     }
 
-  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()->SetScale( 
+  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()->SetScale(
     scaleVector );
-  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()->SetOffset( 
+  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()->SetOffset(
     offsetVector );
-  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()->SetMatrix( 
+  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()->SetMatrix(
     this->m_InputImage->GetDirection() );
   this->m_TubeExtractorFilter->GetTubeGroup()->ComputeObjectToWorldTransform();
 
@@ -298,10 +298,10 @@ SegmentTubes<TInputImage>
     this->m_TubeExtractorFilter->GetRidgeOp()->GetNumberOfFailureCodes();
     ++code )
     {
-    std::cout << "   " << this->m_TubeExtractorFilter->GetRidgeOp()->GetFailureCodeName( 
+    std::cout << "   " << this->m_TubeExtractorFilter->GetRidgeOp()->GetFailureCodeName(
       typename RidgeExtractorFilterType::FailureCodeEnum( code ) ) << " : "
-      << this->m_TubeExtractorFilter->GetRidgeOp()->GetFailureCodeCount( 
-      typename RidgeExtractorFilterType::FailureCodeEnum( 
+      << this->m_TubeExtractorFilter->GetRidgeOp()->GetFailureCodeCount(
+      typename RidgeExtractorFilterType::FailureCodeEnum(
       code ) ) << std::endl;
     }
 }

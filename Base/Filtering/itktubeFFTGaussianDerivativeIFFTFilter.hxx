@@ -69,12 +69,12 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   typename GaussianDerivativeImageSourceType::Pointer gaussSource =
     GaussianDerivativeImageSourceType::New();
 
-  const typename ComplexImageType::RegionType inputRegion( 
+  const typename ComplexImageType::RegionType inputRegion(
     this->GetInput()->GetLargestPossibleRegion() );
   const typename ComplexImageType::SizeType inputSize
     = inputRegion.GetSize();
 
-  const typename ComplexImageType::RegionType fftRegion( 
+  const typename ComplexImageType::RegionType fftRegion(
     m_InputImageFFT->GetLargestPossibleRegion() );
   const typename ComplexImageType::SizeType fftSize
     = fftRegion.GetSize();

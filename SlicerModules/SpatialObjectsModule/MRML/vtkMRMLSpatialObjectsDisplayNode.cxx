@@ -118,7 +118,7 @@ void vtkMRMLSpatialObjectsDisplayNode::Copy( vtkMRMLNode *anode )
 
   Superclass::Copy( anode );
 
-  this->SetSpatialObjectsDisplayPropertiesNodeID( 
+  this->SetSpatialObjectsDisplayPropertiesNodeID(
     node->SpatialObjectsDisplayPropertiesNodeID );
 
   this->EndModify( disabledModify );
@@ -136,7 +136,7 @@ void vtkMRMLSpatialObjectsDisplayNode::UpdateScene( vtkMRMLScene *scene )
 {
    Superclass::UpdateScene( scene );
 
-   this->SetAndObserveSpatialObjectsDisplayPropertiesNodeID( 
+   this->SetAndObserveSpatialObjectsDisplayPropertiesNodeID(
      this->GetSpatialObjectsDisplayPropertiesNodeID() );
 }
 
@@ -146,7 +146,7 @@ void vtkMRMLSpatialObjectsDisplayNode::UpdateReferences( void )
   Superclass::UpdateReferences();
 
   if( this->SpatialObjectsDisplayPropertiesNodeID != NULL &&
-      this->Scene->GetNodeByID( 
+      this->Scene->GetNodeByID(
         this->SpatialObjectsDisplayPropertiesNodeID ) == NULL )
     {
     this->SetAndObserveSpatialObjectsDisplayPropertiesNodeID( NULL );
@@ -185,7 +185,7 @@ GetSpatialObjectsDisplayPropertiesNode( void )
 void vtkMRMLSpatialObjectsDisplayNode::
 SetAndObserveSpatialObjectsDisplayPropertiesNodeID( const char *id )
 {
-  if( 
+  if(
       ( id != this->GetSpatialObjectsDisplayPropertiesNodeID() )
       && id != NULL && this->GetSpatialObjectsDisplayPropertiesNodeID() != NULL
       && ( std::strcmp( id, this->GetSpatialObjectsDisplayPropertiesNodeID() ) == 0 ) )
@@ -224,7 +224,7 @@ std::vector<int> vtkMRMLSpatialObjectsDisplayNode::GetSupportedColorModes( void 
   modes.clear();
   modes.push_back( vtkMRMLSpatialObjectsDisplayPropertiesNode::ColorOrientation );
   modes.push_back( vtkMRMLSpatialObjectsDisplayPropertiesNode::LinearMeasure );
-  modes.push_back( 
+  modes.push_back(
     vtkMRMLSpatialObjectsDisplayPropertiesNode::RelativeAnisotropy );
 
   return modes;

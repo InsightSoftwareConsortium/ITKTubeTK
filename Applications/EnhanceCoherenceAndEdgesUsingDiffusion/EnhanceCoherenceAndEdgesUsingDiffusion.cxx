@@ -48,7 +48,7 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter progressReporter( 
+  tube::CLIProgressReporter progressReporter(
     "HybridEnhancingAnisotropicDiffusion",
     CLPProcessInformation );
   progressReporter.Start();
@@ -117,12 +117,12 @@ int DoIt( int argc, char * argv[] )
 
   //Set/Get CED parameters
   HybridEnhancingFilter->SetSigma( scaleParameter );
-  HybridEnhancingFilter->SetContrastParameterLambdaEED( 
+  HybridEnhancingFilter->SetContrastParameterLambdaEED(
     eedContrastParameter );
-  HybridEnhancingFilter->SetContrastParameterLambdaCED( 
+  HybridEnhancingFilter->SetContrastParameterLambdaCED(
     cedContrastParameter );
   HybridEnhancingFilter->SetAlpha( alpha );
-  HybridEnhancingFilter->SetContrastParameterLambdaHybrid( 
+  HybridEnhancingFilter->SetContrastParameterLambdaHybrid(
     hybridContrastParameter );
   HybridEnhancingFilter->SetTimeStep( timeStep );
   HybridEnhancingFilter->SetNumberOfIterations( numberOfIterations );
@@ -138,7 +138,7 @@ int DoIt( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( 
+    tube::ErrorMessage(
       "Hybrid enhancing anisotropic diffusion: Exception caught: "
       + std::string( err.GetDescription() ) );
     timeCollector.Report();
@@ -162,7 +162,7 @@ int DoIt( int argc, char * argv[] )
   typename OrientOutputFilterType::Pointer orientOutputFilter
       = OrientOutputFilterType::New();
   orientOutputFilter->UseImageDirectionOn();
-  orientOutputFilter->SetDesiredCoordinateDirection( 
+  orientOutputFilter->SetDesiredCoordinateDirection(
       reader->GetOutput()->GetDirection() );
   orientOutputFilter->SetInput( castOutputImageFilter->GetOutput() );
 

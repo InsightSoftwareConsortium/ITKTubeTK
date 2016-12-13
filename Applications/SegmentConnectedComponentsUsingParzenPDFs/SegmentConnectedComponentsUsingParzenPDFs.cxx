@@ -66,7 +66,7 @@ CheckImageAttributes( const TInputImage * input,
     input->GetLargestPossibleRegion();
   const typename TLabelMap::RegionType maskRegion =
     mask->GetLargestPossibleRegion();
-  return ( 
+  return (
     inputOrigin.GetVnlVector().is_equal( maskOrigin.GetVnlVector(), 0.01 )
     && inputRegion.GetIndex() == maskRegion.GetIndex()
     && inputRegion.GetSize() == maskRegion.GetSize() );
@@ -193,9 +193,9 @@ int DoIt( int argc, char * argv[] )
       pdfSegmenter->SetObjectPDFWeight( i, objectPDFWeight[i] );
       }
     }
-  pdfSegmenter->SetProbabilityImageSmoothingStandardDeviation( 
+  pdfSegmenter->SetProbabilityImageSmoothingStandardDeviation(
     probImageSmoothingStdDev );
-  pdfSegmenter->SetHistogramSmoothingStandardDeviation( 
+  pdfSegmenter->SetHistogramSmoothingStandardDeviation(
     histogramSmoothingStdDev );
   pdfSegmenter->SetReclassifyNotObjectLabels( reclassifyNotObjectLabels );
   pdfSegmenter->SetReclassifyObjectLabels( reclassifyObjectLabels );

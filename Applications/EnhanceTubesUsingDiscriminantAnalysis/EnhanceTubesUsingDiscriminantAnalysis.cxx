@@ -181,7 +181,7 @@ int DoIt( int argc, char * argv[] )
     unsigned int numFeatures = tubeFilter->GetNumberOfBasis();
     for( unsigned int i=0; i<numFeatures; i++ )
       {
-      WriteImageInSequence< RidgeSeedImageType >( 
+      WriteImageInSequence< RidgeSeedImageType >(
         tubeFilter->GetBasisImage( i ),
         saveFeatureImages, ".f%02d.mha", i );
       }

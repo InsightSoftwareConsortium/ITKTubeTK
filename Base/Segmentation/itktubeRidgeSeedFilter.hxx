@@ -50,7 +50,7 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_RidgeFeatureGenerator = RidgeFeatureGeneratorType::New();
 
   m_SeedFeatureGenerator = SeedFeatureGeneratorType::New();
-  m_SeedFeatureGenerator->SetInputFeatureVectorGenerator( 
+  m_SeedFeatureGenerator->SetInputFeatureVectorGenerator(
     m_RidgeFeatureGenerator );
 
   m_SeedFeatureGenerator->SetNumberOfLDABasisToUseAsFeatures( 1 );
@@ -328,7 +328,7 @@ RidgeSeedFilter< TImage, TLabelMap >
 
   unsigned int numClasses = m_PDFSegmenter->GetNumberOfClasses();
 
-  itk::ImageRegionIterator< ProbabilityImageType > resultIter( 
+  itk::ImageRegionIterator< ProbabilityImageType > resultIter(
     resultImage, region );
   double backgroundMax = 0;
   for( unsigned int c = 0; c < numClasses; c++ )
@@ -356,7 +356,7 @@ RidgeSeedFilter< TImage, TLabelMap >
       }
     }
   double tubeMax = 0;
-  itk::ImageRegionConstIterator< ProbabilityImageType > classIter( 
+  itk::ImageRegionConstIterator< ProbabilityImageType > classIter(
     m_PDFSegmenter->GetClassProbabilityImage( objectNum ), region );
   resultIter.GoToBegin();
   while( ! resultIter.IsAtEnd() )
@@ -404,7 +404,7 @@ RidgeSeedFilter< TImage, TLabelMap >
     tmpPDF->SetOutlierRejectPortion( 0.001 );
     }
 
-  m_PDFSegmenter->SetFeatureVectorGenerator( 
+  m_PDFSegmenter->SetFeatureVectorGenerator(
     m_SeedFeatureGenerator.GetPointer() );
   m_PDFSegmenter->SetReclassifyObjectLabels( true );
   m_PDFSegmenter->SetReclassifyNotObjectLabels( true );
@@ -464,7 +464,7 @@ RidgeSeedFilter< TImage, TLabelMap >
 
   m_LabelMap = m_PDFSegmenter->GetLabelMap();
 
-  itk::ImageRegionIterator< LabelMapType > resultIter( 
+  itk::ImageRegionIterator< LabelMapType > resultIter(
     m_LabelMap, m_LabelMap->GetLargestPossibleRegion() );
   while( !resultIter.IsAtEnd() )
     {

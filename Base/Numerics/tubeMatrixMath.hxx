@@ -192,7 +192,7 @@ ComputeRidgeness( const vnl_matrix<T> & H,
       {
       for( unsigned int i=0; i<ImageDimension-1; ++i )
         {
-        HEVect.get_column( ImageDimension-1 )[i] = -1 * HEVect.get_column( 
+        HEVect.get_column( ImageDimension-1 )[i] = -1 * HEVect.get_column(
           ImageDimension-1 )[i];
         }
       }
@@ -270,7 +270,7 @@ ComputeRidgeness( const vnl_matrix<T> & H,
  * Compute eigenvalues and vectors from ( W.inv() * B ) */
 template< class T >
 void
-ComputeEigenOfMatrixInvertedTimesMatrix( 
+ComputeEigenOfMatrixInvertedTimesMatrix(
   vnl_matrix<T> const & matToInvert, vnl_matrix<T> const & mat,
   vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
   bool orderByAbs, bool minToMax )

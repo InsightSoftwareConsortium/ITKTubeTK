@@ -152,7 +152,7 @@ bool qSlicerSpatialObjectsReader::load( const IOProperties& properties )
       {
       if( properties.contains( "name" ) )
         {
-        std::string uname = this->mrmlScene()->GetUniqueNameByString( 
+        std::string uname = this->mrmlScene()->GetUniqueNameByString(
           properties["name"].toString().toLatin1() );
         node->SetName( uname.c_str() );
         }

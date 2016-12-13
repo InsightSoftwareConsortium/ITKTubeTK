@@ -79,7 +79,7 @@ ApplyIntensityWindowing( typename ImageType::Pointer imIn,
 template< unsigned int VDimension >
 bool
 ImageFilters<VDimension>::
-ApplyIntensityMultiplicativeWithBiasCorrection( 
+ApplyIntensityMultiplicativeWithBiasCorrection(
   typename ImageType::Pointer imIn,
   const std::string & inMeanFieldFilePath )
 {
@@ -272,7 +272,7 @@ ImageFilters<VDimension>
 template< unsigned int VDimension >
 bool
 ImageFilters<VDimension>
-::MultiplyImages( 
+::MultiplyImages(
     typename ImageType::Pointer imIn,
     const std::string & imIn2FilePath )
 {
@@ -309,7 +309,7 @@ ImageFilters<VDimension>
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
-::MirrorAndPadImage( 
+::MirrorAndPadImage(
     typename ImageType::Pointer & imIn,
     int numPadVoxels )
 {
@@ -328,7 +328,7 @@ template< unsigned int VDimension >
 template< typename TPixel >
 void
 ImageFilters<VDimension>
-::NormalizeImage( 
+::NormalizeImage(
     typename ImageType::Pointer & imIn,
     int normType )
 {
@@ -496,7 +496,7 @@ ImageFilters<VDimension>
 template< unsigned int VDimension >
 bool
 ImageFilters<VDimension>
-::FuseImages( 
+::FuseImages(
     typename ImageType::Pointer imIn,
     const std::string & imIn2FilePath,
     float offset2 )
@@ -540,7 +540,7 @@ ImageFilters<VDimension>
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
-::ThresholdImage( 
+::ThresholdImage(
     typename ImageType::Pointer imIn,
     float threshLow, float threshHigh, float valTrue, float valFalse )
 {
@@ -586,7 +586,7 @@ ImageFilters<VDimension>
 template< unsigned int VDimension >
 double
 ImageFilters<VDimension>
-::ComputeImageStdDevOrMeanWithinRangeUsingMask( 
+::ComputeImageStdDevOrMeanWithinRangeUsingMask(
     typename ImageType::Pointer imIn,
     const std::string & maskFilePath,
     float threshLow, float threshHigh, int mode, bool & success )
@@ -660,7 +660,7 @@ ImageFilters<VDimension>
 template< unsigned int VDimension >
 bool
 ImageFilters<VDimension>
-::MaskImageWithValueIfNotWithinSecondImageRange( 
+::MaskImageWithValueIfNotWithinSecondImageRange(
     typename ImageType::Pointer imIn,
     const std::string & imIn2FilePath,
     float threshLow, float threshHigh, float valFalse )
@@ -709,7 +709,7 @@ ImageFilters<VDimension>
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
-::MorphImage( 
+::MorphImage(
     typename ImageType::Pointer & imIn,
     int mode, float radius, float foregroundValue, float backgroundValue )
 {
@@ -755,7 +755,7 @@ ImageFilters<VDimension>
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
-::OverwriteImage( 
+::OverwriteImage(
     typename ImageType::Pointer imIn,
     const std::string & maskFilePath,
     float maskKeyVal, float imageKeyVal, float newImageVal )
@@ -787,7 +787,7 @@ ImageFilters<VDimension>
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
-::BlurImage( 
+::BlurImage(
     typename ImageType::Pointer & imIn,
     float sigma )
 {
@@ -801,7 +801,7 @@ ImageFilters<VDimension>
     //filter->SetNormalizeAcrossScale( true );
     filter->SetSigma( sigma );
 
-    filter->SetOrder( 
+    filter->SetOrder(
              itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
     filter->SetDirection( i );
 
@@ -815,7 +815,7 @@ ImageFilters<VDimension>
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
-::BlurOrderImage( 
+::BlurOrderImage(
     typename ImageType::Pointer & imIn,
     float sigma, int order, int direction )
 {
@@ -829,15 +829,15 @@ ImageFilters<VDimension>
   switch( order )
     {
     case 0:
-      filter->SetOrder( 
+      filter->SetOrder(
         itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
       break;
     case 1:
-      filter->SetOrder( 
+      filter->SetOrder(
         itk::RecursiveGaussianImageFilter<ImageType>::FirstOrder );
       break;
     case 2:
-      filter->SetOrder( 
+      filter->SetOrder(
         itk::RecursiveGaussianImageFilter<ImageType>::SecondOrder );
       break;
     }
@@ -850,7 +850,7 @@ ImageFilters<VDimension>
 template< unsigned int VDimension >
 bool
 ImageFilters<VDimension>
-::ComputeImageHistogram( 
+::ComputeImageHistogram(
     typename ImageType::Pointer imIn,
     unsigned int nBins, const std::string & histOutputFilePath )
 {
@@ -919,7 +919,7 @@ ImageFilters<VDimension>
 template< unsigned int VDimension >
 bool
 ImageFilters<VDimension>
-::ComputeImageHistogram2( 
+::ComputeImageHistogram2(
     typename ImageType::Pointer imIn,
     unsigned int nBins, double binMin, double binSize,
     const std::string & histOutputFilePath )
@@ -961,7 +961,7 @@ ImageFilters<VDimension>
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
-::CorrectIntensitySliceBySliceUsingHistogramMatching( 
+::CorrectIntensitySliceBySliceUsingHistogramMatching(
     typename ImageType::Pointer imIn,
     unsigned int numberOfBins, unsigned int numberOfMatchPoints )
 {
@@ -1027,7 +1027,7 @@ ImageFilters<VDimension>
     matchFilter->SetNumberOfHistogramLevels( numberOfBins );
     matchFilter->SetNumberOfMatchPoints( numberOfMatchPoints );
     matchFilter->Update();
-    itk::ImageRegionIterator< ImageType2D > it2DOut( 
+    itk::ImageRegionIterator< ImageType2D > it2DOut(
           matchFilter->GetOutput(),
           im2DIn->GetLargestPossibleRegion() );
     it2DRef.GoToBegin();
@@ -1051,7 +1051,7 @@ ImageFilters<VDimension>
 template< unsigned int VDimension >
 bool
 ImageFilters<VDimension>
-::CorrectIntensityUsingHistogramMatching( 
+::CorrectIntensityUsingHistogramMatching(
     typename ImageType::Pointer & imIn,
     unsigned int numberOfBins, unsigned int numberOfMatchPoints,
     const std::string & referenceVolumeFilePath )
@@ -1087,7 +1087,7 @@ ImageFilters<VDimension>
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
-::Resize( 
+::Resize(
     typename ImageType::Pointer & imIn,
     double factor )
 {
@@ -1145,7 +1145,7 @@ ImageFilters<VDimension>
 template< unsigned int VDimension >
 bool
 ImageFilters<VDimension>
-::Resize( 
+::Resize(
     typename ImageType::Pointer & imIn,
     const std::string & imIn2FilePath )
 {
@@ -1171,7 +1171,7 @@ ImageFilters<VDimension>
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
-::ExtractSlice( 
+::ExtractSlice(
     typename ImageType::Pointer & imIn,
     unsigned int dimension,
     unsigned int slice )

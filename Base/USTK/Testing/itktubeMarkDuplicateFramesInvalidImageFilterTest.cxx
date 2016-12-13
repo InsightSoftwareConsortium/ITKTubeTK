@@ -71,7 +71,7 @@ int itktubeMarkDuplicateFramesInvalidImageFilterTest( int argc, char * argv[] )
   TEST_EXPECT_EQUAL( duplicateFilter->GetTolerance(), 3 );
   duplicateFilter->SetFractionalThreshold( 0.7 );
   TEST_EXPECT_EQUAL( duplicateFilter->GetFractionalThreshold(), 0.7 );
-  duplicateFilter->SetInputMetaDataDictionary( 
+  duplicateFilter->SetInputMetaDataDictionary(
     &( inputImage->GetMetaDataDictionary() ) );
   duplicateFilter->DebugOn();
   TRY_EXPECT_NO_EXCEPTION( duplicateFilter->Update() );
@@ -83,7 +83,7 @@ int itktubeMarkDuplicateFramesInvalidImageFilterTest( int argc, char * argv[] )
   writer->SetUseInputMetaDataDictionary( false );
   typedef itk::MetaImageIO ImageIOType;
   ImageIOType::Pointer imageIO = ImageIOType::New();
-  imageIO->SetMetaDataDictionary( 
+  imageIO->SetMetaDataDictionary(
     duplicateFilter->GetOutputMetaDataDictionary() );
   writer->SetImageIO( imageIO );
   writer->SetUseCompression( true );

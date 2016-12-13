@@ -207,7 +207,7 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
   hsize_t iterationDataspaceDimension[] = { this->m_ParameterProgression.size() };
   const int dataspaceRank = 1;
   H5::DataSpace iterationDataSpace( dataspaceRank, iterationDataspaceDimension );
-  H5::DataSet * iterationDataset = new H5::DataSet( 
+  H5::DataSet * iterationDataset = new H5::DataSet(
     file->createDataSet( "OptimizationParameterProgression",
     this->m_H5ParameterIterationType, iterationDataSpace ) );
   iterationDataset->write( &( this->m_ParameterProgression[0] ),

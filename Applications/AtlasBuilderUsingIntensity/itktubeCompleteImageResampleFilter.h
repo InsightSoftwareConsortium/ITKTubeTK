@@ -166,7 +166,7 @@ protected:
   virtual void GenerateData( void );
 
   /** Determine the output bounding box for the 3D case */
-  void FindOutput3DParameters( 
+  void FindOutput3DParameters(
     InputImageConstPointer image,
     TransformPointerType transform,
     SizeType &outputSize,

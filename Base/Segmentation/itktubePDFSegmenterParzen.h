@@ -110,7 +110,7 @@ public:
   itkSetMacro( OutlierRejectPortion, double );
   itkGetMacro( OutlierRejectPortion, double );
 
-  typename PDFImageType::Pointer GetClassPDFImage( 
+  typename PDFImageType::Pointer GetClassPDFImage(
     unsigned int classNum ) const;
 
   void SetClassPDFImage( unsigned int classNum,

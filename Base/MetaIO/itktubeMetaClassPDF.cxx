@@ -71,7 +71,7 @@ MetaClassPDF( const MetaClassPDF & _metaPDF )
 }
 
 MetaClassPDF::
-MetaClassPDF( 
+MetaClassPDF(
   unsigned int _nFeatures,
   const VectorUIntType & _nBinsPerFeature,
   const VectorDoubleType & _binMin,
@@ -290,24 +290,24 @@ CopyInfo( const MetaObject * _obj )
     InitializeEssential( tmpPDF->GetNumberOfFeatures(),
       tmpPDF->GetNumberOfBinsPerFeature(), tmpPDF->GetBinMin(),
       tmpPDF->GetBinSize(), NULL );
-  
+ 
     this->SetObjectId( tmpPDF->GetObjectId() );
     this->SetObjectPDFWeight( tmpPDF->GetObjectPDFWeight() );
     this->SetVoidId( tmpPDF->GetVoidId() );
     this->SetErodeRadius( tmpPDF->GetErodeRadius() );
     this->SetHoleFillIterations( tmpPDF->GetHoleFillIterations() );
-    this->SetProbabilityImageSmoothingStandardDeviation( 
+    this->SetProbabilityImageSmoothingStandardDeviation(
       tmpPDF->GetProbabilityImageSmoothingStandardDeviation() );
-    this->SetHistogramSmoothingStandardDeviation( 
+    this->SetHistogramSmoothingStandardDeviation(
       tmpPDF->GetHistogramSmoothingStandardDeviation() );
     this->SetOutlierRejectPortion( tmpPDF->GetOutlierRejectPortion() );
     this->SetDraft( tmpPDF->GetDraft() );
     this->SetReclassifyObjectLabels( tmpPDF->GetReclassifyObjectLabels() );
-    this->SetReclassifyNotObjectLabels( 
+    this->SetReclassifyNotObjectLabels(
       tmpPDF->GetReclassifyNotObjectLabels() );
     this->SetForceClassification( tmpPDF->GetForceClassification() );
     }
-  
+ 
 }
 
 void MetaClassPDF::
@@ -928,7 +928,7 @@ M_Read( void )
       }
     }
 
-  unsigned int nFeatures = static_cast< unsigned int >( 
+  unsigned int nFeatures = static_cast< unsigned int >(
     MetaImage::NDims() );
 
   m_BinMin.resize( nFeatures );

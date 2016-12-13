@@ -53,7 +53,7 @@ int DoIt( int argc, char * argv[] )
   // limitation of itkTubeSpatialObject
   if( VDimension != 2 && VDimension != 3 )
     {
-    tube::ErrorMessage( 
+    tube::ErrorMessage(
       "Error: Only 2D and 3D Images are currently supported." );
     return EXIT_FAILURE;
     }
@@ -61,7 +61,7 @@ int DoIt( int argc, char * argv[] )
   // setup progress reporting
   double progress = 0.0;
 
-  tube::CLIProgressReporter progressReporter( 
+  tube::CLIProgressReporter progressReporter(
     "ComputeTubeFlyThroughImage", CLPProcessInformation );
   progressReporter.Start();
   progressReporter.Report( progress );

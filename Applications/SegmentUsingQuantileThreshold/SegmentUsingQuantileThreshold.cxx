@@ -47,7 +47,7 @@ int DoIt( int argc, char * argv[] )
 
   itk::TimeProbesCollectorBase timeCollector;
 
-  tube::CLIProgressReporter progressReporter( 
+  tube::CLIProgressReporter progressReporter(
     "SegmentUsingQuantileThreshold", CLPProcessInformation );
   progressReporter.Start();
 

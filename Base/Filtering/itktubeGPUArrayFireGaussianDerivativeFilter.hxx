@@ -103,12 +103,12 @@ GPUArrayFireGaussianDerivativeFilter<TInputImage, TOutputImage>
   typename GaussianDerivativeImageSourceType::Pointer gaussSource =
     GaussianDerivativeImageSourceType::New();
 
-  const typename RealImageType::RegionType inputRegion( 
+  const typename RealImageType::RegionType inputRegion(
     this->GetInput()->GetLargestPossibleRegion() );
   const typename RealImageType::SizeType inputSize
     = inputRegion.GetSize();
 
-  const typename RealImageType::RegionType fftRegion( 
+  const typename RealImageType::RegionType fftRegion(
     m_PaddedInputImage->GetLargestPossibleRegion() );
   const typename RealImageType::SizeType fftSize
     = fftRegion.GetSize();

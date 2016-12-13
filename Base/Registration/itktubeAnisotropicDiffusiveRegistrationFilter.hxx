@@ -126,7 +126,7 @@ AnisotropicDiffusiveRegistrationFilter
   this->SetDeformationComponentImage( TANGENTIAL, this->GetOutput() );
 
   DeformationFieldPointer normalDeformationField = DeformationFieldType::New();
-  DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( 
+  DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
                                      normalDeformationField, output );
   this->SetDeformationComponentImage( NORMAL, normalDeformationField );
 
@@ -205,7 +205,7 @@ AnisotropicDiffusiveRegistrationFilter
         }
       else
         {
-        DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( 
+        DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
                                      m_NormalVectorImage, output );
         }
       }
@@ -214,12 +214,12 @@ AnisotropicDiffusiveRegistrationFilter
       m_WeightImage = WeightImageType::New();
       if( highResolutionTemplate )
         {
-        DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( 
+        DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
                                      m_WeightImage, highResolutionTemplate );
         }
       else
         {
-        DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( 
+        DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
                                      m_WeightImage, output );
         }
       }
@@ -247,20 +247,20 @@ AnisotropicDiffusiveRegistrationFilter
   // make sure that the attributes of the member images match those of the
   // current output, so that they can be used to calculate the diffusion
   // tensors, deformation components, etc
-  if( !DiffusiveRegistrationFilterUtils::CompareImageAttributes( 
+  if( !DiffusiveRegistrationFilterUtils::CompareImageAttributes(
         m_NormalVectorImage.GetPointer(), output.GetPointer() ) )
     {
-    DiffusiveRegistrationFilterUtils::VectorResampleImageLinear( 
+    DiffusiveRegistrationFilterUtils::VectorResampleImageLinear(
           m_HighResolutionNormalVectorImage, output, m_NormalVectorImage, true );
-    assert( DiffusiveRegistrationFilterUtils::CompareImageAttributes( 
+    assert( DiffusiveRegistrationFilterUtils::CompareImageAttributes(
              m_NormalVectorImage.GetPointer(), output.GetPointer() ) );
     }
-  if( !DiffusiveRegistrationFilterUtils::CompareImageAttributes( 
+  if( !DiffusiveRegistrationFilterUtils::CompareImageAttributes(
         m_WeightImage.GetPointer(), output.GetPointer() ) )
     {
-    DiffusiveRegistrationFilterUtils::ResampleImageLinear( 
+    DiffusiveRegistrationFilterUtils::ResampleImageLinear(
           m_HighResolutionWeightImage, output, m_WeightImage );
-    assert( DiffusiveRegistrationFilterUtils::CompareImageAttributes( 
+    assert( DiffusiveRegistrationFilterUtils::CompareImageAttributes(
              m_WeightImage.GetPointer(), output.GetPointer() ) );
     }
 }
@@ -333,7 +333,7 @@ AnisotropicDiffusiveRegistrationFilter
 
   // Multithread the execution
   this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
-  this->GetMultiThreader()->SetSingleMethod( 
+  this->GetMultiThreader()->SetSingleMethod(
       this->GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback,
       & str );
   this->GetMultiThreader()->SingleMethodExecute();
@@ -369,14 +369,14 @@ AnisotropicDiffusiveRegistrationFilter
   typedef itk::ImageRegionSplitter< ImageDimension > SplitterType;
   typename SplitterType::Pointer splitter = SplitterType::New();
 
-  int normalTotal = splitter->GetNumberOfSplits( 
+  int normalTotal = splitter->GetNumberOfSplits(
       str->NormalVectorImageLargestPossibleRegion, threadCount );
-  ThreadNormalVectorImageRegionType splitNormalRegion = splitter->GetSplit( 
+  ThreadNormalVectorImageRegionType splitNormalRegion = splitter->GetSplit(
       threadId, normalTotal, str->NormalVectorImageLargestPossibleRegion );
 
-  int weightTotal = splitter->GetNumberOfSplits( 
+  int weightTotal = splitter->GetNumberOfSplits(
       str->WeightImageLargestPossibleRegion, threadCount );
-  ThreadWeightImageRegionType splitWeightRegion = splitter->GetSplit( 
+  ThreadWeightImageRegionType splitWeightRegion = splitter->GetSplit(
       threadId, weightTotal, str->WeightImageLargestPossibleRegion );
 
   // Assert we could split all of the images equally
@@ -384,7 +384,7 @@ AnisotropicDiffusiveRegistrationFilter
 
   if( threadId < normalTotal )
     {
-    str->Filter->ThreadedGetNormalsAndDistancesFromClosestSurfacePoint( 
+    str->Filter->ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
         str->PointLocator,
         str->NormalData,
         splitNormalRegion,
@@ -406,7 +406,7 @@ template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ThreadedGetNormalsAndDistancesFromClosestSurfacePoint( 
+::ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
     vtkPointLocator * pointLocator,
     vtkFloatArray * normalData,
     ThreadNormalVectorImageRegionType & normalRegionToProcess,
@@ -528,7 +528,7 @@ AnisotropicDiffusiveRegistrationFilter
 
     // Iterate through the weight image and compute the weight from the
     WeightType weight = 0;
-    WeightImageRegionType weightIt( 
+    WeightImageRegionType weightIt(
         m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
     bool useExponential = ( m_Gamma == -1.0 );
     if( useExponential )
@@ -621,17 +621,17 @@ AnisotropicDiffusiveRegistrationFilter
   DiffusionTensorType    normalDiffusionTensor;
 
   // Setup iterators
-  NormalVectorImageRegionType normalIt = NormalVectorImageRegionType( 
+  NormalVectorImageRegionType normalIt = NormalVectorImageRegionType(
       m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
-  WeightImageRegionType weightIt = WeightImageRegionType( 
+  WeightImageRegionType weightIt = WeightImageRegionType(
       m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
   DiffusionTensorImageRegionType tangentialTensorIt
-      = DiffusionTensorImageRegionType( 
+      = DiffusionTensorImageRegionType(
           this->GetDiffusionTensorImage( TANGENTIAL ),
           this->GetDiffusionTensorImage( TANGENTIAL )
           ->GetLargestPossibleRegion() );
   DiffusionTensorImageRegionType normalTensorIt
-      = DiffusionTensorImageRegionType( 
+      = DiffusionTensorImageRegionType(
           this->GetDiffusionTensorImage( NORMAL ),
           this->GetDiffusionTensorImage( NORMAL )->GetLargestPossibleRegion() );
 
@@ -707,7 +707,7 @@ AnisotropicDiffusiveRegistrationFilter
   // The normal multiplication vector is n_l*n
 
   // Iterate over the normal vector image
-  NormalVectorImageRegionType normalIt = NormalVectorImageRegionType( 
+  NormalVectorImageRegionType normalIt = NormalVectorImageRegionType(
       m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
 
   NormalVectorType normalVector;
@@ -716,11 +716,11 @@ AnisotropicDiffusiveRegistrationFilter
     {
     // Create the multiplication vector image
     DeformationFieldPointer normalMultsImage = DeformationFieldType::New();
-    DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( 
+    DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
                                                normalMultsImage, output );
 
     // Calculate n_l*n
-    DeformationVectorImageRegionType multIt = DeformationVectorImageRegionType( 
+    DeformationVectorImageRegionType multIt = DeformationVectorImageRegionType(
         normalMultsImage, normalMultsImage->GetLargestPossibleRegion() );
     for( normalIt.GoToBegin(), multIt.GoToBegin();
          !multIt.IsAtEnd();
@@ -749,7 +749,7 @@ AnisotropicDiffusiveRegistrationFilter
   assert( this->GetWeightImage() );
 
   // Setup iterators
-  NormalVectorImageRegionType normalVectorRegion( 
+  NormalVectorImageRegionType normalVectorRegion(
       m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
 
   OutputImageRegionType outputRegion( output,
@@ -757,7 +757,7 @@ AnisotropicDiffusiveRegistrationFilter
 
   DeformationFieldPointer normalDeformationField
       = this->GetDeformationComponentImage( NORMAL );
-  OutputImageRegionType normalDeformationRegion( 
+  OutputImageRegionType normalDeformationRegion(
       normalDeformationField,
       normalDeformationField->GetLargestPossibleRegion() );
 

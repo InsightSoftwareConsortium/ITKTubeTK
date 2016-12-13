@@ -1157,7 +1157,7 @@ Hessian( const PointType& point, double scale,
 
 template< class TInputImage >
 double
-NJetImageFunction<TInputImage>::Hessian( 
+NJetImageFunction<TInputImage>::Hessian(
   const PointType& point, const VectorType & v1, double scale,
   typename NJetImageFunction<TInputImage>::MatrixType & h ) const
 {
@@ -1834,7 +1834,7 @@ RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
   m_MostRecentRidgeRoundness = roundness;
   m_MostRecentRidgeCurvature = curvature;
   m_MostRecentRidgeLevelness = levelness;
-  m_MostRecentRidgeTangent.SetVnlVector( eVect.get_column( 
+  m_MostRecentRidgeTangent.SetVnlVector( eVect.get_column(
     ImageDimension-1 ) );
 
   return m_MostRecentRidgeness;

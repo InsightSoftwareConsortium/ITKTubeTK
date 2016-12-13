@@ -86,14 +86,14 @@ int DoIt( int argc, char * argv[] )
     {
     if( size.size() > 0 && max.size() > 0 )
       {
-      tube::ErrorMessage( 
+      tube::ErrorMessage(
         "You must specify either --size or --max options.  Not both." );
       return EXIT_FAILURE;
       }
 
     if( center.size() > 0 && min.size() > 0 )
       {
-      tube::ErrorMessage( 
+      tube::ErrorMessage(
         "You must specify either --center or --min options.  Not both." );
       return EXIT_FAILURE;
       }

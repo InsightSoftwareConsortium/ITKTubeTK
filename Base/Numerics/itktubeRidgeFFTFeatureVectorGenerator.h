@@ -75,20 +75,20 @@ public:
 
   typedef std::vector< typename FeatureImageType::Pointer >
                                                      FeatureImageListType;
-  
+
   //
   virtual unsigned int GetNumberOfFeatures( void ) const;
 
   void SetScales( const RidgeScalesType & scales );
   const RidgeScalesType & GetScales( void ) const;
 
-  virtual FeatureVectorType GetFeatureVector( 
+  virtual FeatureVectorType GetFeatureVector(
     const IndexType & indx ) const;
 
   virtual FeatureValueType GetFeatureVectorValue( const IndexType & indx,
     unsigned int fNum ) const;
 
-  virtual typename FeatureImageType::Pointer GetFeatureImage( 
+  virtual typename FeatureImageType::Pointer GetFeatureImage(
     unsigned int fNum ) const;
 
   virtual void Update( void );

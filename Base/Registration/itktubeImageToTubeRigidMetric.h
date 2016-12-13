@@ -191,11 +191,11 @@ private:
     OutputPointType & outputPoint,
     const TransformType * transform ) const;
 
-  ScalarType ComputeLaplacianMagnitude( 
+  ScalarType ComputeLaplacianMagnitude(
     const typename TubePointType::CovariantVectorType & tubeNormal,
     const ScalarType scale,
     const OutputPointType & currentPoint ) const;
-  ScalarType ComputeThirdDerivatives( 
+  ScalarType ComputeThirdDerivatives(
     const VectorType & v,
     const ScalarType scale,
     const OutputPointType & currentPoint ) const;

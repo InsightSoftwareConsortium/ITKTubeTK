@@ -127,7 +127,7 @@ int main( int argc, char * argv[] )
       }
     catch( ... )
       {
-      tube::WarningMessage( 
+      tube::WarningMessage(
         "No input image found. Defaulting to a ( 1, 1, 1 ) size." );
       timeCollector.Report();
       }

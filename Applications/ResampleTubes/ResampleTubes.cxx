@@ -143,7 +143,7 @@ int DoIt( int argc, char * argv[] )
   filter->Update();
   timeCollector.Stop( "Run Filter" );
 
-  std::cout << "Output # of children = " 
+  std::cout << "Output # of children = "
     << filter->GetOutput()->GetNumberOfChildren() << std::endl;
 
   progress = 0.9;
@@ -195,7 +195,7 @@ int main( int argc, char * argv[] )
       }
     default:
       {
-      tubeErrorMacro( 
+      tubeErrorMacro(
         << "Error: Only 3D data is currently supported." );
       delete mScene;
       return EXIT_FAILURE;

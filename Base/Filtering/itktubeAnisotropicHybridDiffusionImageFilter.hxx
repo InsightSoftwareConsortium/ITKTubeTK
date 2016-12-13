@@ -102,7 +102,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   typename EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter
     = EigenVectorAnalysisFilterType::New();
   eigenVectorAnalysisFilter->SetDimension( 3 );
-  eigenVectorAnalysisFilter->OrderEigenValuesBy( 
+  eigenVectorAnalysisFilter->OrderEigenValuesBy(
     EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
 
   eigenVectorAnalysisFilter->SetInput( structureTensorFilter->GetOutput() );
@@ -117,7 +117,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   typename EigenAnalysisFilterType::Pointer eigenAnalysisFilter
     = EigenAnalysisFilterType::New();
   eigenAnalysisFilter->SetDimension( 3 );
-  eigenAnalysisFilter->OrderEigenValuesBy( 
+  eigenAnalysisFilter->OrderEigenValuesBy(
     EigenAnalysisFilterType::FunctorType::OrderByValue );
 
   eigenAnalysisFilter->SetInput( structureTensorFilter->GetOutput() );
@@ -146,7 +146,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   itk::ImageRegionConstIterator<EigenVectorImageType>
     eigenVectorImageIterator;
   eigenVectorImageIterator
-    = itk::ImageRegionConstIterator<EigenVectorImageType>( 
+    = itk::ImageRegionConstIterator<EigenVectorImageType>(
     eigenVectorImage, eigenVectorImage->GetRequestedRegion() );
   eigenVectorImageIterator.GoToBegin();
 
@@ -173,7 +173,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   itk::ImageRegionConstIterator<GradientMagnitudeOutputImageType>
     gradientMagnitudeImageIterator;
   gradientMagnitudeImageIterator = itk::ImageRegionConstIterator<
-    GradientMagnitudeOutputImageType>( 
+    GradientMagnitudeOutputImageType>(
     gradientMagnitudeOutputImage,
     gradientMagnitudeOutputImage->GetRequestedRegion() );
 

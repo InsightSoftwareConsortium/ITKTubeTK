@@ -98,7 +98,7 @@ void vtkMRMLSpatialObjectsGlyphDisplayNode::UpdatePolyDataPipeline( void )
 
   /*if( this->Glyph3DMapper )
     {
-    this->Glyph3DMapper->SetInputConnection( 
+    this->Glyph3DMapper->SetInputConnection(
       this->PolyData->GetSource()->GetOutputPort() );
     }*/
 

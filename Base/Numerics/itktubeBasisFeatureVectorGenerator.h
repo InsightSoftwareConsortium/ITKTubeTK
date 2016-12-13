@@ -104,10 +104,10 @@ public:
   MatrixType   GetGlobalCovariance( void ) const;
   void         SetGlobalCovariance( MatrixType val );
 
-  void         SetNumberOfPCABasisToUseAsFeatures( 
+  void         SetNumberOfPCABasisToUseAsFeatures(
                  unsigned int numBasisUsed );
   unsigned int GetNumberOfPCABasisToUseAsFeatures( void ) const;
-  void         SetNumberOfLDABasisToUseAsFeatures( 
+  void         SetNumberOfLDABasisToUseAsFeatures(
                  unsigned int numBasisUsed );
   unsigned int GetNumberOfLDABasisToUseAsFeatures( void ) const;
 
@@ -122,7 +122,7 @@ public:
   void         SetBasisMatrix( const MatrixType & mat );
   void         SetBasisValues( const VectorType & values );
 
-  virtual typename FeatureImageType::Pointer GetFeatureImage( 
+  virtual typename FeatureImageType::Pointer GetFeatureImage(
                                        unsigned int fNum ) const;
 
   void   SetInputWhitenMeans( const ValueListType & means );

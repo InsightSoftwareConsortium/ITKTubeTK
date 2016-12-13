@@ -104,7 +104,7 @@ protected:
 
 private:
   // Purposely not implemented
-  RecordOptimizationParameterProgressionCommand( 
+  RecordOptimizationParameterProgressionCommand(
     const RecordOptimizationParameterProgressionCommand & );
   // Purposely not implemented
   void operator=( const RecordOptimizationParameterProgressionCommand & );

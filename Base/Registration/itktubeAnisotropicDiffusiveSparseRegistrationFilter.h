@@ -293,7 +293,7 @@ public:
   /** Set/get the weighting value w image.  Setting the weighting component
     * image overrides the border surface polydata and lambda/gamma if the border
     * surface was also supplied. */
-  virtual void SetWeightRegularizationsImage( 
+  virtual void SetWeightRegularizationsImage(
       WeightComponentImageType * weightImage )
     { m_WeightRegularizationsImage = weightImage; }
   virtual WeightComponentImageType * GetWeightRegularizationsImage( void ) const
@@ -358,14 +358,14 @@ protected:
 
   /** Computes the normal vector image and weighting factors w given the
    *  surface border polydata. */
-  virtual void ComputeNormalMatrixAndWeightImages( 
+  virtual void ComputeNormalMatrixAndWeightImages(
       bool computeNormals,
       bool computeWeightStructures,
       bool computeWeightRegularizations );
 
   /** Computes the normal vectors and distances to the closest point given
    *  an initialized vtkPointLocator and the surface border normals */
-  virtual void GetNormalsAndDistancesFromClosestSurfacePoint( 
+  virtual void GetNormalsAndDistancesFromClosestSurfacePoint(
       bool computeNormals,
       bool computeWeightStructures,
       bool computeWeightRegularizations );
@@ -374,7 +374,7 @@ protected:
    *  by the multithreading mechanism.
    *  \sa GetNormalsAndDistancesFromClosestSurfacePoint
    *  \sa GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback */
-  virtual void ThreadedGetNormalsAndDistancesFromClosestSurfacePoint( 
+  virtual void ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
       vtkPointLocator * surfacePointLocator,
       vtkFloatArray * surfaceNormalData,
       vtkPointLocator * tubePointLocator,
@@ -392,18 +392,18 @@ protected:
   /** Computes the weighting factor w from the distance to the border using
    *  exponential decay.  The weight should be 1 near the border and 0 away from
    *  the border. */
-  virtual WeightComponentType ComputeWeightFromDistanceExponential( 
+  virtual WeightComponentType ComputeWeightFromDistanceExponential(
       const WeightComponentType distance ) const;
 
   /** Computes the weighting factor w from the distance to the border using
    *  a Dirac-shaped function.  The weight should be 1 near the border and 0
    *  away from the border. */
-  virtual WeightComponentType ComputeWeightFromDistanceDirac( 
+  virtual WeightComponentType ComputeWeightFromDistanceDirac(
       const WeightComponentType distance ) const;
 
   /** Given a point and two vectors on a plane, and a second point, calculates
    *  the in-plane distance between the two points. */
-  double ComputeDistanceToPointOnPlane( 
+  double ComputeDistanceToPointOnPlane(
       double * planePoint,
       float * tangentVector1,
       float * tangentVector2,
@@ -439,7 +439,7 @@ private:
    * output region that it passes to
    * ThreadedGetNormalsAndDistancesFromClosestSurfacePoint for processing. */
   static ITK_THREAD_RETURN_TYPE
-      GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback( 
+      GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback(
           void * arg );
 
   /** Organ boundary surface and surface of border normals */

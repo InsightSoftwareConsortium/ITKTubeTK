@@ -110,7 +110,7 @@ public:
     }
 
   /** Get the Z-score at a given continuous index. */
-  virtual double EvaluateAtContinuousIndex( 
+  virtual double EvaluateAtContinuousIndex(
     const ContinuousIndexType & index ) const
     {
     IndexType nindex;
@@ -138,7 +138,7 @@ public:
    * used to calculate the mean and standard deviation histograms when
    * needed.
    */
-  virtual void PrecomputeAtContinuousIndex( 
+  virtual void PrecomputeAtContinuousIndex(
     const ContinuousIndexType & index )
     {
     IndexType nindex;
@@ -182,7 +182,7 @@ protected:
   /** PrintSelf function for introspection. */
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
-  typename HistogramType::Pointer & ComputeHistogramAtIndex( 
+  typename HistogramType::Pointer & ComputeHistogramAtIndex(
     const IndexType & index, bool blur=true ) const;
 
   /** Get the Z-score at a given index. */

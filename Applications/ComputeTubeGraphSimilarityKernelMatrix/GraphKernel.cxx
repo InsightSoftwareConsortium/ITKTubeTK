@@ -30,7 +30,7 @@ namespace tube
 std::string GraphKernel::LabelVectorToString( const std::vector<int> &labVec )
 {
   std::stringstream res;
-  std::copy( 
+  std::copy(
     labVec.begin(),
     labVec.end(),
     std::ostream_iterator<int>( res, "" ) );
@@ -214,7 +214,7 @@ GraphKernel::GraphFromJSONFile( const char *graphFile )
     read_json( graphFile, pt );
 
     // Gets #vertices
-    int nVertices = boost::lexical_cast<int>( 
+    int nVertices = boost::lexical_cast<int>(
       pt.get<std::string>( "nVertices" ) );
 
 

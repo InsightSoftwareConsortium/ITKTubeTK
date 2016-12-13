@@ -86,7 +86,7 @@ class ComputeTrainingMask:
     ~ComputeTrainingMask() {}
 
     void PrintSelf( std::ostream & os, itk::Indent indent ) const;
-  
+
   private:
     /** itkComputeTrainingMask parameters **/
     ComputeTrainingMask( const Self & );

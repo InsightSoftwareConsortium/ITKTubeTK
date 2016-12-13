@@ -134,7 +134,7 @@ int DoIt( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage( 
+    tube::ErrorMessage(
       "Edge enhancing anisotropic diffusion: Exception caught: "
       + std::string( err.GetDescription() ) );
     timeCollector.Report();
@@ -159,7 +159,7 @@ int DoIt( int argc, char * argv[] )
   typename OrientOutputFilterType::Pointer orientOutputFilter
       = OrientOutputFilterType::New();
   orientOutputFilter->UseImageDirectionOn();
-  orientOutputFilter->SetDesiredCoordinateDirection( 
+  orientOutputFilter->SetDesiredCoordinateDirection(
       reader->GetOutput()->GetDirection() );
   orientOutputFilter->SetInput( castOutputImageFilter->GetOutput() );
   orientOutputFilter->Update();

@@ -131,12 +131,12 @@ AnisotropicDiffusiveRegistrationFunction
   // Release the component data structures
   if( this->GetComputeRegularizationTerm() )
     {
-    m_RegularizationFunction->ReleaseGlobalDataPointer( 
+    m_RegularizationFunction->ReleaseGlobalDataPointer(
         gd->m_RegularizationGlobalDataStruct );
     }
   if( this->GetComputeIntensityDistanceTerm() )
     {
-    m_IntensityDistanceFunction->ReleaseGlobalDataPointer( 
+    m_IntensityDistanceFunction->ReleaseGlobalDataPointer(
         gd->m_IntensityDistanceGlobalDataStruct );
     }
 
@@ -164,7 +164,7 @@ AnisotropicDiffusiveRegistrationFunction
     {
     m_IntensityDistanceFunction->SetMovingImage( this->GetMovingImage() );
     m_IntensityDistanceFunction->SetFixedImage( this->GetFixedImage() );
-    m_IntensityDistanceFunction->SetDisplacementField( 
+    m_IntensityDistanceFunction->SetDisplacementField(
         this->GetDisplacementField() );
     m_IntensityDistanceFunction->InitializeIteration();
     }
@@ -201,7 +201,7 @@ typename AnisotropicDiffusiveRegistrationFunction
 ::PixelType
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeUpdate( 
+::ComputeUpdate(
     const NeighborhoodType &neighborhood,
     const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
     const ScalarDerivativeImageRegionArrayVectorType
@@ -228,7 +228,7 @@ AnisotropicDiffusiveRegistrationFunction
   intensityDistanceTerm.Fill( 0 );
   if( this->GetComputeIntensityDistanceTerm() )
     {
-    intensityDistanceTerm = m_IntensityDistanceFunction->ComputeUpdate( 
+    intensityDistanceTerm = m_IntensityDistanceFunction->ComputeUpdate(
         neighborhood,
         gd->m_IntensityDistanceGlobalDataStruct,
         offset );
@@ -238,7 +238,7 @@ AnisotropicDiffusiveRegistrationFunction
   regularizationTerm.Fill( 0 );
   if( this->GetComputeRegularizationTerm() )
     {
-    regularizationTerm = this->ComputeRegularizationUpdate( 
+    regularizationTerm = this->ComputeRegularizationUpdate(
           tensorNeighborhoods,
           deformationComponentFirstOrderDerivativeRegions,
           deformationComponentSecondOrderDerivativeRegions,
@@ -266,7 +266,7 @@ typename AnisotropicDiffusiveRegistrationFunction
 ::PixelType
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeRegularizationUpdate( 
+::ComputeRegularizationUpdate(
     const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
     const ScalarDerivativeImageRegionArrayVectorType
         & deformationComponentFirstOrderDerivativeRegions,
@@ -304,7 +304,7 @@ AnisotropicDiffusiveRegistrationFunction
               GetImage() );
 
       // Compute div( T \grad( u ) )
-      intermediateComponent = m_RegularizationFunction->ComputeUpdate( 
+      intermediateComponent = m_RegularizationFunction->ComputeUpdate(
           tensorNeighborhoods[term],
           deformationComponentFirstOrderDerivativeRegions[term][i],
           deformationComponentSecondOrderDerivativeRegions[term][i],
@@ -341,11 +341,11 @@ template< class TFixedImage, class TMovingImage, class TDeformationField >
 double
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeIntensityDistanceEnergy( 
+::ComputeIntensityDistanceEnergy(
   const typename NeighborhoodType::IndexType index,
   const DeformationVectorType & update )
 {
-  return vnl_math_sqr( m_IntensityDistanceFunction->ComputeIntensityDifference( 
+  return vnl_math_sqr( m_IntensityDistanceFunction->ComputeIntensityDifference(
                          index, update ) );
 }
 
@@ -356,7 +356,7 @@ template< class TFixedImage, class TMovingImage, class TDeformationField >
 double
 AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeRegularizationEnergy( 
+::ComputeRegularizationEnergy(
     const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
     const ScalarDerivativeImageRegionArrayVectorType
         & deformationComponentFirstOrderDerivativeRegions )

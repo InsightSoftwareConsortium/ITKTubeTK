@@ -105,7 +105,7 @@ int itktubeTubeAngleOfIncidenceWeightFunctionTest( int argc, char * argv[] )
     PointWeightsType > PointWeightsCalculatorType;
   PointWeightsCalculatorType::Pointer weightsCalculator
     = PointWeightsCalculatorType::New();
-  weightsCalculator->SetTubeTreeSpatialObject( 
+  weightsCalculator->SetTubeTreeSpatialObject(
     subSampleTubeTreeFilter->GetOutput() );
   weightsCalculator->SetPointWeightFunction( weightFunction );
   weightsCalculator->Compute();

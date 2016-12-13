@@ -41,12 +41,12 @@ public:
     float inValMin, float inValMax, float outMin, float outMax );
 
   /** Intensity multiplicative correct using inMeanField. */
-  static bool ApplyIntensityMultiplicativeWithBiasCorrection( 
+  static bool ApplyIntensityMultiplicativeWithBiasCorrection(
     typename ImageType::Pointer imIn,
     const std::string & inMeanFieldFilePath );
 
   /** Resamples image a to b if they are different, returns resampled_a */
-  static typename ImageType::Pointer ResampleImage( 
+  static typename ImageType::Pointer ResampleImage(
     typename ImageType::Pointer a, typename ImageType::Pointer b );
 
   /** Adds uniform noise to all pixels within inVal range */
@@ -89,7 +89,7 @@ public:
     float threshLow, float threshHigh, float valTrue, float valFalse );
 
   /** Return image value within masked region ( mode: 0=mean, 1=stdDev ) */
-  static double ComputeImageStdDevOrMeanWithinRangeUsingMask( 
+  static double ComputeImageStdDevOrMeanWithinRangeUsingMask(
     typename ImageType::Pointer imIn, const std::string & maskFilePath,
     float threshLow, float threshHigh, int mode, bool & success );
 
@@ -97,7 +97,7 @@ public:
   static void AbsoluteImage( typename ImageType::Pointer imIn );
 
   /** If inFile( x ) in [tLow, tHigh] then I( x )=I( x ) else I( x )=vFalse */
-  static bool MaskImageWithValueIfNotWithinSecondImageRange( 
+  static bool MaskImageWithValueIfNotWithinSecondImageRange(
     typename ImageType::Pointer imIn, const std::string & imIn2FilePath,
     float threshLow, float threshHigh, float valFalse );
 
@@ -127,12 +127,12 @@ public:
     const std::string & histOutputFilePath );
 
   /** Correct intensity slice-by-slice using HistogramMatchingFilter. */
-  static void CorrectIntensitySliceBySliceUsingHistogramMatching( 
+  static void CorrectIntensitySliceBySliceUsingHistogramMatching(
     typename ImageType::Pointer imIn, unsigned int numberOfBins,
     unsigned int numberOfMatchPoints );
 
   /** Match intensity to another volume using HistogramMatchingFilter. */
-  static bool CorrectIntensityUsingHistogramMatching( 
+  static bool CorrectIntensityUsingHistogramMatching(
     typename ImageType::Pointer & imIn, unsigned int numberOfBins,
     unsigned int numberOfMatchPoints,
     const std::string & referenceVolumeFilePath );
@@ -146,7 +146,7 @@ public:
     const std::string & imIn2FilePath );
 
   /** Extract a single slice from the image. */
-  static void ExtractSlice( 
+  static void ExtractSlice(
     typename ImageType::Pointer & imIn, unsigned int dimension,
     unsigned int slice );
 
@@ -155,13 +155,13 @@ public:
     double scaleMin, double scaleMax, double numScales );
 
   /** Segment using ( inclusive ) threshold connected components. */
-  static void SegmentUsingConnectedThreshold( 
+  static void SegmentUsingConnectedThreshold(
     typename ImageType::Pointer & imIn,
     float threshLow, float threshHigh, float labelValue,
     float x, float y, float z );
 
   /** Run centroid voronoi tessellation on the image. */
-  static bool ComputeVoronoiTessellation( 
+  static bool ComputeVoronoiTessellation(
     typename ImageType::Pointer & imIn, unsigned int numberOfCentroids,
     unsigned int numberOfIterations, unsigned int numberOfSamples,
     const std::string & centroidOutFilePath );

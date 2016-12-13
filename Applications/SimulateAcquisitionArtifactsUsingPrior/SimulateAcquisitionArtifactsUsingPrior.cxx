@@ -174,7 +174,7 @@ int DoIt( int argc, char * argv[] )
     treader->SetFileName( loadTransform );
     treader->Update();
     typename TransformType::Pointer transform;
-    transform = static_cast< TransformType * >( 
+    transform = static_cast< TransformType * >(
       treader->GetTransformList()->front().GetPointer() );
 
     eval.SetRegistrationTransform( transform );

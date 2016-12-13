@@ -70,7 +70,7 @@ MetaRidgeSeed( const MetaRidgeSeed & _metaRidgeSeed )
 }
 
 MetaRidgeSeed::
-MetaRidgeSeed( 
+MetaRidgeSeed(
   const RidgeSeedScalesType & _ridgeSeedScales,
   bool _useIntensityOnly,
   bool _useSVM,
@@ -178,7 +178,7 @@ Clear( void )
 }
 
 bool MetaRidgeSeed::
-InitializeEssential( 
+InitializeEssential(
   const RidgeSeedScalesType & _ridgeSeedScales,
   bool _useIntensityOnly,
   bool _useSVM,

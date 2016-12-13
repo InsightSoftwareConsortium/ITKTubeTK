@@ -60,7 +60,7 @@ int qSlicerSpatialObjectsGlyphWidgetTest1( int argc, char * argv[] )
   widget.setSpatialObjectsDisplayNode( nullNode );
   widget.setSpatialObjectsDisplayNode( so->GetDisplayNode() );
 
-  soDisplay->SetAndObserveSpatialObjectsDisplayPropertiesNodeID( 
+  soDisplay->SetAndObserveSpatialObjectsDisplayPropertiesNodeID(
       soDisplayProperties->GetID() );
 
   widget.setSpatialObjectsDisplayNode( nullNode );

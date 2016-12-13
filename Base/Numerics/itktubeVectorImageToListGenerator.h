@@ -122,7 +122,7 @@ public:
     // set the dimension to a different value.
     if( s != MeasurementVectorSize )
       {
-      itkExceptionMacro( 
+      itkExceptionMacro(
         << "Measurement vector size for the image adaptor obtained"
         << " from the pixel dimension is: "
         << MeasurementVectorSize << " but you "

@@ -223,7 +223,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
       if( s > 0 )
         {
         m_FeatureImageList[feat-1] = FeatureImageType::New();
-        m_FeatureImageList[feat-1]->CopyInformation( 
+        m_FeatureImageList[feat-1]->CopyInformation(
           this->m_InputImageList[0] );
         m_FeatureImageList[feat-1]->SetRegions( region );
         m_FeatureImageList[feat-1]->Allocate();
@@ -243,7 +243,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
       if( s == m_Scales.size() - 1 )
         {
         m_FeatureImageList[feat+1] = FeatureImageType::New();
-        m_FeatureImageList[feat+1]->CopyInformation( 
+        m_FeatureImageList[feat+1]->CopyInformation(
           this->m_InputImageList[0] );
         m_FeatureImageList[feat+1]->SetRegions( region );
         m_FeatureImageList[feat+1]->Allocate();

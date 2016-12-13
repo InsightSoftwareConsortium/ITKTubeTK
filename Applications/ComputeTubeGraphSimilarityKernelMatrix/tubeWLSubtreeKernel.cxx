@@ -97,7 +97,7 @@ std::vector< int > WLSubtreeKernel::BuildPhi( GraphType & G )
     const int height = 0;
     const int type = G[vertex( i, G )].type;
     LabelMapType::const_iterator it
-      = m_LabelMap[height].find( boost::lexical_cast< std::string >( 
+      = m_LabelMap[height].find( boost::lexical_cast< std::string >(
           type ) );
     if( it != m_LabelMap[height].end() )
       {

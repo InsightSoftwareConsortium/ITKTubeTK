@@ -183,7 +183,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     hist->GetLargestPossibleRegion() );
   itk::ImageRegionIterator< HistogramType > iterSum( m_SumHistogram,
     m_SumHistogram->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< HistogramType > iterSumSquare( 
+  itk::ImageRegionIterator< HistogramType > iterSumSquare(
     m_SumOfSquaresHistogram,
     m_SumOfSquaresHistogram->GetLargestPossibleRegion() );
   while( !iterHist.IsAtEnd() )
@@ -236,7 +236,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     while( !meanItr.IsAtEnd() )
       {
       meanItr.Set( sumItr.Get() / m_NumberOfSamples );
-      stdItr.Set( std::sqrt( vnl_math_abs( 
+      stdItr.Set( std::sqrt( vnl_math_abs(
         sumOfSquaresItr.Get() / m_NumberOfSamples -
         meanItr.Get() * meanItr.Get() ) ) );
       ++sumItr;

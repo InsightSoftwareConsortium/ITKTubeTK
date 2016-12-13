@@ -52,7 +52,7 @@ int DoIt( int argc, char * argv[] )
   double progress = 0.0;
   itk::TimeProbesCollectorBase timeCollector;
 
-  tube::CLIProgressReporter progressReporter( 
+  tube::CLIProgressReporter progressReporter(
     "ConvertTubesToImage",
     CLPProcessInformation );
 

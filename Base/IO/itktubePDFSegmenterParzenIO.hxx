@@ -386,21 +386,21 @@ Read( const char * _headerName )
   m_PDFSegmenter->SetErodeRadius( static_cast< int >( mF->value[0] ) );
 
   mF = MET_GetFieldRecord( "HoleFillIterations", &metaFields );
-  m_PDFSegmenter->SetHoleFillIterations( static_cast< int >( 
+  m_PDFSegmenter->SetHoleFillIterations( static_cast< int >(
     mF->value[0] ) );
 
   mF = MET_GetFieldRecord( "ProbabilityImageSmoothingStandardDeviation",
     &metaFields );
-  m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation( 
+  m_PDFSegmenter->SetProbabilityImageSmoothingStandardDeviation(
     static_cast< double >( mF->value[0] ) );
 
   mF = MET_GetFieldRecord( "HistogramSmoothingStandardDeviation",
     &metaFields );
-  m_PDFSegmenter->SetHistogramSmoothingStandardDeviation( 
+  m_PDFSegmenter->SetHistogramSmoothingStandardDeviation(
     static_cast< double >( mF->value[0] ) );
 
   mF = MET_GetFieldRecord( "OutlierRejectPortion", &metaFields );
-  m_PDFSegmenter->SetOutlierRejectPortion( static_cast< double >( 
+  m_PDFSegmenter->SetOutlierRejectPortion( static_cast< double >(
     mF->value[0] ) );
 
   mF = MET_GetFieldRecord( "ReclassifyObjectLabels", &metaFields );
@@ -736,23 +736,23 @@ Write( const char * _headerName )
         ->GetBufferPointer() );
 
     pdfClassWriter.SetObjectId( m_PDFSegmenter->GetObjectId() );
-    pdfClassWriter.SetObjectPDFWeight( 
+    pdfClassWriter.SetObjectPDFWeight(
       m_PDFSegmenter->GetObjectPDFWeight() );
     pdfClassWriter.SetVoidId( m_PDFSegmenter->GetVoidId() );
     pdfClassWriter.SetErodeRadius( m_PDFSegmenter->GetErodeRadius() );
-    pdfClassWriter.SetHoleFillIterations( 
+    pdfClassWriter.SetHoleFillIterations(
       m_PDFSegmenter->GetHoleFillIterations() );
-    pdfClassWriter.SetHistogramSmoothingStandardDeviation( 
+    pdfClassWriter.SetHistogramSmoothingStandardDeviation(
       m_PDFSegmenter->GetHistogramSmoothingStandardDeviation() );
-    pdfClassWriter.SetProbabilityImageSmoothingStandardDeviation( 
+    pdfClassWriter.SetProbabilityImageSmoothingStandardDeviation(
       m_PDFSegmenter->GetProbabilityImageSmoothingStandardDeviation() );
-    pdfClassWriter.SetOutlierRejectPortion( 
+    pdfClassWriter.SetOutlierRejectPortion(
       m_PDFSegmenter->GetOutlierRejectPortion() );
-    pdfClassWriter.SetReclassifyObjectLabels( 
+    pdfClassWriter.SetReclassifyObjectLabels(
       m_PDFSegmenter->GetReclassifyObjectLabels() );
-    pdfClassWriter.SetReclassifyNotObjectLabels( 
+    pdfClassWriter.SetReclassifyNotObjectLabels(
       m_PDFSegmenter->GetReclassifyNotObjectLabels() );
-    pdfClassWriter.SetForceClassification( 
+    pdfClassWriter.SetForceClassification(
       m_PDFSegmenter->GetForceClassification() );
 
     char objectFileName[4096];

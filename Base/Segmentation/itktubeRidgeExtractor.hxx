@@ -50,7 +50,7 @@ class RidgeExtractorSplineValue
 {
 public:
 
-  RidgeExtractorSplineValue( 
+  RidgeExtractorSplineValue(
     RidgeExtractor<TInputImage> * newRidgeExtractor )
     {
     m_Ridge = newRidgeExtractor;
@@ -1027,7 +1027,7 @@ RidgeExtractor<TInputImage>
       continue;
       }
 
-    double diffX = std::sqrt( 
+    double diffX = std::sqrt(
       ::tube::ComputeEuclideanDistanceVector( lX, pX ) );
     if( diffX > m_MaxXChange * GetScale() * stepFactor )
       {

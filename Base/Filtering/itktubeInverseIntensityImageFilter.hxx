@@ -73,7 +73,7 @@ InverseIntensityImageFilter<TInputImage>
 
   typename itk::MinimumMaximumImageFilter<InputImageType>::Pointer
     MinMaxFilter;
-  MinMaxFilter=itk::MinimumMaximumImageFilter<InputImageType>::New(); 
+  MinMaxFilter=itk::MinimumMaximumImageFilter<InputImageType>::New();
   MinMaxFilter->SetInput( InputImage );         //  compute max
   MinMaxFilter->Update();                       // and min
   myMin=MinMaxFilter->GetMinimum();             //  of the input image

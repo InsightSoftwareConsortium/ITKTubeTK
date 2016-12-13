@@ -273,13 +273,13 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Stop( "Ridge Extractor" );
 
-  if( segmentTubesFilter->GetTubeGroup()->GetNumberOfChildren() == 
+  if( segmentTubesFilter->GetTubeGroup()->GetNumberOfChildren() ==
     numberOfPriorChildren )
     {
     std::cerr << "Failed to extract any tubes." << std::endl;
     progressReporter.Report( 1.0 );
     progressReporter.End();
-  
+ 
     timeCollector.Report();
     return EXIT_FAILURE;
     }

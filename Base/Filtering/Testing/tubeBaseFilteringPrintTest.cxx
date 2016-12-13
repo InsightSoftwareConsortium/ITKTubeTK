@@ -42,7 +42,7 @@ limitations under the License.
 #include <itkMatrix.h>
 #include <itkTubeSpatialObject.h>
 
-int tubeBaseFilteringPrintTest( int itkNotUsed( argc ), char * itkNotUsed( 
+int tubeBaseFilteringPrintTest( int itkNotUsed( argc ), char * itkNotUsed(
   argv )[] )
 {
   const unsigned int Dimension = 3;

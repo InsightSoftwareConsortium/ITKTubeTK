@@ -64,11 +64,11 @@ CropTubesFilter< VDimension >
 
   pTargetTubeGroup->CopyInformation( pSourceTubeGroup );
   // TODO: make CopyInformation of itk::SpatialObject do this
-  pTargetTubeGroup->GetObjectToParentTransform()->SetScale( 
+  pTargetTubeGroup->GetObjectToParentTransform()->SetScale(
     pSourceTubeGroup->GetObjectToParentTransform()->GetScale() );
-  pTargetTubeGroup->GetObjectToParentTransform()->SetOffset( 
+  pTargetTubeGroup->GetObjectToParentTransform()->SetOffset(
     pSourceTubeGroup->GetObjectToParentTransform()->GetOffset() );
-  pTargetTubeGroup->GetObjectToParentTransform()->SetMatrix( 
+  pTargetTubeGroup->GetObjectToParentTransform()->SetMatrix(
     pSourceTubeGroup->GetObjectToParentTransform()->GetMatrix() );
   pTargetTubeGroup->SetSpacing( pSourceTubeGroup->GetSpacing() );
   pTargetTubeGroup->ComputeObjectToWorldTransform();
@@ -116,13 +116,13 @@ CropTubesFilter< VDimension >
       TubePointType curSourcePoint = *pointList_it;
       //Transform parameters in physical space
       typename TubePointType::PointType curSourcePos =
-        pTubeObjectPhysTransform->TransformPoint( 
+        pTubeObjectPhysTransform->TransformPoint(
           curSourcePoint.GetPosition() );
       typename TubePointType::CovariantVectorType curTubeNormal1 =
-        pTubeObjectPhysTransform->TransformCovariantVector( 
+        pTubeObjectPhysTransform->TransformCovariantVector(
           curSourcePoint.GetNormal1() );
       typename TubePointType::CovariantVectorType curTubeNormal2 =
-        pTubeObjectPhysTransform->TransformCovariantVector( 
+        pTubeObjectPhysTransform->TransformCovariantVector(
           curSourcePoint.GetNormal2() );
       VectorType curRadius;
       for( unsigned int i = 0; i < VDimension; i++ )
@@ -140,7 +140,7 @@ CropTubesFilter< VDimension >
         }
       bool volumeMaskFlag = false;
       typename TubePointType::PointType curSourcePosIndexSpace =
-        pTubeIndexPhysTransform->TransformPoint( 
+        pTubeIndexPhysTransform->TransformPoint(
         curSourcePoint.GetPosition() );
       if( m_UseMaskImage )
         {
@@ -182,11 +182,11 @@ CropTubesFilter< VDimension >
           pTargetTube->CopyInformation( pCurSourceTube );
 
           // TODO: make CopyInformation of itk::SpatialObject do this
-          pTargetTube->GetObjectToParentTransform()->SetScale( 
+          pTargetTube->GetObjectToParentTransform()->SetScale(
             pCurSourceTube->GetObjectToParentTransform()->GetScale() );
-          pTargetTube->GetObjectToParentTransform()->SetOffset( 
+          pTargetTube->GetObjectToParentTransform()->SetOffset(
             pCurSourceTube->GetObjectToParentTransform()->GetOffset() );
-          pTargetTube->GetObjectToParentTransform()->SetMatrix( 
+          pTargetTube->GetObjectToParentTransform()->SetMatrix(
             pCurSourceTube->GetObjectToParentTransform()->GetMatrix() );
           pTargetTube->SetSpacing( pCurSourceTube->GetSpacing() );
           pTargetTube->ComputeObjectToWorldTransform();
@@ -211,11 +211,11 @@ CropTubesFilter< VDimension >
       pTargetTube->CopyInformation( pCurSourceTube );
 
       // TODO: make CopyInformation of itk::SpatialObject do this
-      pTargetTube->GetObjectToParentTransform()->SetScale( 
+      pTargetTube->GetObjectToParentTransform()->SetScale(
         pCurSourceTube->GetObjectToParentTransform()->GetScale() );
-      pTargetTube->GetObjectToParentTransform()->SetOffset( 
+      pTargetTube->GetObjectToParentTransform()->SetOffset(
         pCurSourceTube->GetObjectToParentTransform()->GetOffset() );
-      pTargetTube->GetObjectToParentTransform()->SetMatrix( 
+      pTargetTube->GetObjectToParentTransform()->SetMatrix(
         pCurSourceTube->GetObjectToParentTransform()->GetMatrix() );
       pTargetTube->SetSpacing( pCurSourceTube->GetSpacing() );
       pTargetTube->ComputeObjectToWorldTransform();
@@ -281,7 +281,7 @@ CropTubesFilter< VDimension >
         }
       default:
         {
-        tubeErrorMacro( 
+        tubeErrorMacro(
           << "Error: Only 2D and 3D data is currently supported." );
         return EXIT_FAILURE;
         }

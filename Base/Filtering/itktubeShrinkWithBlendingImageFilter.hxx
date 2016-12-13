@@ -178,7 +178,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 
   if( m_InputMipPointImage.IsNotNull() )
     {
-    inputMipPointItPtr = new PointImageConstIteratorType( 
+    inputMipPointItPtr = new PointImageConstIteratorType(
       m_InputMipPointImage, outputRegionForThread );
     }
 
@@ -413,7 +413,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
     return;
     }
   bool warnSize = false;
-  InputImagePointer  inputPtr = const_cast< TInputImage * >( 
+  InputImagePointer  inputPtr = const_cast< TInputImage * >(
     this->GetInput() );
   const typename TOutputImage::SizeType & inputSize =
     inputPtr->GetLargestPossibleRegion().GetSize();
@@ -435,7 +435,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
     for( unsigned int i = 0; i < ImageDimension; ++i )
       {
       itkWarningMacro( << "   m_NewSize [" << i << "] = " << m_NewSize[ i ] );
-      itkWarningMacro( << "   outSize [" << i << "] = " << static_cast< int >( 
+      itkWarningMacro( << "   outSize [" << i << "] = " << static_cast< int >(
       inputSize[ i ] / m_InternalShrinkFactors[ i ] ) );
       }
     }
@@ -453,7 +453,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
   Superclass::GenerateInputRequestedRegion();
 
   // Get pointers to the input and output
-  InputImagePointer  inputPtr = const_cast< TInputImage * >( 
+  InputImagePointer  inputPtr = const_cast< TInputImage * >(
     this->GetInput() );
   OutputImagePointer outputPtr = this->GetOutput();
 
@@ -547,7 +547,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
     outputSpacing[i] = inputSpacing[i] * ( double ) m_InternalShrinkFactors[i];
 
     // Round down so that all output pixels fit input input region
-    outputSize[i] = static_cast<SizeValueType>( std::floor( 
+    outputSize[i] = static_cast<SizeValueType>( std::floor(
       ( double )inputSize[i] / ( double )m_InternalShrinkFactors[i] ) );
 
     if( outputSize[i] < 1 )
@@ -606,7 +606,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 
     if( !sizeEqual )
       {
-      itkExceptionMacro( 
+      itkExceptionMacro(
         << "Size of output and input MIP point image do not match. "
            "Make sure you are using the same shrink amount parameters "
            "that were used to generate the input MIP point image." )
@@ -621,7 +621,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
   outputPtr->SetLargestPossibleRegion( outputLargestPossibleRegion );
 
   m_OutputMipPointImage = PointImageType::New();
-  m_OutputMipPointImage->SetRegions( 
+  m_OutputMipPointImage->SetRegions(
     outputPtr->GetLargestPossibleRegion() );
   m_OutputMipPointImage->CopyInformation( outputPtr );
   m_OutputMipPointImage->Allocate();

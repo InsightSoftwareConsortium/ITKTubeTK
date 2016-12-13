@@ -234,14 +234,14 @@ FeatureVectorGenerator< TImage >
   if( m_WhitenStdDev.size() > 0 &&
     m_WhitenStdDev[fNum] > 0 )
     {
-    return static_cast< FeatureValueType >( 
+    return static_cast< FeatureValueType >(
         ( m_InputImageList[fNum]->GetPixel( indx )
           - m_WhitenMean[fNum] )
         / m_WhitenStdDev[fNum] );
     }
   else
     {
-    return static_cast< FeatureValueType >( 
+    return static_cast< FeatureValueType >(
       m_InputImageList[fNum]->GetPixel( indx ) );
     }
 }

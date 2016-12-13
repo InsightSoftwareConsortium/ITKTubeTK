@@ -65,10 +65,10 @@ vtkMRMLSpatialObjectsTubeDisplayNode::vtkMRMLSpatialObjectsTubeDisplayNode( void
   this->amontAssignAttribute->Assign( this->GetActiveScalarName(),
                                      vtkDataSetAttributes::SCALARS,
                                      vtkAssignAttribute::POINT_DATA );
-  this->TubeFilter->SetInputConnection( 
+  this->TubeFilter->SetInputConnection(
     this->amontAssignAttribute->GetOutputPort() );
 
-  this->AssignAttribute->SetInputConnection( 
+  this->AssignAttribute->SetInputConnection(
     this->TubeFilter->GetOutputPort() );
 }
 

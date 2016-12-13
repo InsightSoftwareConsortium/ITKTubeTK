@@ -38,7 +38,7 @@ extern "C"
 {
 #endif
 
-  static PyObject * tubetk_numpy_tubes_from_file( 
+  static PyObject * tubetk_numpy_tubes_from_file(
     PyObject * itkNotUsed( self ), PyObject * args )
     {
     const char * inputTubeTree;
@@ -219,7 +219,7 @@ extern "C"
     for( PointsContainerType::ElementIdentifier elementId = 0;
          elementId < pointsContainer->Size(); ++elementId )
       {
-      const TubePointType & tubePoint = pointsContainer->ElementAt( 
+      const TubePointType & tubePoint = pointsContainer->ElementAt(
         elementId );
 
       const int id_ = tubePoint.GetID();

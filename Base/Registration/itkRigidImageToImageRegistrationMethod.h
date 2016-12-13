@@ -110,7 +110,7 @@ public:
    * InitialImageToImageRegistrationMethod to directly initialize this rigid
    * registration method. The received Affine transform will be approximated
    * to its closest rigid transform by using Polar decomposition. */
-  void SetInitialTransformParametersFromAffineTransform( 
+  void SetInitialTransformParametersFromAffineTransform(
     const AffineTransformType * affine );
 
 protected:

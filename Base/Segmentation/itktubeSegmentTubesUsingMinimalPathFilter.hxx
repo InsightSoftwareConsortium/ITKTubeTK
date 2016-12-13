@@ -180,11 +180,11 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
   m_Output =InputSpatialObjectType::New();
 
   // Update tubes transform
-  m_Output->GetObjectToParentTransform()->SetScale( 
+  m_Output->GetObjectToParentTransform()->SetScale(
     scaleVector );
-  m_Output->GetObjectToParentTransform()->SetOffset( 
+  m_Output->GetObjectToParentTransform()->SetOffset(
     offsetVector );
-  m_Output->GetObjectToParentTransform()->SetMatrix( 
+  m_Output->GetObjectToParentTransform()->SetMatrix(
     m_SpeedImage->GetDirection() );
   m_Output->ComputeObjectToWorldTransform();
   m_CostAssociatedWithExtractedTube = 0.0;
@@ -206,7 +206,7 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
     for( unsigned int k = 0; k < vertexList->Size(); k++ )
       {
       PointType pathPoint;
-      m_SpeedImage->TransformContinuousIndexToPhysicalPoint( 
+      m_SpeedImage->TransformContinuousIndexToPhysicalPoint(
         vertexList->GetElement( k ), pathPoint );
       typename InputImageType::IndexType imageIndex;
       if ( m_SpeedImage->TransformPhysicalPointToIndex
@@ -297,7 +297,7 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
       TubePointType curSourcePoint = *pointList_it;
       //Transform parameters in physical space
       typename TubePointType::PointType curSourcePos =
-        pTubeIndexPhysTransform->TransformPoint( 
+        pTubeIndexPhysTransform->TransformPoint(
           curSourcePoint.GetPosition() );
       double distance =
         curSourcePos.SquaredEuclideanDistanceTo( outsidePoint );

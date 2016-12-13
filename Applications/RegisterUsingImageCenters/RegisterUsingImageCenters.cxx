@@ -57,7 +57,7 @@ int main( int argc, char * argv[] )
   try
     {
     unsigned int dimension;
-    tube::GetImageInformation( 
+    tube::GetImageInformation(
       inputImageFile.c_str(), componentType, dimension );
     switch( dimension )
       {
@@ -85,7 +85,7 @@ int DoIt( int argc, char * argv[] )
   const unsigned int Dimension = VDimension;
 
   itk::ImageIOBase::Pointer imageIO =
-    itk::ImageIOFactory::CreateImageIO( 
+    itk::ImageIOFactory::CreateImageIO(
       inputImageFile.c_str(), itk::ImageIOFactory::ReadMode );
 
   imageIO->SetFileName( inputImageFile.c_str() );
@@ -117,7 +117,7 @@ int DoIt( int argc, char * argv[] )
         orientationFilter =
         itk::OrientImageFilter<ImageType,ImageType>::New();
       orientationFilter->UseImageDirectionOn();
-      orientationFilter->SetDesiredCoordinateOrientation( 
+      orientationFilter->SetDesiredCoordinateOrientation(
         itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RAI );
       orientationFilter->SetInput( srcReader->GetOutput() );
       orientationFilter->Update();

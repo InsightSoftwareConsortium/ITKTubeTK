@@ -131,7 +131,7 @@ int itktubeRidgeSeedFilterIOTest( int argc, char * argv[] )
   std::cout << "Labelmap Written" << std::endl;
 
   timeCollector.Start( "Filter copy and write" );
-  itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO( 
+  itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO(
     filter );
   filterIO.Write( argv[4] );
   timeCollector.Stop( "Filter copy and write" );
@@ -142,7 +142,7 @@ int itktubeRidgeSeedFilterIOTest( int argc, char * argv[] )
   filter2->SetInput( inputImage );
   std::cout << "Filter2 setinput." << std::endl;
 
-  itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO2( 
+  itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO2(
     filter2 );
   filterIO2.Read( argv[4] );
   std::cout << "FilterIO2 Read." << std::endl;
@@ -170,7 +170,7 @@ int itktubeRidgeSeedFilterIOTest( int argc, char * argv[] )
   timeCollector.Start( "Filter Writer3" );
   char out3[255];
   sprintf( out3, "%s.mrs", argv[5] );
-  itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO3( 
+  itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO3(
     filter2 );
   filterIO3.Write( out3 );
   timeCollector.Stop( "Filter Writer3" );

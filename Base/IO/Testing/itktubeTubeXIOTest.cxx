@@ -58,7 +58,7 @@ int itktubeTubeXIOTest( int argc, char * argv[] )
       }
     }
 
-  IOMethodType::TubeGroupType::Pointer tubeGroup = 
+  IOMethodType::TubeGroupType::Pointer tubeGroup =
     ioMethod->GetTubeGroup();
 
   IOMethodType::Pointer ioMethod2 = IOMethodType::New();

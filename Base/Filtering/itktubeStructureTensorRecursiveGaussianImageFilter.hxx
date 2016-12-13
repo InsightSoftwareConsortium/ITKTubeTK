@@ -195,7 +195,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
   const typename TInputImage::ConstPointer   inputImage( this->GetInput() );
 
   m_ImageAdaptor->SetImage( this->GetOutput() );
-  m_ImageAdaptor->SetLargestPossibleRegion( 
+  m_ImageAdaptor->SetLargestPossibleRegion(
       inputImage->GetLargestPossibleRegion() );
   m_ImageAdaptor->SetBufferedRegion( inputImage->GetBufferedRegion() );
   m_ImageAdaptor->SetRequestedRegion( inputImage->GetRequestedRegion() );
@@ -240,11 +240,11 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
 
     typename RealImageType::Pointer derivativeImage = lastFilter->GetOutput();
 
-    ImageRegionIteratorWithIndex< RealImageType > it( 
+    ImageRegionIteratorWithIndex< RealImageType > it(
       derivativeImage,
       derivativeImage->GetRequestedRegion() );
 
-    ImageRegionIteratorWithIndex< OutputImageAdaptorType > ot( 
+    ImageRegionIteratorWithIndex< OutputImageAdaptorType > ot(
       m_ImageAdaptor,
       m_ImageAdaptor->GetRequestedRegion() );
 
@@ -262,11 +262,11 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
     }
 
   //Calculate the outer ( diadic ) product of the gradient.
-  ImageRegionIteratorWithIndex< OutputImageType > ottensor( 
+  ImageRegionIteratorWithIndex< OutputImageType > ottensor(
     this->GetOutput(),
     this->GetOutput()->GetRequestedRegion() );
 
-  ImageRegionIteratorWithIndex< OutputImageType > itgradient( 
+  ImageRegionIteratorWithIndex< OutputImageType > itgradient(
     this->GetOutput(),
     this->GetOutput()->GetRequestedRegion() );
 
@@ -307,7 +307,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
     componentImage->Allocate();
 
     ImageRegionIteratorWithIndex< ComponentImageType >
-              compit( 
+              compit(
                     componentImage,
                     componentImage->GetRequestedRegion() );
 

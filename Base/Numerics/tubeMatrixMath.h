@@ -83,7 +83,7 @@ FixMatrixSymmetry( vnl_matrix<T> & mat );
 /** Compute eigenvalues and vectors  */
 template< class T >
 void
-ComputeEigenOfMatrixInvertedTimesMatrix( 
+ComputeEigenOfMatrixInvertedTimesMatrix(
   vnl_matrix<T> const & matToInvert, vnl_matrix<T> const & mat,
   vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
   bool orderByAbs, bool minToMax = true );

@@ -102,9 +102,9 @@ protected:
     ThreadIdType threadId );
 
 private:
-  SingleValuedCostFunctionImageSource( 
+  SingleValuedCostFunctionImageSource(
     const SingleValuedCostFunctionImageSource & ); // purposely not implemented
-  void operator=( 
+  void operator=(
     const SingleValuedCostFunctionImageSource & ); // purposely not implemented
 
   typename CostFunctionType::Pointer m_CostFunction;

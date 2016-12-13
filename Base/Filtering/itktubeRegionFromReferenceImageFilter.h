@@ -80,7 +80,7 @@ public:
 
   /** Copy the output information from another Image. */
   void SetReferenceImage ( const ReferenceImageType *image );
-  
+
   const ReferenceImageType * GetReferenceImage() const;
 
   /** Set the input image */
@@ -113,19 +113,19 @@ protected:
   ~RegionFromReferenceImageFilter() {}
 
   void GenerateOutputInformation();
-  
+
 private:
   RegionFromReferenceImageFilter( const Self& ); //purposely not implemented
   void operator=( const Self& ); //purposely not implemented
 };
 
-  
+
 } // end namespace tube
 
 } // end namespace itk
-  
+
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itktubeRegionFromReferenceImageFilter.hxx"
 #endif
-  
+
 #endif

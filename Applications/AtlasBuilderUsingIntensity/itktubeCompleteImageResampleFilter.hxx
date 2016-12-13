@@ -63,7 +63,7 @@ CompleteImageResampleFilter< TInputImage, TOutputImage,
   Superclass::PrintSelf( os, indent );
 
   os << indent << "DefaultPixelValue: "
-     << static_cast< typename NumericTraits<PixelType>::PrintType >( 
+     << static_cast< typename NumericTraits<PixelType>::PrintType >(
        m_DefaultPixelValue ) << std::endl;
   os << indent << "OutputSpacing: " << m_OutputSpacing << std::endl;
   os << indent << "Transform: " << m_Transform.GetPointer() << std::endl;

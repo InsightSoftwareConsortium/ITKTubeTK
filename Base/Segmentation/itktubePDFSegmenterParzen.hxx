@@ -565,7 +565,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
   m_LabeledFeatureSpace->SetSpacing( spacing );
   m_LabeledFeatureSpace->Allocate();
 
-  itk::ImageRegionIterator< LabeledFeatureSpaceType > fsIter( 
+  itk::ImageRegionIterator< LabeledFeatureSpaceType > fsIter(
     m_LabeledFeatureSpace, region );
 
   unsigned int numClasses = this->m_ObjectIdList.size();

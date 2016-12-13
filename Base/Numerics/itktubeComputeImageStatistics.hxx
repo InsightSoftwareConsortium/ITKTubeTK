@@ -81,7 +81,7 @@ ComputeImageStatistics< TPixel, VDimension >
   curConnComp->Allocate();
 
   this->GetOutput()->CopyInformation( this->GetInput() );
-  this->GetOutput()->SetRegions( 
+  this->GetOutput()->SetRegions(
     this->GetInput()->GetLargestPossibleRegion() );
   this->GetOutput()->Allocate();
 

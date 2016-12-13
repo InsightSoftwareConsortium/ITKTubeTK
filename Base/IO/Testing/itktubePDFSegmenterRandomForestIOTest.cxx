@@ -140,7 +140,7 @@ int itktubePDFSegmenterRandomForestIOTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  itk::tube::PDFSegmenterRandomForestIO< ImageType, ImageType > PDFIO( 
+  itk::tube::PDFSegmenterRandomForestIO< ImageType, ImageType > PDFIO(
     filter );
   std::cout << "*** Writing Filter 1 ***" << std::endl;
   std::cout << "filename = " << argv[5] << std::endl;
@@ -159,7 +159,7 @@ int itktubePDFSegmenterRandomForestIOTest( int argc, char * argv[] )
   FilterType::Pointer filter2 = FilterType::New();
   filter2->SetFeatureVectorGenerator( fvGen );
 
-  itk::tube::PDFSegmenterRandomForestIO< ImageType, ImageType > PDFIO2( 
+  itk::tube::PDFSegmenterRandomForestIO< ImageType, ImageType > PDFIO2(
     filter2 );
   std::cout << "*** Reading Filter 2 ***" << std::endl;
   std::cout << "filename = " << argv[5] << std::endl;
@@ -203,7 +203,7 @@ int itktubePDFSegmenterRandomForestIOTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  itk::tube::PDFSegmenterRandomForestIO< ImageType, ImageType > PDFIO3( 
+  itk::tube::PDFSegmenterRandomForestIO< ImageType, ImageType > PDFIO3(
     filter2 );
   PDFIO.Write( argv[7] );
 

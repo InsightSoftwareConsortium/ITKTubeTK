@@ -44,7 +44,7 @@ int DoIt ( int argc, char * argv[] )
   // limitation of itkTubeSpatialObject
   if( DimensionT != 2 && DimensionT != 3 )
     {
-    tube::ErrorMessage( 
+    tube::ErrorMessage(
       "Error: Only 2D and 3D data is currently supported." );
     return EXIT_FAILURE;
     }
@@ -140,7 +140,7 @@ int DoIt ( int argc, char * argv[] )
   timeCollector.Stop( "Cropping Tubes" );
 
   // Write output TRE file
-  tubeStandardOutputMacro( 
+  tubeStandardOutputMacro(
     << "\n>> Writing TRE file" );
 
   timeCollector.Start( "Writing output TRE file" );
@@ -185,7 +185,7 @@ int main( int argc, char * argv[] )
 
   if( ( boxCorner.empty() || boxSize.empty() ) && volumeMask.empty() )
     {
-    tube::ErrorMessage( 
+    tube::ErrorMessage(
       "Error: Either both longflags --boxCorner and --boxSize "
       "or the flag --volumeMask is required." );
     return EXIT_FAILURE;
@@ -219,7 +219,7 @@ int main( int argc, char * argv[] )
       }
     default:
       {
-      tubeErrorMacro( 
+      tubeErrorMacro(
         << "Error: Only 2D and 3D data is currently supported." );
       delete mScene;
       return EXIT_FAILURE;

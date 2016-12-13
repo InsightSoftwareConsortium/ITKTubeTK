@@ -193,7 +193,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Start( "Computing tortuosity measures" );
 
   char childName[] = "Tube";
-  TubeListPointerType tubeList = pTubeGroup->GetChildren( 
+  TubeListPointerType tubeList = pTubeGroup->GetChildren(
     pTubeGroup->GetMaximumDepth(), childName );
 
   vtkSmartPointer< vtkIntArray > tubeIdArray =

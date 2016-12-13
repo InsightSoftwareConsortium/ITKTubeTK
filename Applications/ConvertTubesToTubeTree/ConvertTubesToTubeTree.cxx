@@ -105,9 +105,9 @@ int DoIt( int argc, char * argv[] )
   VesselConnectivityFilterType::New();
 
   vesselConnectivityFilter->SetInput( pTubeGroup );
-  vesselConnectivityFilter->SetMaxTubeDistanceToRadiusRatio( 
+  vesselConnectivityFilter->SetMaxTubeDistanceToRadiusRatio(
     maxTubeDistanceToRadiusRatio );
-  vesselConnectivityFilter->SetMaxContinuityAngleError( 
+  vesselConnectivityFilter->SetMaxContinuityAngleError(
     maxContinuityAngleError );
   vesselConnectivityFilter->SetRemoveOrphanTubes( removeOrphanTubes );
 
@@ -123,7 +123,7 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Stop( "Running vessel connectivity filter" );
 
   // Write tube group with connectivity information
-  tubeStandardOutputMacro( 
+  tubeStandardOutputMacro(
     << "\n>> Writing TRE file with connectivity information" );
 
   timeCollector.Start( "Writing TRE file with connectivity information" );
@@ -190,7 +190,7 @@ int main( int argc, char * argv[] )
       }
     default:
       {
-      tubeErrorMacro( 
+      tubeErrorMacro(
         << "Error: Only 2D and 3D data is currently supported." );
       delete mScene;
       return EXIT_FAILURE;

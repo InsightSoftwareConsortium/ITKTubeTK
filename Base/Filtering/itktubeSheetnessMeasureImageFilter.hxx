@@ -50,7 +50,7 @@ SheetnessMeasureImageFilter< TPixel >
   // Hessian( Image ) = Jacobian( Gradient ( Image ) )  is symmetric
   m_SymmetricEigenValueFilter = EigenAnalysisFilterType::New();
   m_SymmetricEigenValueFilter->SetDimension( ImageDimension );
-  m_SymmetricEigenValueFilter->OrderEigenValuesBy( 
+  m_SymmetricEigenValueFilter->OrderEigenValuesBy(
     EigenAnalysisFilterType::FunctorType::OrderByValue );
 }
 
@@ -76,7 +76,7 @@ SheetnessMeasureImageFilter< TPixel >
   // walk the region of eigenvalues and get the vesselness measure
   EigenValueArrayType                                   eigenValue;
   ImageRegionConstIterator< EigenValueOutputImageType > it;
-  it = ImageRegionConstIterator< EigenValueOutputImageType >( 
+  it = ImageRegionConstIterator< EigenValueOutputImageType >(
     eigenImage, eigenImage->GetRequestedRegion() );
   ImageRegionIterator< OutputImageType > oit;
   this->AllocateOutputs();

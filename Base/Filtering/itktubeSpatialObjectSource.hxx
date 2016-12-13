@@ -41,7 +41,7 @@ SpatialObjectSource< TOutputSpatialObject >
   // Create the output. We use static_cast<> here because we know the
   // default output must be of type TOutputSpatialObject
   typename TOutputSpatialObject::Pointer output =
-    static_cast< TOutputSpatialObject * >( 
+    static_cast< TOutputSpatialObject * >(
     this->MakeOutput( 0 ).GetPointer() );
   this->ProcessObject::SetNumberOfRequiredOutputs( 1 );
   this->ProcessObject::SetNthOutput( 0, output.GetPointer() );
@@ -53,7 +53,7 @@ SpatialObjectSource< TOutputSpatialObject >
 template< class TOutputSpatialObject >
 ProcessObject::DataObjectPointer
 SpatialObjectSource< TOutputSpatialObject >
-::MakeOutput( ProcessObject::DataObjectPointerArraySizeType itkNotUsed( 
+::MakeOutput( ProcessObject::DataObjectPointerArraySizeType itkNotUsed(
   idx ) )
 {
   return OutputSpatialObjectType::New().GetPointer();
@@ -67,7 +67,7 @@ SpatialObjectSource< TOutputSpatialObject >
 ::GetOutput( void )
 {
   // we assume that the first output is of the templated type
-  return itkDynamicCastInDebugMode< TOutputSpatialObject * >( 
+  return itkDynamicCastInDebugMode< TOutputSpatialObject * >(
     this->GetPrimaryOutput() );
 }
 
@@ -78,7 +78,7 @@ SpatialObjectSource< TOutputSpatialObject >
 ::GetOutput( void ) const
 {
   // we assume that the first output is of the templated type
-  return itkDynamicCastInDebugMode< const TOutputSpatialObject * >( 
+  return itkDynamicCastInDebugMode< const TOutputSpatialObject * >(
     this->GetPrimaryOutput() );
 }
 
@@ -124,7 +124,7 @@ SpatialObjectSource< TOutputSpatialObject >
   // we use the process object method since all out output may not be
   // of the same type
   TOutputSpatialObject * outputObject =
-    static_cast< TOutputSpatialObject * >( 
+    static_cast< TOutputSpatialObject * >(
       this->ProcessObject::GetOutput( key ) );
   if( !outputObject )
     {

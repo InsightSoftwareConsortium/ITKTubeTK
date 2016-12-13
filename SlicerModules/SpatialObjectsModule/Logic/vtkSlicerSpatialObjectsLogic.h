@@ -51,7 +51,7 @@ public:
   // Read and update the given spatial object from the new spatial object
   // stored in the filename. If not storage node exists for the given spatial
   // object, one will be created.
-  void SetSpatialObject( 
+  void SetSpatialObject(
     vtkMRMLSpatialObjectsNode* spatialObject, const char* filename );
 
   // Description:
@@ -82,7 +82,7 @@ public:
   // Description:
   // Utility function to copy a spatial object from a node to another
   // ( implemented since python doesn't wrap itk objects )
-  void CopySpatialObject( 
+  void CopySpatialObject(
     vtkMRMLSpatialObjectsNode* from, vtkMRMLSpatialObjectsNode* to );
 
   // Description:
@@ -90,14 +90,14 @@ public:
   // node, merge the spatial object read from file in the recipient node.
   // The updated recipient is returned.
   // \sa MergeSpatialObject
-  vtkMRMLSpatialObjectsNode* MergeSpatialObjectFromFilename( 
+  vtkMRMLSpatialObjectsNode* MergeSpatialObjectFromFilename(
     vtkMRMLSpatialObjectsNode* recipient, const char* filename );
 
   // Description:
   // Given two spatial object nodes, add the donor spatial object to the
   // recipient. The donor stays intact and the updated recipient is returned.
   // \sa MergeSpatialObjectFromFilename
-  vtkMRMLSpatialObjectsNode* MergeSpatialObject( 
+  vtkMRMLSpatialObjectsNode* MergeSpatialObject(
     vtkMRMLSpatialObjectsNode* recipient, vtkMRMLSpatialObjectsNode* donor );
 
   // Description:

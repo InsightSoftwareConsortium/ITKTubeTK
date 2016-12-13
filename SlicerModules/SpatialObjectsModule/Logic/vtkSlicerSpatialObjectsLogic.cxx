@@ -126,7 +126,7 @@ void vtkSlicerSpatialObjectsLogic
     }
 
   vtkMRMLSpatialObjectsStorageNode* storageNode =
-    vtkMRMLSpatialObjectsStorageNode::SafeDownCast( 
+    vtkMRMLSpatialObjectsStorageNode::SafeDownCast(
       spatialObjectNode->GetStorageNode() );
   bool addStorageNodeToScene = false;
   if ( !storageNode )
@@ -143,7 +143,7 @@ void vtkSlicerSpatialObjectsLogic
       const std::string fname( filename );
       std::string name =
         itksys::SystemTools::GetFilenameWithoutExtension( fname );
-      std::string uname( 
+      std::string uname(
         this->GetMRMLScene()->GetUniqueNameByString( name.c_str() ) );
       spatialObjectNode->SetName( uname.c_str() );
       }
@@ -182,7 +182,7 @@ vtkSlicerSpatialObjectsLogic::AddSpatialObject( const char* filename )
 
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsNode*
-vtkSlicerSpatialObjectsLogic::MergeSpatialObjectFromFilename( 
+vtkSlicerSpatialObjectsLogic::MergeSpatialObjectFromFilename(
   vtkMRMLSpatialObjectsNode* recipient, const char* filename )
 {
   if ( !filename )
@@ -202,7 +202,7 @@ vtkSlicerSpatialObjectsLogic::MergeSpatialObjectFromFilename(
 
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsNode*
-vtkSlicerSpatialObjectsLogic::MergeSpatialObject( 
+vtkSlicerSpatialObjectsLogic::MergeSpatialObject(
   vtkMRMLSpatialObjectsNode* recipient, vtkMRMLSpatialObjectsNode* donor )
 {
   if ( !recipient || !donor )
@@ -286,14 +286,14 @@ void vtkSlicerSpatialObjectsLogic::RegisterNodes( void )
     return;
     }
 
-  this->GetMRMLScene()->RegisterNodeClass( 
+  this->GetMRMLScene()->RegisterNodeClass(
     vtkNew<vtkMRMLSpatialObjectsNode>().GetPointer() );
-  this->GetMRMLScene()->RegisterNodeClass( 
+  this->GetMRMLScene()->RegisterNodeClass(
     vtkNew<vtkMRMLSpatialObjectsLineDisplayNode>().GetPointer() );
-  this->GetMRMLScene()->RegisterNodeClass( 
+  this->GetMRMLScene()->RegisterNodeClass(
     vtkNew<vtkMRMLSpatialObjectsTubeDisplayNode>().GetPointer() );
-  this->GetMRMLScene()->RegisterNodeClass( 
+  this->GetMRMLScene()->RegisterNodeClass(
     vtkNew<vtkMRMLSpatialObjectsGlyphDisplayNode>().GetPointer() );
-  this->GetMRMLScene()->RegisterNodeClass( 
+  this->GetMRMLScene()->RegisterNodeClass(
     vtkNew<vtkMRMLSpatialObjectsStorageNode>().GetPointer() );
 }

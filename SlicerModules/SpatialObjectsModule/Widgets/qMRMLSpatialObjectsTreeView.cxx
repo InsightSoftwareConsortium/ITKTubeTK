@@ -150,7 +150,7 @@ bool qMRMLSpatialObjectsTreeView::clickDecoration( const QModelIndex& index )
   int type = -1;
   QModelIndex sourceIndex = this->sortFilterProxyModel()->mapToSource( index );
 
-  vtkMRMLSpatialObjectsNode* soNode = vtkMRMLSpatialObjectsNode::SafeDownCast( 
+  vtkMRMLSpatialObjectsNode* soNode = vtkMRMLSpatialObjectsNode::SafeDownCast(
     this->sortFilterProxyModel()->mrmlNodeFromIndex( index ) );
 
   vtkMRMLSpatialObjectsDisplayNode* lineDisplayNode =

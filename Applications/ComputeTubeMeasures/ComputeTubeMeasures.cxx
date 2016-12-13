@@ -112,17 +112,17 @@ int DoIt( int argc, char * argv[] )
     writer->SetInput( filter->GetRidgeness() );
     writer->SetUseCompression( true );
     writer->Update();
-  
+ 
     writer->SetFileName( roundFilename );
     writer->SetInput( filter->GetRoundness() );
     writer->SetUseCompression( true );
     writer->Update();
-  
+ 
     writer->SetFileName( curveFilename );
     writer->SetInput( filter->GetCurvature() );
     writer->SetUseCompression( true );
     writer->Update();
-  
+ 
     writer->SetFileName( levelFilename );
     writer->SetInput( filter->GetLevelness() );
     writer->SetUseCompression( true );

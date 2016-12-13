@@ -87,7 +87,7 @@ SpatialObjectToSpatialObjectFilter< TInputSpatialObject,
 TOutputSpatialObject >
 ::GetInput( void ) const
 {
-  return itkDynamicCastInDebugMode< const TInputSpatialObject * >( 
+  return itkDynamicCastInDebugMode< const TInputSpatialObject * >(
     this->GetPrimaryInput() );
 }
 

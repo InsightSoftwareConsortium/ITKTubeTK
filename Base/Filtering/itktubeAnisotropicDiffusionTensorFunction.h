@@ -232,7 +232,7 @@ protected:
       [itkGetStaticConstMacro( ImageDimension )];
 
   /** Computes the first and second derivatives of an intensity image. */
-  void ComputeIntensityFirstAndSecondOrderPartialDerivatives( 
+  void ComputeIntensityFirstAndSecondOrderPartialDerivatives(
       const NeighborhoodType &neighborhood,
       ScalarDerivativeType &firstOrderResult,
       TensorDerivativeType &secondOrderResult,
@@ -240,14 +240,14 @@ protected:
 
   /** Computes the first order partial derivative of a diffusion tensor
    *  image. */
-  void ComputeDiffusionTensorFirstOrderPartialDerivatives( 
+  void ComputeDiffusionTensorFirstOrderPartialDerivatives(
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       TensorDerivativeType &firstOrderResult,
       const SpacingType &spacing ) const;
 
   /** Computes the final update term based on the results of the first and
     * second derivative computations */
-  PixelType ComputeFinalUpdateTerm( 
+  PixelType ComputeFinalUpdateTerm(
       const DiffusionTensorNeighborhoodType &tensorNeighborhood,
       const GlobalDataStruct* gd ) const;
 

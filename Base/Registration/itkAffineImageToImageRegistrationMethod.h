@@ -92,7 +92,7 @@ public:
    * use the AffineTransform returned by the InitialImageToImageRegistrationMethod
    * to directly initialize this rigid registration method.
    */
-  void SetInitialTransformParametersFromAffineTransform( 
+  void SetInitialTransformParametersFromAffineTransform(
     const AffineTransformType * affine );
 
 protected:

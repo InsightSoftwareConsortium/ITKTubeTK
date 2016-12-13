@@ -99,7 +99,7 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
   typename EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter
     = EigenVectorAnalysisFilterType::New();
   eigenVectorAnalysisFilter->SetDimension( 3 );
-  eigenVectorAnalysisFilter->OrderEigenValuesBy( 
+  eigenVectorAnalysisFilter->OrderEigenValuesBy(
     EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
 
   eigenVectorAnalysisFilter->SetInput( StructureTensorFilter->GetOutput() );
@@ -114,7 +114,7 @@ AnisotropicCoherenceEnhancingDiffusionImageFilter<TInputImage, TOutputImage>
   typename EigenAnalysisFilterType::Pointer eigenAnalysisFilter
     = EigenAnalysisFilterType::New();
   eigenAnalysisFilter->SetDimension( 3 );
-  eigenAnalysisFilter->OrderEigenValuesBy( 
+  eigenAnalysisFilter->OrderEigenValuesBy(
     EigenAnalysisFilterType::FunctorType::OrderByValue );
 
   eigenAnalysisFilter->SetInput( StructureTensorFilter->GetOutput() );

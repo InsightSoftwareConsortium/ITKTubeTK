@@ -52,7 +52,7 @@ public:
 
   typedef TOutputSpatialObject       OutputSpatialObjectType;
 
-  typedef SpatialObject< TOutputSpatialObject::ObjectDimension > 
+  typedef SpatialObject< TOutputSpatialObject::ObjectDimension >
     SpatialObjectType;
   typedef Superclass::DataObjectIdentifierType
     DataObjectIdentifierType;

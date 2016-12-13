@@ -62,7 +62,7 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
   typename DefaultInterpolatorType::Pointer interp =
     DefaultInterpolatorType::New();
 
-  m_MovingImageInterpolator = static_cast<InterpolatorType*>( 
+  m_MovingImageInterpolator = static_cast<InterpolatorType*>(
     interp.GetPointer() );
 
   m_BackgroundIntensity = 0.0;
