@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -42,78 +42,78 @@ limitations under the License.
 #include <itkSpatialObjectWriter.h>
 
 //------------------------------------------------------------------------------
-vtkMRMLNodeNewMacro(vtkMRMLSpatialObjectsStorageNode);
+vtkMRMLNodeNewMacro( vtkMRMLSpatialObjectsStorageNode );
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsStorageNode::PrintSelf(ostream& os, vtkIndent indent)
+void vtkMRMLSpatialObjectsStorageNode::PrintSelf( ostream& os, vtkIndent indent )
 {
-  this->Superclass::PrintSelf(os,indent);
+  this->Superclass::PrintSelf( os,indent );
 }
 
 //------------------------------------------------------------------------------
 bool vtkMRMLSpatialObjectsStorageNode::
-CanReadInReferenceNode(vtkMRMLNode *refNode)
+CanReadInReferenceNode( vtkMRMLNode *refNode )
 {
-  return refNode->IsA("vtkMRMLSpatialObjectsNode");
+  return refNode->IsA( "vtkMRMLSpatialObjectsNode" );
 }
 
 //------------------------------------------------------------------------------
-int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
+int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal( vtkMRMLNode *refNode )
 {
   vtkMRMLSpatialObjectsNode* spatialObjectsNode =
-    vtkMRMLSpatialObjectsNode::SafeDownCast(refNode);
+    vtkMRMLSpatialObjectsNode::SafeDownCast( refNode );
 
-  if(Superclass::ReadDataInternal(refNode) != 0)
+  if( Superclass::ReadDataInternal( refNode ) != 0 )
     {
     return 0;
     }
 
   std::string fullName = this->GetFullNameFromFileName();
-  if(fullName == std::string(""))
+  if( fullName == std::string( "" ) )
     {
-    vtkErrorMacro("ReadData: File name not specified");
+    vtkErrorMacro( "ReadData: File name not specified" );
     return 0;
     }
 
   // compute file prefix
-  std::string name(fullName);
-  std::string::size_type loc = name.find_last_of(".");
+  std::string name( fullName );
+  std::string::size_type loc = name.find_last_of( "." );
   if( loc == std::string::npos )
     {
-    vtkErrorMacro("ReadData: no file extension specified: " << name.c_str());
+    vtkErrorMacro( "ReadData: no file extension specified: " << name.c_str() );
     return 0;
     }
-  std::string extension = name.substr(loc);
-  vtkDebugMacro("ReadData: extension = " << extension.c_str());
+  std::string extension = name.substr( loc );
+  vtkDebugMacro( "ReadData: extension = " << extension.c_str() );
 
   int result = 1;
   try
   {
-    if(extension == std::string(".tre"))
+    if( extension == std::string( ".tre" ) )
       {
       ReaderType::Pointer reader = ReaderType::New();
-      reader->SetFileName(fullName);
+      reader->SetFileName( fullName );
       reader->Update();
 
-      spatialObjectsNode->SetSpatialObject(reader->GetGroup());
+      spatialObjectsNode->SetSpatialObject( reader->GetGroup() );
       }
   }
-  catch(...)
+  catch( ... )
   {
     result = 0;
   }
 
-  if(spatialObjectsNode->GetPolyData() != NULL)
+  if( spatialObjectsNode->GetPolyData() != NULL )
     {
     // is there an active scalar array?
-    if(spatialObjectsNode->GetDisplayNode())
+    if( spatialObjectsNode->GetDisplayNode() )
       {
       double *scalarRange = spatialObjectsNode->GetPolyData()->GetScalarRange();
-      if(scalarRange)
+      if( scalarRange )
         {
-        vtkDebugMacro("ReadData: setting scalar range " << scalarRange[0]
-                      << ", " << scalarRange[1]);
-        spatialObjectsNode->GetDisplayNode()->SetScalarRange(scalarRange);
+        vtkDebugMacro( "ReadData: setting scalar range " << scalarRange[0]
+                      << ", " << scalarRange[1] );
+        spatialObjectsNode->GetDisplayNode()->SetScalarRange( scalarRange );
         }
       }
 
@@ -124,42 +124,42 @@ int vtkMRMLSpatialObjectsStorageNode::ReadDataInternal(vtkMRMLNode *refNode)
 }
 
 //------------------------------------------------------------------------------
-int vtkMRMLSpatialObjectsStorageNode::WriteDataInternal(vtkMRMLNode *refNode)
+int vtkMRMLSpatialObjectsStorageNode::WriteDataInternal( vtkMRMLNode *refNode )
 {
   vtkMRMLSpatialObjectsNode* spatialObjects =
-    vtkMRMLSpatialObjectsNode::SafeDownCast(refNode);
+    vtkMRMLSpatialObjectsNode::SafeDownCast( refNode );
 
   const std::string fullName = this->GetFullNameFromFileName();
-  if(fullName == std::string(""))
+  if( fullName == std::string( "" ) )
     {
-    vtkErrorMacro("vtkMRMLModelNode: File name not specified");
+    vtkErrorMacro( "vtkMRMLModelNode: File name not specified" );
     return 0;
     }
 
   const std::string extension =
-    itksys::SystemTools::GetFilenameLastExtension(fullName);
+    itksys::SystemTools::GetFilenameLastExtension( fullName );
 
   int result = 1;
-  if(extension == ".tre")
+  if( extension == ".tre" )
     {
     try
       {
       WriterType::Pointer writer = WriterType::New();
-      writer->SetFileName(fullName.c_str());
-      writer->SetInput(spatialObjects->GetSpatialObject());
+      writer->SetFileName( fullName.c_str() );
+      writer->SetInput( spatialObjects->GetSpatialObject() );
       writer->Update();
       }
-    catch(...)
+    catch( ... )
       {
       result = 0;
-      vtkErrorMacro("Error occured writing Spatial Objects: "
-                    << fullName.c_str());
+      vtkErrorMacro( "Error occured writing Spatial Objects: "
+                    << fullName.c_str() );
       }
     }
   else
     {
     result = 0;
-    vtkErrorMacro( << "No file extension recognized: " << fullName.c_str());
+    vtkErrorMacro( << "No file extension recognized: " << fullName.c_str() );
     }
 
   return result;
@@ -168,13 +168,13 @@ int vtkMRMLSpatialObjectsStorageNode::WriteDataInternal(vtkMRMLNode *refNode)
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsStorageNode::InitializeSupportedReadFileTypes( void )
 {
-  this->SupportedReadFileTypes->InsertNextValue("SpatialObject (.tre)");
+  this->SupportedReadFileTypes->InsertNextValue( "SpatialObject ( .tre )" );
 }
 
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsStorageNode::InitializeSupportedWriteFileTypes( void )
 {
-  this->SupportedWriteFileTypes->InsertNextValue("SpatialObject (.tre)");
+  this->SupportedWriteFileTypes->InsertNextValue( "SpatialObject ( .tre )" );
 }
 
 //------------------------------------------------------------------------------

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -54,13 +54,13 @@ public:
   ~LabelMapToAcousticImpedanceFunctor( void ) {}
 
   /** Comparison operator. */
-  bool operator!=(const LabelMapToAcousticImpedanceFunctor &) const;
-  bool operator==(const LabelMapToAcousticImpedanceFunctor &) const;
+  bool operator!=( const LabelMapToAcousticImpedanceFunctor & ) const;
+  bool operator==( const LabelMapToAcousticImpedanceFunctor & ) const;
 
   /** Perform the function on a given pixel. */
   inline TImpedancePixel operator()( const TLabelPixel & input ) const
     {
-    return (*m_LookupTable)[input];
+    return ( *m_LookupTable )[input];
     }
 
 private:
@@ -76,4 +76,4 @@ private:
 #include "itkLabelMapToAcousticImpedanceFunctor.hxx"
 #endif
 
-#endif // End !defined(__itkLabelMapToAcousticImpedanceFunctor_h)
+#endif // End !defined( __itkLabelMapToAcousticImpedanceFunctor_h )

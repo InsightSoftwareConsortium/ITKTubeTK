@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -44,14 +44,14 @@ namespace Function
  * direction.  The output weight is given by:
  *
  * \f[
- * W(\mathbf{x}) =
+ * W( \mathbf{x} ) =
  *   1 - \alpha ( 1 - \cos^n \theta )
  * \f]
  *
  * Where:
  *
  * \f{eqnarray*}
- *   W(\mathbf{x}) &=& \mbox{output weight}
+ *   W( \mathbf{x} ) &=& \mbox{output weight}
  *   n             &=& \mbox{specifies angle dependence}
  *   \alpha        &=& \mbox{fractional importance of the angle of incidence}
  *   \cos \theta   &=& \mbox{angle of incidence with the tube}
@@ -91,7 +91,7 @@ public:
   itkSetMacro( AngleDependence, double );
   itkGetConstMacro( AngleDependence, double );
 
-  /** Set/Get the ultrasound probe origin (assuming a phase array or
+  /** Set/Get the ultrasound probe origin ( assuming a phase array or
    * curvilinear array transducer geometry. */
   itkSetMacro( UltrasoundProbeOrigin, PointType );
   itkGetConstReferenceMacro( UltrasoundProbeOrigin, PointType );
@@ -100,7 +100,7 @@ public:
     {
     const PointType & position = tubePoint.GetPosition();
     typename TubePointType::VectorType beam =
-      (position - m_UltrasoundProbeOrigin);
+      ( position - m_UltrasoundProbeOrigin );
     beam.Normalize();
     typename TubePointType::VectorType tangent =
       tubePoint.GetTangent();
@@ -141,4 +141,4 @@ private:
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeTubeAngleOfIncidenceWeightFunction_h)
+#endif // End !defined( __itktubeTubeAngleOfIncidenceWeightFunction_h )

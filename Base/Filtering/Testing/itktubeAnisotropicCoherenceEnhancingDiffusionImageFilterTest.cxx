@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -110,14 +110,14 @@ int itktubeAnisotropicCoherenceEnhancingDiffusionImageFilterTest( int argc,
   //Set time step
   if( argc > 7 )
     {
-    double timeStep = std::atof(argv[7]);
+    double timeStep = std::atof( argv[7] );
     CoherenceEnhancingFilter->SetTimeStep( timeStep );
     }
 
   //Set number of iterations
   if( argc > 8 )
     {
-    double numberOfIterations = std::atoi(argv[8]);
+    double numberOfIterations = std::atoi( argv[8] );
     CoherenceEnhancingFilter->SetNumberOfIterations( numberOfIterations );
     }
 

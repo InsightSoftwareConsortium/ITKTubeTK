@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -76,7 +76,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest( int argc, char * argv
   DeformationFieldType::SpacingType  spacing;
   spacing.Fill( spacingValue );
   DeformationFieldType::PointType    origin;
-  origin.Fill( originValue);
+  origin.Fill( originValue );
 
   deformationField->SetRegions( region );
   deformationField->SetSpacing( spacing );
@@ -142,7 +142,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest( int argc, char * argv
     = itk::Statistics::MersenneTwisterRandomVariateGenerator::New();
   randGenerator->Initialize( 137593424 );
   double        mean = 0;
-  double        variance = std::atof(argv[2]);
+  double        variance = std::atof( argv[2] );
 
   for( it.GoToBegin(); !it.IsAtEnd(); ++it )
     {
@@ -171,7 +171,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest( int argc, char * argv
     pixel[1] += randY;
     pixel[2] += randZ;
 
-    it.Set(pixel);
+    it.Set( pixel );
     }
 
   // Setup the images to be registered
@@ -182,13 +182,13 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest( int argc, char * argv
   fixedImage->SetSpacing( spacing );
   fixedImage->SetOrigin( origin );
   fixedImage->Allocate();
-  fixedImage->FillBuffer(0.0);
+  fixedImage->FillBuffer( 0.0 );
 
   movingImage->SetRegions( region );
   movingImage->SetSpacing( spacing );
   movingImage->SetOrigin( origin );
   movingImage->Allocate();
-  movingImage->FillBuffer(0.0);
+  movingImage->FillBuffer( 0.0 );
 
   // Setup the registrator object
   typedef itk::tube::DiffusiveRegistrationFilter
@@ -206,7 +206,7 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest( int argc, char * argv
     {
     registrator = AnisotropicDiffusiveRegistrationFilterType::New();
     anisotropicRegistrator
-        = dynamic_cast < AnisotropicDiffusiveRegistrationFilterType * >(
+        = dynamic_cast < AnisotropicDiffusiveRegistrationFilterType * >( 
             registrator.GetPointer() );
     }
   else

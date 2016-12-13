@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -817,7 +817,7 @@ SplineND
             }
           itk::ImageRegionIterator<ImageType> itImageWSX2( itWSX2->Value(),
             itWSX2->Value()->GetLargestPossibleRegion() );
-          itk::ImageRegionIterator<ImageType> itImageWSXX2(
+          itk::ImageRegionIterator<ImageType> itImageWSXX2( 
             itWSXX2->Value(),
             itWSXX2->Value()->GetLargestPossibleRegion() );
           itImageWSX2.GoToBegin();

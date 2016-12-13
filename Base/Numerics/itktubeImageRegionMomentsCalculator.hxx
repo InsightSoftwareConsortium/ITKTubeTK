@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -190,7 +190,7 @@ Compute( void )
   // Throw an error if the total mass is zero
   if( m_M0 == 0.0 )
     {
-    itkExceptionMacro(
+    itkExceptionMacro( 
      << "Compute(): Total Mass of the image was zero. Aborting here to "
      << "prevent division by zero later on. " );
     }
@@ -257,7 +257,7 @@ GetTotalMass( void ) const
 {
   if( !m_Valid )
     {
-    itkExceptionMacro(
+    itkExceptionMacro( 
        << "GetTotalMass() invoked, but the moments have not been computed."
        << "  Call Compute() first." );
     }
@@ -273,7 +273,7 @@ GetFirstMoments( void ) const
 {
   if( !m_Valid )
     {
-    itkExceptionMacro(
+    itkExceptionMacro( 
        << "GetFirstMoments() invoked, but the moments have not been computed. "
        << "Call Compute() first." );
     }
@@ -289,7 +289,7 @@ GetSecondMoments( void ) const
 {
   if( !m_Valid )
     {
-    itkExceptionMacro(
+    itkExceptionMacro( 
       << "GetSecondMoments() invoked, but the moments have not been computed. "
       << "Call Compute() first." );
     }
@@ -305,7 +305,7 @@ GetCenterOfGravity( void ) const
 {
   if( !m_Valid )
     {
-    itkExceptionMacro(
+    itkExceptionMacro( 
       << "GetCenterOfGravity() invoked, but the moments have not been "
       << "computed. Call Compute() first." );
     }
@@ -321,7 +321,7 @@ GetCentralMoments( void ) const
 {
   if( !m_Valid )
     {
-    itkExceptionMacro(
+    itkExceptionMacro( 
       << "GetCentralMoments() invoked, but the moments have not been "
       << "computed. Call Compute() first." );
     }
@@ -337,7 +337,7 @@ GetPrincipalMoments( void ) const
 {
   if( !m_Valid )
     {
-    itkExceptionMacro(
+    itkExceptionMacro( 
       << "GetPrincipalMoments() invoked, but the moments have not been "
       << "computed. Call Compute() first." );
     }
@@ -353,7 +353,7 @@ GetPrincipalAxes( void ) const
 {
   if( !m_Valid )
     {
-    itkExceptionMacro(
+    itkExceptionMacro( 
     << "GetPrincipalAxes() invoked, but the moments have not been computed."
     << "  Call Compute() first." );
     }
@@ -420,4 +420,4 @@ GetPhysicalAxesToPrincipalAxesTransform( void ) const
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeImageRegionMomentsCalculator_hxx)
+#endif // End !defined( __itktubeImageRegionMomentsCalculator_hxx )

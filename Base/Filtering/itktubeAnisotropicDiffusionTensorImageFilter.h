@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -40,7 +40,7 @@ namespace tube
  *        an image by solving a non-linear diffusion equation.
  *
  * \warning Does not handle image directions.  Re-orient images to axial
- * (direction cosines = identity matrix) before using this function.
+ * ( direction cosines = identity matrix ) before using this function.
  *
  * \sa AnisotropicEdgeEnhancementDiffusionImageFilter
  * \sa AnisotropicCoherenceEnhancingDiffusionImageFilter
@@ -62,7 +62,7 @@ public:
 
   // itkNewMacro( Self );  // Not included since pure virtual
 
-  /** Run-time type information (and related methods) */
+  /** Run-time type information ( and related methods ) */
   itkTypeMacro( AnisotropicDiffusionTensorImageFilter,
     FiniteDifferenceImageFiler );
 
@@ -73,7 +73,8 @@ public:
 
   /** Dimensionality of input and output data is assumed to be the same.
    * It is inherited from the superclass. */
-  itkStaticConstMacro( ImageDimension, unsigned int, Superclass::ImageDimension );
+  itkStaticConstMacro( ImageDimension, unsigned int,
+    Superclass::ImageDimension );
 
   /** Type of associated function, with associated typedefs */
   typedef AnisotropicDiffusionTensorFunction< InputImageType >
@@ -97,7 +98,8 @@ public:
   typedef OutputImageType UpdateBufferType;
 
   /** Define diffusion image neighborhood type */
-  typedef typename FiniteDifferenceFunctionType::DiffusionTensorNeighborhoodType
+  typedef typename
+    FiniteDifferenceFunctionType::DiffusionTensorNeighborhoodType
       DiffusionTensorNeighborhoodType;
 
   /** Set/Get Macro for diffusion tensor image filter parameters */
@@ -118,7 +120,7 @@ public:
 protected:
   AnisotropicDiffusionTensorImageFilter( void );
  ~AnisotropicDiffusionTensorImageFilter( void ) {}
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
   /* overloaded GenerateData method */
   virtual void GenerateData( void );
@@ -131,7 +133,7 @@ protected:
   /** This method applies changes from the m_UpdateBuffer to the output using
    * the ThreadedApplyUpdate() method and a multithreading mechanism.  "dt" is
    * the time step to use for the update of each pixel. */
-  virtual void ApplyUpdate(const TimeStepType& dt);
+  virtual void ApplyUpdate( const TimeStepType& dt );
 
   /** Method to allow subclasses to get direct access to the update
    * buffer */
@@ -168,20 +170,18 @@ protected:
    *  \sa ApplyUpdate
    *  \sa ApplyUpdateThreaderCallback */
   virtual void ThreadedApplyUpdate( TimeStepType dt,
-                                    const ThreadRegionType &regionToProcess,
-                                    const ThreadDiffusionTensorImageRegionType
-                                      &diffusionRegionToProcess,
-                                    ThreadIdType threadId );
+    const ThreadRegionType &regionToProcess,
+    const ThreadDiffusionTensorImageRegionType &diffusionRegionToProcess,
+    ThreadIdType threadId );
 
   /** Does the actual work of calculating change over a region supplied by
    * the multithreading mechanism.
    * \sa CalculateChange
    * \sa CalculateChangeThreaderCallback */
   virtual TimeStepType ThreadedCalculateChange(
-      const ThreadRegionType &regionToProcess,
-      const ThreadDiffusionTensorImageRegionType
-        &diffusionRegionToProcess,
-      ThreadIdType threadId );
+    const ThreadRegionType &regionToProcess,
+    const ThreadDiffusionTensorImageRegionType &diffusionRegionToProcess,
+    ThreadIdType threadId );
 
   /** Prepare for the iteration process. */
   virtual void InitializeIteration( void );
@@ -190,8 +190,8 @@ protected:
 
 private:
   //purposely not implemented
-  AnisotropicDiffusionTensorImageFilter(const Self&);
-  void operator=(const Self&); //purposely not implemented
+  AnisotropicDiffusionTensorImageFilter( const Self& );
+  void operator=( const Self& ); //purposely not implemented
 
   /** Structure for passing information into static callback methods.  Used in
    * the subclasses' threading mechanisms. */
@@ -229,4 +229,4 @@ private:
 #include "itktubeAnisotropicDiffusionTensorImageFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeAnisotropicDiffusionTensorImageFilter_h)
+#endif // End !defined( __itktubeAnisotropicDiffusionTensorImageFilter_h )

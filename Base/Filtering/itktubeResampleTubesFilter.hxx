@@ -7,7 +7,7 @@
 
    All rights reserved.
 
-   Licensed under the Apache License, Version 2.0 (the "License");
+   Licensed under the Apache License, Version 2.0 ( the "License" );
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
@@ -123,7 +123,7 @@ ResampleTubesFilter< VDimension >
    DisplacementFieldTransformFilterType::New();
   filter->SetInput( inputTubeGroup );
   filter->SetTransform( transform );
-  filter->SetOutputIndexToObjectTransform(
+  filter->SetOutputIndexToObjectTransform( 
     outputTransform.GetPointer() );
   filter->GraftOutput( this->GetOutput() );
   filter->Update();
@@ -302,4 +302,4 @@ ResampleTubesFilter< VDimension >
 } // End namespace tube
 } // End namespace itk
 
-#endif // End !defined(__itktubeResampleTubesFilter_hxx)
+#endif // End !defined( __itktubeResampleTubesFilter_hxx )

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -342,7 +342,7 @@ PDFSegmenterBase< TImage, TLabelMap >
     {
     if( m_InClassList[c].size() != minClassSize )
       {
-      double stepSize = minClassSize / (double)( m_InClassList[c].size() );
+      double stepSize = minClassSize / ( double )( m_InClassList[c].size() );
       int cut = m_InClassList[c].size()-1;
       int s=0;
       double step = 0;
@@ -350,7 +350,7 @@ PDFSegmenterBase< TImage, TLabelMap >
         {
         ++s;
         step += stepSize;
-        while( s < cut && (int)( step ) == (int)( step + stepSize ) )
+        while( s < cut && ( int )( step ) == ( int )( step + stepSize ) )
           {
           m_InClassList[c][s] = m_InClassList[c].back();
           m_InClassList[c].pop_back();
@@ -418,13 +418,13 @@ PDFSegmenterBase< TImage, TLabelMap >
   for( unsigned int c = 0; c < numClasses; c++ )
     {
     m_ProbabilityImageVector[c] = ProbabilityImageType::New();
-    m_ProbabilityImageVector[c]->SetRegions(
+    m_ProbabilityImageVector[c]->SetRegions( 
       m_FeatureVectorGenerator->GetInput( 0 )->GetLargestPossibleRegion() );
     m_ProbabilityImageVector[c]->CopyInformation( m_FeatureVectorGenerator->
       GetInput( 0 ) );
     m_ProbabilityImageVector[c]->Allocate();
 
-    probIt[c] = new ProbabilityImageIteratorType(
+    probIt[c] = new ProbabilityImageIteratorType( 
       m_ProbabilityImageVector[c],
       m_ProbabilityImageVector[c]->GetLargestPossibleRegion() );
     probIt[c]->GoToBegin();
@@ -485,7 +485,7 @@ PDFSegmenterBase< TImage, TLabelMap >
       {
       probImageFilter = ProbImageFilterType::New();
       probImageFilter->SetInput( m_ProbabilityImageVector[c] );
-      probImageFilter->SetSigma(
+      probImageFilter->SetSigma( 
         m_ProbabilityImageSmoothingStandardDeviation );
       probImageFilter->Update();
       m_ProbabilityImageVector[c] = probImageFilter->GetOutput();
@@ -517,14 +517,14 @@ PDFSegmenterBase< TImage, TLabelMap >
       {
       // For this class, label all pixels for which it is the most
       // likely class.
-      itk::ImageRegionIteratorWithIndex<LabelMapType> labelIt(
+      itk::ImageRegionIteratorWithIndex<LabelMapType> labelIt( 
         tmpLabelImage, tmpLabelImage->GetLargestPossibleRegion() );
       labelIt.GoToBegin();
       while( !labelIt.IsAtEnd() )
         {
         labelImageIndex = labelIt.GetIndex();
         bool maxPC = true;
-        double maxP = m_ProbabilityImageVector[c]->GetPixel(
+        double maxP = m_ProbabilityImageVector[c]->GetPixel( 
           labelImageIndex );
         for( unsigned int oc = 0; oc < numClasses; oc++ )
           {
@@ -560,7 +560,7 @@ PDFSegmenterBase< TImage, TLabelMap >
         {
         for( unsigned int i = 0; i < ImageDimension; i++ )
           {
-          indx[i] = static_cast<int>( (*inClassListIt)[numFeatures+i] );
+          indx[i] = static_cast<int>( ( *inClassListIt )[numFeatures+i] );
           }
         insideConnecter->AddSeed( indx );
         ++inClassListIt;
@@ -576,14 +576,14 @@ PDFSegmenterBase< TImage, TLabelMap >
         // of the probability.  Setting input labels to 255 before
         // the update
         // of the ConnectedThresholdFilter will cause the filter to
-        // return only the values at 255 (the input label map).
+        // return only the values at 255 ( the input label map ).
         inClassListIt = m_InClassList[c].begin();
         inClassListItEnd = m_InClassList[c].end();
         while( inClassListIt != inClassListItEnd )
           {
           for( unsigned int i = 0; i < ImageDimension; i++ )
             {
-            indx[i] = static_cast<int>( (*inClassListIt)[numFeatures+i] );
+            indx[i] = static_cast<int>( ( *inClassListIt )[numFeatures+i] );
             }
           tmpLabelImage->SetPixel( indx, 128 );
           ++inClassListIt;
@@ -603,8 +603,8 @@ PDFSegmenterBase< TImage, TLabelMap >
               {
               for( unsigned int i = 0; i < ImageDimension; i++ )
                 {
-                indx[i] = static_cast<int>(
-                  (*inClassListIt)[numFeatures+i] );
+                indx[i] = static_cast<int>( 
+                  ( *inClassListIt )[numFeatures+i] );
                 }
               tmpLabelImage->SetPixel( indx, 0 );
               ++inClassListIt;
@@ -621,7 +621,7 @@ PDFSegmenterBase< TImage, TLabelMap >
           {
           for( unsigned int i = 0; i < ImageDimension; i++ )
             {
-            indx[i] = static_cast<int>(
+            indx[i] = static_cast<int>( 
               ( *outListIt )[numFeatures+i] );
             }
           tmpLabelImage->SetPixel( indx, 0 );
@@ -719,7 +719,7 @@ PDFSegmenterBase< TImage, TLabelMap >
           {
           for( unsigned int i = 0; i < ImageDimension; i++ )
             {
-            indx[i] = static_cast<int>( (*inClassListIt)[numFeatures+i] );
+            indx[i] = static_cast<int>( ( *inClassListIt )[numFeatures+i] );
             }
 
           insideConnectedLabelMapFilter->AddSeed( indx );
@@ -827,11 +827,11 @@ PDFSegmenterBase< TImage, TLabelMap >
       {
       labelImageIndex = itInLM.GetIndex();
       unsigned int maxPC = 0;
-      double maxP = m_ProbabilityImageVector[0]->GetPixel(
+      double maxP = m_ProbabilityImageVector[0]->GetPixel( 
         labelImageIndex );
       for( unsigned int c = 1; c < numClasses; c++ )
         {
-        double p = m_ProbabilityImageVector[c]->GetPixel(
+        double p = m_ProbabilityImageVector[c]->GetPixel( 
           labelImageIndex );
         if( p > maxP )
           {
@@ -967,4 +967,4 @@ PDFSegmenterBase< TImage, TLabelMap >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubePDFSegmenterBase_hxx)
+#endif // End !defined( __itktubePDFSegmenterBase_hxx )

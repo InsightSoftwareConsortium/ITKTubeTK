@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -60,7 +60,7 @@ int itktubeNJetImageFunctionTest( int argc, char * argv[] )
     {
     reader->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
     std::cerr << "Exception caught during read:\n"  << e;
     return EXIT_FAILURE;
@@ -114,7 +114,7 @@ int itktubeNJetImageFunctionTest( int argc, char * argv[] )
   outIter.GoToBegin();
   while( !outIter.IsAtEnd() )
     {
-    inputImage->TransformIndexToPhysicalPoint( outIter.GetIndex(), pnt);
+    inputImage->TransformIndexToPhysicalPoint( outIter.GetIndex(), pnt );
     switch( function )
       {
       case 0:
@@ -193,14 +193,14 @@ int itktubeNJetImageFunctionTest( int argc, char * argv[] )
         }
       case 13:
         {
-        func->Derivative(pnt, v1, scale, d );
+        func->Derivative( pnt, v1, scale, d );
         val = func->GetMostRecentIntensity();
         outIter.Set( d[0] );
         break;
         }
       case 14:
         {
-        func->Derivative(pnt, v1, v2, scale, d );
+        func->Derivative( pnt, v1, v2, scale, d );
         val = func->GetMostRecentIntensity();
         outIter.Set( val );
         break;
@@ -423,7 +423,7 @@ int itktubeNJetImageFunctionTest( int argc, char * argv[] )
     {
     writer->Update();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
     std::cerr << "Exception caught during write:\n"  << e;
     return EXIT_FAILURE;

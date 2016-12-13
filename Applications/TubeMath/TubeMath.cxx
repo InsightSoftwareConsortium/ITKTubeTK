@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -106,8 +106,8 @@ SetPropertyFromImage( typename itk::GroupSpatialObject< DimensionT >::
   for( tubeIterator = inputTubeList->begin(); tubeIterator !=
     inputTubeList->end(); tubeIterator++ )
     {
-    typename TubeType::Pointer inputTube = ((TubeType *)( tubeIterator->
-      GetPointer()));
+    typename TubeType::Pointer inputTube = ( ( TubeType * )( tubeIterator->
+      GetPointer() ) );
 
     if( currentTube == ALL_TUBES_CURRENT || inputTube->GetId() ==
       currentTube )
@@ -115,15 +115,15 @@ SetPropertyFromImage( typename itk::GroupSpatialObject< DimensionT >::
       inputTube->ComputeObjectToWorldTransform();
 
       unsigned int pointListSize = inputTube->GetNumberOfPoints();
-      for( unsigned int pointNum = 0; pointNum < pointListSize; ++pointNum)
+      for( unsigned int pointNum = 0; pointNum < pointListSize; ++pointNum )
         {
-        TubePointType * currentPoint = static_cast< TubePointType * >(
+        TubePointType * currentPoint = static_cast< TubePointType * >( 
           inputTube->GetPoint( pointNum ) );
         typename TubeType::PointType pointIndex;
         pointIndex = currentPoint->GetPosition();
 
         typename TubeType::PointType pointWorld;
-        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint(
+        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint( 
           pointIndex );
 
         typename ImageType::IndexType imageIndex;
@@ -175,8 +175,8 @@ SetPropertyFromImageMean( typename itk::GroupSpatialObject< DimensionT >::
   for( tubeIterator = inputTubeList->begin(); tubeIterator !=
     inputTubeList->end(); tubeIterator++ )
     {
-    typename TubeType::Pointer inputTube = ((TubeType *)( tubeIterator->
-      GetPointer()));
+    typename TubeType::Pointer inputTube = ( ( TubeType * )( tubeIterator->
+      GetPointer() ) );
 
     if( currentTube == ALL_TUBES_CURRENT || inputTube->GetId() ==
       currentTube )
@@ -186,15 +186,15 @@ SetPropertyFromImageMean( typename itk::GroupSpatialObject< DimensionT >::
       double valAvg = 0;
       unsigned int valCount = 0;
       unsigned int pointListSize = inputTube->GetNumberOfPoints();
-      for( unsigned int pointNum = 0; pointNum < pointListSize; ++pointNum)
+      for( unsigned int pointNum = 0; pointNum < pointListSize; ++pointNum )
         {
-        TubePointType * currentPoint = static_cast< TubePointType * >(
+        TubePointType * currentPoint = static_cast< TubePointType * >( 
           inputTube->GetPoint( pointNum ) );
         typename TubeType::PointType pointIndex;
         pointIndex = currentPoint->GetPosition();
 
         typename TubeType::PointType pointWorld;
-        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint(
+        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint( 
           pointIndex );
 
         typename ImageType::IndexType imageIndex;
@@ -206,15 +206,15 @@ SetPropertyFromImageMean( typename itk::GroupSpatialObject< DimensionT >::
           }
         }
       valAvg /= valCount;
-      for( unsigned int pointNum = 0; pointNum < pointListSize; ++pointNum)
+      for( unsigned int pointNum = 0; pointNum < pointListSize; ++pointNum )
         {
-        TubePointType * currentPoint = static_cast< TubePointType * >(
+        TubePointType * currentPoint = static_cast< TubePointType * >( 
           inputTube->GetPoint( pointNum ) );
         typename TubeType::PointType pointIndex;
         pointIndex = currentPoint->GetPosition();
 
         typename TubeType::PointType pointWorld;
-        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint(
+        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint( 
           pointIndex );
 
         switch( propertyId )
@@ -247,7 +247,7 @@ int DoIt( MetaCommand & command )
 
   MetaCommand::OptionVector parsed = command.GetParsedOptions();
 
-  inputTubes = ReadTubeFile< DimensionT >( command.GetValueAsString(
+  inputTubes = ReadTubeFile< DimensionT >( command.GetValueAsString( 
     "infile" ).c_str() );
 
   int currentTube = ALL_TUBES_CURRENT;
@@ -256,7 +256,7 @@ int DoIt( MetaCommand & command )
     {
     if( it->name == "Write" )
       {
-      WriteTubeFile< DimensionT >( inputTubes, command.GetValueAsString(
+      WriteTubeFile< DimensionT >( inputTubes, command.GetValueAsString( 
         *it, "filename" ).c_str() );
       }
     else if( it->name == "SelectTube" )
@@ -311,8 +311,8 @@ int DoIt( MetaCommand & command )
       for( tubeIterator = inputTubeList->begin(); tubeIterator !=
         inputTubeList->end(); tubeIterator++ )
         {
-        typename TubeType::Pointer inputTube = ((TubeType *)( tubeIterator->
-          GetPointer()));
+        typename TubeType::Pointer inputTube = ( ( TubeType * )( tubeIterator->
+          GetPointer() ) );
 
         if( currentTube == ALL_TUBES_CURRENT || inputTube->GetId() ==
           currentTube )
@@ -342,8 +342,8 @@ int DoIt( MetaCommand & command )
       for( tubeIterator = inputTubeList->begin(); tubeIterator !=
         inputTubeList->end(); tubeIterator++ )
         {
-        typename TubeType::Pointer inputTube = ((TubeType *)( tubeIterator->
-          GetPointer()));
+        typename TubeType::Pointer inputTube = ( ( TubeType * )( tubeIterator->
+          GetPointer() ) );
 
         if( currentTube == ALL_TUBES_CURRENT || inputTube->GetId() ==
           currentTube )
@@ -369,8 +369,8 @@ int DoIt( MetaCommand & command )
       for( tubeIterator = inputTubeList->begin(); tubeIterator !=
         inputTubeList->end(); tubeIterator++ )
         {
-        typename TubeType::Pointer inputTube = ((TubeType *)( tubeIterator->
-          GetPointer()));
+        typename TubeType::Pointer inputTube = ( ( TubeType * )( tubeIterator->
+          GetPointer() ) );
 
         if( currentTube == ALL_TUBES_CURRENT || inputTube->GetId() ==
           currentTube )
@@ -397,8 +397,8 @@ int DoIt( MetaCommand & command )
       for( tubeIterator = inputTubeList->begin(); tubeIterator !=
         inputTubeList->end(); tubeIterator++ )
         {
-        typename TubeType::Pointer inputTube = ((TubeType *)( tubeIterator->
-          GetPointer()));
+        typename TubeType::Pointer inputTube = ( ( TubeType * )( tubeIterator->
+          GetPointer() ) );
 
         inputTube->SetId( count++ );
         }

@@ -6,7 +6,7 @@
 
    All rights reserved.
 
-   Licensed under the Apache License, Version 2.0 (the "License");
+   Licensed under the Apache License, Version 2.0 ( the "License" );
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
@@ -49,10 +49,10 @@ int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  if ( VDimension != 2 && VDimension != 3 )
+  if( VDimension != 2 && VDimension != 3 )
     {
-    tube::ErrorMessage(
-      "Error: Only 2D and 3D data is currently supported.");
+    tube::ErrorMessage( 
+      "Error: Only 2D and 3D data is currently supported." );
     return EXIT_FAILURE;
     }
 
@@ -73,7 +73,7 @@ int DoIt( int argc, char * argv[] )
   imReader = ImageReaderType::New();
   typename ImageType::Pointer image;
   tube::InfoMessage( "Reading volume mask..." );
-  imReader->SetFileName(inputVolume.c_str());
+  imReader->SetFileName( inputVolume.c_str() );
   try
     {
     imReader->Update();
@@ -93,9 +93,9 @@ int DoIt( int argc, char * argv[] )
   typedef tube::ComputeTrainingMask<ImageType> ComputeTrainingMaskType;
   typename ComputeTrainingMaskType::Pointer filter =
     ComputeTrainingMaskType::New();
-  filter->SetInput(imReader->GetOutput());
-  filter->SetGap(gap);
-  filter->SetNotVesselWidth(notVesselWidth);
+  filter->SetInput( imReader->GetOutput() );
+  filter->SetGap( gap );
+  filter->SetNotVesselWidth( notVesselWidth );
   filter->Update();
   progress = 0.65;
   progressReporter.Report( progress );
@@ -104,21 +104,21 @@ int DoIt( int argc, char * argv[] )
   typedef itk::ImageFileWriter<ImageTypeShort>             VolumeWriterType;
 
   typename VolumeWriterType::Pointer writer = VolumeWriterType::New();
-  if ( !notVesselMask.empty() )
+  if( !notVesselMask.empty() )
     {
     timeCollector.Start( "Creating not-Vessel Mask" );
     tube::InfoMessage( "Creating not-Vessel Mask..." );
-    writer->SetFileName(notVesselMask);
-    writer->SetInput(filter->GetNotVesselMask());
+    writer->SetFileName( notVesselMask );
+    writer->SetInput( filter->GetNotVesselMask() );
     writer->Update();
     timeCollector.Stop( "Creating not-Vessel Mask" );
     }
   timeCollector.Start( "Creating Vessel Mask" );
   tube::InfoMessage( "Creating Vessel Mask..." );
-  writer->SetFileName(outputVolume.c_str());
+  writer->SetFileName( outputVolume.c_str() );
   writer->SetInput( filter->GetOutput() );
   writer->Update();
-  timeCollector.Stop("Creating Vessel Mask" );
+  timeCollector.Stop( "Creating Vessel Mask" );
   progress = 1.0;
   progressReporter.Report( progress );
   progressReporter.End();

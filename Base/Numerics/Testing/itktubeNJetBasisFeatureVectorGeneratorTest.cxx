@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -136,7 +136,7 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
       {
       featureImage0Writer->Update();
       }
-    catch (itk::ExceptionObject& e)
+    catch ( itk::ExceptionObject& e )
       {
       std::cerr << "Exception caught during write:" << std::endl << e;
       return EXIT_FAILURE;
@@ -162,7 +162,7 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
       featureImage1Writer->SetInput( filter->GetFeatureImage( i ) );
       featureImage1Writer->Update();
       }
-    catch (itk::ExceptionObject& e)
+    catch ( itk::ExceptionObject& e )
       {
       std::cerr << "Exception caught during write:" << std::endl << e;
       return EXIT_FAILURE;

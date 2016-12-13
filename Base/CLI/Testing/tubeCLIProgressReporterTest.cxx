@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -47,10 +47,10 @@ int tubeCLIProgressReporterTest( int argc, char * itkNotUsed( argv )[] )
 
   ModuleProcessInformation CLPProcessInfo;
   CLPProcessInfo.Initialize();
-  CLPProcessInfo.SetProgressCallback(
+  CLPProcessInfo.SetProgressCallback( 
     cliProgressReporterTestCallbackFunction, NULL );
 
-  std::string processName("tubeCLIProgressReporterTest");
+  std::string processName( "tubeCLIProgressReporterTest" );
 
   tube::CLIProgressReporter reporter( processName.c_str(),
                                       &CLPProcessInfo,

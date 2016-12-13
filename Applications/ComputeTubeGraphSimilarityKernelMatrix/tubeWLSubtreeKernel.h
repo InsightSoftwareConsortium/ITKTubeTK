@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -48,7 +48,7 @@ namespace tube
  *
  * [1]  N. Shervashidze, P. Schweitzer, E.-J. Van Leeuwen and
  *      K. M. Borgwardt, "Weisfeiler-Lehman graph kernels", In:
- *      JMLR 12(Sep), pp. 2539-2561, 2011.
+ *      JMLR 12( Sep ), pp. 2539-2561, 2011.
  *
  * Please read this article for any further details on this
  * kind of graph kernel. Naming of variables in this class
@@ -66,11 +66,11 @@ public:
                    const GraphType &G1,
                    const LabelMapVectorType & labelMap,
                    const int & labelCount,
-                   int subtreeHeight)
-                     : GraphKernel(G0, G1),
-                       m_SubtreeHeight(subtreeHeight),
-                       m_LabelMap(labelMap),
-                       m_LabelCount(labelCount)
+                   int subtreeHeight )
+                     : GraphKernel( G0, G1 ),
+                       m_SubtreeHeight( subtreeHeight ),
+                       m_LabelMap( labelMap ),
+                       m_LabelCount( labelCount )
     {
     }
 
@@ -80,13 +80,13 @@ public:
   /**
    * Take graph information and update
    *
-   *  1) 'labelMap' for each subtree height with compressed label mapping
-   *  2) the number of compressed labels per subtree level (in 'cLabCounter')
+   *  1 ) 'labelMap' for each subtree height with compressed label mapping
+   *  2 ) the number of compressed labels per subtree level ( in 'cLabCounter' )
    */
   static void UpdateLabelCompression( GraphType &G,
                              std::vector<LabelMapType> & labelMap,
                              int & cLabCounter,
-                             int subtreeHeight);
+                             int subtreeHeight );
 
 private:
   /**
@@ -110,4 +110,4 @@ private:
 
 } // End namespace tube
 
-#endif // End !defined(__tubeWLSubtreeKernel_h)
+#endif // End !defined( __tubeWLSubtreeKernel_h )

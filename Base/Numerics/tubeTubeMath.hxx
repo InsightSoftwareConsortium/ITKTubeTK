@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -56,14 +56,14 @@ ComputeNormalsFromTangent( TTubePoint & tubePoint,
       t.Fill( 0 );
       t[0] = 1;
       }
-    tubePoint.SetTangent(t);
+    tubePoint.SetTangent( t );
 
     CovariantVectorType n1;
     CovariantVectorType n2;
 
     n2.SetVnlVector( ::tube::ComputeOrthogonalVector( t.GetVnlVector() )
       .normalize() );
-    tubePoint.SetNormal2(n2);
+    tubePoint.SetNormal2( n2 );
 
     if( dimension == 3 )
       {
@@ -74,7 +74,7 @@ ComputeNormalsFromTangent( TTubePoint & tubePoint,
         n1.Fill( 0 );
         n1[0] = 1;
         }
-      tubePoint.SetNormal1(n1);
+      tubePoint.SetNormal1( n1 );
       }
 
     return;
@@ -103,7 +103,7 @@ ComputeNormalsFromTangent( TTubePoint & tubePoint,
     tt[2] = prevT[2];
     tt.Normalize();
 
-    vnl_vector< double > vv = ::tube::ComputeCrossVector(
+    vnl_vector< double > vv = ::tube::ComputeCrossVector( 
       t.GetVnlVector(), tt.GetVnlVector() );
     if( t * prevT > 0.99999 )
       {
@@ -160,7 +160,7 @@ ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
 
   PointType x1, x3;
   VectorType t;
-  t.Fill(0.0);
+  t.Fill( 0.0 );
 
   if( length == 1 )
     {
@@ -173,36 +173,36 @@ ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
   int it2 = 1;
   int it3 = 2;
 
-  while(it3 < length)
+  while( it3 < length )
     {
     x1 = tubeV[it1].GetPosition();
     x3 = tubeV[it3].GetPosition();
     double l = 0;
-    for(unsigned int i=0; i<dimension; i++)
+    for( unsigned int i=0; i<dimension; i++ )
       {
-      t[i] = (x3[i] - x1[i]);
+      t[i] = ( x3[i] - x1[i] );
       l = l + t[i]*t[i];
       }
 
-    l = std::sqrt(l);
-    if(l < 0.0001)
+    l = std::sqrt( l );
+    if( l < 0.0001 )
       {
       std::cerr << "tubeTubeMath::ComputeVectorTangentsAndNormals() : ";
       std::cerr << "length between two consecutive points is 0";
-      std::cerr << " (use RemoveDuplicatePoints())" << std::endl;
+      std::cerr << " ( use RemoveDuplicatePoints() )" << std::endl;
       std::cerr << "   p1 = " << x1 << std::endl;
       std::cerr << "   p3 = " << x3 << std::endl;
       t = tubeV[it1].GetTangent();
       }
     else
       {
-      for(unsigned int i=0; i<dimension; i++)
+      for( unsigned int i=0; i<dimension; i++ )
         {
         t[i] /= l;
         }
       }
 
-    tubeV[it2].SetTangent(t);
+    tubeV[it2].SetTangent( t );
     ++it1;
     ++it2;
     ++it3;
@@ -211,14 +211,14 @@ ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
   it1 = 0;
   it2 = 1;
   t = tubeV[it2].GetTangent();
-  tubeV[it1].SetTangent(t);
+  tubeV[it1].SetTangent( t );
   it1 = length-1;
   it2 = length-2;
   t = tubeV[it2].GetTangent();
-  tubeV[it1].SetTangent(t);
+  tubeV[it1].SetTangent( t );
 
   it1 = 0;
-  while(it1 < length-1)
+  while( it1 < length-1 )
     {
     t = tubeV[it1+1].GetTangent();
 
@@ -263,7 +263,7 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
   std::vector< double > w;
   int wSize = 0;
 
-  if(smoothFunction == SMOOTH_TUBE_USING_INDEX_AVERAGE ||
+  if( smoothFunction == SMOOTH_TUBE_USING_INDEX_AVERAGE ||
      smoothFunction == SMOOTH_TUBE_USING_INDEX_GAUSSIAN )
     {
     // Calculate the weighing window w
@@ -271,7 +271,7 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
       {
       int maxIndex = static_cast< int >( h );
       wSize = 2 * maxIndex + 1;
-      w.resize(wSize, 1.0);
+      w.resize( wSize, 1.0 );
       }
     else
       {
@@ -281,11 +281,11 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
       int maxIndex = static_cast< int >( 3*sigma );
       wSize = 2 * maxIndex + 1;
       w.resize( wSize, 0.0 );
-      for(int i = 0; i <= maxIndex; i++)
+      for( int i = 0; i <= maxIndex; i++ )
         {
-        // The multiplication term 1/sigma*sqrt(2*pi) isn't necessary
+        // The multiplication term 1/sigma*sqrt( 2*pi ) isn't necessary
         // since we normalize at the end by the sum of w
-        w[maxIndex+i] = exp(-i*i/(2.0*sigma*sigma));
+        w[maxIndex+i] = exp( -i*i/( 2.0*sigma*sigma ) );
         w[maxIndex-i] = w[maxIndex+i];
         }
       }
@@ -299,7 +299,7 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
       double wTotal = 0;
       avg.Fill( 0 );
       tmpPointItr = pointItr;
-      int wCenter = (wSize-1)/2;
+      int wCenter = ( wSize-1 )/2;
 
       // Place the tmpPointItr at the beginning of the window
       tmpPointItr -= std::min( count, wCenter );
@@ -340,8 +340,8 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
     {
     // // Set w for Gaussians
     // double sigma = h;
-    // double dist = (pointItr->GetPosition()-tmpPointItr->GetPosition()).GetNorm();
-    // w[pos] = 1/(sigma*2.50663)*exp(-dist*dist/(2.0*sigma*sigma));
+    // double dist = ( pointItr->GetPosition()-tmpPointItr->GetPosition() ).GetNorm();
+    // w[pos] = 1/( sigma*2.50663 )*exp( -dist*dist/( 2.0*sigma*sigma ) );
 
     // TODO : Finish implementation
     std::cerr<<" Smoothing method not yet implemented. Please choose another one.\n";
@@ -370,19 +370,19 @@ RemoveDuplicateTubePoints( typename TTube::Pointer & tube )
   int nPoints = 0;
   for ( int i = 0; i < length - 1; i++ )
     {
-    if ( tube->GetPoint(i)->GetPosition() ==
-      tube->GetPoint(i + 1)->GetPosition() )
+    if ( tube->GetPoint( i )->GetPosition() ==
+      tube->GetPoint( i + 1 )->GetPosition() )
       {
-      tube->RemovePoint(i + 1);
+      tube->RemovePoint( i + 1 );
       i--;
       length--;
       nPoints++;
       }
     if ( i >= 0 && i < length - 2
-         && tube->GetPoint(i)->GetPosition() ==
-         tube->GetPoint(i + 2)->GetPosition() )
+         && tube->GetPoint( i )->GetPosition() ==
+         tube->GetPoint( i + 2 )->GetPosition() )
       {
-      tube->RemovePoint(i + 2);
+      tube->RemovePoint( i + 2 );
       i--;
       length--;
       nPoints++;
@@ -471,7 +471,7 @@ ComputeTubeLength( const typename TTube::Pointer & tube )
     PositionVectorType ptCurPosVec =
       itTubePoints->GetPosition().GetVectorFromOrigin();
 
-    tubeLength += (ptCurPosVec - ptPrevPosVec).GetNorm();
+    tubeLength += ( ptCurPosVec - ptPrevPosVec ).GetNorm();
 
     ptPrevPosVec = ptCurPosVec;
     ++itTubePoints;
@@ -482,4 +482,4 @@ ComputeTubeLength( const typename TTube::Pointer & tube )
 
 } // End namespace tube
 
-#endif // End !defined(__tubeTubeMath_hxx)
+#endif // End !defined( __tubeTubeMath_hxx )

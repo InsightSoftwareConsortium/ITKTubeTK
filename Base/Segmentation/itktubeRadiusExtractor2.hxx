@@ -12,7 +12,7 @@ Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -255,7 +255,7 @@ RadiusExtractor2<TInputImage>
   ITKIndexType buffer;
   for( unsigned int i = 0; i < dimension; ++i )
     {
-    buffer[i] = static_cast< unsigned int >(
+    buffer[i] = static_cast< unsigned int >( 
       this->GetKernelExtent() * this->GetRadiusMax() );
     }
 
@@ -414,14 +414,14 @@ RadiusExtractor2<TInputImage>
     double factor = ( m_RadiusMin - r ) / m_RadiusTolerance;
     double m0 = this->GetKernelMedialness( m_RadiusMin );
     double m1 = this->GetKernelMedialness( m_RadiusMin + m_RadiusTolerance );
-    return m0 - factor * vnl_math_abs(m0 - m1);
+    return m0 - factor * vnl_math_abs( m0 - m1 );
     }
   else if( r > m_RadiusMax )
     {
     double factor = ( r - m_RadiusMax ) / m_RadiusTolerance;
     double m0 = this->GetKernelMedialness( m_RadiusMax );
     double m1 = this->GetKernelMedialness( m_RadiusMax - m_RadiusTolerance );
-    return m0 - factor * vnl_math_abs(m0 - m1);
+    return m0 - factor * vnl_math_abs( m0 - m1 );
     }
 
   double pVal = 0;
@@ -478,7 +478,7 @@ RadiusExtractor2<TInputImage>
         {
         bin = histoBins - 1;
         }
-      if( (*iterDist) <= r )
+      if( ( *iterDist ) <= r )
         {
         ++histoPos[bin];
         ++histoPosCount;
@@ -542,7 +542,7 @@ RadiusExtractor2<TInputImage>
     double m0 = this->GetKernelBranchness( m_RadiusMin );
     double m1 = this->GetKernelBranchness( m_RadiusMin
       + m_RadiusTolerance );
-    return m0 - factor * vnl_math_abs(m0 - m1);
+    return m0 - factor * vnl_math_abs( m0 - m1 );
     }
   else if( r > m_RadiusMax )
     {
@@ -550,7 +550,7 @@ RadiusExtractor2<TInputImage>
     double m0 = this->GetKernelBranchness( m_RadiusMax );
     double m1 = this->GetKernelBranchness( m_RadiusMax
       - m_RadiusTolerance );
-    return m0 - factor * vnl_math_abs(m0 - m1);
+    return m0 - factor * vnl_math_abs( m0 - m1 );
     }
   double pVal = 0;
   double nVal = 0;
@@ -590,7 +590,7 @@ RadiusExtractor2<TInputImage>
         {
         bin = histoBins - 1;
         }
-      if( (*iterDist) <= r )
+      if( ( *iterDist ) <= r )
         {
         ++histoPos[bin];
         ++histoPosCount;
@@ -659,29 +659,29 @@ RadiusExtractor2<TInputImage>
     default:
     case RADIUS_CORRECTION_NONE:
       {
-      xMin = (int)vnl_math_ceil( m_RadiusMin / m_RadiusTolerance );
-      xMax = (int)vnl_math_floor( m_RadiusMax / m_RadiusTolerance );
+      xMin = ( int )vnl_math_ceil( m_RadiusMin / m_RadiusTolerance );
+      xMax = ( int )vnl_math_floor( m_RadiusMax / m_RadiusTolerance );
       x = m_RadiusStart / m_RadiusTolerance;
       break;
       }
     case RADIUS_CORRECTION_FOR_BINARY_IMAGE:
       {
-      xMin = (int)vnl_math_ceil( m_RadiusMin / m_RadiusTolerance );
-      xMax = (int)vnl_math_floor( m_RadiusMax / m_RadiusTolerance );
+      xMin = ( int )vnl_math_ceil( m_RadiusMin / m_RadiusTolerance );
+      xMax = ( int )vnl_math_floor( m_RadiusMax / m_RadiusTolerance );
       x = m_RadiusStart / m_RadiusTolerance;
       break;
       }
     case RADIUS_CORRECTION_FOR_CTA:
       {
-      xMin = (int)vnl_math_ceil( m_RadiusMin / m_RadiusTolerance );
-      xMax = (int)vnl_math_floor( m_RadiusMax / m_RadiusTolerance );
+      xMin = ( int )vnl_math_ceil( m_RadiusMin / m_RadiusTolerance );
+      xMax = ( int )vnl_math_floor( m_RadiusMax / m_RadiusTolerance );
       x = m_RadiusStart / m_RadiusTolerance;
       break;
       }
     case RADIUS_CORRECTION_FOR_MRA:
       {
-      xMin = (int)vnl_math_ceil( m_RadiusMin / m_RadiusTolerance );
-      xMax = (int)vnl_math_floor( m_RadiusMax / m_RadiusTolerance );
+      xMin = ( int )vnl_math_ceil( m_RadiusMin / m_RadiusTolerance );
+      xMax = ( int )vnl_math_floor( m_RadiusMax / m_RadiusTolerance );
       x = m_RadiusStart / m_RadiusTolerance;
       break;
       }
@@ -746,7 +746,7 @@ RadiusExtractor2<TInputImage>
     }
 
   tube->RemoveDuplicatePoints();
-  ::tube::ComputeVectorTangentsAndNormals< TubePointType >(
+  ::tube::ComputeVectorTangentsAndNormals< TubePointType >( 
     tube->GetPoints() );
 
   typename std::vector< TubePointType >::iterator pntIter;
@@ -868,7 +868,7 @@ RadiusExtractor2<TInputImage>
         m_KernelPointStep ].GetPosition();
       for( unsigned int i = 0; i < ImageDimension; ++i )
         {
-        p2[i] = p1[i] - ( ( p2[i] - p1[i] ) * ( ( p - (tubeSize-1) ) /
+        p2[i] = p1[i] - ( ( p2[i] - p1[i] ) * ( ( p - ( tubeSize-1 ) ) /
             m_KernelPointStep ) );
         }
       m_KernelTubePoints[ count ].SetPosition( p2 );
@@ -935,9 +935,9 @@ RadiusExtractor2<TInputImage>
         d = static_cast< double >( tubePointNum - p )
           / ( tubePointNum - startP );
         }
-      tube->GetPoints()[ p ].SetRadius( d * r0 + (1 - d) * r1 );
-      tube->GetPoints()[ p ].SetMedialness( d * m0 + (1 - d) * m1 );
-      tube->GetPoints()[ p ].SetBranchness( d * b0 + (1 - d) * b1 );
+      tube->GetPoints()[ p ].SetRadius( d * r0 + ( 1 - d ) * r1 );
+      tube->GetPoints()[ p ].SetMedialness( d * m0 + ( 1 - d ) * m1 );
+      tube->GetPoints()[ p ].SetBranchness( d * b0 + ( 1 - d ) * b1 );
       }
     else
       {
@@ -947,9 +947,9 @@ RadiusExtractor2<TInputImage>
         d = static_cast< double >( p - tubePointNum )
           / ( endP - tubePointNum );
         }
-      tube->GetPoints()[ p ].SetRadius( d * r2 + (1 - d) * r1 );
-      tube->GetPoints()[ p ].SetMedialness( d * m2 + (1 - d) * m1 );
-      tube->GetPoints()[ p ].SetBranchness( d * b2 + (1 - d) * b1 );
+      tube->GetPoints()[ p ].SetRadius( d * r2 + ( 1 - d ) * r1 );
+      tube->GetPoints()[ p ].SetMedialness( d * m2 + ( 1 - d ) * m1 );
+      tube->GetPoints()[ p ].SetBranchness( d * b2 + ( 1 - d ) * b1 );
       }
     }
 }
@@ -1031,4 +1031,4 @@ RadiusExtractor2<TInputImage>
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeRadiusExtractor2_hxx)
+#endif // End !defined( __itktubeRadiusExtractor2_hxx )

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -51,13 +51,13 @@ public:
   typedef itk::GroupSpatialObject<3>  TubeNetType;
 
   static vtkMRMLSpatialObjectsStorageNode *New( void );
-  vtkTypeMacro(vtkMRMLSpatialObjectsStorageNode, vtkMRMLModelStorageNode);
-  void PrintSelf(ostream& os, vtkIndent indent);
+  vtkTypeMacro( vtkMRMLSpatialObjectsStorageNode, vtkMRMLModelStorageNode );
+  void PrintSelf( ostream& os, vtkIndent indent );
 
   virtual vtkMRMLNode* CreateNodeInstance( void );
 
   ///
-  /// Get node XML tag name (like Storage, Model)
+  /// Get node XML tag name ( like Storage, Model )
   virtual const char* GetNodeTagName( void ) {return "SpatialObjectsStorage";}
 
   ///
@@ -66,13 +66,13 @@ public:
 
   ///
   /// Return true if the node can be read in
-  virtual bool CanReadInReferenceNode(vtkMRMLNode *refNode);
+  virtual bool CanReadInReferenceNode( vtkMRMLNode *refNode );
 
 protected:
   vtkMRMLSpatialObjectsStorageNode( void ) {}
   ~vtkMRMLSpatialObjectsStorageNode( void ) {}
-  vtkMRMLSpatialObjectsStorageNode(const vtkMRMLSpatialObjectsStorageNode&);
-  void operator=(const vtkMRMLSpatialObjectsStorageNode&);
+  vtkMRMLSpatialObjectsStorageNode( const vtkMRMLSpatialObjectsStorageNode& );
+  void operator=( const vtkMRMLSpatialObjectsStorageNode& );
 
   ///
   /// Initialize all the supported read file types
@@ -83,11 +83,11 @@ protected:
   virtual void InitializeSupportedWriteFileTypes( void );
 
   /// Read data and set it in the referenced node
-  virtual int ReadDataInternal(vtkMRMLNode *refNode);
+  virtual int ReadDataInternal( vtkMRMLNode *refNode );
 
   /// Write data from a  referenced node
-  virtual int WriteDataInternal(vtkMRMLNode *refNode);
+  virtual int WriteDataInternal( vtkMRMLNode *refNode );
 
 }; // End class vtkMRMLSpatialObjectsStorageNode
 
-#endif // End !defined(__vtkMRMLSpatialObjectsStorageNode_h)
+#endif // End !defined( __vtkMRMLSpatialObjectsStorageNode_h )

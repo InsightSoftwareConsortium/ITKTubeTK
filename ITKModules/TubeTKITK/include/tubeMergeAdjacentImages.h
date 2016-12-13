@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -61,10 +61,10 @@ public:
   typedef typename FilterType::PaddingType                     PaddingType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(MergeAdjacentImages, ProcessObject);
+  /** Run-time type information ( and related methods ). */
+  itkTypeMacro( MergeAdjacentImages, ProcessObject );
 
   /** Set input image 1 */
   tubeWrapSetConstObjectMacro( Input1, ImageType, Filter );
@@ -139,10 +139,10 @@ public:
   void SaveTransform( const std::string & filename );
 
   /** Run algorithm */
-  tubeWrapUpdateMacro(Filter);
+  tubeWrapUpdateMacro( Filter );
 
   /** Get output image */
-  tubeWrapGetObjectMacro(Output, ImageType, Filter);
+  tubeWrapGetObjectMacro( Output, ImageType, Filter );
 
 protected:
   MergeAdjacentImages( void );
@@ -151,8 +151,8 @@ protected:
 
 private:
   /** itkMergeAdjacentImagesFilter parameters **/
-  MergeAdjacentImages(const Self &);
-  void operator=(const Self &);
+  MergeAdjacentImages( const Self & );
+  void operator=( const Self & );
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
   void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -87,7 +87,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( AnisotropicDiffusiveSparseRegistrationFilter,
                 DiffusiveRegistrationFilter );
 
@@ -223,7 +223,7 @@ public:
   typedef typename TubeType::TubePointType
       TubePointType;
 
-  /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
+  /** The number of div( Tensor \grad u )v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
   virtual int GetNumberOfTerms( void ) const
     { return 4; }
@@ -245,9 +245,9 @@ public:
 
   /** Set/get the lambda that controls the decay of the weight value w as a
    *  function of the distance to the closest border point.  If gamma=-1, then
-   *  w decays exponentially (w = e^(-1.0*lambda*distance)).  Otherwise, w
+   *  w decays exponentially ( w = e^( -1.0*lambda*distance ) ).  Otherwise, w
    *  decays exponentially using a Dirac-shaped function
-   *  (w = 1 / ( 1 + lambda*gamma*e^(-1.0*lambda*distance^2))).  Lambda must
+   *  ( w = 1 / ( 1 + lambda*gamma*e^( -1.0*lambda*distance^2 ) ) ).  Lambda must
    *  be positive. */
   void SetLambda( WeightComponentType l )
     { if( l > 0 ) { m_Lambda = l; } }
@@ -256,9 +256,9 @@ public:
 
   /** Set/get the gamma that controls the decay of the weight value w as a
    *  function of the distance to the closest border point.  If gamma=-1, then
-   *  w decays exponentially (w = e^(-1.0*lambda*distance)).  Otherwise, w
+   *  w decays exponentially ( w = e^( -1.0*lambda*distance ) ).  Otherwise, w
    *  decays exponentially using a Dirac-shaped function
-   *  (w = 1 / ( 1 + lambda*gamma*e^(-1.0*lambda*distance^2))).  Gamma must
+   *  ( w = 1 / ( 1 + lambda*gamma*e^( -1.0*lambda*distance^2 ) ) ).  Gamma must
    *  be positive or -1.0. */
   void SetGamma( WeightComponentType g )
     { if( g > 0 || g == -1.0 ) { m_Gamma = g; } }
@@ -274,7 +274,7 @@ public:
     { return m_NormalMatrixImage; }
   virtual NormalMatrixImageType * GetHighResolutionNormalMatrixImage( void ) const
     { return m_HighResolutionNormalMatrixImage; }
-  /** Get the image of a specific normal vector (column of the normal matrix).
+  /** Get the image of a specific normal vector ( column of the normal matrix ).
    *  Pointer should already have been initialized with New() */
   virtual void GetHighResolutionNormalVectorImage
       ( NormalVectorImagePointer & normalImage,
@@ -293,7 +293,7 @@ public:
   /** Set/get the weighting value w image.  Setting the weighting component
     * image overrides the border surface polydata and lambda/gamma if the border
     * surface was also supplied. */
-  virtual void SetWeightRegularizationsImage(
+  virtual void SetWeightRegularizationsImage( 
       WeightComponentImageType * weightImage )
     { m_WeightRegularizationsImage = weightImage; }
   virtual WeightComponentImageType * GetWeightRegularizationsImage( void ) const
@@ -314,13 +314,13 @@ public:
 protected:
   AnisotropicDiffusiveSparseRegistrationFilter( void );
   virtual ~AnisotropicDiffusiveSparseRegistrationFilter( void ) {}
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
   /** Handy for array indexing. */
   enum DivTerm { SMOOTH_TANGENTIAL, SMOOTH_NORMAL, PROP_TANGENTIAL, PROP_NORMAL };
 
   /** Allocate the deformation component images and their derivative images.
-   *  (which may be updated throughout the registration). Reimplement in derived
+   *  ( which may be updated throughout the registration ). Reimplement in derived
    *  classes. */
   virtual void InitializeDeformationComponentAndDerivativeImages( void );
 
@@ -329,7 +329,7 @@ protected:
   virtual void ComputeDiffusionTensorImages( void );
 
   /** Allocate and populate the images of multiplication vectors that the
-   *  div(T \grad(u)) values are multiplied by.  Allocate and populate all or
+   *  div( T \grad( u ) ) values are multiplied by.  Allocate and populate all or
    *  some of the multiplication vector images in derived classes.  Otherwise,
    *  default to e_l, where e_l is the lth canonical unit vector. */
   virtual void ComputeMultiplicationVectorImages( void );
@@ -358,14 +358,14 @@ protected:
 
   /** Computes the normal vector image and weighting factors w given the
    *  surface border polydata. */
-  virtual void ComputeNormalMatrixAndWeightImages(
+  virtual void ComputeNormalMatrixAndWeightImages( 
       bool computeNormals,
       bool computeWeightStructures,
       bool computeWeightRegularizations );
 
   /** Computes the normal vectors and distances to the closest point given
    *  an initialized vtkPointLocator and the surface border normals */
-  virtual void GetNormalsAndDistancesFromClosestSurfacePoint(
+  virtual void GetNormalsAndDistancesFromClosestSurfacePoint( 
       bool computeNormals,
       bool computeWeightStructures,
       bool computeWeightRegularizations );
@@ -374,7 +374,7 @@ protected:
    *  by the multithreading mechanism.
    *  \sa GetNormalsAndDistancesFromClosestSurfacePoint
    *  \sa GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback */
-  virtual void ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
+  virtual void ThreadedGetNormalsAndDistancesFromClosestSurfacePoint( 
       vtkPointLocator * surfacePointLocator,
       vtkFloatArray * surfaceNormalData,
       vtkPointLocator * tubePointLocator,
@@ -392,18 +392,18 @@ protected:
   /** Computes the weighting factor w from the distance to the border using
    *  exponential decay.  The weight should be 1 near the border and 0 away from
    *  the border. */
-  virtual WeightComponentType ComputeWeightFromDistanceExponential(
+  virtual WeightComponentType ComputeWeightFromDistanceExponential( 
       const WeightComponentType distance ) const;
 
   /** Computes the weighting factor w from the distance to the border using
    *  a Dirac-shaped function.  The weight should be 1 near the border and 0
    *  away from the border. */
-  virtual WeightComponentType ComputeWeightFromDistanceDirac(
+  virtual WeightComponentType ComputeWeightFromDistanceDirac( 
       const WeightComponentType distance ) const;
 
   /** Given a point and two vectors on a plane, and a second point, calculates
    *  the in-plane distance between the two points. */
-  double ComputeDistanceToPointOnPlane(
+  double ComputeDistanceToPointOnPlane( 
       double * planePoint,
       float * tangentVector1,
       float * tangentVector2,
@@ -411,8 +411,8 @@ protected:
 
 private:
   // Purposely not implemented
-  AnisotropicDiffusiveSparseRegistrationFilter(const Self&);
-  void operator=(const Self&); // Purposely not implemented
+  AnisotropicDiffusiveSparseRegistrationFilter( const Self& );
+  void operator=( const Self& ); // Purposely not implemented
 
   /** Structure for passing information into static callback methods.  Used in
    * the subclasses threading mechanisms. */
@@ -439,7 +439,7 @@ private:
    * output region that it passes to
    * ThreadedGetNormalsAndDistancesFromClosestSurfacePoint for processing. */
   static ITK_THREAD_RETURN_TYPE
-      GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback(
+      GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback( 
           void * arg );
 
   /** Organ boundary surface and surface of border normals */
@@ -454,7 +454,7 @@ private:
   WeightComponentImagePointer         m_WeightRegularizationsImage;
 
   /** Highest resolution versions of the normal and weight images, useful
-   *  to calculate once (setting m_ImageAttributeImage) at the highest
+   *  to calculate once ( setting m_ImageAttributeImage ) at the highest
    *  resolution during multiresolution registration, and then resampling on
    *  each scale.  The normal matrix image and weight structures image are
    *  resampled using nearest neighbor, while the weight regularizations image
@@ -478,4 +478,4 @@ private:
 #include "itktubeAnisotropicDiffusiveSparseRegistrationFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeAnisotropicDiffusiveSparseRegistrationFilter_h)
+#endif // End !defined( __itktubeAnisotropicDiffusiveSparseRegistrationFilter_h )

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -67,9 +67,9 @@ SegmentBinaryImageSkeleton< TPixel, VDimension >
 template< class TPixel, unsigned int VDimension >
 void
 SegmentBinaryImageSkeleton< TPixel, VDimension >
-::PrintSelf(std::ostream & os, Indent indent) const
+::PrintSelf( std::ostream & os, Indent indent ) const
 {
-  Superclass::PrintSelf(os, indent);
+  Superclass::PrintSelf( os, indent );
   os << "Structuring element radius: " << m_Radius << std::endl;
 
 }

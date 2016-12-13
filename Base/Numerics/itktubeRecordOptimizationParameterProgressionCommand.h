@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -104,7 +104,7 @@ protected:
 
 private:
   // Purposely not implemented
-  RecordOptimizationParameterProgressionCommand(
+  RecordOptimizationParameterProgressionCommand( 
     const RecordOptimizationParameterProgressionCommand & );
   // Purposely not implemented
   void operator=( const RecordOptimizationParameterProgressionCommand & );
@@ -126,4 +126,4 @@ private:
 #include "itktubeRecordOptimizationParameterProgressionCommand.hxx"
 #endif
 
-#endif // End !defined(__itktubeRecordOptimizationParameterProgressionCommand_h)
+#endif // End !defined( __itktubeRecordOptimizationParameterProgressionCommand_h )

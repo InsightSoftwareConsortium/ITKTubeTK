@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -122,7 +122,7 @@ int DoIt( int argc, char * argv[] )
       {
       std::cout << "###Initialization: ImageCenters" << std::endl;
       }
-    reger->SetInitialMethodEnum(
+    reger->SetInitialMethodEnum( 
       RegistrationType::INIT_WITH_IMAGE_CENTERS );
     }
   else if( initialization == "SecondMoments" )
@@ -131,7 +131,7 @@ int DoIt( int argc, char * argv[] )
       {
       std::cout << "###Initialization: SecondMoments" << std::endl;
       }
-    reger->SetInitialMethodEnum(
+    reger->SetInitialMethodEnum( 
       RegistrationType::INIT_WITH_SECOND_MOMENTS );
     }
   else if( initialization == "CentersOfMass" )
@@ -140,7 +140,7 @@ int DoIt( int argc, char * argv[] )
       {
       std::cout << "###Initialization: CentersOfMass" << std::endl;
       }
-    reger->SetInitialMethodEnum(
+    reger->SetInitialMethodEnum( 
       RegistrationType::INIT_WITH_CENTERS_OF_MASS );
     }
   else // if( initialization == "None" )

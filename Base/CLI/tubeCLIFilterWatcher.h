@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -39,13 +39,13 @@ namespace tube
 class CLIFilterWatcher : public itk::SimpleFilterWatcher
 {
 public:
-  CLIFilterWatcher(itk::ProcessObject* o,
+  CLIFilterWatcher( itk::ProcessObject* o,
                       const char *comment="",
                       ModuleProcessInformation *inf=0,
                       double fraction = 1.0,
                       double start = 0.0,
-                      bool useStdCout = false)
-    : SimpleFilterWatcher(o, comment)
+                      bool useStdCout = false )
+    : SimpleFilterWatcher( o, comment )
     {
     m_ProcessInformation = inf;
     m_Fraction = fraction;
@@ -71,11 +71,11 @@ protected:
         {
         if( m_ProcessInformation )
           {
-          std::strncpy(m_ProcessInformation->ProgressMessage,
-                  this->GetComment().c_str(), 1023);
+          std::strncpy( m_ProcessInformation->ProgressMessage,
+                  this->GetComment().c_str(), 1023 );
           m_ProcessInformation->Progress =
-            (this->GetProcess()->GetProgress() * m_Fraction + m_Start);
-          if(m_Fraction != 1.0)
+            ( this->GetProcess()->GetProgress() * m_Fraction + m_Start );
+          if( m_Fraction != 1.0 )
             {
             m_ProcessInformation->StageProgress =
               this->GetProcess()->GetProgress();
@@ -86,28 +86,28 @@ protected:
             * this->GetTimeProbe().GetNumberOfStops();
           this->GetTimeProbe().Start();
 
-          if(m_ProcessInformation->Abort)
+          if( m_ProcessInformation->Abort )
             {
             this->GetProcess()->AbortGenerateDataOn();
             m_ProcessInformation->Progress = 0;
             m_ProcessInformation->StageProgress = 0;
             }
 
-          if(m_ProcessInformation->ProgressCallbackFunction
-              && m_ProcessInformation->ProgressCallbackClientData)
+          if( m_ProcessInformation->ProgressCallbackFunction
+              && m_ProcessInformation->ProgressCallbackClientData )
             {
-            (*(m_ProcessInformation->ProgressCallbackFunction))(
-              m_ProcessInformation->ProgressCallbackClientData);
+            ( *( m_ProcessInformation->ProgressCallbackFunction ) )( 
+              m_ProcessInformation->ProgressCallbackClientData );
             }
           }
         if( !m_ProcessInformation || m_UseStdCout )
           {
           std::cout << "<filter-progress>"
-                    << (this->GetProcess()->GetProgress() * m_Fraction)
+                    << ( this->GetProcess()->GetProgress() * m_Fraction )
                        + m_Start
                     << "</filter-progress>"
                     << std::endl;
-          if(m_Fraction != 1.0)
+          if( m_Fraction != 1.0 )
             {
             std::cout << "<filter-stage-progress>"
                       << this->GetProcess()->GetProgress()
@@ -123,24 +123,24 @@ protected:
   /** Callback method to show the StartEvent */
   virtual void StartFilter( void )
     {
-    this->SetSteps(0);
-    this->SetIterations(0);
+    this->SetSteps( 0 );
+    this->SetIterations( 0 );
     this->GetTimeProbe().Start();
     this->m_StartCalled = true;
-    if(!this->GetQuiet())
+    if( !this->GetQuiet() )
       {
-      if(m_ProcessInformation)
+      if( m_ProcessInformation )
         {
         m_ProcessInformation->Progress = 0;
         m_ProcessInformation->StageProgress = 0;
-        std::strncpy(m_ProcessInformation->ProgressMessage,
-                this->GetComment().c_str(), 1023);
+        std::strncpy( m_ProcessInformation->ProgressMessage,
+                this->GetComment().c_str(), 1023 );
 
-        if(m_ProcessInformation->ProgressCallbackFunction
-            && m_ProcessInformation->ProgressCallbackClientData)
+        if( m_ProcessInformation->ProgressCallbackFunction
+            && m_ProcessInformation->ProgressCallbackClientData )
           {
-          (*(m_ProcessInformation->ProgressCallbackFunction))(
-            m_ProcessInformation->ProgressCallbackClientData);
+          ( *( m_ProcessInformation->ProgressCallbackFunction ) )( 
+            m_ProcessInformation->ProgressCallbackClientData );
           }
         }
       if( !m_ProcessInformation || m_UseStdCout )
@@ -148,8 +148,8 @@ protected:
         std::cout << "<filter-start>"
                   << std::endl;
         std::cout << "<filter-name>"
-                  << (this->GetProcess()
-                      ? this->GetProcess()->GetNameOfClass() : "None")
+                  << ( this->GetProcess()
+                      ? this->GetProcess()->GetNameOfClass() : "None" )
                   << "</filter-name>"
                   << std::endl;
         std::cout << "<filter-comment>"
@@ -167,9 +167,9 @@ protected:
   virtual void EndFilter( void )
     {
     this->GetTimeProbe().Stop();
-    if(!this->GetQuiet())
+    if( !this->GetQuiet() )
       {
-      if(m_ProcessInformation)
+      if( m_ProcessInformation )
         {
         m_ProcessInformation->Progress = 1;
         m_ProcessInformation->StageProgress = 1;
@@ -177,11 +177,11 @@ protected:
         m_ProcessInformation->ElapsedTime = this->GetTimeProbe().GetMean()
           * this->GetTimeProbe().GetNumberOfStops();
 
-        if(m_ProcessInformation->ProgressCallbackFunction
-            && m_ProcessInformation->ProgressCallbackClientData)
+        if( m_ProcessInformation->ProgressCallbackFunction
+            && m_ProcessInformation->ProgressCallbackClientData )
           {
-          (*(m_ProcessInformation->ProgressCallbackFunction))(
-            m_ProcessInformation->ProgressCallbackClientData);
+          ( *( m_ProcessInformation->ProgressCallbackFunction ) )( 
+            m_ProcessInformation->ProgressCallbackClientData );
           }
         }
       if( !m_ProcessInformation || m_UseStdCout )
@@ -189,8 +189,8 @@ protected:
         std::cout << "<filter-end>"
                   << std::endl;
         std::cout << "<filter-name>"
-                  << (this->GetProcess()
-                      ? this->GetProcess()->GetNameOfClass() : "None")
+                  << ( this->GetProcess()
+                      ? this->GetProcess()->GetNameOfClass() : "None" )
                   << "</filter-name>"
                   << std::endl;
         std::cout << "<filter-time>"
@@ -214,4 +214,4 @@ protected:
 
 } // End namespace itk
 
-#endif // End !defined(__tubeCLIFilterWatcher_h)
+#endif // End !defined( __tubeCLIFilterWatcher_h )

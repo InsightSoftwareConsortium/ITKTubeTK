@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -38,7 +38,7 @@ namespace tube
  * VotingResampleImageFunction linearly interpolates image intensity at
  * a non-integer pixel position. This class is templated
  * over the input image type and the coordinate representation type
- * (e.g. float or double).
+ * ( e.g. float or double ).
  *
  * This function works for N-dimensional images.
  *
@@ -60,7 +60,7 @@ public:
   typedef SmartPointer< Self >                            Pointer;
   typedef SmartPointer< const Self >                      ConstPointer;
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( VotingResampleImageFunction, InterpolateImageFunction );
 
   /** Method for creation through the object factory. */
@@ -92,13 +92,13 @@ public:
    *
    * ImageFunction::IsInsideBuffer() can be used to check bounds before
    * calling the method. */
-  virtual OutputType EvaluateAtContinuousIndex(
+  virtual OutputType EvaluateAtContinuousIndex( 
     const ContinuousIndexType & index ) const;
 
 protected:
   VotingResampleImageFunction( void );
   ~VotingResampleImageFunction( void ) {}
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
 private:
   VotingResampleImageFunction( const Self& ); //purposely not implemented
@@ -117,4 +117,4 @@ private:
 #include "itktubeVotingResampleImageFunction.hxx"
 #endif
 
-#endif // End !defined(__itktubeVotingResampleImageFunction_h)
+#endif // End !defined( __itktubeVotingResampleImageFunction_h )

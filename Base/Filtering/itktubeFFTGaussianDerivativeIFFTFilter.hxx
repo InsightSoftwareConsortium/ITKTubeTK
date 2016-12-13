@@ -3,10 +3,10 @@
   Program:   Insight Segmentation & Registration Toolkit
   Module:    $RCSfile: ITKHeader.h,v $
   Language:  C++
-  Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
+  Date:      $Date: 2007-07-10 11:35:36 -0400 ( Tue, 10 Jul 2007 ) $
   Version:   $Revision: 0 $
 
-  Copyright (c) 2002 Insight Consortium. All rights reserved.
+  Copyright ( c ) 2002 Insight Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
@@ -69,12 +69,12 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   typename GaussianDerivativeImageSourceType::Pointer gaussSource =
     GaussianDerivativeImageSourceType::New();
 
-  const typename ComplexImageType::RegionType inputRegion(
+  const typename ComplexImageType::RegionType inputRegion( 
     this->GetInput()->GetLargestPossibleRegion() );
   const typename ComplexImageType::SizeType inputSize
     = inputRegion.GetSize();
 
-  const typename ComplexImageType::RegionType fftRegion(
+  const typename ComplexImageType::RegionType fftRegion( 
     m_InputImageFFT->GetLargestPossibleRegion() );
   const typename ComplexImageType::SizeType fftSize
     = fftRegion.GetSize();
@@ -95,7 +95,7 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
   typename GaussianDerivativeImageSourceType::IndexType meanIndex;
   for( unsigned int ii = 0; ii < ImageDimension; ++ii )
     {
-    const int halfLength = (inputSize[ii]  / 2.0);
+    const int halfLength = ( inputSize[ii]  / 2.0 );
     meanIndex[ii] = inputRegion.GetIndex()[ii] + halfLength;
     }
   this->GetInput()->TransformIndexToPhysicalPoint( meanIndex, mean );
@@ -263,7 +263,8 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
     }
   if( m_KernelImageFFT.IsNotNull() )
     {
-    os << indent << "Kernel Image        : " << m_KernelImageFFT << std::endl;
+    os << indent << "Kernel Image        : " << m_KernelImageFFT
+      << std::endl;
     }
   else
     {
@@ -271,7 +272,8 @@ FFTGaussianDerivativeIFFTFilter<TInputImage, TOutputImage>
     }
   if( m_ConvolvedImageFFT.IsNotNull() )
     {
-    os << indent << "Convolved Image FFT : " << m_ConvolvedImageFFT << std::endl;
+    os << indent << "Convolved Image FFT : " << m_ConvolvedImageFFT
+      << std::endl;
     }
   else
     {

@@ -3,10 +3,10 @@
   Program:   Insight Segmentation & Registration Toolkit
   Module:    $RCSfile: ITKHeader.h,v $
   Language:  C++
-  Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
+  Date:      $Date: 2007-07-10 11:35:36 -0400 ( Tue, 10 Jul 2007 ) $
   Version:   $Revision: 0 $
 
-  Copyright (c) 2002 Insight Consortium. All rights reserved.
+  Copyright ( c ) 2002 Insight Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
@@ -45,7 +45,7 @@ namespace itk
  * implemented in python by David G. Gobbi.
  *
  * The solution is based on
- * Berthold K. P. Horn (1987), "Closed-form solution of absolute orientation
+ * Berthold K. P. Horn ( 1987 ), "Closed-form solution of absolute orientation
  * using unit quaternions,"
  * http://people.csail.mit.edu/bkph/papers/Absolute_Orientation.pdf
  *
@@ -68,7 +68,7 @@ public:
   /** New macro for creation of through a Smart Pointer. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( AnisotropicSimilarityLandmarkBasedTransformInitializer, Object );
 
   /** Type of the transform to initialize */
@@ -76,10 +76,10 @@ public:
   typedef typename TransformType::Pointer TransformPointer;
 
   /** Dimension of parameters. */
-  itkStaticConstMacro(InputSpaceDimension, unsigned int,
-                      TransformType::InputSpaceDimension);
-  itkStaticConstMacro(OutputSpaceDimension, unsigned int,
-                      TransformType::OutputSpaceDimension);
+  itkStaticConstMacro( InputSpaceDimension, unsigned int,
+                      TransformType::InputSpaceDimension );
+  itkStaticConstMacro( OutputSpaceDimension, unsigned int,
+                      TransformType::OutputSpaceDimension );
 
   /** Set the transform to be initialized */
   itkSetObjectMacro( Transform,   TransformType   );
@@ -116,13 +116,13 @@ public:
     }
 
   /** Determine the image dimension. */
-  itkStaticConstMacro(ImageDimension, unsigned int, FixedImageType::ImageDimension );
+  itkStaticConstMacro( ImageDimension, unsigned int, FixedImageType::ImageDimension );
 
   /** Convenience typedefs */
   typedef typename TransformType::InputPointType   InputPointType;
   typedef typename TransformType::OutputVectorType OutputVectorType;
   typedef Point<double,
-          itkGetStaticConstMacro(ImageDimension)>  LandmarkPointType;
+          itkGetStaticConstMacro( ImageDimension )>  LandmarkPointType;
   typedef std::vector<LandmarkPointType>           LandmarkPointContainer;
   typedef typename  LandmarkPointContainer::const_iterator
                                                    PointsContainerConstIterator;
@@ -130,13 +130,13 @@ public:
   typedef typename ParametersType::ValueType       ParameterValueType;
 
   /** Set the Fixed landmark point containers */
-  void SetFixedLandmarks(const LandmarkPointContainer & fixedLandmarks)
+  void SetFixedLandmarks( const LandmarkPointContainer & fixedLandmarks )
     {
     this->m_FixedLandmarks = fixedLandmarks;
     }
 
   /** Set the Moving landmark point containers */
-  void SetMovingLandmarks(const LandmarkPointContainer & movingLandmarks)
+  void SetMovingLandmarks( const LandmarkPointContainer & movingLandmarks )
     {
     this->m_MovingLandmarks = movingLandmarks;
     }
@@ -155,7 +155,7 @@ protected:
     {
     }
 
-  void PrintSelf(std::ostream & os, Indent indent) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const;
 
   // Supported Transform types
   typedef enum
@@ -166,10 +166,10 @@ protected:
     } InputTransformType;
 private:
   // purposely not implemented
-  AnisotropicSimilarityLandmarkBasedTransformInitializer(const Self &);
+  AnisotropicSimilarityLandmarkBasedTransformInitializer( const Self & );
 
   // purposely not implemented
-  void operator=(const Self &);
+  void operator=( const Self & );
 
   FixedImagePointer  m_FixedImage;
   MovingImagePointer m_MovingImage;

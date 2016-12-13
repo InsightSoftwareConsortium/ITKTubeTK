@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -79,15 +79,15 @@ int itkAngleOfIncidenceImageFilterTest( int argc, char * argv[] )
   typedef itk::ImageFileWriter<SheetnessImageType>     SheetnessImageWriterType;
   SheetnessImageWriterType::Pointer writer= SheetnessImageWriterType::New();
   std::cout<< "Writing out sheetness measure image" << std::endl;
-  writer->SetFileName(argv[2]);
-  writer->SetInput(filterSheetness->GetOutput());
+  writer->SetFileName( argv[2] );
+  writer->SetInput( filterSheetness->GetOutput() );
   writer->Update();
 
   //Generate a binary image by thresholding the sheetness measure
   typedef itk::ThresholdImageFilter< SheetnessImageType >  ThresholdFilterType;
 
   ThresholdFilterType::Pointer thresholdFilter = ThresholdFilterType::New();
-  thresholdFilter->SetInput( filterSheetness->GetOutput());
+  thresholdFilter->SetInput( filterSheetness->GetOutput() );
   thresholdFilter->SetOutsideValue( 0 );
 
   double sheetnessThresholdValue = 0.1;
@@ -105,7 +105,7 @@ int itkAngleOfIncidenceImageFilterTest( int argc, char * argv[] )
   // Create a sheetness Filter
   AngleOfIncidenceImageFilterType::Pointer filterAngleOfIncidence = AngleOfIncidenceImageFilterType::New();
 
-  //Read in the ultrasound probe origin (X,Y,Z)
+  //Read in the ultrasound probe origin ( X,Y,Z )
   double UltrasoundProbeOriginX = std::atof( argv[4] );
   double UltrasoundProbeOriginY = std::atof( argv[5] );
   double UltrasoundProbeOriginZ = std::atof( argv[6] );
@@ -124,8 +124,8 @@ int itkAngleOfIncidenceImageFilterTest( int argc, char * argv[] )
   typedef itk::ImageFileWriter<AngleOfIncidencesImageType>     AngleOfIncidencesImageWriterType;
   AngleOfIncidencesImageWriterType::Pointer angleOfIncidenceWriter= AngleOfIncidencesImageWriterType::New();
   std::cout<< "Writing out angle of incidence measure image" << std::endl;
-  angleOfIncidenceWriter->SetFileName(argv[3]);
-  angleOfIncidenceWriter->SetInput(filterAngleOfIncidence->GetOutput());
+  angleOfIncidenceWriter->SetFileName( argv[3] );
+  angleOfIncidenceWriter->SetInput( filterAngleOfIncidence->GetOutput() );
   angleOfIncidenceWriter->Update();
 
 

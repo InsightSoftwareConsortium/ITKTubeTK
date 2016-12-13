@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -49,16 +49,16 @@ public:
   typedef SmartPointer< Self >                            Pointer;
   typedef SmartPointer< const Self >                      ConstPointer;
 
-  typedef TInputImage                                     InputImageType;
-  typedef typename InputImageType::PixelType              InputPixelType;
-  typedef typename InputImageType::Pointer                InputImagePointer;
-  typedef typename InputImageType::ConstPointer           InputImageConstPointer;
+  typedef TInputImage                             InputImageType;
+  typedef typename InputImageType::PixelType      InputPixelType;
+  typedef typename InputImageType::Pointer        InputImagePointer;
+  typedef typename InputImageType::ConstPointer   InputImageConstPointer;
 
-  typedef TInputImage                                     OutputImageType;
-  typedef typename OutputImageType::PixelType             OutputPixelType;
-  typedef typename OutputImageType::Pointer               OutputImagePointer;
+  typedef TInputImage                             OutputImageType;
+  typedef typename OutputImageType::PixelType     OutputPixelType;
+  typedef typename OutputImageType::Pointer       OutputImagePointer;
 
-  typedef typename InputImageType::RegionType             RegionType;
+  typedef typename InputImageType::RegionType     RegionType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -66,7 +66,7 @@ public:
   itkSetMacro( InverseMaximumIntensity, InputPixelType );
   itkGetMacro( InverseMaximumIntensity, InputPixelType );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( TubeNetworkSpatialObjectToImageFilter, ImageToImageFilter );
 
 protected:
@@ -79,8 +79,8 @@ protected:
 
 private:
 
-  void PrintSelf(std::ostream& os, Indent indent) const
-             { SuperClass::PrintSelf(os,indent);   }
+  void PrintSelf( std::ostream& os, Indent indent ) const
+    { SuperClass::PrintSelf( os, indent );   }
 
   InputPixelType                 m_InverseMaximumIntensity;
 
@@ -94,4 +94,4 @@ private:
 #include "itktubeInverseIntensityImageFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeInverseIntensityImageFilter_h)
+#endif // End !defined( __itktubeInverseIntensityImageFilter_h )

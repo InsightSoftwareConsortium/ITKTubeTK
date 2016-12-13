@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -70,7 +70,7 @@ CompareImageWithPrior< TPixel, TDimension>
   m_RegistrationTransform = RegistrationMethodType::TransformType::New();
   m_RegistrationTransform->SetIdentity();
   m_Normalize = true;
-  m_BoundarySize.resize(0);
+  m_BoundarySize.resize( 0 );
   m_SamplingRate = 0.2;
   m_Seed = 0;
 
@@ -267,7 +267,7 @@ CompareImageWithPrior< TPixel, TDimension>
 template< class TPixel, unsigned int TDimension >
 void
 CompareImageWithPrior< TPixel, TDimension>
-::SetRegistrationTransform(
+::SetRegistrationTransform( 
   typename itk::RigidImageToImageRegistrationMethod<
     itk::Image< float, TDimension > >::TransformType::Pointer tfm )
 {
@@ -289,7 +289,7 @@ CompareImageWithPrior< TPixel, TDimension>
 ::SetBoundarySize( std::vector< int > & boundarySize )
 {
   m_BoundarySize.resize( boundarySize.size() );
-  for(unsigned int i=0; i<boundarySize.size(); i++ )
+  for( unsigned int i=0; i<boundarySize.size(); i++ )
     {
     m_BoundarySize[i] = boundarySize[i];
     }
@@ -330,7 +330,7 @@ CompareImageWithPrior< TPixel, TDimension>
 
     if( m_TimeCollector )
       {
-      m_TimeCollector->Start("Erode");
+      m_TimeCollector->Start( "Erode" );
       }
     if( m_ProgressReporter )
       {
@@ -346,7 +346,7 @@ CompareImageWithPrior< TPixel, TDimension>
     typedef itk::BinaryErodeImageFilter< ImageType, ImageType, BallType >
       ErodeFilterType;
 
-    for(int r=0; r<m_Erode; r++)
+    for( int r=0; r<m_Erode; r++ )
       {
       typename ErodeFilterType::Pointer filter = ErodeFilterType::New();
       filter->SetBackgroundValue( m_Background );
@@ -361,7 +361,7 @@ CompareImageWithPrior< TPixel, TDimension>
 
     if( m_TimeCollector )
       {
-      m_TimeCollector->Stop("Erode");
+      m_TimeCollector->Stop( "Erode" );
       }
     if( m_ProgressReporter )
       {
@@ -375,7 +375,7 @@ CompareImageWithPrior< TPixel, TDimension>
 
     if( m_TimeCollector )
       {
-      m_TimeCollector->Start("Dilate");
+      m_TimeCollector->Start( "Dilate" );
       }
     if( m_ProgressReporter )
       {
@@ -391,7 +391,7 @@ CompareImageWithPrior< TPixel, TDimension>
     typedef itk::BinaryDilateImageFilter< ImageType, ImageType, BallType >
       DilateFilterType;
 
-    for(int r=0; r<m_Dilate; r++)
+    for( int r=0; r<m_Dilate; r++ )
       {
       typename DilateFilterType::Pointer filter = DilateFilterType::New();
       filter->SetBackgroundValue( m_Background );
@@ -406,7 +406,7 @@ CompareImageWithPrior< TPixel, TDimension>
 
     if( m_TimeCollector )
       {
-      m_TimeCollector->Stop("Dilate");
+      m_TimeCollector->Stop( "Dilate" );
       }
     if( m_ProgressReporter )
       {
@@ -419,20 +419,20 @@ CompareImageWithPrior< TPixel, TDimension>
     std::cout << "Blurring = " << m_GaussianBlur << std::endl;
     if( m_TimeCollector )
       {
-      m_TimeCollector->Start("Blur");
+      m_TimeCollector->Start( "Blur" );
       }
 
     typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType >
       FilterType;
     typename FilterType::Pointer filter = FilterType::New();
 
-    for(unsigned int i=0; i<TDimension; i++)
+    for( unsigned int i=0; i<TDimension; i++ )
       {
       filter = FilterType::New();
       filter->SetInput( m_OutputMaskImage );
       filter->SetSigma( m_GaussianBlur );
 
-      filter->SetOrder(
+      filter->SetOrder( 
                itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
       filter->SetDirection( i );
 
@@ -442,7 +442,7 @@ CompareImageWithPrior< TPixel, TDimension>
 
     if( m_TimeCollector )
       {
-      m_TimeCollector->Stop("Blur");
+      m_TimeCollector->Stop( "Blur" );
       }
     if( m_ProgressReporter )
       {
@@ -455,7 +455,7 @@ CompareImageWithPrior< TPixel, TDimension>
     std::cout << "Registering" << std::endl;
     if( m_TimeCollector )
       {
-      m_TimeCollector->Start("RegisterROIs");
+      m_TimeCollector->Start( "RegisterROIs" );
       }
 
     if( m_UseRegistrationOptimization )
@@ -478,11 +478,11 @@ CompareImageWithPrior< TPixel, TDimension>
       reg->SetMaxIterations( 500 );
       typename RegistrationMethodType::TransformParametersScalesType scales;
       scales = reg->GetTransformParametersScales();
-      for( unsigned int i=0; i<TDimension-1; i++)
+      for( unsigned int i=0; i<TDimension-1; i++ )
         {
         scales[i] = 1.0/0.02;
         }
-      for( unsigned int i=0; i<TDimension; i++)
+      for( unsigned int i=0; i<TDimension; i++ )
         {
         scales[i + TDimension-1] = 1.0/10.0;
         }
@@ -491,13 +491,13 @@ CompareImageWithPrior< TPixel, TDimension>
       int numSamples = 1;
       if( m_UseRegistrationTransform )
         {
-        reg->SetInitialTransformParameters(
+        reg->SetInitialTransformParameters( 
           m_RegistrationTransform->GetParameters() );
         }
       typename ImageType::SizeType imageSize = m_OutputVolImage
                                                ->GetLargestPossibleRegion()
                                                .GetSize();
-      for( unsigned int i=0; i<TDimension; i++)
+      for( unsigned int i=0; i<TDimension; i++ )
         {
         numSamples *= imageSize[i];
         }
@@ -523,18 +523,18 @@ CompareImageWithPrior< TPixel, TDimension>
         }
       catch( ... )
         {
-        tube::WarningMessage(
+        tube::WarningMessage( 
           "Exception thrown during registration. Compensating..." );
         m_RegistrationTransform =
           RegistrationMethodType::TransformType::New();
         m_RegistrationTransform->SetIdentity();
         }
 
-      std::stringstream str(std::stringstream::in | std::stringstream::out);
+      std::stringstream str( std::stringstream::in | std::stringstream::out );
       str << "Registration params =";
       for( unsigned int i=0;
            i<m_RegistrationTransform->GetNumberOfParameters();
-           i++)
+           i++ )
         {
         str << " " << m_RegistrationTransform->GetParameters()[i];
         }
@@ -578,7 +578,7 @@ CompareImageWithPrior< TPixel, TDimension>
 
     if( m_TimeCollector )
       {
-      m_TimeCollector->Stop("RegisterROIs");
+      m_TimeCollector->Stop( "RegisterROIs" );
       }
     if( m_ProgressReporter )
       {
@@ -592,7 +592,7 @@ CompareImageWithPrior< TPixel, TDimension>
 
     if( m_TimeCollector )
       {
-      m_TimeCollector->Start("Crop2");
+      m_TimeCollector->Start( "Crop2" );
       }
     typename ImageType::SizeType roiSize = m_OutputVolImage
                                              ->GetLargestPossibleRegion()
@@ -607,7 +607,7 @@ CompareImageWithPrior< TPixel, TDimension>
         lowerCropSize[i] = 0;
         upperCropSize[i] = 0;
         }
-      else if( m_BoundarySize[i] >= (int)(roiSize[i])/2 )
+      else if( m_BoundarySize[i] >= ( int )( roiSize[i] )/2 )
         {
         lowerCropSize[i] = roiSize[i]/2-1;
         upperCropSize[i] = roiSize[i]/2-1;
@@ -647,7 +647,7 @@ CompareImageWithPrior< TPixel, TDimension>
 
     if( m_TimeCollector )
       {
-      m_TimeCollector->Stop("Crop2");
+      m_TimeCollector->Stop( "Crop2" );
       }
     if( m_ProgressReporter )
       {
@@ -661,7 +661,7 @@ CompareImageWithPrior< TPixel, TDimension>
 
     if( m_TimeCollector )
       {
-      m_TimeCollector->Start("Normalize");
+      m_TimeCollector->Start( "Normalize" );
       }
 
     typedef itk::ImageRegionIterator< ImageType > IterType;
@@ -728,7 +728,7 @@ CompareImageWithPrior< TPixel, TDimension>
     std::cout << "MBg = " << meanMaskBg <<  " - "
               << "MFg = " << meanMaskFg << std::endl;
 
-    double scale = (meanVolFg - meanVolBg) / (meanMaskFg - meanMaskBg);
+    double scale = ( meanVolFg - meanVolBg ) / ( meanMaskFg - meanMaskBg );
     double shift = meanVolBg/scale - meanMaskBg;
 
      typedef itk::ShiftScaleImageFilter< ImageType, ImageType >
@@ -746,7 +746,7 @@ CompareImageWithPrior< TPixel, TDimension>
 
     if( m_TimeCollector )
       {
-      m_TimeCollector->Stop("Normalize");
+      m_TimeCollector->Stop( "Normalize" );
       }
     if( m_ProgressReporter )
       {
@@ -758,12 +758,12 @@ CompareImageWithPrior< TPixel, TDimension>
   std::cout << "Computing similarity" << std::endl;
   if( m_TimeCollector )
     {
-    m_TimeCollector->Start("Match metric");
+    m_TimeCollector->Start( "Match metric" );
     }
 
-  itk::ImageRegionIteratorWithIndex< ImageType > volIter(
+  itk::ImageRegionIteratorWithIndex< ImageType > volIter( 
     m_OutputVolImage, m_OutputVolImage->GetLargestPossibleRegion() );
-  itk::ImageRegionIteratorWithIndex< ImageType > maskIter(
+  itk::ImageRegionIteratorWithIndex< ImageType > maskIter( 
     m_OutputMaskImage, m_OutputMaskImage->GetLargestPossibleRegion() );
 
   m_GoF = 0;
@@ -803,7 +803,7 @@ CompareImageWithPrior< TPixel, TDimension>
 
   if( m_TimeCollector )
     {
-    m_TimeCollector->Stop("Match metric");
+    m_TimeCollector->Stop( "Match metric" );
     }
   if( m_ProgressReporter )
     {
@@ -828,4 +828,4 @@ CompareImageWithPrior< TPixel, TDimension>
 
 } // End namespace tube
 
-#endif // End !defined(__tubeCompareImageWithPrior_hxx)
+#endif // End !defined( __tubeCompareImageWithPrior_hxx )

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -167,8 +167,8 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
     {
     origin[ii] = this->m_ParametersLowerBound[ii];
     spacing[ii] = this->m_ParametersStep[ii];
-    size[ii] = static_cast< SizeValueType >( (this->m_ParametersUpperBound[ii] -
-      this->m_ParametersLowerBound[ii]) / this->m_ParametersStep[ii] ) + 1;
+    size[ii] = static_cast< SizeValueType >( ( this->m_ParametersUpperBound[ii] -
+      this->m_ParametersLowerBound[ii] ) / this->m_ParametersStep[ii] ) + 1;
     }
   typename OutputImageType::RegionType region;
   region.SetIndex( index );
@@ -201,7 +201,7 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
 ::ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread,
   ThreadIdType threadId )
 {
-  OutputImageType * outputImage = this->GetOutput(0);
+  OutputImageType * outputImage = this->GetOutput( 0 );
 
   ProgressReporter progress( this, threadId, outputRegionForThread.GetNumberOfPixels() );
 
@@ -224,4 +224,4 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeSingleValuedCostFunctionImageSource_hxx)
+#endif // End !defined( __itktubeSingleValuedCostFunctionImageSource_hxx )

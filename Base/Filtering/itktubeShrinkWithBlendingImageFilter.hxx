@@ -106,7 +106,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 template< typename TInputImage, typename TOutputImage >
 void
 ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
-::SetShrinkFactor(unsigned int i, unsigned int factor)
+::SetShrinkFactor( unsigned int i, unsigned int factor )
 {
   if( m_ShrinkFactors[i] == factor )
     {
@@ -120,7 +120,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 template< typename TInputImage, typename TOutputImage >
 unsigned int
 ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
-::GetShrinkFactor(unsigned int i)
+::GetShrinkFactor( unsigned int i )
 {
   return m_ShrinkFactors[i];
 }
@@ -178,7 +178,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 
   if( m_InputMipPointImage.IsNotNull() )
     {
-    inputMipPointItPtr = new PointImageConstIteratorType(
+    inputMipPointItPtr = new PointImageConstIteratorType( 
       m_InputMipPointImage, outputRegionForThread );
     }
 
@@ -215,7 +215,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
       // move to next output pixel
       ++outIt;
       ++outMipPointIt;
-      ++(*inputMipPointItPtr);
+      ++( *inputMipPointItPtr );
 
       continue;
       }
@@ -319,8 +319,8 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
         weight = 0;
         for( unsigned int i = 0; i < ImageDimension; ++i )
           {
-          double dist = (valueIndex[i] - inputIndex[i] ) / factorSize[i];
-          weight += (1.0 / (factorSize[i] * std::sqrt( 2 * vnl_math::pi )))
+          double dist = ( valueIndex[i] - inputIndex[i] ) / factorSize[i];
+          weight += ( 1.0 / ( factorSize[i] * std::sqrt( 2 * vnl_math::pi ) ) )
             * std::exp( -0.5 * dist * dist );
           }
         if( m_UseLog )
@@ -366,11 +366,11 @@ template< class TInputImage, class TOutputImage >
 template <typename ArrayType>
 bool
 ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
-::NotValue(ArrayType array, double val, double tolerance)
+::NotValue( ArrayType array, double val, double tolerance )
 {
-  for( unsigned int i = 0; i < ImageDimension; i++)
+  for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    if( fabs(array[i]-val) > tolerance )
+    if( fabs( array[i]-val ) > tolerance )
       {
       return true;
       }
@@ -385,15 +385,15 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 {
   bool useNewSize;
   bool useShrinkFactors;
-  useNewSize = this->NotValue(m_NewSize, m_DefaultNewSize);
-  useShrinkFactors = this->NotValue(m_ShrinkFactors, m_DefaultShrinkFactor);
-  if( useNewSize && useShrinkFactors)
+  useNewSize = this->NotValue( m_NewSize, m_DefaultNewSize );
+  useShrinkFactors = this->NotValue( m_ShrinkFactors, m_DefaultShrinkFactor );
+  if( useNewSize && useShrinkFactors )
     {
-    itkExceptionMacro(<< "Only set one of new size or shrink factors.");
+    itkExceptionMacro( << "Only set one of new size or shrink factors." );
     }
-  if( !useNewSize && !useShrinkFactors)
+  if( !useNewSize && !useShrinkFactors )
     {
-    itkExceptionMacro(<< "Set either a new size or shrink factors.");
+    itkExceptionMacro( << "Set either a new size or shrink factors." );
     }
   Superclass::VerifyInputInformation();
 }
@@ -407,13 +407,13 @@ void
 ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 ::UpdateInternalShrinkFactors()
 {
-  if( this->NotValue(m_ShrinkFactors, m_DefaultShrinkFactor) )
+  if( this->NotValue( m_ShrinkFactors, m_DefaultShrinkFactor ) )
     {
     m_InternalShrinkFactors = m_ShrinkFactors;
     return;
     }
   bool warnSize = false;
-  InputImagePointer  inputPtr = const_cast< TInputImage * >(
+  InputImagePointer  inputPtr = const_cast< TInputImage * >( 
     this->GetInput() );
   const typename TOutputImage::SizeType & inputSize =
     inputPtr->GetLargestPossibleRegion().GetSize();
@@ -430,13 +430,13 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
     }
   if( warnSize )
     {
-    itkWarningMacro(<< "Warning: Need for integer resampling factor causes "
-                        "output size to not match target m_NewSize given.");
+    itkWarningMacro( << "Warning: Need for integer resampling factor causes "
+                        "output size to not match target m_NewSize given." );
     for( unsigned int i = 0; i < ImageDimension; ++i )
       {
-      itkWarningMacro(<< "   m_NewSize [" << i << "] = " << m_NewSize[ i ]);
-      itkWarningMacro(<< "   outSize [" << i << "] = " << static_cast< int >(
-      inputSize[ i ] / m_InternalShrinkFactors[ i ] ));
+      itkWarningMacro( << "   m_NewSize [" << i << "] = " << m_NewSize[ i ] );
+      itkWarningMacro( << "   outSize [" << i << "] = " << static_cast< int >( 
+      inputSize[ i ] / m_InternalShrinkFactors[ i ] ) );
       }
     }
 }
@@ -453,7 +453,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
   Superclass::GenerateInputRequestedRegion();
 
   // Get pointers to the input and output
-  InputImagePointer  inputPtr = const_cast< TInputImage * >(
+  InputImagePointer  inputPtr = const_cast< TInputImage * >( 
     this->GetInput() );
   OutputImagePointer outputPtr = this->GetOutput();
 
@@ -462,7 +462,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
     return;
     }
 
-  // Compute the input requested region (size and start index)
+  // Compute the input requested region ( size and start index )
   // Use the image transformations to insure an input requested region
   // that will provide the proper range
   const typename TOutputImage::SizeType & outputRequestedRegionSize =
@@ -482,7 +482,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
   typename TOutputImage::PointType tempPoint;
 
   outputPtr->TransformIndexToPhysicalPoint( outputRequestedRegionStartIndex,
-    tempPoint);
+    tempPoint );
   inputPtr->TransformPhysicalPointToIndex( tempPoint,
     inputRequestedRegionStartIndex );
   for( unsigned int i = 0; i < TInputImage::ImageDimension; i++ )
@@ -537,18 +537,18 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
   typename TOutputImage::IndexType outputStartIndex;
 
   // Check that only one of the two parameter to compute the
-  // new size is given (ShrinkFactors,NewSize)
+  // new size is given ( ShrinkFactors,NewSize )
 
   // Update shrink factors if new size given
   this->UpdateInternalShrinkFactors();
 
   for( unsigned int i = 0; i < TOutputImage::ImageDimension; i++ )
     {
-    outputSpacing[i] = inputSpacing[i] * (double) m_InternalShrinkFactors[i];
+    outputSpacing[i] = inputSpacing[i] * ( double ) m_InternalShrinkFactors[i];
 
     // Round down so that all output pixels fit input input region
-    outputSize[i] = static_cast<SizeValueType>( std::floor(
-      (double)inputSize[i] / (double)m_InternalShrinkFactors[i] ) );
+    outputSize[i] = static_cast<SizeValueType>( std::floor( 
+      ( double )inputSize[i] / ( double )m_InternalShrinkFactors[i] ) );
 
     if( outputSize[i] < 1 )
       {
@@ -576,16 +576,16 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 
   typename TOutputImage::PointType inputCenterPoint;
   typename TOutputImage::PointType outputCenterPoint;
-  inputPtr->TransformContinuousIndexToPhysicalPoint(inputCenterIndex,
-    inputCenterPoint);
-  outputPtr->TransformContinuousIndexToPhysicalPoint(outputCenterIndex,
-    outputCenterPoint);
+  inputPtr->TransformContinuousIndexToPhysicalPoint( inputCenterIndex,
+    inputCenterPoint );
+  outputPtr->TransformContinuousIndexToPhysicalPoint( outputCenterIndex,
+    outputCenterPoint );
 
   const typename TOutputImage::PointType & inputOrigin =
     inputPtr->GetOrigin();
   typename TOutputImage::PointType outputOrigin;
-  outputOrigin = inputOrigin + (inputCenterPoint - outputCenterPoint);
-  outputPtr->SetOrigin(outputOrigin);
+  outputOrigin = inputOrigin + ( inputCenterPoint - outputCenterPoint );
+  outputPtr->SetOrigin( outputOrigin );
 
   // make sure size of output image is same as the Input MIP Point Image
   if( m_InputMipPointImage )
@@ -606,22 +606,22 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 
     if( !sizeEqual )
       {
-      itkExceptionMacro(
+      itkExceptionMacro( 
         << "Size of output and input MIP point image do not match. "
            "Make sure you are using the same shrink amount parameters "
-           "that were used to generate the input MIP point image.")
+           "that were used to generate the input MIP point image." )
       }
     }
 
   // Set region
   typename TOutputImage::RegionType outputLargestPossibleRegion;
-  outputLargestPossibleRegion.SetSize(outputSize);
-  outputLargestPossibleRegion.SetIndex(outputStartIndex);
+  outputLargestPossibleRegion.SetSize( outputSize );
+  outputLargestPossibleRegion.SetIndex( outputStartIndex );
 
-  outputPtr->SetLargestPossibleRegion(outputLargestPossibleRegion);
+  outputPtr->SetLargestPossibleRegion( outputLargestPossibleRegion );
 
   m_OutputMipPointImage = PointImageType::New();
-  m_OutputMipPointImage->SetRegions(
+  m_OutputMipPointImage->SetRegions( 
     outputPtr->GetLargestPossibleRegion() );
   m_OutputMipPointImage->CopyInformation( outputPtr );
   m_OutputMipPointImage->Allocate();

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -70,7 +70,7 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter(
+  tube::CLIProgressReporter    progressReporter( 
     "ComputeSegmentTubesParameters", CLPProcessInformation );
   progressReporter.Start();
   typedef tube::ComputeSegmentTubesParameters< TPixel, VDimension >
@@ -86,7 +86,7 @@ int DoIt( int argc, char * argv[] )
   typedef typename FilterType::ScaleImageType       ScaleImageType;
   typedef itk::ImageFileReader< ScaleImageType >    ScaleReaderType;
 
-  timeCollector.Start("Load data");
+  timeCollector.Start( "Load data" );
 
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputImageFileName.c_str() );
@@ -136,11 +136,11 @@ int DoIt( int argc, char * argv[] )
   filter->SetMaskTubeId( maskTubeId );
   filter->SetParameterFile( outputParametersFile );
 
-  timeCollector.Stop("Load data");
+  timeCollector.Stop( "Load data" );
   double progress = 0.1;
   progressReporter.Report( progress );
 
-  timeCollector.Start("Compute ridgeness images");
+  timeCollector.Start( "Compute ridgeness images" );
   try
     {
     filter->Update();
@@ -152,9 +152,9 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Compute ridgeness images");
+  timeCollector.Stop( "Compute ridgeness images" );
 
-  timeCollector.Start("Save Data");
+  timeCollector.Start( "Save Data" );
 
   std::string fileName = outputParametersFile + ".init.txt";
   std::ofstream outputDataStreamInit;
@@ -185,19 +185,19 @@ int DoIt( int argc, char * argv[] )
   std::vector< itk::ContinuousIndex< double, VDimension > > bkgIndex =
     filter->GetBkgDataIndexList();
 
-  for( unsigned int i = 0; i < seedData.size(); i++)
+  for( unsigned int i = 0; i < seedData.size(); i++ )
     {
     vnl_vector< double > instance = seedData[i];
     WriteOutputData< VDimension >( outputDataStreamInit, seedIndex[i],
       instance[0], instance[1], instance[2], instance[3], instance[4] );
     }
-  for( unsigned int i = 0; i < tubeData.size(); i++)
+  for( unsigned int i = 0; i < tubeData.size(); i++ )
     {
     vnl_vector< double > instance = tubeData[i];
     WriteOutputData< VDimension >( outputDataStreamTube, tubeIndex[i],
       instance[0], instance[1], instance[2], instance[3], instance[4] );
     }
-  for( unsigned int i = 0; i < bkgData.size(); i++)
+  for( unsigned int i = 0; i < bkgData.size(); i++ )
     {
     vnl_vector< double > instance = bkgData[i];
     WriteOutputData< VDimension >( outputDataStreamBkg, bkgIndex[i],
@@ -208,7 +208,7 @@ int DoIt( int argc, char * argv[] )
   outputDataStreamTube.close();
   outputDataStreamInit.close();
 
-  timeCollector.Stop("Save Data");
+  timeCollector.Stop( "Save Data" );
 
   progress = 1.0;
   progressReporter.Report( progress );

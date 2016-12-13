@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -20,7 +20,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-
 #ifndef __tubeAtlasSummation_h
 #define __tubeAtlasSummation_h
 
@@ -48,46 +47,48 @@ public:
    */
   enum { Dimension = 3, DEFAULT_PIXEL_FILL = 0 };
 
-  typedef float                                           InputPixelType;
-  typedef float                                           CountPixelType;
-  typedef float                                           OutputPixelType;
-  typedef float                                           MeanPixelType;
-  typedef float                                           VariancePixelType;
+  typedef float                                      InputPixelType;
+  typedef float                                      CountPixelType;
+  typedef float                                      OutputPixelType;
+  typedef float                                      MeanPixelType;
+  typedef float                                      VariancePixelType;
 
-  typedef itk::Image< InputPixelType, Dimension >         InputImageType;
-  typedef itk::Image< MeanPixelType, Dimension >          MeanImageType;
-  typedef itk::Image< VariancePixelType, Dimension >      VarianceImageType;
-  typedef itk::Image< CountPixelType, Dimension >         CountImageType;
-  typedef itk::AffineTransform<>                          TransformType;
+  typedef itk::Image< InputPixelType, Dimension >    InputImageType;
+  typedef itk::Image< MeanPixelType, Dimension >     MeanImageType;
+  typedef itk::Image< VariancePixelType, Dimension > VarianceImageType;
+  typedef itk::Image< CountPixelType, Dimension >    CountImageType;
+  typedef itk::AffineTransform<>                     TransformType;
 
-  typedef InputImageType::Pointer                         InputImagePointer;
-  typedef InputImageType::ConstPointer                    InputImageConstPointer;
-  typedef MeanImageType::Pointer                          MeanImagePointer;
-  typedef VarianceImageType::Pointer                      VarianceImagePointer;
-  typedef TransformType::Pointer                          TransformPointer;
+  typedef InputImageType::Pointer                    InputImagePointer;
+  typedef InputImageType::ConstPointer               InputImageConstPointer;
+  typedef MeanImageType::Pointer                     MeanImagePointer;
+  typedef VarianceImageType::Pointer                 VarianceImagePointer;
+  typedef TransformType::Pointer                     TransformPointer;
 
-  typedef InputImageType::SpacingType                     SpacingType;
-  typedef InputImageType::SizeType                        SizeType;
-  typedef InputImageType::PointType                       PointType;
+  typedef InputImageType::SpacingType                SpacingType;
+  typedef InputImageType::SizeType                   SizeType;
+  typedef InputImageType::PointType                  PointType;
 
 private:
 
   /** Pixel and Image Type for processing transition images */
-  typedef double                                          ProcessPixelType;
-  typedef itk::Image< ProcessPixelType, Dimension >       ProcessImageType;
-  typedef ProcessImageType::Pointer                       ProcessImagePointer;
+  typedef double                                     ProcessPixelType;
+  typedef itk::Image< ProcessPixelType, Dimension >  ProcessImageType;
+  typedef ProcessImageType::Pointer                  ProcessImagePointer;
 
-  typedef itk::ImageRegionConstIterator< InputImageType > InputConstIteratorType;
-  typedef itk::ImageRegionIterator< InputImageType >      InputIteratorType;
-  typedef itk::ImageRegionIterator< ProcessImageType >    ProcessIteratorType;
-  typedef itk::ImageRegionIterator< MeanImageType >       MeanIteratorType;
-  typedef itk::ImageRegionIterator< VarianceImageType >   VarianceIteratorType;
-  typedef itk::ImageRegionIterator< CountImageType >      CountIteratorType;
+  typedef itk::ImageRegionConstIterator< InputImageType >
+    InputConstIteratorType;
 
-  typedef std::vector<InputImagePointer>                  MedianImageListType;
+  typedef itk::ImageRegionIterator< InputImageType >    InputIteratorType;
+  typedef itk::ImageRegionIterator< ProcessImageType >  ProcessIteratorType;
+  typedef itk::ImageRegionIterator< MeanImageType >     MeanIteratorType;
+  typedef itk::ImageRegionIterator< VarianceImageType > VarianceIteratorType;
+  typedef itk::ImageRegionIterator< CountImageType >    CountIteratorType;
 
-  typedef itk::tube::MeanAndSigmaImageBuilder<
-    InputImageType, MeanImageType, VarianceImageType >    RobustMeanBuilderType;
+  typedef std::vector<InputImagePointer>                MedianImageListType;
+
+  typedef itk::tube::MeanAndSigmaImageBuilder< InputImageType,
+    MeanImageType, VarianceImageType >               RobustMeanBuilderType;
 
 public:
 
@@ -101,15 +102,16 @@ public:
   /** Add image with or without a transform */
   void AddImage( InputImageType::Pointer );
 
-  /** Add image WITH transform -- Receives Moving -> Fixed Image Transform */
+  /** Add image WITH transform -- Receives Moving -> Fixed Image
+   * Transform */
   void AddImage( InputImageType::Pointer, TransformType::Pointer );
 
   /** Build Mean and variance image & end AddImage() addition abilities */
   void Finalize( void );
 
   /**
-   * Return final Summation products-Mean (or median) & Variance
-   * (or standard deviation & image count for # of valid images
+   * Return final Summation products-Mean ( or median ) & Variance
+   * ( or standard deviation & image count for # of valid images
    */
   MeanImageType * GetMeanImage( void ) const
     { return m_MeanBuilder->GetOutputMeanImage(); }
@@ -155,7 +157,7 @@ public:
     { return m_OutputOrigin; }
 
   /**
-   * Do we want to use the variance (S^2) or standard deviation (S)
+   * Do we want to use the variance ( S^2 ) or standard deviation ( S )
    * Default is to use standard deviation
    */
   bool GetUseStdDeviation( void ) const
@@ -183,17 +185,17 @@ public:
     { m_NumOfImages = numOfImages; }
 
   bool UseMedian( void ) const
-    { return (m_NumOfImages > 0); }
+    { return ( m_NumOfImages > 0 ); }
 
   /**
-   * Adjust all the resampled images origins and size (if not already defined)
-   * so that no elements are cut off due to transforming & resampling the image
-   * off of the screen.
+   * Adjust all the resampled images origins and size ( if not already
+   * defined ) so that no elements are cut off due to transforming &
+   * resampling the image off of the screen.
    *
-   * Note: This can require significant more processing time, but insures that
-   * the first image entered does not dictate the final product image. Otherwise
-   * the output mean is assumed to be identical to the first image as far as size
-   * and origin is at (0,0,0).
+   * Note: This can require significant more processing time, but insures
+   * that the first image entered does not dictate the final product image.
+   * Otherwise the output mean is assumed to be identical to the first
+   * image as far as size and origin is at ( 0,0,0 ).
    */
   void AdjustResampledImageSize( bool adjustResampledImageSize )
     { m_AdjustResampledImageSize = adjustResampledImageSize; }
@@ -207,21 +209,20 @@ private:
    * Builds appropriate bounding box for size and origin so that
    * none of original image is cut off
    */
-  void GetProperRegion( InputImageType::Pointer,
-                        ProcessImageType::Pointer,
-                        InputImageType::RegionType& );
+  void GetProperRegion( InputImageType::Pointer, ProcessImageType::Pointer,
+    InputImageType::RegionType& );
 
   /** Returns the clipped images */
   InputImagePointer GetClippedImage( InputImagePointer image,
-                                     TransformType::Pointer t );
+    TransformType::Pointer t );
 
   /**
-   * Update the set output parameters (but not spacing) to include the area
-   * given by inputed parameters and return true if the output variables changed.
+   * Update the set output parameters ( but not spacing ) to include the area
+   * given by inputed parameters and return true if the output variables
+   * changed.
    */
-  bool UpdateOutputProperties( SizeType inputSize,
-                               PointType inputOrigin,
-                               SpacingType inputSpacing );
+  bool UpdateOutputProperties( SizeType inputSize, PointType inputOrigin,
+    SpacingType inputSpacing );
 
   /**
    * Update the input size parameter to match the output size
@@ -231,10 +232,8 @@ private:
 
   /** Resample the given image with transform & parameters */
   InputImagePointer TransformInputImage( InputImagePointer image,
-                                         TransformPointer trans,
-                                         SizeType size,
-                                         SpacingType spacing,
-                                         PointType origin );
+    TransformPointer trans, SizeType size, SpacingType spacing,
+    PointType origin );
 
   void Start( InputImageType::Pointer );
   void SumImage( InputImageType::Pointer );
@@ -242,7 +241,8 @@ private:
   void WriteImage( ProcessImagePointer, const std::string & );
 
   /** Median specific functions */
-  MedianImageListType&  GetInputImageList( void ) { return m_MedianList; }
+  MedianImageListType&  GetInputImageList( void )
+    { return m_MedianList; }
   void SetupImageList( InputImagePointer example );
   void UpdateImageImageList( void );
   void AddMedianImage( InputImagePointer image );
@@ -278,4 +278,4 @@ private:
 
 } // End namespace tube
 
-#endif // End !defined(__tubeAtlasSummation_h)
+#endif // End !defined( __tubeAtlasSummation_h )

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -43,12 +43,12 @@ namespace tube
  *
  * Registration function for registrations using anisotropic diffusive
  * regularizers.  Registration update terms are of the form:
- * Cost = intensityUpdate + div(T1*\grad(u1))v1 + div(T2*\grad(u2))v2 + ...
+ * Cost = intensityUpdate + div( T1*\grad( u1 ) )v1 + div( T2*\grad( u2 ) )v2 + ...
  * where the types are:
  * - T1..TN are diffusion tensors
  * - u1..uN are deformation vectors
  * - v1..vN are deformation vectors
- * One can specify as many div(T*\grad(u))v regularization terms as you'd like,
+ * One can specify as many div( T*\grad( u ) )v regularization terms as you'd like,
  * by passing vectors into ComputeUpdate().
  *
  * Uses the MeanSquareRegistrationFunction as the similarity metric between
@@ -84,7 +84,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( AnisotropicDiffusiveRegistrationFunction,
                 PDEDeformableRegistrationFunction );
 
@@ -191,12 +191,12 @@ public:
   /** Set/Get the time step. For this class of anisotropic diffusion filters,
       the time-step is supplied by the user and remains fixed for all
       updates. */
-  void SetTimeStep(const TimeStepType &t)
+  void SetTimeStep( const TimeStepType &t )
     {
     m_TimeStep = t;
     if( m_ComputeRegularizationTerm )
       {
-      m_RegularizationFunction->SetTimeStep(t);
+      m_RegularizationFunction->SetTimeStep( t );
       }
     // Intensity distance function doesn't have a SetTimeStep(), but it's ok
     // because we only use ComputeUpdate() for it.
@@ -207,10 +207,10 @@ public:
   /** Utility function to check whether the timestep is stable, optionally based
     * on the spacing of the given image */
   template< class TPixel, unsigned int VImageDimension >
-  void CheckTimeStepStability(
+  void CheckTimeStepStability( 
       const itk::Image< TPixel, VImageDimension > * input,
       bool useImageSpacing )
-    { m_RegularizationFunction->CheckTimeStepStability(input,
+    { m_RegularizationFunction->CheckTimeStepStability( input,
                                                        useImageSpacing ); }
 
   /** Set/get whether to compute the motion field regularization term
@@ -245,15 +245,15 @@ public:
 
   /** Inherited from superclass - do not call this function!  Call the other
    *  ComputeUpdate instead */
-  PixelType ComputeUpdate(const NeighborhoodType &neighborhood,
+  PixelType ComputeUpdate( const NeighborhoodType &neighborhood,
                           void *globalData,
-                          const FloatOffsetType &offset = FloatOffsetType(0.0));
+                          const FloatOffsetType &offset = FloatOffsetType( 0.0 ) );
 
   /** Compute the update value.  The intensityDistanceTerm and
    *  regularizationTerm are outputs.  Incorporates weighting between
    *  intensity distance term and regularization term, but does not yet
    *  incorporate the time step. */
-  virtual PixelType ComputeUpdate(
+  virtual PixelType ComputeUpdate( 
       const NeighborhoodType & neighborhood,
       const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
       const ScalarDerivativeImageRegionArrayVectorType
@@ -266,15 +266,15 @@ public:
       void * globalData,
       PixelType & intensityDistanceTerm,
       PixelType & regularizationTerm,
-      const FloatOffsetType& = FloatOffsetType(0.0) );
+      const FloatOffsetType& = FloatOffsetType( 0.0 ) );
 
   /** Updates the energy associated with the intensity distance term */
-  virtual double ComputeIntensityDistanceEnergy(
+  virtual double ComputeIntensityDistanceEnergy( 
     const typename NeighborhoodType::IndexType index,
     const DeformationVectorType & update );
 
   /** Updates the energy associated with the regularization */
-  virtual double ComputeRegularizationEnergy(
+  virtual double ComputeRegularizationEnergy( 
     const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
     const ScalarDerivativeImageRegionArrayVectorType
         & deformationComponentFirstOrderDerivativeRegions );
@@ -284,7 +284,7 @@ public:
   virtual void * GetGlobalDataPointer( void ) const;
 
   /** Release the global data structure. */
-  virtual void ReleaseGlobalDataPointer(void *GlobalData) const;
+  virtual void ReleaseGlobalDataPointer( void *GlobalData ) const;
 
   /** Returns the pointers to the regularization function and the intensity
     difference function */
@@ -305,10 +305,10 @@ public:
 protected:
   AnisotropicDiffusiveRegistrationFunction( void );
   virtual ~AnisotropicDiffusiveRegistrationFunction( void ) {}
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
   /** Returns the update from the regularization component */
-  virtual PixelType ComputeRegularizationUpdate(
+  virtual PixelType ComputeRegularizationUpdate( 
     const DiffusionTensorNeighborhoodVectorType & tensorNeighborhoods,
     const ScalarDerivativeImageRegionArrayVectorType
         & deformationComponentFirstOrderDerivativeRegions,
@@ -318,10 +318,10 @@ protected:
     const DeformationVectorImageRegionArrayVectorType
         & multiplicationVectorRegionArrays,
     void *globalData,
-    const FloatOffsetType& = FloatOffsetType(0.0) );
+    const FloatOffsetType& = FloatOffsetType( 0.0 ) );
 
 //  /** Update the RMS and mean update change statistics */
-//  virtual void UpdateRMSAndMeanUpdateStatistics(
+//  virtual void UpdateRMSAndMeanUpdateStatistics( 
 //    const PixelType & updateTerm,
 //    const PixelType & intensityDistanceTerm,
 //    const PixelType & regularizationTerm,
@@ -341,8 +341,8 @@ protected:
 
 private:
   // Purposely not implemented
-  AnisotropicDiffusiveRegistrationFunction(const Self&);
-  void operator=(const Self&);
+  AnisotropicDiffusiveRegistrationFunction( const Self& );
+  void operator=( const Self& );
   // Purposely not implemented
 
   /** The global time step. */
@@ -358,7 +358,7 @@ private:
   bool                                  m_ComputeIntensityDistanceTerm;
 
   /** Relative weighting between the intensity distance and regularization
-   *  terms (default 1) */
+   *  terms ( default 1 ) */
   double                                m_RegularizationWeighting;
 
   /** Used to calculate the regularization energy. */
@@ -378,4 +378,4 @@ private:
 #include "itktubeAnisotropicDiffusiveRegistrationFunction.hxx"
 #endif
 
-#endif // End !defined(__itktubeAnisotropicDiffusiveRegistrationFunction_h)
+#endif // End !defined( __itktubeAnisotropicDiffusiveRegistrationFunction_h )

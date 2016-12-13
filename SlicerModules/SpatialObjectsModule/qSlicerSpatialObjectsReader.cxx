@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -52,19 +52,19 @@ public:
 };
 
 //------------------------------------------------------------------------------
-qSlicerSpatialObjectsReader::qSlicerSpatialObjectsReader(QObject* _parent)
-  : Superclass(_parent)
-  , d_ptr(new qSlicerSpatialObjectsReaderPrivate)
+qSlicerSpatialObjectsReader::qSlicerSpatialObjectsReader( QObject* _parent )
+  : Superclass( _parent )
+  , d_ptr( new qSlicerSpatialObjectsReaderPrivate )
 {}
 
 //------------------------------------------------------------------------------
 qSlicerSpatialObjectsReader::
-qSlicerSpatialObjectsReader(vtkSlicerSpatialObjectsLogic* logic,
-                            QObject* _parent)
- : Superclass(_parent)
- , d_ptr(new qSlicerSpatialObjectsReaderPrivate)
+qSlicerSpatialObjectsReader( vtkSlicerSpatialObjectsLogic* logic,
+                            QObject* _parent )
+ : Superclass( _parent )
+ , d_ptr( new qSlicerSpatialObjectsReaderPrivate )
 {
-  this->setLogic(logic);
+  this->setLogic( logic );
 }
 
 //------------------------------------------------------------------------------
@@ -72,16 +72,16 @@ qSlicerSpatialObjectsReader::~qSlicerSpatialObjectsReader()
 {}
 
 //------------------------------------------------------------------------------
-void qSlicerSpatialObjectsReader::setLogic(vtkSlicerSpatialObjectsLogic* logic)
+void qSlicerSpatialObjectsReader::setLogic( vtkSlicerSpatialObjectsLogic* logic )
 {
-  Q_D(qSlicerSpatialObjectsReader);
+  Q_D( qSlicerSpatialObjectsReader );
   d->Logic = logic;
 }
 
 //------------------------------------------------------------------------------
 vtkSlicerSpatialObjectsLogic* qSlicerSpatialObjectsReader::logic() const
 {
-  Q_D(const qSlicerSpatialObjectsReader);
+  Q_D( const qSlicerSpatialObjectsReader );
   return d->Logic.GetPointer();
 }
 
@@ -95,17 +95,17 @@ QString qSlicerSpatialObjectsReader::description() const
 qSlicerSpatialObjectsReader::
 IOFileType qSlicerSpatialObjectsReader::fileType() const
 {
-  return QString("SpatialObjectFile");
+  return QString( "SpatialObjectFile" );
 }
 
 //-----------------------------------------------------------------------------
 QStringList qSlicerSpatialObjectsReader::extensions() const
 {
   return QStringList()
-    << "VesselTubeSpatialObject (*.tre)"
-    << "DTITubeSpatialObject (*.tre)"
-    << "TubeSpatialObject (*.tre)"
-    << "All Files (*)";
+    << "VesselTubeSpatialObject ( *.tre )"
+    << "DTITubeSpatialObject ( *.tre )"
+    << "TubeSpatialObject ( *.tre )"
+    << "All Files ( * )";
 }
 
 //-----------------------------------------------------------------------------
@@ -117,25 +117,25 @@ qSlicerIOOptions* qSlicerSpatialObjectsReader::options() const
 }
 
 //-----------------------------------------------------------------------------
-bool qSlicerSpatialObjectsReader::load(const IOProperties& properties)
+bool qSlicerSpatialObjectsReader::load( const IOProperties& properties )
 {
-  Q_D(qSlicerSpatialObjectsReader);
-  Q_ASSERT(d->Logic);
-  Q_ASSERT(properties.contains("fileName"));
+  Q_D( qSlicerSpatialObjectsReader );
+  Q_ASSERT( d->Logic );
+  Q_ASSERT( properties.contains( "fileName" ) );
   QString fileName = properties["fileName"].toString();
 
   QStringList fileNames;
-  if(properties.contains("suffix"))
+  if( properties.contains( "suffix" ) )
     {
     QStringList suffixList = properties["suffix"].toStringList();
     suffixList.removeDuplicates();
 
     // here filename describes a directory
-    Q_ASSERT(QFileInfo(fileName).isDir());
-    QDir dir(fileName);
+    Q_ASSERT( QFileInfo( fileName ).isDir() );
+    QDir dir( fileName );
 
     // suffix should be of style: *.png
-    fileNames = dir.entryList(suffixList);
+    fileNames = dir.entryList( suffixList );
     }
   else
     {
@@ -143,23 +143,23 @@ bool qSlicerSpatialObjectsReader::load(const IOProperties& properties)
     }
 
   QStringList nodes;
-  foreach(QString file, fileNames)
+  foreach( QString file, fileNames )
     {
     vtkMRMLSpatialObjectsNode* node =
-      d->Logic->AddSpatialObject(file.toLatin1());
+      d->Logic->AddSpatialObject( file.toLatin1() );
 
-    if(node)
+    if( node )
       {
-      if(properties.contains("name"))
+      if( properties.contains( "name" ) )
         {
-        std::string uname = this->mrmlScene()->GetUniqueNameByString(
-          properties["name"].toString().toLatin1());
-        node->SetName(uname.c_str());
+        std::string uname = this->mrmlScene()->GetUniqueNameByString( 
+          properties["name"].toString().toLatin1() );
+        node->SetName( uname.c_str() );
         }
       nodes << node->GetID();
       }
     }
-  this->setLoadedNodes(nodes);
+  this->setLoadedNodes( nodes );
 
   return nodes.size() > 0;
 }

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -122,7 +122,7 @@ int DoIt( int argc, char * argv[] )
       }
     segmentTubesFilter->SetRadiusInputImage( radiusReader->GetOutput() );
     }
-  timeCollector.Stop("Load data");
+  timeCollector.Stop( "Load data" );
   double progress = 0.1;
   progressReporter.Report( progress );
 
@@ -197,7 +197,7 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Reading mask: Exception caught: "
-                          + std::string(err.GetDescription() ) );
+                          + std::string( err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
@@ -215,7 +215,7 @@ int DoIt( int argc, char * argv[] )
       catch( itk::ExceptionObject & err )
         {
         tube::ErrorMessage( "Reading scale: Exception caught: "
-                            + std::string(err.GetDescription()) );
+                            + std::string( err.GetDescription() ) );
         timeCollector.Report();
         return EXIT_FAILURE;
         }
@@ -235,7 +235,7 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Reading vessels mask: Exception caught: "
-                          + std::string(err.GetDescription() ) );
+                          + std::string( err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
@@ -271,7 +271,7 @@ int DoIt( int argc, char * argv[] )
 
   segmentTubesFilter->Update();
 
-  timeCollector.Stop("Ridge Extractor");
+  timeCollector.Stop( "Ridge Extractor" );
 
   if( segmentTubesFilter->GetTubeGroup()->GetNumberOfChildren() == 
     numberOfPriorChildren )
@@ -284,7 +284,7 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  timeCollector.Start("Save tubes and mask");
+  timeCollector.Start( "Save tubes and mask" );
   // Save Tubes
   typename TubesWriterType::Pointer soWriter = TubesWriterType::New();
   soWriter->SetFileName( outputTubeFile );
@@ -300,7 +300,7 @@ int DoIt( int argc, char * argv[] )
     writer->SetUseCompression( true );
     writer->Update();
     }
-  timeCollector.Stop("Save tubes and mask");
+  timeCollector.Stop( "Save tubes and mask" );
 
   progressReporter.Report( 1.0 );
   progressReporter.End();

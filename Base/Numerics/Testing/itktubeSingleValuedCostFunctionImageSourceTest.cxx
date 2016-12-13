@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -41,7 +41,7 @@ public:
   typedef SmartPointer< Self >          Pointer;
   typedef SmartPointer< const Self >    ConstPointer;
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( ArthurDentCostFunction, SingleValuedCostFunction );
 
   itkNewMacro( Self );
@@ -57,8 +57,8 @@ public:
            4 * parameters[2] * parameters[2];
     }
 
-  virtual void GetDerivative(const ParametersType &,
-                             DerivativeType &) const
+  virtual void GetDerivative( const ParametersType &,
+                             DerivativeType & ) const
     {
     // irrevelant for this test
     }
@@ -73,8 +73,8 @@ protected:
   virtual ~ArthurDentCostFunction() {}
 
 private:
-  ArthurDentCostFunction(const Self &); //purposely not implemented
-  void operator=(const Self &);         //purposely not implemented
+  ArthurDentCostFunction( const Self & ); //purposely not implemented
+  void operator=( const Self & );         //purposely not implemented
 };
 
 } // end namespace itk

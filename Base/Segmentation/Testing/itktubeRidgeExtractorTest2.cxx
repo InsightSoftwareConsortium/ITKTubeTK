@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -103,7 +103,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       {
       ++tubeIter;
       }
-    TubeType::Pointer tube = static_cast< TubeType * >(
+    TubeType::Pointer tube = static_cast< TubeType * >( 
       tubeIter->GetPointer() );
     std::cout << "Test tube = " << rndTubeNum << std::endl;
 
@@ -120,7 +120,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       {
       ++pntIter;
       }
-    TubePointType * pnt = static_cast< TubePointType * >(&(*pntIter));
+    TubePointType * pnt = static_cast< TubePointType * >( &( *pntIter ) );
     std::cout << "Test point = " << rndPointNum << std::endl;
 
     tube->ComputeObjectToWorldTransform();
@@ -185,7 +185,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       }
 
     double diff = 0;
-    for( unsigned int i=0; i<ImageType::ImageDimension; i++)
+    for( unsigned int i=0; i<ImageType::ImageDimension; i++ )
       {
       double tf = x0[i]-x1[i];
       diff += tf * tf;
@@ -287,9 +287,9 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
   for( unsigned int code = 0; code < ridgeOp->GetNumberOfFailureCodes();
     ++code )
     {
-    std::cout << "   " << ridgeOp->GetFailureCodeName(
+    std::cout << "   " << ridgeOp->GetFailureCodeName( 
       RidgeOpType::FailureCodeEnum( code ) ) << " : "
-      << ridgeOp->GetFailureCodeCount( RidgeOpType::FailureCodeEnum(
+      << ridgeOp->GetFailureCodeCount( RidgeOpType::FailureCodeEnum( 
       code ) ) << std::endl;
     }
 

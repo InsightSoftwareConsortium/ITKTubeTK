@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -81,7 +81,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( TubeToTubeTransformFilter,
     SpatialObjectToSpatialObjectFilter );
 
@@ -95,7 +95,7 @@ protected:
 
   TubeToTubeTransformFilter( void );
   virtual ~TubeToTubeTransformFilter( void ) {}
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
   /** Apply the transformation to the tube */
   void GenerateData( void );
@@ -103,8 +103,8 @@ protected:
 
 private:
 
-  TubeToTubeTransformFilter(const Self&); //purposely not implemented
-  void operator=(const Self&);            //purposely not implemented
+  TubeToTubeTransformFilter( const Self& ); //purposely not implemented
+  void operator=( const Self& );            //purposely not implemented
 
   void UpdateLevel( SpatialObject< TDimension > * inputSO,
     SpatialObject< TDimension > * parentSO );
@@ -123,4 +123,4 @@ private:
 #include "itktubeTubeToTubeTransformFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeTubeToTubeTransformFilter_h)
+#endif // End !defined( __itktubeTubeToTubeTransformFilter_h )

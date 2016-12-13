@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -72,12 +72,12 @@ int DoIt( int argc, char * argv[] )
   logMsg << "Number of graphs " << numberOfGraphs;
   tube::InfoMessage( logMsg.str() );
 
-  vnl_matrix<double> aMat(numberOfCentroids, numberOfCentroids);
-  aMat.fill(0);
-  vnl_vector<double> bVect(numberOfCentroids);
-  bVect.fill(0);
-  vnl_vector<double> rVect(numberOfCentroids);
-  rVect.fill(0);
+  vnl_matrix<double> aMat( numberOfCentroids, numberOfCentroids );
+  aMat.fill( 0 );
+  vnl_vector<double> bVect( numberOfCentroids );
+  bVect.fill( 0 );
+  vnl_vector<double> rVect( numberOfCentroids );
+  rVect.fill( 0 );
 
   double tf;
   int numberOfCentroids2;
@@ -86,15 +86,15 @@ int DoIt( int argc, char * argv[] )
   DocumentListType::const_iterator graphIt = graphObjects.begin();
   while( graphIt != graphObjects.end() )
     {
-    filename = (*graphIt)->GetObjectName();
+    filename = ( *graphIt )->GetObjectName();
 
     std::string matrixFilename = filename + ".mat";
     tube::InfoMessage( "Reading file " + matrixFilename );
     std::ifstream readMatrixStream;
-    readMatrixStream.open(matrixFilename.c_str(), std::ios::in);
+    readMatrixStream.open( matrixFilename.c_str(), std::ios::in );
     readMatrixStream >> numberOfCentroids2;
     readMatrixStream.get();
-    if(numberOfCentroids != numberOfCentroids2)
+    if( numberOfCentroids != numberOfCentroids2 )
       {
       std::cerr << "Error: fileList's #Centroids != matrix #Centroids"
                 << std::endl;
@@ -103,9 +103,9 @@ int DoIt( int argc, char * argv[] )
       delete reader;
       return 0;
       }
-    for(int i=0; i<numberOfCentroids; i++)
+    for( int i=0; i<numberOfCentroids; i++ )
       {
-      for(int j=0; j<numberOfCentroids; j++)
+      for( int j=0; j<numberOfCentroids; j++ )
         {
         readMatrixStream >> tf;
         readMatrixStream.get();
@@ -116,17 +116,17 @@ int DoIt( int argc, char * argv[] )
 
     std::string branchFilename = filename + ".brc";
     std::ifstream readBranchStream;
-    readBranchStream.open(branchFilename.c_str(), std::ios::in);
+    readBranchStream.open( branchFilename.c_str(), std::ios::in );
     readBranchStream >> numberOfCentroids2;
     readBranchStream.get();
-    if(numberOfCentroids != numberOfCentroids2)
+    if( numberOfCentroids != numberOfCentroids2 )
       {
       std::cerr << "Error: fileList's #Centroids != branch #Centroids"
                 << std::endl;
       delete reader;
       return 0;
       }
-    for(int i=0; i<numberOfCentroids; i++)
+    for( int i=0; i<numberOfCentroids; i++ )
       {
       readBranchStream >> tf;
       readBranchStream.get();
@@ -136,17 +136,17 @@ int DoIt( int argc, char * argv[] )
 
     std::string rootFilename = filename + ".rot";
     std::ifstream readRootStream;
-    readRootStream.open(rootFilename.c_str(), std::ios::in);
+    readRootStream.open( rootFilename.c_str(), std::ios::in );
     readRootStream >> numberOfCentroids2;
     readRootStream.get();
-    if(numberOfCentroids != numberOfCentroids2)
+    if( numberOfCentroids != numberOfCentroids2 )
       {
       std::cerr << "Error: fileList's #Centroids != root #Centroids"
                 << std::endl;
       delete reader;
       return 0;
       }
-    for(int i=0; i<numberOfCentroids; i++)
+    for( int i=0; i<numberOfCentroids; i++ )
       {
       readRootStream >> tf;
       readRootStream.get();
@@ -159,15 +159,15 @@ int DoIt( int argc, char * argv[] )
 
   std::string matrixFile = graphFile + ".mat";
   std::ofstream writeStream;
-  writeStream.open(matrixFile.c_str(), std::ios::binary | std::ios::out);
+  writeStream.open( matrixFile.c_str(), std::ios::binary | std::ios::out );
   writeStream << numberOfCentroids << std::endl;
-  for(int i=0; i<numberOfCentroids; i++)
+  for( int i=0; i<numberOfCentroids; i++ )
     {
-    for(int j=0; j<numberOfCentroids; j++)
+    for( int j=0; j<numberOfCentroids; j++ )
       {
       aMat[i][j] = aMat[i][j] / numberOfGraphs;
       writeStream << aMat[i][j];
-      if(j<numberOfCentroids-1)
+      if( j<numberOfCentroids-1 )
         {
         writeStream << " ";
         }
@@ -176,39 +176,39 @@ int DoIt( int argc, char * argv[] )
     }
   writeStream.close();
 
-  vnl_matrix<double> iMat(numberOfCentroids, numberOfCentroids);
+  vnl_matrix<double> iMat( numberOfCentroids, numberOfCentroids );
   iMat.set_identity();
 
-  vnl_matrix<double> cntMat(numberOfCentroids, numberOfCentroids);
+  vnl_matrix<double> cntMat( numberOfCentroids, numberOfCentroids );
   cntMat = iMat - 0.1 * aMat;
-  vnl_vector<double> e(numberOfCentroids);
-  e.fill(1);
-  vnl_vector<double> cnt(numberOfCentroids);
-  vnl_matrix<double> cntMatI(numberOfCentroids, numberOfCentroids);
-  cntMatI = vnl_matrix_inverse<double>(cntMat).inverse();
+  vnl_vector<double> e( numberOfCentroids );
+  e.fill( 1 );
+  vnl_vector<double> cnt( numberOfCentroids );
+  vnl_matrix<double> cntMatI( numberOfCentroids, numberOfCentroids );
+  cntMatI = vnl_matrix_inverse<double>( cntMat ).inverse();
   cnt = cntMatI * e;
   std::string cntFile = graphFile + ".cnt";
-  writeStream.open(cntFile.c_str(), std::ios::binary | std::ios::out);
+  writeStream.open( cntFile.c_str(), std::ios::binary | std::ios::out );
   writeStream << numberOfCentroids << std::endl;
-  for(int i=0; i<numberOfCentroids; i++)
+  for( int i=0; i<numberOfCentroids; i++ )
     {
     writeStream << cnt[i] << std::endl;
     }
   writeStream.close();
 
   std::string branchFile = graphFile + ".brc";
-  writeStream.open(branchFile.c_str(), std::ios::binary | std::ios::out);
+  writeStream.open( branchFile.c_str(), std::ios::binary | std::ios::out );
   writeStream << numberOfCentroids << std::endl;
-  for(int i=0; i<numberOfCentroids; i++)
+  for( int i=0; i<numberOfCentroids; i++ )
     {
     writeStream << bVect[i]/numberOfGraphs << std::endl;
     }
   writeStream.close();
 
   std::string rootFile = graphFile + ".rot";
-  writeStream.open(rootFile.c_str(), std::ios::binary | std::ios::out);
+  writeStream.open( rootFile.c_str(), std::ios::binary | std::ios::out );
   writeStream << numberOfCentroids << std::endl;
-  for(int i=0; i<numberOfCentroids; i++)
+  for( int i=0; i<numberOfCentroids; i++ )
     {
     writeStream << rVect[i]/numberOfGraphs << std::endl;
     }

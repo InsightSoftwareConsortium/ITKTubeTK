@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -135,21 +135,21 @@ bool MetaDocument::ReadFields( void )
 
   if( dateModifiedField != NULL && dateModifiedField->defined )
     {
-    this->SetDateModified( (const char *)dateModifiedField->value );
+    this->SetDateModified( ( const char * )dateModifiedField->value );
     }
 
   FieldType * const commentField = MET_GetFieldRecord( "Comment", &m_FieldList );
 
   if( commentField != NULL && commentField->defined )
     {
-    this->SetComment( (const char *)commentField->value );
+    this->SetComment( ( const char * )commentField->value );
     }
 
   FieldType * const nameField = MET_GetFieldRecord( "Name", &m_FieldList );
 
   if( nameField != NULL && nameField->defined )
     {
-    this->SetName( (const char *)nameField->value );
+    this->SetName( ( const char * )nameField->value );
     }
 
   return true;

@@ -12,7 +12,7 @@ Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -36,7 +36,7 @@ namespace tube
 {
 
 /** Solve for local extremes of 1D functions
- *  Must be derived to specify specific optimization method (e.g., BrentOptimizer1D)
+ *  Must be derived to specify specific optimization method ( e.g., BrentOptimizer1D )
  *  \class Optimizer1D
  *  \author Stephen R. Aylward
  *  \rewritten Julien Jomier
@@ -139,4 +139,4 @@ private:
 
 } // End namespace tube
 
-#endif // End !defined(__tubeOptimizer1D_h)
+#endif // End !defined( __tubeOptimizer1D_h )

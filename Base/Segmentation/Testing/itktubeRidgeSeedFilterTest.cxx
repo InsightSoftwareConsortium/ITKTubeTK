@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -98,7 +98,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     }
   LabelMapType::Pointer labelmapImage = mReader->GetOutput();
 
-  FilterType::RidgeScalesType scales(3);
+  FilterType::RidgeScalesType scales( 3 );
   scales[0] = 0.35;
   scales[1] = 0.7;
   scales[2] = 1.05;
@@ -130,7 +130,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     PDFType::Pointer pdf = PDFType::New();
     pdf->SetTrainingDataStride( 100 );
     pdf->SetNumberOfDecisionTrees( 10 );
-    filter->GetSeedFeatureGenerator()->SetNumberOfPCABasisToUseAsFeatures(
+    filter->GetSeedFeatureGenerator()->SetNumberOfPCABasisToUseAsFeatures( 
       10 );
     filter->SetPDFSegmenter( pdf.GetPointer() );
     filter->SetSeedTolerance( 0.95 );
@@ -166,7 +166,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     {
     feature2ImageWriter->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch ( itk::ExceptionObject& e )
     {
     std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
@@ -180,7 +180,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     {
     labelmapWriter->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch ( itk::ExceptionObject& e )
     {
     std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;
@@ -195,7 +195,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     {
     scaleImageWriter->Update();
     }
-  catch (itk::ExceptionObject& e)
+  catch ( itk::ExceptionObject& e )
     {
     std::cerr << "Exception caught during write:" << std::endl << e;
     return EXIT_FAILURE;

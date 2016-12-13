@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -109,11 +109,11 @@ public:
 
   void ComputeStatistics( void );
 
-  /** Return the min over the (possibly masked) image.
+  /** Return the min over the ( possibly masked ) image.
    * Requires previous call to ComputeStatistics */
   double GetMin( void ) const;
 
-  /** Return the max over the (possibly masked) image.
+  /** Return the max over the ( possibly masked ) image.
    * Requires previous call to ComputeStatistics */
   double GetMax( void ) const;
 
@@ -253,7 +253,7 @@ public:
                        const VectorType & v1, const VectorType & v2,
                        double scale=1 ) const;
 
-  InputImagePointer ScaleSubsample(double factor);
+  InputImagePointer ScaleSubsample( double factor );
 
   /**
    * Set the Extent
@@ -283,7 +283,7 @@ protected:
 
   ~NJetImageFunction( void );
 
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
   typename InputImageType::ConstPointer  m_InputImage;
   typename InputImageType::ConstPointer  m_InputImageMask;
@@ -315,7 +315,7 @@ protected:
 
 private:
   NJetImageFunction( const Self& );
-  void operator=(const Self&);
+  void operator=( const Self& );
 
 }; // End class NJetImageFunction
 
@@ -327,4 +327,4 @@ private:
 #include "itktubeNJetImageFunction.hxx"
 #endif
 
-#endif // End !defined(__itktubeNJetImageFunction_h)
+#endif // End !defined( __itktubeNJetImageFunction_h )

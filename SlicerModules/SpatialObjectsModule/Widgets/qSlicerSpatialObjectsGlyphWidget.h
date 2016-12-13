@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -49,7 +49,7 @@ qSlicerSpatialObjectsGlyphWidget : public qSlicerWidget
 
 public:
   typedef qSlicerWidget Superclass;
-  qSlicerSpatialObjectsGlyphWidget(QWidget *parent=0);
+  qSlicerSpatialObjectsGlyphWidget( QWidget *parent=0 );
   virtual ~qSlicerSpatialObjectsGlyphWidget();
 
   vtkMRMLSpatialObjectsDisplayNode* spatialObjectsDisplayNode() const;
@@ -57,17 +57,17 @@ public:
     spatialObjectsDisplayPropertiesNode() const;
 
 public slots:
-  void setSpatialObjectsDisplayNode(vtkMRMLNode*);
-  void setSpatialObjectsDisplayNode(vtkMRMLSpatialObjectsDisplayNode*);
-  void setSpatialObjectsDisplayPropertiesNode(vtkMRMLNode*);
+  void setSpatialObjectsDisplayNode( vtkMRMLNode* );
+  void setSpatialObjectsDisplayNode( vtkMRMLSpatialObjectsDisplayNode* );
+  void setSpatialObjectsDisplayPropertiesNode( vtkMRMLNode* );
   void setSpatialObjectsDisplayPropertiesNode
-    (vtkMRMLSpatialObjectsDisplayPropertiesNode*);
+    ( vtkMRMLSpatialObjectsDisplayPropertiesNode* );
 
-  void setGlyphScaleFactor(double);
-  void setGlyphSpacing(double);
-  void setGlyphType(int);
-  void setTubeGlyphNumberOfSides(double);
-  void setTubeGlyphRadius(double);
+  void setGlyphScaleFactor( double );
+  void setGlyphSpacing( double );
+  void setGlyphType( int );
+  void setTubeGlyphNumberOfSides( double );
+  void setTubeGlyphRadius( double );
 
 protected slots:
   void updateWidgetFromMRMLDisplayNode();
@@ -77,8 +77,8 @@ protected:
   QScopedPointer<qSlicerSpatialObjectsGlyphWidgetPrivate> d_ptr;
 
 private:
-  Q_DECLARE_PRIVATE(qSlicerSpatialObjectsGlyphWidget);
-  Q_DISABLE_COPY(qSlicerSpatialObjectsGlyphWidget);
+  Q_DECLARE_PRIVATE( qSlicerSpatialObjectsGlyphWidget );
+  Q_DISABLE_COPY( qSlicerSpatialObjectsGlyphWidget );
 
   int updating;
 };

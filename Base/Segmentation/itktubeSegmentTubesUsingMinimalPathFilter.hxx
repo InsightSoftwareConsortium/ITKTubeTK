@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -180,11 +180,11 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
   m_Output =InputSpatialObjectType::New();
 
   // Update tubes transform
-  m_Output->GetObjectToParentTransform()->SetScale(
+  m_Output->GetObjectToParentTransform()->SetScale( 
     scaleVector );
-  m_Output->GetObjectToParentTransform()->SetOffset(
+  m_Output->GetObjectToParentTransform()->SetOffset( 
     offsetVector );
-  m_Output->GetObjectToParentTransform()->SetMatrix(
+  m_Output->GetObjectToParentTransform()->SetMatrix( 
     m_SpeedImage->GetDirection() );
   m_Output->ComputeObjectToWorldTransform();
   m_CostAssociatedWithExtractedTube = 0.0;
@@ -206,7 +206,7 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
     for( unsigned int k = 0; k < vertexList->Size(); k++ )
       {
       PointType pathPoint;
-      m_SpeedImage->TransformContinuousIndexToPhysicalPoint(
+      m_SpeedImage->TransformContinuousIndexToPhysicalPoint( 
         vertexList->GetElement( k ), pathPoint );
       typename InputImageType::IndexType imageIndex;
       if ( m_SpeedImage->TransformPhysicalPointToIndex
@@ -273,13 +273,13 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
     sourceTubeGroup->GetChildren();
   for( typename InputSpatialObjectType::ChildrenListType::iterator
     tubeList_it = sourceTubeList->begin();
-    tubeList_it != sourceTubeList->end(); ++tubeList_it)
+    tubeList_it != sourceTubeList->end(); ++tubeList_it )
     {
     //**** Source Tube **** :
     typename TubeType::Pointer pCurSourceTube =
       dynamic_cast< TubeType* >( tubeList_it->GetPointer() );
     //dynamic_cast verification
-    if(!pCurSourceTube)
+    if( !pCurSourceTube )
       {
       return EXIT_FAILURE;
       }
@@ -297,7 +297,7 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
       TubePointType curSourcePoint = *pointList_it;
       //Transform parameters in physical space
       typename TubePointType::PointType curSourcePos =
-        pTubeIndexPhysTransform->TransformPoint(
+        pTubeIndexPhysTransform->TransformPoint( 
           curSourcePoint.GetPosition() );
       double distance =
         curSourcePos.SquaredEuclideanDistanceTo( outsidePoint );
@@ -312,7 +312,7 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
         }
       }
     }
-  if( minDistance < nearestPointRadius*nearestPointRadius)
+  if( minDistance < nearestPointRadius*nearestPointRadius )
     {
     return true;
     }

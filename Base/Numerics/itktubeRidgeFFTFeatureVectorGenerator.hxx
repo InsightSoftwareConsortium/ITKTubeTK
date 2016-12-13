@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -140,7 +140,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
     ridgeF->SetUseIntensityOnly( false );
 
     // compute intensity, ridgeness, roundness, curvature,
-    // and levelness features (in that order) for each scale
+    // and levelness features ( in that order ) for each scale
     unsigned int feat = 0;
     for( unsigned int s=0; s<m_Scales.size(); ++s )
       {
@@ -223,7 +223,7 @@ RidgeFFTFeatureVectorGenerator< TImage >
       if( s > 0 )
         {
         m_FeatureImageList[feat-1] = FeatureImageType::New();
-        m_FeatureImageList[feat-1]->CopyInformation(
+        m_FeatureImageList[feat-1]->CopyInformation( 
           this->m_InputImageList[0] );
         m_FeatureImageList[feat-1]->SetRegions( region );
         m_FeatureImageList[feat-1]->Allocate();
@@ -243,12 +243,12 @@ RidgeFFTFeatureVectorGenerator< TImage >
       if( s == m_Scales.size() - 1 )
         {
         m_FeatureImageList[feat+1] = FeatureImageType::New();
-        m_FeatureImageList[feat+1]->CopyInformation(
+        m_FeatureImageList[feat+1]->CopyInformation( 
           this->m_InputImageList[0] );
         m_FeatureImageList[feat+1]->SetRegions( region );
         m_FeatureImageList[feat+1]->Allocate();
 
-        IterType iterPrevS( m_FeatureImageList[ (s / 2) * 2 ], region );
+        IterType iterPrevS( m_FeatureImageList[ ( s / 2 ) * 2 ], region );
         IterType iterCurS( m_FeatureImageList[ feat ], region );
         IterType iterDiff( m_FeatureImageList[ feat+1 ], region );
         while( !iterPrevS.IsAtEnd() )
@@ -378,4 +378,4 @@ RidgeFFTFeatureVectorGenerator< TImage >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeRidgeFFTFeatureVectorGenerator_hxx)
+#endif // End !defined( __itktubeRidgeFFTFeatureVectorGenerator_hxx )

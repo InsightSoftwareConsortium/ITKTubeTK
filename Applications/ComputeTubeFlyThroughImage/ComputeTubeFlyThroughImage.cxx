@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -53,14 +53,15 @@ int DoIt( int argc, char * argv[] )
   // limitation of itkTubeSpatialObject
   if( VDimension != 2 && VDimension != 3 )
     {
-    tube::ErrorMessage( "Error: Only 2D and 3D Images are currently supported." );
+    tube::ErrorMessage( 
+      "Error: Only 2D and 3D Images are currently supported." );
     return EXIT_FAILURE;
     }
 
   // setup progress reporting
   double progress = 0.0;
 
-  tube::CLIProgressReporter progressReporter(
+  tube::CLIProgressReporter progressReporter( 
     "ComputeTubeFlyThroughImage", CLPProcessInformation );
   progressReporter.Start();
   progressReporter.Report( progress );
@@ -86,7 +87,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Error loading input image: "
-      + std::string(err.GetDescription()) );
+      + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -112,7 +113,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Error loading TRE file: "
-      + std::string( err.GetDescription()) );
+      + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -127,8 +128,8 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Start( "Computing tube fly through images" );
 
-  typename ComputeFlyThroughImageFilterType::Pointer pFlyThroughImageFilter =
-    ComputeFlyThroughImageFilterType::New();
+  typename ComputeFlyThroughImageFilterType::Pointer pFlyThroughImageFilter
+    = ComputeFlyThroughImageFilterType::New();
 
   pFlyThroughImageFilter->SetTubeId( inputTubeId );
   pFlyThroughImageFilter->SetInputImage( pImageReader->GetOutput() );
@@ -155,7 +156,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Error writing tube fly through image: "
-      + std::string(err.GetDescription()) );
+      + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -165,7 +166,8 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   // Write tube mask fly through image
-  typedef typename ComputeFlyThroughImageFilterType::OutputMaskType MaskType;
+  typedef typename ComputeFlyThroughImageFilterType::OutputMaskType
+    MaskType;
   typedef itk::ImageFileWriter< MaskType > MaskWriterType;
 
   timeCollector.Start( "Writing tube mask fly through image" );
@@ -181,7 +183,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Error writing tube mask fly through image: "
-      + std::string(err.GetDescription()) );
+      + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }

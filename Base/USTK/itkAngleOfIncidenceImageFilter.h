@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -56,7 +56,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( AngleOfIncidenceImageFilter, ImageToImageFilter );
 
   itkStaticConstMacro( ImageDimension, unsigned int,
@@ -113,15 +113,15 @@ public:
 protected:
   AngleOfIncidenceImageFilter( void );
   virtual ~AngleOfIncidenceImageFilter( void ) {}
-  void PrintSelf(std::ostream & os, Indent indent) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const;
 
   /* Generate Data */
   void GenerateData( void );
 
   void ComputeNormalVectorImage( void );
 private:
-  AngleOfIncidenceImageFilter(const Self &); //purposely not implemented
-  void operator=(const Self &);          //purposely not implemented
+  AngleOfIncidenceImageFilter( const Self & ); //purposely not implemented
+  void operator=( const Self & );          //purposely not implemented
 
   /* Ultrasound origin*/
   VectorType m_UltrasoundProbeOrigin;
@@ -146,4 +146,4 @@ private:
 #include "itkAngleOfIncidenceImageFilter.hxx"
 #endif
 
-#endif // End !defined(__itkAngleOfIncidenceImageFilter_h)
+#endif // End !defined( __itkAngleOfIncidenceImageFilter_h )

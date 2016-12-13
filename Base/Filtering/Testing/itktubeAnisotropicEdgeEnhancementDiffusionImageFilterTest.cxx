@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -74,25 +74,25 @@ int itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest( int argc, char * 
   //Set scale/sigma value
   if( argc > 3 )
     {
-    double scaleParameter = std::atof(argv[3]);
+    double scaleParameter = std::atof( argv[3] );
     EdgeEnhancementFilter->SetSigma( scaleParameter );
     }
   //Set contrast parameter
   if( argc > 4 )
     {
-    double contrastParameter = std::atof(argv[4]);
+    double contrastParameter = std::atof( argv[4] );
     EdgeEnhancementFilter->SetContrastParameterLambdaE( contrastParameter );
     }
   //Set time step
   if( argc > 5 )
     {
-    double timeStep = std::atof(argv[5]);
+    double timeStep = std::atof( argv[5] );
     EdgeEnhancementFilter->SetTimeStep( timeStep );
     }
   //Set number of iterations
   if( argc > 6 )
     {
-    double numberOfIterations = std::atoi(argv[6]);
+    double numberOfIterations = std::atoi( argv[6] );
     EdgeEnhancementFilter->SetNumberOfIterations( numberOfIterations );
     }
 

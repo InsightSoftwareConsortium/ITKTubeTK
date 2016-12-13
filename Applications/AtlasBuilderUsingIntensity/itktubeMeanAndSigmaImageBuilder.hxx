@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -27,28 +27,26 @@ limitations under the License.
 #include "itktubeMeanAndSigmaImageBuilder.h"
 
 template< class TInputImageType, class TOutputMeanImageType,
-          class TOutputSigmaImageType >
-MeanAndSigmaImageBuilder< TInputImageType,
-                          TOutputMeanImageType,
-                          TOutputSigmaImageType>
+  class TOutputSigmaImageType >
+MeanAndSigmaImageBuilder< TInputImageType, TOutputMeanImageType,
+  TOutputSigmaImageType>
 ::MeanAndSigmaImageBuilder( void )
-: m_ImageCountThreshold(1),
-  m_ThresholdInputImageBelowOn(false),
-  m_ThresholdInputImageBelow(0),
-  m_IsProcessing(false),
-  m_UseStandardDeviation(true),
-  m_DynamicallyAdjustOutputSize(false)
+: m_ImageCountThreshold( 1 ),
+  m_ThresholdInputImageBelowOn( false ),
+  m_ThresholdInputImageBelow( 0 ),
+  m_IsProcessing( false ),
+  m_UseStandardDeviation( true ),
+  m_DynamicallyAdjustOutputSize( false )
 {
-  m_OutputSize.Fill(0);
-  m_OutputSpacing.Fill(0);
-  m_OutputOrigin.Fill(0);
+  m_OutputSize.Fill( 0 );
+  m_OutputSpacing.Fill( 0 );
+  m_OutputOrigin.Fill( 0 );
 }
 
 template< class TInputImageType, class TOutputMeanImageType,
-          class TOutputSigmaImageType >
-void MeanAndSigmaImageBuilder< TInputImageType,
-                               TOutputMeanImageType,
-                               TOutputSigmaImageType>
+  class TOutputSigmaImageType >
+void MeanAndSigmaImageBuilder< TInputImageType, TOutputMeanImageType,
+  TOutputSigmaImageType>
 ::AddImage( InputImagePointer i )
 {
   if( !( this->GetIsProcessing() ) )
@@ -83,15 +81,15 @@ void MeanAndSigmaImageBuilder< TInputImageType,
     InputPixelType p = it_image.Get();
 
     // If requested to be threshold, ensure that the value
-    // added has a value above the threshold (and not out of the
-    // image area), else ignore.
+    // added has a value above the threshold ( and not out of the
+    // image area ), else ignore.
     if( this->GetThresholdInputImageBelowOn() == false
-        || (this->GetThresholdInputImageBelowOn() == true
+        || ( this->GetThresholdInputImageBelowOn() == true
         && p > this->GetThresholdInputImageBelow() ) )
       {
       it_valid.Set( it_valid.Get() + 1 );
       it_sum.Set( it_sum.Get() + p );
-      it_sum_sqre.Set( it_sum_sqre.Get() + (p * p) );
+      it_sum_sqre.Set( it_sum_sqre.Get() + ( p * p ) );
       }
     ++it_image;
     ++it_sum;
@@ -104,15 +102,14 @@ void MeanAndSigmaImageBuilder< TInputImageType,
 }
 
 template< class TInputImageType, class TOutputMeanImageType,
-          class TOutputSigmaImageType >
-void MeanAndSigmaImageBuilder< TInputImageType,
-                               TOutputMeanImageType,
-                               TOutputSigmaImageType >
+  class TOutputSigmaImageType >
+void MeanAndSigmaImageBuilder< TInputImageType, TOutputMeanImageType,
+  TOutputSigmaImageType >
 ::FinalizeOutput( void )
 {
   if( !( this->GetIsProcessing() ) )
     {
-    ::tube::FmtErrorMessage("Must call Start() function before Finalizing");
+    ::tube::FmtErrorMessage( "Must call Start() before Finalizing" );
     return;
     }
 
@@ -167,23 +164,23 @@ void MeanAndSigmaImageBuilder< TInputImageType,
         {
         ProcessPixelType sum = it_sum.Get();
         ProcessPixelType sumSqr = it_sum_sqre.Get();
-        // Variance Calc. s^2 = ( (sum(x^2) - (sum(x)^2/n) )/ (n-1) )
+        // Variance Calc. s^2 = ( ( sum( x^2 ) - ( sum( x )^2/n ) )/ ( n-1 ) )
         ProcessPixelType variance =
-          ( sumSqr - ( (sum * sum ) / number )) / (number - 1);
+          ( sumSqr - ( ( sum * sum ) / number ) ) / ( number - 1 );
 
-        // If Standard Deviation Calc. s = std::sqrt(s^2)
+        // If Standard Deviation Calc. s = std::sqrt( s^2 )
         if( isStdDeviation )
           {
-          variance = std::sqrt(variance);
+          variance = std::sqrt( variance );
           }
-        it_dev.Set( (OutputSigmaPixelType) variance );
-        it_mean.Set( (OutputMeanPixelType)
-                     ( sum / ( (ProcessPixelType) number )) );
+        it_dev.Set( ( OutputSigmaPixelType ) variance );
+        it_mean.Set( ( OutputMeanPixelType )
+                     ( sum / ( ( ProcessPixelType ) number ) ) );
         }
       else
         {
         it_dev.Set( 0 );
-        it_mean.Set( (OutputMeanPixelType) it_sum.Get() );
+        it_mean.Set( ( OutputMeanPixelType ) it_sum.Get() );
         }
       }
     else
@@ -207,11 +204,10 @@ void MeanAndSigmaImageBuilder< TInputImageType,
 }
 
 template< class TInputImageType, class TOutputMeanImageType,
-          class TOutputSigmaImageType >
+  class TOutputSigmaImageType >
 void
-MeanAndSigmaImageBuilder< TInputImageType,
-                          TOutputMeanImageType,
-                          TOutputSigmaImageType >
+MeanAndSigmaImageBuilder< TInputImageType, TOutputMeanImageType,
+  TOutputSigmaImageType >
 ::BuildProcessingImages( InputImagePointer i )
 {
   ProcessImagePointer sumImage        = ProcessImageType::New();
@@ -253,16 +249,15 @@ MeanAndSigmaImageBuilder< TInputImageType,
 }
 
 template< class TInputImageType, class TOutputMeanImageType,
-          class TOutputSigmaImageType >
+  class TOutputSigmaImageType >
 void
-MeanAndSigmaImageBuilder< TInputImageType,
-                          TOutputMeanImageType,
-                          TOutputSigmaImageType>
+MeanAndSigmaImageBuilder< TInputImageType, TOutputMeanImageType,
+  TOutputSigmaImageType>
 ::UpdateOutputImageSize( SizeType inputSize )
 {
   if( !( this->GetIsProcessing() ) )
     {
-    ::tube::ErrorMessage("Need to call AddImage() before updating image size!");
+    ::tube::ErrorMessage( "Call AddImage() before updating image size!" );
     return;
     }
 
@@ -273,7 +268,7 @@ MeanAndSigmaImageBuilder< TInputImageType,
   typedef ResampleImageFilter< ProcessImageType, ProcessImageType >
     ResampleProcessImageType;
   typename ResampleProcessImageType::Pointer processFilter =
-                                             ResampleProcessImageType::New();
+    ResampleProcessImageType::New();
 
   processFilter->SetInput( sumImage );
   processFilter->SetSize( inputSize );
@@ -284,30 +279,32 @@ MeanAndSigmaImageBuilder< TInputImageType,
   this->SetSumImage( processFilter->GetOutput() );
 
   typename ResampleProcessImageType::Pointer processFilter2 =
-                                             ResampleProcessImageType::New();
+    ResampleProcessImageType::New();
   processFilter2->SetInput( sumSquareImage );
   processFilter2->SetSize( inputSize );
   // Keep all the spacing an origins constant for all images
-  // (so using only one to declare)
+  // ( so using only one to declare )
   processFilter2->SetOutputSpacing( sumImage->GetSpacing() );
   // Keep all the spacing an origins constant for all images
-  // (so using only one to declare)
+  // ( so using only one to declare )
   processFilter2->SetOutputOrigin( sumImage->GetOrigin() );
   processFilter2->Update();
   this->SetSumSquareImage( processFilter2->GetOutput() );
 
 
-  typedef ResampleImageFilter<CountImageType,CountImageType> ResampleCountImageType;
-  typename ResampleCountImageType::Pointer countFilter = ResampleCountImageType::New();
+  typedef ResampleImageFilter<CountImageType, CountImageType>
+    ResampleCountImageType;
+  typename ResampleCountImageType::Pointer countFilter =
+    ResampleCountImageType::New();
 
   countFilter->SetInput( validImage );
   countFilter->SetSize( inputSize );
 
-  // Keep all the spacing an origins constant for all images (so using only
-  // one to declare)
+  // Keep all the spacing an origins constant for all images ( so using only
+  // one to declare )
   countFilter->SetOutputSpacing( sumImage->GetSpacing() );
-  // Keep all the spacing an origins constant for all images (so using only
-  // one to declare)
+  // Keep all the spacing an origins constant for all images ( so using only
+  // one to declare )
   countFilter->SetOutputOrigin( sumImage->GetOrigin() );
   countFilter->Update();
   this->SetValidCountImage( countFilter->GetOutput() );
@@ -315,4 +312,4 @@ MeanAndSigmaImageBuilder< TInputImageType,
   this->SetOutputSize( inputSize );
 }
 
-#endif // End !defined(__itktubeMeanAndSigmaImageBuilder_hxx)
+#endif // End !defined( __itktubeMeanAndSigmaImageBuilder_hxx )

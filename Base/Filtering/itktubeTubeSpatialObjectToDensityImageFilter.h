@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -103,8 +103,8 @@ public:
   /** Use square distance instead of linear distance */
   itkSetMacro( UseSquareDistance, bool );
   itkGetMacro( UseSquareDistance, bool );
-  itkSetMacro( MaxDensityIntensity, DensityPixelType);
-  itkGetMacro( MaxDensityIntensity, DensityPixelType);
+  itkSetMacro( MaxDensityIntensity, DensityPixelType );
+  itkGetMacro( MaxDensityIntensity, DensityPixelType );
   itkSetMacro( Size, SizeType );
   itkGetMacro( Size, SizeType );
   /** Sets the input tubes */
@@ -144,4 +144,4 @@ private:
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeTubeSpatialObjectToDensityImageFilter_h)
+#endif // End !defined( __itktubeTubeSpatialObjectToDensityImageFilter_h )

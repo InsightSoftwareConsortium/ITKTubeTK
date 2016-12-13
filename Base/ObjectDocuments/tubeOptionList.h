@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -29,7 +29,7 @@ Language:  C++
 Date:      $Date: 2004/05/06 13:45:52 $
 Version:   $Revision: 1.1 $
 
-Copyright (c) 2002 Insight Consortium. All rights reserved.
+Copyright ( c ) 2002 Insight Consortium. All rights reserved.
 See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
 This software is distributed WITHOUT ANY WARRANTY; without even
@@ -156,7 +156,7 @@ public:
 
   /** Return the value of the specified tag as a string. */
   virtual int GetStringOption( const std::string & tag, std::string & value,
-                               bool required) const;
+                               bool required ) const;
 
   /** Return the value of the specified tag as a unsigned character. */
   virtual unsigned char GetCharacterOption( const std::string & tag,
@@ -190,4 +190,4 @@ private:
 
 } // End namespace tube
 
-#endif // End !defined(__tubeOptionList_h)
+#endif // End !defined( __tubeOptionList_h )

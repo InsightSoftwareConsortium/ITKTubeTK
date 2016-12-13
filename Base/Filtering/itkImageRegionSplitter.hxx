@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -29,18 +29,18 @@ namespace itk
 template< unsigned int VImageDimension >
 unsigned int
 ImageRegionSplitter< VImageDimension >
-::GetNumberOfSplits(const RegionType & region, unsigned int requestedNumber)
+::GetNumberOfSplits( const RegionType & region, unsigned int requestedNumber )
 {
   const SizeType & regionSize = region.GetSize();
 
   // split on the outermost dimension available
   int splitAxis = VImageDimension - 1;
-  while ( regionSize[splitAxis] == 1 )
+  while( regionSize[splitAxis] == 1 )
     {
     --splitAxis;
-    if ( splitAxis < 0 )
+    if( splitAxis < 0 )
       { // cannot split
-      itkDebugMacro("  Cannot Split");
+      itkDebugMacro( "  Cannot Split" );
       return 1;
       }
     }
@@ -48,9 +48,9 @@ ImageRegionSplitter< VImageDimension >
   // determine the actual number of pieces that will be generated
   const SizeValueType range = regionSize[splitAxis];
   const unsigned int valuesPerPiece =
-    Math::Ceil< unsigned int >(range / (double)requestedNumber);
+    Math::Ceil< unsigned int >( range / ( double )requestedNumber );
   const unsigned int maxPieceUsed =
-    Math::Ceil< unsigned int >(range / (double)valuesPerPiece) - 1;
+    Math::Ceil< unsigned int >( range / ( double )valuesPerPiece ) - 1;
 
   return maxPieceUsed + 1;
 }
@@ -61,8 +61,8 @@ ImageRegionSplitter< VImageDimension >
 template< unsigned int VImageDimension >
 ImageRegion< VImageDimension >
 ImageRegionSplitter< VImageDimension >
-::GetSplit(unsigned int i, unsigned int numberOfPieces,
-           const RegionType & region)
+::GetSplit( unsigned int i, unsigned int numberOfPieces,
+           const RegionType & region )
 {
   int        splitAxis;
   RegionType splitRegion;
@@ -78,28 +78,30 @@ ImageRegionSplitter< VImageDimension >
 
   // split on the outermost dimension available
   splitAxis = VImageDimension - 1;
-  while ( regionSize[splitAxis] == 1 )
+  while( regionSize[splitAxis] == 1 )
     {
     --splitAxis;
-    if ( splitAxis < 0 )
+    if( splitAxis < 0 )
       { // cannot split
-      itkDebugMacro("  Cannot Split");
+      itkDebugMacro( "  Cannot Split" );
       return splitRegion;
       }
     }
 
   // determine the actual number of pieces that will be generated
   SizeValueType range = regionSize[splitAxis];
-  int           valuesPerPiece = Math::Ceil< int >(range / (double)numberOfPieces);
-  int           maxPieceUsed = Math::Ceil< int >(range / (double)valuesPerPiece) - 1;
+  int           valuesPerPiece = Math::Ceil< int >( range /
+    ( double )numberOfPieces );
+  int           maxPieceUsed = Math::Ceil< int >( range /
+    ( double )valuesPerPiece ) - 1;
 
   // Split the region
-  if ( (int)i < maxPieceUsed )
+  if( ( int )i < maxPieceUsed )
     {
     splitIndex[splitAxis] += i * valuesPerPiece;
     splitSize[splitAxis] = valuesPerPiece;
     }
-  if ( (int)i == maxPieceUsed )
+  if( ( int )i == maxPieceUsed )
     {
     splitIndex[splitAxis] += i * valuesPerPiece;
     // last piece needs to process the "rest" dimension being split
@@ -107,10 +109,10 @@ ImageRegionSplitter< VImageDimension >
     }
 
   // set the split region ivars
-  splitRegion.SetIndex(splitIndex);
-  splitRegion.SetSize(splitSize);
+  splitRegion.SetIndex( splitIndex );
+  splitRegion.SetSize( splitSize );
 
-  itkDebugMacro("  Split Piece: " << splitRegion);
+  itkDebugMacro( "  Split Piece: " << splitRegion );
 
   return splitRegion;
 }
@@ -121,9 +123,9 @@ ImageRegionSplitter< VImageDimension >
 template< unsigned int VImageDimension >
 void
 ImageRegionSplitter< VImageDimension >
-::PrintSelf(std::ostream & os, Indent indent) const
+::PrintSelf( std::ostream & os, Indent indent ) const
 {
-  Superclass::PrintSelf(os, indent);
+  Superclass::PrintSelf( os, indent );
 }
 } // end namespace itk
 

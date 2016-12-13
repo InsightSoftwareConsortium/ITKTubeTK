@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -44,65 +44,65 @@ class VTK_SLICER_SPATIALOBJECTS_MODULE_LOGIC_EXPORT vtkSlicerSpatialObjectsLogic
 {
 public:
   static vtkSlicerSpatialObjectsLogic *New( void );
-  vtkTypeMacro(vtkSlicerSpatialObjectsLogic,vtkSlicerModuleLogic);
-  void PrintSelf(ostream& os, vtkIndent indent);
+  vtkTypeMacro( vtkSlicerSpatialObjectsLogic,vtkSlicerModuleLogic );
+  void PrintSelf( ostream& os, vtkIndent indent );
 
   // Description:
   // Read and update the given spatial object from the new spatial object
   // stored in the filename. If not storage node exists for the given spatial
   // object, one will be created.
-  void SetSpatialObject(
-    vtkMRMLSpatialObjectsNode* spatialObject, const char* filename);
+  void SetSpatialObject( 
+    vtkMRMLSpatialObjectsNode* spatialObject, const char* filename );
 
   // Description:
   // Create SpatialObjectsNode and
   // read their polydata from a specified directory if a filename is specified.
   // Also create the logic object for its display.
-  vtkMRMLSpatialObjectsNode* AddSpatialObject(const char* filename = 0);
+  vtkMRMLSpatialObjectsNode* AddSpatialObject( const char* filename = 0 );
 
   // Description:
   // Create SpatialObjectsNode and
   // read their polydata from a specified directory.
   // Files matching suffix are read
   // Internally calls AddSpatialObjects for each file.
-  int AddSpatialObjects(const char* dirname, const char* suffix);
+  int AddSpatialObjects( const char* dirname, const char* suffix );
 
   // Description:
   // Create SpatialObjectsNode and
   // read their polydata from a specified directory.
   // Files matching all suffixes are read
   // Internally calls AddSpatialObjects for each file.
-  int AddSpatialObjects(const char* dirname, std::vector<std::string> suffix);
+  int AddSpatialObjects( const char* dirname, std::vector<std::string> suffix );
 
   // Description:
   // Write SpatialObjectsNode's polydata  to a specified file.
-  int SaveSpatialObject(const char* filename,
-                        vtkMRMLSpatialObjectsNode *spatialObjectsNode);
+  int SaveSpatialObject( const char* filename,
+                        vtkMRMLSpatialObjectsNode *spatialObjectsNode );
 
   // Description:
   // Utility function to copy a spatial object from a node to another
-  // (implemented since python doesn't wrap itk objects)
-  void CopySpatialObject(
-    vtkMRMLSpatialObjectsNode* from, vtkMRMLSpatialObjectsNode* to);
+  // ( implemented since python doesn't wrap itk objects )
+  void CopySpatialObject( 
+    vtkMRMLSpatialObjectsNode* from, vtkMRMLSpatialObjectsNode* to );
 
   // Description:
   // Given a filename pointing to a spatial object file and a spatial object
   // node, merge the spatial object read from file in the recipient node.
   // The updated recipient is returned.
   // \sa MergeSpatialObject
-  vtkMRMLSpatialObjectsNode* MergeSpatialObjectFromFilename(
-    vtkMRMLSpatialObjectsNode* recipient, const char* filename);
+  vtkMRMLSpatialObjectsNode* MergeSpatialObjectFromFilename( 
+    vtkMRMLSpatialObjectsNode* recipient, const char* filename );
 
   // Description:
   // Given two spatial object nodes, add the donor spatial object to the
   // recipient. The donor stays intact and the updated recipient is returned.
   // \sa MergeSpatialObjectFromFilename
-  vtkMRMLSpatialObjectsNode* MergeSpatialObject(
-    vtkMRMLSpatialObjectsNode* recipient, vtkMRMLSpatialObjectsNode* donor);
+  vtkMRMLSpatialObjectsNode* MergeSpatialObject( 
+    vtkMRMLSpatialObjectsNode* recipient, vtkMRMLSpatialObjectsNode* donor );
 
   // Description:
   // Utility function to add the display nodes to a given spatial object node.
-  void AddDisplayNodes(vtkMRMLSpatialObjectsNode* spatialObjectsNode);
+  void AddDisplayNodes( vtkMRMLSpatialObjectsNode* spatialObjectsNode );
 
   // Description:
   // Register MRML Node classes to Scene.
@@ -112,8 +112,8 @@ public:
 protected:
   vtkSlicerSpatialObjectsLogic( void );
   ~vtkSlicerSpatialObjectsLogic( void );
-  vtkSlicerSpatialObjectsLogic(const vtkSlicerSpatialObjectsLogic&);
-  void operator=(const vtkSlicerSpatialObjectsLogic&);
+  vtkSlicerSpatialObjectsLogic( const vtkSlicerSpatialObjectsLogic& );
+  void operator=( const vtkSlicerSpatialObjectsLogic& );
 
   // Description:
   // Collection of pointers to display logic objects
@@ -122,4 +122,4 @@ protected:
 
 }; // End class vtkSlicerSpatialObjectsLogic
 
-#endif // End !defined(__vtkSlicerSpatialObjectsLogic_h)
+#endif // End !defined( __vtkSlicerSpatialObjectsLogic_h )

@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -37,7 +37,7 @@ PadImageFilter<TInputImage, TOutputImage>
 {
   m_GreatestPrimeFactor = 13;
   m_PadMethod = ZERO_FLUX_NEUMANN;
-  this->SetNumberOfRequiredOutputs(1);
+  this->SetNumberOfRequiredOutputs( 1 );
 }
 
 template <class TInputImage, class TOutputImage>
@@ -48,7 +48,7 @@ PadImageFilter<TInputImage, TOutputImage>
   // call the superclass' implementation of this method
   Superclass::GenerateInputRequestedRegion();
   
-  InputImageType * input0 = const_cast<InputImageType *>(this->GetInput(0));
+  InputImageType * input0 = const_cast<InputImageType *>( this->GetInput( 0 ) );
   if ( !input0 )
     {
     return;
@@ -127,7 +127,7 @@ PadImageFilter<TInputImage, TOutputImage>
 
   // Create a process accumulator for tracking the progress of this minipipeline
   ProgressAccumulator::Pointer progress = ProgressAccumulator::New();
-  progress->SetMiniPipelineFilter(this);
+  progress->SetMiniPipelineFilter( this );
 
   typedef typename itk::PadImageFilter
     < InputImageType, OutputImageType > PadType;
@@ -165,7 +165,7 @@ PadImageFilter<TInputImage, TOutputImage>
       pad0 = WrapPadType::New();
       break;
     default:
-      itkExceptionMacro(<< "Unknown pad method: " << m_PadMethod);
+      itkExceptionMacro( << "Unknown pad method: " << m_PadMethod );
       break;
       }
     }
@@ -181,7 +181,7 @@ PadImageFilter<TInputImage, TOutputImage>
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
       s[i] = or0.GetSize()[i] -
-        ( ir0.GetIndex()[i] - or0.GetIndex()[i] + ir0.GetSize()[i]);
+        ( ir0.GetIndex()[i] - or0.GetIndex()[i] + ir0.GetSize()[i] );
       }
     pad0->SetPadUpperBound( s );
     }
@@ -195,11 +195,12 @@ PadImageFilter<TInputImage, TOutputImage>
 template<class TInputImage, class TOutputImage>
 void
 PadImageFilter<TInputImage, TOutputImage>
-::PrintSelf(std::ostream &os, Indent indent) const
+::PrintSelf( std::ostream &os, Indent indent ) const
 {
-  Superclass::PrintSelf(os, indent);
+  Superclass::PrintSelf( os, indent );
 
-  os << indent << "GreatestPrimeFactor: "  << m_GreatestPrimeFactor << std::endl;
+  os << indent << "GreatestPrimeFactor: "  << m_GreatestPrimeFactor
+    << std::endl;
   os << indent << "PadMethod: "  << m_PadMethod << std::endl;
 }
   

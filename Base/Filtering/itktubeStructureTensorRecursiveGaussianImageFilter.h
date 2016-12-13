@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -40,7 +40,7 @@ namespace tube
 
 /** \class StructureTensorRecursiveGaussianImageFilter
  * \brief Computes the structure tensor of a multidimensional image
- * \warning Operates in image (pixel) space, not physical space
+ * \warning Operates in image ( pixel ) space, not physical space
  * \ingroup GradientFilters
  * \ingroup Singlethreaded
  */
@@ -108,7 +108,7 @@ public:
 
   /** Set Sigma value. Sigma is measured in the units of image spacing.  */
   void SetSigma( RealType sigma );
-  void SetSigmaOuter( RealType rho);
+  void SetSigmaOuter( RealType rho );
 
   /** Define which normalization factor will be used for the Gaussian */
   void SetNormalizeAcrossScale( bool normalizeInScaleSpace );
@@ -124,24 +124,24 @@ public:
 protected:
   StructureTensorRecursiveGaussianImageFilter( void );
   virtual ~StructureTensorRecursiveGaussianImageFilter( void ) {}
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
   /** StructureTensorRecursiveGaussianImageFilter needs all of the input to produce an
    * output. Therefore, StructureTensorRecursiveGaussianImageFilter needs to provide
    * an implementation for GenerateInputRequestedRegion in order to inform
    * the pipeline execution model.
    * \sa ImageToImageFilter::GenerateInputRequestedRegion() */
-  virtual void GenerateInputRequestedRegion( void ) throw(InvalidRequestedRegionError);
+  virtual void GenerateInputRequestedRegion( void ) throw( InvalidRequestedRegionError );
 
   /** Generate Data */
   void GenerateData( void );
 
   // Override since the filter produces the entire data set
-  void EnlargeOutputRequestedRegion(DataObject *output);
+  void EnlargeOutputRequestedRegion( DataObject *output );
 
 private:
-  StructureTensorRecursiveGaussianImageFilter(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  StructureTensorRecursiveGaussianImageFilter( const Self& ); //purposely not implemented
+  void operator=( const Self& ); //purposely not implemented
 
   std::vector<GaussianFilterPointer>         m_SmoothingFilters;
   DerivativeFilterPointer                    m_DerivativeFilter;
@@ -165,4 +165,4 @@ private:
 #include "itktubeStructureTensorRecursiveGaussianImageFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeStructureTensorRecursiveGaussianImageFilter_h)
+#endif // End !defined( __itktubeStructureTensorRecursiveGaussianImageFilter_h )

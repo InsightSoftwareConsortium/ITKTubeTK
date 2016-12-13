@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -40,7 +40,7 @@ ComputeTrainingMaskFilter< TInputImage >
 
   m_Threshold = ThresholdFilterType::New();
 
-  m_Threshold->SetLowerThreshold( 0);
+  m_Threshold->SetLowerThreshold( 0 );
   m_Threshold->SetInsideValue( 0 );
   m_Threshold->SetOutsideValue( 255 );
 
@@ -48,26 +48,26 @@ ComputeTrainingMaskFilter< TInputImage >
   m_Ball.CreateStructuringElement();
 
   m_Dilate = DilateFilterType::New();
-  m_Dilate->SetObjectValue(255 );
+  m_Dilate->SetObjectValue( 255 );
   m_Dilate->SetKernel( m_Ball );
 
   m_Substract = SubstractFilterType::New();
   m_MultiplyCenterLine = MultiplyFilterType::New();
-  m_MultiplyCenterLine->SetConstant(255);
+  m_MultiplyCenterLine->SetConstant( 255 );
 
   m_DivideImage = DivideFilterType::New();
-  m_DivideImage->SetConstant(2.0);
+  m_DivideImage->SetConstant( 2.0 );
 
   m_Add = AddFilterType::New();
   m_Cast = CastFilterType::New();
   m_CastNotVessel = CastFilterType::New();
 
-  this->SetNumberOfRequiredInputs(1);
-  this->SetNumberOfRequiredOutputs(2);
+  this->SetNumberOfRequiredInputs( 1 );
+  this->SetNumberOfRequiredOutputs( 2 );
 
   typename ImageTypeShort::Pointer output1 =
-    static_cast< ImageTypeShort * >( this->MakeOutput(1).GetPointer() );
-  this->ProcessObject::SetNthOutput( 1,output1);
+    static_cast< ImageTypeShort * >( this->MakeOutput( 1 ).GetPointer() );
+  this->ProcessObject::SetNthOutput( 1,output1 );
 }
 
 template< class TInputImage >
@@ -77,7 +77,7 @@ ComputeTrainingMaskFilter< TInputImage >
 {
   for ( int r = 0; r<m_NotVesselWidth; r++ )
     {
-    m_Dilate->SetInput(input);
+    m_Dilate->SetInput( input );
     m_Dilate->Update();
     input=m_Dilate->GetOutput();
     input->DisconnectPipeline();
@@ -91,8 +91,8 @@ ComputeTrainingMaskFilter< TInputImage >
 ::GenerateData()
 {
   typename ImageType::Pointer input = ImageType::New();
-  input->Graft( const_cast< ImageType * >( this->GetInput() ));
-  m_BinaryThinning->SetInput(input);
+  input->Graft( const_cast< ImageType * >( this->GetInput() ) );
+  m_BinaryThinning->SetInput( input );
   m_Threshold->SetInput( input );
   m_Threshold->SetUpperThreshold( m_Gap );
   m_Threshold->Update();
@@ -101,21 +101,21 @@ ComputeTrainingMaskFilter< TInputImage >
   ApplyDilateMorphologyFilter( image );
   typename ImageType::Pointer dilatedImage = image;
   ApplyDilateMorphologyFilter( image );
-  m_Substract->SetInput1(image);
-  m_Substract->SetInput2(dilatedImage);
+  m_Substract->SetInput1( image );
+  m_Substract->SetInput2( dilatedImage );
 
-  m_MultiplyCenterLine->SetInput(m_BinaryThinning->GetOutput());
-  m_DivideImage->SetInput(m_Substract->GetOutput());
-  m_Add->SetInput1(m_MultiplyCenterLine->GetOutput());
-  m_Add->SetInput2(m_DivideImage->GetOutput());
+  m_MultiplyCenterLine->SetInput( m_BinaryThinning->GetOutput() );
+  m_DivideImage->SetInput( m_Substract->GetOutput() );
+  m_Add->SetInput1( m_MultiplyCenterLine->GetOutput() );
+  m_Add->SetInput2( m_DivideImage->GetOutput() );
 
-  m_CastNotVessel->SetInput(m_Substract->GetOutput());
-  m_CastNotVessel->GraftOutput(const_cast< ImageTypeShort * >(this->GetOutput(1)));
+  m_CastNotVessel->SetInput( m_Substract->GetOutput() );
+  m_CastNotVessel->GraftOutput( const_cast< ImageTypeShort * >( this->GetOutput( 1 ) ) );
   m_CastNotVessel->Update();
-  this->GraftNthOutput(1,m_CastNotVessel->GetOutput());
+  this->GraftNthOutput( 1,m_CastNotVessel->GetOutput() );
 
-  m_Cast->SetInput(m_Add->GetOutput());
-  m_Cast->GraftOutput(this->GetOutput());
+  m_Cast->SetInput( m_Add->GetOutput() );
+  m_Cast->GraftOutput( this->GetOutput() );
   m_Cast->Update();
   this->GraftOutput( m_Cast->GetOutput() );
 }
@@ -125,7 +125,7 @@ const typename ComputeTrainingMaskFilter< TInputImage >::ImageTypeShort*
 ComputeTrainingMaskFilter< TInputImage >
 ::GetNotVesselMask()
 {
-  return itkDynamicCastInDebugMode< ImageTypeShort * >( this->GetOutput(1) );
+  return itkDynamicCastInDebugMode< ImageTypeShort * >( this->GetOutput( 1 ) );
 }
 
 template< class TInputImage >

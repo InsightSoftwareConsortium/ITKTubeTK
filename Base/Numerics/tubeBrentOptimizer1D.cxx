@@ -12,7 +12,7 @@ Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -124,30 +124,30 @@ BrentOptimizer1D
 
   d = -1;
   v = *extX;
-  fv = maxSign * m_FuncVal->Value(v);
+  fv = maxSign * m_FuncVal->Value( v );
   x = v+d * m_XStep;
-  if(x < m_XMin || x > m_XMax)
+  if( x < m_XMin || x > m_XMax )
     {
     d *= -1;
     x = v + d * m_XStep;
     }
-  fx = maxSign * m_FuncVal->Value(x);
-  if(fx>fv)
+  fx = maxSign * m_FuncVal->Value( x );
+  if( fx>fv )
     {
     d *= -1;
     x = v + d * m_XStep;
-    fx = maxSign * m_FuncVal->Value(x);
+    fx = maxSign * m_FuncVal->Value( x );
     }
   w = 1;
 
-  while(fx < fv)
+  while( fx < fv )
     {
     v = x;
     fv = fx;
     x = v + d * m_XStep*w;
-    if(x < m_XMin || x > m_XMax)
+    if( x < m_XMin || x > m_XMax )
       {
-      if(x < m_XMin)
+      if( x < m_XMin )
         {
         x = m_XMin;
         }
@@ -155,7 +155,7 @@ BrentOptimizer1D
         {
         x = m_XMax;
         }
-      fx = maxSign * m_FuncVal->Value(x);
+      fx = maxSign * m_FuncVal->Value( x );
       if( fx >= fv )
         {
         *extX = v;
@@ -165,60 +165,60 @@ BrentOptimizer1D
       }
     else
       {
-      fx = maxSign * m_FuncVal->Value(x);
+      fx = maxSign * m_FuncVal->Value( x );
       w *= 1.1;
       }
     }
 
   u = v - d * m_XStep * w;
 
-  a = (u < x ? u : x);
-  b = (u > x ? u : x);
+  a = ( u < x ? u : x );
+  b = ( u > x ? u : x );
 
   w = x = v;
-  fw = fv = fx = maxSign * m_FuncVal->Value(v);
-  dw = dv = dx = maxSign * m_FuncDeriv->Value(v);
+  fw = fv = fx = maxSign * m_FuncVal->Value( v );
+  dw = dv = dx = maxSign * m_FuncDeriv->Value( v );
 
-  for(iter = 0; iter < m_MaxIterations; iter++)
+  for( iter = 0; iter < m_MaxIterations; iter++ )
     {
-    double xm = 0.5 * (a+b);
-    double tol1 = m_Tolerance * vnl_math_abs(x) + m_Epsilon;
+    double xm = 0.5 * ( a+b );
+    double tol1 = m_Tolerance * vnl_math_abs( x ) + m_Epsilon;
     double tol2 = 2.0 * tol1;
-    if(vnl_math_abs(x-xm) <= (tol2 - 0.5*(b-a)))
+    if( vnl_math_abs( x-xm ) <= ( tol2 - 0.5*( b-a ) ) )
       {
       *extX = x;
       *extVal = maxSign*fx;
       return true;
       }
-    if(vnl_math_abs(e) > tol1)
+    if( vnl_math_abs( e ) > tol1 )
       {
-      d1 = 2.0*(b-a);
+      d1 = 2.0*( b-a );
       d2 = d1;
-      if(dw != dx)
+      if( dw != dx )
         {
-        d1 = (w-x)*dx/(dx-dw);
+        d1 = ( w-x )*dx/( dx-dw );
         }
 
-      if(dv != dx)
+      if( dv != dx )
         {
-        d2 = (v-x)*dx/(dx-dv);
+        d2 = ( v-x )*dx/( dx-dv );
         }
 
       u1 = x + d1;
       u2 = x + d2;
-      ok1 = (a-u1)*(u1-b) > 0.0 && dx*d1 <= 0.0;
-      ok2 = (a-u2)*(u2-b) > 0.0 && dx*d2 <= 0.0;
+      ok1 = ( a-u1 )*( u1-b ) > 0.0 && dx*d1 <= 0.0;
+      ok2 = ( a-u2 )*( u2-b ) > 0.0 && dx*d2 <= 0.0;
       olde = e;
       e = d;
-      if(ok1 || ok2)
+      if( ok1 || ok2 )
         {
-        if(ok1 && ok2)
+        if( ok1 && ok2 )
           {
-          d = (vnl_math_abs(d1) < vnl_math_abs(d2) ? d1 : d2);
+          d = ( vnl_math_abs( d1 ) < vnl_math_abs( d2 ) ? d1 : d2 );
           }
         else
           {
-          if(ok1)
+          if( ok1 )
             {
             d = d1;
             }
@@ -228,48 +228,48 @@ BrentOptimizer1D
             }
           }
 
-        if(vnl_math_abs(d) <= vnl_math_abs(0.5 * olde))
+        if( vnl_math_abs( d ) <= vnl_math_abs( 0.5 * olde ) )
           {
           u = x+d;
-          if(u-a < tol2 || b-u < tol2)
+          if( u-a < tol2 || b-u < tol2 )
             {
-            d = tol1 * vnl_math_sgn(xm-x);
+            d = tol1 * vnl_math_sgn( xm-x );
             }
           }
         else
           {
-          d = (double)0.5 * (e = (dx >= 0.0 ? a-x : b-x));
+          d = ( double )0.5 * ( e = ( dx >= 0.0 ? a-x : b-x ) );
           }
         }
       else
         {
-        d = (double)0.5 * (e = (dx >= 0.0 ? a-x : b-x));
+        d = ( double )0.5 * ( e = ( dx >= 0.0 ? a-x : b-x ) );
         }
       }
     else
       {
-      d = (double)0.5 * (e = (dx >= 0.0 ? a-x : b-x));
+      d = ( double )0.5 * ( e = ( dx >= 0.0 ? a-x : b-x ) );
       }
-    if(vnl_math_abs(d) >= tol1)
+    if( vnl_math_abs( d ) >= tol1 )
       {
       u = x + d;
-      fu = maxSign * m_FuncVal->Value(u);
+      fu = maxSign * m_FuncVal->Value( u );
       }
     else
       {
-      u = x + tol1 * vnl_math_sgn(d);
-      fu = maxSign * m_FuncVal->Value(u);
-      if(fu > fx)
+      u = x + tol1 * vnl_math_sgn( d );
+      fu = maxSign * m_FuncVal->Value( u );
+      if( fu > fx )
         {
         *extX = x;
         *extVal = maxSign*fx;
         return true;
         }
       }
-    double du = maxSign * m_FuncDeriv->Value(u);
-    if(fu <= fx)
+    double du = maxSign * m_FuncDeriv->Value( u );
+    if( fu <= fx )
       {
-      if(u >= x)
+      if( u >= x )
         {
         a = x;
         }
@@ -278,13 +278,13 @@ BrentOptimizer1D
         b = x;
         }
 
-      m_Move(v,fv,dv, w,fw,dw);
-      m_Move(w,fw,dw, x,fx,dx);
-      m_Move(x,fx,dx, u,fu,du);
+      m_Move( v,fv,dv, w,fw,dw );
+      m_Move( w,fw,dw, x,fx,dx );
+      m_Move( x,fx,dx, u,fu,du );
       }
     else
       {
-      if(u < x)
+      if( u < x )
         {
         a = u;
         }
@@ -293,16 +293,16 @@ BrentOptimizer1D
         b = u;
         }
 
-      if(fu <= fw || w == x)
+      if( fu <= fw || w == x )
         {
-        m_Move(v,fv,dv, w,fw,dw);
-        m_Move(w,fw,dw, u,fu,du);
+        m_Move( v,fv,dv, w,fw,dw );
+        m_Move( w,fw,dw, u,fu,du );
         }
       else
         {
-        if(fu < fv || v == x || v == w)
+        if( fu < fv || v == x || v == w )
           {
-          m_Move(v,fv,dv, u,fu,du);
+          m_Move( v,fv,dv, u,fu,du );
           }
         }
       }

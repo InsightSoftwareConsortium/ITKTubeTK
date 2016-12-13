@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -52,8 +52,8 @@ bool IsDiscrete( const std::string & fileName )
 {
   typedef itk::ImageIOBase::IOComponentType ScalarPixelType;
 
-  itk::ImageIOBase::Pointer imageIO = itk::ImageIOFactory::CreateImageIO(
-    fileName.c_str(), itk::ImageIOFactory::ReadMode);
+  itk::ImageIOBase::Pointer imageIO = itk::ImageIOFactory::CreateImageIO( 
+    fileName.c_str(), itk::ImageIOFactory::ReadMode );
 
   imageIO->SetFileName( fileName.c_str() );
   imageIO->ReadImageInformation();
@@ -84,9 +84,9 @@ bool check_vnl_vector_equality( const vnl_vector<T> &v,
     {
     return false;
     }
-  for( unsigned i=0; i<v.size(); ++i)
+  for( unsigned i=0; i<v.size(); ++i )
     {
-    if( vnl_math_abs(g.get(i) - v.get(i)) > tol )
+    if( vnl_math_abs( g.get( i ) - v.get( i ) ) > tol )
       {
       return false;
       }
@@ -110,11 +110,11 @@ bool check_vnl_matrix_equality( const vnl_matrix<T> &V,
     {
     return false;
     }
-  for( unsigned int r=0; r<V.rows(); ++r)
+  for( unsigned int r=0; r<V.rows(); ++r )
     {
-    for( unsigned int c=0; c<V.cols(); ++c)
+    for( unsigned int c=0; c<V.cols(); ++c )
       {
-      if( vnl_math_abs(V.get(r,c) - G.get(r,c)) > tol )
+      if( vnl_math_abs( V.get( r,c ) - G.get( r,c ) ) > tol )
         {
         return false;
         }
@@ -126,22 +126,22 @@ bool check_vnl_matrix_equality( const vnl_matrix<T> &V,
 
 /** Create an empty image.
  *
- *  \param outImage Image that is about to be created (has to exist)
+ *  \param outImage Image that is about to be created ( has to exist )
  *  \param targetSize Desired size of the image
  */
 template< class TImage >
-void CreateEmptyImage(
+void CreateEmptyImage( 
   typename TImage::Pointer &outImage,
-  typename TImage::SizeType targetSize)
+  typename TImage::SizeType targetSize )
 {
   typename TImage::IndexType start;
-  start.Fill(0);
+  start.Fill( 0 );
   typename TImage::SizeType outImageSize = targetSize;
 
   typename TImage::RegionType region( start, outImageSize );
   outImage->SetRegions( region );
   outImage->Allocate();
-  outImage->FillBuffer(0);
+  outImage->FillBuffer( 0 );
 }
 
 
@@ -153,21 +153,21 @@ void CreateEmptyImage(
  *  \returns true if image have equal spacing and size, false else
  */
 template< class TImage >
-bool CheckCompatibility(
+bool CheckCompatibility( 
   typename TImage::Pointer imageA,
   typename TImage::Pointer imageB )
 {
   // Spacing tolerance is imageA's 1st coord. spacing * 1e-6
   double spacingTol = imageA->GetSpacing()[0] * 1.0e-6;
 
-  if( !check_vnl_vector_equality(
+  if( !check_vnl_vector_equality( 
     imageA->GetOrigin().GetVnlVector(),
     imageB->GetOrigin().GetVnlVector() ) )
     {
     tube::ErrorMessage( "Origin mismatch between input images!" );
     return false;
     }
-  if( !check_vnl_vector_equality(
+  if( !check_vnl_vector_equality( 
     imageA->GetSpacing().GetVnlVector(),
     imageB->GetSpacing().GetVnlVector(), spacingTol ) )
     {
@@ -180,7 +180,7 @@ bool CheckCompatibility(
     tube::ErrorMessage( "Size mismatch between input images!" );
     return false;
     }
-  if( !check_vnl_matrix_equality(
+  if( !check_vnl_matrix_equality( 
     imageA->GetDirection().GetVnlMatrix().as_ref(),
     imageB->GetDirection().GetVnlMatrix().as_ref() ) )
     {
@@ -210,7 +210,7 @@ int DoIt( int argc, char * argv[] )
 
   typedef itk::ImageIOBase::IOComponentType               ScalarPixelType;
 
-  // Check input images's type (we assume discrete valued images)
+  // Check input images's type ( we assume discrete valued images )
   if( !IsDiscrete( argInImageFileName ) ||
       !IsDiscrete( argInLabelFileName ) )
     {
@@ -219,7 +219,7 @@ int DoIt( int argc, char * argv[] )
     }
 
 
-  // First, we try to read in the input image(s), i.e., an image of the Voronoi
+  // First, we try to read in the input image( s ), i.e., an image of the Voronoi
   // tesselation and an image that contains discrete label values for each
   // voxel of the input image.
   typename InputImageType::Pointer inImage;
@@ -266,8 +266,8 @@ int DoIt( int argc, char * argv[] )
 
 
   // Determine the set of unique CVT cell IDs.
-  typename itk::ImageRegionIteratorWithIndex< InputImageType > inImageIt(
-    inImage, inImage->GetLargestPossibleRegion());
+  typename itk::ImageRegionIteratorWithIndex< InputImageType > inImageIt( 
+    inImage, inImage->GetLargestPossibleRegion() );
 
   std::set< TPixel > cvtCellIdentifiers;
 
@@ -278,7 +278,7 @@ int DoIt( int argc, char * argv[] )
     ++inImageIt;
     }
 
-  tube::FmtDebugMessage("%d distinct CVT cells!",
+  tube::FmtDebugMessage( "%d distinct CVT cells!",
     static_cast<int>( cvtCellIdentifiers.size() ) );
 
   TPixel maxCVTIndex = *std::max_element( cvtCellIdentifiers.begin(),
@@ -289,7 +289,7 @@ int DoIt( int argc, char * argv[] )
   try
     {
     itkAssertOrThrowMacro( static_cast<int>( maxCVTIndex - minCVTIndex )
-      == static_cast<int>(cvtCellIdentifiers.size()-1),
+      == static_cast<int>( cvtCellIdentifiers.size()-1 ),
       "CVT cell numbering not continuous!" );
     }
   catch( itk::ExceptionObject &ex )
@@ -298,7 +298,7 @@ int DoIt( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
 
-  tube::FmtDebugMessage("Maximum CVT identifier = %d!",
+  tube::FmtDebugMessage( "Maximum CVT identifier = %d!",
     static_cast<int>( maxCVTIndex ) );
 
 
@@ -320,8 +320,8 @@ int DoIt( int argc, char * argv[] )
 
   // Determine the set of unique labels in the label map image.
   std::set< TPixel > labelSet;
-  typename itk::ImageRegionIteratorWithIndex< InputImageType > inLabelImageIt(
-    inLabelImage, inLabelImage->GetLargestPossibleRegion());
+  typename itk::ImageRegionIteratorWithIndex< InputImageType > inLabelImageIt( 
+    inLabelImage, inLabelImage->GetLargestPossibleRegion() );
 
   inLabelImageIt.GoToBegin();
   while( !inLabelImageIt.IsAtEnd() )
@@ -332,7 +332,7 @@ int DoIt( int argc, char * argv[] )
 
   TPixel maxLabel = *std::max_element( labelSet.begin(), labelSet.end() );
 
-  tube::FmtDebugMessage( "Identified %d unique labels (max. = %d)!",
+  tube::FmtDebugMessage( "Identified %d unique labels ( max. = %d )!",
     labelSet.size(), static_cast<int>( maxLabel ) );
 
 
@@ -345,8 +345,8 @@ int DoIt( int argc, char * argv[] )
   typename std::set< TPixel >::const_iterator labelSetIt = labelSet.begin();
   while( labelSetIt != labelSet.end() )
     {
-    labelRemapFwd[*(labelSetIt)] = labelCounter;
-    labelRemapInv[labelCounter] = *(labelSetIt);
+    labelRemapFwd[*( labelSetIt )] = labelCounter;
+    labelRemapInv[labelCounter] = *( labelSetIt );
     ++labelCounter;
     ++labelSetIt;
     }
@@ -354,8 +354,8 @@ int DoIt( int argc, char * argv[] )
   typename std::map< TPixel, unsigned int >::iterator u = labelRemapFwd.begin();
   while( u != labelRemapFwd.end() )
     {
-    tube::FmtDebugMessage("%.4d mapsto %.4d",
-      (*u).first, (*u).second);
+    tube::FmtDebugMessage( "%.4d mapsto %.4d",
+      ( *u ).first, ( *u ).second );
     ++u;
     }
 
@@ -374,9 +374,9 @@ int DoIt( int argc, char * argv[] )
 
   // Relabeling algorithm:
   //
-  //   1) Create histogram of anatomical labels occurring in CVT cell
-  //   2) Determine the anatomical label occurring most frequently
-  //   3) Set voxel values (of CVT cell) in output image to dominant label
+  //   1 ) Create histogram of anatomical labels occurring in CVT cell
+  //   2 ) Determine the anatomical label occurring most frequently
+  //   3 ) Set voxel values ( of CVT cell ) in output image to dominant label
   std::ofstream outMappingFile;
   outMappingFile.open( argOutMappingFileName.c_str() );
 
@@ -394,7 +394,7 @@ int DoIt( int argc, char * argv[] )
   boost::dynamic_bitset<> omitLabel( labelSet.size() );
 
   // Set OMIT flag for certain labels
-  for( unsigned int o=0; o<argOmit.size(); ++o)
+  for( unsigned int o=0; o<argOmit.size(); ++o )
     {
     omitLabel[labelRemapFwd[argOmit[o]]] = 1;
     }
@@ -402,13 +402,13 @@ int DoIt( int argc, char * argv[] )
   typename MapType::iterator mapIt = cvtToIndex.begin();
   while( mapIt != cvtToIndex.end() )
     {
-    TPixel cell = (*mapIt).first;
+    TPixel cell = ( *mapIt ).first;
 
     const std::vector< IndexType > & indexVector =
-      (*mapIt).second;
+      ( *mapIt ).second;
 
-    tube::FmtDebugMessage("Cell %d: Index vector has size = %d!",
-      static_cast<int>(cell),
+    tube::FmtDebugMessage( "Cell %d: Index vector has size = %d!",
+      static_cast<int>( cell ),
       static_cast<int>( indexVector.size() ) );
 
     // Build histogram of anatomical labels in current CVT cell
@@ -420,26 +420,26 @@ int DoIt( int argc, char * argv[] )
       }
 
     // Find the dominant label
-    unsigned int dominantLabel = distance(
+    unsigned int dominantLabel = distance( 
       cellHist.begin(),
-      std::max_element(
+      std::max_element( 
         cellHist.begin(),
         cellHist.end() ) );
 
     // Map the artificial label to the original one
     TPixel originalLabel = labelRemapInv[dominantLabel];
-    tube::FmtDebugMessage( "Dominant label in CVT cell %d = %d (%d)",
+    tube::FmtDebugMessage( "Dominant label in CVT cell %d = %d ( %d )",
       cell, dominantLabel, labelRemapInv[dominantLabel] );
 
     if( omitLabel[dominantLabel] )
       {
       // If we omit a region, give it a unique label - by that we
-      // can ensure that omitted background (for instance) cells do
+      // can ensure that omitted background ( for instance ) cells do
       // not get just one background label
       originalLabel = omittedRegionCounter++;
       }
 
-    for(unsigned int v=0; v < indexVector.size(); ++v )
+    for( unsigned int v=0; v < indexVector.size(); ++v )
       {
       IndexType index = indexVector[v];
       outImage->SetPixel( index, originalLabel );

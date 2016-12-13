@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -169,7 +169,7 @@ OptimizerND
   m_X0.set_size( m_Dimension );
   m_X0.fill( 0.0 );
   m_X0Dir.set_size( m_Dimension );
-  m_X0Dir.fill( 1.0/std::sqrt((float)m_Dimension) );
+  m_X0Dir.fill( 1.0/std::sqrt( ( float )m_Dimension ) );
   m_X0Temp.set_size( m_Dimension );
   m_X0Temp.fill( 0.0 );
 
@@ -254,7 +254,7 @@ OptimizerND
   double xmax;
 
   unsigned int count = 0;
-  while( vnl_math_abs(a) > m_Tolerance )
+  while( vnl_math_abs( a ) > m_Tolerance )
     {
     m_X0Dir = m_FuncDerivND->Value( m_X0 );
     if( m_X0Dir.magnitude() < m_Tolerance * m_Tolerance )
@@ -265,10 +265,10 @@ OptimizerND
 
     m_X0Dir.normalize();
 
-    if( m_X0Dir(0) != 0 )
+    if( m_X0Dir( 0 ) != 0 )
       {
-      xmin = (m_XMin(0) - m_X0(0)) / m_X0Dir(0);
-      xmax = (m_XMax(0) - m_X0(0)) / m_X0Dir(0);
+      xmin = ( m_XMin( 0 ) - m_X0( 0 ) ) / m_X0Dir( 0 );
+      xmax = ( m_XMax( 0 ) - m_X0( 0 ) ) / m_X0Dir( 0 );
       }
     else
       {
@@ -285,10 +285,10 @@ OptimizerND
       {
       double tmin = xmin;
       double tmax = xmax;
-      if( m_X0Dir(i) != 0 )
+      if( m_X0Dir( i ) != 0 )
         {
-        tmin = (m_XMin(i) - m_X0(i))/m_X0Dir(i);
-        tmax = (m_XMax(i) - m_X0(i))/m_X0Dir(i);
+        tmin = ( m_XMin( i ) - m_X0( i ) )/m_X0Dir( i );
+        tmax = ( m_XMax( i ) - m_X0( i ) )/m_X0Dir( i );
         }
       if( tmin > tmax )
         {
@@ -313,7 +313,7 @@ OptimizerND
       break;
       }
 
-    double xstep = vnl_math_abs( dot_product(m_XStep, m_X0Dir) );
+    double xstep = vnl_math_abs( dot_product( m_XStep, m_X0Dir ) );
 
     a = 0;
     m_Optimizer1D->SetXMin( xmin );
@@ -331,7 +331,7 @@ OptimizerND
 
   x = m_X0;
 
-  if( vnl_math_abs(a) > m_Tolerance )
+  if( vnl_math_abs( a ) > m_Tolerance )
     {
     std::cout << "Scanned " << count
       << " directions without convergence - aborting" << std::endl;
@@ -352,19 +352,19 @@ OptimizerND
   double xmin;
   double xmax;
   double xstep;
-  for(unsigned int i=0; i<m_MaxLineSearches; i++ )
+  for( unsigned int i=0; i<m_MaxLineSearches; i++ )
     {
-    for(unsigned int j=0; j<x.size(); j++ )
+    for( unsigned int j=0; j<x.size(); j++ )
       {
       m_X0Dir( j ) = directions.get( j, i%n );
       }
 
     m_X0Dir.normalize();
 
-    if( m_X0Dir(0) != 0 )
+    if( m_X0Dir( 0 ) != 0 )
       {
-      xmin = (m_XMin(0) - m_X0(0)) / m_X0Dir(0);
-      xmax = (m_XMax(0) - m_X0(0)) / m_X0Dir(0);
+      xmin = ( m_XMin( 0 ) - m_X0( 0 ) ) / m_X0Dir( 0 );
+      xmax = ( m_XMax( 0 ) - m_X0( 0 ) ) / m_X0Dir( 0 );
       }
     else
       {
@@ -381,10 +381,10 @@ OptimizerND
       {
       double tmin = xmin;
       double tmax = xmax;
-      if( m_X0Dir(k) != 0 )
+      if( m_X0Dir( k ) != 0 )
         {
-        tmin = (m_XMin(k) - m_X0(k))/m_X0Dir(k);
-        tmax = (m_XMax(k) - m_X0(k))/m_X0Dir(k);
+        tmin = ( m_XMin( k ) - m_X0( k ) )/m_X0Dir( k );
+        tmax = ( m_XMax( k ) - m_X0( k ) )/m_X0Dir( k );
         }
       if( tmin > tmax )
         {

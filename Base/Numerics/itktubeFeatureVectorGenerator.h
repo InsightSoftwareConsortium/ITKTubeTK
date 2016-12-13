@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -93,13 +93,13 @@ public:
 
   virtual unsigned int GetNumberOfFeatures( void ) const;
 
-  virtual FeatureVectorType GetFeatureVector(
+  virtual FeatureVectorType GetFeatureVector( 
     const IndexType & indx ) const;
 
-  virtual FeatureValueType GetFeatureVectorValue(
+  virtual FeatureValueType GetFeatureVectorValue( 
     const IndexType & indx, unsigned int fNum ) const;
 
-  virtual typename FeatureImageType::Pointer GetFeatureImage(
+  virtual typename FeatureImageType::Pointer GetFeatureImage( 
     unsigned int num ) const;
 
   virtual void Update( void );
@@ -136,4 +136,4 @@ private:
 #include "itktubeFeatureVectorGenerator.hxx"
 #endif
 
-#endif // End !defined(__itktubeFeatureVectorGenerator_h)
+#endif // End !defined( __itktubeFeatureVectorGenerator_h )

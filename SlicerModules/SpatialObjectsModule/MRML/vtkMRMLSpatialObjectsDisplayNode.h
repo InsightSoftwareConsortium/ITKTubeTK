@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -44,28 +44,28 @@ class VTK_SLICER_SPATIALOBJECTS_MODULE_MRML_EXPORT
 vtkMRMLSpatialObjectsDisplayNode : public vtkMRMLModelDisplayNode
 {
 public:
-  vtkTypeMacro(vtkMRMLSpatialObjectsDisplayNode, vtkMRMLModelDisplayNode);
-  void PrintSelf(ostream& os, vtkIndent indent);
+  vtkTypeMacro( vtkMRMLSpatialObjectsDisplayNode, vtkMRMLModelDisplayNode );
+  void PrintSelf( ostream& os, vtkIndent indent );
 
   //----------------------------------------------------------------------------
   /// MRMLNode methods
   //----------------------------------------------------------------------------
 
   ///
-  /// Read node attributes from XML (MRML) file
-  virtual void ReadXMLAttributes(const char** atts);
+  /// Read node attributes from XML ( MRML ) file
+  virtual void ReadXMLAttributes( const char** atts );
 
   ///
   /// Write this node's information to a MRML file in XML format.
-  virtual void WriteXML(ostream& of, int indent);
+  virtual void WriteXML( ostream& of, int indent );
 
   ///
   /// Copy the node's attributes to this object
   /// Does NOT copy: ID, FilePrefix, Name, ID
-  virtual void Copy(vtkMRMLNode *node);
+  virtual void Copy( vtkMRMLNode *node );
 
   ///
-  /// Get node XML tag name (like Volume, model...)
+  /// Get node XML tag name ( like Volume, model... )
   virtual const char* GetNodeTagName( void ) = 0;
 
   ///
@@ -75,22 +75,22 @@ public:
 
   ///
   /// Finds the storage node and read the data
-  virtual void UpdateScene(vtkMRMLScene *scene);
+  virtual void UpdateScene( vtkMRMLScene *scene );
 
   ///
   /// Update the stored reference to another node in the scene
-  virtual void UpdateReferenceID(const char *oldID, const char *newID);
+  virtual void UpdateReferenceID( const char *oldID, const char *newID );
 
   //----------------------------------------------------------------------------
-  /// Display Information: Geometry to display (not mutually exclusive)
+  /// Display Information: Geometry to display ( not mutually exclusive )
   //----------------------------------------------------------------------------
 
   //----------------------------------------------------------------------------
   /// Display Information: Color Mode
-  /// 0) solid color by group
-  /// 1) color by scalar invariant
-  /// 2) color by avg scalar invariant
-  /// 3) color by other
+  /// 0 ) solid color by group
+  /// 1 ) color by scalar invariant
+  /// 2 ) color by avg scalar invariant
+  /// 3 ) color by other
   //----------------------------------------------------------------------------
   enum
   {
@@ -107,23 +107,23 @@ public:
 
   /// Description:
   /// Color mode for glyphs. The color modes are mutually exclusive.
-  vtkGetMacro(ColorMode, int);
-  vtkSetMacro(ColorMode, int);
+  vtkGetMacro( ColorMode, int );
+  vtkSetMacro( ColorMode, int );
 
   ///
-  /// Color by solid color (for example the whole vessel bundle red. blue, etc.)
+  /// Color by solid color ( for example the whole vessel bundle red. blue, etc. )
   void SetColorModeToSolid( void )
-  {this->SetColorMode(this->colorModeSolid );}
+  {this->SetColorMode( this->colorModeSolid );}
 
   ///
   /// Color according to the vessels using various scalar invariants.
   void SetColorModeToScalar( void )
-  {this->SetColorMode(this->colorModeScalar );}
+  {this->SetColorMode( this->colorModeScalar );}
 
   ///
   /// Color function of scalar invariants along the tract.
   void SetColorModeToFunctionOfScalar( void )
-  {this->SetColorMode(this->colorModeFunctionOfScalar);}
+  {this->SetColorMode( this->colorModeFunctionOfScalar );}
 
   ///
   /// Use to color by the active cell scalars. This is intended to support
@@ -133,13 +133,13 @@ public:
   /// Then by making that information the active cell scalar field,
   /// this will allow coloring by that information.
   void SetColorModeToUseCellScalars( void )
-  {this->SetColorMode(this->colorModeUseCellScalars );}
+  {this->SetColorMode( this->colorModeUseCellScalars );}
 
   ///
   /// Color according to the vessels using scalars
   /// from the original SpatialObjectsNode.
   void SetColorModeToScalarData( void )
-  {this->SetColorMode(this->colorModeScalarData );}
+  {this->SetColorMode( this->colorModeScalarData );}
 
   //----------------------------------------------------------------------------
   /// MRML nodes that are observed
@@ -152,23 +152,23 @@ public:
 
   ///
   /// Set spatial object display properties MRML node object for vessels glyph.
-  void SetAndObserveSpatialObjectsDisplayPropertiesNodeID(const char *id);
+  void SetAndObserveSpatialObjectsDisplayPropertiesNodeID( const char *id );
 
   ///
   /// Get ID of spatial object display properties
   /// MRML node object for vessels glyph.
-  vtkGetStringMacro(SpatialObjectsDisplayPropertiesNodeID);
+  vtkGetStringMacro( SpatialObjectsDisplayPropertiesNodeID );
 
   static int GetNumberOfScalarInvariants( void );
-  static int GetNthScalarInvariant(int i);
+  static int GetNthScalarInvariant( int i );
 
  protected:
   vtkMRMLSpatialObjectsDisplayNode( void );
   ~vtkMRMLSpatialObjectsDisplayNode( void );
-  vtkMRMLSpatialObjectsDisplayNode(const vtkMRMLSpatialObjectsDisplayNode&);
-  void operator=(const vtkMRMLSpatialObjectsDisplayNode&);
+  vtkMRMLSpatialObjectsDisplayNode( const vtkMRMLSpatialObjectsDisplayNode& );
+  void operator=( const vtkMRMLSpatialObjectsDisplayNode& );
 
-  virtual void SetSpatialObjectsDisplayPropertiesNodeID(const char* id);
+  virtual void SetSpatialObjectsDisplayPropertiesNodeID( const char* id );
 
   vtkMRMLSpatialObjectsDisplayPropertiesNode*
     SpatialObjectsDisplayPropertiesNode;
@@ -179,4 +179,4 @@ public:
 
 }; // End class vtkMRMLSpatialObjectsDisplayNode
 
-#endif // End !defined(__vtkMRMLSpatialObjectsDisplayNode_h)
+#endif // End !defined( __vtkMRMLSpatialObjectsDisplayNode_h )

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -41,27 +41,27 @@ namespace tube
 /** simple function that return the orthogonal vector to one */
 template< class T >
 vnl_vector<T>
-ComputeOrthogonalVector(vnl_vector<T> x);
+ComputeOrthogonalVector( vnl_vector<T> x );
 
 /** simple function that return the cross vector from two vectors */
 template< class T >
 vnl_vector<T>
-ComputeCrossVector(vnl_vector<T> v1, vnl_vector<T> v2);
+ComputeCrossVector( vnl_vector<T> v1, vnl_vector<T> v2 );
 
 /** return the new position following the vector direction */
 template< class T >
 vnl_vector<T>
-ComputeLineStep(vnl_vector<T> x, double a, vnl_vector<T> dir);
+ComputeLineStep( vnl_vector<T> x, double a, vnl_vector<T> dir );
 
 /** Compute the Euclidean distance */
 template< class T >
 double
-ComputeEuclideanDistanceVector(vnl_vector<T> x, const vnl_vector<T> y);
+ComputeEuclideanDistanceVector( vnl_vector<T> x, const vnl_vector<T> y );
 
 /** Compute the Euclidean distance for two points */
 template< class TPoint >
 double
-ComputeEuclideanDistance(TPoint x, TPoint y);
+ComputeEuclideanDistance( TPoint x, TPoint y );
 
 /** Compute Ridgeness measures */
 template< class T >
@@ -83,7 +83,7 @@ FixMatrixSymmetry( vnl_matrix<T> & mat );
 /** Compute eigenvalues and vectors  */
 template< class T >
 void
-ComputeEigenOfMatrixInvertedTimesMatrix(
+ComputeEigenOfMatrixInvertedTimesMatrix( 
   vnl_matrix<T> const & matToInvert, vnl_matrix<T> const & mat,
   vnl_matrix<T> &eVects, vnl_vector<T> &eVals,
   bool orderByAbs, bool minToMax = true );
@@ -91,7 +91,7 @@ ComputeEigenOfMatrixInvertedTimesMatrix(
 /** Compute eigenvalues and vectors  */
 template< class T >
 void
-ComputeEigen(vnl_matrix<T> const & mat, vnl_matrix<T> &eVects,
+ComputeEigen( vnl_matrix<T> const & mat, vnl_matrix<T> &eVects,
   vnl_vector<T> &eVals, bool orderByAbs = false, bool minToMax = true );
 
 } // End namespace tube
@@ -101,4 +101,4 @@ ComputeEigen(vnl_matrix<T> const & mat, vnl_matrix<T> &eVects,
 #include "tubeMatrixMath.hxx"
 #endif
 
-#endif // End !defined(__tubeMatrixMath_h)
+#endif // End !defined( __tubeMatrixMath_h )

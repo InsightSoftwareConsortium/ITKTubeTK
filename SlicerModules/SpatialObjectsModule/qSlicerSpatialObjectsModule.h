@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -37,11 +37,11 @@ class Q_SLICER_QTMODULES_SPATIALOBJECTS_EXPORT qSlicerSpatialObjectsModule
   : public qSlicerLoadableModule
 {
   Q_OBJECT
-  Q_INTERFACES(qSlicerLoadableModule);
+  Q_INTERFACES( qSlicerLoadableModule );
 
 public:
   typedef qSlicerLoadableModule Superclass;
-  qSlicerSpatialObjectsModule(QObject *parent=0);
+  qSlicerSpatialObjectsModule( QObject *parent=0 );
   virtual ~qSlicerSpatialObjectsModule();
 
   virtual QString helpText() const;
@@ -50,7 +50,7 @@ public:
   virtual QIcon icon() const;
   virtual QStringList categories() const;
   virtual QStringList dependencies() const;
-  qSlicerGetTitleMacro(QTMODULE_TITLE);
+  qSlicerGetTitleMacro( QTMODULE_TITLE );
 
 protected:
   /// Initialize the module.
@@ -67,8 +67,8 @@ protected:
   QScopedPointer<qSlicerSpatialObjectsModulePrivate> d_ptr;
 
 private:
-  Q_DECLARE_PRIVATE(qSlicerSpatialObjectsModule);
-  Q_DISABLE_COPY(qSlicerSpatialObjectsModule);
+  Q_DECLARE_PRIVATE( qSlicerSpatialObjectsModule );
+  Q_DISABLE_COPY( qSlicerSpatialObjectsModule );
 };
 
 #endif

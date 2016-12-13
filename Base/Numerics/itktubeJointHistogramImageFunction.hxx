@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -112,8 +112,8 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 
   m_NumberOfComputedSamples = m_NumberOfSamples = 0;
 
-  m_ImageStep = (m_ImageMax - m_ImageMin) / m_HistogramSize;
-  m_MaskStep = (m_MaskMax - m_MaskMin) / m_HistogramSize;
+  m_ImageStep = ( m_ImageMax - m_ImageMin ) / m_HistogramSize;
+  m_MaskStep = ( m_MaskMax - m_MaskMin ) / m_HistogramSize;
 }
 
 template< class TInputImage, class TCoordRep >
@@ -130,7 +130,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   m_ImageMin = calculator->GetMinimum();
   m_ImageMax = calculator->GetMaximum();
 
-  m_ImageStep = (m_ImageMax - m_ImageMin) / m_HistogramSize;
+  m_ImageStep = ( m_ImageMax - m_ImageMin ) / m_HistogramSize;
 }
 
 template< class TInputImage, class TCoordRep >
@@ -147,7 +147,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
   m_MaskMin = calculator->GetMinimum();
   m_MaskMax = calculator->GetMaximum();
 
-  m_MaskStep = (m_MaskMax - m_MaskMin) / m_HistogramSize;
+  m_MaskStep = ( m_MaskMax - m_MaskMin ) / m_HistogramSize;
 }
 
 template< class TInputImage, class TCoordRep >
@@ -183,7 +183,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     hist->GetLargestPossibleRegion() );
   itk::ImageRegionIterator< HistogramType > iterSum( m_SumHistogram,
     m_SumHistogram->GetLargestPossibleRegion() );
-  itk::ImageRegionIterator< HistogramType > iterSumSquare(
+  itk::ImageRegionIterator< HistogramType > iterSumSquare( 
     m_SumOfSquaresHistogram,
     m_SumOfSquaresHistogram->GetLargestPossibleRegion() );
   while( !iterHist.IsAtEnd() )
@@ -236,7 +236,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     while( !meanItr.IsAtEnd() )
       {
       meanItr.Set( sumItr.Get() / m_NumberOfSamples );
-      stdItr.Set( std::sqrt( vnl_math_abs(
+      stdItr.Set( std::sqrt( vnl_math_abs( 
         sumOfSquaresItr.Get() / m_NumberOfSamples -
         meanItr.Get() * meanItr.Get() ) ) );
       ++sumItr;
@@ -354,7 +354,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     size[i] = m_FeatureWidth;
     if( origin[i] < minIndex[i] )
       {
-      size[i] -= (minIndex[i] - origin[i]);
+      size[i] -= ( minIndex[i] - origin[i] );
       origin[i] = minIndex[i];
       }
     if( origin[i] > maxIndex[i] )
@@ -362,9 +362,9 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
       origin[i] = maxIndex[i];
       size[i] = 1;
       }
-    if( (int)(origin[i]+size[i]-1) > maxIndex[i] )
+    if( ( int )( origin[i]+size[i]-1 ) > maxIndex[i] )
       {
-      size[i] = (maxIndex[i] - origin[i]) + 1;
+      size[i] = ( maxIndex[i] - origin[i] ) + 1;
       }
     }
   region.SetSize( size );
@@ -377,13 +377,13 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
     typename HistogramType::IndexType cur;
     cur[0] = ( ( inputItr.Get() - m_ImageMin ) / m_ImageStep );
     cur[1] = ( ( maskItr.Get() - m_MaskMin ) / m_MaskStep );
-    if( cur[0] > (int)(m_HistogramSize) - 1 )
+    if( cur[0] > ( int )( m_HistogramSize ) - 1 )
       {
-      cur[0] = (int)(m_HistogramSize) - 1;
+      cur[0] = ( int )( m_HistogramSize ) - 1;
       }
-    if( cur[1] > (int)(m_HistogramSize) - 1 )
+    if( cur[1] > ( int )( m_HistogramSize ) - 1 )
       {
-      cur[1] = (int)(m_HistogramSize) - 1;
+      cur[1] = ( int )( m_HistogramSize ) - 1;
       }
     if( cur[0] < 0 )
       {
@@ -394,7 +394,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
       cur[1] = 0;
       }
 
-    m_Histogram->SetPixel(cur, m_Histogram->GetPixel(cur) + 1);
+    m_Histogram->SetPixel( cur, m_Histogram->GetPixel( cur ) + 1 );
 
     ++inputItr;
     ++maskItr;
@@ -431,16 +431,16 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
         }
       if( maxJV > 0 )
         {
-        if((int)maxJ > (int)m_HistogramSize/2 )
+        if( ( int )maxJ > ( int )m_HistogramSize/2 )
           {
           typename HistogramType::IndexType src;
           cur[1] = 0;
           src[0] = cur[0];
-          src[1] = (int)maxJ - (int)m_HistogramSize/2;
+          src[1] = ( int )maxJ - ( int )m_HistogramSize/2;
           src[1] = cur[1] + src[1];
-          while( cur[1] >= 0 && cur[1] < (int)(m_HistogramSize) )
+          while( cur[1] >= 0 && cur[1] < ( int )( m_HistogramSize ) )
             {
-            if( src[1] < 0 || src[1] >= (int)(m_HistogramSize) )
+            if( src[1] < 0 || src[1] >= ( int )( m_HistogramSize ) )
               {
               m_Histogram->SetPixel( cur, 0 );
               }
@@ -457,11 +457,11 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
           typename HistogramType::IndexType src;
           cur[1] = m_HistogramSize-1;
           src[0] = cur[0];
-          src[1] = (int)maxJ - (int)m_HistogramSize/2;
+          src[1] = ( int )maxJ - ( int )m_HistogramSize/2;
           src[1] = cur[1] + src[1];
-          while( cur[1] >= 0 && cur[1] < (int)(m_HistogramSize) )
+          while( cur[1] >= 0 && cur[1] < ( int )( m_HistogramSize ) )
             {
-            if( src[1] < 0 || src[1] >= (int)(m_HistogramSize) )
+            if( src[1] < 0 || src[1] >= ( int )( m_HistogramSize ) )
               {
               m_Histogram->SetPixel( cur, 0 );
               }
@@ -484,4 +484,4 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeJointHistogramImageFunction_hxx)
+#endif // End !defined( __itktubeJointHistogramImageFunction_hxx )

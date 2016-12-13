@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -139,7 +139,7 @@ MarkDuplicateFramesInvalidImageFilterThreader< TAssociate >
 ::AfterThreadedExecution( void )
 {
   MetaDataDictionary newDictionary =
-    *(this->m_Associate->GetInputMetaDataDictionary());
+    *( this->m_Associate->GetInputMetaDataDictionary() );
   const ThreadIdType numberOfThreads = this->GetNumberOfThreadsUsed();
   std::ostringstream keyPrefix;
   for( ThreadIdType ii = 0; ii < numberOfThreads; ++ii )
@@ -149,7 +149,7 @@ MarkDuplicateFramesInvalidImageFilterThreader< TAssociate >
       invalidIt != m_InvalidFramesPerThread[ii].end();
       ++invalidIt )
       {
-      keyPrefix.str("");
+      keyPrefix.str( "" );
       keyPrefix << "Seq_Frame";
       keyPrefix.fill( '0' );
       keyPrefix.width( 4 );
@@ -264,4 +264,4 @@ MarkDuplicateFramesInvalidImageFilter< TInputImage >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeMarkDuplicateFramesInvalidImageFilter_hxx)
+#endif // End !defined( __itktubeMarkDuplicateFramesInvalidImageFilter_hxx )

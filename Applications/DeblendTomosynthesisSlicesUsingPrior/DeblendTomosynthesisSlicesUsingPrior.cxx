@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -207,7 +207,7 @@ public:
       double stdDev255 = std::sqrt( sums255/count255 - mean255*mean255 );
       double stdDevNot = std::sqrt( sumsNot/countNot - meanNot*meanNot );
 
-      result = - vnl_math_abs(mean255 - meanNot)
+      result = - vnl_math_abs( mean255 - meanNot )
         / std::sqrt( stdDev255 * stdDevNot );
       }
 
@@ -223,7 +223,7 @@ public:
 protected:
 
   BlendCostFunction( void )
-    : m_Mode(0), m_CallsToGetValue(0) {}
+    : m_Mode( 0 ), m_CallsToGetValue( 0 ) {}
   virtual ~BlendCostFunction( void ) {}
 
   void PrintSelf( std::ostream & os, Indent indent ) const
@@ -434,7 +434,7 @@ public:
       double stdDev255 = std::sqrt( sums255/count255 - mean255*mean255 );
       double stdDevNot = std::sqrt( sumsNot/countNot - meanNot*meanNot );
 
-      result = - vnl_math_abs(mean255 - meanNot)
+      result = - vnl_math_abs( mean255 - meanNot )
         / std::sqrt( stdDev255 * stdDevNot );
       }
 
@@ -451,7 +451,7 @@ public:
 protected:
 
   BlendScaleCostFunction( void )
-    : m_Mode(0), m_CallsToGetValue(0) {}
+    : m_Mode( 0 ), m_CallsToGetValue( 0 ) {}
   virtual ~BlendScaleCostFunction( void ) {}
 
   void PrintSelf( std::ostream & os, Indent indent ) const
@@ -506,7 +506,7 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::Pointer imageTop;
   typename ImageType::Pointer imageMiddleTarget;
 
-  timeCollector.Start("Read");
+  timeCollector.Start( "Read" );
     {
     typedef itk::ImageFileReader< ImageType >   ReaderType;
 
@@ -528,7 +528,7 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Reading bottom. Exception caught: "
-                          + std::string(err.GetDescription()) );
+                          + std::string( err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
@@ -540,7 +540,7 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Reading middle. Exception caught: "
-                          + std::string(err.GetDescription()) );
+                          + std::string( err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
@@ -552,7 +552,7 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Reading top. Exception caught: "
-                          + std::string(err.GetDescription()) );
+                          + std::string( err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
@@ -564,7 +564,7 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Reading mask. Exception caught: "
-                          + std::string(err.GetDescription()) );
+                          + std::string( err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
@@ -575,7 +575,7 @@ int DoIt( int argc, char * argv[] )
     imageMiddleTarget = readerMiddleTarget->GetOutput();
     }
   progressReporter.Report( 0.1 );
-  timeCollector.Stop("Read");
+  timeCollector.Stop( "Read" );
 
   //
   // Generate output image
@@ -585,7 +585,7 @@ int DoIt( int argc, char * argv[] )
   imageOutput->SetRegions( imageMiddle->GetLargestPossibleRegion() );
   imageOutput->Allocate();
 
-  itk::Array<double> blendParams(3);
+  itk::Array<double> blendParams( 3 );
   blendParams[0] = alpha;
   blendParams[1] = gamma;
   blendParams[2] = offset;
@@ -681,7 +681,7 @@ int DoIt( int argc, char * argv[] )
               << " Result = " << result << std::endl;
     }
 
-  itk::Array<double> blendScaleParams(4);
+  itk::Array<double> blendScaleParams( 4 );
   blendScaleParams[0] = blendParams[0];
   blendScaleParams[1] = blendParams[1];
   blendScaleParams[2] = blendParams[2];
@@ -737,7 +737,8 @@ int DoIt( int argc, char * argv[] )
     blendScaleScales[2] = 1.0 / 0.01;
     blendScaleScales[3] = 1.0 / 0.5;
 
-    typename BlendScaleCostFunctionType::ParametersType costFunctionScaleScales( 4 );
+    typename BlendScaleCostFunctionType::ParametersType
+      costFunctionScaleScales( 4 );
     costFunctionScaleScales[0] = blendScaleScales[0];
     costFunctionScaleScales[1] = blendScaleScales[1];
     costFunctionScaleScales[2] = blendScaleScales[2];
@@ -792,7 +793,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Writing volume. Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }

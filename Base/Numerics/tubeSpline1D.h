@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -68,9 +68,9 @@ public:
 
   /** Constructor.
    * \param funcVal an instance of a derivation of the UserFunction class
-   *        used to specify values at control points (i.e., integer values)
-   * \param optimizer1D a (possibly NULL constructed) instance of a derivation
-   *        of the Optimizer1D class (e.g., BrentOptimizer1D). Use to find local
+   *        used to specify values at control points ( i.e., integer values )
+   * \param optimizer1D a ( possibly NULL constructed ) instance of a derivation
+   *        of the Optimizer1D class ( e.g., BrentOptimizer1D ). Use to find local
    *        maximums and minimums.
    * \warning Must set xMin and xMax
    */
@@ -80,7 +80,7 @@ public:
   virtual ~Spline1D( void );
 
   /** Returns the characteristics of spline evaluations near data bounds
-   * (xMin and xMax). If true, values beyond edges (xMin and xMax) are set
+   * ( xMin and xMax ). If true, values beyond edges ( xMin and xMax ) are set
    * to zero. If false, values beyond edges are faded to 0 as a function of
    * squared distance from edge.
    */
@@ -91,13 +91,13 @@ public:
 
   tubeBooleanMacro( Clip );
 
-  /** Returns the control points' (integer value locations) lower bound */
+  /** Returns the control points' ( integer value locations ) lower bound */
   tubeGetMacro( XMin, int );
 
   /** User specification of lower bound */
   virtual void SetXMin( int xMin );
 
-  /** Sets control points' (integer value locations) upper bound */
+  /** Sets control points' ( integer value locations ) upper bound */
   tubeGetMacro( XMax, int );
 
   /** User Specification of upper bound */
@@ -105,7 +105,7 @@ public:
 
   /** Tracks the validity of internally maintained intermediate
    * calculations and data.  Returns true if a new spline instance has been
-   * created (e.g., use has been called)
+   * created ( e.g., use has been called )
    */
   tubeGetMacro( NewData, bool );
 
@@ -117,10 +117,10 @@ public:
   tubeBooleanMacro( NewData );
 
   /** Returns spline interpolated curvature at x
-   *  Calculates the values at control (integer) points by calling the
+   *  Calculates the values at control ( integer ) points by calling the
    *  UserFunction and returns the interpolated curvature value between those
    *  points. Type of interpolation is dependent on which spline derivation
-   *  is used (e.g., SplApprox1D).
+   *  is used ( e.g., SplApprox1D ).
    *  Intermediate calculations and control point evaluations are stored to
    *  speed subsequent calls
    */
@@ -128,8 +128,8 @@ public:
 
   /** Value virtual function, defined by spline types, e.g., SplApprox1D
    *  \param y provides the data local to x; for SplApprox1D, must have
-   *         quantity()>=4 where y(0) is the value at x=-1, y(1) is the
-   *         value at x=0, y(2) for x=1, and y(3) for x=2
+   *         quantity()>=4 where y( 0 ) is the value at x=-1, y( 1 ) is the
+   *         value at x=0, y( 2 ) for x=1, and y( 3 ) for x=2
    *  \param x must be between 0 and 1
    *  \warning This function is not normally called directly by the class
    *           user.  The value of y is normally set and x is remapped
@@ -138,10 +138,10 @@ public:
   virtual double DataValue( const VectorType & y, double x ) = 0;
 
   /** First derivative virtual function, defined by spline types
-   * (e.g., SplApprox1D)
+   * ( e.g., SplApprox1D )
    * \param y provides the data local to x; for SplApprox1D, must have
-   *        quantity()>=4 where y(0) is the value at x=-1, y(1) is the
-   *        value at x=0, y(2) for x=1, and y(3) for x=2
+   *        quantity()>=4 where y( 0 ) is the value at x=-1, y( 1 ) is the
+   *        value at x=0, y( 2 ) for x=1, and y( 3 ) for x=2
    * \param x must be between 0 and 1
    * \warning This function is not normally called directly by the class
    *          user,   The value of y is normally set and x is remapped
@@ -150,10 +150,10 @@ public:
   virtual double DataValueD( const VectorType & y, double x ) = 0;
 
   /** Second derivative virtual function, defined by specific spline types
-   * (e.g., SplApprox1D)
+   * ( e.g., SplApprox1D )
    * \param y provides the data local to x; for SplApprox1D, must have
-   *        quantity()>=4 where y(0) is the value at x=-1, y(1) is the
-   *        value at x=0, y(2) for x=1, and y(3) for x=2
+   *        quantity()>=4 where y( 0 ) is the value at x=-1, y( 1 ) is the
+   *        value at x=0, y( 2 ) for x=1, and y( 3 ) for x=2
    * \param x must be between 0 and 1
    * \warning This function is not normally called directly by the class
    *          user,   The value of y is normally set and x is remapped
@@ -162,11 +162,11 @@ public:
   virtual double DataValueD2( const VectorType & y, double x ) = 0;
 
   /** Jet virtual function - returns value and sets first and second
-   * derivative, defined by specific spline types (e.g., SplApprox1D)
+   * derivative, defined by specific spline types ( e.g., SplApprox1D )
    * \param y provides the data local to x; for SplApprox1D, for
-   *        SplApprox1D, must have quantity()>=4 where y(0) is
-   *        the value at x=-1, y(1) is the value at x=0, y(2) for x=1,
-   *        and y(3) for x=2
+   *        SplApprox1D, must have quantity()>=4 where y( 0 ) is
+   *        the value at x=-1, y( 1 ) is the value at x=0, y( 2 ) for x=1,
+   *        and y( 3 ) for x=2
    * \param x must be between 0 and 1
    * \param d returns first derivative value at x
    * \param d2 returns second derivative value at x
@@ -190,46 +190,46 @@ public:
 
   /** Supply a new spline definition
    * \param funcVal an instance of a derivation of the UserFunction class
-   *        used to specify values at control points (i.e., integer values)
-   * \param optimizer1D a (possibly NULL constructed) instance of a derivation
-   *        of the Optimizer1D class (e.g., BrentOptimizer1D). Use to find local
+   *        used to specify values at control points ( i.e., integer values )
+   * \param optimizer1D a ( possibly NULL constructed ) instance of a derivation
+   *        of the Optimizer1D class ( e.g., BrentOptimizer1D ). Use to find local
    *        maximums and minimums.
    * \warning Must set xMin and xMax
    */
   void Use( ValueFunctionType::Pointer funcVal, Optimizer1D::Pointer optimizer1D );
 
   /** Returns spline interpolated value at x
-   * Calculates the values at control (integer) points by calling the
+   * Calculates the values at control ( integer ) points by calling the
    * UserFunction and returns the interpolated value between those points.
    * Type of interpolation is dependent on which spline derivation is
-   * used (e.g., SplApprox1D).   Intermediate calculations and control
+   * used ( e.g., SplApprox1D ).   Intermediate calculations and control
    * point evaluations are stored to speed subsequent calls
    */
   double Value( double x );
 
   /** Returns spline interpolated first derivative at x
-   *  Calculates the values at control (integer) points by calling the
+   *  Calculates the values at control ( integer ) points by calling the
    *  UserFunction and returns the interpolated first derivative between those
    *  points.   Type of interpolation is dependent on which spline
-   *  derivation is used (e.g., SplApprox1D).   Intermediate calculations
+   *  derivation is used ( e.g., SplApprox1D ).   Intermediate calculations
    *  and control point evaluations are stored to speed subsequent calls
    */
   double ValueD( double x );
 
   /** Returns spline interpolated second derivative at x
-   *  Calculates the values at control (integer) points by calling the
+   *  Calculates the values at control ( integer ) points by calling the
    *  UserFunction and returns the interpolated second derivative between those
    *  points.   Type of interpolation is dependent on which spline
-   *  derivation is used (e.g., SplApprox1D).   Intermediate calculations
+   *  derivation is used ( e.g., SplApprox1D ).   Intermediate calculations
    *  and control point evaluations are stored to speed subsequent calls
    */
   double ValueD2( double x );
 
   /** Returns spline interpolated derivative jet at x
-   *  Calculates the values at control (integer) points by calling the
+   *  Calculates the values at control ( integer ) points by calling the
    *  UserFunction and returns the interpolated value, first, and second
    *  derivatives between those points.  Type of interpolation is dependent
-   *  on which spline derivation is used (e.g., SplApprox1D).  Intermediate
+   *  on which spline derivation is used ( e.g., SplApprox1D ).  Intermediate
    *  calculations and control point evaluations are stored to speed
    *  subsequent calls
    */
@@ -265,4 +265,4 @@ private:
 
 } // End namespace itk
 
-#endif // End !defined(__tubeSpline1D_h)
+#endif // End !defined( __tubeSpline1D_h )

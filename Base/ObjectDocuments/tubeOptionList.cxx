@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -29,7 +29,7 @@ Language:  C++
 Date:      $Date: 2004/05/06 13:45:52 $
 Version:   $Revision: 1.1 $
 
-Copyright (c) 2002 Insight Consortium. All rights reserved.
+Copyright ( c ) 2002 Insight Consortium. All rights reserved.
 See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
 This software is distributed WITHOUT ANY WARRANTY; without even
@@ -193,7 +193,7 @@ OptionList
     return defaultValue;
     }
 
-  return (unsigned char)std::atoi( values[0].c_str() );
+  return ( unsigned char )std::atoi( values[0].c_str() );
 }
 
 
@@ -239,7 +239,7 @@ OptionList
     return defaultValue;
     }
 
-  return (int)std::strtol( values[0].c_str(), NULL, 0 );
+  return ( int )std::strtol( values[0].c_str(), NULL, 0 );
 }
 
 
@@ -271,7 +271,7 @@ OptionList
 
   for( int i = 0; i < numberOfValues; ++i )
     {
-    values.push_back( (unsigned char)std::atoi( tempValues[i].c_str() ) );
+    values.push_back( ( unsigned char )std::atoi( tempValues[i].c_str() ) );
     }
 
   return numberOfValues;
@@ -369,7 +369,7 @@ OptionList
 
   for( int i = 0; i < numberOfValues; ++i )
     {
-    values.push_back( (int)std::strtol( tempValues[i].c_str(), NULL, 0 ) );
+    values.push_back( ( int )std::strtol( tempValues[i].c_str(), NULL, 0 ) );
     }
 
   return numberOfValues;
@@ -434,7 +434,7 @@ OptionList
 
   for( int i = 0; i < numberOfValues; ++i )
     {
-    values.push_back( (unsigned int)std::strtoul( tempValues[i].c_str(), NULL,
+    values.push_back( ( unsigned int )std::strtoul( tempValues[i].c_str(), NULL,
                                                   0 ) );
     }
 
@@ -486,7 +486,7 @@ OptionList
     return defaultValue;
     }
 
-  return (unsigned int)std::strtoul( values[0].c_str(), NULL, 0 );
+  return ( unsigned int )std::strtoul( values[0].c_str(), NULL, 0 );
 }
 
 

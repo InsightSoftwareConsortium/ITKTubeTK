@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -48,7 +48,7 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter    progressReporter(
+  tube::CLIProgressReporter    progressReporter( 
     "CoherenceEnhancingAnisotropicDiffusion", CLPProcessInformation );
   progressReporter.Start();
 
@@ -65,7 +65,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< FilterPixelType, Dimension > FilterOutputImageType;
 
   // Read the input volume
-  timeCollector.Start("Load data");
+  timeCollector.Start( "Load data" );
   typedef itk::ImageFileReader< InputImageType  >  ImageReaderType;
   typename ImageReaderType::Pointer reader = ImageReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
@@ -76,11 +76,11 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Load data");
+  timeCollector.Stop( "Load data" );
   double progress = 0.1;
   progressReporter.Report( progress );
 
@@ -102,7 +102,7 @@ int DoIt( int argc, char * argv[] )
   orientInputFilter->SetInput( castInputImageFilter->GetOutput() );
 
   // Perform the coherence enhancing anisotropic diffusion
-  timeCollector.Start("Coherence enhancing anisotropic diffusion");
+  timeCollector.Start( "Coherence enhancing anisotropic diffusion" );
 
   // Declare the anisotropic diffusion coherence enhancing filter
   typedef itk::tube::AnisotropicCoherenceEnhancingDiffusionImageFilter<
@@ -118,7 +118,7 @@ int DoIt( int argc, char * argv[] )
   //Set/Get CED parameters
   CoherenceEnhancingFilter->SetSigma( scaleParameter );
   CoherenceEnhancingFilter->SetAlpha( alpha );
-  CoherenceEnhancingFilter->SetContrastParameterLambdaC(
+  CoherenceEnhancingFilter->SetContrastParameterLambdaC( 
     cedContrastParameter );
   CoherenceEnhancingFilter->SetTimeStep( timeStep );
   CoherenceEnhancingFilter->SetNumberOfIterations( numberOfIterations );
@@ -134,14 +134,14 @@ int DoIt( int argc, char * argv[] )
     }
   catch( itk::ExceptionObject & err )
     {
-    tube::ErrorMessage(
+    tube::ErrorMessage( 
       "Coherence enhancing anisotropic diffusion: Exception caught: "
-      + std::string(err.GetDescription()) );
+      + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
 
-  timeCollector.Stop("Coherence enhancing anisotropic diffusion");
+  timeCollector.Stop( "Coherence enhancing anisotropic diffusion" );
   progress = 0.9;
   progressReporter.Report( progress );
 
@@ -158,12 +158,12 @@ int DoIt( int argc, char * argv[] )
   typename OrientOutputFilterType::Pointer orientOutputFilter
       = OrientOutputFilterType::New();
   orientOutputFilter->UseImageDirectionOn();
-  orientOutputFilter->SetDesiredCoordinateDirection(
+  orientOutputFilter->SetDesiredCoordinateDirection( 
       reader->GetOutput()->GetDirection() );
   orientOutputFilter->SetInput( castOutputImageFilter->GetOutput() );
 
   // Save output data
-  timeCollector.Start("Save data");
+  timeCollector.Start( "Save data" );
   typedef itk::ImageFileWriter< OutputImageType  >      ImageWriterType;
   typename ImageWriterType::Pointer writer = ImageWriterType::New();
   writer->SetFileName( outputVolume.c_str() );
@@ -177,12 +177,12 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Writing volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
 
-  timeCollector.Stop("Save data");
+  timeCollector.Stop( "Save data" );
 
   progress = 1.0;
   progressReporter.Report( progress );

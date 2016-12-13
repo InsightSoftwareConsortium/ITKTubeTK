@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -181,7 +181,7 @@ int DoIt( int argc, char * argv[] )
     unsigned int numFeatures = tubeFilter->GetNumberOfBasis();
     for( unsigned int i=0; i<numFeatures; i++ )
       {
-      WriteImageInSequence< RidgeSeedImageType >(
+      WriteImageInSequence< RidgeSeedImageType >( 
         tubeFilter->GetBasisImage( i ),
         saveFeatureImages, ".f%02d.mha", i );
       }

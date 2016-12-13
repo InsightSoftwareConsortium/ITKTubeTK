@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -64,7 +64,7 @@ public:
   typedef typename PointBasedSpatialObject::Pointer
     PointBasedSpatialObjectPointer;
 
-  /** Run-time type information (and related methods).   */
+  /** Run-time type information ( and related methods ).   */
   itkTypeMacro( TortuositySpatialObjectFilter,
     SpatialObjectToSpatialObjectFilter );
 
@@ -81,8 +81,8 @@ public:
   *  vessel
   *
   *  - Distance metric: Ratio of the spatial object path length
-  * (sum of the line's length between each point) and the object direct
-  * length (length of the line between the first and last point)
+  * ( sum of the line's length between each point ) and the object direct
+  * length ( length of the line between the first and last point )
   *
   *  - Inflection count metric: Distance metric multiplied by the number of
   * times the object path crossed the first to last point line + 1.
@@ -91,7 +91,7 @@ public:
   * by thresholding the curvature scalar function along the vessel, and
   * counting the number of times the curve goes over the threshold. For
   * this 1st method, the threshold is set to lambda/sigma. sigma is the
-  * smoothing scale (standard * deviation for gaussian smoothing), and
+  * smoothing scale ( standard * deviation for gaussian smoothing ), and
   * lambda is an arbitrary value, set to 1.5, because it works. See
   * Curvature scalar metric below.
   *
@@ -130,7 +130,7 @@ public:
   *
   *  - Curvature vector metric: Defined at each point as the cross product
   * between the first and the second derivative of the spatial line. It is
-  * a 3-components vector (x, y, z). Mostly used for debugging
+  * a 3-components vector ( x, y, z ). Mostly used for debugging
   *
   *  - Inflection points metric: Values checked to know when an inflection
   * occurs. Mostly useful for debugging.
@@ -159,7 +159,7 @@ public:
   *  - Other-wise metrics: All other-wise metrics are in this bitmask
   *
   *
-  * NOTE: For the metrics (not the bitmasks), the numbers are given by
+  * NOTE: For the metrics ( not the bitmasks ), the numbers are given by
   * date of addition, but the names are sorted by metric type, then
   * alphabetically.
   *
@@ -228,19 +228,19 @@ public:
   /** Set/Get the sensibility of the filter. Spacing values are usually
   * around 0.1. On some vessels, it can be lower, and it causes the
   * CURVATURE_SCALAR_METRIC to go abnormally high. We don't normalize by
-  * spacing when it is lower than EpsilonForSpacing. Default value (1e-2)
+  * spacing when it is lower than EpsilonForSpacing. Default value ( 1e-2 )
   * should be acceptable for most cases.
   */
   itkSetClampMacro( EpsilonForSpacing, double, 0,
-    std::numeric_limits<double>::max())
+    std::numeric_limits<double>::max() )
   itkGetConstMacro( EpsilonForSpacing, double )
 
   /** Set/Get the sensibility of the filter. This is used in internal
   * computation when comparing whether a value should be considered null or
-  * not. Default value (1e-6) should be acceptable for most cases.
+  * not. Default value ( 1e-6 ) should be acceptable for most cases.
   */
   itkSetClampMacro( EpsilonForZero, double, 0,
-    std::numeric_limits<double>::max())
+    std::numeric_limits<double>::max() )
   itkGetConstMacro( EpsilonForZero, double )
 
   /** Set/Get the maximum of the range of values the histogram must be
@@ -285,14 +285,14 @@ public:
   * See ::tube::SmoothTube() for more details. Default value is 5.0.
   */
   itkSetClampMacro( SmoothingScale, double, 0,
-    std::numeric_limits<double>::max())
+    std::numeric_limits<double>::max() )
   itkGetConstMacro( SmoothingScale, double )
 
   /** Set/Get the subsampling scale to be applied to the vessel before
   * computing the metrics.
   */
   itkSetClampMacro( SubsamplingScale, int, 0,
-    std::numeric_limits<int>::max())
+    std::numeric_limits<int>::max() )
   itkGetConstMacro( SubsamplingScale, int )
 
 protected:
@@ -353,4 +353,4 @@ private:
 #include "itktubeTortuositySpatialObjectFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeTortuositySpatialObjectFilter_h)
+#endif // End !defined( __itktubeTortuositySpatialObjectFilter_h )

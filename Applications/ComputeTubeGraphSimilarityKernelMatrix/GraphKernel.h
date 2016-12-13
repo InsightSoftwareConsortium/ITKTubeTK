@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -101,7 +101,7 @@ public:
   typedef boost::property_map<
     GraphType, boost::edge_weight_t>::type      EdgeWeightMapType;
 
-  /** Types used to access all vertex (+property) information  */
+  /** Types used to access all vertex ( +property ) information  */
   typedef boost::property_map<
     GraphType,
     boost::vertex_all_t>::const_type            ConstVertexAllMapType;
@@ -110,7 +110,7 @@ public:
     boost::vertex_all_t>::type                  VertexAllMapType;
 
   /** CTOR */
-  GraphKernel(const GraphType &G0, const GraphType &G1)
+  GraphKernel( const GraphType &G0, const GraphType &G1 )
     {
     m_G0 = G0;
     m_G1 = G1;
@@ -126,9 +126,9 @@ public:
   /** Read graph from adj file */
   static GraphType GraphFromAdjFile( const char *graphFile,
                                      const char *labelFile,
-                                     DefaultNodeLabelingType defNodeLabel);
+                                     DefaultNodeLabelingType defNodeLabel );
   /** Read graph from JSON file */
-  static GraphType GraphFromJSONFile(const char *graphFile);
+  static GraphType GraphFromJSONFile( const char *graphFile );
 
   /** Compute kernel value among graphs G0,G1 */
   virtual double Compute( void ) { return 0.0; }
@@ -137,16 +137,16 @@ public:
 protected:
 
   /** Build a string representation of the neighbors of v-th vertex */
-  static std::string BuildNeighborStr(const GraphType &G, int v);
+  static std::string BuildNeighborStr( const GraphType &G, int v );
 
   /** Builds and returns a prefix "<i>," string, see [1] for details */
-  static std::string BuildPrefixFromVertexID(int v);
+  static std::string BuildPrefixFromVertexID( int v );
 
   /** Format vector of int as string */
-  static std::string LabelVectorToString(const std::vector<int> &);
+  static std::string LabelVectorToString( const std::vector<int> & );
 
   /** In-place counting sort on int vector */
-  static void CountingSort(std::vector<int> & vec);
+  static void CountingSort( std::vector<int> & vec );
 
   /** Two input graphs */
   GraphType m_G0;
@@ -156,4 +156,4 @@ protected:
 
 } // End namespace tube
 
-#endif // End !defined(__GraphKernel_h)
+#endif // End !defined( __GraphKernel_h )

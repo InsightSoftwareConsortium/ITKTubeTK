@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -60,7 +60,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Error reading input image 1: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     return EXIT_FAILURE;
     }
 
@@ -75,7 +75,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Error reading input image 2: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     return EXIT_FAILURE;
     }
 

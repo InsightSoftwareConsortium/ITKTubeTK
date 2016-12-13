@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -59,12 +59,12 @@ ComputeImageSimilarityMetrics< TInputImage >
   // check if both input images are set
   if( m_Input1.IsNull() )
     {
-    itkExceptionMacro("Input Image 1 is not set");
+    itkExceptionMacro( "Input Image 1 is not set" );
     }
 
   if( m_Input1.IsNull() )
     {
-    itkExceptionMacro("Input Image 2 is not set");
+    itkExceptionMacro( "Input Image 2 is not set" );
     }
 
   // Normalize the images
@@ -109,7 +109,7 @@ ComputeImageSimilarityMetrics< TInputImage >
 
   metric->SetFixedImage( norm1->GetOutput() );
   metric->SetMovingImage( norm2->GetOutput() );
-  metric->SetFixedImageRegion(
+  metric->SetFixedImageRegion( 
     norm1->GetOutput()->GetLargestPossibleRegion() );
   metric->SetTransform( transform );
   metric->SetInterpolator( interpolator );
@@ -130,9 +130,9 @@ ComputeImageSimilarityMetrics< TInputImage >
 template< class TInputImage >
 void
 ComputeImageSimilarityMetrics< TInputImage >
-::PrintSelf(std::ostream & os, Indent indent) const
+::PrintSelf( std::ostream & os, Indent indent ) const
 {
-  Superclass::PrintSelf(os, indent);
+  Superclass::PrintSelf( os, indent );
   os << "Use Correlation: " << m_UseCorrelation << std::endl;
   os << "Sampling Rate: " << m_SamplingRate << std::endl;
 }

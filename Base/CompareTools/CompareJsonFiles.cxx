@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -125,7 +125,7 @@ int main( int argc, char * argv[] )
     if( singleBaselineFile )
       {
       bestBaselineStatus =
-        RegressionTestJson(
+        RegressionTestJson( 
             testFilename.c_str(), baselineFilename.c_str(),
             true, true, toleranceValue );
       }
@@ -136,7 +136,7 @@ int main( int argc, char * argv[] )
       while( baselineFileItr != baselineFilenames.end() )
         {
         const int currentStatus =
-          RegressionTestJson(
+          RegressionTestJson( 
               testFilename.c_str(), baselineFileItr->c_str(),
               true, true, toleranceValue );
         if( currentStatus < bestBaselineStatus )
@@ -190,15 +190,16 @@ int compareJSON( const Json::Value & test,
     {
     // Certain points in the hierarchy can be avoided by setting them to
     // "Regression test NA"
-    if( (*baselineIt).isString() &&
-        (*baselineIt).asString() == "Regression test NA" )
+    if( ( *baselineIt ).isString() &&
+        ( *baselineIt ).asString() == "Regression test NA" )
       {
       continue;
       }
-    if( !((*baselineIt).isNull()) &&
-        ((*baselineIt).isArray() || (*baselineIt).isObject()) )
+    if( !( ( *baselineIt ).isNull() ) &&
+        ( ( *baselineIt ).isArray() || ( *baselineIt ).isObject() ) )
       {
-      if( compareJSON( *testIt, *baselineIt, reportErrors, verbose, toleranceValue ) )
+      if( compareJSON( *testIt, *baselineIt, reportErrors, verbose,
+        toleranceValue ) )
         {
         same = EXIT_FAILURE;
         break;
@@ -207,14 +208,14 @@ int compareJSON( const Json::Value & test,
     else
       {
       if( verbose &&
-          !(*baselineIt).isNull() && !(*testIt).isNull() )
+          !( *baselineIt ).isNull() && !( *testIt ).isNull() )
         {
         std::cout << "Comparing: " << *testIt
                   << " to " << *baselineIt << std::endl;
         }
-      if( (*baselineIt).isNull() )
+      if( ( *baselineIt ).isNull() )
         {
-        if( !(*testIt).isNull() )
+        if( !( *testIt ).isNull() )
           {
           if( reportErrors )
             {
@@ -225,58 +226,58 @@ int compareJSON( const Json::Value & test,
           break;
           }
         }
-      else if( (*baselineIt).isBool() )
+      else if( ( *baselineIt ).isBool() )
         {
-        if( (*baselineIt).asBool() != (*testIt).asBool() )
+        if( ( *baselineIt ).asBool() != ( *testIt ).asBool() )
           {
           if( reportErrors )
             {
-            std::cerr << "The test value: " << (*testIt).asBool()
+            std::cerr << "The test value: " << ( *testIt ).asBool()
                       << " does not equal the baseline value: "
-                      << (*baselineIt).asBool() << std::endl;
+                      << ( *baselineIt ).asBool() << std::endl;
             }
           same = EXIT_FAILURE;
           break;
           }
         }
-      else if( (*baselineIt).isIntegral() )
+      else if( ( *baselineIt ).isIntegral() )
         {
-        if( (*baselineIt).asInt() != (*testIt).asInt() )
+        if( ( *baselineIt ).asInt() != ( *testIt ).asInt() )
           {
           if( reportErrors )
             {
-            std::cerr << "The test value: " << (*testIt).asInt()
+            std::cerr << "The test value: " << ( *testIt ).asInt()
                       << " does not equal the baseline value: "
-                      << (*baselineIt).asInt() << std::endl;
+                      << ( *baselineIt ).asInt() << std::endl;
             }
           same = EXIT_FAILURE;
           break;
           }
         }
-      else if( (*baselineIt).isDouble() )
+      else if( ( *baselineIt ).isDouble() )
         {
-        if( vnl_math_abs((*baselineIt).asDouble() - (*testIt).asDouble())
+        if( vnl_math_abs( ( *baselineIt ).asDouble() - ( *testIt ).asDouble() )
               > toleranceValue )
           {
           if( reportErrors )
             {
-            std::cerr << "The test value: " << (*testIt).asDouble()
+            std::cerr << "The test value: " << ( *testIt ).asDouble()
                       << " does not equal the baseline value: "
-                      << (*baselineIt).asDouble() << std::endl;
+                      << ( *baselineIt ).asDouble() << std::endl;
             }
           same = EXIT_FAILURE;
           break;
           }
         }
-      else if( (*baselineIt).isString() )
+      else if( ( *baselineIt ).isString() )
         {
-        if( (*baselineIt).asString() != (*testIt).asString() )
+        if( ( *baselineIt ).asString() != ( *testIt ).asString() )
           {
           if( reportErrors )
             {
-            std::cerr << "The test value: " << (*testIt).asString()
+            std::cerr << "The test value: " << ( *testIt ).asString()
                       << " does not equal the baseline value: "
-                      << (*baselineIt).asString() << std::endl;
+                      << ( *baselineIt ).asString() << std::endl;
             }
           same = EXIT_FAILURE;
           break;
@@ -314,12 +315,14 @@ int RegressionTestJson( const char *testJSONFileName,
   std::ifstream baselineFile( baselineJSONFileName );
   if( !baselineFile.is_open() )
     {
-    std::cerr << "Could not open baseline file: " << baselineJSONFileName << std::endl;
+    std::cerr << "Could not open baseline file: " << baselineJSONFileName
+      << std::endl;
     return EXIT_FAILURE;
     }
   if( !reader.parse( baselineFile, baselineRoot ) )
     {
-    std::cerr << "Could not parse baseline file: " << baselineJSONFileName << std::endl;
+    std::cerr << "Could not parse baseline file: " << baselineJSONFileName
+      << std::endl;
     baselineFile.close();
     return EXIT_FAILURE;
     }

@@ -3,10 +3,10 @@
   Program:   Insight Segmentation & Registration Toolkit
   Module:    $RCSfile: ITKHeader.h,v $
   Language:  C++
-  Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
+  Date:      $Date: 2007-07-10 11:35:36 -0400 ( Tue, 10 Jul 2007 ) $
   Version:   $Revision: 0 $
 
-  Copyright (c) 2002 Insight Consortium. All rights reserved.
+  Copyright ( c ) 2002 Insight Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
@@ -59,16 +59,16 @@ public:
     ScalarRealType;
 
   /** Runtime information support. */
-  itkTypeMacro(SmoothingRecursiveGaussianImageFilter,
-    ImageToImageFilter);
+  itkTypeMacro( SmoothingRecursiveGaussianImageFilter,
+    ImageToImageFilter );
 
   /** Image dimension. */
-  itkStaticConstMacro(ImageDimension, unsigned int,
-    TInputImage::ImageDimension);
+  itkStaticConstMacro( ImageDimension, unsigned int,
+    TInputImage::ImageDimension );
 
   /** Define the type for the sigma array */
   typedef FixedArray< ScalarRealType,
-    itkGetStaticConstMacro(ImageDimension) > SigmaArrayType;
+    itkGetStaticConstMacro( ImageDimension ) > SigmaArrayType;
 
   /** Define the image type for internal computations
     RealType is usually 'double' in NumericTraits.
@@ -98,14 +98,14 @@ public:
     >    CastingFilterType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
   /** Set Sigma value. Sigma is measured in the units of image spacing. You
     may use the method SetSigma to set the same value across each axis or
     use the method SetSigmaArray if you need different values along each
     axis. */
-  void SetSigmaArray(const SigmaArrayType & sigmas);
-  void SetSigma(ScalarRealType sigma);
+  void SetSigmaArray( const SigmaArrayType & sigmas );
+  void SetSigma( ScalarRealType sigma );
 
   SigmaArrayType GetSigmaArray() const;
   ScalarRealType GetSigma() const;
@@ -114,12 +114,12 @@ public:
    *
    *  \sa  RecursiveGaussianImageFilter::SetNormalizeAcrossScale
    */
-  void SetNormalizeAcrossScale(bool normalizeInScaleSpace);
-  itkGetConstMacro(NormalizeAcrossScale, bool);
+  void SetNormalizeAcrossScale( bool normalizeInScaleSpace );
+  itkGetConstMacro( NormalizeAcrossScale, bool );
 
   // See super class for doxygen documentation
   //
-  void SetNumberOfThreads(ThreadIdType nb);
+  void SetNumberOfThreads( ThreadIdType nb );
 
   // See super class for doxygen documentation
   //
@@ -136,10 +136,10 @@ public:
 protected:
   SmoothingRecursiveGaussianImageFilter();
   virtual ~SmoothingRecursiveGaussianImageFilter() {}
-  void PrintSelf(std::ostream & os, Indent indent) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const;
 
   /** Generate Data */
-  void GenerateData(void);
+  void GenerateData( void );
 
   /** SmoothingRecursiveGaussianImageFilter needs all of the input to
    * produce an output. Therefore, SmoothingRecursiveGaussianImageFilter
@@ -149,12 +149,12 @@ protected:
   virtual void GenerateInputRequestedRegion();
 
   // Override since the filter produces the entire dataset
-  void EnlargeOutputRequestedRegion(DataObject *output);
+  void EnlargeOutputRequestedRegion( DataObject *output );
 
 private:
-  SmoothingRecursiveGaussianImageFilter(const Self &); //purposely not
+  SmoothingRecursiveGaussianImageFilter( const Self & ); //purposely not
                                                        // implemented
-  void operator=(const Self &);                        //purposely not
+  void operator=( const Self & );                        //purposely not
 
   // implemented
 

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -84,7 +84,7 @@ struct EnergiesStruct
  * monomodal image registration term only.
  *
  * The update term for the regularization will be of the form:
- * div(T1*\grad(u1))v1 + div(T2*\grad(u2))v2 + ... + div(TN*\grad(uN))vN
+ * div( T1*\grad( u1 ) )v1 + div( T2*\grad( u2 ) )v2 + ... + div( TN*\grad( uN ) )vN
  * where the types are:
  * - T1..TN are diffusion tensors
  * - u1..uN are deformation vectors
@@ -96,7 +96,7 @@ struct EnergiesStruct
  * This base class implements the diffusive regularization.  Algorithms
  * implementing anisotropic regularization should derive it and override the
  * following functions:
- * - GetNumberOfTerms(): returns the number of div(T*\grad(u))v terms
+ * - GetNumberOfTerms(): returns the number of div( T*\grad( u ) )v terms
  * - ComputeDiffusionTensorImages(): allocate and populate the T images
  * - InitializeDeformationComponentAndDerivativeImages(): allocate the u images
  * and their derivatives
@@ -137,7 +137,7 @@ public:
     * call it here. Derived classes should use this instead of itkNewMacro(). */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( DiffusiveRegistrationFilter, PDEDeformableRegistrationFilter );
 
   /** Inherit some parameters from the superclass. */
@@ -176,14 +176,14 @@ public:
       RegularizationFunctionPointer;
   typedef typename RegistrationFunctionType::SpacingType SpacingType;
 
-  /** Deformation component types (i.e. component of a deformation field,
+  /** Deformation component types ( i.e. component of a deformation field,
    *  still a vector */
   typedef std::vector< DeformationFieldPointer >
       DeformationFieldArrayType;
   typedef typename RegistrationFunctionType::DeformationVectorType
       DeformationVectorType;
 
-  /** Deformation vector component types (i.e. scalar within a vector) */
+  /** Deformation vector component types ( i.e. scalar within a vector ) */
   typedef typename RegistrationFunctionType::DeformationVectorComponentType
       DeformationVectorComponentType;
   typedef typename RegistrationFunctionType::DeformationVectorComponentImageType
@@ -314,7 +314,7 @@ public:
   MovingImagePixelType GetBackgroundIntensity( void ) const
     { return this->GetRegistrationFunctionPointer()->GetBackgroundIntensity(); }
 
-  /** The number of div(T\grad(u))v terms we sum for the regularizer.
+  /** The number of div( T\grad( u ) )v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
   virtual int GetNumberOfTerms( void ) const
     { return 1; }
@@ -360,7 +360,7 @@ public:
 protected:
   DiffusiveRegistrationFilter( void );
   virtual ~DiffusiveRegistrationFilter( void ) {}
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
   /** Handy for array indexing. */
   enum DivTerm { GAUSSIAN };
@@ -372,7 +372,7 @@ protected:
   virtual void AllocateImageMembers( void );
 
   /** Allocate the deformation component images and their derivative images.
-   *  (which may be updated throughout the registration). Reimplement in derived
+   *  ( which may be updated throughout the registration ). Reimplement in derived
    *  classes. */
   virtual void InitializeDeformationComponentAndDerivativeImages( void );
 
@@ -388,14 +388,14 @@ protected:
 
   /** Helper to compute the first-order partial derivatives of the diffusion
    *  tensor images */
-  virtual void ComputeDiffusionTensorDerivativeImageHelper(
+  virtual void ComputeDiffusionTensorDerivativeImageHelper( 
       const DiffusionTensorImagePointer & tensorImage,
       int term,
       const SpacingType & spacing,
       const typename OutputImageType::SizeType & radius );
 
   /** Allocate and populate the images of multiplication vectors that the
-   *  div(T \grad(u)) values are multiplied by.  Allocate and populate all or
+   *  div( T \grad( u ) ) values are multiplied by.  Allocate and populate all or
    *  some of the multiplication vector images in derived classes.  Otherwise,
    *  default to e_l, where e_l is the lth canonical unit vector. */
   virtual void ComputeMultiplicationVectorImages( void ) {}
@@ -417,7 +417,7 @@ protected:
    *  ThreadedComputeDeformationComponentDerivativeImageHelper() method and a
    *  multithreading mechanism.
    *  \sa ThreadedComputeDeformationComponentDerivativeImageHelper */
-  virtual void ComputeDeformationComponentDerivativeImageHelper(
+  virtual void ComputeDeformationComponentDerivativeImageHelper( 
       DeformationVectorComponentImagePointer & deformationComponentImage,
       int term,
       int dimension,
@@ -429,7 +429,7 @@ protected:
    *  by the multithreading mechanism.
    *  \sa ComputeDeformationComponentDerivativeImageHelper
    *  \sa ComputeDeformationComponentDerivativeImageHelperThreadedCallback */
-   virtual void ThreadedComputeDeformationComponentDerivativeImageHelper(
+   virtual void ThreadedComputeDeformationComponentDerivativeImageHelper( 
        const DeformationVectorComponentImagePointer & deformationComponentImage,
        const ThreadDeformationVectorComponentImageRegionType
          & deformationVectorComponenntRegionToProcess,
@@ -487,7 +487,7 @@ protected:
     }
 
   /** Set/Get a first-order deformation component derivative. */
-  void SetDeformationComponentFirstOrderDerivative(
+  void SetDeformationComponentFirstOrderDerivative( 
       int index,
       int dimension,
       ScalarDerivativeImageType * deriv )
@@ -497,7 +497,7 @@ protected:
     this->m_DeformationComponentFirstOrderDerivativeArrays[index][dimension]
         = deriv;
     }
-  ScalarDerivativeImageType * GetDeformationComponentFirstOrderDerivative(
+  ScalarDerivativeImageType * GetDeformationComponentFirstOrderDerivative( 
       int index,
       int dimension )
     {
@@ -508,7 +508,7 @@ protected:
     }
 
   /** Set/Get a second-order deformation component derivative. */
-  void SetDeformationComponentSecondOrderDerivative(
+  void SetDeformationComponentSecondOrderDerivative( 
       int index,
       int dimension,
       TensorDerivativeImageType * deriv )
@@ -518,7 +518,7 @@ protected:
     this->m_DeformationComponentSecondOrderDerivativeArrays[index][dimension]
         = deriv;
     }
-  TensorDerivativeImageType * GetDeformationComponentSecondOrderDerivative(
+  TensorDerivativeImageType * GetDeformationComponentSecondOrderDerivative( 
       int index,
       int dimension )
     {
@@ -610,7 +610,7 @@ protected:
 
     void copyFrom( const UpdateMetricsStruct & rhs )
       {
-      IntermediateStruct.copyFrom(rhs.IntermediateStruct);
+      IntermediateStruct.copyFrom( rhs.IntermediateStruct );
       RMSTotalUpdateMagnitude = rhs.RMSTotalUpdateMagnitude;
       RMSIntensityDistanceUpdateMagnitude
           = rhs.RMSIntensityDistanceUpdateMagnitude;
@@ -654,7 +654,7 @@ protected:
   virtual TimeStepType CalculateChange( void );
 
   /** Inherited from superclass - do not call this function! */
-  TimeStepType ThreadedCalculateChange(
+  TimeStepType ThreadedCalculateChange( 
       const ThreadRegionType & regionToProcess, ThreadIdType threadId );
 
   /** This method populates an update buffer with changes for each pixel in the
@@ -668,7 +668,7 @@ protected:
    * over a region supplied by the multithreading mechanism.
    * \sa CalculateChangeGradient
    * \sa CalculateChangeGradientThreaderCallback */
-  virtual TimeStepType ThreadedCalculateChangeGradient(
+  virtual TimeStepType ThreadedCalculateChangeGradient( 
       const ThreadRegionType & regionToProcess,
       const ThreadDiffusionTensorImageRegionType & tensorRegionToProcess,
       const ThreadTensorDerivativeImageRegionType
@@ -688,7 +688,7 @@ protected:
   virtual void CalculateEnergies( EnergiesStruct & energies,
                                   OutputImageType * outputField );
 
-  /** Updates the intermediate update statistics (sum-of-squared and sum-of
+  /** Updates the intermediate update statistics ( sum-of-squared and sum-of
    *  statistics, incorporating the time step, and
    *  computes the RMS and mean update statistics */
   virtual void UpdateUpdateStatistics( TimeStepType stepSize );
@@ -698,7 +698,7 @@ protected:
    * mechanism.
    * \sa CalculateEnergies
    * \sa CalculateEnergiesThreaderCallback */
-  virtual void ThreadedCalculateEnergies(
+  virtual void ThreadedCalculateEnergies( 
     const OutputImagePointer & output,
     const ThreadRegionType & regionToProcess,
     const ThreadDiffusionTensorImageRegionType & tensorRegionToProcess,
@@ -748,12 +748,12 @@ protected:
 
   /** This method is called after ApplyUpdate() to print out energy and RMS
    * change metrics and evaluate the stopping conditions. */
-  virtual void PostProcessIteration(TimeStepType stepSize);
+  virtual void PostProcessIteration( TimeStepType stepSize );
 
 private:
   // Purposely not implemented
-  DiffusiveRegistrationFilter(const Self&);
-  void operator=(const Self&); // Purposely not implemented
+  DiffusiveRegistrationFilter( const Self& );
+  void operator=( const Self& ); // Purposely not implemented
 
   /** Structure for passing information into static callback methods.  Used in
    * the subclasses threading mechanisms. */
@@ -806,14 +806,14 @@ private:
 
   /** This callback method uses SplitUpdateContainer to acquire a region
   * which it then passes to ThreadedCalculateChange for processing. */
-  static ITK_THREAD_RETURN_TYPE CalculateChangeGradientThreaderCallback(
+  static ITK_THREAD_RETURN_TYPE CalculateChangeGradientThreaderCallback( 
     void *arg );
 
   /** This callback method uses SplitUpdateContainer to acquire a region which
   * it then passes to ThreadedComputeDeformationComponentDerivativeImageHelper
   * for processing. */
   static ITK_THREAD_RETURN_TYPE
-      ComputeDeformationComponentDerivativeImageHelperThreaderCallback(
+      ComputeDeformationComponentDerivativeImageHelperThreaderCallback( 
           void *arg );
 
   /** This callback method uses SplitUpdateContainer to acquire a region which
@@ -872,4 +872,4 @@ private:
 #include "itktubeDiffusiveRegistrationFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeDiffusiveRegistrationFilter_h)
+#endif // End !defined( __itktubeDiffusiveRegistrationFilter_h )

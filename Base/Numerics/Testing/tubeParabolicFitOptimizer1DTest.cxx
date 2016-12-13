@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -37,7 +37,7 @@ public:
     }
   const double & Value( const double & x )
     {
-    cVal = std::sin(x);
+    cVal = std::sin( x );
     return cVal;
     }
 
@@ -55,7 +55,7 @@ public:
     }
   const double & Value( const double & x )
     {
-    cDeriv = std::cos(x);
+    cDeriv = std::cos( x );
     return cDeriv;
     }
 

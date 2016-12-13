@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -40,12 +40,12 @@ limitations under the License.
 /// \ingroup Slicer_QtModules_SpatialObjects
 class qMRMLSpatialObjectsTreeViewPrivate
 {
-  Q_DECLARE_PUBLIC(qMRMLSpatialObjectsTreeView);
+  Q_DECLARE_PUBLIC( qMRMLSpatialObjectsTreeView );
 protected:
   qMRMLSpatialObjectsTreeView* const q_ptr;
 
 public:
-  qMRMLSpatialObjectsTreeViewPrivate(qMRMLSpatialObjectsTreeView& object);
+  qMRMLSpatialObjectsTreeViewPrivate( qMRMLSpatialObjectsTreeView& object );
   void init();
 
   qMRMLSceneSpatialObjectsModel* SceneModel;
@@ -54,8 +54,8 @@ public:
 
 //------------------------------------------------------------------------------
 qMRMLSpatialObjectsTreeViewPrivate::
-qMRMLSpatialObjectsTreeViewPrivate(qMRMLSpatialObjectsTreeView& object)
-  : q_ptr(&object)
+qMRMLSpatialObjectsTreeViewPrivate( qMRMLSpatialObjectsTreeView& object )
+  : q_ptr( &object )
 {
   this->SceneModel = 0;
   this->SortFilterModel = 0;
@@ -64,36 +64,36 @@ qMRMLSpatialObjectsTreeViewPrivate(qMRMLSpatialObjectsTreeView& object)
 //------------------------------------------------------------------------------
 void qMRMLSpatialObjectsTreeViewPrivate::init()
 {
-  Q_Q(qMRMLSpatialObjectsTreeView);
+  Q_Q( qMRMLSpatialObjectsTreeView );
 
-  this->SceneModel = new qMRMLSceneSpatialObjectsModel(q);
-  q->setSceneModel(this->SceneModel, "SpatialObjects");
+  this->SceneModel = new qMRMLSceneSpatialObjectsModel( q );
+  q->setSceneModel( this->SceneModel, "SpatialObjects" );
 
   // We only want to show vtkMRMLSpatialObjectsNodes.
   QStringList nodeTypes = QStringList();
-  nodeTypes.append("vtkMRMLSpatialObjectsNode");
+  nodeTypes.append( "vtkMRMLSpatialObjectsNode" );
 
-  q->setNodeTypes(nodeTypes);
+  q->setNodeTypes( nodeTypes );
   this->SortFilterModel = q->sortFilterProxyModel();
 
-  q->header()->setStretchLastSection(false);
-  q->header()->setResizeMode(QHeaderView::ResizeToContents);
-  q->header()->setResizeMode(0, QHeaderView::Stretch);
+  q->header()->setStretchLastSection( false );
+  q->header()->setResizeMode( QHeaderView::ResizeToContents );
+  q->header()->setResizeMode( 0, QHeaderView::Stretch );
 
-  q->setUniformRowHeights(true);
+  q->setUniformRowHeights( true );
 }
 
 //------------------------------------------------------------------------------
-qMRMLSpatialObjectsTreeView::qMRMLSpatialObjectsTreeView(QWidget *_parent)
-  :qMRMLTreeView(_parent)
-  , d_ptr(new qMRMLSpatialObjectsTreeViewPrivate(*this))
+qMRMLSpatialObjectsTreeView::qMRMLSpatialObjectsTreeView( QWidget *_parent )
+  :qMRMLTreeView( _parent )
+  , d_ptr( new qMRMLSpatialObjectsTreeViewPrivate( *this ) )
 {
-  Q_D(qMRMLSpatialObjectsTreeView);
+  Q_D( qMRMLSpatialObjectsTreeView );
   d->init();
 
   // We need to enable mouse tracking to set the appropriate
   // cursor while mouseMove occurs.
-  this->setMouseTracking(true);
+  this->setMouseTracking( true );
 }
 
 //------------------------------------------------------------------------------
@@ -102,22 +102,22 @@ qMRMLSpatialObjectsTreeView::~qMRMLSpatialObjectsTreeView()
 
 //------------------------------------------------------------------------------
 #ifndef QT_NO_CURSOR
-bool qMRMLSpatialObjectsTreeView::viewportEvent(QEvent* e)
+bool qMRMLSpatialObjectsTreeView::viewportEvent( QEvent* e )
 {
   // reset the cursor if we leave the viewport
-  if(e->type() == QEvent::Leave)
+  if( e->type() == QEvent::Leave )
     {
-    setCursor(QCursor());
+    setCursor( QCursor() );
     }
 
-  return QTreeView::viewportEvent(e);
+  return QTreeView::viewportEvent( e );
 }
 #endif
 
 //------------------------------------------------------------------------------
-void qMRMLSpatialObjectsTreeView::onVisibilityColumnClicked(vtkMRMLNode* node)
+void qMRMLSpatialObjectsTreeView::onVisibilityColumnClicked( vtkMRMLNode* node )
 {
-  if(!node)
+  if( !node )
     {
     return;
     }
@@ -126,9 +126,9 @@ void qMRMLSpatialObjectsTreeView::onVisibilityColumnClicked(vtkMRMLNode* node)
 //-----------------------------------------------------------------------------
 /// Set and observe the logic
 //-----------------------------------------------------------------------------
-void qMRMLSpatialObjectsTreeView::setLogic(vtkSlicerSpatialObjectsLogic* logic)
+void qMRMLSpatialObjectsTreeView::setLogic( vtkSlicerSpatialObjectsLogic* logic )
 {
-  if(!logic)
+  if( !logic )
     {
     return;
     }
@@ -137,21 +137,21 @@ void qMRMLSpatialObjectsTreeView::setLogic(vtkSlicerSpatialObjectsLogic* logic)
 }
 
 //------------------------------------------------------------------------------
-void qMRMLSpatialObjectsTreeView::setMRMLScene(vtkMRMLScene* scene)
+void qMRMLSpatialObjectsTreeView::setMRMLScene( vtkMRMLScene* scene )
 {
-  this->Superclass::setMRMLScene(scene);
-  this->setRootIndex(this->sortFilterProxyModel()->mrmlSceneIndex());
+  this->Superclass::setMRMLScene( scene );
+  this->setRootIndex( this->sortFilterProxyModel()->mrmlSceneIndex() );
 }
 
 //------------------------------------------------------------------------------
-bool qMRMLSpatialObjectsTreeView::clickDecoration(const QModelIndex& index)
+bool qMRMLSpatialObjectsTreeView::clickDecoration( const QModelIndex& index )
 {
   bool res = false;
   int type = -1;
-  QModelIndex sourceIndex = this->sortFilterProxyModel()->mapToSource(index);
+  QModelIndex sourceIndex = this->sortFilterProxyModel()->mapToSource( index );
 
-  vtkMRMLSpatialObjectsNode* soNode = vtkMRMLSpatialObjectsNode::SafeDownCast(
-    this->sortFilterProxyModel()->mrmlNodeFromIndex(index));
+  vtkMRMLSpatialObjectsNode* soNode = vtkMRMLSpatialObjectsNode::SafeDownCast( 
+    this->sortFilterProxyModel()->mrmlNodeFromIndex( index ) );
 
   vtkMRMLSpatialObjectsDisplayNode* lineDisplayNode =
     soNode->GetLineDisplayNode();
@@ -161,67 +161,67 @@ bool qMRMLSpatialObjectsTreeView::clickDecoration(const QModelIndex& index)
     soNode->GetGlyphDisplayNode();
 
   qMRMLSceneSpatialObjectsModel* model =
-    dynamic_cast<qMRMLSceneSpatialObjectsModel*>(this->sceneModel());
+    dynamic_cast<qMRMLSceneSpatialObjectsModel*>( this->sceneModel() );
 
-  if(!(sourceIndex.flags() & Qt::ItemIsEnabled))
+  if( !( sourceIndex.flags() & Qt::ItemIsEnabled ) )
     {
     res = false;
     }
-  else if(sourceIndex.column() == model->lineVisibilityColumn())
+  else if( sourceIndex.column() == model->lineVisibilityColumn() )
     {
     type = 0;
-    if(lineDisplayNode)
+    if( lineDisplayNode )
       {
-      lineDisplayNode->SetVisibility(lineDisplayNode->GetVisibility() ? 0 : 1);
+      lineDisplayNode->SetVisibility( lineDisplayNode->GetVisibility() ? 0 : 1 );
       res = true;
       }
     }
-  else if(sourceIndex.column() == model->tubeVisibilityColumn())
+  else if( sourceIndex.column() == model->tubeVisibilityColumn() )
     {
     type = 1;
-    if(tubeDisplayNode)
+    if( tubeDisplayNode )
       {
-      tubeDisplayNode->SetVisibility(tubeDisplayNode->GetVisibility() ? 0 : 1);
+      tubeDisplayNode->SetVisibility( tubeDisplayNode->GetVisibility() ? 0 : 1 );
       res = true;
       }
     }
-  else if(sourceIndex.column() == model->glyphVisibilityColumn())
+  else if( sourceIndex.column() == model->glyphVisibilityColumn() )
     {
     type = 2;
-    if(glyphDisplayNode)
+    if( glyphDisplayNode )
       {
       glyphDisplayNode->
-        SetVisibility(glyphDisplayNode->GetVisibility() ? 0 : 1);
+        SetVisibility( glyphDisplayNode->GetVisibility() ? 0 : 1 );
       res = true;
       }
     }
 
-  if(glyphDisplayNode->GetVisibility() == 0 &&
+  if( glyphDisplayNode->GetVisibility() == 0 &&
       tubeDisplayNode->GetVisibility() == 0  &&
-      lineDisplayNode->GetVisibility() == 1)
+      lineDisplayNode->GetVisibility() == 1 )
     {
     type = 0;
     }
-  if(glyphDisplayNode->GetVisibility() == 0 &&
+  if( glyphDisplayNode->GetVisibility() == 0 &&
       tubeDisplayNode->GetVisibility() == 1  &&
-      lineDisplayNode->GetVisibility() == 0)
+      lineDisplayNode->GetVisibility() == 0 )
     {
     type = 1;
     }
-  if(glyphDisplayNode->GetVisibility() == 1 &&
+  if( glyphDisplayNode->GetVisibility() == 1 &&
       tubeDisplayNode->GetVisibility() == 0  &&
-      lineDisplayNode->GetVisibility() == 0)
+      lineDisplayNode->GetVisibility() == 0 )
     {
     type = 2;
     }
 
-  if(res)
+  if( res )
     {
-    emit decorationClicked(index);
+    emit decorationClicked( index );
     }
-  if(type > -1)
+  if( type > -1 )
     {
-    emit visibilityChanged(type);
+    emit visibilityChanged( type );
     }
   return res;
 }

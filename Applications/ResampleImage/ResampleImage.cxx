@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -66,7 +66,7 @@ int DoIt( int argc, char * argv[] )
   try
     {
     reader->Update();
-    filter->SetInput(reader->GetOutput() );
+    filter->SetInput( reader->GetOutput() );
     }
   catch( itk::ExceptionObject & err )
     {
@@ -120,7 +120,7 @@ int DoIt( int argc, char * argv[] )
     treader->SetFileName( loadTransform );
     treader->Update();
 
-    typename TransformType::Pointer tfm = static_cast< TransformType * >(
+    typename TransformType::Pointer tfm = static_cast< TransformType * >( 
       treader->GetTransformList()->front().GetPointer() );
 
     filter->SetTransform( tfm );

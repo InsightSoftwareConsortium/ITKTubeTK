@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -33,7 +33,7 @@ public:
     }
   const double & Value( const vnl_vector<double> & x )
     {
-    cVal = std::sin(x(0)) + std::sin(x(1));
+    cVal = std::sin( x( 0 ) ) + std::sin( x( 1 ) );
     return cVal;
     }
 
@@ -48,12 +48,12 @@ class MyNDFuncD : public tube::UserFunction< vnl_vector< double >,
 public:
   MyNDFuncD( void )
     {
-    cDx.set_size(2);
+    cDx.set_size( 2 );
     }
   const vnl_vector<double> & Value( const vnl_vector<double> & x )
     {
-    cDx[0] = std::cos(x(0));
-    cDx[1] = std::cos(x(1));
+    cDx[0] = std::cos( x( 0 ) );
+    cDx[1] = std::cos( x( 1 ) );
     std::cout << "deriv = " << cDx[0] << ", " << cDx[1] << std::endl;
     return cDx;
     }
@@ -77,7 +77,7 @@ int tubeBrentOptimizerNDTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv 
 
   int returnStatus = EXIT_SUCCESS;
 
-  VectorType xMin(2);
+  VectorType xMin( 2 );
   xMin.fill( -3.5 );
   opt.SetXMin( xMin );
   if( opt.GetXMin()[0] != -3.5 )
@@ -87,7 +87,7 @@ int tubeBrentOptimizerNDTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv 
     returnStatus = EXIT_FAILURE;
     }
 
-  VectorType xMax(2);
+  VectorType xMax( 2 );
   xMax.fill( 3.5 );
   opt.SetXMax( xMax );
   if( opt.GetXMax()[0] != 3.5 )
@@ -97,7 +97,7 @@ int tubeBrentOptimizerNDTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv 
     returnStatus = EXIT_FAILURE;
     }
 
-  VectorType xStep(2);
+  VectorType xStep( 2 );
   xStep.fill( 0.1 );
   opt.SetXStep( xStep );
   if( opt.GetXStep()[0] != 0.1 )
@@ -130,7 +130,7 @@ int tubeBrentOptimizerNDTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv 
     returnStatus = EXIT_FAILURE;
     }
 
-  VectorType x(2);
+  VectorType x( 2 );
   x[0] = 0.01;
   x[1] = 1.01;
   double xVal = 0;
@@ -140,7 +140,7 @@ int tubeBrentOptimizerNDTest( int tubeNotUsed( argc ), char * tubeNotUsed( argv 
     returnStatus = EXIT_FAILURE;
     }
 
-  VectorType idealX(2);
+  VectorType idealX( 2 );
   idealX[0] = - vnl_math::pi / 2;
   idealX[1] = - vnl_math::pi / 2;
   double diff0 = idealX[0] - x[0];

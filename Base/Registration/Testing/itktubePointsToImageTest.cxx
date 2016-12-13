@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -132,15 +132,15 @@ int itktubePointsToImageTest( int argc, char * argv[] )
   size[2] = 100;
   tubeToImageFilter->SetSize( size );
 
-  tubeToImageFilter->SetInsideValue(1.0);
-  tubeToImageFilter->SetOutsideValue(0.0);
+  tubeToImageFilter->SetInsideValue( 1.0 );
+  tubeToImageFilter->SetOutsideValue( 0.0 );
   tubeToImageFilter->Update();
   typedef itk::ImageFileWriter< ImageType > ImageWriterType;
 
   ImageWriterType::Pointer imageWriter = ImageWriterType::New();
-  imageWriter->SetFileName(argv[2]);
+  imageWriter->SetFileName( argv[2] );
   imageWriter->SetUseCompression( true );
-  imageWriter->SetInput(tubeToImageFilter->GetOutput());
+  imageWriter->SetInput( tubeToImageFilter->GetOutput() );
   imageWriter->Update();
   return EXIT_SUCCESS;
 }

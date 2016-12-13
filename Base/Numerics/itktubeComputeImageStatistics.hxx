@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -51,7 +51,7 @@ ComputeImageStatistics< TPixel, VDimension >
 template< class TPixel, unsigned int VDimension >
 void
 ComputeImageStatistics< TPixel, VDimension >
-::SetQuantiles (const std::vector<float> _arg)
+::SetQuantiles ( const std::vector<float> _arg )
 {
   if( this->m_Quantiles != _arg )
     {
@@ -68,11 +68,11 @@ ComputeImageStatistics< TPixel, VDimension >
   //Sanity checks
   if( !this->GetInput() )
     {
-    itkExceptionMacro("Input Image is not set");
+    itkExceptionMacro( "Input Image is not set" );
     }
   if( !m_InputMask )
     {
-    itkExceptionMacro("Input Mask is not set");
+    itkExceptionMacro( "Input Mask is not set" );
     }
 
   typename ConnCompType::Pointer curConnComp = ConnCompType::New();
@@ -81,7 +81,7 @@ ComputeImageStatistics< TPixel, VDimension >
   curConnComp->Allocate();
 
   this->GetOutput()->CopyInformation( this->GetInput() );
-  this->GetOutput()->SetRegions(
+  this->GetOutput()->SetRegions( 
     this->GetInput()->GetLargestPossibleRegion() );
   this->GetOutput()->Allocate();
 
@@ -345,9 +345,9 @@ ComputeImageStatistics< TPixel, VDimension >
 template< class TPixel, unsigned int VDimension >
 void
 ComputeImageStatistics< TPixel, VDimension >
-::PrintSelf(std::ostream & os, Indent indent) const
+::PrintSelf( std::ostream & os, Indent indent ) const
 {
-  Superclass::PrintSelf(os, indent);
+  Superclass::PrintSelf( os, indent );
 }
 
 } // End namespace tube

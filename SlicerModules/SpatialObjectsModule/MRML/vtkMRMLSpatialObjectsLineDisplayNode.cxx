@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -38,7 +38,7 @@ limitations under the License.
 #include "vtkMRMLSpatialObjectsDisplayPropertiesNode.h"
 
 //------------------------------------------------------------------------------
-vtkMRMLNodeNewMacro(vtkMRMLSpatialObjectsLineDisplayNode);
+vtkMRMLNodeNewMacro( vtkMRMLSpatialObjectsLineDisplayNode );
 
 
 //------------------------------------------------------------------------------
@@ -50,38 +50,38 @@ vtkMRMLSpatialObjectsLineDisplayNode::vtkMRMLSpatialObjectsLineDisplayNode( void
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsLineDisplayNode::~vtkMRMLSpatialObjectsLineDisplayNode( void )
 {
-  this->RemoveObservers (vtkCommand::ModifiedEvent, this->MRMLCallbackCommand);
+  this->RemoveObservers ( vtkCommand::ModifiedEvent, this->MRMLCallbackCommand );
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsLineDisplayNode::WriteXML(ostream& of, int nIndent)
+void vtkMRMLSpatialObjectsLineDisplayNode::WriteXML( ostream& of, int nIndent )
 {
-  Superclass::WriteXML(of, nIndent);
+  Superclass::WriteXML( of, nIndent );
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsLineDisplayNode::ReadXMLAttributes(const char** atts)
+void vtkMRMLSpatialObjectsLineDisplayNode::ReadXMLAttributes( const char** atts )
 {
-  Superclass::ReadXMLAttributes(atts);
+  Superclass::ReadXMLAttributes( atts );
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsLineDisplayNode::Copy(vtkMRMLNode *anode)
+void vtkMRMLSpatialObjectsLineDisplayNode::Copy( vtkMRMLNode *anode )
 {
-  Superclass::Copy(anode);
+  Superclass::Copy( anode );
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsLineDisplayNode::PrintSelf(ostream& os,
-                                                     vtkIndent indent)
+void vtkMRMLSpatialObjectsLineDisplayNode::PrintSelf( ostream& os,
+                                                     vtkIndent indent )
 {
-  Superclass::PrintSelf(os,indent);
+  Superclass::PrintSelf( os,indent );
 }
 
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsLineDisplayNode::UpdatePolyDataPipeline( void )
 {
-  if(!this->GetInputPolyData() || !this->Visibility)
+  if( !this->GetInputPolyData() || !this->Visibility )
     {
     return;
     }
@@ -94,26 +94,26 @@ void vtkMRMLSpatialObjectsLineDisplayNode::UpdatePolyDataPipeline( void )
     SpatialObjectsDisplayPropertiesNode =
       this->GetSpatialObjectsDisplayPropertiesNode();
 
-  if(SpatialObjectsDisplayPropertiesNode != NULL)
+  if( SpatialObjectsDisplayPropertiesNode != NULL )
     {
     const int colorMode = this->GetColorMode();
-    if(colorMode ==
-          vtkMRMLSpatialObjectsDisplayNode::colorModeSolid)
+    if( colorMode ==
+          vtkMRMLSpatialObjectsDisplayNode::colorModeSolid )
       {
       this->ScalarVisibilityOff();
 
       vtkMRMLNode* colorNode =
-        this->GetScene()->GetNodeByID("vtkMRMLColorTableNodeFullRainbow");
-      if(colorNode)
+        this->GetScene()->GetNodeByID( "vtkMRMLColorTableNodeFullRainbow" );
+      if( colorNode )
         {
-        this->SetAndObserveColorNodeID(colorNode->GetID());
+        this->SetAndObserveColorNodeID( colorNode->GetID() );
         }
 
       this->AutoScalarRangeOff();
-      this->SetScalarRange(0, 255);
+      this->SetScalarRange( 0, 255 );
       }
-    else if(colorMode ==
-               vtkMRMLSpatialObjectsDisplayNode::colorModeScalarData)
+    else if( colorMode ==
+               vtkMRMLSpatialObjectsDisplayNode::colorModeScalarData )
       {
       this->ScalarVisibilityOn();
       this->AssignAttribute->Update();

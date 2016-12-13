@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -102,7 +102,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   typename EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter
     = EigenVectorAnalysisFilterType::New();
   eigenVectorAnalysisFilter->SetDimension( 3 );
-  eigenVectorAnalysisFilter->OrderEigenValuesBy(
+  eigenVectorAnalysisFilter->OrderEigenValuesBy( 
     EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
 
   eigenVectorAnalysisFilter->SetInput( structureTensorFilter->GetOutput() );
@@ -117,7 +117,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   typename EigenAnalysisFilterType::Pointer eigenAnalysisFilter
     = EigenAnalysisFilterType::New();
   eigenAnalysisFilter->SetDimension( 3 );
-  eigenAnalysisFilter->OrderEigenValuesBy(
+  eigenAnalysisFilter->OrderEigenValuesBy( 
     EigenAnalysisFilterType::FunctorType::OrderByValue );
 
   eigenAnalysisFilter->SetInput( structureTensorFilter->GetOutput() );
@@ -146,8 +146,8 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   itk::ImageRegionConstIterator<EigenVectorImageType>
     eigenVectorImageIterator;
   eigenVectorImageIterator
-    = itk::ImageRegionConstIterator<EigenVectorImageType>(
-    eigenVectorImage, eigenVectorImage->GetRequestedRegion());
+    = itk::ImageRegionConstIterator<EigenVectorImageType>( 
+    eigenVectorImage, eigenVectorImage->GetRequestedRegion() );
   eigenVectorImageIterator.GoToBegin();
 
   //Iterator for the diffusion tensor image
@@ -173,7 +173,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
   itk::ImageRegionConstIterator<GradientMagnitudeOutputImageType>
     gradientMagnitudeImageIterator;
   gradientMagnitudeImageIterator = itk::ImageRegionConstIterator<
-    GradientMagnitudeOutputImageType>(
+    GradientMagnitudeOutputImageType>( 
     gradientMagnitudeOutputImage,
     gradientMagnitudeOutputImage->GetRequestedRegion() );
 
@@ -254,10 +254,10 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
       {
       double gradientMagnitudeSquare = gradientMagnitude
         * gradientMagnitude;
-      double ratio = (gradientMagnitudeSquare) /
-               (m_ContrastParameterLambdaEED*m_ContrastParameterLambdaEED);
-      double expVal = std::exp( (-1.0 * m_ThresholdParameterC)/(std::pow( ratio,
-        4.0 )));
+      double ratio = ( gradientMagnitudeSquare ) /
+               ( m_ContrastParameterLambdaEED*m_ContrastParameterLambdaEED );
+      double expVal = std::exp( ( -1.0 * m_ThresholdParameterC )/( std::pow( ratio,
+        4.0 ) ) );
       LambdaEED1 = 1.0 - expVal;
       }
 
@@ -276,24 +276,26 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 
     double zeroValueTolerance = 1.0e-20;
 
-    if((vnl_math_abs(eigenValue[middleEigenValueIndex]) < zeroValueTolerance)  ||
-       (vnl_math_abs(eigenValue[smallestEigenValueIndex]) < zeroValueTolerance) )
+    if( ( vnl_math_abs( eigenValue[middleEigenValueIndex] ) <
+        zeroValueTolerance )  ||
+      ( vnl_math_abs( eigenValue[smallestEigenValueIndex] ) <
+        zeroValueTolerance ) )
       {
       LambdaCED3 = 1.0;
       }
     else
       {
       double kappa =
-       std::pow( ((float) (eigenValue[middleEigenValueIndex]) /
-                ( m_Alpha + eigenValue[smallestEigenValueIndex])),
-               4.0);
+       std::pow( ( ( float ) ( eigenValue[middleEigenValueIndex] ) /
+                ( m_Alpha + eigenValue[smallestEigenValueIndex] ) ),
+               4.0 );
 
       double contrastParameterLambdaCEDSquare
         = m_ContrastParameterLambdaCED * m_ContrastParameterLambdaCED;
 
-      double expVal = std::exp((-1.0 * (std::log( 2.0)
-        * contrastParameterLambdaCEDSquare )/kappa ));
-      LambdaCED3 = m_Alpha + (1.0 - m_Alpha)*expVal;
+      double expVal = std::exp( ( -1.0 * ( std::log( 2.0 )
+        * contrastParameterLambdaCEDSquare )/kappa ) );
+      LambdaCED3 = m_Alpha + ( 1.0 - m_Alpha )*expVal;
       }
 
     /* Compute the lambda's for the continuous switch */
@@ -301,28 +303,30 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     double Lambda2;
     double Lambda3;
 
-    double xi = (eigenValue[largestEigenValueIndex]
-      /(m_Alpha + eigenValue[middleEigenValueIndex])) -
-      (eigenValue[middleEigenValueIndex]
-      /(m_Alpha + eigenValue[smallestEigenValueIndex]));
+    double xi = ( eigenValue[largestEigenValueIndex]
+      /( m_Alpha + eigenValue[middleEigenValueIndex] ) ) -
+      ( eigenValue[middleEigenValueIndex]
+      /( m_Alpha + eigenValue[smallestEigenValueIndex] ) );
 
     double numerator = eigenValue[middleEigenValueIndex] *
-      ( (m_ContrastParameterLambdaHybrid * m_ContrastParameterLambdaHybrid)
-      * (xi - vnl_math_abs(xi)) - 2.0 * eigenValue[smallestEigenValueIndex] );
+      ( ( m_ContrastParameterLambdaHybrid *
+          m_ContrastParameterLambdaHybrid )
+      * ( xi - vnl_math_abs( xi ) ) - 2.0 *
+          eigenValue[smallestEigenValueIndex] );
 
 
     double denominator = 2.0 * std::pow( m_ContrastParameterLambdaHybrid,
       4.0 );
 
-    double epsilon = std::exp(numerator/denominator);
+    double epsilon = std::exp( numerator/denominator );
 
-    Lambda1 = (1 - epsilon ) * LambdaCED1 + epsilon*LambdaEED1;
-    Lambda2 = (1 - epsilon ) * LambdaCED2 + epsilon*LambdaEED2;
-    Lambda3 = (1 - epsilon ) * LambdaCED3 + epsilon*LambdaEED3;
+    Lambda1 = ( 1 - epsilon ) * LambdaCED1 + epsilon*LambdaEED1;
+    Lambda2 = ( 1 - epsilon ) * LambdaCED2 + epsilon*LambdaEED2;
+    Lambda3 = ( 1 - epsilon ) * LambdaCED3 + epsilon*LambdaEED3;
 
-    eigenValueMatrix(0,0) = Lambda1;
-    eigenValueMatrix(1,1) = Lambda2;
-    eigenValueMatrix(2,2) = Lambda3;
+    eigenValueMatrix( 0,0 ) = Lambda1;
+    eigenValueMatrix( 1,1 ) = Lambda2;
+    eigenValueMatrix( 2,2 ) = Lambda3;
 
     //Get the eigenVector matrix
     EigenVectorMatrixType eigenVectorMatrix =
@@ -358,17 +362,17 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     //doing this TODO
     typename DiffusionTensorImageType::PixelType        tensor;
 
-    tensor(0,0) = productMatrix(0,0);
-    tensor(0,1) = productMatrix(0,1);
-    tensor(0,2) = productMatrix(0,2);
+    tensor( 0,0 ) = productMatrix( 0,0 );
+    tensor( 0,1 ) = productMatrix( 0,1 );
+    tensor( 0,2 ) = productMatrix( 0,2 );
 
-    tensor(1,0) = productMatrix(1,0);
-    tensor(1,1) = productMatrix(1,1);
-    tensor(1,2) = productMatrix(1,2);
+    tensor( 1,0 ) = productMatrix( 1,0 );
+    tensor( 1,1 ) = productMatrix( 1,1 );
+    tensor( 1,2 ) = productMatrix( 1,2 );
 
-    tensor(2,0) = productMatrix(2,0);
-    tensor(2,1) = productMatrix(2,1);
-    tensor(2,2) = productMatrix(2,2);
+    tensor( 2,0 ) = productMatrix( 2,0 );
+    tensor( 2,1 ) = productMatrix( 2,1 );
+    tensor( 2,2 ) = productMatrix( 2,2 );
     it.Set( tensor );
 
     ++it;
@@ -381,9 +385,9 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 template< class TInputImage, class TOutputImage >
 void
 AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
-::PrintSelf(std::ostream& os, Indent indent) const
+::PrintSelf( std::ostream& os, Indent indent ) const
 {
-  Superclass::PrintSelf(os, indent);
+  Superclass::PrintSelf( os, indent );
 
   os << indent << "CED Contrast parameter "
     << m_ContrastParameterLambdaCED << std::endl;
@@ -402,4 +406,4 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeAnisotropicHybridDiffusionImageFilter_hxx)
+#endif // End !defined( __itktubeAnisotropicHybridDiffusionImageFilter_hxx )

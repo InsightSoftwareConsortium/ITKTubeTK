@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -50,7 +50,7 @@ class Q_SLICER_MODULE_SPATIALOBJECTS_WIDGETS_EXPORT qSlicerSpatialObjectsWidget
 
 public:
   typedef qSlicerWidget Superclass;
-  qSlicerSpatialObjectsWidget(QWidget *parent=0);
+  qSlicerSpatialObjectsWidget( QWidget *parent=0 );
   virtual ~qSlicerSpatialObjectsWidget();
 
   QColor color() const;
@@ -67,42 +67,42 @@ public:
     SpatialObjectsDisplayPropertiesNode() const;
 
 public slots:
-  void setSpatialObjectsNode(vtkMRMLNode *node, int DisplayNodeIndex = 0);
-  void setSpatialObjectsNode(vtkMRMLSpatialObjectsNode* SpatialObjectsNode, int DisplayNodeIndex = 0);
+  void setSpatialObjectsNode( vtkMRMLNode *node, int DisplayNodeIndex = 0 );
+  void setSpatialObjectsNode( vtkMRMLSpatialObjectsNode* SpatialObjectsNode, int DisplayNodeIndex = 0 );
 
-  void setVisibility(bool);
+  void setVisibility( bool );
   void setColorByScalar();
-  void onColorByScalarChanged(int);
-  void onColorByScalarValuesChanged(double,double);
+  void onColorByScalarChanged( int );
+  void onColorByScalarValuesChanged( double,double );
   void setColorByCellScalars();
   void setColorBySolid();
-  void setSliceIntersection(int);
-  void setSliceIntersectionThickness(double);
-  void clickColorBySolid(bool);
-  void onColorBySolidChanged(const QColor&);
-  void setColorByCellScalarsColorTable(vtkMRMLNode*);
-  void setOpacity(double);
+  void setSliceIntersection( int );
+  void setSliceIntersectionThickness( double );
+  void clickColorBySolid( bool );
+  void onColorBySolidChanged( const QColor& );
+  void setColorByCellScalarsColorTable( vtkMRMLNode* );
+  void setOpacity( double );
 
   /// Set the values on the display node
-  void setColor(const QColor&);
-  void setAmbient(double);
-  void setDiffuse(double);
-  void setSpecular(double);
-  void setSpecularPower(double);
-  void setBackfaceCulling(bool);
+  void setColor( const QColor& );
+  void setAmbient( double );
+  void setDiffuse( double );
+  void setSpecular( double );
+  void setSpecularPower( double );
+  void setBackfaceCulling( bool );
 
 protected slots:
   void updateWidgetFromMRML();
 
 protected:
-  void setSpatialObjectsDisplayNode(vtkMRMLNode *node);
-  void setSpatialObjectsDisplayNode(vtkMRMLSpatialObjectsDisplayNode *node);
+  void setSpatialObjectsDisplayNode( vtkMRMLNode *node );
+  void setSpatialObjectsDisplayNode( vtkMRMLSpatialObjectsDisplayNode *node );
 
   QScopedPointer<qSlicerSpatialObjectsWidgetPrivate> d_ptr;
 
 private:
-  Q_DECLARE_PRIVATE(qSlicerSpatialObjectsWidget);
-  Q_DISABLE_COPY(qSlicerSpatialObjectsWidget);
+  Q_DECLARE_PRIVATE( qSlicerSpatialObjectsWidget );
+  Q_DISABLE_COPY( qSlicerSpatialObjectsWidget );
 
   int inProcess;
 };

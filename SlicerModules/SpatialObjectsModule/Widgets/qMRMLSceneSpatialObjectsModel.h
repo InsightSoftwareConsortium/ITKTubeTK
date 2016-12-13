@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -37,68 +37,68 @@ qMRMLSceneSpatialObjectsModel : public qMRMLSceneDisplayableModel
 Q_OBJECT
 
   /// Control in which column vtkMRMLModelDisplayNode::Color are displayed
-  /// (Qt::DecorationRole). Even if a vtkMRMLModelNode doesn't have a color
+  /// ( Qt::DecorationRole ). Even if a vtkMRMLModelNode doesn't have a color
   /// proper, the color of its display node is used. If the model node has
   /// more than one display node and their colors are different, it uses
   /// an invalid color.
-  /// A value of -1 (default) hides the column
-  Q_PROPERTY (int colorColumn READ colorColumn WRITE setColorColumn)
+  /// A value of -1 ( default ) hides the column
+  Q_PROPERTY ( int colorColumn READ colorColumn WRITE setColorColumn )
 
   // This property holds the column ID where the node tube visisbility is shown.
-  /// A value of -1 (default) hides the column.
-  Q_PROPERTY (int lineVisibilityColumn READ lineVisibilityColumn
-              WRITE setLineVisibilityColumn)
+  /// A value of -1 ( default ) hides the column.
+  Q_PROPERTY ( int lineVisibilityColumn READ lineVisibilityColumn
+              WRITE setLineVisibilityColumn )
 
   // This property holds the column ID where the node tube visisbility is shown.
-  /// A value of -1 (default) hides the column.
-  Q_PROPERTY (int tubeVisibilityColumn READ tubeVisibilityColumn
-              WRITE setTubeVisibilityColumn)
+  /// A value of -1 ( default ) hides the column.
+  Q_PROPERTY ( int tubeVisibilityColumn READ tubeVisibilityColumn
+              WRITE setTubeVisibilityColumn )
 
   // Property holds the column ID where the node glyph visisbility is shown.
-  /// A value of -1 (default) hides the column.
-  Q_PROPERTY (int glyphVisibilityColumn READ glyphVisibilityColumn
-              WRITE setGlyphVisibilityColumn)
+  /// A value of -1 ( default ) hides the column.
+  Q_PROPERTY ( int glyphVisibilityColumn READ glyphVisibilityColumn
+              WRITE setGlyphVisibilityColumn )
 
 public:
   typedef qMRMLSceneDisplayableModel Superclass;
-  qMRMLSceneSpatialObjectsModel(QObject *parent=0);
+  qMRMLSceneSpatialObjectsModel( QObject *parent=0 );
   virtual ~qMRMLSceneSpatialObjectsModel();
 
   int colorColumn()const;
-  void setColorColumn(int column);
+  void setColorColumn( int column );
 
   int  lineVisibilityColumn()const;
-  void setLineVisibilityColumn(int column);
+  void setLineVisibilityColumn( int column );
 
   int tubeVisibilityColumn()const;
-  void setTubeVisibilityColumn(int column);
+  void setTubeVisibilityColumn( int column );
 
   int glyphVisibilityColumn()const;
-  void setGlyphVisibilityColumn(int column);
+  void setGlyphVisibilityColumn( int column );
 
 protected:
-  qMRMLSceneSpatialObjectsModel(qMRMLSceneSpatialObjectsModelPrivate* pimpl,
-                                QObject *parent=0);
+  qMRMLSceneSpatialObjectsModel( qMRMLSceneSpatialObjectsModelPrivate* pimpl,
+                                QObject *parent=0 );
 
   /// Reimplemented to listen to the displayable DisplayModifiedEvent event for
   /// visibility check state changes.
-  virtual QFlags<Qt::ItemFlag> nodeFlags(vtkMRMLNode* node, int column) const;
-  virtual void updateItemDataFromNode(QStandardItem* item,
+  virtual QFlags<Qt::ItemFlag> nodeFlags( vtkMRMLNode* node, int column ) const;
+  virtual void updateItemDataFromNode( QStandardItem* item,
                                       vtkMRMLNode* node,
-                                      int column);
-  virtual void updateNodeFromItemData(vtkMRMLNode* node, QStandardItem* item);
+                                      int column );
+  virtual void updateNodeFromItemData( vtkMRMLNode* node, QStandardItem* item );
   virtual int maxColumnId()const;
 
-  void updateVilibilityFromNode(QStandardItem* item,
+  void updateVilibilityFromNode( QStandardItem* item,
                                 vtkMRMLNode* node,
-                                bool slice = false);
-  void updateVilibilityFromItem(QStandardItem* item,
+                                bool slice = false );
+  void updateVilibilityFromItem( QStandardItem* item,
                                 vtkMRMLNode* node,
-                                bool slice = false);
+                                bool slice = false );
 
 private:
-  Q_DECLARE_PRIVATE(qMRMLSceneSpatialObjectsModel);
-  Q_DISABLE_COPY(qMRMLSceneSpatialObjectsModel);
+  Q_DECLARE_PRIVATE( qMRMLSceneSpatialObjectsModel );
+  Q_DISABLE_COPY( qMRMLSceneSpatialObjectsModel );
 };
 
 #endif

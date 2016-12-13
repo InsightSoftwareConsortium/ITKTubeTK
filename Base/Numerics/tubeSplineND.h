@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -37,7 +37,7 @@ namespace tube
 
 /** Multidimensional spline class
  *  Evaluates user supplied function to determine values at integers
- *  and will then interpolate (based on derivation used) non-integer
+ *  and will then interpolate ( based on derivation used ) non-integer
  *  values.  Includes methods for determining value, first derivative,
  *  Hessian, and local extrema.   Relies on a derivation of Spline1D to
  *  specify how interpolation is performed.
@@ -72,9 +72,9 @@ public:
    *  \param dimension dimensionality of the space being interpolated
    *  \param funcVal function evaluated at integer points to determine
    *         control point values
-   *  \param spline1D derivation of Spline1D (e.g., SplApprox1D) used
-   *         to marginally (i.e., per dimension) interpolate values
-   *  \param optimizer1D an instance (can be NULL constructed) of OptimizerND
+   *  \param spline1D derivation of Spline1D ( e.g., SplApprox1D ) used
+   *         to marginally ( i.e., per dimension ) interpolate values
+   *  \param optimizer1D an instance ( can be NULL constructed ) of OptimizerND
    *         that is used to find local extrema
    *  \warning xMin and xMax must be set!
    */
@@ -87,14 +87,14 @@ public:
   virtual ~SplineND( void );
 
   /** Returns the characteristics of spline evaluations near data bounds
-   *   (xMin and xMax). If true, values beyond edges (xMin and xMax) are
+   *   ( xMin and xMax ). If true, values beyond edges ( xMin and xMax ) are
    *   set to zero.  If false, values beyond edges are faded to 0 as a
    *   function of squared distance from edge.
    */
   tubeGetMacro( Clip, bool );
 
   /** Sets the characteristics of spline evaluations near data bounds
-   *   (xMin and xMax). If true, values beyond edges (xMin and xMax) are
+   *   ( xMin and xMax ). If true, values beyond edges ( xMin and xMax ) are
    *   set to zero.  If false, values beyond edges are faded to 0 as a
    *   function of squared distance from edge.
    */
@@ -110,18 +110,18 @@ public:
   /** User specification of lower bound */
   virtual void SetXMin( IntVectorType xMin );
 
-  /** Returns the control points' (integer value locations) lower bound */
+  /** Returns the control points' ( integer value locations ) lower bound */
   tubeGetMacro( XMin, IntVectorType );
 
   /** User Specification of upper bound */
   virtual void SetXMax( IntVectorType xMax );
 
-  /** Sets control points' (integer value locations) upper bound */
+  /** Sets control points' ( integer value locations ) upper bound */
   tubeGetMacro( XMax, IntVectorType );
 
   /** Tracks the validity of internally maintained intermediate
    * calculations and data. Returns true if a new spline instance has been
-   * created (e.g., use has been called)
+   * created ( e.g., use has been called )
    */
   tubeGetMacro( NewData, bool );
 
@@ -173,10 +173,10 @@ public:
   bool ExtremeConjGrad( VectorType & extX, double * extVal );
 
   /** Returns spline interpolated Hessian at x.
-   * Calculates the values at control (integer) points by calling the
+   * Calculates the values at control ( integer ) points by calling the
    * UserFunction and returns the interpolated Hessian between those points.
    * Type of interpolation is dependent on which spline derivation is used
-   * (e.g., SplApprox1D).  Intermediate calculations and control point
+   * ( e.g., SplApprox1D ).  Intermediate calculations and control point
    * evaluations are stored to speed subsequent calls
    */
   MatrixType & Hessian( const VectorType & x );
@@ -185,9 +185,9 @@ public:
    *  \param dimension dimensionality of the space being interpolated
    *  \param funcVal function evaluated at integer points to determine
    *         control point values
-   *  \param spline1D derivation of Spline1D (e.g., SplApprox1D) used
-   *         to marginally (i.e., per dimension) interpolate values
-   *  \param optimizer1D an instance (can be NULL constructed) of OptimizerND
+   *  \param spline1D derivation of Spline1D ( e.g., SplApprox1D ) used
+   *         to marginally ( i.e., per dimension ) interpolate values
+   *  \param optimizer1D an instance ( can be NULL constructed ) of OptimizerND
    *         that is used to find local extrema
    *  \warning xMin and xMax must be set!
    */
@@ -197,47 +197,47 @@ public:
     Optimizer1D::Pointer optimizer1D );
 
   /** Returns spline interpolated value at x.
-   * Calculates the values at control (integer) points by calling the
+   * Calculates the values at control ( integer ) points by calling the
    * UserFunction and returns the interpolated value between those points.
    * Type of interpolation is dependent on which spline derivation is used
-   * (e.g., SplApprox1D).   Intermediate calculations and control point
+   * ( e.g., SplApprox1D ).   Intermediate calculations and control point
    * evaluations are stored to speed subsequent calls.
    */
   double Value( const VectorType & x );
 
   /** Returns spline interpolated first derivative at x projected onto dx.
-   *  Calculates the values at control (integer) points by calling the
+   *  Calculates the values at control ( integer ) points by calling the
    *  UserFunction and returns the interpolated first derivative between those
    *  points.  Type of interpolation is dependent on which spline derivation
-   *  is used (e.g., SplApprox1D).   Intermediate calculations and control
+   *  is used ( e.g., SplApprox1D ).   Intermediate calculations and control
    *  point evaluations are stored to speed subsequent calls.
    */
   double ValueD( const VectorType & x, IntVectorType & dx );
 
   /** Returns spline interpolated first derivative at x.
-   * Calculates the values at control (integer) points by calling the
+   * Calculates the values at control ( integer ) points by calling the
    * UserFunction and returns the interpolated first derivative between those
    * points.  Type of interpolation is dependent on which spline derivation
-   * is used (e.g., SplApprox1D).  Intermediate calculations and control
+   * is used ( e.g., SplApprox1D ).  Intermediate calculations and control
    * point evaluations are stored to speed subsequent calls.
    */
   VectorType & ValueD( const VectorType & x );
 
-  /** Returns spline interpolated derivative jet (value, 1st derivative,
-   * Hessian) at x. Calculates the values at control (integer) points by
+  /** Returns spline interpolated derivative jet ( value, 1st derivative,
+   * Hessian ) at x. Calculates the values at control ( integer ) points by
    * calling the UserFunction and returns the interpolated derivative jet
    * between those points.   Type of interpolation is dependent on which
-   * spline derivation is used (e.g., SplApprox1D).   Intermediate
+   * spline derivation is used ( e.g., SplApprox1D ).   Intermediate
    * calculations and control point evaluations are stored to speed
    * subsequent calls.
    */
   double ValueJet( const VectorType & x, VectorType & d, MatrixType & h );
 
   /** Returns spline interpolated 1st derivatives and 2nd derivatives at x
-   * Calculates the values at control (integer) points by calling the
+   * Calculates the values at control ( integer ) points by calling the
    * UserFunction and returns the interpolated 1st derivatives and 2nd
    * derivatives between those points.  Type of interpolation is dependent
-   * on which spline derivation is used (e.g., SplApprox1D). Intermediate
+   * on which spline derivation is used ( e.g., SplApprox1D ). Intermediate
    * calculations and control point evaluations are stored to speed
    * subsequent calls
    */
@@ -284,4 +284,4 @@ private:
 
 } // End namespace tube
 
-#endif // End !defined(__tubeSplineND_h)
+#endif // End !defined( __tubeSplineND_h )

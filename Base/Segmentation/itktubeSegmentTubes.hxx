@@ -12,7 +12,7 @@ Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -111,7 +111,7 @@ template< class TInputImage >
 void
 SegmentTubes<TInputImage>
 ::SetSeedIndexFromFileList
-( std::vector< ContinuousIndexType > seedI, std::vector< ScaleType > seedS)
+( std::vector< ContinuousIndexType > seedI, std::vector< ScaleType > seedS )
 {
   double scaleNorm = this->m_InputImage->GetSpacing()[0];
   for( size_t seedNum = 0; seedNum < seedI.size(); ++seedNum )
@@ -161,7 +161,7 @@ SegmentTubes<TInputImage>
 
   if( this->m_SeedMask )
     {
-    itk::ImageRegionConstIteratorWithIndex< TubeMaskImageType > iter(
+    itk::ImageRegionConstIteratorWithIndex< TubeMaskImageType > iter( 
           this->m_SeedMask, this->m_SeedMask->GetLargestPossibleRegion() );
     itk::ImageRegionConstIterator< ScaleImageType > iterS;
     if( this->m_ScaleMask )
@@ -205,7 +205,7 @@ SegmentTubes<TInputImage>
     typename TubeGroupType::ChildrenListType::iterator iter = tubeList->begin();
     while( iter != tubeList->end() )
       {
-      this->m_TubeExtractorFilter->AddTube( static_cast< TubeType * >(
+      this->m_TubeExtractorFilter->AddTube( static_cast< TubeType * >( 
             iter->GetPointer() ) );
       ++iter;
       }
@@ -279,17 +279,17 @@ SegmentTubes<TInputImage>
   typename TubeTransformType::MatrixType directionMatrix;
   typename ImageType::SpacingType spacing = this->m_InputImage->GetSpacing();
   typename ImageType::PointType origin = this->m_InputImage->GetOrigin();
-  for (unsigned int i = 0; i < ImageDimension; ++i)
+  for ( unsigned int i = 0; i < ImageDimension; ++i )
     {
     scaleVector[i] = spacing[i];
     offsetVector[i] = origin[i];
     }
 
-  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()->SetScale(
+  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()->SetScale( 
     scaleVector );
-  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()->SetOffset(
+  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()->SetOffset( 
     offsetVector );
-  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()->SetMatrix(
+  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()->SetMatrix( 
     this->m_InputImage->GetDirection() );
   this->m_TubeExtractorFilter->GetTubeGroup()->ComputeObjectToWorldTransform();
 
@@ -298,10 +298,10 @@ SegmentTubes<TInputImage>
     this->m_TubeExtractorFilter->GetRidgeOp()->GetNumberOfFailureCodes();
     ++code )
     {
-    std::cout << "   " << this->m_TubeExtractorFilter->GetRidgeOp()->GetFailureCodeName(
+    std::cout << "   " << this->m_TubeExtractorFilter->GetRidgeOp()->GetFailureCodeName( 
       typename RidgeExtractorFilterType::FailureCodeEnum( code ) ) << " : "
-      << this->m_TubeExtractorFilter->GetRidgeOp()->GetFailureCodeCount(
-      typename RidgeExtractorFilterType::FailureCodeEnum(
+      << this->m_TubeExtractorFilter->GetRidgeOp()->GetFailureCodeCount( 
+      typename RidgeExtractorFilterType::FailureCodeEnum( 
       code ) ) << std::endl;
     }
 }
@@ -358,4 +358,4 @@ void SegmentTubes<TInputImage>
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeSegmentTubes_hxx)
+#endif // End !defined( __itktubeSegmentTubes_hxx )

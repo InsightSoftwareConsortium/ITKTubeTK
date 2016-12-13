@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -65,7 +65,7 @@ int DoIt( int argc, char * argv[] )
   double progress = 0.1;
   progressReporter.Report( progress );
 
-  timeCollector.Start("Load image data");
+  timeCollector.Start( "Load image data" );
   typename ImageReaderType::Pointer inImageReader = ImageReaderType::New();
   inImageReader->SetFileName( inputShrunkenImageFileName.c_str() );
   try
@@ -75,17 +75,17 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
   typename ImageType::Pointer inImage = inImageReader->GetOutput();
-  timeCollector.Stop("Load image data");
+  timeCollector.Stop( "Load image data" );
 
   progress += 0.1;
   progressReporter.Report( progress );
 
-  timeCollector.Start("Load scale data");
+  timeCollector.Start( "Load scale data" );
   typename ImageReaderType::Pointer inScaleReader = ImageReaderType::New();
   inScaleReader->SetFileName( inputShrunkenScaleImageFileName.c_str() );
   try
@@ -95,17 +95,17 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
   typename ImageType::Pointer inScale = inScaleReader->GetOutput();
-  timeCollector.Stop("Load scale data");
+  timeCollector.Stop( "Load scale data" );
 
   progress += 0.1;
   progressReporter.Report( progress );
 
-  timeCollector.Start("Load point data");
+  timeCollector.Start( "Load point data" );
   typename PointImageReaderType::Pointer inPointReader =
     PointImageReaderType::New();
   inPointReader->SetFileName( inputShrunkenPointsImageFileName.c_str() );
@@ -116,17 +116,17 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
   typename PointImageType::Pointer inPoint = inPointReader->GetOutput();
-  timeCollector.Stop("Load point data");
+  timeCollector.Stop( "Load point data" );
 
   progress += 0.1;
   progressReporter.Report( progress );
 
-  timeCollector.Start("Generate output list");
+  timeCollector.Start( "Generate output list" );
   itk::ImageRegionIterator< ImageType > itImage( inImage,
     inImage->GetLargestPossibleRegion() );
   itk::ImageRegionIterator< ImageType > itScale( inScale,
@@ -153,7 +153,7 @@ int DoIt( int argc, char * argv[] )
     ++itPoint;
     }
   writeStream.close();
-  timeCollector.Stop("Generate output list");
+  timeCollector.Stop( "Generate output list" );
 
   progress = 1.0;
   progressReporter.Report( progress );

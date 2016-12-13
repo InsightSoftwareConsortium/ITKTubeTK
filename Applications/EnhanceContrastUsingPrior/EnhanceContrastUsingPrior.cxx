@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -48,7 +48,7 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with Slicer GUI
-  tube::CLIProgressReporter    progressReporter(
+  tube::CLIProgressReporter    progressReporter( 
     "ContrastImage", CLPProcessInformation );
   progressReporter.Start();
 
@@ -64,7 +64,7 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::Pointer inputImage;
   typename ImageType::Pointer inputMask;
 
-  timeCollector.Start("Read");
+  timeCollector.Start( "Read" );
     {
     typedef itk::ImageFileReader< ImageType >   ReaderType;
 
@@ -83,7 +83,7 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Reading input image. Exception caught: "
-                          + std::string(err.GetDescription()) );
+                          + std::string( err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
@@ -96,13 +96,13 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Reading input mask. Exception caught: "
-                          + std::string(err.GetDescription()) );
+                          + std::string( err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
     }
   progressReporter.Report( 0.1 );
-  timeCollector.Stop("Read");
+  timeCollector.Stop( "Read" );
 
   filter->SetObjectScale( objectScale );
   filter->SetBackgroundScale( backgroundScale );
@@ -111,11 +111,11 @@ int DoIt( int argc, char * argv[] )
   filter->SetOptimizationIterations( iterations );
   filter->SetOptimizationSeed( seed );
 
-  timeCollector.Start("Run Filter");
+  timeCollector.Start( "Run Filter" );
 
   filter->Update();
 
-  timeCollector.Stop("Run Filter");
+  timeCollector.Stop( "Run Filter" );
   progressReporter.Report( 0.8 );
 
   typedef itk::ImageFileWriter< ImageType  >   ImageWriterType;
@@ -131,7 +131,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Writing volume. Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }

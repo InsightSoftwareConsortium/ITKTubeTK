@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -26,7 +26,7 @@ limitations under the License.
 #include <itkHessianRecursiveGaussianImageFilter.h>
 #include <itkImageFileWriter.h>
 
-int itktubeSheetnessMeasureImageFilterTest(int ,char *[] )
+int itktubeSheetnessMeasureImageFilterTest( int ,char *[] )
 {
   std::cout << "itktubeSheetnessMeasureImageFilterTest running..." << std::endl;
 
@@ -57,7 +57,7 @@ int itktubeSheetnessMeasureImageFilterTest(int ,char *[] )
   size[2] = 8;
 
   myIndexType start;
-  start.Fill(0);
+  start.Fill( 0 );
 
   myRegionType region;
   region.SetIndex( start );
@@ -72,7 +72,7 @@ int itktubeSheetnessMeasureImageFilterTest(int ,char *[] )
   // Declare Iterator type for the input image
   typedef itk::ImageRegionIteratorWithIndex<myImageType>  myIteratorType;
 
-  // Create one iterator for the Input Image A (this is a light object)
+  // Create one iterator for the Input Image A ( this is a light object )
   myIteratorType it( inputImage, inputImage->GetRequestedRegion() );
 
   // Initialize the content of Image A
@@ -107,8 +107,8 @@ int itktubeSheetnessMeasureImageFilterTest(int ,char *[] )
   std::cout << "Writing out the synthetic image" << std::endl;
   typedef itk::ImageFileWriter<myImageType>     InputImageWriterType;
   InputImageWriterType::Pointer inputImageWriter= InputImageWriterType::New();
-  inputImageWriter->SetFileName("SyntheticImageForSheetnessTest.mha");
-  inputImageWriter->SetInput(inputImage);
+  inputImageWriter->SetFileName( "SyntheticImageForSheetnessTest.mha" );
+  inputImageWriter->SetInput( inputImage );
   inputImageWriter->Update();
 
   // Declare the type for the Hessian filter
@@ -153,8 +153,8 @@ int itktubeSheetnessMeasureImageFilterTest(int ,char *[] )
   std::cout << "Write out the sheetness image" << std::endl;
   typedef itk::ImageFileWriter<SheetnessImageType>     SheetnessImageWriterType;
   SheetnessImageWriterType::Pointer writer= SheetnessImageWriterType::New();
-  writer->SetFileName("SheetnessImage.mha");
-  writer->SetInput(outputImage);
+  writer->SetFileName( "SheetnessImage.mha" );
+  writer->SetInput( outputImage );
   writer->Update();
 
   return EXIT_SUCCESS;

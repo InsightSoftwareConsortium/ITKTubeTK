@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -45,9 +45,9 @@ vtkMRMLSpatialObjectsTubeDisplayNode : public vtkMRMLSpatialObjectsDisplayNode
 {
  public:
   static vtkMRMLSpatialObjectsTubeDisplayNode* New( void );
-  vtkTypeMacro(vtkMRMLSpatialObjectsTubeDisplayNode,
-               vtkMRMLSpatialObjectsDisplayNode);
-  void PrintSelf(ostream& os, vtkIndent indent);
+  vtkTypeMacro( vtkMRMLSpatialObjectsTubeDisplayNode,
+               vtkMRMLSpatialObjectsDisplayNode );
+  void PrintSelf( ostream& os, vtkIndent indent );
 
   //----------------------------------------------------------------------------
   /// MRMLNode methods
@@ -56,20 +56,20 @@ vtkMRMLSpatialObjectsTubeDisplayNode : public vtkMRMLSpatialObjectsDisplayNode
   virtual vtkMRMLNode* CreateNodeInstance( void );
 
   ///
-  /// Read node attributes from XML (MRML) file
-  virtual void ReadXMLAttributes(const char** atts);
+  /// Read node attributes from XML ( MRML ) file
+  virtual void ReadXMLAttributes( const char** atts );
 
   ///
   /// Write this node's information to a MRML file in XML format.
-  virtual void WriteXML(ostream& of, int indent);
+  virtual void WriteXML( ostream& of, int indent );
 
   ///
   /// Copy the node's attributes to this object
   /// Does NOT copy: ID, FilePrefix, Name, ID
-  virtual void Copy(vtkMRMLNode *node);
+  virtual void Copy( vtkMRMLNode *node );
 
   ///
-  /// Get node XML tag name (like Volume, UnstructuredGrid)
+  /// Get node XML tag name ( like Volume, UnstructuredGrid )
   virtual const char* GetNodeTagName( void )
   {return "SpatialObjectsTubeDisplayNode";}
 
@@ -82,31 +82,31 @@ vtkMRMLSpatialObjectsTubeDisplayNode : public vtkMRMLSpatialObjectsDisplayNode
   virtual void UpdatePolyDataPipeline( void );
 
   //----------------------------------------------------------------------------
-  /// Display Information: Geometry to display (not mutually exclusive)
+  /// Display Information: Geometry to display ( not mutually exclusive )
   //----------------------------------------------------------------------------
 
   ///
   /// The minimum tube radius.
-  vtkSetMacro(TubeRadius, double);
-  vtkGetMacro(TubeRadius, double);
+  vtkSetMacro( TubeRadius, double );
+  vtkGetMacro( TubeRadius, double );
 
   ///
   /// Number of tube sides.
-  vtkSetMacro(TubeNumberOfSides, int);
-  vtkGetMacro(TubeNumberOfSides, int);
+  vtkSetMacro( TubeNumberOfSides, int );
+  vtkGetMacro( TubeNumberOfSides, int );
 
 protected:
   vtkMRMLSpatialObjectsTubeDisplayNode( void );
   ~vtkMRMLSpatialObjectsTubeDisplayNode( void );
-  vtkMRMLSpatialObjectsTubeDisplayNode(
-    const vtkMRMLSpatialObjectsTubeDisplayNode&);
-  void operator=(const vtkMRMLSpatialObjectsTubeDisplayNode&);
+  vtkMRMLSpatialObjectsTubeDisplayNode( 
+    const vtkMRMLSpatialObjectsTubeDisplayNode& );
+  void operator=( const vtkMRMLSpatialObjectsTubeDisplayNode& );
 
   /// To be reimplemented in subclasses if the input of the pipeline changes
-#if (VTK_MAJOR_VERSION <= 5)
-  virtual void SetInputToPolyDataPipeline(vtkPolyData* polyData);
+#if ( VTK_MAJOR_VERSION <= 5 )
+  virtual void SetInputToPolyDataPipeline( vtkPolyData* polyData );
 #else
-  virtual void SetInputToPolyDataPipeline(vtkAlgorithmOutput* polyDataConnection);
+  virtual void SetInputToPolyDataPipeline( vtkAlgorithmOutput* polyDataConnection );
 #endif
 
   /// Return the polydata that is processed by the display node.
@@ -125,4 +125,4 @@ protected:
 
 }; // End class vtkMRMLSpatialObjectsTubeDisplayNode
 
-#endif // End !defined(__vtkMRMLSpatialObjectsTubeDisplayNode_h)
+#endif // End !defined( __vtkMRMLSpatialObjectsTubeDisplayNode_h )

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -71,8 +71,8 @@ int itktubeMarkDuplicateFramesInvalidImageFilterTest( int argc, char * argv[] )
   TEST_EXPECT_EQUAL( duplicateFilter->GetTolerance(), 3 );
   duplicateFilter->SetFractionalThreshold( 0.7 );
   TEST_EXPECT_EQUAL( duplicateFilter->GetFractionalThreshold(), 0.7 );
-  duplicateFilter->SetInputMetaDataDictionary(
-    &(inputImage->GetMetaDataDictionary()) );
+  duplicateFilter->SetInputMetaDataDictionary( 
+    &( inputImage->GetMetaDataDictionary() ) );
   duplicateFilter->DebugOn();
   TRY_EXPECT_NO_EXCEPTION( duplicateFilter->Update() );
 
@@ -83,7 +83,7 @@ int itktubeMarkDuplicateFramesInvalidImageFilterTest( int argc, char * argv[] )
   writer->SetUseInputMetaDataDictionary( false );
   typedef itk::MetaImageIO ImageIOType;
   ImageIOType::Pointer imageIO = ImageIOType::New();
-  imageIO->SetMetaDataDictionary(
+  imageIO->SetMetaDataDictionary( 
     duplicateFilter->GetOutputMetaDataDictionary() );
   writer->SetImageIO( imageIO );
   writer->SetUseCompression( true );

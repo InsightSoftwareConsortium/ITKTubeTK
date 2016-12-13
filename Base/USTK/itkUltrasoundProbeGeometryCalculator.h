@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -40,8 +40,8 @@ namespace tube
  *
  * Given a scan-converted ultrasound B-Mode "sector" image that was generated
  * with a curvilinear or phased array probe, compute a center of curvature
- * (UltrasoundProbeOrigin) and the distance to the start of acquisition
- * (StartOfAcquisitionRadius).
+ * ( UltrasoundProbeOrigin ) and the distance to the start of acquisition
+ * ( StartOfAcquisitionRadius ).
  *
  * We iterate in from the sides of the image orthogonal to the
  * GeneralBeamDirection and find the first values that are not equal to the
@@ -65,7 +65,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( UltrasoundProbeGeometryCalculator, ProcessObject );
 
   /** Some convenient typedefs. */
@@ -101,7 +101,7 @@ protected:
   virtual void PrintSelf( std::ostream & os, Indent indent ) const;
 
   using Superclass::MakeOutput;
-  virtual DataObject::Pointer MakeOutput(DataObjectPointerArraySizeType index);
+  virtual DataObject::Pointer MakeOutput( DataObjectPointerArraySizeType index );
 
   virtual void GenerateData( void );
 
@@ -122,4 +122,4 @@ private:
 #include "itkUltrasoundProbeGeometryCalculator.hxx"
 #endif
 
-#endif // End !defined(__itkUltrasoundProbeGeometryCalculator_h)
+#endif // End !defined( __itkUltrasoundProbeGeometryCalculator_h )

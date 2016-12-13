@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -106,10 +106,10 @@ AcousticImpulseResponseImageFilter< TInputImage, TOutputImage, TOperatorValue >
          !outputIt.IsAtEnd();
          ++inputIt, ++angleOfIncidenceIt, ++gradientMagnitudeIt, ++outputIt )
       {
-      outputIt.Set( static_cast< typename OutputImageType::PixelType >(
+      outputIt.Set( static_cast< typename OutputImageType::PixelType >( 
         std::pow( static_cast< OperatorValueType >( angleOfIncidenceIt.Get() ),
         static_cast< OperatorValueType >( this->m_AngleDependence *
-        gradientMagnitudeIt.Get() / ( 2.0 * inputIt.Get() )))));
+        gradientMagnitudeIt.Get() / ( 2.0 * inputIt.Get() ) ) ) ) );
       }
     }
 }
@@ -120,7 +120,7 @@ void
 AcousticImpulseResponseImageFilter< TInputImage, TOutputImage, TOperatorValue >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
-  Superclass::PrintSelf(os, indent);
+  Superclass::PrintSelf( os, indent );
   os << indent << "AngleDependence: "
      << this->m_AngleDependence
      << std::endl;
@@ -128,4 +128,4 @@ AcousticImpulseResponseImageFilter< TInputImage, TOutputImage, TOperatorValue >
 
 } // End namespace itk
 
-#endif // End !defined(__itkAcousticImpulseResponseImageFilter_hxx)
+#endif // End !defined( __itkAcousticImpulseResponseImageFilter_hxx )

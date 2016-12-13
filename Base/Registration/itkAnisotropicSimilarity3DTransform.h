@@ -3,10 +3,10 @@
   Program:   Insight Segmentation & Registration Toolkit
   Module:    $RCSfile: ITKHeader.h,v $
   Language:  C++
-  Date:      $Date: 2007-07-10 11:35:36 -0400 (Tue, 10 Jul 2007) $
+  Date:      $Date: 2007-07-10 11:35:36 -0400 ( Tue, 10 Jul 2007 ) $
   Version:   $Revision: 0 $
 
-  Copyright (c) 2002 Insight Consortium. All rights reserved.
+  Copyright ( c ) 2002 Insight Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
@@ -23,8 +23,8 @@
 namespace itk
 {
 
-/** \brief AnisotropicSimilarity3DTransform of a vector space (e.g. space
- * coordinates)
+/** \brief AnisotropicSimilarity3DTransform of a vector space ( e.g. space
+ * coordinates )
  *
  * This transform applies a rotation, translation and anisotropic scaling
  * to the space.
@@ -47,7 +47,7 @@ namespace itk
  * \sa VersorRigid3DTransform
  */
 template <class TScalarType = double>
-// Data type for scalars (float or double)
+// Data type for scalars ( float or double )
 class AnisotropicSimilarity3DTransform :
   public VersorRigid3DTransform<TScalarType>
 {
@@ -61,14 +61,14 @@ public:
   /** New macro for creation of through a Smart Pointer. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( AnisotropicSimilarity3DTransform, VersorRigid3DTransform );
 
   /** Dimension of parameters. */
-  itkStaticConstMacro(SpaceDimension, unsigned int, 3);
-  itkStaticConstMacro(InputSpaceDimension, unsigned int, 3);
-  itkStaticConstMacro(OutputSpaceDimension, unsigned int, 3);
-  itkStaticConstMacro(ParametersDimension, unsigned int, 9);
+  itkStaticConstMacro( SpaceDimension, unsigned int, 3 );
+  itkStaticConstMacro( InputSpaceDimension, unsigned int, 3 );
+  itkStaticConstMacro( OutputSpaceDimension, unsigned int, 3 );
+  itkStaticConstMacro( ParametersDimension, unsigned int, 9 );
 
   /** Parameters Type   */
   typedef typename Superclass::ParametersType      ParametersType;
@@ -112,7 +112,7 @@ public:
    * represents the scaling factor. */
   void SetParameters( const ParametersType & parameters );
 
-  virtual const ParametersType & GetParameters(void) const;
+  virtual const ParametersType & GetParameters( void ) const;
 
   /** Set/Get the value of the isotropic scaling factor */
   void SetScale( ScaleType scale );
@@ -125,21 +125,21 @@ public:
    * given point or vector, returning the transformed point or
    * vector. The rank of the Jacobian will also indicate if the
    * transform is invertible at this point. */
-  virtual const JacobianType & GetJacobian(const InputPointType  & point ) const;
+  virtual const JacobianType & GetJacobian( const InputPointType  & point ) const;
 
-  virtual void ComputeJacobianWithRespectToParameters(
-    const InputPointType & p, JacobianType & jacobian) const;
+  virtual void ComputeJacobianWithRespectToParameters( 
+    const InputPointType & p, JacobianType & jacobian ) const;
 
 protected:
-  AnisotropicSimilarity3DTransform(const MatrixType & matrix,
-    const OutputVectorType & offset);
-  AnisotropicSimilarity3DTransform(unsigned int paramDim);
+  AnisotropicSimilarity3DTransform( const MatrixType & matrix,
+    const OutputVectorType & offset );
+  AnisotropicSimilarity3DTransform( unsigned int paramDim );
   AnisotropicSimilarity3DTransform();
   ~AnisotropicSimilarity3DTransform()
     {
     };
 
-  void PrintSelf(std::ostream & os, Indent indent) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const;
 
   /** Recomputes the matrix by calling the Superclass::ComputeMatrix() and then
    * applying the scale factor. */
@@ -149,8 +149,8 @@ protected:
   void ComputeMatrixParameters();
 
 private:
-  AnisotropicSimilarity3DTransform(const Self &); // purposely not implemented
-  void operator=(const Self &);                   // purposely not implemented
+  AnisotropicSimilarity3DTransform( const Self & ); // purposely not implemented
+  void operator=( const Self & );                   // purposely not implemented
 
   VectorType           m_Scale;
   mutable JacobianType m_NonThreadsafeSharedJacobian;

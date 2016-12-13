@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -176,7 +176,7 @@ Read( const char * _headerName )
 
   m_RidgeSeedFilter->SetScales( seedReader.GetRidgeSeedScales() );
 
-  m_RidgeSeedFilter->SetUseIntensityOnly(
+  m_RidgeSeedFilter->SetUseIntensityOnly( 
     seedReader.GetUseIntensityOnly() );
 
   m_RidgeSeedFilter->SetRidgeId( seedReader.GetRidgeId() );
@@ -210,7 +210,7 @@ Read( const char * _headerName )
       GetPointer() );
   if( pdfParzen.IsNotNull() )
     {
-    PDFSegmenterParzenIO< TImage, TLabelMap > pdfReader(
+    PDFSegmenterParzenIO< TImage, TLabelMap > pdfReader( 
       pdfParzen.GetPointer() );
     if( !pdfReader.Read( pdfFileName.c_str() ) )
       {
@@ -229,7 +229,7 @@ Read( const char * _headerName )
         GetPointer() );
     if( pdfSVM.IsNotNull() )
       {
-      PDFSegmenterSVMIO< TImage, TLabelMap > pdfReader(
+      PDFSegmenterSVMIO< TImage, TLabelMap > pdfReader( 
         pdfSVM.GetPointer() );
       if( !pdfReader.Read( pdfFileName.c_str() ) )
         {
@@ -245,11 +245,11 @@ Read( const char * _headerName )
       typedef PDFSegmenterRandomForest< TImage, TLabelMap >
         PDFSegmenterRandomForestType;
       typename PDFSegmenterRandomForestType::Pointer pdfRandomForest =
-        dynamic_cast< PDFSegmenterRandomForestType * >(
+        dynamic_cast< PDFSegmenterRandomForestType * >( 
           m_RidgeSeedFilter->GetPDFSegmenter().GetPointer() );
       if( pdfRandomForest.IsNotNull() )
         {
-        PDFSegmenterRandomForestIO< TImage, TLabelMap > pdfReader(
+        PDFSegmenterRandomForestIO< TImage, TLabelMap > pdfReader( 
           pdfRandomForest.GetPointer() );
         if( !pdfReader.Read( pdfFileName.c_str() ) )
           {
@@ -286,7 +286,7 @@ Write( const char * _headerName )
 
   seedWriter.SetRidgeSeedScales( m_RidgeSeedFilter->GetScales() );
 
-  seedWriter.SetUseIntensityOnly(
+  seedWriter.SetUseIntensityOnly( 
     m_RidgeSeedFilter->GetUseIntensityOnly() );
 
   seedWriter.SetRidgeId( m_RidgeSeedFilter->GetRidgeId() );
@@ -312,7 +312,7 @@ Write( const char * _headerName )
   char fileName[255];
   MET_GetFilePath( _headerName, fileName );
   int skip = strlen( fileName );
-  std::string pdfName = &(_headerName[skip]);
+  std::string pdfName = &( _headerName[skip] );
 
   pdfName = pdfName + ".mpd";
 
@@ -330,7 +330,7 @@ Write( const char * _headerName )
       GetPDFSegmenter().GetPointer() );
   if( pdfParzen.IsNotNull() )
     {
-    PDFSegmenterParzenIO< TImage, TLabelMap > pdfWriter(
+    PDFSegmenterParzenIO< TImage, TLabelMap > pdfWriter( 
       pdfParzen.GetPointer() );
     if( !pdfWriter.Write( pdfWriteName.c_str() ) )
       {
@@ -346,7 +346,7 @@ Write( const char * _headerName )
         GetPDFSegmenter().GetPointer() );
     if( pdfSVM.IsNotNull() )
       {
-      PDFSegmenterSVMIO< TImage, TLabelMap > pdfWriter(
+      PDFSegmenterSVMIO< TImage, TLabelMap > pdfWriter( 
         pdfSVM.GetPointer() );
       if( !pdfWriter.Write( pdfWriteName.c_str() ) )
         {
@@ -364,7 +364,7 @@ Write( const char * _headerName )
           GetPDFSegmenter().GetPointer() );
       if( pdfRandomForest.IsNotNull() )
         {
-        PDFSegmenterRandomForestIO< TImage, TLabelMap > pdfWriter(
+        PDFSegmenterRandomForestIO< TImage, TLabelMap > pdfWriter( 
           pdfRandomForest.GetPointer() );
         if( !pdfWriter.Write( pdfWriteName.c_str() ) )
           {

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -62,8 +62,8 @@ InverseIntensityImageFilter<TInputImage>
   OutputImage->SetLargestPossibleRegion( region );   //
   OutputImage->SetBufferedRegion( region );         // set the region
   OutputImage->SetRequestedRegion( region );       //
-  OutputImage->SetSpacing(InputImage->GetSpacing());  // set spacing
-  OutputImage->SetOrigin(InputImage->GetOrigin());   //   and origin
+  OutputImage->SetSpacing( InputImage->GetSpacing() );  // set spacing
+  OutputImage->SetOrigin( InputImage->GetOrigin() );   //   and origin
   OutputImage->Allocate();                          // allocate the image
 
   InputPixelType myMin;        //
@@ -71,12 +71,13 @@ InverseIntensityImageFilter<TInputImage>
   InputPixelType value;      //       calc max/min
   InputPixelType temp;     //
 
-  typename itk::MinimumMaximumImageFilter<InputImageType>::Pointer MinMaxFilter;//
-  MinMaxFilter=itk::MinimumMaximumImageFilter<InputImageType>::New(); //
-  MinMaxFilter->SetInput( InputImage );                //  compute max
+  typename itk::MinimumMaximumImageFilter<InputImageType>::Pointer
+    MinMaxFilter;
+  MinMaxFilter=itk::MinimumMaximumImageFilter<InputImageType>::New(); 
+  MinMaxFilter->SetInput( InputImage );         //  compute max
   MinMaxFilter->Update();                       // and min
-  myMin=MinMaxFilter->GetMinimum();                //  of the input image
-  myMax=MinMaxFilter->GetMaximum();               //
+  myMin=MinMaxFilter->GetMinimum();             //  of the input image
+  myMax=MinMaxFilter->GetMaximum();             //
 
   // ** Input max value is given, then use it instead of true max ** //
   if( m_InverseMaximumIntensity ) { myMax = m_InverseMaximumIntensity;  }
@@ -100,11 +101,11 @@ InverseIntensityImageFilter<TInputImage>
       }
     else
       {
-      value = (myMax + myMin) - temp;
+      value = ( myMax + myMin ) - temp;
       }
-    OutputPixelType out = (OutputPixelType) value;
+    OutputPixelType out = ( OutputPixelType ) value;
 
-    it_output.Set(out);
+    it_output.Set( out );
     ++it_output;
     ++it_input;
     }
@@ -116,4 +117,4 @@ InverseIntensityImageFilter<TInputImage>
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeInverseIntensityImageFilter_hxx)
+#endif // End !defined( __itktubeInverseIntensityImageFilter_hxx )

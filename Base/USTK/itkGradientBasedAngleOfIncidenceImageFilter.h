@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -63,7 +63,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( GradientBasedAngleOfIncidenceImageFilter, ImageToImageFilter );
 
   /** Some convenient typedefs. */
@@ -128,7 +128,7 @@ protected:
   GradientBasedAngleOfIncidenceImageFilter( void );
   virtual ~GradientBasedAngleOfIncidenceImageFilter( void ) {}
 
-  virtual void PrintSelf(std::ostream & os, Indent indent) const;
+  virtual void PrintSelf( std::ostream & os, Indent indent ) const;
 
   virtual void BeforeThreadedGenerateData( void );
   virtual void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread,
@@ -157,4 +157,4 @@ private:
 #include "itkGradientBasedAngleOfIncidenceImageFilter.hxx"
 #endif
 
-#endif // End !defined(__itkGradientBasedAngleOfIncidenceImageFilter_h)
+#endif // End !defined( __itkGradientBasedAngleOfIncidenceImageFilter_h )

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -40,7 +40,7 @@ public:
     }
   const double & Value( const int & x )
     {
-    cVal = std::sin((double)x);
+    cVal = std::sin( ( double )x );
     return cVal;
     }
 
@@ -58,7 +58,7 @@ public:
     }
   const double & Value( const double & x )
     {
-    cVal = std::sin((double)x);
+    cVal = std::sin( ( double )x );
     return cVal;
     }
 
@@ -76,7 +76,7 @@ public:
     }
   const double & Value( const double & x )
     {
-    cDeriv = std::cos((double)x);
+    cDeriv = std::cos( ( double )x );
     return cDeriv;
     }
 
@@ -157,44 +157,44 @@ int tubeSplineApproximation1DTest( int argc, char * argv[] )
       && itIm.GetIndex()[0] == 0 )
       {
       std::cout << "Slice index = "
-        << (itIm.GetIndex()[2]-index0[2]) % 7 << std::endl;
+        << ( itIm.GetIndex()[2]-index0[2] ) % 7 << std::endl;
       }
-    switch( (itIm.GetIndex()[2]-index0[2]) % 7 )
+    switch( ( itIm.GetIndex()[2]-index0[2] ) % 7 )
       {
       default:
       case 0:
         {
-        itIm.Set( spline.Value(x) );
+        itIm.Set( spline.Value( x ) );
         break;
         }
       case 1:
         {
-        itIm.Set( myFuncV->Value(x) );
+        itIm.Set( myFuncV->Value( x ) );
         break;
         }
       case 2:
         {
-        itIm.Set( spline.ValueD(x) );
+        itIm.Set( spline.ValueD( x ) );
         break;
         }
       case 3:
         {
-        itIm.Set( myFuncD->Value(x) );
+        itIm.Set( myFuncD->Value( x ) );
         break;
         }
       case 4:
         {
-        itIm.Set( spline.ValueD2(x) );
+        itIm.Set( spline.ValueD2( x ) );
         break;
         }
       case 5:
         {
-        itIm.Set( spline.Curv(x) );
+        itIm.Set( spline.Curv( x ) );
         break;
         }
       case 6:
         {
-        itIm.Set( spline.ValueJet(x, &d, &d2) );
+        itIm.Set( spline.ValueJet( x, &d, &d2 ) );
         break;
         }
       }
@@ -213,7 +213,7 @@ int tubeSplineApproximation1DTest( int argc, char * argv[] )
   rndGen->Initialize( 1 );
 
   int failed = 0;
-  for(unsigned int c=0; c<100; c++)
+  for( unsigned int c=0; c<100; c++ )
     {
     x = rndGen->GetNormalVariate( 0.0, 0.5 );
 

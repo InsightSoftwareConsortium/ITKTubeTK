@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -85,7 +85,7 @@ DiffusiveRegistrationFilterUtils
 template< class TResampleImagePointer, class TemplateImagePointer >
 void
 DiffusiveRegistrationFilterUtils
-::ResampleImageNearestNeighbor(
+::ResampleImageNearestNeighbor( 
     const TResampleImagePointer & highResolutionImage,
     const TemplateImagePointer & templateImage,
     TResampleImagePointer & resampledImage )
@@ -102,7 +102,7 @@ DiffusiveRegistrationFilterUtils
   // Do NN interpolation
   typedef itk::ImageRegionIteratorWithIndex< ResampleImageType >
       ResampleImageRegionType;
-  ResampleImageRegionType resampledImageIt = ResampleImageRegionType(
+  ResampleImageRegionType resampledImageIt = ResampleImageRegionType( 
       resampledImage, resampledImage->GetLargestPossibleRegion() );
 
   typename ResampleImageType::PointType physicalPoint;
@@ -115,9 +115,9 @@ DiffusiveRegistrationFilterUtils
        !resampledImageIt.IsAtEnd();
        ++resampledImageIt )
     {
-    resampledImage->TransformIndexToPhysicalPoint(
+    resampledImage->TransformIndexToPhysicalPoint( 
         resampledImageIt.GetIndex(), physicalPoint );
-    highResolutionImage->TransformPhysicalPointToIndex(
+    highResolutionImage->TransformPhysicalPointToIndex( 
         physicalPoint, highResolutionIndex );
     pixelValue = highResolutionImage->GetPixel( highResolutionIndex );
     resampledImageIt.Set( pixelValue );
@@ -151,7 +151,7 @@ DiffusiveRegistrationFilterUtils
 template< class TVectorResampleImagePointer, class TemplateImagePointer >
 void
 DiffusiveRegistrationFilterUtils
-::VectorResampleImageLinear(
+::VectorResampleImageLinear( 
     const TVectorResampleImagePointer & highResolutionImage,
     const TemplateImagePointer & templateImage,
     TVectorResampleImagePointer & resampledImage,
@@ -166,7 +166,7 @@ DiffusiveRegistrationFilterUtils
   resampler->SetOutputOrigin( templateImage->GetOrigin() );
   resampler->SetOutputSpacing( templateImage->GetSpacing() );
   resampler->SetOutputDirection( templateImage->GetDirection() );
-  resampler->SetOutputStartIndex(
+  resampler->SetOutputStartIndex( 
       templateImage->GetLargestPossibleRegion().GetIndex() );
   resampler->SetSize( templateImage->GetLargestPossibleRegion().GetSize() );
   resampler->Update();
@@ -188,7 +188,7 @@ DiffusiveRegistrationFilterUtils
 {
   typedef ImageRegionIterator< typename TVectorImagePointer::ObjectType >
       DeformationVectorImageRegionType;
-  DeformationVectorImageRegionType vectorIt(
+  DeformationVectorImageRegionType vectorIt( 
       image, image->GetLargestPossibleRegion() );
   for( vectorIt.GoToBegin(); !vectorIt.IsAtEnd(); ++vectorIt )
     {
@@ -223,7 +223,7 @@ DiffusiveRegistrationFilterUtils
 template< class TDeformationField, class TDeformationComponentImageArray >
 void
 DiffusiveRegistrationFilterUtils
-::ExtractXYZComponentsFromDeformationField(
+::ExtractXYZComponentsFromDeformationField( 
     const TDeformationField * deformationField,
     TDeformationComponentImageArray& deformationComponentImages )
 {
@@ -248,4 +248,4 @@ DiffusiveRegistrationFilterUtils
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeDiffusiveRegistrationFilterUtils_hxx)
+#endif // End !defined( __itktubeDiffusiveRegistrationFilterUtils_hxx )

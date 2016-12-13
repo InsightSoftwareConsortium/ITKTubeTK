@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -38,7 +38,7 @@ namespace tube {
 * factor in each dimension. The algorithm implemented is a max over the
 * subsample. The output image size in each dimension is given by:
 *
-* outputSize[j] = max( std::floor(inputSize[j]/shrinkFactor[j]), 1 );
+* outputSize[j] = max( std::floor( inputSize[j]/shrinkFactor[j] ), 1 );
 *
 * NOTE: The physical centers of the input and output will be the
 * same. Because of this, the Origin of the output may not be the same
@@ -72,7 +72,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( ShrinkWithBlendingImageFilter, ShrinkImageFilter );
 
   /** Typedef to images */
@@ -103,14 +103,14 @@ public:
 
   /** Set the shrink factors. Values are clamped to
    * a minimum value of 1. Default is 1 for all dimensions. */
-  itkSetMacro(ShrinkFactors, ShrinkFactorsType);
-  void SetShrinkFactor(unsigned int i, unsigned int factor);
-  unsigned int GetShrinkFactor(unsigned int i);
-  itkGetMacro(NewSize, InputSizeType);
-  itkSetMacro(NewSize, InputSizeType);
+  itkSetMacro( ShrinkFactors, ShrinkFactorsType );
+  void SetShrinkFactor( unsigned int i, unsigned int factor );
+  unsigned int GetShrinkFactor( unsigned int i );
+  itkGetMacro( NewSize, InputSizeType );
+  itkSetMacro( NewSize, InputSizeType );
 
   /** Get the shrink factors. */
-  itkGetConstReferenceMacro(ShrinkFactors, ShrinkFactorsType);
+  itkGetConstReferenceMacro( ShrinkFactors, ShrinkFactorsType );
 
   itkSetMacro( Overlap, InputIndexType );
   itkGetMacro( Overlap, InputIndexType );
@@ -146,7 +146,7 @@ protected:
   void UpdateInternalShrinkFactors();
   void VerifyInputInformation();
   template<class ArrayType>
-  bool NotValue(ArrayType array, double val, double tolerance=0.00001);
+  bool NotValue( ArrayType array, double val, double tolerance=0.00001 );
 private:
   ShrinkWithBlendingImageFilter( const Self & ); //purposely not implemented
   void operator=( const Self & );            //purposely not implemented

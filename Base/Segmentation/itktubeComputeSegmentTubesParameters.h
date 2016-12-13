@@ -12,7 +12,7 @@ Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -82,7 +82,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( ComputeSegmentTubesParameters, Object );
 
   /** Set/Get the input image */
@@ -167,4 +167,4 @@ private:
 #include "itktubeComputeSegmentTubesParameters.hxx"
 #endif
 
-#endif // End !defined(__itktubeComputeSegmentTubesParameters_h)
+#endif // End !defined( __itktubeComputeSegmentTubesParameters_h )

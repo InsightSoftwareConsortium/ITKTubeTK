@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -49,14 +49,14 @@ public:
 
   /** Resamples an image to a template using nearest neighbor interpolation */
   template< class TResampleImagePointer, class TTemplateImagePointer >
-  static void ResampleImageNearestNeighbor(
+  static void ResampleImageNearestNeighbor( 
       const TResampleImagePointer & highResolutionImage,
       const TTemplateImagePointer & templateImage,
       TResampleImagePointer & resampledImage );
 
   /** Resamples an image to a template using linear interpolation */
   template< class TResampleImagePointer, class TTemplateImagePointer >
-  static void ResampleImageLinear(
+  static void ResampleImageLinear( 
       const TResampleImagePointer & highResolutionImage,
       const TTemplateImagePointer & templateImage,
       TResampleImagePointer & resampledImage );
@@ -65,7 +65,7 @@ public:
    *  normalize is true, the vectors will be scaled to length 1 after the
    *  resampling. */
   template< class TVectorResampleImagePointer, class TTemplateImagePointer >
-  static void VectorResampleImageLinear(
+  static void VectorResampleImageLinear( 
       const TVectorResampleImagePointer & highResolutionImage,
       const TTemplateImagePointer & templateImage,
       TVectorResampleImagePointer & resampledImage,
@@ -81,7 +81,7 @@ public:
 
   /** Extracts the x, y, z components of a deformation field. */
   template< class TDeformationField, class TDeformationComponentImageArray >
-  static void ExtractXYZComponentsFromDeformationField(
+  static void ExtractXYZComponentsFromDeformationField( 
       const TDeformationField * deformationField,
       TDeformationComponentImageArray & deformationComponentImages );
 
@@ -120,7 +120,7 @@ struct FaceStruct
               typename TImage::ObjectType::SizeType radius )
     {
     numberOfTerms = 0;
-    for( int i = 0; i < (int) images.size(); i++ )
+    for( int i = 0; i < ( int ) images.size(); i++ )
       {
       if( images[i].GetPointer() )
         {
@@ -136,7 +136,7 @@ struct FaceStruct
               typename TImage::ObjectType::SizeType radius )
     {
     numberOfTerms = 0;
-    for( int i = 0; i < (int) images.Size(); i++ )
+    for( int i = 0; i < ( int ) images.Size(); i++ )
       {
       if( images[i].GetPointer() )
         {
@@ -153,7 +153,7 @@ struct FaceStruct
               typename TImage::ObjectType::SizeType radius )
     {
     numberOfTerms = 0;
-    for( int i = 0; i < (int) images.size(); i++)
+    for( int i = 0; i < ( int ) images.size(); i++ )
       {
       for( unsigned int j = 0; j < images[i].Size(); j++ )
         {
@@ -168,7 +168,7 @@ struct FaceStruct
 
   void GoToBegin( void )
     {
-    if( (int) faceListIts.size() != numberOfTerms )
+    if( ( int ) faceListIts.size() != numberOfTerms )
       {
       for( int i = 0; i < numberOfTerms; i++ )
         {
@@ -205,7 +205,7 @@ struct FaceStruct
     }
 
   template< class TIterator >
-  void SetIteratorToCurrentFace(
+  void SetIteratorToCurrentFace( 
       TIterator& iterator,
       const TImage& image,
       typename TImage::ObjectType::SizeType radius )
@@ -221,7 +221,7 @@ struct FaceStruct
     }
 
   template< class TIterator >
-  void SetIteratorToCurrentFace(
+  void SetIteratorToCurrentFace( 
       TIterator& iterator,
       const TImage& image )
     {
@@ -236,18 +236,18 @@ struct FaceStruct
     }
 
   template< class TIterator >
-  void SetIteratorToCurrentFace(
+  void SetIteratorToCurrentFace( 
       std::vector< TIterator >& iterators,
       const std::vector< TImage >& images,
       typename TImage::ObjectType::SizeType radius )
     {
-    if( (int) iterators.size() != numberOfTerms )
+    if( ( int ) iterators.size() != numberOfTerms )
       {
       for( int i = 0; i < numberOfTerms; i++ )
         {
         if( images[i].GetPointer() )
           {
-          iterators.push_back(
+          iterators.push_back( 
               TIterator( radius, images[i], *faceListIts[i] ) );
           }
         else
@@ -273,11 +273,11 @@ struct FaceStruct
     }
 
   template< class TIterator >
-  void SetIteratorToCurrentFace(
+  void SetIteratorToCurrentFace( 
       std::vector< TIterator >& iterators,
       const std::vector< TImage >& images )
     {
-    if( (int) iterators.size() != numberOfTerms )
+    if( ( int ) iterators.size() != numberOfTerms )
       {
       for( int i = 0; i < numberOfTerms; i++ )
         {
@@ -308,17 +308,17 @@ struct FaceStruct
     }
 
     template< class TIterator, unsigned int VLength >
-    void SetIteratorToCurrentFace(
+    void SetIteratorToCurrentFace( 
         std::vector< itk::FixedArray< TIterator, VLength > > &iterators,
         const std::vector< itk::FixedArray< TImage, VLength > > & images )
     {
     int c = 0;
-    if( (int) iterators.size() != (int) images.size() )
+    if( ( int ) iterators.size() != ( int ) images.size() )
         {
-        for( int i = 0; i < (int) images.size(); i++ )
+        for( int i = 0; i < ( int ) images.size(); i++ )
           {
           itk::FixedArray< TIterator, VLength > fixedArray;
-          for( int j = 0; j < (int) images[i].Size(); j++ )
+          for( int j = 0; j < ( int ) images[i].Size(); j++ )
             {
             if( images[i][j] )
               {
@@ -335,10 +335,10 @@ struct FaceStruct
         }
       else
         {
-        for( int i = 0; i < (int) images.size(); i++ )
+        for( int i = 0; i < ( int ) images.size(); i++ )
           {
           itk::FixedArray< TIterator, VLength > fixedArray;
-          for( int j = 0; j < (int) images[i].Size(); j++ )
+          for( int j = 0; j < ( int ) images[i].Size(); j++ )
             {
             if( images[i][j].GetPointer() )
               {
@@ -370,4 +370,4 @@ struct FaceStruct
 #include "itktubeDiffusiveRegistrationFilterUtils.hxx"
 #endif
 
-#endif // End !defined(__itktubeDiffusiveRegistrationFilterUtils_h)
+#endif // End !defined( __itktubeDiffusiveRegistrationFilterUtils_h )

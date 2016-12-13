@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -57,16 +57,16 @@ public:
   typedef itk::GradientDescentOptimizer OptimizerType;
   typedef const OptimizerType *         OptimizerPointer;
 
-  void Execute(itk::Object *caller, const itk::EventObject & event)
+  void Execute( itk::Object *caller, const itk::EventObject & event )
     {
-    Execute( (const itk::Object *)caller, event);
+    Execute( ( const itk::Object * )caller, event );
     }
 
-  void Execute(const itk::Object * object, const itk::EventObject & event)
+  void Execute( const itk::Object * object, const itk::EventObject & event )
     {
     OptimizerPointer optimizer =
       dynamic_cast< OptimizerPointer >( object );
-    if( !(itk::IterationEvent().CheckEvent( &event )) )
+    if( !( itk::IterationEvent().CheckEvent( &event ) ) )
       {
       return;
       }
@@ -124,16 +124,16 @@ int itktubeImageToTubeRigidRegistrationPerformanceTest( int argc, char * argv[] 
     <ImageType, ImageType> GaussianBlurFilterType;
 
   GaussianBlurFilterType::Pointer blurFilters[3];
-  for(int i = 0; i < 3; i++)
+  for( int i = 0; i < 3; i++ )
     {
     blurFilters[i] = GaussianBlurFilterType::New();
     blurFilters[i]->SetSigma( 3.0 );
     blurFilters[i]->SetZeroOrder();
     blurFilters[i]->SetDirection( i );
     }
-  blurFilters[0]->SetInput(imageReader->GetOutput());
-  blurFilters[1]->SetInput(blurFilters[0]->GetOutput());
-  blurFilters[2]->SetInput(blurFilters[1]->GetOutput());
+  blurFilters[0]->SetInput( imageReader->GetOutput() );
+  blurFilters[1]->SetInput( blurFilters[0]->GetOutput() );
+  blurFilters[2]->SetInput( blurFilters[1]->GetOutput() );
   try
     {
     blurFilters[0]->Update();

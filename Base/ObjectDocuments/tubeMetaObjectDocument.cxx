@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -90,7 +90,7 @@ MetaObjectDocument
 
   if( mF != NULL && mF->defined )
     {
-    m_NumberOfObjectDocuments = (int)mF->value[0];
+    m_NumberOfObjectDocuments = ( int )mF->value[0];
     }
 
   for( int i = 0; i < m_NumberOfObjectDocuments; ++i )
@@ -105,7 +105,7 @@ MetaObjectDocument
 
     if( mF != NULL && mF->defined )
       {
-      const std::string objectType = (const char *)mF->value;
+      const std::string objectType = ( const char * )mF->value;
 
       if( objectType == "Image" )
         {
@@ -129,7 +129,7 @@ MetaObjectDocument
 
     if( mF != NULL && mF->defined )
       {
-      object->SetObjectName( (const char *)mF->value );
+      object->SetObjectName( ( const char * )mF->value );
       }
 
     // Read transform.
@@ -143,7 +143,7 @@ MetaObjectDocument
       if( mF != NULL && mF->defined )
         {
         // Vector reference count starts 1, not 0.
-        object->AddTransformNameToBack( (const char *)mF->value );
+        object->AddTransformNameToBack( ( const char * )mF->value );
         }
       }
     m_ObjectDocumentList.push_back( object );

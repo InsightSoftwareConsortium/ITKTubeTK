@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -54,7 +54,7 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // CLIProgressReporter is used to communicate progress with the Slicer GUI
-  tube::CLIProgressReporter progressReporter(
+  tube::CLIProgressReporter progressReporter( 
     "RegisterImageToTubesUsingRigidTransform",
     CLPProcessInformation );
   progressReporter.Start();
@@ -86,7 +86,7 @@ int DoIt( int argc, char * argv[] )
     }
 
 
-  timeCollector.Start("Register image to tube");
+  timeCollector.Start( "Register image to tube" );
 
   typename RegistrationMethodType::Pointer registrationMethod =
     RegistrationMethodType::New();
@@ -132,7 +132,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Performing registration: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -140,8 +140,8 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( progress );
 
   TransformType* registrationTransform =
-    dynamic_cast<TransformType *>(registrationMethod->GetTransform());
-  registrationTransform->SetParameters(
+    dynamic_cast<TransformType *>( registrationMethod->GetTransform() );
+  registrationTransform->SetParameters( 
     registrationMethod->GetLastTransformParameters() );
   std::ostringstream parametersMessage;
   parametersMessage << "Transform Parameters: " <<
@@ -151,13 +151,13 @@ int DoIt( int argc, char * argv[] )
   parametersMessage << "Transform Center Of Rotation: " <<
     registrationTransform->GetFixedParameters();
   tube::InformationMessage( parametersMessage.str() );
-  timeCollector.Stop("Register image to tube");
+  timeCollector.Stop( "Register image to tube" );
 
-  timeCollector.Start("Save data");
+  timeCollector.Start( "Save data" );
 
   if( !parameterProgression.empty() )
     {
-    recordParameterProgressionCommand->SetFixedParameters(
+    recordParameterProgressionCommand->SetFixedParameters( 
       registrationTransform->GetFixedParameters() );
     recordParameterProgressionCommand->WriteParameterProgressionToFile();
     }
@@ -173,11 +173,11 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Writing transform: Exception caught: "
-      + std::string(err.GetDescription()) );
+      + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Save data");
+  timeCollector.Stop( "Save data" );
   progress = 1.0;
   progressReporter.Report( progress );
   progressReporter.End();

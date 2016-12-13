@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -153,7 +153,7 @@ public:
   virtual void ClassifyImages( void );
 
   // Overwrite for speedup
-  virtual typename ProbabilityImageType::Pointer GetClassProbabilityImage(
+  virtual typename ProbabilityImageType::Pointer GetClassProbabilityImage( 
     unsigned int classNum ) const;
 
   //
@@ -235,4 +235,4 @@ private:
 #include "itktubePDFSegmenterBase.hxx"
 #endif
 
-#endif // End !defined(__itktubePDFSegmenterBase_h)
+#endif // End !defined( __itktubePDFSegmenterBase_h )

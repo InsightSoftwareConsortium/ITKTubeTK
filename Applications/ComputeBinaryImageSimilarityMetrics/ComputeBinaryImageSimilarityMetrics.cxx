@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -87,9 +87,9 @@ int DoIt( int argc, char * argv[] )
     {
     std::cout << "Total Overlap = " << metric->GetTotalOverlap()
       << std::endl;
-    std::cout << "Union Overlap (Jaccard Coefficient) = "
+    std::cout << "Union Overlap ( Jaccard Coefficient ) = "
       << metric->GetUnionOverlap() << std::endl;
-    std::cout << "Mean Overlap (Dice Coefficient) = "
+    std::cout << "Mean Overlap ( Dice Coefficient ) = "
       << metric->GetMeanOverlap() << std::endl;
     std::cout << "Similarity = " << metric->GetVolumeSimilarity()
       << std::endl;
@@ -104,9 +104,9 @@ int DoIt( int argc, char * argv[] )
     outFile.open( resultsFile.c_str() );
     outFile << "Total Overlap = " << metric->GetTotalOverlap()
       << std::endl;
-    outFile << "Union Overlap (Jaccard Coefficient) = "
+    outFile << "Union Overlap ( Jaccard Coefficient ) = "
       << metric->GetUnionOverlap() << std::endl;
-    outFile << "Mean Overlap (Dice Coefficient) = "
+    outFile << "Mean Overlap ( Dice Coefficient ) = "
       << metric->GetMeanOverlap() << std::endl;
     outFile << "Similarity = " << metric->GetVolumeSimilarity()
       << std::endl;

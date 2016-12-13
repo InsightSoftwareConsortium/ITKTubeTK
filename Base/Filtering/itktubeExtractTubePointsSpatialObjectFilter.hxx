@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -137,12 +137,12 @@ ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
     ++childrenIt )
     {
     typename TubeSpatialObjectType::Pointer tube;
-    tube = dynamic_cast< TubeSpatialObjectType * >(
+    tube = dynamic_cast< TubeSpatialObjectType * >( 
       childrenIt->GetPointer() );
     if( tube.IsNotNull() )
       {
       ::tube::RemoveDuplicateTubePoints< TubeSpatialObjectType >( tube );
-      ::tube::ComputeTubeTangentsAndNormals< TubeSpatialObjectType >(
+      ::tube::ComputeTubeTangentsAndNormals< TubeSpatialObjectType >( 
         tube );
       const typename TubeSpatialObjectType::PointListType
         pointsForThisTube = tube->GetPoints();
@@ -164,4 +164,4 @@ ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeExtractTubePointsSpatialObjectFilter_hxx)
+#endif // End !defined( __itktubeExtractTubePointsSpatialObjectFilter_hxx )

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -104,10 +104,10 @@ public:
   MatrixType   GetGlobalCovariance( void ) const;
   void         SetGlobalCovariance( MatrixType val );
 
-  void         SetNumberOfPCABasisToUseAsFeatures(
+  void         SetNumberOfPCABasisToUseAsFeatures( 
                  unsigned int numBasisUsed );
   unsigned int GetNumberOfPCABasisToUseAsFeatures( void ) const;
-  void         SetNumberOfLDABasisToUseAsFeatures(
+  void         SetNumberOfLDABasisToUseAsFeatures( 
                  unsigned int numBasisUsed );
   unsigned int GetNumberOfLDABasisToUseAsFeatures( void ) const;
 
@@ -122,7 +122,7 @@ public:
   void         SetBasisMatrix( const MatrixType & mat );
   void         SetBasisValues( const VectorType & values );
 
-  virtual typename FeatureImageType::Pointer GetFeatureImage(
+  virtual typename FeatureImageType::Pointer GetFeatureImage( 
                                        unsigned int fNum ) const;
 
   void   SetInputWhitenMeans( const ValueListType & means );
@@ -184,4 +184,4 @@ private:
 #include "itktubeBasisFeatureVectorGenerator.hxx"
 #endif
 
-#endif // End !defined(__itktubeBasisFeatureVectorGenerator_h)
+#endif // End !defined( __itktubeBasisFeatureVectorGenerator_h )

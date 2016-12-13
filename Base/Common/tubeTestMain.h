@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -43,10 +43,10 @@ limitations under the License.
 
 #define ITK_TEST_DIMENSION_MAX 6
 
-typedef int (*MainFuncPointer)( int argc, char * argv[] );
+typedef int ( *MainFuncPointer )( int argc, char * argv[] );
 std::map< std::string, MainFuncPointer > StringToTestFunctionMap;
 
-#define REGISTER_TEST(test) \
+#define REGISTER_TEST( test ) \
 extern int test( int argc, char * argv[] ); \
 StringToTestFunctionMap[#test] = test
 
@@ -55,9 +55,9 @@ int RegressionTestImage ( const char * testImageFilename,
                           int reportErrors,
                           double intensityTolerance = 0.0,
                           unsigned int numberOfPixelsTolerance = 0,
-                          unsigned int radiusTolerance = 0);
+                          unsigned int radiusTolerance = 0 );
 
-std::map<std::string,int> RegressionTestBaselines(char *);
+std::map<std::string,int> RegressionTestBaselines( char * );
 
 void RegisterTests( void );
 
@@ -67,7 +67,7 @@ void PrintAvailableTests( void )
   std::map<std::string, MainFuncPointer>::iterator j =
     StringToTestFunctionMap.begin();
   int i = 0;
-  while(j != StringToTestFunctionMap.end())
+  while( j != StringToTestFunctionMap.end() )
     {
     std::cout << i << ". " << j->first << "\n";
     ++i;
@@ -96,12 +96,12 @@ int main( int argc, char * argv[] )
     std::cin >> testNum;
     std::map<std::string, MainFuncPointer>::iterator j = StringToTestFunctionMap.begin();
     int i = 0;
-    while(j != StringToTestFunctionMap.end() && i < testNum)
+    while( j != StringToTestFunctionMap.end() && i < testNum )
       {
       ++i;
       ++j;
       }
-    if(j == StringToTestFunctionMap.end())
+    if( j == StringToTestFunctionMap.end() )
       {
       std::cerr << testNum << " is an invalid test number\n";
       return -1;
@@ -112,38 +112,38 @@ int main( int argc, char * argv[] )
     {
     while( argc > 0 && testToRun.empty() )
       {
-      if(std::strcmp(argv[1], "--with-threads") == 0)
+      if( std::strcmp( argv[1], "--with-threads" ) == 0 )
         {
-        int numThreads = std::atoi(argv[2]);
-        itk::MultiThreader::SetGlobalDefaultNumberOfThreads(numThreads);
+        int numThreads = std::atoi( argv[2] );
+        itk::MultiThreader::SetGlobalDefaultNumberOfThreads( numThreads );
         argv += 2;
         argc -= 2;
         }
-      else if(std::strcmp(argv[1], "--without-threads") == 0)
+      else if( std::strcmp( argv[1], "--without-threads" ) == 0 )
         {
-        itk::MultiThreader::SetGlobalDefaultNumberOfThreads(1);
+        itk::MultiThreader::SetGlobalDefaultNumberOfThreads( 1 );
         argv += 1;
         argc -= 1;
         }
-      else if(argc > 3 && std::strcmp(argv[1], "--compare") == 0)
+      else if( argc > 3 && std::strcmp( argv[1], "--compare" ) == 0 )
         {
         compareList.push_back( ComparePairType( argv[2], argv[3] ) );
         argv += 3;
         argc -= 3;
         }
-      else if(argc > 2 && std::strcmp(argv[1], "--compareNumberOfPixelsTolerance") == 0)
+      else if( argc > 2 && std::strcmp( argv[1], "--compareNumberOfPixelsTolerance" ) == 0 )
         {
         numberOfPixelsTolerance = std::atoi( argv[2] );
         argv += 2;
         argc -= 2;
         }
-      else if(argc > 2 && std::strcmp(argv[1], "--compareRadiusTolerance") == 0)
+      else if( argc > 2 && std::strcmp( argv[1], "--compareRadiusTolerance" ) == 0 )
         {
         radiusTolerance = std::atoi( argv[2] );
         argv += 2;
         argc -= 2;
         }
-      else if(argc > 2 && std::strcmp(argv[1], "--compareIntensityTolerance") == 0)
+      else if( argc > 2 && std::strcmp( argv[1], "--compareIntensityTolerance" ) == 0 )
         {
         intensityTolerance = std::atof( argv[2] );
         argv += 2;
@@ -156,48 +156,48 @@ int main( int argc, char * argv[] )
       }
     }
   std::map<std::string, MainFuncPointer>::iterator j =
-    StringToTestFunctionMap.find(testToRun);
-  if(j != StringToTestFunctionMap.end())
+    StringToTestFunctionMap.find( testToRun );
+  if( j != StringToTestFunctionMap.end() )
     {
     MainFuncPointer f = j->second;
     int result;
     try
       {
       // Invoke the test's "main" function.
-      result = (*f)(argc-1, argv+1);
+      result = ( *f )( argc-1, argv+1 );
 
       // Make a list of possible baselines
-      for( int i=0; i<static_cast<int>(compareList.size()); i++)
+      for( int i=0; i<static_cast<int>( compareList.size() ); i++ )
         {
         char * baselineFilename = compareList[i].first;
         char * testFilename = compareList[i].second;
-        std::map<std::string,int> baselines = RegressionTestBaselines(baselineFilename);
+        std::map<std::string,int> baselines = RegressionTestBaselines( baselineFilename );
         std::map<std::string,int>::iterator baseline = baselines.begin();
         std::string bestBaseline;
         int bestBaselineStatus = itk::NumericTraits<int>::max();
-        while(baseline != baselines.end())
+        while( baseline != baselines.end() )
           {
-          baseline->second = RegressionTestImage(testFilename,
-                                                 (baseline->first).c_str(),
+          baseline->second = RegressionTestImage( testFilename,
+                                                 ( baseline->first ).c_str(),
                                                  0,
                                                  intensityTolerance,
                                                  numberOfPixelsTolerance,
                                                  radiusTolerance );
-          if(baseline->second < bestBaselineStatus)
+          if( baseline->second < bestBaselineStatus )
             {
             bestBaseline = baseline->first;
             bestBaselineStatus = baseline->second;
             }
-          if(baseline->second == 0)
+          if( baseline->second == 0 )
             {
             break;
             }
           ++baseline;
           }
         // if the best we can do still has errors, generate the error images
-         if(bestBaselineStatus)
+         if( bestBaselineStatus )
           {
-          RegressionTestImage(testFilename,
+          RegressionTestImage( testFilename,
                               bestBaseline.c_str(),
                               1,
                               intensityTolerance,
@@ -207,25 +207,25 @@ int main( int argc, char * argv[] )
 
         // output the matching baseline
         std::cout << "<DartMeasurement name=\"BaselineImageName\" type=\"text/string\">";
-        std::cout << itksys::SystemTools::GetFilenameName(bestBaseline);
+        std::cout << itksys::SystemTools::GetFilenameName( bestBaseline );
         std::cout << "</DartMeasurement>" << std::endl;
 
         result += bestBaselineStatus;
         }
       }
-    catch(const itk::ExceptionObject& e)
+    catch( const itk::ExceptionObject& e )
       {
       std::cerr << "ITK test driver caught an ITK exception:\n";
-      e.Print(std::cerr);
+      e.Print( std::cerr );
       result = -1;
       }
-    catch(const std::exception& e)
+    catch( const std::exception& e )
       {
       std::cerr << "ITK test driver caught an exception:\n";
       std::cerr << e.what() << "\n";
       result = -1;
       }
-    catch(...)
+    catch( ... )
       {
       std::cerr << "ITK test driver caught an unknown exception!!!\n";
       result = -1;
@@ -240,7 +240,7 @@ int main( int argc, char * argv[] )
 
 // Regression Testing Code
 
-int RegressionTestImage(const char * testImageFilename,
+int RegressionTestImage( const char * testImageFilename,
                         const char * baselineImageFilename,
                         int reportErrors,
                         double intensityTolerance,
@@ -256,12 +256,12 @@ int RegressionTestImage(const char * testImageFilename,
 
   // Read the baseline file
   ReaderType::Pointer baselineReader = ReaderType::New();
-    baselineReader->SetFileName(baselineImageFilename);
+    baselineReader->SetFileName( baselineImageFilename );
   try
     {
     baselineReader->UpdateLargestPossibleRegion();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
     std::cerr << "Exception detected while reading "
       << baselineImageFilename << " : "  << e.GetDescription();
@@ -270,12 +270,12 @@ int RegressionTestImage(const char * testImageFilename,
 
   // Read the file generated by the test
   ReaderType::Pointer testReader = ReaderType::New();
-    testReader->SetFileName(testImageFilename);
+    testReader->SetFileName( testImageFilename );
   try
     {
     testReader->UpdateLargestPossibleRegion();
     }
-  catch(itk::ExceptionObject& e)
+  catch( itk::ExceptionObject& e )
     {
     std::cerr << "Exception detected while reading "
       << testImageFilename << " : "  << e.GetDescription() << std::endl;
@@ -288,7 +288,7 @@ int RegressionTestImage(const char * testImageFilename,
   ImageType::SizeType testSize;
     testSize = testReader->GetOutput()->GetLargestPossibleRegion().GetSize();
 
-  if(baselineSize != testSize)
+  if( baselineSize != testSize )
     {
     std::cerr << "The size of the Baseline image and Test image do not match!\n";
     std::cerr << "Baseline image: " << baselineImageFilename
@@ -301,8 +301,8 @@ int RegressionTestImage(const char * testImageFilename,
   // Now compare the two images
   typedef itk::tube::DifferenceImageFilter<ImageType,ImageType> DiffType;
   DiffType::Pointer diff = DiffType::New();
-    diff->SetValidInput(baselineReader->GetOutput());
-    diff->SetTestInput(testReader->GetOutput());
+    diff->SetValidInput( baselineReader->GetOutput() );
+    diff->SetTestInput( testReader->GetOutput() );
     diff->SetDifferenceThreshold( intensityTolerance );
     diff->SetToleranceRadius( radiusTolerance );
     diff->UpdateLargestPossibleRegion();
@@ -311,45 +311,45 @@ int RegressionTestImage(const char * testImageFilename,
     status = diff->GetNumberOfPixelsWithDifferences();
 
   // if there are discrepancies, create an difference image
-  if( (status > numberOfPixelsTolerance) && reportErrors )
+  if( ( status > numberOfPixelsTolerance ) && reportErrors )
     {
     typedef itk::RescaleIntensityImageFilter<ImageType,OutputType> RescaleType;
     typedef itk::ExtractImageFilter<OutputType,DiffOutputType>     ExtractType;
     typedef itk::ImageFileWriter<DiffOutputType>                   WriterType;
     typedef itk::ImageRegion<ITK_TEST_DIMENSION_MAX>               RegionType;
     OutputType::SizeType size;
-    size.Fill(0);
+    size.Fill( 0 );
 
     RescaleType::Pointer rescale = RescaleType::New();
-      rescale->SetOutputMinimum(itk::NumericTraits<unsigned char>::NonpositiveMin());
-      rescale->SetOutputMaximum(itk::NumericTraits<unsigned char>::max());
-      rescale->SetInput(diff->GetOutput());
+      rescale->SetOutputMinimum( itk::NumericTraits<unsigned char>::NonpositiveMin() );
+      rescale->SetOutputMaximum( itk::NumericTraits<unsigned char>::max() );
+      rescale->SetInput( diff->GetOutput() );
       rescale->UpdateLargestPossibleRegion();
     size = rescale->GetOutput()->GetLargestPossibleRegion().GetSize();
 
     //Get the center slice of the image,  In 3D, the first slice
     //is often a black slice with little debugging information.
     OutputType::IndexType index;
-    index.Fill(0);
+    index.Fill( 0 );
 
-    for(unsigned int i = 2; i < ITK_TEST_DIMENSION_MAX; i++)
+    for( unsigned int i = 2; i < ITK_TEST_DIMENSION_MAX; i++ )
       {
       index[i]=size[i]/2;//NOTE: Integer Divide used to get approximately the center slice
       size[i] = 0;
       }
 
     RegionType region;
-    region.SetIndex(index);
+    region.SetIndex( index );
 
-    region.SetSize(size);
+    region.SetSize( size );
 
     ExtractType::Pointer extract = ExtractType::New();
-      extract->SetInput(rescale->GetOutput());
-      extract->SetExtractionRegion(region);
+      extract->SetInput( rescale->GetOutput() );
+      extract->SetExtractionRegion( region );
       extract->SetDirectionCollapseToIdentity();
 
     WriterType::Pointer writer = WriterType::New();
-      writer->SetInput(extract->GetOutput());
+      writer->SetInput( extract->GetOutput() );
 
     std::cout << "<DartMeasurement name=\"ImageError\" type=\"numeric/double\">";
     std::cout << status;
@@ -359,29 +359,29 @@ int RegressionTestImage(const char * testImageFilename,
       diffName << testImageFilename << ".diff.png";
     try
       {
-      rescale->SetInput(diff->GetOutput());
+      rescale->SetInput( diff->GetOutput() );
       rescale->Update();
       }
-    catch(const std::exception& e)
+    catch( const std::exception& e )
       {
       std::cerr << "Error during rescale of " << diffName.str() << std::endl;
       std::cerr << e.what() << "\n";
       }
-    catch(...)
+    catch( ... )
       {
       std::cerr << "Error during rescale of " << diffName.str() << std::endl;
       }
-    writer->SetFileName(diffName.str().c_str());
+    writer->SetFileName( diffName.str().c_str() );
     try
       {
       writer->Update();
       }
-    catch(const std::exception& e)
+    catch( const std::exception& e )
       {
       std::cerr << "Error during write of " << diffName.str() << std::endl;
       std::cerr << e.what() << "\n";
       }
-    catch(...)
+    catch( ... )
       {
       std::cerr << "Error during write of " << diffName.str() << std::endl;
       }
@@ -394,29 +394,29 @@ int RegressionTestImage(const char * testImageFilename,
     baseName << testImageFilename << ".base.png";
     try
       {
-      rescale->SetInput(baselineReader->GetOutput());
+      rescale->SetInput( baselineReader->GetOutput() );
       rescale->Update();
       }
-    catch(const std::exception& e)
+    catch( const std::exception& e )
       {
       std::cerr << "Error during rescale of " << baseName.str() << std::endl;
       std::cerr << e.what() << "\n";
       }
-    catch(...)
+    catch( ... )
       {
       std::cerr << "Error during rescale of " << baseName.str() << std::endl;
       }
     try
       {
-      writer->SetFileName(baseName.str().c_str());
+      writer->SetFileName( baseName.str().c_str() );
       writer->Update();
       }
-    catch(const std::exception& e)
+    catch( const std::exception& e )
       {
       std::cerr << "Error during write of " << baseName.str() << std::endl;
       std::cerr << e.what() << "\n";
       }
-    catch(...)
+    catch( ... )
       {
       std::cerr << "Error during write of " << baseName.str() << std::endl;
       }
@@ -429,29 +429,29 @@ int RegressionTestImage(const char * testImageFilename,
     testName << testImageFilename << ".test.png";
     try
       {
-      rescale->SetInput(testReader->GetOutput());
+      rescale->SetInput( testReader->GetOutput() );
       rescale->Update();
       }
-    catch(const std::exception& e)
+    catch( const std::exception& e )
       {
       std::cerr << "Error during rescale of " << testName.str() << std::endl;
       std::cerr << e.what() << "\n";
       }
-    catch(...)
+    catch( ... )
       {
       std::cerr << "Error during rescale of " << testName.str() << std::endl;
       }
     try
       {
-      writer->SetFileName(testName.str().c_str());
+      writer->SetFileName( testName.str().c_str() );
       writer->Update();
       }
-    catch(const std::exception& e)
+    catch( const std::exception& e )
       {
       std::cerr << "Error during write of " << testName.str() << std::endl;
       std::cerr << e.what() << "\n";
       }
-    catch(...)
+    catch( ... )
       {
       std::cerr << "Error during write of " << testName.str() << std::endl;
       }
@@ -462,39 +462,39 @@ int RegressionTestImage(const char * testImageFilename,
 
 
     }
-  return (status > numberOfPixelsTolerance) ? 1 : 0;
+  return ( status > numberOfPixelsTolerance ) ? 1 : 0;
 }
 
 //
 // Generate all of the possible baselines
 // The possible baselines are generated from the baselineFilename
 // using the following algorithm:
-// 1) strip the suffix
-// 2) append a digit .x
-// 3) append the original suffix.
+// 1 ) strip the suffix
+// 2 ) append a digit .x
+// 3 ) append the original suffix.
 // It the file exists, increment x and continue
 //
-std::map<std::string,int> RegressionTestBaselines (char *baselineFilename)
+std::map<std::string,int> RegressionTestBaselines ( char *baselineFilename )
 {
   std::map<std::string,int> baselines;
-  baselines[std::string(baselineFilename)] = 0;
+  baselines[std::string( baselineFilename )] = 0;
 
-  std::string originalBaseline(baselineFilename);
+  std::string originalBaseline( baselineFilename );
 
   int x = 0;
-  std::string::size_type suffixPos = originalBaseline.rfind(".");
+  std::string::size_type suffixPos = originalBaseline.rfind( "." );
   std::string suffix;
-  if(suffixPos != std::string::npos)
+  if( suffixPos != std::string::npos )
     {
-    suffix = originalBaseline.substr(suffixPos,originalBaseline.length());
-    originalBaseline.erase(suffixPos,originalBaseline.length());
+    suffix = originalBaseline.substr( suffixPos,originalBaseline.length() );
+    originalBaseline.erase( suffixPos,originalBaseline.length() );
     }
-  while(++x)
+  while( ++x )
     {
     std::ostringstream filename;
     filename << originalBaseline << "." << x << suffix;
-    std::ifstream filestream(filename.str().c_str());
-    if(!filestream)
+    std::ifstream filestream( filename.str().c_str() );
+    if( !filestream )
       {
       break;
       }
@@ -508,4 +508,4 @@ std::map<std::string,int> RegressionTestBaselines (char *baselineFilename)
 #include "itktubeDifferenceImageFilter.hxx"
 #endif
 
-#endif // End !defined(__tubeTestMain_h)
+#endif // End !defined( __tubeTestMain_h )

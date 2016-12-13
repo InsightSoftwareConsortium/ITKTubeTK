@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -47,10 +47,10 @@ void
 RegionFromReferenceImageFilter<TInputImage,TOutputImage>
 ::SetReferenceImage ( const ReferenceImageType *image )
 {
-  itkDebugMacro("setting input ReferenceImage to " << image);
-  if( image != static_cast<const ReferenceImageType *>(this->GetInput( 1 )) )
+  itkDebugMacro( "setting input ReferenceImage to " << image );
+  if( image != static_cast<const ReferenceImageType *>( this->GetInput( 1 ) ) )
     {
-    this->ProcessObject::SetNthInput(1, const_cast< ReferenceImageType *>( image ) );
+    this->ProcessObject::SetNthInput( 1, const_cast< ReferenceImageType *>( image ) );
     this->Modified();
     }
 }
@@ -66,7 +66,7 @@ RegionFromReferenceImageFilter<TInputImage,TOutputImage>
 {
   Self * surrogate = const_cast< Self * >( this );
 
-  const DataObject * input = surrogate->ProcessObject::GetInput(1);
+  const DataObject * input = surrogate->ProcessObject::GetInput( 1 );
 
   const ReferenceImageType * referenceImage =
     static_cast<const ReferenceImageType *>( input );

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -87,7 +87,7 @@ public:
   typedef   SymmetricEigenAnalysisImageFilter<
     InputImageType, EigenValueImageType >     EigenAnalysisFilterType;
 
-  /** Run-time type information (and related methods).   */
+  /** Run-time type information ( and related methods ).   */
   itkTypeMacro( SheetnessMeasureImageFilter, ImageToImageFilter );
 
   /** Method for creation through the object factory. */
@@ -119,14 +119,14 @@ public:
 protected:
   SheetnessMeasureImageFilter( void );
   ~SheetnessMeasureImageFilter( void ) {}
-  void PrintSelf(std::ostream & os, Indent indent) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const;
 
   /** Generate Data */
   void GenerateData( void );
 
 private:
-  SheetnessMeasureImageFilter(const Self &); //purposely not implemented
-  void operator=(const Self &); //purposely not implemented
+  SheetnessMeasureImageFilter( const Self & ); //purposely not implemented
+  void operator=( const Self & ); //purposely not implemented
 
   typename EigenAnalysisFilterType::Pointer m_SymmetricEigenValueFilter;
 
@@ -145,4 +145,4 @@ private:
 #include "itktubeSheetnessMeasureImageFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeSheetnessMeasureImageFilter_h)
+#endif // End !defined( __itktubeSheetnessMeasureImageFilter_h )

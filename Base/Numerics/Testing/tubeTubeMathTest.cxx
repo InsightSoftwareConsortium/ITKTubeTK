@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -156,7 +156,7 @@ int tubeTubeMathTest( int tubeNotUsed( argc ),
   for( unsigned int i = 0; i < 5; ++i )
     {
     std::cout << "Subsampling..." << std::endl;
-    TubeType::Pointer tube3 = ::tube::SubsampleTube< TubeType >(tube, 2);
+    TubeType::Pointer tube3 = ::tube::SubsampleTube< TubeType >( tube, 2 );
 
     double t3Length = tubeLength( tube3 );
     int t3NumPoints = tube3->GetNumberOfPoints();
@@ -168,7 +168,7 @@ int tubeTubeMathTest( int tubeNotUsed( argc ),
         << " <= Smooth length = " << t3Length << std::endl;
       returnStatus = EXIT_FAILURE;
       }
-    if( t3NumPoints >= tNumPoints)
+    if( t3NumPoints >= tNumPoints )
       {
       std::cerr << "ERROR: Raw: NumberOfPoints = " << tube->GetNumberOfPoints()
         << " <= Subsampled: NumberOfPoints = " << tube3->GetNumberOfPoints()

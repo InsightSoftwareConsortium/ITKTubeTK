@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -24,7 +24,7 @@ limitations under the License.
 /// vtkMRMLSpatialObjectsNode -
 /// MRML node to represent SpatialObject structures.
 ///
-/// vtkMRMLSpatialObjects nodes contain trajectories ("tubes")
+/// vtkMRMLSpatialObjects nodes contain trajectories ( "tubes" )
 /// from vessels, internally represented as vtkPolyData.
 /// A SpatialObjects node contains many tubes and forms the smallest
 /// logical unit of the vessel network.
@@ -59,8 +59,8 @@ public:
   typedef TubeNetType::Pointer        TubeNetPointerType;
 
   static vtkMRMLSpatialObjectsNode* New( void );
-  vtkTypeMacro(vtkMRMLSpatialObjectsNode, vtkMRMLModelNode);
-  void PrintSelf(ostream& os, vtkIndent indent);
+  vtkTypeMacro( vtkMRMLSpatialObjectsNode, vtkMRMLModelNode );
+  void PrintSelf( ostream& os, vtkIndent indent );
 
   //----------------------------------------------------------------------------
   /// MRMLNode methods
@@ -68,17 +68,17 @@ public:
   virtual vtkMRMLNode* CreateNodeInstance( void );
 
   ///
-  /// Read node attributes from XML (MRML) file
-  virtual void ReadXMLAttributes(const char** atts);
+  /// Read node attributes from XML ( MRML ) file
+  virtual void ReadXMLAttributes( const char** atts );
 
   ///
   /// Write this node's information to a MRML file in XML format.
-  virtual void WriteXML(ostream& of, int indent);
+  virtual void WriteXML( ostream& of, int indent );
 
   ///
   /// Copy the node's attributes to this object
   /// Does NOT copy: ID, FilePrefix, Name, ID
-  virtual void Copy(vtkMRMLNode *node);
+  virtual void Copy( vtkMRMLNode *node );
 
   ///
   /// Reset the node to an empty spatial object
@@ -90,7 +90,7 @@ public:
   virtual void UpdateReferences( void );
 
   ///
-  /// Get node XML tag name (like Volume, Model)
+  /// Get node XML tag name ( like Volume, Model )
   virtual const char* GetNodeTagName( void )
     {return "SpatialObjects";}
 
@@ -137,10 +137,10 @@ public:
   // Description:
   // Get/Set the SpatialObject when a new node is set
   TubeNetPointerType GetSpatialObject( void );
-  void SetSpatialObject(TubeNetPointerType object);
+  void SetSpatialObject( TubeNetPointerType object );
 
   /// Set and observe poly data for this model
-  virtual void SetAndObservePolyData(vtkPolyData* polyData);
+  virtual void SetAndObservePolyData( vtkPolyData* polyData );
 
   // Description:
   // Reset and recompute the polydata from the spatial object.
@@ -166,8 +166,8 @@ public:
 protected:
   vtkMRMLSpatialObjectsNode( void );
   ~vtkMRMLSpatialObjectsNode( void );
-  vtkMRMLSpatialObjectsNode(const vtkMRMLSpatialObjectsNode&);
-  void operator=(const vtkMRMLSpatialObjectsNode&);
+  vtkMRMLSpatialObjectsNode( const vtkMRMLSpatialObjectsNode& );
+  void operator=( const vtkMRMLSpatialObjectsNode& );
 
   // Description
   // Contains the SpatialObject structure used to generate the differents
@@ -190,4 +190,4 @@ private:
   void Reset( vtkMRMLNode* ) {};
 }; // End class vtkMRMLSpatialObjectsNode
 
-#endif // End !defined(__vtkMRMLSpatialObjectsNode_h)
+#endif // End !defined( __vtkMRMLSpatialObjectsNode_h )

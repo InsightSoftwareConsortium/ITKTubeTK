@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -33,9 +33,9 @@ int itkGradientBasedAngleOfIncidenceImageFilterTest( int argc, char * argv[] )
               << " inputImage"
               << " outputImage"
               << " outputImageWithGradientRecursiveGaussian"
-              << " probeType(CURVILINEAR|LINEAR)"
-              << " (originX|beamDirectionX)"
-              << " (originY|beamDirectionY)"
+              << " probeType( CURVILINEAR|LINEAR )"
+              << " ( originX|beamDirectionX )"
+              << " ( originY|beamDirectionY )"
               << std::endl;
     return EXIT_FAILURE;
     }

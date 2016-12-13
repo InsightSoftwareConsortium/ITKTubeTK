@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -96,7 +96,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
     }
   if( this->m_FeatureWeights.GetSize() != tubePoints )
     {
-    itkExceptionMacro(
+    itkExceptionMacro( 
       << "The number of FeatureWeights "
       << "do not equal the number of tube points!" );
     }
@@ -121,7 +121,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
        tubeIterator != tubeList->end();
        ++tubeIterator )
     {
-    TubeType* currentTube = dynamic_cast<TubeType*>(
+    TubeType* currentTube = dynamic_cast<TubeType*>( 
       ( *tubeIterator ).GetPointer() );
 
     if( currentTube != NULL )
@@ -205,7 +205,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
     }
 
   char childName[] = "Tube";
-  return this->m_MovingSpatialObject->GetChildren(
+  return this->m_MovingSpatialObject->GetChildren( 
     this->m_MovingSpatialObject->GetMaximumDepth(), childName );
 }
 
@@ -223,7 +223,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
   CompensatedSummationType matchMeasure;
   CompensatedSummationType weightSum;
 
-  // Create a copy of the transform to keep true const correctness (thread-safe)
+  // Create a copy of the transform to keep true const correctness ( thread-safe )
   // Set the parameters on the copy and uses the copy.
   LightObject::Pointer anotherTransform = this->m_Transform->CreateAnother();
   TransformType * transformCopy =
@@ -257,7 +257,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
           const ScalarType scale = scalingRadius * m_Kappa;
 
-          matchMeasure += m_FeatureWeights[weightCount] * vnl_math_abs(
+          matchMeasure += m_FeatureWeights[weightCount] * vnl_math_abs( 
             this->ComputeLaplacianMagnitude( pointIterator->GetNormal1(),
               scale,
               currentPoint ) );
@@ -269,7 +269,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
   if( weightSum.GetSum() == NumericTraits< ScalarType >::Zero )
     {
-    itkWarningMacro(
+    itkWarningMacro( 
       << "GetValue: All the transformed tube points are outside the image." );
     matchMeasure = NumericTraits< ScalarType >::min();
     }
@@ -294,7 +294,7 @@ template< class TFixedImage, class TMovingSpatialObject,
 typename ImageToTubeRigidMetric< TFixedImage,
   TMovingSpatialObject, TTubeSpatialObject >::ScalarType
 ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
-::ComputeLaplacianMagnitude(
+::ComputeLaplacianMagnitude( 
   const typename TubePointType::CovariantVectorType & tubeNormal,
   const ScalarType scale,
   const OutputPointType & currentPoint ) const
@@ -314,7 +314,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
     typename FixedImageType::PointType point;
     for( unsigned int ii = 0; ii < ImageDimension; ++ii )
       {
-      point[ii] = currentPoint[ii] + distance * tubeNormal.GetElement(ii);
+      point[ii] = currentPoint[ii] + distance * tubeNormal.GetElement( ii );
       }
 
     if( this->m_Interpolator->IsInsideBuffer( point ) )
@@ -327,7 +327,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
       }
     }
 
-  //! \todo check this normalization (where is the 1/(scale * sqrt( 2 pi ))
+  //! \todo check this normalization ( where is the 1/( scale * sqrt( 2 pi ) )
   //term?
   const ScalarType error = kernelSum.GetSum() / numberOfKernelPoints;
   CompensatedSummationType result;
@@ -344,13 +344,13 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
     typename FixedImageType::PointType point;
     for( unsigned int ii = 0; ii < ImageDimension; ++ii )
       {
-      point[ii] = currentPoint[ii] + distance * tubeNormal.GetElement(ii);
+      point[ii] = currentPoint[ii] + distance * tubeNormal.GetElement( ii );
       }
 
     if( this->m_Interpolator->IsInsideBuffer( point ) )
       {
       const ScalarType value =
-        static_cast< ScalarType >(
+        static_cast< ScalarType >( 
           this->m_Interpolator->Evaluate( point ) );
       result += value * kernelValue;
       }
@@ -387,7 +387,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 {
   derivative.SetSize( this->GetNumberOfParameters() );
 
-  // Create a copy of the transform to keep true const correctness (thread-safe)
+  // Create a copy of the transform to keep true const correctness ( thread-safe )
   // Set the parameters on the copy and uses the copy.
   LightObject::Pointer anotherTransform =
     this->m_Transform->CreateAnother();
@@ -420,7 +420,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
   dTubePointsContainerType dtransformedTubePoints;
   dtransformedTubePoints.reserve( m_FeatureWeights.GetSize() );
 
-  derivative.fill(0.0);
+  derivative.fill( 0.0 );
 
   typename TubeTreeType::ChildrenListType * tubeList = GetTubes();
   typename TubeTreeType::ChildrenListType::const_iterator tubeIterator;
@@ -428,7 +428,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
        tubeIterator != tubeList->end();
        ++tubeIterator )
     {
-    TubeType* currentTube = dynamic_cast<TubeType*>(
+    TubeType* currentTube = dynamic_cast<TubeType*>( 
       ( *tubeIterator ).GetPointer() );
 
     if( currentTube != NULL )
@@ -520,7 +520,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
        tubeIterator != tubeList->end();
        ++tubeIterator )
     {
-    TubeType* currentTube = dynamic_cast<TubeType*>(
+    TubeType* currentTube = dynamic_cast<TubeType*>( 
       ( *tubeIterator ).GetPointer() );
 
     if( currentTube != NULL )
@@ -587,7 +587,7 @@ template< class TFixedImage, class TMovingSpatialObject,
 typename ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
   TTubeSpatialObject >::ScalarType
 ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
-::ComputeThirdDerivatives(
+::ComputeThirdDerivatives( 
   const VectorType & tubeNormal,
   const ScalarType scale,
   const OutputPointType & currentPoint ) const
@@ -614,13 +614,13 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
     typename FixedImageType::PointType point;
     for( unsigned int ii = 0; ii < ImageDimension; ++ii )
       {
-      point[ii] = currentPoint[ii] + distance * tubeNormal.GetElement(ii);
+      point[ii] = currentPoint[ii] + distance * tubeNormal.GetElement( ii );
       }
 
     if( this->m_Interpolator->IsInsideBuffer( point ) )
       {
       const ScalarType value =
-        static_cast< ScalarType >(
+        static_cast< ScalarType >( 
           this->m_Interpolator->Evaluate( point ) );
       result += value * kernelValue;
       }
@@ -646,4 +646,4 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeImageToTubeRigidMetric_hxx)
+#endif // End !defined( __itktubeImageToTubeRigidMetric_hxx )

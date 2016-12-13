@@ -7,7 +7,7 @@
 
    All rights reserved.
 
-   Licensed under the Apache License, Version 2.0 (the "License");
+   Licensed under the Apache License, Version 2.0 ( the "License" );
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
@@ -151,7 +151,7 @@ int DoIt( int argc, char * argv[] )
     }
   else
     {
-    tubeErrorMacro(
+    tubeErrorMacro( 
       << "Error: Path must contain at only one Start Point" );
     timeCollector.Stop( "Set parameters" );
     return EXIT_FAILURE;
@@ -183,7 +183,7 @@ int DoIt( int argc, char * argv[] )
     }
   else if ( TargetTubeFileName.empty() && EndPoint.size() == 0 )
     {
-    tubeErrorMacro(
+    tubeErrorMacro( 
       << "Error: Atmost one End/Target Point or Target"
       "Tube should be provided. " );
     timeCollector.Stop( "Set parameters" );

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -58,7 +58,7 @@ TubePointWeightsCalculator< VDimension,
 {
   char childName[] = "Tube";
   typename TubeTreeSpatialObjectType::ChildrenListType * tubeList =
-    this->m_TubeTreeSpatialObject->GetChildren(
+    this->m_TubeTreeSpatialObject->GetChildren( 
       this->m_TubeTreeSpatialObject->GetMaximumDepth(), childName );
 
   // Count the tube points.
@@ -116,14 +116,14 @@ TubePointWeightsCalculator< VDimension,
   TPointWeights >
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
-  Superclass::PrintSelf(os,indent);
+  Superclass::PrintSelf( os,indent );
   if( ! m_TubeTreeSpatialObject.IsNull() )
     {
     os << indent << "TubeTreeSpatialObject: " << m_TubeTreeSpatialObject << std::endl;
     }
   else
     {
-    os << indent << "TubeTreeSpatialObject: " << "(0x0)" << std::endl;
+    os << indent << "TubeTreeSpatialObject: " << "( 0x0 )" << std::endl;
     }
   if( ! m_PointWeightFunction.IsNull() )
     {
@@ -132,7 +132,7 @@ TubePointWeightsCalculator< VDimension,
     }
   else
     {
-    os << indent << "PointWeightFunction: " << "(0x0)" << std::endl;
+    os << indent << "PointWeightFunction: " << "( 0x0 )" << std::endl;
     }
   os << indent << "PointWeights: " << m_PointWeights << std::endl;
 }
@@ -141,4 +141,4 @@ TubePointWeightsCalculator< VDimension,
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeTubePointWeightsCalculator_hxx)
+#endif // End !defined( __itktubeTubePointWeightsCalculator_hxx )

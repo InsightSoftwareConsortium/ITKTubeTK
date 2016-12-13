@@ -12,7 +12,7 @@ Copyright Kitware Inc., Carrboro, NC, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -50,7 +50,7 @@ class RidgeExtractorSplineValue
 {
 public:
 
-  RidgeExtractorSplineValue(
+  RidgeExtractorSplineValue( 
     RidgeExtractor<TInputImage> * newRidgeExtractor )
     {
     m_Ridge = newRidgeExtractor;
@@ -413,7 +413,7 @@ RidgeExtractor<TInputImage>
   double & roundness,
   double & curvature,
   double & levelness,
-  const vnl_vector<double> & prevTangent)
+  const vnl_vector<double> & prevTangent )
 {
   if( this->GetDebug() )
     {
@@ -431,7 +431,7 @@ RidgeExtractor<TInputImage>
   m_XVal = m_DataSpline->ValueJet( m_X, m_XD, m_XH );
 
   // test for nan
-  if( m_XVal != m_XVal || m_XD[0] != m_XD[0] || m_XH(0, 0) != m_XH(0, 0) )
+  if( m_XVal != m_XVal || m_XD[0] != m_XD[0] || m_XH( 0, 0 ) != m_XH( 0, 0 ) )
     {
     std::cerr << "NAN at " << m_X << std::endl;
 
@@ -678,8 +678,8 @@ RidgeExtractor<TInputImage>
     }
   for( unsigned int j=0; j<ImageDimension-1; j++ )
     {
-    lN.set_column(j, newN.get_column(j) );
-    lSearchDir.set_column( j, newN.get_column(j) );
+    lN.set_column( j, newN.get_column( j ) );
+    lSearchDir.set_column( j, newN.get_column( j ) );
     }
 
   pX = lX;
@@ -699,8 +699,8 @@ RidgeExtractor<TInputImage>
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
     indx[i] = ( int )( lX[i]+0.5 );
-    if( lX[i] < (double)m_ExtractBoundMin[i]
-      || lX[i]+0.5 > (double)m_ExtractBoundMax[i] )
+    if( lX[i] < ( double )m_ExtractBoundMin[i]
+      || lX[i]+0.5 > ( double )m_ExtractBoundMax[i] )
       {
       if( verbose || this->GetDebug() )
         {
@@ -819,7 +819,7 @@ RidgeExtractor<TInputImage>
   int recovery = 0;
   int prevRecoveryPoint = tubePointCount;
   while( recovery < m_MaxRecoveryAttempts &&
-    prevRecoveryPoint+(2.0/m_StepX) > tubePointCount )
+    prevRecoveryPoint+( 2.0/m_StepX ) > tubePointCount )
     {
     if( recovery > 0 )
       {
@@ -920,14 +920,14 @@ RidgeExtractor<TInputImage>
       std::cout << "Ridge: TraverseOW: lX0 = "
                 << lX << std::endl;
       std::cout << "Ridge: TraverseOW: lSearchDir1 = "
-                << lSearchDir.get_column(0) << std::endl;
+                << lSearchDir.get_column( 0 ) << std::endl;
       if( ImageDimension > 2 )
         {
         std::cout << "Ridge: TraverseOW: lSearchDir2 = "
-                  << lSearchDir.get_column(1) << std::endl;
+                  << lSearchDir.get_column( 1 ) << std::endl;
         }
       std::cout << "Ridge: TraverseOW: lSearchDir1*StepDir = "
-                << dot_product( lSearchDir.get_column(0), lStepDir )
+                << dot_product( lSearchDir.get_column( 0 ), lStepDir )
                 << std::endl;
       }
 
@@ -952,8 +952,8 @@ RidgeExtractor<TInputImage>
     bool inbounds = true;
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
-      if( lX[i] < (double)m_ExtractBoundMin[i]
-        || lX[i] + 0.5 > (double)m_ExtractBoundMax[i] )
+      if( lX[i] < ( double )m_ExtractBoundMin[i]
+        || lX[i] + 0.5 > ( double )m_ExtractBoundMax[i] )
         {
         inbounds = false;
         if( verbose || this->GetDebug() )
@@ -982,7 +982,7 @@ RidgeExtractor<TInputImage>
 
     for( unsigned int i=0; i<ImageDimension-1; i++ )
       {
-      lN.set_column(i, m_XHEVect.get_column( i ) );
+      lN.set_column( i, m_XHEVect.get_column( i ) );
       lNTEVal[i] = m_XHEVal[i];
       }
     lSearchDir = lN;
@@ -1027,7 +1027,7 @@ RidgeExtractor<TInputImage>
       continue;
       }
 
-    double diffX = std::sqrt(
+    double diffX = std::sqrt( 
       ::tube::ComputeEuclideanDistanceVector( lX, pX ) );
     if( diffX > m_MaxXChange * GetScale() * stepFactor )
       {
@@ -1143,7 +1143,7 @@ RidgeExtractor<TInputImage>
 
     if( maskVal != 0 )
       {
-      int oldPoint = ( maskVal - (int)maskVal ) * 10000;
+      int oldPoint = ( maskVal - ( int )maskVal ) * 10000;
       if( ( int )maskVal != tubeId ||
         ( ( tubePointCount - oldPoint ) > ( 20 / m_StepX )
         && ( tubePointCount - tubePointCountStart ) > ( 20 / m_StepX ) ) )
@@ -1302,7 +1302,7 @@ RidgeExtractor<TInputImage>
 
   if( dir == -1 )
     {
-    std::vector< TubePointType > * curPoints = &(m_Tube->GetPoints());
+    std::vector< TubePointType > * curPoints = &( m_Tube->GetPoints() );
     std::vector< TubePointType > newPoints;
     newPoints.clear();
     for( int i=pnts.size()-1; i>=0; --i )
@@ -1311,7 +1311,7 @@ RidgeExtractor<TInputImage>
       }
     for( unsigned int i=0; i<curPoints->size(); ++i )
       {
-      newPoints.push_back( (*curPoints)[i] );
+      newPoints.push_back( ( *curPoints )[i] );
       }
     m_Tube->SetPoints( newPoints );
     }
@@ -1434,8 +1434,8 @@ RidgeExtractor<TInputImage>
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
     indx[i] = ( int )( newX[i] + 0.5 ); // rounding
-    if( newX[i] < (double)m_ExtractBoundMin[i]
-      || newX[i] + 0.5 > (double)m_ExtractBoundMax[i] )
+    if( newX[i] < ( double )m_ExtractBoundMin[i]
+      || newX[i] + 0.5 > ( double )m_ExtractBoundMax[i] )
       {
       if( m_StatusCallBack )
         {
@@ -1502,8 +1502,8 @@ RidgeExtractor<TInputImage>
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
       indx[i]=( int )( newX[i] + 0.5 ); // rounding
-      if( newX[i] < (double)m_ExtractBoundMin[i]
-        || newX[i] + 0.5 > (double)m_ExtractBoundMax[i] )
+      if( newX[i] < ( double )m_ExtractBoundMin[i]
+        || newX[i] + 0.5 > ( double )m_ExtractBoundMax[i] )
         {
         if( m_StatusCallBack )
           {
@@ -1678,7 +1678,7 @@ RidgeExtractor<TInputImage>
   typename TubeMaskImageType::IndexType indx;
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
-    indx[i] = (int)(lX[i] + 0.5);
+    indx[i] = ( int )( lX[i] + 0.5 );
     }
   typename TubeMaskImageType::PixelType value =
     m_TubeMaskImage->GetPixel( indx );
@@ -1770,7 +1770,7 @@ RidgeExtractor<TInputImage>
     lT[i] = m_XHEVect( i, ImageDimension-1 );
     for( unsigned int j=0; j<ImageDimension-1; j++ )
       {
-      lN(i, j) = m_XHEVect( i, j );
+      lN( i, j ) = m_XHEVect( i, j );
       }
     }
   if( verbose || this->GetDebug() )
@@ -1845,7 +1845,7 @@ RidgeExtractor<TInputImage>
   if( m_StatusCallBack )
     {
     char s[80];
-    std::sprintf( s, "%d points", (int)(m_Tube->GetPoints().size()) );
+    std::sprintf( s, "%d points", ( int )( m_Tube->GetPoints().size() ) );
     m_StatusCallBack( "Extract: Ridge", s, 0 );
     }
 
@@ -1891,9 +1891,9 @@ RidgeExtractor<TInputImage>
     typename ImageType::IndexType indx;
     for( unsigned int i=0; i<ImageDimension; ++i )
       {
-      indx[i] = (int)( x[i] + 0.5 );
-      if( x[i] < (double)m_ExtractBoundMin[i]
-        || x[i] + 0.5 > (double)m_ExtractBoundMax[i] )
+      indx[i] = ( int )( x[i] + 0.5 );
+      if( x[i] < ( double )m_ExtractBoundMin[i]
+        || x[i] + 0.5 > ( double )m_ExtractBoundMax[i] )
         {
         inside = false;
         break;
@@ -1930,7 +1930,7 @@ RidgeExtractor<TInputImage>
             double dist = 0;
             for( unsigned int j=0; j<ImageDimension; j++ )
               {
-              double tf = it.GetOffset(i)[j];
+              double tf = it.GetOffset( i )[j];
               dist += tf * tf;
               }
             if( dist <= rr )
@@ -1946,7 +1946,7 @@ RidgeExtractor<TInputImage>
             double dist = 0;
             for( unsigned int j=0; j<ImageDimension; j++ )
               {
-              double tf = it.GetOffset(i)[j];
+              double tf = it.GetOffset( i )[j];
               dist += tf * tf;
               }
             if( dist <= rr )
@@ -2016,9 +2016,9 @@ RidgeExtractor<TInputImage>
     typename ImageType::IndexType indx;
     for( unsigned int i=0; i<ImageDimension; ++i )
       {
-      indx[i] = (int)( x[i] + 0.5 );
-      if( x[i] < (double)m_ExtractBoundMin[i]
-        || x[i] + 0.5 > (double)m_ExtractBoundMax[i] )
+      indx[i] = ( int )( x[i] + 0.5 );
+      if( x[i] < ( double )m_ExtractBoundMin[i]
+        || x[i] + 0.5 > ( double )m_ExtractBoundMax[i] )
         {
         inside = false;
         break;
@@ -2057,7 +2057,7 @@ RidgeExtractor<TInputImage>
             double dist = 0;
             for( unsigned int j=0; j<ImageDimension; j++ )
               {
-              double tf = it.GetOffset(i)[j];
+              double tf = it.GetOffset( i )[j];
               dist += tf * tf;
               }
             if( dist <= rr )
@@ -2074,7 +2074,7 @@ RidgeExtractor<TInputImage>
             double dist = 0;
             for( unsigned int j=0; j<ImageDimension; j++ )
               {
-              double tf = it.GetOffset(i)[j];
+              double tf = it.GetOffset( i )[j];
               dist += tf * tf;
               }
             if( dist <= rr )
@@ -2130,4 +2130,4 @@ RidgeExtractor<TInputImage>
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeRidgeExtractor_hxx)
+#endif // End !defined( __itktubeRidgeExtractor_hxx )

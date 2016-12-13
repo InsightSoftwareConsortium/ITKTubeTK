@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -25,7 +25,7 @@ limitations under the License.
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -89,7 +89,7 @@ public:
     std::cout << x << " ";
     std::cout << y << " ) = ";
 
-    const MeasureType measure = 0.5*(3*x*x+4*x*y+6*y*y) - 2*x + 8*y;
+    const MeasureType measure = 0.5*( 3*x*x+4*x*y+6*y*y ) - 2*x + 8*y;
 
     std::cout << measure << std::endl;
     return measure;
@@ -164,7 +164,7 @@ int itktubeRecordOptimizationParameterProgressionCommandTest( int argc, char * a
   RecordOptimizationParameterProgressionCommandType::Pointer
     recordOptimizationParameterProgressionCommand =
     RecordOptimizationParameterProgressionCommandType::New();
-  recordOptimizationParameterProgressionCommand->SetFileName(
+  recordOptimizationParameterProgressionCommand->SetFileName( 
     optimizationParameterProgressionFile );
   recordOptimizationParameterProgressionCommand->Observe( optimizer );
   // some fake fixed parameters
@@ -188,9 +188,9 @@ int itktubeRecordOptimizationParameterProgressionCommandTest( int argc, char * a
     }
 
   ParametersType finalPosition = optimizer->GetCurrentPosition();
-  std::cout << "Solution        = (";
+  std::cout << "Solution        = ( ";
   std::cout << finalPosition[0] << ",";
-  std::cout << finalPosition[1] << ")" << std::endl;
+  std::cout << finalPosition[1] << " )" << std::endl;
 
   // Make the file was written correctly and has content.
   H5::H5File h5file( optimizationParameterProgressionFile, H5F_ACC_RDONLY );

@@ -1157,7 +1157,7 @@ Hessian( const PointType& point, double scale,
 
 template< class TInputImage >
 double
-NJetImageFunction<TInputImage>::Hessian(
+NJetImageFunction<TInputImage>::Hessian( 
   const PointType& point, const VectorType & v1, double scale,
   typename NJetImageFunction<TInputImage>::MatrixType & h ) const
 {
@@ -1597,7 +1597,7 @@ JetAtContinuousIndex( const ContinuousIndexType & cIndex, VectorType & d,
 
           for( unsigned int j=i+1; j< ImageDimension; j++ )
             {
-            double distJ = (xShift[j] - cIndex[j])
+            double distJ = ( xShift[j] - cIndex[j] )
               * m_InputImageSpacing[j];
 
             expValueD = distI * distJ * expValue;
@@ -1834,7 +1834,7 @@ RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
   m_MostRecentRidgeRoundness = roundness;
   m_MostRecentRidgeCurvature = curvature;
   m_MostRecentRidgeLevelness = levelness;
-  m_MostRecentRidgeTangent.SetVnlVector( eVect.get_column(
+  m_MostRecentRidgeTangent.SetVnlVector( eVect.get_column( 
     ImageDimension-1 ) );
 
   return m_MostRecentRidgeness;
@@ -1858,7 +1858,7 @@ RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
 
   vnl_symmetric_eigensystem< double > eigSys( h.GetVnlMatrix() );
 
-  assert( eigSys.get_eigenvalue(0 ) <= eigSys.get_eigenvalue(1 ) );
+  assert( eigSys.get_eigenvalue( 0 ) <= eigSys.get_eigenvalue( 1 ) );
 
   if( d.GetNorm() != 0 )
     {
@@ -1928,7 +1928,7 @@ RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
 
   vnl_symmetric_eigensystem< double > eigSys( h.GetVnlMatrix() );
 
-  assert( eigSys.get_eigenvalue(0 ) <= eigSys.get_eigenvalue(1 ) );
+  assert( eigSys.get_eigenvalue( 0 ) <= eigSys.get_eigenvalue( 1 ) );
 
   if( d.GetNorm() != 0 )
     {
@@ -2067,4 +2067,4 @@ ScaleSubsample( double factor )
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeNJetImageFunction_hxx )
+#endif // End !defined( __itktubeNJetImageFunction_hxx )

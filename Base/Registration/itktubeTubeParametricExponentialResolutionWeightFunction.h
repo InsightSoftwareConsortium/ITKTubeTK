@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -39,12 +39,12 @@ namespace Function
  *
  * \brief Weight tube points exponentially by their radius.
  *
- * \f$ w_i = \frac{1}{1 + \delta (e^{-\alpha r_i} - 1)} \f$
+ * \f$ w_i = \frac{1}{1 + \delta ( e^{-\alpha r_i} - 1 )} \f$
  *
- * where \f$\delta\ \in (-1, 1)f$ controls the amount of weighting.  A
+ * where \f$\delta\ \in ( -1, 1 )f$ controls the amount of weighting.  A
  * positive Delta weighs large tubes higher than small tubes, and a
  * negative Delta weighs small tubes higher than large tubes.
- * \f$\alpha \in [0, \infty)\f$ controls transition in weights.
+ * \f$\alpha \in [0, \infty )\f$ controls transition in weights.
  * \f$r\f$ is the tube radius at a point.
  *
  * \sa TubeParametricExponentialResolutionWeightFunction
@@ -69,7 +69,7 @@ public:
     {
     const OperatorValueType radius = tubePoint.GetRadius();
     return static_cast< OperatorValueType >( 1.0 /
-      (1.0 + this->m_Delta * (std::exp( -this->m_Alpha * radius ) - 1.0)));
+      ( 1.0 + this->m_Delta * ( std::exp( -this->m_Alpha * radius ) - 1.0 ) ) );
     }
 
   void SetDelta( const OperatorValueType delta )
@@ -119,4 +119,4 @@ private:
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeTubeParametricExponentialResolutionWeightFunction_h)
+#endif // End !defined( __itktubeTubeParametricExponentialResolutionWeightFunction_h )

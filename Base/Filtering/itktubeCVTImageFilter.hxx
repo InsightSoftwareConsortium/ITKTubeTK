@@ -88,7 +88,7 @@ GenerateInputRequestedRegion( void )
   Superclass::GenerateInputRequestedRegion();
   if( this->GetInput() )
     {
-    typename InputImageType::Pointer inpt = const_cast< TInputImage * >(
+    typename InputImageType::Pointer inpt = const_cast< TInputImage * >( 
       this->GetInput() );
     inpt->SetRequestedRegionToLargestPossibleRegion();
     }
@@ -165,7 +165,7 @@ GenerateData( void )
 
   if( this->GetDebug() )
     {
-    for( int j = 0; j < (int)m_NumberOfCentroids; j++ )
+    for( int j = 0; j < ( int )m_NumberOfCentroids; j++ )
       {
       std::cout << "Initial Centroid [" << j << "] = " << m_Centroids[j]
         << std::endl;
@@ -176,7 +176,7 @@ GenerateData( void )
     {
     iteration = iteration + 1;
 
-    double iterationEnergy = this->ComputeIteration(
+    double iterationEnergy = this->ComputeIteration( 
       iterationEnergyDifference );
 
     if( this->GetDebug() )
@@ -187,7 +187,7 @@ GenerateData( void )
       }
     ContinuousIndexType indx;
     indx.Fill( 0 );
-    for( int j = 0; j < (int)m_NumberOfCentroids; j++ )
+    for( int j = 0; j < ( int )m_NumberOfCentroids; j++ )
       {
       for( unsigned int i=0; i<ImageDimension; i++ )
         {
@@ -206,16 +206,16 @@ GenerateData( void )
 
   // Generate output image
   IndexType iIndx;
-  for( int j = 0; j < (int)m_NumberOfCentroids; j++ )
+  for( int j = 0; j < ( int )m_NumberOfCentroids; j++ )
     {
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
-      iIndx[i] = (int)( m_Centroids[j][i] );
+      iIndx[i] = ( int )( m_Centroids[j][i] );
       if( iIndx[i] < 0 )
         {
         iIndx[i] = 0;
         }
-      if( iIndx[i] > (int)m_InputImageSize[i]-1 )
+      if( iIndx[i] > ( int )m_InputImageSize[i]-1 )
         {
         iIndx[i] = m_InputImageSize[i]-1;
         }
@@ -272,7 +272,7 @@ ComputeIteration( double & energyDiff )
   unsigned int * nearest = new unsigned int[m_NumberOfSamplesPerBatch];
   PointArrayType batch( m_NumberOfSamplesPerBatch );
 
-  for( j = 0; j < (int)m_NumberOfCentroids; j++ )
+  for( j = 0; j < ( int )m_NumberOfCentroids; j++ )
     {
     centroids2[j] = m_Centroids[j];
     count[j] = 1;
@@ -288,7 +288,7 @@ ComputeIteration( double & energyDiff )
   int get;
   int have = 0;
   double dist;
-  while( have < (int)m_NumberOfSamples )
+  while( have < ( int )m_NumberOfSamples )
     {
     if( this->GetDebug() )
       {
@@ -317,7 +317,7 @@ ComputeIteration( double & energyDiff )
       j2 = nearest[j];
 
       dist = 0;
-      for( i = 0; i < (int)ImageDimension; i++ )
+      for( i = 0; i < ( int )ImageDimension; i++ )
         {
         centroids2[j2][i] = centroids2[j2][i] + batch[j][i];
         dist = ( m_Centroids[j2][i] - batch[j][i] )
@@ -328,19 +328,19 @@ ComputeIteration( double & energyDiff )
       }
     }
 
-  for( j = 0; j < (int)m_NumberOfCentroids; j++ )
+  for( j = 0; j < ( int )m_NumberOfCentroids; j++ )
     {
-    for( i = 0; i < (int)ImageDimension; i++ )
+    for( i = 0; i < ( int )ImageDimension; i++ )
       {
       centroids2[j][i] = centroids2[j][i] / count[j];
       }
     }
 
   energyDiff = 0.0;
-  for( j = 0; j < (int)m_NumberOfCentroids; j++ )
+  for( j = 0; j < ( int )m_NumberOfCentroids; j++ )
     {
     double term = 0.0;
-    for( i = 0; i < (int)ImageDimension; i++ )
+    for( i = 0; i < ( int )ImageDimension; i++ )
       {
       term += ( centroids2[j][i] - m_Centroids[j][i] )
         * ( centroids2[j][i] - m_Centroids[j][i] );
@@ -401,19 +401,19 @@ ComputeSample( PointArrayType * sample, unsigned int sampleSize,
       len = 1;
       for( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        gridSize[i] = (int)( m_InputImageSize[i] / factor );
+        gridSize[i] = ( int )( m_InputImageSize[i] / factor );
         len = len * gridSize[i];
         }
       for( unsigned int j = 0; j < len; j++ )
         {
         double tmpJ = j;
         double tmpLen = len;
-        for( int i = (int)( ImageDimension )-1; i >= 0; --i )
+        for( int i = ( int )( ImageDimension )-1; i >= 0; --i )
           {
           tmpLen = tmpLen / gridSize[i];
-          iIndx[i] = (int)( tmpJ / tmpLen );
+          iIndx[i] = ( int )( tmpJ / tmpLen );
           tmpJ = tmpJ - ( iIndx[i] * tmpLen );
-          iIndx[i] = (int)( iIndx[i] * factor + factor/2 );
+          iIndx[i] = ( int )( iIndx[i] * factor + factor/2 );
           }
         sample->push_back( iIndx );
         }
@@ -422,7 +422,7 @@ ComputeSample( PointArrayType * sample, unsigned int sampleSize,
         {
         for( unsigned int i = 0; i < ImageDimension; i++ )
           {
-          iIndx[i] = (int)( m_RandomGenerator->GetUniformVariate( 0, 1 )
+          iIndx[i] = ( int )( m_RandomGenerator->GetUniformVariate( 0, 1 )
             * m_InputImageSize[i]-1 );
           }
         ( *sample ).push_back( iIndx );
@@ -439,9 +439,9 @@ ComputeSample( PointArrayType * sample, unsigned int sampleSize,
           {
           for( unsigned int i = 0; i < ImageDimension; i++ )
             {
-            indx[i] = (int)( m_RandomGenerator->GetUniformVariate( 0, 1 )
+            indx[i] = ( int )( m_RandomGenerator->GetUniformVariate( 0, 1 )
               * m_InputImageSize[i]-1 );
-            iIndx[i] = (int)( indx[i] );
+            iIndx[i] = ( int )( indx[i] );
             }
           p1 = m_InputImage->GetPixel( iIndx ) / m_InputImageMax;
           u = ( double )m_RandomGenerator->GetUniformVariate( 0, 1 );

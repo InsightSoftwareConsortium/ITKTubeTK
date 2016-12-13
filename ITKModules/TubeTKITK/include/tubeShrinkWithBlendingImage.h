@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -50,7 +50,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( ShrinkWithBlendingImage, ProcessObject );
 
 
@@ -69,7 +69,7 @@ public:
 
   /** Set the shrink factors. Values are clamped to
    * a minimum value of 1. Default is 1 for all dimensions. */
-  tubeWrapSetMacro( ShrinkFactors, ShrinkFactorsType, Filter)
+  tubeWrapSetMacro( ShrinkFactors, ShrinkFactorsType, Filter )
   void SetShrinkFactor( unsigned int i, unsigned int factor );
   unsigned int GetShrinkFactor( unsigned int i );
 

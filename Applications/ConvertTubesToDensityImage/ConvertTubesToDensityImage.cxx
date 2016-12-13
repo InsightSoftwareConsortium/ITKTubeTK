@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -59,7 +59,7 @@ int DoIt( int argc, char * argv[] )
   double progress = 0.0;
   itk::TimeProbesCollectorBase timeCollector;
 
-  tube::CLIProgressReporter progressReporter(
+  tube::CLIProgressReporter progressReporter( 
     "tubeDensityImageRadiusBuilder",
     CLPProcessInformation );
 
@@ -157,7 +157,7 @@ int DoIt( int argc, char * argv[] )
 
   writer_d->SetFileName( outputDensityImage.c_str() );
   writer_d->SetInput( builder->GetDensityMapImage() );
-  writer_d->SetUseCompression(true);
+  writer_d->SetUseCompression( true );
   writer_d->Update();
 
   std::cout << "Writing image: " << outputRadiusImage.c_str() << std::endl;
@@ -230,7 +230,7 @@ int main( int argc, char * argv[] )
       }
     default:
       {
-      tubeErrorMacro(
+      tubeErrorMacro( 
         << "Error: Only 2D and 3D data is currently supported." );
       delete mScene;
       return EXIT_FAILURE;

@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -220,8 +220,8 @@ PDFSegmenterSVM< TImage, TLabelMap >
   sampleSize /= m_TrainingDataStride;
 
   m_Parameter.nr_weight = numClasses;
-  m_Parameter.weight_label = (int *)malloc( numClasses * sizeof( int ) );
-  m_Parameter.weight = (double *)malloc( numClasses * sizeof( double ) );
+  m_Parameter.weight_label = ( int * )malloc( numClasses * sizeof( int ) );
+  m_Parameter.weight = ( double * )malloc( numClasses * sizeof( double ) );
   if( m_SVMClassWeight.size() != numClasses )
     {
     m_SVMClassWeight.resize( numClasses );
@@ -229,9 +229,9 @@ PDFSegmenterSVM< TImage, TLabelMap >
   for( unsigned int c=0; c<numClasses; ++c )
     {
     m_Parameter.weight_label[c] = c;
-    m_Parameter.weight[c] = 1.0 - (
+    m_Parameter.weight[c] = 1.0 - ( 
       ( this->m_InClassList[c].size() / m_TrainingDataStride )
-      / (double)( sampleSize ) );
+      / ( double )( sampleSize ) );
     m_SVMClassWeight[c] = m_Parameter.weight[c];
     }
 
@@ -250,16 +250,16 @@ PDFSegmenterSVM< TImage, TLabelMap >
       }
     }
   m_Problem.l = sampleSize;
-  m_Problem.y = (double *)malloc( sampleSize * sizeof( double ) );
-  m_Problem.x = (struct svm_node **)malloc( sampleSize *
-    sizeof( struct svm_node *) );
+  m_Problem.y = ( double * )malloc( sampleSize * sizeof( double ) );
+  m_Problem.x = ( struct svm_node ** )malloc( sampleSize *
+    sizeof( struct svm_node * ) );
 
   unsigned int numElements = sampleSize * ( numFeatures + 1 );
   if( m_Space != NULL )
     {
     free( m_Space );
     }
-  m_Space = (struct svm_node *)malloc( numElements *
+  m_Space = ( struct svm_node * )malloc( numElements *
     sizeof( struct svm_node ) );
 
   unsigned int elementNum = 0;
@@ -277,7 +277,7 @@ PDFSegmenterSVM< TImage, TLabelMap >
       for( unsigned int f=0; f<numFeatures; ++f )
         {
         m_Space[ elementNum ].index = f;
-        m_Space[ elementNum ].value = (*inClassListIt)[ f ];
+        m_Space[ elementNum ].value = ( *inClassListIt )[ f ];
         ++elementNum;
         }
       m_Space[ elementNum ].index = -1;
@@ -306,12 +306,12 @@ PDFSegmenterSVM< TImage, TLabelMap >
 template< class TImage, class TLabelMap >
 typename PDFSegmenterSVM< TImage, TLabelMap >::ProbabilityVectorType
 PDFSegmenterSVM< TImage, TLabelMap >
-::GetProbabilityVector( const FeatureVectorType & fv) const
+::GetProbabilityVector( const FeatureVectorType & fv ) const
 {
   unsigned int numClasses = this->m_ObjectIdList.size();
   unsigned int numFeatures = this->GetNumberOfFeatures();
 
-  svm_node * x = (struct svm_node *)malloc( ( numFeatures+1 ) *
+  svm_node * x = ( struct svm_node * )malloc( ( numFeatures+1 ) *
     sizeof( struct svm_node ) );
 
   for( unsigned int f=0; f<numFeatures; ++f )
@@ -322,7 +322,7 @@ PDFSegmenterSVM< TImage, TLabelMap >
   x[ numFeatures ].index = -1;
   x[ numFeatures ].value = 0;
 
-  double * probEstimates = (double *)malloc( numClasses *
+  double * probEstimates = ( double * )malloc( numClasses *
     sizeof( double ) );
 
   svm_predict_probability( m_Model, x, probEstimates );
@@ -364,4 +364,4 @@ PDFSegmenterSVM< TImage, TLabelMap >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubePDFSegmenterSVM_hxx)
+#endif // End !defined( __itktubePDFSegmenterSVM_hxx )

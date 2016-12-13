@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -100,7 +100,7 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   typename EigenVectorAnalysisFilterType::Pointer eigenVectorAnalysisFilter
     = EigenVectorAnalysisFilterType::New();
   eigenVectorAnalysisFilter->SetDimension( 3 );
-  eigenVectorAnalysisFilter->OrderEigenValuesBy(
+  eigenVectorAnalysisFilter->OrderEigenValuesBy( 
     EigenVectorAnalysisFilterType::FunctorType::OrderByValue );
 
   eigenVectorAnalysisFilter->SetInput( StructureTensorFilter->GetOutput() );
@@ -115,7 +115,7 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   typename EigenAnalysisFilterType::Pointer eigenAnalysisFilter =
     EigenAnalysisFilterType::New();
   eigenAnalysisFilter->SetDimension( 3 );
-  eigenAnalysisFilter->OrderEigenValuesBy(
+  eigenAnalysisFilter->OrderEigenValuesBy( 
     EigenAnalysisFilterType::FunctorType::OrderByValue );
 
   eigenAnalysisFilter->SetInput( StructureTensorFilter->GetOutput() );
@@ -144,8 +144,8 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   itk::ImageRegionConstIterator<EigenVectorImageType>
     eigenVectorImageIterator;
   eigenVectorImageIterator =
-    itk::ImageRegionConstIterator<EigenVectorImageType>(
-    eigenVectorImage, eigenVectorImage->GetRequestedRegion());
+    itk::ImageRegionConstIterator<EigenVectorImageType>( 
+    eigenVectorImage, eigenVectorImage->GetRequestedRegion() );
   eigenVectorImageIterator.GoToBegin();
 
   //Iterator for the diffusion tensor image
@@ -161,7 +161,7 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
     eigenValueImageIterator;
   eigenValueImageIterator =
     itk::ImageRegionConstIterator<EigenValueImageType>( eigenImage,
-    eigenImage->GetRequestedRegion());
+    eigenImage->GetRequestedRegion() );
 
   //Iterator for the gradient magnitude image
   typedef typename GradientMagnitudeFilterType::OutputImageType
@@ -172,9 +172,9 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
   itk::ImageRegionConstIterator<GradientMagnitudeOutputImageType>
     gradientMagnitudeImageIterator;
   gradientMagnitudeImageIterator = itk::ImageRegionConstIterator<
-    GradientMagnitudeOutputImageType>(
+    GradientMagnitudeOutputImageType>( 
     gradientMagnitudeOutputImage,
-    gradientMagnitudeOutputImage->GetRequestedRegion());
+    gradientMagnitudeOutputImage->GetRequestedRegion() );
 
   it.GoToBegin();
   eigenVectorImageIterator.GoToBegin();
@@ -250,16 +250,16 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
       {
       double gradientMagnitudeSquare = gradientMagnitude
         * gradientMagnitude;
-      double ratio = (gradientMagnitudeSquare) /
-        (m_ContrastParameterLambdaE*m_ContrastParameterLambdaE);
-      double expVal = std::exp( (-1.0 * m_ThresholdParameterC)/(std::pow( ratio,
-        4.0 )));
+      double ratio = ( gradientMagnitudeSquare ) /
+        ( m_ContrastParameterLambdaE*m_ContrastParameterLambdaE );
+      double expVal = std::exp( ( -1.0 * m_ThresholdParameterC )/( std::pow( ratio,
+        4.0 ) ) );
       Lambda1 = 1.0 - expVal;
       }
 
-    eigenValueMatrix(0,0) = Lambda1;
-    eigenValueMatrix(1,1) = Lambda2;
-    eigenValueMatrix(2,2) = Lambda3;
+    eigenValueMatrix( 0,0 ) = Lambda1;
+    eigenValueMatrix( 1,1 ) = Lambda2;
+    eigenValueMatrix( 2,2 ) = Lambda3;
 
     //Get the eigenVector matrix
     EigenVectorMatrixType eigenVectorMatrix;
@@ -293,17 +293,17 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
     //of doing this TODO
     typename DiffusionTensorImageType::PixelType        tensor;
 
-    tensor(0,0) = productMatrix(0,0);
-    tensor(0,1) = productMatrix(0,1);
-    tensor(0,2) = productMatrix(0,2);
+    tensor( 0,0 ) = productMatrix( 0,0 );
+    tensor( 0,1 ) = productMatrix( 0,1 );
+    tensor( 0,2 ) = productMatrix( 0,2 );
 
-    tensor(1,0) = productMatrix(1,0);
-    tensor(1,1) = productMatrix(1,1);
-    tensor(1,2) = productMatrix(1,2);
+    tensor( 1,0 ) = productMatrix( 1,0 );
+    tensor( 1,1 ) = productMatrix( 1,1 );
+    tensor( 1,2 ) = productMatrix( 1,2 );
 
-    tensor(2,0) = productMatrix(2,0);
-    tensor(2,1) = productMatrix(2,1);
-    tensor(2,2) = productMatrix(2,2);
+    tensor( 2,0 ) = productMatrix( 2,0 );
+    tensor( 2,1 ) = productMatrix( 2,1 );
+    tensor( 2,2 ) = productMatrix( 2,2 );
     it.Set( tensor );
 
     ++it;
@@ -316,9 +316,9 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
 template< class TInputImage, class TOutputImage >
 void
 AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
-::PrintSelf(std::ostream& os, Indent indent) const
+::PrintSelf( std::ostream& os, Indent indent ) const
 {
-  Superclass::PrintSelf(os, indent);
+  Superclass::PrintSelf( os, indent );
 
   os << indent << "Contrast parameter LambdaE: "
     << m_ContrastParameterLambdaE  << std::endl;
@@ -332,4 +332,6 @@ AnisotropicEdgeEnhancementDiffusionImageFilter<TInputImage, TOutputImage>
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeAnisotropicEdgeEnhancementDiffusionImageFilter_hxx)
+#endif
+// Endif !defined(
+//    __itktubeAnisotropicEdgeEnhancementDiffusionImageFilter_hxx )

@@ -7,7 +7,7 @@
 
    All rights reserved.
 
-   Licensed under the Apache License, Version 2.0 (the "License");
+   Licensed under the Apache License, Version 2.0 ( the "License" );
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
@@ -67,7 +67,7 @@ public:
   typedef itk::IndexValueType                   TubeIdType;
   typedef std::vector< TubeIdType >             TubeIdListType;
 
-  /** Run-time type information (and related methods).   */
+  /** Run-time type information ( and related methods ).   */
   itkTypeMacro( MinimumSpanningTreeVesselConnectivityFilter,
                 SpatialObjectToSpatialObjectFilter );
 
@@ -105,7 +105,7 @@ private:
   // purposely not implemented
   void operator=( const Self & );
 
-  double ComputeTubeLength( );
+  double ComputeTubeLength();
   void BuildTubeGraph( void );
   void ComputeTubeConnectivity( void );
   void VisitTube( TubePointerType pTube );
@@ -176,4 +176,4 @@ private:
 #include "itktubeMinimumSpanningTreeVesselConnectivityFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeMinimumSpanningTreeVesselConnectivityFilter_h)
+#endif // End !defined( __itktubeMinimumSpanningTreeVesselConnectivityFilter_h )

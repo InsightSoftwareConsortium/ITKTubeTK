@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -40,7 +40,7 @@ ConvertImagesToCSVFilter< TInputImage, TInputMask >
 template< class TInputImage, class TInputMask >
 void
 ConvertImagesToCSVFilter< TInputImage, TInputMask >
-::GenerateData(void)
+::GenerateData( void )
 {
   const unsigned int ARows =
     m_InputMask->GetLargestPossibleRegion().GetNumberOfPixels() / m_Stride;
@@ -49,8 +49,8 @@ ConvertImagesToCSVFilter< TInputImage, TInputMask >
   std::vector< IteratorType * > iterList;
   for( unsigned int i = 0; i < m_NumImages; ++i )
     {
-    iterList.push_back( new IteratorType(m_ImageList[i],
-    m_ImageList[i]->GetLargestPossibleRegion()) );
+    iterList.push_back( new IteratorType( m_ImageList[i],
+    m_ImageList[i]->GetLargestPossibleRegion() ) );
     }
   MaskIteratorType maskIter( m_InputMask,
     m_InputMask->GetLargestPossibleRegion() );
@@ -97,7 +97,7 @@ ConvertImagesToCSVFilter< TInputImage, TInputMask >
 template< class TInputImage, class TInputMask >
 void
 ConvertImagesToCSVFilter< TInputImage, TInputMask >
-::SetInput(InputImageType* image)
+::SetInput( InputImageType* image )
 {
   m_ImageList.clear();
   this->m_ImageList.push_back( image );
@@ -115,7 +115,7 @@ ConvertImagesToCSVFilter< TInputImage, TInputMask >
 template< class TInputImage, class TInputMask >
 void
 ConvertImagesToCSVFilter< TInputImage, TInputMask >
-::AddImage(InputImageType* image)
+::AddImage( InputImageType* image )
 {
   this->m_ImageList.push_back( image );
   this->Modified();
@@ -125,14 +125,14 @@ ConvertImagesToCSVFilter< TInputImage, TInputMask >
 template< class TInputImage, class TInputMask >
 void
 ConvertImagesToCSVFilter< TInputImage, TInputMask >
-::PrintSelf(std::ostream & os, Indent indent) const
+::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
   os << indent << "ImageList size = " << m_ImageList.size() << std::endl;
-  if (m_ImageList.size() > 0)
-  {
+  if( m_ImageList.size() > 0 )
+    {
     os << indent << "ImageList[0] = " << m_ImageList[0] << std::endl;
-  }
+    }
   os << indent << "InputMask = " << m_InputMask << std::endl;
   os << indent << "VnlOutput = " << m_VnlOutput << std::endl;
   os << indent << "Stride = " << m_Stride << std::endl;

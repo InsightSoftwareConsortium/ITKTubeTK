@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -45,12 +45,12 @@ namespace tube
 
 template< class TImage, class TLabelMap >
 RidgeSeedFilter< TImage, TLabelMap >
-::RidgeSeedFilter( )
+::RidgeSeedFilter()
 {
   m_RidgeFeatureGenerator = RidgeFeatureGeneratorType::New();
 
   m_SeedFeatureGenerator = SeedFeatureGeneratorType::New();
-  m_SeedFeatureGenerator->SetInputFeatureVectorGenerator(
+  m_SeedFeatureGenerator->SetInputFeatureVectorGenerator( 
     m_RidgeFeatureGenerator );
 
   m_SeedFeatureGenerator->SetNumberOfLDABasisToUseAsFeatures( 1 );
@@ -328,7 +328,7 @@ RidgeSeedFilter< TImage, TLabelMap >
 
   unsigned int numClasses = m_PDFSegmenter->GetNumberOfClasses();
 
-  itk::ImageRegionIterator< ProbabilityImageType > resultIter(
+  itk::ImageRegionIterator< ProbabilityImageType > resultIter( 
     resultImage, region );
   double backgroundMax = 0;
   for( unsigned int c = 0; c < numClasses; c++ )
@@ -356,7 +356,7 @@ RidgeSeedFilter< TImage, TLabelMap >
       }
     }
   double tubeMax = 0;
-  itk::ImageRegionConstIterator< ProbabilityImageType > classIter(
+  itk::ImageRegionConstIterator< ProbabilityImageType > classIter( 
     m_PDFSegmenter->GetClassProbabilityImage( objectNum ), region );
   resultIter.GoToBegin();
   while( ! resultIter.IsAtEnd() )
@@ -390,7 +390,7 @@ RidgeSeedFilter< TImage, TLabelMap >
 {
   //itk::TimeProbesCollectorBase timeCollector;
 
-  //timeCollector.Start("RidgeSeedFilter Update");
+  //timeCollector.Start( "RidgeSeedFilter Update" );
   std::cout << "RidgeSeedFilter::GenerateData" << std::endl;
 
   if( m_PDFSegmenter.IsNull() )
@@ -404,7 +404,7 @@ RidgeSeedFilter< TImage, TLabelMap >
     tmpPDF->SetOutlierRejectPortion( 0.001 );
     }
 
-  m_PDFSegmenter->SetFeatureVectorGenerator(
+  m_PDFSegmenter->SetFeatureVectorGenerator( 
     m_SeedFeatureGenerator.GetPointer() );
   m_PDFSegmenter->SetReclassifyObjectLabels( true );
   m_PDFSegmenter->SetReclassifyNotObjectLabels( true );
@@ -416,9 +416,9 @@ RidgeSeedFilter< TImage, TLabelMap >
 
   m_RidgeFeatureGenerator->SetUseIntensityOnly( m_UseIntensityOnly );
 
-  //timeCollector.Start("RidgeSeedFilter FeatureGenerator");
+  //timeCollector.Start( "RidgeSeedFilter FeatureGenerator" );
   m_RidgeFeatureGenerator->Update();
-  //timeCollector.Stop("RidgeSeedFilter FeatureGenerator");
+  //timeCollector.Stop( "RidgeSeedFilter FeatureGenerator" );
 
   m_SeedFeatureGenerator->SetObjectId( m_RidgeId );
   m_SeedFeatureGenerator->AddObjectId( m_BackgroundId );
@@ -430,22 +430,22 @@ RidgeSeedFilter< TImage, TLabelMap >
 
   if( m_TrainClassifier )
     {
-    //timeCollector.Start("RidgeSeedFilter RidgeFeatureGenerator Update");
+    //timeCollector.Start( "RidgeSeedFilter RidgeFeatureGenerator Update" );
     m_RidgeFeatureGenerator->SetUpdateWhitenStatisticsOnUpdate( true );
     m_RidgeFeatureGenerator->Update();
-    //timeCollector.Stop("RidgeSeedFilter RidgeFeatureGenerator Update");
+    //timeCollector.Stop( "RidgeSeedFilter RidgeFeatureGenerator Update" );
 
-    //timeCollector.Start("RidgeSeedFilter SeedFeatureGenerator Update");
+    //timeCollector.Start( "RidgeSeedFilter SeedFeatureGenerator Update" );
     m_SeedFeatureGenerator->SetUpdateWhitenStatisticsOnUpdate( true );
     m_SeedFeatureGenerator->Update();
-    //timeCollector.Stop("RidgeSeedFilter SeedFeatureGenerator Update");
+    //timeCollector.Stop( "RidgeSeedFilter SeedFeatureGenerator Update" );
 
-    //timeCollector.Start("RidgeSeedFilter PDFSegmenter Update");
+    //timeCollector.Start( "RidgeSeedFilter PDFSegmenter Update" );
     m_PDFSegmenter->Update();
-    //timeCollector.Start("RidgeSeedFilter PDFSegmenter Update");
+    //timeCollector.Start( "RidgeSeedFilter PDFSegmenter Update" );
     }
 
-  //timeCollector.Stop("RidgeSeedFilter Update");
+  //timeCollector.Stop( "RidgeSeedFilter Update" );
   //timeCollector.Report();
 }
 
@@ -464,7 +464,7 @@ RidgeSeedFilter< TImage, TLabelMap >
 
   m_LabelMap = m_PDFSegmenter->GetLabelMap();
 
-  itk::ImageRegionIterator< LabelMapType > resultIter(
+  itk::ImageRegionIterator< LabelMapType > resultIter( 
     m_LabelMap, m_LabelMap->GetLargestPossibleRegion() );
   while( !resultIter.IsAtEnd() )
     {
@@ -539,4 +539,4 @@ RidgeSeedFilter< TImage, TLabelMap >
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeRidgeSeedFilter_hxx)
+#endif // End !defined( __itktubeRidgeSeedFilter_hxx )

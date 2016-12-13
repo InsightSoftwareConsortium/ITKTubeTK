@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -58,9 +58,9 @@ public:
   typedef typename FilterType::TubeGroupType      TubeGroupType;
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( ConvertTubesToTubeGraph, ProcessObject );
 
   /** Set Number of Centroids */
@@ -72,8 +72,8 @@ public:
   tubeWrapGetObjectMacro( CVTImage, InputImageType, Filter );
 
   /* Set input tubes */
-  tubeWrapSetObjectMacro( InputTubeGroup, TubeGroupType, Filter);
-  tubeWrapGetObjectMacro( InputTubeGroup, TubeGroupType, Filter);
+  tubeWrapSetObjectMacro( InputTubeGroup, TubeGroupType, Filter );
+  tubeWrapGetObjectMacro( InputTubeGroup, TubeGroupType, Filter );
 
   /* Runs tubes to image conversion */
   tubeWrapUpdateMacro( Filter );

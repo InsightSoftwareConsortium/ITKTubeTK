@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -57,7 +57,7 @@ limitations under the License.
 #include <algorithm>
 
 //------------------------------------------------------------------------------
-vtkMRMLNodeNewMacro(vtkMRMLSpatialObjectsNode);
+vtkMRMLNodeNewMacro( vtkMRMLSpatialObjectsNode );
 
 
 //------------------------------------------------------------------------------
@@ -74,45 +74,45 @@ vtkMRMLSpatialObjectsNode::~vtkMRMLSpatialObjectsNode( void )
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsNode::WriteXML(ostream& of, int nIndent)
+void vtkMRMLSpatialObjectsNode::WriteXML( ostream& of, int nIndent )
 {
-  Superclass::WriteXML(of, nIndent);
+  Superclass::WriteXML( of, nIndent );
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsNode::ReadXMLAttributes(const char** atts)
+void vtkMRMLSpatialObjectsNode::ReadXMLAttributes( const char** atts )
 {
   int disabledModify = this->StartModify();
 
-  Superclass::ReadXMLAttributes(atts);
+  Superclass::ReadXMLAttributes( atts );
 
   //const char* attName;
   //const char* attValue;
-  //while(*atts != NULL)
+  //while( *atts != NULL )
   //  {
-  //  attName = *(atts++);
-  //  attValue = *(atts++);
+  //  attName = *( atts++ );
+  //  attValue = *( atts++ );
   //  }
 
-  this->EndModify(disabledModify);
+  this->EndModify( disabledModify );
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsNode::Copy(vtkMRMLNode *anode)
+void vtkMRMLSpatialObjectsNode::Copy( vtkMRMLNode *anode )
 {
   int disabledModify = this->StartModify();
 
-  Superclass::Copy(anode);
+  Superclass::Copy( anode );
 
   vtkMRMLSpatialObjectsNode *node =
-    vtkMRMLSpatialObjectsNode::SafeDownCast(anode);
+    vtkMRMLSpatialObjectsNode::SafeDownCast( anode );
 
-  if(node)
+  if( node )
     {
-    this->SetSpatialObject(node->GetSpatialObject());
+    this->SetSpatialObject( node->GetSpatialObject() );
     }
 
-  this->EndModify(disabledModify);
+  this->EndModify( disabledModify );
 }
 
 //------------------------------------------------------------------------------
@@ -132,9 +132,9 @@ vtkMRMLSpatialObjectsNode::GetSpatialObject()
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsNode::SetSpatialObject(TubeNetPointerType object)
+void vtkMRMLSpatialObjectsNode::SetSpatialObject( TubeNetPointerType object )
 {
-  if (this->m_SpatialObject == object)
+  if ( this->m_SpatialObject == object )
     {
     return;
     }
@@ -145,24 +145,24 @@ void vtkMRMLSpatialObjectsNode::SetSpatialObject(TubeNetPointerType object)
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsNode::PrintSelf(ostream& os, vtkIndent indent)
+void vtkMRMLSpatialObjectsNode::PrintSelf( ostream& os, vtkIndent indent )
 {
-  Superclass::PrintSelf(os,indent);
+  Superclass::PrintSelf( os,indent );
 }
 
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsNode::UpdateReferences( void )
 {
-  for(int ii = 0; ii < this->GetNumberOfDisplayNodes(); ++ii)
+  for( int ii = 0; ii < this->GetNumberOfDisplayNodes(); ++ii )
     {
     vtkMRMLSpatialObjectsDisplayNode *node = vtkMRMLSpatialObjectsDisplayNode::
-      SafeDownCast(this->GetNthDisplayNode(ii));
-    if(node)
+      SafeDownCast( this->GetNthDisplayNode( ii ) );
+    if( node )
       {
 #if VTK_MAJOR_VERSION <= 5
-      node->SetInputPolyData(this->GetFilteredPolyData());
+      node->SetInputPolyData( this->GetFilteredPolyData() );
 #else
-      node->SetInputPolyDataConnection(this->GetFilteredPolyDataConnection());
+      node->SetInputPolyDataConnection( this->GetFilteredPolyDataConnection() );
 #endif
       }
     }
@@ -190,18 +190,18 @@ namespace
 {
 //------------------------------------------------------------------------------
 // Helper method for factorizing the GetDisplayXNode methods
-// (X = Line, Tube or Glyph)
+// ( X = Line, Tube or Glyph )
 template<typename T>
 vtkMRMLSpatialObjectsDisplayNode*
-  TemplatedGetDisplayNode(vtkMRMLSpatialObjectsNode* self)
+  TemplatedGetDisplayNode( vtkMRMLSpatialObjectsNode* self )
 {
   int nnodes = self->GetNumberOfDisplayNodes();
   T *node = NULL;
 
-  for(int n = 0; n < nnodes; ++n)
+  for( int n = 0; n < nnodes; ++n )
     {
-    node = T::SafeDownCast(self->GetNthDisplayNode(n));
-    if(node)
+    node = T::SafeDownCast( self->GetNthDisplayNode( n ) );
+    if( node )
       {
       break;
       }
@@ -212,26 +212,26 @@ vtkMRMLSpatialObjectsDisplayNode*
 
 //------------------------------------------------------------------------------
 // Helper method for factorizing the AddDisplayXNode methods
-// (X = Line, Tube or Glyph)
+// ( X = Line, Tube or Glyph )
 template<typename T>
 vtkMRMLSpatialObjectsDisplayNode*
-  TemplatedAddDisplayNode(vtkMRMLSpatialObjectsNode* self)
+  TemplatedAddDisplayNode( vtkMRMLSpatialObjectsNode* self )
 {
-  vtkMRMLSpatialObjectsDisplayNode* node = TemplatedGetDisplayNode<T>(self);
-  if(node == NULL && self->GetScene())
+  vtkMRMLSpatialObjectsDisplayNode* node = TemplatedGetDisplayNode<T>( self );
+  if( node == NULL && self->GetScene() )
     {
     node = T::New(); // No smart pointer, it's returned at the end
     vtkNew<vtkMRMLSpatialObjectsDisplayPropertiesNode> properties;
     self->GetScene()->SaveStateForUndo();
 
-    self->GetScene()->AddNode(properties.GetPointer());
-    node->SetAndObserveSpatialObjectsDisplayPropertiesNodeID(
-      properties->GetID());
+    self->GetScene()->AddNode( properties.GetPointer() );
+    node->SetAndObserveSpatialObjectsDisplayPropertiesNodeID( 
+      properties->GetID() );
 
-    self->GetScene()->AddNode(node);
+    self->GetScene()->AddNode( node );
     node->Delete(); // See vtkMRMLScene::AddNode
-    node->SetAndObserveColorNodeID("vtkMRMLColorTableNodeRainbow");
-    self->AddAndObserveDisplayNodeID(node->GetID());
+    node->SetAndObserveColorNodeID( "vtkMRMLColorTableNodeRainbow" );
+    self->AddAndObserveDisplayNodeID( node->GetID() );
     }
 
   return node;
@@ -242,21 +242,21 @@ vtkMRMLSpatialObjectsDisplayNode*
 vtkMRMLSpatialObjectsDisplayNode* vtkMRMLSpatialObjectsNode::
 GetLineDisplayNode( void )
 {
-  return TemplatedGetDisplayNode<vtkMRMLSpatialObjectsLineDisplayNode>(this);
+  return TemplatedGetDisplayNode<vtkMRMLSpatialObjectsLineDisplayNode>( this );
 }
 
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsDisplayNode* vtkMRMLSpatialObjectsNode::
 GetTubeDisplayNode( void )
 {
-  return TemplatedGetDisplayNode<vtkMRMLSpatialObjectsTubeDisplayNode>(this);
+  return TemplatedGetDisplayNode<vtkMRMLSpatialObjectsTubeDisplayNode>( this );
 }
 
 //----------------------------------------------------------------------------
 vtkMRMLSpatialObjectsDisplayNode* vtkMRMLSpatialObjectsNode::
 GetGlyphDisplayNode( void )
 {
-  return TemplatedGetDisplayNode<vtkMRMLSpatialObjectsGlyphDisplayNode>(this);
+  return TemplatedGetDisplayNode<vtkMRMLSpatialObjectsGlyphDisplayNode>( this );
 }
 
 //------------------------------------------------------------------------------
@@ -264,7 +264,7 @@ vtkMRMLSpatialObjectsDisplayNode* vtkMRMLSpatialObjectsNode::
 AddLineDisplayNode( void )
 {
   vtkMRMLSpatialObjectsDisplayNode* displayNode =
-    TemplatedAddDisplayNode<vtkMRMLSpatialObjectsLineDisplayNode>(this);
+    TemplatedAddDisplayNode<vtkMRMLSpatialObjectsLineDisplayNode>( this );
   this->UpdateCleaning();
   return displayNode;
 }
@@ -274,7 +274,7 @@ vtkMRMLSpatialObjectsDisplayNode* vtkMRMLSpatialObjectsNode::
 AddTubeDisplayNode( void )
 {
   vtkMRMLSpatialObjectsDisplayNode* displayNode =
-    TemplatedAddDisplayNode<vtkMRMLSpatialObjectsTubeDisplayNode>(this);
+    TemplatedAddDisplayNode<vtkMRMLSpatialObjectsTubeDisplayNode>( this );
   this->UpdateCleaning();
   return displayNode;
 }
@@ -284,17 +284,17 @@ vtkMRMLSpatialObjectsDisplayNode* vtkMRMLSpatialObjectsNode::
 AddGlyphDisplayNode( void )
 {
   vtkMRMLSpatialObjectsDisplayNode* displayNode =
-    TemplatedAddDisplayNode<vtkMRMLSpatialObjectsGlyphDisplayNode>(this);
+    TemplatedAddDisplayNode<vtkMRMLSpatialObjectsGlyphDisplayNode>( this );
   this->UpdateCleaning();
   return displayNode;
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsNode::SetAndObservePolyData(vtkPolyData* polyData)
+void vtkMRMLSpatialObjectsNode::SetAndObservePolyData( vtkPolyData* polyData )
 {
-  vtkMRMLModelNode::SetAndObservePolyData(polyData);
+  vtkMRMLModelNode::SetAndObservePolyData( polyData );
 
-  if(!polyData)
+  if( !polyData )
     {
     return;
     }
@@ -302,18 +302,18 @@ void vtkMRMLSpatialObjectsNode::SetAndObservePolyData(vtkPolyData* polyData)
   const vtkIdType numberOfPairs = polyData->GetNumberOfLines();
 
   std::vector<vtkIdType> idVector;
-  for(vtkIdType i = 0; i < numberOfPairs; ++i )
+  for( vtkIdType i = 0; i < numberOfPairs; ++i )
     {
-    idVector.push_back(i);
+    idVector.push_back( i );
     }
 
-  random_shuffle(idVector.begin(), idVector.end());
+  random_shuffle( idVector.begin(), idVector.end() );
 
   this->m_ShuffledIds->Initialize();
-  this->m_ShuffledIds->SetNumberOfTuples(numberOfPairs);
-  for(vtkIdType i = 0;  i < numberOfPairs; ++i)
+  this->m_ShuffledIds->SetNumberOfTuples( numberOfPairs );
+  for( vtkIdType i = 0;  i < numberOfPairs; ++i )
     {
-    this->m_ShuffledIds->SetValue(i, idVector[i]);
+    this->m_ShuffledIds->SetValue( i, idVector[i] );
     }
 
   this->UpdateCleaning();
@@ -333,50 +333,50 @@ void vtkMRMLSpatialObjectsNode::PrepareCleaning( void )
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsNode::UpdateCleaning( void )
 {
-  if(!this->GetPolyData())
+  if( !this->GetPolyData() )
     {
     return;
     }
 
 #if VTK_MAJOR_VERSION <= 5
-  this->m_CleanPolyData->SetInput(this->GetPolyData());
+  this->m_CleanPolyData->SetInput( this->GetPolyData() );
 #else
-  this->m_CleanPolyData->SetInputConnection(this->GetPolyDataConnection());
+  this->m_CleanPolyData->SetInputConnection( this->GetPolyDataConnection() );
 #endif
 
-  vtkDebugMacro(<< this->GetClassName() << "Updating the subsampling");
+  vtkDebugMacro( << this->GetClassName() << "Updating the subsampling" );
 
   vtkMRMLSpatialObjectsDisplayNode *node = this->GetLineDisplayNode();
-  if(node != NULL)
+  if( node != NULL )
     {
 #if VTK_MAJOR_VERSION <= 5
-    node->SetInputPolyData(this->GetFilteredPolyData());
+    node->SetInputPolyData( this->GetFilteredPolyData() );
 #else
-    node->SetInputPolyDataConnection(this->GetFilteredPolyDataConnection());
+    node->SetInputPolyDataConnection( this->GetFilteredPolyDataConnection() );
 #endif
     }
 
   node = this->GetTubeDisplayNode();
-  if(node != NULL)
+  if( node != NULL )
     {
 #if VTK_MAJOR_VERSION <= 5
-    node->SetInputPolyData(this->GetFilteredPolyData());
+    node->SetInputPolyData( this->GetFilteredPolyData() );
 #else
-    node->SetInputPolyDataConnection(this->GetFilteredPolyDataConnection());
+    node->SetInputPolyDataConnection( this->GetFilteredPolyDataConnection() );
 #endif
     }
 
   node = this->GetGlyphDisplayNode();
-  if(node != NULL)
+  if( node != NULL )
     {
 #if VTK_MAJOR_VERSION <= 5
-    node->SetInputPolyData(this->GetFilteredPolyData());
+    node->SetInputPolyData( this->GetFilteredPolyData() );
 #else
-    node->SetInputPolyDataConnection(this->GetFilteredPolyDataConnection());
+    node->SetInputPolyDataConnection( this->GetFilteredPolyDataConnection() );
 #endif
     }
 
-  this->InvokeEvent(vtkMRMLModelNode::PolyDataModifiedEvent, this);
+  this->InvokeEvent( vtkMRMLModelNode::PolyDataModifiedEvent, this );
 }
 
 //------------------------------------------------------------------------------
@@ -396,8 +396,8 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
 
   char childName[] = "Tube";
   TubeNetType::ChildrenListType* tubeList =
-    this->m_SpatialObject->GetChildren(
-      this->m_SpatialObject->GetMaximumDepth(), childName);
+    this->m_SpatialObject->GetChildren( 
+      this->m_SpatialObject->GetMaximumDepth(), childName );
 
   // -----------------------------------------------------------------------
   // Copy skeleton points from vessels into polydata structure
@@ -407,13 +407,13 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
   // Count number of points && remove dupplicate
   int totalNumberOfPoints = 0;
   TubeIdType maxTubeId = 0;
-  for(TubeNetType::ChildrenListType::iterator tubeIT = tubeList->begin();
+  for( TubeNetType::ChildrenListType::iterator tubeIT = tubeList->begin();
         tubeIT != tubeList->end();
         ++tubeIT )
     {
     VesselTubeType* currTube =
-      dynamic_cast<VesselTubeType*>((*tubeIT).GetPointer());
-    if (!currTube)
+      dynamic_cast<VesselTubeType*>( ( *tubeIT ).GetPointer() );
+    if ( !currTube )
       {
       continue;
       }
@@ -435,13 +435,13 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
   //Making sure tubeId is unique to a tube
   std::set< TubeIdType > tubeIds;
   std::set< TubeIdType >::iterator it;
-  for(TubeNetType::ChildrenListType::iterator tubeIT = tubeList->begin();
+  for( TubeNetType::ChildrenListType::iterator tubeIT = tubeList->begin();
         tubeIT != tubeList->end();
         ++tubeIT )
     {
     VesselTubeType* currTube =
-      dynamic_cast<VesselTubeType*>((*tubeIT).GetPointer());
-    if (!currTube)
+      dynamic_cast<VesselTubeType*>( ( *tubeIT ).GetPointer() );
+    if ( !currTube )
       {
       continue;
       }
@@ -461,80 +461,80 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
   // Create the points
   vtkNew<vtkPoints> vesselsPoints;
   vesselsPoints->SetDataTypeToDouble();
-  vesselsPoints->SetNumberOfPoints(totalNumberOfPoints);
+  vesselsPoints->SetNumberOfPoints( totalNumberOfPoints );
 
   // Create the Lines
   vtkNew<vtkCellArray> vesselLinesCA;
 
   // Create scalar array that indicates TubeID.
   vtkNew<vtkDoubleArray> tubeIDs;
-  tubeIDs->SetName("TubeIDs");
-  tubeIDs->SetNumberOfTuples(totalNumberOfPoints);
+  tubeIDs->SetName( "TubeIDs" );
+  tubeIDs->SetNumberOfTuples( totalNumberOfPoints );
 
   // Create scalar array that indicates Parent TubeID.
   vtkNew<vtkDoubleArray> parentTubeIDs;
-  parentTubeIDs->SetName("ParentTubeIDs");
-  parentTubeIDs->SetNumberOfTuples(totalNumberOfPoints);
+  parentTubeIDs->SetName( "ParentTubeIDs" );
+  parentTubeIDs->SetNumberOfTuples( totalNumberOfPoints );
 
   // Create scalar array that indicates root TubeID.
   vtkNew<vtkDoubleArray> rootTubeIDs;
-  rootTubeIDs->SetName("RootTubeIDs");
-  rootTubeIDs->SetNumberOfTuples(totalNumberOfPoints);
+  rootTubeIDs->SetName( "RootTubeIDs" );
+  rootTubeIDs->SetNumberOfTuples( totalNumberOfPoints );
 
   // Create scalar array that indicates whether or not a tube is root
   vtkNew<vtkUnsignedCharArray> rootIndicator;
-  rootIndicator->SetName("IsRoot");
-  rootIndicator->SetNumberOfTuples(totalNumberOfPoints);
+  rootIndicator->SetName( "IsRoot" );
+  rootIndicator->SetNumberOfTuples( totalNumberOfPoints );
 
   // Create scalar array that indicates native point colors given in tre file
   vtkNew< vtkUnsignedCharArray > tubeColors;
-  tubeColors->SetName("TubeColor");
-  tubeColors->SetNumberOfTuples(4 * totalNumberOfPoints);
+  tubeColors->SetName( "TubeColor" );
+  tubeColors->SetNumberOfTuples( 4 * totalNumberOfPoints );
   tubeColors->SetNumberOfComponents( 4 );
 
   // Create scalar array that indicates native point colors given in tre file
   vtkNew< vtkUnsignedCharArray > tubePointColors;
-  tubePointColors->SetName("TubePointColor");
-  tubePointColors->SetNumberOfTuples(4 * totalNumberOfPoints);
+  tubePointColors->SetName( "TubePointColor" );
+  tubePointColors->SetNumberOfTuples( 4 * totalNumberOfPoints );
   tubePointColors->SetNumberOfComponents( 4 );
 
   // Create scalar array that indicates the radius at each
   // centerline point.
   vtkNew<vtkDoubleArray> tubeRadius;
-  tubeRadius->SetName("TubeRadius");
-  tubeRadius->SetNumberOfTuples(totalNumberOfPoints);
+  tubeRadius->SetName( "TubeRadius" );
+  tubeRadius->SetNumberOfTuples( totalNumberOfPoints );
 
   // Create scalar array that indicates both tangents at each
   // centerline point.
   vtkNew<vtkDoubleArray> tan1;
-  tan1->SetName("Tan1");
-  tan1->SetNumberOfTuples(3 * totalNumberOfPoints);
-  tan1->SetNumberOfComponents(3);
+  tan1->SetName( "Tan1" );
+  tan1->SetNumberOfTuples( 3 * totalNumberOfPoints );
+  tan1->SetNumberOfComponents( 3 );
 
   vtkNew<vtkDoubleArray> tan2;
-  tan2->SetName("Tan2");
-  tan2->SetNumberOfTuples(3 * totalNumberOfPoints);
-  tan2->SetNumberOfComponents(3);
+  tan2->SetName( "Tan2" );
+  tan2->SetNumberOfTuples( 3 * totalNumberOfPoints );
+  tan2->SetNumberOfComponents( 3 );
 
   // Create scalar array that indicates Ridgness and medialness at each
   // centerline point.
   bool containsMidialnessInfo = false;
   vtkNew<vtkDoubleArray> medialness;
-  medialness->SetName("Medialness");
-  medialness->SetNumberOfTuples(totalNumberOfPoints);
+  medialness->SetName( "Medialness" );
+  medialness->SetNumberOfTuples( totalNumberOfPoints );
 
   bool containsRidgnessInfo = false;
   vtkNew<vtkDoubleArray> ridgeness;
-  ridgeness->SetName("Ridgeness");
-  ridgeness->SetNumberOfTuples(totalNumberOfPoints);
+  ridgeness->SetName( "Ridgeness" );
+  ridgeness->SetNumberOfTuples( totalNumberOfPoints );
 
   int pointID = 0;
-  for(TubeNetType::ChildrenListType::iterator tubeIT = tubeList->begin();
+  for( TubeNetType::ChildrenListType::iterator tubeIT = tubeList->begin();
         tubeIT != tubeList->end(); ++tubeIT )
     {
     VesselTubeType* currTube =
-      dynamic_cast<VesselTubeType*>((*tubeIT).GetPointer());
-    if (!currTube)
+      dynamic_cast<VesselTubeType*>( ( *tubeIT ).GetPointer() );
+    if ( !currTube )
       {
       continue;
       }
@@ -580,11 +580,11 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
       currTube->GetProperty()->GetColor();
 
     size_t numberOfPoints = currTube->GetPoints().size();
-    for(size_t index = 0; index < numberOfPoints; ++pointID, ++index)
+    for( size_t index = 0; index < numberOfPoints; ++pointID, ++index )
       {
       VesselTubePointType* tubePoint =
-        dynamic_cast<VesselTubePointType*>(currTube->GetPoint(index));
-      assert(tubePoint);
+        dynamic_cast<VesselTubePointType*>( currTube->GetPoint( index ) );
+      assert( tubePoint );
 
       PointType inputPoint = tubePoint->GetPosition();
 
@@ -599,175 +599,175 @@ void vtkMRMLSpatialObjectsNode::UpdatePolyDataFromSpatialObject( void )
       vesselsPoints->SetPoint( pointID, inputPoint[0], inputPoint[1],
         inputPoint[2] );
       //inputPoint[1] * axesRatio[1] / axesRatio[0],
-      //inputPoint[2] * axesRatio[2] / axesRatio[0]);
+      //inputPoint[2] * axesRatio[2] / axesRatio[0] );
 
       // TubeID
-      tubeIDs->SetTuple1(pointID, currTube->GetId());
+      tubeIDs->SetTuple1( pointID, currTube->GetId() );
 
       // Parent TubeID
-      parentTubeIDs->SetTuple1(pointID, currTube->GetParentId());
+      parentTubeIDs->SetTuple1( pointID, currTube->GetParentId() );
 
       // Root TubeID
-      rootTubeIDs->SetTuple1(pointID, curRootTube->GetId());
+      rootTubeIDs->SetTuple1( pointID, curRootTube->GetId() );
 
       // Is the current tube a root
-      rootIndicator->SetTuple1(pointID, currTube->GetRoot());
+      rootIndicator->SetTuple1( pointID, currTube->GetRoot() );
 
       // Native tube color from tre file
-      tubeColors->SetTuple4(pointID,
+      tubeColors->SetTuple4( pointID,
         curTubeColor.GetRed(),
         curTubeColor.GetGreen(),
         curTubeColor.GetBlue(),
         curTubeColor.GetAlpha() );
 
       // Native tube point color from tre file
-      tubePointColors->SetTuple4(pointID,
+      tubePointColors->SetTuple4( pointID,
         tubePoint->GetRed(),
         tubePoint->GetGreen(),
         tubePoint->GetBlue(),
         tubePoint->GetAlpha() );
 
       // Radius
-      tubeRadius->SetTuple1(pointID, tubePoint->GetRadius() * spacingX );
+      tubeRadius->SetTuple1( pointID, tubePoint->GetRadius() * spacingX );
 
       // Tangeantes
-      tan1->SetTuple3(pointID,
+      tan1->SetTuple3( pointID,
                       tubePoint->GetNormal1()[0],
                       tubePoint->GetNormal1()[1],
-                      tubePoint->GetNormal1()[2]);
+                      tubePoint->GetNormal1()[2] );
 
-      tan2->SetTuple3(pointID,
+      tan2->SetTuple3( pointID,
                       tubePoint->GetNormal2()[0],
                       tubePoint->GetNormal2()[1],
-                      tubePoint->GetNormal2()[2]);
+                      tubePoint->GetNormal2()[2] );
 
       // Medialness & Ridgness
-      if(tubePoint->GetMedialness() != 0)
+      if( tubePoint->GetMedialness() != 0 )
         {
         containsMidialnessInfo = true;
-        medialness->SetTuple1(pointID, tubePoint->GetMedialness());
+        medialness->SetTuple1( pointID, tubePoint->GetMedialness() );
         }
 
-      if(tubePoint->GetRidgeness() != 0)
+      if( tubePoint->GetRidgeness() != 0 )
         {
         containsRidgnessInfo = true;
-        ridgeness->SetTuple1(pointID, tubePoint->GetRidgeness());
+        ridgeness->SetTuple1( pointID, tubePoint->GetRidgeness() );
         }
       }
 
-    vesselLine->Initialize(tubeSize,
+    vesselLine->Initialize( tubeSize,
                             pointIDs,
-                            vesselsPoints.GetPointer());
-    vesselLinesCA->InsertNextCell(vesselLine.GetPointer());
+                            vesselsPoints.GetPointer() );
+    vesselLinesCA->InsertNextCell( vesselLine.GetPointer() );
     delete [] pointIDs;
     }
 
   // Convert spatial objects to a PolyData
   vtkNew<vtkPolyData> vesselsPD;
-  vesselsPD->SetLines(vesselLinesCA.GetPointer());
-  vesselsPD->SetPoints(vesselsPoints.GetPointer());
+  vesselsPD->SetLines( vesselLinesCA.GetPointer() );
+  vesselsPD->SetPoints( vesselsPoints.GetPointer() );
 
   // Add the Radius information
-  vesselsPD->GetPointData()->AddArray(tubeRadius.GetPointer());
-  vesselsPD->GetPointData()->SetActiveScalars("TubeRadius");
+  vesselsPD->GetPointData()->AddArray( tubeRadius.GetPointer() );
+  vesselsPD->GetPointData()->SetActiveScalars( "TubeRadius" );
 
   // Add the TudeID information
-  vesselsPD->GetPointData()->AddArray(tubeIDs.GetPointer());
+  vesselsPD->GetPointData()->AddArray( tubeIDs.GetPointer() );
 
   // Add the Parent TudeID information
-  vesselsPD->GetPointData()->AddArray(parentTubeIDs.GetPointer());
+  vesselsPD->GetPointData()->AddArray( parentTubeIDs.GetPointer() );
 
   // Add the Root TudeID information
-  vesselsPD->GetPointData()->AddArray(rootTubeIDs.GetPointer());
+  vesselsPD->GetPointData()->AddArray( rootTubeIDs.GetPointer() );
 
   // Add the info about whether or not a tube is a root
-  vesselsPD->GetPointData()->AddArray(rootIndicator.GetPointer());
+  vesselsPD->GetPointData()->AddArray( rootIndicator.GetPointer() );
 
   // Add tube point color information
-  vesselsPD->GetPointData()->AddArray(tubeColors.GetPointer());
+  vesselsPD->GetPointData()->AddArray( tubeColors.GetPointer() );
 
   // Add tube point color information
-  vesselsPD->GetPointData()->AddArray(tubePointColors.GetPointer());
+  vesselsPD->GetPointData()->AddArray( tubePointColors.GetPointer() );
 
   // Add Tangeantes information
-  vesselsPD->GetPointData()->AddArray(tan1.GetPointer());
-  vesselsPD->GetPointData()->AddArray(tan2.GetPointer());
+  vesselsPD->GetPointData()->AddArray( tan1.GetPointer() );
+  vesselsPD->GetPointData()->AddArray( tan2.GetPointer() );
 
   // Add Medialness & Ridgness if contains information
-  if(containsMidialnessInfo == true)
+  if( containsMidialnessInfo == true )
     {
-    vesselsPD->GetPointData()->AddArray(medialness.GetPointer());
+    vesselsPD->GetPointData()->AddArray( medialness.GetPointer() );
     }
 
-  if(containsRidgnessInfo == true)
+  if( containsRidgnessInfo == true )
     {
-    vesselsPD->GetPointData()->AddArray(ridgeness.GetPointer());
+    vesselsPD->GetPointData()->AddArray( ridgeness.GetPointer() );
     }
 
   // Remove any duplicate points from polydata.
   // The tubes generation will fails if any duplicates points are present.
   // Cleaned before, could create degeneration problems with the cells
   //vtkNew<vtkCleanPolyData> cleanedVesselPD;
-  //cleanedVesselPD->SetInput(vesselsPD.GetPointer());
+  //cleanedVesselPD->SetInput( vesselsPD.GetPointer() );
 
-  vtkDebugMacro("Points: " << totalNumberOfPoints);
+  vtkDebugMacro( "Points: " << totalNumberOfPoints );
 
-  this->SetAndObservePolyData(vesselsPD.GetPointer());
+  this->SetAndObservePolyData( vesselsPD.GetPointer() );
 }
 
 //------------------------------------------------------------------------------
 vtkMRMLStorageNode* vtkMRMLSpatialObjectsNode::CreateDefaultStorageNode( void )
 {
-  vtkDebugMacro("vtkMRMLSpatialObjectsNode::CreateDefaultStorageNode");
+  vtkDebugMacro( "vtkMRMLSpatialObjectsNode::CreateDefaultStorageNode" );
 
   return
-    vtkMRMLStorageNode::SafeDownCast(vtkMRMLSpatialObjectsStorageNode::New());
+    vtkMRMLStorageNode::SafeDownCast( vtkMRMLSpatialObjectsStorageNode::New() );
 }
 
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsNode::CreateDefaultDisplayNodes( void )
 {
-  vtkDebugMacro("vtkMRMLSpatialObjectsNode::CreateDefaultDisplayNodes");
+  vtkDebugMacro( "vtkMRMLSpatialObjectsNode::CreateDefaultDisplayNodes" );
 
   vtkMRMLSpatialObjectsDisplayNode *sodn = this->AddLineDisplayNode();
-  sodn->SetVisibility(1);
+  sodn->SetVisibility( 1 );
   sodn = this->AddTubeDisplayNode();
-  sodn->SetVisibility(1);
+  sodn->SetVisibility( 1 );
   sodn = this->AddGlyphDisplayNode();
-  sodn->GetSpatialObjectsDisplayPropertiesNode()->SetGlyphGeometry(
-    vtkMRMLSpatialObjectsDisplayPropertiesNode::Lines);
-  sodn->SetVisibility(0);
+  sodn->GetSpatialObjectsDisplayPropertiesNode()->SetGlyphGeometry( 
+    vtkMRMLSpatialObjectsDisplayPropertiesNode::Lines );
+  sodn->SetVisibility( 0 );
 }
 
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsNode::BuildDefaultColorMap( void )
 {
-  vtkDebugMacro("vtkMRMLSpatialObjectsNode::BuildDefaultColorMap");
+  vtkDebugMacro( "vtkMRMLSpatialObjectsNode::BuildDefaultColorMap" );
 
   typedef itk::VesselTubeSpatialObject<3>      VesselTubeType;
 
   char childName[] = "Tube";
   TubeNetType::ChildrenListType* tubeList =
-    this->m_SpatialObject->GetChildren(
-      this->m_SpatialObject->GetMaximumDepth(), childName);
+    this->m_SpatialObject->GetChildren( 
+      this->m_SpatialObject->GetMaximumDepth(), childName );
 
-  for (TubeNetType::ChildrenListType::iterator tubeIt = tubeList->begin();
-      tubeIt != tubeList->end(); ++tubeIt)
+  for ( TubeNetType::ChildrenListType::iterator tubeIt = tubeList->begin();
+      tubeIt != tubeList->end(); ++tubeIt )
     {
     VesselTubeType* currTube =
-      dynamic_cast<VesselTubeType*>((*tubeIt).GetPointer());
-    if (!currTube || currTube->GetNumberOfPoints() < 1)
+      dynamic_cast<VesselTubeType*>( ( *tubeIt ).GetPointer() );
+    if ( !currTube || currTube->GetNumberOfPoints() < 1 )
       {
       continue;
       }
     std::map< int, std::vector<double> >::iterator it;
-    it = this->m_DefaultColorMap.find(currTube->GetId());
-    if (it == this->m_DefaultColorMap.end())
+    it = this->m_DefaultColorMap.find( currTube->GetId() );
+    if ( it == this->m_DefaultColorMap.end() )
       {
       std::vector<double> color;
-      color.push_back(currTube->GetProperty()->GetColor().GetRed());
-      color.push_back(currTube->GetProperty()->GetColor().GetGreen());
-      color.push_back(currTube->GetProperty()->GetColor().GetBlue());
+      color.push_back( currTube->GetProperty()->GetColor().GetRed() );
+      color.push_back( currTube->GetProperty()->GetColor().GetGreen() );
+      color.push_back( currTube->GetProperty()->GetColor().GetBlue() );
       this->m_DefaultColorMap[currTube->GetId()] = color;
       }
     }
@@ -777,7 +777,7 @@ void vtkMRMLSpatialObjectsNode::BuildDefaultColorMap( void )
 bool vtkMRMLSpatialObjectsNode::GetColorFromDefaultColorMap
   ( int TubeId, std::vector<double> &color )
 {
-  vtkDebugMacro("vtkMRMLSpatialObjectsNode::GetColorFromDefaultColorMap");
+  vtkDebugMacro( "vtkMRMLSpatialObjectsNode::GetColorFromDefaultColorMap" );
 
   std::map< int, std::vector<double> >::iterator itDefaultColorMap;
   itDefaultColorMap = this->m_DefaultColorMap.find( TubeId );
@@ -792,7 +792,7 @@ bool vtkMRMLSpatialObjectsNode::GetColorFromDefaultColorMap
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsNode::InsertSelectedTube( int TubeId )
 {
-  vtkDebugMacro("vtkMRMLSpatialObjectsNode::InsertSelectedTube");
+  vtkDebugMacro( "vtkMRMLSpatialObjectsNode::InsertSelectedTube" );
 
   this->m_SelectedTubeIds.insert( TubeId );
 }
@@ -800,7 +800,7 @@ void vtkMRMLSpatialObjectsNode::InsertSelectedTube( int TubeId )
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsNode::ClearSelectedTubes()
 {
-  vtkDebugMacro("vtkMRMLSpatialObjectsNode::ClearSelectedTubes");
+  vtkDebugMacro( "vtkMRMLSpatialObjectsNode::ClearSelectedTubes" );
 
   this->m_SelectedTubeIds.clear();
 }
@@ -808,7 +808,7 @@ void vtkMRMLSpatialObjectsNode::ClearSelectedTubes()
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsNode::EraseSelectedTube( int TubeId )
 {
-  vtkDebugMacro("vtkMRMLSpatialObjectsNode::EraseSelectedTube");
+  vtkDebugMacro( "vtkMRMLSpatialObjectsNode::EraseSelectedTube" );
   std::set<int>::iterator it = this->m_SelectedTubeIds.find( TubeId );
   if ( it != this->m_SelectedTubeIds.end() )
     {

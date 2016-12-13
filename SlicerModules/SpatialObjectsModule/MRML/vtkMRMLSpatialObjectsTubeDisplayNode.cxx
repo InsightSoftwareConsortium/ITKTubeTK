@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -39,7 +39,7 @@ limitations under the License.
 #include "vtkMRMLSpatialObjectsTubeDisplayNode.h"
 
 //------------------------------------------------------------------------------
-vtkMRMLNodeNewMacro(vtkMRMLSpatialObjectsTubeDisplayNode);
+vtkMRMLNodeNewMacro( vtkMRMLSpatialObjectsTubeDisplayNode );
 
 
 //------------------------------------------------------------------------------
@@ -61,57 +61,57 @@ vtkMRMLSpatialObjectsTubeDisplayNode::vtkMRMLSpatialObjectsTubeDisplayNode( void
 
   // Pipeline
   this->amontAssignAttribute = vtkAssignAttribute::New();
-  this->SetActiveScalarName("TubeRadius");
-  this->amontAssignAttribute->Assign(this->GetActiveScalarName(),
+  this->SetActiveScalarName( "TubeRadius" );
+  this->amontAssignAttribute->Assign( this->GetActiveScalarName(),
                                      vtkDataSetAttributes::SCALARS,
-                                     vtkAssignAttribute::POINT_DATA);
-  this->TubeFilter->SetInputConnection(
-    this->amontAssignAttribute->GetOutputPort());
+                                     vtkAssignAttribute::POINT_DATA );
+  this->TubeFilter->SetInputConnection( 
+    this->amontAssignAttribute->GetOutputPort() );
 
-  this->AssignAttribute->SetInputConnection(
-    this->TubeFilter->GetOutputPort());
+  this->AssignAttribute->SetInputConnection( 
+    this->TubeFilter->GetOutputPort() );
 }
 
 //------------------------------------------------------------------------------
 vtkMRMLSpatialObjectsTubeDisplayNode::~vtkMRMLSpatialObjectsTubeDisplayNode( void )
 {
-  this->RemoveObservers(vtkCommand::ModifiedEvent, this->MRMLCallbackCommand);
+  this->RemoveObservers( vtkCommand::ModifiedEvent, this->MRMLCallbackCommand );
   this->amontAssignAttribute->Delete();
   this->TubeFilter->Delete();
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsTubeDisplayNode::WriteXML(ostream& of, int nIndent)
+void vtkMRMLSpatialObjectsTubeDisplayNode::WriteXML( ostream& of, int nIndent )
 {
-  Superclass::WriteXML(of, nIndent);
+  Superclass::WriteXML( of, nIndent );
 
-  vtkIndent indent(nIndent);
+  vtkIndent indent( nIndent );
   of << indent << " tubeRadius =\"" << this->TubeRadius << "\"";
   of << indent << " tubeNumberOfSides =\"" << this->TubeNumberOfSides << "\"";
 }
 
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsTubeDisplayNode::ReadXMLAttributes(const char** atts)
+void vtkMRMLSpatialObjectsTubeDisplayNode::ReadXMLAttributes( const char** atts )
 {
   int disabledModify = this->StartModify();
 
-  Superclass::ReadXMLAttributes(atts);
+  Superclass::ReadXMLAttributes( atts );
 
   const char* attName;
   const char* attValue;
-  while(*atts != NULL)
+  while( *atts != NULL )
     {
-    attName = *(atts++);
-    attValue = *(atts++);
+    attName = *( atts++ );
+    attValue = *( atts++ );
 
-    if(!std::strcmp(attName, "tubeRadius"))
+    if( !std::strcmp( attName, "tubeRadius" ) )
       {
       std::stringstream ss;
       ss << attValue;
       ss >> this->TubeRadius;
       }
 
-    if(!std::strcmp(attName, "tubeNumberOfSides"))
+    if( !std::strcmp( attName, "tubeNumberOfSides" ) )
       {
       std::stringstream ss;
       ss << attValue;
@@ -119,55 +119,55 @@ void vtkMRMLSpatialObjectsTubeDisplayNode::ReadXMLAttributes(const char** atts)
       }
     }
 
-  this->EndModify(disabledModify);
+  this->EndModify( disabledModify );
 }
 
 //------------------------------------------------------------------------------
 // Copy the node's attributes to this object.
 // Does NOT copy: ID, FilePrefix, Name, ID
-void vtkMRMLSpatialObjectsTubeDisplayNode::Copy(vtkMRMLNode *anode)
+void vtkMRMLSpatialObjectsTubeDisplayNode::Copy( vtkMRMLNode *anode )
 {
   int disabledModify = this->StartModify();
 
-  Superclass::Copy(anode);
+  Superclass::Copy( anode );
   vtkMRMLSpatialObjectsTubeDisplayNode *node =
-    vtkMRMLSpatialObjectsTubeDisplayNode::SafeDownCast(anode);
+    vtkMRMLSpatialObjectsTubeDisplayNode::SafeDownCast( anode );
 
-  this->SetTubeNumberOfSides(node->TubeNumberOfSides);
-  this->SetTubeRadius(node->TubeRadius);
+  this->SetTubeNumberOfSides( node->TubeNumberOfSides );
+  this->SetTubeRadius( node->TubeRadius );
 
-  this->EndModify(disabledModify);
+  this->EndModify( disabledModify );
 }
 
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsTubeDisplayNode::
-PrintSelf(ostream& os, vtkIndent indent)
+PrintSelf( ostream& os, vtkIndent indent )
 {
-  Superclass::PrintSelf(os,indent);
+  Superclass::PrintSelf( os,indent );
 
   os << indent << "TubeNumberOfSides: " << this->TubeNumberOfSides << "\n";
   os << indent << "TubeRadius: " << this->TubeRadius << "\n";
 }
 
-#if (VTK_MAJOR_VERSION < 6)
+#if ( VTK_MAJOR_VERSION < 6 )
 //------------------------------------------------------------------------------
-void vtkMRMLSpatialObjectsTubeDisplayNode::SetInputToPolyDataPipeline(vtkPolyData* polyData)
+void vtkMRMLSpatialObjectsTubeDisplayNode::SetInputToPolyDataPipeline( vtkPolyData* polyData )
 {
-  this->amontAssignAttribute->SetInput(polyData);
+  this->amontAssignAttribute->SetInput( polyData );
 }
 #else
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsTubeDisplayNode
-::SetInputToPolyDataPipeline(vtkAlgorithmOutput* polyDataConnection)
+::SetInputToPolyDataPipeline( vtkAlgorithmOutput* polyDataConnection )
 {
-  this->amontAssignAttribute->SetInputConnection(polyDataConnection);
+  this->amontAssignAttribute->SetInputConnection( polyDataConnection );
 }
 #endif
 
 //------------------------------------------------------------------------------
 vtkPolyData* vtkMRMLSpatialObjectsTubeDisplayNode::GetInputPolyData( void )
 {
-  return vtkPolyData::SafeDownCast(this->amontAssignAttribute->GetInput());
+  return vtkPolyData::SafeDownCast( this->amontAssignAttribute->GetInput() );
 }
 
 //------------------------------------------------------------------------------
@@ -179,7 +179,7 @@ vtkAlgorithmOutput* vtkMRMLSpatialObjectsTubeDisplayNode::GetOutputPort( void )
 //------------------------------------------------------------------------------
 void vtkMRMLSpatialObjectsTubeDisplayNode::UpdatePolyDataPipeline( void )
 {
-  if(!this->GetInputPolyData() || !this->Visibility)
+  if( !this->GetInputPolyData() || !this->Visibility )
     {
     return;
     }
@@ -193,35 +193,35 @@ void vtkMRMLSpatialObjectsTubeDisplayNode::UpdatePolyDataPipeline( void )
       this->GetSpatialObjectsDisplayPropertiesNode();
 
   const char * activeScalarName = this->GetActiveScalarName();
-  this->AssignAttribute->Assign(activeScalarName,
+  this->AssignAttribute->Assign( activeScalarName,
                                 vtkDataSetAttributes::SCALARS,
-                                vtkAssignAttribute::POINT_DATA);
+                                vtkAssignAttribute::POINT_DATA );
 
-  if(SpatialObjectsDisplayPropertiesNode != NULL)
+  if( SpatialObjectsDisplayPropertiesNode != NULL )
     {
     const int colorMode = this->GetColorMode();
-    if(colorMode ==
-          vtkMRMLSpatialObjectsDisplayNode::colorModeSolid)
+    if( colorMode ==
+          vtkMRMLSpatialObjectsDisplayNode::colorModeSolid )
       {
       this->ScalarVisibilityOff();
 
       vtkMRMLNode* colorNode =
-        this->GetScene()->GetNodeByID("vtkMRMLColorTableNodeFullRainbow");
-      if(colorNode)
+        this->GetScene()->GetNodeByID( "vtkMRMLColorTableNodeFullRainbow" );
+      if( colorNode )
         {
-        this->SetAndObserveColorNodeID(colorNode->GetID());
+        this->SetAndObserveColorNodeID( colorNode->GetID() );
         }
 
       this->AutoScalarRangeOff();
-      this->SetScalarRange(0, 255);
+      this->SetScalarRange( 0, 255 );
       }
 
-    else if(colorMode ==
-               vtkMRMLSpatialObjectsDisplayNode::colorModeScalarData)
+    else if( colorMode ==
+               vtkMRMLSpatialObjectsDisplayNode::colorModeScalarData )
       {
       this->ScalarVisibilityOn();
-      this->TubeFilter->SetRadius(this->GetTubeRadius());
-      this->TubeFilter->SetNumberOfSides(this->GetTubeNumberOfSides());
+      this->TubeFilter->SetRadius( this->GetTubeRadius() );
+      this->TubeFilter->SetNumberOfSides( this->GetTubeNumberOfSides() );
       this->AssignAttribute->Update();
       }
     }

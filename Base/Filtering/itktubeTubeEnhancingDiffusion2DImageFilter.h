@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -38,10 +38,10 @@ namespace tube
  *
  * Complete rewrite of previous versions, only using itk/vnl routines
  * for derivatives, eigensystem calculations and diffusion. Internally,
- * the input image image is converted to internal precision (float) for
+ * the input image image is converted to internal precision ( float ) for
  * calculation, and converted back when returning the results.
  *
- * Uses simple forward Euler scheme (explicit) with 3x3 stencil,
+ * Uses simple forward Euler scheme ( explicit ) with 3x3 stencil,
  * see, e.g., PhD of Joachim Weickert for theory and implementation regarding
  * the construction of this discretization scheme. See 'Tube Enhancing
  * Diffusion', Manniesing, media 2006, for information regarding the
@@ -50,14 +50,14 @@ namespace tube
  * - Stores all elements of the Hessian of the complete image during
  *   diffusion. An alternative implementation is to only store the
  *   scale for which the vesselness has maximum response, and to
- *   recalculate the Hessian (locally) during diffusion. Also stores
+ *   recalculate the Hessian ( locally ) during diffusion. Also stores
  *   the current image, i.e., at iteration i + temp image, therefore the complete
  *   memory consumption approximately peaks at 8 times the input image
- *   (input image in float)
+ *   ( input image in float )
  * - The Hessian is stored as six individual images, an alternative
  *   implementation is to use the itk symmetric second rank tensor
- *   as pixel type (and e.g. using the class SymmetricEigenAnalysisImage
- *   Filter). However, we are lazy, and using this since we rely
+ *   as pixel type ( and e.g. using the class SymmetricEigenAnalysisImage
+ *   Filter ). However, we are lazy, and using this since we rely
  *   on vnl data types and its eigensystem calculations
  * - note: most of computation time is spent at calculation of vesselness
  *   response
@@ -70,7 +70,7 @@ namespace tube
  *   - completely ITK-fying, e.g., eigenvalues calculation
  *   - possibly embedding within itk-diffusion framework
  *   - itk expert to have a look at use of iterators
- *     (there must be a potential gain there)
+ *     ( there must be a potential gain there )
  *
  * email: r.manniesing@erasmusmc.nl
  */
@@ -126,7 +126,7 @@ public:
   itkSetMacro( Sensitivity, Precision );
   itkGetMacro( Sensitivity, Precision );
 
-  void SetScales(const std::vector<Precision> &scales)
+  void SetScales( const std::vector<Precision> &scales )
     {
     m_Scales = scales;
     }
@@ -152,7 +152,7 @@ public:
     m_Omega                     = 25.0;
     m_Sensitivity               = 20.0;
 
-    m_Scales.resize(2);
+    m_Scales.resize( 2 );
     m_Scales[0] = 6;
     m_Scales[1] = 8;
 
@@ -163,13 +163,13 @@ public:
 protected:
   TubeEnhancingDiffusion2DImageFilter( void );
   ~TubeEnhancingDiffusion2DImageFilter( void ) {}
-  void PrintSelf(std::ostream &os, Indent indent) const;
+  void PrintSelf( std::ostream &os, Indent indent ) const;
   void GenerateData( void );
 
 private:
 
-  TubeEnhancingDiffusion2DImageFilter(const Self&);
-  void operator=(const Self&);
+  TubeEnhancingDiffusion2DImageFilter( const Self& );
+  void operator=( const Self& );
 
   Precision                 m_TimeStep;
   unsigned int              m_Iterations;
@@ -198,8 +198,8 @@ private:
   void MaxTubeResponse( const typename PrecisionImageType::Pointer );
 
   // calculates diffusion tensor
-  // based on current values of Hessian (for which we have
-  // maximum vessel response).
+  // based on current values of Hessian ( for which we have
+  // maximum vessel response ).
   void DiffusionTensor( void );
 
   // Sorted increasing magnitude: l1, l2
@@ -215,4 +215,4 @@ private:
 #include "itktubeTubeEnhancingDiffusion2DImageFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeTubeEnhancingDiffusion2DImageFilter_h)
+#endif // End !defined( __itktubeTubeEnhancingDiffusion2DImageFilter_h )

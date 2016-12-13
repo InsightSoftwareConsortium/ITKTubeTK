@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -65,7 +65,7 @@ void Message( const T& str, int level = 0 )
     }
 }
 
-inline void FmtMessage(int level, const std::string & message )
+inline void FmtMessage( int level, const std::string & message )
 {
   std::ostream & os = level >= MessageLevel::Information ? std::cerr : std::cout;
 
@@ -100,35 +100,35 @@ inline void FmtMessage(int level, const std::string & message )
   os.flush();
 }
 
-/** Formatted logging, as with printf(...) */
-inline void FmtMessage(int level, const char* fmt, va_list args )
+/** Formatted logging, as with printf( ... ) */
+inline void FmtMessage( int level, const char* fmt, va_list args )
 {
   char message[1024];
-  std::memset(message, 0, sizeof(char) * 1023);
-  vsnprintf(message, 1023, fmt, args);
+  std::memset( message, 0, sizeof( char ) * 1023 );
+  vsnprintf( message, 1023, fmt, args );
 
-  FmtMessage(level, std::string(message));
+  FmtMessage( level, std::string( message ) );
 }
 
-inline void FmtInfoMessage(const std::string & message)
+inline void FmtInfoMessage( const std::string & message )
 {
   FmtMessage( MessageLevel::Information, message );
 }
 
-inline void FmtInfoMessage(const char* fmt, ...)
+inline void FmtInfoMessage( const char* fmt, ... )
 {
   va_list args;
-  va_start(args, fmt);
+  va_start( args, fmt );
   FmtMessage( MessageLevel::Information, fmt, args );
-  va_end(args);
+  va_end( args );
 }
 
-inline void FmtInformationMessage(const std::string & message)
+inline void FmtInformationMessage( const std::string & message )
 {
   FmtMessage( MessageLevel::Information, message );
 }
 
-inline void FmtInformationMessage(const char* fmt, ...)
+inline void FmtInformationMessage( const char* fmt, ... )
 {
   va_list args;
   va_start( args, fmt );
@@ -137,12 +137,12 @@ inline void FmtInformationMessage(const char* fmt, ...)
 
 }
 
-inline void FmtWarningMessage(const std::string & message)
+inline void FmtWarningMessage( const std::string & message )
 {
   FmtMessage( MessageLevel::Warning, message );
 }
 
-inline void FmtWarningMessage(const char* fmt, ...)
+inline void FmtWarningMessage( const char* fmt, ... )
 {
   va_list args;
   va_start( args, fmt );
@@ -150,12 +150,12 @@ inline void FmtWarningMessage(const char* fmt, ...)
   va_end( args );
 }
 
-inline void FmtErrorMessage(const std::string & message)
+inline void FmtErrorMessage( const std::string & message )
 {
   FmtMessage( MessageLevel::Error, message );
 }
 
-inline void FmtErrorMessage(const char* fmt, ...)
+inline void FmtErrorMessage( const char* fmt, ... )
 {
   va_list args;
   va_start( args, fmt );
@@ -163,12 +163,12 @@ inline void FmtErrorMessage(const char* fmt, ...)
   va_end( args );
 }
 
-inline void FmtDebugMessage(const std::string & message)
+inline void FmtDebugMessage( const std::string & message )
 {
   FmtMessage( MessageLevel::Debug, message );
 }
 
-inline void FmtDebugMessage(const char* fmt, ...)
+inline void FmtDebugMessage( const char* fmt, ... )
 {
   va_list args;
   va_start( args, fmt );
@@ -208,4 +208,4 @@ void DebugMessage( const T& str )
 
 } // End namespace tube
 
-#endif // End !defined(__tubeMessage_h)
+#endif // End !defined( __tubeMessage_h )

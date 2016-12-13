@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -60,7 +60,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( ComputeImageStatistics, ImageToImageFilter );
 
   /** Set/Get input mask */
@@ -89,7 +89,7 @@ protected:
   ComputeImageStatistics( void );
   ~ComputeImageStatistics( void ) {};
 
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
   /** Computes image statistics */
   void GenerateData( void );
@@ -121,4 +121,4 @@ private:
 #include "itktubeComputeImageStatistics.hxx"
 #endif
 
-#endif // End !defined(__itktubeComputeImageStatistics_h)
+#endif // End !defined( __itktubeComputeImageStatistics_h )

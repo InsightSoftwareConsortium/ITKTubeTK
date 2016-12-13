@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -34,7 +34,7 @@ int main( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
     << std::endl
     << "  contains some info about your data and that also"
     << std::endl
-    << "  lists the file(s) that contain your data."
+    << "  lists the file( s ) that contain your data."
     << std::endl
     << std::endl
     << "This program helps you create that text file - we"
@@ -53,14 +53,14 @@ int main( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
   std::cout << std::endl;
 
   std::ofstream fp;
-  fp.open(filename.c_str());
+  fp.open( filename.c_str() );
 
-  std::cout << "What is the dimensionality of your data (1, 2, 3, ...)?"
+  std::cout << "What is the dimensionality of your data ( 1, 2, 3, ... )?"
     << std::endl
     << "  -=> ";
   int nDims;
   std::cin >> nDims;
-  if(nDims < 1)
+  if( nDims < 1 )
     {
     std::cout << "...have a nice day" << std::endl;
     return 1;
@@ -71,11 +71,11 @@ int main( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
   int i;
   int * dimSize = new int [nDims];
   std::cout << "Assuming dimension 0 is the 'x' dimension..." << std::endl;
-  for(i = 0; i < nDims; i++)
+  for( i = 0; i < nDims; i++ )
     {
     std::cout << "  How large is dimension " << i << " -=> ";
     std::cin >> dimSize[i];
-    if(dimSize[i]<1)
+    if( dimSize[i]<1 )
       {
       std::cout << "    ...we'll assume you meant 1..." << std::endl;
       dimSize[i] = 1;
@@ -83,7 +83,7 @@ int main( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
     }
   std::cout << std::endl;
   fp << "DimSize =";
-  for(i = 0; i < nDims; i++)
+  for( i = 0; i < nDims; i++ )
     {
     fp << " " << dimSize[i];
     }
@@ -99,12 +99,12 @@ int main( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
     << std::endl
     << "   points in your data...if you don't know/care, answer 1."
     << std::endl;
-  for(i = 0; i < nDims; i++)
+  for( i = 0; i < nDims; i++ )
     {
     std::cout << "  What is the point spacing in dimension " << i
       << "? -=> ";
     std::cin >> pointSpacing[i];
-    if(pointSpacing[i]<0.0000000000000001)
+    if( pointSpacing[i]<0.0000000000000001 )
       {
       std::cout << "...we'll assume you meant 1..." << std::endl;
       pointSpacing[i] = 1;
@@ -112,7 +112,7 @@ int main( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
     }
   std::cout << std::endl;
   fp << "ElementSpacing =";
-  for(i = 0; i < nDims; i++)
+  for( i = 0; i < nDims; i++ )
     {
     fp << " " << pointSpacing[i];
     }
@@ -125,14 +125,14 @@ int main( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
     << std::endl
     << "   know/care, answer 0 for each dimension."
     << std::endl;
-  for(i = 0; i < nDims; i++)
+  for( i = 0; i < nDims; i++ )
     {
     std::cout << "  What is the origin in dimension " << i << "? -=> ";
     std::cin >> origin[i];
     }
   std::cout << std::endl;
   fp << "Position =";
-  for(i = 0; i < nDims; i++)
+  for( i = 0; i < nDims; i++ )
     {
     fp << " " << origin[i];
     }
@@ -152,7 +152,7 @@ int main( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
     << "  -=> ";
   std::cin >> byteOrderMSB;
   std::cout << std::endl;
-  if(byteOrderMSB)
+  if( byteOrderMSB )
     {
     fp << "ElementByteOrderMSB = True" << std::endl;
     }
@@ -171,11 +171,11 @@ int main( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
     << "  -=> ";
   std::cin >> nComps;
   std::cout << std::endl;
-  if(nComps<1)
+  if( nComps<1 )
     {
     nComps = 1;
     }
-  if(nComps != 1)
+  if( nComps != 1 )
     {
     fp << "ElementNumberOfChannels = " << nComps << std::endl;
     }
@@ -183,18 +183,18 @@ int main( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
   int elementType;
   std::cout << "What is the 'type' of the elements in your data :"
     << std::endl
-    << "  0 - signed char (one byte)" << std::endl
+    << "  0 - signed char ( one byte )" << std::endl
     << "  1 - unsigned char" << std::endl
-    << "  2 - signed short (two byte)" << std::endl
+    << "  2 - signed short ( two byte )" << std::endl
     << "  3 - unsigned short" << std::endl
-    << "  4 - signed int (four byte)" << std::endl
+    << "  4 - signed int ( four byte )" << std::endl
     << "  5 - unsigned int" << std::endl
-    << "  6 - float (four byte)" << std::endl
-    << "  7 - double (eight byte)" << std::endl
+    << "  6 - float ( four byte )" << std::endl
+    << "  7 - double ( eight byte )" << std::endl
     << "  -=> ";
   std::cin >> elementType;
   std::cout << std::endl;
-  switch(elementType)
+  switch( elementType )
     {
     case 0: fp << "ElementType = MET_CHAR" << std::endl;
       break;
@@ -219,7 +219,7 @@ int main( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
   int storage = 0;
   std::cout << "How is the data stored ?" << std::endl
     << "  0 - in one file" << std::endl
-    << "  1 - in one file per slice (e.g., like dicom)" << std::endl
+    << "  1 - in one file per slice ( e.g., like dicom )" << std::endl
     << "  -=> ";
   std::cin >> storage;
   std::cout << std::endl;
@@ -227,7 +227,7 @@ int main( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
   int headerSize = -1;
   std::cout << "Size of the header that must be skipped to"
     << std::endl
-    << "  reach the data in the file(s)? Enter 0 to not skip"
+    << "  reach the data in the file( s )? Enter 0 to not skip"
     << std::endl
     << "  a header, -1 to have MetaImageReader automatically"
     << std::endl
@@ -238,12 +238,12 @@ int main( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
     << "  -=> ";
   std::cin >> headerSize;
   std::cout << std::endl;
-  if(headerSize > 0 || headerSize == -1)
+  if( headerSize > 0 || headerSize == -1 )
     {
     fp << "HeaderSize = " << headerSize << std::endl;
     }
 
-  if(storage == 0)
+  if( storage == 0 )
     {
     std::string fname;
     std::cout << "Name of the file containing the data -=> ";
@@ -278,34 +278,34 @@ int main( int tubeNotUsed( argc ), char * tubeNotUsed( argv )[] )
     std::cin >> storageList;
     std::cout << std::endl;
 
-    if(storageList == 0)
+    if( storageList == 0 )
       {
       fp << "ElementDataFile = LIST ";
         std::cout << "What is the dimension of the data stored in files?"
         << std::endl
-        << "It must be less than or equal to nDims (" << nDims
-        << ") Enter 2 for typical image slice data."
+        << "It must be less than or equal to nDims ( " << nDims
+        << " ) Enter 2 for typical image slice data."
         <<std::endl
         << "  -=> ";
         int fileImageDim;
       std::cin >>fileImageDim;
       std::cout << std::endl;
-      if( (fileImageDim < 0 ) || (fileImageDim > nDims) )
+      if( ( fileImageDim < 0 ) || ( fileImageDim > nDims ) )
         {
-        std::cout << "    ...we'll assume you meant " << (nDims - 1)
+        std::cout << "    ...we'll assume you meant " << ( nDims - 1 )
           << " ..." << std::endl;
         }
 
       fp << fileImageDim
         << std::endl;
       int totalFiles = 1;
-      for(i = nDims; i > fileImageDim; i--)
+      for( i = nDims; i > fileImageDim; i-- )
         {
         totalFiles *= dimSize[i-1];
         }
 
       std::string str;
-      for(i=0; i<totalFiles; i++)
+      for( i=0; i<totalFiles; i++ )
         {
         std::cout << "Filename of slice " << i << " -=> ";
         std::cin >> str;

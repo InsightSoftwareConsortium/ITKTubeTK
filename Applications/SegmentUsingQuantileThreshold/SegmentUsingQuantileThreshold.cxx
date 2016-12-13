@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -47,7 +47,7 @@ int DoIt( int argc, char * argv[] )
 
   itk::TimeProbesCollectorBase timeCollector;
 
-  tube::CLIProgressReporter progressReporter(
+  tube::CLIProgressReporter progressReporter( 
     "SegmentUsingQuantileThreshold", CLPProcessInformation );
   progressReporter.Start();
 
@@ -55,7 +55,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< PixelType, VDimension >   ImageType;
   typedef itk::ImageFileReader< ImageType >     ReaderType;
 
-  timeCollector.Start("Load data");
+  timeCollector.Start( "Load data" );
   typename ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
   try
@@ -114,7 +114,7 @@ int DoIt( int argc, char * argv[] )
      * Create a and configure a vector of length N of pointers
      * to BOOST accumulators -- Each of the N accumulators will
      * estimate exactly one of the given N desired quantile. If
-     * the desired quantile is not within (0,1), throw an exception.
+     * the desired quantile is not within ( 0,1 ), throw an exception.
      */
     QuantileAccumulatorType acc( boost::accumulators::quantile_probability
       = thresholdQuantile );

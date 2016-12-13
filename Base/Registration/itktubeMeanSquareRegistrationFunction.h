@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -75,7 +75,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( MeanSquareRegistrationFunction,
     PDEDeformableRegistrationFunction );
 
@@ -145,21 +145,21 @@ public:
 
   /** Release memory for global data structure. */
   virtual void ReleaseGlobalDataPointer( void *GlobalData ) const
-    { delete (GlobalDataStruct *) GlobalData;  }
+    { delete ( GlobalDataStruct * ) GlobalData;  }
 
   /** Set the object's state before each iteration. */
   virtual void InitializeIteration( void );
 
   /** This method is called by a finite difference solver image filter at
    * each pixel that does not lie on a data set boundary */
-  virtual PixelType  ComputeUpdate(const NeighborhoodType &neighborhood,
+  virtual PixelType  ComputeUpdate( const NeighborhoodType &neighborhood,
                      void *globalData,
-                     const FloatOffsetType &offset = FloatOffsetType(0.0));
+                     const FloatOffsetType &offset = FloatOffsetType( 0.0 ) );
 
   /** Computes the intensity difference between the fixed and moving image
    *  at the given index, under the given deformation vector. */
-  virtual double ComputeIntensityDifference(const IndexType & index,
-                                            const DeformationFieldPixelType & itvec);
+  virtual double ComputeIntensityDifference( const IndexType & index,
+                                            const DeformationFieldPixelType & itvec );
 
   /** Get the energy mutex lock  */
   void SetEnergy( double energy )
@@ -183,7 +183,7 @@ public:
 protected:
   MeanSquareRegistrationFunction( void );
   ~MeanSquareRegistrationFunction( void ) {}
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
   /** FixedImage image neighborhood iterator type. */
   typedef ConstNeighborhoodIterator<FixedImageType> FixedImageNeighborhoodIteratorType;
@@ -196,8 +196,8 @@ protected:
     }; // End struct GlobalDataStruct
 
 private:
-  MeanSquareRegistrationFunction(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  MeanSquareRegistrationFunction( const Self& ); //purposely not implemented
+  void operator=( const Self& ); //purposely not implemented
 
   /** Cache fixed image information. */
   SpacingType                     m_FixedImageSpacing;
@@ -231,4 +231,4 @@ private:
 #include "itktubeMeanSquareRegistrationFunction.hxx"
 #endif
 
-#endif // End !defined(__itktubeMeanSquareRegistrationFunction_h)
+#endif // End !defined( __itktubeMeanSquareRegistrationFunction_h )

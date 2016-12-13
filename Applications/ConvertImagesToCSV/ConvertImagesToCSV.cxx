@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -78,7 +78,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Reading volume: Exception caught: "
-      + std::string(err.GetDescription()));
+      + std::string( err.GetDescription() ) );
     return EXIT_FAILURE;
     }
 
@@ -103,7 +103,7 @@ int DoIt( int argc, char * argv[] )
     fileName.push_back( imageFileNameList[i] );
     if( MET_GetFilePath( imageFileNameList[i].c_str(), filePath ) )
       {
-      fileName[i] = &( imageFileNameList[i][strlen(filePath)] );
+      fileName[i] = &( imageFileNameList[i][strlen( filePath )] );
       }
     try
       {
@@ -112,7 +112,7 @@ int DoIt( int argc, char * argv[] )
     catch ( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Reading volume: Exception caught: "
-        + std::string(err.GetDescription()) );
+        + std::string( err.GetDescription() ) );
       return EXIT_FAILURE;
       }
     filter->AddImage( reader->GetOutput() );

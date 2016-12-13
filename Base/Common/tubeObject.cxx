@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -51,7 +51,7 @@ void Object::Print( std::ostream & os, Indent indent ) const
 // Header for when printing out information about this object.
 void Object::PrintHeader( std::ostream & os, Indent indent ) const
 {
-  os << indent << this->GetNameOfClass() << " (" << this << ")" << std::endl;
+  os << indent << this->GetNameOfClass() << " ( " << this << " )" << std::endl;
 }
 
 // Print out information about the member variables of this object.
@@ -60,7 +60,7 @@ void Object::PrintSelf( std::ostream & os, Indent indent ) const
   os << indent << "RTTI typeinfo: ";
 
 #if __GNUC__ > 3 || ( __GNUC__ == 3 && __GNUC_MINOR__ > 0 )
-  const char * mangled = typeid( *this).name();
+  const char * mangled = typeid( *this ).name();
   int status;
   char * demangled = abi::__cxa_demangle( mangled, NULL, NULL, &status );
 

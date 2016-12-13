@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -41,9 +41,9 @@ SpatialObjectSource< TOutputSpatialObject >
   // Create the output. We use static_cast<> here because we know the
   // default output must be of type TOutputSpatialObject
   typename TOutputSpatialObject::Pointer output =
-    static_cast< TOutputSpatialObject * >(
-    this->MakeOutput(0).GetPointer() );
-  this->ProcessObject::SetNumberOfRequiredOutputs(1);
+    static_cast< TOutputSpatialObject * >( 
+    this->MakeOutput( 0 ).GetPointer() );
+  this->ProcessObject::SetNumberOfRequiredOutputs( 1 );
   this->ProcessObject::SetNthOutput( 0, output.GetPointer() );
 
   itk::OutputWindow::SetInstance( itk::TextOutput::New() );
@@ -53,7 +53,7 @@ SpatialObjectSource< TOutputSpatialObject >
 template< class TOutputSpatialObject >
 ProcessObject::DataObjectPointer
 SpatialObjectSource< TOutputSpatialObject >
-::MakeOutput( ProcessObject::DataObjectPointerArraySizeType itkNotUsed(
+::MakeOutput( ProcessObject::DataObjectPointerArraySizeType itkNotUsed( 
   idx ) )
 {
   return OutputSpatialObjectType::New().GetPointer();
@@ -67,7 +67,7 @@ SpatialObjectSource< TOutputSpatialObject >
 ::GetOutput( void )
 {
   // we assume that the first output is of the templated type
-  return itkDynamicCastInDebugMode< TOutputSpatialObject * >(
+  return itkDynamicCastInDebugMode< TOutputSpatialObject * >( 
     this->GetPrimaryOutput() );
 }
 
@@ -78,7 +78,7 @@ SpatialObjectSource< TOutputSpatialObject >
 ::GetOutput( void ) const
 {
   // we assume that the first output is of the templated type
-  return itkDynamicCastInDebugMode< const TOutputSpatialObject * >(
+  return itkDynamicCastInDebugMode< const TOutputSpatialObject * >( 
     this->GetPrimaryOutput() );
 }
 
@@ -90,9 +90,9 @@ SpatialObjectSource< TOutputSpatialObject >
 ::GetOutput( unsigned int idx )
 {
   OutputSpatialObjectType * output = dynamic_cast<
-    OutputSpatialObjectType * >( this->ProcessObject::GetOutput(idx) );
+    OutputSpatialObjectType * >( this->ProcessObject::GetOutput( idx ) );
 
-  if( output == NULL && this->ProcessObject::GetOutput(idx) != NULL )
+  if( output == NULL && this->ProcessObject::GetOutput( idx ) != NULL )
     {
     itkWarningMacro( << "Unable to convert output number " << idx
       << " to type " << typeid( OutputSpatialObjectType ).name() );
@@ -104,16 +104,16 @@ SpatialObjectSource< TOutputSpatialObject >
 template< class TOutputSpatialObject >
 void
 SpatialObjectSource< TOutputSpatialObject >
-::GraftOutput(DataObject *graft)
+::GraftOutput( DataObject *graft )
 {
-  this->GraftNthOutput(0, graft);
+  this->GraftNthOutput( 0, graft );
 }
 
 
 template< class TOutputSpatialObject >
 void
 SpatialObjectSource< TOutputSpatialObject >
-::GraftOutput(const DataObjectIdentifierType & key, DataObject *graft)
+::GraftOutput( const DataObjectIdentifierType & key, DataObject *graft )
 {
   if( !graft )
     {
@@ -124,8 +124,8 @@ SpatialObjectSource< TOutputSpatialObject >
   // we use the process object method since all out output may not be
   // of the same type
   TOutputSpatialObject * outputObject =
-    static_cast< TOutputSpatialObject * >(
-      this->ProcessObject::GetOutput(key) );
+    static_cast< TOutputSpatialObject * >( 
+      this->ProcessObject::GetOutput( key ) );
   if( !outputObject )
     {
     itkExceptionMacro( << "Cannot convert output to filter output type" );
@@ -158,7 +158,7 @@ SpatialObjectSource< TOutputSpatialObject >
 template< class TOutputSpatialObject >
 void
 SpatialObjectSource< TOutputSpatialObject >
-::GraftNthOutput(unsigned int idx, DataObject *graft)
+::GraftNthOutput( unsigned int idx, DataObject *graft )
 {
   if( idx >= this->GetNumberOfIndexedOutputs() )
     {
@@ -166,11 +166,11 @@ SpatialObjectSource< TOutputSpatialObject >
       << " but this filter only has " << this->GetNumberOfIndexedOutputs()
       << " indexed Outputs." );
     }
-  this->GraftOutput( this->MakeNameFromOutputIndex(idx), graft );
+  this->GraftOutput( this->MakeNameFromOutputIndex( idx ), graft );
 }
 
 } // End namespace tube
 
 } // End namespace itk
 
-#endif // End !defined(__itktubeSpatialObjectSource_hxx)
+#endif // End !defined( __itktubeSpatialObjectSource_hxx )

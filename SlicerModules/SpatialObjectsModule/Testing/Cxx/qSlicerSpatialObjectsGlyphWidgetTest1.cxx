@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -40,36 +40,36 @@ limitations under the License.
 //-----------------------------------------------------------------------------
 int qSlicerSpatialObjectsGlyphWidgetTest1( int argc, char * argv[] )
 {
-  QApplication app(argc, argv);
+  QApplication app( argc, argv );
 
   vtkNew<vtkMRMLScene> scene;
 
   vtkNew<vtkMRMLSpatialObjectsNode> so;
-  scene->AddNode(so.GetPointer());
+  scene->AddNode( so.GetPointer() );
   vtkNew<vtkMRMLSpatialObjectsGlyphDisplayNode> soDisplay;
-  scene->AddNode(soDisplay.GetPointer());
+  scene->AddNode( soDisplay.GetPointer() );
   vtkNew<vtkMRMLSpatialObjectsDisplayPropertiesNode> soDisplayProperties;
-  scene->AddNode(soDisplayProperties.GetPointer());
+  scene->AddNode( soDisplayProperties.GetPointer() );
 
   qSlicerSpatialObjectsGlyphWidget widget;
-  widget.setSpatialObjectsDisplayNode(so->GetDisplayNode());
+  widget.setSpatialObjectsDisplayNode( so->GetDisplayNode() );
 
-  so->SetAndObserveDisplayNodeID(soDisplay->GetID());
+  so->SetAndObserveDisplayNodeID( soDisplay->GetID() );
 
   vtkMRMLNode* nullNode = NULL;
-  widget.setSpatialObjectsDisplayNode(nullNode);
-  widget.setSpatialObjectsDisplayNode(so->GetDisplayNode());
+  widget.setSpatialObjectsDisplayNode( nullNode );
+  widget.setSpatialObjectsDisplayNode( so->GetDisplayNode() );
 
-  soDisplay->SetAndObserveSpatialObjectsDisplayPropertiesNodeID(
-      soDisplayProperties->GetID());
+  soDisplay->SetAndObserveSpatialObjectsDisplayPropertiesNodeID( 
+      soDisplayProperties->GetID() );
 
-  widget.setSpatialObjectsDisplayNode(nullNode);
-  widget.setSpatialObjectsDisplayNode(so->GetDisplayNode());
+  widget.setSpatialObjectsDisplayNode( nullNode );
+  widget.setSpatialObjectsDisplayNode( so->GetDisplayNode() );
   widget.show();
 
-  if(argc < 2 || QString(argv[1]) != "-I")
+  if( argc < 2 || QString( argv[1] ) != "-I" )
     {
-    QTimer::singleShot(200, &app, SLOT(quit()));
+    QTimer::singleShot( 200, &app, SLOT( quit() ) );
     }
 
   return app.exec();

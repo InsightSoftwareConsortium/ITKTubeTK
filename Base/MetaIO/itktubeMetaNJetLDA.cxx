@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -316,7 +316,7 @@ bool MetaNJetLDA
     return false;
     }
 
-  const bool result = !std::strncmp( MET_ReadForm(
+  const bool result = !std::strncmp( MET_ReadForm( 
                                        inputStream ).c_str(), "NJetLDA", 7 );
 
   inputStream.close();
@@ -652,7 +652,7 @@ bool MetaNJetLDA
       {
       for( unsigned int i = 0; i < nZeroScales; i++ )
         {
-        m_ZeroScales[i] = (double)mF->value[i];
+        m_ZeroScales[i] = ( double )mF->value[i];
         }
       }
     }
@@ -671,7 +671,7 @@ bool MetaNJetLDA
       {
       for( unsigned int i = 0; i < nFirstScales; i++ )
         {
-        m_FirstScales[i] = (double)mF->value[i];
+        m_FirstScales[i] = ( double )mF->value[i];
         }
       }
     }
@@ -690,7 +690,7 @@ bool MetaNJetLDA
       {
       for( unsigned int i = 0; i < nSecondScales; i++ )
         {
-        m_SecondScales[i] = (double)mF->value[i];
+        m_SecondScales[i] = ( double )mF->value[i];
         }
       }
     }
@@ -709,7 +709,7 @@ bool MetaNJetLDA
       {
       for( unsigned int i = 0; i < nRidgeScales; i++ )
         {
-        m_RidgeScales[i] = (double)mF->value[i];
+        m_RidgeScales[i] = ( double )mF->value[i];
         }
       }
     }

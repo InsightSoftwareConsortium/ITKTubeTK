@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -68,8 +68,7 @@ int main( int argc, char **argv )
  */
 template< typename T >
 bool CheckVNLVectorEquality( const vnl_vector< T > &v,
-                                const vnl_vector< T > &g,
-                                double tol = 1.0e-6 )
+  const vnl_vector< T > &g, double tol = 1.0e-6 )
 {
   if( v.size() != g.size() )
     {
@@ -77,7 +76,7 @@ bool CheckVNLVectorEquality( const vnl_vector< T > &v,
     }
   for( unsigned i=0; i<v.size(); ++i )
     {
-    if( vnl_math_abs(g.get(i) - v.get(i)) > tol )
+    if( vnl_math_abs( g.get( i ) - v.get( i ) ) > tol )
       {
       return false;
       }
@@ -96,8 +95,7 @@ bool CheckVNLVectorEquality( const vnl_vector< T > &v,
  */
 template< typename T >
 bool CheckVNLMatrixEquality( const vnl_matrix< T > &V,
-                             const vnl_matrix< T > &G,
-                             double tol = 1.0e-6 )
+  const vnl_matrix< T > &G, double tol = 1.0e-6 )
 {
   if( V.rows() != G.rows() || V.cols() != G.cols() )
     {
@@ -107,7 +105,7 @@ bool CheckVNLMatrixEquality( const vnl_matrix< T > &V,
     {
     for( unsigned int c=0; c<V.cols(); ++c )
       {
-      if( vnl_math_abs(V.get(r, c) - G.get(r, c)) > tol )
+      if( vnl_math_abs( V.get( r, c ) - G.get( r, c ) ) > tol )
         {
         return false;
         }
@@ -125,22 +123,19 @@ bool CheckVNLMatrixEquality( const vnl_matrix< T > &V,
  *
  */
 template< typename ImageT >
-bool CheckCompatibility(
-  typename ImageT::Pointer imageA,
+bool CheckCompatibility( typename ImageT::Pointer imageA,
   typename ImageT::Pointer imageB )
 {
   // Spacing tolerance is imageA's 1st coord. spacing * 1e-6
   const double spacingTol = imageA->GetSpacing()[0] * 1.0e-6;
 
-  if( !CheckVNLVectorEquality(
-    imageA->GetOrigin().GetVnlVector(),
+  if( !CheckVNLVectorEquality( imageA->GetOrigin().GetVnlVector(),
     imageB->GetOrigin().GetVnlVector() ) )
     {
     tube::ErrorMessage( "Origin mismatch between input images" );
     return false;
     }
-  if( !CheckVNLVectorEquality(
-    imageA->GetSpacing().GetVnlVector(),
+  if( !CheckVNLVectorEquality( imageA->GetSpacing().GetVnlVector(),
     imageB->GetSpacing().GetVnlVector(), spacingTol ) )
     {
     tube::ErrorMessage( "Spacing mismatch between input images" );
@@ -152,7 +147,7 @@ bool CheckCompatibility(
     tube::ErrorMessage( "Size mismatch between input images" );
     return false;
     }
-  if( !CheckVNLMatrixEquality(
+  if( !CheckVNLMatrixEquality( 
     imageA->GetDirection().GetVnlMatrix().as_ref(),
     imageB->GetDirection().GetVnlMatrix().as_ref() ) )
     {
@@ -165,13 +160,12 @@ bool CheckCompatibility(
 
 /** Create an empty image.
  *
- *  \param outImage Image that is about to be created (has to exist)
+ *  \param outImage Image that is about to be created ( has to exist )
  *  \param targetSize Desired size of the image
  *
  */
 template< class ImageT >
-void CreateEmptyImage(
-  typename ImageT::Pointer & outImage,
+void CreateEmptyImage( typename ImageT::Pointer & outImage,
   typename ImageT::SizeType targetSize )
 {
   typename ImageT::IndexType start;
@@ -195,8 +189,8 @@ bool IsDiscrete( const std::string & fileName )
 {
   typedef itk::ImageIOBase::IOComponentType ScalarPixelType;
 
-  itk::ImageIOBase::Pointer imageIO = itk::ImageIOFactory::CreateImageIO(
-    fileName.c_str(), itk::ImageIOFactory::ReadMode);
+  itk::ImageIOBase::Pointer imageIO = itk::ImageIOFactory::CreateImageIO( 
+    fileName.c_str(), itk::ImageIOFactory::ReadMode );
 
   imageIO->SetFileName( fileName.c_str() );
   imageIO->ReadImageInformation();
@@ -218,13 +212,13 @@ bool IsDiscrete( const std::string & fileName )
  */
 template< typename TPixel >
 void CreateRenumberingMap( const std::set< TPixel > & in,
-                           std::map< TPixel, unsigned int > & map)
+  std::map< TPixel, unsigned int > & map )
 {
   unsigned int cnt = 0;
   typename std::set< TPixel >::const_iterator it = in.begin();
   while( it != in.end() )
     {
-    map[(*it)] = cnt++;
+    map[( *it )] = cnt++;
     ++it;
     }
 }
@@ -246,15 +240,16 @@ int DoIt( int argc, char **argv )
   typedef itk::ImageFileWriter< OutputImageType >         OutputWriterType;
 
   typedef itk::ImageRegionIteratorWithIndex< InputImageType >
-                                                          ImageIteratorType;
+    ImageIteratorType;
 
   typedef std::vector< typename InputImageType::IndexType >
-                                                          InputIndexVectorType;
+    InputIndexVectorType;
 
-  typedef std::map< TPixel, InputIndexVectorType >        IdToIndexVectorType;
+  typedef std::map< TPixel, InputIndexVectorType >    IdToIndexVectorType;
 
 
-  // Read segmenation image and image of Central-Voronoi-Tesellation (CVT) cells
+  // Read segmenation image and image of Central-Voronoi-Tesellation ( CVT )
+  // cells
   typename InputImageType::Pointer  segImage, cvtImage;
   typename InputReaderType::Pointer segImageReader = InputReaderType::New();
   typename InputReaderType::Pointer cvtImageReader = InputReaderType::New();
@@ -297,7 +292,7 @@ int DoIt( int argc, char **argv )
     cvtCentersIdx.resize( nCenters );
 
     tube::FmtInfoMessage( "Reading %d CVT centers ...",
-                          nCenters);
+                          nCenters );
 
     unsigned int centerCounter = 0;
     while( cvtCenterFile >> c0 >> c1 >> c2 )
@@ -311,7 +306,8 @@ int DoIt( int argc, char **argv )
       p[2] = c2;
 
       typename InputImageType::IndexType targetIndex;
-      bool isInside = cvtImage->TransformPhysicalPointToIndex( p, targetIndex );
+      bool isInside = cvtImage->TransformPhysicalPointToIndex( p,
+        targetIndex );
       if( !isInside )
         {
         tube::ErrorMessage( "CVT cell center outside image" );
@@ -342,8 +338,8 @@ int DoIt( int argc, char **argv )
 
 
   // Determine the number of unqique segmentation regions
-  typename itk::ImageRegionIteratorWithIndex< InputImageType > segImageIt(
-    segImage, segImage->GetLargestPossibleRegion());
+  typename itk::ImageRegionIteratorWithIndex< InputImageType > segImageIt( 
+    segImage, segImage->GetLargestPossibleRegion() );
 
   // Holds the IDs of the segmentation regions
   std::set< TPixel > segmentationRegions;
@@ -355,10 +351,10 @@ int DoIt( int argc, char **argv )
     ++segImageIt;
     }
 
-  tube::FmtInfoMessage("Found %d distinct segmentation IDs",
+  tube::FmtInfoMessage( "Found %d distinct segmentation IDs",
     segmentationRegions.size() );
 
-  // Map segmentation IDs to the (artificial) segmentation IDs {0, ..., S-1}
+  // Map segmentation IDs to the ( artificial ) segmentation IDs {0, ..., S-1}
   std::map< TPixel, unsigned int > fwdSegMapper;
   std::map< unsigned int, TPixel > invSegMapper;
 
@@ -374,26 +370,29 @@ int DoIt( int argc, char **argv )
     }
 
   itkAssertOrThrowMacro( segmentationRegions.size() ==
-                         segmentationRegionCounter,
-                         "Size mismatch after seg. region renumbering" );
+    segmentationRegionCounter,
+    "Size mismatch after seg. region renumbering" );
 
-  // Create a map of (artificial) segmentation IDs -> Vector of voxel indices
+  // Create a map of ( artificial ) segmentation IDs -> Vector of voxel
+  // indices
   IdToIndexVectorType segToIndexVector;
 
   segImageIt.GoToBegin();
   while( !segImageIt.IsAtEnd() )
     {
-    const typename InputImageType::IndexType &index = segImageIt.GetIndex( );
+    const typename InputImageType::IndexType &index =
+      segImageIt.GetIndex();
     segToIndexVector[ fwdSegMapper[ segImageIt.Get() ] ].push_back( index );
     ++segImageIt;
     }
 
-  itkAssertOrThrowMacro( segToIndexVector.size() == segmentationRegions.size(),
-                         "Size mismatch after region -> index vector mapping" );
+  itkAssertOrThrowMacro( segToIndexVector.size() ==
+    segmentationRegions.size(),
+    "Size mismatch after region -> index vector mapping" );
 
-  // Map CVT cell IDs to (artificial) CVT cell IDs {0, ..., C-1}
+  // Map CVT cell IDs to ( artificial ) CVT cell IDs {0, ..., C-1}
   ImageIteratorType cvtImageIt( cvtImage,
-                                cvtImage->GetLargestPossibleRegion());
+    cvtImage->GetLargestPossibleRegion() );
 
   std::set< TPixel > cvtCellSet;
   cvtImageIt.GoToBegin();
@@ -407,9 +406,9 @@ int DoIt( int argc, char **argv )
   CreateRenumberingMap< TPixel >( cvtCellSet, fwdCVTMapper );
 
   itkAssertOrThrowMacro( fwdCVTMapper.size() == cvtCellSet.size(),
-                         "Size mismatch after renumbering CVT cells" );
+    "Size mismatch after renumbering CVT cells" );
 
-  // Create a map of (artificial) CVT cell IDs -> Vector of voxel indices
+  // Create a map of ( artificial ) CVT cell IDs -> Vector of voxel indices
   IdToIndexVectorType cvtToIndexVector;
 
   cvtImageIt.GoToBegin();
@@ -421,9 +420,9 @@ int DoIt( int argc, char **argv )
     }
 
   TPixel largestKey = cvtToIndexVector.rbegin()->first;
-  itkAssertOrThrowMacro( (largestKey + 1)
-                         ==  static_cast< TPixel >( cvtToIndexVector.size() ),
-                         "Size mismatch after CVT to index vector mapping" );
+  itkAssertOrThrowMacro( ( largestKey + 1 ) ==
+    static_cast< TPixel >( cvtToIndexVector.size() ),
+    "Size mismatch after CVT to index vector mapping" );
 
   // Build index vector for exclusion regions
   boost::dynamic_bitset<> excludeRegions( segmentationRegions.size() );
@@ -431,7 +430,7 @@ int DoIt( int argc, char **argv )
     {
     unsigned int mappedRegionID = fwdCVTMapper[ argExcludeRegions[e] ];
     itkAssertOrThrowMacro( mappedRegionID < segmentationRegions.size(),
-                           "Excluded region ID out of range" );
+      "Excluded region ID out of range" );
 
     excludeRegions[ mappedRegionID ] = 1;
     }
@@ -441,16 +440,16 @@ int DoIt( int argc, char **argv )
   unsigned int numberOfSegmentedRegions = segmentationRegions.size();
 
   vnl_matrix< TPixel > signatureMatrix ( numberOfCVTCells,
-                                         numberOfSegmentedRegions );
+    numberOfSegmentedRegions );
 
   typename IdToIndexVectorType::iterator mapIt = segToIndexVector.begin();
   while( mapIt != segToIndexVector.end() )
     {
-    TPixel id = (*mapIt).first;
+    TPixel id = ( *mapIt ).first;
 
     if( excludeRegions[id] )
       {
-      tube::FmtInfoMessage( "Exclude segmentation region %d (Orig: %d)",
+      tube::FmtInfoMessage( "Exclude segmentation region %d ( Orig: %d )",
         id, invSegMapper[id] );
 
       ++mapIt;
@@ -458,8 +457,8 @@ int DoIt( int argc, char **argv )
       }
 
     std::stringstream mapFileName, prtFileName;
-    mapFileName << boost::format("%04i-map.mha") % invSegMapper[id];
-    prtFileName << boost::format("%04i-prt.mha") % invSegMapper[id];
+    mapFileName << boost::format( "%04i-map.mha" ) % invSegMapper[id];
+    prtFileName << boost::format( "%04i-prt.mha" ) % invSegMapper[id];
 
     boost::filesystem::path dir( argOutputDirectory.c_str() );
     boost::filesystem::path mapFilePath ( mapFileName.str().c_str() );
@@ -476,8 +475,10 @@ int DoIt( int argc, char **argv )
         fullPrtFilePath.string().c_str(),
         fullMapFilePath.string().c_str() );
 
-      typename InputReaderType::Pointer singlePrtReader = InputReaderType::New();
-      typename InputReaderType::Pointer singleMapReader = InputReaderType::New();
+      typename InputReaderType::Pointer singlePrtReader =
+        InputReaderType::New();
+      typename InputReaderType::Pointer singleMapReader =
+        InputReaderType::New();
       singlePrtReader->SetFileName( fullPrtFilePath.string().c_str() );
       singleMapReader->SetFileName( fullMapFilePath.string().c_str() );
       try
@@ -496,7 +497,8 @@ int DoIt( int argc, char **argv )
     else
       // Otherwise, recompute distance maps ...
       {
-      tube::FmtInfoMessage( "Recomputing distance map for (original) seg. %d",
+      tube::FmtInfoMessage( 
+        "Recomputing distance map for ( original ) seg. %d",
         invSegMapper[id] );
 
       typename OutputImageType::Pointer outImage = OutputImageType::New();
@@ -504,9 +506,9 @@ int DoIt( int argc, char **argv )
       CreateEmptyImage< OutputImageType >( outImage,
         segImage->GetLargestPossibleRegion().GetSize() );
 
-      itkAssertOrThrowMacro( segImage->GetLargestPossibleRegion().GetSize() ==
-                             outImage->GetLargestPossibleRegion().GetSize(),
-                             "Newly created output image differs in size" );
+      itkAssertOrThrowMacro( segImage->GetLargestPossibleRegion().GetSize()
+        == outImage->GetLargestPossibleRegion().GetSize(),
+        "Newly created output image differs in size" );
 
       const InputIndexVectorType &indices = ( *mapIt ).second;
       for( unsigned int v=0; v<indices.size(); ++v )
@@ -518,7 +520,8 @@ int DoIt( int argc, char **argv )
         InputImageType,
         OutputImageType > DistanceMapType;
 
-      typename DistanceMapType::Pointer distanceMap = DistanceMapType::New();
+      typename DistanceMapType::Pointer distanceMap =
+        DistanceMapType::New();
       distanceMap->SetInputIsBinary( true );
       distanceMap->SetUseImageSpacing( true );
       distanceMap->SetInput( outImage );
@@ -527,12 +530,14 @@ int DoIt( int argc, char **argv )
       mapImage = distanceMap->GetDistanceMap();
       prtImage = outImage;
 
-      typename OutputWriterType::Pointer prtWriter = OutputWriterType::New( );
+      typename OutputWriterType::Pointer prtWriter =
+        OutputWriterType::New();
       prtWriter->SetFileName( fullPrtFilePath.string().c_str() );
       prtWriter->SetInput( prtImage );
       prtWriter->SetUseCompression( true );
 
-      typename OutputWriterType::Pointer mapWriter = OutputWriterType::New( );
+      typename OutputWriterType::Pointer mapWriter =
+        OutputWriterType::New();
       mapWriter->SetFileName( fullMapFilePath.string().c_str() );
       mapWriter->SetInput( mapImage );
       mapWriter->SetUseCompression( true );
@@ -555,9 +560,9 @@ int DoIt( int argc, char **argv )
         {
         for( unsigned int c=0; c<numberOfCVTCells; ++c )
           {
-          // Distance to c-th (i.e., c-th CVT cell) center
+          // Distance to c-th ( i.e., c-th CVT cell ) center
           TPixel dist = mapImage->GetPixel( cvtCentersIdx[c] );
-          signatureMatrix.put(c, id , dist);
+          signatureMatrix.put( c, id, dist );
           }
         break;
         }
@@ -603,14 +608,14 @@ int DoIt( int argc, char **argv )
   std::ofstream outSignatureFile( argDistanceSignatureFileName.c_str() );
   if( outSignatureFile.is_open() )
     {
-    for( unsigned int r=0; r<signatureMatrix.rows(); ++r)
+    for( unsigned int r=0; r<signatureMatrix.rows(); ++r )
       {
       for( unsigned int c=0; c<signatureMatrix.columns()-1; ++c )
         {
-        outSignatureFile << signatureMatrix.get(r,c) << ",";
+        outSignatureFile << signatureMatrix.get( r, c ) << ",";
         }
-      outSignatureFile << signatureMatrix.get( r, signatureMatrix.columns() - 1 )
-                       << std::endl;
+      outSignatureFile << signatureMatrix.get( r,
+        signatureMatrix.columns() - 1 ) << std::endl;
       }
     }
   else

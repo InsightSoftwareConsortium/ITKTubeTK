@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -38,8 +38,8 @@ int DoIt( int argc, char * argv[] );
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
-  (void)argc;
-  (void)argv;
+  ( void )argc;
+  ( void )argv;
   return 0;
 }
 
@@ -57,14 +57,14 @@ int main( int argc, char * argv[] )
   try
     {
     unsigned int dimension;
-    tube::GetImageInformation(
+    tube::GetImageInformation( 
       inputImageFile.c_str(), componentType, dimension );
     switch( dimension )
       {
       case 3:
         return DoIt< 3 >( argc, argv );
       default:
-        tube::ErrorMessage("Only 3D images supported!");
+        tube::ErrorMessage( "Only 3D images supported!" );
         return EXIT_FAILURE;
       }
     }
@@ -85,8 +85,8 @@ int DoIt( int argc, char * argv[] )
   const unsigned int Dimension = VDimension;
 
   itk::ImageIOBase::Pointer imageIO =
-    itk::ImageIOFactory::CreateImageIO(
-      inputImageFile.c_str(), itk::ImageIOFactory::ReadMode);
+    itk::ImageIOFactory::CreateImageIO( 
+      inputImageFile.c_str(), itk::ImageIOFactory::ReadMode );
 
   imageIO->SetFileName( inputImageFile.c_str() );
   imageIO->ReadImageInformation();
@@ -97,7 +97,7 @@ int DoIt( int argc, char * argv[] )
     {
     case itk::ImageIOBase::SHORT:
       {
-      // Define the image type, the reader type and the nearest-neighbor (NN)
+      // Define the image type, the reader type and the nearest-neighbor ( NN )
       // interpolator type that might be used later on.
       typedef itk::Image< short, Dimension >                ImageType;
       typedef itk::ImageFileReader< ImageType >             ReaderType;
@@ -114,9 +114,10 @@ int DoIt( int argc, char * argv[] )
       // First, we run an orientation correction filter that ensures that we
       // have a RAI coordinate system.
       typename itk::OrientImageFilter< ImageType, ImageType >::Pointer
-        orientationFilter = itk::OrientImageFilter<ImageType,ImageType>::New();
+        orientationFilter =
+        itk::OrientImageFilter<ImageType,ImageType>::New();
       orientationFilter->UseImageDirectionOn();
-      orientationFilter->SetDesiredCoordinateOrientation(
+      orientationFilter->SetDesiredCoordinateOrientation( 
         itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RAI );
       orientationFilter->SetInput( srcReader->GetOutput() );
       orientationFilter->Update();
@@ -150,7 +151,7 @@ int DoIt( int argc, char * argv[] )
         TranslationTransformType::New();
       typename TranslationTransformType::OutputVectorType translation;
 
-      for(unsigned int dim=0; dim<Dimension; ++dim)
+      for( unsigned int dim=0; dim<Dimension; ++dim )
         {
         if( centerOnZero )
           {
@@ -159,17 +160,17 @@ int DoIt( int argc, char * argv[] )
         else
           {
           translation[dim] = orientedImageOrigin[dim]
-            + static_cast<double>(orientedImageSize[dim])/2.0
-            - static_cast<double>(refImageSize[dim])/2.0;
+            + static_cast<double>( orientedImageSize[dim] )/2.0
+            - static_cast<double>( refImageSize[dim] )/2.0;
           }
         }
-      transform->Translate(translation);
+      transform->Translate( translation );
 
 
       // We have to adjust the image origin to reflect the changes induced
       // by the translation transform.
       double outImageOrigin[Dimension];
-      for( unsigned int dim=0; dim<Dimension; ++dim)
+      for( unsigned int dim=0; dim<Dimension; ++dim )
          {
          outImageOrigin[dim] = orientedImageOrigin[dim]
            - translation[dim];
@@ -178,7 +179,7 @@ int DoIt( int argc, char * argv[] )
 
       // Finally, we run a resampling filter to resample the input image in
       // the new space. We have to take care that, in case of discrete pixel
-      // values (e.g., label map), we switch from the standard linear
+      // values ( e.g., label map ), we switch from the standard linear
       // interpolator to the NN interpolator.
       typedef itk::ResampleImageFilter<ImageType, ImageType>
         ResampleImageFilterType;
@@ -192,7 +193,7 @@ int DoIt( int argc, char * argv[] )
 
       if( isLabelMap )
         {
-        tube::InfoMessage("Using NN interpolation!");
+        tube::InfoMessage( "Using NN interpolation!" );
         typename NNInterpolatorType::Pointer nnInterpolator =
           NNInterpolatorType::New();
         resampleFilter->SetInterpolator( nnInterpolator );
@@ -214,7 +215,7 @@ int DoIt( int argc, char * argv[] )
       }
     default:
       {
-      tube::ErrorMessage("Only SHORT type supported!");
+      tube::ErrorMessage( "Only SHORT type supported!" );
       return EXIT_FAILURE;
       }
     }

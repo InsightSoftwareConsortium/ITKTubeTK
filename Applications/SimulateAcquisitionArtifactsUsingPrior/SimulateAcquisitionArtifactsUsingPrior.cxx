@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -45,7 +45,7 @@ class MyMIWPFunc : public tube::UserFunction< vnl_vector< int >, double >
 public:
 
   typedef tube::CompareImageWithPrior< TPixel, VDimension > ImageEvalType;
-  MyMIWPFunc( ImageEvalType & eval ) : m_Eval(eval), m_GoF(0)
+  MyMIWPFunc( ImageEvalType & eval ) : m_Eval( eval ), m_GoF( 0 )
     {
     }
 
@@ -87,7 +87,7 @@ int DoIt( int argc, char * argv[] )
   typename ImageType::Pointer inVolume;
   typename ImageType::Pointer inMask;
 
-  timeCollector.Start("Read");
+  timeCollector.Start( "Read" );
     {
     typedef itk::ImageFileReader< ImageType >   ReaderType;
 
@@ -105,7 +105,7 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Reading volume. Exception caught: "
-                          + std::string(err.GetDescription()) );
+                          + std::string( err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
@@ -117,7 +117,7 @@ int DoIt( int argc, char * argv[] )
     catch( itk::ExceptionObject & err )
       {
       tube::ErrorMessage( "Reading mask. Exception caught: "
-                          + std::string(err.GetDescription()) );
+                          + std::string( err.GetDescription() ) );
       timeCollector.Report();
       return EXIT_FAILURE;
       }
@@ -126,7 +126,7 @@ int DoIt( int argc, char * argv[] )
     inMask = readerMask->GetOutput();
     }
   progressReporter.Report( 0.1 );
-  timeCollector.Stop("Read");
+  timeCollector.Stop( "Read" );
 
   typename ImageType::Pointer metricMaskImage = NULL;
   if( metricMask.size() != 0 )
@@ -171,10 +171,10 @@ int DoIt( int argc, char * argv[] )
     {
     itk::TransformFileReader::Pointer treader =
       itk::TransformFileReader::New();
-    treader->SetFileName(loadTransform);
+    treader->SetFileName( loadTransform );
     treader->Update();
     typename TransformType::Pointer transform;
-    transform = static_cast< TransformType * >(
+    transform = static_cast< TransformType * >( 
       treader->GetTransformList()->front().GetPointer() );
 
     eval.SetRegistrationTransform( transform );
@@ -211,8 +211,8 @@ int DoIt( int argc, char * argv[] )
     {
     itk::TransformFileWriter::Pointer twriter =
       itk::TransformFileWriter::New();
-    twriter->SetInput(regTfm);
-    twriter->SetFileName(saveTransform);
+    twriter->SetInput( regTfm );
+    twriter->SetFileName( saveTransform );
     twriter->Update();
     }
 
@@ -231,14 +231,14 @@ int DoIt( int argc, char * argv[] )
     tube::BrentOptimizer1D * opt = new tube::BrentOptimizer1D();
     tube::SplineND spline( 3, myFunc, spline1D, opt );
 
-    vnl_vector< int > xMin(3);
+    vnl_vector< int > xMin( 3 );
     xMin.fill( 1 );
-    vnl_vector< int > xMax(3);
+    vnl_vector< int > xMax( 3 );
     xMax.fill( 12 );
     spline.SetXMin( xMin );
     spline.SetXMax( xMax );
 
-    vnl_vector< double > x(3);
+    vnl_vector< double > x( 3 );
     x[0] = erode;
     x[1] = dilate;
     x[2] = gaussianBlur;
@@ -299,7 +299,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Writing volume. Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -311,7 +311,7 @@ int DoIt( int argc, char * argv[] )
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Writing mask. Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }

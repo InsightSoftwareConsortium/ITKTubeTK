@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -53,7 +53,7 @@ namespace tube
  * considering sliding motion.
  *
  * The regularization term uses a specified border between the organs
- * (stored as a vtkPolyData *) and enforces coupling between the organs while
+ * ( stored as a vtkPolyData * ) and enforces coupling between the organs while
  * allowing the motion field to exhibit sliding motion at the organ interface.
  *
  * See: D.F. Pace et al., Deformable image registration of sliding organs using
@@ -85,7 +85,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Run-time type information (and related methods). */
+  /** Run-time type information ( and related methods ). */
   itkTypeMacro( AnisotropicDiffusiveRegistrationFilter,
                 DiffusiveRegistrationFilter );
 
@@ -169,7 +169,7 @@ public:
   typedef typename NormalVectorImageType::RegionType
       ThreadNormalVectorImageRegionType;
 
-  /** Types for weighting between the anisotropic and diffusive (Gaussian)
+  /** Types for weighting between the anisotropic and diffusive ( Gaussian )
     * regularization */
   typedef double                                        WeightType;
   typedef itk::Image< WeightType, ImageDimension >      WeightImageType;
@@ -182,7 +182,7 @@ public:
   typedef vtkPolyData                                   BorderSurfaceType;
   typedef vtkSmartPointer< BorderSurfaceType >          BorderSurfacePointer;
 
-  /** The number of div(Tensor \grad u)v terms we sum for the regularizer.
+  /** The number of div( Tensor \grad u )v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
   virtual int GetNumberOfTerms( void ) const
     { return 2; }
@@ -197,9 +197,9 @@ public:
 
   /** Set/get the lambda that controls the decay of the weight value w as a
    *  function of the distance to the closest border point.  If gamma=-1, then
-   *  w decays exponentially (w = e^(-1.0*lambda*distance)).  Otherwise, w
+   *  w decays exponentially ( w = e^( -1.0*lambda*distance ) ).  Otherwise, w
    *  decays exponentially using a Dirac-shaped function
-   *  (w = 1 / ( 1 + lambda*gamma*e^(-1.0*lambda*distance^2))).  Lambda must
+   *  ( w = 1 / ( 1 + lambda*gamma*e^( -1.0*lambda*distance^2 ) ) ).  Lambda must
    *  be positive. */
   void SetLambda( WeightType l )
     { if( l > 0 ) { m_Lambda = l; } }
@@ -208,9 +208,9 @@ public:
 
   /** Set/get the gamma that controls the decay of the weight value w as a
    *  function of the distance to the closest border point.  If gamma=-1, then
-   *  w decays exponentially (w = e^(-1.0*lambda*distance)).  Otherwise, w
+   *  w decays exponentially ( w = e^( -1.0*lambda*distance ) ).  Otherwise, w
    *  decays exponentially using a Dirac-shaped function
-   *  (w = 1 / ( 1 + lambda*gamma*e^(-1.0*lambda*distance^2))).  Gamma must
+   *  ( w = 1 / ( 1 + lambda*gamma*e^( -1.0*lambda*distance^2 ) ) ).  Gamma must
    *  be positive or -1.0. */
   void SetGamma( WeightType g )
     { if( g > 0 || g == -1.0 ) { m_Gamma = g; } }
@@ -247,13 +247,13 @@ public:
 protected:
   AnisotropicDiffusiveRegistrationFilter( void );
   virtual ~AnisotropicDiffusiveRegistrationFilter( void ) {}
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const;
 
   /** Handy for array indexing. */
   enum DivTerm { TANGENTIAL, NORMAL };
 
   /** Allocate the deformation component images and their derivative images.
-   *  (which may be updated throughout the registration). Reimplement in derived
+   *  ( which may be updated throughout the registration ). Reimplement in derived
    *  classes. */
   virtual void InitializeDeformationComponentAndDerivativeImages( void );
 
@@ -262,7 +262,7 @@ protected:
   virtual void ComputeDiffusionTensorImages( void );
 
   /** Allocate and populate the images of multiplication vectors that the
-   *  div(T \grad(u)) values are multiplied by.  Allocate and populate all or
+   *  div( T \grad( u ) ) values are multiplied by.  Allocate and populate all or
    *  some of the multiplication vector images in derived classes.  Otherwise,
    *  default to e_l, where e_l is the lth canonical unit vector. */
   virtual void ComputeMultiplicationVectorImages( void );
@@ -283,14 +283,14 @@ protected:
 
   /** Computes the normal vectors and distances to the closest point given
    *  an initialized vtkPointLocator and the surface border normals */
-  virtual void GetNormalsAndDistancesFromClosestSurfacePoint(
+  virtual void GetNormalsAndDistancesFromClosestSurfacePoint( 
       bool computeNormals, bool computeWeights );
 
   /** Does the actual work of updating the output over an output region supplied
    *  by the multithreading mechanism.
    *  \sa GetNormalsAndDistancesFromClosestSurfacePoint
    *  \sa GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback */
-  virtual void ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
+  virtual void ThreadedGetNormalsAndDistancesFromClosestSurfacePoint( 
       vtkPointLocator * pointLocator,
       vtkFloatArray * normalData,
       ThreadNormalVectorImageRegionType & normalRegionToProcess,
@@ -302,19 +302,19 @@ protected:
   /** Computes the weighting factor w from the distance to the border using
    *  exponential decay.  The weight should be 1 near the border and 0 away from
    *  the border. */
-  virtual WeightType ComputeWeightFromDistanceExponential(
+  virtual WeightType ComputeWeightFromDistanceExponential( 
       const WeightType distance ) const;
 
   /** Computes the weighting factor w from the distance to the border using
    *  a Dirac-shaped function.  The weight should be 1 near the border and 0
    *  away from the border. */
-  virtual WeightType ComputeWeightFromDistanceDirac(
+  virtual WeightType ComputeWeightFromDistanceDirac( 
       const WeightType distance ) const;
 
 private:
   // Purposely not implemented
-  AnisotropicDiffusiveRegistrationFilter(const Self&);
-  void operator=(const Self&); // Purposely not implemented
+  AnisotropicDiffusiveRegistrationFilter( const Self& );
+  void operator=( const Self& ); // Purposely not implemented
 
   /** Structure for passing information into static callback methods.  Used in
    * the subclasses threading mechanisms. */
@@ -333,7 +333,7 @@ private:
    * output region that it passes to
    * ThreadedGetNormalsAndDistancesFromClosestSurfacePoint for processing. */
   static ITK_THREAD_RETURN_TYPE
-      GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback(
+      GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback( 
           void * arg );
 
   /** Organ boundary surface and surface of border normals */
@@ -345,7 +345,7 @@ private:
   WeightImagePointer                  m_WeightImage;
 
   /** Highest resolution versions of the normal and weight images, useful
-   *  to calculate once (setting m_ImageAttributeImage) at the highest
+   *  to calculate once ( setting m_ImageAttributeImage ) at the highest
    *  resolution during multiresolution registration, and then resampling on
    *  each scale.  The normal matrix image and weight structures image are
    *  resampled using nearest neighbor, while the weight regularizations image
@@ -367,4 +367,4 @@ private:
 #include "itktubeAnisotropicDiffusiveRegistrationFilter.hxx"
 #endif
 
-#endif // End !defined(__itktubeAnisotropicDiffusiveRegistrationFilter_h)
+#endif // End !defined( __itktubeAnisotropicDiffusiveRegistrationFilter_h )

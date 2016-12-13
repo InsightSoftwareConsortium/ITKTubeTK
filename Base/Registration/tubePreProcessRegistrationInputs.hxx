@@ -7,7 +7,7 @@ Clifton Park, NY, 12065, USA.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 2.0 ( the "License" );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -66,7 +66,7 @@ PreProcessRegistrationInputs( int argc,
 
   PARSE_ARGS;
 
-  timeCollector.Start("Load data");
+  timeCollector.Start( "Load data" );
   typedef itk::ImageFileReader< ImageType > ImageReaderType;
   typename ImageReaderType::Pointer reader = ImageReaderType::New();
   reader->SetFileName( inputVolume.c_str() );
@@ -77,7 +77,7 @@ PreProcessRegistrationInputs( int argc,
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Reading volume: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
@@ -92,15 +92,15 @@ PreProcessRegistrationInputs( int argc,
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Reading vessel: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
-  timeCollector.Stop("Load data");
+  timeCollector.Stop( "Load data" );
   double progress = 0.1;
   progressReporter.Report( progress );
 
-  timeCollector.Start("Sub-sample data");
+  timeCollector.Start( "Sub-sample data" );
   typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
                                                          SubSampleTubeTreeFilterType;
   typename SubSampleTubeTreeFilterType::Pointer subSampleTubeTreeFilter =
@@ -114,13 +114,13 @@ PreProcessRegistrationInputs( int argc,
   catch( itk::ExceptionObject & err )
     {
     tube::ErrorMessage( "Sub-sampling vessel: Exception caught: "
-                        + std::string(err.GetDescription()) );
+                        + std::string( err.GetDescription() ) );
     timeCollector.Report();
     return EXIT_FAILURE;
     }
   tubeNet = subSampleTubeTreeFilter->GetOutput();
 
-  timeCollector.Stop("Sub-sample data");
+  timeCollector.Stop( "Sub-sample data" );
   progress = 0.2;
   progressReporter.Report( progress );
 
@@ -128,7 +128,7 @@ PreProcessRegistrationInputs( int argc,
   currentImage = reader->GetOutput();
   if( gaussianBlurStdDev > 0.0 )
     {
-    timeCollector.Start("Gaussian Blur");
+    timeCollector.Start( "Gaussian Blur" );
 
     typedef itk::RecursiveGaussianImageFilter< ImageType, ImageType >
       GaussianFilterType;
@@ -142,7 +142,7 @@ PreProcessRegistrationInputs( int argc,
       gaussianFilter->SetInput( currentImage );
       gaussianFilter->SetSigma( gaussianBlurStdDev );
 
-      gaussianFilter->SetOrder(
+      gaussianFilter->SetOrder( 
                itk::RecursiveGaussianImageFilter<ImageType>::ZeroOrder );
       gaussianFilter->SetDirection( ii );
       tube::CLIFilterWatcher watcher( gaussianFilter,
@@ -156,10 +156,10 @@ PreProcessRegistrationInputs( int argc,
       currentImage = gaussianFilter->GetOutput();
       }
 
-    timeCollector.Stop("Gaussian Blur");
+    timeCollector.Stop( "Gaussian Blur" );
     }
 
-  timeCollector.Start("Compute Model Feature Weights");
+  timeCollector.Start( "Compute Model Feature Weights" );
 
   typedef itk::tube::Function::TubeExponentialResolutionWeightFunction<
     typename TubeType::TubePointType, FloatType >
@@ -175,18 +175,18 @@ PreProcessRegistrationInputs( int argc,
   typename PointWeightsCalculatorType::Pointer resolutionWeightsCalculator =
     PointWeightsCalculatorType::New();
 
-  resolutionWeightsCalculator->SetTubeTreeSpatialObject(
+  resolutionWeightsCalculator->SetTubeTreeSpatialObject( 
     subSampleTubeTreeFilter->GetOutput() );
   resolutionWeightsCalculator->SetPointWeightFunction( weightFunction );
   resolutionWeightsCalculator->Compute();
 
   pointWeights = resolutionWeightsCalculator->GetPointWeights();
 
-  timeCollector.Stop("Compute Model Feature Weights");
+  timeCollector.Stop( "Compute Model Feature Weights" );
 
   return EXIT_SUCCESS;
 }
 
 } //namespace
 
-#endif // End !defined(__tubePreProcessRegistrationInputs_hxx)
+#endif // End !defined( __tubePreProcessRegistrationInputs_hxx )

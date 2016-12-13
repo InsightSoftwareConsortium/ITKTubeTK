@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 ( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -69,7 +69,7 @@ public:
   typedef typename TOutputImage::SpacingType SpacingType;
 
   /** Origin typedef support.  The origin is the geometric coordinates
-   * of the index (0,0). */
+   * of the index ( 0,0 ). */
   typedef typename TOutputImage::PointType PointType;
 
   /** Direction typedef support.  The direction is the direction
@@ -92,30 +92,30 @@ public:
   typedef typename Superclass::ParametersValueType ParametersValueType;
   typedef typename Superclass::ParametersType      ParametersType;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro(GaussianDerivativeImageSource, ParametricImageSource);
+  /** Run-time type information ( and related methods ). */
+  itkTypeMacro( GaussianDerivativeImageSource, ParametricImageSource );
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro( Self );
 
-  itkSetMacro(Index, IndexType);
-  itkGetConstReferenceMacro(Index, IndexType);
+  itkSetMacro( Index, IndexType );
+  itkGetConstReferenceMacro( Index, IndexType );
 
-  itkSetMacro(Sigmas, SigmasType);
-  itkGetConstReferenceMacro(Sigmas, SigmasType);
+  itkSetMacro( Sigmas, SigmasType );
+  itkGetConstReferenceMacro( Sigmas, SigmasType );
 
-  itkSetMacro(Mean, PointType );
-  itkGetConstReferenceMacro(Mean, PointType );
+  itkSetMacro( Mean, PointType );
+  itkGetConstReferenceMacro( Mean, PointType );
 
-  itkSetMacro(Orders, OrdersType);
-  itkGetConstReferenceMacro(Orders, OrdersType);
+  itkSetMacro( Orders, OrdersType );
+  itkGetConstReferenceMacro( Orders, OrdersType );
 
   /** Set/get the parameters for this source. When this source is
    * templated over an N-dimensional output image type, the first N
    * values in the parameter array are the Sigma parameters in each
    * dimension, the next N values are the Mean parameters in each
    * dimension, and the last value is the Scale. */
-  virtual void SetParameters(const ParametersType & parameters);
+  virtual void SetParameters( const ParametersType & parameters );
   virtual ParametersType GetParameters() const;
 
   /** Get the number of parameters for this image source. When this
@@ -125,16 +125,16 @@ public:
 
 protected:
   GaussianDerivativeImageSource();
-  void PrintSelf(std::ostream & os, Indent indent) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const;
 
   virtual void GenerateOutputInformation();
 
   void GenerateData();
 
 private:
-  GaussianDerivativeImageSource(const GaussianDerivativeImageSource &);
+  GaussianDerivativeImageSource( const GaussianDerivativeImageSource & );
   //purposely not implemented
-  void operator=(const GaussianDerivativeImageSource &);
+  void operator=( const GaussianDerivativeImageSource & );
   //purposely not implemented
 
   IndexType m_Index;
