@@ -62,7 +62,7 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< MaskPixelType, VDimension >   InputMaskType;
   typedef itk::ImageFileReader< InputMaskType >     MaskReaderType;
 
-  typedef itk::tube::ConvertImagesToCSVFilter< InputMaskType, InputImageType >
+  typedef tube::ConvertImagesToCSV< InputImageType, InputMaskType >
     ConvertImagesToCSVFilterType;
   typename ConvertImagesToCSVFilterType::Pointer filter
           = ConvertImagesToCSVFilterType::New();
@@ -132,7 +132,7 @@ int DoIt( int argc, char * argv[] )
 
   filter->Update();
 
-  matrix = filter->GetOutput()->Get();
+  matrix = filter->GetOutput();
   unsigned int numberRows = filter->GetNumberRows();
   MatrixType submatrix = matrix.extract( numberRows, ACols );
 

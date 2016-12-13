@@ -80,4 +80,28 @@ if( ITK_WRAP_PYTHON )
     )
   set_property( TEST TubeTKITK.Python.ConvertImagesToCSV-Test1-Compare
     APPEND PROPERTY DEPENDS TubeTKITK.Python.ConvertImagesToCSV-Test1 )
+
+######################  PythonConvertShrunkenSeedImageToList  ##########################
+  # Test1 - PythonConvertShrunkenSeedImageToList
+  set( MODULE_NAME PythonConvertShrunkenSeedImageToList )
+  Midas3FunctionAddTestWithEnv( NAME TubeTKITK.Python.ConvertShrunkenSeedImageToList-Test1
+    COMMAND ${PYTHON_EXECUTABLE}
+      ${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}Test.py
+        MIDAS{LiverVess_Shrink_Seeds.mha.md5}
+        MIDAS{LiverVess_Shrink_SeedScales.mha.md5}
+        MIDAS{LiverVess_Shrink_Points.mha.md5}
+        ${TEMP}/${MODULE_NAME}Test1.sdlst
+        0
+    ENVIRONMENT ITK_BUILD_DIR=${ITK_DIR} TubeTK_BUILD_DIR=${TubeTK_BINARY_DIR} BUILD_TYPE=$<$<BOOL:${WIN32}>:$<CONFIG>>
+    )
+  # Test1 - Compare - PythonConvertShrunkenSeedImageToList
+  Midas3FunctionAddTest( NAME
+    TubeTKITK.Python.ConvertShrunkenSeedImageToList-Test1-Compare
+    COMMAND ${CompareTextFiles_EXE}
+      -t ${TEMP}/${MODULE_NAME}Test1.sdlst
+      -b MIDAS{ConvertShrunkenSeedImageToListTest1.sdlst.md5}
+    )
+  set_property( TEST
+    TubeTKITK.Python.ConvertShrunkenSeedImageToList-Test1-Compare
+    APPEND PROPERTY DEPENDS TubeTKITK.Python.ConvertShrunkenSeedImageToList-Test1 )
 endif()
