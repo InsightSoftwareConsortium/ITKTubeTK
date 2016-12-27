@@ -306,7 +306,7 @@ int DoIt( int argc, char * argv[] )
       out << "_";
       for( unsigned int i = 0; i < VDimension; i++ )
         {
-        out << roiIndex[i];
+        out << std::setfill('0') << std::setw(3) << roiIndex[i];
         }
       out << ".mha";
       writer->SetFileName( out.str() );
