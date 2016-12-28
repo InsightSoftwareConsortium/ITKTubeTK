@@ -76,16 +76,16 @@ public:
 
   /** Image dimension = 3. */
   itkStaticConstMacro( ImageDimension, unsigned int,
-                       InputImageType::ImageDimension );
+    InputImageType::ImageDimension );
   itkStaticConstMacro( InputPixelDimension, unsigned int,
-                       InputPixelType::Dimension );
+    InputPixelType::Dimension );
 
-  typedef  FixedArray< double, itkGetStaticConstMacro( InputPixelDimension ) >
-  EigenValueArrayType;
-  typedef  Image< EigenValueArrayType, itkGetStaticConstMacro( ImageDimension ) >
-  EigenValueImageType;
-  typedef   SymmetricEigenAnalysisImageFilter<
-    InputImageType, EigenValueImageType >     EigenAnalysisFilterType;
+  typedef FixedArray< double,
+    itkGetStaticConstMacro( InputPixelDimension ) > EigenValueArrayType;
+  typedef Image< EigenValueArrayType,
+    itkGetStaticConstMacro( ImageDimension ) >      EigenValueImageType;
+  typedef SymmetricEigenAnalysisImageFilter<
+    InputImageType, EigenValueImageType >           EigenAnalysisFilterType;
 
   /** Run-time type information ( and related methods ).   */
   itkTypeMacro( SheetnessMeasureImageFilter, ImageToImageFilter );

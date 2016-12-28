@@ -213,7 +213,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 
     for( unsigned int i=1; i <=2; i++ )
       {
-      if(  vnl_math_abs( eigenValue[i] ) > largest )
+      if( vnl_math_abs( eigenValue[i] ) > largest )
         {
         largestEigenValueIndex = i;
         }
@@ -254,10 +254,10 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
       {
       double gradientMagnitudeSquare = gradientMagnitude
         * gradientMagnitude;
-      double ratio = ( gradientMagnitudeSquare ) /
-               ( m_ContrastParameterLambdaEED*m_ContrastParameterLambdaEED );
-      double expVal = std::exp( ( -1.0 * m_ThresholdParameterC )/( std::pow( ratio,
-        4.0 ) ) );
+      double ratio = ( gradientMagnitudeSquare )
+        / ( m_ContrastParameterLambdaEED*m_ContrastParameterLambdaEED );
+      double expVal = std::exp( ( -1.0 * m_ThresholdParameterC )
+        / ( std::pow( ratio, 4.0 ) ) );
       LambdaEED1 = 1.0 - expVal;
       }
 
@@ -324,9 +324,9 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     Lambda2 = ( 1 - epsilon ) * LambdaCED2 + epsilon*LambdaEED2;
     Lambda3 = ( 1 - epsilon ) * LambdaCED3 + epsilon*LambdaEED3;
 
-    eigenValueMatrix( 0,0 ) = Lambda1;
-    eigenValueMatrix( 1,1 ) = Lambda2;
-    eigenValueMatrix( 2,2 ) = Lambda3;
+    eigenValueMatrix( 0, 0 ) = Lambda1;
+    eigenValueMatrix( 1, 1 ) = Lambda2;
+    eigenValueMatrix( 2, 2 ) = Lambda3;
 
     //Get the eigenVector matrix
     EigenVectorMatrixType eigenVectorMatrix =
@@ -362,17 +362,17 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     //doing this TODO
     typename DiffusionTensorImageType::PixelType        tensor;
 
-    tensor( 0,0 ) = productMatrix( 0,0 );
-    tensor( 0,1 ) = productMatrix( 0,1 );
-    tensor( 0,2 ) = productMatrix( 0,2 );
+    tensor( 0, 0 ) = productMatrix( 0, 0 );
+    tensor( 0, 1 ) = productMatrix( 0, 1 );
+    tensor( 0, 2 ) = productMatrix( 0, 2 );
 
-    tensor( 1,0 ) = productMatrix( 1,0 );
-    tensor( 1,1 ) = productMatrix( 1,1 );
-    tensor( 1,2 ) = productMatrix( 1,2 );
+    tensor( 1, 0 ) = productMatrix( 1, 0 );
+    tensor( 1, 1 ) = productMatrix( 1, 1 );
+    tensor( 1, 2 ) = productMatrix( 1, 2 );
 
-    tensor( 2,0 ) = productMatrix( 2,0 );
-    tensor( 2,1 ) = productMatrix( 2,1 );
-    tensor( 2,2 ) = productMatrix( 2,2 );
+    tensor( 2, 0 ) = productMatrix( 2, 0 );
+    tensor( 2, 1 ) = productMatrix( 2, 1 );
+    tensor( 2, 2 ) = productMatrix( 2, 2 );
     it.Set( tensor );
 
     ++it;

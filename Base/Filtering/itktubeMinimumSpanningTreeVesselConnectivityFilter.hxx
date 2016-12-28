@@ -657,6 +657,8 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 }
 
 } // End namespace tube
+
 } // End namespace itk
 
-#endif // End !defined( __itktubeMinimumSpanningTreeVesselConnectivityFilter_hxx )
+// End !defined( __itktubeMinimumSpanningTreeVesselConnectivityFilter_hxx )
+#endif

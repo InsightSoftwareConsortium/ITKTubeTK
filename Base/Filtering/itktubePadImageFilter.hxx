@@ -48,8 +48,9 @@ PadImageFilter<TInputImage, TOutputImage>
   // call the superclass' implementation of this method
   Superclass::GenerateInputRequestedRegion();
  
-  InputImageType * input0 = const_cast<InputImageType *>( this->GetInput( 0 ) );
-  if ( !input0 )
+  InputImageType * input0 = const_cast<InputImageType *>( this->GetInput(
+    0 ) );
+  if( !input0 )
     {
     return;
     }
@@ -71,7 +72,7 @@ PadImageFilter<TInputImage, TOutputImage>
   Superclass::GenerateOutputInformation();
  
   const InputImageType * input0 = this->GetInput();
-  if ( !input0 )
+  if( !input0 )
     {
     return;
     }

@@ -114,7 +114,7 @@ bool check_vnl_matrix_equality( const vnl_matrix<T> &V,
     {
     for( unsigned int c=0; c<V.cols(); ++c )
       {
-      if( vnl_math_abs( V.get( r,c ) - G.get( r,c ) ) > tol )
+      if( vnl_math_abs( V.get( r, c ) - G.get( r, c ) ) > tol )
         {
         return false;
         }
@@ -219,9 +219,9 @@ int DoIt( int argc, char * argv[] )
     }
 
 
-  // First, we try to read in the input image( s ), i.e., an image of the Voronoi
-  // tesselation and an image that contains discrete label values for each
-  // voxel of the input image.
+  // First, we try to read in the input image( s ), i.e., an image of the
+  // Voronoi tesselation and an image that contains discrete label values
+  // for each voxel of the input image.
   typename InputImageType::Pointer inImage;
   typename InputReaderType::Pointer inImageReader =
     InputReaderType::New();

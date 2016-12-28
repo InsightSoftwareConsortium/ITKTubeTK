@@ -457,7 +457,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
     this->GetInput() );
   OutputImagePointer outputPtr = this->GetOutput();
 
-  if ( !inputPtr || !outputPtr )
+  if( !inputPtr || !outputPtr )
     {
     return;
     }
@@ -520,7 +520,7 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
 
   InputImageConstPointer inputPtr = this->GetInput();
   OutputImagePointer     outputPtr = this->GetOutput();
-  if ( !inputPtr || !outputPtr )
+  if( !inputPtr || !outputPtr )
     {
     return;
     }

@@ -49,7 +49,7 @@ public:
     m_Indent = indent;
     }
 
-  /** Determine and return the next indentation. **/
+  /** Determine and return the next indentation. */
   Indent GetNextIndent( void );
 
   friend std::ostream & operator<<( std::ostream & os, const Indent & indent );

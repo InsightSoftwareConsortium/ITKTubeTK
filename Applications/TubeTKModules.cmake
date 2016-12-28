@@ -63,7 +63,6 @@ set( TubeTK_${proj}_MODULES
   ResampleTubes
   RegisterImages
   RegisterImageToTubesUsingRigidTransform
-  RegisterUsingImageCenters
   SampleCLIApplication
   SegmentBinaryImageSkeleton
   SegmentConnectedComponents

@@ -89,7 +89,7 @@ void Object::PrintFooter( std::ostream & tubeNotUsed( os ),
 // Print out information about the specified object.
 std::ostream & operator<<( std::ostream & os, const Object & object )
 {
-  object.Print(  os );
+  object.Print( os );
 
   return os;
 }

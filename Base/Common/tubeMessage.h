@@ -67,7 +67,8 @@ void Message( const T& str, int level = 0 )
 
 inline void FmtMessage( int level, const std::string & message )
 {
-  std::ostream & os = level >= MessageLevel::Information ? std::cerr : std::cout;
+  std::ostream & os =
+    level >= MessageLevel::Information ? std::cerr : std::cout;
 
 #ifndef NDEBUG
   if( level == MessageLevel::Debug )

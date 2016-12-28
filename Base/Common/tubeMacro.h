@@ -70,7 +70,8 @@ limitations under the License.
 #error "__SUNPRO_CC < 0x590 is not supported by TubeTK"
 #endif
 
-// Disable some warnings for the Microsoft Visual C++ compiler, based on ITK and VTK.
+// Disable some warnings for the Microsoft Visual C++ compiler,
+// based on ITK and VTK.
 
 #ifdef _MSC_VER
 // Conditional expression is constant.

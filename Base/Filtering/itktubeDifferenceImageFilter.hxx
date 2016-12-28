@@ -161,11 +161,18 @@ DifferenceImageFilter<TInputImage, TOutputImage>
   ProgressReporter progress( this, threadId, threadRegion.GetNumberOfPixels() );
 
   // Process the internal face and each of the boundary faces.
-  for( FaceListIterator face = faceList.begin(); face != faceList.end(); ++face )
+  for( FaceListIterator face = faceList.begin();
+    face != faceList.end(); ++face )
     {
-    SmartIterator test( radius, testImage, *face ); // Iterate over test image.
-    InputIterator valid( validImage, *face );       // Iterate over valid image.
-    OutputIterator out( outputPtr, *face );         // Iterate over output image.
+    SmartIterator test( radius, testImage, *face );
+    // Iterate over test image.
+
+    InputIterator valid( validImage, *face );
+    // Iterate over valid image.
+
+    OutputIterator out( outputPtr, *face );
+    // Iterate over output image.
+
     if( !test.GetNeedToUseBoundaryCondition() || !m_IgnoreBoundaryPixels )
       {
       test.OverrideBoundaryCondition( &nbc );
@@ -178,7 +185,8 @@ DifferenceImageFilter<TInputImage, TOutputImage>
         InputPixelType t = valid.Get();
 
         //  Assume a good match - so test center pixel first, for speed
-        RealType difference = static_cast<RealType>( t ) - test.GetCenterPixel();
+        RealType difference = static_cast<RealType>( t )
+          - test.GetCenterPixel();
         RealType absDifference = difference;
         if( NumericTraits<RealType>::IsNegative( difference ) )
           {

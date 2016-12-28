@@ -496,7 +496,8 @@ bool MetaImageImporterUI::Import()
     if( QFileInfo( file ).isAbsolute() )
       {
       QMessageBox::critical( this, "Import", "The file to import shall be "
-        "in the same directory( or subdirectory ) than the generated MHD file" );
+        "in the same directory( or subdirectory ) than the generated "
+        "MHD file" );
       return false;
       }
     fp << "ElementDataFile = " << file.toStdString() << std::endl;

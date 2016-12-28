@@ -639,8 +639,7 @@ int main( int argc, char * argv[] )
     "", "output filename", MetaCommand::DATA_OUT );
 
   command.SetOption( "WriteType", "W", false,
-    "write UChar,UShort,Short,Old Meta,U-UChar,U-UShort,U-Short,U-Float )"
-    );
+    "write UChar,UShort,Short,OldMeta,U-UChar,U-UShort,U-Short,U-Float )" );
   command.AddOptionField( "WriteType", "Type", MetaCommand::INT, true );
   command.AddOptionField( "WriteType", "filename", MetaCommand::STRING,
     true, "", "output filename", MetaCommand::DATA_OUT );

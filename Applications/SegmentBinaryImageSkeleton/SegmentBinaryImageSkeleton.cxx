@@ -81,7 +81,7 @@ int DoIt( int argc, char * argv[] )
   // Progress per iteration
   double progressFraction = 0.8/VDimension;
 
-  typedef itk::tube::SegmentBinaryImageSkeleton<PixelType,VDimension>
+  typedef itk::tube::SegmentBinaryImageSkeleton<PixelType, VDimension>
     FilterType;
   typename FilterType::Pointer filter = FilterType::New();
   filter->SetInput( reader->GetOutput() );

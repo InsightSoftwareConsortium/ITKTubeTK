@@ -276,8 +276,8 @@ int DoIt( int argc, char * argv[] )
       }
     initField = initFieldImageReader->GetOutput();
     }
-  // If an "initial transform" transform is given, or if there is no initial
-  // transform given
+  // If an "initial transform" transform is given, or if there is no
+  // initial transform given
   else
     {
     // Setup the fixed image as a template
@@ -286,7 +286,8 @@ int DoIt( int argc, char * argv[] )
     initField->SetOrigin( templateImage->GetOrigin() );
     initField->SetSpacing( templateImage->GetSpacing() );
     initField->SetDirection( templateImage->GetDirection() );
-    initField->SetLargestPossibleRegion( templateImage->GetLargestPossibleRegion() );
+    initField->SetLargestPossibleRegion(
+      templateImage->GetLargestPossibleRegion() );
     initField->SetRequestedRegion( templateImage->GetRequestedRegion() );
     initField->SetBufferedRegion( templateImage->GetBufferedRegion() );
     initField->Allocate();
@@ -319,13 +320,14 @@ int DoIt( int argc, char * argv[] )
         typename TransformType::Pointer transform
             = dynamic_cast< TransformType* >( initial.GetPointer() );
 
-        // For each voxel, find the displacement invoked by the given initial
-        // transform.  This should work for all types of transforms ( linear,
-        // nonlinear, B-spline, etc ) because itk::Transform is the base for each.
+        // For each voxel, find the displacement invoked by the given
+        // initial transform.  This should work for all types of
+        // transforms ( linear, nonlinear, B-spline, etc ) because
+        // itk::Transform is the base for each.
         // Slicer saves transforms in LPS space ( see Slicer's
-        // vtkMRMLTransformStorageNode::WriteData() ), so we don't need to modify
-        // the initial transform according to the worldCoordinateSystem
-        // variable ( unlike the surface model ).
+        // vtkMRMLTransformStorageNode::WriteData() ), so we don't
+        // need to modify the initial transform according to the
+        // worldCoordinateSystem variable ( unlike the surface model ).
         if( transform )
           {
           typename TransformType::InputPointType physicalPoint;
@@ -359,7 +361,8 @@ int DoIt( int argc, char * argv[] )
           }
         }
       }
-    // If no initial transform is given, fill the initial field with zero vectors
+    // If no initial transform is given, fill the initial field with
+    // zero vectors
     else
       {
       VectorType zeroVector;
@@ -459,7 +462,8 @@ int DoIt( int argc, char * argv[] )
     // space.  It's easiest to transform the model to LPS space.
     if( worldCoordinateSystem == "RAS" )
       {
-      vtkSmartPointer< vtkTransform > RAStoLPS = vtkSmartPointer< vtkTransform >::New();
+      vtkSmartPointer< vtkTransform > RAStoLPS =
+        vtkSmartPointer< vtkTransform >::New();
       RAStoLPS->RotateZ( 180 ); // flip in superior-inferior
       vtkSmartPointer< vtkTransformPolyDataFilter > transformPolyDataFilter
           = vtkSmartPointer< vtkTransformPolyDataFilter >::New();
@@ -687,7 +691,8 @@ int DoIt( int argc, char * argv[] )
   // Setup the anisotropic registrator
   registrator->SetTimeStep( timeStep );
   registrator->SetComputeRegularizationTerm( !doNotPerformRegularization );
-  registrator->SetComputeIntensityDistanceTerm( !doNotComputeIntensityDistanceTerm );
+  registrator->SetComputeIntensityDistanceTerm(
+    !doNotComputeIntensityDistanceTerm );
   if( anisotropicRegistrator )
     {
     anisotropicRegistrator->SetLambda( lambda );
@@ -702,8 +707,9 @@ int DoIt( int argc, char * argv[] )
   registrator->SetRegularizationWeightings( regularizationWeightings );
   registrator->SetBackgroundIntensity( backgroundIntensity );
   registrator->SetStoppingCriterionEvaluationPeriod(
-        static_cast<unsigned int>( stoppingCriterionPeriod ) );
-  registrator->SetStoppingCriterionMaxTotalEnergyChange( maximumTotalEnergyChange );
+    static_cast<unsigned int>( stoppingCriterionPeriod ) );
+  registrator->SetStoppingCriterionMaxTotalEnergyChange(
+    maximumTotalEnergyChange );
 
   // Setup the multiresolution PDE filter - we use the recursive pyramid because
   // we don't want the deformation field to undergo Gaussian smoothing on the
@@ -752,7 +758,8 @@ int DoIt( int argc, char * argv[] )
   multires->SetRegistrationFilter( registrator );
   multires->SetFixedImage( orientFixed->GetOutput() );
   multires->SetMovingImage( orientMoving->GetOutput() );
-  multires->SetArbitraryInitialDisplacementField( orientInitField->GetOutput() );
+  multires->SetArbitraryInitialDisplacementField(
+    orientInitField->GetOutput() );
   multires->SetFixedImagePyramid( fixedImagePyramid );
   multires->SetMovingImagePyramid( movingImagePyramid );
   multires->SetNumberOfLevels( numberOfLevels );
@@ -980,8 +987,8 @@ int DoIt( int argc, char * argv[] )
     timeCollector.Stop( "Write normal vector image" );
     }
 
-  // Write the weight regularizations image ( in the space of the fixed image ) if
-  // we are using the anisotropic regularization
+  // Write the weight regularizations image ( in the space of the fixed
+  // image ) if we are using the anisotropic regularization
   if( haveAnisotropicRegistrator
       && outputWeightRegularizationsImageFileName != "" )
     {

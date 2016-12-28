@@ -93,7 +93,7 @@ int DoIt( int argc, char * argv[] )
   try
     {
     reader->Update();
-    filter->SetInputImage(  reader->GetOutput() );
+    filter->SetInputImage( reader->GetOutput() );
     }
   catch( itk::ExceptionObject & err )
     {

@@ -31,35 +31,35 @@ namespace itk {
 namespace tube {
 
 /** \class ShrinkWithBlendingImageFilter
-* \brief Reduce the size of an image by an integer factor in each
-* dimension.
-*
-* ShrinkWithBlendingImageFilter reduces the size of an image by an integer
-* factor in each dimension. The algorithm implemented is a max over the
-* subsample. The output image size in each dimension is given by:
-*
-* outputSize[j] = max( std::floor( inputSize[j]/shrinkFactor[j] ), 1 );
-*
-* NOTE: The physical centers of the input and output will be the
-* same. Because of this, the Origin of the output may not be the same
-* as the Origin of the input.
-* Since this filter produces an image which is a different
-* resolution, origin and with different pixel spacing than its input
-* image, it needs to override several of the methods defined
-* in ProcessObject in order to properly manage the pipeline execution
-* model. In particular, this filter overrides
-* ProcessObject::GenerateInputRequestedRegion() and
-* ProcessObject::GenerateOutputInformation().
-*
-* This filter is implemented as a multithreaded filter.  It provides a
-* ThreadedGenerateData() method for its implementation.
-*
-* \ingroup GeometricTransform Streamed
-* \ingroup ITKImageGrid
-*
-*/
+ * \brief Reduce the size of an image by an integer factor in each
+ * dimension.
+ *
+ * ShrinkWithBlendingImageFilter reduces the size of an image by an integer
+ * factor in each dimension. The algorithm implemented is a max over the
+ * subsample. The output image size in each dimension is given by:
+ *
+ * outputSize[j] = max( std::floor( inputSize[j]/shrinkFactor[j] ), 1 );
+ *
+ * NOTE: The physical centers of the input and output will be the
+ * same. Because of this, the Origin of the output may not be the same
+ * as the Origin of the input.
+ * Since this filter produces an image which is a different
+ * resolution, origin and with different pixel spacing than its input
+ * image, it needs to override several of the methods defined
+ * in ProcessObject in order to properly manage the pipeline execution
+ * model. In particular, this filter overrides
+ * ProcessObject::GenerateInputRequestedRegion() and
+ * ProcessObject::GenerateOutputInformation().
+ *
+ * This filter is implemented as a multithreaded filter.  It provides a
+ * ThreadedGenerateData() method for its implementation.
+ *
+ * \ingroup GeometricTransform Streamed
+ * \ingroup ITKImageGrid
+ *
+ */
 template< class TInputImage, class TOutputImage >
-class ITK_EXPORT ShrinkWithBlendingImageFilter:
+class ITK_EXPORT ShrinkWithBlendingImageFilter :
   public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:

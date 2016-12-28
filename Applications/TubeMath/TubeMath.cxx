@@ -461,8 +461,7 @@ int main( int argc, char * argv[] )
     MetaCommand::STRING, true, "", "Image filename", MetaCommand::DATA_IN );
 
   command.SetOption( "ComputeTangentsAndNormals", "n", false,
-    "Compute the current tube's tangents and normals from point sequence."
-    );
+    "Compute current tube's tangents and normals from point sequence." );
 
   command.SetOption( "MarkAsArtery", "a", false,
     "Flag the current tube as an Artery." );

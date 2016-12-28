@@ -38,7 +38,8 @@ limitations under the License.
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 
-// Must follow include of "...CLP.h" and forward declaration of int DoIt( ... ).
+// Must follow include of "...CLP.h" and
+// forward declaration of int DoIt( ... ).
 #include "tubeCLIHelperFunctions.h"
 
 // Your code should be within the DoIt function...
@@ -73,7 +74,7 @@ int DoIt( int argc, char * argv[] )
   try
     {
     reader->Update();
-    filter->SetInputImage(  reader->GetOutput() );
+    filter->SetInputImage( reader->GetOutput() );
     }
   catch( itk::ExceptionObject & err )
     {

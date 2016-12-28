@@ -122,17 +122,17 @@ namespace itk
 *
 * \ingroup ImageFeatureExtraction
 */
- template< class TFunctionImage, class TDistanceImage=TFunctionImage,
-           class TLabelImage=TFunctionImage >
+template< class TFunctionImage, class TDistanceImage=TFunctionImage,
+  class TLabelImage=TFunctionImage >
 class GeneralizedDistanceTransformImageFilter
   : public ImageToImageFilter<TFunctionImage, TDistanceImage>
 {
 public:
   /** Standard class typedefs. */
-  typedef GeneralizedDistanceTransformImageFilter           Self;
-  typedef ImageToImageFilter<TFunctionImage,TDistanceImage> Superclass;
-  typedef SmartPointer<Self>                                Pointer;
-  typedef SmartPointer<const Self>                          ConstPointer;
+  typedef GeneralizedDistanceTransformImageFilter            Self;
+  typedef ImageToImageFilter<TFunctionImage, TDistanceImage> Superclass;
+  typedef SmartPointer<Self>                                 Pointer;
+  typedef SmartPointer<const Self>                           ConstPointer;
 
   /** Method for creation through the object factory */
   itkNewMacro( Self );
