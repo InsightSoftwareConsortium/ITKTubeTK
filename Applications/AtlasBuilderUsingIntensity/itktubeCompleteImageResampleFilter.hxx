@@ -191,7 +191,8 @@ CompleteImageResampleFilter< TInputImage, TOutputImage,
   typename InputImageType::SpacingType  spacing = image->GetSpacing();
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    outputSize[i] = ( long unsigned int )( ( max[i] - origin[i] ) / spacing[i] );
+    outputSize[i] = ( long unsigned int )( ( max[i] - origin[i] ) /
+      spacing[i] );
     }
 }
 

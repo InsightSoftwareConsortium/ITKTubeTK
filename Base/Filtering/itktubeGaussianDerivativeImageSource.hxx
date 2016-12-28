@@ -168,8 +168,8 @@ GaussianDerivativeImageSource< TOutputImage >
       if( m_Orders[i] != 0 )
         {
         prefixDenom *= std::pow( m_Sigmas[i], 2*m_Orders[i] )
-          / ( std::pow( ( -( evalPoint[i] - m_Mean[i] ) ), m_Orders[i] )
-             - ( m_Orders[i] == 2 ? std::pow( m_Sigmas[1], m_Orders[i] ) : 0 ) );
+          / ( std::pow( ( -( evalPoint[i] - m_Mean[i] ) ), m_Orders[i] ) -
+          ( m_Orders[i] == 2 ? std::pow( m_Sigmas[1], m_Orders[i] ) : 0 ) );
         }
       }
     double suffixExp = 0;

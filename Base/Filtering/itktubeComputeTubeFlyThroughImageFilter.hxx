@@ -337,7 +337,7 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
           curInputPoint[i] += stepN2 * curTubeNormal2[i];
           }
 
-          distToCenter = std::sqrt( stepN1 * stepN1 + stepN2 * stepN2  );
+          distToCenter = std::sqrt( stepN1 * stepN1 + stepN2 * stepN2 );
         }
 
       // set pixel values in the output images

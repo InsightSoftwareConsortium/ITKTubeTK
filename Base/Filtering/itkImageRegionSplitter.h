@@ -161,8 +161,11 @@ protected:
   virtual void PrintSelf( std::ostream & os, Indent indent ) const ITK_OVERRIDE;
 
 private:
-  ImageRegionSplitter( const ImageRegionSplitter & ); //purposely not implemented
-  void operator=( const ImageRegionSplitter & );      //purposely not implemented
+  //purposely not implemented
+  ImageRegionSplitter( const ImageRegionSplitter & );
+
+  //purposely not implemented
+  void operator=( const ImageRegionSplitter & );
 };
 } // end namespace itk
 

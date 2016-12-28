@@ -168,7 +168,8 @@ int DoIt( int argc, char * argv[] )
   // Write tube mask fly through image
   typedef typename ComputeFlyThroughImageFilterType::OutputMaskType
     MaskType;
-  typedef itk::ImageFileWriter< MaskType > MaskWriterType;
+  typedef itk::ImageFileWriter< MaskType >
+    MaskWriterType;
 
   timeCollector.Start( "Writing tube mask fly through image" );
 

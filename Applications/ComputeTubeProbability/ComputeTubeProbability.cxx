@@ -27,53 +27,21 @@ limitations under the License.
 #include <itkImageFileReader.h>
 #include <itkSpatialObjectReader.h>
 
+// Must include CLP before including tubeCLIHelperFunctions
 #include "ComputeTubeProbabilityCLP.h"
-
-template< unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
 
 // This needs to be declared for tubeCLIHelperFunctions.
 template< class TPixel, unsigned int VDimension >
-int DoIt( int itkNotUsed( argc ), char * itkNotUsed( argv )[] )
-  { return 0; }
+int DoIt( int itkNotUsed( argc ), char * itkNotUsed( argv )[] );
 
 #include "tubeCLIHelperFunctions.h"
 
-int main( int argc, char * argv[] )
-{
-  PARSE_ARGS;
-
-  itk::ImageIOBase::IOComponentType componentType;
-
-  try
-    {
-    unsigned int dimension;
-    tube::GetImageInformation( inMeanImageFile, componentType, dimension );
-    switch( dimension )
-      {
-      case 2:
-        return DoIt< 2 >( argc, argv );
-      case 3:
-        return DoIt< 3 >( argc, argv );
-      default:
-        return EXIT_FAILURE;
-      }
-    }
-  catch( const std::exception & exception )
-    {
-    tube::ErrorMessage( exception.what() );
-    return EXIT_FAILURE;
-    }
-  return EXIT_FAILURE;
-}
-
-
-template< unsigned int VDimension >
+template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
 {
   PARSE_ARGS;
 
-  typedef itk::Image< short, VDimension >             ImageType;
+  typedef itk::Image< TPixel, VDimension >            ImageType;
   typedef itk::GroupSpatialObject< VDimension >       GroupType;
   typedef itk::ImageFileReader< ImageType >           ImageReaderType;
   typedef itk::SpatialObjectReader< VDimension >      SOReaderType;
@@ -156,4 +124,32 @@ int DoIt( int argc, char * argv[] )
   progressReporter.End();
 
   return EXIT_SUCCESS;
+}
+
+int main( int argc, char * argv[] )
+{
+  PARSE_ARGS;
+
+  itk::ImageIOBase::IOComponentType componentType;
+
+  try
+    {
+    unsigned int dimension;
+    tube::GetImageInformation( inMeanImageFile, componentType, dimension );
+    switch( dimension )
+      {
+      case 2:
+        return DoIt< short, 2 >( argc, argv );
+      case 3:
+        return DoIt< short, 3 >( argc, argv );
+      default:
+        return EXIT_FAILURE;
+      }
+    }
+  catch( const std::exception & exception )
+    {
+    tube::ErrorMessage( exception.what() );
+    return EXIT_FAILURE;
+    }
+  return EXIT_FAILURE;
 }

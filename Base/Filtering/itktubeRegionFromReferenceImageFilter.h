@@ -37,15 +37,15 @@ namespace tube {
  * \ingroup GeometricTransforms
  */
 template <class TInputImage, class TOutputImage=TInputImage>
-class ITK_EXPORT RegionFromReferenceImageFilter:
-    public ExtractImageFilter<TInputImage,TOutputImage>
+class ITK_EXPORT RegionFromReferenceImageFilter
+  : public ExtractImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class typedefs. */
-  typedef RegionFromReferenceImageFilter                Self;
-  typedef ExtractImageFilter<TInputImage,TOutputImage>  Superclass;
-  typedef SmartPointer<Self>                            Pointer;
-  typedef SmartPointer<const Self>                      ConstPointer;
+  typedef RegionFromReferenceImageFilter                 Self;
+  typedef ExtractImageFilter<TInputImage, TOutputImage>  Superclass;
+  typedef SmartPointer<Self>                             Pointer;
+  typedef SmartPointer<const Self>                       ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -70,13 +70,14 @@ public:
 
   /** ImageDimension constants */
   itkStaticConstMacro( InputImageDimension, unsigned int,
-                      Superclass::InputImageDimension );
+    Superclass::InputImageDimension );
   itkStaticConstMacro( OutputImageDimension, unsigned int,
-                      Superclass::OutputImageDimension );
+    Superclass::OutputImageDimension );
   itkStaticConstMacro( ImageDimension, unsigned int,
-                      Superclass::OutputImageDimension );
+    Superclass::OutputImageDimension );
 
-  typedef ImageBase< itkGetStaticConstMacro( ImageDimension ) >    ReferenceImageType;
+  typedef ImageBase< itkGetStaticConstMacro( ImageDimension ) >
+    ReferenceImageType;
 
   /** Copy the output information from another Image. */
   void SetReferenceImage ( const ReferenceImageType *image );

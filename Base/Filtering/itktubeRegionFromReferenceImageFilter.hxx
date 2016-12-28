@@ -35,7 +35,8 @@ RegionFromReferenceImageFilter<TInputImage, TOutputImage>
     }
 
   // Superclass::Superclass::GenerateOutputInformation();
-  this->SetExtractionRegion( this->GetReferenceImage()->GetLargestPossibleRegion() );
+  this->SetExtractionRegion(
+    this->GetReferenceImage()->GetLargestPossibleRegion() );
   Superclass::GenerateOutputInformation();
 }
  
@@ -44,13 +45,15 @@ RegionFromReferenceImageFilter<TInputImage, TOutputImage>
  */
 template <class TInputImage, class TOutputImage>
 void
-RegionFromReferenceImageFilter<TInputImage,TOutputImage>
+RegionFromReferenceImageFilter<TInputImage, TOutputImage>
 ::SetReferenceImage ( const ReferenceImageType *image )
 {
   itkDebugMacro( "setting input ReferenceImage to " << image );
-  if( image != static_cast<const ReferenceImageType *>( this->GetInput( 1 ) ) )
+  if( image != static_cast<const ReferenceImageType *>(
+    this->GetInput( 1 ) ) )
     {
-    this->ProcessObject::SetNthInput( 1, const_cast< ReferenceImageType *>( image ) );
+    this->ProcessObject::SetNthInput( 1,
+      const_cast< ReferenceImageType *>( image ) );
     this->Modified();
     }
 }
@@ -60,8 +63,9 @@ RegionFromReferenceImageFilter<TInputImage,TOutputImage>
  */
 template <class TInputImage, class TOutputImage>
 const typename
-RegionFromReferenceImageFilter<TInputImage,TOutputImage>::ReferenceImageType *
-RegionFromReferenceImageFilter<TInputImage,TOutputImage>
+RegionFromReferenceImageFilter<TInputImage, TOutputImage>::
+ReferenceImageType *
+RegionFromReferenceImageFilter<TInputImage, TOutputImage>
 ::GetReferenceImage() const
 {
   Self * surrogate = const_cast< Self * >( this );

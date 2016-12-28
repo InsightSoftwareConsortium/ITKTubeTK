@@ -98,7 +98,8 @@ int DoIt( int argc, char * argv[] )
   readStream.get();
   if( numberOfCentroids != numberOfCentroids2 )
     {
-    tube::ErrorMessage( "Error: fileList's #Centroids != branch #Centroids" );
+    tube::ErrorMessage(
+      "Error: fileList's #Centroids != branch #Centroids" );
     return EXIT_FAILURE;
     }
   for( unsigned int i=0; i<numberOfCentroids; i++ )
@@ -121,7 +122,8 @@ int DoIt( int argc, char * argv[] )
   readStream.get();
   if( numberOfCentroids != numberOfCentroids2 )
     {
-    tube::ErrorMessage( "Error: fileList's #Centroids != mean matrix #Centroids" );
+    tube::ErrorMessage(
+      "Error: fileList's #Centroids != mean matrix #Centroids" );
     return EXIT_FAILURE;
     }
   for( unsigned int i=0; i<numberOfCentroids; i++ )
@@ -147,7 +149,8 @@ int DoIt( int argc, char * argv[] )
   readStream.get();
   if( numberOfCentroids != numberOfCentroids2 )
     {
-    tube::ErrorMessage( "Error: fileList's #Centroids != mean branch #Centroids" );
+    tube::ErrorMessage(
+      "Error: fileList's #Centroids != mean branch #Centroids" );
     return EXIT_FAILURE;
     }
   for( unsigned int i=0; i<numberOfCentroids; i++ )
@@ -170,7 +173,8 @@ int DoIt( int argc, char * argv[] )
   readStream.get();
   if( numberOfCentroids != numberOfCentroids2 )
     {
-    tube::ErrorMessage( "Error: fileList's #Centroids != mean centrality #Centroids" );
+    tube::ErrorMessage(
+      "Error: fileList's #Centroids != mean centrality #Centroids" );
     return EXIT_FAILURE;
     }
   for( unsigned int i=0; i<numberOfCentroids; i++ )

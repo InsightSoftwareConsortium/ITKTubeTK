@@ -52,10 +52,10 @@ int DoIt( int argc, char * argv[] )
                                                  CLPProcessInformation );
   progressReporter.Start();
 
-  typedef itk::Image< TPixel,  VDimension >        MaskType;
+  typedef itk::Image< TPixel, VDimension >         MaskType;
   typedef itk::ImageFileReader< MaskType >         MaskReaderType;
 
-  typedef itk::Image< unsigned int,  VDimension >  ConnCompType;
+  typedef itk::Image< unsigned int, VDimension >   ConnCompType;
 
   //
   //

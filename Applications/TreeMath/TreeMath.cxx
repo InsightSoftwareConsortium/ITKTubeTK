@@ -91,8 +91,8 @@ int DoIt( MetaCommand & command )
     else if( it->name == "FillGapsInTubeTree" )
       {
       tubeStandardOutputMacro( << "\n>> Filling gaps in input tree" );
-      tube::TreeFilters< VDimension >::FillGap( inputTubes, command.GetValueAsString( *it,
-        "InterpolationMethod" ).c_str()[0] );
+      tube::TreeFilters< VDimension >::FillGap( inputTubes,
+        command.GetValueAsString( *it, "InterpolationMethod" ).c_str()[0] );
       }
     ++it;
     }

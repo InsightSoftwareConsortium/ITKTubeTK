@@ -53,7 +53,8 @@ void readGraphList( const std::string &fileName,
     boost::property_tree::ptree pt;
     read_json( fileName, pt );
 
-    const int nGraphs = boost::lexical_cast<int>( pt.get<std::string>( "nGraphs" ) );
+    const int nGraphs = boost::lexical_cast<int>(
+      pt.get<std::string>( "nGraphs" ) );
 
     int graphCount = 0;
     BOOST_FOREACH( boost::property_tree::ptree::value_type &v,
@@ -88,7 +89,8 @@ void readGraphList( const std::string &fileName,
       }
 
     int labelCount = 0;
-    BOOST_FOREACH( boost::property_tree::ptree::value_type &v, pt.get_child( "labels" ) )
+    BOOST_FOREACH( boost::property_tree::ptree::value_type &v,
+      pt.get_child( "labels" ) )
       {
       int label = boost::lexical_cast<int>( v.second.data() );
       labels.push_back( label );
@@ -143,10 +145,10 @@ void writeKernel( const std::string &baseFileName, const vnl_matrix<double> &K )
 }
 
 /** Writes VNL matrix to plain-text file.
- *  Writes VNL matrix in row-by-row manner to a plain-text file ( One value on
- *  each line ).
+ *  Writes VNL matrix in row-by-row manner to a plain-text file (
+ *  One value on each line ).
  *
- *  \param baseFileName The base name of the plain-text file ( .txt is appended ).
+ *  \param baseFileName name of the plain-text file ( .txt is appended ).
  *  \param K The VNL kernel matrix.
  */
 void writeKernelPlainText( const std::string &baseFileName,
@@ -180,7 +182,7 @@ void writeKernelPlainText( const std::string &baseFileName,
 
 /** Writes VNL matrix to LIBSVM compatible file.
  *
- *  \param baseFileName The base name of the LIBSVM file ( .libsvm is appended ).
+ *  \param baseFileName The basename of LIBSVM file ( .libsvm appended ).
  *  \param K The VNL kernel matrix.
  */
 void writeKernelLIBSVM( const std::string &baseFileName,
@@ -235,8 +237,11 @@ tube::GraphKernel::GraphType loadGraph( std::string graphFile,
     tube::GraphKernel::LABEL_BY_NUM,
   const std::string & globalLabelFile = std::string() )
 {
-  const char * labelFile = 0; // Will stay 0 as long as there is NO per-graph label file
-  std::string labelFileStr; // Used to build the graph-specific label file name
+  // Will stay 0 as long as there is NO per-graph label file
+  const char * labelFile = 0;
+  
+  // Used to build the graph-specific label file name
+  std::string labelFileStr;
 
   // Global label file given
   if( !globalLabelFile.empty() )
@@ -300,8 +305,10 @@ int main( int argc, char * argv[] )
 
     assert( N > 0 && M > 0 );
 
-    tube::FmtDebugMessage( "Read N=%d entries from %s.", N, argGraphListA.c_str() );
-    tube::FmtDebugMessage( "Read M=%d entries from %s.", M, argGraphListB.c_str() );
+    tube::FmtDebugMessage( "Read N=%d entries from %s.", N,
+      argGraphListA.c_str() );
+    tube::FmtDebugMessage( "Read M=%d entries from %s.", M,
+      argGraphListB.c_str() );
 
     vnl_matrix<double> K( N, M );
     K.fill( 0.0 );
@@ -318,13 +325,15 @@ int main( int argc, char * argv[] )
      * list loadable from file/
      */
 
-    if( !tube::GraphKernel::IsValidDefaultNodeLabeling( argDefaultLabelType ) )
+    if( !tube::GraphKernel::IsValidDefaultNodeLabeling(
+      argDefaultLabelType ) )
       {
       tube::ErrorMessage( "Labeling strategy not supported!" );
       return EXIT_FAILURE;
       }
     tube::GraphKernel::DefaultNodeLabelingType defLabelType =
-      static_cast<tube::GraphKernel::DefaultNodeLabelingType>( argDefaultLabelType );
+      static_cast<tube::GraphKernel::DefaultNodeLabelingType>(
+        argDefaultLabelType );
 
     tube::WLSubtreeKernel::LabelMapVectorType labelMap( argSubtreeHeight );
     int labelCount = 0;
@@ -357,16 +366,14 @@ int main( int argc, char * argv[] )
     for( int i = 0; i < N; ++i )
       {
       tube::GraphKernel::GraphType f = loadGraph( listA[i],
-                                                  defLabelType,
-                                                  argGlobalLabelFileName );
+        defLabelType, argGlobalLabelFileName );
       for( int j = 0; j < M; ++j )
         {
         tube::GraphKernel::GraphType g = loadGraph( listB[j],
-                                                    defLabelType,
-                                                    argGlobalLabelFileName );
+          defLabelType, argGlobalLabelFileName );
 
         tube::FmtInfoMessage( "Running kernel on graphs ( %d,%d )",
-          i,j );
+          i, j );
 
         tube::GraphKernel *gk = 0;
         switch( argGraphKernelType )
