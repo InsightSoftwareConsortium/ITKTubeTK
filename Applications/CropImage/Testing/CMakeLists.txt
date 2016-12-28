@@ -82,30 +82,30 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4
     ${TEMP}/${MODULE_NAME}Test4
     -S 2,2 -b 5,5 )
 
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare00
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare000000
   COMMAND ${CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test4_00.mha
-    -b MIDAS{${MODULE_NAME}Test4_00.mha.md5} )
-set_property( TEST ${MODULE_NAME}-Test4-Compare00
+    -t ${TEMP}/${MODULE_NAME}Test4_000000.mha
+    -b MIDAS{${MODULE_NAME}Test4_000000.mha.md5} )
+set_property( TEST ${MODULE_NAME}-Test4-Compare000000
   APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
 
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare01
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare000001
   COMMAND ${CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test4_01.mha
-    -b MIDAS{${MODULE_NAME}Test4_01.mha.md5} )
-set_property( TEST ${MODULE_NAME}-Test4-Compare01
+    -t ${TEMP}/${MODULE_NAME}Test4_000001.mha
+    -b MIDAS{${MODULE_NAME}Test4_000001.mha.md5} )
+set_property( TEST ${MODULE_NAME}-Test4-Compare000001
   APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
 
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare10
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare001000
   COMMAND ${CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test4_10.mha
-    -b MIDAS{${MODULE_NAME}Test4_10.mha.md5} )
-set_property( TEST ${MODULE_NAME}-Test4-Compare10
+    -t ${TEMP}/${MODULE_NAME}Test4_001000.mha
+    -b MIDAS{${MODULE_NAME}Test4_001000.mha.md5} )
+set_property( TEST ${MODULE_NAME}-Test4-Compare001000
   APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
 
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare11
+Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare001001
   COMMAND ${CompareImages_EXE}
-    -t ${TEMP}/${MODULE_NAME}Test4_11.mha
-    -b MIDAS{${MODULE_NAME}Test4_11.mha.md5} )
-set_property( TEST ${MODULE_NAME}-Test4-Compare11
+    -t ${TEMP}/${MODULE_NAME}Test4_001001.mha
+    -b MIDAS{${MODULE_NAME}Test4_001001.mha.md5} )
+set_property( TEST ${MODULE_NAME}-Test4-Compare001001
   APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
