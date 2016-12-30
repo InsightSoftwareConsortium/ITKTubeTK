@@ -78,6 +78,16 @@ FeatureVectorGenerator< TImage >
 template< class TImage >
 void
 FeatureVectorGenerator< TImage >
+::SetInput( unsigned int id, ImageType * img )
+{
+  m_WhitenMean[id] = 0;
+  m_WhitenStdDev[id] = 1;
+  m_InputImageList[id] = img;
+}
+
+template< class TImage >
+void
+FeatureVectorGenerator< TImage >
 ::AddInput( ImageType * img )
 {
   m_InputImageList.push_back( img );

@@ -101,6 +101,7 @@ public:
     ProbabilityImageType;
 
   virtual void SetInput( InputImageType * img );
+  virtual void SetInput( unsigned int id, InputImageType * img );
   virtual void AddInput( InputImageType * img );
 
   void SetLabelMap( LabelMapType * img );

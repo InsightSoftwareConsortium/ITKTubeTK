@@ -44,7 +44,7 @@ class FeatureVectorGenerator : public LightProcessObject
 public:
 
   typedef FeatureVectorGenerator               Self;
-  typedef Object                               Superclass;
+  typedef LightProcessObject                   Superclass;
   typedef SmartPointer< Self >                 Pointer;
   typedef SmartPointer< const Self >           ConstPointer;
 
@@ -69,6 +69,7 @@ public:
   typedef std::vector< ValueType >                      ValueListType;
 
   virtual void SetInput( ImageType * img );
+  virtual void SetInput( unsigned int id, ImageType * img );
   void AddInput( ImageType * img );
 
   typename ImageType::Pointer GetInput( unsigned int imageNum );
