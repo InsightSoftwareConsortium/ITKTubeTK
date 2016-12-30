@@ -59,7 +59,6 @@ int DoIt( int argc, char * argv[] )
   typedef itk::Image< PixelType, DimensionT >              ImageType;
   typedef itk::ImageFileReader< ImageType >                ReaderType;
   typedef itk::SpatialObjectReader< DimensionT >           TubesReaderType;
-  typedef itk::GroupSpatialObject< DimensionT >            TubeGroupType;
   typedef itk::Point< double, DimensionT >                 PointType;
 
   timeCollector.Start( "Load data" );

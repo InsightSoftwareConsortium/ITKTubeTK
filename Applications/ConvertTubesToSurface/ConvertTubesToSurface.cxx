@@ -188,9 +188,6 @@ int DoIt( int argc, char * argv[] )
     vtkIdType * pointIds = new vtkIdType[numberOfPoints];
     vtkNew<vtkPolyLine> tubeLine;
 
-    // Get the tube element spacing information.
-    const double* axesRatio = tube->GetSpacing();
-
     const TubeSpatialObjectType::PointListType & tubePoints =
       tube->GetPoints();
     typedef TubeSpatialObjectType::PointListType::const_iterator

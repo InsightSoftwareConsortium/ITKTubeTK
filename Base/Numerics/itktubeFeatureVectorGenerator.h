@@ -52,8 +52,8 @@ public:
 
   itkNewMacro( Self );
 
-  typedef TImage                                        ImageType;
-  typedef std::vector< typename ImageType::Pointer >    ImageListType;
+  typedef TImage                                             ImageType;
+  typedef std::vector< typename ImageType::ConstPointer >    ImageListType;
 
   typedef typename TImage::IndexType                    IndexType;
 
@@ -68,11 +68,11 @@ public:
   typedef double                                        ValueType;
   typedef std::vector< ValueType >                      ValueListType;
 
-  virtual void SetInput( ImageType * img );
-  virtual void SetInput( unsigned int id, ImageType * img );
-  void AddInput( ImageType * img );
+  virtual void SetInput( const ImageType * img );
+  virtual void SetInput( unsigned int id, const ImageType * img );
+  void AddInput( const ImageType * img );
 
-  typename ImageType::Pointer GetInput( unsigned int imageNum );
+  typename ImageType::ConstPointer GetInput( unsigned int imageNum );
 
   unsigned int GetNumberOfInputImages() const;
 

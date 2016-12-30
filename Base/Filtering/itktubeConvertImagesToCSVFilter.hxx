@@ -46,24 +46,23 @@ ConvertImagesToCSVFilter< TInputImage, TInputMask >
     m_InputMask->GetLargestPossibleRegion().GetNumberOfPixels() / m_Stride;
   const unsigned int ACols = m_ImageList.size() + 1;
   m_VnlOutput.set_size( ARows, ACols );
-  std::vector< IteratorType * > iterList;
+  std::vector< InputImageIteratorType * > iterList;
   for( unsigned int i = 0; i < m_NumImages; ++i )
     {
-    iterList.push_back( new IteratorType( m_ImageList[i],
+    iterList.push_back( new InputImageIteratorType( m_ImageList[i],
     m_ImageList[i]->GetLargestPossibleRegion() ) );
     }
   MaskIteratorType maskIter( m_InputMask,
     m_InputMask->GetLargestPossibleRegion() );
-  unsigned int i = 0;
   while( !maskIter.IsAtEnd() )
     {
     if( maskIter.Get() != 0 )
       {
-      for( i = 0; i<m_NumImages; ++i )
+      for( unsigned int i = 0; i<m_NumImages; ++i )
         {
         m_VnlOutput( m_NumberRows, i ) = iterList[i]->Get();
         }
-      m_VnlOutput( m_NumberRows, i ) = maskIter.Get();
+      m_VnlOutput( m_NumberRows, m_NumImages ) = maskIter.Get();
       m_NumberRows++;
       }
     for( int s = 0; s<m_Stride && !maskIter.IsAtEnd(); ++s )
@@ -97,15 +96,25 @@ ConvertImagesToCSVFilter< TInputImage, TInputMask >
 template< class TInputImage, class TInputMask >
 void
 ConvertImagesToCSVFilter< TInputImage, TInputMask >
-::SetInput( InputImageType* image )
+::SetInput( const InputImageType * image )
 {
   m_ImageList.clear();
   this->m_ImageList.push_back( image );
   this->Modified();
 }
 
+/** Set the input image and reinitialize the list of images */
 template< class TInputImage, class TInputMask >
-const TInputImage*
+void
+ConvertImagesToCSVFilter< TInputImage, TInputMask >
+::SetInput( unsigned int id, const InputImageType * image )
+{
+  this->m_ImageList[id] = image;
+  this->Modified();
+}
+
+template< class TInputImage, class TInputMask >
+const TInputImage *
 ConvertImagesToCSVFilter< TInputImage, TInputMask >
 ::GetInput()
 {
@@ -115,7 +124,7 @@ ConvertImagesToCSVFilter< TInputImage, TInputMask >
 template< class TInputImage, class TInputMask >
 void
 ConvertImagesToCSVFilter< TInputImage, TInputMask >
-::AddImage( InputImageType* image )
+::AddImage( const InputImageType * image )
 {
   this->m_ImageList.push_back( image );
   this->Modified();

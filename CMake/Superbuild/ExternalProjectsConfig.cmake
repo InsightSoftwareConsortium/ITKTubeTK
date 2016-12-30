@@ -69,7 +69,7 @@ set( TubeTKITK_HASH_OR_TAG "")
 # MinimalPathExtraction
 set( MinimalPathExtraction_URL
   ${git_protocol}://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction.git )
-set( MinimalPathExtraction_HASH_OR_TAG c9cdc87db021ff84417518979dd5924565ff5043 )
+set( MinimalPathExtraction_HASH_OR_TAG 5a2017ef5d5c25db518ecae49408598f906dd307 )
 
 set( TubeTK_ITK_MODULES
   TubeTKITK
@@ -98,7 +98,7 @@ set( TubeTK_ITK_MODULES
 #  (??1vtkRenderingCore_AutoInit@@QEAA@XZ)
 # bin\CTKVisualizationVTKCore.dll : fatal error LNK1120: 2 unresolved externals
 set( CTK_URL ${github_protocol}://github.com/aylward/CTK.git )
-set( CTK_HASH_OR_TAG 575dcc6040d4e8a5a87500f2f5e9a7e13b3cc928 )
+set( CTK_HASH_OR_TAG d1ebb429c952a329615f5fa9223a5897c6cc459c )
 
 # Insight Segmentation and Registration Toolkit
 set( ITK_URL ${github_protocol}://github.com/InsightSoftwareConsortium/ITK.git )

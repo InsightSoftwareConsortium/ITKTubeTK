@@ -108,8 +108,8 @@ private:
   mutable typename ImageType::Pointer m_OutputImage;
 
   double                              m_InputMean;
-  unsigned int                        m_MaskObjectValue;
-  unsigned int                        m_MaskBackgroundValue;
+  int                                 m_MaskObjectValue;
+  int                                 m_MaskBackgroundValue;
   ParametersType                      m_Scales;
   mutable unsigned int                m_CallsToGetValue;
 

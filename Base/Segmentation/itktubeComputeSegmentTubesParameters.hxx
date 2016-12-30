@@ -337,40 +337,30 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
   portion = 1.0 / 500.0;
   int clippedMaxStart = ( int )( m_TubeData.size() * portion );
 
-  double ridgeMinRidgeness;
-  double ridgeMinRidgenessStart;
-  double ridgeMinRoundness;
-  double ridgeMinRoundnessStart;
-  double ridgeMinCurvature;
-  double ridgeMinCurvatureStart;
-  double ridgeMinLevelness;
-  double ridgeMinLevelnessStart;
-  for ( int index = 1; index < 5; index++ )
-    {
-    m_SortColumn = index;
-    std::sort( m_TubeData.begin(), m_TubeData.end(),
-      ComputeSegmentTubesParametersSortFunctionType() );
-    if( index == 1 )
-      {
-      ridgeMinRidgeness = m_TubeData[clippedMax][index];
-      ridgeMinRidgenessStart = m_TubeData[clippedMaxStart][index];
-      }
-    else if( index == 2 )
-      {
-      ridgeMinRoundness = m_TubeData[clippedMax][index];
-      ridgeMinRoundnessStart = m_TubeData[clippedMaxStart][index];
-      }
-    else if( index == 3 )
-      {
-      ridgeMinCurvature = m_TubeData[clippedMax][index];
-      ridgeMinCurvatureStart = m_TubeData[clippedMaxStart][index];
-      }
-    else if( index == 4 )
-      {
-      ridgeMinLevelness = m_TubeData[clippedMax][index];
-      ridgeMinLevelnessStart = m_TubeData[clippedMaxStart][index];
-      }
-    }
+  int index = 1;
+  m_SortColumn = index;
+  std::sort( m_TubeData.begin(), m_TubeData.end(),
+    ComputeSegmentTubesParametersSortFunctionType() );
+  double ridgeMinRidgeness = m_TubeData[clippedMax][index];
+  double ridgeMinRidgenessStart = m_TubeData[clippedMaxStart][index];
+  index = 2;
+  m_SortColumn = index;
+  std::sort( m_TubeData.begin(), m_TubeData.end(),
+    ComputeSegmentTubesParametersSortFunctionType() );
+  double ridgeMinRoundness = m_TubeData[clippedMax][index];
+  double ridgeMinRoundnessStart = m_TubeData[clippedMaxStart][index];
+  index = 3;
+  m_SortColumn = index;
+  std::sort( m_TubeData.begin(), m_TubeData.end(),
+    ComputeSegmentTubesParametersSortFunctionType() );
+  double ridgeMinCurvature = m_TubeData[clippedMax][index];
+  double ridgeMinCurvatureStart = m_TubeData[clippedMaxStart][index];
+  index = 4;
+  m_SortColumn = index;
+  std::sort( m_TubeData.begin(), m_TubeData.end(),
+    ComputeSegmentTubesParametersSortFunctionType() );
+  double ridgeMinLevelness = m_TubeData[clippedMax][index];
+  double ridgeMinLevelnessStart = m_TubeData[clippedMaxStart][index];
 
   int ridgeMaxRecoveryAttempts = 3;
 
