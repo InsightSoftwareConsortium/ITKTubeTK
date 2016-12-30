@@ -138,7 +138,6 @@ ResampleTubesFilter< VDimension >
 ::ApplyInputTransform( typename TubeGroupType::TransformType::Pointer
   outputTransform )
 {
-  const TubeGroupType * inputTubeGroup = this->GetInput();
   typename TubeGroupType::Pointer tmpTubes;
   tmpTubes = m_InputSpatialObject;
 

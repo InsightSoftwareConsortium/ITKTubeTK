@@ -82,7 +82,7 @@ RidgeSeedFilter< TImage, TLabelMap >
 template< class TImage, class TLabelMap >
 void
 RidgeSeedFilter< TImage, TLabelMap >
-::SetInput( InputImageType * img )
+::SetInput( const InputImageType * img )
 {
   m_RidgeFeatureGenerator->SetInput( img );
   m_SeedFeatureGenerator->SetInput( img );
@@ -91,7 +91,7 @@ RidgeSeedFilter< TImage, TLabelMap >
 template< class TImage, class TLabelMap >
 void
 RidgeSeedFilter< TImage, TLabelMap >
-::SetInput( unsigned int id, InputImageType * img )
+::SetInput( unsigned int id, const InputImageType * img )
 {
   m_RidgeFeatureGenerator->SetInput( id, img );
   m_SeedFeatureGenerator->SetInput( id, img );
@@ -100,7 +100,7 @@ RidgeSeedFilter< TImage, TLabelMap >
 template < class TImage, class TLabelMap >
 void
 RidgeSeedFilter< TImage, TLabelMap >
-::AddInput( InputImageType * img )
+::AddInput( const InputImageType * img )
 {
   m_RidgeFeatureGenerator->AddInput( img );
   m_SeedFeatureGenerator->AddInput( img );

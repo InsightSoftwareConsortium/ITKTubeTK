@@ -33,8 +33,4 @@
       <longflag>centerline</longflag>
     </geometry>
   </parameters>
-  <parameters>
-    <label>Rendering Options</label>
-    <description>Parameters that effect how the surface is created</description>
-  </parameters>
 </executable>

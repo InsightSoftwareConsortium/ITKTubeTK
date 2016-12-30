@@ -65,7 +65,7 @@ FeatureVectorGenerator< TImage >
 template< class TImage >
 void
 FeatureVectorGenerator< TImage >
-::SetInput( ImageType * img )
+::SetInput( const ImageType * img )
 {
   m_WhitenMean.clear();
   m_WhitenMean.push_back( 0 );
@@ -78,7 +78,7 @@ FeatureVectorGenerator< TImage >
 template< class TImage >
 void
 FeatureVectorGenerator< TImage >
-::SetInput( unsigned int id, ImageType * img )
+::SetInput( unsigned int id, const ImageType * img )
 {
   m_WhitenMean[id] = 0;
   m_WhitenStdDev[id] = 1;
@@ -88,7 +88,7 @@ FeatureVectorGenerator< TImage >
 template< class TImage >
 void
 FeatureVectorGenerator< TImage >
-::AddInput( ImageType * img )
+::AddInput( const ImageType * img )
 {
   m_InputImageList.push_back( img );
   m_WhitenMean.push_back( 0 );
@@ -96,7 +96,7 @@ FeatureVectorGenerator< TImage >
 }
 
 template< class TImage >
-typename FeatureVectorGenerator< TImage >::ImageType::Pointer
+typename FeatureVectorGenerator< TImage >::ImageType::ConstPointer
 FeatureVectorGenerator< TImage >
 ::GetInput( unsigned int imageNum )
 {
@@ -336,9 +336,11 @@ UpdateWhitenStatistics( void )
     }
   unsigned int imCount = 0;
 
+  typedef itk::ImageRegionConstIteratorWithIndex< TImage >
+    ImageConstIteratorType;
   typedef itk::ImageRegionIteratorWithIndex< TImage >
     ImageIteratorType;
-  ImageIteratorType itIm( m_InputImageList[0],
+  ImageConstIteratorType itIm( m_InputImageList[0],
     m_InputImageList[0]->GetLargestPossibleRegion() );
 
   IndexType indx;
