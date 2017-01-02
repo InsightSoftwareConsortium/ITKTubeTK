@@ -84,6 +84,10 @@ msg_second() {
 	fi
 }
 
+msg_rest() {
+:
+}
+
 # Pipe commit message into the state machine.
 state=first
 cat "$commit_msg" |
