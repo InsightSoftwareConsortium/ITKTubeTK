@@ -268,8 +268,9 @@ Read( const char * _headerName )
 #ifdef TubeTK_USE_RandomForest
       }
 #endif
-  }
-
+#ifdef TubeTK_USE_LIBSVM
+      }
+#endif
   return true;
 }
 
@@ -316,7 +317,7 @@ Write( const char * _headerName )
 
   pdfName = pdfName + ".mpd";
 
-  seedWriter.SetPDFFileName(  pdfName.c_str() );
+  seedWriter.SetPDFFileName( pdfName.c_str() );
 
   char pdfPath[255];
   MET_GetFilePath( _headerName, pdfPath );
@@ -380,8 +381,9 @@ Write( const char * _headerName )
 #ifdef TubeTK_USE_RandomForest
       }
 #endif
+#ifdef TubeTK_USE_LIBSVM
     }
-
+#endif
   result = seedWriter.Write( _headerName );
 
   return result;
