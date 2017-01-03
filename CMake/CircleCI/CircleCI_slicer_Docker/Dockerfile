@@ -26,11 +26,11 @@ RUN git clone https://github.com/Slicer/Slicer.git && \
   mkdir Slicer-Release && \
   cd Slicer-Release && \
   cmake \
-    -G Ninja \
+    -G "Unix Makefiles" \
     -DCMAKE_INSTALL_PREFIX:PATH=/usr \
     -DBUILD_TESTING:BOOL=OFF \
     -DCMAKE_BUILD_TYPE:STRING=Release \
     ../Slicer && \
-  ninja && \
+  make -j 8 && \
   find . -name '*.o' -delete && \
   cd ../
