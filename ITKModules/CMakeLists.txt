@@ -229,9 +229,13 @@ foreach( itk-module ${TubeTK_ITK_MODULES} )
 
   get_target_property( _imported ${itk-module} IMPORTED )
   if( NOT _imported )
+    set( ${itk-module}_INC_DIRS ${${itk-module}_SOURCE_DIR}/include )
+    if( ${itk-module}_ENABLE_SHARED )
+      list( APPEND
+        ${itk-module}_INC_DIRS ${${itk-module}_BINARY_DIR}/include )
+    endif()
     target_include_directories( ${itk-module} ${_target_type}
-      ${${itk-module}_SOURCE_DIR}/include
-      ${${itk-module}_BINARY_DIR}/include )
+      ${${itk-module}_INC_DIRS})
   endif()
 
 endforeach()
