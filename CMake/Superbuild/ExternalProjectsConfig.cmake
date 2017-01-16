@@ -102,7 +102,7 @@ set( CTK_HASH_OR_TAG d1ebb429c952a329615f5fa9223a5897c6cc459c )
 
 # Insight Segmentation and Registration Toolkit
 set( ITK_URL ${github_protocol}://github.com/InsightSoftwareConsortium/ITK.git )
-set( ITK_HASH_OR_TAG f535cf3cd87178b06eb682358a6d19fd7d5ed7da )
+set( ITK_HASH_OR_TAG 862bea78dbac34bf002c3a7331eec90ae240cdd5 )
 
 # Slicer Execution Model
 set( SlicerExecutionModel_URL
