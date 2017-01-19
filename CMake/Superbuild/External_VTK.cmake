@@ -42,13 +42,6 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
   set( ${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj} )
   set( ${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build )
 
-  set( ${proj}_QT_ARGS )
-  if( TubeTK_USE_QT )
-    set( ${proj}_QT_ARGS
-      -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
-      -DVTK_Group_Qt:BOOL=ON )
-  endif( TubeTK_USE_QT )
-
   set( TubeTK_VTKHDF5_VALGRIND_ARGS )
   if( TubeTK_USE_VALGRIND )
     list( APPEND TubeTK_VTKHDF5_VALGRIND_ARGS
@@ -110,7 +103,6 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
       -DBUILD_EXAMPLES:BOOL=OFF
       -DBUILD_TESTING:BOOL=OFF
       -DVTK_LEGACY_REMOVE:BOOL=ON
-      ${${proj}_QT_ARGS}
       ${TubeTK_VTKHDF5_VALGRIND_ARGS}
     INSTALL_COMMAND ""
     DEPENDS

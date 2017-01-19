@@ -35,11 +35,6 @@ endforeach()
 set( Cppcheck_URL ${github_protocol}://github.com/KitwareMedical/cppcheck.git )
 set( Cppcheck_HASH_OR_TAG a9c9482d6e1b42457aedf8065e21523654f46124 )
 
-# TubeTK Image Viewer
-set( ImageViewer_URL
-  ${github_protocol}://github.com/KitwareMedical/ImageViewer.git )
-set( ImageViewer_HASH_OR_TAG 2123736abe01a4cee91c231011086e3770058088 )
-
 # JsonCpp
 # http://midas3.kitware.com/midas/download/bitstream/366544/JsonCpp_r276.tar.gz
 set( JsonCpp_URL ${git_protocol}://github.com/KitwareMedical/jsoncpp.git )
@@ -81,24 +76,6 @@ set( TubeTK_ITK_MODULES
 # The following were copied from Slicer on 12/03/2016
 ###########################################################
 ###########################################################
-
-# Common Toolkit
-# Not updated because compilation error remains in CTK head:
-# Creating library bin\CTKVisualizationVTKCore.lib and object
-#  bin\CTKVisualizationVTKCore.exp
-# vtkLightBoxRendererManager.cpp.obj : error LNK2019: unresolved external
-#  symbol "void __cdecl vtkRenderingFreeType_AutoInit_Construct(void)"
-#  (?vtkRenderingFreeType_AutoInit_Construct@@YAXXZ) referenced in function
-#  "public: __cdecl vtkRenderingCore_AutoInit::vtkRenderingCore_AutoInit(void)"
-#  (??0vtkRenderingCore_AutoInit@@QEAA@XZ)
-# vtkLightBoxRendererManager.cpp.obj : error LNK2019: unresolved external
-#  symbol "void __cdecl vtkRenderingFreeType_AutoInit_Destruct(void)"
-#  (?vtkRenderingFreeType_AutoInit_Destruct@@YAXXZ) referenced in function
-#  "public: __cdecl vtkRenderingCore_AutoInit::~vtkRenderingCore_AutoInit(void)"
-#  (??1vtkRenderingCore_AutoInit@@QEAA@XZ)
-# bin\CTKVisualizationVTKCore.dll : fatal error LNK1120: 2 unresolved externals
-set( CTK_URL ${github_protocol}://github.com/aylward/CTK.git )
-set( CTK_HASH_OR_TAG d1ebb429c952a329615f5fa9223a5897c6cc459c )
 
 # Insight Segmentation and Registration Toolkit
 set( ITK_URL ${github_protocol}://github.com/InsightSoftwareConsortium/ITK.git )

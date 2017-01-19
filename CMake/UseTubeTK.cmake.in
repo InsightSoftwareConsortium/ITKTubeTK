@@ -60,13 +60,10 @@ set( TubeTK_VERSION "@TubeTK_VERSION@" )
 
 # Pass on TubeTK dependencies directories
 set( GITCOMMAND "@GITCOMMAND@" )
-set( QT_QMAKE_EXECUTABLE "@QT_QMAKE_EXECUTABLE@" )
 
 set( BOOST_ROOT "@BOOST_ROOT@" )
 set( Slicer_DIR "@Slicer_DIR@" )
-set( CTK_DIR "@CTK_DIR@" )
 set( CPPCHECK_EXECUTABLE "@CPPCHECK_EXECUTABLE@" )
-set( ImageViewer_DIR "@ImageViewer_DIR@" )
 set( ITK_DIR "@ITK_DIR@" )
 set( JsonCpp_DIR "@JsonCpp_DIR@" )
 set( KWSTYLE_EXECUTABLE "@KWSTYLE_EXECUTABLE@" )
