@@ -100,8 +100,11 @@ public:
   typedef typename  PDFSegmenterType::ProbabilityImageType
     ProbabilityImageType;
 
+  using Superclass::SetInput;
   virtual void SetInput( const InputImageType * img );
   virtual void SetInput( unsigned int id, const InputImageType * img );
+
+  using Superclass::AddInput;
   virtual void AddInput( const InputImageType * img );
 
   void SetLabelMap( LabelMapType * img );

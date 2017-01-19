@@ -101,13 +101,14 @@ int DoIt( int argc, char * argv[] )
 
   if( !matchImage.empty() )
     {
-    typedef itk::Image< char, Dimension >    ImageType;
-    typedef itk::ImageFileReader< ImageType> ImageReaderType;
+    typedef itk::Image< char, Dimension >         MatchImageType;
+    typedef itk::ImageFileReader< MatchImageType> MatchImageReaderType;
 
-    typename ImageReaderType::Pointer reader = ImageReaderType::New();
-    reader->SetFileName( matchImage.c_str() );
-    reader->Update();
-    filter->SetMatchImage( reader->GetOutput() );
+    typename MatchImageReaderType::Pointer matchReader =
+      MatchImageReaderType::New();
+    matchReader->SetFileName( matchImage.c_str() );
+    matchReader->Update();
+    filter->SetMatchImage( matchReader->GetOutput() );
     }
 
   if( !loadDisplacementField.empty() )
