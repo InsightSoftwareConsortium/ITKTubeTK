@@ -65,7 +65,7 @@ ConvertImagesToCSVFilter< TInputImage, TInputMask >
       m_VnlOutput( m_NumberRows, m_NumImages ) = maskIter.Get();
       m_NumberRows++;
       }
-    for( int s = 0; s<m_Stride && !maskIter.IsAtEnd(); ++s )
+    for( unsigned int s = 0; s<m_Stride && !maskIter.IsAtEnd(); ++s )
       {
       for( unsigned int i = 0; i<m_NumImages; ++i )
         {

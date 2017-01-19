@@ -31,7 +31,7 @@ namespace tube
 
 /**
  * Controls indentation during printing for classes not derived from classes in
- * ITK or VTK. For ITK-derived classes use itk::Indent.
+ * ITK. For ITK-derived classes use itk::Indent.
  *
  * \ingroup  Common
  */

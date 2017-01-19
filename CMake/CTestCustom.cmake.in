@@ -198,9 +198,6 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   # Slicer
   "Slicer.CMake.SlicerMacroConfigureGenericCxxModuleTests.*(if)"
 
-  # ImageViewer
-  "[Ii]mage[Vv]iewer.*sprintf.*unsafe"
-
   # qt suppressions from vtk...
   # Some Slicer dashboards include building bits of Qt which produce lots of
   # the following warnings when built with the MS compilers. Qt guys should

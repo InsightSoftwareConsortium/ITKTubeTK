@@ -93,9 +93,6 @@ list_conditional_append( TubeTK_USE_VTK TubeTK_DEPENDENCIES "VTK" )
 
 list_conditional_append( TubeTK_USE_CPPCHECK TubeTK_DEPENDENCIES "Cppcheck" )
 
-list_conditional_append( TubeTK_BUILD_IMAGE_VIEWER TubeTK_DEPENDENCIES
-  "ImageViewer" )
-
 list_conditional_append( TubeTK_USE_KWSTYLE TubeTK_DEPENDENCIES "KWStyle" )
 
 list_conditional_append( TubeTK_USE_JsonCpp TubeTK_DEPENDENCIES "JsonCpp" )
@@ -104,8 +101,6 @@ list_conditional_append( TubeTK_USE_LIBSVM TubeTK_DEPENDENCIES "LIBSVM" )
 
 list_conditional_append( TubeTK_USE_RandomForest TubeTK_DEPENDENCIES
   "RandomForest" )
-
-list_conditional_append( TubeTK_USE_CTK TubeTK_DEPENDENCIES "CTK" )
 
 set( TubeTK_EXTERNAL_PROJECTS_ARGS )
 
@@ -116,11 +111,6 @@ list_conditional_append( TubeTK_USE_BOOST
 list_conditional_append( TubeTK_BUILD_USING_SLICER
   TubeTK_EXTERNAL_PROJECTS_ARGS
     -DSlicer_DIR=${Slicer_DIR} )
-
-list_conditional_append( TubeTK_USE_QT
-  TubeTK_EXTERNAL_PROJECTS_ARGS
-    -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
-    -DTubeTK_REQUIRED_QT_VERSION=${TubeTK_REQUIRED_QT_VERSION} )
 
 list_conditional_append( TubeTK_USE_PYTHON
   TubeTK_EXTERNAL_PROJECTS_ARGS
@@ -189,7 +179,6 @@ ExternalProject_Add( ${proj}
     -Dgithub_protocol:STRING=${github_protocol}
     -DSITE:STRING=${SITE}
     -DTubeTK_BUILD_APPLICATIONS:BOOL=${TubeTK_BUILD_APPLICATIONS}
-    -DTubeTK_BUILD_IMAGE_VIEWER:BOOL=${TubeTK_BUILD_IMAGE_VIEWER}
     -DTubeTK_BUILD_USING_SLICER:BOOL=${TubeTK_BUILD_USING_SLICER}
     -DTubeTK_BUILD_WITHIN_SLICER:BOOL=${TubeTK_BUILD_WITHIN_SLICER}
     -DTubeTK_CONFIG_BINARY_DIR:PATH=${TubeTK_CONFIG_BINARY_DIR}
@@ -198,14 +187,12 @@ ExternalProject_Add( ${proj}
     -DTubeTK_USE_GPU_ARRAYFIRE:BOOL=${TubeTK_USE_GPU_ARRAYFIRE}
     -DTubeTK_USE_BOOST:BOOL=${TubeTK_USE_BOOST}
     -DTubeTK_USE_CPPCHECK:BOOL=${TubeTK_USE_CPPCHECK}
-    -DTubeTK_USE_CTK:BOOL=${TubeTK_USE_CTK}
     -DTubeTK_USE_EXAMPLES_AS_TESTS:BOOL=${TubeTK_USE_EXAMPLES_AS_TESTS}
     -DTubeTK_USE_JsonCpp:BOOL=${TubeTK_USE_JsonCpp}
     -DTubeTK_USE_LIBSVM:BOOL=${TubeTK_USE_LIBSVM}
     -DTubeTK_USE_RandomForest:BOOL=${TubeTK_USE_RandomForest}
     -DTubeTK_USE_PYTHON:BOOL=${TubeTK_USE_PYTHON}
     -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
-    -DTubeTK_USE_QT:BOOL=${TubeTK_USE_QT}
     -DTubeTK_USE_SUPERBUILD:BOOL=OFF
     -DTubeTK_USE_VTK:BOOL=${TubeTK_USE_VTK}
     ${TubeTK_EXTERNAL_PROJECTS_ARGS}

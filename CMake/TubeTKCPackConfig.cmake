@@ -20,19 +20,16 @@
 # limitations under the License.
 #
 ##############################################################################
-# Record ITK, VTK, CTK, and GenerateCLP libraries used by TubeTK for
+# Record ITK, VTK, and GenerateCLP libraries used by TubeTK for
 # packaging.
 file( GLOB_RECURSE ITK_BINARIES "${ITK_DIR}/lib/lib*" )
 if( TubeTK_USE_VTK )
   file( GLOB_RECURSE VTK_BINARIES "${VTK_DIR}/bin/lib*" )
 endif( TubeTK_USE_VTK )
-if( TubeTK_USE_CTK )
-  file( GLOB_RECURSE CTK_BINARIES "${CTK_DIR}/CTK-build/bin/lib*" )
-endif( TubeTK_USE_CTK )
 file( GLOB_RECURSE SEM_BINARIES "${GenerateCLP_DIR}/bin/lib*" )
 file( GLOB_RECURSE JsonCpp_BINARIES "${JsonCpp_DIR}/lib/lib*" )
 list( APPEND TubeTK_SUPPORT_BINARIES
-  ${SEM_BINARIES} ${CTK_BINARIES} ${VTK_BINARIES} ${ITK_BINARIES} )
+  ${SEM_BINARIES} ${VTK_BINARIES} ${ITK_BINARIES} )
 if( TubeTK_USE_JsonCpp )
   list( APPEND TubeTK_SUPPORT_BINARIES ${JsonCpp_BINARIES} )
 endif( TubeTK_USE_JsonCpp )

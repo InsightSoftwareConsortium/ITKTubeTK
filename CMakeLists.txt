@@ -161,11 +161,6 @@ if( BUILD_DOCUMENTATION )
   endif( TubeTK_USE_DOXYGEN )
 endif( BUILD_DOCUMENTATION )
 
-#
-# ImageViewer setup.
-#
-option( TubeTK_BUILD_IMAGE_VIEWER "Use ImageViewer." ON )
-
 # Append an item to a string if it does not already contain it.  Any additional
 # arguments are treated as extra "set" arguments
 macro( tubetk_append_if_absent VARNAME VALUE )
@@ -253,26 +248,21 @@ if( TubeTK_BUILD_SLICER_EXTENSION )
   set(TubeTK_BUILD_WITHIN_SLICER TRUE)
 endif()
 if( TubeTK_BUILD_USING_SLICER )
-  # Slicer's extension manager requires use of SVN
-  find_package( Subversion REQUIRED )
-
   include( TubeTKSlicer4ExtensionConfig )
 
-  mark_as_advanced( TubeTK_USE_ITK TubeTK_USE_VTK TubeTK_USE_QT
-    TubeTK_USE_CTK )
+  mark_as_advanced( TubeTK_USE_ITK TubeTK_USE_VTK )
 
   #set( TubeTK_BUILD_WITHIN_SLICER ${TubeTK_BUILD_USING_SLICER} )
   # Do not unset these variables if project is built as
   # a Slicer extension within Slicer.
   if( NOT TubeTK_BUILD_WITHIN_SLICER)
-    unset( QT_QMAKE_EXECUTABLE CACHE)
     unset( PYTHON_EXECUTABLE CACHE)
     unset( PYTHON_INCLUDE_DIR CACHE)
     unset( PYTHON_LIBRARY CACHE)
     unset( PYTHON_DEBUG_LIBRARY CACHE)
   endif()
 
-  # Find Slicer to set the [ITK|VTK|CTK|...]_DIR variables
+  # Find Slicer to set the [ITK|VTK|...]_DIR variables
   find_package( Slicer REQUIRED )
   if( NOT Slicer_USE_FILE )
     message( FATAL_ERROR
@@ -299,10 +289,6 @@ if( TubeTK_BUILD_USING_SLICER )
     "Use VTK to enable additional functionality." FORCE )
   set( USE_SYSTEM_VTK ON CACHE BOOL
     "Exclude VTK from superbuild and use an existing build." FORCE )
-  set( TubeTK_USE_QT ON CACHE BOOL
-    "Use the Qt framework to enable additional functionality." FORCE )
-  set( USE_SYSTEM_CTK ON CACHE BOOL
-    "Exclude CTK from superbuild and use an existing build." FORCE )
   set( USE_SYSTEM_SLICER_EXECUTION_MODEL ON CACHE BOOL
     "Exclude SlicerExecutionModel from superbuild and use an existing build."
     FORCE )
@@ -314,14 +300,11 @@ if( TubeTK_BUILD_USING_SLICER )
     jpPlot_DIR MIDAS_PACKAGE_API_KEY MIDAS_PACKAGE_EMAIL MIDAS_PACKAGE_URL
     SimpleITK_DIR GENERATECLP_EXE OPENSSL_CRYPTO_LIBRARY OPENSSL_INCLUDE_DIR
     OPENSSL_SSL_LIBRARY HIDE_CONSOLE NUMPY_INCLUDE_DIR SH_EXECUTABLE
-    USE_SYSTEM_CTK LIB_EAY_DEBUG LIB_EAY_RELEASE SSL_EAY_DEBUG SSL_EAY_RELEASE
-    CMAKE_CXX_COMPILER CMAKE_C_COMPILER CMAKE_CXX_MP_FLAG
+    LIB_EAY_DEBUG LIB_EAY_RELEASE SSL_EAY_DEBUG
+    SSL_EAY_RELEASE CMAKE_CXX_COMPILER CMAKE_C_COMPILER CMAKE_CXX_MP_FLAG
     CMAKE_CXX_MP_NUM_PROCESSORS ParameterSerializer_DIR )
 else( TubeTK_BUILD_USING_SLICER )
-  mark_as_advanced( CLEAR TubeTK_USE_ITK TubeTK_USE_VTK TubeTK_USE_QT )
-  if( TubeTK_USE_QT )
-    mark_as_advanced( CLEAR TubeTK_USE_CTK )
-  endif( TubeTK_USE_QT )
+  mark_as_advanced( CLEAR TubeTK_USE_ITK TubeTK_USE_VTK )
   mark_as_advanced( Slicer_DIR )
 endif( TubeTK_BUILD_USING_SLICER )
 
@@ -432,7 +415,7 @@ mark_as_advanced( USE_SYSTEM_KWSTYLE )
 #
 # LIBSVM setup.
 #
-option( TubeTK_USE_LIBSVM "Use LIBSVM to enable additional functionality." ON )
+option( TubeTK_USE_LIBSVM "Use LIBSVM to enable additional functionality." OFF )
 option( USE_SYSTEM_LIBSVM
   "Exclude LIBSVM from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_LIBSVM )
@@ -442,56 +425,12 @@ mark_as_advanced( LIBSVM_DIR )
 # RandomForest setup.
 #
 option( TubeTK_USE_RandomForest
- "Use RandomForest to enable additional functionality." ON )
+  "Use RandomForest to enable additional functionality." OFF )
 option( USE_SYSTEM_RandomForest
   "Exclude RandomForest from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_RandomForest )
 mark_as_advanced( RandomForest_DIR )
 
-#
-# Qt framework setup.
-#
-option( TubeTK_USE_QT
-  "Use the Qt framework to enable additional applications and libraries." ON )
-if( TubeTK_USE_QT )
-  # CTK setup.
-  option( TubeTK_USE_CTK "Use CTK to enable additional functionality." ON )
-  if( NOT TubeTK_BUILD_USING_SLICER )
-    mark_as_advanced( CLEAR TubeTK_USE_CTK )
-  endif( NOT TubeTK_BUILD_USING_SLICER )
-  option( USE_SYSTEM_CTK
-    "Exclude CTK from superbuild and use an existing build." OFF )
-  mark_as_advanced( USE_SYSTEM_CTK )
-
-  find_package( Qt4 )
-  # 3D Slicer only tests against a specific Qt 4 version. To
-  # override the version check, set the TubeTK_REQUIRED_QT_VERSION CMake
-  # variable.
-  if( NOT DEFINED TubeTK_REQUIRED_QT_VERSION )
-    set( TubeTK_REQUIRED_QT_VERSION "4.7.4" CACHE STRING
-      "Exact Qt4 framework version required." FORCE )
-    mark_as_advanced( TubeTK_REQUIRED_QT_VERSION )
-  endif( NOT DEFINED TubeTK_REQUIRED_QT_VERSION )
-  if( QT4_FOUND )
-    if( "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
-        VERSION_LESS "${TubeTK_REQUIRED_QT_VERSION}" )
-      message( FATAL_ERROR
-        "error: TubeTK requires at least Qt ${TubeTK_REQUIRED_QT_VERSION} "
-        "- you have ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
-        " ${extra_error_message}" )
-    endif( "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
-      VERSION_LESS "${TubeTK_REQUIRED_QT_VERSION}" )
-    include( ${QT_USE_FILE} )
-  else( QT4_FOUND )
-    message( SEND_ERROR "Error: Qt4 framework not found." )
-  endif( QT4_FOUND )
-else( TubeTK_USE_QT )
-  option( TubeTK_USE_CTK "Use CTK to enable additional functionality." OFF )
-  mark_as_advanced( TubeTK_USE_CTK )
-  option( USE_SYSTEM_CTK
-    "Exclude CTK from superbuild and use an existing build." OFF )
-  mark_as_advanced( USE_SYSTEM_CTK )
-endif( TubeTK_USE_QT )
 
 #
 # Slicer Execution model Setup
@@ -570,13 +509,6 @@ set( TubeTK_INSTALL_PLUGINS_CACHE_DIR "${TubeTK_INSTALL_LIB_DIR}/CACHE" )
 set( TubeTK_INSTALL_PLUGINS_INCLUDE_DIR "${TubeTK_INSTALL_INCLUDE_DIR}" )
 set( TubeTK_INSTALL_PLUGINS_LIB_DIR "${TubeTK_INSTALL_LIB_DIR}" )
 set( TubeTK_INSTALL_PLUGINS_SHARE_DIR "${TubeTK_INSTALL_SHARE_DIR}" )
-
-if( TubeTK_USE_QT )
-  if( TubeTK_USE_CTK )
-    find_package( CTK REQUIRED )
-    include( ${CTK_USE_FILE} )
-  endif( TubeTK_USE_CTK )
-endif( TubeTK_USE_QT )
 
 find_package( JsonCpp REQUIRED )
 include_directories( ${JsonCpp_INCLUDE_DIRS} )
