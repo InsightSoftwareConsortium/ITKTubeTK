@@ -270,6 +270,10 @@ if( TubeTK_BUILD_USING_SLICER )
   endif( NOT Slicer_USE_FILE )
   include( ${Slicer_USE_FILE} )
 
+  mark_as_advanced( CLEAR Subversion_SVN_EXECUTABLE )
+  find_package( Subversion REQUIRED )
+  mark_as_advanced( CLEAR Subversion_SVN_EXECUTABLE )
+
   if( Slicer_SOURCE_DIR )
     set( TubeTK_SLICER_SOURCE_DIR "${Slicer_SOURCE_DIR}" )
   else( Slicer_SOURCE_DIR )
