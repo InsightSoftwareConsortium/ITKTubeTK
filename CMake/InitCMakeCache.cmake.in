@@ -97,6 +97,8 @@ endif( TubeTK_USE_BOOST )
 
 if( TubeTK_BUILD_USING_SLICER )
   set( Slicer_DIR "@Slicer_DIR@" CACHE PATH "Init" FORCE )
+  set( Subversion_SVN_EXECUTABLE "@Subversion_SVN_EXECUTABLE@"
+    CACHE FILEPATH "Init" FORCE )
 endif( TubeTK_BUILD_USING_SLICER )
 
 if( TubeTK_USE_GPU_ARRAYFIRE )
