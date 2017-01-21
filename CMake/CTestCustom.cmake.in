@@ -204,8 +204,6 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "[Mm]odules.[Ff]iltering.[Ff]ast[Mm]arching"
   "[Mm]odules.[Rr]emote.[Mm]inimal[Pp]ath[Ee]xtraction"
   "[Mm]odules.*unary minus operator applied to unsigned"
-  "OSAtomic.*deprecated"
-  "OSMemory.*deprecated"
 
   # VTK suppressions
   "vtkfreetype"
