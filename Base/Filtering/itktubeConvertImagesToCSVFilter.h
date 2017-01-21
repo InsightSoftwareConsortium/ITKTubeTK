@@ -87,6 +87,7 @@ public:
   itkGetMacro( NumberRows, unsigned int );
 
   /** Set the input image and reinitialize the list of images */
+  using Superclass::SetInput;
   void SetInput( const InputImageType * img );
   void SetInput( unsigned int id, const InputImageType * img );
   void AddImage( const InputImageType * img );
