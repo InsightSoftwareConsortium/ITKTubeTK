@@ -127,7 +127,7 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
     double cCount = 1;
     int cNode = m_CVTImage->GetPixel( indx );
     double cRadius = tubePoint.GetRadius();
-    for( int i = 0; i < Dimension; i++ )
+    for( unsigned int i = 0; i < Dimension; i++ )
       {
       cVect[i] = tubePoint.GetTangent()[i];
       }
@@ -149,7 +149,7 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
         {
         cCount++;
         cRadius += tubePoint.GetRadius();
-        for( int i = 0; i < Dimension; i++ )
+        for( unsigned int i = 0; i < Dimension; i++ )
           {
           cVect[i] = tubePoint.GetTangent()[i];
           }
@@ -173,9 +173,9 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
           TubeGraphPnt * tgP = graph->GetPoints().back();
           cNode = tNode;
           cRadius = tgP->m_R;
-          for( int i = 0; i < Dimension; i++ )
+          for( unsigned int i = 0; i < Dimension; i++ )
             {
-            for( int j = 0; j < Dimension; j++ )
+            for( unsigned int j = 0; j < Dimension; j++ )
               {
               cMat[i][j] = tgP->m_T[i * Dimension + j];
               }
@@ -197,9 +197,9 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
           tgP->m_GraphNode = cNode;
           tgP->m_R = cRadius / cCount;
           tgP->m_P = cCount;
-          for( int i = 0; i < Dimension; i++ )
+          for( unsigned int i = 0; i < Dimension; i++ )
             {
-            for( int j = 0; j < Dimension; j++ )
+            for( unsigned int j = 0; j < Dimension; j++ )
               {
               tgP->m_T[i * Dimension + j] = cMat[i][j] / cCount;
               }
@@ -207,7 +207,7 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
           graph->GetPoints().push_back( tgP );
           cNode = tNode;
           cRadius = tubePoint.GetRadius();
-          for( int i = 0; i < Dimension; i++ )
+          for( unsigned int i = 0; i < Dimension; i++ )
             {
             cVect[i] = tubePoint.GetTangent()[i];
             }
@@ -221,9 +221,9 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
       TubeGraphPnt * tgP = new TubeGraphPnt( Dimension );
       tgP->m_GraphNode = cNode;
       tgP->m_R = cRadius / cCount;
-      for( int i = 0; i < Dimension; i++ )
+      for( unsigned int i = 0; i < Dimension; i++ )
         {
-        for( int j = 0; j < Dimension; j++ )
+        for( unsigned int j = 0; j < Dimension; j++ )
           {
           tgP->m_T[i * Dimension + j] = cMat[i][j] / cCount;
           }
