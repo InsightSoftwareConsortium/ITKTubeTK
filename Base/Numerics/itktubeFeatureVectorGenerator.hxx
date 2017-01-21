@@ -338,8 +338,6 @@ UpdateWhitenStatistics( void )
 
   typedef itk::ImageRegionConstIteratorWithIndex< TImage >
     ImageConstIteratorType;
-  typedef itk::ImageRegionIteratorWithIndex< TImage >
-    ImageIteratorType;
   ImageConstIteratorType itIm( m_InputImageList[0],
     m_InputImageList[0]->GetLargestPossibleRegion() );
 
