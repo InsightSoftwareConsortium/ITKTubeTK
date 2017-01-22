@@ -146,7 +146,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "LIBSVM.*vsprintf"
   "LIBSVM.*min.*redefinition"
   "LIBSVM.*max.*redefinition"
-  "LIBSVM.*previous declaration is here"
+  "LIBSVM.*declaration is here"
 
   # cppcheck
   "[Cc]ppcheck.[Ll]ib"
@@ -161,6 +161,9 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "KWStyle.kwsStyle.cxx.*not used"
   "KWStyle.[Tt]esting"
   "detail.dynamic.sequence.hpp.*xpr.*shadows"
+
+  # numpy - used when TubeTK is wrapped
+  "Using deprecated NumPy API"
 
   # SlicerExecutionModel
   "GenerateCLP.cxx.*unused"
@@ -204,6 +207,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "[Mm]odules.[Ff]iltering.[Ff]ast[Mm]arching"
   "[Mm]odules.[Rr]emote.[Mm]inimal[Pp]ath[Ee]xtraction"
   "[Mm]odules.*unary minus operator applied to unsigned"
+  "libpcre.*has no symbols"
 
   # VTK suppressions
   "vtkfreetype"

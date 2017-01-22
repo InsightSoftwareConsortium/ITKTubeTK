@@ -134,7 +134,6 @@ public:
   itkSetMacro( FractionalThreshold, double );
   itkGetConstMacro( FractionalThreshold, double );
 
-  using Superclass::SetInput;
   virtual void SetInput( const InputImageType * image );
   virtual const InputImageType * GetInput( void ) const;
 
@@ -157,6 +156,9 @@ protected:
 private:
   MarkDuplicateFramesInvalidImageFilter( const Self & );
   void operator=( const Self & ); // purposely not implemented
+
+  // To remove warning "was hidden [-Woverloaded-virtual]"
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
 
   InputImagePixelType m_Tolerance;
   double m_FractionalThreshold;

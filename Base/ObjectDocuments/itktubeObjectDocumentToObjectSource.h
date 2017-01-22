@@ -87,7 +87,6 @@ public:
   virtual void SetApplyTransforms( int start, int end );
 
   /** Set the input. */
-  using Superclass::SetInput;
   virtual void SetInput( const DocumentType * input );
 
   /* Graft the specified data object onto the specified indexed output, but note
@@ -169,6 +168,9 @@ private:
 
   // Copy assignment operator not implemented.
   void operator=( const Self & self );
+
+  // To remove warning "was hidden [-Woverloaded-virtual]"
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
 
   ConstDocumentPointer  m_Input;
   int                   m_StartTransforms;

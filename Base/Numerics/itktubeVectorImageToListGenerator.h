@@ -136,7 +136,6 @@ public:
     }
 
   /** Method to set/get the image */
-  using Superclass::SetInput;
   void SetInput( const ImageType* image );
   const ImageType* GetInput( void ) const;
 
@@ -177,6 +176,9 @@ protected:
 private:
   VectorImageToListGenerator( const Self& ); //purposely not implemented
   void operator=( const Self& ); //purposely not implemented
+
+  // To remove warning "was hidden [-Woverloaded-virtual]"
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
 
   MaskPixelType       m_MaskValue;
   bool                m_UseSingleMaskValue;

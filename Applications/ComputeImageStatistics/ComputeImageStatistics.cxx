@@ -58,7 +58,6 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   typedef itk::Image< TPixel, VDimension >         MaskType;
-  typedef itk::Image< unsigned int, VDimension >   ConnCompType;
   typedef itk::Image< float, VDimension >          VolumeType;
   typedef itk::ImageFileReader< VolumeType >       VolumeReaderType;
   typedef itk::ImageFileReader< MaskType >         MaskReaderType;

@@ -81,7 +81,6 @@ public:
   itkNewMacro( Self );
 
   /** Set/Get the input GroupSpatialObject. */
-  using Superclass::SetInput;
   virtual void SetInput( const GroupSpatialObjectType * group );
   const GroupSpatialObjectType * GetInput( void ) const;
 
@@ -108,6 +107,9 @@ private:
 
   // purposely not implemented
   void operator=( const Self & );
+
+  // To remove warning "was hidden [-Woverloaded-virtual]"
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
 
   typename PointsContainerDecoratorType::Pointer m_PointsContainerDecorator;
   typename PointsContainerType::Pointer          m_PointsContainer;

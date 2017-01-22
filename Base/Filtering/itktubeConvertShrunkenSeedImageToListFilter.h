@@ -93,7 +93,6 @@ public:
   itkSetMacro( Threshold, double );
 
 protected:
-  using Superclass::SetInput;
   ConvertShrunkenSeedImageToListFilter( void );
   ~ConvertShrunkenSeedImageToListFilter( void ) {};
   virtual void GenerateData() ITK_OVERRIDE;
@@ -104,6 +103,9 @@ private:
   /** itkConvertShrunkenSeedImageToListFilter parameters **/
   ConvertShrunkenSeedImageToListFilter( const Self & );
   void operator=( const Self & );
+
+  // To remove warning "was hidden [-Woverloaded-virtual]"
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
 
   VnlMatrixType                        m_VnlOutput;
   double                               m_Threshold;
