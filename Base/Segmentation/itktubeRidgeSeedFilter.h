@@ -192,7 +192,7 @@ private:
   void operator = ( const Self & );      // Purposely not implemented
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const Superclass::DataObjectIdentifierType &,
+  void SetInput( const typename Superclass::DataObjectIdentifierType &,
     itk::DataObject * ) {};
 
   typename RidgeFeatureGeneratorType::Pointer     m_RidgeFeatureGenerator;

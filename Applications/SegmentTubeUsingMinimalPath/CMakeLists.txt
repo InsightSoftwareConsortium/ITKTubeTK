@@ -41,7 +41,7 @@ SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/Base/CLI/TubeTKLogo.h
   INCLUDE_DIRECTORIES
-    ${MinimalPathExtraction_INCLUDE_DIRS}
+    "${MinimalPathExtraction_INCLUDE_DIRS}"
   TARGET_LIBRARIES
     ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects ITKIOImageBase
     MinimalPathExtraction TubeCLI TubeTKCommon TubeTKSegmentation
