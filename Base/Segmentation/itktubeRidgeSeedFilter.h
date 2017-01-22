@@ -191,6 +191,10 @@ private:
   RidgeSeedFilter( const Self & );    // Purposely not implemented
   void operator = ( const Self & );      // Purposely not implemented
 
+  // To remove warning "was hidden [-Woverloaded-virtual]"
+  void SetInput( const Superclass::DataObjectIdentifierType &,
+    itk::DataObject * ) {};
+
   typename RidgeFeatureGeneratorType::Pointer     m_RidgeFeatureGenerator;
   typename SeedFeatureGeneratorType::Pointer      m_SeedFeatureGenerator;
   typename PDFSegmenterType::Pointer              m_PDFSegmenter;
