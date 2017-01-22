@@ -105,7 +105,8 @@ private:
   void operator=( const Self& );
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+  void SetInput( const Superclass::DataObjectIdentifierType &,
+    itk::DataObject * ) {};
 
   typename InputMaskType::Pointer                       m_InputMask;
   VnlMatrixType                                         m_VnlOutput;
