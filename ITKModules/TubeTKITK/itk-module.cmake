@@ -25,7 +25,7 @@ set(DOCUMENTATION
 
 itk_module( TubeTKITK
   DEPENDS
-    ITKCommon ITKSpatialObjects
+    ITKCommon ITKSpatialObjects MinimalPathExtraction
   EXCLUDE_FROM_DEFAULT
   DESCRIPTION
     "${DOCUMENTATION}"
