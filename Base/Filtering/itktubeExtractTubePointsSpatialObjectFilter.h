@@ -109,7 +109,7 @@ private:
   void operator=( const Self & );
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const Superclass::DataObjectIdentifierType &,
+  void SetInput( const typename Superclass::DataObjectIdentifierType &,
     itk::DataObject * ) {};
 
   typename PointsContainerDecoratorType::Pointer m_PointsContainerDecorator;
