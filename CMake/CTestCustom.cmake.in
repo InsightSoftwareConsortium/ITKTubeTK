@@ -175,7 +175,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "Slicer.CMake.SlicerMacroConfigureGenericCxxModuleTests.*(if)"
 
   # STL - Tiger
-  "include.c.*bits.stl_algo.h.*warning: comparison between signed and unsigned integer expressions"
+  "include.c.*bits.stl_algo.h.*warning: comparison between signed"
 
   # Make
   "warning: jobserver unavailable"
@@ -208,6 +208,9 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "[Mm]odules.[Rr]emote.[Mm]inimal[Pp]ath[Ee]xtraction"
   "[Mm]odules.*unary minus operator applied to unsigned"
   "libpcre.*has no symbols"
+  # MacOS 10.12 deprecations
+  "OSMemory.*deprecated"
+  "OSAtomic.*deprecated"
 
   # VTK suppressions
   "vtkfreetype"
