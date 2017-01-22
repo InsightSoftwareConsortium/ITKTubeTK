@@ -100,7 +100,6 @@ public:
   typedef typename  PDFSegmenterType::ProbabilityImageType
     ProbabilityImageType;
 
-  using Superclass::SetInput;
   virtual void SetInput( const InputImageType * img );
   virtual void SetInput( unsigned int id, const InputImageType * img );
 
@@ -191,6 +190,9 @@ private:
 
   RidgeSeedFilter( const Self & );    // Purposely not implemented
   void operator = ( const Self & );      // Purposely not implemented
+
+  // To remove warning "was hidden [-Woverloaded-virtual]"
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
 
   typename RidgeFeatureGeneratorType::Pointer     m_RidgeFeatureGenerator;
   typename SeedFeatureGeneratorType::Pointer      m_SeedFeatureGenerator;

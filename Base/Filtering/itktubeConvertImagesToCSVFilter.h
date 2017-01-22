@@ -87,7 +87,6 @@ public:
   itkGetMacro( NumberRows, unsigned int );
 
   /** Set the input image and reinitialize the list of images */
-  using Superclass::SetInput;
   void SetInput( const InputImageType * img );
   void SetInput( unsigned int id, const InputImageType * img );
   void AddImage( const InputImageType * img );
@@ -104,6 +103,9 @@ protected:
 private:
   ConvertImagesToCSVFilter ( const Self& );
   void operator=( const Self& );
+
+  // To remove warning "was hidden [-Woverloaded-virtual]"
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
 
   typename InputMaskType::Pointer                       m_InputMask;
   VnlMatrixType                                         m_VnlOutput;

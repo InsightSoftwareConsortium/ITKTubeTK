@@ -80,7 +80,6 @@ public:
   tubeWrapCallMacro( Update, ConvertShrunkenSeedImageToListFilter );
 
 protected:
-  using Superclass::SetInput;
   ConvertShrunkenSeedImageToList( void );
   ~ConvertShrunkenSeedImageToList() {}
   void PrintSelf( std::ostream & os, itk::Indent indent ) const;
@@ -89,6 +88,9 @@ private:
   /** itkConvertShrunkenSeedImageToListFilter parameters **/
   ConvertShrunkenSeedImageToList( const Self & );
   void operator=( const Self & );
+
+  // To remove warning "was hidden [-Woverloaded-virtual]"
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
 
   typename ConvertShrunkenSeedImageToListFilterType::Pointer
     m_ConvertShrunkenSeedImageToListFilter;

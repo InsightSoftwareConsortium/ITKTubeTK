@@ -71,20 +71,14 @@ set( TubeTK_ITK_MODULES
   MinimalPathExtraction
   )
 
-###########################################################
-###########################################################
-# The following were copied from Slicer on 12/03/2016
-###########################################################
-###########################################################
-
 # Insight Segmentation and Registration Toolkit
 set( ITK_URL ${github_protocol}://github.com/InsightSoftwareConsortium/ITK.git )
-set( ITK_HASH_OR_TAG d125b69c44ac0ed7d61df0252a6b3b054c60df83 )
+set( ITK_HASH_OR_TAG eda099680acca5b590a5f13e96bdebb9718a27a6 )
 
 # Slicer Execution Model
 set( SlicerExecutionModel_URL
   ${github_protocol}://github.com/Slicer/SlicerExecutionModel.git )
-set( SlicerExecutionModel_HASH_OR_TAG 62d0121dbb0fb057ebbd7c9ab84520accacec8bc )
+set( SlicerExecutionModel_HASH_OR_TAG de0ee402097df9c4a092b789547757a7fd970a7c )
 
 # Visualization Toolkit (3D Slicer fork)
 set( VTK_URL ${github_protocol}://github.com/Slicer/VTK.git )
