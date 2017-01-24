@@ -117,7 +117,7 @@ protected:
 
   void PrintSelf( std::ostream& os, Indent indent ) const
     {
-    SuperClass::PrintSelf( os,indent );
+    SuperClass::PrintSelf( os, indent );
     os << indent << "m_UseRadius: " << m_UseRadius << std::endl;
     os << indent << "m_FallOff: " << m_FallOff << std::endl;
     os << indent << "m_Cumulative: " << m_Cumulative << std::endl;

@@ -111,39 +111,37 @@ private:
  */
 template< class TInputImage, class TOutputImage, class TOutputMatrix >
 class SymmetricEigenVectorAnalysisImageFilter
-  : public
-    UnaryFunctorImageFilter< TInputImage, TOutputMatrix,
-                             Functor::SymmetricEigenVectorAnalysisFunction<
-                                           typename TInputImage::PixelType,
-                                           typename TOutputImage::PixelType,
-                                           typename TOutputMatrix::PixelType > >
+  : public UnaryFunctorImageFilter< TInputImage, TOutputMatrix,
+    Functor::SymmetricEigenVectorAnalysisFunction<
+      typename TInputImage::PixelType, typename TOutputImage::PixelType,
+      typename TOutputMatrix::PixelType > >
 {
 public:
   /** Standard class typedefs. */
   typedef SymmetricEigenVectorAnalysisImageFilter  Self;
-  typedef UnaryFunctorImageFilter<TInputImage,TOutputMatrix,
-                                  Functor::SymmetricEigenVectorAnalysisFunction<
-                                        typename TInputImage::PixelType,
-                                        typename TOutputImage::PixelType,
-                                        typename TOutputMatrix::PixelType > >
-                                                                      Superclass;
+  typedef UnaryFunctorImageFilter<TInputImage, TOutputMatrix,
+    Functor::SymmetricEigenVectorAnalysisFunction<
+      typename TInputImage::PixelType, typename TOutputImage::PixelType,
+      typename TOutputMatrix::PixelType > >        Superclass;
 
-  typedef SmartPointer< Self >              Pointer;
-  typedef SmartPointer< const Self >        ConstPointer;
+  typedef SmartPointer< Self >                     Pointer;
+  typedef SmartPointer< const Self >               ConstPointer;
 
-  typedef typename Superclass::OutputImageType    OutputImageType;
-  typedef typename TOutputImage::PixelType        OutputPixelType;
-  typedef typename TInputImage::PixelType         InputPixelType;
-  typedef typename Superclass::FunctorType        FunctorType;
+  typedef typename Superclass::OutputImageType     OutputImageType;
+  typedef typename TOutputImage::PixelType         OutputPixelType;
+  typedef typename TInputImage::PixelType          InputPixelType;
+  typedef typename Superclass::FunctorType         FunctorType;
 
   /** Typedefs to order eigenvalues.
    * OrderByValue:      lambda_1 < lambda_2 < ....
    * OrderByMagnitude:  |lambda_1| < |lambda_2| < .....
-   * DoNotOrder:        Default order of eigenvalues obtained after QL method
+   * DoNotOrder:        Default order of eigenvalues obtained after QL
+   *                    method
    */
-  typedef typename FunctorType::EigenValueOrderType         EigenValueOrderType;
+  typedef typename FunctorType::EigenValueOrderType EigenValueOrderType;
 
-  /** Order eigenvalues. Default is to OrderByValue:  lambda_1 < lambda_2 < .... */
+  /** Order eigenvalues. Default is to OrderByValue:
+   * lambda_1 < lambda_2 < .... */
   void OrderEigenValuesBy( EigenValueOrderType order )
     {
     this->GetFunctor().OrderEigenValuesBy( order );
@@ -156,8 +154,8 @@ public:
   void PrintSelf( std::ostream& os, Indent indent ) const
     { this->Superclass::PrintSelf( os, indent ); }
 
-  /** Set the dimension of the tensor. ( For example the SymmetricSecondRankTensor
-   * is a pxp matrix ) */
+  /** Set the dimension of the tensor. ( For example the
+   * SymmetricSecondRankTensor is a pxp matrix ) */
   void SetDimension( unsigned int p )
     {
     this->GetFunctor().SetDimension( p );
@@ -168,8 +166,10 @@ protected:
   virtual ~SymmetricEigenVectorAnalysisImageFilter( void ) {}
 
 private:
-  SymmetricEigenVectorAnalysisImageFilter( const Self& ); //purposely not implemented
-  void operator=( const Self& ); //purposely not implemented
+  //purposely not implemented
+  SymmetricEigenVectorAnalysisImageFilter( const Self& );
+  //purposely not implemented
+  void operator=( const Self& );
 
 }; // End class SymmetricEigenVectorAnalysisImageFilter
 

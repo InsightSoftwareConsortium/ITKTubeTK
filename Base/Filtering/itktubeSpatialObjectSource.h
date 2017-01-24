@@ -109,7 +109,8 @@ public:
    * allows you to specify which output is affected.
    * See the GraftOutput for general usage information.
    */
-  virtual void GraftOutput( const DataObjectIdentifierType & key, DataObject *output );
+  virtual void GraftOutput( const DataObjectIdentifierType & key,
+    DataObject *output );
 
   /** Graft the specified data object onto this ProcessObject's idx'th
    * output. This is similar to the GraftOutput method except it

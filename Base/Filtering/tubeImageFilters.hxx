@@ -47,7 +47,7 @@ limitations under the License.
 namespace tube
 {
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>::
@@ -75,7 +75,7 @@ ApplyIntensityWindowing( typename ImageType::Pointer imIn,
     }
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
 ImageFilters<VDimension>::
@@ -134,7 +134,7 @@ ApplyIntensityMultiplicativeWithBiasCorrection(
   return true;
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 typename ImageFilters<VDimension>::ImageType::Pointer
 ImageFilters<VDimension>
@@ -151,7 +151,7 @@ ImageFilters<VDimension>
       || a->GetLargestPossibleRegion().GetIndex()[i]
       != b->GetLargestPossibleRegion().GetIndex()[i]
       || a->GetSpacing()[i] != b->GetSpacing()[i]
-      || a->GetOrigin()[i] != b->GetOrigin()[i]  )
+      || a->GetOrigin()[i] != b->GetOrigin()[i] )
       {
       doResample = true;
       break;
@@ -174,7 +174,7 @@ ImageFilters<VDimension>
   return output;
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>::
@@ -202,7 +202,7 @@ AddUniformNoise( typename ImageType::Pointer imIn,
     }
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
@@ -229,7 +229,7 @@ ImageFilters<VDimension>
     }
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
 ImageFilters<VDimension>
@@ -268,7 +268,7 @@ ImageFilters<VDimension>
   return true;
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
 ImageFilters<VDimension>
@@ -305,7 +305,7 @@ ImageFilters<VDimension>
   return true;
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
@@ -323,7 +323,7 @@ ImageFilters<VDimension>
   imIn = padFilter->GetOutput();
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 template< typename TPixel >
 void
@@ -492,7 +492,7 @@ ImageFilters<VDimension>
     }
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
 ImageFilters<VDimension>
@@ -536,7 +536,7 @@ ImageFilters<VDimension>
   return true;
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
@@ -562,7 +562,7 @@ ImageFilters<VDimension>
     }
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
 ImageFilters<VDimension>
@@ -582,7 +582,7 @@ ImageFilters<VDimension>
   return true;
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 double
 ImageFilters<VDimension>
@@ -640,7 +640,7 @@ ImageFilters<VDimension>
     }
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
@@ -656,7 +656,7 @@ ImageFilters<VDimension>
     }
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
 ImageFilters<VDimension>
@@ -705,7 +705,7 @@ ImageFilters<VDimension>
   return true;
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
@@ -751,7 +751,7 @@ ImageFilters<VDimension>
     }
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
@@ -783,7 +783,7 @@ ImageFilters<VDimension>
     }
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
@@ -811,7 +811,7 @@ ImageFilters<VDimension>
     }
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
@@ -846,7 +846,7 @@ ImageFilters<VDimension>
   imIn = imTemp;
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
 ImageFilters<VDimension>
@@ -900,10 +900,12 @@ ImageFilters<VDimension>
     ++it1;
     }
   std::ofstream writeStream;
-  writeStream.open( histOutputFilePath.c_str(), std::ios::binary | std::ios::out );
+  writeStream.open( histOutputFilePath.c_str(),
+    std::ios::binary | std::ios::out );
   if( !writeStream.rdbuf()->is_open() )
     {
-    std::cerr << "Cannot write to file : " << histOutputFilePath << std::endl;
+    std::cerr << "Cannot write to file : " << histOutputFilePath
+      << std::endl;
     return false;
     }
   for( unsigned int i=0; i<nBins; i++ )
@@ -915,7 +917,7 @@ ImageFilters<VDimension>
   return true;
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
 ImageFilters<VDimension>
@@ -942,10 +944,12 @@ ImageFilters<VDimension>
     ++it1;
     }
   std::ofstream writeStream;
-  writeStream.open( histOutputFilePath.c_str(), std::ios::binary | std::ios::out );
+  writeStream.open( histOutputFilePath.c_str(),
+    std::ios::binary | std::ios::out );
   if( !writeStream.rdbuf()->is_open() )
     {
-    std::cerr << "Cannot write to file : " << histOutputFilePath << std::endl;
+    std::cerr << "Cannot write to file : " << histOutputFilePath
+      << std::endl;
     return false;
     }
   for( unsigned int i=0; i<nBins; i++ )
@@ -957,7 +961,7 @@ ImageFilters<VDimension>
   return true;
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
@@ -1008,7 +1012,7 @@ ImageFilters<VDimension>
         }
       }
     }
-  for( ; z<zMax; z++ )
+  while( z<zMax )
     {
     it2DIn.GoToBegin();
     it3DSliceStart = it3D;
@@ -1044,10 +1048,11 @@ ImageFilters<VDimension>
         ++it3D;
         }
       }
+    ++z;
     }
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
 ImageFilters<VDimension>
@@ -1083,7 +1088,7 @@ ImageFilters<VDimension>
   return true;
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>
@@ -1141,7 +1146,7 @@ ImageFilters<VDimension>
   imIn = ResampleImage( imIn, imSub2 );
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 bool
 ImageFilters<VDimension>
@@ -1167,7 +1172,7 @@ ImageFilters<VDimension>
   return true;
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 ImageFilters<VDimension>

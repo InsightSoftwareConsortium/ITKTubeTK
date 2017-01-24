@@ -126,12 +126,14 @@ protected:
   virtual ~StructureTensorRecursiveGaussianImageFilter( void ) {}
   void PrintSelf( std::ostream& os, Indent indent ) const;
 
-  /** StructureTensorRecursiveGaussianImageFilter needs all of the input to produce an
-   * output. Therefore, StructureTensorRecursiveGaussianImageFilter needs to provide
+  /** StructureTensorRecursiveGaussianImageFilter needs all of the input
+   * to produce an output. Therefore,
+   * StructureTensorRecursiveGaussianImageFilter needs to provide
    * an implementation for GenerateInputRequestedRegion in order to inform
    * the pipeline execution model.
    * \sa ImageToImageFilter::GenerateInputRequestedRegion() */
-  virtual void GenerateInputRequestedRegion( void ) throw( InvalidRequestedRegionError );
+  virtual void GenerateInputRequestedRegion( void )
+    throw( InvalidRequestedRegionError );
 
   /** Generate Data */
   void GenerateData( void );
@@ -140,13 +142,15 @@ protected:
   void EnlargeOutputRequestedRegion( DataObject *output );
 
 private:
-  StructureTensorRecursiveGaussianImageFilter( const Self& ); //purposely not implemented
-  void operator=( const Self& ); //purposely not implemented
+  //purposely not implemented
+  StructureTensorRecursiveGaussianImageFilter( const Self& );
+  //purposely not implemented
+  void operator=( const Self& );
 
-  std::vector<GaussianFilterPointer>         m_SmoothingFilters;
-  DerivativeFilterPointer                    m_DerivativeFilter;
-  GaussianFilterPointer                      m_TensorComponentSmoothingFilter;
-  OutputImageAdaptorPointer                  m_ImageAdaptor;
+  std::vector<GaussianFilterPointer>    m_SmoothingFilters;
+  DerivativeFilterPointer               m_DerivativeFilter;
+  GaussianFilterPointer                 m_TensorComponentSmoothingFilter;
+  OutputImageAdaptorPointer             m_ImageAdaptor;
 
   /** Normalize the image across scale space */
   bool m_NormalizeAcrossScale;
@@ -165,4 +169,5 @@ private:
 #include "itktubeStructureTensorRecursiveGaussianImageFilter.hxx"
 #endif
 
-#endif // End !defined( __itktubeStructureTensorRecursiveGaussianImageFilter_h )
+// End !defined( __itktubeStructureTensorRecursiveGaussianImageFilter_h )
+#endif

@@ -77,10 +77,11 @@ void
 TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 ::PrintSelf( std::ostream &os, Indent indent ) const
 {
-  Superclass::PrintSelf( os,indent );
+  Superclass::PrintSelf( os, indent );
 
-  os << indent << "TimeStep                  : " << m_TimeStep  << std::endl;
-  os << indent << "Iterations                : " << m_Iterations << std::endl;
+  os << indent << "TimeStep                  : " << m_TimeStep << std::endl;
+  os << indent << "Iterations                : " << m_Iterations
+    << std::endl;
   os << indent << "RecalculateTubeness       : " << m_RecalculateTubeness
      << std::endl;
   os << indent << "Scales                    : ";
@@ -91,9 +92,10 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
   os << std::endl;
   os << indent << "Epsilon                   : " << m_Epsilon << std::endl;
   os << indent << "Omega                     : " << m_Omega << std::endl;
-  os << indent << "Sensitivity               : " << m_Sensitivity << std::endl;
+  os << indent << "Sensitivity               : " << m_Sensitivity
+    << std::endl;
   os << indent << "DarkObjectLightBackground : "
-     << m_DarkObjectLightBackground << std::endl;
+    << m_DarkObjectLightBackground << std::endl;
   os << indent << "Beta                      : " << m_Beta << std::endl;
   os << indent << "Gamma                     : " << m_Gamma << std::endl;
   os << indent << "Verbose                   : " << m_Verbose << std::endl;
@@ -141,53 +143,58 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 
   // shapedneighborhood iter, zeroflux boundary condition
   // division into faces and inner region
-  typedef ZeroFluxNeumannBoundaryCondition<PrecisionImageType>    BT;
-  typedef ConstShapedNeighborhoodIterator<PrecisionImageType,BT>  NT;
-  typedef typename NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<PrecisionImageType>
-                                                                  FT;
+  typedef ZeroFluxNeumannBoundaryCondition<PrecisionImageType>     BT;
+  typedef ConstShapedNeighborhoodIterator<PrecisionImageType, BT>  NT;
+  typedef typename NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<
+    PrecisionImageType>                                            FT;
+
   BT                      b;
   typename NT::RadiusType r;
   r.Fill( 1 );
 
   // offsets
-  const typename NT::OffsetType oxp = {{1,0}};
-  const typename NT::OffsetType oxm = {{-1,0}};
-  const typename NT::OffsetType oyp = {{0,1}};
-  const typename NT::OffsetType oym = {{0,-1}};
+  const typename NT::OffsetType oxp = {{1, 0}};
+  const typename NT::OffsetType oxm = {{-1, 0}};
+  const typename NT::OffsetType oyp = {{0, 1}};
+  const typename NT::OffsetType oym = {{0, -1}};
 
-  const typename NT::OffsetType oxpyp = {{1,1}};
-  const typename NT::OffsetType oxmym = {{-1,-1}};
-  const typename NT::OffsetType oxpym = {{1,-1}};
-  const typename NT::OffsetType oxmyp = {{-1,1}};
+  const typename NT::OffsetType oxpyp = {{1, 1}};
+  const typename NT::OffsetType oxmym = {{-1, -1}};
+  const typename NT::OffsetType oxpym = {{1, -1}};
+  const typename NT::OffsetType oxmyp = {{-1, 1}};
 
   // fixed weights ( timers )
-  const typename PrecisionImageType::SpacingType ispacing = ci->GetSpacing();
+  const typename PrecisionImageType::SpacingType ispacing =
+    ci->GetSpacing();
   const Precision rxx = m_TimeStep / ( 2.0 * ispacing[0] * ispacing[0] );
   const Precision ryy = m_TimeStep / ( 2.0 * ispacing[1] * ispacing[1] );
   const Precision rxy = m_TimeStep / ( 4.0 * ispacing[0] * ispacing[1] );
 
   // faces
   FT                        fc;
-  typename FT::FaceListType fci = fc( ci,d->GetLargestPossibleRegion(),r );
-  typename FT::FaceListType fxx = fc( m_Dxx,d->GetLargestPossibleRegion(),r );
-  typename FT::FaceListType fxy = fc( m_Dxy,d->GetLargestPossibleRegion(),r );
-  typename FT::FaceListType fyy = fc( m_Dyy,d->GetLargestPossibleRegion(),r );
+  typename FT::FaceListType fci = fc( ci, d->GetLargestPossibleRegion(),
+    r );
+  typename FT::FaceListType fxx = fc( m_Dxx, d->GetLargestPossibleRegion(),
+    r );
+  typename FT::FaceListType fxy = fc( m_Dxy, d->GetLargestPossibleRegion(),
+    r );
+  typename FT::FaceListType fyy = fc( m_Dyy, d->GetLargestPossibleRegion(),
+    r );
 
-  typename FT::FaceListType::iterator fitci,fitxx,fitxy,fityy;
+  typename FT::FaceListType::iterator fitci, fitxx, fitxy, fityy;
 
   for( fitci = fci.begin(), fitxx = fxx.begin(), fitxy = fxy.begin(),
-       fityy = fyy.begin();
-       fitci != fci.end();
-       ++fitci, ++fitxx, ++fitxy, ++fityy )
+    fityy = fyy.begin(); fitci != fci.end();
+    ++fitci, ++fitxx, ++fitxy, ++fityy )
     {
     // output iter
     ImageRegionIterator<PrecisionImageType> dit( d,*fitci );
 
     // input iters
-    NT itci ( r,ci,*fitci );
-    NT itxx ( r,m_Dxx,*fitxx );
-    NT itxy ( r,m_Dxy,*fitxy );
-    NT ityy ( r,m_Dyy,*fityy );
+    NT itci ( r, ci,*fitci );
+    NT itxx ( r, m_Dxx,*fitxx );
+    NT itxy ( r, m_Dxy,*fitxy );
+    NT ityy ( r, m_Dyy,*fityy );
 
     itci.OverrideBoundaryCondition( &b );
     itxx.OverrideBoundaryCondition( &b );
@@ -255,8 +262,10 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 
       const Precision xpyp = itxy.GetPixel( oxpyp ) + itxy.GetCenterPixel();
       const Precision xmym = itxy.GetPixel( oxmym ) + itxy.GetCenterPixel();
-      const Precision xpym = - itxy.GetPixel( oxpym ) - itxy.GetCenterPixel();
-      const Precision xmyp = - itxy.GetPixel( oxmyp ) - itxy.GetCenterPixel();
+      const Precision xpym = - itxy.GetPixel( oxpym )
+        - itxy.GetCenterPixel();
+      const Precision xmyp = - itxy.GetPixel( oxmyp )
+        - itxy.GetCenterPixel();
 
       // evolution
       const Precision cv = itci.GetCenterPixel();
@@ -275,9 +284,9 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 
   // copying
   ImageRegionConstIterator<PrecisionImageType>
-    iti ( d,d->GetLargestPossibleRegion() );
+    iti ( d, d->GetLargestPossibleRegion() );
   ImageRegionIterator<PrecisionImageType>
-    ito ( ci,ci->GetLargestPossibleRegion() );
+    ito ( ci, ci->GetLargestPossibleRegion() );
   for( iti.GoToBegin(), ito.GoToBegin(); !iti.IsAtEnd(); ++iti, ++ito )
     {
     ito.Value() = iti.Value();
@@ -330,7 +339,8 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 
   for( unsigned int i = 0; i < m_Scales.size(); ++i )
     {
-    typedef HessianRecursiveGaussianImageFilter<PrecisionImageType> HessianType;
+    typedef HessianRecursiveGaussianImageFilter<PrecisionImageType>
+      HessianType;
     typename HessianType::Pointer hessian = HessianType::New();
     hessian->SetInput( im );
     hessian->SetNormalizeAcrossScale( true );
@@ -346,8 +356,9 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
     ImageRegionIterator<PrecisionImageType>
       vit( vi, vi->GetLargestPossibleRegion() );
 
-    ImageRegionConstIterator<typename HessianType::OutputImageType> hit
-      ( hessian->GetOutput(), hessian->GetOutput()->GetLargestPossibleRegion() );
+    ImageRegionConstIterator<typename HessianType::OutputImageType> hit(
+      hessian->GetOutput(),
+      hessian->GetOutput()->GetLargestPossibleRegion() );
 
     for( itxx.GoToBegin(), itxy.GoToBegin(), ityy.GoToBegin(),
          vit.GoToBegin(), hit.GoToBegin();
@@ -356,9 +367,9 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
       {
       vnl_matrix<Precision> H( 2, 2 );
 
-      H( 0,0 ) = hit.Value()( 0,0 );
-      H( 0,1 ) = H( 1,0 ) = hit.Value()( 0,1 );
-      H( 1,1 ) = hit.Value()( 1,1 );
+      H( 0, 0 ) = hit.Value()( 0, 0 );
+      H( 0, 1 ) = H( 1, 0 ) = hit.Value()( 0, 1 );
+      H( 1, 1 ) = hit.Value()( 1, 1 );
 
       vnl_symmetric_eigensystem<Precision> ES( H );
       vnl_vector<Precision> ev( 2 );
@@ -377,9 +388,9 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
         {
         vit.Value() = vesselness;
 
-        itxx.Value() = hit.Value()( 0,0 );
-        itxy.Value() = hit.Value()( 0,1 );
-        ityy.Value() = hit.Value()( 1,1 );
+        itxx.Value() = hit.Value()( 0, 0 );
+        itxy.Value() = hit.Value()( 0, 1 );
+        ityy.Value() = hit.Value()( 1, 1 );
         }
       }
     }
@@ -390,7 +401,7 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 
 template< class TPixel, unsigned int TDimension >
 typename TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>::Precision
-TubeEnhancingDiffusion2DImageFilter<TPixel,TDimension>
+TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 ::TubenessFunction2D( const Precision l1, const Precision l2 )
 {
   if( l2 < 0 )
@@ -407,7 +418,8 @@ TubeEnhancingDiffusion2DImageFilter<TPixel,TDimension>
 
   const Precision   Rb2 = ( l1 * l1 ) / ( l2 * l2 ); // btwn 0 and 1
   const Precision   S2 =  ( l1 * l1 ) + ( l2 *l2 );
-  //const Precision   T = std::exp( -( 2*smoothC*smoothC )/( vnl_math_abs( l1 )*l2*l2 ) );
+  //const Precision   T = std::exp( -( 2*smoothC*smoothC )
+  //  / ( vnl_math_abs( l1 )*l2*l2 ) );
 
   vesselness = std::exp( -Rb2/vb2 ) * ( 1.0 - std::exp( -S2/vc2 ) );
 
@@ -431,16 +443,16 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
        !itxx.IsAtEnd();
        ++itxx, ++itxy, ++ityy )
     {
-    vnl_matrix<Precision> H( 2,2 );
-    H( 0,0 ) = itxx.Value();
-    H( 0,1 ) = H( 1,0 ) = itxy.Value();
-    H( 1,1 ) = ityy.Value();
+    vnl_matrix<Precision> H( 2, 2 );
+    H( 0, 0 ) = itxx.Value();
+    H( 0, 1 ) = H( 1, 0 ) = itxy.Value();
+    H( 1, 1 ) = ityy.Value();
 
     vnl_symmetric_eigensystem<Precision> ES( H );
 
-    vnl_matrix<Precision> EV( 2,2 );
-    EV.set_column( 0,ES.get_eigenvector( 0 ) );
-    EV.set_column( 1,ES.get_eigenvector( 1 ) );
+    vnl_matrix<Precision> EV( 2, 2 );
+    EV.set_column( 0, ES.get_eigenvector( 0 ) );
+    EV.set_column( 1, ES.get_eigenvector( 1 ) );
 
     vnl_vector<Precision> ev( 2 );
     ev[0] = ES.get_eigenvalue( 0 );
@@ -451,26 +463,26 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
       std::swap( ev[0], ev[1] );
       }
 
-    const Precision V = TubenessFunction2D( ev[0],ev[1] );
+    const Precision V = TubenessFunction2D( ev[0], ev[1] );
     vnl_vector<Precision> evn( 2 );
 
     // adjusting eigenvalues
     // static_cast required to prevent error with gcc 4.1.2
     evn[0]   = 1.0 + ( m_Epsilon - 1.0 ) *
-      std::pow( V,static_cast<Precision>( 1.0/m_Sensitivity ) );
+      std::pow( V, static_cast<Precision>( 1.0/m_Sensitivity ) );
     evn[1]   = 1.0 + ( m_Epsilon - 1.0 ) *
-      std::pow( V,static_cast<Precision>( 1.0/m_Sensitivity ) );
+      std::pow( V, static_cast<Precision>( 1.0/m_Sensitivity ) );
 
-    vnl_matrix<Precision> LAM( 2,2 );
+    vnl_matrix<Precision> LAM( 2, 2 );
     LAM.fill( 0 );
-    LAM( 0,0 ) = evn[0];
-    LAM( 1,1 ) = evn[1];
+    LAM( 0, 0 ) = evn[0];
+    LAM( 1, 1 ) = evn[1];
 
     const vnl_matrix<Precision> HN = EV * LAM * EV.transpose();
 
-    itxx.Value() = HN( 0,0 );
-    itxy.Value() = HN( 0,1 );
-    ityy.Value() = HN( 1,1 );
+    itxx.Value() = HN( 0, 0 );
+    itxy.Value() = HN( 0, 1 );
+    ityy.Value() = HN( 1, 1 );
     }
   return;
 }
@@ -487,7 +499,7 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
       "begin vesselenhancingdiffusion2Dimagefilter ... " << std::endl;
     }
 
-  ProgressReporter progress( this,0,m_Iterations+4 );
+  ProgressReporter progress( this, 0, m_Iterations+4 );
 
   typedef MinimumMaximumImageFilter<ImageType> MinMaxType;
   typename MinMaxType::Pointer minmax = MinMaxType::New();
@@ -501,7 +513,8 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
   const typename ImageType::SpacingType
     ispacing = this->GetInput()->GetSpacing();
   const Precision htmax = 0.5 /
-     ( 1.0 / ( ispacing[0] * ispacing[0] ) + 1.0 / ( ispacing[1] * ispacing[1] ) );
+     ( 1.0 / ( ispacing[0] * ispacing[0] )
+       + 1.0 / ( ispacing[1] * ispacing[1] ) );
 
    if( m_TimeStep == NumericTraits<Precision>::Zero )
     {
@@ -534,7 +547,7 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
     }
 
   // cast to precision
-  typedef CastImageFilter<ImageType,PrecisionImageType> CT;
+  typedef CastImageFilter<ImageType, PrecisionImageType> CT;
   typename CT::Pointer cast = CT::New();
   cast->SetInput( this->GetInput() );
   cast->Update();
@@ -574,7 +587,7 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 
   // cast back to pixel type
   this->AllocateOutputs();
-  typedef CastImageFilter<PrecisionImageType,ImageType> CTI;
+  typedef CastImageFilter<PrecisionImageType, ImageType> CTI;
   typename CTI::Pointer casti = CTI::New();
   casti->SetInput( ci );
   casti->GraftOutput( this->GetOutput() );

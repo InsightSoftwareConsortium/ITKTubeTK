@@ -44,13 +44,13 @@ namespace tube
 template< class TTubeSpatialObject >
 class SubSampleTubeSpatialObjectFilter
   : public SpatialObjectToSpatialObjectFilter< TTubeSpatialObject,
-                                               TTubeSpatialObject >
+    TTubeSpatialObject >
 {
 public:
   /** Standard class typedefs. */
   typedef SubSampleTubeSpatialObjectFilter  Self;
-  typedef SpatialObjectToSpatialObjectFilter< TTubeSpatialObject, TTubeSpatialObject >
-    Superclass;
+  typedef SpatialObjectToSpatialObjectFilter< TTubeSpatialObject,
+    TTubeSpatialObject >                    Superclass;
   typedef SmartPointer< Self >              Pointer;
   typedef SmartPointer< const Self >        ConstPointer;
 
@@ -63,9 +63,10 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  /** Set the sampling factor.  The output points taken every sampling factor
-   * from the input points. */
-  itkSetClampMacro( Sampling, SizeValueType, 1, NumericTraits< SizeValueType >::max() );
+  /** Set the sampling factor.  The output points taken every sampling
+   * factor from the input points. */
+  itkSetClampMacro( Sampling, SizeValueType, 1,
+    NumericTraits< SizeValueType >::max() );
   itkGetConstMacro( Sampling, SizeValueType );
 
 protected:
@@ -75,8 +76,10 @@ protected:
   virtual void GenerateData( void );
 
 private:
-  SubSampleTubeSpatialObjectFilter( const Self & ); // purposely not implemented
-  void operator=( const Self & ); // purposely not implemented
+  // purposely not implemented
+  SubSampleTubeSpatialObjectFilter( const Self & );
+  // purposely not implemented
+  void operator=( const Self & );
 
   SizeValueType m_Sampling;
 

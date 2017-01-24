@@ -73,7 +73,8 @@ SpatialObjectSource< TOutputSpatialObject >
 
 
 template< class TOutputSpatialObject >
-const typename SpatialObjectSource< TOutputSpatialObject >::OutputSpatialObjectType *
+const typename SpatialObjectSource< TOutputSpatialObject >::
+OutputSpatialObjectType *
 SpatialObjectSource< TOutputSpatialObject >
 ::GetOutput( void ) const
 {

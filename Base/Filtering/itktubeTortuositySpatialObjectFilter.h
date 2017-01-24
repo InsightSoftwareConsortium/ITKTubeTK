@@ -276,8 +276,8 @@ public:
   * computing the metrics. Default method is
   * SMOOTH_TUBE_USING_INDEX_GAUSSIAN.
   */
-  itkSetMacro( SmoothingMethod, ::tube::SmoothTubeFunctionEnum  )
-  itkGetConstMacro( SmoothingMethod, ::tube::SmoothTubeFunctionEnum  )
+  itkSetMacro( SmoothingMethod, ::tube::SmoothTubeFunctionEnum )
+  itkGetConstMacro( SmoothingMethod, ::tube::SmoothTubeFunctionEnum )
 
   /** Set/Get the smoothing scale to be applied to the vessel before
   * computing the metrics. This value has different meanings when using

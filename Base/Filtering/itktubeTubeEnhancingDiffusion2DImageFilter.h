@@ -51,9 +51,9 @@ namespace tube
  *   diffusion. An alternative implementation is to only store the
  *   scale for which the vesselness has maximum response, and to
  *   recalculate the Hessian ( locally ) during diffusion. Also stores
- *   the current image, i.e., at iteration i + temp image, therefore the complete
- *   memory consumption approximately peaks at 8 times the input image
- *   ( input image in float )
+ *   the current image, i.e., at iteration i + temp image, therefore the
+ *   complete memory consumption approximately peaks at 8 times the input
+ *   image ( input image in float )
  * - The Hessian is stored as six individual images, an alternative
  *   implementation is to use the itk symmetric second rank tensor
  *   as pixel type ( and e.g. using the class SymmetricEigenAnalysisImage
@@ -87,7 +87,7 @@ public:
   typedef Image<Precision, VDimension>                    PrecisionImageType;
 
   typedef TubeEnhancingDiffusion2DImageFilter             Self;
-  typedef ImageToImageFilter<ImageType,ImageType>         Superclass;
+  typedef ImageToImageFilter<ImageType, ImageType>        Superclass;
   typedef SmartPointer< Self >                            Pointer;
   typedef SmartPointer< const Self >                      ConstPointer;
 

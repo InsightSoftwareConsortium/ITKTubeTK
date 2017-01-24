@@ -44,8 +44,8 @@ public:
   typedef typename TubeType::PointListType              TubePointListType;
 
   /** Run Fill Gap on the tube-tree. */
-  static void FillGap(
-    typename TubeGroupType::Pointer & pTubeGroup, char InterpolationMethod  );
+  static void FillGap( typename TubeGroupType::Pointer & pTubeGroup,
+    char InterpolationMethod );
 
   static void InterpolatePath(
   typename TubeType::TubePointType * parentNearestPoint,

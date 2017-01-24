@@ -28,12 +28,12 @@ limitations under the License.
 namespace tube
 {
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 TreeFilters< VDimension >::
 FillGap( typename TubeGroupType::Pointer & pTubeGroup,
-char InterpolationMethod  )
+char InterpolationMethod )
 {
   char tubeName[] = "Tube";
   TubeListPointerType pTubeList = pTubeGroup->GetChildren(
@@ -60,7 +60,7 @@ char InterpolationMethod  )
           {
           double minDistance = itk::NumericTraits<double>::max();
           int flag =-1;
-          for ( unsigned int index = 0; index < pTube->GetNumberOfPoints();
+          for( unsigned int index = 0; index < pTube->GetNumberOfPoints();
             ++index )
             {
             TubePointType* tubePoint = dynamic_cast< TubePointType* >(
@@ -123,7 +123,7 @@ char InterpolationMethod  )
     }
 }
 
-//----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 template< unsigned int VDimension >
 void
 TreeFilters< VDimension >::
