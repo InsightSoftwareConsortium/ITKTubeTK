@@ -37,7 +37,7 @@ namespace itk
 namespace tube
 {
 
-//----------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 template< class TPointBasedSpatialObject >
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::TortuositySpatialObjectFilter( void )
@@ -72,14 +72,14 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   this->m_InflectionPoints = itk::Array<double>();
 }
 
-//----------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 template< class TPointBasedSpatialObject >
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::~TortuositySpatialObjectFilter( void )
 {
 }
 
-//----------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 template< class TPointBasedSpatialObject > double
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::GetAverageRadiusMetric() const
@@ -87,7 +87,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   return this->m_AverageRadiusMetric;
 }
 
-//----------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 template< class TPointBasedSpatialObject > double
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::GetChordLengthMetric() const
@@ -95,7 +95,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   return this->m_ChordLengthMetric;
 }
 
-//----------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 template< class TPointBasedSpatialObject > double
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::GetDistanceMetric() const
@@ -103,7 +103,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   return this->m_DistanceMetric;
 }
 
-//----------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 template< class TPointBasedSpatialObject > double
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::GetInflectionCountMetric() const
@@ -111,7 +111,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   return this->m_InflectionCountMetric;
 }
 
-//----------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 template< class TPointBasedSpatialObject > double
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::GetInflectionCount1Metric() const
@@ -119,7 +119,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   return this->m_InflectionCount1Metric;
 }
 
-//----------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 template< class TPointBasedSpatialObject > double
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::GetInflectionCount2Metric() const
@@ -127,7 +127,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   return this->m_InflectionCount2Metric;
 }
 
-//----------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 template< class TPointBasedSpatialObject > double
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::GetPathLengthMetric() const
@@ -136,7 +136,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 }
 
 
-//----------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 template< class TPointBasedSpatialObject > double
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::GetPercentile95Metric() const
@@ -144,7 +144,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   return this->m_Percentile95Metric;
 }
 
-//----------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 template< class TPointBasedSpatialObject > double
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::GetSumOfAnglesMetric() const
@@ -152,7 +152,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   return this->m_SumOfAnglesMetric;
 }
 
-//----------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 template< class TPointBasedSpatialObject > double
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::GetSumOfTorsionMetric() const
@@ -160,7 +160,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   return this->m_SumOfTorsionMetric;
 }
 
-//----------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 template< class TPointBasedSpatialObject > double
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::GetTotalCurvatureMetric() const
@@ -168,7 +168,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   return this->m_TotalCurvatureMetric;
 }
 
-//----------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 template< class TPointBasedSpatialObject > double
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::GetTotalSquaredCurvatureMetric() const
@@ -176,19 +176,20 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   return this->m_TotalSquaredCurvatureMetric;
 
 }
-//----------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 template< class TPointBasedSpatialObject > double
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::GetCurvatureScalarMetric( unsigned int i ) const
 {
   if( this->m_CurvatureScalar.size() == 0 )
     {
-    std::cerr<<"CurvatureScalarMetric not computed"<<std::endl;
+    std::cerr << "CurvatureScalarMetric not computed" << std::endl;
     }
   else if( i >= this->m_CurvatureScalar.size() )
     {
-    std::cerr<<"GetCurvatureScalarMetric( int ): Index "<<i<<" out of bounds"
-      <<std::endl;
+    std::cerr << "GetCurvatureScalarMetric( int ): Index " << i
+      << " out of bounds" << std::endl;
     }
   else
     {
@@ -197,19 +198,19 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   return -1;
 }
 
-//----------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 template< class TPointBasedSpatialObject > double
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::GetInflectionPointValue( unsigned int i ) const
 {
   if( this->m_InflectionPoints.Size() == 0 )
     {
-    std::cerr<<"InflectionPointMetric not computed"<<std::endl;
+    std::cerr << "InflectionPointMetric not computed" << std::endl;
     }
   else if( i >= this->m_InflectionPoints.Size() )
     {
-    std::cerr<<"GetInflectionPointValue( int ): Index "<<i<<" out of bounds"
-      <<std::endl;
+    std::cerr << "GetInflectionPointValue( int ): Index " << i
+      << " out of bounds" <<std::endl;
     }
   else
     {
@@ -218,7 +219,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   return -1;
 }
 
-//----------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 template< class TPointBasedSpatialObject > int
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 ::GetCurvatureHistogramMetric( unsigned int bin ) const
@@ -240,18 +241,17 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     }
 }
 
-
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 namespace
 {
 
 double SafeAcos( double x )
 {
-  if ( x < -1.0 )
+  if( x < -1.0 )
     {
     x = -1.0;
     }
-  else if ( x > 1.0 )
+  else if( x > 1.0 )
     {
     x = 1.0;
     }
@@ -265,9 +265,9 @@ typename VectorType::RealValueType SafeNormalize( VectorType& v )
   typedef typename VectorType::ValueType      ValueType;
 
   typename VectorType::RealValueType norm = v.GetNorm();
-  if ( norm != 0.0 )
+  if( norm != 0.0 )
     {
-    for ( unsigned int i = 0; i < VectorType::Dimension; ++i )
+    for( unsigned int i = 0; i < VectorType::Dimension; ++i )
       {
       v[i] = static_cast< ValueType >( static_cast< RealType >( v[i] )
         / norm );
@@ -278,7 +278,7 @@ typename VectorType::RealValueType SafeNormalize( VectorType& v )
 
 } // end namespace
 
-//----------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 template< class TPointBasedSpatialObject >
 void
 TortuositySpatialObjectFilter< TPointBasedSpatialObject >
@@ -286,11 +286,13 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 {
   // Get I/O
   PointBasedSpatialObjectPointer output = this->GetOutput();
-  PointBasedSpatialObjectPointer originalInput = PointBasedSpatialObject::New();
-  originalInput = const_cast< PointBasedSpatialObject * >( this->GetInput() );
+  PointBasedSpatialObjectPointer originalInput =
+    PointBasedSpatialObject::New();
+  originalInput = const_cast< PointBasedSpatialObject * >(
+    this->GetInput() );
 
   // Safety check
-  if ( originalInput->GetNumberOfPoints() < 2 )
+  if( originalInput->GetNumberOfPoints() < 2 )
     {
     itkExceptionMacro( << "Cannot run Tortuosity on input. "
                        << "Input has less than 2 points." );
@@ -335,8 +337,10 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   double sumOfRadius = 0.0;
 
   // Preprocessing
-  PointBasedSpatialObjectPointer smoothedTube = PointBasedSpatialObject::New();
-  PointBasedSpatialObjectPointer resampledTube = PointBasedSpatialObject::New();
+  PointBasedSpatialObjectPointer smoothedTube =
+    PointBasedSpatialObject::New();
+  PointBasedSpatialObjectPointer resampledTube =
+    PointBasedSpatialObject::New();
 
   // Smooth the vessel
   smoothedTube = ::tube::SmoothTube<PointBasedSpatialObject>( originalInput,
@@ -362,7 +366,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   // Make the measurements on the pre-processed tube.
   PointBasedSpatialObjectPointer processedInput = resampledTube;
 
-  if ( processedInput->GetNumberOfPoints() < 2 )
+  if( processedInput->GetNumberOfPoints() < 2 )
     {
     itkExceptionMacro( << "Cannot run Tortuosity on input. "
                        << "Input has less than 2 points." );
@@ -371,42 +375,42 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 
   this->m_NumberOfPoints = processedInput->GetPoints().size();
   this->m_TubeID = processedInput->GetId();
-  if ( ipm )
+  if( ipm )
     {
     this->m_InflectionPoints.SetSize( this->m_NumberOfPoints );
     }
-  if ( m_MeasureFlag & BITMASK_CURVATURE_METRICS )
+  if( m_MeasureFlag & BITMASK_CURVATURE_METRICS )
     {
     this->m_CurvatureScalar.resize( this->m_NumberOfPoints );
     }
-  if ( cvm )
+  if( cvm )
     {
     this->m_CurvatureVector.resize( this->m_NumberOfPoints );
     }
 
   for( size_t index = 0; index < this->m_NumberOfPoints; ++index )
     {
-    SOVectorType currentPoint =
-      processedInput->GetPoint( index )->GetPosition().GetVectorFromOrigin();
+    SOVectorType currentPoint = processedInput->GetPoint( index )->
+      GetPosition().GetVectorFromOrigin();
 
     // General variables
     bool nextPointAvailable = ( index < this->m_NumberOfPoints - 1 );
     SOVectorType nextPoint( 0.0 );
-    if ( nextPointAvailable )
+    if( nextPointAvailable )
       {
-      nextPoint =
-        processedInput->GetPoint( index + 1 )->GetPosition().GetVectorFromOrigin();
+      nextPoint = processedInput->GetPoint( index + 1 )->
+        GetPosition().GetVectorFromOrigin();
       }
     bool previousPointAvailable = ( index > 0 );
     SOVectorType previousPoint( 0.0 );
-    if ( previousPointAvailable )
+    if( previousPointAvailable )
       {
-      previousPoint =
-        processedInput->GetPoint( index - 1 )->GetPosition().GetVectorFromOrigin();
+      previousPoint = processedInput->GetPoint( index - 1 )->
+        GetPosition().GetVectorFromOrigin();
       }
     // t1 and t2, used both in icm and soam
     SOVectorType t1( 0.0 ), t2( 0.0 );
-    if ( previousPointAvailable && nextPointAvailable )
+    if( previousPointAvailable && nextPointAvailable )
       {
       t1 = currentPoint - previousPoint;
       t2 = nextPoint - currentPoint;
@@ -414,25 +418,25 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 
     bool nPlus2PointAvailable = ( index < this->m_NumberOfPoints - 2 );
     SOVectorType nPlus2Point( 0.0 );
-    if ( nPlus2PointAvailable )
+    if( nPlus2PointAvailable )
       {
-      nPlus2Point =
-        processedInput->GetPoint( index + 2 )->GetPosition().GetVectorFromOrigin();
+      nPlus2Point = processedInput->GetPoint( index + 2 )->
+        GetPosition().GetVectorFromOrigin();
       }
 
     //
     // DM Computations
-    if ( index == 0 )
+    if( index == 0 )
       {
       start = currentPoint;
       currentPoint = start;
       }
-    if  ( index == this->m_NumberOfPoints - 1 )
+    if( index == this->m_NumberOfPoints - 1 )
       {
       end = currentPoint;
       }
 
-    if ( ( dm || icm || ipm || soam || plm ) && nextPointAvailable )
+    if( ( dm || icm || ipm || soam || plm ) && nextPointAvailable )
       {
       pathLength += ( nextPoint - currentPoint ).GetNorm();
       }
@@ -440,7 +444,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     //
     // ICM Computations
     double inflectionValue = 0.0;
-    if ( ( icm || ipm ) && previousPointAvailable && nextPointAvailable )
+    if( ( icm || ipm ) && previousPointAvailable && nextPointAvailable )
       {
       // Compute velocity and acceleration
       SOVectorType v = nextPoint - previousPoint;
@@ -453,19 +457,19 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 
       // 2 - N = v x a x v / | v x a x v |
       bool canCheckForinflection = a.GetNorm() > this->m_EpsilonForZero;
-      if ( canCheckForinflection )
+      if( canCheckForinflection )
         {
         N = CrossProduct( v, a );
         N = CrossProduct( v, N );
         SafeNormalize( N );
         vectorBIsValid = true;
         }
-      else if ( vectorBIsValid ) // 2nd chance
+      else if( vectorBIsValid ) // 2nd chance
         {
         // Acceleration can be null when the curve approximates a straight
-        // line ( sin around pi for example ). Unfortunately that could happen
-        // when the curve is crossing the straight line and the inflection
-        // would be missed...
+        // line ( sin around pi for example ). Unfortunately that could
+        // happen when the curve is crossing the straight line and the
+        // inflection would be missed...
         // This assumes that no pure torsion along the N vector happened.
         // Note that this is only valid is B was already computed at least
         // once.
@@ -478,13 +482,13 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
       B = CrossProduct( T, N );
       SafeNormalize( B );
 
-      if ( canCheckForinflection )
+      if( canCheckForinflection )
         {
         // Check for inflection
         SOVectorType deltaN = N - previousN;
 
         inflectionValue = deltaN * deltaN;
-        if ( inflectionValue > 1.0 + this->m_EpsilonForZero )
+        if( inflectionValue > 1.0 + this->m_EpsilonForZero )
           {
           inflectionCount += 1;
           }
@@ -494,20 +498,20 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
       }
 
     // Set the inflection value for this point
-    if ( ipm )
+    if( ipm )
       {
       this->m_InflectionPoints.SetElement( index, inflectionValue );
       }
 
-    if ( ( soam || sot ) &&
-       previousPointAvailable && nextPointAvailable && nPlus2PointAvailable )
+    if( ( soam || sot ) && previousPointAvailable && nextPointAvailable &&
+      nPlus2PointAvailable )
       {
       // Compute in-plane angle
       SOVectorType normT1 = t1;
       SOVectorType normT2 = t2;
 
       double inPlaneAngle = 0.0;
-      if ( SafeNormalize( normT1 ) > this->m_EpsilonForZero
+      if( SafeNormalize( normT1 ) > this->m_EpsilonForZero
         && SafeNormalize( normT2 ) > this->m_EpsilonForZero )
         {
         inPlaneAngle = SafeAcos( normT1 * normT2 );
@@ -519,7 +523,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
       SOVectorType t2t3Cross = CrossProduct( t2, t3 );
 
       double torsionAngle = 0.0;
-      if ( SafeNormalize( t1t2Cross ) > this->m_EpsilonForZero
+      if( SafeNormalize( t1t2Cross ) > this->m_EpsilonForZero
         && SafeNormalize( t2t3Cross ) > this->m_EpsilonForZero )
         {
         double t1t2t2t3Dot = t1t2Cross * t2t3Cross;
@@ -545,7 +549,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
       }
 
     // Metrics that require curvature computation
-    if ( m_MeasureFlag & BITMASK_CURVATURE_METRICS )
+    if( m_MeasureFlag & BITMASK_CURVATURE_METRICS )
       {
       SOVectorType dg;
       SOVectorType d2g;
@@ -561,7 +565,8 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
       d2g = t2-t1;
       dtl = t1.GetNorm();
       dtr = t2.GetNorm();
-      if( dtl > this->m_EpsilonForSpacing && dtr > this->m_EpsilonForSpacing )
+      if( dtl > this->m_EpsilonForSpacing &&
+        dtr > this->m_EpsilonForSpacing )
         {
         d2g /= ( dtl * dtr );
         }
@@ -598,17 +603,17 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     this->m_PathLengthMetric = pathLength;
     }
 
-  if ( dm || icm || clm )
+  if( dm || icm || clm )
     {
     double straightLineLength = ( start - end ).GetNorm();
 
-    if ( straightLineLength > 0.0 )
+    if( straightLineLength > 0.0 )
       {
       if( clm )
         {
         this->m_ChordLengthMetric = straightLineLength;
         }
-      if ( pathLength / straightLineLength < 1.0 )
+      if( pathLength / straightLineLength < 1.0 )
         {
         itkExceptionMacro( << "Error while computing the distance metric."
           << "DM ( =" << pathLength / straightLineLength << " ) < 1.0" );
@@ -622,10 +627,11 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 
   if( icm )
     {
-  this->m_InflectionCountMetric = inflectionCount * this->m_DistanceMetric;
+    this->m_InflectionCountMetric = inflectionCount *
+      this->m_DistanceMetric;
     }
 
-  if ( soam || sot )
+  if( soam || sot )
     {
     if( pathLength > 0.0 )
       {
@@ -635,7 +641,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     else
       {
       itkExceptionMacro( <<"Cannot compute angle metrics, path length ( ="
-        <<pathLength<<" ) <= 0.0" );
+        << pathLength << " ) <= 0.0" );
       }
     }
 
@@ -659,7 +665,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     typedef itk::Statistics::ListSample< MeasurementVectorType > SampleType;
 
     typedef itk::Statistics::Histogram< double,
-            itk::Statistics::DenseFrequencyContainer2 > HistogramType;
+      itk::Statistics::DenseFrequencyContainer2 > HistogramType;
 
     SampleType::Pointer sample = SampleType::New();
     for( size_t i = 0; i < this->m_CurvatureScalar.size(); ++i )
@@ -685,20 +691,20 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 
     if( p95m || ic2m )
       {
-      this->m_Percentile95Metric = histogram->Quantile( 0,0.95 );
+      this->m_Percentile95Metric = histogram->Quantile( 0, 0.95 );
       }
 
     if( ic1m || ic2m )
       {
       // Compute Inflection Count with 2 different methods
 
-      // 1st Method: Every blob of curvature curve > lambda/sigma  is considered
-      // as an inflection.
+      // 1st Method: Every blob of curvature curve > lambda/sigma
+      // is considered as an inflection.
       int inflectionCount1 = 0;
       double threshold1 = this->m_Lambda/this->m_SmoothingScale;
 
-      // 2nd Method: Every blob of curvature curve > 95 percentile  is considered
-      // as an inflection.
+      // 2nd Method: Every blob of curvature curve > 95 percentile
+      // is considered as an inflection.
       int inflectionCount2 = 0;
       double threshold2 = this->m_Percentile95Metric;
 
@@ -755,18 +761,19 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 
       // Compute the histogram
       sampleToHistogramFilter2->Update();
-      const HistogramType* histogramForFeatures = sampleToHistogramFilter2->GetOutput();
+      const HistogramType* histogramForFeatures =
+        sampleToHistogramFilter2->GetOutput();
 
       if( histogramForFeatures->Size() != this->m_NumberOfBins )
         {
-        itkExceptionMacro( <<"The histogram is not of expected size:"<<std::endl
-                           <<"Expected = "<<m_NumberOfBins<<std::endl
-                           <<"Real size = "<<histogramForFeatures->Size()<<std::endl );
+        itkExceptionMacro( << "The histogram is not of expected size:"
+          << std::endl << "Expected = " << m_NumberOfBins << std::endl
+          << "Real size = " << histogramForFeatures->Size() << std::endl );
         }
       else
         {
         // Add bin values to the metric array
-        for ( unsigned int i=0; i < this->m_NumberOfBins; ++i )
+        for( unsigned int i=0; i < this->m_NumberOfBins; ++i )
           {
           this->m_CurvatureHistogramMetrics.push_back(
             histogramForFeatures->GetFrequency( i ) );

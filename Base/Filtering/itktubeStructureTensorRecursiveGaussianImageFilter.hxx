@@ -38,7 +38,7 @@ namespace tube
  * Constructor
  */
 template< class TInputImage, class TOutputImage >
-StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
+StructureTensorRecursiveGaussianImageFilter<TInputImage, TOutputImage>
 ::StructureTensorRecursiveGaussianImageFilter( void )
 {
   m_NormalizeAcrossScale = false;
@@ -59,8 +59,10 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 
   // Outer Gaussian smoothing filter
   m_TensorComponentSmoothingFilter = GaussianFilterType::New();
-  m_TensorComponentSmoothingFilter->SetOrder( GaussianFilterType::ZeroOrder );
-  m_TensorComponentSmoothingFilter->SetNormalizeAcrossScale( m_NormalizeAcrossScale );
+  m_TensorComponentSmoothingFilter->SetOrder(
+    GaussianFilterType::ZeroOrder );
+  m_TensorComponentSmoothingFilter->SetNormalizeAcrossScale(
+    m_NormalizeAcrossScale );
   //m_TensorComponentSmoothingFilter->ReleaseDataFlagOn();
 
   m_DerivativeFilter = DerivativeFilterType::New();
@@ -90,7 +92,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
  */
 template< class TInputImage, class TOutputImage >
 void
-StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
+StructureTensorRecursiveGaussianImageFilter<TInputImage, TOutputImage>
 ::SetSigma( RealType sigma )
 {
 
@@ -111,7 +113,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
  */
 template< class TInputImage, class TOutputImage >
 void
-StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
+StructureTensorRecursiveGaussianImageFilter<TInputImage, TOutputImage>
 ::SetSigmaOuter( RealType sigma )
 {
   m_SigmaOuter = sigma;
@@ -124,7 +126,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
  */
 template< class TInputImage, class TOutputImage >
 void
-StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
+StructureTensorRecursiveGaussianImageFilter<TInputImage, TOutputImage>
 ::SetNormalizeAcrossScale( bool normalize )
 {
 
@@ -142,7 +144,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 
 template< class TInputImage, class TOutputImage >
 void
-StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
+StructureTensorRecursiveGaussianImageFilter<TInputImage, TOutputImage>
 ::GenerateInputRequestedRegion() throw( InvalidRequestedRegionError )
 {
   // call the superclass' implementation of this method. this should
@@ -159,7 +161,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 
 template< class TInputImage, class TOutputImage >
 void
-StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
+StructureTensorRecursiveGaussianImageFilter<TInputImage, TOutputImage>
 ::EnlargeOutputRequestedRegion( DataObject *output )
 {
   TOutputImage *out = dynamic_cast< TOutputImage* >( output );
@@ -175,7 +177,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
  */
 template< class TInputImage, class TOutputImage >
 void
-StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
+StructureTensorRecursiveGaussianImageFilter<TInputImage, TOutputImage >
 ::GenerateData( void )
 {
   // Create a process accumulator for tracking the progress of this
@@ -296,20 +298,21 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
     }
 
   //Finally, smooth the outer product components
-  typedef typename itk::Image<InternalRealType, ImageDimension> ComponentImageType;
+  typedef typename itk::Image<InternalRealType, ImageDimension>
+    ComponentImageType;
 
   for( unsigned int i =0; i < numberTensorElements; i++ )
     {
-    typename ComponentImageType::Pointer componentImage = ComponentImageType::New();
-    componentImage->SetLargestPossibleRegion( inputImage->GetLargestPossibleRegion() );
+    typename ComponentImageType::Pointer componentImage =
+      ComponentImageType::New();
+    componentImage->SetLargestPossibleRegion(
+      inputImage->GetLargestPossibleRegion() );
     componentImage->SetBufferedRegion( inputImage->GetBufferedRegion() );
     componentImage->SetRequestedRegion( inputImage->GetRequestedRegion() );
     componentImage->Allocate();
 
-    ImageRegionIteratorWithIndex< ComponentImageType >
-              compit(
-                    componentImage,
-                    componentImage->GetRequestedRegion() );
+    ImageRegionIteratorWithIndex< ComponentImageType > compit(
+      componentImage, componentImage->GetRequestedRegion() );
 
     ottensor.GoToBegin();
     compit.GoToBegin();
@@ -325,7 +328,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
 
     ImageRegionIteratorWithIndex< ComponentImageType >
     smoothedCompIt( m_TensorComponentSmoothingFilter->GetOutput(),
-                    m_TensorComponentSmoothingFilter->GetOutput()->GetRequestedRegion() );
+      m_TensorComponentSmoothingFilter->GetOutput()->GetRequestedRegion() );
 
     ottensor.GoToBegin();
     smoothedCompIt.GoToBegin();
@@ -343,10 +346,10 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage >
 
 template< class TInputImage, class TOutputImage >
 void
-StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
+StructureTensorRecursiveGaussianImageFilter<TInputImage, TOutputImage>
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
-  Superclass::PrintSelf( os,indent );
+  Superclass::PrintSelf( os, indent );
   os << "NormalizeAcrossScale: " << m_NormalizeAcrossScale << std::endl;
   os << "Sigma: " << m_Sigma << std::endl;
   os << "SigmaOuter: " << m_SigmaOuter << std::endl;
@@ -356,4 +359,5 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage,TOutputImage>
 
 } // End namespace itk
 
-#endif // End !defined( __itktubeStructureTensorRecursiveGaussianImageFilter_hxx )
+// End !defined( __itktubeStructureTensorRecursiveGaussianImageFilter_hxx )
+#endif

@@ -180,7 +180,7 @@ int DoIt( int argc, char * argv[] )
       }
     filter->SetEndPoint( targetPathPoint );
     }
-  else if ( TargetTubeFileName.empty() && EndPoint.size() == 0 )
+  else if( TargetTubeFileName.empty() && EndPoint.size() == 0 )
     {
     tubeErrorMacro(
       << "Error: Atmost one End/Target Point or Target"

@@ -35,16 +35,18 @@ namespace tube
 /** \class SubSampleTubeTreeSpatialObjectFilter
  * \brief Sub-sample tubes within a SpatialObject hierarchy.
  *
- * The input to this SpatialObjectFilter can be a single TubeSpatialObject or a
- * hierarchy of SpatialObject's that contain tubes to be sub-sampled.  All
- * TubeSpatialObjects in the output hierarchy will be sub-sampled by the \c Sampling
- * factor.  Non-Tube spatial objects are passed to the output unchanged.
+ * The input to this SpatialObjectFilter can be a single TubeSpatialObject
+ * or a hierarchy of SpatialObject's that contain tubes to be sub-sampled.
+ * All TubeSpatialObjects in the output hierarchy will be sub-sampled by
+ * the \c Sampling factor.  Non-Tube spatial objects are passed to the
+ * output unchanged.
  *
  * \sa SubSampleTubeSpatialObjectFilter
  */
 template< class TSpatialObject, class TTubeSpatialObject >
 class SubSampleTubeTreeSpatialObjectFilter
-  : public SpatialObjectToSpatialObjectFilter< TSpatialObject, TSpatialObject >
+  : public SpatialObjectToSpatialObjectFilter< TSpatialObject,
+    TSpatialObject >
 {
 public:
   /** Standard class typedefs. */

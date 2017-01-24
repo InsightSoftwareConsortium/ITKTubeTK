@@ -74,7 +74,8 @@ void
 TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
 ::Update( void )
 {
-  itkDebugMacro( << "TubeSpatialObjectToTubeGraphFilter::Update() called." );
+  itkDebugMacro( <<
+    "TubeSpatialObjectToTubeGraphFilter::Update() called." );
 
   typedef itk::MinimumMaximumImageFilter< InputImageType > MinMaxFilterType;
   typename MinMaxFilterType::Pointer mmFilter = MinMaxFilterType::New();
@@ -163,12 +164,12 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
           && graph->GetPoints().at( len - 2 )->m_GraphNode == cNode )
           {
           itkDebugMacro( << " " );
-          itkDebugMacro(  << "Oscillation detected"
-                  << " : tube = " << cNode
-                  << " : seq = " << graph->GetPoints().at( len - 3 )->m_GraphNode
-                  << " " << graph->GetPoints().at( len - 2 )->m_GraphNode
-                  << " " << graph->GetPoints().at( len - 1 )->m_GraphNode
-                  << " " << cNode << " " << tNode );
+          itkDebugMacro( << "Oscillation detected"
+            << " : tube = " << cNode
+            << " : seq = " << graph->GetPoints().at( len - 3 )->m_GraphNode
+            << " " << graph->GetPoints().at( len - 2 )->m_GraphNode
+            << " " << graph->GetPoints().at( len - 1 )->m_GraphNode
+            << " " << cNode << " " << tNode );
 
           TubeGraphPnt * tgP = graph->GetPoints().back();
           cNode = tNode;
@@ -183,9 +184,9 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
           cCount = tgP->m_P;
           graph->GetPoints().pop_back();
           /* Memory allocated for each element of list returned by
-          graph->GetPoints() usually released when destructor of graph called,
-          but since tgP is popped off back of list, memory would not be
-          released without explicit delete. */
+           * graph->GetPoints() usually released when destructor of graph
+           * called, but since tgP is popped off back of list, memory
+           * would not be released without explicit delete. */
           delete tgP;
           }
         else
@@ -240,7 +241,8 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
 
   delete tubeList;
 
-  itkDebugMacro( << "TubeSpatialObjectToTubeGraphFilter::Update() finished." );
+  itkDebugMacro( <<
+    "TubeSpatialObjectToTubeGraphFilter::Update() finished." );
 
 } // End update function
 
@@ -251,7 +253,8 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
 {
   Superclass::PrintSelf( os, indent );
 
-  os << indent << "Number of Centroids: "  << m_NumberOfCenteroids << std::endl;
+  os << indent << "Number of Centroids: "  << m_NumberOfCenteroids
+    << std::endl;
 }
 
 #endif // End !defined( __itktubeTubeSpatialObjectToTubeGraphFilter_hxx )

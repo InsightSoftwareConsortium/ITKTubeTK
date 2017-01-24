@@ -31,10 +31,10 @@ limitations under the License.
 #include <vnl/vnl_vector.h>
 
 /** Constructor */
-template< unsigned int ObjectDimension, class TOutputImage, class TRadiusImage,
-          class TTangentImage >
+template< unsigned int ObjectDimension, class TOutputImage,
+  class TRadiusImage, class TTangentImage >
 TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
-                                TTangentImage>
+  TTangentImage>
 ::TubeSpatialObjectToImageFilter( void )
 {
   m_UseRadius = false;
@@ -61,53 +61,54 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
 }
 
 /** Destructor */
-template< unsigned int ObjectDimension, class TOutputImage, class TRadiusImage,
-          class TTangentImage >
+template< unsigned int ObjectDimension, class TOutputImage,
+  class TRadiusImage, class TTangentImage >
 TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
-                                TTangentImage >
+  TTangentImage >
 ::~TubeSpatialObjectToImageFilter( void )
 {
 }
 
 /** Return the Radius Image */
-template< unsigned int ObjectDimension, class TOutputImage, class TRadiusImage,
-          class TTangentImage >
+template< unsigned int ObjectDimension, class TOutputImage,
+  class TRadiusImage, class TTangentImage >
 typename TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage,
-                                         TRadiusImage,
-                                         TTangentImage >::RadiusImagePointer
+  TRadiusImage, TTangentImage >::RadiusImagePointer
 TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
-                                TTangentImage>
+  TTangentImage>
 ::GetRadiusImage( void )
 {
   return dynamic_cast< TRadiusImage * >( this->ProcessObject::GetOutput( 1 ) );
 }
 
 /** Return the tangent Image */
-template< unsigned int ObjectDimension, class TOutputImage, class TRadiusImage,
-          class TTangentImage >
+template< unsigned int ObjectDimension, class TOutputImage,
+  class TRadiusImage, class TTangentImage >
 typename TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage,
-                                         TRadiusImage,
-                                         TTangentImage >::TangentImagePointer
+  TRadiusImage, TTangentImage >::TangentImagePointer
 TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
-                                TTangentImage >
+  TTangentImage >
 ::GetTangentImage( void )
 {
-  return dynamic_cast< TTangentImage * >( this->ProcessObject::GetOutput( 2 ) );
+  return dynamic_cast< TTangentImage * >(
+    this->ProcessObject::GetOutput( 2 ) );
 }
 
 /** Update */
-template< unsigned int ObjectDimension, class TOutputImage, class TRadiusImage,
-          class TTangentImage >
+template< unsigned int ObjectDimension, class TOutputImage,
+  class TRadiusImage, class TTangentImage >
 void
 TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
-                                TTangentImage >
+  TTangentImage >
 ::GenerateData( void )
 {
   itkDebugMacro( << "TubeSpatialObjectToImageFilter::Update() called." );
 
   //Get the input and output pointers
-  const typename SuperClass::InputSpatialObjectType   * InputTube = this->GetInput();
-  typename SuperClass::OutputImagePointer             OutputImage = this->GetOutput();
+  const typename SuperClass::InputSpatialObjectType   * InputTube =
+    this->GetInput();
+  typename SuperClass::OutputImagePointer             OutputImage =
+    this->GetOutput();
 
   // Generate the image
   typename OutputImageType::RegionType region;
@@ -115,10 +116,11 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
     {
     std::cout << "WARNING: Size not set." << std::endl;
     std::cout << "   Reverting to an incorrect method to compute region."
-              << std::endl;
+      << std::endl;
     SizeType size;
 
-    typename SuperClass::InputSpatialObjectType::BoundingBoxType::PointType maxPoint;
+    typename SuperClass::InputSpatialObjectType::BoundingBoxType::PointType
+      maxPoint;
     maxPoint = InputTube->GetBoundingBox()->GetMaximum();
 
     typename OutputImageType::PointType   physicalSize;
@@ -134,8 +136,8 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
 
       /** Get the origin point within the image so that the object
        * remains in the image **/
-      size[i] = ( long unsigned int )( physicalSize[i] / this->m_Spacing[i] )
-                + buffer;
+      size[i] = ( long unsigned int )(
+        physicalSize[i] / this->m_Spacing[i] ) + buffer;
       }
     region.SetSize( size );
     }
@@ -184,49 +186,46 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
 
   // Get the list of tubes
   char tubeName[] = "Tube";
-  ChildrenListType* tubeList = InputTube->GetChildren( this->m_ChildrenDepth,
-                                                      tubeName );
+  ChildrenListType* tubeList = InputTube->GetChildren(
+    this->m_ChildrenDepth, tubeName );
 
   //int size = tubeList->size();
 
   typedef typename ChildrenListType::iterator ChildrenIteratorType;
-  ChildrenIteratorType                        TubeIterator = tubeList->begin();
+  ChildrenIteratorType TubeIterator = tubeList->begin();
 
-  typename OutputImageType::IndexType         index2;
+  typename OutputImageType::IndexType index2;
 
   while( TubeIterator != tubeList->end() )
     {
     // Force the computation of the tangents
     if( m_BuildTangentImage )
       {
-      ( ( TubeType * )( ( *TubeIterator ).GetPointer() ) )->RemoveDuplicatePoints();
-      ( ( TubeType * )( ( *TubeIterator ).GetPointer() ) )->ComputeTangentAndNormals();
+      ( ( TubeType * )( ( *TubeIterator ).GetPointer() ) )->
+        RemoveDuplicatePoints();
+      ( ( TubeType * )( ( *TubeIterator ).GetPointer() ) )->
+        ComputeTangentAndNormals();
       }
 
-    for( unsigned int k=0;
-         k < ( ( TubeType * )( TubeIterator->GetPointer() ) )->GetNumberOfPoints();
-         k++ )
+    for( unsigned int k=0; k <
+      ( ( TubeType * )( TubeIterator->GetPointer() ) )->GetNumberOfPoints();
+      k++ )
       {
       bool IsInside = true;
       typedef typename TubeType::TubePointType TubePointType;
       const TubePointType* tubePoint = static_cast<const TubePointType*>(
-                                       ( ( TubeType * )
-                                        ( TubeIterator->GetPointer() ) )
-                                       ->GetPoint( k ) );
+        ( ( TubeType * ) ( TubeIterator->GetPointer() ) )->GetPoint( k ) );
       for( unsigned int i=0; i<ObjectDimension; i++ )
         {
         point[i] = ( ( tubePoint->GetPosition()[i] *
-                                ( ( TubeType * )( TubeIterator->GetPointer() ) )->
-                                  GetIndexToObjectTransform()->
-                                  GetScaleComponent()[i] )
-                                 - this->m_Origin[i] ) /
-                                this->m_Spacing[i];
+          ( ( TubeType * )( TubeIterator->GetPointer() ) )->
+            GetIndexToObjectTransform()->GetScaleComponent()[i] )
+            - this->m_Origin[i] ) / this->m_Spacing[i];
 
         index[i] = ( long int )( point[i]+0.5 );
 
-        if( ( index[i]<=0 ) ||
-             ( static_cast<unsigned int>( index[i] ) >=
-               OutputImage->GetLargestPossibleRegion().GetSize()[i] ) )
+        if( ( index[i]<=0 ) || ( static_cast<unsigned int>( index[i] ) >=
+          OutputImage->GetLargestPossibleRegion().GetSize()[i] ) )
           {
           IsInside = false;
           }
@@ -237,11 +236,11 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
         // Density Image
         if( m_Cumulative )
           {
-          OutputImage->SetPixel( index,OutputImage->GetPixel( index )+1 );
+          OutputImage->SetPixel( index, OutputImage->GetPixel( index )+1 );
           }
         else
           {
-          OutputImage->SetPixel( index,1 );
+          OutputImage->SetPixel( index, 1 );
           }
 
         // Tangent Image
@@ -254,7 +253,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
             {
             tp[tpind] = t[tpind];
             }
-          m_TangentImage->SetPixel( index,tp );
+          m_TangentImage->SetPixel( index, tp );
           }
 
         // Radius Image and Density image with radius
@@ -272,7 +271,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
                                       phys_pt_radius ) );
             }
 
-          long  radius = ( long int )( phys_pt_radius / this->m_Spacing[0] );
+          long radius = ( long int )( phys_pt_radius / this->m_Spacing[0] );
 
 
           double step = radius/2;
@@ -295,10 +294,10 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
                   {
                   index2[0]=( long )( point[0]+x+0.5 );
                   index2[1]=( long )( point[1]+y+0.5 );
-                  if(  ( unsigned long )index2[0] <
-                        OutputImage->GetLargestPossibleRegion().GetSize()[0]
-                        && ( unsigned long )index2[1] <
-                        OutputImage->GetLargestPossibleRegion().GetSize()[1] )
+                  if( ( unsigned long )index2[0] <
+                    OutputImage->GetLargestPossibleRegion().GetSize()[0]
+                    && ( unsigned long )index2[1] <
+                    OutputImage->GetLargestPossibleRegion().GetSize()[1] )
                     {
                     typedef typename OutputImageType::PixelType PixelType;
                     if( m_Cumulative )
@@ -310,7 +309,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
                       }
                     else
                       {
-                      OutputImage->SetPixel( index2,1 );
+                      OutputImage->SetPixel( index2, 1 );
                       }
                     if( m_BuildRadiusImage )
                       {
@@ -350,7 +349,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
                              OutputImage->GetLargestPossibleRegion()
                                           .GetSize()[2] )
                       {
-                      OutputImage->SetPixel( index2,1 );
+                      OutputImage->SetPixel( index2, 1 );
                       if( m_BuildRadiusImage )
                         {
                         m_RadiusImage->SetPixel( index2, phys_pt_radius );
