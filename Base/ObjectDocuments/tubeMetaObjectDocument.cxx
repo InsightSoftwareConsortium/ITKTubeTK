@@ -174,12 +174,12 @@ MetaObjectDocument
 
     FieldType * const transformNameField = new FieldType();
     MET_InitReadField( transformNameField, labelTransform.str().c_str(),
-                       MET_STRING, false );
+      MET_STRING, false );
     m_FieldList.push_back( transformNameField );
     }
 
   FieldType * const endObjectField = new FieldType();
-  MET_InitReadField( endObjectField, "EndObject" , MET_NONE, true );
+  MET_InitReadField( endObjectField, "EndObject", MET_NONE, true );
   endObjectField->terminateRead = true;
   endObjectField->required = true;
   m_FieldList.push_back( endObjectField );
@@ -192,14 +192,14 @@ MetaObjectDocument
 {
   FieldType * const typeField = new FieldType();
   MET_InitWriteField( typeField, "Type", MET_STRING,
-                      std::strlen( m_ObjectDocumentList[index]->GetObjectType() ),
-                      m_ObjectDocumentList[index]->GetObjectType() );
+    std::strlen( m_ObjectDocumentList[index]->GetObjectType() ),
+    m_ObjectDocumentList[index]->GetObjectType() );
   m_FieldList.push_back( typeField );
 
   FieldType * const nameField = new FieldType();
   MET_InitWriteField( nameField, "Name", MET_STRING,
-                      std::strlen( m_ObjectDocumentList[index]->GetObjectName().c_str() ),
-                      m_ObjectDocumentList[index]->GetObjectName().c_str() );
+    std::strlen( m_ObjectDocumentList[index]->GetObjectName().c_str() ),
+    m_ObjectDocumentList[index]->GetObjectName().c_str() );
   m_FieldList.push_back( nameField );
 
   for( unsigned int i = 0;
@@ -209,8 +209,8 @@ MetaObjectDocument
     label << "Transform" << i;
     FieldType * const transformNameField = new FieldType();
     MET_InitWriteField( transformNameField, label.str().c_str(), MET_STRING,
-                        m_ObjectDocumentList[index]->GetTransformNames()[i].length(),
-                        m_ObjectDocumentList[index]->GetTransformNames()[i].c_str() );
+      m_ObjectDocumentList[index]->GetTransformNames()[i].length(),
+      m_ObjectDocumentList[index]->GetTransformNames()[i].c_str() );
     m_FieldList.push_back( transformNameField );
   }
 
@@ -227,8 +227,8 @@ MetaObjectDocument
   this->Superclass::SetupReadFields();
 
   FieldType * const numberOfObjectDocumentsField = new FieldType();
-  MET_InitReadField( numberOfObjectDocumentsField, "NumberOfObjects", MET_INT,
-                     true );
+  MET_InitReadField( numberOfObjectDocumentsField, "NumberOfObjects",
+    MET_INT, true );
   numberOfObjectDocumentsField->required = true;
   numberOfObjectDocumentsField->terminateRead = true;
   m_FieldList.push_back( numberOfObjectDocumentsField );
@@ -242,8 +242,8 @@ MetaObjectDocument
   this->Superclass::SetupWriteFields();
 
   FieldType * const numberOfObjectDocumentsField = new FieldType();
-  MET_InitWriteField( numberOfObjectDocumentsField, "NumberOfObjects", MET_INT,
-                      m_NumberOfObjectDocuments );
+  MET_InitWriteField( numberOfObjectDocumentsField, "NumberOfObjects",
+    MET_INT, m_NumberOfObjectDocuments );
   numberOfObjectDocumentsField->required = true;
   m_FieldList.push_back( numberOfObjectDocumentsField );
 
@@ -289,14 +289,15 @@ MetaObjectDocument
 {
   this->Superclass::PrintSelf( os, indent );
 
-  os << indent << "MaximumNumberOfTransforms: " << m_MaximumNumberOfTransforms
-                                                << std::endl;
-  os << indent << "NumberOfObjectDocuments:   " << m_NumberOfObjectDocuments
-                                                << std::endl;
+  os << indent << "MaximumNumberOfTransforms: "
+    << m_MaximumNumberOfTransforms << std::endl;
+  os << indent << "NumberOfObjectDocuments:   "
+    << m_NumberOfObjectDocuments << std::endl;
   os << indent << "ObjectDocumentList:" << std::endl;
 
-  for( ObjectDocumentListType::const_iterator it = m_ObjectDocumentList.begin();
-       it != m_ObjectDocumentList.end(); ++it )
+  for( ObjectDocumentListType::const_iterator it =
+    m_ObjectDocumentList.begin();
+    it != m_ObjectDocumentList.end(); ++it )
     {
     os << indent << *it << std::endl;
     }

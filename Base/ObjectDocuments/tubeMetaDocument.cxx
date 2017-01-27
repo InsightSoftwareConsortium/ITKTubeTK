@@ -130,15 +130,16 @@ bool MetaDocument::ReadFields( void )
     return false;
     }
 
-  FieldType * const dateModifiedField = MET_GetFieldRecord( "DateLastModified",
-                                                            &m_FieldList );
+  FieldType * const dateModifiedField = MET_GetFieldRecord(
+    "DateLastModified", &m_FieldList );
 
   if( dateModifiedField != NULL && dateModifiedField->defined )
     {
     this->SetDateModified( ( const char * )dateModifiedField->value );
     }
 
-  FieldType * const commentField = MET_GetFieldRecord( "Comment", &m_FieldList );
+  FieldType * const commentField = MET_GetFieldRecord( "Comment",
+    &m_FieldList );
 
   if( commentField != NULL && commentField->defined )
     {
@@ -164,7 +165,8 @@ void MetaDocument::SetupReadFields( void )
   m_FieldList.push_back( commentField );
 
   FieldType * const dateModifiedField = new FieldType();
-  MET_InitReadField( dateModifiedField, "DateLastModified", MET_STRING, false );
+  MET_InitReadField( dateModifiedField, "DateLastModified", MET_STRING,
+    false );
   m_FieldList.push_back( dateModifiedField );
 
   FieldType * const nameField = new FieldType();
@@ -180,7 +182,7 @@ void MetaDocument::SetupWriteFields( void )
     {
     FieldType * const commentField = new FieldType();
     MET_InitWriteField( commentField, "Comment", MET_STRING,
-                        std::strlen( this->GetComment() ), this->GetComment() );
+      std::strlen( this->GetComment() ), this->GetComment() );
     m_FieldList.push_back( commentField );
     }
 
@@ -188,8 +190,7 @@ void MetaDocument::SetupWriteFields( void )
     {
     FieldType * const dateModifiedField = new FieldType();
     MET_InitWriteField( dateModifiedField, "DateLastModified", MET_STRING,
-                        std::strlen( this->GetDateModified() ),
-                        this->GetDateModified() );
+      std::strlen( this->GetDateModified() ), this->GetDateModified() );
     m_FieldList.push_back( dateModifiedField );
     }
 
@@ -197,7 +198,7 @@ void MetaDocument::SetupWriteFields( void )
     {
     FieldType * const nameField = new FieldType();
     MET_InitWriteField( nameField, "Name", MET_STRING,
-                        std::strlen( this->GetName() ), this->GetName() );
+      std::strlen( this->GetName() ), this->GetName() );
     m_FieldList.push_back( nameField );
     }
 }

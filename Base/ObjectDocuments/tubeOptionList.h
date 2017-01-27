@@ -103,70 +103,64 @@ public:
 
   /** Return the values of the specified tag. */
   virtual int GetOptions( const std::string & tag,
-                          std::vector< std::string > & values ) const;
+    std::vector< std::string > & values ) const;
 
   /** Dump the values of the specified tag to the standard output. */
   virtual int DumpOptions( const std::string & tag, bool withTag = true,
-                           bool withNewLine = false ) const;
+    bool withNewLine = false ) const;
 
   /** Return the value of the specified tag as a boolean. */
   virtual bool GetBooleanOption( const std::string & tag, bool defaultValue,
-                                 bool required ) const;
+    bool required ) const;
 
   /** Return the value of the specified tag as a double-precision float. */
-  virtual double GetDoubleOption( const std::string & tag, double defaultValue,
-                                  bool required ) const;
+  virtual double GetDoubleOption( const std::string & tag,
+    double defaultValue, bool required ) const;
 
   /** Return the value of the specified tag as a signed integer. */
   virtual int GetIntegerOption( const std::string & tag, int defaultValue,
-                                bool required ) const;
+    bool required ) const;
 
   /** Return the values of the specified tag as a list of unsigned
-      characters. */
+   * characters. */
   virtual int GetMultipleCharactersOption( const std::string & tag,
-                                           std::vector< unsigned char > & values,
-                                           bool required ) const;
+    std::vector< unsigned char > & values, bool required ) const;
 
-  /** Return the values of the specified tag as an ITK array of double-precision
-      floats. */
+  /** Return the values of the specified tag as an ITK array of
+   * double-precision floats. */
   virtual int GetMultipleDoublesOption( const std::string & tag,
-                                        itk::Array< double > & values,
-                                        bool required ) const;
+    itk::Array< double > & values, bool required ) const;
 
   /** Return the values of the specified tag as a list of double-precision
-      floats. */
+   * floats. */
   virtual int GetMultipleDoublesOption( const std::string & tag,
-                                        std::vector< double > & values,
-                                        bool required ) const;
+    std::vector< double > & values, bool required ) const;
 
-  /** Return the values of the specified tag as a list of signed integers. */
+  /** Return the values of the specified tag as a list of signed
+   * integers. */
   virtual int GetMultipleIntegersOption( const std::string & tag,
-                                         std::vector< int > & values,
-                                         bool required ) const;
+    std::vector< int > & values, bool required ) const;
 
   /** Return the values of the specified tag as a list of strings. */
   virtual int GetMultipleStringsOption( const std::string & tag,
-                                        std::vector< std::string > & values,
-                                        bool required ) const;
+    std::vector< std::string > & values, bool required ) const;
 
-  /** Return the values of the specified tag as a list of unsigned integers. */
+  /** Return the values of the specified tag as a list of unsigned
+   * integers. */
   virtual int GetMultipleUnsignedIntegersOption( const std::string & tag,
-                                                 std::vector< unsigned int > & values,
-                                                 bool required ) const;
+    std::vector< unsigned int > & values, bool required ) const;
 
   /** Return the value of the specified tag as a string. */
   virtual int GetStringOption( const std::string & tag, std::string & value,
-                               bool required ) const;
+    bool required ) const;
 
   /** Return the value of the specified tag as a unsigned character. */
   virtual unsigned char GetCharacterOption( const std::string & tag,
-                                            unsigned char defaultValue,
-                                            bool required ) const;
+    unsigned char defaultValue, bool required ) const;
 
   /** Return the value of the specified tag as a unsigned integer. */
   virtual unsigned int GetUnsignedIntegerOption( const std::string & tag,
-                                                 unsigned int defaultValue,
-                                                 bool required ) const;
+    unsigned int defaultValue, bool required ) const;
 
 protected:
 

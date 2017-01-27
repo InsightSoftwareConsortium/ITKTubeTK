@@ -52,7 +52,8 @@ ObjectDocumentToObjectSource< TObjectDocument, VDimension >
 }
 
 template< class TObjectDocument, unsigned int VDimension >
-typename ObjectDocumentToObjectSource< TObjectDocument, VDimension >::TransformPointer
+typename ObjectDocumentToObjectSource< TObjectDocument, VDimension >
+::TransformPointer
 ObjectDocumentToObjectSource< TObjectDocument, VDimension >
 ::GetComposedTransform( void )
 {
@@ -61,14 +62,16 @@ ObjectDocumentToObjectSource< TObjectDocument, VDimension >
 
   if( m_ApplyTransforms )
     {
-    return this->ComposeTransforms( document, m_StartTransforms, m_EndTransforms );
+    return this->ComposeTransforms( document, m_StartTransforms,
+      m_EndTransforms );
     }
 
   return this->ComposeTransforms( document, 0, -1 );
 }
 
 template< class TObjectDocument, unsigned int VDimension >
-const typename ObjectDocumentToObjectSource< TObjectDocument, VDimension >::DocumentType *
+const typename ObjectDocumentToObjectSource< TObjectDocument, VDimension >
+::DocumentType *
 ObjectDocumentToObjectSource< TObjectDocument, VDimension >
 ::GetInput( void )
 {
@@ -130,7 +133,8 @@ ObjectDocumentToObjectSource< TObjectDocument, VDimension >
 }
 
 template< class TObjectDocument, unsigned int VDimension >
-typename ObjectDocumentToObjectSource< TObjectDocument, VDimension >::DataObjectPointer
+typename ObjectDocumentToObjectSource< TObjectDocument, VDimension >
+::DataObjectPointer
 ObjectDocumentToObjectSource< TObjectDocument, VDimension >
 ::MakeOutput( DataObjectPointerArraySizeType itkNotUsed( index ) )
 {
@@ -144,7 +148,8 @@ ObjectDocumentToObjectSource< TObjectDocument, VDimension >
    -1 refers to the last element.
    Therefore startIndex = -1 is just the last element. */
 template< class TObjectDocument, unsigned int VDimension >
-typename ObjectDocumentToObjectSource< TObjectDocument, VDimension >::TransformPointer
+typename ObjectDocumentToObjectSource< TObjectDocument, VDimension >
+::TransformPointer
 ObjectDocumentToObjectSource< TObjectDocument, VDimension >
 ::ComposeTransforms( ConstDocumentPointer document, int startIndex,
                      int endIndex ) const
@@ -171,14 +176,14 @@ ObjectDocumentToObjectSource< TObjectDocument, VDimension >
   int i = 0;
 
   // Skip the starting transforms.
-  while( iter != transformNames.end() && i < startIndex  )
+  while( iter != transformNames.end() && i < startIndex )
     {
     ++i;
     ++iter;
     }
 
   // Compose the transform range.
-  while( iter != transformNames.end() && i < endIndex  )
+  while( iter != transformNames.end() && i < endIndex )
     {
     m_ComposedTransformIsIdentity = false;
     transform->Compose( this->ReadTransform( *iter ) );
@@ -191,7 +196,8 @@ ObjectDocumentToObjectSource< TObjectDocument, VDimension >
 }
 
 template< class TObjectDocument, unsigned int VDimension >
-typename ObjectDocumentToObjectSource< TObjectDocument, VDimension >::TransformPointer
+typename ObjectDocumentToObjectSource< TObjectDocument, VDimension >
+::TransformPointer
 ObjectDocumentToObjectSource< TObjectDocument, VDimension >
 ::ReadTransform( const std::string & file ) const
 {
@@ -216,7 +222,8 @@ ObjectDocumentToObjectSource< TObjectDocument, VDimension >
     }
   else
     {
-    return ( * ( group->GetChildren()->begin() ) )->GetObjectToParentTransform();
+    return ( * ( group->GetChildren()->begin() ) )->
+      GetObjectToParentTransform();
     }
 }
 

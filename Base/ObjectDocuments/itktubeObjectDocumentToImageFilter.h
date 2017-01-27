@@ -51,11 +51,11 @@ public:
 
   enum { Dimension = 3 };
 
-  typedef ObjectDocumentToImageFilter                                Self;
+  typedef ObjectDocumentToImageFilter                     Self;
   typedef ObjectDocumentToObjectSource< TObjectDocument,
-                                        TImageType::ImageDimension > Superclass;
-  typedef SmartPointer< Self >                                       Pointer;
-  typedef SmartPointer< const Self >                                 ConstPointer;
+    ImageType::ImageDimension >                           Superclass;
+  typedef SmartPointer< Self >                            Pointer;
+  typedef SmartPointer< const Self >                      ConstPointer;
 
   typedef TObjectDocument                      DocumentType;
   typedef typename DocumentType::ConstPointer  ConstDocumentPointer;
@@ -67,9 +67,9 @@ public:
   typedef typename TransformType::Pointer      TransformPointer;
 
   typedef InterpolateImageFunction< ImageType, double >
-                                               InterpolateImageFunctionType;
+    InterpolateImageFunctionType;
   typedef typename InterpolateImageFunctionType::Pointer
-                                               InterpolateImageFunctionPointer;
+    InterpolateImageFunctionPointer;
 
   itkNewMacro( Self );
   itkTypeMacro( ObjectDocumentToImageFilter, ObjectDocumentToObjectSource );
@@ -86,10 +86,10 @@ public:
 
 protected:
 
-  typedef ImageFileReader< ImageType >                 ImageFileReaderType;
-  typedef ResampleImageFilter< ImageType, ImageType >  ResampleImageFilterType;
-  typedef typename ImageType::SizeType                 SizeType;
-  typedef typename ImageType::PointType                PointType;
+  typedef ImageFileReader< ImageType >                ImageFileReaderType;
+  typedef ResampleImageFilter< ImageType, ImageType > ResampleImageFilterType;
+  typedef typename ImageType::SizeType                SizeType;
+  typedef typename ImageType::PointType               PointType;
 
   /** Constructor. */
   ObjectDocumentToImageFilter( void );
@@ -120,8 +120,7 @@ private:
 
   /** Return the transformed bounding box. */
   void GetTransformedBoundingBox( ImagePointer image,
-                                  TransformPointer transform, SizeType & size,
-                                  PointType & origin ) const;
+    TransformPointer transform, SizeType & size, PointType & origin ) const;
 
   InterpolateImageFunctionPointer  m_Interpolator;
 

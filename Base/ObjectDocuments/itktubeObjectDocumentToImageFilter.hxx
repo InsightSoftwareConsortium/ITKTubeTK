@@ -73,7 +73,8 @@ ObjectDocumentToImageFilter< TObjectDocument, TImageType >
 }
 
 template< class TObjectDocument, class TImageType >
-typename ObjectDocumentToImageFilter< TObjectDocument, TImageType >::ImagePointer
+typename ObjectDocumentToImageFilter< TObjectDocument, TImageType >
+::ImagePointer
 ObjectDocumentToImageFilter< TObjectDocument, TImageType >
 ::ReadDocument( ConstDocumentPointer document )
 {
@@ -86,28 +87,30 @@ ObjectDocumentToImageFilter< TObjectDocument, TImageType >
 }
 
 template< class TObjectDocument, class TImageType >
-typename ObjectDocumentToImageFilter< TObjectDocument, TImageType >::ImagePointer
+typename ObjectDocumentToImageFilter< TObjectDocument, TImageType >
+::ImagePointer
 ObjectDocumentToImageFilter< TObjectDocument, TImageType >
 ::ResampleImage( ImagePointer image, TransformPointer transform )
 {
   // Resample image defaulted to linear interpolation.
-  typename ResampleImageFilterType::Pointer filter = ResampleImageFilterType::New();
+  typename ResampleImageFilterType::Pointer filter =
+    ResampleImageFilterType::New();
 
   filter->SetInput( image );
   filter->SetOutputSpacing( image->GetSpacing() );
 
   PointType outputOrigin;
 
-  /* Adjust the output size and origin so that none of the image is lost when
-     transformed. */
+  /* Adjust the output size and origin so that none of the image is lost
+   * when transformed. */
   SizeType size;
   this->GetTransformedBoundingBox( image, transform, size, outputOrigin );
 
   filter->SetSize( size );
   filter->SetOutputOrigin( outputOrigin );
 
-  /* Filter expects transform from fixed image to moving image, so we must use
-     the inverse. */
+  /* Filter expects transform from fixed image to moving image, so we must
+   * use the inverse. */
   typename TransformType::Pointer inverse = TransformType::New();
 
   transform->GetInverse( inverse );
@@ -140,7 +143,8 @@ ObjectDocumentToImageFilter< TObjectDocument, TImageType >
   // Fill origin ( minimum value with large number ).
   origin.Fill( 9999999 );
 
-  // Transform all of the image corners and determine the minimum bounding box.
+  // Transform all of the image corners and determine the minimum bounding
+  // box.
   for( unsigned int x = 0; x <= size[0]; x += size[0] )
     {
     for( unsigned int y = 0; y <= size[1]; y += size[1] )
