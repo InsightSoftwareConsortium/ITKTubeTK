@@ -32,7 +32,7 @@ set( TubeTK_C_PYTHON_EXTENSION_DIR ${CMAKE_CURRENT_BINARY_DIR} )
 
 configure_file( tubetk.pth.in tubetk.pth )
 
-if( BUILD_TESTING_VIRTUALENV AND TubeTK_BUILD_TESTING AND
+if( BUILD_TESTING_VIRTUAL_ENV AND TubeTK_BUILD_TESTING AND
   NOT TubeTK_BUILD_USING_SLICER )
   # Install into the testing virtualenv.
   execute_process( COMMAND "${PYTHON_EXECUTABLE}" "-c"
