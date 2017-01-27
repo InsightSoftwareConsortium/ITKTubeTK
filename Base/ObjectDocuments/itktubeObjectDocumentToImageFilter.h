@@ -44,8 +44,8 @@ namespace tube
  */
 template< class TObjectDocument, class TImageType >
 class ObjectDocumentToImageFilter
-  : public ObjectDocumentToObjectSource< TObjectDocument,
-                                         TImageType::ImageDimension >
+: public ObjectDocumentToObjectSource< TObjectDocument,
+  TImageType::ImageDimension >
 {
 public:
 
@@ -53,7 +53,7 @@ public:
 
   typedef ObjectDocumentToImageFilter                     Self;
   typedef ObjectDocumentToObjectSource< TObjectDocument,
-    ImageType::ImageDimension >                           Superclass;
+    TImageType::ImageDimension >                           Superclass;
   typedef SmartPointer< Self >                            Pointer;
   typedef SmartPointer< const Self >                      ConstPointer;
 
