@@ -40,8 +40,8 @@ GoldenMeanOptimizer1D::GoldenMeanOptimizer1D( void )
 }
 
 // Constructor.
-GoldenMeanOptimizer1D::GoldenMeanOptimizer1D( ValueFunctionType::Pointer funcVal )
-  : Optimizer1D( funcVal, NULL )
+GoldenMeanOptimizer1D::GoldenMeanOptimizer1D( ValueFunctionType::Pointer
+  funcVal ) : Optimizer1D( funcVal, NULL )
 {
 }
 

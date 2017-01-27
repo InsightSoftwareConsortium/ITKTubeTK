@@ -36,7 +36,8 @@ namespace tube
 {
 
 /** Solve for local extremes of 1D functions
- *  Must be derived to specify specific optimization method ( e.g., BrentOptimizer1D )
+ *  Must be derived to specify specific optimization method
+ *  ( e.g., BrentOptimizer1D )
  *  \class Optimizer1D
  *  \author Stephen R. Aylward
  *  \rewritten Julien Jomier

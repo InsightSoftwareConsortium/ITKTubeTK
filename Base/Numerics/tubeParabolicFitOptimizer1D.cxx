@@ -63,7 +63,8 @@ double
 ParabolicFitOptimizer1D
 ::m_Center( double x1, double y1, double x2, double y2, double x3, double y3 )
 {
-  double a = ( y1 - ( ( y2-y3 )*x1 )/( x2-x3 ) - y3 + ( ( y2-y3 )*x3 )/( x2-x3 ) ) /
+  double a = ( y1 - ( ( y2-y3 )*x1 )/( x2-x3 ) - y3
+      + ( ( y2-y3 )*x3 )/( x2-x3 ) ) /
     ( x1*x1 - x3*x3 + ( ( x3*x3-x2*x2 )*x1 )/( x2-x3 ) -
      ( ( x3*x3-x2*x2 )*x3 )/( x2-x3 ) );
   double b = ( y2 - a * x2*x2 - y3 + a * x3*x3 ) / ( x2 - x3 );

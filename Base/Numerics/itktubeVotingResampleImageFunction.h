@@ -55,10 +55,10 @@ class VotingResampleImageFunction
 {
 public:
   /** Standard class typedefs. */
-  typedef VotingResampleImageFunction                     Self;
-  typedef InterpolateImageFunction<TInputImage,TCoordRep> Superclass;
-  typedef SmartPointer< Self >                            Pointer;
-  typedef SmartPointer< const Self >                      ConstPointer;
+  typedef VotingResampleImageFunction                      Self;
+  typedef InterpolateImageFunction<TInputImage, TCoordRep> Superclass;
+  typedef SmartPointer< Self >                             Pointer;
+  typedef SmartPointer< const Self >                       ConstPointer;
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( VotingResampleImageFunction, InterpolateImageFunction );
@@ -76,7 +76,8 @@ public:
   typedef typename Superclass::RealType RealType;
 
   /** Dimension underlying input image. */
-  itkStaticConstMacro( ImageDimension, unsigned int, Superclass::ImageDimension );
+  itkStaticConstMacro( ImageDimension, unsigned int,
+    Superclass::ImageDimension );
 
   /** Index typedef support. */
   typedef typename Superclass::IndexType IndexType;

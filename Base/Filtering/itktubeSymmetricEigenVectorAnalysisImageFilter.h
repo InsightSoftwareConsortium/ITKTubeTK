@@ -64,7 +64,8 @@ public:
     {
     TOutput      eigenValues;
     TMatrix eigenVectorMatrix;
-    m_Calculator.ComputeEigenValuesAndVectors( x, eigenValues, eigenVectorMatrix );
+    m_Calculator.ComputeEigenValuesAndVectors( x, eigenValues,
+      eigenVectorMatrix );
     return eigenVectorMatrix;
     }
 
@@ -77,7 +78,8 @@ public:
   /** Typedefs to order eigenvalues.
    * OrderByValue:      lambda_1 < lambda_2 < ....
    * OrderByMagnitude:  |lambda_1| < |lambda_2| < .....
-   * DoNotOrder:        Default order of eigenvalues obtained after QL method
+   * DoNotOrder:        Default order of eigenvalues obtained after QL
+   *                      method
    */
   typedef enum {
     OrderByValue=1,
@@ -85,7 +87,8 @@ public:
     DoNotOrder
   } EigenValueOrderType;
 
-  /** Order eigenvalues. Default is to OrderByValue:  lambda_1 < lambda_2 < .... */
+  /** Order eigenvalues. Default is to OrderByValue:  lambda_1 < lambda_2
+   * < .... */
   void OrderEigenValuesBy( EigenValueOrderType order )
     {
     if( order == OrderByMagnitude )

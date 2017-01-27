@@ -345,7 +345,8 @@ OptimizerND
 
 bool
 OptimizerND
-::Extreme( VectorType & x, double * xVal, unsigned int n, MatrixType & directions )
+::Extreme( VectorType & x, double * xVal, unsigned int n,
+  MatrixType & directions )
 {
   m_X0 = x;
   double a;

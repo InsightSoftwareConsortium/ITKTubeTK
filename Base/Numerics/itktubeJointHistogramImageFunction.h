@@ -49,16 +49,16 @@ class JointHistogramImageFunction
 public:
 
   /** Class typedefs */
-  typedef JointHistogramImageFunction                  Self;
-  typedef ImageFunction<TInputImage,double,TCoordRep>  Superclass;
-  typedef SmartPointer< Self >                         Pointer;
-  typedef SmartPointer< const Self >                   ConstPointer;
-  typedef typename Superclass::InputImageType          InputImageType;
-  typedef typename TInputImage::PixelType              PixelType;
-  typedef typename Superclass::PointType               PointType;
-  typedef typename Superclass::IndexType               IndexType;
-  typedef typename Superclass::ContinuousIndexType     ContinuousIndexType;
-  typedef itk::Image<float,2>                          HistogramType;
+  typedef JointHistogramImageFunction                   Self;
+  typedef ImageFunction<TInputImage, double, TCoordRep> Superclass;
+  typedef SmartPointer< Self >                          Pointer;
+  typedef SmartPointer< const Self >                    ConstPointer;
+  typedef typename Superclass::InputImageType           InputImageType;
+  typedef typename TInputImage::PixelType               PixelType;
+  typedef typename Superclass::PointType                PointType;
+  typedef typename Superclass::IndexType                IndexType;
+  typedef typename Superclass::ContinuousIndexType      ContinuousIndexType;
+  typedef itk::Image<float, 2>                          HistogramType;
 
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( JointHistogramImageFunction, ImageFunction );

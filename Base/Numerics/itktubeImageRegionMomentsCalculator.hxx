@@ -43,16 +43,20 @@ public:
   /*
   * Constructor. Needed to ensure the exception object can be copied.
   */
-  InvalidImageRegionMomentsError( const char *file, unsigned int lineNumber )
-    :ExceptionObject( file, lineNumber )
-    { this->SetDescription( "No valid image moments are availble." );}
+  InvalidImageRegionMomentsError( const char *file,
+    unsigned int lineNumber ) : ExceptionObject( file, lineNumber )
+    {
+    this->SetDescription( "No valid image moments are availble." );
+    }
 
   /*
   * Constructor. Needed to ensure the exception object can be copied.
   */
-  InvalidImageRegionMomentsError( const std::string& file, unsigned int lineNumber )
-    :ExceptionObject( file, lineNumber )
-    { this->SetDescription( "No valid image moments are availble." );}
+  InvalidImageRegionMomentsError( const std::string& file,
+    unsigned int lineNumber ) : ExceptionObject( file, lineNumber )
+    {
+    this->SetDescription( "No valid image moments are availble." );
+    }
 
   itkTypeMacro( InvalidImageRegionMomentsError, ExceptionObject );
 
@@ -92,7 +96,7 @@ void
 ImageRegionMomentsCalculator<TInputImage>
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
-  Superclass::PrintSelf( os,indent );
+  Superclass::PrintSelf( os, indent );
   os << indent << "Image: " << m_Image.GetPointer() << std::endl;
   os << indent << "Valid: " << m_Valid << std::endl;
   os << indent << "Zeroth Moment about origin: " << m_M0 << std::endl;
@@ -102,9 +106,12 @@ ImageRegionMomentsCalculator<TInputImage>
   os << indent << "Second central moments: " << m_Cm << std::endl;
   os << indent << "Principal Moments: " << m_Pm << std::endl;
   os << indent << "Principal axes: " << m_Pa << std::endl;
-  os << indent << "Use RegionOfInterest : " << m_UseRegionOfInterest << std::endl;
-  os << indent << "RegionOfInterest Point1: " << m_RegionOfInterestPoint1 << std::endl;
-  os << indent << "RegionOfInterest Point2: " << m_RegionOfInterestPoint2 << std::endl;
+  os << indent << "Use RegionOfInterest : " << m_UseRegionOfInterest
+    << std::endl;
+  os << indent << "RegionOfInterest Point1: " << m_RegionOfInterestPoint1
+    << std::endl;
+  os << indent << "RegionOfInterest Point2: " << m_RegionOfInterestPoint2
+    << std::endl;
 }
 
 //----------------------------------------------------------------------
@@ -128,7 +135,7 @@ Compute( void )
     }
 
   ImageRegionConstIteratorWithIndex< ImageType > it( m_Image,
-                                                     m_Image->GetRequestedRegion() );
+    m_Image->GetRequestedRegion() );
 
   while( !it.IsAtEnd() )
     {
@@ -137,7 +144,8 @@ Compute( void )
     IndexType indexPosition = it.GetIndex();
 
     Point<double, ImageDimension> physicalPosition;
-    m_Image->TransformIndexToPhysicalPoint( indexPosition, physicalPosition );
+    m_Image->TransformIndexToPhysicalPoint( indexPosition,
+      physicalPosition );
 
     bool isInsideRegionOfInterest = true;
     if( m_UseRegionOfInterest )
@@ -222,7 +230,7 @@ Compute( void )
   vnl_diag_matrix<double> pm = eigen.D;
   for( unsigned int i=0; i<ImageDimension; i++ )
     {
-    m_Pm[i] = pm( i,i ) * m_M0;
+    m_Pm[i] = pm( i, i ) * m_M0;
     }
   m_Pa = eigen.V.transpose();
 

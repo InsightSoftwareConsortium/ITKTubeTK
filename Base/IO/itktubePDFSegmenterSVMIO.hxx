@@ -141,7 +141,7 @@ CanRead( const char * _headerName ) const
   bool extensionFound = false;
 
   METAIO_STL::string::size_type stringPos = fname.rfind( ".mpd" );
-  if ( ( stringPos != METAIO_STL::string::npos )
+  if( ( stringPos != METAIO_STL::string::npos )
       && ( stringPos == fname.length() - 4 ) )
     {
     extensionFound = true;
@@ -164,7 +164,7 @@ CanRead( const char * _headerName ) const
     }
 
   char* buf = new char[8001];
-  inputStream.read( buf,8000 );
+  inputStream.read( buf, 8000 );
   unsigned long fileSize = inputStream.gcount();
   buf[fileSize] = 0;
   METAIO_STL::string header( buf );
@@ -345,7 +345,8 @@ Read( const char * _headerName )
     static_cast< double >( mF->value[0] ) );
 
   mF = MET_GetFieldRecord( "ReclassifyObjectLabels", &metaFields );
-  if( ( ( char * )( mF->value ) )[0] == 'T' || ( ( char * )( mF->value ) )[0] == 't' )
+  if( ( ( char * )( mF->value ) )[0] == 'T'
+    || ( ( char * )( mF->value ) )[0] == 't' )
     {
     m_PDFSegmenter->SetReclassifyObjectLabels( true );
     }
@@ -355,7 +356,8 @@ Read( const char * _headerName )
     }
 
   mF = MET_GetFieldRecord( "ReclassifyNotObjectLabels", &metaFields );
-  if( ( ( char * )( mF->value ) )[0] == 'T' || ( ( char * )( mF->value ) )[0] == 't' )
+  if( ( ( char * )( mF->value ) )[0] == 'T'
+    || ( ( char * )( mF->value ) )[0] == 't' )
     {
     m_PDFSegmenter->SetReclassifyNotObjectLabels( true );
     }
@@ -365,7 +367,8 @@ Read( const char * _headerName )
     }
 
   mF = MET_GetFieldRecord( "ForceClassification", &metaFields );
-  if( ( ( char * )( mF->value ) )[0] == 'T' || ( ( char * )( mF->value ) )[0] == 't' )
+  if( ( ( char * )( mF->value ) )[0] == 'T'
+    || ( ( char * )( mF->value ) )[0] == 't' )
     {
     m_PDFSegmenter->SetForceClassification( true );
     }

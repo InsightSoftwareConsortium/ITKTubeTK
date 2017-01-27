@@ -45,7 +45,7 @@ namespace tube
  * Set the input Image
  */
 template< class TInputImage, class TCoordRep >
-JointHistogramImageFunction<TInputImage,TCoordRep>
+JointHistogramImageFunction<TInputImage, TCoordRep>
 ::JointHistogramImageFunction( void )
 {
   m_InputMask = NULL;
@@ -72,7 +72,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 
 template< class TInputImage, class TCoordRep >
 void
-JointHistogramImageFunction<TInputImage,TCoordRep>
+JointHistogramImageFunction<TInputImage, TCoordRep>
 ::SetHistogramSize( const unsigned int & size )
 {
   m_HistogramSize = size;
@@ -118,7 +118,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 
 template< class TInputImage, class TCoordRep >
 void
-JointHistogramImageFunction<TInputImage,TCoordRep>
+JointHistogramImageFunction<TInputImage, TCoordRep>
 ::SetInputImage( const InputImageType * ptr )
 {
   this->Superclass::SetInputImage( ptr );
@@ -135,7 +135,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 
 template< class TInputImage, class TCoordRep >
 void
-JointHistogramImageFunction<TInputImage,TCoordRep>
+JointHistogramImageFunction<TInputImage, TCoordRep>
 ::SetInputMask( const typename InputImageType::Pointer mask )
 {
   m_InputMask = mask;
@@ -152,7 +152,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 
 template< class TInputImage, class TCoordRep >
 double
-JointHistogramImageFunction<TInputImage,TCoordRep>
+JointHistogramImageFunction<TInputImage, TCoordRep>
 ::EvaluateAtIndex( const IndexType & index ) const
 {
   try
@@ -173,7 +173,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 
 template< class TInputImage, class TCoordRep >
 void
-JointHistogramImageFunction<TInputImage,TCoordRep>
+JointHistogramImageFunction<TInputImage, TCoordRep>
 ::PrecomputeAtIndex( const IndexType & index )
 {
   typename HistogramType::Pointer hist;
@@ -201,7 +201,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 
 template< class TInputImage, class TCoordRep >
 void
-JointHistogramImageFunction<TInputImage,TCoordRep>
+JointHistogramImageFunction<TInputImage, TCoordRep>
 ::ComputeMeanAndStandardDeviation( void ) const
 {
   typedef itk::DiscreteGaussianImageFilter< HistogramType,
@@ -249,7 +249,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 
 template< class TInputImage, class TCoordRep >
 void
-JointHistogramImageFunction<TInputImage,TCoordRep>
+JointHistogramImageFunction<TInputImage, TCoordRep>
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   this->Superclass::PrintSelf( os, indent );
@@ -286,7 +286,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 
 template< class TInputImage, class TCoordRep >
 double
-JointHistogramImageFunction<TInputImage,TCoordRep>
+JointHistogramImageFunction<TInputImage, TCoordRep>
 ::ComputeZScoreAtIndex( const IndexType & index ) const
 {
   typename HistogramType::Pointer hist;
@@ -329,7 +329,7 @@ JointHistogramImageFunction<TInputImage,TCoordRep>
 
 template< class TInputImage, class TCoordRep >
 itk::Image<float,2>::Pointer &
-JointHistogramImageFunction<TInputImage,TCoordRep>
+JointHistogramImageFunction<TInputImage, TCoordRep>
 ::ComputeHistogramAtIndex( const IndexType & index, bool blur ) const
 {
   m_Histogram->FillBuffer( 0 );

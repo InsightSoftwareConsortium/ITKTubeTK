@@ -66,7 +66,8 @@ public:
 
   double DataValueD2( const VectorType & y, double x );
 
-  double DataValueJet( const VectorType & y, double x, double * d, double * d2 );
+  double DataValueJet( const VectorType & y, double x, double * d,
+    double * d2 );
 
 protected:
 

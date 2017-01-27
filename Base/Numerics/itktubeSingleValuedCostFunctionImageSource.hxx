@@ -56,8 +56,8 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
   if( lowerBoundSize != NumberOfParameters )
     {
     itkExceptionMacro( << "The ParametersLowerBound size: " << lowerBoundSize
-      << " does not equal the expected number of parameters: " << NumberOfParameters
-      << std::endl );
+      << " does not equal the expected number of parameters: "
+      << NumberOfParameters << std::endl );
     }
   for( SizeValueType ii = 0; ii < lowerBoundSize; ++ii )
     {
@@ -90,8 +90,8 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
   if( upperBoundSize != NumberOfParameters )
     {
     itkExceptionMacro( << "The ParametersUpperBound size: " << upperBoundSize
-      << " does not equal the expected number of parameters: " << NumberOfParameters
-      << std::endl );
+      << " does not equal the expected number of parameters: "
+      << NumberOfParameters << std::endl );
     }
   for( SizeValueType ii = 0; ii < upperBoundSize; ++ii )
     {
@@ -124,8 +124,8 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
   if( stepSize != NumberOfParameters )
     {
     itkExceptionMacro( << "The ParametersStep size: " << stepSize
-      << " does not equal the expected number of parameters: " << NumberOfParameters
-      << std::endl );
+      << " does not equal the expected number of parameters: "
+      << NumberOfParameters << std::endl );
     }
   for( SizeValueType ii = 0; ii < stepSize; ++ii )
     {
@@ -167,7 +167,8 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
     {
     origin[ii] = this->m_ParametersLowerBound[ii];
     spacing[ii] = this->m_ParametersStep[ii];
-    size[ii] = static_cast< SizeValueType >( ( this->m_ParametersUpperBound[ii] -
+    size[ii] = static_cast< SizeValueType >(
+      ( this->m_ParametersUpperBound[ii] -
       this->m_ParametersLowerBound[ii] ) / this->m_ParametersStep[ii] ) + 1;
     }
   typename OutputImageType::RegionType region;
@@ -203,7 +204,8 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
 {
   OutputImageType * outputImage = this->GetOutput( 0 );
 
-  ProgressReporter progress( this, threadId, outputRegionForThread.GetNumberOfPixels() );
+  ProgressReporter progress( this, threadId,
+    outputRegionForThread.GetNumberOfPixels() );
 
   typedef ImageRegionIteratorWithIndex< OutputImageType > ImageIteratorType;
   ImageIteratorType imageIt( outputImage, outputRegionForThread );
@@ -214,8 +216,10 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
     outputImage->TransformIndexToPhysicalPoint( index, point );
     ParametersType parameters( NumberOfParameters );
     parameters.SetDataSameSize( point.GetDataPointer() );
-    const MeasureType measure = this->m_CostFunction->GetValue( parameters );
-    imageIt.Set( static_cast< typename OutputImageType::PixelType >( measure ) );
+    const MeasureType measure = this->m_CostFunction->GetValue(
+      parameters );
+    imageIt.Set( static_cast< typename OutputImageType::PixelType >(
+      measure ) );
     progress.CompletedPixel();
     }
 }

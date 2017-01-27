@@ -308,16 +308,16 @@ void
 ComputeTriDiag2D( vnl_matrix<T> &mat,
   vnl_vector<T> &diag, vnl_vector<T> &subD )
 {
-  diag( 0 ) = mat( 0,0 );
-  diag( 1 ) = mat( 1,1 );
-  subD( 0 ) = mat( 0,1 );
+  diag( 0 ) = mat( 0, 0 );
+  diag( 1 ) = mat( 1, 1 );
+  subD( 0 ) = mat( 0, 1 );
   subD( 1 ) = 0;
 
-  mat( 0,0 ) = 1;
-  mat( 0,1 ) = 0;
+  mat( 0, 0 ) = 1;
+  mat( 0, 1 ) = 0;
 
-  mat( 1,0 ) = 0;
-  mat( 1,1 ) = 1;
+  mat( 1, 0 ) = 0;
+  mat( 1, 1 ) = 1;
 }
 
 /**
@@ -327,8 +327,12 @@ void
 ComputeTriDiag3D( vnl_matrix<T> &mat,
   vnl_vector<T> &diag, vnl_vector<T> &subD )
 {
-  double  a = mat( 0,0 ), b = mat( 0,1 ), c = mat( 0,2 ),
-          d = mat( 1,1 ), e = mat( 1,2 ), f = mat( 2,2 );
+  double a = mat( 0, 0 );
+  double b = mat( 0, 1 );
+  double c = mat( 0, 2 );
+  double d = mat( 1, 1 );
+  double e = mat( 1, 2 );
+  double f = mat( 2, 2 );
 
   diag( 0 ) = static_cast< T >( a );
   subD( 2 ) = 0;
@@ -343,17 +347,17 @@ ComputeTriDiag3D( vnl_matrix<T> &mat,
     subD( 0 ) = static_cast< T >( s );
     subD( 1 ) = static_cast< T >( e-b*q );
 
-    mat( 0,0 ) = 1;
-    mat( 0,1 ) = 0;
-    mat( 0,2 ) = 0;
+    mat( 0, 0 ) = 1;
+    mat( 0, 1 ) = 0;
+    mat( 0, 2 ) = 0;
 
-    mat( 1,0 ) = 0;
-    mat( 1,1 ) = static_cast< T >( b );
-    mat( 1,2 ) = static_cast< T >( c );
+    mat( 1, 0 ) = 0;
+    mat( 1, 1 ) = static_cast< T >( b );
+    mat( 1, 2 ) = static_cast< T >( c );
 
-    mat( 2,0 ) = 0;
-    mat( 2,1 ) = static_cast< T >( c );
-    mat( 2,2 ) = static_cast< T >( -b );
+    mat( 2, 0 ) = 0;
+    mat( 2, 1 ) = static_cast< T >( c );
+    mat( 2, 2 ) = static_cast< T >( -b );
     }
   else
     {
@@ -362,17 +366,17 @@ ComputeTriDiag3D( vnl_matrix<T> &mat,
     subD( 0 ) = static_cast< T >( b );
     subD( 1 ) = static_cast< T >( e );
 
-    mat( 0,0 ) = 1;
-    mat( 0,1 ) = 0;
-    mat( 0,2 ) = 0;
+    mat( 0, 0 ) = 1;
+    mat( 0, 1 ) = 0;
+    mat( 0, 2 ) = 0;
 
-    mat( 1,0 ) = 0;
-    mat( 1,1 ) = 1;
-    mat( 1,2 ) = 0;
+    mat( 1, 0 ) = 0;
+    mat( 1, 1 ) = 1;
+    mat( 1, 2 ) = 0;
 
-    mat( 2,0 ) = 0;
-    mat( 2,1 ) = 0;
-    mat( 2,2 ) = 1;
+    mat( 2, 0 ) = 0;
+    mat( 2, 1 ) = 0;
+    mat( 2, 2 ) = 1;
     }
 }
 
@@ -460,9 +464,9 @@ ComputeTqli ( vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat )
 
         for( k=0; k<n; k++ )
           {
-          f = mat( k,i+1 );
-          mat( k,i+1 ) = static_cast< T >( s*mat( k,i )+c*f );
-          mat( k,i ) = static_cast< T >( c*mat( k,i )-s*f );
+          f = mat( k, i+1 );
+          mat( k, i+1 ) = static_cast< T >( s*mat( k, i )+c*f );
+          mat( k, i ) = static_cast< T >( c*mat( k, i )-s*f );
           }
         }
       diag( l ) -= static_cast< T >( p );
@@ -513,7 +517,7 @@ ComputeEigen( vnl_matrix<T> const & mat,
     switch( n )
       {
       case 1:
-        eVects.set_size( 1,1 );
+        eVects.set_size( 1, 1 );
         eVects.fill( 1 );
         eVals.set_size( 1 );
         eVals.fill( mat[0][0] );
@@ -566,8 +570,10 @@ ComputeEigen( vnl_matrix<T> const & mat,
       {
       for( unsigned int j=i+1; j<n; j++ )
         {
-        if( ( vnl_math_abs( eVals( j ) )>vnl_math_abs( eVals( i ) ) && !minToMax )
-          || ( vnl_math_abs( eVals( j ) )<vnl_math_abs( eVals( i ) ) && minToMax ) )
+        if( ( vnl_math_abs( eVals( j ) )>vnl_math_abs( eVals( i ) )
+            && !minToMax )
+          || ( vnl_math_abs( eVals( j ) )<vnl_math_abs( eVals( i ) )
+            && minToMax ) )
           {
           T tf = eVals( j );
           eVals( j ) = eVals( i );

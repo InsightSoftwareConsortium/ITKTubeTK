@@ -41,16 +41,17 @@ namespace tube
  */
 template< class TCostFunction, unsigned int VNumberOfParameters >
 class SingleValuedCostFunctionImageSource
-: public ImageSource< Image< typename TCostFunction::MeasureType, VNumberOfParameters > >
+: public ImageSource< Image< typename TCostFunction::MeasureType,
+  VNumberOfParameters > >
 {
 public:
   typedef Image< typename TCostFunction::MeasureType, VNumberOfParameters >
     CostFunctionImageType;
 
-  typedef SingleValuedCostFunctionImageSource                               Self;
-  typedef ImageSource< CostFunctionImageType >                              Superclass;
-  typedef SmartPointer< Self >                                              Pointer;
-  typedef SmartPointer< const Self >                                        ConstPointer;
+  typedef SingleValuedCostFunctionImageSource       Self;
+  typedef ImageSource< CostFunctionImageType >      Superclass;
+  typedef SmartPointer< Self >                      Pointer;
+  typedef SmartPointer< const Self >                ConstPointer;
 
   typedef TCostFunction                             CostFunctionType;
   typedef typename CostFunctionType::MeasureType    MeasureType;
@@ -98,8 +99,8 @@ protected:
 
   virtual void BeforeThreadedGenerateData();
 
-  virtual void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread,
-    ThreadIdType threadId );
+  virtual void ThreadedGenerateData( const OutputImageRegionType &
+    outputRegionForThread, ThreadIdType threadId );
 
 private:
   SingleValuedCostFunctionImageSource(

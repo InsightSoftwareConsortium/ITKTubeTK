@@ -38,7 +38,7 @@ bool MET_InitWriteField_Temp( MET_FieldRecordType * _mf,
                                    size_t _length,
                                    T *_v )
 {
-  strncpy( _mf->name, _name,254 );
+  strncpy( _mf->name, _name, 254 );
   _mf->name[254] = '\0';
   _mf->type = _type;
   _mf->defined = true;

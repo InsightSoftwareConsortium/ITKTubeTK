@@ -188,13 +188,13 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
     ++fitci, ++fitxx, ++fitxy, ++fityy )
     {
     // output iter
-    ImageRegionIterator<PrecisionImageType> dit( d,*fitci );
+    ImageRegionIterator<PrecisionImageType> dit( d, *fitci );
 
     // input iters
-    NT itci ( r, ci,*fitci );
-    NT itxx ( r, m_Dxx,*fitxx );
-    NT itxy ( r, m_Dxy,*fitxy );
-    NT ityy ( r, m_Dyy,*fityy );
+    NT itci( r, ci, *fitci );
+    NT itxx( r, m_Dxx, *fitxx );
+    NT itxy( r, m_Dxy, *fitxy );
+    NT ityy( r, m_Dyy, *fityy );
 
     itci.OverrideBoundaryCondition( &b );
     itxx.OverrideBoundaryCondition( &b );
@@ -339,8 +339,8 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
 
   for( unsigned int i = 0; i < m_Scales.size(); ++i )
     {
-    typedef HessianRecursiveGaussianImageFilter<PrecisionImageType>
-      HessianType;
+    typedef HessianRecursiveGaussianImageFilter<
+      PrecisionImageType > HessianType;
     typename HessianType::Pointer hessian = HessianType::New();
     hessian->SetInput( im );
     hessian->SetNormalizeAcrossScale( true );

@@ -130,7 +130,7 @@ void
 BlurImageFunction<TInputImage>
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
-  this->Superclass::PrintSelf( os,indent );
+  this->Superclass::PrintSelf( os, indent );
 
   os << indent << "calculate Blurring value at point:" << std::endl;
   os << indent << "UseRelativeSpacing = " << m_UseRelativeSpacing
@@ -284,7 +284,7 @@ BlurImageFunction<TInputImage>
     }
   else
     {
-    this->m_Image->TransformPhysicalPointToContinuousIndex( point,index );
+    this->m_Image->TransformPhysicalPointToContinuousIndex( point, index );
     }
 
   if( this->GetDebug() )
