@@ -47,7 +47,8 @@ enum SmoothTubeFunctionEnum { SMOOTH_TUBE_USING_INDEX_AVERAGE,
   SMOOTH_TUBE_USING_INDEX_GAUSSIAN, SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN };
 
 /** Smooth a tube
- * The parameter h has different meanings when using different smoothing functions:
+ * The parameter h has different meanings when using different smoothing
+ * functions:
  *
  * smoothFunction = SMOOTH_TUBE_USING_INDEX_AVERAGE:
  *    h is half of the window size

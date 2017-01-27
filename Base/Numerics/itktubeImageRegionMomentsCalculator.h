@@ -46,7 +46,8 @@ namespace tube
  * moments of a large image can easily take a million times longer
  * than computing the various other values derived from them, so we
  * compute the moments only on explicit request, and save their values
- * ( in an ImageRegionMomentsCalculator object ) for later retrieval by the user.
+ * ( in an ImageRegionMomentsCalculator object ) for later retrieval by
+ * the user.
  *
  * The non-central moments computed by this class are not really
  * intended for general use and are therefore in index coordinates;
@@ -117,7 +118,7 @@ public:
   typedef typename ImageType::ConstPointer ImageConstPointer;
 
   /** Affine transform for mapping to and from principal axis */
-  typedef AffineTransform<double,itkGetStaticConstMacro( ImageDimension )>
+  typedef AffineTransform<double, itkGetStaticConstMacro( ImageDimension )>
                                            AffineTransformType;
   typedef typename AffineTransformType::Pointer
                                            AffineTransformPointer;

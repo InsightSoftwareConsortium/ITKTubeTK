@@ -68,13 +68,15 @@ public:
 
   /** Constructor.
    * \param funcVal an instance of a derivation of the UserFunction class
-   *        used to specify values at control points ( i.e., integer values )
-   * \param optimizer1D a ( possibly NULL constructed ) instance of a derivation
-   *        of the Optimizer1D class ( e.g., BrentOptimizer1D ). Use to find local
-   *        maximums and minimums.
+   *        used to specify values at control points
+   *        ( i.e., integer values )
+   * \param optimizer1D a ( possibly NULL constructed ) instance of a
+   *        derivation of the Optimizer1D class ( e.g., BrentOptimizer1D ).
+   *        Use to find local maximums and minimums.
    * \warning Must set xMin and xMax
    */
-  Spline1D( ValueFunctionType::Pointer funcVal, Optimizer1D::Pointer optimizer1D );
+  Spline1D( ValueFunctionType::Pointer funcVal,
+    Optimizer1D::Pointer optimizer1D );
 
   /** Destructor. */
   virtual ~Spline1D( void );
@@ -190,13 +192,15 @@ public:
 
   /** Supply a new spline definition
    * \param funcVal an instance of a derivation of the UserFunction class
-   *        used to specify values at control points ( i.e., integer values )
-   * \param optimizer1D a ( possibly NULL constructed ) instance of a derivation
-   *        of the Optimizer1D class ( e.g., BrentOptimizer1D ). Use to find local
-   *        maximums and minimums.
+   *        used to specify values at control points
+   *        ( i.e., integer values )
+   * \param optimizer1D a ( possibly NULL constructed ) instance of a
+   *        derivation of the Optimizer1D class ( e.g., BrentOptimizer1D ).
+   *        Use to find local maximums and minimums.
    * \warning Must set xMin and xMax
    */
-  void Use( ValueFunctionType::Pointer funcVal, Optimizer1D::Pointer optimizer1D );
+  void Use( ValueFunctionType::Pointer funcVal,
+    Optimizer1D::Pointer optimizer1D );
 
   /** Returns spline interpolated value at x
    * Calculates the values at control ( integer ) points by calling the

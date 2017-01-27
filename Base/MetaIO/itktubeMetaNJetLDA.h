@@ -38,7 +38,8 @@ namespace tube
 {
 
 /**
- * \brief    Reads and writes MetaNJetLDA files, typically designated .mnda files.
+ * \brief    Reads and writes MetaNJetLDA files, typically designated
+ *             .mnda files.
  * \pre      NJetLDAGenerator instance.
  *
  * \author   Stephen R. Aylward

@@ -62,7 +62,8 @@ public:
 
 protected:
 
-  double m_Center( double x1, double y1, double x2, double y2, double x3, double y3 );
+  double m_Center( double x1, double y1, double x2, double y2,
+    double x3, double y3 );
 
   bool m_Extreme( double * x, double * xVal );
 

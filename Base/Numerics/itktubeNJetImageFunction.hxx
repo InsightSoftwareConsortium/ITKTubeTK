@@ -151,7 +151,7 @@ void
 NJetImageFunction<TInputImage>::
 PrintSelf( std::ostream& os, Indent indent ) const
 {
-  this->Superclass::PrintSelf( os,indent );
+  this->Superclass::PrintSelf( os, indent );
   os << indent << "m_UseProjection = " << m_UseProjection << std::endl;
   os << indent << "m_UseInputImageMask = " << m_UseInputImageMask
      << std::endl;
@@ -1825,9 +1825,8 @@ RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
   vnl_matrix<double> eVect( ImageDimension, ImageDimension );
   vnl_vector<double> eVal( ImageDimension );
   vnl_vector<double> prevTangent;
-  ::tube::ComputeRidgeness<double>( h.GetVnlMatrix(), d.GetVnlVector(), prevTangent,
-    ridgeness, roundness, curvature, levelness,
-    eVect, eVal );
+  ::tube::ComputeRidgeness<double>( h.GetVnlMatrix(), d.GetVnlVector(),
+    prevTangent, ridgeness, roundness, curvature, levelness, eVect, eVal );
 
   m_MostRecentIntensity = intensity;
   m_MostRecentRidgeness = ridgeness;

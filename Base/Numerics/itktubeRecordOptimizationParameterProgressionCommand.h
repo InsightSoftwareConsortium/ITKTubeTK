@@ -64,7 +64,8 @@ public:
   typedef OptimizerParameters< ParametersValueType > FixedParametersType;
 
   /** Set/Get fixed parameters associated with the optimization. */
-  virtual void SetFixedParameters( const FixedParametersType & fixedParameters );
+  virtual void SetFixedParameters( const FixedParametersType &
+    fixedParameters );
   virtual const FixedParametersType & GetFixedParameters( void ) const;
 
 
@@ -126,4 +127,5 @@ private:
 #include "itktubeRecordOptimizationParameterProgressionCommand.hxx"
 #endif
 
-#endif // End !defined( __itktubeRecordOptimizationParameterProgressionCommand_h )
+// End !defined( __itktubeRecordOptimizationParameterProgressionCommand_h )
+#endif

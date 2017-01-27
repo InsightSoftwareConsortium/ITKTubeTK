@@ -311,7 +311,8 @@ BasisFeatureVectorGenerator< TImage, TLabelMap >
 }
 
 template< class TImage, class TLabelMap >
-typename BasisFeatureVectorGenerator< TImage, TLabelMap >::FeatureImageType::Pointer
+typename BasisFeatureVectorGenerator< TImage, TLabelMap >
+::FeatureImageType::Pointer
 BasisFeatureVectorGenerator< TImage, TLabelMap >
 ::GetFeatureImage( unsigned int featureNum ) const
 {

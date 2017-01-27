@@ -40,7 +40,7 @@ TubeXIO< TDimension >
 ::TubeXIO()
 {
   m_TubeGroup = TubeGroupType::New();
-  for ( unsigned int i = 0; i < TDimension; ++i )
+  for( unsigned int i = 0; i < TDimension; ++i )
     {
     m_Dimensions[i] = 1;
     }
@@ -393,10 +393,10 @@ TubeXIO< TDimension >
 
   tmpWriteStream << "NDims: " << TDimension << std::endl;
   tmpWriteStream << "Dimensions: ";
-  for ( unsigned int i = 0; i < TDimension; ++i )
+  for( unsigned int i = 0; i < TDimension; ++i )
     {
     tmpWriteStream << this->m_Dimensions[i];
-    if ( i != TDimension - 1 )
+    if( i != TDimension - 1 )
       {
       tmpWriteStream << " ";
       }

@@ -278,9 +278,9 @@ BrentOptimizer1D
         b = x;
         }
 
-      m_Move( v,fv,dv, w,fw,dw );
-      m_Move( w,fw,dw, x,fx,dx );
-      m_Move( x,fx,dx, u,fu,du );
+      m_Move( v, fv, dv, w, fw, dw );
+      m_Move( w, fw, dw, x, fx, dx );
+      m_Move( x, fx, dx, u, fu, du );
       }
     else
       {
@@ -295,14 +295,14 @@ BrentOptimizer1D
 
       if( fu <= fw || w == x )
         {
-        m_Move( v,fv,dv, w,fw,dw );
-        m_Move( w,fw,dw, u,fu,du );
+        m_Move( v, fv, dv, w, fw, dw );
+        m_Move( w, fw, dw, u, fu, du );
         }
       else
         {
         if( fu < fv || v == x || v == w )
           {
-          m_Move( v,fv,dv, u,fu,du );
+          m_Move( v, fv, dv, u, fu, du );
           }
         }
       }

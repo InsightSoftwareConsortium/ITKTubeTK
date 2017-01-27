@@ -47,8 +47,9 @@ public:
   typedef vnl_vector< double >                    VectorType;
   typedef UserFunction< VectorType, double >      ValueFunctionType;
   typedef UserFunction< VectorType, VectorType >  DerivativeFunctionType;
-  typedef UserFunction< double, double >          OptimizerValueFunctionType;
-  typedef UserFunction< double, double >          OptimizerDerivativeFunctionType;
+
+  typedef UserFunction< double, double >    OptimizerValueFunctionType;
+  typedef UserFunction< double, double >    OptimizerDerivativeFunctionType;
 
   /** Return the type of this object. */
   tubeTypeMacro( OptimizerND );
@@ -97,7 +98,8 @@ public:
 
   bool Extreme( VectorType & x, double * xVal );
 
-  bool Extreme( VectorType & x, double * xVal, unsigned int n, MatrixType & directions );
+  bool Extreme( VectorType & x, double * xVal, unsigned int n,
+    MatrixType & directions );
 
   double FuncDeriv( double x );
 

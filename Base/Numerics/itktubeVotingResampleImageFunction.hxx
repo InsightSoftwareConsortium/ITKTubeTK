@@ -67,7 +67,7 @@ void
 VotingResampleImageFunction< TInputImage, TCoordRep >
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
-  this->Superclass::PrintSelf( os,indent );
+  this->Superclass::PrintSelf( os, indent );
 }
 
 

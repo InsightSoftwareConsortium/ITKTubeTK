@@ -54,7 +54,7 @@ class StructureTensorRecursiveGaussianImageFilter
 public:
   /** Standard class typedefs. */
   typedef StructureTensorRecursiveGaussianImageFilter     Self;
-  typedef ImageToImageFilter<TInputImage,TOutputImage>    Superclass;
+  typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
   typedef SmartPointer< Self >                            Pointer;
   typedef SmartPointer< const Self >                      ConstPointer;
 
@@ -118,7 +118,7 @@ public:
   itkGetMacro( Sigma, RealType );
 
   //Sigma value for the outer Gaussian smoothing filter
-  itkGetMacro( SigmaOuter,   RealType );
+  itkGetMacro( SigmaOuter, RealType );
 
 
 protected:

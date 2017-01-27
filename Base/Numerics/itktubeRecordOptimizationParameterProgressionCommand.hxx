@@ -50,11 +50,14 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
   H5::ArrayType parametersMemoryDataType( H5::PredType::NATIVE_DOUBLE,
     1, parametersDimension );
   memoryDataType.insertMember( "Parameters",
-    HOFFSET( ParameterIterationType, Parameters ), parametersMemoryDataType );
+    HOFFSET( ParameterIterationType, Parameters ),
+    parametersMemoryDataType );
   memoryDataType.insertMember( "CostFunctionValue",
-    HOFFSET( ParameterIterationType, CostFunctionValue ), H5::PredType::NATIVE_DOUBLE );
+    HOFFSET( ParameterIterationType, CostFunctionValue ),
+    H5::PredType::NATIVE_DOUBLE );
   memoryDataType.insertMember( "CostFunctionDerivative",
-    HOFFSET( ParameterIterationType, CostFunctionDerivative ), parametersMemoryDataType );
+    HOFFSET( ParameterIterationType, CostFunctionDerivative ),
+    parametersMemoryDataType );
   this->m_H5ParameterIterationType = memoryDataType;
 }
 
@@ -74,8 +77,8 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
 
 
 template< unsigned int VNumberOfParameters, class TParametersValue >
-const typename RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
-      TParametersValue >::FixedParametersType &
+const typename RecordOptimizationParameterProgressionCommand<
+  VNumberOfParameters, TParametersValue >::FixedParametersType &
 RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
   TParametersValue >
 ::GetFixedParameters() const
@@ -141,8 +144,8 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
     optimizer->GetCostFunction()->GetDerivative( parameters, derivative );
     for( unsigned int ii = 0; ii < NumberOfParameters; ++ii )
       {
-      this->m_ParameterProgression[this->m_CurrentIteration].CostFunctionDerivative[ii] =
-        derivative[ii];
+      this->m_ParameterProgression[ this->m_CurrentIteration ].
+        CostFunctionDerivative[ii] = derivative[ii];
       }
 
     return;
@@ -177,8 +180,8 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
     optimizer->GetCostFunction()->GetDerivative( parameters, derivative );
     for( unsigned int ii = 0; ii < NumberOfParameters; ++ii )
       {
-      this->m_ParameterProgression[this->m_CurrentIteration].CostFunctionDerivative[ii] =
-        derivative[ii];
+      this->m_ParameterProgression[ this->m_CurrentIteration ].
+        CostFunctionDerivative[ii] = derivative[ii];
       }
 
     return;
@@ -204,9 +207,13 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
     }
   H5::H5File * file = new H5::H5File( this->m_FileName, H5F_ACC_TRUNC );
 
-  hsize_t iterationDataspaceDimension[] = { this->m_ParameterProgression.size() };
+  hsize_t iterationDataspaceDimension[] =
+    {
+    this->m_ParameterProgression.size()
+    };
   const int dataspaceRank = 1;
-  H5::DataSpace iterationDataSpace( dataspaceRank, iterationDataspaceDimension );
+  H5::DataSpace iterationDataSpace( dataspaceRank,
+    iterationDataspaceDimension );
   H5::DataSet * iterationDataset = new H5::DataSet(
     file->createDataSet( "OptimizationParameterProgression",
     this->m_H5ParameterIterationType, iterationDataSpace ) );
@@ -216,8 +223,8 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
   hsize_t fixedDataspaceDimension[] = { this->m_FixedParameters.Size() };
   H5::DataSpace fixedDataSpace( dataspaceRank, fixedDataspaceDimension );
 
-  H5::DataSet * fixedDataset = new H5::DataSet( file->createDataSet( "FixedParameters",
-      H5::PredType::NATIVE_DOUBLE, fixedDataSpace ) );
+  H5::DataSet * fixedDataset = new H5::DataSet( file->createDataSet(
+    "FixedParameters", H5::PredType::NATIVE_DOUBLE, fixedDataSpace ) );
   if( fixedDataspaceDimension[0] > 0 )
     {
     fixedDataset->write( &( this->m_FixedParameters.GetElement( 0 ) ),
@@ -245,4 +252,5 @@ RecordOptimizationParameterProgressionCommand< VNumberOfParameters,
 
 } // End namespace itk
 
-#endif // End !defined( __itktubeRecordOptimizationParameterProgressionCommand_hxx )
+// End !defined( __itktubeRecordOptimizationParameterProgressionCommand_hxx )
+#endif

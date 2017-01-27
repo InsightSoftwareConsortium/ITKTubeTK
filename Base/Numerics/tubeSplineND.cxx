@@ -28,7 +28,8 @@ limitations under the License.
 namespace tube
 {
 
-class SplineNDValueFunction : public UserFunction< vnl_vector< double >, double >
+class SplineNDValueFunction
+: public UserFunction< vnl_vector< double >, double >
 {
 public:
 
@@ -529,7 +530,8 @@ SplineND
         }
 
       itDataWSDest.Set( m_Spline1D->DataValue( m_Data1D,
-          ( ( x( ( int )m_Dimension-i-1 )-( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
+        ( ( x( ( int )m_Dimension-i-1 )
+        - ( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
       ++itDataWSDest;
       }
     }
@@ -583,7 +585,8 @@ SplineND
             }
 
           itDataWSDest.Set( m_Spline1D->DataValue( m_Data1D,
-              ( ( x( ( int )m_Dimension-i-1 )-( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
+            ( ( x( ( int )m_Dimension-i-1 ) 
+            - ( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
           ++itDataWSDest;
           }
         break;
@@ -597,7 +600,8 @@ SplineND
             }
 
           itDataWSDest.Set( m_Spline1D->DataValueD( m_Data1D,
-              ( ( x( ( int )m_Dimension-i-1 )-( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
+            ( ( x( ( int )m_Dimension-i-1 )
+            - ( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
           ++itDataWSDest;
           }
         break;
@@ -611,7 +615,8 @@ SplineND
             }
 
           itDataWSDest.Set( m_Spline1D->DataValueD2( m_Data1D,
-              ( ( x( ( int )m_Dimension-i-1 )-( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
+            ( ( x( ( int )m_Dimension-i-1 ) 
+            - ( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
           ++itDataWSDest;
           }
         break;
@@ -799,8 +804,8 @@ SplineND
         }
 
       itDataWSX.Set( m_Spline1D->DataValueJet( m_Data1D,
-        ( ( x( ( int )m_Dimension-i-1 ) - ( int )x( ( int )m_Dimension-i-1 ) ) ),
-          &vD, &vD2 ) );
+        ( ( x( ( int )m_Dimension-i-1 ) 
+        - ( int )x( ( int )m_Dimension-i-1 ) ) ), &vD, &vD2 ) );
 
       for( unsigned int l=0; l<m_Dimension; l++ )
         {
@@ -839,7 +844,8 @@ SplineND
             ++itImageWSX2;
             }
           itImageWSX2.Set( m_Spline1D->DataValue( m_Data1D,
-              ( ( x( ( int )m_Dimension-i-1 )-( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
+              ( ( x( ( int )m_Dimension-i-1 ) 
+              - ( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
           for( unsigned int ind=0; ind<4; ind++ )
             {
             m_Data1D( ind )= itImageWSXX2.Get();
@@ -853,7 +859,8 @@ SplineND
             }
 
           itImageWSXX2.Set( m_Spline1D->DataValue( m_Data1D,
-            ( ( x( ( int )m_Dimension-i-1 )-( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
+            ( ( x( ( int )m_Dimension-i-1 ) 
+            - ( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
           }
         }
 
@@ -915,7 +922,7 @@ SplineND
   MatrixType h( m_Dimension, 1 );
   for( unsigned int i=0; i<m_Dimension; i++ )
     {
-    h( i,0 ) = dir( i );
+    h( i, 0 ) = dir( i );
     }
   return m_OptimizerND->Extreme( extX, extVal, 1, h );
 }

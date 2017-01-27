@@ -40,22 +40,22 @@ namespace tube
 
 template< class TPixel, unsigned int VDimension >
 class ComputeImageStatistics
-  : public itk::ImageToImageFilter< itk::Image< float,  VDimension >,
-      itk::Image< float,  VDimension > >
+  : public itk::ImageToImageFilter< itk::Image< float, VDimension >,
+      itk::Image< float, VDimension > >
 {
 public:
 
   /** Standard class typedefs. */
   typedef ComputeImageStatistics                   Self;
-  typedef itk::ImageToImageFilter< itk::Image< float,  VDimension >,
-      itk::Image< float,  VDimension > >           Superclass;
+  typedef itk::ImageToImageFilter< itk::Image< float, VDimension >,
+      itk::Image< float, VDimension > >            Superclass;
   typedef SmartPointer< Self >                     Pointer;
   typedef SmartPointer< const Self >               ConstPointer;
 
   /** Custom typedefs */
-  typedef itk::Image< TPixel,  VDimension >        MaskType;
-  typedef itk::Image< unsigned int,  VDimension >  ConnCompType;
-  typedef itk::Image< float,  VDimension >         VolumeType;
+  typedef itk::Image< TPixel, VDimension >         MaskType;
+  typedef itk::Image< unsigned int, VDimension >   ConnCompType;
+  typedef itk::Image< float, VDimension >          VolumeType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

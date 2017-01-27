@@ -55,7 +55,7 @@ void
 VectorImageToListGenerator< TImage, TMaskImage >
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
-  Superclass::PrintSelf( os,indent );
+  Superclass::PrintSelf( os, indent );
   os << indent << "MaskValue: "
      << static_cast<typename NumericTraits<MaskPixelType>::PrintType>(
        m_MaskValue )
@@ -248,11 +248,12 @@ VectorImageToListGenerator< TImage, TMaskImage >
   //
   if( this->GetNumberOfInputs() > 1 )
     {
-    MaskImageType *maskImage =
-      const_cast< MaskImageType * >( this->GetMaskImage() );
-    ImageType     *image =
-      const_cast< ImageType * >( this->GetInput() );
-    if( !image->GetBufferedRegion().IsInside( maskImage->GetBufferedRegion() ) )
+    MaskImageType *maskImage = const_cast< MaskImageType * >(
+      this->GetMaskImage() );
+    ImageType     *image = const_cast< ImageType * >(
+      this->GetInput() );
+    if( !image->GetBufferedRegion().IsInside(
+      maskImage->GetBufferedRegion() ) )
       {
       maskImage->SetRequestedRegion( image->GetBufferedRegion() );
       }
@@ -260,7 +261,8 @@ VectorImageToListGenerator< TImage, TMaskImage >
 }
 
 template< class TImage, class TMaskImage >
-const typename VectorImageToListGenerator< TImage, TMaskImage >::ListSampleType *
+const typename VectorImageToListGenerator< TImage, TMaskImage >
+::ListSampleType *
 VectorImageToListGenerator< TImage, TMaskImage >
 ::GetListSample( void ) const
 {

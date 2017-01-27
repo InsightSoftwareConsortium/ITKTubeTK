@@ -340,11 +340,13 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
     {
     // // Set w for Gaussians
     // double sigma = h;
-    // double dist = ( pointItr->GetPosition()-tmpPointItr->GetPosition() ).GetNorm();
+    // double dist = ( pointItr->GetPosition()
+    //   - tmpPointItr->GetPosition() ).GetNorm();
     // w[pos] = 1/( sigma*2.50663 )*exp( -dist*dist/( 2.0*sigma*sigma ) );
 
     // TODO : Finish implementation
-    std::cerr<<" Smoothing method not yet implemented. Please choose another one.\n";
+    std::cerr <<
+      "Distance Gaussian smoothing method not yet implemented.\n";
     return NULL;
     }
 
@@ -362,15 +364,15 @@ RemoveDuplicateTubePoints( typename TTube::Pointer & tube )
 {
   int length = tube->GetNumberOfPoints();
 
-  if ( length <= 1 )
+  if( length <= 1 )
     {
     return 0;
     }
 
   int nPoints = 0;
-  for ( int i = 0; i < length - 1; i++ )
+  for( int i = 0; i < length - 1; i++ )
     {
-    if ( tube->GetPoint( i )->GetPosition() ==
+    if( tube->GetPoint( i )->GetPosition() ==
       tube->GetPoint( i + 1 )->GetPosition() )
       {
       tube->RemovePoint( i + 1 );
@@ -378,7 +380,7 @@ RemoveDuplicateTubePoints( typename TTube::Pointer & tube )
       length--;
       nPoints++;
       }
-    if ( i >= 0 && i < length - 2
+    if( i >= 0 && i < length - 2
          && tube->GetPoint( i )->GetPosition() ==
          tube->GetPoint( i + 2 )->GetPosition() )
       {

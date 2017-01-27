@@ -59,8 +59,11 @@ public:
   typedef vnl_matrix< double >                    MatrixType;
   typedef vnl_vector< double >                    VectorType;
   typedef UserFunction< IntVectorType, double >   ValueFunctionType;
-  typedef UserFunction< VectorType, double >      OptimizerValueFunctionType;
-  typedef UserFunction< VectorType, VectorType >  OptimizerDerivativeFunctionType;
+
+  typedef UserFunction< VectorType, double >
+    OptimizerValueFunctionType;
+  typedef UserFunction< VectorType, VectorType >
+    OptimizerDerivativeFunctionType;
 
   /** Return the type of this object. */
   tubeTypeMacro( SplineND );
@@ -157,11 +160,13 @@ public:
    *  \param extX User supplied initial point, On return equals location
    *         of extreme local to initial point
    *  \param extVal On return equals the value at the local extreme
-   *  \param n number of vectors in directions to use to define the basis space
+   *  \param n number of vectors in directions to use to define the basis
+   *         space
    *  \param dirs TNT::Vectors that define the basis space to search for
    *         local extreme
    */
-  bool Extreme( VectorType & extX, double * extVal, unsigned int n, MatrixType & dirs );
+  bool Extreme( VectorType & extX, double * extVal, unsigned int n,
+    MatrixType & dirs );
 
   /** Calculates the local extreme using an approximation to the conjugate
    * gradient descent method. Function returns true on successful local
@@ -245,7 +250,8 @@ public:
 
 protected:
 
-  typedef itk::VectorContainer< unsigned int, ImageType::Pointer > VectorImageType;
+  typedef itk::VectorContainer< unsigned int, ImageType::Pointer >
+    VectorImageType;
 
   /** Print out information about this object. */
   void PrintSelf( std::ostream & os, Indent indent ) const;
