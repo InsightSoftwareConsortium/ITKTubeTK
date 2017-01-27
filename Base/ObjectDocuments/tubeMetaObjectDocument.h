@@ -43,14 +43,15 @@ public:
   typedef Self *             Pointer;
   typedef const Self *       ConstPointer;
 
-  typedef Superclass::FieldType                      FieldType;
-  typedef Superclass::FieldListType                  FieldListType;
+  typedef Superclass::FieldType                FieldType;
+  typedef Superclass::FieldListType            FieldListType;
 
-  typedef itk::tube::BlobSpatialObjectDocument       BlobSpatialObjectDocumentType;
-  typedef itk::tube::ImageDocument                   ImageDocumentType;
-  typedef itk::tube::ObjectDocument                  ObjectDocumentType;
-  typedef itk::tube::SpatialObjectDocument           SpatialObjectDocumentType;
-  typedef std::vector< ObjectDocumentType::Pointer > ObjectDocumentListType;
+  typedef itk::tube::BlobSpatialObjectDocument BlobSpatialObjectDocumentType;
+  typedef itk::tube::ImageDocument             ImageDocumentType;
+  typedef itk::tube::ObjectDocument            ObjectDocumentType;
+  typedef itk::tube::SpatialObjectDocument     SpatialObjectDocumentType;
+  typedef std::vector< ObjectDocumentType::Pointer >
+                                               ObjectDocumentListType;
 
   /** Constructor. */
   MetaObjectDocument( void );
@@ -71,10 +72,12 @@ public:
   virtual ObjectDocumentListType & GetObjectDocumentList( void );
 
   /** Set the list of object documents. **/
-  virtual void SetObjectDocumentList( ObjectDocumentListType & objectDocumentList );
+  virtual void SetObjectDocumentList( ObjectDocumentListType &
+    objectDocumentList );
 
   /** Add the specified object document to the back of the list. */
-  virtual void AddObjectDocument( ObjectDocumentType::Pointer objectDocument );
+  virtual void AddObjectDocument( ObjectDocumentType::Pointer
+    objectDocument );
 
   /** Clear all the information. */
   virtual void Clear( void );
