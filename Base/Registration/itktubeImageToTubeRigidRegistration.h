@@ -101,9 +101,12 @@ public:
     MovingTubeType >
     DefaultMetricType;
 
-  typedef typename DefaultMetricType::TransformParametersType     ParametersType;
-  typedef typename DefaultMetricType::TransformType               TransformType;
-  typedef ParametersType                                          FeatureWeightsType;
+  typedef typename DefaultMetricType::TransformParametersType
+    ParametersType;
+  typedef typename DefaultMetricType::TransformType
+    TransformType;
+  typedef ParametersType
+    FeatureWeightsType;
 
   /**  Dimension of the images.  */
   enum { ImageDimension = FixedImageType::ImageDimension,

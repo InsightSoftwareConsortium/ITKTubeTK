@@ -572,7 +572,9 @@ SplineND
     itDataWSColumn.GoToBegin();
     itDataWSDest.GoToBegin();
     unsigned int k = ( unsigned int )std::pow( ( float )4, ( int )i );
-    switch( dx( ( int )m_Dimension-i-1 ) )
+    int pos = static_cast<int>( m_Dimension ) - i - 1;
+    double posX = x( pos ) - static_cast<int>( x( pos ) );
+    switch( dx( pos ) )
       {
       default:
       case 0:
@@ -584,9 +586,7 @@ SplineND
             ++itDataWSColumn;
             }
 
-          itDataWSDest.Set( m_Spline1D->DataValue( m_Data1D,
-            ( ( x( ( int )m_Dimension-i-1 ) 
-            - ( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
+          itDataWSDest.Set( m_Spline1D->DataValue( m_Data1D, posX ) );
           ++itDataWSDest;
           }
         break;
@@ -599,9 +599,7 @@ SplineND
             ++itDataWSColumn;
             }
 
-          itDataWSDest.Set( m_Spline1D->DataValueD( m_Data1D,
-            ( ( x( ( int )m_Dimension-i-1 )
-            - ( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
+          itDataWSDest.Set( m_Spline1D->DataValueD( m_Data1D, posX ) );
           ++itDataWSDest;
           }
         break;
@@ -614,9 +612,7 @@ SplineND
             ++itDataWSColumn;
             }
 
-          itDataWSDest.Set( m_Spline1D->DataValueD2( m_Data1D,
-            ( ( x( ( int )m_Dimension-i-1 ) 
-            - ( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
+          itDataWSDest.Set( m_Spline1D->DataValueD2( m_Data1D, posX ) );
           ++itDataWSDest;
           }
         break;
@@ -784,6 +780,8 @@ SplineND
       m_DataWS->GetLargestPossibleRegion() );
     itDataWSX.GoToBegin();
 
+    int pos = static_cast<int>( m_Dimension ) - i - 1;
+    double posX = x( pos ) - static_cast<int>( x( pos ) );
     for( unsigned int j=0; j<k; j++ )
       {
       itDataWSX.GoToBegin();
@@ -803,13 +801,10 @@ SplineND
         ++itDataWSX;
         }
 
-      itDataWSX.Set( m_Spline1D->DataValueJet( m_Data1D,
-        ( ( x( ( int )m_Dimension-i-1 ) 
-        - ( int )x( ( int )m_Dimension-i-1 ) ) ), &vD, &vD2 ) );
+      itDataWSX.Set( m_Spline1D->DataValueJet( m_Data1D, posX, &vD, &vD2 ) );
 
       for( unsigned int l=0; l<m_Dimension; l++ )
         {
-
         if( ( int )m_Dimension-i != ( int )l )
           {
           VectorImageType::Iterator itWSX2  = m_DataWSX->Begin();
@@ -843,9 +838,7 @@ SplineND
             {
             ++itImageWSX2;
             }
-          itImageWSX2.Set( m_Spline1D->DataValue( m_Data1D,
-              ( ( x( ( int )m_Dimension-i-1 ) 
-              - ( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
+          itImageWSX2.Set( m_Spline1D->DataValue( m_Data1D, posX ) );
           for( unsigned int ind=0; ind<4; ind++ )
             {
             m_Data1D( ind )= itImageWSXX2.Get();
@@ -858,9 +851,7 @@ SplineND
             ++itImageWSXX2;
             }
 
-          itImageWSXX2.Set( m_Spline1D->DataValue( m_Data1D,
-            ( ( x( ( int )m_Dimension-i-1 ) 
-            - ( int )x( ( int )m_Dimension-i-1 ) ) ) ) );
+          itImageWSXX2.Set( m_Spline1D->DataValue( m_Data1D, posX ) );
           }
         }
 

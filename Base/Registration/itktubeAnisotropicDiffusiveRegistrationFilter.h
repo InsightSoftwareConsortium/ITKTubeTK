@@ -49,15 +49,16 @@ namespace tube
  * inaccuracies.
  *
  * This filter includes a regularization term based on anisotropic diffusion
- * that accommodates deformation field discontinuities that are expected when
- * considering sliding motion.
+ * that accommodates deformation field discontinuities that are expected
+ * when considering sliding motion.
  *
  * The regularization term uses a specified border between the organs
- * ( stored as a vtkPolyData * ) and enforces coupling between the organs while
- * allowing the motion field to exhibit sliding motion at the organ interface.
+ * ( stored as a vtkPolyData * ) and enforces coupling between the organs
+ * while allowing the motion field to exhibit sliding motion at the organ
+ * interface.
  *
- * See: D.F. Pace et al., Deformable image registration of sliding organs using
- * anisotropic diffusive regularization, ISBI 2011.
+ * See: D.F. Pace et al., Deformable image registration of sliding organs
+ * using anisotropic diffusive regularization, ISBI 2011.
  *
  * This class is templated over the type of the fixed image, the type of the
  * moving image and the type of the deformation field.
@@ -90,7 +91,8 @@ public:
                 DiffusiveRegistrationFilter );
 
   /** Inherit some parameters from the superclass. */
-  itkStaticConstMacro( ImageDimension, unsigned int, Superclass::ImageDimension );
+  itkStaticConstMacro( ImageDimension, unsigned int,
+    Superclass::ImageDimension );
 
   /** Convenient typedefs from the superclass. */
   typedef typename Superclass::FixedImageType
@@ -171,47 +173,47 @@ public:
 
   /** Types for weighting between the anisotropic and diffusive ( Gaussian )
     * regularization */
-  typedef double                                        WeightType;
-  typedef itk::Image< WeightType, ImageDimension >      WeightImageType;
-  typedef typename WeightImageType::Pointer             WeightImagePointer;
-  typedef itk::ImageRegionIterator< WeightImageType >   WeightImageRegionType;
-  typedef typename WeightImageType::RegionType
-      ThreadWeightImageRegionType;
+  typedef double                                      WeightType;
+  typedef itk::Image< WeightType, ImageDimension >    WeightImageType;
+  typedef typename WeightImageType::Pointer           WeightImagePointer;
+  typedef itk::ImageRegionIterator< WeightImageType > WeightImageRegionType;
+
+  typedef typename WeightImageType::RegionType ThreadWeightImageRegionType;
 
   /** Organ boundary surface types */
-  typedef vtkPolyData                                   BorderSurfaceType;
-  typedef vtkSmartPointer< BorderSurfaceType >          BorderSurfacePointer;
+  typedef vtkPolyData                                 BorderSurfaceType;
+  typedef vtkSmartPointer< BorderSurfaceType >        BorderSurfacePointer;
 
   /** The number of div( Tensor \grad u )v terms we sum for the regularizer.
    *  Reimplement in derived classes. */
   virtual int GetNumberOfTerms( void ) const
     { return 2; }
 
-  /** Set/get the organ boundary polydata, which must be in the same space as
-   *  the fixed image.  Border normals are computed on this polydata, so it
-   *  may be changed over the course of the registration. */
+  /** Set/get the organ boundary polydata, which must be in the same space
+   * as the fixed image.  Border normals are computed on this polydata, so
+   * it may be changed over the course of the registration. */
   virtual void SetBorderSurface( BorderSurfaceType * border )
     { m_BorderSurface = border; }
   virtual BorderSurfaceType * GetBorderSurface( void ) const
     { return m_BorderSurface; }
 
   /** Set/get the lambda that controls the decay of the weight value w as a
-   *  function of the distance to the closest border point.  If gamma=-1, then
-   *  w decays exponentially ( w = e^( -1.0*lambda*distance ) ).  Otherwise, w
-   *  decays exponentially using a Dirac-shaped function
-   *  ( w = 1 / ( 1 + lambda*gamma*e^( -1.0*lambda*distance^2 ) ) ).  Lambda must
-   *  be positive. */
+   *  function of the distance to the closest border point.  If gamma=-1,
+   *  then w decays exponentially ( w = e^( -1.0*lambda*distance ) ).
+   *  Otherwise, w decays exponentially using a Dirac-shaped function
+   *  ( w = 1 / ( 1 + lambda*gamma*e^( -1.0*lambda*distance^2 ) ) ).
+   *  Lambda must be positive. */
   void SetLambda( WeightType l )
     { if( l > 0 ) { m_Lambda = l; } }
   WeightType GetLambda( void ) const
     { return m_Lambda; }
 
   /** Set/get the gamma that controls the decay of the weight value w as a
-   *  function of the distance to the closest border point.  If gamma=-1, then
-   *  w decays exponentially ( w = e^( -1.0*lambda*distance ) ).  Otherwise, w
-   *  decays exponentially using a Dirac-shaped function
-   *  ( w = 1 / ( 1 + lambda*gamma*e^( -1.0*lambda*distance^2 ) ) ).  Gamma must
-   *  be positive or -1.0. */
+   *  function of the distance to the closest border point.  If gamma=-1,
+   *  then w decays exponentially ( w = e^( -1.0*lambda*distance ) ).
+   *  Otherwise, w decays exponentially using a Dirac-shaped function
+   *  ( w = 1 / ( 1 + lambda*gamma*e^( -1.0*lambda*distance^2 ) ) ).
+   *  Gamma must be positive or -1.0. */
   void SetGamma( WeightType g )
     { if( g > 0 || g == -1.0 ) { m_Gamma = g; } }
   WeightType GetGamma( void ) const
@@ -224,12 +226,13 @@ public:
     { m_NormalVectorImage = normalImage; }
   virtual NormalVectorImageType * GetNormalVectorImage( void ) const
     { return m_NormalVectorImage; }
-  virtual NormalVectorImageType * GetHighResolutionNormalVectorImage( void ) const
+  virtual NormalVectorImageType * GetHighResolutionNormalVectorImage( void )
+    const
     { return m_HighResolutionNormalVectorImage; }
 
   /** Set/get the weighting image.  Setting the weighting image overrides
-   * the border surface polydata and lambda/gamma if a border surface was also
-   * supplied.  */
+   * the border surface polydata and lambda/gamma if a border surface was
+   * also supplied.  */
   virtual void SetWeightImage( WeightImageType * weightImage )
     { m_WeightImage = weightImage; }
   virtual WeightImageType * GetWeightImage( void ) const
@@ -238,8 +241,8 @@ public:
     { return m_HighResolutionWeightImage; }
 
   /** Get the normal components of the deformation field. */
-  virtual const DeformationFieldType * GetNormalDeformationComponentImage( void )
-      const
+  virtual const DeformationFieldType * GetNormalDeformationComponentImage(
+    void ) const
     {
     return this->GetDeformationComponentImage( NORMAL );
     }
@@ -253,8 +256,8 @@ protected:
   enum DivTerm { TANGENTIAL, NORMAL };
 
   /** Allocate the deformation component images and their derivative images.
-   *  ( which may be updated throughout the registration ). Reimplement in derived
-   *  classes. */
+   *  ( which may be updated throughout the registration ). Reimplement in
+   *  derived classes. */
   virtual void InitializeDeformationComponentAndDerivativeImages( void );
 
   /** Allocate and populate the diffusion tensor images.
@@ -262,15 +265,17 @@ protected:
   virtual void ComputeDiffusionTensorImages( void );
 
   /** Allocate and populate the images of multiplication vectors that the
-   *  div( T \grad( u ) ) values are multiplied by.  Allocate and populate all or
-   *  some of the multiplication vector images in derived classes.  Otherwise,
-   *  default to e_l, where e_l is the lth canonical unit vector. */
+   *  div( T \grad( u ) ) values are multiplied by.  Allocate and populate
+   *  all or *  some of the multiplication vector images in derived classes.
+   *  Otherwise, default to e_l, where e_l is the lth canonical unit
+   *  vector.  */
   virtual void ComputeMultiplicationVectorImages( void );
 
   /** Updates the deformation vector component images on each iteration. */
   virtual void UpdateDeformationComponentImages( OutputImageType * output );
 
-  /** If needed, allocates and computes the normal vector and weight images. */
+  /** If needed, allocates and computes the normal vector and weight
+   * images. */
   virtual void SetupNormalVectorAndWeightImages( void );
 
   /** Compute the normals for the border surface. */
@@ -286,8 +291,8 @@ protected:
   virtual void GetNormalsAndDistancesFromClosestSurfacePoint(
       bool computeNormals, bool computeWeights );
 
-  /** Does the actual work of updating the output over an output region supplied
-   *  by the multithreading mechanism.
+  /** Does the actual work of updating the output over an output region
+   * supplied by the multithreading mechanism.
    *  \sa GetNormalsAndDistancesFromClosestSurfacePoint
    *  \sa GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback */
   virtual void ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
@@ -300,8 +305,8 @@ protected:
       int threadId );
 
   /** Computes the weighting factor w from the distance to the border using
-   *  exponential decay.  The weight should be 1 near the border and 0 away from
-   *  the border. */
+   *  exponential decay.  The weight should be 1 near the border and 0 away
+   *  from the border. */
   virtual WeightType ComputeWeightFromDistanceExponential(
       const WeightType distance ) const;
 
@@ -316,8 +321,8 @@ private:
   AnisotropicDiffusiveRegistrationFilter( const Self& );
   void operator=( const Self& ); // Purposely not implemented
 
-  /** Structure for passing information into static callback methods.  Used in
-   * the subclasses threading mechanisms. */
+  /** Structure for passing information into static callback methods.
+   * Used in the subclasses threading mechanisms. */
   struct AnisotropicDiffusiveRegistrationFilterThreadStruct
     {
     AnisotropicDiffusiveRegistrationFilter * Filter;
@@ -329,9 +334,10 @@ private:
     bool ComputeWeights;
     }; // End struct AnisotropicDiffusiveRegistrationFilterThreadStruct
 
-  /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
-   * output region that it passes to
-   * ThreadedGetNormalsAndDistancesFromClosestSurfacePoint for processing. */
+  /** This callback method uses ImageSource::SplitRequestedRegion to
+   * acquire an output region that it passes to
+   * ThreadedGetNormalsAndDistancesFromClosestSurfacePoint for
+   * processing. */
   static ITK_THREAD_RETURN_TYPE
       GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback(
           void * arg );
@@ -348,8 +354,8 @@ private:
    *  to calculate once ( setting m_ImageAttributeImage ) at the highest
    *  resolution during multiresolution registration, and then resampling on
    *  each scale.  The normal matrix image and weight structures image are
-   *  resampled using nearest neighbor, while the weight regularizations image
-   *  are resampled using a linear interpolation */
+   *  resampled using nearest neighbor, while the weight regularizations
+   *  image are resampled using a linear interpolation */
   NormalVectorImagePointer            m_HighResolutionNormalVectorImage;
   WeightImagePointer                  m_HighResolutionWeightImage;
 

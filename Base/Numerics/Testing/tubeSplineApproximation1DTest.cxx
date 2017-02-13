@@ -28,6 +28,8 @@ limitations under the License.
 #include <itkImageRegionIteratorWithIndex.h>
 #include <itkMersenneTwisterRandomVariateGenerator.h>
 
+bool MY_DEBUG = false;
+
 class MySA1DFunc : public tube::UserFunction< int, double >
 {
 private:
@@ -41,6 +43,10 @@ public:
   const double & Value( const int & x )
     {
     cVal = std::sin( ( double )x );
+    if( MY_DEBUG )
+      {
+      std::cout << "   x = " << x << " : v = " << cVal << std::endl;
+      }
     return cVal;
     }
 
@@ -59,6 +65,10 @@ public:
   const double & Value( const double & x )
     {
     cVal = std::sin( ( double )x );
+    if( MY_DEBUG )
+      {
+      std::cout << "   x = " << x << " : v = " << cVal << std::endl;
+      }
     return cVal;
     }
 
@@ -77,6 +87,10 @@ public:
   const double & Value( const double & x )
     {
     cDeriv = std::cos( ( double )x );
+    if( MY_DEBUG )
+      {
+      std::cout << "   x = " << x << " : dx = " << cDeriv << std::endl;
+      }
     return cDeriv;
     }
 
@@ -216,8 +230,13 @@ int tubeSplineApproximation1DTest( int argc, char * argv[] )
   for( unsigned int c=0; c<100; c++ )
     {
     x = rndGen->GetNormalVariate( 0.0, 0.5 );
+    while( x > 1.4749 )
+      {
+      x = rndGen->GetNormalVariate( 0.0, 0.5 );
+      }
 
     double xVal = 0;
+    double x0 = x;
     if( !spline.Extreme( &x, &xVal ) )
       {
       std::cout << "Spline.Extreme() returned false." << std::endl;
@@ -232,7 +251,21 @@ int tubeSplineApproximation1DTest( int argc, char * argv[] )
       if( vnl_math_abs( x - -1.4749 ) > 0.0001 )
         {
         std::cout << "Spline.Extreme() solution not ideal: x="
-          << x << "!= ideal=" << vnl_math::pi/2 << std::endl;
+          << x << " != ideal=-1.4749" << std::endl;
+        std::cout << "   Optimization started at x = " << x0 << std::endl;
+        std::cout << "   Value at x0 = " << std::sin(x0) << std::endl;
+        std::cout << "   Derivative at x0 = " << std::cos(x0) << std::endl;
+        std::cout << "   Iteration = " << c << " of 100." << std::endl;
+        for( double tx=x0-1; tx<x0+1; tx+=0.1 )
+          {
+          std::cout << "    tx0 = " << tx << " v = " << spline.Value( tx )
+            << std::endl;
+          }
+        for( double tx=x-1; tx<x+1; tx+=0.1 )
+          {
+          std::cout << "    tx = " << tx << " v = " << spline.Value( tx )
+            << std::endl;
+          }
         returnStatus = EXIT_FAILURE;
         err = true;
         }
@@ -240,6 +273,8 @@ int tubeSplineApproximation1DTest( int argc, char * argv[] )
         {
         std::cout << "Spline.Extreme() output not ideal: val="
           << xVal << " != ideal=1.0" << std::endl;
+        std::cout << "   Optimization started at x = " << x0 << std::endl;
+        std::cout << "   Iteration = " << c << " of 100." << std::endl;
         returnStatus = EXIT_FAILURE;
         err = true;
         }

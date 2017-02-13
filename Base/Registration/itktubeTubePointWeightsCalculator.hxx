@@ -70,7 +70,8 @@ TubePointWeightsCalculator< VDimension,
        ++tubeIterator )
     {
     TubeSpatialObjectType * currentTube =
-      dynamic_cast< TubeSpatialObjectType * >( ( *tubeIterator ).GetPointer() );
+      dynamic_cast< TubeSpatialObjectType * >(
+        ( *tubeIterator ).GetPointer() );
     if( currentTube != NULL )
       {
       tubePoints += currentTube->GetNumberOfPoints();
@@ -84,16 +85,18 @@ TubePointWeightsCalculator< VDimension,
        ++tubeIterator )
     {
     TubeSpatialObjectType * currentTube =
-      dynamic_cast< TubeSpatialObjectType * >( ( *tubeIterator ).GetPointer() );
+      dynamic_cast< TubeSpatialObjectType * >(
+        ( *tubeIterator ).GetPointer() );
     if( currentTube != NULL )
       {
-      const typename TubeSpatialObjectType::PointListType & currentTubePoints
-        = currentTube->GetPoints();
+      const typename TubeSpatialObjectType::PointListType &
+        currentTubePoints = currentTube->GetPoints();
       typedef typename TubeSpatialObjectType::PointListType::const_iterator
         TubePointIteratorType;
-      for( TubePointIteratorType tubePointIterator = currentTubePoints.begin();
-            tubePointIterator != currentTubePoints.end();
-            ++tubePointIterator )
+      for( TubePointIteratorType tubePointIterator =
+        currentTubePoints.begin();
+        tubePointIterator != currentTubePoints.end();
+        ++tubePointIterator )
         {
         this->m_PointWeights[tubeIndex]
           = this->m_PointWeightFunction->Evaluate( *tubePointIterator );
@@ -116,10 +119,11 @@ TubePointWeightsCalculator< VDimension,
   TPointWeights >
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
-  Superclass::PrintSelf( os,indent );
+  Superclass::PrintSelf( os, indent );
   if( ! m_TubeTreeSpatialObject.IsNull() )
     {
-    os << indent << "TubeTreeSpatialObject: " << m_TubeTreeSpatialObject << std::endl;
+    os << indent << "TubeTreeSpatialObject: " << m_TubeTreeSpatialObject
+      << std::endl;
     }
   else
     {

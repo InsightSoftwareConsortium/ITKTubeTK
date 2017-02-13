@@ -150,8 +150,8 @@ public:
 
   // **************
   // **************
-  //  Specify how the fixed image should be sampled when computing the metric and
-  //    what ROI of the moving image is valid
+  //  Specify how the fixed image should be sampled when computing the
+  //  metric and what ROI of the moving image is valid
   // **************
   // **************
   itkSetMacro( UseFixedImageMaskObject, bool );
@@ -176,7 +176,8 @@ public:
   itkGetMacro( RegionOfInterestPoint1, PointType );
   itkSetMacro( RegionOfInterestPoint2, PointType );
   itkGetMacro( RegionOfInterestPoint2, PointType );
-  void SetRegionOfInterest( const PointType & point1, const PointType & point2 );
+  void SetRegionOfInterest( const PointType & point1,
+    const PointType & point2 );
 
   void SetRegionOfInterest( const std::vector<float> & points );
 
@@ -216,9 +217,9 @@ public:
     PixelType defaultPixelValue = 0 );
 
   // Returns the moving image resampled into the space of the fixed image
-  typename TImage::ConstPointer  GetFinalMovingImage( InterpolationMethodEnumType interp
-                                                       = OptimizedRegistrationMethodType
-                                                         ::LINEAR_INTERPOLATION );
+  typename TImage::ConstPointer  GetFinalMovingImage(
+    InterpolationMethodEnumType interp = OptimizedRegistrationMethodType
+    ::LINEAR_INTERPOLATION );
 
   // **************
   // **************
@@ -233,7 +234,7 @@ public:
   itkSetConstObjectMacro( BaselineImage, TImage );
 
   // Bound the required accuracy for the registration test to "pass"
-  itkSetMacro( BaselineNumberOfFailedPixelsTolerance,  unsigned int );
+  itkSetMacro( BaselineNumberOfFailedPixelsTolerance, unsigned int );
   itkSetMacro( BaselineIntensityTolerance, PixelType );
   itkSetMacro( BaselineRadiusTolerance, unsigned int );
 
@@ -379,7 +380,8 @@ public:
   itkGetConstMacro( RigidMetricMethodEnum, MetricMethodEnumType );
 
   itkSetMacro( RigidInterpolationMethodEnum, InterpolationMethodEnumType );
-  itkGetConstMacro( RigidInterpolationMethodEnum, InterpolationMethodEnumType );
+  itkGetConstMacro( RigidInterpolationMethodEnum,
+    InterpolationMethodEnumType );
 
   itkGetConstObjectMacro( RigidTransform, RigidTransformType );
   itkGetMacro( RigidMetricValue, double );
@@ -400,7 +402,8 @@ public:
   itkGetConstMacro( AffineMetricMethodEnum, MetricMethodEnumType );
 
   itkSetMacro( AffineInterpolationMethodEnum, InterpolationMethodEnumType );
-  itkGetConstMacro( AffineInterpolationMethodEnum, InterpolationMethodEnumType );
+  itkGetConstMacro( AffineInterpolationMethodEnum,
+    InterpolationMethodEnumType );
 
   itkGetConstObjectMacro( AffineTransform, AffineTransformType );
   itkGetMacro( AffineMetricValue, double );
@@ -423,8 +426,10 @@ public:
   itkSetMacro( BSplineMetricMethodEnum, MetricMethodEnumType );
   itkGetConstMacro( BSplineMetricMethodEnum, MetricMethodEnumType );
 
-  itkSetMacro( BSplineInterpolationMethodEnum, InterpolationMethodEnumType );
-  itkGetConstMacro( BSplineInterpolationMethodEnum, InterpolationMethodEnumType );
+  itkSetMacro( BSplineInterpolationMethodEnum,
+    InterpolationMethodEnumType );
+  itkGetConstMacro( BSplineInterpolationMethodEnum,
+    InterpolationMethodEnumType );
 
   itkGetConstObjectMacro( BSplineTransform, BSplineTransformType );
   itkGetMacro( BSplineMetricValue, double );
@@ -446,8 +451,10 @@ private:
   typedef typename InitialRegistrationMethodType::LandmarkPointContainer
   LandmarkPointContainer;
 
-  ImageToImageRegistrationHelper( const Self & );   // Purposely not implemented
-  void operator =( const Self & );                  // Purposely not implemented
+  // Purposely not implemented
+  ImageToImageRegistrationHelper( const Self & );
+  // Purposely not implemented
+  void operator =( const Self & );
 
   //  Data
   typename TImage::ConstPointer         m_FixedImage;

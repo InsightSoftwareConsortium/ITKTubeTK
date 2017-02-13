@@ -328,7 +328,7 @@ JointHistogramImageFunction<TInputImage, TCoordRep>
 }
 
 template< class TInputImage, class TCoordRep >
-itk::Image<float,2>::Pointer &
+itk::Image<float, 2>::Pointer &
 JointHistogramImageFunction<TInputImage, TCoordRep>
 ::ComputeHistogramAtIndex( const IndexType & index, bool blur ) const
 {

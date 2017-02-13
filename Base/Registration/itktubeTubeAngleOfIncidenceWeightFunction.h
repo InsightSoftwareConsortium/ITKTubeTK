@@ -131,8 +131,10 @@ private:
   double    m_AngleDependence;
   PointType m_UltrasoundProbeOrigin;
 
-  TubeAngleOfIncidenceWeightFunction( const Self & ); // purposely not implemented
-  void operator=( const Self & ); // purposely not implemented
+  // purposely not implemented
+  TubeAngleOfIncidenceWeightFunction( const Self & );
+  // purposely not implemented
+  void operator=( const Self & );
 }; // End class TubeAngleOfIncidenceWeightFunction
 
 } // End namespace Function

@@ -122,8 +122,10 @@ protected:
 
 private:
 
-  RigidImageToImageRegistrationMethod( const Self & );    // Purposely not implemented
-  void operator =( const Self & );                        // Purposely not implemented
+  // Purposely not implemented
+  RigidImageToImageRegistrationMethod( const Self & );
+  // Purposely not implemented
+  void operator =( const Self & );
 
 };
 

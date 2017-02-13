@@ -259,10 +259,10 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
 
 template< class TTransformType, unsigned int TDimension >
 void
-TubeToTubeTransformFilter< TTransformType,TDimension >
+TubeToTubeTransformFilter< TTransformType, TDimension >
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
-  Superclass::PrintSelf( os,indent );
+  Superclass::PrintSelf( os, indent );
 
   os << indent << "Transformation: " << m_Transform << std::endl;
   os << indent << "OutputIndexToObject Transform: " <<

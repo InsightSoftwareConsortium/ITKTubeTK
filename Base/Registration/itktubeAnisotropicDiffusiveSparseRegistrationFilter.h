@@ -52,12 +52,14 @@ namespace tube
  * inaccuracies.
  *
  * This filter includes a regularization term based on anisotropic diffusion
- * that accommodates deformation field discontinuities that are expected when
+ * that accommodates deformation field discontinuities that are expected
+ * when
  * considering sliding motion.
  *
  * TODO
  *
- * See: D.F. Pace et al., Deformable image registration of sliding organs using
+ * See: D.F. Pace et al., Deformable image registration of sliding organs
+ * using
  * anisotropic diffusive regularization, ISBI 2011.
  *
  * This class is templated over the type of the fixed image, the type of the
@@ -92,16 +94,19 @@ public:
                 DiffusiveRegistrationFilter );
 
   /** Inherit some parameters from the superclass. */
-  itkStaticConstMacro( ImageDimension, unsigned int, Superclass::ImageDimension );
+  itkStaticConstMacro( ImageDimension, unsigned int,
+    Superclass::ImageDimension );
 
   /** Convenient typedefs from the superclass. */
-  typedef typename Superclass::FixedImageType           FixedImageType;
-  typedef typename Superclass::FixedImagePointer        FixedImagePointer;
-  typedef typename Superclass::MovingImageType          MovingImageType;
-  typedef typename Superclass::MovingImagePointer       MovingImagePointer;
-  typedef typename Superclass::DeformationFieldType     DeformationFieldType;
-  typedef typename Superclass::DeformationFieldPointer  DeformationFieldPointer;
-  typedef typename Superclass::TimeStepType             TimeStepType;
+  typedef typename Superclass::FixedImageType          FixedImageType;
+  typedef typename Superclass::FixedImagePointer       FixedImagePointer;
+  typedef typename Superclass::MovingImageType         MovingImageType;
+  typedef typename Superclass::MovingImagePointer      MovingImagePointer;
+  typedef typename Superclass::DeformationFieldType    DeformationFieldType;
+  typedef typename Superclass::TimeStepType            TimeStepType;
+
+  typedef typename Superclass::DeformationFieldPointer
+      DeformationFieldPointer;
   typedef typename Superclass::FiniteDifferenceFunctionType
       FiniteDifferenceFunctionType;
   typedef typename Superclass::OutputImageType
@@ -196,8 +201,8 @@ public:
   typedef typename WeightMatrixImageType::RegionType
       ThreadWeightMatrixImageRegionType;
 
-  /** We also need a weighting w between the diffusive regularization and the
-    * anisotropic regularization, which is a scalar. */
+  /** We also need a weighting w between the diffusive regularization and
+   * the anisotropic regularization, which is a scalar. */
   typedef itk::Image< WeightComponentType, ImageDimension >
       WeightComponentImageType;
   typedef typename WeightComponentImageType::Pointer
@@ -208,8 +213,8 @@ public:
       ThreadWeightComponentImageRegionType;
 
   /** Organ boundary surface types */
-  typedef vtkPolyData                                   BorderSurfaceType;
-  typedef vtkSmartPointer< BorderSurfaceType >          BorderSurfacePointer;
+  typedef vtkPolyData                               BorderSurfaceType;
+  typedef vtkSmartPointer< BorderSurfaceType >      BorderSurfacePointer;
 
   /** Tube spatial object types */
   typedef typename itk::SpatialObject< ImageDimension >::ChildrenListType
@@ -228,38 +233,40 @@ public:
   virtual int GetNumberOfTerms( void ) const
     { return 4; }
 
-  /** Set/get the organ boundary polydata, which must be in the same space as
-   *  the fixed image.  Border normals are computed on this polydata, so it
-   *  may be changed over the course of the registration. */
+  /** Set/get the organ boundary polydata, which must be in the same space
+   * as the fixed image.  Border normals are computed on this polydata, so
+   * it may be changed over the course of the registration. */
   virtual void SetBorderSurface( BorderSurfaceType * border )
     { m_BorderSurface = border; }
   virtual BorderSurfaceType * GetBorderSurface( void ) const
     { return m_BorderSurface; }
 
-  /** Set/get the list of tube spatial objects, which must be in the same space
-   *  as the fixed image. */
+  /** Set/get the list of tube spatial objects, which must be in the same
+   * space as the fixed image. */
   virtual void SetTubeList( TubeListType * tubeList )
     { m_TubeList = tubeList; }
   virtual TubeListType * GetTubeList( void ) const
     { return m_TubeList; }
 
   /** Set/get the lambda that controls the decay of the weight value w as a
-   *  function of the distance to the closest border point.  If gamma=-1, then
-   *  w decays exponentially ( w = e^( -1.0*lambda*distance ) ).  Otherwise, w
-   *  decays exponentially using a Dirac-shaped function
-   *  ( w = 1 / ( 1 + lambda*gamma*e^( -1.0*lambda*distance^2 ) ) ).  Lambda must
-   *  be positive. */
+   *  function of the distance to the closest border point.  If gamma=-1,
+   *  then w decays exponentially ( w = e^( -1.0*lambda*distance ) ).
+   *  Otherwise, w decays exponentially using a Dirac-shaped function
+   *  ( w = 1 / ( 1 + lambda*gamma*e^( -1.0*lambda*distance^2 ) ) ).
+   *  Lambda must be positive. */
   void SetLambda( WeightComponentType l )
     { if( l > 0 ) { m_Lambda = l; } }
   WeightComponentType GetLambda( void ) const
     { return m_Lambda; }
 
   /** Set/get the gamma that controls the decay of the weight value w as a
-   *  function of the distance to the closest border point.  If gamma=-1, then
-   *  w decays exponentially ( w = e^( -1.0*lambda*distance ) ).  Otherwise, w
+   *  function of the distance to the closest border point.  If gamma=-1,
+   *  then
+   *  w decays exponentially ( w = e^( -1.0*lambda*distance ) ).
+   *  Otherwise, w
    *  decays exponentially using a Dirac-shaped function
-   *  ( w = 1 / ( 1 + lambda*gamma*e^( -1.0*lambda*distance^2 ) ) ).  Gamma must
-   *  be positive or -1.0. */
+   *  ( w = 1 / ( 1 + lambda*gamma*e^( -1.0*lambda*distance^2 ) ) ).
+   *  Gamma must be positive or -1.0. */
   void SetGamma( WeightComponentType g )
     { if( g > 0 || g == -1.0 ) { m_Gamma = g; } }
   WeightComponentType GetGamma( void ) const
@@ -272,41 +279,45 @@ public:
     { m_NormalMatrixImage = normalImage; }
   virtual NormalMatrixImageType * GetNormalMatrixImage( void ) const
     { return m_NormalMatrixImage; }
-  virtual NormalMatrixImageType * GetHighResolutionNormalMatrixImage( void ) const
+  virtual NormalMatrixImageType * GetHighResolutionNormalMatrixImage(
+    void ) const
     { return m_HighResolutionNormalMatrixImage; }
-  /** Get the image of a specific normal vector ( column of the normal matrix ).
-   *  Pointer should already have been initialized with New() */
-  virtual void GetHighResolutionNormalVectorImage
-      ( NormalVectorImagePointer & normalImage,
-        int dim,
-        bool getHighResolutionNormalVectorImage ) const;
+  /** Get the image of a specific normal vector ( column of the normal
+   * matrix ). Pointer should already have been initialized with New() */
+  virtual void GetHighResolutionNormalVectorImage(
+    NormalVectorImagePointer & normalImage, int dim,
+    bool getHighResolutionNormalVectorImage ) const;
 
-  /** Set/get the weighting matrix A image.  Setting the weighting matrix image
-   * overrides the structure tensor eigen analysis. */
-  virtual void SetWeightStructuresImage( WeightMatrixImageType * weightImage )
+  /** Set/get the weighting matrix A image.  Setting the weighting matrix
+   * image overrides the structure tensor eigen analysis. */
+  virtual void SetWeightStructuresImage( WeightMatrixImageType *
+    weightImage )
     { m_WeightStructuresImage = weightImage; }
   virtual WeightMatrixImageType * GetWeightStructuresImage( void ) const
     { return m_WeightStructuresImage; }
-  virtual WeightMatrixImageType * GetHighResolutionWeightStructuresImage( void ) const
+  virtual WeightMatrixImageType * GetHighResolutionWeightStructuresImage(
+    void ) const
     { return m_HighResolutionWeightStructuresImage; }
 
   /** Set/get the weighting value w image.  Setting the weighting component
-    * image overrides the border surface polydata and lambda/gamma if the border
-    * surface was also supplied. */
+   * image overrides the border surface polydata and lambda/gamma if the
+   * border surface was also supplied. */
   virtual void SetWeightRegularizationsImage(
       WeightComponentImageType * weightImage )
     { m_WeightRegularizationsImage = weightImage; }
-  virtual WeightComponentImageType * GetWeightRegularizationsImage( void ) const
+  virtual WeightComponentImageType * GetWeightRegularizationsImage(
+    void ) const
     { return m_WeightRegularizationsImage; }
   virtual WeightComponentImageType *
-      GetHighResolutionWeightRegularizationsImage( void ) const
+    GetHighResolutionWeightRegularizationsImage( void ) const
     { return m_HighResolutionWeightRegularizationsImage; }
 
   /** Get the normal components of the deformation field.  The normal
-   *  deformation field component images are the same for both the SMOOTH_NORMAL
+   *  deformation field component images are the same for both the
+   *  SMOOTH_NORMAL
    *  and PROP_NORMAL terms, so we will return one arbitrarily. */
-  virtual const DeformationFieldType * GetNormalDeformationComponentImage( void )
-      const
+  virtual const DeformationFieldType * GetNormalDeformationComponentImage(
+    void ) const
     {
     return this->GetDeformationComponentImage( SMOOTH_NORMAL );
     }
@@ -317,11 +328,12 @@ protected:
   void PrintSelf( std::ostream& os, Indent indent ) const;
 
   /** Handy for array indexing. */
-  enum DivTerm { SMOOTH_TANGENTIAL, SMOOTH_NORMAL, PROP_TANGENTIAL, PROP_NORMAL };
+  enum DivTerm { SMOOTH_TANGENTIAL, SMOOTH_NORMAL, PROP_TANGENTIAL,
+    PROP_NORMAL };
 
   /** Allocate the deformation component images and their derivative images.
-   *  ( which may be updated throughout the registration ). Reimplement in derived
-   *  classes. */
+   *  ( which may be updated throughout the registration ). Reimplement in
+   *  derived classes. */
   virtual void InitializeDeformationComponentAndDerivativeImages( void );
 
   /** Allocate and populate the diffusion tensor images.
@@ -329,8 +341,9 @@ protected:
   virtual void ComputeDiffusionTensorImages( void );
 
   /** Allocate and populate the images of multiplication vectors that the
-   *  div( T \grad( u ) ) values are multiplied by.  Allocate and populate all or
-   *  some of the multiplication vector images in derived classes.  Otherwise,
+   *  div( T \grad( u ) ) values are multiplied by.  Allocate and populate
+   *  all or some of the multiplication vector images in derived classes.
+   *  Otherwise,
    *  default to e_l, where e_l is the lth canonical unit vector. */
   virtual void ComputeMultiplicationVectorImages( void );
 
@@ -339,11 +352,12 @@ protected:
 
   /** Computes the first- and second-order partial derivatives of the
    *  deformation component images on each iteration.  Override in derived
-   *  classes if the deformation components image pointers are not unique, to
-   *  avoid computing the same derivatives multiple times. */
+   *  classes if the deformation components image pointers are not unique,
+   *  to avoid computing the same derivatives multiple times. */
   virtual void ComputeDeformationComponentDerivativeImages( void );
 
-  /** If needed, allocates and computes the normal vector and weight images. */
+  /** If needed, allocates and computes the normal vector and weight
+   * images. */
   virtual void SetupNormalMatrixAndWeightImages( void );
 
   /** Compute the normals for the border surface. */
@@ -370,8 +384,8 @@ protected:
       bool computeWeightStructures,
       bool computeWeightRegularizations );
 
-  /** Does the actual work of updating the output over an output region supplied
-   *  by the multithreading mechanism.
+  /** Does the actual work of updating the output over an output region
+   * supplied by the multithreading mechanism.
    *  \sa GetNormalsAndDistancesFromClosestSurfacePoint
    *  \sa GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback */
   virtual void ThreadedGetNormalsAndDistancesFromClosestSurfacePoint(
@@ -390,8 +404,8 @@ protected:
       int threadId );
 
   /** Computes the weighting factor w from the distance to the border using
-   *  exponential decay.  The weight should be 1 near the border and 0 away from
-   *  the border. */
+   *  exponential decay.  The weight should be 1 near the border and 0 away
+   *  from the border. */
   virtual WeightComponentType ComputeWeightFromDistanceExponential(
       const WeightComponentType distance ) const;
 
@@ -401,8 +415,8 @@ protected:
   virtual WeightComponentType ComputeWeightFromDistanceDirac(
       const WeightComponentType distance ) const;
 
-  /** Given a point and two vectors on a plane, and a second point, calculates
-   *  the in-plane distance between the two points. */
+  /** Given a point and two vectors on a plane, and a second point,
+   * calculates the in-plane distance between the two points. */
   double ComputeDistanceToPointOnPlane(
       double * planePoint,
       float * tangentVector1,
@@ -414,8 +428,8 @@ private:
   AnisotropicDiffusiveSparseRegistrationFilter( const Self& );
   void operator=( const Self& ); // Purposely not implemented
 
-  /** Structure for passing information into static callback methods.  Used in
-   * the subclasses threading mechanisms. */
+  /** Structure for passing information into static callback methods.  Used
+   * in the subclasses threading mechanisms. */
   struct AnisotropicDiffusiveSparseRegistrationFilterThreadStruct
     {
     AnisotropicDiffusiveSparseRegistrationFilter * Filter;
@@ -425,19 +439,22 @@ private:
     vtkFloatArray * TubeNormal1Data;
     vtkFloatArray * TubeNormal2Data;
     vtkFloatArray * TubeRadiusData;
-    ThreadNormalMatrixImageRegionType NormalMatrixImageLargestPossibleRegion;
+    ThreadNormalMatrixImageRegionType
+      NormalMatrixImageLargestPossibleRegion;
     ThreadWeightMatrixImageRegionType
-        WeightStructuresImageLargestPossibleRegion;
+      WeightStructuresImageLargestPossibleRegion;
     ThreadWeightComponentImageRegionType
-        WeightRegularizationsImageLargestPossibleRegion;
+      WeightRegularizationsImageLargestPossibleRegion;
     bool ComputeNormals;
     bool ComputeWeightStructures;
     bool ComputeWeightRegularizations;
-    }; // End struct AnisotropicDiffusiveSparseRegistrationFilterThreadStruct
+    };
+  // End struct AnisotropicDiffusiveSparseRegistrationFilterThreadStruct
 
-  /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
-   * output region that it passes to
-   * ThreadedGetNormalsAndDistancesFromClosestSurfacePoint for processing. */
+  /** This callback method uses ImageSource::SplitRequestedRegion to
+   * acquire an output region that it passes to
+   * ThreadedGetNormalsAndDistancesFromClosestSurfacePoint for
+   * processing. */
   static ITK_THREAD_RETURN_TYPE
       GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback(
           void * arg );
@@ -457,8 +474,8 @@ private:
    *  to calculate once ( setting m_ImageAttributeImage ) at the highest
    *  resolution during multiresolution registration, and then resampling on
    *  each scale.  The normal matrix image and weight structures image are
-   *  resampled using nearest neighbor, while the weight regularizations image
-   *  are resampled using a linear interpolation */
+   *  resampled using nearest neighbor, while the weight regularizations
+   *  image are resampled using a linear interpolation */
   NormalMatrixImagePointer            m_HighResolutionNormalMatrixImage;
   WeightMatrixImagePointer            m_HighResolutionWeightStructuresImage;
   WeightComponentImagePointer
@@ -478,4 +495,5 @@ private:
 #include "itktubeAnisotropicDiffusiveSparseRegistrationFilter.hxx"
 #endif
 
-#endif // End !defined( __itktubeAnisotropicDiffusiveSparseRegistrationFilter_h )
+// End !defined( __itktubeAnisotropicDiffusiveSparseRegistrationFilter_h )
+#endif

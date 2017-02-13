@@ -68,7 +68,7 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
   return m_BranchNodes;
 }
 
-/** Update */
+/** Update to compute filter */
 template< class TPixel, unsigned int Dimension >
 void
 TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >

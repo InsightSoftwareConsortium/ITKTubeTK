@@ -140,11 +140,14 @@ AnisotropicDiffusiveRegistrationFilter
     for( unsigned int j = 0; j < ImageDimension; j++ )
       {
       firstOrder = ScalarDerivativeImageType::New();
-      DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( firstOrder, output );
+      DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( firstOrder,
+        output );
       secondOrder = TensorDerivativeImageType::New();
-      DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( secondOrder, output );
+      DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( secondOrder,
+        output );
       this->SetDeformationComponentFirstOrderDerivative( i, j, firstOrder );
-      this->SetDeformationComponentSecondOrderDerivative( i, j, secondOrder );
+      this->SetDeformationComponentSecondOrderDerivative( i, j,
+        secondOrder );
       }
     }
 
@@ -169,12 +172,13 @@ AnisotropicDiffusiveRegistrationFilter
   bool computeNormals = !m_NormalVectorImage;
   bool computeWeights = !m_WeightImage;
 
-  // If we have a template for image attributes, use it.  The normal and weight
-  // images will be stored at their full resolution.  The diffusion tensor,
-  // deformation component, derivative and multiplication vector images are
-  // recalculated every time Initialize() is called to regenerate them at the
-  // correct resolution.
-  FixedImagePointer highResolutionTemplate = this->GetHighResolutionTemplate();
+  // If we have a template for image attributes, use it.  The normal and
+  // weight images will be stored at their full resolution.  The diffusion
+  // tensor, deformation component, derivative and multiplication vector
+  // images are recalculated every time Initialize() is called to
+  // regenerate them at the correct resolution.
+  FixedImagePointer highResolutionTemplate =
+    this->GetHighResolutionTemplate();
 
   // If we don't have a template:
   // The output will be used as the template to allocate the images we will
@@ -188,7 +192,7 @@ AnisotropicDiffusiveRegistrationFilter
     if( !this->GetBorderSurface() )
       {
       itkExceptionMacro( << "You must provide a border surface, or both a "
-                         << "normal vector image and a weight image" );
+        << "normal vector image and a weight image" );
       }
 
     // Compute the normals for the surface
@@ -200,8 +204,8 @@ AnisotropicDiffusiveRegistrationFilter
       m_NormalVectorImage = NormalVectorImageType::New();
       if( highResolutionTemplate )
         {
-        DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( m_NormalVectorImage,
-                                     highResolutionTemplate );
+        DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
+          m_NormalVectorImage, highResolutionTemplate );
         }
       else
         {
@@ -215,23 +219,24 @@ AnisotropicDiffusiveRegistrationFilter
       if( highResolutionTemplate )
         {
         DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
-                                     m_WeightImage, highResolutionTemplate );
+          m_WeightImage, highResolutionTemplate );
         }
       else
         {
         DiffusiveRegistrationFilterUtils::AllocateSpaceForImage(
-                                     m_WeightImage, output );
+          m_WeightImage, output );
         }
       }
 
     // Actually compute the normal vectors and/or weights
-    this->ComputeNormalVectorAndWeightImages( computeNormals, computeWeights );
+    this->ComputeNormalVectorAndWeightImages( computeNormals,
+      computeWeights );
     }
 
   // On the first iteration of the first level, the normal and weight images
   // will contain the highest resolution images.  We need to save the high
-  // resolution images, and then resample them down to correspond to this level.
-  // On subsequent iterations, we just do the resampling.
+  // resolution images, and then resample them down to correspond to this
+  // level. On subsequent iterations, we just do the resampling.
 
   // Set the high resolution images only once
   if( !m_HighResolutionNormalVectorImage )
@@ -243,15 +248,16 @@ AnisotropicDiffusiveRegistrationFilter
     m_HighResolutionWeightImage = m_WeightImage;
     }
 
-  // If we are using a template or getting an image from the user, we need to
-  // make sure that the attributes of the member images match those of the
-  // current output, so that they can be used to calculate the diffusion
+  // If we are using a template or getting an image from the user, we need
+  // to make sure that the attributes of the member images match those of
+  // the current output, so that they can be used to calculate the diffusion
   // tensors, deformation components, etc
   if( !DiffusiveRegistrationFilterUtils::CompareImageAttributes(
         m_NormalVectorImage.GetPointer(), output.GetPointer() ) )
     {
     DiffusiveRegistrationFilterUtils::VectorResampleImageLinear(
-          m_HighResolutionNormalVectorImage, output, m_NormalVectorImage, true );
+      m_HighResolutionNormalVectorImage, output, m_NormalVectorImage,
+      true );
     assert( DiffusiveRegistrationFilterUtils::CompareImageAttributes(
              m_NormalVectorImage.GetPointer(), output.GetPointer() ) );
     }
@@ -295,7 +301,8 @@ AnisotropicDiffusiveRegistrationFilter
     }
   else if( !m_BorderSurface->GetPointData()->GetNormals() )
     {
-    itkExceptionMacro( << "Border surface point data does not have normals." );
+    itkExceptionMacro( <<
+      "Border surface point data does not have normals." );
     }
 }
 
@@ -339,23 +346,28 @@ AnisotropicDiffusiveRegistrationFilter
   this->GetMultiThreader()->SingleMethodExecute();
 
   // Explicitly call Modified on the normal and weight images here, since
-  // ThreadedGetNormalsAndDistancesFromClosestSurfacePoint changes these buffers
+  // ThreadedGetNormalsAndDistancesFromClosestSurfacePoint changes these
+  // buffers
   // through iterators which do not increment the update buffer time stamp
   this->m_NormalVectorImage->Modified();
   this->m_WeightImage->Modified();
 }
 
 /**
- * Calls ThreadedGetNormalsAndDistancesFromClosestSurfacePoint for processing
+ * Calls ThreadedGetNormalsAndDistancesFromClosestSurfacePoint for
+ * processing
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 ITK_THREAD_RETURN_TYPE
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback( void * arg )
+::GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback(
+  void * arg )
 {
-  int threadId = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->ThreadID;
-  int threadCount = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->NumberOfThreads;
+  int threadId =
+    ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->ThreadID;
+  int threadCount =
+    ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->NumberOfThreads;
 
   AnisotropicDiffusiveRegistrationFilterThreadStruct * str
       = ( AnisotropicDiffusiveRegistrationFilterThreadStruct * )
@@ -363,7 +375,8 @@ AnisotropicDiffusiveRegistrationFilter
 
   // Execute the actual method with appropriate output region
   // First find out how many pieces extent can be split into.
-  // We don't want to use the SplitRequestedRegion method from itk::ImageSource
+  // We don't want to use the SplitRequestedRegion method from
+  // itk::ImageSource
   // because we might be calculating the normals and weights of a high res
   // template, where the image extent will not match that of the output
   typedef itk::ImageRegionSplitter< ImageDimension > SplitterType;
@@ -421,9 +434,9 @@ AnisotropicDiffusiveRegistrationFilter
   WeightImageRegionType weightIt( m_WeightImage,
                                  weightRegionToProcess );
 
-  // The normal vector image will hold the normal of the closest point of the
-  // surface polydata, and the weight image will be a function of the distance
-  // between the voxel and this closest point
+  // The normal vector image will hold the normal of the closest point of
+  // the surface polydata, and the weight image will be a function of the
+  // distance between the voxel and this closest point
 
   itk::Point< double, ImageDimension >  imageCoord;
   imageCoord.Fill( 0 );
@@ -447,7 +460,8 @@ AnisotropicDiffusiveRegistrationFilter
                                                         imageCoord );
     id = pointLocator->FindClosestPoint( imageCoord.GetDataPointer() );
 
-    // Find the normal of the surface point that is closest to the current voxel
+    // Find the normal of the surface point that is closest to the current
+    // voxel
     if( computeNormals )
       {
       for( unsigned int i = 0; i < ImageDimension; i++ )
@@ -457,8 +471,8 @@ AnisotropicDiffusiveRegistrationFilter
       normalIt.Set( normal );
       }
 
-    // Calculate distance between the current coordinate and the border surface
-    // coordinate
+    // Calculate distance between the current coordinate and the border
+    // surface coordinate
     if( computeWeights )
       {
       m_BorderSurface->GetPoint( id, borderCoord );
@@ -481,7 +495,8 @@ template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeNormalVectorAndWeightImages( bool computeNormals, bool computeWeights )
+::ComputeNormalVectorAndWeightImages( bool computeNormals,
+  bool computeWeights )
 {
   assert( this->GetComputeRegularizationTerm() );
   assert( m_BorderSurface->GetPointData()->GetNormals() );
@@ -490,9 +505,9 @@ AnisotropicDiffusiveRegistrationFilter
 
   std::cout << "Computing normals and weights... " << std::endl;
 
-  // The normal vector image will hold the normal of the closest point of the
-  // surface polydata, and the weight image will be a function of the distance
-  // between the voxel and this closest point
+  // The normal vector image will hold the normal of the closest point of
+  // the surface polydata, and the weight image will be a function of the
+  // distance between the voxel and this closest point
   this->GetNormalsAndDistancesFromClosestSurfacePoint( computeNormals,
                                                        computeWeights );
 
@@ -535,7 +550,8 @@ AnisotropicDiffusiveRegistrationFilter
       {
       for( weightIt.GoToBegin(); !weightIt.IsAtEnd(); ++weightIt )
         {
-        weight = this->ComputeWeightFromDistanceExponential( weightIt.Get() );
+        weight = this->ComputeWeightFromDistanceExponential(
+          weightIt.Get() );
         weightIt.Set( weight );
         }
       }
@@ -554,8 +570,8 @@ AnisotropicDiffusiveRegistrationFilter
 
 /**
  * Calculates the weighting between the anisotropic diffusive and diffusive
- * regularizations, based on a given distance from a voxel to the border, using
- * exponential decay.
+ * regularizations, based on a given distance from a voxel to the border,
+ * using exponential decay.
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 typename AnisotropicDiffusiveRegistrationFilter
@@ -570,8 +586,8 @@ AnisotropicDiffusiveRegistrationFilter
 
 /**
  * Calculates the weighting between the anisotropic diffusive and diffusive
- * regularizations, based on a given distance from a voxel to the border, using
- * a Dirac-shaped function
+ * regularizations, based on a given distance from a voxel to the border,
+ * using a Dirac-shaped function
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 typename AnisotropicDiffusiveRegistrationFilter
@@ -582,7 +598,7 @@ AnisotropicDiffusiveRegistrationFilter
 ::ComputeWeightFromDistanceDirac( const WeightType distance ) const
 {
   return 1.0 - ( 1.0 / ( 1.0 + m_Lambda * m_Gamma
-                         * std::exp( -1.0 * m_Lambda * distance * distance ) ) );
+    * std::exp( -1.0 * m_Lambda * distance * distance ) ) );
 }
 
 /**
@@ -622,18 +638,17 @@ AnisotropicDiffusiveRegistrationFilter
 
   // Setup iterators
   NormalVectorImageRegionType normalIt = NormalVectorImageRegionType(
-      m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
+    m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
   WeightImageRegionType weightIt = WeightImageRegionType(
-      m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
-  DiffusionTensorImageRegionType tangentialTensorIt
-      = DiffusionTensorImageRegionType(
-          this->GetDiffusionTensorImage( TANGENTIAL ),
-          this->GetDiffusionTensorImage( TANGENTIAL )
-          ->GetLargestPossibleRegion() );
-  DiffusionTensorImageRegionType normalTensorIt
-      = DiffusionTensorImageRegionType(
-          this->GetDiffusionTensorImage( NORMAL ),
-          this->GetDiffusionTensorImage( NORMAL )->GetLargestPossibleRegion() );
+    m_WeightImage, m_WeightImage->GetLargestPossibleRegion() );
+  DiffusionTensorImageRegionType tangentialTensorIt =
+    DiffusionTensorImageRegionType(
+      this->GetDiffusionTensorImage( TANGENTIAL ),
+      this->GetDiffusionTensorImage( TANGENTIAL )
+      ->GetLargestPossibleRegion() );
+  DiffusionTensorImageRegionType normalTensorIt =
+    DiffusionTensorImageRegionType( this->GetDiffusionTensorImage( NORMAL ),
+      this->GetDiffusionTensorImage( NORMAL )->GetLargestPossibleRegion() );
 
   for( normalIt.GoToBegin(), weightIt.GoToBegin(),
        tangentialTensorIt.GoToBegin(), normalTensorIt.GoToBegin();
@@ -683,8 +698,8 @@ AnisotropicDiffusiveRegistrationFilter
     }
 }
 
-/** Computes the multiplication vectors that the div( Tensor /grad u ) values
- *  are multiplied by.
+/** Computes the multiplication vectors that the div( Tensor /grad u )
+ * values are multiplied by.
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
@@ -708,7 +723,7 @@ AnisotropicDiffusiveRegistrationFilter
 
   // Iterate over the normal vector image
   NormalVectorImageRegionType normalIt = NormalVectorImageRegionType(
-      m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
+    m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
 
   NormalVectorType normalVector;
   normalVector.Fill( 0.0 );
@@ -720,7 +735,8 @@ AnisotropicDiffusiveRegistrationFilter
                                                normalMultsImage, output );
 
     // Calculate n_l*n
-    DeformationVectorImageRegionType multIt = DeformationVectorImageRegionType(
+    DeformationVectorImageRegionType multIt =
+      DeformationVectorImageRegionType(
         normalMultsImage, normalMultsImage->GetLargestPossibleRegion() );
     for( normalIt.GoToBegin(), multIt.GoToBegin();
          !multIt.IsAtEnd();
@@ -750,16 +766,16 @@ AnisotropicDiffusiveRegistrationFilter
 
   // Setup iterators
   NormalVectorImageRegionType normalVectorRegion(
-      m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
+    m_NormalVectorImage, m_NormalVectorImage->GetLargestPossibleRegion() );
 
   OutputImageRegionType outputRegion( output,
-                                     output->GetLargestPossibleRegion() );
+    output->GetLargestPossibleRegion() );
 
-  DeformationFieldPointer normalDeformationField
-      = this->GetDeformationComponentImage( NORMAL );
+  DeformationFieldPointer normalDeformationField =
+    this->GetDeformationComponentImage( NORMAL );
   OutputImageRegionType normalDeformationRegion(
-      normalDeformationField,
-      normalDeformationField->GetLargestPossibleRegion() );
+    normalDeformationField,
+    normalDeformationField->GetLargestPossibleRegion() );
 
   // Calculate the tangential and normal components of the deformation field
   NormalVectorType       n;
@@ -779,8 +795,8 @@ AnisotropicDiffusiveRegistrationFilter
     normalDeformationVector = ( u * n ) * n;
     normalDeformationRegion.Set( normalDeformationVector );
 
-    // Test that the normal and tangential components were computed correctly
-    // ( they should be orthogonal )
+    // Test that the normal and tangential components were computed
+    // correctly ( they should be orthogonal )
 
     // tangential component = u - normal component
     tangentialDeformationVector = u - normalDeformationVector;
@@ -799,4 +815,5 @@ AnisotropicDiffusiveRegistrationFilter
 
 } // End namespace itk
 
-#endif // End !defined( __itktubeAnisotropicDiffusiveRegistrationFilter_hxx )
+// End !defined( __itktubeAnisotropicDiffusiveRegistrationFilter_hxx )
+#endif

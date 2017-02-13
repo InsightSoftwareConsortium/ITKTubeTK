@@ -24,13 +24,15 @@
 namespace itk
 {
 
-/** \class ImageToImageRegistrationMethod base class for the registration methods.
+/** \class ImageToImageRegistrationMethod base class for the registration
+ * methods.
  *
- * This class has a separate hierarchy from the ImageRegistrationMethod defined
- * in ITK.  The purpose of this class is to provide the common functionalities
- * of a registration method in a context that is easy to use from the
- * Registration Helper class that provides an even higher-level, user-friendly
- * interface to a generic image registration problem.
+ * This class has a separate hierarchy from the ImageRegistrationMethod
+ * defined in ITK.  The purpose of this class is to provide the common
+ * functionalities of a registration method in a context that is easy to
+ * use from the Registration Helper class that provides an even
+ * higher-level, user-friendly interface to a generic image registration
+ * problem.
  *
  */
 template <class TImage>
@@ -90,7 +92,8 @@ public:
 
   itkGetConstObjectMacro( MovingImage, ImageType );
 
-  void SetRegionOfInterest( const PointType & point1, const PointType & point2 );
+  void SetRegionOfInterest( const PointType & point1,
+    const PointType & point2 );
 
   itkSetMacro( UseRegionOfInterest, bool );
   itkGetMacro( UseRegionOfInterest, bool );
@@ -127,30 +130,35 @@ protected:
 
   virtual void    Initialize( void );
 
-  /** Method that actually computes the registration. This method is intended
-   * to be overloaded by derived classes. Those overload, however, must
-   * invoke this method in the base class. */
+  /** Method that actually computes the registration. This method is
+   * intended to be overloaded by derived classes. Those overload,
+   * however, must invoke this method in the base class. */
   void GenerateData( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
-  /** Provide derived classes with access to the Transform member variable. */
+  /** Provide derived classes with access to the Transform member
+   * variable. */
   itkSetObjectMacro( Transform, TransformType );
   itkGetObjectMacro( Transform, TransformType );
   itkGetConstObjectMacro( Transform, TransformType );
 
   using Superclass::MakeOutput;
-  virtual DataObjectPointer   MakeOutput( DataObjectPointerArraySizeType idx );
+  virtual DataObjectPointer  MakeOutput( DataObjectPointerArraySizeType
+    idx );
 
-  unsigned long               GetMTime( void ) const;
+  unsigned long GetMTime( void ) const;
 
 protected:
 
-  typename TransformType::Pointer        m_Transform;
+  typename TransformType::Pointer m_Transform;
+
 private:
 
-  ImageToImageRegistrationMethod( const Self & );   // Purposely not implemented
-  void operator =( const Self & );                  // Purposely not implemented
+  // Purposely not implemented
+  ImageToImageRegistrationMethod( const Self & );
+  // Purposely not implemented
+  void operator =( const Self & );
 
   unsigned int m_RegistrationNumberOfThreads;
 

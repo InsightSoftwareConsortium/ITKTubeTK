@@ -41,19 +41,21 @@ namespace Function
  *
  * \brief Weight tube points exponentially by their radius if within bounds.
  *
- * This is similar to TubeParametricExponentialResolutionWeightFunction except that values
- * outside the UpperBound or LowerBound are given a weight of zero.
+ * This is similar to TubeParametricExponentialResolutionWeightFunction
+ * except that values outside the UpperBound or LowerBound are given a
+ * weight of zero.
  */
 template< class TTubePoint, class TOperatorValue = double >
 class TubeParametricExponentialWithBoundsResolutionWeightFunction
   : public TubeParametricExponentialResolutionWeightFunction< TTubePoint,
-                                                              TOperatorValue >
+  TOperatorValue >
 {
 public:
   typedef TubeParametricExponentialWithBoundsResolutionWeightFunction
-    Self;
-  typedef TubeParametricExponentialResolutionWeightFunction< TTubePoint, TOperatorValue >
-    Superclass;
+      Self;
+  typedef TubeParametricExponentialResolutionWeightFunction< TTubePoint,
+    TOperatorValue >
+      Superclass;
 
   typedef typename Superclass::OperatorValueType OperatorValueType;
   typedef typename Superclass::TubePointType     TubePointType;
@@ -73,7 +75,8 @@ public:
       return NumericTraits< OperatorValueType >::Zero;
       }
     return static_cast< OperatorValueType >( 1.0 /
-      ( 1.0 + this->GetDelta() * ( std::exp( -this->GetAlpha() * radius ) - 1.0 ) ) );
+      ( 1.0 + this->GetDelta()
+        * ( std::exp( -this->GetAlpha() * radius ) - 1.0 ) ) );
     }
 
   void SetLowerBound( const OperatorValueType lowerBound )

@@ -56,8 +56,10 @@ ImageToTubeRigidRegistration< TFixedImage, TMovingSpatialObject, TMovingTube >
   typename DefaultMetricType::Pointer metric = DefaultMetricType::New();
   this->SetMetric( metric );
 
-  typedef LinearInterpolateImageFunction< FixedImageType > DefaultInterpolatorType;
-  typename DefaultInterpolatorType::Pointer interpolator = DefaultInterpolatorType::New();
+  typedef LinearInterpolateImageFunction< FixedImageType >
+    DefaultInterpolatorType;
+  typename DefaultInterpolatorType::Pointer interpolator =
+    DefaultInterpolatorType::New();
   this->SetInterpolator( interpolator );
 
   typename Superclass::OptimizerType::ParametersType parameterScales( 6 );

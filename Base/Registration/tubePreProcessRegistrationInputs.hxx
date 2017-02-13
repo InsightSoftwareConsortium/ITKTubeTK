@@ -83,7 +83,8 @@ PreProcessRegistrationInputs( int argc,
     }
 
   typedef itk::SpatialObjectReader< Dimension > TubeNetReaderType;
-  typename TubeNetReaderType::Pointer vesselReader = TubeNetReaderType::New();
+  typename TubeNetReaderType::Pointer vesselReader =
+    TubeNetReaderType::New();
   vesselReader->SetFileName( inputVessel );
   try
     {
@@ -101,8 +102,9 @@ PreProcessRegistrationInputs( int argc,
   progressReporter.Report( progress );
 
   timeCollector.Start( "Sub-sample data" );
-  typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< TubeNetType, TubeType >
-                                                         SubSampleTubeTreeFilterType;
+  typedef itk::tube::SubSampleTubeTreeSpatialObjectFilter< TubeNetType,
+    TubeType >
+      SubSampleTubeTreeFilterType;
   typename SubSampleTubeTreeFilterType::Pointer subSampleTubeTreeFilter =
     SubSampleTubeTreeFilterType::New();
   subSampleTubeTreeFilter->SetInput( vesselReader->GetGroup() );

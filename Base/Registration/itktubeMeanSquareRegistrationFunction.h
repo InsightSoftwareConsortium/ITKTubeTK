@@ -92,12 +92,16 @@ public:
   typedef typename FixedImageType::SpacingType    SpacingType;
 
   /** Deformation field type. */
-  typedef typename Superclass::DisplacementFieldType     DeformationFieldType;
-  typedef typename DeformationFieldType::Pointer         DeformationFieldPointer;
-  typedef typename DeformationFieldType::PixelType     DeformationFieldPixelType;
+  typedef typename Superclass::DisplacementFieldType
+    DeformationFieldType;
+  typedef typename DeformationFieldType::Pointer
+    DeformationFieldPointer;
+  typedef typename DeformationFieldType::PixelType
+    DeformationFieldPixelType;
 
   /** Inherit some enums from the superclass. */
-  itkStaticConstMacro( ImageDimension, unsigned int, Superclass::ImageDimension );
+  itkStaticConstMacro( ImageDimension, unsigned int,
+    Superclass::ImageDimension );
 
   /** Inherit some enums from the superclass. */
   typedef typename Superclass::PixelType        PixelType;
@@ -108,20 +112,22 @@ public:
 
   /** Interpolator type. */
   typedef double                                     CoordRepType;
-  typedef InterpolateImageFunction<MovingImageType,CoordRepType>
+  typedef InterpolateImageFunction<MovingImageType, CoordRepType>
                                                      InterpolatorType;
   typedef typename InterpolatorType::Pointer         InterpolatorPointer;
   typedef typename InterpolatorType::PointType       PointType;
-  typedef LinearInterpolateImageFunction<MovingImageType,CoordRepType>
+  typedef LinearInterpolateImageFunction<MovingImageType, CoordRepType>
                                                      DefaultInterpolatorType;
 
   /** Covariant vector type. */
-  typedef CovariantVector< double,itkGetStaticConstMacro( ImageDimension ) >
+  typedef CovariantVector< double, itkGetStaticConstMacro( ImageDimension ) >
     CovariantVectorType;
 
   /** Gradient calculator type. */
-  typedef CentralDifferenceImageFunction<FixedImageType> GradientCalculatorType;
-  typedef typename GradientCalculatorType::Pointer   GradientCalculatorPointer;
+  typedef CentralDifferenceImageFunction<FixedImageType>
+    GradientCalculatorType;
+  typedef typename GradientCalculatorType::Pointer
+    GradientCalculatorPointer;
 
   /** Set the moving image interpolator. */
   void SetMovingImageInterpolator( InterpolatorType * ptr )
@@ -132,7 +138,8 @@ public:
     { return m_MovingImageInterpolator; }
 
   /** This class uses a constant time step of 1. */
-  virtual TimeStepType ComputeGlobalTimeStep( void * itkNotUsed( globalData ) ) const
+  virtual TimeStepType ComputeGlobalTimeStep( void * itkNotUsed(
+    globalData ) ) const
     { return m_TimeStep; }
 
   /** Return a pointer to a global data structure that is passed to
@@ -153,13 +160,13 @@ public:
   /** This method is called by a finite difference solver image filter at
    * each pixel that does not lie on a data set boundary */
   virtual PixelType  ComputeUpdate( const NeighborhoodType &neighborhood,
-                     void *globalData,
-                     const FloatOffsetType &offset = FloatOffsetType( 0.0 ) );
+    void *globalData,
+    const FloatOffsetType &offset = FloatOffsetType( 0.0 ) );
 
   /** Computes the intensity difference between the fixed and moving image
    *  at the given index, under the given deformation vector. */
   virtual double ComputeIntensityDifference( const IndexType & index,
-                                            const DeformationFieldPixelType & itvec );
+    const DeformationFieldPixelType & itvec );
 
   /** Get the energy mutex lock  */
   void SetEnergy( double energy )
@@ -186,7 +193,8 @@ protected:
   void PrintSelf( std::ostream& os, Indent indent ) const;
 
   /** FixedImage image neighborhood iterator type. */
-  typedef ConstNeighborhoodIterator<FixedImageType> FixedImageNeighborhoodIteratorType;
+  typedef ConstNeighborhoodIterator<FixedImageType>
+    FixedImageNeighborhoodIteratorType;
 
   /** A global data type for this class of equation. Used to store
    * iterators for the fixed image. */
