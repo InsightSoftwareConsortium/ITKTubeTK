@@ -218,14 +218,15 @@ public:
   /** Get the affine transform from principal axes to physical axes
    * This method returns an affine transform which transforms from
    * the principal axes coordinate system to physical coordinates. */
-  AffineTransformPointer GetPrincipalAxesToPhysicalAxesTransform( void ) const;
+  AffineTransformPointer GetPrincipalAxesToPhysicalAxesTransform(
+    void ) const;
 
   /** Get the affine transform from physical axes to principal axes
    * This method returns an affine transform which transforms from
    * the physical coordinate system to the principal axes coordinate
    * system. */
-  AffineTransformPointer GetPhysicalAxesToPrincipalAxesTransform( void )
-    const;
+  AffineTransformPointer GetPhysicalAxesToPrincipalAxesTransform(
+    void ) const;
 
 protected:
   ImageRegionMomentsCalculator();

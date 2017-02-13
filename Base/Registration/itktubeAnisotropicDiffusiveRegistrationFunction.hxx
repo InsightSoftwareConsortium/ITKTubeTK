@@ -384,9 +384,8 @@ AnisotropicDiffusiveRegistrationFunction
         {
         for( unsigned int col = 0; col < ImageDimension; col++ )
           {
-          multVector[row]
-              += diffusionTensor( row, col ) *
-              deformationComponentFirstOrderDerivative[col];
+          multVector[row] += diffusionTensor( row, col )
+            * deformationComponentFirstOrderDerivative[col];
           }
         }
       termRegularizationEnergies[i] += multVector;
