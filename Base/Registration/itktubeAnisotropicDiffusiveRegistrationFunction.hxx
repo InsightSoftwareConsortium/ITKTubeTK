@@ -70,7 +70,7 @@ AnisotropicDiffusiveRegistrationFunction
   < TFixedImage, TMovingImage, TDeformationField >
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
-  Superclass::PrintSelf( os,indent );
+  Superclass::PrintSelf( os, indent );
 
   os << indent << "Time step: " << m_TimeStep << std::endl;
   os << indent << "Compute regularization term: "
@@ -187,9 +187,10 @@ AnisotropicDiffusiveRegistrationFunction
 ::ComputeUpdate( const NeighborhoodType &, void *, const FloatOffsetType & )
 {
   // This function should never be called!
-  itkExceptionMacro( << "ComputeUpdate( neighborhood, gd, offset ) should never"
-                     << "be called.  Use the other ComputeUpdate() defined in"
-                     << "itktubeAnisotropicDiffusiveRegistrationFunction instead" );
+  itkExceptionMacro(
+    << "ComputeUpdate( neighborhood, gd, offset ) should never"
+    << "be called.  Use the other ComputeUpdate() defined in"
+    << "itktubeAnisotropicDiffusiveRegistrationFunction instead" );
 }
 
 /**
@@ -384,7 +385,8 @@ AnisotropicDiffusiveRegistrationFunction
         for( unsigned int col = 0; col < ImageDimension; col++ )
           {
           multVector[row]
-              += diffusionTensor( row,col ) * deformationComponentFirstOrderDerivative[col];
+              += diffusionTensor( row, col ) *
+              deformationComponentFirstOrderDerivative[col];
           }
         }
       termRegularizationEnergies[i] += multVector;
@@ -395,8 +397,8 @@ AnisotropicDiffusiveRegistrationFunction
   double regularizationEnergy = 0.0;
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    regularizationEnergy +=
-        0.5 * ( termRegularizationEnergies[i] * termRegularizationEnergies[i] );
+    regularizationEnergy += 0.5 *
+      ( termRegularizationEnergies[i] * termRegularizationEnergies[i] );
     }
   regularizationEnergy *= m_RegularizationWeighting;
 
@@ -407,4 +409,5 @@ AnisotropicDiffusiveRegistrationFunction
 
 } // End namespace itk
 
-#endif // End !defined( __itktubeAnisotropicDiffusiveRegistrationFunction_hxx )
+// End !defined( __itktubeAnisotropicDiffusiveRegistrationFunction_hxx )
+#endif

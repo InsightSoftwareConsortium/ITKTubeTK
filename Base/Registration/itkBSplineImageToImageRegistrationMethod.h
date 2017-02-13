@@ -123,8 +123,10 @@ protected:
 
 private:
 
-  BSplineImageToImageRegistrationMethod( const Self & );  // Purposely not implemented
-  void operator =( const Self & );                        // Purposely not implemented
+  // Purposely not implemented
+  BSplineImageToImageRegistrationMethod( const Self & );
+  // Purposely not implemented
+  void operator =( const Self & );
 
   double m_ExpectedDeformationMagnitude;
 

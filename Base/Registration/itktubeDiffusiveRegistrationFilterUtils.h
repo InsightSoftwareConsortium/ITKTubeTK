@@ -39,7 +39,7 @@ public:
   /** Helper function to allocate an image based on a template */
   template< class TUnallocatedImagePointer, class TTemplateImagePointer >
   static void AllocateSpaceForImage( TUnallocatedImagePointer & image,
-                                     const TTemplateImagePointer & templateImage );
+       const TTemplateImagePointer & templateImage );
 
   /** Helper function to check whether the attributes of an image match a
     * template */
@@ -93,10 +93,10 @@ public:
 template< class TImage >
 struct FaceStruct
 {
-  typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator
-      < typename TImage::ObjectType >                     FaceCalculatorType;
-        typedef typename FaceCalculatorType::FaceListType FaceListType;
-        typedef typename FaceListType::iterator           FaceListIteratorType;
+  typedef NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<
+    typename TImage::ObjectType >                     FaceCalculatorType;
+    typedef typename FaceCalculatorType::FaceListType FaceListType;
+    typedef typename FaceListType::iterator           FaceListIteratorType;
 
   FaceStruct( void )
     {
@@ -159,7 +159,8 @@ struct FaceStruct
         {
         if( images[i][j].GetPointer() )
           {
-          faceLists.push_back( faceCalculator( images[i][j], region, radius ) );
+          faceLists.push_back( faceCalculator( images[i][j], region,
+              radius ) );
           numberOfTerms++;
           }
         }

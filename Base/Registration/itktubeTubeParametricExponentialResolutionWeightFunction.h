@@ -69,7 +69,8 @@ public:
     {
     const OperatorValueType radius = tubePoint.GetRadius();
     return static_cast< OperatorValueType >( 1.0 /
-      ( 1.0 + this->m_Delta * ( std::exp( -this->m_Alpha * radius ) - 1.0 ) ) );
+      ( 1.0 + this->m_Delta
+        * ( std::exp( -this->m_Alpha * radius ) - 1.0 ) ) );
     }
 
   void SetDelta( const OperatorValueType delta )
@@ -119,4 +120,5 @@ private:
 
 } // End namespace itk
 
-#endif // End !defined( __itktubeTubeParametricExponentialResolutionWeightFunction_h )
+// End !defined( __itktubeTubeParametricExponentialResolutionWeightFunction_h )
+#endif

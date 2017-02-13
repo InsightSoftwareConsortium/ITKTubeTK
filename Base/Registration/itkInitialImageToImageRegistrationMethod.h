@@ -114,8 +114,10 @@ protected:
 
 private:
 
-  InitialImageToImageRegistrationMethod( const Self & );    // Purposely not implemented
-  void operator =( const Self & );                          // Purposely not implemented
+  // Purposely not implemented
+  InitialImageToImageRegistrationMethod( const Self & );
+  // Purposely not implemented
+  void operator =( const Self & );
 
   unsigned int           m_NumberOfMoments;
   bool                   m_ComputeCenterOfRotationOnly;

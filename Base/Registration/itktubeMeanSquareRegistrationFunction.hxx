@@ -38,7 +38,7 @@ namespace tube
  * Default constructor
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
-MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
+MeanSquareRegistrationFunction<TFixedImage, TMovingImage, TDeformationField>
 ::MeanSquareRegistrationFunction( void )
 {
 
@@ -75,7 +75,7 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
-MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
+MeanSquareRegistrationFunction<TFixedImage, TMovingImage, TDeformationField>
 ::PrintSelf( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
@@ -97,10 +97,11 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
-MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
+MeanSquareRegistrationFunction<TFixedImage, TMovingImage, TDeformationField>
 ::InitializeIteration( void )
 {
-  if( !this->GetMovingImage() || !this->GetFixedImage() || !m_MovingImageInterpolator )
+  if( !this->GetMovingImage() || !this->GetFixedImage()
+    || !m_MovingImageInterpolator )
     {
     itkExceptionMacro( << "MovingImage, FixedImage and/or Interpolator not "
                        << "set." );
@@ -123,11 +124,11 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
  * Compute update at a non boundary neighborhood
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
-typename MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
-::PixelType
-MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
-::ComputeUpdate( const NeighborhoodType &it, void * itkNotUsed( globalData ),
-                 const FloatOffsetType& itkNotUsed( offset ) )
+typename MeanSquareRegistrationFunction<TFixedImage, TMovingImage,
+  TDeformationField>::PixelType
+MeanSquareRegistrationFunction<TFixedImage, TMovingImage, TDeformationField>
+::ComputeUpdate( const NeighborhoodType &it, void * itkNotUsed(
+    globalData ), const FloatOffsetType& itkNotUsed( offset ) )
 {
   // Get fixed image related information
   // Note: no need to check the index is within
@@ -143,7 +144,8 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
     }
 
   // Compute update
-  DeformationFieldPixelType itvec = this->GetDisplacementField()->GetPixel( index );
+  DeformationFieldPixelType itvec = this->GetDisplacementField()->GetPixel(
+    index );
   const double speedValue = this->ComputeIntensityDifference( index, itvec );
 
   const bool normalizemetric=this->GetNormalizeGradient();
@@ -183,11 +185,12 @@ MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 double
-MeanSquareRegistrationFunction<TFixedImage,TMovingImage,TDeformationField>
+MeanSquareRegistrationFunction<TFixedImage, TMovingImage, TDeformationField>
 ::ComputeIntensityDifference( const IndexType & index,
                              const DeformationFieldPixelType & itvec )
 {
-  const double fixedValue = ( double ) this->GetFixedImage()->GetPixel( index );
+  const double fixedValue = ( double ) this->GetFixedImage()->GetPixel(
+    index );
 
   // Get moving image related information
   PointType mappedPoint;

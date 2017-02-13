@@ -35,8 +35,9 @@ namespace tube
 {
 
 template< class TFixedImage, class TMovingSpatialObject,
-          class TTubeSpatialObject >
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
+  class TTubeSpatialObject >
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
+  TTubeSpatialObject >
 ::ImageToTubeRigidMetric( void )
 {
   m_Kappa = 1.0;
@@ -47,14 +48,17 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
   m_DerivativeImageFunction = DerivativeImageFunctionType::New();
 
-  typedef LinearInterpolateImageFunction< FixedImageType > DefaultInterpolatorType;
+  typedef LinearInterpolateImageFunction< FixedImageType >
+    DefaultInterpolatorType;
+
   this->m_Interpolator = DefaultInterpolatorType::New();
 }
 
 
 template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject >
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
+  TTubeSpatialObject >
 ::~ImageToTubeRigidMetric( void )
 {
 }
@@ -63,7 +67,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject >
 void
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
+  TTubeSpatialObject >
 ::SetFeatureWeights( FeatureWeightsType & featureWeights )
 {
   if( this->m_FeatureWeights.data_block() != featureWeights.data_block() ||
@@ -80,7 +85,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject >
 void
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
+  TTubeSpatialObject >
 ::Initialize( void ) throw ( ExceptionObject )
 {
   if( !this->m_MovingSpatialObject || !this->m_FixedImage )
@@ -110,7 +116,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 template< class TFixedImage, class TMovingSpatialObject,
           class TTubeSpatialObject >
 SizeValueType
-ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
+ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
+  TTubeSpatialObject >
 ::CountTubePoints( void )
 {
   SizeValueType tubePoints = 0;
@@ -161,9 +168,10 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
         = currentTube->GetPoints();
       typedef typename TubeType::PointListType::const_iterator
         TubePointIteratorType;
-      for( TubePointIteratorType tubePointIterator = currentTubePoints.begin();
-            tubePointIterator != currentTubePoints.end();
-            ++tubePointIterator )
+      for( TubePointIteratorType tubePointIterator =
+        currentTubePoints.begin();
+        tubePointIterator != currentTubePoints.end();
+        ++tubePointIterator )
         {
         const ScalarType weight = this->m_FeatureWeights[weightCount];
         ++weightCount;
@@ -223,7 +231,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
   CompensatedSummationType matchMeasure;
   CompensatedSummationType weightSum;
 
-  // Create a copy of the transform to keep true const correctness ( thread-safe )
+  // Create a copy of the transform to keep true const correctness (
+  // thread-safe )
   // Set the parameters on the copy and uses the copy.
   LightObject::Pointer anotherTransform = this->m_Transform->CreateAnother();
   TransformType * transformCopy =
@@ -327,7 +336,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
       }
     }
 
-  //! \todo check this normalization ( where is the 1/( scale * sqrt( 2 pi ) )
+  //! \todo check this normalization
+  //( //where is the 1/( scale * sqrt( 2 pi ) )
   //term?
   const ScalarType error = kernelSum.GetSum() / numberOfKernelPoints;
   CompensatedSummationType result;
@@ -387,7 +397,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 {
   derivative.SetSize( this->GetNumberOfParameters() );
 
-  // Create a copy of the transform to keep true const correctness ( thread-safe )
+  // Create a copy of the transform to keep true const correctness
+  // ( thread-safe )
   // Set the parameters on the copy and uses the copy.
   LightObject::Pointer anotherTransform =
     this->m_Transform->CreateAnother();
@@ -479,7 +490,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
           VectorType dtransformedTubePoint;
           for( unsigned int ii = 0; ii < TubeDimension; ++ii )
             {
-            dtransformedTubePoint[ii] = ( dXProj1 * v1[ii] + dXProj2 * v2[ii] );
+            dtransformedTubePoint[ii] =
+              ( dXProj1 * v1[ii] + dXProj2 * v2[ii] );
             dPosition[ii] +=
               m_FeatureWeights[weightCount] * ( dtransformedTubePoint[ii] );
             }
@@ -513,8 +525,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
     }
   typename TubePointsContainerType::const_iterator transformedTubePointsIt =
     transformedTubePoints.begin();
-  typename dTubePointsContainerType::const_iterator dtransformedTubePointsIt =
-    dtransformedTubePoints.begin();
+  typename dTubePointsContainerType::const_iterator
+    dtransformedTubePointsIt = dtransformedTubePoints.begin();
   weightCount = 0;
   for( tubeIterator = tubeList->begin();
        tubeIterator != tubeList->end();
@@ -532,8 +544,10 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
         {
         InputPointType inputPoint = pointIterator->GetPosition();
         OutputPointType currentPoint;
-        //! \todo this checking is not necessary, but we have to make sure have
-        //the corresponding weight -- should cache the result and use it here.
+        //! \todo this checking is not necessary, but we have to make sure
+        //have
+        //the corresponding weight -- should cache the result and use it
+        //here.
         if( this->IsInside( inputPoint, currentPoint, transformCopy ) )
           {
           VnlVectorType dXT( TubeDimension );
@@ -545,7 +559,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
           dXT = dXT * biasVI;
 
           ScalarType angleDelta[TubeDimension];
-          this->GetDeltaAngles( *transformedTubePointsIt, dXT, offsets, angleDelta );
+          this->GetDeltaAngles( *transformedTubePointsIt, dXT, offsets,
+            angleDelta );
           for( unsigned int ii = 0; ii < TubeDimension; ++ii )
             {
             dAngle[ii] += m_FeatureWeights[weightCount] * angleDelta[ii];

@@ -35,10 +35,10 @@ ImageRegionSplitter< VImageDimension >
 
   // split on the outermost dimension available
   int splitAxis = VImageDimension - 1;
-  while ( regionSize[splitAxis] == 1 )
+  while( regionSize[splitAxis] == 1 )
     {
     --splitAxis;
-    if ( splitAxis < 0 )
+    if( splitAxis < 0 )
       { // cannot split
       itkDebugMacro( "  Cannot Split" );
       return 1;
@@ -78,10 +78,10 @@ ImageRegionSplitter< VImageDimension >
 
   // split on the outermost dimension available
   splitAxis = VImageDimension - 1;
-  while ( regionSize[splitAxis] == 1 )
+  while( regionSize[splitAxis] == 1 )
     {
     --splitAxis;
-    if ( splitAxis < 0 )
+    if( splitAxis < 0 )
       { // cannot split
       itkDebugMacro( "  Cannot Split" );
       return splitRegion;
@@ -90,16 +90,18 @@ ImageRegionSplitter< VImageDimension >
 
   // determine the actual number of pieces that will be generated
   SizeValueType range = regionSize[splitAxis];
-  int           valuesPerPiece = Math::Ceil< int >( range / ( double )numberOfPieces );
-  int           maxPieceUsed = Math::Ceil< int >( range / ( double )valuesPerPiece ) - 1;
+  int valuesPerPiece =
+    Math::Ceil< int >( range / ( double )numberOfPieces );
+  int maxPieceUsed =
+    Math::Ceil< int >( range / ( double )valuesPerPiece ) - 1;
 
   // Split the region
-  if ( ( int )i < maxPieceUsed )
+  if( ( int )i < maxPieceUsed )
     {
     splitIndex[splitAxis] += i * valuesPerPiece;
     splitSize[splitAxis] = valuesPerPiece;
     }
-  if ( ( int )i == maxPieceUsed )
+  if( ( int )i == maxPieceUsed )
     {
     splitIndex[splitAxis] += i * valuesPerPiece;
     // last piece needs to process the "rest" dimension being split

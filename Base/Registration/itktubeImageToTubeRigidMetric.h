@@ -38,7 +38,8 @@ namespace tube
 /** \class ImageToTubeRigidMetric
  * \brief Computes similarity between two objects to be registered
  * The metric implemented here corresponds to the following paper:
- * \link http://www.cs.unc.edu/Research/MIDAG/pubs/papers/MICCAI01-aylwardVReg.pdf
+ * \link
+ * http://www.cs.unc.edu/Research/MIDAG/pubs/papers/MICCAI01-aylwardVReg.pdf
  * The metric is based on the fact that vessel centerlines are scaled
  * intensity ridges in the image.
  *
@@ -66,8 +67,10 @@ public:
   typedef SmartPointer< const Self >            ConstPointer;
 
   /**  Dimension of the image and tube.  */
-  itkStaticConstMacro( ImageDimension, unsigned int, TFixedImage::ImageDimension );
-  itkStaticConstMacro( TubeDimension, unsigned int, TTubeSpatialObject::ObjectDimension );
+  itkStaticConstMacro( ImageDimension, unsigned int,
+    TFixedImage::ImageDimension );
+  itkStaticConstMacro( TubeDimension, unsigned int,
+    TTubeSpatialObject::ObjectDimension );
 
   typedef TFixedImage                           FixedImageType;
   typedef TMovingSpatialObject                  TubeTreeType;
@@ -135,7 +138,8 @@ public:
   itkSetMacro( MinimumScalingRadius, ScalarType );
   itkGetConstMacro( MinimumScalingRadius, ScalarType );
 
-  /** Set/Get the extent of the blurring calculation given in Gaussian sigma's. */
+  /** Set/Get the extent of the blurring calculation given in Gaussian
+   * sigma's. */
   itkSetMacro( Extent, ScalarType );
   itkGetConstMacro( Extent, ScalarType );
 
@@ -146,7 +150,9 @@ public:
   itkGetConstReferenceMacro( FeatureWeights, FeatureWeightsType )
 
   TransformPointer GetTransform( void ) const
-    { return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() ); }
+    {
+    return dynamic_cast<TransformType*>( this->m_Transform.GetPointer() );
+    }
 
   /** Downsample the tube points by this integer value. */
 
@@ -156,10 +162,11 @@ protected:
 
   typedef Vector< ScalarType, TubeDimension >                VectorType;
   typedef Matrix< ScalarType, TubeDimension, TubeDimension > MatrixType;
-  typedef typename TubePointType::PointType                  PointType;
-  typedef vnl_vector< ScalarType >                           VnlVectorType;
-  typedef vnl_matrix< ScalarType >                           VnlMatrixType;
-  typedef CompensatedSummation< ScalarType >                 CompensatedSummationType;
+
+  typedef typename TubePointType::PointType        PointType;
+  typedef vnl_vector< ScalarType >                 VnlVectorType;
+  typedef vnl_matrix< ScalarType >                 VnlMatrixType;
+  typedef CompensatedSummation< ScalarType >       CompensatedSummationType;
 
   virtual void ComputeCenterOfRotation( void );
   SizeValueType CountTubePoints( void );

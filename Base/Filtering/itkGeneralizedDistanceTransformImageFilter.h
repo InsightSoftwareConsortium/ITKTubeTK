@@ -28,10 +28,11 @@
 
 namespace itk
 {
+
 /** \class GeneralizedDistanceTransformImageFilter
 *
 * This filter computes a generalized variant of the distance transform with
-* a * squared euclidean metric. It can optionally compute a voronoi map as
+* a squared euclidean metric. It can optionally compute a voronoi map as
 * well.
 *
 * DEFINITION
@@ -122,10 +123,11 @@ namespace itk
 *
 * \ingroup ImageFeatureExtraction
 */
+
 template< class TFunctionImage, class TDistanceImage=TFunctionImage,
   class TLabelImage=TFunctionImage >
 class GeneralizedDistanceTransformImageFilter
-  : public ImageToImageFilter<TFunctionImage, TDistanceImage>
+: public ImageToImageFilter<TFunctionImage, TDistanceImage>
 {
 public:
   /** Standard class typedefs. */

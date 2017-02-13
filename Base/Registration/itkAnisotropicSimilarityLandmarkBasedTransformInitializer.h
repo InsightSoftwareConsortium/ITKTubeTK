@@ -69,7 +69,8 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( AnisotropicSimilarityLandmarkBasedTransformInitializer, Object );
+  itkTypeMacro( AnisotropicSimilarityLandmarkBasedTransformInitializer,
+    Object );
 
   /** Type of the transform to initialize */
   typedef TTransform                      TransformType;
@@ -82,7 +83,7 @@ public:
                       TransformType::OutputSpaceDimension );
 
   /** Set the transform to be initialized */
-  itkSetObjectMacro( Transform,   TransformType   );
+  itkSetObjectMacro( Transform, TransformType );
 
   /** Image Types to use in the initialization of the transform */
   typedef   TFixedImage  FixedImageType;
@@ -116,18 +117,24 @@ public:
     }
 
   /** Determine the image dimension. */
-  itkStaticConstMacro( ImageDimension, unsigned int, FixedImageType::ImageDimension );
+  itkStaticConstMacro( ImageDimension, unsigned int,
+    FixedImageType::ImageDimension );
 
   /** Convenience typedefs */
-  typedef typename TransformType::InputPointType   InputPointType;
-  typedef typename TransformType::OutputVectorType OutputVectorType;
-  typedef Point<double,
-          itkGetStaticConstMacro( ImageDimension )>  LandmarkPointType;
-  typedef std::vector<LandmarkPointType>           LandmarkPointContainer;
+  typedef typename TransformType::InputPointType
+    InputPointType;
+  typedef typename TransformType::OutputVectorType
+    OutputVectorType;
+  typedef Point<double, itkGetStaticConstMacro( ImageDimension )>
+    LandmarkPointType;
+  typedef std::vector<LandmarkPointType>
+    LandmarkPointContainer;
   typedef typename  LandmarkPointContainer::const_iterator
-                                                   PointsContainerConstIterator;
-  typedef typename TransformType::ParametersType   ParametersType;
-  typedef typename ParametersType::ValueType       ParameterValueType;
+    PointsContainerConstIterator;
+  typedef typename TransformType::ParametersType
+    ParametersType;
+  typedef typename ParametersType::ValueType
+    ParameterValueType;
 
   /** Set the Fixed landmark point containers */
   void SetFixedLandmarks( const LandmarkPointContainer & fixedLandmarks )

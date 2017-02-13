@@ -97,7 +97,7 @@ DiffusiveRegistrationFilterUtils
   // Create the resized resampled image
   resampledImage = ResampleImageType::New();
   DiffusiveRegistrationFilterUtils::AllocateSpaceForImage( resampledImage,
-                                                                  templateImage );
+    templateImage );
 
   // Do NN interpolation
   typedef itk::ImageRegionIteratorWithIndex< ResampleImageType >

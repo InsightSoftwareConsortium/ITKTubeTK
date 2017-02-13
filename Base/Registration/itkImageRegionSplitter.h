@@ -153,7 +153,7 @@ protected:
     Self *nonconst_this = const_cast<Self*>( this );
     region = nonconst_this->GetSplit( i, numberOfPieces, region );
 
-    for ( unsigned int d = 0; d < dim; ++d )
+    for( unsigned int d = 0; d < dim; ++d )
       {
       regionIndex[d] = region.GetIndex( d );
       regionSize[d] = region.GetSize( d );
@@ -164,8 +164,10 @@ protected:
   virtual void PrintSelf( std::ostream & os, Indent indent ) const ITK_OVERRIDE;
 
 private:
-  ImageRegionSplitter( const ImageRegionSplitter & ); //purposely not implemented
-  void operator=( const ImageRegionSplitter & );      //purposely not implemented
+  //purposely not implemented
+  ImageRegionSplitter( const ImageRegionSplitter & );
+  //purposely not implemented
+  void operator=( const ImageRegionSplitter & );
 };
 } // end namespace itk
 

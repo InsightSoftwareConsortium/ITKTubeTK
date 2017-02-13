@@ -106,10 +106,10 @@ public:
   virtual void SetMatrix( const MatrixType & matrix );
   virtual void SetMatrix( const MatrixType & matrix, const double tolerance );
 
-  /** Set the transformation from a container of parameters This is typically
-   * used by optimizers.  There are 7 parameters. The first three represent the
-   * versor, the next three represent the translation and the last one
-   * represents the scaling factor. */
+  /** Set the transformation from a container of parameters This is
+   * typically used by optimizers.  There are 7 parameters. The first
+   * three represent the versor, the next three represent the translation
+   * and the last one represents the scaling factor. */
   void SetParameters( const ParametersType & parameters );
 
   virtual const ParametersType & GetParameters( void ) const;
@@ -125,7 +125,8 @@ public:
    * given point or vector, returning the transformed point or
    * vector. The rank of the Jacobian will also indicate if the
    * transform is invertible at this point. */
-  virtual const JacobianType & GetJacobian( const InputPointType  & point ) const;
+  virtual const JacobianType & GetJacobian( const InputPointType  & point )
+    const;
 
   virtual void ComputeJacobianWithRespectToParameters(
     const InputPointType & p, JacobianType & jacobian ) const;
@@ -141,16 +142,18 @@ protected:
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
-  /** Recomputes the matrix by calling the Superclass::ComputeMatrix() and then
-   * applying the scale factor. */
+  /** Recomputes the matrix by calling the Superclass::ComputeMatrix() and
+   * then applying the scale factor. */
   void ComputeMatrix();
 
   /** Computes the parameters from an input matrix. */
   void ComputeMatrixParameters();
 
 private:
-  AnisotropicSimilarity3DTransform( const Self & ); // purposely not implemented
-  void operator=( const Self & );                   // purposely not implemented
+  // purposely not implemented
+  AnisotropicSimilarity3DTransform( const Self & );
+  // purposely not implemented
+  void operator=( const Self & );
 
   VectorType           m_Scale;
   mutable JacobianType m_NonThreadsafeSharedJacobian;

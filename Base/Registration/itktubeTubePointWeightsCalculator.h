@@ -35,13 +35,15 @@ namespace tube
 {
 
 /**
- *  This class computes scalar weights for every point in a tube tree based on
+ *  This class computes scalar weights for every point in a tube tree
+ *  based on
  *  the radius at that point.
  *
  *  \tparam TTubeTreeSpatialObject input tube tree spatial object type.
  *  \tparam TPointWeightFunction type of the function used to compute the
  *  weights.
- *  \tparam TResolutionsWeights type of the output scalar resolution weights.
+ *  \tparam TResolutionsWeights type of the output scalar resolution
+ *  weights.
  */
 template< unsigned int VDimension, class TTubeSpatialObject,
   class TPointWeightFunction,
@@ -71,7 +73,8 @@ public:
   /** Run-time type information ( and related methods ). */
   itkTypeMacro( TubePointWeightsCalculator, Object );
 
-  /** Compute the resolutions weights on the input TubeTreeSpatialObject using the
+  /** Compute the resolutions weights on the input TubeTreeSpatialObject
+   * using the
    * PointWeightFunction. */
   void Compute( void );
 
@@ -79,7 +82,8 @@ public:
   itkSetObjectMacro( TubeTreeSpatialObject, TubeTreeSpatialObjectType );
   itkGetConstObjectMacro( TubeTreeSpatialObject, TubeTreeSpatialObjectType );
 
-  /** Set/Get the function used to determine the resolution weights.  This function
+  /** Set/Get the function used to determine the resolution weights.
+   * This function
    *  takes a tube point as an input and outputs a weight for that point. */
   itkSetObjectMacro( PointWeightFunction, PointWeightFunctionType );
   itkGetConstObjectMacro( PointWeightFunction, PointWeightFunctionType );

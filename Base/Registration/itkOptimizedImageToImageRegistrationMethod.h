@@ -148,8 +148,10 @@ protected:
 
 private:
 
-  OptimizedImageToImageRegistrationMethod( const Self & );    // Purposely not implemented
-  void operator =( const Self & );                            // Purposely not implemented
+  // Purposely not implemented
+  OptimizedImageToImageRegistrationMethod( const Self & );
+  // Purposely not implemented
+  void operator =( const Self & );
 
   TransformParametersType m_InitialTransformParameters;
   TransformParametersType m_InitialTransformFixedParameters;

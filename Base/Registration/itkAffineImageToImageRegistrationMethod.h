@@ -68,7 +68,8 @@ public:
   /**
    * The function performs the casting.  This function should only appear
    *   once in the class hierarchy.  It is provided so that member
-   *   functions that exist only in specific transforms ( e.g., SetIdentity )
+   *   functions that exist only in specific transforms
+   *   ( e.g., SetIdentity )
    *   can be called without the caller having to do the casting.
    */
   TransformType * GetTypedTransform( void );
@@ -86,10 +87,12 @@ public:
    */
   AffineTransformPointer GetAffineTransform( void ) const;
 
-  /** Initialize the transform parameters from an AffineTransform This method
-   * is intended as an alternative to calling SetInitialTransformParameters()
-   * and SetInitialTransformFixedParameters(). The method below facilitates to
-   * use the AffineTransform returned by the InitialImageToImageRegistrationMethod
+  /** Initialize the transform parameters from an AffineTransform.
+   * This method is intended as an alternative to calling
+   * SetInitialTransformParameters() and
+   * SetInitialTransformFixedParameters(). The method below facilitates to
+   * use the AffineTransform returned by the
+   * InitialImageToImageRegistrationMethod
    * to directly initialize this rigid registration method.
    */
   void SetInitialTransformParametersFromAffineTransform(
@@ -104,8 +107,10 @@ protected:
 
 private:
 
-  AffineImageToImageRegistrationMethod( const Self & );   // Purposely not implemented
-  void operator =( const Self & );                        // Purposely not implemented
+  // Purposely not implemented
+  AffineImageToImageRegistrationMethod( const Self & );
+  // Purposely not implemented
+  void operator =( const Self & );
 
 };
 
