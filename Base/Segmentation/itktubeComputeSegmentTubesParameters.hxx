@@ -39,13 +39,14 @@ limitations under the License.
 #include <vnl/vnl_c_vector.h>
 
 int m_SortColumn = 0;
-struct ComputeSegmentTubesParametersSortFunctionType {
-    bool operator()( const vnl_vector< double > & first,
-      const vnl_vector< double > & second ) const
-      {
-      return( first[m_SortColumn] < second[m_SortColumn] );
-      }
-    };
+struct ComputeSegmentTubesParametersSortFunctionType
+{
+  bool operator()( const vnl_vector< double > & first,
+    const vnl_vector< double > & second ) const
+    {
+    return( first[m_SortColumn] < second[m_SortColumn] );
+    }
+};
 
 namespace itk
 {

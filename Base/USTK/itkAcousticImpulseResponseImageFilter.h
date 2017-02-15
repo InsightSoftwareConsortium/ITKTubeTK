@@ -54,14 +54,16 @@ namespace itk
  *
  * This filter requires two inputs.  The first input is the input acoustic
  * impedance image.  The second input is an angle of incidence image.
- * \f$n\f$ is specified with the \c AngleDependence parameter, and defaults to one.
+ * \f$n\f$ is specified with the \c AngleDependence parameter, and
+ * defaults to one.
  *
  * It is possible to specify the filter used to calculate the gradient
  * magnitude with \c SetGradientMagnitudeFilter.
  *
  * \ingroup ImageToImageFilter
  */
-template< class TInputImage, class TOutputImage, class TOperatorValue = float >
+template< class TInputImage, class TOutputImage,
+  class TOperatorValue = float >
 class AcousticImpulseResponseImageFilter
   : public ImageToImageFilter< TInputImage, TOutputImage >
 {
@@ -109,18 +111,21 @@ protected:
   virtual void PrintSelf( std::ostream & os, Indent indent ) const;
 
   virtual void BeforeThreadedGenerateData( void );
-  virtual void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread,
-    ThreadIdType threadId );
+  virtual void ThreadedGenerateData( const OutputImageRegionType &
+    outputRegionForThread, ThreadIdType threadId );
 
 private:
-  AcousticImpulseResponseImageFilter( const Self & ); // purposely not implemented
-  void operator=( const Self & ); // purposely not implemented
+  // purposely not implemented
+  AcousticImpulseResponseImageFilter( const Self & );
+  // purposely not implemented
+  void operator=( const Self & );
 
   typename GradientMagnitudeFilterType::Pointer m_GradientMagnitudeFilter;
 
   double m_AngleDependence;
 
-  typedef CastImageFilter< InputImageType, OperatorImageType > CastImageFilterType;
+  typedef CastImageFilter< InputImageType, OperatorImageType >
+    CastImageFilterType;
   typename CastImageFilterType::Pointer m_CastImageFilter;
 
 }; // End class AcousticImpulseResponseImageFilter

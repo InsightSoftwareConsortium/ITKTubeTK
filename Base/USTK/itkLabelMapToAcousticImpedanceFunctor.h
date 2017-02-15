@@ -45,8 +45,8 @@ public:
   typedef TImpedancePixel ImpedancePixelType;
   typedef TLookupTable    LookupTableType;
 
-  /** Set/Get the lookup table.  It must be persistent throughout the life of the
-   * functor. */
+  /** Set/Get the lookup table.  It must be persistent throughout the life
+   * of the functor. */
   void SetLookupTable( const LookupTableType * lookupTable );
   const LookupTableType * GetLookupTable( void ) const;
 

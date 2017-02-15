@@ -80,21 +80,25 @@ void
 UltrasoundProbeGeometryCalculator< TInputImage >
 ::SetInput( const InputImageType * image )
 {
-  this->ProcessObject::SetPrimaryInput( const_cast< InputImageType * >( image ) );
+  this->ProcessObject::SetPrimaryInput( const_cast< InputImageType * >(
+    image ) );
 }
 
 
 template< class TInputImage >
-const typename UltrasoundProbeGeometryCalculator< TInputImage >::InputImageType *
+const typename UltrasoundProbeGeometryCalculator< TInputImage >::
+InputImageType *
 UltrasoundProbeGeometryCalculator< TInputImage >
 ::GetInput( void ) const
 {
-  return itkDynamicCastInDebugMode< const TInputImage * >( this->GetPrimaryInput() );
+  return itkDynamicCastInDebugMode< const TInputImage * >(
+    this->GetPrimaryInput() );
 }
 
 
 template< class TInputImage >
-const typename UltrasoundProbeGeometryCalculator< TInputImage >::OriginType &
+const typename UltrasoundProbeGeometryCalculator< TInputImage >::
+OriginType &
 UltrasoundProbeGeometryCalculator< TInputImage >
 ::GetUltrasoundProbeOrigin( void ) const
 {
@@ -106,7 +110,8 @@ UltrasoundProbeGeometryCalculator< TInputImage >
 
 
 template< class TInputImage >
-const typename UltrasoundProbeGeometryCalculator< TInputImage >::RadiusType &
+const typename UltrasoundProbeGeometryCalculator< TInputImage >::
+RadiusType &
 UltrasoundProbeGeometryCalculator< TInputImage >
 ::GetStartOfAcquisitionRadius( void ) const
 {
@@ -136,7 +141,8 @@ UltrasoundProbeGeometryCalculator< TInputImage >
 
   // Find the directions orthogonal to the general beam direction.
   unsigned int orthogonalDirections[InputImageType::ImageDimension - 1];
-  for( unsigned int ii = 0, jj = 0; ii < InputImageType::ImageDimension; ++ii )
+  for( unsigned int ii = 0, jj = 0; ii < InputImageType::ImageDimension;
+    ++ii )
     {
     if( ii != m_GeneralBeamDirection )
       {
@@ -145,28 +151,30 @@ UltrasoundProbeGeometryCalculator< TInputImage >
       }
     }
 
-  // Number of points to examine on each side of the imaged sector.  This could
-  // be a class parameter.
+  // Number of points to examine on each side of the imaged sector.  This
+  // could be a class parameter.
   const unsigned int pointsToExamine = 8;
   typedef std::vector< OriginType > PointsContainerType;
   PointsContainerType pointsOnSide1( pointsToExamine );
   PointsContainerType pointsOnSide2( pointsToExamine );
 
-  // The indices along the beam direction to walk in from along the orthogonal
-  // direction.
+  // The indices along the beam direction to walk in from along the
+  // orthogonal direction.
   IndexValueType beamDirectionIndicesToExamine[pointsToExamine];
   for( unsigned int ii = 0; ii < pointsToExamine; ++ii )
     {
     // Fraction along each side of the beam direction to ignore in the image
-    // because of padding, the sector geometry, etc.  This is also a potential
-    // class parameter.
+    // because of padding, the sector geometry, etc.  This is also a
+    // potential class parameter.
     const float ignoreFraction = 0.3f;
     const float keepFraction = 1.0f - 2*ignoreFraction;
     const float keepStep = keepFraction / ( pointsToExamine - 1 );
     const SizeValueType size = inputSize[m_GeneralBeamDirection];
     const SizeValueType offset =
-      static_cast< SizeValueType >( size * ( ignoreFraction + keepStep * ii ) );
-    beamDirectionIndicesToExamine[ii] = inputIndex[m_GeneralBeamDirection] + offset;
+      static_cast< SizeValueType >( size
+        * ( ignoreFraction + keepStep * ii ) );
+    beamDirectionIndicesToExamine[ii] = inputIndex[m_GeneralBeamDirection]
+      + offset;
     }
 
   // Come in from the sides, and find the sides of the real data by locating
@@ -178,15 +186,18 @@ UltrasoundProbeGeometryCalculator< TInputImage >
     // GeneralBeamDirection x orthogonalDirection plane.
     const unsigned int orthogonalDirection = orthogonalDirections[ii];
 
-    // For every point, walk in from the edge of the image, and find the side of
-    // the sector image by locating the first non-background value.
-    for( unsigned int pointIndex = 0; pointIndex < pointsToExamine; ++pointIndex )
+    // For every point, walk in from the edge of the image, and find the
+    // side of the sector image by locating the first non-background value.
+    for( unsigned int pointIndex = 0; pointIndex < pointsToExamine;
+      ++pointIndex )
       {
       // Define an ImageRegion that is a line along one of the
       // beamDirectionIndicesToExamine.
       typename InputImageType::RegionType lineRegion = inputRegion;
-      typename InputImageType::IndexType  regionIndex = lineRegion.GetIndex();
-      regionIndex[m_GeneralBeamDirection] = beamDirectionIndicesToExamine[pointIndex];
+      typename InputImageType::IndexType  regionIndex =
+        lineRegion.GetIndex();
+      regionIndex[m_GeneralBeamDirection] =
+        beamDirectionIndicesToExamine[pointIndex];
       typename InputImageType::SizeType   regionSize = lineRegion.GetSize();
       regionSize[m_GeneralBeamDirection] = 1;
       // use the middle plane in the 3D case
@@ -209,7 +220,8 @@ UltrasoundProbeGeometryCalculator< TInputImage >
         if( imageIt.Value() != m_BackgroundValue )
           {
           OriginType point;
-          inputImage->TransformIndexToPhysicalPoint( imageIt.GetIndex(), point );
+          inputImage->TransformIndexToPhysicalPoint( imageIt.GetIndex(),
+            point );
           pointsOnSide1[pointIndex] = point;
           break;
           }
@@ -222,23 +234,27 @@ UltrasoundProbeGeometryCalculator< TInputImage >
         if( imageIt.Value() != m_BackgroundValue )
           {
           OriginType point;
-          inputImage->TransformIndexToPhysicalPoint( imageIt.GetIndex(), point );
+          inputImage->TransformIndexToPhysicalPoint( imageIt.GetIndex(),
+            point );
           pointsOnSide2[pointIndex] = point;
           break;
           }
         }
       } // end for each point to examine
 
-    // Compute the line slope and intercept for each pair of points that were
-    // previously detected.
-    typedef typename OriginType::RealType                   MeasurementType;
-    typedef Vector< MeasurementType, 2 >                    MeasurementVectorType;
+    // Compute the line slope and intercept for each pair of points that
+    // were previously detected.
+    typedef typename OriginType::RealType    MeasurementType;
+    typedef Vector< MeasurementType, 2 >     MeasurementVectorType;
+
     typedef Statistics::ListSample< MeasurementVectorType > SampleType;
+
     typename SampleType::Pointer side1LineParameters = SampleType::New();
     typename SampleType::Pointer side2LineParameters = SampleType::New();
     side1LineParameters->SetMeasurementVectorSize( 2 );
     side2LineParameters->SetMeasurementVectorSize( 2 );
-    for( unsigned int pointIndex = 0; pointIndex < pointsToExamine - 1; ++pointIndex )
+    for( unsigned int pointIndex = 0; pointIndex < pointsToExamine - 1;
+      ++pointIndex )
       {
       for( unsigned int pointIndexInc = pointIndex+1;
            pointIndexInc < pointsToExamine;
@@ -273,23 +289,30 @@ UltrasoundProbeGeometryCalculator< TInputImage >
         }
       }
 
-    // Get the median line parameters.  Each slope and intercept are precise,
-    // but since there may be some pixel within the imaged sector that happen to
+    // Get the median line parameters.  Each slope and intercept are
+    // precise,
+    // but since there may be some pixel within the imaged sector that
+    // happen to
     // have BackgroundValue values, they will not be detected and their line
-    // parameters will be wrong -- it will have the wrong slope.  These outliers
+    // parameters will be wrong -- it will have the wrong slope.  These
+    // outliers
     // are avoided by taking the median value.
     typedef Statistics::Subsample< SampleType > SubsampleType;
-    typename SubsampleType::Pointer side1LineParametersSS = SubsampleType::New();
-    typename SubsampleType::Pointer side2LineParametersSS = SubsampleType::New();
+    typename SubsampleType::Pointer side1LineParametersSS =
+      SubsampleType::New();
+    typename SubsampleType::Pointer side2LineParametersSS =
+      SubsampleType::New();
     side1LineParametersSS->SetSample( side1LineParameters );
     side2LineParametersSS->SetSample( side2LineParameters );
     side1LineParametersSS->InitializeWithAllInstances();
     side2LineParametersSS->InitializeWithAllInstances();
     const unsigned int activeDimension = 0;
-    Statistics::Algorithm::InsertSort< SubsampleType >( side1LineParametersSS,
-      activeDimension, 0, side1LineParametersSS->Size() );
-    Statistics::Algorithm::InsertSort< SubsampleType >( side2LineParametersSS,
-      activeDimension, 0, side2LineParametersSS->Size() );
+    Statistics::Algorithm::InsertSort< SubsampleType >(
+      side1LineParametersSS, activeDimension, 0,
+      side1LineParametersSS->Size() );
+    Statistics::Algorithm::InsertSort< SubsampleType >(
+      side2LineParametersSS, activeDimension, 0,
+      side2LineParametersSS->Size() );
     const MeasurementVectorType side1MedianLineParameter =
       side1LineParametersSS->GetMeasurementVectorByIndex(
         side1LineParametersSS->Size() / 2 );
@@ -321,8 +344,8 @@ UltrasoundProbeGeometryCalculator< TInputImage >
   // Now, find the radius.
   const unsigned int radiusPointsToExamine = 5;
 
-  // Just look at one orthogonal direction because the radius is assumed to be
-  // the same in all planes.
+  // Just look at one orthogonal direction because the radius is assumed
+  // to be the same in all planes.
   unsigned int orthogonalDirection = 0;
   for( unsigned int ii = 0; ii < InputImageType::ImageDimension; ++ii )
     {
@@ -342,22 +365,26 @@ UltrasoundProbeGeometryCalculator< TInputImage >
     const SizeValueType size = inputSize[orthogonalDirection];
     const SizeValueType offset = static_cast< SizeValueType >(
       size * ( ignoreFraction + keepStep * ii ) );
-    orthogonalIndicesToExamine[ii] = inputIndex[m_GeneralBeamDirection] + offset;
+    orthogonalIndicesToExamine[ii] = inputIndex[m_GeneralBeamDirection]
+      + offset;
     }
 
   // Compute the radius for each point found by casting along the beam
   // direction.
   typedef Vector< RadiusType, 1 > RadiusMeasurementVectorType;
-  typedef Statistics::ListSample< RadiusMeasurementVectorType > RadiusSampleType;
+  typedef Statistics::ListSample< RadiusMeasurementVectorType >
+    RadiusSampleType;
   typename RadiusSampleType::Pointer radiiSamples = RadiusSampleType::New();
-  for( unsigned int pointIndex = 0; pointIndex < radiusPointsToExamine; ++pointIndex )
+  for( unsigned int pointIndex = 0; pointIndex < radiusPointsToExamine;
+    ++pointIndex )
     {
     // Create an ImageRegion along a line defined by the
     // orthogonalIndicesToExamine
     typename InputImageType::RegionType lineRegion = inputRegion;
-    typename InputImageType::IndexType  regionIndex = lineRegion.GetIndex();
-    regionIndex[orthogonalDirection] = orthogonalIndicesToExamine[pointIndex];
-    typename InputImageType::SizeType   regionSize = lineRegion.GetSize();
+    typename InputImageType::IndexType regionIndex = lineRegion.GetIndex();
+    regionIndex[orthogonalDirection] =
+      orthogonalIndicesToExamine[pointIndex];
+    typename InputImageType::SizeType regionSize = lineRegion.GetSize();
     regionSize[orthogonalDirection] = 1;
     // use the middle plane in the 3D case
     for( unsigned int jj = 0; jj < InputImageType::ImageDimension; ++jj )
@@ -380,24 +407,28 @@ UltrasoundProbeGeometryCalculator< TInputImage >
       if( imageIt.Value() != m_BackgroundValue )
         {
         OriginType point;
-        inputImage->TransformIndexToPhysicalPoint( imageIt.GetIndex(), point );
-        const typename OriginType::VectorType radiusVector = point - probeOrigin;
+        inputImage->TransformIndexToPhysicalPoint( imageIt.GetIndex(),
+          point );
+        const typename OriginType::VectorType radiusVector = point
+          - probeOrigin;
         radiiSamples->PushBack( radiusVector.GetNorm() );
         break;
         }
       }
     }
 
-  // Use the median radii to avoid outliers due to BackgroundValue pixels in the
-  // sector.
+  // Use the median radii to avoid outliers due to BackgroundValue pixels
+  // in the sector.
   typedef Statistics::Subsample< RadiusSampleType > RadiusSubsampleType;
-  typename RadiusSubsampleType::Pointer radiiSubsample = RadiusSubsampleType::New();
+  typename RadiusSubsampleType::Pointer radiiSubsample =
+    RadiusSubsampleType::New();
   radiiSubsample->SetSample( radiiSamples );
   radiiSubsample->InitializeWithAllInstances();
   Statistics::Algorithm::InsertSort< RadiusSubsampleType >( radiiSubsample,
     0, 0, static_cast< int >( radiusPointsToExamine ) );
   startOfAcquisitionRadius =
-    radiiSubsample->GetMeasurementVectorByIndex( radiusPointsToExamine / 2 )[0];
+    radiiSubsample->GetMeasurementVectorByIndex(
+      radiusPointsToExamine / 2 )[0];
 
   // Set the values to our ProcessObject outputs.
   typename DecoratedOriginType::Pointer decoratedProbeOrigin =

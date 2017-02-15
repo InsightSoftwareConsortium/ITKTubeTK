@@ -81,7 +81,7 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
   typename InputImageType::PointType origin = m_SpeedImage->GetOrigin();
   double tubeSpacing[Dimension];
 
-  for ( unsigned int k = 0; k < Dimension; ++k )
+  for( unsigned int k = 0; k < Dimension; ++k )
     {
     scaleVector[k] = spacing[k];
     offsetVector[k] = origin[k];
@@ -143,7 +143,7 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
     double minspacing = spacing[0];
     for( unsigned int dim = 0; dim < Dimension; dim++ )
       {
-      if ( spacing[dim] < minspacing )
+      if( spacing[dim] < minspacing )
         {
         minspacing = spacing[dim];
         }
@@ -188,12 +188,12 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
     m_SpeedImage->GetDirection() );
   m_Output->ComputeObjectToWorldTransform();
   m_CostAssociatedWithExtractedTube = 0.0;
-  for ( unsigned int i = 0; i < pathFilter->GetNumberOfOutputs(); i++ )
+  for( unsigned int i = 0; i < pathFilter->GetNumberOfOutputs(); i++ )
     {
     // Get the path
     typename PathType::Pointer path = pathFilter->GetOutput( i );
     // Check path is valid
-    if ( path->GetVertexList()->Size() == 0 )
+    if( path->GetVertexList()->Size() == 0 )
       {
       std::cout << "WARNING: Path " << ( i + 1 )
         << " contains no points!" << std::endl;
@@ -209,7 +209,7 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
       m_SpeedImage->TransformContinuousIndexToPhysicalPoint(
         vertexList->GetElement( k ), pathPoint );
       typename InputImageType::IndexType imageIndex;
-      if ( m_SpeedImage->TransformPhysicalPointToIndex
+      if( m_SpeedImage->TransformPhysicalPointToIndex
         ( pathPoint, imageIndex ) )
         {
         m_CostAssociatedWithExtractedTube +=

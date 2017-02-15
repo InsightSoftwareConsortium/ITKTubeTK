@@ -67,7 +67,7 @@ ComputeTrainingMaskFilter< TInputImage >
 
   typename ImageTypeShort::Pointer output1 =
     static_cast< ImageTypeShort * >( this->MakeOutput( 1 ).GetPointer() );
-  this->ProcessObject::SetNthOutput( 1,output1 );
+  this->ProcessObject::SetNthOutput( 1, output1 );
 }
 
 template< class TInputImage >
@@ -75,7 +75,7 @@ void
 ComputeTrainingMaskFilter< TInputImage >
 ::ApplyDilateMorphologyFilter( typename ImageType::Pointer &input )
 {
-  for ( int r = 0; r<m_NotVesselWidth; r++ )
+  for( int r = 0; r<m_NotVesselWidth; r++ )
     {
     m_Dilate->SetInput( input );
     m_Dilate->Update();
@@ -110,9 +110,10 @@ ComputeTrainingMaskFilter< TInputImage >
   m_Add->SetInput2( m_DivideImage->GetOutput() );
 
   m_CastNotVessel->SetInput( m_Substract->GetOutput() );
-  m_CastNotVessel->GraftOutput( const_cast< ImageTypeShort * >( this->GetOutput( 1 ) ) );
+  m_CastNotVessel->GraftOutput( const_cast< ImageTypeShort * >(
+      this->GetOutput( 1 ) ) );
   m_CastNotVessel->Update();
-  this->GraftNthOutput( 1,m_CastNotVessel->GetOutput() );
+  this->GraftNthOutput( 1, m_CastNotVessel->GetOutput() );
 
   m_Cast->SetInput( m_Add->GetOutput() );
   m_Cast->GraftOutput( this->GetOutput() );

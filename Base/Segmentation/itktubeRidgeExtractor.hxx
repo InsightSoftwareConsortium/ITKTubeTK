@@ -1856,7 +1856,7 @@ template< class TInputImage >
 template< class TDrawMask >
 bool
 RidgeExtractor<TInputImage>
-::DeleteTube( const TubeType * tube,  TDrawMask * drawMask )
+::DeleteTube( const TubeType * tube, TDrawMask * drawMask )
 {
   typedef typename TDrawMask::PixelType      DrawPixelType;
   typedef NeighborhoodIterator< TDrawMask >  NeighborhoodIteratorType;
@@ -1978,7 +1978,7 @@ template< class TInputImage >
 template< class TDrawMask >
 bool
 RidgeExtractor<TInputImage>
-::AddTube( const TubeType * tube,  TDrawMask * drawMask )
+::AddTube( const TubeType * tube, TDrawMask * drawMask )
 {
   if( this->GetDebug() )
     {

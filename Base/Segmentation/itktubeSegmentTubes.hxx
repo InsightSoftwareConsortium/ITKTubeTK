@@ -76,7 +76,7 @@ SegmentTubes<TInputImage>
   for( size_t seedNum = 0; seedNum < seedI.size(); ++seedNum )
     {
     m_SeedIndexList.push_back( seedI[seedNum] );
-    m_SeedRadiusList.push_back( this->m_Scale / scaleNorm  );
+    m_SeedRadiusList.push_back( this->m_Scale / scaleNorm );
     }
 }
 
@@ -101,7 +101,7 @@ SegmentTubes<TInputImage>
       continue;
       }
     m_SeedIndexList.push_back( seedIndex );
-    m_SeedRadiusList.push_back( this->m_Scale / scaleNorm  );
+    m_SeedRadiusList.push_back( this->m_Scale / scaleNorm );
     }
 }
 
@@ -117,7 +117,7 @@ SegmentTubes<TInputImage>
   for( size_t seedNum = 0; seedNum < seedI.size(); ++seedNum )
     {
     m_SeedIndexList.push_back( seedI[seedNum] );
-    m_SeedRadiusList.push_back( seedS[seedNum] / scaleNorm  );
+    m_SeedRadiusList.push_back( seedS[seedNum] / scaleNorm );
     }
 }
 
@@ -149,7 +149,8 @@ SegmentTubes<TInputImage>
     }
   if( this->m_RadiusInputImage )
     {
-    this->m_TubeExtractorFilter->SetRadiusInputImage( this->m_RadiusInputImage );
+    this->m_TubeExtractorFilter->SetRadiusInputImage(
+      this->m_RadiusInputImage );
     }
   // Set the radius for tube extractor
   double scaleNorm = this->m_InputImage->GetSpacing()[0];
@@ -186,7 +187,7 @@ SegmentTubes<TInputImage>
             }
           else
             {
-            m_SeedRadiusList.push_back(  this->m_Scale / scaleNorm );
+            m_SeedRadiusList.push_back( this->m_Scale / scaleNorm );
             }
           }
         }
@@ -215,7 +216,7 @@ SegmentTubes<TInputImage>
     {
     TubeExtractorIOType teReader;
     teReader.SetTubeExtractor( this->m_TubeExtractorFilter );
-    teReader.Read(  m_ParameterFile.c_str() );
+    teReader.Read( m_ParameterFile.c_str() );
     }
 
   this->m_TubeExtractorFilter->SetDebug( false );
@@ -251,7 +252,8 @@ SegmentTubes<TInputImage>
     std::cout << "Extracting from index point " << *seedIndexIter
       << " at radius " << *seedRadiusIter << std::endl;
     typename TubeType::Pointer xTube =
-      this->m_TubeExtractorFilter->ExtractTube( *seedIndexIter, count, true );
+      this->m_TubeExtractorFilter->ExtractTube( *seedIndexIter, count,
+        true );
     if( !xTube.IsNull() )
       {
       this->m_TubeExtractorFilter->AddTube( xTube );
@@ -267,7 +269,7 @@ SegmentTubes<TInputImage>
     ++seedRadiusIter;
     ++count;
     }
-  if ( !foundOneTube )
+  if( !foundOneTube )
     {
     std::cout << "No Ridge found at all";
     return;
@@ -279,26 +281,28 @@ SegmentTubes<TInputImage>
   typename TubeTransformType::MatrixType directionMatrix;
   typename ImageType::SpacingType spacing = this->m_InputImage->GetSpacing();
   typename ImageType::PointType origin = this->m_InputImage->GetOrigin();
-  for ( unsigned int i = 0; i < ImageDimension; ++i )
+  for( unsigned int i = 0; i < ImageDimension; ++i )
     {
     scaleVector[i] = spacing[i];
     offsetVector[i] = origin[i];
     }
 
-  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()->SetScale(
-    scaleVector );
-  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()->SetOffset(
-    offsetVector );
-  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()->SetMatrix(
-    this->m_InputImage->GetDirection() );
-  this->m_TubeExtractorFilter->GetTubeGroup()->ComputeObjectToWorldTransform();
+  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()
+    ->SetScale( scaleVector );
+  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()
+    ->SetOffset( offsetVector );
+  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()
+    ->SetMatrix( this->m_InputImage->GetDirection() );
+  this->m_TubeExtractorFilter->GetTubeGroup()
+    ->ComputeObjectToWorldTransform();
 
   std::cout << "Ridge termination code counts:" << std::endl;
   for( unsigned int code = 0; code <
     this->m_TubeExtractorFilter->GetRidgeOp()->GetNumberOfFailureCodes();
     ++code )
     {
-    std::cout << "   " << this->m_TubeExtractorFilter->GetRidgeOp()->GetFailureCodeName(
+    std::cout << "   "
+      << this->m_TubeExtractorFilter->GetRidgeOp()->GetFailureCodeName(
       typename RidgeExtractorFilterType::FailureCodeEnum( code ) ) << " : "
       << this->m_TubeExtractorFilter->GetRidgeOp()->GetFailureCodeCount(
       typename RidgeExtractorFilterType::FailureCodeEnum(

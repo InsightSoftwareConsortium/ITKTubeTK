@@ -50,13 +50,16 @@ class SegmentTubesUsingMinimalPathFilter: public Object
 {
 public:
   /** Standard class typedefs. */
-  typedef SegmentTubesUsingMinimalPathFilter              Self;
-  typedef Object                                          Superclass;
-  typedef SmartPointer< Self >                            Pointer;
-  typedef SmartPointer< const Self >                      ConstPointer;
-  typedef itk::Image< TInputPixel, Dimension >            InputImageType;
-  typedef itk::GroupSpatialObject< Dimension >            InputSpatialObjectType;
-  typedef typename InputSpatialObjectType::Pointer        TubeGroupPointer;
+  typedef SegmentTubesUsingMinimalPathFilter Self;
+  typedef Object                             Superclass;
+  typedef SmartPointer< Self >               Pointer;
+  typedef SmartPointer< const Self >         ConstPointer;
+
+  typedef itk::Image< TInputPixel, Dimension > InputImageType;
+  typedef itk::GroupSpatialObject< Dimension > InputSpatialObjectType;
+
+  typedef typename InputSpatialObjectType::Pointer TubeGroupPointer;
+
   typedef itk::Point< double, Dimension >                 PointType;
   typedef itk::VesselTubeSpatialObjectPoint< Dimension >  TubePointType;
   typedef itk::VesselTubeSpatialObject< Dimension >       TubeType;

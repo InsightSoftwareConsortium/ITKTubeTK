@@ -32,15 +32,17 @@ namespace itk
 {
 
 template< class TInputImage, class TOutputImage, class TOperatorValue >
-AcousticImpulseResponseImageFilter< TInputImage, TOutputImage, TOperatorValue >
+AcousticImpulseResponseImageFilter< TInputImage, TOutputImage,
+  TOperatorValue >
 ::AcousticImpulseResponseImageFilter( void )
   : m_AngleDependence( 1.0 )
 {
   this->SetNumberOfRequiredInputs( 2 );
 
-  typedef GradientMagnitudeImageFilter< OperatorImageType, OperatorImageType >
-    DefaultGradientMagnitudeFilterType;
-  this->m_GradientMagnitudeFilter = DefaultGradientMagnitudeFilterType::New();
+  typedef GradientMagnitudeImageFilter< OperatorImageType,
+    OperatorImageType > DefaultGradientMagnitudeFilterType;
+  this->m_GradientMagnitudeFilter = DefaultGradientMagnitudeFilterType::
+    New();
 
   this->m_CastImageFilter = CastImageFilterType::New();
 }
@@ -48,19 +50,23 @@ AcousticImpulseResponseImageFilter< TInputImage, TOutputImage, TOperatorValue >
 
 template< class TInputImage, class TOutputImage, class TOperatorValue >
 void
-AcousticImpulseResponseImageFilter< TInputImage, TOutputImage, TOperatorValue >
+AcousticImpulseResponseImageFilter< TInputImage, TOutputImage,
+  TOperatorValue >
 ::BeforeThreadedGenerateData( void )
 {
   this->m_CastImageFilter->SetInput( this->GetInput() );
-  this->m_GradientMagnitudeFilter->SetNumberOfThreads( this->GetNumberOfThreads() );
-  this->m_GradientMagnitudeFilter->SetInput( this->m_CastImageFilter->GetOutput() );
+  this->m_GradientMagnitudeFilter->SetNumberOfThreads(
+    this->GetNumberOfThreads() );
+  this->m_GradientMagnitudeFilter->SetInput(
+    this->m_CastImageFilter->GetOutput() );
   this->m_GradientMagnitudeFilter->Update();
 }
 
 
 template< class TInputImage, class TOutputImage, class TOperatorValue >
 void
-AcousticImpulseResponseImageFilter< TInputImage, TOutputImage, TOperatorValue >
+AcousticImpulseResponseImageFilter< TInputImage, TOutputImage,
+  TOperatorValue >
 ::ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread,
   ThreadIdType threadId )
 {
@@ -91,9 +97,9 @@ AcousticImpulseResponseImageFilter< TInputImage, TOutputImage, TOperatorValue >
   if( this->m_AngleDependence == 1.0 )  // avoid the pow call
     {
     for( inputIt.GoToBegin(), angleOfIncidenceIt.GoToBegin(),
-          gradientMagnitudeIt.GoToBegin(), outputIt.GoToBegin();
-         !outputIt.IsAtEnd();
-         ++inputIt, ++angleOfIncidenceIt, ++gradientMagnitudeIt, ++outputIt )
+      gradientMagnitudeIt.GoToBegin(), outputIt.GoToBegin();
+      !outputIt.IsAtEnd();
+      ++inputIt, ++angleOfIncidenceIt, ++gradientMagnitudeIt, ++outputIt )
       {
       outputIt.Set( angleOfIncidenceIt.Get() *
         gradientMagnitudeIt.Get() / ( 2.0 * inputIt.Get() ) );
@@ -102,12 +108,13 @@ AcousticImpulseResponseImageFilter< TInputImage, TOutputImage, TOperatorValue >
   else
     {
     for( inputIt.GoToBegin(), angleOfIncidenceIt.GoToBegin(),
-          gradientMagnitudeIt.GoToBegin(), outputIt.GoToBegin();
-         !outputIt.IsAtEnd();
-         ++inputIt, ++angleOfIncidenceIt, ++gradientMagnitudeIt, ++outputIt )
+      gradientMagnitudeIt.GoToBegin(), outputIt.GoToBegin();
+      !outputIt.IsAtEnd();
+      ++inputIt, ++angleOfIncidenceIt, ++gradientMagnitudeIt, ++outputIt )
       {
       outputIt.Set( static_cast< typename OutputImageType::PixelType >(
-        std::pow( static_cast< OperatorValueType >( angleOfIncidenceIt.Get() ),
+        std::pow( static_cast< OperatorValueType >(
+            angleOfIncidenceIt.Get() ),
         static_cast< OperatorValueType >( this->m_AngleDependence *
         gradientMagnitudeIt.Get() / ( 2.0 * inputIt.Get() ) ) ) ) );
       }
@@ -117,7 +124,8 @@ AcousticImpulseResponseImageFilter< TInputImage, TOutputImage, TOperatorValue >
 
 template< class TInputImage, class TOutputImage, class TOperatorValue >
 void
-AcousticImpulseResponseImageFilter< TInputImage, TOutputImage, TOperatorValue >
+AcousticImpulseResponseImageFilter< TInputImage, TOutputImage,
+  TOperatorValue >
 ::PrintSelf( std::ostream & os, Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );

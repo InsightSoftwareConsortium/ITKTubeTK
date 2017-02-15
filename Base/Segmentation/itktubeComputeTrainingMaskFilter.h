@@ -50,11 +50,11 @@ namespace tube
 template< class TInputImage >
 class ComputeTrainingMaskFilter:
   public ImageToImageFilter< TInputImage,
-    itk::Image<short,TInputImage::ImageDimension> >
+    itk::Image<short, TInputImage::ImageDimension> >
 {
 public:
   typedef ComputeTrainingMaskFilter                       Self;
-  typedef ImageToImageFilter<TInputImage,TInputImage>     Superclass;
+  typedef ImageToImageFilter<TInputImage, TInputImage>    Superclass;
   typedef SmartPointer<Self>                              Pointer;
   typedef SmartPointer<const Self>                        ConstPointer;
   typedef TInputImage                                     ImageType;
@@ -65,10 +65,10 @@ public:
 
   itkNewMacro( Self );
   const ImageTypeShort* GetNotVesselMask();
-  itkSetMacro( Gap,double );
-  itkSetMacro( NotVesselWidth,double );
-  itkGetMacro( Gap,double );
-  itkGetMacro( NotVesselWidth,double );
+  itkSetMacro( Gap, double );
+  itkSetMacro( NotVesselWidth, double );
+  itkGetMacro( Gap, double );
+  itkGetMacro( NotVesselWidth, double );
 
 protected:
   ComputeTrainingMaskFilter();
@@ -85,13 +85,13 @@ private:
                                 BinaryThinningFilterType;
   typedef itk::BinaryThresholdImageFilter< ImageType, ImageType >
                                 ThresholdFilterType;
-  typedef itk::SubtractImageFilter<ImageType,ImageType,ImageType>
+  typedef itk::SubtractImageFilter<ImageType, ImageType, ImageType>
                                 SubstractFilterType;
-  typedef itk::MultiplyImageFilter<ImageType,ImageType,ImageType>
+  typedef itk::MultiplyImageFilter<ImageType, ImageType, ImageType>
                                 MultiplyFilterType;
-  typedef itk::DivideImageFilter<ImageType,ImageType,ImageType>
+  typedef itk::DivideImageFilter<ImageType, ImageType, ImageType>
                                 DivideFilterType;
-  typedef itk::AddImageFilter<ImageType,ImageType,ImageType>
+  typedef itk::AddImageFilter<ImageType, ImageType, ImageType>
                                 AddFilterType;
   typedef itk::CastImageFilter< ImageType, ImageTypeShort >
                                 CastFilterType;

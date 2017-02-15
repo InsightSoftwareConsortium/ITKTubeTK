@@ -97,7 +97,8 @@ MarkDuplicateFramesInvalidImageFilterThreader< TAssociate >
   currentSliceIt.GoToBegin();
   currentSliceIt.SetFirstDirection( 0 );
   currentSliceIt.SetSecondDirection( 1 );
-  const float tolerance = static_cast< float >( this->m_Associate->m_Tolerance );
+  const float tolerance = static_cast< float >(
+    this->m_Associate->m_Tolerance );
   const float numberOfSlicePixels =
     static_cast< float >( largestSize[0] * largestSize[1] );
   SizeValueType currentFrame = currentSliceIndex[2];
@@ -122,7 +123,8 @@ MarkDuplicateFramesInvalidImageFilterThreader< TAssociate >
       nextSliceIt.NextLine();
       }
     //std::cout << sameCount / numberOfSlicePixels << std::endl;
-    if( sameCount / numberOfSlicePixels > this->m_Associate->m_FractionalThreshold )
+    if( sameCount / numberOfSlicePixels >
+      this->m_Associate->m_FractionalThreshold )
       {
       m_InvalidFramesPerThread[threadId].push_back( currentFrame );
       }
@@ -195,16 +197,19 @@ void
 MarkDuplicateFramesInvalidImageFilter< TInputImage >
 ::SetInput( const InputImageType * image )
 {
-  this->ProcessObject::SetPrimaryInput( const_cast< InputImageType * >( image ) );
+  this->ProcessObject::SetPrimaryInput( const_cast< InputImageType * >(
+      image ) );
 }
 
 
 template< typename TInputImage >
-const typename MarkDuplicateFramesInvalidImageFilter< TInputImage >::InputImageType *
+const typename MarkDuplicateFramesInvalidImageFilter< TInputImage >::
+InputImageType *
 MarkDuplicateFramesInvalidImageFilter< TInputImage >
 ::GetInput( void ) const
 {
-  return itkDynamicCastInDebugMode< const TInputImage * >( this->GetPrimaryInput() );
+  return itkDynamicCastInDebugMode< const TInputImage * >(
+    this->GetPrimaryInput() );
 }
 
 

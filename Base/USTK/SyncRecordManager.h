@@ -55,7 +55,7 @@ public:
   //#   ifdef INNEROPTIC_INTERNAL_ONLY
   void setVolumeImagePath( const char *vol_path );
   void setTrackerFromVolumeImageMatrix( const double m[16] );
-  void setTrackerFromNavelMatrix(       const double m[16] );
+  void setTrackerFromNavelMatrix( const double m[16] );
   SyncRecord *newSequentialAppendedRecord( void );
   bool dump( const char *disk_write_path, char *ident );
   //#   endif
