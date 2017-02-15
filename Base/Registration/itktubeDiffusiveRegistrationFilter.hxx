@@ -45,8 +45,8 @@ DiffusiveRegistrationFilter
   m_OriginalTimeStep = 1.0;
 
   // We are using our own regularization, so don't use the implementation
-  // provided by the PDERegistration framework.  We also want to use the image
-  // spacing to calculate derivatives in physical space
+  // provided by the PDERegistration framework.  We also want to use the
+  // image spacing to calculate derivatives in physical space
   this->SmoothDisplacementFieldOff();
   this->SmoothUpdateFieldOff();
   this->UseImageSpacingOn();
@@ -171,8 +171,9 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::GetRegistrationFunctionPointer( void ) const
 {
-  RegistrationFunctionType * df = dynamic_cast< RegistrationFunctionType * >
-       ( this->GetDifferenceFunction().GetPointer() );
+  RegistrationFunctionType * df = dynamic_cast<
+    RegistrationFunctionType * >(
+      this->GetDifferenceFunction().GetPointer() );
   return df;
 }
 
@@ -228,7 +229,8 @@ DiffusiveRegistrationFilter
     itkExceptionMacro( << "Regularization weightings not set." );
     }
 
-  // Update the current multiresolution level ( when registering, level is 1..N )
+  // Update the current multiresolution level ( when registering, level
+  // is 1..N )
   m_CurrentLevel++;
 
   // Check the time step for stability if we are using the diffusive or
@@ -576,7 +578,8 @@ DiffusiveRegistrationFilter
 
   // Get the spacing and the radius
   SpacingType spacing = this->GetOutput()->GetSpacing();
-  const RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
+  const RegistrationFunctionType * df =
+    this->GetRegistrationFunctionPointer();
   typename OutputImageType::SizeType radius = df->GetRadius();
 
   // By default, calculate the derivatives for each of the deformation
@@ -586,8 +589,10 @@ DiffusiveRegistrationFilter
 
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
-    DiffusiveRegistrationFilterUtils::ExtractXYZComponentsFromDeformationField(
-          this->GetDeformationComponentImage( i ), deformationComponentImageArray );
+    DiffusiveRegistrationFilterUtils::
+      ExtractXYZComponentsFromDeformationField(
+        this->GetDeformationComponentImage( i ),
+        deformationComponentImageArray );
 
     for( unsigned int j = 0; j < ImageDimension; j++ )
       {
@@ -623,32 +628,38 @@ DiffusiveRegistrationFilter
   str.Radius = radius;
 
   // Multithread the execution
-  this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
+  this->GetMultiThreader()->SetNumberOfThreads(
+    this->GetNumberOfThreads() );
   this->GetMultiThreader()->SetSingleMethod(
-      this->ComputeDeformationComponentDerivativeImageHelperThreaderCallback,
-      & str );
+    this->ComputeDeformationComponentDerivativeImageHelperThreaderCallback,
+    & str );
   this->GetMultiThreader()->SingleMethodExecute();
 
-  // Explicitly call Modified on the first- and second-order partial derviative
-  // image affected here, since
+  // Explicitly call Modified on the first- and second-order partial
+  // derviative image affected here, since
   // ThreadedComputeDeformationComponentDerivativeImageHelper changes them
   // through iterators which do not increment their timestamp
-  m_DeformationComponentFirstOrderDerivativeArrays[term][dimension]->Modified();
+  m_DeformationComponentFirstOrderDerivativeArrays[term][dimension]
+    ->Modified();
   m_DeformationComponentSecondOrderDerivativeArrays[term][dimension]
-      ->Modified();
+    ->Modified();
 }
 
 /**
- * Calls ThreadedComputeDeformationComponentDerivativeImageHelper for processing
+ * Calls ThreadedComputeDeformationComponentDerivativeImageHelper for
+ * processing
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 ITK_THREAD_RETURN_TYPE
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::ComputeDeformationComponentDerivativeImageHelperThreaderCallback( void *arg )
+::ComputeDeformationComponentDerivativeImageHelperThreaderCallback(
+  void *arg )
 {
-  int threadId = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->ThreadID;
-  int threadCount = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->NumberOfThreads;
+  int threadId = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )
+    ->ThreadID;
+  int threadCount = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )
+    ->NumberOfThreads;
 
   ComputeDeformationComponentDerivativeImageHelperThreadStruct * str
       = ( ComputeDeformationComponentDerivativeImageHelperThreadStruct * )
@@ -687,14 +698,16 @@ DiffusiveRegistrationFilter
 }
 
 /**
- * Does the actual work of computing the deformation component image derivatives
+ * Does the actual work of computing the deformation component image
+ * derivatives
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ThreadedComputeDeformationComponentDerivativeImageHelper(
-    const DeformationVectorComponentImagePointer & deformationComponentImage,
+    const DeformationVectorComponentImagePointer
+      & deformationComponentImage,
     const ThreadDeformationVectorComponentImageRegionType
       & deformationVectorComponentRegionToProcess,
     const ThreadScalarDerivativeImageRegionType
@@ -714,44 +727,50 @@ DiffusiveRegistrationFilter
   assert( secondOrderDerivativeImage );
 
   // Get the FiniteDifferenceFunction to use in calculations.
-  const RegistrationFunctionType * df = this->GetRegistrationFunctionPointer();
+  const RegistrationFunctionType * df =
+    this->GetRegistrationFunctionPointer();
   assert( df );
   typename RegularizationFunctionType::ConstPointer reg
       = df->GetRegularizationFunctionPointer();
   assert( reg );
 
-  // Setup the structs for the face calculations, the face iterators, and the
-  // iterators over the current face
+  // Setup the structs for the face calculations, the face iterators, and
+  // the iterators over the current face
   FaceStruct< DeformationVectorComponentImagePointer >
       deformationComponentStruct (
           deformationComponentImage,
           deformationVectorComponentRegionToProcess,
           radius );
-  DeformationVectorComponentNeighborhoodType deformationComponentNeighborhood;
+  DeformationVectorComponentNeighborhoodType
+    deformationComponentNeighborhood;
 
   FaceStruct< ScalarDerivativeImagePointer > firstOrderStruct (
       firstOrderDerivativeImage, scalarDerivativeRegionToProcess, radius );
   ScalarDerivativeImageRegionType firstOrderRegion;
 
   FaceStruct< TensorDerivativeImagePointer > secondOrderStruct (
-      secondOrderDerivativeImage, tensorDerivativeRegionToProcess, radius );
+      secondOrderDerivativeImage, tensorDerivativeRegionToProcess,
+      radius );
   TensorDerivativeImageRegionType secondOrderRegion;
 
-  for( deformationComponentStruct.GoToBegin(), firstOrderStruct.GoToBegin(),
-       secondOrderStruct.GoToBegin();
-       !deformationComponentStruct.IsAtEnd();
-       deformationComponentStruct.Increment(), firstOrderStruct.Increment(),
-       secondOrderStruct.Increment() )
+  for( deformationComponentStruct.GoToBegin(),
+    firstOrderStruct.GoToBegin(),
+    secondOrderStruct.GoToBegin();
+    !deformationComponentStruct.IsAtEnd();
+    deformationComponentStruct.Increment(), firstOrderStruct.Increment(),
+    secondOrderStruct.Increment() )
     {
     // Set the neighborhood iterators to the current face
     deformationComponentStruct.SetIteratorToCurrentFace(
-        deformationComponentNeighborhood, deformationComponentImage, radius );
+      deformationComponentNeighborhood, deformationComponentImage,
+      radius );
     firstOrderStruct.SetIteratorToCurrentFace(
-        firstOrderRegion, firstOrderDerivativeImage );
+      firstOrderRegion, firstOrderDerivativeImage );
     secondOrderStruct.SetIteratorToCurrentFace(
-        secondOrderRegion, secondOrderDerivativeImage );
+      secondOrderRegion, secondOrderDerivativeImage );
 
-    // Iterate through the neighborhood for this face and compute derivatives
+    // Iterate through the neighborhood for this face and compute
+    // derivatives
     for( deformationComponentNeighborhood.GoToBegin(),
          firstOrderRegion.GoToBegin(), secondOrderRegion.GoToBegin();
          !deformationComponentNeighborhood.IsAtEnd();
@@ -780,8 +799,8 @@ DiffusiveRegistrationFilter
   Superclass::InitializeIteration();
 
   // Update the deformation field component images
-  // Since the components depend on the current deformation field, they must be
-  // computed on every registration iteration
+  // Since the components depend on the current deformation field, they
+  // must be computed on every registration iteration
   if( this->GetComputeRegularizationTerm() )
     {
     this->UpdateDeformationComponentImages( this->GetOutput() );
@@ -812,8 +831,8 @@ DiffusiveRegistrationFilter
   // - update magnitude statistics as if stepSize = 1
   TimeStepType stepSize = this->CalculateChangeGradient();
 
-  // Now that we know the potential global scaling, we can finish the update
-  // metrics.  After this,
+  // Now that we know the potential global scaling, we can finish the
+  // update metrics.  After this,
   // - update buffer as if stepSize = 1
   // - update magnitude statistics for determined stepSize
   this->UpdateUpdateStatistics( stepSize );
@@ -834,9 +853,10 @@ DiffusiveRegistrationFilter
                            ThreadIdType itkNotUsed( threadId ) )
 {
   // This function should never be called!
-  itkExceptionMacro( << "ThreadedCalculateChange( regionToProcess, threadId ) "
-                     << "should never be called.  Use the other "
-                     << "ThreadedCalculateChange function instead" );
+  itkExceptionMacro(
+    << "ThreadedCalculateChange( regionToProcess, threadId ) "
+    << "should never be called.  Use the other "
+    << "ThreadedCalculateChange function instead" );
 }
 
 /**
@@ -862,9 +882,10 @@ DiffusiveRegistrationFilter
     str.UpdateMetricsIntermediate[i].zero();
     }
 
-  this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
+  this->GetMultiThreader()->SetNumberOfThreads(
+    this->GetNumberOfThreads() );
   this->GetMultiThreader()->SetSingleMethod(
-      this->CalculateChangeGradientThreaderCallback, & str );
+    this->CalculateChangeGradientThreaderCallback, & str );
 
   // Initialize the list of time step values that will be generated by the
   // various threads.  There is one distinct slot for each possible thread,
@@ -886,30 +907,39 @@ DiffusiveRegistrationFilter
                                            str.ValidTimeStepList );
 
   // Combine the results from the threads to calculate the metrics
-  // Will include multiplication by timestep and global scaling, and calculation
+  // Will include multiplication by timestep and global scaling, and
+  // calculation
   // of RMS and mean statistics, in UpdateUpdateStatistics
   for( ThreadIdType i = 0; i < this->GetNumberOfThreads(); i++ )
     {
     m_UpdateMetrics.IntermediateStruct.NumberOfPixelsProcessed
-        += str.UpdateMetricsIntermediate[i].NumberOfPixelsProcessed;
+      += str.UpdateMetricsIntermediate[i].NumberOfPixelsProcessed;
     m_UpdateMetrics.IntermediateStruct.SumOfSquaredTotalUpdateMagnitude
-        += str.UpdateMetricsIntermediate[i].SumOfSquaredTotalUpdateMagnitude;
-    m_UpdateMetrics.IntermediateStruct.SumOfSquaredIntensityDistanceUpdateMagnitude
-        += str.UpdateMetricsIntermediate[i].SumOfSquaredIntensityDistanceUpdateMagnitude;
-    m_UpdateMetrics.IntermediateStruct.SumOfSquaredRegularizationUpdateMagnitude
-        += str.UpdateMetricsIntermediate[i].SumOfSquaredRegularizationUpdateMagnitude;
+      += str.UpdateMetricsIntermediate[i].SumOfSquaredTotalUpdateMagnitude;
+    m_UpdateMetrics.IntermediateStruct
+      .SumOfSquaredIntensityDistanceUpdateMagnitude
+      += str.UpdateMetricsIntermediate[i]
+      .SumOfSquaredIntensityDistanceUpdateMagnitude;
+    m_UpdateMetrics.IntermediateStruct
+      .SumOfSquaredRegularizationUpdateMagnitude
+      += str.UpdateMetricsIntermediate[i]
+      .SumOfSquaredRegularizationUpdateMagnitude;
     m_UpdateMetrics.IntermediateStruct.SumOfTotalUpdateMagnitude
-        += str.UpdateMetricsIntermediate[i].SumOfTotalUpdateMagnitude;
-    m_UpdateMetrics.IntermediateStruct.SumOfIntensityDistanceUpdateMagnitude
-        += str.UpdateMetricsIntermediate[i].SumOfIntensityDistanceUpdateMagnitude;
+      += str.UpdateMetricsIntermediate[i].SumOfTotalUpdateMagnitude;
+    m_UpdateMetrics.IntermediateStruct
+      .SumOfIntensityDistanceUpdateMagnitude
+      += str.UpdateMetricsIntermediate[i]
+      .SumOfIntensityDistanceUpdateMagnitude;
     m_UpdateMetrics.IntermediateStruct.SumOfRegularizationUpdateMagnitude
-        += str.UpdateMetricsIntermediate[i].SumOfRegularizationUpdateMagnitude;
+      += str.UpdateMetricsIntermediate[i]
+      .SumOfRegularizationUpdateMagnitude;
     }
 
   delete [] str.UpdateMetricsIntermediate;
 
   // Explicitly call Modified on m_UpdateBuffer here, since
-  // ThreadedCalculateChangeGradient changes this buffer through iterators which
+  // ThreadedCalculateChangeGradient changes this buffer through
+  // iterators which
   // do not increment the update buffer timestamp
   this->m_UpdateBuffer->Modified();
 
@@ -925,11 +955,14 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::CalculateChangeGradientThreaderCallback( void * arg )
 {
-  int threadId = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->ThreadID;
-  int threadCount = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->NumberOfThreads;
+  int threadId = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )
+    ->ThreadID;
+  int threadCount = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )
+    ->NumberOfThreads;
 
-  CalculateChangeGradientThreadStruct * str = ( CalculateChangeGradientThreadStruct * )
-            ( ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->UserData );
+  CalculateChangeGradientThreadStruct * str =
+    ( CalculateChangeGradientThreadStruct * )(
+      ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->UserData );
 
   // Execute the actual method with appropriate output region
   // first find out how many pieces extent can be split into.
@@ -951,20 +984,18 @@ DiffusiveRegistrationFilter
   str->Filter->SplitRequestedRegion( threadId, threadCount,
     splitScalarDerivativeRegion );
 
-  ThreadStoppingCriterionMaskImageRegionType splitStoppingCriterionMaskImageRegion;
+  ThreadStoppingCriterionMaskImageRegionType
+    splitStoppingCriterionMaskImageRegion;
   str->Filter->SplitRequestedRegion( threadId, threadCount,
     splitStoppingCriterionMaskImageRegion );
 
   if( threadId < total )
     {
-    str->TimeStepList[threadId] = str->Filter->ThreadedCalculateChangeGradient(
-      splitRegion,
-      splitTensorRegion,
-      splitTensorDerivativeRegion,
-      splitScalarDerivativeRegion,
-      splitStoppingCriterionMaskImageRegion,
-      str->UpdateMetricsIntermediate[threadId],
-      threadId );
+    str->TimeStepList[threadId] = str->Filter
+      ->ThreadedCalculateChangeGradient( splitRegion, splitTensorRegion,
+        splitTensorDerivativeRegion, splitScalarDerivativeRegion,
+        splitStoppingCriterionMaskImageRegion,
+        str->UpdateMetricsIntermediate[threadId], threadId );
     str->ValidTimeStepList[threadId] = true;
     }
 
@@ -1046,16 +1077,19 @@ DiffusiveRegistrationFilter
   TensorDerivativeImageRegionVectorType tensorDerivativeRegions;
 
   FaceStruct< DeformationFieldPointer > multiplicationVectorStruct(
-      m_MultiplicationVectorImageArrays, regionToProcess, radius );
-  DeformationVectorImageRegionArrayVectorType multiplicationVectorRegionArrays;
+    m_MultiplicationVectorImageArrays, regionToProcess, radius );
+  DeformationVectorImageRegionArrayVectorType
+    multiplicationVectorRegionArrays;
 
   FaceStruct< FixedImagePointer > stoppingCriterionMaskStruct(
-      m_StoppingCriterionMask, stoppingCriterionMaskRegionToProcess, radius );
+    m_StoppingCriterionMask, stoppingCriterionMaskRegionToProcess,
+    radius );
   StoppingCriterionMaskImageRegionType stoppingCriterionMaskRegion;
 
   // Get the type of registration
   bool computeRegularization = this->GetComputeRegularizationTerm();
-  bool haveStoppingCriterionMask = ( m_StoppingCriterionMask.GetPointer() != 0 );
+  bool haveStoppingCriterionMask =
+    ( m_StoppingCriterionMask.GetPointer() != 0 );
 
   // Initialize the metrics
   UpdateMetricsIntermediateStruct localUpdateMetricsIntermediate;
@@ -1080,7 +1114,8 @@ DiffusiveRegistrationFilter
   while( !outputStruct.IsAtEnd() )
     {
     // Set the neighborhood iterators to the current face
-    outputStruct.SetIteratorToCurrentFace( outputNeighborhood, output, radius );
+    outputStruct.SetIteratorToCurrentFace( outputNeighborhood, output,
+      radius );
     outputStruct.SetIteratorToCurrentFace( updateIt, m_UpdateBuffer );
     if( computeRegularization )
       {
@@ -1170,17 +1205,20 @@ DiffusiveRegistrationFilter
           }
         localUpdateMetricsIntermediate.NumberOfPixelsProcessed++;
         localUpdateMetricsIntermediate.SumOfSquaredTotalUpdateMagnitude
-            += squaredTotalUpdateMagnitude;
-        localUpdateMetricsIntermediate.SumOfSquaredIntensityDistanceUpdateMagnitude
-            += squaredIntensityDistanceUpdateMagnitude;
-        localUpdateMetricsIntermediate.SumOfSquaredRegularizationUpdateMagnitude
-            += squaredRegularizationUpdateMagnitude;
+          += squaredTotalUpdateMagnitude;
+        localUpdateMetricsIntermediate
+          .SumOfSquaredIntensityDistanceUpdateMagnitude
+          += squaredIntensityDistanceUpdateMagnitude;
+        localUpdateMetricsIntermediate
+          .SumOfSquaredRegularizationUpdateMagnitude
+          += squaredRegularizationUpdateMagnitude;
         localUpdateMetricsIntermediate.SumOfTotalUpdateMagnitude
-            += std::sqrt( squaredTotalUpdateMagnitude );
-        localUpdateMetricsIntermediate.SumOfIntensityDistanceUpdateMagnitude
-            += std::sqrt( squaredIntensityDistanceUpdateMagnitude );
+          += std::sqrt( squaredTotalUpdateMagnitude );
+        localUpdateMetricsIntermediate
+          .SumOfIntensityDistanceUpdateMagnitude
+          += std::sqrt( squaredIntensityDistanceUpdateMagnitude );
         localUpdateMetricsIntermediate.SumOfRegularizationUpdateMagnitude
-            += std::sqrt( squaredRegularizationUpdateMagnitude );
+          += std::sqrt( squaredRegularizationUpdateMagnitude );
         }
 
       // Go to the next neighborhood
@@ -1237,21 +1275,23 @@ DiffusiveRegistrationFilter
 }
 
 /**
- * Computes the intensity distance and regularization energies under the current
- * update buffer.
+ * Computes the intensity distance and regularization energies under the
+ * current update buffer.
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
-::CalculateEnergies( EnergiesStruct & energies, OutputImageType * outputField )
+::CalculateEnergies( EnergiesStruct & energies, OutputImageType *
+  outputField )
 {
   assert( outputField );
 
   if( this->GetComputeRegularizationTerm() )
     {
     this->UpdateDeformationComponentImages( outputField );
-    // TODO this will compute first and second derivatives, we need first only
+    // TODO this will compute first and second derivatives, we need first
+    // only
     this->ComputeDeformationComponentDerivativeImages();
     }
 
@@ -1268,7 +1308,8 @@ DiffusiveRegistrationFilter
     }
 
   // Multithread the execution
-  this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
+  this->GetMultiThreader()->SetNumberOfThreads(
+    this->GetNumberOfThreads() );
   this->GetMultiThreader()->SetSingleMethod(
   this->CalculateEnergiesThreaderCallback, & str );
   this->GetMultiThreader()->SingleMethodExecute();
@@ -1280,7 +1321,8 @@ DiffusiveRegistrationFilter
     energies.IntensityDistanceEnergy += str.IntensityDistanceEnergies[i];
     energies.RegularizationEnergy += str.RegularizationEnergies[i];
     }
-  energies.TotalEnergy = energies.IntensityDistanceEnergy + energies.RegularizationEnergy;
+  energies.TotalEnergy = energies.IntensityDistanceEnergy
+    + energies.RegularizationEnergy;
 
   delete [] str.IntensityDistanceEnergies;
   delete [] str.RegularizationEnergies;
@@ -1295,8 +1337,10 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::CalculateEnergiesThreaderCallback( void * arg )
 {
-  int threadId = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->ThreadID;
-  int threadCount = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->NumberOfThreads;
+  int threadId = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )
+    ->ThreadID;
+  int threadCount = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )
+    ->NumberOfThreads;
 
   CalculateEnergiesThreadStruct * str = ( CalculateEnergiesThreadStruct * )
       ( ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->UserData );
@@ -1317,20 +1361,21 @@ DiffusiveRegistrationFilter
   str->Filter->SplitRequestedRegion( threadId, threadCount,
                                      splitScalarDerivativeRegion );
 
-  ThreadStoppingCriterionMaskImageRegionType splitStoppingCriterionMaskImageRegion;
+  ThreadStoppingCriterionMaskImageRegionType
+    splitStoppingCriterionMaskImageRegion;
   str->Filter->SplitRequestedRegion( threadId, threadCount,
     splitStoppingCriterionMaskImageRegion );
 
   if( threadId < total )
     {
     str->Filter->ThreadedCalculateEnergies( str->OutputImage,
-                                            splitRegion,
-                                            splitTensorRegion,
-                                            splitScalarDerivativeRegion,
-                                            splitStoppingCriterionMaskImageRegion,
-                                            str->IntensityDistanceEnergies[threadId],
-                                            str->RegularizationEnergies[threadId],
-                                            threadId );
+      splitRegion,
+      splitTensorRegion,
+      splitScalarDerivativeRegion,
+      splitStoppingCriterionMaskImageRegion,
+      str->IntensityDistanceEnergies[threadId],
+      str->RegularizationEnergies[threadId],
+      threadId );
     }
 
   return ITK_THREAD_RETURN_VALUE;
@@ -1386,13 +1431,15 @@ DiffusiveRegistrationFilter
       deformationComponentFirstOrderRegionArrays;
 
   FaceStruct< FixedImagePointer > stoppingCriterionMaskStruct(
-      m_StoppingCriterionMask, stoppingCriterionMaskRegionToProcess, radius );
+    m_StoppingCriterionMask, stoppingCriterionMaskRegionToProcess,
+    radius );
   StoppingCriterionMaskImageRegionType stoppingCriterionMaskRegion;
 
   // Get the type of registration
   bool computeIntensityDistance = this->GetComputeIntensityDistanceTerm();
   bool computeRegularization = this->GetComputeRegularizationTerm();
-  bool haveStoppingCriterionMask = ( m_StoppingCriterionMask.GetPointer() != 0 );
+  bool haveStoppingCriterionMask =
+    ( m_StoppingCriterionMask.GetPointer() != 0 );
 
   // Initialize the energy values
   double localIntensityDistanceEnergy = 0.0;
@@ -1414,7 +1461,8 @@ DiffusiveRegistrationFilter
   while( !outputStruct.IsAtEnd() )
     {
     // Set the neighborhood iterators to the current face
-    outputStruct.SetIteratorToCurrentFace( outputNeighborhood, output, radius );
+    outputStruct.SetIteratorToCurrentFace( outputNeighborhood, output,
+      radius );
     if( computeRegularization )
       {
       tensorStruct.SetIteratorToCurrentFace(
@@ -1463,8 +1511,10 @@ DiffusiveRegistrationFilter
         // Calculate intensity distance energy
         if( computeIntensityDistance )
           {
-          localIntensityDistanceEnergy += df->ComputeIntensityDistanceEnergy(
-                outputNeighborhood.GetIndex(), outputNeighborhood.GetCenterPixel() );
+          localIntensityDistanceEnergy +=
+            df->ComputeIntensityDistanceEnergy(
+            outputNeighborhood.GetIndex(),
+            outputNeighborhood.GetCenterPixel() );
           }
 
         // Calculate regularization energy
@@ -1524,13 +1574,15 @@ DiffusiveRegistrationFilter
   // Compute the true sumOfSquared and sumOf metrics, considering the
   // actual stepSize
   double scalingForSumOfSquaredUpdateMagnitude
-      = vnl_math_sqr( stepSize );
+    = vnl_math_sqr( stepSize );
   m_UpdateMetrics.IntermediateStruct.SumOfSquaredTotalUpdateMagnitude
-      *= scalingForSumOfSquaredUpdateMagnitude;
-  m_UpdateMetrics.IntermediateStruct.SumOfSquaredIntensityDistanceUpdateMagnitude
-      *= scalingForSumOfSquaredUpdateMagnitude;
-  m_UpdateMetrics.IntermediateStruct.SumOfSquaredRegularizationUpdateMagnitude
-      *= scalingForSumOfSquaredUpdateMagnitude;
+    *= scalingForSumOfSquaredUpdateMagnitude;
+  m_UpdateMetrics.IntermediateStruct
+    .SumOfSquaredIntensityDistanceUpdateMagnitude
+    *= scalingForSumOfSquaredUpdateMagnitude;
+  m_UpdateMetrics.IntermediateStruct
+    .SumOfSquaredRegularizationUpdateMagnitude
+    *= scalingForSumOfSquaredUpdateMagnitude;
   double scalingForSumOfUpdateMagnitude = stepSize;
   m_UpdateMetrics.IntermediateStruct.SumOfTotalUpdateMagnitude
       *= scalingForSumOfUpdateMagnitude;
@@ -1540,8 +1592,8 @@ DiffusiveRegistrationFilter
       *= scalingForSumOfUpdateMagnitude;
 
   // Compute the RMS and mean metrics
-  double numPixels
-      = ( double ) m_UpdateMetrics.IntermediateStruct.NumberOfPixelsProcessed;
+  double numPixels =
+    ( double ) m_UpdateMetrics.IntermediateStruct.NumberOfPixelsProcessed;
   if( numPixels == 0 )
     {
     m_UpdateMetrics.zero();
@@ -1549,30 +1601,32 @@ DiffusiveRegistrationFilter
   else
     {
     m_UpdateMetrics.RMSTotalUpdateMagnitude = std::sqrt(
-          m_UpdateMetrics.IntermediateStruct.SumOfSquaredTotalUpdateMagnitude
-          / numPixels );
+      m_UpdateMetrics.IntermediateStruct.SumOfSquaredTotalUpdateMagnitude
+      / numPixels );
     m_UpdateMetrics.RMSIntensityDistanceUpdateMagnitude = std::sqrt(
-          m_UpdateMetrics.IntermediateStruct.SumOfSquaredIntensityDistanceUpdateMagnitude
-          / numPixels );
+      m_UpdateMetrics.IntermediateStruct
+      .SumOfSquaredIntensityDistanceUpdateMagnitude / numPixels );
     m_UpdateMetrics.RMSRegularizationUpdateMagnitude = std::sqrt(
-          m_UpdateMetrics.IntermediateStruct.SumOfSquaredRegularizationUpdateMagnitude
-          / numPixels );
-    m_UpdateMetrics.MeanTotalUpdateMagnitude
-        = m_UpdateMetrics.IntermediateStruct.SumOfTotalUpdateMagnitude / numPixels;
+      m_UpdateMetrics.IntermediateStruct
+      .SumOfSquaredRegularizationUpdateMagnitude / numPixels );
+    m_UpdateMetrics.MeanTotalUpdateMagnitude =
+      m_UpdateMetrics.IntermediateStruct
+      .SumOfTotalUpdateMagnitude / numPixels;
     m_UpdateMetrics.MeanIntensityDistanceUpdateMagnitude =
-      m_UpdateMetrics.IntermediateStruct.SumOfIntensityDistanceUpdateMagnitude /
-        numPixels;
+      m_UpdateMetrics.IntermediateStruct
+      .SumOfIntensityDistanceUpdateMagnitude / numPixels;
     m_UpdateMetrics.MeanRegularizationUpdateMagnitude =
-      m_UpdateMetrics.IntermediateStruct.SumOfRegularizationUpdateMagnitude /
-        numPixels;
+      m_UpdateMetrics.IntermediateStruct
+      .SumOfRegularizationUpdateMagnitude / numPixels;
     }
 
   this->SetRMSChange( m_UpdateMetrics.RMSTotalUpdateMagnitude );
 }
 
 /**
- * Applies changes from the update buffer to the output.  This will only get
- * called by the superclass, so we know that it is the final apply update.
+ * Applies changes from the update buffer to the output.  This will only
+ * get called by the superclass, so we know that it is the final apply
+ * update.
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
 void
@@ -1612,7 +1666,8 @@ DiffusiveRegistrationFilter
   str.Filter = this;
   str.OutputImage = outputImage;
   str.TimeStep = dt;
-  this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
+  this->GetMultiThreader()->SetNumberOfThreads(
+    this->GetNumberOfThreads() );
   this->GetMultiThreader()->SetSingleMethod(
     this->ApplyUpdateThreaderCallback, & str );
 
@@ -1636,7 +1691,8 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ApplyUpdateThreaderCallback( void * arg )
 {
-  const ThreadIdType threadId = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->ThreadID;
+  const ThreadIdType threadId =
+    ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->ThreadID;
   const ThreadIdType threadCount =
     ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->NumberOfThreads;
 
@@ -1675,9 +1731,10 @@ DiffusiveRegistrationFilter
                        ThreadIdType )
 {
   // This function should never be called!
-  itkExceptionMacro( << "ThreadedApplyUpdate( dt, regionToProcess, threadId ) "
-                    << "should never be called.  Use the other "
-                    << "ThreadedApplyUpdate function instead" );
+  itkExceptionMacro(
+    << "ThreadedApplyUpdate( dt, regionToProcess, threadId ) "
+    << "should never be called.  Use the other "
+    << "ThreadedApplyUpdate function instead" );
 }
 
 /**
@@ -1693,7 +1750,8 @@ DiffusiveRegistrationFilter
                        const ThreadRegionType &regionToProcess,
                        ThreadIdType )
 {
-  ImageRegionIterator< UpdateBufferType > updateIt( m_UpdateBuffer, regionToProcess );
+  ImageRegionIterator< UpdateBufferType > updateIt( m_UpdateBuffer,
+    regionToProcess );
   typedef ImageRegionIterator< OutputImageType > OutputImageIteratorType;
   OutputImageIteratorType outputIt1( this->GetOutput(), regionToProcess );
   OutputImageIteratorType outputIt2( outputImage, regionToProcess );
@@ -1703,7 +1761,8 @@ DiffusiveRegistrationFilter
        ++outputIt1, ++outputIt2, ++updateIt )
     {
     outputIt2.Value() =
-      outputIt1.Value() + static_cast< DeformationVectorType >( updateIt.Value() * dt );
+      outputIt1.Value() + static_cast< DeformationVectorType >(
+        updateIt.Value() * dt );
     // no adaptor support here
     }
 }
@@ -1722,11 +1781,13 @@ DiffusiveRegistrationFilter
   static TimeStepType totalTime = 0.0;
   totalTime += stepSize;
 
-  // Get the change in energy and update metrics since the previous iteration
+  // Get the change in energy and update metrics since the previous
+  // iteration
   EnergiesStruct energiesChange;
   energiesChange.difference( m_Energies, m_PreviousEnergies );
   UpdateMetricsStruct updateMetricsChange;
-  updateMetricsChange.difference( m_UpdateMetrics, m_PreviousUpdateMetrics );
+  updateMetricsChange.difference( m_UpdateMetrics,
+    m_PreviousUpdateMetrics );
 
   // Keep track of the total energy change within each stopping criterion
   // evaluation block
@@ -1759,34 +1820,39 @@ DiffusiveRegistrationFilter
   std::cout.setf( std::ios::fixed, std::ios::floatfield );
   std::cout.precision( 6 );
   std::cout << elapsedIterations << delimiter
-            << stepSize << delimiter
-            << totalTime << sectionDelimiter
+    << stepSize << delimiter
+    << totalTime << sectionDelimiter
 
-            << m_UpdateMetrics.RMSTotalUpdateMagnitude << delimiter
-            << m_UpdateMetrics.RMSIntensityDistanceUpdateMagnitude << delimiter
-            << m_UpdateMetrics.RMSRegularizationUpdateMagnitude << sectionDelimiter
+    << m_UpdateMetrics.RMSTotalUpdateMagnitude << delimiter
+    << m_UpdateMetrics.RMSIntensityDistanceUpdateMagnitude << delimiter
+    << m_UpdateMetrics.RMSRegularizationUpdateMagnitude << sectionDelimiter
 
-            << updateMetricsChange.RMSTotalUpdateMagnitude << delimiter
-            << updateMetricsChange.RMSIntensityDistanceUpdateMagnitude << delimiter
-            << updateMetricsChange.RMSRegularizationUpdateMagnitude << sectionDelimiter
+    << updateMetricsChange.RMSTotalUpdateMagnitude << delimiter
+    << updateMetricsChange.RMSIntensityDistanceUpdateMagnitude << delimiter
+    << updateMetricsChange.RMSRegularizationUpdateMagnitude
+    << sectionDelimiter
 
-            << ",,, " << m_UpdateMetrics.MeanTotalUpdateMagnitude << " ,,, " << delimiter
-            << m_UpdateMetrics.MeanIntensityDistanceUpdateMagnitude << delimiter
-            << m_UpdateMetrics.MeanRegularizationUpdateMagnitude << sectionDelimiter
+    << ",,, " << m_UpdateMetrics.MeanTotalUpdateMagnitude << " ,,, "
+    << delimiter
+    << m_UpdateMetrics.MeanIntensityDistanceUpdateMagnitude << delimiter
+    << m_UpdateMetrics.MeanRegularizationUpdateMagnitude
+    << sectionDelimiter
 
-            << updateMetricsChange.MeanTotalUpdateMagnitude << delimiter
-            << updateMetricsChange.MeanIntensityDistanceUpdateMagnitude << delimiter
-            << updateMetricsChange.MeanRegularizationUpdateMagnitude << sectionDelimiter
+    << updateMetricsChange.MeanTotalUpdateMagnitude << delimiter
+    << updateMetricsChange.MeanIntensityDistanceUpdateMagnitude
+    << delimiter
+    << updateMetricsChange.MeanRegularizationUpdateMagnitude
+    << sectionDelimiter
 
-            << m_Energies.TotalEnergy << delimiter
-            << m_Energies.IntensityDistanceEnergy << delimiter
-            << m_Energies.RegularizationEnergy << delimiter
+    << m_Energies.TotalEnergy << delimiter
+    << m_Energies.IntensityDistanceEnergy << delimiter
+    << m_Energies.RegularizationEnergy << delimiter
 
-            << ",,, " << energiesChange.TotalEnergy << " ,,, " << delimiter
-            << energiesChange.IntensityDistanceEnergy << delimiter
-            << energiesChange.RegularizationEnergy << sectionDelimiter
+    << ",,, " << energiesChange.TotalEnergy << " ,,, " << delimiter
+    << energiesChange.IntensityDistanceEnergy << delimiter
+    << energiesChange.RegularizationEnergy << sectionDelimiter
 
-            << ",,, " << totalEnergyChangeInEvaluationPeriod << " ,,, ";
+    << ",,, " << totalEnergyChangeInEvaluationPeriod << " ,,, ";
 
 
   // Error checking for energy increase that indicates we should stop
@@ -1799,9 +1865,10 @@ DiffusiveRegistrationFilter
     }
   if( numEnergyViolations > 10 )
     {
-    std::cout << "Total energy is increasing, indicating numeric instability. "
-              << energiesChange.TotalEnergy << ".  "
-              << "Registration halting.";
+    std::cout
+      << "Total energy is increasing, indicating numeric instability. "
+      << energiesChange.TotalEnergy << ".  "
+      << "Registration halting.";
     this->StopRegistration();
     std::cout << delimiter <<  "!!!";
     }
@@ -1809,10 +1876,12 @@ DiffusiveRegistrationFilter
   std::cout << std::endl;
 
   // Check for stopping condition every m_StoppingCriterionEvaluationPeriod
-  if( elapsedIterations != 0
-      && ( ( elapsedIterations + 1 ) % m_StoppingCriterionEvaluationPeriod ) == 0 )
+  if( elapsedIterations != 0 &&
+    ( ( elapsedIterations + 1 ) % m_StoppingCriterionEvaluationPeriod ) ==
+    0 )
     {
-    if( totalEnergyChangeInEvaluationPeriod > m_StoppingCriterionMaxTotalEnergyChange )
+    if( totalEnergyChangeInEvaluationPeriod >
+      m_StoppingCriterionMaxTotalEnergyChange )
       {
       std::cout << "Stopping criterion satisfied. "
                 << totalEnergyChangeInEvaluationPeriod << ".  "

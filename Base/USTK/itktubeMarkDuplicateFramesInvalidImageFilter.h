@@ -81,17 +81,22 @@ private:
  *
  * \brief Detect duplicate frames and mark invalid in the Plus metadata.
  *
- * The screengrabber's frame rate is often higher that the ultrasounds's frame
- * rate, so detect duplicate frames ( or partial duplicates with an incomplete
+ * The screengrabber's frame rate is often higher that the ultrasounds's
+ * frame
+ * rate, so detect duplicate frames ( or partial duplicates with an
+ * incomplete
  * refresh ) by subtracting subsequent frames.
  *
- * The input to this filter should be a scalar image.  It runs in place on the
+ * The input to this filter should be a scalar image.  It runs in place on
+ * the
  * content of the image, and leaves it unchanged.  The output image, though,
  * has a new MetaDataDictionary with modified values from the dictionary
  * specified with SetInputMetaDataDictionary.
  *
- * Pixels are considered the same if their difference is within the Tolerance
- * parameter.  Frames are considered the same if same-valued pixels exceed the
+ * Pixels are considered the same if their difference is within the
+ * Tolerance
+ * parameter.  Frames are considered the same if same-valued pixels exceed
+ * the
  * FractionalThreshold parameter.
  *
  */
@@ -123,7 +128,8 @@ public:
   typedef SimpleDataObjectDecorator< MetaDataDictionary >
     DecoratedMetaDataDictionaryType;
 
-  /** Set the tolerance which determines if a pixel is unchanged.  Noise with
+  /** Set the tolerance which determines if a pixel is unchanged.  Noise
+   * with
    * analog framegrabbers requires this to be non-zero. This is considered
    * inclusive. */
   itkSetMacro( Tolerance, InputImagePixelType );
@@ -149,7 +155,8 @@ protected:
   virtual ~MarkDuplicateFramesInvalidImageFilter( void );
 
   using Superclass::MakeOutput;
-  virtual DataObject::Pointer MakeOutput( DataObjectPointerArraySizeType index );
+  virtual DataObject::Pointer MakeOutput(
+    DataObjectPointerArraySizeType index );
 
   virtual void GenerateData( void );
 
@@ -166,7 +173,8 @@ private:
   const MetaDataDictionary * m_InputMetaDataDictionary;
 
   friend class MarkDuplicateFramesInvalidImageFilterThreader< Self >;
-  typedef MarkDuplicateFramesInvalidImageFilterThreader< Self > ThreaderType;
+  typedef MarkDuplicateFramesInvalidImageFilterThreader< Self >
+    ThreaderType;
   typename ThreaderType::Pointer m_Threader;
 
 }; // End class MarkDuplicateFramesInvalidImageFilter

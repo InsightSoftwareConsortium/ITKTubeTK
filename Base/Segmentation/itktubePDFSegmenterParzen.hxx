@@ -608,7 +608,8 @@ PDFSegmenterParzen< TImage, TLabelMap >
 }
 
 template< class TImage, class TLabelMap >
-typename PDFSegmenterParzen< TImage, TLabelMap >::LabeledFeatureSpaceType::Pointer
+typename PDFSegmenterParzen< TImage, TLabelMap >::LabeledFeatureSpaceType::
+Pointer
 PDFSegmenterParzen< TImage, TLabelMap >
 ::GetLabeledFeatureSpace( void ) const
 {

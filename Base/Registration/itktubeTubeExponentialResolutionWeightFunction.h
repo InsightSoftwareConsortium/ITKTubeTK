@@ -43,7 +43,8 @@ namespace Function
  * \f$ w_i = \frac{2}{1 + e^{-2 r_i}} \f$
  *
  * As in Eqn. 2. Alyward, S. Weeks, S. and Bullitt, E.  Analysis of the
- * Parameter Space of a Metric for Registering 3D Vascular Images.  MICCAI, 2001.
+ * Parameter Space of a Metric for Registering 3D Vascular Images.
+ * MICCAI, 2001.
  *
  * \sa TubeExponentialResolutionWeightFunction
  * \sa TubeExponentialWithBoundsResolutionWeightFunction
@@ -83,8 +84,10 @@ protected:
     {}
 
 private:
-  TubeExponentialResolutionWeightFunction( const Self & ); // purposely not implemented
-  void operator=( const Self & ); // purposely not implemented
+  // purposely not implemented
+  TubeExponentialResolutionWeightFunction( const Self & );
+  // purposely not implemented
+  void operator=( const Self & );
 }; // End class TubeExponentialResolutionWeightFunction
 
 } // End namespace Function

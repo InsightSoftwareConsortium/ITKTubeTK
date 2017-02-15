@@ -38,7 +38,8 @@ namespace tube
  * \brief Compute probe origin and radius of curvature from a scan-converted
  * image.
  *
- * Given a scan-converted ultrasound B-Mode "sector" image that was generated
+ * Given a scan-converted ultrasound B-Mode "sector" image that was
+ * generated
  * with a curvilinear or phased array probe, compute a center of curvature
  * ( UltrasoundProbeOrigin ) and the distance to the start of acquisition
  * ( StartOfAcquisitionRadius ).
@@ -47,8 +48,10 @@ namespace tube
  * GeneralBeamDirection and find the first values that are not equal to the
  * BackgroundValue.  The parameters of lines for both sides of the image are
  * created for each sector edge point.  The median values of these line
- * parameters define two lines in one plane.  The output UltrasoundProbeOrigin
- * is the intersection of these lines.  By radiating out from this origin, the
+ * parameters define two lines in one plane.  The output
+ * UltrasoundProbeOrigin
+ * is the intersection of these lines.  By radiating out from this origin,
+ * the
  * median of the first non-background values determine the output
  * StartOfAcquisitionRadius.
  */
@@ -82,8 +85,8 @@ public:
   itkSetMacro( GeneralBeamDirection, unsigned int );
   itkGetConstMacro( GeneralBeamDirection, unsigned int );
 
-  /** Set/Get the background value that is used in the input image outside of
-   * the scanned sector. */
+  /** Set/Get the background value that is used in the input image outside
+   * of the scanned sector. */
   itkSetMacro( BackgroundValue, InputPixelType );
   itkGetConstMacro( BackgroundValue, InputPixelType );
 
@@ -100,13 +103,16 @@ protected:
   virtual void PrintSelf( std::ostream & os, Indent indent ) const;
 
   using Superclass::MakeOutput;
-  virtual DataObject::Pointer MakeOutput( DataObjectPointerArraySizeType index );
+  virtual DataObject::Pointer MakeOutput(
+    DataObjectPointerArraySizeType index );
 
   virtual void GenerateData( void );
 
 private:
-  UltrasoundProbeGeometryCalculator( const Self & ); // purposely not implemented
-  void operator=( const Self & ); // purposely not implemented
+  // purposely not implemented
+  UltrasoundProbeGeometryCalculator( const Self & );
+  // purposely not implemented
+  void operator=( const Self & );
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
   void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};

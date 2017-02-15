@@ -37,19 +37,24 @@ namespace itk
  * ultrasound beam direction and the normal of the "local surface", which is
  * computed as the local gradient.
  *
- * For every input pixel location, the beam direction is computed by normalizing
- * the vector from that location to the center of rotation of a phased array or
- * curvilinear array probe, specified with the \c UltrasoundProbeOrigin.  The
+ * For every input pixel location, the beam direction is computed by
+ * normalizing
+ * the vector from that location to the center of rotation of a phased
+ * array or
+ * curvilinear array probe, specified with the \c UltrasoundProbeOrigin.
+ * The
  * gradient is computed with a gradient filter of the user's choice -- the
  * default is a GradientImageFilter, but a difference filter, e.g. a
  * GradientRecursiveGaussianImageFilter could be used instead.
  *
- * The cosine of the angle of incidence is computed as the dot product of the
+ * The cosine of the angle of incidence is computed as the dot product of
+ * the
  * two normalized vectors.
  *
  * \ingroup ImageToImageFilter
  */
-template< class TInputImage, class TOutputImage, class TOperatorValue = float >
+template< class TInputImage, class TOutputImage,
+  class TOperatorValue = float >
 class GradientBasedAngleOfIncidenceImageFilter
   : public ImageToImageFilter< TInputImage, TOutputImage >
 {
@@ -64,7 +69,8 @@ public:
   itkNewMacro( Self );
 
   /** Run-time type information ( and related methods ). */
-  itkTypeMacro( GradientBasedAngleOfIncidenceImageFilter, ImageToImageFilter );
+  itkTypeMacro( GradientBasedAngleOfIncidenceImageFilter,
+    ImageToImageFilter );
 
   /** Some convenient typedefs. */
   typedef TInputImage                           InputImageType;
@@ -105,13 +111,15 @@ public:
   itkGetConstMacro( UltrasoundProbeType, ProbeType );
 
   /** Set/Get the location of the ultrasound beam probe center of rotation.
-   * This is only valid when the UltrasoundProbeType is CURVILINEAR or PHASED. */
+   * This is only valid when the UltrasoundProbeType is CURVILINEAR or 
+   * PHASED. */
   itkSetMacro( UltrasoundProbeOrigin, OriginType );
   itkGetConstMacro( UltrasoundProbeOrigin, OriginType );
 
-  /** Set/Get the direction of the ultrasound beam.  This is only valid when the
-   * UltrasoundProbeType is LINEAR. */
-  void SetUltrasoundProbeBeamDirection( const BeamDirectionType & beamDirection );
+  /** Set/Get the direction of the ultrasound beam.  This is only valid
+   * when the UltrasoundProbeType is LINEAR. */
+  void SetUltrasoundProbeBeamDirection( const BeamDirectionType &
+    beamDirection );
   itkGetConstMacro( UltrasoundProbeBeamDirection, BeamDirectionType );
 
   /** Set/Get the filter used to calculate the gradients of the input image.
@@ -131,14 +139,18 @@ protected:
   virtual void PrintSelf( std::ostream & os, Indent indent ) const;
 
   virtual void BeforeThreadedGenerateData( void );
-  virtual void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread,
+  virtual void ThreadedGenerateData(
+    const OutputImageRegionType & outputRegionForThread,
     ThreadIdType threadId );
 
 private:
-  GradientBasedAngleOfIncidenceImageFilter( const Self & ); //purposely not implemented
-  void operator=( const Self & );          //purposely not implemented
+  //purposely not implemented
+  GradientBasedAngleOfIncidenceImageFilter( const Self & );
+  //purposely not implemented
+  void operator=( const Self & );
 
-  typedef CastImageFilter< InputImageType, OperatorImageType > CastImageFilterType;
+  typedef CastImageFilter< InputImageType, OperatorImageType >
+    CastImageFilterType;
   typename CastImageFilterType::Pointer m_CastImageFilter;
 
 

@@ -162,8 +162,6 @@ public:
   virtual ProbabilityVectorType GetProbabilityVector( const
     FeatureVectorType & fv ) const;
 
-
-
 protected:
 
   PDFSegmenterBase( void );

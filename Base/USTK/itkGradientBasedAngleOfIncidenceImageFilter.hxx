@@ -86,8 +86,8 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
       this->m_UltrasoundProbeBeamDirection.GetNorm()
         == static_cast< OperatorValueType >( 0.0 ) )
     {
-    itkExceptionMacro( << "The BeamDirection must be specified with a linear "
-                       << "probe." );
+    itkExceptionMacro(
+      << "The BeamDirection must be specified with a linear probe." );
     }
 }
 
@@ -106,11 +106,15 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
   OutputImageType * output = this->GetOutput();
 
   const OriginType origin = this->m_UltrasoundProbeOrigin;
-  const double gradientMagnitudeTolerance = this->m_GradientMagnitudeTolerance;
+  const double gradientMagnitudeTolerance =
+    this->m_GradientMagnitudeTolerance;
 
-  typedef ImageRegionConstIteratorWithIndex< InputImageType > InputIteratorType;
-  typedef ImageRegionConstIterator< GradientOutputImageType > GradientIteratorType;
-  typedef ImageRegionIterator< OutputImageType >              OutputIteratorType;
+  typedef ImageRegionConstIteratorWithIndex< InputImageType >
+    InputIteratorType;
+  typedef ImageRegionConstIterator< GradientOutputImageType >
+    GradientIteratorType;
+  typedef ImageRegionIterator< OutputImageType >
+    OutputIteratorType;
 
   InputIteratorType inputIt( input, outputRegionForThread );
   GradientIteratorType gradientIt( gradient, outputRegionForThread );
@@ -144,7 +148,8 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
     // output  scalar product of the two normalized vectors
     typedef typename OutputImageType::PixelType OutputPixelType;
     const OutputPixelType outputPixel = gradientPixel * beamDirection;
-    if( vnl_math_isnan( outputPixel ) || gradientNorm < gradientMagnitudeTolerance )
+    if( vnl_math_isnan( outputPixel )
+      || gradientNorm < gradientMagnitudeTolerance )
       {
       outputIt.Set( NumericTraits< OutputPixelType >::Zero );
       }

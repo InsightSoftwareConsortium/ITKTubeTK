@@ -100,7 +100,7 @@ public:
 
   /**
    * Defines the type of vectors used */
-  typedef itk::Vector<double,  ImageDimension >         VectorType;
+  typedef itk::Vector<double, ImageDimension >         VectorType;
 
 
   /**

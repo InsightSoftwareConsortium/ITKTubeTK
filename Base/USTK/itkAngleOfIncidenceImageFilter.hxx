@@ -91,7 +91,8 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 
   outputImagePtr->SetRequestedRegion( inputImagePtr->GetRequestedRegion() );
   outputImagePtr->SetBufferedRegion( inputImagePtr->GetBufferedRegion() );
-  outputImagePtr->SetLargestPossibleRegion( inputImagePtr->GetLargestPossibleRegion() );
+  outputImagePtr->SetLargestPossibleRegion(
+    inputImagePtr->GetLargestPossibleRegion() );
   outputImagePtr->Allocate();
   outputImagePtr->FillBuffer( 0 );
 
@@ -107,9 +108,12 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   this->ComputeNormalVectorImage();
 
   //Iterator for the primary eigenvector image with the largest eigenvector
-  itk::ImageRegionIterator<EigenVectorImageType> primaryEigenVectorImageIterator;
-  primaryEigenVectorImageIterator = itk::ImageRegionIterator<EigenVectorImageType>(
-      m_PrimaryEigenVectorImage, m_PrimaryEigenVectorImage->GetRequestedRegion() );
+  itk::ImageRegionIterator<EigenVectorImageType>
+    primaryEigenVectorImageIterator;
+  primaryEigenVectorImageIterator =
+    itk::ImageRegionIterator<EigenVectorImageType>(
+      m_PrimaryEigenVectorImage,
+      m_PrimaryEigenVectorImage->GetRequestedRegion() );
   primaryEigenVectorImageIterator.GoToBegin();
 
 
@@ -126,7 +130,7 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
     vectorPixel[1] = primaryEigenVectorImageIterator.Get()[1];
     vectorPixel[2] = primaryEigenVectorImageIterator.Get()[2];
 
-    itk::Vector<double,3>  primaryEigenVector;
+    itk::Vector<double, 3>  primaryEigenVector;
 
     primaryEigenVector[0] = vectorPixel[0];
     primaryEigenVector[1] = vectorPixel[1];
@@ -141,11 +145,9 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 
     /*
     std::cout << "Beam vector for( "  << inputIt.GetIndex()[0]  << ","
-                                     << inputIt.GetIndex()[1]  << ","
-                                     << inputIt.GetIndex()[2]  << " ):=( "
-                                     << beamVector[0]        << ","
-                                     << beamVector[1]        << ","
-                                     << beamVector[2]        << " )" << std::endl;
+    << inputIt.GetIndex()[1]  << "," << inputIt.GetIndex()[2]  << " ):=( "
+    << beamVector[0]        << "," << beamVector[1]        << ","
+    << beamVector[2]        << " )" << std::endl;
     */
 
     //Normalize the vectors
@@ -186,7 +188,8 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   m_EigenVectorAnalysisFilter->SetInput( m_HessianFilter->GetOutput() );
   m_EigenVectorAnalysisFilter->Update();
 
-  //Generate an image with eigenvector pixel that correspond to the largest eigenvalue
+  //Generate an image with eigenvector pixel that correspond to the
+  //largest eigenvalue
   typename EigenVectorMatrixImageType::ConstPointer eigenVectorImage =
                     m_EigenVectorAnalysisFilter->GetOutput();
 
@@ -210,22 +213,29 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
   //Setup the iterators
   //
   //Iterator for the eigenvector matrix image
-  itk::ImageRegionConstIterator<EigenVectorMatrixImageType> eigenVectorImageIterator;
-  eigenVectorImageIterator = itk::ImageRegionConstIterator<EigenVectorMatrixImageType>(
+  itk::ImageRegionConstIterator<EigenVectorMatrixImageType>
+    eigenVectorImageIterator;
+  eigenVectorImageIterator =
+    itk::ImageRegionConstIterator<EigenVectorMatrixImageType>(
       eigenVectorImage, eigenVectorImage->GetRequestedRegion() );
   eigenVectorImageIterator.GoToBegin();
 
   //Iterator for the output image with the largest eigenvector
-  itk::ImageRegionIterator<EigenVectorImageType> primaryEigenVectorImageIterator;
-  primaryEigenVectorImageIterator = itk::ImageRegionIterator<EigenVectorImageType>(
-      m_PrimaryEigenVectorImage, m_PrimaryEigenVectorImage->GetRequestedRegion() );
+  itk::ImageRegionIterator<EigenVectorImageType>
+    primaryEigenVectorImageIterator;
+  primaryEigenVectorImageIterator =
+    itk::ImageRegionIterator<EigenVectorImageType>(
+      m_PrimaryEigenVectorImage, m_PrimaryEigenVectorImage
+      ->GetRequestedRegion() );
   primaryEigenVectorImageIterator.GoToBegin();
 
   //Iterator for the eigenvalue image
   typename EigenValueImageType::ConstPointer eigenImage
     = m_EigenValueAnalysisFilter->GetOutput();
-  itk::ImageRegionConstIterator<EigenValueImageType> eigenValueImageIterator;
-  eigenValueImageIterator = itk::ImageRegionConstIterator<EigenValueImageType>(
+  itk::ImageRegionConstIterator<EigenValueImageType>
+    eigenValueImageIterator;
+  eigenValueImageIterator =
+    itk::ImageRegionConstIterator<EigenValueImageType>(
       eigenImage, eigenImage->GetRequestedRegion() );
   eigenValueImageIterator.GoToBegin();
 
@@ -243,7 +253,7 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
 
     for( unsigned int i=1; i <=2; i++ )
       {
-      if(  vnl_math_abs( eigenValue[i] > largest ) )
+      if( vnl_math_abs( eigenValue[i] > largest ) )
         {
         largest = vnl_math_abs( eigenValue[i] );
         largestEigenValueIndex = i;
@@ -254,13 +264,13 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
     matrixPixel = eigenVectorImageIterator.Get();
 
     /*
-    std::cout << "EigenValues( " << eigenValueImageIterator.GetIndex()[0] << ","
-                                         << eigenValueImageIterator.GetIndex()[1] << ","
-                                         << eigenValueImageIterator.GetIndex()[2] <<" )\t="
-                                         << smallest << ","
-                                         << largest << " )" << std::endl;
+    std::cout << "EigenValues( "
+      << eigenValueImageIterator.GetIndex()[0] << ","
+      << eigenValueImageIterator.GetIndex()[1] << ","
+      << eigenValueImageIterator.GetIndex()[2] <<" )\t="
+      << smallest << "," << largest << " )" << std::endl;
     */
-    if( vnl_math_abs( largest ) >  toleranceEigenValues  )
+    if( vnl_math_abs( largest ) >  toleranceEigenValues )
       {
       //Assuming eigenvectors are rows
       itk::VariableLengthVector<double> primaryEigenVector( vectorLength );

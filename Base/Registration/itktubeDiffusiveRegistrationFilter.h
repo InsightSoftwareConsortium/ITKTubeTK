@@ -332,12 +332,11 @@ public:
    *  intensity distance function.  Default 0.0 */
   void SetBackgroundIntensity( MovingImagePixelType bg )
     {
-    this->GetRegistrationFunctionPointer()->SetBackgroundIntensity( bg ); 
+    this->GetRegistrationFunctionPointer()->SetBackgroundIntensity( bg );
     }
   MovingImagePixelType GetBackgroundIntensity( void ) const
     {
-    return
-      this->GetRegistrationFunctionPointer()->GetBackgroundIntensity(); 
+    return this->GetRegistrationFunctionPointer()->GetBackgroundIntensity();
     }
 
   /** The number of div( T\grad( u ) )v terms we sum for the regularizer.
@@ -863,22 +862,20 @@ private:
   static ITK_THREAD_RETURN_TYPE ApplyUpdateThreaderCallback( void *arg );
 
   /** This callback method uses SplitUpdateContainer to acquire a region
-  * which it then passes to ThreadedCalculateChange for processing. */
+   * which it then passes to ThreadedCalculateChange for processing. */
   static ITK_THREAD_RETURN_TYPE CalculateChangeGradientThreaderCallback(
     void *arg );
 
   /** This callback method uses SplitUpdateContainer to acquire a region
-   * which
-  * it then passes to
-  * ThreadedComputeDeformationComponentDerivativeImageHelper
-  * for processing. */
+   * which it then passes to
+   * ThreadedComputeDeformationComponentDerivativeImageHelper
+   * for processing. */
   static ITK_THREAD_RETURN_TYPE
       ComputeDeformationComponentDerivativeImageHelperThreaderCallback(
           void *arg );
 
   /** This callback method uses SplitUpdateContainer to acquire a region
-   * which
-  * it then passes to ThreadedComputeEnergies for processing. */
+   * which it then passes to ThreadedComputeEnergies for processing. */
   static ITK_THREAD_RETURN_TYPE CalculateEnergiesThreaderCallback(
     void *arg );
 
@@ -899,7 +896,8 @@ private:
     m_DeformationComponentFirstOrderDerivativeArrays;
   TensorDerivativeImageArrayVectorType
     m_DeformationComponentSecondOrderDerivativeArrays;
-  DeformationVectorImageArrayVectorType m_MultiplicationVectorImageArrays;
+  DeformationVectorImageArrayVectorType
+    m_MultiplicationVectorImageArrays;
 
   /** Variables for multiresolution registration.  Current level can be
    * detected

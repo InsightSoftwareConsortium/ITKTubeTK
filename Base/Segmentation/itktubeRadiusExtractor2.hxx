@@ -127,7 +127,7 @@ RadiusExtractor2<TInputImage>
 template< class TInputImage >
 void
 RadiusExtractor2<TInputImage>
-::SetInputImage( typename ImageType::Pointer inputImage  )
+::SetInputImage( typename ImageType::Pointer inputImage )
 {
   m_Image = inputImage;
 
@@ -443,7 +443,7 @@ RadiusExtractor2<TInputImage>
     }
   double areaMin = distMin * distMin * vnl_math::pi;
   double areaPos = areaR - areaMin;
-  if ( this->GetDebug() )
+  if( this->GetDebug() )
     {
     std::cout << "R = " << r << std::endl;
     std::cout << "   Dist = " << distMin << " - " << distMax << std::endl;
@@ -519,7 +519,7 @@ RadiusExtractor2<TInputImage>
     nVal = ( bin - 0.5 ) / histoBins;
     }
 
-  if ( this->GetDebug() )
+  if( this->GetDebug() )
     {
     std::cout << "   Count = " << histoPosCount << " - " << histoNegCount
       << std::endl;
@@ -767,7 +767,7 @@ RadiusExtractor2<TInputImage>
 
   if( pntIter == tube->GetPoints().end() )
     {
-    if ( this->GetDebug() )
+    if( this->GetDebug() )
       {
       std::cout << "Warning: PointID 0 not found. Using mid-point of tube."
         << std::endl;
@@ -844,7 +844,7 @@ RadiusExtractor2<TInputImage>
   int endP = startP + ( m_NumKernelPoints - 1 ) * m_KernelPointStep;
 
   unsigned int count = 0;
-  for( int p = startP; p <= endP; p += m_KernelPointStep  )
+  for( int p = startP; p <= endP; p += m_KernelPointStep )
     {
     if( p < 0 )
       {
