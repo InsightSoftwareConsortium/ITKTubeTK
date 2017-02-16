@@ -294,11 +294,13 @@ DiffusiveRegistrationFilter
     }
 
   // Allocate and initialize the images we will use to store data computed
-  // during the registration ( or set pointers to 0 if they are not being used ).
+  // during the registration ( or set pointers to 0 if they are not being
+  // used ).
   this->AllocateImageMembers();
 
   // Set the time step to the registration function.
-  this->GetRegistrationFunctionPointer()->SetTimeStep( m_OriginalTimeStep );
+  this->GetRegistrationFunctionPointer()->SetTimeStep(
+    m_OriginalTimeStep );
 
   // Compute the diffusion tensors and their derivatives
   if( this->GetComputeRegularizationTerm() )

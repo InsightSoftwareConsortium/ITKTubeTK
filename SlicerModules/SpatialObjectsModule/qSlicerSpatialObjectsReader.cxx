@@ -44,61 +44,60 @@ limitations under the License.
 #include <vtkSmartPointer.h>
 #include <vtkStringArray.h>
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 class qSlicerSpatialObjectsReaderPrivate
 {
 public:
   vtkSmartPointer<vtkSlicerSpatialObjectsLogic> Logic;
 };
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 qSlicerSpatialObjectsReader::qSlicerSpatialObjectsReader( QObject* _parent )
-  : Superclass( _parent )
-  , d_ptr( new qSlicerSpatialObjectsReaderPrivate )
+  : Superclass( _parent ), d_ptr( new qSlicerSpatialObjectsReaderPrivate )
 {}
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 qSlicerSpatialObjectsReader::
 qSlicerSpatialObjectsReader( vtkSlicerSpatialObjectsLogic* logic,
                             QObject* _parent )
- : Superclass( _parent )
- , d_ptr( new qSlicerSpatialObjectsReaderPrivate )
+ : Superclass( _parent ), d_ptr( new qSlicerSpatialObjectsReaderPrivate )
 {
   this->setLogic( logic );
 }
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 qSlicerSpatialObjectsReader::~qSlicerSpatialObjectsReader()
 {}
 
-//------------------------------------------------------------------------------
-void qSlicerSpatialObjectsReader::setLogic( vtkSlicerSpatialObjectsLogic* logic )
+//-------------------------------------------------------------------------
+void qSlicerSpatialObjectsReader::setLogic(
+  vtkSlicerSpatialObjectsLogic* logic )
 {
   Q_D( qSlicerSpatialObjectsReader );
   d->Logic = logic;
 }
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 vtkSlicerSpatialObjectsLogic* qSlicerSpatialObjectsReader::logic() const
 {
   Q_D( const qSlicerSpatialObjectsReader );
   return d->Logic.GetPointer();
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 QString qSlicerSpatialObjectsReader::description() const
 {
   return "SpatialObjects";
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 qSlicerSpatialObjectsReader::
 IOFileType qSlicerSpatialObjectsReader::fileType() const
 {
   return QString( "SpatialObjectFile" );
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 QStringList qSlicerSpatialObjectsReader::extensions() const
 {
   return QStringList()
@@ -108,7 +107,7 @@ QStringList qSlicerSpatialObjectsReader::extensions() const
     << "All Files ( * )";
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 qSlicerIOOptions* qSlicerSpatialObjectsReader::options() const
 {
   return 0;
@@ -116,7 +115,7 @@ qSlicerIOOptions* qSlicerSpatialObjectsReader::options() const
   //return new qSlicerSpatialObjectsReaderOptionsWidget;
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------
 bool qSlicerSpatialObjectsReader::load( const IOProperties& properties )
 {
   Q_D( qSlicerSpatialObjectsReader );

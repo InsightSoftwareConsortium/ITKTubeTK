@@ -51,8 +51,7 @@ class qSlicerSpatialObjectsModulePrivate
 
 //------------------------------------------------------------------------------
 qSlicerSpatialObjectsModule::qSlicerSpatialObjectsModule( QObject* _parent )
-  : Superclass( _parent )
-  , d_ptr( new qSlicerSpatialObjectsModulePrivate )
+  : Superclass( _parent ), d_ptr( new qSlicerSpatialObjectsModulePrivate )
 {}
 
 //------------------------------------------------------------------------------

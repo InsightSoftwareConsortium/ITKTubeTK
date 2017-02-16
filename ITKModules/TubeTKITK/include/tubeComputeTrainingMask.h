@@ -39,68 +39,70 @@ namespace tube
  */
 
 template< typename TImage >
-class ComputeTrainingMask:
-  public itk::ProcessObject
+class ComputeTrainingMask : public itk::ProcessObject
 {
-  public:
-    /** Standard class typedefs. */
-    typedef ComputeTrainingMask                             Self;
-    typedef itk::ProcessObject                              Superclass;
-    typedef itk::SmartPointer< Self >                       Pointer;
-    typedef itk::SmartPointer< const Self >                 ConstPointer;
+public:
+  /** Standard class typedefs. */
+  typedef ComputeTrainingMask                             Self;
+  typedef itk::ProcessObject                              Superclass;
+  typedef itk::SmartPointer< Self >                       Pointer;
+  typedef itk::SmartPointer< const Self >                 ConstPointer;
 
-    /** Method for creation through the object factory. */
-    itkNewMacro( Self );
+  /** Method for creation through the object factory. */
+  itkNewMacro( Self );
 
-    /** Run-time type information ( and related methods ). */
-    itkTypeMacro( ComputeTrainingMask, ProcessObject );
+  /** Run-time type information ( and related methods ). */
+  itkTypeMacro( ComputeTrainingMask, ProcessObject );
 
 
-    /** Typedef to images */
-    typedef TImage                                          ImageType;
+  /** Typedef to images */
+  typedef TImage                                          ImageType;
 
-    itkStaticConstMacro( ImageDimension, unsigned int,
-      ImageType::ImageDimension );
+  itkStaticConstMacro( ImageDimension, unsigned int,
+    ImageType::ImageDimension );
 
-    typedef typename itk::tube::ComputeTrainingMaskFilter< ImageType >
-                                                            FilterType;
-    typedef typename FilterType::ImageTypeShort             ImageTypeShort;
+  typedef typename itk::tube::ComputeTrainingMaskFilter< ImageType >
+                                                          FilterType;
+  typedef typename FilterType::ImageTypeShort             ImageTypeShort;
 
-    tubeWrapSetMacro( Gap, double, ComputeTrainingMaskFilter );
-    tubeWrapGetMacro( Gap, double, ComputeTrainingMaskFilter );
-    tubeWrapSetMacro( NotVesselWidth, double, ComputeTrainingMaskFilter );
-    tubeWrapGetMacro( NotVesselWidth, double, ComputeTrainingMaskFilter );
-    tubeWrapGetConstObjectMacro( NotVesselMask, ImageTypeShort,
-      ComputeTrainingMaskFilter );
+  tubeWrapSetMacro( Gap, double, ComputeTrainingMaskFilter );
+  tubeWrapGetMacro( Gap, double, ComputeTrainingMaskFilter );
+  tubeWrapSetMacro( NotVesselWidth, double, ComputeTrainingMaskFilter );
+  tubeWrapGetMacro( NotVesselWidth, double, ComputeTrainingMaskFilter );
+  tubeWrapGetConstObjectMacro( NotVesselMask, ImageTypeShort,
+    ComputeTrainingMaskFilter );
 
-    tubeWrapSetObjectMacro( Input, ImageType,
-      ComputeTrainingMaskFilter );
+  tubeWrapSetObjectMacro( Input, ImageType,
+    ComputeTrainingMaskFilter );
 
-    tubeWrapCallMacro( Update, ComputeTrainingMaskFilter );
+  tubeWrapCallMacro( Update, ComputeTrainingMaskFilter );
 
-    tubeWrapGetObjectMacro( Output, ImageTypeShort,
-      ComputeTrainingMaskFilter );
+  tubeWrapGetObjectMacro( Output, ImageTypeShort,
+    ComputeTrainingMaskFilter );
 
-  protected:
-    ComputeTrainingMask( void );
-    ~ComputeTrainingMask() {}
+protected:
+  ComputeTrainingMask( void );
+  ~ComputeTrainingMask() {}
 
-    void PrintSelf( std::ostream & os, itk::Indent indent ) const;
+  void PrintSelf( std::ostream & os, itk::Indent indent ) const;
 
-  private:
-    /** itkComputeTrainingMask parameters **/
-    ComputeTrainingMask( const Self & );
+private:
+  /** itkComputeTrainingMask parameters **/
+  ComputeTrainingMask( const Self & );
 
-    void operator=( const Self & );
+  void operator=( const Self & );
 
-    // To remove warning "was hidden [-Woverloaded-virtual]"
-    void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+  // To remove warning "was hidden [-Woverloaded-virtual]"
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
 
-    typename FilterType::Pointer m_ComputeTrainingMaskFilter;
+  typename FilterType::Pointer m_ComputeTrainingMaskFilter;
 
 };
+
 } // End namespace tube
+
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "tubeComputeTrainingMask.hxx"
 #endif
+
 #endif // End !defined( __tubeComputeTrainingMask_h )

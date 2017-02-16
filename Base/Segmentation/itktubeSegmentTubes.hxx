@@ -293,8 +293,9 @@ SegmentTubes<TInputImage>
     ->SetOffset( offsetVector );
   this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()
     ->SetMatrix( this->m_InputImage->GetDirection() );
-  this->m_TubeExtractorFilter->GetTubeGroup()
-    ->ComputeObjectToWorldTransform();
+
+  this->m_TubeExtractorFilter->GetTubeGroup()->
+    ComputeObjectToWorldTransform();
 
   std::cout << "Ridge termination code counts:" << std::endl;
   for( unsigned int code = 0; code <
