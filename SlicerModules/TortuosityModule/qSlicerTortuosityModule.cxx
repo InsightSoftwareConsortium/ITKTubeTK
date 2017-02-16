@@ -37,34 +37,34 @@ limitations under the License.
 #include "qSlicerTortuosityModule.h"
 #include "qSlicerTortuosityModuleWidget.h"
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 Q_EXPORT_PLUGIN2( qSlicerTortuosityModule, qSlicerTortuosityModule );
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 /// \ingroup Slicer_QtModules_Tortuosity
 class qSlicerTortuosityModulePrivate
 {};
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 qSlicerTortuosityModule::qSlicerTortuosityModule( QObject* _parent )
-  : Superclass( _parent )
-  , d_ptr( new qSlicerTortuosityModulePrivate )
+  : Superclass( _parent ), d_ptr( new qSlicerTortuosityModulePrivate )
 {}
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 qSlicerTortuosityModule::~qSlicerTortuosityModule()
 {}
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 QString qSlicerTortuosityModule::helpText() const
 {
-  QString help = QString( "Run tortuosity metrics on spatial objects.\n Documentation"
-                         " about these metrics can be found in the TubeTK source code,"
-                         " in Base/Filtering/itkTubeTortuositySpatialObjectFilter.h" );
+  QString help = QString(
+    "Run tortuosity metrics on spatial objects.\n Documentation"
+    " about these metrics can be found in the TubeTK source code,"
+    " in Base/Filtering/itkTubeTortuositySpatialObjectFilter.h" );
   return help;
 }
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 QString qSlicerTortuosityModule::acknowledgementText() const
 {
   QString acknowledgement = QString( "" );
@@ -72,7 +72,7 @@ QString qSlicerTortuosityModule::acknowledgementText() const
   return acknowledgement;
 }
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 QStringList qSlicerTortuosityModule::contributors() const
 {
   QStringList moduleContributors;
@@ -81,19 +81,19 @@ QStringList qSlicerTortuosityModule::contributors() const
   return moduleContributors;
 }
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 QIcon qSlicerTortuosityModule::icon()const
 {
   return QIcon( ":/Icons/Tortuosity.png" );
 }
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 QStringList qSlicerTortuosityModule::categories() const
 {
   return QStringList() << "TubeTK";
 }
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 QStringList qSlicerTortuosityModule::dependencies() const
 {
   QStringList moduleDependencies;
@@ -102,20 +102,20 @@ QStringList qSlicerTortuosityModule::dependencies() const
   return moduleDependencies;
 }
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 void qSlicerTortuosityModule::setup()
 {
   this->Superclass::setup();
 }
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 qSlicerAbstractModuleRepresentation*
 qSlicerTortuosityModule::createWidgetRepresentation()
 {
   return new qSlicerTortuosityModuleWidget;
 }
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 vtkMRMLAbstractLogic* qSlicerTortuosityModule::createLogic()
 {
   return vtkSlicerTortuosityLogic::New();

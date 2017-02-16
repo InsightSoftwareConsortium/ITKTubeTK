@@ -119,7 +119,8 @@ limitations under the License.
     }
 
 /** Set input using const pointer to object type */
-#define tubeWrapForceSetConstObjectMacro( name, type, wrap_filter_object_name ) \
+#define tubeWrapForceSetConstObjectMacro( name, type,                    \
+  wrap_filter_object_name )                                              \
   void Set##name( const type * value )                                   \
     {                                                                    \
     this->m_##wrap_filter_object_name->Set##name( value );               \
@@ -138,7 +139,8 @@ limitations under the License.
     }
 
 /** Set input using const reference to object type */
-#define tubeWrapForceSetConstReferenceMacro( name, type, wrap_filter_object_name ) \
+#define tubeWrapForceSetConstReferenceMacro( name, type,              \
+  wrap_filter_object_name )                                           \
   void Set##name( const type & value )                                \
     {                                                                 \
     this->m_##wrap_filter_object_name->Set##name( value );            \

@@ -111,7 +111,7 @@ public:
   itkGetConstMacro( UltrasoundProbeType, ProbeType );
 
   /** Set/Get the location of the ultrasound beam probe center of rotation.
-   * This is only valid when the UltrasoundProbeType is CURVILINEAR or 
+   * This is only valid when the UltrasoundProbeType is CURVILINEAR or
    * PHASED. */
   itkSetMacro( UltrasoundProbeOrigin, OriginType );
   itkGetConstMacro( UltrasoundProbeOrigin, OriginType );

@@ -44,7 +44,7 @@ ShrinkWithBlendingImage< TInputImage, TOutputImage >
 {
   if( m_Filter->GetShrinkFactor( i ) != factor )
     {
-    m_Filter->SetShrinkFactor( i,factor );
+    m_Filter->SetShrinkFactor( i, factor );
     this->Modified();
     }
 }
