@@ -42,7 +42,7 @@ set( JsonCpp_HASH_OR_TAG 110d054227e9eb63faad48a1fb6a828ad0670e61 )
 
 # KWStyle
 set( KWStyle_URL ${git_protocol}://github.com/Kitware/KWStyle.git )
-set( KWStyle_HASH_OR_TAG 5f91ef9ac03e93c6316c127f6ed0afbfccaf2c79 )
+set( KWStyle_HASH_OR_TAG e03980ff514d5248a9f95ea355dcd9eff78c62d3 )
 
 # LIBSVM
 set( LIBSVM_URL ${git_protocol}://github.com/KitwareMedical/libsvm.git )
