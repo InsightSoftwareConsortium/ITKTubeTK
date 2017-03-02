@@ -8,42 +8,48 @@
 #
 ###########################################################################
 
+import json
+import os
 import sys
+
 ## Append ITK libs
-sys.path.append('/home/lucas/Projects/ITK-Release/Wrapping/Generators/Python')
-sys.path.append('/home/lucas/Projects/ITK-Release/Modules/ThirdParty/VNL/src/vxl/lib')
+sys.path.append(os.path.join(os.environ['TubeTK_BUILD_DIR'], 'ITK-build/Wrapping/Generators/Python'))
+sys.path.append(os.path.join(os.environ['TubeTK_BUILD_DIR'], 'ITK-build/Modules/ThirdParty/VNL/src/vxl/lib'))
 import itk
 
-def reconstructSlabs( animalName, directory ):
-  PixelType = itk.UC
-  Dimension = 3
-  ImageType=itk.Image[PixelType,Dimension]
 
-  SeriesReaderType = itk.ImageSeriesReader[ImageType]
-  WriterType = itk.ImageFileWriter[ImageType]
+def reconstructSlabs(animalName, directory):
 
-  seriesReader = SeriesReaderType.New()
-  writer = WriterType.New()
+    PixelType = itk.UC
+    Dimension = 3
+    ImageType=itk.Image[PixelType,Dimension]
 
-  NameGeneratorType = itk.NumericSeriesFileNames
-  nameGenerator = NameGeneratorType.New()
+    SeriesReaderType = itk.ImageSeriesReader[ImageType]
+    WriterType = itk.ImageFileWriter[ImageType]
 
-  nameGenerator.SetStartIndex( 0 )
-  nameGenerator.SetEndIndex( 9 )
-  nameGenerator.SetIncrementIndex( 1 )
-  nameGenerator.SetSeriesFormat( directory + "%d_" + animalName )
+    seriesReader = SeriesReaderType.New()
+    writer = WriterType.New()
 
-  #seriesReader.SetImageIO( itk.PNGImageIO.New() )
-  seriesReader.SetFileNames( nameGenerator.GetFileNames() )
-  writer.SetFileName( directory + animalName + ".mha" )
-  writer.SetInput( seriesReader.GetOutput() )
-  writer.Update()
+    NameGeneratorType = itk.NumericSeriesFileNames
+    nameGenerator = NameGeneratorType.New()
 
+    nameGenerator.SetStartIndex( 0 )
+    nameGenerator.SetEndIndex( 9 )
+    nameGenerator.SetIncrementIndex( 1 )
+    nameGenerator.SetSeriesFormat(str(os.path.join(directory, "%d_" + animalName)))
 
+    #  seriesReader.SetImageIO( itk.PNGImageIO.New() )
+    seriesReader.SetFileNames( nameGenerator.GetFileNames() )
+    writer.SetFileName(str(os.path.join(directory, animalName + ".mha")))
+    writer.SetInput(seriesReader.GetOutput())
+    writer.Update()
 
-hardDrive_root = "/media/lucas/krs0014/"
+# Define paths
+script_params = json.load(open('params.json'))
+caffe_root = script_params['CAFFE_SRC_ROOT']
+hardDrive_root = script_params['CNN_DATA_ROOT']
 
-outputDir = hardDrive_root + "SegmentVesselsUsingNeuralNetworks/output/"
-outputAnimal = "pp07_A34_left.png" #WARNING Hardcoded
+outputDir = os.path.join(hardDrive_root, "SegmentVesselsUsingNeuralNetworks/output/")
+outputAnimal = "pp07_A36_left.png"  # WARNING Hardcoded
 
-reconstructSlabs( outputAnimal, outputDir )
+reconstructSlabs(outputAnimal, outputDir)
