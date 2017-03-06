@@ -22,13 +22,13 @@
 ##############################################################################
 
 if( BUILD_TESTING )
-  Midas3FunctionAddTestWithEnv( NAME Example.Python.MergeAdjacentImages
+  ExternalData_Add_Test_With_Env( NAME Example.Python.MergeAdjacentImages
     COMMAND ${PYTHON_TESTING_EXECUTABLE}
       "${NOTEBOOK_TEST_DRIVER}"
       "${CMAKE_CURRENT_SOURCE_DIR}/MergeAdjacentImages.ipynb"
       "${TubeTK_BINARY_DIR}"
-      MIDAS_FETCH_ONLY{ES0015_Large.mha.md5}
-      MIDAS_FETCH_ONLY{ES0015_Large_Wo_offset.mha.md5}
+      DATA_FETCH_ONLY{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
+      DATA_FETCH_ONLY{${TubeTK_DATA_ROOT}/ES0015_Large_Wo_offset.mha}
     ENVIRONMENT ITK_BUILD_DIR=${ITK_DIR} TubeTK_BUILD_DIR=${PROJECT_BINARY_DIR}
     )
 endif( BUILD_TESTING )

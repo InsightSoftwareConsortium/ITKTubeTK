@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 
@@ -126,29 +122,31 @@ add_test( NAME tubeBaseIOPrintTest
   COMMAND ${BASE_IO_TESTS}
     tubeBaseIOPrintTest )
 
-Midas3FunctionAddTest( NAME itktubePDFSegmenterParzenIOTest
+ExternalData_Add_Test( TubeTKData
+  NAME itktubePDFSegmenterParzenIOTest
   COMMAND ${BASE_IO_TESTS}
     --compare ${TEMP}/itktubePDFSegmenterParzenIOTest.mha
       ${TEMP}/itktubePDFSegmenterParzenIOTest2.mha
     itktubePDFSegmenterParzenIOTest
-      MIDAS{ES0015_Large.mha.md5}
-      MIDAS{ES0015_Large.mha.md5}
-      MIDAS{GDS0015_Large-TrainingMask.mha.md5}
+      DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
+      DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
+      DATA{${TubeTK_DATA_ROOT}/GDS0015_Large-TrainingMask.mha}
       ${TEMP}/itktubePDFSegmenterParzenIOTest.mha
       ${TEMP}/itktubePDFSegmenterParzenIOTest.mpd
       ${TEMP}/itktubePDFSegmenterParzenIOTest2.mha
       ${TEMP}/itktubePDFSegmenterParzenIOTest2.mpd )
 
 if( TubeTK_USE_LIBSVM )
-  Midas3FunctionAddTest( NAME itktubePDFSegmenterSVMIOTest
+  ExternalData_Add_Test( TubeTKData
+    NAME itktubePDFSegmenterSVMIOTest
     COMMAND ${BASE_IO_TESTS}
       --compareNumberOfPixelsTolerance 20
       --compare ${TEMP}/itktubePDFSegmenterSVMIOTest.mha
         ${TEMP}/itktubePDFSegmenterSVMIOTest2.mha
       itktubePDFSegmenterSVMIOTest
-        MIDAS{ES0015_Large.mha.md5}
-        MIDAS{ES0015_Large.mha.md5}
-        MIDAS{GDS0015_Large-TrainingMask.mha.md5}
+        DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
+        DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
+        DATA{${TubeTK_DATA_ROOT}/GDS0015_Large-TrainingMask.mha}
         ${TEMP}/itktubePDFSegmenterSVMIOTest.mha
         ${TEMP}/itktubePDFSegmenterSVMIOTest.msvm
         ${TEMP}/itktubePDFSegmenterSVMIOTest2.mha
@@ -156,65 +154,72 @@ if( TubeTK_USE_LIBSVM )
 endif( TubeTK_USE_LIBSVM )
 
 if( TubeTK_USE_RandomForest )
-  Midas3FunctionAddTest( NAME itktubePDFSegmenterRandomForestIOTest
+  ExternalData_Add_Test( TubeTKData
+    NAME itktubePDFSegmenterRandomForestIOTest
     COMMAND ${BASE_IO_TESTS}
       --compareNumberOfPixelsTolerance 20
       --compare ${TEMP}/itktubePDFSegmenterRandomForestIOTest.mha
         ${TEMP}/itktubePDFSegmenterRandomForestIOTest2.mha
       itktubePDFSegmenterRandomForestIOTest
-        MIDAS{ES0015_Large.mha.md5}
-        MIDAS{ES0015_Large.mha.md5}
-        MIDAS{GDS0015_Large-TrainingMask.mha.md5}
+        DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
+        DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
+        DATA{${TubeTK_DATA_ROOT}/GDS0015_Large-TrainingMask.mha}
         ${TEMP}/itktubePDFSegmenterRandomForestIOTest.mha
         ${TEMP}/itktubePDFSegmenterRandomForestIOTest.mrf
         ${TEMP}/itktubePDFSegmenterRandomForestIOTest2.mha
         ${TEMP}/itktubePDFSegmenterRandomForestIOTest2.mrf )
 endif( TubeTK_USE_RandomForest )
 
-Midas3FunctionAddTest( NAME itktubeRidgeSeedFilterIOTest
+ExternalData_Add_Test( TubeTKData
+  NAME itktubeRidgeSeedFilterIOTest
   COMMAND ${BASE_IO_TESTS}
     --compare ${TEMP}/itktubeRidgeSeedFilterIOTest_Output.mha
       ${TEMP}/itktubeRidgeSeedFilterIOTest_Output2.mha
     --compareNumberOfPixelsTolerance 50
     itktubeRidgeSeedFilterIOTest
-      MIDAS{im0001.crop.contrast.mha.md5}
-      MIDAS{im0001.vk.maskRidge.crop.mha.md5}
+      DATA{${TubeTK_DATA_ROOT}/im0001.crop.contrast.mha}
+      DATA{${TubeTK_DATA_ROOT}/im0001.vk.maskRidge.crop.mha}
       ${TEMP}/itktubeRidgeSeedFilterIOTest_Output.mha
       ${TEMP}/itktubeRidgeSeedFilterIOTest.mrs
       ${TEMP}/itktubeRidgeSeedFilterIOTest_Output2.mha )
 
-Midas3FunctionAddTest( NAME itktubeTubeExtractorIOTest
+ExternalData_Add_Test( TubeTKData
+  NAME itktubeTubeExtractorIOTest
   COMMAND ${BASE_IO_TESTS}
     itktubeTubeExtractorIOTest
-      MIDAS{TubeExtractorIOTest.mtp.md5}
+      DATA{${TubeTK_DATA_ROOT}/TubeExtractorIOTest.mtp}
       ${TEMP}/itktubeTubeExtractorIOTest.mtp
       ${TEMP}/itktubeTubeExtractorIOTest2.mtp )
 
-Midas3FunctionAddTest( NAME itktubeTubeExtractorIOTest-Compare
+ExternalData_Add_Test( TubeTKData
+  NAME itktubeTubeExtractorIOTest-Compare
   COMMAND ${CompareTextFiles_EXE}
-    -b MIDAS{TubeExtractorIOTest.mtp.md5}
+    -b DATA{${TubeTK_DATA_ROOT}/TubeExtractorIOTest.mtp}
     -t ${TEMP}/itktubeTubeExtractorIOTest.mtp )
-set_property( TEST itktubeTubeExtractorIOTest-Compare APPEND PROPERTY DEPENDS
+set_tests_properties( itktubeTubeExtractorIOTest-Compare PROPERTIES DEPENDS
   itktubeTubeExtractorIOTest )
 
-Midas3FunctionAddTest( NAME itktubeTubeExtractorIOTest-Compare2
+ExternalData_Add_Test( TubeTKData
+  NAME itktubeTubeExtractorIOTest-Compare2
   COMMAND ${CompareTextFiles_EXE}
-    -b MIDAS{TubeExtractorIOTest.mtp.md5}
+    -b DATA{${TubeTK_DATA_ROOT}/TubeExtractorIOTest.mtp}
     -t ${TEMP}/itktubeTubeExtractorIOTest2.mtp )
-set_property( TEST itktubeTubeExtractorIOTest-Compare2 APPEND PROPERTY DEPENDS
+set_tests_properties( itktubeTubeExtractorIOTest-Compare2 PROPERTIES DEPENDS
   itktubeTubeExtractorIOTest )
 
-Midas3FunctionAddTest( NAME itktubeTubeXIOTest
+ExternalData_Add_Test( TubeTKData
+  NAME itktubeTubeXIOTest
   COMMAND ${BASE_IO_TESTS}
     itktubeTubeXIOTest
-      MIDAS{TubeXIOTest.tre.md5}
+      DATA{${TubeTK_DATA_ROOT}/TubeXIOTest.tre}
       ${TEMP}/itktubeTubeXIOTest.tre
       512 512 393
       )
 
-Midas3FunctionAddTest( NAME itktubeTubeXIOTest-Compare
+ExternalData_Add_Test( TubeTKData
+  NAME itktubeTubeXIOTest-Compare
   COMMAND ${CompareTextFiles_EXE}
-    -b MIDAS{TubeXIOTest.tre.md5}
+    -b DATA{${TubeTK_DATA_ROOT}/TubeXIOTest.tre}
     -t ${TEMP}/itktubeTubeXIOTest.tre )
-set_property( TEST itktubeTubeXIOTest-Compare APPEND PROPERTY DEPENDS
+set_tests_properties( itktubeTubeXIOTest-Compare PROPERTIES DEPENDS
   itktubeTubeXIOTest )

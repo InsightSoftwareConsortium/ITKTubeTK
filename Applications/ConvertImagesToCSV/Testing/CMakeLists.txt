@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -39,16 +35,18 @@ set( CompareTextFiles_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
 
 # Test1
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
-    MIDAS{GDS0015_Large-TrainingMask.mha.md5}
-    MIDAS{GDS0015_Large.mha.md5},MIDAS{ES0015_Large.mha.md5}
+    DATA{${TubeTK_DATA_ROOT}/GDS0015_Large-TrainingMask.mha}
+    DATA{${TubeTK_DATA_ROOT}/GDS0015_Large.mha},DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
     ${TEMP}/${MODULE_NAME}Test1.csv )
 
 # Test1-Compare
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1-Compare
   COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.csv
-    -b MIDAS{${MODULE_NAME}Test1.csv.md5} )
-set_property( TEST ${MODULE_NAME}-Test1-Compare
-  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+    -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.csv} )
+set_tests_properties( ${MODULE_NAME}-Test1-Compare PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test1 )

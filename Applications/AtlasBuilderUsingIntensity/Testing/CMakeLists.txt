@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -38,32 +34,39 @@ set( CompareImages_EXE
 configure_file( ${TubeTK_SOURCE_DIR}/Applications/${MODULE_NAME}/Testing/ListTemplate.txt.in
                 ${TEMP}/${MODULE_NAME}-List.txt IMMEDIATE @ONLY )
 
+# Fetch data
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1-FetchData
+  COMMAND ${CMAKE_COMMAND} -E md5sum
+    DATA{${TubeTK_DATA_ROOT}/DDMap58.mha}
+    DATA{${TubeTK_DATA_ROOT}/DDMap86.mha}
+    DATA{${TubeTK_DATA_ROOT}/DDMap57.mha}
+    DATA{${TubeTK_DATA_ROOT}/DDMap25.mha} )
+
 # Test1
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
-                COMMAND ${PROJ_EXE}
-                  MIDAS_FETCH_ONLY{DDMap58.mha.md5}
-                  MIDAS_FETCH_ONLY{DDMap86.mha.md5}
-                  MIDAS_FETCH_ONLY{DDMap57.mha.md5}
-                  MIDAS_FETCH_ONLY{DDMap25.mha.md5}
-                  ${TEMP}/${MODULE_NAME}-List.txt
-                  ${TEMP}/${MODULE_NAME}-Test1-Mean.mha
-                  ${TEMP}/${MODULE_NAME}-Test1-Variance.mha
-                  --outputSize 128,128,128
-                  --outputSpacing 2,2,2 )
+add_test(	NAME ${MODULE_NAME}-Test1
+  COMMAND ${PROJ_EXE}
+    ${TEMP}/${MODULE_NAME}-List.txt
+    ${TEMP}/${MODULE_NAME}-Test1-Mean.mha
+            ${TEMP}/${MODULE_NAME}-Test1-Variance.mha
+            --outputSize 128,128,128
+            --outputSpacing 2,2,2 )
+set_tests_properties(${MODULE_NAME}-Test1 PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test1-FetchData)
 
 # Test1-Compare
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare00
-                COMMAND ${CompareImages_EXE}
-                  -t ${TEMP}/${MODULE_NAME}-Test1-Mean.mha
-                  -b MIDAS{${MODULE_NAME}-Test1-Mean.mha.md5} )
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1-Compare00
+  COMMAND ${CompareImages_EXE}
+    -t ${TEMP}/${MODULE_NAME}-Test1-Mean.mha
+    -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Test1-Mean.mha} )
+set_tests_properties(${MODULE_NAME}-Test1-Compare00 PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test1)
 
-set_property( TEST ${MODULE_NAME}-Test1-Compare00
-              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
-
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare01
-                COMMAND ${CompareImages_EXE}
-                  -t ${TEMP}/${MODULE_NAME}-Test1-Variance.mha
-                  -b MIDAS{${MODULE_NAME}-Test1-Variance.mha.md5} )
-
-set_property( TEST ${MODULE_NAME}-Test1-Compare01
-              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1-Compare01
+  COMMAND ${CompareImages_EXE}
+    -t ${TEMP}/${MODULE_NAME}-Test1-Variance.mha
+    -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Test1-Variance.mha} )
+set_tests_properties(${MODULE_NAME}-Test1-Compare01 PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test1)

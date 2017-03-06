@@ -33,6 +33,7 @@ include( ExternalProject )
 include( TubeTKExternalProjectDependency )
 include( CMakeDependentOption )
 include( TubeTKCheckPythonLibrary )
+include( TubeTKExternalData )
 
 # Set TubeTK version and output directories.
 #
@@ -137,15 +138,6 @@ configure_file( ${TubeTK_SOURCE_DIR}/CMake/CTestCustom.cmake.in
   ${TubeTK_BINARY_DIR}/CTestCustom.cmake )
 
 set( TubeTK_BUILD_TESTING ${BUILD_TESTING} )
-
-#
-# Configure for the download of CTest unit testing data from Midas
-#
-set( MIDAS_USER "" CACHE STRING "Midas Platform user email address." )
-mark_as_advanced( MIDAS_USER )
-set( MIDAS_DEFAULT_API_KEY "" CACHE STRING "Midas Platform default API key." )
-mark_as_advanced( MIDAS_DEFAULT_API_KEY )
-set( MIDAS_DATA_DIR ${TubeTK_BINARY_DIR}/MIDAS_Data )
 
 #
 # Doxygen documentation setup.
@@ -740,3 +732,9 @@ if( NOT TubeTK_BUILD_USING_SLICER )
  else( NOT TubeTK_BUILD_USING_SLICER )
   include( ${Slicer_EXTENSION_CPACK} )
 endif( NOT TubeTK_BUILD_USING_SLICER )
+
+# Create target to download data from the TubeTKData group. This must come after
+# all tests have been added that reference the group, so we put it last.
+#LIST(PREPEND CMAKE_MODULE_PATH "${CMAKE_ROOT}/Modules")
+include(${CMAKE_ROOT}/Modules/ExternalData.cmake)
+ExternalData_Add_Target(TubeTKData)

@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -36,25 +32,28 @@ set( CompareImages_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
 # Test1
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test1
             COMMAND ${PROJ_EXE}
-               MIDAS{ES0015_1_Subs.mha.md5}
-               MIDAS{GDS0015_1_Subs.mha.md5}
+               DATA{${TubeTK_DATA_ROOT}/ES0015_1_Subs.mha}
+               DATA{${TubeTK_DATA_ROOT}/GDS0015_1_Subs.mha}
                ${TEMP}/${MODULE_NAME}_ESTest1.mha
                ${TEMP}/${MODULE_NAME}_GDSTest1.mha
                -g 3 -f 0 -b 255 -B 10,10 -S 7 )
 
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare1
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test1-Compare1
             COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}_ESTest1.mha
-               -b MIDAS{${MODULE_NAME}_ESTest1.mha.md5} )
-set_property( TEST ${MODULE_NAME}-Test1-Compare1
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+               -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}_ESTest1.mha} )
+set_tests_properties( ${MODULE_NAME}-Test1-Compare1 PROPERTIES DEPENDS
+            ${MODULE_NAME}-Test1 )
 
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare2
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test1-Compare2
             COMMAND ${CompareImages_EXE}
                -i 0.005
                -t ${TEMP}/${MODULE_NAME}_GDSTest1.mha
-               -b MIDAS{${MODULE_NAME}_GDSTest1.mha.md5} )
-set_property( TEST ${MODULE_NAME}-Test1-Compare2
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+               -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}_GDSTest1.mha} )
+set_tests_properties( ${MODULE_NAME}-Test1-Compare2 PROPERTIES DEPENDS
+            ${MODULE_NAME}-Test1 )

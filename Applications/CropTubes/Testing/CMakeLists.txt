@@ -22,10 +22,6 @@
 ############################################################################
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -35,38 +31,42 @@ set( CompareTextFiles_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
 
 # Test1 - NotCropped
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-NotCropped
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1-NotCropped
   COMMAND ${PROJ_EXE}
-    MIDAS{CropTubes-Test1.tre.md5}
+    DATA{${TubeTK_DATA_ROOT}/CropTubes-Test1.tre}
     ${TEMP}/${MODULE_NAME}Test1.tre
     --boxCorner 350,280,145
-    --boxSize 100,100,100)
+    --boxSize 100,100,100 )
 
 # Test1 - Compare - NotCropped
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-NotCropped-Compare
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1-NotCropped-Compare
   COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.tre
-    -b MIDAS{CropTubes-Test1_NotCropped.tre.md5}
+    -b DATA{${TubeTK_DATA_ROOT}/CropTubes-Test1_NotCropped.tre}
     -d 0.01 )
 
-set_property( TEST ${MODULE_NAME}-Test1-NotCropped-Compare
-  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1-NotCropped )
+set_tests_properties( ${MODULE_NAME}-Test1-NotCropped-Compare PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test1-NotCropped )
 
 # Test2 - Cropped
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Cropped
-COMMAND ${PROJ_EXE}
-  MIDAS{CropTubes-Test1.tre.md5}
-  ${TEMP}/${MODULE_NAME}Test2.tre
-  --boxCorner 350,280,145
-  --boxSize 100,100,100
-  --CropTubes)
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test2-Cropped
+  COMMAND ${PROJ_EXE}
+    DATA{${TubeTK_DATA_ROOT}/CropTubes-Test1.tre}
+    ${TEMP}/${MODULE_NAME}Test2.tre
+    --boxCorner 350,280,145
+    --boxSize 100,100,100
+    --CropTubes )
 
 # Test2 - Compare - Cropped
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Cropped-Compare
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test2-Cropped-Compare
   COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2.tre
-    -b MIDAS{CropTubes-Test1_Cropped.tre.md5}
+    -b DATA{${TubeTK_DATA_ROOT}/CropTubes-Test1_Cropped.tre}
     -d 0.01 )
 
-set_property( TEST ${MODULE_NAME}-Test2-Cropped-Compare
-  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2-Cropped )
+set_tests_properties( ${MODULE_NAME}-Test2-Cropped-Compare PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test2-Cropped )

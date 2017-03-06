@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -37,28 +33,31 @@ set( CompareTextFiles_EXE
 
 
 # Test1
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Valid
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1-Valid
   COMMAND ${PROJ_EXE}
-    MIDAS{LiverVess_Shrink_Seeds.mha.md5}
-    MIDAS{LiverVess_Shrink_SeedScales.mha.md5}
-    MIDAS{LiverVess_Shrink_Points.mha.md5}
+    DATA{${TubeTK_DATA_ROOT}/LiverVess_Shrink_Seeds.mha}
+    DATA{${TubeTK_DATA_ROOT}/LiverVess_Shrink_SeedScales.mha}
+    DATA{${TubeTK_DATA_ROOT}/LiverVess_Shrink_Points.mha}
     ${TEMP}/${MODULE_NAME}Test1.sdlst )
 
 # Test1-Compare
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Valid-Compare
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1-Valid-Compare
   COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.sdlst
-    -b MIDAS{${MODULE_NAME}Test1.sdlst.md5} )
-set_property( TEST ${MODULE_NAME}-Test1-Valid-Compare
-  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1-Valid )
+    -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.sdlst} )
+set_tests_properties( ${MODULE_NAME}-Test1-Valid-Compare PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test1-Valid )
 
 # Test2
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-DifferentSizeInputs
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test2-DifferentSizeInputs
   COMMAND ${PROJ_EXE}
-    MIDAS{ES0015_Large.mha.md5}
-    MIDAS{LiverVess_Shrink_SeedScales.mha.md5}
-    MIDAS{LiverVess_Shrink_Points.mha.md5}
+    DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
+    DATA{${TubeTK_DATA_ROOT}/LiverVess_Shrink_SeedScales.mha}
+    DATA{${TubeTK_DATA_ROOT}/LiverVess_Shrink_Points.mha}
     ${TEMP}/${MODULE_NAME}Test2.sdlst )
-set_property( TEST ${MODULE_NAME}-Test2-DifferentSizeInputs
-  PROPERTY WILL_FAIL true
+set_tests_properties( ${MODULE_NAME}-Test2-DifferentSizeInputs
+  PROPERTIES WILL_FAIL true
   )

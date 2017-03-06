@@ -23,34 +23,33 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${MODULE_NAME}> )
 
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
     --parameterProgression ${TEMP}/${MODULE_NAME}Test1ParameterProgression.h5
-    MIDAS{Branch.n020.mha.md5}
-    MIDAS{tube.tre.md5}
+    DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
+    DATA{${TubeTK_DATA_ROOT}/tube.tre}
     ${TEMP}/${MODULE_NAME}Test1.h5 )
 
 set( METRIC_SAMPLER ComputeImageToTubeRigidMetricImage )
 set( METRIC_SAMPLER_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${METRIC_SAMPLER}> )
 
-Midas3FunctionAddTest( NAME ${METRIC_SAMPLER}-Test1
+ExternalData_Add_Test( TubeTKData
+  NAME ${METRIC_SAMPLER}-Test1
   COMMAND ${METRIC_SAMPLER_EXE}
-    MIDAS{Branch.n020.mha.md5}
-    MIDAS{tube.tre.md5}
+    DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
+    DATA{${TubeTK_DATA_ROOT}/tube.tre}
     ${TEMP}/${METRIC_SAMPLER}Test1.nrrd )
 
 set( METRIC_EXTRACTOR ExtractMetricImageSlice )
 set( METRIC_EXTRACTOR_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:${METRIC_EXTRACTOR}> )
 
-Midas3FunctionAddTest( NAME ${METRIC_EXTRACTOR}-Test1
+ExternalData_Add_Test( TubeTKData
+  NAME ${METRIC_EXTRACTOR}-Test1
   COMMAND ${METRIC_EXTRACTOR_EXE}
     ${TEMP}/${METRIC_SAMPLER}Test1.nrrd
     ${TEMP}/${METRIC_EXTRACTOR}Test1.mha )

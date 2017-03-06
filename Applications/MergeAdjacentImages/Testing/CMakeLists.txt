@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -39,75 +35,84 @@ set( CompareTextFiles_EXE
  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
 
 # Test1
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
-             COMMAND ${PROJ_EXE}
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test1
+            COMMAND ${PROJ_EXE}
                -a
                --saveTransform ${TEMP}/${MODULE_NAME}Test1.tfm
-               MIDAS{ES0015_Large_Left.mha.md5}
-               MIDAS{ES0015_Large_Right.mha.md5}
+               DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Left.mha}
+               DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Right.mha}
                ${TEMP}/${MODULE_NAME}Test1.mha )
 
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
-             COMMAND ${CompareImages_EXE}
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test1-Compare
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test1.mha
-               -b MIDAS{ES0015_Large.mha.md5} )
-set_property( TEST ${MODULE_NAME}-Test1-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+               -b DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha} )
+set_tests_properties( ${MODULE_NAME}-Test1-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}-Test1 )
 
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Tfm-Compare
-             COMMAND ${CompareTextFiles_EXE}
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test1-Tfm-Compare
+            COMMAND ${CompareTextFiles_EXE}
                -t ${TEMP}/${MODULE_NAME}Test1.tfm
-               -b MIDAS{${MODULE_NAME}Test1.tfm.md5}
+               -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.tfm}
                -d 0.1 )
-set_property( TEST ${MODULE_NAME}-Test1-Tfm-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+set_tests_properties( ${MODULE_NAME}-Test1-Tfm-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}-Test1 )
 
 # Test2
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
-             COMMAND ${PROJ_EXE}
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test2
+            COMMAND ${PROJ_EXE}
                -i 0
                -b 50,50
-               MIDAS{ES0015_Large.mha.md5}
-               MIDAS{ES0015_Large_Wo_offset.mha.md5}
+               DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
+               DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Wo_offset.mha}
                ${TEMP}/${MODULE_NAME}Test2.mha )
 
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare
-             COMMAND ${CompareImages_EXE}
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test2-Compare
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test2.mha
-               -b MIDAS{${MODULE_NAME}Test2.mha.md5} )
-set_property( TEST ${MODULE_NAME}-Test2-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
+               -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2.mha} )
+set_tests_properties( ${MODULE_NAME}-Test2-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}-Test2 )
 
 # Test3
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3
-             COMMAND ${PROJ_EXE}
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test3
+            COMMAND ${PROJ_EXE}
                -i 0
                -k 10
                -b 50,50
-               MIDAS{ES0015_Large.mha.md5}
-               MIDAS{ES0015_Large_Wo_offset.mha.md5}
+               DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
+               DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Wo_offset.mha}
                ${TEMP}/${MODULE_NAME}Test3.mha )
 
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3-Compare
-             COMMAND ${CompareImages_EXE}
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test3-Compare
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test3.mha
-               -b MIDAS{${MODULE_NAME}Test3.mha.md5} )
-set_property( TEST ${MODULE_NAME}-Test3-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test3 )
+               -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test3.mha} )
+set_tests_properties( ${MODULE_NAME}-Test3-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}-Test3 )
 
 # Test4
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4
-             COMMAND ${PROJ_EXE}
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test4
+            COMMAND ${PROJ_EXE}
                -b 50,50
                -M
                -i 0
-               MIDAS{ES0015_Large.mha.md5}
-               MIDAS{ES0015_Large_Wo_offset.mha.md5}
+               DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
+               DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Wo_offset.mha}
                ${TEMP}/${MODULE_NAME}Test4.mha )
 
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare
-             COMMAND ${CompareImages_EXE}
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test4-Compare
+            COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test4.mha
-               -b MIDAS{${MODULE_NAME}Test4.mha.md5} )
-set_property( TEST ${MODULE_NAME}-Test4-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
+               -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test4.mha} )
+set_tests_properties( ${MODULE_NAME}-Test4-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}-Test4 )

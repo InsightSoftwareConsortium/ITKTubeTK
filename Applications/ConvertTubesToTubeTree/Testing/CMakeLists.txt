@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -36,33 +32,37 @@ set( CompareTextFiles_EXE
  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
 
 # Test1 - I-Junction
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
-COMMAND ${PROJ_EXE}
-  MIDAS{I_Junction_3D.tre.md5}
-  ${TEMP}/${MODULE_NAME}Test1.tre )
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1
+  COMMAND ${PROJ_EXE}
+    DATA{${TubeTK_DATA_ROOT}/I_Junction_3D.tre}
+    ${TEMP}/${MODULE_NAME}Test1.tre )
 
 # Test1 - Compare - I-Junction
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1-Compare
   COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.tre
-    -b MIDAS{I_Junction_3D_tree.tre.md5}
+    -b DATA{${TubeTK_DATA_ROOT}/I_Junction_3D_tree.tre}
     -d 0.01 )
 
-set_property( TEST ${MODULE_NAME}-Test1-Compare
-              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+set_tests_properties( ${MODULE_NAME}-Test1-Compare PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test1 )
 
 # Test2 - Y-Junction
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
-COMMAND ${PROJ_EXE}
-  MIDAS{Y_Junction_3D.tre.md5}
-  ${TEMP}/${MODULE_NAME}Test2.tre )
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test2
+  COMMAND ${PROJ_EXE}
+    DATA{${TubeTK_DATA_ROOT}/Y_Junction_3D.tre}
+    ${TEMP}/${MODULE_NAME}Test2.tre )
 
 # Test2 - Compare - Y-Junction
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test2-Compare
   COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2.tre
-    -b MIDAS{Y_Junction_3D_tree.tre.md5}
+    -b DATA{${TubeTK_DATA_ROOT}/Y_Junction_3D_tree.tre}
     -d 0.01 )
 
-set_property( TEST ${MODULE_NAME}-Test2-Compare
-              APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
+set_tests_properties( ${MODULE_NAME}-Test2-Compare PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test2 )

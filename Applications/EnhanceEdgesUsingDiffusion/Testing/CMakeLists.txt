@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -44,62 +40,69 @@ else( UNIX AND NOT APPLE AND NOT CYGWIN AND CMAKE_SIZEOF_VOID_P EQUAL 8 )
 endif( UNIX AND NOT APPLE AND NOT CYGWIN AND CMAKE_SIZEOF_VOID_P EQUAL 8 )
 
 # Test1
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test1
             COMMAND ${PROJ_EXE}
-               MIDAS{CroppedWholeLungCTScan.mhd.md5}
-               ${TEMP}/${MODULE_NAME}-Test1.mha
-               MIDAS_FETCH_ONLY{CroppedWholeLungCTScan.raw.md5} )
+               DATA{${TubeTK_DATA_ROOT}/CroppedWholeLungCTScan.mhd,CroppedWholeLungCTScan.raw}
+               ${TEMP}/${MODULE_NAME}-Test1.mha )
 
 # Test1-Compare
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test1-Compare
             COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Test1.mha
-               -b MIDAS{${MODULE_NAME}-Test1.mha.md5}
+               -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Test1.mha}
                -i ${CompareImagesTolerance} )
-set_property( TEST ${MODULE_NAME}-Test1-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+set_tests_properties( ${MODULE_NAME}-Test1-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}-Test1 )
 
 # Test2
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test2
             COMMAND ${PROJ_EXE}
-               MIDAS{SyntheticTubeImage.mha.md5}
+               DATA{${TubeTK_DATA_ROOT}/SyntheticTubeImage.mha}
                ${TEMP}/${MODULE_NAME}-Test2.mha )
 
 # Test2-Compare
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test2-Compare
             COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Test2.mha
-               -b MIDAS{${MODULE_NAME}-Test2.mha.md5}
+               -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Test2.mha}
                -i ${CompareImagesTolerance} )
-set_property( TEST ${MODULE_NAME}-Test2-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
+set_tests_properties( ${MODULE_NAME}-Test2-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}-Test2 )
 
 # Test3
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test3
             COMMAND ${PROJ_EXE}
-               MIDAS{SyntheticTubePlusSurfaceImage.mha.md5}
+               DATA{${TubeTK_DATA_ROOT}/SyntheticTubePlusSurfaceImage.mha}
                ${TEMP}/${MODULE_NAME}-Test3.mha )
 
 # Test3-Compare
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3-Compare
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test3-Compare
             COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Test3.mha
-               -b MIDAS{${MODULE_NAME}-Test3.mha.md5}
+               -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Test3.mha}
                -i ${CompareImagesTolerance} )
-set_property( TEST ${MODULE_NAME}-Test3-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test3 )
+set_tests_properties( ${MODULE_NAME}-Test3-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}-Test3 )
 
 # Test4
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test4
             COMMAND ${PROJ_EXE}
-               MIDAS{SyntheticTubePlusSurfaceImage_oriented.mha.md5}
+               DATA{${TubeTK_DATA_ROOT}/SyntheticTubePlusSurfaceImage_oriented.mha}
                ${TEMP}/${MODULE_NAME}-Test4.mha )
 
 # Test4-Compare
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test4-Compare
             COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Test4.mha
-               -b MIDAS{${MODULE_NAME}-Test4.mha.md5}
+               -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Test4.mha}
                -i ${CompareImagesTolerance} )
-set_property( TEST ${MODULE_NAME}-Test4-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
+set_tests_properties( ${MODULE_NAME}-Test4-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}-Test4 )

@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseCLI ${PYTHON_EXECUTABLE}
@@ -94,13 +90,15 @@ add_test( NAME tubeBaseCLIPrintTest
   COMMAND ${BASE_CLI_TESTS}
   tubeBaseCLIPrintTest )
 
-Midas3FunctionAddTest( NAME tubeCLIFilterWatcherTest
+ExternalData_Add_Test( TubeTKData
+  NAME tubeCLIFilterWatcherTest
   COMMAND ${BASE_CLI_TESTS}
-  tubeCLIFilterWatcherTest MIDAS{Branch.n010.mha.md5} )
+  tubeCLIFilterWatcherTest DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha} )
 
-Midas3FunctionAddTest( NAME tubeCLIHelperFunctionsTest
+ExternalData_Add_Test( TubeTKData
+  NAME tubeCLIHelperFunctionsTest
   COMMAND ${BASE_CLI_TESTS}
-  tubeCLIHelperFunctionsTest MIDAS{Branch.n010.mha.md5} )
+  tubeCLIHelperFunctionsTest DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha} )
 
 add_test( NAME tubeCLIProgressReporterTest
   COMMAND ${BASE_CLI_TESTS}

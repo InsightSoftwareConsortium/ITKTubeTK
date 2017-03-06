@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -36,38 +32,39 @@ set( CompareTextFiles_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
 
 # Test1
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
-    MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.md5}
-    MIDAS_FETCH_ONLY{${MODULE_NAME}-CVT50-Branch-truth.grp.mat.md5}
-    MIDAS_FETCH_ONLY{${MODULE_NAME}-CVT50-Branch-truth.grp.brc.md5}
-    MIDAS_FETCH_ONLY{${MODULE_NAME}-CVT50-Branch-truth.grp.rot.md5}
-    MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.md5}
+    DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.grp,${MODULE_NAME}-CVT50-Branch-truth.grp.mat,${MODULE_NAME}-CVT50-Branch-truth.grp.brc,${MODULE_NAME}-CVT50-Branch-truth.grp.rot}
+    DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.grp}
     ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp )
 
 # Test1-Compare-00
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-00
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1-Compare-00
   COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.matProb.txt
-    -b MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.matProb.txt.md5} )
+    -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.grp.matProb.txt} )
 
-set_property( TEST ${MODULE_NAME}-Test1-Compare-00
-  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+set_tests_properties( ${MODULE_NAME}-Test1-Compare-00 PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test1 )
 
 # Test1-Compare-01
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-01
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1-Compare-01
   COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.cntProb.txt
-    -b MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.cntProb.txt.md5} )
+    -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.grp.cntProb.txt} )
 
-set_property( TEST ${MODULE_NAME}-Test1-Compare-01
-  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+set_tests_properties( ${MODULE_NAME}-Test1-Compare-01 PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test1 )
 
 # Test1-Compare-02
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-02
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1-Compare-02
   COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.brcProb.txt
-    -b MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.brcProb.txt.md5} )
+    -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.grp.brcProb.txt} )
 
-set_property( TEST ${MODULE_NAME}-Test1-Compare-02
-  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+set_tests_properties( ${MODULE_NAME}-Test1-Compare-02 PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test1 )

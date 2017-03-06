@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -36,44 +32,40 @@ set( CompareTextFiles_EXE
  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
 
 # Test1
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test1
             COMMAND ${PROJ_EXE}
-              MIDAS_FETCH_ONLY{mutag_1.mat.md5}
-              MIDAS_FETCH_ONLY{mutag_2.mat.md5}
-              MIDAS_FETCH_ONLY{mutag_1.mat.vertexLabel.md5}
-              MIDAS_FETCH_ONLY{mutag_2.mat.vertexLabel.md5}
-              MIDAS{mutag_test_graphs.json.md5}
-              MIDAS{mutag_test_graphs.json.md5}
+              DATA{${TubeTK_DATA_ROOT}/mutag_test_graphs.json,mutag_1.mat, mutag_2.mat}
+              DATA{${TubeTK_DATA_ROOT}/mutag_test_graphs.json,mutag_1.mat.vertexLabel,mutag_2.mat.vertexLabel}
               ${TEMP}/${MODULE_NAME}Test1
-              --basePath ${MIDAS_DATA_DIR}
+              --basePath ${TubeTK_DATA_ROOT}
               --graphKernelType 1
               --subtreeHeight 2 )
 
 # Test2
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test2
             COMMAND ${PROJ_EXE}
-              MIDAS_FETCH_ONLY{mutag_1.mat.md5}
-              MIDAS_FETCH_ONLY{mutag_2.mat.md5}
-              MIDAS_FETCH_ONLY{mutag_1.mat.vertexLabel.md5}
-              MIDAS_FETCH_ONLY{mutag_2.mat.vertexLabel.md5}
-              MIDAS{mutag_test_graphs.json.md5}
-              MIDAS{mutag_test_graphs.json.md5}
+              DATA{${TubeTK_DATA_ROOT}/mutag_test_graphs.json,mutag_1.mat,mutag_2.mat}
+              DATA{${TubeTK_DATA_ROOT}/mutag_test_graphs.json,mutag_1.mat.vertexLabel,mutag_2.mat.vertexLabel}
               ${TEMP}/${MODULE_NAME}Test2
-              --basePath ${MIDAS_DATA_DIR}
+              --basePath ${TubeTK_DATA_ROOT}
               --graphKernelType 0 )
 
 # Test1-Compare
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test1-Compare
             COMMAND ${CompareTextFiles_EXE}
               -t ${TEMP}/${MODULE_NAME}Test1.txt
-              -b MIDAS{${MODULE_NAME}Test1.txt.md5} )
-set_property( TEST ${MODULE_NAME}-Test1-Compare
-           APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+              -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.txt} )
+set_tests_properties( ${MODULE_NAME}-Test1-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}-Test1 )
 
 # Test2-Compare
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test2-Compare
             COMMAND ${CompareTextFiles_EXE}
               -t ${TEMP}/${MODULE_NAME}Test2.txt
-              -b MIDAS{${MODULE_NAME}Test2.txt.md5} )
-set_property( TEST ${MODULE_NAME}-Test2-Compare
-           APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
+              -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2.txt} )
+set_tests_properties( ${MODULE_NAME}-Test2-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}-Test2 )

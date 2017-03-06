@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 find_package( SlicerExecutionModel REQUIRED )
 include( ${SlicerExecutionModel_USE_FILE} )
 
@@ -122,17 +118,18 @@ add_test( NAME tubeBaseSegmentationPrintTest
   COMMAND ${BASE_SEGMENTATION_TESTS}
   tubeBaseSegmentationPrintTest )
 
-Midas3FunctionAddTest( NAME itktubePDFSegmenterParzenTest
+ExternalData_Add_Test( TubeTKData
+  NAME itktubePDFSegmenterParzenTest
   COMMAND ${BASE_SEGMENTATION_TESTS}
     --compareNumberOfPixelsTolerance 50
-    --compare MIDAS{itktubePDFSegmenterParzenTest_mask.mha.md5}
+    --compare DATA{${TubeTK_DATA_ROOT}/itktubePDFSegmenterParzenTest_mask.mha}
       ${TEMP}/itktubePDFSegmenterParzenTest_mask.mha
     itktubePDFSegmenterParzenTest
-      MIDAS{ES0015_Large.mha.md5}
-      MIDAS{ES0015_Large.mha.md5}
+      DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
+      DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
       true
       5.0
-      MIDAS{GDS0015_Large-TrainingMask.mha.md5}
+      DATA{${TubeTK_DATA_ROOT}/GDS0015_Large-TrainingMask.mha}
       ${TEMP}/itktubePDFSegmenterParzenTest_prob0.mha
       ${TEMP}/itktubePDFSegmenterParzenTest_pdf0.mha
       ${TEMP}/itktubePDFSegmenterParzenTest_prob1.mha
@@ -140,17 +137,18 @@ Midas3FunctionAddTest( NAME itktubePDFSegmenterParzenTest
       ${TEMP}/itktubePDFSegmenterParzenTest_mask.mha
       ${TEMP}/itktubePDFSegmenterParzenTest_labeledFeatureSpace.mha )
 
-Midas3FunctionAddTest( NAME itktubePDFSegmenterParzenTest2
+ExternalData_Add_Test( TubeTKData
+  NAME itktubePDFSegmenterParzenTest2
   COMMAND ${BASE_SEGMENTATION_TESTS}
     --compareNumberOfPixelsTolerance 50
-    --compare MIDAS{itktubePDFSegmenterParzenTest2_mask.mha.md5}
+    --compare DATA{${TubeTK_DATA_ROOT}/itktubePDFSegmenterParzenTest2_mask.mha}
       ${TEMP}/itktubePDFSegmenterParzenTest2_mask.mha
     itktubePDFSegmenterParzenTest
-      MIDAS{im0001.crop.mha.md5}
-      MIDAS{im0001.crop.contrast.mha.md5}
+      DATA{${TubeTK_DATA_ROOT}/im0001.crop.mha}
+      DATA{${TubeTK_DATA_ROOT}/im0001.crop.contrast.mha}
       false
       0.4
-      MIDAS{im0001.vk.mask.crop.mha.md5}
+      DATA{${TubeTK_DATA_ROOT}/im0001.vk.mask.crop.mha}
       ${TEMP}/itktubePDFSegmenterParzenTest2_prob0.mha
       ${TEMP}/itktubePDFSegmenterParzenTest2_pdf0.mha
       ${TEMP}/itktubePDFSegmenterParzenTest2_prob1.mha
@@ -160,32 +158,34 @@ Midas3FunctionAddTest( NAME itktubePDFSegmenterParzenTest2
 
 if( TubeTK_USE_LIBSVM )
 
-  Midas3FunctionAddTest( NAME itktubePDFSegmenterSVMTest
+  ExternalData_Add_Test( TubeTKData
+    NAME itktubePDFSegmenterSVMTest
     COMMAND ${BASE_SEGMENTATION_TESTS}
       --compareNumberOfPixelsTolerance 300
-      --compare MIDAS{itktubePDFSegmenterSVMTest_mask.mha.md5}
+      --compare DATA{${TubeTK_DATA_ROOT}/itktubePDFSegmenterSVMTest_mask.mha}
         ${TEMP}/itktubePDFSegmenterSVMTest_mask.mha
       itktubePDFSegmenterSVMTest
-        MIDAS{ES0015_Large.mha.md5}
-        MIDAS{ES0015_Large.mha.md5}
+        DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
+        DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
         true
         5.0
-        MIDAS{GDS0015_Large-TrainingMask.mha.md5}
+        DATA{${TubeTK_DATA_ROOT}/GDS0015_Large-TrainingMask.mha}
         ${TEMP}/itktubePDFSegmenterSVMTest_prob0.mha
         ${TEMP}/itktubePDFSegmenterSVMTest_prob1.mha
         ${TEMP}/itktubePDFSegmenterSVMTest_mask.mha )
 
-  Midas3FunctionAddTest( NAME itktubePDFSegmenterSVMTest2
+  ExternalData_Add_Test( TubeTKData
+    NAME itktubePDFSegmenterSVMTest2
     COMMAND ${BASE_SEGMENTATION_TESTS}
       --compareNumberOfPixelsTolerance 300
-      --compare MIDAS{itktubePDFSegmenterSVMTest2_mask.mha.md5}
+      --compare DATA{${TubeTK_DATA_ROOT}/itktubePDFSegmenterSVMTest2_mask.mha}
         ${TEMP}/itktubePDFSegmenterSVMTest2_mask.mha
       itktubePDFSegmenterSVMTest
-        MIDAS{im0001.crop.mha.md5}
-        MIDAS{im0001.crop.contrast.mha.md5}
+        DATA{${TubeTK_DATA_ROOT}/im0001.crop.mha}
+        DATA{${TubeTK_DATA_ROOT}/im0001.crop.contrast.mha}
         false
         0.4
-        MIDAS{im0001.vk.mask.crop.mha.md5}
+        DATA{${TubeTK_DATA_ROOT}/im0001.vk.mask.crop.mha}
         ${TEMP}/itktubePDFSegmenterSVMTest2_prob0.mha
         ${TEMP}/itktubePDFSegmenterSVMTest2_prob1.mha
         ${TEMP}/itktubePDFSegmenterSVMTest2_mask.mha )
@@ -194,78 +194,86 @@ endif( TubeTK_USE_LIBSVM )
 
 if( TubeTK_USE_RandomForest )
 
-  Midas3FunctionAddTest( NAME itktubePDFSegmenterRandomForestTest
+  ExternalData_Add_Test( TubeTKData
+    NAME itktubePDFSegmenterRandomForestTest
     COMMAND ${BASE_SEGMENTATION_TESTS}
       --compareNumberOfPixelsTolerance 300
-      --compare MIDAS{itktubePDFSegmenterRandomForestTest_mask.mha.md5}
+      --compare DATA{${TubeTK_DATA_ROOT}/itktubePDFSegmenterRandomForestTest_mask.mha}
         ${TEMP}/itktubePDFSegmenterRandomForestTest_mask.mha
       itktubePDFSegmenterRandomForestTest
-        MIDAS{ES0015_Large.mha.md5}
-        MIDAS{ES0015_Large.mha.md5}
+        DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
+        DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
         true
         5.0
-        MIDAS{GDS0015_Large-TrainingMask.mha.md5}
+        DATA{${TubeTK_DATA_ROOT}/GDS0015_Large-TrainingMask.mha}
         ${TEMP}/itktubePDFSegmenterRandomForestTest_prob0.mha
         ${TEMP}/itktubePDFSegmenterRandomForestTest_prob1.mha
         ${TEMP}/itktubePDFSegmenterRandomForestTest_mask.mha )
 
-  Midas3FunctionAddTest( NAME itktubePDFSegmenterRandomForestTest2
+  ExternalData_Add_Test( TubeTKData
+    NAME itktubePDFSegmenterRandomForestTest2
     COMMAND ${BASE_SEGMENTATION_TESTS}
       --compareNumberOfPixelsTolerance 300
-      --compare MIDAS{itktubePDFSegmenterRandomForestTest2_mask.mha.md5}
+      --compare DATA{${TubeTK_DATA_ROOT}/itktubePDFSegmenterRandomForestTest2_mask.mha}
         ${TEMP}/itktubePDFSegmenterRandomForestTest2_mask.mha
       itktubePDFSegmenterRandomForestTest
-        MIDAS{im0001.crop.mha.md5}
-        MIDAS{im0001.crop.contrast.mha.md5}
+        DATA{${TubeTK_DATA_ROOT}/im0001.crop.mha}
+        DATA{${TubeTK_DATA_ROOT}/im0001.crop.contrast.mha}
         false
         0.4
-        MIDAS{im0001.vk.mask.crop.mha.md5}
+        DATA{${TubeTK_DATA_ROOT}/im0001.vk.mask.crop.mha}
         ${TEMP}/itktubePDFSegmenterRandomForestTest2_prob0.mha
         ${TEMP}/itktubePDFSegmenterRandomForestTest2_prob1.mha
         ${TEMP}/itktubePDFSegmenterRandomForestTest2_mask.mha )
 
 endif( TubeTK_USE_RandomForest )
 
-Midas3FunctionAddTest( NAME itktubeRidgeExtractorTest
+ExternalData_Add_Test( TubeTKData
+  NAME itktubeRidgeExtractorTest
   COMMAND ${BASE_SEGMENTATION_TESTS}
-    --compare MIDAS{itktubeRidgeExtractorTest.mha.md5}
+    --compare DATA{${TubeTK_DATA_ROOT}/itktubeRidgeExtractorTest.mha}
       ${TEMP}/itktubeRidgeExtractorTest.mha
     itktubeRidgeExtractorTest
-      MIDAS{Branch.n010.sub.mha.md5}
+      DATA{${TubeTK_DATA_ROOT}/Branch.n010.sub.mha}
       ${TEMP}/itktubeRidgeExtractorTest.mha )
 
-Midas3FunctionAddTest( NAME itktubeRidgeExtractorTest2
+ExternalData_Add_Test( TubeTKData
+  NAME itktubeRidgeExtractorTest2
   COMMAND ${BASE_SEGMENTATION_TESTS}
     itktubeRidgeExtractorTest2
-      MIDAS{Branch.n010.sub.mha.md5}
-      MIDAS{Branch-truth_Subs.tre.md5} )
+      DATA{${TubeTK_DATA_ROOT}/Branch.n010.sub.mha}
+      DATA{${TubeTK_DATA_ROOT}/Branch-truth_Subs.tre} )
 
-Midas3FunctionAddTest( NAME itktubeRadiusExtractor2Test
+ExternalData_Add_Test( TubeTKData
+  NAME itktubeRadiusExtractor2Test
   COMMAND ${BASE_SEGMENTATION_TESTS}
     itktubeRadiusExtractor2Test
-      MIDAS{Branch.n010.mha.md5}
-      MIDAS{Branch-truth.tre.md5} )
+      DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha}
+      DATA{${TubeTK_DATA_ROOT}/Branch-truth.tre} )
 
-Midas3FunctionAddTest( NAME itktubeRadiusExtractor2Test2
+ExternalData_Add_Test( TubeTKData
+  NAME itktubeRadiusExtractor2Test2
   COMMAND ${BASE_SEGMENTATION_TESTS}
     itktubeRadiusExtractor2Test2
-      MIDAS{Branch.n010.mha.md5}
-      MIDAS{Branch-truth.tre.md5} )
+      DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha}
+      DATA{${TubeTK_DATA_ROOT}/Branch-truth.tre} )
 
-Midas3FunctionAddTest( NAME itktubeTubeExtractorTest
+ExternalData_Add_Test( TubeTKData
+  NAME itktubeTubeExtractorTest
   COMMAND ${BASE_SEGMENTATION_TESTS}
     itktubeTubeExtractorTest
-      MIDAS{Branch.n010.sub.mha.md5}
-      MIDAS{Branch-truth.tre.md5} )
+      DATA{${TubeTK_DATA_ROOT}/Branch.n010.sub.mha}
+      DATA{${TubeTK_DATA_ROOT}/Branch-truth.tre} )
 
-Midas3FunctionAddTest( NAME itktubeRidgeSeedFilterParzenTest
+ExternalData_Add_Test( TubeTKData
+  NAME itktubeRidgeSeedFilterParzenTest
   COMMAND ${BASE_SEGMENTATION_TESTS}
     --compareNumberOfPixelsTolerance 100
-    --compare MIDAS{itktubeRidgeSeedFilterParzenTest_Output.mha.md5}
+    --compare DATA{${TubeTK_DATA_ROOT}/itktubeRidgeSeedFilterParzenTest_Output.mha}
       ${TEMP}/itktubeRidgeSeedFilterParzenTest_Output.mha
     itktubeRidgeSeedFilterTest
-      MIDAS{im0001.crop.contrast.mha.md5}
-      MIDAS{im0001.vk.maskRidge.crop.mha.md5}
+      DATA{${TubeTK_DATA_ROOT}/im0001.crop.contrast.mha}
+      DATA{${TubeTK_DATA_ROOT}/im0001.vk.maskRidge.crop.mha}
       255 127 0
       ${TEMP}/itktubeRidgeSeedFilterParzenTest_Feature0Image.mha
       ${TEMP}/itktubeRidgeSeedFilterParzenTest_Output.mha
@@ -273,14 +281,15 @@ Midas3FunctionAddTest( NAME itktubeRidgeSeedFilterParzenTest
 
 if( TubeTK_USE_LIBSVM )
 
-  Midas3FunctionAddTest( NAME itktubeRidgeSeedFilterSVMTest
+  ExternalData_Add_Test( TubeTKData
+    NAME itktubeRidgeSeedFilterSVMTest
     COMMAND ${BASE_SEGMENTATION_TESTS}
       --compareNumberOfPixelsTolerance 700
-      --compare MIDAS{itktubeRidgeSeedFilterSVMTest_Output.mha.md5}
+      --compare DATA{${TubeTK_DATA_ROOT}/itktubeRidgeSeedFilterSVMTest_Output.mha}
         ${TEMP}/itktubeRidgeSeedFilterSVMTest_Output.mha
       itktubeRidgeSeedFilterTest
-        MIDAS{im0001.crop.contrast.mha.md5}
-        MIDAS{im0001.vk.maskRidge.crop.mha.md5}
+        DATA{${TubeTK_DATA_ROOT}/im0001.crop.contrast.mha}
+        DATA{${TubeTK_DATA_ROOT}/im0001.vk.maskRidge.crop.mha}
         255 127 1
         ${TEMP}/itktubeRidgeSeedFilterSVMTest_Feature0Image.mha
         ${TEMP}/itktubeRidgeSeedFilterSVMTest_Output.mha
@@ -290,14 +299,15 @@ endif( TubeTK_USE_LIBSVM )
 
 if( TubeTK_USE_RandomForest )
 
-  Midas3FunctionAddTest( NAME itktubeRidgeSeedFilterRandomForestTest
+  ExternalData_Add_Test( TubeTKData
+    NAME itktubeRidgeSeedFilterRandomForestTest
     COMMAND ${BASE_SEGMENTATION_TESTS}
       --compareNumberOfPixelsTolerance 700
-      --compare MIDAS{itktubeRidgeSeedFilterRandomForestTest_Output.mha.md5}
+      --compare DATA{${TubeTK_DATA_ROOT}/itktubeRidgeSeedFilterRandomForestTest_Output.mha}
         ${TEMP}/itktubeRidgeSeedFilterRandomForestTest_Output.mha
       itktubeRidgeSeedFilterTest
-        MIDAS{im0001.crop.contrast.mha.md5}
-        MIDAS{im0001.vk.maskRidge.crop.mha.md5}
+        DATA{${TubeTK_DATA_ROOT}/im0001.crop.contrast.mha}
+        DATA{${TubeTK_DATA_ROOT}/im0001.vk.maskRidge.crop.mha}
         255 127 2
         ${TEMP}/itktubeRidgeSeedFilterRandomForestTest_Feature0Image.mha
         ${TEMP}/itktubeRidgeSeedFilterRandomForestTest_Output.mha

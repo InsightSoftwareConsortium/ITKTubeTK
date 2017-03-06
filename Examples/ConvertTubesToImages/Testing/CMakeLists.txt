@@ -21,10 +21,11 @@
 #
 ##############################################################################
 
-Midas3FunctionAddTest( NAME Python.ConvertTubesToImages
+ExternalData_Add_Test( TubeTKData
+  NAME Python.ConvertTubesToImages
   COMMAND ${PYTHON_TESTING_EXECUTABLE}
     "${NOTEBOOK_TEST_DRIVER}"
     "${CMAKE_CURRENT_SOURCE_DIR}/../ConvertTubesToImages.ipynb"
     "${TubeTK_BINARY_DIR}"
-    MIDAS_FETCH_ONLY{Branch.n010.mha.md5}
-    MIDAS_FETCH_ONLY{Branch-truth.tre.md5} )
+    DATA_FETCH_ONLY{${TubeTK_DATA_ROOT}/Branch.n010.mha}
+    DATA_FETCH_ONLY{${TubeTK_DATA_ROOT}/Branch-truth.tre} )
