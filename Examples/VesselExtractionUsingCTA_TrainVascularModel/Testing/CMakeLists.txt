@@ -21,11 +21,12 @@
 #
 ##############################################################################
 
-Midas3FunctionAddTest( NAME Python.VesselExtractionUsingCTA_TrainVascularModel
+ExternalData_Add_Test( TubeTKData
+  NAME Python.VesselExtractionUsingCTA_TrainVascularModel
   COMMAND ${PYTHON_TESTING_EXECUTABLE}
     "${NOTEBOOK_TEST_DRIVER}"
     "${CMAKE_CURRENT_SOURCE_DIR}/../VesselExtractionUsingCTA_TrainVascularModel.ipynb"
     "${TubeTK_BINARY_DIR}"
-    MIDAS_FETCH_ONLY{inputCTA.mha.md5}
-    MIDAS_FETCH_ONLY{inputMask.mha.md5}
-    MIDAS_FETCH_ONLY{inputExpertMask.mha} )
+    DATA_FETCH_ONLY{${TubeTK_DATA_ROOT}/inputCTA.mha}
+    DATA_FETCH_ONLY{${TubeTK_DATA_ROOT}/inputMask.mha}
+    DATA_FETCH_ONLY{${TubeTK_DATA_ROOT}/inputExpertMask.mha} )

@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -36,16 +32,18 @@ set( CompareImages_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
 # Test1
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test1
             COMMAND ${PROJ_EXE}
-               MIDAS{im0001.crop.mha.md5}
+               DATA{${TubeTK_DATA_ROOT}/im0001.crop.mha}
                --min 0.1 --max 3.0 --steps 10 --timestep 0.001
                ${TEMP}/${MODULE_NAME}Test1.mha )
 
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
+ExternalData_Add_Test( TubeTKData
+            NAME ${MODULE_NAME}-Test1-Compare
             COMMAND ${CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}Test1.mha
-               -b MIDAS{${MODULE_NAME}Test1.mha.md5}
+               -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.mha}
                -n 90 )
-set_property( TEST ${MODULE_NAME}-Test1-Compare
-                      APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+set_tests_properties( ${MODULE_NAME}-Test1-Compare PROPERTIES DEPENDS
+            ${MODULE_NAME}-Test1 )

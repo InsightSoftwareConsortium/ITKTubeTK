@@ -1,13 +1,13 @@
 NumberOfObjects = 4
 Type = Image
-Name = @MIDAS_DATA_DIR@/DDMap58.mha
+Name = @ExternalData_BINARY_ROOT@/MIDAS_Keys/DDMap58.mha
 EndObject =
 Type = Image
-Name = @MIDAS_DATA_DIR@/DDMap86.mha
+Name = @ExternalData_BINARY_ROOT@/MIDAS_Keys/DDMap86.mha
 EndObject =
 Type = Image
-Name = @MIDAS_DATA_DIR@/DDMap57.mha
+Name = @ExternalData_BINARY_ROOT@/MIDAS_Keys/DDMap57.mha
 EndObject =
 Type = Image
-Name = @MIDAS_DATA_DIR@/DDMap25.mha
+Name = @ExternalData_BINARY_ROOT@/MIDAS_Keys/DDMap25.mha
 EndObject =

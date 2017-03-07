@@ -21,42 +21,36 @@
 #
 ##############################################################################
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 if( ${TubeTK_USE_NUMPY_STACK} )
-  Midas3FunctionAddTestWithEnv(
+  ExternalData_Add_Test_With_Env(
     NAME Python.VesselTubeToNumPyTest
     COMMAND ${PYTHON_TESTING_EXECUTABLE}
       ${CMAKE_CURRENT_SOURCE_DIR}/test_tubetk.py
       VesselTubeToNumPyTest
-        MIDAS{tube.tre.md5}
-        MIDAS{tube.tre.npy.md5}
+        DATA{${TubeTK_DATA_ROOT}/tube.tre}
+        DATA{${TubeTK_DATA_ROOT}/tube.tre.npy}
     ENVIRONMENT TubeTK_BUILD_DIR=${TubeTK_BINARY_DIR}
     )
   if( ${TubeTK_USE_PYQTGRAPH} )
-    Midas3FunctionAddTestWithEnv(
+    ExternalData_Add_Test_With_Env(
       NAME Python.PyQtGraphTubesAsCirclesTest
       COMMAND ${PYTHON_TESTING_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/test_tubetk.py
         PyQtGraphTubesAsCirclesTest
-          MIDAS{tube.tre.md5}
+          DATA{${TubeTK_DATA_ROOT}/tube.tre}
           ${TEMP}/PyQtGraphTubesAsCirclesTest.png
       ENVIRONMENT TubeTK_BUILD_DIR=${TubeTK_BINARY_DIR}
       )
-    Midas3FunctionAddTestWithEnv(
+    ExternalData_Add_Test_With_Env(
       NAME Python.PyQtGraphTubesAsCirclesTest-Compare
       COMMAND $<TARGET_FILE:CompareImages>
         -t ${TEMP}/PyQtGraphTubesAsCirclesTest.png
-        -b MIDAS{PyQtGraphTubesAsCirclesTest.png.md5},MIDAS{PyQtGraphTubesAsCirclesTest.1.png.md5}
-        MIDAS_FETCH_ONLY{PyQtGraphTubesAsCirclesTest.png.md5}
-        MIDAS_FETCH_ONLY{PyQtGraphTubesAsCirclesTest.1.png.md5}
+        -b DATA{${TubeTK_DATA_ROOT}/PyQtGraphTubesAsCirclesTest.png,PyQtGraphTubesAsCirclesTest.png},DATA{${TubeTK_DATA_ROOT}/PyQtGraphTubesAsCirclesTest.1.png,PyQtGraphTubesAsCirclesTest.1.png}
       ENVIRONMENT TubeTK_BUILD_DIR=${TubeTK_BINARY_DIR}
       )
-    set_property( TEST Python.PyQtGraphTubesAsCirclesTest-Compare
-      APPEND PROPERTY DEPENDS Python.PyQtGraphTubesAsCirclesTest )
+    set_tests_properties( Python.PyQtGraphTubesAsCirclesTest-Compare PROPERTIES DEPENDS
+      Python.PyQtGraphTubesAsCirclesTest )
   endif( ${TubeTK_USE_PYQTGRAPH} )
 endif( ${TubeTK_USE_NUMPY_STACK} )

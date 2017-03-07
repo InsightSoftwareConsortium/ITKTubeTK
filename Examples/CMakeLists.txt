@@ -21,10 +21,6 @@
 #
 ##############################################################################
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 #
 # Setup examples as tests
 #

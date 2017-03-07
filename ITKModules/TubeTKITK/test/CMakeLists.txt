@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( CompareImages_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
@@ -36,10 +32,10 @@ set( CompareTextFiles_EXE ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
 if( ITK_WRAP_PYTHON )
   # Test1 - PythonComputeTrainingMask
   set( MODULE_NAME PythonComputeTrainingMask )
-  Midas3FunctionAddTestWithEnv( NAME TubeTKITK.Python.ComputeTrainingMask-Test1
+  ExternalData_Add_Test_With_Env( NAME TubeTKITK.Python.ComputeTrainingMask-Test1
     COMMAND ${PYTHON_EXECUTABLE}
       ${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}Test.py
-        MIDAS{ComputeTrainingMask-Test1.mha.md5}
+        DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test1.mha}
         ${TEMP}/${MODULE_NAME}_VesselMaskTest1.mha
         ${TEMP}/${MODULE_NAME}_NotVesselMaskTest1.mha
         0.5
@@ -47,61 +43,64 @@ if( ITK_WRAP_PYTHON )
     ENVIRONMENT ITK_BUILD_DIR=${ITK_DIR} TubeTK_BUILD_DIR=${TubeTK_BINARY_DIR} BUILD_TYPE=$<$<BOOL:${WIN32}>:$<CONFIG>>
     )
   # Test1 - Compare - PythonComputeTrainingMask
-  Midas3FunctionAddTest( NAME
-    TubeTKITK.Python.ComputeTrainingMask-Test1-VesselMask-Compare
+  ExternalData_Add_Test( TubeTKData
+    NAME
+      TubeTKITK.Python.ComputeTrainingMask-Test1-VesselMask-Compare
     COMMAND ${CompareImages_EXE}
       -t ${TEMP}/${MODULE_NAME}_VesselMaskTest1.mha
-      -b MIDAS{ComputeTrainingMask-Test1_VesselMask.mha.md5}
+      -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test1_VesselMask.mha}
       -i 0.01
     )
-  set_property( TEST
+  set_tests_properties(
     TubeTKITK.Python.ComputeTrainingMask-Test1-VesselMask-Compare
-    APPEND PROPERTY DEPENDS TubeTKITK.Python.ComputeTrainingMask-Test1 )
+    PROPERTIES DEPENDS TubeTKITK.Python.ComputeTrainingMask-Test1 )
 
 ######################  PythonConvertImagesToCSV  ########################
   # Test1 - PythonConvertImagesToCSV
   set( MODULE_NAME PythonConvertImagesToCSV )
-  Midas3FunctionAddTestWithEnv( NAME TubeTKITK.Python.ConvertImagesToCSV-Test1
+  ExternalData_Add_Test_With_Env( NAME TubeTKITK.Python.ConvertImagesToCSV-Test1
     COMMAND ${PYTHON_EXECUTABLE}
       ${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}Test.py
-        MIDAS{GDS0015_Large-TrainingMask.mha.md5}
-        MIDAS{GDS0015_Large.mha.md5},MIDAS{ES0015_Large.mha.md5}
+        DATA{${TubeTK_DATA_ROOT}/GDS0015_Large-TrainingMask.mha}
+        DATA{${TubeTK_DATA_ROOT}/GDS0015_Large.mha},DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
         ${TEMP}/${MODULE_NAME}Test1.csv
         3
     ENVIRONMENT ITK_BUILD_DIR=${ITK_DIR} TubeTK_BUILD_DIR=${TubeTK_BINARY_DIR} BUILD_TYPE=$<$<BOOL:${WIN32}>:$<CONFIG>>
     )
 
   # Test1 - Compare - PythonConvertImagesToCSV
-  Midas3FunctionAddTest( NAME
-    TubeTKITK.Python.ConvertImagesToCSV-Test1-Compare
+  ExternalData_Add_Test( TubeTKData
+    NAME
+      TubeTKITK.Python.ConvertImagesToCSV-Test1-Compare
     COMMAND ${CompareTextFiles_EXE}
       -t ${TEMP}/${MODULE_NAME}Test1.csv
-      -b MIDAS{ConvertImagesToCSVTest1.csv.md5}
+      -b DATA{${TubeTK_DATA_ROOT}/ConvertImagesToCSVTest1.csv}
     )
-  set_property( TEST TubeTKITK.Python.ConvertImagesToCSV-Test1-Compare
-    APPEND PROPERTY DEPENDS TubeTKITK.Python.ConvertImagesToCSV-Test1 )
+  set_tests_properties( TubeTKITK.Python.ConvertImagesToCSV-Test1-Compare
+    PROPERTIES DEPENDS TubeTKITK.Python.ConvertImagesToCSV-Test1 )
 
 ######################  PythonConvertShrunkenSeedImageToList  ##########################
   # Test1 - PythonConvertShrunkenSeedImageToList
   set( MODULE_NAME PythonConvertShrunkenSeedImageToList )
-  Midas3FunctionAddTestWithEnv( NAME TubeTKITK.Python.ConvertShrunkenSeedImageToList-Test1
+  ExternalData_Add_Test_With_Env( NAME TubeTKITK.Python.ConvertShrunkenSeedImageToList-Test1
     COMMAND ${PYTHON_EXECUTABLE}
       ${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}Test.py
-        MIDAS{LiverVess_Shrink_Seeds.mha.md5}
-        MIDAS{LiverVess_Shrink_SeedScales.mha.md5}
-        MIDAS{LiverVess_Shrink_Points.mha.md5}
+        DATA{${TubeTK_DATA_ROOT}/LiverVess_Shrink_Seeds.mha}
+        DATA{${TubeTK_DATA_ROOT}/LiverVess_Shrink_SeedScales.mha}
+        DATA{${TubeTK_DATA_ROOT}/LiverVess_Shrink_Points.mha}
         ${TEMP}/${MODULE_NAME}Test1.sdlst
         0
     ENVIRONMENT ITK_BUILD_DIR=${ITK_DIR} TubeTK_BUILD_DIR=${TubeTK_BINARY_DIR} BUILD_TYPE=$<$<BOOL:${WIN32}>:$<CONFIG>>
     )
   # Test1 - Compare - PythonConvertShrunkenSeedImageToList
-  Midas3FunctionAddTest( NAME
-    TubeTKITK.Python.ConvertShrunkenSeedImageToList-Test1-Compare
+  ExternalData_Add_Test( TubeTKData
+    NAME
+      TubeTKITK.Python.ConvertShrunkenSeedImageToList-Test1-Compare
     COMMAND ${CompareTextFiles_EXE}
       -t ${TEMP}/${MODULE_NAME}Test1.sdlst
-      -b MIDAS{ConvertShrunkenSeedImageToListTest1.sdlst.md5}
+      -b DATA{${TubeTK_DATA_ROOT}/ConvertShrunkenSeedImageToListTest1.sdlst}
     )
-  set_property( TEST
+  set_tests_properties(
     TubeTKITK.Python.ConvertShrunkenSeedImageToList-Test1-Compare
-    APPEND PROPERTY DEPENDS TubeTKITK.Python.ConvertShrunkenSeedImageToList-Test1 )
+    PROPERTIES DEPENDS TubeTKITK.Python.ConvertShrunkenSeedImageToList-Test1 )
 endif()

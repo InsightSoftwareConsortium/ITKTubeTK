@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -39,41 +35,46 @@ set( CompareImages_EXE
      ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
 # Test1
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
-    MIDAS{Branch-truth-new.tre.md5}
+    DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
     ${TEMP}/${MODULE_NAME}-Test1.vtk
     )
 
 # Test2
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test2
   COMMAND ${PROJ_EXE}
-    MIDAS{Branch-truth-new.tre.md5}
+    DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
     ${TEMP}/${MODULE_NAME}-Test2.stl
     )
 
 # Test3
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test3
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test3
   COMMAND ${PROJ_EXE}
-    MIDAS{Branch-truth-new.tre.md5}
+    DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
     ${TEMP}/${MODULE_NAME}-Test3.stt
     )
 set_tests_properties( ${MODULE_NAME}-Test3
   PROPERTIES WILL_FAIL true )
 
 # Test4
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test4
   COMMAND ${PROJ_EXE}
-    MIDAS{ConvertTubesToSurfaceTestFile.tre.md5}
+    DATA{${TubeTK_DATA_ROOT}/ConvertTubesToSurfaceTestFile.tre}
     ${TEMP}/${MODULE_NAME}-Test4_Surface.vtk
-    --centerline ${TEMP}/${MODULE_NAME}-Test4_Centerline.vtp)
+    --centerline ${TEMP}/${MODULE_NAME}-Test4_Centerline.vtp )
 
 # Test5 - Compare - Surface
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test4-Compare-Surface
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test4-Compare-Surface
   COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-Test4_Surface.vtk
-    -b MIDAS{ConvertTubesToSurfaceTestFile_Surface.vtk.md5}
+    -b DATA{${TubeTK_DATA_ROOT}/ConvertTubesToSurfaceTestFile_Surface.vtk}
     -d 0.01 )
 
-set_property( TEST ${MODULE_NAME}-Test4-Compare-Surface
-  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test4 )
+set_tests_properties( ${MODULE_NAME}-Test4-Compare-Surface PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test4 )

@@ -22,12 +22,12 @@
 ##############################################################################
 
 if( BUILD_TESTING )
-  Midas3FunctionAddTestWithEnv( NAME Example.Python.TubeNumPyArrayAndPropertyHistograms
+  ExternalData_Add_Test_With_Env( NAME Example.Python.TubeNumPyArrayAndPropertyHistograms
     COMMAND ${PYTHON_TESTING_EXECUTABLE}
       "${NOTEBOOK_TEST_DRIVER}"
       "${CMAKE_CURRENT_SOURCE_DIR}/TubeNumPyArrayAndPropertyHistograms.ipynb"
       "${TubeTK_BINARY_DIR}"
-      MIDAS{VascularNetwork.tre.md5}
+      DATA{${TubeTK_DATA_ROOT}/VascularNetwork.tre}
     ENVIRONMENT ITK_BUILD_DIR=${ITK_DIR} TubeTK_BUILD_DIR=${PROJECT_BINARY_DIR}
     )
 endif( BUILD_TESTING )

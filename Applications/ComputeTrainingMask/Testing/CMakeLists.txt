@@ -22,10 +22,6 @@
 ############################################################################
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -35,43 +31,48 @@ set( CompareImages_EXE
  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
 # Test1 - VesselMask
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-VesselMask
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1-VesselMask
   COMMAND ${PROJ_EXE}
-    MIDAS{ComputeTrainingMask-Test1.mha.md5}
+    DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test1.mha}
     ${TEMP}/${MODULE_NAME}Test1.mha
     --gap 0.5
-    --notVesselWidth 2)
+    --notVesselWidth 2 )
 
 # Test1 - Compare - VesselMask
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-VesselMask-Compare
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1-VesselMask-Compare
   COMMAND ${CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.mha
-    -b MIDAS{ComputeTrainingMask-Test1_VesselMask.mha.md5}
+    -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test1_VesselMask.mha}
     -i 0.01 )
 
-set_property( TEST ${MODULE_NAME}-Test1-VesselMask-Compare
-  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1-VesselMask )
+set_tests_properties( ${MODULE_NAME}-Test1-VesselMask-Compare PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test1-VesselMask )
 
 # Test2 - NotVesselMask
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-NotVesselMask
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test2-NotVesselMask
   COMMAND ${PROJ_EXE}
-    MIDAS{ComputeTrainingMask-Test2.mha.md5}
+    DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test2.mha}
     ${TEMP}/${MODULE_NAME}Test2.mha
     --gap 0.5
     --notVesselWidth 2
-    --notVesselMask ${TEMP}/${MODULE_NAME}Test2_NotVesselMask.mha)
+    --notVesselMask ${TEMP}/${MODULE_NAME}Test2_NotVesselMask.mha )
 
 # Test2 - Compare - NotVesselMask
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-NotVesselMask-Compare
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test2-NotVesselMask-Compare
   COMMAND ${CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2.mha
-    -b MIDAS{ComputeTrainingMask-Test2_NotVesselMask.mha.md5}
+    -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test2_NotVesselMask.mha}
     -i 0.01 )
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-NotVesselMask1-Compare
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test2-NotVesselMask1-Compare
   COMMAND ${CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2_NotVesselMask.mha
-    -b MIDAS{ComputeTrainingMask-Test2_NotVesselMask1.mha.md5}
+    -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test2_NotVesselMask1.mha}
     -i 0.01 )
 
-set_property( TEST ${MODULE_NAME}-Test2-NotVesselMask-Compare
-  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2-NotVesselMask )
+set_tests_properties( ${MODULE_NAME}-Test2-NotVesselMask-Compare PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test2-NotVesselMask )

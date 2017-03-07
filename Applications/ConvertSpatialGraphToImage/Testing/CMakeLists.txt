@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -36,21 +32,19 @@ set( CompareImages_EXE
  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
 # Test1
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
-    MIDAS{${MODULE_NAME}-CVT50-Branch-truth.cvt.mha.md5}
-    MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.md5}
-    MIDAS_FETCH_ONLY{${MODULE_NAME}-CVT50-Branch-truth.grp.md5}
-    MIDAS_FETCH_ONLY{${MODULE_NAME}-CVT50-Branch-truth.grp.mat.md5}
-    MIDAS_FETCH_ONLY{${MODULE_NAME}-CVT50-Branch-truth.grp.brc.md5}
-    MIDAS_FETCH_ONLY{${MODULE_NAME}-CVT50-Branch-truth.grp.rot.md5}
+    DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.cvt.mha}
+    DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.grp,${MODULE_NAME}-CVT50-Branch-truth.grp,${MODULE_NAME}-CVT50-Branch-truth.grp.mat,${MODULE_NAME}-CVT50-Branch-truth.grp.brc,${MODULE_NAME}-CVT50-Branch-truth.grp.rot}
     ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.Image )
 
 # Test1-Compare
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-00
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1-Compare-00
   COMMAND ${CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.Image.mat.mha
-    -b MIDAS{${MODULE_NAME}-CVT50-Branch-truth.grp.Image.mat.mha.md5} )
+    -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.grp.Image.mat.mha} )
 
-set_property( TEST ${MODULE_NAME}-Test1-Compare-00
-  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+set_tests_properties( ${MODULE_NAME}-Test1-Compare-00 PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test1 )

@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -35,64 +31,70 @@ set( PROJ_EXE
 set( CompareImages_EXE
  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
-#  
+#
 # Test with 2D Cylinder
 #
 
-  # Run module and generate result on test case
-  Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+# Run module and generate result on test case
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
-    MIDAS{Cylinder_2D.mha.md5}
-    MIDAS{Cylinder_2D.tre.md5} 1
+    DATA{${TubeTK_DATA_ROOT}/Cylinder_2D.mha}
+    DATA{${TubeTK_DATA_ROOT}/Cylinder_2D.tre} 1
     ${TEMP}/${MODULE_NAME}Test1.flyThrough.mha
     ${TEMP}/${MODULE_NAME}Test1.flyThrough.tubeMask.mha )
 
-  # compare outputs with groundtruth		       
-  Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-flyThrough
-    COMMAND ${CompareImages_EXE}
-      -t ${TEMP}/${MODULE_NAME}Test1.flyThrough.mha 
-      -b MIDAS{${MODULE_NAME}Test1.flyThrough.mha.md5} 
-      -i 0.001 )
+# compare outputs with groundtruth
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1-Compare-flyThrough
+  COMMAND ${CompareImages_EXE}
+    -t ${TEMP}/${MODULE_NAME}Test1.flyThrough.mha
+    -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.flyThrough.mha}
+    -i 0.001 )
 
-  set_property( TEST ${MODULE_NAME}-Test1-Compare-flyThrough
-		APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
-  
-  Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-flyThrough-TubeMask
-    COMMAND ${CompareImages_EXE}
-      -t ${TEMP}/${MODULE_NAME}Test1.flyThrough.tubeMask.mha
-      -b MIDAS{${MODULE_NAME}Test1.flyThrough.tubeMask.mha.md5} 
-      -i 0.001 )
+set_tests_properties( ${MODULE_NAME}-Test1-Compare-flyThrough PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test1 )
 
-  set_property( TEST ${MODULE_NAME}-Test1-Compare-flyThrough-TubeMask
-		APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1-Compare-flyThrough-TubeMask
+  COMMAND ${CompareImages_EXE}
+    -t ${TEMP}/${MODULE_NAME}Test1.flyThrough.tubeMask.mha
+    -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.flyThrough.tubeMask.mha}
+    -i 0.001 )
 
-#  
+set_tests_properties( ${MODULE_NAME}-Test1-Compare-flyThrough-TubeMask PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test1 )
+
+#
 # Test with 3D Cylinder
 #
 
-  # Run module and generate result on test case
-  Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
-    COMMAND ${PROJ_EXE}
-      MIDAS{Cylinder_3D.mha.md5}
-      MIDAS{Cylinder_3D.tre.md5} 1
-      ${TEMP}/${MODULE_NAME}Test2.flyThrough.mha
-      ${TEMP}/${MODULE_NAME}Test2.flyThrough.tubeMask.mha)
+# Run module and generate result on test case
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test2
+  COMMAND ${PROJ_EXE}
+    DATA{${TubeTK_DATA_ROOT}/Cylinder_3D.mha}
+    DATA{${TubeTK_DATA_ROOT}/Cylinder_3D.tre} 1
+    ${TEMP}/${MODULE_NAME}Test2.flyThrough.mha
+    ${TEMP}/${MODULE_NAME}Test2.flyThrough.tubeMask.mha )
 
-  # compare outputs with groundtruth		       
-  Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare-flyThrough
-    COMMAND ${CompareImages_EXE}
-      -t ${TEMP}/${MODULE_NAME}Test2.flyThrough.mha 
-      -b MIDAS{${MODULE_NAME}Test2.flyThrough.mha.md5} 
-      -i 0.001 )
+# compare outputs with groundtruth
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test2-Compare-flyThrough
+  COMMAND ${CompareImages_EXE}
+    -t ${TEMP}/${MODULE_NAME}Test2.flyThrough.mha
+    -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2.flyThrough.mha}
+    -i 0.001 )
 
-  set_property( TEST ${MODULE_NAME}-Test2-Compare-flyThrough
-		APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
-  
-  Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare-flyThrough-TubeMask
-    COMMAND ${CompareImages_EXE}
-      -t ${TEMP}/${MODULE_NAME}Test2.flyThrough.tubeMask.mha
-      -b MIDAS{${MODULE_NAME}Test2.flyThrough.tubeMask.mha.md5} 
-      -i 0.001 )
+set_tests_properties( ${MODULE_NAME}-Test2-Compare-flyThrough PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test2 )
 
-  set_property( TEST ${MODULE_NAME}-Test2-Compare-flyThrough-TubeMask
-		APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test2-Compare-flyThrough-TubeMask
+  COMMAND ${CompareImages_EXE}
+    -t ${TEMP}/${MODULE_NAME}Test2.flyThrough.tubeMask.mha
+    -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2.flyThrough.tubeMask.mha}
+    -i 0.001 )
+
+set_tests_properties( ${MODULE_NAME}-Test2-Compare-flyThrough-TubeMask PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test2 )

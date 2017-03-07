@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -39,52 +35,58 @@ set( CompareImages_EXE
      ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
 # Test1
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+ExternalData_Add_Test( TubeTKData
+                NAME ${MODULE_NAME}-Test1
                 COMMAND ${PROJ_EXE}
-                  MIDAS{Exemplary-CVT-Tessellation.mha.md5}
-                  MIDAS{SPL2012-LabelMap.nrrd.md5}
+                  DATA{${TubeTK_DATA_ROOT}/Exemplary-CVT-Tessellation.mha}
+                  DATA{${TubeTK_DATA_ROOT}/SPL2012-LabelMap.nrrd}
                   ${TEMP}/${MODULE_NAME}Test1-Img.mha
                   ${TEMP}/${MODULE_NAME}Test1-Map.txt )
 
-# Test1
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
+# Test2
+ExternalData_Add_Test( TubeTKData
+                NAME ${MODULE_NAME}-Test2
                 COMMAND ${PROJ_EXE}
-                  MIDAS{Exemplary-CVT-Tessellation.mha.md5}
-                  MIDAS{SPL2012-LabelMap.nrrd.md5}
+                  DATA{${TubeTK_DATA_ROOT}/Exemplary-CVT-Tessellation.mha}
+                  DATA{${TubeTK_DATA_ROOT}/SPL2012-LabelMap.nrrd}
                   ${TEMP}/${MODULE_NAME}Test2-Img.mha
                   ${TEMP}/${MODULE_NAME}Test2-Map.txt
                   --omitRegions 0 )
 
 # Test1-Compare
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-Map
+ExternalData_Add_Test( TubeTKData
+                NAME ${MODULE_NAME}-Test1-Compare-Map
                 COMMAND ${CompareTextFiles_EXE}
                   -t ${TEMP}/${MODULE_NAME}Test1-Map.txt
-                  -b MIDAS{${MODULE_NAME}Test1-Map.txt.md5} )
+                  -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1-Map.txt} )
 
-set_property( TEST ${MODULE_NAME}-Test1-Compare-Map
-               APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+set_tests_properties( ${MODULE_NAME}-Test1-Compare-Map PROPERTIES DEPENDS
+                ${MODULE_NAME}-Test1 )
 
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare-Img
+ExternalData_Add_Test( TubeTKData
+                NAME ${MODULE_NAME}-Test1-Compare-Img
                 COMMAND ${CompareImages_EXE}
                   -t ${TEMP}/${MODULE_NAME}Test1-Img.mha
-                  -b MIDAS{${MODULE_NAME}Test1-Img.mha.md5} )
+                  -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1-Img.mha} )
 
-set_property( TEST ${MODULE_NAME}-Test1-Compare-Img
-               APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+set_tests_properties ${MODULE_NAME}-Test1-Compare-Img PROPERTIES DEPENDS
+                ${MODULE_NAME}-Test1 )
 
 # Test2-Compare
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare-Map
+ExternalData_Add_Test( TubeTKData
+                NAME ${MODULE_NAME}-Test2-Compare-Map
                 COMMAND ${CompareTextFiles_EXE}
                   -t ${TEMP}/${MODULE_NAME}Test2-Map.txt
-                  -b MIDAS{${MODULE_NAME}Test2-Map.txt.md5} )
+                  -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2-Map.txt} )
 
-set_property( TEST ${MODULE_NAME}-Test2-Compare-Map
-               APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
+set_tests_properties( ${MODULE_NAME}-Test2-Compare-Map PROPERTIES DEPENDS
+                ${MODULE_NAME}-Test2 )
 
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare-Img
+ExternalData_Add_Test( TubeTKData
+                NAME ${MODULE_NAME}-Test2-Compare-Img
                 COMMAND ${CompareImages_EXE}
                   -t ${TEMP}/${MODULE_NAME}Test2-Img.mha
-                  -b MIDAS{${MODULE_NAME}Test2-Img.mha.md5} )
+                  -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2-Img.mha} )
 
-set_property( TEST ${MODULE_NAME}-Test2-Compare-Img
-               APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
+set_tests_properties( ${MODULE_NAME}-Test2-Compare-Img PROPERTIES DEPENDS
+                ${MODULE_NAME}-Test2 )

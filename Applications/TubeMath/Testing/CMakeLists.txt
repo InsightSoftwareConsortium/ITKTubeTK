@@ -23,10 +23,6 @@
 
 include_regular_expression( "^.*$" )
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( PROJ_EXE
@@ -36,28 +32,31 @@ set( CompareTextFiles_EXE
  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
 
 # Test1
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1
   COMMAND ${PROJ_EXE}
-    MIDAS{Branch-truth-new.tre.md5}
+    DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
     -w ${TEMP}/${MODULE_NAME}Test1.tre )
 
 # Test1-Compare
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test1-Compare
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test1-Compare
   COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.tre
-    -b MIDAS{Branch-truth-new.tre.md5}
+    -b DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
     -d 0.01 )
-set_property( TEST ${MODULE_NAME}-Test1-Compare
-  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test1 )
+set_tests_properties( ${MODULE_NAME}-Test1-Compare PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test1 )
 
 # Test2
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test2
   COMMAND ${PROJ_EXE}
-    MIDAS{Branch-truth-new.tre.md5}
-    -l R MIDAS{Branch.n010.mha.md5}
-    -l M MIDAS{Branch.n020.mha.md5}
-    -l B MIDAS{Branch.n010.mha.md5}
-    -l r MIDAS{Branch.n020.mha.md5}
+    DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
+    -l R DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha}
+    -l M DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
+    -l B DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha}
+    -l r DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
     -u
     -t 100
     -a
@@ -67,10 +66,11 @@ Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2
     -w ${TEMP}/${MODULE_NAME}Test2.tre )
 
 # Test2-Compare
-Midas3FunctionAddTest( NAME ${MODULE_NAME}-Test2-Compare
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test2-Compare
   COMMAND ${CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2.tre
-    -B 2 MIDAS{${MODULE_NAME}Test2.tre.md5} MIDAS{${MODULE_NAME}Test2-2.tre.md5}
+    -B 2 DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2.tre} DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2-2.tre}
     -d 0.01 )
-set_property( TEST ${MODULE_NAME}-Test2-Compare
-  APPEND PROPERTY DEPENDS ${MODULE_NAME}-Test2 )
+set_tests_properties( ${MODULE_NAME}-Test2-Compare PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test2 )

@@ -21,10 +21,6 @@
 #
 ##############################################################################
 
-include( Midas3FunctionAddTest )
-set( MIDAS_REST_URL http://midas3.kitware.com/midas/api/rest )
-set( MIDAS_KEY_DIR ${TubeTK_SOURCE_DIR}/MIDAS_Keys )
-
 set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( CompareImages_EXE
@@ -33,47 +29,54 @@ set( CompareImages_EXE
 set( CompareJsonFiles_EXE
   ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareJsonFiles> )
 
-Midas3FunctionAddTest( NAME CompareImages-Test1
+ExternalData_Add_Test( TubeTKData
+  NAME CompareImages-Test1
   COMMAND ${CompareImages_EXE}
-    -t MIDAS{ES0015_Large.mha.md5}
-    -b MIDAS{ES0015_Large.mha.md5} )
+    -t DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
+    -b DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha} )
 
-Midas3FunctionAddTest( NAME CompareImages-Test2
+ExternalData_Add_Test( TubeTKData
+  NAME CompareImages-Test2
   COMMAND ${CompareImages_EXE}
     -n 1000
     -r 1
     -i 50
-    -t MIDAS{im0001.crop.mha.md5}
-    -b MIDAS{im0001_n10.crop.mha.md5} )
+    -t DATA{${TubeTK_DATA_ROOT}/im0001.crop.mha}
+    -b DATA{${TubeTK_DATA_ROOT}/im0001_n10.crop.mha} )
 
-Midas3FunctionAddTest( NAME CompareImages-Test3
+ExternalData_Add_Test( TubeTKData
+  NAME CompareImages-Test3
   COMMAND ${CompareImages_EXE}
-    -t MIDAS{im0001.mha.md5}
-    -b MIDAS{im0001_n10.crop.mha.md5} )
+    -t DATA{${TubeTK_DATA_ROOT}/im0001.mha}
+    -b DATA{${TubeTK_DATA_ROOT}/im0001_n10.crop.mha} )
 set_tests_properties( CompareImages-Test3 PROPERTIES WILL_FAIL true )
 
-Midas3FunctionAddTest( NAME CompareImages-Test4
+ExternalData_Add_Test( TubeTKData
+  NAME CompareImages-Test4
   COMMAND ${CompareImages_EXE}
-    -t MIDAS{im0001.crop.mha.md5}
-    -b MIDAS{im0001_n10.crop.mha.md5},MIDAS{im0001.crop.mha.md5} )
+    -t DATA{${TubeTK_DATA_ROOT}/im0001.crop.mha}
+    -b DATA{${TubeTK_DATA_ROOT}/im0001_n10.crop.mha},DATA{${TubeTK_DATA_ROOT}/im0001.crop.mha} )
 
-Midas3FunctionAddTest( NAME CompareImages-Test5
+ExternalData_Add_Test( TubeTKData
+  NAME CompareImages-Test5
   COMMAND ${CompareImages_EXE}
-    -t MIDAS{im0001.crop.mha.md5}
-    -b MIDAS{im0001_n10.crop.mha.md5},MIDAS{im0001_n20.crop.mha.md5} )
+    -t DATA{${TubeTK_DATA_ROOT}/im0001.crop.mha}
+    -b DATA{${TubeTK_DATA_ROOT}/im0001_n10.crop.mha},DATA{${TubeTK_DATA_ROOT}/im0001_n20.crop.mha} )
 set_tests_properties( CompareImages-Test5 PROPERTIES WILL_FAIL true )
 
-Midas3FunctionAddTest( NAME CompareImages-Test6
+ExternalData_Add_Test( TubeTKData
+  NAME CompareImages-Test6
   COMMAND ${CompareImages_EXE}
-    -t MIDAS{im0001_n10.crop.mha.md5}
+    -t DATA{${TubeTK_DATA_ROOT}/im0001_n10.crop.mha}
     -b ${TEMP}/filedoesnotexist.mha )
 set_tests_properties( CompareImages-Test6 PROPERTIES WILL_FAIL true )
 
-Midas3FunctionAddTest( NAME CompareImages-Test7
+ExternalData_Add_Test( TubeTKData
+  NAME CompareImages-Test7
   COMMAND ${CompareImages_EXE}
     -c 1.0e-4
-    -t MIDAS{ResampleImageTest2.mha.md5}
-    -b MIDAS{ResampleImageTest2SpacingOff.mha.md5} )
+    -t DATA{${TubeTK_DATA_ROOT}/ResampleImageTest2.mha}
+    -b DATA{${TubeTK_DATA_ROOT}/ResampleImageTest2SpacingOff.mha} )
 
 if( TubeTK_USE_JsonCpp )
   add_test( NAME CompareJsonFiles-Test1
