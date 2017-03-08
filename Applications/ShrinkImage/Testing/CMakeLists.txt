@@ -108,3 +108,21 @@ ExternalData_Add_Test( TubeTKData
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test4.mha} )
 set_tests_properties( ${MODULE_NAME}-Test4-Compare PROPERTIES DEPENDS
   ${MODULE_NAME}-Test4 )
+
+# Test5
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test5
+  COMMAND ${PROJ_EXE}
+    -i DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test5_Points.mha}
+    -n 3,3
+    DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test5_In.mha}
+    ${TEMP}/${MODULE_NAME}Test5_Out.mha )
+
+# Test5-Compare
+ExternalData_Add_Test( TubeTKData
+  NAME ${MODULE_NAME}-Test5-Compare
+  COMMAND ${CompareImages_EXE}
+    -t ${TEMP}/${MODULE_NAME}Test5_Out.mha
+    -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test5_Out.mha} )
+set_tests_properties( ${MODULE_NAME}-Test5-Compare PROPERTIES DEPENDS
+  ${MODULE_NAME}-Test5 )
