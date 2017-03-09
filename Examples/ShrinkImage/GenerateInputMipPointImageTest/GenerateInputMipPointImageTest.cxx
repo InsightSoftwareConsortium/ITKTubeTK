@@ -24,7 +24,6 @@ limitations under the License.
 #include <itkImage.h>
 #include <itkImageFileWriter.h>
 
-#include <iostream>
 #include <string>
 
 const int dimension = 2;
