@@ -25,6 +25,7 @@ limitations under the License.
 #include <itkImageFileWriter.h>
 
 #include <iostream>
+#include <string>
 
 const int dimension = 2;
 using PixelType = float;
@@ -43,7 +44,7 @@ typename TImage::Pointer CreateImage( typename TImage::SizeType size )
 }
 
 template <typename T>
-void WriteImage( typename itk::SmartPointer<T> image, const char* file_name )
+void WriteImage( const itk::SmartPointer<T>& image, std::string file_name )
 {
   auto writer = itk::ImageFileWriter<T>::New();
   writer->SetFileName( file_name );
