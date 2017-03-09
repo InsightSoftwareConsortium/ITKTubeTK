@@ -26,16 +26,17 @@ limitations under the License.
 
 #include <iostream>
 
-const int d = 2;
-using NumType = float;
-using Image = itk::Image<NumType, d>;
-using VImage = itk::Image<itk::Vector<NumType, d>, d>;
+const int dimension = 2;
+using PixelType = float;
+using ImageType = itk::Image<PixelType, dimension>;
+using VectorPixelType = itk::Vector<PixelType, dimension>;
+using VectorImageType = itk::Image<VectorPixelType, dimension>;
 
 // Create an image, with memory allocated
-template <typename T>
-typename T::Pointer CreateImage( typename T::SizeType size )
+template <typename TImage>
+typename TImage::Pointer CreateImage( typename TImage::SizeType size )
 {
-  auto im = T::New();
+  auto im = TImage::New();
   im->SetRegions( size );
   im->Allocate();
   return im;
@@ -52,24 +53,24 @@ void WriteImage( typename itk::SmartPointer<T> image, const char* file_name )
 
 int main()
 {
-  Image::SpacingType::ValueType spacing_a[] = { 1.3, 2.4 };
-  Image::SpacingType spacing = spacing_a;
+  ImageType::SpacingType::ValueType spacing_a[] = { 1.3, 2.4 };
+  ImageType::SpacingType spacing = spacing_a;
 
-  auto in_im = CreateImage<Image>( {{ 15, 21 }} );
+  auto in_im = CreateImage<ImageType>( {{ 15, 21 }} );
   in_im->SetSpacing( spacing );
-  in_im->SetOrigin( Image::PointType( 0 ) );
+  in_im->SetOrigin( ImageType::PointType( 0 ) );
 
-  Image::SizeType out_size = {{ 3, 3 }};
-  Image::SpacingType::ValueType out_spacing_a[] = { 6.5, 16.8 };
-  Image::PointType::ValueType out_origin_a[] = { 2.6, 7.2 };
-  Image::SpacingType out_spacing = out_spacing_a;
-  Image::PointType out_origin = out_origin_a;
+  ImageType::SizeType out_size = {{ 3, 3 }};
+  ImageType::SpacingType::ValueType out_spacing_a[] = { 6.5, 16.8 };
+  ImageType::PointType::ValueType out_origin_a[] = { 2.6, 7.2 };
+  ImageType::SpacingType out_spacing = out_spacing_a;
+  ImageType::PointType out_origin = out_origin_a;
 
-  auto in_vim = CreateImage<VImage>( out_size );
+  auto in_vim = CreateImage<VectorImageType>( out_size );
   in_vim->SetSpacing( out_spacing );
   in_vim->SetOrigin( out_origin );
 
-  auto out_im = CreateImage<Image>( out_size );
+  auto out_im = CreateImage<ImageType>( out_size );
   out_im->SetSpacing( out_spacing );
   out_im->SetOrigin( out_origin );
 
@@ -82,7 +83,7 @@ int main()
     {
     for( int y = 0; y < 3; y++ )
       {
-      NumType v[] = { ( 6 * x + 1 ) * 1.3f, ( 6 * y + 4 ) * 2.4f };
+      PixelType v[] = { ( 6 * x + 1 ) * 1.3f, ( 6 * y + 4 ) * 2.4f };
       in_vim->SetPixel( {{ x, y }}, v );
       }
     }
