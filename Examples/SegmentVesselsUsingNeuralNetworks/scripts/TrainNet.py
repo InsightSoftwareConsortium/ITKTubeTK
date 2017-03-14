@@ -220,6 +220,10 @@ def run():
     with open(solver_config_path, 'w') as f:
         f.write(str(solver_params))
 
+    # Must be called before instantiating solver due to potential
+    # Caffe bug
+    caffe.set_mode_gpu()  # Use GPU
+
     # load the solver and create train and test nets
     # ignore this workaround for lmdb data (can't instantiate two solvers on
     # the same data)
@@ -254,7 +258,6 @@ def run():
         sys.exit(0)
 
     # solve
-    caffe.set_mode_gpu()  # Use GPU
 
     fig = {}
     for layer_name in solver.net.params.keys():
