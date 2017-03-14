@@ -51,21 +51,26 @@ def createExpertSegmentationMask(inputImageFile, treFile, outputExpertSegFile):
 # Shrink images
 def shrink(inputImage, expertImage, outputImagePrefix):
 
-    shrinked_size = "-n 512,512,%d" % script_params["NUM_SLABS"]
-    window_overlap = "-o 0,0,%d" % script_params["SLAB_OVERLAP"]
+    shrinked_size = "512,512,%d" % script_params["NUM_SLABS"]
+    window_overlap = "0,0,%d" % script_params["SLAB_OVERLAP"]
 
-    subprocess.call(["ShrinkImage", shrinked_size, window_overlap,
+    subprocess.call(["ShrinkImage",
+                     "-n", shrinked_size,
+                     "-o", window_overlap,
                      "-p", outputImagePrefix + "_zslab_points.mha",
                      inputImage,
                      outputImagePrefix + "_zslab.mha"])
 
-    subprocess.call(["ShrinkImage", shrinked_size, window_overlap,
+    subprocess.call(["ShrinkImage",
+                     "-n", shrinked_size,
+                     "-o", window_overlap,
                      "-i", outputImagePrefix + "_zslab_points.mha",
                      expertImage,
                      outputImagePrefix + "_zslab_expert.mha"])
 
     """
-    subprocess.call(["ShrinkImage", shrinked_size,
+    subprocess.call(["ShrinkImage",
+                     "-n", shrinked_size,
                      expertImage,
                      outputImagePrefix + "_zslab_expert.mha"])
     """

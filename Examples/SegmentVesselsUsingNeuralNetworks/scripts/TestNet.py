@@ -9,6 +9,8 @@ import glob
 import subprocess
 import time
 
+import matplotlib
+matplotlib.use('AGG')
 import matplotlib.pyplot as plt
 import numpy as np
 import skimage.io
