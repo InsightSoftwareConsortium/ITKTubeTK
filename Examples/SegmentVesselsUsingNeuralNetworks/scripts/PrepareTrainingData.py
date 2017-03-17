@@ -50,6 +50,14 @@ def createExpertSegmentationMask(inputImageFile, treFile, outputExpertSegFile):
 
 # Shrink images
 def shrink(inputImage, expertImage, outputImagePrefix):
+    """Shrink inputImage and expertImage according to script_params.
+    Output (where '*' stands for outputImagePrefix):
+    - *.mha: MHA copy of inputImage
+    - *_zslab_points.mha: Image of max points (vectors)
+    - *_zslab.mha: Shrunk inputImage
+    - *_zslab_expert.mha: Shrunk expertImage
+
+    """
 
     shrinked_size = "512,512,%d" % script_params["NUM_SLABS"]
     window_overlap = "0,0,%d" % script_params["SLAB_OVERLAP"]
