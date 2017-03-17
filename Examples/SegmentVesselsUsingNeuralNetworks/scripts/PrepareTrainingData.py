@@ -89,6 +89,39 @@ def shrink(inputImage, expertImage, outputImagePrefix):
                      inputImage])
 
 
+def createZMIPSlabsFor(name, inputDir, outputDir):
+    # Sanity check
+    if not os.path.exists(outputDir):
+        os.makedirs(outputDir)
+
+    # Process files
+    printSectionHeader('Creating Z-MIP slabs for %ss' % name)
+
+    mhdFiles = glob.glob(os.path.join(inputDir, "*", "*.mhd"))
+
+    i = 0
+
+    for mhdFile in mhdFiles:
+
+        print("\n%s file %d/%d : %s" %
+              (name, i + 1, len(mhdFiles), mhdFile))
+
+        fileName = os.path.basename(os.path.splitext(mhdFile)[0])
+        fileDir = os.path.dirname(os.path.abspath(mhdFile))
+
+        treFile = os.path.join(fileDir, "TRE", fileName + ".tre")
+        expertSegFile = os.path.join(outputDir,
+                                     fileName + "_expert.mha")
+
+        # Process
+        createExpertSegmentationMask(mhdFile, treFile, expertSegFile)
+
+        shrink(mhdFile, expertSegFile,
+               os.path.join(outputDir, fileName))
+
+        i += 1
+
+
 # create z-mip slabs
 def createZMIPSlabs():
 
@@ -100,67 +133,11 @@ def createZMIPSlabs():
     controlOutputDir = os.path.join(hardDrive_proj_root, "controls")
     tumorOutputDir = os.path.join(hardDrive_proj_root, "tumors")
 
-    # Sanity checks
-    if not os.path.exists(controlOutputDir):
-        os.makedirs(controlOutputDir)
-
-    if not os.path.exists(tumorOutputDir):
-        os.makedirs(tumorOutputDir)
-
     # Process control files
-    printSectionHeader('Creating Z-MIP slabs for controls')
-
-    controlMhdFiles = glob.glob(os.path.join(controlInputDir, "*", "*.mhd"))
-
-    i = 0
-
-    for mhdFile in controlMhdFiles:
-
-        print("\ncontrol file %d/%d : %s" %
-              (i + 1, len(controlMhdFiles), mhdFile))
-
-        fileName = os.path.basename(os.path.splitext(mhdFile)[0])
-        fileDir = os.path.dirname(os.path.abspath(mhdFile))
-
-        treFile = os.path.join(fileDir, "TRE", fileName + ".tre")
-        expertSegFile = os.path.join(controlOutputDir,
-                                     fileName + "_expert.mha")
-
-        # Process
-        createExpertSegmentationMask(mhdFile, treFile, expertSegFile)
-
-        shrink(mhdFile, expertSegFile,
-               os.path.join(controlOutputDir, fileName))
-
-        i += 1
+    createZMIPSlabsFor('control', controlInputDir, controlOutputDir)
 
     # Process tumor files
-    printSectionHeader('Creating Z-MIP slabs for tumors')
-
-    tumorMhdFiles = glob.glob(os.path.join(tumorInputDir, "*", "*.mhd"))
-
-    i = 0
-
-    for mhdFile in tumorMhdFiles:
-
-        print("\ntumor file %d/%d : %s" %
-              (i + 1, len(tumorMhdFiles), mhdFile))
-
-        fileName = os.path.basename(os.path.splitext(mhdFile)[0])
-        fileDir = os.path.dirname(os.path.abspath(mhdFile))
-
-        treFile = os.path.join(fileDir, "TRE", fileName + ".tre")
-        expertSegFile = os.path.join(tumorOutputDir,
-                                     fileName + "_expert.mha")
-
-        # Process
-        createExpertSegmentationMask(mhdFile, treFile, expertSegFile)
-
-        shrink(mhdFile, expertSegFile,
-               os.path.join(tumorOutputDir, fileName))
-
-        i += 1
-
+    createZMIPSlabsFor('tumor', tumorInputDir, tumorOutputDir)
 
 # Compute Training mask
 def computeTrainingMask(expertSegMask, outputTrainingMask):
