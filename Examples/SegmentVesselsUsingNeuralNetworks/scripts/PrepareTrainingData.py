@@ -232,6 +232,19 @@ def saveSlabs(mhaFile):
 
 
 def splitData(name, inputDir, outputDir, trainOutputDir, testOutputDir):
+    """Split the various outputs created from the image files in inputDir,
+    which reside in outputDir, between trainOutputDir and
+    testOutputDir, reorganizing them in the process.
+
+    With an input file named *.mhd, the following outputs are moved
+    into the following subdirectories in the destination folder:
+    - *.mha: images
+    - *_zslab.mha: images
+    - *_zslab_points.mha: points
+    - *_expert.mha: expert
+    - *_zslab_expert.mha: expert
+
+    """
     # Process files
     printSectionHeader('Splitting %s data into training and testing' % name)
 
@@ -271,6 +284,12 @@ def splitData(name, inputDir, outputDir, trainOutputDir, testOutputDir):
 
 # assign control and tumor volumes equally to training and testing
 def splitControlTumorData():
+    """Split the data created from the images in the directories Controls
+    and LargeTumor in input_image_root via splitData and put the
+    results in training and testing subdirectories of
+    hardDrive_proj_root.
+
+    """
 
     # Input data directories
     controlInputDir = os.path.join(input_image_root, "Controls")
