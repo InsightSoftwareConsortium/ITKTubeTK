@@ -41,6 +41,9 @@ hardDrive_proj_root = os.path.join(hardDrive_root, proj_rel_path)
 # distinguished from its location in the caffe root directory
 input_image_root = caffe_proj_root
 
+def ensureDirectoryExists(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
 
 # Create segmentation mask from tre file
 def createExpertSegmentationMask(inputImageFile, treFile, outputExpertSegFile):
@@ -127,8 +130,7 @@ def createZMIPSlabsFor(name, inputDir, outputDir):
 
     """
     # Sanity check
-    if not os.path.exists(outputDir):
-        os.makedirs(outputDir)
+    ensureDirectoryExists(outputDir)
 
     # Process files
     printSectionHeader('Creating Z-MIP slabs for %ss' % name)
@@ -291,11 +293,8 @@ def splitControlTumorData():
     testOutputDir = os.path.join(hardDrive_proj_root, "testing")
 
     # Sanity checks
-    if not os.path.exists(trainOutputDir):
-        os.makedirs(trainOutputDir)
-
-    if not os.path.exists(testOutputDir):
-        os.makedirs(testOutputDir)
+    ensureDirectoryExists(trainOutputDir)
+    ensureDirectoryExists(testOutputDir)
 
     # Process control files
     splitData('control', controlInputDir, controlOutputDir, trainOutputDir, testOutputDir)
@@ -404,8 +403,7 @@ def createTrainTestPatches():
 
     trainPatchesDir = os.path.join(trainDataDir, "patches")
     for i in range(2):
-        if not os.path.exists(os.path.join(trainPatchesDir, str(i))):
-            os.makedirs(os.path.join(trainPatchesDir, str(i)))
+        ensureDirectoryExists(os.path.join(trainPatchesDir, str(i)))
 
     trainPatchListFile = open(os.path.join(trainPatchesDir, "train.txt"), "w")
     trainPatchListFile.truncate()
@@ -434,8 +432,7 @@ def createTrainTestPatches():
 
     testPatchesDir = os.path.join(testDataDir, "patches")
     for i in range(2):
-        if not os.path.exists(os.path.join(testPatchesDir, str(i))):
-            os.makedirs(os.path.join(testPatchesDir, str(i)))
+        ensureDirectoryExists(os.path.join(testPatchesDir, str(i)))
 
     testPatchListFile = open(os.path.join(testPatchesDir, "val.txt"), "w+")
     testPatchListFile.truncate()  # Erase file
