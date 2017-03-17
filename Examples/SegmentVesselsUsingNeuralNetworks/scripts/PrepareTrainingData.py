@@ -202,32 +202,30 @@ def computeTrainingMask(expertSegMask, outputTrainingMask):
     # "--notVesselWidth","1"] )
 
 
-# save each of the z-mip slabs from .mha files as a .png file
-def saveSlabs(mhaFileList):
+# save each of the z-mip slabs from an .mha file as .png files
+def saveSlabs(mhaFile):
 
-    for mhaFile in mhaFileList:
+    print 'saving slabs of %s' % mhaFile
 
-        print 'saving slabs of %s' % mhaFile
+    reader = itk.ImageFileReader.New(FileName = str(mhaFile))
+    reader.Update()
+    buf = itk.GetArrayFromImage(reader.GetOutput())
 
-        reader = itk.ImageFileReader.New(FileName = str(mhaFile))
-        reader.Update()
-        buf = itk.GetArrayFromImage(reader.GetOutput())
+    # convert to [0, 255] range
+    buf = 255.0 * (buf - buf.min()) / (buf.max() - buf.min())
+    buf = buf.astype('uint8')
 
-        # convert to [0, 255] range
-        buf = 255.0 * (buf - buf.min()) / (buf.max() - buf.min())
-        buf = buf.astype('uint8')
+    # file names definition
+    fileName = os.path.basename(os.path.splitext(mhaFile)[0])
+    fileDir = os.path.dirname(os.path.abspath(mhaFile))
 
-        # file names definition
-        fileName = os.path.basename(os.path.splitext(mhaFile)[0])
-        fileDir = os.path.dirname(os.path.abspath(mhaFile))
+    # Iterate through each slab
+    for i, slab in enumerate(buf):
 
-        # Iterate through each slab
-        for i, slab in enumerate(buf):
+        outputImage = os.path.join(
+            fileDir, str(i) + "_" + fileName + ".png")
 
-            outputImage = os.path.join(
-                fileDir, str(i) + "_" + fileName + ".png")
-
-            skimage.io.imsave(outputImage, slab)
+        skimage.io.imsave(outputImage, slab)
 
 
 # assign control and tumor volumes equally to training and testing
@@ -292,11 +290,8 @@ def splitControlTumorData():
                    os.path.join(curOutputDir, "expert", filePrefix + "_zslab_expert.mha"))
 
         # save slabs as pngs
-        saveSlabs([
-            os.path.join(curOutputDir, "images", filePrefix + "_zslab.mha"),
-            os.path.join(curOutputDir, "expert",
-                         filePrefix + "_zslab_expert.mha")
-        ])
+        saveSlabs(os.path.join(curOutputDir, "images", filePrefix + "_zslab.mha"))
+        saveSlabs(os.path.join(curOutputDir, "expert", filePrefix + "_zslab_expert.mha"))
 
         i += 1
 
@@ -341,11 +336,8 @@ def splitControlTumorData():
                    os.path.join(curOutputDir, "expert", filePrefix + "_zslab_expert.mha"))
 
         # save slabs as pngs
-        saveSlabs([
-            os.path.join(curOutputDir, "images", filePrefix + "_zslab.mha"),
-            os.path.join(curOutputDir, "expert",
-                         filePrefix + "_zslab_expert.mha")
-        ])
+        saveSlabs(os.path.join(curOutputDir, "images", filePrefix + "_zslab.mha"))
+        saveSlabs(os.path.join(curOutputDir, "expert", filePrefix + "_zslab_expert.mha"))
 
         i += 1
 
