@@ -89,7 +89,39 @@ def shrink(inputImage, expertImage, outputImagePrefix):
                      inputImage])
 
 
+def createZMIPSlabsForFile(mhdFile, outputDir):
+    """Create slabs and related files corresponding to mhdFile in outputDir.
+    Input:
+    - $input/*.mhd: The image file header
+    - $input/TRE/*.tre: The expert TRE file
+    Output:
+    - $output/*_expert.mha: The expert MHA file
+    - : All output from shrink with $output/* as outputImagePrefix
+
+    """
+    fileName = os.path.basename(os.path.splitext(mhdFile)[0])
+    fileDir = os.path.dirname(os.path.abspath(mhdFile))
+
+    treFile = os.path.join(fileDir, "TRE", fileName + ".tre")
+    expertSegFile = os.path.join(outputDir,
+                                 fileName + "_expert.mha")
+
+    # Process
+    createExpertSegmentationMask(mhdFile, treFile, expertSegFile)
+
+    shrink(mhdFile, expertSegFile,
+           os.path.join(outputDir, fileName))
+
 def createZMIPSlabsFor(name, inputDir, outputDir):
+    """Process all image files in immediate subdirectories of inputDir to
+    correspondingly prefixed images in outputDir.  outputDir is
+    created if it doesn't already exist.  The subdirectory structure
+    is not replicated.
+
+    See the documentation of createZMIPSlabsForFile for the exact
+    files created.
+
+    """
     # Sanity check
     if not os.path.exists(outputDir):
         os.makedirs(outputDir)
@@ -104,18 +136,7 @@ def createZMIPSlabsFor(name, inputDir, outputDir):
         print("\n%s file %d/%d : %s" %
               (name, i + 1, len(mhdFiles), mhdFile))
 
-        fileName = os.path.basename(os.path.splitext(mhdFile)[0])
-        fileDir = os.path.dirname(os.path.abspath(mhdFile))
-
-        treFile = os.path.join(fileDir, "TRE", fileName + ".tre")
-        expertSegFile = os.path.join(outputDir,
-                                     fileName + "_expert.mha")
-
-        # Process
-        createExpertSegmentationMask(mhdFile, treFile, expertSegFile)
-
-        shrink(mhdFile, expertSegFile,
-               os.path.join(outputDir, fileName))
+        createZMIPSlabsForFile(mhdFile, outputDir)
 
 
 # create z-mip slabs
