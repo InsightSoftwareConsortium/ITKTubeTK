@@ -145,6 +145,12 @@ def createZMIPSlabsFor(name, inputDir, outputDir):
 
 # create z-mip slabs
 def createZMIPSlabs():
+    """Create slabs from the directories Controls and LargeTumor in
+    input_image_root via createZMIPSlabsFor and put the results in
+    controls and tumors subdirectories, respectively, of
+    hardDrive_proj_root.
+
+    """
 
     # Input data directories where mha/mhd and associated tre files are located
     controlInputDir = os.path.join(input_image_root, "Controls")
@@ -162,6 +168,13 @@ def createZMIPSlabs():
 
 # Compute Training mask
 def computeTrainingMask(expertSegMask, outputTrainingMask):
+    """Compute a training mask from expertSegMask, written to
+    outputTrainingMask.
+
+    Note: A temporary file -- expertSegMask + "_skel.png" -- is
+    created and then removed in the process.
+
+    """
 
     skeletonFile = expertSegMask + "_skel.png"
 
