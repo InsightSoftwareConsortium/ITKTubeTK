@@ -204,6 +204,11 @@ def computeTrainingMask(expertSegMask, outputTrainingMask):
 
 # save each of the z-mip slabs from an .mha file as .png files
 def saveSlabs(mhaFile):
+    """Extract each slab of mhaFile to a separate file.
+    Input: $input/*.mha
+    Output: $input/#_*.png, where # is the slab number
+
+    """
 
     print 'saving slabs of %s' % mhaFile
 
