@@ -99,9 +99,7 @@ def createZMIPSlabsFor(name, inputDir, outputDir):
 
     mhdFiles = glob.glob(os.path.join(inputDir, "*", "*.mhd"))
 
-    i = 0
-
-    for mhdFile in mhdFiles:
+    for i, mhdFile in enumerate(mhdFiles):
 
         print("\n%s file %d/%d : %s" %
               (name, i + 1, len(mhdFiles), mhdFile))
@@ -118,8 +116,6 @@ def createZMIPSlabsFor(name, inputDir, outputDir):
 
         shrink(mhdFile, expertSegFile,
                os.path.join(outputDir, fileName))
-
-        i += 1
 
 
 # create z-mip slabs
