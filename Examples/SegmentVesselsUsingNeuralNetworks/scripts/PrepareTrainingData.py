@@ -163,9 +163,11 @@ def createZMIPSlabs():
 # Compute Training mask
 def computeTrainingMask(expertSegMask, outputTrainingMask):
 
+    skeletonFile = expertSegMask + "_skel.png"
+
     subprocess.call(["SegmentBinaryImageSkeleton",
                      expertSegMask,
-                     expertSegMask + "_skel.png"])
+                     skeletonFile])
 
     subprocess.call([
         "ImageMath", expertSegMask,
@@ -174,11 +176,11 @@ def computeTrainingMask(expertSegMask, outputTrainingMask):
         # subtract vessel mask from dilated version to get vessel boundary
         "-a", "1", "-1", expertSegMask,
         # create training mask with vessel center-line (=255) and boundary (=128)
-        "-a", "0.5", "255", expertSegMask + "_skel.png",
+        "-a", "0.5", "255", skeletonFile,
         # write training mask
         "-W", "0", outputTrainingMask])
 
-    subprocess.call(["rm", "-rf", expertSegMask + "_skel.png"])
+    os.remove(skeletonFile)
 
     # WARNING: Couldn't write to PNG using the implemented CLI
     # subprocess.call( ["ComputeTrainingMask",
