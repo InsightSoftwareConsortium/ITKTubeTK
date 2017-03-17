@@ -205,20 +205,13 @@ def computeTrainingMask(expertSegMask, outputTrainingMask):
 # save each of the z-mip slabs from .mha files as a .png file
 def saveSlabs(mhaFileList):
 
-    PixelType = itk.F
-    Dimension = 3
-    ImageType = itk.Image[PixelType, Dimension]
-    ReaderType = itk.ImageFileReader[ImageType]
-
     for mhaFile in mhaFileList:
 
         print 'saving slabs of %s' % mhaFile
 
-        reader = ReaderType.New()
-        reader.SetFileName(str(mhaFile))
+        reader = itk.ImageFileReader.New(FileName = str(mhaFile))
         reader.Update()
-        img = reader.GetOutput()
-        buf = itk.PyBuffer[ImageType].GetArrayFromImage(img)
+        buf = itk.GetArrayFromImage(reader.GetOutput())
 
         # convert to [0, 255] range
         buf = 255.0 * (buf - buf.min()) / (buf.max() - buf.min())
@@ -229,12 +222,12 @@ def saveSlabs(mhaFileList):
         fileDir = os.path.dirname(os.path.abspath(mhaFile))
 
         # Iterate through each slab
-        for i in range(buf.shape[0]):
+        for i, slab in enumerate(buf):
 
             outputImage = os.path.join(
                 fileDir, str(i) + "_" + fileName + ".png")
 
-            skimage.io.imsave(outputImage, buf[i, :, :])
+            skimage.io.imsave(outputImage, slab)
 
 
 # assign control and tumor volumes equally to training and testing
