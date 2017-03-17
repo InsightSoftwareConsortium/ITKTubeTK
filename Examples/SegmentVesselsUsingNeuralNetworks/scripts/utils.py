@@ -19,13 +19,20 @@ class Logger(object):
         pass
 
 
+def ensureDirectoryExists(path):
+    """Create the directory named by path and any necessary parents if it
+    doesn't exist.
+
+    """
+    if not os.path.exists(path):
+        os.makedirs(path)
+
 # Copy infile to outFile and create dirs if not present
 def copy(inFile, outFile):
 
     # create path if it doesnt exist
     out_path = os.path.dirname(outFile)
-    if not os.path.exists(out_path):
-        os.makedirs(out_path)
+    ensureDirectoryExists(out_path)
 
     # copy file
     shutil.copyfile(inFile, outFile)

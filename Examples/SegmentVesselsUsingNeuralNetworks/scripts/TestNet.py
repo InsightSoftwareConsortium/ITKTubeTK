@@ -305,8 +305,7 @@ def run():
     # set output directory
     outputDir = os.path.join(hardDrive_proj_root, "testing", "cnn")
 
-    if not os.path.exists(outputDir):
-        os.makedirs(outputDir)
+    utils.ensureDirectoryExists(outputDir)
 
     sys.stdout = utils.Logger(os.path.join(outputDir, 'net_test.log'))
 

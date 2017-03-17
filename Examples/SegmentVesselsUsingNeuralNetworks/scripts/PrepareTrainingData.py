@@ -41,10 +41,6 @@ hardDrive_proj_root = os.path.join(hardDrive_root, proj_rel_path)
 # distinguished from its location in the caffe root directory
 input_image_root = caffe_proj_root
 
-def ensureDirectoryExists(path):
-    if not os.path.exists(path):
-        os.makedirs(path)
-
 # Create segmentation mask from tre file
 def createExpertSegmentationMask(inputImageFile, treFile, outputExpertSegFile):
 
@@ -130,7 +126,7 @@ def createZMIPSlabsFor(name, inputDir, outputDir):
 
     """
     # Sanity check
-    ensureDirectoryExists(outputDir)
+    utils.ensureDirectoryExists(outputDir)
 
     # Process files
     printSectionHeader('Creating Z-MIP slabs for %ss' % name)
@@ -293,8 +289,8 @@ def splitControlTumorData():
     testOutputDir = os.path.join(hardDrive_proj_root, "testing")
 
     # Sanity checks
-    ensureDirectoryExists(trainOutputDir)
-    ensureDirectoryExists(testOutputDir)
+    utils.ensureDirectoryExists(trainOutputDir)
+    utils.ensureDirectoryExists(testOutputDir)
 
     # Process control files
     splitData('control', controlInputDir, controlOutputDir, trainOutputDir, testOutputDir)
@@ -403,7 +399,7 @@ def createTrainTestPatches():
 
     trainPatchesDir = os.path.join(trainDataDir, "patches")
     for i in range(2):
-        ensureDirectoryExists(os.path.join(trainPatchesDir, str(i)))
+        utils.ensureDirectoryExists(os.path.join(trainPatchesDir, str(i)))
 
     trainPatchListFile = open(os.path.join(trainPatchesDir, "train.txt"), "w")
     trainPatchListFile.truncate()
@@ -432,7 +428,7 @@ def createTrainTestPatches():
 
     testPatchesDir = os.path.join(testDataDir, "patches")
     for i in range(2):
-        ensureDirectoryExists(os.path.join(testPatchesDir, str(i)))
+        utils.ensureDirectoryExists(os.path.join(testPatchesDir, str(i)))
 
     testPatchListFile = open(os.path.join(testPatchesDir, "val.txt"), "w+")
     testPatchListFile.truncate()  # Erase file
