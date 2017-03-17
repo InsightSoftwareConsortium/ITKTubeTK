@@ -37,6 +37,10 @@ proj_rel_path = script_params['PROJECT_REL_PATH']
 caffe_proj_root = os.path.join(caffe_root, "data", proj_rel_path)
 hardDrive_proj_root = os.path.join(hardDrive_root, proj_rel_path)
 
+# Where the input data is to be found, to be conceptually
+# distinguished from its location in the caffe root directory
+input_image_root = caffe_proj_root
+
 
 # Create segmentation mask from tre file
 def createExpertSegmentationMask(inputImageFile, treFile, outputExpertSegFile):
@@ -143,8 +147,8 @@ def createZMIPSlabsFor(name, inputDir, outputDir):
 def createZMIPSlabs():
 
     # Input data directories where mha/mhd and associated tre files are located
-    controlInputDir = os.path.join(caffe_proj_root, "Controls")
-    tumorInputDir = os.path.join(caffe_proj_root, "LargeTumor")
+    controlInputDir = os.path.join(input_image_root, "Controls")
+    tumorInputDir = os.path.join(input_image_root, "LargeTumor")
 
     # Output data directories
     controlOutputDir = os.path.join(hardDrive_proj_root, "controls")
@@ -222,8 +226,8 @@ def saveSlabs(mhaFileList):
 def splitControlTumorData():
 
     # Input data directories
-    controlInputDir = os.path.join(caffe_proj_root, "Controls")
-    tumorInputDir = os.path.join(caffe_proj_root, "LargeTumor")
+    controlInputDir = os.path.join(input_image_root, "Controls")
+    tumorInputDir = os.path.join(input_image_root, "LargeTumor")
 
     # Output data directories
     controlOutputDir = os.path.join(hardDrive_proj_root, "controls")
