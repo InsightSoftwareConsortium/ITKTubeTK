@@ -233,6 +233,49 @@ def saveSlabs(mhaFile):
         skimage.io.imsave(outputImage, slab)
 
 
+def splitData(name, inputDir, outputDir, trainOutputDir, testOutputDir):
+    # Process files
+    printSectionHeader('Splitting %s data into training and testing' % name)
+
+    mhdFiles = glob.glob(os.path.join(inputDir, "*", "*.mhd"))
+
+    for i, mhdFile in enumerate(mhdFiles):
+
+        print("\n%s file %d/%d : %s" %
+              (name, i + 1, len(mhdFiles), mhdFile))
+
+        filePrefix = os.path.basename(os.path.splitext(mhdFile)[0])
+
+        # Split equally for training and testing
+        if i % 2 == 0:
+            curOutputDir = trainOutputDir
+        else:
+            curOutputDir = testOutputDir
+
+        # copy input volume
+        utils.copy(os.path.join(outputDir, filePrefix + ".mha"),
+                   os.path.join(curOutputDir, "images", filePrefix + ".mha"))
+
+        # copy z-mip slab volume
+        utils.copy(os.path.join(outputDir, filePrefix + "_zslab.mha"),
+                   os.path.join(curOutputDir, "images", filePrefix + "_zslab.mha"))
+
+        # copy z-mip slab point map
+        utils.copy(os.path.join(outputDir, filePrefix + "_zslab_points.mha"),
+                   os.path.join(curOutputDir, "points", filePrefix + "_zslab_points.mha"))
+
+        # copy expert volume
+        utils.copy(os.path.join(outputDir, filePrefix + "_expert.mha"),
+                   os.path.join(curOutputDir, "expert", filePrefix + "_expert.mha"))
+
+        # copy expert z-mip slab volume
+        utils.copy(os.path.join(outputDir, filePrefix + "_zslab_expert.mha"),
+                   os.path.join(curOutputDir, "expert", filePrefix + "_zslab_expert.mha"))
+
+        # save slabs as pngs
+        saveSlabs(os.path.join(curOutputDir, "images", filePrefix + "_zslab.mha"))
+        saveSlabs(os.path.join(curOutputDir, "expert", filePrefix + "_zslab_expert.mha"))
+
 # assign control and tumor volumes equally to training and testing
 def splitControlTumorData():
 
@@ -255,96 +298,10 @@ def splitControlTumorData():
         os.makedirs(testOutputDir)
 
     # Process control files
-    printSectionHeader('Splitting control data into training and testing')
-
-    controlMhdFiles = glob.glob(os.path.join(controlInputDir, "*", "*.mhd"))
-
-    i = 0
-
-    for mhdFile in controlMhdFiles:
-
-        print("\ncontrol file %d/%d : %s" %
-              (i + 1, len(controlMhdFiles), mhdFile))
-
-        filePrefix = os.path.basename(os.path.splitext(mhdFile)[0])
-
-        # Split equally for training and testing
-        if i % 2 == 0:
-            curOutputDir = trainOutputDir
-        else:
-            curOutputDir = testOutputDir
-
-        # copy input volume
-        utils.copy(os.path.join(controlOutputDir, filePrefix + ".mha"),
-                   os.path.join(curOutputDir, "images", filePrefix + ".mha"))
-
-        # copy z-mip slab volume
-        utils.copy(os.path.join(controlOutputDir, filePrefix + "_zslab.mha"),
-                   os.path.join(curOutputDir, "images", filePrefix + "_zslab.mha"))
-
-        # copy z-mip slab point map
-        utils.copy(os.path.join(controlOutputDir, filePrefix + "_zslab_points.mha"),
-                   os.path.join(curOutputDir, "points", filePrefix + "_zslab_points.mha"))
-
-        # copy expert volume
-        utils.copy(os.path.join(controlOutputDir, filePrefix + "_expert.mha"),
-                   os.path.join(curOutputDir, "expert", filePrefix + "_expert.mha"))
-
-        # copy expert z-mip slab volume
-        utils.copy(os.path.join(controlOutputDir, filePrefix + "_zslab_expert.mha"),
-                   os.path.join(curOutputDir, "expert", filePrefix + "_zslab_expert.mha"))
-
-        # save slabs as pngs
-        saveSlabs(os.path.join(curOutputDir, "images", filePrefix + "_zslab.mha"))
-        saveSlabs(os.path.join(curOutputDir, "expert", filePrefix + "_zslab_expert.mha"))
-
-        i += 1
+    splitData('control', controlInputDir, controlOutputDir, trainOutputDir, testOutputDir)
 
     # Process tumor files
-    printSectionHeader('Splitting tumor data into training and testing')
-
-    tumorMhdFiles = glob.glob(os.path.join(tumorInputDir, "*", "*.mhd"))
-
-    i = 0
-
-    for mhdFile in tumorMhdFiles:
-
-        print("\ntumor file %d / %d : %s" %
-              (i + 1, len(tumorMhdFiles), mhdFile))
-
-        filePrefix = os.path.basename(os.path.splitext(mhdFile)[0])
-
-        # Split equally for training and testing
-        if i % 2 == 0:
-            curOutputDir = trainOutputDir
-        else:
-            curOutputDir = testOutputDir
-
-        # copy input volume
-        utils.copy(os.path.join(tumorOutputDir, filePrefix + ".mha"),
-                   os.path.join(curOutputDir, "images", filePrefix + ".mha"))
-
-        # copy z-mip slab volume
-        utils.copy(os.path.join(tumorOutputDir, filePrefix + "_zslab.mha"),
-                   os.path.join(curOutputDir, "images", filePrefix + "_zslab.mha"))
-
-        # copy z-mip slab point map
-        utils.copy(os.path.join(tumorOutputDir, filePrefix + "_zslab_points.mha"),
-                   os.path.join(curOutputDir, "points", filePrefix + "_zslab_points.mha"))
-
-        # copy expert volume
-        utils.copy(os.path.join(tumorOutputDir, filePrefix + "_expert.mha"),
-                   os.path.join(curOutputDir, "expert", filePrefix + "_expert.mha"))
-
-        # copy expert z-mip slab volume
-        utils.copy(os.path.join(tumorOutputDir, filePrefix + "_zslab_expert.mha"),
-                   os.path.join(curOutputDir, "expert", filePrefix + "_zslab_expert.mha"))
-
-        # save slabs as pngs
-        saveSlabs(os.path.join(curOutputDir, "images", filePrefix + "_zslab.mha"))
-        saveSlabs(os.path.join(curOutputDir, "expert", filePrefix + "_zslab_expert.mha"))
-
-        i += 1
+    splitData('tumor', tumorInputDir, tumorOutputDir, trainOutputDir, testOutputDir)
 
 
 # Extracts +ve (vessel center) and -ve (background) patches from image
