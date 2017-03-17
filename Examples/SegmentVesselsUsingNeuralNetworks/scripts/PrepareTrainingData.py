@@ -250,25 +250,20 @@ def splitData(name, inputDir, outputDir, trainOutputDir, testOutputDir):
         else:
             curOutputDir = testOutputDir
 
-        # copy input volume
-        utils.copy(os.path.join(outputDir, filePrefix + ".mha"),
-                   os.path.join(curOutputDir, "images", filePrefix + ".mha"))
+        # "suffix" is surround by fileName and '.mha'
+        # "dir" is a subdirectory of curOutputDir
+        suffixesAndDirsForCopying = [
+            ('', 'images'), # input volume
+            ('_zslab', 'images'), # z-mip slab volume
+            ('_zslab_points', 'points'), # z-mip slab point map
+            ('_expert', 'expert'), # expert volume
+            ('_zslab_expert', 'expert'), # expert z-mip slab volume
+        ]
 
-        # copy z-mip slab volume
-        utils.copy(os.path.join(outputDir, filePrefix + "_zslab.mha"),
-                   os.path.join(curOutputDir, "images", filePrefix + "_zslab.mha"))
-
-        # copy z-mip slab point map
-        utils.copy(os.path.join(outputDir, filePrefix + "_zslab_points.mha"),
-                   os.path.join(curOutputDir, "points", filePrefix + "_zslab_points.mha"))
-
-        # copy expert volume
-        utils.copy(os.path.join(outputDir, filePrefix + "_expert.mha"),
-                   os.path.join(curOutputDir, "expert", filePrefix + "_expert.mha"))
-
-        # copy expert z-mip slab volume
-        utils.copy(os.path.join(outputDir, filePrefix + "_zslab_expert.mha"),
-                   os.path.join(curOutputDir, "expert", filePrefix + "_zslab_expert.mha"))
+        for suffix, dir in suffixesAndDirsForCopying:
+            fileName = filePrefix + suffix + '.mha'
+            utils.copy(os.path.join(outputDir, fileName),
+                       os.path.join(curOutputDir, dir, fileName))
 
         # save slabs as pngs
         saveSlabs(os.path.join(curOutputDir, "images", filePrefix + "_zslab.mha"))
