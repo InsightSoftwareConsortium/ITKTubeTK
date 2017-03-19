@@ -81,10 +81,10 @@ if( TubeTK_USE_BOOST )
     ComputeRegionSignatures
     SegmentUsingQuantileThreshold
     TransferLabelsToRegions )
-  if( TubeTK_USE_JsonCpp )
+  if( TubeTK_USE_JSONCPP )
     list(TubeTK_${proj}_Boost_MODULES
       ComputeTubeGraphSimilarityKernelMatrix )
-  endif( TubeTK_USE_JsonCpp )
+  endif( TubeTK_USE_JSONCPP )
   list( APPEND TubeTK_${proj}_MODULES
     ${TubeTK_${proj}_Boost_MODULES} )
 endif( TubeTK_USE_BOOST )

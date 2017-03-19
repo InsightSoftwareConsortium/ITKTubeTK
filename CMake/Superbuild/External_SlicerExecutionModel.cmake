@@ -31,12 +31,12 @@ endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 # Set dependency list
 set( ${proj}_DEPENDENCIES "ITK" )
-if( TubeTK_USE_JsonCpp )
+if( TubeTK_USE_JSONCPP )
   list( APPEND ${proj}_DEPENDENCIES "JsonCpp" )
   set( ${proj}_DEPENDENCIES_ARGS "-DJsonCpp_DIR:PATH=${JsonCpp_DIR}"
     "-DJsonCpp_LIBRARIES:PATH=${JsonCpp_LIBRARIES}"
     "-DJsonCpp_INCLUDE_DIRS:PATH=${JsonCpp_INCLUDE_DIRS}" )
-endif( TubeTK_USE_JsonCpp )
+endif( TubeTK_USE_JSONCPP )
 
 # Include dependent projects, if any.
 ExternalProject_Include_Dependencies( ${proj}

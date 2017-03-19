@@ -42,7 +42,7 @@ SEMMacroBuildCLI(
     ${TubeTK_SOURCE_DIR}/Base/Filtering )
 
 #-----------------------------------------------------------------------------
-if( TubeTK_USE_JsonCpp )
+if( TubeTK_USE_JSONCPP )
 
   set( _toolname CompareJsonFiles )
 
@@ -58,7 +58,7 @@ if( TubeTK_USE_JsonCpp )
     DESTINATION ${TubeTK_INSTALL_BIN_DIR}
     COMPONENT Runtime )
 
-endif( TubeTK_USE_JsonCpp )
+endif( TubeTK_USE_JSONCPP )
 
 #-----------------------------------------------------------------------------
 set( _toolname CompareTextFiles )

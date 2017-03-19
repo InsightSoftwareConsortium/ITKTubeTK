@@ -65,8 +65,8 @@ set( TubeTK_BUILD_USING_SLICER ON )
 set( Slicer_DIR "/usr/src/Slicer-Release/Slicer-build" )
 
 # ArrayFire
-set( TubeTK_USE_GPU_ARRAYFIRE OFF )
-#if TubeTK_USE_GPU_ARRAYFIRE is ON, you need to fix the following line
+set( TubeTK_USE_ARRAYFIRE OFF )
+#if TubeTK_USE_ARRAYFIRE is ON, you need to fix the following line
 # set( ArrayFire_DIR "/usr/local" )
 
 set( TubeTK_BUILD_APPLICATIONS ON )

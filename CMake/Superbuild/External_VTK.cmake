@@ -28,12 +28,12 @@ if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
   message( FATAL_ERROR "${proj}_DIR variable is defined but corresponds to a nonexistent directory" )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
-if( TubeTK_USE_JsonCpp )
+if( TubeTK_USE_JSONCPP )
   set( ${proj}_DEPENDENCIES "JsonCpp" )
   set( ${proj}_DEPENDENCIES_ARGS "-DJsonCpp_DIR:PATH=${JsonCpp_DIR}"
     "-DJsonCpp_LIBRARIES:PATH=${JsonCpp_LIBRARIES}"
     "-DJsonCpp_INCLUDE_DIRS:PATH=${JsonCpp_INCLUDE_DIRS}" )
-endif( TubeTK_USE_JsonCpp )
+endif( TubeTK_USE_JSONCPP )
 
 # Include dependent projects, if any.
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)

@@ -63,10 +63,10 @@ target_link_libraries( tubeBaseCLIHeaderTest ${ITK_LIBRARIES} )
 set(tubeBaseCLITests_TARGET_LIBRARIES
   ${ITK_LIBRARIES}
   TubeCLI )
-if( TubeTK_USE_JsonCpp )
+if( TubeTK_USE_JSONCPP )
   list(APPEND tubeBaseCLITests_TARGET_LIBRARIES
     ${JsonCpp_LIBRARIES} )
-endif( TubeTK_USE_JsonCpp )
+endif( TubeTK_USE_JSONCPP )
 
 set(no_install_option )
 if(NOT TubeTK_INSTALL_DEVELOPMENT)
