@@ -23,9 +23,9 @@
 
 project( TubeTKFiltering )
 
-if( TubeTK_USE_GPU_ARRAYFIRE )
+if( TubeTK_USE_ARRAYFIRE )
   include_directories( ${ArrayFire_INCLUDE_DIRS} )
-endif( TubeTK_USE_GPU_ARRAYFIRE )
+endif( TubeTK_USE_ARRAYFIRE )
 
 set( TubeTK_Base_Filtering_H_Files
   itkGeneralizedDistanceTransformImageFilter.h
@@ -107,14 +107,14 @@ set( TubeTK_Base_Filtering_HXX_Files
   tubeTreeFilters.hxx )
 
 # Add GPU Array Fire based filter source files here
-if( TubeTK_USE_GPU_ARRAYFIRE )
+if( TubeTK_USE_ARRAYFIRE )
   list( APPEND TubeTK_Base_Filtering_H_Files
     itktubeArrayFireGlueUtilities.h
     itktubeGPUArrayFireGaussianDerivativeFilter.h )
 
   list( APPEND TubeTK_Base_Filtering_HXX_Files
     itktubeGPUArrayFireGaussianDerivativeFilter.hxx )
-endif( TubeTK_USE_GPU_ARRAYFIRE )
+endif( TubeTK_USE_ARRAYFIRE )
 
 add_library( ${PROJECT_NAME} INTERFACE )
 target_include_directories( ${PROJECT_NAME} INTERFACE

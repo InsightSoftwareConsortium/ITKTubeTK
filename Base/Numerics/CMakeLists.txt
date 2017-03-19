@@ -101,9 +101,9 @@ add_library( ${PROJECT_NAME} STATIC
   ${TubeTK_Base_Numerics_H_Files}
   ${TubeTK_Base_Numerics_HXX_Files}
   ${TubeTK_Base_Numerics_SRCS} )
-if( TubeTK_USE_GPU_ARRAYFIRE )
+if( TubeTK_USE_ARRAYFIRE )
   target_link_libraries( ${PROJECT_NAME} PUBLIC ${ArrayFire_LIBRARIES} )
-endif( TubeTK_USE_GPU_ARRAYFIRE )
+endif( TubeTK_USE_ARRAYFIRE )
 target_link_libraries( ${PROJECT_NAME} PUBLIC TubeTKCommon )
 target_include_directories( ${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )

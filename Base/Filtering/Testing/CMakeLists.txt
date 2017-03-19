@@ -64,10 +64,10 @@ set( tubeBaseFilteringTests_SRCS
   itktubeTubeEnhancingDiffusion2DImageFilterTest.cxx )
 
 # Add tests of filters based on the ArrayFire Library
-if( TubeTK_USE_GPU_ARRAYFIRE )
+if( TubeTK_USE_ARRAYFIRE )
   list( APPEND tubeBaseFilteringTests_SRCS
     itktubeGPUArrayFireGaussianDerivativeFilterTest.cxx )
-endif( TubeTK_USE_GPU_ARRAYFIRE )
+endif( TubeTK_USE_ARRAYFIRE )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
@@ -78,9 +78,9 @@ add_executable( tubeBaseFilteringHeaderTest
   tubeBaseFilteringHeaderTest.cxx )
 target_link_libraries( tubeBaseFilteringHeaderTest
   TubeTKFiltering ${ITK_LIBRARIES} )
-if( TubeTK_USE_GPU_ARRAYFIRE )
+if( TubeTK_USE_ARRAYFIRE )
   target_link_libraries( tubeBaseFilteringHeaderTest ${ArrayFire_LIBRARIES} )
-endif( TubeTK_USE_GPU_ARRAYFIRE )
+endif( TubeTK_USE_ARRAYFIRE )
 
 set( no_install_option )
 if( NOT TubeTK_INSTALL_DEVELOPMENT )
@@ -98,9 +98,9 @@ SEMMacroBuildCLI(
   EXECUTABLE_ONLY
   ${no_install_option}
   )
-if( TubeTK_USE_GPU_ARRAYFIRE )
+if( TubeTK_USE_ARRAYFIRE )
   target_link_libraries( tubeBaseFilteringTests ${ArrayFire_LIBRARIES} )
-endif( TubeTK_USE_GPU_ARRAYFIRE )
+endif( TubeTK_USE_ARRAYFIRE )
 
 add_test( NAME tubeBaseFilteringHeaderTest
   COMMAND ${BASE_FILTERING_HEADER_TEST} )
@@ -156,7 +156,7 @@ ExternalData_Add_Test( TubeTKData
       ${TEMP}/itktubeFFTGaussianDerivativeIFFTFilterTest3.mha )
 
 # GPU ArrayFire Gaussian Derivative Tests - begin
-if( TubeTK_USE_GPU_ARRAYFIRE )
+if( TubeTK_USE_ARRAYFIRE )
   ExternalData_Add_Test( TubeTKData
     NAME itktubeGPUArrayFireGaussianDerivativeFilterTest1
     COMMAND ${BASE_FILTERING_TESTS}
@@ -190,7 +190,7 @@ if( TubeTK_USE_GPU_ARRAYFIRE )
         DATA{${TubeTK_DATA_ROOT}/im0001.mha}
         ${TEMP}/itktubeGPUArrayFireGaussianDerivativeFilterTest3.mha )
 
-endif( TubeTK_USE_GPU_ARRAYFIRE )
+endif( TubeTK_USE_ARRAYFIRE )
 # GPU ArrayFire Gaussian Derivative Tests - end
 
 #--compare DATA{${TubeTK_DATA_ROOT}/itktubeRidgeFFTFilterTest1.mha}

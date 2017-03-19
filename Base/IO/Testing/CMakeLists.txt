@@ -34,10 +34,10 @@ if( TubeTK_USE_LIBSVM )
   include_directories( ${LIBSVM_INCLUDE_DIRS} )
 endif( TubeTK_USE_LIBSVM )
 
-if( TubeTK_USE_RandomForest )
+if( TubeTK_USE_RANDOMFOREST )
   find_package( RandomForest REQUIRED )
   include_directories( ${RandomForest_INCLUDE_DIR} )
-endif( TubeTK_USE_RandomForest )
+endif( TubeTK_USE_RANDOMFOREST )
 
 find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
@@ -70,10 +70,10 @@ if( TubeTK_USE_LIBSVM )
   list( APPEND tubeBaseIOTests_SRCS
     itktubePDFSegmenterSVMIOTest.cxx )
 endif( TubeTK_USE_LIBSVM )
-if( TubeTK_USE_RandomForest )
+if( TubeTK_USE_RANDOMFOREST )
   list( APPEND tubeBaseIOTests_SRCS
     itktubePDFSegmenterRandomForestIOTest.cxx )
-endif( TubeTK_USE_RandomForest )
+endif( TubeTK_USE_RANDOMFOREST )
 
 
 add_executable( tubeBaseIOHeaderTest
@@ -85,9 +85,9 @@ if( TubeTK_USE_LIBSVM )
 endif( TubeTK_USE_LIBSVM )
 
 set( tubeBaseIO_External_Libraries )
-if( TubeTK_USE_GPU_ARRAYFIRE )
+if( TubeTK_USE_ARRAYFIRE )
   set( tubeBaseIO_External_Libraries ${ArrayFire_LIBRARIES} )
-endif( TubeTK_USE_GPU_ARRAYFIRE )
+endif( TubeTK_USE_ARRAYFIRE )
 if( TubeTK_USE_LIBSVM )
   set( tubeBaseIO_External_Libraries ${LIBSVM_LIBRARIES} )
 endif( TubeTK_USE_LIBSVM )
@@ -153,7 +153,7 @@ if( TubeTK_USE_LIBSVM )
         ${TEMP}/itktubePDFSegmenterSVMIOTest2.msvm )
 endif( TubeTK_USE_LIBSVM )
 
-if( TubeTK_USE_RandomForest )
+if( TubeTK_USE_RANDOMFOREST )
   ExternalData_Add_Test( TubeTKData
     NAME itktubePDFSegmenterRandomForestIOTest
     COMMAND ${BASE_IO_TESTS}
@@ -168,7 +168,7 @@ if( TubeTK_USE_RandomForest )
         ${TEMP}/itktubePDFSegmenterRandomForestIOTest.mrf
         ${TEMP}/itktubePDFSegmenterRandomForestIOTest2.mha
         ${TEMP}/itktubePDFSegmenterRandomForestIOTest2.mrf )
-endif( TubeTK_USE_RandomForest )
+    endif( TubeTK_USE_RANDOMFOREST )
 
 ExternalData_Add_Test( TubeTKData
   NAME itktubeRidgeSeedFilterIOTest

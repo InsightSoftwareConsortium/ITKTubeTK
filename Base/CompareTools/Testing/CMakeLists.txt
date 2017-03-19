@@ -78,7 +78,7 @@ ExternalData_Add_Test( TubeTKData
     -t DATA{${TubeTK_DATA_ROOT}/ResampleImageTest2.mha}
     -b DATA{${TubeTK_DATA_ROOT}/ResampleImageTest2SpacingOff.mha} )
 
-if( TubeTK_USE_JsonCpp )
+if( TubeTK_USE_JSONCPP )
   add_test( NAME CompareJsonFiles-Test1
     COMMAND ${CompareJsonFiles_EXE}
       -t ${CMAKE_CURRENT_SOURCE_DIR}/CompareJsonFilesTestTest1.json
@@ -94,4 +94,4 @@ if( TubeTK_USE_JsonCpp )
     COMMAND ${CompareJsonFiles_EXE}
       -t ${CMAKE_CURRENT_SOURCE_DIR}/CompareJsonFilesTestTest2.json
       -b ${CMAKE_CURRENT_SOURCE_DIR}/CompareJsonFilesTestBaseline2.json )
-endif( TubeTK_USE_JsonCpp )
+endif( TubeTK_USE_JSONCPP )

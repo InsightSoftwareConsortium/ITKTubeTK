@@ -71,14 +71,14 @@ add_executable( tubeBaseNumericsHeaderTest
   tubeBaseNumericsHeaderTest.cxx )
 target_link_libraries( tubeBaseNumericsHeaderTest
   TubeTKCommon TubeTKFiltering TubeTKNumerics ${ITK_LIBRARIES} )
-if( TubeTK_USE_GPU_ARRAYFIRE )
+if( TubeTK_USE_ARRAYFIRE )
   target_link_libraries( tubeBaseNumericsHeaderTest ${ArrayFire_LIBRARIES} )
-endif( TubeTK_USE_GPU_ARRAYFIRE )
+endif( TubeTK_USE_ARRAYFIRE )
 
 set( tubeBaseNumerics_External_Libraries )
-if( TubeTK_USE_GPU_ARRAYFIRE )
+if( TubeTK_USE_ARRAYFIRE )
   set( tubeBaseNumerics_External_Libraries ${ArrayFire_LIBRARIES} )
-endif( TubeTK_USE_GPU_ARRAYFIRE )
+endif( TubeTK_USE_ARRAYFIRE )
 
 set( no_install_option )
 if( NOT TubeTK_INSTALL_DEVELOPMENT )

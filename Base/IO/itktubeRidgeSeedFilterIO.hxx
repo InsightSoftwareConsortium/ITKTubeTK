@@ -30,7 +30,7 @@ limitations under the License.
 #  include "itktubePDFSegmenterSVMIO.h"
 #endif
 
-#ifdef TubeTK_USE_RandomForest
+#ifdef TubeTK_USE_RANDOMFOREST
 #  include "itktubePDFSegmenterRandomForestIO.h"
 #endif
 
@@ -239,7 +239,7 @@ Read( const char * _headerName )
         }
       }
 #endif
-#ifdef TubeTK_USE_RandomForest
+#ifdef TubeTK_USE_RANDOMFOREST
     else
       {
       typedef PDFSegmenterRandomForest< TImage, TLabelMap >
@@ -265,7 +265,7 @@ Read( const char * _headerName )
         std::cerr << "PDFSegmenter type not known." << std::endl;
         std::cerr << "  May require LibSVM or RandomForest." << std::endl;
         }
-#ifdef TubeTK_USE_RandomForest
+#ifdef TubeTK_USE_RANDOMFOREST
       }
 #endif
 #ifdef TubeTK_USE_LIBSVM
@@ -355,7 +355,7 @@ Write( const char * _headerName )
         }
       }
 #endif
-#ifdef TubeTK_USE_RandomForest
+#ifdef TubeTK_USE_RANDOMFOREST
     else
       {
       typedef PDFSegmenterRandomForest< TImage, TLabelMap >
@@ -378,7 +378,7 @@ Write( const char * _headerName )
         std::cerr << "PDFSegmenter type not known." << std::endl;
         std::cerr << "  May require LibSVM or RandomForest." << std::endl;
         }
-#ifdef TubeTK_USE_RandomForest
+#ifdef TubeTK_USE_RANDOMFOREST
       }
 #endif
 #ifdef TubeTK_USE_LIBSVM

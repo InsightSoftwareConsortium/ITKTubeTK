@@ -318,7 +318,7 @@ endif()
 #
 # GPU ArrayFire setup
 #
-option( TubeTK_USE_GPU_ARRAYFIRE
+option( TubeTK_USE_ARRAYFIRE
   "Use the ArrayFire library to speedup filtering opertions using the GPU." OFF)
 
 #
@@ -392,7 +392,7 @@ mark_as_advanced( USE_SYSTEM_ITK )
 #
 # JsonCpp library setup.
 #
-option( TubeTK_USE_JsonCpp "Use JsonCpp to enable additional functionality."
+option( TubeTK_USE_JSONCPP "Use JsonCpp to enable additional functionality."
   ON )
 option( USE_SYSTEM_JSONCPP
   "Exclude JsonCpp from superbuild and use an existing build." OFF )
@@ -420,11 +420,11 @@ mark_as_advanced( LIBSVM_DIR )
 #
 # RandomForest setup.
 #
-option( TubeTK_USE_RandomForest
+option( TubeTK_USE_RANDOMFOREST
   "Use RandomForest to enable additional functionality." OFF )
-option( USE_SYSTEM_RandomForest
+option( USE_SYSTEM_RANDOMFOREST
   "Exclude RandomForest from superbuild and use an existing build." OFF )
-mark_as_advanced( USE_SYSTEM_RandomForest )
+mark_as_advanced( USE_SYSTEM_RANDOMFOREST )
 mark_as_advanced( RandomForest_DIR )
 
 
@@ -523,14 +523,14 @@ if( TubeTK_USE_LIBSVM )
   find_package( LIBSVM REQUIRED )
 endif( TubeTK_USE_LIBSVM )
 
-if( TubeTK_USE_RandomForest )
+if( TubeTK_USE_RANDOMFOREST )
   find_package( RandomForest REQUIRED )
-endif( TubeTK_USE_RandomForest )
+endif( TubeTK_USE_RANDOMFOREST )
 
-if( TubeTK_USE_GPU_ARRAYFIRE )
+if( TubeTK_USE_ARRAYFIRE )
   find_package( ArrayFire REQUIRED )
   include_directories( ${ArrayFire_INCLUDE_DIRS} )
-endif( TubeTK_USE_GPU_ARRAYFIRE )
+endif( TubeTK_USE_ARRAYFIRE )
 
 if( TubeTK_USE_BOOST )
   set( Boost_USE_STATIC_LIBS ON )

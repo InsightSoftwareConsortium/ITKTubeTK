@@ -28,7 +28,7 @@ limitations under the License.
 #ifdef TubeTK_USE_LIBSVM
 #  include "itktubePDFSegmenterSVMIO.h"
 #endif
-#ifdef TubeTK_USE_RandomForest
+#ifdef TubeTK_USE_RANDOMFOREST
 #  include "itktubePDFSegmenterRandomForestIO.h"
 #endif
 #include "itktubeTubeExtractorIO.h"

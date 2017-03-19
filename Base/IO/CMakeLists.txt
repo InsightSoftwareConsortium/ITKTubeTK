@@ -34,12 +34,12 @@ if( TubeTK_USE_LIBSVM )
   list( APPEND TubeTK_Base_IO_H_Files
     itktubePDFSegmenterSVMIO.h )
 endif( TubeTK_USE_LIBSVM )
-if( TubeTK_USE_RandomForest )
+if( TubeTK_USE_RANDOMFOREST )
   find_package( RandomForest REQUIRED )
   include_directories( ${RandomForest_INCLUDE_DIR} )
   list( APPEND TubeTK_Base_IO_H_Files
     itktubePDFSegmenterRandomForestIO.h )
-endif( TubeTK_USE_RandomForest )
+endif( TubeTK_USE_RANDOMFOREST )
 
 set( TubeTK_Base_IO_HXX_Files
   itktubePDFSegmenterParzenIO.hxx
@@ -50,10 +50,10 @@ if( TubeTK_USE_LIBSVM )
   list( APPEND TubeTK_Base_IO_HXX_Files
     itktubePDFSegmenterSVMIO.hxx )
 endif( TubeTK_USE_LIBSVM )
-if( TubeTK_USE_RandomForest )
+if( TubeTK_USE_RANDOMFOREST )
   list( APPEND TubeTK_Base_IO_HXX_Files
     itktubePDFSegmenterRandomForestIO.hxx )
-endif( TubeTK_USE_RandomForest )
+endif( TubeTK_USE_RANDOMFOREST )
 
 add_library( ${PROJECT_NAME} INTERFACE )
 

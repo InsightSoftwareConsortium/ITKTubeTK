@@ -95,11 +95,11 @@ list_conditional_append( TubeTK_USE_CPPCHECK TubeTK_DEPENDENCIES "Cppcheck" )
 
 list_conditional_append( TubeTK_USE_KWSTYLE TubeTK_DEPENDENCIES "KWStyle" )
 
-list_conditional_append( TubeTK_USE_JsonCpp TubeTK_DEPENDENCIES "JsonCpp" )
+list_conditional_append( TubeTK_USE_JSONCPP TubeTK_DEPENDENCIES "JsonCpp" )
 
 list_conditional_append( TubeTK_USE_LIBSVM TubeTK_DEPENDENCIES "LIBSVM" )
 
-list_conditional_append( TubeTK_USE_RandomForest TubeTK_DEPENDENCIES
+list_conditional_append( TubeTK_USE_RANDOMFOREST TubeTK_DEPENDENCIES
   "RandomForest" )
 
 set( TubeTK_EXTERNAL_PROJECTS_ARGS )
@@ -187,13 +187,13 @@ ExternalProject_Add( ${proj}
     -DTubeTK_CONFIG_BINARY_DIR:PATH=${TubeTK_CONFIG_BINARY_DIR}
     -DTubeTK_EXECUTABLE_DIRS:STRING=${TubeTK_EXECUTABLE_DIRS}
     -DTubeTK_SUPPORT_2D_IMAGES:BOOL=${TubeTK_SUPPORT_2D_IMAGES}
-    -DTubeTK_USE_GPU_ARRAYFIRE:BOOL=${TubeTK_USE_GPU_ARRAYFIRE}
+    -DTubeTK_USE_ARRAYFIRE:BOOL=${TubeTK_USE_ARRAYFIRE}
     -DTubeTK_USE_BOOST:BOOL=${TubeTK_USE_BOOST}
     -DTubeTK_USE_CPPCHECK:BOOL=${TubeTK_USE_CPPCHECK}
     -DTubeTK_USE_EXAMPLES_AS_TESTS:BOOL=${TubeTK_USE_EXAMPLES_AS_TESTS}
-    -DTubeTK_USE_JsonCpp:BOOL=${TubeTK_USE_JsonCpp}
+    -DTubeTK_USE_JSONCPP:BOOL=${TubeTK_USE_JSONCPP}
     -DTubeTK_USE_LIBSVM:BOOL=${TubeTK_USE_LIBSVM}
-    -DTubeTK_USE_RandomForest:BOOL=${TubeTK_USE_RandomForest}
+    -DTubeTK_USE_RANDOMFOREST:BOOL=${TubeTK_USE_RANDOMFOREST}
     -DTubeTK_USE_PYTHON:BOOL=${TubeTK_USE_PYTHON}
     -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
     -DTubeTK_USE_SUPERBUILD:BOOL=OFF

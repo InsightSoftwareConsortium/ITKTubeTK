@@ -24,13 +24,13 @@ limitations under the License.
 #ifndef __tubetkConfigure_h
 #define __tubetkConfigure_h
 
-// this gets defined if use set TUBETK_USE_GPU_ARRAYFIRE to ON
-#cmakedefine TubeTK_USE_GPU_ARRAYFIRE
+// this gets defined if use set TUBETK_USE_ARRAYFIRE to ON
+#cmakedefine TubeTK_USE_ARRAYFIRE
 
 // this gets defined if use set TubeTK_USE_LIBSVM to ON
 #cmakedefine TubeTK_USE_LIBSVM
 
-// this gets defined if use set TubeTK_USE_RandomForest to ON
-#cmakedefine TubeTK_USE_RandomForest
+// this gets defined if use set TubeTK_USE_RANDOMFOREST to ON
+#cmakedefine TubeTK_USE_RANDOMFOREST
 
 #endif // __tubetkConfigure_h
