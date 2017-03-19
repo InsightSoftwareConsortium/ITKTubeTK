@@ -33,7 +33,7 @@ endforeach()
 
 # Cppcheck
 set( Cppcheck_URL ${github_protocol}://github.com/KitwareMedical/cppcheck.git )
-set( Cppcheck_HASH_OR_TAG a9c9482d6e1b42457aedf8065e21523654f46124 )
+set( Cppcheck_HASH_OR_TAG bb0c8cbe7667615bca37ea2a02e2652642a5112e )
 
 # JsonCpp
 # http://midas3.kitware.com/midas/download/bitstream/366544/JsonCpp_r276.tar.gz
