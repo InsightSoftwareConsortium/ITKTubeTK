@@ -28,10 +28,10 @@ if( TubeTK_USE_LIBSVM )
   include_directories( ${LIBSVM_INCLUDE_DIRS} )
 endif( TubeTK_USE_LIBSVM )
 
-if( TubeTK_USE_RandomForest )
+if( TubeTK_USE_RANDOMFOREST )
   find_package( RandomForest )
   include_directories( ${RandomForest_INCLUDE_DIR} )
-endif( TubeTK_USE_RandomForest )
+endif( TubeTK_USE_RANDOMFOREST )
 
 set( TubeTK_Base_Segmentation_H_Files
   itktubeComputeSegmentTubesParameters.h
@@ -49,10 +49,10 @@ if( TubeTK_USE_LIBSVM )
   list( APPEND TubeTK_Base_Segmentation_H_Files
     itktubePDFSegmenterSVM.h )
 endif( TubeTK_USE_LIBSVM )
-if( TubeTK_USE_RandomForest )
+if( TubeTK_USE_RANDOMFOREST )
   list( APPEND TubeTK_Base_Segmentation_H_Files
     itktubePDFSegmenterRandomForest.h )
-endif( TubeTK_USE_RandomForest )
+endif( TubeTK_USE_RANDOMFOREST )
 
 set( TubeTK_Base_Segmentation_HXX_Files
   itktubeComputeSegmentTubesParameters.hxx
@@ -71,10 +71,10 @@ if( TubeTK_USE_LIBSVM )
   list( APPEND TubeTK_Base_Segmentation_HXX_Files
     itktubePDFSegmenterSVM.hxx )
 endif( TubeTK_USE_LIBSVM )
-if( TubeTK_USE_RandomForest )
+if( TubeTK_USE_RANDOMFOREST )
   list( APPEND TubeTK_Base_Segmentation_HXX_Files
     itktubePDFSegmenterRandomForest.hxx )
-endif( TubeTK_USE_RandomForest )
+endif( TubeTK_USE_RANDOMFOREST )
 
 add_library( ${PROJECT_NAME} INTERFACE )
 

@@ -29,7 +29,7 @@ limitations under the License.
 #include "itktubePDFSegmenterSVM.h"
 #endif
 
-#ifdef TubeTK_USE_RandomForest
+#ifdef TubeTK_USE_RANDOMFOREST
 #include "itktubePDFSegmenterRandomForest.h"
 #endif
 
@@ -124,7 +124,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     }
   else if( argv[5][0] == '2' )
     {
-#ifdef TubeTK_USE_RandomForest
+#ifdef TubeTK_USE_RANDOMFOREST
     typedef itk::tube::PDFSegmenterRandomForest< ImageType, LabelMapType >
       PDFType;
     PDFType::Pointer pdf = PDFType::New();

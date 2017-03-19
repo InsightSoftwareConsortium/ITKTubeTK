@@ -62,13 +62,13 @@ if( TubeTK_USE_LIBSVM )
     itktubePDFSegmenterSVMTest.cxx )
 endif( TubeTK_USE_LIBSVM )
 
-if( TubeTK_USE_RandomForest )
+if( TubeTK_USE_RANDOMFOREST )
   find_package( RandomForest REQUIRED )
   include_directories( ${RandomForest_INCLUDE_DIR} )
 
   list( APPEND tubeBaseSegmentation_SRCS 
     itktubePDFSegmenterRandomForestTest.cxx )
-endif( TubeTK_USE_RandomForest )
+endif( TubeTK_USE_RANDOMFOREST )
 
 include_directories(
   ${TubeTK_SOURCE_DIR}/Base/Common
@@ -192,7 +192,7 @@ if( TubeTK_USE_LIBSVM )
 
 endif( TubeTK_USE_LIBSVM )
 
-if( TubeTK_USE_RandomForest )
+if( TubeTK_USE_RANDOMFOREST )
 
   ExternalData_Add_Test( TubeTKData
     NAME itktubePDFSegmenterRandomForestTest
@@ -226,7 +226,7 @@ if( TubeTK_USE_RandomForest )
         ${TEMP}/itktubePDFSegmenterRandomForestTest2_prob1.mha
         ${TEMP}/itktubePDFSegmenterRandomForestTest2_mask.mha )
 
-endif( TubeTK_USE_RandomForest )
+endif( TubeTK_USE_RANDOMFOREST )
 
 ExternalData_Add_Test( TubeTKData
   NAME itktubeRidgeExtractorTest
@@ -297,7 +297,7 @@ if( TubeTK_USE_LIBSVM )
 
 endif( TubeTK_USE_LIBSVM )
 
-if( TubeTK_USE_RandomForest )
+if( TubeTK_USE_RANDOMFOREST )
 
   ExternalData_Add_Test( TubeTKData
     NAME itktubeRidgeSeedFilterRandomForestTest
@@ -313,4 +313,4 @@ if( TubeTK_USE_RandomForest )
         ${TEMP}/itktubeRidgeSeedFilterRandomForestTest_Output.mha
         ${TEMP}/itktubeRidgeSeedFilterRandomForestTest_MaxScale.mha )
 
-endif( TubeTK_USE_RandomForest )
+endif( TubeTK_USE_RANDOMFOREST )

@@ -99,7 +99,7 @@ list_conditional_append( TubeTK_USE_JsonCpp TubeTK_DEPENDENCIES "JsonCpp" )
 
 list_conditional_append( TubeTK_USE_LIBSVM TubeTK_DEPENDENCIES "LIBSVM" )
 
-list_conditional_append( TubeTK_USE_RandomForest TubeTK_DEPENDENCIES
+list_conditional_append( TubeTK_USE_RANDOMFOREST TubeTK_DEPENDENCIES
   "RandomForest" )
 
 set( TubeTK_EXTERNAL_PROJECTS_ARGS )
@@ -193,7 +193,7 @@ ExternalProject_Add( ${proj}
     -DTubeTK_USE_EXAMPLES_AS_TESTS:BOOL=${TubeTK_USE_EXAMPLES_AS_TESTS}
     -DTubeTK_USE_JsonCpp:BOOL=${TubeTK_USE_JsonCpp}
     -DTubeTK_USE_LIBSVM:BOOL=${TubeTK_USE_LIBSVM}
-    -DTubeTK_USE_RandomForest:BOOL=${TubeTK_USE_RandomForest}
+    -DTubeTK_USE_RANDOMFOREST:BOOL=${TubeTK_USE_RANDOMFOREST}
     -DTubeTK_USE_PYTHON:BOOL=${TubeTK_USE_PYTHON}
     -DTubeTK_USE_KWSTYLE:BOOL=${TubeTK_USE_KWSTYLE}
     -DTubeTK_USE_SUPERBUILD:BOOL=OFF

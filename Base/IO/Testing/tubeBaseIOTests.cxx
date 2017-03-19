@@ -34,7 +34,7 @@ void RegisterTests( void )
 #ifdef TubeTK_USE_LIBSVM
   REGISTER_TEST( itktubePDFSegmenterSVMIOTest );
 #endif
-#ifdef TubeTK_USE_RandomForest
+#ifdef TubeTK_USE_RANDOMFOREST
   REGISTER_TEST( itktubePDFSegmenterRandomForestIOTest );
 #endif
   REGISTER_TEST( itktubeRidgeSeedFilterIOTest );

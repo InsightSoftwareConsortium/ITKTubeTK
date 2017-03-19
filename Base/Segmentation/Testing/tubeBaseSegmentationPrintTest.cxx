@@ -24,7 +24,7 @@ limitations under the License.
 #include "tubetkConfigure.h"
 
 #include "itktubePDFSegmenterParzen.h"
-#ifdef TubeTK_USE_RandomForest
+#ifdef TubeTK_USE_RANDOMFOREST
 #  include "itktubePDFSegmenterRandomForest.h"
 #endif
 #ifdef TubeTK_USE_LIBSVM
@@ -49,7 +49,7 @@ int tubeBaseSegmentationPrintTest( int itkNotUsed( argc ),
   std::cout << "-------------itktubePDFSegmenterParzen" << pdfSegmenterParzen
     << std::endl;
 
-#ifdef TubeTK_USE_RandomForest
+#ifdef TubeTK_USE_RANDOMFOREST
   itk::tube::PDFSegmenterRandomForest< ImageType, ImageType >::Pointer
     pdfSegmenterRandomForest = itk::tube::PDFSegmenterRandomForest<
       ImageType, ImageType >::New();

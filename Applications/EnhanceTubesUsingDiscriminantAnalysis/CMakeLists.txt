@@ -46,10 +46,10 @@ if( TubeTK_USE_LIBSVM )
   set( ${MODULE_NAME}_EXTERNAL_LIBS ${LIBSVM_LIBRARIES} )
 endif( TubeTK_USE_LIBSVM )
 
-if( TubeTK_USE_RandomForest )
+if( TubeTK_USE_RANDOMFOREST )
   find_package( RandomForest REQUIRED )
   include_directories( ${RandomForest_INCLUDE_DIR} )
-endif( TubeTK_USE_RandomForest )
+endif( TubeTK_USE_RANDOMFOREST )
 
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
