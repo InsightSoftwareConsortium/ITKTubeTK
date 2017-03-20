@@ -448,6 +448,11 @@ def createPatches(name, dataDir, patchListFile):
 
 # convert train/test images to patches
 def createTrainTestPatches():
+    """Create training and testing patches from the training and testing
+    subdirectories of the working data directory.  See createPatches
+    for the exact files read and created.
+
+    """
 
     # create training patches
     createPatches('training', dataDir=os.path.join(hardDrive_proj_root, "training"),
