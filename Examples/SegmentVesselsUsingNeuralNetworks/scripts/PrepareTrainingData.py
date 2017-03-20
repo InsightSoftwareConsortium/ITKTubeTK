@@ -414,65 +414,48 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
     print 'Number of positive patches = ', numVesselPatches
 
 
+def createPatches(name, dataDir, patchListFile):
+    """Create patch files from images in dataDir.
+
+    Input:
+    - $dataDir/images/*.png
+    - $dataDir/expert/*_expert.png
+
+    Output:
+    - $dataDir/patches/{0,1}/*_$i_$j.png
+    - $dataDir/patches/$patchListFile: List of patch files and patch index
+
+    """
+    printSectionHeader('Creating %s patches' % name)
+
+    imageFiles = glob.glob(os.path.join(dataDir, "images", "*.png"))
+
+    patchesDir = os.path.join(dataDir, "patches")
+    for i in range(2):
+        utils.ensureDirectoryExists(os.path.join(patchesDir, str(i)))
+
+    with open(os.path.join(patchesDir, patchListFile), "w") as patchListFile:
+
+        for i, imageFile in enumerate(imageFiles):
+
+            print('\nCreating patches for %s file %d/%d - %s' %
+                  (name, i + 1, len(imageFiles), imageFile))
+
+            imageName = os.path.basename(os.path.splitext(imageFile)[0])
+
+            extractPatchesFromImage(dataDir, imageName, patchesDir,
+                                    patchListFile)
+
 # convert train/test images to patches
 def createTrainTestPatches():
 
     # create training patches
-    printSectionHeader('Creating training patches')
-
-    trainDataDir = os.path.join(hardDrive_proj_root, "training")
-    trainImageFiles = glob.glob(os.path.join(trainDataDir, "images", "*.png"))
-
-    trainPatchesDir = os.path.join(trainDataDir, "patches")
-    for i in range(2):
-        utils.ensureDirectoryExists(os.path.join(trainPatchesDir, str(i)))
-
-    trainPatchListFile = open(os.path.join(trainPatchesDir, "train.txt"), "w")
-    trainPatchListFile.truncate()
-
-    i = 0
-
-    for imageFile in trainImageFiles:
-
-        print('\nCreating patches for train file %d/%d - %s' %
-              (i + 1, len(trainImageFiles), imageFile))
-
-        imageName = os.path.basename(os.path.splitext(imageFile)[0])
-
-        extractPatchesFromImage(trainDataDir, imageName, trainPatchesDir,
-                                trainPatchListFile)
-
-        i += 1
-
-    trainPatchListFile.close()
+    createPatches('training', dataDir=os.path.join(hardDrive_proj_root, "training"),
+                  patchListFile="train.txt")
 
     # create testing patches
-    printSectionHeader('Creating testing patches')
-
-    testDataDir = os.path.join(hardDrive_proj_root, "testing")
-    testImageFiles = glob.glob(os.path.join(testDataDir, "images", "*.png"))
-
-    testPatchesDir = os.path.join(testDataDir, "patches")
-    for i in range(2):
-        utils.ensureDirectoryExists(os.path.join(testPatchesDir, str(i)))
-
-    testPatchListFile = open(os.path.join(testPatchesDir, "val.txt"), "w+")
-    testPatchListFile.truncate()  # Erase file
-
-    i = 0
-    for imageFile in testImageFiles:
-
-        print('\nCreating patches for test file %d/%d - %s' %
-              (i + 1, len(testImageFiles), imageFile))
-
-        imageName = os.path.basename(os.path.splitext(imageFile)[0])
-
-        extractPatchesFromImage(testDataDir, imageName, testPatchesDir,
-                                testPatchListFile)
-
-        i += 1
-
-    testPatchListFile.close()
+    createPatches('testing', dataDir=os.path.join(hardDrive_proj_root, "testing"),
+                  patchListFile="val.txt")
 
 
 # create lmdb
