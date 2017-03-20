@@ -315,6 +315,21 @@ def splitControlTumorData():
 
 # Extracts +ve (vessel center) and -ve (background) patches from image
 def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
+    """Convert an image to a set of patches.  Patches are sorted into
+    "positive" and "negative" patches, i.e. those with and without a
+    vessel at the center.  Positive patches have index 1, negative
+    patches index 0.  Patch relative paths and their indices are
+    written to the patchListFile file object.
+
+    Input:
+    - $rootDir/images/$imageName.png: The image to extract slices from
+    - $rootDir/expert/$imageName_expert.png: The corresponding expert mask
+
+    Output:
+    - $outputDir/0/$imageName_$i_$j.png: Negative patches
+    - $outputDir/1/$imageName_$i_$j.png: Positive patches
+
+    """
 
     def writePatch(patchSetIndex, i, j):
 
