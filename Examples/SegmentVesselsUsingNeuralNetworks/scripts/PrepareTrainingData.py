@@ -463,46 +463,45 @@ def createTrainTestPatches():
                   patchListFile="val.txt")
 
 
-# create lmdb
-def createTrainTestLmdb():
+def createLmdb(name, patchesDir, patchListFile, lmdbDir):
+    """Create an LMDB instance in lmdbDir from the patches in patchesDir,
+    indexed by patchListFile
 
-    printSectionHeader('Creating LMDBs for train and test data')
-
+    """
     caffe_tools_dir = os.path.join(caffe_root, "build", "tools")
     convert_imageset_exec = os.path.join(caffe_tools_dir, "convert_imageset")
 
-    # create training lmdb
-    print('Creating training lmdb ...\n')
+    print('Creating %s lmdb ...\n' % name)
 
-    train_patches_dir = os.path.join(
-        hardDrive_proj_root, "training", "patches/")
-
-    train_lmdb_dir = os.path.join(caffe_proj_root, "Net_TrainData")
-    if os.path.exists(train_lmdb_dir):
-        shutil.rmtree(train_lmdb_dir)
+    if os.path.exists(lmdbDir):
+        shutil.rmtree(lmdbDir)
 
     subprocess.call([convert_imageset_exec,
                      "--shuffle",
                      "--gray",
-                     train_patches_dir,
-                     os.path.join(train_patches_dir, "train.txt"),
-                     train_lmdb_dir])
+                     patchesDir,
+                     os.path.join(patchesDir, patchListFile),
+                     lmdbDir])
+
+# create lmdb
+def createTrainTestLmdb():
+    """Create LMBD instances for the training and testing data.  For
+    training and testing, take the patches created by
+    createTrainTestPatches and create LMDB instances in the Caffe
+    project directory titled Net_TrainData and Net_ValData,
+    respectively.
+
+    """
+
+    printSectionHeader('Creating LMDBs for train and test data')
+
+    # create training lmdb
+    createLmdb('training', os.path.join(hardDrive_proj_root, 'training', 'patches/'),
+               'train.txt', os.path.join(caffe_proj_root, "Net_TrainData"))
 
     # create testing lmdb
-    print('Creating testing lmdb ...\n')
-
-    test_patches_dir = os.path.join(hardDrive_proj_root, "testing", "patches/")
-
-    test_lmdb_dir = os.path.join(caffe_proj_root, "Net_ValData")
-    if os.path.exists(test_lmdb_dir):
-        shutil.rmtree(test_lmdb_dir)
-
-    subprocess.call([convert_imageset_exec,
-                     "--shuffle",
-                     "--gray",
-                     test_patches_dir,
-                     os.path.join(test_patches_dir, "val.txt"),
-                     test_lmdb_dir])
+    createLmdb('testing', os.path.join(hardDrive_proj_root, 'testing', 'patches/'),
+               'val.txt', os.path.join(caffe_proj_root, "Net_ValData"))
 
 
 def printSectionHeader(title):
