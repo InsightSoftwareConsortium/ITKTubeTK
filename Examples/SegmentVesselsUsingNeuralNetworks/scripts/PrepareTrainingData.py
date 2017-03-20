@@ -316,6 +316,23 @@ def splitControlTumorData():
 # Extracts +ve (vessel center) and -ve (background) patches from image
 def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
 
+    def writePatch(patchSetIndex, i, j):
+
+        """Write out a patch centered at i,j to a correspondingly named file,
+        using the given patch set index.  Create a corresponding entry
+        in patchListFile.
+
+        """
+        psi = str(patchSetIndex)
+
+        filename = os.path.join(
+            psi, imageName + "_" + str(i) + "_" + str(j) + ".png")
+
+        patchListFile.write(filename + " " + psi + "\n")
+
+        skimage.io.imsave(os.path.join(outputDir, filename),
+                          inputImage[i - w : i + w + 1, j - w : j + w + 1])
+
     # patch/window radius
     w = script_params['PATCH_RADIUS']
 
@@ -347,13 +364,7 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
             # Vessel center-line pixel (positive)
             if trainingMask[i, j] > 0.6 * 255:
 
-                filename = os.path.join(
-                    "1", imageName + "_" + str(i) + "_" + str(j) + ".png")
-
-                patchListFile.write(filename + " " + str(1) + "\n")
-
-                skimage.io.imsave(os.path.join(outputDir, filename),
-                                  inputImage[i - w : i + w + 1, j - w : j + w + 1])
+                writePatch(1, i, j)
 
                 numVesselPatches += 1
 
@@ -374,14 +385,7 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
     selVesselBndInd = random.sample(vesselBndInd, numVesselBndPatches)
 
     for [i, j] in selVesselBndInd:
-
-        filename = os.path.join("0", imageName +
-                                "_" + str(i) + "_" + str(j) + ".png")
-
-        patchListFile.write(filename + " " + str(0) + "\n")
-
-        skimage.io.imsave(os.path.join(outputDir, filename),
-                          inputImage[i - w : i + w + 1, j - w : j + w + 1])
+        writePatch(0, i, j)
 
     # Pick rest of background (negative) patches away from vessel boundary
     numOtherBgndPatches = \
@@ -390,14 +394,7 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
     selBgndInd = random.sample(bgndInd, numOtherBgndPatches)
 
     for [i, j] in selBgndInd:
-
-        filename = os.path.join("0", imageName +
-                                "_" + str(i) + "_" + str(j) + ".png")
-
-        patchListFile.write(filename + " " + str(0) + "\n")
-
-        skimage.io.imsave(os.path.join(outputDir, filename),
-                          inputImage[i - w : i + w + 1, j - w : j + w + 1])
+        writePatch(0, i, j)
 
     print 'Number of positive patches = ', numVesselPatches
 
