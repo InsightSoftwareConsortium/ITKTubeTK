@@ -239,10 +239,10 @@ def splitData(name, inputDir, outputDir, trainOutputDir, testOutputDir):
     With an input file named *.mhd, the following outputs are moved
     into the following subdirectories in the destination folder:
     - *.mha: images
-    - *_zslab.mha: images
+    - *_zslab.mha: images (also split into PNG slices)
     - *_zslab_points.mha: points
     - *_expert.mha: expert
-    - *_zslab_expert.mha: expert
+    - *_zslab_expert.mha: expert (also split into PNG slices)
 
     """
     # Process files
