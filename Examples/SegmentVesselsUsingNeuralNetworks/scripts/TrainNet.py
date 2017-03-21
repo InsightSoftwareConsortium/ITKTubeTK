@@ -41,8 +41,7 @@ deploy_net_path = os.path.join(net_proto_path, 'net_deploy.prototxt')
 solver_config_path = os.path.join(net_proto_path, 'net_solver.prototxt')
 
 train_results_dir = os.path.join(net_proto_path, 'train_results')
-if not os.path.exists(train_results_dir):
-    os.makedirs(train_results_dir)
+utils.ensureDirectoryExists(train_results_dir)
 
 # Features square plot :
 #   Plot any layer's output features with the data parameter corresponding to
