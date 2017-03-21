@@ -115,7 +115,7 @@ def createZMIPSlabsForFile(mhdFile, outputDir):
     shrink(mhdFile, expertSegFile,
            os.path.join(outputDir, fileName))
 
-def createZMIPSlabsFor(name, inputDir, outputDir):
+def createZMIPSlabs(name, inputDir, outputDir):
     """Process all image files in immediate subdirectories of inputDir to
     correspondingly prefixed images in outputDir.  outputDir is
     created if it doesn't already exist.  The subdirectory structure
@@ -142,9 +142,9 @@ def createZMIPSlabsFor(name, inputDir, outputDir):
 
 
 # create z-mip slabs
-def createZMIPSlabs():
+def createControlTumorZMIPSlabs():
     """Create slabs from the directories Controls and LargeTumor in
-    input_image_root via createZMIPSlabsFor and put the results in
+    input_image_root via createZMIPSlabs and put the results in
     controls and tumors subdirectories, respectively, of
     hardDrive_proj_root.
 
@@ -159,10 +159,10 @@ def createZMIPSlabs():
     tumorOutputDir = os.path.join(hardDrive_proj_root, "tumors")
 
     # Process control files
-    createZMIPSlabsFor('control', controlInputDir, controlOutputDir)
+    createZMIPSlabs('control', controlInputDir, controlOutputDir)
 
     # Process tumor files
-    createZMIPSlabsFor('tumor', tumorInputDir, tumorOutputDir)
+    createZMIPSlabs('tumor', tumorInputDir, tumorOutputDir)
 
 # Compute Training mask
 def computeTrainingMask(expertSegMask, outputTrainingMask):
@@ -514,7 +514,7 @@ def printSectionHeader(title):
 def run():
 
     # create z-mip slabs
-    createZMIPSlabs()
+    createControlTumorZMIPSlabs()
 
     # assign control and tumor volumes equally to training and testing
     # Note: this must be called after createZMIPSlabs()
