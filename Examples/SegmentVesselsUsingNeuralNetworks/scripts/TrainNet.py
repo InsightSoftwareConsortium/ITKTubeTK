@@ -22,6 +22,9 @@ import utils
 script_params = json.load(open('params.json'))
 caffe_root = str(script_params['CAFFE_SRC_ROOT'])
 hardDrive_root = str(script_params['CNN_DATA_ROOT'])
+proj_rel_path = script_params['PROJECT_REL_PATH']
+
+caffe_proj_root = os.path.join(caffe_root, "data", proj_rel_path)
 
 # import caffe
 sys.path.insert(0, os.path.join(caffe_root, 'python'))  # Add pycaffe
@@ -31,8 +34,7 @@ from caffe.proto import caffe_pb2
 import lmdb
 
 # Define file paths
-net_proto_path = os.path.join(
-    caffe_root, 'data/SegmentVesselsUsingNeuralNetworks/NetProto')
+net_proto_path = os.path.join(caffe_proj_root, 'NetProto')
 snapshot_prefix = os.path.join(net_proto_path, 'net')
 
 train_net_path = os.path.join(net_proto_path, 'net_train.prototxt')
@@ -193,14 +195,12 @@ def run():
 
     # Create testing and training net
     train_batch_size = script_params['TRAIN_BATCH_SIZE']
-    train_lmdb_path = os.path.join(
-        caffe_root, 'data/SegmentVesselsUsingNeuralNetworks/Net_TrainData')
+    train_lmdb_path = os.path.join(caffe_proj_root, 'Net_TrainData')
     with open(train_net_path, 'w') as f:
         f.write(str(custom_net(train_batch_size, train_lmdb_path)))
 
     test_batch_size = script_params['TEST_BATCH_SIZE']
-    test_lmdb_path = os.path.join(
-        caffe_root, 'data/SegmentVesselsUsingNeuralNetworks/Net_ValData')
+    test_lmdb_path = os.path.join(caffe_proj_root, 'Net_ValData')
     with open(test_net_path, 'w') as f:
         f.write(str(custom_net(test_batch_size, test_lmdb_path)))
 
@@ -227,7 +227,7 @@ def run():
     # ignore this workaround for lmdb data (can't instantiate two solvers on
     # the same data)
     solver = None
-    solver = caffe.get_solver(solver_config_path)
+    solver = caffe.get_solver(str(solver_config_path))
 
     # print the structure of the network
     print '\nNumber of training samples = ', num_train_samples
