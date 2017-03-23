@@ -439,41 +439,24 @@ def run():
     pred_labels = solver.test_nets[0].blobs['score'].data.argmax(1)
     true_labels = solver.test_nets[0].blobs['label'].data
 
-    tp = np.where(np.logical_and(true_labels == 1, pred_labels == 1))[0]
-    tp_data = solver.test_nets[0].blobs['data'].data[tp, 0]
-    tp_percent = len(tp) * 100.0 / test_batch_size
-    print 'True Positives : %d / %d (%.2f%%)' % (len(tp), test_batch_size, tp_percent)
-    plt.figure()
-    squarePlot(tp_data)
-    plt.title('True Positive Examples - %.2f%%' % tp_percent)
-    plt.savefig(os.path.join(train_results_dir, 'sample_true_positives.png'))
+    def generate_confusion_file(true_value, pred_value):
+        adj = 'true' if true_value == pred_value else 'false'
+        noun = 'positive' if pred_value == 1 else 'negative'
 
-    tn = np.where(np.logical_and(true_labels == 0, pred_labels == 0))[0]
-    tn_data = solver.test_nets[0].blobs['data'].data[tn, 0]
-    tn_percent = len(tn) * 100.0 / test_batch_size
-    print 'True Negatives : %d / %d (%.2f%%)' % (len(tn), test_batch_size, tn_percent)
-    plt.figure()
-    squarePlot(tn_data)
-    plt.title('True Negative Examples - %.2f%%' % tn_percent)
-    plt.savefig(os.path.join(train_results_dir, 'sample_true_negatives.png'))
+        c_data = solver.test_nets[0].blobs['data'].data[
+            (true_labels == true_value) & (pred_labels == pred_value),
+            0]
+        c_count = c_data.shape[0]
+        c_percent = c_count * 100. / test_batch_size
+        print '%s %ss : %d / %d (%.2f%%)' % (adj, noun, c_count, test_batch_size, c_percent)
+        plt.figure()
+        squarePlot(c_data)
+        plt.title('%s %s examples - %.2f%%' % (adj, noun, c_percent))
+        plt.savefig(os.path.join(train_results_dir, 'sample_%s_%ss.png' % (adj, noun)))
 
-    fp = np.where(np.logical_and(true_labels == 0, pred_labels == 1))[0]
-    fp_data = solver.test_nets[0].blobs['data'].data[fp, 0]
-    fp_percent = len(fp) * 100.0 / test_batch_size
-    print 'False Positives : %d / %d (%.2f%%) ' % (len(fp), test_batch_size, fp_percent)
-    plt.figure()
-    squarePlot(fp_data)
-    plt.title('False Positive Examples - %.2f%%' % fp_percent)
-    plt.savefig(os.path.join(train_results_dir, 'sample_false_positives.png'))
-
-    fn = np.where(np.logical_and(true_labels == 1, pred_labels == 0))[0]
-    fn_data = solver.test_nets[0].blobs['data'].data[fn, 0]
-    fn_percent = len(fn) * 100.0 / test_batch_size
-    print 'False Negatives : %d / %d (%.2f%%)' % (len(fn), test_batch_size, fn_percent)
-    plt.figure()
-    squarePlot(fn_data)
-    plt.title('False Negative Examples - %.2f%%' % fn_percent)
-    plt.savefig(os.path.join(train_results_dir, 'sample_false_negatives.png'))
+    for truth in [True, False]:
+        for val in [1, 0]:
+            generate_confusion_file(true_value=(not truth) ^ val, pred_value=val)
 
 
 if __name__ == "__main__":
