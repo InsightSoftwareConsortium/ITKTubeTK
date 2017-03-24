@@ -17,6 +17,7 @@ import shutil
 import sys
 
 import skimage.io
+import numpy as np
 
 import utils
 
@@ -376,34 +377,30 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
     trainingMask = skimage.io.imread(trainingMaskFile)
 
     # Iterate through expert mask and find pos/neg patches
-    vesselCtlInd = [] # Indices of vessel pixels on centerline
-    vesselInd = [] # Inidces of all other vessel pixels
-    vesselBndInd = []  # Indices of background pixels near vessel boundary
-    bgndInd = []  # Indices of all other background pixels
     subsample = 1  # Increase to reduce time for debugging
 
-    for i in range(w, trainingMask.shape[0] - w - 1, subsample):
-        for j in range(w, trainingMask.shape[1] - w - 1, subsample):
-            if trainingMask[i, j] > 0.6 * 255:
-                # Vessel center-line pixel (positive)
-                appendee = vesselCtlInd
-            elif trainingMask[i, j] > 0:
-                # Vessel bound pixel (negative)
-                appendee = vesselBndInd
-            elif expertSeg[i, j] > 0:
-                # Other vessel (positive)
-                appendee = vesselInd
-            else:
-                # Background pixel (negative)
-                appendee = bgndInd
-            appendee.append([i, j])
+    # Slice that we want, which excludes edge pixels
+    s = np.s_[w:-w-1:subsample]
+    s = (s, s)
+    trainingMaskMid = trainingMask[s]
+    expertSegMid = expertSeg[s]
 
-    for indices, frac, label in [
-            (vesselCtlInd, vessel_ctl_pos_frac, 1),
-            (vesselInd, other_pos_frac, 1),
-            (vesselBndInd, vessel_bnd_neg_frac, 0),
-            (bgndInd, other_neg_frac, 0)
+    # Vessel centerline pixel (positive)
+    vesselCtl = trainingMaskMid > 0.6 * 255
+    # Other vessel pixel (positive)
+    vessel = (expertSegMid > 0) & ~vesselCtl
+    # Vessel bound pixel (negative)
+    vesselBnd = (trainingMaskMid > 0) & ~vesselCtl
+    # Other background pixel (negative)
+    bgnd = (expertSegMid == 0) & (trainingMaskMid == 0)
+
+    for midArray, frac, label in [
+            (vesselCtl, vessel_ctl_pos_frac, 1),
+            (vessel, other_pos_frac, 1),
+            (vesselBnd, vessel_bnd_neg_frac, 0),
+            (bgnd, other_neg_frac, 0)
     ]:
+        indices = np.array(np.where(midArray)).T * subsample + w
         numPatches = int(math.ceil(frac * total_patches))
         try:
             selInd = random.sample(indices, numPatches)
