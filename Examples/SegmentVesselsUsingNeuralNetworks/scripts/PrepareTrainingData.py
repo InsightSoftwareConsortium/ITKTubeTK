@@ -364,6 +364,7 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
 
     computeTrainingMask(expertSegFile, trainingMaskFile)
 
+    expertSeg = skimage.io.imread(expertSegFile)
     trainingMask = skimage.io.imread(trainingMaskFile)
 
     # Iterate through expert mask and find pos/neg patches
@@ -375,22 +376,18 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
 
     for i in range(w, trainingMask.shape[0] - w - 1, subsample):
         for j in range(w, trainingMask.shape[1] - w - 1, subsample):
-
-            # Vessel center-line pixel (positive)
             if trainingMask[i, j] > 0.6 * 255:
-
+                # Vessel center-line pixel (positive)
                 writePatch(1, i, j)
-
                 numVesselPatches += 1
-
-            # Vessel bound pixel (negative)
             elif trainingMask[i, j] > 0:
-
+                # Vessel bound pixel (negative)
                 vesselBndInd.append([i, j])
-
-            # Background pixel (negative)
+            elif expertSeg[i, j] > 0:
+                # Other vessel (positive)
+                continue
             else:
-
+                # Background pixel (negative)
                 bgndInd.append([i, j])
 
     # Pick a subset of background (negative) patches near vessel boundary
