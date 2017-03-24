@@ -100,11 +100,11 @@ def segmentSlab(net, input_file, output_file):
     output_image = np.zeros_like(input_image)  # Output segmented slab
     output_image_flat = np.ravel(output_image)
 
-    pw = test_batch_size - (num_patches % test_batch_size)
+    pw = -num_patches % test_batch_size
     patches = np.pad(patches, ((0, pw), (0, 0), (0, 0)), 'constant')
     patch_indices = np.pad(patch_indices, ((0, pw), (0, 0)), 'constant')
 
-    patches = np.rollaxis(np.expand_dims(patches, 3), 3, 1)
+    patches = patches[:, np.newaxis]
     print patches.shape
 
     for i in range(0, num_patches, test_batch_size):
