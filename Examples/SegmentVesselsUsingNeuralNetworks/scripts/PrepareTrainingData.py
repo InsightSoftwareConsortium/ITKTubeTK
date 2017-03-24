@@ -351,8 +351,16 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
     # patch/window radius
     w = script_params['PATCH_RADIUS']
 
-    # fraction of negatives near vessel boundary
+    total_patches = script_params['PATCHES_PER_INPUT_FILE'] / script_params['NUM_SLABS']
+    vessel_ctl_pos_frac = script_params['POSITIVES_NEAR_VESSEL_CENTERLINE']
+    other_pos_frac = script_params['OTHER_POSITIVES']
     vessel_bnd_neg_frac = script_params['NEGATIVES_NEAR_VESSEL_BOUNDARY']
+    other_neg_frac = script_params['OTHER_NEGATIVES']
+
+    patch_frac_sum = vessel_ctl_pos_frac + other_pos_frac + \
+                     vessel_bnd_neg_frac + other_neg_frac
+    if abs(patch_frac_sum - 1.0) > 1e-9:
+        raise ValueError("Patch fractions sum must be 1.0, is {}".format(patch_frac_sum))
 
     # read input image
     inputImageFile = os.path.join(rootDir, "images", imageName + '.png')
@@ -368,8 +376,8 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
     trainingMask = skimage.io.imread(trainingMaskFile)
 
     # Iterate through expert mask and find pos/neg patches
-    numVesselPatches = 0
-
+    vesselCtlInd = [] # Indices of vessel pixels on centerline
+    vesselInd = [] # Inidces of all other vessel pixels
     vesselBndInd = []  # Indices of background pixels near vessel boundary
     bgndInd = []  # Indices of all other background pixels
     subsample = 1  # Increase to reduce time for debugging
@@ -378,37 +386,32 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
         for j in range(w, trainingMask.shape[1] - w - 1, subsample):
             if trainingMask[i, j] > 0.6 * 255:
                 # Vessel center-line pixel (positive)
-                writePatch(1, i, j)
-                numVesselPatches += 1
+                appendee = vesselCtlInd
             elif trainingMask[i, j] > 0:
                 # Vessel bound pixel (negative)
-                vesselBndInd.append([i, j])
+                appendee = vesselBndInd
             elif expertSeg[i, j] > 0:
                 # Other vessel (positive)
-                continue
+                appendee = vesselInd
             else:
                 # Background pixel (negative)
-                bgndInd.append([i, j])
+                appendee = bgndInd
+            appendee.append([i, j])
 
-    # Pick a subset of background (negative) patches near vessel boundary
-    numVesselBndPatches = int(
-        math.ceil(vessel_bnd_neg_frac * numVesselPatches))
-
-    selVesselBndInd = random.sample(vesselBndInd, numVesselBndPatches)
-
-    for [i, j] in selVesselBndInd:
-        writePatch(0, i, j)
-
-    # Pick rest of background (negative) patches away from vessel boundary
-    numOtherBgndPatches = \
-        int(math.ceil((1.0 - vessel_bnd_neg_frac) * numVesselPatches))
-
-    selBgndInd = random.sample(bgndInd, numOtherBgndPatches)
-
-    for [i, j] in selBgndInd:
-        writePatch(0, i, j)
-
-    print 'Number of positive patches = ', numVesselPatches
+    for indices, frac, label in [
+            (vesselCtlInd, vessel_ctl_pos_frac, 1),
+            (vesselInd, other_pos_frac, 1),
+            (vesselBndInd, vessel_bnd_neg_frac, 0),
+            (bgndInd, other_neg_frac, 0)
+    ]:
+        numPatches = int(math.ceil(frac * total_patches))
+        try:
+            selInd = random.sample(indices, numPatches)
+        except ValueError:
+            print "WARNING: Too few of the desired patch type; writing all that we have"
+            selInd = indices
+        for i, j in selInd:
+            writePatch(label, i, j)
 
 
 def createPatches(name, dataDir, patchListFile):
