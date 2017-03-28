@@ -101,24 +101,29 @@ def custom_net(batch_size, lmdb=None):
 
     n.conv1 = L.Convolution(n.data, kernel_size=6,
                             num_output=48, weight_filler=dict(type='xavier'))
-    n.pool1 = L.Pooling(n.conv1, kernel_size=2, stride=2, pool=P.Pooling.MAX)
+    n.relu1 = L.ReLU(n.conv1, negative_slope=0.1)
+    n.pool1 = L.Pooling(n.relu1, kernel_size=2, stride=2, pool=P.Pooling.MAX)
 
     n.conv2 = L.Convolution(n.pool1, kernel_size=5,
                             num_output=48, weight_filler=dict(type='xavier'))
-    n.pool2 = L.Pooling(n.conv2, kernel_size=2, stride=2, pool=P.Pooling.MAX)
+    n.relu2 = L.ReLU(n.conv2, negative_slope=0.1)
+    n.pool2 = L.Pooling(n.relu2, kernel_size=2, stride=2, pool=P.Pooling.MAX)
 
     n.conv3 = L.Convolution(n.pool2, kernel_size=4,
                             num_output=48, weight_filler=dict(type='xavier'))
-    n.pool3 = L.Pooling(n.conv3, kernel_size=2, stride=2, pool=P.Pooling.MAX)
+    n.relu3 = L.ReLU(n.conv3, negative_slope=0.1)
+    n.pool3 = L.Pooling(n.relu3, kernel_size=2, stride=2, pool=P.Pooling.MAX)
 
     n.conv4 = L.Convolution(n.pool3, kernel_size=2,
                             num_output=48, weight_filler=dict(type='xavier'))
-    n.pool4 = L.Pooling(n.conv4, kernel_size=2, stride=2, pool=P.Pooling.MAX)
+    n.relu4 = L.ReLU(n.conv4, negative_slope=0.1)
+    n.pool4 = L.Pooling(n.relu4, kernel_size=2, stride=2, pool=P.Pooling.MAX)
 
     n.fc1 = L.InnerProduct(n.pool4, num_output=50,
                            weight_filler=dict(type='xavier'))
+    n.relu5 = L.ReLU(n.fc1, negative_slope=0.1)
 
-    n.drop1 = L.Dropout(n.fc1, dropout_param=dict(dropout_ratio=0.5))
+    n.drop1 = L.Dropout(n.relu5, dropout_param=dict(dropout_ratio=0.5))
 
     n.score = L.InnerProduct(n.drop1, num_output=2,
                              weight_filler=dict(type='xavier'))
