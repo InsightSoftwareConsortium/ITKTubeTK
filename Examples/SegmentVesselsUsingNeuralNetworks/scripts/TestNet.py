@@ -28,10 +28,10 @@ import itk
 # Define paths
 script_params = json.load(open('params.json'))
 caffe_root = script_params['CAFFE_SRC_ROOT']
-hardDrive_proj_root = script_params['OUTPUT_DATA_ROOT']
-caffe_proj_root = script_params['INPUT_DATA_ROOT']
+output_data_root = script_params['OUTPUT_DATA_ROOT']
+input_data_root = script_params['INPUT_DATA_ROOT']
 
-testDataDir = os.path.join(hardDrive_proj_root, "testing")
+testDataDir = os.path.join(output_data_root, "testing")
 
 # import caffe
 sys.path.insert(0, os.path.join(caffe_root, 'python'))
@@ -300,7 +300,7 @@ def segmentTubes(inputImageName, vascularModelFile, outputDir,
 def run():
 
     # set output directory
-    outputDir = os.path.join(hardDrive_proj_root, "testing", "cnn")
+    outputDir = os.path.join(output_data_root, "testing", "cnn")
 
     utils.ensureDirectoryExists(outputDir)
 
@@ -308,7 +308,7 @@ def run():
 
     # Model weights
     caffeModelWeights = os.path.join(
-        hardDrive_proj_root, "NetProto", "net_best.caffemodel")
+        output_data_root, "NetProto", "net_best.caffemodel")
 
     if os.path.isfile(caffeModelWeights):
         print("Caffe model weights " + caffeModelWeights + " found.")
@@ -319,7 +319,7 @@ def run():
 
     # Model definition
     caffeModelDef = os.path.join(
-        hardDrive_proj_root, "NetProto", "net_deploy.prototxt")
+        output_data_root, "NetProto", "net_deploy.prototxt")
 
     if os.path.isfile(caffeModelDef):
         print("Caffe model definition " + caffeModelDef + " found.")
@@ -370,7 +370,7 @@ def run():
         reconstructSegVolume(testAnimal, outputDir)
 
         # segment tubes using ridge traversal
-        vascularModelFile = os.path.join(caffe_proj_root, 'vascularModel.mtp')
+        vascularModelFile = os.path.join(input_data_root, 'vascularModel.mtp')
 
         segmentTubes(testAnimal, vascularModelFile, outputDir,
                      script_params['VESSEL_SEED_PROBABILITY'],
