@@ -31,15 +31,8 @@ import itk
 script_params = json.load(open('params.json'))
 
 caffe_root = script_params['CAFFE_SRC_ROOT']
-hardDrive_root = script_params['CNN_DATA_ROOT']
-proj_rel_path = script_params['PROJECT_REL_PATH']
-
-caffe_proj_root = os.path.join(caffe_root, "data", proj_rel_path)
-hardDrive_proj_root = os.path.join(hardDrive_root, proj_rel_path)
-
-# Where the input data is to be found, to be conceptually
-# distinguished from its location in the caffe root directory
-input_image_root = caffe_proj_root
+output_data_root = script_params['OUTPUT_DATA_ROOT']
+input_data_root = script_params['INPUT_DATA_ROOT']
 
 # Create segmentation mask from tre file
 def createExpertSegmentationMask(inputImageFile, treFile, outputExpertSegFile):
@@ -144,19 +137,19 @@ def createZMIPSlabs(name, inputDir, outputDir):
 # create z-mip slabs
 def createControlTumorZMIPSlabs():
     """Create slabs from the directories Controls and LargeTumor in
-    input_image_root via createZMIPSlabs and put the results in
+    input_data_root via createZMIPSlabs and put the results in
     controls and tumors subdirectories, respectively, of
-    hardDrive_proj_root.
+    output_data_root.
 
     """
 
     # Input data directories where mha/mhd and associated tre files are located
-    controlInputDir = os.path.join(input_image_root, "Controls")
-    tumorInputDir = os.path.join(input_image_root, "LargeTumor")
+    controlInputDir = os.path.join(input_data_root, "Controls")
+    tumorInputDir = os.path.join(input_data_root, "LargeTumor")
 
     # Output data directories
-    controlOutputDir = os.path.join(hardDrive_proj_root, "controls")
-    tumorOutputDir = os.path.join(hardDrive_proj_root, "tumors")
+    controlOutputDir = os.path.join(output_data_root, "controls")
+    tumorOutputDir = os.path.join(output_data_root, "tumors")
 
     # Process control files
     createZMIPSlabs('control', controlInputDir, controlOutputDir)
@@ -285,22 +278,22 @@ def splitData(name, inputDir, outputDir, trainOutputDir, testOutputDir):
 # assign control and tumor volumes equally to training and testing
 def splitControlTumorData():
     """Split the data created from the images in the directories Controls
-    and LargeTumor in input_image_root via splitData and put the
+    and LargeTumor in input_data_root via splitData and put the
     results in training and testing subdirectories of
-    hardDrive_proj_root.
+    output_data_root.
 
     """
 
     # Input data directories
-    controlInputDir = os.path.join(input_image_root, "Controls")
-    tumorInputDir = os.path.join(input_image_root, "LargeTumor")
+    controlInputDir = os.path.join(input_data_root, "Controls")
+    tumorInputDir = os.path.join(input_data_root, "LargeTumor")
 
     # Output data directories
-    controlOutputDir = os.path.join(hardDrive_proj_root, "controls")
-    tumorOutputDir = os.path.join(hardDrive_proj_root, "tumors")
+    controlOutputDir = os.path.join(output_data_root, "controls")
+    tumorOutputDir = os.path.join(output_data_root, "tumors")
 
-    trainOutputDir = os.path.join(hardDrive_proj_root, "training")
-    testOutputDir = os.path.join(hardDrive_proj_root, "testing")
+    trainOutputDir = os.path.join(output_data_root, "training")
+    testOutputDir = os.path.join(output_data_root, "testing")
 
     # Sanity checks
     utils.ensureDirectoryExists(trainOutputDir)
@@ -455,11 +448,11 @@ def createTrainTestPatches():
     """
 
     # create training patches
-    createPatches('training', dataDir=os.path.join(hardDrive_proj_root, "training"),
+    createPatches('training', dataDir=os.path.join(output_data_root, "training"),
                   patchListFile="train.txt")
 
     # create testing patches
-    createPatches('testing', dataDir=os.path.join(hardDrive_proj_root, "testing"),
+    createPatches('testing', dataDir=os.path.join(output_data_root, "testing"),
                   patchListFile="val.txt")
 
 
@@ -487,21 +480,20 @@ def createLmdb(name, patchesDir, patchListFile, lmdbDir):
 def createTrainTestLmdb():
     """Create LMBD instances for the training and testing data.  For
     training and testing, take the patches created by
-    createTrainTestPatches and create LMDB instances in the Caffe
-    project directory titled Net_TrainData and Net_ValData,
-    respectively.
+    createTrainTestPatches and create LMDB instances in the output
+    directory titled Net_TrainData and Net_ValData, respectively.
 
     """
 
     printSectionHeader('Creating LMDBs for train and test data')
 
     # create training lmdb
-    createLmdb('training', os.path.join(hardDrive_proj_root, 'training', 'patches/'),
-               'train.txt', os.path.join(caffe_proj_root, "Net_TrainData"))
+    createLmdb('training', os.path.join(output_data_root, 'training', 'patches/'),
+               'train.txt', os.path.join(output_data_root, "Net_TrainData"))
 
     # create testing lmdb
-    createLmdb('testing', os.path.join(hardDrive_proj_root, 'testing', 'patches/'),
-               'val.txt', os.path.join(caffe_proj_root, "Net_ValData"))
+    createLmdb('testing', os.path.join(output_data_root, 'testing', 'patches/'),
+               'val.txt', os.path.join(output_data_root, "Net_ValData"))
 
 
 def printSectionHeader(title):
