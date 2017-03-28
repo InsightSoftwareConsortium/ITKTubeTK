@@ -314,6 +314,20 @@ def splitControlTumorData():
     splitData('tumor', tumorInputDir, tumorOutputDir, trainOutputDir, testOutputDir)
 
 
+def dict_to_list(d):
+    """Convert a dict whose keys are the ints 0..N-1 into a list of length
+    N such that l[x] == d[x].  In the process, check that the keys are
+    indeed such a range.
+
+    """
+    l = [None]*len(d)
+    try:
+        for k, v in d.items():
+            l[k] = v
+    except IndexError:
+        raise ValueError("Argument does not have a complete set of indices!")
+    return l
+
 # Extracts +ve (vessel center) and -ve (background) patches from image
 def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
     """Convert an image to a set of patches.  Patches are sorted into
@@ -353,13 +367,16 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
     w = script_params['PATCH_RADIUS']
 
     total_patches = script_params['PATCHES_PER_INPUT_FILE'] / script_params['NUM_SLABS']
-    vessel_ctl_pos_frac = script_params['POSITIVES_NEAR_VESSEL_CENTERLINE']
-    other_pos_frac = script_params['OTHER_POSITIVES']
-    vessel_bnd_neg_frac = script_params['NEGATIVES_NEAR_VESSEL_BOUNDARY']
-    other_neg_frac = script_params['OTHER_NEGATIVES']
+    num_patch_types = 4
+    vessel_ctl_pos, other_pos, vessel_bnd_neg, other_neg = range(num_patch_types)
+    frac = dict_to_list({
+        vessel_ctl_pos: script_params['POSITIVES_NEAR_VESSEL_CENTERLINE'],
+        other_pos: script_params['OTHER_POSITIVES'],
+        vessel_bnd_neg: script_params['NEGATIVES_NEAR_VESSEL_BOUNDARY'],
+        other_neg: script_params['OTHER_NEGATIVES'],
+    })
 
-    patch_frac_sum = vessel_ctl_pos_frac + other_pos_frac + \
-                     vessel_bnd_neg_frac + other_neg_frac
+    patch_frac_sum = sum(frac)
     if abs(patch_frac_sum - 1.0) > 1e-9:
         raise ValueError("Patch fractions sum must be 1.0, is {}".format(patch_frac_sum))
 
@@ -384,23 +401,26 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
     trainingMaskMid = trainingMask[s]
     expertSegMid = expertSeg[s]
 
-    # Vessel centerline pixel (positive)
-    vesselCtl = trainingMaskMid > 0.6 * 255
-    # Other vessel pixel (positive)
-    vessel = (expertSegMid > 0) & ~vesselCtl
-    # Vessel bound pixel (negative)
-    vesselBnd = (trainingMaskMid > 0) & ~vesselCtl
-    # Other background pixel (negative)
-    bgnd = (expertSegMid == 0) & (trainingMaskMid == 0)
+    vessel_ctl_pos_mask = trainingMaskMid > 0.6 * 255
+    mask = dict_to_list({
+        # Vessel centerline pixel (positive)
+        vessel_ctl_pos: vessel_ctl_pos_mask,
+        # Other vessel pixel (positive)
+        other_pos: (expertSegMid > 0) & ~vessel_ctl_pos_mask,
+        # Vessel bound pixel (negative)
+        vessel_bnd_neg: (trainingMaskMid > 0) & ~vessel_ctl_pos_mask,
+        # Other background pixel (negative)
+        other_neg: (expertSegMid == 0) & (trainingMaskMid == 0),
+    })
 
-    for midArray, frac, label in [
-            (vesselCtl, vessel_ctl_pos_frac, 1),
-            (vessel, other_pos_frac, 1),
-            (vesselBnd, vessel_bnd_neg_frac, 0),
-            (bgnd, other_neg_frac, 0)
+    for key, label in [
+            (vessel_ctl_pos, 1),
+            (other_pos, 1),
+            (vessel_bnd_neg, 0),
+            (other_neg, 0),
     ]:
-        indices = np.array(np.where(midArray)).T + w
-        numPatches = int(math.ceil(frac * total_patches))
+        indices = np.array(np.where(mask[key])).T + w
+        numPatches = int(math.ceil(frac[key] * total_patches))
         try:
             selInd = random.sample(indices, numPatches)
         except ValueError:
