@@ -377,10 +377,9 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
     trainingMask = skimage.io.imread(trainingMaskFile)
 
     # Iterate through expert mask and find pos/neg patches
-    subsample = 1  # Increase to reduce time for debugging
 
     # Slice that we want, which excludes edge pixels
-    s = np.s_[w:-w-1:subsample]
+    s = np.s_[w:-w-1]
     s = (s, s)
     trainingMaskMid = trainingMask[s]
     expertSegMid = expertSeg[s]
@@ -400,7 +399,7 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
             (vesselBnd, vessel_bnd_neg_frac, 0),
             (bgnd, other_neg_frac, 0)
     ]:
-        indices = np.array(np.where(midArray)).T * subsample + w
+        indices = np.array(np.where(midArray)).T + w
         numPatches = int(math.ceil(frac * total_patches))
         try:
             selInd = random.sample(indices, numPatches)
