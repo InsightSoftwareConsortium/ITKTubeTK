@@ -25,6 +25,7 @@ hardDrive_root = str(script_params['CNN_DATA_ROOT'])
 proj_rel_path = script_params['PROJECT_REL_PATH']
 
 caffe_proj_root = os.path.join(caffe_root, "data", proj_rel_path)
+hardDrive_proj_root = os.path.join(hardDrive_root, proj_rel_path)
 
 # import caffe
 sys.path.insert(0, os.path.join(caffe_root, 'python'))  # Add pycaffe
@@ -34,7 +35,7 @@ from caffe.proto import caffe_pb2
 import lmdb
 
 # Define file paths
-net_proto_path = os.path.join(caffe_proj_root, 'NetProto')
+net_proto_path = os.path.join(hardDrive_proj_root, 'NetProto')
 snapshot_prefix = os.path.join(net_proto_path, 'net')
 
 train_net_path = os.path.join(net_proto_path, 'net_train.prototxt')
@@ -195,12 +196,12 @@ def run():
 
     # Create testing and training net
     train_batch_size = script_params['TRAIN_BATCH_SIZE']
-    train_lmdb_path = os.path.join(caffe_proj_root, 'Net_TrainData')
+    train_lmdb_path = os.path.join(hardDrive_proj_root, 'Net_TrainData')
     with open(train_net_path, 'w') as f:
         f.write(str(custom_net(train_batch_size, train_lmdb_path)))
 
     test_batch_size = script_params['TEST_BATCH_SIZE']
-    test_lmdb_path = os.path.join(caffe_proj_root, 'Net_ValData')
+    test_lmdb_path = os.path.join(hardDrive_proj_root, 'Net_ValData')
     with open(test_net_path, 'w') as f:
         f.write(str(custom_net(test_batch_size, test_lmdb_path)))
 

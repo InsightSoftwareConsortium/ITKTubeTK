@@ -311,7 +311,7 @@ def run():
 
     # Model weights
     caffeModelWeights = os.path.join(
-        caffe_proj_root, "NetProto", "net_best.caffemodel")
+        hardDrive_proj_root, "NetProto", "net_best.caffemodel")
 
     if os.path.isfile(caffeModelWeights):
         print("Caffe model weights " + caffeModelWeights + " found.")
@@ -322,7 +322,7 @@ def run():
 
     # Model definition
     caffeModelDef = os.path.join(
-        caffe_proj_root, "NetProto", "net_deploy.prototxt")
+        hardDrive_proj_root, "NetProto", "net_deploy.prototxt")
 
     if os.path.isfile(caffeModelDef):
         print("Caffe model definition " + caffeModelDef + " found.")

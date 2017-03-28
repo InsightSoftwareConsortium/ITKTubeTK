@@ -487,7 +487,7 @@ def createLmdb(name, patchesDir, patchListFile, lmdbDir):
 def createTrainTestLmdb():
     """Create LMBD instances for the training and testing data.  For
     training and testing, take the patches created by
-    createTrainTestPatches and create LMDB instances in the Caffe
+    createTrainTestPatches and create LMDB instances in the hard drive
     project directory titled Net_TrainData and Net_ValData,
     respectively.
 
@@ -497,11 +497,11 @@ def createTrainTestLmdb():
 
     # create training lmdb
     createLmdb('training', os.path.join(hardDrive_proj_root, 'training', 'patches/'),
-               'train.txt', os.path.join(caffe_proj_root, "Net_TrainData"))
+               'train.txt', os.path.join(hardDrive_proj_root, "Net_TrainData"))
 
     # create testing lmdb
     createLmdb('testing', os.path.join(hardDrive_proj_root, 'testing', 'patches/'),
-               'val.txt', os.path.join(caffe_proj_root, "Net_ValData"))
+               'val.txt', os.path.join(hardDrive_proj_root, "Net_ValData"))
 
 
 def printSectionHeader(title):
