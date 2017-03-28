@@ -480,9 +480,8 @@ def createLmdb(name, patchesDir, patchListFile, lmdbDir):
 def createTrainTestLmdb():
     """Create LMBD instances for the training and testing data.  For
     training and testing, take the patches created by
-    createTrainTestPatches and create LMDB instances in the hard drive
-    project directory titled Net_TrainData and Net_ValData,
-    respectively.
+    createTrainTestPatches and create LMDB instances in the output
+    directory titled Net_TrainData and Net_ValData, respectively.
 
     """
 
