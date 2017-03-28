@@ -21,11 +21,8 @@ import utils
 # Define paths
 script_params = json.load(open('params.json'))
 caffe_root = str(script_params['CAFFE_SRC_ROOT'])
-hardDrive_root = str(script_params['CNN_DATA_ROOT'])
-proj_rel_path = script_params['PROJECT_REL_PATH']
-
-caffe_proj_root = os.path.join(caffe_root, "data", proj_rel_path)
-hardDrive_proj_root = os.path.join(hardDrive_root, proj_rel_path)
+hardDrive_proj_root = str(script_params['OUTPUT_DATA_ROOT'])
+caffe_proj_root = script_params['INPUT_DATA_ROOT']
 
 # import caffe
 sys.path.insert(0, os.path.join(caffe_root, 'python'))  # Add pycaffe

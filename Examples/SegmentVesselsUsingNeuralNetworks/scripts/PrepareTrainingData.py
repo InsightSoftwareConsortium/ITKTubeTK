@@ -31,11 +31,8 @@ import itk
 script_params = json.load(open('params.json'))
 
 caffe_root = script_params['CAFFE_SRC_ROOT']
-hardDrive_root = script_params['CNN_DATA_ROOT']
-proj_rel_path = script_params['PROJECT_REL_PATH']
-
-caffe_proj_root = os.path.join(caffe_root, "data", proj_rel_path)
-hardDrive_proj_root = os.path.join(hardDrive_root, proj_rel_path)
+hardDrive_proj_root = script_params['OUTPUT_DATA_ROOT']
+caffe_proj_root = script_params['INPUT_DATA_ROOT']
 
 # Where the input data is to be found, to be conceptually
 # distinguished from its location in the caffe root directory

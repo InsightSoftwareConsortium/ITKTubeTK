@@ -1,7 +1,7 @@
 {
-    "CNN_DATA_ROOT": "/media/krs0014",
+    "OUTPUT_DATA_ROOT": "/media/krs0014/SegmentVesselsUsingNeuralNetworks",
     "CAFFE_SRC_ROOT": "/home/cdeepakroy/work/Libs/caffe",
-    "PROJECT_REL_PATH": "SegmentVesselsUsingNeuralNetworks",
+    "INPUT_DATA_ROOT": "/home/cdeepakroy/work/Libs/caffe/data/SegmentVesselsUsingNeuralNetworks",
     "PATCH_RADIUS": 32,
     "NUM_SLABS": 10,
     "SLAB_OVERLAP": 20,
