@@ -425,14 +425,16 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
     })
 
     indices = [np.array(np.where(m)).T + w for m in mask]
-    numFractionalPatches = frac * np.where(patch_index, total_pos_patches, total_neg_patches)
-
-    available_count = np.array([len(ind) for ind in indices])
-    available_frac = available_count.astype(float) / numFractionalPatches
-    scalar_available_frac = min(available_frac.min(), 1.)
-    if scalar_available_frac != 1.:
-        print("WARNING: Too few of a desired patch type; scaling other types down accordingly")
-    numPatches = np.ceil(numFractionalPatches * scalar_available_frac - 1e-9).astype(int)
+    # Desired number of each type of patch (not necessarily a whole number)
+    desiredFractionalPatches = frac * np.where(patch_index, total_pos_patches, total_neg_patches)
+    availablePatches = np.array([len(ind) for ind in indices])
+    availableFraction = availablePatches.astype(float) / desiredFractionalPatches
+    # The largest fraction we can take, capped at 1
+    minAvailableFraction = min(availableFraction.min(), 1.)
+    if minAvailableFraction != 1.:
+        print("WARNING: Too few of a desired patch type; " +
+              "scaling all types down by {}% accordingly".format(minAvailableFraction * 100))
+    numPatches = np.ceil(desiredFractionalPatches * minAvailableFraction - 1e-9).astype(int)
 
     for key, label in enumerate(patch_index):
         selInd = random.sample(indices[key], numPatches[key])
