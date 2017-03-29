@@ -17,6 +17,7 @@ import shutil
 import sys
 
 import skimage.io
+import numpy as np
 
 import utils
 
@@ -306,6 +307,20 @@ def splitControlTumorData():
     splitData('tumor', tumorInputDir, tumorOutputDir, trainOutputDir, testOutputDir)
 
 
+def dict_to_list(d):
+    """Convert a dict whose keys are the ints 0..N-1 into a list of length
+    N such that l[x] == d[x].  In the process, check that the keys are
+    indeed such a range.
+
+    """
+    l = [None]*len(d)
+    try:
+        for k, v in d.items():
+            l[k] = v
+    except IndexError:
+        raise ValueError("Argument does not have a complete set of indices!")
+    return l
+
 # Extracts +ve (vessel center) and -ve (background) patches from image
 def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
     """Convert an image to a set of patches.  Patches are sorted into
@@ -344,8 +359,30 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
     # patch/window radius
     w = script_params['PATCH_RADIUS']
 
-    # fraction of negatives near vessel boundary
-    vessel_bnd_neg_frac = script_params['NEGATIVES_NEAR_VESSEL_BOUNDARY']
+    total_pos_patches = script_params['POSITIVE_PATCHES_PER_INPUT_FILE'] / script_params['NUM_SLABS']
+    total_neg_patches = script_params['NEGATIVE_TO_POSITIVE_RATIO'] * total_pos_patches
+
+    num_patch_types = 4
+    vessel_ctl_pos, other_pos, vessel_bnd_neg, other_neg = range(num_patch_types)
+
+    patch_index = np.array(dict_to_list({
+        vessel_ctl_pos: 1,
+        other_pos: 1,
+        vessel_bnd_neg: 0,
+        other_neg: 0,
+    }))
+
+    frac = np.array(dict_to_list({
+        vessel_ctl_pos: script_params['POSITIVES_NEAR_VESSEL_CENTERLINE'],
+        other_pos: script_params['OTHER_POSITIVES'],
+        vessel_bnd_neg: script_params['NEGATIVES_NEAR_VESSEL_BOUNDARY'],
+        other_neg: script_params['OTHER_NEGATIVES'],
+    }))
+
+    for i in range(2):
+        if abs(frac[patch_index == i].sum() - 1.0) > 1e-9:
+            raise ValueError("{} patch fraction sum must be 1.0, is {}".format(
+                "Positive" if i else "Negative", patch_frac_sum))
 
     # read input image
     inputImageFile = os.path.join(rootDir, "images", imageName + '.png')
@@ -357,54 +394,45 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
 
     computeTrainingMask(expertSegFile, trainingMaskFile)
 
+    expertSeg = skimage.io.imread(expertSegFile)
     trainingMask = skimage.io.imread(trainingMaskFile)
 
     # Iterate through expert mask and find pos/neg patches
-    numVesselPatches = 0
 
-    vesselBndInd = []  # Indices of background pixels near vessel boundary
-    bgndInd = []  # Indices of all other background pixels
-    subsample = 1  # Increase to reduce time for debugging
+    # Slice that we want, which excludes edge pixels
+    s = np.s_[w:-w-1]
+    s = (s, s)
+    trainingMaskMid = trainingMask[s]
+    expertSegMid = expertSeg[s]
 
-    for i in range(w, trainingMask.shape[0] - w - 1, subsample):
-        for j in range(w, trainingMask.shape[1] - w - 1, subsample):
+    vessel_ctl_pos_mask = trainingMaskMid > 0.6 * 255
+    mask = dict_to_list({
+        # Vessel centerline pixel (positive)
+        vessel_ctl_pos: vessel_ctl_pos_mask,
+        # Other vessel pixel (positive)
+        other_pos: (expertSegMid > 0) & ~vessel_ctl_pos_mask,
+        # Vessel bound pixel (negative)
+        vessel_bnd_neg: (trainingMaskMid > 0) & ~vessel_ctl_pos_mask,
+        # Other background pixel (negative)
+        other_neg: (expertSegMid == 0) & (trainingMaskMid == 0),
+    })
 
-            # Vessel center-line pixel (positive)
-            if trainingMask[i, j] > 0.6 * 255:
+    indices = [np.array(np.where(m)).T + w for m in mask]
+    # Desired number of each type of patch (not necessarily a whole number)
+    desiredFractionalPatches = frac * np.where(patch_index, total_pos_patches, total_neg_patches)
+    availablePatches = np.array([len(ind) for ind in indices])
+    availableFraction = availablePatches.astype(float) / desiredFractionalPatches
+    # The largest fraction we can take, capped at 1
+    minAvailableFraction = min(availableFraction.min(), 1.)
+    if minAvailableFraction != 1.:
+        print("WARNING: Too few of a desired patch type; " +
+              "scaling all types down by {}% accordingly".format(minAvailableFraction * 100))
+    numPatches = np.ceil(desiredFractionalPatches * minAvailableFraction - 1e-9).astype(int)
 
-                writePatch(1, i, j)
-
-                numVesselPatches += 1
-
-            # Vessel bound pixel (negative)
-            elif trainingMask[i, j] > 0:
-
-                vesselBndInd.append([i, j])
-
-            # Background pixel (negative)
-            else:
-
-                bgndInd.append([i, j])
-
-    # Pick a subset of background (negative) patches near vessel boundary
-    numVesselBndPatches = int(
-        math.ceil(vessel_bnd_neg_frac * numVesselPatches))
-
-    selVesselBndInd = random.sample(vesselBndInd, numVesselBndPatches)
-
-    for [i, j] in selVesselBndInd:
-        writePatch(0, i, j)
-
-    # Pick rest of background (negative) patches away from vessel boundary
-    numOtherBgndPatches = \
-        int(math.ceil((1.0 - vessel_bnd_neg_frac) * numVesselPatches))
-
-    selBgndInd = random.sample(bgndInd, numOtherBgndPatches)
-
-    for [i, j] in selBgndInd:
-        writePatch(0, i, j)
-
-    print 'Number of positive patches = ', numVesselPatches
+    for key, label in enumerate(patch_index):
+        selInd = random.sample(indices[key], numPatches[key])
+        for i, j in selInd:
+            writePatch(label, i, j)
 
 
 def createPatches(name, dataDir, patchListFile):
