@@ -413,19 +413,23 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
         other_neg: (expertSegMid == 0) & (trainingMaskMid == 0),
     })
 
+    indices = [np.array(np.where(m)).T + w for m in mask]
+    numFractionalPatches = np.array(frac) * total_patches
+
+    available_count = np.array([len(ind) for ind in indices])
+    available_frac = available_count.astype(float) / numFractionalPatches
+    scalar_available_frac = min(available_frac.min(), 1.)
+    if scalar_available_frac != 1.:
+        print("WARNING: Too few of a desired patch type; scaling other types down accordingly")
+    numPatches = np.ceil(numFractionalPatches * scalar_available_frac - 1e-9).astype(int)
+
     for key, label in [
             (vessel_ctl_pos, 1),
             (other_pos, 1),
             (vessel_bnd_neg, 0),
             (other_neg, 0),
     ]:
-        indices = np.array(np.where(mask[key])).T + w
-        numPatches = int(math.ceil(frac[key] * total_patches))
-        try:
-            selInd = random.sample(indices, numPatches)
-        except ValueError:
-            print "WARNING: Too few of the desired patch type; writing all that we have"
-            selInd = indices
+        selInd = random.sample(indices[key], numPatches[key])
         for i, j in selInd:
             writePatch(label, i, j)
 
