@@ -366,19 +366,30 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
     # patch/window radius
     w = script_params['PATCH_RADIUS']
 
-    total_patches = script_params['PATCHES_PER_INPUT_FILE'] / script_params['NUM_SLABS']
+    total_pos_patches = script_params['POSITIVE_PATCHES_PER_INPUT_FILE'] / script_params['NUM_SLABS']
+    total_neg_patches = script_params['NEGATIVE_TO_POSITIVE_RATIO'] * total_pos_patches
+
     num_patch_types = 4
     vessel_ctl_pos, other_pos, vessel_bnd_neg, other_neg = range(num_patch_types)
-    frac = dict_to_list({
+
+    patch_index = np.array(dict_to_list({
+        vessel_ctl_pos: 1,
+        other_pos: 1,
+        vessel_bnd_neg: 0,
+        other_neg: 0,
+    }))
+
+    frac = np.array(dict_to_list({
         vessel_ctl_pos: script_params['POSITIVES_NEAR_VESSEL_CENTERLINE'],
         other_pos: script_params['OTHER_POSITIVES'],
         vessel_bnd_neg: script_params['NEGATIVES_NEAR_VESSEL_BOUNDARY'],
         other_neg: script_params['OTHER_NEGATIVES'],
-    })
+    }))
 
-    patch_frac_sum = sum(frac)
-    if abs(patch_frac_sum - 1.0) > 1e-9:
-        raise ValueError("Patch fractions sum must be 1.0, is {}".format(patch_frac_sum))
+    for i in range(2):
+        if abs(frac[patch_index == i].sum() - 1.0) > 1e-9:
+            raise ValueError("{} patch fraction sum must be 1.0, is {}".format(
+                "Positive" if i else "Negative", patch_frac_sum))
 
     # read input image
     inputImageFile = os.path.join(rootDir, "images", imageName + '.png')
@@ -414,7 +425,7 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
     })
 
     indices = [np.array(np.where(m)).T + w for m in mask]
-    numFractionalPatches = np.array(frac) * total_patches
+    numFractionalPatches = frac * np.where(patch_index, total_pos_patches, total_neg_patches)
 
     available_count = np.array([len(ind) for ind in indices])
     available_frac = available_count.astype(float) / numFractionalPatches
@@ -423,12 +434,7 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
         print("WARNING: Too few of a desired patch type; scaling other types down accordingly")
     numPatches = np.ceil(numFractionalPatches * scalar_available_frac - 1e-9).astype(int)
 
-    for key, label in [
-            (vessel_ctl_pos, 1),
-            (other_pos, 1),
-            (vessel_bnd_neg, 0),
-            (other_neg, 0),
-    ]:
+    for key, label in enumerate(patch_index):
         selInd = random.sample(indices[key], numPatches[key])
         for i, j in selInd:
             writePatch(label, i, j)
