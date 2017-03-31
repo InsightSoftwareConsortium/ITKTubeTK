@@ -334,8 +334,8 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
     - $rootDir/expert/$imageName_expert.png: The corresponding expert mask
 
     Output:
-    - $outputDir/0/$imageName_$i_$j.png: Negative patches
-    - $outputDir/1/$imageName_$i_$j.png: Positive patches
+    - $outputDir/0/$imageName/$i_$j.png: Negative patches
+    - $outputDir/1/$imageName/$i_$j.png: Positive patches
 
     """
 
@@ -349,12 +349,15 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
         psi = str(patchSetIndex)
 
         filename = os.path.join(
-            psi, imageName + "_" + str(i) + "_" + str(j) + ".png")
+            psi, imageName, str(i) + "_" + str(j) + ".png")
 
         patchListFile.write(filename + " " + psi + "\n")
 
         skimage.io.imsave(os.path.join(outputDir, filename),
                           inputImage[i - w : i + w + 1, j - w : j + w + 1])
+
+    for i in range(2):
+        utils.ensureDirectoryExists(os.path.join(outputDir, str(i), imageName))
 
     # patch/window radius
     w = script_params['PATCH_RADIUS']
