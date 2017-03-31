@@ -18,6 +18,7 @@ import sys
 
 import skimage.io
 import numpy as np
+import sqlite3
 
 import utils
 
@@ -31,7 +32,6 @@ import itk
 # Define paths
 script_params = json.load(open('params.json'))
 
-caffe_root = script_params['CAFFE_SRC_ROOT']
 output_data_root = script_params['OUTPUT_DATA_ROOT']
 input_data_root = script_params['INPUT_DATA_ROOT']
 
@@ -484,25 +484,49 @@ def createTrainTestPatches():
                   patchListFile="val.txt")
 
 
+# TODO update names and docs
 def createLmdb(name, patchesDir, patchListFile, lmdbDir):
     """Create an LMDB instance in lmdbDir from the patches in patchesDir,
     indexed by patchListFile
 
     """
-    caffe_tools_dir = os.path.join(caffe_root, "build", "tools")
-    convert_imageset_exec = os.path.join(caffe_tools_dir, "convert_imageset")
-
     print('Creating %s lmdb ...\n' % name)
 
     if os.path.exists(lmdbDir):
         shutil.rmtree(lmdbDir)
 
-    subprocess.call([convert_imageset_exec,
-                     "--shuffle",
-                     "--gray",
-                     patchesDir,
-                     os.path.join(patchesDir, patchListFile),
-                     lmdbDir])
+    utils.ensureDirectoryExists(lmdbDir)
+
+    patchListFile = os.path.join(patchesDir, patchListFile)
+
+    db = sqlite3.connect(os.path.join(lmdbDir, 'data.sqlite3'))
+    db.execute('''create table "Patches" (
+        "filename" text,
+        "patch_index" integer,
+        -- Interpreted as a square C-major-order uint8 array with each
+        -- dimension (2 * PATCH_RADIUS + 1)
+        "image_data" blob
+    )''')
+
+    lines = list(open(patchListFile))
+    random.shuffle(lines)
+
+    def generate_data():
+        for i, l in enumerate(lines):
+            filename, patch_index = l.rstrip().rsplit(' ', 1)
+            patch_index = int(patch_index)
+            image_data = buffer(skimage.io.imread(os.path.join(patchesDir, filename)).copy())
+
+            yield filename, patch_index, image_data
+
+            if i % 1000 == 0:
+                print("{} patches processed".format(i))
+
+    db.executemany('''insert into "Patches" values (?, ?, ?)''',
+                   generate_data())
+
+    db.commit()
+    db.close()
 
 # create lmdb
 def createTrainTestLmdb():
