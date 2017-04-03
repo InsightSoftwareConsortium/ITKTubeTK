@@ -18,7 +18,6 @@ import sys
 
 import skimage.io
 import numpy as np
-import sqlite3
 
 import utils
 
@@ -502,7 +501,7 @@ def createLmdb(name, patchesDir, patchListFile, lmdbDir):
 
     patchListFile = os.path.join(patchesDir, patchListFile)
 
-    db = sqlite3.connect(os.path.join(lmdbDir, 'data.sqlite3'))
+    db = utils.open_sqlite3_db(lmdbDir)
     db.execute('''create table "Patches" (
         "filename" text,
         "patch_index" integer,
@@ -561,11 +560,11 @@ def printSectionHeader(title):
 def run():
 
     # create z-mip slabs
-    createControlTumorZMIPSlabs()
+    #createControlTumorZMIPSlabs()
 
     # assign control and tumor volumes equally to training and testing
     # Note: this must be called after createZMIPSlabs()
-    splitControlTumorData()
+    #splitControlTumorData()
 
     # convert train/test images to patches
     createTrainTestPatches()

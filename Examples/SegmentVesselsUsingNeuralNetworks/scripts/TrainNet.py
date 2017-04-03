@@ -20,28 +20,25 @@ import utils
 
 # Define paths
 script_params = json.load(open('params.json'))
-caffe_root = str(script_params['CAFFE_SRC_ROOT'])
 output_data_root = str(script_params['OUTPUT_DATA_ROOT'])
 input_data_root = script_params['INPUT_DATA_ROOT']
 
-# import caffe
-sys.path.insert(0, os.path.join(caffe_root, 'python'))  # Add pycaffe
-import caffe
-from caffe import layers as L, params as P
-from caffe.proto import caffe_pb2
-import lmdb
+import keras
+import keras.callbacks as C
+import keras.layers as L
+import keras.models as M
+import keras.optimizers as O
+import keras.utils as U
 
 # Define file paths
 net_proto_path = os.path.join(output_data_root, 'NetProto')
-snapshot_prefix = os.path.join(net_proto_path, 'net')
-
-train_net_path = os.path.join(net_proto_path, 'net_train.prototxt')
-test_net_path = os.path.join(net_proto_path, 'net_test.prototxt')
-deploy_net_path = os.path.join(net_proto_path, 'net_deploy.prototxt')
-solver_config_path = os.path.join(net_proto_path, 'net_solver.prototxt')
+snapshot_format = os.path.join(net_proto_path, 'net').replace('{','{{').replace('}','}}') + \
+                  '_{epoch:02d}.hdf5'
 
 train_results_dir = os.path.join(net_proto_path, 'train_results')
 utils.ensureDirectoryExists(train_results_dir)
+
+patch_size = 2 * script_params['PATCH_RADIUS'] + 1
 
 # Features square plot :
 #   Plot any layer's output features with the data parameter corresponding to
@@ -79,117 +76,64 @@ def squarePlot(data):
     plt.pause(0.05)
 
 
-# Define net architecture
-def custom_net(batch_size, lmdb=None):
+# Define net architecture, returning an uncompiled model
+def custom_net():
+    # Channels go last
+    inputs = L.Input(shape=(patch_size, patch_size, 1))
 
-    # define your own net!
-    n = caffe.NetSpec()
+    # First layer set
+    x = L.Conv2D(filters=48, kernel_size=6)(inputs)
+    x = L.LeakyReLU(0.1)(x)
+    x = L.MaxPooling2D(2)(x)
 
-    # keep this data layer for all networks
-    if lmdb:
+    # Second layer set
+    x = L.Conv2D(filters=48, kernel_size=5)(x)
+    x = L.LeakyReLU(0.1)(x)
+    x = L.MaxPooling2D(2)(x)
 
-        n.data, n.label = L.Data(batch_size=batch_size, backend=P.Data.LMDB, source=lmdb,
-                                 ntop=2, transform_param=dict(scale=1. / 255))
+    # Second layer set
+    x = L.Conv2D(filters=48, kernel_size=4)(x)
+    x = L.LeakyReLU(0.1)(x)
+    x = L.MaxPooling2D(2)(x)
 
-    else:
+    # Second layer set
+    x = L.Conv2D(filters=48, kernel_size=2)(x)
+    x = L.LeakyReLU(0.1)(x)
+    x = L.MaxPooling2D(2)(x)
 
-        # deploy mode
-        patch_size = 2 * script_params['PATCH_RADIUS'] + 1
+    # Fully connected layer set
+    x = L.Flatten()(x)
+    x = L.Dense(50)(x)
+    x = L.LeakyReLU(0.1)(x)
 
-        n.data = L.Input(shape=[dict(dim=[batch_size, 1, patch_size, patch_size])],
-                         transform_param=dict(scale=1.0 / 255.0))
+    x = L.Dropout(0.5)(x)
 
-    n.conv1 = L.Convolution(n.data, kernel_size=6,
-                            num_output=48, weight_filler=dict(type='xavier'))
-    n.relu1 = L.ReLU(n.conv1, negative_slope=0.1)
-    n.pool1 = L.Pooling(n.relu1, kernel_size=2, stride=2, pool=P.Pooling.MAX)
+    # Classify
+    x = L.Dense(2)(x)
+    predictions = L.Activation('softmax')(x)
 
-    n.conv2 = L.Convolution(n.pool1, kernel_size=5,
-                            num_output=48, weight_filler=dict(type='xavier'))
-    n.relu2 = L.ReLU(n.conv2, negative_slope=0.1)
-    n.pool2 = L.Pooling(n.relu2, kernel_size=2, stride=2, pool=P.Pooling.MAX)
-
-    n.conv3 = L.Convolution(n.pool2, kernel_size=4,
-                            num_output=48, weight_filler=dict(type='xavier'))
-    n.relu3 = L.ReLU(n.conv3, negative_slope=0.1)
-    n.pool3 = L.Pooling(n.relu3, kernel_size=2, stride=2, pool=P.Pooling.MAX)
-
-    n.conv4 = L.Convolution(n.pool3, kernel_size=2,
-                            num_output=48, weight_filler=dict(type='xavier'))
-    n.relu4 = L.ReLU(n.conv4, negative_slope=0.1)
-    n.pool4 = L.Pooling(n.relu4, kernel_size=2, stride=2, pool=P.Pooling.MAX)
-
-    n.fc1 = L.InnerProduct(n.pool4, num_output=50,
-                           weight_filler=dict(type='xavier'))
-    n.relu5 = L.ReLU(n.fc1, negative_slope=0.1)
-
-    n.drop1 = L.Dropout(n.relu5, dropout_param=dict(dropout_ratio=0.5))
-
-    n.score = L.InnerProduct(n.drop1, num_output=2,
-                             weight_filler=dict(type='xavier'))
-
-    # keep this loss layer for all networks
-    if lmdb:
-
-        n.loss = L.SoftmaxWithLoss(n.score, n.label)
-
-    else:
-
-        # deploy mode
-        n.loss = L.Softmax(n.score)
-
-    return n.to_proto()
+    return M.Model(inputs=inputs, outputs=predictions)
 
 
-def custom_solver(num_train_samples, num_test_samples):
+# Configure and compile model
+def custom_solver(net):
 
-    # Define and save solver params
-    solver_params = caffe_pb2.SolverParameter()
+    net.compile(O.SGD(lr=script_params['BASE_LR'],
+                      momentum=script_params['MOMENTUM'],
+                      decay=script_params['GAMMA']),
+                'categorical_crossentropy',
+                metrics=['accuracy'])
 
-    # set solver_params type - "SGD", "Adam", and "Nesterov" etc
-    solver_params.type = script_params['SOLVER_TYPE']
 
-    # set solver params parameters
-    solver_params.base_lr = script_params['BASE_LR']
-    solver_params.momentum = script_params['MOMENTUM']
-    solver_params.weight_decay = script_params['WEIGHT_DECAY']
+def queryResultToModelArguments(result):
+    """Convert the list of (image, label) pairs from a query into a pair
+    of NumPy arrays to pass into various model functions.
 
-    solver_params.lr_policy = script_params['LR_DECAY_POLICY']
-    solver_params.gamma = script_params['GAMMA']
-    solver_params.power = script_params['POWER']
-
-    # Set a seed for reproducible experiments
-    solver_params.random_seed = 0xCAFFE
-
-    # Specify locations of the train and (maybe) test networks.
-    solver_params.train_net = train_net_path
-    solver_params.test_net.append(test_net_path)
-
-    # specify train iterations
-    # num passes through train dataset
-    num_train_epochs = script_params['NUM_TRAIN_EPOCHS']
-    train_batch_size = script_params['TRAIN_BATCH_SIZE']
-    num_train_iters_per_epoch = num_train_samples / train_batch_size
-
-    solver_params.max_iter = num_train_epochs * num_train_iters_per_epoch
-
-    # specify test interval and iterations
-    # num passes through test dataset
-    num_test_epochs = script_params['NUM_TEST_EPOCHS']
-    test_batch_size = script_params['TEST_BATCH_SIZE']
-    num_test_iters_per_epoch = num_test_samples / test_batch_size
-
-    # one pass through train dataset
-    solver_params.test_interval = num_train_iters_per_epoch
-    solver_params.test_iter.append(num_test_epochs * num_test_iters_per_epoch)
-
-    solver_params.display = solver_params.test_interval
-    solver_params.snapshot = solver_params.test_interval
-    solver_params.snapshot_prefix = snapshot_prefix
-
-    solver_params.solver_mode = caffe_pb2.SolverParameter.GPU
-
-    return solver_params
+    """
+    image_data = (np.array([np.frombuffer(im, dtype=np.uint8) for im, _ in result])
+                  .reshape((len(result), patch_size, patch_size, 1)) / 255.)
+    labels = np.array([l for _, l in result])
+    return image_data, labels
 
 
 def run():
@@ -199,43 +143,31 @@ def run():
     # Create testing and training net
     train_batch_size = script_params['TRAIN_BATCH_SIZE']
     train_lmdb_path = os.path.join(output_data_root, 'Net_TrainData')
-    with open(train_net_path, 'w') as f:
-        f.write(str(custom_net(train_batch_size, train_lmdb_path)))
 
     test_batch_size = script_params['TEST_BATCH_SIZE']
     test_lmdb_path = os.path.join(output_data_root, 'Net_ValData')
-    with open(test_net_path, 'w') as f:
-        f.write(str(custom_net(test_batch_size, test_lmdb_path)))
 
-    with open(deploy_net_path, 'w') as f:
-        f.write(str(custom_net(test_batch_size, None)))
+    net = custom_net()
+    custom_solver(net)
+
+    def get_sample_count(path):
+        db = utils.open_sqlite3_db(path)
+        retval, = db.execute('''select count(*) from "Patches"''').fetchone()
+        db.close()
+        return retval
 
     # get number of train/test samples
-    num_train_samples = lmdb.open(
-        train_lmdb_path, readonly=True).stat()['entries']
-    num_test_samples = lmdb.open(
-        test_lmdb_path, readonly=True).stat()['entries']
+    num_train_samples = get_sample_count(train_lmdb_path)
+    num_test_samples = get_sample_count(test_lmdb_path)
 
-    # Define and save solver params
-    solver_params = custom_solver(num_train_samples, num_test_samples)
-
-    with open(solver_config_path, 'w') as f:
-        f.write(str(solver_params))
-
-    # Must be called before instantiating solver due to potential
-    # Caffe bug
-    caffe.set_mode_gpu()  # Use GPU
-
-    # load the solver and create train and test nets
-    # ignore this workaround for lmdb data (can't instantiate two solvers on
-    # the same data)
-    solver = None
-    solver = caffe.get_solver(str(solver_config_path))
+    solver = net
 
     # print the structure of the network
     print '\nNumber of training samples = ', num_train_samples
     print 'Number of testing samples = ', num_test_samples
 
+    # TODO translate
+    '''
     print('\nNetwork structure ...')
     for layer_name, blob in solver.net.blobs.iteritems():
         print(layer_name + '\t' + str(blob.data.shape))
@@ -252,6 +184,7 @@ def run():
         num_params += cur_num_params
 
     print 'Total number of params : %d (%.3f MB)' % (num_params, num_params * 8.0 / 10**6)
+    '''
 
     # ask if user wants to start training
     flag_train = raw_input('start training (y/n)?')
@@ -260,11 +193,13 @@ def run():
         sys.exit(0)
 
     # solve
-
+    # TODO figure out how to translate
+    '''
     fig = {}
     for layer_name in solver.net.params.keys():
         if layer_name.startswith('conv'):
             fig[layer_name] = plt.figure()
+    '''
 
     num_train_epochs = script_params['NUM_TRAIN_EPOCHS']
     train_batch_size = script_params['TRAIN_BATCH_SIZE']
@@ -276,92 +211,48 @@ def run():
     num_test_iters_per_epoch = num_test_samples / test_batch_size
     num_test_iters = num_test_epochs * num_test_iters_per_epoch
 
-    assert(num_train_iters == solver_params.max_iter)
-    assert(num_test_iters == solver_params.test_iter[0])
-    assert(num_train_iters_per_epoch == solver_params.test_interval)
+    def data_generator(lmdb_path, batch_size):
+        """Generate batches of batch_size samples from the database at
+        lmdb_path, looping through the database repeatedly, and
+        ignoring remaining samples when the total sample count is
+        divided by batch_size.
 
-    train_loss = np.zeros(num_train_iters)
-    test_acc = np.zeros(num_train_epochs)
-    test_loss = np.zeros_like(test_acc)
+        """
+        db = utils.open_sqlite3_db(lmdb_path)
+        cursor = db.cursor()
+        while True:
+            cursor.execute('''select "image_data", "patch_index"
+                              from "Patches"''')
+            while True:
+                result = cursor.fetchmany(batch_size)
+                if len(result) < batch_size:
+                    break
+                image_data, labels = queryResultToModelArguments(result)
+                yield image_data, U.to_categorical(labels, 2)
 
-    it_train = 0
+    history = solver.fit_generator(data_generator(train_lmdb_path, train_batch_size),
+                                   steps_per_epoch=num_train_iters_per_epoch,
+                                   epochs=num_train_epochs,
+                                   callbacks=[C.ProgbarLogger('steps'),
+                                              C.ModelCheckpoint(snapshot_format)],
+                                   validation_data=data_generator(test_lmdb_path, test_batch_size),
+                                   validation_steps=num_test_iters_per_epoch).history
 
-    best_iter = -1
-    best_epoch = -1
-    best_acc = 0
+    print 'Test accuracy : ', history['val_acc']
+    print 'Test loss     : ', history['val_loss']
 
-    for ep_train in range(num_train_epochs):
+    best_epoch = np.argmax(history['val_acc'])
+    best_acc = history['val_acc'][best_epoch]
 
-        # make one pass through training data
-        t = time.time()
+    # save best model
+    print 'Best model: accuracy = %s, epoch = %s' % (best_acc, best_epoch)
 
-        mean_train_loss = 0
+    shutil.copyfile(
+        snapshot_format.format(epoch=best_epoch),
+        os.path.join(net_proto_path, 'net_best.hdf5')
+    )
 
-        for i in range(num_train_iters_per_epoch):
-
-            # make one training step
-            solver.step(1)  # SGD by Caffe
-
-            # get and store the loss
-            cur_loss = solver.net.blobs['loss'].data
-
-            train_loss[it_train] = cur_loss
-
-            mean_train_loss += cur_loss
-
-            it_train += 1
-
-        epoch_train_time = time.time() - t
-
-        mean_train_loss /= num_train_iters_per_epoch
-
-        # validate model
-        correct = 0.0
-        num_test_cases = 0.0
-        mean_test_loss = 0.0
-
-        t = time.time()
-
-        for ep_test in range(num_test_epochs):
-
-            for i in range(num_test_iters_per_epoch):
-
-                # make one validation step
-                solver.test_nets[0].forward()
-
-                # compute and store test accuracy
-                pred_labels = solver.test_nets[0].blobs['score'].data.argmax(1)
-                true_labels = solver.test_nets[0].blobs['label'].data
-                correct += np.sum(pred_labels == true_labels)
-                num_test_cases += len(pred_labels)
-
-                # compute and store test loss
-                mean_test_loss += solver.test_nets[0].blobs['loss'].data
-
-        mean_test_loss /= num_test_iters
-        cur_acc = correct / num_test_cases
-
-        test_acc[ep_train] = cur_acc
-        test_loss[ep_train] = mean_test_loss
-
-        if cur_acc > best_acc:
-
-            best_iter = it_train
-            best_epoch = ep_train
-            best_acc = cur_acc
-
-        test_time = time.time() - t
-
-        # print status
-        print 'Training epoch %s / %s ...' % (ep_train + 1, num_train_epochs)
-
-        print '\tTrain loss mean = %s' % mean_train_loss
-        print '\tNo of training iterations finished = %s' % it_train
-        print '\tEpoch training time = %s' % epoch_train_time
-
-        print "\tTest loss mean = %s, accuracy = %s" % (mean_test_loss, cur_acc)
-        print "\tTesting time = %s" % test_time
-
+    '''
         # Visualize convolutional filters at each layer
         for layer_name in solver.net.params.keys():
 
@@ -387,32 +278,14 @@ def run():
                                                             it_train)
                     )
                 )
-
-    print 'Test accuracy : ', test_acc
-    print 'Test loss     : ', test_loss
-
-    # save best model
-    print 'Best model: accuracy = %s, iter = %s, epoch = %s' % (best_acc,
-                                                                best_iter,
-                                                                best_epoch)
-
-    shutil.copyfile(
-        snapshot_prefix + '_iter_%d.caffemodel' % best_iter,
-        snapshot_prefix + '_best.caffemodel'
-    )
-    shutil.copyfile(
-        snapshot_prefix + '_iter_%d.solverstate' % best_iter,
-        snapshot_prefix + '_best.solverstate'
-    )
+    '''
 
     # Plot learning curve
     fig_learning_curve = plt.figure()
 
     ax1 = fig_learning_curve.add_subplot(111)
 
-    train_iter_ticks = np.arange(
-        num_train_iters, dtype=np.double) / num_train_iters_per_epoch
-    ln1 = ax1.plot(train_iter_ticks, train_loss, 'g', label='train loss')
+    ln1 = ax1.plot(history['loss'], 'g', label='train loss')
 
     ax1.plot(best_epoch, best_acc, 'k*', markersize=10)
 
@@ -422,14 +295,12 @@ def run():
 
     ax2 = ax1.twinx()
 
-    test_iter_ticks = np.arange(num_train_epochs, dtype=np.double)
-    ln2 = ax1.plot(test_iter_ticks, test_loss, 'b', label='test loss')
-    ln3 = ax2.plot(test_iter_ticks, test_acc, 'r', label='test accuracy')
+    ln2 = ax1.plot(history['val_loss'], 'b', label='test loss')
+    ln3 = ax2.plot(history['val_acc'], 'r', label='test accuracy')
 
     ax2.grid()
     ax2.set_ylabel('test accuracy')
-    ax2.set_title('Learning curve : best epoch = %d, iter = %d' %
-                  (best_epoch, best_iter))
+    ax2.set_title('Learning curve : best epoch = %d' % best_epoch)
     ax2.set_xlim([0, num_train_epochs])
     ax2.set_ylim([0.0, 1.0])
 
@@ -441,16 +312,18 @@ def run():
         train_results_dir, 'learning_curve.png'))
 
     # Show sample images from each cell of the confusion matrix
-    pred_labels = solver.test_nets[0].blobs['score'].data.argmax(1)
-    true_labels = solver.test_nets[0].blobs['label'].data
+    image_data, true_labels = queryResultToModelArguments(
+        utils.open_sqlite3_db(test_lmdb_path)
+        .execute('''select "image_data", "patch_index" from "Patches"
+                    order by random() limit ?''', (test_batch_size,))
+        .fetchall())
+    pred_labels = solver.predict(image_data, test_batch_size).argmax(1)
 
     def generate_confusion_file(true_value, pred_value):
         adj = 'true' if true_value == pred_value else 'false'
         noun = 'positive' if pred_value == 1 else 'negative'
 
-        c_data = solver.test_nets[0].blobs['data'].data[
-            (true_labels == true_value) & (pred_labels == pred_value),
-            0]
+        c_data = image_data[(true_labels == true_value) & (pred_labels == pred_value), ..., 0]
         c_count = c_data.shape[0]
         c_percent = c_count * 100. / test_batch_size
         print '%s %ss : %d / %d (%.2f%%)' % (adj, noun, c_count, test_batch_size, c_percent)
