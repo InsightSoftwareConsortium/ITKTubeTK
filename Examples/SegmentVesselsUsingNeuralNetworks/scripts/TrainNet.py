@@ -142,10 +142,10 @@ def run():
 
     # Create testing and training net
     train_batch_size = script_params['TRAIN_BATCH_SIZE']
-    train_lmdb_path = os.path.join(output_data_root, 'Net_TrainData')
+    train_db_path = os.path.join(output_data_root, 'Net_TrainData')
 
     test_batch_size = script_params['TEST_BATCH_SIZE']
-    test_lmdb_path = os.path.join(output_data_root, 'Net_ValData')
+    test_db_path = os.path.join(output_data_root, 'Net_ValData')
 
     net = custom_net()
     custom_solver(net)
@@ -157,8 +157,8 @@ def run():
         return retval
 
     # get number of train/test samples
-    num_train_samples = get_sample_count(train_lmdb_path)
-    num_test_samples = get_sample_count(test_lmdb_path)
+    num_train_samples = get_sample_count(train_db_path)
+    num_test_samples = get_sample_count(test_db_path)
 
     solver = net
 
@@ -211,14 +211,14 @@ def run():
     num_test_iters_per_epoch = num_test_samples / test_batch_size
     num_test_iters = num_test_epochs * num_test_iters_per_epoch
 
-    def data_generator(lmdb_path, batch_size):
+    def data_generator(db_path, batch_size):
         """Generate batches of batch_size samples from the database at
-        lmdb_path, looping through the database repeatedly, and
+        db_path, looping through the database repeatedly, and
         ignoring remaining samples when the total sample count is
         divided by batch_size.
 
         """
-        db = utils.open_sqlite3_db(lmdb_path)
+        db = utils.open_sqlite3_db(db_path)
         cursor = db.cursor()
         while True:
             cursor.execute('''select "image_data", "patch_index"
@@ -230,12 +230,12 @@ def run():
                 image_data, labels = queryResultToModelArguments(result)
                 yield image_data, U.to_categorical(labels, 2)
 
-    history = solver.fit_generator(data_generator(train_lmdb_path, train_batch_size),
+    history = solver.fit_generator(data_generator(train_db_path, train_batch_size),
                                    steps_per_epoch=num_train_iters_per_epoch,
                                    epochs=num_train_epochs,
                                    callbacks=[C.ProgbarLogger('steps'),
                                               C.ModelCheckpoint(snapshot_format)],
-                                   validation_data=data_generator(test_lmdb_path, test_batch_size),
+                                   validation_data=data_generator(test_db_path, test_batch_size),
                                    validation_steps=num_test_iters_per_epoch).history
 
     print 'Test accuracy : ', history['val_acc']
@@ -313,7 +313,7 @@ def run():
 
     # Show sample images from each cell of the confusion matrix
     image_data, true_labels = queryResultToModelArguments(
-        utils.open_sqlite3_db(test_lmdb_path)
+        utils.open_sqlite3_db(test_db_path)
         .execute('''select "image_data", "patch_index" from "Patches"
                     order by random() limit ?''', (test_batch_size,))
         .fetchall())

@@ -486,22 +486,21 @@ def createTrainTestPatches():
                   patchListFile="val.txt")
 
 
-# TODO update names and docs
-def createLmdb(name, patchesDir, patchListFile, lmdbDir):
-    """Create an LMDB instance in lmdbDir from the patches in patchesDir,
-    indexed by patchListFile
+def createDB(name, patchesDir, patchListFile, dbDir):
+    """Create a database in dbDir from the patches in patchesDir, indexed
+    by patchListFile
 
     """
-    print('Creating %s lmdb ...\n' % name)
+    print('Creating %s DB ...\n' % name)
 
-    if os.path.exists(lmdbDir):
-        shutil.rmtree(lmdbDir)
+    if os.path.exists(dbDir):
+        shutil.rmtree(dbDir)
 
-    utils.ensureDirectoryExists(lmdbDir)
+    utils.ensureDirectoryExists(dbDir)
 
     patchListFile = os.path.join(patchesDir, patchListFile)
 
-    db = utils.open_sqlite3_db(lmdbDir)
+    db = utils.open_sqlite3_db(dbDir)
     db.execute('''create table "Patches" (
         "filename" text,
         "patch_index" integer,
@@ -530,24 +529,24 @@ def createLmdb(name, patchesDir, patchListFile, lmdbDir):
     db.commit()
     db.close()
 
-# create lmdb
-def createTrainTestLmdb():
-    """Create LMBD instances for the training and testing data.  For
-    training and testing, take the patches created by
-    createTrainTestPatches and create LMDB instances in the output
+def createTrainTestDB():
+    """Create databases for the training and testing data.
+
+    For training and testing, take the patches created by
+    createTrainTestPatches and create a database in the output
     directory titled Net_TrainData and Net_ValData, respectively.
 
     """
 
-    printSectionHeader('Creating LMDBs for train and test data')
+    printSectionHeader('Creating DBs for train and test data')
 
-    # create training lmdb
-    createLmdb('training', os.path.join(output_data_root, 'training', 'patches/'),
-               'train.txt', os.path.join(output_data_root, "Net_TrainData"))
+    # create training DB
+    createDB('training', os.path.join(output_data_root, 'training', 'patches/'),
+             'train.txt', os.path.join(output_data_root, "Net_TrainData"))
 
-    # create testing lmdb
-    createLmdb('testing', os.path.join(output_data_root, 'testing', 'patches/'),
-               'val.txt', os.path.join(output_data_root, "Net_ValData"))
+    # create testing DB
+    createDB('testing', os.path.join(output_data_root, 'testing', 'patches/'),
+             'val.txt', os.path.join(output_data_root, "Net_ValData"))
 
 
 def printSectionHeader(title):
@@ -569,8 +568,8 @@ def run():
     # convert train/test images to patches
     createTrainTestPatches()
 
-    # create lmdb database
-    createTrainTestLmdb()
+    # create database
+    createTrainTestDB()
 
 
 if __name__ == "__main__":
