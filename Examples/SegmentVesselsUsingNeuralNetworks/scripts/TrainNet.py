@@ -77,7 +77,7 @@ def squarePlot(data):
 
 
 # Define net architecture, returning an uncompiled model
-def custom_net():
+def create_uncompiled_model():
     # Channels go last
     inputs = L.Input(shape=(patch_size, patch_size, 1))
 
@@ -116,13 +116,13 @@ def custom_net():
 
 
 # Configure and compile model
-def custom_solver(net):
+def compile_model(model):
 
-    net.compile(O.SGD(lr=script_params['BASE_LR'],
-                      momentum=script_params['MOMENTUM'],
-                      decay=script_params['GAMMA']),
-                'categorical_crossentropy',
-                metrics=['accuracy'])
+    model.compile(O.SGD(lr=script_params['BASE_LR'],
+                        momentum=script_params['MOMENTUM'],
+                        decay=script_params['GAMMA']),
+                  'categorical_crossentropy',
+                  metrics=['accuracy'])
 
 
 def queryResultToModelArguments(result):
@@ -147,8 +147,8 @@ def run():
     test_batch_size = script_params['TEST_BATCH_SIZE']
     test_db_path = os.path.join(output_data_root, 'Net_ValData')
 
-    net = custom_net()
-    custom_solver(net)
+    model = create_uncompiled_model()
+    compile_model(model)
 
     def get_sample_count(path):
         db = utils.open_sqlite3_db(path)
@@ -159,8 +159,6 @@ def run():
     # get number of train/test samples
     num_train_samples = get_sample_count(train_db_path)
     num_test_samples = get_sample_count(test_db_path)
-
-    solver = net
 
     # print the structure of the network
     print '\nNumber of training samples = ', num_train_samples
@@ -230,13 +228,13 @@ def run():
                 image_data, labels = queryResultToModelArguments(result)
                 yield image_data, U.to_categorical(labels, 2)
 
-    history = solver.fit_generator(data_generator(train_db_path, train_batch_size),
-                                   steps_per_epoch=num_train_iters_per_epoch,
-                                   epochs=num_train_epochs,
-                                   callbacks=[C.ProgbarLogger('steps'),
-                                              C.ModelCheckpoint(snapshot_format)],
-                                   validation_data=data_generator(test_db_path, test_batch_size),
-                                   validation_steps=num_test_iters_per_epoch).history
+    history = model.fit_generator(data_generator(train_db_path, train_batch_size),
+                                  steps_per_epoch=num_train_iters_per_epoch,
+                                  epochs=num_train_epochs,
+                                  callbacks=[C.ProgbarLogger('steps'),
+                                             C.ModelCheckpoint(snapshot_format)],
+                                  validation_data=data_generator(test_db_path, test_batch_size),
+                                  validation_steps=num_test_iters_per_epoch).history
 
     print 'Test accuracy : ', history['val_acc']
     print 'Test loss     : ', history['val_loss']
@@ -317,7 +315,7 @@ def run():
         .execute('''select "image_data", "patch_index" from "Patches"
                     order by random() limit ?''', (test_batch_size,))
         .fetchall())
-    pred_labels = solver.predict(image_data, test_batch_size).argmax(1)
+    pred_labels = model.predict(image_data, test_batch_size).argmax(1)
 
     def generate_confusion_file(true_value, pred_value):
         adj = 'true' if true_value == pred_value else 'false'
