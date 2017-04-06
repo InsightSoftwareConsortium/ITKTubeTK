@@ -164,25 +164,25 @@ def run():
     print '\nNumber of training samples = ', num_train_samples
     print 'Number of testing samples = ', num_test_samples
 
-    # TODO translate
-    '''
-    print('\nNetwork structure ...')
-    for layer_name, blob in solver.net.blobs.iteritems():
-        print(layer_name + '\t' + str(blob.data.shape))
+    print '\nNetwork structure ...'
+    for layer in model.layers:
+        print layer.name + '\t' + str(layer.output_shape)
 
-    # print parameters at each network layer
-    print('\nNetwork parameters ...')
+    print '\nNetwork weights ...'
 
-    num_params = 0
-    for layer_name, param in solver.net.params.iteritems():
-        print layer_name + '\t' + str(param[0].data.shape), str(param[1].data.shape),
+    def with_estimated_mem(num):
+        return "{} ({:.3f} MB)".format(num, num*8/1e6)
 
-        cur_num_params = np.prod(param[0].data.shape) + param[1].data.shape
-        print '\t%d parameters (%.2f MB)' % (cur_num_params, cur_num_params * 8.0 / 10.0**6)
-        num_params += cur_num_params
-
-    print 'Total number of params : %d (%.3f MB)' % (num_params, num_params * 8.0 / 10**6)
-    '''
+    total_params = 0
+    for layer in model.layers:
+        shapes = [w.shape for w in layer.get_weights()]
+        if not shapes:
+            continue
+        print layer.name + '\t' + ' '.join(map(str, shapes)),
+        num_params = sum(map(np.prod, shapes))
+        print '\tParameters:', with_estimated_mem(num_params)
+        total_params += num_params
+    print 'Total parameters:', with_estimated_mem(total_params)
 
     # ask if user wants to start training
     flag_train = raw_input('start training (y/n)?')
