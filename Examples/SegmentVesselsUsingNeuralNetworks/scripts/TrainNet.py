@@ -191,13 +191,9 @@ def run():
         sys.exit(0)
 
     # solve
-    # TODO figure out how to translate
-    '''
-    fig = {}
-    for layer_name in solver.net.params.keys():
-        if layer_name.startswith('conv'):
-            fig[layer_name] = plt.figure()
-    '''
+    conv_layers = [l for l in model.layers if isinstance(l, L.Conv2D)]
+    # Auto-generated names are supposed to be unique
+    fig = {l.name: plt.figure() for l in conv_layers}
 
     num_train_epochs = script_params['NUM_TRAIN_EPOCHS']
     train_batch_size = script_params['TRAIN_BATCH_SIZE']
@@ -250,33 +246,27 @@ def run():
         os.path.join(net_proto_path, 'net_best.hdf5')
     )
 
-    '''
-        # Visualize convolutional filters at each layer
-        for layer_name in solver.net.params.keys():
+    # Visualize convolutional filters at each layer
+    ep_train = num_test_epochs - 1
+    for l in conv_layers:
 
-            if layer_name.startswith('conv'):
+        plt.figure(fig[l.name].number)
 
-                plt.figure(fig[layer_name].number)
+        features = l.get_weights()[0]
 
-                features = solver.net.params[layer_name][0].data
+        h, w, n_channels, n_filters = features.shape
+        n_images = n_filters * n_channels
 
-                n_filters, n_channels, h, w = features.shape
-                n_images = n_filters * n_channels
+        squarePlot(features.transpose(2, 3, 0, 1).reshape(n_images, h, w))
 
-                squarePlot(features.reshape(n_images, h, w))
-
-                plt.title('%s - %s - Iter %s - Epoch %s' %
-                          (layer_name, str(features.shape),
-                           it_train, ep_train))
-                plt.savefig(
-                    os.path.join(
-                        train_results_dir,
-                        'filters_%s_ep_%.3d_it_%.7d.png' % (layer_name,
-                                                            ep_train,
-                                                            it_train)
-                    )
-                )
-    '''
+        plt.title('%s - %s - Epoch %s' %
+                  (l.name, str(features.shape), ep_train))
+        plt.savefig(
+            os.path.join(
+                train_results_dir,
+                'filters_%s_ep_%.3d.png' % (l.name, ep_train)
+            )
+        )
 
     # Plot learning curve
     fig_learning_curve = plt.figure()
