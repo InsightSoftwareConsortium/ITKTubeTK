@@ -166,14 +166,24 @@ def run():
     print '\nNumber of training samples = ', num_train_samples
     print 'Number of testing samples = ', num_test_samples
 
-    print '\nNetwork structure ...'
-    for layer in model.layers:
-        print layer.name + '\t' + str(layer.output_shape)
-
-    print '\nNetwork weights ...'
-
     def with_estimated_mem(num):
         return "{} ({:.3f} MB)".format(num, num*8/1e6)
+
+    # Warning: this summation assumes the memory used by a layer for
+    # its tensors is determined only by its output.  This estimate
+    # will be an overestimate to the extent that any operation can be
+    # done "in-place", and an underestimate to the extent a layer is
+    # more complicated than a single step of input to output.
+    total_elements = 0
+    print '\nNetwork structure ...'
+    for layer in model.layers:
+        print layer.name + '\t' + str(layer.output_shape),
+        elements = train_batch_size * np.prod(layer.output_shape[1:])
+        print '\tElements:', with_estimated_mem(elements)
+        total_elements += elements
+    print 'Total elements:', with_estimated_mem(total_elements)
+
+    print '\nNetwork weights ...'
 
     total_params = 0
     for layer in model.layers:
