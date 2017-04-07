@@ -28,6 +28,7 @@ import keras.callbacks as C
 import keras.layers as L
 import keras.models as M
 import keras.optimizers as O
+import keras.regularizers as R
 import keras.utils as U
 
 # Define file paths
@@ -78,38 +79,51 @@ def squarePlot(data):
 
 # Define net architecture, returning an uncompiled model
 def create_uncompiled_model():
+    weight_decay = script_params['WEIGHT_DECAY']
+
+    def wrap_regularizer(layer):
+        def wrapper(*args, **kwargs):
+            return layer(*args,
+                         kernel_regularizer=R.l2(weight_decay),
+                         bias_regularizer=R.l2(weight_decay),
+                         **kwargs)
+        return wrapper
+
+    Conv2D = wrap_regularizer(L.Conv2D)
+    Dense = wrap_regularizer(L.Dense)
+
     # Channels go last
     inputs = L.Input(shape=(patch_size, patch_size, 1))
 
     # First layer set
-    x = L.Conv2D(filters=48, kernel_size=6)(inputs)
+    x = Conv2D(filters=48, kernel_size=6)(inputs)
     x = L.LeakyReLU(0.1)(x)
     x = L.MaxPooling2D(2)(x)
 
     # Second layer set
-    x = L.Conv2D(filters=48, kernel_size=5)(x)
+    x = Conv2D(filters=48, kernel_size=5)(x)
     x = L.LeakyReLU(0.1)(x)
     x = L.MaxPooling2D(2)(x)
 
     # Second layer set
-    x = L.Conv2D(filters=48, kernel_size=4)(x)
+    x = Conv2D(filters=48, kernel_size=4)(x)
     x = L.LeakyReLU(0.1)(x)
     x = L.MaxPooling2D(2)(x)
 
     # Second layer set
-    x = L.Conv2D(filters=48, kernel_size=2)(x)
+    x = Conv2D(filters=48, kernel_size=2)(x)
     x = L.LeakyReLU(0.1)(x)
     x = L.MaxPooling2D(2)(x)
 
     # Fully connected layer set
     x = L.Flatten()(x)
-    x = L.Dense(50)(x)
+    x = Dense(50)(x)
     x = L.LeakyReLU(0.1)(x)
 
     x = L.Dropout(0.5)(x)
 
     # Classify
-    x = L.Dense(2)(x)
+    x = Dense(2)(x)
     predictions = L.Activation('softmax')(x)
 
     return M.Model(inputs=inputs, outputs=predictions)
