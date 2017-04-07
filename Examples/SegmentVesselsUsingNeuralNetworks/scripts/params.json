@@ -16,12 +16,12 @@
     "TEST_BATCH_SIZE": 1024,
     "DEPLOY_BATCH_SIZE": 4096,
     "SOLVER_TYPE": "SGD",
+    "SOLVER_PARAMS": {
+	"MOMENTUM": 0.9
+    },
     "BASE_LR": 0.01,
-    "MOMENTUM": 0.9,
     "WEIGHT_DECAY": 1e-4,
-    "LR_DECAY_POLICY": "inv",
     "GAMMA": 1e-4,
-    "POWER": 0.75,
     "VESSEL_SEED_PROBABILITY": 0.95,
     "VESSEL_SCALE": 0.1
 }

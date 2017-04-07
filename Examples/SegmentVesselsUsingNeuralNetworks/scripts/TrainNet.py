@@ -117,10 +117,12 @@ def create_uncompiled_model():
 
 # Configure and compile model
 def compile_model(model):
+    optimizer = getattr(O, script_params['SOLVER_TYPE'])
+    kwargs = {k.lower(): v for k, v in script_params['SOLVER_PARAMS'].items()}
 
-    model.compile(O.SGD(lr=script_params['BASE_LR'],
-                        momentum=script_params['MOMENTUM'],
-                        decay=script_params['GAMMA']),
+    model.compile(optimizer(lr=script_params['BASE_LR'],
+                            decay=script_params['GAMMA'],
+                            **kwargs),
                   'categorical_crossentropy',
                   metrics=['accuracy'])
 
