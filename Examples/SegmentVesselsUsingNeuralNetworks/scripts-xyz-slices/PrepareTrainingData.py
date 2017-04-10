@@ -44,55 +44,37 @@ def createExpertSegmentationMask(inputImageFile, treFile, outputExpertSegFile):
                      outputExpertSegFile])
 
 
-# Shrink images
-def shrink(inputImage, expertImage, outputImagePrefix):
-    """Shrink inputImage and expertImage according to script_params.
+# Smooth images
+def smooth(inputImage, expertImage, outputImagePrefix):
+    """Smooth inputImage and expertImage according to script_params.
     Output (where '*' stands for outputImagePrefix):
-    - *.mha: MHA copy of inputImage
-    - *_zslab_points.mha: Image of max points (vectors)
-    - *_zslab.mha: Shrunk inputImage
-    - *_zslab_expert.mha: Shrunk expertImage
+    - *_smooth.mha: Smoothed inputImage
+    - *_smooth_expert.mha: Smoothed expertImage
 
     """
+    outputImagePrefix = str(outputImagePrefix)
 
-    shrinked_size = "512,512,%d" % script_params["NUM_SLABS"]
-    window_overlap = "0,0,%d" % script_params["SLAB_OVERLAP"]
+    smoothing_radius = script_params['SMOOTHING_RADIUS']
 
-    subprocess.call(["ShrinkImage",
-                     "-n", shrinked_size,
-                     "-o", window_overlap,
-                     "-p", outputImagePrefix + "_zslab_points.mha",
-                     inputImage,
-                     outputImagePrefix + "_zslab.mha"])
+    reader = itk.ImageFileReader.New(FileName=str(inputImage))
+    filter = itk.MedianImageFilter.New(reader.GetOutput(), Radius=smoothing_radius)
+    writer = itk.ImageFileWriter.New(filter.GetOutput(),
+                                     FileName=outputImagePrefix + "_smooth.mha")
+    writer.Update()
 
-    subprocess.call(["ShrinkImage",
-                     "-n", shrinked_size,
-                     "-o", window_overlap,
-                     "-i", outputImagePrefix + "_zslab_points.mha",
-                     expertImage,
-                     outputImagePrefix + "_zslab_expert.mha"])
-
-    """
-    subprocess.call(["ShrinkImage",
-                     "-n", shrinked_size,
-                     expertImage,
-                     outputImagePrefix + "_zslab_expert.mha"])
-    """
-
-    # save a copy of inputImage in .mha format
-    subprocess.call(["ImageMath",
-                     "-w", outputImagePrefix + ".mha",
-                     inputImage])
+    reader.SetFileName(str(expertImage))
+    writer.SetFileName(outputImagePrefix + "_smooth_expert.mha")
+    writer.Update()
 
 
-def createZMIPSlabsForFile(mhdFile, outputDir):
-    """Create slabs and related files corresponding to mhdFile in outputDir.
+def createSmoothedImagesForFile(mhdFile, outputDir):
+    """Create smoothed image and related files corresponding to mhdFile in outputDir.
     Input:
     - $input/*.mhd: The image file header
     - $input/TRE/*.tre: The expert TRE file
     Output:
     - $output/*_expert.mha: The expert MHA file
-    - : All output from shrink with $output/* as outputImagePrefix
+    - : All output from smooth with $output/* as outputImagePrefix
 
     """
     fileName = os.path.basename(os.path.splitext(mhdFile)[0])
@@ -105,16 +87,16 @@ def createZMIPSlabsForFile(mhdFile, outputDir):
     # Process
     createExpertSegmentationMask(mhdFile, treFile, expertSegFile)
 
-    shrink(mhdFile, expertSegFile,
+    smooth(mhdFile, expertSegFile,
            os.path.join(outputDir, fileName))
 
-def createZMIPSlabs(name, inputDir, outputDir):
+def createSmoothedImages(name, inputDir, outputDir):
     """Process all image files in immediate subdirectories of inputDir to
     correspondingly prefixed images in outputDir.  outputDir is
     created if it doesn't already exist.  The subdirectory structure
     is not replicated.
 
-    See the documentation of createZMIPSlabsForFile for the exact
+    See the documentation of createSmoothedImagesForFile for the exact
     files created.
 
     """
@@ -122,7 +104,7 @@ def createZMIPSlabs(name, inputDir, outputDir):
     utils.ensureDirectoryExists(outputDir)
 
     # Process files
-    printSectionHeader('Creating Z-MIP slabs for %ss' % name)
+    printSectionHeader('Creating smoothed images for %ss' % name)
 
     mhdFiles = glob.glob(os.path.join(inputDir, "*", "*.mhd"))
 
@@ -131,13 +113,13 @@ def createZMIPSlabs(name, inputDir, outputDir):
         print("\n%s file %d/%d : %s" %
               (name, i + 1, len(mhdFiles), mhdFile))
 
-        createZMIPSlabsForFile(mhdFile, outputDir)
+        createSmoothedImagesForFile(mhdFile, outputDir)
 
 
 # create z-mip slabs
-def createControlTumorZMIPSlabs():
-    """Create slabs from the directories Controls and LargeTumor in
-    input_data_root via createZMIPSlabs and put the results in
+def createControlTumorSmoothedImages():
+    """Create smoothed images from the directories Controls and LargeTumor
+    in input_data_root via createZMIPSlabs and put the results in
     controls and tumors subdirectories, respectively, of
     output_data_root.
 
@@ -152,22 +134,30 @@ def createControlTumorZMIPSlabs():
     tumorOutputDir = os.path.join(output_data_root, "tumors")
 
     # Process control files
-    createZMIPSlabs('control', controlInputDir, controlOutputDir)
+    createSmoothedImages('control', controlInputDir, controlOutputDir)
 
     # Process tumor files
-    createZMIPSlabs('tumor', tumorInputDir, tumorOutputDir)
+    createSmoothedImages('tumor', tumorInputDir, tumorOutputDir)
 
 # Compute Training mask
 def computeTrainingMask(expertSegMask, outputTrainingMask):
     """Compute a training mask from expertSegMask, written to
-    outputTrainingMask.
+    outputTrainingMask.  It takes on the following values:
 
-    Note: A temporary file -- expertSegMask + "_skel.png" -- is
+    - 0: Background, other
+    - 51: Vessel, other
+    - 181: Vessel, center line
+    - 255: Background, vessel edge
+
+    Note: These values are arbitrary and were picked for the
+    convenience of generating them.
+
+    Note: A temporary file -- expertSegMask + "_skel.mha" -- is
     created and then removed in the process.
 
     """
 
-    skeletonFile = expertSegMask + "_skel.png"
+    skeletonFile = expertSegMask + "_skel.mha"
 
     subprocess.call(["SegmentBinaryImageSkeleton",
                      expertSegMask,
@@ -176,66 +166,27 @@ def computeTrainingMask(expertSegMask, outputTrainingMask):
     subprocess.call([
         "ImageMath", expertSegMask,
          # dilate vessel mask with kernel radius = 1
-         "-M", "1", "1", "255", "0",
+         "-M", "1", "1", "1", "0",
         # subtract vessel mask from dilated version to get vessel boundary
-        "-a", "1", "-1", expertSegMask,
+        "-a", "255", "-204", expertSegMask,
         # create training mask with vessel center-line (=255) and boundary (=128)
-        "-a", "0.5", "255", skeletonFile,
+        "-a", "1", "130", skeletonFile,
         # write training mask
         "-W", "0", outputTrainingMask])
 
     os.remove(skeletonFile)
 
-    # WARNING: Couldn't write to PNG using the implemented CLI
-    # subprocess.call( ["ComputeTrainingMask",
-    # expertSegMask,
-    # outputTrainingMask,
-    # "--notVesselWidth","1"] )
-
-
-# save each of the z-mip slabs from an .mha file as .png files
-def saveSlabs(mhaFile):
-    """Extract each slab of mhaFile to a separate file.
-    Input: $input/*.mha
-    Output: $input/#_*.png, where # is the slab number
-
-    """
-
-    print 'saving slabs of %s' % mhaFile
-
-    reader = itk.ImageFileReader.New(FileName = str(mhaFile))
-    reader.Update()
-    buf = itk.GetArrayFromImage(reader.GetOutput())
-
-    # convert to [0, 255] range
-    buf = 255.0 * (buf - buf.min()) / (buf.max() - buf.min())
-    buf = buf.astype('uint8')
-
-    # file names definition
-    fileName = os.path.basename(os.path.splitext(mhaFile)[0])
-    fileDir = os.path.dirname(os.path.abspath(mhaFile))
-
-    # Iterate through each slab
-    for i, slab in enumerate(buf):
-
-        outputImage = os.path.join(
-            fileDir, str(i) + "_" + fileName + ".png")
-
-        skimage.io.imsave(outputImage, slab)
-
 
 def splitData(name, inputDir, outputDir, trainOutputDir, testOutputDir):
     """Split the various outputs created from the image files in inputDir,
     which reside in outputDir, between trainOutputDir and
-    testOutputDir, reorganizing them in the process.
+    testOutputDir.
 
     With an input file named *.mhd, the following outputs are moved
-    into the following subdirectories in the destination folder:
-    - *.mha: images
-    - *_zslab.mha: images (also split into PNG slices)
-    - *_zslab_points.mha: points
-    - *_expert.mha: expert
-    - *_zslab_expert.mha: expert (also split into PNG slices)
+    into the destination folder:
+    - *_smooth.mha
+    - *_expert.mha
+    - *_smooth_expert.mha
 
     """
     # Process files
@@ -256,24 +207,11 @@ def splitData(name, inputDir, outputDir, trainOutputDir, testOutputDir):
         else:
             curOutputDir = testOutputDir
 
-        # "suffix" is surround by fileName and '.mha'
-        # "dir" is a subdirectory of curOutputDir
-        suffixesAndDirsForCopying = [
-            ('', 'images'), # input volume
-            ('_zslab', 'images'), # z-mip slab volume
-            ('_zslab_points', 'points'), # z-mip slab point map
-            ('_expert', 'expert'), # expert volume
-            ('_zslab_expert', 'expert'), # expert z-mip slab volume
-        ]
-
-        for suffix, dir in suffixesAndDirsForCopying:
-            fileName = filePrefix + suffix + '.mha'
+        # "suffix" is surround by fileName+'_' and '.mha'
+        for suffix in ['smooth', 'expert', 'smooth_expert']:
+            fileName = filePrefix + '_' + suffix + '.mha'
             utils.copy(os.path.join(outputDir, fileName),
-                       os.path.join(curOutputDir, dir, fileName))
-
-        # save slabs as pngs
-        saveSlabs(os.path.join(curOutputDir, "images", filePrefix + "_zslab.mha"))
-        saveSlabs(os.path.join(curOutputDir, "expert", filePrefix + "_zslab_expert.mha"))
+                       os.path.join(curOutputDir, fileName))
 
 # assign control and tumor volumes equally to training and testing
 def splitControlTumorData():
@@ -524,10 +462,10 @@ def printSectionHeader(title):
 def run():
 
     # create z-mip slabs
-    createControlTumorZMIPSlabs()
+    createControlTumorSmoothedImages()
 
     # assign control and tumor volumes equally to training and testing
-    # Note: this must be called after createZMIPSlabs()
+    # Note: this must be called after createControlTumorSmoothedImages()
     splitControlTumorData()
 
     # create database
