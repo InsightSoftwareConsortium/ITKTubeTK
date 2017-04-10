@@ -51,7 +51,7 @@ def segmentSlab(net, input_file, output_file):
     fgnd_mask = input_image > th
 
     # get test_batch_size and patch_size used for cnn net
-    test_batch_size = script_params['TEST_BATCH_SIZE']
+    test_batch_size = script_params['DEPLOY_BATCH_SIZE']
     patch_size = data_shape[1]
 
     print 'Test batch shape = ', data_shape
