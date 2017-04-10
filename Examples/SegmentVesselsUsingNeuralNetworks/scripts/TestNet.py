@@ -27,23 +27,21 @@ import itk
 
 # Define paths
 script_params = json.load(open('params.json'))
-caffe_root = script_params['CAFFE_SRC_ROOT']
 output_data_root = script_params['OUTPUT_DATA_ROOT']
 input_data_root = script_params['INPUT_DATA_ROOT']
 
 testDataDir = os.path.join(output_data_root, "testing")
 
-# import caffe
-sys.path.insert(0, os.path.join(caffe_root, 'python'))
-import caffe
-
+import keras.models as M
 
 # Segment a slab
 def segmentSlab(net, input_file, output_file):
 
     print "Segmenting slab ", input_file
 
-    print net.blobs['data'].data.shape
+    data_shape = net.input_shape
+
+    print data_shape
 
     # read input slab image
     input_image = skimage.io.imread(input_file)
@@ -53,10 +51,10 @@ def segmentSlab(net, input_file, output_file):
     fgnd_mask = input_image > th
 
     # get test_batch_size and patch_size used for cnn net
-    test_batch_size = net.blobs['data'].data.shape[0]
-    patch_size = net.blobs['data'].data.shape[2]
+    test_batch_size = script_params['DEPLOY_BATCH_SIZE']
+    patch_size = data_shape[1]
 
-    print 'Test batch shape = ', net.blobs['data'].data.shape
+    print 'Test batch shape = ', data_shape
 
     # collect all patches
     print "Extracting patches ... "
@@ -100,11 +98,11 @@ def segmentSlab(net, input_file, output_file):
     output_image = np.zeros_like(input_image)  # Output segmented slab
     output_image_flat = np.ravel(output_image)
 
-    pw = test_batch_size - (num_patches % test_batch_size)
+    pw = -num_patches % test_batch_size
     patches = np.pad(patches, ((0, pw), (0, 0), (0, 0)), 'constant')
     patch_indices = np.pad(patch_indices, ((0, pw), (0, 0)), 'constant')
 
-    patches = np.rollaxis(np.expand_dims(patches, 3), 3, 1)
+    patches = patches[..., np.newaxis]
     print patches.shape
 
     for i in range(0, num_patches, test_batch_size):
@@ -114,11 +112,7 @@ def segmentSlab(net, input_file, output_file):
         cur_patches = patches[i:i + test_batch_size]
 
         # perform classification using cnn
-        net.blobs['data'].data[...] = cur_patches
-
-        output = net.forward()
-
-        prob_vessel = output['loss'][:, 1]
+        prob_vessel = net.predict(utils.scale_net_input_data(cur_patches), test_batch_size)[:, 1]
 
         if i + test_batch_size > num_patches:
 
@@ -306,43 +300,19 @@ def run():
 
     sys.stdout = utils.Logger(os.path.join(outputDir, 'net_test.log'))
 
-    # Model weights
-    caffeModelWeights = os.path.join(
-        output_data_root, "NetProto", "net_best.caffemodel")
-
-    if os.path.isfile(caffeModelWeights):
-        print("Caffe model weights " + caffeModelWeights + " found.")
-    else:
-        print('Error : Caffe model weights "' + caffeModelWeights + '" not found.\n' +
-              '  Train neural network before processing it.')
-        sys.exit(0)
-
     # Model definition
-    caffeModelDef = os.path.join(
-        output_data_root, "NetProto", "net_deploy.prototxt")
+    modelDef = os.path.join(
+        output_data_root, "NetProto", "net_best.hdf5")
 
-    if os.path.isfile(caffeModelDef):
-        print("Caffe model definition " + caffeModelDef + " found.")
+    if os.path.isfile(modelDef):
+        print("Model definition " + modelDef + " found.")
     else:
-        print('Error : Caffe model definition "' + caffeModelDef + '" not found.\n' +
+        print('Error : model definition "' + modelDef + '" not found.\n' +
               '  Train neural network before processing it.')
         sys.exit(0)
 
     # Create network
-    caffe.set_mode_gpu()
-
-    net = caffe.Net(str(caffeModelDef),  # defines the structure of the model
-                    str(caffeModelWeights),  # contains the trained weights
-                    caffe.TEST)  # use test mode (e.g., don't perform dropout)
-
-    # set the size of the input (we can skip this if we're happy
-    # with the default; we can also change it later, e.g., for different batch
-    # sizes)
-    w = script_params['PATCH_RADIUS']
-
-    net.blobs['data'].reshape(script_params['DEPLOY_BATCH_SIZE'],  # batch size
-                              1,  # 1-channel
-                              2 * w + 1, 2 * w + 1)  # image size
+    net = M.load_model(modelDef)
 
     # get list of test mha files
     testMhaFiles = glob.glob(os.path.join(

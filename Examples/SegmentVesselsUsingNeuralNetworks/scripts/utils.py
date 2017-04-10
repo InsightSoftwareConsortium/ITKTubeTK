@@ -2,6 +2,8 @@ import os
 import sys
 import shutil
 
+import sqlite3
+
 class Logger(object):
 
     def __init__(self, log_file):
@@ -36,3 +38,14 @@ def copy(inFile, outFile):
 
     # copy file
     shutil.copyfile(inFile, outFile)
+
+def open_sqlite3_db(dir):
+    """Open the sqlite3 database contained in dir.  We use "data.sqlite3"."""
+    return sqlite3.connect(os.path.join(dir, 'data.sqlite3'))
+
+def scale_net_input_data(data):
+    """Rescale data, presumably obtained from an 8-bit grayscale image, to
+    the range [0, 1] for feeding into the network.
+
+    """
+    return data / 255.

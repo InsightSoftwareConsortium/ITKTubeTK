@@ -31,7 +31,6 @@ import itk
 # Define paths
 script_params = json.load(open('params.json'))
 
-caffe_root = script_params['CAFFE_SRC_ROOT']
 output_data_root = script_params['OUTPUT_DATA_ROOT']
 input_data_root = script_params['INPUT_DATA_ROOT']
 
@@ -334,8 +333,8 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
     - $rootDir/expert/$imageName_expert.png: The corresponding expert mask
 
     Output:
-    - $outputDir/0/$imageName_$i_$j.png: Negative patches
-    - $outputDir/1/$imageName_$i_$j.png: Positive patches
+    - $outputDir/0/$imageName/$i_$j.png: Negative patches
+    - $outputDir/1/$imageName/$i_$j.png: Positive patches
 
     """
 
@@ -349,12 +348,15 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
         psi = str(patchSetIndex)
 
         filename = os.path.join(
-            psi, imageName + "_" + str(i) + "_" + str(j) + ".png")
+            psi, imageName, str(i) + "_" + str(j) + ".png")
 
         patchListFile.write(filename + " " + psi + "\n")
 
         skimage.io.imsave(os.path.join(outputDir, filename),
                           inputImage[i - w : i + w + 1, j - w : j + w + 1])
+
+    for i in range(2):
+        utils.ensureDirectoryExists(os.path.join(outputDir, str(i), imageName))
 
     # patch/window radius
     w = script_params['PATCH_RADIUS']
@@ -484,44 +486,67 @@ def createTrainTestPatches():
                   patchListFile="val.txt")
 
 
-def createLmdb(name, patchesDir, patchListFile, lmdbDir):
-    """Create an LMDB instance in lmdbDir from the patches in patchesDir,
-    indexed by patchListFile
+def createDB(name, patchesDir, patchListFile, dbDir):
+    """Create a database in dbDir from the patches in patchesDir, indexed
+    by patchListFile
 
     """
-    caffe_tools_dir = os.path.join(caffe_root, "build", "tools")
-    convert_imageset_exec = os.path.join(caffe_tools_dir, "convert_imageset")
+    print('Creating %s DB ...\n' % name)
 
-    print('Creating %s lmdb ...\n' % name)
+    if os.path.exists(dbDir):
+        shutil.rmtree(dbDir)
 
-    if os.path.exists(lmdbDir):
-        shutil.rmtree(lmdbDir)
+    utils.ensureDirectoryExists(dbDir)
 
-    subprocess.call([convert_imageset_exec,
-                     "--shuffle",
-                     "--gray",
-                     patchesDir,
-                     os.path.join(patchesDir, patchListFile),
-                     lmdbDir])
+    patchListFile = os.path.join(patchesDir, patchListFile)
 
-# create lmdb
-def createTrainTestLmdb():
-    """Create LMBD instances for the training and testing data.  For
-    training and testing, take the patches created by
-    createTrainTestPatches and create LMDB instances in the output
+    db = utils.open_sqlite3_db(dbDir)
+    db.execute('''create table "Patches" (
+        "filename" text,
+        "patch_index" integer,
+        -- Interpreted as a square C-major-order uint8 array with each
+        -- dimension (2 * PATCH_RADIUS + 1)
+        "image_data" blob
+    )''')
+
+    lines = list(open(patchListFile))
+    random.shuffle(lines)
+
+    def generate_data():
+        for i, l in enumerate(lines):
+            filename, patch_index = l.rstrip().rsplit(' ', 1)
+            patch_index = int(patch_index)
+            image_data = buffer(skimage.io.imread(os.path.join(patchesDir, filename)).copy())
+
+            yield filename, patch_index, image_data
+
+            if i % 1000 == 0:
+                print("{} patches processed".format(i))
+
+    db.executemany('''insert into "Patches" values (?, ?, ?)''',
+                   generate_data())
+
+    db.commit()
+    db.close()
+
+def createTrainTestDB():
+    """Create databases for the training and testing data.
+
+    For training and testing, take the patches created by
+    createTrainTestPatches and create a database in the output
     directory titled Net_TrainData and Net_ValData, respectively.
 
     """
 
-    printSectionHeader('Creating LMDBs for train and test data')
+    printSectionHeader('Creating DBs for train and test data')
 
-    # create training lmdb
-    createLmdb('training', os.path.join(output_data_root, 'training', 'patches/'),
-               'train.txt', os.path.join(output_data_root, "Net_TrainData"))
+    # create training DB
+    createDB('training', os.path.join(output_data_root, 'training', 'patches/'),
+             'train.txt', os.path.join(output_data_root, "Net_TrainData"))
 
-    # create testing lmdb
-    createLmdb('testing', os.path.join(output_data_root, 'testing', 'patches/'),
-               'val.txt', os.path.join(output_data_root, "Net_ValData"))
+    # create testing DB
+    createDB('testing', os.path.join(output_data_root, 'testing', 'patches/'),
+             'val.txt', os.path.join(output_data_root, "Net_ValData"))
 
 
 def printSectionHeader(title):
@@ -534,17 +559,17 @@ def printSectionHeader(title):
 def run():
 
     # create z-mip slabs
-    createControlTumorZMIPSlabs()
+    #createControlTumorZMIPSlabs()
 
     # assign control and tumor volumes equally to training and testing
     # Note: this must be called after createZMIPSlabs()
-    splitControlTumorData()
+    #splitControlTumorData()
 
     # convert train/test images to patches
     createTrainTestPatches()
 
-    # create lmdb database
-    createTrainTestLmdb()
+    # create database
+    createTrainTestDB()
 
 
 if __name__ == "__main__":
