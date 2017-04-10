@@ -112,7 +112,7 @@ def segmentSlab(net, input_file, output_file):
         cur_patches = patches[i:i + test_batch_size]
 
         # perform classification using cnn
-        prob_vessel = net.predict(cur_patches / 255., test_batch_size)[:, 1]
+        prob_vessel = net.predict(utils.scale_net_input_data(cur_patches), test_batch_size)[:, 1]
 
         if i + test_batch_size > num_patches:
 

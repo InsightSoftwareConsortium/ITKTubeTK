@@ -146,8 +146,9 @@ def queryResultToModelArguments(result):
     of NumPy arrays to pass into various model functions.
 
     """
-    image_data = (np.array([np.frombuffer(im, dtype=np.uint8) for im, _ in result])
-                  .reshape((len(result), patch_size, patch_size, 1)) / 255.)
+    image_data = utils.scale_net_input_data(
+        np.array([np.frombuffer(im, dtype=np.uint8) for im, _ in result])
+        .reshape((len(result), patch_size, patch_size, 1)))
     labels = np.array([l for _, l in result])
     return image_data, labels
 
