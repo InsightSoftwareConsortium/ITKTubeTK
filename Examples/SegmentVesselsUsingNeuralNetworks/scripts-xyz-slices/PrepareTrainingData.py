@@ -321,42 +321,29 @@ def dict_to_list(d):
     return l
 
 # Extracts +ve (vessel center) and -ve (background) patches from image
-def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
+def extractPatchesFromImageGenerator(rootDir, imageName):
     """Convert an image to a set of patches.  Patches are sorted into
     "positive" and "negative" patches, i.e. those with and without a
     vessel at the center.  Positive patches have index 1, negative
     patches index 0.  Patch relative paths and their indices are
-    written to the patchListFile file object.
+    yielded with the image data as part of a generator.
 
     Input:
     - $rootDir/images/$imageName.png: The image to extract slices from
     - $rootDir/expert/$imageName_expert.png: The corresponding expert mask
 
     Output:
-    - $outputDir/0/$imageName/$i_$j.png: Negative patches
-    - $outputDir/1/$imageName/$i_$j.png: Positive patches
+    - ("0/$imageName/$i_$j.png", 0, image): Negative patches
+    - ("1/$imageName/$i_$j.png", 1, image): Positive patches
 
     """
 
-    def writePatch(patchSetIndex, i, j):
-
-        """Write out a patch centered at i,j to a correspondingly named file,
-        using the given patch set index.  Create a corresponding entry
-        in patchListFile.
-
-        """
-        psi = str(patchSetIndex)
-
+    def patchEntry(patchSetIndex, i, j):
+        # TODO document
         filename = os.path.join(
-            psi, imageName, str(i) + "_" + str(j) + ".png")
+            str(patchSetIndex), imageName, str(i) + "_" + str(j) + ".png")
 
-        patchListFile.write(filename + " " + psi + "\n")
-
-        skimage.io.imsave(os.path.join(outputDir, filename),
-                          inputImage[i - w : i + w + 1, j - w : j + w + 1])
-
-    for i in range(2):
-        utils.ensureDirectoryExists(os.path.join(outputDir, str(i), imageName))
+        return filename, patchSetIndex, inputImage[i - w : i + w + 1, j - w : j + w + 1]
 
     # patch/window radius
     w = script_params['PATCH_RADIUS']
@@ -434,10 +421,11 @@ def extractPatchesFromImage(rootDir, imageName, outputDir, patchListFile):
     for key, label in enumerate(patch_index):
         selInd = random.sample(indices[key], numPatches[key])
         for i, j in selInd:
-            writePatch(label, i, j)
+            yield patchEntry(label, i, j)
 
 
-def createPatches(name, dataDir, patchListFile):
+def createPatchesGenerator(name, dataDir):
+    # TODO update documentation
     """Create patch files from images in dataDir.
 
     Input:
@@ -453,40 +441,18 @@ def createPatches(name, dataDir, patchListFile):
 
     imageFiles = glob.glob(os.path.join(dataDir, "images", "*.png"))
 
-    patchesDir = os.path.join(dataDir, "patches")
-    for i in range(2):
-        utils.ensureDirectoryExists(os.path.join(patchesDir, str(i)))
+    for i, imageFile in enumerate(imageFiles):
 
-    with open(os.path.join(patchesDir, patchListFile), "w") as patchListFile:
+        print('\nCreating patches for %s file %d/%d - %s' %
+              (name, i + 1, len(imageFiles), imageFile))
 
-        for i, imageFile in enumerate(imageFiles):
+        imageName = os.path.basename(os.path.splitext(imageFile)[0])
 
-            print('\nCreating patches for %s file %d/%d - %s' %
-                  (name, i + 1, len(imageFiles), imageFile))
+        for result in extractPatchesFromImageGenerator(dataDir, imageName):
+            yield result
 
-            imageName = os.path.basename(os.path.splitext(imageFile)[0])
-
-            extractPatchesFromImage(dataDir, imageName, patchesDir,
-                                    patchListFile)
-
-# convert train/test images to patches
-def createTrainTestPatches():
-    """Create training and testing patches from the training and testing
-    subdirectories of the working data directory.  See createPatches
-    for the exact files read and created.
-
-    """
-
-    # create training patches
-    createPatches('training', dataDir=os.path.join(output_data_root, "training"),
-                  patchListFile="train.txt")
-
-    # create testing patches
-    createPatches('testing', dataDir=os.path.join(output_data_root, "testing"),
-                  patchListFile="val.txt")
-
-
-def createDB(name, patchesDir, patchListFile, dbDir):
+def createDB(name, dataDir, dbDir):
+    # TODO update documentation
     """Create a database in dbDir from the patches in patchesDir, indexed
     by patchListFile
 
@@ -498,10 +464,8 @@ def createDB(name, patchesDir, patchListFile, dbDir):
 
     utils.ensureDirectoryExists(dbDir)
 
-    patchListFile = os.path.join(patchesDir, patchListFile)
-
     db = utils.open_sqlite3_db(dbDir)
-    db.execute('''create table "Patches" (
+    db.execute('''create table "temp"."PatchesUnshuffled" (
         "filename" text,
         "patch_index" integer,
         -- Interpreted as a square C-major-order uint8 array with each
@@ -509,22 +473,23 @@ def createDB(name, patchesDir, patchListFile, dbDir):
         "image_data" blob
     )''')
 
-    lines = list(open(patchListFile))
-    random.shuffle(lines)
-
     def generate_data():
-        for i, l in enumerate(lines):
-            filename, patch_index = l.rstrip().rsplit(' ', 1)
-            patch_index = int(patch_index)
-            image_data = buffer(skimage.io.imread(os.path.join(patchesDir, filename)).copy())
-
-            yield filename, patch_index, image_data
-
+        patches = createPatchesGenerator(name, dataDir)
+        for i, (filename, patch_index, image_data) in enumerate(patches):
+            yield filename, patch_index, buffer(image_data.copy())
             if i % 1000 == 0:
                 print("{} patches processed".format(i))
 
-    db.executemany('''insert into "Patches" values (?, ?, ?)''',
+    db.executemany('''insert into "PatchesUnshuffled" values (?, ?, ?)''',
                    generate_data())
+
+    print("Shuffling patches")
+
+    db.execute('''create table "main"."Patches" as
+                  select * from "PatchesUnshuffled"
+                  order by random()''')
+
+    db.execute('''drop table "PatchesUnshuffled"''')
 
     db.commit()
     db.close()
@@ -541,12 +506,12 @@ def createTrainTestDB():
     printSectionHeader('Creating DBs for train and test data')
 
     # create training DB
-    createDB('training', os.path.join(output_data_root, 'training', 'patches/'),
-             'train.txt', os.path.join(output_data_root, "Net_TrainData"))
+    createDB('training', os.path.join(output_data_root, 'training'),
+             os.path.join(output_data_root, "Net_TrainData"))
 
     # create testing DB
-    createDB('testing', os.path.join(output_data_root, 'testing', 'patches/'),
-             'val.txt', os.path.join(output_data_root, "Net_ValData"))
+    createDB('testing', os.path.join(output_data_root, 'testing'),
+             os.path.join(output_data_root, "Net_ValData"))
 
 
 def printSectionHeader(title):
@@ -564,9 +529,6 @@ def run():
     # assign control and tumor volumes equally to training and testing
     # Note: this must be called after createZMIPSlabs()
     splitControlTumorData()
-
-    # convert train/test images to patches
-    createTrainTestPatches()
 
     # create database
     createTrainTestDB()
