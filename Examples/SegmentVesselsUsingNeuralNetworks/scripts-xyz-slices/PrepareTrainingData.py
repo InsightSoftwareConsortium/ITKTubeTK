@@ -260,6 +260,7 @@ def dict_to_list(d):
 
 # Extracts +ve (vessel center) and -ve (background) patches from image
 def extractPatchesFromImageGenerator(rootDir, imageName):
+    # TODO update docstring
     """Convert an image to a set of patches.  Patches are sorted into
     "positive" and "negative" patches, i.e. those with and without a
     vessel at the center.  Positive patches have index 1, negative
@@ -267,8 +268,8 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
     yielded with the image data as part of a generator.
 
     Input:
-    - $rootDir/images/$imageName.png: The image to extract slices from
-    - $rootDir/expert/$imageName_expert.png: The corresponding expert mask
+    - $rootDir/$imageName.mha: The image to extract slices from
+    - $rootDir/$imageName_expert.mha: The corresponding expert mask
 
     Output:
     - ("0/$imageName/$i_$j.png", 0, image): Negative patches
@@ -281,12 +282,17 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
         filename = os.path.join(
             str(patchSetIndex), imageName, '_'.join(map(str, coords)) + ".png")
 
-        return filename, patchSetIndex, inputImage[tuple(np.s_[x - w : x + w + 1] for x in coords)]
+        image = np.stack((inputImage[tuple(np.s_[x - w : x + w + 1] if i != j else x
+                                           for j, x in enumerate(coords))]
+                          for i in range(len(coords))),
+                         axis=-1)
+
+        return filename, patchSetIndex, image
 
     # patch/window radius
     w = script_params['PATCH_RADIUS']
 
-    total_pos_patches = script_params['POSITIVE_PATCHES_PER_INPUT_FILE'] / script_params['NUM_SLABS']
+    total_pos_patches = script_params['POSITIVE_PATCHES_PER_INPUT_FILE']
     total_neg_patches = script_params['NEGATIVE_TO_POSITIVE_RATIO'] * total_pos_patches
 
     num_patch_types = 4
@@ -312,22 +318,26 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
                 "Positive" if i else "Negative", patch_frac_sum))
 
     # read input image
-    inputImageFile = os.path.join(rootDir, "images", imageName + '.png')
-    inputImage = skimage.io.imread(inputImageFile)
+    inputImageFile = os.path.join(rootDir, imageName + '.mha')
+    inputImageReader = itk.ImageFileReader.New(FileName=str(inputImageFile))
+    inputImageReader.Update()
+    inputImage = itk.GetArrayFromImage(inputImageReader.GetOutput())
 
     # read expert segmented label mask
-    expertSegFile = os.path.join(rootDir, "expert", imageName + '_expert.png')
-    trainingMaskFile = os.path.join(rootDir, "expert", imageName + '_train.png')
+    expertSegFile = os.path.join(rootDir, imageName + '_expert.mha')
+    trainingMaskFile = os.path.join(rootDir, imageName + '_train.mha')
 
     computeTrainingMask(expertSegFile, trainingMaskFile)
 
-    trainingMask = skimage.io.imread(trainingMaskFile)
+    trainingMaskReader = itk.ImageFileReader.New(FileName=str(trainingMaskFile))
+    trainingMaskReader.Update()
+    trainingMask = itk.GetArrayFromImage(trainingMaskReader.GetOutput())
 
     # Iterate through expert mask and find pos/neg patches
 
     # Slice that we want, which excludes edge pixels
     s = np.s_[w:-w-1]
-    trainingMaskMid = trainingMask[(s,) * 2]
+    trainingMaskMid = trainingMask[(s,) * 3]
 
     mask = dict_to_list({
         # Vessel centerline pixel (positive)
@@ -340,7 +350,8 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
         other_neg: trainingMaskMid == 0,
     })
 
-    indices = [np.array(np.where(m)).T + w for m in mask]
+    # Linear, flat indices
+    indices = [np.where(m.reshape(-1))[0] for m in mask]
     # Desired number of each type of patch (not necessarily a whole number)
     desiredFractionalPatches = frac * np.where(patch_index, total_pos_patches, total_neg_patches)
     availablePatches = np.array([len(ind) for ind in indices])
@@ -354,6 +365,7 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
 
     for key, label in enumerate(patch_index):
         selInd = random.sample(indices[key], numPatches[key])
+        selInd = np.transpose(np.unravel_index(selInd, trainingMaskMid.shape)) + w
         for coords in selInd:
             yield patchEntry(label, coords)
 
@@ -373,7 +385,7 @@ def createPatchesGenerator(name, dataDir):
     """
     printSectionHeader('Creating %s patches' % name)
 
-    imageFiles = glob.glob(os.path.join(dataDir, "images", "*.png"))
+    imageFiles = glob.glob(os.path.join(dataDir, "*_smooth.mha"))
 
     for i, imageFile in enumerate(imageFiles):
 
@@ -403,7 +415,7 @@ def createDB(name, dataDir, dbDir):
         "filename" text,
         "patch_index" integer,
         -- Interpreted as a square C-major-order uint8 array with each
-        -- dimension (2 * PATCH_RADIUS + 1)
+        -- dimension (2 * PATCH_RADIUS + 1) and extra final dimension of size 3
         "image_data" blob
     )''')
 
