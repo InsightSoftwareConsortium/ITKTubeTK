@@ -4,6 +4,7 @@
 # TrainNet.py
 ###########################################################################
 
+import itertools
 import os
 import sys
 import json
@@ -194,6 +195,14 @@ def run():
     def with_estimated_mem(num):
         return "{} ({:.3f} MB)".format(num, num*8/1e6)
 
+    def flatten_model(m):
+        if isinstance(m, M.Model):
+            return itertools.chain.from_iterable(flatten_model(l) for l in m.layers)
+        else:
+            return [m]
+
+    layers = list(flatten_model(model))
+
     # Warning: this summation assumes the memory used by a layer for
     # its tensors is determined only by its output.  This estimate
     # will be an overestimate to the extent that any operation can be
@@ -201,7 +210,7 @@ def run():
     # more complicated than a single step of input to output.
     total_elements = 0
     print '\nNetwork structure ...'
-    for layer in model.layers:
+    for layer in layers:
         print layer.name + '\t' + str(layer.output_shape),
         elements = train_batch_size * np.prod(layer.output_shape[1:])
         print '\tElements:', with_estimated_mem(elements)
@@ -211,7 +220,7 @@ def run():
     print '\nNetwork weights ...'
 
     total_params = 0
-    for layer in model.layers:
+    for layer in layers:
         shapes = [w.shape for w in layer.get_weights()]
         if not shapes:
             continue
@@ -228,7 +237,7 @@ def run():
         sys.exit(0)
 
     # solve
-    conv_layers = [l for l in model.layers if isinstance(l, L.Conv2D)]
+    conv_layers = [l for l in layers if isinstance(l, L.Conv2D)]
     # Auto-generated names are supposed to be unique
     fig = {l.name: plt.figure() for l in conv_layers}
 
