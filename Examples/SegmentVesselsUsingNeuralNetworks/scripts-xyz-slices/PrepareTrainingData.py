@@ -276,12 +276,12 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
 
     """
 
-    def patchEntry(patchSetIndex, i, j):
+    def patchEntry(patchSetIndex, coords):
         # TODO document
         filename = os.path.join(
-            str(patchSetIndex), imageName, str(i) + "_" + str(j) + ".png")
+            str(patchSetIndex), imageName, '_'.join(map(str, coords)) + ".png")
 
-        return filename, patchSetIndex, inputImage[i - w : i + w + 1, j - w : j + w + 1]
+        return filename, patchSetIndex, inputImage[tuple(np.s_[x - w : x + w + 1] for x in coords)]
 
     # patch/window radius
     w = script_params['PATCH_RADIUS']
@@ -328,7 +328,7 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
 
     # Slice that we want, which excludes edge pixels
     s = np.s_[w:-w-1]
-    s = (s, s)
+    s = (s,) * 2
     trainingMaskMid = trainingMask[s]
     expertSegMid = expertSeg[s]
 
@@ -358,8 +358,8 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
 
     for key, label in enumerate(patch_index):
         selInd = random.sample(indices[key], numPatches[key])
-        for i, j in selInd:
-            yield patchEntry(label, i, j)
+        for coords in selInd:
+            yield patchEntry(label, coords)
 
 
 def createPatchesGenerator(name, dataDir):
