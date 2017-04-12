@@ -93,10 +93,12 @@ def create_uncompiled_model():
     Dense = wrap_regularizer(L.Dense)
 
     # Channels go last
-    inputs = L.Input(shape=(patch_size, patch_size, 1))
+    inputs = [L.Input(shape=(patch_size, patch_size, 1)) for _ in range(3)]
+
+    sharedInput = L.Input()
 
     # First layer set
-    x = Conv2D(filters=48, kernel_size=6)(inputs)
+    x = Conv2D(filters=48, kernel_size=6)(sharedInput)
     x = L.LeakyReLU(0.1)(x)
     x = L.MaxPooling2D(2)(x)
 
@@ -122,6 +124,13 @@ def create_uncompiled_model():
 
     x = L.Dropout(0.5)(x)
 
+    sharedModel = M.Model(inputs=sharedInput, outputs=x)
+
+    x = L.Concatenate()([sharedModel(i) for i in inputs])
+
+    x = Dense(20)(x)
+    x = L.LeakyReLU(0.1)(x)
+
     # Classify
     x = Dense(2)(x)
     predictions = L.Activation('softmax')(x)
@@ -143,14 +152,15 @@ def compile_model(model):
 
 def queryResultToModelArguments(result):
     """Convert the list of (image, label) pairs from a query into a pair
-    of NumPy arrays to pass into various model functions.
+    of a list of inputs and a label array to pass into various model
+    functions.
 
     """
     image_data = utils.scale_net_input_data(
         np.array([np.frombuffer(im, dtype=np.uint8) for im, _ in result])
-        .reshape((len(result), patch_size, patch_size, 1)))
+        .reshape((len(result), patch_size, patch_size, 1, 3)))
     labels = np.array([l for _, l in result])
-    return image_data, labels
+    return list(np.moveaxis(image_data, -1, 0)), labels
 
 
 def run():
@@ -334,11 +344,15 @@ def run():
         .fetchall())
     pred_labels = model.predict(image_data, test_batch_size).argmax(1)
 
+    # TODO this generates color plots.  Not helpful.
+    image_data = np.stack(image_data, -2)
+    image_data.shape = image_data.shape[:-1]
+
     def generate_confusion_file(true_value, pred_value):
         adj = 'true' if true_value == pred_value else 'false'
         noun = 'positive' if pred_value == 1 else 'negative'
 
-        c_data = image_data[(true_labels == true_value) & (pred_labels == pred_value), ..., 0]
+        c_data = image_data[(true_labels == true_value) & (pred_labels == pred_value)]
         c_count = c_data.shape[0]
         c_percent = c_count * 100. / test_batch_size
         print '%s %ss : %d / %d (%.2f%%)' % (adj, noun, c_count, test_batch_size, c_percent)
