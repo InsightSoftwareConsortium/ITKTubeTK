@@ -321,27 +321,23 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
 
     computeTrainingMask(expertSegFile, trainingMaskFile)
 
-    expertSeg = skimage.io.imread(expertSegFile)
     trainingMask = skimage.io.imread(trainingMaskFile)
 
     # Iterate through expert mask and find pos/neg patches
 
     # Slice that we want, which excludes edge pixels
     s = np.s_[w:-w-1]
-    s = (s,) * 2
-    trainingMaskMid = trainingMask[s]
-    expertSegMid = expertSeg[s]
+    trainingMaskMid = trainingMask[(s,) * 2]
 
-    vessel_ctl_pos_mask = trainingMaskMid > 0.6 * 255
     mask = dict_to_list({
         # Vessel centerline pixel (positive)
-        vessel_ctl_pos: vessel_ctl_pos_mask,
+        vessel_ctl_pos: trainingMaskMid == 181,
         # Other vessel pixel (positive)
-        other_pos: (expertSegMid > 0) & ~vessel_ctl_pos_mask,
+        other_pos: trainingMaskMid == 51,
         # Vessel bound pixel (negative)
-        vessel_bnd_neg: (trainingMaskMid > 0) & ~vessel_ctl_pos_mask,
+        vessel_bnd_neg: trainingMaskMid == 255,
         # Other background pixel (negative)
-        other_neg: (expertSegMid == 0) & (trainingMaskMid == 0),
+        other_neg: trainingMaskMid == 0,
     })
 
     indices = [np.array(np.where(m)).T + w for m in mask]
