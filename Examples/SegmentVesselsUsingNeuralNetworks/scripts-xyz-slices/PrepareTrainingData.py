@@ -59,7 +59,8 @@ def smooth(inputImage, expertImage, outputImagePrefix):
     reader = itk.ImageFileReader.New(FileName=str(inputImage))
     filter = itk.MedianImageFilter.New(reader.GetOutput(), Radius=smoothing_radius)
     writer = itk.ImageFileWriter.New(filter.GetOutput(),
-                                     FileName=outputImagePrefix + "_smooth.mha")
+                                     FileName=outputImagePrefix + "_smooth.mha",
+                                     UseCompression=True)
     writer.Update()
 
     reader.SetFileName(str(expertImage))
