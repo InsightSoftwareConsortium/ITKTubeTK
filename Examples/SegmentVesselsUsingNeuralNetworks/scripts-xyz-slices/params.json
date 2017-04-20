@@ -1,6 +1,6 @@
 {
-    "OUTPUT_DATA_ROOT": "/media/krs0014/SegmentVesselsUsingNeuralNetworks",
-    "INPUT_DATA_ROOT": "/home/cdeepakroy/work/Libs/caffe/data/SegmentVesselsUsingNeuralNetworks",
+    "OUTPUT_DATA_ROOT": "/media/krs0014/neal/SegmentVesselsUsingNeuralNetworks",
+    "INPUT_DATA_ROOT": "/home/nealsiekierski/caffe/data/SegmentVesselsUsingNeuralNetworks",
     "PATCH_RADIUS": 32,
     "NUM_SLABS": 10,
     "SLAB_OVERLAP": 20,
