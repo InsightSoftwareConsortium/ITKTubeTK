@@ -153,8 +153,8 @@ def computeTrainingMask(expertSegMask, outputTrainingMask):
     Note: These values are arbitrary and were picked for the
     convenience of generating them.
 
-    Note: A temporary file -- expertSegMask + "_skel.mha" -- is
-    created and then removed in the process.
+    Note: An intermediate file -- expertSegMask + "_skel.mha" -- is
+    created in the process.
 
     """
 
@@ -174,8 +174,6 @@ def computeTrainingMask(expertSegMask, outputTrainingMask):
         "-a", "1", "130", skeletonFile,
         # write training mask
         "-W", "0", outputTrainingMask])
-
-    os.remove(skeletonFile)
 
 
 def splitData(name, inputDir, outputDir, trainOutputDir, testOutputDir):
