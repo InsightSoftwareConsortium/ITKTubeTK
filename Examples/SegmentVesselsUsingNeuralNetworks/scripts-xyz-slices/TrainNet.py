@@ -96,7 +96,7 @@ def create_uncompiled_model():
     # Channels go last
     inputs = [L.Input(shape=(patch_size, patch_size, 1)) for _ in range(3)]
 
-    sharedInput = L.Input()
+    sharedInput = L.Input(shape=(patch_size, patch_size, 1))
 
     # First layer set
     x = Conv2D(filters=48, kernel_size=6)(sharedInput)
