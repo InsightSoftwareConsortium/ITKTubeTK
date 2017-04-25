@@ -96,11 +96,6 @@ def segmentSlab(net, input_file, output_file):
     start_time = time.time()
 
     output_image = np.zeros_like(input_image)  # Output segmented slab
-    output_image_flat = np.ravel(output_image)
-
-    pw = -num_patches % test_batch_size
-    patches = np.pad(patches, ((0, pw), (0, 0), (0, 0)), 'constant')
-    patch_indices = np.pad(patch_indices, ((0, pw), (0, 0)), 'constant')
 
     patches = patches[..., np.newaxis]
     print patches.shape
@@ -112,29 +107,15 @@ def segmentSlab(net, input_file, output_file):
         cur_patches = patches[i:i + test_batch_size]
 
         # perform classification using cnn
-        prob_vessel = net.predict(utils.scale_net_input_data(cur_patches), test_batch_size)[:, 1]
+        prob_vessel = net.predict_on_batch(utils.scale_net_input_data(cur_patches))[:, 1]
 
-        if i + test_batch_size > num_patches:
-
-            # remove padded part for last batch
-            num_valid = num_patches - i
-            prob_vessel = prob_vessel[0:num_valid]
-            cur_pind = cur_pind[0:num_valid, :]
-
-        # set output
-        cur_pind_lin = np.ravel_multi_index((cur_pind[:, 0], cur_pind[:, 1]),
-                                            output_image.shape)
-
-        output_image_flat[cur_pind_lin] = prob_vessel * 255
+        output_image[tuple(cur_pind.T)] = (prob_vessel * 255).round()
 
         # Print progress
         print '\t %.2f%%' % (100.0 * (i + len(prob_vessel)) / num_patches),
-        if len(prob_vessel) > 0:
-            print "%.4f, %.4f, %.4f" % (prob_vessel.min(),
-                                        prob_vessel.max(),
-                                        prob_vessel.mean())
-        else:
-            print ""
+        print "%.4f, %.4f, %.4f" % (prob_vessel.min(),
+                                    prob_vessel.max(),
+                                    prob_vessel.mean())
 
     end_time = time.time()
     print '\tTook %s seconds' % (end_time - start_time)
