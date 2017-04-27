@@ -67,3 +67,7 @@ def extractPatch(im, indices):
                               for j, x in enumerate(indices))]
                      for i in range(len(indices))),
                     axis=-1)
+
+def separateChannels(im):
+    """Transpose an ...xN image into an Nx...x1 image"""
+    return np.moveaxis(im, -1, 0)[..., np.newaxis]

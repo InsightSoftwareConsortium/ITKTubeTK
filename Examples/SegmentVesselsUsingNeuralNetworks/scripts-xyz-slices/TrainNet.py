@@ -157,10 +157,11 @@ def queryResultToModelArguments(result):
 
     """
     image_data = utils.scale_net_input_data(
-        np.array([np.frombuffer(im, dtype=np.uint8) for im, _ in result])
-        .reshape((len(result), patch_size, patch_size, 1, 3)))
+        np.stack(np.frombuffer(im, dtype=np.uint8).reshape(patch_size, patch_size, 3)
+                 for im, _ in result)
+    )
     labels = np.array([l for _, l in result])
-    return list(np.moveaxis(image_data, -1, 0)), labels
+    return list(utils.separateChannels(image_data)), labels
 
 
 def run():
