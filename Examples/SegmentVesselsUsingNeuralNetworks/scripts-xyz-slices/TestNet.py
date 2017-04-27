@@ -64,7 +64,6 @@ def segmentSlab(net, input_file, output_file):
 
     w = np.int(patch_size / 2)
 
-    patches = []
     patch_indices = []
 
     for indices in itertools.product(*(range(w, s - w) for s in input_image.shape)):
@@ -75,16 +74,11 @@ def segmentSlab(net, input_file, output_file):
         # store patch center index
         patch_indices.append(indices)
 
-        # store patch
-        cur_patch = input_image[tuple(np.s_[i - w : i + w + 1] for i in indices)]
-        patches.append(cur_patch)
-
     end_time = time.time()
 
     print '\tTook %s seconds' % (end_time - start_time)
 
     num_patches = len(patch_indices)
-    patches = np.array(patches)
     patch_indices = np.array(patch_indices)
 
     print "\tNo of patches = %s" % num_patches
@@ -96,14 +90,14 @@ def segmentSlab(net, input_file, output_file):
 
     output_image = np.zeros_like(input_image)  # Output segmented slab
 
-    patches = patches[..., np.newaxis]
-    print patches.shape
-
     for i in range(0, num_patches, test_batch_size):
 
         # get current batch of patches
         cur_pind = patch_indices[i:i + test_batch_size]
-        cur_patches = patches[i:i + test_batch_size]
+        cur_patches = np.stack(
+            input_image[tuple(np.s_[i - w : i + w + 1] for i in indices)]
+            for indices in cur_pind
+        )[..., np.newaxis]
 
         # perform classification using cnn
         prob_vessel = net.predict_on_batch(utils.scale_net_input_data(cur_patches))[:, 1]
