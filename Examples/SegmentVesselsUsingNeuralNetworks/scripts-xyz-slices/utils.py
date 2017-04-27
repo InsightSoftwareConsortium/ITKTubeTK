@@ -1,4 +1,5 @@
 import json
+import numpy as np
 import os
 import sys
 import shutil
@@ -52,3 +53,17 @@ def scale_net_input_data(data):
 
     """
     return data / 255.
+
+def extractPatch(im, indices):
+    """Return a patch extracted from im at indices.
+
+    Currently, this means returning an array of size (2W+1 x 2W+1 x
+    3), where W is the patch radius.
+
+    """
+    w = script_params['PATCH_RADIUS']
+    # Return N (N-1)-dimensional slices
+    return np.stack((im[tuple(np.s_[x - w : x + w + 1] if i != j else x
+                              for j, x in enumerate(indices))]
+                     for i in range(len(indices))),
+                    axis=-1)

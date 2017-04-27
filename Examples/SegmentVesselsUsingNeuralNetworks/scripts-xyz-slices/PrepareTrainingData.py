@@ -279,10 +279,7 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
         filename = os.path.join(
             str(patchSetIndex), imageName, '_'.join(map(str, coords)) + ".png")
 
-        image = np.stack((inputImage[tuple(np.s_[x - w : x + w + 1] if i != j else x
-                                           for j, x in enumerate(coords))]
-                          for i in range(len(coords))),
-                         axis=-1)
+        image = utils.extractPatch(inputImage, coords)
 
         return filename, patchSetIndex, image
 
