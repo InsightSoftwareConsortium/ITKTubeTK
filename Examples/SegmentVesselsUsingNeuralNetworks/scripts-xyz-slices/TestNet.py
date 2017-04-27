@@ -2,6 +2,7 @@
 """
 Tests the trained CNN vessel segmentation mode on all test images
 """
+import itertools
 import os
 import sys
 import json
@@ -66,19 +67,17 @@ def segmentSlab(net, input_file, output_file):
     patches = []
     patch_indices = []
 
-    for i in range(w, input_image.shape[0] - w):
-        for j in range(w, input_image.shape[1] - w):
+    for indices in itertools.product(*(range(w, s - w) for s in input_image.shape)):
+        # check if pixel is in foreground
+        # if ~fgnd_mask[indices]:
+        #    continue
 
-            # check if pixel is in foreground
-            # if ~fgnd_mask[i, j]:
-            #    continue
+        # store patch center index
+        patch_indices.append(indices)
 
-            # store patch center index
-            patch_indices.append([i, j])
-
-            # store patch
-            cur_patch = input_image[(i - w):(i + w + 1), (j - w):(j + w + 1)]
-            patches.append(cur_patch)
+        # store patch
+        cur_patch = input_image[tuple(np.s_[i - w : i + w + 1] for i in indices)]
+        patches.append(cur_patch)
 
     end_time = time.time()
 
