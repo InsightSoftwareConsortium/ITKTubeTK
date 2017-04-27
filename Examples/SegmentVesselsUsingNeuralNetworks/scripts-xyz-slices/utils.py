@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import shutil
@@ -20,6 +21,8 @@ class Logger(object):
         #you might want to specify some extra behavior here.
         pass
 
+
+script_params = json.load(open('params.json'))
 
 def ensureDirectoryExists(path):
     """Create the directory named by path and any necessary parents if it

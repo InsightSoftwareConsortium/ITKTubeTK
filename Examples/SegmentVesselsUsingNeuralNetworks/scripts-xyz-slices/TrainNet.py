@@ -7,7 +7,6 @@
 import itertools
 import os
 import sys
-import json
 import time
 import shutil
 
@@ -18,9 +17,9 @@ matplotlib.use('AGG')
 import matplotlib.pyplot as plt
 
 import utils
+from utils import script_params
 
 # Define paths
-script_params = json.load(open('params.json'))
 output_data_root = str(script_params['OUTPUT_DATA_ROOT'])
 input_data_root = script_params['INPUT_DATA_ROOT']
 

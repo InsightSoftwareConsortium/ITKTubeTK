@@ -8,7 +8,6 @@
 ###########################################################################
 
 import glob
-import json
 import math
 import os
 import random
@@ -20,6 +19,7 @@ import skimage.io
 import numpy as np
 
 import utils
+from utils import script_params
 
 # Append ITK libs
 sys.path.append(os.path.join(os.environ['TubeTK_BUILD_DIR'], 'ITK-build',
@@ -29,8 +29,6 @@ sys.path.append(os.path.join(os.environ['TubeTK_BUILD_DIR'], 'ITK-build',
 import itk
 
 # Define paths
-script_params = json.load(open('params.json'))
-
 output_data_root = script_params['OUTPUT_DATA_ROOT']
 input_data_root = script_params['INPUT_DATA_ROOT']
 
