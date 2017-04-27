@@ -71,3 +71,10 @@ def extractPatch(im, indices):
 def separateChannels(im):
     """Transpose an ...xN image into an Nx...x1 image"""
     return np.moveaxis(im, -1, 0)[..., np.newaxis]
+
+def prepareInputArray(im):
+    """Convert a Bx...xC array to a list of C Bx...x1 arrays, converting
+    data types appropriately in the process.
+
+    """
+    return list(scale_net_input_data(separateChannels(im)))

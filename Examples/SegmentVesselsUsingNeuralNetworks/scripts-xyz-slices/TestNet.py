@@ -93,13 +93,12 @@ def segmentSlab(net, input_file, output_file):
 
         # get current batch of patches
         cur_pind = patch_indices[i:i + test_batch_size]
-        cur_patches = np.stack(
-            input_image[tuple(np.s_[i - w : i + w + 1] for i in indices)]
-            for indices in cur_pind
-        )[..., np.newaxis]
+        cur_patches = utils.prepareInputArray(np.stack(
+            utils.extractPatch(input_image, indices) for indices in cur_pind
+        ))
 
         # perform classification using cnn
-        prob_vessel = net.predict_on_batch(utils.scale_net_input_data(cur_patches))[:, 1]
+        prob_vessel = net.predict_on_batch(cur_patches)[:, 1]
 
         output_image[tuple(cur_pind.T)] = (prob_vessel * 255).round()
 
