@@ -333,7 +333,7 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
     # Iterate through expert mask and find pos/neg patches
 
     # Slice that we want, which excludes edge pixels
-    s = np.s_[w:-w-1]
+    s = np.s_[w:-w or None]
     trainingMaskMid = trainingMask[(s,) * 3]
 
     mask = dict_to_list({
