@@ -58,7 +58,7 @@ def segmentImage(net, input_file, output_file):
 
     # get test_batch_size and patch_size used for cnn net
     test_batch_size = script_params['DEPLOY_BATCH_SIZE']
-    patch_size = data_shape[1]
+    patch_size = data_shape[0][1]
 
     print 'Test batch shape = ', data_shape
 
