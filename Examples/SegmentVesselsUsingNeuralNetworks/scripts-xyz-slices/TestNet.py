@@ -52,7 +52,8 @@ def segmentImage(net, input_file, output_file):
     input_image = itk.GetArrayFromImage(input_image_itk)
 
     # get foreground mask
-    th = skimage.filters.threshold_otsu(input_image)
+    input_revcum = np.cumsum(np.bincount(input_image.reshape(-1))[::-1])[::-1]
+    th = np.count_nonzero(input_revcum >= input_revcum[0] * script_params['DEPLOY_TOP_FRAC']) - 2
     fgnd_mask = input_image > th
 
     # get test_batch_size and patch_size used for cnn net
