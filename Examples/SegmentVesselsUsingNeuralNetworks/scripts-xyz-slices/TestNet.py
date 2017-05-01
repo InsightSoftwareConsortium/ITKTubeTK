@@ -125,7 +125,7 @@ def segmentTubes(inputImageName, vascularModelFile, outputDir,
         outputDir, inputImageName + "_vess_seeds.mha")
 
     subprocess.call(["ImageMath", vessProbImageFile,
-                     "-t", str(vess_seed_prob), "1.0", "1", "0",
+                     "-t", str(255 * vess_seed_prob), "255", "1", "0",
                      "-W", "0", outSeedImageFile])
 
     # segment tubes using ridge traversal
