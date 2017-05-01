@@ -34,17 +34,22 @@ testDataDir = os.path.join(output_data_root, "testing")
 
 import keras.models as M
 
-# Segment a slab
-def segmentSlab(net, input_file, output_file):
+# Segment an image
+def segmentImage(net, input_file, output_file):
 
-    print "Segmenting slab ", input_file
+    print "Segmenting image", input_file
 
     data_shape = net.input_shape
 
     print data_shape
 
     # read input slab image
-    input_image = skimage.io.imread(input_file)
+    if True:
+        reader = itk.ImageFileReader.New(FileName=str(input_file))
+        reader.Update()
+        input_image_itk = reader.GetOutput()
+        del reader
+    input_image = itk.GetArrayFromImage(input_image_itk)
 
     # get foreground mask
     th = skimage.filters.threshold_otsu(input_image)
@@ -112,7 +117,7 @@ def segmentSlab(net, input_file, output_file):
     print '\tTook %s seconds' % (end_time - start_time)
 
     # Save output
-    skimage.io.imsave(output_file, output_image)
+    itk.ImageFileWriter.New(itk.GetImageFromArray(output_image), FileName=str(output_file)).Update()
 
 
 def combineSlabs(inputImageName, outputDir):
@@ -305,7 +310,7 @@ def run():
             outputFilename = os.path.join(
                 outputDir, str(i) + "_" + testAnimal + '_zslab.png')
 
-            segmentSlab(net, inputFilename, outputFilename)
+            segmentImage(net, inputFilename, outputFilename)
 
         # reconstruct volume from segmented slabs by mapping back to their MIP
         # location
