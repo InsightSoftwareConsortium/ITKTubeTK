@@ -118,7 +118,7 @@ def segmentImage(net, input_file, output_file):
     print '\tTook %s seconds' % (end_time - start_time)
 
     # Save output
-    itk.ImageFileWriter.New(itk.GetImageFromArray(output_image), FileName=str(output_file)).Update()
+    itk.ImageFileWriter.New(itk.GetImageFromArray(output_image), FileName=str(output_file), UseCompression=True).Update()
 
 
 def segmentTubes(inputImageName, vascularModelFile, outputDir,
