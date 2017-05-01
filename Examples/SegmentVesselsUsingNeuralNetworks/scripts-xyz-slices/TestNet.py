@@ -120,119 +120,11 @@ def segmentImage(net, input_file, output_file):
     itk.ImageFileWriter.New(itk.GetImageFromArray(output_image), FileName=str(output_file)).Update()
 
 
-def combineSlabs(inputImageName, outputDir):
-
-    PixelType = itk.UC
-    Dimension = 3
-    ImageType = itk.Image[PixelType, Dimension]
-
-    NameGeneratorType = itk.NumericSeriesFileNames
-    nameGenerator = NameGeneratorType.New()
-    nameGenerator.SetStartIndex(0)
-    nameGenerator.SetEndIndex(9)
-    nameGenerator.SetIncrementIndex(1)
-    nameGenerator.SetSeriesFormat(
-        str(os.path.join(outputDir, "%d_" + inputImageName + '_zslab.png')))
-
-    SeriesReaderType = itk.ImageSeriesReader[ImageType]
-    seriesReader = SeriesReaderType.New()
-    seriesReader.SetFileNames(nameGenerator.GetFileNames())
-    #  seriesReader.SetImageIO( itk.PNGImageIO.New() )
-
-    WriterType = itk.ImageFileWriter[ImageType]
-    writer = WriterType.New()
-    writer.SetFileName(
-        str(os.path.join(outputDir, inputImageName + "_zslab.mha")))
-    writer.SetInput(seriesReader.GetOutput())
-    writer.Update()
-
-
-def reconstructSegVolume(inputImageName, outputDir):
-
-    PixelType = itk.F
-    Dimension = 3
-    ImageType = itk.Image[PixelType, Dimension]
-
-    # combine slab images into a .mha volume file
-    combineSlabs(inputImageName, outputDir)
-
-    # Read segmented slab volume
-    slabSegFile = str(os.path.join(outputDir, inputImageName + "_zslab.mha"))
-
-    SlabVolumeReaderType = itk.ImageFileReader[ImageType]
-    slabVolumeReader = SlabVolumeReaderType.New()
-    slabVolumeReader.SetFileName(slabSegFile)
-    slabVolumeReader.Update()
-    slabSeg = slabVolumeReader.GetOutput()
-    slabSegBuf = itk.PyBuffer[ImageType].GetArrayFromImage(slabSeg)
-
-    # Read point map image
-    pointMapFile = str(os.path.join(
-        testDataDir, "points", inputImageName + "_zslab_points.mha"))
-
-    VectorImageType = itk.VectorImage[PixelType, Dimension]
-    PointMapReaderType = itk.ImageFileReader[VectorImageType]
-    pointMapReader = PointMapReaderType.New()
-    pointMapReader.SetFileName(pointMapFile)
-    pointMapReader.Update()
-    pointMap = pointMapReader.GetOutput()
-    pointMapBuf = itk.PyBuffer[VectorImageType].GetArrayFromImage(pointMap)
-
-    # Read input volume
-    inputVolumeFile = str(os.path.join(os.path.join(
-        testDataDir, "images", inputImageName + ".mha")))
-
-    InputVolumeReaderType = itk.ImageFileReader[ImageType]
-    inputVolumeReader = InputVolumeReaderType.New()
-    inputVolumeReader.SetFileName(inputVolumeFile)
-    inputVolumeReader.Update()
-
-    # reconstruct segmentation volume in original space by inverse mapping
-    img3d = inputVolumeReader.GetOutput()
-
-    img3d.FillBuffer(0.0)
-
-    numSlabs = slabSegBuf.shape[0]
-
-    for slabIdx in range(numSlabs):
-
-        print "Reconstructing slab ", slabIdx + 1, "/", numSlabs, "..."
-
-        for i in range(slabSegBuf.shape[1]):
-            for j in range(slabSegBuf.shape[2]):
-
-                predProb = slabSegBuf[slabIdx, i, j] / 255.0
-
-                src_x = float(pointMapBuf[slabIdx, i, j, 0])
-                src_y = float(pointMapBuf[slabIdx, i, j, 1])
-                src_z = float(pointMapBuf[slabIdx, i, j, 2])
-                src_index = img3d.TransformPhysicalPointToIndex(
-                    [src_x, src_y, src_z])
-
-                img3d.SetPixel(src_index, predProb)
-
-    # Blur image to fill gaps between painted pixels.
-    BlurFilterType = itk.DiscreteGaussianImageFilter[ImageType, ImageType]
-    blurFilter = BlurFilterType.New()
-    blurFilter.SetInput(img3d)
-    blurFilter.SetVariance(1)
-    blurFilter.SetMaximumKernelWidth(1)
-
-    print("Writing output ..")
-    WriterType = itk.ImageFileWriter[ImageType]
-    writer = WriterType.New()
-    writer.UseCompressionOn()
-    writer.SetFileName(
-        str(os.path.join(outputDir, inputImageName + "_vess_prob.mha")))
-    writer.SetInput(blurFilter.GetOutput())
-    writer.Update()
-
-
 def segmentTubes(inputImageName, vascularModelFile, outputDir,
                  vess_seed_prob=0.95, vess_scale=0.1):
 
-    inputImageFile = os.path.join(
-        testDataDir, "images", inputImageName + ".mha")
+    inputImageFile, = glob.glob(os.path.join(
+        input_data_root, '*', '*', inputImageName + ".mhd"))
 
     # compute seed image
     vessProbImageFile = os.path.join(
@@ -292,29 +184,15 @@ def run():
     net = M.load_model(modelDef)
 
     # get list of test mha files
-    testMhaFiles = glob.glob(os.path.join(
-        testDataDir, "images", "*_zslab.mha"))
+    testMhaFiles = glob.glob(os.path.join(testDataDir, "*_smooth.mha"))
 
     # segment all test .mha files
     for mhaFile in testMhaFiles:
 
-        testAnimal = os.path.basename(os.path.splitext(mhaFile)[0])[:-6]
-        print "Segmenting ", testAnimal + ".mha", " ..."
+        testAnimal = os.path.basename(os.path.splitext(mhaFile)[0])[:-7]
 
-        # segment all slabs
-        for i in range(script_params['NUM_SLABS']):
-
-            inputFilename = os.path.join(
-                testDataDir, "images", str(i) + "_" + testAnimal + '_zslab.png')
-
-            outputFilename = os.path.join(
-                outputDir, str(i) + "_" + testAnimal + '_zslab.png')
-
-            segmentImage(net, inputFilename, outputFilename)
-
-        # reconstruct volume from segmented slabs by mapping back to their MIP
-        # location
-        reconstructSegVolume(testAnimal, outputDir)
+        # segment image
+        segmentImage(net, mhaFile, os.path.join(outputDir, testAnimal + '_vess_prob.mha'))
 
         # segment tubes using ridge traversal
         vascularModelFile = os.path.join(input_data_root, 'vascularModel.mtp')
