@@ -73,8 +73,8 @@ def segmentImage(net, input_file, output_file):
 
     for indices in itertools.product(*(range(w, s - w) for s in input_image.shape)):
         # check if pixel is in foreground
-        # if ~fgnd_mask[indices]:
-        #    continue
+        if ~fgnd_mask[indices]:
+           continue
 
         # store patch center index
         patch_indices.append(indices)
