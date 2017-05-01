@@ -69,22 +69,13 @@ def segmentImage(net, input_file, output_file):
 
     w = np.int(patch_size / 2)
 
-    patch_indices = []
-
-    for indices in itertools.product(*(range(w, s - w) for s in input_image.shape)):
-        # check if pixel is in foreground
-        if ~fgnd_mask[indices]:
-           continue
-
-        # store patch center index
-        patch_indices.append(indices)
+    patch_indices = np.stack(np.where(fgnd_mask[(np.s_[w:-w],) * input_image.ndim]), axis=-1) + w
 
     end_time = time.time()
 
     print '\tTook %s seconds' % (end_time - start_time)
 
-    num_patches = len(patch_indices)
-    patch_indices = np.array(patch_indices)
+    num_patches = patch_indices.shape[0]
 
     print "\tNo of patches = %s" % num_patches
 
