@@ -34,6 +34,12 @@ testDataDir = os.path.join(output_data_root, "testing")
 
 import keras.models as M
 
+def duplicate(im):
+    """Duplicate an itk image"""
+    f = itk.ImageDuplicator.New(im)
+    f.Update()
+    return f.GetOutput()
+
 # Segment an image
 def segmentImage(net, input_file, output_file):
 
@@ -44,12 +50,8 @@ def segmentImage(net, input_file, output_file):
     print data_shape
 
     # read input slab image
-    if True:
-        reader = itk.ImageFileReader.New(FileName=str(input_file))
-        reader.Update()
-        input_image_itk = reader.GetOutput()
-        del reader
-    input_image = itk.GetArrayFromImage(input_image_itk)
+    input_image_itk = itk.imread(str(input_file))
+    input_image = itk.GetArrayViewFromImage(input_image_itk)
 
     # get foreground mask
     input_revcum = np.cumsum(np.bincount(input_image.reshape(-1))[::-1])[::-1]
@@ -84,7 +86,9 @@ def segmentImage(net, input_file, output_file):
 
     start_time = time.time()
 
-    output_image = np.zeros_like(input_image)  # Output segmented slab
+    output_image_itk = duplicate(input_image_itk)
+    output_image = itk.GetArrayViewFromImage(output_image_itk)
+    output_image.fill(0)
 
     for i in range(0, num_patches, test_batch_size):
 
@@ -109,7 +113,7 @@ def segmentImage(net, input_file, output_file):
     print '\tTook %s seconds' % (end_time - start_time)
 
     # Save output
-    itk.ImageFileWriter.New(itk.GetImageFromArray(output_image), FileName=str(output_file), UseCompression=True).Update()
+    itk.imwrite(output_image_itk, str(output_file), compression=True)
 
 
 def segmentTubes(inputImageName, vascularModelFile, outputDir,
