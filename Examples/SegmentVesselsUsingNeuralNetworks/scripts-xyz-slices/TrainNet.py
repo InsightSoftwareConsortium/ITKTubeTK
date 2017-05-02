@@ -92,34 +92,39 @@ def create_uncompiled_model():
     Conv2D = wrap_regularizer(L.Conv2D)
     Dense = wrap_regularizer(L.Dense)
 
+    def convLayer(f=32, k=3):
+        c = Conv2D(filters=f, kernel_size=k)
+        r = L.LeakyReLU(0.1)
+        return lambda x: r(c(x))
+
     # Channels go last
     inputs = [L.Input(shape=(patch_size, patch_size, 1)) for _ in range(3)]
 
     sharedInput = L.Input(shape=(patch_size, patch_size, 1))
 
     # First layer set
-    x = Conv2D(filters=48, kernel_size=6)(sharedInput)
-    x = L.LeakyReLU(0.1)(x)
+    x = convLayer()(sharedInput)
+    x = convLayer()(x)
+    x = convLayer(k=2)(x)
     x = L.MaxPooling2D(2)(x)
 
     # Second layer set
-    x = Conv2D(filters=48, kernel_size=5)(x)
-    x = L.LeakyReLU(0.1)(x)
+    x = convLayer()(x)
+    x = convLayer()(x)
     x = L.MaxPooling2D(2)(x)
 
-    # Second layer set
-    x = Conv2D(filters=48, kernel_size=4)(x)
-    x = L.LeakyReLU(0.1)(x)
+    # Third layer set
+    x = convLayer()(x)
+    x = convLayer(k=2)(x)
     x = L.MaxPooling2D(2)(x)
 
-    # Second layer set
-    x = Conv2D(filters=48, kernel_size=2)(x)
-    x = L.LeakyReLU(0.1)(x)
+    # Fourth layer set
+    x = convLayer(k=2)(x)
     x = L.MaxPooling2D(2)(x)
 
     # Fully connected layer set
     x = L.Flatten()(x)
-    x = Dense(50)(x)
+    x = Dense(32)(x)
     x = L.LeakyReLU(0.1)(x)
 
     x = L.Dropout(0.5)(x)
