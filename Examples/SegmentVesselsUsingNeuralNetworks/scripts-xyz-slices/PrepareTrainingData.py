@@ -151,8 +151,9 @@ def computeTrainingMask(expertSegMask, outputTrainingMask):
     Note: These values are arbitrary and were picked for the
     convenience of generating them.
 
-    Note: An intermediate file -- expertSegMask + "_skel.mha" -- is
-    created in the process.
+    Note: Two intermediate files -- expertSegMask + "_skel.mha" and +
+    "_dilated.mha" -- are created in the process.  The latter is
+    removed afterwards.
 
     """
 
@@ -162,16 +163,25 @@ def computeTrainingMask(expertSegMask, outputTrainingMask):
                      expertSegMask,
                      skeletonFile])
 
+    dilated = expertSegMask + '_dilated.mha'
+
     subprocess.call([
-        "ImageMath", expertSegMask,
+        'ImageMath', expertSegMask,
+        '-M', '1', '4', '1', '0',
+        '-W', '0', dilated])
+
+    subprocess.call([
+        "ImageMath", dilated,
          # dilate vessel mask with kernel radius = 1
          "-M", "1", "1", "1", "0",
         # subtract vessel mask from dilated version to get vessel boundary
-        "-a", "255", "-204", expertSegMask,
+        "-a", "255", "-204", dilated,
         # create training mask with vessel center-line (=255) and boundary (=128)
         "-a", "1", "130", skeletonFile,
         # write training mask
         "-W", "0", outputTrainingMask])
+
+    os.unlink(dilated)
 
 
 def splitData(name, inputDir, outputDir, trainOutputDir, testOutputDir):
