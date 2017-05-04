@@ -91,11 +91,20 @@ def create_uncompiled_model():
 
     Conv2D = wrap_regularizer(L.Conv2D)
     Dense = wrap_regularizer(L.Dense)
+    def BatchNormalization():
+        return L.BatchNormalization(scale=False, beta_regularizer=R.l2(weight_decay))
 
     def convLayer(f=32, k=3):
-        c = Conv2D(filters=f, kernel_size=k)
+        c = Conv2D(filters=f, kernel_size=k, use_bias=False)
+        n = BatchNormalization()
         r = L.LeakyReLU(0.1)
-        return lambda x: r(c(x))
+        return lambda x: r(n(c(x)))
+
+    def denseLayer(u):
+        d = Dense(u, use_bias=False)
+        n = BatchNormalization()
+        r = L.LeakyReLU(0.1)
+        return lambda x: r(n(d(x)))
 
     # Channels go last
     inputs = [L.Input(shape=(patch_size, patch_size, 1)) for _ in range(3)]
@@ -124,8 +133,7 @@ def create_uncompiled_model():
 
     # Fully connected layer set
     x = L.Flatten()(x)
-    x = Dense(32)(x)
-    x = L.LeakyReLU(0.1)(x)
+    x = denseLayer(32)(x)
 
     x = L.Dropout(0.5)(x)
 
@@ -133,11 +141,13 @@ def create_uncompiled_model():
 
     x = L.Concatenate()([sharedModel(i) for i in inputs])
 
-    x = Dense(20)(x)
-    x = L.LeakyReLU(0.1)(x)
+    x = denseLayer(20)(x)
 
     # Classify
     x = Dense(2)(x)
+    # Use gamma because softmax is scale-sensitive
+    x = L.BatchNormalization(beta_regularizer=R.l2(weight_decay),
+                             gamma_regularizer=R.l2(weight_decay))(x)
     predictions = L.Activation('softmax')(x)
 
     return M.Model(inputs=inputs, outputs=predictions)
