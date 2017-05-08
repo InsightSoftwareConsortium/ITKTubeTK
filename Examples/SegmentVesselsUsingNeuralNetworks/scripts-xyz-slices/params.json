@@ -19,9 +19,9 @@
     "SOLVER_PARAMS": {
 	"MOMENTUM": 0.9
     },
-    "BASE_LR": 0.01,
+    "BASE_LR": 0.1,
     "WEIGHT_DECAY": 1e-4,
-    "GAMMA": 1e-4,
+    "GAMMA": 0.01,
     "VESSEL_SEED_PROBABILITY": 0.95,
     "VESSEL_SCALE": 0.1
 }
