@@ -37,7 +37,7 @@ def dispatch():
     sp = script_params.copy()
     sp['OUTPUT_DATA_ROOT'] = '..'
     with open(os.path.join(source, 'params.json'), 'w') as f:
-        json.dump(sp, f)
+        json.dump(sp, f, indent=4, separators=(',', ': '))
 
     if a.base is None:
         raise NotImplementedError
