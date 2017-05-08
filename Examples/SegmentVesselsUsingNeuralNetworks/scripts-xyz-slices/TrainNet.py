@@ -95,7 +95,7 @@ def create_uncompiled_model():
         return L.BatchNormalization(scale=False, beta_regularizer=R.l2(weight_decay))
 
     def convLayer(f=32, k=3):
-        c = Conv2D(filters=f, kernel_size=k, use_bias=False)
+        c = Conv2D(filters=f, kernel_size=k, use_bias=False, padding='same')
         n = BatchNormalization()
         r = L.LeakyReLU(0.1)
         return lambda x: r(n(c(x)))
@@ -113,22 +113,22 @@ def create_uncompiled_model():
 
     # First layer set
     x = convLayer()(sharedInput)
-    x = convLayer()(x)
-    x = convLayer(k=2)(x)
     x = L.MaxPooling2D(2)(x)
 
     # Second layer set
-    x = convLayer()(x)
     x = convLayer()(x)
     x = L.MaxPooling2D(2)(x)
 
     # Third layer set
     x = convLayer()(x)
-    x = convLayer(k=2)(x)
     x = L.MaxPooling2D(2)(x)
 
     # Fourth layer set
-    x = convLayer(k=2)(x)
+    x = convLayer()(x)
+    x = L.MaxPooling2D(2)(x)
+
+    # Fifth layer set
+    x = convLayer()(x)
     x = L.MaxPooling2D(2)(x)
 
     # Fully connected layer set
