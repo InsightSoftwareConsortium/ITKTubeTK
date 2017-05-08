@@ -391,4 +391,8 @@ def run():
 
 
 if __name__ == "__main__":
-    run()
+    t = time.time()
+    try:
+        run()
+    finally:
+        print("Running time: " + str(time.time() - t))
