@@ -7,7 +7,7 @@ from collections import OrderedDict
 import json
 import os
 import shutil
-from subprocess import call
+from subprocess import check_call
 import sys
 
 stages = [
@@ -77,7 +77,7 @@ def dispatch():
         f.write(repr(sys.argv)+'\n')
 
         for i in range(stages_dict[a.from_], stages_dict[a.to] + 1):
-            call([os.path.join(source, commands[i])], cwd=source)
+            check_call([os.path.join(source, commands[i])], cwd=source)
             f.write(repr([commands[i]])+'\n')
 
 def symlink_entries_through(source, dest, *args):
