@@ -77,7 +77,7 @@ def dispatch():
 
         for i in range(stages_dict[a.from_], stages_dict[a.to] + 1):
             check_call([os.path.join(source, commands[i])], cwd=source)
-            f.write(repr([commands[i]])+'\n')
+            f.write(repr([os.path.join('.', commands[i])])+'\n')
 
 def symlink_entries_through(source, dest, *args):
     for arg in args:
