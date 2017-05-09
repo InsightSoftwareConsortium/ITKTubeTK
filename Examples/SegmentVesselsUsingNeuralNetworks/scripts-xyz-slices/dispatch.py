@@ -49,21 +49,29 @@ def dispatch():
     with open(os.path.join(source, 'params.json'), 'w') as f:
         json.dump(sp, f, indent=4, separators=(',', ': '))
 
-    if a.from_ != 'TODO starting value' and a.base is None:
-        raise ValueError("--base required if not starting from beginning")
+    def setup_links():
+        if a.from_ == 'TODO starting value':
+            if a.base is not None:
+                raise ValueError("--base must not be passed if starting from beginning")
+            return
 
-    if a.from_ == 'TrainNet':
+        if a.base is None:
+            raise ValueError("--base required if not starting from beginning")
+
         for x in 'Net_TrainData', 'Net_ValData':
             symlink_entries_through(a.base, odr, x)
-    elif a.from_ == 'TestNet':
-        symlink_entries_through(a.base, odr, 'NetProto')
         os.mkdir(os.path.join(odr, 'testing'))
         symlink_entries_through(a.base, odr,
                                 *(os.path.join('testing', x)
                                   for x in os.listdir(os.path.join(a.base, 'testing'))
                                   if x.endswith('.mha')))
-    else:
-        raise NotImplementedError
+
+        if a.from_ == 'TrainNet':
+            return
+
+        symlink_entries_through(a.base, odr, 'NetProto')
+
+    setup_links()
 
     with open(os.path.join(source, 'script'), 'a') as f:
         f.write(repr(sys.argv)+'\n')
