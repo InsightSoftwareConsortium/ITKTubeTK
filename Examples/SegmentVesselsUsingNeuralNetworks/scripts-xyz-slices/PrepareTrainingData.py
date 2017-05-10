@@ -60,6 +60,7 @@ def prep(inputImage, expertImage, outputImagePrefix):
     equalization_filter = itk.AdaptiveHistogramEqualizationImageFilter.New(
         smoothing_filter.GetOutput(),
         Radius=script_params['PATCH_RADIUS'],
+        Alpha=0, Beta=0,
     )
     writer = itk.ImageFileWriter.New(equalization_filter.GetOutput(),
                                      FileName=outputImagePrefix + "_prepped.mha",
