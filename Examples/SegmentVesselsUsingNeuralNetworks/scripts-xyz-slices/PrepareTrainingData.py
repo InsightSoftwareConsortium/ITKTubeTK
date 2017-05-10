@@ -55,13 +55,20 @@ def prep(inputImage, expertImage, outputImagePrefix):
     smoothing_radius = script_params['SMOOTHING_RADIUS']
 
     reader = itk.ImageFileReader.New(FileName=str(inputImage))
-    filter = itk.MedianImageFilter.New(reader.GetOutput(), Radius=smoothing_radius)
-    writer = itk.ImageFileWriter.New(filter.GetOutput(),
+    smoothing_filter = itk.MedianImageFilter.New(reader.GetOutput(),
+                                                 Radius=smoothing_radius)
+    equalization_filter = itk.AdaptiveHistogramEqualizationImageFilter.New(
+        smoothing_filter.GetOutput(),
+        Radius=script_params['PATCH_RADIUS'],
+    )
+    writer = itk.ImageFileWriter.New(equalization_filter.GetOutput(),
                                      FileName=outputImagePrefix + "_prepped.mha",
                                      UseCompression=True)
     writer.Update()
 
     reader.SetFileName(str(expertImage))
+    # Don't equalize the expert mask
+    writer.SetInput(smoothing_filter.GetOutput())
     writer.SetFileName(outputImagePrefix + "_prepped_expert.mha")
     writer.Update()
 
