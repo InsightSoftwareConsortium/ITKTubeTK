@@ -10,6 +10,8 @@ import shutil
 from subprocess import check_call
 import sys
 
+from utils import symlink_entries_through
+
 stages = [
     'TODO starting value',
     'TrainNet',
@@ -78,25 +80,6 @@ def dispatch():
         for i in range(stages_dict[a.from_], stages_dict[a.to] + 1):
             check_call([os.path.join(source, commands[i])], cwd=source)
             f.write(repr([os.path.join('.', commands[i])])+'\n')
-
-def symlink_entries_through(source, dest, *args):
-    for arg in args:
-        symlink_through(os.path.join(source, arg), os.path.join(dest, arg))
-
-def symlink_through(source, dest):
-    """Create a symlink at dest to source, or what source links to if
-    source is itself a symlink.
-
-    """
-    if os.path.islink(source):
-        source = readlink_absolute(source)
-    os.symlink(os.path.relpath(source, os.path.dirname(dest)), dest)
-
-def readlink_absolute(path):
-    rl = os.readlink(path)
-    if not os.path.isabs(rl):
-        rl = os.path.normpath(os.path.join(os.path.dirname(path), rl))
-    return rl
 
 if __name__=='__main__':
     dispatch()

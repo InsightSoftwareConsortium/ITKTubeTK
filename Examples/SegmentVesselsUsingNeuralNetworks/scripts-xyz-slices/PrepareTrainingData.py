@@ -217,8 +217,7 @@ def splitData(name, inputDir, outputDir, trainOutputDir, testOutputDir):
         # "suffix" is surround by fileName+'_' and '.mha'
         for suffix in ['smooth', 'expert', 'smooth_expert']:
             fileName = filePrefix + '_' + suffix + '.mha'
-            utils.copy(os.path.join(outputDir, fileName),
-                       os.path.join(curOutputDir, fileName))
+            utils.symlink_entries_through(outputDir, curOutputDir, fileName)
 
 # assign control and tumor volumes equally to training and testing
 def splitControlTumorData():

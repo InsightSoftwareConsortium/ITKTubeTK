@@ -33,15 +33,25 @@ def ensureDirectoryExists(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
-# Copy infile to outFile and create dirs if not present
-def copy(inFile, outFile):
 
-    # create path if it doesnt exist
-    out_path = os.path.dirname(outFile)
-    ensureDirectoryExists(out_path)
+def symlink_entries_through(source, dest, *args):
+    for arg in args:
+        symlink_through(os.path.join(source, arg), os.path.join(dest, arg))
 
-    # copy file
-    shutil.copyfile(inFile, outFile)
+def symlink_through(source, dest):
+    """Create a symlink at dest to source, or what source links to if
+    source is itself a symlink.
+
+    """
+    if os.path.islink(source):
+        source = readlink_absolute(source)
+    os.symlink(os.path.relpath(source, os.path.dirname(dest)), dest)
+
+def readlink_absolute(path):
+    rl = os.readlink(path)
+    if not os.path.isabs(rl):
+        rl = os.path.normpath(os.path.join(os.path.dirname(path), rl))
+    return rl
 
 def open_sqlite3_db(dir):
     """Open the sqlite3 database contained in dir.  We use "data.sqlite3"."""
