@@ -180,12 +180,12 @@ def run():
     net = M.load_model(modelDef)
 
     # get list of test mha files
-    testMhaFiles = glob.glob(os.path.join(testDataDir, "*_smooth.mha"))
+    testMhaFiles = glob.glob(os.path.join(testDataDir, "*_prepped.mha"))
 
     # segment all test .mha files
     for mhaFile in testMhaFiles:
 
-        testAnimal = os.path.basename(os.path.splitext(mhaFile)[0])[:-7]
+        testAnimal = os.path.basename(os.path.splitext(mhaFile)[0])[:-8]
 
         # segment image
         segmentImage(net, mhaFile, os.path.join(outputDir, testAnimal + '_vess_prob.mha'))

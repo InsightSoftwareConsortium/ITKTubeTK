@@ -42,12 +42,12 @@ def createExpertSegmentationMask(inputImageFile, treFile, outputExpertSegFile):
                      outputExpertSegFile])
 
 
-# Smooth images
-def smooth(inputImage, expertImage, outputImagePrefix):
-    """Smooth inputImage and expertImage according to script_params.
+# Preprocess ("prep") images
+def prep(inputImage, expertImage, outputImagePrefix):
+    """Preprocess inputImage and expertImage according to script_params.
     Output (where '*' stands for outputImagePrefix):
-    - *_smooth.mha: Smoothed inputImage
-    - *_smooth_expert.mha: Smoothed expertImage
+    - *_prepped.mha: Preprocessed inputImage
+    - *_prepped_expert.mha: Preprocessed expertImage
 
     """
     outputImagePrefix = str(outputImagePrefix)
@@ -57,23 +57,23 @@ def smooth(inputImage, expertImage, outputImagePrefix):
     reader = itk.ImageFileReader.New(FileName=str(inputImage))
     filter = itk.MedianImageFilter.New(reader.GetOutput(), Radius=smoothing_radius)
     writer = itk.ImageFileWriter.New(filter.GetOutput(),
-                                     FileName=outputImagePrefix + "_smooth.mha",
+                                     FileName=outputImagePrefix + "_prepped.mha",
                                      UseCompression=True)
     writer.Update()
 
     reader.SetFileName(str(expertImage))
-    writer.SetFileName(outputImagePrefix + "_smooth_expert.mha")
+    writer.SetFileName(outputImagePrefix + "_prepped_expert.mha")
     writer.Update()
 
 
-def createSmoothedImagesForFile(mhdFile, outputDir):
-    """Create smoothed image and related files corresponding to mhdFile in outputDir.
+def createPreppedImagesForFile(mhdFile, outputDir):
+    """Create preprocessed image and related files corresponding to mhdFile in outputDir.
     Input:
     - $input/*.mhd: The image file header
     - $input/TRE/*.tre: The expert TRE file
     Output:
     - $output/*_expert.mha: The expert MHA file
-    - : All output from smooth with $output/* as outputImagePrefix
+    - : All output from prep with $output/* as outputImagePrefix
 
     """
     fileName = os.path.basename(os.path.splitext(mhdFile)[0])
@@ -86,16 +86,16 @@ def createSmoothedImagesForFile(mhdFile, outputDir):
     # Process
     createExpertSegmentationMask(mhdFile, treFile, expertSegFile)
 
-    smooth(mhdFile, expertSegFile,
-           os.path.join(outputDir, fileName))
+    prep(mhdFile, expertSegFile,
+         os.path.join(outputDir, fileName))
 
-def createSmoothedImages(name, inputDir, outputDir):
+def createPreppedImages(name, inputDir, outputDir):
     """Process all image files in immediate subdirectories of inputDir to
     correspondingly prefixed images in outputDir.  outputDir is
     created if it doesn't already exist.  The subdirectory structure
     is not replicated.
 
-    See the documentation of createSmoothedImagesForFile for the exact
+    See the documentation of createPreppedImagesForFile for the exact
     files created.
 
     """
@@ -103,7 +103,7 @@ def createSmoothedImages(name, inputDir, outputDir):
     utils.ensureDirectoryExists(outputDir)
 
     # Process files
-    printSectionHeader('Creating smoothed images for %ss' % name)
+    printSectionHeader('Preprocessing images for %ss' % name)
 
     mhdFiles = glob.glob(os.path.join(inputDir, "*", "*.mhd"))
 
@@ -112,14 +112,14 @@ def createSmoothedImages(name, inputDir, outputDir):
         print("\n%s file %d/%d : %s" %
               (name, i + 1, len(mhdFiles), mhdFile))
 
-        createSmoothedImagesForFile(mhdFile, outputDir)
+        createPreppedImagesForFile(mhdFile, outputDir)
 
 
 # create z-mip slabs
-def createControlTumorSmoothedImages():
-    """Create smoothed images from the directories Controls and LargeTumor
-    in input_data_root via createZMIPSlabs and put the results in
-    controls and tumors subdirectories, respectively, of
+def createControlTumorPreppedImages():
+    """Create preprocessed images from the directories Controls and
+    LargeTumor in input_data_root via createZMIPSlabs and put the
+    results in controls and tumors subdirectories, respectively, of
     output_data_root.
 
     """
@@ -133,10 +133,10 @@ def createControlTumorSmoothedImages():
     tumorOutputDir = os.path.join(output_data_root, "tumors")
 
     # Process control files
-    createSmoothedImages('control', controlInputDir, controlOutputDir)
+    createPreppedImages('control', controlInputDir, controlOutputDir)
 
     # Process tumor files
-    createSmoothedImages('tumor', tumorInputDir, tumorOutputDir)
+    createPreppedImages('tumor', tumorInputDir, tumorOutputDir)
 
 # Compute Training mask
 def computeTrainingMask(expertSegMask, outputTrainingMask):
@@ -191,9 +191,9 @@ def splitData(name, inputDir, outputDir, trainOutputDir, testOutputDir):
 
     With an input file named *.mhd, the following outputs are moved
     into the destination folder:
-    - *_smooth.mha
+    - *_prepped.mha
     - *_expert.mha
-    - *_smooth_expert.mha
+    - *_prepped_expert.mha
 
     """
     # Process files
@@ -215,7 +215,7 @@ def splitData(name, inputDir, outputDir, trainOutputDir, testOutputDir):
             curOutputDir = testOutputDir
 
         # "suffix" is surround by fileName+'_' and '.mha'
-        for suffix in ['smooth', 'expert', 'smooth_expert']:
+        for suffix in ['prepped', 'expert', 'prepped_expert']:
             fileName = filePrefix + '_' + suffix + '.mha'
             utils.symlink_entries_through(outputDir, curOutputDir, fileName)
 
@@ -388,7 +388,7 @@ def createPatchesGenerator(name, dataDir):
     """
     printSectionHeader('Creating %s patches' % name)
 
-    imageFiles = glob.glob(os.path.join(dataDir, "*_smooth.mha"))
+    imageFiles = glob.glob(os.path.join(dataDir, "*_prepped.mha"))
 
     for i, imageFile in enumerate(imageFiles):
 
@@ -473,10 +473,10 @@ def printSectionHeader(title):
 def run():
 
     # create z-mip slabs
-    createControlTumorSmoothedImages()
+    createControlTumorPreppedImages()
 
     # assign control and tumor volumes equally to training and testing
-    # Note: this must be called after createControlTumorSmoothedImages()
+    # Note: this must be called after createControlTumorPreppedImages()
     splitControlTumorData()
 
     # create database
