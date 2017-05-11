@@ -1,7 +1,7 @@
 {
     "OUTPUT_DATA_ROOT": "/media/krs0014/neal/SegmentVesselsUsingNeuralNetworks",
     "INPUT_DATA_ROOT": "/home/nealsiekierski/caffe/data/SegmentVesselsUsingNeuralNetworks",
-    "PATCH_RADIUS": 32,
+    "PATCH_RADIUS": 31,
     "SMOOTHING_RADIUS": 2,
     "POSITIVE_PATCHES_PER_INPUT_FILE": 20000,
     "POSITIVES_NEAR_VESSEL_CENTERLINE": 0.8,
