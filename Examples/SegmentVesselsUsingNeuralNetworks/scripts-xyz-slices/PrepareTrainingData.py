@@ -43,13 +43,14 @@ def createExpertSegmentationMask(inputImageFile, treFile, outputExpertSegFile):
 
 
 # Preprocess ("prep") images
-def prep(inputImage, expertImage, outputImagePrefix):
+def prep(inputImage, expertImage, outputDir):
     """Preprocess inputImage and expertImage according to script_params.
-    Output (where '*' stands for outputImagePrefix):
+    Output (where '*' stands for outputDir + basename(inputImage) (without extension)):
     - *_prepped.mha: Preprocessed inputImage
     - *_prepped_expert.mha: Preprocessed expertImage
 
     """
+    outputImagePrefix = os.path.join(outputDir, os.path.splitext(os.path.basename(inputImage))[0])
     outputImagePrefix = str(outputImagePrefix)
 
     smoothing_radius = script_params['SMOOTHING_RADIUS']
@@ -94,8 +95,7 @@ def createPreppedImagesForFile(mhdFile, outputDir):
     # Process
     createExpertSegmentationMask(mhdFile, treFile, expertSegFile)
 
-    prep(mhdFile, expertSegFile,
-         os.path.join(outputDir, fileName))
+    prep(mhdFile, expertSegFile, outputDir)
 
 def createPreppedImages(name, inputDir, outputDir):
     """Process all image files in immediate subdirectories of inputDir to
