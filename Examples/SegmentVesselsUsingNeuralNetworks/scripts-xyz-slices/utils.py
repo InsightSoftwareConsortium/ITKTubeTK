@@ -23,8 +23,18 @@ class Logger(object):
         pass
 
 
-with open(os.path.join(os.path.dirname(__file__), 'params.json')) as f:
-    script_params = json.load(f)
+try:
+    with open(os.path.join(os.path.dirname(__file__), 'params.json')) as f:
+        script_params = json.load(f)
+except (IOError, ValueError):
+    script_params = {}
+
+def set_params_path(path):
+    with open(path) as f:
+        new_params = json.load(f)
+    # Let "from utils import script_params" work
+    script_params.clear()
+    script_params.update(new_params)
 
 def ensureDirectoryExists(path):
     """Create the directory named by path and any necessary parents if it
