@@ -43,7 +43,7 @@ def createExpertSegmentationMask(inputImageFile, treFile, outputExpertSegFile):
 
 
 # Preprocess ("prep") images
-def prep(inputImage, expertImage, outputDir):
+def prep(inputImage, outputDir, expertImage):
     """Preprocess inputImage and expertImage according to script_params.
     Output (where '*' stands for outputDir + basename(inputImage) (without extension)):
     - *_prepped.mha: Preprocessed inputImage
@@ -95,7 +95,7 @@ def createPreppedImagesForFile(mhdFile, outputDir):
     # Process
     createExpertSegmentationMask(mhdFile, treFile, expertSegFile)
 
-    prep(mhdFile, expertSegFile, outputDir)
+    prep(mhdFile, outputDir, expertSegFile)
 
 def createPreppedImages(name, inputDir, outputDir):
     """Process all image files in immediate subdirectories of inputDir to
