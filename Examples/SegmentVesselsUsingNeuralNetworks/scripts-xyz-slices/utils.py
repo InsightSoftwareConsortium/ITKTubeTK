@@ -23,7 +23,8 @@ class Logger(object):
         pass
 
 
-script_params = json.load(open('params.json'))
+with open(os.path.join(os.path.dirname(__file__), 'params.json')) as f:
+    script_params = json.load(f)
 
 def ensureDirectoryExists(path):
     """Create the directory named by path and any necessary parents if it
