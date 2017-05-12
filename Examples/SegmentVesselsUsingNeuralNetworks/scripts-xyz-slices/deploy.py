@@ -19,9 +19,10 @@ def duplicate(im):
 
 
 # Preprocess ("prep") images
-def prep(inputImage, outputDir, expertImage):
-    """Preprocess inputImage and expertImage according to script_params.
-    Output (where '*' stands for outputDir + basename(inputImage) (without extension)):
+def prep(inputImage, outputDir, expertImage=None):
+    """Preprocess inputImage and expertImage (if not None) according to
+    script_params.  Output (where '*' stands for outputDir +
+    basename(inputImage) (without extension)):
     - *_prepped.mha: Preprocessed inputImage
     - *_prepped_expert.mha: Preprocessed expertImage
 
@@ -44,11 +45,12 @@ def prep(inputImage, outputDir, expertImage):
                                      UseCompression=True)
     writer.Update()
 
-    reader.SetFileName(str(expertImage))
-    # Don't equalize the expert mask
-    writer.SetInput(smoothing_filter.GetOutput())
-    writer.SetFileName(outputImagePrefix + "_prepped_expert.mha")
-    writer.Update()
+    if expertImage is not None:
+        reader.SetFileName(str(expertImage))
+        # Don't equalize the expert mask
+        writer.SetInput(smoothing_filter.GetOutput())
+        writer.SetFileName(outputImagePrefix + "_prepped_expert.mha")
+        writer.Update()
 
 
 def segmentPreppedImage(model, input_file, output_file):
