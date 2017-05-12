@@ -18,6 +18,39 @@ def duplicate(im):
     return f.GetOutput()
 
 
+# Preprocess ("prep") images
+def prep(inputImage, outputDir, expertImage):
+    """Preprocess inputImage and expertImage according to script_params.
+    Output (where '*' stands for outputDir + basename(inputImage) (without extension)):
+    - *_prepped.mha: Preprocessed inputImage
+    - *_prepped_expert.mha: Preprocessed expertImage
+
+    """
+    outputImagePrefix = os.path.join(outputDir, os.path.splitext(os.path.basename(inputImage))[0])
+    outputImagePrefix = str(outputImagePrefix)
+
+    smoothing_radius = script_params['SMOOTHING_RADIUS']
+
+    reader = itk.ImageFileReader.New(FileName=str(inputImage))
+    smoothing_filter = itk.MedianImageFilter.New(reader.GetOutput(),
+                                                 Radius=smoothing_radius)
+    equalization_filter = itk.AdaptiveHistogramEqualizationImageFilter.New(
+        smoothing_filter.GetOutput(),
+        Radius=script_params['PATCH_RADIUS'],
+        Alpha=0, Beta=0,
+    )
+    writer = itk.ImageFileWriter.New(equalization_filter.GetOutput(),
+                                     FileName=outputImagePrefix + "_prepped.mha",
+                                     UseCompression=True)
+    writer.Update()
+
+    reader.SetFileName(str(expertImage))
+    # Don't equalize the expert mask
+    writer.SetInput(smoothing_filter.GetOutput())
+    writer.SetFileName(outputImagePrefix + "_prepped_expert.mha")
+    writer.Update()
+
+
 def segmentPreppedImage(model, input_file, output_file):
     """Segment (really, generate seed points from) a preprocessed image"""
 

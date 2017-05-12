@@ -28,6 +28,8 @@ sys.path.append(os.path.join(os.environ['TubeTK_BUILD_DIR'], 'ITK-build',
                              'Modules/ThirdParty/VNL/src/vxl/lib'))
 import itk
 
+import deploy
+
 # Define paths
 output_data_root = script_params['OUTPUT_DATA_ROOT']
 input_data_root = script_params['INPUT_DATA_ROOT']
@@ -40,39 +42,6 @@ def createExpertSegmentationMask(inputImageFile, treFile, outputExpertSegFile):
                      inputImageFile,
                      treFile,
                      outputExpertSegFile])
-
-
-# Preprocess ("prep") images
-def prep(inputImage, outputDir, expertImage):
-    """Preprocess inputImage and expertImage according to script_params.
-    Output (where '*' stands for outputDir + basename(inputImage) (without extension)):
-    - *_prepped.mha: Preprocessed inputImage
-    - *_prepped_expert.mha: Preprocessed expertImage
-
-    """
-    outputImagePrefix = os.path.join(outputDir, os.path.splitext(os.path.basename(inputImage))[0])
-    outputImagePrefix = str(outputImagePrefix)
-
-    smoothing_radius = script_params['SMOOTHING_RADIUS']
-
-    reader = itk.ImageFileReader.New(FileName=str(inputImage))
-    smoothing_filter = itk.MedianImageFilter.New(reader.GetOutput(),
-                                                 Radius=smoothing_radius)
-    equalization_filter = itk.AdaptiveHistogramEqualizationImageFilter.New(
-        smoothing_filter.GetOutput(),
-        Radius=script_params['PATCH_RADIUS'],
-        Alpha=0, Beta=0,
-    )
-    writer = itk.ImageFileWriter.New(equalization_filter.GetOutput(),
-                                     FileName=outputImagePrefix + "_prepped.mha",
-                                     UseCompression=True)
-    writer.Update()
-
-    reader.SetFileName(str(expertImage))
-    # Don't equalize the expert mask
-    writer.SetInput(smoothing_filter.GetOutput())
-    writer.SetFileName(outputImagePrefix + "_prepped_expert.mha")
-    writer.Update()
 
 
 def createPreppedImagesForFile(mhdFile, outputDir):
@@ -95,7 +64,7 @@ def createPreppedImagesForFile(mhdFile, outputDir):
     # Process
     createExpertSegmentationMask(mhdFile, treFile, expertSegFile)
 
-    prep(mhdFile, outputDir, expertSegFile)
+    deploy.prep(mhdFile, outputDir, expertSegFile)
 
 def createPreppedImages(name, inputDir, outputDir):
     """Process all image files in immediate subdirectories of inputDir to
