@@ -45,7 +45,9 @@ def prep(inputImage, outputDir, expertImage=None):
                                      UseCompression=True)
     writer.Update()
 
-    if expertImage is not None:
+    if expertImage is None:
+        return writer.GetFileName()
+    else:
         reader.SetFileName(str(expertImage))
         # Don't equalize the expert mask
         writer.SetInput(smoothing_filter.GetOutput())
