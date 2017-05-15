@@ -28,8 +28,6 @@ input_data_root = script_params['INPUT_DATA_ROOT']
 
 testDataDir = os.path.join(output_data_root, "testing")
 
-import keras.models as M
-
 
 def run():
 
@@ -40,19 +38,14 @@ def run():
 
     sys.stdout = utils.Logger(os.path.join(outputDir, 'net_test.log'))
 
-    # Model definition
-    modelDef = os.path.join(
-        output_data_root, "NetProto", "net_best.hdf5")
+    try:
+        # Model definition
+        model = utils.load_best_model()
+    except IOError:
+        print("Could not load model from expected path!")
+        raise
 
-    if os.path.isfile(modelDef):
-        print("Model definition " + modelDef + " found.")
-    else:
-        print('Error : model definition "' + modelDef + '" not found.\n' +
-              '  Train neural network before processing it.')
-        sys.exit(1)
-
-    # Create network
-    model = M.load_model(modelDef)
+    print("Model definition found.")
 
     # get list of test mha files
     testMhaFiles = glob.glob(os.path.join(testDataDir, "*_prepped.mha"))

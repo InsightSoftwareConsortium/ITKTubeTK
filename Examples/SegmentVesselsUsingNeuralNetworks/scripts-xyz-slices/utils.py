@@ -4,6 +4,7 @@ import os
 import sys
 import shutil
 
+import keras.models
 import sqlite3
 
 class Logger(object):
@@ -99,6 +100,11 @@ def prepareInputArray(im):
 
     """
     return list(scale_net_input_data(separateChannels(im)))
+
+def load_best_model():
+    return keras.models.load_model(os.path.join(
+        script_params['OUTPUT_DATA_ROOT'], "NetProto", "net_best.hdf5"
+    ))
 
 def predict_on_indices(model, input_image, indices, batch_size):
     """Run prediction on patches taken from input_image centered at the
