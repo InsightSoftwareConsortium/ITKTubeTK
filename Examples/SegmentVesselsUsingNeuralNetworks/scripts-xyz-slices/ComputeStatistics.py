@@ -59,10 +59,11 @@ def whole_image_roc():
         expert_im = itk.imread(str(os.path.join(test_data_dir, name + '_expert.mha')))
         network_im = itk.imread(str(os.path.join(test_output_dir, name + '_vess_prob.mha')))
         expert_arr, network_arr = map(itk.GetArrayViewFromImage, (expert_im, network_im))
+        all_bins = np.bincount((256 * expert_arr + network_arr).reshape(-1), minlength=512).astype(float)
         pairs = []
         for i in range(257):
-            thresh = network_arr >= i
-            bins = np.bincount((2 * expert_arr + thresh).reshape(-1), minlength=4).astype(float)
+            bins = np.array([all_bins[:i].sum(), all_bins[i:256].sum(),
+                             all_bins[256:i + 256].sum(), all_bins[i + 256:].sum()])
             pairs.append((bins[1]/bins[:2].sum(), bins[3]/bins[2:].sum()))
         pairs = np.stack(pairs, -1)
         plt.figure()
