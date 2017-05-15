@@ -39,14 +39,15 @@ def dispatch():
     if a.to is None:
         a.to = a.from_
 
-    with open(os.path.join(os.path.dirname(__file__), 'params.json')) as f:
+    script_dir = os.path.dirname(__file__)
+    with open(os.path.join(script_dir, 'params.json')) as f:
         # So that the output resembles the input
         script_params = json.load(f, object_pairs_hook=OrderedDict)
     odr = a.outputDir or script_params['OUTPUT_DATA_ROOT']
     os.mkdir(odr)
 
     source = os.path.join(odr, 'source')
-    shutil.copytree('.', source)
+    shutil.copytree(script_dir, source)
 
     sp = script_params.copy()
     sp['OUTPUT_DATA_ROOT'] = '..'
@@ -85,7 +86,7 @@ def dispatch():
         f.write(repr(sys.argv)+'\n')
 
         for i in range(stages_dict[a.from_], stages_dict[a.to] + 1):
-            check_call([os.path.join(source, commands[i])], cwd=source)
+            check_call([os.path.abspath(os.path.join(source, commands[i]))], cwd=source)
             f.write(repr([os.path.join('.', commands[i])])+'\n')
 
 if __name__=='__main__':
