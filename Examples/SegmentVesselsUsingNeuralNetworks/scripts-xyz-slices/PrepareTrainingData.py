@@ -18,17 +18,11 @@ import sys
 import skimage.io
 import numpy as np
 
+import deploy
 import utils
 from utils import script_params
 
-# Append ITK libs
-sys.path.append(os.path.join(os.environ['TubeTK_BUILD_DIR'], 'ITK-build',
-                             'Wrapping/Generators/Python'))
-sys.path.append(os.path.join(os.environ['TubeTK_BUILD_DIR'], 'ITK-build',
-                             'Modules/ThirdParty/VNL/src/vxl/lib'))
 import itk
-
-import deploy
 
 # Define paths
 output_data_root = script_params['OUTPUT_DATA_ROOT']
