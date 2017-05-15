@@ -16,12 +16,14 @@ stages = [
     'TODO starting value',
     'TrainNet',
     'TestNet',
+    'ComputeStatistics',
 ]
 stages_dict = {k: i for i, k in enumerate(stages)}
 commands = [
     None,
     'TrainNet.py',
     'TestNet.py',
+    'ComputeStatistics.py',
 ]
 
 def parse_args():
@@ -71,6 +73,11 @@ def dispatch():
             return
 
         symlink_entries_through(a.base, odr, 'NetProto')
+
+        if a.from_ == 'TestNet':
+            return
+
+        symlink_entries_through(a.base, odr, 'testing/cnn')
 
     setup_links()
 
