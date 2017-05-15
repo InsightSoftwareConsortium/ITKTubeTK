@@ -56,7 +56,7 @@ def run():
     else:
         print('Error : model definition "' + modelDef + '" not found.\n' +
               '  Train neural network before processing it.')
-        sys.exit(0)
+        sys.exit(1)
 
     # Create network
     model = M.load_model(modelDef)
