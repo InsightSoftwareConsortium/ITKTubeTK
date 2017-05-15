@@ -39,7 +39,7 @@ def dispatch():
     if a.to is None:
         a.to = a.from_
 
-    with open('params.json') as f:
+    with open(os.path.join(os.path.dirname(__file__), 'params.json')) as f:
         # So that the output resembles the input
         script_params = json.load(f, object_pairs_hook=OrderedDict)
     odr = a.outputDir or script_params['OUTPUT_DATA_ROOT']
