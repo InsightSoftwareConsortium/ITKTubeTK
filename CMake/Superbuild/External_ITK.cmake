@@ -94,6 +94,7 @@ if( NOT DEFINED ${proj}_DIR AND NOT ${USE_SYSTEM_${proj}} )
       -DITK_WRAP_PYTHON:BOOL=${TubeTK_USE_PYTHON}
       -DModule_BridgeNumPy:BOOL=${TubeTK_USE_NUMPY_STACK}
       -DModule_MinimalPathExtraction:BOOL=ON
+      -DModule_SmoothingRecursiveYvvGaussianFilter:BOOL=ON # I want ITK to have this module
       -DKWSYS_USE_MD5:BOOL=ON
       -DModule_ITKReview:BOOL=ON
       ${TubeTK_ITKHDF5_VALGRIND_ARGS}
