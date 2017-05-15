@@ -99,3 +99,21 @@ def prepareInputArray(im):
 
     """
     return list(scale_net_input_data(separateChannels(im)))
+
+def predict_on_indices(model, input_image, indices, batch_size):
+    """Run prediction on patches taken from input_image centered at the
+    various indices.
+
+    """
+    predictions = []
+    for i in range(0, len(indices), batch_size):
+        ind = indices[i:i + batch_size]
+        patches = prepareInputArray(np.stack(
+            extractPatch(input_image, i) for i in ind
+        ))
+        pred = model.predict_on_batch(patches)[:, 1]
+        predictions.append(pred)
+        # Print progress
+        print '\t %.2f%%' % (100.0 * (i + len(pred)) / len(indices)),
+        print "%.4f, %.4f, %.4f" % (pred.min(), pred.max(), pred.mean())
+    return np.concatenate(predictions)

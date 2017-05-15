@@ -105,24 +105,8 @@ def segmentPreppedImage(model, input_file, output_file):
     output_image = itk.GetArrayViewFromImage(output_image_itk)
     output_image.fill(0)
 
-    for i in range(0, num_patches, test_batch_size):
-
-        # get current batch of patches
-        cur_pind = patch_indices[i:i + test_batch_size]
-        cur_patches = utils.prepareInputArray(np.stack(
-            utils.extractPatch(input_image, indices) for indices in cur_pind
-        ))
-
-        # perform classification using cnn
-        prob_vessel = model.predict_on_batch(cur_patches)[:, 1]
-
-        output_image[tuple(cur_pind.T)] = (prob_vessel * 255).round()
-
-        # Print progress
-        print '\t %.2f%%' % (100.0 * (i + len(prob_vessel)) / num_patches),
-        print "%.4f, %.4f, %.4f" % (prob_vessel.min(),
-                                    prob_vessel.max(),
-                                    prob_vessel.mean())
+    prob_vessel = utils.predict_on_indices(model, input_image, patch_indices, test_batch_size)
+    output_image[tuple(patch_indices.T)] = (prob_vessel * 255).round()
 
     end_time = time.time()
     print '\tTook %s seconds' % (end_time - start_time)
