@@ -51,6 +51,23 @@ def prep(inputImage, outputDir, expertImage=None):
         utils.symlink_through(expertImage, outputImagePrefix + '_prepped_expert.mha')
 
 
+def chunked_argmax(arr, window):
+    """Compute a tuple (length arr.ndim) of arrays representing the
+    indices of the max values in window-shaped chunks of arr, which
+    must evenly divide into windows.
+
+    """
+    split_dim = arr.reshape(tuple(x for s, w in zip(arr.shape, window) for x in (s / w, w)))
+    transpose_dim = split_dim.transpose(tuple(range(0, split_dim.ndim, 2)) +
+                                        tuple(range(1, split_dim.ndim, 2)))
+    flat_dim = transpose_dim.reshape(transpose_dim.shape[:arr.ndim] + (-1,))
+    argmaxes = np.argmax(flat_dim, axis=-1)
+    flat_argmaxes = argmaxes.reshape(-1)
+    in_chunk_indices = np.unravel_index(flat_argmaxes, window)
+    chunk_corner_indices = (np.indices(argmaxes.shape).reshape((arr.ndim, -1)).T * window).T
+    return tuple(chunk_corner_indices + in_chunk_indices)
+
+
 def segmentPreppedImage(model, input_file, output_file):
     """Segment (really, generate seed points from) a preprocessed image"""
 
