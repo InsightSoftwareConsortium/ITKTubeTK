@@ -48,11 +48,7 @@ def prep(inputImage, outputDir, expertImage=None):
     if expertImage is None:
         return writer.GetFileName()
     else:
-        reader.SetFileName(str(expertImage))
-        # Don't equalize the expert mask
-        writer.SetInput(smoothing_filter.GetOutput())
-        writer.SetFileName(outputImagePrefix + "_prepped_expert.mha")
-        writer.Update()
+        utils.symlink_through(expertImage, outputImagePrefix + '_prepped_expert.mha')
 
 
 def segmentPreppedImage(model, input_file, output_file):
