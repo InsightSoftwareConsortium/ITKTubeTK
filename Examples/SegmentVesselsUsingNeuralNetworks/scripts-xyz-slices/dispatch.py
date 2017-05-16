@@ -13,14 +13,14 @@ import sys
 from utils import symlink_entries_through
 
 stages = [
-    'TODO starting value',
+    'PrepareTrainingData',
     'TrainNet',
     'TestNet',
     'ComputeStatistics',
 ]
 stages_dict = {k: i for i, k in enumerate(stages)}
 commands = [
-    None,
+    'PrepareTrainingData.py',
     'TrainNet.py',
     'TestNet.py',
     'ComputeStatistics.py',
@@ -55,7 +55,7 @@ def dispatch():
         json.dump(sp, f, indent=4, separators=(',', ': '))
 
     def setup_links():
-        if a.from_ == 'TODO starting value':
+        if a.from_ == 'PrepareTrainingData':
             if a.base is not None:
                 raise ValueError("--base must not be passed if starting from beginning")
             return
