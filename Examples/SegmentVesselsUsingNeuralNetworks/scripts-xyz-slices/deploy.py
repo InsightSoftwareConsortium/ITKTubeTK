@@ -82,9 +82,12 @@ def segmentPreppedImage(model, input_file, output_file):
     input_image = itk.GetArrayViewFromImage(input_image_itk)
 
     # get foreground mask
-    input_revcum = np.cumsum(np.bincount(input_image.reshape(-1))[::-1])[::-1]
-    th = np.count_nonzero(input_revcum >= input_revcum[0] * script_params['DEPLOY_TOP_FRAC']) - 2
-    fgnd_mask = input_image > th
+    tw = script_params['DEPLOY_TOP_WINDOW']
+    input_image_padded = np.pad(input_image, tuple(
+        (0, -s % tw) for s in input_image.shape
+    ), 'constant')
+    fgnd_mask = np.zeros_like(input_image, dtype=bool)
+    fgnd_mask[chunked_argmax(input_image_padded, (tw,) * input_image.ndim)] = True
 
     # get test_batch_size and patch_size used for cnn model
     test_batch_size = script_params['DEPLOY_BATCH_SIZE']
