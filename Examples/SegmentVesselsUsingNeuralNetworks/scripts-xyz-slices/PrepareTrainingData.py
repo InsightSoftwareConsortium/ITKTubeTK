@@ -388,7 +388,7 @@ def createDB(name, dataDir, dbDir):
     db.execute('''create table "temp"."PatchesUnshuffled" (
         "filename" text,
         "patch_index" integer,
-        -- Interpreted as a square C-major-order uint8 array with each
+        -- Interpreted as a square C-major-order float16 array with each
         -- dimension (2 * PATCH_RADIUS + 1) and extra final dimension of size 3
         "image_data" blob
     )''')
@@ -396,7 +396,7 @@ def createDB(name, dataDir, dbDir):
     def generate_data():
         patches = createPatchesGenerator(name, dataDir)
         for i, (filename, patch_index, image_data) in enumerate(patches):
-            yield filename, patch_index, buffer(image_data.copy())
+            yield filename, patch_index, buffer(image_data.astype(np.float16))
             if i % 1000 == 0:
                 print("{} patches processed".format(i))
 

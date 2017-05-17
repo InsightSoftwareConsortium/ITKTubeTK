@@ -168,7 +168,7 @@ def queryResultToModelArguments(result):
 
     """
     image_data = np.stack(
-        np.frombuffer(im, dtype=np.uint8).reshape(patch_size, patch_size, 3)
+        np.frombuffer(im, dtype=np.float16).reshape(patch_size, patch_size, 3)
         for im, _ in result
     )
     labels = np.array([l for _, l in result])

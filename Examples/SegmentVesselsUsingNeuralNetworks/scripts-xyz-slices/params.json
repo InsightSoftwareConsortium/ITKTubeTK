@@ -3,6 +3,7 @@
     "INPUT_DATA_ROOT": "/home/nealsiekierski/caffe/data/SegmentVesselsUsingNeuralNetworks",
     "PATCH_RADIUS": 31,
     "SMOOTHING_RADIUS": 2,
+    "BLURRING_RADIUS": 31,
     "POSITIVE_PATCHES_PER_INPUT_FILE": 20000,
     "POSITIVES_NEAR_VESSEL_CENTERLINE": 0.8,
     "OTHER_POSITIVES": 0.2,

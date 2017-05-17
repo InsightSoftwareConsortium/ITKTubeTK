@@ -71,11 +71,8 @@ def open_sqlite3_db(dir):
     return sqlite3.connect(os.path.join(dir, 'data.sqlite3'))
 
 def scale_net_input_data(data):
-    """Rescale data, presumably obtained from an 8-bit grayscale image, to
-    the range [0, 1] for feeding into the network.
-
-    """
-    return data / 255.
+    """Convert to float64"""
+    return data.astype(float)
 
 def extractPatch(im, indices):
     """Return a patch extracted from im at indices.

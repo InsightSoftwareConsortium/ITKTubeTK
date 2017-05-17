@@ -11,13 +11,6 @@ import utils
 from utils import script_params
 
 
-def duplicate(im):
-    """Duplicate an itk image"""
-    f = itk.ImageDuplicator.New(im)
-    f.Update()
-    return f.GetOutput()
-
-
 # Preprocess ("prep") images
 def prep(inputImage, outputDir, expertImage=None):
     """Preprocess inputImage and expertImage (if not None) according to
@@ -35,12 +28,20 @@ def prep(inputImage, outputDir, expertImage=None):
     reader = itk.ImageFileReader.New(FileName=str(inputImage))
     smoothing_filter = itk.MedianImageFilter.New(reader.GetOutput(),
                                                  Radius=smoothing_radius)
-    equalization_filter = itk.AdaptiveHistogramEqualizationImageFilter.New(
-        smoothing_filter.GetOutput(),
-        Radius=script_params['PATCH_RADIUS'],
-        Alpha=0, Beta=0,
-    )
-    writer = itk.ImageFileWriter.New(equalization_filter.GetOutput(),
+
+    Gaussian = itk.SmoothingRecursiveYvvGaussianImageFilter
+    # Convert pixels to world distances
+    blurring_radii = itk.spacing(reader.GetOutput()) * script_params['BLURRING_RADIUS']
+
+    CIF = itk.CastImageFilter[type(smoothing_filter.GetOutput()),
+                              itk.Image[itk.F, reader.GetOutput().GetImageDimension()]]
+    smoothed_single = CIF.New(smoothing_filter.GetOutput()).GetOutput()
+    local_mean_filter = Gaussian.New(smoothed_single, SigmaArray=blurring_radii)
+    lm_subtracted = itk.SubtractImageFilter.New(smoothed_single, local_mean_filter.GetOutput()).GetOutput()
+    local_stddev_filter = itk.SqrtImageFilter.New(Gaussian.New(itk.SquareImageFilter.New(lm_subtracted), SigmaArray=blurring_radii))
+    ls_divided = itk.DivideImageFilter.New(lm_subtracted, local_stddev_filter.GetOutput()).GetOutput()
+
+    writer = itk.ImageFileWriter.New(ls_divided,
                                      FileName=outputImagePrefix + "_prepped.mha",
                                      UseCompression=True)
     writer.Update()
@@ -85,7 +86,7 @@ def segmentPreppedImage(model, input_file, output_file):
     tw = script_params['DEPLOY_TOP_WINDOW']
     input_image_padded = np.pad(input_image, tuple(
         (0, -s % tw) for s in input_image.shape
-    ), 'constant')
+    ), 'constant', constant_values=-np.inf)
     fgnd_mask = np.zeros_like(input_image, dtype=bool)
     fgnd_mask[chunked_argmax(input_image_padded, (tw,) * input_image.ndim)] = True
 
@@ -117,9 +118,7 @@ def segmentPreppedImage(model, input_file, output_file):
 
     start_time = time.time()
 
-    output_image_itk = duplicate(input_image_itk)
-    output_image = itk.GetArrayViewFromImage(output_image_itk)
-    output_image.fill(0)
+    output_image = np.zeros_like(input_image, dtype=np.uint8)
 
     prob_vessel = utils.predict_on_indices(model, input_image, patch_indices, test_batch_size)
     output_image[tuple(patch_indices.T)] = (prob_vessel * 255).round()
@@ -128,6 +127,8 @@ def segmentPreppedImage(model, input_file, output_file):
     print '\tTook %s seconds' % (end_time - start_time)
 
     # Save output
+    output_image_itk = itk.GetImageViewFromArray(output_image)
+    output_image_itk.CopyInformation(input_image_itk)
     itk.imwrite(output_image_itk, str(output_file), compression=True)
 
 
