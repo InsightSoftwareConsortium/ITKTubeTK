@@ -26,20 +26,20 @@ def prep(inputImage, outputDir, expertImage=None):
     smoothing_radius = script_params['SMOOTHING_RADIUS']
 
     reader = itk.ImageFileReader.New(FileName=str(inputImage))
-    smoothing_filter = itk.MedianImageFilter.New(reader.GetOutput(),
+    smoothing_filter = itk.MedianImageFilter.New(reader,
                                                  Radius=smoothing_radius)
 
     Gaussian = itk.SmoothingRecursiveYvvGaussianImageFilter
     # Convert pixels to world distances
-    blurring_radii = itk.spacing(reader.GetOutput()) * script_params['BLURRING_RADIUS']
+    blurring_radii = itk.spacing(reader) * script_params['BLURRING_RADIUS']
 
     CIF = itk.CastImageFilter[type(smoothing_filter.GetOutput()),
                               itk.Image[itk.F, reader.GetOutput().GetImageDimension()]]
-    smoothed_single = CIF.New(smoothing_filter.GetOutput()).GetOutput()
+    smoothed_single = CIF.New(smoothing_filter)
     local_mean_filter = Gaussian.New(smoothed_single, SigmaArray=blurring_radii)
-    lm_subtracted = itk.SubtractImageFilter.New(smoothed_single, local_mean_filter.GetOutput()).GetOutput()
+    lm_subtracted = itk.SubtractImageFilter.New(smoothed_single, local_mean_filter)
     local_stddev_filter = itk.SqrtImageFilter.New(Gaussian.New(itk.SquareImageFilter.New(lm_subtracted), SigmaArray=blurring_radii))
-    ls_divided = itk.DivideImageFilter.New(lm_subtracted, local_stddev_filter.GetOutput()).GetOutput()
+    ls_divided = itk.DivideImageFilter.New(lm_subtracted, local_stddev_filter)
 
     writer = itk.ImageFileWriter.New(ls_divided,
                                      FileName=outputImagePrefix + "_prepped.mha",
