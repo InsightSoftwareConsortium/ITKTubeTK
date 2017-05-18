@@ -38,7 +38,9 @@ def prep(inputImage, outputDir, expertImage=None):
     smoothed_single = CIF.New(smoothing_filter)
     local_mean_filter = Gaussian.New(smoothed_single, SigmaArray=blurring_radii)
     lm_subtracted = itk.SubtractImageFilter.New(smoothed_single, local_mean_filter)
-    local_stddev_filter = itk.SqrtImageFilter.New(Gaussian.New(itk.SquareImageFilter.New(lm_subtracted), SigmaArray=blurring_radii))
+    squared = itk.SquareImageFilter.New(lm_subtracted)
+    local_variance_filter = Gaussian.New(squared, SigmaArray=blurring_radii)
+    local_stddev_filter = itk.SqrtImageFilter.New(local_variance_filter)
     ls_divided = itk.DivideImageFilter.New(lm_subtracted, local_stddev_filter)
 
     writer = itk.ImageFileWriter.New(ls_divided,
