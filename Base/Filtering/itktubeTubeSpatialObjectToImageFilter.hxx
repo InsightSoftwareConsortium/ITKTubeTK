@@ -291,10 +291,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
                   {
                   index2[0]=( long )( point[0]+x+0.5 );
                   index2[1]=( long )( point[1]+y+0.5 );
-                  if( ( unsigned long )index2[0] <
-                    OutputImage->GetLargestPossibleRegion().GetSize()[0]
-                    && ( unsigned long )index2[1] <
-                    OutputImage->GetLargestPossibleRegion().GetSize()[1] )
+                  if( OutputImage->GetLargestPossibleRegion().IsInside( index2 ) )
                     {
                     typedef typename OutputImageType::PixelType PixelType;
                     if( m_Cumulative )
@@ -333,18 +330,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
                     index2[2]=( long )( point[2]+z+0.5 );
 
                     // Test that point is within the output image boundries
-                    if( index2[0] >= 0
-                         && index2[1] >= 0
-                         && index2[2] >= 0
-                         && ( unsigned long )index2[0] <
-                             OutputImage->GetLargestPossibleRegion()
-                                          .GetSize()[0]
-                         && ( unsigned long )index2[1] <
-                             OutputImage->GetLargestPossibleRegion()
-                                          .GetSize()[1]
-                         && ( unsigned long )index2[2] <
-                             OutputImage->GetLargestPossibleRegion()
-                                          .GetSize()[2] )
+                    if( OutputImage->GetLargestPossibleRegion().IsInside( index2 ) )
                       {
                       OutputImage->SetPixel( index2, 1 );
                       if( m_BuildRadiusImage )
