@@ -198,27 +198,25 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
 
   while( TubeIterator != tubeList->end() )
     {
+    TubeType * tube = ( TubeType * )TubeIterator->GetPointer();
+
     // Force the computation of the tangents
     if( m_BuildTangentImage )
       {
-      ( ( TubeType * )( ( *TubeIterator ).GetPointer() ) )->
-        RemoveDuplicatePoints();
-      ( ( TubeType * )( ( *TubeIterator ).GetPointer() ) )->
-        ComputeTangentAndNormals();
+      tube->RemoveDuplicatePoints();
+      tube->ComputeTangentAndNormals();
       }
 
-    for( unsigned int k=0; k <
-      ( ( TubeType * )( TubeIterator->GetPointer() ) )->GetNumberOfPoints();
-      k++ )
+    for( unsigned int k=0; k < tube->GetNumberOfPoints(); k++ )
       {
       bool IsInside = true;
       typedef typename TubeType::TubePointType TubePointType;
       const TubePointType* tubePoint = static_cast<const TubePointType*>(
-        ( ( TubeType * ) ( TubeIterator->GetPointer() ) )->GetPoint( k ) );
+        tube->GetPoint( k ) );
       for( unsigned int i=0; i<ObjectDimension; i++ )
         {
         point[i] = ( ( tubePoint->GetPosition()[i] *
-          ( ( TubeType * )( TubeIterator->GetPointer() ) )->
+          tube->
             GetIndexToObjectTransform()->GetScaleComponent()[i] )
             - this->m_Origin[i] ) / this->m_Spacing[i];
 
@@ -260,8 +258,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
         if( m_UseRadius )
           {
           double phys_pt_radius = tubePoint->GetRadius() *
-                                      ( ( TubeType * )( ( TubeIterator )
-                                                    ->GetPointer() ) )
+                                      tube
                                       ->GetIndexToObjectTransform()
                                       ->GetScaleComponent()[0];
           if( m_BuildRadiusImage )
