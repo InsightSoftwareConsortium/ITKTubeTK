@@ -158,7 +158,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
   OutputImage->Allocate();
   OutputImage->FillBuffer( 0 );
 
-  itk::Point<double, 3> point;
+  itk::ContinuousIndex<double, ObjectDimension> point;
 
   m_RadiusImage = this->GetRadiusImage();
   //Build radius image for processing
@@ -200,6 +200,9 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
     {
     TubeType * tube = ( TubeType * )TubeIterator->GetPointer();
 
+    typename TubeType::TransformType * tubeIndexPhysTransform =
+      tube->GetIndexToWorldTransform();
+
     // Force the computation of the tangents
     if( m_BuildTangentImage )
       {
@@ -209,25 +212,17 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
 
     for( unsigned int k=0; k < tube->GetNumberOfPoints(); k++ )
       {
-      bool IsInside = true;
       typedef typename TubeType::TubePointType TubePointType;
       const TubePointType* tubePoint = static_cast<const TubePointType*>(
         tube->GetPoint( k ) );
+      OutputImage->TransformPhysicalPointToContinuousIndex(
+	tubeIndexPhysTransform->TransformPoint( tubePoint->GetPosition() ),
+	point );
       for( unsigned int i=0; i<ObjectDimension; i++ )
         {
-        point[i] = ( ( tubePoint->GetPosition()[i] *
-          tube->
-            GetIndexToObjectTransform()->GetScaleComponent()[i] )
-            - this->m_Origin[i] ) / this->m_Spacing[i];
-
         index[i] = ( long int )( point[i]+0.5 );
-
-        if( ( index[i]<=0 ) || ( static_cast<unsigned int>( index[i] ) >=
-          OutputImage->GetLargestPossibleRegion().GetSize()[i] ) )
-          {
-          IsInside = false;
-          }
         }
+      bool IsInside = OutputImage->GetLargestPossibleRegion().IsInside(index);
 
       if( IsInside )
         {
