@@ -42,13 +42,6 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
   m_BuildRadiusImage = false;
   m_BuildTangentImage = false;
   m_FallOff = 0.0;
-  this->m_Size.Fill( 0 );
-  unsigned int i;
-  for( i=0; i<ObjectDimension; i++ )
-    {
-    this->m_Spacing[i] = 1;
-    this->m_Origin[i] = 0;
-    }
 
   // This is a little bit tricky since the 2nd an 3rd outputs are
   //   not always computed
