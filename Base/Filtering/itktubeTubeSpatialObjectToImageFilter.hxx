@@ -243,6 +243,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
         // Radius Image and Density image with radius
         if( m_UseRadius )
           {
+	  // TODO it looks like we're assuming isometry here
           double phys_pt_radius = tubePoint->GetRadius() *
                                       tube
                                       ->GetIndexToObjectTransform()
