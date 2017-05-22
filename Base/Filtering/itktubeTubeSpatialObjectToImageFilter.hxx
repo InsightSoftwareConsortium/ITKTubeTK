@@ -146,6 +146,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
   OutputImage->SetRegions( region );
   OutputImage->SetSpacing( this->m_Spacing );
   OutputImage->SetOrigin( this->m_Origin );
+  OutputImage->SetDirection( this->m_Direction );
   OutputImage->Allocate();
   OutputImage->FillBuffer( 0 );
 
@@ -158,6 +159,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
     m_RadiusImage->SetRegions( region );
     m_RadiusImage->SetSpacing( this->m_Spacing );
     m_RadiusImage->SetOrigin( this->m_Origin );
+    m_RadiusImage->SetDirection( this->m_Direction );
     m_RadiusImage->Allocate();
     m_RadiusImage->FillBuffer( 0 );
     }
@@ -169,6 +171,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
     m_TangentImage->SetRegions( region );
     m_TangentImage->SetSpacing( this->m_Spacing );
     m_TangentImage->SetOrigin( this->m_Origin );
+    m_TangentImage->SetDirection( this->m_Direction );
     m_TangentImage->Allocate();
     TangentPixelType v;
     v.Fill( 0 );
