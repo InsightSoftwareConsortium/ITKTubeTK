@@ -143,9 +143,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
   index.Fill( 0 );
   region.SetIndex( index );
 
-  OutputImage->SetLargestPossibleRegion( region );  //
-  OutputImage->SetBufferedRegion( region );         // set the region
-  OutputImage->SetRequestedRegion( region );        //
+  OutputImage->SetRegions( region );
   OutputImage->SetSpacing( this->m_Spacing );
   OutputImage->SetOrigin( this->m_Origin );
   OutputImage->Allocate();
