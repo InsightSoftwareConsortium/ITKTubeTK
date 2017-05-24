@@ -194,6 +194,8 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
     {
     TubeType * tube = ( TubeType * )TubeIterator->GetPointer();
 
+    tube->ComputeObjectToWorldTransform();
+
     typename TubeType::TransformType * tubeIndexPhysTransform =
       tube->GetIndexToWorldTransform();
 
