@@ -60,7 +60,7 @@ def createPreppedImagesForFile(mhdFile, outputDir):
 
     deploy.prep(mhdFile, outputDir, expertSegFile)
 
-def createPreppedImages(name, inputDir, outputDir):
+def createPreppedImagesForType(name, inputDir, outputDir):
     """Process all image files in immediate subdirectories of inputDir to
     correspondingly prefixed images in outputDir.  outputDir is
     created if it doesn't already exist.  The subdirectory structure
@@ -86,8 +86,7 @@ def createPreppedImages(name, inputDir, outputDir):
         createPreppedImagesForFile(mhdFile, outputDir)
 
 
-# create z-mip slabs
-def createControlTumorPreppedImages():
+def createPreppedImages():
     """Create preprocessed images from the directories Controls and
     LargeTumor in input_data_root via createZMIPSlabs and put the
     results in controls and tumors subdirectories, respectively, of
@@ -104,10 +103,10 @@ def createControlTumorPreppedImages():
     tumorOutputDir = os.path.join(output_data_root, "tumors")
 
     # Process control files
-    createPreppedImages('control', controlInputDir, controlOutputDir)
+    createPreppedImagesForType('control', controlInputDir, controlOutputDir)
 
     # Process tumor files
-    createPreppedImages('tumor', tumorInputDir, tumorOutputDir)
+    createPreppedImagesForType('tumor', tumorInputDir, tumorOutputDir)
 
 # Compute Training mask
 def computeTrainingMask(expertSegMask, outputTrainingMask):
@@ -155,7 +154,7 @@ def computeTrainingMask(expertSegMask, outputTrainingMask):
     os.unlink(dilated)
 
 
-def splitData(name, inputDir, outputDir, trainOutputDir, testOutputDir):
+def splitDataForType(name, inputDir, outputDir, trainOutputDir, testOutputDir):
     """Split the various outputs created from the image files in inputDir,
     which reside in outputDir, between trainOutputDir and
     testOutputDir.
@@ -191,7 +190,7 @@ def splitData(name, inputDir, outputDir, trainOutputDir, testOutputDir):
             utils.symlink_entries_through(outputDir, curOutputDir, fileName)
 
 # assign control and tumor volumes equally to training and testing
-def splitControlTumorData():
+def splitData():
     """Split the data created from the images in the directories Controls
     and LargeTumor in input_data_root via splitData and put the
     results in training and testing subdirectories of
@@ -215,10 +214,10 @@ def splitControlTumorData():
     utils.ensureDirectoryExists(testOutputDir)
 
     # Process control files
-    splitData('control', controlInputDir, controlOutputDir, trainOutputDir, testOutputDir)
+    splitDataForType('control', controlInputDir, controlOutputDir, trainOutputDir, testOutputDir)
 
     # Process tumor files
-    splitData('tumor', tumorInputDir, tumorOutputDir, trainOutputDir, testOutputDir)
+    splitDataForType('tumor', tumorInputDir, tumorOutputDir, trainOutputDir, testOutputDir)
 
 
 def dict_to_list(d):
@@ -444,11 +443,11 @@ def printSectionHeader(title):
 def run():
 
     # create z-mip slabs
-    createControlTumorPreppedImages()
+    createPreppedImages()
 
     # assign control and tumor volumes equally to training and testing
-    # Note: this must be called after createControlTumorPreppedImages()
-    splitControlTumorData()
+    # Note: this must be called after createPreppedImages()
+    splitData()
 
     # create database
     createTrainTestDB()
