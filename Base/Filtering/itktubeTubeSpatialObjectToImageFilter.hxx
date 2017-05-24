@@ -150,7 +150,8 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
   OutputImage->Allocate();
   OutputImage->FillBuffer( 0 );
 
-  itk::ContinuousIndex<double, ObjectDimension> point;
+  typedef itk::ContinuousIndex<double, ObjectDimension> ContinuousIndexType;
+  ContinuousIndexType point;
 
   m_RadiusImage = this->GetRadiusImage();
   //Build radius image for processing
@@ -212,8 +213,8 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
       const TubePointType* tubePoint = static_cast<const TubePointType*>(
         tube->GetPoint( k ) );
       OutputImage->TransformPhysicalPointToContinuousIndex(
-	tubeIndexPhysTransform->TransformPoint( tubePoint->GetPosition() ),
-	point );
+        tubeIndexPhysTransform->TransformPoint( tubePoint->GetPosition() ),
+        point );
       for( unsigned int i=0; i<ObjectDimension; i++ )
         {
         index[i] = ( long int )( point[i]+0.5 );
@@ -248,7 +249,22 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
         // Radius Image and Density image with radius
         if( m_UseRadius )
           {
-	  // TODO it looks like we're assuming isometry here
+          typename TubePointType::PointType radius, zero;
+          radius.Fill( tubePoint->GetRadius() );
+          zero.Fill( 0 );
+          // Convert to an index vector, working around the lack of an
+          // appropriate transformation function
+          ContinuousIndexType cix_radius, cix_zero;
+          OutputImage->TransformPhysicalPointToContinuousIndex(
+            tubeIndexPhysTransform->TransformPoint( radius ),
+            cix_radius );
+          OutputImage->TransformPhysicalPointToContinuousIndex(
+            tubeIndexPhysTransform->TransformPoint( zero ),
+            cix_zero );
+          itk::Vector<double, ObjectDimension> v_radius = cix_radius - cix_zero;
+
+          // This is inherently broken for anisotropic images since
+          // the radius image is scalar-valued
           double phys_pt_radius = tubePoint->GetRadius() *
                                       tube
                                       ->GetIndexToObjectTransform()
@@ -260,25 +276,31 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
                                       phys_pt_radius ) );
             }
 
-          long radius = ( long int )( phys_pt_radius / this->m_Spacing[0] );
-
-
-          double step = radius/2;
-          while( step > 1 )
+          double step[ObjectDimension];
+          for( int i = 0; i < ObjectDimension; i++ )
             {
-            step /= 2;
+            double s = v_radius[i] / 2;
+
+            while( s > 1 )
+              {
+              s /= 2;
+              }
+            if( s < 0.5 )
+              {
+              s = 0.5;
+              }
+
+            step[i] = s;
             }
-          if( step < 0.5 )
-            {
-            step = 0.5;
-            }
+
           if( ObjectDimension == 2 )
             {
-            for( double x=-radius; x<=radius+step/2; x+=step )
+            for( double x=-v_radius[0]; x<=v_radius[0]+step[0]/2; x+=step[0] )
               {
-              for( double y=-radius; y<=radius+step/2; y+=step )
+              for( double y=-v_radius[1]; y<=v_radius[1]+step[1]/2; y+=step[1] )
                 {
-                if( ( ( x*x ) +( y*y ) ) <= ( radius*radius ) )
+                double xr = x / v_radius[0], yr = y / v_radius[1];
+                if( ( ( xr*xr ) +( yr*yr ) ) <= 1 )
                   // test  inside the sphere
                   {
                   index2[0]=( long )( point[0]+x+0.5 );
@@ -308,13 +330,14 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
             }
           else if( ObjectDimension == 3 )
             {
-            for( double x=-radius; x<=radius+step/2; x+=step )
+            for( double x=-v_radius[0]; x<=v_radius[0]+step[0]/2; x+=step[0] )
               {
-              for( double y=-radius; y<=radius+step/2; y+=step )
+              for( double y=-v_radius[1]; y<=v_radius[1]+step[1]/2; y+=step[1] )
                 {
-                for( double z=-radius; z<=radius+step/2; z+=step )
+                for( double z=-v_radius[2]; z<=v_radius[2]+step[2]/2; z+=step[2] )
                   {
-                  if( ( ( x*x ) +( y*y ) +( z*z ) ) <= ( radius*radius ) )
+                  double xr = x / v_radius[0], yr = y / v_radius[1], zr = z / v_radius[2];
+                  if( ( ( xr*xr ) +( yr*yr ) +( zr*zr ) ) <= 1 )
                     // test  inside the sphere
                     {
                     index2[0]=( long )( point[0]+x+0.5 );
