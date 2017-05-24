@@ -74,7 +74,7 @@ def createPreppedImagesForType(name, inputDir, outputDir):
     utils.ensureDirectoryExists(outputDir)
 
     # Process files
-    printSectionHeader('Preprocessing images for %ss' % name)
+    printSectionHeader('Preprocessing images for %s' % name)
 
     mhdFiles = glob.glob(os.path.join(inputDir, script_params['TYPE_SUBDIR_STRUCTURE'], "*.mhd"))
 
@@ -87,26 +87,19 @@ def createPreppedImagesForType(name, inputDir, outputDir):
 
 
 def createPreppedImages():
-    """Create preprocessed images from the directories Controls and
-    LargeTumor in input_data_root via createPreppedImagesForType and
-    put the results in controls and tumors subdirectories,
-    respectively, of output_data_root.
+    """Create preprocessed images from the directories in input_data_root
+    that are the keys of TYPES via createPreppedImagesForType and put
+    the results in subdirectories of output_data_root named as the
+    corresponding values.
 
     """
-
-    # Input data directories where mha/mhd and associated tre files are located
-    controlInputDir = os.path.join(input_data_root, "Controls")
-    tumorInputDir = os.path.join(input_data_root, "LargeTumor")
-
-    # Output data directories
-    controlOutputDir = os.path.join(output_data_root, "controls")
-    tumorOutputDir = os.path.join(output_data_root, "tumors")
-
-    # Process control files
-    createPreppedImagesForType('control', controlInputDir, controlOutputDir)
-
-    # Process tumor files
-    createPreppedImagesForType('tumor', tumorInputDir, tumorOutputDir)
+    for input_dir, output_dir in script_params['TYPES'].items():
+        createPreppedImagesForType(
+            output_dir,
+            # Input data directory where mha/mhd and associated tre files are located
+            os.path.join(input_data_root, input_dir),
+            os.path.join(output_data_root, output_dir),
+        )
 
 # Compute Training mask
 def computeTrainingMask(expertSegMask, outputTrainingMask):
@@ -189,23 +182,14 @@ def splitDataForType(name, inputDir, outputDir, trainOutputDir, testOutputDir):
             fileName = filePrefix + '_' + suffix + '.mha'
             utils.symlink_entries_through(outputDir, curOutputDir, fileName)
 
-# assign control and tumor volumes equally to training and testing
+# assign volumes equally to training and testing
 def splitData():
-    """Split the data created from the images in the directories Controls
-    and LargeTumor in input_data_root via splitData and put the
-    results in training and testing subdirectories of
+    """Split the data created from the images in the directories in
+    input_data_root named by the keys of TYPES via splitData and put
+    the results in training and testing subdirectories of
     output_data_root.
 
     """
-
-    # Input data directories
-    controlInputDir = os.path.join(input_data_root, "Controls")
-    tumorInputDir = os.path.join(input_data_root, "LargeTumor")
-
-    # Output data directories
-    controlOutputDir = os.path.join(output_data_root, "controls")
-    tumorOutputDir = os.path.join(output_data_root, "tumors")
-
     trainOutputDir = os.path.join(output_data_root, "training")
     testOutputDir = os.path.join(output_data_root, "testing")
 
@@ -213,11 +197,14 @@ def splitData():
     utils.ensureDirectoryExists(trainOutputDir)
     utils.ensureDirectoryExists(testOutputDir)
 
-    # Process control files
-    splitDataForType('control', controlInputDir, controlOutputDir, trainOutputDir, testOutputDir)
-
-    # Process tumor files
-    splitDataForType('tumor', tumorInputDir, tumorOutputDir, trainOutputDir, testOutputDir)
+    for input_dir, output_dir in script_params['TYPES'].items():
+        splitDataForType(
+            output_dir,
+            os.path.join(input_data_root, input_dir),
+            os.path.join(output_data_root, output_dir),
+            os.path.join(output_data_root, "training"),
+            os.path.join(output_data_root, "testing"),
+        )
 
 
 def dict_to_list(d):
@@ -445,7 +432,7 @@ def run():
     # preprocess images
     createPreppedImages()
 
-    # assign control and tumor volumes equally to training and testing
+    # assign volumes equally to training and testing
     # Note: this must be called after createPreppedImages()
     splitData()
 

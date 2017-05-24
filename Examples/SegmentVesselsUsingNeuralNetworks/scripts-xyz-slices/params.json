@@ -2,6 +2,10 @@
     "OUTPUT_DATA_ROOT": "/media/krs0014/neal/SegmentVesselsUsingNeuralNetworks",
     "INPUT_DATA_ROOT": "/home/nealsiekierski/caffe/data/SegmentVesselsUsingNeuralNetworks",
     "TYPE_SUBDIR_STRUCTURE": "*",
+    "TYPES": {
+	"Controls": "controls",
+	"LargeTumor": "tumors"
+    },
     "PATCH_RADIUS": 31,
     "SMOOTHING_RADIUS": 2,
     "BLURRING_RADIUS": 31,
