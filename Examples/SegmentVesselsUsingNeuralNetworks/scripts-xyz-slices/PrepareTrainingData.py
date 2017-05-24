@@ -76,7 +76,7 @@ def createPreppedImages(name, inputDir, outputDir):
     # Process files
     printSectionHeader('Preprocessing images for %ss' % name)
 
-    mhdFiles = glob.glob(os.path.join(inputDir, "*", "*.mhd"))
+    mhdFiles = glob.glob(os.path.join(inputDir, script_params['TYPE_SUBDIR_STRUCTURE'], "*.mhd"))
 
     for i, mhdFile in enumerate(mhdFiles):
 
@@ -170,7 +170,7 @@ def splitData(name, inputDir, outputDir, trainOutputDir, testOutputDir):
     # Process files
     printSectionHeader('Splitting %s data into training and testing' % name)
 
-    mhdFiles = glob.glob(os.path.join(inputDir, "*", "*.mhd"))
+    mhdFiles = glob.glob(os.path.join(inputDir, script_params['TYPE_SUBDIR_STRUCTURE'], "*.mhd"))
 
     for i, mhdFile in enumerate(mhdFiles):
 

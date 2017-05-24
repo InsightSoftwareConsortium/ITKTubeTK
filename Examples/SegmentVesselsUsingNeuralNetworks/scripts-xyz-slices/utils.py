@@ -123,5 +123,8 @@ def predict_on_indices(model, input_image, indices, batch_size):
     return np.concatenate(predictions)
 
 def original_image(name_key):
-    r, = glob(os.path.join(script_params['INPUT_DATA_ROOT'], '*/*', name_key + '.mhd'))
+    r, = glob(os.path.join(script_params['INPUT_DATA_ROOT'],
+                           '*',
+                           script_params['TYPE_SUBDIR_STRUCTURE'],
+                           name_key + '.mhd'))
     return r
