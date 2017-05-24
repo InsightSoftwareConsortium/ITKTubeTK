@@ -88,9 +88,9 @@ def createPreppedImagesForType(name, inputDir, outputDir):
 
 def createPreppedImages():
     """Create preprocessed images from the directories Controls and
-    LargeTumor in input_data_root via createZMIPSlabs and put the
-    results in controls and tumors subdirectories, respectively, of
-    output_data_root.
+    LargeTumor in input_data_root via createPreppedImagesForType and
+    put the results in controls and tumors subdirectories,
+    respectively, of output_data_root.
 
     """
 
@@ -442,7 +442,7 @@ def printSectionHeader(title):
 
 def run():
 
-    # create z-mip slabs
+    # preprocess images
     createPreppedImages()
 
     # assign control and tumor volumes equally to training and testing
