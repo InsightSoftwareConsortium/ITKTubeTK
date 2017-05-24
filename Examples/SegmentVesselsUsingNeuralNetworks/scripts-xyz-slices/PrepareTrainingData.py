@@ -41,7 +41,7 @@ def createExpertSegmentationMask(inputImageFile, treFile, outputExpertSegFile):
 def createPreppedImagesForFile(mhdFile, outputDir):
     """Create preprocessed image and related files corresponding to mhdFile in outputDir.
     Input:
-    - $input/*.mhd: The image file header
+    - $input/*.mh[ad]: The image file header
     - $input/TRE/*.tre: The expert TRE file
     Output:
     - $output/*_expert.mha: The expert MHA file
@@ -76,7 +76,7 @@ def createPreppedImagesForType(name, inputDir, outputDir):
     # Process files
     printSectionHeader('Preprocessing images for %s' % name)
 
-    mhdFiles = glob.glob(os.path.join(inputDir, script_params['TYPE_SUBDIR_STRUCTURE'], "*.mhd"))
+    mhdFiles = glob.glob(os.path.join(inputDir, script_params['TYPE_SUBDIR_STRUCTURE'], "*.mh[ad]"))
 
     for i, mhdFile in enumerate(mhdFiles):
 
@@ -152,7 +152,7 @@ def splitDataForType(name, inputDir, outputDir, trainOutputDir, testOutputDir):
     which reside in outputDir, between trainOutputDir and
     testOutputDir.
 
-    With an input file named *.mhd, the following outputs are moved
+    With an input file named *.mh[ad], the following outputs are moved
     into the destination folder:
     - *_prepped.mha
     - *_expert.mha
@@ -162,7 +162,7 @@ def splitDataForType(name, inputDir, outputDir, trainOutputDir, testOutputDir):
     # Process files
     printSectionHeader('Splitting %s data into training and testing' % name)
 
-    mhdFiles = glob.glob(os.path.join(inputDir, script_params['TYPE_SUBDIR_STRUCTURE'], "*.mhd"))
+    mhdFiles = glob.glob(os.path.join(inputDir, script_params['TYPE_SUBDIR_STRUCTURE'], "*.mh[ad]"))
 
     for i, mhdFile in enumerate(mhdFiles):
 

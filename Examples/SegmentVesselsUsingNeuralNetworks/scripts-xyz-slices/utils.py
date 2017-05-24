@@ -126,5 +126,5 @@ def original_image(name_key):
     r, = glob(os.path.join(script_params['INPUT_DATA_ROOT'],
                            '*',
                            script_params['TYPE_SUBDIR_STRUCTURE'],
-                           name_key + '.mhd'))
+                           name_key + '.mh[ad]'))
     return r
