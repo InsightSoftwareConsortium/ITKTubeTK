@@ -31,7 +31,9 @@ def prep(inputImage, outputDir):
         new_spacing = np.full(len(spacing), script_params['RESAMPLE_SPACING'])
         spacing_ratio = new_spacing / spacing
         # Preserve the physical location of index -0.5 (corner of pixel 0)
-        new_origin = reader.GetOutput().TransformContinuousIndexToPhysicalPoint(list(0.5 * (spacing_ratio - 1)))
+        new_origin = reader.GetOutput().TransformContinuousIndexToPhysicalPoint(
+            itk.ContinuousIndex[itk.D, reader.GetOutput().GetImageDimension()](0.5 * (spacing_ratio - 1))
+        )
         new_size = (size / spacing_ratio).round().astype(int)
         Interpolator = itk.BSplineInterpolateImageFunction[
             reader.GetOutput(),
