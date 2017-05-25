@@ -29,9 +29,14 @@ def whole_image_confusion():
     print("Generating whole-image confusion matrices")
     base = os.path.join(stats_base, 'whole_image_confusion')
     utils.ensureDirectoryExists(base)
+    # TODO figure out the output shape of SegmentTubes (the shape of
+    # the _vseg image).  It will at any rate be a different size than
+    # the expert image; an interesting question is whether it will be
+    # the same as the original image.
     name_keys = [os.path.basename(x)[:-9] for x in glob(os.path.join(test_output_dir, '*_vseg.mha'))]
     for name in name_keys:
         print(name)
+        # TODO this line will be a problem; cf. previous TODO
         expert_im = itk.imread(str(os.path.join(test_data_dir, name + '_prepped_expert.mha')))
         network_im = itk.imread(str(os.path.join(test_output_dir, name + '_vseg.mha')))
         expert_arr, network_arr = map(itk.GetArrayViewFromImage, (expert_im, network_im))
