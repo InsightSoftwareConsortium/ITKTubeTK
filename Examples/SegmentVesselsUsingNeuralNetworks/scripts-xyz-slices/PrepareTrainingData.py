@@ -44,7 +44,6 @@ def createPreppedImagesForFile(mhdFile, outputDir):
     - $input/*.mh[ad]: The image file header
     - $input/TRE/*.tre: The expert TRE file
     Output:
-    - $output/*_expert.mha: The expert MHA file
     - $output/*_prepped_expert.mha: The expert MHA file matching the prepped output
     - : All output from prep with $output/* as outputImagePrefix
 
@@ -54,15 +53,12 @@ def createPreppedImagesForFile(mhdFile, outputDir):
 
     treFile = os.path.join(fileDir, "TRE", fileName + ".tre")
     expertSegFile = os.path.join(outputDir,
-                                 fileName + "_expert.mha")
+                                 fileName + "_prepped_expert.mha")
 
     # Process
-    createExpertSegmentationMask(mhdFile, treFile, expertSegFile)
+    prepped_mhd_file = deploy.prep(mhdFile, outputDir)
 
-    deploy.prep(mhdFile, outputDir)
-
-    utils.symlink_through(expertSegFile,
-                          os.path.join(outputDir, fileName + '_prepped_expert.mha'))
+    createExpertSegmentationMask(prepped_mhd_file, treFile, expertSegFile)
 
 def createPreppedImagesForType(name, inputDir, outputDir):
     """Process all image files in immediate subdirectories of inputDir to
@@ -182,7 +178,7 @@ def splitDataForType(name, inputDir, outputDir, trainOutputDir, testOutputDir):
             curOutputDir = testOutputDir
 
         # "suffix" is surround by fileName+'_' and '.mha'
-        for suffix in ['prepped', 'expert', 'prepped_expert']:
+        for suffix in 'prepped', 'prepped_expert':
             fileName = filePrefix + '_' + suffix + '.mha'
             utils.symlink_entries_through(outputDir, curOutputDir, fileName)
 

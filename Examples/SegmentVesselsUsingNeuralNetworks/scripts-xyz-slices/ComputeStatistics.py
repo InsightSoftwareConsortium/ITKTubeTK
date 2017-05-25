@@ -32,7 +32,7 @@ def whole_image_confusion():
     name_keys = [os.path.basename(x)[:-9] for x in glob(os.path.join(test_output_dir, '*_vseg.mha'))]
     for name in name_keys:
         print(name)
-        expert_im = itk.imread(str(os.path.join(test_data_dir, name + '_expert.mha')))
+        expert_im = itk.imread(str(os.path.join(test_data_dir, name + '_prepped_expert.mha')))
         network_im = itk.imread(str(os.path.join(test_output_dir, name + '_vseg.mha')))
         expert_arr, network_arr = map(itk.GetArrayViewFromImage, (expert_im, network_im))
         network_arr = np.where(network_arr, 1, 0)
@@ -57,7 +57,7 @@ def whole_image_roc():
     name_keys = [os.path.basename(x)[:-14] for x in glob(os.path.join(test_output_dir, '*_vess_prob.mha'))]
     for name in name_keys:
         print(name)
-        expert_im = itk.imread(str(os.path.join(test_data_dir, name + '_expert.mha')))
+        expert_im = itk.imread(str(os.path.join(test_data_dir, name + '_prepped_expert.mha')))
         network_im = itk.imread(str(os.path.join(test_output_dir, name + '_vess_prob.mha')))
         expert_arr, network_arr = map(itk.GetArrayViewFromImage, (expert_im, network_im))
         all_bins = np.bincount((256 * expert_arr + network_arr).reshape(-1), minlength=512).astype(float)
@@ -78,7 +78,7 @@ def sampling_roc(samples_per_class=5000):
     name_keys = [os.path.basename(x)[:-12] for x in glob(os.path.join(test_data_dir, '*_prepped.mha'))]
     for name in name_keys:
         print(name)
-        expert_im = itk.imread(str(os.path.join(test_data_dir, name + '_expert.mha')))
+        expert_im = itk.imread(str(os.path.join(test_data_dir, name + '_prepped_expert.mha')))
         prepped_im = itk.imread(str(os.path.join(test_data_dir, name + '_prepped.mha')))
         expert_arr, prepped_arr = map(itk.GetArrayViewFromImage, (expert_im, prepped_im))
         sample_ind = [random.sample(np.transpose(np.where(
