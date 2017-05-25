@@ -45,6 +45,7 @@ def createPreppedImagesForFile(mhdFile, outputDir):
     - $input/TRE/*.tre: The expert TRE file
     Output:
     - $output/*_expert.mha: The expert MHA file
+    - $output/*_prepped_expert.mha: The expert MHA file matching the prepped output
     - : All output from prep with $output/* as outputImagePrefix
 
     """
@@ -58,7 +59,10 @@ def createPreppedImagesForFile(mhdFile, outputDir):
     # Process
     createExpertSegmentationMask(mhdFile, treFile, expertSegFile)
 
-    deploy.prep(mhdFile, outputDir, expertSegFile)
+    deploy.prep(mhdFile, outputDir)
+
+    utils.symlink_through(expertSegFile,
+                          os.path.join(outputDir, fileName + '_prepped_expert.mha'))
 
 def createPreppedImagesForType(name, inputDir, outputDir):
     """Process all image files in immediate subdirectories of inputDir to

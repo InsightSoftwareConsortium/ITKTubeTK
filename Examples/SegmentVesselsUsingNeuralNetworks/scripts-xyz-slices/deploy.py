@@ -12,12 +12,11 @@ from utils import script_params
 
 
 # Preprocess ("prep") images
-def prep(inputImage, outputDir, expertImage=None):
+def prep(inputImage, outputDir):
     """Preprocess inputImage and expertImage (if not None) according to
     script_params.  Output (where '*' stands for outputDir +
     basename(inputImage) (without extension)):
     - *_prepped.mha: Preprocessed inputImage
-    - *_prepped_expert.mha: Preprocessed expertImage
 
     """
     outputImagePrefix = os.path.join(outputDir, os.path.splitext(os.path.basename(inputImage))[0])
@@ -73,10 +72,7 @@ def prep(inputImage, outputDir, expertImage=None):
                                      UseCompression=True)
     writer.Update()
 
-    if expertImage is None:
-        return writer.GetFileName()
-    else:
-        utils.symlink_through(expertImage, outputImagePrefix + '_prepped_expert.mha')
+    return writer.GetFileName()
 
 
 def chunked_argmax(arr, window):
