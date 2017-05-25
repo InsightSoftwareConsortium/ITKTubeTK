@@ -26,7 +26,32 @@ def prep(inputImage, outputDir, expertImage=None):
     smoothing_radius = script_params['SMOOTHING_RADIUS']
 
     reader = itk.ImageFileReader.New(FileName=str(inputImage))
-    smoothing_filter = itk.MedianImageFilter.New(reader,
+    if script_params['RESAMPLE_SPACING'] is not None:
+        reader.UpdateOutputInformation()
+        size, spacing = itk.size(reader), itk.spacing(reader)
+        new_spacing = np.full(len(spacing), script_params['RESAMPLE_SPACING'])
+        spacing_ratio = new_spacing / spacing
+        # Preserve the physical location of index -0.5 (corner of pixel 0)
+        new_origin = reader.GetOutput().TransformContinuousIndexToPhysicalPoint(list(0.5 * (spacing_ratio - 1)))
+        new_size = (size / spacing_ratio).round().astype(int)
+        Interpolator = itk.BSplineInterpolateImageFunction[
+            reader.GetOutput(),
+            itk.D,
+            itk.template(reader.GetOutput())[1][0],
+        ]
+        resample = itk.ResampleImageFilter.New(
+            reader,
+            Size=list(new_size),
+            OutputSpacing=new_spacing,
+            OutputOrigin=new_origin,
+            OutputDirection=reader.GetOutput().GetDirection(),
+            Interpolator=Interpolator.New(UseImageDirection=True),
+        )
+        to_smoothing = resample
+    else:
+        to_smoothing = reader
+
+    smoothing_filter = itk.MedianImageFilter.New(to_smoothing,
                                                  Radius=smoothing_radius)
 
     Gaussian = itk.SmoothingRecursiveYvvGaussianImageFilter
