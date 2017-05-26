@@ -37,7 +37,7 @@
       <channel>input</channel>
       <flag>f</flag>
       <longflag>seedList</longflag>
-      <description>List seed points stored in a file</description>
+      <description>List seed points stored in a file.  The format is lines of the form I1 ... ID S, where Ij is the jth component of the seed point, as an index, and S the seed point's scale.</description>
       <default></default>
     </file>
     <double>
