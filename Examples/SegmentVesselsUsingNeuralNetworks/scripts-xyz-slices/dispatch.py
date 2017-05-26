@@ -39,6 +39,12 @@ def dispatch():
     if a.to is None:
         a.to = a.from_
 
+    if a.from_ is None:
+        raise NotImplementedError
+
+    if any(tf not in stages_dict for tf in (a.to, a.from_)):
+        raise ValueError('to and from must be one of the following: ' + ' '.join(stages))
+
     script_dir = os.path.dirname(__file__)
     with open(os.path.join(script_dir, 'params.json')) as f:
         # So that the output resembles the input
