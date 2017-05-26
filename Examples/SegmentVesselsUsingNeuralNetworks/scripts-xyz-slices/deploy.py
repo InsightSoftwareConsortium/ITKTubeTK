@@ -162,14 +162,15 @@ def segmentTubes(originalImage, vascularModelFile, outputDir,
     inputImageName = os.path.splitext(os.path.basename(originalImage))[0]
 
     # compute seed image
-    vessProbImageFile = os.path.join(
-        outputDir, inputImageName + "_vess_prob.mha")
-    outSeedImageFile = os.path.join(
-        outputDir, inputImageName + "_vess_seeds.mha")
+    outSeedPointsFile = os.path.join(
+        outputDir, inputImageName + "_vess_seeds.txt")
 
-    subprocess.call(["ImageMath", vessProbImageFile,
-                     "-t", str(255 * vess_seed_prob), "255", "1", "0",
-                     "-W", "0", outSeedImageFile])
+    prob_im = itk.imread(str(os.path.join(outputDir, inputImageName + '_vess_prob.mha')))
+    prob_arr = itk.PyBuffer[prob_im].GetArrayViewFromImage(prob_im, keepAxes=True)
+    indices = np.transpose(np.where(prob_arr >= 255 * vess_seed_prob))
+    with open(outSeedPointsFile, 'w') as f:
+        for i in indices:
+            f.write(' '.join(map(str, prob_im.TransformIndexToPhysicalPoint(i))) + '\n')
 
     # segment tubes using ridge traversal
     outVsegMaskFile = os.path.join(outputDir, inputImageName + "_vseg.mha")
@@ -188,7 +189,7 @@ def segmentTubes(originalImage, vascularModelFile, outputDir,
     subprocess.call(["SegmentTubes",
                      "-o", outVsegMaskFile,
                      "-P", vascularModelFile,
-                     "-M", outSeedImageFile,
+                     "--seedListPhysicalNoScale", outSeedPointsFile,
                      "-s", str(vess_scale),
                      originalImage, outVsegTreFile])
 
