@@ -61,7 +61,7 @@
       <label>Seed physical coordinate</label>
       <longflag>seedP</longflag>
       <flag>p</flag>
-      <description>Phisycal coordinate seed for ridge extraction</description>
+      <description>Physical coordinate seed for ridge extraction</description>
       <default></default>
     </point>
     <image>
