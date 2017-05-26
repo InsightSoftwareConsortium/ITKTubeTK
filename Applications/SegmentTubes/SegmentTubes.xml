@@ -40,6 +40,14 @@
       <description>List seed points stored in a file.  The format is lines of the form I1 ... ID S, where Ij is the jth component of the seed point, as an index, and S the seed point's scale.</description>
       <default></default>
     </file>
+    <file>
+      <name>seedListFilePhysicalNoScale</name>
+      <label>Physical Point Seed List, No Scale</label>
+      <longflag>seedListPhysicalNoScale</longflag>
+      <description>List seed points stored in a file.  The format is lines of the form I1 ... ID, where Ij is the jth component of the seed point, as a physical point.</description>
+      <channel>input</channel>
+      <default></default>
+    </file>
     <double>
       <name>scale</name>
       <label>Scale of Ridge</label>
