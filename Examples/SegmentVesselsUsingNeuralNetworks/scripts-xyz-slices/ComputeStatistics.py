@@ -3,6 +3,7 @@
 from glob import glob
 import os
 import random
+from subprocess import call
 
 import itk
 import matplotlib
@@ -29,16 +30,22 @@ def whole_image_confusion():
     print("Generating whole-image confusion matrices")
     base = os.path.join(stats_base, 'whole_image_confusion')
     utils.ensureDirectoryExists(base)
-    # TODO figure out the output shape of SegmentTubes (the shape of
-    # the _vseg image).  It will at any rate be a different size than
-    # the expert image; an interesting question is whether it will be
-    # the same as the original image.
     name_keys = [os.path.basename(x)[:-9] for x in glob(os.path.join(test_output_dir, '*_vseg.mha'))]
     for name in name_keys:
         print(name)
-        # TODO this line will be a problem; cf. previous TODO
-        expert_im = itk.imread(str(os.path.join(test_data_dir, name + '_prepped_expert.mha')))
-        network_im = itk.imread(str(os.path.join(test_output_dir, name + '_vseg.mha')))
+        expert_im_path = str(os.path.join(test_output_dir, name + '_expert.mha'))
+        network_im_path = str(os.path.join(test_output_dir, name + '_vseg.mha'))
+        if script_params['RESAMPLE_SPACING'] is None:
+            utils.symlink_through(
+                os.path.join(test_data_dir, name + '_prepped_expert.mha'),
+                expert_im_path,
+            )
+        else:
+            call(['ConvertTubesToImage',
+                  '-r', network_im_path,
+                  os.path.join(os.path.dirname(utils.original_image(name)), 'TRE', name + '.tre'),
+                  expert_im_path])
+        expert_im, network_im = map(itk.imread, (expert_im_path, network_im_path))
         expert_arr, network_arr = map(itk.GetArrayViewFromImage, (expert_im, network_im))
         network_arr = np.where(network_arr, 1, 0)
         bins = np.bincount((2 * expert_arr + network_arr).reshape(-1), minlength=4).astype(float)
