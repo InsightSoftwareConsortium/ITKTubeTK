@@ -101,52 +101,6 @@ def createPreppedImages():
             os.path.join(output_data_root, output_dir),
         )
 
-# Compute Training mask
-def computeTrainingMask(expertSegMask, outputTrainingMask):
-    """Compute a training mask from expertSegMask, written to
-    outputTrainingMask.  It takes on the following values:
-
-    - 0: Background, other
-    - 51: Vessel, other
-    - 181: Vessel, center line
-    - 255: Background, vessel edge
-
-    Note: These values are arbitrary and were picked for the
-    convenience of generating them.
-
-    Note: Two intermediate files -- expertSegMask + "_skel.mha" and +
-    "_dilated.mha" -- are created in the process.  The latter is
-    removed afterwards.
-
-    """
-
-    skeletonFile = expertSegMask + "_skel.mha"
-
-    subprocess.call(["SegmentBinaryImageSkeleton",
-                     expertSegMask,
-                     skeletonFile])
-
-    dilated = expertSegMask + '_dilated.mha'
-
-    subprocess.call([
-        'ImageMath', expertSegMask,
-        '-M', '1', '4', '1', '0',
-        '-W', '0', dilated])
-
-    subprocess.call([
-        "ImageMath", dilated,
-         # dilate vessel mask with kernel radius = 1
-         "-M", "1", "1", "1", "0",
-        # subtract vessel mask from dilated version to get vessel boundary
-        "-a", "255", "-204", dilated,
-        # create training mask with vessel center-line (=255) and boundary (=128)
-        "-a", "1", "130", skeletonFile,
-        # write training mask
-        "-W", "0", outputTrainingMask])
-
-    os.unlink(dilated)
-
-
 def splitDataForType(name, inputDir, outputDir, trainOutputDir, testOutputDir):
     """Split the various outputs created from the image files in inputDir,
     which reside in outputDir, between trainOutputDir and
@@ -255,27 +209,13 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
     total_pos_patches = script_params['POSITIVE_PATCHES_PER_INPUT_FILE']
     total_neg_patches = script_params['NEGATIVE_TO_POSITIVE_RATIO'] * total_pos_patches
 
-    num_patch_types = 4
-    vessel_ctl_pos, other_pos, vessel_bnd_neg, other_neg = range(num_patch_types)
+    num_patch_types = 2
+    neg, pos = range(num_patch_types)
 
     patch_index = np.array(dict_to_list({
-        vessel_ctl_pos: 1,
-        other_pos: 1,
-        vessel_bnd_neg: 0,
-        other_neg: 0,
+        pos: 1,
+        neg: 0,
     }))
-
-    frac = np.array(dict_to_list({
-        vessel_ctl_pos: script_params['POSITIVES_NEAR_VESSEL_CENTERLINE'],
-        other_pos: script_params['OTHER_POSITIVES'],
-        vessel_bnd_neg: script_params['NEGATIVES_NEAR_VESSEL_BOUNDARY'],
-        other_neg: script_params['OTHER_NEGATIVES'],
-    }))
-
-    for i in range(2):
-        if abs(frac[patch_index == i].sum() - 1.0) > 1e-9:
-            raise ValueError("{} patch fraction sum must be 1.0, is {}".format(
-                "Positive" if i else "Negative", patch_frac_sum))
 
     # read input image
     inputImageFile = os.path.join(rootDir, imageName + '.mha')
@@ -285,13 +225,10 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
 
     # read expert segmented label mask
     expertSegFile = os.path.join(rootDir, imageName + '_expert.mha')
-    trainingMaskFile = os.path.join(rootDir, imageName + '_train.mha')
 
-    computeTrainingMask(expertSegFile, trainingMaskFile)
-
-    trainingMaskReader = itk.ImageFileReader.New(FileName=str(trainingMaskFile))
-    trainingMaskReader.Update()
-    trainingMask = itk.GetArrayFromImage(trainingMaskReader.GetOutput())
+    expertMaskImage = itk.imread(str(expertSegFile))
+    expertMask = itk.GetArrayViewFromImage(expertMaskImage)
+    trainingMask = expertMask
 
     # Iterate through expert mask and find pos/neg patches
 
@@ -300,20 +237,14 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
     trainingMaskMid = trainingMask[(s,) * 3]
 
     mask = dict_to_list({
-        # Vessel centerline pixel (positive)
-        vessel_ctl_pos: trainingMaskMid == 181,
-        # Other vessel pixel (positive)
-        other_pos: trainingMaskMid == 51,
-        # Vessel bound pixel (negative)
-        vessel_bnd_neg: trainingMaskMid == 255,
-        # Other background pixel (negative)
-        other_neg: trainingMaskMid == 0,
+        pos: trainingMaskMid == 1,
+        neg: trainingMaskMid == 0,
     })
 
     # Linear, flat indices
     indices = [np.where(m.reshape(-1))[0] for m in mask]
     # Desired number of each type of patch (not necessarily a whole number)
-    desiredFractionalPatches = frac * np.where(patch_index, total_pos_patches, total_neg_patches)
+    desiredFractionalPatches = np.where(patch_index, total_pos_patches, total_neg_patches)
     availablePatches = np.array([len(ind) for ind in indices])
     availableFraction = availablePatches.astype(float) / desiredFractionalPatches
     # The largest fraction we can take, capped at 1
