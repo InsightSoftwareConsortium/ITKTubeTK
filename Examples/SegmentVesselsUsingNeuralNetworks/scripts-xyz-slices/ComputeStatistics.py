@@ -47,6 +47,7 @@ def whole_image_confusion():
                   expert_im_path])
         expert_im, network_im = map(itk.imread, (expert_im_path, network_im_path))
         expert_arr, network_arr = map(itk.GetArrayViewFromImage, (expert_im, network_im))
+        expert_arr = expert_arr.astype(np.uint8)
         network_arr = np.where(network_arr, 1, 0)
         bins = np.bincount((2 * expert_arr + network_arr).reshape(-1), minlength=4).astype(float)
         bins[:2] /= bins[:2].sum()
@@ -72,6 +73,7 @@ def whole_image_roc():
         expert_im = itk.imread(str(os.path.join(test_data_dir, name + '_prepped_expert.mha')))
         network_im = itk.imread(str(os.path.join(test_output_dir, name + '_vess_prob.mha')))
         expert_arr, network_arr = map(itk.GetArrayViewFromImage, (expert_im, network_im))
+        expert_arr = expert_arr.astype(np.uint16)
         all_bins = np.bincount((256 * expert_arr + network_arr).reshape(-1), minlength=512).astype(float)
         write_roc_plot_from_all_bins(all_bins, os.path.join(base, name + '.png'))
 
