@@ -55,21 +55,11 @@ def prep(inputImage, outputDir):
     smoothing_filter = itk.MedianImageFilter.New(to_smoothing,
                                                  Radius=smoothing_radius)
 
-    Gaussian = itk.SmoothingRecursiveYvvGaussianImageFilter
-    # Convert pixels to world distances
-    blurring_radii = itk.spacing(reader) * script_params['BLURRING_RADIUS']
-
     CIF = itk.CastImageFilter[type(smoothing_filter.GetOutput()),
                               itk.Image[itk.F, reader.GetOutput().GetImageDimension()]]
     smoothed_single = CIF.New(smoothing_filter)
-    local_mean_filter = Gaussian.New(smoothed_single, SigmaArray=blurring_radii)
-    lm_subtracted = itk.SubtractImageFilter.New(smoothed_single, local_mean_filter)
-    squared = itk.SquareImageFilter.New(lm_subtracted)
-    local_variance_filter = Gaussian.New(squared, SigmaArray=blurring_radii)
-    local_stddev_filter = itk.SqrtImageFilter.New(local_variance_filter)
-    ls_divided = itk.DivideImageFilter.New(lm_subtracted, local_stddev_filter)
 
-    writer = itk.ImageFileWriter.New(ls_divided,
+    writer = itk.ImageFileWriter.New(smoothed_single,
                                      FileName=outputImagePrefix + "_prepped.mha",
                                      UseCompression=True)
     writer.Update()
