@@ -161,20 +161,6 @@ def splitData():
         )
 
 
-def dict_to_list(d):
-    """Convert a dict whose keys are the ints 0..N-1 into a list of length
-    N such that l[x] == d[x].  In the process, check that the keys are
-    indeed such a range.
-
-    """
-    l = [None]*len(d)
-    try:
-        for k, v in d.items():
-            l[k] = v
-    except IndexError:
-        raise ValueError("Argument does not have a complete set of indices!")
-    return l
-
 # Extracts +ve (vessel center) and -ve (background) patches from image
 def extractPatchesFromImageGenerator(rootDir, imageName):
     # TODO update docstring
@@ -209,14 +195,6 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
     total_pos_patches = script_params['POSITIVE_PATCHES_PER_INPUT_FILE']
     total_neg_patches = script_params['NEGATIVE_TO_POSITIVE_RATIO'] * total_pos_patches
 
-    num_patch_types = 2
-    neg, pos = range(num_patch_types)
-
-    patch_index = np.array(dict_to_list({
-        pos: 1,
-        neg: 0,
-    }))
-
     # read input image
     inputImageFile = os.path.join(rootDir, imageName + '.mha')
     inputImageReader = itk.ImageFileReader.New(FileName=str(inputImageFile))
@@ -228,7 +206,7 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
 
     expertMaskImage = itk.imread(str(expertSegFile))
     expertMask = itk.GetArrayViewFromImage(expertMaskImage)
-    trainingMask = expertMask
+    trainingMask = expertMask.astype(bool)
 
     # Iterate through expert mask and find pos/neg patches
 
@@ -236,15 +214,12 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
     s = np.s_[w:-w or None]
     trainingMaskMid = trainingMask[(s,) * 3]
 
-    mask = dict_to_list({
-        pos: trainingMaskMid == 1,
-        neg: trainingMaskMid == 0,
-    })
+    mask = [~trainingMaskMid, trainingMaskMid]
 
     # Linear, flat indices
     indices = [np.where(m.reshape(-1))[0] for m in mask]
     # Desired number of each type of patch (not necessarily a whole number)
-    desiredFractionalPatches = np.where(patch_index, total_pos_patches, total_neg_patches)
+    desiredFractionalPatches = np.array([total_neg_patches, total_pos_patches])
     availablePatches = np.array([len(ind) for ind in indices])
     availableFraction = availablePatches.astype(float) / desiredFractionalPatches
     # The largest fraction we can take, capped at 1
@@ -254,8 +229,8 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
               "scaling all types down by {}% accordingly".format(minAvailableFraction * 100))
     numPatches = np.ceil(desiredFractionalPatches * minAvailableFraction - 1e-9).astype(int)
 
-    for key, label in enumerate(patch_index):
-        selInd = random.sample(indices[key], numPatches[key])
+    for label, (ind, n) in enumerate(zip(indices, numPatches)):
+        selInd = random.sample(ind, n)
         selInd = np.transpose(np.unravel_index(selInd, trainingMaskMid.shape)) + w
         for coords in selInd:
             yield patchEntry(label, coords)
