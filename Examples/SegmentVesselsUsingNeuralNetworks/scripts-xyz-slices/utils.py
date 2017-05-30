@@ -77,27 +77,46 @@ def scale_net_input_data(data):
 def extractPatch(im, indices):
     """Return a patch extracted from im at indices.
 
-    Currently, this means returning an array of size (2W+1 x 2W+1 x
-    3), where W is the patch radius.
+    If NETWORK_DESIGN is "xyz", this means returning an array of size
+    (2W+1 x 2W+1 x 3), where W is the patch radius.
+
+    If NETWORK_DESIGN is "full3d", this means returning an array of
+    size (2W+1 x 2W+1 x 2W+1).
 
     """
     w = script_params['PATCH_RADIUS']
-    # Return N (N-1)-dimensional slices
-    return np.stack((im[tuple(np.s_[x - w : x + w + 1] if i != j else x
-                              for j, x in enumerate(indices))]
-                     for i in range(len(indices))),
-                    axis=-1)
+    design = script_params['NETWORK_DESIGN']
+    if design == 'xyz':
+        # Return N (N-1)-dimensional slices
+        return np.stack((im[tuple(np.s_[x - w : x + w + 1] if i != j else x
+                                  for j, x in enumerate(indices))]
+                         for i in range(len(indices))),
+                        axis=-1)
+    elif design == 'full3d':
+        # Return an N-dimensional slice
+        return im[tuple(np.s_[x - w : x + w + 1] for x in indices)]
+    else:
+        raise ValueError('Unknown NETWORK_DESIGN')
 
 def separateChannels(im):
     """Transpose an ...xN image into an Nx...x1 image"""
     return np.moveaxis(im, -1, 0)[..., np.newaxis]
 
 def prepareInputArray(im):
-    """Convert a Bx...xC array to a list of C Bx...x1 arrays, converting
-    data types appropriately in the process.
+    """For NETWORK_DESIGN == "xyz", convert a Bx...xC array to a list of C
+    Bx...x1 arrays, converting data types appropriately in the
+    process.
+
+    For NETWORK_DESIGN == "full3d", only the data type is converted.
 
     """
-    return list(scale_net_input_data(separateChannels(im)))
+    design = script_params['NETWORK_DESIGN']
+    if design == 'xyz':
+        return list(scale_net_input_data(separateChannels(im)))
+    elif design == 'full3d':
+        return scale_net_input_data(im[..., np.newaxis])
+    else:
+        raise ValueError('Unknown NETWORK_DESIGN')
 
 def load_best_model():
     return keras.models.load_model(os.path.join(

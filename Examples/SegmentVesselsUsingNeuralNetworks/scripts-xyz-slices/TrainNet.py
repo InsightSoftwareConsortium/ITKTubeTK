@@ -89,13 +89,28 @@ def create_uncompiled_model():
                          **kwargs)
         return wrapper
 
-    Conv2D = wrap_regularizer(L.Conv2D)
+    design = script_params['NETWORK_DESIGN']
+
+    if design == 'xyz':
+        L_ConvND = L.Conv2D
+        MaxPoolingND = L.MaxPooling2D
+        ndim = 2
+        ninputs = 3
+    elif design == 'full3d':
+        L_ConvND = L.Conv3D
+        MaxPoolingND = L.MaxPooling3D
+        ndim = 3
+        ninputs = 1
+    else:
+        raise ValueError('Unknown NETWORK_DESIGN')
+
+    ConvND = wrap_regularizer(L_ConvND)
     Dense = wrap_regularizer(L.Dense)
     def BatchNormalization():
         return L.BatchNormalization(scale=False, beta_regularizer=R.l2(weight_decay))
 
     def convLayer(f=32, k=3):
-        c = Conv2D(filters=f, kernel_size=k, use_bias=False)
+        c = ConvND(filters=f, kernel_size=k, use_bias=False)
         n = BatchNormalization()
         r = L.LeakyReLU(0.1)
         return lambda x: r(n(c(x)))
@@ -107,9 +122,11 @@ def create_uncompiled_model():
         return lambda x: r(n(d(x)))
 
     # Channels go last
-    inputs = [L.Input(shape=(patch_size, patch_size, 1)) for _ in range(3)]
+    input_shape = (patch_size,) * ndim + (1,)
 
-    sharedInput = L.Input(shape=(patch_size, patch_size, 1))
+    inputs = [L.Input(shape=input_shape) for _ in range(ninputs)]
+
+    sharedInput = L.Input(shape=input_shape)
 
     out_size = patch_size
     x = sharedInput
@@ -117,7 +134,7 @@ def create_uncompiled_model():
     # Convolutional layer sets
     while out_size >= 4:
         x = convLayer()(x)
-        x = L.MaxPooling2D(2)(x)
+        x = MaxPoolingND(2)(x)
         out_size = int((out_size - 2) / 2)
 
     # Fully connected layer set
@@ -160,8 +177,15 @@ def queryResultToModelArguments(result):
     functions.
 
     """
+    design = script_params['NETWORK_DESIGN']
+    if design == 'xyz':
+        patch_shape = patch_size, patch_size, 3
+    elif design == 'full3d':
+        patch_shape = (patch_size,) * 3
+    else:
+        raise ValueError('Unknown NETWORK_DESIGN')
     image_data = np.stack(
-        np.frombuffer(im, dtype=np.float16).reshape(patch_size, patch_size, 3)
+        np.frombuffer(im, dtype=np.float16).reshape(patch_shape)
         for im, _ in result
     )
     labels = np.array([l for _, l in result])
@@ -296,6 +320,8 @@ def run():
         os.path.join(net_proto_path, 'net_best.hdf5')
     )
 
+    design = script_params['NETWORK_DESIGN']
+
     # Visualize convolutional filters at each layer
     ep_train = num_train_epochs - 1
     for l in conv_layers:
@@ -304,10 +330,16 @@ def run():
 
         features = l.get_weights()[0]
 
-        h, w, n_channels, n_filters = features.shape
-        n_images = n_filters * n_channels
+        if design == 'xyz':
+            h, w, n_channels, n_filters = features.shape
+            n_images = n_filters * n_channels
 
-        squarePlot(features.transpose(2, 3, 0, 1).reshape(n_images, h, w))
+            squarePlot(features.transpose(2, 3, 0, 1).reshape(n_images, h, w))
+        elif design == 'full3d':
+            # TODO how to visualize 3D data?
+            pass
+        else:
+            raise ValueError('Unknown NETWORK_DESIGN')
 
         plt.title('%s - %s - Epoch %s' %
                   (l.name, str(features.shape), ep_train))
@@ -357,8 +389,13 @@ def run():
         .fetchall())
     pred_labels = model.predict(image_data, test_batch_size).argmax(1)
 
-    # TODO this generates color plots.  Not helpful.
-    image_data = np.stack(image_data, -2)
+    if design == 'xyz':
+        # TODO this generates color plots.  Not helpful.
+        image_data = np.stack(image_data, -2)
+    elif design == 'full3d':
+        pass
+    else:
+        raise ValueError('Unknown NETWORK_DESIGN')
     image_data.shape = image_data.shape[:-1]
 
     def generate_confusion_file(true_value, pred_value):
@@ -370,7 +407,13 @@ def run():
         c_percent = c_count * 100. / test_batch_size
         print '%s %ss : %d / %d (%.2f%%)' % (adj, noun, c_count, test_batch_size, c_percent)
         plt.figure()
-        squarePlot(c_data)
+        if design == 'xyz':
+            squarePlot(c_data)
+        elif design == 'full3d':
+            # TODO how to visualize 3D data?
+            pass
+        else:
+            raise ValueError('Unknown NETWORK_DESIGN')
         plt.title('%s %s examples - %.2f%%' % (adj, noun, c_percent))
         plt.savefig(os.path.join(train_results_dir, 'sample_%s_%ss.png' % (adj, noun)))
 

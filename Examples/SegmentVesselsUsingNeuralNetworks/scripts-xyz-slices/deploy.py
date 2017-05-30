@@ -107,7 +107,14 @@ def segmentPreppedImage(model, input_file, output_file):
 
     # get test_batch_size and patch_size used for cnn model
     test_batch_size = script_params['DEPLOY_BATCH_SIZE']
-    patch_size = data_shape[0][1]
+
+    design = script_params['NETWORK_DESIGN']
+    if design == 'xyz':
+        patch_size = data_shape[0][1]
+    elif design == 'full3d':
+        patch_size = data_shape[1]
+    else:
+        raise ValueError("Unknown NETWORK_DESIGN")
 
     print 'Test batch shape = ', data_shape
 

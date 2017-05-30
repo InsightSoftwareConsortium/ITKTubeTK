@@ -6,6 +6,7 @@
 	"Controls": "controls",
 	"LargeTumor": "tumors"
     },
+    "NETWORK_DESIGN": "xyz",
     "PATCH_RADIUS": 31,
     "RESAMPLE_SPACING": null,
     "SMOOTHING_RADIUS": 2,
