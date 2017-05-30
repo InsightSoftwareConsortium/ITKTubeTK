@@ -33,18 +33,8 @@ def whole_image_confusion():
     name_keys = [os.path.basename(x)[:-9] for x in glob(os.path.join(test_output_dir, '*_vseg.mha'))]
     for name in name_keys:
         print(name)
-        expert_im_path = str(os.path.join(test_output_dir, name + '_expert.mha'))
+        expert_im_path = str(os.path.join(test_data_dir, name + '_prepped_expert.mha'))
         network_im_path = str(os.path.join(test_output_dir, name + '_vseg.mha'))
-        if script_params['RESAMPLE_SPACING'] is None:
-            utils.symlink_through(
-                os.path.join(test_data_dir, name + '_prepped_expert.mha'),
-                expert_im_path,
-            )
-        else:
-            call(['ConvertTubesToImage',
-                  '-r', network_im_path,
-                  os.path.join(os.path.dirname(utils.original_image(name)), 'TRE', name + '.tre'),
-                  expert_im_path])
         expert_im, network_im = map(itk.imread, (expert_im_path, network_im_path))
         expert_arr, network_arr = map(itk.GetArrayViewFromImage, (expert_im, network_im))
         expert_arr = expert_arr.astype(np.uint8)
