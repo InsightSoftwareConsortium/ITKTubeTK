@@ -111,21 +111,14 @@ def create_uncompiled_model():
 
     sharedInput = L.Input(shape=(patch_size, patch_size, 1))
 
-    # First layer set
-    x = convLayer()(sharedInput)
-    x = L.MaxPooling2D(2)(x)
+    out_size = patch_size
+    x = sharedInput
 
-    # Second layer set
-    x = convLayer()(x)
-    x = L.MaxPooling2D(2)(x)
-
-    # Third layer set
-    x = convLayer()(x)
-    x = L.MaxPooling2D(2)(x)
-
-    # Fourth layer set
-    x = convLayer()(x)
-    x = L.MaxPooling2D(2)(x)
+    # Convolutional layer sets
+    while out_size >= 4:
+        x = convLayer()(x)
+        x = L.MaxPooling2D(2)(x)
+        out_size = int((out_size - 2) / 2)
 
     # Fully connected layer set
     x = L.Flatten()(x)
