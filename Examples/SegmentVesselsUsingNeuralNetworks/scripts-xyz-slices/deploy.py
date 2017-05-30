@@ -154,14 +154,12 @@ def segmentPreppedImage(model, input_file, output_file):
     itk.imwrite(output_image_itk, str(output_file), compression=True)
 
 
-def segmentTubes(originalImage, vascularModelFile, outputDir,
+def segmentTubes(prepped_image, vascularModelFile, output_prefix,
                  vess_seed_prob=0.95, vess_scale=0.1):
-    prefix = os.path.join(outputDir, os.path.splitext(os.path.basename(originalImage))[0])
-
     # compute seed image
-    outSeedPointsFile = prefix + "_vess_seeds.txt"
+    outSeedPointsFile = output_prefix + "_vess_seeds.txt"
 
-    prob_im = itk.imread(str(prefix + '_vess_prob.mha'))
+    prob_im = itk.imread(str(output_prefix + '_vess_prob.mha'))
     prob_arr = itk.PyBuffer[prob_im].GetArrayViewFromImage(prob_im, keepAxes=True)
     indices = np.transpose(np.where(prob_arr >= 255 * vess_seed_prob))
     with open(outSeedPointsFile, 'w') as f:
@@ -169,15 +167,15 @@ def segmentTubes(originalImage, vascularModelFile, outputDir,
             f.write(' '.join(map(str, prob_im.TransformIndexToPhysicalPoint(i))) + '\n')
 
     # segment tubes using ridge traversal
-    outVsegMaskFile = prefix + "_vseg.mha"
-    outVsegTreFile = prefix + "_vseg.tre"
+    outVsegMaskFile = output_prefix + "_vseg.mha"
+    outVsegTreFile = output_prefix + "_vseg.tre"
 
     subprocess.call(["SegmentTubes",
                      "-o", outVsegMaskFile,
                      "-P", vascularModelFile,
                      "--seedListPhysicalNoScale", outSeedPointsFile,
                      "-s", str(vess_scale),
-                     originalImage, outVsegTreFile])
+                     prepped_image, outVsegTreFile])
 
     # Fill gaps and convert to a tree
     subprocess.call(["ConvertTubesToTubeTree",

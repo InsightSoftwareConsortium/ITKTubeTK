@@ -64,9 +64,8 @@ def run():
         # segment tubes using ridge traversal
         vascularModelFile = os.path.join(input_data_root, 'vascularModel.mtp')
 
-        originalImage = utils.original_image(testAnimal)
-
-        deploy.segmentTubes(originalImage, vascularModelFile, outputDir,
+        deploy.segmentTubes(mhaFile, vascularModelFile,
+                            os.path.join(outputDir, testAnimal),
                             script_params['VESSEL_SEED_PROBABILITY'],
                             script_params['VESSEL_SCALE'])
 
