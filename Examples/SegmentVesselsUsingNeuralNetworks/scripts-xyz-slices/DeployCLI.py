@@ -9,8 +9,6 @@ import deploy
 import utils
 from utils import script_params
 
-parser = ctk_cli.CLIArgumentParser()
-
 
 def main(args):
     utils.set_params_path(args.params)
@@ -25,4 +23,4 @@ def main(args):
 
 
 if __name__ == '__main__':
-    main(parser.parse_args())
+    main(ctk_cli.CLIArgumentParser().parse_args())
