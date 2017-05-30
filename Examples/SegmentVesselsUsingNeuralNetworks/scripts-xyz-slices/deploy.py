@@ -166,16 +166,6 @@ def segmentTubes(originalImage, vascularModelFile, outputDir,
     outVsegMaskFile = os.path.join(outputDir, inputImageName + "_vseg.mha")
     outVsegTreFile = os.path.join(outputDir, inputImageName + "_vseg.tre")
 
-    # TODO resample the output seed image back in an appropriate way
-    # (that works for both up- and downsampling) to pass to
-    # SegmentTubes, which effectively requires but does not check the
-    # original and the seed image are in the same space.
-
-    # Unfortunately, no existing interpolator does what I want
-    # (logical OR, essentially).  It might be best to extract,
-    # transform, and create a seed point list manually, since
-    # SegmentTubes does support it.
-
     subprocess.call(["SegmentTubes",
                      "-o", outVsegMaskFile,
                      "-P", vascularModelFile,
