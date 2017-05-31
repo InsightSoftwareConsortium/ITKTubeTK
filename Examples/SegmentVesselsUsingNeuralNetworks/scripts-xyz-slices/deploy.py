@@ -84,6 +84,21 @@ def chunked_argmax(arr, window):
     return tuple(chunk_corner_indices + in_chunk_indices)
 
 
+def locally_brightest_mask(arr):
+    """Compute a mask from a FP image using chunked_argmax.  The image is
+    automatically appropriately padded.  The window size is determined
+    by the DEPLOY_TOP_WINDOW parameter.
+
+    """
+    tw = script_params['DEPLOY_TOP_WINDOW']
+    padded = np.pad(arr, tuple(
+        (0, -s % tw) for s in arr.shape
+    ), 'constant', constant_values=-np.inf)
+    mask = np.zeros_like(arr, dtype=bool)
+    mask[chunked_argmax(padded, (tw,) * arr.ndim)] = True
+    return mask
+
+
 def segmentPreppedImage(model, input_file, output_file):
     """Segment (really, generate seed points from) a preprocessed image"""
 
@@ -98,12 +113,7 @@ def segmentPreppedImage(model, input_file, output_file):
     input_image = itk.GetArrayViewFromImage(input_image_itk)
 
     # get foreground mask
-    tw = script_params['DEPLOY_TOP_WINDOW']
-    input_image_padded = np.pad(input_image, tuple(
-        (0, -s % tw) for s in input_image.shape
-    ), 'constant', constant_values=-np.inf)
-    fgnd_mask = np.zeros_like(input_image, dtype=bool)
-    fgnd_mask[chunked_argmax(input_image_padded, (tw,) * input_image.ndim)] = True
+    fgnd_mask = locally_brightest_mask(input_image)
 
     # get test_batch_size and patch_size used for cnn model
     test_batch_size = script_params['DEPLOY_BATCH_SIZE']
