@@ -206,7 +206,9 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
 
     expertMaskImage = itk.imread(str(expertSegFile))
     expertMask = itk.GetArrayViewFromImage(expertMaskImage)
-    trainingMask = expertMask.astype(bool)
+
+    lbm = deploy.locally_brightest_mask(inputImage)
+    trainingMask = np.where(lbm, expertMask, -1)
 
     # Iterate through expert mask and find pos/neg patches
 
@@ -214,7 +216,7 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
     s = np.s_[w:-w or None]
     trainingMaskMid = trainingMask[(s,) * 3]
 
-    mask = [~trainingMaskMid, trainingMaskMid]
+    mask = [trainingMaskMid == 0, trainingMaskMid == 1]
 
     # Linear, flat indices
     indices = [np.where(m.reshape(-1))[0] for m in mask]
