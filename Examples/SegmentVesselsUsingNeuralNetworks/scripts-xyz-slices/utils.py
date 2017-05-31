@@ -118,10 +118,11 @@ def prepareInputArray(im):
     else:
         raise ValueError('Unknown NETWORK_DESIGN')
 
+def best_model_path():
+    return os.path.join(script_params['OUTPUT_DATA_ROOT'], "NetProto", "net_best.hdf5")
+
 def load_best_model():
-    return keras.models.load_model(os.path.join(
-        script_params['OUTPUT_DATA_ROOT'], "NetProto", "net_best.hdf5"
-    ))
+    return keras.models.load_model(best_model_path())
 
 def predict_on_indices(model, input_image, indices, batch_size):
     """Run prediction on patches taken from input_image centered at the

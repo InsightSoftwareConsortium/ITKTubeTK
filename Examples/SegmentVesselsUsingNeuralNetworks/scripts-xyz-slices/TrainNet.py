@@ -317,7 +317,7 @@ def run():
 
     shutil.copyfile(
         snapshot_format.format(epoch=best_epoch),
-        os.path.join(net_proto_path, 'net_best.hdf5')
+        utils.best_model_path(),
     )
 
     design = script_params['NETWORK_DESIGN']
