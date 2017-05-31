@@ -199,7 +199,7 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
     inputImageFile = os.path.join(rootDir, imageName + '.mha')
     inputImageReader = itk.ImageFileReader.New(FileName=str(inputImageFile))
     inputImageReader.Update()
-    inputImage = itk.GetArrayFromImage(inputImageReader.GetOutput())
+    inputImage = itk.GetArrayViewFromImage(inputImageReader.GetOutput())
 
     # read expert segmented label mask
     expertSegFile = os.path.join(rootDir, imageName + '_expert.mha')
