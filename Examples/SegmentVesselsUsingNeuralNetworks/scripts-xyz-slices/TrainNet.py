@@ -320,10 +320,12 @@ def run():
         utils.best_model_path(),
     )
 
+    # Restore model to best state
+    model.load_weights(utils.best_model_path())
+
     design = script_params['NETWORK_DESIGN']
 
     # Visualize convolutional filters at each layer
-    ep_train = num_train_epochs - 1
     for l in conv_layers:
 
         plt.figure(fig[l.name].number)
@@ -342,11 +344,11 @@ def run():
             raise ValueError('Unknown NETWORK_DESIGN')
 
         plt.title('%s - %s - Epoch %s' %
-                  (l.name, str(features.shape), ep_train))
+                  (l.name, str(features.shape), best_epoch))
         plt.savefig(
             os.path.join(
                 train_results_dir,
-                'filters_%s_ep_%.3d.png' % (l.name, ep_train)
+                'filters_%s_ep_%.3d.png' % (l.name, best_epoch)
             )
         )
 
