@@ -290,7 +290,7 @@ def run():
         cursor = db.cursor()
         while True:
             cursor.execute('''select "image_data", "patch_index"
-                              from "Patches"''')
+                              from "Patches" order by random()''')
             while True:
                 result = cursor.fetchmany(batch_size)
                 if len(result) < batch_size:
