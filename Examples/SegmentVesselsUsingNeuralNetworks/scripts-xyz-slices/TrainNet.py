@@ -50,6 +50,9 @@ def squarePlot(data):
     """Take an array of shape (n, height, width) or (n, height, width, 3)
        and visualize each (height, width) thing in a grid of size approx. sqrt(n) by sqrt(n)"""
 
+    if not data.shape[0]:
+        return
+
     # normalize data for display
     data = (data - data.min()) / (data.max() - data.min())
 
