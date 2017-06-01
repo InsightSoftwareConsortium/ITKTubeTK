@@ -132,7 +132,7 @@ def create_uncompiled_model():
     sharedInput = L.Input(shape=input_shape)
 
     out_size = patch_size
-    x = sharedInput
+    x = BatchNormalization()(sharedInput)
 
     # Convolutional layer sets
     while out_size >= 4:
