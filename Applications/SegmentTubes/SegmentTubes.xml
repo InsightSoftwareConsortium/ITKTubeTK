@@ -37,7 +37,15 @@
       <channel>input</channel>
       <flag>f</flag>
       <longflag>seedList</longflag>
-      <description>List seed points stored in a file</description>
+      <description>List seed points stored in a file.  The format is lines of the form I1 ... ID S, where Ij is the jth component of the seed point, as an index, and S the seed point's scale.</description>
+      <default></default>
+    </file>
+    <file>
+      <name>seedListFilePhysicalNoScale</name>
+      <label>Physical Point Seed List, No Scale</label>
+      <longflag>seedListPhysicalNoScale</longflag>
+      <description>List seed points stored in a file.  The format is lines of the form I1 ... ID, where Ij is the jth component of the seed point, as a physical point.</description>
+      <channel>input</channel>
       <default></default>
     </file>
     <double>
@@ -61,7 +69,7 @@
       <label>Seed physical coordinate</label>
       <longflag>seedP</longflag>
       <flag>p</flag>
-      <description>Phisycal coordinate seed for ridge extraction</description>
+      <description>Physical coordinate seed for ridge extraction</description>
       <default></default>
     </point>
     <image>
