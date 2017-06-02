@@ -96,6 +96,7 @@ def write_roc_plot_from_all_bins(all_bins, path):
     plt.figure()
     plt.plot(pairs[0], pairs[1], 'k.-')
     plt.savefig(path)
+    plt.close()
 
 def main():
     whole_image_confusion()
