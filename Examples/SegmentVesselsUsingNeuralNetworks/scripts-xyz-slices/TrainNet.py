@@ -174,10 +174,53 @@ def compile_model(model):
                   metrics=['accuracy'])
 
 
-def queryResultToModelArguments(result):
+def augment_patch(patch):
+    """Randomly transform a patch for augmentation"""
+    # Only works for 3D
+    axes = np.random.permutation(3)
+    flips = np.random.randint(2, size=3)
+    design = script_params['NETWORK_DESIGN']
+    if design == 'xyz':
+        ret = np.empty_like(patch)
+        for i in range(3):
+            ax1, ax2 = ((1, 2), (0, 2), (0, 1))[i]
+            # Because of this reassignment, we interpret flips
+            # slightly differently, but it still works
+            ax1, ax2 = axes[[ax1, ax2]]
+            channel = 3 - ax1 - ax2
+            r = patch[..., channel]
+            if ax1 > ax2:
+                r = r.T
+            if flips[ax1]:
+                r = r[::-1]
+            if flips[ax2]:
+                r = r[:, ::-1]
+            ret[..., i] = r
+        return ret
+    elif design == 'full3d':
+        return patch.transpose(axes)[tuple(np.s_[::-1] if f else np.s_[:] for f in flips)]
+    else:
+        raise ValueError("Unknown NETWORK_DESIGN")
+
+
+def augment_sample(data):
+    """Implement augmentation by randomly performing transformations on
+    data, which should be of shape NxWxWx3 (XYZ) or NxWxWxW (Full 3D),
+    where W is the patch width.
+
+    """
+    # Because each patch is transformed differently, there's not
+    # really a better way to handle it than one by one.  The time
+    # spent here should be still overmatched by the training time.
+    return np.stack(map(augment_patch, data))
+
+
+def queryResultToModelArguments(result, augment):
+
     """Convert the list of (image, label) pairs from a query into a pair
     of a list of inputs and a label array to pass into various model
-    functions.
+    functions.  augment is a boolean for determining whether to
+    perform data augmentation.
 
     """
     design = script_params['NETWORK_DESIGN']
@@ -191,6 +234,8 @@ def queryResultToModelArguments(result):
         np.frombuffer(im, dtype=np.float16).reshape(patch_shape)
         for im, _ in result
     )
+    if augment:
+        image_data = augment_sample(image_data)
     labels = np.array([l for _, l in result])
     return utils.prepareInputArray(image_data), labels
 
@@ -298,7 +343,7 @@ def run():
                 result = cursor.fetchmany(batch_size)
                 if len(result) < batch_size:
                     break
-                image_data, labels = queryResultToModelArguments(result)
+                image_data, labels = queryResultToModelArguments(result, augment=True)
                 yield image_data, U.to_categorical(labels, 2)
 
     history = model.fit_generator(data_generator(train_db_path, train_batch_size),
@@ -391,7 +436,8 @@ def run():
         utils.open_sqlite3_db(test_db_path)
         .execute('''select "image_data", "patch_index" from "Patches"
                     order by random() limit ?''', (test_batch_size,))
-        .fetchall())
+        .fetchall(),
+        augment=False)
     pred_labels = model.predict(image_data, test_batch_size).argmax(1)
 
     if design == 'xyz':
