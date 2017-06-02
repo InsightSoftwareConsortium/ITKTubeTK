@@ -79,12 +79,17 @@ def sampling_roc(samples_per_class=5000):
         ).reshape((2, -1)) * 255).round().astype(int)
         all_bins = np.concatenate((np.bincount(neg_pred, minlength=256),
                                    np.bincount(pos_pred, minlength=256))).astype(float)
-        write_roc_plot_from_all_bins(all_bins, os.path.join(base, name + '.png'))
+        write_roc_plot_from_all_bins(
+            all_bins,
+            os.path.join(base, name + '_roc.png'),
+            os.path.join(base, name + '_i.png'),
+        )
         # TODO ROC curve
 
-def write_roc_plot_from_all_bins(all_bins, path):
+def write_roc_plot_from_all_bins(all_bins, path, path_i):
     """From a flat array of all expert-negative, the all expert-positive
-    bincounts, create an ROC plot
+    bincounts, create an ROC plot and an ROC-like plot that's plotted
+    versus intensity.
 
     """
     pairs = []
@@ -96,6 +101,11 @@ def write_roc_plot_from_all_bins(all_bins, path):
     plt.figure()
     plt.plot(pairs[0], pairs[1], 'k.-')
     plt.savefig(path)
+    plt.close()
+
+    plt.figure()
+    plt.plot(pairs[0], 'r.-', pairs[1], 'b.-')
+    plt.savefig(path_i)
     plt.close()
 
 def main():
