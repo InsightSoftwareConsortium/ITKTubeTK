@@ -12,12 +12,16 @@ from utils import script_params
 
 def main(args):
     utils.set_params_path(args.params)
+    if (args.resampled is None) ^ (script_params['RESAMPLE_SPACING'] is None or args.preprocessed is None):
+        raise ValueError("A resampled image should be supplied iff resampling is"
+                         " enabled in the parameters file and a preprocessed"
+                         " image is given.")
     if args.preprocessed is None:
-        args.preprocessed = deploy.prep(args.inputImage, args.outputDir)
+        args.resampled, args.preprocessed = deploy.prep(args.inputImage, args.outputDir)
     model = M.load_model(args.model)
     prefix = os.path.join(args.outputDir, os.path.splitext(os.path.basename(args.inputImage))[0])
     deploy.segmentPreppedImage(model, args.preprocessed, prefix + '_vess_prob.mha')
-    deploy.segmentTubes(args.preprocessed, args.vascularModelFile, prefix,
+    deploy.segmentTubes(args.resampled, args.vascularModelFile, prefix,
                         script_params['VESSEL_SEED_PROBABILITY'],
                         script_params['VESSEL_SCALE'])
 

@@ -17,6 +17,7 @@ def prep(inputImage, outputDir):
     script_params.  Output (where '*' stands for outputDir +
     basename(inputImage) (without extension)):
     - *_prepped.mha: Preprocessed inputImage
+    - *_resampled.mha: Resampled inputImage (if RESAMPLE_SPACING is a number)
 
     """
     outputImagePrefix = os.path.join(outputDir, os.path.splitext(os.path.basename(inputImage))[0])
@@ -48,8 +49,11 @@ def prep(inputImage, outputDir):
             OutputDirection=reader.GetOutput().GetDirection(),
             Interpolator=Interpolator.New(UseImageDirection=True),
         )
+        rir = outputImagePrefix + '_resampled.mha'
+        itk.imwrite(resample, rir, compression=True)
         to_smoothing = resample
     else:
+        rir = inputImage
         to_smoothing = reader
 
     smoothing_filter = itk.MedianImageFilter.New(to_smoothing,
@@ -64,7 +68,7 @@ def prep(inputImage, outputDir):
                                      UseCompression=True)
     writer.Update()
 
-    return writer.GetFileName()
+    return rir, writer.GetFileName()
 
 
 def chunked_argmax(arr, window):
@@ -164,8 +168,12 @@ def segmentPreppedImage(model, input_file, output_file):
     itk.imwrite(output_image_itk, str(output_file), compression=True)
 
 
-def segmentTubes(prepped_image, vascularModelFile, output_prefix,
+def segmentTubes(rir_image, vascularModelFile, output_prefix,
                  vess_seed_prob=0.95, vess_scale=0.1):
+    """Extract the tubes from an image.  rir_image is the original image,
+    but (R)esampled (I)f (R)equested.
+
+    """
     # compute seed image
     vessProbImageFile = output_prefix + "_vess_prob.mha"
     outSeedImageFile = output_prefix + "_vess_seeds.mha"
@@ -183,7 +191,7 @@ def segmentTubes(prepped_image, vascularModelFile, output_prefix,
                      "-P", vascularModelFile,
                      "-M", outSeedImageFile,
                      "-s", str(vess_scale),
-                     prepped_image, outVsegTreFile])
+                     rir_image, outVsegTreFile])
 
     # Fill gaps and convert to a tree
     subprocess.call(["ConvertTubesToTubeTree",

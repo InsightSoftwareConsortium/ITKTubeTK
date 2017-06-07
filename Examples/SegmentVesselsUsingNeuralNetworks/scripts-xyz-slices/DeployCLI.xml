@@ -48,6 +48,12 @@
       <default>.</default>
     </directory>
     <image>
+      <longflag>resampled</longflag>
+      <label>Resampled image</label>
+      <description>An appropriately resampled version of the input image.  Should be supplied iff resampling is enabled in the parameters file and a preprocessed image is given.</description>
+      <channel>input</channel>
+    </image>
+    <image>
       <longflag>preprocessed</longflag>
       <label>Preprocessed image</label>
       <description>An appropriately preprocessed version of the input image.  Automatically generated if not given.</description>

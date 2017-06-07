@@ -56,7 +56,7 @@ def createPreppedImagesForFile(mhdFile, outputDir):
                                  fileName + "_prepped_expert.mha")
 
     # Process
-    prepped_mhd_file = deploy.prep(mhdFile, outputDir)
+    _, prepped_mhd_file = deploy.prep(mhdFile, outputDir)
 
     createExpertSegmentationMask(prepped_mhd_file, treFile, expertSegFile)
 
@@ -131,9 +131,8 @@ def splitDataForType(name, inputDir, outputDir, trainOutputDir, testOutputDir):
         else:
             curOutputDir = testOutputDir
 
-        # "suffix" is surround by fileName+'_' and '.mha'
-        for suffix in 'prepped', 'prepped_expert':
-            fileName = filePrefix + '_' + suffix + '.mha'
+        for path in glob.glob(os.path.join(outputDir, filePrefix + '_*.mha')):
+            fileName = os.path.basename(path)
             utils.symlink_entries_through(outputDir, curOutputDir, fileName)
 
 # assign volumes equally to training and testing
