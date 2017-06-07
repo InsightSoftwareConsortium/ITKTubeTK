@@ -141,3 +141,10 @@ def predict_on_indices(model, input_image, indices, batch_size):
         print '\t %.2f%%' % (100.0 * (i + len(pred)) / len(indices)),
         print "%.4f, %.4f, %.4f" % (pred.min(), pred.max(), pred.mean())
     return np.concatenate(predictions)
+
+def original_image(name_key):
+    r, = glob(os.path.join(script_params['INPUT_DATA_ROOT'],
+                           '*',
+                           script_params['TYPE_SUBDIR_STRUCTURE'],
+                           name_key + '.mh[ad]'))
+    return r
