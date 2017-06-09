@@ -32,8 +32,7 @@ if( ${TubeTK_USE_NUMPY_STACK} )
       HINTS ${_numpy_include} )
   endif( NOT NUMPY_INCLUDE_DIR )
 
-  include_directories( ${NUMPY_INCLUDE_DIR}
-    ${PYTHON_INCLUDE_DIRS} )
+  include_directories( ${NUMPY_INCLUDE_DIR} ${PYTHON_INCLUDE_DIRS} )
 
   python_add_module( _tubetk_numpy _tubetk_numpy.cxx )
   set_target_properties( _tubetk_numpy
@@ -41,7 +40,7 @@ if( ${TubeTK_USE_NUMPY_STACK} )
 
   target_link_libraries( _tubetk_numpy
     ${ITK_LIBRARIES} TubeTKFiltering )
-
-  file( COPY ./ DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
-    FILES_MATCHING PATTERN "*.py" )
 endif( ${TubeTK_USE_NUMPY_STACK} )
+
+file( COPY ./ DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
+  FILES_MATCHING PATTERN "*.py" )

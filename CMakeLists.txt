@@ -738,3 +738,8 @@ endif( NOT TubeTK_BUILD_USING_SLICER )
 #LIST(PREPEND CMAKE_MODULE_PATH "${CMAKE_ROOT}/Modules")
 include(${CMAKE_ROOT}/Modules/ExternalData.cmake)
 ExternalData_Add_Target(TubeTKData)
+
+# Add python modules
+if( TubeTK_USE_PYTHON )
+  add_subdirectory( PythonModules )
+endif( TubeTK_USE_PYTHON )

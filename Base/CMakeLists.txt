@@ -47,10 +47,6 @@ _subdirectory_conditional_add( MetaIO )
 _subdirectory_conditional_add( Numerics )
 _subdirectory_conditional_add( ObjectDocuments )
 
-if( TubeTK_USE_PYTHON )
-  _subdirectory_conditional_add( Python )
-endif( TubeTK_USE_PYTHON )
-
 _subdirectory_conditional_add( Filtering )
 _subdirectory_conditional_add( Registration )
 _subdirectory_conditional_add( Segmentation )

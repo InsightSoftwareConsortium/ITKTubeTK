@@ -39,7 +39,7 @@ if not os.path.exists(TubeTK_BUILD_DIR):
     sys.exit(1)
 
 sys.path.append( os.path.join(TubeTK_BUILD_DIR, 'lib') )
-sys.path.append( os.path.join(TubeTK_BUILD_DIR, 'Base/Python') )
+sys.path.append( os.path.join(TubeTK_BUILD_DIR, 'PythonModules') )
 
 def VesselTubeToNumPyTest(tubes, baseline_array):
     import numpy as np
