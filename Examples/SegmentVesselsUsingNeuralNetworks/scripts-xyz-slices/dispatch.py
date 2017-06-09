@@ -69,7 +69,7 @@ def dispatch():
         if a.base is None:
             raise ValueError("--base required if not starting from beginning")
 
-        symlink_entries_through(a.base, odr, 'Net_TrainData', 'Net_ValData', *sp['TYPES'].values())
+        symlink_entries_through(a.base, odr, 'training', 'Net_TrainData', 'Net_ValData', *sp['TYPES'].values())
         os.mkdir(os.path.join(odr, 'testing'))
         symlink_entries_through(a.base, odr,
                                 *(os.path.join('testing', x)
