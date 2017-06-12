@@ -29,7 +29,8 @@ try:
     with open(os.path.join(os.path.dirname(__file__), 'params.json')) as f:
         script_params = json.load(f)
 except (IOError, ValueError):
-    script_params = {}
+    import params
+    script_params = params.params.copy()
 
 def set_params_path(path):
     with open(path) as f:

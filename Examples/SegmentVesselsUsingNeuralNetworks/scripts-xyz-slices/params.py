@@ -1,10 +1,10 @@
-{
+params = {
     "OUTPUT_DATA_ROOT": "/invalid/path/to/data",
     "INPUT_DATA_ROOT": "/home/nealsiekierski/caffe/data/SegmentVesselsUsingNeuralNetworks",
     "TYPE_SUBDIR_STRUCTURE": "*",
     "TYPES": {
-	"Controls": "controls",
-	"LargeTumor": "tumors"
+        "Controls": "controls",
+        "LargeTumor": "tumors",
     },
     "NETWORK_DESIGN": "xyz",
     "PATCH_RADIUS": 31,
@@ -20,11 +20,11 @@
     "DEPLOY_TOP_WINDOW": 5,
     "SOLVER_TYPE": "SGD",
     "SOLVER_PARAMS": {
-        "MOMENTUM": 0.9
+        "MOMENTUM": 0.9,
     },
     "BASE_LR": 0.2,
     "WEIGHT_DECAY": 0.0001,
     "GAMMA": 0.02,
     "VESSEL_SEED_PROBABILITY": 0.95,
-    "VESSEL_SCALE": 0.1
+    "VESSEL_SCALE": 0.1,
 }
