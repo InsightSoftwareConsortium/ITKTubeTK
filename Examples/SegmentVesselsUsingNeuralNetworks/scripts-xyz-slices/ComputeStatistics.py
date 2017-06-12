@@ -70,11 +70,12 @@ def sampling_roc(samples_per_class=5000):
         expert_im = itk.imread(str(os.path.join(test_data_dir, name + '_prepped_expert.mha')))
         prepped_im = itk.imread(str(os.path.join(test_data_dir, name + '_prepped.mha')))
         expert_arr, prepped_arr = map(itk.GetArrayViewFromImage, (expert_im, prepped_im))
-        sample_ind = [random.sample(np.transpose(np.where(
-            (expert_arr if i else 1 - expert_arr)[(np.s_[w:-w],) * expert_arr.ndim]
-        )) + w, samples_per_class) for i in 0, 1]
+        sample_ind = [random.sample(
+            np.transpose(np.where(expert_arr if i else 1 - expert_arr)),
+            samples_per_class,
+        ) for i in 0, 1]
         neg_pred, pos_pred = (utils.predict_on_indices(
-            model, prepped_arr, sample_ind[0] + sample_ind[1],
+            model, utils.pad(prepped_arr), sample_ind[0] + sample_ind[1],
             script_params['DEPLOY_BATCH_SIZE'],
         ).reshape((2, -1)) * 255).round().astype(int)
         all_bins = np.concatenate((np.bincount(neg_pred, minlength=256),

@@ -75,8 +75,18 @@ def scale_net_input_data(data):
     """Convert to float64"""
     return data.astype(float)
 
-def extractPatch(im, indices):
-    """Return a patch extracted from im at indices.
+def pad(im):
+    """Pad im with BACKGROUND_PADDING in the amount of PATCH_RADIUS on
+    each edge of each dimension so that it can be passed to
+    extractPatch
+
+    """
+    return np.pad(im, script_params['PATCH_RADIUS'], 'reflect')
+
+def extractPatch(im_padded, indices):
+    """Return a patch extracted from im_padded at indices.
+
+    Indices are for the corresponding unpadded image.
 
     If NETWORK_DESIGN is "xyz", this means returning an array of size
     (2W+1 x 2W+1 x 3), where W is the patch radius.
@@ -85,17 +95,18 @@ def extractPatch(im, indices):
     size (2W+1 x 2W+1 x 2W+1).
 
     """
+    im_p = im_padded
     w = script_params['PATCH_RADIUS']
     design = script_params['NETWORK_DESIGN']
     if design == 'xyz':
         # Return N (N-1)-dimensional slices
-        return np.stack((im[tuple(np.s_[x - w : x + w + 1] if i != j else x
-                                  for j, x in enumerate(indices))]
+        return np.stack((im_p[tuple(np.s_[x : x + 2*w + 1] if i != j else x + w
+                                    for j, x in enumerate(indices))]
                          for i in range(len(indices))),
                         axis=-1)
     elif design == 'full3d':
         # Return an N-dimensional slice
-        return im[tuple(np.s_[x - w : x + w + 1] for x in indices)]
+        return im_p[tuple(np.s_[x : x + 2*w + 1] for x in indices)]
     else:
         raise ValueError('Unknown NETWORK_DESIGN')
 
@@ -125,16 +136,16 @@ def best_model_path():
 def load_best_model():
     return keras.models.load_model(best_model_path())
 
-def predict_on_indices(model, input_image, indices, batch_size):
-    """Run prediction on patches taken from input_image centered at the
-    various indices.
+def predict_on_indices(model, input_image_padded, indices, batch_size):
+    """Run prediction on patches taken from input_image_padded centered at
+    the various indices (which are relative to the unpadded image)
 
     """
     predictions = []
     for i in range(0, len(indices), batch_size):
         ind = indices[i:i + batch_size]
         patches = prepareInputArray(np.stack(
-            extractPatch(input_image, i) for i in ind
+            extractPatch(input_image_padded, i) for i in ind
         ))
         pred = model.predict_on_batch(patches)[:, 1]
         predictions.append(pred)

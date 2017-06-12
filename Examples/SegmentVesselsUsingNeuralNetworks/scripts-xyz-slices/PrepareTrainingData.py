@@ -184,7 +184,7 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
         filename = os.path.join(
             str(patchSetIndex), imageName, '_'.join(map(str, coords)) + ".png")
 
-        image = utils.extractPatch(inputImage, coords)
+        image = utils.extractPatch(inputImagePadded, coords)
 
         return filename, patchSetIndex, image
 
@@ -199,6 +199,7 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
     inputImageReader = itk.ImageFileReader.New(FileName=str(inputImageFile))
     inputImageReader.Update()
     inputImage = itk.GetArrayViewFromImage(inputImageReader.GetOutput())
+    inputImagePadded = utils.pad(inputImage)
 
     # read expert segmented label mask
     expertSegFile = os.path.join(rootDir, imageName + '_expert.mha')
@@ -210,12 +211,7 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
     trainingMask = np.where(lbm, expertMask, -1)
 
     # Iterate through expert mask and find pos/neg patches
-
-    # Slice that we want, which excludes edge pixels
-    s = np.s_[w:-w or None]
-    trainingMaskMid = trainingMask[(s,) * 3]
-
-    mask = [trainingMaskMid == 0, trainingMaskMid == 1]
+    mask = [trainingMask == 0, trainingMask == 1]
 
     # Linear, flat indices
     indices = [np.where(m.reshape(-1))[0] for m in mask]
@@ -232,7 +228,7 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
 
     for label, (ind, n) in enumerate(zip(indices, numPatches)):
         selInd = random.sample(ind, n)
-        selInd = np.transpose(np.unravel_index(selInd, trainingMaskMid.shape)) + w
+        selInd = np.transpose(np.unravel_index(selInd, trainingMask.shape))
         for coords in selInd:
             yield patchEntry(label, coords)
 

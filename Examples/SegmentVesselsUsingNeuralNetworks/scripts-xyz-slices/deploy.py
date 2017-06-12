@@ -139,7 +139,7 @@ def segmentPreppedImage(model, input_file, output_file):
 
     w = np.int(patch_size / 2)
 
-    patch_indices = np.stack(np.where(fgnd_mask[(np.s_[w:-w],) * input_image.ndim]), axis=-1) + w
+    patch_indices = np.stack(np.where(fgnd_mask), axis=-1)
 
     end_time = time.time()
 
@@ -156,7 +156,7 @@ def segmentPreppedImage(model, input_file, output_file):
 
     output_image = np.zeros_like(input_image, dtype=np.uint8)
 
-    prob_vessel = utils.predict_on_indices(model, input_image, patch_indices, test_batch_size)
+    prob_vessel = utils.predict_on_indices(model, utils.pad(input_image), patch_indices, test_batch_size)
     output_image[tuple(patch_indices.T)] = (prob_vessel * 255).round()
 
     end_time = time.time()
