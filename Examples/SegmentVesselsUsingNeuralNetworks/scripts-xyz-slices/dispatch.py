@@ -3,14 +3,13 @@
 from __future__ import print_function
 
 import argparse
-from collections import OrderedDict
 import json
 import os
 import shutil
 from subprocess import check_call
 import sys
 
-from utils import symlink_entries_through
+from utils import script_params, symlink_entries_through
 
 stages = [
     'PrepareTrainingData',
@@ -45,13 +44,10 @@ def dispatch():
     if any(tf not in stages_dict for tf in (a.to, a.from_)):
         raise ValueError('to and from must be one of the following: ' + ' '.join(stages))
 
-    script_dir = os.path.dirname(__file__)
-    with open(os.path.join(script_dir, 'params.json')) as f:
-        # So that the output resembles the input
-        script_params = json.load(f, object_pairs_hook=OrderedDict)
     odr = a.outputDir or script_params['OUTPUT_DATA_ROOT']
     os.mkdir(odr)
 
+    script_dir = os.path.dirname(__file__)
     source = os.path.join(odr, 'source')
     shutil.copytree(script_dir, source)
 
