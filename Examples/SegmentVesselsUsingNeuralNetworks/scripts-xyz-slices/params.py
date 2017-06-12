@@ -1,4 +1,5 @@
 data_id = 'SVUNN'
+filters = 32
 
 params = {
     "OUTPUT_DATA_ROOT": "/invalid/path/to/data",
@@ -9,9 +10,14 @@ params = {
     "NEGATIVE_TO_POSITIVE_RATIO": 1.0,
     "NUM_TRAIN_EPOCHS": 12,
     "NUM_TEST_EPOCHS": 1,
-    "TRAIN_BATCH_SIZE": 768,
-    "TEST_BATCH_SIZE": 768,
-    "DEPLOY_BATCH_SIZE": 1024,
+    "FILTERS_PER_LAYER": filters,
+    # These parameters are set here in this file as a reminder that
+    # they are guesses and are machine-specific.  These guesses will
+    # not work automatically for all configurations, even on the
+    # machine they were created for.
+    "TRAIN_BATCH_SIZE": 24 * 1024 / filters,
+    "TEST_BATCH_SIZE": 24 * 1024 / filters,
+    "DEPLOY_BATCH_SIZE": 32 * 1024 / filters,
     "DEPLOY_TOP_WINDOW": 5,
     "SOLVER_TYPE": "SGD",
     "SOLVER_PARAMS": {

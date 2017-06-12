@@ -111,7 +111,7 @@ def create_uncompiled_model():
     def BatchNormalization():
         return L.BatchNormalization(scale=False, beta_regularizer=R.l2(weight_decay))
 
-    def convLayer(f=32, k=3):
+    def convLayer(f=script_params['FILTERS_PER_LAYER'], k=3):
         c = ConvND(filters=f, kernel_size=k, use_bias=False)
         n = BatchNormalization()
         r = L.LeakyReLU(0.1)
