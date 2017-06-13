@@ -38,6 +38,7 @@ if data_id == 'SVUNN':
             "LargeTumor": "tumors",
         },
         "RESAMPLE_SPACING": None,
+        "RESHUFFLE": False,
         "VESSEL_SCALE": 0.1,
     })
 elif data_id == 'B-MRA':
@@ -49,6 +50,7 @@ elif data_id == 'B-MRA':
             "Female": "female",
         },
         "RESAMPLE_SPACING": 0.513393,
+        "RESHUFFLE": False,
         "VESSEL_SCALE": 0.9,
     })
 elif data_id == 'stroke':
@@ -59,6 +61,7 @@ elif data_id == 'stroke':
             "restructured-with-skull": "data",
         },
         "RESAMPLE_SPACING": 0.5,
+        "RESHUFFLE": True,
         "VESSEL_SCALE": 0.9,
     })
 else:

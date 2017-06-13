@@ -348,12 +348,14 @@ def run():
                 image_data, labels = queryResultToModelArguments(result, augment=True)
                 yield image_data, U.to_categorical(labels, 2)
 
-    history = model.fit_generator(data_generator(train_db_path, train_batch_size, reshuffle=True),
+    history = model.fit_generator(data_generator(train_db_path, train_batch_size,
+                                                 reshuffle=script_params['RESHUFFLE']),
                                   steps_per_epoch=num_train_iters_per_epoch,
                                   epochs=num_train_epochs,
                                   callbacks=[C.ProgbarLogger('steps'),
                                              C.ModelCheckpoint(snapshot_format)],
-                                  validation_data=data_generator(test_db_path, test_batch_size, reshuffle=False),
+                                  validation_data=data_generator(test_db_path, test_batch_size,
+                                                                 reshuffle=False),
                                   validation_steps=num_test_iters_per_epoch).history
 
     print 'Test accuracy : ', history['val_acc']
