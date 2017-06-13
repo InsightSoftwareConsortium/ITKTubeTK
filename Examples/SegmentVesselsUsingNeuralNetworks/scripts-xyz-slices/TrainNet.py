@@ -326,18 +326,21 @@ def run():
     num_test_iters_per_epoch = num_test_samples / test_batch_size
     num_test_iters = num_test_epochs * num_test_iters_per_epoch
 
-    def data_generator(db_path, batch_size):
+    def data_generator(db_path, batch_size, reshuffle):
         """Generate batches of batch_size samples from the database at
         db_path, looping through the database repeatedly, and
         ignoring remaining samples when the total sample count is
         divided by batch_size.
+
+        If reshuffle is true, the data is reshuffled every epoch.
 
         """
         db = utils.open_sqlite3_db(db_path)
         cursor = db.cursor()
         while True:
             cursor.execute('''select "image_data", "patch_index"
-                              from "Patches" order by random()''')
+                              from "Patches"'''
+                           + (' order by random()' if reshuffle else ''))
             while True:
                 result = cursor.fetchmany(batch_size)
                 if len(result) < batch_size:
@@ -345,12 +348,12 @@ def run():
                 image_data, labels = queryResultToModelArguments(result, augment=True)
                 yield image_data, U.to_categorical(labels, 2)
 
-    history = model.fit_generator(data_generator(train_db_path, train_batch_size),
+    history = model.fit_generator(data_generator(train_db_path, train_batch_size, reshuffle=True),
                                   steps_per_epoch=num_train_iters_per_epoch,
                                   epochs=num_train_epochs,
                                   callbacks=[C.ProgbarLogger('steps'),
                                              C.ModelCheckpoint(snapshot_format)],
-                                  validation_data=data_generator(test_db_path, test_batch_size),
+                                  validation_data=data_generator(test_db_path, test_batch_size, reshuffle=False),
                                   validation_steps=num_test_iters_per_epoch).history
 
     print 'Test accuracy : ', history['val_acc']
