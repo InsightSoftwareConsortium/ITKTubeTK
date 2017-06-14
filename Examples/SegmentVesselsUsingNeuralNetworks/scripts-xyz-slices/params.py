@@ -1,9 +1,17 @@
 data_id = 'SVUNN'
 filters = 32
+design = 'xyz'
+
+if design == 'xyz':
+    train_bs = 24 * 1024 / filters
+elif design == 'full3d':
+    train_bs = 1024 / filters
+else:
+    raise ValueError("Bad value for NETWORK_DESIGN")
 
 params = {
     "OUTPUT_DATA_ROOT": "/invalid/path/to/data",
-    "NETWORK_DESIGN": "xyz",
+    "NETWORK_DESIGN": design,
     "PATCH_RADIUS": 31,
     "SMOOTHING_RADIUS": 2,
     "POSITIVE_PATCHES_PER_INPUT_FILE": 5000,
@@ -15,9 +23,9 @@ params = {
     # they are guesses and are machine-specific.  These guesses will
     # not work automatically for all configurations, even on the
     # machine they were created for.
-    "TRAIN_BATCH_SIZE": 24 * 1024 / filters,
-    "TEST_BATCH_SIZE": 24 * 1024 / filters,
-    "DEPLOY_BATCH_SIZE": 32 * 1024 / filters,
+    "TRAIN_BATCH_SIZE": train_bs,
+    "TEST_BATCH_SIZE": train_bs,
+    "DEPLOY_BATCH_SIZE": 4 * train_bs / 3,
     "DEPLOY_TOP_WINDOW": 5,
     "SOLVER_TYPE": "SGD",
     "SOLVER_PARAMS": {
