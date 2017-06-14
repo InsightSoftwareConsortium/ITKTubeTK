@@ -147,7 +147,12 @@ def create_uncompiled_model():
 
     sharedModel = M.Model(inputs=sharedInput, outputs=x)
 
-    x = L.Concatenate()([sharedModel(i) for i in inputs])
+    # Work around Keras annoyance where merge layers don't generalize
+    # to a single input
+    if ninputs != 1:
+        x = L.Concatenate()([sharedModel(i) for i in inputs])
+    else:
+        x = sharedModel(inputs[0])
 
     x = denseLayer(20)(x)
 
