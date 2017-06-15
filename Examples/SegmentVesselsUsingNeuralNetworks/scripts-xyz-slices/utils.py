@@ -1,4 +1,6 @@
+from contextlib import contextmanager
 from glob import glob
+from itertools import chain
 import json
 import numpy as np
 import os
@@ -160,3 +162,79 @@ def original_image(name_key):
                            script_params['TYPE_SUBDIR_STRUCTURE'],
                            name_key + '.mh[ad]'))
     return r
+
+def escape_sql_id(string):
+    """Escape string into a valid SQL identifier."""
+    return '"' + string.replace('"', '""') + '"'
+
+def gen_name(con, prefix):
+    """Generate a name for a table or index that is not currently in use."""
+    while True:
+        # Presumably we'll never have anywhere near this number of
+        # tables and indices
+        name = prefix + str(np.random.randint(1000000))
+        if con.execute('''select ? not in (
+                            select name from sqlite_master union all
+                            select name from sqlite_temp_master
+                          )''', (name,)).fetchone()[0]:
+            return name
+
+@contextmanager
+def temp_table(con, schema, data):
+    """Yield a table name that is valid in the context and has the given
+    schema (everything after "create table $name") and data.  Schema
+    arity is inferred from data, all of whose elements (if any) must
+    be tuples of the same length.
+
+    """
+    name = gen_name(con, 'temp')
+    ename = escape_sql_id(name)
+    con.execute('create temp table ' + ename + ' ' + schema)
+    data = iter(data)
+    try:
+        first = next(data)
+    except StopIteration:
+        pass
+    else:
+        con.executemany('insert into ' + ename + ' values ('
+                        + ', '.join('?' * len(first)) + ')',
+                        chain((first,), data))
+    yield name
+    con.execute('drop table ' + ename)
+
+@contextmanager
+def select_rowids(con, table, rowids):
+    """Yield a select statement that is valid in the context and describes
+    a table whose rows are selected from the given table using the
+    given rowids.
+
+    """
+    with temp_table(con, '("index" integer)', ((r,) for r in rowids)) as name:
+        ename = escape_sql_id(name)
+        etable = escape_sql_id(table)
+        yield '''select T.* from {n} as R
+                 join {t} as T on R."index" = T.rowid'''.format(n=ename, t=etable)
+
+@contextmanager
+def choice(con, table, size=None):
+    """Yield a select statement that is valid in the context and describes
+    a table whose rows are a selection of size rows (default: the
+    size of the table), in random order.  There are no repeats.
+
+    Note: It is required that rowids count up from 1 with no gaps for
+    this function to work properly.  This precondition is checked.
+
+    """
+    etable = escape_sql_id(table)
+    count, min_, max_ = con.execute(
+        'select count(*), min(rowid), max(rowid) from ' + etable
+    ).fetchone()
+    if min_ != 1 or count != max_:
+        raise ValueError("Rowids must count up contiguously from 1!  Found:\n"
+                         "min(rowid) = {}, max(rowid) = {}, count(*) = {}"
+                         .format(min_, max_, count))
+    if size is None:
+        size = count
+    rowids = np.random.permutation(count)[:size] + 1
+    with select_rowids(con, table, rowids) as select:
+        yield select
