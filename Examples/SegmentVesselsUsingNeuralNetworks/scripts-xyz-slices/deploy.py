@@ -184,6 +184,7 @@ def segmentTubes(rir_image, vascularModelFile, output_prefix,
 
     # segment tubes using ridge traversal
     outVsegMaskFile = output_prefix + "_vseg.mha"
+    out_vseg_raw_tre_file = output_prefix + '_vseg_raw.tre'
     outVsegTreFile = output_prefix + "_vseg.tre"
 
     subprocess.call(["SegmentTubes",
@@ -191,13 +192,13 @@ def segmentTubes(rir_image, vascularModelFile, output_prefix,
                      "-P", vascularModelFile,
                      "-M", outSeedImageFile,
                      "-s", str(vess_scale),
-                     rir_image, outVsegTreFile])
+                     rir_image, out_vseg_raw_tre_file])
 
     # Fill gaps and convert to a tree
     subprocess.call(["ConvertTubesToTubeTree",
                      "--maxTubeDistanceToRadiusRatio", "3",
                      "--removeOrphanTubes",
-                     outVsegTreFile,
+                     out_vseg_raw_tre_file,
                      outVsegTreFile])
 
     subprocess.call(["TreeMath",
