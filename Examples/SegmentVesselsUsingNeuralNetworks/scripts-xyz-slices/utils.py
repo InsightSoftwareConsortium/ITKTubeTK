@@ -238,3 +238,7 @@ def choice(con, table, size=None):
     rowids = np.random.permutation(count)[:size] + 1
     with select_rowids(con, table, rowids) as select:
         yield select
+
+@contextmanager
+def empty_context():
+    yield

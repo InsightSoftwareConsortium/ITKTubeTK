@@ -294,9 +294,8 @@ def createDB(name, dataDir, dbDir):
 
     print("Shuffling patches")
 
-    db.execute('''create table "main"."Patches" as
-                  select * from "PatchesUnshuffled"
-                  order by random()''')
+    with utils.choice(db, "PatchesUnshuffled") as select:
+        db.execute('create table "Patches" as ' + select)
 
     db.execute('''drop table "PatchesUnshuffled"''')
 

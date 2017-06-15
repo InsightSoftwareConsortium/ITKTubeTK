@@ -343,15 +343,21 @@ def run():
         db = utils.open_sqlite3_db(db_path)
         cursor = db.cursor()
         while True:
-            cursor.execute('''select "image_data", "patch_index"
-                              from "Patches"'''
-                           + (' order by random()' if reshuffle else ''))
-            while True:
-                result = cursor.fetchmany(batch_size)
-                if len(result) < batch_size:
-                    break
-                image_data, labels = queryResultToModelArguments(result, augment=True)
-                yield image_data, U.to_categorical(labels, 2)
+            with (
+                utils.choice(db, "Patches") if reshuffle else utils.empty_context()
+            ) as select:
+                if reshuffle:
+                    inner_query = '(' + select + ')'
+                else:
+                    inner_query = '"Patches"'
+                cursor.execute('select "image_data", "patch_index"'
+                               ' from ' + inner_query)
+                while True:
+                    result = cursor.fetchmany(batch_size)
+                    if len(result) < batch_size:
+                        break
+                    image_data, labels = queryResultToModelArguments(result, augment=True)
+                    yield image_data, U.to_categorical(labels, 2)
 
     history = model.fit_generator(data_generator(train_db_path, train_batch_size,
                                                  reshuffle=script_params['RESHUFFLE']),
@@ -441,12 +447,13 @@ def run():
         train_results_dir, 'learning_curve.png'))
 
     # Show sample images from each cell of the confusion matrix
-    image_data, true_labels = queryResultToModelArguments(
-        utils.open_sqlite3_db(test_db_path)
-        .execute('''select "image_data", "patch_index" from "Patches"
-                    order by random() limit ?''', (test_batch_size,))
-        .fetchall(),
-        augment=False)
+    test_db = utils.open_sqlite3_db(test_db_path)
+    with utils.choice(test_db, "Patches", test_batch_size) as select:
+        image_data, true_labels = queryResultToModelArguments(
+            test_db.execute('select "image_data", "patch_index" from ('
+                            + select + ')').fetchall(),
+            augment=False
+        )
     pred_labels = model.predict(image_data, test_batch_size).argmax(1)
 
     if design == 'xyz':
