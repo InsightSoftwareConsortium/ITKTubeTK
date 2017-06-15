@@ -1,18 +1,20 @@
 data_id = 'SVUNN'
 filters = 32
 design = 'xyz'
+patch_radius = 31
 
 if design == 'xyz':
-    train_bs = 24 * 1024 / filters
+    bs_mult, ndim = 24, 2
 elif design == 'full3d':
-    train_bs = 1024 / filters
+    bs_mult, ndim = 1, 3
 else:
     raise ValueError("Bad value for NETWORK_DESIGN")
+train_bs = int(bs_mult * 1024 / (patch_radius / 31.) ** ndim / filters)
 
 params = {
     "OUTPUT_DATA_ROOT": "/invalid/path/to/data",
     "NETWORK_DESIGN": design,
-    "PATCH_RADIUS": 31,
+    "PATCH_RADIUS": patch_radius,
     "SMOOTHING_RADIUS": 2,
     "POSITIVE_PATCHES_PER_INPUT_FILE": 5000,
     "NEGATIVE_TO_POSITIVE_RATIO": 1.0,
