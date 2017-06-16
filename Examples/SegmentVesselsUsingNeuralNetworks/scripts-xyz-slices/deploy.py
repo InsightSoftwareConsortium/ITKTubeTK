@@ -110,7 +110,7 @@ def segmentPreppedImage(model, input_file, output_file):
 
     data_shape = model.input_shape
 
-    print data_shape
+    print "Model input shape:", data_shape
 
     # read input slab image
     input_image_itk = itk.imread(str(input_file))
