@@ -73,7 +73,7 @@ set( TubeTK_ITK_MODULES
 
 # Insight Segmentation and Registration Toolkit
 set( ITK_URL ${github_protocol}://github.com/InsightSoftwareConsortium/ITK.git )
-set( ITK_HASH_OR_TAG cb0b6bb10ec2fbad5caf04a6b9b213bbc5420e3d )
+set( ITK_HASH_OR_TAG v4.12.0 )
 
 # Slicer Execution Model
 set( SlicerExecutionModel_URL
