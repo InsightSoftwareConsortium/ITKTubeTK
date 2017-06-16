@@ -54,9 +54,8 @@ def whole_image_confusion():
 
 def sampling_roc(samples_per_class=5000):
     """Sample so many positive and negative patches per image, and use the
-    model prediction on these to estimate the ROC curve.  Also
-    generate the confusion matrix using VESSEL_SEED_PROBABILITY as the
-    threshold for reference.
+    model prediction on these to estimate the ROC curve.  Also plot
+    the points used to generate the ROC curve vs. the threshold value.
 
     """
     print("Generating sampled ROC curves")
@@ -85,7 +84,6 @@ def sampling_roc(samples_per_class=5000):
             os.path.join(base, name + '_roc.png'),
             os.path.join(base, name + '_i.png'),
         )
-        # TODO ROC curve
 
 def write_roc_plot_from_all_bins(all_bins, path, path_i):
     """From a flat array of all expert-negative, the all expert-positive
