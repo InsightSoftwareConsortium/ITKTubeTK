@@ -162,25 +162,28 @@ def splitData():
 
 # Extracts +ve (vessel center) and -ve (background) patches from image
 def extractPatchesFromImageGenerator(rootDir, imageName):
-    # TODO update docstring
     """Convert an image to a set of patches.  Patches are sorted into
     "positive" and "negative" patches, i.e. those with and without a
     vessel at the center.  Positive patches have index 1, negative
-    patches index 0.  Patch relative paths and their indices are
-    yielded with the image data as part of a generator.
+    patches index 0.  A path-like string containing patch information
+    is yielded with the image data for each patch as part of a
+    generator.
 
     Input:
     - $rootDir/$imageName.mha: The image to extract slices from
     - $rootDir/$imageName_expert.mha: The corresponding expert mask
 
     Output:
-    - ("0/$imageName/$i_$j.png", 0, image): Negative patches
-    - ("1/$imageName/$i_$j.png", 1, image): Positive patches
+    - ("0/$imageName/$i_$j_$k.png", 0, image): Negative patches
+    - ("1/$imageName/$i_$j_$k.png", 1, image): Positive patches
 
     """
 
     def patchEntry(patchSetIndex, coords):
-        # TODO document
+        """Return a pseudo-path, the given index, and the patch corresponding
+        to the given coordinates of the input image.
+
+        """
         filename = os.path.join(
             str(patchSetIndex), imageName, '_'.join(map(str, coords)) + ".png")
 
@@ -234,16 +237,14 @@ def extractPatchesFromImageGenerator(rootDir, imageName):
 
 
 def createPatchesGenerator(name, dataDir):
-    # TODO update documentation
-    """Create patch files from images in dataDir.
+    """Create a generator yielding patches from the images in dataDir.
 
     Input:
-    - $dataDir/images/*.png
-    - $dataDir/expert/*_expert.png
+    - $dataDir/*.png
+    - $dataDir/*_expert.png
 
     Output:
-    - $dataDir/patches/{0,1}/*_$i_$j.png
-    - $dataDir/patches/$patchListFile: List of patch files and patch index
+    - ("{0,1}/*/$i_$j_$k.png", {0,1}, image)
 
     """
     printSectionHeader('Creating %s patches' % name)
@@ -261,11 +262,7 @@ def createPatchesGenerator(name, dataDir):
             yield result
 
 def createDB(name, dataDir, dbDir):
-    # TODO update documentation
-    """Create a database in dbDir from the patches in patchesDir, indexed
-    by patchListFile
-
-    """
+    """Create a database in dbDir from the images in dataDir."""
     print('Creating %s DB ...\n' % name)
 
     if os.path.exists(dbDir):
