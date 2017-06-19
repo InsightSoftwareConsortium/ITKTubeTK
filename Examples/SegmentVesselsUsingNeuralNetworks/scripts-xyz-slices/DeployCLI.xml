@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>Segment Vessels Using Neural Networks</title>
+  <description>Segment vessels using a neural network</description>
+  <version>0.1.0</version>
+  <documentation-url>http://tubetk.org</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Neal Siekierski (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+    <label>I/O</label>
+    <description>Input/output parameters</description>
+    <file>
+      <name>params</name>
+      <label>Parameters</label>
+      <description>The params.json file used to train the model</description>
+      <index>0</index>
+      <channel>input</channel>
+    </file>
+    <file>
+      <name>model</name>
+      <label>Model</label>
+      <description>Saved Keras model file</description>
+      <index>1</index>
+      <channel>input</channel>
+    </file>
+    <file>
+      <name>vascularModelFile</name>
+      <label>Vascular model file</label>
+      <description>File with vascular model parameters</description>
+      <index>2</index>
+      <channel>input</channel>
+    </file>
+    <image>
+      <name>inputImage</name>
+      <label>Input image</label>
+      <description>Image to be segmented</description>
+      <index>3</index>
+      <channel>input</channel>
+    </image>
+    <directory>
+      <name>outputDir</name>
+      <label>Output directory</label>
+      <description>Directory to write all output to.  Output file names all start with the basename of the input image without its extension</description>
+      <index>4</index>
+      <channel>output</channel>
+      <default>.</default>
+    </directory>
+    <image>
+      <longflag>resampled</longflag>
+      <label>Resampled image</label>
+      <description>An appropriately resampled version of the input image.  Should be supplied iff resampling is enabled in the parameters file and a preprocessed image is given.</description>
+      <channel>input</channel>
+    </image>
+    <image>
+      <longflag>preprocessed</longflag>
+      <label>Preprocessed image</label>
+      <description>An appropriately preprocessed version of the input image.  Automatically generated if not given.</description>
+      <channel>input</channel>
+    </image>
+  </parameters>
+</executable>
