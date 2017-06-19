@@ -109,7 +109,7 @@ def splitDataForType(name, inputDir, outputDir, trainOutputDir, testOutputDir):
     With an input file named *.mh[ad], the following outputs are moved
     into the destination folder:
     - *_prepped.mha
-    - *_expert.mha
+    - *_resampled.mha (If RESAMPLED_SPACING is a number)
     - *_prepped_expert.mha
 
     """
@@ -240,8 +240,8 @@ def createPatchesGenerator(name, dataDir):
     """Create a generator yielding patches from the images in dataDir.
 
     Input:
-    - $dataDir/*.png
-    - $dataDir/*_expert.png
+    - $dataDir/*_prepped.mha
+    - $dataDir/*_prepped_expert.mha
 
     Output:
     - ("{0,1}/*/$i_$j_$k.png", {0,1}, image)
