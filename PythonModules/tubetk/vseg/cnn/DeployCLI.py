@@ -5,9 +5,9 @@ import os.path
 import ctk_cli
 import keras.models as M
 
-import deploy
-import utils
-from utils import script_params
+from . import deploy
+from . import utils
+from .utils import script_params
 
 
 def main(args):

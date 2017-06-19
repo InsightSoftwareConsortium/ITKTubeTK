@@ -9,7 +9,7 @@ import shutil
 from subprocess import check_call
 import sys
 
-from utils import script_params, symlink_entries_through
+from .utils import script_params, symlink_entries_through
 
 stages = [
     'PrepareTrainingData',

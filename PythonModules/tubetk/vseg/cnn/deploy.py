@@ -7,8 +7,8 @@ import time
 import itk
 import numpy as np
 
-import utils
-from utils import script_params
+from . import utils
+from .utils import script_params
 
 
 # Preprocess ("prep") images

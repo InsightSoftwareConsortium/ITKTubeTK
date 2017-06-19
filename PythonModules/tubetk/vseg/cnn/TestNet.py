@@ -16,9 +16,9 @@ import numpy as np
 import skimage.io
 import skimage.filters
 
-import deploy
-import utils
-from utils import script_params
+from . import deploy
+from . import utils
+from .utils import script_params
 
 import itk
 
