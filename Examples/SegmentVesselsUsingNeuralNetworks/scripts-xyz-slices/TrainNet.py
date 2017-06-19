@@ -117,11 +117,12 @@ def create_uncompiled_model():
         r = L.LeakyReLU(0.1)
         return lambda x: r(n(c(x)))
 
-    def denseLayer(u):
+    def denseLayer(u, dropout=True):
         d = Dense(u, use_bias=False)
         n = BatchNormalization()
         r = L.LeakyReLU(0.1)
-        return lambda x: r(n(d(x)))
+        o = L.Dropout(0.5) if dropout else lambda x: x
+        return lambda x: o(r(n(d(x))))
 
     # Channels go last
     input_shape = (patch_size,) * ndim + (1,)
@@ -143,8 +144,6 @@ def create_uncompiled_model():
     x = L.Flatten()(x)
     x = denseLayer(32)(x)
 
-    x = L.Dropout(0.5)(x)
-
     sharedModel = M.Model(inputs=sharedInput, outputs=x)
 
     # Work around Keras annoyance where merge layers don't generalize
@@ -154,7 +153,7 @@ def create_uncompiled_model():
     else:
         x = sharedModel(inputs[0])
 
-    x = denseLayer(20)(x)
+    x = denseLayer(20, dropout=False)(x)
 
     # Classify
     x = Dense(2)(x)
