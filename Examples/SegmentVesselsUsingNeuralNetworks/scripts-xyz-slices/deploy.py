@@ -103,8 +103,8 @@ def locally_brightest_mask(arr):
     return mask
 
 
-def segmentPreppedImage(model, input_file, output_file):
-    """Segment (really, generate seed points from) a preprocessed image"""
+def generate_seed_points(model, input_file, output_file):
+    """Generate seed points from a preprocessed image"""
 
     print "Segmenting image", input_file
 

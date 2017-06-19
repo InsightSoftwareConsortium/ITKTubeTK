@@ -55,8 +55,7 @@ def run():
 
         name_key = os.path.basename(os.path.splitext(mhaFile)[0])[:-8]
 
-        # segment image
-        deploy.segmentPreppedImage(
+        deploy.generate_seed_points(
             model, mhaFile,
             os.path.join(outputDir, name_key + '_vess_prob.mha')
         )

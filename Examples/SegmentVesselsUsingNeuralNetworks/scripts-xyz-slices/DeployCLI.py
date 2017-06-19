@@ -20,7 +20,7 @@ def main(args):
         args.resampled, args.preprocessed = deploy.prep(args.inputImage, args.outputDir)
     model = M.load_model(args.model)
     prefix = os.path.join(args.outputDir, os.path.splitext(os.path.basename(args.inputImage))[0])
-    deploy.segmentPreppedImage(model, args.preprocessed, prefix + '_vess_prob.mha')
+    deploy.generate_seed_points(model, args.preprocessed, prefix + '_vess_prob.mha')
     deploy.segmentTubes(args.resampled, args.vascularModelFile, prefix,
                         script_params['VESSEL_SEED_PROBABILITY'],
                         script_params['VESSEL_SCALE'])
