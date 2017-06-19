@@ -53,24 +53,24 @@ def run():
     # segment all test .mha files
     for mhaFile in testMhaFiles:
 
-        testAnimal = os.path.basename(os.path.splitext(mhaFile)[0])[:-8]
+        name_key = os.path.basename(os.path.splitext(mhaFile)[0])[:-8]
 
         # segment image
         deploy.segmentPreppedImage(
             model, mhaFile,
-            os.path.join(outputDir, testAnimal + '_vess_prob.mha')
+            os.path.join(outputDir, name_key + '_vess_prob.mha')
         )
 
         # segment tubes using ridge traversal
         vascularModelFile = os.path.join(input_data_root, 'vascularModel.mtp')
 
         if script_params['RESAMPLE_SPACING'] is None:
-            rir_image = utils.original_image(testAnimal)
+            rir_image = utils.original_image(name_key)
         else:
-            rir_image = os.path.join(testDataDir, testAnimal + '_resampled.mha')
+            rir_image = os.path.join(testDataDir, name_key + '_resampled.mha')
 
         deploy.segmentTubes(rir_image, vascularModelFile,
-                            os.path.join(outputDir, testAnimal),
+                            os.path.join(outputDir, name_key),
                             script_params['VESSEL_SEED_PROBABILITY'],
                             script_params['VESSEL_SCALE'])
 
