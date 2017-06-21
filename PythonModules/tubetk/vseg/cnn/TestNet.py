@@ -54,11 +54,9 @@ def run():
     for mhaFile in testMhaFiles:
 
         name_key = os.path.basename(os.path.splitext(mhaFile)[0])[:-8]
+        output_prefix = os.path.join(outputDir, name_key)
 
-        deploy.generate_seed_points(
-            model, mhaFile,
-            os.path.join(outputDir, name_key + '_vess_prob.mha')
-        )
+        deploy.generate_seed_points(model, mhaFile, output_prefix)
 
         # segment tubes using ridge traversal
         vascularModelFile = os.path.join(input_data_root, 'vascularModel.mtp')
@@ -68,8 +66,7 @@ def run():
         else:
             rir_image = os.path.join(testDataDir, name_key + '_resampled.mha')
 
-        deploy.segmentTubes(rir_image, vascularModelFile,
-                            os.path.join(outputDir, name_key),
+        deploy.segmentTubes(rir_image, vascularModelFile, output_prefix,
                             script_params['VESSEL_SEED_PROBABILITY'],
                             script_params['VESSEL_SCALE'])
 
