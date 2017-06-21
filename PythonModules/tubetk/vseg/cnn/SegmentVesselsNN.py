@@ -5,10 +5,9 @@ import os.path
 import ctk_cli
 import keras.models as M
 
-from . import deploy
-from . import utils
-from .utils import script_params
+from tubetk.vseg.cnn import deploy, utils
 
+script_params = utils.script_params
 
 def main(args):
     utils.set_params_path(args.params)
