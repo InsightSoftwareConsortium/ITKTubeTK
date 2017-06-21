@@ -18,6 +18,8 @@ def main(args):
                          " image is given.")
     if args.preprocessed is None:
         args.resampled, args.preprocessed = deploy.prep(args.inputImage, args.outputDir)
+    elif args.resampled is None:
+        args.resampled = args.inputImage
     model = M.load_model(args.model)
     prefix = os.path.join(args.outputDir, os.path.splitext(os.path.basename(args.inputImage))[0])
     deploy.generate_seed_points(model, args.preprocessed, prefix + '_vess_prob.mha')
