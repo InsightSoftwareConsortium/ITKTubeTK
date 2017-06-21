@@ -42,5 +42,7 @@ if( ${TubeTK_USE_NUMPY_STACK} )
     ${ITK_LIBRARIES} TubeTKFiltering )
 endif( ${TubeTK_USE_NUMPY_STACK} )
 
-file( COPY ./ DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
-  FILES_MATCHING PATTERN "*.py" )
+add_custom_target( CopyPurePythonTubetk ALL "${CMAKE_COMMAND}" -P
+  "${CMAKE_CURRENT_SOURCE_DIR}/CMake/CopyPurePythonTubetk.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}"
+  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" )
