@@ -9,7 +9,7 @@ import shutil
 from subprocess import check_call
 import sys
 
-from utils import script_params, symlink_entries_through
+from .utils import script_params, symlink_entries_through
 
 stages = [
     'PrepareTrainingData',
@@ -18,12 +18,9 @@ stages = [
     'ComputeStatistics',
 ]
 stages_dict = {k: i for i, k in enumerate(stages)}
-commands = [
-    'PrepareTrainingData.py',
-    'TrainNet.py',
-    'TestNet.py',
-    'ComputeStatistics.py',
-]
+# In theory, stage names could be different from the underlying
+# command names.  In current practice, they are not.
+commands = stages
 
 def parse_args():
     p = argparse.ArgumentParser()
@@ -52,7 +49,7 @@ def dispatch():
     shutil.copytree(script_dir, source)
 
     sp = script_params.copy()
-    sp['OUTPUT_DATA_ROOT'] = '..'
+    sp['OUTPUT_DATA_ROOT'] = '.'
     with open(os.path.join(source, 'params.json'), 'w') as f:
         json.dump(sp, f, indent=4, separators=(',', ': '))
 
@@ -88,8 +85,9 @@ def dispatch():
         f.write(repr(sys.argv)+'\n')
 
         for i in range(stages_dict[a.from_], stages_dict[a.to] + 1):
-            check_call([os.path.abspath(os.path.join(source, commands[i]))], cwd=source)
-            f.write(repr([os.path.join('.', commands[i])])+'\n')
+            call_args = ['python', '-m',  'source.' + commands[i]]
+            check_call(call_args, cwd=odr)
+            f.write(repr(call_args)+'\n')
 
 if __name__=='__main__':
     dispatch()

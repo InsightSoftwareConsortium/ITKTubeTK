@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <executable>
   <category>TubeTK</category>
-  <title>Segment Vessels Using Neural Networks</title>
-  <description>Segment vessels using a neural network</description>
+  <title>Segment Vessels Using CNN for Seeds</title>
+  <description>Segment vessels using a convolutional neural network for seed point generation</description>
   <version>0.1.0</version>
   <documentation-url>http://tubetk.org</documentation-url>
   <license>Apache 2.0</license>

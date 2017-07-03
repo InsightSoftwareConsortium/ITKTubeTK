@@ -18,9 +18,9 @@ import sys
 import skimage.io
 import numpy as np
 
-import deploy
-import utils
-from utils import script_params
+from . import deploy
+from . import utils
+from .utils import script_params
 
 import itk
 

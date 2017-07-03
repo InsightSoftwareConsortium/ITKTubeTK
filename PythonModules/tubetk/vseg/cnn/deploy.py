@@ -7,8 +7,8 @@ import time
 import itk
 import numpy as np
 
-import utils
-from utils import script_params
+from . import utils
+from .utils import script_params
 
 
 # Preprocess ("prep") images
@@ -103,9 +103,11 @@ def locally_brightest_mask(arr):
     return mask
 
 
-def generate_seed_points(model, input_file, output_file):
-    """Generate seed points from a preprocessed image"""
+def generate_seed_points(model, input_file, output_prefix):
+    """Generate seed points from a preprocessed image.  The output file
+    name is output_prefix + '_vess_prob.mha'.
 
+    """
     print "Segmenting image", input_file
 
     data_shape = model.input_shape
@@ -165,7 +167,7 @@ def generate_seed_points(model, input_file, output_file):
     # Save output
     output_image_itk = itk.GetImageViewFromArray(output_image)
     output_image_itk.CopyInformation(input_image_itk)
-    itk.imwrite(output_image_itk, str(output_file), compression=True)
+    itk.imwrite(output_image_itk, str(output_prefix + '_vess_prob.mha'), compression=True)
 
 
 def segmentTubes(rir_image, vascularModelFile, output_prefix,
