@@ -16,15 +16,15 @@ def main(args):
         raise ValueError("A resampled image should be supplied iff resampling is"
                          " enabled in the parameters file and a preprocessed"
                          " image is given.")
-    if args.preprocessed is None:
-        args.resampled, args.preprocessed = deploy.prep(args.inputImage, args.outputDir)
-    elif args.resampled is None:
-        args.resampled = args.inputImage
     try:
         os.mkdir(args.outputDir)
     except OSError as e:
         if e.errno != errno.EEXIST:
             raise
+    if args.preprocessed is None:
+        args.resampled, args.preprocessed = deploy.prep(args.inputImage, args.outputDir)
+    elif args.resampled is None:
+        args.resampled = args.inputImage
     model = M.load_model(args.model)
     prefix = os.path.join(args.outputDir, os.path.splitext(os.path.basename(args.inputImage))[0])
     deploy.generate_seed_points(model, args.preprocessed, prefix)
