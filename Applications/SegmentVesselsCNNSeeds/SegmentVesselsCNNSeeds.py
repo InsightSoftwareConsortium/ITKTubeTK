@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import os.path
+import errno
+import os
 
 import ctk_cli
 import keras.models as M
@@ -19,6 +20,11 @@ def main(args):
         args.resampled, args.preprocessed = deploy.prep(args.inputImage, args.outputDir)
     elif args.resampled is None:
         args.resampled = args.inputImage
+    try:
+        os.mkdir(args.outputDir)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
     model = M.load_model(args.model)
     prefix = os.path.join(args.outputDir, os.path.splitext(os.path.basename(args.inputImage))[0])
     deploy.generate_seed_points(model, args.preprocessed, prefix)
