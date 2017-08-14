@@ -189,12 +189,14 @@ def segmentTubes(rir_image, vascularModelFile, output_prefix,
     out_vseg_raw_tre_file = output_prefix + '_vseg_raw.tre'
     outVsegTreFile = output_prefix + "_vseg.tre"
 
-    subprocess.call(["SegmentTubes",
-                     "-o", outVsegMaskFile,
-                     "-P", vascularModelFile,
-                     "-M", outSeedImageFile,
-                     "-s", str(vess_scale),
-                     rir_image, out_vseg_raw_tre_file])
+    with open(os.path.devnull, 'wb') as devnull:
+        subprocess.call(["SegmentTubes",
+                         "-o", outVsegMaskFile,
+                         "-P", vascularModelFile,
+                         "-M", outSeedImageFile,
+                         "-s", str(vess_scale),
+                         rir_image, out_vseg_raw_tre_file],
+                        stdout=devnull, stderr=devnull)
 
     # Fill gaps and convert to a tree
     subprocess.call(["ConvertTubesToTubeTree",
