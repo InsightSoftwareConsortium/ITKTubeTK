@@ -210,7 +210,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "[Mm]odules.[Rr]emote.[Mm]inimal[Pp]ath[Ee]xtraction"
   "[Mm]odules.*unary minus operator applied to unsigned"
   "libpcre.*has no symbols"
-  "warning.*current project is configured to use a C++ standard version older"
+  "current project.*configured.*standard version older"
   # MacOS 10.12 deprecations
   "OSMemory.*deprecated"
   "OSAtomic.*deprecated"
