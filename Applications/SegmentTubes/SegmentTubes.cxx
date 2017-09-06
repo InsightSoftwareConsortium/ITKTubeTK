@@ -186,6 +186,25 @@ int DoIt( int argc, char * argv[] )
     segmentTubesFilter->SetSeedIndexFromFileList( seedIndexList, scaleList );
     }
 
+  if( !seedListFilePhysicalNoScale.empty() )
+    {
+    pointList.clear();
+    std::ifstream readStream;
+    readStream.open( seedListFilePhysicalNoScale.c_str(), std::ios::binary |
+      std::ios::in );
+    std::string line;
+    while( std::getline( readStream, line ) )
+      {
+      std::istringstream iss( line );
+      for( unsigned int i = 0; i < VDimension; ++i )
+        {
+        iss >> point[i];
+        }
+      pointList.push_back( point );
+      }
+    segmentTubesFilter->SetSeedPhysicalCoordinatesList( pointList );
+    }
+
   if( !seedMask.empty() )
     {
     typename MaskReaderType::Pointer maskReader = MaskReaderType::New();

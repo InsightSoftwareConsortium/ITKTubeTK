@@ -78,6 +78,8 @@ set( CTEST_CUSTOM_COVERAGE_EXCLUDE
 
     ".*CLP.h"
 
+    ".*Wrapping/Modules/TubeTKITK.*"
+
     ${CTEST_CUSTOM_COVERAGE_EXCLUDE} )
 
 set( CTEST_CUSTOM_MEMCHECK_IGNORE
@@ -208,6 +210,7 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "[Mm]odules.[Rr]emote.[Mm]inimal[Pp]ath[Ee]xtraction"
   "[Mm]odules.*unary minus operator applied to unsigned"
   "libpcre.*has no symbols"
+  "current project.*configured.*standard version older"
   # MacOS 10.12 deprecations
   "OSMemory.*deprecated"
   "OSAtomic.*deprecated"

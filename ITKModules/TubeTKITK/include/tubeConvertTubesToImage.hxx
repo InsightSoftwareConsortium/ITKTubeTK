@@ -51,6 +51,8 @@ ConvertTubesToImage< Dimension, TOutputPixel >
 
     m_Filter->SetSize( pTemplateImage->GetLargestPossibleRegion().GetSize() );
     m_Filter->SetSpacing( pTemplateImage->GetSpacing() );
+    m_Filter->SetDirection( pTemplateImage->GetDirection() );
+    m_Filter->SetOrigin( pTemplateImage->GetOrigin() );
 
     this->Modified();
     }

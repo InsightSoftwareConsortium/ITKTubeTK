@@ -42,13 +42,6 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
   m_BuildRadiusImage = false;
   m_BuildTangentImage = false;
   m_FallOff = 0.0;
-  this->m_Size.Fill( 0 );
-  unsigned int i;
-  for( i=0; i<ObjectDimension; i++ )
-    {
-    this->m_Spacing[i] = 1;
-    this->m_Origin[i] = 0;
-    }
 
   // This is a little bit tricky since the 2nd an 3rd outputs are
   //   not always computed
@@ -150,15 +143,15 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
   index.Fill( 0 );
   region.SetIndex( index );
 
-  OutputImage->SetLargestPossibleRegion( region );  //
-  OutputImage->SetBufferedRegion( region );         // set the region
-  OutputImage->SetRequestedRegion( region );        //
+  OutputImage->SetRegions( region );
   OutputImage->SetSpacing( this->m_Spacing );
   OutputImage->SetOrigin( this->m_Origin );
+  OutputImage->SetDirection( this->m_Direction );
   OutputImage->Allocate();
   OutputImage->FillBuffer( 0 );
 
-  itk::Point<double, 3> point;
+  typedef itk::ContinuousIndex<double, ObjectDimension> ContinuousIndexType;
+  ContinuousIndexType point;
 
   m_RadiusImage = this->GetRadiusImage();
   //Build radius image for processing
@@ -167,6 +160,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
     m_RadiusImage->SetRegions( region );
     m_RadiusImage->SetSpacing( this->m_Spacing );
     m_RadiusImage->SetOrigin( this->m_Origin );
+    m_RadiusImage->SetDirection( this->m_Direction );
     m_RadiusImage->Allocate();
     m_RadiusImage->FillBuffer( 0 );
     }
@@ -178,6 +172,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
     m_TangentImage->SetRegions( region );
     m_TangentImage->SetSpacing( this->m_Spacing );
     m_TangentImage->SetOrigin( this->m_Origin );
+    m_TangentImage->SetDirection( this->m_Direction );
     m_TangentImage->Allocate();
     TangentPixelType v;
     v.Fill( 0 );
@@ -198,38 +193,33 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
 
   while( TubeIterator != tubeList->end() )
     {
+    TubeType * tube = ( TubeType * )TubeIterator->GetPointer();
+
+    tube->ComputeObjectToWorldTransform();
+
+    typename TubeType::TransformType * tubeIndexPhysTransform =
+      tube->GetIndexToWorldTransform();
+
     // Force the computation of the tangents
     if( m_BuildTangentImage )
       {
-      ( ( TubeType * )( ( *TubeIterator ).GetPointer() ) )->
-        RemoveDuplicatePoints();
-      ( ( TubeType * )( ( *TubeIterator ).GetPointer() ) )->
-        ComputeTangentAndNormals();
+      tube->RemoveDuplicatePoints();
+      tube->ComputeTangentAndNormals();
       }
 
-    for( unsigned int k=0; k <
-      ( ( TubeType * )( TubeIterator->GetPointer() ) )->GetNumberOfPoints();
-      k++ )
+    for( unsigned int k=0; k < tube->GetNumberOfPoints(); k++ )
       {
-      bool IsInside = true;
       typedef typename TubeType::TubePointType TubePointType;
       const TubePointType* tubePoint = static_cast<const TubePointType*>(
-        ( ( TubeType * ) ( TubeIterator->GetPointer() ) )->GetPoint( k ) );
+        tube->GetPoint( k ) );
+      OutputImage->TransformPhysicalPointToContinuousIndex(
+        tubeIndexPhysTransform->TransformPoint( tubePoint->GetPosition() ),
+        point );
       for( unsigned int i=0; i<ObjectDimension; i++ )
         {
-        point[i] = ( ( tubePoint->GetPosition()[i] *
-          ( ( TubeType * )( TubeIterator->GetPointer() ) )->
-            GetIndexToObjectTransform()->GetScaleComponent()[i] )
-            - this->m_Origin[i] ) / this->m_Spacing[i];
-
         index[i] = ( long int )( point[i]+0.5 );
-
-        if( ( index[i]<=0 ) || ( static_cast<unsigned int>( index[i] ) >=
-          OutputImage->GetLargestPossibleRegion().GetSize()[i] ) )
-          {
-          IsInside = false;
-          }
         }
+      bool IsInside = OutputImage->GetLargestPossibleRegion().IsInside( index );
 
       if( IsInside )
         {
@@ -259,9 +249,24 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
         // Radius Image and Density image with radius
         if( m_UseRadius )
           {
+          typename TubePointType::PointType radius, zero;
+          radius.Fill( tubePoint->GetRadius() );
+          zero.Fill( 0 );
+          // Convert to an index vector, working around the lack of an
+          // appropriate transformation function
+          ContinuousIndexType cix_radius, cix_zero;
+          OutputImage->TransformPhysicalPointToContinuousIndex(
+            tubeIndexPhysTransform->TransformPoint( radius ),
+            cix_radius );
+          OutputImage->TransformPhysicalPointToContinuousIndex(
+            tubeIndexPhysTransform->TransformPoint( zero ),
+            cix_zero );
+          itk::Vector<double, ObjectDimension> v_radius = cix_radius - cix_zero;
+
+          // This is inherently broken for anisotropic images since
+          // the radius image is scalar-valued
           double phys_pt_radius = tubePoint->GetRadius() *
-                                      ( ( TubeType * )( ( TubeIterator )
-                                                    ->GetPointer() ) )
+                                      tube
                                       ->GetIndexToObjectTransform()
                                       ->GetScaleComponent()[0];
           if( m_BuildRadiusImage )
@@ -271,33 +276,37 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
                                       phys_pt_radius ) );
             }
 
-          long radius = ( long int )( phys_pt_radius / this->m_Spacing[0] );
-
-
-          double step = radius/2;
-          while( step > 1 )
+          double step[ObjectDimension];
+          for( unsigned int i = 0; i < ObjectDimension; i++ )
             {
-            step /= 2;
+            double s = v_radius[i] / 2;
+
+            while( s > 1 )
+              {
+              s /= 2;
+              }
+            if( s < 0.5 )
+              {
+              s = 0.5;
+              }
+
+            step[i] = s;
             }
-          if( step < 0.5 )
-            {
-            step = 0.5;
-            }
+
           if( ObjectDimension == 2 )
             {
-            for( double x=-radius; x<=radius+step/2; x+=step )
+            for( double x=-v_radius[0]; x<=v_radius[0]+step[0]/2; x+=step[0] )
               {
-              for( double y=-radius; y<=radius+step/2; y+=step )
+              for( double y=-v_radius[1]; y<=v_radius[1]+step[1]/2; y+=step[1] )
                 {
-                if( ( ( x*x ) +( y*y ) ) <= ( radius*radius ) )
+                double xr = x / v_radius[0], yr = y / v_radius[1];
+                if( ( ( xr*xr ) +( yr*yr ) ) <= 1 )
                   // test  inside the sphere
                   {
                   index2[0]=( long )( point[0]+x+0.5 );
                   index2[1]=( long )( point[1]+y+0.5 );
-                  if( ( unsigned long )index2[0] <
-                    OutputImage->GetLargestPossibleRegion().GetSize()[0]
-                    && ( unsigned long )index2[1] <
-                    OutputImage->GetLargestPossibleRegion().GetSize()[1] )
+                  if( OutputImage->GetLargestPossibleRegion().IsInside(
+                    index2 ) )
                     {
                     typedef typename OutputImageType::PixelType PixelType;
                     if( m_Cumulative )
@@ -322,13 +331,17 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
             }
           else if( ObjectDimension == 3 )
             {
-            for( double x=-radius; x<=radius+step/2; x+=step )
+            for( double x=-v_radius[0]; x<=v_radius[0]+step[0]/2; x+=step[0] )
               {
-              for( double y=-radius; y<=radius+step/2; y+=step )
+              for( double y=-v_radius[1]; y<=v_radius[1]+step[1]/2; y+=step[1] )
                 {
-                for( double z=-radius; z<=radius+step/2; z+=step )
+                for( double z=-v_radius[2]; z<=v_radius[2]+step[2]/2;
+                  z+=step[2] )
                   {
-                  if( ( ( x*x ) +( y*y ) +( z*z ) ) <= ( radius*radius ) )
+                  double xr = x / v_radius[0];
+                  double yr = y / v_radius[1];
+                  double zr = z / v_radius[2];
+                  if( ( ( xr*xr ) +( yr*yr ) +( zr*zr ) ) <= 1 )
                     // test  inside the sphere
                     {
                     index2[0]=( long )( point[0]+x+0.5 );
@@ -336,18 +349,8 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
                     index2[2]=( long )( point[2]+z+0.5 );
 
                     // Test that point is within the output image boundries
-                    if( index2[0] >= 0
-                         && index2[1] >= 0
-                         && index2[2] >= 0
-                         && ( unsigned long )index2[0] <
-                             OutputImage->GetLargestPossibleRegion()
-                                          .GetSize()[0]
-                         && ( unsigned long )index2[1] <
-                             OutputImage->GetLargestPossibleRegion()
-                                          .GetSize()[1]
-                         && ( unsigned long )index2[2] <
-                             OutputImage->GetLargestPossibleRegion()
-                                          .GetSize()[2] )
+                    if( OutputImage->GetLargestPossibleRegion().IsInside(
+                      index2 ) )
                       {
                       OutputImage->SetPixel( index2, 1 );
                       if( m_BuildRadiusImage )

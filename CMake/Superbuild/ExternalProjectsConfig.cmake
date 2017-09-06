@@ -83,7 +83,7 @@ set( TubeTK_ITK_MODULES
 
 # Insight Segmentation and Registration Toolkit
 set( ITK_URL ${github_protocol}://github.com/InsightSoftwareConsortium/ITK.git )
-set( ITK_HASH_OR_TAG db7e397987ebfe3531351a26858e9f9bf84f8bd2 )
+set( ITK_HASH_OR_TAG v4.12.1 )
 
 # Slicer Execution Model
 set( SlicerExecutionModel_URL
@@ -91,5 +91,5 @@ set( SlicerExecutionModel_URL
 set( SlicerExecutionModel_HASH_OR_TAG 61bb14d57ff45c8de0f506e23b6ec982fcdf0da2 )
 
 # Visualization Toolkit 
-set( VTK_URL ${github_protocol}://github.com/Slicer/VTK.git )
-set( VTK_HASH_OR_TAG a024cefc2acf25350734e6f04d2562f9a6a3b124 )
+set( VTK_URL ${github_protocol}://github.com/Kitware/VTK.git )
+set( VTK_HASH_OR_TAG v8.0.1 )
