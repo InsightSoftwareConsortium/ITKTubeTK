@@ -139,6 +139,10 @@ configure_file( ${TubeTK_SOURCE_DIR}/CMake/CTestCustom.cmake.in
 
 set( TubeTK_BUILD_TESTING ${BUILD_TESTING} )
 
+if( DEFINED "ENV{ExternalData_OBJECT_STORES}" )
+  set( ExternalData_OBJECT_STORES $ENV{ExternalData_OBJECT_STORES} )
+endif()
+
 #
 # Doxygen documentation setup.
 #

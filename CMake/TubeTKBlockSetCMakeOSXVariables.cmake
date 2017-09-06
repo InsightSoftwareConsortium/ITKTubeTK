@@ -103,18 +103,8 @@ if( APPLE )
     string( REGEX MATCH "MacOSX([0-9]+\\.[0-9]+)\\.sdk" _match
       "${CMAKE_OSX_SYSROOT}" )
     set( SDK_VERSION "${CMAKE_MATCH_1}" )
-    if( "${SDK_VERSION}" VERSION_GREATER "10.8" )
-      execute_process( COMMAND "otool -L $QT_QMAKE_COMMAND | grep stdc"
-        OUTPUT_VARIABLE QMAKE_USE_STDC
-        OUTPUT_STRIP_TRAILING_WHITESPACE )
-      if( "x${QMAKE_USE_STDC}x" STREQUAL "xx" )
-        set( CMAKE_OSX_DEPLOYMENT_TARGET "${SDK_VERSION}" CACHE PATH
-          "Deployment target needs to be explicitly set." FORCE )
-      else()
-        set( CMAKE_OSX_DEPLOYMENT_TARGET "10.8" CACHE PATH
-          "Deployment target needs to be explicitly set." FORCE )
-      endif()
-    endif()
+    set( CMAKE_OSX_DEPLOYMENT_TARGET "${SDK_VERSION}" CACHE PATH
+      "Deployment target needs to be explicitly set." FORCE )
   endif()
 
   if( NOT "${CMAKE_OSX_SYSROOT}" STREQUAL "" )
