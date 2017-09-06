@@ -19,7 +19,6 @@ TubeTK offers various interface layers:
 
 * [TubeTK/Experiments][TubeTK/Experiments]: These are Python Jupyter notebooks that combine many `TubeTK/ITKModules` into Python scripts that show how to accomplish high-level image analysis goals with TubeTK.  They are intended to be an interactive basis for exploring TubeTK.  Python and Jupyter notebooks packages must be installed on your computer to run these. These can also be (and are) run as tests to check performance (these test performance, whereas the unit-level tests focus on regression).
 
-* [TubeTK/SlicerModules][TubeTK/SlicerModules]: These are Slicer modules that combine many of the `TubeTK/ITKModules` into Slicer elements that accomplish select high-level image analysis tasks using TubeTK.
 
 Python requirements
 -------------------
@@ -66,4 +65,3 @@ The development of TubeTK is supported in part by the
 [TubeTK/ITKModules]: https://github.com/KitwareMedical/TubeTK/tree/master/ITKModules
 [TubeTK/Applications]: https://github.com/KitwareMedical/TubeTK/tree/master/Applications
 [TubeTK/Experiments]: https://github.com/KitwareMedical/TubeTK/tree/master/Experiments
-[TubeTK/SlicerModules]: https://github.com/KitwareMedical/TubeTK/tree/master/SlicerModules

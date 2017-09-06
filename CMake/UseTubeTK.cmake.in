@@ -62,7 +62,6 @@ set( TubeTK_VERSION "@TubeTK_VERSION@" )
 set( GITCOMMAND "@GITCOMMAND@" )
 
 set( BOOST_ROOT "@BOOST_ROOT@" )
-set( Slicer_DIR "@Slicer_DIR@" )
 set( CPPCHECK_EXECUTABLE "@CPPCHECK_EXECUTABLE@" )
 set( ITK_DIR "@ITK_DIR@" )
 set( JsonCpp_DIR "@JsonCpp_DIR@" )
@@ -71,13 +70,3 @@ set( LIBSVM_DIR "@LIBSVM_DIR@" )
 set( RandomForest_DIR "@RandomForest_DIR@" )
 set( SlicerExecutionModel_DIR "@SlicerExecutionModel_DIR@" )
 set( VTK_DIR "@VTK_DIR@" )
-
-# Slicer variables and macros as provided by TubeTK
-# Needs to come after the definition of SlicerExecutionModel_DIR.
-set( TubeTK_BUILD_USING_SLICER "@TubeTK_BUILD_USING_SLICER@" )
-if( TubeTK_BUILD_USING_SLICER )
-  include( "@TubeTK_CMAKE_EXTENSIONS_DIR@/TubeTKSlicer4Config.cmake" )
-endif( TubeTK_BUILD_USING_SLICER )
-set( TubeTK_SLICER_SOURCE_DIR "@TubeTK_SLICER_SOURCE_DIR@" )
-set( TubeTK_SLICER_BINARY_DIR "@TubeTK_SLICER_BINARY_DIR@" )
-set( TubeTK_BUILD_WITHIN_SLICER "@TubeTK_BUILD_WITHIN_SLICER@" )

@@ -10,15 +10,27 @@ if(NOT ExternalData_OBJECT_STORES)
   endif()
 endif()
 
+# Select a data store.
+if(NOT DEFINED ExternalData_OBJECT_STORES)
+  if(DEFINED "ENV{ExternalData_OBJECT_STORES}")
+    file(TO_CMAKE_PATH "$ENV{ExternalData_OBJECT_STORES}" ExternalData_OBJECT_STORES)
+  else()
+    if(DEFINED dashboard_data_name)
+        set(ExternalData_OBJECT_STORES ${CTEST_DASHBOARD_ROOT}/${dashboard_data_name})
+    else()
+        set(ExternalData_OBJECT_STORES ${CTEST_DASHBOARD_ROOT}/ExternalData)
+    endif()
+  endif()
+endif()
+
 set(ExternalData_OBJECT_STORES "${ExternalData_OBJECT_STORES_DEFAULT}" CACHE STRING
-  "Semicolon-separated list of local directories holding data objects in the layout %(algo)/%(hash).")
+  "Semicolon-separated list of data directories in the layout %(algo)/%(hash).")
 mark_as_advanced(ExternalData_OBJECT_STORES)
 if(NOT ExternalData_OBJECT_STORES)
   set(ExternalData_OBJECT_STORES "${CMAKE_BINARY_DIR}/ExternalData/Objects")
   file(MAKE_DIRECTORY "${ExternalData_OBJECT_STORES}")
 endif()
 list(APPEND ExternalData_OBJECT_STORES
-  # Local data store populated by the ITK pre-commit hook
   "${CMAKE_SOURCE_DIR}/.ExternalData"
   )
 

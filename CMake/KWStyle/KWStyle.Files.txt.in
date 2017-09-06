@@ -10,6 +10,3 @@
 @TubeTK_SOURCE_DIR@/ITKModules/TubeTKITK/*/*.h
 @TubeTK_SOURCE_DIR@/ITKModules/TubeTKITK/*/*.hxx
 @TubeTK_SOURCE_DIR@/ITKModules/TubeTKITK/*/*.cxx
-@TubeTK_SOURCE_DIR@/SlicerModules/*/*.h
-@TubeTK_SOURCE_DIR@/SlicerModules/*/*.hxx
-@TubeTK_SOURCE_DIR@/SlicerModules/*/*.cxx
