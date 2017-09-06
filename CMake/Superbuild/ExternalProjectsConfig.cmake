@@ -58,6 +58,21 @@ set( LIBSVM_HASH_OR_TAG 9bc3630f0f15fed7a5119c228c4d260574b4b6b2 )
 # Kitware Modules
 ###########################################################
 
+# Insight Segmentation and Registration Toolkit
+set( ITK_URL
+  ${github_protocol}://github.com/InsightSoftwareConsortium/ITK.git )
+set( ITK_HASH_OR_TAG v4.12.1 )
+
+# Slicer Execution Model
+set( SlicerExecutionModel_URL
+  ${github_protocol}://github.com/Slicer/SlicerExecutionModel.git )
+set( SlicerExecutionModel_HASH_OR_TAG
+  fa5f22e6346f8115381c1a242c4c50afe0ee8a50 )
+
+# Visualization Toolkit 
+set( VTK_URL ${github_protocol}://github.com/Kitware/VTK.git )
+set( VTK_HASH_OR_TAG v8.0.1 )
+
 # KWStyle
 set( KWStyle_URL ${git_protocol}://github.com/Kitware/KWStyle.git )
 set( KWStyle_HASH_OR_TAG e03980ff514d5248a9f95ea355dcd9eff78c62d3 )
@@ -74,22 +89,10 @@ set( TubeTKITK_HASH_OR_TAG "")
 # MinimalPathExtraction
 set( MinimalPathExtraction_URL
   ${git_protocol}://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction.git )
-set( MinimalPathExtraction_HASH_OR_TAG 21b01c83ffe9717e280020edb7f73996341945e9 )
+set( MinimalPathExtraction_HASH_OR_TAG
+  21b01c83ffe9717e280020edb7f73996341945e9 )
 
 set( TubeTK_ITK_MODULES
   TubeTKITK
   MinimalPathExtraction
   )
-
-# Insight Segmentation and Registration Toolkit
-set( ITK_URL ${github_protocol}://github.com/InsightSoftwareConsortium/ITK.git )
-set( ITK_HASH_OR_TAG v4.12.1 )
-
-# Slicer Execution Model
-set( SlicerExecutionModel_URL
-  ${github_protocol}://github.com/Slicer/SlicerExecutionModel.git )
-set( SlicerExecutionModel_HASH_OR_TAG 61bb14d57ff45c8de0f506e23b6ec982fcdf0da2 )
-
-# Visualization Toolkit 
-set( VTK_URL ${github_protocol}://github.com/Kitware/VTK.git )
-set( VTK_HASH_OR_TAG v8.0.1 )
