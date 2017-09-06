@@ -104,9 +104,6 @@ if( NOT TubeTK_SOURCE_DIR )
   include( ${TubeTK_USE_FILE} )
 endif( NOT TubeTK_SOURCE_DIR )
 
-if( ${CMAKE_PROJECT_NAME} STREQUAL "Slicer" )
-  include( ${CMAKE_CURRENT_SOURCE_DIR}/../CMake/TubeTKMacroAddModules.cmake )
-else()
-  include(TubeTKMacroAddModules)
-endif( ${CMAKE_PROJECT_NAME} STREQUAL "Slicer" )
+include(TubeTKMacroAddModules)
+
 TubeTKMacroAddModules( MODULES ${TubeTK_${proj}_MODULES} )

@@ -22,8 +22,7 @@ requiring complete shape models.
 
 TubeTK makes extensive use of the Insight Segmentation and Registration Toolkit
 (ITK) and the Visualization Toolkit (VTK). Select methods of TubeTK are provided
-as command-line applications and as extensions in 3D Slicer, an open-source
-medical imaging application.
+as command-line applications.
 
 Acknowledgements:
 

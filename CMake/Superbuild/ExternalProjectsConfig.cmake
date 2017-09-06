@@ -31,27 +31,37 @@ foreach(varname ${expected_nonempty_vars})
   endif()
 endforeach()
 
+
+###########################################################
+# KitwareMedical Modules
+###########################################################
+
 # Cppcheck
 set( Cppcheck_URL ${github_protocol}://github.com/KitwareMedical/cppcheck.git )
 set( Cppcheck_HASH_OR_TAG bb0c8cbe7667615bca37ea2a02e2652642a5112e )
 
 # JsonCpp
-# http://midas3.kitware.com/midas/download/bitstream/366544/JsonCpp_r276.tar.gz
 set( JsonCpp_URL ${git_protocol}://github.com/KitwareMedical/jsoncpp.git )
 set( JsonCpp_HASH_OR_TAG 110d054227e9eb63faad48a1fb6a828ad0670e61 )
-
-# KWStyle
-set( KWStyle_URL ${git_protocol}://github.com/Kitware/KWStyle.git )
-set( KWStyle_HASH_OR_TAG e03980ff514d5248a9f95ea355dcd9eff78c62d3 )
-
-# LIBSVM
-set( LIBSVM_URL ${git_protocol}://github.com/KitwareMedical/libsvm.git )
-set( LIBSVM_HASH_OR_TAG 9bc3630f0f15fed7a5119c228c4d260574b4b6b2 )
 
 # RandomForest
 set( RandomForest_URL
   ${git_protocol}://github.com/KitwareMedical/random-forest.git )
 set( RandomForest_HASH_OR_TAG 6e1d0e271fea967487655555b8f26915aa1004d4 )
+
+# LIBSVM
+set( LIBSVM_URL ${git_protocol}://github.com/KitwareMedical/libsvm.git )
+set( LIBSVM_HASH_OR_TAG 9bc3630f0f15fed7a5119c228c4d260574b4b6b2 )
+
+
+###########################################################
+# Kitware Modules
+###########################################################
+
+# KWStyle
+set( KWStyle_URL ${git_protocol}://github.com/Kitware/KWStyle.git )
+set( KWStyle_HASH_OR_TAG e03980ff514d5248a9f95ea355dcd9eff78c62d3 )
+
 
 ###########################################################
 # ITK Modules
@@ -64,7 +74,7 @@ set( TubeTKITK_HASH_OR_TAG "")
 # MinimalPathExtraction
 set( MinimalPathExtraction_URL
   ${git_protocol}://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction.git )
-set( MinimalPathExtraction_HASH_OR_TAG 5a2017ef5d5c25db518ecae49408598f906dd307 )
+set( MinimalPathExtraction_HASH_OR_TAG 21b01c83ffe9717e280020edb7f73996341945e9 )
 
 set( TubeTK_ITK_MODULES
   TubeTKITK
@@ -73,13 +83,13 @@ set( TubeTK_ITK_MODULES
 
 # Insight Segmentation and Registration Toolkit
 set( ITK_URL ${github_protocol}://github.com/InsightSoftwareConsortium/ITK.git )
-set( ITK_HASH_OR_TAG 27bad878d16897a35484925ed06552cb00b871c0 )
+set( ITK_HASH_OR_TAG db7e397987ebfe3531351a26858e9f9bf84f8bd2 )
 
 # Slicer Execution Model
 set( SlicerExecutionModel_URL
   ${github_protocol}://github.com/Slicer/SlicerExecutionModel.git )
-set( SlicerExecutionModel_HASH_OR_TAG b6f14387f71a15c054d73b8bbb8f32974c975489 )
+set( SlicerExecutionModel_HASH_OR_TAG 61bb14d57ff45c8de0f506e23b6ec982fcdf0da2 )
 
-# Visualization Toolkit (3D Slicer fork)
+# Visualization Toolkit 
 set( VTK_URL ${github_protocol}://github.com/Slicer/VTK.git )
 set( VTK_HASH_OR_TAG a024cefc2acf25350734e6f04d2562f9a6a3b124 )

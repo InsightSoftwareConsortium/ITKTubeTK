@@ -1,8 +1,5 @@
 itk.* Namespace Disable
 .*\.cxx Namespace Disable
-qSlicer.* Namespace Disable
-qSlicer.* MemberFunctions Disable
-qSlicer.* InternalVariables Disable
 QtOverlayControlsWidget.cxx InternalVariables Disable
 QtOverlayControlsWidget.cxx Encapsulation Disable
 QtOverlayControlsWidget.h MemberFunctions Disable

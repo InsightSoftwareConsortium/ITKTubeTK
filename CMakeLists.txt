@@ -153,8 +153,8 @@ if( BUILD_DOCUMENTATION )
   endif( TubeTK_USE_DOXYGEN )
 endif( BUILD_DOCUMENTATION )
 
-# Append an item to a string if it does not already contain it.  Any additional
-# arguments are treated as extra "set" arguments
+# Append an item to a string if it does not already contain it.  Any
+#   additional arguments are treated as extra "set" arguments
 macro( tubetk_append_if_absent VARNAME VALUE )
   if( NOT ${VARNAME} MATCHES "(^| )${VALUE}($| )" )
     if( ${VARNAME} )
@@ -224,92 +224,12 @@ endif( CMAKE_COMPILER_IS_GNUCXX )
 #
 set( CMAKE_POSITION_INDEPENDENT_CODE ON )
 
-#
-# Build TubeTK to operate as a Slicer module
-#
-option( TubeTK_BUILD_USING_SLICER
-  "Use Slicer to extract useful commands and CLIs." OFF )
-option( TubeTK_BUILD_WITHIN_SLICER
-  "Whether TubeTK's CLIs modules are configured to be run from Slicer or alone."
-  OFF )
-mark_as_advanced( TubeTK_BUILD_WITHIN_SLICER )
-# Slicer's extension build tool defines TubeTK_BUILD_SLICER_EXTENSION
-# to indicate that this project has to be compiled using Slicer, within Slicer.
-if( TubeTK_BUILD_SLICER_EXTENSION )
-  set(TubeTK_BUILD_USING_SLICER TRUE)
-  set(TubeTK_BUILD_WITHIN_SLICER TRUE)
-endif()
-if( TubeTK_BUILD_USING_SLICER )
-  include( TubeTKSlicer4ExtensionConfig )
-
-  mark_as_advanced( TubeTK_USE_ITK TubeTK_USE_VTK )
-
-  #set( TubeTK_BUILD_WITHIN_SLICER ${TubeTK_BUILD_USING_SLICER} )
-  # Do not unset these variables if project is built as
-  # a Slicer extension within Slicer.
-  if( NOT TubeTK_BUILD_WITHIN_SLICER)
-    unset( PYTHON_EXECUTABLE CACHE)
-    unset( PYTHON_INCLUDE_DIR CACHE)
-    unset( PYTHON_LIBRARY CACHE)
-    unset( PYTHON_DEBUG_LIBRARY CACHE)
-  endif()
-
-  # Find Slicer to set the [ITK|VTK|...]_DIR variables
-  find_package( Slicer REQUIRED )
-  if( NOT Slicer_USE_FILE )
-    message( FATAL_ERROR
-      "Slicer_USE_FILE not defined. Find Slicer silently failed." )
-  endif( NOT Slicer_USE_FILE )
-  include( ${Slicer_USE_FILE} )
-
-  mark_as_advanced( CLEAR Subversion_SVN_EXECUTABLE )
-  find_package( Subversion REQUIRED )
-  mark_as_advanced( CLEAR Subversion_SVN_EXECUTABLE )
-
-  if( Slicer_SOURCE_DIR )
-    set( TubeTK_SLICER_SOURCE_DIR "${Slicer_SOURCE_DIR}" )
-  else( Slicer_SOURCE_DIR )
-    set( TubeTK_SLICER_SOURCE_DIR "${Slicer_CMAKE_DIR}/.." )
-  endif( Slicer_SOURCE_DIR )
-
-  if( Slicer_BINARY_DIR )
-    set( TubeTK_SLICER_BINARY_DIR "${Slicer_BINARY_DIR}" )
-  else( Slicer_BINARY_DIR )
-    set( TubeTK_SLICER_BINARY_DIR "${Slicer_HOME}" )
-  endif( Slicer_BINARY_DIR )
-
-  # All those dependencies are already provided by Slicer
-  set( USE_SYSTEM_ITK ON CACHE BOOL
-    "Exclude ITK from superbuild and use an existing build." FORCE )
-  set( TubeTK_USE_VTK ON CACHE BOOL
-    "Use VTK to enable additional functionality." FORCE )
-  set( USE_SYSTEM_VTK ON CACHE BOOL
-    "Exclude VTK from superbuild and use an existing build." FORCE )
-  set( USE_SYSTEM_SLICER_EXECUTION_MODEL ON CACHE BOOL
-    "Exclude SlicerExecutionModel from superbuild and use an existing build."
-    FORCE )
-  mark_as_advanced( CTK_DIR DCMTK_DIR ITK_DIR LibArchive_INCLUDE_DIR
-    LibArchive_LIBRARY OpenIGTLink_DIR QT_QMAKE_EXECUTABLE QtTesting_DIR
-    SlicerExecutionModel_DIR Slicer_EXTENSIONS_TRACK_QUALIFIER Teem_DIR
-    VTK_DIR ZLIB_INCLUDE_DIR ZLIB_LIBRARY ZLIB_ROOT jqPlot_DIR qRestAPI_DIR
-    CURL_INCLUDE_DIR CURL_LIBRARY ZLIB_LIBRARY ZLIB_ROOT ZLIB_INCLUDE_DIR
-    jpPlot_DIR MIDAS_PACKAGE_API_KEY MIDAS_PACKAGE_EMAIL MIDAS_PACKAGE_URL
-    SimpleITK_DIR GENERATECLP_EXE OPENSSL_CRYPTO_LIBRARY OPENSSL_INCLUDE_DIR
-    OPENSSL_SSL_LIBRARY HIDE_CONSOLE NUMPY_INCLUDE_DIR SH_EXECUTABLE
-    LIB_EAY_DEBUG LIB_EAY_RELEASE SSL_EAY_DEBUG
-    SSL_EAY_RELEASE CMAKE_CXX_COMPILER CMAKE_C_COMPILER CMAKE_CXX_MP_FLAG
-    CMAKE_CXX_MP_NUM_PROCESSORS ParameterSerializer_DIR )
-else( TubeTK_BUILD_USING_SLICER )
-  mark_as_advanced( CLEAR TubeTK_USE_ITK TubeTK_USE_VTK )
-  mark_as_advanced( Slicer_DIR )
-endif( TubeTK_BUILD_USING_SLICER )
-
-include( TubeTKSlicer4Config )
 
 #
 # 2D image support.
 #
-option( TubeTK_SUPPORT_2D_IMAGES "Compile CLI with support for 2D images" ON )
+option( TubeTK_SUPPORT_2D_IMAGES "Compile CLI with support for 2D images"
+  ON )
 mark_as_advanced( TubeTK_SUPPORT_2D_IMAGES )
 if( TubeTK_SUPPORT_2D_IMAGES )
   add_definitions( -DSUPPORT_2D_IMAGES )
@@ -319,7 +239,8 @@ endif()
 # GPU ArrayFire setup
 #
 option( TubeTK_USE_ARRAYFIRE
-  "Use the ArrayFire library to speedup filtering opertions using the GPU." OFF)
+  "Use the ArrayFire library to speedup filtering opertions using the GPU."
+  OFF)
 
 #
 # Boost libraries setup.
@@ -344,14 +265,14 @@ endif( TubeTK_USE_BOOST )
 option( TubeTK_USE_CPPCHECK "Use Cppcheck to enable additional tests." ON )
 option( USE_SYSTEM_CPPCHECK
   "Exclude Cppcheck from superbuild and use an existing build." OFF )
+mark_as_advanced( TubeTK_USE_CPPCHECK )
 mark_as_advanced( USE_SYSTEM_CPPCHECK )
 
 #
 # Setup python
 #
-CMAKE_DEPENDENT_OPTION( TubeTK_USE_PYTHON
-  "Use Python to enable additional functionality." ON
-  "NOT TubeTK_BUILD_USING_SLICER" OFF )
+option( TubeTK_USE_PYTHON
+ "Use Python to enable additional functionality." ON )
 
 CMAKE_DEPENDENT_OPTION( TubeTK_USE_NUMPY_STACK
   "Use NumPy to enable additional functionality." ON
@@ -385,8 +306,8 @@ endif( TubeTK_USE_PYTHON )
 #
 # ITK setup.
 #
-option( USE_SYSTEM_ITK "Exclude ITK from superbuild and use an existing build."
-  OFF )
+option( USE_SYSTEM_ITK
+ "Exclude ITK from superbuild and use an existing build." OFF )
 mark_as_advanced( USE_SYSTEM_ITK )
 
 #
@@ -396,6 +317,7 @@ option( TubeTK_USE_JSONCPP "Use JsonCpp to enable additional functionality."
   ON )
 option( USE_SYSTEM_JSONCPP
   "Exclude JsonCpp from superbuild and use an existing build." OFF )
+mark_as_advanced( TubeTK_USE_JSONCPP )
 mark_as_advanced( USE_SYSTEM_JSONCPP )
 mark_as_advanced( JsonCpp_DIR )
 
@@ -406,6 +328,7 @@ option( TubeTK_USE_KWSTYLE
   "Use KWStyle to check for coding standards violations." ON )
 option( USE_SYSTEM_KWSTYLE
   "Exclude KWStyle from superbuild and use an existing build." OFF )
+mark_as_advanced( TubeTK_USE_KWSTYLE )
 mark_as_advanced( USE_SYSTEM_KWSTYLE )
 
 #
@@ -414,6 +337,7 @@ mark_as_advanced( USE_SYSTEM_KWSTYLE )
 option( TubeTK_USE_LIBSVM "Use LIBSVM to enable additional functionality." OFF )
 option( USE_SYSTEM_LIBSVM
   "Exclude LIBSVM from superbuild and use an existing build." OFF )
+mark_as_advanced( TubeTK_USE_LIBSVM )
 mark_as_advanced( USE_SYSTEM_LIBSVM )
 mark_as_advanced( LIBSVM_DIR )
 
@@ -424,6 +348,7 @@ option( TubeTK_USE_RANDOMFOREST
   "Use RandomForest to enable additional functionality." OFF )
 option( USE_SYSTEM_RANDOMFOREST
   "Exclude RandomForest from superbuild and use an existing build." OFF )
+mark_as_advanced( TubeTK_USE_RANDOMFOREST )
 mark_as_advanced( USE_SYSTEM_RANDOMFOREST )
 mark_as_advanced( RandomForest_DIR )
 
@@ -439,15 +364,20 @@ mark_as_advanced( USE_SYSTEM_SLICER_EXECUTION_MODEL )
 #
 # Provide option for Valgrind
 #
-option( TubeTK_USE_VALGRIND "Use Valgrind to enable additional functionality."
-  OFF )
+
+option( TubeTK_USE_VALGRIND
+  "Use Valgrind to enable additional functionality." OFF )
+if( WIN32 )
+  mark_as_advanced( TubeTK_USE_VALGRIND )
+endif( WIN32 )
 
 #
 # VTK setup.
 #
 option( TubeTK_USE_VTK "Use VTK to enable additional functionality." ON )
-option( USE_SYSTEM_VTK "Exclude VTK from superbuild and use an existing build."
-  OFF )
+option( USE_SYSTEM_VTK
+ "Exclude VTK from superbuild and use an existing build." OFF )
+mark_as_advanced( TubeTK_USE_VTK )
 mark_as_advanced( USE_SYSTEM_VTK )
 
 #
@@ -466,9 +396,10 @@ endif( NOT DEFINED TubeTK_CONFIG_BINARY_DIR )
 mark_as_advanced( TubeTK_CONFIG_BINARY_DIR )
 
 # Setup Python VirtualEnv for testing.
-if( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_USING_SLICER )
+if( BUILD_TESTING AND TubeTK_USE_PYTHON )
   option( BUILD_TESTING_VIRTUAL_ENV
     "Build a Python virtual environment to run tests." OFF )
+  mark_as_advanced( BUILD_TESTING_VIRTUAL_ENV )
   if( BUILD_TESTING_VIRTUAL_ENV )
     include( TubeTKVirtualEnvSetup )
   else()
@@ -476,7 +407,7 @@ if( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_USING_SLICER )
     find_package( PythonLibs REQUIRED )
     set( PYTHON_TESTING_EXECUTABLE ${PYTHON_EXECUTABLE} )
   endif()
-endif( BUILD_TESTING AND TubeTK_USE_PYTHON AND NOT TubeTK_BUILD_USING_SLICER )
+endif( BUILD_TESTING AND TubeTK_USE_PYTHON )
 
 #
 # Testing using Examples
@@ -594,9 +525,6 @@ if( WIN32 )
     if( TubeTK_USE_VTK )
       list( APPEND TubeTK_EXECUTABLE_DIRS ${VTK_DIR}/bin/${_build_type} )
     endif( TubeTK_USE_VTK )
-    if( TubeTK_BUILD_USING_SLICER )
-      list( APPEND TubeTK_EXECUTABLE_DIRS ${Slicer_DIR}/bin/${_build_type} )
-    endif( TubeTK_BUILD_USING_SLICER )
   endforeach()
 else( WIN32 )
   set( TubeTK_EXECUTABLE_DIRS
@@ -608,9 +536,6 @@ else( WIN32 )
   if( TubeTK_USE_VTK )
     list( APPEND TubeTK_EXECUTABLE_DIRS ${VTK_DIR}/bin )
   endif( TubeTK_USE_VTK )
-  if( TubeTK_BUILD_USING_SLICER )
-    list( APPEND TubeTK_EXECUTABLE_DIRS ${Slicer_DIR}/bin/${_build_type} )
-  endif( TubeTK_BUILD_USING_SLICER )
 endif( WIN32 )
 
 # Boost may be dynamically linked, so...
@@ -643,7 +568,7 @@ if( WIN32 )
   endif()
 
   set( TubeTK_LAUNCHER ${TubeTK_BINARY_DIR}/TubeTKLauncher.bat )
-elseif( UNIX AND TubeTK_BUILD_USING_SLICER )
+elseif( UNIX )
   # Apple OS X, Linux, or UNIX.
   set( _launcher_platform "unix" )
   configure_file( ${TubeTK_SOURCE_DIR}/CMake/TubeTKLauncher.sh.in
@@ -652,9 +577,10 @@ elseif( UNIX AND TubeTK_BUILD_USING_SLICER )
   find_program( SH_EXECUTABLE "sh" )
   if( NOT SH_EXECUTABLE )
     message( FATAL_ERROR
-      "Could not find 'sh' executable required to run test using the launcher" )
+      "Could not find 'sh' executable required to test using the launcher" )
   endif()
-  set( TubeTK_LAUNCHER ${SH_EXECUTABLE} ${TubeTK_BINARY_DIR}/TubeTKLauncher.sh )
+  set( TubeTK_LAUNCHER ${SH_EXECUTABLE}
+    ${TubeTK_BINARY_DIR}/TubeTKLauncher.sh )
 elseif( NOT UNIX )
   message( FATAL_ERROR
     "Configuring Launcher script - failed [unknown platform]" )
@@ -675,10 +601,6 @@ add_subdirectory( ITKModules )
 if( TubeTK_BUILD_APPLICATIONS )
   add_subdirectory( Applications )
 endif( TubeTK_BUILD_APPLICATIONS )
-
-if( TubeTK_BUILD_USING_SLICER )
-  add_subdirectory( SlicerModules )
-endif( TubeTK_BUILD_USING_SLICER )
 
 if( BUILD_TESTING )
   add_subdirectory( Testing )
@@ -727,11 +649,7 @@ configure_file( ${TubeTK_SOURCE_DIR}/CMake/UseTubeTK.cmake.in
   ${TubeTK_CONFIG_BINARY_DIR}/UseTubeTK.cmake @ONLY )
 
 # Configure CPack packaging.
-if( NOT TubeTK_BUILD_USING_SLICER )
-  include( TubeTKCPackConfig )
- else( NOT TubeTK_BUILD_USING_SLICER )
-  include( ${Slicer_EXTENSION_CPACK} )
-endif( NOT TubeTK_BUILD_USING_SLICER )
+include( TubeTKCPackConfig )
 
 # Create target to download data from the TubeTKData group. This must come after
 # all tests have been added that reference the group, so we put it last.
