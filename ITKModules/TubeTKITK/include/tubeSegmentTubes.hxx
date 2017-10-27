@@ -39,6 +39,14 @@ SegmentTubes< TInputImage >
 }
 
 template< class TInputImage >
+bool
+SegmentTubes< TInputImage >
+::DeleteTube( TubeType * tube )
+{
+  return m_Filter->DeleteTube( tube );
+}
+
+template< class TInputImage >
 typename itk::tube::TubeExtractor< TInputImage >::TubeType *
 SegmentTubes< TInputImage >
 ::ExtractTube( const ContinuousIndexType & x,
