@@ -83,6 +83,9 @@ public:
   /** Add a tube */
   bool AddTube( TubeType * tube );
 
+  /** Delete a tube */
+  bool DeleteTube( TubeType * tube );
+
   /** Set/Get debug status */
   tubeWrapSetMacro( Debug, bool, Filter );
   tubeWrapGetMacro( Debug, bool, Filter );
