@@ -35,6 +35,7 @@ set( TubeTK_${proj}_MODULES
   ComputeTubeGraphProbability
   ComputeTubeMeasures
   ComputeTubeProbability
+  Convert4DImageTo3DImages
   ConvertCSVToImages
   ConvertImagesToCSV
   ConvertShrunkenSeedImageToList
