@@ -376,6 +376,20 @@ if( WIN32 )
 endif( WIN32 )
 
 #
+# Provide options to swig
+#
+
+if ( TubeTK_USE_PYTHON )
+  set( WRAP_TubeTK_SWIG_ARGS_PYTHON
+    "-threads"
+    CACHE STRING
+      "Additional options to be passed to SWIG when generating Python bindings." )
+  mark_as_advanced( WRAP_TubeTK_SWIG_ARGS_PYTHON )
+else()
+  unset( WRAP_TubeTK_SWIG_ARGS_PYTHON CACHE )
+endif( TubeTK_USE_PYTHON )
+
+#
 # VTK setup.
 #
 option( TubeTK_USE_VTK "Use VTK to enable additional functionality." ON )
