@@ -390,7 +390,7 @@ TubeExtractor<TInputImage>
   if( this->m_StatusCallBack )
     {
     char s[80];
-    std::sprintf( s, "%ld points", tube->GetPoints().size() );
+    std::sprintf( s, "%zd points", tube->GetPoints().size() );
     this->m_StatusCallBack( "Extract: Ridge", s, 0 );
     }
 

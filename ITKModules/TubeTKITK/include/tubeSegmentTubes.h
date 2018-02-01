@@ -91,12 +91,12 @@ public:
   tubeWrapGetMacro( Debug, bool, Filter );
 
   /** Set ExtractBound Minimum */
-  tubeWrapSetConstReferenceMacro( ExtractBoundMin, IndexType, Filter );
-  tubeWrapGetConstReferenceMacro( ExtractBoundMin, IndexType, Filter );
+  tubeWrapSetMacro( ExtractBoundMin, IndexType, Filter );
+  tubeWrapGetMacro( ExtractBoundMin, IndexType, Filter );
 
   /** Set ExtractBound Maximum */
-  tubeWrapSetConstReferenceMacro( ExtractBoundMax, IndexType, Filter );
-  tubeWrapGetConstReferenceMacro( ExtractBoundMax, IndexType, Filter );
+  tubeWrapSetMacro( ExtractBoundMax, IndexType, Filter );
+  tubeWrapGetMacro( ExtractBoundMax, IndexType, Filter );
 
   /*** Extract the ND tube given the position of the first point
    * and the tube ID */
