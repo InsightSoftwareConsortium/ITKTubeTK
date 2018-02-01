@@ -42,7 +42,8 @@ set( TubeTK_VERSION_MINOR "9" )
 set( TubeTK_VERSION_PATCH "0" )
 
 option( TubeTK_INSTALL_DEVELOPMENT
-  "Add install rules for TubeTK SDK dependencies (headers, libraries, ...)" ON )
+  "Add install rules for TubeTK SDK dependencies (headers, libraries, ...)"
+  ON )
 mark_as_advanced( TubeTK_INSTALL_DEVELOPMENT )
 
 mark_as_advanced( CMAKE_BACKWARDS_COMPATIBILITY )
@@ -73,6 +74,9 @@ tubetk_set_if_not_defined( TubeTK_INSTALL_BIN_DIR "bin" )
 tubetk_set_if_not_defined( TubeTK_INSTALL_LIB_DIR "lib" )
 tubetk_set_if_not_defined( TubeTK_INSTALL_INCLUDE_DIR "include" )
 tubetk_set_if_not_defined( TubeTK_INSTALL_SHARE_DIR "share/TubeTK" )
+
+option( BUILD_SHARED_LIBS
+  "Build the software as / using shared libraries." ON )
 
 # Pass value to TubeTK inner build
 mark_as_superbuild( VARS
@@ -312,7 +316,6 @@ endif( TubeTK_USE_PYTHON )
 #
 option( USE_SYSTEM_ITK
  "Exclude ITK from superbuild and use an existing build." OFF )
-mark_as_advanced( USE_SYSTEM_ITK )
 
 #
 # JsonCpp library setup.
@@ -396,7 +399,6 @@ option( TubeTK_USE_VTK "Use VTK to enable additional functionality." ON )
 option( USE_SYSTEM_VTK
  "Exclude VTK from superbuild and use an existing build." OFF )
 mark_as_advanced( TubeTK_USE_VTK )
-mark_as_advanced( USE_SYSTEM_VTK )
 
 #
 # Modules
@@ -463,6 +465,7 @@ include( ${SlicerExecutionModel_USE_FILE} )
 
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
+
 if( TubeTK_USE_VTK )
   find_package( VTK REQUIRED )
   include( ${VTK_USE_FILE} )

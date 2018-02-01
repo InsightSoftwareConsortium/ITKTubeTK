@@ -23,6 +23,10 @@ limitations under the License.
 
 // Note: Python.h must be included first.
 #include <Python.h>
+#ifdef PYTHON3
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#endif
+
 #include <numpy/arrayobject.h>
 
 #include "itktubeExtractTubePointsSpatialObjectFilter.h"
@@ -94,7 +98,11 @@ extern "C"
     PyObject * recordList = NULL;
     PyObject * subDtype = NULL;
     PyArray_Descr * dtype = NULL;
+#ifdef PYTHON3
+    PyArrayObject * array = NULL;
+#else
     PyObject * array = NULL;
+#endif
     char * data = NULL;
     char * dataElementStart = NULL;
     npy_intp stride = 0;
@@ -209,7 +217,12 @@ extern "C"
     Py_DECREF( recordList );
     npy_intp dims[1];
     dims[0] = pointsContainer->Size();
+#ifdef PYTHON3
+    array = (PyArrayObject *)PyArray_SimpleNewFromDescr( 1, dims, dtype );
+#else
     array = PyArray_SimpleNewFromDescr( 1, dims, dtype );
+#endif
+
 
     stride = PyArray_STRIDE( array, 0 );
     data = PyArray_BYTES( array );
@@ -301,7 +314,11 @@ extern "C"
       data = dataElementStart;
       }
 
+#ifdef PYTHON3
+    return (PyObject *)array;
+#else
     return array;
+#endif
 
     fail:
       Py_XDECREF( recordList );
@@ -318,12 +335,37 @@ extern "C"
     };
 
 
+#ifdef PYTHON3
+  static struct PyModuleDef tubetkPyModuleDef =
+    {
+    PyModuleDef_HEAD_INIT,
+    "_tubetk_numpy",
+    "",
+    -1,
+    _tubetk_numpyMethods
+    };
+  PyMODINIT_FUNC
+  PyInit__tubetk_numpy( void )
+    {
+    PyObject * m;
+    m = PyModule_Create( &tubetkPyModuleDef );
+    if( m == NULL )
+      {
+      return NULL;
+      }
+
+    import_array();
+ 		
+    return m;
+    }
+#else
   PyMODINIT_FUNC
   init_tubetk_numpy( void )
     {
     ( void )Py_InitModule( "_tubetk_numpy", _tubetk_numpyMethods );
     import_array();
     }
+#endif
 
 
 #ifdef __cplusplus

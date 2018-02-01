@@ -34,6 +34,9 @@ if( ${TubeTK_USE_NUMPY_STACK} )
 
   include_directories( ${NUMPY_INCLUDE_DIR} ${PYTHON_INCLUDE_DIRS} )
 
+  if( PYTHON_VERSION_STRING VERSION_GREATER 3.0 )
+    add_definitions( "-DPYTHON3")
+  endif()
   python_add_module( _tubetk_numpy _tubetk_numpy.cxx )
   set_target_properties( _tubetk_numpy
     PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} )

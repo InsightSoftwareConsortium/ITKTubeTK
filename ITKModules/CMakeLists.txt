@@ -23,7 +23,8 @@
 
 ##############################################################################
 #
-# Hint: To add an ITK module update CMake/Superbuild/ExternalProjectConfig.cmake
+# Hint: To add an ITK module update
+#   CMake/Superbuild/ExternalProjectConfig.cmake
 #
 ##############################################################################
 
