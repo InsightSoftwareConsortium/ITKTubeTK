@@ -30,6 +30,7 @@ limitations under the License.
 #include "tubeWrappingMacros.h"
 
 #include "itktubeTubeExtractor.h"
+#include "itktubeTubeExtractorIO.h"
 
 namespace tube
 {
@@ -59,6 +60,8 @@ public:
   typedef typename FilterType::TubeGroupType           TubeGroupType;
 
   typedef typename FilterType::ContinuousIndexType     ContinuousIndexType;
+
+  typedef itk::tube::TubeExtractorIO< ImageType >      TubeExtractorIOType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
@@ -97,6 +100,8 @@ public:
   /** Set ExtractBound Maximum */
   tubeWrapSetMacro( ExtractBoundMax, IndexType, Filter );
   tubeWrapGetMacro( ExtractBoundMax, IndexType, Filter );
+
+  void SetParameterFile( const char *filename );
 
   /*** Extract the ND tube given the position of the first point
    * and the tube ID */

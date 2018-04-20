@@ -36,6 +36,7 @@
 #
 
 set( TubeTKITK_DEPENDS
+  IO
   Common
   Numerics
   Filtering

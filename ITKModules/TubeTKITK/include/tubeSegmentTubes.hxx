@@ -59,6 +59,16 @@ SegmentTubes< TInputImage >
 template< class TInputImage >
 void
 SegmentTubes< TInputImage >
+::SetParameterFile( const char *filename )
+{
+  TubeExtractorIOType teReader;
+  teReader.SetTubeExtractor( this->m_Filter );
+  teReader.Read( filename );
+}
+
+template< class TInputImage >
+void
+SegmentTubes< TInputImage >
 ::PrintSelf( std::ostream & os, itk::Indent indent ) const
 {
   Superclass::PrintSelf( os, indent );
