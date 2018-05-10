@@ -84,7 +84,7 @@ int DoIt( int argc, char * argv[] )
       {
       std::cout << "###Loading transform...";
       }
-    reger->LoadTransform( loadTransform );
+    reger->LoadTransform( loadTransform, invertLoadedTransform );
     if( verbosity >= STANDARD )
       {
       std::cout << "###DONE" << std::endl;
@@ -534,17 +534,20 @@ int DoIt( int argc, char * argv[] )
         {
         resultImage = reger->ResampleImage( RegistrationType
           ::OptimizedRegistrationMethodType
-          ::NEAREST_NEIGHBOR_INTERPOLATION );
+          ::NEAREST_NEIGHBOR_INTERPOLATION,
+          NULL, NULL, NULL, 0, resampledImagePortion );
         }
       else if( interpolation == "Linear" )
         {
         resultImage = reger->ResampleImage( RegistrationType
-          ::OptimizedRegistrationMethodType::LINEAR_INTERPOLATION );
+          ::OptimizedRegistrationMethodType::LINEAR_INTERPOLATION,
+          NULL, NULL, NULL, 0, resampledImagePortion );
         }
       else if( interpolation == "BSpline" )
         {
         resultImage = reger->ResampleImage( RegistrationType
-          ::OptimizedRegistrationMethodType::BSPLINE_INTERPOLATION );
+          ::OptimizedRegistrationMethodType::BSPLINE_INTERPOLATION,
+          NULL, NULL, NULL, 0, resampledImagePortion );
         }
       }
     catch( itk::ExceptionObject & exception )

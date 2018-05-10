@@ -26,6 +26,8 @@
 #include "itkOptimizedImageToImageRegistrationMethod.h"
 #include "itkRigidImageToImageRegistrationMethod.h"
 #include "itkAffineImageToImageRegistrationMethod.h"
+#include "itkScaleSkewAngle2DImageToImageRegistrationMethod.h"
+#include "itkScaleSkewVersor3DImageToImageRegistrationMethod.h"
 #include "itkBSplineImageToImageRegistrationMethod.h"
 
 namespace itk
@@ -74,6 +76,12 @@ public:
   typedef AffineImageToImageRegistrationMethod<TImage>
   AffineRegistrationMethodType;
 
+  typedef ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
+  Affine2DRegistrationMethodType;
+
+  typedef ScaleSkewVersor3DImageToImageRegistrationMethod<TImage>
+  Affine3DRegistrationMethodType;
+
   typedef BSplineImageToImageRegistrationMethod<TImage>
   BSplineRegistrationMethodType;
 
@@ -115,6 +123,12 @@ public:
 
   typedef typename AffineRegistrationMethodType::TransformType
   AffineTransformType;
+
+  typedef typename Affine2DRegistrationMethodType::TransformType
+  Affine2DTransformType;
+
+  typedef typename Affine3DRegistrationMethodType::TransformType
+  Affine3DTransformType;
 
   typedef AffineTransformType MatrixTransformType;
 
@@ -214,7 +228,7 @@ public:
         ::LINEAR_INTERPOLATION, const TImage * movingImage = NULL,
     const MatrixTransformType * matrixTransform = NULL,
     const BSplineTransformType * bsplineTransform = NULL,
-    PixelType defaultPixelValue = 0 );
+    PixelType defaultPixelValue = 0, double portion = 1.0 );
 
   // Returns the moving image resampled into the space of the fixed image
   typename TImage::ConstPointer  GetFinalMovingImage(
@@ -341,13 +355,14 @@ public:
   //
   // Loaded transforms parameters
   //
-  void LoadTransform( const std::string & filename );
+  void LoadTransform( const std::string & filename, bool invert=false );
 
   void SaveTransform( const std::string & filename );
 
   void SaveDisplacementField( const std::string &filename );
 
-  void SetLoadedMatrixTransform( const MatrixTransformType & tfm );
+  void SetLoadedMatrixTransform( const MatrixTransformType & tfm,
+    bool invert=false );
 
   itkGetConstObjectMacro( LoadedMatrixTransform, MatrixTransformType );
 
@@ -445,6 +460,14 @@ protected:
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
 private:
+
+  template< int tmpImageDimension >
+  void AffineRegND() 
+   { Image< double, tmpImageDimension >::Pointer t; AffineRegND( t ); }
+
+  void AffineRegND( Image< double, 2 > * t );
+
+  void AffineRegND( Image< double, 3 > * t );
 
   typedef typename InitialRegistrationMethodType::LandmarkPointType
   LandmarkPointType;

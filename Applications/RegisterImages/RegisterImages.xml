@@ -33,6 +33,14 @@
       <description>Registration results</description>
       <default/>
     </image>
+    <float>
+      <name>resampledImagePortion</name>
+      <label>Resample image portion</label>
+      <channel>input</channel>
+      <longflag>resampledImagePortion</longflag>
+      <description>Only apply a portion of the transform.  This scalar enables, for example, 1/2 of the transform magnitude to be applied.</description>
+      <default>1.0</default>
+    </float>
   </parameters>
   <parameters>
     <label>Registration Parameters</label>
@@ -45,6 +53,14 @@
       <channel>input</channel>
       <default/>
     </transform>
+    <boolean>
+      <name>invertLoadedTransform</name>
+      <label>Invert loaded transform</label>
+      <description>Invert the loaded transform before applying it to the moving image</description>
+      <longflag>invertLoadedTransform</longflag>
+      <channel>input</channel>
+      <default>false</default>
+    </boolean>
     <transform fileExtensions=".txt">
       <name>saveTransform</name>
       <label>Save transform</label>
