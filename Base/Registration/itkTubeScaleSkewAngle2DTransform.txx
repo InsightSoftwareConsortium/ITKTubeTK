@@ -29,6 +29,7 @@ TubeScaleSkewAngle2DTransform<TParametersValueType>
 ::TubeScaleSkewAngle2DTransform() :
   Superclass(ParametersDimension)
 {
+  m_UseSingleScale = false;
   m_Scale.Fill(NumericTraits<TParametersValueType>::OneValue());
   m_Skew.Fill(NumericTraits<TParametersValueType>::ZeroValue());
 }
@@ -78,8 +79,7 @@ TubeScaleSkewAngle2DTransform<TParametersValueType>
     {
     this->m_Parameters = parameters;
     }
-
-  this->SetRotation(parameters[0]);
+  this->SetVarAngle(parameters[0]);
 
   // Transfer the translation part
   TranslationType newTranslation;
@@ -89,8 +89,16 @@ TubeScaleSkewAngle2DTransform<TParametersValueType>
 
   // Matrix must be defined before translation so that offset can be computed
   // from translation
-  m_Scale[0] = parameters[3];
-  m_Scale[1] = parameters[4];
+  if( m_UseSingleScale )
+    {
+    m_Scale[0] = parameters[3];
+    m_Scale[1] = parameters[3];
+    }
+  else 
+    {
+    m_Scale[0] = parameters[3];
+    m_Scale[1] = parameters[4];
+    } 
 
   m_Skew[0] = parameters[5];
   m_Skew[1] = parameters[6];
@@ -123,13 +131,20 @@ const typename TubeScaleSkewAngle2DTransform<TParametersValueType>::ParametersTy
   {
   itkDebugMacro(<< "Getting parameters ");
 
-  this->m_Parameters[0] = this->GetRotation();
+  this->m_Parameters[0] = this->GetAngle();
 
   this->m_Parameters[1] = this->GetTranslation()[0];
   this->m_Parameters[2] = this->GetTranslation()[1];
 
   this->m_Parameters[3] = this->GetScale()[0];
-  this->m_Parameters[4] = this->GetScale()[1];
+  if( m_UseSingleScale )
+    {
+    this->m_Parameters[4] = this->GetScale()[0];
+    }
+  else
+    {
+    this->m_Parameters[4] = this->GetScale()[1];
+    }
 
   this->m_Parameters[5] = this->GetSkew()[0];
   this->m_Parameters[6] = this->GetSkew()[1];
@@ -173,24 +188,32 @@ void
 TubeScaleSkewAngle2DTransform<TParametersValueType>
 ::ComputeMatrix(void)
 {
-  this->Superclass::ComputeMatrix();
+  MatrixType rotationMatrix;
+  const MatrixValueType ca = std::cos(this->GetAngle());
+  const MatrixValueType sa = std::sin(this->GetAngle());
+  rotationMatrix[0][0] = ca;
+  rotationMatrix[0][1] = -sa;
+  rotationMatrix[1][0] = sa;
+  rotationMatrix[1][1] = ca;
 
-  MatrixType newMatrix = this->GetMatrix();
+  MatrixType scaleSkewMatrix;
+  scaleSkewMatrix[0][0] = m_Scale[0];
+  scaleSkewMatrix[0][1] = std::tan(m_Skew[1]) * m_Scale[1];
+  scaleSkewMatrix[1][0] = std::tan(m_Skew[0]) * m_Scale[0];
+  if( m_UseSingleScale )
+    {
+    scaleSkewMatrix[1][1] = m_Scale[0];
+    }
+  else
+    {
+    scaleSkewMatrix[1][1] = m_Scale[1];
+    }
 
-  MatrixType scaleMatrix = this->GetMatrix();
-  scaleMatrix[0][0] = m_Scale[0];
-  scaleMatrix[0][1] = 0;
-  scaleMatrix[1][0] = 0;
-  scaleMatrix[1][1] = m_Scale[1];
-
-  MatrixType skewMatrix = this->GetMatrix();
-  skewMatrix[0][0] = 0;
-  skewMatrix[0][1] = std::tan(m_Skew[0]);
-  skewMatrix[1][0] = std::tan(m_Skew[1]);
-  skewMatrix[1][1] = 0;
-
-  newMatrix = skewMatrix * scaleMatrix * newMatrix;
+  MatrixType newMatrix = rotationMatrix * scaleSkewMatrix;
   this->SetVarMatrix(newMatrix);
+
+  // For debugging purposes...
+  this->ComputeMatrixParameters();
 }
 
 template<typename TParametersValueType>
@@ -209,22 +232,29 @@ TubeScaleSkewAngle2DTransform<TParametersValueType>
     {
     angle = -angle;
     }
-  if( ortho[1][0] - std::sin(angle) > 0.000001 )
+  if( std::abs(ortho[1][0] - std::sin(angle)) > 0.000001 )
     {
     itkWarningMacro( "Bad Rotation Matrix " << this->GetMatrix() );
     }
 
   // Set Rotation
+  //std::cout << "ComputeMatrixParameters" << std::endl;
+  //std::cout << "   Original angle = " << this->GetAngle()
+    //<< " : New = " << angle << std::endl;
   Superclass::SetVarAngle( angle );
 
-  MatrixType scaleSkew = vnl_inverse(ortho) * matrix;
-  // Set Scale  <=-  Need to verify this is sufficient for estimating scale
+  MatrixType scaleSkew = matrix * vnl_inverse(ortho);
+  //std::cout << "   Original scale = " << m_Scale[0] << ", " << m_Scale[1]
+    //<< " : New = " << scaleSkew[0][0] << ", " << scaleSkew[1][1] << std::endl;
   m_Scale[0] = scaleSkew[0][0];
   m_Scale[1] = scaleSkew[1][1];
 
   // Set Skew
-  m_Skew[0] = std::atan(scaleSkew[0][1]);
-  m_Skew[1] = std::atan(scaleSkew[1][0]);
+  //std::cout << "   Original skew = " << m_Skew[0] << ", " << m_Skew[1]
+    //<< " : New = " << std::atan(scaleSkew[1][0]/scaleSkew[0][0]) << ", "
+    //<< std::atan(scaleSkew[0][1]/scaleSkew[1][1]) << std::endl;
+  m_Skew[0] = std::atan2(scaleSkew[1][0], scaleSkew[0][0]);
+  m_Skew[1] = std::atan2(scaleSkew[0][1], scaleSkew[1][1]);
 }
 
 // Print self
@@ -234,8 +264,16 @@ TubeScaleSkewAngle2DTransform<TParametersValueType>::PrintSelf(std::ostream & os
 {
   Superclass::PrintSelf(os, indent);
 
-  os << indent << "Scale:       " << m_Scale        << std::endl;
-  os << indent << "Skew:        " << m_Skew         << std::endl;
+  if( m_UseSingleScale )
+    {
+    os << indent << "UseSingleScale: true" << std::endl;
+    }
+  else
+    {
+    os << indent << "UseSingleScale: false" << std::endl;
+    }
+  os << indent << "Scale:          " << m_Scale        << std::endl;
+  os << indent << "Skew:           " << m_Skew         << std::endl;
 }
 
 template<typename TParametersValueType>

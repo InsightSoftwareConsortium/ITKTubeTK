@@ -113,6 +113,9 @@ public:
 
   virtual const ParametersType & GetParameters(void) const ITK_OVERRIDE;
 
+  itkGetMacro( UseSingleScale, bool );
+  itkSetMacro( UseSingleScale, bool );
+
   void SetScale(const ScaleVectorType & scale);
 
   itkGetConstReferenceMacro(Scale, ScaleVectorType);
@@ -156,6 +159,9 @@ protected:
 
 private:
   ITK_DISALLOW_COPY_AND_ASSIGN(TubeScaleSkewAngle2DTransform);
+
+  /**  If true, parameters[3] is used for scaling in x and y. */
+  bool m_UseSingleScale;
 
   /**  Vector containing the scale. */
   ScaleVectorType m_Scale;

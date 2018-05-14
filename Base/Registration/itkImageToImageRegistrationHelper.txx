@@ -767,7 +767,10 @@ ImageToImageRegistrationHelper<TImage>
     m_CompletedResampling = false;
     }
 
-  this->AffineRegND<ImageDimension>();
+  if( m_EnableAffineRegistration )
+    {
+    this->AffineRegND<ImageDimension>();
+    }
 
   if( m_EnableBSplineRegistration )
     {

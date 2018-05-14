@@ -28,6 +28,7 @@ ScaleSkewAngle2DImageToImageRegistrationMethod<TImage>
 ::ScaleSkewAngle2DImageToImageRegistrationMethod( void )
 {
   this->SetTransform( ScaleSkewAngle2DTransformType::New() );
+  this->GetTypedTransform()->SetUseSingleScale( true );
   this->GetTypedTransform()->SetIdentity();
 
   this->SetInitialTransformParameters( this->GetTypedTransform()
