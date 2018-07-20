@@ -76,6 +76,12 @@ set( TubeTK_${proj}_MODULES
   TubeMath
   TreeMath )
 
+if (NOT TubeTK_SUPPORT_2D_IMAGES)
+  set( TubeTK_${proj}_MODULES
+    ${TubeTK_${proj}_MODULES}
+    SegmentBinaryImageSkeleton3D )
+endif()
+
 set( TubeTK_${proj}_Boost_MODULES )
 if( TubeTK_USE_BOOST )
   set( TubeTK_${proj}_Boost_MODULES
