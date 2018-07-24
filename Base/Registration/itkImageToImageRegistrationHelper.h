@@ -312,6 +312,9 @@ public:
   itkSetMacro( ExpectedSkewMagnitude, double );
   itkGetConstMacro( ExpectedSkewMagnitude, double );
 
+  itkSetMacro( ExpectedDeformationMagnitude, double );
+  itkGetConstMacro( ExpectedDeformationMagnitude, double );
+
   // **************
   //  Return the current product of the registration pipeline
   // **************
@@ -509,6 +512,7 @@ private:
   double m_ExpectedRotationMagnitude;
   double m_ExpectedScaleMagnitude;
   double m_ExpectedSkewMagnitude;
+  double m_ExpectedDeformationMagnitude;
 
   bool                      m_CompletedInitialization;
   RegistrationStageEnumType m_CompletedStage;

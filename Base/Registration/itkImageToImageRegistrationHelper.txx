@@ -74,6 +74,7 @@ ImageToImageRegistrationHelper<TImage>
   m_ExpectedRotationMagnitude = 0.1;
   m_ExpectedScaleMagnitude = 0.05;
   m_ExpectedSkewMagnitude = 0.01;
+  m_ExpectedDeformationMagnitude = 10;
 
   // Current state of the registration pipeline
   m_CompletedInitialization = false;
@@ -805,6 +806,7 @@ ImageToImageRegistrationHelper<TImage>
     regBspline->SetSampleFromOverlap( m_SampleFromOverlap );
     regBspline->SetMinimizeMemory( m_MinimizeMemory );
     regBspline->SetMaxIterations( m_BSplineMaxIterations );
+    regBspline->SetExpectedDeformationMagnitude( m_ExpectedDeformationMagnitude );
     regBspline->SetTargetError( m_BSplineTargetError );
     if( m_UseFixedImageMaskObject )
       {
@@ -988,7 +990,6 @@ ImageToImageRegistrationHelper<TImage>
         std::cout << "Resampling using loaded matrix." << std::endl;
         }
       // Register using LoadedMatrix
-      interpolator->SetInputImage( mImage );
       typename ResampleImageFilterType::Pointer resampler =
         ResampleImageFilterType::New();
       resampler->SetInput( mImage );
@@ -1021,7 +1022,6 @@ ImageToImageRegistrationHelper<TImage>
         std::cout << "Resampling using loaded bspline." << std::endl;
         }
       // Register using LoadedMatrix
-      interpolator->SetInputImage( mImage );
       typename ResampleImageFilterType::Pointer resampler =
         ResampleImageFilterType::New();
       resampler->SetInput( mImage );
@@ -1055,7 +1055,6 @@ ImageToImageRegistrationHelper<TImage>
       std::cout << "Resampling using matrix." << std::endl;
       }
     // Register using Matrix
-    interpolator->SetInputImage( mImage );
     typename ResampleImageFilterType::Pointer resampler =
       ResampleImageFilterType::New();
     resampler->SetInput( mImage );
@@ -1106,7 +1105,6 @@ ImageToImageRegistrationHelper<TImage>
       std::cout << "Resampling using bspline." << std::endl;
       }
     // Register using BSpline
-    interpolator->SetInputImage( mImage );
     typename ResampleImageFilterType::Pointer resampler =
       ResampleImageFilterType::New();
     resampler->SetInput( mImage );
@@ -1122,8 +1120,8 @@ ImageToImageRegistrationHelper<TImage>
       BSplineTransformType::New();
     if( portion != 1.0 )
       {
-      //tmpTrans->SetTransformDomainMeshSize(
-        //bTrans->GetTransformDomainMeshSize() );
+      tmpTrans->SetTransformDomainMeshSize(
+        bTrans->GetTransformDomainMeshSize() );
       tmpTrans->SetFixedParameters( bTrans->GetFixedParameters() );
       BSplineTransformType::ParametersType bTransParams =
         bTrans->GetParameters();
@@ -1136,6 +1134,7 @@ ImageToImageRegistrationHelper<TImage>
       tmpTrans->SetParameters( tmpParams );
       bTrans = tmpTrans.GetPointer();
       }
+    std::cout << "using params = " << bTrans->GetParameters() << std::endl;
     resampler->SetTransform( bTrans );
     resampler->SetDefaultPixelValue( defaultPixelValue );
     resampler->Update();
@@ -1420,13 +1419,9 @@ ImageToImageRegistrationHelper<TImage>
   m_LoadedMatrixTransform->SetOffset( tfm.GetOffset() );
   if( invert )
     {
-    std::cout << "Pre inverse params = "
-      << m_LoadedMatrixTransform->GetParameters() << std::endl;
     MatrixTransformType::Pointer tmpTfm = MatrixTransformType::New();
     m_LoadedMatrixTransform->GetInverse( tmpTfm );
     m_LoadedMatrixTransform = tmpTfm;
-    std::cout << "Post inverse params = "
-      << m_LoadedMatrixTransform->GetParameters() << std::endl;
     }
 
   m_EnableLoadedRegistration = true;
@@ -1625,6 +1620,8 @@ ImageToImageRegistrationHelper<TImage>
     << std::endl;
   os << indent << "Expected Skew Magnitude = " << m_ExpectedSkewMagnitude
     << std::endl;
+  os << indent << "Expected Deformation Magnitude = "
+    << m_ExpectedDeformationMagnitude << std::endl;
   os << indent << std::endl;
   os << indent << "Completed Initialization = "
     << m_CompletedInitialization << std::endl;
