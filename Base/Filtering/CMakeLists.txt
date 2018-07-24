@@ -34,6 +34,7 @@ set( TubeTK_Base_Filtering_H_Files
   itktubeAnisotropicDiffusionTensorImageFilter.h
   itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.h
   itktubeAnisotropicHybridDiffusionImageFilter.h
+  itktubeBinaryThinningImageFilter3D.h
   itktubeComputeTubeFlyThroughImageFilter.h
   itktubeComputeTubeMeasuresFilter.h
   itktubeContrastCostFunction.h
@@ -74,6 +75,7 @@ set( TubeTK_Base_Filtering_HXX_Files
   itktubeAnisotropicDiffusionTensorImageFilter.hxx
   itktubeAnisotropicEdgeEnhancementDiffusionImageFilter.hxx
   itktubeAnisotropicHybridDiffusionImageFilter.hxx
+  itktubeBinaryThinningImageFilter3D.hxx
   itktubeComputeTubeFlyThroughImageFilter.hxx
   itktubeComputeTubeMeasuresFilter.hxx
   itktubeContrastCostFunction.h

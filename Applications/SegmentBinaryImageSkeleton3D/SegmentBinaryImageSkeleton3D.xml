@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>Segment Binary Image Skeleton 3D (TubeTK)</title>
+  <description>Generate a 1D skeleton from a 3D binary mask.</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <license>Apache 2.0</license>
+  <contributor>Jared Vicory (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters.</description>
+    <image>
+      <name>inputVolume</name>
+      <label>Input Volume</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input volume.</description>
+    </image>
+    <image>
+      <name>outputVolume</name>
+      <label>Output Volume</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Output volume.</description>
+    </image>
+  </parameters>
+  <parameters>
+    <label>Post-Dilation</label>
+    <integer>
+      <name>radius</name>
+      <label>Radius</label>
+      <description>The radius used for dilation of the skeleton.</description>
+      <longflag>radius</longflag>
+      <flag>r</flag>
+      <default>0</default>
+    </integer>
+  </parameters>
+</executable>
