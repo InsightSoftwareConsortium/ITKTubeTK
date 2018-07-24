@@ -148,6 +148,13 @@
       <longflag>expectedSkew</longflag>
       <default>0.01</default>
     </float>
+    <float>
+      <name>expectedDeformation</name>
+      <description>Expected control point movement for BSplines</description>
+      <label>Expected Deformation magnitude</label>
+      <longflag>expectedDeformation</longflag>
+      <default>2</default>
+    </float>
   </parameters>
   <parameters advanced="true">
     <label>Advanced Registration Parameters</label>
