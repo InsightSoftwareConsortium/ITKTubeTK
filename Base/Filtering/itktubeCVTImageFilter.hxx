@@ -220,6 +220,12 @@ GenerateData( void )
         iIndx[i] = m_InputImageSize[i]-1;
         }
       }
+    // if you want an output image using the grayscale value at the centroid
+    // location, uncomment the following.
+    //double tf = m_InputImage->GetPixel( iIndx );
+    //m_OutputImage->SetPixel( iIndx, tf ); //j+1 );
+    // ...OR...If you want an output imge using the centroid number for each
+    // region, uncomment the following.
     m_OutputImage->SetPixel( iIndx, j+1 );
     if( this->GetDebug() )
       {

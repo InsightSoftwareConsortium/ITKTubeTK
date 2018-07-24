@@ -34,6 +34,7 @@
 #include "itkSubtractImageFilter.h"
 #include "itkMinimumMaximumImageCalculator.h"
 #include "itkVector.h"
+#include "itkAffineTransform.h"
 
 namespace itk
 {
@@ -73,6 +74,7 @@ ImageToImageRegistrationHelper<TImage>
   m_ExpectedRotationMagnitude = 0.1;
   m_ExpectedScaleMagnitude = 0.05;
   m_ExpectedSkewMagnitude = 0.01;
+  m_ExpectedDeformationMagnitude = 10;
 
   // Current state of the registration pipeline
   m_CompletedInitialization = false;
@@ -297,6 +299,221 @@ ImageToImageRegistrationHelper<TImage>
   m_BSplineTransformResampledImage = 0;
 }
 
+template <class TImage>
+void
+ImageToImageRegistrationHelper<TImage>
+::AffineRegND( Image< double, 2 > * tmpImage )
+{
+  if( this->GetReportProgress() )
+    {
+    std::cout << "*** AFFINE REGISTRATION ***" << std::endl;
+    }
+
+  unsigned long fixedImageNumPixels = m_FixedImage->GetLargestPossibleRegion()
+    .GetNumberOfPixels();
+
+  typename Affine2DRegistrationMethodType::Pointer regAff
+    = Affine2DRegistrationMethodType::New();
+  regAff->SetRandomNumberSeed( m_RandomNumberSeed );
+  regAff->SetReportProgress( m_ReportProgress );
+  regAff->SetMovingImage( m_CurrentMovingImage );
+  regAff->SetFixedImage( m_FixedImage );
+  regAff->SetNumberOfSamples( (unsigned int)(m_AffineSamplingRatio
+    * fixedImageNumPixels) );
+  if( m_UseRegionOfInterest )
+    {
+    regAff->SetRegionOfInterest( m_RegionOfInterestPoint1,
+      m_RegionOfInterestPoint2 );
+    }
+  regAff->SetSampleFromOverlap( m_SampleFromOverlap );
+  regAff->SetMinimizeMemory( m_MinimizeMemory );
+  regAff->SetMaxIterations( m_AffineMaxIterations );
+  regAff->SetTargetError( m_AffineTargetError );
+  if( m_EnableRigidRegistration || !m_UseEvolutionaryOptimization )
+    {
+    regAff->SetUseEvolutionaryOptimization( false );
+    }
+  regAff->SetTargetError( m_AffineTargetError );
+  if( m_UseFixedImageMaskObject )
+    {
+    if( m_FixedImageMaskObject.IsNotNull() )
+      {
+      regAff->SetFixedImageMaskObject( m_FixedImageMaskObject );
+      }
+    }
+  if( m_UseMovingImageMaskObject )
+    {
+    if( m_MovingImageMaskObject.IsNotNull() )
+      {
+      regAff->SetMovingImageMaskObject( m_MovingImageMaskObject );
+      }
+    }
+  if( m_SampleIntensityPortion > 0 )
+    {
+    typedef MinimumMaximumImageCalculator<ImageType> MinMaxCalcType;
+    typename MinMaxCalcType::Pointer calc = MinMaxCalcType::New();
+    calc->SetImage( m_FixedImage );
+    calc->Compute();
+    PixelType fixedImageMax = calc->GetMaximum();
+    PixelType fixedImageMin = calc->GetMinimum();
+
+    regAff->SetFixedImageSamplesIntensityThreshold(
+      static_cast<PixelType>( ( m_SampleIntensityPortion
+        * (fixedImageMax - fixedImageMin) ) + fixedImageMin ) );
+    }
+  regAff->SetMetricMethodEnum( m_AffineMetricMethodEnum );
+  regAff->SetInterpolationMethodEnum( m_AffineInterpolationMethodEnum );
+  typename AffineTransformType::ParametersType scales;
+  scales.set_size( 7 );
+  unsigned int scaleNum = 0;
+  scales[scaleNum++] = 1.0 / ( m_ExpectedRotationMagnitude );
+  scales[scaleNum++] = 1.0 / ( m_ExpectedOffsetPixelMagnitude);
+  scales[scaleNum++] = 1.0 / ( m_ExpectedOffsetPixelMagnitude);
+  scales[scaleNum++] = 1.0 / ( m_ExpectedScaleMagnitude );
+  scales[scaleNum++] = 1.0 / ( m_ExpectedScaleMagnitude );
+  scales[scaleNum++] = 1.0 / ( m_ExpectedSkewMagnitude );
+  scales[scaleNum++] = 1.0 / ( m_ExpectedSkewMagnitude );
+  regAff->SetTransformParametersScales( scales );
+
+  if( m_CurrentMatrixTransform.IsNotNull() )
+    {
+    regAff->GetTypedTransform()->SetCenter(
+      m_CurrentMatrixTransform->GetCenter() );
+    regAff->GetTypedTransform()->SetMatrix(
+      m_CurrentMatrixTransform->GetMatrix() );
+    regAff->GetTypedTransform()->SetOffset(
+      m_CurrentMatrixTransform->GetOffset() );
+    regAff->SetInitialTransformParameters(
+      regAff->GetTypedTransform()->GetParameters() );
+    regAff->SetInitialTransformFixedParameters(
+      regAff->GetTypedTransform()->GetFixedParameters() );
+    }
+
+  regAff->Update();
+
+  m_AffineTransform = regAff->GetAffineTransform();
+  m_CurrentMatrixTransform = m_AffineTransform;
+  m_CurrentBSplineTransform = 0;
+
+  m_FinalMetricValue = regAff->GetFinalMetricValue();
+  m_AffineMetricValue = m_FinalMetricValue;
+
+  m_CompletedStage = AFFINE_STAGE;
+  m_CompletedResampling = false;
+}
+
+template <class TImage>
+void
+ImageToImageRegistrationHelper<TImage>
+::AffineRegND( Image< double, 3 > * tmpImage )
+{
+  if( this->GetReportProgress() )
+    {
+    std::cout << "*** AFFINE REGISTRATION ***" << std::endl;
+    }
+
+  unsigned long fixedImageNumPixels = m_FixedImage->GetLargestPossibleRegion()
+    .GetNumberOfPixels();
+
+  typename Affine3DRegistrationMethodType::Pointer regAff =
+    Affine3DRegistrationMethodType::New();
+  regAff->SetRandomNumberSeed( m_RandomNumberSeed );
+  regAff->SetReportProgress( m_ReportProgress );
+  regAff->SetMovingImage( m_CurrentMovingImage );
+  regAff->SetFixedImage( m_FixedImage );
+  regAff->SetNumberOfSamples( (unsigned int)(m_AffineSamplingRatio
+    * fixedImageNumPixels) );
+  if( m_UseRegionOfInterest )
+    {
+    regAff->SetRegionOfInterest( m_RegionOfInterestPoint1,
+      m_RegionOfInterestPoint2 );
+    }
+  regAff->SetSampleFromOverlap( m_SampleFromOverlap );
+  regAff->SetMinimizeMemory( m_MinimizeMemory );
+  regAff->SetMaxIterations( m_AffineMaxIterations );
+  regAff->SetTargetError( m_AffineTargetError );
+  if( m_EnableRigidRegistration || !m_UseEvolutionaryOptimization )
+    {
+    regAff->SetUseEvolutionaryOptimization( false );
+    }
+  regAff->SetTargetError( m_AffineTargetError );
+  if( m_UseFixedImageMaskObject )
+    {
+    if( m_FixedImageMaskObject.IsNotNull() )
+      {
+      regAff->SetFixedImageMaskObject( m_FixedImageMaskObject );
+      }
+    }
+  if( m_UseMovingImageMaskObject )
+    {
+    if( m_MovingImageMaskObject.IsNotNull() )
+      {
+      regAff->SetMovingImageMaskObject( m_MovingImageMaskObject );
+      }
+    }
+  if( m_SampleIntensityPortion > 0 )
+    {
+    typedef MinimumMaximumImageCalculator<ImageType> MinMaxCalcType;
+    typename MinMaxCalcType::Pointer calc = MinMaxCalcType::New();
+    calc->SetImage( m_FixedImage );
+    calc->Compute();
+    PixelType fixedImageMax = calc->GetMaximum();
+    PixelType fixedImageMin = calc->GetMinimum();
+
+    regAff->SetFixedImageSamplesIntensityThreshold(
+      static_cast<PixelType>( ( m_SampleIntensityPortion
+        * (fixedImageMax - fixedImageMin) ) + fixedImageMin ) );
+    }
+  regAff->SetMetricMethodEnum( m_AffineMetricMethodEnum );
+  regAff->SetInterpolationMethodEnum( m_AffineInterpolationMethodEnum );
+  typename AffineTransformType::ParametersType scales;
+
+  scales.set_size( 15 );
+  unsigned int scaleNum = 0;
+  scales[scaleNum++] = 1.0 / ( m_ExpectedRotationMagnitude );
+  scales[scaleNum++] = 1.0 / ( m_ExpectedRotationMagnitude );
+  scales[scaleNum++] = 1.0 / ( m_ExpectedRotationMagnitude );
+  scales[scaleNum++] = 1.0 / ( m_ExpectedOffsetPixelMagnitude);
+  scales[scaleNum++] = 1.0 / ( m_ExpectedOffsetPixelMagnitude);
+  scales[scaleNum++] = 1.0 / ( m_ExpectedOffsetPixelMagnitude);
+  scales[scaleNum++] = 1.0 / ( m_ExpectedScaleMagnitude );
+  scales[scaleNum++] = 1.0 / ( m_ExpectedScaleMagnitude );
+  scales[scaleNum++] = 1.0 / ( m_ExpectedScaleMagnitude );
+  scales[scaleNum++] = 1.0 / ( m_ExpectedSkewMagnitude );
+  scales[scaleNum++] = 1.0 / ( m_ExpectedSkewMagnitude );
+  scales[scaleNum++] = 1.0 / ( m_ExpectedSkewMagnitude );
+  scales[scaleNum++] = 1.0 / ( m_ExpectedSkewMagnitude );
+  scales[scaleNum++] = 1.0 / ( m_ExpectedSkewMagnitude );
+  scales[scaleNum++] = 1.0 / ( m_ExpectedSkewMagnitude );
+  regAff->SetTransformParametersScales( scales );
+
+  if( m_CurrentMatrixTransform.IsNotNull() )
+    {
+    regAff->GetTypedTransform()->SetCenter(
+      m_CurrentMatrixTransform->GetCenter() );
+    regAff->GetTypedTransform()->SetMatrix(
+      m_CurrentMatrixTransform->GetMatrix() );
+    regAff->GetTypedTransform()->SetOffset(
+      m_CurrentMatrixTransform->GetOffset() );
+    regAff->SetInitialTransformParameters(
+      regAff->GetTypedTransform()->GetParameters() );
+    regAff->SetInitialTransformFixedParameters(
+      regAff->GetTypedTransform()->GetFixedParameters() );
+    }
+
+  regAff->Update();
+
+  m_AffineTransform = regAff->GetAffineTransform();
+  m_CurrentMatrixTransform = m_AffineTransform;
+  m_CurrentBSplineTransform = 0;
+
+  m_FinalMetricValue = regAff->GetFinalMetricValue();
+  m_AffineMetricValue = m_FinalMetricValue;
+
+  m_CompletedStage = AFFINE_STAGE;
+  m_CompletedResampling = false;
+}
+
 /** This class provides an Update() method to fit the appearance of a
  * ProcessObject API, but it is not a ProcessObject.  */
 template <class TImage>
@@ -515,22 +732,6 @@ ImageToImageRegistrationHelper<TImage>
         << "ERROR: Only 2 and 3 dimensional images are supported."
         << std::endl;
       }
-    /*
-    double minS = scales[0];
-    for(unsigned int i=1; i<scales.size(); i++)
-      {
-      if(scales[i] < minS)
-        {
-        minS = scales[i];
-        }
-      }
-    if(minS < 1)
-      {
-      for(unsigned int i=0; i<scales.size(); i++)
-        {
-        scales[i] /= minS;
-        }
-      }*/
     regRigid->SetTransformParametersScales( scales );
 
     if( m_CurrentMatrixTransform.IsNotNull() )
@@ -569,131 +770,7 @@ ImageToImageRegistrationHelper<TImage>
 
   if( m_EnableAffineRegistration )
     {
-    if( this->GetReportProgress() )
-      {
-      std::cout << "*** AFFINE REGISTRATION ***" << std::endl;
-      }
-
-    typename AffineRegistrationMethodType::Pointer regAff =
-      AffineRegistrationMethodType::New();
-    regAff->SetRandomNumberSeed( m_RandomNumberSeed );
-    regAff->SetReportProgress( m_ReportProgress );
-    regAff->SetMovingImage( m_CurrentMovingImage );
-    regAff->SetFixedImage( m_FixedImage );
-    regAff->SetNumberOfSamples( (unsigned int)(m_AffineSamplingRatio
-      * fixedImageNumPixels) );
-    if( m_UseRegionOfInterest )
-      {
-      regAff->SetRegionOfInterest( m_RegionOfInterestPoint1,
-        m_RegionOfInterestPoint2 );
-      }
-    regAff->SetSampleFromOverlap( m_SampleFromOverlap );
-    regAff->SetMinimizeMemory( m_MinimizeMemory );
-    regAff->SetMaxIterations( m_AffineMaxIterations );
-    regAff->SetTargetError( m_AffineTargetError );
-    if( m_EnableRigidRegistration || !m_UseEvolutionaryOptimization )
-      {
-      regAff->SetUseEvolutionaryOptimization( false );
-      }
-    regAff->SetTargetError( m_AffineTargetError );
-    if( m_UseFixedImageMaskObject )
-      {
-      if( m_FixedImageMaskObject.IsNotNull() )
-        {
-        regAff->SetFixedImageMaskObject( m_FixedImageMaskObject );
-        }
-      }
-    if( m_UseMovingImageMaskObject )
-      {
-      if( m_MovingImageMaskObject.IsNotNull() )
-        {
-        regAff->SetMovingImageMaskObject( m_MovingImageMaskObject );
-        }
-      }
-    if( m_SampleIntensityPortion > 0 )
-      {
-      typedef MinimumMaximumImageCalculator<ImageType> MinMaxCalcType;
-      typename MinMaxCalcType::Pointer calc = MinMaxCalcType::New();
-      calc->SetImage( m_FixedImage );
-      calc->Compute();
-      PixelType fixedImageMax = calc->GetMaximum();
-      PixelType fixedImageMin = calc->GetMinimum();
-
-      regAff->SetFixedImageSamplesIntensityThreshold(
-        static_cast<PixelType>( ( m_SampleIntensityPortion
-          * (fixedImageMax - fixedImageMin) ) + fixedImageMin ) );
-      }
-    regAff->SetMetricMethodEnum( m_AffineMetricMethodEnum );
-    regAff->SetInterpolationMethodEnum( m_AffineInterpolationMethodEnum );
-    typename AffineTransformType::ParametersType scales;
-    scales.set_size( ImageDimension * ImageDimension + ImageDimension );
-    unsigned int scaleNum = 0;
-    for( unsigned int d1 = 0; d1 < ImageDimension; d1++ )
-      {
-      for( unsigned int d2 = 0; d2 < ImageDimension; d2++ )
-        {
-        if( d1 == d2 )
-          {
-          scales[scaleNum] = 1.0 / (
-            m_ExpectedRotationMagnitude + m_ExpectedScaleMagnitude);
-          }
-        else
-          {
-          scales[scaleNum] = 1.0 / (
-            m_ExpectedRotationMagnitude + m_ExpectedSkewMagnitude);
-          }
-        ++scaleNum;
-        }
-      }
-    for( unsigned int d1 = 0; d1 < ImageDimension; d1++ )
-      {
-      scales[scaleNum] = 1.0 / (
-        m_ExpectedOffsetPixelMagnitude * m_FixedImage->GetSpacing()[0]);
-      ++scaleNum;
-      }
-    /*
-    double minS = scales[0];
-    for(unsigned int i=1; i<scaleNum; i++)
-      {
-      if(scales[i] < minS)
-        {
-        minS = scales[i];
-        }
-      }
-    if(minS < 1)
-      {
-      for(unsigned int i=0; i<scaleNum; i++)
-        {
-        scales[i] /= minS;
-        }
-      }*/
-    regAff->SetTransformParametersScales( scales );
-
-    if( m_CurrentMatrixTransform.IsNotNull() )
-      {
-      regAff->GetTypedTransform()->SetCenter(
-        m_CurrentMatrixTransform->GetCenter() );
-      regAff->GetTypedTransform()->SetMatrix(
-        m_CurrentMatrixTransform->GetMatrix() );
-      regAff->GetTypedTransform()->SetOffset(
-        m_CurrentMatrixTransform->GetOffset() );
-      regAff->SetInitialTransformParameters(
-        regAff->GetTypedTransform()->GetParameters() );
-      regAff->SetInitialTransformFixedParameters(
-        regAff->GetTypedTransform()->GetFixedParameters() );
-      }
-
-    regAff->Update();
-
-    m_AffineTransform = regAff->GetAffineTransform();
-    m_CurrentMatrixTransform = m_AffineTransform;
-    m_CurrentBSplineTransform = 0;
-
-    m_FinalMetricValue = regAff->GetFinalMetricValue();
-    m_AffineMetricValue = m_FinalMetricValue;
-
-    m_CompletedStage = AFFINE_STAGE;
-    m_CompletedResampling = false;
+    this->AffineRegND<ImageDimension>();
     }
 
   if( m_EnableBSplineRegistration )
@@ -729,6 +806,7 @@ ImageToImageRegistrationHelper<TImage>
     regBspline->SetSampleFromOverlap( m_SampleFromOverlap );
     regBspline->SetMinimizeMemory( m_MinimizeMemory );
     regBspline->SetMaxIterations( m_BSplineMaxIterations );
+    regBspline->SetExpectedDeformationMagnitude( m_ExpectedDeformationMagnitude );
     regBspline->SetTargetError( m_BSplineTargetError );
     if( m_UseFixedImageMaskObject )
       {
@@ -789,7 +867,7 @@ ImageToImageRegistrationHelper<TImage>
                  const ImageType * movingImage,
                  const MatrixTransformType * matrixTransform,
                  const BSplineTransformType * bsplineTransform,
-                 PixelType defaultPixelValue)
+                 PixelType defaultPixelValue, double portion)
 {
   typedef InterpolateImageFunction<TImage, double>
     InterpolatorType;
@@ -912,7 +990,6 @@ ImageToImageRegistrationHelper<TImage>
         std::cout << "Resampling using loaded matrix." << std::endl;
         }
       // Register using LoadedMatrix
-      interpolator->SetInputImage( mImage );
       typename ResampleImageFilterType::Pointer resampler =
         ResampleImageFilterType::New();
       resampler->SetInput( mImage );
@@ -945,7 +1022,6 @@ ImageToImageRegistrationHelper<TImage>
         std::cout << "Resampling using loaded bspline." << std::endl;
         }
       // Register using LoadedMatrix
-      interpolator->SetInputImage( mImage );
       typename ResampleImageFilterType::Pointer resampler =
         ResampleImageFilterType::New();
       resampler->SetInput( mImage );
@@ -979,7 +1055,6 @@ ImageToImageRegistrationHelper<TImage>
       std::cout << "Resampling using matrix." << std::endl;
       }
     // Register using Matrix
-    interpolator->SetInputImage( mImage );
     typename ResampleImageFilterType::Pointer resampler =
       ResampleImageFilterType::New();
     resampler->SetInput( mImage );
@@ -991,6 +1066,24 @@ ImageToImageRegistrationHelper<TImage>
     typename ImageType::Pointer tmp = const_cast<ImageType *>(
       m_FixedImage.GetPointer() );
     resampler->SetOutputParametersFromImage( tmp );
+    typename MatrixTransformType::Pointer tmpTrans = MatrixTransformType::New();
+    if( portion != 1.0 )
+      {
+      tmpTrans->SetIdentity();
+      tmpTrans->SetFixedParameters( aTrans->GetFixedParameters() );
+      MatrixTransformType::ParametersType aTransParams =
+        aTrans->GetParameters();
+      MatrixTransformType::ParametersType tmpParams =
+        tmpTrans->GetParameters();
+      std::cout << "Original params = " << aTransParams << std::endl;
+      for( unsigned int p=0; p<tmpParams.size(); ++p )
+        {
+        tmpParams[p] = tmpParams[p] + portion * (aTransParams[p]-tmpParams[p]);
+        }
+      tmpTrans->SetParameters( tmpParams );
+      std::cout << "portion params = " << tmpParams << std::endl;
+      aTrans = tmpTrans.GetPointer();
+      }
     resampler->SetTransform( aTrans );
     resampler->SetDefaultPixelValue( defaultPixelValue );
     resampler->Update();
@@ -1012,7 +1105,6 @@ ImageToImageRegistrationHelper<TImage>
       std::cout << "Resampling using bspline." << std::endl;
       }
     // Register using BSpline
-    interpolator->SetInputImage( mImage );
     typename ResampleImageFilterType::Pointer resampler =
       ResampleImageFilterType::New();
     resampler->SetInput( mImage );
@@ -1024,6 +1116,25 @@ ImageToImageRegistrationHelper<TImage>
     typename ImageType::Pointer tmp = const_cast<ImageType *>(
       m_FixedImage.GetPointer() );
     resampler->SetOutputParametersFromImage( tmp );
+    typename BSplineTransformType::Pointer tmpTrans =
+      BSplineTransformType::New();
+    if( portion != 1.0 )
+      {
+      tmpTrans->SetTransformDomainMeshSize(
+        bTrans->GetTransformDomainMeshSize() );
+      tmpTrans->SetFixedParameters( bTrans->GetFixedParameters() );
+      BSplineTransformType::ParametersType bTransParams =
+        bTrans->GetParameters();
+      BSplineTransformType::ParametersType tmpParams =
+        tmpTrans->GetParameters();
+      for( unsigned int p=0; p<tmpParams.size(); ++p )
+        {
+        tmpParams[p] = tmpParams[p] + portion * (bTransParams[p]-tmpParams[p]);
+        }
+      tmpTrans->SetParameters( tmpParams );
+      bTrans = tmpTrans.GetPointer();
+      }
+    std::cout << "using params = " << bTrans->GetParameters() << std::endl;
     resampler->SetTransform( bTrans );
     resampler->SetDefaultPixelValue( defaultPixelValue );
     resampler->Update();
@@ -1165,7 +1276,7 @@ ImageToImageRegistrationHelper<TImage>
 template <class TImage>
 void
 ImageToImageRegistrationHelper<TImage>
-::LoadTransform( const std::string & filename )
+::LoadTransform( const std::string & filename, bool invert )
 {
   typedef TransformFileReader                    TransformReaderType;
   typedef TransformReaderType::TransformListType TransformListType;
@@ -1187,7 +1298,7 @@ ImageToImageRegistrationHelper<TImage>
         static_cast<MatrixTransformType *>( (*transformIt).GetPointer() );
       typename MatrixTransformType::ConstPointer affine =
         affine_read.GetPointer();
-      SetLoadedMatrixTransform( *affine.GetPointer() );
+      SetLoadedMatrixTransform( *affine.GetPointer(), invert );
       }
 
     if( !strcmp( (*transformIt)->GetNameOfClass(),
@@ -1299,13 +1410,19 @@ ImageToImageRegistrationHelper<TImage>
 template <class TImage>
 void
 ImageToImageRegistrationHelper<TImage>
-::SetLoadedMatrixTransform( const MatrixTransformType & tfm )
+::SetLoadedMatrixTransform( const MatrixTransformType & tfm, bool invert )
 {
   m_LoadedMatrixTransform = MatrixTransformType::New();
   m_LoadedMatrixTransform->SetIdentity();
   m_LoadedMatrixTransform->SetCenter( tfm.GetCenter() );
   m_LoadedMatrixTransform->SetMatrix( tfm.GetMatrix() );
   m_LoadedMatrixTransform->SetOffset( tfm.GetOffset() );
+  if( invert )
+    {
+    MatrixTransformType::Pointer tmpTfm = MatrixTransformType::New();
+    m_LoadedMatrixTransform->GetInverse( tmpTfm );
+    m_LoadedMatrixTransform = tmpTfm;
+    }
 
   m_EnableLoadedRegistration = true;
   m_LoadedTransformResampledImage = 0;
@@ -1503,6 +1620,8 @@ ImageToImageRegistrationHelper<TImage>
     << std::endl;
   os << indent << "Expected Skew Magnitude = " << m_ExpectedSkewMagnitude
     << std::endl;
+  os << indent << "Expected Deformation Magnitude = "
+    << m_ExpectedDeformationMagnitude << std::endl;
   os << indent << std::endl;
   os << indent << "Completed Initialization = "
     << m_CompletedInitialization << std::endl;

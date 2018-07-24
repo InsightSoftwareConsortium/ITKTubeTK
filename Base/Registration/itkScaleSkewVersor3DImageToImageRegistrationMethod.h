@@ -14,11 +14,11 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef __itkAffineImageToImageRegistrationMethod_h
-#define __itkAffineImageToImageRegistrationMethod_h
+#ifndef __itkScaleSkewVersor3DImageToImageRegistrationMethod_h
+#define __itkScaleSkewVersor3DImageToImageRegistrationMethod_h
 
 #include "itkImage.h"
-#include "itkAffineTransform.h"
+#include "itkTubeScaleSkewVersor3DTransform.h"
 
 #include "itkOptimizedImageToImageRegistrationMethod.h"
 
@@ -26,34 +26,41 @@ namespace itk
 {
 
 template <class TImage>
-class AffineImageToImageRegistrationMethod
-  : public OptimizedImageToImageRegistrationMethod<TImage>
+class ScaleSkewVersor3DImageToImageRegistrationMethod
+  : public OptimizedImageToImageRegistrationMethod<
+    Image< typename TImage::PixelType, 3 > >
 {
 
 public:
 
-  typedef AffineImageToImageRegistrationMethod            Self;
-  typedef OptimizedImageToImageRegistrationMethod<TImage> Superclass;
+  typedef ScaleSkewVersor3DImageToImageRegistrationMethod Self;
+  typedef OptimizedImageToImageRegistrationMethod<
+    Image< typename TImage::PixelType, 3 > >              Superclass;
   typedef SmartPointer<Self>                              Pointer;
   typedef SmartPointer<const Self>                        ConstPointer;
 
-  itkTypeMacro( AffineImageToImageRegistrationMethod,
+  itkTypeMacro( ScaleSkewVersor3DImageToImageRegistrationMethod,
                 OptimizedImageToImageRegistrationMethod );
 
   itkNewMacro( Self );
 
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       TImage::ImageDimension );
+  itkStaticConstMacro( ImageDimension, unsigned int, 3 );
 
   //
   // Typedefs from Superclass
-  //
-
+  // 
   // Overrides the superclass' TransformType typedef
-  typedef AffineTransform<double, itkGetStaticConstMacro( ImageDimension )>
-                                                AffineTransformType;
-  typedef typename AffineTransformType::Pointer AffineTransformPointer;
-  typedef AffineTransformType                   TransformType;
+  typedef ::itk::TubeScaleSkewVersor3DTransform< double >
+            ScaleSkewVersor3DTransformType;
+  typedef typename ScaleSkewVersor3DTransformType::Pointer
+            ScaleSkewVersor3DTransformPointer;
+  typedef ScaleSkewVersor3DTransformType
+            TransformType;
+
+  typedef AffineTransform<double, 3>
+            AffineTransformType;
+  typedef typename AffineTransformType::Pointer
+            AffineTransformPointer;
 
   //
   // Superclass Methods
@@ -93,22 +100,22 @@ public:
    * SetInitialTransformFixedParameters(). The method below facilitates to
    * use the AffineTransform returned by the
    * InitialImageToImageRegistrationMethod
-   * to directly initialize this rigid registration method.
+   * to directly initialize this registration method.
    */
   void SetInitialTransformParametersFromAffineTransform(
-    const AffineTransformType * affine );
+    const AffineTransformType * transform );
 
 protected:
 
-  AffineImageToImageRegistrationMethod( void );
-  virtual ~AffineImageToImageRegistrationMethod( void );
+  ScaleSkewVersor3DImageToImageRegistrationMethod( void );
+  virtual ~ScaleSkewVersor3DImageToImageRegistrationMethod( void );
 
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
 private:
 
   // Purposely not implemented
-  AffineImageToImageRegistrationMethod( const Self & );
+  ScaleSkewVersor3DImageToImageRegistrationMethod( const Self & );
   // Purposely not implemented
   void operator =( const Self & );
 
@@ -117,7 +124,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkAffineImageToImageRegistrationMethod.txx"
+#include "itkScaleSkewVersor3DImageToImageRegistrationMethod.txx"
 #endif
 
 #endif // __ImageToImageRegistrationMethod_h
