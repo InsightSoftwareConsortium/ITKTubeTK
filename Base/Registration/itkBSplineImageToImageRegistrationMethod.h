@@ -19,7 +19,7 @@
 #define __itkBSplineImageToImageRegistrationMethod_h
 
 #include "itkImage.h"
-#include "itkBSplineDeformableTransform.h"
+#include "itkBSplineTransform.h"
 
 #include "itkOptimizedImageToImageRegistrationMethod.h"
 
@@ -47,14 +47,12 @@ public:
   // Typedefs from Superclass
   //
   typedef TImage ImageType;
-  itkStaticConstMacro( ImageDimension, unsigned int,
-                       TImage::ImageDimension );
+  itkStaticConstMacro( ImageDimension, unsigned int, TImage::ImageDimension );
 
   // Overrides the superclass' TransformType typedef
-  typedef BSplineDeformableTransform<double,
-                                     itkGetStaticConstMacro( ImageDimension ),
-                                     itkGetStaticConstMacro( ImageDimension )>
-  BSplineTransformType;
+  typedef BSplineTransform<double, itkGetStaticConstMacro( ImageDimension ),
+    itkGetStaticConstMacro( ImageDimension )>
+      BSplineTransformType;
 
   typedef typename BSplineTransformType::Pointer BSplineTransformPointer;
 
@@ -93,16 +91,17 @@ public:
   BSplineTransformPointer GetBSplineTransform( void ) const;
 
   void ComputeGridRegion( int numberOfControlPoints,
-                    typename TransformType::RegionType::SizeType & regionSize,
-                    typename TransformType::SpacingType & regionSpacing,
-                    typename TransformType::OriginType & regionOrigin,
-                    typename TransformType::DirectionType & regionDirection );
+    typename TransformType::MeshSizeType & regionSize,
+    typename TransformType::PhysicalDimensionsType & regionPhysicalDimensions,
+    typename TransformType::OriginType & regionOrigin,
+    typename TransformType::DirectionType & regionDirection );
 
   void ResampleControlGrid( int newNumberOfControlPoints,
-                            ParametersType & newParameters );
+    ParametersType & newParameters );
 
   itkSetMacro( GradientOptimizeOnly, bool );
   itkGetMacro( GradientOptimizeOnly, bool );
+
 protected:
 
   BSplineImageToImageRegistrationMethod( void );
