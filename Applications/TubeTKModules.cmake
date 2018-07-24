@@ -50,6 +50,7 @@ set( TubeTK_${proj}_MODULES
   DeblendTomosynthesisSlicesUsingPrior
   EnhanceCoherenceAndEdgesUsingDiffusion
   EnhanceCoherenceUsingDiffusion
+  EnhanceContrastUsingAHE
   EnhanceContrastUsingPrior
   EnhanceEdgesUsingDiffusion
   EnhanceTubesUsingDiffusion

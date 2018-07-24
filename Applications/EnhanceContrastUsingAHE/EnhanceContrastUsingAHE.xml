@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<executable>
+  <category>TubeTK</category>
+  <title>Compute Contrast Image Using Adaptive Histogram Equalization (TubeTK)</title>
+  <description>Apply adaptive histogram equalization to an image</description>
+  <version>0.1.0.$Revision: 2104 $(alpha)</version>
+  <documentation-url>http://public.kitware.com/Wiki/TubeTK</documentation-url>
+  <documentation-url/>
+  <license>Apache 2.0</license>
+  <contributor>Stephen R. Aylward (Kitware)</contributor>
+  <acknowledgements>This work is part of the TubeTK project at Kitware. It was funded in part by USC:EXPOSE.</acknowledgements>
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters.</description>
+    <image>
+      <name>inputImageName</name>
+      <label>Input Volume</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input volume.</description>
+    </image>
+    <image>
+      <name>outputImageName</name>
+      <label>Output Image</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Output, contrast-enhanced, image.</description>
+    </image>
+  </parameters>
+  <parameters>
+    <label>Options</label>
+    <description>Initial values for parameters to be optimized.</description>
+    <float>
+      <name>alpha</name>
+      <label>Alpha</label>
+      <description>Controls how much the filter acts like the classical histogram equalization method (alpha=0) to how much the filter acts like an unsharp mask (alpha=1)..</description>
+      <flag>a</flag>
+      <longflag>alpha</longflag>
+      <default>0.1</default>
+    </float>
+    <float>
+      <name>beta</name>
+      <label>Beta</label>
+      <description>Controls how much the filter acts like an unsharp mask (beta=0) to much the filter acts like pass through (beta=1, with alpha=1).</description>
+      <flag>b</flag>
+      <longflag>beta</longflag>
+      <default>0.5</default>
+    </float>
+    <integer>
+      <name>window</name>
+      <label>Window</label>
+      <description>Controls the size of the region over which local statistics are calculated.</description>
+      <flag>w</flag>
+      <longflag>window</longflag>
+      <default>5</default>
+    </integer>
+  </parameters>
+</executable>
