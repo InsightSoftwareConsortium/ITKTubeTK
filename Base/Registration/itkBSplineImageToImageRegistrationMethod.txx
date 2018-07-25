@@ -444,7 +444,7 @@ BSplineImageToImageRegistrationMethod<TImage>
   unsigned int levelNumberOfControlPoints =
     this->GetNumberOfControlPoints();
   double levelScale = 1;
-  unsigned int numberOfLevelsUsing m_NumberOfLevels;
+  unsigned int numberOfLevelsUsing = m_NumberOfLevels;
   if( this->m_NumberOfLevels > 1 )
     {
     for( unsigned int level = 1; level < this->m_NumberOfLevels; level++ )

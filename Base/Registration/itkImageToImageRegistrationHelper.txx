@@ -1414,14 +1414,16 @@ ImageToImageRegistrationHelper<TImage>
 {
   m_LoadedMatrixTransform = MatrixTransformType::New();
   m_LoadedMatrixTransform->SetIdentity();
+  m_LoadedMatrixTransform->SetFixedParameters( tfm.GetFixedParameters() );
   m_LoadedMatrixTransform->SetCenter( tfm.GetCenter() );
   m_LoadedMatrixTransform->SetMatrix( tfm.GetMatrix() );
   m_LoadedMatrixTransform->SetOffset( tfm.GetOffset() );
   if( invert )
     {
-    MatrixTransformType::Pointer tmpTfm = MatrixTransformType::New();
-    m_LoadedMatrixTransform->GetInverse( tmpTfm );
-    m_LoadedMatrixTransform = tmpTfm;
+    std::cout << "GetInverseTransform" << std::endl;
+    MatrixTransformType::Pointer invTfm = MatrixTransformType::New();
+    m_LoadedMatrixTransform->GetInverse( invTfm );
+    m_LoadedMatrixTransform = invTfm;
     }
 
   m_EnableLoadedRegistration = true;

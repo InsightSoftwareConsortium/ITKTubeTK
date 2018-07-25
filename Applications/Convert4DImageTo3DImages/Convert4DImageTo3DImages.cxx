@@ -152,7 +152,7 @@ int DoIt( int argc, char * argv[] )
 
   timeCollector.Report();
   return EXIT_SUCCESS;
-    }
+  }
 
 // Main
 int main( int argc, char * argv[] )
