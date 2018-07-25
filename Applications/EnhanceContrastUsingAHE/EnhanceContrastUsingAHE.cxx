@@ -54,10 +54,10 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Start();
 
   typedef float                                PixelType;
-
   typedef itk::Image< PixelType, VDimension >  ImageType;
+  typedef itk::AdaptiveHistogramEqualizationImageFilter< ImageType >
+                                               FilterType;
 
-  typedef itk::AdaptiveHistogramEqualizationImageFilter< ImageType >                  FilterType;
   typename FilterType::Pointer filter = FilterType::New();
 
   /** Read input image */
