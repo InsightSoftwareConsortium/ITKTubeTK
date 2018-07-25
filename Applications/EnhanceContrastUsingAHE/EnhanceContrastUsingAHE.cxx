@@ -91,7 +91,7 @@ int DoIt( int argc, char * argv[] )
   filter->SetAlpha( alpha );
   filter->SetBeta( beta );
 
-  FilterType::ImageSizeType radius;
+  typename FilterType::ImageSizeType radius;
   radius.Fill( window );
   filter->SetRadius( radius );
 
