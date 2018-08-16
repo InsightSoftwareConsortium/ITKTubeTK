@@ -1071,9 +1071,9 @@ ImageToImageRegistrationHelper<TImage>
       {
       tmpTrans->SetIdentity();
       tmpTrans->SetFixedParameters( aTrans->GetFixedParameters() );
-      MatrixTransformType::ParametersType aTransParams =
+      typename MatrixTransformType::ParametersType aTransParams =
         aTrans->GetParameters();
-      MatrixTransformType::ParametersType tmpParams =
+      typename MatrixTransformType::ParametersType tmpParams =
         tmpTrans->GetParameters();
       std::cout << "Original params = " << aTransParams << std::endl;
       for( unsigned int p=0; p<tmpParams.size(); ++p )
@@ -1123,9 +1123,9 @@ ImageToImageRegistrationHelper<TImage>
       tmpTrans->SetTransformDomainMeshSize(
         bTrans->GetTransformDomainMeshSize() );
       tmpTrans->SetFixedParameters( bTrans->GetFixedParameters() );
-      BSplineTransformType::ParametersType bTransParams =
+      typename BSplineTransformType::ParametersType bTransParams =
         bTrans->GetParameters();
-      BSplineTransformType::ParametersType tmpParams =
+      typename BSplineTransformType::ParametersType tmpParams =
         tmpTrans->GetParameters();
       for( unsigned int p=0; p<tmpParams.size(); ++p )
         {
@@ -1421,7 +1421,7 @@ ImageToImageRegistrationHelper<TImage>
   if( invert )
     {
     std::cout << "GetInverseTransform" << std::endl;
-    MatrixTransformType::Pointer invTfm = MatrixTransformType::New();
+    typename MatrixTransformType::Pointer invTfm = MatrixTransformType::New();
     m_LoadedMatrixTransform->GetInverse( invTfm );
     m_LoadedMatrixTransform = invTfm;
     }

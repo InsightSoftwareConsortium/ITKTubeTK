@@ -466,7 +466,7 @@ private:
 
   template< int tmpImageDimension >
   void AffineRegND() 
-   { Image< double, tmpImageDimension >::Pointer t; AffineRegND( t ); }
+   { typename Image< double, tmpImageDimension >::Pointer t; AffineRegND( t ); }
 
   void AffineRegND( Image< double, 2 > * t );
 
