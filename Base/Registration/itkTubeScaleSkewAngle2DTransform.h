@@ -79,6 +79,7 @@ public:
   typedef typename Superclass::InputCovariantVectorType  InputCovariantVectorType;
   typedef typename Superclass::OutputCovariantVectorType OutputCovariantVectorType;
   typedef typename Superclass::MatrixType                MatrixType;
+  typedef typename Superclass::MatrixValueType           MatrixValueType;
   typedef typename Superclass::InverseMatrixType         InverseMatrixType;
   typedef typename Superclass::CenterType                CenterType;
   typedef typename Superclass::OffsetType                OffsetType;
