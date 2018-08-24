@@ -16,4 +16,4 @@ then
 fi
 
 lower_case_tag="`echo $1 | tr "[:upper:]" "[:lower:]" `"
-docker build -t kitwaremedical/tubetk:$lower_case_tag $2
+docker build -t kitwaremedical/itktubetk:$lower_case_tag $2

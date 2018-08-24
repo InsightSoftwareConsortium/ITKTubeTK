@@ -12,4 +12,4 @@ fi
 
 lower_case_tag="`echo $1 | tr "[:upper:]" "[:lower:]" `"
 
-docker push kitwaremedical/tubetk:$lower_case_tag
+docker push kitwaremedical/itktubetk:$lower_case_tag
