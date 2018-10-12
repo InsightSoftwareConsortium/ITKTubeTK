@@ -4,8 +4,17 @@ branches:
 
 version: "0.0.1.{build}"
 
+environment:
+   - PYTHON_VERSION: 3.5
+     MINICONDA: C:\Miniconda3
+
 install:
 
+  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda info -a
+  - conda install numpy scipy
   - curl -L https://rawgit.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/windows-download-cache-and-build-module-wheels.ps1 -O
   - ps: .\windows-download-cache-and-build-module-wheels.ps1
 
