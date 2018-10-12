@@ -4,21 +4,70 @@ branches:
 
 version: "0.0.1.{build}"
 
-environment:
-   - PYTHON_VERSION: 3.5
-     MINICONDA: C:\Miniconda3
+os:
+  - Visual Studio 2015
+
+configuration:
+  - Release
 
 install:
 
+  #########################################################################
+  # Scipy and Numpy
+  #########################################################################
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda install numpy scipy
+  - conda install numpy scipy python=3.5
+    
+  #########################################################################
+  # All external dependencies are installed in C:\projects\deps
+  #########################################################################
+  - mkdir C:\projects\deps
+  - cd C:\projects\deps
+
+  #########################################################################
+  # ITK
+  #########################################################################
   - curl -L https://rawgit.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/windows-download-cache-and-build-module-wheels.ps1 -O
   - ps: .\windows-download-cache-and-build-module-wheels.ps1
 
-build: off
+  #########################################################################
+  # Install Ninja
+  #########################################################################
+  - set NINJA_URL="https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-win.zip"
+  - appveyor DownloadFile %NINJA_URL% -FileName ninja.zip
+  - 7z x ninja.zip -oC:\projects\deps\ninja > nul
+  - set PATH=C:\projects\deps\ninja;%PATH%
+  - ninja --version
+
+  #########################################################################
+  # Install a recent CMake
+  #########################################################################
+  - set CMAKE_URL="https://cmake.org/files/v3.12/cmake-3.12.3-win64-x64.zip"
+  - appveyor DownloadFile %CMAKE_URL% -FileName cmake.zip
+  - 7z x cmake.zip -oC:\projects\deps > nul
+  # Move to a version-agnostic directory
+  - move C:\projects\deps\cmake-* C:\projects\deps\cmake 
+  - set PATH=C:\projects\deps\cmake\bin;%PATH%
+  - cmake --version
+
+
+#########################################################################
+before_build:
+  - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+  - cd C:\projects
+
+build:
+  verbosity: detailed
+
+build_script:
+  - mkdir ITKTubeTK-Release
+  - cd ITKTubeTK-Release
+  - cmake ..\ITKTubeTK -GNinja
+  - echo %ITK_DIR%
+  - cmake --Experimental .
 
 test: off
 
