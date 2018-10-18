@@ -60,10 +60,15 @@ install:
   - cd C:\projects\deps
 
   #########################################################################
-  # ITK
+  # Install a recent CMake
   #########################################################################
-  - curl -L https://rawgit.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/windows-download-cache-and-build-module-wheels.ps1 -O
-  - ps: .\windows-download-cache-and-build-module-wheels.ps1
+  - set CMAKE_URL="https://cmake.org/files/v3.12/cmake-3.12.3-win64-x64.zip"
+  - appveyor DownloadFile %CMAKE_URL% -FileName cmake.zip
+  - 7z x cmake.zip -oC:\projects\deps > nul
+  # Move to a version-agnostic directory
+  - move C:\projects\deps\cmake-* C:\projects\deps\cmake
+  - set PATH=C:\projects\deps\cmake\bin;%PATH%
+  - cmake --version
 
   #########################################################################
   # Install Ninja
@@ -75,15 +80,11 @@ install:
   - ninja --version
 
   #########################################################################
-  # Install a recent CMake
+  # ITK
   #########################################################################
-  - set CMAKE_URL="https://cmake.org/files/v3.12/cmake-3.12.3-win64-x64.zip"
-  - appveyor DownloadFile %CMAKE_URL% -FileName cmake.zip
-  - 7z x cmake.zip -oC:\projects\deps > nul
-  # Move to a version-agnostic directory
-  - move C:\projects\deps\cmake-* C:\projects\deps\cmake
-  - set PATH=C:\projects\deps\cmake\bin;%PATH%
-  - cmake --version
+  - curl -L https://rawgit.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/windows-download-cache-and-build-module-wheels.ps1 -O
+  - ps: .\windows-download-cache-and-build-module-wheels.ps1
+
 
 
 #########################################################################
