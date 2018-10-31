@@ -87,9 +87,7 @@ macro(list_conditional_append cond list)
   endif()
 endmacro()
 
-set( TubeTK_DEPENDENCIES "ITK" "SlicerExecutionModel" )
-
-list_conditional_append( TubeTK_USE_VTK TubeTK_DEPENDENCIES "VTK" )
+set( TubeTK_DEPENDENCIES "SlicerExecutionModel" )
 
 list_conditional_append( TubeTK_USE_CPPCHECK TubeTK_DEPENDENCIES "Cppcheck" )
 

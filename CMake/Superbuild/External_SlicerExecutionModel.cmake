@@ -30,7 +30,6 @@ if( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 endif( DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR} )
 
 # Set dependency list
-set( ${proj}_DEPENDENCIES "ITK" )
 if( TubeTK_USE_JSONCPP )
   list( APPEND ${proj}_DEPENDENCIES "JsonCpp" )
   set( ${proj}_DEPENDENCIES_ARGS "-DJsonCpp_DIR:PATH=${JsonCpp_DIR}"

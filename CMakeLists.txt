@@ -88,15 +88,20 @@ mark_as_superbuild( VARS
 #
 # TubeTK applications install directories
 #
-tubetk_set_if_not_defined( SlicerExecutionModel_CLI_INSTALL_RUNTIME_DESTINATION
+tubetk_set_if_not_defined(
+  SlicerExecutionModel_CLI_INSTALL_RUNTIME_DESTINATION
   ${TubeTK_INSTALL_BIN_DIR} )
-tubetk_set_if_not_defined( SlicerExecutionModel_CLI_INSTALL_LIBRARY_DESTINATION
+tubetk_set_if_not_defined(
+  SlicerExecutionModel_CLI_INSTALL_LIBRARY_DESTINATION
   ${TubeTK_INSTALL_LIB_DIR} )
-tubetk_set_if_not_defined( SlicerExecutionModel_CLI_INSTALL_INCLUDE_DESTINATION
+tubetk_set_if_not_defined(
+  SlicerExecutionModel_CLI_INSTALL_INCLUDE_DESTINATION
   ${TubeTK_INSTALL_INCLUDE_DIR} )
-tubetk_set_if_not_defined( SlicerExecutionModel_CLI_INSTALL_SHARE_DESTINATION
+tubetk_set_if_not_defined(
+  SlicerExecutionModel_CLI_INSTALL_SHARE_DESTINATION
   ${TubeTK_INSTALL_SHARE_DIR} )
-tubetk_set_if_not_defined( SlicerExecutionModel_CLI_INSTALL_ARCHIVE_DESTINATION
+tubetk_set_if_not_defined(
+  SlicerExecutionModel_CLI_INSTALL_ARCHIVE_DESTINATION
   ${TubeTK_INSTALL_LIB_DIR} )
 
 # Pass value to TubeTK inner build
@@ -238,7 +243,6 @@ set( CMAKE_POSITION_INDEPENDENT_CODE ON )
 #
 option( TubeTK_SUPPORT_2D_IMAGES "Compile CLI with support for 2D images"
   ON )
-mark_as_advanced( TubeTK_SUPPORT_2D_IMAGES )
 if( TubeTK_SUPPORT_2D_IMAGES )
   add_definitions( -DSUPPORT_2D_IMAGES )
 endif()
@@ -287,7 +291,7 @@ CMAKE_DEPENDENT_OPTION( TubeTK_USE_NUMPY_STACK
   "TubeTK_USE_PYTHON" OFF )
 
 CMAKE_DEPENDENT_OPTION( TubeTK_USE_PYQTGRAPH
-  "Use PyQtGraph to enable additional functionality." ON
+  "Use PyQtGraph to enable additional functionality." OFF
   "TubeTK_USE_PYTHON" OFF )
 
 if( TubeTK_USE_PYTHON )
@@ -310,12 +314,6 @@ if( TubeTK_USE_PYTHON )
     ${TubeTK_SOURCE_DIR}/Utilities/Python/EvaluateIPythonNotebook.py
     CACHE INTERNAL "Test driver command for IPython Notebooks." FORCE )
 endif( TubeTK_USE_PYTHON )
-
-#
-# ITK setup.
-#
-option( USE_SYSTEM_ITK
- "Exclude ITK from superbuild and use an existing build." OFF )
 
 #
 # JsonCpp library setup.
@@ -393,12 +391,23 @@ else()
 endif( TubeTK_USE_PYTHON )
 
 #
+# ITK Setup.
+#
+if( NOT ITK_DIR )
+  set( ITK_DIR "NOT_FOUND" CACHE PATH
+	  "Path to ITK installation/build directory." FORCE )
+endif( NOT ITK_DIR )
+
+#
 # VTK setup.
 #
 option( TubeTK_USE_VTK "Use VTK to enable additional functionality." ON )
-option( USE_SYSTEM_VTK
- "Exclude VTK from superbuild and use an existing build." OFF )
-mark_as_advanced( TubeTK_USE_VTK )
+if( TubeTK_USE_VTK )
+  if( NOT VTK_DIR )
+    set( VTK_DIR "NOT_FOUND" CACHE PATH
+	    "Path to ITK installation/build directory." FORCE )
+  endif( NOT VTK_DIR )
+endif( TubeTK_USE_VTK )
 
 #
 # Modules
@@ -465,10 +474,12 @@ include( ${SlicerExecutionModel_USE_FILE} )
 
 find_package( ITK REQUIRED )
 include( ${ITK_USE_FILE} )
+mark_as_advanced( CLEAR ITK_DIR )
 
 if( TubeTK_USE_VTK )
   find_package( VTK REQUIRED )
   include( ${VTK_USE_FILE} )
+  mark_as_advanced( CLEAR VTK_DIR )
 endif( TubeTK_USE_VTK )
 
 if( TubeTK_USE_LIBSVM )

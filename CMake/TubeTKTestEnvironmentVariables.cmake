@@ -21,8 +21,8 @@
 #
 ##############################################################################
 
-# This script expects ITK_BUILD_DIR and TubeTK_BUILD_DIR to be passed as cmake
-# variables.
+# This script expects ITK_BUILD_DIR and TubeTK_BUILD_DIR to be passed as
+# cmake variables.
 # It verifies that ITK_BUILD_DIR and TubeTK_BUILD_DIR are set as environment
 # variables and that their values match the values passed to the script.
 if( NOT DEFINED ENV{ITK_BUILD_DIR})

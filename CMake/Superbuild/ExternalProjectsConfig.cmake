@@ -58,20 +58,11 @@ set( LIBSVM_HASH_OR_TAG 9bc3630f0f15fed7a5119c228c4d260574b4b6b2 )
 # Kitware Modules
 ###########################################################
 
-# Insight Segmentation and Registration Toolkit
-set( ITK_URL
-  ${github_protocol}://github.com/InsightSoftwareConsortium/ITK.git )
-set( ITK_HASH_OR_TAG v4.12.1 )
-
 # Slicer Execution Model
 set( SlicerExecutionModel_URL
   ${github_protocol}://github.com/Slicer/SlicerExecutionModel.git )
 set( SlicerExecutionModel_HASH_OR_TAG
   fa5f22e6346f8115381c1a242c4c50afe0ee8a50 )
-
-# Visualization Toolkit 
-set( VTK_URL ${github_protocol}://github.com/Kitware/VTK.git )
-set( VTK_HASH_OR_TAG v8.0.1 )
 
 # KWStyle
 set( KWStyle_URL ${git_protocol}://github.com/Kitware/KWStyle.git )
