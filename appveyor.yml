@@ -40,13 +40,15 @@ os:
 
 environment:
   matrix:
-    - MINICONDA: C:\Miniconda3
+    - MINICONDA: "C:\\Miniconda3"
+      PYTHON_VERSION: 3.6
+      PYTHON: "C:\\Python36-x64"
 
 install:
   #########################################################################
   # Scipy and Numpy
   #########################################################################
-  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
+  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
@@ -55,8 +57,8 @@ install:
   #########################################################################
   # ITK
   #########################################################################
-  - curl -L https://rawgit.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/windows-download-cache-and-build-module-wheels.ps1 -O
-  - ps: .\windows-download-cache-and-build-module-wheels.ps1
+  - conda install -c conda-forge itk
+  - conda install -c conda-forge libitk
 
   #########################################################################
   # All external dependencies are installed in C:\projects\deps
@@ -86,11 +88,16 @@ build_script:
   - mkdir ITKTubeTK-Release
   - cd ITKTubeTK-Release
   - cmake ..\ITKTubeTK
-    #-GNinja
   - echo %ITK_DIR%
-  - cmake -DTubeTK_USE_PYQTGRAPH=OFF --Experimental .
+  - cmake -DTubeTK_USE_PYQTGRAPH=OFF -DCMAKE_BUILD_TYPE=Release --build .
 
-test: off
+
+#########################################################################
+# Test Script
+#########################################################################
+test_script:
+  - cd TubeTK
+  - ctest -D Experimental
 
 
 #########################################################################
