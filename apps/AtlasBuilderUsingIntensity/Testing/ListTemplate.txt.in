@@ -1,0 +1,13 @@
+NumberOfObjects = 4
+Type = Image
+Name = @ExternalData_BINARY_ROOT@/data_keys/DDMap58.mha
+EndObject =
+Type = Image
+Name = @ExternalData_BINARY_ROOT@/data_keys/DDMap86.mha
+EndObject =
+Type = Image
+Name = @ExternalData_BINARY_ROOT@/data_keys/DDMap57.mha
+EndObject =
+Type = Image
+Name = @ExternalData_BINARY_ROOT@/data_keys/DDMap25.mha
+EndObject =

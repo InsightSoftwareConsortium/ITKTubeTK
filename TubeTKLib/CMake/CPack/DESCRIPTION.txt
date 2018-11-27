@@ -1,0 +1,36 @@
+DESCRIPTION
+===========
+
+TubeTKLib (http://www.tubetk.org) is an open-source toolkit for the segmentation,
+registration, and analysis of tubes and surfaces in images, developed by
+Kitware, Inc.
+
+Tubes and surfaces, as generalized 1D and 2D manifolds in N-dimensional images,
+are essential components in a variety of image analysis tasks. Instances of
+tubular structures in images include blood vessels in magnetic resonance
+angiograms and b-mode ultrasound images, wires in microscopy images of
+integrated circuits, roads in aerial photographs, and nerves in confocal
+microscopy.
+
+A guiding premise of TubeTKLib is that by focusing on 1D and 2D manifolds we can
+devise methods that are insensitive to the modality, noise, contrast, and scale
+of the images being analyzed and to the arrangement and deformations of the
+objects in them. In particular, we propose that TubeTKLib's manifold methods offer
+improved performance for many applications, compared to methods involving the
+analysis of independent geometric measures (e.g., edges and corners) or
+requiring complete shape models.
+
+TubeTKLib makes extensive use of the Insight Segmentation and Registration Toolkit
+(ITK) and the Visualization Toolkit (VTK). Select methods of TubeTKLib are provided
+as command-line applications.
+
+Acknowledgements:
+
+The development of TubeTKLib is supported in part by the National Cancer Institute
+(NCI) of the National Institutes of Health (NIH) under award numbers
+R01CA138419, R01CA170665, R43CA165621, and R44CA143234; by the National
+Institute of Biomedical Imaging and Bioengineering (NBIB) of the NIH under award
+numbers R41EB015775, R43EB016621, and U54EB005149; by the National Institute of
+Neurological Disorders and Stroke (NINDS) of the NIH under award number
+R41NS081792; and by the Defense Advanced Research Projects Agency (DARPA) under
+the TRUST program.

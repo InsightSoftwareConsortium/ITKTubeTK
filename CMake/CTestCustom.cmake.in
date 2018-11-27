@@ -70,36 +70,28 @@ set( CTEST_CUSTOM_COVERAGE_EXCLUDE
     ".*Python.cxx"
     ".*PythonInit.cxx"
 
-    # Exclude Qt Designer plugins
-    ".*/DesignerPlugins/.*"
-
     # Exclude generated cpp files
     ".*/generated_cpp/.*"
 
     ".*CLP.h"
 
-    ".*Wrapping/Modules/TubeTKITK.*"
-
     ${CTEST_CUSTOM_COVERAGE_EXCLUDE} )
 
 set( CTEST_CUSTOM_MEMCHECK_IGNORE
     # Ignore possible memory leaks in the Python interpreter.
-    PrintSelf-BaseCLI
-    PrintSelf-BaseCommon
-    PrintSelf-BaseFiltering
-    PrintSelf-BaseIO
-    PrintSelf-BaseNumerics
-    PrintSelf-BaseObjectDocuments
-    PrintSelf-BaseRegistration
-    PrintSelf-BaseSegmentation
-    PrintSelf-BaseUSTK )
+    PrintSelf-Common
+    PrintSelf-Filtering
+    PrintSelf-IO
+    PrintSelf-Numerics
+    PrintSelf-ObjectDocuments
+    PrintSelf-Registration
+    PrintSelf-Segmentation
+    PrintSelf-USTK )
 
 # GLOB automatically recurses in subdirectories.
 set( CTEST_EXTRA_COVERAGE_GLOB
-    Applications/*.cxx
-    Applications/*.hxx
-    Base/*.cxx
-    Base/*.hxx )
+    */*.cxx
+    */*.hxx )
 
 set( CTEST_CUSTOM_MAXIMUM_NUMBER_OF_ERRORS 2500 )
 

@@ -40,64 +40,75 @@ os:
 
 environment:
   matrix:
-    - MINICONDA: "C:\\Miniconda3"
-      PYTHON_VERSION: 3.6
-      PYTHON: "C:\\Python36-x64"
+    - MINICONDA: "C:\\Miniconda36-x64"
+      ITKModule: On
+    - MINICONDA: "C:\\Miniconda36-x64"
+      ITKModule: Off
 
-install:
-  #########################################################################
-  # Scipy and Numpy
-  #########################################################################
-  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
-  - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
-  - conda info -a
-  - conda install numpy scipy
-
-  #########################################################################
-  # ITK
-  #########################################################################
-  - conda install -c conda-forge itk
-  - conda install -c conda-forge libitk
-
-  #########################################################################
-  # All external dependencies are installed in C:\projects\deps
-  #########################################################################
-  - mkdir C:\projects\deps
-  - cd C:\projects\deps
-
-
-#########################################################################
-# Build Setup
-#########################################################################
 configuration:
   - Release
 
-before_build:
-  - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
-  - cd C:\projects
+#########################################################################
+# Build ITKModule using ITK script
+#########################################################################
+for:
+-
+  matrix:
+    only:
+      - ITKModule: On
+  #########################################################################
+  # Download and run ITK script
+  #########################################################################
+  install:
+  - curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/windows-download-cache-and-build-module-wheels.ps1 -O
+  - ps: .\windows-download-cache-and-build-module-wheels.ps1
 
 
 #########################################################################
-# Build
+# Build and Test TubeTK without using ITK script
 #########################################################################
-build:
-  verbosity: detailed
+for:
+-
+  matrix:
+    only:
+      - ITKModule: Off
 
-build_script:
-  - mkdir ITKTubeTK-Release
-  - cd ITKTubeTK-Release
-  - cmake ..\ITKTubeTK
-  - echo %ITK_DIR%
-  - cmake -DTubeTK_USE_PYQTGRAPH=OFF -DCMAKE_BUILD_TYPE=Release --build .
+  #########################################################################
+  # Dependencies resolved via conda: ITK, LIBITK, VTK
+  #########################################################################
+  install:
+  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
+  - conda config --set always_yes yes --set changeps1 no
+  - conda config --add channels conda-forge
+  - conda install itk libitk vtk numpy scipy ninja
+  - "set ITK_DIR=%MINICONDA%\\Library\\lib\\cmake\\ITK-4.13;%PATH%"
+  - "set VTK_DIR=%MINICONDA%\\Library\\lib\\cmake\\vtk-8.1;%PATH%"
 
+  #########################################################################
+  # Build Setup
+  #########################################################################
+  before_build:
+    - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+    - cd C:\projects
 
-#########################################################################
-# Test Script
-#########################################################################
-test_script:
-  - cd TubeTK
-  - ctest -D Experimental
+  #########################################################################
+  # Build
+  #########################################################################
+  build:
+    verbosity: detailed
+  
+  build_script:
+    - mkdir ITKTubeTK-Release
+    - cd ITKTubeTK-Release
+    - cmake -GNinja -DITK_DIR=%ITK_DIR% -DVTK_DIR=%VTK_DIR% -DTubeTK_USE_PYQTGRAPH=OFF -DCMAKE_BUILD_TYPE=Release ..\ITKTubeTK
+    - ninja
+
+  #########################################################################
+  # Test Script
+  #########################################################################
+  test_script:
+    - cd TubeTK-build
+    - ctest -D Experimental
 
 
 #########################################################################

@@ -1,30 +1,35 @@
 include(ExternalData)
 
-set ( TubeTK_DATA_ROOT ${TubeTK_SOURCE_DIR}/MIDAS_Keys)
+set( TubeTK_DATA_ROOT ${TubeTK_SOURCE_DIR}/data_keys)
+set( TubeTKLib_DATA_ROOT ${TubeTKLib_SOURCE_DIR}/DataKeys)
 
 if(NOT ExternalData_OBJECT_STORES)
   # Use ExternalData_OBJECT_STORES from environment as default.
   set(ExternalData_OBJECT_STORES_DEFAULT "")
   if(DEFINED "ENV{ExternalData_OBJECT_STORES}")
-    file(TO_CMAKE_PATH "$ENV{ExternalData_OBJECT_STORES}" ExternalData_OBJECT_STORES_DEFAULT)
+    file(TO_CMAKE_PATH "$ENV{ExternalData_OBJECT_STORES}"
+      ExternalData_OBJECT_STORES_DEFAULT)
   endif()
 endif()
 
 # Select a data store.
 if(NOT DEFINED ExternalData_OBJECT_STORES)
   if(DEFINED "ENV{ExternalData_OBJECT_STORES}")
-    file(TO_CMAKE_PATH "$ENV{ExternalData_OBJECT_STORES}" ExternalData_OBJECT_STORES)
+    file(TO_CMAKE_PATH "$ENV{ExternalData_OBJECT_STORES}"
+      ExternalData_OBJECT_STORES)
   else()
     if(DEFINED dashboard_data_name)
-        set(ExternalData_OBJECT_STORES ${CTEST_DASHBOARD_ROOT}/${dashboard_data_name})
+        set(ExternalData_OBJECT_STORES
+          ${CTEST_DASHBOARD_ROOT}/${dashboard_data_name})
     else()
         set(ExternalData_OBJECT_STORES ${CTEST_DASHBOARD_ROOT}/ExternalData)
     endif()
   endif()
 endif()
 
-set(ExternalData_OBJECT_STORES "${ExternalData_OBJECT_STORES_DEFAULT}" CACHE STRING
-  "Semicolon-separated list of data directories in the layout %(algo)/%(hash).")
+set(ExternalData_OBJECT_STORES "${ExternalData_OBJECT_STORES_DEFAULT}"
+  CACHE STRING
+  "Semicolon-separated list of data dirs in the layout %(algo)/%(hash).")
 mark_as_advanced(ExternalData_OBJECT_STORES)
 if(NOT ExternalData_OBJECT_STORES)
   set(ExternalData_OBJECT_STORES "${CMAKE_BINARY_DIR}/ExternalData/Objects")
