@@ -34,6 +34,8 @@ limitations under the License.
 
 #include "SegmentBinaryImageSkeleton3DCLP.h"
 
+#define PARSE_ARGS_3D_ONLY true
+
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] );
 

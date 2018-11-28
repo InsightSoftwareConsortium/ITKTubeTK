@@ -73,7 +73,7 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
 
 #ifndef PARSE_ARGS_FLOAT_ONLY
 
-#ifdef SUPPORT_2D_IMAGES
+#ifndef PARSE_ARGS_3D_ONLY
     if( dimension == 2 )
       {
       switch( componentType )
@@ -134,7 +134,7 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
       }
 
 #else
-#ifdef SUPPORT_2D_IMAGES
+#ifndef PARSE_ARGS_3D_ONLY
     if( dimension == 2 )
       {
       return DoIt< float, 2 >( argc, argv );
