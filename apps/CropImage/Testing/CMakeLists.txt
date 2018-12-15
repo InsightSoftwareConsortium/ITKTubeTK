@@ -37,7 +37,7 @@ ExternalData_Add_Test( TubeTKData
 
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test1-Compare
-  COMMAND ${TubeTKLib_CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.mha} )
 set_tests_properties( ${MODULE_NAME}-Test1-Compare PROPERTIES DEPENDS
@@ -53,7 +53,7 @@ ExternalData_Add_Test( TubeTKData
 
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test2-Compare
-  COMMAND ${TubeTKLib_CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.mha} )
 set_tests_properties( ${MODULE_NAME}-Test2-Compare PROPERTIES DEPENDS
@@ -69,7 +69,7 @@ ExternalData_Add_Test( TubeTKData
 
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test3-Compare
-  COMMAND ${TubeTKLib_CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test3.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.mha} )
 set_tests_properties( ${MODULE_NAME}-Test3-Compare PROPERTIES DEPENDS
@@ -85,7 +85,7 @@ ExternalData_Add_Test( TubeTKData
 
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test4-Compare000000
-  COMMAND ${TubeTKLib_CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test4_000000.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test4_000000.mha} )
 set_tests_properties( ${MODULE_NAME}-Test4-Compare000000 PROPERTIES DEPENDS
@@ -93,7 +93,7 @@ set_tests_properties( ${MODULE_NAME}-Test4-Compare000000 PROPERTIES DEPENDS
 
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test4-Compare000001
-  COMMAND ${TubeTKLib_CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test4_000001.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test4_000001.mha} )
 set_tests_properties( ${MODULE_NAME}-Test4-Compare000001 PROPERTIES DEPENDS
@@ -101,7 +101,7 @@ set_tests_properties( ${MODULE_NAME}-Test4-Compare000001 PROPERTIES DEPENDS
 
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test4-Compare001000
-  COMMAND ${TubeTKLib_CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test4_001000.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test4_001000.mha} )
 set_tests_properties( ${MODULE_NAME}-Test4-Compare001000 PROPERTIES DEPENDS
@@ -109,7 +109,7 @@ set_tests_properties( ${MODULE_NAME}-Test4-Compare001000 PROPERTIES DEPENDS
 
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test4-Compare001001
-  COMMAND ${TubeTKLib_CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test4_001001.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test4_001001.mha} )
 set_tests_properties( ${MODULE_NAME}-Test4-Compare001001 PROPERTIES DEPENDS

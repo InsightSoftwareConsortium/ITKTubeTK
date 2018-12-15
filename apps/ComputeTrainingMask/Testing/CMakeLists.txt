@@ -39,7 +39,7 @@ ExternalData_Add_Test( TubeTKData
 # Test1 - Compare - VesselMask
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test1-VesselMask-Compare
-  COMMAND ${TubeTKLib_CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.mha
     -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test1_VesselMask.mha}
     -i 0.01 )
@@ -60,13 +60,13 @@ ExternalData_Add_Test( TubeTKData
 # Test2 - Compare - NotVesselMask
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test2-NotVesselMask-Compare
-  COMMAND ${TubeTKLib_CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2.mha
     -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test2_NotVesselMask.mha}
     -i 0.01 )
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test2-NotVesselMask1-Compare
-  COMMAND ${TubeTKLib_CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2_NotVesselMask.mha
     -b DATA{${TubeTK_DATA_ROOT}/ComputeTrainingMask-Test2_NotVesselMask1.mha}
     -i 0.01 )

@@ -16,8 +16,8 @@
  *
  *=========================================================================*/
 #include "itkImage.h"
-#include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
+#include "itkImageFileReader.h"
 #include "itkRescaleIntensityImageFilter.h"
 #include "itkExtractImageFilter.h"
 

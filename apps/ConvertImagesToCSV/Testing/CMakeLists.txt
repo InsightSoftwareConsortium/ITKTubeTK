@@ -2,8 +2,7 @@
 #
 # Library:   TubeTK
 #
-# Copyright 2010 Kitware Inc. 28 Corporate Drive,
-# Clifton Park, NY, 12065, USA.
+# Copyright Kitware Inc.
 #
 # All rights reserved.
 #
@@ -39,7 +38,7 @@ ExternalData_Add_Test( TubeTKData
 # Test1-Compare
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test1-Compare
-  COMMAND ${TubeTKLib_CompareTextFiles_EXE}
+  COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.csv
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.csv} )
 set_tests_properties( ${MODULE_NAME}-Test1-Compare PROPERTIES DEPENDS

@@ -28,23 +28,23 @@ include( ${ITK_USE_FILE} )
 find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseMetaIO ${PYTHON_EXECUTABLE}
-    ${TubeTKLib_SOURCE_DIR}/CMake/PrintSelfCheck.py
-    ${TubeTKLib_SOURCE_DIR}/Base/MetaIO )
+    ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
+    ${TubeTK_SOURCE_DIR}/TubeTKLib/MetaIO )
 endif( PYTHON_EXECUTABLE )
 
 set( CompareImages_EXE
-  ${TubeTKLib_LAUNCHER} $<TARGET_FILE:CompareImages> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
 set( CompareTextFiles_EXE
-  ${TubeTKLib_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareTextFiles> )
 
 set( BASE_MetaIO_TESTS
-  ${TubeTKLib_LAUNCHER} $<TARGET_FILE:tubeBaseMetaIOTests> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseMetaIOTests> )
 
 set( BASE_MetaIO_HEADER_TEST
-  ${TubeTKLib_LAUNCHER} $<TARGET_FILE:tubeBaseMetaIOHeaderTest> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseMetaIOHeaderTest> )
 
-set( TEMP ${TubeTKLib_BINARY_DIR}/Temporary )
+set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseMetaIOTests_SRCS
   tubeBaseMetaIOTests.cxx
@@ -64,7 +64,7 @@ target_link_libraries( tubeBaseMetaIOHeaderTest
 add_executable( tubeBaseMetaIOTests
   ${tubeBaseMetaIOTests_SRCS} )
 target_include_directories( tubeBaseMetaIOTests PUBLIC
-  ${TubeTKLib_SOURCE_DIR}/Filtering )
+  ${TubeTK_SOURCE_DIR}/TubeTKLib/Filtering )
 target_link_libraries( tubeBaseMetaIOTests
   TubeTKLibMetaIO
   ${ITK_LIBRARIES}

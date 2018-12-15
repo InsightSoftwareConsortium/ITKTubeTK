@@ -25,11 +25,11 @@ limitations under the License.
 #include "itktubeRidgeSeedFilterIO.h"
 #include "itktubePDFSegmenterParzenIO.h"
 
-#ifdef TubeTKLib_USE_LIBSVM
+#ifdef TubeTK_USE_LIBSVM
 #  include "itktubePDFSegmenterSVMIO.h"
 #endif
 
-#ifdef TubeTKLib_USE_RANDOMFOREST
+#ifdef TubeTK_USE_RANDOMFOREST
 #  include "itktubePDFSegmenterRandomForestIO.h"
 #endif
 
@@ -219,7 +219,7 @@ Read( const char * _headerName )
       return false;
       }
     }
-#ifdef TubeTKLib_USE_LIBSVM
+#ifdef TubeTK_USE_LIBSVM
   else
     {
     typedef PDFSegmenterSVM< TImage, TLabelMap > PDFSegmenterSVMType;
@@ -238,7 +238,7 @@ Read( const char * _headerName )
         }
       }
 #endif
-#ifdef TubeTKLib_USE_RANDOMFOREST
+#ifdef TubeTK_USE_RANDOMFOREST
     else
       {
       typedef PDFSegmenterRandomForest< TImage, TLabelMap >
@@ -264,10 +264,10 @@ Read( const char * _headerName )
         std::cerr << "PDFSegmenter type not known." << std::endl;
         std::cerr << "  May require LibSVM or RandomForest." << std::endl;
         }
-#ifdef TubeTKLib_USE_RANDOMFOREST
+#ifdef TubeTK_USE_RANDOMFOREST
       }
 #endif
-#ifdef TubeTKLib_USE_LIBSVM
+#ifdef TubeTK_USE_LIBSVM
       }
 #endif
   return true;
@@ -337,7 +337,7 @@ Write( const char * _headerName )
       result = false;
       }
     }
-#ifdef TubeTKLib_USE_LIBSVM
+#ifdef TubeTK_USE_LIBSVM
   else
     {
     typedef PDFSegmenterSVM< TImage, TLabelMap >    PDFSegmenterSVMType;
@@ -354,7 +354,7 @@ Write( const char * _headerName )
         }
       }
 #endif
-#ifdef TubeTKLib_USE_RANDOMFOREST
+#ifdef TubeTK_USE_RANDOMFOREST
     else
       {
       typedef PDFSegmenterRandomForest< TImage, TLabelMap >
@@ -377,10 +377,10 @@ Write( const char * _headerName )
         std::cerr << "PDFSegmenter type not known." << std::endl;
         std::cerr << "  May require LibSVM or RandomForest." << std::endl;
         }
-#ifdef TubeTKLib_USE_RANDOMFOREST
+#ifdef TubeTK_USE_RANDOMFOREST
       }
 #endif
-#ifdef TubeTKLib_USE_LIBSVM
+#ifdef TubeTK_USE_LIBSVM
     }
 #endif
   result = seedWriter.Write( _headerName );

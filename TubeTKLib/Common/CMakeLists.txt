@@ -20,13 +20,6 @@
 #
 ##############################################################################
 
-project( TubeTKLibCommon )
-
-if(NOT ITK_SOURCE_DIR)
-  find_package( ITK REQUIRED )
-  include( ${ITK_USE_FILE} )
-endif()
-
 set( TubeTKLib_Base_Common_H_Files
   tubeIndent.h
   tubeMacro.h
@@ -41,25 +34,23 @@ set( TubeTKLib_Base_Common_CXX_Files
   tubeIndent.cxx
   tubeObject.cxx )
 
-add_library( ${PROJECT_NAME} STATIC
+add_library( TubeTKLibCommon STATIC
   ${TubeTKLib_Base_Common_H_Files}
   ${TubeTKLib_Base_Common_HXX_Files}
   ${TubeTKLib_Base_Common_CXX_Files} )
-target_link_libraries( ${PROJECT_NAME}
+target_link_libraries( TubeTKLibCommon
   ${ITK_LIBRARIES} )
-target_include_directories( ${PROJECT_NAME} PUBLIC
+target_include_directories( TubeTKLibCommon PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )
 
-if( TubeTKLib_BUILD_TESTING )
+if( BUILD_TESTING )
   add_subdirectory( Testing )
-endif( TubeTKLib_BUILD_TESTING )
+endif( BUILD_TESTING )
 
-if( TubeTKLib_INSTALL_DEVELOPMENT )
-  install( FILES
-    ${TubeTKLib_Base_Common_H_Files}
-    ${TubeTKLib_Base_Common_HXX_Files}
-    DESTINATION ${TubeTKLib_INSTALL_INCLUDE_DIR}
-    COMPONENT Development )
-endif()
+install( FILES
+  ${TubeTKLib_Base_Common_H_Files}
+  ${TubeTKLib_Base_Common_HXX_Files}
+  DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
+  COMPONENT Development )
 
-set_property( GLOBAL APPEND PROPERTY TubeTKLib_TARGETS ${PROJECT_NAME} )
+set_property( GLOBAL APPEND PROPERTY TubeTKLib_TARGETS TubeTKLibCommon )

@@ -39,7 +39,7 @@ ExternalData_Add_Test( TubeTKData
 # Test1-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test1-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test1.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test1.mha}
                -i 0.001 )
@@ -60,7 +60,7 @@ ExternalData_Add_Test( TubeTKData
 # Test2-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test2-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test2.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test2.mha}
                -i 0.001 )
@@ -79,7 +79,7 @@ ExternalData_Add_Test( TubeTKData
 # Test3-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test3-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test3.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test3.mha}
                -i 0.001 )
@@ -98,7 +98,7 @@ ExternalData_Add_Test( TubeTKData
 # Test4-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test4-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test4.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test4.mha}
                -i 0.01 )
@@ -117,7 +117,7 @@ ExternalData_Add_Test( TubeTKData
 # Test5-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test5-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test5.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test5.mha}
                -i 0.001 )
@@ -135,7 +135,7 @@ ExternalData_Add_Test( TubeTKData
 # Test6-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test6-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test6.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test6.mha}
                -i 0.001 )
@@ -153,7 +153,7 @@ ExternalData_Add_Test( TubeTKData
 # Test7-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test7-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test7.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test7.mha}
                -i 0.001 )
@@ -171,7 +171,7 @@ ExternalData_Add_Test( TubeTKData
 # Test8-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test8-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test8.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test8.mha}
                -i 0.001 )
@@ -189,7 +189,7 @@ ExternalData_Add_Test( TubeTKData
 # Test9-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test9-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test9.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test9.mha}
                -i 0.001 )
@@ -207,7 +207,7 @@ ExternalData_Add_Test( TubeTKData
 # Test10-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test10-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test10.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test10.mha}
                -i 0.001 )
@@ -225,7 +225,7 @@ ExternalData_Add_Test( TubeTKData
 # Test11-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test11-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test11.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test11.mha}
                -i 0.001 )
@@ -243,7 +243,7 @@ ExternalData_Add_Test( TubeTKData
 # Test12-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test12-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test12.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test12.mha}
                -i 0.001 )
@@ -261,7 +261,7 @@ ExternalData_Add_Test( TubeTKData
 # Test13-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test13-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test13.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test13.mha}
                -i 0.001 )
@@ -278,7 +278,7 @@ ExternalData_Add_Test( TubeTKData
 # Test14-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test14-Compare
-            COMMAND ${TubeTKLib_CompareTextFiles_EXE}
+            COMMAND ${TubeTK_CompareTextFiles_EXE}
             -t ${TEMP}/${PROJECT_NAME}Test14.txt
             -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test14.txt} )
 set_tests_properties( ${PROJECT_NAME}-Test14-Compare PROPERTIES DEPENDS
@@ -294,7 +294,7 @@ ExternalData_Add_Test( TubeTKData
 # Test15-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test15-Compare
-            COMMAND ${TubeTKLib_CompareTextFiles_EXE}
+            COMMAND ${TubeTK_CompareTextFiles_EXE}
             -t ${TEMP}/${PROJECT_NAME}Test15.txt
             -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test15.txt} )
 set_tests_properties( ${PROJECT_NAME}-Test15-Compare PROPERTIES DEPENDS
@@ -311,7 +311,7 @@ ExternalData_Add_Test( TubeTKData
 # Test16-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test16-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test16.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test16.mha}
                -i 0.5
@@ -330,7 +330,7 @@ ExternalData_Add_Test( TubeTKData
 # Test17-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test17-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test17.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test17.mha}
                -i 0.001 )
@@ -348,7 +348,7 @@ ExternalData_Add_Test( TubeTKData
 # Test18-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test18-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test18.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test18.mha}
                -i 0.001 )
@@ -366,7 +366,7 @@ ExternalData_Add_Test( TubeTKData
 # Test19-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test19-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test19.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test19.mha}
                -i 0.001 )
@@ -384,7 +384,7 @@ ExternalData_Add_Test( TubeTKData
 # Test20-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test20-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test20.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test20.mha}
                -i 0.001 )
@@ -402,7 +402,7 @@ ExternalData_Add_Test( TubeTKData
 # Test21-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test21-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test21.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test21.mha}
                -i 0.001 )
@@ -420,7 +420,7 @@ ExternalData_Add_Test( TubeTKData
 # Test23-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test23-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test23.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test23.mha}
                -i 0.001 )
@@ -438,7 +438,7 @@ ExternalData_Add_Test( TubeTKData
 # Test24-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test24-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test24.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test24.mha}
                -i 0.001 )
@@ -456,7 +456,7 @@ ExternalData_Add_Test( TubeTKData
 # Test25-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test25-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test25.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test25.mha}
                -i 0.001 )
@@ -474,7 +474,7 @@ ExternalData_Add_Test( TubeTKData
 # Test26-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test26-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test26.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test26.mha}
                -i 0.001 )
@@ -492,7 +492,7 @@ ExternalData_Add_Test( TubeTKData
 # Test27-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test27-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test27.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test27.mha}
                -i 0.001 )
@@ -510,7 +510,7 @@ ExternalData_Add_Test( TubeTKData
 # Test28-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test28-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test28.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test28.mha}
                -i 0.001 )
@@ -528,7 +528,7 @@ ExternalData_Add_Test( TubeTKData
 # Test29-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test29-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test29.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test29.mha}
                -i 0.001 )
@@ -546,7 +546,7 @@ ExternalData_Add_Test( TubeTKData
 # Test30-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${PROJECT_NAME}-Test30-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${PROJECT_NAME}Test30.mha
                -b DATA{${TubeTK_DATA_ROOT}/${PROJECT_NAME}Test30.mha}
                -i 0.001 )

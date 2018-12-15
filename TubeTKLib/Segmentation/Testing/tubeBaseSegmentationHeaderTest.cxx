@@ -21,14 +21,14 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubetklibConfigure.h"
+#include "tubetkConfigure.h"
 
 #include "itktubePDFSegmenterBase.h"
 #include "itktubePDFSegmenterParzen.h"
-#ifdef TubeTKLib_USE_LIBSVM
+#ifdef TubeTK_USE_LIBSVM
 #  include "itktubePDFSegmenterSVM.h"
 #endif
-#ifdef TubeTKLib_USE_RANDOMFOREST
+#ifdef TubeTK_USE_RANDOMFOREST
 #  include "itktubePDFSegmenterRandomForest.h"
 #endif
 #include "itktubeRadiusExtractor2.h"

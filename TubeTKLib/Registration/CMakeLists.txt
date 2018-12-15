@@ -20,8 +20,6 @@
 #
 ##############################################################################
 
-project( TubeTKLibRegistration )
-
 set( TubeTKLib_Base_Registration_H_Files
   itktubeAnisotropicDiffusiveRegistrationFunction.h
   itktubeDiffusiveRegistrationFilter.h
@@ -35,11 +33,11 @@ set( TubeTKLib_Base_Registration_H_Files
   itktubeTubeParametricExponentialWithBoundsResolutionWeightFunction.h
   itktubeTubeToTubeTransformFilter.h )
 
-if( TubeTKLib_USE_VTK )
+if( TubeTK_USE_VTK )
   list( APPEND TubeTKLib_Base_Registration_H_Files
     itktubeAnisotropicDiffusiveSparseRegistrationFilter.h
     itktubeAnisotropicDiffusiveRegistrationFilter.h )
-endif( TubeTKLib_USE_VTK )
+endif()
 
 set( TubeTKLib_Base_Registration_HXX_Files
   itktubeAnisotropicDiffusiveRegistrationFunction.hxx
@@ -51,32 +49,31 @@ set( TubeTKLib_Base_Registration_HXX_Files
   itktubeMergeAdjacentImagesFilter.hxx
   itktubeTubeToTubeTransformFilter.hxx )
 
-if( TubeTKLib_USE_VTK )
+if( TubeTK_USE_VTK )
   list( APPEND TubeTKLib_Base_Registration_HXX_Files
     itktubeAnisotropicDiffusiveSparseRegistrationFilter.hxx
     itktubeAnisotropicDiffusiveRegistrationFilter.hxx )
-endif( TubeTKLib_USE_VTK )
+endif()
 
-add_library( ${PROJECT_NAME} INTERFACE )
+add_library( TubeTKLibRegistration INTERFACE )
 
-target_include_directories( ${PROJECT_NAME} INTERFACE
+target_include_directories( TubeTKLibRegistration INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR} )
 
-target_link_libraries( ${PROJECT_NAME} INTERFACE
+target_link_libraries( TubeTKLibRegistration INTERFACE
   TubeTKLibFiltering
   TubeTKLibNumerics
   )
 
-if( TubeTKLib_BUILD_TESTING )
+if( BUILD_TESTING )
   add_subdirectory( Testing )
-endif( TubeTKLib_BUILD_TESTING )
+endif( BUILD_TESTING )
 
-if( TubeTKLib_INSTALL_DEVELOPMENT )
-  install( FILES
-    ${TubeTKLib_Base_Segmentation_H_Files}
-    ${TubeTKLib_Base_Segmentation_HXX_Files}
-    DESTINATION ${TubeTKLib_INSTALL_INCLUDE_DIR}
-    COMPONENT Development )
-endif()
+install( FILES
+  ${TubeTKLib_Base_Segmentation_H_Files}
+  ${TubeTKLib_Base_Segmentation_HXX_Files}
+  DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
+  COMPONENT Development )
 
-set_property( GLOBAL APPEND PROPERTY TubeTKLib_TARGETS ${PROJECT_NAME} )
+set_property( GLOBAL APPEND PROPERTY TubeTKLib_TARGETS
+  TubeTKLibRegistration )

@@ -20,12 +20,11 @@
 #
 ##############################################################################
 
-project(TukeTKCompareTools)
-
 add_executable( CompareImages
   CompareImages.cxx )
 target_link_libraries( CompareImages
-  ${ITK_LIBRARIES} TubeTKLibCommon )
+  ${ITK_LIBRARIES}
+  TubeTKLibCommon )
 target_include_directories( CompareImages PRIVATE
   ${TubeTKLib_SOURCE_DIR}/Filtering )
 
@@ -50,6 +49,6 @@ install( TARGETS
   COMPONENT Runtime )
 
 #-----------------------------------------------------------------------------
-if( TubeTKLib_BUILD_TESTING )
+if( BUILD_TESTING )
   add_subdirectory( Testing )
-endif( TubeTKLib_BUILD_TESTING )
+endif( BUILD_TESTING )

@@ -21,7 +21,7 @@ limitations under the License.
 =========================================================================*/
 
 #include "tubeTestMain.h"
-#include "tubetklibConfigure.h"
+#include "tubetkConfigure.h"
 
 #include <iostream>
 
@@ -29,10 +29,10 @@ void RegisterTests( void )
 {
   REGISTER_TEST( tubeBaseSegmentationPrintTest );
   REGISTER_TEST( itktubePDFSegmenterParzenTest );
-#ifdef TubeTKLib_USE_LIBSVM
+#ifdef TubeTK_USE_LIBSVM
   REGISTER_TEST( itktubePDFSegmenterSVMTest );
 #endif
-#ifdef TubeTKLib_USE_RANDOMFOREST
+#ifdef TubeTK_USE_RANDOMFOREST
   REGISTER_TEST( itktubePDFSegmenterRandomForestTest );
 #endif
   REGISTER_TEST( itktubeRidgeExtractorTest );

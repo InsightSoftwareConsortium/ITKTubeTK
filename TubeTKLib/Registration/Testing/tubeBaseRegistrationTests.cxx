@@ -30,7 +30,7 @@ limitations under the License.
 
 void RegisterTests( void )
 {
-#ifdef TubeTKLib_USE_VTK
+#ifdef TubeTK_USE_VTK
   REGISTER_TEST( itkAnisotropicDiffusiveRegistrationGenerateTestingImages );
   REGISTER_TEST( itkAnisotropicDiffusiveRegistrationRegularizationTest );
 #endif

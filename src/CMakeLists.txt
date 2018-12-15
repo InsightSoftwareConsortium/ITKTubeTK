@@ -27,13 +27,14 @@ set( TubeTK_SRCS
 add_library( TubeTK ${TubeTK_SRCS} )
 
 itk_module_link_dependencies()
-add_dependencies( TubeTK TubeTKLib )
+
+add_dependencies( TubeTK ${TubeTKLib_LIBRARIES} )
 
 target_link_libraries( TubeTK INTERFACE
   ${TubeTKLib_LIBRARIES}
   ${ITK_LIBRARIES} 
-  ${ITK_DIR}/lib/itkMinimalPathExtraction-${ITK_VERSION_MAJOR}.${ITK_VERSION_MINOR}.lib
   )
+
 target_include_directories( TubeTK INTERFACE
   ${TubeTKLib_INCLUDE_DIRS}
   )

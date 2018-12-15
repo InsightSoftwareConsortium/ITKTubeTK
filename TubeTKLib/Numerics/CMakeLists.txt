@@ -20,29 +20,9 @@
 #
 ##############################################################################
 
-project( TubeTKLibNumerics )
-
-set( ${PROJECT_NAME}_ITK_COMPONENTS
-  ITKCommon
-  ITKHDF5
-  ITKIOImageBase
-  ITKImageFunction
-  ITKImageIntensity
-  ITKOptimizers
-  ITKSmoothing
-  ITKSpatialObjects
-  ITKStatistics
-  ITKTransform )
-
-if(NOT ITK_SOURCE_DIR)
-  find_package(ITK COMPONENTS ${${PROJECT_NAME}_ITK_COMPONENTS} REQUIRED)
-  include(${ITK_USE_FILE})
-else()
-  set(itk-module ${PROJECT_NAME})
-  itk_module_use(${${PROJECT_NAME}_ITK_COMPONENTS})
-  itk_module_link_dependencies()
-endif()
-
+####
+# Track local source files
+####
 set( TubeTKLib_Base_Numerics_H_Files
   itktubeBasisFeatureVectorGenerator.h
   itktubeBlurImageFunction.h
@@ -96,27 +76,37 @@ set( TubeTKLib_Base_Numerics_SRCS
   tubeSplineApproximation1D.cxx
   tubeSplineND.cxx )
 
-add_library( ${PROJECT_NAME} STATIC
+####
+# Create project Library
+####
+add_library( TubeTKLibNumerics STATIC
   ${TubeTKLib_Base_Numerics_H_Files}
   ${TubeTKLib_Base_Numerics_HXX_Files}
   ${TubeTKLib_Base_Numerics_SRCS} )
-if( TubeTKLib_USE_ARRAYFIRE )
-  target_link_libraries( ${PROJECT_NAME} PUBLIC ${ArrayFire_LIBRARIES} )
-endif( TubeTKLib_USE_ARRAYFIRE )
-target_link_libraries( ${PROJECT_NAME} PUBLIC TubeTKLibCommon )
-target_include_directories( ${PROJECT_NAME} PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )
 
-if( TubeTKLib_BUILD_TESTING )
-  add_subdirectory( Testing )
-endif( TubeTKLib_BUILD_TESTING )
-
-if( TubeTKLib_INSTALL_DEVELOPMENT )
-  install( FILES
-    ${TubeTKLib_Base_Numerics_H_Files}
-    ${TubeTKLib_Base_Numerics_HXX_Files}
-    DESTINATION ${TubeTKLib_INSTALL_INCLUDE_DIR}
-    COMPONENT Development )
+if( TubeTK_USE_ARRAYFIRE )
+  target_link_libraries( TubeTKLibNumerics PUBLIC
+    ${ArrayFire_LIBRARIES} )
 endif()
 
-set_property( GLOBAL APPEND PROPERTY TubeTKLib_TARGETS ${PROJECT_NAME} )
+target_link_libraries( TubeTKLibNumerics PUBLIC
+  TubeTKLibCommon
+  ${ITK_LIBRARIES} )
+
+target_include_directories( TubeTKLibNumerics PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> )
+
+####
+# Do testing
+####
+if( BUILD_TESTING )
+  add_subdirectory( Testing )
+endif( BUILD_TESTING )
+
+install( FILES
+  ${TubeTKLib_Base_Numerics_H_Files}
+  ${TubeTKLib_Base_Numerics_HXX_Files}
+  DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
+  COMPONENT Development )
+
+set_property( GLOBAL APPEND PROPERTY TubeTKLib_TARGETS TubeTKLibNumerics )

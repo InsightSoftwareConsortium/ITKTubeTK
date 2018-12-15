@@ -26,21 +26,21 @@ if( WIN32 )
   foreach( _build_type "" Debug Release )
     list( APPEND TubeTK_EXECUTABLE_DIRS
       ${ITK_DIR}/bin/${_build_type}
-      ${TubeTKLib_BINARY_DIR}/bin/${_build_type}
-      ${TubeTKLib_BINARY_DIR}/lib/TubeTKLib/${_build_type} )
-    if( TubeTKLib_USE_VTK )
+      ${TubeTK_BINARY_DIR}/bin/${_build_type}
+      ${TubeTK_BINARY_DIR}/lib/${_build_type} )
+    if( TubeTK_USE_VTK )
       list( APPEND TubeTK_EXECUTABLE_DIRS ${VTK_DIR}/bin/${_build_type} )
-    endif( TubeTKLib_USE_VTK )
+    endif()
   endforeach()
 else( WIN32 )
   set( TubeTK_EXECUTABLE_DIRS
     ${ITK_DIR}/bin
-    ${TubeTKLib_BINARY_DIR}/bin
-    ${TubeTKLib_BINARY_DIR}/lib/TubeTKLib
+    ${TubeTK_BINARY_DIR}/bin
+    ${TubeTK_BINARY_DIR}/lib
     CACHE INTERNAL "Bin and Lib dirs for running apps." FORCE )
-  if( TubeTKLib_USE_VTK )
+  if( TubeTK_USE_VTK )
     list( APPEND TubeTK_EXECUTABLE_DIRS ${VTK_DIR}/bin )
-  endif( TubeTKLib_USE_VTK )
+  endif()
 endif( WIN32 )
 
 message( STATUS "Configuring Launcher script" )

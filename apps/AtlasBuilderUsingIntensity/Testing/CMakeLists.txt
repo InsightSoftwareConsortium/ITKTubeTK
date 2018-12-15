@@ -56,7 +56,7 @@ set_tests_properties(${MODULE_NAME}-Test1 PROPERTIES DEPENDS
 # Test1-Compare
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test1-Compare00
-  COMMAND ${TubeTKLib_CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}-Test1-Mean.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Test1-Mean.mha} )
 set_tests_properties(${MODULE_NAME}-Test1-Compare00 PROPERTIES DEPENDS
@@ -64,7 +64,7 @@ set_tests_properties(${MODULE_NAME}-Test1-Compare00 PROPERTIES DEPENDS
 
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test1-Compare01
-  COMMAND ${TubeTKLib_CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}-Test1-Variance.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Test1-Variance.mha} )
 set_tests_properties(${MODULE_NAME}-Test1-Compare01 PROPERTIES DEPENDS
