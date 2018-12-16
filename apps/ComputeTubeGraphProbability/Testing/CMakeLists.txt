@@ -39,7 +39,7 @@ ExternalData_Add_Test( TubeTKData
 # Test1-Compare-00
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test1-Compare-00
-  COMMAND ${TubeTKLib_CompareTextFiles_EXE}
+  COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.matProb.txt
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.grp.matProb.txt} )
 
@@ -49,7 +49,7 @@ set_tests_properties( ${MODULE_NAME}-Test1-Compare-00 PROPERTIES DEPENDS
 # Test1-Compare-01
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test1-Compare-01
-  COMMAND ${TubeTKLib_CompareTextFiles_EXE}
+  COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.cntProb.txt
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.grp.cntProb.txt} )
 
@@ -59,7 +59,7 @@ set_tests_properties( ${MODULE_NAME}-Test1-Compare-01 PROPERTIES DEPENDS
 # Test1-Compare-02
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test1-Compare-02
-  COMMAND ${TubeTKLib_CompareTextFiles_EXE}
+  COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.brcProb.txt
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.grp.brcProb.txt} )
 

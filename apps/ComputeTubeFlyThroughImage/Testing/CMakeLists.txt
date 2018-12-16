@@ -44,7 +44,7 @@ ExternalData_Add_Test( TubeTKData
 # compare outputs with groundtruth
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test1-Compare-flyThrough
-  COMMAND ${TubeTKLib_CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.flyThrough.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.flyThrough.mha}
     -i 0.001 )

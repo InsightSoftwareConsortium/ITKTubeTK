@@ -20,15 +20,15 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubetklibConfigure.h"
+#include "tubetkConfigure.h"
 
 #include "itktubeRidgeSeedFilter.h"
 
-#ifdef TubeTKLib_USE_LIBSVM
+#ifdef TubeTK_USE_LIBSVM
 #include "itktubePDFSegmenterSVM.h"
 #endif
 
-#ifdef TubeTKLib_USE_RANDOMFOREST
+#ifdef TubeTK_USE_RANDOMFOREST
 #include "itktubePDFSegmenterRandomForest.h"
 #endif
 
@@ -110,7 +110,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
   int bkgId = atoi( argv[4] );
   if( argv[5][0] == '1' )
     {
-#ifdef TubeTKLib_USE_LIBSVM
+#ifdef TubeTK_USE_LIBSVM
     typedef itk::tube::PDFSegmenterSVM< ImageType, LabelMapType > PDFType;
     PDFType::Pointer pdf = PDFType::New();
     pdf->SetTrainingDataStride( 100 );
@@ -123,7 +123,7 @@ int itktubeRidgeSeedFilterTest( int argc, char * argv[] )
     }
   else if( argv[5][0] == '2' )
     {
-#ifdef TubeTKLib_USE_RANDOMFOREST
+#ifdef TubeTK_USE_RANDOMFOREST
     typedef itk::tube::PDFSegmenterRandomForest< ImageType, LabelMapType >
       PDFType;
     PDFType::Pointer pdf = PDFType::New();

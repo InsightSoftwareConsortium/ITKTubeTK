@@ -20,7 +20,7 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubetklibConfigure.h"
+#include "tubetkConfigure.h"
 
 #include "tubeTestMain.h"
 

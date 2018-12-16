@@ -28,17 +28,17 @@ include( ${ITK_USE_FILE} )
 find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseNumerics ${PYTHON_EXECUTABLE}
-    ${TubeTKLib_SOURCE_DIR}/CMake/PrintSelfCheck.py
-    ${TubeTKLib_SOURCE_DIR}/Base/Numerics )
-endif( PYTHON_EXECUTABLE )
+    ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
+    ${TubeTK_SOURCE_DIR}/TubeTKLib/Numerics )
+endif()
 
 set( BASE_NUMERICS_TESTS
-  ${TubeTKLib_LAUNCHER} $<TARGET_FILE:tubeBaseNumericsTests> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseNumericsTests> )
 
 set( BASE_NUMERICS_HEADER_TEST
-  ${TubeTKLib_LAUNCHER} $<TARGET_FILE:tubeBaseNumericsHeaderTest> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseNumericsHeaderTest> )
 
-set( TEMP ${TubeTKLib_BINARY_DIR}/Temporary )
+set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( tubeBaseNumericsTests_SRCS
   tubeBaseNumericsTests.cxx
@@ -68,14 +68,14 @@ add_executable( tubeBaseNumericsHeaderTest
   tubeBaseNumericsHeaderTest.cxx )
 target_link_libraries( tubeBaseNumericsHeaderTest
   TubeTKLibCommon TubeTKLibFiltering TubeTKLibNumerics ${ITK_LIBRARIES} )
-if( TubeTKLib_USE_ARRAYFIRE )
+if( TubeTK_USE_ARRAYFIRE )
   target_link_libraries( tubeBaseNumericsHeaderTest ${ArrayFire_LIBRARIES} )
-endif( TubeTKLib_USE_ARRAYFIRE )
+endif()
 
 set( tubeBaseNumerics_External_Libraries )
-if( TubeTKLib_USE_ARRAYFIRE )
+if( TubeTK_USE_ARRAYFIRE )
   set( tubeBaseNumerics_External_Libraries ${ArrayFire_LIBRARIES} )
-endif( TubeTKLib_USE_ARRAYFIRE )
+endif()
 
 add_executable( tubeBaseNumericsTests
   ${tubeBaseNumericsTests_SRCS} )
@@ -156,97 +156,97 @@ add_test( NAME tubeUserFunctionTest
   COMMAND ${BASE_NUMERICS_TESTS}
     tubeUserFunctionTest )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME itktubeJointHistogramImageFunctionTest01
   COMMAND ${BASE_NUMERICS_TESTS}
-    --compare DATA{${TubeTKLib_DATA_ROOT}/itkJointHistogramImageFunctionTest01.mha}
+    --compare DATA{${TubeTK_DATA_ROOT}/itkJointHistogramImageFunctionTest01.mha}
       ${TEMP}/itkJointHistogramImageFunctionTest01.mha
     --compareNumberOfPixelsTolerance 7
     itktubeJointHistogramImageFunctionTest
-      DATA{${TubeTKLib_DATA_ROOT}/GDS0015_1_match_Subs.mha}
-      DATA{${TubeTKLib_DATA_ROOT}/ES0015_1_Subs.mha}
-      DATA{${TubeTKLib_DATA_ROOT}/GDS0015_1_match_Subs.mask.mha}
+      DATA{${TubeTK_DATA_ROOT}/GDS0015_1_match_Subs.mha}
+      DATA{${TubeTK_DATA_ROOT}/ES0015_1_Subs.mha}
+      DATA{${TubeTK_DATA_ROOT}/GDS0015_1_match_Subs.mask.mha}
       0
       ${TEMP}/itkJointHistogramImageFunctionTest01.mha
       ${TEMP}/itkJointHistogramImageFunctionTest01Mean.mha
       ${TEMP}/itkJointHistogramImageFunctionTest01StdDev.mha )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME itktubeJointHistogramImageFunctionTest02
   COMMAND ${BASE_NUMERICS_TESTS}
-    --compare DATA{${TubeTKLib_DATA_ROOT}/itkJointHistogramImageFunctionTest02.mha}
+    --compare DATA{${TubeTK_DATA_ROOT}/itkJointHistogramImageFunctionTest02.mha}
       ${TEMP}/itkJointHistogramImageFunctionTest02.mha
     --compareNumberOfPixelsTolerance 7
     itktubeJointHistogramImageFunctionTest
-      DATA{${TubeTKLib_DATA_ROOT}/GDS0015_1_match_Subs.mha}
-      DATA{${TubeTKLib_DATA_ROOT}/ES0015_1_Subs.mha}
-      DATA{${TubeTKLib_DATA_ROOT}/GDS0015_1_match_Subs.mask.mha}
+      DATA{${TubeTK_DATA_ROOT}/GDS0015_1_match_Subs.mha}
+      DATA{${TubeTK_DATA_ROOT}/ES0015_1_Subs.mha}
+      DATA{${TubeTK_DATA_ROOT}/GDS0015_1_match_Subs.mask.mha}
       1
       ${TEMP}/itkJointHistogramImageFunctionTest02.mha
       ${TEMP}/itkJointHistogramImageFunctionTest02Mean.mha
       ${TEMP}/itkJointHistogramImageFunctionTest02StdDev.mha )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME itktubeImageRegionMomentsCalculatorTest
   COMMAND ${BASE_NUMERICS_TESTS}
     itktubeImageRegionMomentsCalculatorTest
-      DATA{${TubeTKLib_DATA_ROOT}/scoring-test.png} )
+      DATA{${TubeTK_DATA_ROOT}/scoring-test.png} )
 
 foreach( testNum RANGE 0 38 )
-  ExternalData_Add_Test( TubeTKLibData
+  ExternalData_Add_Test( TubeTKData
     NAME itktubeNJetImageFunctionTest${testNum}
     COMMAND ${BASE_NUMERICS_TESTS}
-      --compare DATA{${TubeTKLib_DATA_ROOT}/itktubeNJetImageFunctionTest${testNum}.mha}
+      --compare DATA{${TubeTK_DATA_ROOT}/itktubeNJetImageFunctionTest${testNum}.mha}
         ${TEMP}/itktubeNJetImageFunctionTest${testNum}.mha
         --compareIntensityTolerance 0.000000000001
       itktubeNJetImageFunctionTest
         ${testNum}
-        DATA{${TubeTKLib_DATA_ROOT}/im0001.crop2.mha}
+        DATA{${TubeTK_DATA_ROOT}/im0001.crop2.mha}
         ${TEMP}/itktubeNJetImageFunctionTest${testNum}.mha )
 endforeach( testNum )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME itktubeVotingResampleImageFunctionTest0
   COMMAND ${BASE_NUMERICS_TESTS}
-    --compare DATA{${TubeTKLib_DATA_ROOT}/itkVotingResampleImageFunctionTest0.png}
+    --compare DATA{${TubeTK_DATA_ROOT}/itkVotingResampleImageFunctionTest0.png}
       ${TEMP}/itkVotingResampleImageFunctionTest0.png
     itktubeVotingResampleImageFunctionTest
       0
-      DATA{${TubeTKLib_DATA_ROOT}/greyscale01.png}
+      DATA{${TubeTK_DATA_ROOT}/greyscale01.png}
       ${TEMP}/itkVotingResampleImageFunctionTest0.png )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME itktubeVotingResampleImageFunctionTest1
   COMMAND ${BASE_NUMERICS_TESTS}
-    --compare DATA{${TubeTKLib_DATA_ROOT}/itkVotingResampleImageFunctionTest1.png}
+    --compare DATA{${TubeTK_DATA_ROOT}/itkVotingResampleImageFunctionTest1.png}
       ${TEMP}/itkVotingResampleImageFunctionTest1.png
     itktubeVotingResampleImageFunctionTest
       1
-      DATA{${TubeTKLib_DATA_ROOT}/greyscale01.png}
+      DATA{${TubeTK_DATA_ROOT}/greyscale01.png}
       ${TEMP}/itkVotingResampleImageFunctionTest1.png )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME itktubeVotingResampleImageFunctionTest2
   COMMAND ${BASE_NUMERICS_TESTS}
-    --compare DATA{${TubeTKLib_DATA_ROOT}/itkVotingResampleImageFunctionTest2.png}
+    --compare DATA{${TubeTK_DATA_ROOT}/itkVotingResampleImageFunctionTest2.png}
       ${TEMP}/itkVotingResampleImageFunctionTest2.png
     itktubeVotingResampleImageFunctionTest
       2
-      DATA{${TubeTKLib_DATA_ROOT}/greyscale01.png}
+      DATA{${TubeTK_DATA_ROOT}/greyscale01.png}
       ${TEMP}/itkVotingResampleImageFunctionTest2.png )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME tubeSplineApproximation1DTest
   COMMAND ${BASE_NUMERICS_TESTS}
-    --compare DATA{${TubeTKLib_DATA_ROOT}/tubeSplineApprox1DTest.mha}
+    --compare DATA{${TubeTK_DATA_ROOT}/tubeSplineApprox1DTest.mha}
       ${TEMP}/tubeSplineApprox1DTest.mha
     tubeSplineApproximation1DTest
       ${TEMP}/tubeSplineApprox1DTest.mha )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME tubeSplineNDTest
   COMMAND ${BASE_NUMERICS_TESTS}
-    --compare DATA{${TubeTKLib_DATA_ROOT}/tubeSplineNDTest.mha}
+    --compare DATA{${TubeTK_DATA_ROOT}/tubeSplineNDTest.mha}
       ${TEMP}/tubeSplineNDTest.mha
     tubeSplineNDTest
       ${TEMP}/tubeSplineNDTest.mha )
@@ -256,59 +256,59 @@ add_test( NAME itktubeRecordOptimizationParameterProgressionCommandTest
     itktubeRecordOptimizationParameterProgressionCommandTest
       ${TEMP}/itkRecordOptimizationParameterProgressionCommandTest.h5 )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME itktubeBlurImageFunctionTest
   COMMAND ${BASE_NUMERICS_TESTS}
-    --compare DATA{${TubeTKLib_DATA_ROOT}/itktubeBlurImageFunctionTest.mha}
+    --compare DATA{${TubeTK_DATA_ROOT}/itktubeBlurImageFunctionTest.mha}
       ${TEMP}/itktubeBlurImageFunctionTest.mha
     itktubeBlurImageFunctionTest
       ${TEMP}/itktubeBlurImageFunctionTest.mha )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME itktubeNJetFeatureVectorGeneratorTest
   COMMAND ${BASE_NUMERICS_TESTS}
-    --compare DATA{${TubeTKLib_DATA_ROOT}/itktubeNJetFeatureVectorGeneratorTest_f0.mha}
+    --compare DATA{${TubeTK_DATA_ROOT}/itktubeNJetFeatureVectorGeneratorTest_f0.mha}
       ${TEMP}/itktubeNJetFeatureVectorGeneratorTest_f0.mha
     itktubeNJetFeatureVectorGeneratorTest
-      DATA{${TubeTKLib_DATA_ROOT}/ES0015_Large_Subs.mha}
-      DATA{${TubeTKLib_DATA_ROOT}/GDS0015_Large-TrainingMask_Subs.mha}
+      DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
+      DATA{${TubeTK_DATA_ROOT}/GDS0015_Large-TrainingMask_Subs.mha}
       ${TEMP}/itktubeNJetFeatureVectorGeneratorTest_f0.mha
       ${TEMP}/itktubeNJetFeatureVectorGeneratorTest_f1.mha )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME itktubeNJetBasisFeatureVectorGeneratorTest
   COMMAND ${BASE_NUMERICS_TESTS}
-    --compare DATA{${TubeTKLib_DATA_ROOT}/itktubeNJetBasisFeatureVectorGeneratorTest_basis.0.mha}
+    --compare DATA{${TubeTK_DATA_ROOT}/itktubeNJetBasisFeatureVectorGeneratorTest_basis.0.mha}
       ${TEMP}/itktubeNJetBasisFeatureVectorGeneratorTest_basis.0.mha
     itktubeNJetBasisFeatureVectorGeneratorTest
-      DATA{${TubeTKLib_DATA_ROOT}/ES0015_Large_Subs.mha}
-      DATA{${TubeTKLib_DATA_ROOT}/GDS0015_Large-TrainingMask_Subs.mha}
+      DATA{${TubeTK_DATA_ROOT}/ES0015_Large_Subs.mha}
+      DATA{${TubeTK_DATA_ROOT}/GDS0015_Large-TrainingMask_Subs.mha}
       255 0
       ${TEMP}/itktubeNJetBasisFeatureVectorGeneratorTest_basis
       ${TEMP}/itktubeNJetBasisFeatureVectorGeneratorTest_feature )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME itktubeSingleValuedCostFunctionImageSourceTest
   COMMAND ${BASE_NUMERICS_TESTS}
-    --compare DATA{${TubeTKLib_DATA_ROOT}/itktubeSingleValuedCostFunctionImageSourceTest.mha}
+    --compare DATA{${TubeTK_DATA_ROOT}/itktubeSingleValuedCostFunctionImageSourceTest.mha}
       ${TEMP}/itktubeSingleValuedCostFunctionImageSourceTest.mha
     itktubeSingleValuedCostFunctionImageSourceTest
       ${TEMP}/itktubeSingleValuedCostFunctionImageSourceTest.mha )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME itktubeRidgeFFTFeatureVectorGeneratorTest
   COMMAND ${BASE_NUMERICS_TESTS}
     itktubeRidgeFFTFeatureVectorGeneratorTest
-      DATA{${TubeTKLib_DATA_ROOT}/im0001.crop.contrast.mha}
+      DATA{${TubeTK_DATA_ROOT}/im0001.crop.contrast.mha}
       ${TEMP}/itktubeRidgeFFTFeatureVectorGeneratorTest_f0.mha
       ${TEMP}/itktubeRidgeFFTFeatureVectorGeneratorTest_f1.mha )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME itktubeRidgeBasisFeatureVectorGeneratorTest
   COMMAND ${BASE_NUMERICS_TESTS}
     itktubeRidgeBasisFeatureVectorGeneratorTest
-      DATA{${TubeTKLib_DATA_ROOT}/im0001.crop.contrast.mha}
-      DATA{${TubeTKLib_DATA_ROOT}/im0001.vk.mask.crop.mha}
+      DATA{${TubeTK_DATA_ROOT}/im0001.crop.contrast.mha}
+      DATA{${TubeTK_DATA_ROOT}/im0001.vk.mask.crop.mha}
       255 127
       ${TEMP}/itktubeRidgeBasisFeatureVectorGeneratorTest_lda0.mha
       ${TEMP}/itktubeRidgeBasisFeatureVectorGeneratorTest_lda1.mha )

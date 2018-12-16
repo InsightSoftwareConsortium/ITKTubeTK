@@ -1,7 +1,7 @@
 @ECHO off
 REM ###########################################################################
 REM
-REM  Library:   TubeTKLib
+REM  Library:   TubeTK
 REM
 REM  Copyright Kitware Inc.
 REM
@@ -21,7 +21,7 @@ REM  limitations under the License.
 REM
 REM ###########################################################################
 
-SET PATH="@TubeTKLib_EXECUTABLE_DIRS@;%PATH%"
+SET PATH="@TubeTK_BINARY_DIR@/bin;%PATH%"
 
 %*
 IF %ERRORLEVEL% NEQ 0 (

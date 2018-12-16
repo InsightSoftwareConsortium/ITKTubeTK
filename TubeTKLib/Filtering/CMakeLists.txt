@@ -20,12 +20,6 @@
 #
 ##############################################################################
 
-project( TubeTKLibFiltering )
-
-if( TubeTKLib_USE_ARRAYFIRE )
-  include_directories( ${ArrayFire_INCLUDE_DIRS} )
-endif( TubeTKLib_USE_ARRAYFIRE )
-
 set( TubeTKLib_Base_Filtering_H_Files
   itkGeneralizedDistanceTransformImageFilter.h
   itktubeAnisotropicCoherenceEnhancingDiffusionImageFilter.h
@@ -108,31 +102,30 @@ set( TubeTKLib_Base_Filtering_HXX_Files
   tubeTreeFilters.hxx )
 
 # Add GPU Array Fire based filter source files here
-if( TubeTKLib_USE_ARRAYFIRE )
+if( TubeTK_USE_ARRAYFIRE )
   list( APPEND TubeTKLib_Base_Filtering_H_Files
     itktubeArrayFireGlueUtilities.h
     itktubeGPUArrayFireGaussianDerivativeFilter.h )
 
   list( APPEND TubeTKLib_Base_Filtering_HXX_Files
     itktubeGPUArrayFireGaussianDerivativeFilter.hxx )
-endif( TubeTKLib_USE_ARRAYFIRE )
-
-add_library( ${PROJECT_NAME} INTERFACE )
-target_include_directories( ${PROJECT_NAME} INTERFACE
-  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
-  )
-target_link_libraries( ${PROJECT_NAME} INTERFACE TubeTKLibNumerics )
-
-if( TubeTKLib_BUILD_TESTING )
-  add_subdirectory( Testing )
-endif( TubeTKLib_BUILD_TESTING )
-
-if( TubeTKLib_INSTALL_DEVELOPMENT )
-  install( FILES
-    ${TubeTKLib_Base_Filtering_H_Files}
-    ${TubeTKLib_Base_Filtering_HXX_Files}
-    DESTINATION ${TubeTKLib_INSTALL_INCLUDE_DIR}
-    COMPONENT Development )
 endif()
 
-set_property( GLOBAL APPEND PROPERTY TubeTKLib_TARGETS ${PROJECT_NAME} )
+add_library( TubeTKLibFiltering INTERFACE )
+target_include_directories( TubeTKLibFiltering INTERFACE
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+  )
+target_link_libraries( TubeTKLibFiltering INTERFACE
+  TubeTKLibNumerics )
+
+if( BUILD_TESTING )
+  add_subdirectory( Testing )
+endif( BUILD_TESTING )
+
+install( FILES
+  ${TubeTKLib_Base_Filtering_H_Files}
+  ${TubeTKLib_Base_Filtering_HXX_Files}
+  DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
+  COMPONENT Development )
+
+set_property( GLOBAL APPEND PROPERTY TubeTKLib_TARGETS TubeTKLibFiltering )

@@ -39,7 +39,7 @@ ExternalData_Add_Test( TubeTKData
 # Test1-Compare
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test1-Compare-00
-  COMMAND ${TubeTKLib_CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}-CVT50-Branch-truth.grp.Image.mat.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-CVT50-Branch-truth.grp.Image.mat.mha} )
 

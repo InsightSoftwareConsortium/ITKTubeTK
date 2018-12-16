@@ -42,7 +42,7 @@ ExternalData_Add_Test( TubeTKData
 # Test1-Compare
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test1-Compare-Den
-  COMMAND ${TubeTKLib_CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -i 0.001
     -t ${TEMP}/${MODULE_NAME}Test1-Den.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1-Den.mha} )
@@ -50,7 +50,7 @@ set_tests_properties( ${MODULE_NAME}-Test1-Compare-Den PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1 )
 
 ExternalData_Add_Test( TubeTKData NAME ${MODULE_NAME}-Test1-Compare-Rad
-  COMMAND ${TubeTKLib_CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -i 0.001
     -n 50
     -t ${TEMP}/${MODULE_NAME}Test1-Rad.mha
@@ -59,7 +59,7 @@ set_tests_properties( ${MODULE_NAME}-Test1-Compare-Rad PROPERTIES DEPENDS
   ${MODULE_NAME}-Test1 )
 
 ExternalData_Add_Test( TubeTKData NAME ${MODULE_NAME}-Test1-Compare-Tan
-  COMMAND ${TubeTKLib_CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -i 0.00001
     -n 50
     -t ${TEMP}/${MODULE_NAME}Test1-Tan.mha

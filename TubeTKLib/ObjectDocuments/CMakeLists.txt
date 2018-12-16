@@ -20,8 +20,6 @@
 #
 ##############################################################################
 
-project( TubeTKLibObjectDocuments )
-
 set( TubeTKLib_Base_ObjectDocuments_H_Files
   itktubeBlobSpatialObjectDocument.h
   itktubeDocument.h
@@ -43,27 +41,29 @@ set( TubeTk_Base_ObjectDocuments_SRCS
   tubeMetaObjectDocument.cxx
   tubeOptionList.cxx )
 
-add_library( ${PROJECT_NAME} STATIC
+add_library( TubeTKLibObjectDocuments STATIC
   ${TubeTKLib_Base_ObjectDocuments_H_Files}
   ${TubeTk_Base_ObjectDocuments_HXX_Files}
   ${TubeTk_Base_ObjectDocuments_SRCS} )
 
-target_link_libraries( ${PROJECT_NAME}
-  TubeTKLibCommon ${ITK_LIBRARIES} ITKIOMeta ITKIOSpatialObjects )
+target_link_libraries( TubeTKLibObjectDocuments PUBLIC
+  TubeTKLibCommon
+  ${ITK_LIBRARIES}
+  ITKIOMeta
+  ITKIOSpatialObjects )
 
-target_include_directories( ${PROJECT_NAME} PUBLIC
+target_include_directories( TubeTKLibObjectDocuments PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR} )
 
-if( TubeTKLib_BUILD_TESTING )
+if( BUILD_TESTING )
   add_subdirectory( Testing )
-endif( TubeTKLib_BUILD_TESTING )
+endif( BUILD_TESTING )
 
-if( TubeTKLib_INSTALL_DEVELOPMENT )
-  install( FILES
-    ${TubeTKLib_Base_ObjectDocuments_H_Files}
-    ${TubeTKLib_Base_ObjectDocuments_HXX_Files}
-    DESTINATION ${TubeTKLib_INSTALL_INCLUDE_DIR}
-    COMPONENT Development )
-endif()
+install( FILES
+  ${TubeTKLib_Base_ObjectDocuments_H_Files}
+  ${TubeTKLib_Base_ObjectDocuments_HXX_Files}
+  DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
+  COMPONENT Development )
 
-set_property( GLOBAL APPEND PROPERTY TubeTKLib_TARGETS ${PROJECT_NAME} )
+set_property( GLOBAL APPEND PROPERTY TubeTKLib_TARGETS 
+  TubeTKLibObjectDocuments )

@@ -20,14 +20,14 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "tubetklibConfigure.h"
+#include "tubetkConfigure.h"
 
 #include "itktubePDFSegmenterParzenIO.h"
 #include "itktubeRidgeSeedFilterIO.h"
-#ifdef TubeTKLib_USE_LIBSVM
-#  include "itktubePDFSegmenterSVMIO.h"
+#ifdef TubeTK_USE_LIBSVM
+#include "itktubePDFSegmenterSVMIO.h"
 #endif
-#ifdef TubeTKLib_USE_RANDOMFOREST
+#ifdef TubeTK_USE_RANDOMFOREST
 #  include "itktubePDFSegmenterRandomForestIO.h"
 #endif
 #include "itktubeTubeExtractorIO.h"

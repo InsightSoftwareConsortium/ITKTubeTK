@@ -28,8 +28,31 @@ itk_module( TubeTK
     ITKStatistics
     ITKSpatialObjects
   COMPILE_DEPENDS
-    ITKImageSources
     MinimalPathExtraction
+    ITKImageIO
+    ITKTransformIO
+    ITKIOSpatialObjects
+    ITKRegistrationCommon
+    ITKBinaryMathematicalMorphology
+    ITKFFT
+    ITKCommon
+    ITKHDF5
+    ITKIOCSV
+    ITKRegionGrowing
+    ITKAnisotropicSmoothing
+    ITKLabelVoting
+    ITKPDEDeformableRegistration
+    ITKIOImageBase
+    ITKImageFunction
+    ITKImageIntensity
+    ITKDistanceMap
+    ITKTestKernel
+    ITKOptimizers
+    ITKSmoothing
+    ITKSpatialObjects
+    ITKStatistics
+    ITKTransform
+    ITKImageSources
   TEST_DEPENDS
     ITKTestKernel
     ITKMetaIO

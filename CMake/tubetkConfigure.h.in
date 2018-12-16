@@ -1,12 +1,12 @@
 /*=========================================================================
 
-Library:   TubeTKLib
+Library:   TubeTK
 
 Copyright Kitware Inc.
 
 All rights reserved.
 
-Licensed under the Apache License, Version 2.0 ( the "License" );
+Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -19,3 +19,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
+
+#ifndef __tubetkConfigure_h
+#define __tubetkConfigure_h
+
+// this gets defined if use set TUBETK_USE_ARRAYFIRE to ON
+#cmakedefine TubeTK_USE_ARRAYFIRE
+
+// this gets defined if use set TubeTK_USE_LIBSVM to ON
+#cmakedefine TubeTK_USE_LIBSVM
+
+// this gets defined if use set TubeTK_USE_RANDOMFOREST to ON
+#cmakedefine TubeTK_USE_RANDOMFOREST
+
+#endif // __tubetkConfigure_h

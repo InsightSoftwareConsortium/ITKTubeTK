@@ -38,7 +38,7 @@ ExternalData_Add_Test( TubeTKData
 
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test1-Compare
-  COMMAND ${TubeTKLib_CompareTextFiles_EXE}
+  COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-Test1.txt
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Test1.txt} )
 

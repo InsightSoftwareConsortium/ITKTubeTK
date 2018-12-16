@@ -19,6 +19,7 @@
 # limitations under the License.
 #
 ##############################################################################
+
 find_package( PythonInterp )
 execute_process(
   COMMAND ${PYTHON_EXECUTABLE} -c "import numpy; print(numpy.get_include())"
@@ -39,7 +40,9 @@ set_target_properties( _tubetk_numpy
   PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}" )
 
 target_link_libraries( _tubetk_numpy
-  TubeTK ${ITK_LIBRARIES} ${PYTHON_LIBRARIES} )
+  TubeTK
+  ${ITK_LIBRARIES}
+  ${PYTHON_LIBRARIES} )
 
 add_custom_target( CopyPurePythonTubeTK ALL "${CMAKE_COMMAND}" -P
   "${CMAKE_CURRENT_SOURCE_DIR}/CMake/CopyTubeTK.cmake"

@@ -20,56 +20,56 @@
 #
 ##############################################################################
 
-set( TEMP ${TubeTKLib_BINARY_DIR}/Temporary )
+set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 
 set( CompareImages_EXE
-  ${TubeTKLib_LAUNCHER} $<TARGET_FILE:CompareImages> )
+  ${TubeTK_LAUNCHER} $<TARGET_FILE:CompareImages> )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME CompareImages-Test1
   COMMAND ${CompareImages_EXE}
-    -t DATA{${TubeTKLib_DATA_ROOT}/ES0015_Large.mha}
-    -b DATA{${TubeTKLib_DATA_ROOT}/ES0015_Large.mha} )
+    -t DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha}
+    -b DATA{${TubeTK_DATA_ROOT}/ES0015_Large.mha} )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME CompareImages-Test2
   COMMAND ${CompareImages_EXE}
     -n 1000
     -r 1
     -i 50
-    -t DATA{${TubeTKLib_DATA_ROOT}/im0001.crop.mha}
-    -b DATA{${TubeTKLib_DATA_ROOT}/im0001_n10.crop.mha} )
+    -t DATA{${TubeTK_DATA_ROOT}/im0001.crop.mha}
+    -b DATA{${TubeTK_DATA_ROOT}/im0001_n10.crop.mha} )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME CompareImages-Test3
   COMMAND ${CompareImages_EXE}
-    -t DATA{${TubeTKLib_DATA_ROOT}/im0001.mha}
-    -b DATA{${TubeTKLib_DATA_ROOT}/im0001_n10.crop.mha} )
+    -t DATA{${TubeTK_DATA_ROOT}/im0001.mha}
+    -b DATA{${TubeTK_DATA_ROOT}/im0001_n10.crop.mha} )
 set_tests_properties( CompareImages-Test3 PROPERTIES WILL_FAIL true )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME CompareImages-Test4
   COMMAND ${CompareImages_EXE}
-    -t DATA{${TubeTKLib_DATA_ROOT}/im0001.crop.mha}
-    -b DATA{${TubeTKLib_DATA_ROOT}/im0001_n10.crop.mha},DATA{${TubeTKLib_DATA_ROOT}/im0001.crop.mha} )
+    -t DATA{${TubeTK_DATA_ROOT}/im0001.crop.mha}
+    -b DATA{${TubeTK_DATA_ROOT}/im0001_n10.crop.mha},DATA{${TubeTK_DATA_ROOT}/im0001.crop.mha} )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME CompareImages-Test5
   COMMAND ${CompareImages_EXE}
-    -t DATA{${TubeTKLib_DATA_ROOT}/im0001.crop.mha}
-    -b DATA{${TubeTKLib_DATA_ROOT}/im0001_n10.crop.mha},DATA{${TubeTKLib_DATA_ROOT}/im0001_n20.crop.mha} )
+    -t DATA{${TubeTK_DATA_ROOT}/im0001.crop.mha}
+    -b DATA{${TubeTK_DATA_ROOT}/im0001_n10.crop.mha},DATA{${TubeTK_DATA_ROOT}/im0001_n20.crop.mha} )
 set_tests_properties( CompareImages-Test5 PROPERTIES WILL_FAIL true )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME CompareImages-Test6
   COMMAND ${CompareImages_EXE}
-    -t DATA{${TubeTKLib_DATA_ROOT}/im0001_n10.crop.mha}
+    -t DATA{${TubeTK_DATA_ROOT}/im0001_n10.crop.mha}
     -b ${TEMP}/filedoesnotexist.mha )
 set_tests_properties( CompareImages-Test6 PROPERTIES WILL_FAIL true )
 
-ExternalData_Add_Test( TubeTKLibData
+ExternalData_Add_Test( TubeTKData
   NAME CompareImages-Test7
   COMMAND ${CompareImages_EXE}
     -c 1.0e-4
-    -t DATA{${TubeTKLib_DATA_ROOT}/ResampleImageTest2.mha}
-    -b DATA{${TubeTKLib_DATA_ROOT}/ResampleImageTest2SpacingOff.mha} )
+    -t DATA{${TubeTK_DATA_ROOT}/ResampleImageTest2.mha}
+    -b DATA{${TubeTK_DATA_ROOT}/ResampleImageTest2SpacingOff.mha} )

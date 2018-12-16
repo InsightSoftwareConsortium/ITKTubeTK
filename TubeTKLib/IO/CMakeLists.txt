@@ -20,58 +20,57 @@
 #
 ##############################################################################
 
-project( TubeTKLibIO )
-
 set( TubeTKLib_Base_IO_H_Files
   itktubePDFSegmenterParzenIO.h
   itktubeRidgeSeedFilterIO.h
   itktubeTubeExtractorIO.h
   itktubeTubeXIO.h )
-if( TubeTKLib_USE_LIBSVM )
-  find_package( LIBSVM REQUIRED )
-  include_directories( ${LIBSVM_INCLUDE_DIRS} )
+
+if( TubeTK_USE_LIBSVM )
   list( APPEND TubeTKLib_Base_IO_H_Files
     itktubePDFSegmenterSVMIO.h )
-endif( TubeTKLib_USE_LIBSVM )
-if( TubeTKLib_USE_RANDOMFOREST )
-  find_package( RandomForest REQUIRED )
-  include_directories( ${RandomForest_INCLUDE_DIR} )
+endif()
+
+if( TubeTK_USE_RANDOMFOREST )
   list( APPEND TubeTKLib_Base_IO_H_Files
     itktubePDFSegmenterRandomForestIO.h )
-endif( TubeTKLib_USE_RANDOMFOREST )
+endif()
 
 set( TubeTKLib_Base_IO_HXX_Files
   itktubePDFSegmenterParzenIO.hxx
   itktubeRidgeSeedFilterIO.hxx
   itktubeTubeExtractorIO.hxx
   itktubeTubeXIO.hxx )
-if( TubeTKLib_USE_LIBSVM )
+
+if( TubeTK_USE_LIBSVM )
   list( APPEND TubeTKLib_Base_IO_HXX_Files
     itktubePDFSegmenterSVMIO.hxx )
-endif( TubeTKLib_USE_LIBSVM )
-if( TubeTKLib_USE_RANDOMFOREST )
-  list( APPEND TubeTKLib_Base_IO_HXX_Files
-    itktubePDFSegmenterRandomForestIO.hxx )
-endif( TubeTKLib_USE_RANDOMFOREST )
-
-add_library( ${PROJECT_NAME} INTERFACE )
-
-target_link_libraries( ${PROJECT_NAME} INTERFACE
-  TubeTKLibMetaIO TubeTKLibCommon TubeTKLibNumerics TubeTKLibSegmentation )
-
-target_include_directories( ${PROJECT_NAME} INTERFACE
-  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>" )
-
-if( TubeTKLib_BUILD_TESTING )
-  add_subdirectory( Testing )
-endif( TubeTKLib_BUILD_TESTING )
-
-if( TubeTKLib_INSTALL_DEVELOPMENT )
-  install( FILES
-    ${TubeTKLib_Base_IO_H_Files}
-    ${TubeTKLib_Base_IO_HXX_Files}
-    DESTINATION ${TubeTKLib_INSTALL_INCLUDE_DIR}
-    COMPONENT Development )
 endif()
 
-set_property( GLOBAL APPEND PROPERTY TubeTKLib_TARGETS ${PROJECT_NAME} )
+if( TubeTK_USE_RANDOMFOREST )
+  list( APPEND TubeTKLib_Base_IO_HXX_Files
+    itktubePDFSegmenterRandomForestIO.hxx )
+endif()
+
+add_library( TubeTKLibIO INTERFACE )
+
+target_link_libraries( TubeTKLibIO INTERFACE
+  TubeTKLibMetaIO
+  TubeTKLibCommon
+  TubeTKLibNumerics
+  TubeTKLibSegmentation )
+
+target_include_directories( TubeTKLibIO INTERFACE
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>" )
+
+if( BUILD_TESTING )
+  add_subdirectory( Testing )
+endif( BUILD_TESTING )
+
+install( FILES
+  ${TubeTKLib_Base_IO_H_Files}
+  ${TubeTKLib_Base_IO_HXX_Files}
+  DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
+  COMPONENT Development )
+
+set_property( GLOBAL APPEND PROPERTY TubeTKLib_TARGETS TubeTKLibIO )

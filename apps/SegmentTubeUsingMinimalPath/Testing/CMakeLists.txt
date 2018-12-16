@@ -46,7 +46,7 @@ ExternalData_Add_Test( TubeTKData
 # Test1 - Compare - RegularStepGradientDescent
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-RegularStepGradientDescent-Compare
-  COMMAND ${TubeTKLib_CompareTextFiles_EXE}
+  COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-RegularStepGradientDescent.tre
     -b DATA{${TubeTK_DATA_ROOT}/MPE-RegularStepGradientDescent.tre}
     -d 0.01 )
@@ -68,7 +68,7 @@ ExternalData_Add_Test( TubeTKData
 # Test2 - Compare - GradientDescent
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-GradientDescent-Compare
-  COMMAND ${TubeTKLib_CompareTextFiles_EXE}
+  COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-GradientDescent.tre
     -b DATA{${TubeTK_DATA_ROOT}/MPE-GradientDescent.tre}
     -d 0.01 )
@@ -90,7 +90,7 @@ ExternalData_Add_Test( TubeTKData
 # Test3 - Compare - IterateNeighborhood
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-IterateNeighborhood-Compare
-  COMMAND ${TubeTKLib_CompareTextFiles_EXE}
+  COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-IterateNeighborhood.tre
     -b DATA{${TubeTK_DATA_ROOT}/MPE-IterateNeighborhood.tre}
     -d 0.01 )

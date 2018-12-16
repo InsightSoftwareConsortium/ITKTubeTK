@@ -20,18 +20,6 @@
 #
 ##############################################################################
 
-project( TubeTKLibSegmentation )
-
-if( TubeTKLib_USE_LIBSVM )
-  find_package( LIBSVM )
-  include_directories( ${LIBSVM_INCLUDE_DIRS} )
-endif( TubeTKLib_USE_LIBSVM )
-
-if( TubeTKLib_USE_RANDOMFOREST )
-  find_package( RandomForest )
-  include_directories( ${RandomForest_INCLUDE_DIR} )
-endif( TubeTKLib_USE_RANDOMFOREST )
-
 set( TubeTKLib_Base_Segmentation_H_Files
   itktubeComputeSegmentTubesParameters.h
   itktubePDFSegmenterBase.h
@@ -45,14 +33,14 @@ set( TubeTKLib_Base_Segmentation_H_Files
   itktubeTubeExtractor.h
   itktubeRidgeSeedFilter.h
   itktubeComputeTrainingMask.h)
-if( TubeTKLib_USE_LIBSVM )
+if( TubeTK_USE_LIBSVM )
   list( APPEND TubeTKLib_Base_Segmentation_H_Files
     itktubePDFSegmenterSVM.h )
-endif( TubeTKLib_USE_LIBSVM )
-if( TubeTKLib_USE_RANDOMFOREST )
+endif()
+if( TubeTK_USE_RANDOMFOREST )
   list( APPEND TubeTKLib_Base_Segmentation_H_Files
     itktubePDFSegmenterRandomForest.h )
-endif( TubeTKLib_USE_RANDOMFOREST )
+endif()
 
 set( TubeTKLib_Base_Segmentation_HXX_Files
   itktubeComputeSegmentTubesParameters.hxx
@@ -68,38 +56,37 @@ set( TubeTKLib_Base_Segmentation_HXX_Files
   itktubeTubeExtractor.hxx
   itktubeRidgeSeedFilter.hxx
   itktubeComputeTrainingMask.hxx)
-if( TubeTKLib_USE_LIBSVM )
+
+if( TubeTK_USE_LIBSVM )
   list( APPEND TubeTKLib_Base_Segmentation_HXX_Files
     itktubePDFSegmenterSVM.hxx )
-endif( TubeTKLib_USE_LIBSVM )
-if( TubeTKLib_USE_RANDOMFOREST )
+endif()
+
+if( TubeTK_USE_RANDOMFOREST )
   list( APPEND TubeTKLib_Base_Segmentation_HXX_Files
     itktubePDFSegmenterRandomForest.hxx )
-endif( TubeTKLib_USE_RANDOMFOREST )
+endif()
 
-add_library( ${PROJECT_NAME} INTERFACE )
+add_library( TubeTKLibSegmentation INTERFACE )
 
-target_include_directories( ${PROJECT_NAME} INTERFACE
+target_include_directories( TubeTKLibSegmentation INTERFACE
   ${CMAKE_CURRENT_SOURCE_DIR} )
 
-target_link_libraries( ${PROJECT_NAME} INTERFACE
+target_link_libraries( TubeTKLibSegmentation INTERFACE
    TubeTKLibMetaIO
    TubeTKLibFiltering
    TubeTKLibNumerics
-   MinimalPathExtraction )
+   ${ITK_LIBRARIES} )
 
-if( TubeTKLib_BUILD_TESTING )
+if( BUILD_TESTING )
   add_subdirectory( Testing )
-endif( TubeTKLib_BUILD_TESTING )
+endif( BUILD_TESTING )
 
-if( TubeTKLib_INSTALL_DEVELOPMENT )
-  install( FILES
-    ${TubeTKLib_Base_Segmentation_H_Files}
-    ${TubeTKLib_Base_Segmentation_HXX_Files}
-    DESTINATION ${TubeTKLib_INSTALL_INCLUDE_DIR}
-    COMPONENT Development )
+install( FILES
+  ${TubeTKLib_Base_Segmentation_H_Files}
+  ${TubeTKLib_Base_Segmentation_HXX_Files}
+  DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
+  COMPONENT Development )
 
-  TubeTKLibMacroInstallPlugins( ${PROJECT_NAME} )
-endif()
-
-set_property( GLOBAL APPEND PROPERTY TubeTKLib_TARGETS ${PROJECT_NAME} )
+set_property( GLOBAL APPEND PROPERTY TubeTKLib_TARGETS
+  TubeTKLibSegmentation )

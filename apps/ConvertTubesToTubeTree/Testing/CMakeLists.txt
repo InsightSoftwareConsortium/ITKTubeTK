@@ -38,7 +38,7 @@ ExternalData_Add_Test( TubeTKData
 # Test1 - Compare - I-Junction
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test1-Compare
-  COMMAND ${TubeTKLib_CompareTextFiles_EXE}
+  COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.tre
     -b DATA{${TubeTK_DATA_ROOT}/I_Junction_3D_tree.tre}
     -d 0.01 )
@@ -56,7 +56,7 @@ ExternalData_Add_Test( TubeTKData
 # Test2 - Compare - Y-Junction
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test2-Compare
-  COMMAND ${TubeTKLib_CompareTextFiles_EXE}
+  COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2.tre
     -b DATA{${TubeTK_DATA_ROOT}/Y_Junction_3D_tree.tre}
     -d 0.01 )

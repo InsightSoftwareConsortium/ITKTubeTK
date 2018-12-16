@@ -22,7 +22,7 @@ limitations under the License.
 
 #include "tubeTestMain.h"
 
-#include "tubetklibConfigure.h"
+#include "tubetkConfigure.h"
 
 #include <iostream>
 
@@ -46,7 +46,7 @@ void RegisterTests( void )
   REGISTER_TEST( itktubeAnisotropicEdgeEnhancementDiffusionImageFilterTest );
   REGISTER_TEST( itktubeTortuositySpatialObjectFilterTest );
 
-  #if defined( TubeTKLib_USE_ARRAYFIRE )
+  #if defined( TubeTK_USE_ARRAYFIRE )
     REGISTER_TEST( itktubeGPUArrayFireGaussianDerivativeFilterTest );
   #endif
 }

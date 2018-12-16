@@ -46,7 +46,7 @@ ExternalData_Add_Test( TubeTKData
 # Test1-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${MODULE_NAME}-TestSphereNoReg-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_noReg_motionField.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Sphere_noReg_motionField.mha}
                -i ${CompareImagesTolerance} )
@@ -69,7 +69,7 @@ ExternalData_Add_Test( TubeTKData
 # Test2-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${MODULE_NAME}-TestSphereAnisotropic-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_anisotropic_motionField.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Sphere_anisotropic_motionField.mha}
                -i ${CompareImagesTolerance} )
@@ -91,7 +91,7 @@ ExternalData_Add_Test( TubeTKData
 # Test3-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${MODULE_NAME}-TestSphereAnisotropicSurfaceRAS-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_anisotropicSurfaceRAS_motionField.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Sphere_anisotropicSurface_motionField.mha}
                -i ${CompareImagesTolerance} )
@@ -115,7 +115,7 @@ ExternalData_Add_Test( TubeTKData
 # Test4-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${MODULE_NAME}-TestSphereAnisotropicSurfaceLPS-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_anisotropicSurfaceLPS_motionField.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Sphere_anisotropicSurface_motionField.mha}
                -i ${CompareImagesTolerance} )
@@ -137,7 +137,7 @@ ExternalData_Add_Test( TubeTKData
 # Test5-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASDownsampled-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_anisotropicSurfaceRASDownsampled_motionField.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Sphere_anisotropicSurfaceRASDownsampled_motionField.mha}
                -i ${CompareImagesTolerance} )
@@ -161,7 +161,7 @@ ExternalData_Add_Test( TubeTKData
 # Test6-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${MODULE_NAME}-TestSphereGaussian-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_gaussian_motionField.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Sphere_gaussian_motionField.mha}
                -i ${CompareImagesTolerance} )
@@ -182,7 +182,7 @@ ExternalData_Add_Test( TubeTKData
 # Test7-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${MODULE_NAME}-TestBoxesNoReg-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Boxes_noReg_motionField.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Boxes_noReg_motionField.mha}
                -i ${CompareImagesTolerance} )
@@ -204,7 +204,7 @@ ExternalData_Add_Test( TubeTKData
 # Test8-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${MODULE_NAME}-TestBoxesAnisotropic-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Boxes_anisotropic_motionField.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Boxes_anisotropic_motionField.mha}
                -i ${CompareImagesTolerance} )
@@ -227,7 +227,7 @@ ExternalData_Add_Test( TubeTKData
 # Test9-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${MODULE_NAME}-TestBoxesGaussian-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Boxes_gaussian_motionField.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Boxes_gaussian_motionField.mha}
                -i ${CompareImagesTolerance} )
@@ -249,7 +249,7 @@ ExternalData_Add_Test( TubeTKData
 
 # Test10-Compare
 ExternalData_Add_Test( TubeTKData NAME ${MODULE_NAME}-TestSphereSparseAnisotropicSurfaceRAS-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_sparseAnisotropicSurfaceRAS_motionField.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Sphere_sparseAnisotropicSurface_motionField.mha}
                -i ${CompareImagesTolerance} )
@@ -272,7 +272,7 @@ ExternalData_Add_Test( TubeTKData
 # Test11-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${MODULE_NAME}-TestSphereAnisotropicMultiresolution-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_anisotropicMultiresolution_motionField.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Sphere_anisotropicMultiresolution_motionField.mha}
                -i ${CompareImagesTolerance} )
@@ -294,7 +294,7 @@ ExternalData_Add_Test( TubeTKData
 # Test12-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${MODULE_NAME}-TestSphereAnisotropicSurfaceRASMultiresolution-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Sphere_anisotropicSurfaceRASMultiresolution_motionField.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Sphere_anisotropicSurfaceMultiresolution_motionField.mha}
                -i ${CompareImagesTolerance} )
@@ -317,7 +317,7 @@ ExternalData_Add_Test( TubeTKData
 # Test13-Compare
 ExternalData_Add_Test( TubeTKData
             NAME ${MODULE_NAME}-TestTubesSparseAnisotropic-Compare
-            COMMAND ${TubeTKLib_CompareImages_EXE}
+            COMMAND ${TubeTK_CompareImages_EXE}
                -t ${TEMP}/${MODULE_NAME}-Tubes_anisotropic_motionField.mha
                -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}-Tubes_anisotropic_motionField.mha}
                -i ${CompareImagesTolerance} )

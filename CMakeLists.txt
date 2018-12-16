@@ -24,19 +24,20 @@ cmake_minimum_required(VERSION 3.10.2)
 cmake_policy( SET CMP0070 NEW )
 cmake_policy( SET CMP0071 NEW )
 
-# Include TubeTKLib
-if( NOT ITK_SOURCE_DIR )
-  include( itk-module-init.cmake )
-endif()
-
 ####
 ####
 ####
 ####
 project( TubeTK )
 
+####
+# Setup CMake
+####
 list( APPEND CMAKE_MODULE_PATH ${TubeTK_SOURCE_DIR}/CMake )
 
+####
+# Setup External Data Cache
+####
 include( TubeTKExternalData )
 if( DEFINED "ENV{ExternalData_OBJECT_STORES}" )
   set( ExternalData_OBJECT_STORES $ENV{ExternalData_OBJECT_STORES} )
@@ -51,12 +52,16 @@ set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" )
 set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" )
 
 mark_as_advanced( BUILD_SHARED_LIBS )
-mark_as_advanced( CMAKE_BACKWARDS_COMPATIBILITY )
-mark_as_advanced( EXECUTABLE_OUTPUT_PATH )
-mark_as_advanced( LIBRARY_OUTPUT_PATH )
 mark_as_advanced( CMAKE_INSTALL_PREFIX )
-mark_as_advanced( BUILD_TESTING )
-mark_as_advanced( BUILD_DOCUMENTATION )
+
+####
+# Setup testing
+####
+if( NOT BUILD_TESTING )
+  option( BUILD_TESTING "Build TubeTK's tests" on )
+  mark_as_advanced( BUILD_TESTING )
+endif()
+set( TubeTK_DATA_ROOT ${TubeTK_SOURCE_DIR}/data_keys)
 
 ####
 # CDash dashboard setup.
@@ -77,39 +82,92 @@ include( CTestConfig.cmake )
 configure_file( ${TubeTK_SOURCE_DIR}/CMake/CTestCustom.cmake.in
   ${TubeTK_BINARY_DIR}/CTestCustom.cmake )
 
-set( TubeTK_BUILD_TESTING ${BUILD_TESTING} )
-
 include( TubeTKExternalData )
 if( DEFINED "ENV{ExternalData_OBJECT_STORES}" )
   set( ExternalData_OBJECT_STORES $ENV{ExternalData_OBJECT_STORES} )
 endif()
 
+
 ####
-# Setup TubeTKLib definition since UseTubeTKLib.cmake won't be available
-# until after superbuild of TubeTKLib has completed.
+# Find Python
 ####
-set( TubeTKLib_DIR
-  ${TubeTK_BINARY_DIR}/TubeTKLib
-  )
-list( APPEND CMAKE_PREFIX_PATH ${TubeTKLib_DIR} )
+find_package( PythonInterp )
+find_package( PythonLibs REQUIRED )
+mark_as_advanced( NUMPY_INCLUDE_DIR )
 
-set( TubeTKLib_LIBRARIES
-  TubeTKLibMetaIO
-  TubeTKLibCommon
-  TubeTKLibNumerics
-  )
+####
+# VTK setup.
+####
+option( TubeTK_USE_VTK "Use VTK to enable additional functionality." ON )
+if( TubeTK_USE_VTK )
+  find_package( VTK REQUIRED )
+  mark_as_advanced( CLEAR VTK_DIR )
+  include( ${VTK_USE_FILE} )
+endif()
 
-set( TubeTKLib_LIB_DIRS
-  ${TubeTK_BINARY_DIR}/TubeTKLib/Lib
-  )
+####
+# ArrayFire setup
+####
+option( TubeTK_USE_ARRAYFIRE
+  "Use the ArrayFire library to speedup filtering opertions using the GPU."
+  OFF)
+if( TubeTK_USE_ARRAYFIRE )
+  find_package( ArrayFire REQUIRED )
+  mark_as_advanced( CLEAR ArrayFire_DIR )
+  include_directories( ${ArrayFire_INCLUDE_DIRS} )
+endif()
 
+
+####
+# LIBSVM setup.
+####
+option( TubeTK_USE_LIBSVM "Use LIBSVM for additional functionality."
+  OFF )
+mark_as_advanced( TubeTK_USE_LIBSVM )
+if( TubeTK_USE_LIBSVM )
+  find_package( LIBSVM REQUIRED )
+  mark_as_advanced( CLEAR LIBSVM_DIR )
+  include_directories( ${LIBSVM_INCLUDE_DIRS} )
+endif()
+
+####
+# RandomForest setup.
+####
+option( TubeTK_USE_RANDOMFOREST
+  "Use RandomForest to enable additional functionality." OFF )
+mark_as_advanced( TubeTK_USE_RANDOMFOREST )
+if( TubeTK_USE_RANDOMFOREST )
+  find_package( RandomForest REQUIRED )
+  mark_as_advanced( CLEAR RandomForest_DIR )
+  include_directories( ${RandomForest_INCLUDE_DIRS} )
+endif()
+
+####
+# Create TubeTK Configuration file (to pass ArrayFire and other flags)
+####
+configure_file( "${TubeTK_SOURCE_DIR}/CMake/tubetkConfigure.h.in"
+  tubetkConfigure.h @ONLY )
+include_directories( ${TubeTK_BINARY_DIR} )
+
+####
+# CompareImages and CompareTextFiles for app tests
+####
 set( TubeTKLib_CompareTextFiles_EXE
-  ${TubeTK_BINARY_DIR}/TubeTKLib/bin/CompareTextFiles
+  ${TubeTK_BINARY_DIR}/bin/CompareTextFiles
+  )
+set( TubeTKLib_CompareImages_EXE
+  ${TubeTK_BINARY_DIR}/bin/CompareImages
   )
 
-set( TubeTKLib_CompareImages_EXE
-  ${TubeTK_BINARY_DIR}/TubeTKLib/bin/CompareImages
-  )
+####
+# Configure for building against a build tree
+####
+set( TubeTKLib_LIBRARIES
+  TubeTKLibCommon
+  TubeTKLibMetaIO
+  TubeTKLibNumerics
+  TubeTKLibObjectDocuments
+  TubeTKLibUSTK )
 
 set( TubeTKLib_INCLUDE_DIRS
   ${TubeTK_BINARY_DIR}/TubeTKLib
@@ -121,58 +179,86 @@ set( TubeTKLib_INCLUDE_DIRS
   ${TubeTK_SOURCE_DIR}/TubeTKLib/ObjectDocuments
   ${TubeTK_SOURCE_DIR}/TubeTKLib/Registration
   ${TubeTK_SOURCE_DIR}/TubeTKLib/Segmentation
-  ${TubeTK_BINARY_DIR}/TubeTKLib/MinimalPathExtraction/include
-  )
+  ${TubeTK_SOURCE_DIR}/TubeTKLib/USTK )
+
+set( TubeTKLib_LIBRARY_DIRS
+  ${TubeTK_BINARY_DIR}/TubeTKLib/bin
+  ${TubeTK_BINARY_DIR}/TubeTKLib/lib )
 
 ####
 # TubeTK includes TubeTKLib's libraries and include directories
 ####
 set( TubeTK_LIBRARIES
   TubeTK
-  ${TubeTKLib_LIBRARIES}
+  ${TubeTKLib_LIBRARIES} )
+
+set( TubeTK_INCLUDE_DIRS
+  ${ITK_INCLUDE_DIRS}
+  ${TubeTK_SOURCE_DIR}/include
+  ${TubeTKLib_INCLUDE_DIRS} )
+
+set( TubeTK_LIBRARY_DIRS
+  ${TubeTK_EXECUTABLE_DIRS}
+  ${TubeTKLib_LIBRARY_DIRS} )
+
+set( TubeTK_SYSTEM_INCLUDE_DIRS ${TubeTK_INCLUDE_DIRS} )
+set( TubeTK_SYSTEM_LIBRARY_DIRS ${TubeTK_LIBRARY_DIRS} )
+
+####
+# Find ITK and pre-built modules
+####
+set( TubeTK_ITK_COMPONENTS
+  MinimalPathExtraction
+  ITKImageIO
+  ITKTransformIO
+  ITKIOSpatialObjects
+  ITKRegistrationCommon
+  ITKBinaryMathematicalMorphology
+  ITKFFT
+  ITKCommon
+  ITKHDF5
+  ITKIOCSV
+  ITKRegionGrowing
+  ITKAnisotropicSmoothing
+  ITKLabelVoting
+  ITKPDEDeformableRegistration
+  ITKIOImageBase
+  ITKImageFunction
+  ITKImageIntensity
+  ITKDistanceMap
+  ITKTestKernel
+  ITKOptimizers
+  ITKSmoothing
+  ITKSpatialObjects
+  ITKStatistics
+  ITKTransform
   )
-
-####
-# When this module is loaded by an app, load TubeTKLib too.
-####
-set( TubeTK_EXPORT_CODE_INSTALL "
-  set( TubeTKLib_DIR \"${TubeTKLib_DIR}\" )
-  find_package( TubeTKLib REQUIRED HINTS \"${TubeTK_DIR}/TubeTKLib\" )
-  ")
-
-set( TubeTK_EXPORT_CODE_BUILD "
-  if( NOT ITK_BINARY_DIR )
-    set( TubeTKLib_DIR \"${TubeTKLib_DIR}\" )
-    find_package( TubeTKLib REQUIRED HINTS \"${TubeTK_DIR}/TubeTKLib\" )
-  endif()
-  ")
-
-####
-# 
-####
-set( TubeTK_SYSTEM_INCLUDE_DIRS ${TubeTKLib_INCLUDE_DIRS} )
-set( TubeTK_SYSTEM_LIBRARY_DIRS ${TubeTKLib_LIB_DIRS} )
-
 if( NOT ITK_SOURCE_DIR )
-
-  find_package( ITK REQUIRED )
+  find_package( ITK COMPONENTS ${TubeTK_ITK_COMPONENTS} REQUIRED )
+  mark_as_advanced( CLEAR ITK_DIR )
+  if( NOT ITK_FOUND )
+    find_package( ITK )
+    if( ITK_FOUND )
+      message( FATAL_ERROR
+        "TubeTK requires ITK with MinimalPathExtraction module enabled.")
+    endif()
+    set( ITK_DIR "NOT_FOUND" CACHE PATH
+	    "Path to ITK installation/build directory." FORCE )
+  endif()
   include( ${ITK_USE_FILE} )
   list( APPEND CMAKE_MODULE_PATH ${ITK_CMAKE_DIR} )
-
   include( ITKModuleExternal )
-
 else()
-
   set( ITK_DIR ${CMAKE_BINARY_DIR} )
   itk_module_impl()
-
 endif()
 
+add_subdirectory( TubeTKLib )
 add_subdirectory( python )
 add_subdirectory( apps )
 
-#
+####
 # Enable access to remote testing data (must be placed last)
-#
+####
 include( ${CMAKE_ROOT}/Modules/ExternalData.cmake )
 ExternalData_Add_Target( TubeTKData )

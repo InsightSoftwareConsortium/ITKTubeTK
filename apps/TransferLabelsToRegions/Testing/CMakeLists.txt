@@ -50,7 +50,7 @@ ExternalData_Add_Test( TubeTKData
 # Test1-Compare
 ExternalData_Add_Test( TubeTKData
                 NAME ${MODULE_NAME}-Test1-Compare-Map
-                COMMAND ${TubeTKLib_CompareTextFiles_EXE}
+                COMMAND ${TubeTK_CompareTextFiles_EXE}
                   -t ${TEMP}/${MODULE_NAME}Test1-Map.txt
                   -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1-Map.txt} )
 
@@ -59,7 +59,7 @@ set_tests_properties( ${MODULE_NAME}-Test1-Compare-Map PROPERTIES DEPENDS
 
 ExternalData_Add_Test( TubeTKData
                 NAME ${MODULE_NAME}-Test1-Compare-Img
-                COMMAND ${TubeTKLib_CompareImages_EXE}
+                COMMAND ${TubeTK_CompareImages_EXE}
                   -t ${TEMP}/${MODULE_NAME}Test1-Img.mha
                   -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1-Img.mha} )
 
@@ -69,7 +69,7 @@ set_tests_properties ${MODULE_NAME}-Test1-Compare-Img PROPERTIES DEPENDS
 # Test2-Compare
 ExternalData_Add_Test( TubeTKData
                 NAME ${MODULE_NAME}-Test2-Compare-Map
-                COMMAND ${TubeTKLib_CompareTextFiles_EXE}
+                COMMAND ${TubeTK_CompareTextFiles_EXE}
                   -t ${TEMP}/${MODULE_NAME}Test2-Map.txt
                   -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2-Map.txt} )
 
@@ -78,7 +78,7 @@ set_tests_properties( ${MODULE_NAME}-Test2-Compare-Map PROPERTIES DEPENDS
 
 ExternalData_Add_Test( TubeTKData
                 NAME ${MODULE_NAME}-Test2-Compare-Img
-                COMMAND ${TubeTKLib_CompareImages_EXE}
+                COMMAND ${TubeTK_CompareImages_EXE}
                   -t ${TEMP}/${MODULE_NAME}Test2-Img.mha
                   -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2-Img.mha} )
 

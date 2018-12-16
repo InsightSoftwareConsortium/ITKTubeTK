@@ -39,7 +39,7 @@ ExternalData_Add_Test( TubeTKData
 # Test1 - Compare - NotCropped
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test1-NotCropped-Compare
-  COMMAND ${TubeTKLib_CompareTextFiles_EXE}
+  COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.tre
     -b DATA{${TubeTK_DATA_ROOT}/CropTubes-Test1_NotCropped.tre}
     -d 0.01 )
@@ -60,7 +60,7 @@ ExternalData_Add_Test( TubeTKData
 # Test2 - Compare - Cropped
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test2-Cropped-Compare
-  COMMAND ${TubeTKLib_CompareTextFiles_EXE}
+  COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2.tre
     -b DATA{${TubeTK_DATA_ROOT}/CropTubes-Test1_Cropped.tre}
     -d 0.01 )

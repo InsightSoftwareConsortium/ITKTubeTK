@@ -1,8 +1,5 @@
 include(ExternalData)
 
-set( TubeTK_DATA_ROOT ${TubeTK_SOURCE_DIR}/data_keys)
-set( TubeTKLib_DATA_ROOT ${TubeTKLib_SOURCE_DIR}/DataKeys)
-
 if(NOT ExternalData_OBJECT_STORES)
   # Use ExternalData_OBJECT_STORES from environment as default.
   set(ExternalData_OBJECT_STORES_DEFAULT "")

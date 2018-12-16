@@ -33,6 +33,7 @@ SEMMacroBuildCLI(
     ${ITK_LIBRARIES}
     ITKIOSpatialObjects
     ITKIOMeta
+    TubeTK
     TubeTKLibCommon
     TubeTKLibNumerics
     TubeTKLibUSTK

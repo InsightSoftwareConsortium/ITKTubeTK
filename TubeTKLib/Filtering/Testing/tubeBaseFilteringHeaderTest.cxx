@@ -42,7 +42,7 @@ limitations under the License.
 #include "itktubeTubeEnhancingDiffusion2DImageFilter.h"
 #include "tubeImageFilters.h"
 
-#if defined( TubeTKLib_USE_ARRAYFIRE )
+#if defined( TubeTK_USE_ARRAYFIRE )
 
 #include "itktubeArrayFireGlueUtilities.h"
 #include "itktubeGPUArrayFireGaussianDerivativeFilter.h"

@@ -65,7 +65,7 @@ ExternalData_Add_Test( TubeTKData
 # Test5 - Compare - Surface
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test4-Compare-Surface
-  COMMAND ${TubeTKLib_CompareTextFiles_EXE}
+  COMMAND ${TubeTK_CompareTextFiles_EXE}
     -t ${TEMP}/${MODULE_NAME}-Test4_Surface.vtk
     -b DATA{${TubeTK_DATA_ROOT}/ConvertTubesToSurfaceTestFile_Surface.vtk}
     -d 0.01 )
