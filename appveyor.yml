@@ -67,6 +67,9 @@ for:
       SlicerExecutionModel_BIN: C:\projects\deps\SlicerExecutionModel-Release
       SlicerExecutionModel_DIR: C:\projects\deps\SlicerExecutionModel-Install
     install:
+    - conda config --set always_yes yes --set changeps1 no
+    - conda config --add channels conda-forge
+    - conda install numpy scipy ninja
     - IF NOT EXIST C:\projects\deps mkdir C:\projects\deps
     - cd C:\projects\deps
     # Install VTK
@@ -124,6 +127,9 @@ for:
       SlicerExecutionModel_BIN: C:\projects\deps\SlicerExecutionModel-Release
       SlicerExecutionModel_DIR: C:\projects\deps\SlicerExecutionModel-Install
     install:
+    - conda config --set always_yes yes --set changeps1 no
+    - conda config --add channels conda-forge
+    - conda install numpy scipy ninja
     - IF NOT EXIST C:\projects\deps mkdir C:\projects\deps
     - cd C:\projects\deps
     # Install ITK
@@ -158,9 +164,6 @@ for:
         ninja install
         )
     - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
-    - conda config --set always_yes yes --set changeps1 no
-    - conda config --add channels conda-forge
-    - conda install numpy scipy ninja
     cache:
     - C:\projects\deps
   
