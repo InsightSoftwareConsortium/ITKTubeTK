@@ -67,6 +67,7 @@ for:
       SlicerExecutionModel_BIN: C:\projects\deps\SlicerExecutionModel-Release
       SlicerExecutionModel_DIR: C:\projects\deps\SlicerExecutionModel-Install
     install:
+    - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
     - conda config --set always_yes yes --set changeps1 no
     - conda config --add channels conda-forge
     - conda install numpy scipy ninja
@@ -127,6 +128,7 @@ for:
       SlicerExecutionModel_BIN: C:\projects\deps\SlicerExecutionModel-Release
       SlicerExecutionModel_DIR: C:\projects\deps\SlicerExecutionModel-Install
     install:
+    - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
     - conda config --set always_yes yes --set changeps1 no
     - conda config --add channels conda-forge
     - conda install numpy scipy ninja
@@ -163,7 +165,6 @@ for:
         cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%SlicerExecutionModel_DIR% %SlicerExecutionModel_SRC% &&
         ninja install
         )
-    - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
     cache:
     - C:\projects\deps
   
