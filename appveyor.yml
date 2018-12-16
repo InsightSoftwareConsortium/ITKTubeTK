@@ -83,7 +83,7 @@ for:
     - conda config --set always_yes yes --set changeps1 no
     - conda config --add channels conda-forge
     - conda install numpy scipy ninja
-    - ninja -v
+    - ninja --version
     - cmake -v
     - clang-cl -v
 
@@ -168,7 +168,7 @@ for:
     - conda config --add channels conda-forge
     - conda install numpy scipy ninja
     - set PATH="C:\Program Files\LLVM\bin";%PATH%
-    - ninja -v
+    - ninja --version
     - cmake -v
     - clang-cl -v
 
