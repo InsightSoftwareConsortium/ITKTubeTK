@@ -77,7 +77,7 @@ for:
         7z x %VTK_ZIP% > null &&
         mkdir %VTK_BIN% &&
         cd %VTK_BIN% &&
-        cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
+        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
         ninja install
         )
     # Install SlicerExecutionModel
@@ -86,7 +86,7 @@ for:
         git clone %SlicerExecutionModel_URL% &&
         mkdir %SlicerExecutionModel_BIN% &&
         cd %SlicerExecutionModel_BIN% &&
-        cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%SlicerExecutionModel_DIR% %SlicerExecutionModel_SRC% &&
+        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%SlicerExecutionModel_DIR% %SlicerExecutionModel_SRC% &&
         ninja install
         )
 
@@ -134,7 +134,7 @@ for:
         7z x %ITK_ZIP% > null &&
         mkdir %ITK_BIN% &&
         cd %ITK_BIN% &&
-        cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DITK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%ITK_DIR% %ITK_SRC% &&
+        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DITK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%ITK_DIR% %ITK_SRC% &&
         ninja install
         )
     # Install VTK
@@ -145,7 +145,7 @@ for:
         7z x %VTK_ZIP% > null &&
         mkdir %VTK_BIN% &&
         cd %VTK_BIN% &&
-        cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
+        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
         ninja install
         )
     # Install SlicerExecutionModel
@@ -154,7 +154,7 @@ for:
         git clone %SlicerExecutionModel_URL% &&
         mkdir %SlicerExecutionModel_BIN% &&
         cd %SlicerExecutionModel_BIN% &&
-        cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%SlicerExecutionModel_DIR% %SlicerExecutionModel_SRC% &&
+        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%SlicerExecutionModel_DIR% %SlicerExecutionModel_SRC% &&
         ninja install
         )
     - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
