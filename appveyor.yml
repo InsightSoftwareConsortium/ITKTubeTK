@@ -108,12 +108,12 @@ for:
     #####################################################################
     # Dependencies resolved via conda: ITK, LIBITK, VTK
     #####################################################################
-    install:
-    - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
-    - conda config --set always_yes yes --set changeps1 no
-    - conda config --add channels conda-forge
-    - conda install numpy scipy ninja
     environment:
+      ITK_URL: "https://downloads.sourceforge.net/project/itk/itk/4.13/InsightToolkit-4.13.1.zip"
+      ITK_ZIP: C:\projects\deps\InsightToolkit-4.13.1.zip
+      ITK_SRC: C:\projects\deps\ITK
+      ITK_BIN: C:\projects\deps\ITK-Release
+      ITK_DIR: C:\projects\deps\ITK-Install
       VTK_URL: "https://www.vtk.org/files/release/8.1/VTK-8.1.2.zip"
       VTK_ZIP: C:\projects\deps\VTK-8.1.2.zip
       VTK_SRC: C:\projects\deps\VTK
@@ -126,6 +126,17 @@ for:
     install:
     - IF NOT EXIST C:\projects\deps mkdir C:\projects\deps
     - cd C:\projects\deps
+    # Install ITK
+    - IF NOT EXIST %ITK_ZIP% (
+        appveyor DownloadFile %ITK_URL% -FileName %ITK_ZIP% 
+        )
+    - IF NOT EXIST %ITK_SRC% (
+        7z x %ITK_ZIP% -o%ITK_SRC% > null &&
+        mkdir %ITK_BIN% &&
+        cd %ITK_BIN% &&
+        cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DITK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%ITK_DIR% %ITK_SRC% &&
+        ninja install
+        )
     # Install VTK
     - IF NOT EXIST %VTK_ZIP% (
         appveyor DownloadFile %VTK_URL% -FileName %VTK_ZIP% 
@@ -146,6 +157,10 @@ for:
         cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%SlicerExecutionModel_DIR% %SlicerExecutionModel_SRC% &&
         ninja install
         )
+    - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
+    - conda config --set always_yes yes --set changeps1 no
+    - conda config --add channels conda-forge
+    - conda install numpy scipy ninja
     cache:
     - C:\projects\deps
   
@@ -165,7 +180,7 @@ for:
     build_script:
       - mkdir ITKTubeTK-Release
       - cd ITKTubeTK-Release
-      - cmake -GNinja -DITK_DIR=%ITK_DIR% -DVTK_DIR=%VTK_DIR% -DTubeTK_USE_PYQTGRAPH=OFF -DCMAKE_BUILD_TYPE=Release ..\ITKTubeTK
+      - cmake -GNinja -DITK_DIR=%ITK_DIR% -DVTK_DIR=%VTK_DIR% -DSlicerExecutionModel_DIR=%SlicerExecutionModel_DIR% -DCMAKE_BUILD_TYPE=Release ..\ITKTubeTK
       - ninja
   
     #####################################################################
@@ -179,8 +194,8 @@ for:
 #########################################################################
 # Archive
 #########################################################################
-artifacts:
+#artifacts:
   # pushing entire folder as a zip archive
-  - path: dist\*
+  #- path: dist\*
 
 deploy: off
