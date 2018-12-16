@@ -74,7 +74,7 @@ for:
         appveyor DownloadFile %VTK_URL% -FileName %VTK_ZIP% 
         )
     - IF NOT EXIST %VTK_SRC% (
-        7z x %VTK_ZIP% -o%VTK_SRC% > null &&
+        7z x %VTK_ZIP% -oC:\projects\deps\VTK > null &&
         mkdir %VTK_BIN% &&
         cd %VTK_BIN% &&
         cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
@@ -131,7 +131,7 @@ for:
         appveyor DownloadFile %ITK_URL% -FileName %ITK_ZIP% 
         )
     - IF NOT EXIST %ITK_SRC% (
-        7z x %ITK_ZIP% -o%ITK_SRC% > null &&
+        7z x %ITK_ZIP% -oC:\projects\deps\ITK > null &&
         mkdir %ITK_BIN% &&
         cd %ITK_BIN% &&
         cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DITK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%ITK_DIR% %ITK_SRC% &&
@@ -142,7 +142,7 @@ for:
         appveyor DownloadFile %VTK_URL% -FileName %VTK_ZIP% 
         )
     - IF NOT EXIST %VTK_SRC% (
-        7z x %VTK_ZIP% -o%VTK_SRC% > null &&
+        7z x %VTK_ZIP% -oC:\projects\deps\VTK > null &&
         mkdir %VTK_BIN% &&
         cd %VTK_BIN% &&
         cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
