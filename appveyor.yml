@@ -56,6 +56,10 @@ for:
     matrix:
       only:
         - ITKModule: On
+
+    ####
+    # Setup the environment
+    ####
     environment:
       VTK_URL: "https://www.vtk.org/files/release/8.1/VTK-8.1.2.zip"
       VTK_ZIP: C:\projects\deps\VTK-8.1.2.zip
@@ -66,14 +70,32 @@ for:
       SlicerExecutionModel_SRC: C:\projects\deps\SlicerExecutionModel
       SlicerExecutionModel_BIN: C:\projects\deps\SlicerExecutionModel-Release
       SlicerExecutionModel_DIR: C:\projects\deps\SlicerExecutionModel-Install
+
+    ####
+    # Begin installation
+    ####
     install:
+
+    ####
+    # Setup the python environment
+    ####
     - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
     - conda config --set always_yes yes --set changeps1 no
     - conda config --add channels conda-forge
     - conda install numpy scipy ninja
+    - ninja -v
+    - cmake -v
+    - clang-cl -v
+
+    ####
+    # Setup the dependencies
+    ####
     - IF NOT EXIST C:\projects\deps mkdir C:\projects\deps
     - cd C:\projects\deps
+    
+    ####
     # Install VTK
+    ####
     - IF NOT EXIST %VTK_ZIP% (
         appveyor DownloadFile %VTK_URL% -FileName %VTK_ZIP% 
         )
@@ -81,20 +103,25 @@ for:
         7z x %VTK_ZIP% > null &&
         mkdir %VTK_BIN% &&
         cd %VTK_BIN% &&
-        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
+        cmake -GNinja -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
         ninja install
         )
+
+    ####
     # Install SlicerExecutionModel
+    ####
     - IF NOT EXIST %SlicerExecutionModel_SRC% (
         cd C:\projects\deps &&
         git clone %SlicerExecutionModel_URL% &&
         mkdir %SlicerExecutionModel_BIN% &&
         cd %SlicerExecutionModel_BIN% &&
-        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%SlicerExecutionModel_DIR% %SlicerExecutionModel_SRC% &&
+        cmake -GNinja -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%SlicerExecutionModel_DIR% %SlicerExecutionModel_SRC% &&
         ninja install
         )
 
+    ####
     # Install ITK
+    ####
     - curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/windows-download-cache-and-build-module-wheels.ps1 -O
     - ps: .\windows-download-cache-and-build-module-wheels.ps1
     cache:
@@ -109,9 +136,9 @@ for:
       only:
         - ITKModule: Off
   
-    #####################################################################
-    # Dependencies resolved via conda: ITK, LIBITK, VTK
-    #####################################################################
+    ####
+    # Setup the environment
+    ####
     environment:
       ITK_URL: "https://downloads.sourceforge.net/project/itk/itk/4.13/InsightToolkit-4.13.1.zip"
       ITK_ZIP: C:\projects\deps\InsightToolkit-4.13.1.zip
@@ -127,14 +154,33 @@ for:
       SlicerExecutionModel_SRC: C:\projects\deps\SlicerExecutionModel
       SlicerExecutionModel_BIN: C:\projects\deps\SlicerExecutionModel-Release
       SlicerExecutionModel_DIR: C:\projects\deps\SlicerExecutionModel-Install
+
+    ####
+    # Begin installation
+    ####
     install:
+    
+    ####
+    # Setup python environment
+    ####
     - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
     - conda config --set always_yes yes --set changeps1 no
     - conda config --add channels conda-forge
     - conda install numpy scipy ninja
+    - set PATH="C:\Program Files\LLVM\bin";%PATH%
+    - ninja -v
+    - cmake -v
+    - clang-cl -v
+
+    ####
+    # Setup the dependencies directory
+    ####
     - IF NOT EXIST C:\projects\deps mkdir C:\projects\deps
     - cd C:\projects\deps
+    
+    ####
     # Install ITK
+    ####
     - IF NOT EXIST %ITK_ZIP% (
         appveyor DownloadFile %ITK_URL% -FileName %ITK_ZIP% 
         )
@@ -142,7 +188,7 @@ for:
         7z x %ITK_ZIP% > null &&
         mkdir %ITK_BIN% &&
         cd %ITK_BIN% &&
-        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DITK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%ITK_DIR% %ITK_SRC% &&
+        cmake -GNinja -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DITK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%ITK_DIR% %ITK_SRC% &&
         ninja install
         )
     # Install VTK
@@ -153,7 +199,7 @@ for:
         7z x %VTK_ZIP% > null &&
         mkdir %VTK_BIN% &&
         cd %VTK_BIN% &&
-        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
+        cmake -GNinja -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
         ninja install
         )
     # Install SlicerExecutionModel
@@ -162,7 +208,7 @@ for:
         git clone %SlicerExecutionModel_URL% &&
         mkdir %SlicerExecutionModel_BIN% &&
         cd %SlicerExecutionModel_BIN% &&
-        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%SlicerExecutionModel_DIR% %SlicerExecutionModel_SRC% &&
+        cmake -GNinja -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%SlicerExecutionModel_DIR% %SlicerExecutionModel_SRC% &&
         ninja install
         )
     cache:
@@ -184,7 +230,7 @@ for:
     build_script:
       - mkdir ITKTubeTK-Release
       - cd ITKTubeTK-Release
-      - cmake -GNinja -DITK_DIR=%ITK_DIR% -DVTK_DIR=%VTK_DIR% -DSlicerExecutionModel_DIR=%SlicerExecutionModel_DIR% -DCMAKE_BUILD_TYPE=Release ..\ITKTubeTK
+      - cmake -GNinja -DCMAKE_CXX_COMPILER=clang-cl -DITK_DIR=%ITK_DIR% -DVTK_DIR=%VTK_DIR% -DSlicerExecutionModel_DIR=%SlicerExecutionModel_DIR% -DCMAKE_BUILD_TYPE=Release ..\ITKTubeTK
       - ninja
   
     #####################################################################
