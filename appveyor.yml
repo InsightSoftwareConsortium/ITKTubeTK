@@ -59,7 +59,7 @@ for:
     environment:
       VTK_URL: "https://www.vtk.org/files/release/8.1/VTK-8.1.2.zip"
       VTK_ZIP: C:\projects\deps\VTK-8.1.2.zip
-      VTK_SRC: C:\projects\deps\VTK
+      VTK_SRC: C:\projects\deps\VTK-8.1.2
       VTK_BIN: C:\projects\deps\VTK-Release
       VTK_DIR: C:\projects\deps\VTK-Install
       SlicerExecutionModel_URL: "https://github.com/Slicer/SlicerExecutionModel"
@@ -74,7 +74,7 @@ for:
         appveyor DownloadFile %VTK_URL% -FileName %VTK_ZIP% 
         )
     - IF NOT EXIST %VTK_SRC% (
-        7z x %VTK_ZIP% -oC:\projects\deps\VTK > null &&
+        7z x %VTK_ZIP% > null &&
         mkdir %VTK_BIN% &&
         cd %VTK_BIN% &&
         cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
@@ -111,12 +111,12 @@ for:
     environment:
       ITK_URL: "https://downloads.sourceforge.net/project/itk/itk/4.13/InsightToolkit-4.13.1.zip"
       ITK_ZIP: C:\projects\deps\InsightToolkit-4.13.1.zip
-      ITK_SRC: C:\projects\deps\ITK
+      ITK_SRC: C:\projects\deps\InsightToolkit-4.13.1
       ITK_BIN: C:\projects\deps\ITK-Release
       ITK_DIR: C:\projects\deps\ITK-Install
       VTK_URL: "https://www.vtk.org/files/release/8.1/VTK-8.1.2.zip"
       VTK_ZIP: C:\projects\deps\VTK-8.1.2.zip
-      VTK_SRC: C:\projects\deps\VTK
+      VTK_SRC: C:\projects\deps\VTK-8.1.2
       VTK_BIN: C:\projects\deps\VTK-Release
       VTK_DIR: C:\projects\deps\VTK-Install
       SlicerExecutionModel_URL: "https://github.com/Slicer/SlicerExecutionModel"
@@ -131,7 +131,7 @@ for:
         appveyor DownloadFile %ITK_URL% -FileName %ITK_ZIP% 
         )
     - IF NOT EXIST %ITK_SRC% (
-        7z x %ITK_ZIP% -oC:\projects\deps\ITK > null &&
+        7z x %ITK_ZIP% > null &&
         mkdir %ITK_BIN% &&
         cd %ITK_BIN% &&
         cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DITK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%ITK_DIR% %ITK_SRC% &&
@@ -142,7 +142,7 @@ for:
         appveyor DownloadFile %VTK_URL% -FileName %VTK_ZIP% 
         )
     - IF NOT EXIST %VTK_SRC% (
-        7z x %VTK_ZIP% -oC:\projects\deps\VTK > null &&
+        7z x %VTK_ZIP% > null &&
         mkdir %VTK_BIN% &&
         cd %VTK_BIN% &&
         cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
