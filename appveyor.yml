@@ -56,12 +56,45 @@ for:
     matrix:
       only:
         - ITKModule: On
-    #####################################################################
-    # Download and run ITK script
-    #####################################################################
+    environment:
+      VTK_URL: "https://www.vtk.org/files/release/8.1/VTK-8.1.2.zip"
+      VTK_ZIP: C:\projects\deps\VTK-8.1.2.zip
+      VTK_SRC: C:\projects\deps\VTK
+      VTK_BIN: C:\projects\deps\VTK-Release
+      VTK_DIR: C:\projects\deps\VTK-Install
+      SlicerExecutionModel_URL: "https://github.com/Slicer/SlicerExecutionModel"
+      SlicerExecutionModel_SRC: C:\projects\deps\SlicerExecutionModel
+      SlicerExecutionModel_BIN: C:\projects\deps\SlicerExecutionModel-Release
+      SlicerExecutionModel_DIR: C:\projects\deps\SlicerExecutionModel-Install
     install:
+    - IF NOT EXIST C:\projects\deps mkdir C:\projects\deps
+    - cd C:\projects\deps
+    # Install VTK
+    - IF NOT EXIST %VTK_ZIP% (
+        appveyor DownloadFile %VTK_URL% -FileName %VTK_ZIP% 
+        )
+    - IF NOT EXIST %VTK_SRC% (
+        7z x %VTK_ZIP% -o%VTK_SRC% > null &&
+        mkdir %VTK_BIN% &&
+        cd %VTK_BIN% &&
+        cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
+        ninja install
+        )
+    # Install SlicerExecutionModel
+    - IF NOT EXIST %SlicerExecutionModel_SRC% (
+        cd C:\projects\deps &&
+        git clone %SlicerExecutionModel_URL% &&
+        mkdir %SlicerExecutionModel_BIN% &&
+        cd %SlicerExecutionModel_BIN% &&
+        cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%SlicerExecutionModel_DIR% %SlicerExecutionModel_SRC% &&
+        ninja install
+        )
+
+    # Install ITK
     - curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/windows-download-cache-and-build-module-wheels.ps1 -O
     - ps: .\windows-download-cache-and-build-module-wheels.ps1
+    cache:
+    - C:\projects\deps
 
 
   #######################################################################
@@ -79,9 +112,42 @@ for:
     - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
     - conda config --set always_yes yes --set changeps1 no
     - conda config --add channels conda-forge
-    - conda install itk libitk vtk numpy scipy ninja
-    - "set ITK_DIR=%MINICONDA%\\Library\\lib\\cmake\\ITK-4.13;%PATH%"
-    - "set VTK_DIR=%MINICONDA%\\Library\\lib\\cmake\\vtk-8.1;%PATH%"
+    - conda install numpy scipy ninja
+    environment:
+      VTK_URL: "https://www.vtk.org/files/release/8.1/VTK-8.1.2.zip"
+      VTK_ZIP: C:\projects\deps\VTK-8.1.2.zip
+      VTK_SRC: C:\projects\deps\VTK
+      VTK_BIN: C:\projects\deps\VTK-Release
+      VTK_DIR: C:\projects\deps\VTK-Install
+      SlicerExecutionModel_URL: "https://github.com/Slicer/SlicerExecutionModel"
+      SlicerExecutionModel_SRC: C:\projects\deps\SlicerExecutionModel
+      SlicerExecutionModel_BIN: C:\projects\deps\SlicerExecutionModel-Release
+      SlicerExecutionModel_DIR: C:\projects\deps\SlicerExecutionModel-Install
+    install:
+    - IF NOT EXIST C:\projects\deps mkdir C:\projects\deps
+    - cd C:\projects\deps
+    # Install VTK
+    - IF NOT EXIST %VTK_ZIP% (
+        appveyor DownloadFile %VTK_URL% -FileName %VTK_ZIP% 
+        )
+    - IF NOT EXIST %VTK_SRC% (
+        7z x %VTK_ZIP% -o%VTK_SRC% > null &&
+        mkdir %VTK_BIN% &&
+        cd %VTK_BIN% &&
+        cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
+        ninja install
+        )
+    # Install SlicerExecutionModel
+    - IF NOT EXIST %SlicerExecutionModel_SRC% (
+        cd C:\projects\deps &&
+        git clone %SlicerExecutionModel_URL% &&
+        mkdir %SlicerExecutionModel_BIN% &&
+        cd %SlicerExecutionModel_BIN% &&
+        cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%SlicerExecutionModel_DIR% %SlicerExecutionModel_SRC% &&
+        ninja install
+        )
+    cache:
+    - C:\projects\deps
   
     #####################################################################
     # Build Setup
