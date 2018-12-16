@@ -61,6 +61,8 @@ for:
     # Setup the environment
     ####
     environment:
+      CC: clang-cl
+      CXX: clang-cl
       VTK_URL: "https://www.vtk.org/files/release/8.1/VTK-8.1.2.zip"
       VTK_ZIP: C:\projects\deps\VTK-8.1.2.zip
       VTK_SRC: C:\projects\deps\VTK-8.1.2
@@ -103,7 +105,7 @@ for:
         7z x %VTK_ZIP% > null &&
         mkdir %VTK_BIN% &&
         cd %VTK_BIN% &&
-        cmake -GNinja -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
+        cmake -GNinja -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
         ninja install
         )
 
@@ -115,7 +117,7 @@ for:
         git clone %SlicerExecutionModel_URL% &&
         mkdir %SlicerExecutionModel_BIN% &&
         cd %SlicerExecutionModel_BIN% &&
-        cmake -GNinja -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%SlicerExecutionModel_DIR% %SlicerExecutionModel_SRC% &&
+        cmake -GNinja -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%SlicerExecutionModel_DIR% %SlicerExecutionModel_SRC% &&
         ninja install
         )
 
@@ -140,6 +142,8 @@ for:
     # Setup the environment
     ####
     environment:
+      CC: clang-cl
+      CXX: clang-cl
       ITK_URL: "https://downloads.sourceforge.net/project/itk/itk/4.13/InsightToolkit-4.13.1.zip"
       ITK_ZIP: C:\projects\deps\InsightToolkit-4.13.1.zip
       ITK_SRC: C:\projects\deps\InsightToolkit-4.13.1
@@ -188,7 +192,7 @@ for:
         7z x %ITK_ZIP% > null &&
         mkdir %ITK_BIN% &&
         cd %ITK_BIN% &&
-        cmake -GNinja -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DITK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%ITK_DIR% %ITK_SRC% &&
+        cmake -GNinja -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DITK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%ITK_DIR% %ITK_SRC% &&
         ninja install
         )
     # Install VTK
@@ -199,7 +203,7 @@ for:
         7z x %VTK_ZIP% > null &&
         mkdir %VTK_BIN% &&
         cd %VTK_BIN% &&
-        cmake -GNinja -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
+        cmake -GNinja -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
         ninja install
         )
     # Install SlicerExecutionModel
@@ -208,7 +212,7 @@ for:
         git clone %SlicerExecutionModel_URL% &&
         mkdir %SlicerExecutionModel_BIN% &&
         cd %SlicerExecutionModel_BIN% &&
-        cmake -GNinja -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%SlicerExecutionModel_DIR% %SlicerExecutionModel_SRC% &&
+        cmake -GNinja -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%SlicerExecutionModel_DIR% %SlicerExecutionModel_SRC% &&
         ninja install
         )
     cache:
@@ -230,7 +234,7 @@ for:
     build_script:
       - mkdir ITKTubeTK-Release
       - cd ITKTubeTK-Release
-      - cmake -GNinja -DCMAKE_CXX_COMPILER=clang-cl -DITK_DIR=%ITK_DIR% -DVTK_DIR=%VTK_DIR% -DSlicerExecutionModel_DIR=%SlicerExecutionModel_DIR% -DCMAKE_BUILD_TYPE=Release ..\ITKTubeTK
+      - cmake -GNinja -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DITK_DIR=%ITK_DIR% -DVTK_DIR=%VTK_DIR% -DSlicerExecutionModel_DIR=%SlicerExecutionModel_DIR% -DCMAKE_BUILD_TYPE=Release ..\ITKTubeTK
       - ninja
   
     #####################################################################
