@@ -99,11 +99,11 @@ install:
   ####
   # Install SlicerExecutionModel
   ####
-  - IF NOT EXIST %SlicerExecutionModel_INSTALL_ZIP% (
-      appveyor DownloadFile %SlicerExecutionModel_INSTALL_URL% -FileName %SlicerExecutionModel_INSTALL_ZIP% 
+  - IF NOT EXIST %SlicerExecutionModel_RELEASE_ZIP% (
+      appveyor DownloadFile %SlicerExecutionModel_RELEASE_URL% -FileName %SlicerExecutionModel_RELEASE_ZIP% 
       )
   - IF NOT EXIST %SlicerExecutionModel_DIR% (
-      7z x %SlicerExecutionModel_INSTALL_ZIP% > null
+      7z x %SlicerExecutionModel_RELEASE_ZIP% > null
       )
 
 #####################################################################
