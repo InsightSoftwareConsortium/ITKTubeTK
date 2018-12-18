@@ -86,9 +86,7 @@ install:
   - IF NOT EXIST %ITK_INSTALL_ZIP% (
       appveyor DownloadFile %ITK_INSTALL_URL% -FileName %ITK_INSTALL_ZIP% 
       )
-  - IF NOT EXIST %ITK_DIR% (
-      7z x %ITK_INSTALL_ZIP% > null &&
-      )
+  - IF NOT EXIST %ITK_DIR% ( 7z x %ITK_INSTALL_ZIP% > null)
 
   ####
   # Install VTK
@@ -96,9 +94,7 @@ install:
   - IF NOT EXIST %VTK_INSTALL_ZIP% (
       appveyor DownloadFile %VTK_INSTALL_URL% -FileName %VTK_INSTALL_ZIP% 
       )
-  - IF NOT EXIST %VTK_DIR% (
-      7z x %VTK_INSTALL_ZIP% > null &&
-      )
+  - IF NOT EXIST %VTK_DIR% ( 7z x %VTK_INSTALL_ZIP% > null )
 
   ####
   # Install SlicerExecutionModel
@@ -107,7 +103,7 @@ install:
       appveyor DownloadFile %SlicerExecutionModel_INSTALL_URL% -FileName %SlicerExecutionModel_INSTALL_ZIP% 
       )
   - IF NOT EXIST %SlicerExecutionModel_DIR% (
-      7z x %SlicerExecutionModel_INSTALL_ZIP% > null &&
+      7z x %SlicerExecutionModel_INSTALL_ZIP% > null
       )
 
 #####################################################################
