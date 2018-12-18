@@ -59,9 +59,9 @@ install:
   ####
   - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
-  - "set ITK_INSTALL_URL=https://data.kitware.com/api/v1/item/5c18d4648d777f072bd84293/download"
-  - "set ITK_INSTALL_ZIP=C:\\projects\\deps\\ITK-Install.zip"
-  - "set ITK_DIR=C:\\projects\\deps\\ITK-Install\\lib\\cmake\\ITK-4.13"
+  - "set ITK_RELEASE_URL=https://data.kitware.com/api/v1/item/5c191abc8d777f072bd9231a/download"
+  - "set ITK_RELEASE_ZIP=C:\\projects\\deps\\ITK-Release.zip"
+  - "set ITK_DIR=C:\\projects\\deps\\ITK-Release"
   - "set VTK_INSTALL_URL=https://data.kitware.com/api/v1/item/5c18d4a18d777f072bd842bb/download"
   - "set VTK_INSTALL_ZIP=C:\\projects\\deps\\VTK-Install.zip"
   - "set VTK_DIR=C:\\projects\\deps\\VTK-Install\\lib\\cmake\\vtk-8.1"
@@ -83,10 +83,10 @@ install:
   ####
   # Install ITK
   ####
-  - IF NOT EXIST %ITK_INSTALL_ZIP% (
-      appveyor DownloadFile %ITK_INSTALL_URL% -FileName %ITK_INSTALL_ZIP% 
+  - IF NOT EXIST %ITK_RELEASE_ZIP% (
+      appveyor DownloadFile %ITK_RELEASE_URL% -FileName %ITK_RELEASE_ZIP% 
       )
-  - IF NOT EXIST %ITK_DIR% ( 7z x %ITK_INSTALL_ZIP% > null)
+  - IF NOT EXIST %ITK_DIR% ( 7z x %ITK_RELEASE_ZIP% > null )
 
   ####
   # Install VTK
