@@ -59,14 +59,14 @@ install:
   - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
   - "set ITK_INSTALL_URL=https://data.kitware.com/api/v1/item/5c18d4648d777f072bd84293/download"
-  - "set ITK_INSTALL_ZIP=C:\projects\deps\ITK-Install.zip"
-  - "set ITK_DIR=C:\projects\deps\ITK-Install"
+  - "set ITK_INSTALL_ZIP=C:\\projects\\deps\\ITK-Install.zip"
+  - "set ITK_DIR=C:\\projects\\deps\\ITK-Install"
   - "set VTK_INSTALL_URL=https://data.kitware.com/api/v1/item/5c18d4a18d777f072bd842bb/download"
-  - "set VTK_INSTALL_ZIP=C:\projects\deps\VTK-Install"
-  - "set VTK_DIR=C:\projects\deps\VTK-Install"
+  - "set VTK_INSTALL_ZIP=C:\\projects\\deps\\VTK-Install"
+  - "set VTK_DIR=C:\\projects\\deps\\VTK-Install"
   - "set SlicerExecutionModel_INSTALL_URL=https://data.kitware.com/api/v1/item/5c18d4668d777f072bd842a3/download"
-  - "set SlicerExecutionModel_INSTALL_ZIP=C:\projects\deps\SlicerExecutionModel-Install"
-  - "set SlicerExecutionModel_DIR=C:\projects\deps\SlicerExecutionModel-Install"
+  - "set SlicerExecutionModel_INSTALL_ZIP=C:\\projects\\deps\\SlicerExecutionModel-Install"
+  - "set SlicerExecutionModel_DIR=C:\\projects\\deps\\SlicerExecutionModel-Install"
   - conda config --set always_yes yes --set changeps1 no
   - conda config --add channels conda-forge
   - conda install numpy scipy ninja
