@@ -39,7 +39,8 @@ os:
   - Visual Studio 2015
 
 environment:
-  - MINICONDA: "C:\\Miniconda36-x64"
+  matrix:
+    - MINICONDA: "C:\\Miniconda36-x64"
   
 configuration:
   - Release
