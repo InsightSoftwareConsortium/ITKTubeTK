@@ -39,219 +39,107 @@ os:
   - Visual Studio 2015
 
 environment:
-  matrix:
-    - MINICONDA: "C:\\Miniconda36-x64"
-      ITKModule: On
-    - MINICONDA: "C:\\Miniconda36-x64"
-      ITKModule: Off
+  - MINICONDA: "C:\\Miniconda36-x64"
 
 configuration:
   - Release
 
-for:
- ########################################################################
-  # Build ITKModule using ITK script
- ########################################################################
-  -
-    matrix:
-      only:
-        - ITKModule: On
+########################################################################
+# Build and test ITKModule 
+########################################################################
 
-    ####
-    # Setup the environment
-    ####
-    environment:
-      VTK_URL: "https://www.vtk.org/files/release/8.1/VTK-8.1.2.zip"
-      VTK_ZIP: C:\projects\deps\VTK-8.1.2.zip
-      VTK_SRC: C:\projects\deps\VTK-8.1.2
-      VTK_BIN: C:\projects\deps\VTK-Release
-      VTK_DIR: C:\projects\deps\VTK-Install
-      SlicerExecutionModel_URL: "https://github.com/Slicer/SlicerExecutionModel"
-      SlicerExecutionModel_SRC: C:\projects\deps\SlicerExecutionModel
-      SlicerExecutionModel_BIN: C:\projects\deps\SlicerExecutionModel-Release
-      SlicerExecutionModel_DIR: C:\projects\deps\SlicerExecutionModel-Install
+####
+# Setup the environment
+####
+environment:
+  ITK_INSTALL_URL: "https://data.kitware.com/api/v1/item/5c18d4648d777f072bd84293/download"
+  ITK_INSTALL_ZIP: C:\projects\deps\ITK-Install.zip
+  ITK_DIR: C:\projects\deps\ITK-Install
+  VTK_INSTALL_URL: "https://data.kitware.com/api/v1/item/5c18d4a18d777f072bd842bb/download"
+  VTK_INSTALL_ZIP: C:\projects\deps\VTK-Install
+  VTK_DIR: C:\projects\deps\VTK-Install
+  SlicerExecutionModel_INSTALL_URL: "https://data.kitware.com/api/v1/item/5c18d4668d777f072bd842a3/download"
+  SlicerExecutionModel_INSTALL_ZIP: C:\projects\deps\SlicerExecutionModel-Install
+  SlicerExecutionModel_DIR: C:\projects\deps\SlicerExecutionModel-Install
 
-    ####
-    # Begin installation
-    ####
-    install:
+####
+# Begin installation
+####
+install:
 
-    ####
-    # Setup the python environment
-    ####
-    - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
-    - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
-    - conda config --set always_yes yes --set changeps1 no
-    - conda config --add channels conda-forge
-    - conda install numpy scipy ninja
-    - ninja --version
-    - cmake --version
+  ####
+  # Setup the python environment
+  ####
+  - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
+  - conda config --set always_yes yes --set changeps1 no
+  - conda config --add channels conda-forge
+  - conda install numpy scipy ninja
+  - ninja --version
+  - cmake --version
 
-    ####
-    # Setup the dependencies
-    ####
-    - IF NOT EXIST C:\projects\deps mkdir C:\projects\deps
-    - cd C:\projects\deps
-    
-    ####
-    # Install VTK
-    ####
-    - IF NOT EXIST %VTK_ZIP% (
-        appveyor DownloadFile %VTK_URL% -FileName %VTK_ZIP% 
-        )
-    - IF NOT EXIST %VTK_SRC% (
-        7z x %VTK_ZIP% > null &&
-        mkdir %VTK_BIN% &&
-        cd %VTK_BIN% &&
-        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
-        ninja install
-        )
-
-    ####
-    # Install SlicerExecutionModel
-    ####
-    - IF NOT EXIST %SlicerExecutionModel_SRC% (
-        cd C:\projects\deps &&
-        git clone %SlicerExecutionModel_URL% &&
-        mkdir %SlicerExecutionModel_BIN% &&
-        cd %SlicerExecutionModel_BIN% &&
-        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DITK_DIR=%ITK_DIR% -DCMAKE_INSTALL_PREFIX=%SlicerExecutionModel_DIR% %SlicerExecutionModel_SRC% &&
-        ninja install
-        )
-
-    ####
-    # Install ITK
-    ####
-    - curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/windows-download-cache-and-build-module-wheels.ps1 -O
-    - ps: .\windows-download-cache-and-build-module-wheels.ps1
-    cache:
-    - C:\projects\deps
-
-
-  #######################################################################
-  # Build and Test TubeTK without using ITK script
-  #######################################################################
-  -
-    matrix:
-      only:
-        - ITKModule: Off
+  ####
+  # Setup the dependencies
+  ####
+  - IF NOT EXIST C:\projects\deps mkdir C:\projects\deps
+  - cd C:\projects\deps
   
-    ####
-    # Setup the environment
-    ####
-    environment:
-      ITK_URL: "https://downloads.sourceforge.net/project/itk/itk/4.13/InsightToolkit-4.13.1.zip"
-      ITK_ZIP: C:\projects\deps\InsightToolkit-4.13.1.zip
-      ITK_SRC: C:\projects\deps\InsightToolkit-4.13.1
-      ITK_BIN: C:\projects\deps\ITK-Release
-      ITK_DIR: C:\projects\deps\ITK-Install
-      VTK_URL: "https://www.vtk.org/files/release/8.1/VTK-8.1.2.zip"
-      VTK_ZIP: C:\projects\deps\VTK-8.1.2.zip
-      VTK_SRC: C:\projects\deps\VTK-8.1.2
-      VTK_BIN: C:\projects\deps\VTK-Release
-      VTK_DIR: C:\projects\deps\VTK-Install
-      SlicerExecutionModel_URL: "https://github.com/Slicer/SlicerExecutionModel"
-      SlicerExecutionModel_SRC: C:\projects\deps\SlicerExecutionModel
-      SlicerExecutionModel_BIN: C:\projects\deps\SlicerExecutionModel-Release
-      SlicerExecutionModel_DIR: C:\projects\deps\SlicerExecutionModel-Install
+  ####
+  # Install ITK
+  ####
+  - IF NOT EXIST %ITK_INSTALL_ZIP% (
+      appveyor DownloadFile %ITK_INSTALL_URL% -FileName %ITK_INSTALL_ZIP% 
+      )
+  - IF NOT EXIST %ITK_DIR% (
+      7z x %ITK_INSTALL_ZIP% > null &&
+      )
 
-    ####
-    # Begin installation
-    ####
-    install:
-    
-    ####
-    # Setup python environment
-    ####
-    - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
-    - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
-    - conda config --set always_yes yes --set changeps1 no
-    - conda config --add channels conda-forge
-    - conda install numpy scipy ninja
-    - set PATH="C:\Program Files\LLVM\bin";%PATH%
-    - ninja --version
-    - cmake --version
+  ####
+  # Install VTK
+  ####
+  - IF NOT EXIST %VTK_INSTALL_ZIP% (
+      appveyor DownloadFile %VTK_INSTALL_URL% -FileName %VTK_INSTALL_ZIP% 
+      )
+  - IF NOT EXIST %VTK_DIR% (
+      7z x %VTK_INSTALL_ZIP% > null &&
+      )
 
-    ####
-    # Setup the dependencies directory
-    ####
-    - IF NOT EXIST C:\projects\deps mkdir C:\projects\deps
-    - cd C:\projects\deps
-    
-    ####
-    # Install ITK
-    ####
-    - IF NOT EXIST %ITK_ZIP% (
-        appveyor DownloadFile %ITK_URL% -FileName %ITK_ZIP% 
-        )
-    - IF NOT EXIST %ITK_SRC% (
-        7z x %ITK_ZIP% > null &&
-        mkdir %ITK_BIN% &&
-        cd %ITK_BIN% &&
-        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DITK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%ITK_DIR% %ITK_SRC% &&
-        ninja install
-        )
-        
-    ####
-    # Install VTK
-    ####
-    - IF NOT EXIST %VTK_ZIP% (
-        appveyor DownloadFile %VTK_URL% -FileName %VTK_ZIP% 
-        )
-    - IF NOT EXIST %VTK_SRC% (
-        7z x %VTK_ZIP% > null &&
-        mkdir %VTK_BIN% &&
-        cd %VTK_BIN% &&
-        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DVTK_PYTHON_VERSION=3.6 -DVTK_WRAP_PYTHON=ON -DCMAKE_INSTALL_PREFIX=%VTK_DIR% %VTK_SRC% &&
-        ninja install
-        )
+  ####
+  # Install SlicerExecutionModel
+  ####
+  - IF NOT EXIST %SlicerExecutionModel_INSTALL_ZIP% (
+      appveyor DownloadFile %SlicerExecutionModel_INSTALL_URL% -FileName %SlicerExecutionModel_INSTALL_ZIP% 
+      )
+  - IF NOT EXIST %SlicerExecutionModel_DIR% (
+      7z x %SlicerExecutionModel_INSTALL_ZIP% > null &&
+      )
 
-    ####
-    # Install SlicerExecutionModel
-    ####
-    - IF NOT EXIST %SlicerExecutionModel_SRC% (
-        cd C:\projects\deps &&
-        git clone %SlicerExecutionModel_URL% &&
-        mkdir %SlicerExecutionModel_BIN% &&
-        cd %SlicerExecutionModel_BIN% &&
-        cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DITK_DIR=%ITK_DIR% -DCMAKE_INSTALL_PREFIX=%SlicerExecutionModel_DIR% %SlicerExecutionModel_SRC% &&
-        ninja install
-        )
-    cache:
-    - C:\projects\deps
+#####################################################################
+# Build
+#####################################################################
+build:
+  verbosity: detailed
   
-    #####################################################################
-    # Build Setup
-    #####################################################################
-    before_build:
-      - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
-      - cd C:\projects
-  
-    #####################################################################
-    # Build
-    #####################################################################
-    build:
-      verbosity: detailed
-    
-    build_script:
-      - mkdir ITKTubeTK-Release
-      - cd ITKTubeTK-Release
-      - cmake -GNinja -DITK_DIR=%ITK_DIR% -DVTK_DIR=%VTK_DIR% -DSlicerExecutionModel_DIR=%SlicerExecutionModel_DIR% -DCMAKE_BUILD_TYPE=Release ..\ITKTubeTK
-      - ninja
-  
-    #####################################################################
-    # Test Script
-    #####################################################################
-    test_script:
-      - cd TubeTK-build
-      - ctest -D Experimental
-  
-  
+build_script:
+  - cd C:\projects
+  - mkdir ITKTubeTK-Release
+  - cd ITKTubeTK-Release
+  - cmake -GNinja -DITK_DIR=%ITK_DIR% -DVTK_DIR=%VTK_DIR% -DSlicerExecutionModel_DIR=%SlicerExecutionModel_DIR% -DCMAKE_BUILD_TYPE=Release ..\ITKTubeTK
+  - ninja
+ 
+#####################################################################
+# Test Script
+#####################################################################
+test_script:
+  - cd C:\projects\ITKTubeTK-Release
+  - ctest -D Experimental
+ 
+ 
 #########################################################################
 # Archive
 #########################################################################
 #artifacts:
-  # pushing entire folder as a zip archive
-  #- path: dist\*
+# pushing entire folder as a zip archive
+#- path: dist\*
 
 deploy: off
