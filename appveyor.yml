@@ -77,6 +77,9 @@ install:
   - "set SlicerExecutionModel_SRC_URL=https://data.kitware.com/api/v1/item/5c18d4658d777f072bd8429b/download"
   - "set SlicerExecutionModel_SRC_ZIP=C:/projects/deps/SlicerExecutionModel.zip"
   - "set SlicerExecutionModel_SRC=C:/projects/deps/SlicerExecutionModel"
+  - "set ITKTubeTK_ExternalData_URL=https://data.kitware.com/api/v1/item/5c1aaf188d777f072bdc2d36/download"
+  - "set ITKTubeTK_ExternalData_ZIP=C:/projects/itktubetk/ExternalData.zip"
+  - "set ITKTubeTK_ExternalData_DIR=C:/projects/itktubetk/ExternalData"
   - conda config --set always_yes yes --set changeps1 no
   - conda config --add channels conda-forge
   - conda install numpy scipy ninja
@@ -139,6 +142,11 @@ build_script:
   - cd C:\projects
   - mkdir ITKTubeTK-Release
   - cd ITKTubeTK-Release
+  - IF NOT EXIST %ITKTubeTK_ExternalData_ZIP% (
+      appveyor DownloadFile %ITKTubeTK_ExternalData_URL% -FileName %ITKTubeTK_ExternalData_ZIP% &&
+      rmdir %ITKTubeTK_ExternalData_DIR% /s /q
+      7z x %ITKTubeTK_ExternalData_ZIP% > null
+      )
   - cmake -GNinja -DITK_DIR=%ITK_DIR% -DVTK_DIR=%VTK_DIR% -DSlicerExecutionModel_DIR=%SlicerExecutionModel_DIR% -DCMAKE_BUILD_TYPE=Release ..\itktubetk
   - ctest -D Experimental -V
  
