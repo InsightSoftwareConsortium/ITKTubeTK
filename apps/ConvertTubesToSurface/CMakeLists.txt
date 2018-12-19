@@ -22,8 +22,6 @@
 
 set( MODULE_NAME ConvertTubesToSurface )
 
-project( ${MODULE_NAME} )
-
 set( ConvertTubesToSurface_H_Files
   )
 

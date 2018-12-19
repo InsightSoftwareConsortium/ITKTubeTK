@@ -22,8 +22,6 @@
 
 set( MODULE_NAME Convert4DImageTo3DImages )
 
-project( ${MODULE_NAME} )
-
 SEMMacroBuildCLI(
   NAME
     ${MODULE_NAME}

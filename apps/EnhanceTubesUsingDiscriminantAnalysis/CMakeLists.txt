@@ -22,8 +22,6 @@
 
 set( MODULE_NAME EnhanceTubesUsingDiscriminantAnalysis )
 
-project( ${MODULE_NAME} )
-
 set( ${MODULE_NAME}_EXTERNAL_LIBS )
 if( TubeTK_USE_LIBSVM )
   find_package( LIBSVM REQUIRED )
