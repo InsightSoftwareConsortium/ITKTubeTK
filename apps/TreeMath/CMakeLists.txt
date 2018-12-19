@@ -21,8 +21,6 @@
 ############################################################################
 set( MODULE_NAME TreeMath )
 
-project( ${MODULE_NAME} )
-
 SEMMacroBuildCLI(
   NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/docs/TubeTKLogo.h

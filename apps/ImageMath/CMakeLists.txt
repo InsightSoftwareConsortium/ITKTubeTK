@@ -20,10 +20,10 @@
 #
 ##############################################################################
 
-project( ImageMath )
+set( MODULE_NAME ImageMath )
 
 SEMMacroBuildCLI(
-  NAME ${PROJECT_NAME}
+  NAME ${MODULE_NAME}
   LOGO_HEADER ${TubeTK_SOURCE_DIR}/docs/TubeTKLogo.h
   TARGET_LIBRARIES
     ${ITK_LIBRARIES}

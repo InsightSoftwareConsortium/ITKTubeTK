@@ -22,8 +22,6 @@
 
 set( MODULE_NAME ComputeTubeGraphSimilarityKernelMatrix )
 
-project( ${MODULE_NAME} )
-
 set( TubeGraphKernel_H_Files
   GraphKernel.h
   tubeShortestPathKernel.h

@@ -22,8 +22,6 @@
 
 set( MODULE_NAME ComputeTubeTortuosityMeasures )
 
-project( ${MODULE_NAME} )
-
 SEMMacroBuildCLI(
   NAME
     ${MODULE_NAME}

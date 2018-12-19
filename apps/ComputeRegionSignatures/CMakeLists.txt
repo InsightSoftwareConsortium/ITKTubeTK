@@ -22,8 +22,6 @@
 
 set( MODULE_NAME ComputeRegionSignatures )
 
-project( ${MODULE_NAME} )
-
 SEMMacroBuildCLI(
   NAME
     ${MODULE_NAME}

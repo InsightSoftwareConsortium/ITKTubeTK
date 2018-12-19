@@ -22,8 +22,6 @@
 
 set( MODULE_NAME AtlasBuilderUsingIntensity )
 
-project( ${MODULE_NAME} )
-
 set( AtlasBuilderUsingIntensity_H_Files
   itktubeCompleteImageResampleFilter.h
   itktubeMeanAndSigmaImageBuilder.h

@@ -22,8 +22,6 @@
 
 set( MODULE_NAME SimulateAcquisitionArtifactsUsingPrior )
 
-project( ${MODULE_NAME} )
-
 set( SimulateAcquisitionArtifactsUsingPrior_H_Files
   tubeCompareImageWithPrior.h )
 
