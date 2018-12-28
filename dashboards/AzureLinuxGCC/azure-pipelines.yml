@@ -14,8 +14,27 @@ steps:
       set -x
       sudo pip3 install ninja
       sudo apt-get update
-      sudo apt-get install -y python3.6
     displayName: Install dependencies
+  - bash: |
+      set -x
+      git clone https://github.com/InsightSoftwareConsortium/ITK.git ITK
+      mkdir ITK-Release
+      cd ITK-Release
+      cmake -GNinja -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MinimalPathExtraction=ON -DCMAKE_BUILD_TYPE=Release ../ITK
+      ninja -j 4 -V
+      cd ..
+    displayName: Download and Build ITK
+    workingDirectory: $(Agent.BuildDirectory)
+  - bash: |
+      set -x
+      git clone https://github.com/Slicer/SlicerExecutionModel.git SlicerExecutionModel
+      mkdir SlicerExecutionModel-Release
+      cd SlicerExecutionModel-Release
+      cmake -GNinja -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Release -DCMAKE_BUILD_TYPE=Release ../SlicerExecutionModel
+      ninja -j 4 -V
+      cd ..
+    displayName: Download and Build SlicerExecutionModel
+    workingDirectory: $(Agent.BuildDirectory)
   - bash: |
       set -x
       mkdir ITKTubeTK-Release
@@ -25,20 +44,11 @@ steps:
     workingDirectory: $(Agent.BuildDirectory)
   - bash: |
       set -x
-      git clone https://github.com/InsightSoftwareConsortium/ITK.git ITK
-      mkdir ITK-Release
-      cd ITK-Release
-      cmake -GNinja -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MinimalPathExtraction=ON -DCMAKE_BUILD_TYPE=Release ../ITK
-      cd ..
-    displayName: Download and Build ITK
-    workingDirectory: $(Agent.BuildDirectory)
-  - bash: |
-      set -x
       c++ --version
       cmake --version
       cd ITKTubeTK-Release
-      cmake -GNinja -DTubeTK_USE_VTK=OFF -DTubeTK_WRAP_PYTHON=OFF -DTubeTK_BUILD_APPS=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Release -DCMAKE_BUILD_TYPE=Release $(Agent.SourcesDirectory)
+      cmake -GNinja -DTubeTK_USE_VTK=OFF -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Release -DSlicerExecutionModel_DIR=$(Agent.BuildDirectory)/SlicerExecutionModel-Release -DCMAKE_BUILD_TYPE=Release $(Agent.SourcesDirectory)
       ctest -D Experimental -V
       cd ..
-    displayName: CMake and CTest
+    displayName: CMake and CTest ITKTubeTK
     workingDirectory: $(Agent.BuildDirectory)
