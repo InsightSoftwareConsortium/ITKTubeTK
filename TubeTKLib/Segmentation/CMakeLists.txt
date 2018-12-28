@@ -76,6 +76,7 @@ target_link_libraries( TubeTKLibSegmentation INTERFACE
    TubeTKLibMetaIO
    TubeTKLibFiltering
    TubeTKLibNumerics
+   MinimalPathExtraction
    ${ITK_LIBRARIES} )
 
 if( BUILD_TESTING )

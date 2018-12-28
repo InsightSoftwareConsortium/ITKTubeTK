@@ -22,15 +22,11 @@
 
 include_regular_expression( "^.*$" )
 
-find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseObjectDocuments ${PYTHON_EXECUTABLE}
     ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
     ${TubeTK_SOURCE_DIR}/TubeTKLib/ObjectDocuments )
 endif( PYTHON_EXECUTABLE )
-
-find_package( ITK REQUIRED )
-include( ${ITK_USE_FILE} )
 
 set( BASE_OBJECT_DOCUMENTS_TESTS
   ${TubeTK_LAUNCHER} $<TARGET_FILE:tubeBaseObjectDocumentsTests> )

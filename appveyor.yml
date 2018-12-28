@@ -37,125 +37,269 @@ version: "0.0.1.{build}"
 #########################################################################
 os:
   - Visual Studio 2015
+  - Visual Studio 2017
+  - Ubuntu
+  - Ubuntu1804
 
-environment:
-  matrix:
-    - MINICONDA: "C:\\Miniconda36-x64"
-  
 configuration:
   - Release
 
 ########################################################################
 # Build and test ITKModule 
 ########################################################################
+for:
+  ####
+  # Visual Studio 2015
+  ####
+  -
+    matrix:
+      only:
+        - os: Visual Studio 2015
+        - os: Visual Studio 2017
 
-####
-# Begin installation
-####
-install:
+    ####
+    # Setup environment
+    ####
+    environment:
+      MINICONDA: "C:\\Miniconda36-x64"
 
-  ####
-  # Setup the environment
-  ####
-  - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
-  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
-  - "set ITK_RELEASE_URL=https://data.kitware.com/api/v1/item/5c1a786e8d777f072bdbd0dd/download"
-  - "set ITK_RELEASE_ZIP=C:/projects/deps/ITK-Release.zip"
-  - "set ITK_DIR=C:/projects/deps/ITK-Release"
-  - "set ITK_SRC_URL=https://data.kitware.com/api/v1/item/5c18d4158d777f072bd84249/download"
-  - "set ITK_SRC_ZIP=C:/projects/deps/InsightToolkit-4.13.1.zip"
-  - "set ITK_SRC=C:/projects/deps/InsightToolkit-4.13.1"
-  - "set VTK_RELEASE_URL=https://data.kitware.com/api/v1/item/5c1a78b68d777f072bdbd13f/download"
-  - "set VTK_RELEASE_ZIP=C:/projects/deps/VTK-Release.zip"
-  - "set VTK_DIR=C:/projects/deps/VTK-Release"
-  - "set VTK_SRC_URL=https://data.kitware.com/api/v1/item/5c18d4858d777f072bd842b1/download"
-  - "set VTK_SRC_ZIP=C:/projects/deps/VTK-8.1.2.zip"
-  - "set VTK_SRC=C:/projects/deps/VTK-8.1.2"
-  - "set SlicerExecutionModel_RELEASE_URL=https://data.kitware.com/api/v1/item/5c1a786e8d777f072bdbd0e5/download"
-  - "set SlicerExecutionModel_RELEASE_ZIP=C:/projects/deps/SlicerExecutionModel-Release.zip"
-  - "set SlicerExecutionModel_DIR=C:/projects/deps/SlicerExecutionModel-Release"
-  - "set SlicerExecutionModel_SRC_URL=https://data.kitware.com/api/v1/item/5c18d4658d777f072bd8429b/download"
-  - "set SlicerExecutionModel_SRC_ZIP=C:/projects/deps/SlicerExecutionModel.zip"
-  - "set SlicerExecutionModel_SRC=C:/projects/deps/SlicerExecutionModel"
-  - "set ITKTubeTK_ExternalData_URL=https://data.kitware.com/api/v1/item/5c1aaf188d777f072bdc2d36/download"
-  - "set ITKTubeTK_ExternalData_ZIP=C:/projects/itktubetk/ExternalData.zip"
-  - "set ITKTubeTK_ExternalData_DIR=C:/projects/itktubetk/ExternalData"
-  - conda config --set always_yes yes --set changeps1 no
-  - conda config --add channels conda-forge
-  - conda install numpy scipy ninja
-  - ninja --version
-  - cmake --version
-
-  ####
-  # Setup the dependencies
-  ####
-  - IF NOT EXIST C:\projects\deps mkdir C:\projects\deps
-  - cd C:\projects\deps
+    ####
+    # Begin installation
+    ####
+    install:
+      ####
+      # Setup the environment
+      ####
+      - IF "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2015" (
+          set SITE_PLATFORM=VS2015_Release_Python36x64 &&
+          call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+        ) else (
+          set SITE_PLATFORM=VS2017_Release_Python36x64 &&
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+        )
+      - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
+      - "set ITK_RELEASE_URL=https://data.kitware.com/api/v1/item/5c1a786e8d777f072bdbd0dd/download"
+      - "set ITK_RELEASE_ZIP=C:/projects/deps/ITK-Release.zip"
+      - "set ITK_DIR=C:/projects/deps/ITK-Release"
+      - "set ITK_SRC_URL=https://data.kitware.com/api/v1/item/5c1d6a4a8d777f072be0cf55/download"
+      - "set ITK_SRC_ZIP=C:/projects/deps/InsightToolkit-4.13.1.zip"
+      - "set ITK_SRC=C:/projects/deps/InsightToolkit-4.13.1"
+      - "set VTK_RELEASE_URL=https://data.kitware.com/api/v1/item/5c1a78b68d777f072bdbd13f/download"
+      - "set VTK_RELEASE_ZIP=C:/projects/deps/VTK-Release.zip"
+      - "set VTK_DIR=C:/projects/deps/VTK-Release"
+      - "set VTK_SRC_URL=https://data.kitware.com/api/v1/item/5c18d4858d777f072bd842b1/download"
+      - "set VTK_SRC_ZIP=C:/projects/deps/VTK-8.1.2.zip"
+      - "set VTK_SRC=C:/projects/deps/VTK-8.1.2"
+      - "set SlicerExecutionModel_RELEASE_URL=https://data.kitware.com/api/v1/item/5c1a786e8d777f072bdbd0e5/download"
+      - "set SlicerExecutionModel_RELEASE_ZIP=C:/projects/deps/SlicerExecutionModel-Release.zip"
+      - "set SlicerExecutionModel_DIR=C:/projects/deps/SlicerExecutionModel-Release"
+      - "set SlicerExecutionModel_SRC_URL=https://data.kitware.com/api/v1/item/5c18d4658d777f072bd8429b/download"
+      - "set SlicerExecutionModel_SRC_ZIP=C:/projects/deps/SlicerExecutionModel.zip"
+      - "set SlicerExecutionModel_SRC=C:/projects/deps/SlicerExecutionModel"
+      - "set ITKTubeTK_ExternalData_URL=https://data.kitware.com/api/v1/item/5c1aaf188d777f072bdc2d36/download"
+      - "set ITKTubeTK_ExternalData_ZIP=C:/projects/itktubetk/ExternalData.zip"
+      - "set ITKTubeTK_ExternalData_DIR=C:\\projects\\itktubetk\\ExternalData"
+      - conda config --set always_yes yes --set changeps1 no
+      - conda config --add channels conda-forge
+      - conda install numpy scipy ninja
+      - ninja --version
+      - cmake --version
+    
+      ####
+      # Setup the dependencies
+      ####
+      - IF NOT EXIST C:\projects\deps mkdir C:\projects\deps
+      - cd C:\projects\deps
+      
+      ####
+      # Install ITK
+      ####
+      - IF NOT EXIST %ITK_RELEASE_ZIP% (
+          appveyor DownloadFile %ITK_RELEASE_URL% -FileName %ITK_RELEASE_ZIP% 
+          )
+      - IF NOT EXIST %ITK_DIR% ( 7z x %ITK_RELEASE_ZIP% > null )
+      - IF NOT EXIST %ITK_SRC_ZIP% (
+          appveyor DownloadFile %ITK_SRC_URL% -FileName %ITK_SRC_ZIP% 
+          )
+      - IF NOT EXIST %ITK_SRC% ( 7z x %ITK_SRC_ZIP% > null )
+    
+      ####
+      # Install VTK
+      ####
+      - IF NOT EXIST %VTK_RELEASE_ZIP% (
+          appveyor DownloadFile %VTK_RELEASE_URL% -FileName %VTK_RELEASE_ZIP% 
+          )
+      - IF NOT EXIST %VTK_DIR% ( 7z x %VTK_RELEASE_ZIP% > null )
+      - IF NOT EXIST %VTK_SRC_ZIP% (
+          appveyor DownloadFile %VTK_SRC_URL% -FileName %VTK_SRC_ZIP% 
+          )
+      - IF NOT EXIST %VTK_SRC% ( 7z x %VTK_SRC_ZIP% > null )
+    
+      ####
+      # Install SlicerExecutionModel
+      ####
+      - IF NOT EXIST %SlicerExecutionModel_RELEASE_ZIP% (
+          appveyor DownloadFile %SlicerExecutionModel_RELEASE_URL% -FileName %SlicerExecutionModel_RELEASE_ZIP% 
+          )
+      - IF NOT EXIST %SlicerExecutionModel_DIR% (
+          7z x %SlicerExecutionModel_RELEASE_ZIP% > null
+          )
+      - IF NOT EXIST %SlicerExecutionModel_SRC_ZIP% (
+          appveyor DownloadFile %SlicerExecutionModel_SRC_URL% -FileName %SlicerExecutionModel_SRC_ZIP% 
+          )
+      - IF NOT EXIST %SlicerExecutionModel_SRC% (
+          7z x %SlicerExecutionModel_SRC_ZIP% > null
+          )
   
-  ####
-  # Install ITK
-  ####
-  - IF NOT EXIST %ITK_RELEASE_ZIP% (
-      appveyor DownloadFile %ITK_RELEASE_URL% -FileName %ITK_RELEASE_ZIP% 
-      )
-  - IF NOT EXIST %ITK_DIR% ( 7z x %ITK_RELEASE_ZIP% > null )
-  - IF NOT EXIST %ITK_SRC_ZIP% (
-      appveyor DownloadFile %ITK_SRC_URL% -FileName %ITK_SRC_ZIP% 
-      )
-  - IF NOT EXIST %ITK_SRC% ( 7z x %ITK_SRC_ZIP% > null )
+    ####
+    # Begin build
+    ####
+    build_script:
+      - cd C:\projects
+      - mkdir ITKTubeTK-Release
+      - cd ITKTubeTK-Release
+      - IF NOT EXIST %ITKTubeTK_ExternalData_ZIP% (
+          appveyor DownloadFile %ITKTubeTK_ExternalData_URL% -FileName %ITKTubeTK_ExternalData_ZIP% &&
+          7z x %ITKTubeTK_ExternalData_ZIP% > null
+          )
+          #rmdir %ITKTubeTK_ExternalData_DIR% /s /q &&
+      - cmake -GNinja -DITK_DIR=%ITK_DIR% -DVTK_DIR=%VTK_DIR% -DSlicerExecutionModel_DIR=%SlicerExecutionModel_DIR% -DCMAKE_BUILD_TYPE=Release ..\itktubetk -DBUILDNAME="%SITE_PLATFORM%" 
+      - ctest -D Experimental -V
+      - dir C:\projects\ITKTubeTK-Release/bin
 
   ####
-  # Install VTK
+  # Linux Build
   ####
-  - IF NOT EXIST %VTK_RELEASE_ZIP% (
-      appveyor DownloadFile %VTK_RELEASE_URL% -FileName %VTK_RELEASE_ZIP% 
-      )
-  - IF NOT EXIST %VTK_DIR% ( 7z x %VTK_RELEASE_ZIP% > null )
-  - IF NOT EXIST %VTK_SRC_ZIP% (
-      appveyor DownloadFile %VTK_SRC_URL% -FileName %VTK_SRC_ZIP% 
-      )
-  - IF NOT EXIST %VTK_SRC% ( 7z x %VTK_SRC_ZIP% > null )
+  -
+    matrix:
+      only:
+        - os: Ubuntu
+        - os: Ubuntu1804
+  
+    ####
+    # Setup Environment
+    ####
+    environment:
+      PYTHON: "C:\\Miniconda36-x64"
+      APPVEYOR_SSH_KEY: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDnrW9IrGuZY1R1kF0+xZzMeTUUwgGTvzRCAsDrl0JAsJq5UxS2ridNi0z6Zi3zm2aKfBGA+PFBrShbZgxEtXaXj8M4V7J3SupTj5Y3bY/PuNcQBDY1lxHxpdgqZqmHz2hRT/wc09NbupxT47dn3UNLu3EOZoXb+MSbyVY2IRIjBAqUrpF9zfgImBQ9dDDtkCJZfBBGMxKlbOYSlnF8BN+EmgENWH43ZS3DMwPhPSYw4a9zAXTClLrm68JW/NDjxdxYDmgmSfb94rR8CRkuVr0vvxhIpsFlOZWDu7U8r1jlAVSd3LvyMFZwFm/U38+vnWA1YfMTKW/8J9/xuA+hi2kp aylward@ork"
 
-  ####
-  # Install SlicerExecutionModel
-  ####
-  - IF NOT EXIST %SlicerExecutionModel_RELEASE_ZIP% (
-      appveyor DownloadFile %SlicerExecutionModel_RELEASE_URL% -FileName %SlicerExecutionModel_RELEASE_ZIP% 
-      )
-  - IF NOT EXIST %SlicerExecutionModel_DIR% (
-      7z x %SlicerExecutionModel_RELEASE_ZIP% > null
-      )
-  - IF NOT EXIST %SlicerExecutionModel_SRC_ZIP% (
-      appveyor DownloadFile %SlicerExecutionModel_SRC_URL% -FileName %SlicerExecutionModel_SRC_ZIP% 
-      )
-  - IF NOT EXIST %SlicerExecutionModel_SRC% (
-      7z x %SlicerExecutionModel_SRC_ZIP% > null
-      )
-
+    ####
+    # Setup Environment
+    ####
+    init:
+      - sh: curl -sflL 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-ssh.sh' | bash -e -
+  
+    ####
+    # Begin installation
+    ####
+    install:
+      ####
+      # Setup the environment
+      ####
+      - IF "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Ubuntu1804" (
+          set SITE_PLATFORM=Ubuntu1804_Release_Python36x64
+        ) else (
+          set SITE_PLATFORM=Ubuntu_Release_Python35x64
+        )
+      - "set ITK_RELEASE_URL=https://data.kitware.com/api/v1/item/5c1a786e8d777f072bdbd0dd/download"
+      - "set ITK_RELEASE_ZIP=C:/projects/deps/ITK-Release.zip"
+      - "set ITK_DIR=C:/projects/deps/ITK-Release"
+      - "set ITK_SRC_URL=https://data.kitware.com/api/v1/item/5c18d4158d777f072bd84249/download"
+      - "set ITK_SRC_ZIP=C:/projects/deps/InsightToolkit-4.13.1.zip"
+      - "set ITK_SRC=C:/projects/deps/InsightToolkit-4.13.1"
+      - "set VTK_RELEASE_URL=https://data.kitware.com/api/v1/item/5c1a78b68d777f072bdbd13f/download"
+      - "set VTK_RELEASE_ZIP=C:/projects/deps/VTK-Release.zip"
+      - "set VTK_DIR=C:/projects/deps/VTK-Release"
+      - "set VTK_SRC_URL=https://data.kitware.com/api/v1/item/5c18d4858d777f072bd842b1/download"
+      - "set VTK_SRC_ZIP=C:/projects/deps/VTK-8.1.2.zip"
+      - "set VTK_SRC=C:/projects/deps/VTK-8.1.2"
+      - "set SlicerExecutionModel_RELEASE_URL=https://data.kitware.com/api/v1/item/5c1a786e8d777f072bdbd0e5/download"
+      - "set SlicerExecutionModel_RELEASE_ZIP=C:/projects/deps/SlicerExecutionModel-Release.zip"
+      - "set SlicerExecutionModel_DIR=C:/projects/deps/SlicerExecutionModel-Release"
+      - "set SlicerExecutionModel_SRC_URL=https://data.kitware.com/api/v1/item/5c18d4658d777f072bd8429b/download"
+      - "set SlicerExecutionModel_SRC_ZIP=C:/projects/deps/SlicerExecutionModel.zip"
+      - "set SlicerExecutionModel_SRC=C:/projects/deps/SlicerExecutionModel"
+      - "set ITKTubeTK_ExternalData_URL=https://data.kitware.com/api/v1/item/5c1aaf188d777f072bdc2d36/download"
+      - "set ITKTubeTK_ExternalData_ZIP=C:/projects/itktubetk/ExternalData.zip"
+      - "set ITKTubeTK_ExternalData_DIR=C:\\projects\\itktubetk\\ExternalData"
+      - conda config --set always_yes yes --set changeps1 no
+      - conda config --add channels conda-forge
+      - conda install numpy scipy ninja
+      - ninja --version
+      - cmake --version
+    
+      ####
+      # Setup the dependencies
+      ####
+      - IF NOT EXIST C:\projects\deps mkdir C:\projects\deps
+      - cd C:\projects\deps
+      
+      ####
+      # Install ITK
+      ####
+      - IF NOT EXIST %ITK_RELEASE_ZIP% (
+          appveyor DownloadFile %ITK_RELEASE_URL% -FileName %ITK_RELEASE_ZIP% 
+          )
+      - IF NOT EXIST %ITK_DIR% ( 7z x %ITK_RELEASE_ZIP% > null )
+      - IF NOT EXIST %ITK_SRC_ZIP% (
+          appveyor DownloadFile %ITK_SRC_URL% -FileName %ITK_SRC_ZIP% 
+          )
+      - IF NOT EXIST %ITK_SRC% ( 7z x %ITK_SRC_ZIP% > null )
+    
+      ####
+      # Install VTK
+      ####
+      - IF NOT EXIST %VTK_RELEASE_ZIP% (
+          appveyor DownloadFile %VTK_RELEASE_URL% -FileName %VTK_RELEASE_ZIP% 
+          )
+      - IF NOT EXIST %VTK_DIR% ( 7z x %VTK_RELEASE_ZIP% > null )
+      - IF NOT EXIST %VTK_SRC_ZIP% (
+          appveyor DownloadFile %VTK_SRC_URL% -FileName %VTK_SRC_ZIP% 
+          )
+      - IF NOT EXIST %VTK_SRC% ( 7z x %VTK_SRC_ZIP% > null )
+    
+      ####
+      # Install SlicerExecutionModel
+      ####
+      - IF NOT EXIST %SlicerExecutionModel_RELEASE_ZIP% (
+          appveyor DownloadFile %SlicerExecutionModel_RELEASE_URL% -FileName %SlicerExecutionModel_RELEASE_ZIP% 
+          )
+      - IF NOT EXIST %SlicerExecutionModel_DIR% (
+          7z x %SlicerExecutionModel_RELEASE_ZIP% > null
+          )
+      - IF NOT EXIST %SlicerExecutionModel_SRC_ZIP% (
+          appveyor DownloadFile %SlicerExecutionModel_SRC_URL% -FileName %SlicerExecutionModel_SRC_ZIP% 
+          )
+      - IF NOT EXIST %SlicerExecutionModel_SRC% (
+          7z x %SlicerExecutionModel_SRC_ZIP% > null
+          )
+  
+    ####
+    # Begin build
+    ####
+    build_script:
+      - cd C:\projects
+      - mkdir ITKTubeTK-Release
+      - cd ITKTubeTK-Release
+      - IF NOT EXIST %ITKTubeTK_ExternalData_ZIP% (
+          appveyor DownloadFile %ITKTubeTK_ExternalData_URL% -FileName %ITKTubeTK_ExternalData_ZIP% &&
+          7z x %ITKTubeTK_ExternalData_ZIP% > null
+          )
+      - cmake -GNinja -DITK_DIR=%ITK_DIR% -DVTK_DIR=%VTK_DIR% -DSlicerExecutionModel_DIR=%SlicerExecutionModel_DIR% -DBUILDNAME="%SITE_PLATFORM%" -DCMAKE_BUILD_TYPE=Release ..\itktubetk
+      - ctest -D Experimental -V
+     
 #####################################################################
 # Build
 #####################################################################
 build:
   verbosity: detailed
-  
-build_script:
-  - cd C:\projects
-  - mkdir ITKTubeTK-Release
-  - cd ITKTubeTK-Release
-  - IF NOT EXIST %ITKTubeTK_ExternalData_ZIP% (
-      appveyor DownloadFile %ITKTubeTK_ExternalData_URL% -FileName %ITKTubeTK_ExternalData_ZIP% &&
-      rmdir %ITKTubeTK_ExternalData_DIR% /s /q
-      7z x %ITKTubeTK_ExternalData_ZIP% > null
-      )
-  - cmake -GNinja -DITK_DIR=%ITK_DIR% -DVTK_DIR=%VTK_DIR% -DSlicerExecutionModel_DIR=%SlicerExecutionModel_DIR% -DCMAKE_BUILD_TYPE=Release ..\itktubetk
-  - ctest -D Experimental -V
- 
+
 #####################################################################
 # Test Script
 #####################################################################
 #test_script:
   #- cd C:\projects\ITKTubeTK-Release
- 
+     
  
 #########################################################################
 # Archive

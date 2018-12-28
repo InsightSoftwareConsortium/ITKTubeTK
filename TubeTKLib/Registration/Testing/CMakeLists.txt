@@ -22,10 +22,6 @@
 
 include_regular_expression( "^.*$" )
 
-find_package( ITK REQUIRED )
-include( ${ITK_USE_FILE} )
-
-find_package( PythonInterp )
 if( PYTHON_EXECUTABLE )
   add_test( PrintSelf-BaseRegistration ${PYTHON_EXECUTABLE}
     ${TubeTK_SOURCE_DIR}/CMake/PrintSelfCheck.py
@@ -60,9 +56,6 @@ set( CompareImagesTolerance 0.000001 )
 
 set( tubeBaseRegistration_ADDITIONAL_LIBRARIES )
 if( TubeTK_USE_VTK )
-  find_package( VTK REQUIRED )
-  include( ${VTK_USE_FILE} )
-
   set( tubeBaseRegistrationTests_SRCS
     ${tubeBaseRegistrationTests_SRCS}
     itktubeAnisotropicDiffusiveRegistrationGenerateTestingImages.cxx
