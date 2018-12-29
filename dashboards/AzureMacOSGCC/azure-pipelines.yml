@@ -7,17 +7,16 @@ trigger:
 - master
 
 jobs:
-- job: LinuxGCC
+- job: MacOSGCC
   continueOnError: true
   timeoutInMinutes: 360
   cancelTimeoutInMinutes: 360
   pool:
-    vmImage: 'Ubuntu-16.04'
+    vmImage: 'macOS-10.13'
   steps:
     - bash: |
         set -x
         sudo pip3 install ninja
-        sudo apt-get update
       displayName: Install dependencies
     - bash: |
         set -x
