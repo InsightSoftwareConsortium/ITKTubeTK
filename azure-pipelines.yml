@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'macOS-10.13'
+  vmImage: 'vs2015-win2012r2'
 
 steps:
 - script: echo Hello, world!
