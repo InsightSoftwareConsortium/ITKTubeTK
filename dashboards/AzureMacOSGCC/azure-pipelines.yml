@@ -20,7 +20,7 @@ jobs:
       displayName: Install dependencies
     - bash: |
         set -x
-        git clone https://github.com/InsightSoftwareConsortium/ITK.git ITK
+        git clone -b release-4.13 https://github.com/InsightSoftwareConsortium/ITK.git ITK
         mkdir ITK-Release
         cd ITK-Release
         cmake -GNinja -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MinimalPathExtraction=ON -DCMAKE_BUILD_TYPE=Release ../ITK
@@ -33,7 +33,7 @@ jobs:
         git clone https://github.com/Slicer/SlicerExecutionModel.git SlicerExecutionModel
         mkdir SlicerExecutionModel-Release
         cd SlicerExecutionModel-Release
-        cmake -GNinja -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Release -DCMAKE_BUILD_TYPE=Release ../SlicerExecutionModel
+        cmake -GNinja -DBUILD_TESTING=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Release -DCMAKE_BUILD_TYPE=Release ../SlicerExecutionModel
         ninja -j 4 -v
         cd ..
       displayName: Download and Build SlicerExecutionModel
@@ -41,8 +41,10 @@ jobs:
     - bash: |
         set -x
         mkdir ITKTubeTK-Release
-        curl -L https://data.kitware.com/api/v1/item/5c1aaf188d777f072bdc2d36/download -o ITKTubeTK-Release/ExternalData.zip
-        unzip ITKTubeTK-Release/ExternalData.zip
+        cd ITKTubeTK-Release
+        curl -L https://data.kitware.com/api/v1/item/5c1aaf188d777f072bdc2d36/download -o ExternalData.zip
+        unzip ExternalData.zip
+        cd ..
       displayName: Download testing data
       workingDirectory: $(Agent.BuildDirectory)
     - bash: |

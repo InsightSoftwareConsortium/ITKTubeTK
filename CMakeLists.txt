@@ -47,6 +47,8 @@ endif()
 ####
 # Default output directories
 ####
+make_directory( "${TubeTK_BINARY_DIR}/bin" )
+make_directory( "${TubeTK_BINARY_DIR}/lib" )
 set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${TubeTK_BINARY_DIR}/bin" )
 set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${TubeTK_BINARY_DIR}/lib" )
 set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${TubeTK_BINARY_DIR}/lib" )
@@ -182,8 +184,8 @@ set( TubeTKLib_INCLUDE_DIRS
   ${TubeTK_SOURCE_DIR}/TubeTKLib/USTK )
 
 set( TubeTKLib_LIBRARY_DIRS
-  ${TubeTK_BINARY_DIR}/TubeTKLib/bin
-  ${TubeTK_BINARY_DIR}/TubeTKLib/lib )
+  ${TubeTK_BINARY_DIR}/bin
+  ${TubeTK_BINARY_DIR}/lib )
 
 ####
 # TubeTK includes TubeTKLib's libraries and include directories
@@ -198,8 +200,9 @@ set( TubeTK_INCLUDE_DIRS
   ${TubeTKLib_INCLUDE_DIRS} )
 
 set( TubeTK_LIBRARY_DIRS
-  ${TubeTK_EXECUTABLE_DIRS}
-  ${TubeTKLib_LIBRARY_DIRS} )
+  ${TubeTK_BINARY_DIR}/bin 
+  ${TubeTK_BINARY_DIR}/lib
+  ${TubeTK_EXECUTABLE_DIRS} )
 
 set( TubeTK_SYSTEM_INCLUDE_DIRS ${TubeTK_INCLUDE_DIRS} )
 set( TubeTK_SYSTEM_LIBRARY_DIRS ${TubeTK_LIBRARY_DIRS} )

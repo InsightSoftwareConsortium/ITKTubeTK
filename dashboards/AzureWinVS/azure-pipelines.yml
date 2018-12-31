@@ -12,46 +12,45 @@ jobs:
   timeoutInMinutes: 360
   cancelTimeoutInMinutes: 360
   pool:
-    vmImage: 'vs2015-win2012r2'
+    vmImage: 'vs2017-win2016'
   steps:
     - bash: |
-        set -x
-        sudo pip3 install ninja
-      displayName: Install dependencies
-    - bash: |
-        set -x
-        git clone https://github.com/InsightSoftwareConsortium/ITK.git ITK
+        set -x 
+        git clone -b release-4.13 https://github.com/InsightSoftwareConsortium/ITK.git ITK
         mkdir ITK-Release
-        cd ITK-Release
-        cmake -GNinja -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MinimalPathExtraction=ON -DCMAKE_BUILD_TYPE=Release ../ITK
-        ninja -j 4 -v
-        cd ..
-      displayName: Download and Build ITK
+      displayName: Clone ITK
       workingDirectory: $(Agent.BuildDirectory)
+    - script: |
+        cmake -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MinimalPathExtraction=ON -DCMAKE_BUILD_TYPE=Release ..\ITK
+        cmake --build . --config Release
+      displayName: CMake ITK
+      workingDirectory: $(Agent.BuildDirectory)\ITK-Release
     - bash: |
         set -x
         git clone https://github.com/Slicer/SlicerExecutionModel.git SlicerExecutionModel
         mkdir SlicerExecutionModel-Release
-        cd SlicerExecutionModel-Release
-        cmake -GNinja -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Release -DCMAKE_BUILD_TYPE=Release ../SlicerExecutionModel
-        ninja -j 4 -v
-        cd ..
-      displayName: Download and Build SlicerExecutionModel
+      displayName: Clone SlicerExecutionModel
       workingDirectory: $(Agent.BuildDirectory)
+    - script: |
+        cmake -DBUILD_TESTING=OFF -DITK_DIR:PATH="..\ITK-Release" -DCMAKE_BUILD_TYPE=Release ..\SlicerExecutionModel
+        cmake --build . --config Release
+      displayName: CMake SlicerExecutionModel
+      workingDirectory: $(Agent.BuildDirectory)\SlicerExecutionModel-Release
     - bash: |
         set -x
         mkdir ITKTubeTK-Release
-        curl -L https://data.kitware.com/api/v1/item/5c1aaf188d777f072bdc2d36/download -o ITKTubeTK-Release/ExternalData.zip
-        unzip ITKTubeTK-Release/ExternalData.zip
+        cd ITKTubeTK-Release
+        curl -L https://data.kitware.com/api/v1/item/5c1aaf188d777f072bdc2d36/download -o ExternalData.zip
+        unzip ExternalData.zip
+        cd ..
       displayName: Download testing data
       workingDirectory: $(Agent.BuildDirectory)
+    - script: |
+        cmake -DTubeTK_USE_VTK=OFF -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=../ITK-Release -DSlicerExecutionModel_DIR=../SlicerExecutionModel-Release -DCMAKE_BUILD_TYPE=Release $(Build.SourcesDirectory)
+      displayName: CMake ITKTubeTK
+      workingDirectory: $(Agent.BuildDirectory)\ITKTubeTK-Release
     - bash: |
         set -x
-        c++ --version
-        cmake --version
-        cd ITKTubeTK-Release
-        cmake -GNinja -DTubeTK_USE_VTK=OFF -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Release -DSlicerExecutionModel_DIR=$(Agent.BuildDirectory)/SlicerExecutionModel-Release -DCMAKE_BUILD_TYPE=Release $(Build.SourcesDirectory)
         ctest -D Experimental -V
-        cd ..
-      displayName: CMake and CTest ITKTubeTK
-      workingDirectory: $(Agent.BuildDirectory)
+      displayName: Build and Test ITKTubeTK
+      workingDirectory: $(Agent.BuildDirectory)\ITKTubeTK-Release
