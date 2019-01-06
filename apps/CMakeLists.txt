@@ -21,15 +21,6 @@
 #
 ##############################################################################
 
-find_package( SlicerExecutionModel REQUIRED )
-include( ${SlicerExecutionModel_USE_FILE} )
-mark_as_advanced( GENERATECLP_EXE )
-
-set( TubeTK_CompareImages_EXE
-  $<TARGET_FILE:CompareImages> )
-set( TubeTK_CompareTextFiles_EXE
-  $<TARGET_FILE:CompareTextFiles> )
-
 add_subdirectory( AtlasBuilderUsingIntensity )
 add_subdirectory( ComputeBinaryImageSimilarityMetrics )
 add_subdirectory( ComputeImageSimilarityMetrics )
