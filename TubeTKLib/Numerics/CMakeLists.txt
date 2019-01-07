@@ -106,7 +106,7 @@ endif( BUILD_TESTING )
 install( FILES
   ${TubeTKLib_Base_Numerics_H_Files}
   ${TubeTKLib_Base_Numerics_HXX_Files}
-  DESTINATION ${TubeTK_INSTALL_INCLUDE_DIR}
+  DESTINATION include
   COMPONENT Development )
 
 set_property( GLOBAL APPEND PROPERTY TubeTKLib_TARGETS TubeTKLibNumerics )

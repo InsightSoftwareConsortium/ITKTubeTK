@@ -89,18 +89,64 @@ if( DEFINED "ENV{ExternalData_OBJECT_STORES}" )
   set( ExternalData_OBJECT_STORES $ENV{ExternalData_OBJECT_STORES} )
 endif()
 
+####
+# Find ITK and pre-built modules
+####
+set( TubeTK_ITK_COMPONENTS
+  MinimalPathExtraction
+  ITKImageIO
+  ITKTransformIO
+  ITKIOSpatialObjects
+  ITKRegistrationCommon
+  ITKBinaryMathematicalMorphology
+  ITKFFT
+  ITKCommon
+  ITKHDF5
+  ITKIOCSV
+  ITKRegionGrowing
+  ITKAnisotropicSmoothing
+  ITKLabelVoting
+  ITKPDEDeformableRegistration
+  ITKIOImageBase
+  ITKImageFunction
+  ITKImageIntensity
+  ITKDistanceMap
+  ITKTestKernel
+  ITKOptimizers
+  ITKSmoothing
+  ITKSpatialObjects
+  ITKStatistics
+  ITKTransform
+  )
+if( NOT ITK_SOURCE_DIR )
+  find_package( ITK COMPONENTS ${TubeTK_ITK_COMPONENTS} REQUIRED )
+  mark_as_advanced( CLEAR ITK_DIR )
+  if( NOT ITK_FOUND )
+    find_package( ITK )
+    if( ITK_FOUND )
+      message( FATAL_ERROR
+        "TubeTK requires ITK with MinimalPathExtraction module enabled.")
+    endif()
+    set( ITK_DIR "NOT_FOUND" CACHE PATH
+	    "Path to ITK installation/build directory." FORCE )
+  endif()
+  include( ${ITK_USE_FILE} )
+endif()
 
 ####
 # Find Python
 ####
-find_package( PythonInterp )
-find_package( PythonLibs REQUIRED )
-mark_as_advanced( NUMPY_INCLUDE_DIR )
+if( ITK_WRAP_PYTHON )
+  find_package( PythonInterp )
+  find_package( PythonLibs REQUIRED )
+  find_package( NumPy REQUIRED )
+  mark_as_advanced( NUMPY_INCLUDE_DIR )
+endif()
 
 ####
 # VTK setup.
 ####
-option( TubeTK_USE_VTK "Use VTK to enable additional functionality." ON )
+option( TubeTK_USE_VTK "Use VTK to enable additional functionality." OFF )
 if( TubeTK_USE_VTK )
   find_package( VTK REQUIRED )
   mark_as_advanced( CLEAR VTK_DIR )
@@ -145,6 +191,17 @@ if( TubeTK_USE_RANDOMFOREST )
 endif()
 
 ####
+# Ask to build apps
+####
+option( TubeTK_BUILD_APPLICATION 
+  "Build the optional apps that come with TubeTK." OFF )
+if( TubeTK_BUILD_APPLICATIONS )
+  find_package( SlicerExecutionModel REQUIRED )
+  include( ${SlicerExecutionModel_USE_FILE} )
+  mark_as_advanced( GENERATECLP_EXE )
+endif()
+
+####
 # Create TubeTK Configuration file (to pass ArrayFire and other flags)
 ####
 configure_file( "${TubeTK_SOURCE_DIR}/CMake/tubetkConfigure.h.in"
@@ -154,12 +211,14 @@ include_directories( ${TubeTK_BINARY_DIR} )
 ####
 # CompareImages and CompareTextFiles for app tests
 ####
-set( TubeTKLib_CompareTextFiles_EXE
-  ${TubeTK_BINARY_DIR}/bin/CompareTextFiles
-  )
+set( TubeTK_CompareImages_EXE
+  $<TARGET_FILE:CompareImages> )
+set( TubeTK_CompareTextFiles_EXE
+  $<TARGET_FILE:CompareTextFiles> )
 set( TubeTKLib_CompareImages_EXE
-  ${TubeTK_BINARY_DIR}/bin/CompareImages
-  )
+  $<TARGET_FILE:CompareImages> )
+set( TubeTKLib_CompareTextFiles_EXE
+  $<TARGET_FILE:CompareTextFiles> )
 
 ####
 # Configure for building against a build tree
@@ -195,7 +254,6 @@ set( TubeTK_LIBRARIES
   ${TubeTKLib_LIBRARIES} )
 
 set( TubeTK_INCLUDE_DIRS
-  ${ITK_INCLUDE_DIRS}
   ${TubeTK_SOURCE_DIR}/include
   ${TubeTKLib_INCLUDE_DIRS} )
 
@@ -208,47 +266,17 @@ set( TubeTK_SYSTEM_INCLUDE_DIRS ${TubeTK_INCLUDE_DIRS} )
 set( TubeTK_SYSTEM_LIBRARY_DIRS ${TubeTK_LIBRARY_DIRS} )
 
 ####
-# Find ITK and pre-built modules
+# Build base library and optional components
 ####
-set( TubeTK_ITK_COMPONENTS
-  MinimalPathExtraction
-  ITKImageIO
-  ITKTransformIO
-  ITKIOSpatialObjects
-  ITKRegistrationCommon
-  ITKBinaryMathematicalMorphology
-  ITKFFT
-  ITKCommon
-  ITKHDF5
-  ITKIOCSV
-  ITKRegionGrowing
-  ITKAnisotropicSmoothing
-  ITKLabelVoting
-  ITKPDEDeformableRegistration
-  ITKIOImageBase
-  ITKImageFunction
-  ITKImageIntensity
-  ITKDistanceMap
-  ITKTestKernel
-  ITKOptimizers
-  ITKSmoothing
-  ITKSpatialObjects
-  ITKStatistics
-  ITKTransform
-  )
+add_subdirectory( TubeTKLib )
+
+####
+# Build ITK module
+####
 if( NOT ITK_SOURCE_DIR )
-  find_package( ITK COMPONENTS ${TubeTK_ITK_COMPONENTS} REQUIRED )
-  mark_as_advanced( CLEAR ITK_DIR )
-  if( NOT ITK_FOUND )
-    find_package( ITK )
-    if( ITK_FOUND )
-      message( FATAL_ERROR
-        "TubeTK requires ITK with MinimalPathExtraction module enabled.")
-    endif()
-    set( ITK_DIR "NOT_FOUND" CACHE PATH
-	    "Path to ITK installation/build directory." FORCE )
-  endif()
-  include( ${ITK_USE_FILE} )
+  # ITK has already been found (see above), so skip these two lines...
+  #   find_package( ITK COMPONENTS ${TubeTK_ITK_COMPONENTS} REQUIRED )
+  #   include( ${ITK_USE_FILE} )
   list( APPEND CMAKE_MODULE_PATH ${ITK_CMAKE_DIR} )
   include( ITKModuleExternal )
 else()
@@ -256,9 +284,15 @@ else()
   itk_module_impl()
 endif()
 
-add_subdirectory( TubeTKLib )
-add_subdirectory( python )
-add_subdirectory( apps )
+####
+# Build additional components, optional
+####
+if( ITK_WRAP_PYTHON )
+  add_subdirectory( python )
+endif()
+if( TubeTK_BUILD_APPLICATIONS )
+  add_subdirectory( apps )
+endif()
 
 ####
 # Enable access to remote testing data (must be placed last)
