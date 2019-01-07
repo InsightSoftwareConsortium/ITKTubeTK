@@ -26,7 +26,7 @@ target_link_libraries( CompareImages
   ${ITK_LIBRARIES}
   TubeTKLibCommon )
 target_include_directories( CompareImages PRIVATE
-  ${TubeTKLib_SOURCE_DIR}/Filtering )
+  ${TubeTK_SOURCE_DIR}/TubeTKLib/Filtering )
 
 install( TARGETS
   CompareImages

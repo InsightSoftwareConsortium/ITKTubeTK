@@ -269,12 +269,6 @@ set( TubeTK_SYSTEM_LIBRARY_DIRS ${TubeTK_LIBRARY_DIRS} )
 # Build base library and optional components
 ####
 add_subdirectory( TubeTKLib )
-if( ITK_WRAP_PYTHON )
-  add_subdirectory( python )
-endif()
-if( TubeTK_BUILD_APPLICATIONS )
-  add_subdirectory( apps )
-endif()
 
 ####
 # Build ITK module
@@ -288,6 +282,16 @@ if( NOT ITK_SOURCE_DIR )
 else()
   set( ITK_DIR ${CMAKE_BINARY_DIR} )
   itk_module_impl()
+endif()
+
+####
+# Build additional components, optional
+####
+if( ITK_WRAP_PYTHON )
+  add_subdirectory( python )
+endif()
+if( TubeTK_BUILD_APPLICATIONS )
+  add_subdirectory( apps )
 endif()
 
 ####
