@@ -15,6 +15,7 @@ jobs:
     vmImage: 'vs2017-win2016'
   steps:
     - bash: |
+        pwd -W > buildpath
         set -x 
         git clone -b release-4.13 https://github.com/InsightSoftwareConsortium/ITK.git ITK
         mkdir ITK-Release
@@ -32,7 +33,8 @@ jobs:
       displayName: Clone SlicerExecutionModel
       workingDirectory: $(Agent.BuildDirectory)
     - script: |
-        cmake -DBUILD_TESTING=OFF -DITK_DIR:PATH="..\ITK-Release" -DCMAKE_BUILD_TYPE=Release ..\SlicerExecutionModel
+        set /p BUILDPATH=<..\buildpath
+        cmake -DBUILD_TESTING=OFF -DITK_DIR=%BUILDPATH%/ITK-Release -DCMAKE_BUILD_TYPE=Release ..\SlicerExecutionModel
         cmake --build . --config Release
       displayName: CMake SlicerExecutionModel
       workingDirectory: $(Agent.BuildDirectory)\SlicerExecutionModel-Release
@@ -46,7 +48,8 @@ jobs:
       displayName: Download testing data
       workingDirectory: $(Agent.BuildDirectory)
     - script: |
-        cmake -DTubeTK_USE_VTK=OFF -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=../ITK-Release -DSlicerExecutionModel_DIR=../SlicerExecutionModel-Release -DCMAKE_BUILD_TYPE=Release $(Build.SourcesDirectory)
+        set /p BUILDPATH=<..\buildpath
+        cmake -DTubeTK_USE_VTK=OFF -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=%BUILDPATH%/ITK-Release -DSlicerExecutionModel_DIR=%BUILDPATH%/SlicerExecutionModel-Release -DCMAKE_BUILD_TYPE=Release $(Build.SourcesDirectory)
       displayName: CMake ITKTubeTK
       workingDirectory: $(Agent.BuildDirectory)\ITKTubeTK-Release
     - bash: |
