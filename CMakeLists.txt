@@ -193,7 +193,7 @@ endif()
 ####
 # Ask to build apps
 ####
-option( TubeTK_BUILD_APPLICATION 
+option( TubeTK_BUILD_APPLICATIONS 
   "Build the optional apps that come with TubeTK." OFF )
 if( TubeTK_BUILD_APPLICATIONS )
   find_package( SlicerExecutionModel REQUIRED )
