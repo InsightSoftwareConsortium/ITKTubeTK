@@ -8,6 +8,15 @@ jobs:
       - checkout:
           path: /ITKTubeTK
       - run:
+          name: Build Module Dependencies
+          command: |
+            cd /
+            git clone https://github.com/InsightSoftwareConsortium/ITKMinimalPathExtraction
+            mkdir ITKMinimalPathExtraction-Release
+            cd ITKMinimalPathExtraction-Release
+            cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DITK_DIR=/ITK-build ../ITKMinimalPathExtraction
+            ninja
+      - run:
           name: Fetch CTest driver script
           command: |
             curl -L https://raw.githubusercontent.com/InsightSoftwareConsortium/ITK/dashboard/itk_common.cmake -O
