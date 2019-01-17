@@ -49,7 +49,7 @@ jobs:
       workingDirectory: $(Agent.BuildDirectory)
     - script: |
         set /p BUILDPATH=<..\buildpath
-        cmake -DTubeTK_USE_VTK=OFF -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=%BUILDPATH%/ITK-Release -DSlicerExecutionModel_DIR=%BUILDPATH%/SlicerExecutionModel-Release -DCMAKE_BUILD_TYPE=Release $(Build.SourcesDirectory)
+        cmake -DTubeTK_USE_VTK=OFF -DTubeTK_BUILD_APPLICATIONS=ON -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=%BUILDPATH%/ITK-Release -DSlicerExecutionModel_DIR=%BUILDPATH%/SlicerExecutionModel-Release -DCMAKE_BUILD_TYPE=Release $(Build.SourcesDirectory)
       displayName: CMake ITKTubeTK
       workingDirectory: $(Agent.BuildDirectory)\ITKTubeTK-Release
     - bash: |
