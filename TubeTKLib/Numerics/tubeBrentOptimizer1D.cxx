@@ -182,15 +182,15 @@ BrentOptimizer1D
   for( iter = 0; iter < m_MaxIterations; iter++ )
     {
     double xm = 0.5 * ( a+b );
-    double tol1 = m_Tolerance * vnl_math_abs( x ) + m_Epsilon;
+    double tol1 = m_Tolerance * std::fabs( x ) + m_Epsilon;
     double tol2 = 2.0 * tol1;
-    if( vnl_math_abs( x-xm ) <= ( tol2 - 0.5*( b-a ) ) )
+    if( std::fabs( x-xm ) <= ( tol2 - 0.5*( b-a ) ) )
       {
       *extX = x;
       *extVal = maxSign*fx;
       return true;
       }
-    if( vnl_math_abs( e ) > tol1 )
+    if( std::fabs( e ) > tol1 )
       {
       d1 = 2.0*( b-a );
       d2 = d1;
@@ -214,7 +214,7 @@ BrentOptimizer1D
         {
         if( ok1 && ok2 )
           {
-          d = ( vnl_math_abs( d1 ) < vnl_math_abs( d2 ) ? d1 : d2 );
+          d = ( std::fabs( d1 ) < std::fabs( d2 ) ? d1 : d2 );
           }
         else
           {
@@ -228,7 +228,7 @@ BrentOptimizer1D
             }
           }
 
-        if( vnl_math_abs( d ) <= vnl_math_abs( 0.5 * olde ) )
+        if( std::fabs( d ) <= std::fabs( 0.5 * olde ) )
           {
           u = x+d;
           if( u-a < tol2 || b-u < tol2 )
@@ -250,7 +250,7 @@ BrentOptimizer1D
       {
       d = ( double )0.5 * ( e = ( dx >= 0.0 ? a-x : b-x ) );
       }
-    if( vnl_math_abs( d ) >= tol1 )
+    if( std::fabs( d ) >= tol1 )
       {
       u = x + d;
       fu = maxSign * m_FuncVal->Value( u );
