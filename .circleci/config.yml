@@ -3,7 +3,7 @@ jobs:
   build-and-test:
     working_directory: /ITKTubeTK-build
     docker:
-      - image: insighttoolkit/module-ci:v.4.13.1
+      - image: insighttoolkit/module-ci:v.4.13
     steps:
       - checkout:
           path: /ITKTubeTK
