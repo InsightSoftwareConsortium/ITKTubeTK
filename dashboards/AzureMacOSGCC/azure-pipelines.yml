@@ -52,7 +52,7 @@ jobs:
         c++ --version
         cmake --version
         cd ITKTubeTK-Release
-        cmake -GNinja -DTubeTK_USE_VTK=OFF -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Release -DSlicerExecutionModel_DIR=$(Agent.BuildDirectory)/SlicerExecutionModel-Release -DCMAKE_BUILD_TYPE=Release $(Build.SourcesDirectory)
+        cmake -GNinja -DTubeTK_USE_VTK=OFF -DTubeTK_BUILD_APPLICATIONS=ON -DTubeTK_WRAP_PYTHON=OFF -DITK_DIR=$(Agent.BuildDirectory)/ITK-Release -DSlicerExecutionModel_DIR=$(Agent.BuildDirectory)/SlicerExecutionModel-Release -DCMAKE_BUILD_TYPE=Release $(Build.SourcesDirectory)
         ctest -D Experimental -V
         cd ..
       displayName: CMake and CTest ITKTubeTK
