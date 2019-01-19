@@ -35,6 +35,8 @@ project( TubeTK )
 ####
 list( APPEND CMAKE_MODULE_PATH ${TubeTK_SOURCE_DIR}/CMake )
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 ####
 # Setup External Data Cache
 ####
