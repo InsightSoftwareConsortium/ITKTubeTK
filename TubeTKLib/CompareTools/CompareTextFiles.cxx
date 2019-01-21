@@ -243,7 +243,7 @@ int RegressionTestFile ( const char *testFilename,
       double baselineVal = 0.0;
       if( testInStream >> testVal && baselineInStream >> baselineVal )
         {
-        if( vnl_math_abs( testVal - baselineVal ) > valueTolerance )
+        if( std::fabs( testVal - baselineVal ) > valueTolerance )
           {
           if( reportErrors )
             {

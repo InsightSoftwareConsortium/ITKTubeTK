@@ -23,7 +23,6 @@ limitations under the License.
 
 #include "itktubeTubeEnhancingDiffusion2DImageFilter.h"
 
-#include <itkFilterWatcher.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
@@ -70,7 +69,6 @@ int itktubeTubeEnhancingDiffusion2DImageFilterTest( int argc, char * argv[] )
     }
 
   FilterType::Pointer filter = FilterType::New();
-  FilterWatcher watcher( filter, "filter" );
 
   // Connect the pipeline
   filter->SetInput( reader->GetOutput() );

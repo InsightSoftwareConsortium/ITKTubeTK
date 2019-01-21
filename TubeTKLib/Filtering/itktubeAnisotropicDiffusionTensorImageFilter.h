@@ -26,7 +26,6 @@ limitations under the License.
 #include "itktubeAnisotropicDiffusionTensorFunction.h"
 
 #include <itkFiniteDifferenceImageFilter.h>
-#include <itkMultiThreader.h>
 
 namespace itk
 {

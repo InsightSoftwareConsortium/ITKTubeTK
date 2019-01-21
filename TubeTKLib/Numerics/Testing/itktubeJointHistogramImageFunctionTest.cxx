@@ -118,7 +118,6 @@ int itktubeJointHistogramImageFunctionTest( int argc, char * argv[] )
     outputImage->GetLargestPossibleRegion() );
   itk::ImageRegionIteratorWithIndex< ImageType > maskIter( maskImage,
     maskImage->GetLargestPossibleRegion() );
-  ImageType::PointType pnt;
 
   // Precompute
   while( !outIter.IsAtEnd() )

@@ -160,15 +160,15 @@ int tubeGoldenMeanOptimizer1DTest( int argc, char * argv[] )
     }
 
   double idealX = vnl_math::pi * idealXPiScaling;
-  if( vnl_math_abs( idealX - x ) > epsilon )
+  if( std::fabs( idealX - x ) > epsilon )
     {
     std::cout << "Optimization not within tolerance!  x=" << x
-      << " diff=" << vnl_math_abs( idealX - x )
+      << " diff=" << std::fabs( idealX - x )
       << std::endl;
     returnStatus = EXIT_FAILURE;
     }
 
-  if( vnl_math_abs( idealV - xVal ) > epsilon )
+  if( std::fabs( idealV - xVal ) > epsilon )
     {
     std::cout << "Optimization not within tolerance!  xVal=" << xVal
       << std::endl;

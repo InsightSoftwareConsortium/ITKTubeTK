@@ -233,7 +233,7 @@ BrentOptimizer1D
           u = x+d;
           if( u-a < tol2 || b-u < tol2 )
             {
-            d = tol1 * vnl_math_sgn( xm-x );
+            d = tol1 * itk::Math::sgn( xm-x );
             }
           }
         else
@@ -257,7 +257,7 @@ BrentOptimizer1D
       }
     else
       {
-      u = x + tol1 * vnl_math_sgn( d );
+      u = x + tol1 * itk::Math::sgn( d );
       fu = maxSign * m_FuncVal->Value( u );
       if( fu > fx )
         {

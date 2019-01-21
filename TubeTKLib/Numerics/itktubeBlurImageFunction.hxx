@@ -500,9 +500,9 @@ BlurImageFunction<TInputImage>
     IndexType maxX;
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
-      minX[i] = vnl_math_max( ( int )( ( int )( point[i] )+m_KernelMin[i] ),
+      minX[i] = std::max( ( int )( ( int )( point[i] )+m_KernelMin[i] ),
         ( int )( m_ImageIndexMin[i] ) );
-      maxX[i] = vnl_math_min( ( int )( ( int )( point[i] )+m_KernelMax[i] ),
+      maxX[i] = std::min( ( int )( ( int )( point[i] )+m_KernelMax[i] ),
         ( int )( m_ImageIndexMax[i] ) );
       }
 

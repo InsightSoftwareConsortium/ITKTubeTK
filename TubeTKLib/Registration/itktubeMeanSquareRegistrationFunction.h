@@ -30,6 +30,7 @@ limitations under the License.
 #include <itkLinearInterpolateImageFunction.h>
 #include <itkPDEDeformableRegistrationFunction.h>
 #include <itkPoint.h>
+#include <itkSimpleFastMutexLock.h>
 
 namespace itk
 {

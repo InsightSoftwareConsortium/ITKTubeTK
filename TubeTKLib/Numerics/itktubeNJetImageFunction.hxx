@@ -463,7 +463,7 @@ EvaluateAtContinuousIndex( const ContinuousIndexType & cIndex,
 
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    xMin[i] = ( int ) vnl_math_floor( cIndex[i] - ( scale * m_Extent
+    xMin[i] = ( int ) std::floor( cIndex[i] - ( scale * m_Extent
       / m_InputImageSpacing[i] ) );
     if( xMin[i] < m_InputImageMinX[i] )
       {
@@ -472,7 +472,7 @@ EvaluateAtContinuousIndex( const ContinuousIndexType & cIndex,
     xShift[i] = xMin[i];
     xShiftBoundary[i] = xShift[i];
 
-    xMax[i] = ( int ) vnl_math_ceil( cIndex[i] + ( scale * m_Extent
+    xMax[i] = ( int ) std::ceil( cIndex[i] + ( scale * m_Extent
       / m_InputImageSpacing[i] ) );
     if( xMax[i] > m_InputImageMaxX[i] )
       {
@@ -550,7 +550,7 @@ EvaluateAtContinuousIndex( const ContinuousIndexType & cIndex,
         expValue = std::exp( physGaussFactor * physDist );
 
         v += pixelValue * expValue;
-        vTotal += vnl_math_abs( expValue );
+        vTotal += std::fabs( expValue );
         }
       }
 
@@ -845,7 +845,7 @@ DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
 
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    xMin[i] = ( int ) vnl_math_floor( cIndex[i] - ( scale * m_Extent
+    xMin[i] = ( int ) std::floor( cIndex[i] - ( scale * m_Extent
       / m_InputImageSpacing[i] ) );
     if( xMin[i]<m_InputImageMinX[i] )
       {
@@ -854,7 +854,7 @@ DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
     xShift[i] = xMin[i];
     xShiftBoundary[i] = xShift[i];
 
-    xMax[i] = ( int ) vnl_math_ceil( cIndex[i] + ( scale * m_Extent
+    xMax[i] = ( int ) std::ceil( cIndex[i] + ( scale * m_Extent
       / m_InputImageSpacing[i] ) );
     if( xMax[i] > ( int ) m_InputImageMaxX[i] )
       {
@@ -932,14 +932,14 @@ DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
         expValue = std::exp( physGaussFactor * physDist );
 
         v += pixelValue * expValue;
-        vTotal += vnl_math_abs( expValue );
+        vTotal += std::fabs( expValue );
 
         for( unsigned int i = 0; i <  ImageDimension; i++ )
           {
           expValueD = - ( xShift[i] - cIndex[i] ) * m_InputImageSpacing[i]
             * expValue;
           d[i] += pixelValue * expValueD;
-          dTotal[i] += vnl_math_abs( expValueD );
+          dTotal[i] += std::fabs( expValueD );
           }
         }
       }
@@ -1045,7 +1045,7 @@ DerivativeAtContinuousIndex( const ContinuousIndexType & cIndex,
   m_MostRecentDerivative.Fill( 0 );
   m_MostRecentDerivative[0] = d[0];
 
-  return vnl_math_abs( d[0] );
+  return std::fabs( d[0] );
 }
 
 template< class TInputImage >
@@ -1339,7 +1339,7 @@ HessianAtContinuousIndex( const ContinuousIndexType & cIndex,
   m_MostRecentHessian.Fill( 0 );
   m_MostRecentHessian[0][0] = m[0][0];
 
-  return vnl_math_abs( m[0][0] );
+  return std::fabs( m[0][0] );
 }
 
 template< class TInputImage >
@@ -1492,7 +1492,7 @@ JetAtContinuousIndex( const ContinuousIndexType & cIndex, VectorType & d,
 
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    xMin[i] = ( int ) vnl_math_floor( cIndex[i] - ( scale * m_Extent
+    xMin[i] = ( int ) std::floor( cIndex[i] - ( scale * m_Extent
       / m_InputImageSpacing[i] ) );
     if( xMin[i] < m_InputImageMinX[i] )
       {
@@ -1501,7 +1501,7 @@ JetAtContinuousIndex( const ContinuousIndexType & cIndex, VectorType & d,
     xShift[i] = xMin[i];
     xShiftBoundary[i] = xShift[i];
 
-    xMax[i] = ( int ) vnl_math_ceil( cIndex[i] + ( scale * m_Extent
+    xMax[i] = ( int ) std::ceil( cIndex[i] + ( scale * m_Extent
       / m_InputImageSpacing[i] ) );
     if( xMax[i] > m_InputImageMaxX[i] )
       {
@@ -1579,7 +1579,7 @@ JetAtContinuousIndex( const ContinuousIndexType & cIndex, VectorType & d,
 
         expValue = std::exp( physGaussFactor * physDist );
         v += pixelValue * expValue;
-        vTotal += vnl_math_abs( expValue );
+        vTotal += std::fabs( expValue );
 
         for( unsigned int i = 0; i < ImageDimension; i++ )
           {
@@ -1588,12 +1588,12 @@ JetAtContinuousIndex( const ContinuousIndexType & cIndex, VectorType & d,
 
           expValueD = -distI * expValue;
           d[i] += pixelValue * expValueD;
-          dTotal[i] += vnl_math_abs( expValueD );
+          dTotal[i] += std::fabs( expValueD );
 
           expValueD = ( ( distI * distI ) / ( scale * scale ) - 1.0 )
             * expValue;
           h[i][i] += pixelValue * expValueD;
-          hTotal[i][i] += vnl_math_abs( expValueD );
+          hTotal[i][i] += std::fabs( expValueD );
 
           for( unsigned int j=i+1; j< ImageDimension; j++ )
             {
@@ -1602,7 +1602,7 @@ JetAtContinuousIndex( const ContinuousIndexType & cIndex, VectorType & d,
 
             expValueD = distI * distJ * expValue;
             h[i][j] += pixelValue * expValueD;
-            hTotal[i][j] += vnl_math_abs( expValueD );
+            hTotal[i][j] += std::fabs( expValueD );
             }
           }
         }
@@ -1814,7 +1814,6 @@ RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
   // RIDGENESS
   VectorType d;
   MatrixType h;
-  VectorType p;
 
   double intensity = JetAtContinuousIndex( cIndex, d, h, scale );
 
@@ -1876,7 +1875,7 @@ RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
       {
       dp += eigSys.get_eigenvector( i )[j] * v1[j];
       }
-    dp = vnl_math_abs( dp );
+    dp = std::fabs( dp );
     for( unsigned int j=0; j<ImageDimension; j++ )
       {
       p[i] += dp * eigSys.get_eigenvector( i )[j] * d[j];
@@ -1946,7 +1945,7 @@ RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
       {
       dp += eigSys.get_eigenvector( i )[j] * v1[j];
       }
-    dp = vnl_math_abs( dp );
+    dp = std::fabs( dp );
     for( unsigned int j=0; j<ImageDimension; j++ )
       {
       p[i] += dp * eigSys.get_eigenvector( i )[j] * d[j];
@@ -1957,7 +1956,7 @@ RidgenessAtContinuousIndex( const ContinuousIndexType & cIndex,
       {
       dp += eigSys.get_eigenvector( i )[j] * v2[j];
       }
-    dp = vnl_math_abs( dp );
+    dp = std::fabs( dp );
     for( unsigned int j=0; j<ImageDimension; j++ )
       {
       p[i] += dp * eigSys.get_eigenvector( i )[j] * d[j];

@@ -347,7 +347,7 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
     // TODO : Finish implementation
     std::cerr <<
       "Distance Gaussian smoothing method not yet implemented.\n";
-    return NULL;
+    return nullptr;
     }
 
   newTube->SetPoints( newPointList );
@@ -414,7 +414,7 @@ SubsampleTube( const typename TTube::Pointer & tube, int N )
   // Cannot subsample by 0
   if( N == 0 )
     {
-    return NULL;
+    return nullptr;
     }
   // Subsample by 1 = do nothing
   if( N == 1 )

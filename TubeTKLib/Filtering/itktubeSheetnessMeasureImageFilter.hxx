@@ -95,9 +95,9 @@ SheetnessMeasureImageFilter< TPixel >
     double a2 = static_cast<double>( eigenValue[1] );
     double a3 = static_cast<double>( eigenValue[2] );
 
-    double l1 = vnl_math_abs( a1 );
-    double l2 = vnl_math_abs( a2 );
-    double l3 = vnl_math_abs( a3 );
+    double l1 = std::fabs( a1 );
+    double l2 = std::fabs( a2 );
+    double l3 = std::fabs( a3 );
 
     //
     // Sort the values by their absolute value.
@@ -169,7 +169,7 @@ SheetnessMeasureImageFilter< TPixel >
     else
       {
       Rs = l2 / l3;
-      Rb = vnl_math_abs( l3 + l3 - l2 - l1 ) / l3;
+      Rb = std::fabs( l3 + l3 - l2 - l1 ) / l3;
       }
 
     Rn = std::sqrt( l3*l3 + l2*l2 + l1*l1 );
