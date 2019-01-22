@@ -1128,7 +1128,7 @@ RidgeExtractor<TInputImage>
         }
       m_CurrentFailureCode = ROUND_FAIL;
       ++m_FailureCodeCount[ m_CurrentFailureCode ];
-      if( vnl_math_abs( lNTEVal[0] ) )
+      if(std::fabs( lNTEVal[0] ) )
         {
         recovery++;
         }

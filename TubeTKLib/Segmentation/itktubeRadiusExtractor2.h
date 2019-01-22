@@ -33,7 +33,7 @@ limitations under the License.
 
 #include <itkVesselTubeSpatialObject.h>
 
-#include <vnl/vnl_vector.h>
+#include <itkMath.h>
 
 #include <vector>
 

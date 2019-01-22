@@ -128,7 +128,7 @@ int DoIt( int argc, char * argv[] )
   progressReporter.Report( 0.1 );
   timeCollector.Stop( "Read" );
 
-  typename ImageType::Pointer metricMaskImage = NULL;
+  typename ImageType::Pointer metricMaskImage = nullptr;
   if( metricMask.size() != 0 )
     {
     typedef itk::ImageFileReader< ImageType >   ReaderType;
