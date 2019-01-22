@@ -79,7 +79,7 @@ int itktubeImageRegionMomentsCalculatorTest( int argc, char * argv[] )
     return EXIT_FAILURE;
     }
   std::cout << "First = " << filter->GetFirstMoments() << std::endl;
-  if( vnl_math_abs( filter->GetFirstMoments()[0] - 71.5565 ) > 0.001 )
+  if( std::fabs( filter->GetFirstMoments()[0] - 71.5565 ) > 0.001 )
     {
     return EXIT_FAILURE;
     }

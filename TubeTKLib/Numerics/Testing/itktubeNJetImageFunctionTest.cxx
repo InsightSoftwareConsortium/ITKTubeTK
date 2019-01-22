@@ -306,10 +306,10 @@ int itktubeNJetImageFunctionTest( int argc, char * argv[] )
         func->RidgenessAtIndex( outIter.GetIndex(), scale );
         h = func->GetMostRecentHessian();
         val2 = func->HessianAtIndex( outIter.GetIndex(), scale, h2 );
-        val = vnl_math_abs( h[0][0] - h2[0][0] ) +
-              vnl_math_abs( h[0][1] - h2[0][1] ) +
-              vnl_math_abs( h[1][0] - h2[1][0] ) +
-              vnl_math_abs( h[1][1] - h2[1][1] );
+        val = std::fabs( h[0][0] - h2[0][0] ) +
+              std::fabs( h[0][1] - h2[0][1] ) +
+              std::fabs( h[1][0] - h2[1][0] ) +
+              std::fabs( h[1][1] - h2[1][1] );
         if( val > 0.0001 )
           {
           error = true;

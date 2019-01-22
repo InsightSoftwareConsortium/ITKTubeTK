@@ -483,7 +483,7 @@ Read( const char * _headerName )
         return false;
         }
       spacing[j] = pdfClassReader.GetBinSize()[j];
-      if( vnl_math_abs( spacing[j] - m_PDFSegmenter->GetBinSize()[j] ) >
+      if( std::fabs( spacing[j] - m_PDFSegmenter->GetBinSize()[j] ) >
         0.005 * spacing[j] )
         {
         std::cout << "ERROR: Spacing mismatch" << std::endl;
@@ -495,7 +495,7 @@ Read( const char * _headerName )
         return false;
         }
       origin[j] = pdfClassReader.GetBinMin()[j];
-      if( vnl_math_abs( origin[j] - m_PDFSegmenter->GetBinMin()[j] ) >
+      if( std::fabs( origin[j] - m_PDFSegmenter->GetBinMin()[j] ) >
         0.005 * spacing[j] )
         {
         std::cout << "ERROR: Min mismatch" << std::endl;

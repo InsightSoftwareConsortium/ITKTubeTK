@@ -210,14 +210,14 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
     eigenValue = eigenValueImageIterator.Get();
 
     // Find the largest eigenvalue
-    double largest = vnl_math_abs( eigenValue[0] );
+    double largest = std::fabs( eigenValue[0] );
     unsigned int largestEigenValueIndex=0;
 
     for( unsigned int i=1; i <=2; i++ )
       {
-      if(  vnl_math_abs( eigenValue[i] > largest ) )
+      if(  std::fabs( eigenValue[i] > largest ) )
         {
-        largest = vnl_math_abs( eigenValue[i] );
+        largest = std::fabs( eigenValue[i] );
         largestEigenValueIndex = i;
         }
       }
@@ -255,7 +255,7 @@ int itktubeStructureTensorRecursiveGaussianImageFilterTest( int argc,
     */
 
 
-    if( vnl_math_abs( largest ) >  toleranceEigenValues  )
+    if( std::fabs( largest ) >  toleranceEigenValues  )
       {
       //Assuming eigenvectors are rows
       itk::VariableLengthVector<double> primaryEigenVector( vectorLength );

@@ -333,8 +333,8 @@ DiffusiveRegistrationFilter
   // Allocate the diffusion tensor images and their derivatives
   // If we are not computing a regularization term, the image arrays will be
   // filled with '0' pointers
-  DiffusionTensorImagePointer diffusionTensorPointer = 0;
-  TensorDerivativeImagePointer tensorDerivativePointer = 0;
+  DiffusionTensorImagePointer diffusionTensorPointer = nullptr;
+  TensorDerivativeImagePointer tensorDerivativePointer = nullptr;
   for( int i = 0; i < numTerms; i++ )
     {
     if( this->GetComputeRegularizationTerm() )
@@ -364,11 +364,11 @@ DiffusiveRegistrationFilter
     {
     if( ( int ) m_DeformationComponentImages.size() < numTerms )
       {
-      m_DeformationComponentImages.push_back( 0 );
+      m_DeformationComponentImages.push_back( nullptr );
       }
     else
       {
-      m_DeformationComponentImages[i] = 0;
+      m_DeformationComponentImages[i] = nullptr;
       }
 
     ScalarDerivativeImageArrayType deformationComponentFirstArray;
@@ -587,7 +587,7 @@ DiffusiveRegistrationFilter
   // By default, calculate the derivatives for each of the deformation
   // components
   DeformationComponentImageArrayType deformationComponentImageArray;
-  deformationComponentImageArray.Fill( 0 );
+  deformationComponentImageArray.Fill( nullptr );
 
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
@@ -658,14 +658,14 @@ DiffusiveRegistrationFilter
 ::ComputeDeformationComponentDerivativeImageHelperThreaderCallback(
   void *arg )
 {
-  int threadId = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )
-    ->ThreadID;
-  int threadCount = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )
-    ->NumberOfThreads;
+  int threadId = ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )
+    ->WorkUnitID;
+  int threadCount = ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )
+    ->NumberOfWorkUnits;
 
   ComputeDeformationComponentDerivativeImageHelperThreadStruct * str
       = ( ComputeDeformationComponentDerivativeImageHelperThreadStruct * )
-            ( ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->UserData );
+            ( ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )->UserData );
 
   // Execute the actual method with appropriate output region
   // first find out how many pieces extent can be split into.
@@ -696,7 +696,7 @@ DiffusiveRegistrationFilter
         str->Radius );
     }
 
-  return ITK_THREAD_RETURN_VALUE;
+  return ITK_THREAD_RETURN_DEFAULT_VALUE;
 }
 
 /**
@@ -957,14 +957,14 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::CalculateChangeGradientThreaderCallback( void * arg )
 {
-  int threadId = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )
-    ->ThreadID;
-  int threadCount = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )
-    ->NumberOfThreads;
+  int threadId = ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )
+    ->WorkUnitID;
+  int threadCount = ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )
+    ->NumberOfWorkUnits;
 
   CalculateChangeGradientThreadStruct * str =
     ( CalculateChangeGradientThreadStruct * )(
-      ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->UserData );
+      ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )->UserData );
 
   // Execute the actual method with appropriate output region
   // first find out how many pieces extent can be split into.
@@ -1001,7 +1001,7 @@ DiffusiveRegistrationFilter
     str->ValidTimeStepList[threadId] = true;
     }
 
-  return ITK_THREAD_RETURN_VALUE;
+  return ITK_THREAD_RETURN_DEFAULT_VALUE;
 }
 
 /**
@@ -1199,11 +1199,11 @@ DiffusiveRegistrationFilter
         double squaredRegularizationUpdateMagnitude = 0.0;
         for( unsigned int i = 0; i < ImageDimension; i++ )
           {
-          squaredTotalUpdateMagnitude += vnl_math_sqr( updateTerm[i] );
+          squaredTotalUpdateMagnitude += vnl_math::sqr( updateTerm[i] );
           squaredIntensityDistanceUpdateMagnitude
-              += vnl_math_sqr( intensityDistanceTerm[i] );
+              += vnl_math::sqr( intensityDistanceTerm[i] );
           squaredRegularizationUpdateMagnitude
-              += vnl_math_sqr( regularizationTerm[i] );
+              += vnl_math::sqr( regularizationTerm[i] );
           }
         localUpdateMetricsIntermediate.NumberOfPixelsProcessed++;
         localUpdateMetricsIntermediate.SumOfSquaredTotalUpdateMagnitude
@@ -1339,13 +1339,13 @@ DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::CalculateEnergiesThreaderCallback( void * arg )
 {
-  int threadId = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )
-    ->ThreadID;
-  int threadCount = ( ( MultiThreader::ThreadInfoStruct * )( arg ) )
-    ->NumberOfThreads;
+  int threadId = ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )
+    ->WorkUnitID;
+  int threadCount = ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )
+    ->NumberOfWorkUnits;
 
   CalculateEnergiesThreadStruct * str = ( CalculateEnergiesThreadStruct * )
-      ( ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->UserData );
+      ( ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )->UserData );
 
   // Execute the actual method with appropriate output region
   // first find out how many pieces extent can be split into.
@@ -1380,7 +1380,7 @@ DiffusiveRegistrationFilter
       threadId );
     }
 
-  return ITK_THREAD_RETURN_VALUE;
+  return ITK_THREAD_RETURN_DEFAULT_VALUE;
 }
 
 /**
@@ -1576,7 +1576,7 @@ DiffusiveRegistrationFilter
   // Compute the true sumOfSquared and sumOf metrics, considering the
   // actual stepSize
   double scalingForSumOfSquaredUpdateMagnitude
-    = vnl_math_sqr( stepSize );
+    = vnl_math::sqr( stepSize );
   m_UpdateMetrics.IntermediateStruct.SumOfSquaredTotalUpdateMagnitude
     *= scalingForSumOfSquaredUpdateMagnitude;
   m_UpdateMetrics.IntermediateStruct
@@ -1694,12 +1694,12 @@ DiffusiveRegistrationFilter
 ::ApplyUpdateThreaderCallback( void * arg )
 {
   const ThreadIdType threadId =
-    ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->ThreadID;
+    ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )->WorkUnitID;
   const ThreadIdType threadCount =
-    ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->NumberOfThreads;
+    ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )->NumberOfWorkUnits;
 
   DenseFDThreadStruct * str = ( DenseFDThreadStruct * )
-            ( ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->UserData );
+            ( ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )->UserData );
 
   // Execute the actual method with appropriate output region
   // first find out how many pieces extent can be split into.
@@ -1718,7 +1718,7 @@ DiffusiveRegistrationFilter
                                      threadId );
     }
 
-  return ITK_THREAD_RETURN_VALUE;
+  return ITK_THREAD_RETURN_DEFAULT_VALUE;
 }
 
 /**

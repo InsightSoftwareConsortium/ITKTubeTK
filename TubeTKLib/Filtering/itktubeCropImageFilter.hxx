@@ -165,11 +165,11 @@ CropImageFilter< TInputImage, TOutputImage >
     {
     for( unsigned int i = 0; i < InputImageDimension; i++ )
       {
-      minI[i] = vnl_math_rnd( ( ( matchOrigin[i]
+      minI[i] = itk::Math::rnd( ( ( matchOrigin[i]
         + matchIndex[i] * matchSpacing[i] ) - ( imgOrigin[i]
         + imgIndex[i] * imgSpacing[i] ) )
         / imgSpacing[i] );
-      sizeI[i] = vnl_math_rnd( ( matchSize[i] * matchSpacing[i] )
+      sizeI[i] = itk::Math::rnd( ( matchSize[i] * matchSpacing[i] )
         / imgSpacing[i] );
       }
     }

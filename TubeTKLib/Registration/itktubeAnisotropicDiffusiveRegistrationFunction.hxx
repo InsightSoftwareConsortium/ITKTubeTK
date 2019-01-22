@@ -346,7 +346,7 @@ AnisotropicDiffusiveRegistrationFunction
   const typename NeighborhoodType::IndexType index,
   const DeformationVectorType & update )
 {
-  return vnl_math_sqr( m_IntensityDistanceFunction->ComputeIntensityDifference(
+  return itk::Math::sqr( m_IntensityDistanceFunction->ComputeIntensityDifference(
                          index, update ) );
 }
 

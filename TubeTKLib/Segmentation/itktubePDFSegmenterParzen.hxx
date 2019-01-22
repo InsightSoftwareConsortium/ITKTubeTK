@@ -86,7 +86,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
     {
     return m_InClassHistogram[classNum];
     }
-  return NULL;
+  return nullptr;
 }
 
 template< class TImage, class TLabelMap >

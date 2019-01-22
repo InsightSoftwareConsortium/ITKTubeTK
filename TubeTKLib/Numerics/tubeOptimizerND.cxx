@@ -254,7 +254,7 @@ OptimizerND
   double xmax;
 
   unsigned int count = 0;
-  while( vnl_math_abs( a ) > m_Tolerance )
+  while( std::fabs( a ) > m_Tolerance )
     {
     m_X0Dir = m_FuncDerivND->Value( m_X0 );
     if( m_X0Dir.magnitude() < m_Tolerance * m_Tolerance )
@@ -313,7 +313,7 @@ OptimizerND
       break;
       }
 
-    double xstep = vnl_math_abs( dot_product( m_XStep, m_X0Dir ) );
+    double xstep = std::fabs( dot_product( m_XStep, m_X0Dir ) );
 
     a = 0;
     m_Optimizer1D->SetXMin( xmin );
@@ -331,7 +331,7 @@ OptimizerND
 
   x = m_X0;
 
-  if( vnl_math_abs( a ) > m_Tolerance )
+  if( std::fabs( a ) > m_Tolerance )
     {
     std::cout << "Scanned " << count
       << " directions without convergence - aborting" << std::endl;
@@ -410,7 +410,7 @@ OptimizerND
       continue;
       }
 
-    xstep = vnl_math_abs( dot_product( m_XStep, m_X0Dir ) );
+    xstep = std::fabs( dot_product( m_XStep, m_X0Dir ) );
 
     a = 0;
 

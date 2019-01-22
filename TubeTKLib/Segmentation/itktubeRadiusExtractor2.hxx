@@ -414,14 +414,14 @@ RadiusExtractor2<TInputImage>
     double factor = ( m_RadiusMin - r ) / m_RadiusTolerance;
     double m0 = this->GetKernelMedialness( m_RadiusMin );
     double m1 = this->GetKernelMedialness( m_RadiusMin + m_RadiusTolerance );
-    return m0 - factor * vnl_math_abs( m0 - m1 );
+    return m0 - factor * std::fabs( m0 - m1 );
     }
   else if( r > m_RadiusMax )
     {
     double factor = ( r - m_RadiusMax ) / m_RadiusTolerance;
     double m0 = this->GetKernelMedialness( m_RadiusMax );
     double m1 = this->GetKernelMedialness( m_RadiusMax - m_RadiusTolerance );
-    return m0 - factor * vnl_math_abs( m0 - m1 );
+    return m0 - factor * std::fabs( m0 - m1 );
     }
 
   double pVal = 0;
@@ -659,29 +659,29 @@ RadiusExtractor2<TInputImage>
     default:
     case RADIUS_CORRECTION_NONE:
       {
-      xMin = ( int )vnl_math_ceil( m_RadiusMin / m_RadiusTolerance );
-      xMax = ( int )vnl_math_floor( m_RadiusMax / m_RadiusTolerance );
+      xMin = ( int )std::ceil( m_RadiusMin / m_RadiusTolerance );
+      xMax = ( int )std::floor( m_RadiusMax / m_RadiusTolerance );
       x = m_RadiusStart / m_RadiusTolerance;
       break;
       }
     case RADIUS_CORRECTION_FOR_BINARY_IMAGE:
       {
-      xMin = ( int )vnl_math_ceil( m_RadiusMin / m_RadiusTolerance );
-      xMax = ( int )vnl_math_floor( m_RadiusMax / m_RadiusTolerance );
+      xMin = ( int )std::ceil( m_RadiusMin / m_RadiusTolerance );
+      xMax = ( int )std::floor( m_RadiusMax / m_RadiusTolerance );
       x = m_RadiusStart / m_RadiusTolerance;
       break;
       }
     case RADIUS_CORRECTION_FOR_CTA:
       {
-      xMin = ( int )vnl_math_ceil( m_RadiusMin / m_RadiusTolerance );
-      xMax = ( int )vnl_math_floor( m_RadiusMax / m_RadiusTolerance );
+      xMin = ( int )std::ceil( m_RadiusMin / m_RadiusTolerance );
+      xMax = ( int )std::floor( m_RadiusMax / m_RadiusTolerance );
       x = m_RadiusStart / m_RadiusTolerance;
       break;
       }
     case RADIUS_CORRECTION_FOR_MRA:
       {
-      xMin = ( int )vnl_math_ceil( m_RadiusMin / m_RadiusTolerance );
-      xMax = ( int )vnl_math_floor( m_RadiusMax / m_RadiusTolerance );
+      xMin = ( int )std::ceil( m_RadiusMin / m_RadiusTolerance );
+      xMax = ( int )std::floor( m_RadiusMax / m_RadiusTolerance );
       x = m_RadiusStart / m_RadiusTolerance;
       break;
       }

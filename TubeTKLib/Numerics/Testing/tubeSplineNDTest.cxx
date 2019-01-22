@@ -272,8 +272,8 @@ int tubeSplineNDTest( int argc, char * argv[] )
     else
       {
       bool err = false;
-      if( vnl_math_abs( x[0] - 3.139 ) > 0.001
-        || vnl_math_abs( x[1] - 0.0 ) > 0.001 )
+      if( std::fabs( x[0] - 3.139 ) > 0.001
+        || std::fabs( x[1] - 0.0 ) > 0.001 )
         {
         std::cout << "Spline.Extreme failed." << std::endl;
         std::cout << "  x = ( " << x[0] << ", " << x[1]
@@ -281,7 +281,7 @@ int tubeSplineNDTest( int argc, char * argv[] )
         returnStatus = EXIT_FAILURE;
         err = true;
         }
-      if( vnl_math_abs( xVal - 1.918 ) > 0.001 )
+      if( std::fabs( xVal - 1.918 ) > 0.001 )
         {
         std::cout << "Spline.Extreme failed." << std::endl;
         std::cout << "  xVal=" << xVal << " != 1.918" << std::endl;
@@ -318,8 +318,8 @@ int tubeSplineNDTest( int argc, char * argv[] )
       bool err = false;
       // Note: ExtremeConjGrad is less reliable and has poorer precision than
       // Extreme in this case.
-      if( vnl_math_abs( x[0] - 3.139 ) > 0.1
-        || vnl_math_abs( x[1] - 0.0 ) > 1.1 )
+      if( std::fabs( x[0] - 3.139 ) > 0.1
+        || std::fabs( x[1] - 0.0 ) > 1.1 )
         {
         std::cout << "Spline.ExtremeConjGrad failed." << std::endl;
         std::cout << "  x = ( " << x[0] << ", " << x[1]
@@ -327,7 +327,7 @@ int tubeSplineNDTest( int argc, char * argv[] )
         returnStatus = EXIT_FAILURE;
         err = true;
         }
-      if( vnl_math_abs( xVal - 1.918 ) > 0.5 )
+      if( std::fabs( xVal - 1.918 ) > 0.5 )
         {
         std::cout << "Spline.ConjGrad failed." << std::endl;
         std::cout << "  xVal=" << xVal << " != 1.918" << std::endl;

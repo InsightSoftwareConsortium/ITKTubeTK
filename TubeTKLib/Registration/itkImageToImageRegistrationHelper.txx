@@ -884,7 +884,7 @@ ImageToImageRegistrationHelper<TImage>
   typedef ResampleImageFilter<TImage, TImage, double>
     ResampleImageFilterType;
 
-  typename InterpolatorType::Pointer interpolator = 0;
+  typename InterpolatorType::Pointer interpolator = nullptr;
 
   switch( interpolationMethod )
     {

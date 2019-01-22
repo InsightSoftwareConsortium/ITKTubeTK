@@ -175,9 +175,9 @@ int itktubeTubeAngleOfIncidenceWeightFunctionTest( int argc, char * argv[] )
 
   // Regression test on a few points
   WeightType tolerance = 0.01;
-  if( vnl_math_abs( weights[3] - 0.818436 ) > tolerance ||
-      vnl_math_abs( weights[4] - 0.909169 ) > tolerance ||
-      vnl_math_abs( weights[5] - 0.951959 ) > tolerance )
+  if( std::fabs( weights[3] - 0.818436 ) > tolerance ||
+      std::fabs( weights[4] - 0.909169 ) > tolerance ||
+      std::fabs( weights[5] - 0.951959 ) > tolerance )
     {
     std::cerr << "Did not generate the expected weights." << std::endl;
     return EXIT_FAILURE;

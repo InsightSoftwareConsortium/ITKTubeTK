@@ -236,7 +236,7 @@ JointHistogramImageFunction<TInputImage, TCoordRep>
     while( !meanItr.IsAtEnd() )
       {
       meanItr.Set( sumItr.Get() / m_NumberOfSamples );
-      stdItr.Set( std::sqrt( vnl_math_abs(
+      stdItr.Set( std::sqrt( std::fabs(
         sumOfSquaresItr.Get() / m_NumberOfSamples -
         meanItr.Get() * meanItr.Get() ) ) );
       ++sumItr;
@@ -309,7 +309,7 @@ JointHistogramImageFunction<TInputImage, TCoordRep>
     s += m_StdevBase;
     if( s != 0 )
       {
-      val += vnl_math_abs( t - m ) / s;
+      val += std::fabs( t - m ) / s;
       ++histCount;
       }
     ++histItr;

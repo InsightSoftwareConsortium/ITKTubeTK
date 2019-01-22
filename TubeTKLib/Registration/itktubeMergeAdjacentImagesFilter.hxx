@@ -464,8 +464,8 @@ MergeAdjacentImagesFilter< TImage >
     // timeCollector.Stop( "Resample Image2" );
 
     // timeCollector.Start( "Out Distance Map" );
-    typename ImageType::Pointer outputDistMap = NULL;
-    typename ImageType::Pointer outputVoronoiMap = NULL;
+    typename ImageType::Pointer outputDistMap = nullptr;
+    typename ImageType::Pointer outputVoronoiMap = nullptr;
     if( m_UseFastBlending )
       {
       typedef typename itk::GeneralizedDistanceTransformImageFilter<
@@ -530,7 +530,7 @@ MergeAdjacentImagesFilter< TImage >
 
     // timeCollector.Stop( "Distance Map Selection" );
 
-    typename ImageType::Pointer vorImageDistMap = NULL;
+    typename ImageType::Pointer vorImageDistMap = nullptr;
     if( m_UseFastBlending )
       {
       typedef typename itk::GeneralizedDistanceTransformImageFilter<

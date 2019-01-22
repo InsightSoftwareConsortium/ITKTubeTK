@@ -164,7 +164,7 @@ ContrastCostFunction< TPixel, Dimension >
     stdDevBkg = std::sqrt( sumsBkg/countBkg - stdDevBkg*stdDevBkg );
     }
 
-  double dp = vnl_math_abs( meanObj - meanBkg ) / ( stdDevObj * stdDevBkg );
+  double dp = std::fabs( meanObj - meanBkg ) / ( stdDevObj * stdDevBkg );
 
   std::cout << ++m_CallsToGetValue << " : "
             << params[0] << ", " << params[1] << ", "

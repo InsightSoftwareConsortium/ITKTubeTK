@@ -47,7 +47,7 @@ int itktubeMetaClassPDFTest( int argc, char * argv[] )
   float data[100];
   for( unsigned int i = 0; i < 100; ++i )
     {
-    data[i] = i;
+    data[i] = static_cast<float>(i);
     }
   pdf1.InitializeEssential( 2, dimSize, binMin, binSize, data );
 

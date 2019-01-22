@@ -114,7 +114,7 @@ int itktubeCVTImageFilterTest( int argc, char * argv[] )
   bool valid = true;
   for( unsigned int i=0; i<numCentroids; i++ )
     {
-    double tf = vnl_math_abs( ( val[i]-mean )/mean );
+    double tf = std::fabs( ( val[i]-mean )/mean );
     std::cout << "val[" << i << "] = " << val[i] << " ( "
       << ( int )( tf*100 ) << "% diff from mean )" << std::endl;
     if( tf > 0.15 )

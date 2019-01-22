@@ -29,6 +29,11 @@ limitations under the License.
 #ifndef __itktubeTubeExtractor_hxx
 #define __itktubeTubeExtractor_hxx
 
+#ifdef WIN32
+#define _CRT_SECURE_NO_DEPRECATE
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "itktubeTubeExtractor.h"
 
 namespace itk
@@ -349,7 +354,7 @@ TubeExtractor<TInputImage>
       std::cout << "Initial pixel on prior tube." << std::endl;
       std::cout << "  x = " << x << std::endl;
       }
-    return NULL;
+    return nullptr;
     }
 
   typename TubeType::Pointer tube = this->m_RidgeOp->ExtractRidge( x,
@@ -373,13 +378,13 @@ TubeExtractor<TInputImage>
         {
         this->m_StatusCallBack( "Extract: Ridge", "Aborted", 0 );
         }
-      return NULL;
+      return nullptr;
       }
     }
 
   if( !this->m_RadiusOp->ExtractRadii( tube ) )
     {
-    return NULL;
+    return nullptr;
     }
 
   if( this->m_NewTubeCallBack != NULL )

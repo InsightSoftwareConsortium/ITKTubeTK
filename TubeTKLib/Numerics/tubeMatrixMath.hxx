@@ -167,7 +167,7 @@ ComputeRidgeness( const vnl_matrix<T> & H,
     double closestVDProd = 0;
     for( unsigned int i=0; i<ImageDimension; i++ )
       {
-      double dProd = vnl_math_abs( dot_product( prevTangent,
+      double dProd = std::fabs( dot_product( prevTangent,
         HEVect.get_column( i ) ) );
       if( dProd > closestVDProd )
         {
@@ -228,7 +228,7 @@ ComputeRidgeness( const vnl_matrix<T> & H,
     if( ImageDimension > 2 )
       {
       roundness =
-        1 - vnl_math_abs( 1 - ( ( HEVal[ ImageDimension-2 ] *
+        1 - std::fabs( 1 - ( ( HEVal[ ImageDimension-2 ] *
           HEVal[ ImageDimension-2] ) / avgv ) );
       }
     else
@@ -338,7 +338,7 @@ ComputeTriDiag3D( vnl_matrix<T> &mat,
   subD( 2 ) = 0;
   if( c != 0 )
     {
-    const double s = vcl_sqrt( b*b+c*c );
+    const double s = std::sqrt( b*b+c*c );
     b /= s;
     c /= s;
     const double q = 2*b*e+c*( f-d );
@@ -409,14 +409,14 @@ ComputeTqli ( vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat )
         {
         if( m!=( n-1 ) )
           {
-          dd = vnl_math_abs( diag( m ) )+vnl_math_abs( diag( m+1 ) );
+          dd = std::fabs( diag( m ) )+std::fabs( diag( m+1 ) );
           }
         else
           {
-          dd = vnl_math_abs( diag( m ) );
+          dd = std::fabs( diag( m ) );
           }
 
-        if( vnl_math_abs( subD( m ) )+dd == dd )
+        if( std::fabs( subD( m ) )+dd == dd )
           {
           break;
           }
@@ -426,7 +426,7 @@ ComputeTqli ( vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat )
         break;
         }
       g = ( diag( l+1 )-diag( l ) )/( 2*subD( l ) );
-      r = vcl_sqrt( g*g+1 );
+      r = std::sqrt( g*g+1 );
       if( g<0 )
         {
         g = diag( m )-diag( l )+subD( l )/( g-r );
@@ -442,17 +442,17 @@ ComputeTqli ( vnl_vector<T> &diag, vnl_vector<T> &subD, vnl_matrix<T> &mat )
         {
         f = s*subD( i );
         b = c*subD( i );
-        if( vnl_math_abs( f )>=vnl_math_abs( g ) )
+        if( std::fabs( f )>=std::fabs( g ) )
           {
           c = g/f;
-          r = vcl_sqrt( c*c+1 );
+          r = std::sqrt( c*c+1 );
           subD( i+1 ) = static_cast< T >( f*r );
           c *= ( s = 1/r );
           }
         else
           {
           s = f/g;
-          r = vcl_sqrt( s*s+1 );
+          r = std::sqrt( s*s+1 );
           subD( i+1 ) = static_cast< T >( g*r );
           s *= ( c = 1/r );
           }
@@ -570,9 +570,9 @@ ComputeEigen( vnl_matrix<T> const & mat,
       {
       for( unsigned int j=i+1; j<n; j++ )
         {
-        if( ( vnl_math_abs( eVals( j ) )>vnl_math_abs( eVals( i ) )
+        if( ( std::fabs( eVals( j ) )>std::fabs( eVals( i ) )
             && !minToMax )
-          || ( vnl_math_abs( eVals( j ) )<vnl_math_abs( eVals( i ) )
+          || ( std::fabs( eVals( j ) )<std::fabs( eVals( i ) )
             && minToMax ) )
           {
           T tf = eVals( j );

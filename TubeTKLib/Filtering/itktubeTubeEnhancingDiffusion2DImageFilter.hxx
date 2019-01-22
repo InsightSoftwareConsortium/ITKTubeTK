@@ -377,7 +377,7 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
       ev[0] = ES.get_eigenvalue( 0 );
       ev[1] = ES.get_eigenvalue( 1 );
 
-      if( vnl_math_abs( ev[0] ) > vnl_math_abs( ev[1] ) )
+      if( std::fabs( ev[0] ) > std::fabs( ev[1] ) )
         {
         std::swap( ev[0], ev[1] );
         }
@@ -419,7 +419,7 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
   const Precision   Rb2 = ( l1 * l1 ) / ( l2 * l2 ); // btwn 0 and 1
   const Precision   S2 =  ( l1 * l1 ) + ( l2 *l2 );
   //const Precision   T = std::exp( -( 2*smoothC*smoothC )
-  //  / ( vnl_math_abs( l1 )*l2*l2 ) );
+  //  / ( std::fabs( l1 )*l2*l2 ) );
 
   vesselness = std::exp( -Rb2/vb2 ) * ( 1.0 - std::exp( -S2/vc2 ) );
 
@@ -458,7 +458,7 @@ TubeEnhancingDiffusion2DImageFilter<TPixel, TDimension>
     ev[0] = ES.get_eigenvalue( 0 );
     ev[1] = ES.get_eigenvalue( 1 );
 
-    if( vnl_math_abs( ev[0] ) > vnl_math_abs( ev[1] ) )
+    if( std::fabs( ev[0] ) > std::fabs( ev[1] ) )
       {
       std::swap( ev[0], ev[1] );
       }

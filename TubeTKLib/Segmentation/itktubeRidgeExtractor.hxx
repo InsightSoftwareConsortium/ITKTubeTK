@@ -29,6 +29,10 @@ limitations under the License.
 #ifndef __itktubeRidgeExtractor_hxx
 #define __itktubeRidgeExtractor_hxx
 
+#ifdef WIN32
+#define _CRT_SECURE_NO_DEPRECATE
+#endif
+
 #include "itktubeRidgeExtractor.h"
 #include "tubeMatrixMath.h"
 
@@ -1124,7 +1128,7 @@ RidgeExtractor<TInputImage>
         }
       m_CurrentFailureCode = ROUND_FAIL;
       ++m_FailureCodeCount[ m_CurrentFailureCode ];
-      if( vnl_math_abs( lNTEVal[0] ) )
+      if(std::fabs( lNTEVal[0] ) )
         {
         recovery++;
         }
@@ -1668,7 +1672,7 @@ RidgeExtractor<TInputImage>
       {
       std::cout << "LocalRidge fails at " << lX << std::endl;
       }
-    return NULL;
+    return nullptr;
     }
   if( verbose || this->GetDebug() )
     {
@@ -1686,7 +1690,7 @@ RidgeExtractor<TInputImage>
     {
     m_CurrentFailureCode = REVISITED_VOXEL;
     ++m_FailureCodeCount[ m_CurrentFailureCode ];
-    return NULL;
+    return nullptr;
     }
 
   MatrixType lN( ImageDimension, ImageDimension-1 );
@@ -1754,7 +1758,7 @@ RidgeExtractor<TInputImage>
       m_DynamicScaleUsed = scaleOriginal;
       SetScale( scaleOriginal );
       m_RadiusExtractor->SetRadiusStart( radiusOriginal );
-      return NULL;
+      return nullptr;
       }
     scale0 = m_DynamicScaleUsed;
     SetScale( scale0 );

@@ -651,7 +651,7 @@ ImageFilters<VDimension>
   it1.GoToBegin();
   while( !it1.IsAtEnd() )
     {
-    it1.Set( vnl_math_abs( it1.Get() ) );
+    it1.Set( std::fabs( it1.Get() ) );
     ++it1;
     }
 }

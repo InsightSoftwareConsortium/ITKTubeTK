@@ -365,7 +365,7 @@ InitializeEssential( unsigned int _nFeatures,
   for( unsigned int i = 0; i < _nFeatures; ++i )
     {
     nBins[i] = _nBinsPerFeature[i];
-    binSize[i] = _binSize[i];
+    binSize[i] = static_cast<float>(_binSize[i]);
     minD[i] = _binMin[i];
     }
 
@@ -440,7 +440,7 @@ SetBinSize( const VectorDoubleType & _binSize )
   float binSizeTemp[10];
   for( int i = 0; i < MetaImage::NDims(); i++ )
     {
-    binSizeTemp[i] = _binSize[i];
+    binSizeTemp[i] = static_cast<float>(_binSize[i]);
     }
   MetaImage::ElementSpacing( binSizeTemp );
 }
@@ -780,7 +780,7 @@ M_SetupWriteFields( void )
   float binSizeTemp[10];
   for( int i = 0; i < MetaImage::NDims(); i++ )
     {
-    binSizeTemp[i] = m_BinSize[i];
+    binSizeTemp[i] = static_cast<float>(m_BinSize[i]);
     }
   MetaImage::ElementSpacing( binSizeTemp );
 
@@ -806,7 +806,7 @@ M_SetupWriteFields( void )
   float tmpF[4096];
   for( unsigned int i = 0; i < nObjects; ++i )
     {
-    tmpF[i] = m_ObjectPDFWeight[i];
+    tmpF[i] = static_cast<float>(m_ObjectPDFWeight[i]);
     }
   mF = new MET_FieldRecordType;
   MET_InitWriteField( mF, "ObjectPDFWeight", MET_FLOAT_ARRAY,

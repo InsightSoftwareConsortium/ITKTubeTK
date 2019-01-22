@@ -38,6 +38,7 @@ limitations under the License.
 #include <itkRescaleIntensityImageFilter.h>
 #include <itkSubtractImageFilter.h>
 #include <itkTextOutput.h>
+#include <itkMultiThreaderBase.h>
 
 
 #define ITK_TEST_DIMENSION_MAX 6
@@ -115,13 +116,13 @@ int main( int argc, char * argv[] )
       if( std::strcmp( argv[1], "--with-threads" ) == 0 )
         {
         int numThreads = std::atoi( argv[2] );
-        itk::MultiThreader::SetGlobalDefaultNumberOfThreads( numThreads );
+        itk::MultiThreaderBase::SetGlobalDefaultNumberOfThreads( numThreads );
         argv += 2;
         argc -= 2;
         }
       else if( std::strcmp( argv[1], "--without-threads" ) == 0 )
         {
-        itk::MultiThreader::SetGlobalDefaultNumberOfThreads( 1 );
+        itk::MultiThreaderBase::SetGlobalDefaultNumberOfThreads( 1 );
         argv += 1;
         argc -= 1;
         }

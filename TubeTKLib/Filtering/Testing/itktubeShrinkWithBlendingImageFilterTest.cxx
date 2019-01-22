@@ -23,7 +23,6 @@ limitations under the License.
 
 #include "itktubeShrinkWithBlendingImageFilter.h"
 
-#include <itkFilterWatcher.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 #include <itkImageRegionIteratorWithIndex.h>

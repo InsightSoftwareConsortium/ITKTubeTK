@@ -140,7 +140,7 @@ MeanSquareRegistrationFunction<TFixedImage, TMovingImage, TDeformationField>
   for( unsigned int j = 0; j < ImageDimension; j++ )
     {
     fixedGradientSquaredMagnitude +=
-      vnl_math_sqr( fixedGradient[j] ) * m_FixedImageSpacing[j];
+      vnl_math::sqr( fixedGradient[j] ) * m_FixedImageSpacing[j];
     }
 
   // Compute update
@@ -160,7 +160,7 @@ MeanSquareRegistrationFunction<TFixedImage, TMovingImage, TDeformationField>
     denominator=1.0;
     }
   PixelType update;
-  if( vnl_math_abs( speedValue ) < m_IntensityDifferenceThreshold ||
+  if( std::fabs( speedValue ) < m_IntensityDifferenceThreshold ||
     denominator < m_DenominatorThreshold )
     {
     update.Fill( 0.0 );
@@ -173,7 +173,7 @@ MeanSquareRegistrationFunction<TFixedImage, TMovingImage, TDeformationField>
       denominator*this->m_GradientStep;
     if( normalizemetric )
       {
-      update[j] *= vnl_math_sqr( m_FixedImageSpacing[j] );
+      update[j] *= vnl_math::sqr( m_FixedImageSpacing[j] );
       }
     }
   return update;

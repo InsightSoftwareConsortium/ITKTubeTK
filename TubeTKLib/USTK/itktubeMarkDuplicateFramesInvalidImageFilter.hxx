@@ -40,7 +40,7 @@ void
 MarkDuplicateFramesInvalidImageFilterThreader< TAssociate >
 ::BeforeThreadedExecution( void )
 {
-  const ThreadIdType numberOfThreads = this->GetNumberOfThreadsUsed();
+  const ThreadIdType numberOfThreads = this->GetNumberOfWorkUnits();
   m_InvalidFramesPerThread.resize( numberOfThreads );
   for( ThreadIdType ii = 0; ii < numberOfThreads; ++ii )
     {
@@ -142,7 +142,7 @@ MarkDuplicateFramesInvalidImageFilterThreader< TAssociate >
 {
   MetaDataDictionary newDictionary =
     *( this->m_Associate->GetInputMetaDataDictionary() );
-  const ThreadIdType numberOfThreads = this->GetNumberOfThreadsUsed();
+  const ThreadIdType numberOfThreads = this->GetNumberOfWorkUnits();
   std::ostringstream keyPrefix;
   for( ThreadIdType ii = 0; ii < numberOfThreads; ++ii )
     {

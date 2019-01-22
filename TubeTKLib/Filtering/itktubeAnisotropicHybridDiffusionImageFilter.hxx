@@ -194,25 +194,25 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     /* Assumption is that eigenvalue1 > eigenvalue2 > eigenvalue3 */
 
     // Find the smallest eigenvalue
-    double smallest = vnl_math_abs( eigenValue[0] );
+    double smallest = std::fabs( eigenValue[0] );
     unsigned int smallestEigenValueIndex=0;
 
     for( unsigned int i=1; i <=2; i++ )
       {
-      if( vnl_math_abs( eigenValue[i] ) < smallest )
+      if( std::fabs( eigenValue[i] ) < smallest )
         {
-        smallest = vnl_math_abs( eigenValue[i] );
+        smallest = std::fabs( eigenValue[i] );
         smallestEigenValueIndex = i;
         }
       }
 
     // Find the largest eigenvalue
-    double largest = vnl_math_abs( eigenValue[0] );
+    double largest = std::fabs( eigenValue[0] );
     unsigned int largestEigenValueIndex=0;
 
     for( unsigned int i=1; i <=2; i++ )
       {
-      if( vnl_math_abs( eigenValue[i] ) > largest )
+      if( std::fabs( eigenValue[i] ) > largest )
         {
         largestEigenValueIndex = i;
         }
@@ -222,8 +222,8 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 
     for( unsigned int i=0; i <=2; i++ )
       {
-      if( vnl_math_abs( eigenValue[i] ) != smallest
-        && vnl_math_abs( eigenValue[i] ) != largest )
+      if( std::fabs( eigenValue[i] ) != smallest
+        && std::fabs( eigenValue[i] ) != largest )
         {
         middleEigenValueIndex = i;
         break;
@@ -275,9 +275,9 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
 
     double zeroValueTolerance = 1.0e-20;
 
-    if( ( vnl_math_abs( eigenValue[middleEigenValueIndex] ) <
+    if( ( std::fabs( eigenValue[middleEigenValueIndex] ) <
         zeroValueTolerance )  ||
-      ( vnl_math_abs( eigenValue[smallestEigenValueIndex] ) <
+      ( std::fabs( eigenValue[smallestEigenValueIndex] ) <
         zeroValueTolerance ) )
       {
       LambdaCED3 = 1.0;
@@ -310,7 +310,7 @@ AnisotropicHybridDiffusionImageFilter<TInputImage, TOutputImage>
     double numerator = eigenValue[middleEigenValueIndex] *
       ( ( m_ContrastParameterLambdaHybrid *
           m_ContrastParameterLambdaHybrid )
-      * ( xi - vnl_math_abs( xi ) ) - 2.0 *
+      * ( xi - std::fabs( xi ) ) - 2.0 *
           eigenValue[smallestEigenValueIndex] );
 
 
