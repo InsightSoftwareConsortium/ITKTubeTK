@@ -76,7 +76,7 @@ bool CheckVNLVectorEquality( const vnl_vector< T > &v,
     }
   for( unsigned i=0; i<v.size(); ++i )
     {
-    if( vnl_math_abs( g.get( i ) - v.get( i ) ) > tol )
+    if( std::fabs( g.get( i ) - v.get( i ) ) > tol )
       {
       return false;
       }
@@ -105,7 +105,7 @@ bool CheckVNLMatrixEquality( const vnl_matrix< T > &V,
     {
     for( unsigned int c=0; c<V.cols(); ++c )
       {
-      if( vnl_math_abs( V.get( r, c ) - G.get( r, c ) ) > tol )
+      if( std::fabs( V.get( r, c ) - G.get( r, c ) ) > tol )
         {
         return false;
         }

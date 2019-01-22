@@ -201,7 +201,7 @@ int itktubeRadiusExtractor2Test( int argc, char * argv[] )
       continue;
       }
 
-    double diff = vnl_math_abs( r1 - r0 );
+    double diff = std::fabs( r1 - r0 );
     if( diff > 0.2 * r0 && diff > 0.75 )
       {
       std::cout << "Radius estimate inaccurate." << std::endl;
