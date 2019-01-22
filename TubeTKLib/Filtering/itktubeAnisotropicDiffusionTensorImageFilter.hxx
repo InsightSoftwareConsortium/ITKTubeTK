@@ -223,11 +223,11 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   DenseFDThreadStruct * str;
   ThreadIdType total, threadId, threadCount;
 
-  threadId = ( ( MultiThreaderBase::ThreadInfoStruct * )( arg ) )->ThreadID;
-  threadCount = ( ( MultiThreaderBase::ThreadInfoStruct * )( arg ) )->
-    NumberOfThreads;
+  threadId = ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )->WorkUnitID;
+  threadCount = ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )->
+    NumberOfWorkUnits;
 
-  str = ( DenseFDThreadStruct * )( ( ( MultiThreaderBase::ThreadInfoStruct * )
+  str = ( DenseFDThreadStruct * )( ( ( MultiThreaderBase::WorkUnitInfo * )
     ( arg ) )->UserData );
 
   // Execute the actual method with appropriate output region.
@@ -295,11 +295,11 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
   DenseFDThreadStruct * str;
   ThreadIdType total, threadId, threadCount;
 
-  threadId = ( ( MultiThreaderBase::ThreadInfoStruct * )( arg ) )->ThreadID;
-  threadCount = ( ( MultiThreaderBase::ThreadInfoStruct * )( arg ) )->
-    NumberOfThreads;
+  threadId = ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )->WorkUnitID;
+  threadCount = ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )->
+    NumberOfWorkUnits;
 
-  str = ( DenseFDThreadStruct * )( ( ( MultiThreaderBase::ThreadInfoStruct * )
+  str = ( DenseFDThreadStruct * )( ( ( MultiThreaderBase::WorkUnitInfo * )
     ( arg ) )->UserData );
 
   // Execute the actual method with appropriate output region
