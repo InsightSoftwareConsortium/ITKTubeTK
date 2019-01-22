@@ -48,7 +48,7 @@ typename TImage::PixelType backgnd )
   it.GoToBegin();
 
   typename TImage::IndexType index;
-  double r2 = vnl_math_sqr( radius );
+  double r2 = vnl_math::sqr( radius );
 
   for( ; !it.IsAtEnd(); ++it )
     {
@@ -56,7 +56,7 @@ typename TImage::PixelType backgnd )
     double distance = 0;
     for( unsigned int j = 0; j < TImage::ImageDimension; j++ )
       {
-      distance += vnl_math_sqr( ( double ) index[j] - center[j] );
+      distance += vnl_math::sqr( ( double ) index[j] - center[j] );
       }
     if( distance <= r2 ) it.Set( foregnd );
     else it.Set( backgnd );
@@ -146,7 +146,7 @@ bool PointInTube( TIndex index, double * tubeLeftPoint, double radius )
   double distance = 0;
   for( int i = 0; i < 3; i++ )
     {
-    distance += vnl_math_sqr( index[i] - centerPoint[i] );
+    distance += vnl_math::sqr( index[i] - centerPoint[i] );
     }
 
   return std::sqrt( distance ) <= radius;
@@ -368,8 +368,8 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages( int argc, char * a
   fixed->Allocate();
 
   PixelType bgnd = 15;
-  vtkPolyData * border = 0;
-  GroupType::Pointer group = 0;
+  vtkPolyData * border = nullptr;
+  GroupType::Pointer group = nullptr;
 
   enum geometryTypes { circles, boxes, tubes };
 
@@ -498,8 +498,8 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages( int argc, char * a
     if( defineShortTube )
       {
       numPoints = static_cast<int>( length ) + 1;
-      bottomX = vnl_math_ceil( fixedBottomTubeLeftPoint[0] );
-      topX = vnl_math_ceil( fixedTopTubeLeftPoint[0] );
+      bottomX = std::ceil( fixedBottomTubeLeftPoint[0] );
+      topX = std::ceil( fixedTopTubeLeftPoint[0] );
       }
     else
       {

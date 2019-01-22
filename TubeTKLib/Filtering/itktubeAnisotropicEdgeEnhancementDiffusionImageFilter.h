@@ -30,7 +30,6 @@ limitations under the License.
 
 #include <itkDiffusionTensor3D.h>
 #include <itkHessianRecursiveGaussianImageFilter.h>
-#include <itkMultiThreader.h>
 #include <itkSymmetricEigenAnalysisImageFilter.h>
 
 namespace itk

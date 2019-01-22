@@ -209,7 +209,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 {
   if( !this->m_MovingSpatialObject )
     {
-    return NULL;
+    return nullptr;
     }
 
   char childName[] = "Tube";
@@ -266,7 +266,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
           const ScalarType scale = scalingRadius * m_Kappa;
 
-          matchMeasure += m_FeatureWeights[weightCount] * vnl_math_abs(
+          matchMeasure += m_FeatureWeights[weightCount] * std::fabs(
             this->ComputeLaplacianMagnitude( pointIterator->GetNormal1(),
               scale,
               currentPoint ) );
@@ -624,7 +624,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
     const ScalarType kernelValue =
       2.0 * distance * std::exp( -0.5 * distanceSquared / scaleSquared );
 
-    kernelSum += vnl_math_abs( kernelValue );
+    kernelSum += std::fabs( kernelValue );
 
     typename FixedImageType::PointType point;
     for( unsigned int ii = 0; ii < ImageDimension; ++ii )

@@ -24,7 +24,6 @@ limitations under the License.
 #ifndef __itktubeTubeAngleOfIncidenceWeightFunction_h
 #define __itktubeTubeAngleOfIncidenceWeightFunction_h
 
-#include <vnl/vnl_math.h>
 #include <itkFunctionBase.h>
 
 namespace itk
@@ -107,7 +106,7 @@ public:
     tangent.Normalize();
     const double dotProduct = beam * tangent;
     double cos_term =
-      vnl_math_abs( std::sqrt( 1.0 - dotProduct * dotProduct ) );
+      std::fabs( std::sqrt( 1.0 - dotProduct * dotProduct ) );
     if( m_AngleDependence != 1.0 )
       {
       cos_term = std::pow( cos_term, m_AngleDependence );

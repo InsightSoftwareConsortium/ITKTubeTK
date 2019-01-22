@@ -198,9 +198,9 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest( int argc, char * argv
       < FixedImageType, MovingImageType, DeformationFieldType >
       AnisotropicDiffusiveRegistrationFilterType;
 
-  DiffusiveRegistrationFilterType::Pointer registrator = 0;
-  AnisotropicDiffusiveRegistrationFilterType::Pointer anisotropicRegistrator
-      = 0;
+  DiffusiveRegistrationFilterType::Pointer registrator = nullptr;
+  AnisotropicDiffusiveRegistrationFilterType::Pointer anisotropicRegistrator =
+    nullptr;
   int useAnisotropic = std::atoi( argv[6] );
   if( useAnisotropic )
     {
@@ -255,9 +255,9 @@ int itkAnisotropicDiffusiveRegistrationRegularizationTest( int argc, char * argv
     for( int i = 0; i < normalData->GetNumberOfTuples(); i++ )
       {
       normalData->GetTuple( i, test );
-      if( vnl_math_abs( test[0] - borderN[0] ) > ep
-          || vnl_math_abs( test[1] - borderN[1] ) > ep
-          || vnl_math_abs( test[2] - borderN[2] ) > ep )
+      if( std::fabs( test[0] - borderN[0] ) > ep
+          || std::fabs( test[1] - borderN[1] ) > ep
+          || std::fabs( test[2] - borderN[2] ) > ep )
         {
         std::cerr << "index i=" << i << ": extracted normal [" << test[0] << " "
             << test[1] << " " << test[2] << "]" << std::endl;

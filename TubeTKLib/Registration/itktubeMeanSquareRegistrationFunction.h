@@ -30,7 +30,7 @@ limitations under the License.
 #include <itkLinearInterpolateImageFunction.h>
 #include <itkPDEDeformableRegistrationFunction.h>
 #include <itkPoint.h>
-#include <itkSimpleFastMutexLock.h>
+#include <mutex>
 
 namespace itk
 {
@@ -172,9 +172,9 @@ public:
   /** Get the energy mutex lock  */
   void SetEnergy( double energy )
     {
-    m_EnergyCalculationLock.Lock();
+    m_EnergyCalculationLock.lock();
     this->m_Energy = energy;
-    m_EnergyCalculationLock.Unlock();
+    m_EnergyCalculationLock.unlock();
     }
 
   void SetBackgroundIntensity( MovingImagePixelType intensity )
@@ -226,7 +226,7 @@ private:
   /** Threshold below which two intensity value are assumed to match. */
   double                          m_IntensityDifferenceThreshold;
 
-  mutable SimpleFastMutexLock     m_EnergyCalculationLock;
+  mutable std::mutex              m_EnergyCalculationLock;
 
   MovingImagePixelType            m_BackgroundIntensity;
 

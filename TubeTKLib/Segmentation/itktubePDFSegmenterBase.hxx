@@ -225,7 +225,7 @@ PDFSegmenterBase< TImage, TLabelMap >
     {
     return m_ProbabilityImageVector[classNum];
     }
-  return NULL;
+  return nullptr;
 }
 
 template< class TImage, class TLabelMap >

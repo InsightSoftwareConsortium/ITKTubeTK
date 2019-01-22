@@ -339,7 +339,7 @@ AnisotropicDiffusiveRegistrationFilter
   str.ComputeWeights = computeWeights;
 
   // Multithread the execution
-  this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
+  this->GetMultiThreader()->SetNumberOfWorkUnits( this->GetNumberOfWorkUnits() );
   this->GetMultiThreader()->SetSingleMethod(
       this->GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback,
       & str );
@@ -365,13 +365,13 @@ AnisotropicDiffusiveRegistrationFilter
   void * arg )
 {
   int threadId =
-    ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->ThreadID;
+    ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )->WorkUnitID;
   int threadCount =
-    ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->NumberOfThreads;
+    ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )->NumberOfWorkUnits;
 
   AnisotropicDiffusiveRegistrationFilterThreadStruct * str
       = ( AnisotropicDiffusiveRegistrationFilterThreadStruct * )
-            ( ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->UserData );
+            ( ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )->UserData );
 
   // Execute the actual method with appropriate output region
   // First find out how many pieces extent can be split into.
