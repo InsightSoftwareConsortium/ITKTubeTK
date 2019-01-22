@@ -45,6 +45,9 @@ SingleValuedCostFunctionImageSource< TCostFunction, VNumberOfParameters >
   this->m_ParametersLowerBound.Fill( 0.0 );
   this->m_ParametersUpperBound.Fill( 10.0 );
   this->m_ParametersStep.Fill( 1.0 );
+
+  //Use the ITKv4 Threading Model (call ThreadedGenerateData instead of DynamicThreadedGenerateData)
+  this->DynamicMultiThreadingOff();
 }
 
 template< class TCostFunction, unsigned int VNumberOfParameters >

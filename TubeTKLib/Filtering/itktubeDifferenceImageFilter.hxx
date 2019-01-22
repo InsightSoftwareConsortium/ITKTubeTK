@@ -56,6 +56,8 @@ DifferenceImageFilter<TInputImage, TOutputImage>
   m_TotalDifference = NumericTraits<AccumulateType>::Zero;
   m_NumberOfPixelsWithDifferences = 0;
   m_IgnoreBoundaryPixels = false;
+  //Use the ITKv4 Threading Model (call ThreadedGenerateData instead of DynamicThreadedGenerateData)
+  this->DynamicMultiThreadingOff();
 }
 
 //----------------------------------------------------------------------------
