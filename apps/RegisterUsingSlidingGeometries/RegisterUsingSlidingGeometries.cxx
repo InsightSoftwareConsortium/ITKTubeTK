@@ -158,11 +158,11 @@ int DoIt( int argc, char * argv[] )
       < FixedImageType, MovingImageType, VectorImageType >
       AnisotropicDiffusiveSparseRegistrationFilterType;
 
-  typename DiffusiveRegistrationFilterType::Pointer registrator = 0;
+  typename DiffusiveRegistrationFilterType::Pointer registrator = nullptr;
   typename AnisotropicDiffusiveRegistrationFilterType::Pointer
-      anisotropicRegistrator = 0;
+      anisotropicRegistrator = nullptr;
   typename AnisotropicDiffusiveSparseRegistrationFilterType::Pointer
-      sparseAnisotropicRegistrator = 0;
+      sparseAnisotropicRegistrator = nullptr;
   bool haveAnisotropicRegistrator = false;
   if( doNotPerformRegularization || doNotUseAnisotropicRegularization )
     {
@@ -237,7 +237,7 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start( "Loading stopping criterion mask" );
     typename DiffusiveRegistrationFilterType::StoppingCriterionMaskPointer
-        stoppingCriterionMaskImage = 0;
+        stoppingCriterionMaskImage = nullptr;
     if( ReadAndOrientImageAxial( stoppingCriterionMaskImage,
                                  stoppingCriterionMaskImageFileName ) )
       {
@@ -494,7 +494,7 @@ int DoIt( int argc, char * argv[] )
     }
 
   typename AnisotropicDiffusiveSparseRegistrationFilterType::TubeListPointer
-    tubeList = 0;
+    tubeList = nullptr;
 
   // Read tube spatial object if we are using the sparse anisotropic regularizer
   if( sparseAnisotropicRegistrator && tubeSpatialObjectFileName != "" )
@@ -528,7 +528,7 @@ int DoIt( int argc, char * argv[] )
     if( anisotropicRegistrator )
       {
       typename AnisotropicDiffusiveRegistrationFilterType::NormalVectorImageType
-          ::Pointer normalImage = 0;
+          ::Pointer normalImage = nullptr;
       if( ReadAndOrientImageAxial( normalImage,
                                    inputNormalVectorImageFileName ) )
         {
@@ -543,7 +543,7 @@ int DoIt( int argc, char * argv[] )
     else if( sparseAnisotropicRegistrator )
       {
       typename AnisotropicDiffusiveSparseRegistrationFilterType
-          ::NormalMatrixImageType::Pointer normalImage = 0;
+          ::NormalMatrixImageType::Pointer normalImage = nullptr;
       if( ReadAndOrientImageAxial( normalImage,
                                    inputNormalVectorImageFileName ) )
         {
@@ -571,7 +571,7 @@ int DoIt( int argc, char * argv[] )
     if( anisotropicRegistrator )
       {
       typename AnisotropicDiffusiveRegistrationFilterType::WeightImageType
-          ::Pointer weightImage = 0;
+          ::Pointer weightImage = nullptr;
       if( ReadAndOrientImageAxial( weightImage,
                                    inputWeightRegularizationsImageFileName ) )
         {
@@ -586,7 +586,7 @@ int DoIt( int argc, char * argv[] )
     else if( sparseAnisotropicRegistrator )
       {
       typename AnisotropicDiffusiveSparseRegistrationFilterType
-          ::WeightComponentImageType::Pointer weightImage = 0;
+          ::WeightComponentImageType::Pointer weightImage = nullptr;
       if( ReadAndOrientImageAxial( weightImage,
                                    inputWeightRegularizationsImageFileName ) )
         {
@@ -612,7 +612,7 @@ int DoIt( int argc, char * argv[] )
     {
     timeCollector.Start( "Loading weight structures image" );
     typename AnisotropicDiffusiveSparseRegistrationFilterType
-        ::WeightMatrixImageType::Pointer weightImage = 0;
+        ::WeightMatrixImageType::Pointer weightImage = nullptr;
     if( ReadAndOrientImageAxial( weightImage,
                                  inputWeightStructuresImageFileName ) )
       {

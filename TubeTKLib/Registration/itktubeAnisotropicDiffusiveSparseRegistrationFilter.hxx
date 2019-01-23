@@ -171,8 +171,8 @@ AnisotropicDiffusiveSparseRegistrationFilter
   int termOrder[4] = { SMOOTH_TANGENTIAL, PROP_TANGENTIAL, SMOOTH_NORMAL,
     PROP_NORMAL };
   int t = 0;
-  ScalarDerivativeImagePointer firstOrder = 0;
-  TensorDerivativeImagePointer secondOrder = 0;
+  ScalarDerivativeImagePointer firstOrder = nullptr;
+  TensorDerivativeImagePointer secondOrder = nullptr;
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
     for( int j = 0; j < this->GetNumberOfTerms(); j++ )
@@ -522,8 +522,8 @@ AnisotropicDiffusiveSparseRegistrationFilter
     bool computeWeightRegularizations )
 {
   // Setup the point locator and get the normals from the surface polydata
-  vtkSmartPointer< vtkPointLocator > surfacePointLocator = 0;
-  vtkFloatArray * surfaceNormalData = 0;
+  vtkSmartPointer< vtkPointLocator > surfacePointLocator = nullptr;
+  vtkFloatArray * surfaceNormalData = nullptr;
   if( this->GetBorderSurface() )
     {
     surfacePointLocator = vtkSmartPointer< vtkPointLocator >::New();
@@ -536,10 +536,10 @@ AnisotropicDiffusiveSparseRegistrationFilter
     }
 
   // Create a vtk polydata representing the tube points and associated normals
-  vtkSmartPointer< vtkPointLocator > tubePointLocator = 0;
-  vtkFloatArray * tubeNormal1Data = 0;
-  vtkFloatArray * tubeNormal2Data = 0;
-  vtkFloatArray * tubeRadiusData = 0;
+  vtkSmartPointer< vtkPointLocator > tubePointLocator = nullptr;
+  vtkFloatArray * tubeNormal1Data = nullptr;
+  vtkFloatArray * tubeNormal2Data = nullptr;
+  vtkFloatArray * tubeRadiusData = nullptr;
   if( this->GetTubeSurface() )
     {
     tubePointLocator = vtkSmartPointer< vtkPointLocator >::New();
@@ -1351,7 +1351,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   // calculate derivatives only for the SMOOTH terms, and the PROP terms
   // will be automatically updated since they point to the same image data.
   DeformationComponentImageArrayType deformationComponentImageArray;
-  deformationComponentImageArray.Fill( 0 );
+  deformationComponentImageArray.Fill( nullptr );
   for( int i = 0; i < this->GetNumberOfTerms(); i++ )
     {
     if( i == SMOOTH_TANGENTIAL || i == SMOOTH_NORMAL )
