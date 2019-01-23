@@ -311,7 +311,7 @@ static unsigned int readBinFileAnySizeWithOffset(
     return 0;
     }
   struct stat st;
-  if( fstat( _fileno( fp ), &st ) )
+  if( fstat( fileno( fp ), &st ) )
     {
     cerr << "readBinFileAnySizeWithOffset(): _fstat() failed on " <<
       filename << endl;
