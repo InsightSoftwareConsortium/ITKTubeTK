@@ -150,7 +150,7 @@ class ClassErrors(object):
                 print('     Superclass PrintSelf not called!')
             self.missing_superclass_calls += 1
 
-        for ivar, found in ivars_printed.iteritems():
+        for ivar, found in ivars_printed.items():
             if VERBOSE >= 1:
                 prefix = '        ' + ivar + ' printed:'
                 print(prefix.ljust(60) + str(found))

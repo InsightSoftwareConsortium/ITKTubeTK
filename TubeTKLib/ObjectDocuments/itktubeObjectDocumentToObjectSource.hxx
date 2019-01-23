@@ -211,7 +211,7 @@ ObjectDocumentToObjectSource< TObjectDocument, VDimension >
   catch( ... )
     {
     itkWarningMacro( << "No readable transform found." );
-    return (typename TransformType *)NULL;
+    return (TransformType *)NULL;
     }
 
   typename TransformReaderType::GroupPointer group = reader->GetGroup();

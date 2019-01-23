@@ -146,42 +146,42 @@ int itktubeRadiusExtractor2Test2( int argc, char * argv[] )
         pntIter->SetID( i+1 );
         }
 
-      if( vnl_math_abs( pntIter->GetTangent().GetVnlVector().magnitude()-1 )
+      if( std::fabs( pntIter->GetTangent().GetVnlVector().magnitude()-1 )
         > 0.01 )
         {
         std::cout << "Point: " << i << ": Tangent not of unit length."
           << std::endl;
         ++failures;
         }
-      if( vnl_math_abs( pntIter->GetNormal1().GetVnlVector().magnitude()-1 )
+      if( std::fabs( pntIter->GetNormal1().GetVnlVector().magnitude()-1 )
         > 0.01 )
         {
         std::cout << "Point: " << i << ": Normal1 not of unit length."
           << std::endl;
         ++failures;
         }
-      if( vnl_math_abs( pntIter->GetNormal2().GetVnlVector().magnitude()-1 )
+      if( std::fabs( pntIter->GetNormal2().GetVnlVector().magnitude()-1 )
         > 0.01 )
         {
         std::cout << "Point: " << i << ": Normal2 not of unit length."
           << std::endl;
         ++failures;
         }
-      if( vnl_math_abs( dot_product( pntIter->GetTangent().GetVnlVector(),
+      if( std::fabs( dot_product( pntIter->GetTangent().GetVnlVector(),
         pntIter->GetNormal1().GetVnlVector() ) ) > 0.001 )
         {
         std::cout << "Point: " << i
           << ": dot_product( Tangent, Normal1 ) != 0." << std::endl;
         ++failures;
         }
-      if( vnl_math_abs( dot_product( pntIter->GetTangent().GetVnlVector(),
+      if( std::fabs( dot_product( pntIter->GetTangent().GetVnlVector(),
         pntIter->GetNormal2().GetVnlVector() ) ) > 0.001 )
         {
         std::cout << "Point: " << i
           << ": dot_product( Tangent, Normal2 ) != 0." << std::endl;
         ++failures;
         }
-      if( vnl_math_abs( dot_product( pntIter->GetNormal1().GetVnlVector(),
+      if( std::fabs( dot_product( pntIter->GetNormal1().GetVnlVector(),
         pntIter->GetNormal2().GetVnlVector() ) ) > 0.001 )
         {
         std::cout << "Point: " << i
@@ -213,7 +213,7 @@ int itktubeRadiusExtractor2Test2( int argc, char * argv[] )
     pntIter = tube->GetPoints().begin();
     for( unsigned int i=0; i<numPoints; i++ )
       {
-      double diff = vnl_math_abs( pntIter->GetRadius() - idealR[i] );
+      double diff = std::fabs( pntIter->GetRadius() - idealR[i] );
       avgDiff += diff;
       if( diff > maxDiff )
         {

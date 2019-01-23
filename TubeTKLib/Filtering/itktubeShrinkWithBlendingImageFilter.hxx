@@ -58,6 +58,8 @@ ShrinkWithBlendingImageFilter< TInputImage, TOutputImage >
     m_NewSize[j] = 0;
     m_InternalShrinkFactors = 1;
     }
+  //Use the ITKv4 Threading Model (call ThreadedGenerateData instead of DynamicThreadedGenerateData)
+  this->DynamicMultiThreadingOff();
 }
 
 

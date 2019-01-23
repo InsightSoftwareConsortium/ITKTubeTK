@@ -126,7 +126,7 @@ double ShortestPathKernel::Compute( void )
       double weightE1 = wmFG1[*bIt];
 
       // Skip edges, unless the weights are equal
-      if( !( vnl_math_abs( weightE0 - weightE1 ) <
+      if( !( std::fabs( weightE0 - weightE1 ) <
           std::numeric_limits<double>::epsilon() ) )
         {
         continue;

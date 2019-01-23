@@ -51,6 +51,8 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
   this->m_UltrasoundProbeBeamDirection.Fill( 0.0 );
 
   this->m_GradientMagnitudeTolerance = 1.0e-7;
+  //Use the ITKv4 Threading Model (call ThreadedGenerateData instead of DynamicThreadedGenerateData)
+  this->DynamicMultiThreadingOff();
 }
 
 

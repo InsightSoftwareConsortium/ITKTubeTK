@@ -207,7 +207,7 @@ public:
       double stdDev255 = std::sqrt( sums255/count255 - mean255*mean255 );
       double stdDevNot = std::sqrt( sumsNot/countNot - meanNot*meanNot );
 
-      result = - vnl_math_abs( mean255 - meanNot )
+      result = - std::fabs( mean255 - meanNot )
         / std::sqrt( stdDev255 * stdDevNot );
       }
 
@@ -434,7 +434,7 @@ public:
       double stdDev255 = std::sqrt( sums255/count255 - mean255*mean255 );
       double stdDevNot = std::sqrt( sumsNot/countNot - meanNot*meanNot );
 
-      result = - vnl_math_abs( mean255 - meanNot )
+      result = - std::fabs( mean255 - meanNot )
         / std::sqrt( stdDev255 * stdDevNot );
       }
 

@@ -45,6 +45,8 @@ AcousticImpulseResponseImageFilter< TInputImage, TOutputImage,
     New();
 
   this->m_CastImageFilter = CastImageFilterType::New();
+  //Use the ITKv4 Threading Model (call ThreadedGenerateData instead of DynamicThreadedGenerateData)
+  this->DynamicMultiThreadingOff();
 }
 
 
