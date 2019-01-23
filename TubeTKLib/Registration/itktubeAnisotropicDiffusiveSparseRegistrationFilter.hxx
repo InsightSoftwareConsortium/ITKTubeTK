@@ -663,7 +663,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
         threadId );
     }
 
-  return ITK_THREAD_RETURN_VALUE;
+  return ITK_THREAD_RETURN_DEFAULT_VALUE;
 }
 
 /**
