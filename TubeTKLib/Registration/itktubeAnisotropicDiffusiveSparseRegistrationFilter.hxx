@@ -68,6 +68,9 @@ AnisotropicDiffusiveSparseRegistrationFilter
   // Lambda/gamma used to calculate weight from distance
   m_Lambda  = 0.01;
   m_Gamma   = -1.0;
+  //Use the ITKv4 Threading Model
+  //  (call ThreadedGenerateData instead of DynamicThreadedGenerateData)
+  this->DynamicMultiThreadingOff();
 }
 
 /**
@@ -577,7 +580,7 @@ AnisotropicDiffusiveSparseRegistrationFilter
   str.ComputeWeightRegularizations = computeWeightRegularizations;
 
   // Multithread the execution
-  this->GetMultiThreader()->SetNumberOfThreads( this->GetNumberOfThreads() );
+  this->GetMultiThreader()->SetNumberOfWorkUnits( this->GetNumberOfWorkUnits() );
   this->GetMultiThreader()->SetSingleMethod(
       this->GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback,
       & str );
@@ -604,13 +607,13 @@ AnisotropicDiffusiveSparseRegistrationFilter
   void * arg )
 {
   int threadId =
-    ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->ThreadID;
+    ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )->WorkUnitID;
   int threadCount =
-    ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->NumberOfThreads;
+    ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )->NumberOfWorkUnits;
 
   AnisotropicDiffusiveSparseRegistrationFilterThreadStruct * str
       = ( AnisotropicDiffusiveSparseRegistrationFilterThreadStruct * )
-            ( ( ( MultiThreader::ThreadInfoStruct * )( arg ) )->UserData );
+            ( ( ( MultiThreaderBase::WorkUnitInfo * )( arg ) )->UserData );
 
   // Execute the actual method with appropriate output region
   // First find out how many pieces extent can be split into.
