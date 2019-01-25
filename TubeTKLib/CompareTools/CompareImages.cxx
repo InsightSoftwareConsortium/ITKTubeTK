@@ -89,7 +89,7 @@ int main( int argc, char **argv )
   // Option for setting the filename of a single baseline image.
   command.SetOption( "baselineImages", "b", true, 
     "Baseline images filename" );
-  command.AddOptionField( "baselineImages", "filename", MetaCommand::STRING,
+  command.AddOptionField( "baselineImages", "filenames", MetaCommand::STRING,
     true );
 
 
@@ -141,18 +141,15 @@ int main( int argc, char **argv )
   baselineImageFilenames.clear();
 
   // Get the filename of the base line image
-  if( command.GetOptionWasSet( "baselineImages" ) )
-    {
-    std::string filenames = command.GetValueAsString( "baselineImages" );
-    MET_StringToVector( filenames, baselineImageFilenames );
-    }
+  std::string filenames = command.GetValueAsString( "baselineImages", "filenames" );
+  MET_StringToVector( filenames, baselineImageFilenames );
 
   std::string bestBaselineFilename;
 
   try
     {
-    typedef std::vector< std::string >::const_iterator  nameIterator;
-    nameIterator baselineImageItr = baselineImageFilenames.begin();
+    typedef std::vector< std::string >::const_iterator  NameIteratorType;
+    NameIteratorType baselineImageItr = baselineImageFilenames.begin();
     while( baselineImageItr != baselineImageFilenames.end() )
       {
       const int currentStatus =
