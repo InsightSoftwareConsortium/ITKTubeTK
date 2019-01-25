@@ -455,7 +455,7 @@ private:
    * acquire an output region that it passes to
    * ThreadedGetNormalsAndDistancesFromClosestSurfacePoint for
    * processing. */
-  static ITK_THREAD_RETURN_TYPE
+  static ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION
       GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback(
           void * arg );
 

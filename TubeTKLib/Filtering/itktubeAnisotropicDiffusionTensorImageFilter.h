@@ -204,11 +204,11 @@ private:
 
   /** This callback method uses ImageSource::SplitRequestedRegion to acquire an
    * output region that it passes to ThreadedApplyUpdate for processing. */
-  static ITK_THREAD_RETURN_TYPE ApplyUpdateThreaderCallback( void *arg );
+  static ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION ApplyUpdateThreaderCallback( void *arg );
 
   /** This callback method uses SplitUpdateContainer to acquire a region
    * which it then passes to ThreadedCalculateChange for processing. */
-  static ITK_THREAD_RETURN_TYPE CalculateChangeThreaderCallback( void *arg );
+  static ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION CalculateChangeThreaderCallback( void *arg );
 
   typename DiffusionTensorImageType::Pointer            m_DiffusionTensorImage;
 
