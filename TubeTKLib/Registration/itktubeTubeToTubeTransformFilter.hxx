@@ -110,8 +110,6 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
     Point<double, TDimension> transformedWorldPoint;
     Point<double, TDimension> inputPoint;
     Point<double, TDimension> outputPoint;
-    CovariantVector< double, TDimension > normal1;
-    CovariantVector< double, TDimension > normal2;
 
     inputSOAsTube->ComputeObjectToWorldTransform();
 

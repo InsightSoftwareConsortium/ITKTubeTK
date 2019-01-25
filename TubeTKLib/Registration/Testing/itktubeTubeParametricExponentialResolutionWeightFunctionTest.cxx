@@ -99,9 +99,9 @@ int itktubeTubeParametricExponentialResolutionWeightFunctionTest( int argc, char
     }
 
   unsigned int numberOfAlphas = 5;
-  float alphas[] = { 5.0, 2.0, 1.0, 0.5, 0.0 };
+  double alphas[] = { 5.0, 2.0, 1.0, 0.5, 0.0 };
   unsigned int numberOfDeltas = 5;
-  float deltas[] = { 0.7, 0.5, 0.0, -0.5, -0.7 };
+  double deltas[] = { 0.7, 0.5, 0.0, -0.5, -0.7 };
 
   for( unsigned int ii = 0; ii < numberOfPoints; ++ii )
     {
