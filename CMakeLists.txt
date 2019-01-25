@@ -152,7 +152,7 @@ option( TubeTK_USE_VTK "Use VTK to enable additional functionality." OFF )
 if( TubeTK_USE_VTK )
   find_package( VTK REQUIRED )
   mark_as_advanced( CLEAR VTK_DIR )
-  #include( ${VTK_USE_FILE} )
+  include( ${VTK_USE_FILE} )
 endif()
 
 ####
