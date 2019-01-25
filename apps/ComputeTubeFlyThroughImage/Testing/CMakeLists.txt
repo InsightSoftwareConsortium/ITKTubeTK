@@ -54,7 +54,7 @@ set_tests_properties( ${MODULE_NAME}-Test1-Compare-flyThrough PROPERTIES DEPENDS
 
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test1-Compare-flyThrough-TubeMask
-  COMMAND ${CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test1.flyThrough.tubeMask.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test1.flyThrough.tubeMask.mha}
     -i 0.001 )
@@ -78,7 +78,7 @@ ExternalData_Add_Test( TubeTKData
 # compare outputs with groundtruth
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test2-Compare-flyThrough
-  COMMAND ${CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2.flyThrough.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2.flyThrough.mha}
     -i 0.001 )
@@ -88,7 +88,7 @@ set_tests_properties( ${MODULE_NAME}-Test2-Compare-flyThrough PROPERTIES DEPENDS
 
 ExternalData_Add_Test( TubeTKData
   NAME ${MODULE_NAME}-Test2-Compare-flyThrough-TubeMask
-  COMMAND ${CompareImages_EXE}
+  COMMAND ${TubeTK_CompareImages_EXE}
     -t ${TEMP}/${MODULE_NAME}Test2.flyThrough.tubeMask.mha
     -b DATA{${TubeTK_DATA_ROOT}/${MODULE_NAME}Test2.flyThrough.tubeMask.mha}
     -i 0.001 )
