@@ -226,9 +226,9 @@ ExternalData_Add_Test( TubeTKData
   NAME SyncRecordTest
   COMMAND ${BASE_USTK_TESTS}
     SyncRecordTest
-      DATA{${TubeTK_DATA_ROOT}/reexported_tracking_data_f_Kitware_v2.txt,ultrasound_0002392.ppm,ultrasound_0002393.ppm,ultrasound_0002394.ppm} )
-set_tests_properties( SyncRecordTest PROPERTIES
-  WORKING_DIRECTORY ${ExternalData_BINARY_ROOT}/MIDAS_Keys )
+      DATA{${TubeTK_DATA_ROOT}/reexported_tracking_data_f_Kitware_v2.txt,${TubeTK_DATA_ROOT}/ultrasound_0002392.ppm,${TubeTK_DATA_ROOT}/ultrasound_0002393.ppm,${TubeTK_DATA_ROOT}/ultrasound_0002394.ppm} )
+#set_tests_properties( SyncRecordTest PROPERTIES
+  #WORKING_DIRECTORY ${ExternalData_BINARY_ROOT}/MIDAS_Keys )
 
 ExternalData_Add_Test( TubeTKData
   NAME itktubeInnerOpticToPlusImageReaderTest
