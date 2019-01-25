@@ -24,6 +24,7 @@
 #include "itktubeDifferenceImageFilter.h"
 
 #include "metaCommand.h"
+#include "metaUtils.h"
 
 #include <iostream>
 #include <fstream>
@@ -36,11 +37,11 @@ int RegressionTestImage( const char *, const char *, int, bool, double, int,
 
 int main( int argc, char **argv )
 {
-  if( argc < 3 )
+  if( argc < 5 )
     {
     std::cerr << "Usage:" << std::endl;
     std::cerr
-      << "testImage, baselineImage1, [baselineImage2, baselineImage3, ...]"
+      << "-t testImage -b baselineImage1[,baselineImage2[,baselineImage3[, ...]"
       << std::endl;
     std::cerr
       << "If you supply more than one baselineImage, this test will pass if any"
@@ -85,16 +86,10 @@ int main( int argc, char **argv )
     "Filename of the image to be tested against the baseline images" );
   command.AddOptionField( "testImage", "filename", MetaCommand::STRING, true );
 
-  // Option for setting the filename of multiple baseline images.
-  command.SetOption( "baselineImages", "B", false, 
-    "List of baseline images <N> <image1> <image2>...<imageN>" );
-  command.AddOptionField( "baselineImages", "filename", MetaCommand::LIST,
-    true );
-
   // Option for setting the filename of a single baseline image.
-  command.SetOption( "baselineImage", "b", false, 
+  command.SetOption( "baselineImages", "b", true, 
     "Baseline images filename" );
-  command.AddOptionField( "baselineImage", "filename", MetaCommand::STRING,
+  command.AddOptionField( "baselineImages", "filename", MetaCommand::STRING,
     true );
 
 
@@ -106,7 +101,6 @@ int main( int argc, char **argv )
   unsigned long toleranceNumberOfPixels = 0;
   double toleranceCoordinates = 1e-6;
   std::string testImageFilename;
-  std::string baselineImageFilename;
 
   // If a value of intensity tolerance was given in the command line
   if( command.GetOptionWasSet( "toleranceIntensity" ) )
@@ -143,70 +137,39 @@ int main( int argc, char **argv )
       command.GetValueAsString( "testImage", "filename" );
     }
 
-  std::list< std::string > baselineImageFilenames;
+  std::vector< std::string > baselineImageFilenames;
   baselineImageFilenames.clear();
-
-  bool singleBaselineImage = true;
-
-  if( !command.GetOptionWasSet( "baselineImage" ) &&
-    !command.GetOptionWasSet( "baselineImages" ) )
-    {
-    std::cerr << "You must provide a -BaselineImage or -BaselineImages option"
-      << std::endl;
-    return EXIT_FAILURE;
-    }
-
-  // Get the filename of the base line image
-  if( command.GetOptionWasSet( "baselineImage" ) )
-    {
-    singleBaselineImage = true;
-    baselineImageFilename = command.GetValueAsString( "baselineImage",
-      "filename" );
-    }
 
   // Get the filename of the base line image
   if( command.GetOptionWasSet( "baselineImages" ) )
     {
-    singleBaselineImage = false;
-    baselineImageFilenames = command.GetValueAsList( "baselineImages" );
+    std::string filenames = command.GetValueAsString( "baselineImages" );
+    MET_StringToVector( filenames, baselineImageFilenames );
     }
 
   std::string bestBaselineFilename;
 
   try
     {
-    if( singleBaselineImage )
+    typedef std::vector< std::string >::const_iterator  nameIterator;
+    nameIterator baselineImageItr = baselineImageFilenames.begin();
+    while( baselineImageItr != baselineImageFilenames.end() )
       {
-      bestBaselineStatus =
+      const int currentStatus =
         RegressionTestImage( 
-          testImageFilename.c_str(), baselineImageFilename.c_str(), 
-          0, false, toleranceIntensity, toleranceRadius, 
-          toleranceNumberOfPixels, toleranceCoordinates );
-      bestBaselineFilename = baselineImageFilename;
-      }
-    else
-      {
-
-      typedef std::list< std::string >::const_iterator  nameIterator;
-      nameIterator baselineImageItr = baselineImageFilenames.begin();
-      while( baselineImageItr != baselineImageFilenames.end() )
+            testImageFilename.c_str(), baselineImageItr->c_str(), 
+            0, false, toleranceIntensity, toleranceRadius, 
+            toleranceNumberOfPixels, toleranceCoordinates );
+      if( currentStatus < bestBaselineStatus )
         {
-        const int currentStatus =
-          RegressionTestImage( 
-              testImageFilename.c_str(), baselineImageItr->c_str(), 
-              0, false, toleranceIntensity, toleranceRadius, 
-              toleranceNumberOfPixels, toleranceCoordinates );
-        if( currentStatus < bestBaselineStatus )
-          {
-          bestBaselineStatus = currentStatus;
-          bestBaselineFilename = *baselineImageItr;
-          }
-        if( bestBaselineStatus == 0 )
-          {
-          break;
-          }
-        ++baselineImageItr;
+        bestBaselineStatus = currentStatus;
+        bestBaselineFilename = *baselineImageItr;
         }
+      if( bestBaselineStatus == 0 )
+        {
+        break;
+        }
+      ++baselineImageItr;
       }
     // generate images of our closest match
     if( bestBaselineStatus == 0 )
@@ -225,7 +188,6 @@ int main( int argc, char **argv )
         toleranceIntensity, toleranceRadius, toleranceNumberOfPixels,
         toleranceCoordinates );
       }
-
     }
   catch( itk::ExceptionObject& e )
     {
