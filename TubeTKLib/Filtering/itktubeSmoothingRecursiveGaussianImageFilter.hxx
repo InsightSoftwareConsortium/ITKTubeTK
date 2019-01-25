@@ -95,14 +95,14 @@ SmoothingRecursiveGaussianImageFilter< TInputImage, TOutputImage >
 template< typename TInputImage, typename TOutputImage >
 void
 SmoothingRecursiveGaussianImageFilter< TInputImage, TOutputImage >
-::SetNumberOfThreads( ThreadIdType nb )
+::SetNumberOfWorkUnits( ThreadIdType nb )
 {
-  Superclass::SetNumberOfThreads( nb );
+  Superclass::SetNumberOfWorkUnits( nb );
   for( int i = 0; i < static_cast< int >( ImageDimension ) - 1; i++ )
     {
-    m_SmoothingFilters[i]->SetNumberOfThreads( nb );
+    m_SmoothingFilters[i]->SetNumberOfWorkUnits( nb );
     }
-  m_FirstSmoothingFilter->SetNumberOfThreads( nb );
+  m_FirstSmoothingFilter->SetNumberOfWorkUnits( nb );
 }
 
 template< typename TInputImage, typename TOutputImage >

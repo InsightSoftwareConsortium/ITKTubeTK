@@ -116,13 +116,13 @@ int main( int argc, char * argv[] )
       if( std::strcmp( argv[1], "--with-threads" ) == 0 )
         {
         int numThreads = std::atoi( argv[2] );
-        itk::MultiThreaderBase::SetGlobalDefaultNumberOfThreads( numThreads );
+        itk::MultiThreaderBase::SetGlobalDefaultNumberOfWorkUnits( numThreads );
         argv += 2;
         argc -= 2;
         }
       else if( std::strcmp( argv[1], "--without-threads" ) == 0 )
         {
-        itk::MultiThreaderBase::SetGlobalDefaultNumberOfThreads( 1 );
+        itk::MultiThreaderBase::SetGlobalDefaultNumberOfWorkUnits( 1 );
         argv += 1;
         argc -= 1;
         }

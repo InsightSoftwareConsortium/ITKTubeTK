@@ -253,7 +253,7 @@ InitialImageToImageRegistrationMethod<TImage>
       }
 
     // HELP: ImageMomentsCalculator isn't multi-threaded :(
-    // momCalc->SetNumberOfThreads( this->GetRegistrationNumberOfThreads() );
+    // momCalc->SetNumberOfWorkUnits( this->GetRegistrationNumberOfWorkUnits() );
     try
       {
       momCalc->Compute();

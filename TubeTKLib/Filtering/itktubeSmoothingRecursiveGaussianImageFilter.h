@@ -119,7 +119,7 @@ public:
 
   // See super class for doxygen documentation
   //
-  void SetNumberOfThreads( ThreadIdType nb );
+  void SetNumberOfWorkUnits( ThreadIdType nb );
 
   // See super class for doxygen documentation
   //

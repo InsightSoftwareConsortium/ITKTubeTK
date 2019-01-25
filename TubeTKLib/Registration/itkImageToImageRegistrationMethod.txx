@@ -36,8 +36,8 @@ ImageToImageRegistrationMethod<TImage>
 
   this->ProcessObject::SetNthOutput( 0, transformDecorator.GetPointer() );
 
-  this->m_RegistrationNumberOfThreads = this->GetNumberOfThreads();
-  this->GetMultiThreader()->SetNumberOfThreads( this->m_RegistrationNumberOfThreads );
+  this->m_RegistrationNumberOfWorkUnits = this->GetNumberOfWorkUnits();
+  this->GetMultiThreader()->SetNumberOfWorkUnits( this->m_RegistrationNumberOfWorkUnits );
 
   this->m_FixedImage = 0;
   this->m_MovingImage = 0;
@@ -214,7 +214,7 @@ void
 ImageToImageRegistrationMethod<TImage>
 ::Initialize( void )
 {
-  this->GetMultiThreader()->SetNumberOfThreads( m_RegistrationNumberOfThreads );
+  this->GetMultiThreader()->SetNumberOfWorkUnits( m_RegistrationNumberOfWorkUnits );
 
   if( m_Transform.IsNull() )
     {
@@ -253,7 +253,7 @@ ImageToImageRegistrationMethod<TImage>
 {
   Superclass::PrintSelf( os, indent );
 
-  os << indent << "Number of threads = " << this->m_RegistrationNumberOfThreads
+  os << indent << "Number of threads = " << this->m_RegistrationNumberOfWorkUnits
      << std::endl;
   if( this->m_Transform.IsNotNull() )
     {

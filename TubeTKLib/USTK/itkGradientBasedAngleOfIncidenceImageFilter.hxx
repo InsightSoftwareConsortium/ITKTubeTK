@@ -80,7 +80,7 @@ GradientBasedAngleOfIncidenceImageFilter< TInputImage,
 ::BeforeThreadedGenerateData( void )
 {
   this->m_CastImageFilter->SetInput( this->GetInput() );
-  this->m_GradientFilter->SetNumberOfThreads( this->GetNumberOfThreads() );
+  this->m_GradientFilter->SetNumberOfWorkUnits( this->GetNumberOfWorkUnits() );
   this->m_GradientFilter->SetInput( this->m_CastImageFilter->GetOutput() );
   this->m_GradientFilter->Update();
 
