@@ -358,7 +358,7 @@ AnisotropicDiffusiveRegistrationFilter
  * processing
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
-ITK_THREAD_RETURN_TYPE
+ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION
 AnisotropicDiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::GetNormalsAndDistancesFromClosestSurfacePointThreaderCallback(

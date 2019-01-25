@@ -652,7 +652,7 @@ DiffusiveRegistrationFilter
  * processing
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
-ITK_THREAD_RETURN_TYPE
+ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ComputeDeformationComponentDerivativeImageHelperThreaderCallback(
@@ -952,7 +952,7 @@ DiffusiveRegistrationFilter
  * Calls ThreadedCalculateChangeGradient for processing
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
-ITK_THREAD_RETURN_TYPE
+ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::CalculateChangeGradientThreaderCallback( void * arg )
@@ -1334,7 +1334,7 @@ DiffusiveRegistrationFilter
  * Calls ThreadedCalculateEnergies for processing
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
-ITK_THREAD_RETURN_TYPE
+ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::CalculateEnergiesThreaderCallback( void * arg )
@@ -1688,7 +1688,7 @@ DiffusiveRegistrationFilter
  * diffusion tensor image
  */
 template< class TFixedImage, class TMovingImage, class TDeformationField >
-ITK_THREAD_RETURN_TYPE
+ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION
 DiffusiveRegistrationFilter
   < TFixedImage, TMovingImage, TDeformationField >
 ::ApplyUpdateThreaderCallback( void * arg )
