@@ -216,7 +216,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 }
 
 template< class TInputImage, class TOutputImage >
-ITK_THREAD_RETURN_TYPE
+ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::ApplyUpdateThreaderCallback( void * arg )
 {
@@ -288,7 +288,7 @@ AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 }
 
 template< class TInputImage, class TOutputImage >
-ITK_THREAD_RETURN_TYPE
+ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION
 AnisotropicDiffusionTensorImageFilter<TInputImage, TOutputImage>
 ::CalculateChangeThreaderCallback( void * arg )
 {

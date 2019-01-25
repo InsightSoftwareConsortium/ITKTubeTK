@@ -859,25 +859,26 @@ private:
   /** This callback method uses ImageSource::SplitRequestedRegion to
    * acquire an
    * output region that it passes to ThreadedApplyUpdate for processing. */
-  static ITK_THREAD_RETURN_TYPE ApplyUpdateThreaderCallback( void *arg );
+  static ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION
+    ApplyUpdateThreaderCallback( void *arg );
 
   /** This callback method uses SplitUpdateContainer to acquire a region
    * which it then passes to ThreadedCalculateChange for processing. */
-  static ITK_THREAD_RETURN_TYPE CalculateChangeGradientThreaderCallback(
-    void *arg );
+  static ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION
+    CalculateChangeGradientThreaderCallback( void *arg );
 
   /** This callback method uses SplitUpdateContainer to acquire a region
    * which it then passes to
    * ThreadedComputeDeformationComponentDerivativeImageHelper
    * for processing. */
-  static ITK_THREAD_RETURN_TYPE
-      ComputeDeformationComponentDerivativeImageHelperThreaderCallback(
-          void *arg );
+  static ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION
+   ComputeDeformationComponentDerivativeImageHelperThreaderCallback(
+     void *arg );
 
   /** This callback method uses SplitUpdateContainer to acquire a region
    * which it then passes to ThreadedComputeEnergies for processing. */
-  static ITK_THREAD_RETURN_TYPE CalculateEnergiesThreaderCallback(
-    void *arg );
+  static ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION
+    CalculateEnergiesThreaderCallback( void *arg );
 
   TimeStepType                              m_OriginalTimeStep;
 
