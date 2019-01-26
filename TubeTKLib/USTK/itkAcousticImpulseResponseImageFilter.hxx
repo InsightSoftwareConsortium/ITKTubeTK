@@ -57,8 +57,8 @@ AcousticImpulseResponseImageFilter< TInputImage, TOutputImage,
 ::BeforeThreadedGenerateData( void )
 {
   this->m_CastImageFilter->SetInput( this->GetInput() );
-  this->m_GradientMagnitudeFilter->SetNumberOfThreads(
-    this->GetNumberOfThreads() );
+  this->m_GradientMagnitudeFilter->SetNumberOfWorkUnits(
+    this->GetNumberOfWorkUnits() );
   this->m_GradientMagnitudeFilter->SetInput(
     this->m_CastImageFilter->GetOutput() );
   this->m_GradientMagnitudeFilter->Update();

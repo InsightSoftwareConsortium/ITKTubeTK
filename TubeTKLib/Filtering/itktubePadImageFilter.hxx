@@ -171,7 +171,7 @@ PadImageFilter<TInputImage, TOutputImage>
       }
     }
   pad0->SetInput( input0 );
-  pad0->SetNumberOfThreads( this->GetNumberOfThreads() );
+  pad0->SetNumberOfWorkUnits( this->GetNumberOfWorkUnits() );
   if( m_PadMethod != NO_PADDING )
     {
     for( unsigned int i=0; i<ImageDimension; i++ )

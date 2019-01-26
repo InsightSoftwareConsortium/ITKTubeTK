@@ -330,6 +330,7 @@ Read( const char * _headerName )
     throw( "Expected features and features in PDF file do not match" );
     }
 
+  typename PDFSegmenterType::ObjectIdListType tmpVectorObjectId;
   std::vector< unsigned int > tmpVectorUInt;
   std::vector< int > tmpVectorInt;
   std::vector< double > tmpVectorDouble;
@@ -364,12 +365,12 @@ Read( const char * _headerName )
   unsigned int nObjects = static_cast< unsigned int >( mF->value[0] );
 
   mF = MET_GetFieldRecord( "ObjectId", &metaFields );
-  tmpVectorInt.resize( nObjects );
+  tmpVectorObjectId.resize( nObjects );
   for( unsigned int i = 0; i < nObjects; ++i )
     {
-    tmpVectorInt[i] = static_cast< int >( mF->value[i] );
+    tmpVectorObjectId[i] = static_cast< int >( mF->value[i] );
     }
-  m_PDFSegmenter->SetObjectId( tmpVectorInt );
+  m_PDFSegmenter->SetObjectId( tmpVectorObjectId );
 
   mF = MET_GetFieldRecord( "ObjectPDFWeight", &metaFields );
   tmpVectorDouble.resize( nObjects );
@@ -738,7 +739,12 @@ Write( const char * _headerName )
       m_PDFSegmenter->GetClassPDFImage( i )->GetPixelContainer()
         ->GetBufferPointer() );
 
-    pdfClassWriter.SetObjectId( m_PDFSegmenter->GetObjectId() );
+    std::vector< int > tmpObjectId;
+    for( unsigned int j = 0; j < nObjects; ++j )
+      {
+      tmpObjectId[j] = static_cast<int>(m_PDFSegmenter->GetObjectId()[j]);
+      }
+    pdfClassWriter.SetObjectId( tmpObjectId );
     pdfClassWriter.SetObjectPDFWeight(
       m_PDFSegmenter->GetObjectPDFWeight() );
     pdfClassWriter.SetVoidId( m_PDFSegmenter->GetVoidId() );

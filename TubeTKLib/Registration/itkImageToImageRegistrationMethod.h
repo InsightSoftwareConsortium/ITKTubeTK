@@ -78,8 +78,8 @@ public:
   //
   // Custom Methods
   //
-  itkSetMacro( RegistrationNumberOfThreads, unsigned int );
-  itkGetMacro( RegistrationNumberOfThreads, unsigned int );
+  itkSetMacro( RegistrationNumberOfWorkUnits, unsigned int );
+  itkGetMacro( RegistrationNumberOfWorkUnits, unsigned int );
 
   itkSetObjectMacro( Observer, Command );
   itkGetObjectMacro( Observer, Command );
@@ -160,7 +160,7 @@ private:
   // Purposely not implemented
   void operator =( const Self & );
 
-  unsigned int m_RegistrationNumberOfThreads;
+  unsigned int m_RegistrationNumberOfWorkUnits;
 
   Command::Pointer m_Observer;
 

@@ -75,7 +75,7 @@ public:
 
   typedef typename LabelMapType::PixelType     LabelMapPixelType;
 
-  typedef int                                  ObjectIdType;
+  typedef LabelMapPixelType                    ObjectIdType;
   typedef std::vector< ObjectIdType >          ObjectIdListType;
 
   typedef float                                ProbabilityPixelType;
@@ -96,8 +96,8 @@ public:
   void ClearObjectIds( void );
   void SetObjectId( ObjectIdType objectId );
   void AddObjectId( ObjectIdType objectId );
-  void SetObjectId( const ObjectIdListType _objectId );
-  const VectorIntType & GetObjectId( void ) const;
+  void SetObjectId( ObjectIdListType _objectId );
+  const ObjectIdListType & GetObjectId( void ) const;
 
   unsigned int GetNumberOfClasses( void ) const;
   unsigned int GetNumberOfObjectIds( void ) const;
