@@ -75,8 +75,8 @@ public:
 
   typedef typename LabelMapType::PixelType     LabelMapPixelType;
 
-  typedef typename LabelMapPixelType           ObjectIdType;
-  typedef std::vector< typename ObjectIdType > ObjectIdListType;
+  typedef LabelMapPixelType                    ObjectIdType;
+  typedef std::vector< ObjectIdType >          ObjectIdListType;
 
   typedef float                                ProbabilityPixelType;
   typedef std::vector< ProbabilityPixelType >  ProbabilityVectorType;
