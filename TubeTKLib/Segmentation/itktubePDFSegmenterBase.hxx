@@ -136,7 +136,7 @@ PDFSegmenterBase< TImage, TLabelMap >
 template< class TImage, class TLabelMap >
 void
 PDFSegmenterBase< TImage, TLabelMap >
-::SetObjectId( const ObjectIdListType objectId )
+::SetObjectId( ObjectIdListType objectId )
 {
   m_ObjectIdList = objectId;
   if( m_PDFWeightList.size() != m_ObjectIdList.size() )
@@ -146,7 +146,7 @@ PDFSegmenterBase< TImage, TLabelMap >
 }
 
 template< class TImage, class TLabelMap >
-const typename PDFSegmenterBase< TImage, TLabelMap >::VectorIntType &
+const typename PDFSegmenterBase< TImage, TLabelMap >::ObjectIdListType &
 PDFSegmenterBase< TImage, TLabelMap >
 ::GetObjectId( void ) const
 {
