@@ -43,7 +43,7 @@ void WriteImageInSequence( const typename TImage::Pointer & img,
   typename ImageWriterType::Pointer rsImageWriter = ImageWriterType::New();
   std::string fname = base;
   char c[80];
-  std::sprintf( c, ext.c_str(), num );
+  std::snprintf( c, 79, ext.c_str(), num );
   fname += std::string( c );
   rsImageWriter->SetUseCompression( true );
   rsImageWriter->SetFileName( fname.c_str() );

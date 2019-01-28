@@ -29,11 +29,6 @@ limitations under the License.
 #ifndef __itktubeTubeExtractor_hxx
 #define __itktubeTubeExtractor_hxx
 
-#ifdef WIN32
-#define _CRT_SECURE_NO_DEPRECATE
-#define _CRT_SECURE_NO_WARNINGS
-#endif
-
 #include "itktubeTubeExtractor.h"
 
 namespace itk
@@ -395,7 +390,7 @@ TubeExtractor<TInputImage>
   if( this->m_StatusCallBack )
     {
     char s[80];
-    std::sprintf( s, "%zd points", tube->GetPoints().size() );
+    std::snprintf( s, 80, "%zd points", tube->GetPoints().size() );
     this->m_StatusCallBack( "Extract: Ridge", s, 0 );
     }
 

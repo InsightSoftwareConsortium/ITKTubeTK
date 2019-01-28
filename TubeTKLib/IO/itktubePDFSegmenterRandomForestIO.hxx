@@ -496,7 +496,7 @@ Write( const char * _headerName )
   MET_GetFilePath( _headerName, filePath );
   int skip = strlen( filePath );
   char shortFileName[255];
-  sprintf( shortFileName, "%s", &( _headerName[skip] ) );
+  snprintf( shortFileName, 254, "%s", &( _headerName[skip] ) );
   MET_SetFileSuffix( shortFileName, "mrf" );
   std::string fullFileName = filePath;
   fullFileName = fullFileName + shortFileName;

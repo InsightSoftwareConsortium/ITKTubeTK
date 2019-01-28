@@ -404,7 +404,7 @@ TubeXIO< TDimension >
   tmpWriteStream << std::endl;
 
   char soType[80];
-  sprintf( soType, "Tube" );
+  snprintf( soType, 79, "Tube" );
   typename TubeType::ChildrenListType * tubeList =
     m_TubeGroup->GetChildren( 99999, soType );
   tmpWriteStream << "VoxelSize:";
