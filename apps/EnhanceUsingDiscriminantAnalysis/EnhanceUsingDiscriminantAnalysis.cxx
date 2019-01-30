@@ -176,7 +176,7 @@ int DoIt( int argc, char * argv[] )
         BasisImageWriterType::New();
       std::string fname = outputBase;
       char c[4096];
-      std::sprintf( c, ".basis%02u.mha", i );
+      std::snprintf( c, 2095, ".basis%02u.mha", i );
       fname += std::string( c );
       basisImageWriter->SetUseCompression( true );
       basisImageWriter->SetFileName( fname.c_str() );

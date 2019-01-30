@@ -53,7 +53,7 @@ void WriteBasis( const typename TImage::Pointer & img,
     BasisImageWriterType::New();
   std::string basename = base;
   char c[4096];
-  std::sprintf( c, ext.c_str(), num );
+  std::snprintf( c, 4095, ext.c_str(), num );
   basename += std::string( c );
   basisImageWriter->SetUseCompression( true );
   basisImageWriter->SetFileName( basename.c_str() );
@@ -213,7 +213,7 @@ int DoIt( int argc, char * argv[] )
         BasisImageWriterType::New();
       std::string basename = outputBase;
       char c[4096];
-      std::sprintf( c, ".basis%02u.mha", i );
+      std::snprintf( c, 4095, ".basis%02u.mha", i );
       basename += std::string( c );
       basisImageWriter->SetUseCompression( true );
       basisImageWriter->SetFileName( basename.c_str() );

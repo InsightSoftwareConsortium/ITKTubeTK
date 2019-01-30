@@ -137,7 +137,7 @@ int DoIt( int argc, char * argv[] )
   for( unsigned int i=0; i<imageIter.size(); ++i )
     {
     char outName[4096];
-    sprintf( outName, "%s.%s.%03d.mha", outputImageBaseFileName.c_str(),
+    snprintf( outName, 4095, "%s.%s.%03d.mha", outputImageBaseFileName.c_str(),
      imageFileNameList[i].c_str(), i );
     writer->SetFileName( outName );
     writer->SetInput( imageList[i] );

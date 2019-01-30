@@ -785,7 +785,7 @@ M_SetupWriteFields( void )
   m_Fields.push_back( mF );
 
   char colorString[80];
-  sprintf( colorString, "%f %f %f %f", m_TubeColor[0], m_TubeColor[1],
+  snprintf( colorString, 79, "%f %f %f %f", m_TubeColor[0], m_TubeColor[1],
     m_TubeColor[2], m_TubeColor[3] );
   mF = new MET_FieldRecordType;
   MET_InitWriteField( mF, "TubeColor", MET_STRING,

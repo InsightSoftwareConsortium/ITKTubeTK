@@ -116,10 +116,6 @@ AngleOfIncidenceImageFilter< TInputImage, TOutputImage >
       m_PrimaryEigenVectorImage->GetRequestedRegion() );
   primaryEigenVectorImageIterator.GoToBegin();
 
-
-  InputImageSpacingType inputImageSpacing;
-  InputImagePointType   inputImageOrigin;
-
   while( !inputIt.IsAtEnd() )
     {
     //Compute the angle and set it to output iterator.

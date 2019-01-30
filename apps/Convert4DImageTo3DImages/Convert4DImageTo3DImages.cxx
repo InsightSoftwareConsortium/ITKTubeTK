@@ -125,7 +125,7 @@ int DoIt( int argc, char * argv[] )
     char outputImageFileName[255];
     std::strcpy( outputImageFileName, inputImageFileName.c_str() );
     char newSuffix[80];
-    sprintf( newSuffix, "%03d.mha", d4 );
+    snprintf( newSuffix, 79, "%03d.mha", d4 );
     MET_SetFileSuffix( outputImageFileName, newSuffix );
 
     typename WriterType::Pointer writer = WriterType::New();

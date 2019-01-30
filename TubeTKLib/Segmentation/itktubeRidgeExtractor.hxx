@@ -1178,7 +1178,7 @@ RidgeExtractor<TInputImage>
       if( m_StatusCallBack )
         {
         char st[80];
-        std::sprintf( st, "Point #%d", tubePointCount );
+        std::snprintf( st, 80, "Point #%d", tubePointCount );
         m_StatusCallBack( NULL, st, 0 );
         }
       }
@@ -1289,7 +1289,7 @@ RidgeExtractor<TInputImage>
         if( m_StatusCallBack )
           {
           char s[80];
-          std::sprintf( s, "Extract: Ridge: DS = %1.1f",
+          std::snprintf( s, 80, "Extract: Ridge: DS = %1.1f",
             m_DynamicScaleUsed );
           m_StatusCallBack( s, NULL, 0 );
           }
@@ -1849,7 +1849,7 @@ RidgeExtractor<TInputImage>
   if( m_StatusCallBack )
     {
     char s[80];
-    std::sprintf( s, "%d points", ( int )( m_Tube->GetPoints().size() ) );
+    std::snprintf( s, 80, "%d points", ( int )( m_Tube->GetPoints().size() ) );
     m_StatusCallBack( "Extract: Ridge", s, 0 );
     }
 

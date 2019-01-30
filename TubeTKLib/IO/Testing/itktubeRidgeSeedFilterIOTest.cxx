@@ -169,7 +169,7 @@ int itktubeRidgeSeedFilterIOTest( int argc, char * argv[] )
 
   timeCollector.Start( "Filter Writer3" );
   char out3[255];
-  sprintf( out3, "%s.mrs", argv[5] );
+  snprintf( out3, 254, "%s.mrs", argv[5] );
   itk::tube::RidgeSeedFilterIO< ImageType, LabelMapType > filterIO3(
     filter2 );
   filterIO3.Write( out3 );

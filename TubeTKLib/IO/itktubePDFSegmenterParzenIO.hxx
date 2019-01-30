@@ -688,7 +688,7 @@ Write( const char * _headerName )
   MET_GetFilePath( _headerName, filePath );
   int skip = strlen( filePath );
   char shortFileName[255];
-  sprintf( shortFileName, "%s", &( _headerName[skip] ) );
+  snprintf( shortFileName, 254, "%s", &( _headerName[skip] ) );
   MET_SetFileSuffix( shortFileName, "mpd" );
   std::string fullFileName = filePath;
   fullFileName = fullFileName + shortFileName;
@@ -697,7 +697,7 @@ Write( const char * _headerName )
   for( unsigned int i = 0; i < nObjects; ++i )
     {
     char objectFileName[4096];
-    sprintf( objectFileName, "%s.%02d.mha", shortFileName, i );
+    snprintf( objectFileName, 4095, "%s.%02d.mha", shortFileName, i );
     tmpString = tmpString + objectFileName;
     if( i < nObjects-1 )
       {
@@ -765,7 +765,7 @@ Write( const char * _headerName )
       m_PDFSegmenter->GetForceClassification() );
 
     char objectFileName[4096];
-    sprintf( objectFileName, "%s.%02d.mha", fullFileName.c_str(), i );
+    snprintf( objectFileName, 4095, "%s.%02d.mha", fullFileName.c_str(), i );
 
     pdfClassWriter.Write( objectFileName );
     }

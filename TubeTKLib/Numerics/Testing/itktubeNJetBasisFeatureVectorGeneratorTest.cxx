@@ -131,7 +131,7 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
     {
     WriterType::Pointer featureImage0Writer = WriterType::New();
     char fname[255];
-    sprintf( fname, "%s.%d.mha", argv[5], i );
+    snprintf( fname, 254, "%s.%d.mha", argv[5], i );
     std::cout << "Saving basis feature image: " << fname << std::endl;
     featureImage0Writer->SetFileName( fname );
     featureImage0Writer->SetUseCompression( true );
@@ -157,7 +157,7 @@ int itktubeNJetBasisFeatureVectorGeneratorTest( int argc, char * argv[] )
     {
     WriterType::Pointer featureImage1Writer = WriterType::New();
     char fname[255];
-    sprintf( fname, "%s.%d.mha", argv[6], i );
+    snprintf( fname, 254, "%s.%d.mha", argv[6], i );
     std::cout << "Saving feature image: " << fname << std::endl;
     featureImage1Writer->SetFileName( fname );
     featureImage1Writer->SetUseCompression( true );
