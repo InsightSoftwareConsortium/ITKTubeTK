@@ -54,6 +54,12 @@ make_directory( "${TubeTK_BINARY_DIR}/lib" )
 set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${TubeTK_BINARY_DIR}/bin" )
 set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${TubeTK_BINARY_DIR}/lib" )
 set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${TubeTK_BINARY_DIR}/lib" )
+set( SlicerExecutionModel_DEFAULT_CLI_RUNTIME_OUTPUT_DIRECTORY
+  "${TubeTK_BINARY_DIR}/bin" )
+set( SlicerExecutionModel_DEFAULT_CLI_LIBRARY_OUTPUT_DIRECTORY
+  "${TubeTK_BINARY_DIR}/lib" )
+set( SlicerExecutionModel_DEFAULT_CLI_ARCHIVE_OUTPUT_DIRECTORY
+  "${TubeTK_BINARY_DIR}/lib" )
 
 mark_as_advanced( BUILD_SHARED_LIBS )
 mark_as_advanced( CMAKE_INSTALL_PREFIX )
