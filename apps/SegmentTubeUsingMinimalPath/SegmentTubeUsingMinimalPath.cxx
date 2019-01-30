@@ -40,6 +40,7 @@ int DoIt( int argc, char * argv[] );
 
 // Must follow include of "...CLP.h"
 //   and forward declaration of int DoIt( ... ).
+#define PARSE_ARGS_FLOAT_ONLY true
 #include "../CLI/tubeCLIHelperFunctions.h"
 
 template< class TPixel, unsigned int DimensionT >
