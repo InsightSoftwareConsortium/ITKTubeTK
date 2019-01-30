@@ -91,6 +91,7 @@ set( CTEST_CUSTOM_MEMCHECK_IGNORE
 # GLOB automatically recurses in subdirectories.
 set( CTEST_EXTRA_COVERAGE_GLOB
     */*.cxx
+    */*.txx
     */*.hxx )
 
 set( CTEST_CUSTOM_MAXIMUM_NUMBER_OF_ERRORS 2500 )
@@ -109,6 +110,9 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   ${CTEST_CUSTOM_WARNING_EXCEPTION}
   "Microsoft SDKs."
   "VC.include."
+
+  # MacOS
+  "CoreFoundation are out of sync"
 
   # Fake library is empty
   "itkTubeTK_fake_library_src.*empty"
@@ -234,5 +238,5 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "unrecognized command line option.*no-unused-local-typedefs"
 
   # USTK
-  "fileno.*deprecated.*ISO"
+  #"fileno.*deprecated.*ISO"
   )
