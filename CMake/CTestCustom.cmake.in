@@ -238,5 +238,5 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
   "unrecognized command line option.*no-unused-local-typedefs"
 
   # USTK
-  #"fileno.*deprecated.*ISO"
+  "fileno.*deprecated.*ISO"
   )
