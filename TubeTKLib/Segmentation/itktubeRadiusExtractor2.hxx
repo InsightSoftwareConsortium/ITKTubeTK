@@ -263,9 +263,9 @@ RadiusExtractor2<TInputImage>
   pntIter = m_KernelTubePoints.begin();
   for( unsigned int i = 0; i < dimension; ++i )
     {
-    minX[i] = static_cast< int >( m_KernelTubePoints[0].GetPosition()[i]
+    minX[i] = static_cast< int >( m_KernelTubePoints[0].GetPositionInObjectSpace()[i]
       - buffer[i] );
-    maxX[i] = static_cast< int >( m_KernelTubePoints[0].GetPosition()[i]
+    maxX[i] = static_cast< int >( m_KernelTubePoints[0].GetPositionInObjectSpace()[i]
       + buffer[i] );
     }
   ++pntIter;
@@ -274,12 +274,12 @@ RadiusExtractor2<TInputImage>
     {
     for( unsigned int i = 0; i < dimension; ++i )
       {
-      tempI = static_cast< int >( pntIter->GetPosition()[i] - buffer[i] );
+      tempI = static_cast< int >( pntIter->GetPositionInObjectSpace()[i] - buffer[i] );
       if( tempI < minX[i] )
         {
         minX[i] = tempI;
         }
-      tempI = static_cast< int >( pntIter->GetPosition()[i] + buffer[i] );
+      tempI = static_cast< int >( pntIter->GetPositionInObjectSpace()[i] + buffer[i] );
       if( tempI > maxX[i] )
         {
         maxX[i] = tempI;
@@ -328,11 +328,11 @@ RadiusExtractor2<TInputImage>
       int minTangentDistCount = -1;
       while( pntIter != m_KernelTubePoints.end() )
         {
-        ITKVectorType pDiff = pntIter->GetPosition() - p;
+        ITKVectorType pDiff = pntIter->GetPositionInObjectSpace() - p;
         double d1 = 0;
         for( unsigned int i = 0; i < dimension; ++i )
           {
-          d1 += pDiff[i] * pntIter->GetTangent()[i];
+          d1 += pDiff[i] * pntIter->GetTangentInObjectSpace()[i];
           }
         pntTangentDist = d1 * d1;
         if( pntTangentDist < minTangentDist || minTangentDistCount == -1 )
@@ -342,7 +342,7 @@ RadiusExtractor2<TInputImage>
           d1 = 0;
           for( unsigned int i = 0; i < dimension; ++i )
             {
-            d1 += pDiff[i] * pntIter->GetNormal1()[i];
+            d1 += pDiff[i] * pntIter->GetNormal1InObjectSpace()[i];
             }
           minNormalDist = d1 * d1;
           if( dimension == 3 )
@@ -350,7 +350,7 @@ RadiusExtractor2<TInputImage>
             double d2 = 0;
             for( unsigned int i = 0; i < dimension; ++i )
               {
-              d2 += pDiff[i] * pntIter->GetNormal2()[i];
+              d2 += pDiff[i] * pntIter->GetNormal2InObjectSpace()[i];
               }
             minNormalDist += d2 * d2;
             }
@@ -745,7 +745,7 @@ RadiusExtractor2<TInputImage>
     return false;
     }
 
-  tube->RemoveDuplicatePoints();
+  tube->RemoveDuplicatePointsInObjectSpace();
   ::tube::ComputeVectorTangentsAndNormals< TubePointType >(
     tube->GetPoints() );
 
@@ -753,13 +753,13 @@ RadiusExtractor2<TInputImage>
   pntIter = tube->GetPoints().begin();
   while( pntIter != tube->GetPoints().end() )
     {
-    pntIter->SetRadius( 0 );
+    pntIter->SetRadiusInObjectSpace( 0 );
     ++pntIter;
     }
 
   int pntCount = 0;
   pntIter = tube->GetPoints().begin();
-  while( pntIter != tube->GetPoints().end() && pntIter->GetID() != 0 )
+  while( pntIter != tube->GetPoints().end() && pntIter->GetId() != 0 )
     {
     ++pntIter;
     ++pntCount;
@@ -781,7 +781,7 @@ RadiusExtractor2<TInputImage>
     }
   else if( this->GetDebug() )
     {
-    std::cout << "Found point " << ( *pntIter ).GetID() << std::endl;
+    std::cout << "Found point " << ( *pntIter ).GetId() << std::endl;
     }
 
   double rStart0 = this->GetRadiusStart();
@@ -817,8 +817,8 @@ RadiusExtractor2<TInputImage>
     pntIter = tube->GetPoints().begin();
     while( pntIter != tube->GetPoints().end() )
       {
-      std::cout << "   " << pntIter->GetID() << " : "
-        << pntIter->GetRadius() << std::endl;
+      std::cout << "   " << pntIter->GetId() << " : "
+        << pntIter->GetRadiusInObjectSpace() << std::endl;
       ++pntIter;
       }
     }
@@ -849,29 +849,29 @@ RadiusExtractor2<TInputImage>
     if( p < 0 )
       {
       typename TubeType::PointType p1 =
-        tube->GetPoints()[ 0 ].GetPosition();
+        tube->GetPoints()[ 0 ].GetPositionInObjectSpace();
       typename TubeType::PointType p2 =
         tube->GetPoints()[ m_NumKernelPoints / 2 *
-        m_KernelPointStep ].GetPosition();
+        m_KernelPointStep ].GetPositionInObjectSpace();
       for( unsigned int i = 0; i < ImageDimension; ++i )
         {
         p2[i] = p1[i] - ( ( p2[i] - p1[i] ) * ( -p / m_KernelPointStep ) );
         }
-      m_KernelTubePoints[ count ].SetPosition( p2 );
+      m_KernelTubePoints[ count ].SetPositionInObjectSpace( p2 );
       }
     else if( p > static_cast< int >( tubeSize ) - 1 )
       {
       typename TubeType::PointType p1 =
-        tube->GetPoints()[ tubeSize - 1 ].GetPosition();
+        tube->GetPoints()[ tubeSize - 1 ].GetPositionInObjectSpace();
       typename TubeType::PointType p2 =
         tube->GetPoints()[ tubeSize - 1 - m_NumKernelPoints / 2 *
-        m_KernelPointStep ].GetPosition();
+        m_KernelPointStep ].GetPositionInObjectSpace();
       for( unsigned int i = 0; i < ImageDimension; ++i )
         {
         p2[i] = p1[i] - ( ( p2[i] - p1[i] ) * ( ( p - ( tubeSize-1 ) ) /
             m_KernelPointStep ) );
         }
-      m_KernelTubePoints[ count ].SetPosition( p2 );
+      m_KernelTubePoints[ count ].SetPositionInObjectSpace( p2 );
       }
     else
       {
@@ -900,7 +900,7 @@ RadiusExtractor2<TInputImage>
     {
     startP = 0;
     }
-  double r0 = tube->GetPoints()[ startP ].GetRadius();
+  double r0 = tube->GetPoints()[ startP ].GetRadiusInObjectSpace();
   double m0 = tube->GetPoints()[ startP ].GetMedialness();
   double b0 = tube->GetPoints()[ startP ].GetBranchness();
   if( r0 == 0 )
@@ -915,7 +915,7 @@ RadiusExtractor2<TInputImage>
     {
     endP = tubeSize-1;
     }
-  double r2 = tube->GetPoints()[ endP ].GetRadius();
+  double r2 = tube->GetPoints()[ endP ].GetRadiusInObjectSpace();
   double m2 = tube->GetPoints()[ endP ].GetMedialness();
   double b2 = tube->GetPoints()[ endP ].GetBranchness();
   if( r2 == 0 )
@@ -935,7 +935,7 @@ RadiusExtractor2<TInputImage>
         d = static_cast< double >( tubePointNum - p )
           / ( tubePointNum - startP );
         }
-      tube->GetPoints()[ p ].SetRadius( d * r0 + ( 1 - d ) * r1 );
+      tube->GetPoints()[ p ].SetRadiusInObjectSpace( d * r0 + ( 1 - d ) * r1 );
       tube->GetPoints()[ p ].SetMedialness( d * m0 + ( 1 - d ) * m1 );
       tube->GetPoints()[ p ].SetBranchness( d * b0 + ( 1 - d ) * b1 );
       }
@@ -947,7 +947,7 @@ RadiusExtractor2<TInputImage>
         d = static_cast< double >( p - tubePointNum )
           / ( endP - tubePointNum );
         }
-      tube->GetPoints()[ p ].SetRadius( d * r2 + ( 1 - d ) * r1 );
+      tube->GetPoints()[ p ].SetRadiusInObjectSpace( d * r2 + ( 1 - d ) * r1 );
       tube->GetPoints()[ p ].SetMedialness( d * m2 + ( 1 - d ) * m1 );
       tube->GetPoints()[ p ].SetBranchness( d * b2 + ( 1 - d ) * b1 );
       }

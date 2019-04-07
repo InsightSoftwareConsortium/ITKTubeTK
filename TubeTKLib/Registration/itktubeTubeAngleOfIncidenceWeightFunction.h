@@ -97,12 +97,12 @@ public:
 
   WeightType Evaluate( const TubePointType & tubePoint ) const
     {
-    const PointType & position = tubePoint.GetPosition();
+    const PointType & position = tubePoint.GetPositionInObjectSpace();
     typename TubePointType::VectorType beam =
       ( position - m_UltrasoundProbeOrigin );
     beam.Normalize();
     typename TubePointType::VectorType tangent =
-      tubePoint.GetTangent();
+      tubePoint.GetTangentInObjectSpace();
     tangent.Normalize();
     const double dotProduct = beam * tangent;
     double cos_term =

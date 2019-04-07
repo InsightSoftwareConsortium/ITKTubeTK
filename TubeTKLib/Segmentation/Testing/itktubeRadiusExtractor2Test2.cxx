@@ -71,8 +71,8 @@ int itktubeRadiusExtractor2Test2( int argc, char * argv[] )
   typedef itk::SpatialObjectReader<>                   ReaderType;
   typedef itk::SpatialObject<>::ChildrenListType       ObjectListType;
   typedef itk::GroupSpatialObject<>                    GroupType;
-  typedef itk::VesselTubeSpatialObject<>               TubeType;
-  typedef TubeType::PointListType                      PointListType;
+  typedef itk::TubeSpatialObject<>                     TubeType;
+  typedef TubeType::TubePointListType                  TubePointListType;
 
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( argv[2] );
@@ -133,67 +133,67 @@ int itktubeRadiusExtractor2Test2( int argc, char * argv[] )
     double failures = 0;
     std::vector< double > idealR;
     idealR.clear();
-    PointListType::iterator pntIter = tube->GetPoints().begin();
+    TubePointListType::iterator pntIter = tube->GetPoints().begin();
     for( unsigned int i=0; i<numPoints; i++ )
       {
       if( i == startPoint )
         {
-        pntIter->SetID( 0 );
-        radiusStart = ( radiusStart + pntIter->GetRadius() ) / 2;
+        pntIter->SetId( 0 );
+        radiusStart = ( radiusStart + pntIter->GetRadiusInObjectSpace() ) / 2;
         }
       else
         {
-        pntIter->SetID( i+1 );
+        pntIter->SetId( i+1 );
         }
 
-      if( std::fabs( pntIter->GetTangent().GetVnlVector().magnitude()-1 )
+      if( std::fabs( pntIter->GetTangentInObjectSpace().GetVnlVector().magnitude()-1 )
         > 0.01 )
         {
         std::cout << "Point: " << i << ": Tangent not of unit length."
           << std::endl;
         ++failures;
         }
-      if( std::fabs( pntIter->GetNormal1().GetVnlVector().magnitude()-1 )
+      if( std::fabs( pntIter->GetNormal1InObjectSpace().GetVnlVector().magnitude()-1 )
         > 0.01 )
         {
         std::cout << "Point: " << i << ": Normal1 not of unit length."
           << std::endl;
         ++failures;
         }
-      if( std::fabs( pntIter->GetNormal2().GetVnlVector().magnitude()-1 )
+      if( std::fabs( pntIter->GetNormal2InObjectSpace().GetVnlVector().magnitude()-1 )
         > 0.01 )
         {
         std::cout << "Point: " << i << ": Normal2 not of unit length."
           << std::endl;
         ++failures;
         }
-      if( std::fabs( dot_product( pntIter->GetTangent().GetVnlVector(),
-        pntIter->GetNormal1().GetVnlVector() ) ) > 0.001 )
+      if( std::fabs( dot_product( pntIter->GetTangentInObjectSpace().GetVnlVector(),
+        pntIter->GetNormal1InObjectSpace().GetVnlVector() ) ) > 0.001 )
         {
         std::cout << "Point: " << i
           << ": dot_product( Tangent, Normal1 ) != 0." << std::endl;
         ++failures;
         }
-      if( std::fabs( dot_product( pntIter->GetTangent().GetVnlVector(),
-        pntIter->GetNormal2().GetVnlVector() ) ) > 0.001 )
+      if( std::fabs( dot_product( pntIter->GetTangentInObjectSpace().GetVnlVector(),
+        pntIter->GetNormal2InObjectSpace().GetVnlVector() ) ) > 0.001 )
         {
         std::cout << "Point: " << i
           << ": dot_product( Tangent, Normal2 ) != 0." << std::endl;
         ++failures;
         }
-      if( std::fabs( dot_product( pntIter->GetNormal1().GetVnlVector(),
-        pntIter->GetNormal2().GetVnlVector() ) ) > 0.001 )
+      if( std::fabs( dot_product( pntIter->GetNormal1InObjectSpace().GetVnlVector(),
+        pntIter->GetNormal2InObjectSpace().GetVnlVector() ) ) > 0.001 )
         {
         std::cout << "Point: " << i
           << ": dot_product( Normal1, Normal2 ) != 0." << std::endl;
         ++failures;
         }
 
-      idealR.push_back( pntIter->GetRadius() );
-      if( pntIter->GetRadius() < 0 )
+      idealR.push_back( pntIter->GetRadiusInObjectSpace() );
+      if( pntIter->GetRadiusInObjectSpace() < 0 )
         {
         std::cout << "Point: " << i << ": radius < 0. ( "
-          << pntIter->GetRadius() << " )" << std::endl;
+          << pntIter->GetRadiusInObjectSpace() << " )" << std::endl;
         ++failures;
         }
 
@@ -213,7 +213,7 @@ int itktubeRadiusExtractor2Test2( int argc, char * argv[] )
     pntIter = tube->GetPoints().begin();
     for( unsigned int i=0; i<numPoints; i++ )
       {
-      double diff = std::fabs( pntIter->GetRadius() - idealR[i] );
+      double diff = std::fabs( pntIter->GetRadiusInObjectSpace() - idealR[i] );
       avgDiff += diff;
       if( diff > maxDiff )
         {
@@ -222,22 +222,22 @@ int itktubeRadiusExtractor2Test2( int argc, char * argv[] )
       if( diff > 1 )
         {
         std::cout << "Point: " << i << "  idealR = " << idealR[i]
-          << "  estimatedR = " << pntIter->GetRadius() << " : FAIL "
+          << "  estimatedR = " << pntIter->GetRadiusInObjectSpace() << " : FAIL "
           << std::endl;
         ++failures;
         }
       else
         {
         std::cout << "Point: " << i << "  idealR = " << idealR[i]
-          << "  estimatedR = " << pntIter->GetRadius() << std::endl;
+          << "  estimatedR = " << pntIter->GetRadiusInObjectSpace() << std::endl;
         }
 
       // reset radius for re-testing
-      pntIter->SetRadius( idealR[i] );
+      pntIter->SetRadiusInObjectSpace( idealR[i] );
       ++pntIter;
       if( i < numPoints-1 )
         {
-        pntIter->SetRadius( idealR[i] );
+        pntIter->SetRadiusInObjectSpace( idealR[i] );
         ++pntIter;
         ++i;
         }

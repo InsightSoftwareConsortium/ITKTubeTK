@@ -28,7 +28,7 @@ limitations under the License.
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectWriter.h>
 #include <itkTimeProbesCollectorBase.h>
-#include <itkVesselTubeSpatialObject.h>
+#include <itkTubeSpatialObject.h>
 
 #include <itkImageFileReader.h>
 #include <itkDisplacementFieldTransform.h>
@@ -91,14 +91,14 @@ SetPropertyFromImage( typename itk::GroupSpatialObject< DimensionT >::
   Pointer & inputTubes, int currentTube, typename itk::Image< PixelT,
   DimensionT>::Pointer & inputImage, char propertyId )
 {
-  typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
+  typedef itk::TubeSpatialObject< DimensionT >        TubeType;
   typedef typename TubeType::TubePointType            TubePointType;
   typedef itk::Image< PixelT, DimensionT >            ImageType;
 
   typename TubeType::ChildrenListType::iterator tubeIterator;
 
   char soTypeName[80];
-  strcpy( soTypeName, "VesselTubeSpatialObject" );
+  strcpy( soTypeName, "TubeSpatialObject" );
   typename TubeType::ChildrenListPointer inputTubeList =
     inputTubes->GetChildren( inputTubes->GetMaximumDepth(), soTypeName );
   for( tubeIterator = inputTubeList->begin(); tubeIterator !=
@@ -144,7 +144,7 @@ SetPropertyFromImage( typename itk::GroupSpatialObject< DimensionT >::
             currentPoint->SetBranchness( val );
             break;
           case 'r':
-            currentPoint->SetRadius( val );
+            currentPoint->SetRadiusInObjectSpace( val );
             break;
           }
         }
@@ -160,14 +160,14 @@ SetPropertyFromImageMean( typename itk::GroupSpatialObject< DimensionT >::
   Pointer & inputTubes, int currentTube, typename itk::Image< PixelT,
   DimensionT>::Pointer & inputImage, char propertyId )
 {
-  typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
+  typedef itk::TubeSpatialObject< DimensionT >        TubeType;
   typedef typename TubeType::TubePointType            TubePointType;
   typedef itk::Image< PixelT, DimensionT >            ImageType;
 
   typename TubeType::ChildrenListType::iterator tubeIterator;
 
   char soTypeName[80];
-  strcpy( soTypeName, "VesselTubeSpatialObject" );
+  strcpy( soTypeName, "TubeSpatialObject" );
   typename TubeType::ChildrenListPointer inputTubeList =
     inputTubes->GetChildren( inputTubes->GetMaximumDepth(), soTypeName );
   for( tubeIterator = inputTubeList->begin(); tubeIterator !=
@@ -228,7 +228,7 @@ SetPropertyFromImageMean( typename itk::GroupSpatialObject< DimensionT >::
             currentPoint->SetBranchness( valAvg );
             break;
           case 'r':
-            currentPoint->SetRadius( valAvg );
+            currentPoint->SetRadiusInObjectSpace( valAvg );
             break;
           }
         }
@@ -297,12 +297,12 @@ int DoIt( MetaCommand & command )
     else if( it->name == "ComputeTangentsAndNormals" )
       {
       ::tube::Message( "Compute Tangents and Normals" );
-      typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
+      typedef itk::TubeSpatialObject< DimensionT >  TubeType;
 
       typename TubeType::ChildrenListType::iterator tubeIterator;
 
       char soTypeName[80];
-      strcpy( soTypeName, "VesselTubeSpatialObject" );
+      strcpy( soTypeName, "TubeSpatialObject" );
       typename TubeType::ChildrenListPointer inputTubeList =
         inputTubes->GetChildren( inputTubes->GetMaximumDepth(),
         soTypeName );
@@ -328,12 +328,12 @@ int DoIt( MetaCommand & command )
     else if( it->name == "MarkAsArtery" )
       {
       ::tube::Message( "Mark as Artery" );
-      typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
+      typedef itk::TubeSpatialObject< DimensionT >  TubeType;
 
       typename TubeType::ChildrenListType::iterator tubeIterator;
 
       char soTypeName[80];
-      strcpy( soTypeName, "VesselTubeSpatialObject" );
+      strcpy( soTypeName, "TubeSpatialObject" );
       typename TubeType::ChildrenListPointer inputTubeList =
         inputTubes->GetChildren( inputTubes->GetMaximumDepth(),
         soTypeName );
@@ -355,12 +355,12 @@ int DoIt( MetaCommand & command )
     else if( it->name == "MarkAsRoot" )
       {
       ::tube::Message( "Mark as Root" );
-      typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
+      typedef itk::TubeSpatialObject< DimensionT >  TubeType;
 
       typename TubeType::ChildrenListType::iterator tubeIterator;
 
       char soTypeName[80];
-      strcpy( soTypeName, "VesselTubeSpatialObject" );
+      strcpy( soTypeName, "TubeSpatialObject" );
       typename TubeType::ChildrenListPointer inputTubeList =
         inputTubes->GetChildren( inputTubes->GetMaximumDepth(),
         soTypeName );
@@ -382,12 +382,12 @@ int DoIt( MetaCommand & command )
     else if( it->name == "UniqueIDs" )
       {
       ::tube::Message( "Assign Unique IDs" );
-      typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
+      typedef itk::TubeSpatialObject< DimensionT >  TubeType;
 
       typename TubeType::ChildrenListType::iterator tubeIterator;
 
       char soTypeName[80];
-      strcpy( soTypeName, "VesselTubeSpatialObject" );
+      strcpy( soTypeName, "TubeSpatialObject" );
       typename TubeType::ChildrenListPointer inputTubeList =
         inputTubes->GetChildren( inputTubes->GetMaximumDepth(),
         soTypeName );

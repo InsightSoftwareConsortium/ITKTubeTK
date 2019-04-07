@@ -319,11 +319,11 @@ TubeXIO< TDimension >
         tmpReadStream >> x[d];
         tmpReadStream.get();
         }
-      pnt.SetPosition( x );
+      pnt.SetPositionInObjectSpace( x );
 
       double r;
       tmpReadStream >> r;
-      pnt.SetRadius( r );
+      pnt.SetRadiusInObjectSpace( r );
 
       tube->GetPoints().push_back( pnt );
 
@@ -334,22 +334,21 @@ TubeXIO< TDimension >
         }
       }
 
-    tube->SetSpacing( voxelSize );
     tube->SetId( tubeId );
-    tube->RemoveDuplicatePoints();
+    tube->RemoveDuplicatePointsInObjectSpace();
     tube->ComputeTangentAndNormals();
-    tube->GetProperty()->SetColor( tubeColor[0], tubeColor[1],
+    tube->GetProperty().SetColor( tubeColor[0], tubeColor[1],
       tubeColor[2] );
-    tube->GetProperty()->SetAlpha( tubeColor[3] );
+    tube->GetProperty().SetAlpha( tubeColor[3] );
     if( strlen( tubeAnat ) > 0 )
       {
       if( tubeAnat[0] == 'a' || tubeAnat[0] == 'A' )
         {
-        tube->SetArtery( true );
+        tube->GetProperty().SetTagStringValue( "Artery", "True" );
         }
       else
         {
-        tube->SetArtery( false );
+        tube->GetProperty().SetTagStringValue( "Artery", "False" );
         }
       }
     if( strlen( tubeTreeType ) > 0 )
@@ -369,7 +368,7 @@ TubeXIO< TDimension >
         }
       }
 
-    m_TubeGroup->AddSpatialObject( tube );
+    m_TubeGroup->AddChild( tube );
     }
 
   tmpReadStream.close();
@@ -407,11 +406,6 @@ TubeXIO< TDimension >
   snprintf( soType, 79, "Tube" );
   typename TubeType::ChildrenListType * tubeList =
     m_TubeGroup->GetChildren( 99999, soType );
-  tmpWriteStream << "VoxelSize:";
-  for( unsigned int i=0; i<TDimension; ++i )
-    {
-    tmpWriteStream << " " << ( *( tubeList->begin() ) )->GetSpacing()[i];
-    }
   tmpWriteStream << std::endl;
 
   unsigned int nObjects = tubeList->size();
@@ -427,7 +421,9 @@ TubeXIO< TDimension >
 
     tmpWriteStream << "ID: " << tube->GetId() << std::endl;
     tmpWriteStream << "Type: Tube" << std::endl;
-    if( tube->GetArtery() )
+    std::string artery = "False";
+    if( tube->GetProperty().GetTagStringValue( "Artery", artery ) &&
+      artery == "True" )
       {
       tmpWriteStream << "Anat: artery" << std::endl;
       }
@@ -445,13 +441,10 @@ TubeXIO< TDimension >
       {
       tmpWriteStream << "TreeType: orphan" << std::endl;
       }
-    if( tube->GetProperty() )
-      {
-      tmpWriteStream << "Color: "
-        << tube->GetProperty()->GetRed() << " "
-        << tube->GetProperty()->GetGreen() << " "
-        << tube->GetProperty()->GetBlue() << std::endl;
-      }
+    tmpWriteStream << "Color: "
+      << tube->GetProperty().GetRed() << " "
+      << tube->GetProperty().GetGreen() << " "
+      << tube->GetProperty().GetBlue() << std::endl;
     tmpWriteStream << "PointDim: 4 x y z r" << std::endl;
     unsigned int nPoints = tube ->GetNumberOfPoints();
     tmpWriteStream << "NPoints: " << nPoints << std::endl;
@@ -463,9 +456,9 @@ TubeXIO< TDimension >
       pnt = static_cast< TubePointType * >( tube->GetPoint( i ) );
       for( unsigned int k=0; k<TDimension; ++k )
         {
-        tmpWriteStream << pnt->GetPosition()[k] << " ";
+        tmpWriteStream << pnt->GetPositionInObjectSpace()[k] << " ";
         }
-      tmpWriteStream << pnt->GetRadius() << std::endl;
+      tmpWriteStream << pnt->GetRadiusInObjectSpace() << std::endl;
       }
     tmpWriteStream << std::endl;
 

@@ -149,7 +149,7 @@ SpatialObjectSource< TOutputSpatialObject >
   typename ChildrenListType::const_iterator it = children->begin();
   while( it != children->end() )
     {
-    outputObject->AddSpatialObject( *it );
+    outputObject->AddChild( *it );
     ++it;
     }
   delete children;

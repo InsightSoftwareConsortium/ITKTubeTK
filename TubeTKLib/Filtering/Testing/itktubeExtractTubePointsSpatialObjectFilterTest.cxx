@@ -37,8 +37,8 @@ int itktubeExtractTubePointsSpatialObjectFilterTest( int argc, char* argv[] )
   const char * inputTubeTree = argv[1];
 
   static const unsigned int Dimension = 3;
-  typedef itk::VesselTubeSpatialObject< Dimension > TubeSpatialObjectType;
-  typedef itk::GroupSpatialObject< Dimension >      GroupSpatialObjectType;
+  typedef itk::TubeSpatialObject< Dimension >   TubeSpatialObjectType;
+  typedef itk::GroupSpatialObject< Dimension >  GroupSpatialObjectType;
 
   // Read input tube tree.
   typedef itk::SpatialObjectReader< Dimension >  ReaderType;
@@ -109,12 +109,12 @@ int itktubeExtractTubePointsSpatialObjectFilterTest( int argc, char* argv[] )
     const ExtractTubePointsSpatialObjectFilterType::TubePointType &
       tubePoint = pointsContainer->ElementAt( ii );
     std::cout << "Point index: " << ii << '\n'
-              << "  Point Id:       " << tubePoint.GetID() << '\n'
-              << "  Point Position: " << tubePoint.GetPosition() << '\n'
-              << "  Point Radius:   " << tubePoint.GetRadius() << '\n'
-              << "  Point Normal1:  " << tubePoint.GetNormal1() << '\n'
-              << "  Point Normal2:  " << tubePoint.GetNormal2() << '\n'
-              << "  Point Tangent:  " << tubePoint.GetTangent() << '\n'
+              << "  Point Id:       " << tubePoint.GetId() << '\n'
+              << "  Point Position: " << tubePoint.GetPositionInObjectSpace() << '\n'
+              << "  Point Radius:   " << tubePoint.GetRadiusInObjectSpace() << '\n'
+              << "  Point Normal1:  " << tubePoint.GetNormal1InObjectSpace() << '\n'
+              << "  Point Normal2:  " << tubePoint.GetNormal2InObjectSpace() << '\n'
+              << "  Point Tangent:  " << tubePoint.GetTangentInObjectSpace() << '\n'
               << std::endl;
     }
 

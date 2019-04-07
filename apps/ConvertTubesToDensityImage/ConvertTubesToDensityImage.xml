@@ -60,7 +60,7 @@
       <description>Sets the output image dimension (in case of no template image).</description>
     </integer-vector>
     <boolean>
-      <name>useSquareDistance</name>
+      <name>useSquaredDistance</name>
       <label>Use Squared Distance</label>
       <longflag>useSquareDistance</longflag>
       <description>Use squared distance instead of linear.</description>

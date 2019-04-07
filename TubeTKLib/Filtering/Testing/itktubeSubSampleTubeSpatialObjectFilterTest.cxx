@@ -40,8 +40,8 @@ int itktubeSubSampleTubeSpatialObjectFilterTest( int argc, char * argv[] )
   const char * outputTubeNetwork = argv[2];
 
   enum { Dimension = 3 };
-  typedef itk::VesselTubeSpatialObject< Dimension > TubeSpatialObjectType;
-  typedef itk::GroupSpatialObject< Dimension >      GroupSpatialObjectType;
+  typedef itk::TubeSpatialObject< Dimension >   TubeSpatialObjectType;
+  typedef itk::GroupSpatialObject< Dimension >  GroupSpatialObjectType;
 
   typedef itk::SpatialObjectReader< Dimension >  ReaderType;
   ReaderType::Pointer reader = ReaderType::New();
@@ -90,7 +90,7 @@ int itktubeSubSampleTubeSpatialObjectFilterTest( int argc, char * argv[] )
         delete children;
         return EXIT_FAILURE;
         }
-      output->AddSpatialObject( subSampleFilter->GetOutput() );
+      output->AddChild( subSampleFilter->GetOutput() );
       }
     }
 

@@ -324,8 +324,8 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages( int argc, char * a
   typedef ImageType::SpacingType                              SpacingType;
   typedef ImageType::RegionType                               RegionType;
   typedef itk::GroupSpatialObject< ImageDimension >           GroupType;
-  typedef itk::VesselTubeSpatialObjectPoint< ImageDimension > VectorTubePointType;
-  typedef itk::VesselTubeSpatialObject< ImageDimension >      VesselTubeType;
+  typedef itk::TubeSpatialObjectPoint< ImageDimension >       TubePointType;
+  typedef itk::TubeSpatialObject< ImageDimension >            VesselTubeType;
 
   //--------------------------------------------------------
   std::cout << "Generate registration input images" << std::endl;
@@ -508,27 +508,54 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages( int argc, char * a
       topX = 0;
       }
 
-    VesselTubeType::PointListType bottomTubePoints;
+    VesselTubeType::TubePointListType bottomTubePoints;
     bottomTubePoints.resize( numPoints );
-    VesselTubeType::PointListType topTubePoints;
+    VesselTubeType::TubePointListType topTubePoints;
     topTubePoints.resize( numPoints );
 
     for( int i = 0; i < numPoints; i++ )
       {
-      VectorTubePointType bottomPoint;
-      bottomPoint.SetPosition( bottomX, fixedBottomTubeLeftPoint[1], fixedBottomTubeLeftPoint[2] );
-      bottomPoint.SetNormal1( 0, 1, 0 );
-      bottomPoint.SetNormal2( 0, 0, 1 );
-      bottomPoint.SetTangent( 1, 0, 0 );
-      bottomPoint.SetRadius( radius );
+      TubePointType bottomPoint;
+      typename TubePointType::PointType pnt;
+      pnt[0] = bottomX;
+      pnt[1] = fixedBottomTubeLeftPoint[1];
+      pnt[2] = fixedBottomTubeLeftPoint[2];
+      bottomPoint.SetPositionInObjectSpace( pnt );
+      typename TubePointType::CovariantVectorType nrm;
+      nrm[0] = 0;
+      nrm[1] = 1;
+      nrm[2] = 0;
+      bottomPoint.SetNormal1InObjectSpace( nrm );
+      nrm[0] = 0;
+      nrm[1] = 0;
+      nrm[2] = 1;
+      bottomPoint.SetNormal2InObjectSpace( nrm );
+      typename TubePointType::VectorType tng;
+      tng[0] = 1;
+      tng[1] = 0;
+      tng[2] = 0;
+      bottomPoint.SetTangentInObjectSpace( tng );
+      bottomPoint.SetRadiusInObjectSpace( radius );
       bottomTubePoints[i] = bottomPoint;
 
-      VectorTubePointType topPoint;
-      topPoint.SetPosition( topX, fixedTopTubeLeftPoint[1], fixedTopTubeLeftPoint[2] );
-      topPoint.SetNormal1( 0, 1, 0 );
-      topPoint.SetNormal2( 0, 0, 1 );
-      topPoint.SetTangent( 1, 0, 0 );
-      topPoint.SetRadius( radius );
+      TubePointType topPoint;
+      pnt[0] = topX;
+      pnt[1] = fixedTopTubeLeftPoint[1];
+      pnt[2] = fixedTopTubeLeftPoint[2];
+      topPoint.SetPositionInObjectSpace( pnt );
+      nrm[0] = 0;
+      nrm[1] = 1;
+      nrm[2] = 0;
+      topPoint.SetNormal1InObjectSpace( nrm );
+      nrm[0] = 0;
+      nrm[1] = 0;
+      nrm[2] = 1;
+      topPoint.SetNormal2InObjectSpace( nrm );
+      tng[0] = 1;
+      tng[1] = 0;
+      tng[2] = 0;
+      topPoint.SetTangentInObjectSpace( tng );
+      topPoint.SetRadiusInObjectSpace( radius );
       topTubePoints[i] = topPoint;
 
       bottomX += spacingValue;
@@ -541,8 +568,8 @@ int itkAnisotropicDiffusiveRegistrationGenerateTestingImages( int argc, char * a
     topTube->SetPoints( topTubePoints );
 
     group = GroupType::New();
-    group->AddSpatialObject( bottomTube );
-    group->AddSpatialObject( topTube );
+    group->AddChild( bottomTube );
+    group->AddChild( topTube );
     }
 
   // Scale the images to 0..1

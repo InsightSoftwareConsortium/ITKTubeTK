@@ -26,7 +26,7 @@ limitations under the License.
 
 #include <itkMinimumMaximumImageFilter.h>
 #include <itkGroupSpatialObject.h>
-#include <itkVesselTubeSpatialObject.h>
+#include <itkTubeSpatialObject.h>
 #include <itkImage.h>
 #include <metaScene.h>
 #include <metaTubeGraph.h>
@@ -57,7 +57,7 @@ public:
   typedef typename InputImageType::Pointer               InputImagePointer;
   typedef GroupSpatialObject< Dimension >                TubeGroupType;
   typedef typename TubeGroupType::Pointer                TubeGroupPointer;
-  typedef VesselTubeSpatialObject< Dimension >           TubeSpatialObjectType;
+  typedef TubeSpatialObject< Dimension >                 TubeSpatialObjectType;
   typedef typename TubeSpatialObjectType::TubePointType  TubePointType;
   typedef typename TubeSpatialObjectType::TransformType  TubeTransformType;
 

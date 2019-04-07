@@ -49,7 +49,7 @@ int itktubeImageToTubeRigidMetricPerformanceTest( int argc, char * argv[] )
     }
 
   typedef itk::Image<double, 3>                             Image3DType;
-  typedef itk::VesselTubeSpatialObject<3>                   TubeType;
+  typedef itk::TubeSpatialObject<3>                         TubeType;
   typedef itk::GroupSpatialObject<3>                        TubeNetType;
 
   typedef itk::ImageFileReader<Image3DType>                 ImageReaderType;

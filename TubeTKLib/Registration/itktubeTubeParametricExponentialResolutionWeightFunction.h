@@ -67,7 +67,7 @@ public:
 
   inline OperatorValueType operator()( const TubePointType & tubePoint )
     {
-    const OperatorValueType radius = tubePoint.GetRadius();
+    const OperatorValueType radius = tubePoint.GetRadiusInObjectSpace();
     return static_cast< OperatorValueType >( 1.0 /
       ( 1.0 + this->m_Delta
         * ( std::exp( -this->m_Alpha * radius ) - 1.0 ) ) );

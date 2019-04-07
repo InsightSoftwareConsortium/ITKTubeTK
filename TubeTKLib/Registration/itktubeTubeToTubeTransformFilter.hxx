@@ -38,7 +38,7 @@ template< class TTransformType, unsigned int TDimension >
 TubeToTubeTransformFilter< TTransformType, TDimension >
 ::TubeToTubeTransformFilter( void )
 {
-  m_OutputIndexToObjectTransform = 0;
+  m_OutputObjectToParentTransform = 0;
   m_Transform = 0;
 
   SpatialObjectFactoryBase::RegisterDefaultSpatialObjects();
@@ -80,17 +80,12 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
 ::UpdateLevel( SpatialObject< TDimension > * inputSO,
   SpatialObject< TDimension > * parentSO )
 {
-  const std::string spatialObjectTypeName = inputSO->
-    GetSpatialObjectTypeAsString();
-  LightObject::Pointer outputLO = ObjectFactoryBase::CreateInstance(
-    spatialObjectTypeName.c_str() );
-
   typename SpatialObject< TDimension >::Pointer outputSO =
-    dynamic_cast< SpatialObject< TDimension > * >( outputLO.GetPointer() );
+    inputSO->Clone();
   if( outputSO.IsNull() )
     {
     itkExceptionMacro( << "Could not create an instance of "
-      << spatialObjectTypeName << ". The usual cause of this error is not"
+      << outputSO->GetTypeName() << ". The usual cause of this error is not"
       << "registering the SpatialObject with SpatialFactory." );
     }
 
@@ -111,13 +106,10 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
     Point<double, TDimension> inputPoint;
     Point<double, TDimension> outputPoint;
 
-    inputSOAsTube->ComputeObjectToWorldTransform();
+    inputSOAsTube->Update();
 
-    typename TubeType::TransformType::Pointer inputIndexToObjectTransform =
-      inputSOAsTube->GetIndexToObjectTransform();
-
-    typename TubeType::TransformType::Pointer inputIndexToWorldTransform =
-      inputSOAsTube->GetIndexToWorldTransform();
+    typename TubeType::TransformType::Pointer inputObjectToParentTransform =
+      inputSOAsTube->GetObjectToParentTransform();
 
     typename TubeType::TransformType::Pointer inputObjectToWorldTransform =
       inputSOAsTube->GetObjectToWorldTransform();
@@ -125,64 +117,53 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
     outputSOAsTube->CopyInformation( inputSOAsTube );
     outputSOAsTube->Clear();
 
-    if( m_OutputIndexToObjectTransform.IsNotNull() )
+    if( m_OutputObjectToParentTransform.IsNotNull() )
       {
       typename TubeType::TransformType::Pointer tfm = TubeType::
         TransformType::New();
       tfm->SetIdentity();
-      tfm->SetMatrix( m_OutputIndexToObjectTransform->GetMatrix() );
-      tfm->SetOffset( m_OutputIndexToObjectTransform->GetOffset() );
+      tfm->SetMatrix( m_OutputObjectToParentTransform->GetMatrix() );
+      tfm->SetOffset( m_OutputObjectToParentTransform->GetOffset() );
       outputSOAsTube->SetObjectToParentTransform( tfm );
-      outputSOAsTube->SetSpacing( m_OutputIndexToObjectTransform->
-        GetScale() );
-      }
-    else
-      {
-      outputSOAsTube->SetSpacing( inputSOAsTube->GetSpacing() );
       }
 
-    outputSOAsTube->ComputeObjectToWorldTransform();
-
-    typename TubeType::TransformType::Pointer
-      outputInverseIndexToWorldTransform = TubeType::TransformType::New();
-    outputSOAsTube->GetIndexToWorldTransform()->GetInverse(
-      outputInverseIndexToWorldTransform );
+    outputSOAsTube->Update();
 
     typename TubeType::TransformType::Pointer
       outputInverseObjectToWorldTransform = TubeType::TransformType::New();
     outputSOAsTube->GetObjectToWorldTransform()->GetInverse(
       outputInverseObjectToWorldTransform );
 
-    typedef typename TubeType::PointListType      TubePointListType;
+    typedef typename TubeType::TubePointListType      TubePointListType;
     TubePointListType tubePointList = inputSOAsTube->GetPoints();
     typename TubePointListType::const_iterator tubePointIterator =
       tubePointList.begin();
 
     while( tubePointIterator != tubePointList.end() )
       {
-      inputPoint = ( *tubePointIterator ).GetPosition();
-      inputObjectPoint = inputIndexToObjectTransform
+      inputPoint = ( *tubePointIterator ).GetPositionInObjectSpace();
+      inputObjectPoint = inputObjectToParentTransform
         ->TransformPoint( inputPoint );
-      worldPoint = inputIndexToWorldTransform->TransformPoint(
+      worldPoint = inputObjectToWorldTransform->TransformPoint(
         inputPoint );
 
       transformedWorldPoint = m_Transform->TransformPoint( worldPoint );
 
-      outputPoint = outputInverseIndexToWorldTransform->
+      outputPoint = outputInverseObjectToWorldTransform->
         TransformPoint( transformedWorldPoint );
 
-      VesselTubeSpatialObjectPoint<TDimension> pnt;
+      TubeSpatialObjectPoint<TDimension> pnt;
 
-      pnt.SetID( tubePointIterator->GetID() );
+      pnt.SetId( tubePointIterator->GetId() );
       pnt.SetColor( tubePointIterator->GetColor() );
 
-      pnt.SetPosition( outputPoint );
+      pnt.SetPositionInObjectSpace( outputPoint );
 
       // get both normals
       typename TubeType::CovariantVectorType n1 = tubePointIterator
-        ->GetNormal1();
+        ->GetNormal1InObjectSpace();
       typename TubeType::CovariantVectorType n2 = tubePointIterator
-        ->GetNormal2();
+        ->GetNormal2InObjectSpace();
 
       // only try transformation of normals if both are non-zero
       if( !n1.GetVnlVector().is_zero() && !n2.GetVnlVector().is_zero() )
@@ -199,12 +180,12 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
           ->TransformCovariantVector( n2, transformedWorldPoint );
         n1.Normalize();
         n2.Normalize();
-        pnt.SetNormal1( n1 );
-        pnt.SetNormal2( n2 );
+        pnt.SetNormal1InObjectSpace( n1 );
+        pnt.SetNormal2InObjectSpace( n2 );
         }
 
       typename TubeType::VectorType tang = tubePointIterator->
-        GetTangent();
+        GetTangentInObjectSpace();
       if( !tang.GetVnlVector().is_zero() )
         {
         tang = inputObjectToWorldTransform->TransformVector(
@@ -213,20 +194,20 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
         tang = outputInverseObjectToWorldTransform->
           TransformVector( tang, transformedWorldPoint );
         tang.Normalize();
-        pnt.SetTangent( tang );
+        pnt.SetTangentInObjectSpace( tang );
         }
 
       typename TubeType::VectorType radi;
       for( unsigned int i=0; i<TDimension; ++i )
         {
-        radi[i] = tubePointIterator->GetRadius();
+        radi[i] = tubePointIterator->GetRadiusInObjectSpace();
         }
-      radi = inputIndexToWorldTransform->TransformVector( radi,
+      radi = inputObjectToWorldTransform->TransformVector( radi,
         inputPoint );
       radi = m_Transform->TransformVector( radi, worldPoint );
-      radi = outputInverseIndexToWorldTransform->
+      radi = outputInverseObjectToWorldTransform->
         TransformVector( radi, worldPoint );
-      pnt.SetRadius( radi[0] );
+      pnt.SetRadiusInObjectSpace( radi[0] );
 
       pnt.SetMedialness( ( *tubePointIterator ).GetMedialness() );
       pnt.SetRidgeness( ( *tubePointIterator ).GetRidgeness() );
@@ -241,7 +222,7 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
     {
     outputSO->CopyInformation( inputSO );
     }
-  parentSO->AddSpatialObject( outputSO );
+  parentSO->AddChild( outputSO );
 
   typedef typename SpatialObject< TDimension >::ChildrenListType
     ChildrenListType;
@@ -263,8 +244,8 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
   Superclass::PrintSelf( os, indent );
 
   os << indent << "Transformation: " << m_Transform << std::endl;
-  os << indent << "OutputIndexToObject Transform: " <<
-    m_OutputIndexToObjectTransform << std::endl;
+  os << indent << "OutputObjectToParent Transform: " <<
+    m_OutputObjectToParentTransform << std::endl;
 }
 
 } // End namespace tube

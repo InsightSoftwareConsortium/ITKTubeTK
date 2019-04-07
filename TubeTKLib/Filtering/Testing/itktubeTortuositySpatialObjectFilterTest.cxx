@@ -23,7 +23,7 @@ limitations under the License.
 
 // Tortuostity includes
 #include <itktubeTortuositySpatialObjectFilter.h>
-#include <itkVesselTubeSpatialObject.h>
+#include <itkTubeSpatialObject.h>
 
 // ITK includes
 #include <itkMath.h>
@@ -32,28 +32,29 @@ limitations under the License.
 #include <iomanip>
 
 //--------------------------------------------------------------------------
-itk::VesselTubeSpatialObject<3>::Pointer
-GenerateStraightTube( itk::VesselTubeSpatialObject<3>::VectorType
-  start, itk::VesselTubeSpatialObject<3>::VectorType increment,
+itk::TubeSpatialObject<3>::Pointer
+GenerateStraightTube( itk::TubeSpatialObject<3>::PointType
+  start, itk::TubeSpatialObject<3>::VectorType increment,
   int numberOfPoints )
 {
-  typedef itk::VesselTubeSpatialObject<3>  VesselTubeType;
+  typedef itk::TubeSpatialObject<3>        VesselTubeType;
   typedef VesselTubeType::VectorType       VectorType;
+  typedef VesselTubeType::PointType        PointType;
 
   VesselTubeType::Pointer vessel = VesselTubeType::New();
-  VesselTubeType::PointListType pointList;
+  VesselTubeType::TubePointListType tubePointList;
 
-  VectorType pos = start;
+  PointType pos = start;
   for ( int i = 0; i < numberOfPoints; ++i )
     {
-    VesselTubeType::TubePointType point;
-    point.SetPosition( pos[0], pos[1], pos[2] );
-    pointList.push_back( point );
+    VesselTubeType::TubePointType tubePoint;
+    tubePoint.SetPositionInObjectSpace( pos );
+    tubePointList.push_back( tubePoint );
 
     pos += increment;
     }
 
-  vessel->SetPoints( pointList );
+  vessel->SetPoints( tubePointList );
   std::cout<<"Straight vessel generated"<<std::endl;
   return vessel;
 }
@@ -70,40 +71,40 @@ double Modulus( double v, double mod )
 //--------------------------------------------------------------------------
 void
 GenerateCosTube( double length, double amplitude, double frequency,
-  itk::VesselTubeSpatialObject<3>::Pointer & vessel )
+  itk::TubeSpatialObject<3>::Pointer & vessel )
 {
-  typedef itk::VesselTubeSpatialObject<3>  VesselTubeType;
-  typedef VesselTubeType::VectorType       VectorType;
+  typedef itk::TubeSpatialObject<3>   VesselTubeType;
+  typedef VesselTubeType::VectorType  VectorType;
+  typedef VesselTubeType::PointType   PointType;
 
   vessel = VesselTubeType::New();
-  VesselTubeType::PointListType pointList;
+  VesselTubeType::TubePointListType tubePointList;
 
-  VectorType pos( 0.0 );
+  PointType pos( 0.0 );
 
   int numberOfSamples = 1e2;
   for ( double l = 0.0; l < length; l += length / numberOfSamples )
     {
     double t = Modulus( l, itk::Math::pi * 2 );
 
-    VesselTubeType::TubePointType point;
-    point.SetPosition( pos[0], pos[1], pos[2] );
-    pointList.push_back( point );
+    VesselTubeType::TubePointType tubePoint;
+    tubePoint.SetPositionInObjectSpace( pos );
+    tubePointList.push_back( tubePoint );
 
     pos[0] = l;
     pos[1] = amplitude * sin( frequency * t );
     pos[2] = 0.0;
     }
 
-  vessel->SetPoints( pointList );
+  vessel->SetPoints( tubePointList );
   std::cout<<"Cosine vessel generated"<<std::endl;
 }
 
 //--------------------------------------------------------------------------
-bool TestVesselMetrics( itk::VesselTubeSpatialObject<3>::Pointer
+bool TestVesselMetrics( itk::TubeSpatialObject<3>::Pointer
   vessel, double results[] )
 {
-  typedef itk::VesselTubeSpatialObject<3>
-    VesselTubeType;
+  typedef itk::TubeSpatialObject<3>   VesselTubeType;
 
   typedef itk::tube::TortuositySpatialObjectFilter<VesselTubeType>
     FilterType;
@@ -209,7 +210,7 @@ bool TestVesselMetrics( itk::VesselTubeSpatialObject<3>::Pointer
 //--------------------------------------------------------------------------
 int itktubeTortuositySpatialObjectFilterTest( int, char*[] )
 {
-  typedef itk::VesselTubeSpatialObject<3> VesselTubeType;
+  typedef itk::TubeSpatialObject<3> VesselTubeType;
 
   //
   // Test straight spatial objects

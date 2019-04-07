@@ -31,7 +31,7 @@ limitations under the License.
 
 #include "itktubeBlurImageFunction.h"
 
-#include <itkVesselTubeSpatialObject.h>
+#include <itkTubeSpatialObject.h>
 
 #include <itkMath.h>
 
@@ -69,7 +69,7 @@ public:
   itkStaticConstMacro( ImageDimension, unsigned int,
     TInputImage::ImageDimension );
 
-  typedef VesselTubeSpatialObject< TInputImage::ImageDimension > TubeType;
+  typedef TubeSpatialObject< TInputImage::ImageDimension > TubeType;
 
   typedef typename TubeType::TubePointType                   TubePointType;
 

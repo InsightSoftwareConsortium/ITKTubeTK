@@ -144,7 +144,7 @@ ExtractTubePointsSpatialObjectFilter< TTubeSpatialObject >
       ::tube::RemoveDuplicateTubePoints< TubeSpatialObjectType >( tube );
       ::tube::ComputeTubeTangentsAndNormals< TubeSpatialObjectType >(
         tube );
-      const typename TubeSpatialObjectType::PointListType
+      const typename TubeSpatialObjectType::TubePointListType
         pointsForThisTube = tube->GetPoints();
       unsigned int count = m_PointsContainer->Size();
       m_PointsContainer->Reserve( count +

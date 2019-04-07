@@ -31,7 +31,7 @@ limitations under the License.
 #include <itkGroupSpatialObject.h>
 #include <itkImage.h>
 #include <itkImageFileWriter.h>
-#include <itkVesselTubeSpatialObject.h>
+#include <itkTubeSpatialObject.h>
 
 namespace itk
 {
@@ -73,7 +73,7 @@ public:
     itkGetStaticConstMacro( ImageDimension ) >  TubeGroupType;
   typedef typename TubeGroupType::Pointer       TubeGroupPointer;
 
-  typedef VesselTubeSpatialObject<
+  typedef TubeSpatialObject<
     itkGetStaticConstMacro( ImageDimension ) >  TubeType;
 
   typedef typename DensityImageType::OffsetType VectorPixelType;
@@ -101,8 +101,8 @@ public:
   itkGetMacro( TangentMapImage, TangentImagePointer );
 
   /** Use square distance instead of linear distance */
-  itkSetMacro( UseSquareDistance, bool );
-  itkGetMacro( UseSquareDistance, bool );
+  itkSetMacro( UseSquaredDistance, bool );
+  itkGetMacro( UseSquaredDistance, bool );
   itkSetMacro( MaxDensityIntensity, DensityPixelType );
   itkGetMacro( MaxDensityIntensity, DensityPixelType );
   itkSetMacro( Size, SizeType );
@@ -132,7 +132,7 @@ private:
 
   /** Max value allowed for inverse intensity filter */
   DensityPixelType                  m_MaxDensityIntensity;
-  bool                              m_UseSquareDistance;
+  bool                              m_UseSquaredDistance;
 
 }; // End class TubeSpatialObjectToDensityImageFilter
 

@@ -56,8 +56,8 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
   typedef itk::SpatialObjectReader<>                   ReaderType;
   typedef itk::SpatialObject<>::ChildrenListType       ObjectListType;
   typedef itk::GroupSpatialObject<>                    GroupType;
-  typedef itk::VesselTubeSpatialObject<>               TubeType;
-  typedef TubeType::PointListType                      PointListType;
+  typedef itk::TubeSpatialObject<>                     TubeType;
+  typedef TubeType::TubePointListType                  TubePointListType;
   typedef TubeType::TubePointType                      TubePointType;
 
   ReaderType::Pointer reader = ReaderType::New();
@@ -105,7 +105,7 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
       tubeIter->GetPointer() );
     std::cout << "Test tube = " << rndTubeNum << std::endl;
 
-    PointListType tubePointList = tube->GetPoints();
+    TubePointListType tubePointList = tube->GetPoints();
     unsigned int numPoints = tubePointList.size();
     unsigned int rndPointNum = rndGen->GetUniformVariate( 0, 1 )
       * numPoints;
@@ -113,7 +113,7 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
       {
       rndPointNum = numPoints-1;
       }
-    PointListType::iterator pntIter = tubePointList.begin();
+    TubePointListType::iterator pntIter = tubePointList.begin();
     for( unsigned int i=0; i<rndPointNum; i++ )
       {
       ++pntIter;
@@ -121,10 +121,8 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
     TubePointType * pnt = static_cast< TubePointType * >( &( *pntIter ) );
     std::cout << "Test point = " << rndPointNum << std::endl;
 
-    tube->ComputeObjectToWorldTransform();
-    TubeType::TransformType * soTfm = tube->GetIndexToWorldTransform();
-
-    ImageType::PointType pntX = soTfm->TransformPoint( pnt->GetPosition() );
+    tube->Update();
+    ImageType::PointType pntX = pnt->GetPositionInWorldSpace();
 
     TubeOpType::ContinuousIndexType x0;
     bool inMargin = im->TransformPhysicalPointToContinuousIndex( pntX, x0 );
@@ -163,9 +161,9 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
     tubeOp->SetExtractBoundMin( minX );
     tubeOp->SetExtractBoundMax( maxX );
 
-    if( pnt->GetRadius() > 1 )
+    if( pnt->GetRadiusInObjectSpace() > 1 )
       {
-      tubeOp->SetRadius( 0.8 * pnt->GetRadius() );
+      tubeOp->SetRadius( 0.8 * pnt->GetRadiusInObjectSpace() );
       }
     else
       {

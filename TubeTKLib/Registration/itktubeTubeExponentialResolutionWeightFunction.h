@@ -72,7 +72,7 @@ public:
 
   WeightType Evaluate( const TubePointType & tubePoint ) const
     {
-    const WeightType radius = tubePoint.GetRadius();
+    const WeightType radius = tubePoint.GetRadiusInObjectSpace();
     return static_cast< WeightType >( 2.0 /
       ( 1.0 + std::exp( -2.0 * radius ) ) );
     }

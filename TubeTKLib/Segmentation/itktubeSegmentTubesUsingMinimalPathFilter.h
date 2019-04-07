@@ -22,8 +22,8 @@
 
 //ITK imports
 #include "itkGroupSpatialObject.h"
-#include "itkVesselTubeSpatialObjectPoint.h"
-#include "itkVesselTubeSpatialObject.h"
+#include "itkTubeSpatialObjectPoint.h"
+#include "itkTubeSpatialObject.h"
 #include "itkPathIterator.h"
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkPolyLineParametricPath.h"
@@ -60,9 +60,9 @@ public:
 
   typedef typename InputSpatialObjectType::Pointer TubeGroupPointer;
 
-  typedef itk::Point< double, Dimension >                 PointType;
-  typedef itk::VesselTubeSpatialObjectPoint< Dimension >  TubePointType;
-  typedef itk::VesselTubeSpatialObject< Dimension >       TubeType;
+  typedef itk::Point< double, Dimension >           PointType;
+  typedef itk::TubeSpatialObjectPoint< Dimension >  TubePointType;
+  typedef itk::TubeSpatialObject< Dimension >       TubeType;
 
   /** Method for creation through the object factory. */
   itkNewMacro( Self );

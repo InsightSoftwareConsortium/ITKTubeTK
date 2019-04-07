@@ -124,7 +124,7 @@ int DoIt( int argc, char * argv[] )
     builder->SetSpacing( sp );
     }
 
-  builder->SetUseSquareDistance( useSquareDistance );
+  builder->SetUseSquaredDistance( useSquaredDistance );
   typename TubesReaderType::Pointer reader = TubesReaderType::New();
   try
     {

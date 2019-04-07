@@ -29,8 +29,8 @@ limitations under the License.
 #include <itkGroupSpatialObject.h>
 #include <itkObject.h>
 #include <itkObjectFactory.h>
-#include <itkVesselTubeSpatialObject.h>
-#include <itkVesselTubeSpatialObjectPoint.h>
+#include <itkTubeSpatialObject.h>
+#include <itkTubeSpatialObjectPoint.h>
 
 namespace itk
 {
@@ -70,9 +70,9 @@ public:
   typedef SmartPointer< Self >                               Pointer;
   typedef SmartPointer< const Self >                         ConstPointer;
 
-  typedef VesselTubeSpatialObject< TDimension >              TubeType;
+  typedef TubeSpatialObject< TDimension >                    TubeType;
 
-  typedef typename VesselTubeSpatialObject< TDimension >::TransformType
+  typedef typename TubeSpatialObject< TDimension >::TransformType
     TubeTransformType;
 
   /** Typedef for the transformations */
@@ -88,8 +88,8 @@ public:
   /** Set the Transformation */
   itkSetObjectMacro( Transform, TransformType );
 
-  /** Set the Object to Index transform for the output tubes */
-  itkSetObjectMacro( OutputIndexToObjectTransform, TubeTransformType );
+  /** Set the Object to Parent transform for the output tubes */
+  itkSetObjectMacro( OutputObjectToParentTransform, TubeTransformType );
 
 protected:
 
@@ -111,7 +111,7 @@ private:
 
   typename TransformType::Pointer            m_Transform;
 
-  typename TubeTransformType::Pointer        m_OutputIndexToObjectTransform;
+  typename TubeTransformType::Pointer        m_OutputObjectToParentTransform;
 
 }; // End class TubeToTubeTransformFilter
 

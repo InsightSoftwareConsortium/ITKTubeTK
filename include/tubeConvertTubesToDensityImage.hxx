@@ -40,8 +40,8 @@ ConvertTubesToDensityImage< TOutputPixel, Dimension >
   os << indent << "m_Size: " << m_Filter->GetSize() << std::endl;
   os << indent << "m_MaxDensityIntensity: " <<
     m_Filter->GetMaxDensityIntensity() << std::endl;
-  os << indent << "m_UseSquareDistance: " <<
-    m_Filter->GetUseSquareDistance() << std::endl;
+  os << indent << "m_UseSquaredDistance: " <<
+    m_Filter->GetUseSquaredDistance() << std::endl;
 }
 
 }

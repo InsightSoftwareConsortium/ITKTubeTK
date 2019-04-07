@@ -24,6 +24,9 @@ limitations under the License.
 
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
+
+#include <itkEuler3DTransform.h>
+
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectToImageFilter.h>
 #include <itkSpatialObjectWriter.h>

@@ -28,6 +28,7 @@ limitations under the License.
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectToImageFilter.h>
 #include <itkSpatialObjectWriter.h>
+#include <itkEuler3DTransform.h>
 
 /**
  *  This test is a base to generate images and spatial objects for the
@@ -52,7 +53,7 @@ int itktubeSyntheticTubeImageGenerationTest( int argc, char * argv[] )
   typedef itk::Image<double, 3>                             Image3DType;
   typedef itk::ImageRegionIteratorWithIndex< Image3DType >  Image3DIteratorType;
   typedef itk::TubeSpatialObject<3>                         TubeType;
-  typedef itk::VesselTubeSpatialObjectPoint<3>              TubePointType;
+  typedef itk::TubeSpatialObjectPoint<3>                    TubePointType;
   typedef itk::GroupSpatialObject<3>                        TubeNetType;
 
   typedef itk::SpatialObjectToImageFilter< TubeNetType, Image3DType >
@@ -153,16 +154,20 @@ int itktubeSyntheticTubeImageGenerationTest( int argc, char * argv[] )
                                          "Vessel" );
 
   TubePointType point;
-  point.SetRadius( 2.0 );
+  point.SetRadiusInObjectSpace( 2.0 );
 
+  typename TubePointType::PointType pnt;
   for( int i = -550; i < 550; ++i )
     {
-    point.SetPosition( 15, 15, i / 10. );
+    pnt[0] = 15;
+    pnt[1] = 15;
+    pnt[2] = i/10.0;
+    point.SetPositionInObjectSpace( pnt );
     tube->GetPoints().push_back( point );
     }
 
   TubeNetType::Pointer group = TubeNetType::New();
-  group->AddSpatialObject( tube );
+  group->AddChild( tube );
 
   std::cout << "Write tubeFile: " << argv[2] << std::endl;
   TubeWriterType::Pointer tubeWriter = TubeWriterType::New();

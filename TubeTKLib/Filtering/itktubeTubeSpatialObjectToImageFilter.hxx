@@ -114,7 +114,8 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
 
     typename SuperClass::InputSpatialObjectType::BoundingBoxType::PointType
       maxPoint;
-    maxPoint = InputTube->GetBoundingBox()->GetMaximum();
+    InputTube->ComputeFamilyBoundingBox( 9999, "Tube" );
+    maxPoint = InputTube->GetFamilyBoundingBoxInWorldSpace()->GetMaximum();
 
     typename OutputImageType::PointType   physicalSize;
 
@@ -122,9 +123,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
 
     for( unsigned int i=0; i<ObjectDimension; i++ )
       {
-      maxPoint[i] = maxPoint[i] *
-                    ( InputTube->GetIndexToObjectTransform() )
-                      ->GetScaleComponent()[i];
+      maxPoint[i] = maxPoint[i];
       physicalSize[i] = maxPoint[i] - this->m_Origin[i];
 
       /** Get the origin point within the image so that the object
@@ -195,15 +194,12 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
     {
     TubeType * tube = ( TubeType * )TubeIterator->GetPointer();
 
-    tube->ComputeObjectToWorldTransform();
-
-    typename TubeType::TransformType * tubeIndexPhysTransform =
-      tube->GetIndexToWorldTransform();
+    tube->Update();
 
     // Force the computation of the tangents
     if( m_BuildTangentImage )
       {
-      tube->RemoveDuplicatePoints();
+      tube->RemoveDuplicatePointsInObjectSpace();
       tube->ComputeTangentAndNormals();
       }
 
@@ -213,7 +209,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
       const TubePointType* tubePoint = static_cast<const TubePointType*>(
         tube->GetPoint( k ) );
       OutputImage->TransformPhysicalPointToContinuousIndex(
-        tubeIndexPhysTransform->TransformPoint( tubePoint->GetPosition() ),
+        tubePoint->GetPositionInWorldSpace(),
         point );
       for( unsigned int i=0; i<ObjectDimension; i++ )
         {
@@ -237,7 +233,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
         if( m_BuildTangentImage )
           {
           // Convert the tangent type to the actual tangent image pixel type
-          typename TubeType::VectorType t = tubePoint->GetTangent();
+          typename TubeType::VectorType t = tubePoint->GetTangentInWorldSpace();
           TangentPixelType tp;
           for( unsigned int tpind = 0;tpind<ObjectDimension;tpind++ )
             {
@@ -250,25 +246,9 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
         if( m_UseRadius )
           {
           typename TubePointType::PointType radius, zero;
-          radius.Fill( tubePoint->GetRadius() );
-          zero.Fill( 0 );
-          // Convert to an index vector, working around the lack of an
-          // appropriate transformation function
-          ContinuousIndexType cix_radius, cix_zero;
-          OutputImage->TransformPhysicalPointToContinuousIndex(
-            tubeIndexPhysTransform->TransformPoint( radius ),
-            cix_radius );
-          OutputImage->TransformPhysicalPointToContinuousIndex(
-            tubeIndexPhysTransform->TransformPoint( zero ),
-            cix_zero );
-          itk::Vector<double, ObjectDimension> v_radius = cix_radius - cix_zero;
+          radius.Fill( tubePoint->GetRadiusInWorldSpace() );
 
-          // This is inherently broken for anisotropic images since
-          // the radius image is scalar-valued
-          double phys_pt_radius = tubePoint->GetRadius() *
-                                      tube
-                                      ->GetIndexToObjectTransform()
-                                      ->GetScaleComponent()[0];
+          double phys_pt_radius = tubePoint->GetRadiusInWorldSpace();
           if( m_BuildRadiusImage )
             {
             m_RadiusImage->SetPixel( index,
@@ -276,6 +256,9 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
                                       phys_pt_radius ) );
             }
 
+          typename OutputImageType::IndexType v_radius;
+          OutputImage->TransformPhysicalPointToIndex( radius,
+            v_radius );
           double step[ObjectDimension];
           for( unsigned int i = 0; i < ObjectDimension; i++ )
             {

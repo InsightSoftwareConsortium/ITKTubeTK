@@ -147,7 +147,7 @@ protected:
   virtual DataObjectPointer  MakeOutput( DataObjectPointerArraySizeType
     idx );
 
-  unsigned long GetMTime( void ) const;
+  ModifiedTimeType GetMTime( void ) const override;
 
 protected:
 

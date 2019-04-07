@@ -64,14 +64,11 @@ CropTubesFilter< VDimension >
 
   pTargetTubeGroup->CopyInformation( pSourceTubeGroup );
   // TODO: make CopyInformation of itk::SpatialObject do this
-  pTargetTubeGroup->GetObjectToParentTransform()->SetScale(
-    pSourceTubeGroup->GetObjectToParentTransform()->GetScale() );
-  pTargetTubeGroup->GetObjectToParentTransform()->SetOffset(
-    pSourceTubeGroup->GetObjectToParentTransform()->GetOffset() );
-  pTargetTubeGroup->GetObjectToParentTransform()->SetMatrix(
-    pSourceTubeGroup->GetObjectToParentTransform()->GetMatrix() );
-  pTargetTubeGroup->SetSpacing( pSourceTubeGroup->GetSpacing() );
-  pTargetTubeGroup->ComputeObjectToWorldTransform();
+  pTargetTubeGroup->GetObjectToParentTransform()->SetFixedParameters(
+    pSourceTubeGroup->GetObjectToParentTransform()->GetFixedParameters() );
+  pTargetTubeGroup->GetObjectToParentTransform()->SetParameters(
+    pSourceTubeGroup->GetObjectToParentTransform()->GetParameters() );
+  pTargetTubeGroup->Update();
 
   int targetTubeId=0;
   typename TubePointType::PointType worldBoxposition;
@@ -91,25 +88,23 @@ CropTubesFilter< VDimension >
       }
     //Compute Tangent and Normals
     pCurSourceTube->ComputeTangentAndNormals();
-    pCurSourceTube->ComputeObjectToWorldTransform();
+    pCurSourceTube->Update();
     //Point List for TargetTube
-    typename TubeType::PointListType targetPointList;
+    typename TubeType::TubePointListType targetPointList;
     //Get points in current source tube
-    typename TubeType::PointListType pointList =
+    typename TubeType::TubePointListType pointList =
       pCurSourceTube->GetPoints();
 
     //Get Index to World Transformation
     typename TubeType::TransformType * pTubeObjectPhysTransform =
       pCurSourceTube->GetObjectToWorldTransform();
-    typename TubeType::TransformType * pTubeIndexPhysTransform =
-      pCurSourceTube->GetIndexToWorldTransform();
 
     worldBoxposition =
         pTubeObjectPhysTransform->TransformPoint( m_BoxPosition );
     worldBoxSize =
         pTubeObjectPhysTransform->TransformVector( m_BoxSize );
 
-    for( typename TubeType::PointListType::const_iterator
+    for( typename TubeType::TubePointListType::const_iterator
       pointList_it = pointList.begin();
       pointList_it != pointList.end(); ++pointList_it )
       {
@@ -117,17 +112,17 @@ CropTubesFilter< VDimension >
       //Transform parameters in physical space
       typename TubePointType::PointType curSourcePos =
         pTubeObjectPhysTransform->TransformPoint(
-          curSourcePoint.GetPosition() );
+          curSourcePoint.GetPositionInObjectSpace() );
       typename TubePointType::CovariantVectorType curTubeNormal1 =
         pTubeObjectPhysTransform->TransformCovariantVector(
-          curSourcePoint.GetNormal1() );
+          curSourcePoint.GetNormal1InObjectSpace() );
       typename TubePointType::CovariantVectorType curTubeNormal2 =
         pTubeObjectPhysTransform->TransformCovariantVector(
-          curSourcePoint.GetNormal2() );
+          curSourcePoint.GetNormal2InObjectSpace() );
       VectorType curRadius;
       for( unsigned int i = 0; i < VDimension; i++ )
         {
-        curRadius[i] = curSourcePoint.GetRadius();
+        curRadius[i] = curSourcePoint.GetRadiusInObjectSpace();
         }
       typename TubePointType::VectorType curRadiusVector =
         pTubeObjectPhysTransform->TransformVector( curRadius );
@@ -139,13 +134,11 @@ CropTubesFilter< VDimension >
         normalList.push_back( curTubeNormal2 );
         }
       bool volumeMaskFlag = false;
-      typename TubePointType::PointType curSourcePosIndexSpace =
-        pTubeIndexPhysTransform->TransformPoint(
-        curSourcePoint.GetPosition() );
       if( m_UseMaskImage )
         {
         typename ImageType::IndexType imageIndex;
-        if( m_MaskImage->TransformPhysicalPointToIndex( curSourcePosIndexSpace,
+        if( m_MaskImage->TransformPhysicalPointToIndex(
+          curSourcePoint.GetPositionInWorldSpace(),
           imageIndex ) )
           {
           double val = 0;
@@ -168,7 +161,7 @@ CropTubesFilter< VDimension >
           {
           pCurSourceTube->SetId( targetTubeId );
           ++targetTubeId;
-          pTargetTubeGroup->AddSpatialObject( pCurSourceTube );
+          pTargetTubeGroup->AddChild( pCurSourceTube );
           break;
           }
         }
@@ -182,14 +175,11 @@ CropTubesFilter< VDimension >
           pTargetTube->CopyInformation( pCurSourceTube );
 
           // TODO: make CopyInformation of itk::SpatialObject do this
-          pTargetTube->GetObjectToParentTransform()->SetScale(
-            pCurSourceTube->GetObjectToParentTransform()->GetScale() );
-          pTargetTube->GetObjectToParentTransform()->SetOffset(
-            pCurSourceTube->GetObjectToParentTransform()->GetOffset() );
-          pTargetTube->GetObjectToParentTransform()->SetMatrix(
-            pCurSourceTube->GetObjectToParentTransform()->GetMatrix() );
-          pTargetTube->SetSpacing( pCurSourceTube->GetSpacing() );
-          pTargetTube->ComputeObjectToWorldTransform();
+          pTargetTube->GetObjectToParentTransform()->SetFixedParameters(
+            pCurSourceTube->GetObjectToParentTransform()->GetFixedParameters() );
+          pTargetTube->GetObjectToParentTransform()->SetParameters(
+            pCurSourceTube->GetObjectToParentTransform()->GetParameters() );
+          pTargetTube->Update();
 
           pTargetTube->ComputeTangentAndNormals();
 
@@ -197,7 +187,7 @@ CropTubesFilter< VDimension >
           ++targetTubeId;
           //Save cropped tube
           pTargetTube->SetPoints( targetPointList );
-          pTargetTubeGroup->AddSpatialObject( pTargetTube );
+          pTargetTubeGroup->AddChild( pTargetTube );
 
           targetPointList.clear();
           }
@@ -211,14 +201,11 @@ CropTubesFilter< VDimension >
       pTargetTube->CopyInformation( pCurSourceTube );
 
       // TODO: make CopyInformation of itk::SpatialObject do this
-      pTargetTube->GetObjectToParentTransform()->SetScale(
-        pCurSourceTube->GetObjectToParentTransform()->GetScale() );
-      pTargetTube->GetObjectToParentTransform()->SetOffset(
-        pCurSourceTube->GetObjectToParentTransform()->GetOffset() );
-      pTargetTube->GetObjectToParentTransform()->SetMatrix(
-        pCurSourceTube->GetObjectToParentTransform()->GetMatrix() );
-      pTargetTube->SetSpacing( pCurSourceTube->GetSpacing() );
-      pTargetTube->ComputeObjectToWorldTransform();
+      pTargetTube->GetObjectToParentTransform()->SetFixedParameters(
+        pCurSourceTube->GetObjectToParentTransform()->GetFixedParameters() );
+      pTargetTube->GetObjectToParentTransform()->SetParameters(
+        pCurSourceTube->GetObjectToParentTransform()->GetParameters() );
+      pTargetTube->Update();
 
       pTargetTube->ComputeTangentAndNormals();
 
@@ -226,7 +213,7 @@ CropTubesFilter< VDimension >
       ++targetTubeId;
       //Save cropped tube
       pTargetTube->SetPoints( targetPointList );
-      pTargetTubeGroup->AddSpatialObject( pTargetTube );
+      pTargetTubeGroup->AddChild( pTargetTube );
 
       targetPointList.clear();
       }
@@ -241,7 +228,7 @@ CropTubesFilter< VDimension >
   double tubeRadius,
   itk::Point< double, VDimension > boxPos,
   itk::Vector< double, VDimension > boxSize,
-  std::vector<  typename itk::VesselTubeSpatialObjectPoint
+  std::vector<  typename itk::TubeSpatialObjectPoint
     < VDimension >::CovariantVectorType > normalList )
 {
   // Return a boolean indicating if any slice of the tube

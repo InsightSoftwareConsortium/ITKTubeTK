@@ -84,7 +84,7 @@ public:
   typedef typename ImageType::PixelType                 PixelType;
 
   /**  Type definition for VesselTubeSpatialObject */
-  typedef VesselTubeSpatialObject< ImageDimension >     TubeType;
+  typedef TubeSpatialObject< ImageDimension >           TubeType;
   typedef typename TubeType::TubePointType              TubePointType;
 
   typedef itk::GroupSpatialObject< ImageDimension >     TubeGroupType;

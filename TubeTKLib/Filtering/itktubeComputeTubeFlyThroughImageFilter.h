@@ -25,7 +25,7 @@ limitations under the License.
 
 #include <itkGroupSpatialObject.h>
 #include <itkSpatialObjectToImageFilter.h>
-#include <itkVesselTubeSpatialObject.h>
+#include <itkTubeSpatialObject.h>
 
 namespace itk
 {
@@ -47,7 +47,7 @@ public:
 
   /** Tube class typedef */
   typedef GroupSpatialObject< Dimension >                TubeGroupType;
-  typedef VesselTubeSpatialObject< Dimension >           TubeType;
+  typedef TubeSpatialObject< Dimension >                 TubeType;
   typedef Image< TPixel, Dimension >                     InputImageType;
   typedef InputImageType                                 OutputImageType;
   typedef Image< unsigned char, Dimension >              OutputMaskType;

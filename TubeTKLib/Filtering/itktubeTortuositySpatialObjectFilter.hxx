@@ -391,7 +391,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   for( size_t index = 0; index < this->m_NumberOfPoints; ++index )
     {
     SOVectorType currentPoint = processedInput->GetPoint( index )->
-      GetPosition().GetVectorFromOrigin();
+      GetPositionInObjectSpace().GetVectorFromOrigin();
 
     // General variables
     bool nextPointAvailable = ( index < this->m_NumberOfPoints - 1 );
@@ -399,14 +399,14 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     if( nextPointAvailable )
       {
       nextPoint = processedInput->GetPoint( index + 1 )->
-        GetPosition().GetVectorFromOrigin();
+        GetPositionInObjectSpace().GetVectorFromOrigin();
       }
     bool previousPointAvailable = ( index > 0 );
     SOVectorType previousPoint( 0.0 );
     if( previousPointAvailable )
       {
       previousPoint = processedInput->GetPoint( index - 1 )->
-        GetPosition().GetVectorFromOrigin();
+        GetPositionInObjectSpace().GetVectorFromOrigin();
       }
     // t1 and t2, used both in icm and soam
     SOVectorType t1( 0.0 ), t2( 0.0 );
@@ -421,7 +421,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     if( nPlus2PointAvailable )
       {
       nPlus2Point = processedInput->GetPoint( index + 2 )->
-        GetPosition().GetVectorFromOrigin();
+        GetPositionInObjectSpace().GetVectorFromOrigin();
       }
 
     //
@@ -545,7 +545,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     if( arm )
       {
       // Average radius computation
-      sumOfRadius += processedInput->GetPoints()[index].GetRadius();
+      sumOfRadius += processedInput->GetPoints()[index].GetRadiusInObjectSpace();
       }
 
     // Metrics that require curvature computation

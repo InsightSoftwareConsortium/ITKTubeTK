@@ -69,7 +69,7 @@ public:
 
   inline OperatorValueType operator()( const TubePointType & tubePoint )
     {
-    const OperatorValueType radius = tubePoint.GetRadius();
+    const OperatorValueType radius = tubePoint.GetRadiusInObjectSpace();
     if( radius < this->m_LowerBound || radius > this->m_UpperBound )
       {
       return NumericTraits< OperatorValueType >::Zero;

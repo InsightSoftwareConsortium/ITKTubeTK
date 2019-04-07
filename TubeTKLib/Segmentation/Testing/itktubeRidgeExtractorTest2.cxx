@@ -58,8 +58,8 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
   typedef itk::SpatialObjectReader<>                   ReaderType;
   typedef itk::SpatialObject<>::ChildrenListType       ObjectListType;
   typedef itk::GroupSpatialObject<>                    GroupType;
-  typedef itk::VesselTubeSpatialObject<>               TubeType;
-  typedef TubeType::PointListType                      PointListType;
+  typedef itk::TubeSpatialObject<>                     TubeType;
+  typedef TubeType::TubePointListType                  TubePointListType;
   typedef TubeType::TubePointType                      TubePointType;
 
   ReaderType::Pointer reader = ReaderType::New();
@@ -107,7 +107,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       tubeIter->GetPointer() );
     std::cout << "Test tube = " << rndTubeNum << std::endl;
 
-    PointListType tubePointList = tube->GetPoints();
+    TubePointListType tubePointList = tube->GetPoints();
     unsigned int numPoints = tubePointList.size();
     unsigned int rndPointNum = rndGen->GetUniformVariate( 0, 1 )
       * numPoints;
@@ -115,7 +115,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       {
       rndPointNum = numPoints-1;
       }
-    PointListType::iterator pntIter = tubePointList.begin();
+    TubePointListType::iterator pntIter = tubePointList.begin();
     for( unsigned int i=0; i<rndPointNum; i++ )
       {
       ++pntIter;
@@ -123,10 +123,9 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
     TubePointType * pnt = static_cast< TubePointType * >( &( *pntIter ) );
     std::cout << "Test point = " << rndPointNum << std::endl;
 
-    tube->ComputeObjectToWorldTransform();
-    TubeType::TransformType * soTfm = tube->GetIndexToWorldTransform();
+    tube->Update();
 
-    ImageType::PointType pntX = soTfm->TransformPoint( pnt->GetPosition() );
+    ImageType::PointType pntX = pnt->GetPositionInWorldSpace();
 
     RidgeOpType::ContinuousIndexType x0;
     bool inMargin = im->TransformPhysicalPointToContinuousIndex( pntX, x0 );
@@ -164,9 +163,9 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
     ridgeOp->SetExtractBoundMin( minX );
     ridgeOp->SetExtractBoundMax( maxX );
 
-    if( pnt->GetRadius() > 1 )
+    if( pnt->GetRadiusInObjectSpace() > 1 )
       {
-      ridgeOp->SetScale( 0.8 * pnt->GetRadius() );
+      ridgeOp->SetScale( 0.8 * pnt->GetRadiusInObjectSpace() );
       }
     else
       {
@@ -191,7 +190,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       diff += tf * tf;
       }
     diff = std::sqrt( diff );
-    if( diff > 2*pnt->GetRadius() && diff > 4 )
+    if( diff > 2*pnt->GetRadiusInObjectSpace() && diff > 4 )
       {
       std::cout << "Local ridge test failed.  Local ridge too far."
         << std::endl;

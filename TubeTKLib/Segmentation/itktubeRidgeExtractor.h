@@ -36,7 +36,7 @@ limitations under the License.
 #include "tubeSplineND.h"
 
 #include <itkContinuousIndex.h>
-#include <itkVesselTubeSpatialObject.h>
+#include <itkTubeSpatialObject.h>
 
 #include <cmath>
 #include <list>
@@ -100,7 +100,7 @@ public:
   typedef vnl_matrix< double >                  MatrixType;
 
   /** Tube SpatialObject typedefs */
-  typedef VesselTubeSpatialObject< TInputImage::ImageDimension > TubeType;
+  typedef TubeSpatialObject< TInputImage::ImageDimension > TubeType;
 
   typedef typename TubeType::TubePointType      TubePointType;
 

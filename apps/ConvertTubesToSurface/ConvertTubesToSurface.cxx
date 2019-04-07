@@ -27,7 +27,7 @@ limitations under the License.
 #include <itkSpatialObjectReader.h>
 #include <itkGroupSpatialObject.h>
 #include <itkTimeProbesCollectorBase.h>
-#include <itkVesselTubeSpatialObject.h>
+#include <itkTubeSpatialObject.h>
 
 #include <vtkCellArray.h>
 #include <vtkDoubleArray.h>
@@ -73,7 +73,7 @@ int DoIt( int argc, char * argv[] )
 
   const unsigned int Dimension = 3;
 
-  typedef itk::VesselTubeSpatialObject< Dimension > TubeSpatialObjectType;
+  typedef itk::TubeSpatialObject< Dimension >       TubeSpatialObjectType;
   typedef itk::GroupSpatialObject< Dimension >      GroupSpatialObjectType;
 
   timeCollector.Start( "Read tubes" );
