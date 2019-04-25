@@ -280,22 +280,22 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
       {
       return EXIT_FAILURE;
       }
-    pCurSourceTube->ComputeObjectToWorldTransform();
+    pCurSourceTube->Update();
     //Get points in current source tube
-    typename TubeType::PointListType pointList =
+    typename TubeType::TubePointListType pointList =
       pCurSourceTube->GetPoints();
     //Get Index to World Transformation
-    typename TubeType::TransformType * pTubeIndexPhysTransform =
-      pCurSourceTube->GetIndexToWorldTransform();
-    for( typename TubeType::PointListType::const_iterator
+    typename TubeType::TransformType * pTubeObjectPhysTransform =
+      pCurSourceTube->GetObjectToWorldTransform();
+    for( typename TubeType::TubePointListType::const_iterator
       pointList_it = pointList.begin();
       pointList_it != pointList.end(); ++pointList_it )
       {
       TubePointType curSourcePoint = *pointList_it;
       //Transform parameters in physical space
       typename TubePointType::PointType curSourcePos =
-        pTubeIndexPhysTransform->TransformPoint(
-          curSourcePoint.GetPosition() );
+        pTubeObjectPhysTransform->TransformPoint(
+          curSourcePoint.GetPositionInObjectSpace() );
       double distance =
         curSourcePos.SquaredEuclideanDistanceTo( outsidePoint );
       if( minDistance > distance )
@@ -305,7 +305,7 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
           {
           nearestPoint[i] = curSourcePos[i];
           }
-        nearestPointRadius = curSourcePoint.GetRadius();
+        nearestPointRadius = curSourcePoint.GetRadiusInObjectSpace();
         }
       }
     }
