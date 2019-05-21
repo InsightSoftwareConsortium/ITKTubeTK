@@ -144,7 +144,7 @@ ImageRegionMomentsCalculator<TImage>::Compute()
 
     if( isInsideRegionOfInterest &&
         (m_SpatialObjectMask.IsNull()
-         || m_SpatialObjectMask->IsInside(physicalPosition) ) )
+         || m_SpatialObjectMask->IsInsideInWorldSpace(physicalPosition) ) )
       {
       m_M0 += value;
       for( unsigned int i = 0; i < ImageDimension; i++ )

@@ -228,7 +228,7 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
           }
         }
       graph->GetPoints().push_back( tgP );
-      scene.AddChild( graph );
+      scene.AddObject( graph );
       }
     else
       {

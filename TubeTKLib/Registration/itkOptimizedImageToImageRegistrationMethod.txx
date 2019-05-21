@@ -295,7 +295,7 @@ OptimizedImageToImageRegistrationMethod<TImage>
       if( this->GetUseFixedImageMaskObject() )
         {
         double val;
-        if( this->GetFixedImageMaskObject()->ValueAt( fixedPoint, val ) )
+        if( this->GetFixedImageMaskObject()->ValueAtInWorldSpace( fixedPoint, val ) )
           {
           if( val == 0 )
             {
@@ -366,7 +366,7 @@ OptimizedImageToImageRegistrationMethod<TImage>
       if( this->GetUseFixedImageMaskObject() )
         {
         double val;
-        if( this->GetFixedImageMaskObject()->ValueAt( fixedPoint, val ) )
+        if( this->GetFixedImageMaskObject()->ValueAtInWorldSpace( fixedPoint, val ) )
           {
           if( val == 0 )
             {
