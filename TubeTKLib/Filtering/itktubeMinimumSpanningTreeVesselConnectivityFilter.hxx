@@ -375,9 +375,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
   // Add root tube to output
   TubePointerType inputRootTube = m_TubeIdToObjectMap[rootTubeId];
-  TubePointerType rootTube = TubeType::New();
-
-  rootTube->CopyInformation( inputRootTube );
+  TubePointerType rootTube = inputRootTube->Clone();
 
   // TODO: make CopyInformation of itk::SpatialObject do this
   rootTube->GetObjectToParentTransform()->SetFixedParameters(
@@ -425,9 +423,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       }
 
     // get tube object
-    TubePointerType curTube = TubeType::New();
-
-    curTube->CopyInformation( eTop.targetTube );
+    TubePointerType curTube = eTop.targetTube->Clone();
 
     // TODO: make CopyInformation of itk::SpatialObject do this
     curTube->GetObjectToParentTransform()->SetFixedParameters(
@@ -598,9 +594,8 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
     if( m_SetTubesVisited.find( curSourceTubeId ) == m_SetTubesVisited.end() )
       {
-      TubePointerType curTube = TubeType::New();
+      TubePointerType curTube = pCurSourceTube->Clone();
 
-      curTube->CopyInformation( pCurSourceTube );
       // TODO: make CopyInformation of itk::SpatialObject do this
       curTube->GetObjectToParentTransform()->SetFixedParameters(
         pCurSourceTube->GetObjectToParentTransform()->GetFixedParameters() );
