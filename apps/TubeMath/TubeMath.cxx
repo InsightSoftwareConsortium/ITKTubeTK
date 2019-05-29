@@ -294,6 +294,12 @@ int DoIt( MetaCommand & command )
       {
       ::tube::Message( "Reverse" );
       }
+    else if( it->name == "FillGapsInTree" )
+      {
+      ::tube::Message( "Fill gapes in tree" );
+      tube::TreeFilters< VDimension >::FillGap( inputTubes,
+        command.GetValueAsString( *it, "InterpolationMethod" ).c_str()[0] );
+      }
     else if( it->name == "ComputeTangentsAndNormals" )
       {
       ::tube::Message( "Compute Tangents and Normals" );
@@ -346,7 +352,16 @@ int DoIt( MetaCommand & command )
         if( currentTube == ALL_TUBES_CURRENT || inputTube->GetId() ==
           currentTube )
           {
-          inputTube->SetArtery( true );
+          std::string str;
+          if( inputTube->GetProperty().GetTagStringValue( "Artery", str )
+            && str == "True" )
+            {
+            inputTube->GetProperty().SetTagStringValue( "Artery", "False" );
+            }
+          else
+            {
+            inputTube->GetProperty().SetTagStringValue( "Artery", "True" );
+            }
           }
         }
       inputTubeList->clear();
@@ -457,6 +472,14 @@ int main( int argc, char * argv[] )
     MetaCommand::DATA_IN );
   command.AddOptionField( "LoadValueFromImageMean", "filename",
     MetaCommand::STRING, true, "", "Image filename", MetaCommand::DATA_IN );
+
+  command.SetOption( "FillGapsInTubeTree", "f", false,
+    "Connects the parent and child tube if they have a gap inbetween,"
+    " by interpolating the path inbetween." );
+  command.AddOptionField( "FillGapsInTubeTree", "InterpolationMethod",
+    MetaCommand::STRING, true, "",
+    "[S]traight Line, [L]Linear Interp., [C]urve Fitting, [M]inimal Path",
+    MetaCommand::DATA_IN );
 
   command.SetOption( "ComputeTangentsAndNormals", "n", false,
     "Compute current tube's tangents and normals from point sequence." );

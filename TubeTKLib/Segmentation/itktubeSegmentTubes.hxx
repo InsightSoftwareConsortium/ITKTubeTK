@@ -275,27 +275,6 @@ SegmentTubes<TInputImage>
     return;
     }
 
-  //Update tubes transform
-  typename TubeTransformType::InputVectorType scaleVector;
-  typename TubeTransformType::OffsetType offsetVector;
-  typename TubeTransformType::MatrixType directionMatrix;
-  typename ImageType::SpacingType spacing = this->m_InputImage->GetSpacing();
-  typename ImageType::PointType origin = this->m_InputImage->GetOrigin();
-  for( unsigned int i = 0; i < ImageDimension; ++i )
-    {
-    scaleVector[i] = spacing[i];
-    offsetVector[i] = origin[i];
-    }
-
-  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()
-    ->SetScale( scaleVector );
-  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()
-    ->SetOffset( offsetVector );
-  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()
-    ->SetMatrix( this->m_InputImage->GetDirection() );
-  this->m_TubeExtractorFilter->GetTubeGroup()
-    ->ComputeObjectToWorldTransform();
-
   std::cout << "Ridge termination code counts:" << std::endl;
   for( unsigned int code = 0; code <
     this->m_TubeExtractorFilter->GetRidgeOp()->GetNumberOfFailureCodes();

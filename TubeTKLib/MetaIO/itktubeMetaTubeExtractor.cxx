@@ -37,7 +37,7 @@ MetaTubeExtractor( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaTubeExtractor()" << METAIO_STREAM::endl;
+    std::cout << "MetaTubeExtractor()" << std::endl;
     }
 
   Clear();
@@ -49,7 +49,7 @@ MetaTubeExtractor( const char *_headerName )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaTubeExtractor()" << METAIO_STREAM::endl;
+    std::cout << "MetaTubeExtractor()" << std::endl;
     }
 
   Clear();
@@ -64,7 +64,7 @@ MetaTubeExtractor( const MetaTubeExtractor & _metaTubeExtractor ) : MetaForm()
 {
   if( META_DEBUG )
    {
-   METAIO_STREAM::cout << "MetaTubeExtractor()" << METAIO_STREAM::endl;
+   std::cout << "MetaTubeExtractor()" << std::endl;
    }
 
   Clear();
@@ -85,77 +85,77 @@ PrintInfo( void ) const
 {
   MetaForm::PrintInfo();
 
-  METAIO_STREAM::cout << "DataMin = "
-    << m_DataMin << METAIO_STREAM::endl;
+  std::cout << "DataMin = "
+    << m_DataMin << std::endl;
 
-  METAIO_STREAM::cout << "DataMax = "
-    << m_DataMax << METAIO_STREAM::endl;
+  std::cout << "DataMax = "
+    << m_DataMax << std::endl;
 
-  METAIO_STREAM::cout << "TubeColor = "
-    << m_TubeColor << METAIO_STREAM::endl;
+  std::cout << "TubeColor = "
+    << m_TubeColor << std::endl;
 
-  METAIO_STREAM::cout << "RidgeScale = "
-    << m_RidgeScale << METAIO_STREAM::endl;
+  std::cout << "RidgeScale = "
+    << m_RidgeScale << std::endl;
 
-  METAIO_STREAM::cout << "RidgeScaleKernelExtent = "
-    << m_RidgeScaleKernelExtent << METAIO_STREAM::endl;
+  std::cout << "RidgeScaleKernelExtent = "
+    << m_RidgeScaleKernelExtent << std::endl;
 
-  METAIO_STREAM::cout << "RidgeDynamicScale = "
-    << m_RidgeDynamicScale << METAIO_STREAM::endl;
+  std::cout << "RidgeDynamicScale = "
+    << m_RidgeDynamicScale << std::endl;
 
-  METAIO_STREAM::cout << "RidgeDynamicStepSize = "
-    << m_RidgeDynamicStepSize << METAIO_STREAM::endl;
+  std::cout << "RidgeDynamicStepSize = "
+    << m_RidgeDynamicStepSize << std::endl;
 
-  METAIO_STREAM::cout << "RidgeStepX = "
-    << m_RidgeStepX << METAIO_STREAM::endl;
+  std::cout << "RidgeStepX = "
+    << m_RidgeStepX << std::endl;
 
-  METAIO_STREAM::cout << "RidgeMaxTangentChange = "
-    << m_RidgeMaxTangentChange << METAIO_STREAM::endl;
+  std::cout << "RidgeMaxTangentChange = "
+    << m_RidgeMaxTangentChange << std::endl;
 
-  METAIO_STREAM::cout << "RidgeMaxXChange = "
-    << m_RidgeMaxXChange << METAIO_STREAM::endl;
+  std::cout << "RidgeMaxXChange = "
+    << m_RidgeMaxXChange << std::endl;
 
-  METAIO_STREAM::cout << "RidgeMinRidgeness = "
-    << m_RidgeMinRidgeness << METAIO_STREAM::endl;
+  std::cout << "RidgeMinRidgeness = "
+    << m_RidgeMinRidgeness << std::endl;
 
-  METAIO_STREAM::cout << "RidgeMinRidgenessStart = "
-    << m_RidgeMinRidgenessStart << METAIO_STREAM::endl;
+  std::cout << "RidgeMinRidgenessStart = "
+    << m_RidgeMinRidgenessStart << std::endl;
 
-  METAIO_STREAM::cout << "RidgeMinRoundness = "
-    << m_RidgeMinRoundness << METAIO_STREAM::endl;
+  std::cout << "RidgeMinRoundness = "
+    << m_RidgeMinRoundness << std::endl;
 
-  METAIO_STREAM::cout << "RidgeMinRoundnessStart = "
-    << m_RidgeMinRoundnessStart << METAIO_STREAM::endl;
+  std::cout << "RidgeMinRoundnessStart = "
+    << m_RidgeMinRoundnessStart << std::endl;
 
-  METAIO_STREAM::cout << "RidgeMinCurvature = "
-    << m_RidgeMinCurvature << METAIO_STREAM::endl;
+  std::cout << "RidgeMinCurvature = "
+    << m_RidgeMinCurvature << std::endl;
 
-  METAIO_STREAM::cout << "RidgeMinCurvatureStart = "
-    << m_RidgeMinCurvatureStart << METAIO_STREAM::endl;
+  std::cout << "RidgeMinCurvatureStart = "
+    << m_RidgeMinCurvatureStart << std::endl;
 
-  METAIO_STREAM::cout << "RidgeMinLevelness = "
-    << m_RidgeMinLevelness << METAIO_STREAM::endl;
+  std::cout << "RidgeMinLevelness = "
+    << m_RidgeMinLevelness << std::endl;
 
-  METAIO_STREAM::cout << "RidgeMinLevelnessStart = "
-    << m_RidgeMinLevelnessStart << METAIO_STREAM::endl;
+  std::cout << "RidgeMinLevelnessStart = "
+    << m_RidgeMinLevelnessStart << std::endl;
 
-  METAIO_STREAM::cout << "RidgeMaxRecoveryAttempts = "
-    << m_RidgeMaxRecoveryAttempts << METAIO_STREAM::endl;
+  std::cout << "RidgeMaxRecoveryAttempts = "
+    << m_RidgeMaxRecoveryAttempts << std::endl;
 
-  METAIO_STREAM::cout << "RadiusStart = "
-    << m_RadiusStart << METAIO_STREAM::endl;
+  std::cout << "RadiusStart = "
+    << m_RadiusStart << std::endl;
 
-  METAIO_STREAM::cout << "RadiusMin = "
-    << m_RadiusMin << METAIO_STREAM::endl;
+  std::cout << "RadiusMin = "
+    << m_RadiusMin << std::endl;
 
-  METAIO_STREAM::cout << "RadiusMax = "
-    << m_RadiusMax << METAIO_STREAM::endl;
+  std::cout << "RadiusMax = "
+    << m_RadiusMax << std::endl;
 
-  METAIO_STREAM::cout << "RadiusMinMedialness = "
-    << m_RadiusMinMedialness << METAIO_STREAM::endl;
+  std::cout << "RadiusMinMedialness = "
+    << m_RadiusMinMedialness << std::endl;
 
-  METAIO_STREAM::cout << "RadiusMinMedialnessStart = "
-    << m_RadiusMinMedialnessStart << METAIO_STREAM::endl;
+  std::cout << "RadiusMinMedialnessStart = "
+    << m_RadiusMinMedialnessStart << std::endl;
 
 }
 
@@ -399,8 +399,8 @@ Clear( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaTubeExtractor: Clear"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaTubeExtractor: Clear"
+      << std::endl;
     }
 
   m_DataMin = 0;
@@ -442,8 +442,8 @@ InitializeEssential( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaTubeExtractor: Initialize"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaTubeExtractor: Initialize"
+      << std::endl;
     }
 
   MetaForm::InitializeEssential();
@@ -460,7 +460,7 @@ bool MetaTubeExtractor::
 CanRead( const char *_headerName ) const
 {
   // First check the extension
-  METAIO_STL::string fname = _headerName;
+  std::string fname = _headerName;
   if( fname == "" )
     {
     return false;
@@ -468,8 +468,8 @@ CanRead( const char *_headerName ) const
 
   bool extensionFound = false;
 
-  METAIO_STL::string::size_type stringPos = fname.rfind( ".mtp" );
-  if( ( stringPos != METAIO_STL::string::npos )
+  std::string::size_type stringPos = fname.rfind( ".mtp" );
+  if( ( stringPos != std::string::npos )
       && ( stringPos == fname.length() - 4 ) )
     {
     extensionFound = true;
@@ -481,10 +481,10 @@ CanRead( const char *_headerName ) const
     }
 
   // Now check the file content
-  METAIO_STREAM::ifstream inputStream;
+  std::ifstream inputStream;
 
-  inputStream.open( _headerName, METAIO_STREAM::ios::in |
-                                 METAIO_STREAM::ios::binary );
+  inputStream.open( _headerName, std::ios::in |
+                                 std::ios::binary );
 
   if( !inputStream.rdbuf()->is_open() )
     {
@@ -508,15 +508,15 @@ Read( const char *_headerName )
     FileName( _headerName );
     }
 
-  METAIO_STREAM::ifstream * tmpStream = new METAIO_STREAM::ifstream;
+  std::ifstream * tmpStream = new std::ifstream;
 
-  tmpStream->open( m_FileName, METAIO_STREAM::ios::in |
-                              METAIO_STREAM::ios::binary );
+  tmpStream->open( m_FileName, std::ios::in |
+                              std::ios::binary );
 
   if( !tmpStream->rdbuf()->is_open() )
     {
-    METAIO_STREAM::cout << "MetaTubeExtractor: Read: Cannot open file _"
-                        << m_FileName << "_" << METAIO_STREAM::endl;
+    std::cout << "MetaTubeExtractor: Read: Cannot open file _"
+                        << m_FileName << "_" << std::endl;
     delete tmpStream;
     return false;
     }
@@ -532,7 +532,7 @@ Read( const char *_headerName )
 
 
 bool MetaTubeExtractor::
-CanReadStream( METAIO_STREAM::ifstream * _stream ) const
+CanReadStream( std::ifstream * _stream ) const
 {
   if( !std::strncmp( MET_ReadForm( *_stream ).c_str(),
     "TubeExtractor", 10 ) )
@@ -544,12 +544,12 @@ CanReadStream( METAIO_STREAM::ifstream * _stream ) const
 }
 
 bool MetaTubeExtractor::
-ReadStream( METAIO_STREAM::ifstream * _stream )
+ReadStream( std::ifstream * _stream )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaTubeExtractor: ReadStream"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaTubeExtractor: ReadStream"
+      << std::endl;
     }
 
   M_Destroy();
@@ -560,8 +560,8 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
 
   if( m_ReadStream )
     {
-    METAIO_STREAM::cout << "MetaTubeExtractor: ReadStream: two files open?"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaTubeExtractor: ReadStream: two files open?"
+                        << std::endl;
     delete m_ReadStream;
     }
 
@@ -569,8 +569,8 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
 
   if( !M_Read() )
     {
-    METAIO_STREAM::cout << "MetaTubeExtractor: Read: Cannot parse file"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaTubeExtractor: Read: Cannot parse file"
+                        << std::endl;
     m_ReadStream = NULL;
     return false;
     }
@@ -595,10 +595,10 @@ Write( const char *_headName )
 
   MET_SetFileSuffix( m_FileName, ".mtp" );
 
-  METAIO_STREAM::ofstream * tmpWriteStream = new METAIO_STREAM::ofstream;
+  std::ofstream * tmpWriteStream = new std::ofstream;
 
-  tmpWriteStream->open( m_FileName, METAIO_STREAM::ios::binary |
-                                   METAIO_STREAM::ios::out );
+  tmpWriteStream->open( m_FileName, std::ios::binary |
+                                   std::ios::out );
 
   if( !tmpWriteStream->rdbuf()->is_open() )
     {
@@ -616,12 +616,12 @@ Write( const char *_headName )
 }
 
 bool MetaTubeExtractor::
-WriteStream( METAIO_STREAM::ofstream * _stream )
+WriteStream( std::ofstream * _stream )
 {
   if( m_WriteStream != NULL )
     {
-    METAIO_STREAM::cout << "MetaTubeExtractor: WriteStream: two files open?"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaTubeExtractor: WriteStream: two files open?"
+                        << std::endl;
     delete m_WriteStream;
     }
 
@@ -649,8 +649,8 @@ M_SetupReadFields( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaTubeExtractor: M_SetupReadFields"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaTubeExtractor: M_SetupReadFields"
+                        << std::endl;
     }
 
   MetaForm::M_SetupReadFields();
@@ -766,8 +766,8 @@ M_SetupWriteFields( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaTubeExtractor: M_SetupWriteFields"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaTubeExtractor: M_SetupWriteFields"
+                        << std::endl;
     }
 
   strcpy( m_FormTypeName, "TubeExtractor" );
@@ -914,20 +914,20 @@ M_Read( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaTubeExtractor: M_Read: Loading Header"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaTubeExtractor: M_Read: Loading Header"
+                        << std::endl;
     }
   if( !MetaForm::M_Read() )
     {
-    METAIO_STREAM::cout << "MetaTubeExtractor: M_Read: Error parsing file"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaTubeExtractor: M_Read: Error parsing file"
+                        << std::endl;
     return false;
     }
 
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaTubeExtractor: M_Read: Parsing Header"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaTubeExtractor: M_Read: Parsing Header"
+                        << std::endl;
     }
   MET_FieldRecordType * mF;
 

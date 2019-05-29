@@ -115,7 +115,7 @@ int DoIt( int argc, char * argv[] )
     TubeSpatialObjectType * tube =
       static_cast< TubeSpatialObjectType * >( tubeIt->GetPointer() );
 
-    tube->RemoveDuplicatePoints();
+    tube->RemoveDuplicatePointsInObjectSpace();
 
     const itk::SizeValueType numberOfPoints = tube->GetNumberOfPoints();
     if( numberOfPoints < 2 )
@@ -188,9 +188,9 @@ int DoIt( int argc, char * argv[] )
     vtkIdType * pointIds = new vtkIdType[numberOfPoints];
     vtkNew<vtkPolyLine> tubeLine;
 
-    const TubeSpatialObjectType::PointListType & tubePoints =
+    const TubeSpatialObjectType::TubePointListType & tubePoints =
       tube->GetPoints();
-    typedef TubeSpatialObjectType::PointListType::const_iterator
+    typedef TubeSpatialObjectType::TubePointListType::const_iterator
       TubePointIteratorType;
     const TubePointIteratorType tubePointsEnd = tubePoints.end();
     itk::SizeValueType index = 0;

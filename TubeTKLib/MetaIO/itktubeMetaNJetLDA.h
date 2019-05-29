@@ -118,13 +118,13 @@ public:
 
   virtual bool Read( const char * headerName = NULL );
 
-  virtual bool CanReadStream( METAIO_STREAM::ifstream * stream ) const;
+  virtual bool CanReadStream( std::ifstream * stream ) const;
 
-  virtual bool ReadStream( METAIO_STREAM::ifstream * stream );
+  virtual bool ReadStream( std::ifstream * stream );
 
   virtual bool Write( const char * headerName = NULL );
 
-  virtual bool WriteStream( METAIO_STREAM::ofstream * stream );
+  virtual bool WriteStream( std::ofstream * stream );
 
 protected:
 

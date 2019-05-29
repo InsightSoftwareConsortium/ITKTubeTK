@@ -36,14 +36,6 @@ limitations under the License.
 // Must include CLP before including tubeCLIHelperFunctions
 #include "Convert4DImageTo3DImagesCLP.h"
 
-// Must do a forward declaration of DoIt before including
-// tubeCLIHelperFunctions
-template< class TPixel, unsigned int VDimension >
-int DoIt( int argc, char * argv[] );
-
-// Must follow include of "...CLP.h" and forward declaration of DoIt( ... ).
-#include "../CLI/tubeCLIHelperFunctions.h"
-
 // Your code should be within the DoIt function...
 template< class TPixel, unsigned int VDimension >
 int DoIt( int argc, char * argv[] )
@@ -122,10 +114,11 @@ int DoIt( int argc, char * argv[] )
     progress = 0.8 * ( d4 / (double)inImSize[3] ) + 0.2;
     progressReporter.Report( progress );
 
-    char outputImageFileName[255];
-    std::strcpy( outputImageFileName, inputImageFileName.c_str() );
-    char newSuffix[80];
-    snprintf( newSuffix, 79, "%03d.mha", d4 );
+    std::string outputImageFileName = inputImageFileName;
+    std::ostringstream zeroPadNum;
+    zeroPadNum << std::setw(3) << std::setfill( '0' ) << d4;
+    std::string newSuffix;
+    newSuffix = zeroPadNum.str() + ".mha";
     MET_SetFileSuffix( outputImageFileName, newSuffix );
 
     typename WriterType::Pointer writer = WriterType::New();
@@ -153,6 +146,38 @@ int DoIt( int argc, char * argv[] )
   timeCollector.Report();
   return EXIT_SUCCESS;
   }
+
+namespace tube
+{
+
+// Get the component type and dimension of the image.
+void GetImageInformation( const std::string & fileName,
+                          itk::ImageIOBase::IOComponentType & componentType,
+                          unsigned int & dimension )
+{
+  typedef itk::ImageIOBase     ImageIOType;
+  typedef itk::ImageIOFactory  ImageIOFactoryType;
+
+  ImageIOType::Pointer imageIO =
+    ImageIOFactoryType::CreateImageIO( fileName.c_str(),
+                                       ImageIOFactoryType::ReadMode );
+
+  if( imageIO )
+    {
+    // Read the metadata from the image file.
+    imageIO->SetFileName( fileName.c_str() );
+    imageIO->ReadImageInformation();
+
+    componentType = imageIO->GetComponentType();
+    dimension = imageIO->GetNumberOfDimensions();
+    }
+  else
+    {
+    tubeErrorMacro( << "No ImageIO was found." );
+    }
+}
+
+}
 
 // Main
 int main( int argc, char * argv[] )

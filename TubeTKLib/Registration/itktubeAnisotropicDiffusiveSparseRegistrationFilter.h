@@ -27,7 +27,7 @@ limitations under the License.
 #include "itktubeDiffusiveRegistrationFilter.h"
 
 #include <itkGroupSpatialObject.h>
-#include <itkVesselTubeSpatialObject.h>
+#include <itkTubeSpatialObject.h>
 
 #include <vtkSmartPointer.h>
 
@@ -221,7 +221,7 @@ public:
       TubeListType;
   typedef TubeListType *
       TubeListPointer;
-  typedef itk::VesselTubeSpatialObject< ImageDimension >
+  typedef itk::TubeSpatialObject< ImageDimension >
       TubeType;
   typedef typename TubeType::PointListType
       TubePointListType;

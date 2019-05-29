@@ -37,7 +37,7 @@ MetaClassPDF( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaClassPDF()" << METAIO_STREAM::endl;
+    std::cout << "MetaClassPDF()" << std::endl;
     }
 
   Clear();
@@ -48,7 +48,7 @@ MetaClassPDF( const char * _headerName )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaClassPDF()" << METAIO_STREAM::endl;
+    std::cout << "MetaClassPDF()" << std::endl;
     }
 
   Clear();
@@ -62,7 +62,7 @@ MetaClassPDF( const MetaClassPDF & _metaPDF )
 {
   if( META_DEBUG )
    {
-   METAIO_STREAM::cout << "MetaClassPDF()" << METAIO_STREAM::endl;
+   std::cout << "MetaClassPDF()" << std::endl;
    }
 
   Clear();
@@ -80,7 +80,7 @@ MetaClassPDF(
 {
   if( META_DEBUG )
    {
-   METAIO_STREAM::cout << "MetaClassPDF()" << METAIO_STREAM::endl;
+   std::cout << "MetaClassPDF()" << std::endl;
    }
 
   Clear();
@@ -315,7 +315,7 @@ Clear( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaClassPDF: Clear" << METAIO_STREAM::endl;
+    std::cout << "MetaClassPDF: Clear" << std::endl;
     }
 
   MetaImage::Clear();
@@ -352,7 +352,7 @@ InitializeEssential( unsigned int _nFeatures,
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaClassPDF: Initialize" << METAIO_STREAM::endl;
+    std::cout << "MetaClassPDF: Initialize" << std::endl;
     }
 
   m_NumberOfBinsPerFeature = _nBinsPerFeature;
@@ -635,18 +635,18 @@ Read( const char * _headerName )
 }
 
 bool MetaClassPDF::
-CanReadStream( METAIO_STREAM::ifstream * _stream ) const
+CanReadStream( std::ifstream * _stream ) const
 {
   return MetaImage::CanReadStream( _stream );
 }
 
 bool MetaClassPDF::
-ReadStream( METAIO_STREAM::ifstream * _stream )
+ReadStream( std::ifstream * _stream )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaClassPDF: ReadStream"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaClassPDF: ReadStream"
+      << std::endl;
     }
 
   M_Destroy();
@@ -657,8 +657,8 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
 
   if( m_ReadStream )
     {
-    METAIO_STREAM::cout << "MetaClassPDF: ReadStream: two files open?"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaClassPDF: ReadStream: two files open?"
+                        << std::endl;
     delete m_ReadStream;
     }
 
@@ -666,8 +666,8 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
 
   if( !M_Read() )
     {
-    METAIO_STREAM::cout << "MetaClassPDF: Read: Cannot parse file"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaClassPDF: Read: Cannot parse file"
+                        << std::endl;
     m_ReadStream = NULL;
     return false;
     }
@@ -687,7 +687,7 @@ Write( const char * _headerName )
 }
 
 bool MetaClassPDF::
-WriteStream( METAIO_STREAM::ofstream * _stream )
+WriteStream( std::ofstream * _stream )
 {
   return MetaImage::WriteStream( _stream );
 }
@@ -697,8 +697,8 @@ M_SetupReadFields( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaClassPDF: M_SetupReadFields"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaClassPDF: M_SetupReadFields"
+                        << std::endl;
     }
 
   MetaImage::Clear();
@@ -901,30 +901,30 @@ M_Read( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaClassPDF: M_Read: Loading Header"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaClassPDF: M_Read: Loading Header"
+                        << std::endl;
     }
   if( !MetaImage::M_Read() )
     {
-    METAIO_STREAM::cout << "MetaClassPDF: M_Read: Error parsing file"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaClassPDF: M_Read: Error parsing file"
+                        << std::endl;
     return false;
     }
 
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaClassPDF: M_Read: Parsing Header"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaClassPDF: M_Read: Parsing Header"
+                        << std::endl;
     }
 
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaClassPDF: M_Read: num fields = "
-      << m_Fields.size() << METAIO_STREAM::endl;
+    std::cout << "MetaClassPDF: M_Read: num fields = "
+      << m_Fields.size() << std::endl;
     for( unsigned int i = 0; i < m_Fields.size(); i++ )
       {
-      METAIO_STREAM::cout << "  Field " << i << " = "
-        << m_Fields[i]->name << METAIO_STREAM::endl;
+      std::cout << "  Field " << i << " = "
+        << m_Fields[i]->name << std::endl;
       }
     }
 

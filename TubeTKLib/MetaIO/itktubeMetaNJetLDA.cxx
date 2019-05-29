@@ -36,7 +36,7 @@ MetaNJetLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA()" << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA()" << std::endl;
     }
 
   this->Clear();
@@ -47,7 +47,7 @@ MetaNJetLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA()" << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA()" << std::endl;
     }
 
   this->Clear();
@@ -60,7 +60,7 @@ MetaNJetLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA()" << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA()" << std::endl;
     }
 
   this->Clear();
@@ -83,7 +83,7 @@ MetaNJetLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA()" << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA()" << std::endl;
     }
 
   this->Clear();
@@ -104,23 +104,23 @@ void MetaNJetLDA
 {
   MetaLDA::PrintInfo();
 
-  METAIO_STREAM::cout << "ZeroScales = " << m_ZeroScales.size()
-                      << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "FirstScales = " << m_FirstScales.size()
-                      << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "SecondScales = " << m_SecondScales.size()
-                      << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "RidgeScales = " << m_RidgeScales.size()
-                      << METAIO_STREAM::endl;
+  std::cout << "ZeroScales = " << m_ZeroScales.size()
+                      << std::endl;
+  std::cout << "FirstScales = " << m_FirstScales.size()
+                      << std::endl;
+  std::cout << "SecondScales = " << m_SecondScales.size()
+                      << std::endl;
+  std::cout << "RidgeScales = " << m_RidgeScales.size()
+                      << std::endl;
 
-  METAIO_STREAM::cout << "ZeroScalesTmp = " << m_ZeroScalesTmp.size()
-                      << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "FirstScalesTmp = " << m_FirstScalesTmp.size()
-                      << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "SecondScalesTmp = " << m_SecondScalesTmp.size()
-                      << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "RidgeScalesTmp = " << m_RidgeScalesTmp.size()
-                      << METAIO_STREAM::endl;
+  std::cout << "ZeroScalesTmp = " << m_ZeroScalesTmp.size()
+                      << std::endl;
+  std::cout << "FirstScalesTmp = " << m_FirstScalesTmp.size()
+                      << std::endl;
+  std::cout << "SecondScalesTmp = " << m_SecondScalesTmp.size()
+                      << std::endl;
+  std::cout << "RidgeScalesTmp = " << m_RidgeScalesTmp.size()
+                      << std::endl;
 }
 
 void MetaNJetLDA
@@ -139,7 +139,7 @@ void MetaNJetLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: Clear" << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: Clear" << std::endl;
     }
 
   MetaLDA::Clear();
@@ -169,7 +169,7 @@ bool MetaNJetLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: Initialize" << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: Initialize" << std::endl;
     }
 
   MetaLDA::InitializeEssential( numberOfPCABasis, numberOfLDABasis,
@@ -189,13 +189,13 @@ void MetaNJetLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: SetZeroScales" << METAIO_STREAM::endl;
-    METAIO_STREAM::cout << " Size = " << zeroScales.size()
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: SetZeroScales" << std::endl;
+    std::cout << " Size = " << zeroScales.size()
+                        << std::endl;
     for( unsigned int i = 0; i < zeroScales.size(); i++ )
       {
-      METAIO_STREAM::cout << " Scale " << i << " = " << zeroScales[i]
-                          << METAIO_STREAM::endl;
+      std::cout << " Scale " << i << " = " << zeroScales[i]
+                          << std::endl;
       }
     }
 
@@ -207,7 +207,7 @@ const MetaNJetLDA::NJetScalesType & MetaNJetLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: GetZeroScales" << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: GetZeroScales" << std::endl;
     }
 
   return m_ZeroScales;
@@ -218,7 +218,7 @@ void MetaNJetLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: SetFirstScales" << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: SetFirstScales" << std::endl;
     }
 
   m_FirstScales = firstScales;
@@ -229,7 +229,7 @@ const MetaNJetLDA::NJetScalesType & MetaNJetLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: GetFirstScales" << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: GetFirstScales" << std::endl;
     }
 
   return m_FirstScales;
@@ -240,8 +240,8 @@ void MetaNJetLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: SetSecondScales"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: SetSecondScales"
+                        << std::endl;
     }
 
   m_SecondScales = secondScales;
@@ -252,8 +252,8 @@ const MetaNJetLDA::NJetScalesType & MetaNJetLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: GetSecondScales"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: GetSecondScales"
+                        << std::endl;
     }
 
   return m_SecondScales;
@@ -264,7 +264,7 @@ void MetaNJetLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: SetRidgeScales" << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: SetRidgeScales" << std::endl;
     }
 
   m_RidgeScales = ridgeScales;
@@ -275,7 +275,7 @@ const MetaNJetLDA::NJetScalesType & MetaNJetLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: GetRidgeScales" << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: GetRidgeScales" << std::endl;
     }
 
   return m_RidgeScales;
@@ -285,7 +285,7 @@ bool MetaNJetLDA
 ::CanRead( const char * headerName ) const
 {
   // First check the extension.
-  METAIO_STL::string fname = headerName;
+  std::string fname = headerName;
   if( fname == "" )
     {
     return false;
@@ -293,8 +293,8 @@ bool MetaNJetLDA
 
   bool extensionFound = false;
 
-  METAIO_STL::string::size_type stringPos = fname.rfind( ".mnda" );
-  if( ( stringPos != METAIO_STL::string::npos )
+  std::string::size_type stringPos = fname.rfind( ".mnda" );
+  if( ( stringPos != std::string::npos )
       && ( stringPos == fname.length() - 5 ) )
     {
     extensionFound = true;
@@ -306,10 +306,10 @@ bool MetaNJetLDA
     }
 
   // Now check the file content.
-  METAIO_STREAM::ifstream inputStream;
+  std::ifstream inputStream;
 
   inputStream.open( headerName,
-                    METAIO_STREAM::ios::in | METAIO_STREAM::ios::binary );
+                    std::ios::in | std::ios::binary );
 
   if( !inputStream.rdbuf()->is_open() )
     {
@@ -332,15 +332,15 @@ bool MetaNJetLDA
     this->FileName( headerName );
     }
 
-  METAIO_STREAM::ifstream * const tmpStream = new METAIO_STREAM::ifstream();
+  std::ifstream * const tmpStream = new std::ifstream();
 
   tmpStream->open( m_FileName,
-                   METAIO_STREAM::ios::in | METAIO_STREAM::ios::binary );
+                   std::ios::in | std::ios::binary );
 
   if( !tmpStream->rdbuf()->is_open() )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: Read: Cannot open file _"
-                        << m_FileName << "_" << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: Read: Cannot open file _"
+                        << m_FileName << "_" << std::endl;
     delete tmpStream;
     return false;
     }
@@ -355,7 +355,7 @@ bool MetaNJetLDA
 }
 
 bool MetaNJetLDA
-::CanReadStream( METAIO_STREAM::ifstream * stream ) const
+::CanReadStream( std::ifstream * stream ) const
 {
   if( !std::strncmp( MET_ReadForm( *stream ).c_str(), "NJetLDA", 7 ) )
     {
@@ -366,11 +366,11 @@ bool MetaNJetLDA
 }
 
 bool MetaNJetLDA
-::ReadStream( METAIO_STREAM::ifstream * stream )
+::ReadStream( std::ifstream * stream )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: ReadStream" << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: ReadStream" << std::endl;
     }
 
   this->M_Destroy();
@@ -379,8 +379,8 @@ bool MetaNJetLDA
 
   if( m_ReadStream )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: ReadStream: Are two files open?"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: ReadStream: Are two files open?"
+                        << std::endl;
     delete m_ReadStream;
     }
 
@@ -388,8 +388,8 @@ bool MetaNJetLDA
 
   if( !this->M_Read() )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: Read: Cannot parse file."
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: Read: Cannot parse file."
+                        << std::endl;
     m_ReadStream = NULL;
     return false;
     }
@@ -415,11 +415,11 @@ bool MetaNJetLDA
 
   MET_SetFileSuffix( m_FileName, "mnda" );
 
-  METAIO_STREAM::ofstream * const tmpWriteStream = new
-    METAIO_STREAM::ofstream();
+  std::ofstream * const tmpWriteStream = new
+    std::ofstream();
 
   tmpWriteStream->open( m_FileName,
-    METAIO_STREAM::ios::binary | METAIO_STREAM::ios::out );
+    std::ios::binary | std::ios::out );
 
   if( !tmpWriteStream->rdbuf()->is_open() )
     {
@@ -438,12 +438,12 @@ bool MetaNJetLDA
 }
 
 bool MetaNJetLDA
-::WriteStream( METAIO_STREAM::ofstream * stream )
+::WriteStream( std::ofstream * stream )
 {
   if( m_WriteStream != NULL )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: WriteStream: Are two files open?"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: WriteStream: Are two files open?"
+                        << std::endl;
     delete m_WriteStream;
     }
 
@@ -463,7 +463,7 @@ void MetaNJetLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: M_Destroy" << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: M_Destroy" << std::endl;
     }
 
   MetaLDA::M_Destroy();
@@ -474,8 +474,8 @@ void MetaNJetLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: M_SetupReadFields"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: M_SetupReadFields"
+                        << std::endl;
     }
 
   MetaLDA::M_SetupReadFields();
@@ -487,8 +487,8 @@ void MetaNJetLDA
 
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << " nZeroScalesRecNum = " << nScalesRecNum
-                        << METAIO_STREAM::endl;
+    std::cout << " nZeroScalesRecNum = " << nScalesRecNum
+                        << std::endl;
     }
 
   mF = new MET_FieldRecordType();
@@ -607,31 +607,31 @@ bool MetaNJetLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: M_Read: Loading header."
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: M_Read: Loading header."
+                        << std::endl;
     }
 
   if( !MetaLDA::M_Read() )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: M_Read: Error parsing file."
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: M_Read: Error parsing file."
+                        << std::endl;
     return false;
     }
 
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: M_Read: Parsing header."
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: M_Read: Parsing header."
+                        << std::endl;
     }
 
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaNJetLDA: M_Read: num fields = "
-                        << m_Fields.size() << METAIO_STREAM::endl;
+    std::cout << "MetaNJetLDA: M_Read: num fields = "
+                        << m_Fields.size() << std::endl;
     for( unsigned int i = 0; i < m_Fields.size(); i++ )
       {
-      METAIO_STREAM::cout << " Field " << i << " = " << m_Fields[i]->name
-                          << METAIO_STREAM::endl;
+      std::cout << " Field " << i << " = " << m_Fields[i]->name
+                          << std::endl;
       }
     }
 
@@ -641,9 +641,9 @@ bool MetaNJetLDA
     const unsigned int nZeroScales = ( unsigned int )mF->value[0];
     if( META_DEBUG )
       {
-      METAIO_STREAM::cout << "MetaNJetLDA: M_Read: ZeroScales"
-                          << METAIO_STREAM::endl;
-      METAIO_STREAM::cout << " size = " << nZeroScales << METAIO_STREAM::endl;
+      std::cout << "MetaNJetLDA: M_Read: ZeroScales"
+                          << std::endl;
+      std::cout << " size = " << nZeroScales << std::endl;
       }
 
     m_ZeroScales.resize( nZeroScales, 0 );

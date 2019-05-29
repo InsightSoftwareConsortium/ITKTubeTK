@@ -72,6 +72,9 @@ public:
   /** InputImageType typedef support. */
   typedef typename Superclass::InputImageType InputImageType;
 
+  /** SizeType typedef support. */
+  typedef typename Superclass::SizeType SizeType;
+
   /** RealType typedef support. */
   typedef typename Superclass::RealType RealType;
 
@@ -96,6 +99,9 @@ public:
   virtual OutputType EvaluateAtContinuousIndex(
     const ContinuousIndexType & index ) const;
 
+  SizeType GetRadius() const
+    { return m_Radius; }
+
 protected:
   VotingResampleImageFunction( void );
   ~VotingResampleImageFunction( void ) {}
@@ -106,7 +112,8 @@ private:
   void operator=( const Self& ); //purposely not implemented
 
   /** Number of neighbors used in the interpolation */
-  static const unsigned long  m_Neighbors;
+  static const unsigned long m_Neighbors;
+  SizeType                   m_Radius;
 
 }; // End class VotingResampleImageFunction
 

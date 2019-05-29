@@ -99,11 +99,11 @@ int DoIt( int argc, char * argv[] )
     {
     reader = ReaderType::New();
     reader->SetFileName( imageFileNameList[i] );
-    char filePath[4096];
+    std::string filePath;
     fileName.push_back( imageFileNameList[i] );
     if( MET_GetFilePath( imageFileNameList[i].c_str(), filePath ) )
       {
-      fileName[i] = &( imageFileNameList[i][strlen( filePath )] );
+      fileName[i] = &( imageFileNameList[i][strlen( filePath.c_str() )] );
       }
     try
       {
