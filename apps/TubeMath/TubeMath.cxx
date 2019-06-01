@@ -23,6 +23,7 @@ limitations under the License.
 #include "tubeMessage.h"
 
 #include "tubeTubeMath.h"
+#include "tubeTreeFilters.h"
 
 #include <itkGroupSpatialObject.h>
 #include <itkSpatialObjectReader.h>
@@ -118,10 +119,10 @@ SetPropertyFromImage( typename itk::GroupSpatialObject< DimensionT >::
         TubePointType * currentPoint = static_cast< TubePointType * >(
           inputTube->GetPoint( pointNum ) );
         typename TubeType::PointType pointIndex;
-        pointIndex = currentPoint->GetPosition();
+        pointIndex = currentPoint->GetPositionInObjectSpace();
 
         typename TubeType::PointType pointWorld;
-        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint(
+        pointWorld = inputTube->GetObjectToWorldTransform()->TransformPoint(
           pointIndex );
 
         typename ImageType::IndexType imageIndex;
@@ -189,10 +190,10 @@ SetPropertyFromImageMean( typename itk::GroupSpatialObject< DimensionT >::
         TubePointType * currentPoint = static_cast< TubePointType * >(
           inputTube->GetPoint( pointNum ) );
         typename TubeType::PointType pointIndex;
-        pointIndex = currentPoint->GetPosition();
+        pointIndex = currentPoint->GetPositionInObjectSpace();
 
         typename TubeType::PointType pointWorld;
-        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint(
+        pointWorld = inputTube->GetObjectToWorldTransform()->TransformPoint(
           pointIndex );
 
         typename ImageType::IndexType imageIndex;
@@ -209,10 +210,10 @@ SetPropertyFromImageMean( typename itk::GroupSpatialObject< DimensionT >::
         TubePointType * currentPoint = static_cast< TubePointType * >(
           inputTube->GetPoint( pointNum ) );
         typename TubeType::PointType pointIndex;
-        pointIndex = currentPoint->GetPosition();
+        pointIndex = currentPoint->GetPositionInObjectSpace();
 
         typename TubeType::PointType pointWorld;
-        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint(
+        pointWorld = inputTube->GetObjectToWorldTransform()->TransformPoint(
           pointIndex );
 
         switch( propertyId )
@@ -297,7 +298,7 @@ int DoIt( MetaCommand & command )
     else if( it->name == "FillGapsInTree" )
       {
       ::tube::Message( "Fill gapes in tree" );
-      tube::TreeFilters< VDimension >::FillGap( inputTubes,
+      ::tube::TreeFilters< DimensionT >::FillGap( inputTubes,
         command.GetValueAsString( *it, "InterpolationMethod" ).c_str()[0] );
       }
     else if( it->name == "ComputeTangentsAndNormals" )

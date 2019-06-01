@@ -223,7 +223,7 @@ public:
       TubeListPointer;
   typedef itk::TubeSpatialObject< ImageDimension >
       TubeType;
-  typedef typename TubeType::PointListType
+  typedef typename TubeType::TubePointListType
       TubePointListType;
   typedef typename TubeType::TubePointType
       TubePointType;

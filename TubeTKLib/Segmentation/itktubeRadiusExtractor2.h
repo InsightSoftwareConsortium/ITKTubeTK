@@ -73,23 +73,18 @@ public:
 
   typedef typename TubeType::TubePointType                   TubePointType;
 
-  typedef typename TubeType::PointType                       ITKPointType;
-  typedef typename TubeType::VectorType                      ITKVectorType;
+  typedef typename TubeType::PointType                       PointType;
+  typedef typename TubeType::VectorType                      VectorType;
 
   /**
    * Type definition for the input image. */
-  typedef TInputImage                                        ImageType;
+  typedef TInputImage                                        InputImageType;
 
-  typedef typename ImageType::IndexType                      ITKIndexType;
+  typedef typename InputImageType::IndexType                 IndexType;
 
   /**
    * Type definition for the input image pixel type. */
   typedef typename TInputImage::PixelType                    PixelType;
-
-  /**
-   * Defines the type of vectors used
-   */
-  typedef vnl_vector< double >                               VectorType;
 
   /**
    * Defines the type of matrix used
@@ -103,11 +98,11 @@ public:
 
   /**
    * Set the input image */
-  void SetInputImage( typename ImageType::Pointer inputImage );
+  void SetInputImage( typename InputImageType::Pointer inputImage );
 
   /**
    * Get the input image */
-  itkGetConstObjectMacro( Image, ImageType );
+  itkGetConstObjectMacro( InputImage, InputImageType );
 
   /** Set Data Minimum */
   itkSetMacro( DataMin, double );
@@ -221,7 +216,8 @@ private:
   RadiusExtractor2( const Self& );
   void operator=( const Self& );
 
-  typename ImageType::Pointer             m_Image;
+  typename InputImageType::Pointer        m_InputImage;
+  double                                  m_Spacing;
   double                                  m_DataMin;
   double                                  m_DataMax;
 

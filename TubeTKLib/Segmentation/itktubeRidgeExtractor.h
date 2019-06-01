@@ -68,7 +68,7 @@ public:
   itkNewMacro( RidgeExtractor );
 
   /** Type definition for the input image. */
-  typedef TInputImage                                      ImageType;
+  typedef TInputImage                                      InputImageType;
 
   /** Standard for the number of dimension */
   itkStaticConstMacro( ImageDimension, unsigned int,
@@ -112,10 +112,10 @@ public:
     OTHER_FAIL }                                FailureCodeEnum;
 
   /** Set the input image */
-  void SetInputImage( typename ImageType::Pointer inputImage );
+  void SetInputImage( typename InputImageType::Pointer inputImage );
 
   /** Get the input image */
-  typename ImageType::Pointer GetInputImage( void );
+  typename InputImageType::Pointer GetInputImage( void );
 
   /** Get the mask image */
   itkGetObjectMacro( TubeMaskImage, TubeMaskImageType );
@@ -203,16 +203,16 @@ public:
 
 
   /** Set Extract Bound Minimum */
-  itkSetMacro( ExtractBoundMin, IndexType );
+  itkSetMacro( ExtractBoundMinInIndexSpace, IndexType );
 
   /** Get Extract Bound Minimum */
-  itkGetMacro( ExtractBoundMin, IndexType );
+  itkGetMacro( ExtractBoundMinInIndexSpace, IndexType );
 
   /** Set Extract Bound Maximum */
-  itkSetMacro( ExtractBoundMax, IndexType );
+  itkSetMacro( ExtractBoundMaxInIndexSpace, IndexType );
 
   /** Get Extract Bound Maximum */
-  itkGetMacro( ExtractBoundMax, IndexType );
+  itkGetMacro( ExtractBoundMaxInIndexSpace, IndexType );
 
   /** Get the data spline */
   ::tube::SplineND * GetDataSpline( void );
@@ -273,12 +273,13 @@ public:
   void  SetRadiusExtractor( RadiusExtractor2<TInputImage> * radiusExtractor );
 
   /** Compute the intensity at the point x */
-  double  Intensity( const IndexType & x );
+  double  IntensityInIndexSpace( const IndexType & x );
 
   /** Computes ridge measures at the given point x
    *  and stores them so that they can be queried later.
    *  Returns the ridgeness at x
    *  \param x User supplied point at which ridge measures will be computed
+   *   - in the physical space of the Image
    *  \param intensity On return equals the interpolated intensity at x
    *    Can be queried later using GetCurrentIntensity()
    *  \param roundness On return equals the roundness at x
@@ -288,7 +289,7 @@ public:
    *  \param levelness On return equals the levelness at x
    *    Can be queried later using GetCurrentLevelness()
    */
-  double  Ridgeness( const ContinuousIndexType & x,
+  double  Ridgeness( const PointType & x,
     double & intensity,
     double & roundness,
     double & curvature,
@@ -298,7 +299,7 @@ public:
   /** Get current location
    *  This is location at which the Ridgness function was last called
    */
-  const VectorType & GetCurrentLocation() const;
+  const PointType & GetCurrentLocation() const;
 
   /** Get the Hessian Eigen Basis at the current location
    *  Each column of the return matrix is an eigen vector
@@ -322,13 +323,11 @@ public:
   /** Get levelness at the current location */
   double GetCurrentLevelness() const;
 
-  /** Compute/find the local Ridge */
-  FailureCodeEnum LocalRidge( ContinuousIndexType & x,
-    bool verbose=false );
+  /** Compute/find the local Ridge at x in image physical space */
+  FailureCodeEnum LocalRidge( PointType & x, bool verbose=false );
 
   /** Extract */
-  typename TubeType::Pointer ExtractRidge( const ContinuousIndexType & x,
-    int tubeID,
+  typename TubeType::Pointer ExtractRidge( const PointType & x, int tubeID,
     bool verbose=false );
 
   itkGetMacro( CurrentFailureCode, FailureCodeEnum );
@@ -353,7 +352,7 @@ protected:
   void PrintSelf( std::ostream & os, Indent indent ) const;
 
   /** Traverse the ridge one way */
-  bool  TraverseOneWay( ContinuousIndexType & newX, VectorType & newT,
+  bool  TraverseOneWay( PointType & newX, VectorType & newT,
     MatrixType & newN, int dir, bool verbose=false );
 
 private:
@@ -361,11 +360,11 @@ private:
   RidgeExtractor( const Self& );
   void operator=( const Self& );
 
-  typename ImageType::Pointer                        m_InputImage;
+  typename InputImageType::Pointer                        m_InputImage;
 
-  typename BlurImageFunction<ImageType>::Pointer     m_DataFunc;
+  typename BlurImageFunction<InputImageType>::Pointer     m_DataFunc;
 
-  typename TubeMaskImageType::Pointer                m_TubeMaskImage;
+  typename TubeMaskImageType::Pointer                     m_TubeMaskImage;
 
   bool                                               m_DynamicScale;
   double                                             m_DynamicScaleUsed;
@@ -374,6 +373,7 @@ private:
 
   int                                                m_MaxRecoveryAttempts;
 
+  double                                             m_Spacing;
   double                                             m_DataMin;
   double                                             m_DataMax;
   double                                             m_DataRange;
@@ -382,8 +382,8 @@ private:
   double                                             m_MaxTangentChange;
   double                                             m_MaxXChange;
 
-  IndexType                                          m_ExtractBoundMin;
-  IndexType                                          m_ExtractBoundMax;
+  IndexType                                     m_ExtractBoundMinInIndexSpace;
+  IndexType                                     m_ExtractBoundMaxInIndexSpace;
 
   ::tube::SplineApproximation1D                      m_DataSpline1D;
   ::tube::BrentOptimizer1D                           m_DataSplineOpt;
@@ -403,9 +403,8 @@ private:
   double                                             m_MinLevelnessStart;
 
   // current location
-  VectorType                                         m_X;
-
-  VectorType                                         m_XP;
+  PointType                                          m_X;
+  VectorType                                         m_XIV;
 
   // current intensity
   double                                             m_XVal;

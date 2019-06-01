@@ -160,7 +160,7 @@ int DoIt( int argc, char * argv[] )
 
       pointList.push_back( point );
       }
-    segmentTubesFilter->SetSeedPhysicalCoordinatesList( pointList );
+    segmentTubesFilter->SetSeedPointList( pointList );
     }
 
   ScaleListType scaleList;
@@ -183,7 +183,7 @@ int DoIt( int argc, char * argv[] )
       seedIndexList.push_back( seedIndex );
       scaleList.push_back( seedScale );
       }
-    segmentTubesFilter->SetSeedIndexFromFileList( seedIndexList, scaleList );
+    segmentTubesFilter->SetSeedIndexAndScaleList( seedIndexList, scaleList );
     }
 
   if( !seedListFilePhysicalNoScale.empty() )
@@ -202,7 +202,7 @@ int DoIt( int argc, char * argv[] )
         }
       pointList.push_back( point );
       }
-    segmentTubesFilter->SetSeedPhysicalCoordinatesList( pointList );
+    segmentTubesFilter->SetSeedPointList( pointList );
     }
 
   if( !seedMask.empty() )

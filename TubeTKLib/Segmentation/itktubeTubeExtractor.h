@@ -100,7 +100,7 @@ public:
 
   /**
    * Defines the type of vectors used */
-  typedef itk::Vector<double, ImageDimension >         VectorType;
+  typedef itk::Vector< double, ImageDimension >         VectorType;
 
 
   /**
@@ -141,19 +141,19 @@ public:
 
   /**
    * Set ExtractBound Minimum */
-  void SetExtractBoundMin( const IndexType & dataMin );
+  void SetExtractBoundMinInIndexSpace( const IndexType & dataMin );
 
   /**
    * Get ExtractBound Minimum */
-  IndexType GetExtractBoundMin( void ) const;
+  IndexType GetExtractBoundMinInIndexSpace( void ) const;
 
   /**
    * Set ExtractBound Maximum */
-  void SetExtractBoundMax( const IndexType & dataMax );
+  void SetExtractBoundMaxInIndexSpace( const IndexType & dataMax );
 
   /**
    * Get ExtractBound Maximum */
-  IndexType GetExtractBoundMax( void ) const;
+  IndexType GetExtractBoundMaxInIndexSpace( void ) const;
 
   /**
    * Set the radius */

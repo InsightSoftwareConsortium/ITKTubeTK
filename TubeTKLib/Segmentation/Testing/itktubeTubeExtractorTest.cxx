@@ -80,8 +80,8 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
   RandGenType::Pointer rndGen = RandGenType::New();
   rndGen->Initialize(); // set seed here
 
-  ImageType::IndexType imMinX = tubeOp->GetExtractBoundMin();
-  ImageType::IndexType imMaxX = tubeOp->GetExtractBoundMax();
+  ImageType::IndexType imMinX = tubeOp->GetExtractBoundMinInIndexSpace();
+  ImageType::IndexType imMaxX = tubeOp->GetExtractBoundMaxInIndexSpace();
   int margin = 10;
 
   int failures = 0;
@@ -158,8 +158,8 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
       {
       maxX[2] = x0[2] + 5;
       }
-    tubeOp->SetExtractBoundMin( minX );
-    tubeOp->SetExtractBoundMax( maxX );
+    tubeOp->SetExtractBoundMinInIndexSpace( minX );
+    tubeOp->SetExtractBoundMaxInIndexSpace( maxX );
 
     if( pnt->GetRadiusInObjectSpace() > 1 )
       {

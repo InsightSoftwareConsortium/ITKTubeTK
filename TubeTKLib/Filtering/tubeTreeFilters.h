@@ -26,6 +26,7 @@ limitations under the License.
 
 #include <itkImageFileReader.h>
 #include "itkGroupSpatialObject.h"
+#include "itkTubeSpatialObject.h"
 
 namespace tube
 {
@@ -36,22 +37,22 @@ public:
   //typedefs
   typedef itk::GroupSpatialObject< VDimension >         TubeGroupType;
   typedef typename TubeGroupType::ChildrenListPointer   TubeListPointerType;
-  typedef itk::VesselTubeSpatialObject< VDimension >    TubeType;
+  typedef itk::TubeSpatialObject< VDimension >          TubeType;
   typedef typename TubeType::Pointer                    TubePointerType;
   typedef typename TubeType::TubePointType              TubePointType;
   typedef typename TubeType::PointType                  PositionType;
   typedef itk::IndexValueType                           TubeIdType;
-  typedef typename TubeType::PointListType              TubePointListType;
+  typedef typename TubeType::TubePointListType          TubePointListType;
 
   /** Run Fill Gap on the tube-tree. */
   static void FillGap( typename TubeGroupType::Pointer & pTubeGroup,
     char InterpolationMethod );
 
   static void InterpolatePath(
-  typename TubeType::TubePointType * parentNearestPoint,
-  typename TubeType::TubePointType * itkNotUsed( childEndPoint ),
-  typename TubeType::PointListType & newTubePoints,
-  char InterpolationMethod );
+    typename TubeType::TubePointType * parentNearestPoint,
+    typename TubeType::TubePointType * itkNotUsed( childEndPoint ),
+    typename TubeType::TubePointListType & newTubePoints,
+    char InterpolationMethod );
 
 private:
   TreeFilters();

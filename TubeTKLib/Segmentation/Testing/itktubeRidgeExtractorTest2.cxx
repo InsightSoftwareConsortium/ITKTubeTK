@@ -82,8 +82,8 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
   RandGenType::Pointer rndGen = RandGenType::New();
   rndGen->Initialize(); // set seed here
 
-  RidgeOpType::IndexType imMinX = ridgeOp->GetExtractBoundMin();
-  RidgeOpType::IndexType imMaxX = ridgeOp->GetExtractBoundMax();
+  RidgeOpType::IndexType imMinX = ridgeOp->GetExtractBoundMinInIndexSpace();
+  RidgeOpType::IndexType imMaxX = ridgeOp->GetExtractBoundMaxInIndexSpace();
   int margin = 10;
 
   int failures = 0;
@@ -160,8 +160,8 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       {
       maxX[2] = x0[2] + margin;
       }
-    ridgeOp->SetExtractBoundMin( minX );
-    ridgeOp->SetExtractBoundMax( maxX );
+    ridgeOp->SetExtractBoundMinInIndexSpace( minX );
+    ridgeOp->SetExtractBoundMaxInIndexSpace( maxX );
 
     if( pnt->GetRadiusInObjectSpace() > 1 )
       {
