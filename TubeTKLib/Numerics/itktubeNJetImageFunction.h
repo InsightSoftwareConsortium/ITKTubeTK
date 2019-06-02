@@ -283,7 +283,7 @@ protected:
 
   ~NJetImageFunction( void );
 
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
   typename InputImageType::ConstPointer  m_InputImage;
   typename InputImageType::ConstPointer  m_InputImageMask;

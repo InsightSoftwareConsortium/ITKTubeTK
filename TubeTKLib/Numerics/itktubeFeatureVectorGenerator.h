@@ -114,7 +114,7 @@ protected:
 
   void UpdateWhitenStatistics( void );
 
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
 

@@ -68,7 +68,7 @@ public:
 
   typedef std::vector< double >                   NJetScalesType;
 
-  virtual unsigned int GetNumberOfFeatures( void ) const;
+  virtual unsigned int GetNumberOfFeatures( void ) const override;
 
   void SetZeroScales( const NJetScalesType & scales );
   void SetFirstScales( const NJetScalesType & scales );
@@ -81,17 +81,17 @@ public:
   const NJetScalesType & GetRidgeScales( void ) const;
 
   virtual FeatureVectorType GetFeatureVector(
-    const IndexType & indx ) const;
+    const IndexType & indx ) const override;
 
   virtual FeatureValueType  GetFeatureVectorValue( const IndexType & indx,
-    unsigned int fNum ) const;
+    unsigned int fNum ) const override;
 
 protected:
 
   NJetFeatureVectorGenerator( void );
   virtual ~NJetFeatureVectorGenerator( void );
 
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
 
