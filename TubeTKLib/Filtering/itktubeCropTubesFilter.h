@@ -27,8 +27,8 @@
 #include "itkGroupSpatialObject.h"
 #include "itkImage.h"
 #include "itktubeSpatialObjectToSpatialObjectFilter.h"
-#include "itkVesselTubeSpatialObject.h"
-#include "itkVesselTubeSpatialObjectPoint.h"
+#include "itkTubeSpatialObject.h"
+#include "itkTubeSpatialObjectPoint.h"
 namespace itk
 {
 namespace tube
@@ -52,8 +52,8 @@ public:
                                                      Superclass;
   typedef SmartPointer< Self >                       Pointer;
   typedef SmartPointer< const Self >                 ConstPointer;
-  typedef VesselTubeSpatialObject< VDimension >      TubeType;
-  typedef VesselTubeSpatialObjectPoint< VDimension > TubePointType;
+  typedef TubeSpatialObject< VDimension >      TubeType;
+  typedef TubeSpatialObjectPoint< VDimension > TubePointType;
 
   typedef double                                     PixelType;
   typedef itk::Image< PixelType, VDimension >        ImageType;
@@ -91,9 +91,9 @@ protected:
   CropTubesFilter( void );
   virtual ~CropTubesFilter( void );
 
-  virtual void GenerateData( void );
+  virtual void GenerateData( void ) override;
 
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
   // purposely not implemented
@@ -112,7 +112,7 @@ private:
     itk::Point< double, VDimension > boxPos,
     itk::Vector< double, VDimension > boxSize,
     std::vector<  typename
-    itk::VesselTubeSpatialObjectPoint< VDimension >::
+    itk::TubeSpatialObjectPoint< VDimension >::
     CovariantVectorType > normalList );
 
 }; // End class CropTubesFilter

@@ -65,7 +65,7 @@ int DoIt( int argc, char * argv[] )
   const unsigned int Dimension = 3;
   typedef double     FloatType;
 
-  typedef itk::VesselTubeSpatialObject< Dimension >  TubeType;
+  typedef itk::TubeSpatialObject< Dimension >        TubeType;
   typedef itk::GroupSpatialObject< Dimension >       TubeNetType;
   typedef itk::Image< FloatType, Dimension >         ImageType;
   typedef itk::tube::ImageToTubeRigidRegistration< ImageType, TubeNetType,

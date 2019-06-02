@@ -23,7 +23,7 @@ limitations under the License.
 
 #include "tubeMessage.h"
 
-#include <itkVesselTubeSpatialObject.h>
+#include <itkTubeSpatialObject.h>
 
 #include <fstream>
 

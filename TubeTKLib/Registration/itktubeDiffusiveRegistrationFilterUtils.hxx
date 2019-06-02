@@ -29,7 +29,7 @@ limitations under the License.
 #include <itkMinimumMaximumImageCalculator.h>
 #include <itkResampleImageFilter.h>
 #include <itkVectorIndexSelectionCastImageFilter.h>
-#include <itkVectorResampleImageFilter.h>
+#include <itkResampleImageFilter.h>
 
 namespace itk
 {
@@ -158,7 +158,7 @@ DiffusiveRegistrationFilterUtils
     bool normalize )
 {
   // Do linear interpolation
-  typedef itk::VectorResampleImageFilter
+  typedef itk::ResampleImageFilter
       < typename TVectorResampleImagePointer::ObjectType,
         typename TVectorResampleImagePointer::ObjectType > ResampleFilterType;
   typename ResampleFilterType::Pointer resampler = ResampleFilterType::New();

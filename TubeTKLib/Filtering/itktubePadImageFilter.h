@@ -146,14 +146,15 @@ public:
 protected:
   PadImageFilter();
   ~PadImageFilter() {};
-  void PrintSelf( std::ostream& os, Indent indent ) const;
 
-  void GenerateInputRequestedRegion();
-  void GenerateOutputInformation();
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
+
+  void GenerateInputRequestedRegion() override;
+  void GenerateOutputInformation() override;
 
   /** Single-threaded version of GenerateData.  This filter delegates
    * to other filters. */
-  void GenerateData();
+  void GenerateData() override;
 
 
 private:

@@ -108,11 +108,12 @@ protected:
   AcousticImpulseResponseImageFilter( void );
   virtual ~AcousticImpulseResponseImageFilter( void ) {}
 
-  virtual void PrintSelf( std::ostream & os, Indent indent ) const;
+  virtual void PrintSelf( std::ostream & os, Indent indent ) const override;
 
-  virtual void BeforeThreadedGenerateData( void );
+  virtual void BeforeThreadedGenerateData( void ) override;
+
   virtual void ThreadedGenerateData( const OutputImageRegionType &
-    outputRegionForThread, ThreadIdType threadId );
+    outputRegionForThread, ThreadIdType threadId ) override;
 
 private:
   // purposely not implemented

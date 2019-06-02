@@ -479,10 +479,10 @@ AnisotropicDiffusiveSparseRegistrationFilter
       ++pointIt )
       {
       point = static_cast< TubePointType * >( &( *pointIt ) );
-      pointPosition = point->GetPosition();
-      pointNormal1 = point->GetNormal1();
-      pointNormal2 = point->GetNormal2();
-      radius = point->GetRadius();
+      pointPosition = point->GetPositionInObjectSpace();
+      pointNormal1 = point->GetNormal1InObjectSpace();
+      pointNormal2 = point->GetNormal2InObjectSpace();
+      radius = point->GetRadiusInObjectSpace();
       positionFloatArray->SetTuple( pointCounter,
                                     pointPosition.GetDataPointer() );
       normal1FloatArray->SetTuple( pointCounter,

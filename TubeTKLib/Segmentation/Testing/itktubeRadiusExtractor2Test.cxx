@@ -106,8 +106,8 @@ int itktubeRadiusExtractor2Test( int argc, char * argv[] )
   typedef itk::SpatialObjectReader<>                   ReaderType;
   typedef itk::SpatialObject<>::ChildrenListType       ObjectListType;
   typedef itk::GroupSpatialObject<>                    GroupType;
-  typedef itk::VesselTubeSpatialObject<>               TubeType;
-  typedef TubeType::PointListType                      PointListType;
+  typedef itk::TubeSpatialObject<>                     TubeType;
+  typedef TubeType::TubePointListType                  TubePointListType;
   typedef TubeType::TubePointType                      TubePointType;
 
   ReaderType::Pointer reader = ReaderType::New();
@@ -154,7 +154,7 @@ int itktubeRadiusExtractor2Test( int argc, char * argv[] )
 
     std::cout << "Test tube = " << rndTubeNum << std::endl;
 
-    PointListType tubePointList = tube->GetPoints();
+    TubePointListType tubePointList = tube->GetPoints();
     unsigned int numPoints = tubePointList.size();
     unsigned int rndPointNum = rndGen->GetUniformVariate( 0, 1 )
       * numPoints * 0.8 + numPoints * 0.1;
@@ -162,7 +162,7 @@ int itktubeRadiusExtractor2Test( int argc, char * argv[] )
       {
       rndPointNum = numPoints-1;
       }
-    PointListType::iterator pntIter = tubePointList.begin();
+    TubePointListType::iterator pntIter = tubePointList.begin();
     for( unsigned int i=0; i<rndPointNum-1; i++ )
       {
       ++pntIter;
@@ -174,18 +174,18 @@ int itktubeRadiusExtractor2Test( int argc, char * argv[] )
     tubePoints[2] = *( pntIter+4 );
     std::cout << "Test point = " << rndPointNum << std::endl;
 
-    double r0 = pntIter->GetRadius();
+    double r0 = pntIter->GetRadiusInObjectSpace();
     double r1 = r0;
     if( r1 < 1 )
       {
       r1 = 1;
       }
 
-    std::cout << "  x = " << pntIter->GetPosition() << std::endl;
+    std::cout << "  x = " << pntIter->GetPositionInObjectSpace() << std::endl;
     std::cout << "  r = " << r0 << std::endl;
-    std::cout << "  t = " << pntIter->GetTangent() << std::endl;
-    std::cout << "  n1 = " << pntIter->GetNormal1() << std::endl;
-    std::cout << "  n2 = " << pntIter->GetNormal2() << std::endl;
+    std::cout << "  t = " << pntIter->GetTangentInObjectSpace() << std::endl;
+    std::cout << "  n1 = " << pntIter->GetNormal1InObjectSpace() << std::endl;
+    std::cout << "  n2 = " << pntIter->GetNormal2InObjectSpace() << std::endl;
 
     double rMin = 0.33;
     double rMax = 15;

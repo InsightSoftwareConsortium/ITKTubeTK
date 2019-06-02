@@ -2,7 +2,7 @@
  *
  *  Copyright Insight Software Consortium
  *
- *  Licensed under the Apache License, Version 2.0 ( the "License" );
+ *  Licensed under the Apache License, Version 2.0( the "License" );
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
@@ -46,12 +46,12 @@ public:
   typedef SmartPointer< Self >                                  Pointer;
   typedef SmartPointer< const Self >                            ConstPointer;
 
-  itkNewMacro ( Self );
+  itkNewMacro( Self );
 
-  itkTypeMacro ( GPUArrayFireGaussianDerivativeFilter,
+  itkTypeMacro( GPUArrayFireGaussianDerivativeFilter,
                  GaussianDerivativeFilter );
 
-  itkStaticConstMacro ( ImageDimension, unsigned int,
+  itkStaticConstMacro( ImageDimension, unsigned int,
                         TInputImage::ImageDimension );
 
   typedef TInputImage                      InputImageType;
@@ -63,7 +63,7 @@ public:
   typedef typename Superclass::OrdersType  OrdersType;
   typedef typename Superclass::SigmasType  SigmasType;
 
-  void GenerateNJet ( typename OutputImageType::Pointer & D,
+  void GenerateNJet( typename OutputImageType::Pointer & D,
                       std::vector< typename TOutputImage::Pointer > & Dx,
                       std::vector< typename TOutputImage::Pointer > & Dxx );
 
@@ -72,22 +72,22 @@ protected:
   typedef FFTShiftImageFilter< RealImageType, RealImageType >
   FFTShiftFilterType;
 
-  GPUArrayFireGaussianDerivativeFilter ( void );
-  virtual ~GPUArrayFireGaussianDerivativeFilter ( void ) {}
+  GPUArrayFireGaussianDerivativeFilter( void );
+  virtual ~GPUArrayFireGaussianDerivativeFilter( void ) {}
 
   void ComputeInputImageFFT();
   void ComputeKernelImageFFT();
   void ComputeConvolvedImageFFT();
   void ComputeConvolvedImage();
 
-  void GenerateData();
+  void GenerateData() override;
 
-  void PrintSelf ( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
   // Purposely not implemented
-  GPUArrayFireGaussianDerivativeFilter ( const Self & );
-  void operator = ( const Self & );
+  GPUArrayFireGaussianDerivativeFilter( const Self & );
+  void operator =( const Self & );
 
   typename RealImageType::Pointer                     m_PaddedInputImage;
 

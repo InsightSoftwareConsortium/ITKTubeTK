@@ -111,7 +111,7 @@ protected:
   ScaleSkewAngle2DImageToImageRegistrationMethod( void );
   virtual ~ScaleSkewAngle2DImageToImageRegistrationMethod( void );
 
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
 

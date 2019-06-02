@@ -187,7 +187,7 @@ MergeAdjacentImagesFilter< TImage >
     transformReader->SetFileName( m_InitialTransformFile );
     transformReader->Update();
 
-    TransformListType * transforms = transformReader->GetTransformList();
+    const TransformListType * transforms = transformReader->GetTransformList();
     TransformListType::const_iterator transformIt = transforms->begin();
     while( transformIt != transforms->end() )
       {

@@ -55,7 +55,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   enum { Dimension = 3 };
   typedef double            FloatType;
 
-  typedef itk::VesselTubeSpatialObject< Dimension >      TubeType;
+  typedef itk::TubeSpatialObject< Dimension >            TubeType;
   typedef itk::GroupSpatialObject< Dimension >           TubeTreeType;
   typedef itk::SpatialObjectReader< Dimension >          TubeTreeReaderType;
   typedef itk::Image< FloatType, Dimension >             ImageType;

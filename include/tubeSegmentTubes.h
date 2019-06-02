@@ -94,12 +94,12 @@ public:
   tubeWrapGetMacro( Debug, bool, Filter );
 
   /** Set ExtractBound Minimum */
-  tubeWrapSetMacro( ExtractBoundMin, IndexType, Filter );
-  tubeWrapGetMacro( ExtractBoundMin, IndexType, Filter );
+  tubeWrapSetMacro( ExtractBoundMinInIndexSpace, IndexType, Filter );
+  tubeWrapGetMacro( ExtractBoundMinInIndexSpace, IndexType, Filter );
 
   /** Set ExtractBound Maximum */
-  tubeWrapSetMacro( ExtractBoundMax, IndexType, Filter );
-  tubeWrapGetMacro( ExtractBoundMax, IndexType, Filter );
+  tubeWrapSetMacro( ExtractBoundMaxInIndexSpace, IndexType, Filter );
+  tubeWrapGetMacro( ExtractBoundMaxInIndexSpace, IndexType, Filter );
 
   void SetParameterFile( const char *filename );
 

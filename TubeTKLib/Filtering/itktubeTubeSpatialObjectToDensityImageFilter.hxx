@@ -39,7 +39,7 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
     m_Spacing[i] = 1;
     }
   m_MaxDensityIntensity = 255;   //NumericTraits<DensityPixelType>::max();
-  m_UseSquareDistance = false;
+  m_UseSquaredDistance = false;
 }
 
 /** Destructor */
@@ -81,8 +81,7 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
     {
     TubeGroupPointer tubes = this->GetInputTubeGroup();
 
-    tubes->SetBoundingBoxChildrenDepth( tubes->GetMaximumDepth() );
-    tubes->ComputeBoundingBox();
+    tubes->ComputeFamilyBoundingBox( 99999 );
 
     typedef TubeSpatialObjectToImageFilter<ImageDimension, DensityImageType,
       RadiusImageType, TangentImageType> FilterType;
@@ -102,29 +101,20 @@ TubeSpatialObjectToDensityImageFilter< TDensityImageType, TRadiusImageType,
 
     danFilter->SetInput( tubefilter->GetOutput() );
 
+    danFilter->SetUseImageSpacing( true );
+    danFilter->SetInputIsBinary( true );
+
+    if( m_UseSquaredDistance )
+      {
+      danFilter->SetSquaredDistance( true );
+      }
+
     danFilter->Update();
 
     VectorImagePointer  vectorImage = danFilter->GetVectorDistanceMap();
     m_RadiusMapImage   = tubefilter->GetRadiusImage();
     m_TangentMapImage  = tubefilter->GetTangentImage();
     m_DensityMapImage  = danFilter->GetDistanceMap();
-
-    // ** If Requested: Square the Dan.Dis. image values to get the
-    //      Squared distance image ** //
-    if( m_UseSquareDistance )
-      {
-      typedef ImageRegionIterator<DensityImageType>   DistanceIteratorType;
-      DistanceIteratorType  it_dis( m_DensityMapImage,
-        m_DensityMapImage->GetLargestPossibleRegion() );
-      it_dis.GoToBegin();
-      while( !it_dis.IsAtEnd() )
-        {
-        DensityPixelType number = it_dis.Get();
-        DensityPixelType square = number*number;
-        it_dis.Set( square );
-        ++it_dis;
-        }
-      }
 
     typedef ImageRegionIterator<VectorImageType>   VectorIteratorType;
     typedef ImageRegionIterator<RadiusImageType>   RadiusIteratorType;

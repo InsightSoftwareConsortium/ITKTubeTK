@@ -85,8 +85,8 @@ public:
   tubeWrapGetMacro( Size, SizeType, Filter );
 
   /** Set whether to use squared or actual distances in calculations. */
-  tubeWrapSetMacro( UseSquareDistance, bool, Filter );
-  tubeWrapGetMacro( UseSquareDistance, bool, Filter );
+  tubeWrapSetMacro( UseSquaredDistance, bool, Filter );
+  tubeWrapGetMacro( UseSquaredDistance, bool, Filter );
 
   /** Set the input tubes */
   tubeWrapSetMacro( InputTubeGroup, TubeGroupPointer, Filter );

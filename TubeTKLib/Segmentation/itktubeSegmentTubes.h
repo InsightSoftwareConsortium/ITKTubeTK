@@ -102,9 +102,9 @@ public:
 
   /** Set Seed Index List */
   void SetSeedIndexList( std::vector< ContinuousIndexType > );
-  void SetSeedPhysicalCoordinatesList( std::vector< PointType > );
-  void SetSeedIndexFromFileList
-    ( std::vector< ContinuousIndexType >, std::vector< ScaleType > );
+  void SetSeedPointList( std::vector< PointType > );
+  void SetSeedIndexAndScaleList( std::vector< ContinuousIndexType >,
+    std::vector< ScaleType > );
 
   /** Set Seed Mask Image */
   itkSetObjectMacro( SeedMask, TubeMaskImageType );
@@ -138,7 +138,8 @@ protected:
 
   SegmentTubes( void );
   virtual ~SegmentTubes( void );
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
 

@@ -36,7 +36,7 @@ MetaRidgeSeed( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed()" << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed()" << std::endl;
     }
 
   Clear();
@@ -47,7 +47,7 @@ MetaRidgeSeed( const char * _headerName )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed()" << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed()" << std::endl;
     }
 
   Clear();
@@ -61,7 +61,7 @@ MetaRidgeSeed( const MetaRidgeSeed & _metaRidgeSeed )
 {
   if( META_DEBUG )
    {
-   METAIO_STREAM::cout << "MetaRidgeSeed()" << METAIO_STREAM::endl;
+   std::cout << "MetaRidgeSeed()" << std::endl;
    }
 
   Clear();
@@ -84,7 +84,7 @@ MetaRidgeSeed(
 {
   if( META_DEBUG )
    {
-   METAIO_STREAM::cout << "MetaRidgeSeed()" << METAIO_STREAM::endl;
+   std::cout << "MetaRidgeSeed()" << std::endl;
    }
 
   Clear();
@@ -106,32 +106,32 @@ PrintInfo() const
 {
   MetaLDA::PrintInfo();
 
-  METAIO_STREAM::cout << "RidgeSeedScales = " << m_RidgeSeedScales.size()
-    << METAIO_STREAM::endl;
+  std::cout << "RidgeSeedScales = " << m_RidgeSeedScales.size()
+    << std::endl;
 
-  METAIO_STREAM::cout << "PDFFileaName = "
-    << m_PDFFileName << METAIO_STREAM::endl;
+  std::cout << "PDFFileaName = "
+    << m_PDFFileName << std::endl;
 
-  METAIO_STREAM::cout << "UseSVM = "
-    << ( m_UseSVM ? "True" : "False" ) << METAIO_STREAM::endl;
+  std::cout << "UseSVM = "
+    << ( m_UseSVM ? "True" : "False" ) << std::endl;
 
-  METAIO_STREAM::cout << "UseIntensityOnly = "
-    << ( m_UseIntensityOnly ? "True" : "False" ) << METAIO_STREAM::endl;
+  std::cout << "UseIntensityOnly = "
+    << ( m_UseIntensityOnly ? "True" : "False" ) << std::endl;
 
-  METAIO_STREAM::cout << "RidgeId = " << m_RidgeId
-    << METAIO_STREAM::endl;
+  std::cout << "RidgeId = " << m_RidgeId
+    << std::endl;
 
-  METAIO_STREAM::cout << "BackgroundId = " << m_BackgroundId
-    << METAIO_STREAM::endl;
+  std::cout << "BackgroundId = " << m_BackgroundId
+    << std::endl;
 
-  METAIO_STREAM::cout << "UnknownId = " << m_UnknownId
-    << METAIO_STREAM::endl;
+  std::cout << "UnknownId = " << m_UnknownId
+    << std::endl;
 
-  METAIO_STREAM::cout << "SeedTolerance = " << m_SeedTolerance
-    << METAIO_STREAM::endl;
+  std::cout << "SeedTolerance = " << m_SeedTolerance
+    << std::endl;
 
-  METAIO_STREAM::cout << "Skeletonize = "
-    << ( m_Skeletonize ? "True" : "False" ) << METAIO_STREAM::endl;
+  std::cout << "Skeletonize = "
+    << ( m_Skeletonize ? "True" : "False" ) << std::endl;
 }
 
 void MetaRidgeSeed::
@@ -155,7 +155,7 @@ Clear( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: Clear" << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: Clear" << std::endl;
     }
 
   MetaLDA::Clear();
@@ -192,8 +192,8 @@ InitializeEssential(
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: Initialize"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: Initialize"
+      << std::endl;
     }
 
   MetaLDA::InitializeEssential( 3, 1,
@@ -216,8 +216,8 @@ SetRidgeSeedScales( const RidgeSeedScalesType & _RidgeSeedScales )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: SetRidgeSeedScales"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: SetRidgeSeedScales"
+      << std::endl;
     }
 
   m_RidgeSeedScales = _RidgeSeedScales;
@@ -228,8 +228,8 @@ GetRidgeSeedScales( void ) const
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: GetRidgeSeedScales"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: GetRidgeSeedScales"
+      << std::endl;
     }
 
   return m_RidgeSeedScales;
@@ -240,8 +240,8 @@ SetUseIntensityOnly( bool _UseIntensityOnly )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: SetUseIntensityOnly"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: SetUseIntensityOnly"
+      << std::endl;
     }
 
   m_UseIntensityOnly = _UseIntensityOnly;
@@ -252,8 +252,8 @@ GetUseIntensityOnly( void ) const
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: GetUseIntensityOnly"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: GetUseIntensityOnly"
+      << std::endl;
     }
 
   return m_UseIntensityOnly;
@@ -264,8 +264,8 @@ SetUseSVM( bool _UseSVM )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: SetUseSVM"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: SetUseSVM"
+      << std::endl;
     }
 
   m_UseSVM = _UseSVM;
@@ -276,8 +276,8 @@ GetUseSVM( void ) const
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: GetUseSVM"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: GetUseSVM"
+      << std::endl;
     }
 
   return m_UseSVM;
@@ -289,8 +289,8 @@ SetPDFFileName( const std::string & _pdfFileName )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: SetPDFFileName"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: SetPDFFileName"
+      << std::endl;
     }
 
   m_PDFFileName = _pdfFileName;
@@ -301,8 +301,8 @@ GetPDFFileName( void ) const
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: GetPDFFileName"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: GetPDFFileName"
+      << std::endl;
     }
 
   return m_PDFFileName;
@@ -313,8 +313,8 @@ SetRidgeId( int _RidgeId )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: SetRidgeId"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: SetRidgeId"
+      << std::endl;
     }
 
   m_RidgeId = _RidgeId;
@@ -325,8 +325,8 @@ GetRidgeId( void ) const
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: GetRidgeId"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: GetRidgeId"
+      << std::endl;
     }
 
   return m_RidgeId;
@@ -337,8 +337,8 @@ SetBackgroundId( int _BackgroundId )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: SetBackgroundId"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: SetBackgroundId"
+      << std::endl;
     }
 
   m_BackgroundId = _BackgroundId;
@@ -349,8 +349,8 @@ GetBackgroundId( void ) const
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: GetBackgroundId"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: GetBackgroundId"
+      << std::endl;
     }
 
   return m_BackgroundId;
@@ -361,8 +361,8 @@ SetUnknownId( int _UnknownId )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: SetUnknownId"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: SetUnknownId"
+      << std::endl;
     }
 
   m_UnknownId = _UnknownId;
@@ -373,8 +373,8 @@ GetUnknownId( void ) const
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: GetUnknownId"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: GetUnknownId"
+      << std::endl;
     }
 
   return m_UnknownId;
@@ -385,8 +385,8 @@ SetSkeletonize( bool _Skeletonize )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: SetSkeletonize"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: SetSkeletonize"
+      << std::endl;
     }
 
   m_Skeletonize = _Skeletonize;
@@ -397,8 +397,8 @@ GetSkeletonize( void ) const
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: GetSkeletonize"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: GetSkeletonize"
+      << std::endl;
     }
 
   return m_Skeletonize;
@@ -409,8 +409,8 @@ SetSeedTolerance( double _SeedTolerance )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: SetSeedTolerance"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: SetSeedTolerance"
+      << std::endl;
     }
 
   m_SeedTolerance = _SeedTolerance;
@@ -421,8 +421,8 @@ GetSeedTolerance( void ) const
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: GetSeedTolerance"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: GetSeedTolerance"
+      << std::endl;
     }
 
   return m_SeedTolerance;
@@ -432,7 +432,7 @@ bool MetaRidgeSeed::
 CanRead( const char * _headerName ) const
 {
   // First check the extension
-  METAIO_STL::string fname = _headerName;
+  std::string fname = _headerName;
   if( fname == "" )
     {
     return false;
@@ -440,8 +440,8 @@ CanRead( const char * _headerName ) const
 
   bool extensionFound = false;
 
-  METAIO_STL::string::size_type stringPos = fname.rfind( ".mrs" );
-  if( ( stringPos != METAIO_STL::string::npos )
+  std::string::size_type stringPos = fname.rfind( ".mrs" );
+  if( ( stringPos != std::string::npos )
       && ( stringPos == fname.length() - 5 ) )
     {
     extensionFound = true;
@@ -453,10 +453,10 @@ CanRead( const char * _headerName ) const
     }
 
   // Now check the file content
-  METAIO_STREAM::ifstream inputStream;
+  std::ifstream inputStream;
 
-  inputStream.open( _headerName, METAIO_STREAM::ios::in |
-                                 METAIO_STREAM::ios::binary );
+  inputStream.open( _headerName, std::ios::in |
+                                 std::ios::binary );
 
   if( !inputStream.rdbuf()->is_open() )
     {
@@ -479,15 +479,15 @@ Read( const char * _headerName )
     FileName( _headerName );
     }
 
-  METAIO_STREAM::ifstream * tmpStream = new METAIO_STREAM::ifstream;
+  std::ifstream * tmpStream = new std::ifstream;
 
-  tmpStream->open( m_FileName, METAIO_STREAM::ios::in |
-                               METAIO_STREAM::ios::binary );
+  tmpStream->open( m_FileName, std::ios::in |
+                               std::ios::binary );
 
   if( !tmpStream->rdbuf()->is_open() )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: Read: Cannot open file _"
-                        << m_FileName << "_" << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: Read: Cannot open file _"
+                        << m_FileName << "_" << std::endl;
     delete tmpStream;
     return false;
     }
@@ -502,7 +502,7 @@ Read( const char * _headerName )
 }
 
 bool MetaRidgeSeed::
-CanReadStream( METAIO_STREAM::ifstream * _stream ) const
+CanReadStream( std::ifstream * _stream ) const
 {
   if( !std::strncmp( MET_ReadForm( * _stream ).c_str(), "RidgeSeed", 9 ) )
     {
@@ -513,12 +513,12 @@ CanReadStream( METAIO_STREAM::ifstream * _stream ) const
 }
 
 bool MetaRidgeSeed::
-ReadStream( METAIO_STREAM::ifstream * _stream )
+ReadStream( std::ifstream * _stream )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: ReadStream"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: ReadStream"
+      << std::endl;
     }
 
   M_Destroy();
@@ -529,8 +529,8 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
 
   if( m_ReadStream )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: ReadStream: two files open?"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: ReadStream: two files open?"
+                        << std::endl;
     delete m_ReadStream;
     }
 
@@ -538,8 +538,8 @@ ReadStream( METAIO_STREAM::ifstream * _stream )
 
   if( !M_Read() )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: Read: Cannot parse file"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: Read: Cannot parse file"
+                        << std::endl;
     m_ReadStream = NULL;
     return false;
     }
@@ -564,10 +564,10 @@ Write( const char * _headName )
 
   MET_SetFileSuffix( m_FileName, ".mrs" );
 
-  METAIO_STREAM::ofstream * tmpWriteStream = new METAIO_STREAM::ofstream;
+  std::ofstream * tmpWriteStream = new std::ofstream;
 
-  tmpWriteStream->open( m_FileName, METAIO_STREAM::ios::binary |
-                                   METAIO_STREAM::ios::out );
+  tmpWriteStream->open( m_FileName, std::ios::binary |
+                                   std::ios::out );
 
   if( !tmpWriteStream->rdbuf()->is_open() )
     {
@@ -587,12 +587,12 @@ Write( const char * _headName )
 }
 
 bool MetaRidgeSeed::
-WriteStream( METAIO_STREAM::ofstream * _stream )
+WriteStream( std::ofstream * _stream )
 {
   if( m_WriteStream != NULL )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: WriteStream: two files open?"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: WriteStream: two files open?"
+                        << std::endl;
     delete m_WriteStream;
     }
 
@@ -614,8 +614,8 @@ M_Destroy( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: M_Destroy"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: M_Destroy"
+                        << std::endl;
     }
 
   MetaLDA::M_Destroy();
@@ -626,8 +626,8 @@ M_SetupReadFields( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: M_SetupReadFields"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: M_SetupReadFields"
+                        << std::endl;
     }
 
   MetaLDA::M_SetupReadFields();
@@ -764,30 +764,30 @@ M_Read( void )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: M_Read: Loading Header"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: M_Read: Loading Header"
+                        << std::endl;
     }
   if( !MetaLDA::M_Read() )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: M_Read: Error parsing file"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: M_Read: Error parsing file"
+                        << std::endl;
     return false;
     }
 
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: M_Read: Parsing Header"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: M_Read: Parsing Header"
+                        << std::endl;
     }
 
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaRidgeSeed: M_Read: num fields = "
-      << m_Fields.size() << METAIO_STREAM::endl;
+    std::cout << "MetaRidgeSeed: M_Read: num fields = "
+      << m_Fields.size() << std::endl;
     for( unsigned int i = 0; i < m_Fields.size(); i++ )
       {
-      METAIO_STREAM::cout << "  Field " << i << " = "
-        << m_Fields[i]->name << METAIO_STREAM::endl;
+      std::cout << "  Field " << i << " = "
+        << m_Fields[i]->name << std::endl;
       }
     }
 

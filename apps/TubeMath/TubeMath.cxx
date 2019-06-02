@@ -23,12 +23,13 @@ limitations under the License.
 #include "tubeMessage.h"
 
 #include "tubeTubeMath.h"
+#include "tubeTreeFilters.h"
 
 #include <itkGroupSpatialObject.h>
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectWriter.h>
 #include <itkTimeProbesCollectorBase.h>
-#include <itkVesselTubeSpatialObject.h>
+#include <itkTubeSpatialObject.h>
 
 #include <itkImageFileReader.h>
 #include <itkDisplacementFieldTransform.h>
@@ -91,14 +92,14 @@ SetPropertyFromImage( typename itk::GroupSpatialObject< DimensionT >::
   Pointer & inputTubes, int currentTube, typename itk::Image< PixelT,
   DimensionT>::Pointer & inputImage, char propertyId )
 {
-  typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
+  typedef itk::TubeSpatialObject< DimensionT >        TubeType;
   typedef typename TubeType::TubePointType            TubePointType;
   typedef itk::Image< PixelT, DimensionT >            ImageType;
 
   typename TubeType::ChildrenListType::iterator tubeIterator;
 
   char soTypeName[80];
-  strcpy( soTypeName, "VesselTubeSpatialObject" );
+  strcpy( soTypeName, "TubeSpatialObject" );
   typename TubeType::ChildrenListPointer inputTubeList =
     inputTubes->GetChildren( inputTubes->GetMaximumDepth(), soTypeName );
   for( tubeIterator = inputTubeList->begin(); tubeIterator !=
@@ -118,10 +119,10 @@ SetPropertyFromImage( typename itk::GroupSpatialObject< DimensionT >::
         TubePointType * currentPoint = static_cast< TubePointType * >(
           inputTube->GetPoint( pointNum ) );
         typename TubeType::PointType pointIndex;
-        pointIndex = currentPoint->GetPosition();
+        pointIndex = currentPoint->GetPositionInObjectSpace();
 
         typename TubeType::PointType pointWorld;
-        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint(
+        pointWorld = inputTube->GetObjectToWorldTransform()->TransformPoint(
           pointIndex );
 
         typename ImageType::IndexType imageIndex;
@@ -144,7 +145,7 @@ SetPropertyFromImage( typename itk::GroupSpatialObject< DimensionT >::
             currentPoint->SetBranchness( val );
             break;
           case 'r':
-            currentPoint->SetRadius( val );
+            currentPoint->SetRadiusInObjectSpace( val );
             break;
           }
         }
@@ -160,14 +161,14 @@ SetPropertyFromImageMean( typename itk::GroupSpatialObject< DimensionT >::
   Pointer & inputTubes, int currentTube, typename itk::Image< PixelT,
   DimensionT>::Pointer & inputImage, char propertyId )
 {
-  typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
+  typedef itk::TubeSpatialObject< DimensionT >        TubeType;
   typedef typename TubeType::TubePointType            TubePointType;
   typedef itk::Image< PixelT, DimensionT >            ImageType;
 
   typename TubeType::ChildrenListType::iterator tubeIterator;
 
   char soTypeName[80];
-  strcpy( soTypeName, "VesselTubeSpatialObject" );
+  strcpy( soTypeName, "TubeSpatialObject" );
   typename TubeType::ChildrenListPointer inputTubeList =
     inputTubes->GetChildren( inputTubes->GetMaximumDepth(), soTypeName );
   for( tubeIterator = inputTubeList->begin(); tubeIterator !=
@@ -189,10 +190,10 @@ SetPropertyFromImageMean( typename itk::GroupSpatialObject< DimensionT >::
         TubePointType * currentPoint = static_cast< TubePointType * >(
           inputTube->GetPoint( pointNum ) );
         typename TubeType::PointType pointIndex;
-        pointIndex = currentPoint->GetPosition();
+        pointIndex = currentPoint->GetPositionInObjectSpace();
 
         typename TubeType::PointType pointWorld;
-        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint(
+        pointWorld = inputTube->GetObjectToWorldTransform()->TransformPoint(
           pointIndex );
 
         typename ImageType::IndexType imageIndex;
@@ -209,10 +210,10 @@ SetPropertyFromImageMean( typename itk::GroupSpatialObject< DimensionT >::
         TubePointType * currentPoint = static_cast< TubePointType * >(
           inputTube->GetPoint( pointNum ) );
         typename TubeType::PointType pointIndex;
-        pointIndex = currentPoint->GetPosition();
+        pointIndex = currentPoint->GetPositionInObjectSpace();
 
         typename TubeType::PointType pointWorld;
-        pointWorld = inputTube->GetIndexToWorldTransform()->TransformPoint(
+        pointWorld = inputTube->GetObjectToWorldTransform()->TransformPoint(
           pointIndex );
 
         switch( propertyId )
@@ -228,7 +229,7 @@ SetPropertyFromImageMean( typename itk::GroupSpatialObject< DimensionT >::
             currentPoint->SetBranchness( valAvg );
             break;
           case 'r':
-            currentPoint->SetRadius( valAvg );
+            currentPoint->SetRadiusInObjectSpace( valAvg );
             break;
           }
         }
@@ -294,15 +295,21 @@ int DoIt( MetaCommand & command )
       {
       ::tube::Message( "Reverse" );
       }
+    else if( it->name == "FillGapsInTree" )
+      {
+      ::tube::Message( "Fill gapes in tree" );
+      ::tube::TreeFilters< DimensionT >::FillGap( inputTubes,
+        command.GetValueAsString( *it, "InterpolationMethod" ).c_str()[0] );
+      }
     else if( it->name == "ComputeTangentsAndNormals" )
       {
       ::tube::Message( "Compute Tangents and Normals" );
-      typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
+      typedef itk::TubeSpatialObject< DimensionT >  TubeType;
 
       typename TubeType::ChildrenListType::iterator tubeIterator;
 
       char soTypeName[80];
-      strcpy( soTypeName, "VesselTubeSpatialObject" );
+      strcpy( soTypeName, "TubeSpatialObject" );
       typename TubeType::ChildrenListPointer inputTubeList =
         inputTubes->GetChildren( inputTubes->GetMaximumDepth(),
         soTypeName );
@@ -328,12 +335,12 @@ int DoIt( MetaCommand & command )
     else if( it->name == "MarkAsArtery" )
       {
       ::tube::Message( "Mark as Artery" );
-      typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
+      typedef itk::TubeSpatialObject< DimensionT >  TubeType;
 
       typename TubeType::ChildrenListType::iterator tubeIterator;
 
       char soTypeName[80];
-      strcpy( soTypeName, "VesselTubeSpatialObject" );
+      strcpy( soTypeName, "TubeSpatialObject" );
       typename TubeType::ChildrenListPointer inputTubeList =
         inputTubes->GetChildren( inputTubes->GetMaximumDepth(),
         soTypeName );
@@ -346,7 +353,16 @@ int DoIt( MetaCommand & command )
         if( currentTube == ALL_TUBES_CURRENT || inputTube->GetId() ==
           currentTube )
           {
-          inputTube->SetArtery( true );
+          std::string str;
+          if( inputTube->GetProperty().GetTagStringValue( "Artery", str )
+            && str == "True" )
+            {
+            inputTube->GetProperty().SetTagStringValue( "Artery", "False" );
+            }
+          else
+            {
+            inputTube->GetProperty().SetTagStringValue( "Artery", "True" );
+            }
           }
         }
       inputTubeList->clear();
@@ -355,12 +371,12 @@ int DoIt( MetaCommand & command )
     else if( it->name == "MarkAsRoot" )
       {
       ::tube::Message( "Mark as Root" );
-      typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
+      typedef itk::TubeSpatialObject< DimensionT >  TubeType;
 
       typename TubeType::ChildrenListType::iterator tubeIterator;
 
       char soTypeName[80];
-      strcpy( soTypeName, "VesselTubeSpatialObject" );
+      strcpy( soTypeName, "TubeSpatialObject" );
       typename TubeType::ChildrenListPointer inputTubeList =
         inputTubes->GetChildren( inputTubes->GetMaximumDepth(),
         soTypeName );
@@ -382,12 +398,12 @@ int DoIt( MetaCommand & command )
     else if( it->name == "UniqueIDs" )
       {
       ::tube::Message( "Assign Unique IDs" );
-      typedef itk::VesselTubeSpatialObject< DimensionT >  TubeType;
+      typedef itk::TubeSpatialObject< DimensionT >  TubeType;
 
       typename TubeType::ChildrenListType::iterator tubeIterator;
 
       char soTypeName[80];
-      strcpy( soTypeName, "VesselTubeSpatialObject" );
+      strcpy( soTypeName, "TubeSpatialObject" );
       typename TubeType::ChildrenListPointer inputTubeList =
         inputTubes->GetChildren( inputTubes->GetMaximumDepth(),
         soTypeName );
@@ -457,6 +473,14 @@ int main( int argc, char * argv[] )
     MetaCommand::DATA_IN );
   command.AddOptionField( "LoadValueFromImageMean", "filename",
     MetaCommand::STRING, true, "", "Image filename", MetaCommand::DATA_IN );
+
+  command.SetOption( "FillGapsInTubeTree", "f", false,
+    "Connects the parent and child tube if they have a gap inbetween,"
+    " by interpolating the path inbetween." );
+  command.AddOptionField( "FillGapsInTubeTree", "InterpolationMethod",
+    MetaCommand::STRING, true, "",
+    "[S]traight Line, [L]Linear Interp., [C]urve Fitting, [M]inimal Path",
+    MetaCommand::DATA_IN );
 
   command.SetOption( "ComputeTangentsAndNormals", "n", false,
     "Compute current tube's tangents and normals from point sequence." );

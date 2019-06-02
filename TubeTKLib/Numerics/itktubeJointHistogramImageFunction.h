@@ -180,7 +180,7 @@ protected:
   ~JointHistogramImageFunction( void ) {}
 
   /** PrintSelf function for introspection. */
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
   typename HistogramType::Pointer & ComputeHistogramAtIndex(
     const IndexType & index, bool blur=true ) const;

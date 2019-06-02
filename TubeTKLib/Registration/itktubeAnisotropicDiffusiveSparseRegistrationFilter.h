@@ -27,7 +27,7 @@ limitations under the License.
 #include "itktubeDiffusiveRegistrationFilter.h"
 
 #include <itkGroupSpatialObject.h>
-#include <itkVesselTubeSpatialObject.h>
+#include <itkTubeSpatialObject.h>
 
 #include <vtkSmartPointer.h>
 
@@ -221,9 +221,9 @@ public:
       TubeListType;
   typedef TubeListType *
       TubeListPointer;
-  typedef itk::VesselTubeSpatialObject< ImageDimension >
+  typedef itk::TubeSpatialObject< ImageDimension >
       TubeType;
-  typedef typename TubeType::PointListType
+  typedef typename TubeType::TubePointListType
       TubePointListType;
   typedef typename TubeType::TubePointType
       TubePointType;
@@ -325,7 +325,8 @@ public:
 protected:
   AnisotropicDiffusiveSparseRegistrationFilter( void );
   virtual ~AnisotropicDiffusiveSparseRegistrationFilter( void ) {}
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
   /** Handy for array indexing. */
   enum DivTerm { SMOOTH_TANGENTIAL, SMOOTH_NORMAL, PROP_TANGENTIAL,

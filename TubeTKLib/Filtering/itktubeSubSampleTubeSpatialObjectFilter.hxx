@@ -54,11 +54,10 @@ SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
   TubeSpatialObjectType * output = this->GetOutput();
   const TubeSpatialObjectType * input = this->GetInput();
   output->CopyInformation( input );
-  output->Clear();
 
-  typedef typename TubeSpatialObjectType::PointListType PointListType;
-  const PointListType & inputPoints = input->GetPoints();
-  PointListType & outputPoints = output->GetPoints();
+  typedef typename TubeSpatialObjectType::TubePointListType TubePointListType;
+  const TubePointListType & inputPoints = input->GetPoints();
+  TubePointListType & outputPoints = output->GetPoints();
   const unsigned int numberOfInputPoints = inputPoints.size();
   unsigned int numberOfOutputPoints;
   if( this->m_Sampling == 1 )
@@ -82,7 +81,7 @@ SubSampleTubeSpatialObjectFilter< TTubeSpatialObject >
     }
   outputPoints[numberOfOutputPoints - 1] = inputPoints[numberOfInputPoints - 1];
 
-  output->RemoveDuplicatePoints();
+  output->RemoveDuplicatePointsInObjectSpace();
 }
 
 } // End namespace tube

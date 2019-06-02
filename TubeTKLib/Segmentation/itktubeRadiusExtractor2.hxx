@@ -30,6 +30,7 @@ limitations under the License.
 
 #include "itktubeRadiusExtractor2.h"
 
+#include "tubeMessage.h"
 #include "tubeMatrixMath.h"
 #include "tubeTubeMath.h"
 #include "tubeUserFunction.h"
@@ -37,6 +38,7 @@ limitations under the License.
 #include "tubeSplineApproximation1D.h"
 
 #include <itkMinimumMaximumImageFilter.h>
+
 
 #include <vnl/vnl_math.h>
 
@@ -62,8 +64,7 @@ public:
 
   const double & Value( const int & x )
     {
-    m_Value = m_RadiusExtractor->GetKernelMedialness( x *
-      m_RadiusExtractor->GetRadiusTolerance() );
+    m_Value = m_RadiusExtractor->GetKernelMedialness( x );
 
     return m_Value;
     }
@@ -81,12 +82,13 @@ template< class TInputImage >
 RadiusExtractor2<TInputImage>
 ::RadiusExtractor2( void )
 {
-  m_Image = NULL;
+  m_InputImage = NULL;
 
+  m_Spacing = 1;
   m_DataMin = 0;
   m_DataMax = -1;
 
-  m_RadiusStart = 1.5;
+  m_RadiusStart = 1.5;  // All values are in physical space (e.g., mm).
   m_RadiusMin = 0.33;
   m_RadiusMax = 15.0;
   m_RadiusStep = 0.25;
@@ -127,25 +129,35 @@ RadiusExtractor2<TInputImage>
 template< class TInputImage >
 void
 RadiusExtractor2<TInputImage>
-::SetInputImage( typename ImageType::Pointer inputImage )
+::SetInputImage( typename InputImageType::Pointer inputImage )
 {
-  m_Image = inputImage;
+  m_InputImage = inputImage;
 
-  if( m_Image )
+  if( m_InputImage )
     {
-    typedef MinimumMaximumImageFilter<ImageType> MinMaxFilterType;
+    typedef MinimumMaximumImageFilter<InputImageType> MinMaxFilterType;
     typename MinMaxFilterType::Pointer minMaxFilter =
       MinMaxFilterType::New();
-    minMaxFilter->SetInput( m_Image );
+    minMaxFilter->SetInput( m_InputImage );
     minMaxFilter->Update();
     m_DataMin = minMaxFilter->GetMinimum();
     m_DataMax = minMaxFilter->GetMaximum();
+    for( unsigned int d=1; d<ImageDimension; ++d )
+      {
+      if( m_InputImage->GetSpacing()[d] != m_InputImage->GetSpacing()[0] )
+        {
+        ::tube::WarningMessage(
+          "Image is not isotropic. Using x-dim spacing as the spacing." );
+        break;
+        }
+      }
+    m_Spacing = m_InputImage->GetSpacing()[0];
     if( this->GetDebug() )
       {
-      std::cout << "RadiusExtractor2: SetInputImage: Minimum = "
-        << m_DataMin << std::endl;
-      std::cout << "RadiusExtractor2: SetInputImage: Maximum = "
-        << m_DataMax << std::endl;
+      ::tube::DebugMessage( "RadiusExtractor2: SetInputImage: Minimum = "
+        + std::to_string(m_DataMin) );
+      ::tube::DebugMessage( "RadiusExtractor2: SetInputImage: Maximum = "
+        + std::to_string(m_DataMax) );
       }
     }
 }
@@ -164,7 +176,7 @@ RadiusExtractor2<TInputImage>
 
   if( this->GetDebug() )
     {
-    std::cout << "Compute values at point" << std::endl;
+    ::tube::DebugMessage( "Compute values at point" );
     }
 
   unsigned int tempNumPoints = this->GetNumKernelPoints();
@@ -247,63 +259,69 @@ void
 RadiusExtractor2<TInputImage>
 ::GenerateKernel( void )
 {
-  ITKIndexType minX;
-  ITKIndexType maxX;
+  IndexType minXI;
+  IndexType maxXI;
 
-  unsigned int dimension = m_Image->GetImageDimension();
-
-  ITKIndexType buffer;
-  for( unsigned int i = 0; i < dimension; ++i )
+  IndexType bufferI;
+  for( unsigned int i = 0; i < ImageDimension; ++i )
     {
-    buffer[i] = static_cast< unsigned int >(
-      this->GetKernelExtent() * this->GetRadiusMax() );
+    bufferI[i] = static_cast< unsigned int >(
+      this->GetKernelExtent() * this->GetRadiusMax() / m_Spacing );
     }
 
   typename std::vector< TubePointType >::iterator pntIter;
   pntIter = m_KernelTubePoints.begin();
-  for( unsigned int i = 0; i < dimension; ++i )
+  for( unsigned int i = 0; i < ImageDimension; ++i )
     {
-    minX[i] = static_cast< int >( m_KernelTubePoints[0].GetPosition()[i]
-      - buffer[i] );
-    maxX[i] = static_cast< int >( m_KernelTubePoints[0].GetPosition()[i]
-      + buffer[i] );
+    IndexType kernelPointI;
+    m_InputImage->TransformPhysicalPointToIndex( 
+      m_KernelTubePoints[0].GetPositionInObjectSpace(), kernelPointI );
+    minXI[i] = static_cast< int >( kernelPointI[i] - bufferI[i] );
+    maxXI[i] = static_cast< int >( kernelPointI[i] + bufferI[i] );
     }
   ++pntIter;
   int tempI;
   while( pntIter != m_KernelTubePoints.end() )
     {
-    for( unsigned int i = 0; i < dimension; ++i )
+    IndexType kernelPointI;
+    m_InputImage->TransformPhysicalPointToIndex(
+      pntIter->GetPositionInObjectSpace(), kernelPointI );
+    for( unsigned int i = 0; i < ImageDimension; ++i )
       {
-      tempI = static_cast< int >( pntIter->GetPosition()[i] - buffer[i] );
-      if( tempI < minX[i] )
+      tempI = static_cast< int >( kernelPointI[i] - bufferI[i] );
+      if( tempI < minXI[i] )
         {
-        minX[i] = tempI;
+        minXI[i] = tempI;
         }
-      tempI = static_cast< int >( pntIter->GetPosition()[i] + buffer[i] );
-      if( tempI > maxX[i] )
+      tempI = static_cast< int >( kernelPointI[i] + bufferI[i] );
+      if( tempI > maxXI[i] )
         {
-        maxX[i] = tempI;
+        maxXI[i] = tempI;
         }
       }
     ++pntIter;
     }
-  unsigned int kernelSize = maxX[0] - minX[0] + 1;
-  for( unsigned int i = 1; i < dimension; ++i )
+  unsigned int kernelSize = maxXI[0] - minXI[0] + 1;
+  for( unsigned int i = 1; i < ImageDimension; ++i )
     {
-    kernelSize *= ( maxX[i] - minX[i] + 1 );
+    kernelSize *= ( maxXI[i] - minXI[i] + 1 );
     }
   m_KernelValues.resize( kernelSize );
+  std::fill( m_KernelValues.begin(), m_KernelValues.end(), 0 );
   m_KernelDistances.resize( kernelSize );
+  std::fill( m_KernelDistances.begin(), m_KernelDistances.end(), 0 );
   m_KernelTangentDistances.resize( kernelSize );
+  std::fill( m_KernelTangentDistances.begin(), m_KernelTangentDistances.end(),
+    0 );
 
   unsigned int count = 0;
-  ITKIndexType x = minX;
+  IndexType xI = minXI;
   bool done = false;
   while( !done )
     {
-    if( m_Image->GetLargestPossibleRegion().IsInside( x ) )
+    if( m_InputImage->GetLargestPossibleRegion().IsInside( xI ) )
       {
-      m_KernelValues[ count ] = ( m_Image->GetPixel( x ) - m_DataMin )
+      m_KernelValues[ count ] = ( m_InputImage->GetPixel( xI ) - m_DataMin )
         / ( m_DataMax - m_DataMin );
       if( m_KernelValues[ count ] < 0 )
         {
@@ -313,11 +331,8 @@ RadiusExtractor2<TInputImage>
         {
         m_KernelValues[ count ] = 1;
         }
-      ITKPointType p;
-      for( unsigned int i = 0; i < dimension; ++i )
-        {
-        p[ i ] = x[ i ];
-        }
+      PointType p;
+      m_InputImage->TransformIndexToPhysicalPoint( xI, p );
 
       unsigned int pntCount = 0;
       pntIter = m_KernelTubePoints.begin();
@@ -328,11 +343,11 @@ RadiusExtractor2<TInputImage>
       int minTangentDistCount = -1;
       while( pntIter != m_KernelTubePoints.end() )
         {
-        ITKVectorType pDiff = pntIter->GetPosition() - p;
+        VectorType pDiff = pntIter->GetPositionInObjectSpace() - p;
         double d1 = 0;
-        for( unsigned int i = 0; i < dimension; ++i )
+        for( unsigned int i = 0; i < ImageDimension; ++i )
           {
-          d1 += pDiff[i] * pntIter->GetTangent()[i];
+          d1 += pDiff[i] * pntIter->GetTangentInObjectSpace()[i];
           }
         pntTangentDist = d1 * d1;
         if( pntTangentDist < minTangentDist || minTangentDistCount == -1 )
@@ -340,17 +355,17 @@ RadiusExtractor2<TInputImage>
           minTangentDist = pntTangentDist;
           minTangentDistCount = pntCount;
           d1 = 0;
-          for( unsigned int i = 0; i < dimension; ++i )
+          for( unsigned int i = 0; i < ImageDimension; ++i )
             {
-            d1 += pDiff[i] * pntIter->GetNormal1()[i];
+            d1 += pDiff[i] * pntIter->GetNormal1InObjectSpace()[i];
             }
           minNormalDist = d1 * d1;
-          if( dimension == 3 )
+          if( ImageDimension == 3 )
             {
             double d2 = 0;
-            for( unsigned int i = 0; i < dimension; ++i )
+            for( unsigned int i = 0; i < ImageDimension; ++i )
               {
-              d2 += pDiff[i] * pntIter->GetNormal2()[i];
+              d2 += pDiff[i] * pntIter->GetNormal2InObjectSpace()[i];
               }
             minNormalDist += d2 * d2;
             }
@@ -365,18 +380,18 @@ RadiusExtractor2<TInputImage>
       {
       m_KernelValues[ count ] = 0;
       m_KernelDistances[ count ] = this->GetKernelExtent() *
-        this->GetRadiusMax() + 1;
+        this->GetRadiusMax() / m_Spacing + 1;
       m_KernelTangentDistances[ count ] = this->GetKernelExtent() *
-        this->GetRadiusMax() + 1;
+        this->GetRadiusMax() / m_Spacing + 1;
       }
     ++count;
     unsigned int d = 0;
-    while( d < dimension && ++x[d] > maxX[d] )
+    while( d < ImageDimension && ++xI[d] > maxXI[d] )
       {
-      x[d] = minX[d];
+      xI[d] = minXI[d];
       ++d;
       }
-    if( d >= dimension )
+    if( d >= ImageDimension )
       {
       done = true;
       }
@@ -409,6 +424,9 @@ double
 RadiusExtractor2<TInputImage>
 ::GetKernelMedialness( double r )
 {
+  // If radius is outside of the legal range, calculate the slope
+  // just inside of the legal range and project that rate of decline
+  // in medialness outside of the legal range
   if( r < m_RadiusMin )
     {
     double factor = ( m_RadiusMin - r ) / m_RadiusTolerance;
@@ -432,22 +450,33 @@ RadiusExtractor2<TInputImage>
   std::vector< double >::iterator iterValue;
 
   double areaR = r * r * vnl_math::pi;
-  double distMax = ( r + 1.0 );
+
+  // TO DO: distMax should be proportional to r, not a constant offset from r
+  double distMax = ( r + 1.0 );           
+  if( r * this->GetKernelExtent() > distMax )
+    {
+    distMax = r * this->GetKernelExtent();
+    }
+
   double areaMax = distMax * distMax * vnl_math::pi;
   double areaNeg = areaMax - areaR;
+
+  // Set the areaPos to be equal to areaNeg
   double distMin2 = ( areaR - areaNeg ) / vnl_math::pi;
-  double distMin = 0;
+  double distMin = 0;  // Where areaPos starts
   if( distMin2 > 0 )
     {
-    distMin = std::sqrt( distMin2 );
+    distMin = std::sqrt( distMin2 );  // areaPos should be same size
     }
   double areaMin = distMin * distMin * vnl_math::pi;
   double areaPos = areaR - areaMin;
   if( this->GetDebug() )
     {
-    std::cout << "R = " << r << std::endl;
-    std::cout << "   Dist = " << distMin << " - " << distMax << std::endl;
-    std::cout << "   Area = " << areaPos << " - " << areaNeg << std::endl;
+    ::tube::InformationMessage( "R = " + std::to_string(r)  );
+    ::tube::InformationMessage( "   Dist = " + std::to_string(distMin) + " - "
+     + std::to_string(distMax) );
+    ::tube::InformationMessage( "   Area = " + std::to_string(areaPos) + " - "
+     + std::to_string(areaNeg) );
     }
 
   const int histoBins = 500;
@@ -521,10 +550,10 @@ RadiusExtractor2<TInputImage>
 
   if( this->GetDebug() )
     {
-    std::cout << "   Count = " << histoPosCount << " - " << histoNegCount
-      << std::endl;
-    std::cout << "   Val = " << pVal << " - " << nVal << " = " << pVal-nVal
-      << std::endl;
+    ::tube::DebugMessage( "   Count = " + std::to_string(histoPosCount) + " - "
+      + std::to_string(histoNegCount) );
+    ::tube::DebugMessage( "   Val = " + std::to_string(pVal) + " - "
+      + std::to_string(nVal) + " = " + std::to_string(pVal-nVal) );
     }
   double medialness = pVal - nVal;
 
@@ -536,6 +565,8 @@ double
 RadiusExtractor2<TInputImage>
 ::GetKernelBranchness( double r )
 {
+  // if r is within RadiusMin, apply a decreasing linear extrapolation
+  // from RadiusMin using the slope from just inside RadiusMin
   if( r < m_RadiusMin )
     {
     double factor = ( m_RadiusMin - r ) / m_RadiusTolerance;
@@ -544,6 +575,8 @@ RadiusExtractor2<TInputImage>
       + m_RadiusTolerance );
     return m0 - factor * std::fabs( m0 - m1 );
     }
+  // if r is outside RadiusMax, apply a decreasing linear extrapolation
+  // from RadiusMax using the slope from just inside RadiusMin
   else if( r > m_RadiusMax )
     {
     double factor = ( r - m_RadiusMax ) / m_RadiusTolerance;
@@ -646,8 +679,8 @@ RadiusExtractor2<TInputImage>
 
   ::tube::GoldenMeanOptimizer1D * opt = new
     ::tube::GoldenMeanOptimizer1D();
-  opt->SetXStep( m_RadiusStep / m_RadiusTolerance );
-  opt->SetTolerance( 1 );
+  opt->SetXStep( m_RadiusStep );
+  opt->SetTolerance( m_RadiusTolerance );
   opt->SetMaxIterations( 20 );
   opt->SetSearchForMin( false );
 
@@ -659,30 +692,30 @@ RadiusExtractor2<TInputImage>
     default:
     case RADIUS_CORRECTION_NONE:
       {
-      xMin = ( int )std::ceil( m_RadiusMin / m_RadiusTolerance );
-      xMax = ( int )std::floor( m_RadiusMax / m_RadiusTolerance );
-      x = m_RadiusStart / m_RadiusTolerance;
+      xMin = ( int )std::ceil( m_RadiusMin );
+      xMax = ( int )std::floor( m_RadiusMax );
+      x = m_RadiusStart;
       break;
       }
     case RADIUS_CORRECTION_FOR_BINARY_IMAGE:
       {
-      xMin = ( int )std::ceil( m_RadiusMin / m_RadiusTolerance );
-      xMax = ( int )std::floor( m_RadiusMax / m_RadiusTolerance );
-      x = m_RadiusStart / m_RadiusTolerance;
+      xMin = ( int )std::ceil( m_RadiusMin );
+      xMax = ( int )std::floor( m_RadiusMax );
+      x = m_RadiusStart;
       break;
       }
     case RADIUS_CORRECTION_FOR_CTA:
       {
-      xMin = ( int )std::ceil( m_RadiusMin / m_RadiusTolerance );
-      xMax = ( int )std::floor( m_RadiusMax / m_RadiusTolerance );
-      x = m_RadiusStart / m_RadiusTolerance;
+      xMin = ( int )std::ceil( m_RadiusMin );
+      xMax = ( int )std::floor( m_RadiusMax );
+      x = m_RadiusStart;
       break;
       }
     case RADIUS_CORRECTION_FOR_MRA:
       {
-      xMin = ( int )std::ceil( m_RadiusMin / m_RadiusTolerance );
-      xMax = ( int )std::floor( m_RadiusMax / m_RadiusTolerance );
-      x = m_RadiusStart / m_RadiusTolerance;
+      xMin = ( int )std::ceil( m_RadiusMin );
+      xMax = ( int )std::floor( m_RadiusMax );
+      x = m_RadiusStart;
       break;
       }
     };
@@ -705,23 +738,22 @@ RadiusExtractor2<TInputImage>
     default:
     case RADIUS_CORRECTION_NONE:
       {
-      m_KernelOptimalRadius = x * m_RadiusTolerance;
+      m_KernelOptimalRadius = x;
       break;
       }
     case RADIUS_CORRECTION_FOR_BINARY_IMAGE:
       {
-      m_KernelOptimalRadius = ( x * m_RadiusTolerance
-        * x * m_RadiusTolerance ) / 24 + 0.5;
+      m_KernelOptimalRadius = ( x * x ) / 24 + 0.5;
       break;
       }
     case RADIUS_CORRECTION_FOR_CTA:
       {
-      m_KernelOptimalRadius = x * m_RadiusTolerance;
+      m_KernelOptimalRadius = x;
       break;
       }
     case RADIUS_CORRECTION_FOR_MRA:
       {
-      m_KernelOptimalRadius = x * m_RadiusTolerance;
+      m_KernelOptimalRadius = x;
       break;
       }
     };
@@ -745,7 +777,7 @@ RadiusExtractor2<TInputImage>
     return false;
     }
 
-  tube->RemoveDuplicatePoints();
+  tube->RemoveDuplicatePointsInObjectSpace();
   ::tube::ComputeVectorTangentsAndNormals< TubePointType >(
     tube->GetPoints() );
 
@@ -753,13 +785,13 @@ RadiusExtractor2<TInputImage>
   pntIter = tube->GetPoints().begin();
   while( pntIter != tube->GetPoints().end() )
     {
-    pntIter->SetRadius( 0 );
+    pntIter->SetRadiusInObjectSpace( 0 );
     ++pntIter;
     }
 
   int pntCount = 0;
   pntIter = tube->GetPoints().begin();
-  while( pntIter != tube->GetPoints().end() && pntIter->GetID() != 0 )
+  while( pntIter != tube->GetPoints().end() && pntIter->GetId() != 0 )
     {
     ++pntIter;
     ++pntCount;
@@ -769,8 +801,8 @@ RadiusExtractor2<TInputImage>
     {
     if( this->GetDebug() )
       {
-      std::cout << "Warning: PointID 0 not found. Using mid-point of tube."
-        << std::endl;
+      ::tube::WarningMessage(
+        "Warning: PointID 0 not found. Using mid-point of tube." );
       }
     pntIter = tube->GetPoints().begin();
     unsigned int psize = tube->GetPoints().size();
@@ -781,7 +813,7 @@ RadiusExtractor2<TInputImage>
     }
   else if( this->GetDebug() )
     {
-    std::cout << "Found point " << ( *pntIter ).GetID() << std::endl;
+    ::tube::DebugMessage( "Found point " + std::to_string( ( *pntIter ).GetId() ) );
     }
 
   double rStart0 = this->GetRadiusStart();
@@ -813,12 +845,12 @@ RadiusExtractor2<TInputImage>
 
   if( this->GetDebug() )
     {
-    std::cout << "Radius results:" << std::endl;
+    ::tube::DebugMessage( "Radius results:" );
     pntIter = tube->GetPoints().begin();
     while( pntIter != tube->GetPoints().end() )
       {
-      std::cout << "   " << pntIter->GetID() << " : "
-        << pntIter->GetRadius() << std::endl;
+      ::tube::DebugMessage( "   " + std::to_string(pntIter->GetId()) + " : "
+        + std::to_string(pntIter->GetRadiusInObjectSpace()) ); 
       ++pntIter;
       }
     }
@@ -849,29 +881,29 @@ RadiusExtractor2<TInputImage>
     if( p < 0 )
       {
       typename TubeType::PointType p1 =
-        tube->GetPoints()[ 0 ].GetPosition();
+        tube->GetPoints()[ 0 ].GetPositionInObjectSpace();
       typename TubeType::PointType p2 =
         tube->GetPoints()[ m_NumKernelPoints / 2 *
-        m_KernelPointStep ].GetPosition();
+        m_KernelPointStep ].GetPositionInObjectSpace();
       for( unsigned int i = 0; i < ImageDimension; ++i )
         {
         p2[i] = p1[i] - ( ( p2[i] - p1[i] ) * ( -p / m_KernelPointStep ) );
         }
-      m_KernelTubePoints[ count ].SetPosition( p2 );
+      m_KernelTubePoints[ count ].SetPositionInObjectSpace( p2 );
       }
     else if( p > static_cast< int >( tubeSize ) - 1 )
       {
       typename TubeType::PointType p1 =
-        tube->GetPoints()[ tubeSize - 1 ].GetPosition();
+        tube->GetPoints()[ tubeSize - 1 ].GetPositionInObjectSpace();
       typename TubeType::PointType p2 =
         tube->GetPoints()[ tubeSize - 1 - m_NumKernelPoints / 2 *
-        m_KernelPointStep ].GetPosition();
+        m_KernelPointStep ].GetPositionInObjectSpace();
       for( unsigned int i = 0; i < ImageDimension; ++i )
         {
         p2[i] = p1[i] - ( ( p2[i] - p1[i] ) * ( ( p - ( tubeSize-1 ) ) /
             m_KernelPointStep ) );
         }
-      m_KernelTubePoints[ count ].SetPosition( p2 );
+      m_KernelTubePoints[ count ].SetPositionInObjectSpace( p2 );
       }
     else
       {
@@ -900,7 +932,7 @@ RadiusExtractor2<TInputImage>
     {
     startP = 0;
     }
-  double r0 = tube->GetPoints()[ startP ].GetRadius();
+  double r0 = tube->GetPoints()[ startP ].GetRadiusInObjectSpace();
   double m0 = tube->GetPoints()[ startP ].GetMedialness();
   double b0 = tube->GetPoints()[ startP ].GetBranchness();
   if( r0 == 0 )
@@ -915,7 +947,7 @@ RadiusExtractor2<TInputImage>
     {
     endP = tubeSize-1;
     }
-  double r2 = tube->GetPoints()[ endP ].GetRadius();
+  double r2 = tube->GetPoints()[ endP ].GetRadiusInObjectSpace();
   double m2 = tube->GetPoints()[ endP ].GetMedialness();
   double b2 = tube->GetPoints()[ endP ].GetBranchness();
   if( r2 == 0 )
@@ -935,7 +967,7 @@ RadiusExtractor2<TInputImage>
         d = static_cast< double >( tubePointNum - p )
           / ( tubePointNum - startP );
         }
-      tube->GetPoints()[ p ].SetRadius( d * r0 + ( 1 - d ) * r1 );
+      tube->GetPoints()[ p ].SetRadiusInObjectSpace( d * r0 + ( 1 - d ) * r1 );
       tube->GetPoints()[ p ].SetMedialness( d * m0 + ( 1 - d ) * m1 );
       tube->GetPoints()[ p ].SetBranchness( d * b0 + ( 1 - d ) * b1 );
       }
@@ -947,7 +979,7 @@ RadiusExtractor2<TInputImage>
         d = static_cast< double >( p - tubePointNum )
           / ( endP - tubePointNum );
         }
-      tube->GetPoints()[ p ].SetRadius( d * r2 + ( 1 - d ) * r1 );
+      tube->GetPoints()[ p ].SetRadiusInObjectSpace( d * r2 + ( 1 - d ) * r1 );
       tube->GetPoints()[ p ].SetMedialness( d * m2 + ( 1 - d ) * m1 );
       tube->GetPoints()[ p ].SetBranchness( d * b2 + ( 1 - d ) * b1 );
       }
@@ -961,14 +993,15 @@ RadiusExtractor2<TInputImage>
 {
   Superclass::PrintSelf( os, indent );
 
-  if( m_Image.IsNotNull() )
+  if( m_InputImage.IsNotNull() )
     {
-    os << indent << "Image = " << m_Image << std::endl;
+    os << indent << "InputImage = " << m_InputImage << std::endl;
     }
   else
     {
-    os << indent << "Image = NULL" << std::endl;
+    os << indent << "InputImage = NULL" << std::endl;
     }
+  os << indent << "Spacing = " << m_Spacing << std::endl;
   os << indent << "DataMin = " << m_DataMin << std::endl;
   os << indent << "DataMax = " << m_DataMax << std::endl;
 

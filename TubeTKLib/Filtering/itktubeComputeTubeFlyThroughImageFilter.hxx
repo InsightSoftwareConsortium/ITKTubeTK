@@ -106,12 +106,12 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
     itkExceptionMacro( "Unable to find the specified tube" );
     }
 
-  inputTube->ComputeObjectToWorldTransform();
-  inputTube->RemoveDuplicatePoints();
+  inputTube->Update();
+  inputTube->RemoveDuplicatePointsInObjectSpace();
   inputTube->ComputeTangentAndNormals();
 
   // Get list of tube points
-  typedef typename TubeType::PointListType    TubePointListType;
+  typedef typename TubeType::TubePointListType    TubePointListType;
 
   TubePointListType tubePointList = inputTube->GetPoints();
 
@@ -125,13 +125,13 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
   // Determine maximum radius among all tube points
   typename TubePointListType::const_iterator itPts = tubePointList.begin();
 
-  double maxTubeRadius = itPts->GetRadius();
+  double maxTubeRadius = itPts->GetRadiusInWorldSpace();
 
   while( itPts != tubePointList.end() )
     {
-    if( itPts->GetRadius() > maxTubeRadius )
+    if( itPts->GetRadiusInWorldSpace() > maxTubeRadius )
       {
-      maxTubeRadius = itPts->GetRadius();
+      maxTubeRadius = itPts->GetRadiusInWorldSpace();
       }
     itPts++;
     }
@@ -145,8 +145,8 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
     {
     // compute distance between current and previous tube point
     double curDist = 0;
-    typename TubeType::PointType p1 = tubePointList[pid-1].GetPosition();
-    typename TubeType::PointType p2 = tubePointList[pid].GetPosition();
+    typename TubeType::PointType p1 = tubePointList[pid-1].GetPositionInWorldSpace();
+    typename TubeType::PointType p2 = tubePointList[pid].GetPositionInWorldSpace();
 
     for( unsigned int i = 0; i < Dimension; i++ )
       {
@@ -239,9 +239,6 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
   typedef MinimumMaximumImageFilter< InputImageType >
     MinMaxImageFilterType;
 
-  typename TubeType::TransformType * pTubeIndexPhysTransform =
-    inputTube->GetIndexToWorldTransform();
-
   typename MinMaxImageFilterType::Pointer minmaxFilter =
   MinMaxImageFilterType::New();
   minmaxFilter->SetInput( m_InputImage );
@@ -260,17 +257,15 @@ ComputeTubeFlyThroughImageFilter< TPixel, Dimension >
     // Get position, radius and frenet-serret basis of current tube point
     // in the world coordinate system
     typename TubeType::PointType curTubePosition =
-      pTubeIndexPhysTransform->TransformPoint( itPts->GetPosition() );
+      itPts->GetPositionInWorldSpace();
 
-    TubeNormalType curTubeNormal1 =
-      pTubeIndexPhysTransform->TransformCovariantVector( itPts->GetNormal1() );
+    TubeNormalType curTubeNormal1 = itPts->GetNormal1InWorldSpace();
     curTubeNormal1.Normalize();
 
-    TubeNormalType curTubeNormal2 =
-      pTubeIndexPhysTransform->TransformCovariantVector( itPts->GetNormal2() );
+    TubeNormalType curTubeNormal2 = itPts->GetNormal2InWorldSpace();
     curTubeNormal2.Normalize();
 
-    double curTubeRadius = ( *itPts ).GetRadius();
+    double curTubeRadius = ( *itPts ).GetRadiusInWorldSpace();
 
     //std::cout << curTubeNormal1.GetNorm() << std::endl;
     //std::cout << curTubeNormal2.GetNorm() << std::endl;

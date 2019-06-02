@@ -27,7 +27,7 @@
 #include "itkGroupSpatialObject.h"
 #include "itkImage.h"
 #include "itktubeSpatialObjectToSpatialObjectFilter.h"
-#include "itkVesselTubeSpatialObject.h"
+#include "itkTubeSpatialObject.h"
 #include "itksys/hash_map.hxx"
 
 #include <map>
@@ -61,7 +61,7 @@ public:
   typedef SmartPointer< Self >                  Pointer;
   typedef SmartPointer< const Self >            ConstPointer;
 
-  typedef VesselTubeSpatialObject< VDimension > TubeType;
+  typedef TubeSpatialObject< VDimension > TubeType;
   typedef typename TubeType::Pointer            TubePointerType;
   typedef typename TubeType::ConstPointer       TubeConstPointerType;
   typedef itk::IndexValueType                   TubeIdType;
@@ -95,9 +95,9 @@ protected:
   MinimumSpanningTreeVesselConnectivityFilter( void );
   virtual ~MinimumSpanningTreeVesselConnectivityFilter( void );
 
-  virtual void GenerateData( void );
+  virtual void GenerateData( void ) override;
 
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
   // purposely not implemented

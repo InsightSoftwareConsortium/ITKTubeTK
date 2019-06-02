@@ -113,9 +113,9 @@ protected:
   ~TubeSpatialObjectToImageFilter( void );
 
   /** Create the output images and fill it */
-  void GenerateData( void );
+  void GenerateData( void ) override;
 
-  void PrintSelf( std::ostream& os, Indent indent ) const
+  void PrintSelf( std::ostream& os, Indent indent ) const override
     {
     SuperClass::PrintSelf( os, indent );
     os << indent << "m_UseRadius: " << m_UseRadius << std::endl;

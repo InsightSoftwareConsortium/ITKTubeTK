@@ -27,7 +27,7 @@ limitations under the License.
 #include <itkSpatialObjectReader.h>
 #include <itkGroupSpatialObject.h>
 #include <itkTimeProbesCollectorBase.h>
-#include <itkVesselTubeSpatialObject.h>
+#include <itkTubeSpatialObject.h>
 
 #include <vtkCellArray.h>
 #include <vtkDoubleArray.h>
@@ -73,7 +73,7 @@ int DoIt( int argc, char * argv[] )
 
   const unsigned int Dimension = 3;
 
-  typedef itk::VesselTubeSpatialObject< Dimension > TubeSpatialObjectType;
+  typedef itk::TubeSpatialObject< Dimension >       TubeSpatialObjectType;
   typedef itk::GroupSpatialObject< Dimension >      GroupSpatialObjectType;
 
   timeCollector.Start( "Read tubes" );
@@ -115,7 +115,7 @@ int DoIt( int argc, char * argv[] )
     TubeSpatialObjectType * tube =
       static_cast< TubeSpatialObjectType * >( tubeIt->GetPointer() );
 
-    tube->RemoveDuplicatePoints();
+    tube->RemoveDuplicatePointsInObjectSpace();
 
     const itk::SizeValueType numberOfPoints = tube->GetNumberOfPoints();
     if( numberOfPoints < 2 )
@@ -188,9 +188,9 @@ int DoIt( int argc, char * argv[] )
     vtkIdType * pointIds = new vtkIdType[numberOfPoints];
     vtkNew<vtkPolyLine> tubeLine;
 
-    const TubeSpatialObjectType::PointListType & tubePoints =
+    const TubeSpatialObjectType::TubePointListType & tubePoints =
       tube->GetPoints();
-    typedef TubeSpatialObjectType::PointListType::const_iterator
+    typedef TubeSpatialObjectType::TubePointListType::const_iterator
       TubePointIteratorType;
     const TubePointIteratorType tubePointsEnd = tubePoints.end();
     itk::SizeValueType index = 0;
@@ -198,9 +198,10 @@ int DoIt( int argc, char * argv[] )
       pointIt != tubePointsEnd;
       ++pointIt, ++pointId, ++index )
       {
-      TubeSpatialObjectType::PointType point = pointIt->GetPosition();
+      TubeSpatialObjectType::PointType point =
+        pointIt->GetPositionInObjectSpace();
       TubeSpatialObjectType::PointType curSourcePosIndexSpace =
-        tube->GetIndexToWorldTransform()->TransformPoint(
+        tube->GetObjectToWorldTransform()->TransformPoint(
         point );
       pointIds[index] = pointId;
 
@@ -211,14 +212,16 @@ int DoIt( int argc, char * argv[] )
       tubeIds->SetTuple1( pointId, tube->GetId() );
 
       // Radius
-      tubeRadius->SetTuple1( pointId, pointIt->GetRadius() );
+      tubeRadius->SetTuple1( pointId, pointIt->GetRadiusInObjectSpace() );
 
       // Tangeantes
-      tan1->SetTuple3( pointId, pointIt->GetNormal1()[0],
-        pointIt->GetNormal1()[1], pointIt->GetNormal1()[2] );
+      tan1->SetTuple3( pointId, pointIt->GetNormal1InObjectSpace()[0],
+        pointIt->GetNormal1InObjectSpace()[1],
+        pointIt->GetNormal1InObjectSpace()[2] );
 
-      tan2->SetTuple3( pointId, pointIt->GetNormal2()[0],
-        pointIt->GetNormal2()[1], pointIt->GetNormal2()[2] );
+      tan2->SetTuple3( pointId, pointIt->GetNormal2InObjectSpace()[0],
+        pointIt->GetNormal2InObjectSpace()[1],
+        pointIt->GetNormal2InObjectSpace()[2] );
 
       // Medialness & Ridgness
       if( pointIt->GetMedialness() != 0.0 )

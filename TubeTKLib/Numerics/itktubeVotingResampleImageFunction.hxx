@@ -55,7 +55,7 @@ template< class TInputImage, class TCoordRep >
 VotingResampleImageFunction< TInputImage, TCoordRep >
 ::VotingResampleImageFunction( void )
 {
-
+  m_Radius.Fill( 1 );
 }
 
 
@@ -84,9 +84,7 @@ VotingResampleImageFunction< TInputImage, TCoordRep >
   typedef itk::ConstNeighborhoodIterator< TInputImage >
     NeighborhoodIteratorType;
 
-  typename NeighborhoodIteratorType::RadiusType radius;
-  radius.Fill( 1 );
-  NeighborhoodIteratorType it( radius, this->GetInputImage(),
+  NeighborhoodIteratorType it( m_Radius, this->GetInputImage(),
     this->GetInputImage()->GetRequestedRegion() );
 
   IndexType newIndex;

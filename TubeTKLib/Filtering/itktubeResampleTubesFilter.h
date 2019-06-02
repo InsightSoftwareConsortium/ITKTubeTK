@@ -28,7 +28,7 @@
 #include "itkImage.h"
 #include <itkDisplacementFieldTransform.h>
 #include "itktubeSpatialObjectToSpatialObjectFilter.h"
-#include "itkVesselTubeSpatialObject.h"
+#include "itkTubeSpatialObject.h"
 #include "itktubeTubeToTubeTransformFilter.h"
 #include "itkTransformBase.h"
 namespace itk
@@ -47,8 +47,8 @@ class ResampleTubesFilter
 {
 public:
   /** Standard class typedefs. */
-  typedef itk::GroupSpatialObject< VDimension >      TubeGroupType;
-  typedef itk::VesselTubeSpatialObject< VDimension > TubeSpatialObjectType;
+  typedef itk::GroupSpatialObject< VDimension > TubeGroupType;
+  typedef itk::TubeSpatialObject< VDimension >  TubeSpatialObjectType;
 
   typedef ResampleTubesFilter< VDimension >     Self;
   typedef SpatialObjectToSpatialObjectFilter< TubeGroupType, TubeGroupType >
@@ -97,8 +97,9 @@ protected:
   ResampleTubesFilter( void );
   virtual ~ResampleTubesFilter( void );
 
-  virtual void GenerateData( void );
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  virtual void GenerateData( void ) override;
+
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
   // purposely not implemented

@@ -79,13 +79,11 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
   typename TransformType::OffsetType offsetVector;
   typename InputImageType::SpacingType spacing = m_SpeedImage->GetSpacing();
   typename InputImageType::PointType origin = m_SpeedImage->GetOrigin();
-  double tubeSpacing[Dimension];
 
   for( unsigned int k = 0; k < Dimension; ++k )
     {
     scaleVector[k] = spacing[k];
     offsetVector[k] = origin[k];
-    tubeSpacing[k] = spacing[k];
     }
   // Create path information
   typedef itk::SpeedFunctionPathInformation< PointType > PathInformationType;
@@ -180,13 +178,13 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
   m_Output =InputSpatialObjectType::New();
 
   // Update tubes transform
-  m_Output->GetObjectToParentTransform()->SetScale(
+  m_Output->GetObjectToParentTransform()->Scale(
     scaleVector );
   m_Output->GetObjectToParentTransform()->SetOffset(
     offsetVector );
   m_Output->GetObjectToParentTransform()->SetMatrix(
     m_SpeedImage->GetDirection() );
-  m_Output->ComputeObjectToWorldTransform();
+  m_Output->Update();
   m_CostAssociatedWithExtractedTube = 0.0;
   for( unsigned int i = 0; i < pathFilter->GetNumberOfOutputs(); i++ )
     {
@@ -201,7 +199,7 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
       }
 
     // Output centerline in TRE file
-    typename TubeType::PointListType tubePointList;
+    typename TubeType::TubePointListType tubePointList;
     typename PathType::VertexListType * vertexList = path->GetVertexList();
     for( unsigned int k = 0; k < vertexList->Size(); k++ )
       {
@@ -226,14 +224,13 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
           }
         }
       TubePointType tubePoint;
-      tubePoint.SetPosition( vertexList->GetElement( k ) );
-      tubePoint.SetID( k );
+      tubePoint.SetPositionInObjectSpace( vertexList->GetElement( k ) );
+      tubePoint.SetId( k );
       tubePointList.push_back( tubePoint );
       }
     typename TubeType::Pointer pTube = TubeType::New();
     pTube->SetPoints( tubePointList );
     pTube->ComputeTangentAndNormals();
-    pTube->SetSpacing( tubeSpacing );
     pTube->SetId( i );
 
     // Extract Radius
@@ -253,8 +250,8 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
       radiusExtractor->ExtractRadii( pTube );
       }
 
-    m_Output->AddSpatialObject( pTube );
-    m_Output->ComputeObjectToWorldTransform();
+    m_Output->AddChild( pTube );
+    m_Output->Update();
     }
 }
 
@@ -283,22 +280,22 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
       {
       return EXIT_FAILURE;
       }
-    pCurSourceTube->ComputeObjectToWorldTransform();
+    pCurSourceTube->Update();
     //Get points in current source tube
-    typename TubeType::PointListType pointList =
+    typename TubeType::TubePointListType pointList =
       pCurSourceTube->GetPoints();
     //Get Index to World Transformation
-    typename TubeType::TransformType * pTubeIndexPhysTransform =
-      pCurSourceTube->GetIndexToWorldTransform();
-    for( typename TubeType::PointListType::const_iterator
+    typename TubeType::TransformType * pTubeObjectPhysTransform =
+      pCurSourceTube->GetObjectToWorldTransform();
+    for( typename TubeType::TubePointListType::const_iterator
       pointList_it = pointList.begin();
       pointList_it != pointList.end(); ++pointList_it )
       {
       TubePointType curSourcePoint = *pointList_it;
       //Transform parameters in physical space
       typename TubePointType::PointType curSourcePos =
-        pTubeIndexPhysTransform->TransformPoint(
-          curSourcePoint.GetPosition() );
+        pTubeObjectPhysTransform->TransformPoint(
+          curSourcePoint.GetPositionInObjectSpace() );
       double distance =
         curSourcePos.SquaredEuclideanDistanceTo( outsidePoint );
       if( minDistance > distance )
@@ -308,7 +305,7 @@ SegmentTubesUsingMinimalPathFilter< Dimension, TInputPixel >
           {
           nearestPoint[i] = curSourcePos[i];
           }
-        nearestPointRadius = curSourcePoint.GetRadius();
+        nearestPointRadius = curSourcePoint.GetRadiusInObjectSpace();
         }
       }
     }

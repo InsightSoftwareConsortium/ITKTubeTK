@@ -33,7 +33,7 @@
 #include "itkSpatialObjectReader.h"
 #include "itkSpatialObjectWriter.h"
 #include "itkGroupSpatialObject.h"
-#include "itkVesselTubeSpatialObject.h"
+#include "itkTubeSpatialObject.h"
 #include "metaScene.h"
 
 // VTK INCLUDES
@@ -72,7 +72,7 @@ int DoIt( int argc, char * argv[] )
   itk::TimeProbesCollectorBase timeCollector;
 
   // typedefs
-  typedef itk::VesselTubeSpatialObject< VDimension >  TubeType;
+  typedef itk::TubeSpatialObject< VDimension >        TubeType;
   typedef itk::SpatialObjectReader< VDimension >      TubesReaderType;
   typedef itk::GroupSpatialObject< VDimension >       TubeGroupType;
   typedef typename TubeGroupType::ChildrenListPointer TubeListPointerType;

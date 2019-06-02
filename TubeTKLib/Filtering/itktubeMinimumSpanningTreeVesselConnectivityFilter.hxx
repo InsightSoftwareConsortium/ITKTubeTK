@@ -148,10 +148,10 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
   // build graph
   tubeDebugMacro( << "Building tube graph" );
 
-  typedef typename TubeType::PointListType  TubePointListType;
-  typedef typename TubeType::TubePointType  TubePointType;
-  typedef typename TubeType::PointType      PositionType;
-  typedef typename PositionType::VectorType PositionVectorType;
+  typedef typename TubeType::TubePointListType TubePointListType;
+  typedef typename TubeType::TubePointType     TubePointType;
+  typedef typename TubeType::PointType         PositionType;
+  typedef typename PositionType::VectorType    PositionVectorType;
 
   m_TubeGraph.clear();
 
@@ -173,7 +173,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       {
       TubePointType ptSource = *itSourcePoints;
       PositionVectorType ptSourcePos
-        = ptSource.GetPosition().GetVectorFromOrigin();
+        = ptSource.GetPositionInObjectSpace().GetVectorFromOrigin();
 
       for( typename TubeGroupType::ChildrenListType::iterator
         itTargetTubes = pTubeList->begin();
@@ -209,14 +209,15 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
           TubePointType ptCur = targetPointList[curPtId];
 
           PositionVectorType ptCurPos
-            = ptCur.GetPosition().GetVectorFromOrigin();
+            = ptCur.GetPositionInObjectSpace().GetVectorFromOrigin();
 
           PositionVectorType vecToCurPt = ptCurPos - ptSourcePos;
 
           // compute and check distance
           double curDist = vecToCurPt.GetNorm();
 
-          if( curDist > m_MaxTubeDistanceToRadiusRatio * ptSource.GetRadius() )
+          if( curDist > m_MaxTubeDistanceToRadiusRatio
+            * ptSource.GetRadiusInObjectSpace() )
             {
             continue;
             }
@@ -226,12 +227,12 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
           if( curPtId == 0 )
             {
-            ptNextPos = targetPointList[ curPtId + 1 ].GetPosition()
+            ptNextPos = targetPointList[ curPtId + 1 ].GetPositionInObjectSpace()
               .GetVectorFromOrigin();
             }
             else
             {
-            ptNextPos = targetPointList[ curPtId - 1 ].GetPosition()
+            ptNextPos = targetPointList[ curPtId - 1 ].GetPositionInObjectSpace()
               .GetVectorFromOrigin();
             }
 
@@ -277,7 +278,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
         e.targetTubePointId = ePtConn.pointId;
 
         e.weight = ePtConn.dist;
-        e.distToRadRatio = ePtConn.dist / ptSource.GetRadius();
+        e.distToRadRatio = ePtConn.dist / ptSource.GetRadiusInObjectSpace();
         e.continuityAngleError = ePtConn.angle;
 
         // if edge to current target is present then update it, else add it
@@ -374,20 +375,14 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
   // Add root tube to output
   TubePointerType inputRootTube = m_TubeIdToObjectMap[rootTubeId];
-  TubePointerType rootTube = TubeType::New();
-
-  rootTube->CopyInformation( inputRootTube );
+  TubePointerType rootTube = inputRootTube->Clone();
 
   // TODO: make CopyInformation of itk::SpatialObject do this
-  rootTube->GetObjectToParentTransform()->SetScale(
-    inputRootTube->GetObjectToParentTransform()->GetScale() );
-  rootTube->GetObjectToParentTransform()->SetOffset(
-    inputRootTube->GetObjectToParentTransform()->GetOffset() );
-  rootTube->GetObjectToParentTransform()->SetMatrix(
-    inputRootTube->GetObjectToParentTransform()->GetMatrix() );
-  rootTube->SetSpacing( inputRootTube->GetSpacing() );
-  rootTube->SetSpacing( inputRootTube->GetSpacing() );
-  rootTube->ComputeObjectToWorldTransform();
+  rootTube->GetObjectToParentTransform()->SetFixedParameters(
+    inputRootTube->GetObjectToParentTransform()->GetFixedParameters() );
+  rootTube->GetObjectToParentTransform()->SetParameters(
+    inputRootTube->GetObjectToParentTransform()->GetParameters() );
+  rootTube->Update();
 
   rootTube->ComputeTangentAndNormals();
   rootTube->SetRoot( true );
@@ -404,7 +399,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       return;
       }
     }
-  outputTubeGroup->AddSpatialObject( rootTube );
+  outputTubeGroup->AddChild( rootTube );
 
   // recusrively process all children in increasing order of connection weight
   int numChildren = 0;
@@ -428,19 +423,14 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
       }
 
     // get tube object
-    TubePointerType curTube = TubeType::New();
-
-    curTube->CopyInformation( eTop.targetTube );
+    TubePointerType curTube = eTop.targetTube->Clone();
 
     // TODO: make CopyInformation of itk::SpatialObject do this
-    curTube->GetObjectToParentTransform()->SetScale(
-      eTop.targetTube->GetObjectToParentTransform()->GetScale() );
-    curTube->GetObjectToParentTransform()->SetOffset(
-      eTop.targetTube->GetObjectToParentTransform()->GetOffset() );
-    curTube->GetObjectToParentTransform()->SetMatrix(
-      eTop.targetTube->GetObjectToParentTransform()->GetMatrix() );
-    curTube->SetSpacing( eTop.targetTube->GetSpacing() );
-    curTube->ComputeObjectToWorldTransform();
+    curTube->GetObjectToParentTransform()->SetFixedParameters(
+      eTop.targetTube->GetObjectToParentTransform()->GetFixedParameters() );
+    curTube->GetObjectToParentTransform()->SetParameters(
+      eTop.targetTube->GetObjectToParentTransform()->GetParameters() );
+    curTube->Update();
 
     curTube->SetRoot( false );
 
@@ -468,7 +458,7 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
     curTube->ComputeTangentAndNormals();
 
     // add tube to output
-    eTop.sourceTube->AddSpatialObject( curTube );
+    eTop.sourceTube->AddChild( curTube );
     // print some info
     tubeDebugMacro(
       << "  sourceTubeId = "    << eTop.sourceTubeId
@@ -503,14 +493,11 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
   outputTubeGroup->CopyInformation( inputTubeGroup );
 
   // TODO: make CopyInformation of itk::SpatialObject do this
-  outputTubeGroup->GetObjectToParentTransform()->SetScale(
-    inputTubeGroup->GetObjectToParentTransform()->GetScale() );
-  outputTubeGroup->GetObjectToParentTransform()->SetOffset(
-    inputTubeGroup->GetObjectToParentTransform()->GetOffset() );
-  outputTubeGroup->GetObjectToParentTransform()->SetMatrix(
-    inputTubeGroup->GetObjectToParentTransform()->GetMatrix() );
-  outputTubeGroup->SetSpacing( inputTubeGroup->GetSpacing() );
-  outputTubeGroup->ComputeObjectToWorldTransform();
+  outputTubeGroup->GetObjectToParentTransform()->SetFixedParameters(
+    inputTubeGroup->GetObjectToParentTransform()->GetFixedParameters() );
+  outputTubeGroup->GetObjectToParentTransform()->SetParameters(
+    inputTubeGroup->GetObjectToParentTransform()->GetParameters() );
+  outputTubeGroup->Update();
 
   // initialize
   m_SetTubesVisited.clear();
@@ -607,22 +594,18 @@ MinimumSpanningTreeVesselConnectivityFilter< VDimension >
 
     if( m_SetTubesVisited.find( curSourceTubeId ) == m_SetTubesVisited.end() )
       {
-      TubePointerType curTube = TubeType::New();
+      TubePointerType curTube = pCurSourceTube->Clone();
 
-      curTube->CopyInformation( pCurSourceTube );
       // TODO: make CopyInformation of itk::SpatialObject do this
-      curTube->GetObjectToParentTransform()->SetScale(
-        pCurSourceTube->GetObjectToParentTransform()->GetScale() );
-      curTube->GetObjectToParentTransform()->SetOffset(
-        pCurSourceTube->GetObjectToParentTransform()->GetOffset() );
-      curTube->GetObjectToParentTransform()->SetMatrix(
-        pCurSourceTube->GetObjectToParentTransform()->GetMatrix() );
-      curTube->SetSpacing( pCurSourceTube->GetSpacing() );
-      curTube->ComputeObjectToWorldTransform();
+      curTube->GetObjectToParentTransform()->SetFixedParameters(
+        pCurSourceTube->GetObjectToParentTransform()->GetFixedParameters() );
+      curTube->GetObjectToParentTransform()->SetParameters(
+        pCurSourceTube->GetObjectToParentTransform()->GetParameters() );
+      curTube->Update();
       curTube->ComputeTangentAndNormals();
       curTube->SetRoot( false );
 
-      outputTubeGroup->AddSpatialObject( curTube );
+      outputTubeGroup->AddChild( curTube );
       }
     }
 }

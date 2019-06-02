@@ -66,9 +66,9 @@ protected:
   RidgeFFTFilter( void );
   virtual ~RidgeFFTFilter( void ) {}
 
-  void GenerateData();
+  void GenerateData() override;
 
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
   // Purposely not implemented

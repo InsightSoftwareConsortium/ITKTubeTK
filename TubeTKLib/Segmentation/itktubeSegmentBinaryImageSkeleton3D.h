@@ -85,9 +85,9 @@ protected:
   SegmentBinaryImageSkeleton3D( void );
   ~SegmentBinaryImageSkeleton3D( void ) {};
 
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
-  void GenerateData( void );
+  void GenerateData( void ) override;
 
 private:
 

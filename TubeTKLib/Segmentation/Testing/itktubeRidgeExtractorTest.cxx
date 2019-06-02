@@ -77,9 +77,9 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
   double minRoundnessStart = ridgeOp->GetMinRoundnessStart();
   std::cout << "RoundnessStart threshold = " << minRoundnessStart
     << std::endl;
-  itk::Index<3> extractBoundMin = ridgeOp->GetExtractBoundMin();
+  itk::Index<3> extractBoundMin = ridgeOp->GetExtractBoundMinInIndexSpace();
   std::cout << "Extract bound min = " << extractBoundMin << std::endl;
-  itk::Index<3> extractBoundMax = ridgeOp->GetExtractBoundMax();
+  itk::Index<3> extractBoundMax = ridgeOp->GetExtractBoundMaxInIndexSpace();
   std::cout << "Extract bound max = " << extractBoundMax << std::endl;
 
   ridgeOp->SetScale( 2.0 );
@@ -123,7 +123,7 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
       default:
       case 0:
         {
-        itOut.Set( ridgeOp->Intensity( itOut.GetIndex() ) );
+        itOut.Set( ridgeOp->IntensityInIndexSpace( itOut.GetIndex() ) );
         break;
         }
       case 1:

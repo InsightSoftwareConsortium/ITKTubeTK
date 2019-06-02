@@ -90,8 +90,9 @@ protected:
   ComputeTubeMeasuresFilter( void );
   ~ComputeTubeMeasuresFilter( void ) {};
 
-  void GenerateData( void );
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+  void GenerateData( void ) override;
+
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
 private:
 

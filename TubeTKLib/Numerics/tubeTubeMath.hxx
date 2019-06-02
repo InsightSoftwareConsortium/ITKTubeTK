@@ -39,9 +39,10 @@ ComputeNormalsFromTangent( TTubePoint & tubePoint,
   typedef typename TTubePoint::VectorType            VectorType;
   typedef typename TTubePoint::CovariantVectorType   CovariantVectorType;
 
-  unsigned int dimension = tubePoint.GetPosition().GetPointDimension();
+  unsigned int dimension = tubePoint.GetPositionInObjectSpace()
+    .GetPointDimension();
 
-  VectorType t = tubePoint.GetTangent();
+  VectorType t = tubePoint.GetTangentInObjectSpace();
   t.Normalize();
 
   if( t.GetNorm() == 0 )
@@ -56,14 +57,14 @@ ComputeNormalsFromTangent( TTubePoint & tubePoint,
       t.Fill( 0 );
       t[0] = 1;
       }
-    tubePoint.SetTangent( t );
+    tubePoint.SetTangentInObjectSpace( t );
 
     CovariantVectorType n1;
     CovariantVectorType n2;
 
     n2.SetVnlVector( ::tube::ComputeOrthogonalVector( t.GetVnlVector() )
       .normalize() );
-    tubePoint.SetNormal2( n2 );
+    tubePoint.SetNormal2InObjectSpace( n2 );
 
     if( dimension == 3 )
       {
@@ -74,7 +75,7 @@ ComputeNormalsFromTangent( TTubePoint & tubePoint,
         n1.Fill( 0 );
         n1[0] = 1;
         }
-      tubePoint.SetNormal1( n1 );
+      tubePoint.SetNormal1InObjectSpace( n1 );
       }
 
     return;
@@ -92,7 +93,7 @@ ComputeNormalsFromTangent( TTubePoint & tubePoint,
       {
       n1 *= -1;
       }
-    tubePoint.SetNormal1( n1 );
+    tubePoint.SetNormal1InObjectSpace( n1 );
     }
   else if( dimension == 3 )
     {
@@ -126,8 +127,8 @@ ComputeNormalsFromTangent( TTubePoint & tubePoint,
       n1 *= -1;
       n2 *= -1;
       }
-    tubePoint.SetNormal1( n1 );
-    tubePoint.SetNormal2( n2 );
+    tubePoint.SetNormal1InObjectSpace( n1 );
+    tubePoint.SetNormal2InObjectSpace( n2 );
     }
 
   return;
@@ -138,7 +139,7 @@ template< class TTube >
 bool
 ComputeTubeTangentsAndNormals( typename TTube::Pointer & tube )
 {
-  typename TTube::PointListType & pointList = tube->GetPoints();
+  typename TTube::TubePointListType & pointList = tube->GetPoints();
   return ComputeVectorTangentsAndNormals( pointList );
 }
 
@@ -150,7 +151,8 @@ ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
   typedef typename TTubePoint::PointType             PointType;
   typedef typename TTubePoint::VectorType            VectorType;
 
-  unsigned int dimension = tubeV[0].GetPosition().GetPointDimension();
+  unsigned int dimension = tubeV[0].GetPositionInObjectSpace()
+    .GetPointDimension();
 
   int length = tubeV.size();
   if( length == 0 )
@@ -175,8 +177,8 @@ ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
 
   while( it3 < length )
     {
-    x1 = tubeV[it1].GetPosition();
-    x3 = tubeV[it3].GetPosition();
+    x1 = tubeV[it1].GetPositionInObjectSpace();
+    x3 = tubeV[it3].GetPositionInObjectSpace();
     double l = 0;
     for( unsigned int i=0; i<dimension; i++ )
       {
@@ -192,7 +194,7 @@ ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
       std::cerr << " ( use RemoveDuplicatePoints() )" << std::endl;
       std::cerr << "   p1 = " << x1 << std::endl;
       std::cerr << "   p3 = " << x3 << std::endl;
-      t = tubeV[it1].GetTangent();
+      t = tubeV[it1].GetTangentInObjectSpace();
       }
     else
       {
@@ -202,7 +204,7 @@ ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
         }
       }
 
-    tubeV[it2].SetTangent( t );
+    tubeV[it2].SetTangentInObjectSpace( t );
     ++it1;
     ++it2;
     ++it3;
@@ -210,17 +212,17 @@ ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
 
   it1 = 0;
   it2 = 1;
-  t = tubeV[it2].GetTangent();
-  tubeV[it1].SetTangent( t );
+  t = tubeV[it2].GetTangentInObjectSpace();
+  tubeV[it1].SetTangentInObjectSpace( t );
   it1 = length-1;
   it2 = length-2;
-  t = tubeV[it2].GetTangent();
-  tubeV[it1].SetTangent( t );
+  t = tubeV[it2].GetTangentInObjectSpace();
+  tubeV[it1].SetTangentInObjectSpace( t );
 
   it1 = 0;
   while( it1 < length-1 )
     {
-    t = tubeV[it1+1].GetTangent();
+    t = tubeV[it1+1].GetTangentInObjectSpace();
 
     ::tube::ComputeNormalsFromTangent( tubeV[it1], t );
 
@@ -229,7 +231,8 @@ ComputeVectorTangentsAndNormals( std::vector< TTubePoint > & tubeV )
 
   it1 = length-1;
   it2 = length-2;
-  ::tube::ComputeNormalsFromTangent( tubeV[it1], tubeV[it2].GetTangent() );
+  ::tube::ComputeNormalsFromTangent( tubeV[it1],
+    tubeV[it2].GetTangentInObjectSpace() );
 
   return true;
 }
@@ -243,17 +246,17 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
 {
   typename TTube::PointType avg;
 
-  typename TTube::PointListType & pointList = tube->GetPoints();
-  typename TTube::PointListType::iterator pointItr;
-  typename TTube::PointListType::iterator tmpPointItr;
+  typename TTube::TubePointListType & pointList = tube->GetPoints();
+  typename TTube::TubePointListType::iterator pointItr;
+  typename TTube::TubePointListType::iterator tmpPointItr;
 
-  typename TTube::PointListType::iterator beginItr = pointList.begin();
-  typename TTube::PointListType::iterator endItr = pointList.end();
+  typename TTube::TubePointListType::iterator beginItr = pointList.begin();
+  typename TTube::TubePointListType::iterator endItr = pointList.end();
 
   typename TTube::Pointer newTube = TTube::New();
   newTube->CopyInformation( tube );
 
-  typename TTube::PointListType newPointList;
+  typename TTube::TubePointListType newPointList;
 
   if( h == 0 )
     {
@@ -313,7 +316,7 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
         {
         for( unsigned int j=0; j<pointDimension; ++j )
           {
-          avg[j] += w[pos] * tmpPointItr->GetPosition()[j];
+          avg[j] += w[pos] * tmpPointItr->GetPositionInObjectSpace()[j];
           }
         wTotal += w[pos];
         ++pos;
@@ -328,7 +331,7 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
           avg[i] /= wTotal;
           }
         // Update the new point coordinates
-        newPoint.SetPosition( avg );
+        newPoint.SetPositionInObjectSpace( avg );
         }
 
       newPointList.push_back( newPoint );
@@ -340,8 +343,8 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
     {
     // // Set w for Gaussians
     // double sigma = h;
-    // double dist = ( pointItr->GetPosition()
-    //   - tmpPointItr->GetPosition() ).GetNorm();
+    // double dist = ( pointItr->GetPositionInObjectSpace()
+    //   - tmpPointItr->GetPositionInObjectSpace() ).GetNorm();
     // w[pos] = 1/( sigma*2.50663 )*exp( -dist*dist/( 2.0*sigma*sigma ) );
 
     // TODO : Finish implementation
@@ -372,8 +375,8 @@ RemoveDuplicateTubePoints( typename TTube::Pointer & tube )
   int nPoints = 0;
   for( int i = 0; i < length - 1; i++ )
     {
-    if( tube->GetPoint( i )->GetPosition() ==
-      tube->GetPoint( i + 1 )->GetPosition() )
+    if( tube->GetPoint( i )->GetPositionInObjectSpace() ==
+      tube->GetPoint( i + 1 )->GetPositionInObjectSpace() )
       {
       tube->RemovePoint( i + 1 );
       i--;
@@ -381,8 +384,8 @@ RemoveDuplicateTubePoints( typename TTube::Pointer & tube )
       nPoints++;
       }
     if( i >= 0 && i < length - 2
-         && tube->GetPoint( i )->GetPosition() ==
-         tube->GetPoint( i + 2 )->GetPosition() )
+         && tube->GetPoint( i )->GetPositionInObjectSpace() ==
+         tube->GetPoint( i + 2 )->GetPositionInObjectSpace() )
       {
       tube->RemovePoint( i + 2 );
       i--;
@@ -400,16 +403,16 @@ template< class TTube >
 typename TTube::Pointer
 SubsampleTube( const typename TTube::Pointer & tube, int N )
 {
-  typename TTube::PointListType & pointList = tube->GetPoints();
-  typename TTube::PointListType::iterator pointItr;
+  typename TTube::TubePointListType & pointList = tube->GetPoints();
+  typename TTube::TubePointListType::iterator pointItr;
 
-  typename TTube::PointListType::iterator beginItr = pointList.begin();
-  typename TTube::PointListType::iterator endItr = pointList.end();
+  typename TTube::TubePointListType::iterator beginItr = pointList.begin();
+  typename TTube::TubePointListType::iterator endItr = pointList.end();
 
   typename TTube::Pointer newTube = TTube::New();
   newTube->CopyInformation( tube );
 
-  typename TTube::PointListType newPointList;
+  typename TTube::TubePointListType newPointList;
 
   // Cannot subsample by 0
   if( N == 0 )
@@ -453,7 +456,7 @@ ComputeTubeLength( const typename TTube::Pointer & tube )
   if( tube->GetNumberOfPoints() <= 1 )
     return 0;
 
-  typedef typename TTube::PointListType     TubePointListType;
+  typedef typename TTube::TubePointListType TubePointListType;
   typedef typename TTube::PointType         PositionType;
   typedef typename PositionType::VectorType PositionVectorType;
 
@@ -463,7 +466,7 @@ ComputeTubeLength( const typename TTube::Pointer & tube )
     tubePointsList.begin();
 
   PositionVectorType ptPrevPosVec =
-    itTubePoints->GetPosition().GetVectorFromOrigin();
+    itTubePoints->GetPositionInObjectSpace().GetVectorFromOrigin();
 
   ++itTubePoints;
 
@@ -471,7 +474,7 @@ ComputeTubeLength( const typename TTube::Pointer & tube )
   while( itTubePoints != tubePointsList.end() )
     {
     PositionVectorType ptCurPosVec =
-      itTubePoints->GetPosition().GetVectorFromOrigin();
+      itTubePoints->GetPositionInObjectSpace().GetVectorFromOrigin();
 
     tubeLength += ( ptCurPosVec - ptPrevPosVec ).GetNorm();
 

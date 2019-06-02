@@ -38,7 +38,7 @@ MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA()" << METAIO_STREAM::endl;
+    std::cout << "MetaLDA()" << std::endl;
     }
 
   this->Clear();
@@ -49,7 +49,7 @@ MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA()" << METAIO_STREAM::endl;
+    std::cout << "MetaLDA()" << std::endl;
     }
 
   this->Clear();
@@ -63,7 +63,7 @@ MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA()" << METAIO_STREAM::endl;
+    std::cout << "MetaLDA()" << std::endl;
     }
 
   this->Clear();
@@ -82,7 +82,7 @@ MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA()" << METAIO_STREAM::endl;
+    std::cout << "MetaLDA()" << std::endl;
     }
 
   this->Clear();
@@ -102,39 +102,39 @@ void MetaLDA
 {
   MetaForm::PrintInfo();
 
-  METAIO_STREAM::cout << "NumberOfPCABasisToUseAsFeatures = "
-    << m_NumberOfPCABasisToUseAsFeatures << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "NumberOfLDABasisToUseAsFeatures = "
-    << m_NumberOfLDABasisToUseAsFeatures << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "LDAValues = " << m_LDAValues
-    << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "LDAMatrix = " << m_LDAMatrix
-    << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "InputWhitenMeans = " << METAIO_STREAM::endl;
+  std::cout << "NumberOfPCABasisToUseAsFeatures = "
+    << m_NumberOfPCABasisToUseAsFeatures << std::endl;
+  std::cout << "NumberOfLDABasisToUseAsFeatures = "
+    << m_NumberOfLDABasisToUseAsFeatures << std::endl;
+  std::cout << "LDAValues = " << m_LDAValues
+    << std::endl;
+  std::cout << "LDAMatrix = " << m_LDAMatrix
+    << std::endl;
+  std::cout << "InputWhitenMeans = " << std::endl;
   for( unsigned int i = 0; i < m_InputWhitenMeans.size(); i++ )
     {
-    METAIO_STREAM::cout << m_InputWhitenMeans[i] << " ";
+    std::cout << m_InputWhitenMeans[i] << " ";
     }
-  METAIO_STREAM::cout << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "InputWhitenStdDevs = " << METAIO_STREAM::endl;
+  std::cout << std::endl;
+  std::cout << "InputWhitenStdDevs = " << std::endl;
   for( unsigned int i = 0; i < m_InputWhitenStdDevs.size(); i++ )
     {
-    METAIO_STREAM::cout << m_InputWhitenStdDevs[i] << " ";
+    std::cout << m_InputWhitenStdDevs[i] << " ";
     }
 
-  METAIO_STREAM::cout << "OutputWhitenMeans = " << METAIO_STREAM::endl;
+  std::cout << "OutputWhitenMeans = " << std::endl;
   for( unsigned int i = 0; i < m_OutputWhitenMeans.size(); i++ )
     {
-    METAIO_STREAM::cout << m_OutputWhitenMeans[i] << " ";
+    std::cout << m_OutputWhitenMeans[i] << " ";
     }
-  METAIO_STREAM::cout << METAIO_STREAM::endl;
-  METAIO_STREAM::cout << "OutputWhitenStdDevs = " << METAIO_STREAM::endl;
+  std::cout << std::endl;
+  std::cout << "OutputWhitenStdDevs = " << std::endl;
   for( unsigned int i = 0; i < m_OutputWhitenStdDevs.size(); i++ )
     {
-    METAIO_STREAM::cout << m_OutputWhitenStdDevs[i] << " ";
+    std::cout << m_OutputWhitenStdDevs[i] << " ";
     }
 
-  METAIO_STREAM::cout << METAIO_STREAM::endl;
+  std::cout << std::endl;
 }
 
 void MetaLDA
@@ -158,7 +158,7 @@ void MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: Clear" << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: Clear" << std::endl;
     }
 
   MetaForm::Clear();
@@ -187,7 +187,7 @@ bool MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: Initialize" << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: Initialize" << std::endl;
     }
 
   MetaForm::InitializeEssential();
@@ -208,8 +208,8 @@ void MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: SetNumberOfPCABasisToUseAsFeatures"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: SetNumberOfPCABasisToUseAsFeatures"
+      << std::endl;
     }
 
   m_NumberOfPCABasisToUseAsFeatures = numberOfPCABasisToUseAsFeatures;
@@ -220,8 +220,8 @@ unsigned int MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: GetNumberOfPCABasisToUseAsFeatures"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: GetNumberOfPCABasisToUseAsFeatures"
+      << std::endl;
     }
 
   return m_NumberOfPCABasisToUseAsFeatures;
@@ -233,8 +233,8 @@ void MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: SetNumberOfLDABasisToUseAsFeatures"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: SetNumberOfLDABasisToUseAsFeatures"
+      << std::endl;
     }
 
   m_NumberOfLDABasisToUseAsFeatures = numberOfLDABasisToUseAsFeatures;
@@ -245,8 +245,8 @@ unsigned int MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: GetNumberOfLDABasisToUseAsFeatures"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: GetNumberOfLDABasisToUseAsFeatures"
+      << std::endl;
     }
 
   return m_NumberOfLDABasisToUseAsFeatures;
@@ -257,7 +257,7 @@ void MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: SetLDAValues" << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: SetLDAValues" << std::endl;
     }
 
   m_LDAValues = ldaValues;
@@ -268,7 +268,7 @@ const MetaLDA::LDAValuesType & MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: GetLDAValues" << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: GetLDAValues" << std::endl;
     }
 
   return m_LDAValues;
@@ -279,7 +279,7 @@ void MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: SetLDAMatrix" << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: SetLDAMatrix" << std::endl;
     }
 
   m_LDAMatrix = ldaMatrix;
@@ -290,7 +290,7 @@ const MetaLDA::LDAMatrixType & MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: GetLDAMatrix" << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: GetLDAMatrix" << std::endl;
     }
 
   return m_LDAMatrix;
@@ -301,8 +301,8 @@ void MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: SetInputWhitenMeans"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: SetInputWhitenMeans"
+      << std::endl;
     }
 
   m_InputWhitenMeans = whitenMeans;
@@ -313,8 +313,8 @@ const MetaLDA::ValueListType & MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: GetInputWhitenMeans"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: GetInputWhitenMeans"
+      << std::endl;
     }
 
   return m_InputWhitenMeans;
@@ -325,8 +325,8 @@ void MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: SetInputWhitenStdDevs"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: SetInputWhitenStdDevs"
+      << std::endl;
     }
 
   m_InputWhitenStdDevs = whitenStdDevs;
@@ -337,8 +337,8 @@ const MetaLDA::ValueListType & MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: GetInputWhitenStdDevs"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: GetInputWhitenStdDevs"
+      << std::endl;
     }
 
   return m_InputWhitenStdDevs;
@@ -349,8 +349,8 @@ void MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: SetOutputWhitenMeans"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: SetOutputWhitenMeans"
+      << std::endl;
     }
 
   m_OutputWhitenMeans = whitenMeans;
@@ -361,8 +361,8 @@ const MetaLDA::ValueListType & MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: GetOutputWhitenMeans"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: GetOutputWhitenMeans"
+      << std::endl;
     }
 
   return m_OutputWhitenMeans;
@@ -373,8 +373,8 @@ void MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: SetOutputWhitenStdDevs"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: SetOutputWhitenStdDevs"
+      << std::endl;
     }
 
   m_OutputWhitenStdDevs = whitenStdDevs;
@@ -385,8 +385,8 @@ const MetaLDA::ValueListType & MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: GetOutputWhitenStdDevs"
-      << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: GetOutputWhitenStdDevs"
+      << std::endl;
     }
 
   return m_OutputWhitenStdDevs;
@@ -396,7 +396,7 @@ bool MetaLDA
 ::CanRead( const char * headerName ) const
 {
   // First check the extension.
-  METAIO_STL::string fname = headerName;
+  std::string fname = headerName;
   if( fname == "" )
     {
     std::cout << "CanRead: Error: Empty file name." << std::endl;
@@ -405,8 +405,8 @@ bool MetaLDA
 
   bool extensionFound = false;
 
-  METAIO_STL::string::size_type stringPos = fname.rfind( ".mlda" );
-  if( ( stringPos != METAIO_STL::string::npos )
+  std::string::size_type stringPos = fname.rfind( ".mlda" );
+  if( ( stringPos != std::string::npos )
       && ( stringPos == fname.length() - 5 ) )
     {
     extensionFound = true;
@@ -419,10 +419,10 @@ bool MetaLDA
     }
 
   // Now check the file content.
-  METAIO_STREAM::ifstream inputStream;
+  std::ifstream inputStream;
 
   inputStream.open( headerName,
-                    METAIO_STREAM::ios::in | METAIO_STREAM::ios::binary );
+                    std::ios::in | std::ios::binary );
 
   if( !inputStream.rdbuf()->is_open() )
     {
@@ -451,15 +451,15 @@ bool MetaLDA
     this->FileName( headerName );
     }
 
-  METAIO_STREAM::ifstream * const tmpStream = new METAIO_STREAM::ifstream();
+  std::ifstream * const tmpStream = new std::ifstream();
 
   tmpStream->open( m_FileName,
-                   METAIO_STREAM::ios::in | METAIO_STREAM::ios::binary );
+                   std::ios::in | std::ios::binary );
 
   if( !tmpStream->rdbuf()->is_open() )
     {
-    METAIO_STREAM::cout << "MetaLDA: Read: Cannot open file _" << m_FileName
-                        << "_" << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: Read: Cannot open file _" << m_FileName
+                        << "_" << std::endl;
     delete tmpStream;
     return false;
     }
@@ -473,7 +473,7 @@ bool MetaLDA
 }
 
 bool MetaLDA
-::CanReadStream( METAIO_STREAM::ifstream * stream ) const
+::CanReadStream( std::ifstream * stream ) const
 {
   if( !std::strncmp( MET_ReadForm( *stream ).c_str(), "LDA", 3 ) )
     {
@@ -484,11 +484,11 @@ bool MetaLDA
 }
 
 bool MetaLDA
-::ReadStream( METAIO_STREAM::ifstream * stream )
+::ReadStream( std::ifstream * stream )
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: ReadStream" << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: ReadStream" << std::endl;
     }
 
   this->M_Destroy();
@@ -497,8 +497,8 @@ bool MetaLDA
 
   if( m_ReadStream )
     {
-    METAIO_STREAM::cout << "MetaLDA: ReadStream: Are two files open?"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: ReadStream: Are two files open?"
+                        << std::endl;
     delete m_ReadStream;
     }
 
@@ -506,8 +506,8 @@ bool MetaLDA
 
   if( !this->M_Read() )
     {
-    METAIO_STREAM::cout << "MetaLDA: Read: Cannot parse file."
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: Read: Cannot parse file."
+                        << std::endl;
     m_ReadStream = NULL;
     return false;
     }
@@ -532,11 +532,11 @@ bool MetaLDA
 
   MET_SetFileSuffix( m_FileName, "mlda" );
 
-  METAIO_STREAM::ofstream * const tmpWriteStream = new
-    METAIO_STREAM::ofstream();
+  std::ofstream * const tmpWriteStream = new
+    std::ofstream();
 
-  tmpWriteStream->open( m_FileName, METAIO_STREAM::ios::binary
-    | METAIO_STREAM::ios::out );
+  tmpWriteStream->open( m_FileName, std::ios::binary
+    | std::ios::out );
 
   if( !tmpWriteStream->rdbuf()->is_open() )
     {
@@ -555,12 +555,12 @@ bool MetaLDA
 }
 
 bool MetaLDA
-::WriteStream( METAIO_STREAM::ofstream * stream )
+::WriteStream( std::ofstream * stream )
 {
   if( m_WriteStream != NULL )
     {
-    METAIO_STREAM::cout << "MetaLDA: WriteStream: Are two files open?"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: WriteStream: Are two files open?"
+                        << std::endl;
     delete m_WriteStream;
     }
 
@@ -586,7 +586,7 @@ void MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: M_SetupReadFields" << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: M_SetupReadFields" << std::endl;
     }
 
   MetaForm::M_SetupReadFields();
@@ -732,21 +732,21 @@ bool MetaLDA
 {
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: M_Read: Loading header."
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: M_Read: Loading header."
+                        << std::endl;
     }
 
   if( !MetaForm::M_Read() )
     {
-    METAIO_STREAM::cout << "MetaLDA: M_Read: Error parsing file."
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: M_Read: Error parsing file."
+                        << std::endl;
     return false;
     }
 
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaLDA: M_Read: Parsing header."
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: M_Read: Parsing header."
+                        << std::endl;
     }
 
   unsigned int nDims = 0;
@@ -765,8 +765,8 @@ bool MetaLDA
     }
   else
     {
-    METAIO_STREAM::cout << "MetaLDA: M_Read: Error: NDims required."
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: M_Read: Error: NDims required."
+                        << std::endl;
     return false;
     }
 
@@ -792,8 +792,8 @@ bool MetaLDA
     }
   else
     {
-    METAIO_STREAM::cout << "MetaLDA: M_Read: Error: Values required."
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: M_Read: Error: Values required."
+                        << std::endl;
     return false;
     }
 
@@ -810,8 +810,8 @@ bool MetaLDA
     }
   else
     {
-    METAIO_STREAM::cout << "MetaLDA: M_Read: Error: Matrix required."
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaLDA: M_Read: Error: Matrix required."
+                        << std::endl;
     return false;
     }
 

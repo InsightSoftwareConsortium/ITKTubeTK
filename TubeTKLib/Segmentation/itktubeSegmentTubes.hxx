@@ -85,15 +85,15 @@ SegmentTubes<TInputImage>
 template< class TInputImage >
 void
 SegmentTubes<TInputImage>
-::SetSeedPhysicalCoordinatesList( std::vector< PointType > seedP )
+::SetSeedPointList( std::vector< PointType > seedP )
 {
   double scaleNorm = this->m_InputImage->GetSpacing()[0];
   for( size_t seedNum = 0; seedNum < seedP.size(); ++seedNum )
     {
     ContinuousIndexType seedIndex;
     bool transformSuccess =
-        m_InputImage->TransformPhysicalPointToContinuousIndex
-        ( seedP[seedNum], seedIndex );
+        m_InputImage->TransformPhysicalPointToContinuousIndex( seedP[seedNum],
+          seedIndex );
     if( !transformSuccess )
       {
       std::cerr<<"Could not transform point #"
@@ -110,7 +110,7 @@ SegmentTubes<TInputImage>
 template< class TInputImage >
 void
 SegmentTubes<TInputImage>
-::SetSeedIndexFromFileList
+::SetSeedIndexAndScaleList
 ( std::vector< ContinuousIndexType > seedI, std::vector< ScaleType > seedS )
 {
   double scaleNorm = this->m_InputImage->GetSpacing()[0];
@@ -158,17 +158,17 @@ SegmentTubes<TInputImage>
     {
     throw( "Error: Scale < 0.3 * voxel spacing is unsupported." );
     }
-  this->m_TubeExtractorFilter->SetRadius( this->m_Scale / scaleNorm );
+  this->m_TubeExtractorFilter->SetRadius( this->m_Scale );
 
   if( this->m_SeedMask )
     {
     itk::ImageRegionConstIteratorWithIndex< TubeMaskImageType > iter(
-          this->m_SeedMask, this->m_SeedMask->GetLargestPossibleRegion() );
+      this->m_SeedMask, this->m_SeedMask->GetLargestPossibleRegion() );
     itk::ImageRegionConstIterator< ScaleImageType > iterS;
     if( this->m_ScaleMask )
       {
-      iterS = itk::ImageRegionConstIterator< ScaleImageType >
-        ( this->m_ScaleMask, this->m_ScaleMask->GetLargestPossibleRegion() );
+      iterS = itk::ImageRegionConstIterator< ScaleImageType >(
+        this->m_ScaleMask, this->m_ScaleMask->GetLargestPossibleRegion() );
       }
 
     int count = 0;
@@ -182,12 +182,12 @@ SegmentTubes<TInputImage>
           m_SeedIndexList.push_back( iter.GetIndex() );
           if( this->m_ScaleMask )
             {
-            m_SeedRadiusList.push_back( iterS.Get() / scaleNorm );
+            m_SeedRadiusList.push_back( iterS.Get() );
             ++iterS;
             }
           else
             {
-            m_SeedRadiusList.push_back( this->m_Scale / scaleNorm );
+            m_SeedRadiusList.push_back( this->m_Scale );
             }
           }
         }
@@ -235,8 +235,8 @@ SegmentTubes<TInputImage>
       minIndx[i] += m_Border;
       maxIndx[i] -= m_Border;
       }
-    this->m_TubeExtractorFilter->SetExtractBoundMin( minIndx );
-    this->m_TubeExtractorFilter->SetExtractBoundMax( maxIndx );
+    this->m_TubeExtractorFilter->SetExtractBoundMinInIndexSpace( minIndx );
+    this->m_TubeExtractorFilter->SetExtractBoundMaxInIndexSpace( maxIndx );
     }
 
   typename std::vector< ContinuousIndexType >::iterator seedIndexIter =
@@ -274,27 +274,6 @@ SegmentTubes<TInputImage>
     std::cout << "No Ridge found at all";
     return;
     }
-
-  //Update tubes transform
-  typename TubeTransformType::InputVectorType scaleVector;
-  typename TubeTransformType::OffsetType offsetVector;
-  typename TubeTransformType::MatrixType directionMatrix;
-  typename ImageType::SpacingType spacing = this->m_InputImage->GetSpacing();
-  typename ImageType::PointType origin = this->m_InputImage->GetOrigin();
-  for( unsigned int i = 0; i < ImageDimension; ++i )
-    {
-    scaleVector[i] = spacing[i];
-    offsetVector[i] = origin[i];
-    }
-
-  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()
-    ->SetScale( scaleVector );
-  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()
-    ->SetOffset( offsetVector );
-  this->m_TubeExtractorFilter->GetTubeGroup()->GetObjectToParentTransform()
-    ->SetMatrix( this->m_InputImage->GetDirection() );
-  this->m_TubeExtractorFilter->GetTubeGroup()
-    ->ComputeObjectToWorldTransform();
 
   std::cout << "Ridge termination code counts:" << std::endl;
   for( unsigned int code = 0; code <

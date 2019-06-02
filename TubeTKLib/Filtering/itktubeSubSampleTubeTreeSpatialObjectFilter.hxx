@@ -79,7 +79,7 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
       }
     else
       {
-      output->AddSpatialObject( subSampleTubeFilter->GetOutput() );
+      output->AddChild( subSampleTubeFilter->GetOutput() );
       }
     newParent = dynamic_cast< SpatialObjectBaseType * >( output );
     }
@@ -92,10 +92,10 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
       }
     else
       {
-      const std::string spatialObjectType = input->
-        GetSpatialObjectTypeAsString();
-      LightObject::Pointer newSpatialObject =
-        ObjectFactoryBase::CreateInstance( spatialObjectType.c_str() );
+      //const std::string spatialObjectType = input->
+        //GetSpatialClassNameAndDimension();
+      LightObject::Pointer newSpatialObject = input->Clone();
+        //ObjectFactoryBase::CreateInstance( spatialObjectType.c_str() );
 
       typename SpatialObjectBaseType::Pointer newSpatialObjectBase =
         dynamic_cast< SpatialObjectBaseType * >(
@@ -103,15 +103,11 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
       if( newSpatialObjectBase.IsNull() )
         {
         itkExceptionMacro( << "Could not create an instance of "
-          << spatialObjectType << ". The usual cause of this error is not"
+          << input->GetTypeName() << ". The usual cause of this error is not"
           << "registering the SpatialObject with SpatialFactory." );
         }
 
-      // Correct for extra reference count from CreateInstance()
-      newSpatialObjectBase->UnRegister();
-
-      newSpatialObjectBase->CopyInformation( input );
-      output->AddSpatialObject( newSpatialObjectBase );
+      output->AddChild( newSpatialObjectBase );
       newParent = newSpatialObjectBase;
       }
     }
@@ -136,7 +132,6 @@ SubSampleTubeTreeSpatialObjectFilter< TSpatialObject, TTubeSpatialObject >
   const SpatialObjectType * input = this->GetInput();
 
   typename SpatialObjectBaseType::Pointer output = this->GetOutput();
-  output->Clear();
 
   this->SubSampleLevel( input, output, true );
 }

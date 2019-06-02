@@ -32,7 +32,7 @@ limitations under the License.
 
 #include <itkGroupSpatialObject.h>
 #include <itkSpatialObjectReader.h>
-#include <itkVesselTubeSpatialObject.h>
+#include <itkTubeSpatialObject.h>
 
 
 // A C Python extension.
@@ -52,7 +52,7 @@ extern "C"
 
     // For now, just support 3D.
     const unsigned int Dimension = 3;
-    typedef itk::VesselTubeSpatialObject< Dimension > TubeSpatialObjectType;
+    typedef itk::TubeSpatialObject< Dimension > TubeSpatialObjectType;
     typedef itk::GroupSpatialObject< Dimension >      GroupSpatialObjectType;
 
     // Read input tube tree.
@@ -112,7 +112,7 @@ extern "C"
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s)", "ID", "i" );
+    subDtype = Py_BuildValue( "(s,s)", "Id", "i" );
     retval = PyList_SetItem( recordList, 0, subDtype );
     if( retval == -1 )
       {
@@ -204,13 +204,6 @@ extern "C"
       goto fail;
       }
 
-    subDtype = Py_BuildValue( "(s,s)", "Mark", "bool_" );
-    retval = PyList_SetItem( recordList, 13, subDtype );
-    if( retval == -1 )
-      {
-      goto fail;
-      }
-
     // Create the output array.
     PyArray_DescrConverter( recordList, &dtype );
 
@@ -235,11 +228,12 @@ extern "C"
       const TubePointType & tubePoint = pointsContainer->ElementAt(
         elementId );
 
-      const int id_ = tubePoint.GetID();
+      const int id_ = tubePoint.GetId();
       std::memcpy( data, &id_, sizeof( int ) );
       data += sizeof( int );
 
-      const TubePointType::PointType & position = tubePoint.GetPosition();
+      const TubePointType::PointType & position =
+        tubePoint.GetPositionInObjectSpace();
       for( unsigned int j = 0; j < Dimension; ++j )
         {
         double td = position[j];
@@ -255,7 +249,7 @@ extern "C"
         data += sizeof( float );
         }
 
-      const TubePointType::VectorType & tangent = tubePoint.GetTangent();
+      const TubePointType::VectorType & tangent = tubePoint.GetTangentInObjectSpace();
       for( unsigned int j = 0; j < Dimension; ++j )
         {
         double td = tangent[j];
@@ -264,7 +258,7 @@ extern "C"
         }
 
       const TubePointType::CovariantVectorType & normal1 =
-        tubePoint.GetNormal1();
+        tubePoint.GetNormal1InObjectSpace();
       for( unsigned int j = 0; j < Dimension; ++j )
         {
         double td = normal1[j];
@@ -273,7 +267,7 @@ extern "C"
         }
 
       const TubePointType::CovariantVectorType & normal2 =
-        tubePoint.GetNormal2();
+        tubePoint.GetNormal2InObjectSpace();
       for( unsigned int j = 0; j < Dimension; ++j )
         {
         double td = normal2[j];
@@ -281,7 +275,7 @@ extern "C"
         data += sizeof( double );
         }
 
-      const float radius = tubePoint.GetRadius();
+      const float radius = tubePoint.GetRadiusInObjectSpace();
       std::memcpy( data, &radius, sizeof( float ) );
       data += sizeof( float );
 
@@ -308,10 +302,6 @@ extern "C"
       const float branchness = tubePoint.GetBranchness();
       std::memcpy( data, &branchness, sizeof( float ) );
       data += sizeof( float );
-
-      const char mark = tubePoint.GetMark();
-      std::memcpy( data, &mark, sizeof( char ) );
-      data += sizeof( char );
 
       // If we find that it is advantageous to perform memory alignment, this
       // becomes necessary.

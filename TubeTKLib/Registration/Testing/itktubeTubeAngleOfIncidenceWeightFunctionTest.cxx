@@ -47,7 +47,7 @@ int itktubeTubeAngleOfIncidenceWeightFunctionTest( int argc, char * argv[] )
   const char * outputDirectory = argv[2];
 
   enum { Dimension = 3 };
-  typedef itk::VesselTubeSpatialObject< Dimension > TubeSpatialObjectType;
+  typedef itk::TubeSpatialObject< Dimension >       TubeSpatialObjectType;
   typedef itk::GroupSpatialObject< Dimension >      GroupSpatialObjectType;
   typedef itk::TubeSpatialObjectPoint< Dimension >  TubePointType;
   typedef float                                     WeightType;
@@ -133,9 +133,9 @@ int itktubeTubeAngleOfIncidenceWeightFunctionTest( int argc, char * argv[] )
       dynamic_cast< TubeSpatialObjectType * >( ( *tubeIterator ).GetPointer() );
     if( currentTube != NULL )
       {
-      const TubeSpatialObjectType::PointListType & currentTubePoints
+      const TubeSpatialObjectType::TubePointListType & currentTubePoints
         = currentTube->GetPoints();
-      typedef TubeSpatialObjectType::PointListType::const_iterator
+      typedef TubeSpatialObjectType::TubePointListType::const_iterator
         TubePointIteratorType;
       for( TubePointIteratorType tubePointIterator = currentTubePoints.begin();
             tubePointIterator != currentTubePoints.end();
@@ -160,7 +160,7 @@ int itktubeTubeAngleOfIncidenceWeightFunctionTest( int argc, char * argv[] )
         outputFile << "# pointColumns = type|x|y|z|sel|vis\n";
         outputFile << "point|";
         const TubePointType::PointType & position
-          = tubePointIterator->GetPosition();
+          = tubePointIterator->GetPositionInObjectSpace();
         outputFile << position[0] << "|";
         outputFile << position[1] << "|";
         outputFile << position[2] << "|";

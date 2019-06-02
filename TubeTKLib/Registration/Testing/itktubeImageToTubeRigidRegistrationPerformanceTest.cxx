@@ -96,7 +96,7 @@ int itktubeImageToTubeRigidRegistrationPerformanceTest( int argc, char * argv[] 
     return EXIT_FAILURE;
     }
 
-  typedef itk::VesselTubeSpatialObject< 3 >              TubeType;
+  typedef itk::TubeSpatialObject< 3 >                    TubeType;
   typedef itk::GroupSpatialObject<3>                     TubeNetType;
   typedef itk::SpatialObjectReader<3>                    TubeNetReaderType;
   typedef itk::Image<double, 3>                          ImageType;

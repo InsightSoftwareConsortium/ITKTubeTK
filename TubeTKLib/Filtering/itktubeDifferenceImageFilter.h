@@ -101,7 +101,7 @@ protected:
   DifferenceImageFilter( void );
   virtual ~DifferenceImageFilter( void ) {}
 
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
   /** DifferenceImageFilter can be implemented as a multithreaded
    * filter.  Therefore, this implementation provides a
@@ -115,10 +115,10 @@ protected:
    * \sa ImageToImageFilter::ThreadedGenerateData(),
    *     ImageToImageFilter::GenerateData()  */
   void ThreadedGenerateData( const OutputImageRegionType& threadRegion,
-                              ThreadIdType threadId );
+                              ThreadIdType threadId ) override;
 
-  void BeforeThreadedGenerateData( void );
-  void AfterThreadedGenerateData( void );
+  void BeforeThreadedGenerateData( void ) override;
+  void AfterThreadedGenerateData( void ) override;
 
   OutputPixelType          m_DifferenceThreshold;
   RealType                 m_MeanDifference;

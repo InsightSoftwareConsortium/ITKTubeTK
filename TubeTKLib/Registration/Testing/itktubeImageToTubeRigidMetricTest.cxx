@@ -52,7 +52,7 @@ int itktubeImageToTubeRigidMetricTest( int argc, char * argv[] )
   static const unsigned int TubeDimension = 3;
 
   typedef itk::Image< FloatType, ImageDimension >         ImageType;
-  typedef itk::VesselTubeSpatialObject< TubeDimension >   TubeType;
+  typedef itk::TubeSpatialObject< TubeDimension >         TubeType;
   typedef itk::GroupSpatialObject< TubeDimension >        TubeNetType;
 
   typedef itk::ImageFileReader< ImageType >               ImageReaderType;

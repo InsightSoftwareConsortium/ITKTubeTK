@@ -240,7 +240,8 @@ public:
 protected:
   ImageRegionMomentsCalculator( void );
   virtual ~ImageRegionMomentsCalculator( void );
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
 private:
   ImageRegionMomentsCalculator( const Self& ); //purposely not implemented

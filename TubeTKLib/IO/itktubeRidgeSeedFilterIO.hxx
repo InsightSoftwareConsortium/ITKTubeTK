@@ -140,7 +140,7 @@ CanRead( const char * _headerName ) const
 
   std::string pdfName = _headerName;
   pdfName = pdfName + ".mpd";
-  char pdfPath[255];
+  std::string pdfPath;
   MET_GetFilePath( _headerName, pdfPath );
   pdfName = pdfPath + pdfName;
 
@@ -199,7 +199,7 @@ Read( const char * _headerName )
   m_RidgeSeedFilter->Update();
 
   std::string pdfFileName = seedReader.GetPDFFileName();
-  char pdfPath[255];
+  std::string pdfPath;
   MET_GetFilePath( _headerName, pdfPath );
   pdfFileName = pdfPath + pdfFileName;
 
@@ -309,16 +309,16 @@ Write( const char * _headerName )
   seedWriter.SetOutputWhitenStdDevs( m_RidgeSeedFilter->
     GetOutputWhitenStdDevs() );
 
-  char fileName[255];
+  std::string fileName;
   MET_GetFilePath( _headerName, fileName );
-  int skip = strlen( fileName );
+  int skip = strlen( fileName.c_str() );
   std::string pdfName = &( _headerName[skip] );
 
   pdfName = pdfName + ".mpd";
 
   seedWriter.SetPDFFileName( pdfName.c_str() );
 
-  char pdfPath[255];
+  std::string pdfPath;
   MET_GetFilePath( _headerName, pdfPath );
   std::string pdfWriteName = pdfPath + pdfName;
 

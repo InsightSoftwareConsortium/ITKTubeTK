@@ -131,7 +131,7 @@ bool PDFSegmenterParzenIO< TImage, TLabelMap >::
 CanRead( const char * _headerName ) const
 {
   // First check the extension
-  METAIO_STL::string fname = _headerName;
+  std::string fname = _headerName;
   if( fname == "" )
     {
     return false;
@@ -139,8 +139,8 @@ CanRead( const char * _headerName ) const
 
   bool extensionFound = false;
 
-  METAIO_STL::string::size_type stringPos = fname.rfind( ".mpd" );
-  if( ( stringPos != METAIO_STL::string::npos )
+  std::string::size_type stringPos = fname.rfind( ".mpd" );
+  if( ( stringPos != std::string::npos )
       && ( stringPos == fname.length() - 4 ) )
     {
     extensionFound = true;
@@ -152,10 +152,10 @@ CanRead( const char * _headerName ) const
     }
 
   // Now check the file content
-  METAIO_STREAM::ifstream inputStream;
+  std::ifstream inputStream;
 
-  inputStream.open( fname.c_str(), METAIO_STREAM::ios::in |
-    METAIO_STREAM::ios::binary );
+  inputStream.open( fname.c_str(), std::ios::in |
+    std::ios::binary );
 
   if( inputStream.fail() )
     {
@@ -166,19 +166,19 @@ CanRead( const char * _headerName ) const
   inputStream.read( buf, 8000 );
   unsigned long fileSize = inputStream.gcount();
   buf[fileSize] = 0;
-  METAIO_STL::string header( buf );
+  std::string header( buf );
   header.resize( fileSize );
   delete [] buf;
   inputStream.close();
 
   stringPos = header.find( "NDims" );
-  if( stringPos == METAIO_STL::string::npos )
+  if( stringPos == std::string::npos )
     {
     return false;
     }
 
   stringPos = header.find( "ObjectPDFFile" );
-  if( stringPos == METAIO_STL::string::npos )
+  if( stringPos == std::string::npos )
     {
     return false;
     }
@@ -197,8 +197,8 @@ Read( const char * _headerName )
 
   if( META_DEBUG )
     {
-    METAIO_STREAM::cout << "MetaClassPDF: M_SetupReadFields"
-                        << METAIO_STREAM::endl;
+    std::cout << "MetaClassPDF: M_SetupReadFields"
+                        << std::endl;
     }
 
   MetaClassPDF classPDFReader;
@@ -282,10 +282,10 @@ Read( const char * _headerName )
   metaFields.push_back( mF );
 
   // READ
-  METAIO_STREAM::ifstream tmpReadStream;
+  std::ifstream tmpReadStream;
 
-  tmpReadStream.open( _headerName, METAIO_STREAM::ios::binary |
-    METAIO_STREAM::ios::in );
+  tmpReadStream.open( _headerName, std::ios::binary |
+    std::ios::in );
 
   if( !tmpReadStream.rdbuf()->is_open() )
     {
@@ -302,8 +302,8 @@ Read( const char * _headerName )
 
   if( !MET_Read( tmpReadStream, &metaFields ) )
     {
-    METAIO_STREAM::cerr << "PDFSegmenterParzenIO: Read: MET_Read Failed"
-      << METAIO_STREAM::endl;
+    std::cerr << "PDFSegmenterParzenIO: Read: MET_Read Failed"
+      << std::endl;
 
     for( unsigned int i=0; i<metaFields.size(); ++i )
       {
@@ -459,7 +459,7 @@ Read( const char * _headerName )
     {
     typedef Image< float, PARZEN_MAX_NUMBER_OF_FEATURES >  pdfImageType;
 
-    char filePath[255];
+    std::string filePath;
     MET_GetFilePath( _headerName, filePath );
     std::string fullFileName = filePath + fileName[i];
 
@@ -684,11 +684,13 @@ Write( const char * _headerName )
     strlen( tmpC ), tmpC );
   metaFields.push_back( mF );
 
-  char filePath[255];
+  std::string filePath;
   MET_GetFilePath( _headerName, filePath );
-  int skip = strlen( filePath );
-  char shortFileName[255];
-  snprintf( shortFileName, 254, "%s", &( _headerName[skip] ) );
+  int skip = strlen( filePath.c_str() );
+
+  std::string shortFileName;
+  shortFileName = &( _headerName[skip] );
+
   MET_SetFileSuffix( shortFileName, "mpd" );
   std::string fullFileName = filePath;
   fullFileName = fullFileName + shortFileName;
@@ -696,8 +698,10 @@ Write( const char * _headerName )
   std::string tmpString;
   for( unsigned int i = 0; i < nObjects; ++i )
     {
-    char objectFileName[4096];
-    snprintf( objectFileName, 4095, "%s.%02d.mha", shortFileName, i );
+    std::string objectFileName;
+    std::ostringstream zeroPadNum;
+    zeroPadNum << std::setw(2) << std::setfill( '0' ) << i;
+    objectFileName  = shortFileName + zeroPadNum.str() + ".mha";
     tmpString = tmpString + objectFileName;
     if( i < nObjects-1 )
       {
@@ -710,17 +714,17 @@ Write( const char * _headerName )
     tmpString.size(), tmpString.c_str() );
   metaFields.push_back( mF );
 
-  METAIO_STREAM::ofstream writeStream;
+  std::ofstream writeStream;
 
-  writeStream.open( fullFileName.c_str(), METAIO_STREAM::ios::binary |
-    METAIO_STREAM::ios::out );
+  writeStream.open( fullFileName.c_str(), std::ios::binary |
+    std::ios::out );
 
   writeStream.precision( 10 );
 
   if( !MET_Write( writeStream, & metaFields ) )
     {
-    METAIO_STREAM::cerr << "MetaObject: Write: MET_Write Failed"
-                        << METAIO_STREAM::endl;
+    std::cerr << "MetaObject: Write: MET_Write Failed"
+                        << std::endl;
     for( unsigned int i=0; i<metaFields.size(); ++i )
       {
       delete metaFields[i];

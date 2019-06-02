@@ -320,7 +320,8 @@ public:
 protected:
   AnisotropicDiffusiveRegistrationFunction( void );
   virtual ~AnisotropicDiffusiveRegistrationFunction( void ) {}
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
   /** Returns the update from the regularization component */
   virtual PixelType ComputeRegularizationUpdate(

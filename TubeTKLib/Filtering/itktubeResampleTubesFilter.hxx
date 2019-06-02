@@ -82,7 +82,6 @@ ResampleTubesFilter< VDimension >
 ::ReadImageTransform( typename TubeGroupType::TransformType::Pointer &
   outputTransform )
 {
-  typename ImageType::SpacingType spacing = m_MatchImage->GetSpacing();
   typename ImageType::PointType origin = m_MatchImage->GetOrigin();
   typename ImageType::DirectionType directions =
     m_MatchImage->GetDirection();
@@ -94,7 +93,6 @@ ResampleTubesFilter< VDimension >
     {
     offset[i] = origin[i];
     }
-  outputTransform->SetScale( spacing );
   outputTransform->SetMatrix( directions );
   outputTransform->SetOffset( offset );
 }
@@ -123,7 +121,7 @@ ResampleTubesFilter< VDimension >
    DisplacementFieldTransformFilterType::New();
   filter->SetInput( inputTubeGroup );
   filter->SetTransform( transform );
-  filter->SetOutputIndexToObjectTransform(
+  filter->SetOutputObjectToParentTransform(
     outputTransform.GetPointer() );
   filter->GraftOutput( this->GetOutput() );
   filter->Update();
@@ -165,7 +163,7 @@ ResampleTubesFilter< VDimension >
 
     filter->SetInput( tmpTubes );
     filter->SetTransform( transform );
-    filter->SetOutputIndexToObjectTransform( outputTransform );
+    filter->SetOutputObjectToParentTransform( outputTransform );
     filter->GraftOutput( this->GetOutput() );
     filter->Update();
     tmpTubes = filter->GetOutput();
@@ -197,7 +195,7 @@ ResampleTubesFilter< VDimension >
     AffineTransformFilterType::New();
   filter->SetInput( inputTubeGroup );
   filter->SetTransform( identityAffineTransform );
-  filter->SetOutputIndexToObjectTransform( outputTransform );
+  filter->SetOutputObjectToParentTransform( outputTransform );
   filter->GraftOutput( this->GetOutput() );
   filter->Update();
 
@@ -221,13 +219,13 @@ ResampleTubesFilter< VDimension >
   else
     {
     char soTypeName[80];
-    strcpy( soTypeName, "VesselTubeSpatialObject" );
+    strcpy( soTypeName, "TubeSpatialObject" );
     typename TubeSpatialObjectType::ChildrenListPointer tubeList =
       inputTubeGroup->GetChildren( inputTubeGroup->GetMaximumDepth(),
       soTypeName );
-    ( *( tubeList->begin() ) )->ComputeObjectToWorldTransform();
+    ( *( tubeList->begin() ) )->Update();
     outputTransform = ( *( tubeList->begin() ) )->
-      GetIndexToWorldTransform();
+      GetObjectToWorldTransform();
     tubeList->clear();
     delete tubeList;
     }
@@ -280,7 +278,7 @@ ResampleTubesFilter< VDimension >
   this->GraftOutput( tmpTubeGroup );
   /*
   char soTypeName[80];
-  strcpy( soTypeName, "VesselTubeSpatialObject" );
+  strcpy( soTypeName, "TubeSpatialObject" );
   typename TubeSpatialObjectType::ChildrenListPointer inTubeList =
     inputTubeGroup->GetChildren( inputTubeGroup->GetMaximumDepth(),
       soTypeName );

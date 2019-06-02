@@ -29,27 +29,27 @@ double tubeLength( itk::TubeSpatialObject<3> * tube )
 {
   typedef itk::TubeSpatialObject<3>   TubeType;
 
-  TubeType::PointListType pointList = tube->GetPoints();
-  TubeType::PointListType::iterator pointItr;
+  TubeType::TubePointListType tubePointList = tube->GetPoints();
+  TubeType::TubePointListType::iterator tubePointItr;
 
-  TubeType::PointListType::iterator beginItr = pointList.begin();
-  TubeType::PointListType::iterator endItr = pointList.end();
-  pointItr = beginItr;
+  TubeType::TubePointListType::iterator beginItr = tubePointList.begin();
+  TubeType::TubePointListType::iterator endItr = tubePointList.end();
+  tubePointItr = beginItr;
 
-  TubeType::PointType lastX = pointItr->GetPosition();
-  ++pointItr;
+  TubeType::PointType lastX = tubePointItr->GetPositionInObjectSpace();
+  ++tubePointItr;
 
   double length = 0;
-  while( pointItr != endItr )
+  while( tubePointItr != endItr )
     {
     double dist = 0;
     for( unsigned int d=0; d<3; ++d )
       {
-      dist += ( pointItr->GetPosition()[d] - lastX[d] ) *
-        ( pointItr->GetPosition()[d] - lastX[d] );
+      dist += ( tubePointItr->GetPositionInObjectSpace()[d] - lastX[d] ) *
+        ( tubePointItr->GetPositionInObjectSpace()[d] - lastX[d] );
       }
     length += std::sqrt( dist );
-    ++pointItr;
+    ++tubePointItr;
     }
 
   return length;
@@ -66,31 +66,30 @@ int tubeTubeMathTest( int tubeNotUsed( argc ),
   TubeType::Pointer tube = TubeType::New();
   TubeType::Pointer tube0 = TubeType::New();
 
-  TubeType::PointListType pointList;
-  TubeType::TubePointType point;
+  TubeType::TubePointListType tubePointList;
+  TubeType::TubePointType tubePoint;
 
   typedef itk::Statistics::MersenneTwisterRandomVariateGenerator RandomType;
   RandomType::Pointer rndGen = RandomType::New();
   rndGen->Initialize( 1 );
 
   // Build the vessel
-  double x = 0;
-  double y = 0;
-  double z = 0;
+  TubeType::TubePointType::PointType pnt;
+  pnt.Fill(0);
   for( unsigned int i = 0; i < 100; ++i )
     {
     double rndX = rndGen->GetNormalVariate( 0, 1 );
     double rndY = rndGen->GetNormalVariate( 0, 1 );
     double rndZ = rndGen->GetNormalVariate( 0, 1 );
-    x += rndX;
-    y += rndY;
-    z += rndZ;
-    point.SetPosition( x, y, z );
-    pointList.push_back( point );
+    pnt[0] += rndX;
+    pnt[1] += rndY;
+    pnt[2] += rndZ;
+    tubePoint.SetPositionInObjectSpace( pnt );
+    tubePointList.push_back( tubePoint );
     }
 
   std::cout << "Tangents and normals..." << std::endl;
-  tube0->SetPoints( pointList );
+  tube0->SetPoints( tubePointList );
   ::tube::ComputeTubeTangentsAndNormals< TubeType >( tube0 );
 
   // Run tests

@@ -45,9 +45,8 @@ int DoIt( int argc, char * argv[] )
   typedef itk::GroupSpatialObject< VDimension >       GroupType;
   typedef itk::ImageFileReader< ImageType >           ImageReaderType;
   typedef itk::SpatialObjectReader< VDimension >      SOReaderType;
-  typedef itk::VesselTubeSpatialObject< VDimension >  TubeType;
+  typedef itk::TubeSpatialObject< VDimension >        TubeType;
   typedef typename TubeType::TubePointType            TubePointType;
-  typedef typename TubeType::TransformType            TubeTransformType;
 
 
   tube::CLIProgressReporter progressReporter( "tubeDensityProbability",
@@ -81,7 +80,6 @@ int DoIt( int argc, char * argv[] )
   typename TubeType::ChildrenListType::const_iterator tubeIt =
     tubeList->begin();
   TubePointType tubePoint;
-  typename TubeTransformType::Pointer tubeTransform;
   std::ofstream writeStream;
   writeStream.open( outFile.c_str(), std::ios::binary | std::ios::out );
   while( tubeIt != tubeList->end() ) // Iterate over tubes
@@ -89,13 +87,12 @@ int DoIt( int argc, char * argv[] )
     typename TubeType::Pointer tube = dynamic_cast<TubeType *>(
       ( *tubeIt ).GetPointer() );
 
-    tube->RemoveDuplicatePoints();
+    tube->RemoveDuplicatePointsInObjectSpace();
     tube->ComputeTangentAndNormals();
 
     itk::Point<double, VDimension> pnt;
     itk::Index< VDimension > indx;
-    tube->ComputeObjectToWorldTransform();
-    tubeTransform = tube->GetIndexToWorldTransform();
+    tube->Update();
    
     for( unsigned int i=0; i<tube->GetNumberOfPoints(); i++ )
       {
@@ -103,10 +100,7 @@ int DoIt( int argc, char * argv[] )
       tubePoint = static_cast<TubePointType>( tube->GetPoints()[i] );
 
       // Get point's position
-      pnt = tubePoint.GetPosition();
-
-      // Point to physical coords
-      pnt = tubeTransform->TransformPoint( pnt );
+      pnt = tubePoint.GetPositionInWorldSpace();
 
       // Get closest voxel
       meanImage->TransformPhysicalPointToIndex( pnt, indx );

@@ -100,13 +100,13 @@ protected:
   UltrasoundProbeGeometryCalculator( void );
   virtual ~UltrasoundProbeGeometryCalculator( void );
 
-  virtual void PrintSelf( std::ostream & os, Indent indent ) const;
+  virtual void PrintSelf( std::ostream & os, Indent indent ) const override;
 
   using Superclass::MakeOutput;
   virtual DataObject::Pointer MakeOutput(
     DataObjectPointerArraySizeType index );
 
-  virtual void GenerateData( void );
+  virtual void GenerateData( void ) override;
 
 private:
   // purposely not implemented

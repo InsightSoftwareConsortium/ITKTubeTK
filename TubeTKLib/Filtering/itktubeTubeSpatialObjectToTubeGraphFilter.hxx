@@ -110,27 +110,26 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
     typename TubeSpatialObjectType::Pointer tube =
         dynamic_cast< TubeSpatialObjectType * >( ( *tubeIt ).GetPointer() );
 
-    tube->RemoveDuplicatePoints();
+    tube->RemoveDuplicatePointsInObjectSpace();
     tube->ComputeTangentAndNormals();
 
     int numberOfPoints = tube->GetNumberOfPoints();
 
     graph = new MetaTubeGraph( Dimension );
 
+    tube->Update();
+
     itk::Point< double, Dimension > pnt;
     itk::Index< Dimension > indx;
     tubePoint = static_cast< TubePointType >( tube->GetPoints()[0] );
-    pnt = tubePoint.GetPosition();
-    tube->ComputeObjectToWorldTransform();
-    tubeTransform = tube->GetIndexToWorldTransform();
-    pnt = tubeTransform->TransformPoint( pnt );
+    pnt = tubePoint.GetPositionInWorldSpace();
     m_CVTImage->TransformPhysicalPointToIndex( pnt, indx );
     double cCount = 1;
     int cNode = m_CVTImage->GetPixel( indx );
-    double cRadius = tubePoint.GetRadius();
+    double cRadius = tubePoint.GetRadiusInWorldSpace();
     for( unsigned int i = 0; i < Dimension; i++ )
       {
-      cVect[i] = tubePoint.GetTangent()[i];
+      cVect[i] = tubePoint.GetTangentInWorldSpace()[i];
       }
     cMat = outer_product( cVect, cVect );
     if( tube->GetRoot() )
@@ -142,17 +141,16 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
     for( int p = 1; p < numberOfPoints; p++ )
       {
       tubePoint = static_cast< TubePointType >( tube->GetPoints()[p] );
-      pnt = tubePoint.GetPosition();
-      pnt = tubeTransform->TransformPoint( pnt );
+      pnt = tubePoint.GetPositionInWorldSpace();
       m_CVTImage->TransformPhysicalPointToIndex( pnt, indx );
       int tNode = m_CVTImage->GetPixel( indx );
       if( tNode == cNode )
         {
         cCount++;
-        cRadius += tubePoint.GetRadius();
+        cRadius += tubePoint.GetRadiusInWorldSpace();
         for( unsigned int i = 0; i < Dimension; i++ )
           {
-          cVect[i] = tubePoint.GetTangent()[i];
+          cVect[i] = tubePoint.GetTangentInWorldSpace()[i];
           }
         cMat = cMat + outer_product( cVect, cVect );
         }
@@ -207,10 +205,10 @@ TubeSpatialObjectToTubeGraphFilter< TPixel, Dimension >
             }
           graph->GetPoints().push_back( tgP );
           cNode = tNode;
-          cRadius = tubePoint.GetRadius();
+          cRadius = tubePoint.GetRadiusInWorldSpace();
           for( unsigned int i = 0; i < Dimension; i++ )
             {
-            cVect[i] = tubePoint.GetTangent()[i];
+            cVect[i] = tubePoint.GetTangentInWorldSpace()[i];
             }
           cMat = outer_product( cVect, cVect );
           cCount = 1;

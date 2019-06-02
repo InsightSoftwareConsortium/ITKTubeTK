@@ -43,8 +43,8 @@ int itktubePointsToImageTest( int argc, char * argv[] )
   typedef itk::SpatialObject< Dimension >::ChildrenListType
       ObjectListType;
   typedef itk::GroupSpatialObject< Dimension >       GroupType;
-  typedef itk::VesselTubeSpatialObject< Dimension >  TubeType;
-  typedef TubeType::PointListType                    PointListType;
+  typedef itk::TubeSpatialObject< Dimension >        TubeType;
+  typedef TubeType::TubePointListType                TubePointListType;
   typedef TubeType::TubePointType                    TubePointType;
   typedef itk::Image< float, Dimension >             ImageType;
 
@@ -80,8 +80,8 @@ int itktubePointsToImageTest( int argc, char * argv[] )
   // Iterate through the tubes
   ObjectListType::iterator            tubeIt = tubeList->begin();
   TubeType::Pointer                   tube;
-  PointListType                       tubePointList;
-  PointListType::iterator             pointIt;
+  TubePointListType                   tubePointList;
+  TubePointListType::iterator         pointIt;
   TubePointType *                     point;
   TubePointType::PointType            position;
   float                               radius;
@@ -103,10 +103,10 @@ int itktubePointsToImageTest( int argc, char * argv[] )
     for( unsigned int j = 0; j < numPoints; j++ )
       {
       point = static_cast< TubePointType * >( &( *pointIt ) );
-      position = point->GetPosition();
-      radius = point->GetRadius();
-      normal1 = point->GetNormal1();
-      normal2 = point->GetNormal2();
+      position = point->GetPositionInObjectSpace();
+      radius = point->GetRadiusInObjectSpace();
+      normal1 = point->GetNormal1InObjectSpace();
+      normal2 = point->GetNormal2InObjectSpace();
 
       std::cout << "point " << j << "; "
                 << "position " << position

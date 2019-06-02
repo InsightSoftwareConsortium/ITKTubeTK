@@ -165,7 +165,7 @@ Compute( void )
 
     if( isInsideRegionOfInterest &&
         ( m_SpatialObjectMask.IsNull()
-         || m_SpatialObjectMask->IsInside( physicalPosition ) ) )
+         || m_SpatialObjectMask->IsInsideInObjectSpace( physicalPosition ) ) )
       {
       m_M0 += value;
 

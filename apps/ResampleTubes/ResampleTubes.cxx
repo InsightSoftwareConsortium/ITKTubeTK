@@ -28,7 +28,7 @@ limitations under the License.
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectWriter.h>
 #include <itkTimeProbesCollectorBase.h>
-#include <itkVesselTubeSpatialObject.h>
+#include <itkTubeSpatialObject.h>
 
 #include <itkImageFileReader.h>
 #include <itkDisplacementFieldTransform.h>

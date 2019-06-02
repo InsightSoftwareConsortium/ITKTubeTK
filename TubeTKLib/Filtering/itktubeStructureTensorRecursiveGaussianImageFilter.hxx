@@ -192,7 +192,6 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage, TOutputImage >
     progress->RegisterInternalFilter( m_SmoothingFilters[i], weight );
     }
   progress->RegisterInternalFilter( m_DerivativeFilter, weight );
-  progress->ResetProgress();
 
   const typename TInputImage::ConstPointer   inputImage( this->GetInput() );
 
@@ -234,7 +233,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage, TOutputImage >
       m_DerivativeFilter->Update();
       }
 
-    progress->ResetFilterProgressAndKeepAccumulatedProgress();
+    //progress->ResetFilterProgressAndKeepAccumulatedProgress();
 
     // Copy the results to the corresponding component
     // on the output image of vectors

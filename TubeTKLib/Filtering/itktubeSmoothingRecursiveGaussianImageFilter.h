@@ -136,20 +136,21 @@ public:
 protected:
   SmoothingRecursiveGaussianImageFilter();
   virtual ~SmoothingRecursiveGaussianImageFilter() {}
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
   /** Generate Data */
-  void GenerateData( void );
+  void GenerateData( void ) override;
 
   /** SmoothingRecursiveGaussianImageFilter needs all of the input to
    * produce an output. Therefore, SmoothingRecursiveGaussianImageFilter
    * needs to provide an implementation for GenerateInputRequestedRegion
    * in order to inform * the pipeline execution model.
    * \sa ImageToImageFilter::GenerateInputRequestedRegion() */
-  virtual void GenerateInputRequestedRegion();
+  virtual void GenerateInputRequestedRegion() override;
 
   // Override since the filter produces the entire dataset
-  void EnlargeOutputRequestedRegion( DataObject *output );
+  void EnlargeOutputRequestedRegion( DataObject *output ) override;
 
 private:
   SmoothingRecursiveGaussianImageFilter( const Self & ); //purposely not

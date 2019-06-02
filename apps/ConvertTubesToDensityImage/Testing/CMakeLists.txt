@@ -37,7 +37,7 @@ ExternalData_Add_Test( TubeTKData
     ${TEMP}/${MODULE_NAME}Test1-Rad.mha
     ${TEMP}/${MODULE_NAME}Test1-Tan.mha
     --inputTemplateImage DATA{${TubeTK_DATA_ROOT}/Branch.n010.mha}
-    --useSquareDistance )
+    --useSquaredDistance )
 
 # Test1-Compare
 ExternalData_Add_Test( TubeTKData

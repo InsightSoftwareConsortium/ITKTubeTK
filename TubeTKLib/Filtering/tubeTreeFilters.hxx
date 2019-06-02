@@ -65,18 +65,19 @@ char InterpolationMethod )
             {
             TubePointType* tubePoint = dynamic_cast< TubePointType* >(
               pTube->GetPoint( index ) );
-            PositionType tubePointPosition = tubePoint->GetPosition();
-            double distance = tubePointPosition.SquaredEuclideanDistanceTo(
-              pCurTube->GetPoint( 0 )->GetPosition() );
+            PositionType tubePointPosition =
+              tubePoint->GetPositionInObjectSpace();
+            double distance = tubePointPosition.EuclideanDistanceTo(
+              pCurTube->GetPoint( 0 )->GetPositionInObjectSpace() );
             if( minDistance > distance )
               {
               minDistance = distance;
               parentNearestPoint = tubePoint;
               flag = 1;
               }
-            distance = tubePointPosition.SquaredEuclideanDistanceTo(
+            distance = tubePointPosition.EuclideanDistanceTo(
               pCurTube->GetPoint( pCurTube->GetNumberOfPoints() - 1 )
-              ->GetPosition() );
+              ->GetPositionInObjectSpace() );
             if( minDistance > distance )
               {
               minDistance = distance;
@@ -130,7 +131,7 @@ TreeFilters< VDimension >::
 InterpolatePath(
   typename TubeType::TubePointType * parentNearestPoint,
   typename TubeType::TubePointType * itkNotUsed( childEndPoint ),
-  typename TubeType::PointListType & newTubePoints,
+  typename TubeType::TubePointListType & newTubePoints,
   char InterpolationMethod )
 {
   if( InterpolationMethod == 'S' )

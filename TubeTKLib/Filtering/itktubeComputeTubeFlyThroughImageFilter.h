@@ -25,7 +25,7 @@ limitations under the License.
 
 #include <itkGroupSpatialObject.h>
 #include <itkSpatialObjectToImageFilter.h>
-#include <itkVesselTubeSpatialObject.h>
+#include <itkTubeSpatialObject.h>
 
 namespace itk
 {
@@ -47,7 +47,7 @@ public:
 
   /** Tube class typedef */
   typedef GroupSpatialObject< Dimension >                TubeGroupType;
-  typedef VesselTubeSpatialObject< Dimension >           TubeType;
+  typedef TubeSpatialObject< Dimension >                 TubeType;
   typedef Image< TPixel, Dimension >                     InputImageType;
   typedef InputImageType                                 OutputImageType;
   typedef Image< unsigned char, Dimension >              OutputMaskType;
@@ -83,9 +83,9 @@ protected:
   ~ComputeTubeFlyThroughImageFilter( void ) {};
 
   /** Creates the tube fly through image */
-  void GenerateData( void );
+  void GenerateData( void ) override;
 
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
 private:
 

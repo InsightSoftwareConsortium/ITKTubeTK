@@ -163,8 +163,10 @@ public:
 protected:
   TubeEnhancingDiffusion2DImageFilter( void );
   ~TubeEnhancingDiffusion2DImageFilter( void ) {}
-  void PrintSelf( std::ostream &os, Indent indent ) const;
-  void GenerateData( void );
+
+  void PrintSelf( std::ostream &os, Indent indent ) const override;
+
+  void GenerateData( void ) override;
 
 private:
 

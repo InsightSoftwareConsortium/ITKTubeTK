@@ -66,7 +66,7 @@ int itktubeTubeParametricExponentialResolutionWeightFunctionTest( int argc, char
   double radius = startingRadius;
   for( unsigned int ii = 0; ii < numberOfPoints; ++ii )
     {
-    tubePointContainer[ii].SetRadius( radius );
+    tubePointContainer[ii].SetRadiusInObjectSpace( radius );
     radius += radiusIncrement;
     }
 

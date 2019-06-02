@@ -125,11 +125,12 @@ public:
 
 protected:
   GaussianDerivativeImageSource();
-  void PrintSelf( std::ostream & os, Indent indent ) const;
 
-  virtual void GenerateOutputInformation();
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
-  void GenerateData();
+  virtual void GenerateOutputInformation() override;
+
+  void GenerateData() override;
 
 private:
   GaussianDerivativeImageSource( const GaussianDerivativeImageSource & );

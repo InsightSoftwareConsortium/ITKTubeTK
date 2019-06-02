@@ -76,18 +76,18 @@ public:
 
   /**
    * Set the input image. */
-  virtual void SetInputImage( const InputImageType * ptr );
+  virtual void SetInputImage( const InputImageType * ptr ) override;
 
   /**
    * Evalulate the function at specified point */
-  virtual double Evaluate( const PointType& point ) const;
+  virtual double Evaluate( const PointType& point ) const override;
 
   /** Evaluate the function at specified Index position. */
-  virtual double EvaluateAtIndex( const IndexType & index ) const;
+  virtual double EvaluateAtIndex( const IndexType & index ) const override;
 
   /** Evaluate the function at specified ContinousIndex position. */
   virtual double EvaluateAtContinuousIndex( const ContinuousIndexType &
-    index ) const;
+    index ) const override;
 
   /**
    * Set the Scale */
@@ -122,7 +122,7 @@ protected:
   BlurImageFunction( void );
   virtual ~BlurImageFunction( void ) {}
 
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
   void RecomputeKernel( void );
 

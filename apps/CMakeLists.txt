@@ -72,7 +72,6 @@ add_subdirectory( SegmentUsingOtsuThreshold )
 add_subdirectory( ShrinkImage )
 add_subdirectory( SimulateAcquisitionArtifactsUsingPrior )
 add_subdirectory( TubeMath )
-add_subdirectory( TreeMath )
 
 if( TubeTK_USE_VTK )
   add_subdirectory( ConvertTubesToSurface )

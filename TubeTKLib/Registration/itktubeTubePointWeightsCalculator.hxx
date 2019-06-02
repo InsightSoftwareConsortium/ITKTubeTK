@@ -89,9 +89,9 @@ TubePointWeightsCalculator< VDimension,
         ( *tubeIterator ).GetPointer() );
     if( currentTube != NULL )
       {
-      const typename TubeSpatialObjectType::PointListType &
+      const typename TubeSpatialObjectType::TubePointListType &
         currentTubePoints = currentTube->GetPoints();
-      typedef typename TubeSpatialObjectType::PointListType::const_iterator
+      typedef typename TubeSpatialObjectType::TubePointListType::const_iterator
         TubePointIteratorType;
       for( TubePointIteratorType tubePointIterator =
         currentTubePoints.begin();

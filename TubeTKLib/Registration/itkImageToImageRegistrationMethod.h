@@ -135,7 +135,7 @@ protected:
    * however, must invoke this method in the base class. */
   void GenerateData( void );
 
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
   /** Provide derived classes with access to the Transform member
    * variable. */
@@ -147,7 +147,7 @@ protected:
   virtual DataObjectPointer  MakeOutput( DataObjectPointerArraySizeType
     idx );
 
-  unsigned long GetMTime( void ) const;
+  ModifiedTimeType GetMTime( void ) const override;
 
 protected:
 

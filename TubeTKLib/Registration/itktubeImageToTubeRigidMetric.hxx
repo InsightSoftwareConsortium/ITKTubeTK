@@ -164,9 +164,9 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
       {
       currentTube->ComputeTangentAndNormals();
 
-      const typename TubeType::PointListType & currentTubePoints
+      const typename TubeType::TubePointListType & currentTubePoints
         = currentTube->GetPoints();
-      typedef typename TubeType::PointListType::const_iterator
+      typedef typename TubeType::TubePointListType::const_iterator
         TubePointIteratorType;
       for( TubePointIteratorType tubePointIterator =
         currentTubePoints.begin();
@@ -180,7 +180,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
           {
           //! \todo CompensatedSummation
           this->m_CenterOfRotation[ii] +=
-            weight * ( tubePointIterator->GetPosition() )[ii];
+            weight * ( tubePointIterator->GetPositionInObjectSpace() )[ii];
           }
         featureWeightSum += weight;
         }
@@ -251,23 +251,23 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
       dynamic_cast< TubeType * >( ( *tubeIterator ).GetPointer() );
     if( currentTube != NULL )
       {
-      typename TubeType::PointListType::iterator pointIterator;
+      typename TubeType::TubePointListType::iterator pointIterator;
       for( pointIterator = currentTube->GetPoints().begin();
            pointIterator != currentTube->GetPoints().end();
            ++pointIterator )
         {
-        const InputPointType inputPoint = pointIterator->GetPosition();
+        const InputPointType inputPoint = pointIterator->GetPositionInObjectSpace();
         OutputPointType currentPoint;
         if( this->IsInside( inputPoint, currentPoint, transformCopy ) )
           {
           weightSum += m_FeatureWeights[weightCount];
-          ScalarType scalingRadius = pointIterator->GetRadius();
+          ScalarType scalingRadius = pointIterator->GetRadiusInObjectSpace();
           scalingRadius = std::max( scalingRadius, m_MinimumScalingRadius );
 
           const ScalarType scale = scalingRadius * m_Kappa;
 
           matchMeasure += m_FeatureWeights[weightCount] * std::fabs(
-            this->ComputeLaplacianMagnitude( pointIterator->GetNormal1(),
+            this->ComputeLaplacianMagnitude( pointIterator->GetNormal1InObjectSpace(),
               scale,
               currentPoint ) );
           }
@@ -444,12 +444,12 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
     if( currentTube != NULL )
       {
-      typename TubeType::PointListType::const_iterator pointIterator;
+      typename TubeType::TubePointListType::const_iterator pointIterator;
       for( pointIterator = currentTube->GetPoints().begin();
            pointIterator != currentTube->GetPoints().end();
            ++pointIterator )
         {
-        InputPointType inputPoint = pointIterator->GetPosition();
+        InputPointType inputPoint = pointIterator->GetPositionInObjectSpace();
         OutputPointType currentPoint;
         if( this->IsInside( inputPoint, currentPoint, transformCopy ) )
           {
@@ -460,8 +460,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
           VectorType v2;
           for( unsigned int ii = 0; ii < TubeDimension; ++ii )
             {
-            v1[ii] = pointIterator->GetNormal1()[ii];
-            v2[ii] = pointIterator->GetNormal2()[ii];
+            v1[ii] = pointIterator->GetNormal1InObjectSpace()[ii];
+            v2[ii] = pointIterator->GetNormal2InObjectSpace()[ii];
             }
 
           for( unsigned int ii = 0; ii < TubeDimension; ++ii )
@@ -477,7 +477,7 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
           v1 = transformCopy->TransformVector( v1 );
           v2 = transformCopy->TransformVector( v2 );
 
-          ScalarType scalingRadius = pointIterator->GetRadius();
+          ScalarType scalingRadius = pointIterator->GetRadiusInObjectSpace();
           scalingRadius = std::max( scalingRadius, m_MinimumScalingRadius );
 
           const ScalarType scale = scalingRadius * m_Kappa;
@@ -537,12 +537,12 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
     if( currentTube != NULL )
       {
-      typename TubeType::PointListType::const_iterator pointIterator;
+      typename TubeType::TubePointListType::const_iterator pointIterator;
       for( pointIterator = currentTube->GetPoints().begin();
            pointIterator != currentTube->GetPoints().end();
            ++pointIterator )
         {
-        InputPointType inputPoint = pointIterator->GetPosition();
+        InputPointType inputPoint = pointIterator->GetPositionInObjectSpace();
         OutputPointType currentPoint;
         //! \todo this checking is not necessary, but we have to make sure
         //have
