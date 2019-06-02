@@ -98,7 +98,7 @@ protected:
   itkSetMacro( ObjectType, std::string );
 
   /** Print information about the object. */
-  virtual void PrintSelf( std::ostream& os, Indent indent ) const
+  virtual void PrintSelf( std::ostream& os, Indent indent ) const override
     {
     Superclass::PrintSelf( os, indent );
 

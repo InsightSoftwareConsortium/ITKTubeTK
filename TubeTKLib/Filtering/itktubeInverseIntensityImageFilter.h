@@ -75,11 +75,11 @@ protected:
   ~InverseIntensityImageFilter( void ) {}
 
   /** GenerateData produce the main work */
-  void GenerateData( void );
+  void GenerateData( void ) override;
 
 private:
 
-  void PrintSelf( std::ostream& os, Indent indent ) const
+  void PrintSelf( std::ostream& os, Indent indent ) const override
     { SuperClass::PrintSelf( os, indent );   }
 
   InputPixelType                 m_InverseMaximumIntensity;

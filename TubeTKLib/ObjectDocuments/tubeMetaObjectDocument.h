@@ -109,7 +109,7 @@ protected:
   virtual bool WriteFields( void );
 
   /** Print information about this object. */
-  virtual void PrintSelf( std::ostream & os, Indent indent ) const;
+  virtual void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
 

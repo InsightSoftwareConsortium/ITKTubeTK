@@ -137,7 +137,8 @@ protected:
 
   ComputeSegmentTubesParameters( void );
   virtual ~ComputeSegmentTubesParameters( void );
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
 

@@ -138,7 +138,8 @@ protected:
 
   SegmentTubes( void );
   virtual ~SegmentTubes( void );
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
 

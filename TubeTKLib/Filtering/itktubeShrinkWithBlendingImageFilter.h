@@ -132,21 +132,26 @@ public:
 
   itkGetObjectMacro( OutputMipPointImage, PointImageType );
 
-  void GenerateOutputInformation( void );
+  void GenerateOutputInformation( void ) override;
 
-  void GenerateInputRequestedRegion( void );
+  void GenerateInputRequestedRegion( void ) override;
 
 protected:
   ShrinkWithBlendingImageFilter( void );
   ~ShrinkWithBlendingImageFilter( void ) {}
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
   void ThreadedGenerateData( const OutputImageRegionType &
-    outputRegionForThread, ThreadIdType threadId );
+    outputRegionForThread, ThreadIdType threadId ) override;
+
   void UpdateInternalShrinkFactors();
+
   void VerifyInputInformation();
+
   template<class ArrayType>
   bool NotValue( ArrayType array, double val, double tolerance=0.00001 );
+
 private:
   ShrinkWithBlendingImageFilter( const Self & ); //purposely not implemented
   void operator=( const Self & );            //purposely not implemented

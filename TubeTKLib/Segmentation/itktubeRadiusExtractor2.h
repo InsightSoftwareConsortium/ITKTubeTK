@@ -203,7 +203,7 @@ protected:
   RadiusExtractor2( void );
   virtual ~RadiusExtractor2( void );
 
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
   void GenerateKernelTubePoints( unsigned int tubePointNum,
     TubeType * tube );

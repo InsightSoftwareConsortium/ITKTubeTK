@@ -110,7 +110,7 @@ protected:
   ScaleSkewVersor3DImageToImageRegistrationMethod( void );
   virtual ~ScaleSkewVersor3DImageToImageRegistrationMethod( void );
 
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
 

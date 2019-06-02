@@ -83,9 +83,9 @@ protected:
   ~ComputeTubeFlyThroughImageFilter( void ) {};
 
   /** Creates the tube fly through image */
-  void GenerateData( void );
+  void GenerateData( void ) override;
 
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
 private:
 

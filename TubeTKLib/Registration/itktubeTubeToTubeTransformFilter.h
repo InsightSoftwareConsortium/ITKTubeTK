@@ -95,10 +95,11 @@ protected:
 
   TubeToTubeTransformFilter( void );
   virtual ~TubeToTubeTransformFilter( void ) {}
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
   /** Apply the transformation to the tube */
-  void GenerateData( void );
+  void GenerateData( void ) override;
 
 
 private:

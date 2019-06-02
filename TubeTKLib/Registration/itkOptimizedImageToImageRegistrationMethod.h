@@ -144,7 +144,7 @@ protected:
 
   virtual void Optimize( MetricType * metric, InterpolatorType * interpolator );
 
-  virtual void PrintSelf( std::ostream & os, Indent indent ) const;
+  virtual void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
 

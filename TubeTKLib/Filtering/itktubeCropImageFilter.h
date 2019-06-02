@@ -137,9 +137,9 @@ protected:
   CropImageFilter( void );
   ~CropImageFilter() {}
 
-  void PrintSelf( std::ostream & os, Indent indent ) const ITK_OVERRIDE;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
-  void GenerateOutputInformation() ITK_OVERRIDE;
+  void GenerateOutputInformation() override;
 
 private:
   /** itkCropImageFilter parameters */

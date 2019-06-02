@@ -99,8 +99,8 @@ protected:
   EnhanceContrastUsingPriorImageFilter( void );
   virtual ~EnhanceContrastUsingPriorImageFilter( void ) {}
 
-  void PrintSelf( std::ostream& os, Indent indent ) const;
-  virtual void GenerateData( void );
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
+  virtual void GenerateData( void ) override;
 
 private:
   //purposely not implemented

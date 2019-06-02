@@ -159,7 +159,7 @@ protected:
   virtual TransformPointer ReadTransform( const std::string & file ) const;
 
   /** Print information about the object. */
-  virtual void PrintSelf( std::ostream & os, Indent indent ) const;
+  virtual void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
 

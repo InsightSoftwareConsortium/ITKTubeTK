@@ -72,7 +72,7 @@ protected:
   GaussianDerivativeFilter ( void );
   virtual ~GaussianDerivativeFilter ( void ) {}
 
-  void PrintSelf ( std::ostream & os, Indent indent ) const;
+  void PrintSelf ( std::ostream & os, Indent indent ) const override;
 
   OrdersType   m_Orders;
   SigmasType   m_Sigmas;

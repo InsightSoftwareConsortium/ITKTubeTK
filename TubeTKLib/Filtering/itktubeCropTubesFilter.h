@@ -91,9 +91,9 @@ protected:
   CropTubesFilter( void );
   virtual ~CropTubesFilter( void );
 
-  virtual void GenerateData( void );
+  virtual void GenerateData( void ) override;
 
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
   // purposely not implemented

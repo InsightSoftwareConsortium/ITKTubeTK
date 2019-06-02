@@ -105,15 +105,18 @@ public:
   itkGetMacro( Output, TubeGroupPointer );
 
   void SetIntermediatePoints( std::vector< PointType > );
+
   void Update( void );
+
 protected:
   SegmentTubesUsingMinimalPathFilter( void );
   ~SegmentTubesUsingMinimalPathFilter() {}
 
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
+
   bool IsPointTooNear( const InputSpatialObjectType * sourceTubeGroup,
-              PointType outsidePoint,
-              PointType &nearestPoint );
+    PointType outsidePoint, PointType &nearestPoint );
+
 private:
   SegmentTubesUsingMinimalPathFilter( const Self & );
   void operator=( const Self & );

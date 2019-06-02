@@ -105,7 +105,8 @@ public:
 protected:
   VotingResampleImageFunction( void );
   ~VotingResampleImageFunction( void ) {}
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
 private:
   VotingResampleImageFunction( const Self& ); //purposely not implemented

@@ -136,9 +136,9 @@ protected:
   MergeAdjacentImagesFilter( void );
   virtual ~MergeAdjacentImagesFilter( void ) {}
 
-  virtual void GenerateData();
+  virtual void GenerateData() override;
 
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
   // Purposely not implemented

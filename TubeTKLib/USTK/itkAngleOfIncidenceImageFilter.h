@@ -113,12 +113,14 @@ public:
 protected:
   AngleOfIncidenceImageFilter( void );
   virtual ~AngleOfIncidenceImageFilter( void ) {}
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
   /* Generate Data */
-  void GenerateData( void );
+  void GenerateData( void ) override;
 
   void ComputeNormalVectorImage( void );
+
 private:
   AngleOfIncidenceImageFilter( const Self & ); //purposely not implemented
   void operator=( const Self & );          //purposely not implemented

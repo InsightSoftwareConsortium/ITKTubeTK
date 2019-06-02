@@ -231,7 +231,7 @@ protected:
   TubeExtractor( void );
   virtual ~TubeExtractor( void );
 
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
   typename RidgeExtractor<ImageType>::Pointer   m_RidgeOp;
   typename RadiusExtractor2<ImageType>::Pointer m_RadiusOp;

@@ -202,17 +202,19 @@ protected:
   GeneralizedDistanceTransformImageFilter();
   /** Destructor */
   virtual ~GeneralizedDistanceTransformImageFilter() {};
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
   /** The whole output will be produced regardless of the region
    * requested. */
-  void EnlargeOutputRequestedRegion( DataObject *itkNotUsed( output ) );
+  void EnlargeOutputRequestedRegion( DataObject *itkNotUsed( output ) )
+    override;
 
   /** Allocate and initialize output images. Used by GenerateData() */
   void PrepareData();
 
   /** Compute distance transform and optionally the voronoi map as well. */
-  void GenerateData();
+  void GenerateData() override;
 
 
 private:

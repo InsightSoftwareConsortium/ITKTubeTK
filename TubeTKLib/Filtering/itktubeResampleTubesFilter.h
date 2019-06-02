@@ -97,8 +97,9 @@ protected:
   ResampleTubesFilter( void );
   virtual ~ResampleTubesFilter( void );
 
-  virtual void GenerateData( void );
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  virtual void GenerateData( void ) override;
+
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
   // purposely not implemented

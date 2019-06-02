@@ -242,7 +242,7 @@ public:
 protected:
 
   /** Print out information about this object. */
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
   void m_GetData( double x );
 

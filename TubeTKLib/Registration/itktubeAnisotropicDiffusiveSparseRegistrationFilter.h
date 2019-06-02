@@ -325,7 +325,8 @@ public:
 protected:
   AnisotropicDiffusiveSparseRegistrationFilter( void );
   virtual ~AnisotropicDiffusiveSparseRegistrationFilter( void ) {}
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
   /** Handy for array indexing. */
   enum DivTerm { SMOOTH_TANGENTIAL, SMOOTH_NORMAL, PROP_TANGENTIAL,

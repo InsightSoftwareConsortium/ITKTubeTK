@@ -140,7 +140,7 @@ protected:
     {
     };
 
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
   /** Recomputes the matrix by calling the Superclass::ComputeMatrix() and
    * then applying the scale factor. */

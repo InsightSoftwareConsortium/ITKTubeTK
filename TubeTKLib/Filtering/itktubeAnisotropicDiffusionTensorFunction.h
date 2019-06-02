@@ -209,7 +209,8 @@ public:
 protected:
   AnisotropicDiffusionTensorFunction( void );
   virtual ~AnisotropicDiffusionTensorFunction( void ) {}
-  void PrintSelf( std::ostream &s, Indent indent ) const;
+
+  void PrintSelf( std::ostream &s, Indent indent ) const override;
 
   /** The offset of the center pixel in the neighborhood. */
   unsigned int m_Center;

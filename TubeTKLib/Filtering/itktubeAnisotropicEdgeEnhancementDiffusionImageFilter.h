@@ -139,7 +139,8 @@ public:
 protected:
   AnisotropicEdgeEnhancementDiffusionImageFilter( void );
  ~AnisotropicEdgeEnhancementDiffusionImageFilter( void ) {}
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
   /** Update diffusion tensor image */
   void virtual UpdateDiffusionTensorImage( void );

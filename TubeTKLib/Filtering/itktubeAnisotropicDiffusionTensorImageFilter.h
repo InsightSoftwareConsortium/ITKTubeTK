@@ -118,10 +118,11 @@ public:
 protected:
   AnisotropicDiffusionTensorImageFilter( void );
  ~AnisotropicDiffusionTensorImageFilter( void ) {}
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
   /* overloaded GenerateData method */
-  virtual void GenerateData( void );
+  virtual void GenerateData( void ) override;
 
   /** A simple method to copy the data from the input to the output. ( Supports
    * "read-only" image adaptors in the case where the input image type converts

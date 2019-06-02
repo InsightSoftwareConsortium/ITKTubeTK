@@ -108,7 +108,7 @@ protected:
                                       TransformPointer transform );
 
   /** Print information about the object. */
-  virtual void PrintSelf( std::ostream & os, Indent indent ) const;
+  virtual void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
 

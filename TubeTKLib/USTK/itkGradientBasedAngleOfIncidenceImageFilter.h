@@ -136,12 +136,13 @@ protected:
   GradientBasedAngleOfIncidenceImageFilter( void );
   virtual ~GradientBasedAngleOfIncidenceImageFilter( void ) {}
 
-  virtual void PrintSelf( std::ostream & os, Indent indent ) const;
+  virtual void PrintSelf( std::ostream & os, Indent indent ) const override;
 
-  virtual void BeforeThreadedGenerateData( void );
+  virtual void BeforeThreadedGenerateData( void ) override;
+
   virtual void ThreadedGenerateData(
     const OutputImageRegionType & outputRegionForThread,
-    ThreadIdType threadId );
+    ThreadIdType threadId ) override;
 
 private:
   //purposely not implemented

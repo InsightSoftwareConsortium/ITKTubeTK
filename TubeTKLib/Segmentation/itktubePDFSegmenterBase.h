@@ -178,7 +178,7 @@ protected:
 
   virtual void ApplyPDFs( void );
 
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
   typedef std::vector< typename ProbabilityImageType::Pointer >
                                               ProbabilityImageVectorType;

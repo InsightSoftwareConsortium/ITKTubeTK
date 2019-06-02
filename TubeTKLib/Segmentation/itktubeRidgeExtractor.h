@@ -349,7 +349,7 @@ protected:
   RidgeExtractor( void );
   virtual ~RidgeExtractor( void );
 
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
   /** Traverse the ridge one way */
   bool  TraverseOneWay( PointType & newX, VectorType & newT,

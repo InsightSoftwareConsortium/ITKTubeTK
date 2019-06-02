@@ -73,8 +73,10 @@ public:
 protected:
   ComputeTrainingMaskFilter();
   virtual ~ComputeTrainingMaskFilter();
-  virtual void GenerateData();
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+
+  virtual void GenerateData() override;
+
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
   typedef itk::BinaryBallStructuringElement< short,

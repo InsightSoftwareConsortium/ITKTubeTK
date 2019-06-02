@@ -90,12 +90,13 @@ public:
   vnl_vector< double > GetBranchNodes( void );
 
   void Update( void );
+
 protected:
 
   TubeSpatialObjectToTubeGraphFilter( void );
   ~TubeSpatialObjectToTubeGraphFilter( void );
 
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
 private:
 

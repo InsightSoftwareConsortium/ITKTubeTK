@@ -95,9 +95,9 @@ protected:
   void ComputeConvolvedImageFFT();
   void ComputeConvolvedImage();
 
-  void GenerateData();
+  void GenerateData() override;
 
-  void PrintSelf( std::ostream & os, Indent indent ) const;
+  void PrintSelf( std::ostream & os, Indent indent ) const override;
 
 private:
   // Purposely not implemented

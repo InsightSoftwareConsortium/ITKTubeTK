@@ -119,11 +119,11 @@ protected:
   CVTImageFilter( void );
   ~CVTImageFilter( void ) {}
 
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
-  void GenerateInputRequestedRegion( void );
-  void EnlargeOutputRequestedRegion( DataObject * output );
-  void GenerateData( void );
+  void GenerateInputRequestedRegion( void ) override;
+  void EnlargeOutputRequestedRegion( DataObject * output ) override;
+  void GenerateData( void ) override;
 
   double ComputeIteration( double & energyDiff );
   void ComputeSample( PointArrayType * sample, unsigned int sampleSize,
