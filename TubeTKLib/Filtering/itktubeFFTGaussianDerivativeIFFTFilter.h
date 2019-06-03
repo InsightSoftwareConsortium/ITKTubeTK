@@ -71,7 +71,7 @@ public:
 
   void GenerateNJet( typename OutputImageType::Pointer & D,
     std::vector< typename TOutputImage::Pointer > & Dx,
-    std::vector< typename TOutputImage::Pointer > & Dxx );
+    std::vector< typename TOutputImage::Pointer > & Dxx ) override;
 
 protected:
   typedef ForwardFFTImageFilter< RealImageType >          FFTFilterType;

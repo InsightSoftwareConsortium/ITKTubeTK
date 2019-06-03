@@ -123,7 +123,7 @@ public:
   void         SetBasisValues( const VectorType & values );
 
   virtual typename FeatureImageType::Pointer GetFeatureImage(
-                                       unsigned int fNum ) const;
+    unsigned int fNum ) const override;
 
   void   SetInputWhitenMeans( const ValueListType & means );
   const  ValueListType & GetInputWhitenMeans( void ) const;
@@ -135,14 +135,15 @@ public:
   void   SetOutputWhitenStdDevs( const ValueListType & stdDevs );
   const  ValueListType & GetOutputWhitenStdDevs( void ) const;
 
-  virtual void Update( void );
+  virtual void Update( void ) override;
 
-  virtual unsigned int      GetNumberOfFeatures( void ) const;
+  virtual unsigned int      GetNumberOfFeatures( void ) const override;
 
-  virtual FeatureVectorType GetFeatureVector( const IndexType & indx ) const;
+  virtual FeatureVectorType GetFeatureVector( const IndexType & indx ) const
+    override;
 
   virtual FeatureValueType  GetFeatureVectorValue( const IndexType & indx,
-                              unsigned int fNum ) const;
+    unsigned int fNum ) const override;
 
 protected:
 

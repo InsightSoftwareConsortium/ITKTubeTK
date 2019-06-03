@@ -81,7 +81,7 @@ public:
   itkSetMacro( StdevBase, double );
 
   /** Override the Set for the InputImage */
-  virtual void SetInputImage( const InputImageType * ptr );
+  virtual void SetInputImage( const InputImageType * ptr ) override;
 
   /** Set the mask or second image used in the comparison. */
   virtual void SetInputMask( const typename InputImageType::Pointer mask );
@@ -102,7 +102,7 @@ public:
   virtual void SetHistogramSize( const unsigned int & size );
 
   /** Get the Z-score at a given point. */
-  virtual double Evaluate( const PointType & point ) const
+  virtual double Evaluate( const PointType & point ) const override
     {
     IndexType index;
     this->ConvertPointToNearestIndex( point, index );
@@ -111,7 +111,7 @@ public:
 
   /** Get the Z-score at a given continuous index. */
   virtual double EvaluateAtContinuousIndex(
-    const ContinuousIndexType & index ) const
+    const ContinuousIndexType & index ) const override
     {
     IndexType nindex;
 
@@ -120,7 +120,7 @@ public:
     }
 
   /** Get the Z-score at a given index. */
-  virtual double EvaluateAtIndex( const IndexType & index ) const;
+  virtual double EvaluateAtIndex( const IndexType & index ) const override;
 
   /**
    * Add histograms ( based on a given point ) to the internals used to

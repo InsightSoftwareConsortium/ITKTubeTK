@@ -75,7 +75,7 @@ protected:
   void m_Move( double & a, double & b, double & c,
     double d, double e, double f );
 
-  bool m_Extreme( double * x, double * xVal );
+  bool m_Extreme( double * x, double * xVal ) override;
 
 private:
 
