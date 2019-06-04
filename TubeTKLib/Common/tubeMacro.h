@@ -120,6 +120,13 @@ virtual const char * GetNameOfClass( void ) const override  \
   return #classname;                               \
   }
 
+/** Return the name of a class. */
+#define tubeTypeMacroNoOverride( classname )                 \
+virtual const char * GetNameOfClass( void ) const \
+  {                                                \
+  return #classname;                               \
+  }
+
 /** Return a member variable of fundamental type. */
 #define tubeGetMacro( variablename, variabletype )  \
 virtual variabletype Get##variablename( void )      \

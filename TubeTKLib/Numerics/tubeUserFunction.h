@@ -43,7 +43,7 @@ public:
   typedef TOutput       OutputType;
 
   /** Return the type of this object. */
-  tubeTypeMacro( UserFunction );
+  tubeTypeMacroNoOverride( UserFunction );
 
   /** Constructor. */
   UserFunction( void )

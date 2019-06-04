@@ -78,7 +78,7 @@ public:
       }
 
     /** Return the name of this class. */
-    tubeTypeMacro( RequiredOptionMissing );
+    tubeTypeMacroNoOverride( RequiredOptionMissing );
 
     /** Return the tag of the missing option. */
     tubeGetStringMacro( Tag );
