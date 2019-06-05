@@ -60,14 +60,14 @@ public:
   /** Destructor. */
   virtual ~SplineApproximation1D( void );
 
-  double DataValue( const VectorType & y, double x );
+  double DataValue( const VectorType & y, double x ) override;
 
-  double DataValueD( const VectorType & y, double x );
+  double DataValueD( const VectorType & y, double x ) override;
 
-  double DataValueD2( const VectorType & y, double x );
+  double DataValueD2( const VectorType & y, double x ) override;
 
   double DataValueJet( const VectorType & y, double x, double * d,
-    double * d2 );
+    double * d2 ) override;
 
 protected:
 

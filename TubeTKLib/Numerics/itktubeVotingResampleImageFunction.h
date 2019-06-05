@@ -97,9 +97,9 @@ public:
    * ImageFunction::IsInsideBuffer() can be used to check bounds before
    * calling the method. */
   virtual OutputType EvaluateAtContinuousIndex(
-    const ContinuousIndexType & index ) const;
+    const ContinuousIndexType & index ) const override;
 
-  SizeType GetRadius() const
+  SizeType GetRadius() const override
     { return m_Radius; }
 
 protected:

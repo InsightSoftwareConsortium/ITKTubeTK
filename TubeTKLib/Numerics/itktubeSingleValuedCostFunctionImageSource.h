@@ -95,12 +95,12 @@ protected:
   SingleValuedCostFunctionImageSource();
   virtual ~SingleValuedCostFunctionImageSource() {}
 
-  virtual void GenerateOutputInformation();
+  virtual void GenerateOutputInformation() override;
 
-  virtual void BeforeThreadedGenerateData();
+  virtual void BeforeThreadedGenerateData() override;
 
   virtual void ThreadedGenerateData( const OutputImageRegionType &
-    outputRegionForThread, ThreadIdType threadId );
+    outputRegionForThread, ThreadIdType threadId ) override;
 
 private:
   SingleValuedCostFunctionImageSource(

@@ -44,7 +44,7 @@ public:
   typedef Self *        Pointer;
   typedef const Self *  ConstPointer;
 
-  tubeTypeMacro( Object );
+  tubeTypeMacroNoOverride( Object );
 
   /** Constructor. */
   Object( void );

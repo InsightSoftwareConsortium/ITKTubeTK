@@ -113,7 +113,8 @@ public:
 
   /** Standard itk::ProcessObject subclass method. */
   using Superclass::MakeOutput;
-  virtual DataObjectPointer MakeOutput( DataObjectPointerArraySizeType idx );
+  virtual DataObjectPointer MakeOutput( DataObjectPointerArraySizeType idx )
+    override;
 
   virtual void SetMeasurementVectorSize( const MeasurementVectorSizeType s )
     {
@@ -159,14 +160,14 @@ public:
   itkGetMacro( UseSingleMaskValue, bool );
 
   /** This method causes the filter to generate its output. */
-  virtual void GenerateData( void );
+  virtual void GenerateData( void ) override;
 
   /** This method ensures that a mask image if specified has requested regions
    * that at least contain the input image's buffered region. */
   virtual void GenerateInputRequestedRegion( void )
-    throw( InvalidRequestedRegionError );
+    throw( InvalidRequestedRegionError ) override;
 
-  virtual void GenerateOutputInformation( void );
+  virtual void GenerateOutputInformation( void ) override;
 
 protected:
   VectorImageToListGenerator( void );
@@ -179,7 +180,8 @@ private:
   void operator=( const Self& ); //purposely not implemented
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * )
+    override {};
 
   MaskPixelType       m_MaskValue;
   bool                m_UseSingleMaskValue;

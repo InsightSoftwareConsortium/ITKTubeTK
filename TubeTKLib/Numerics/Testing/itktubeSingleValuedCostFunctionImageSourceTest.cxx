@@ -51,6 +51,7 @@ public:
   typedef Superclass::ParametersValueType ParametersValueType;
 
   virtual MeasureType GetValue( const ParametersType & parameters ) const
+    override
     {
     return 2 * parameters[0] * parameters[0] + \
            3 * parameters[1] * parameters[1] + \
@@ -58,12 +59,12 @@ public:
     }
 
   virtual void GetDerivative( const ParametersType &,
-                             DerivativeType & ) const
+                             DerivativeType & ) const override
     {
     // irrevelant for this test
     }
 
-  virtual unsigned int GetNumberOfParameters( void ) const
+  virtual unsigned int GetNumberOfParameters( void ) const override
     {
     return 3;
     }

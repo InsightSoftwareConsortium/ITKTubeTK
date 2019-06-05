@@ -113,7 +113,7 @@ protected:
     }
   ~RegionFromReferenceImageFilter() {}
 
-  void GenerateOutputInformation();
+  void GenerateOutputInformation() override;
 
 private:
   RegionFromReferenceImageFilter( const Self& ); //purposely not implemented

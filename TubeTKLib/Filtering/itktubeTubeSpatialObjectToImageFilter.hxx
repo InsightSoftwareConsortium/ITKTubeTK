@@ -245,7 +245,7 @@ TubeSpatialObjectToImageFilter< ObjectDimension, TOutputImage, TRadiusImage,
         // Radius Image and Density image with radius
         if( m_UseRadius )
           {
-          typename TubePointType::PointType radius, zero;
+          typename TubePointType::PointType radius;
           radius.Fill( tubePoint->GetRadiusInWorldSpace() );
 
           double phys_pt_radius = tubePoint->GetRadiusInWorldSpace();
