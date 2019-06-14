@@ -102,6 +102,9 @@ public:
   SizeType GetRadius() const override
     { return m_Radius; }
 
+  SizeType GetRadius() const
+    { return m_Radius; }
+
 protected:
   VotingResampleImageFunction( void );
   ~VotingResampleImageFunction( void ) {}
