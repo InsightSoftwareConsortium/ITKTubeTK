@@ -49,7 +49,7 @@ int itktubeMarkDuplicateFramesInvalidImageFilterTest( int argc, char * argv[] )
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( innerOpticMetadata );
   // Make sure the MetaDataDictionary is populated.
-  TRY_EXPECT_NO_EXCEPTION( reader->Update() );
+  ITK_TRY_EXPECT_NO_EXCEPTION( reader->Update() );
   typedef ReaderType::OutputImageType RGBImageType;
   RGBImageType::Pointer inputImage = reader->GetOutput();
   inputImage->DisconnectPipeline();
@@ -68,13 +68,13 @@ int itktubeMarkDuplicateFramesInvalidImageFilterTest( int argc, char * argv[] )
   DuplicateFilterType::Pointer duplicateFilter = DuplicateFilterType::New();
   duplicateFilter->SetInput( luminanceFilter->GetOutput() );
   duplicateFilter->SetTolerance( 3 );
-  TEST_EXPECT_EQUAL( duplicateFilter->GetTolerance(), 3 );
+  ITK_TEST_EXPECT_EQUAL( duplicateFilter->GetTolerance(), 3 );
   duplicateFilter->SetFractionalThreshold( 0.7 );
-  TEST_EXPECT_EQUAL( duplicateFilter->GetFractionalThreshold(), 0.7 );
+  ITK_TEST_EXPECT_EQUAL( duplicateFilter->GetFractionalThreshold(), 0.7 );
   duplicateFilter->SetInputMetaDataDictionary(
     &( inputImage->GetMetaDataDictionary() ) );
   duplicateFilter->DebugOn();
-  TRY_EXPECT_NO_EXCEPTION( duplicateFilter->Update() );
+  ITK_TRY_EXPECT_NO_EXCEPTION( duplicateFilter->Update() );
 
   typedef itk::ImageFileWriter< OutputImageType > WriterType;
   WriterType::Pointer writer = WriterType::New();
@@ -87,11 +87,11 @@ int itktubeMarkDuplicateFramesInvalidImageFilterTest( int argc, char * argv[] )
     duplicateFilter->GetOutputMetaDataDictionary() );
   writer->SetImageIO( imageIO );
   writer->SetUseCompression( true );
-  TRY_EXPECT_NO_EXCEPTION( writer->Update() );
+  ITK_TRY_EXPECT_NO_EXCEPTION( writer->Update() );
 
-  TEST_EXPECT_EQUAL( inputImage
+  ITK_TEST_EXPECT_EQUAL( inputImage
     ->GetMetaDataDictionary().GetKeys().size(), 9 );
-  TEST_EXPECT_EQUAL( duplicateFilter->GetOutputMetaDataDictionary()
+  ITK_TEST_EXPECT_EQUAL( duplicateFilter->GetOutputMetaDataDictionary()
     .GetKeys().size(), 9 );
 
   return EXIT_SUCCESS;
