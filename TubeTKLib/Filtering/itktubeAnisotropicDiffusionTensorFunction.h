@@ -129,7 +129,8 @@ public:
   /** Compute the equation value.  Inherited from the superclass: call
    *  one of the other two ComputeUpdate() functions instead. */
   virtual PixelType ComputeUpdate( const NeighborhoodType & neighborhood,
-    void *globalData, const FloatOffsetType& = FloatOffsetType( 0.0 ) );
+    void *globalData, const FloatOffsetType& = FloatOffsetType( 0.0 ) )
+    override;
 
   /** Compute the equation value. The spacing of the images associated
    * with the given neighborhoods and regions should be the same as that
@@ -153,8 +154,8 @@ public:
    *  Returns the time step supplied by the user. We don't need
    *  to use the global data supplied since we are returning a fixed value.
    *  */
-  virtual TimeStepType ComputeGlobalTimeStep(
-    void * itkNotUsed( globalData ) ) const
+  virtual TimeStepType ComputeGlobalTimeStep( void * itkNotUsed( globalData ) )
+    const override
     { return this->GetTimeStep(); }
 
   /** Set/Get the time step. For this class of anisotropic diffusion
@@ -197,13 +198,13 @@ public:
 
   /** Returns a pointer to a global data structure that is passed to this
    * object from the solver at each calculation. */
-  virtual void * GetGlobalDataPointer( void ) const
+  virtual void * GetGlobalDataPointer( void ) const override
     {
     GlobalDataStruct *ans = new GlobalDataStruct();
     return ans;
     }
 
-  virtual void ReleaseGlobalDataPointer( void * GlobalData ) const
+  virtual void ReleaseGlobalDataPointer( void * GlobalData ) const override
     { delete static_cast<GlobalDataStruct *>( GlobalData ); }
 
 protected:

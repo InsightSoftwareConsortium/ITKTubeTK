@@ -46,7 +46,7 @@ public:
     m_Value = 0.0;
     }
 
-  const OutputType & Value( const InputType & input )
+  const OutputType & Value( const InputType & input ) override
     {
     m_Value = m_Spline->Value( input );
     return m_Value;
@@ -82,7 +82,7 @@ public:
     m_Derivative = 0.0;
     }
 
-  const OutputType & Value( const InputType & input )
+  const OutputType & Value( const InputType & input ) override
     {
     m_Derivative = m_Spline->ValueD( input );
     return m_Derivative;

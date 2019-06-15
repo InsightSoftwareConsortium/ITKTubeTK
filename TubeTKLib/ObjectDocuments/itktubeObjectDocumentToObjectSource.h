@@ -104,7 +104,8 @@ public:
 
   /* Make an object to be used as the specified indexed output. */
   using Superclass::MakeOutput;
-  virtual DataObjectPointer MakeOutput( DataObjectPointerArraySizeType index );
+  virtual DataObjectPointer MakeOutput( DataObjectPointerArraySizeType index )
+    override;
 
 protected:
 
@@ -138,13 +139,13 @@ protected:
 
   /** Generate the output data, but note that this function should be
       implemented by derived classes. */
-  virtual void GenerateData( void )
+  virtual void GenerateData( void ) override
     {
     }
 
   /** Generate the information describing the output data, but note that this
       function should be implemented by derived classes. */
-  virtual void GenerateOutputInformation( void )
+  virtual void GenerateOutputInformation( void ) override
     {
     }
 
@@ -170,7 +171,8 @@ private:
   void operator=( const Self & self );
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * )
+    override {};
 
   ConstDocumentPointer  m_Input;
   int                   m_StartTransforms;

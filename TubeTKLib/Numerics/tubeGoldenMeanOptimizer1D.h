@@ -62,7 +62,7 @@ public:
 
 protected:
 
-  bool m_Extreme( double * x, double * xVal );
+  bool m_Extreme( double * x, double * xVal ) override;
 
 private:
 

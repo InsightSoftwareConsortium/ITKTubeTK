@@ -80,7 +80,7 @@ public:
   {
   }
 
-  MeasureType  GetValue( const ParametersType & parameters ) const
+  MeasureType  GetValue( const ParametersType & parameters ) const override
   {
     const double x = parameters[0];
     const double y = parameters[1];
@@ -96,7 +96,7 @@ public:
   }
 
   void GetDerivative( const ParametersType & parameters,
-                            DerivativeType  & derivative ) const
+                            DerivativeType  & derivative ) const override
   {
     const double x = parameters[0];
     const double y = parameters[1];
@@ -111,7 +111,7 @@ public:
     std::cout << derivative[0] << " " << derivative[1] << std::endl;
   }
 
-  unsigned int GetNumberOfParameters( void ) const
+  unsigned int GetNumberOfParameters( void ) const override
     {
     return SpaceDimension;
     }
