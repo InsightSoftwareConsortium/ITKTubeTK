@@ -45,7 +45,7 @@ int itktubeInnerOpticToPlusImageReaderTest( int argc, char * argv[] )
   typedef itk::tube::InnerOpticToPlusImageReader ReaderType;
   ReaderType::Pointer reader = ReaderType::New();
 
-  TRY_EXPECT_EXCEPTION( reader->Update() );
+  ITK_TRY_EXPECT_EXCEPTION( reader->Update() );
   reader->SetFileName( innerOpticMetadata );
 
   typedef ReaderType::OutputImageType RGBImageType;
@@ -54,17 +54,17 @@ int itktubeInnerOpticToPlusImageReaderTest( int argc, char * argv[] )
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( outputImageFile );
   writer->SetInput( reader->GetOutput() );
-  TRY_EXPECT_NO_EXCEPTION( writer->Update() );
+  ITK_TRY_EXPECT_NO_EXCEPTION( writer->Update() );
 
   reader->GetOutput()->Print( std::cout );
-  TEST_EXPECT_EQUAL( reader->GetOutput()->GetMetaDataDictionary().GetKeys().size(), 9 );
+  ITK_TEST_EXPECT_EQUAL( reader->GetOutput()->GetMetaDataDictionary().GetKeys().size(), 9 );
 
   reader->SetStartIndex( 3 );
-  TEST_EXPECT_EQUAL( reader->GetStartIndex(), 3 );
+  ITK_TEST_EXPECT_EQUAL( reader->GetStartIndex(), 3 );
   reader->SetEndIndex( 4 );
-  TEST_EXPECT_EQUAL( reader->GetEndIndex(), 4 );
+  ITK_TEST_EXPECT_EQUAL( reader->GetEndIndex(), 4 );
   reader->SetIncrementIndex( 5 );
-  TEST_EXPECT_EQUAL( reader->GetIncrementIndex(), 5 );
+  ITK_TEST_EXPECT_EQUAL( reader->GetIncrementIndex(), 5 );
 
   return EXIT_SUCCESS;
 }
