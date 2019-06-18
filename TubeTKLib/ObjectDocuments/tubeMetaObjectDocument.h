@@ -80,7 +80,7 @@ public:
     objectDocument );
 
   /** Clear all the information. */
-  virtual void Clear( void );
+  virtual void Clear( void ) override;
 
 protected:
 
@@ -91,7 +91,7 @@ protected:
   tubeSetMacro( NumberOfObjectDocuments, int );
 
   /** Read the fields. */
-  virtual bool ReadFields( void );
+  virtual bool ReadFields( void ) override;
 
   /** Initialize the read fields for objects. */
   virtual void SetupObjectReadFields( void );
@@ -100,13 +100,13 @@ protected:
   virtual void SetupObjectWriteFields( unsigned int index );
 
   /** Initialize the read fields. */
-  virtual void SetupReadFields( void );
+  virtual void SetupReadFields( void ) override;
 
   /** Initialize the write fields. */
-  virtual void SetupWriteFields( void );
+  virtual void SetupWriteFields( void ) override;
 
   /** Write the fields. */
-  virtual bool WriteFields( void );
+  virtual bool WriteFields( void ) override;
 
   /** Print information about this object. */
   virtual void PrintSelf( std::ostream & os, Indent indent ) const override;

@@ -63,38 +63,38 @@ public:
   itkSetStringMacro( Comment );
 
   /** Copy the information from the specified data object. */
-  virtual void CopyInformation( const DataObject * itkNotUsed( data ) )
+  virtual void CopyInformation( const DataObject * itkNotUsed( data ) ) override
     {
     }
 
   /** Update the output information. */
-  virtual void UpdateOutputInformation( void )
+  virtual void UpdateOutputInformation( void ) override
     {
     }
 
   /** Verify that the requested region is within the largest possible region,
       but note that this object does not use region information. */
-  virtual bool VerifyRequestedRegion( void )
+  virtual bool VerifyRequestedRegion( void ) override
     {
     return true;
     }
 
   /** Determine whether the requested region is outside of the buffered region,
       but note that this object does not use region information. */
-  virtual bool RequestedRegionIsOutsideOfTheBufferedRegion( void )
+  virtual bool RequestedRegionIsOutsideOfTheBufferedRegion( void ) override
     {
     return false;
     }
 
   /** Set the requested region to match the requested region of the specified
       data object, but note that this object does not use region information. */
-  virtual void SetRequestedRegion( const DataObject * itkNotUsed( data ) )
+  virtual void SetRequestedRegion( const DataObject * itkNotUsed( data ) ) override
     {
     }
 
   /** Set the requested region to the largest possible region, but note that
       this object does not use region information. */
-  virtual void SetRequestedRegionToLargestPossibleRegion( void )
+  virtual void SetRequestedRegionToLargestPossibleRegion( void ) override
     {
     }
 

@@ -88,9 +88,9 @@ public:
 protected:
   RecordOptimizationParameterProgressionCommand( void );
 
-  void Execute( Object *caller, const EventObject & event );
+  void Execute( Object *caller, const EventObject & event ) override;
 
-  void Execute( const Object * object, const EventObject & event );
+  void Execute( const Object * object, const EventObject & event ) override;
 
   struct ParameterIteration
     {

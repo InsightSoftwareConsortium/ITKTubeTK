@@ -82,7 +82,7 @@ public:
     m_Derivative = 0.0;
     }
 
-  const OutputType & Value( const InputType & input )
+  const OutputType & Value( const InputType & input ) override
     {
     m_Derivative = m_Optimizer->FuncDeriv( input );
     return m_Derivative;

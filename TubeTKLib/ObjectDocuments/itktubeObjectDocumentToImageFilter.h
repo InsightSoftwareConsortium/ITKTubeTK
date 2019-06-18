@@ -82,7 +82,7 @@ public:
 
   /** Return the output. */
   using Superclass::GetOutput;
-  ImageType * GetOutput( void );
+  ImageType * GetOutput( void ) override;
 
 protected:
 
@@ -98,7 +98,7 @@ protected:
   virtual ~ObjectDocumentToImageFilter( void );
 
   /** Generate the output data. */
-  virtual void GenerateData( void );
+  virtual void GenerateData( void ) override;
 
   /** Read the specified object document. */
   virtual ImagePointer ReadDocument( ConstDocumentPointer image );
