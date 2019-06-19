@@ -121,7 +121,7 @@ public:
   virtual void GraftNthOutput( unsigned int idx, DataObject *output );
   using Superclass::MakeOutput;
   virtual ProcessObject::DataObjectPointer
-    MakeOutput( ProcessObject::DataObjectPointerArraySizeType idx );
+    MakeOutput( ProcessObject::DataObjectPointerArraySizeType idx ) override;
 
 protected:
   SpatialObjectSource( void );

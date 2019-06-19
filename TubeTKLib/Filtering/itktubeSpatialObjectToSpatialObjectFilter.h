@@ -61,7 +61,7 @@ public:
   // from itkProcessObject
   virtual void SetInput( const
     itk::ProcessObject::DataObjectIdentifierType & index, itk::DataObject *
-    input );
+    input ) override;
 
   const InputSpatialObjectType * GetInput( void ) const;
 

@@ -73,7 +73,7 @@ protected:
   SubSampleTubeSpatialObjectFilter( void );
   virtual ~SubSampleTubeSpatialObjectFilter( void );
 
-  virtual void GenerateData( void );
+  virtual void GenerateData( void ) override;
 
 private:
   // purposely not implemented
