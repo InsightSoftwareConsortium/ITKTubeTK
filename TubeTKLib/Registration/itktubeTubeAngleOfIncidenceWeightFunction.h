@@ -95,7 +95,7 @@ public:
   itkSetMacro( UltrasoundProbeOrigin, PointType );
   itkGetConstReferenceMacro( UltrasoundProbeOrigin, PointType );
 
-  WeightType Evaluate( const TubePointType & tubePoint ) const
+  WeightType Evaluate( const TubePointType & tubePoint ) const override
     {
     const PointType & position = tubePoint.GetPositionInObjectSpace();
     typename TubePointType::VectorType beam =

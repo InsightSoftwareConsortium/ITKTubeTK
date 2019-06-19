@@ -68,7 +68,7 @@ protected:
   LabelMapToAcousticImpedanceImageFilter( void ) {}
   virtual ~LabelMapToAcousticImpedanceImageFilter( void ) {}
 
-  virtual void BeforeThreadedGenerateData( void );
+  virtual void BeforeThreadedGenerateData( void ) override;
 
 private:
   // purposely not implemented

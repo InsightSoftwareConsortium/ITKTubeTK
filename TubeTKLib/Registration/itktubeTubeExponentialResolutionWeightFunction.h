@@ -70,7 +70,7 @@ public:
   typedef TWeight    WeightType;
   typedef TTubePoint TubePointType;
 
-  WeightType Evaluate( const TubePointType & tubePoint ) const
+  WeightType Evaluate( const TubePointType & tubePoint ) const override
     {
     const WeightType radius = tubePoint.GetRadiusInObjectSpace();
     return static_cast< WeightType >( 2.0 /

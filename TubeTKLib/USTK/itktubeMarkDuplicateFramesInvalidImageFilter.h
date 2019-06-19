@@ -65,10 +65,10 @@ private:
   MarkDuplicateFramesInvalidImageFilterThreader( const Self & );
   void operator=( const Self & ); // purposely not implemented
 
-  virtual void BeforeThreadedExecution( void );
+  virtual void BeforeThreadedExecution( void ) override;
   virtual void ThreadedExecution( const DomainType & subDomain,
-    const ThreadIdType threadId );
-  virtual void AfterThreadedExecution( void );
+    const ThreadIdType threadId ) override;
+  virtual void AfterThreadedExecution( void ) override;
 
   typedef std::list< SizeValueType >       InvalidFramesType;
   typedef std::vector< InvalidFramesType > InvalidFramesPerThreadType;
@@ -156,16 +156,17 @@ protected:
 
   using Superclass::MakeOutput;
   virtual DataObject::Pointer MakeOutput(
-    DataObjectPointerArraySizeType index );
+    DataObjectPointerArraySizeType index ) override;
 
-  virtual void GenerateData( void );
+  virtual void GenerateData( void ) override;
 
 private:
   MarkDuplicateFramesInvalidImageFilter( const Self & );
   void operator=( const Self & ); // purposely not implemented
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
+    {};
 
   InputImagePixelType m_Tolerance;
   double m_FractionalThreshold;

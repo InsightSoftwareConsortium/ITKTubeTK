@@ -92,12 +92,12 @@ protected:
 
   typedef Superclass::OutputImageRegionType OutputImageRegionType;
 
-  virtual void GenerateOutputInformation( void );
+  virtual void GenerateOutputInformation( void ) override;
 
-  virtual void GenerateData( void );
+  virtual void GenerateData( void ) override;
 
   /** Expand to the largest value X and Y -- leave Z unchanged. */
-  virtual void EnlargeOutputRequestedRegion( DataObject * output );
+  virtual void EnlargeOutputRequestedRegion( DataObject * output ) override;
 
 private:
   InnerOpticToPlusImageReader( const Self & ); // purposely not implemented

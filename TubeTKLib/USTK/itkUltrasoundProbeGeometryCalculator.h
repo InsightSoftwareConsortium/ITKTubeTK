@@ -104,7 +104,7 @@ protected:
 
   using Superclass::MakeOutput;
   virtual DataObject::Pointer MakeOutput(
-    DataObjectPointerArraySizeType index );
+    DataObjectPointerArraySizeType index ) override;
 
   virtual void GenerateData( void ) override;
 
@@ -115,7 +115,8 @@ private:
   void operator=( const Self & );
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
+    {};
 
   unsigned int   m_GeneralBeamDirection;
   InputPixelType m_BackgroundValue;
