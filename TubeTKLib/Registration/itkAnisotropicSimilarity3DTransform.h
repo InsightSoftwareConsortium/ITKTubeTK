@@ -145,10 +145,10 @@ protected:
 
   /** Recomputes the matrix by calling the Superclass::ComputeMatrix() and
    * then applying the scale factor. */
-  void ComputeMatrix();
+  void ComputeMatrix() override;
 
   /** Computes the parameters from an input matrix. */
-  void ComputeMatrixParameters();
+  void ComputeMatrixParameters() override;
 
 private:
   // purposely not implemented

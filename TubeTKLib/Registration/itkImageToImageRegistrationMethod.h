@@ -133,7 +133,7 @@ protected:
   /** Method that actually computes the registration. This method is
    * intended to be overloaded by derived classes. Those overload,
    * however, must invoke this method in the base class. */
-  void GenerateData( void );
+  void GenerateData( void ) override;
 
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 
@@ -145,7 +145,7 @@ protected:
 
   using Superclass::MakeOutput;
   virtual DataObjectPointer  MakeOutput( DataObjectPointerArraySizeType
-    idx );
+    idx ) override;
 
   ModifiedTimeType GetMTime( void ) const override;
 

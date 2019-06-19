@@ -77,7 +77,7 @@ public:
   //
   // Methods from Superclass
   //
-  virtual void GenerateData( void );
+  virtual void GenerateData( void ) override;
 
   //
   // Custom Methods

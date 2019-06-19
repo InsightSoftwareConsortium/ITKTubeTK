@@ -108,7 +108,7 @@ private:
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
   void SetInput( const typename Superclass::DataObjectIdentifierType &,
-    itk::DataObject * ) {};
+    itk::DataObject * ) override {};
 
   typename InputMaskType::Pointer                       m_InputMask;
   VnlMatrixType                                         m_VnlOutput;
