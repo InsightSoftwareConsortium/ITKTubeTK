@@ -100,8 +100,8 @@ public:
   typedef typename  PDFSegmenterType::ProbabilityImageType
     ProbabilityImageType;
 
-  virtual void SetInput( const InputImageType * img );
-  virtual void SetInput( unsigned int id, const InputImageType * img );
+  virtual void SetInput( const InputImageType * img ) override;
+  virtual void SetInput( unsigned int id, const InputImageType * img ) override;
 
   using Superclass::AddInput;
   virtual void AddInput( const InputImageType * img );
@@ -172,7 +172,7 @@ public:
   itkGetMacro( TrainClassifier, bool );
 
   // Local
-  void   Update();
+  void   Update() override;
   void   ClassifyImages();
 
   typename LabelMapType::Pointer GetOutput( void );
@@ -193,7 +193,8 @@ private:
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
   void SetInput( const typename Superclass::DataObjectIdentifierType &,
-    itk::DataObject * ) {};
+    itk::DataObject * ) override
+    {};
 
   typename RidgeFeatureGeneratorType::Pointer     m_RidgeFeatureGenerator;
   typename SeedFeatureGeneratorType::Pointer      m_SeedFeatureGenerator;

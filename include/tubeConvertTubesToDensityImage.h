@@ -111,7 +111,7 @@ public:
 protected:
   ConvertTubesToDensityImage( void );
   ~ConvertTubesToDensityImage() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const;
+  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
 
 private:
   /** itkConvertTubesToImageFilter parameters **/
@@ -119,7 +119,8 @@ private:
   void operator=( const Self & );
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
+    {};
 
   typename FilterType::Pointer m_Filter;
 };

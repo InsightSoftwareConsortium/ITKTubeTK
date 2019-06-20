@@ -64,7 +64,7 @@ public:
   // Methods from Superclass
   //
 
-  virtual void GenerateData( void );
+  virtual void GenerateData( void ) override;
 
   //
   // Custom Methods
@@ -110,7 +110,8 @@ protected:
   typedef InterpolateImageFunction<TImage, double> InterpolatorType;
   typedef ImageToImageMetric<TImage, TImage>       MetricType;
 
-  virtual void Optimize( MetricType * metric, InterpolatorType * interpolator );
+  virtual void Optimize( MetricType * metric, InterpolatorType * interpolator )
+    override;
 
   virtual void GradientOptimize( MetricType * metric,
                                  InterpolatorType * interpolator );

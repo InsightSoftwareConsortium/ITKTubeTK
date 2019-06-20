@@ -81,7 +81,7 @@ protected:
   SubSampleTubeTreeSpatialObjectFilter( void );
   virtual ~SubSampleTubeTreeSpatialObjectFilter( void );
 
-  virtual void GenerateData( void );
+  virtual void GenerateData( void ) override;
 
   /** Sub-sample at the tubes at a given level, then sub-sample their
   * children. */

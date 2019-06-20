@@ -90,7 +90,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro( Self );
 
-  inline unsigned int GetNumberOfParameters( void ) const
+  inline unsigned int GetNumberOfParameters( void ) const override
     {
     return this->m_Transform->GetNumberOfParameters();
     }
@@ -118,17 +118,17 @@ public:
   const DerivativeType & GetDerivative( const ParametersType &
     parameters ) const;
   void GetDerivative( const ParametersType & parameters,
-    DerivativeType & derivative ) const;
+    DerivativeType & derivative ) const override;
 
   /** Get the Value for SingleValue Optimizers */
-  MeasureType  GetValue( const ParametersType & parameters ) const;
+  MeasureType  GetValue( const ParametersType & parameters ) const override;
 
   /** Get Value and Derivatives for MultipleValuedOptimizers */
   void GetValueAndDerivative( const ParametersType & parameters,
-    MeasureType & Value, DerivativeType  & Derivative ) const;
+    MeasureType & Value, DerivativeType  & Derivative ) const override;
 
   /** Initialize the metric */
-  void Initialize( void ) throw ( ExceptionObject );
+  void Initialize( void ) throw ( ExceptionObject ) override;
 
   /** Control the radius scaling of the metric. */
   itkSetMacro( Kappa, ScalarType );

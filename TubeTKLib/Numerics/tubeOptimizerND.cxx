@@ -46,7 +46,7 @@ public:
     m_Value = 0.0;
     }
 
-  const OutputType & Value( const InputType & input )
+  const OutputType & Value( const InputType & input ) override
     {
     m_Value = m_Optimizer->FuncVal( input );
     return m_Value;

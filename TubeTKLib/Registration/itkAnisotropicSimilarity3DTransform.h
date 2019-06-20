@@ -103,16 +103,17 @@ public:
    * to within a specified tolerance, else an exception is thrown.
    *
    * \sa MatrixOffsetTransformBase::SetMatrix() */
-  virtual void SetMatrix( const MatrixType & matrix );
-  virtual void SetMatrix( const MatrixType & matrix, const double tolerance );
+  virtual void SetMatrix( const MatrixType & matrix ) override;
+  virtual void SetMatrix( const MatrixType & matrix, const double tolerance )
+    override;
 
   /** Set the transformation from a container of parameters This is
    * typically used by optimizers.  There are 7 parameters. The first
    * three represent the versor, the next three represent the translation
    * and the last one represents the scaling factor. */
-  void SetParameters( const ParametersType & parameters );
+  void SetParameters( const ParametersType & parameters ) override;
 
-  virtual const ParametersType & GetParameters( void ) const;
+  virtual const ParametersType & GetParameters( void ) const override;
 
   /** Set/Get the value of the isotropic scaling factor */
   void SetScale( ScaleType scale );
@@ -129,7 +130,7 @@ public:
     const;
 
   virtual void ComputeJacobianWithRespectToParameters(
-    const InputPointType & p, JacobianType & jacobian ) const;
+    const InputPointType & p, JacobianType & jacobian ) const override;
 
 protected:
   AnisotropicSimilarity3DTransform( const MatrixType & matrix,
@@ -144,10 +145,10 @@ protected:
 
   /** Recomputes the matrix by calling the Superclass::ComputeMatrix() and
    * then applying the scale factor. */
-  void ComputeMatrix();
+  void ComputeMatrix() override;
 
   /** Computes the parameters from an input matrix. */
-  void ComputeMatrixParameters();
+  void ComputeMatrixParameters() override;
 
 private:
   // purposely not implemented

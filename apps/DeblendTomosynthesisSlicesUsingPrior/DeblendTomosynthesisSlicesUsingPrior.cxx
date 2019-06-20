@@ -65,7 +65,7 @@ public:
   typedef Superclass::DerivativeType      DerivativeType;
   typedef itk::Image<TPixel, VDimension>  ImageType;
 
-  unsigned int GetNumberOfParameters( void ) const
+  unsigned int GetNumberOfParameters( void ) const override
     {
     return 3;
     }
@@ -111,7 +111,7 @@ public:
     }
 
   void GetDerivative( const ParametersType & params,
-                      DerivativeType & deriv ) const
+                      DerivativeType & deriv ) const override
     {
     ParametersType tmpP = params;
     deriv = params;
@@ -126,7 +126,7 @@ public:
       }
     }
 
-  MeasureType GetValue( const ParametersType & params ) const
+  MeasureType GetValue( const ParametersType & params ) const override
     {
     typedef itk::ImageRegionConstIterator< ImageType >
       ConstImageIteratorType;
@@ -226,7 +226,7 @@ protected:
     : m_Mode( 0 ), m_CallsToGetValue( 0 ) {}
   virtual ~BlendCostFunction( void ) {}
 
-  void PrintSelf( std::ostream & os, Indent indent ) const
+  void PrintSelf( std::ostream & os, Indent indent ) const override
     {
     Superclass::PrintSelf( os, indent );
     }
@@ -273,7 +273,7 @@ public:
   typedef itk::tube::SmoothingRecursiveGaussianImageFilter< ImageType,
     ImageType >                           BlurFilterType;
 
-  unsigned int GetNumberOfParameters( void ) const
+  unsigned int GetNumberOfParameters( void ) const override
     {
     return 4;
     }
@@ -319,7 +319,7 @@ public:
     }
 
   void GetDerivative( const ParametersType & params,
-                      DerivativeType & deriv ) const
+                      DerivativeType & deriv ) const override
     {
     ParametersType tmpP = params;
     deriv = params;
@@ -334,7 +334,7 @@ public:
       }
     }
 
-  MeasureType GetValue( const ParametersType & params ) const
+  MeasureType GetValue( const ParametersType & params ) const override
     {
     typedef itk::ImageRegionConstIterator< ImageType >
       ConstImageIteratorType;
@@ -454,7 +454,7 @@ protected:
     : m_Mode( 0 ), m_CallsToGetValue( 0 ) {}
   virtual ~BlendScaleCostFunction( void ) {}
 
-  void PrintSelf( std::ostream & os, Indent indent ) const
+  void PrintSelf( std::ostream & os, Indent indent ) const override
     {
     Superclass::PrintSelf( os, indent );
     }

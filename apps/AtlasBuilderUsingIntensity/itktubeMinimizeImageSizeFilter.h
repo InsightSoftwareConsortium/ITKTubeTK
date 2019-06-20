@@ -125,7 +125,7 @@ public:
 protected:
 
   /** Does the real work! */
-  virtual void GenerateData( void );
+  virtual void GenerateData( void ) override;
 
   MinimizeImageSizeFilter( void );
   ~MinimizeImageSizeFilter( void ) {}

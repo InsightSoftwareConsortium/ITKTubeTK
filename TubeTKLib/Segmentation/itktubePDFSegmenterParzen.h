@@ -132,20 +132,20 @@ public:
   typename LabeledFeatureSpaceType::Pointer GetLabeledFeatureSpace( void )
     const;
 
-  virtual void Update( void );
+  virtual void Update( void ) override;
 
   //
   // Must overwrite
   //
   virtual ProbabilityVectorType GetProbabilityVector( const
-    FeatureVectorType & fv ) const;
+    FeatureVectorType & fv ) const override;
 
 protected:
 
   PDFSegmenterParzen( void );
   virtual ~PDFSegmenterParzen( void );
 
-  virtual void GeneratePDFs( void );
+  virtual void GeneratePDFs( void ) override;
 
   void PrintSelf( std::ostream & os, Indent indent ) const override;
 

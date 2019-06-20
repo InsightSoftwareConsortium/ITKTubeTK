@@ -112,7 +112,7 @@ public:
   tubeWrapGetConstObjectMacro( Input, ImageType, Filter );
 
   /** Compute vesselness image */
-  void Update( void );
+  void Update( void ) override;
 
   /** Get output vesselness image */
   tubeWrapGetObjectMacro( Output, ImageType, Filter );
@@ -120,7 +120,7 @@ public:
 protected:
   EnhanceTubesUsingDiffusion( void );
   ~EnhanceTubesUsingDiffusion() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const;
+  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
 
 private:
   /** itkEnhanceTubesUsingDiffusionFilter parameters **/
@@ -128,7 +128,8 @@ private:
   void operator=( const Self & );
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
+    {};
 
   double                          m_MinSigma;
   double                          m_MaxSigma;

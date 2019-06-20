@@ -299,7 +299,7 @@ protected:
   TortuositySpatialObjectFilter( void );
   virtual ~TortuositySpatialObjectFilter( void );
 
-  virtual void GenerateData( void );
+  virtual void GenerateData( void ) override;
 
 private:
   // purposely not implemented

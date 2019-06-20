@@ -93,13 +93,13 @@ public:
 
   using Superclass::MakeOutput;
   virtual ProcessObject::DataObjectPointer
-    MakeOutput( ProcessObject::DataObjectPointerArraySizeType idx );
+    MakeOutput( ProcessObject::DataObjectPointerArraySizeType idx ) override;
 
 protected:
   ExtractTubePointsSpatialObjectFilter( void );
   virtual ~ExtractTubePointsSpatialObjectFilter( void );
 
-  virtual void GenerateData();
+  virtual void GenerateData() override;
 
 private:
   // purposely not implemented
@@ -110,7 +110,7 @@ private:
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
   void SetInput( const typename Superclass::DataObjectIdentifierType &,
-    itk::DataObject * ) {};
+    itk::DataObject * ) override {};
 
   typename PointsContainerDecoratorType::Pointer m_PointsContainerDecorator;
   typename PointsContainerType::Pointer          m_PointsContainer;
