@@ -82,7 +82,7 @@ int DoIt( int argc, char * argv[] )
   tubesGroup = reader->GetGroup();
   if( tubesGroup.IsNotNull() )
     {
-    tubesGroup->ComputeObjectToWorldTransform();
+    tubesGroup->Update();
     filter->SetInput( tubesGroup );
     filter->SetInputSpatialObject( tubesGroup );
     }

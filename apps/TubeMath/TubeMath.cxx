@@ -55,7 +55,7 @@ ReadTubeFile( const char * fileName )
 
   typename SpatialObjectReaderType::GroupType::Pointer group =
     reader->GetGroup();
-  group->ComputeObjectToWorldTransform();
+  group->Update();
   return group;
 }
 
@@ -111,7 +111,7 @@ SetPropertyFromImage( typename itk::GroupSpatialObject< DimensionT >::
     if( currentTube == ALL_TUBES_CURRENT || inputTube->GetId() ==
       currentTube )
       {
-      inputTube->ComputeObjectToWorldTransform();
+      inputTube->Update();
 
       unsigned int pointListSize = inputTube->GetNumberOfPoints();
       for( unsigned int pointNum = 0; pointNum < pointListSize; ++pointNum )
@@ -180,7 +180,7 @@ SetPropertyFromImageMean( typename itk::GroupSpatialObject< DimensionT >::
     if( currentTube == ALL_TUBES_CURRENT || inputTube->GetId() ==
       currentTube )
       {
-      inputTube->ComputeObjectToWorldTransform();
+      inputTube->Update();
 
       double valAvg = 0;
       unsigned int valCount = 0;
