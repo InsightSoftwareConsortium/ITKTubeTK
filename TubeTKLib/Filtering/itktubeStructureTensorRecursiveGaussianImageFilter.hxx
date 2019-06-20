@@ -145,7 +145,7 @@ StructureTensorRecursiveGaussianImageFilter<TInputImage, TOutputImage>
 template< class TInputImage, class TOutputImage >
 void
 StructureTensorRecursiveGaussianImageFilter<TInputImage, TOutputImage>
-::GenerateInputRequestedRegion() throw( InvalidRequestedRegionError )
+::GenerateInputRequestedRegion()
 {
   // call the superclass' implementation of this method. this should
   // copy the output requested region to the input requested region

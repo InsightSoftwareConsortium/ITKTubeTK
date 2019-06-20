@@ -1288,7 +1288,7 @@ ImageToImageRegistrationHelper<TImage>
 
   transformReader->Update();
 
-  TransformListType *transforms = transformReader->GetTransformList();
+  const TransformListType *transforms = transformReader->GetTransformList();
   TransformListType::const_iterator transformIt = transforms->begin();
   while( transformIt != transforms->end() )
     {

@@ -91,7 +91,7 @@ public:
   itkSetObjectMacro( InputSpatialObject, TubeGroupType );
 
   void SetDisplacementField( DisplacementFieldType* field );
-  void SetReadTransformList( BaseTransformListType* tList );
+  void SetReadTransformList( const BaseTransformListType* tList );
 
 protected:
   ResampleTubesFilter( void );
@@ -110,7 +110,7 @@ private:
   typename ImageType::Pointer             m_MatchImage;
   int                                     m_SamplingFactor;
   bool                                    m_UseInverseTransform;
-  BaseTransformListType*                  m_ReadTransformList;
+  const BaseTransformListType*            m_ReadTransformList;
   typename DisplacementFieldType::Pointer m_DisplacementField;
   typename TubeGroupType::Pointer         m_InputSpatialObject;
 

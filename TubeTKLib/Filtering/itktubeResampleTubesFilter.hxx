@@ -70,7 +70,7 @@ ResampleTubesFilter< VDimension >
 template< unsigned int VDimension >
 void
 ResampleTubesFilter< VDimension >
-::SetReadTransformList( BaseTransformListType * tList )
+::SetReadTransformList( const BaseTransformListType * tList )
 {
   m_ReadTransformList = tList;
 }

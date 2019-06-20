@@ -133,8 +133,7 @@ protected:
    * an implementation for GenerateInputRequestedRegion in order to inform
    * the pipeline execution model.
    * \sa ImageToImageFilter::GenerateInputRequestedRegion() */
-  virtual void GenerateInputRequestedRegion( void )
-    throw( InvalidRequestedRegionError ) override;
+  virtual void GenerateInputRequestedRegion( void ) override;
 
   /** Generate Data */
   void GenerateData( void ) override;
