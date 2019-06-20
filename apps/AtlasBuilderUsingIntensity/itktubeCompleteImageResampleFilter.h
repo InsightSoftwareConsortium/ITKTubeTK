@@ -163,7 +163,7 @@ public:
 protected:
 
   /** This is where the work is done! */
-  virtual void GenerateData( void );
+  virtual void GenerateData( void ) override;
 
   /** Determine the output bounding box for the 3D case */
   void FindOutput3DParameters(
@@ -175,7 +175,7 @@ protected:
   CompleteImageResampleFilter( void );
   ~CompleteImageResampleFilter( void ) {}
 
-  void PrintSelf( std::ostream& os, Indent indent ) const;
+  void PrintSelf( std::ostream& os, Indent indent ) const override;
 
 private:
 

@@ -81,16 +81,16 @@ public:
   /** Set Scales */
   void SetScales( ParametersType & scales );
 
-  unsigned int GetNumberOfParameters( void ) const;
+  unsigned int GetNumberOfParameters( void ) const override;
 
   /** This method returns the value of the cost function corresponding
     * to the specified parameters.    */
-  double GetValue( const ParametersType & parameters ) const;
+  double GetValue( const ParametersType & parameters ) const override;
 
    /** This method returns the derivative of the cost function corresponding
     * to the specified parameters.   */
   void GetDerivative( const ParametersType & parameters,
-                             DerivativeType & derivative ) const;
+                             DerivativeType & derivative ) const override;
 
   void Initialize( void );
 protected:

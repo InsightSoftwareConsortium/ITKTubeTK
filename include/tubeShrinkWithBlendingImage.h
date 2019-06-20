@@ -94,8 +94,8 @@ public:
   tubeWrapSetMacro( UseLog, bool, Filter );
   tubeWrapGetMacro( UseLog, bool, Filter );
 
-  tubeWrapCallMacro( GenerateOutputInformation, Filter );
-  tubeWrapCallMacro( GenerateInputRequestedRegion, Filter );
+  tubeWrapCallOverrideMacro( GenerateOutputInformation, Filter );
+  tubeWrapCallOverrideMacro( GenerateInputRequestedRegion, Filter );
 
   tubeWrapSetConstObjectMacro( Input, InputImageType, Filter );
   tubeWrapGetConstObjectMacro( Input, InputImageType, Filter );
@@ -103,7 +103,7 @@ public:
   tubeWrapSetConstObjectMacro( InputMipPointImage, PointImageType, Filter );
   tubeWrapGetConstObjectMacro( InputMipPointImage, PointImageType, Filter );
 
-  tubeWrapCallMacro( Update, Filter );
+  tubeWrapUpdateMacro( Filter );
 
   tubeWrapGetObjectMacro( Output, OutputImageType, Filter );
 
@@ -113,7 +113,7 @@ protected:
   ShrinkWithBlendingImage( void );
   ~ShrinkWithBlendingImage() {}
 
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const;
+  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
 
 private:
   /** itkShrinkWithBlendingImageFilter parameters **/
@@ -122,7 +122,8 @@ private:
   void operator=( const Self & );
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
+    {};
 
   typename FilterType::Pointer m_Filter;
 

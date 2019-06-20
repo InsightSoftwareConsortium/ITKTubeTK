@@ -75,7 +75,7 @@ public:
   tubeWrapSetObjectMacro( Input, ImageType,
     ComputeTrainingMaskFilter );
 
-  tubeWrapCallMacro( Update, ComputeTrainingMaskFilter );
+  tubeWrapUpdateMacro( ComputeTrainingMaskFilter );
 
   tubeWrapGetObjectMacro( Output, ImageTypeShort,
     ComputeTrainingMaskFilter );
@@ -84,7 +84,7 @@ protected:
   ComputeTrainingMask( void );
   ~ComputeTrainingMask() {}
 
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const;
+  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
 
 private:
   /** itkComputeTrainingMask parameters **/
@@ -93,7 +93,8 @@ private:
   void operator=( const Self & );
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
+    {};
 
   typename FilterType::Pointer m_ComputeTrainingMaskFilter;
 

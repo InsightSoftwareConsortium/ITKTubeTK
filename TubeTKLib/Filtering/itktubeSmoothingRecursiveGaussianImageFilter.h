@@ -119,11 +119,11 @@ public:
 
   // See super class for doxygen documentation
   //
-  void SetNumberOfWorkUnits( ThreadIdType nb );
+  void SetNumberOfWorkUnits( ThreadIdType nb ) override;
 
   // See super class for doxygen documentation
   //
-  virtual bool CanRunInPlace( void ) const;
+  virtual bool CanRunInPlace( void ) const override;
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   // Begin concept checking

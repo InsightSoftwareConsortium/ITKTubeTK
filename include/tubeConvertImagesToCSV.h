@@ -78,12 +78,12 @@ public:
     ConvertImagesToCSVFilter );
   void AddImage( InputImageType* );
 
-  tubeWrapCallMacro( Update, ConvertImagesToCSVFilter );
+  tubeWrapUpdateMacro( ConvertImagesToCSVFilter );
 
 protected:
   ConvertImagesToCSV( void );
   ~ConvertImagesToCSV() {}
-  void PrintSelf( std::ostream & os, itk::Indent indent ) const;
+  void PrintSelf( std::ostream & os, itk::Indent indent ) const override;
 
 private:
   /** itkConvertImagesToCSVFilter parameters **/
@@ -91,7 +91,8 @@ private:
   void operator=( const Self & );
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
-  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) {};
+  void SetInput( const DataObjectIdentifierType &, itk::DataObject * ) override
+    {};
 
   typename ConvertImagesToCSVFilterType::Pointer m_ConvertImagesToCSVFilter;
 

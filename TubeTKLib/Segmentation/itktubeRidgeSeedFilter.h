@@ -193,7 +193,8 @@ private:
 
   // To remove warning "was hidden [-Woverloaded-virtual]"
   void SetInput( const typename Superclass::DataObjectIdentifierType &,
-    itk::DataObject * ) {};
+    itk::DataObject * ) override
+    {};
 
   typename RidgeFeatureGeneratorType::Pointer     m_RidgeFeatureGenerator;
   typename SeedFeatureGeneratorType::Pointer      m_SeedFeatureGenerator;
