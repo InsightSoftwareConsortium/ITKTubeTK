@@ -80,8 +80,6 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
         {
         case ImageIOType::UCHAR:
           return DoIt< unsigned char, 2 >( argc, argv );
-        case ImageIOType::CHAR:
-          return DoIt< char, 2 >( argc, argv );
         case ImageIOType::USHORT:
           return DoIt< unsigned short, 2 >( argc, argv );
         case ImageIOType::SHORT:
@@ -89,13 +87,9 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
 #ifndef PARSE_ARGS_INT_ONLY
         case ImageIOType::FLOAT:
           return DoIt< float, 2 >( argc, argv );
-        case ImageIOType::DOUBLE:
-          return DoIt< double, 2 >( argc, argv );
 #endif
         case ImageIOType::INT:
           return DoIt< int, 2 >( argc, argv );
-        case ImageIOType::UINT:
-          return DoIt< unsigned int, 2 >( argc, argv );
         case ImageIOType::UNKNOWNCOMPONENTTYPE:
         default:
           tubeErrorMacro( << "Unknown component type." );
@@ -110,8 +104,6 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
         {
         case ImageIOType::UCHAR:
           return DoIt < unsigned char, 3 >( argc, argv );
-        case ImageIOType::CHAR:
-          return DoIt < char, 3 >( argc, argv );
         case ImageIOType::USHORT:
           return DoIt < unsigned short, 3 >( argc, argv );
         case ImageIOType::SHORT:
@@ -119,13 +111,9 @@ int ParseArgsAndCallDoIt( const std::string & inputImage, int argc,
 #ifndef PARSE_ARGS_INT_ONLY
         case ImageIOType::FLOAT:
           return DoIt < float, 3 >( argc, argv );
-        case ImageIOType::DOUBLE:
-          return DoIt < double, 3 >( argc, argv );
 #endif
         case ImageIOType::INT:
           return DoIt< int, 3 >( argc, argv );
-        case ImageIOType::UINT:
-          return DoIt< unsigned int, 3 >( argc, argv );
         case ImageIOType::UNKNOWNCOMPONENTTYPE:
         default:
           tubeErrorMacro( << "Unknown component type." );
