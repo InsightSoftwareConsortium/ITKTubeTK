@@ -93,7 +93,7 @@ template< class TImage, class TLabelMap >
 void
 PDFSegmenterParzen< TImage, TLabelMap >
 ::SetClassPDFImage( unsigned int classNum,
-  typename PDFImageType::Pointer classPDF )
+  PDFImageType * classPDF )
 {
   if( this->m_ObjectIdList.size() != m_InClassHistogram.size() )
     {
@@ -653,8 +653,7 @@ PDFSegmenterParzen< TImage, TLabelMap >
 template< class TImage, class TLabelMap >
 void
 PDFSegmenterParzen< TImage, TLabelMap >
-::SetLabeledFeatureSpace( typename LabeledFeatureSpaceType::Pointer
-  labeledFeatureSpace )
+::SetLabeledFeatureSpace( LabeledFeatureSpaceType * labeledFeatureSpace )
 {
   m_LabeledFeatureSpace = labeledFeatureSpace;
 }

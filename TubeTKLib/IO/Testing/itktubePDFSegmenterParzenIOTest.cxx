@@ -108,7 +108,7 @@ int itktubePDFSegmenterParzenIOTest( int argc, char * argv[] )
   filter->SetObjectId( 255 );
   filter->AddObjectId( 127 );
   filter->SetVoidId( 0 );
-  filter->SetErodeRadius( 0 );
+  filter->SetErodeDilateRadius( 0 );
   filter->SetHoleFillIterations( 5 );
   filter->SetProbabilityImageSmoothingStandardDeviation( 1 );
   filter->SetHistogramSmoothingStandardDeviation( 2 );

@@ -221,7 +221,7 @@ PrintInfo( void ) const
   std::cout << std::endl;
 
   std::cout << "VoidId : " << m_VoidId << std::endl;
-  std::cout << "ErodeRadius : " << m_ErodeRadius << std::endl;
+  std::cout << "ErodeDilateRadius : " << m_ErodeDilateRadius << std::endl;
   std::cout << "HoleFillIterations : " << m_HoleFillIterations << std::endl;
   std::cout << "ProbabilityImageSmoothingStandardDeviation : "
     << m_ProbabilityImageSmoothingStandardDeviation << std::endl;
@@ -294,7 +294,7 @@ CopyInfo( const MetaObject * _obj )
     this->SetObjectId( tmpPDF->GetObjectId() );
     this->SetObjectPDFWeight( tmpPDF->GetObjectPDFWeight() );
     this->SetVoidId( tmpPDF->GetVoidId() );
-    this->SetErodeRadius( tmpPDF->GetErodeRadius() );
+    this->SetErodeDilateRadius( tmpPDF->GetErodeDilateRadius() );
     this->SetHoleFillIterations( tmpPDF->GetHoleFillIterations() );
     this->SetProbabilityImageSmoothingStandardDeviation(
       tmpPDF->GetProbabilityImageSmoothingStandardDeviation() );
@@ -331,7 +331,7 @@ Clear( void )
   m_ObjectPDFWeight[1] = 1;
   m_VoidId = 0;
 
-  m_ErodeRadius = 1;
+  m_ErodeDilateRadius = 1;
   m_HoleFillIterations = 5;
   m_ProbabilityImageSmoothingStandardDeviation = 0.5;
   m_HistogramSmoothingStandardDeviation = 2;
@@ -511,15 +511,15 @@ GetVoidId( void ) const
 }
 
 void MetaClassPDF::
-SetErodeRadius( unsigned int _ErodeRadius )
+SetErodeDilateRadius( unsigned int _ErodeDilateRadius )
 {
-  m_ErodeRadius = _ErodeRadius;
+  m_ErodeDilateRadius = _ErodeDilateRadius;
 }
 
 unsigned int MetaClassPDF::
-GetErodeRadius( void ) const
+GetErodeDilateRadius( void ) const
 {
-  return m_ErodeRadius;
+  return m_ErodeDilateRadius;
 }
 
 void MetaClassPDF::
@@ -727,7 +727,7 @@ M_SetupReadFields( void )
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "ErodeRadius", MET_INT, true );
+  MET_InitReadField( mF, "ErodeDilateRadius", MET_INT, true );
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
@@ -818,7 +818,7 @@ M_SetupWriteFields( void )
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "ErodeRadius", MET_INT, m_ErodeRadius );
+  MET_InitWriteField( mF, "ErodeDilateRadius", MET_INT, m_ErodeDilateRadius );
   m_Fields.push_back( mF );
 
   mF = new MET_FieldRecordType;
@@ -968,10 +968,10 @@ M_Read( void )
     m_VoidId = static_cast< int >( mF->value[0] );
     }
 
-  mF = MET_GetFieldRecord( "ErodeRadius", &m_Fields );
+  mF = MET_GetFieldRecord( "ErodeDilateRadius", &m_Fields );
   if( mF && mF->defined )
     {
-    m_ErodeRadius = static_cast< unsigned int >( mF->value[0] );
+    m_ErodeDilateRadius = static_cast< unsigned int >( mF->value[0] );
     }
 
   mF = MET_GetFieldRecord( "HoleFillIterations", &m_Fields );

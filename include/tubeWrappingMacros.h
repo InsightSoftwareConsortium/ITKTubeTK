@@ -71,6 +71,14 @@ limitations under the License.
       }                                                           \
     }
 
+/** Set input of fundamental type */
+#define tubeWrapForceSetMacro( name, type, wrap_filter_object_name )   \
+  void Set##name( const type value )                              \
+    {                                                             \
+    this->m_##wrap_filter_object_name->Set##name( value );      \
+    this->Modified();                                           \
+    }
+
 /** Set input using pointer to object type */
 #define tubeWrapSetObjectMacro( name, type, wrap_filter_object_name )   \
   void Set##name( type * value )                                \
@@ -109,6 +117,22 @@ limitations under the License.
     this->Modified();                                                   \
     }
 
+/** Add input using reference to object type */
+#define tubeWrapAddMacro( name, type, wrap_filter_object_name )  \
+  void Add##name( type & value )                                        \
+    {                                                                   \
+    this->m_##wrap_filter_object_name->Set##name( value );              \
+    this->Modified();                                                   \
+    }
+
+/** Set Nth in an object list */
+#define tubeWrapSetNthMacro( name, type, wrap_filter_object_name )  \
+  void Set##name( unsigned int i, type & value )                        \
+    {                                                                   \
+    this->m_##wrap_filter_object_name->Set##name( i, value );           \
+    this->Modified();                                                   \
+    }
+
 /** Set input using const pointer to object type */
 #define tubeWrapSetConstObjectMacro( name, type, wrap_filter_object_name ) \
   void Set##name( const type * value )                                     \
@@ -118,6 +142,57 @@ limitations under the License.
       this->m_##wrap_filter_object_name->Set##name( value );               \
       this->Modified();                                                    \
       }                                                                    \
+    }
+
+#define tubeWrapAddConstObjectMacro( name, type, wrap_filter_object_name ) \
+  void Add##name( const type * value )                                     \
+    {                                                                      \
+    this->m_##wrap_filter_object_name->Add##name( value );               \
+    this->Modified();                                                    \
+    }
+
+/** Set Nth in an const pointer object list */
+#define tubeWrapSetNthObjectMacro( name, type, wrap_filter_object_name )  \
+  void Set##name( unsigned int i, type * value )                        \
+    {                                                                   \
+    this->m_##wrap_filter_object_name->Set##name( i, value );           \
+    this->Modified();                                                   \
+    }
+
+/** Set Nth in an const pointer object list */
+#define tubeWrapSetNthConstObjectMacro( name, type, wrap_filter_object_name )  \
+  void Set##name( unsigned int i, const type * value )                        \
+    {                                                                   \
+    this->m_##wrap_filter_object_name->Set##name( i, value );           \
+    this->Modified();                                                   \
+    }
+
+/** Get Nth in an object list */
+#define tubeWrapGetNthMacro( name, type, wrap_filter_object_name )  \
+  type * Get##name( unsigned int i )                        \
+    {                                                                   \
+    return this->m_##wrap_filter_object_name->Get##name( i );           \
+    }
+
+/** Get Nth in an object list */
+#define tubeWrapGetNthObjectMacro( name, type, wrap_filter_object_name )  \
+  const type * Get##name( unsigned int i )                        \
+    {                                                                   \
+    return this->m_##wrap_filter_object_name->Get##name( i );           \
+    }
+
+/** Get Nth in an object list */
+#define tubeWrapGetNthConstObjectMacro( name, type, wrap_filter_object_name )  \
+  const type * Get##name( unsigned int i )                        \
+    {                                                                   \
+    return this->m_##wrap_filter_object_name->Get##name( i );           \
+    }
+
+/** Get Nth in an object list */
+#define tubeWrapGetNthConstReferenceMacro( name, type, wrap_filter_object_name )  \
+  const type & Get##name( unsigned int i )                        \
+    {                                                                   \
+    return this->m_##wrap_filter_object_name->Get##name( i );           \
     }
 
 /** Set input using const pointer to object type */

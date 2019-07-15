@@ -69,7 +69,7 @@ int itktubeMetaClassPDFTest( int argc, char * argv[] )
   pdf1.SetBinSize( binSize );
 
   pdf1.SetVoidId( 1 );
-  pdf1.SetErodeRadius( 5 );
+  pdf1.SetErodeDilateRadius( 5 );
   pdf1.SetHoleFillIterations( 20 );
   pdf1.SetHistogramSmoothingStandardDeviation( 2 );
   pdf1.SetProbabilityImageSmoothingStandardDeviation( 1 );
@@ -113,9 +113,9 @@ int itktubeMetaClassPDFTest( int argc, char * argv[] )
     std::cout << "VoidId Initialize failed" << std::endl;
     result = EXIT_FAILURE;
     }
-  if( pdf1.GetErodeRadius() != pdf2.GetErodeRadius() )
+  if( pdf1.GetErodeDilateRadius() != pdf2.GetErodeDilateRadius() )
     {
-    std::cout << "ErodeRadius Initialize failed" << std::endl;
+    std::cout << "ErodeDilateRadius Initialize failed" << std::endl;
     result = EXIT_FAILURE;
     }
   if( pdf1.GetHoleFillIterations() != pdf2.GetHoleFillIterations() )

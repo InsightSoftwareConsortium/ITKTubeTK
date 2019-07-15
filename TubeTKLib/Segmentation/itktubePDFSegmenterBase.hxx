@@ -72,7 +72,7 @@ PDFSegmenterBase< TImage, TLabelMap >
   m_PDFWeightList.clear();
 
   m_DilateFirst = false;
-  m_ErodeRadius = 1;
+  m_ErodeDilateRadius = 1;
   m_HoleFillIterations = 1;
   m_ProbabilityImageSmoothingStandardDeviation = 0;
   m_ReclassifyObjectLabels = false;
@@ -398,7 +398,7 @@ PDFSegmenterBase< TImage, TLabelMap >
     }
   m_ClassProbabilityImagesUpToDate = true;
 
-  int erodeRadius = m_ErodeRadius;
+  int erodeRadius = m_ErodeDilateRadius;
   int holeFillIterations = m_HoleFillIterations;
 
   unsigned int numClasses = m_ObjectIdList.size();
@@ -944,7 +944,7 @@ PDFSegmenterBase< TImage, TLabelMap >
     {
     os << indent << "LabelMap = NULL" << std::endl;
     }
-  os << indent << "Erode radius = " << m_ErodeRadius << std::endl;
+  os << indent << "Erode radius = " << m_ErodeDilateRadius << std::endl;
   os << indent << "Hole fill iterations = " << m_HoleFillIterations
     << std::endl;
   os << indent << "PDF weight size = " << m_PDFWeightList.size()
