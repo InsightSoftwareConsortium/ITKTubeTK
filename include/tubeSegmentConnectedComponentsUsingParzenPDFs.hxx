@@ -20,10 +20,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 =========================================================================*/
-#ifndef __tubeSegmentUsingOtsuThreshold_hxx
-#define __tubeSegmentUsingOtsuThreshold_hxx
+#ifndef __tubeSegmentConnectedComponentsUsingParzenPDFs_hxx
+#define __tubeSegmentConnectedComponentsUsingParzenPDFs_hxx
 
-#include "tubeSegmentUsingOtsuThreshold.h"
+#include "tubeSegmentConnectedComponentsUsingParzenPDFs.h"
 
 namespace tube
 {
