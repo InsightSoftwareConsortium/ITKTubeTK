@@ -29,7 +29,7 @@ limitations under the License.
 // TubeTK includes
 #include "tubeWrappingMacros.h"
 
-#include "itkTubePDFSegmenterParzen.h"
+#include "itktubePDFSegmenterParzen.h"
 
 
 namespace tube

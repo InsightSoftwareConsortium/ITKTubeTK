@@ -34,7 +34,7 @@ SegmentConnectedComponentsUsingParzenPDFs< TInputPixel, TDimension, TMaskPixel >
 {
   m_Filter = FilterType::New();
 
-  FeatureVectorGeneratorType::Pointer m_FVGenerator =
+  typename FeatureVectorGeneratorType::Pointer m_FVGenerator =
     FeatureVectorGeneratorType::New();
 }
 
