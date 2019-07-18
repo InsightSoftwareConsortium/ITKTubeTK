@@ -21,8 +21,9 @@ limitations under the License.
 
 =========================================================================*/
 
-#include "itktubePDFSegmenterParzen.h"
 #include "tubeMacro.h"
+
+#include "tubeSegmentConnectedComponentsUsingParzenPDFs.h"
 
 #include "SegmentConnectedComponentsUsingParzenPDFsCLP.h"
 
@@ -79,16 +80,17 @@ int DoIt( int argc, char * argv[] )
 
   itk::TimeProbesCollectorBase timeCollector;
 
-  typedef T                                        InputPixelType;
-  typedef itk::Image< InputPixelType, dimension >  InputImageType;
-  typedef itk::Image< float, dimension >           ProbImageType;
-  typedef itk::Image< unsigned short, dimension >  LabelMapType;
+  typedef T                                            InputImagePixelType;
+  typedef itk::Image< InputImagePixelType, dimension > InputImageType;
+  typedef itk::Image< float, dimension >               ProbImageType;
+  typedef unsigned short                               LabelMapPixelType;
+  typedef itk::Image< unsigned short, dimension >      LabelMapType;
 
-  typedef itk::tube::PDFSegmenterParzen< InputImageType, LabelMapType >
-    PDFSegmenterType;
+  typedef tube::SegmentConnectedComponentsUsingParzenPDFs< InputImagePixelType,
+    dimension, LabelMapPixelType >                 PDFSegmenterType;
 
   typedef itk::Image< float, PARZEN_MAX_NUMBER_OF_FEATURES >
-    PDFImageType;
+                                                   PDFImageType;
 
   typedef itk::ImageFileReader< InputImageType >   ImageReaderType;
   typedef itk::ImageFileReader< LabelMapType >     LabelMapReaderType;
@@ -99,12 +101,6 @@ int DoIt( int argc, char * argv[] )
 
   typename PDFSegmenterType::Pointer pdfSegmenter =
     PDFSegmenterType::New();
-
-  typedef itk::tube::FeatureVectorGenerator< InputImageType >
-    FeatureVectorGeneratorType;
-  typename FeatureVectorGeneratorType::Pointer fvGenerator =
-    FeatureVectorGeneratorType::New();
-
 
   timeCollector.Start( "LoadData" );
 
@@ -153,7 +149,6 @@ int DoIt( int argc, char * argv[] )
                 << " this filter to 4 input images" << std::endl;
       return EXIT_FAILURE;
       }
-    std::cout << "Here2" << std::endl;
     reader->Update();
     if( !CheckImageAttributes( reader->GetOutput(),
         inLabelMapReader->GetOutput() ) )
@@ -165,25 +160,25 @@ int DoIt( int argc, char * argv[] )
       }
     if( i == 1 )
       {
-      fvGenerator->SetInput( reader->GetOutput() );
+      pdfSegmenter->SetFeatureImage( reader->GetOutput() );
       }
     else
       {
-      fvGenerator->AddInput( reader->GetOutput() );
+      pdfSegmenter->AddFeatureImage( reader->GetOutput() );
       }
     }
 
-  pdfSegmenter->SetFeatureVectorGenerator( fvGenerator );
-
   timeCollector.Stop( "LoadData" );
 
-  pdfSegmenter->SetObjectId( objectId[0] );
+  unsigned short objId = objectId[0];
+  pdfSegmenter->SetObjectId( objId );
   for( unsigned int o = 1; o < objectId.size(); o++ )
     {
-    pdfSegmenter->AddObjectId( objectId[o] );
+    objId = objectId[o];
+    pdfSegmenter->AddObjectId( objId );
     }
   pdfSegmenter->SetVoidId( voidId );
-  pdfSegmenter->SetErodeRadius( erodeRadius );
+  pdfSegmenter->SetErodeDilateRadius( erodeRadius );
   pdfSegmenter->SetHoleFillIterations( holeFillIterations );
   pdfSegmenter->SetDilateFirst( dilateFirst );
   if( objectPDFWeight.size() == objectId.size() )
@@ -217,9 +212,7 @@ int DoIt( int argc, char * argv[] )
       typename PDFImageReaderType::Pointer pdfImageReader =
         PDFImageReaderType::New();
       pdfImageReader->SetFileName( fname.c_str() );
-      std::cout << "Here3" << std::endl;
       pdfImageReader->Update();
-      std::cout << "Here4" << std::endl;
       typename PDFImageType::Pointer img = pdfImageReader->GetOutput();
       if( i == 0 )
         {

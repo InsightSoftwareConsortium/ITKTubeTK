@@ -119,7 +119,7 @@ int itktubePDFSegmenterParzenTest( int argc, char * argv[] )
   filter->SetObjectId( 255 );
   filter->AddObjectId( 127 );
   filter->SetVoidId( 0 );
-  filter->SetErodeRadius( 0 );
+  filter->SetErodeDilateRadius( 0 );
   filter->SetHoleFillIterations( 5 );
   filter->SetHistogramSmoothingStandardDeviation( 2 );
   if( argv[3][0] == 't' || argv[3][0] == 'T' || argv[3][0] == '1' )

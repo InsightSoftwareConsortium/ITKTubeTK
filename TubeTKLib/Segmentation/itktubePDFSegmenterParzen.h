@@ -113,8 +113,7 @@ public:
   typename PDFImageType::Pointer GetClassPDFImage(
     unsigned int classNum ) const;
 
-  void SetClassPDFImage( unsigned int classNum,
-    typename PDFImageType::Pointer classPDF );
+  void SetClassPDFImage( unsigned int classNum, PDFImageType * classPDF );
 
   const VectorUIntType & GetNumberOfBinsPerFeature( void ) const;
   void             SetNumberOfBinsPerFeature( const VectorUIntType & nBin );
@@ -126,7 +125,7 @@ public:
   /** Given one PDF per class, generate a labelmap of feature space */
   void GenerateLabeledFeatureSpace( void );
 
-  void SetLabeledFeatureSpace( typename LabeledFeatureSpaceType::Pointer
+  void SetLabeledFeatureSpace( LabeledFeatureSpaceType *
     labeledFeatureSpace );
 
   typename LabeledFeatureSpaceType::Pointer GetLabeledFeatureSpace( void )

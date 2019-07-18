@@ -418,7 +418,7 @@ RidgeSeedFilter< TImage, TLabelMap >
   m_PDFSegmenter->SetReclassifyObjectLabels( true );
   m_PDFSegmenter->SetReclassifyNotObjectLabels( true );
   m_PDFSegmenter->SetForceClassification( true );
-  m_PDFSegmenter->SetErodeRadius( 0 );
+  m_PDFSegmenter->SetErodeDilateRadius( 0 );
   m_PDFSegmenter->SetHoleFillIterations( 5 );
 
   m_PDFSegmenter->SetLabelMap( m_SeedFeatureGenerator->GetLabelMap() );

@@ -244,7 +244,7 @@ Read( const char * _headerName )
   metaFields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitReadField( mF, "ErodeRadius", MET_INT, true );
+  MET_InitReadField( mF, "ErodeDilateRadius", MET_INT, true );
   metaFields.push_back( mF );
 
   mF = new MET_FieldRecordType;
@@ -383,8 +383,8 @@ Read( const char * _headerName )
   mF = MET_GetFieldRecord( "VoidId", &metaFields );
   m_PDFSegmenter->SetVoidId( static_cast< int >( mF->value[0] ) );
 
-  mF = MET_GetFieldRecord( "ErodeRadius", &metaFields );
-  m_PDFSegmenter->SetErodeRadius( static_cast< int >( mF->value[0] ) );
+  mF = MET_GetFieldRecord( "ErodeDilateRadius", &metaFields );
+  m_PDFSegmenter->SetErodeDilateRadius( static_cast< int >( mF->value[0] ) );
 
   mF = MET_GetFieldRecord( "HoleFillIterations", &metaFields );
   m_PDFSegmenter->SetHoleFillIterations( static_cast< int >(
@@ -619,8 +619,8 @@ Write( const char * _headerName )
   metaFields.push_back( mF );
 
   mF = new MET_FieldRecordType;
-  MET_InitWriteField( mF, "ErodeRadius", MET_INT,
-    m_PDFSegmenter->GetErodeRadius() );
+  MET_InitWriteField( mF, "ErodeDilateRadius", MET_INT,
+    m_PDFSegmenter->GetErodeDilateRadius() );
   metaFields.push_back( mF );
 
   mF = new MET_FieldRecordType;
@@ -752,7 +752,7 @@ Write( const char * _headerName )
     pdfClassWriter.SetObjectPDFWeight(
       m_PDFSegmenter->GetObjectPDFWeight() );
     pdfClassWriter.SetVoidId( m_PDFSegmenter->GetVoidId() );
-    pdfClassWriter.SetErodeRadius( m_PDFSegmenter->GetErodeRadius() );
+    pdfClassWriter.SetErodeDilateRadius( m_PDFSegmenter->GetErodeDilateRadius() );
     pdfClassWriter.SetHoleFillIterations(
       m_PDFSegmenter->GetHoleFillIterations() );
     pdfClassWriter.SetHistogramSmoothingStandardDeviation(

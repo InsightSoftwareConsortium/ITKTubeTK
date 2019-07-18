@@ -122,8 +122,8 @@ public:
   void          SetVoidId( int _voidId );
   int           GetVoidId( void ) const;
 
-  void          SetErodeRadius( unsigned int _ErodeRadius );
-  unsigned int  GetErodeRadius( void ) const;
+  void          SetErodeDilateRadius( unsigned int _ErodeDilateRadius );
+  unsigned int  GetErodeDilateRadius( void ) const;
   void          SetHoleFillIterations( unsigned int _HoleFillIterations );
   unsigned int  GetHoleFillIterations( void ) const;
   void          SetProbabilityImageSmoothingStandardDeviation(
@@ -171,7 +171,7 @@ protected:
   VectorIntType        m_ObjectId;
   VectorDoubleType     m_ObjectPDFWeight;
   int                  m_VoidId;
-  unsigned int         m_ErodeRadius;
+  unsigned int         m_ErodeDilateRadius;
   unsigned int         m_HoleFillIterations;
   double               m_ProbabilityImageSmoothingStandardDeviation;
   double               m_HistogramSmoothingStandardDeviation;
