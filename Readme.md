@@ -28,12 +28,13 @@ There are two dependencies that must be compiled first
 2) SlicerExecutionModel
 
 For ITK, we want to compile ITK v5.0 or later.   Begin by checking out ITK's source
- > cd /c                               (To keep paths short, start at a top-level dir)
- > mkdir src
- > cd src
- > git clone https://github.com:/InsightSoftwareConsortium/ITK.git -b Release
- > mkdir ITK-Release
- > cmake-gui ..\ITK
+
+    $ cd /c                               (To keep paths short, start at a top-level dir)
+    $ mkdir src
+    $ cd src
+    $ git clone https://github.com:/InsightSoftwareConsortium/ITK.git -b Release
+    $ mkdir ITK-Release
+    $ cmake-gui ..\ITK
 
 Using CMake, you should configure ITK with the following options
 * CMAKE_BUILD_TYPE = Release           (This is an advanced option)
@@ -43,17 +44,18 @@ Using CMake, you should configure ITK with the following options
 
 Once you have configured and generated your build files (e.g., for make or ninja or whatever):
 
- > ninja  (or make, or nmake, or whatever is appropriate for your system)
+    $ ninja  (or make, or nmake, or whatever is appropriate for your system)
 
 This build process can take many hours on a Windows PC, because it is generating the files needed
 to use ITK with Python, as well as the standard C++ libraries, applications, examples, and tests.
 
 Then we repeat this build process for SlicerExecutionModel (used by ITKTubeTK applications):
- > cd ~/src
- > git clone https://github.com:/Slicer/SlicerExecutionModel.git
- > mkdir SlicerExecutionModel-Release
- > cd SlicerExecutionModel-Release
- > cmake-gui ..\SlicerExecutionModel
+
+    $ cd ~/src
+    $ git clone https://github.com:/Slicer/SlicerExecutionModel.git
+    $ mkdir SlicerExecutionModel-Release
+    $ cd SlicerExecutionModel-Release
+    $ cmake-gui ..\SlicerExecutionModel
 
 Using CMake, you should configure SlicerExecutionModel as follows:
 * CMAKE_BUILD_TYPE = Release
@@ -62,7 +64,7 @@ Using CMake, you should configure SlicerExecutionModel as follows:
 Once SlicerExecutionModel's cmake files are configured and build files are generated, you should
 build the application:
 
- > ninja  (or make, or nmake, or whatever is appropriate for your system)
+    $ ninja  (or make, or nmake, or whatever is appropriate for your system)
 
 This build should be relatively quick.  And now you are ready to compile ITKTubeTK
 
@@ -71,11 +73,11 @@ Compiling ITKTubeTK
 
 Once ITK and SlicerExecutionModel have been compiled as described above, you can compile ITKTubeTK:
 
- > cd ~/src
- > git clone https://github.com:/KitwareMedical/ITKTubeTK
- > mkdir ITKTubeTK-Release
- > cd ITKTubeTK-Release
- > cmake-gui ..\ITKTubeTK
+    $ cd ~/src
+    $ git clone https://github.com:/KitwareMedical/ITKTubeTK
+    $ mkdir ITKTubeTK-Release
+    $ cd ITKTubeTK-Release
+    $ cmake-gui ..\ITKTubeTK
 
 Then we configure the CMake variables for ITKTubeTK
 * CMAKE_BUILD_TYPE = Release
@@ -86,11 +88,12 @@ Then we configure the CMake variables for ITKTubeTK
 
 Then configure and generate you build files using cmake, and compile
 
- > ninja
+    $ ninja
 
 Now you will want to add ITKTubeTK's applications to your command-line PATH.  The directory to include
 in that path is:
- ~/src/ITKTubeTK/bin
+
+    ~/src/ITKTubeTK/bin
 
 Using a Compiled and Python-Wrapped ITk and ITKTubeTK from Python
 -----------------------------------------------------------------
@@ -111,7 +114,7 @@ First, to be able to run all the python tests and examples, the following packag
 
 Installing most required packages can be done with the following command line:
 
- > pip install requirements.txt
+    $ pip install requirements.txt
 
 Second, you will need to add the modules of python-wrapped ITK and ITKTubeTK to your python environment.
 This is accomplished by copying the files that specify the paths to their python modules into your
@@ -124,19 +127,19 @@ Let's assume that path is /Python/Python36/site-packages.
 
 First you will want to copy ITK's python paths file into that directory
 
- > cp ~/src/ITK-Release/Wrapping/Generators/Python/WrapITK.pth /Python/Python36/site-packages
+    $ cp ~/src/ITK-Release/Wrapping/Generators/Python/WrapITK.pth /Python/Python36/site-packages
 
 Then you will want to add ITKTubeTK's paths file ONTO that file
 
- > cat ~/src/ITKTubeTK-Release/Wrapping/Generators/Python/WrapITK.pth >> /Python/Python36/site-packages/WrapITK.pth
+    $ cat ~/src/ITKTubeTK-Release/Wrapping/Generators/Python/WrapITK.pth >> /Python/Python36/site-packages/WrapITK.pth
 
 Then you can test your configuration:
 
- > python -c "import itk"
+    $ python -c "import itk"
 
 and
 
- > python -c "from itk import TubeTK"
+    $ python -c "from itk import TubeTK"
 
 Both of the above commands should execute and return without errors.
 
