@@ -38,8 +38,8 @@ namespace tube
 {
 
 //-------------------------------------------------------------------------
-template< class TPointBasedSpatialObject >
-TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+template< class TTubeSpatialObject >
+TortuositySpatialObjectFilter< TTubeSpatialObject >
 ::TortuositySpatialObjectFilter( void )
 {
   // Setting default parameters
@@ -73,63 +73,63 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 }
 
 //--------------------------------------------------------------------------
-template< class TPointBasedSpatialObject >
-TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+template< class TTubeSpatialObject >
+TortuositySpatialObjectFilter< TTubeSpatialObject >
 ::~TortuositySpatialObjectFilter( void )
 {
 }
 
 //--------------------------------------------------------------------------
-template< class TPointBasedSpatialObject > double
-TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+template< class TTubeSpatialObject > double
+TortuositySpatialObjectFilter< TTubeSpatialObject >
 ::GetAverageRadiusMetric() const
 {
   return this->m_AverageRadiusMetric;
 }
 
 //--------------------------------------------------------------------------
-template< class TPointBasedSpatialObject > double
-TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+template< class TTubeSpatialObject > double
+TortuositySpatialObjectFilter< TTubeSpatialObject >
 ::GetChordLengthMetric() const
 {
   return this->m_ChordLengthMetric;
 }
 
 //--------------------------------------------------------------------------
-template< class TPointBasedSpatialObject > double
-TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+template< class TTubeSpatialObject > double
+TortuositySpatialObjectFilter< TTubeSpatialObject >
 ::GetDistanceMetric() const
 {
   return this->m_DistanceMetric;
 }
 
 //--------------------------------------------------------------------------
-template< class TPointBasedSpatialObject > double
-TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+template< class TTubeSpatialObject > double
+TortuositySpatialObjectFilter< TTubeSpatialObject >
 ::GetInflectionCountMetric() const
 {
   return this->m_InflectionCountMetric;
 }
 
 //--------------------------------------------------------------------------
-template< class TPointBasedSpatialObject > double
-TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+template< class TTubeSpatialObject > double
+TortuositySpatialObjectFilter< TTubeSpatialObject >
 ::GetInflectionCount1Metric() const
 {
   return this->m_InflectionCount1Metric;
 }
 
 //--------------------------------------------------------------------------
-template< class TPointBasedSpatialObject > double
-TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+template< class TTubeSpatialObject > double
+TortuositySpatialObjectFilter< TTubeSpatialObject >
 ::GetInflectionCount2Metric() const
 {
   return this->m_InflectionCount2Metric;
 }
 
 //--------------------------------------------------------------------------
-template< class TPointBasedSpatialObject > double
-TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+template< class TTubeSpatialObject > double
+TortuositySpatialObjectFilter< TTubeSpatialObject >
 ::GetPathLengthMetric() const
 {
   return this->m_PathLengthMetric;
@@ -137,40 +137,40 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 
 
 //--------------------------------------------------------------------------
-template< class TPointBasedSpatialObject > double
-TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+template< class TTubeSpatialObject > double
+TortuositySpatialObjectFilter< TTubeSpatialObject >
 ::GetPercentile95Metric() const
 {
   return this->m_Percentile95Metric;
 }
 
 //--------------------------------------------------------------------------
-template< class TPointBasedSpatialObject > double
-TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+template< class TTubeSpatialObject > double
+TortuositySpatialObjectFilter< TTubeSpatialObject >
 ::GetSumOfAnglesMetric() const
 {
   return this->m_SumOfAnglesMetric;
 }
 
 //--------------------------------------------------------------------------
-template< class TPointBasedSpatialObject > double
-TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+template< class TTubeSpatialObject > double
+TortuositySpatialObjectFilter< TTubeSpatialObject >
 ::GetSumOfTorsionMetric() const
 {
   return this->m_SumOfTorsionMetric;
 }
 
 //--------------------------------------------------------------------------
-template< class TPointBasedSpatialObject > double
-TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+template< class TTubeSpatialObject > double
+TortuositySpatialObjectFilter< TTubeSpatialObject >
 ::GetTotalCurvatureMetric() const
 {
   return this->m_TotalCurvatureMetric;
 }
 
 //--------------------------------------------------------------------------
-template< class TPointBasedSpatialObject > double
-TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+template< class TTubeSpatialObject > double
+TortuositySpatialObjectFilter< TTubeSpatialObject >
 ::GetTotalSquaredCurvatureMetric() const
 {
   return this->m_TotalSquaredCurvatureMetric;
@@ -178,8 +178,8 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 }
 
 //--------------------------------------------------------------------------
-template< class TPointBasedSpatialObject > double
-TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+template< class TTubeSpatialObject > double
+TortuositySpatialObjectFilter< TTubeSpatialObject >
 ::GetCurvatureScalarMetric( unsigned int i ) const
 {
   if( this->m_CurvatureScalar.size() == 0 )
@@ -199,8 +199,8 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 }
 
 //--------------------------------------------------------------------------
-template< class TPointBasedSpatialObject > double
-TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+template< class TTubeSpatialObject > double
+TortuositySpatialObjectFilter< TTubeSpatialObject >
 ::GetInflectionPointValue( unsigned int i ) const
 {
   if( this->m_InflectionPoints.Size() == 0 )
@@ -220,8 +220,8 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
 }
 
 //--------------------------------------------------------------------------
-template< class TPointBasedSpatialObject > int
-TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+template< class TTubeSpatialObject > int
+TortuositySpatialObjectFilter< TTubeSpatialObject >
 ::GetCurvatureHistogramMetric( unsigned int bin ) const
 {
   if( this->m_CurvatureHistogramMetrics.size() == 0 )
@@ -279,17 +279,16 @@ typename VectorType::RealValueType SafeNormalize( VectorType& v )
 } // end namespace
 
 //--------------------------------------------------------------------------
-template< class TPointBasedSpatialObject >
+template< class TTubeSpatialObject >
 void
-TortuositySpatialObjectFilter< TPointBasedSpatialObject >
+TortuositySpatialObjectFilter< TTubeSpatialObject >
 ::GenerateData( void )
 {
   // Get I/O
-  PointBasedSpatialObjectPointer output = this->GetOutput();
-  PointBasedSpatialObjectPointer originalInput =
-    PointBasedSpatialObject::New();
-  originalInput = const_cast< PointBasedSpatialObject * >(
-    this->GetInput() );
+  TubeSpatialObjectPointer output = this->GetOutput();
+
+  TubeSpatialObjectPointer originalInput = TubeSpatialObject::New();
+  originalInput = const_cast< TubeSpatialObject * >( this->GetInput() );
 
   // Safety check
   if( originalInput->GetNumberOfPoints() < 2 )
@@ -337,13 +336,13 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
   double sumOfRadius = 0.0;
 
   // Preprocessing
-  PointBasedSpatialObjectPointer smoothedTube =
-    PointBasedSpatialObject::New();
-  PointBasedSpatialObjectPointer resampledTube =
-    PointBasedSpatialObject::New();
+  TubeSpatialObjectPointer smoothedTube =
+    TubeSpatialObject::New();
+  TubeSpatialObjectPointer resampledTube =
+    TubeSpatialObject::New();
 
   // Smooth the vessel
-  smoothedTube = ::tube::SmoothTube<PointBasedSpatialObject>( originalInput,
+  smoothedTube = ::tube::SmoothTube<TubeSpatialObject>( originalInput,
     this->m_SmoothingScale, this->m_SmoothingMethod );
 
   if( !smoothedTube )
@@ -354,7 +353,7 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     }
 
   // Subsample the vessel
-  resampledTube = ::tube::SubsampleTube<PointBasedSpatialObject>(
+  resampledTube = ::tube::SubsampleTube<TubeSpatialObject>(
     smoothedTube, this->m_SubsamplingScale );
 
   if( !resampledTube )
@@ -364,12 +363,12 @@ TortuositySpatialObjectFilter< TPointBasedSpatialObject >
     return;
     }
   // Make the measurements on the pre-processed tube.
-  PointBasedSpatialObjectPointer processedInput = resampledTube;
+  TubeSpatialObjectPointer processedInput = resampledTube;
 
   if( processedInput->GetNumberOfPoints() < 2 )
     {
     itkExceptionMacro( << "Cannot run Tortuosity on input. "
-                       << "Input has less than 2 points." );
+                       << "Processed has less than 2 points." );
     return;
     }
 
