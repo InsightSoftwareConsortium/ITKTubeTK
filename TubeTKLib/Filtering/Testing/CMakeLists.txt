@@ -107,14 +107,14 @@ ExternalData_Add_Test( TubeTKData
     itktubeExtractTubePointsSpatialObjectFilterTest
       DATA{${TubeTK_DATA_ROOT}/VascularNetwork.tre} )
 
-ExternalData_Add_Test( TubeTKata
+ExternalData_Add_Test( TubeTKData
   NAME itktubeFFTGaussianDerivativeIFFTFilterTest1
   COMMAND ${BASE_FILTERING_TESTS}
     --compareIntensityTolerance 0.01
     --compare DATA{${TubeTK_DATA_ROOT}/itktubeFFTGaussianDerivativeIFFTFilterTest1.mha}
       ${TEMP}/itktubeFFTGaussianDerivativeIFFTFilterTest1.mha
     itktubeFFTGaussianDerivativeIFFTFilterTest
-      0 0 0.1 0.1
+      0 0 1 1
       DATA{${TubeTK_DATA_ROOT}/im0001.mha}
       ${TEMP}/itktubeFFTGaussianDerivativeIFFTFilterTest1.mha )
 
