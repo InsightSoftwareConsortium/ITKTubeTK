@@ -215,7 +215,7 @@ ExternalData_Add_Test( TubeTKData
   NAME itktubeShrinkWithBlendingImageFilterTest
   COMMAND ${BASE_FILTERING_TESTS}
   --compare DATA{${TubeTK_DATA_ROOT}/itktubeShrinkWithBlendingImageFilterTest.mha}
-  ${TEMP}/itktubeShrinkWithBlendingImageFilterTest.mha
+    ${TEMP}/itktubeShrinkWithBlendingImageFilterTest.mha
   itktubeShrinkWithBlendingImageFilterTest
       DATA{${TubeTK_DATA_ROOT}/im0001.crop.contrast.mha}
       ${TEMP}/itktubeShrinkWithBlendingImageFilterTest.mha
