@@ -18,7 +18,7 @@
 #define __itkScaleSkewAngle2DImageToImageRegistrationMethod_h
 
 #include "itkImage.h"
-#include "itkTubeScaleSkewAngle2DTransform.h"
+#include "itkScaleSkewAngle2DTransform.h"
 
 #include "itkOptimizedImageToImageRegistrationMethod.h"
 
@@ -51,7 +51,7 @@ public:
   //
 
   // Overrides the superclass' TransformType typedef
-  typedef ::itk::TubeScaleSkewAngle2DTransform< double >
+  typedef ::itk::ScaleSkewAngle2DTransform< double >
             ScaleSkewAngle2DTransformType;
   typedef typename ScaleSkewAngle2DTransformType::Pointer
             ScaleSkewAngle2DTransformPointer;

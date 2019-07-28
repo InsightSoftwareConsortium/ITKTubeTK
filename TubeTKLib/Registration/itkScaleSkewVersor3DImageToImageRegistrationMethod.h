@@ -18,7 +18,7 @@
 #define __itkScaleSkewVersor3DImageToImageRegistrationMethod_h
 
 #include "itkImage.h"
-#include "itkTubeScaleSkewVersor3DTransform.h"
+#include "itkScaleSkewVersor3DTransform.h"
 
 #include "itkOptimizedImageToImageRegistrationMethod.h"
 
@@ -50,7 +50,7 @@ public:
   // Typedefs from Superclass
   // 
   // Overrides the superclass' TransformType typedef
-  typedef ::itk::TubeScaleSkewVersor3DTransform< double >
+  typedef ::itk::ScaleSkewVersor3DTransform< double >
             ScaleSkewVersor3DTransformType;
   typedef typename ScaleSkewVersor3DTransformType::Pointer
             ScaleSkewVersor3DTransformPointer;

@@ -15,18 +15,18 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-#ifndef itkTubeScaleSkewAngle2DTransform_hxx
-#define itkTubeScaleSkewAngle2DTransform_hxx
+#ifndef itkScaleSkewAngle2DTransform_hxx
+#define itkScaleSkewAngle2DTransform_hxx
 
-#include "itkTubeScaleSkewAngle2DTransform.h"
+#include "itkScaleSkewAngle2DTransform.h"
 #include "itkMath.h"
 
 namespace itk
 {
 // Constructor with default arguments
 template<typename TParametersValueType>
-TubeScaleSkewAngle2DTransform<TParametersValueType>
-::TubeScaleSkewAngle2DTransform() :
+ScaleSkewAngle2DTransform<TParametersValueType>
+::ScaleSkewAngle2DTransform() :
   Superclass(ParametersDimension)
 {
   m_UseSingleScale = false;
@@ -36,8 +36,8 @@ TubeScaleSkewAngle2DTransform<TParametersValueType>
 
 // Constructor with arguments
 template<typename TParametersValueType>
-TubeScaleSkewAngle2DTransform<TParametersValueType>
-::TubeScaleSkewAngle2DTransform(unsigned int parametersDimension) :
+ScaleSkewAngle2DTransform<TParametersValueType>
+::ScaleSkewAngle2DTransform(unsigned int parametersDimension) :
   Superclass(parametersDimension)
 {
   m_Scale.Fill(1.0);
@@ -46,8 +46,8 @@ TubeScaleSkewAngle2DTransform<TParametersValueType>
 
 // Constructor with arguments
 template<typename TParametersValueType>
-TubeScaleSkewAngle2DTransform<TParametersValueType>
-::TubeScaleSkewAngle2DTransform(const MatrixType & matrix,
+ScaleSkewAngle2DTransform<TParametersValueType>
+::ScaleSkewAngle2DTransform(const MatrixType & matrix,
   const OutputVectorType & offset) :
   Superclass(matrix, offset)
 {
@@ -57,7 +57,7 @@ TubeScaleSkewAngle2DTransform<TParametersValueType>
 // Directly set the matrix
 template<typename TParametersValueType>
 void
-TubeScaleSkewAngle2DTransform<TParametersValueType>
+ScaleSkewAngle2DTransform<TParametersValueType>
 ::SetMatrix(const MatrixType & matrix)
 {
 
@@ -69,7 +69,7 @@ TubeScaleSkewAngle2DTransform<TParametersValueType>
 // Set Parameters
 template<typename TParametersValueType>
 void
-TubeScaleSkewAngle2DTransform<TParametersValueType>
+ScaleSkewAngle2DTransform<TParametersValueType>
 ::SetParameters(const ParametersType & parameters)
 {
   itkDebugMacro(<< "Setting parameters " << parameters);
@@ -125,8 +125,8 @@ TubeScaleSkewAngle2DTransform<TParametersValueType>
 //
 
 template<typename TParametersValueType>
-const typename TubeScaleSkewAngle2DTransform<TParametersValueType>::ParametersType
-& TubeScaleSkewAngle2DTransform<TParametersValueType>
+const typename ScaleSkewAngle2DTransform<TParametersValueType>::ParametersType
+& ScaleSkewAngle2DTransform<TParametersValueType>
 ::GetParameters(void) const
   {
   itkDebugMacro(<< "Getting parameters ");
@@ -156,7 +156,7 @@ const typename TubeScaleSkewAngle2DTransform<TParametersValueType>::ParametersTy
 
 template<typename TParametersValueType>
 void
-TubeScaleSkewAngle2DTransform<TParametersValueType>
+ScaleSkewAngle2DTransform<TParametersValueType>
 ::SetIdentity()
 {
   m_Scale.Fill(NumericTraits<ScaleVectorValueType>::OneValue());
@@ -166,7 +166,7 @@ TubeScaleSkewAngle2DTransform<TParametersValueType>
 
 template<typename TParametersValueType>
 void
-TubeScaleSkewAngle2DTransform<TParametersValueType>
+ScaleSkewAngle2DTransform<TParametersValueType>
 ::SetScale(const ScaleVectorType & scale)
 {
   m_Scale = scale;
@@ -175,7 +175,7 @@ TubeScaleSkewAngle2DTransform<TParametersValueType>
 
 template<typename TParametersValueType>
 void
-TubeScaleSkewAngle2DTransform<TParametersValueType>
+ScaleSkewAngle2DTransform<TParametersValueType>
 ::SetSkew(const SkewVectorType & skew)
 {
   m_Skew = skew;
@@ -185,7 +185,7 @@ TubeScaleSkewAngle2DTransform<TParametersValueType>
 // Compute the matrix
 template<typename TParametersValueType>
 void
-TubeScaleSkewAngle2DTransform<TParametersValueType>
+ScaleSkewAngle2DTransform<TParametersValueType>
 ::ComputeMatrix(void)
 {
   MatrixType rotationMatrix;
@@ -218,7 +218,7 @@ TubeScaleSkewAngle2DTransform<TParametersValueType>
 
 template<typename TParametersValueType>
 void
-TubeScaleSkewAngle2DTransform<TParametersValueType>
+ScaleSkewAngle2DTransform<TParametersValueType>
 ::ComputeMatrixParameters(void)
 {
   vnl_matrix<TParametersValueType> matrix(2, 2);
@@ -260,10 +260,10 @@ TubeScaleSkewAngle2DTransform<TParametersValueType>
 // Print self
 template<typename TParametersValueType>
 void
-TubeScaleSkewAngle2DTransform<TParametersValueType>::PrintSelf(std::ostream & os, Indent indent) const
+ScaleSkewAngle2DTransform<TParametersValueType>
+::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
-
   if( m_UseSingleScale )
     {
     os << indent << "UseSingleScale: true" << std::endl;
@@ -278,7 +278,7 @@ TubeScaleSkewAngle2DTransform<TParametersValueType>::PrintSelf(std::ostream & os
 
 template<typename TParametersValueType>
 void
-TubeScaleSkewAngle2DTransform<TParametersValueType>
+ScaleSkewAngle2DTransform<TParametersValueType>
 ::ComputeJacobianWithRespectToParameters(const InputPointType & p, JacobianType & j) const
 {
   j.SetSize( OutputSpaceDimension, this->GetNumberOfLocalParameters() );
@@ -308,6 +308,6 @@ TubeScaleSkewAngle2DTransform<TParametersValueType>
   j[1][6] = cx;
 }
 
-} // namespace
+} // namespace itk
 
 #endif

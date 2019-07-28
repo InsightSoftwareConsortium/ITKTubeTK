@@ -213,6 +213,7 @@ protected:
   ~Similarity2DTransform()
   {
   }
+
   virtual void PrintSelf(std::ostream & os, Indent indent) const override;
 
   /** Compute matrix from angle and scale. This is used in Set methods
