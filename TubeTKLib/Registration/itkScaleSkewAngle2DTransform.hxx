@@ -263,7 +263,7 @@ void
 ScaleSkewAngle2DTransform<TParametersValueType>
 ::PrintSelf(std::ostream & os, Indent indent) const
 {
-  Superclass::PrintSelf(os, indent);
+  Rigid2DTransform<TParametersValueType>::PrintSelf(os, indent);
   if( m_UseSingleScale )
     {
     os << indent << "UseSingleScale: true" << std::endl;

@@ -259,7 +259,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkImageRegionMomentsCalculator.txx"
+#include "itkImageRegionMomentsCalculator.hxx"
 #endif
 
 #endif /* __itkImageRegionMomentsCalculator_h */

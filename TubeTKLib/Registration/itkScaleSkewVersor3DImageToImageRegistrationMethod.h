@@ -124,7 +124,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkScaleSkewVersor3DImageToImageRegistrationMethod.txx"
+#include "itkScaleSkewVersor3DImageToImageRegistrationMethod.hxx"
 #endif
 
 #endif // __ImageToImageRegistrationMethod_h

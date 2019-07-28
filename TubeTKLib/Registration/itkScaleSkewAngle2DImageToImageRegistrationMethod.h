@@ -125,7 +125,7 @@ private:
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkScaleSkewAngle2DImageToImageRegistrationMethod.txx"
+#include "itkScaleSkewAngle2DImageToImageRegistrationMethod.hxx"
 #endif
 
 #endif // __ImageToImageRegistrationMethod_h

@@ -597,7 +597,7 @@ private:
 }
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkImageToImageRegistrationHelper.txx"
+#include "itkImageToImageRegistrationHelper.hxx"
 #endif
 
 #endif

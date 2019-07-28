@@ -51,7 +51,7 @@ class ITK_TEMPLATE_EXPORT ScaleSkewAngle2DTransform :
 public:
   /** Standard class typedefs. */
   typedef ScaleSkewAngle2DTransform                    Self;
-  typedef itk::Rigid2DTransform<TParametersValueType>       Superclass;
+  typedef Rigid2DTransform<TParametersValueType>       Superclass;
   typedef SmartPointer<Self>                           Pointer;
   typedef SmartPointer<const Self>                     ConstPointer;
 
@@ -176,7 +176,7 @@ private:
 }  // namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkScaleSkewAngle2DTransform.txx"
+#include "itkScaleSkewAngle2DTransform.hxx"
 #endif
 
 #endif /* __ScaleSkewAngle2DTransform_h */
