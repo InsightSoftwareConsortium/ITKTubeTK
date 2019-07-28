@@ -90,7 +90,7 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
     }
 
   // Correct for extra reference count from CreateInstance().
-  outputSO->UnRegister();
+  //outputSO->UnRegister();
 
   // We make the copy and sub-sample if it is a tube.
   TubeType * inputSOAsTube = dynamic_cast< TubeType * >(
@@ -213,14 +213,14 @@ TubeToTubeTransformFilter< TTransformType, TDimension >
       pnt.SetRidgeness( ( *tubePointIterator ).GetRidgeness() );
       pnt.SetBranchness( ( *tubePointIterator ).GetBranchness() );
 
-      outputSOAsTube->GetPoints().push_back( pnt );
+      outputSOAsTube->AddPoint( pnt );
 
       ++tubePointIterator;
       }
     }
   else
     {
-    outputSO->CopyInformation( inputSO );
+    outputSO = inputSO->Clone();
     }
   parentSO->AddChild( outputSO );
 
