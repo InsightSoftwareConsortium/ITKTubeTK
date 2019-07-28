@@ -131,7 +131,7 @@ public:
 
   tubeWrapGetNthMacro( ClassProbabilityImage, ProbabilityImageType, Filter );
 
-  void Update( void );
+  void Update( void ) override;
 
   /** Get output segmentation mask */
   tubeWrapGetObjectMacro( Output, OutputImageType, Filter );
