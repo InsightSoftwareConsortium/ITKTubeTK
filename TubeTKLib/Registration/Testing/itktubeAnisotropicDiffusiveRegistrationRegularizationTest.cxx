@@ -28,7 +28,7 @@ limitations under the License.
 
 #include <vtkPlaneSource.h>
 
-int itkAnisotropicDiffusiveRegistrationRegularizationTest( int argc, char * argv[] )
+int itktubeAnisotropicDiffusiveRegistrationRegularizationTest( int argc, char * argv[] )
 {
   if( argc < 7 )
     {
