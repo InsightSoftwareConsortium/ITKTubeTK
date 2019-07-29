@@ -189,7 +189,7 @@ private:
 }
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkOptimizedImageToImageRegistrationMethod.txx"
+#include "itkOptimizedImageToImageRegistrationMethod.hxx"
 #endif
 
 #endif

@@ -164,7 +164,7 @@ private:
 }  // namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkAnisotropicSimilarity3DTransform.txx"
+#include "itkAnisotropicSimilarity3DTransform.hxx"
 #endif
 
 #endif /* __itkAnisotropicSimilarity3DTransform_h */

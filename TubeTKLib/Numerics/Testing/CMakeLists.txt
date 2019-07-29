@@ -204,32 +204,32 @@ endforeach( testNum )
 ExternalData_Add_Test( TubeTKData
   NAME itktubeVotingResampleImageFunctionTest0
   COMMAND ${BASE_NUMERICS_TESTS}
-    --compare DATA{${TubeTK_DATA_ROOT}/itkVotingResampleImageFunctionTest0.png}
-      ${TEMP}/itkVotingResampleImageFunctionTest0.png
+    --compare DATA{${TubeTK_DATA_ROOT}/itktubeVotingResampleImageFunctionTest0.png}
+      ${TEMP}/itktubeVotingResampleImageFunctionTest0.png
     itktubeVotingResampleImageFunctionTest
       0
       DATA{${TubeTK_DATA_ROOT}/greyscale01.png}
-      ${TEMP}/itkVotingResampleImageFunctionTest0.png )
+      ${TEMP}/itktubeVotingResampleImageFunctionTest0.png )
 
 ExternalData_Add_Test( TubeTKData
   NAME itktubeVotingResampleImageFunctionTest1
   COMMAND ${BASE_NUMERICS_TESTS}
-    --compare DATA{${TubeTK_DATA_ROOT}/itkVotingResampleImageFunctionTest1.png}
-      ${TEMP}/itkVotingResampleImageFunctionTest1.png
+    --compare DATA{${TubeTK_DATA_ROOT}/itktubeVotingResampleImageFunctionTest1.png}
+      ${TEMP}/itktubeVotingResampleImageFunctionTest1.png
     itktubeVotingResampleImageFunctionTest
       1
       DATA{${TubeTK_DATA_ROOT}/greyscale01.png}
-      ${TEMP}/itkVotingResampleImageFunctionTest1.png )
+      ${TEMP}/itktubeVotingResampleImageFunctionTest1.png )
 
 ExternalData_Add_Test( TubeTKData
   NAME itktubeVotingResampleImageFunctionTest2
   COMMAND ${BASE_NUMERICS_TESTS}
-    --compare DATA{${TubeTK_DATA_ROOT}/itkVotingResampleImageFunctionTest2.png}
-      ${TEMP}/itkVotingResampleImageFunctionTest2.png
+    --compare DATA{${TubeTK_DATA_ROOT}/itktubeVotingResampleImageFunctionTest2.png}
+      ${TEMP}/itktubeVotingResampleImageFunctionTest2.png
     itktubeVotingResampleImageFunctionTest
       2
       DATA{${TubeTK_DATA_ROOT}/greyscale01.png}
-      ${TEMP}/itkVotingResampleImageFunctionTest2.png )
+      ${TEMP}/itktubeVotingResampleImageFunctionTest2.png )
 
 ExternalData_Add_Test( TubeTKData
   NAME tubeSplineApproximation1DTest

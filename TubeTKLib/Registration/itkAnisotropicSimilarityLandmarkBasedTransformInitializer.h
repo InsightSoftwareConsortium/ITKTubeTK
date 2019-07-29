@@ -191,7 +191,7 @@ private:
 }  // namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkAnisotropicSimilarityLandmarkBasedTransformInitializer.txx"
+#include "itkAnisotropicSimilarityLandmarkBasedTransformInitializer.hxx"
 #endif
 
 #endif /* __itkAnisotropicSimilarityLandmarkBasedTransformInitializer_h */

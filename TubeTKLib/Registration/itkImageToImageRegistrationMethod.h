@@ -184,7 +184,7 @@ private:
 }
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkImageToImageRegistrationMethod.txx"
+#include "itkImageToImageRegistrationMethod.hxx"
 #endif
 
 #endif

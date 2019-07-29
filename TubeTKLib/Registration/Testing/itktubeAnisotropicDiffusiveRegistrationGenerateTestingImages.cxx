@@ -298,7 +298,7 @@ TImage * image )
 }
 
 
-int itkAnisotropicDiffusiveRegistrationGenerateTestingImages( int argc, char * argv[] )
+int itktubeAnisotropicDiffusiveRegistrationGenerateTestingImages( int argc, char * argv[] )
 {
   if( argc < 7 )
     {

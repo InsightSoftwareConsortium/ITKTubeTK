@@ -31,8 +31,8 @@ limitations under the License.
 void RegisterTests( void )
 {
 #ifdef TubeTK_USE_VTK
-  REGISTER_TEST( itkAnisotropicDiffusiveRegistrationGenerateTestingImages );
-  REGISTER_TEST( itkAnisotropicDiffusiveRegistrationRegularizationTest );
+  REGISTER_TEST( itktubeAnisotropicDiffusiveRegistrationGenerateTestingImages );
+  REGISTER_TEST( itktubeAnisotropicDiffusiveRegistrationRegularizationTest );
 #endif
   REGISTER_TEST( itktubeImageToTubeRigidMetricPerformanceTest );
   REGISTER_TEST( itktubeImageToTubeRigidMetricTest );

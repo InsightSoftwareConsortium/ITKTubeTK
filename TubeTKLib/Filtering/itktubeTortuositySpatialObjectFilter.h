@@ -35,34 +35,34 @@ namespace tube
 {
 
 /** \class TortuositySpatialObjectFilter
-* \brief Compute tortuosity on a PointBasedSpatialObject.
+* \brief Compute tortuosity on a TubeSpatialObject.
 *
-* Compute tortuosity metrics on the given PointBasedSpatialObject. This
+* Compute tortuosity metrics on the given TubeSpatialObject. This
 * does not check for any child of the input. Different king of tortuosity
 * can be run on the input, depending on the MeasureFlag.
 *
 * This filter does not modify the output so the filter can be part of a
 * pipeline and automatically recomputes itself when necessary.
 */
-template< class TPointBasedSpatialObject >
+template< class TTubeSpatialObject >
 class TortuositySpatialObjectFilter : public
-  SpatialObjectToSpatialObjectFilter< TPointBasedSpatialObject,
-  TPointBasedSpatialObject >
+  SpatialObjectToSpatialObjectFilter< TTubeSpatialObject,
+  TTubeSpatialObject >
 {
 public:
   /** Standard class typedefs. */
   typedef TortuositySpatialObjectFilter     Self;
-  typedef SpatialObjectToSpatialObjectFilter< TPointBasedSpatialObject,
-    TPointBasedSpatialObject >              Superclass;
+  typedef SpatialObjectToSpatialObjectFilter< TTubeSpatialObject,
+    TTubeSpatialObject >                    Superclass;
   typedef SmartPointer< Self >              Pointer;
   typedef SmartPointer< const Self >        ConstPointer;
 
-  typedef TPointBasedSpatialObject          PointBasedSpatialObject;
+  typedef TTubeSpatialObject                TubeSpatialObject;
 
-  typedef typename TPointBasedSpatialObject::VectorType SOVectorType;
+  typedef typename TTubeSpatialObject::VectorType SOVectorType;
 
-  typedef typename PointBasedSpatialObject::Pointer
-    PointBasedSpatialObjectPointer;
+  typedef typename TubeSpatialObject::Pointer
+    TubeSpatialObjectPointer;
 
   /** Run-time type information ( and related methods ).   */
   itkTypeMacro( TortuositySpatialObjectFilter,

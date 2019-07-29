@@ -109,99 +109,95 @@ ExternalData_Add_Test( TubeTKData
 
 if( TubeTK_USE_VTK )
   ExternalData_Add_Test( TubeTKData
-    NAME itkAnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise
+    NAME itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise
     COMMAND ${BASE_REGISTRATION_TESTS}
-      itkAnisotropicDiffusiveRegistrationRegularizationTest
-        ${TEMP}/Regularization_straight_noNoise_smoothedMotionField.mhd
+      itktubeAnisotropicDiffusiveRegistrationRegularizationTest
+        ${TEMP}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise.mha
         0 0
         5 0.125 1 )
   ExternalData_Add_Test( TubeTKData
     NAME
-     itkAnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise-Compare
+     itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise-Compare
     COMMAND ${CompareImages_EXE}
-      -t ${TEMP}/Regularization_straight_noNoise_smoothedMotionField.mhd
-      -b DATA{${TubeTK_DATA_ROOT}/Regularization_straight_noNoise_smoothedMotionField.mhd,Regularization_straight_noNoise_smoothedMotionField.zraw}
+      -t ${TEMP}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise.mha
+      -b DATA{${TubeTK_DATA_ROOT}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise.mha}
       -i ${CompareImagesTolerance} )
   set_tests_properties(
-    itkAnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise-Compare
-    PROPERTIES DEPENDS
-    itkAnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise )
+    itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise-Compare
+    PROPERTIES DEPENDS itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraightNoNoise )
 
   ExternalData_Add_Test( TubeTKData
     NAME
-      itkAnisotropicDiffusiveRegistrationRegularizationTestStraight
+      itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraight
     COMMAND ${BASE_REGISTRATION_TESTS}
-      itkAnisotropicDiffusiveRegistrationRegularizationTest
-        ${TEMP}/Regularization_straight_smoothedMotionField.mhd
+      itktubeAnisotropicDiffusiveRegistrationRegularizationTest
+        ${TEMP}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraight.mha
         0.1 0
         5 0.125 1 )
   ExternalData_Add_Test( TubeTKData
-    NAME itkAnisotropicDiffusiveRegistrationRegularizationTestStraight-Compare
+    NAME itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraight-Compare
     COMMAND ${CompareImages_EXE}
-      -t ${TEMP}/Regularization_straight_smoothedMotionField.mhd
-      -b DATA{${TubeTK_DATA_ROOT}/Regularization_straight_smoothedMotionField.mhd,Regularization_straight_smoothedMotionField.zraw}
+      -t ${TEMP}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraight.mha
+      -b DATA{${TubeTK_DATA_ROOT}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraight.mha}
       -i ${CompareImagesTolerance} )
   set_tests_properties(
-    itkAnisotropicDiffusiveRegistrationRegularizationTestStraight-Compare
-    PROPERTIES DEPENDS
-    itkAnisotropicDiffusiveRegistrationRegularizationTestStraight )
+    itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraight-Compare
+    PROPERTIES DEPENDS itktubeAnisotropicDiffusiveRegistrationRegularizationTestStraight )
 
   ExternalData_Add_Test( TubeTKData
-    NAME itkAnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise
+    NAME itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise
     COMMAND ${BASE_REGISTRATION_TESTS}
-      itkAnisotropicDiffusiveRegistrationRegularizationTest
-        ${TEMP}/Regularization_angled_noNoise_smoothedMotionField.mhd
+      itktubeAnisotropicDiffusiveRegistrationRegularizationTest
+        ${TEMP}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise.mha
         0 0.5
         5 0.125 1 )
   ExternalData_Add_Test( TubeTKData
     NAME
-      itkAnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise-Compare
+      itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise-Compare
     COMMAND ${CompareImages_EXE}
-      -t ${TEMP}/Regularization_angled_noNoise_smoothedMotionField.mhd
-      -b DATA{${TubeTK_DATA_ROOT}/Regularization_angled_noNoise_smoothedMotionField.mhd,Regularization_angled_noNoise_smoothedMotionField.zraw}
+      -t ${TEMP}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise.mha
+      -b DATA{${TubeTK_DATA_ROOT}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise.mha}
       -i ${CompareImagesTolerance} )
   set_tests_properties(
-    itkAnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise-Compare
-    PROPERTIES DEPENDS
-    itkAnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise )
+    itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise-Compare
+    PROPERTIES DEPENDS itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledNoNoise )
 
   ExternalData_Add_Test( TubeTKData
     NAME
-      itkAnisotropicDiffusiveRegistrationRegularizationTestAngled
+      itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngled
     COMMAND ${BASE_REGISTRATION_TESTS}
-      itkAnisotropicDiffusiveRegistrationRegularizationTest
-        ${TEMP}/Regularization_angled_smoothedMotionField.mhd
+      itktubeAnisotropicDiffusiveRegistrationRegularizationTest
+        ${TEMP}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngled.mha
         0.1 0.5
         5 0.125 1 )
   ExternalData_Add_Test( TubeTKData
-    NAME itkAnisotropicDiffusiveRegistrationRegularizationTestAngled-Compare
+    NAME itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngled-Compare
     COMMAND ${CompareImages_EXE}
-      -t ${TEMP}/Regularization_angled_smoothedMotionField.mhd
-      -b DATA{${TubeTK_DATA_ROOT}/Regularization_angled_smoothedMotionField.mhd,Regularization_angled_smoothedMotionField.zraw}
+      -t ${TEMP}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngled.mha
+      -b DATA{${TubeTK_DATA_ROOT}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngled.mha}
       -i ${CompareImagesTolerance} )
   set_tests_properties(
-    itkAnisotropicDiffusiveRegistrationRegularizationTestAngled-Compare
+    itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngled-Compare
     PROPERTIES DEPENDS
-    itkAnisotropicDiffusiveRegistrationRegularizationTestAngled )
+    itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngled )
 
   ExternalData_Add_Test( TubeTKData
-    NAME itkAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian
+    NAME itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian
     COMMAND ${BASE_REGISTRATION_TESTS}
-      itkAnisotropicDiffusiveRegistrationRegularizationTest
-        ${TEMP}/Regularization_angled_gaussian_smoothedMotionField.mhd
+      itktubeAnisotropicDiffusiveRegistrationRegularizationTest
+        ${TEMP}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian.mha
         0.1 0.5
         5 0.125 0 )
   ExternalData_Add_Test( TubeTKData
     NAME
-      itkAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian-Compare
+      itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian-Compare
     COMMAND ${CompareImages_EXE}
-      -t ${TEMP}/Regularization_angled_gaussian_smoothedMotionField.mhd
-      -b DATA{${TubeTK_DATA_ROOT}/Regularization_angled_gaussian_smoothedMotionField.mhd,Regularization_angled_gaussian_smoothedMotionField.zraw}
+      -t ${TEMP}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian.mha
+      -b DATA{${TubeTK_DATA_ROOT}/itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian.mha}
       -i ${CompareImagesTolerance} )
   set_tests_properties(
-    itkAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian-Compare
-    PROPERTIES DEPENDS
-    itkAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian )
+    itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian-Compare
+    PROPERTIES DEPENDS itktubeAnisotropicDiffusiveRegistrationRegularizationTestAngledGaussian )
 
 endif()
 

@@ -233,7 +233,7 @@ VectorImageToListGenerator< TImage, TMaskImage >
 template< class TImage, class TMaskImage >
 void
 VectorImageToListGenerator< TImage, TMaskImage >
-::GenerateInputRequestedRegion() throw( InvalidRequestedRegionError )
+::GenerateInputRequestedRegion()
 {
   // call the superclass' implementation of this method. this should
   // copy the output requested region to the input requested region

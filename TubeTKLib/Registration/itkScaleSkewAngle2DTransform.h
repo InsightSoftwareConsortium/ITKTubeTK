@@ -15,16 +15,17 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-#ifndef itkTubeScaleSkewAngle2DTransform_h
-#define itkTubeScaleSkewAngle2DTransform_h
+#ifndef itkScaleSkewAngle2DTransform_h
+#define itkScaleSkewAngle2DTransform_h
 
 #include <iostream>
-#include "itkVersorRigid3DTransform.h"
+#include "itkRigid2DTransform.h"
 
 namespace itk
 {
-/** \class TubeScaleSkewAngle2DTransform
- * \brief TubeScaleSkewAngle2DTransform of a vector space (e.g. space coordinates)
+
+/** \class ScaleSkewAngle2DTransform
+ * \brief ScaleSkewAngle2DTransform of a vector space (e.g. space coordinates)
  *
  * This transform applies a rotation and translation & scale/skew
  * to the space
@@ -44,12 +45,12 @@ namespace itk
  * \ingroup ITKTransform
  */
 template<typename TParametersValueType=double>
-class ITK_TEMPLATE_EXPORT TubeScaleSkewAngle2DTransform :
+class ITK_TEMPLATE_EXPORT ScaleSkewAngle2DTransform :
   public Rigid2DTransform<TParametersValueType>
 {
 public:
   /** Standard class typedefs. */
-  typedef TubeScaleSkewAngle2DTransform                Self;
+  typedef ScaleSkewAngle2DTransform                    Self;
   typedef Rigid2DTransform<TParametersValueType>       Superclass;
   typedef SmartPointer<Self>                           Pointer;
   typedef SmartPointer<const Self>                     ConstPointer;
@@ -58,7 +59,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(TubeScaleSkewAngle2DTransform, Rigid2DTransform);
+  itkTypeMacro(ScaleSkewAngle2DTransform, Rigid2DTransform);
 
   /** Dimension of parameters. */
   itkStaticConstMacro(InputSpaceDimension, unsigned int, 2);
@@ -134,14 +135,16 @@ public:
   virtual void ComputeJacobianWithRespectToParameters( const InputPointType  & p, JacobianType & jacobian) const ITK_OVERRIDE;
 
 protected:
-  TubeScaleSkewAngle2DTransform();
-  TubeScaleSkewAngle2DTransform(const MatrixType & matrix, const OutputVectorType & offset);
-  TubeScaleSkewAngle2DTransform(unsigned int paramDims);
-  ~TubeScaleSkewAngle2DTransform()
+  ScaleSkewAngle2DTransform();
+  ScaleSkewAngle2DTransform(const MatrixType & matrix,
+    const OutputVectorType & offset);
+  ScaleSkewAngle2DTransform(unsigned int paramDims);
+
+  ~ScaleSkewAngle2DTransform()
   {
   }
 
-  void PrintSelf(std::ostream & os, Indent indent) const override;
+  virtual void PrintSelf(std::ostream & os, Indent indent) const override;
 
   void SetVarScale(const ScaleVectorType & scale)
   {
@@ -159,7 +162,7 @@ protected:
   void ComputeMatrixParameters(void) ITK_OVERRIDE;
 
 private:
-  ITK_DISALLOW_COPY_AND_ASSIGN(TubeScaleSkewAngle2DTransform);
+  ITK_DISALLOW_COPY_AND_ASSIGN(ScaleSkewAngle2DTransform);
 
   /**  If true, parameters[3] is used for scaling in x and y. */
   bool m_UseSingleScale;
@@ -169,11 +172,11 @@ private:
 
   /**  Vector containing the skew */
   SkewVectorType m_Skew;
-}; // class TubeScaleSkewAngle2DTransform
+}; // class ScaleSkewAngle2DTransform
 }  // namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "itkTubeScaleSkewAngle2DTransform.txx"
+#include "itkScaleSkewAngle2DTransform.hxx"
 #endif
 
-#endif /* __TubeScaleSkewAngle2DTransform_h */
+#endif /* __ScaleSkewAngle2DTransform_h */

@@ -164,8 +164,7 @@ public:
 
   /** This method ensures that a mask image if specified has requested regions
    * that at least contain the input image's buffered region. */
-  virtual void GenerateInputRequestedRegion( void )
-    throw( InvalidRequestedRegionError ) override;
+  virtual void GenerateInputRequestedRegion( void ) override;
 
   virtual void GenerateOutputInformation( void ) override;
 

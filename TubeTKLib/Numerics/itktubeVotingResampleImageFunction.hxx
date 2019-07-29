@@ -90,32 +90,25 @@ VotingResampleImageFunction< TInputImage, TCoordRep >
   IndexType newIndex;
   for( unsigned int i = 0; i < ImageDimension; i++ )
     {
-    newIndex[i] = ( int )index[i];
+    newIndex[i] = ( int )(index[i]+0.5);  // Round to nearest int
     }
 
   it.SetLocation( newIndex );
   itk::Neighborhood<typename TInputImage::PixelType, ImageDimension> n =
     it.GetNeighborhood();
   std::map<typename TInputImage::PixelType, int> tally;
-  typename std::map<typename TInputImage::PixelType, int>::const_iterator itr;
   for( unsigned int i = 0; i < n.Size(); i++ )
     {
     tally[n[i]] = 0;
     }
+  int max = 0;
+  OutputType ret = n[0];
   for( unsigned int i = 0; i < n.Size(); i++ )
     {
-    tally[n[i]] += 1;
-    }
-  bool first = true;
-  int max = 0;
-  unsigned short ret = 0;
-  for( itr = tally.begin(); itr != tally.end(); ++itr )
-    {
-    if( first == true || itr->second > max )
+    if( ++tally[n[i]] > max )
       {
-      first = false;
-      max = itr->second;
-      ret = itr->first;
+      max = tally[n[i]];
+      ret = n[i];
       }
     }
   return ret;

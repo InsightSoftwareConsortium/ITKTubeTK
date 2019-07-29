@@ -254,7 +254,7 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
   typename TTube::TubePointListType::iterator endItr = pointList.end();
 
   typename TTube::Pointer newTube = TTube::New();
-  newTube->CopyInformation( tube );
+  newTube = tube->Clone();
 
   typename TTube::TubePointListType newPointList;
 
@@ -338,8 +338,7 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
       ++count;
       }
     }
-
-  if( smoothFunction == SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN )
+  else if( smoothFunction == SMOOTH_TUBE_USING_DISTANCE_GAUSSIAN )
     {
     // // Set w for Gaussians
     // double sigma = h;
@@ -354,6 +353,7 @@ SmoothTube( const typename TTube::Pointer & tube, double h,
     }
 
   newTube->SetPoints( newPointList );
+  std::cout << newTube->GetNumberOfPoints() << std::endl;
   tube::ComputeTubeTangentsAndNormals< TTube >( newTube );
 
   return newTube;
@@ -410,7 +410,7 @@ SubsampleTube( const typename TTube::Pointer & tube, int N )
   typename TTube::TubePointListType::iterator endItr = pointList.end();
 
   typename TTube::Pointer newTube = TTube::New();
-  newTube->CopyInformation( tube );
+  newTube = tube->Clone();
 
   typename TTube::TubePointListType newPointList;
 
