@@ -1,7 +1,12 @@
-TubeTK: Tubular Object Extraction, Registration, and Analysis
-=============================================================
+ITKTubeTK: Tubular Object Extraction, Registration, and Analysis
+================================================================
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/KitwareMedical/ITKTubeTK/blob/master/LICENSE.md)
+
+[![Build Status](https://dev.azure.com/InsightSoftwareConsortium/ITKModules/_apis/build/status/KitwareMedical.ITKTubeTK?branchName=master)](https://dev.azure.com/InsightSoftwareConsortium/ITKModules/_build/latest?definitionId=19&branchName=master)
+
+Overview
+--------
 
 [TubeTK](http://www.tubetk.org) is an open-source toolkit for the segmentation, registration, and analysis of tubes and surfaces in images, developed by [Kitware, Inc.](http://www.kitware.com)
 
@@ -27,6 +32,16 @@ There are two dependencies that must be compiled first
 1) ITK
 2) SlicerExecutionModel
 
+Additionally, you may want to compile 
+
+3) VTK
+
+to enable the "sliding organ
+registration" (anisotropic diffusion regularization and registration)
+methods in ITKTubeTK.
+
+*1) ITK*
+
 For ITK, we want to compile ITK v5.0 or later.   Begin by checking out ITK's source
 
     $ cd /c                               (To keep paths short, start at a top-level dir)
@@ -41,6 +56,7 @@ Using CMake, you should configure ITK with the following options
 * ITK_LEGACY_SILENT = On               (This is an advanced option)
 * ITK_WRAP_PYTHON = On                 (Note: Only Python3 is supported at this time)
 * Module_MinimalPathExtraction = On    (This is an advanced option)
+* You may also want to turn off building Tests and Examples
 
 Once you have configured and generated your build files (e.g., for make or ninja or whatever):
 
@@ -49,7 +65,9 @@ Once you have configured and generated your build files (e.g., for make or ninja
 This build process can take many hours on a Windows PC, because it is generating the files needed
 to use ITK with Python, as well as the standard C++ libraries, applications, examples, and tests.
 
-Then we repeat this build process for SlicerExecutionModel (used by ITKTubeTK applications):
+*2) SlicerExecutionModel*
+
+After compiling ITK, we repeat the build process for SlicerExecutionModel (used by ITKTubeTK applications):
 
     $ cd ~/src
     $ git clone https://github.com:/Slicer/SlicerExecutionModel.git
@@ -61,12 +79,37 @@ Using CMake, you should configure SlicerExecutionModel as follows:
 * CMAKE_BUILD_TYPE = Release
 * ITK_DIR = ~/src/ITK-Release
 
-Once SlicerExecutionModel's cmake files are configured and build files are generated, you should
-build the application:
+Once SlicerExecutionModel's cmake files are configured and build files are
+generated, you should build the application:
 
     $ ninja  (or make, or nmake, or whatever is appropriate for your system)
 
-This build should be relatively quick.  And now you are ready to compile ITKTubeTK
+This build should be relatively quick.
+
+*3) VTK*
+
+Optionally, you may also want to build VTK.   This is used by the Sliding
+Organ Registration algorithm (anisotropic diffusion regularization and
+registration).
+
+    $ cd ~/src
+    $ git clone https://github.com:/Kitware/VTK.git
+    $ mkdir VTK-Release
+    $ cd VTK-Release
+    $ cmake-gui ..\VTK
+
+Using CMake, you should configure VTK as follows:
+* CMAKE_BUILD_TYPE = Release
+* VTK_PYTHON_VERSION = 3
+* VTK_WRAP_PYTHON = True
+* You may also want to turn off building Tests and Examples
+
+After configuring CMake and generating the build files, you should compile 
+VTK:
+
+    $ ninja  (or make, or nmake, or whatever is appropriate for your system)
+
+...And now you are ready to compile ITKTubeTK
 
 Compiling ITKTubeTK
 -------------------
@@ -85,13 +128,14 @@ Then we configure the CMake variables for ITKTubeTK
 * TubeTK_BUILD_APPLICATIONS = On
 * SlicerExecutionModel_DIR = ~/src/SlicerExecutionModel-Release
 * TubeTK_WRAP_PYTHON = On
+* Optionally, if you have built VTK, you can enable the use of VTK and point VTK_DIR to your VTK-Release directory.
 
 Then configure and generate you build files using cmake, and compile
 
     $ ninja
 
-Now you will want to add ITKTubeTK's applications to your command-line PATH.  The directory to include
-in that path is:
+Now you will want to add ITKTubeTK's applications to your command-line PATH.
+The directory to include in that path is:
 
     ~/src/ITKTubeTK/bin
 
@@ -154,6 +198,23 @@ The development of TubeTK is supported in part by the
 * [National Institute of Neurological Disorders and Stroke](http://www.ninds.nih.gov) (NINDS) of the National Institutes of Health (NIH) under award number R41NS081792;
 * [Defense Advanced Research Projects Agency](http://www.darpa.mil) (DARPA) under the TRUST program.
 
-[TubeTK/tubetklib]: https://github.com/KitwareMedical/TubeTK/tree/master/tubetklib
-[TubeTK/include]: https://github.com/KitwareMedical/TubeTK/tree/master/include
-[TubeTK/apps]: https://github.com/KitwareMedical/TubeTK/tree/master/apps
+License
+-------
+
+This software is distributed under the Apache 2.0 license. Please see
+the *LICENSE* file for details.
+
+References
+----------
+
+*Publications*
+
+( See also [http://www.aylward.org/biosketch/publications-1] )
+* D.F. Pace, S.R. Aylward, M. Niethammer, "A Locally Adaptive Regularization Based on Anisotropic Diffusion for Deformable Image Registration of Sliding Organs," Medical Imaging, IEEE Transactions on , vol.32, no.11, pp.2114,2126, Nov. 2013 doi: 10.1109/TMI.2013.2274777
+* E. Bullitt, D. Zeng, B. Mortamet, A. Ghosh, S. R. Aylward, W. Lin, B. L. Marks, and K. Smith, "The effects of healthy aging on intracerebral blood vessels visualized by magnetic resonance angiography," NEUROBIOLOGY OF AGING, vol. 31, no. 2, pp. 290-300, Feb. 2010. 
+* E. Bullitt, M. Ewend, J. Vredenburgh, A. Friedman, W. Lin, K. Wilber, D. Zeng, S. R. Aylward, and D. Reardon, "Computerized assessment of vessel morphological changes during treatment of glioblastoma multiforme: Report of a case imaged serially by MRA over four years," NEUROIMAGE, vol. 47, pp. T143-T151, Aug. 2009. 
+* E. Bullitt, K. Muller, I. Jung, W. Lin, and S. Aylward, "Analyzing attributes of vessel populations," MEDICAL IMAGE ANALYSIS, vol. 9, no. 1, pp. 39-49, Feb. 2005. 
+* S. Aylward, J. Jomier, S. Weeks, and E. Bullitt, "Registration and analysis of vascular images," INTERNATIONAL JOURNAL OF COMPUTER VISION, vol. 55, no. 2-3, pp. 123-138, Dec. 2003. 
+* E. Bullitt, G. Gerig, S. Pizer, W. Lin, and S. Aylward, "Measuring tortuosity of the intracerebral vasculature from MRA images," IEEE TRANSACTIONS ON MEDICAL IMAGING, vol. 22, no. 9, pp. 1163-1171, Sep. 2003.
+* S. R. Aylward and E. Bullitt, "Initialization, noise, singularities, and scale in height ridge traversal for tubular object centerline extraction," Medical Imaging, IEEE Transactions on, vol. 21, no. 2, pp. 61-75, 2002. 
+* S. Aylward, S. Pizer, D. Eberly, and E. Bullitt, "Intensity Ridge and Widths for Tubular Object Segmentation and Description," in MMBIA '96: Proceedings of the 1996 Workshop on Mathematical Methods in Biomedical Image Analysis (MMBIA '96), Washington, DC, USA, 1996, p. 131.
