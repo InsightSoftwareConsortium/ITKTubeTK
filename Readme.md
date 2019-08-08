@@ -16,11 +16,11 @@ A guiding premise of TubeTK is that by focusing on 1D and 2D manifolds we can de
 
 TubeTK offers various interface layers:
 
-* [TubeTK/tubetklib][TubeTK/tubetklib]: This is the algorithms library.   It is the lowest level of access to the methods of TubeTK.  It is only available via C++, and it requires considerable expertise to effectively combine and call its methods to do anything useful.   Interfacing directly with these algorithms is not recommended and is not well supported. Unit-level testing is performed continuously on these methods.
+* [TubeTK/tubetklib](TubeTK/tubetklib): This is the algorithms library.   It is the lowest level of access to the methods of TubeTK.  It is only available via C++, and it requires considerable expertise to effectively combine and call its methods to do anything useful.   Interfacing directly with these algorithms is not recommended and is not well supported. Unit-level testing is performed continuously on these methods.
 
-* [TubeTK/include][TubeTK/include]: This is the ITK interface to select methods in `TubeTK/tubetklib`.  This level of interface is intended for ITK users and Python scripts writers.  The methods exposed represent a level of modularization that invites experimentation, integration with other toolkits (e.g., Scikit-Learn), and development of processing pipelines that accomplish significant image analysis goals.  The interface is available as an ITK Extension and thereby available via Python using Wrapped ITK.
+* [TubeTK/include](TubeTK/include): This is the ITK interface to select methods in `TubeTK/tubetklib`.  This level of interface is intended for ITK users and Python scripts writers.  The methods exposed represent a level of modularization that invites experimentation, integration with other toolkits (e.g., Scikit-Learn), and development of processing pipelines that accomplish significant image analysis goals.  The interface is available as an ITK Extension and thereby available via Python using Wrapped ITK.
 
-* [TubeTK/apps][TubeTK/apps]: These are the command-line interface (CLI) equivalents to the methods available via `TubeTK/include`.  This is intended for bash, bat, and other system-call scripts.  The level of modularization and intended users are similar to those of `TubeTK/include`.  C++ and python-based CLIs are provided.  Continuous, unit-level testing of `TubeTK/include` is provided via these applications.
+* [TubeTK/apps](TubeTK/apps): These are the command-line interface (CLI) equivalents to the methods available via `TubeTK/include`.  This is intended for bash, bat, and other system-call scripts.  The level of modularization and intended users are similar to those of `TubeTK/include`.  C++ and python-based CLIs are provided.  Continuous, unit-level testing of `TubeTK/include` is provided via these applications.
 
 Compiling ITKTubeTK's requirements
 ----------------------------------
@@ -44,12 +44,12 @@ methods in ITKTubeTK.
 
 For ITK, we want to compile ITK v5.0 or later.   Begin by checking out ITK's source
 
-    $ cd /c                               (To keep paths short, start at a top-level dir)
+    $ cd /                               (To keep paths short, start at a top-level dir)
     $ mkdir src
     $ cd src
     $ git clone https://github.com:/InsightSoftwareConsortium/ITK.git -b Release
     $ mkdir ITK-Release
-    $ cmake-gui ..\ITK
+    $ cmake-gui ../ITK
 
 Using CMake, you should configure ITK with the following options
 * CMAKE_BUILD_TYPE = Release           (This is an advanced option)
@@ -69,15 +69,15 @@ to use ITK with Python, as well as the standard C++ libraries, applications, exa
 
 After compiling ITK, we repeat the build process for SlicerExecutionModel (used by ITKTubeTK applications):
 
-    $ cd ~/src
+    $ cd /src
     $ git clone https://github.com:/Slicer/SlicerExecutionModel.git
     $ mkdir SlicerExecutionModel-Release
     $ cd SlicerExecutionModel-Release
-    $ cmake-gui ..\SlicerExecutionModel
+    $ cmake-gui ../SlicerExecutionModel
 
 Using CMake, you should configure SlicerExecutionModel as follows:
 * CMAKE_BUILD_TYPE = Release
-* ITK_DIR = ~/src/ITK-Release
+* ITK_DIR = /src/ITK-Release
 
 Once SlicerExecutionModel's cmake files are configured and build files are
 generated, you should build the application:
@@ -92,11 +92,11 @@ Optionally, you may also want to build VTK.   This is used by the Sliding
 Organ Registration algorithm (anisotropic diffusion regularization and
 registration).
 
-    $ cd ~/src
+    $ cd /src
     $ git clone https://github.com:/Kitware/VTK.git
     $ mkdir VTK-Release
     $ cd VTK-Release
-    $ cmake-gui ..\VTK
+    $ cmake-gui ../VTK
 
 Using CMake, you should configure VTK as follows:
 * CMAKE_BUILD_TYPE = Release
@@ -116,17 +116,17 @@ Compiling ITKTubeTK
 
 Once ITK and SlicerExecutionModel have been compiled as described above, you can compile ITKTubeTK:
 
-    $ cd ~/src
+    $ cd /src
     $ git clone https://github.com:/KitwareMedical/ITKTubeTK
     $ mkdir ITKTubeTK-Release
     $ cd ITKTubeTK-Release
-    $ cmake-gui ..\ITKTubeTK
+    $ cmake-gui ../ITKTubeTK
 
 Then we configure the CMake variables for ITKTubeTK
 * CMAKE_BUILD_TYPE = Release
-* ITK_DIR = ~/src/ITK-Release
+* ITK_DIR = /src/ITK-Release
 * TubeTK_BUILD_APPLICATIONS = On
-* SlicerExecutionModel_DIR = ~/src/SlicerExecutionModel-Release
+* SlicerExecutionModel_DIR = /src/SlicerExecutionModel-Release
 * TubeTK_WRAP_PYTHON = On
 * Optionally, if you have built VTK, you can enable the use of VTK and point VTK_DIR to your VTK-Release directory.
 
@@ -137,7 +137,7 @@ Then configure and generate you build files using cmake, and compile
 Now you will want to add ITKTubeTK's applications to your command-line PATH.
 The directory to include in that path is:
 
-    ~/src/ITKTubeTK/bin
+    /src/ITKTubeTK/bin
 
 Using a Compiled and Python-Wrapped ITk and ITKTubeTK from Python
 -----------------------------------------------------------------
@@ -193,9 +193,10 @@ Acknowledgements
 
 The development of TubeTK is supported in part by the
 
-* [National Cancer Institute](http://www.cancer.gov‎) (NCI) of the [National Institutes of Health](http://www.nih.gov) (NIH) under award numbers R01CA138419, R01CA170665, R43CA165621, and R44CA143234;
-* [National Institute of Biomedical Imaging and Bioengineering](http://www.nibib.nih.gov) (NBIB) of the National Institutes of Health (NIH) under award numbers R41EB015775, R43EB016621, and U54EB005149;
-* [National Institute of Neurological Disorders and Stroke](http://www.ninds.nih.gov) (NINDS) of the National Institutes of Health (NIH) under award number R41NS081792;
+* [NCI](http://www.cancer.gov/) under award numbers R01CA138419, R01CA170665, R43CA165621, and R44CA143234;
+* [NIBIB](http://www.nibib.nih.gov) (NBIB) of the National Institutes of Health (NIH) under award numbers R01EB014955, R41EB015775, R43EB016621, and U54EB005149;
+* [NIBIB](http://www.nibib.nih.gov) and [NIGMS](http://www.nigms.nih.gov) R01EB021396;
+* [NINDS](http://www.ninds.nih.gov) R42NS086295 and R41NS081792;
 * [Defense Advanced Research Projects Agency](http://www.darpa.mil) (DARPA) under the TRUST program.
 
 License
