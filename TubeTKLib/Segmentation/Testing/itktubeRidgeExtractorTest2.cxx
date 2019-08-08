@@ -84,14 +84,15 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
 
   RidgeOpType::IndexType imMinX = ridgeOp->GetExtractBoundMinInIndexSpace();
   RidgeOpType::IndexType imMaxX = ridgeOp->GetExtractBoundMaxInIndexSpace();
-  int margin = 10;
+  int margin = 3;
+  std::cout << "Bound min = " << imMinX << std::endl;
+  std::cout << "Bound max = " << imMaxX << std::endl;
 
   int failures = 0;
   for( int mcRun=0; mcRun<2; mcRun++ )
     {
     std::cout << std::endl;
     std::cout << std::endl;
-    std::cout << "***** Beginning tube test ***** " << std::endl;
     std::cout << "***** Beginning tube test ***** " << std::endl;
     unsigned int rndTubeNum = rndGen->GetUniformVariate( 0, 1 ) * numTubes;
     if( rndTubeNum > numTubes-1 )
@@ -126,14 +127,15 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
     tube->Update();
 
     ImageType::PointType pntX = pnt->GetPositionInWorldSpace();
+    std::cout << "Test position = " << pntX << std::endl;
 
-    RidgeOpType::ContinuousIndexType x0;
-    bool inMargin = im->TransformPhysicalPointToContinuousIndex( pntX, x0 );
+    RidgeOpType::ContinuousIndexType xContI;
+    bool inMargin = im->TransformPhysicalPointToContinuousIndex( pntX, xContI );
     if( inMargin )
       {
       for( unsigned int i=0; i<ImageType::ImageDimension; i++ )
         {
-        if( x0[i] < imMinX[i]+margin || x0[i] > imMaxX[i]-margin )
+        if( xContI[i] < imMinX[i]+margin || xContI[i] > imMaxX[i]-margin )
           {
           inMargin = false;
           break;
@@ -147,18 +149,18 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
         << std::endl;
       continue;
       }
-    std::cout << "Test index = " << x0 << std::endl;
+    std::cout << "Test index = " << xContI << std::endl;
 
     std::cout << "Setting min and max z to save time." << std::endl;
     RidgeOpType::IndexType minX = imMinX;
     RidgeOpType::IndexType maxX = imMaxX;
-    if( x0[2] - margin > minX[2] )
+    if( xContI[2] - margin > minX[2] )
       {
-      minX[2] = x0[2] - margin;
+      minX[2] = xContI[2] - margin;
       }
-    if( x0[2] + margin < maxX[2] )
+    if( xContI[2] + margin < maxX[2] )
       {
-      maxX[2] = x0[2] + margin;
+      maxX[2] = xContI[2] + margin;
       }
     ridgeOp->SetExtractBoundMinInIndexSpace( minX );
     ridgeOp->SetExtractBoundMaxInIndexSpace( maxX );
@@ -173,20 +175,25 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       }
 
 
-    RidgeOpType::ContinuousIndexType x1 = x0;
-    if( ridgeOp->LocalRidge( x1 ) != RidgeOpType::SUCCESS )
+    RidgeOpType::PointType xRidgePnt;
+    im->TransformContinuousIndexToPhysicalPoint( xContI, xRidgePnt );
+    if( ridgeOp->LocalRidge( xRidgePnt ) != RidgeOpType::SUCCESS )
       {
+      RidgeOpType::ContinuousIndexType xRidgeContI;
+      im->TransformPhysicalPointToContinuousIndex( xRidgePnt, xRidgeContI );
       std::cout << "Local ridge test failed.  No ridge found." << std::endl;
-      std::cout << "   Source = " << x0 << std::endl;
-      std::cout << "   Result = " << x1 << std::endl;
+      std::cout << "   Source = " << xContI << std::endl;
+      std::cout << "   Result = " << xRidgeContI << std::endl;
       ++failures;
       continue;
       }
+    RidgeOpType::ContinuousIndexType xRidgeContI;
+    im->TransformPhysicalPointToContinuousIndex( xRidgePnt, xRidgeContI );
 
     double diff = 0;
     for( unsigned int i=0; i<ImageType::ImageDimension; i++ )
       {
-      double tf = x0[i]-x1[i];
+      double tf = xContI[i]-xRidgeContI[i];
       diff += tf * tf;
       }
     diff = std::sqrt( diff );
@@ -194,8 +201,8 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       {
       std::cout << "Local ridge test failed.  Local ridge too far."
         << std::endl;
-      std::cout << "   Source = " << x0 << std::endl;
-      std::cout << "   Result = " << x1 << std::endl;
+      std::cout << "   Source = " << xContI << std::endl;
+      std::cout << "   Result = " << xRidgeContI << std::endl;
       ++failures;
       continue;
       }
@@ -203,7 +210,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
     std::cout << "Local ridge discovery a success!" << std::endl;
     std::cout << std::endl;
     std::cout << "***** Beginning tube extraction ***** " << std::endl;
-    TubeType::Pointer xTube = ridgeOp->ExtractRidge( x1, mcRun );
+    TubeType::Pointer xTube = ridgeOp->ExtractRidge( xRidgePnt, mcRun );
     std::cout << "***** Ending tube extraction ***** " << std::endl;
 
     if( xTube.IsNull() )
@@ -214,7 +221,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       }
 
     TubeType::Pointer xTube2;
-    xTube2 = ridgeOp->ExtractRidge( x1, 101 );
+    xTube2 = ridgeOp->ExtractRidge( xRidgePnt, 101 );
     if( xTube2.IsNotNull() )
       {
       std::cout << "Ridge extracted twice - test failed" << std::endl;
@@ -229,7 +236,7 @@ int itktubeRidgeExtractorTest2( int argc, char * argv[] )
       continue;
       }
 
-    xTube = ridgeOp->ExtractRidge( x1, 101 );
+    xTube = ridgeOp->ExtractRidge( xRidgePnt, 101 );
     if( xTube.IsNull() )
       {
       std::cout << "Ridge extraction after delete failed." << std::endl;

@@ -82,7 +82,7 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
   itk::Index<3> extractBoundMax = ridgeOp->GetExtractBoundMaxInIndexSpace();
   std::cout << "Extract bound max = " << extractBoundMax << std::endl;
 
-  ridgeOp->SetScale( 2.0 );
+  ridgeOp->SetScale( 1.5 );
   ridgeOp->SetDynamicScale( false );
 
   double recoveryMax = ridgeOp->GetMaxRecoveryAttempts();
@@ -98,26 +98,20 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
   double roundness;
   double curvature;
   double levelness;
-  unsigned int skip = 0;
   itk::ImageRegionIteratorWithIndex<ImageType> itOut( imOut,
     imOut->GetLargestPossibleRegion() );
   ImageType::IndexType indx;
   itk::ContinuousIndex<double, 3> contIndx;
   itOut.GoToBegin();
   ImageType::IndexType startIndx = itOut.GetIndex();
+  ImageType::PointType pntOut;
   std::cout << "Start..." << std::endl;
   while( !itOut.IsAtEnd() )
     {
     contIndx = itOut.GetIndex();
-    int taskHash = ( int )( ( contIndx[2] - startIndx[2] ) / 2 );
-    if( taskHash > 5 )
-      {
-      if( taskHash > 6 )
-        {
-        break;
-        }
-      taskHash = 5;
-      }
+    imOut->TransformContinuousIndexToPhysicalPoint( contIndx, pntOut );
+    int taskHash = ( int )( ( contIndx[2] - startIndx[2] ) );
+    taskHash = taskHash % 6;
     switch( taskHash )
       {
       default:
@@ -128,45 +122,48 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
         }
       case 1:
         {
-        itOut.Set( ridgeOp->Ridgeness( contIndx, intensity, roundness,
+        itOut.Set( ridgeOp->Ridgeness( pntOut, intensity, roundness,
           curvature, levelness ) );
         break;
         }
       case 2:
         {
-        ridgeOp->Ridgeness( contIndx, intensity, roundness,
+        ridgeOp->Ridgeness( pntOut, intensity, roundness,
           curvature, levelness );
         itOut.Set( roundness );
         break;
         }
       case 3:
         {
-        ridgeOp->Ridgeness( contIndx, intensity, roundness,
+        ridgeOp->Ridgeness( pntOut, intensity, roundness,
           curvature, levelness );
         itOut.Set( curvature );
         break;
         }
       case 4:
         {
-        ridgeOp->Ridgeness( contIndx,  intensity,roundness,
+        ridgeOp->Ridgeness( pntOut,  intensity,roundness,
           curvature, levelness );
         itOut.Set( levelness );
         break;
         }
       case 5:
         {
-        if( ++skip > 37 )
+        if( (int)(contIndx[1]) == (int)(size[1]/2) )
           {
-          skip = 0;
+          std::cout << "******************************" << std::endl;
+          std::cout << "******************************" << std::endl;
+          indx = itOut.GetIndex();
+          imOut->TransformContinuousIndexToPhysicalPoint( contIndx, pntOut );
           std::cout << "Local ridge: " << contIndx << std::endl;
-          contIndx[1] = size[1]/2;
-          if( ridgeOp->LocalRidge( contIndx ) == RidgeOpType::SUCCESS )
+          RidgeOpType::FailureCodeEnum ridgeResult = ridgeOp->LocalRidge(
+            pntOut );
+          if( ridgeResult == RidgeOpType::SUCCESS )
             {
+            imOut->SetPixel( indx, 0.5 );
+            imOut->TransformPhysicalPointToContinuousIndex( pntOut, contIndx );
             std::cout << "   leads to: " << contIndx << std::endl;
-            for( unsigned int i=0; i<3; i++ )
-              {
-              indx[i] = contIndx[i];
-              }
+            imOut->TransformPhysicalPointToIndex( pntOut, indx );
             imOut->SetPixel( indx, imOut->GetPixel( indx ) + 1 );
             std::cout << "      ridgeness = " <<
               ridgeOp->GetCurrentRidgeness() << std::endl;
@@ -176,6 +173,12 @@ int itktubeRidgeExtractorTest( int argc, char * argv[] )
               ridgeOp->GetCurrentCurvature() << std::endl;
             std::cout << "      levelness = " <<
               ridgeOp->GetCurrentLevelness() << std::endl;
+            }
+          else
+            {
+            std::cout << "   ...no local ridge found." << std::endl;
+            std::cout << "   Result = " << ridgeResult << std::endl;
+            imOut->SetPixel( indx, -0.5 );
             }
           }
         break;

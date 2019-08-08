@@ -216,53 +216,39 @@ ComputeRidgeness( const vnl_matrix<T> & H,
   double avgp = sump / ( ImageDimension - 1 );
   double avgv = sumv / ( ImageDimension - 1 );
 
-  double curv = sumv
-    / ( sumv + HEVal[ ImageDimension - 1 ] * HEVal[ ImageDimension - 1] );
-  ridgeness = ridge * ( 1 - avgp ) * curv;
-
-  // roundness is 1 - || 1 - v2^2 / v1^2  ||
-  // However, since v1^2 can be extremely small, we use the average
-  roundness = 0;
-  if( avgv != 0 )
-    {
-    if( ImageDimension > 2 )
-      {
-      roundness =
-        1 - std::fabs( 1 - ( ( HEVal[ ImageDimension-2 ] *
-          HEVal[ ImageDimension-2] ) / avgv ) );
-      }
-    else
-      {
-      double denom = sumv + ( HEVal[1] * HEVal[1] );
-      if( denom != 0 )
-        {
-        roundness = ridge * ( 1 - ( HEVal[1] * HEVal[1] ) / denom );
-        }
-      }
-    }
-
-  // curvature is ( v1^2 + v2^2 ) / 2.0
+  ridgeness = 0;
   curvature = 0;
-  if( avgv != 0 )
+  roundness = 0;
+  levelness = 0;
+  if( ridge > 0 )
     {
+    ridgeness = ( 1 - avgp );
+
+    // roundness is v2^2 / v1^2
     if( ImageDimension > 2 )
       {
-      // Multiplied by 50 assuming the image is from 0 to 1;
-      curvature = ridge * std::sqrt( avgv ) * 50;
+      roundness = std::sqrt(
+        ( HEVal[ ImageDimension-2 ] * HEVal[ ImageDimension-2] ) / avgv );
       }
     else
       {
-      curvature = ridge * std::sqrt( avgv ) / 4;
+      roundness = 1;
       }
-    }
-
-  // levelness is ( v1^2 + v2^2 ) / ( v1^2 + v2^2 + v3^2 ) = 1 for a flat ridge
-  levelness = 0;
-  double denom =
-     sumv + ( HEVal[ ImageDimension-1 ] * HEVal[ ImageDimension-1] );
-  if( denom != 0 )
-    {
-    levelness = ridge * sumv / denom;
+  
+    // curvature is sqrt( ( v1^2 + v2^2 ) / 2.0 )
+    if( avgv != 0 )
+      {
+      curvature = std::sqrt( avgv );
+      }
+  
+    // levelness is ( v1^2 + v2^2 ) / ( v1^2 + v2^2 + v3^2 )
+    //     = 1 for a flat ridge
+    double denom =
+       sumv + ( HEVal[ ImageDimension-1 ] * HEVal[ ImageDimension-1] );
+    if( denom != 0 )
+      {
+      levelness = sumv / denom;
+      }
     }
 }
 
@@ -549,9 +535,7 @@ ComputeEigen( vnl_matrix<T> const & mat,
       for( unsigned int r=0; r<mat.rows(); r++ )
         {
         matD( r, c ) = mat( r, c );
-        std::cout << mat( r, c ) << " ";
         }
-      std::cout << std::endl;
       }
     vnl_real_eigensystem eigen( matD );
     for( unsigned int c=0; c<mat.columns(); c++ )
