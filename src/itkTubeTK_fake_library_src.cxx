@@ -44,3 +44,5 @@ Then this file is needed to remove the following warning :
 You have called ADD_LIBRARY for library TubeTKITK without any source files.
 This typically indicates a problem with your CMakeLists.txt file
 */
+
+#include "itkTubeTK_fake_library_src.h"
