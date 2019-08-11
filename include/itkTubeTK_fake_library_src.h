@@ -45,4 +45,19 @@ You have called ADD_LIBRARY for library TubeTKITK without any source files.
 This typically indicates a problem with your CMakeLists.txt file
 */
 
-#include "itkTubeTK_fake_library_src.h"
+#ifndef __itkTubeTK_fake_library_src_h
+#define __itkTubeTK_fake_library_src_h
+
+namespace itk {
+
+namespace tube {
+
+class EmptyClass
+  {
+  };
+
+}
+
+}
+
+#endif
