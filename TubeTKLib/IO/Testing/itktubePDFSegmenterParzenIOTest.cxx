@@ -160,8 +160,6 @@ int itktubePDFSegmenterParzenIOTest( int argc, char * argv[] )
   filter2->SetFeatureVectorGenerator( fvGen );
 
   itk::tube::PDFSegmenterParzenIO< ImageType, ImageType > PDFIO2( filter2 );
-  std::cout << "*** Reading Filter 2 ***" << std::endl;
-  std::cout << "filename = " << argv[5] << std::endl;
   try
     {
     if( !PDFIO2.Read( argv[5] ) )

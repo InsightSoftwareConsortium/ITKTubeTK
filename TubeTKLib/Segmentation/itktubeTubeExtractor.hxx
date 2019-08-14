@@ -313,7 +313,7 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 bool
 TubeExtractor<TInputImage>
-::LocalTube( ContinuousIndexType & x )
+::LocalTube( PointType & x )
 {
   if( this->m_RidgeOp.IsNull() )
     {
@@ -329,7 +329,7 @@ TubeExtractor<TInputImage>
 template< class TInputImage >
 typename TubeExtractor< TInputImage >::TubeType *
 TubeExtractor<TInputImage>
-::ExtractTube( const ContinuousIndexType & x, unsigned int tubeID,
+::ExtractTube( const PointType & x, unsigned int tubeID,
   bool verbose )
 {
   if( this->m_RidgeOp.IsNull() )
@@ -338,16 +338,15 @@ TubeExtractor<TInputImage>
     }
 
   IndexType xi;
-  for( unsigned int i=0; i<ImageDimension; ++i )
-    {
-    xi[i] = x[i];
-    }
+  this->m_RidgeOp->GetTubeMaskImage()->TransformPhysicalPointToIndex( x,
+    xi );
   if( this->m_RidgeOp->GetTubeMaskImage()->GetPixel( xi ) != 0 )
     {
     if( this->GetDebug() )
       {
       std::cout << "Initial pixel on prior tube." << std::endl;
       std::cout << "  x = " << x << std::endl;
+      std::cout << "  xi = " << xi << std::endl;
       }
     return nullptr;
     }

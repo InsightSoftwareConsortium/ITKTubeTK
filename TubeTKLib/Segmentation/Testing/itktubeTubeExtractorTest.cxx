@@ -171,18 +171,22 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
       }
 
 
-    TubeOpType::ContinuousIndexType x1 = x0;
+    ImageType::PointType pntX1 = pntX;
     tubeOp->SetDebug( true );
     tubeOp->GetRidgeOp()->SetDebug( true );
     tubeOp->GetRadiusOp()->SetDebug( true );
-    if( tubeOp->LocalTube( x1 ) != TubeOpType::RidgeOpType::SUCCESS )
+    if( tubeOp->LocalTube( pntX1 ) != TubeOpType::RidgeOpType::SUCCESS )
       {
+      TubeOpType::ContinuousIndexType x1;
+      im->TransformPhysicalPointToContinuousIndex( pntX1, x1 );
       std::cout << "Local tube test failed.  No tube found." << std::endl;
-      std::cout << "   Source = " << x0 << std::endl;
-      std::cout << "   Result = " << x1 << std::endl;
+      std::cout << "   Source = " << pntX << " (" << x0 << ")" << std::endl;
+      std::cout << "   Result = " << pntX1 << " (" << x1 << ")" << std::endl;
       ++failures;
       continue;
       }
+    TubeOpType::ContinuousIndexType x1;
+    im->TransformPhysicalPointToContinuousIndex( pntX1, x1 );
 
     double diff = 0;
     for( unsigned int i=0; i<ImageType::ImageDimension; i++ )
@@ -204,7 +208,7 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
     std::cout << "Local tube discovery a success!" << std::endl;
     std::cout << std::endl;
     std::cout << "***** Beginning tube extraction *****" << std::endl;
-    TubeType::Pointer xTube = tubeOp->ExtractTube( x1, mcRun );
+    TubeType::Pointer xTube = tubeOp->ExtractTube( pntX1, mcRun );
     std::cout << "***** Ending tube extraction *****" << std::endl;
 
     if( xTube.IsNull() )
@@ -217,7 +221,7 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
     std::cout << "***** Attempting duplicate extraction - should fail *****"
       << std::endl;
     TubeType::Pointer xTube2;
-    xTube2 = tubeOp->ExtractTube( x1, 101 );
+    xTube2 = tubeOp->ExtractTube( pntX1, 101 );
     if( xTube2.IsNotNull() )
       {
       std::cout << "Tube extracted twice - test failed" << std::endl;
@@ -238,7 +242,7 @@ int itktubeTubeExtractorTest( int argc, char * argv[] )
 
     std::cout << "***** Attempting extract after delete *****"
       << std::endl;
-    xTube = tubeOp->ExtractTube( x1, 101 );
+    xTube = tubeOp->ExtractTube( pntX1, 101 );
     if( xTube.IsNull() )
       {
       std::cout << "Tube extraction after delete failed." << std::endl;
