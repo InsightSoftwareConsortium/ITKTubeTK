@@ -83,6 +83,8 @@ public:
    * Type definition for the input image pixel type. */
   typedef typename ImageType::PixelType                 PixelType;
 
+  typedef typename ImageType::PointType                 PointType;
+
   /**  Type definition for VesselTubeSpatialObject */
   typedef TubeSpatialObject< ImageDimension >           TubeType;
   typedef typename TubeType::TubePointType              TubePointType;
@@ -173,12 +175,12 @@ public:
 
   /**
    * Return true if a tube is found from the given seed point */
-  bool LocalTube( ContinuousIndexType & x );
+  bool LocalTube( PointType & x );
 
   /**
    * Extract the ND tube given the position of the first point
    * and the tube ID */
-  TubeType * ExtractTube( const ContinuousIndexType & x,
+  TubeType * ExtractTube( const PointType & x,
     unsigned int tubeID, bool verbose = false );
 
   /**

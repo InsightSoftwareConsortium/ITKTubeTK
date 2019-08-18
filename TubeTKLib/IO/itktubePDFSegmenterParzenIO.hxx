@@ -197,8 +197,7 @@ Read( const char * _headerName )
 
   if( META_DEBUG )
     {
-    std::cout << "MetaClassPDF: M_SetupReadFields"
-                        << std::endl;
+    std::cout << "MetaClassPDF: M_SetupReadFields" << std::endl;
     }
 
   MetaClassPDF classPDFReader;
@@ -554,6 +553,7 @@ Write( const char * _headerName )
     return false;
     }
 
+
   std::vector< MET_FieldRecordType * > metaFields;
 
   unsigned int numFeatures = m_PDFSegmenter->GetNumberOfFeatures();
@@ -571,6 +571,7 @@ Write( const char * _headerName )
   MET_InitWriteField< int >( mF, "BinsPerFeature", MET_INT_ARRAY,
     numFeatures, tmpI );
   metaFields.push_back( mF );
+
 
   float tmpF[4096];
   for( unsigned int i = 0; i < numFeatures; ++i )
@@ -746,7 +747,8 @@ Write( const char * _headerName )
     std::vector< int > tmpObjectId;
     for( unsigned int j = 0; j < nObjects; ++j )
       {
-      tmpObjectId[j] = static_cast<int>(m_PDFSegmenter->GetObjectId()[j]);
+      tmpObjectId.push_back(
+        static_cast<int>(m_PDFSegmenter->GetObjectId()[j]) );
       }
     pdfClassWriter.SetObjectId( tmpObjectId );
     pdfClassWriter.SetObjectPDFWeight(
@@ -768,10 +770,10 @@ Write( const char * _headerName )
     pdfClassWriter.SetForceClassification(
       m_PDFSegmenter->GetForceClassification() );
 
-    char objectFileName[4096];
-    snprintf( objectFileName, 4095, "%s.%02d.mha", fullFileName.c_str(), i );
-
-    pdfClassWriter.Write( objectFileName );
+    std::ostringstream oss;
+    oss << fullFileName << std::setw(2) << std::setfill('0') << i << ".mha";
+    std::string objectFileName = oss.str();
+    pdfClassWriter.Write( objectFileName.c_str() );
     }
 
   for( unsigned int i=0; i<metaFields.size(); ++i )
