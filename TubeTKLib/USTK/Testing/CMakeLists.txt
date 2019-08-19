@@ -29,9 +29,7 @@ set( TEMP ${TubeTK_BINARY_DIR}/Temporary )
 set( tubeBaseUSTKTest_SRCS
   tubeBaseUSTKTests.cxx
   itkLabelMapToAcousticImpedanceImageFilterTest.cxx
-  itkAcousticImpulseResponseImageFilterTest.cxx
   itkAngleOfIncidenceImageFilterTest.cxx
-  itkGradientBasedAngleOfIncidenceImageFilterTest.cxx
   itkUltrasoundProbeGeometryCalculatorTest.cxx
   itkUltrasoundProbeGeometryCalculatorTest2.cxx
   SyncRecordTest.cxx
@@ -66,149 +64,7 @@ ExternalData_Add_Test( TubeTKData
     10
     10 )
 
-ExternalData_Add_Test( TubeTKData
-  NAME itkGradientBasedAngleOfIncidenceImageFilterTest
-  COMMAND ${BASE_USTK_TESTS}
-  --compareNumberOfPixelsTolerance 50
-  --compare
-      DATA{${TubeTK_DATA_ROOT}/itkGradientBasedAngleOfIncidenceImageFilterTestGradientImageFilter.mha,itkGradientBasedAngleOfIncidenceImageFilterTestGradientImageFilter.1.mha}
-      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTestGradientImageFilter.mha
-  --compare
-      DATA{${TubeTK_DATA_ROOT}/itkGradientBasedAngleOfIncidenceImageFilterTestGradientRecursiveGaussianImageFilter.mha,itkGradientBasedAngleOfIncidenceImageFilterTestGradientRecursiveGaussianImageFilter.1.mha}
-      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTestGradientRecursiveGaussianImageFilter.mha
-    itkGradientBasedAngleOfIncidenceImageFilterTest
-      DATA{${TubeTK_DATA_ROOT}/itkLabelMapToAcousticImpedanceImageFilterTest.mha}
-      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTestGradientImageFilter.mha
-      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTestGradientRecursiveGaussianImageFilter.mha
-      CURVILINEAR
-      31.8
-      -24.8 )
 
-ExternalData_Add_Test( TubeTKData
-  NAME itkGradientBasedAngleOfIncidenceImageFilterTest2
-  COMMAND ${BASE_USTK_TESTS}
-  --compareNumberOfPixelsTolerance 50
-  --compare
-      DATA{${TubeTK_DATA_ROOT}/itkGradientBasedAngleOfIncidenceImageFilterTest2GradientImageFilter.mha,itkGradientBasedAngleOfIncidenceImageFilterTest2GradientImageFilter.1.mha}
-      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest2GradientImageFilter.mha
-  --compare
-      DATA{${TubeTK_DATA_ROOT}/itkGradientBasedAngleOfIncidenceImageFilterTest2GradientRecursiveGaussianImageFilter.mha,itkGradientBasedAngleOfIncidenceImageFilterTest2GradientRecursiveGaussianImageFilter.1.mha}
-      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest2GradientRecursiveGaussianImageFilter.mha
-    itkGradientBasedAngleOfIncidenceImageFilterTest
-      DATA{${TubeTK_DATA_ROOT}/itkLabelMapToAcousticImpedanceImageFilterTest.mha}
-      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest2GradientImageFilter.mha
-      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest2GradientRecursiveGaussianImageFilter.mha
-      CURVILINEAR
-      136.5
-      -90.8 )
-
-ExternalData_Add_Test( TubeTKData
-  NAME itkGradientBasedAngleOfIncidenceImageFilterTest3
-  COMMAND ${BASE_USTK_TESTS}
-  --compareNumberOfPixelsTolerance 50
-  --compare
-      DATA{${TubeTK_DATA_ROOT}/itkGradientBasedAngleOfIncidenceImageFilterTest3GradientImageFilter.mha}
-      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest3GradientImageFilter.mha
-  --compare
-      DATA{${TubeTK_DATA_ROOT}/itkGradientBasedAngleOfIncidenceImageFilterTest3GradientRecursiveGaussianImageFilter.mha}
-      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest3GradientRecursiveGaussianImageFilter.mha
-    itkGradientBasedAngleOfIncidenceImageFilterTest
-      DATA{${TubeTK_DATA_ROOT}/itkLabelMapToAcousticImpedanceImageFilterTest.mha}
-      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest3GradientImageFilter.mha
-      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest3GradientRecursiveGaussianImageFilter.mha
-      LINEAR
-      0.0
-      1.0 )
-
-ExternalData_Add_Test( TubeTKData
-  NAME itkGradientBasedAngleOfIncidenceImageFilterTest4
-  COMMAND ${BASE_USTK_TESTS}
-  --compareNumberOfPixelsTolerance 50
-  --compare
-      DATA{${TubeTK_DATA_ROOT}/itkGradientBasedAngleOfIncidenceImageFilterTest4GradientImageFilter.mha,itkGradientBasedAngleOfIncidenceImageFilterTest4GradientImageFilter.1.mha}
-      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest4GradientImageFilter.mha
-  --compare
-      DATA{${TubeTK_DATA_ROOT}/itkGradientBasedAngleOfIncidenceImageFilterTest4GradientRecursiveGaussianImageFilter.mha,itkGradientBasedAngleOfIncidenceImageFilterTest4GradientRecursiveGaussianImageFilter.1.mha}
-      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest4GradientRecursiveGaussianImageFilter.mha
-    itkGradientBasedAngleOfIncidenceImageFilterTest
-      DATA{${TubeTK_DATA_ROOT}/itkLabelMapToAcousticImpedanceImageFilterTest.mha}
-      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest4GradientImageFilter.mha
-      ${TEMP}/itkGradientBasedAngleOfIncidenceImageFilterTest4GradientRecursiveGaussianImageFilter.mha
-      LINEAR
-      0.5
-      0.5 )
-
-ExternalData_Add_Test( TubeTKData
-  NAME itkAcousticImpulseResponseImageFilterTest1
-  COMMAND ${BASE_USTK_TESTS}
-  --compareNumberOfPixelsTolerance 50
-  --compare
-      DATA{${TubeTK_DATA_ROOT}/itkAcousticImpulseResponseImageFilterTest1GradientImageFilter.mha}
-      ${TEMP}/itkAcousticImpulseResponseImageFilterTest1GradientImageFilter.mha
-  --compare
-      DATA{${TubeTK_DATA_ROOT}/itkAcousticImpulseResponseImageFilterTest1GradientRecursiveGaussianImageFilter.mha}
-      ${TEMP}/itkAcousticImpulseResponseImageFilterTest1GradientRecursiveGaussianImageFilter.mha
-    itkAcousticImpulseResponseImageFilterTest
-      DATA{${TubeTK_DATA_ROOT}/itkLabelMapToAcousticImpedanceImageFilterTest.mha}
-      ${TEMP}/itkAcousticImpulseResponseImageFilterTest1GradientImageFilter.mha
-      ${TEMP}/itkAcousticImpulseResponseImageFilterTest1GradientRecursiveGaussianImageFilter.mha
-      31.8
-      -24.8
-      1.0 )
-
-ExternalData_Add_Test( TubeTKData
-  NAME itkAcousticImpulseResponseImageFilterTest2
-  COMMAND ${BASE_USTK_TESTS}
-  --compareNumberOfPixelsTolerance 50
-  --compare
-      DATA{${TubeTK_DATA_ROOT}/itkAcousticImpulseResponseImageFilterTest2GradientImageFilter.mha}
-      ${TEMP}/itkAcousticImpulseResponseImageFilterTest2GradientImageFilter.mha
-  --compare
-      DATA{${TubeTK_DATA_ROOT}/itkAcousticImpulseResponseImageFilterTest2GradientRecursiveGaussianImageFilter.mha}
-      ${TEMP}/itkAcousticImpulseResponseImageFilterTest2GradientRecursiveGaussianImageFilter.mha
-    itkAcousticImpulseResponseImageFilterTest
-      DATA{${TubeTK_DATA_ROOT}/itkLabelMapToAcousticImpedanceImageFilterTest.mha}
-      ${TEMP}/itkAcousticImpulseResponseImageFilterTest2GradientImageFilter.mha
-      ${TEMP}/itkAcousticImpulseResponseImageFilterTest2GradientRecursiveGaussianImageFilter.mha
-      136.5
-      -90.8
-      1.0 )
-
-ExternalData_Add_Test( TubeTKData
-  NAME itkAcousticImpulseResponseImageFilterTest3
-  COMMAND ${BASE_USTK_TESTS}
-  --compareNumberOfPixelsTolerance 50
-  --compare
-      DATA{${TubeTK_DATA_ROOT}/itkAcousticImpulseResponseImageFilterTest3GradientImageFilter.mha}
-      ${TEMP}/itkAcousticImpulseResponseImageFilterTest3GradientImageFilter.mha
-  --compare
-      DATA{${TubeTK_DATA_ROOT}/itkAcousticImpulseResponseImageFilterTest3GradientRecursiveGaussianImageFilter.mha}
-      ${TEMP}/itkAcousticImpulseResponseImageFilterTest3GradientRecursiveGaussianImageFilter.mha
-    itkAcousticImpulseResponseImageFilterTest
-      DATA{${TubeTK_DATA_ROOT}/itkLabelMapToAcousticImpedanceImageFilterTest.mha}
-      ${TEMP}/itkAcousticImpulseResponseImageFilterTest3GradientImageFilter.mha
-      ${TEMP}/itkAcousticImpulseResponseImageFilterTest3GradientRecursiveGaussianImageFilter.mha
-      136.5
-      -90.8
-      0.5 )
-
-ExternalData_Add_Test( TubeTKData
-  NAME itkAcousticImpulseResponseImageFilterTest4
-  COMMAND ${BASE_USTK_TESTS}
-  --compareNumberOfPixelsTolerance 50
-  --compare
-      DATA{${TubeTK_DATA_ROOT}/itkAcousticImpulseResponseImageFilterTest4GradientImageFilter.mha}
-      ${TEMP}/itkAcousticImpulseResponseImageFilterTest4GradientImageFilter.mha
-  --compare
-      DATA{${TubeTK_DATA_ROOT}/itkAcousticImpulseResponseImageFilterTest4GradientRecursiveGaussianImageFilter.mha}
-      ${TEMP}/itkAcousticImpulseResponseImageFilterTest4GradientRecursiveGaussianImageFilter.mha
-    itkAcousticImpulseResponseImageFilterTest
-      DATA{${TubeTK_DATA_ROOT}/itkLabelMapToAcousticImpedanceImageFilterTest.mha}
-      ${TEMP}/itkAcousticImpulseResponseImageFilterTest4GradientImageFilter.mha
-      ${TEMP}/itkAcousticImpulseResponseImageFilterTest4GradientRecursiveGaussianImageFilter.mha
-      136.5
-      -90.8
-      2.0 )
 
 ExternalData_Add_Test( TubeTKData
   NAME itkUltrasoundProbeGeometryCalculatorTest

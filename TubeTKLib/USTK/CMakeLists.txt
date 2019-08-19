@@ -21,9 +21,7 @@
 ##############################################################################
 
 set( TubeTKLib_Base_USTK_H_Files
-  itkAcousticImpulseResponseImageFilter.h
   itkAngleOfIncidenceImageFilter.h
-  itkGradientBasedAngleOfIncidenceImageFilter.h
   itkLabelMapToAcousticImpedanceFunctor.h
   itkLabelMapToAcousticImpedanceImageFilter.h
   itkUltrasoundProbeGeometryCalculator.h
@@ -33,9 +31,7 @@ set( TubeTKLib_Base_USTK_H_Files
   itktubeMarkDuplicateFramesInvalidImageFilter.h )
 
 set( TubeTKLib_Base_USTK_HXX_Files
-  itkAcousticImpulseResponseImageFilter.hxx
   itkAngleOfIncidenceImageFilter.hxx
-  itkGradientBasedAngleOfIncidenceImageFilter.hxx
   itkLabelMapToAcousticImpedanceFunctor.hxx
   itkLabelMapToAcousticImpedanceImageFilter.hxx
   itkUltrasoundProbeGeometryCalculator.hxx
