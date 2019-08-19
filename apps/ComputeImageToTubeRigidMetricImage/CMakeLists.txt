@@ -34,7 +34,6 @@ SEMMacroBuildCLI(
     TubeTK
     TubeTKLibCommon
     TubeTKLibNumerics
-    TubeTKLibUSTK
   )
 
 if( BUILD_TESTING )

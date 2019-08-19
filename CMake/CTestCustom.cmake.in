@@ -85,8 +85,7 @@ set( CTEST_CUSTOM_MEMCHECK_IGNORE
     PrintSelf-Numerics
     PrintSelf-ObjectDocuments
     PrintSelf-Registration
-    PrintSelf-Segmentation
-    PrintSelf-USTK )
+    PrintSelf-Segmentation )
 
 # GLOB automatically recurses in subdirectories.
 set( CTEST_EXTRA_COVERAGE_GLOB
@@ -236,7 +235,4 @@ set( CTEST_CUSTOM_WARNING_EXCEPTION
 
   # Gcc
   "unrecognized command line option.*no-unused-local-typedefs"
-
-  # USTK
-  "fileno.*deprecated.*ISO"
   )

@@ -237,8 +237,7 @@ set( TubeTKLib_LIBRARIES
   TubeTKLibCommon
   TubeTKLibMetaIO
   TubeTKLibNumerics
-  TubeTKLibObjectDocuments
-  TubeTKLibUSTK )
+  TubeTKLibObjectDocuments )
 
 set( TubeTKLib_INCLUDE_DIRS
   ${TubeTK_BINARY_DIR}/TubeTKLib
@@ -249,8 +248,7 @@ set( TubeTKLib_INCLUDE_DIRS
   ${TubeTK_SOURCE_DIR}/TubeTKLib/Numerics
   ${TubeTK_SOURCE_DIR}/TubeTKLib/ObjectDocuments
   ${TubeTK_SOURCE_DIR}/TubeTKLib/Registration
-  ${TubeTK_SOURCE_DIR}/TubeTKLib/Segmentation
-  ${TubeTK_SOURCE_DIR}/TubeTKLib/USTK )
+  ${TubeTK_SOURCE_DIR}/TubeTKLib/Segmentation )
 
 set( TubeTKLib_LIBRARY_DIRS
   ${TubeTK_BINARY_DIR}/bin
