@@ -208,7 +208,10 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
           double roundness = 0;
           double curvature = 0;
           double levelness = 0;
-          ridgeness = ridgeExtractor->Ridgeness( cIndx, intensity,
+          typename RidgeExtractorType::PointType pnt;
+          m_MaskInputImage->TransformIndexToPhysicalPoint( indx,
+            pnt );
+          ridgeness = ridgeExtractor->Ridgeness( pnt, intensity,
             roundness, curvature, levelness );
           instance[0] = intensity;
           instance[1] = ridgeness;
@@ -218,7 +221,7 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
           m_SeedData.push_back( instance );
           m_SeedDataIndexList.push_back( cIndx );
 
-          if( ridgeExtractor->LocalRidge( cIndx ) ==
+          if( ridgeExtractor->LocalRidge( pnt ) ==
             RidgeExtractorType::SUCCESS )
             {
             if( scale < scaleMin )
@@ -229,8 +232,10 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
               {
               scaleMax = scale;
               }
-            ridgeness = ridgeExtractor->Ridgeness( cIndx, intensity,
+            ridgeness = ridgeExtractor->Ridgeness( pnt, intensity,
               roundness, curvature, levelness );
+            m_MaskInputImage->TransformPhysicalPointToContinuousIndex(
+              pnt, cIndx );
             instance[0] = intensity;
             instance[1] = ridgeness;
             instance[2] = roundness;
@@ -251,7 +256,9 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
           double roundness = 0;
           double curvature = 0;
           double levelness = 0;
-          ridgeness = ridgeExtractor->Ridgeness( cIndx, intensity,
+          typename RidgeExtractorType::PointType pnt;
+          m_MaskInputImage->TransformIndexToPhysicalPoint( indx, pnt );
+          ridgeness = ridgeExtractor->Ridgeness( pnt, intensity,
             roundness, curvature, levelness );
           instance[0] = intensity;
           instance[1] = ridgeness;
@@ -333,9 +340,9 @@ ComputeSegmentTubesParameters< TPixel, VDimension >
 
   double ridgeMaxXChange = 3.0;
 
-  double portion = 1.0 / 1000.0;
+  double portion = 999.0 / 1000.0;
   int clippedMax = ( int )( m_TubeData.size() * portion );
-  portion = 1.0 / 500.0;
+  portion = 499.0 / 500.0;
   int clippedMaxStart = ( int )( m_TubeData.size() * portion );
 
   int index = 1;
