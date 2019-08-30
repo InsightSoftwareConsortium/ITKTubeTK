@@ -249,11 +249,12 @@ SegmentTubes<TInputImage>
     {
     this->m_TubeExtractorFilter->SetRadius( *seedRadiusIter );
 
+    PointType x;
+    this->m_InputImage->TransformContinuousIndexToPhysicalPoint( *seedIndexIter, x );
     std::cout << "Extracting from index point " << *seedIndexIter
       << " at radius " << *seedRadiusIter << std::endl;
     typename TubeType::Pointer xTube =
-      this->m_TubeExtractorFilter->ExtractTube( *seedIndexIter, count,
-        true );
+      this->m_TubeExtractorFilter->ExtractTube( x, count, true );
     if( !xTube.IsNull() )
       {
       this->m_TubeExtractorFilter->AddTube( xTube );
