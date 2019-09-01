@@ -267,7 +267,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
           const ScalarType scale = scalingRadius * m_Kappa;
 
           matchMeasure += m_FeatureWeights[weightCount] * std::fabs(
-            this->ComputeLaplacianMagnitude( pointIterator->GetNormal1InObjectSpace(),
+            this->ComputeLaplacianMagnitude(
+              pointIterator->GetNormal1InObjectSpace(),
               scale,
               currentPoint ) );
           }
@@ -455,9 +456,8 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
           {
           transformedTubePoints.push_back( currentPoint );
 
-          //! \todo: these should be CovariantVectors?
-          VectorType v1;
-          VectorType v2;
+          CovariantVectorType v1;
+          CovariantVectorType v2;
           for( unsigned int ii = 0; ii < TubeDimension; ++ii )
             {
             v1[ii] = pointIterator->GetNormal1InObjectSpace()[ii];
@@ -466,16 +466,16 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
           for( unsigned int ii = 0; ii < TubeDimension; ++ii )
             {
-            v1T[ii] = transformCopy->TransformVector( v1 )[ii];
-            v2T[ii] = transformCopy->TransformVector( v2 )[ii];
+            v1T[ii] = transformCopy->TransformCovariantVector( v1 )[ii];
+            v2T[ii] = transformCopy->TransformCovariantVector( v2 )[ii];
             }
           tM = outer_product( v1T, v1T );
           tM = tM + outer_product( v2T, v2T );
           tM = m_FeatureWeights[weightCount] * tM;
           biasV += tM;
 
-          v1 = transformCopy->TransformVector( v1 );
-          v2 = transformCopy->TransformVector( v2 );
+          v1 = transformCopy->TransformCovariantVector( v1 );
+          v2 = transformCopy->TransformCovariantVector( v2 );
 
           ScalarType scalingRadius = pointIterator->GetRadiusInObjectSpace();
           scalingRadius = std::max( scalingRadius, m_MinimumScalingRadius );
@@ -603,7 +603,7 @@ typename ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject,
   TTubeSpatialObject >::ScalarType
 ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 ::ComputeThirdDerivatives(
-  const VectorType & tubeNormal,
+  const CovariantVectorType & tubeNormal,
   const ScalarType scale,
   const OutputPointType & currentPoint ) const
 {
@@ -614,11 +614,10 @@ ImageToTubeRigidMetric< TFixedImage, TMovingSpatialObject, TTubeSpatialObject >
 
   const ScalarType scaleSquared = scale * scale;
   const ScalarType scaleExtentProduct = scale * m_Extent;
-
+  const ScalarType step = 0.1 * scaleExtentProduct;
   for( ScalarType distance = -scaleExtentProduct;
        distance <= scaleExtentProduct;
-       //! \todo better way to calculate this increment
-       distance += 0.1 )
+       distance += step )
     {
     const ScalarType distanceSquared = distance * distance;
     const ScalarType kernelValue =
