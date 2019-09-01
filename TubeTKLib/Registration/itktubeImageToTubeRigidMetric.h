@@ -160,8 +160,10 @@ protected:
   ImageToTubeRigidMetric( void );
   virtual ~ImageToTubeRigidMetric( void );
 
-  typedef Vector< ScalarType, TubeDimension >                VectorType;
-  typedef Matrix< ScalarType, TubeDimension, TubeDimension > MatrixType;
+  typedef CovariantVector< ScalarType, TubeDimension >    CovariantVectorType;
+  typedef Vector< ScalarType, TubeDimension >             VectorType;
+
+  typedef Matrix< ScalarType, TubeDimension, TubeDimension >   MatrixType; 
 
   typedef typename TubePointType::PointType        PointType;
   typedef vnl_vector< ScalarType >                 VnlVectorType;
@@ -203,7 +205,7 @@ private:
     const ScalarType scale,
     const OutputPointType & currentPoint ) const;
   ScalarType ComputeThirdDerivatives(
-    const VectorType & v,
+    const CovariantVectorType & v,
     const ScalarType scale,
     const OutputPointType & currentPoint ) const;
 

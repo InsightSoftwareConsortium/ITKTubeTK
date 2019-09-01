@@ -35,7 +35,6 @@ limitations under the License.
 
 int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
 {
-
   if( argc < 4 )
     {
     std::cerr << "Missing Parameters: "
@@ -158,7 +157,7 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   if( gradientDescentOptimizer )
     {
     gradientDescentOptimizer->SetLearningRate( 0.1 );
-    gradientDescentOptimizer->SetNumberOfIterations( 20 );
+    gradientDescentOptimizer->SetNumberOfIterations( 40 );
     }
 
   try
@@ -173,7 +172,6 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
     }
 
   // validate the registration result
-  //! \todo validate against known real results.
   TransformType::Pointer outputTransform =
     dynamic_cast<TransformType *>( registrationMethod->GetTransform() );
   const TransformType::ParametersType lastParameters =
@@ -201,12 +199,12 @@ int itktubeImageToTubeRigidRegistrationTest( int argc, char * argv[] )
   std::cout << indent << translation[0] << " "
     << translation[1] << " " << translation[2] << std::endl;
 
-  double knownResult[] = { -0.071,
-    -0.115,
-    -0.1925,
-    -2.522,
-    2.563,
-    -6.09 };
+  double knownResult[] = { -0.0144,
+    -0.0146,
+    0.011,
+    -1.104,
+    -0.129,
+    -0.671 };
   std::cout << "Parameters: " << std::endl;
   for( unsigned int ii = 0; ii < 6; ++ii )
     {

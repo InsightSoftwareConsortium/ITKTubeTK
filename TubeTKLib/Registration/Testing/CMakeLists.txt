@@ -95,7 +95,7 @@ ExternalData_Add_Test( TubeTKData
   COMMAND ${BASE_REGISTRATION_TESTS}
     itktubeImageToTubeRigidRegistrationTest
       DATA{${TubeTK_DATA_ROOT}/Branch.n020.mha}
-      DATA{${TubeTK_DATA_ROOT}/tube.tre}
+      DATA{${TubeTK_DATA_ROOT}/Branch-truth-new.tre}
       ${TEMP}/itktubeImageToTubeRigidRegistrationOutputTube.tre
       ${TEMP}/itktubeImageToTubeRigidRegistrationOutputImage.mha )
 
