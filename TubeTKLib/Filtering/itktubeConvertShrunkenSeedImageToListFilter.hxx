@@ -114,6 +114,12 @@ ConvertShrunkenSeedImageToListFilter< TImage, TPointsImage >
   const PointsImageType* inPoint =
     const_cast< PointsImageType * >( this->GetPointsImage() );
 
+  if( inImage->GetLargestPossibleRegion() != inScale->GetLargestPossibleRegion()
+    || inScale->GetLargestPossibleRegion() !=
+       inPoint->GetLargestPossibleRegion() )
+  {
+    itkExceptionMacro( << "Error: Input images must be of the same size" );
+  }
   itk::ImageRegionConstIterator< ImageType > itImage( inImage,
     inImage->GetLargestPossibleRegion() );
   itk::ImageRegionConstIterator< ImageType > itScale( inScale,
