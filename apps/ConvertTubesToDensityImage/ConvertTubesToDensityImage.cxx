@@ -191,15 +191,6 @@ int DoIt( int argc, char * argv[] )
 // Main
 int main( int argc, char * argv[] )
 {
-  try
-    {
-    PARSE_ARGS;
-    }
-  catch( const std::exception & err )
-    {
-    tube::ErrorMessage( err.what() );
-    return EXIT_FAILURE;
-    }
   PARSE_ARGS;
 
   MetaScene *mScene = new MetaScene;
